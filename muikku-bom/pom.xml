@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>fi.muikku</groupId>
+  <artifactId>bom</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <properties>
+    <muikku.version>1.0.0-SNAPSHOT</muikku.version>
+    <jboss-javaee6-spec.version>1.0.0.Final</jboss-javaee6-spec.version>
+    <jboss-jsf-api_2.1_spec.version>2.0.6.Final</jboss-jsf-api_2.1_spec.version>
+    <jsf-impl.version>2.1.7</jsf-impl.version>
+    <hibernate.version>4.0.1.Final</hibernate.version>
+    <hibernate-validator.version>4.2.0.Final</hibernate-validator.version>
+    <commons-lang.version>3.1</commons-lang.version>
+    <resteasy-jaxrs.version>2.3.2.Final</resteasy-jaxrs.version>
+    <tranquil-model.version>1.0.2-SNAPSHOT</tranquil-model.version>
+    <jackson-mapper-asl.version>1.9.2</jackson-mapper-asl.version>
+    <maven-aether-provider.version>3.0.4</maven-aether-provider.version>
+    <aether-connector-wagon.version>1.13.1</aether-connector-wagon.version>
+    <deltaspike.version>0.3-incubating</deltaspike.version>
+    <apache-httpcomponents.version>4.1.2</apache-httpcomponents.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+          
+      <dependency>
+        <groupId>org.jboss.spec</groupId>
+        <artifactId>jboss-javaee-6.0</artifactId>
+        <type>pom</type>
+        <version>${jboss-javaee6-spec.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.spec.javax.faces</groupId>
+        <artifactId>jboss-jsf-api_2.1_spec</artifactId>
+        <version>${jboss-jsf-api_2.1_spec.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-jaxrs</artifactId>
+        <version>${resteasy-jaxrs.version}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-oauth</artifactId>
+        <version>${resteasy-jaxrs.version}</version>
+      </dependency>
+      
+      <dependency>
+    	<groupId>org.codehaus.jackson</groupId>
+    	<artifactId>jackson-mapper-asl</artifactId>
+    	<version>${jackson-mapper-asl.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-validator</artifactId>
+        <version>${hibernate-validator.version}</version>
+      </dependency> 
+      
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-core</artifactId>
+        <version>${hibernate.version}</version>
+      </dependency> 
+
+      <dependency>
+        <groupId>com.sun.faces</groupId>
+        <artifactId>jsf-impl</artifactId>
+        <version>${jsf-impl.version}</version>
+      </dependency>
+  
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>${commons-lang.version}</version>
+      </dependency>
+  
+      <dependency>
+	    <groupId>org.apache.httpcomponents</groupId>
+	    <artifactId>httpclient</artifactId>
+	    <version>${apache-httpcomponents.version}</version>
+	  </dependency>
+	    
+	  <dependency>
+	    <groupId>org.apache.httpcomponents</groupId>
+	    <artifactId>httpcore</artifactId>
+	    <version>${apache-httpcomponents.version}</version>
+	  </dependency>
+  
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-entitymanager</artifactId>
+        <version>${hibernate.version}</version>
+      </dependency>
+  
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+        <version>1.5.6</version>
+      </dependency>
+  
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-infinispan</artifactId>
+        <version>${hibernate.version}</version>
+      </dependency>
+      
+      <dependency>
+	    <groupId>org.apache.maven</groupId>
+	    <artifactId>maven-aether-provider</artifactId>
+	    <version>${maven-aether-provider.version}</version>
+	  </dependency>
+	    
+	  <dependency>
+        <groupId>org.sonatype.aether</groupId>
+        <artifactId>aether-connector-wagon</artifactId>
+        <version>${aether-connector-wagon.version}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>fi.tranquil-model</groupId>
+        <artifactId>tranquil-model</artifactId>
+        <version>${tranquil-model.version}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>fi.muikku</groupId>
+        <artifactId>muikku-plugin</artifactId>
+        <version>${muikku.version}</version>
+      </dependency> 
+      
+      <dependency>
+        <groupId>fi.muikku</groupId>
+        <artifactId>muikku-plugin-core</artifactId>
+        <version>${muikku.version}</version>
+      </dependency> 
+      
+      <dependency>
+        <groupId>fi.muikku</groupId>
+        <artifactId>muikku-rest</artifactId>
+        <version>${muikku.version}</version>
+      </dependency> 
+      
+      <dependency>
+        <groupId>fi.muikku</groupId>
+        <artifactId>muikku-plugin</artifactId>
+        <version>${muikku.version}</version>
+      </dependency>
+
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>muikku-core-plugins</artifactId>
+        <version>${muikku.version}</version>
+    </dependency>
+    
+      <dependency>
+        <groupId>fi.muikku</groupId>
+        <artifactId>muikku-persistence</artifactId>
+        <version>${muikku.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>fi.muikku</groupId>
+        <artifactId>muikku-security</artifactId>
+        <version>${muikku.version}</version>
+      </dependency>
+    
+      <dependency>
+        <groupId>fi.muikku</groupId>
+        <artifactId>muikku-core</artifactId>
+        <version>${muikku.version}</version>
+      </dependency>
+    
+      <dependency>
+        <groupId>fi.muikku</groupId>
+        <artifactId>muikku-schooldata-pyramus</artifactId>
+        <version>${muikku.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.deltaspike.core</groupId>
+        <artifactId>deltaspike-core-api</artifactId>
+		<version>${deltaspike.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.deltaspike.core</groupId>
+        <artifactId>deltaspike-core-impl</artifactId>
+		<version>${deltaspike.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <distributionManagement>
+    <snapshotRepository>
+      <uniqueVersion>false</uniqueVersion>
+      <id>otavanopisto-snapshots</id>
+      <name>Otavan Opisto Snapshots</name>
+      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <uniqueVersion>false</uniqueVersion>
+      <id>otavanopisto-releases</id>
+      <name>Otavan Opisto Releases</name>
+      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases</url>
+    </repository>
+  </distributionManagement>
+</project>
