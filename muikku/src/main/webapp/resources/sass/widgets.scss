@@ -1,0 +1,173 @@
+
+@import "_base.scss";
+
+/* Widgets */
+
+
+/* staticNaviDock  */
+
+.naviIconCoursePicker{
+   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-coursepicker.png'), $naviIconGr...);
+}
+
+.naviIconCoursePicker.disabled{
+	 opacity:0.2;
+   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-coursepicker.png'), $naviIconDisabledGr...);
+}
+
+.naviIconForum{
+   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-forum.png'), $naviIconGr...);
+}
+
+ .naviIconForum.disabled{
+   opacity:0.2;
+   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-forum.png'), $naviIconDisabledGr...) 
+}
+
+.naviIconDiary{
+   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-diary.png'), $naviIconGr...);	
+}
+
+ .naviIconDiary.disabled{
+    opacity:0.2;
+    @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-diary.png'), $naviIconDisabledGr...); 
+}
+    
+.naviIconMail{
+   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-messaging.png'), $naviIconGr...); 	    
+}
+
+ .naviIconMail.disabled{
+    opacity:0.2;
+    @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-messaging.png'), $naviIconDisabledGr...);  
+}
+
+.naviIconStudyTracker{
+   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-studytracker.png'), $naviIconGr...); 	  
+}
+
+ .naviIconStudyTracker.disabled{
+    opacity:0.2;
+    @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-studytracker.png'), $naviIconDisabledGr...);    
+}
+
+.naviIconCalendar{
+   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-calendar.png'), $naviIconGr...);
+}
+
+ .naviIconCalendar.disabled{
+    opacity:0.2;
+    @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-calendar.png'), $naviIconDisabledGr...);   
+}
+
+
+.naviIconLogout{
+   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-logout.png'), $naviIconGr...);	
+    float:right;    
+}
+
+.naviIconSettings{
+   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-settings.png'), $naviIconGr...);  
+    float:right;      
+}
+
+
+
+/* Register */
+
+#registerWidget{
+    font-size: 10px;
+    width:210px;    
+}
+
+
+/* Login */
+
+#loginWidget{
+    text-align:right;
+    color:#000;
+    font-size: 10px;
+    width:210px;
+    position:absolute;
+    top:5px;
+    right:5px;
+}
+
+
+/* Userprofile */
+ #userProfileWidget{
+    text-align:right;
+    color:#000;
+    font-size: 10px;
+    width:210px;
+    position:absolute;
+    top:5px;
+    right:5px;
+}
+
+#userProfileWidgetInfo{
+	float:left;
+	margin-left:70px;   
+}
+
+#userProfileNavigationContainer{
+
+}
+
+
+
+
+.widget {
+  border: 1px solid #aaa;
+  margin: 8px;
+  padding: 8px;
+  border-radius: 4px;
+  box-shadow: 1px 1px 5px #888;
+  @include gradient-top-bottom-four($widgetGr...);
+}
+
+.widgetTitle {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.fishImage {
+  height: 100px;
+  width: 150px;
+  background-image: url('../gfx/fish.jpg');
+  background-position: right center;
+  background-repeat: no-repeat;
+  display: inline-block;
+}
+
+.fishText {
+  padding-top: 50px;
+  vertical-align: top;
+  display: inline-block;
+}
+
+.calendarWidget {
+  width: 570px;
+}
+
+.calendarWidget div.fullCalendar {
+  width: 100%;
+  position: static;
+}
+
+.calendarWidget div.fullCalendar table {
+  width: inherit;
+}
+
+.calendarWidget div.fullCalendar table tr td {
+  width: 14.30%;
+}
+
+.calendarWidget div.fullCalendar .fullCalendarEventfulDay {
+  background: lightgreen;
+}
+
+.calendarWidget div.fullCalendar .today.fullCalendarEventfulDay {
+  border-color: green;
+}

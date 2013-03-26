@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    template="/WEB-INF/templates/default.xhtml">
+
+  <ui:define name="title">RichFaces Sample</ui:define>
+  
+  <ui:define name="content">
+    <h:outputScript name="scripts/gui/settings/users.js" target="head"/>
+
+    <div class="environmentUsersWidget">
+      <div class="userManagementTabs">
+        <ul>
+          <li>
+            <a href="#userList">K&#228;ytt&#228;j&#228;t</a>
+          </li>
+          <li>
+            <a href="#createUser">Uusi k&#228;ytt&#228;j&#228;</a>
+          </li>
+        </ul>
+
+        <div id="userList" class="tabContent">
+          <div>
+            <input type="hidden" name="environmentId" value="#{muikkuSession.environment.id}"/>
+            
+            <div class="environmentUsersWidgetTable">
+            </div>
+            
+            <h:form id="representForm">
+              <h:inputHidden id="userId"/>
+              <h:commandButton id="representButton" action="#{localSession.representUser(param['representForm:userId'])}" style="display:none"/>
+            </h:form>
+          </div>
+        </div>
+
+        <div id="createUser" class="tabContent">
+          <ui:include src="/widgets/register.xhtml">
+          </ui:include>
+        </div>
+      </div>
+    </div>
+
+  </ui:define>
+
+</ui:composition>

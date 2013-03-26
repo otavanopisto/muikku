@@ -1,0 +1,10 @@
+{#.}
+  <div class="coursePickerCourse">
+    <input type="hidden" name="courseId" value="{id}"/>
+    Rating: {rating} ({ratingCount})
+    Name: {name}
+    Desc: {description}
+    <input type="button" value="Ilmoittaudu" class="coursePickerAttendCourseButton"/>
+    <input type="button" value="Tutustu" class="coursePickerCheckOutCourseButton"/>
+  </div>
+{/.}

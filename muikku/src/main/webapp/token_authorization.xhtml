@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    template="/WEB-INF/templates/default.xhtml">
+    
+    <ui:define name="content">
+      <c:choose>
+        <c:when test="#{!muikkuSession.loggedIn}">
+        
+          <ui:include src="/widgets/login.xhtml">
+          </ui:include>
+    
+          <ui:fragment rendered="#{not muikkuSession.loggedIn}">
+            <ui:include src="/widgets/register.xhtml">
+            </ui:include>
+          </ui:fragment>
+        
+        </c:when>
+        <c:otherwise>
+          <div class="oAuthConfirmText">
+            Saisiko kuluttja "#{oauth_consumer_display}" kayttaa RESTiasi?
+          </div>
+          
+          <h:form id="oauth">
+            <h:inputHidden value="#{oauth_token_confirm_uri}" id="confirmUri" />
+            <h:inputHidden value="#{oauth_consumer_id}" id="consumerId" />
+            <h:inputHidden value="#{oauth_request_token}" id="requestToken" />
+
+            <h:commandButton immediate="true" id="accept" action="#{oAuthController.acceptRequestToken(param['oauth:confirmUri'], param['oauth:consumerId'], param['oauth:requestToken'], localSession.user)}" styleClass="oAuthConfimButton" value="No Miehan Suostun">
+            </h:commandButton>
+            
+            <h:commandButton immediate="true" id="decline" action="#{oAuthController.declineRequestToken(param['oauth:confirmUri'])}" styleClass="oAuthDeclineButton" value="Se ei KAY!">
+            </h:commandButton>
+          </h:form>           
+
+        </c:otherwise>
+      </c:choose>
+
+    </ui:define>
+
+</ui:composition>

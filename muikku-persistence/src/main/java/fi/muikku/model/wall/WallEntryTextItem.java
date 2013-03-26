@@ -1,0 +1,30 @@
+package fi.muikku.model.wall;
+
+import javax.persistence.Entity;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotEmpty;
+
+@Entity
+@PrimaryKeyJoinColumn(name="id")
+public class WallEntryTextItem extends WallEntryItem {
+
+  @Transient
+  public WallEntryItemType getType() {
+    return WallEntryItemType.TEXT;
+  }
+  
+  public String getText() {
+    return text;
+  }
+
+  public void setText(String text) {
+    this.text = text;
+  }
+
+  @NotNull
+  @NotEmpty
+  private String text;
+}

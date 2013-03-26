@@ -8,7 +8,7 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>muikku-plugin-core</artifactId>
+  <artifactId>plugin-core</artifactId>
   <packaging>jar</packaging>
   <name>Muikku Plugin Core</name>
   <description>Muikku Plugin Core</description>
@@ -48,12 +48,12 @@
 
     <dependency>
       <groupId>fi.muikku</groupId>
-      <artifactId>muikku-plugin</artifactId>
+      <artifactId>plugin</artifactId>
     </dependency> 
     
     <dependency>
       <groupId>fi.muikku</groupId>
-      <artifactId>muikku-persistence</artifactId>
+      <artifactId>persistence</artifactId>
       <scope>provided</scope>
     </dependency>
     

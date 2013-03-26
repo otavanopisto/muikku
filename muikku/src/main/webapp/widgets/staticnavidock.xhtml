@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:h="http://java.sun.com/jsf/html">
+    
+    <ui:fragment rendered="#{not muikkuSession.loggedIn}">
+      <h:outputLink styleClass="naviIconCoursePicker tooltip" value="#">
+        <span>Kurssipoimuri <br/> <br/>
+          Kurssipoimurista voit ilmoittautua ja poimia kursseja opintosuunnitelmaasi.<br/> <br/>
+          <span class="tooltipFastLink" onclick="">Luo uusi kurssi (opettaja)</span>
+        </span>
+      </h:outputLink>
+      <div class="naviIconForum disabled">
+      </div>
+      <div class="naviIconDiary disabled">
+      </div>
+      <div class="naviIconMail disabled">
+      </div>
+      <div class="naviIconStudyTracker disabled">
+      </div>
+      <div class="naviIconCalendar disabled">
+      </div>
+    </ui:fragment>
+ 
+     <ui:fragment rendered="#{muikkuSession.loggedIn}">
+       <h:outputLink styleClass="naviIconCoursePicker tooltip" value="#{request.contextPath}/coursepicker.jsf">
+        <span>Kurssipoimuri <br/> <br/>
+          Kurssipoimurista voit ilmoittautua ja poimia kursseja opintosuunnitelmaasi.<br/> <br/>
+          <span class="tooltipFastLink" onclick="">Luo uusi kurssi (opettaja)</span>
+        </span>
+      </h:outputLink>    
+      <h:outputLink styleClass="naviIconForum tooltip" value="#{request.contextPath}/forum/index.jsf">
+        <span>Keskustelualue <br/> <br/>
+          Keskustelualueella voit keskustella oppimisesta, opiskelusta - tai elämästä yleensä.<br/> <br/>
+          <span class="tooltipFastLink" onclick="">RSS-Feed</span>
+        </span>      
+      </h:outputLink>
+      <h:outputLink styleClass="naviIconDiary tooltip" value="#">
+        <span>Oppimispäiväkirja <br/> <br/>
+          Oppimispäiväkirjassa voit reflektoida oppimistasi.<br/> <br/>
+          <span class="tooltipFastLink" onclick="">Luo uusi päiväkirjamerkintä</span>
+        </span>
+      </h:outputLink>
+      <h:outputLink styleClass="naviIconMail tooltip" value="#">
+        <span>Viestin<br/> <br/>
+          Viestimellä voit viestiä muiden kanssa ja arkistoida itsellesi tärkeitä viestejä opettajilta ja ympäristöstä.<br/> <br/>
+          <span class="tooltipFastLink" onclick="">Luo uusi viesti</span> | <span class="tooltipFastLink" onclick="">Luo viesti näkymästä</span>
+        </span>
+      </h:outputLink>      
+      <h:outputLink styleClass="naviIconStudyTracker tooltip" value="#">
+        <span>Opintojen suunnittelu ja seuranta <br/> <br/>
+          Voit suunnitella ja seurata opintojesi edistymistä.<br/> <br/>
+          <span class="tooltipFastLink" onclick="">Tee ohjauspyyntö</span>
+        </span>
+      </h:outputLink>     
+      <h:outputLink styleClass="naviIconCalendar tooltip" value="#">
+        <span>Kalenteri <br/> <br/>
+          Kalenterin avulla voit luoda tapahtumia ja pysyt ajan tasalla niistä.<br/> <br/>
+          <span class="tooltipFastLink" onclick="">Luo kalenteritapahtuma</span>
+        </span>
+      </h:outputLink>     
+    </ui:fragment>
+    
+</ui:composition>

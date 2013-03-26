@@ -1,0 +1,56 @@
+<div class="wallEntry">
+  <input type="hidden" name="wallEntryId" value="{id}"/>
+
+  {?creator.hasPicture} 
+    <img class="wallEntryUserPicture" src="{@contextPath/}/picture?userId={creator.id}" width="50" height="50" />
+  {:else}
+    <img class="wallEntryUserPicture" src="{@contextPath/}/themes/default/gfx/fish.jpg" width="50" height="50" />
+  {/creator.hasPicture}  
+  
+  <div class="wallEntryTitle">
+    <a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={creator.id}">{creator.fullName}</a>
+
+    {@if cond="'{wall.wallType}' == 'ENVIRONMENT'"}
+      &gt; <b>{wall.wallName}</b>
+    {/if}
+
+    {@if cond="'{wall.wallType}' == 'COURSE'"}
+      kurssilla <a class="wallEntryCourseLink" href="{@contextPath/}/course/index.jsf?courseId={wall.id}">{wall.wallName}</a>
+    {/if}
+
+    {@if cond="'{wall.wallType}' == 'USER'"}
+      &gt; <a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={wall.creatorId}">{wall.wallName}</a>
+    {/if}
+    
+    <span class="wallEntryDate">{created|formatDate}</span>
+  </div>
+  
+  <div class="wallEntryContent">
+    {#items}
+      {@if cond="'{type}' == 'TEXT'"}
+        <div class="wallEntryItem">{text}</div>
+      {/if}
+    
+      {@if cond="'{type}' == 'GUIDANCE_REQUEST'"}
+        <div class="wallEntryItem wallEntryGuidanceRequest">Ohjauspyynt&#246;: {text}</div>
+      {/if}
+
+    {/items}
+  </div>
+  
+  <div class="wallEntryFooter">
+    {@if cond="'{visibility}' == 'PRIVATE'"}
+      yksityinen
+    {/if}
+
+	<a class="wallEntryReplyLink">{#localize key="fi.muikku.wall.reply"/}</a>
+  </div>
+  
+  <div class="wallEntryComments">
+    {#replies}
+      {>"wallentryreply.dust"/}
+    {/replies}
+  </div>
+  
+  
+</div>

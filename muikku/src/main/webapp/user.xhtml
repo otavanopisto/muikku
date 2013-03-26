@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    template="/WEB-INF/templates/teese.xhtml">
+    
+    <ui:define name="content">
+      <c:set var="userId" value="#{param['userId']}" />
+      <c:set var="userEntity" value="#{User.findUserEntity(userId)}" />
+      <c:set var="user" value="#{User.findUser(userEntity)}" />
+    
+      <div class="showUserName">
+        #{user.firstName} #{user.lastName}
+      </div>
+
+      <div class="showUserPicture">
+        <c:choose>
+          <c:when test="#{User.getUserHasPicture(userEntity)}">
+            <img src="#{request.contextPath}/picture?userId=#{userEntity.id}" />
+          </c:when>
+          <c:otherwise>
+            <img src="#{request.contextPath}/themes/default/gfx/fish.jpg" />
+          </c:otherwise>
+        </c:choose>
+      </div>
+      
+      <div class="">
+        <form method="post" action="#{request.contextPath}/pictureupload" enctype="multipart/form-data">
+          <input type="file" name="pictureFile"/><br/>
+          <input type="hidden" name="userId" value="#{userEntity.id}"/>
+          <input type="submit" value="Paivita kuva"/>
+        </form>
+      </div>
+      
+      <div class="userContacts">
+        <c:forEach var="contact" items="#{User.listUserContacts(userEntity)}">
+          <c:choose>
+            <c:when test="#{contact.type eq 'PHONE'}"css3 >
+              <div class="userContact">Phone: #{contact.value}</div>
+            </c:when>
+            <c:when test="#{contact.type eq 'SKYPE'}">
+              <div class="userContact">Skype: <a href="skype:#{contact.value}?call">#{contact.value}</a></div>
+            </c:when>
+            <c:when test="#{contact.type eq 'MSN'}">
+              <div class="userContact">MSN: #{contact.value}</div>
+            </c:when>
+            <c:when test="#{contact.type eq 'GTALK'}">
+              <div class="userContact">GTalk: #{contact.value}</div>
+            </c:when>
+          </c:choose>
+        </c:forEach>
+      </div>
+<!--  
+      <div class="showUserWall">
+        <ui:include src="/widgets/userwall.xhtml">
+          <ui:param name="userId" value="#{userId}" />
+        </ui:include>
+      </div>
+-->
+    </ui:define>
+
+</ui:composition>

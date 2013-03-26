@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
+
+    <div class="widget forumAreasWidget">
+      <div class="forumAreaList">
+        <c:forEach var="forum" items="#{forumAreas}">
+          <div class="forumAreaLink">
+            <a href="#{request.contextPath}/forum/threads.jsf?area=#{forum.id}">#{forum.name}</a>
+          </div>
+        </c:forEach>
+      </div>
+    </div>
+    
+</ui:composition>

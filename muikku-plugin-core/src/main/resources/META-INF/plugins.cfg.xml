@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='utf-8'?>
+<hibernate-configuration xmlns="http://www.hibernate.org/xsd/hibernate-configuration">
+
+	<session-factory>
+      <property name="hibernate.show_sql">true</property>
+      <property name="hibernate.format_sql">false</property>
+
+      <!-- Connection -->
+      
+      <property name="hibernate.connection.datasource">java:/jdbc/muikku</property>
+      <property name="hibernate.connection.autocommit">false</property>
+      <property name="hibernate.connection.useUnicode">true</property>
+      <property name="hibernate.connection.characterEncoding">UTF-8</property>
+      
+      <!-- Session Management -->
+
+      <property name="hibernate.current_session_context_class">jta</property>
+
+      <!-- Cache -->
+
+      <property name="hibernate.cache.use_second_level_cache">false</property>
+      <property name="hibernate.cache.use_query_cache">false</property>
+      
+      <!-- Statistics -->
+      
+      <property name="hibernate.generate_statistics">true</property>
+      <property name="hibernate.cache.infinispan.statistics">false</property>
+	</session-factory>
+
+</hibernate-configuration>

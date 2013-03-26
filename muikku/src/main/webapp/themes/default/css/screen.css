@@ -1,0 +1,313 @@
+@import "cssreset-min.css";
+
+@import "s2nq.css";
+@import "validation.css";
+@import "tabs.css";
+@import "forms.css";
+
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #EAECEE;
+    font-family: Verdana, sans-serif;
+    font-size: 0.9em;
+}
+
+#container {
+    margin: 0 auto;
+    border: 1px solid #666666;
+    width: 1105px; /* subtract 40px from banner width for padding */
+    background: #FFFFFF;
+    background-position: top center;
+    --padding-top: 110px; 
+    min-height: 800px; 
+}
+
+
+
+
+@-moz-keyframes header {
+  0% {
+    background: #fff;
+    color: #000;
+    
+  }
+  50% {
+    background: rgba(255,128,0,0.5);
+    color: red;
+  }
+  100% {
+    background: rgba(200,100,20,0.25);
+    color: #fff;
+  }
+}
+
+#header {
+  font-size: 80px;
+  text-align: center;
+  position: relative;
+  --margin-top: -110px;
+  background: rgba(200,100,20,0.25);
+  color: #fff;
+  -moz-animation: header 5s;
+}
+
+#feader {
+    text-decoration: none;
+}
+
+#sessionPanel {
+  position: relative;
+}
+
+#languagePanel {
+  position: absolute;
+  top:0;
+  right: 0;
+  text-align: right;
+}
+
+.languageSelection {
+  margin: 0px 2px 0px 2px;
+}
+
+#content {
+  height: inherit;
+  float: left;
+  max-width: 600px;
+}
+
+#sidebarLeft {
+  width: 250px;
+  float: left;
+}
+
+#sidebarRight {
+  width: 250px;
+  float: right; 
+}
+
+#footer {
+  clear: both; 
+}
+
+.buttonPanel {
+  text-align: right;
+  margin: 4px 0px 4px 0px;
+}
+
+
+
+
+/* Widgets */
+
+/* Register */
+
+.registerWidget{
+  
+	
+}
+
+
+.widget {
+  border: 1px solid #aaa;
+  margin: 8px;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.widgetTitle {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.fishImage {
+  height: 100px;
+  width: 150px;
+  background-image: url('../gfx/fish.jpg');
+  background-position: right center;
+  background-repeat: no-repeat;
+  display: inline-block;
+}
+
+.fishText {
+  padding-top: 50px;
+  vertical-align: top;
+  display: inline-block;
+}
+
+.calendarWidget {
+  width: 570px;
+}
+
+.calendarWidget div.fullCalendar {
+  width: 100%;
+  position: static;
+}
+
+.calendarWidget div.fullCalendar table {
+  width: inherit;
+}
+
+.calendarWidget div.fullCalendar table tr td {
+  width: 14.30%;
+}
+
+.calendarWidget div.fullCalendar .fullCalendarEventfulDay {
+  background: lightgreen;
+}
+
+.calendarWidget div.fullCalendar .today.fullCalendarEventfulDay {
+  border-color: green;
+}
+
+.wallEntry {
+  margin-bottom: 7px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid #4444aa;
+  padding-left: 68px;
+  position: relative;
+  min-height: 60px;
+}
+
+.wallEntryCreator, .wallEntryCommentCreator {
+  font-weight: bold;
+  text-decoration: none;
+  color: black;
+}
+
+.wallEntryDate, .wallEntryCommentDate {
+  font-size: 60%; 
+  float: right;
+}
+
+.wallEntryContent, .wallEntryCommentContent {
+  font-size: 90%;
+}
+
+.wallEntryCourseLink, .wallEntryForumAreaLink {
+  font-weight: bold;
+  text-decoration: none;
+  color: black;
+}
+
+.wallEntryComments {
+  margin-top: 8px;
+  margin-left: 16px;
+  margin-bottom: 12px;
+  background-color: #eeeeff;
+}
+
+.wallEntryComment {
+  padding-left: 68px;
+  position: relative;
+  min-height: 60px;
+}
+
+.wallEntryCommentTitle, .wallEntryTitle {
+  padding-top: 4px;
+}
+
+.wallEntryFooter {
+  font-size: 75%;
+  color: #4444aa;
+}
+
+.wallEntryReplyLink {
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.wallEntryUserPicture {
+  position: absolute;
+  left: 0;
+  
+  margin: 5px 5px 5px 5px;
+  width: 50px;
+  height: 50px;
+}
+
+.wallEntryGuidanceRequest {
+  color: red;
+}
+
+.showUserName {
+  font-size: 300%;
+}
+
+/* OAuth */
+
+.oAuthConfirmText {
+	text-align: center;
+	padding: 16px;
+	font-size: 14px;
+	font-weight: bold;
+}
+
+.oAuthConfimButton, .oAuthDeclineButton {
+  display: block;
+  padding: 16px;
+  border-radius: 8px;
+  font-size: 18px;
+  text-decoration: none;
+  font-weight: bold;
+  float: left;  
+  margin-left: 45px;
+  width: 235px;
+}
+
+.oAuthConfimButton {
+  background: #efe;
+  border: 1px solid #ded;
+  color: #292;
+}
+
+.oAuthDeclineButton {
+  background: #fee;
+  border: 1px solid #edd;
+  color: #922; 
+}
+
+.forumThreadBody {
+  position: relative;
+  min-height: 80px;
+}
+
+.forumThreadReplyBody {
+  position: relative;
+  min-height: 60px;
+}
+
+.forumThreadTitle {
+  background-color: #eeeeff;
+}
+
+.forumThreadMessage, .forumThreadReplyMessage {
+  font-size: 75%;
+  margin-left: 70px;
+  margin-top: 8px;
+}
+
+.forumThreadTitle {
+  font-weight: bold;
+}
+
+.forumThreadBody, .forumThreadReplyBody {
+  border: 1px solid #eeeeff;
+  border-radius: 3px;
+  margin: 4px;
+}
+
+.forumThreadUserImageContainer {
+  position: absolute;
+  top: 24px;
+  left: 4px;
+}
+
+.forumThreadReplyUserImageContainer {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+}

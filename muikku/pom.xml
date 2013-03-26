@@ -112,12 +112,12 @@
 
     <dependency>
       <groupId>fi.muikku</groupId>
-      <artifactId>muikku-plugin-core</artifactId>
+      <artifactId>plugin-core</artifactId>
     </dependency>
 
     <dependency>
       <groupId>fi.muikku</groupId>
-      <artifactId>muikku-persistence</artifactId>
+      <artifactId>persistence</artifactId>
     </dependency>
 
     <dependency>
@@ -127,17 +127,17 @@
     </dependency>
     <dependency>
       <groupId>fi.muikku</groupId>
-      <artifactId>muikku-security</artifactId>
+      <artifactId>security</artifactId>
     </dependency>
     
     <dependency>
       <groupId>fi.muikku</groupId>
-      <artifactId>muikku-core</artifactId>
+      <artifactId>core</artifactId>
     </dependency>
     
     <dependency>
       <groupId>fi.muikku</groupId>
-      <artifactId>muikku-rest</artifactId>
+      <artifactId>rest</artifactId>
     </dependency>
 
     <dependency>

@@ -8,7 +8,7 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>muikku-persistence</artifactId>
+  <artifactId>persistence</artifactId>
   <packaging>jar</packaging>
   <name>Muikku Persistence</name>
   <description>Muikku Persistence</description>
@@ -234,7 +234,7 @@
     </dependency>
     <dependency>
       <groupId>fi.muikku</groupId>
-      <artifactId>muikku-security</artifactId>
+      <artifactId>security</artifactId>
     </dependency>
   </dependencies>
   

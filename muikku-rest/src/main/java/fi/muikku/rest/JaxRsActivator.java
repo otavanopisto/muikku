@@ -1,0 +1,48 @@
+package fi.muikku.rest;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
+
+import fi.muikku.rest.course.CourseRESTService;
+import fi.muikku.rest.user.UserRESTService;
+import fi.muikku.rest.wall.WallRESTService;
+import fi.muikku.plugin.manager.PluginManagerException;
+import fi.muikku.plugin.manager.SingletonPluginManager;
+
+@ApplicationPath("/rest")
+public class JaxRsActivator extends Application {
+
+	public JaxRsActivator() {
+		super();
+	
+		// TODO: There is probably more sophisticated way to do this (extending deployment scanner or something...)
+		
+		List<Class<? extends AbstractRESTService>> coreServices = Arrays.asList(
+				PermissionRESTService.class,
+				CourseRESTService.class,
+				UserRESTService.class,
+				WallRESTService.class
+		);
+		
+		classes = new HashSet<>();
+		classes.addAll(coreServices);
+		
+		try {
+			classes.addAll(SingletonPluginManager.getInstance().getRESTServices());
+		} catch (PluginManagerException e) {
+			throw new ExceptionInInitializerError(e);
+		}
+	}
+	
+	@Override
+	public Set<Class<?>> getClasses() {
+		return classes;
+	}
+	
+	private Set<Class<?>> classes;
+}

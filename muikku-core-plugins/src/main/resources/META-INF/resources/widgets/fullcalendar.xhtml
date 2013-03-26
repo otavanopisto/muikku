@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html">
+
+    <!-- Time Picker -->
+    <h:outputScript name="scripts/jquery.timepicker/jquery.timepicker.js" target="head"/>
+    <h:outputStylesheet name="scripts/jquery.timepicker/jquery.timepicker.css"/>
+
+    <!-- Full Calendar -->
+    <h:outputScript name="scripts/fullcalendar/fullcalendar.js" target="head"/>
+    <h:outputStylesheet name="scripts/fullcalendar/fullcalendar.css"/>
+
+    <h:outputScript name="scripts/gui/fullcalendar.js" target="head"/>
+
+    <h:outputStylesheet name="styles/fullcalendar.css"/>
+    <h:outputStylesheet name="styles/calendarcolorprofiles.css"/>
+    
+    <div class="widget fullCalendarWidget">
+      <div class="fullCalendarWidgetSettings">
+        <!-- TODO: Localize -->
+        <div class="fullCalendarWidgetNavigationContainer">     
+          <button class="fullCalendarWidgetNavigationButton fullCalendarWidgetNavigationLeft">&#9668;</button>
+          <button class="fullCalendarWidgetNavigationButton fullCalendarWidgetNavigationToday">Today</button>
+          <button class="fullCalendarWidgetNavigationButton fullCalendarWidgetNavigationRight">&#9658;</button>
+        </div>
+      
+        <div class="fullCalendarWidgetViewSelectionContainer">
+          <button class="fullCalendarWidgetModeButton" data-mode="EVENT_LIST">Event List</button>
+          <button class="fullCalendarWidgetModeButton" data-mode="DAY">Day</button>
+          <button class="fullCalendarWidgetModeButton" data-mode="WEEK">Week</button>
+          <button class="fullCalendarWidgetModeButton" data-mode="MONTH">Month</button>
+        </div>
+      </div>
+    </div>
+
+</ui:composition>

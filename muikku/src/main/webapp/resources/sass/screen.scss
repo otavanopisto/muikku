@@ -1,0 +1,423 @@
+@import "_base.scss";
+
+
+/* Note: All in-development-unfinished-temp-styles are in temp.css */
+
+html{
+     height: 100%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Verdana, sans-serif;
+    font-size: 0.9em;
+}
+
+/* TODO: H1,H2,H3,H4,H5 */
+
+/* TODO: P, a ... */
+
+
+
+#container {
+    background: #fff;
+    min-height: 800px; 
+    width:960px;
+    margin: 0 auto;
+
+}
+
+
+ a.tooltip {
+ outline:none;
+
+ }
+  
+ a.tooltip strong {
+ line-height:30px;
+ }
+  
+ a.tooltip > span { 
+  @include rounded(3px);
+  @include shadow(2px, 2px, 2px);
+  @include tooltipTransition(0.1s,0.1s,0.1s,0.1s);
+  @include gradient-top-bottom(#707070, #666);
+  position:absolute;
+	width:200px;  
+	padding: 5px 10px;
+	margin-top: 20px; 
+	opacity: 1; 
+	visibility: hidden; 
+	z-index: 10; 
+	font-size: $text; 
+	font-style: normal;  
+	color: #fff; 
+	border: 1px solid $naviDynamicColor; 
+ }  
+ 
+
+ 
+ a.tooltip:hover > span { 
+ opacity: 1;
+ text-decoration:none; 
+ visibility: visible; 
+ overflow: visible; 
+ margin-top:35px; 
+ display: inline; 
+ } 
+ 
+ span.tooltipFastLink{
+  color:$naviDynamicColor;
+  text-decoration:underline;
+ }
+
+ span.tooltipFastLink:hover{
+  color:#fff;
+  tex-decoration:none;
+ }
+
+
+#header {
+  @include gradient-top-bottom($headerGradient-start, $headerGradient-end);
+  text-align: center;
+  height:150px;
+  color: #fff;
+}
+
+#headerContentContainer{
+    width:960px;
+    height:150px;
+    margin:auto;
+}
+
+
+#feader {
+    position:relative;
+    top:-10px;
+    text-decoration: none;
+    font-size:24px;    
+}
+ a.header {
+    color:#fff; 
+    text-decoration: none;
+}
+
+#staticNavigationFade{
+    @include fadetoAlpha-top-bottom;	
+	height:60px;
+}
+
+#staticNavigation{
+    height:50px;
+    width:960px;
+    margin:5px 0 5px 0;
+
+
+}
+
+#naviDockPrimary{
+    float:left;
+    @include staticNaviGr($stNavGradColors...);
+    width:255px; 
+    height:40px;
+    border: 2px solid #ededed;
+    border-radius: 10px;
+
+}
+
+#naviDockSecondary{
+float:left;
+    @include staticNaviGr($stNavGradColors...);
+    height:40px;
+    margin:0;
+    width:690px; 
+    border: 2px solid #ededed;
+    border-radius: 10px;
+    }
+
+
+.fixedNavigation{
+    position:fixed;
+    top:0;
+}
+
+
+#sessionPanel {
+  position: relative;
+}
+
+
+#headerNavigationPanel {
+  position:relative;
+  top:100px;
+  height:50px;
+}
+
+#globalSearch{
+    font-size:13px;
+    @include gradient-top-bottom-four($contInteractGr...);
+    height: 40px;
+    width: 220px;
+    border: 2px solid #ededed;
+    border-radius: 5px;
+}
+
+#globalSearchForm{
+    margin:5px;
+    float:right;
+}
+
+
+
+#globalSearchFormIcon{
+    height:30px;
+    width:30px;
+    margin:5px 5px 5px 5px;
+    border: 1px solid #000;
+    border-radius: 5px;
+    box-shadow: 1px 1px 5px #888;   
+    background: url('../resources/gfx/icons/32x32/actions/navigate-search.png') no-repeat center;
+ 
+}
+
+
+#languageSelector { 
+    margin-top:20px;
+    float:right;
+    font-size:13px;
+    @include gradient-top-bottom-four($contInteractGr...);
+    height: 20px;
+    width : 50px;
+    border: 2px solid #ededed;
+    border-radius: 5px;
+}
+
+.languageSelection{
+    float:left;
+    padding:1px 4px 3px 4px;
+    margin-left:2px;    
+}
+
+.languageSelection a {  
+    text-decoration:none;   
+}
+
+.languageSelection a:hover {    
+    text-decoration:none;
+    color:#fff;    
+}
+
+
+#content {
+
+
+}
+
+#dynNaviShell{
+    z-index:1;
+    position:fixed;
+    background:#fff;
+    margin-left:-339px;
+    top:150px;    
+    width:300px;
+    bottom:0;    
+}
+
+#dynamicNaviPersonal{
+	position:fixed;
+	top:200px;
+	margin-left:-300px;
+	width:300px;
+	bottom:0;   
+  box-shadow: 5px 10px 6px -2px #dadada;
+  @include dynNaviGr(url('../resources/gfx/icons/32x32/actions/navigate-chevron_r.png'),#fff,#fff);
+	@include dynNaviTransition;
+
+}
+
+#dynamicNaviPersonal:hover{
+	  opacity:1;
+    visibility:visible;
+    margin-left:-40px;
+    border:1px dotted #ededed;
+    @include dynNaviGr(url('../resources/gfx/icons/32x32/actions/navigate-chevron_l.png'),#fff,#ededed);    
+}
+
+/*
+
+#sidebarLeft {
+  width: 250px;
+  float: left;
+}
+
+#sidebarRight {
+  width: 250px;
+  float: right; 
+}
+
+*/
+
+.footer {
+  clear: both; 
+}
+
+#footer {
+  clear: both; 
+}
+
+.buttonPanel {
+  text-align: right;
+  margin: 4px 0px 4px 0px;
+}
+
+
+.wallEntry {
+  margin-bottom: 7px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid #4444aa;
+  padding-left: 68px;
+  position: relative;
+  min-height: 60px;
+}
+
+.wallEntryCreator, .wallEntryCommentCreator {
+  font-weight: bold;
+  text-decoration: none;
+  color: black;
+}
+
+.wallEntryDate, .wallEntryCommentDate {
+  font-size: 60%; 
+  float: right;
+}
+
+.wallEntryContent, .wallEntryCommentContent {
+  font-size: 90%;
+}
+
+.wallEntryCourseLink, .wallEntryForumAreaLink {
+  font-weight: bold;
+  text-decoration: none;
+  color: black;
+}
+
+.wallEntryComments {
+  margin-top: 8px;
+  margin-left: 16px;
+  margin-bottom: $text;
+  background-color: #eeeeff;
+}
+
+.wallEntryComment {
+  padding-left: 68px;
+  position: relative;
+  min-height: 60px;
+}
+
+.wallEntryCommentTitle, .wallEntryTitle {
+  padding-top: 4px;
+}
+
+.wallEntryFooter {
+  font-size: 75%;
+  color: #4444aa;
+}
+
+.wallEntryReplyLink {
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.wallEntryUserPicture {
+  position: absolute;
+  left: 0;
+  
+  margin: 5px 5px 5px 5px;
+  width: 50px;
+  height: 50px;
+}
+
+.wallEntryGuidanceRequest {
+  color: red;
+}
+
+.showUserName {
+  font-size: 300%;
+}
+
+/* OAuth */
+
+.oAuthConfirmText {
+    text-align: center;
+    padding: 16px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.oAuthConfimButton, .oAuthDeclineButton {
+  display: block;
+  padding: 16px;
+  border-radius: 8px;
+  font-size: 18px;
+  text-decoration: none;
+  font-weight: bold;
+  float: left;  
+  margin-left: 45px;
+  width: 235px;
+}
+
+.oAuthConfimButton {
+  background: #efe;
+  border: 1px solid #ded;
+  color: #292;
+}
+
+.oAuthDeclineButton {
+  background: #fee;
+  border: 1px solid #edd;
+  color: #922; 
+}
+
+.forumThreadBody {
+  position: relative;
+  min-height: 80px;
+}
+
+.forumThreadReplyBody {
+  position: relative;
+  min-height: 60px;
+}
+
+.forumThreadTitle {
+  background-color: #eeeeff;
+}
+
+.forumThreadMessage, .forumThreadReplyMessage {
+  font-size: 75%;
+  margin-left: 70px;
+  margin-top: 8px;
+}
+
+.forumThreadTitle {
+  font-weight: bold;
+}
+
+.forumThreadBody, .forumThreadReplyBody {
+  border: 1px solid #eeeeff;
+  border-radius: 3px;
+  margin: 4px;
+}
+
+.forumThreadUserImageContainer {
+  position: absolute;
+  top: 24px;
+  left: 4px;
+}
+
+.forumThreadReplyUserImageContainer {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+}

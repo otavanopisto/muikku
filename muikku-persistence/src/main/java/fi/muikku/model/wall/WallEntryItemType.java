@@ -1,0 +1,11 @@
+package fi.muikku.model.wall;
+
+public enum WallEntryItemType {
+  TEXT,
+  EMAIL_NOTIFICATION,
+  FORUM_NOTIFICATION,
+  GUIDANCE_REQUEST,
+  COURSE_JOIN,
+  COURSE_EVALUATION_REQUEST,
+  COURSE_EVALUATION
+}

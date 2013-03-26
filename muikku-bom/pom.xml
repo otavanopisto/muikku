@@ -133,49 +133,49 @@
       
       <dependency>
         <groupId>fi.muikku</groupId>
-        <artifactId>muikku-plugin</artifactId>
+        <artifactId>plugin</artifactId>
         <version>${muikku.version}</version>
       </dependency> 
       
       <dependency>
         <groupId>fi.muikku</groupId>
-        <artifactId>muikku-plugin-core</artifactId>
+        <artifactId>plugin-core</artifactId>
         <version>${muikku.version}</version>
       </dependency> 
       
       <dependency>
         <groupId>fi.muikku</groupId>
-        <artifactId>muikku-rest</artifactId>
+        <artifactId>rest</artifactId>
         <version>${muikku.version}</version>
       </dependency> 
       
       <dependency>
         <groupId>fi.muikku</groupId>
-        <artifactId>muikku-plugin</artifactId>
+        <artifactId>plugin</artifactId>
         <version>${muikku.version}</version>
       </dependency>
 
     <dependency>
       <groupId>fi.muikku</groupId>
-      <artifactId>muikku-core-plugins</artifactId>
+      <artifactId>core-plugins</artifactId>
         <version>${muikku.version}</version>
     </dependency>
     
       <dependency>
         <groupId>fi.muikku</groupId>
-        <artifactId>muikku-persistence</artifactId>
+        <artifactId>persistence</artifactId>
         <version>${muikku.version}</version>
       </dependency>
 
       <dependency>
         <groupId>fi.muikku</groupId>
-        <artifactId>muikku-security</artifactId>
+        <artifactId>security</artifactId>
         <version>${muikku.version}</version>
       </dependency>
     
       <dependency>
         <groupId>fi.muikku</groupId>
-        <artifactId>muikku-core</artifactId>
+        <artifactId>core</artifactId>
         <version>${muikku.version}</version>
       </dependency>
     

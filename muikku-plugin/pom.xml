@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>muikku-plugin</artifactId>
+  <artifactId>plugin</artifactId>
   <packaging>jar</packaging>
   <name>Muikku Plugin</name>
   <description>Muikku Plugin</description>
@@ -70,12 +70,12 @@
     
     <dependency>
       <groupId>fi.muikku</groupId>
-      <artifactId>muikku-core</artifactId>
+      <artifactId>core</artifactId>
     </dependency>
     
     <dependency>
       <groupId>fi.muikku</groupId>
-      <artifactId>muikku-persistence</artifactId>
+      <artifactId>persistence</artifactId>
     </dependency>
   </dependencies>
 

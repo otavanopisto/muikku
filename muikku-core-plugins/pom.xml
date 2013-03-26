@@ -13,7 +13,7 @@
     <tranquil-model-gen.version>1.0.2-SNAPSHOT</tranquil-model-gen.version>
   </properties>
 
-  <artifactId>muikku-core-plugins</artifactId>
+  <artifactId>core-plugins</artifactId>
   <packaging>jar</packaging>
   <name>Muikku Plugin Core</name>
   <description>Muikku Plugin Core</description>
@@ -217,7 +217,7 @@
   
     <dependency>
       <groupId>fi.muikku</groupId>
-      <artifactId>muikku-plugin</artifactId>
+      <artifactId>plugin</artifactId>
       <scope>provided</scope>
     </dependency>
     

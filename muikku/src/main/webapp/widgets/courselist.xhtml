@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
+    
+    <div class="widget">
+      <div>
+        <h:form id="newCourse">
+          <h:outputLabel for="text" value="New Course Name:"/>
+          <h:inputText id="name" />
+          <h:message for="name" errorClass="invalid"/>
+          
+          <h:commandButton action="#{Course.createCourse(muikkuSession.environment, param['newCourse:name'])}" value="Create Course"/>
+        </h:form>
+      </div>
+    
+      <c:forEach var="courseEntity" items="#{Course.listCourses(muikkuSession.environment)}">
+        <c:set var="course" value="#{Course.findCourse(courseEntity)}" />
+        <div>
+          <div>
+            <a href="#{request.contextPath}/course/index.jsf?courseId=#{courseEntity.id}">#{course.name}</a>
+            
+            <ui:fragment rendered="#{not Course.isUserOnCourse(courseEntity)}">
+              <h:form>
+                <h:commandButton action="#{Course.joinCourse(courseEntity)}" value="Join"/>
+              </h:form>
+            </ui:fragment>
+          </div>
+        </div>
+      </c:forEach>
+    </div>
+    
+</ui:composition>

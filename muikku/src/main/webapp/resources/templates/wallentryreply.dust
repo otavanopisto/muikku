@@ -1,0 +1,23 @@
+<div class="wallEntryComment">
+  {?creator.hasPicture} 
+    <img class="wallEntryUserPicture" src="{@contextPath/}/picture?userId={creator.id}" width="50" height="50" />
+  {:else}
+    <img class="wallEntryUserPicture" src="{@contextPath/}/themes/default/gfx/fish.jpg" width="50" height="50" />
+  {/creator.hasPicture}  
+
+  <div class="wallEntryCommentTitle">
+    <a class="wallEntryCommentCreator" href="{@contextPath/}/user.jsf?userId={creator.id}">{creator.fullName}</a>
+    <span class="wallEntryCommentDate">{created|formatDate}</span>
+  </div>
+
+  <div class="wallEntryCommentContent">
+    {#items}
+      {@if cond="'{type}' == 'TEXT'"}
+        <div class="wallEntryCommentItem">{text}</div>
+      {/if}
+      {@if cond="'{type}' == 'GUIDANCE_REQUEST'"}
+        <div class="wallEntryCommentItem">Viestin vastaus ohjauspyynt&#246;n&#228;: {text}</div>
+      {/if}
+    {/items}
+  </div>
+</div>
