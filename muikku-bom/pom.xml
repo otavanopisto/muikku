@@ -46,7 +46,13 @@
         <artifactId>resteasy-jaxrs</artifactId>
         <version>${resteasy-jaxrs.version}</version>
       </dependency>
-      
+
+      <dependency>
+    	<groupId>org.jboss.resteasy</groupId>
+    	<artifactId>async-http-servlet-3.0</artifactId>
+    	<version>${resteasy-jaxrs.version}</version>
+      </dependency>
+            
       <dependency>
         <groupId>org.jboss.resteasy</groupId>
         <artifactId>resteasy-oauth</artifactId>
