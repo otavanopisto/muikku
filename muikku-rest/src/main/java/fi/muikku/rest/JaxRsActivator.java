@@ -37,6 +37,9 @@ public class JaxRsActivator extends Application {
 		} catch (PluginManagerException e) {
 			throw new ExceptionInInitializerError(e);
 		}
+		
+		singletons = new HashSet<>();
+		singletons.add(new ContextInterceptor());
 	}
 	
 	@Override
@@ -44,5 +47,11 @@ public class JaxRsActivator extends Application {
 		return classes;
 	}
 	
+	@Override
+	public Set<Object> getSingletons() {
+		return singletons;
+	}
+	
 	private Set<Class<?>> classes;
+	private Set<Object> singletons;
 }
