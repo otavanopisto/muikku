@@ -8,9 +8,15 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.math.NumberUtils;
+
 import fi.muikku.controller.EnvironmentController;
+import fi.muikku.controller.PluginSettingsController;
 import fi.muikku.controller.UserController;
 import fi.muikku.controller.WidgetController;
+import fi.muikku.model.base.Environment;
+import fi.muikku.model.plugins.PluginUserSettingKey;
+import fi.muikku.model.stub.users.UserEntity;
 import fi.muikku.model.widgets.DefaultWidget;
 import fi.muikku.model.widgets.Widget;
 import fi.muikku.model.widgets.WidgetLocation;
@@ -39,6 +45,7 @@ import fi.muikku.plugins.calendar.model.SubscribedCalendar;
 import fi.muikku.plugins.calendar.model.SubscribedEvent;
 import fi.muikku.plugins.calendar.model.UserCalendar;
 import fi.muikku.plugins.calendar.rest.CalendarRESTService;
+import fi.muikku.schooldata.entity.User;
 
 @ApplicationScoped
 @Stateful
@@ -47,6 +54,12 @@ public class CalendarPluginDescriptor implements PluginDescriptor, PersistencePl
 	private static final String CALENDAR_CONTENT_WIDGET_LOCATION = "calendar.content";
 	
 	private static final String FULLCALENDAR_WIDGET_NAME = "fullcalendar";
+
+	private static final String DEFAULT_CALENDAR_CATEGORY_ID_SETTING = "defaultCalendarCategoryId";
+	private static final String DEFAULT_CALENDAR_CATEGORY_NAME = "default";
+	private static final String DEFAULT_EVENT_TYPE_ID_SETTING = "defaultEventTypeId";
+	private static final String DEFAULT_EVENT_TYPE_NAME = "default";
+	private static final String DEFAULT_CALENDAR_ID_SETTING = "defaultCalendarId";
 	
 	@Inject
 	private CalendarController calendarController;
@@ -59,6 +72,9 @@ public class CalendarPluginDescriptor implements PluginDescriptor, PersistencePl
 
 	@Inject
 	private WidgetController widgetController;
+
+	@Inject
+	private PluginSettingsController pluginSettingsController;
 	
 	@Override
 	public String getName() {
@@ -67,11 +83,26 @@ public class CalendarPluginDescriptor implements PluginDescriptor, PersistencePl
 	
 	@Override
 	public void init() {
-  	// Make sure we have a default calendar type
-		calendarController.getDefaultCalendarCategory(true);
+  	// Make sure we have a default calendar category and default local event type
 		
-		calendarController.getDefaultLocalEventType(true);
+		CalendarCategory defaultCalendarCategory = null;
+		Long defaultCategoryId = NumberUtils.createLong(pluginSettingsController.getPluginSetting(getName(), DEFAULT_CALENDAR_CATEGORY_ID_SETTING));
+		if (defaultCategoryId != null) {
+			defaultCalendarCategory = calendarController.findCalendarCategoryById(defaultCategoryId);
+		} else {
+			defaultCalendarCategory = calendarController.createCalendarCategory(DEFAULT_CALENDAR_CATEGORY_NAME);
+			pluginSettingsController.setPluginSetting(getName(), DEFAULT_CALENDAR_CATEGORY_ID_SETTING, defaultCalendarCategory.getId().toString());
+		}
 		
+		LocalEventType defaultLocalEventType = null;
+		Long defaultLocalEventTypeId = NumberUtils.createLong(pluginSettingsController.getPluginSetting(getName(), DEFAULT_EVENT_TYPE_ID_SETTING));
+		if (defaultLocalEventTypeId != null) {
+			defaultLocalEventType = calendarController.findLocalEventType(defaultLocalEventTypeId);
+		} else {
+			defaultLocalEventType = calendarController.createLocalEventType(DEFAULT_EVENT_TYPE_NAME);
+			pluginSettingsController.setPluginSetting(getName(), DEFAULT_EVENT_TYPE_ID_SETTING, defaultLocalEventType.getId().toString());
+		}
+
 		// Make sure we have registered calendar widgets 
 		
 		Widget fullCalendarWidget = widgetController.findWidget(FULLCALENDAR_WIDGET_NAME);
@@ -90,6 +121,21 @@ public class CalendarPluginDescriptor implements PluginDescriptor, PersistencePl
 		if (fullCalendarDefaultWidget == null) {
 			fullCalendarDefaultWidget = widgetController.createDefaultWidget(calendarContentWidgetLocation, fullCalendarWidget);
 		}
+		
+		// Make sure every user has a default calendar
+
+		PluginUserSettingKey defaultCalendarIdSetting = pluginSettingsController.getPluginUserSettingKey(getName(), DEFAULT_CALENDAR_ID_SETTING);
+
+		// TODO: Environment ???
+		Environment environment = environmentController.listEnvironments().get(0);
+		List<UserEntity> usersWithoutDefaultCalendar = pluginSettingsController.listUsersWithoutSetting(defaultCalendarIdSetting);
+		for (UserEntity userWithoutDefaultCalendar : usersWithoutDefaultCalendar) {
+			User user = userController.findUser(userWithoutDefaultCalendar);
+			String name = user.getFirstName() + ' ' + user.getLastName();
+			UserCalendar calendar = calendarController.createLocalUserCalendar(environment, userWithoutDefaultCalendar, defaultCalendarCategory, name);
+			pluginSettingsController.setPluginUserSetting(getName(), DEFAULT_CALENDAR_ID_SETTING, calendar.getCalendar().getId().toString(), userWithoutDefaultCalendar);
+		}
+
 	}
 
 	@Override

@@ -58,29 +58,29 @@ public class Event {
     this.location = location;
   }
 
-	public Date getStartTime() {
-    return startTime;
-  }
+	public Date getStart() {
+		return start;
+	}
+	
+	public void setStart(Date start) {
+		this.start = start;
+	}
+	
+	public Date getEnd() {
+		return end;
+	}
+	
+	public void setEnd(Date end) {
+		this.end = end;
+	}
 
-	public void setStartTime(Date startTime) {
-    this.startTime = startTime;
-  }
-
-	public Date getEndTime() {
-    return endTime;
-  }
-
-	public void setEndTime(Date endTime) {
-    this.endTime = endTime;
-  }
-
-	public Boolean getAllDayEvent() {
-    return allDayEvent;
-  }
-
-	public void setAllDayEvent(Boolean allDayEvent) {
-    this.allDayEvent = allDayEvent;
-  }
+	public Boolean getAllDay() {
+		return allDay;
+	}
+	
+	public void setAllDay(Boolean allDay) {
+		this.allDay = allDay;
+	}
 	
 	public String getUrl() {
 		return url;
@@ -131,16 +131,16 @@ public class Event {
   @Column(nullable = false)
   @NotNull
   @Temporal (TemporalType.TIMESTAMP)
-  private Date startTime;
+  private Date start;
 
   @Column(nullable = false)
   @NotNull
   @Temporal (TemporalType.TIMESTAMP)
-  private Date endTime;
+  private Date end;
 
   @Column(nullable = false)
   @NotNull
-  private Boolean allDayEvent;
+  private Boolean allDay;
 
   private BigDecimal longitude;
 

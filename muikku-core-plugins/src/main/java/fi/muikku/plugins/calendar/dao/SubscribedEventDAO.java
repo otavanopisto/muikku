@@ -20,16 +20,16 @@ public class SubscribedEventDAO extends PluginDAO<SubscribedEvent> {
 
 	private static final long serialVersionUID = -1572299088200049688L;
 
-	public SubscribedEvent create(SubscribedCalendar calendar, String uid, String summary, String description, String location, Date startTime, Date endTime, String url, Boolean allDayEvent, BigDecimal latitude, BigDecimal longitude) {
+	public SubscribedEvent create(SubscribedCalendar calendar, String uid, String summary, String description, String location, Date start, Date end, String url, Boolean allDay, BigDecimal latitude, BigDecimal longitude) {
 		SubscribedEvent event = new SubscribedEvent();
     
 		event.setUid(uid);
 		event.setSummary(summary);
     event.setCalendar(calendar);
-    event.setAllDayEvent(allDayEvent);
+    event.setAllDay(allDay);
     event.setDescription(description);
-    event.setEndTime(endTime);
-    event.setStartTime(startTime);
+    event.setEnd(end);
+    event.setStart(start);
     event.setLocation(location);
     event.setUrl(url);
     event.setLatitude(latitude);
@@ -54,7 +54,7 @@ public class SubscribedEventDAO extends PluginDAO<SubscribedEvent> {
     return entityManager.createQuery(criteria).getResultList();
   }
   
-  public List<SubscribedEvent> listByCalendarStartTimeGe(SubscribedCalendar calendar, Date startTime) {
+  public List<SubscribedEvent> listByCalendarStartGe(SubscribedCalendar calendar, Date start) {
 		EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -64,7 +64,7 @@ public class SubscribedEventDAO extends PluginDAO<SubscribedEvent> {
     
     criteria.where(
     	criteriaBuilder.and(
-        criteriaBuilder.greaterThanOrEqualTo(root.get(SubscribedEvent_.startTime), startTime),
+        criteriaBuilder.greaterThanOrEqualTo(root.get(SubscribedEvent_.start), start),
         criteriaBuilder.equal(root.get(SubscribedEvent_.calendar), calendar)
       )
     );
@@ -72,7 +72,7 @@ public class SubscribedEventDAO extends PluginDAO<SubscribedEvent> {
     return entityManager.createQuery(criteria).getResultList();
 	}
   
-  public List<SubscribedEvent> listByCalendarEndTimeLe(SubscribedCalendar calendar, Date endTime) {
+  public List<SubscribedEvent> listByCalendarEndLe(SubscribedCalendar calendar, Date end) {
 		EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -82,7 +82,7 @@ public class SubscribedEventDAO extends PluginDAO<SubscribedEvent> {
     
     criteria.where(
     	criteriaBuilder.and(
-        criteriaBuilder.lessThanOrEqualTo(root.get(SubscribedEvent_.endTime), endTime),
+        criteriaBuilder.lessThanOrEqualTo(root.get(SubscribedEvent_.end), end),
         criteriaBuilder.equal(root.get(SubscribedEvent_.calendar), calendar)
       )
     );
@@ -90,7 +90,7 @@ public class SubscribedEventDAO extends PluginDAO<SubscribedEvent> {
     return entityManager.createQuery(criteria).getResultList();
 	}
 
-	public List<SubscribedEvent> listByCalendarStartTimeGeEndTimeLe(SubscribedCalendar calendar, Date startTime, Date endTime) {
+	public List<SubscribedEvent> listByCalendarStartGeEndLe(SubscribedCalendar calendar, Date start, Date end) {
 		EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -100,8 +100,8 @@ public class SubscribedEventDAO extends PluginDAO<SubscribedEvent> {
     
     criteria.where(
     	criteriaBuilder.and(
-        criteriaBuilder.greaterThanOrEqualTo(root.get(SubscribedEvent_.startTime), startTime),
-        criteriaBuilder.lessThanOrEqualTo(root.get(SubscribedEvent_.endTime), endTime),
+        criteriaBuilder.greaterThanOrEqualTo(root.get(SubscribedEvent_.start), start),
+        criteriaBuilder.lessThanOrEqualTo(root.get(SubscribedEvent_.end), end),
         criteriaBuilder.equal(root.get(SubscribedEvent_.calendar), calendar)
       )
     );
