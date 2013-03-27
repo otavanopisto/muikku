@@ -12,6 +12,9 @@
     getWidgetElement: function () {
       return this._widgetElement;
     },
+    getWidgetController: function () {
+      return this.getWidgetElement().data("widgetController");
+    },
     getViewStartTime: function () {
       throw new Error("Unimplemented");
     },
@@ -35,10 +38,10 @@
     init: function (widgetElement, options) {
       this._super(arguments, widgetElement);
       
-      this._pendingEventObjects = null;
       this._maxDayEvents = options.maxDayEvents||Number.POSITIVE_INFINITY;
       this._maxSummaryLength = options.maxSummaryLength;
-
+      this._loadedDatas = null;
+      
       var calendarElement = $('<div class="monthCalendar">');
       
       this._fullCalendar = calendarElement.appendTo(widgetElement).fullCalendar($.extend({
@@ -50,14 +53,24 @@
         height: calendarElement.outerHeight(),
         editable: true,
         dayClick: $.proxy(this._onDayClick, this),
-        eventClick: $.proxy(this._onEventClick, this)
+        eventClick: $.proxy(this._onEventClick, this),
+        eventDrop: $.proxy(this._onEventDrop, this),
+        eventResize: $.proxy(this._onEventResize, this)
       }, options));
-
-      this._calendarEventsLoadListener = $.proxy(this._onCalendarEventsLoad, this);
       
-      widgetElement.on("calendarEventsLoad", this._calendarEventsLoadListener);           
+      // TODO: Stop listening...
+      this._calendarEventsLoadListener = $.proxy(this._onCalendarEventsLoad, this);
+      this._afterEventCreateListener = $.proxy(this._onAfterEventCreate, this);
+      
+      widgetElement.on("calendarEventsLoad", this._calendarEventsLoadListener);      
+      widgetElement.on("afterEventCreate", this._afterEventCreateListener);      
     },
     destroy: function () {
+      var widgetElement = this.getWidgetElement();
+      
+      widgetElement.off("calendarEventsLoad", this._calendarEventsLoadListener);      
+      widgetElement.off("afterEventCreate", this._afterEventCreateListener);      
+      
       this._fullCalendar.remove();
       this._super(arguments);
     },
@@ -96,11 +109,11 @@
       var endDate = new Date(endTime.getFullYear(), endTime.getMonth(), endTime.getDate(), 23, 59, 0, 0);
       return Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
     },
-    _onCalendarEventsLoad: function (event) {
+    
+    _reloadEvents: function (datas) {
+      var widgetController = this.getWidgetController();
       this._fullCalendar.fullCalendar('removeEvents');
       
-      var widgetController = event.source;
-      var datas = event.datas;
       var eventObjects = new Array();
       var dayEventsMeta = {};
       
@@ -128,12 +141,13 @@
         for (var i = 0, l = events.length; i < l; i++) {
           
           var editable = meta.type == 'LOCAL';
-          var startTime = new Date(events[i].startTime);
-          var endTime = new Date(events[i].endTime);
+          var startTime = new Date(events[i].start);
+          var endTime = new Date(events[i].end);
           
           var eventObject = {
             id: events[i].id,
             calendarId: meta.id,
+            typeId: events[i]['type_id'],
             title: this._maxSummaryLength ? this._truncateString(events[i].summary, this._maxSummaryLength) : events[i].summary,
             summary: events[i].summary,
             description: events[i].description,
@@ -144,7 +158,7 @@
             longitude: events[i].longitude,
             latitude: events[i].latitude,
             editable: editable,
-            allDay: events[i].allDayEvent,
+            allDay: events[i].allDay,
             borderColor: colorProfile.borderColor,
             backgroundColor: colorProfile.backgroundColor
           };
@@ -230,7 +244,25 @@
       this._fullCalendar.fullCalendar("addEventSource", {
         events: visibleEvents
       });
-
+    },
+    
+    _onCalendarEventsLoad: function (event) {
+      var datas = event.datas;
+      this._reloadEvents(datas);
+      this._loadedDatas = datas;
+    },
+    
+    _onAfterEventCreate: function (event) {
+      var newEvent = event.event;
+      
+      for (var i = 0, l = this._loadedDatas.length; i < l; i++) {
+        if (this._loadedDatas[i].calendarMeta.id == newEvent.calendarId) {
+          this._loadedDatas[i].events.push(newEvent);
+          break;
+        }
+      }
+      
+      this._reloadEvents(this._loadedDatas);
     },
     
     _onEventClick: function (event) {
@@ -252,6 +284,18 @@
           allDay: allDay      
         }  
       })); 
+    },
+    
+    _onEventDrop: function(event, dayDelta, minuteDelta, allDay, revertFunc) {
+      this.getWidgetElement().trigger($.Event("updateEvent", {
+        event: event
+      }));
+    },
+    
+    _onEventResize: function(event, dayDelta, minuteDelta, revertFunc) {
+      this.getWidgetElement().trigger($.Event("updateEvent", {
+        event: event
+      }));
     }
   });
   
@@ -287,8 +331,11 @@
     },
     setup: function (widgetElement) {
       this._widgetElement = $(widgetElement);
+      this._widgetElement.data("widgetController", this);
       
+      this._initialMode = 'MONTH';
       this._modeHandler = null;
+      this._localEventTypes = null;
       this._calendarMetas = new Array();
       this._calendarsInitialized = false;
       this._nextColorProfile = 1;
@@ -313,6 +360,7 @@
       this._widgetElement.on("modeChange", $.proxy(this._onModeChange, this));
 
       // Listen calendar initialization
+      this._widgetElement.on("basicInfoLoad", $.proxy(this._onBasicInfoLoad, this));
       this._widgetElement.on("calendarsLoad", $.proxy(this._onCalendarsLoad, this));
       this._widgetElement.on("calendarsInit", $.proxy(this._onCalendarsInit, this));
 
@@ -323,7 +371,7 @@
       this._widgetElement.on("editEvent", $.proxy(this._onEditEvent, this));
       this._widgetElement.on("updateEvent", $.proxy(this._onUpdateEvent, this));
       
-      this._changeMode("WEEK");
+      this._loadBasicInfo();
     },
     
     getViewStartTime: function () {
@@ -384,6 +432,16 @@
     
     /* API -calls */ 
     
+    _loadBasicInfo: function () {
+      var _this = this;
+      RESTful.doGet(CONTEXTPATH + "/rest/calendar/localEventTypes")
+        .success(function (data, textStatus, jqXHR) {
+          _this._localEventTypes = data;
+          _this._widgetElement.trigger($.Event("basicInfoLoad", {
+          }));
+        });
+    },
+    
     _loadCalendars: function () {
       // TODO: Error handling
 
@@ -429,7 +487,6 @@
 
           if (i == 0) {
             _this._widgetElement.trigger($.Event("calendarEventsLoad", {
-              source: _this,
               datas: datas
             }));
           }
@@ -503,8 +560,18 @@
             .appendTo(calendarSelect);
         }
       }
-
+      
+      var typeSelect = $('<select name="typeId">');
+      for (var i = 0, l = this._localEventTypes.length; i < l; i++) {
+        var type = this._localEventTypes[i];
+        $('<option>')
+          .attr('value', type.id)
+          .text(type.name)
+          .appendTo(typeSelect);
+      }
+      
       createField(dialogContent, "Calendar", "Calendar", calendarSelect);
+      createField(dialogContent, "Type", "Type", typeSelect);
       createField(dialogContent, "Summary", "Summary", $('<input name="summary" type="text"/>').val(event.summary));
       createField(dialogContent, "AllDay", "All day", allDayElement);
       createField(dialogContent, "From", "From", fromField);
@@ -532,6 +599,7 @@
         }
 
         calendarEvent.calendarId = $(this).find('select[name="calendarId"]').val();
+        calendarEvent.typeId = $(this).find('select[name="typeId"]').val();
         calendarEvent.summary = $(this).find('input[name="summary"]').val();
         calendarEvent.start = startDate;
         calendarEvent.end = endDate;
@@ -618,6 +686,10 @@
       }
     },
     
+    _onBasicInfoLoad: function (event) {
+      this._changeMode(this._initialMode);
+    },
+
     _onCalendarsLoad: function (event) {
       var calendars = event.calendars;
       
@@ -671,27 +743,50 @@
         RESTful.doPost(CONTEXTPATH + '/rest/calendar/calendars/{calendarId}/events', {
           parameters: {
             calendarId: calendarEvent.calendarId,
-            type: 'DEFAULT',
+            typeId: calendarEvent.typeId,
             summary: calendarEvent.summary,
             description: calendarEvent.description,
             location: calendarEvent.location,
             url: calendarEvent.url,
-            startTime: calendarEvent.start,
-            endTime: calendarEvent.end,
-            allDayEvent: calendarEvent.allDay,
+            start: calendarEvent.start,
+            end: calendarEvent.end,
+            allDay: calendarEvent.allDay,
             latitude: calendarEvent.latitude,
             longitude: calendarEvent.longitude
           }
         })
         .success(function (data, textStatus, jqXHR) {
+          calendarEvent.id = data.id;
           _this._widgetElement.trigger($.Event("afterEventCreate", {
-            source: _this,
             event: calendarEvent
           }));
         });
 
       } else {
-        // TODO: Updating existing event
+        // Updating existing event
+        
+        var _this = this;
+        RESTful.doPut(CONTEXTPATH + '/rest/calendar/calendars/{calendarId}/events/{id}', {
+          parameters: {
+            id: calendarEvent.id,
+            calendarId: calendarEvent.calendarId,
+            typeId: calendarEvent.typeId,
+            summary: calendarEvent.summary,
+            description: calendarEvent.description,
+            location: calendarEvent.location,
+            url: calendarEvent.url,
+            start: calendarEvent.start,
+            end: calendarEvent.end,
+            allDay: calendarEvent.allDay,
+            latitude: calendarEvent.latitude,
+            longitude: calendarEvent.longitude
+          }
+        })
+        .success(function (data, textStatus, jqXHR) {
+          _this._widgetElement.trigger($.Event("afterEventUpdate", {
+            event: calendarEvent
+          }));
+        });
       }
     }
     
