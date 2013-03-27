@@ -1,6 +1,6 @@
 package fi.muikku.schooldata.local;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import fi.muikku.dao.users.UserImplDAO;
@@ -9,7 +9,7 @@ import fi.muikku.model.users.UserImpl;
 import fi.muikku.schooldata.UserSchoolDataController;
 import fi.muikku.schooldata.entity.User;
 
-@RequestScoped
+@Dependent
 @LocalSchoolDataController
 public class LocalUserController implements UserSchoolDataController {
 

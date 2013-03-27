@@ -1,12 +1,11 @@
 package fi.muikku.schooldata;
 
 import javax.ejb.Stateful;
-import javax.enterprise.context.RequestScoped;
-
+import javax.enterprise.context.Dependent;
 import fi.muikku.model.stub.users.UserEntity;
 import fi.muikku.schooldata.entity.User;
 
-@RequestScoped
+@Dependent
 @Stateful
 public class UserSchoolDataControllerDelegator
     extends SchoolDataController<UserSchoolDataController>
