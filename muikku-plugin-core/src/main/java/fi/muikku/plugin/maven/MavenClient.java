@@ -50,9 +50,7 @@ import org.sonatype.aether.resolution.ArtifactResult;
 import org.sonatype.aether.resolution.VersionRangeRequest;
 import org.sonatype.aether.resolution.VersionRangeResolutionException;
 import org.sonatype.aether.resolution.VersionRangeResult;
-import org.sonatype.aether.resolution.VersionRequest;
 import org.sonatype.aether.resolution.VersionResolutionException;
-import org.sonatype.aether.resolution.VersionResult;
 import org.sonatype.aether.spi.io.FileProcessor;
 import org.sonatype.aether.spi.localrepo.LocalRepositoryManagerFactory;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
@@ -78,15 +76,17 @@ public class MavenClient {
     SyncContextFactory syncContextFactory = new DefaultSyncContextFactory();
 
     UpdateCheckManager updateCheckManager = new DefaultUpdateCheckManager();
-    remoteRepositoryManager = createRepositoryManager(updateCheckManager);
+    FileProcessor fileProcessor = new DefaultFileProcessor();
+
+    remoteRepositoryManager = createRepositoryManager(updateCheckManager, fileProcessor);
     
     MetadataResolver metadataResolver = createMetadataResolver(remoteRepositoryManager, repositoryEventDispatcher, syncContextFactory, updateCheckManager);
-    VersionResolver versionResolver = createVersionResolver(repositoryEventDispatcher, metadataResolver);
+    VersionResolver versionResolver = createVersionResolver(repositoryEventDispatcher, metadataResolver, syncContextFactory);
     VersionRangeResolver versionRangeResolver = createVersionRangeResolver(metadataResolver, repositoryEventDispatcher, syncContextFactory);
     
     this.repositorySystem = createRepositorySystem(versionRangeResolver, versionResolver);
     this.localRepositoryPath = localRepositoryDirectory.getAbsolutePath();
-    this.artifactResolver = createArtifactResolver(repositoryEventDispatcher, syncContextFactory, remoteRepositoryManager, versionResolver);
+    this.artifactResolver = createArtifactResolver(repositoryEventDispatcher, syncContextFactory, remoteRepositoryManager, versionResolver, fileProcessor);
     this.artifactDescriptorReader = createArtifactDescriptionReader(repositoryEventDispatcher, versionResolver, artifactResolver, remoteRepositoryManager);
     this.systemSession = createSystemSession(eclipseWorkspace);
     this.versionRangeResolver = versionRangeResolver;
@@ -112,16 +112,6 @@ public class MavenClient {
     VersionRangeRequest request = new VersionRangeRequest(artifact, getRemoteRepositories(), null);
     VersionRangeResult rangeResult = versionRangeResolver.resolveVersionRange(systemSession, request);
     return rangeResult.getVersions();
-  }
-  
-  public VersionResult resolveVersion(Artifact artifact) throws VersionResolutionException {
-  	VersionRequest versionRequest = new VersionRequest(artifact, remoteRepositories, null);
-  	return repositorySystem.resolveVersion(systemSession, versionRequest);
-  }
-
-  public Artifact getVersionResolvedArtifact(DefaultArtifact artifact) throws VersionResolutionException {
-	  VersionResult versionResult = resolveVersion(artifact);
-  	return new DefaultArtifact(artifact.getGroupId(), artifact.getArtifactId(), artifact.getExtension(), versionResult.getVersion());
   }
   
   /** 
@@ -182,15 +172,22 @@ public class MavenClient {
   public List<RemoteRepository> getRemoteRepositories() {
     return remoteRepositories;
   }
-
-  /** Add a repository (local or remote) for locating the artifacts.
+  
+  /** Add a remote repository for locating the artifacts.
    * 
-   * @param url The URL of the repository. If it starts with '/', the
-   * repository is assumed to be local, otherwise it's assumed to be 
-   * remote.
+   * @param remoteRepository repository to be added
    */
-  public void addRepository(String url) {
-    remoteRepositories.add(new RemoteRepository(null, "default", url));
+  public void addRepository(RemoteRepository remoteRepository) {
+    remoteRepositories.add(remoteRepository);
+  }
+
+  /** Add a remote repository for locating the artifacts.
+   * 
+   * @param id The Id of the repository. 
+   * @param url The URL of the repository. 
+   */
+  public void addRepository(String id, String url) {
+    this.addRepository(new RemoteRepository(id, "default", url));
   }
   
   /** Remove a repository (local or remote) for locating the artifacts.
@@ -224,19 +221,22 @@ public class MavenClient {
   }
 
   private ArtifactResolver createArtifactResolver(RepositoryEventDispatcher repositoryEventDispatcher, SyncContextFactory syncContextFactory,
-      RemoteRepositoryManager remoteRepositoryManager, VersionResolver versionResolver) {
+      RemoteRepositoryManager remoteRepositoryManager, VersionResolver versionResolver, FileProcessor fileProcessor) {
     DefaultArtifactResolver artifactResolver = new DefaultArtifactResolver();
     artifactResolver.setSyncContextFactory(syncContextFactory);
     artifactResolver.setRepositoryEventDispatcher(repositoryEventDispatcher);
     artifactResolver.setVersionResolver(versionResolver);
     artifactResolver.setRemoteRepositoryManager(remoteRepositoryManager);
+    artifactResolver.setFileProcessor(fileProcessor);
     return artifactResolver;
   }
 
-  private VersionResolver createVersionResolver(RepositoryEventDispatcher repositoryEventDispatcher, MetadataResolver metadataResolver) {
+  private VersionResolver createVersionResolver(RepositoryEventDispatcher repositoryEventDispatcher, MetadataResolver metadataResolver, SyncContextFactory syncContextFactory) {
     DefaultVersionResolver versionResolver = new DefaultVersionResolver();
     versionResolver.setRepositoryEventDispatcher(repositoryEventDispatcher);
     versionResolver.setMetadataResolver(metadataResolver);
+    versionResolver.setSyncContextFactory(syncContextFactory);
+    
     return versionResolver;
   }
 
@@ -259,10 +259,9 @@ public class MavenClient {
     return versionRangeResolver;
   }
 
-  private RemoteRepositoryManager createRepositoryManager(UpdateCheckManager updateCheckManager) {
+  private RemoteRepositoryManager createRepositoryManager(UpdateCheckManager updateCheckManager, FileProcessor fileProcessor) {
     DefaultRemoteRepositoryManager remoteRepositoryManager = new DefaultRemoteRepositoryManager();
-    FileProcessor fileProcessor = new DefaultFileProcessor();
-    
+
     WagonRepositoryConnectorFactory wagonRepositoryConnectorFactory = new WagonRepositoryConnectorFactory();
     wagonRepositoryConnectorFactory.setWagonProvider(new WagonProvider() {
       @Override
