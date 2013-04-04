@@ -23,9 +23,11 @@
       <h:outputStylesheet library="css" name="widgets.css"  />
       <!--  Temporary styles -->
       <h:outputStylesheet library="css" name="temp.css"  />      
+      <!-- Grid 960 styles 
+      <h:outputStylesheet library="css" name="grid960.gs/960_12_col.css"  /> -->
       <!-- Grid 960 styles -->
-      <h:outputStylesheet library="css" name="grid960.gs/960.css"  /> 
-      
+      <h:outputStylesheet library="css" name="grid960.gs/960_24_col.css"  /> 
+            
       <!-- jQuery -->
       
       <h:outputScript name="scripts/jquery/jquery-1.9.1.js"/>
@@ -54,10 +56,23 @@
     
     <h:body>
       <div id="header">
-        <ui:include src="/core/widget-space.xhtml">
+       <div id="headerContainer" class="container_24">
+         <ui:include src="/core/widget-space.xhtml">
           <ui:param name="location" value="#{widgetSpaceBackingBean.environmentHeader}" />
+          <ui:param name="gridSize" value="8" />
           <ui:param name="sublocations" value="#{widgetSpaceBackingBean.environmentHeaderSublocations}"/>
-        </ui:include>
+        </ui:include>             
+       </div>
+      </div>
+      <div id="staticNavigationFade">
+        <div id="staticNavigation" class="container_24">
+					<ui:include src="/core/widget-space.xhtml">
+						<ui:param name="location"
+							value="#{widgetSpaceBackingBean.environmentDockTop}" />
+						<ui:param name="sublocations"
+							value="#{widgetSpaceBackingBean.environmentDockTopSublocations}" />
+					</ui:include>
+        </div>
       </div>
       
       <ui:include src="/core/widget-space.xhtml">
@@ -68,10 +83,7 @@
         <ui:param name="location" value="#{widgetSpaceBackingBean.environmentContentToolsBottom}" />
       </ui:include>
       
-      <ui:include src="/core/widget-space.xhtml">
-        <ui:param name="location" value="#{widgetSpaceBackingBean.environmentDockTop}" />
-        <ui:param name="sublocations" value="#{widgetSpaceBackingBean.environmentDockTopSublocations}"/>
-      </ui:include>
+
       
       <ui:include src="/core/widget-space.xhtml">
         <ui:param name="location" value="#{widgetSpaceBackingBean.environmentContentSidebarLeft}"/>
