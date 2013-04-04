@@ -74,49 +74,37 @@
 					</ui:include>
         </div>
       </div>
-      
-      <ui:include src="/core/widget-space.xhtml">
-        <ui:param name="location" value="#{widgetSpaceBackingBean.environmentContentToolsTop}" />
-      </ui:include>
-      
-      <ui:include src="/core/widget-space.xhtml">
-        <ui:param name="location" value="#{widgetSpaceBackingBean.environmentContentToolsBottom}" />
-      </ui:include>
-      
-
-      
-      <ui:include src="/core/widget-space.xhtml">
-        <ui:param name="location" value="#{widgetSpaceBackingBean.environmentContentSidebarLeft}"/>
-      </ui:include>
-      
-      <ui:insert name="content">
+      <div id="content" class="container_24">      
+	      <ui:include src="/core/widget-space.xhtml">
+	        <ui:param name="location" value="#{widgetSpaceBackingBean.environmentContentToolsTop}" />
+	      </ui:include>     
+	      <ui:include src="/core/widget-space.xhtml">
+	        <ui:param name="location" value="#{widgetSpaceBackingBean.environmentContentToolsBottom}" />
+	      </ui:include>            
+	      <ui:include src="/core/widget-space.xhtml">
+	        <ui:param name="location" value="#{widgetSpaceBackingBean.environmentContentSidebarLeft}"/>
+	      </ui:include>
+	      <ui:include src="/core/widget-space.xhtml">
+	        <ui:param name="location" value="#{widgetSpaceBackingBean.environmentContentSidebarRight}"/>
+	      </ui:include>      
+	      <ui:insert name="content">
+	        <ui:include src="/core/widget-space.xhtml">
+	          <ui:param name="location" value="#{widgetSpaceBackingBean.environmentContent}" />
+	        </ui:include>
+	      </ui:insert>
+      </div>
+      <div>
         <ui:include src="/core/widget-space.xhtml">
-          <ui:param name="location" value="#{widgetSpaceBackingBean.environmentContent}" />
+          <ui:param name="location" value="#{widgetSpaceBackingBean.environmentDockBottom}" />
+          <ui:param name="sublocations" value="#{widgetSpaceBackingBean.environmentDockBottomSublocations}"/>
         </ui:include>
-      </ui:insert>
-      
-      <ui:include src="/core/widget-space.xhtml">
-        <ui:param name="location" value="#{widgetSpaceBackingBean.environmentContentSidebarRight}"/>
-      </ui:include>
-      
-      <ui:include src="/core/widget-space.xhtml">
-        <ui:param name="location" value="#{widgetSpaceBackingBean.environmentContentSidebarLeft}" />
-      </ui:include>
-      
-      <ui:include src="/core/widget-space.xhtml">
-        <ui:param name="location" value="#{widgetSpaceBackingBean.environmentContentSidebarRight}" />
-      </ui:include>
-      
-      <ui:include src="/core/widget-space.xhtml">
-        <ui:param name="location" value="#{widgetSpaceBackingBean.environmentDockBottom}" />
-        <ui:param name="sublocations" value="#{widgetSpaceBackingBean.environmentDockBottomSublocations}"/>
-      </ui:include>
-      
-      <ui:include src="/core/widget-space.xhtml">
-        <ui:param name="location" value="#{widgetSpaceBackingBean.environmentFooter}" />
-        <ui:param name="sublocations" value="#{widgetSpaceBackingBean.environmentFooterSublocations}"/>
-      </ui:include>
-
+      </div>
+      <div>
+        <ui:include src="/core/widget-space.xhtml">
+          <ui:param name="location" value="#{widgetSpaceBackingBean.environmentFooter}" />
+          <ui:param name="sublocations" value="#{widgetSpaceBackingBean.environmentFooterSublocations}"/>
+        </ui:include>
+      </div>
     </h:body>
 
   </f:view>

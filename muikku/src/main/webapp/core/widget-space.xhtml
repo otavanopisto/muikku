@@ -13,8 +13,10 @@
 
   <ui:fragment rendered="#{!widgetsBackingBean.hasWidgets(location)}"> 
     <c:forEach var="sublocation" items="#{sublocations}">
-      <div class="widgetSpace">
-        <m:includeWidgets widgets="#{widgetsBackingBean.getWidgets(location, sublocation)}"/>
+    
+    
+      <div class="widgetSpace grid_#{gridSize}">
+         <m:includeWidgets widgets="#{widgetsBackingBean.getWidgets(location, sublocation)}"/>
       </div>
     </c:forEach>
   </ui:fragment>
