@@ -39,6 +39,7 @@
       <!-- Dust -->
       <h:outputScript name="scripts/dustjs/dust-full-1.1.1.js"/>
       <h:outputScript name="scripts/dustjs/dust-helpers-1.1.0.js"/>
+      <h:outputScript name="scripts/gui/dustloader.js"/>
       
       <!-- REST -->
       <h:outputScript name="scripts/gui/restful.js"/>
@@ -56,13 +57,17 @@
         </ui:include>
       </div>
       
-      <ui:include src="/core/widget-space.xhtml">
-        <ui:param name="location" value="#{widgetSpaceBackingBean.environmentContentToolsTop}" />
-      </ui:include>
+      <ui:insert name="contentToolsTop">
+        <ui:include src="/core/widget-space.xhtml">
+          <ui:param name="location" value="#{widgetSpaceBackingBean.environmentContentToolsTop}" />
+        </ui:include>
+      </ui:insert>
       
-      <ui:include src="/core/widget-space.xhtml">
-        <ui:param name="location" value="#{widgetSpaceBackingBean.environmentContentToolsBottom}" />
-      </ui:include>
+      <ui:insert name="contentToolsBottom">
+        <ui:include src="/core/widget-space.xhtml">
+          <ui:param name="location" value="#{widgetSpaceBackingBean.environmentContentToolsBottom}" />
+        </ui:include>
+      </ui:insert>
       
       <ui:include src="/core/widget-space.xhtml">
         <ui:param name="location" value="#{widgetSpaceBackingBean.environmentDockTop}" />
