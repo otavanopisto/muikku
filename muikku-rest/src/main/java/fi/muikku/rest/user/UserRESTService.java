@@ -1,5 +1,6 @@
 package fi.muikku.rest.user;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -10,14 +11,17 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
-import fi.muikku.rest.AbstractRESTService;
 import fi.muikku.controller.SchoolBridgeController;
 import fi.muikku.controller.UserController;
 import fi.muikku.model.base.Environment;
 import fi.muikku.model.base.SchoolDataSource;
+import fi.muikku.model.stub.users.UserEntity;
 import fi.muikku.model.users.EnvironmentUser;
+import fi.muikku.rest.AbstractRESTService;
+import fi.muikku.schooldata.entity.User;
 import fi.muikku.session.SessionController;
 import fi.muikku.session.local.LocalSession;
 import fi.muikku.session.local.LocalSessionController;
@@ -25,6 +29,9 @@ import fi.tranquil.TranquilModelType;
 import fi.tranquil.Tranquility;
 import fi.tranquil.TranquilityBuilder;
 import fi.tranquil.TranquilityBuilderFactory;
+import fi.tranquil.TranquilizingContext;
+import fi.tranquil.instructions.PropertyInjectInstruction.ValueGetter;
+import fi.tranquil.instructions.SuperClassInstructionSelector;
 
 @Path("/user")
 @Stateless
@@ -63,6 +70,29 @@ public class UserRESTService extends AbstractRESTService {
     ).build();
   }
   
+  @GET
+  @Path ("/searchUsers")
+  public Response searchUsers(
+      @QueryParam("searchString") String searchString
+      ) {
+    Environment environment = sessionController.getEnvironment();
+    
+    List<EnvironmentUser> eusers = userController.listEnvironmentUsers(environment);
+    List<UserEntity> users = new ArrayList<UserEntity>();
+    for (EnvironmentUser e : eusers) 
+      users.add(e.getUser());
+    
+    TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
+    Tranquility tranquility = tranquilityBuilder.createTranquility()
+      .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
+      .addInstruction(new SuperClassInstructionSelector(UserEntity.class), tranquilityBuilder.createPropertyInjectInstruction("hasPicture", new UserEntityHasPictureValueGetter()))
+      .addInstruction(new SuperClassInstructionSelector(UserEntity.class), tranquilityBuilder.createPropertyInjectInstruction("fullName", new UserNameValueGetter()));
+    
+    return Response.ok(
+      tranquility.entities(users)
+    ).build();
+  }
+
   @POST
   @Path ("/registerUser")
 //  @Permit (Permissions.REPRESENT_USER)
@@ -142,4 +172,20 @@ public class UserRESTService extends AbstractRESTService {
   }
 **/
   
+  private class UserEntityHasPictureValueGetter implements ValueGetter<Boolean> {
+    @Override
+    public Boolean getValue(TranquilizingContext context) {
+      UserEntity user = (UserEntity) context.getEntityValue();
+      return userController.getUserHasPicture(user);
+    }
+  }
+
+  private class UserNameValueGetter implements ValueGetter<String> {
+    @Override
+    public String getValue(TranquilizingContext context) {
+      UserEntity userEntity = (UserEntity) context.getEntityValue();
+      User user = userController.findUser(userEntity);
+      return user.getFirstName() + " " + user.getLastName();
+    }
+  }
 }

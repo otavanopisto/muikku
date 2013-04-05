@@ -14,6 +14,7 @@
     <class>fi.muikku.security.PermitInterceptor</class>
     <class>fi.muikku.LoggedInterceptor</class>
     <class>fi.muikku.plugin.TransactionalInterceptor</class>
+    <class>fi.muikku.plugin.PluginContextClassLoaderInterceptor</class>
   </interceptors>
   
 </beans>
