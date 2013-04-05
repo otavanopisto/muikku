@@ -93,19 +93,14 @@ public class CalendarController {
 	@Inject
 	private SubscribedEventDAO subscribedEventDAO;
 	
-	public CalendarCategory getDefaultCalendarCategory() {
-		return getDefaultCalendarCategory(false);
+	/* CalendarCategory */
+
+	public CalendarCategory createCalendarCategory(String name) {
+		return calendarCategoryDAO.create(name);
 	}
 	
-	/* CalendarCategory */
-	
-	public CalendarCategory getDefaultCalendarCategory(boolean create) {
-		CalendarCategory calendarCategory = calendarCategoryDAO.findByName("default");
-  	if (calendarCategory == null && create) {
-  		calendarCategory = calendarCategoryDAO.create("default");
-  	}
-  	
-  	return calendarCategory;
+	public CalendarCategory findCalendarCategoryById(Long id) {
+		return calendarCategoryDAO.findById(id);
 	}
 
 	public List<CalendarCategory> listCalendarCategories() {
@@ -150,7 +145,7 @@ public class CalendarController {
 		
 		return result;
 	}
-	
+
 	/* SubscribedCalendar */
 	
 	public UserCalendar createSubscribedUserCalendar(Environment environment, UserEntity user, CalendarCategory calendarCategory, String name, String url) {
@@ -216,8 +211,28 @@ public class CalendarController {
 	
 	/* LocalEvents */
 
-	public LocalEvent createLocalEvent(LocalCalendar calendar, LocalEventType type, String summary, String description, String location, String url, Date startTime, Date endTime, Boolean allDayEvent, BigDecimal latitude, BigDecimal longitude) {
-		return localEventDAO.create(calendar, type, summary, description, location, url, startTime, endTime, allDayEvent, latitude, longitude);
+	public LocalEvent createLocalEvent(LocalCalendar calendar, LocalEventType type, String summary, String description, String location, String url, Date start, Date end, Boolean allDay, BigDecimal latitude, BigDecimal longitude) {
+		return localEventDAO.create(calendar, type, summary, description, location, url, start, end, allDay, latitude, longitude);
+	}
+
+	public LocalEvent findLocalEventById(Long id) {
+		return localEventDAO.findById(id);
+	}
+	
+	public LocalEvent updateLocalEvent(LocalEvent localEvent, LocalEventType type, String summary, String description, String location, String url, Date start, Date end, Boolean allDay, BigDecimal latitude, BigDecimal longitude) {
+		
+		localEventDAO.updateType(localEvent, type);
+		localEventDAO.updateSummary(localEvent, summary);
+		localEventDAO.updateDescription(localEvent, description);
+		localEventDAO.updateLocation(localEvent, location);
+		localEventDAO.updateUrl(localEvent, url);
+		localEventDAO.updateStart(localEvent, start);
+		localEventDAO.updateEnd(localEvent, end);
+		localEventDAO.updateAllDay(localEvent, allDay);
+		localEventDAO.updateLatitude(localEvent, latitude);
+		localEventDAO.updateLongitude(localEvent, longitude);
+		
+		return localEvent;
 	}
 	
 	/* Events */
@@ -245,15 +260,6 @@ public class CalendarController {
 	
 	public LocalEventType createLocalEventType(String name) {
 		return localEventTypeDAO.create(name);
-	}
-
-	public LocalEventType getDefaultLocalEventType(boolean create) {
-		LocalEventType eventType = localEventTypeDAO.findByName("default");
-		if (eventType == null) {
-			eventType = createLocalEventType("default");
-		}
-		
-		return eventType;
 	}
 
 	public LocalEventType findLocalEventType(Long id) {

@@ -21,6 +21,7 @@ import javax.interceptor.Interceptors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.core.util.metadata.AnnotationInstanceProvider;
 import org.apache.deltaspike.core.util.metadata.builder.AnnotatedTypeBuilder;
+import org.sonatype.aether.repository.RemoteRepository;
 
 import fi.muikku.plugin.PluginDescriptor;
 import fi.muikku.plugin.PluginLibraryDescriptor;
@@ -34,21 +35,21 @@ public class PluginExtension implements Extension {
 	private Logger logger = Logger.getLogger(PluginExtension.class.getName());
 	
 	void beforeBeanDiscovery(@Observes BeforeBeanDiscovery beforeBeanDiscovery, BeanManager beanManager) {
-		List<String> repositoryUrls = new ArrayList<>();
+		List<RemoteRepository> repositories = new ArrayList<>();
     List<PluginLibraryLoadInfo> pluginLoadInfos = new ArrayList<>();
     
     // TODO unhardcode :P
     
-    repositoryUrls.add("http://repo.maven.apache.org/maven2");
-    repositoryUrls.add("http://maven.otavanopisto.fi:7070/nexus/content/repositories/snapshots");
-    repositoryUrls.add("http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases");
+    repositories.add(new RemoteRepository("central", "default", "http://repo.maven.apache.org/maven2"));
+    repositories.add(new RemoteRepository("otavanopisto-snapshots", "default", "http://maven.otavanopisto.fi:7070/nexus/content/repositories/snapshots"));
+    repositories.add(new RemoteRepository("otavanopisto-releases", "default", "http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases"));
     
     pluginLoadInfos.add(new PluginLibraryLoadInfo("fi.muikku", "core-plugins", "1.0.0-SNAPSHOT"));
     String eclipseWorkspace = System.getProperty("eclipse.workspace");
     
     SingletonPluginManager pluginManager;
 		try {
-			pluginManager = SingletonPluginManager.initialize(getClass().getClassLoader(), getPluginsFolder(), repositoryUrls, eclipseWorkspace);
+			pluginManager = SingletonPluginManager.initialize(getClass().getClassLoader(), getPluginsFolder(), repositories, eclipseWorkspace);
 		} catch (PluginManagerException e1) {
 			throw new ExceptionInInitializerError(e1);
 		}

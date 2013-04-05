@@ -13,14 +13,13 @@ import javax.transaction.UserTransaction;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
-import org.apache.commons.lang.math.NumberUtils;
 
 import fi.muikku.model.base.Environment;
 import fi.muikku.model.stub.users.UserEntity;
@@ -97,14 +96,14 @@ public class CalendarRESTService extends PluginRESTService {
   @Path ("/calendars/{CALENDARID}/events")
   public Response createCalendarEvent(
   		@PathParam ("CALENDARID") Long calendarId, 
-  		@FormParam ("type") String type, 
+  		@FormParam ("typeId") Long typeId, 
   		@FormParam ("summary") String summary, 
   		@FormParam ("description") String description, 
   		@FormParam ("location") String location, 
   		@FormParam ("url") String url, 
-  		@FormParam ("startTime") Long startTime, 
-  		@FormParam ("endTime") Long endTime,
-  		@FormParam ("allDayEvent") Boolean allDayEvent, 
+  		@FormParam ("start") Long start, 
+  		@FormParam ("end") Long end,
+  		@FormParam ("allDay") Boolean allDay, 
   		@FormParam ("latitude") BigDecimal latitude, 
   		@FormParam ("longitude") BigDecimal longitude) {
   
@@ -116,16 +115,13 @@ public class CalendarRESTService extends PluginRESTService {
   	
   	if (calendar instanceof LocalCalendar) {
   		LocalCalendar localCalendar = (LocalCalendar) calendar;
+
+  		LocalEventType eventType = calendarController.findLocalEventType(typeId);
+  		if (eventType == null) {
+    		return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not find event type #" + typeId).build();
+    	}
   		
-  		LocalEventType eventType = null;
-  		
-  		if ("DEFAULT".equals(type)) {
-  			eventType = calendarController.getDefaultLocalEventType(false);
-  		} else {
-  			eventType = calendarController.findLocalEventType(NumberUtils.createLong(type));
-  		}
-  		
-    	LocalEvent localEvent = calendarController.createLocalEvent(localCalendar, eventType, summary, description, location, url, new Date(startTime), new Date(endTime), allDayEvent, latitude, longitude);
+    	LocalEvent localEvent = calendarController.createLocalEvent(localCalendar, eventType, summary, description, location, url, new Date(start), new Date(end), allDay, latitude, longitude);
     	
     	TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
       Tranquility tranquility = tranquilityBuilder.createTranquility();
@@ -154,6 +150,48 @@ public class CalendarRESTService extends PluginRESTService {
   	
     return Response.ok(
     	tranquility.entities(events)
+    ).build();
+  }
+  
+  @PUT
+  @Path ("/calendars/{CALENDARID}/events/{EVENTID}")
+  public Response updateCalendarEvent(
+  		@PathParam ("CALENDARID") Long calendarId, 
+  		@PathParam ("EVENTID") Long eventId, 
+  		@FormParam ("typeId") Long typeId, 
+  		@FormParam ("summary") String summary, 
+  		@FormParam ("description") String description, 
+  		@FormParam ("location") String location, 
+  		@FormParam ("url") String url, 
+  		@FormParam ("start") Long start, 
+  		@FormParam ("end") Long end,
+  		@FormParam ("allDay") Boolean allDay, 
+  		@FormParam ("latitude") BigDecimal latitude, 
+  		@FormParam ("longitude") BigDecimal longitude) {
+  	
+  	// TODO: Permissions
+  	
+  	LocalEvent localEvent = calendarController.findLocalEventById(eventId);
+  	if (localEvent == null) {
+  		return Response.status(Status.NOT_FOUND).build();
+  	}
+  	
+  	if (!localEvent.getCalendar().getId().equals(calendarId)) {
+  		return Response.status(Status.NOT_FOUND).build();
+  	}
+
+		LocalEventType eventType = calendarController.findLocalEventType(typeId);
+		if (eventType == null) {
+  		return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not find event type #" + typeId).build();
+  	}
+		
+  	calendarController.updateLocalEvent(localEvent, eventType, summary, description, location, url, new Date(start), new Date(end), allDay, latitude, longitude);
+  	
+  	TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
+    Tranquility tranquility = tranquilityBuilder.createTranquility();
+
+  	return Response.ok(
+      tranquility.entity(localEvent)
     ).build();
   }
 

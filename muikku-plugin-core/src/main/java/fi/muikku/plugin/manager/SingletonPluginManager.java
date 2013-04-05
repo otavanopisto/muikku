@@ -41,7 +41,7 @@ public class SingletonPluginManager {
     return INSTANCE;
   }
 
-  public static final synchronized SingletonPluginManager initialize(ClassLoader parentClassLoader, String pluginDirectory, List<String> repositories) throws PluginManagerException {
+  public static final synchronized SingletonPluginManager initialize(ClassLoader parentClassLoader, String pluginDirectory, List<RemoteRepository> repositories) throws PluginManagerException {
     return initialize(parentClassLoader, pluginDirectory, repositories, null);
   }
   
@@ -53,7 +53,7 @@ public class SingletonPluginManager {
    * @return The plugin manager instance.
    * @throws PluginManagerException when plugin manager is already initialized
    */
-  public static final synchronized SingletonPluginManager initialize(ClassLoader parentClassLoader, String pluginDirectory, List<String> repositories, String eclipseWorkspace) throws PluginManagerException {
+  public static final synchronized SingletonPluginManager initialize(ClassLoader parentClassLoader, String pluginDirectory, List<RemoteRepository> repositories, String eclipseWorkspace) throws PluginManagerException {
     if (INSTANCE != null)
       throw new PluginManagerException("Plugin manger is already initialized");
       
@@ -62,10 +62,10 @@ public class SingletonPluginManager {
     return INSTANCE;
   }
 
-  SingletonPluginManager(ClassLoader parentClassLoader, String pluginDirectory, List<String> repositories, String eclipseWorkspace) throws PluginManagerException {
+  SingletonPluginManager(ClassLoader parentClassLoader, String pluginDirectory, List<RemoteRepository> repositories, String eclipseWorkspace) throws PluginManagerException {
     this.libraryLoader = new LibraryLoader(parentClassLoader);
     mavenClient = new MavenClient(getPluginDirectory(pluginDirectory), eclipseWorkspace);
-    for (String repository : repositories) {
+    for (RemoteRepository repository : repositories) {
       mavenClient.addRepository(repository);
     }
   }
@@ -74,8 +74,8 @@ public class SingletonPluginManager {
    * 
    * @param url The URL of the repository to add.
    */
-  public void addRepository(String url) {
-    mavenClient.addRepository(url);
+  public void addRepository(RemoteRepository remoteRepository) {
+    mavenClient.addRepository(remoteRepository);
   }
   
   /** Removes a plugin repository from the plugin manager.
