@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    template="/WEB-INF/templates/default.xhtml">
+    
+    <ui:define name="content">
+      <h:outputScript name="scripts/gui/communicator.js" target="head" />
+      
+      <h:form>
+        <h:commandButton action="#{Communicator.TEST_MAIL_SEND()}" value="TESTSEND" />
+      </h:form>
+    
+      <div class="widget communicator">
+        <input type="hidden" name="environmentId" value="#{muikkuSession.environment.id}"/>
+        <input type="hidden" name="userId" value="#{muikkuSession.user.id}"/>
+        <input type="button" name="communicatorNewMessageButton" value="Uusi viesti"/>
+      
+        <div class="communicatorTabs">
+          <ul>
+            <li>
+              <a href="#inbox">Postilaatikko</a>
+            </li>
+            <li>
+              <a href="#news_s">Ajankohtaiset - opiskelija</a>
+            </li>
+            <li>
+              <a href="#news_t">Ajankohtaiset - opettaja</a>
+            </li>
+            <li>
+              <a href="#sent_s">Lähetetyt - opiskelija</a>
+            </li>
+            <li>
+              <a href="#sent_t">Lähetetyt - opettaja</a>
+            </li>
+            <li>
+              <a href="#req_s">Pyynnöt - opiskelija</a>
+            </li>
+            <li>
+              <a href="#req_t">Pyynnöt - opettaja</a>
+            </li>
+          </ul>
+
+          <div id="inbox" class="tabContent">
+            <div class="communicatorContent">
+            </div>
+          </div>
+          
+          <div id="news_s" class="tabContent">
+          </div>
+          <div id="news_t" class="tabContent">
+          </div>
+          <div id="sent_s" class="tabContent">
+          </div>
+          <div id="sent_t" class="tabContent">
+          </div>
+          <div id="req_s" class="tabContent">
+          </div>
+          <div id="req_t" class="tabContent">
+          </div>
+  
+        </div>
+      </div>
+      
+    </ui:define>
+
+</ui:composition>

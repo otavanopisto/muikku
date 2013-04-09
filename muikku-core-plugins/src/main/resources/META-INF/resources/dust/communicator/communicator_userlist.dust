@@ -1,0 +1,7 @@
+{#.}
+  <div class="userSearchAutoCompleteUser">
+    <input type="hidden" name="userId" value="{id}" />
+    <input type="hidden" name="userName" value="{fullName}" />
+    {fullName}
+  </div>
+{/.}

@@ -8,7 +8,7 @@ CoursePickerController = Class.create(WidgetController, {
     this._widgetElement = widgetElement;
     this._environmentId = widgetElement.down("input[name='environmentId']").value;
     this._userId = widgetElement.down("input[name='userId']").value;
-    this._allCoursesContainer = $('allCoursesList'); // widgetElement.down(".wallEntries");
+    this._allCoursesContainer = $('allCoursesList');
     this._myCoursesContainer = $('myCoursesList');
     
     this._initializeAllCoursesList();
