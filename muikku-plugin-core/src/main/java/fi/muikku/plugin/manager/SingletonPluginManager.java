@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.ServiceLoader;
 import java.util.logging.Logger;
 
+import org.apache.maven.repository.internal.ArtifactDescriptorUtils;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.graph.Dependency;
 import org.sonatype.aether.repository.RemoteRepository;
@@ -41,33 +42,75 @@ public class SingletonPluginManager {
     return INSTANCE;
   }
 
-  public static final synchronized SingletonPluginManager initialize(ClassLoader parentClassLoader, String pluginDirectory, List<RemoteRepository> repositories) throws PluginManagerException {
-    return initialize(parentClassLoader, pluginDirectory, repositories, null);
+  public static final synchronized SingletonPluginManager initialize(ClassLoader parentClassLoader, String pluginDirectory, Artifact applicationArtifact, List<RemoteRepository> repositories) throws PluginManagerException {
+    return initialize(parentClassLoader, pluginDirectory, applicationArtifact, repositories, null);
   }
   
-  /** Initializes the plugin manager. Call this before any other methods.
+  /**
+   * Initializes the plugin manager. Call this before any other methods.
    * 
    * @param parentClassLoader The parent class loader of the plugin manager.
+   * @param pluginDirectory local plugin Maven repository path
+   * @param applicationArtifact application's artifact. Used for reading application provided artifacts (may be null)
    * @param repositories The URL:s of the repositories containing the plugins.
    * @param eclipseWorkspace location of Eclipse workspace. This parameter is used for development purposes only.
    * @return The plugin manager instance.
    * @throws PluginManagerException when plugin manager is already initialized
    */
-  public static final synchronized SingletonPluginManager initialize(ClassLoader parentClassLoader, String pluginDirectory, List<RemoteRepository> repositories, String eclipseWorkspace) throws PluginManagerException {
+  public static final synchronized SingletonPluginManager initialize(ClassLoader parentClassLoader, String pluginDirectory, Artifact applicationArtifact, List<RemoteRepository> repositories, String eclipseWorkspace) throws PluginManagerException {
     if (INSTANCE != null)
       throw new PluginManagerException("Plugin manger is already initialized");
       
-    INSTANCE = new SingletonPluginManager(parentClassLoader, pluginDirectory, repositories, eclipseWorkspace);
+    INSTANCE = new SingletonPluginManager(parentClassLoader, pluginDirectory, applicationArtifact, repositories, eclipseWorkspace);
     
     return INSTANCE;
   }
 
-  SingletonPluginManager(ClassLoader parentClassLoader, String pluginDirectory, List<RemoteRepository> repositories, String eclipseWorkspace) throws PluginManagerException {
+  SingletonPluginManager(ClassLoader parentClassLoader, String pluginDirectory, Artifact applicationArtifact, List<RemoteRepository> repositories, String eclipseWorkspace) throws PluginManagerException {
     this.libraryLoader = new LibraryLoader(parentClassLoader);
     mavenClient = new MavenClient(getPluginDirectory(pluginDirectory), eclipseWorkspace);
     for (RemoteRepository repository : repositories) {
       mavenClient.addRepository(repository);
     }
+    
+    if (applicationArtifact != null) {
+      // Application artifact is used for detecting artifacts that are already provided by 
+      // main application and should not be loaded by plugins
+    	
+  		addProvidedArtifact(applicationArtifact, null);
+    }
+  }
+
+  private void addProvidedArtifact(Artifact artifact, List<RemoteRepository> remoteRepositories) throws PluginManagerException {
+  	artifact = ArtifactDescriptorUtils.toPomArtifact(artifact);
+  	
+  	processedArtifacts.add(getArtifactId(artifact));
+  	
+  	ArtifactDescriptorResult descriptorResult = null;
+
+  	try {
+  	  if (remoteRepositories == null) {
+				descriptorResult = mavenClient.describeArtifact(artifact);
+  	  } else {
+  	  	descriptorResult = mavenClient.describeArtifact(artifact, remoteRepositories);
+  	  }
+		} catch (ArtifactResolutionException | ArtifactDescriptorException | VersionResolutionException e) {
+			logger.warning("Resolution of application provided artifact '" + artifact.toString() + "' failed");
+		}
+  	
+  	if (descriptorResult != null) {
+    	List<Dependency> dependencies = new ArrayList<>();
+    	
+    	for (Dependency dependency : descriptorResult.getDependencies()) {
+    		if (!processedArtifacts.contains(getArtifactId(dependency.getArtifact()))) {
+        	dependencies.add(dependency);
+    		}
+      }
+  
+    	for (Dependency dependency : dependencies) {
+  			addProvidedArtifact(dependency.getArtifact(), descriptorResult.getRepositories());
+    	}
+  	}
   }
 
   /** Adds a repository to fetch plugins from.
@@ -129,7 +172,13 @@ public class SingletonPluginManager {
 		}
   }
   
+  private String getArtifactId(Artifact artifact) {
+  	return artifact.getGroupId() + "-" + artifact.getArtifactId();
+  }
+  
   private void loadArtifact(Artifact artifact, List<RemoteRepository> remoteRepositories) throws PluginManagerException, ArtifactResolutionException, ArtifactDescriptorException, VersionResolutionException {
+  	processedArtifacts.add(getArtifactId(artifact));
+  	
   	ArtifactDescriptorResult descriptorResult;
   	
   	if (remoteRepositories == null) {
@@ -138,14 +187,24 @@ public class SingletonPluginManager {
   		descriptorResult = mavenClient.describeArtifact(artifact, remoteRepositories);
   	}
   	
+  	List<Dependency> dependencies = new ArrayList<>();
+  	
   	for (Dependency dependency : descriptorResult.getDependencies()) {
       if ("compile".equals(dependency.getScope())) {
-    	  loadArtifact(dependency.getArtifact(), descriptorResult.getRepositories());
+      	dependencies.add(dependency);
+      } else {
+      	logger.info("Marking " + getArtifactId(dependency.getArtifact()) + " as processed because it's scope is " + dependency.getScope());
+      	processedArtifacts.add(getArtifactId(dependency.getArtifact()));
       }
     }
 
+  	for (Dependency dependency : dependencies) {
+  		if (!processedArtifacts.contains(getArtifactId(dependency.getArtifact()))) {
+	      loadArtifact(dependency.getArtifact(), descriptorResult.getRepositories());
+  		}
+  	}
+  	
   	File artifactFile = mavenClient.getArtifactJarFile(descriptorResult.getArtifact());
-  	 
   	if (artifactFile.isDirectory()) {
       logger.info("Loading " + artifact.getGroupId() + "." + artifact.getArtifactId() + ":" + artifact.getVersion() + " plugin folder: " + artifactFile);
 			try {
@@ -198,6 +257,7 @@ public class SingletonPluginManager {
     return libraryLoader.getPluginsClassLoader();
   }
   
+  private List<String> processedArtifacts = new ArrayList<>();
   private LibraryLoader libraryLoader;
   private MavenClient mavenClient;
 }

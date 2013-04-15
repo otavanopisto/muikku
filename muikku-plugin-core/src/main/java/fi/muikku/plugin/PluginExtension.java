@@ -21,11 +21,10 @@ import javax.interceptor.Interceptors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.core.util.metadata.AnnotationInstanceProvider;
 import org.apache.deltaspike.core.util.metadata.builder.AnnotatedTypeBuilder;
+import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.repository.RemoteRepository;
+import org.sonatype.aether.util.artifact.DefaultArtifact;
 
-import fi.muikku.plugin.PluginDescriptor;
-import fi.muikku.plugin.PluginLibraryDescriptor;
-import fi.muikku.plugin.RESTPluginDescriptor;
 import fi.muikku.plugin.manager.PluginLibraryLoadInfo;
 import fi.muikku.plugin.manager.PluginManagerException;
 import fi.muikku.plugin.manager.SingletonPluginManager;
@@ -38,6 +37,9 @@ public class PluginExtension implements Extension {
 		List<RemoteRepository> repositories = new ArrayList<>();
     List<PluginLibraryLoadInfo> pluginLoadInfos = new ArrayList<>();
     
+    String coreVersion = getClass().getPackage().getImplementationVersion();
+    Artifact applicationArtifact = new DefaultArtifact("fi.muikku", "muikku", "pom", coreVersion);
+
     // TODO unhardcode :P
     
     repositories.add(new RemoteRepository("central", "default", "http://repo.maven.apache.org/maven2"));
@@ -49,7 +51,7 @@ public class PluginExtension implements Extension {
     
     SingletonPluginManager pluginManager;
 		try {
-			pluginManager = SingletonPluginManager.initialize(getClass().getClassLoader(), getPluginsFolder(), repositories, eclipseWorkspace);
+			pluginManager = SingletonPluginManager.initialize(getClass().getClassLoader(), getPluginsFolder(), applicationArtifact, repositories, eclipseWorkspace);
 		} catch (PluginManagerException e1) {
 			throw new ExceptionInInitializerError(e1);
 		}
