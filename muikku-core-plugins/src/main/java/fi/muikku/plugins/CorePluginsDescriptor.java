@@ -15,6 +15,7 @@ import fi.muikku.plugin.TranquilEntityLookup;
 import fi.muikku.plugin.TranquilEntityLookups;
 import fi.muikku.plugin.TranquilEntityLookupsImpl;
 import fi.muikku.plugins.calendar.CalendarPluginDescriptor;
+import fi.muikku.plugins.communicator.CommunicatorPluginDescriptor;
 import fi.muikku.plugins.fish.FishPluginDescriptor;
 import fi.muikku.plugins.internallogin.InternalLoginPluginDescriptor;
 
@@ -33,7 +34,8 @@ public class CorePluginsDescriptor implements PluginLibraryDescriptor {
 		return new ArrayList<Class<? extends PluginDescriptor>>(Arrays.asList(
 		  CalendarPluginDescriptor.class,
 		  FishPluginDescriptor.class,
-		  InternalLoginPluginDescriptor.class
+		  InternalLoginPluginDescriptor.class,
+		  CommunicatorPluginDescriptor.class
 		));
 	}
 	

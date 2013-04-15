@@ -1,0 +1,44 @@
+<div class="communicatorNewMessage">
+  <form>
+    <input type="hidden" name="communicatorMessageId" value="{communicatorMessageId}" />
+  
+    <div>
+      <input type="button" name="send" value="Lähetä"/>
+      <input type="button" name="save" value="Tallenna"/>
+      <select>
+        <option value="">Viestipohjat</option>
+      </select>
+      <select>
+        <option value="">Allekirjoitus</option>
+      </select>
+      <input type="button" name="cancel" value="Poista"/>
+    </div>
+    <div>
+      Vastaanottajat
+      <select>
+        <option value=""></option>
+        <option value="opiskelijat">Opiskelijat</option>
+        <option value="opettajat">Opettajat</option>
+      </select>
+      <div class="recipientsList">
+        {#recipients}
+          {>"communicator/communicator_messagerecipient.dust"/}
+        {/recipients}
+      </div>
+      <input type="text" name="userInput"/>
+      <div class="recipientSelector">
+      </div>
+    </div>
+
+    <div>
+      Aihe <input type="text" name="subject" value="Re: {subject}"/>
+    </div>
+
+    <div>
+      <textarea name="content">
+        {content}
+      </textarea>
+    </div>
+  </form>
+
+</div>
