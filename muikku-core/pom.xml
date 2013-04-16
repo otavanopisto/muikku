@@ -88,7 +88,7 @@
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.1</version>
+        <version>3.0</version>
         <configuration>
           <source>${maven.compiler.source}</source>
           <target>${maven.compiler.target}</target>
@@ -154,7 +154,7 @@
             <phase>generate-sources</phase>
             <configuration>
               <includes>
-                <include>**fi/muikku/schooldata/local/**/*.java</include>
+                <include>**fi/muikku/schooldata/**/*.java</include>
               </includes>
               <outputDirectory>${basedir}/src/main/.tranquilmodel</outputDirectory>
               <processors>

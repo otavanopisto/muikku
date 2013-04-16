@@ -33,12 +33,16 @@ public class ResourceRightsController {
   private ResourceRightsDAO resourceRightsDAO;
   
 
-  public ResourceRights getResourceRightsById(Long id) {
+  public ResourceRights findResourceRightsById(Long id) {
     return resourceRightsDAO.findById(id);
   }
   
   public List<Permission> listResourcePermissions() {
     return permissionDAO.listByScope(PermissionScope.RESOURCE);
+  }
+  
+  public ResourceRights create() {
+    return resourceRightsDAO.create();
   }
   
   public boolean hasResourceRolePermission(ResourceRights resourceRights, UserRole userRole, Permission permission) {

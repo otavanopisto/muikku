@@ -1,6 +1,5 @@
 package fi.muikku.controller;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateful;
@@ -14,10 +13,6 @@ import fi.muikku.dao.courses.CourseEntityDAO;
 import fi.muikku.dao.courses.CourseSettingsDAO;
 import fi.muikku.dao.courses.CourseSettingsTemplateDAO;
 import fi.muikku.dao.courses.CourseUserDAO;
-import fi.muikku.dao.wall.CourseWallDAO;
-import fi.muikku.dao.wall.WallEntryDAO;
-import fi.muikku.dao.wall.WallEntryTextItemDAO;
-import fi.muikku.dao.wall.subscription.UserWallSubscriptionDAO;
 import fi.muikku.model.base.Environment;
 import fi.muikku.model.base.EnvironmentDefaults;
 import fi.muikku.model.base.SchoolDataSource;
@@ -26,9 +21,6 @@ import fi.muikku.model.courses.CourseSettingsTemplate;
 import fi.muikku.model.courses.CourseUserRole;
 import fi.muikku.model.stub.courses.CourseEntity;
 import fi.muikku.model.stub.users.UserEntity;
-import fi.muikku.model.wall.CourseWall;
-import fi.muikku.model.wall.WallEntry;
-import fi.muikku.model.wall.WallEntryVisibility;
 import fi.muikku.schooldata.CourseSchoolDataController;
 import fi.muikku.schooldata.entity.Course;
 import fi.muikku.security.LoggedIn;
@@ -66,18 +58,6 @@ public class CourseController {
   @Inject
   private CourseUserDAO courseUserDAO;
 
-  @Inject
-  private CourseWallDAO courseWallDAO;
-
-  @Inject
-  private WallEntryDAO wallEntryDAO;
-
-  @Inject
-  private WallEntryTextItemDAO wallEntryTextItemDAO;
-
-  @Inject
-  private UserWallSubscriptionDAO userWallLinkDAO;
-
   @LoggedIn
   @Permit(MuikkuPermissions.CREATE_COURSE)
   public void createCourse(@PermitContext Environment environment, String name) {
@@ -90,17 +70,18 @@ public class CourseController {
 
     CourseEntity courseEntity = courseEntityDAO.create(dataSource, false);
 
-    Course course = courseSchoolDataController.createCourse(courseEntity, name, creator);
+    courseSchoolDataController.createCourse(courseEntity, name, creator);
     courseSettingsDAO.create(courseEntity, template.getDefaultCourseUserRole());
     courseUserDAO.create(creator, courseEntity, defaults.getDefaultCourseCreatorRole());
 
-    CourseWall courseWall = courseWallDAO.create(courseEntity);
-
-    WallEntry wallEntry = wallEntryDAO.create(courseWall, WallEntryVisibility.PUBLIC, creator);
-
-    wallEntryTextItemDAO.create(wallEntry, "Course " + course.getName() + " created " + new Date().toString(), creator);
-
-    userWallLinkDAO.create(creator, courseWall);
+    // TODO: internal messaging
+//    CourseWall courseWall = courseWallDAO.create(courseEntity);
+//
+//    WallEntry wallEntry = wallEntryDAO.create(courseWall, WallEntryVisibility.PUBLIC, creator);
+//
+//    wallEntryTextItemDAO.create(wallEntry, "Course " + course.getName() + " created " + new Date().toString(), creator);
+//
+//    userWallLinkDAO.create(creator, courseWall);
   }
 
   @Permit(MuikkuPermissions.LIST_COURSES)
@@ -129,10 +110,12 @@ public class CourseController {
 
     CourseSettings courseSettings = courseSettingsDAO.findByCourse(courseEntity);
     CourseUserRole courseUserRole = courseSettings.getDefaultCourseUserRole();
-    CourseWall courseWall = courseWallDAO.findByCourse(courseEntity);
+    
+    // TODO: Internal messaging
+//    CourseWall courseWall = courseWallDAO.findByCourse(courseEntity);
 
     courseUserDAO.create(loggedUser, courseEntity, courseUserRole);
-    userWallLinkDAO.create(loggedUser, courseWall);
+//    userWallLinkDAO.create(loggedUser, courseWall);
   }
 
   public boolean isUserOnCourse(CourseEntity course) {

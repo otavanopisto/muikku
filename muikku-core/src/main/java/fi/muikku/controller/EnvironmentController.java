@@ -14,6 +14,10 @@ public class EnvironmentController {
   @Inject
   private EnvironmentDAO environmentDAO;
   
+  public Environment findEnvironmentById(Long id) {
+    return environmentDAO.findById(id);
+  }
+  
   public List<Environment> listEnvironments() {
   	return environmentDAO.listAll();
   }
