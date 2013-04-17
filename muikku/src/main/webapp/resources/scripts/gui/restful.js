@@ -66,38 +66,43 @@ RESTfulImpl = $.klass({
   },
   **/
   _doRequest: function(endPoint, method, options) {
-    var pathParams = this._getPathParams(endPoint);
-    var parameters = (options && options.parameters)||{};
-        
-    // Process parameters
-    parameters = this._processParameters(parameters);
-    
-    // Replace path parameters in path with values
-    var path = this._replacePathParams(endPoint, parameters);
-
-    // Remove path parametrs and undefined parameters from the request
-    for (var name in parameters) {
-      preserve = false;
+    if (options && options.data) {
+      var data = (typeof options.data) != 'string' ? JSON.stringify(options.data) : options.data;
+      return this._sendDataRequest(endPoint, method, data, options);
+    } else {
+      var pathParams = this._getPathParams(endPoint);
+      var parameters = (options && options.parameters)||{};
+          
+      // Process parameters
+      parameters = this._processParameters(parameters);
       
-      if ((typeof name) == 'string') {
-        var value = parameters[name];
-        if ((value  === undefined)||(value === null)||(value === '')) {
-          preserve = false;
-        } else {
-          if (pathParams[name]) {
+      // Replace path parameters in path with values
+      var path = this._replacePathParams(endPoint, parameters);
+  
+      // Remove path parametrs and undefined parameters from the request
+      for (var name in parameters) {
+        preserve = false;
+        
+        if ((typeof name) == 'string') {
+          var value = parameters[name];
+          if ((value  === undefined)||(value === null)||(value === '')) {
             preserve = false;
           } else {
-            preserve = true;
+            if (pathParams[name]) {
+              preserve = false;
+            } else {
+              preserve = true;
+            }
           }
+        } 
+        
+        if (preserve == false) {
+          delete parameters[name];
         }
-      } 
-      
-      if (preserve == false) {
-        delete parameters[name];
       }
+     
+      return this._sendRequest(path, method, parameters, options);
     }
-   
-    return this._sendRequest(path, method, parameters, options);
   },
   _doFormRequest: function(form, method, options) {
     var endPoint = this._getFormEndPoint(form);
@@ -150,6 +155,19 @@ RESTfulImpl = $.klass({
       },
       type: method,
       data: params
+    });
+  },
+  _sendDataRequest: function (url, method, data, options) {
+    // TODO: implement load message
+    
+    return $.ajax(url, {
+      async: false,
+      dataType: 'json',
+      accepts: {
+        'json' : 'application/json'
+      },
+      type: method,
+      data: data
     });
   },
   _getPathParams: function (endPoint) {
