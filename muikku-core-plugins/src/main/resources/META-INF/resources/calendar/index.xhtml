@@ -5,6 +5,12 @@
     xmlns:h="http://java.sun.com/jsf/html"
     template="/WEB-INF/templates/default.xhtml">
 
+  <ui:define name="contentToolsTop">
+    <ui:include src="/core/widget-space.xhtml">
+      <ui:param name="location" value="calendar.contentToolsTop" />
+    </ui:include>
+  </ui:define>
+
   <ui:define name="content">
     <ui:include src="/core/widget-space.xhtml">
       <ui:param name="location" value="calendar.content" />

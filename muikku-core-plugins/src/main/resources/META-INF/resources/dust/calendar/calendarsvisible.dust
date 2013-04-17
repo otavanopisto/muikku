@@ -1,0 +1,14 @@
+<div class="visibleCalendars">
+  {#calendars}
+    <div class="visibleCalendarContainer">
+      {?visible}
+        <input type="checkbox" checked="checked" data-calendar-id="{id}"/>
+      {:else}
+        <input type="checkbox" data-calendar-id="{id}"/>
+      {/visible}
+      
+      <label>{name}</label>
+    </div>
+  {/calendars}
+
+</div>
