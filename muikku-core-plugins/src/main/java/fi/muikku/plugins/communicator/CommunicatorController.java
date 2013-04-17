@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -36,7 +34,6 @@ import fi.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.muikku.schooldata.CourseSchoolDataController;
 import fi.muikku.schooldata.UserSchoolDataController;
 import fi.muikku.session.SessionController;
-import fi.tranquil.Tranquility;
 
 @Dependent
 @Stateful
