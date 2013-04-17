@@ -5,10 +5,6 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.context.RequestScoped;
-
-
-@RequestScoped
 public class AbstractPermissionCollection {
 
   protected List<String> listPermissions(Class<?> collectionClass) {

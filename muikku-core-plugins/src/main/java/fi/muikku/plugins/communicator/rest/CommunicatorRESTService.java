@@ -15,7 +15,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-import fi.muikku.controller.ForumController;
 import fi.muikku.controller.UserController;
 import fi.muikku.model.stub.users.UserEntity;
 import fi.muikku.plugin.PluginRESTService;
@@ -23,6 +22,7 @@ import fi.muikku.plugins.communicator.CommunicatorController;
 import fi.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
+import fi.muikku.plugins.forum.ForumController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.security.AuthorizationException;
 import fi.muikku.session.SessionController;
@@ -61,7 +61,6 @@ public class CommunicatorRESTService extends PluginRESTService {
   public Response listUserCommunicatorItems( 
       @PathParam ("USERID") Long userId) {
     UserEntity user = userController.findUserEntity(userId); 
-    System.out.println(Thread.currentThread().getContextClassLoader().toString());
     List<CommunicatorMessage> receivedItems = communicatorController.listReceivedItems(user);
 
     TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
