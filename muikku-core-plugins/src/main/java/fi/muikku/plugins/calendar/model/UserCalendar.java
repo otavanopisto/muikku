@@ -30,6 +30,14 @@ public class UserCalendar {
 		this.environmentId = environmentId;
 	}
 	
+	public Boolean getVisible() {
+		return visible;
+	}
+	
+	public void setVisible(Boolean visible) {
+		this.visible = visible;
+	}
+	
 	public Calendar getCalendar() {
 		return calendar;
 	}
@@ -50,6 +58,9 @@ public class UserCalendar {
   @Column (name = "user_id")
 	private Long userId;
 	
+  @Column (nullable = false)
+  private Boolean visible;
+  
   @ManyToOne
   private Calendar calendar;
 }
