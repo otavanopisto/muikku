@@ -21,10 +21,10 @@ import javax.interceptor.Interceptors;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.core.util.metadata.AnnotationInstanceProvider;
 import org.apache.deltaspike.core.util.metadata.builder.AnnotatedTypeBuilder;
+import org.sonatype.aether.artifact.Artifact;
+import org.sonatype.aether.repository.RemoteRepository;
+import org.sonatype.aether.util.artifact.DefaultArtifact;
 
-import fi.muikku.plugin.PluginDescriptor;
-import fi.muikku.plugin.PluginLibraryDescriptor;
-import fi.muikku.plugin.RESTPluginDescriptor;
 import fi.muikku.plugin.manager.PluginLibraryLoadInfo;
 import fi.muikku.plugin.manager.PluginManagerException;
 import fi.muikku.plugin.manager.SingletonPluginManager;
@@ -34,21 +34,24 @@ public class PluginExtension implements Extension {
 	private Logger logger = Logger.getLogger(PluginExtension.class.getName());
 	
 	void beforeBeanDiscovery(@Observes BeforeBeanDiscovery beforeBeanDiscovery, BeanManager beanManager) {
-		List<String> repositoryUrls = new ArrayList<>();
+		List<RemoteRepository> repositories = new ArrayList<>();
     List<PluginLibraryLoadInfo> pluginLoadInfos = new ArrayList<>();
     
+    String coreVersion = getClass().getPackage().getImplementationVersion();
+    Artifact applicationArtifact = new DefaultArtifact("fi.muikku", "muikku", "pom", coreVersion);
+
     // TODO unhardcode :P
     
-    repositoryUrls.add("http://repo.maven.apache.org/maven2");
-    repositoryUrls.add("http://maven.otavanopisto.fi:7070/nexus/content/repositories/snapshots");
-    repositoryUrls.add("http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases");
+    repositories.add(new RemoteRepository("central", "default", "http://repo.maven.apache.org/maven2"));
+    repositories.add(new RemoteRepository("otavanopisto-snapshots", "default", "http://maven.otavanopisto.fi:7070/nexus/content/repositories/snapshots"));
+    repositories.add(new RemoteRepository("otavanopisto-releases", "default", "http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases"));
     
     pluginLoadInfos.add(new PluginLibraryLoadInfo("fi.muikku", "core-plugins", "1.0.0-SNAPSHOT"));
     String eclipseWorkspace = System.getProperty("eclipse.workspace");
     
     SingletonPluginManager pluginManager;
 		try {
-			pluginManager = SingletonPluginManager.initialize(getClass().getClassLoader(), getPluginsFolder(), repositoryUrls, eclipseWorkspace);
+			pluginManager = SingletonPluginManager.initialize(getClass().getClassLoader(), getPluginsFolder(), applicationArtifact, repositories, eclipseWorkspace);
 		} catch (PluginManagerException e1) {
 			throw new ExceptionInInitializerError(e1);
 		}

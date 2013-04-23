@@ -87,17 +87,21 @@ RESTfulImpl = $.klass({
           if (pathParams[name]) {
             preserve = false;
           } else {
-            preserve = true;
+            if (pathParams[name]) {
+              preserve = false;
+            } else {
+              preserve = true;
+            }
           }
+        } 
+        
+        if (preserve == false) {
+          delete parameters[name];
         }
-      } 
-      
-      if (preserve == false) {
-        delete parameters[name];
       }
+     
+      return this._sendRequest(path, method, parameters, options);
     }
-   
-    return this._sendRequest(path, method, parameters, options);
   },
   _doFormRequest: function(form, method, options) {
     var endPoint = this._getFormEndPoint(form);
@@ -144,12 +148,26 @@ RESTfulImpl = $.klass({
     
     return $.ajax(url, {
       async: false,
+      traditional: true,
       dataType: 'json',
       accepts: {
         'json' : 'application/json'
       },
       type: method,
       data: params
+    });
+  },
+  _sendDataRequest: function (url, method, data, options) {
+    // TODO: implement load message
+    
+    return $.ajax(url, {
+      async: false,
+      dataType: 'json',
+      accepts: {
+        'json' : 'application/json'
+      },
+      type: method,
+      data: data
     });
   },
   _getPathParams: function (endPoint) {

@@ -1,0 +1,31 @@
+<div class="calendarSettings">
+
+  <div class="calendarSettingsWeekFirstDayContainer">
+    <h3>First Day of the Week</h3>
+    <select name="firstDay">
+      {@if cond="{firstDay} == '0'"}
+        <option value="0" selected="selected">Sunday</option>
+      {:else}
+        <option value="0">Sunday</option>
+      {/if}
+      
+      {@if cond="{firstDay} == '1'"}
+        <option value="1" selected="selected">Monday</option>
+      {:else}
+        <option value="1">Monday</option>
+      {/if}
+    </select>
+  </div> 
+
+  <div class="calendarSettingsSubscribeCalendarContainer">
+    <button class="calendarSettingsShowSubscribeCalendarButton">Subscribe External Calendar</button>  
+    
+    <div class="calendarSettingsSubscribeCalendarOptionsContainer" style="display: none">
+      <label>Enter the iCal URL to the External Calendar</label>
+      <input class="calendarSettingsSubscribeUrl calendarSettingsSubscribeUrlEmpty" type="text" value=""/>
+      <button class="calendarSettingsSubscribeCalendarButton">Subscribe</button>  
+    </div>
+    
+  </div>
+
+</div>

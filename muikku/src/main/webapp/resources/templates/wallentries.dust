@@ -1,9 +1,0 @@
-{#.}
-  {@if cond="'{type}' == 'ENTRY'"}
-    {>"wallentry.dust"/}
-  {/if}
-    
-  {@if cond="'{type}' == 'FORUMTHREAD'"}
-    {>"threadwallentry.dust"/}
-  {/if}
-{/.}

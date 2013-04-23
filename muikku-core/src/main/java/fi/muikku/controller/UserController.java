@@ -3,7 +3,9 @@ package fi.muikku.controller;
 import java.util.List;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import fi.muikku.dao.base.EnvironmentDefaultsDAO;
 import fi.muikku.dao.security.UserPasswordDAO;
@@ -12,11 +14,6 @@ import fi.muikku.dao.users.EnvironmentUserRoleDAO;
 import fi.muikku.dao.users.UserContactDAO;
 import fi.muikku.dao.users.UserEntityDAO;
 import fi.muikku.dao.users.UserPictureDAO;
-import fi.muikku.dao.wall.EnvironmentWallDAO;
-import fi.muikku.dao.wall.UserWallDAO;
-import fi.muikku.dao.wall.WallEntryDAO;
-import fi.muikku.dao.wall.WallEntryTextItemDAO;
-import fi.muikku.dao.wall.subscription.UserWallSubscriptionDAO;
 import fi.muikku.model.base.Environment;
 import fi.muikku.model.base.EnvironmentDefaults;
 import fi.muikku.model.base.SchoolDataSource;
@@ -24,10 +21,6 @@ import fi.muikku.model.stub.users.UserEntity;
 import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.EnvironmentUserRole;
 import fi.muikku.model.users.UserContact;
-import fi.muikku.model.wall.EnvironmentWall;
-import fi.muikku.model.wall.UserWall;
-import fi.muikku.model.wall.WallEntry;
-import fi.muikku.model.wall.WallEntryVisibility;
 import fi.muikku.schooldata.UserSchoolDataController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.security.MuikkuPermissions;
@@ -36,20 +29,23 @@ import fi.muikku.security.PermitContext;
 import fi.muikku.session.SessionController;
 import fi.muikku.utils.RequestUtils;
 
-@Dependent
+// TODO: Clean this bean
+//@Dependent
+@RequestScoped
+@Named("User")
 public class UserController {
 
   @Inject
   private UserPasswordDAO userPasswordDAO;
   
-  @Inject
-  private UserWallDAO userWallDAO;
-
-  @Inject
-  private UserWallSubscriptionDAO userWallLinkDAO; 
-  
-  @Inject
-  private EnvironmentWallDAO environmentWallDAO;
+//  @Inject
+//  private UserWallDAO userWallDAO;
+//
+//  @Inject
+//  private UserWallSubscriptionDAO userWallLinkDAO; 
+//  
+//  @Inject
+//  private EnvironmentWallDAO environmentWallDAO;
   
   @Inject
   private EnvironmentUserDAO environmentUserDAO;
@@ -57,8 +53,8 @@ public class UserController {
   @Inject
   private EnvironmentUserRoleDAO environmentUserRoleDAO;
   
-  @Inject
-  private WallEntryTextItemDAO wallTextEntryDAO;
+//  @Inject
+//  private WallEntryTextItemDAO wallTextEntryDAO;
 
   @Inject
   private SessionController sessionController;
@@ -78,11 +74,11 @@ public class UserController {
   @Inject
   private UserEntityDAO userEntityDAO;
 
-  @Inject
-  private WallEntryDAO wallEntryDAO;
-
-  @Inject
-  private WallEntryTextItemDAO wallEntryTextItemDAO;
+//  @Inject
+//  private WallEntryDAO wallEntryDAO;
+//
+//  @Inject
+//  private WallEntryTextItemDAO wallEntryTextItemDAO;
   
   public User getUser(Long userId) {
     UserEntity userEntity = userEntityDAO.findById(userId);
@@ -130,16 +126,18 @@ public class UserController {
     /**
      * Create User Wall
      */
-    UserWall userWall = userWallDAO.create(userEntity);
-
-    WallEntry wallEntry = wallEntryDAO.create(userWall, WallEntryVisibility.PRIVATE, userEntity);
-    wallEntryTextItemDAO.create(wallEntry, "Joined Muikku", userEntity);
+    
+    // TODO: Internal messaging
+//    UserWall userWall = userWallDAO.create(userEntity);
+//
+//    WallEntry wallEntry = wallEntryDAO.create(userWall, WallEntryVisibility.PRIVATE, userEntity);
+//    wallEntryTextItemDAO.create(wallEntry, "Joined Muikku", userEntity);
 
     /**
      * Link Environment wall
      */
-    EnvironmentWall environmentWall = environmentWallDAO.findByEnvironment(environment);
-    userWallLinkDAO.create(userEntity, environmentWall);
+//    EnvironmentWall environmentWall = environmentWallDAO.findByEnvironment(environment);
+//    userWallLinkDAO.create(userEntity, environmentWall);
   }
 
   @Permit (MuikkuPermissions.MANAGE_USERS) // TODO: ???

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    template="/WEB-INF/templates/default.xhtml">
+    
+  <ui:define name="content">
+    <h:outputScript name="scripts/gui/coursepicker.js" target="head" />
+    
+    <div class="widget coursePicker">
+      <input type="hidden" name="environmentId" value="#{muikkuSession.environment.id}"/>
+      <input type="hidden" name="userId" value="#{muikkuSession.user.id}"/>
+    
+      <div class="coursePickerTabs">
+        <ul>
+          <li>
+            <a href="#all">#{msg["coursePicker.allCoursesTab"]}</a>
+          </li>
+          <ui:fragment rendered="#{muikkuSession.loggedIn}">
+            <li>
+              <a href="#my">#{msg["coursePicker.myCoursesTab"]}</a>
+            </li>
+            <li>
+              <a href="#plp">#{msg["coursePicker.personalLearningPlanTab"]}</a>
+            </li>
+          </ui:fragment>
+        </ul>
+
+        <div id="all" class="tabContent">
+          <div class="coursePickerAllCoursesFilterPane">
+            <input type="text" name="coursePickerSearch"/> <a href="#">-o</a>
+            <input type="button" name="coursePickerAllCoursesFilterBtn" value="Rajaa"/>
+            <div class="coursePickerFilterListPane">
+              <div class="coursePickerFilter">Filtteri1</div>
+              <div class="coursePickerFilter">Filtteri2</div>
+            </div>
+          </div>
+
+          <div id="allCoursesList">
+            All
+          </div>
+        </div>
+
+        <ui:fragment rendered="#{muikkuSession.loggedIn}">
+          <div id="my" class="tabContent">
+            <div class="coursePickerMyCoursesFilterPane">
+              <input type="text" name="coursePickerSearch"/> <a href="#">-o</a>
+              <input type="button" name="coursePickerMyCoursesFilterBtn" value="Rajaa"/>
+              <div class="coursePickerFilterListPane">
+                <input type="checkbox" name="" /> Filtteri1
+                <input type="checkbox" name="" /> Filtteri2
+              </div>
+            </div>
+
+            <div id="myCoursesList">
+              My
+            </div>
+          </div>        
+          <div id="plp" class="tabContent">
+            <div id="plpCoursesList">
+              Plp
+            </div>
+          </div>        
+        </ui:fragment>
+      </div>
+    </div>
+  </ui:define>
+
+</ui:composition>

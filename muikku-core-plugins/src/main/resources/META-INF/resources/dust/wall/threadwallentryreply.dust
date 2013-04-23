@@ -1,0 +1,16 @@
+<div class="wallEntryComment">
+  {?creator.hasPicture} 
+    <img class="wallEntryUserPicture" src="{@contextPath/}/picture?userId={creator.id}" width="50" height="50" />
+  {:else}
+    <img class="wallEntryUserPicture" src="{@contextPath/}/themes/default/gfx/fish.jpg" width="50" height="50" />
+  {/creator.hasPicture}  
+
+  <div class="wallEntryCommentTitle">
+    <a class="wallEntryCommentCreator" href="{@contextPath/}/user.jsf?userId={creator.id}">{creator.fullName}</a>
+    <span class="wallEntryCommentDate">{created|formatDate}</span>
+  </div>
+
+  <div class="wallEntryCommentContent">
+    <div class="wallEntryCommentItem">{message}</div>
+  </div>
+</div>

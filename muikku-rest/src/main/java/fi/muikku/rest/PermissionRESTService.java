@@ -201,7 +201,7 @@ public class PermissionRESTService extends AbstractRESTService {
 
     UserRole userRole = userRoleDAO.findById(userRoleId);
     Permission permission = permissionDAO.findById(permissionId);
-    ResourceRights resourceRights = resourceRightsController.getResourceRightsById(resourceRightsId);
+    ResourceRights resourceRights = resourceRightsController.findResourceRightsById(resourceRightsId);
 
     if ((userRole == null) || (permission == null)) {
       return Response.status(Response.Status.NOT_FOUND).build();
@@ -230,7 +230,7 @@ public class PermissionRESTService extends AbstractRESTService {
 
     UserRole userRole = userRoleDAO.findById(userRoleId);
     Permission permission = permissionDAO.findById(permissionId);
-    ResourceRights resourceRights = resourceRightsController.getResourceRightsById(resourceRightsId);
+    ResourceRights resourceRights = resourceRightsController.findResourceRightsById(resourceRightsId);
 
     if ((userRole == null) || (permission == null)) {
       return Response.status(Response.Status.NOT_FOUND).build();
