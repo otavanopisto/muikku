@@ -42,6 +42,15 @@
       
       <h:outputScript name="scripts/gui/jquery.extensions.js"/>    
       
+      <!--  jQuery waypoints  -->
+      
+      <h:outputScript name="scripts/waypoints/waypoints.min.js"/>          
+
+      <!--  jQuery scroll  -->
+      
+      <h:outputScript name="scripts/scroll/jquery.scroll.js"/>          
+      
+      
       <!-- Dust -->
       <h:outputScript name="scripts/dustjs/dust-full-1.1.1.js"/>
       <h:outputScript name="scripts/dustjs/dust-helpers-1.1.0.js"/>
@@ -52,6 +61,7 @@
       <!-- Widget Controller -->
 
       <h:outputScript name="scripts/gui/widgetcontroller.js"/>
+          
     </h:head>
     
     <h:body>
@@ -65,10 +75,12 @@
        </div>
       </div>
       <div id="staticNavigationFade">
-        <div id="staticNavigation" class="container_24">
+        <div id="staticNavigation" class="container_24 scrollblock">
 					<ui:include src="/core/widget-space.xhtml">
 						<ui:param name="location"
 							value="#{widgetSpaceBackingBean.environmentDockTop}" />
+					    <ui:param name="gridSize" value="8" />
+					
 						<ui:param name="sublocations"
 							value="#{widgetSpaceBackingBean.environmentDockTopSublocations}" />
 					</ui:include>
@@ -105,7 +117,10 @@
           <ui:param name="sublocations" value="#{widgetSpaceBackingBean.environmentFooterSublocations}"/>
         </ui:include>
       </div>
-    </h:body>
+      
+      
+
+	</h:body>
 
   </f:view>
 </html>
