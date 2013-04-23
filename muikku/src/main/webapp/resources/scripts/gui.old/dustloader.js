@@ -1,10 +1,15 @@
 dust.onLoad = function(name, callback) {
-  $.ajax(CONTEXTPATH + '/resources/templates/' + name, {
-    async: false,
-    type: method,
-    data: params
-  }).success(function (data, textStatus, jqXHR) {
-    callback(false, data);
+  new Ajax.Request(CONTEXTPATH + '/resources/templates/' + name, {
+    onSuccess : function(response) {
+      callback(false, response.responseText);
+    },
+    onFailure: function (response) {
+      var message = 'Could not find Dust template: ' + name;
+      
+      getNotificationQueue().addItem(new fi.internetix.s2nq.NotificationQueueItem(message, {
+        className: "notificationQueueCriticalItem"
+      }));
+    }
   });
 };
 

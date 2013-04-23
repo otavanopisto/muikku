@@ -21,13 +21,6 @@ body {
 
 
 
-#container {
-    background: #fff;
-    min-height: 800px; 
-    width:960px;
-    margin: 0 auto;
-
-}
 
 
  a.tooltip {
@@ -86,10 +79,9 @@ body {
   color: #fff;
 }
 
-#headerContentContainer{
-    width:960px;
-    height:150px;
-    margin:auto;
+
+.widgetSpace{
+	min-height:1px;
 }
 
 
@@ -99,22 +91,26 @@ body {
     text-decoration: none;
     font-size:24px;    
 }
+
  a.header {
     color:#fff; 
     text-decoration: none;
 }
 
+/* Navigation */
+
+.sticky-wrapper{
+  
+}
+
 #staticNavigationFade{
-    @include fadetoAlpha-top-bottom;	
+  @include fadetoAlpha-top-bottom;	
 	height:60px;
 }
 
 #staticNavigation{
+	  border:1px solid #000;
     height:50px;
-    width:960px;
-    margin:5px 0 5px 0;
-
-
 }
 
 #naviDockPrimary{
@@ -124,7 +120,6 @@ body {
     height:40px;
     border: 2px solid #ededed;
     border-radius: 10px;
-
 }
 
 #naviDockSecondary{
@@ -138,9 +133,17 @@ float:left;
     }
 
 
-.fixedNavigation{
+.stuck{
     position:fixed;
-    top:0;
+    top:0
+}
+
+.stuckStNav {
+    position:fixed;
+	top:0;
+	left:50%;
+	margin-left:-480px;
+	
 }
 
 
@@ -211,9 +214,11 @@ float:left;
 
 
 #content {
-
-
+    min-height: 800px; 
+    margin: 0 auto;
+    border:1px solid #000;
 }
+
 
 #dynNaviShell{
     z-index:1;
@@ -259,9 +264,7 @@ float:left;
 
 */
 
-.footer {
-  clear: both; 
-}
+
 
 #footer {
   clear: both; 

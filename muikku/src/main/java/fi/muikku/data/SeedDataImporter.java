@@ -29,6 +29,9 @@ import fi.muikku.model.users.SystemUserRoleType;
 import fi.muikku.model.users.UserContact;
 import fi.muikku.model.users.UserContactType;
 import fi.muikku.model.users.UserImpl;
+import fi.muikku.model.wall.EnvironmentWall;
+import fi.muikku.model.wall.UserWall;
+import fi.muikku.model.wall.subscription.UserWallSubscription;
 import fi.muikku.security.PermissionCollection;
 import fi.muikku.utils.RequestUtils;
 
@@ -82,11 +85,11 @@ public class SeedDataImporter {
       em.persist(env);
     }
 
-//    if (em.createQuery("from EnvironmentWall where environment.id = " + env.getId().toString()).getResultList().size() == 0) {
-//      EnvironmentWall environmentWall = new EnvironmentWall();
-//      environmentWall.setEnvironment(env);
-//      em.persist(environmentWall);
-//    }
+    if (em.createQuery("from EnvironmentWall where environment.id = " + env.getId().toString()).getResultList().size() == 0) {
+      EnvironmentWall environmentWall = new EnvironmentWall();
+      environmentWall.setEnvironment(env);
+      em.persist(environmentWall);
+    }
     
     
     EnvironmentDefaults envdef = findById(EnvironmentDefaults.class, 1l);
@@ -232,21 +235,21 @@ public class SeedDataImporter {
       userWidget.setLocation(findFirst(WidgetLocation.class, "from WidgetLocation where name = 'environment.sidebar.right'"));
       em.persist(userWidget);;
       **/
-//      UserWall userWall = new UserWall();
-//      userWall.setUser(userEntity);
-//      em.persist(userWall);
-//      
-//      UserWallSubscription envWallLink = new UserWallSubscription();
-//      envWallLink.setUser(userEntity);
-//      envWallLink.setWall(findFirst(EnvironmentWall.class, "from EnvironmentWall where environment.id = " + env.getId().toString()));
-//      em.persist(envWallLink);
+      UserWall userWall = new UserWall();
+      userWall.setUser(userEntity);
+      em.persist(userWall);
+      
+      UserWallSubscription envWallLink = new UserWallSubscription();
+      envWallLink.setUser(userEntity);
+      envWallLink.setWall(findFirst(EnvironmentWall.class, "from EnvironmentWall where environment.id = " + env.getId().toString()));
+      em.persist(envWallLink);
     }
     
-//    EnvironmentWall sysWall = findById(EnvironmentWall.class, 1l);
-//    if (sysWall == null) {
-//      sysWall = new EnvironmentWall();
-//      em.persist(sysWall);
-//    }
+    EnvironmentWall sysWall = findById(EnvironmentWall.class, 1l);
+    if (sysWall == null) {
+      sysWall = new EnvironmentWall();
+      em.persist(sysWall);
+    }
 
     for (PermissionCollection collection : permissionCollections) {
       List<String> permissions = collection.listPermissions();
