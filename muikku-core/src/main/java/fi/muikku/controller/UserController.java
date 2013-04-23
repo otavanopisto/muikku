@@ -29,10 +29,7 @@ import fi.muikku.security.PermitContext;
 import fi.muikku.session.SessionController;
 import fi.muikku.utils.RequestUtils;
 
-// TODO: Clean this bean
-//@Dependent
-@RequestScoped
-@Named("User")
+@Dependent
 public class UserController {
 
   @Inject
