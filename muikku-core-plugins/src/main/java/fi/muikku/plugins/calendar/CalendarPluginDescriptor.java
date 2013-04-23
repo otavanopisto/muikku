@@ -50,10 +50,17 @@ import fi.muikku.schooldata.entity.User;
 @ApplicationScoped
 @Stateful
 public class CalendarPluginDescriptor implements PluginDescriptor, PersistencePluginDescriptor, RESTPluginDescriptor {
-	
+
+	public static final String DEFAULT_FIRSTDAY_SETTING = "defaultFirstDay";
+
+	private static final String DEFAULT_FIRSTDAY = "1"; // Monday
+
 	private static final String CALENDAR_CONTENT_WIDGET_LOCATION = "calendar.content";
+	private static final String CALENDAR_CONTENT_TOOLS_TOP_WIDGET_LOCATION = "calendar.contentToolsTop";
 	
 	private static final String FULLCALENDAR_WIDGET_NAME = "fullcalendar";
+	private static final String CALENDARSETTINGS_WIDGET_NAME = "calendarsettings";
+	private static final String CALENDARSVISIBLE_WIDGET_NAME = "calendarsvisible";
 
 	private static final String DEFAULT_CALENDAR_CATEGORY_ID_SETTING = "defaultCalendarCategoryId";
 	private static final String DEFAULT_CALENDAR_CATEGORY_NAME = "default";
@@ -109,6 +116,16 @@ public class CalendarPluginDescriptor implements PluginDescriptor, PersistencePl
 		if (fullCalendarWidget == null) {
 			fullCalendarWidget = widgetController.createWidget(FULLCALENDAR_WIDGET_NAME, WidgetVisibility.AUTHENTICATED);
 		}
+		
+		Widget calendarSettingsWidget = widgetController.findWidget(CALENDARSETTINGS_WIDGET_NAME);
+		if (calendarSettingsWidget == null) {
+			calendarSettingsWidget = widgetController.createWidget(CALENDARSETTINGS_WIDGET_NAME, WidgetVisibility.AUTHENTICATED);
+		}
+
+		Widget calendarsVisibleWidget = widgetController.findWidget(CALENDARSVISIBLE_WIDGET_NAME);
+		if (calendarsVisibleWidget == null) {
+			calendarsVisibleWidget = widgetController.createWidget(CALENDARSVISIBLE_WIDGET_NAME, WidgetVisibility.AUTHENTICATED);
+		}
 
 		// Add full widget as default to content widget location
 		
@@ -122,6 +139,25 @@ public class CalendarPluginDescriptor implements PluginDescriptor, PersistencePl
 			fullCalendarDefaultWidget = widgetController.createDefaultWidget(calendarContentWidgetLocation, fullCalendarWidget);
 		}
 		
+		// Add calendar settings to calendar content tools top widget space by default
+		
+		WidgetLocation calendarContentToopsTopWidgetLocation = widgetController.findWidgetLocation(CALENDAR_CONTENT_TOOLS_TOP_WIDGET_LOCATION);
+		if (calendarContentToopsTopWidgetLocation == null) {
+			calendarContentToopsTopWidgetLocation = widgetController.createWidgetLocation(CALENDAR_CONTENT_TOOLS_TOP_WIDGET_LOCATION);
+		}
+		
+		DefaultWidget calendarSettingsDefaultWidget = widgetController.findDefaultWidget(calendarSettingsWidget, calendarContentToopsTopWidgetLocation);
+		if (calendarSettingsDefaultWidget == null) {
+			calendarSettingsDefaultWidget = widgetController.createDefaultWidget(calendarContentToopsTopWidgetLocation, calendarSettingsWidget);
+		}
+		
+	  // Add calendars visible to calendar content tools top widget space by default
+			
+	  DefaultWidget calendarsVisibleDefaultWidget = widgetController.findDefaultWidget(calendarsVisibleWidget, calendarContentToopsTopWidgetLocation);
+		if (calendarsVisibleDefaultWidget == null) {
+			calendarsVisibleDefaultWidget = widgetController.createDefaultWidget(calendarContentToopsTopWidgetLocation, calendarsVisibleWidget);
+	  }
+
 		// Make sure every user has a default calendar
 
 		PluginUserSettingKey defaultCalendarIdSetting = pluginSettingsController.getPluginUserSettingKey(getName(), DEFAULT_CALENDAR_ID_SETTING);
@@ -135,7 +171,11 @@ public class CalendarPluginDescriptor implements PluginDescriptor, PersistencePl
 			UserCalendar calendar = calendarController.createLocalUserCalendar(environment, userWithoutDefaultCalendar, defaultCalendarCategory, name);
 			pluginSettingsController.setPluginUserSetting(getName(), DEFAULT_CALENDAR_ID_SETTING, calendar.getCalendar().getId().toString(), userWithoutDefaultCalendar);
 		}
-
+		
+		String defaultFirstDay = pluginSettingsController.getPluginSetting(getName(), DEFAULT_FIRSTDAY_SETTING);
+		if (!DEFAULT_FIRSTDAY.equals(defaultFirstDay)) {
+			pluginSettingsController.setPluginSetting(getName(), DEFAULT_FIRSTDAY_SETTING, DEFAULT_FIRSTDAY);
+		}
 	}
 
 	@Override
@@ -155,7 +195,11 @@ public class CalendarPluginDescriptor implements PluginDescriptor, PersistencePl
 		  
 		  /* Controllers */
 
-		  CalendarController.class
+		  CalendarController.class,
+		  
+		  /* Backing Beans */
+		  
+		  CalendarBackingBean.class
 		));
 	}
 	

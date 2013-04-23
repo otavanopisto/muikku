@@ -18,16 +18,35 @@ public class UserCalendarDAO extends PluginDAO<UserCalendar> {
 	
 	private static final long serialVersionUID = -4015334453127961131L;
 
-	public UserCalendar create(Calendar calendar, Long environmentId, Long userId) {
+	public UserCalendar create(Calendar calendar, Long environmentId, Long userId, Boolean visible) {
     UserCalendar userCalendar = new UserCalendar();
+    
     userCalendar.setCalendar(calendar);
     userCalendar.setUserId(userId);
     userCalendar.setEnvironmentId(environmentId);
+    userCalendar.setVisible(visible);
     
     getEntityManager().persist(userCalendar);
     
     return userCalendar;
   }
+
+	public UserCalendar findByCalendarAndUser(Calendar calendar, Long userId) {
+		EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<UserCalendar> criteria = criteriaBuilder.createQuery(UserCalendar.class);
+    Root<UserCalendar> root = criteria.from(UserCalendar.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(UserCalendar_.calendar), calendar),
+        criteriaBuilder.equal(root.get(UserCalendar_.userId), userId)
+      )
+    );
+   
+    return getSingleResult(entityManager.createQuery(criteria));
+	}
 
 	public List<UserCalendar> listByEnvironmentIdAndUserId(Long environmentId, Long userId) {
     EntityManager entityManager = getEntityManager();
@@ -45,5 +64,11 @@ public class UserCalendarDAO extends PluginDAO<UserCalendar> {
    
     return entityManager.createQuery(criteria).getResultList();
   }
+	
+	public UserCalendar updateVisible(UserCalendar userCalendar, Boolean visible) {
+		userCalendar.setVisible(visible);
+		getEntityManager().persist(userCalendar);
+		return userCalendar;
+	}
 	
 }

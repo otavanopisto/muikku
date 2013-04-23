@@ -29,6 +29,7 @@ import net.fortuna.ical4j.model.property.Summary;
 import net.fortuna.ical4j.model.property.Uid;
 import net.fortuna.ical4j.model.property.Url;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -125,12 +126,20 @@ public class CalendarController {
 		}
 		return result;
 	}
+
+	public Calendar updateCalendarName(Calendar calendar, String name) {
+		return calendarDAO.updateName(calendar, name);
+	}
+
+	public Calendar updateCalendarCategory(Calendar calendar, CalendarCategory calendarCategory) {
+		return calendarDAO.updateCategory(calendar, calendarCategory);
+	}
 	
 	/* LocalCalendar */
 	
 	public UserCalendar createLocalUserCalendar(Environment environment, UserEntity user, CalendarCategory calendarCategory, String name) {
 		LocalCalendar localCalendar = localCalendarDAO.create(environment.getId(), calendarCategory, name);
-		UserCalendar userCalendar = userCalendarDAO.create(localCalendar, environment.getId(), user.getId());
+		UserCalendar userCalendar = userCalendarDAO.create(localCalendar, environment.getId(), user.getId(), Boolean.TRUE);
 		return userCalendar;
 	}
 
@@ -150,7 +159,7 @@ public class CalendarController {
 	
 	public UserCalendar createSubscribedUserCalendar(Environment environment, UserEntity user, CalendarCategory calendarCategory, String name, String url) {
 		SubscribedCalendar subscribedCalendar = subscribedCalendarDAO.create(environment.getId(), calendarCategory, name, url);
-		UserCalendar userCalendar = userCalendarDAO.create(subscribedCalendar, environment.getId(), user.getId());
+		UserCalendar userCalendar = userCalendarDAO.create(subscribedCalendar, environment.getId(), user.getId(), Boolean.TRUE);
 		return userCalendar;
 	}
 
@@ -167,9 +176,75 @@ public class CalendarController {
 		return null;
 	}
 
+	public net.fortuna.ical4j.model.Calendar loadIcsCalendar(String url) throws IOException, ParserException, URISyntaxException {
+		DefaultHttpClient httpClient = new DefaultHttpClient();
+		
+		SchemeRegistry schemeRegistry = httpClient.getConnectionManager().getSchemeRegistry();
+		if (!schemeRegistry.getSchemeNames().contains("webcal")) {
+		  schemeRegistry.register(new Scheme("webcal", 80, PlainSocketFactory.getSocketFactory()));
+		}
+		
+		HttpGet httpGet = new HttpGet(new URI(url));
+		
+		HttpResponse response = httpClient.execute(httpGet);
+		if (response.getStatusLine().getStatusCode() == 200) {
+		  HttpEntity entity = response.getEntity();
+		  try {
+		  	InputStream content = entity.getContent();
+		  	try {
+			  	CalendarBuilder builder = new CalendarBuilder();
+  	  	  return builder.build(content);
+		  	} finally {
+		  		content.close();
+		  	}
+		  } finally {
+		  	EntityUtils.consume(entity);
+		  }
+		} else {
+			throw new IOException(response.getStatusLine().getReasonPhrase());
+		}
+	}
+	
+	public String getIcsCalendarName(net.fortuna.ical4j.model.Calendar calendar) {
+		Property property = calendar.getProperty("X-WR-CALNAME");
+		if (property != null && StringUtils.isNotBlank(property.getValue())) {
+			// Check for X-WR-CALNAME extension
+			return property.getValue();
+		}
+		
+		// If name could not be found from extension calendar does not contain name information
+		return null;
+	}
+	
+	public boolean isAllDayIcsEvent(VEvent event) {
+		// Scan X-FUNAMBOL-ALLDAY and X-MICROSOFT-CDO-ALLDAYEVENT extensions for all-day info
+		
+		Boolean extensionAllDay = getBooleanIcsComponentProperty(event, "X-FUNAMBOL-ALLDAY");
+		if (extensionAllDay != null) {
+			return extensionAllDay;
+		}
+		
+		extensionAllDay = getBooleanIcsComponentProperty(event, "X-MICROSOFT-CDO-ALLDAYEVENT");
+		if (extensionAllDay != null) {
+			return extensionAllDay;
+		}
+		
+		// If extensions are not defined we try to figure it out from the start and end dates
+		if (event.getEndDate() == null) {
+			return true;
+		}
+		
+		long millisecondsBetween = event.getEndDate().getDate().getTime() - event.getStartDate().getDate().getTime();
+		if (millisecondsBetween < DateUtils.MILLIS_PER_DAY) {
+			return false;
+		} else {
+			return true;
+		}
+
+	}
+
 	@SuppressWarnings("unchecked")
-	public void synchronizeSubscribedCalendar(SubscribedCalendar subscribedCalendar) throws IOException, ParserException, URISyntaxException {
-		net.fortuna.ical4j.model.Calendar icsCalendar = loadIcsCalendar(subscribedCalendar.getUrl());
+  public void synchronizeSubscribedCalendar(SubscribedCalendar subscribedCalendar, net.fortuna.ical4j.model.Calendar icsCalendar) throws IOException, ParserException, URISyntaxException {
 		Iterator<Component> componentIterator = icsCalendar.getComponents().iterator();
 		while (componentIterator.hasNext()) {
 			Component component = componentIterator.next();
@@ -186,6 +261,15 @@ public class CalendarController {
   				Location location = event.getLocation();
   				Geo geographicPos = event.getGeographicPos();
   				
+  				if (startDate == null) {
+  					logger.warning("Subscribed event " + uid.getValue() + " does not have a start date. Skipping");
+  					continue;
+  				}
+  				
+  				Date start = startDate.getDate();
+  				Date end = endDate == null ? start : endDate.getDate();
+  				boolean allDay = isAllDayIcsEvent(event);
+  				
   				// TODO: Update...
   			  // TODO: Repeats, Alerts, Invitees
   				
@@ -195,10 +279,10 @@ public class CalendarController {
   					summary != null ? summary.getValue() : null, 
   					description != null ? description.getValue() : null,
 						location != null ? location.getValue() : null,
-						startDate.getDate(), 
-  					endDate.getDate(), 
+						start,
+						end,
   					eventUrl != null ? eventUrl.getValue() : null,
-  					isAllDayIcsEvent(event),
+  					allDay,
   	  			geographicPos != null ? geographicPos.getLatitude() : null,
   	  			geographicPos != null ? geographicPos.getLongitude(): null
   				);
@@ -207,6 +291,20 @@ public class CalendarController {
 				}
 			}
 		}
+	}
+	
+	public void synchronizeSubscribedCalendar(SubscribedCalendar subscribedCalendar) throws IOException, ParserException, URISyntaxException {
+		synchronizeSubscribedCalendar(subscribedCalendar, loadIcsCalendar(subscribedCalendar.getUrl()));
+	}
+	
+	/* UserCalendar */
+
+	public UserCalendar findUserCalendarByCalendarAndUser(Calendar calendar, UserEntity user) {
+		return userCalendarDAO.findByCalendarAndUser(calendar, user.getId());
+	}
+
+	public UserCalendar updateUserCalendarVisible(UserCalendar userCalendar, Boolean visible) {
+		return userCalendarDAO.updateVisible(userCalendar, visible);
 	}
 	
 	/* LocalEvents */
@@ -271,59 +369,6 @@ public class CalendarController {
 	}
 	
 	/* Private */
-	
-	private net.fortuna.ical4j.model.Calendar loadIcsCalendar(String url) throws IOException, ParserException, URISyntaxException {
-		DefaultHttpClient httpClient = new DefaultHttpClient();
-		
-		SchemeRegistry schemeRegistry = httpClient.getConnectionManager().getSchemeRegistry();
-		if (!schemeRegistry.getSchemeNames().contains("webcal")) {
-		  schemeRegistry.register(new Scheme("webcal", 80, PlainSocketFactory.getSocketFactory()));
-		}
-		
-		HttpGet httpGet = new HttpGet(new URI(url));
-		
-		HttpResponse response = httpClient.execute(httpGet);
-		if (response.getStatusLine().getStatusCode() == 200) {
-		  HttpEntity entity = response.getEntity();
-		  try {
-		  	InputStream content = entity.getContent();
-		  	try {
-			  	CalendarBuilder builder = new CalendarBuilder();
-			  	return builder.build(content);
-		  	} finally {
-		  		content.close();
-		  	}
-		  } finally {
-		  	EntityUtils.consume(entity);
-		  }
-		} else {
-			throw new IOException(response.getStatusLine().getReasonPhrase());
-		}
-	}
-	
-	private boolean isAllDayIcsEvent(VEvent event) {
-		// Scan X-FUNAMBOL-ALLDAY and X-MICROSOFT-CDO-ALLDAYEVENT extensions for all-day info
-		
-		Boolean extensionAllDay = getBooleanIcsComponentProperty(event, "X-FUNAMBOL-ALLDAY");
-		if (extensionAllDay != null) {
-			return extensionAllDay;
-		}
-		
-		extensionAllDay = getBooleanIcsComponentProperty(event, "X-MICROSOFT-CDO-ALLDAYEVENT");
-		if (extensionAllDay != null) {
-			return extensionAllDay;
-		}
-		
-		// If extensions are not defined we try to figure it out from the start and end dates
-		
-		long millisecondsBetween = event.getEndDate().getDate().getTime() - event.getStartDate().getDate().getTime();
-		if (millisecondsBetween < DateUtils.MILLIS_PER_DAY) {
-			return false;
-		} else {
-			return true;
-		}
-
-	}
 	
 	private Boolean getBooleanIcsComponentProperty(Component component, String propertyName) {
 		Property property = component.getProperty(propertyName);
