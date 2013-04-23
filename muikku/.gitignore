@@ -3,3 +3,5 @@
 /target
 /.classpath
 /.factorypath
+/.externalToolBuilders
+/.DS_Store

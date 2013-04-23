@@ -175,14 +175,7 @@ background: linear-gradient(to bottom, $gr1 0%,$gr2 10%,$gr3 25%,$gr4 37%,$gr5 5
 
 
 @mixin dynNaviGr($iconUrl,$gr1,$gr2){
-	
-
-
-
-
-  box-shadow: 5px 10px 6px -2px #ededed;
-
-
+box-shadow: 5px 10px 6px -2px #ededed;
 background: $iconUrl no-repeat center right #b8bac6;
 background: $iconUrl no-repeat center right, -moz-linear-gradient(top, $gr1 0%, $gr2 100%);
 background: $iconUrl no-repeat center right, -webkit-gradient(linear, left top, left bottom, color-stop(0%,$gr1), color-stop(100%,$gr2));
@@ -190,7 +183,6 @@ background: $iconUrl no-repeat center right, -webkit-linear-gradient(top, $gr1 0
 background: $iconUrl no-repeat center right, -o-linear-gradient(top, $gr1 0%,$gr2 100%);
 background: $iconUrl no-repeat center right, -ms-linear-gradient(top, $gr1 0%,$gr2 100%);
 background: $iconUrl no-repeat center right, linear-gradient(to bottom, $gr1 0%,$gr2 100%);	
-
 }
 
 /* TODO: opacity -transitio

@@ -99,14 +99,16 @@ body {
 
 /* Navigation */
 
+.sticky-wrapper{
+  
+}
+
 #staticNavigationFade{
   @include fadetoAlpha-top-bottom;	
 	height:60px;
 }
 
 #staticNavigation{
-	  margin-left:auto;
-	  margin-right:auto;
 	  border:1px solid #000;
     height:50px;
 }
@@ -131,9 +133,17 @@ float:left;
     }
 
 
-.fixedNavigation{
+.stuck{
     position:fixed;
-    top:0;
+    top:0
+}
+
+.stuckStNav {
+    position:fixed;
+	top:0;
+	left:50%;
+	margin-left:-480px;
+	
 }
 
 
