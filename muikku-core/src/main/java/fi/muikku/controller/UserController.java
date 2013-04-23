@@ -3,7 +3,9 @@ package fi.muikku.controller;
 import java.util.List;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import fi.muikku.dao.base.EnvironmentDefaultsDAO;
 import fi.muikku.dao.security.UserPasswordDAO;
@@ -27,7 +29,10 @@ import fi.muikku.security.PermitContext;
 import fi.muikku.session.SessionController;
 import fi.muikku.utils.RequestUtils;
 
-@Dependent
+// TODO: Clean this bean
+//@Dependent
+@RequestScoped
+@Named("User")
 public class UserController {
 
   @Inject

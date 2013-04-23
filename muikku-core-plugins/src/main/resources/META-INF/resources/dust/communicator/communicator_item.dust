@@ -18,6 +18,6 @@
   <div class="communicatorItemTags">Tagit, kontekstilinkit</div>
 
   <input type="hidden" name="communicatorMessageId" value="{id}"/>
-  <input type="hidden" name="communicatorMessageIdId" value="{communicatorMessageId_id}"/>
+  <input type="hidden" name="communicatorMessageIdId" value="{communicatorMessageId.id}"/>
   
 </div>

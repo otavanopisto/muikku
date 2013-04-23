@@ -58,7 +58,7 @@
           'messageId': messageId
         }
       }).success(function (data, textStatus, jqXHR) {
-        renderDustTemplate('communicator/communicator_viewmessage.dust', response.responseJSON, function (text) {
+        renderDustTemplate('communicator/communicator_viewmessage.dust', data, function (text) {
           _this._communicatorContent.append($.parseHTML(text));
           
           _this._communicatorContent.find('.communicatorMessageReplyLink').click($.proxy(_this._onReplyMessageClick, _this));
@@ -89,7 +89,7 @@
       
       var communicatorMessageId = element.find("input[name='communicatorMessageId']").val();
       var communicatorMessageIdId = element.find("input[name='communicatorMessageIdId']").val();
-      var recipients = new Array();
+      var recipients = [];
       
       if (replyAll) {
         RESTful.doGet(CONTEXTPATH + "/rest/communicator/{userId}/communicatormessages/{messageId}/recipients", {
@@ -98,10 +98,10 @@
             'messageId': communicatorMessageId
           }
         }).success(function (data, textStatus, jqXHR) {
-          for (var i = 0, l = response.responseJSON.length; i < l; i++) {
+          for (var i = 0, l = data.length; i < l; i++) {
             recipients.push({
-              'id': response.responseJSON[i].recipient.id,
-              'name': response.responseJSON[i].recipient.fullName
+              'id': data[i].recipient.id,
+              'name': data[i].recipient.fullName
             });
           }
         });
@@ -113,8 +113,8 @@
           }
         }).success(function (data, textStatus, jqXHR) {
           recipients.push({
-            'id': response.responseJSON.sender.id,
-            'name': response.responseJSON.sender.fullName
+            'id': data.sender.id,
+            'name': data.sender.fullName
           });
         });
       }
@@ -149,7 +149,7 @@
       var element = $(event.target);
       var newMessageElement = element.parents(".communicatorNewMessage");
       var recipientListElement = newMessageElement.find(".recipientsList");
-      var recipientIds = new Array();
+      var recipientIds = [];
       
       $(recipientListElement.children(".recipient")).each(function (index) {
         recipientIds.push($(this).find("input[name='userId']").val());
@@ -171,7 +171,7 @@
       var element = $(event.target);
       var newMessageElement = element.parents(".communicatorNewMessage");
       var recipientListElement = newMessageElement.find(".recipientsList");
-      var recipientIds = new Array();
+      var recipientIds = [];
       
       $(recipientListElement.children(".recipient")).each(function (index) {
         recipientIds.push($(this).find("input[name='userId']").val());

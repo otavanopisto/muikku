@@ -144,6 +144,7 @@ RESTfulImpl = $.klass({
     
     return $.ajax(url, {
       async: false,
+      traditional: true,
       dataType: 'json',
       accepts: {
         'json' : 'application/json'

@@ -9,15 +9,20 @@
     <div class="widget forumThreadsWidget">
       <div class="forumThreadBody">
         <div class="forumThreadUserImageContainer">
+          <c:set var="threadPersonEntity" value="#{User.findUserEntity(thread.creator)}" />
+          <c:set var="threadUser" value="#{User.findUser(threadPersonEntity)}" />
+
           <c:choose>
-            <c:when test="#{User.getUserHasPicture(thread.creator)}">
-              <img class="forumThreadReplyUserImage" src="#{request.contextPath}/picture?userId=#{thread.creator.id}" width="50" height="50" />
+            <c:when test="#{User.getUserHasPicture(threadPersonEntity)}">
+              <img class="forumThreadReplyUserImage" src="#{request.contextPath}/picture?userId=#{thread.creator}" width="50" height="50" />
             </c:when>
             <c:otherwise>
               <img class="forumThreadReplyUserImage" src="#{request.contextPath}/themes/default/gfx/fish.jpg" width="50" height="50" />
             </c:otherwise>
           </c:choose>
         </div>
+
+        <div class="forumThreadStarter">#{threadUser.firstName} #{threadUser.lastName}</div>
 
         <div class="forumThreadTitle">
           #{thread.title}
@@ -29,11 +34,14 @@
     
       <div class="forumThreadReplyList">
         <c:forEach var="reply" items="#{Forum.listForumThreadReplies(thread)}">
+          <c:set var="replyPersonEntity" value="#{User.findUserEntity(reply.creator)}" />
+          <c:set var="replyUser" value="#{User.findUser(replyPersonEntity)}" />
+        
           <div class="forumThreadReplyBody">
             <div class="forumThreadReplyUserImageContainer">
               <c:choose>
-                <c:when test="#{User.getUserHasPicture(reply.creator)}">
-                  <img class="forumThreadReplyUserImage" src="#{request.contextPath}/picture?userId=#{reply.creator.id}" width="50" height="50" />
+                <c:when test="#{User.getUserHasPicture(replyPersonEntity)}">
+                  <img class="forumThreadReplyUserImage" src="#{request.contextPath}/picture?userId=#{reply.creator}" width="50" height="50" />
                 </c:when>
                 <c:otherwise>
                   <img class="forumThreadReplyUserImage" src="#{request.contextPath}/themes/default/gfx/fish.jpg" width="50" height="50" />
@@ -41,6 +49,8 @@
               </c:choose>
             </div>
 
+            <div class="forumThreadReplier">#{replyUser.firstName} #{replyUser.lastName}</div>
+            
             <div class="forumThreadReplyMessage">
               #{reply.message}
             </div>
