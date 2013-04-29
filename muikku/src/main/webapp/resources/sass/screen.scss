@@ -104,13 +104,13 @@ body {
 }
 
 #staticNavigationFade{
-  @include fadetoAlpha-top-bottom;	
+  @include fadetoAlpha-top-bottom;
+  z-index:1;	
 	height:60px;
 }
 
 #staticNavigation{
-	  border:1px solid #000;
-    height:50px;
+	 margin-top:5px;
 }
 
 #naviDockPrimary{
@@ -139,10 +139,10 @@ float:left;
 }
 
 .stuckStNav {
-    position:fixed;
+  position:fixed;
 	top:0;
 	left:50%;
-	margin-left:-480px;
+	margin-left:-481px;
 	
 }
 
