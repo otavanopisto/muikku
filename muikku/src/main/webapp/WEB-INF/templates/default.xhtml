@@ -83,10 +83,13 @@
         </div>
       </div>
       <div id="content" class="container_24">      
+        <ui:insert name="contentToolsTop">
 	      <ui:include src="/core/widget-space.xhtml">
 	        <ui:param name="location" value="#{widgetSpaceBackingBean.environmentContentToolsTop}" />
 	      </ui:include>     
-	      <ui:include src="/core/widget-space.xhtml">
+        </ui:insert>
+	      
+        <ui:include src="/core/widget-space.xhtml">
 	        <ui:param name="location" value="#{widgetSpaceBackingBean.environmentContentToolsBottom}" />
 	      </ui:include>            
 	      <ui:include src="/core/widget-space.xhtml">
