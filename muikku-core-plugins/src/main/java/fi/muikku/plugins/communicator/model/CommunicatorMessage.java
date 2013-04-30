@@ -17,6 +17,9 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import fi.muikku.tranquil.UserEntityResolver;
+import fi.tranquil.TranquilityEntityField;
+
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
 public class CommunicatorMessage {
@@ -81,6 +84,7 @@ public class CommunicatorMessage {
   private CommunicatorMessageId communicatorMessageId;
 
   @Column (name = "sender_id")
+  @TranquilityEntityField(UserEntityResolver.class)
   private Long sender;
   
   @NotNull

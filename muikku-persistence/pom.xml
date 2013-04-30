@@ -236,6 +236,10 @@
       <groupId>fi.muikku</groupId>
       <artifactId>security</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.apache.deltaspike.core</groupId>
+      <artifactId>deltaspike-core-api</artifactId>
+    </dependency>
   </dependencies>
   
   <repositories>

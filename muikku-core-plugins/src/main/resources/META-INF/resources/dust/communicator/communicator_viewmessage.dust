@@ -3,14 +3,14 @@
   <a class="communicatorMessageReplyLink" href="#">Reply</a> <a class="communicatorMessageReplyAllLink" href="#">Reply all</a>
 
   <div class="communicatorMessageSenderPictureContainer">
-    {?sender.hasPicture} 
+    {?sender_tq.hasPicture} 
       <img class="communicatorMessageSenderPicture" src="{@contextPath/}/picture?userId={sender.id}" width="50" height="50" />
     {:else}
       <img class="communicatorMessageSenderPicture" src="{@contextPath/}/themes/default/gfx/fish.jpg" width="50" height="50" />
-    {/sender.hasPicture}
+    {/sender_tq.hasPicture}
   </div>
   
-  <div class="communicatorMessageSenderName"><a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={sender.id}">{sender.fullName}</a></div>
+  <div class="communicatorMessageSenderName"><a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={sender.id}">{sender_tq.fullName}</a></div>
   <div class="communicatorMessageRecipients">
   -&gt;
   {#recipients}
