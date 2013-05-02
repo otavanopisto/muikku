@@ -60,7 +60,7 @@ $eightColorGr-8:#fcfcfc;
   	$stNavGradColors:#b8e1fc,#a9d2f3,#90bae4,#90bcea,#90bff0,#6ba8e5,#a2daf5,#bdf3fd;
 	
 	/* Widget top-bottom */
-    $widgetGr: #ffffff , #f3f3f3, #ededed, #ffffff;
+    $widgetGr: #feffff , #eaf3f7, #cbe3ed;
 
 
 /* Borders */
@@ -101,6 +101,17 @@ background: linear-gradient(to bottom, $fadeColor1 0%,$fadeColor2 50%,$fadeColor
 
 
 @mixin gradient-top-bottom($bgColorStart:$gradient-start, $bgColorEnd:$gradient-end){
+  background: $bgColorStart; 
+  background: -moz-linear-gradient(top, $bgColorStart 0%,  $bgColorEnd 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$bgColorStart), color-stop(100%,$bgColorEnd));
+  background: -webkit-linear-gradient(top, $bgColorStart 0%,$bgColorEnd 100%);
+  background: -o-linear-gradient(top, $bgColorStart 0%,$bgColorEnd 100%);
+  background: -ms-linear-gradient(top, $bgColorStart 0%,$bgColorEnd 100%);
+  background: linear-gradient(to bottom, $bgColorStart 0%,$bgColorEnd 100%);
+
+}
+
+@mixin gradient-top-bottom-three($bgColorStart:$gradient-start, $bgColorEnd:$gradient-end){
   background: $bgColorStart; 
   background: -moz-linear-gradient(top, $bgColorStart 0%,  $bgColorEnd 100%);
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$bgColorStart), color-stop(100%,$bgColorEnd));

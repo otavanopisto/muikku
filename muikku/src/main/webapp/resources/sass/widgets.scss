@@ -119,11 +119,20 @@
 
 .widget {
   border: 1px solid #aaa;
-  margin: 8px;
-  padding: 8px;
+  padding: 4px;
   border-radius: 4px;
-  box-shadow: 1px 1px 5px #888;
-  @include gradient-top-bottom-four($widgetGr...);
+ 
+  @include gradient-top-bottom-three($widgetGr...);
+}
+
+.dockWidget{
+	  box-shadow: 1px 1px 5px #888;
+	  margin-top:4px;
+    float:left;
+    @include staticNaviGr($stNavGradColors...);
+    height:40px;
+    border: 2px solid #ededed;
+    border-radius: 10px;
 }
 
 .widgetTitle {

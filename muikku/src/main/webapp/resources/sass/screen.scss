@@ -19,10 +19,6 @@ body {
 
 /* TODO: P, a ... */
 
-
-
-
-
  a.tooltip {
  outline:none;
 
@@ -106,21 +102,14 @@ body {
 #staticNavigationFade{
   @include fadetoAlpha-top-bottom;	
 	height:60px;
+	z-index:1;
 }
 
 #staticNavigation{
-	  border:1px solid #000;
     height:50px;
 }
 
-#naviDockPrimary{
-    float:left;
-    @include staticNaviGr($stNavGradColors...);
-    width:255px; 
-    height:40px;
-    border: 2px solid #ededed;
-    border-radius: 10px;
-}
+
 
 #naviDockSecondary{
 float:left;
@@ -216,7 +205,6 @@ float:left;
 #content {
     min-height: 800px; 
     margin: 0 auto;
-    border:1px solid #000;
 }
 
 
