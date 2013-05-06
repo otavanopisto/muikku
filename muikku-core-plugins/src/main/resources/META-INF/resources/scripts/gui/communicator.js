@@ -5,12 +5,13 @@
     },
     setup: function (widgetElement) {
       widgetElement = $(widgetElement);
+      
       this._userId = widgetElement.find("input[name='userId']").val();
       this._communicatorContent = widgetElement.find(".communicatorContent");
       this._newMessageButton = widgetElement.find("input[name='communicatorNewMessageButton']");
       
-//      this._tabsContainer = widgetElement.find('.communicatorTabs');
-//      this._tabControl = new S2.UI.Tabs(this._tabsContainer);
+      this._tabsContainer = widgetElement.find('.communicatorTabs');
+      this._tabsContainer.tabs();
       
       this._newMessageButton.click($.proxy(this._onNewMessageClick, this));
       

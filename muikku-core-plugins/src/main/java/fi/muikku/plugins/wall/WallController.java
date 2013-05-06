@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -15,7 +16,12 @@ import fi.muikku.controller.EnvironmentController;
 import fi.muikku.controller.UserController;
 import fi.muikku.dao.courses.CourseEntityDAO;
 import fi.muikku.dao.users.UserEntityDAO;
+import fi.muikku.events.CourseEntityEvent;
+import fi.muikku.events.CourseUserEvent;
+import fi.muikku.events.Created;
+import fi.muikku.events.UserEntityEvent;
 import fi.muikku.model.base.Environment;
+import fi.muikku.model.courses.CourseUser;
 import fi.muikku.model.stub.courses.CourseEntity;
 import fi.muikku.model.stub.users.UserEntity;
 import fi.muikku.plugins.forum.dao.ForumThreadDAO;
@@ -369,4 +375,35 @@ public class WallController {
     return wallDAO.findById(wallId);
   }
 
+  
+  public void onCourseCreateEvent(@Observes @Created CourseEntityEvent event) {
+    CourseEntity courseEntity = courseController.findCourseEntityById(event.getCourseEntityId());
+    courseWallDAO.create(courseEntity);
+  }
+  
+  public void onCourseUserCreateEvent(@Observes @Created CourseUserEvent event) {
+    CourseUser courseUser = courseController.findCourseUserById(event.getCourseUserId());
+    CourseWall courseWall = courseWallDAO.findByCourse(courseUser.getCourse());
+
+    userWallLinkDAO.create(courseUser.getUser(), courseWall);
+  }
+  
+  public void onUserCreatedEvent(@Observes @Created UserEntityEvent event) {
+    /**
+     * Create User Wall
+     */
+    UserEntity userEntity = userController.findUserEntity(event.getUserEntityId());
+    
+    UserWall userWall = userWallDAO.create(userEntity);
+
+    WallEntry wallEntry = wallEntryDAO.create(userWall, WallEntryVisibility.PRIVATE, userEntity);
+    wallEntryTextItemDAO.create(wallEntry, "Joined Muikku", userEntity);
+
+    /**
+     * Link Environment wall
+     */
+    EnvironmentWall environmentWall = environmentWallDAO.findByEnvironment(sessionController.getEnvironment());
+    userWallLinkDAO.create(userEntity, environmentWall);
+  }
+  
 }

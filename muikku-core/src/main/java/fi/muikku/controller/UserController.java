@@ -3,9 +3,8 @@ package fi.muikku.controller;
 import java.util.List;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import fi.muikku.dao.base.EnvironmentDefaultsDAO;
 import fi.muikku.dao.security.UserPasswordDAO;
@@ -14,6 +13,10 @@ import fi.muikku.dao.users.EnvironmentUserRoleDAO;
 import fi.muikku.dao.users.UserContactDAO;
 import fi.muikku.dao.users.UserEntityDAO;
 import fi.muikku.dao.users.UserPictureDAO;
+import fi.muikku.events.Created;
+import fi.muikku.events.Modified;
+import fi.muikku.events.Archived;
+import fi.muikku.events.UserEntityEvent;
 import fi.muikku.model.base.Environment;
 import fi.muikku.model.base.EnvironmentDefaults;
 import fi.muikku.model.base.SchoolDataSource;
@@ -35,24 +38,12 @@ public class UserController {
   @Inject
   private UserPasswordDAO userPasswordDAO;
   
-//  @Inject
-//  private UserWallDAO userWallDAO;
-//
-//  @Inject
-//  private UserWallSubscriptionDAO userWallLinkDAO; 
-//  
-//  @Inject
-//  private EnvironmentWallDAO environmentWallDAO;
-  
   @Inject
   private EnvironmentUserDAO environmentUserDAO;
   
   @Inject
   private EnvironmentUserRoleDAO environmentUserRoleDAO;
   
-//  @Inject
-//  private WallEntryTextItemDAO wallTextEntryDAO;
-
   @Inject
   private SessionController sessionController;
   
@@ -71,12 +62,18 @@ public class UserController {
   @Inject
   private UserEntityDAO userEntityDAO;
 
-//  @Inject
-//  private WallEntryDAO wallEntryDAO;
-//
-//  @Inject
-//  private WallEntryTextItemDAO wallEntryTextItemDAO;
+  @Inject
+  @Created
+  private Event<UserEntityEvent> userCreatedEvent;
   
+  @Inject
+  @Modified
+  private Event<UserEntityEvent> userModifiedEvent;
+
+  @Inject
+  @Archived
+  private Event<UserEntityEvent> userRemovedEvent;
+
   public User getUser(Long userId) {
     UserEntity userEntity = userEntityDAO.findById(userId);
     return userController.findUser(userEntity);
@@ -100,6 +97,7 @@ public class UserController {
     return userContactDAO.listByUser(user, hidden);
   }
   
+  // TODO: Move to createUser and registration widget bean
   public void registerUser(SchoolDataSource dataSource, String firstName, String lastName, String email, String passwordHash) {
     Environment environment = sessionController.getEnvironment();
 
@@ -120,26 +118,29 @@ public class UserController {
     EnvironmentUserRole userRole = defaults.getDefaultUserRole();
     environmentUserDAO.create(userEntity, environment, userRole);
 
-    /**
-     * Create User Wall
-     */
-    
-    // TODO: Internal messaging
-//    UserWall userWall = userWallDAO.create(userEntity);
-//
-//    WallEntry wallEntry = wallEntryDAO.create(userWall, WallEntryVisibility.PRIVATE, userEntity);
-//    wallEntryTextItemDAO.create(wallEntry, "Joined Muikku", userEntity);
-
-    /**
-     * Link Environment wall
-     */
-//    EnvironmentWall environmentWall = environmentWallDAO.findByEnvironment(environment);
-//    userWallLinkDAO.create(userEntity, environmentWall);
+    fireUserCreatedEvent(userEntity);
   }
 
   @Permit (MuikkuPermissions.MANAGE_USERS) // TODO: ???
   public List<EnvironmentUser> listEnvironmentUsers(@PermitContext Environment environment) {
     return environmentUserDAO.listByEnvironment(environment);
   }
-  
+
+  private void fireUserCreatedEvent(UserEntity userEntity) {
+    UserEntityEvent userEvent = new UserEntityEvent();
+    userEvent.setUserEntityId(userEntity.getId());
+    userCreatedEvent.fire(userEvent);
+  }
+
+  private void fireUserModifiedEvent(UserEntity userEntity) {
+    UserEntityEvent userEvent = new UserEntityEvent();
+    userEvent.setUserEntityId(userEntity.getId());
+    userModifiedEvent.fire(userEvent);
+  }
+
+  private void fireUserRemovedEvent(UserEntity userEntity) {
+    UserEntityEvent userEvent = new UserEntityEvent();
+    userEvent.setUserEntityId(userEntity.getId());
+    userRemovedEvent.fire(userEvent);
+  }
 }

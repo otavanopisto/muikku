@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -13,11 +14,17 @@ import fi.muikku.dao.courses.CourseEntityDAO;
 import fi.muikku.dao.courses.CourseSettingsDAO;
 import fi.muikku.dao.courses.CourseSettingsTemplateDAO;
 import fi.muikku.dao.courses.CourseUserDAO;
+import fi.muikku.events.CourseEntityEvent;
+import fi.muikku.events.CourseUserEvent;
+import fi.muikku.events.Created;
+import fi.muikku.events.Modified;
+import fi.muikku.events.Archived;
 import fi.muikku.model.base.Environment;
 import fi.muikku.model.base.EnvironmentDefaults;
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.courses.CourseSettings;
 import fi.muikku.model.courses.CourseSettingsTemplate;
+import fi.muikku.model.courses.CourseUser;
 import fi.muikku.model.courses.CourseUserRole;
 import fi.muikku.model.stub.courses.CourseEntity;
 import fi.muikku.model.stub.users.UserEntity;
@@ -58,6 +65,26 @@ public class CourseController {
   @Inject
   private CourseUserDAO courseUserDAO;
 
+  @Inject
+  @Created
+  private Event<CourseEntityEvent> courseCreationEvent;
+
+  @Inject
+  @Modified
+  private Event<CourseEntityEvent> courseModifiedEvent;
+
+  @Inject
+  @Archived
+  private Event<CourseEntityEvent> courseArchivedEvent;
+
+  @Inject
+  @Created
+  private Event<CourseUserEvent> courseUserCreationEvent;
+
+  public void TEST_COURSES() {
+    createCourse(sessionController.getEnvironment(), "Ukkosen testikurz #" + ((int) (Math.random() * 100)));
+  }
+  
   @LoggedIn
   @Permit(MuikkuPermissions.CREATE_COURSE)
   public void createCourse(@PermitContext Environment environment, String name) {
@@ -74,14 +101,7 @@ public class CourseController {
     courseSettingsDAO.create(courseEntity, template.getDefaultCourseUserRole());
     courseUserDAO.create(creator, courseEntity, defaults.getDefaultCourseCreatorRole());
 
-    // TODO: internal messaging
-//    CourseWall courseWall = courseWallDAO.create(courseEntity);
-//
-//    WallEntry wallEntry = wallEntryDAO.create(courseWall, WallEntryVisibility.PUBLIC, creator);
-//
-//    wallEntryTextItemDAO.create(wallEntry, "Course " + course.getName() + " created " + new Date().toString(), creator);
-//
-//    userWallLinkDAO.create(creator, courseWall);
+    fireCourseCreatedEvent(courseEntity);
   }
 
   @Permit(MuikkuPermissions.LIST_COURSES)
@@ -103,6 +123,10 @@ public class CourseController {
     return courseEntityDAO.findById(id);
   }
 
+  public CourseUser findCourseUserById(Long id) {
+    return courseUserDAO.findById(id);
+  }
+  
   @LoggedIn
   @Permit(MuikkuPermissions.JOIN_COURSE)
   public void joinCourse(@PermitContext CourseEntity courseEntity) {
@@ -111,15 +135,25 @@ public class CourseController {
     CourseSettings courseSettings = courseSettingsDAO.findByCourse(courseEntity);
     CourseUserRole courseUserRole = courseSettings.getDefaultCourseUserRole();
     
-    // TODO: Internal messaging
-//    CourseWall courseWall = courseWallDAO.findByCourse(courseEntity);
-
-    courseUserDAO.create(loggedUser, courseEntity, courseUserRole);
-//    userWallLinkDAO.create(loggedUser, courseWall);
+    CourseUser courseUser = courseUserDAO.create(loggedUser, courseEntity, courseUserRole);
+    
+    fireCourseUserCreatedEvent(courseUser);
   }
 
   public boolean isUserOnCourse(CourseEntity course) {
     return courseUserDAO.findByCourseAndUser(course, sessionController.getUser()) != null;
   }
 
+  private void fireCourseCreatedEvent(CourseEntity courseEntity) {
+    CourseEntityEvent courseEvent = new CourseEntityEvent();
+    courseEvent.setCourseEntityId(courseEntity.getId());
+    courseCreationEvent.fire(courseEvent);
+  }
+  
+  private void fireCourseUserCreatedEvent(CourseUser courseUser) {
+    CourseUserEvent courseUserEvent = new CourseUserEvent();
+    courseUserEvent.setCourseUserId(courseUser.getId());
+    courseUserCreationEvent.fire(courseUserEvent);
+  }
+  
 }

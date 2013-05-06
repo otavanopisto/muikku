@@ -5,13 +5,10 @@
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-    template="/WEB-INF/templates/course.xhtml">
+    template="/WEB-INF/templates/default.xhtml">
     
   <ui:define name="content">
     <p>(courseId): #{param['courseId']}</p>
-
-    <ui:include src="/widgets/coursewall.xhtml">
-    </ui:include>
 
     <ul>
       <li>Tyokalujen valinta on/off</li>
