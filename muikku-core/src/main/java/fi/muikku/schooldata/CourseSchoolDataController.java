@@ -6,6 +6,11 @@ import fi.muikku.model.stub.courses.CourseEntity;
 import fi.muikku.model.stub.users.UserEntity;
 import fi.muikku.schooldata.entity.Course;
 
+/**
+ * 
+ * 
+ * Fire CourseEvent when Course is either created, modified or archived
+ */
 public interface CourseSchoolDataController {
 
   Course createCourse(CourseEntity courseEntity, String name, UserEntity creator);

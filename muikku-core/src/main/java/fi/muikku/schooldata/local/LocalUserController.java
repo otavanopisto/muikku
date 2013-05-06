@@ -1,13 +1,16 @@
 package fi.muikku.schooldata.local;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import fi.muikku.dao.users.UserImplDAO;
+import fi.muikku.events.Created;
 import fi.muikku.model.stub.users.UserEntity;
 import fi.muikku.model.users.UserImpl;
 import fi.muikku.schooldata.UserSchoolDataController;
 import fi.muikku.schooldata.entity.User;
+import fi.muikku.schooldata.events.UserEvent;
 
 @Dependent
 @LocalSchoolDataController
@@ -15,6 +18,10 @@ public class LocalUserController implements UserSchoolDataController {
 
 	@Inject
 	private UserImplDAO userImplDAO;
+	
+	@Inject
+	@Created
+	private Event<UserEvent> userCreatedEvent;
 
 	@Override
 	public User findUser(UserEntity userEntity) {
@@ -23,9 +30,19 @@ public class LocalUserController implements UserSchoolDataController {
 
 	@Override
 	public User createUser(UserEntity userEntity, String firstName, String lastName, String email) {
-		return UserIntfImpl.fromEntity(userImplDAO.create(userEntity, firstName, lastName, email));
+	  UserImpl userImpl = userImplDAO.create(userEntity, firstName, lastName, email);
+	  
+	  fireUserCreatedEvent(userEntity);
+	  
+		return UserIntfImpl.fromEntity(userImpl);
 	}
 
+  private void fireUserCreatedEvent(UserEntity userEntity) {
+    UserEvent userEvent = new UserEvent();
+    userEvent.setUserEntityId(userEntity.getId());
+    userCreatedEvent.fire(userEvent);
+  }
+  
 	private static class UserIntfImpl implements User {
 
 		public UserIntfImpl(String firstName, String lastName, String email) {
