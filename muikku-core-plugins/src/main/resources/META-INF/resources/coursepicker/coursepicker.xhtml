@@ -12,7 +12,7 @@
     
     <div class="widget coursePicker">
       <h:form>
-        <h:commandButton action="#{Course.TEST_COURSES()}" value="CREATETESTCOURSES" />
+        <h:commandButton action="#{Course.TEST_COURSES()}" value="CREATETESTCOURSE" />
       </h:form>
 
       <input type="hidden" name="environmentId" value="#{muikkuSession.environment.id}"/>
@@ -35,24 +35,50 @@
 
         <div id="all" class="tabContent">
           <div class="coursePickerAllCoursesFilterPane">
-            <input type="text" name="coursePickerSearch"/> <a href="#">-o</a>
+            <input type="text" name="coursePickerSearch"/> <a href="#" class="coursePickerAllCoursesSearchBtn">-o</a>
             <input type="button" name="coursePickerAllCoursesFilterBtn" value="Rajaa"/>
-            <div class="coursePickerFilterListPane">
-              <div class="coursePickerFilter">Filtteri1</div>
-              <div class="coursePickerFilter">Filtteri2</div>
+            <div class="coursePickerAllCoursesFilterList">
+<!--               <div class="coursePickerFilter">Filtteri1 <div class="coursePickerFilterRemoveBtn">x</div></div> -->
+<!--               <div class="coursePickerFilter">Filtteri2 <div class="coursePickerFilterRemoveBtn">x</div></div> -->
+            </div>
+            
+            <div class="coursePickerAllCoursesFilterSelectorPopup" style="display: none;">
+              <div>Linjat</div>
+              <div>
+                <div class="coursePickerFilterSelection">
+                  <div class="coursePickerFilterSelectionName">Lukio</div>
+                </div>
+                <div class="coursePickerFilterSelection">
+                  <div class="coursePickerFilterSelectionName">Peruskoulu</div>
+                </div>
+                <div class="coursePickerFilterSelection">
+                  <div class="coursePickerFilterSelectionName">Ammatillinen</div>
+                </div>
+              </div>
+              <div>Muut</div>
+              <div>
+                <div class="coursePickerFilterSelection">
+                  <div class="coursePickerFilterSelectionName">Pajat</div>
+                </div>
+                <div class="coursePickerFilterSelection">
+                  <div class="coursePickerFilterSelectionName">Ilmiöt</div>
+                </div>
+                <div class="coursePickerFilterSelection">
+                  <div class="coursePickerFilterSelectionName">Ryhmäkurssit</div>
+                </div>
+              </div>
             </div>
           </div>
 
           <div id="allCoursesList">
-            All
           </div>
         </div>
 
         <ui:fragment rendered="#{muikkuSession.loggedIn}">
           <div id="my" class="tabContent">
             <div class="coursePickerMyCoursesFilterPane">
-              <input type="text" name="coursePickerSearch"/> <a href="#">-o</a>
-              <input type="button" name="coursePickerMyCoursesFilterBtn" value="Rajaa"/>
+              <input type="text" name="coursePickerSearch"/> <a href="#" class="coursePickerMyCoursesSearchBtn">-o</a>
+<!--               <input type="button" name="coursePickerMyCoursesFilterBtn" value="Rajaa"/> -->
               <div class="coursePickerFilterListPane">
                 <input type="checkbox" name="" /> Filtteri1
                 <input type="checkbox" name="" /> Filtteri2
@@ -60,12 +86,10 @@
             </div>
 
             <div id="myCoursesList">
-              My
             </div>
           </div>        
           <div id="plp" class="tabContent">
             <div id="plpCoursesList">
-              Plp
             </div>
           </div>        
         </ui:fragment>
