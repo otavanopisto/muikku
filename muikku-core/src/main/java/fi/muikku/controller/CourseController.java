@@ -14,6 +14,7 @@ import fi.muikku.dao.courses.CourseEntityDAO;
 import fi.muikku.dao.courses.CourseSettingsDAO;
 import fi.muikku.dao.courses.CourseSettingsTemplateDAO;
 import fi.muikku.dao.courses.CourseUserDAO;
+import fi.muikku.dao.courses.CourseUserRoleDAO;
 import fi.muikku.events.CourseEntityEvent;
 import fi.muikku.events.CourseUserEvent;
 import fi.muikku.events.Created;
@@ -66,6 +67,9 @@ public class CourseController {
   private CourseUserDAO courseUserDAO;
 
   @Inject
+  private CourseUserRoleDAO courseUserRoleDAO;
+
+  @Inject
   @Created
   private Event<CourseEntityEvent> courseCreationEvent;
 
@@ -112,7 +116,7 @@ public class CourseController {
   // TODO: Rights
   // @Permit (MuikkuPermissions.LIST_COURSES)
   public List<CourseEntity> findCoursesByEnvironmentAndUser(@PermitContext Environment environment, UserEntity userEntity) {
-    return courseUserDAO.listByUser(userEntity);
+    return courseUserDAO.listCoursesByUser(userEntity);
   }
 
   public Course findCourse(CourseEntity courseEntity) {
@@ -129,7 +133,7 @@ public class CourseController {
   
   @LoggedIn
   @Permit(MuikkuPermissions.JOIN_COURSE)
-  public void joinCourse(@PermitContext CourseEntity courseEntity) {
+  public CourseUser joinCourse(@PermitContext CourseEntity courseEntity) {
     UserEntity loggedUser = sessionController.getUser();
 
     CourseSettings courseSettings = courseSettingsDAO.findByCourse(courseEntity);
@@ -138,6 +142,8 @@ public class CourseController {
     CourseUser courseUser = courseUserDAO.create(loggedUser, courseEntity, courseUserRole);
     
     fireCourseUserCreatedEvent(courseUser);
+    
+    return courseUser;
   }
 
   public boolean isUserOnCourse(CourseEntity course) {
@@ -154,6 +160,13 @@ public class CourseController {
     CourseUserEvent courseUserEvent = new CourseUserEvent();
     courseUserEvent.setCourseUserId(courseUser.getId());
     courseUserCreationEvent.fire(courseUserEvent);
+  }
+
+  public List<CourseUser> listCourseTeachers(CourseEntity courseEntity) {
+    // TODO
+    CourseUserRole teacherRole = courseUserRoleDAO.findById(5l);
+
+    return courseUserDAO.listByCourseAndRole(courseEntity, teacherRole);
   }
   
 }

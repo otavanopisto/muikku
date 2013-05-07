@@ -1,10 +1,47 @@
 {#.}
   <div class="coursePickerCourse">
     <input type="hidden" name="courseId" value="{id}"/>
-    Rating: {rating} ({ratingCount})
-    Name: {name}
-    Desc: {description}
-    <input type="button" value="Ilmoittaudu" class="coursePickerAttendCourseButton"/>
-    <input type="button" value="Tutustu" class="coursePickerCheckOutCourseButton"/>
+  
+    <div class="coursePickerCourseRating">Rating: {rating} ({ratingCount})</div>
+    <div class="coursePickerCourseName">Name: {name}</div>
+    
+    <div class="coursePickerCourseDetails" style="display: none;">
+      <input type="button" value="Tutustu" class="coursePickerCheckOutCourseButton"/>
+
+      <div class="coursePickerCourseDescription">Desc: {description}</div>
+      <div class="coursePickerCourseTeachers">
+        {?teachers}
+          <div class="coursePickerCourseTeachersCaption">Kurssin opettaja(t)</div>
+          
+          {#teachers}
+            <div class="coursePickerCourseTeacher">
+              <div class="coursePickerCourseTeacherName">{fullName}</div>
+            </div>
+            <div class="coursePickerCourseTeacherPictureContainer">
+              {?hasPicture} 
+                <img class="coursePickerCourseTeacherPicture" src="{@contextPath/}/picture?userId={id}" width="50" height="50" />
+              {:else}
+                <img class="coursePickerCourseTeacherPicture" src="{@contextPath/}/themes/default/gfx/fish.jpg" width="50" height="50" />
+              {/hasPicture}
+            </div>
+          {/teachers}
+        {:else}
+          Kurssilla ei ole opettajia
+        {/teachers}
+      </div>
+
+      {?hasCourseFee}      
+        <div class="coursePickerCourseFee">Kurssi maksullinen</div>
+      {/hasCourseFee}
+
+      {?hasAssessmentFee}      
+        <div class="coursePickerCourseAssessmentFee">Arviointi maksullinen</div>
+      {/hasAssessmentFee}
+
+      {?isMember}
+      {:else}
+        <input type="button" value="Ilmoittaudu" class="coursePickerAttendCourseButton"/>
+      {/isMember}
+    </div>
   </div>
 {/.}
