@@ -1,4 +1,8 @@
-/* FullCalendar Month Calendar Overrides */
+
+.monthCalendar{
+	background-color:#fff;
+}
+/* FullCalendar Month Calendar Overrides 
 
 .fc-view-month .moreInfo {
   background: transparent !important;
@@ -17,7 +21,12 @@
   font-size: 12px;
 }
 
-/* Widget */
+*/
+/* Widget
+
+.calendarSettingsButton{
+  background-color:#fff;
+}
 
 .fullCalendarWidget {
 }
@@ -42,7 +51,10 @@
   text-align: center;
 }
 
-/* Event Editor */
+
+ */
+
+/* Event Editor 
 
 .fullCalendarWidgetEventEditorField {
   margin-bottom: 8px;
@@ -66,3 +78,5 @@
 .fullCalendarWidgetEventEditorField input.ui-timepicker-input {
   margin-left: 8px;
 }
+
+*/

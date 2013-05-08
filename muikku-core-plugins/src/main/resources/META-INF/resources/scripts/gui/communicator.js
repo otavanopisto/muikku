@@ -12,7 +12,7 @@
       
       this._tabsContainer = widgetElement.find('.communicatorTabs');
       this._tabsContainer.tabs();
-      
+      $('#menu').menu();
       this._newMessageButton.click($.proxy(this._onNewMessageClick, this));
       
       this._showInbox();

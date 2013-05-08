@@ -1,9 +1,38 @@
+@import "_base.scss";
 
-/* FullCalendar Month Calendar Overrides */
+
+/* FullCalendar Month Calendar Overrides  */
 
 .monthCalendar{
-  background-color:#000;
+	background-color:$bgr;
 }
+
+.fc-widget-header{
+color: #545454;
+background-color: #ededed;	
+
+}
+
+.fc-state-highlight {
+color: #000;
+font-size:30px;
+font-weight:bold;
+background: #fefcea;
+background: -moz-linear-gradient(top, #fefcea 0%, #fff6b2 100%);
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fefcea), color-stop(100%,#fff6b2));
+background: -webkit-linear-gradient(top, #fefcea 0%,#fff6b2 100%);
+background: -o-linear-gradient(top, #fefcea 0%,#fff6b2 100%);
+background: -ms-linear-gradient(top, #fefcea 0%,#fff6b2 100%);
+background: linear-gradient(to bottom, #fefcea 0%,#fff6b2 100%);
+text-shadow: 2px 2px 1px rgba(150, 150, 150, 1);
+}
+
+.fc-other-month{
+	     background-color: #eaf3f7;
+text-shadow: 2px 2px 1px rgba(150, 150, 150, 1);
+}
+
+
 
 .fc-view-month .moreInfo {
   background: transparent !important;
@@ -23,8 +52,10 @@
 }
 
 
-
 /* Widget */
+.calendarSettingsButton{
+  background-color:$bgr;
+}
 
 .fullCalendarWidget {
 }
@@ -48,6 +79,9 @@
   font-weight: bold;
   text-align: center;
 }
+
+
+
 
 /* Event Editor */
 

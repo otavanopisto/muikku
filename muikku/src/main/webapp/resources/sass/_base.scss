@@ -7,6 +7,11 @@
 /* Shadows */
 $sc: #999;
 
+/* Generic background */
+
+$bgr : #fff;
+
+
 /* Generic gradients (Grayscale) */
 
 /* Top-bottom 2 - color */
@@ -39,21 +44,28 @@ $eightColorGr-8:#fcfcfc;
 	
 	$headerGradient-start:#deefff;
 	$headerGradient-end:#98bede;
-	
+
+
+
 	/* Navigation icons */
 	
 		/* Active */
 		
 		$naviIconGr:#feccb1,#f17432,#ea5507,#fb955e;
 		
+    /* Hover */
+    
+    $cToolIconGr: #fcfcfc,#f17432,#ea5507,#fcfcfc;		
+		
 		/* Disabled */
 		
 		$naviIconDisabledGr:#ffffff,#f1f1f1,#e1e1e1,#f6f6f6 ;
 	
 	/* Content interaction top-bottom 4-color */
+	
 	  $contInteractGr:#e0f3fa,#d8f0fc,#b8e2f6,#b6dffd;
 	
-	/* Tooltip top-bottom */
+	/* Navigation Tooltip top-bottom */
 	
 	/* Static navigation top-bottom 8 - color */
 	
@@ -61,6 +73,44 @@ $eightColorGr-8:#fcfcfc;
 	
 	/* Widget top-bottom */
     $widgetGr: #feffff , #eaf3f7, #cbe3ed;
+
+  /* content */
+  
+   /* contentTool icons */
+  
+    /* Active */
+    
+    $cToolIconGr: #fceabb,#fccd4d,#f8b500,#fbdf93;
+
+    /* Hover */
+    
+    $cToolIconGrHover: #fff,#fceabb,#fccd4d,#fbdf93;
+
+
+    /* Disabled */
+    
+    $cToolIconDisabledGr:#ffffff,#f1f1f1,#e1e1e1,#f6f6f6 ;
+   
+   /* contentTool app */
+  
+    /* Border */
+    
+    $cToolBrdr: #deefff;
+    
+    /* Background */
+    
+    $cToolBgr: #deefff ;    
+
+
+   /* Table Header cells */
+    
+    /* Background gradient */
+    
+    $tableHeaderGr:#cedce7 ;
+    
+   /* Font color */
+    
+    $tableHeaderFont:#ffffff ;    
 
 
 /* Borders */
