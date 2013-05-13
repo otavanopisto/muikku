@@ -418,6 +418,8 @@
       return this._modeHandler.getViewEndTime();
     },
     getCalendarColorProfile: function (id) {
+      var localPrefix = window.location.protocol + '//' + window.location.host;
+      
       for (var i = 0, l = this._calendarMetas.length; i < l; i++) {
         if (this._calendarMetas[i].id == id) {
           var colorProfile = this._calendarMetas[i].colorProfile;
@@ -426,14 +428,17 @@
             var selectorText = '.' + colorProfile.className;
             
             for (var stylesheetIndex = 0, stylesheetsLength = document.styleSheets.length; stylesheetIndex < stylesheetsLength; stylesheetIndex++) {
-              var rules = document.styleSheets[stylesheetIndex].cssRules ? document.styleSheets[stylesheetIndex].cssRules : document.styleSheets[stylesheetIndex].rules;
+              var styleSheet = document.styleSheets[stylesheetIndex];
               
-              for (var ruleIndex = 0, rulesLength = rules.length; ruleIndex < rulesLength; ruleIndex++) {
-                var rule = rules[ruleIndex];
-                if (rule.selectorText && (rule.selectorText.toLowerCase() == selectorText.toLowerCase())) {
-                  colorProfile.backgroundColor = rule.style['backgroundColor'];
-                  colorProfile.borderColor = rule.style['borderColor'];
-                  break;
+              if (styleSheet.href && (styleSheet.href.indexOf(localPrefix) == 0)) {
+                var rules = styleSheet.cssRules||styleSheet.rules;
+                for (var ruleIndex = 0, rulesLength = rules.length; ruleIndex < rulesLength; ruleIndex++) {
+                  var rule = rules[ruleIndex];
+                  if (rule.selectorText && (rule.selectorText.toLowerCase() == selectorText.toLowerCase())) {
+                    colorProfile.backgroundColor = rule.style['backgroundColor'];
+                    colorProfile.borderColor = rule.style['borderColor'];
+                    break;
+                  }
                 }
               }
             }
