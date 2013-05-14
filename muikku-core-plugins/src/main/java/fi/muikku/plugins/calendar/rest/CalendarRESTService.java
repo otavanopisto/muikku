@@ -350,7 +350,7 @@ public class CalendarRESTService extends PluginRESTService {
   	
   	net.fortuna.ical4j.model.Calendar icsCalendar;
 		try {
-			icsCalendar = calendarController.loadIcsCalendar(url);
+			icsCalendar = calendarController.loadIcsCalendar(StringUtils.trim(url));
 		} catch (IOException | ParserException | URISyntaxException e) {
   		// TODO: Localize
   		return Response.status(Status.BAD_REQUEST).entity("Could subscribe to calendar in " + url).build();
