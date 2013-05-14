@@ -17,7 +17,7 @@
     </select>
   </div> 
 
-  <div class="calendarSettingsSubscribeCalendarContainer">
+  <div class="calendarSettingsSubscribeCalendarContainer" style="display: none">
     <button class="calendarSettingsShowSubscribeCalendarButton">Subscribe External Calendar</button>  
     
     <div class="calendarSettingsSubscribeCalendarOptionsContainer" style="display: none">
