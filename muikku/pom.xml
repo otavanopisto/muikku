@@ -113,6 +113,12 @@
     <dependency>
       <groupId>fi.muikku</groupId>
       <artifactId>rest</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>javassist</artifactId>
+          <groupId>javassist</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
