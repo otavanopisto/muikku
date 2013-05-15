@@ -84,7 +84,7 @@
       <plugin>
         <groupId>org.bsc.maven</groupId>
         <artifactId>maven-processor-plugin</artifactId>
-        <version>2.1.0</version>
+        <version>2.2.1</version>
         <dependencies>
           <dependency>
             <groupId>org.hibernate</groupId>
@@ -126,7 +126,6 @@
               <includes>
                 <include>**fi/muikku/plugins/**/*.java</include>
               </includes>
-
               <outputDirectory>${basedir}/src/main/.tranquilmodel</outputDirectory>
               <processors>
                 <processor>fi.tranquil.TranquilModelAnnotationProcessor</processor>
@@ -176,38 +175,6 @@
           </tasks>
         </configuration>
       </plugin>
-      
-<!--       <plugin> -->
-<!--         <groupId>org.bsc.maven</groupId> -->
-<!--         <artifactId>maven-processor-plugin</artifactId> -->
-<!--         <version>2.1.1</version> -->
-<!--         <dependencies> -->
-<!--           <dependency> -->
-<!--             <groupId>org.hibernate</groupId> -->
-<!--             <artifactId>hibernate-jpamodelgen</artifactId> -->
-<!--             <version>1.2.0.Final</version> -->
-<!--           </dependency> -->
-<!--         </dependencies> -->
-<!--         <executions> -->
-<!--           <execution> -->
-<!--             <id>process-metamodel</id> -->
-<!--             <goals> -->
-<!--               <goal>process</goal> -->
-<!--             </goals> -->
-<!--             <phase>generate-sources</phase> -->
-<!--             <configuration> -->
-<!--               <includes> -->
-<!--                 <include>**fi/muikku/plugins/**/*.java</include> -->
-<!--               </includes> -->
-          
-<!--               <outputDirectory>${basedir}/src/main/.metamodel</outputDirectory> -->
-<!--               <processors> -->
-<!--                 <processor>org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor</processor> -->
-<!--               </processors> -->
-<!--             </configuration> -->
-<!--           </execution> -->
-<!--         </executions> -->
-<!--       </plugin> -->
     </plugins>
   </build>
 
