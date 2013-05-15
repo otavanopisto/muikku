@@ -132,6 +132,19 @@
           <target>${maven.compiler.target}</target>
         </configuration>
       </plugin>
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>2.3</version>
+        <executions>
+          <execution>
+            <id>default-war</id>
+            <phase>package</phase>
+            <goals>
+              <goal>war</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
 	  <plugin>
 		<groupId>org.apache.maven.plugins</groupId>
 		<artifactId>maven-source-plugin</artifactId>
