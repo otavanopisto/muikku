@@ -31,6 +31,22 @@
             <lifecycleMappingMetadata>
               <pluginExecutions>
                 <pluginExecution>
+                
+                  <pluginExecutionFilter>
+                    <groupId>org.jasig.maven</groupId>
+                    <artifactId>sass-maven-plugin</artifactId>
+                    <versionRange>[1.1.1,)</versionRange>
+                    <goals>
+                      <goal>update-stylesheets</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  
+                  <action>
+                    <ignore />
+                  </action>
+                </pluginExecution>
+                
+                <pluginExecution>
                   <pluginExecutionFilter>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-antrun-plugin</artifactId>
@@ -39,6 +55,7 @@
                       <goal>run</goal>
                     </goals>
                   </pluginExecutionFilter>
+                  
                   <action>
                     <ignore />
                   </action>
@@ -51,6 +68,26 @@
     </pluginManagement>
     
     <plugins>
+      <plugin>
+        <groupId>org.jasig.maven</groupId>
+        <artifactId>sass-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>sassProcessSource</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>update-stylesheets</goal>
+            </goals>
+            <inherited>false</inherited>
+            <configuration>
+              <sassSourceDirectory>${basedir}/src/main/resources/META-INF/resources/sass</sassSourceDirectory>
+              <destination>${project.build.directory}/classes/META-INF/resources/css</destination>
+            </configuration>
+          </execution>
+        </executions>
+        
+      </plugin>
+      
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>2.3.1</version>
