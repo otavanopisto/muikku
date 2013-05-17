@@ -16,12 +16,11 @@
       <default-locale>en</default-locale>
       <supported-locale>fi</supported-locale>
     </locale-config>
-    
+    <!-- TODO Remove once msg references have been removed -->
     <resource-bundle>
       <base-name>fi.muikku.i18n.Messages</base-name>
       <var>msg</var>
     </resource-bundle>
-    
     <resource-handler>fi.muikku.plugins.PluginResourceHandler</resource-handler>
   </application>
 

@@ -3,10 +3,13 @@ package fi.muikku.plugins.internallogin;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+
+import org.apache.commons.lang3.LocaleUtils;
 
 import fi.muikku.controller.EnvironmentController;
 import fi.muikku.controller.UserController;
@@ -15,11 +18,12 @@ import fi.muikku.model.widgets.DefaultWidget;
 import fi.muikku.model.widgets.Widget;
 import fi.muikku.model.widgets.WidgetLocation;
 import fi.muikku.model.widgets.WidgetVisibility;
+import fi.muikku.plugin.LocalizedPluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
 
 @ApplicationScoped
 @Stateful
-public class InternalLoginPluginDescriptor implements PluginDescriptor {
+public class InternalLoginPluginDescriptor implements PluginDescriptor, LocalizedPluginDescriptor {
 
   private static final String INTERNALLOGIN_WIDGET_NAME = "internallogin";
 
@@ -36,7 +40,7 @@ public class InternalLoginPluginDescriptor implements PluginDescriptor {
   public String getName() {
     return INTERNALLOGIN_WIDGET_NAME;
   }
-
+  
   @Override
   public void init() {
     Widget internalLoginWidget = widgetController.findWidget(INTERNALLOGIN_WIDGET_NAME);
@@ -61,6 +65,14 @@ public class InternalLoginPluginDescriptor implements PluginDescriptor {
     return new ArrayList<Class<?>>(Arrays.asList(
       InternalLoginWidgetBackingBean.class
     ));
+  }
+
+  @Override
+  public List<ResourceBundle> getLocaleBundles() {
+    List<ResourceBundle> bundles = new ArrayList<ResourceBundle>();
+    bundles.add(ResourceBundle.getBundle("fi.muikku.plugins.internallogin.InternalLoginPluginMessages", LocaleUtils.toLocale("fi")));
+    bundles.add(ResourceBundle.getBundle("fi.muikku.plugins.internallogin.InternalLoginPluginMessages", LocaleUtils.toLocale("en")));
+    return bundles;
   }
 
 }
