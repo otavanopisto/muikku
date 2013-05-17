@@ -4,16 +4,18 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ServiceLoader;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.apache.maven.repository.internal.ArtifactDescriptorUtils;
 import org.sonatype.aether.artifact.Artifact;
-import org.sonatype.aether.graph.Dependency;
+import org.sonatype.aether.collection.DependencyCollectionException;
+import org.sonatype.aether.graph.DependencyNode;
+import org.sonatype.aether.graph.Exclusion;
 import org.sonatype.aether.repository.RemoteRepository;
-import org.sonatype.aether.resolution.ArtifactDescriptorException;
-import org.sonatype.aether.resolution.ArtifactDescriptorResult;
-import org.sonatype.aether.resolution.ArtifactResolutionException;
+import org.sonatype.aether.resolution.ArtifactResult;
+import org.sonatype.aether.resolution.DependencyResolutionException;
 import org.sonatype.aether.resolution.VersionResolutionException;
+import org.sonatype.aether.util.artifact.ArtifacIdUtils;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
 
 import fi.muikku.plugin.PluginDescriptor;
@@ -71,48 +73,27 @@ public class SingletonPluginManager {
     mavenClient = new MavenClient(getPluginDirectory(pluginDirectory), eclipseWorkspace);
     for (RemoteRepository repository : repositories) {
       mavenClient.addRepository(repository);
-    }
+    }    
     
     if (applicationArtifact != null) {
-      // Application artifact is used for detecting artifacts that are already provided by 
-      // main application and should not be loaded by plugins
-    	
-  		addProvidedArtifact(applicationArtifact, null);
+      try {
+  			List<ArtifactResult> artifactResults = mavenClient.resolveDependencies(applicationArtifact, "compile", new ArrayList<Exclusion>());
+  
+  			for (ArtifactResult artifactResult : artifactResults) {
+  				DependencyNode node = artifactResult.getRequest().getDependencyNode();
+  				if (!artifactResult.isResolved()) {
+  					logger.warning("Failed to resolve application provided dependency " + node.getDependency());
+  				}
+  
+  				Exclusion exclusion = new Exclusion(artifactResult.getArtifact().getGroupId(), artifactResult.getArtifact().getArtifactId(), artifactResult.getArtifact().getClassifier(), artifactResult.getArtifact().getExtension());
+  				applicationProvidedArtifacts.add(exclusion);
+  			}
+  		} catch (DependencyCollectionException | DependencyResolutionException e) {
+  			throw new PluginManagerException(e);
+  		}
     }
   }
-
-  private void addProvidedArtifact(Artifact artifact, List<RemoteRepository> remoteRepositories) throws PluginManagerException {
-  	artifact = ArtifactDescriptorUtils.toPomArtifact(artifact);
-  	
-  	processedArtifacts.add(getArtifactId(artifact));
-  	
-  	ArtifactDescriptorResult descriptorResult = null;
-
-  	try {
-  	  if (remoteRepositories == null) {
-				descriptorResult = mavenClient.describeArtifact(artifact);
-  	  } else {
-  	  	descriptorResult = mavenClient.describeArtifact(artifact, remoteRepositories);
-  	  }
-		} catch (ArtifactResolutionException | ArtifactDescriptorException | VersionResolutionException e) {
-			logger.warning("Resolution of application provided artifact '" + artifact.toString() + "' failed");
-		}
-  	
-  	if (descriptorResult != null) {
-    	List<Dependency> dependencies = new ArrayList<>();
-    	
-    	for (Dependency dependency : descriptorResult.getDependencies()) {
-    		if (!processedArtifacts.contains(getArtifactId(dependency.getArtifact()))) {
-        	dependencies.add(dependency);
-    		}
-      }
   
-    	for (Dependency dependency : dependencies) {
-  			addProvidedArtifact(dependency.getArtifact(), descriptorResult.getRepositories());
-    	}
-  	}
-  }
-
   /** Adds a repository to fetch plugins from.
    * 
    * @param url The URL of the repository to add.
@@ -162,62 +143,34 @@ public class SingletonPluginManager {
     String version = loadInfo.getVersion();
     
     try {
-    	loadArtifact(new DefaultArtifact(groupId, artifactId, "jar", version), null);
-    } catch (ArtifactResolutionException e) {
-      throw new PluginManagerException(e);
-    } catch (ArtifactDescriptorException e) {
-      throw new PluginManagerException(e);
-    } catch (VersionResolutionException e) {
-    	throw new PluginManagerException(e);
+    	Artifact libraryArtifact = new DefaultArtifact(groupId, artifactId, "jar", version);
+    	
+			List<ArtifactResult> resolvedDependencies = mavenClient.resolveDependencies(libraryArtifact, "compile", applicationProvidedArtifacts);
+			for (ArtifactResult resolvedDependency : resolvedDependencies) {
+				if (resolvedDependency.isResolved()) {
+					File artifactFile = mavenClient.getArtifactJarFile(resolvedDependency.getArtifact());
+					
+					if (artifactFile.isDirectory()) {
+	          logger.info("Loading " + ArtifacIdUtils.toId(resolvedDependency.getArtifact()) + " plugin folder: " + artifactFile);
+	    			try {
+	    			  libraryLoader.loadClassPath(artifactFile.toURI().toURL());        	
+	    		  } catch (Exception e) {
+	    		  	logger.log(Level.WARNING, "Error occurred while loading plugin folder " + artifactFile, e);
+	    			}
+	        } else {
+	          logger.info("Loading " + ArtifacIdUtils.toId(resolvedDependency.getArtifact()) + " plugin library jar: " + artifactFile);
+	          libraryLoader.loadJar(artifactFile);
+	      	}
+				} else {
+					logger.warning("Could not resolve " + ArtifacIdUtils.toId(libraryArtifact) + " -plugin dependency: " + ArtifacIdUtils.toId(resolvedDependency.getArtifact()));
+				}
+			}
+		} catch (DependencyCollectionException | DependencyResolutionException e) {
+			throw new PluginManagerException(e);
 		}
   }
-  
-  private String getArtifactId(Artifact artifact) {
-  	return artifact.getGroupId() + "-" + artifact.getArtifactId();
-  }
-  
-  private void loadArtifact(Artifact artifact, List<RemoteRepository> remoteRepositories) throws PluginManagerException, ArtifactResolutionException, ArtifactDescriptorException, VersionResolutionException {
-  	processedArtifacts.add(getArtifactId(artifact));
-  	
-  	ArtifactDescriptorResult descriptorResult;
-  	
-  	if (remoteRepositories == null) {
-  		descriptorResult = mavenClient.describeArtifact(artifact);
-  	} else {
-  		descriptorResult = mavenClient.describeArtifact(artifact, remoteRepositories);
-  	}
-  	
-  	List<Dependency> dependencies = new ArrayList<>();
-  	
-  	for (Dependency dependency : descriptorResult.getDependencies()) {
-      if ("compile".equals(dependency.getScope())) {
-      	dependencies.add(dependency);
-      } else {
-      	logger.info("Marking " + getArtifactId(dependency.getArtifact()) + " as processed because it's scope is " + dependency.getScope());
-      	processedArtifacts.add(getArtifactId(dependency.getArtifact()));
-      }
-    }
 
-  	for (Dependency dependency : dependencies) {
-  		if (!processedArtifacts.contains(getArtifactId(dependency.getArtifact()))) {
-	      loadArtifact(dependency.getArtifact(), descriptorResult.getRepositories());
-  		}
-  	}
-  	
-  	File artifactFile = mavenClient.getArtifactJarFile(descriptorResult.getArtifact());
-  	if (artifactFile.isDirectory()) {
-      logger.info("Loading " + artifact.getGroupId() + "." + artifact.getArtifactId() + ":" + artifact.getVersion() + " plugin folder: " + artifactFile);
-			try {
-			  libraryLoader.loadClassPath(artifactFile.toURI().toURL());        	
-		  } catch (Exception e) {
-			}
-    } else {
-      logger.info("Loading " + artifact.getGroupId() + "." + artifact.getArtifactId() + ":" + artifact.getVersion() + " plugin library jar: " + artifactFile);
-      libraryLoader.loadJar(artifactFile);
-  	}
-  }
-  
-  public List<PluginLibraryDescriptor> discoverPluginLibraries() {
+	public List<PluginLibraryDescriptor> discoverPluginLibraries() {
   	List<PluginLibraryDescriptor> result = new ArrayList<>();
   	ServiceLoader<PluginLibraryDescriptor> pluginLibraryLoader = ServiceLoader.load(PluginLibraryDescriptor.class, libraryLoader.getPluginsClassLoader());
   	for (PluginLibraryDescriptor pluginLibraryDescriptor : pluginLibraryLoader) {
@@ -257,7 +210,7 @@ public class SingletonPluginManager {
     return libraryLoader.getPluginsClassLoader();
   }
   
-  private List<String> processedArtifacts = new ArrayList<>();
+  private List<Exclusion> applicationProvidedArtifacts = new ArrayList<>();
   private LibraryLoader libraryLoader;
   private MavenClient mavenClient;
 }
