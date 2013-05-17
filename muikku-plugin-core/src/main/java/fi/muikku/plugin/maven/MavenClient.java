@@ -17,9 +17,11 @@ import org.apache.maven.wagon.providers.http.LightweightHttpWagonAuthenticator;
 import org.apache.maven.wagon.providers.http.LightweightHttpsWagon;
 import org.sonatype.aether.RepositorySystemSession;
 import org.sonatype.aether.artifact.Artifact;
+import org.sonatype.aether.collection.DependencyCollectionException;
 import org.sonatype.aether.connector.wagon.WagonProvider;
 import org.sonatype.aether.connector.wagon.WagonRepositoryConnectorFactory;
 import org.sonatype.aether.graph.Dependency;
+import org.sonatype.aether.graph.Exclusion;
 import org.sonatype.aether.impl.ArtifactDescriptorReader;
 import org.sonatype.aether.impl.ArtifactResolver;
 import org.sonatype.aether.impl.MetadataResolver;
@@ -30,6 +32,7 @@ import org.sonatype.aether.impl.UpdateCheckManager;
 import org.sonatype.aether.impl.VersionRangeResolver;
 import org.sonatype.aether.impl.VersionResolver;
 import org.sonatype.aether.impl.internal.DefaultArtifactResolver;
+import org.sonatype.aether.impl.internal.DefaultDependencyCollector;
 import org.sonatype.aether.impl.internal.DefaultFileProcessor;
 import org.sonatype.aether.impl.internal.DefaultLocalRepositoryProvider;
 import org.sonatype.aether.impl.internal.DefaultMetadataResolver;
@@ -47,6 +50,7 @@ import org.sonatype.aether.resolution.ArtifactDescriptorResult;
 import org.sonatype.aether.resolution.ArtifactRequest;
 import org.sonatype.aether.resolution.ArtifactResolutionException;
 import org.sonatype.aether.resolution.ArtifactResult;
+import org.sonatype.aether.resolution.DependencyResolutionException;
 import org.sonatype.aether.resolution.VersionRangeRequest;
 import org.sonatype.aether.resolution.VersionRangeResolutionException;
 import org.sonatype.aether.resolution.VersionRangeResult;
@@ -55,6 +59,8 @@ import org.sonatype.aether.spi.io.FileProcessor;
 import org.sonatype.aether.spi.localrepo.LocalRepositoryManagerFactory;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
 import org.sonatype.aether.version.Version;
+
+import fi.muikku.plugin.manager.DependencyResolver;
 
 /** A class responsible for downloading plugins 
  * and their dependencies using Maven.
@@ -83,19 +89,29 @@ public class MavenClient {
     MetadataResolver metadataResolver = createMetadataResolver(remoteRepositoryManager, repositoryEventDispatcher, syncContextFactory, updateCheckManager);
     VersionResolver versionResolver = createVersionResolver(repositoryEventDispatcher, metadataResolver, syncContextFactory);
     VersionRangeResolver versionRangeResolver = createVersionRangeResolver(metadataResolver, repositoryEventDispatcher, syncContextFactory);
-    
-    this.repositorySystem = createRepositorySystem(versionRangeResolver, versionResolver);
+    ArtifactResolver artifactResolver = createArtifactResolver(repositoryEventDispatcher, syncContextFactory, remoteRepositoryManager, versionResolver, fileProcessor);
+    ArtifactDescriptorReader artifactDescriptorReader = createArtifactDescriptionReader(repositoryEventDispatcher, versionResolver, artifactResolver, remoteRepositoryManager);
+    DefaultRepositorySystem repositorySystem = createRepositorySystem(remoteRepositoryManager, artifactDescriptorReader, versionRangeResolver, versionResolver, artifactResolver);
+
     this.localRepositoryPath = localRepositoryDirectory.getAbsolutePath();
-    this.artifactResolver = createArtifactResolver(repositoryEventDispatcher, syncContextFactory, remoteRepositoryManager, versionResolver, fileProcessor);
-    this.artifactDescriptorReader = createArtifactDescriptionReader(repositoryEventDispatcher, versionResolver, artifactResolver, remoteRepositoryManager);
-    this.systemSession = createSystemSession(eclipseWorkspace);
+    this.artifactResolver = artifactResolver;
+    this.artifactDescriptorReader = artifactDescriptorReader;
+    this.systemSession = createSystemSession(repositorySystem, eclipseWorkspace);
+    this.repositorySystem = repositorySystem;
     this.versionRangeResolver = versionRangeResolver;
   }
 
-  private DefaultRepositorySystem createRepositorySystem(VersionRangeResolver versionRangeResolver, VersionResolver versionResolver) {
+  private DefaultRepositorySystem createRepositorySystem(RemoteRepositoryManager remoteRepositoryManager, ArtifactDescriptorReader artifactDescriptorReader, VersionRangeResolver versionRangeResolver, VersionResolver versionResolver, ArtifactResolver artifactResolver) {
+  	DefaultDependencyCollector dependencyCollector = new DefaultDependencyCollector();
+  	dependencyCollector.setVersionRangeResolver(versionRangeResolver);
+  	dependencyCollector.setArtifactDescriptorReader(artifactDescriptorReader);
+  	dependencyCollector.setRemoteRepositoryManager(remoteRepositoryManager);
+  	
   	DefaultRepositorySystem result = new DefaultRepositorySystem();
   	result.setVersionRangeResolver(versionRangeResolver);
   	result.setVersionResolver(versionResolver);
+  	result.setDependencyCollector(dependencyCollector);
+  	result.setArtifactResolver(artifactResolver);
   	
 		return result;
 	}
@@ -208,6 +224,7 @@ public class MavenClient {
   private ArtifactDescriptorReader createArtifactDescriptionReader(RepositoryEventDispatcher repositoryEventDispatcher, VersionResolver versionResolver,
       ArtifactResolver defaultArtifactResolver, RemoteRepositoryManager remoteRepositoryManager) {
 
+  	DefaultModelBuilderFactory modelBuilderFactory = new DefaultModelBuilderFactory();
   	DefaultModelBuilder modelBuilder = modelBuilderFactory.newInstance();
     
     DefaultArtifactDescriptorReader artifactDescriptorReader = new DefaultArtifactDescriptorReader();
@@ -295,7 +312,7 @@ public class MavenClient {
     return remoteRepositoryManager;
   }
 
-  private RepositorySystemSession createSystemSession(String eclipseWorkspace) {
+  private RepositorySystemSession createSystemSession(DefaultRepositorySystem repositorySystem, String eclipseWorkspace) {
     repositorySystem.setLocalRepositoryProvider(getLocalRepositoryProvider());
     MavenRepositorySystemSession session = new MavenRepositorySystemSession();
     LocalRepository localRepository = new LocalRepository(localRepositoryPath);
@@ -330,6 +347,11 @@ public class MavenClient {
     
     return localRepositoryProvider;
   }
+  
+	public List<ArtifactResult> resolveDependencies(Artifact artifact, String scope, List<Exclusion> exclusions) throws DependencyCollectionException, DependencyResolutionException {
+    DependencyResolver dependencyResolver = new DependencyResolver();
+	  return dependencyResolver.resolveDependencies(repositorySystem, systemSession, remoteRepositories, artifact, scope, exclusions);
+	}
 
   private RemoteRepositoryManager remoteRepositoryManager;
   private DefaultRepositorySystem repositorySystem;
@@ -341,6 +363,4 @@ public class MavenClient {
   private ArtifactDescriptorReader artifactDescriptorReader;
   private VersionRangeResolver versionRangeResolver;
   private RepositorySystemSession systemSession;
-  private DefaultModelBuilderFactory modelBuilderFactory = new DefaultModelBuilderFactory();
-	
 }
