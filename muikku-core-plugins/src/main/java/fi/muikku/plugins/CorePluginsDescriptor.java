@@ -19,7 +19,6 @@ import fi.muikku.plugins.communicator.CommunicatorPluginDescriptor;
 import fi.muikku.plugins.coursepicker.CoursePickerPluginDescriptor;
 import fi.muikku.plugins.defaults.DefaultsPluginDescriptor;
 import fi.muikku.plugins.dock.DockPluginDescriptor;
-import fi.muikku.plugins.fish.FishPluginDescriptor;
 import fi.muikku.plugins.forum.ForumPluginDescriptor;
 import fi.muikku.plugins.internallogin.InternalLoginPluginDescriptor;
 import fi.muikku.plugins.wall.WallPluginDescriptor;
@@ -39,7 +38,6 @@ public class CorePluginsDescriptor implements PluginLibraryDescriptor {
 		return new ArrayList<Class<? extends PluginDescriptor>>(Arrays.asList(
 			DefaultsPluginDescriptor.class,
 		  CalendarPluginDescriptor.class,
-		  FishPluginDescriptor.class,
 		  InternalLoginPluginDescriptor.class,
 		  CommunicatorPluginDescriptor.class,
       CoursePickerPluginDescriptor.class,

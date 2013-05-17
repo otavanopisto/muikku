@@ -1,18 +1,21 @@
 package fi.muikku.plugins.fish;
 
-import javax.ejb.Stateful;
-import javax.enterprise.inject.Model;
+import javax.ejb.Stateless;
+import javax.enterprise.context.Dependent;
 
-@Model
-@Stateful
+@Stateless
+@Dependent
 public class FishWidgetController {
   
-  public String getText(Long widgetId) {
-    int index = Double.valueOf(Math.round(Math.random() * (texts.length - 1))).intValue();
+  public String getText(int index) {
     return texts[index];
   }
   
-  private String[] texts = {
+  public int getCount() {
+    return texts.length;
+  }
+  
+  private static final String[] texts = {
     "Pilkkiin en tartu enää!",
     "Vastarannan kiiski?",
     "Kuin kala verkossa",
@@ -31,6 +34,5 @@ public class FishWidgetController {
     "Hauki on kala",
     "Syökää kanaa, syökää kanaa!",
     "Ajattelen, siis olen!",
-    "Parsa!"
   };
 }
