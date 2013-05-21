@@ -7,6 +7,7 @@
         <input type="checkbox" data-calendar-id="{id}"/>
       {/visible}
       
+      <div class="visibleCalendarColor" style="background-color: {color}"></div>
       <label>{name}</label>
     </div>
   {/calendars}
