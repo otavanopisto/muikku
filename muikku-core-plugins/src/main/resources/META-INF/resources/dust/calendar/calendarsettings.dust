@@ -22,8 +22,16 @@
     
     <div class="calendarSettingsSubscribeCalendarOptionsContainer" style="display: none">
       <label>Enter the iCal URL to the External Calendar</label>
-      <input class="calendarSettingsSubscribeUrl calendarSettingsSubscribeUrlEmpty" type="text" value=""/>
-      <button class="calendarSettingsSubscribeCalendarButton">Subscribe</button>  
+      <div>
+        <input class="calendarSettingsSubscribeUrl calendarSettingsSubscribeUrlEmpty" type="text" value=""/>
+      </div>
+      <label>Choose color for subscribed calendar</label>
+      <div>
+        <input type="color" class="calendarSettingsSubscribeColor" />
+      </div>
+      <div>
+        <button class="calendarSettingsSubscribeCalendarButton">Subscribe</button>  
+      </div>
     </div>
     
   </div>
