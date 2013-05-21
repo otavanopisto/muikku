@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,10 +29,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import net.fortuna.ical4j.data.ParserException;
+import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
 
 import fi.muikku.controller.PluginSettingsController;
 import fi.muikku.model.base.Environment;
@@ -147,42 +147,39 @@ public class CalendarRESTService extends PluginRESTService {
   		return Response.status(Status.NOT_FOUND).build();
   	}
   	
-  	ObjectMapper mapper = new ObjectMapper();  
-  	try {
-			Map<String, Object> jsonData = mapper.readValue(data, new TypeReference<Map<String, Object>>() { });
-			for (String key : jsonData.keySet()) {
-				switch (key) {
-					case "visible":
-						Boolean visible = (Boolean) jsonData.get("visible");
-						if (visible != null) {
-							calendarController.updateUserCalendarVisible(userCalendar, visible);
+		JSONObject jsonData = JSONObject.fromObject(data);
+		@SuppressWarnings("unchecked") Set<String> keys = jsonData.keySet();
+		
+		for (String key : keys) {
+			switch (key) {
+				case "visible":
+					Boolean visible = jsonData.optBoolean("visible");
+					if (visible != null) {
+						calendarController.updateUserCalendarVisible(userCalendar, visible);
+					}
+			  break;
+				case "name":
+					String name = jsonData.optString("name");
+					if (name != null) {
+						calendarController.updateCalendarName(calendar, name);
+					}
+				break;
+				case "calendarCategory_id":
+					Long calendarCategoryId = jsonData.optLong("calendarCategory_id");
+					if (calendarCategoryId != null) {
+						CalendarCategory calendarCategory = calendarController.findCalendarCategoryById(calendarCategoryId);
+						if (calendarCategory != null) {
+							calendarController.updateCalendarCategory(calendar, calendarCategory);
+						} else {
+						  // TODO: Proper error handling
+							throw new RuntimeException("Invalid calendarCategory_id");
 						}
-				  break;
-					case "name":
-						String name = (String) jsonData.get("name");
-						if (name != null) {
-							calendarController.updateCalendarName(calendar, name);
-						}
-					break;
-					case "calendarCategory_id":
-						Long calendarCategoryId = (Long) jsonData.get("calendarCategory_id");
-						if (calendarCategoryId != null) {
-							CalendarCategory calendarCategory = calendarController.findCalendarCategoryById(calendarCategoryId);
-							if (calendarCategory != null) {
-								calendarController.updateCalendarCategory(calendar, calendarCategory);
-							} else {
-							  // TODO: Proper error handling
-								throw new RuntimeException("Invalid calendarCategory_id");
-							}
-						}
-					break;
-					default:
-						// TODO: Proper error handling
-						throw new RuntimeException("Calendar property " + key + " can not be updated");
-				}
+					}
+				break;
+				default:
+					// TODO: Proper error handling
+					throw new RuntimeException("Calendar property " + key + " can not be updated");
 			}
-		} catch (IOException e) {
-			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
   	
   	TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
@@ -207,24 +204,18 @@ public class CalendarRESTService extends PluginRESTService {
   	if (calendar instanceof LocalCalendar) {
   		LocalCalendar localCalendar = (LocalCalendar) calendar;
 
-  		ObjectMapper mapper = new ObjectMapper();  
-  		Map<String, Object> jsonData;
-			try {
-				jsonData = mapper.readValue(data, new TypeReference<Map<String, Object>>() { });
-			} catch (IOException e) {
-				return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-			}
+  		JSONObject jsonData = JSONObject.fromObject(data);
 
-  		String summary = (String) jsonData.get("summary");
-  		String description = (String) jsonData.get("description");
-  		String location = (String) jsonData.get("location");
-  		String url = (String) jsonData.get("url");
-  		Date start = new Date((Long) jsonData.get("start"));
-  		Date end = new Date((Long) jsonData.get("end"));
-  		Boolean allDay = (Boolean) jsonData.get("allDay");
-  		BigDecimal latitude = (BigDecimal) jsonData.get("latitude");
+  		String summary = jsonData.optString("summary");
+  		String description = jsonData.optString("description");
+  		String location = jsonData.optString("location");
+  		String url = jsonData.optString("url");
+  		Date start = new Date(jsonData.optLong("start"));
+  		Date end = new Date(jsonData.optLong("end"));
+  		Boolean allDay = jsonData.optBoolean("allDay");
+  		BigDecimal latitude = (BigDecimal) jsonData.opt("latitude");
   		BigDecimal longitude = (BigDecimal) jsonData.get("longitude");
-  		Long typeId = ((Number) jsonData.get("type_id")).longValue();
+  		Long typeId = jsonData.optLong("type_id");
 
   		LocalEventType eventType = calendarController.findLocalEventType(typeId);
   		if (eventType == null) {
@@ -280,23 +271,17 @@ public class CalendarRESTService extends PluginRESTService {
   	if (!localEvent.getCalendar().getId().equals(calendarId)) {
   		return Response.status(Status.NOT_FOUND).build();
   	}
+  	
+  	JSONObject jsonData = JSONObject.fromObject(data);
 
-  	ObjectMapper mapper = new ObjectMapper();  
-		Map<String, Object> jsonData;
-		try {
-			jsonData = mapper.readValue(data, new TypeReference<Map<String, Object>>() { });
-		} catch (IOException e) {
-			return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-		}
-
-		Long typeId = ((Number) jsonData.get("type_id")).longValue();
-		String summary = (String) jsonData.get("summary");
-		String description = (String) jsonData.get("description");
-		String location = (String) jsonData.get("location");
-		String url = (String) jsonData.get("url");
-		Date start = new Date((Long) jsonData.get("start"));
-		Date end = new Date((Long) jsonData.get("end"));
-		Boolean allDay = (Boolean) jsonData.get("allDay");
+		Long typeId = jsonData.optLong("type_id");
+		String summary = jsonData.optString("summary");
+		String description = jsonData.optString("description");
+		String location = jsonData.optString("location");
+		String url = jsonData.optString("url");
+		Date start = new Date(jsonData.optLong("start"));
+		Date end = new Date(jsonData.optLong("end"));
+		Boolean allDay = jsonData.optBoolean("allDay");
 		BigDecimal latitude = (BigDecimal) jsonData.get("latitude");
 		BigDecimal longitude = (BigDecimal) jsonData.get("longitude");
 
@@ -344,7 +329,8 @@ public class CalendarRESTService extends PluginRESTService {
   @POST
   @Path ("/subscribedCalendars") 
   public Response createSubscribedCalendar(
-  		@FormParam ("url") String url
+  		@FormParam ("url") String url,
+  		@FormParam ("color") String color
   ) {
   	CalendarCategory calendarCategory = null;
   	
@@ -369,7 +355,7 @@ public class CalendarRESTService extends PluginRESTService {
   	Environment environment = sessionController.getEnvironment();
   	UserEntity user = sessionController.getUser();
 
-    UserCalendar subscribedUserCalendar = calendarController.createSubscribedUserCalendar(environment, user, calendarCategory, name, url);
+    UserCalendar subscribedUserCalendar = calendarController.createSubscribedUserCalendar(environment, user, calendarCategory, name, url, color);
     SubscribedCalendar subscribedCalendar = (SubscribedCalendar) subscribedUserCalendar.getCalendar();
     
     try {
@@ -410,27 +396,24 @@ public class CalendarRESTService extends PluginRESTService {
   public Response updateSetting(String data) {
   	UserEntity user = sessionController.getUser();
   	
-  	ObjectMapper mapper = new ObjectMapper();  
-  	try {
-			Map<String, String> jsonData = mapper.readValue(data, new TypeReference<Map<String, String>>() { });
-			for (String key : jsonData.keySet()) {
-				switch (key) {
-					case "firstDay":
-						pluginSettingsController.setPluginUserSetting("calendar", CalendarPluginDescriptor.DEFAULT_FIRSTDAY_SETTING, jsonData.get(key), user);
-				  break;
-					default:
-						// TODO: Proper error handling
-						throw new RuntimeException("Calendar setting " + key + " can not be updated");
-				}
+  	JSONObject jsonData = JSONObject.fromObject(data);
+  	@SuppressWarnings("unchecked") Set<String> keys = jsonData.keySet();
+  	
+		for (String key : keys) {
+			switch (key) {
+				case "firstDay":
+					pluginSettingsController.setPluginUserSetting("calendar", CalendarPluginDescriptor.DEFAULT_FIRSTDAY_SETTING, jsonData.getString(key), user);
+			  break;
+				default:
+					// TODO: Proper error handling
+					throw new RuntimeException("Calendar setting " + key + " can not be updated");
 			}
-		} catch (IOException e) {
-		  return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
 
     return Response.ok(data).build();
   }
   
-  private class CalendarVisiblityValueGetter implements ValueGetter<Boolean> {
+  public static class CalendarVisiblityValueGetter implements ValueGetter<Boolean> {
   	
   	public CalendarVisiblityValueGetter(List<UserCalendar> userCalendars) {
 			for (UserCalendar userCalendar : userCalendars) {

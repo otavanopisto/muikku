@@ -21,5 +21,11 @@ public class CalendarDAO extends PluginDAO<Calendar> {
 		getEntityManager().persist(calendar);
 		return calendar;
 	}
+	
+	public Calendar updateColor(Calendar calendar, String color) {
+		calendar.setColor(color);
+		getEntityManager().persist(calendar);
+		return calendar;
+	}
 
 }
