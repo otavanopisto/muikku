@@ -2,13 +2,11 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:c="http://java.sun.com/jsp/jstl/core"
-    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:h="http://java.sun.com/jsf/html">
     
     <div class="widget fishWidget">
       <div class="fishText">
-        #{fishWidgetController.getText(widgetId)}
+        #{fishWidgetBackingBean.text}
       </div>
       <div class="fishImage"></div>
     </div>

@@ -137,8 +137,8 @@ public class CalendarController {
 	
 	/* LocalCalendar */
 	
-	public UserCalendar createLocalUserCalendar(Environment environment, UserEntity user, CalendarCategory calendarCategory, String name) {
-		LocalCalendar localCalendar = localCalendarDAO.create(environment.getId(), calendarCategory, name);
+	public UserCalendar createLocalUserCalendar(Environment environment, UserEntity user, CalendarCategory calendarCategory, String name, String color) {
+		LocalCalendar localCalendar = localCalendarDAO.create(environment.getId(), calendarCategory, name, color);
 		UserCalendar userCalendar = userCalendarDAO.create(localCalendar, environment.getId(), user.getId(), Boolean.TRUE);
 		return userCalendar;
 	}
@@ -157,8 +157,8 @@ public class CalendarController {
 
 	/* SubscribedCalendar */
 	
-	public UserCalendar createSubscribedUserCalendar(Environment environment, UserEntity user, CalendarCategory calendarCategory, String name, String url) {
-		SubscribedCalendar subscribedCalendar = subscribedCalendarDAO.create(environment.getId(), calendarCategory, name, url);
+	public UserCalendar createSubscribedUserCalendar(Environment environment, UserEntity user, CalendarCategory calendarCategory, String name, String url, String color) {
+		SubscribedCalendar subscribedCalendar = subscribedCalendarDAO.create(environment.getId(), calendarCategory, name, url, color);
 		UserCalendar userCalendar = userCalendarDAO.create(subscribedCalendar, environment.getId(), user.getId(), Boolean.TRUE);
 		return userCalendar;
 	}

@@ -10,6 +10,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
+import fi.muikku.WidgetLocations;
 import fi.muikku.controller.EnvironmentController;
 import fi.muikku.controller.PluginSettingsController;
 import fi.muikku.controller.UserController;
@@ -54,11 +55,14 @@ public class CalendarPluginDescriptor implements PluginDescriptor, PersistencePl
 	public static final String DEFAULT_FIRSTDAY_SETTING = "defaultFirstDay";
 
 	private static final String DEFAULT_FIRSTDAY = "1"; // Monday
+	private static final String DEFAULT_COLOR = "#ff0000";
 
+	private static final String CALENDAR_CONTENT_SIDEBAR_LEFT = "calendar.contentSidebarLeft";
 	private static final String CALENDAR_CONTENT_WIDGET_LOCATION = "calendar.content";
 	private static final String CALENDAR_CONTENT_TOOLS_TOP_WIDGET_LOCATION = "calendar.contentToolsTop";
 	
 	private static final String FULLCALENDAR_WIDGET_NAME = "fullcalendar";
+	private static final String MINICALENDAR_WIDGET_NAME = "minicalendar";
 	private static final String CALENDARSETTINGS_WIDGET_NAME = "calendarsettings";
 	private static final String CALENDARSVISIBLE_WIDGET_NAME = "calendarsvisible";
 
@@ -111,52 +115,28 @@ public class CalendarPluginDescriptor implements PluginDescriptor, PersistencePl
 		}
 
 		// Make sure we have registered calendar widgets 
-		
-		Widget fullCalendarWidget = widgetController.findWidget(FULLCALENDAR_WIDGET_NAME);
-		if (fullCalendarWidget == null) {
-			fullCalendarWidget = widgetController.createWidget(FULLCALENDAR_WIDGET_NAME, WidgetVisibility.AUTHENTICATED);
-		}
-		
-		Widget calendarSettingsWidget = widgetController.findWidget(CALENDARSETTINGS_WIDGET_NAME);
-		if (calendarSettingsWidget == null) {
-			calendarSettingsWidget = widgetController.createWidget(CALENDARSETTINGS_WIDGET_NAME, WidgetVisibility.AUTHENTICATED);
-		}
 
-		Widget calendarsVisibleWidget = widgetController.findWidget(CALENDARSVISIBLE_WIDGET_NAME);
-		if (calendarsVisibleWidget == null) {
-			calendarsVisibleWidget = widgetController.createWidget(CALENDARSVISIBLE_WIDGET_NAME, WidgetVisibility.AUTHENTICATED);
-		}
+		Widget fullCalendarWidget = ensureWidget(FULLCALENDAR_WIDGET_NAME, WidgetVisibility.AUTHENTICATED);
+		Widget miniCalendarWidget = ensureWidget(MINICALENDAR_WIDGET_NAME, WidgetVisibility.AUTHENTICATED);
+		Widget calendarSettingsWidget = ensureWidget(CALENDARSETTINGS_WIDGET_NAME, WidgetVisibility.AUTHENTICATED);
+		Widget calendarsVisibleWidget = ensureWidget(CALENDARSVISIBLE_WIDGET_NAME, WidgetVisibility.AUTHENTICATED);
 
-		// Add full widget as default to content widget location
+		// Add full widget as default to calendar content widget location
 		
-		WidgetLocation calendarContentWidgetLocation = widgetController.findWidgetLocation(CALENDAR_CONTENT_WIDGET_LOCATION);
-		if (calendarContentWidgetLocation == null) {
-			calendarContentWidgetLocation = widgetController.createWidgetLocation(CALENDAR_CONTENT_WIDGET_LOCATION);
-		}
+		ensureDefaultWidget(fullCalendarWidget, CALENDAR_CONTENT_WIDGET_LOCATION);
 		
-		DefaultWidget fullCalendarDefaultWidget = widgetController.findDefaultWidget(fullCalendarWidget, calendarContentWidgetLocation);
-		if (fullCalendarDefaultWidget == null) {
-			fullCalendarDefaultWidget = widgetController.createDefaultWidget(calendarContentWidgetLocation, fullCalendarWidget);
-		}
+		// Add minicalendar as default to calendar content left sidebar and environment right sidebar
+		
+		ensureDefaultWidget(miniCalendarWidget, CALENDAR_CONTENT_SIDEBAR_LEFT);
+		ensureDefaultWidget(miniCalendarWidget, WidgetLocations.ENVIRONMENT_CONTENT_SIDEBAR_RIGHT);
 		
 		// Add calendar settings to calendar content tools top widget space by default
 		
-		WidgetLocation calendarContentToopsTopWidgetLocation = widgetController.findWidgetLocation(CALENDAR_CONTENT_TOOLS_TOP_WIDGET_LOCATION);
-		if (calendarContentToopsTopWidgetLocation == null) {
-			calendarContentToopsTopWidgetLocation = widgetController.createWidgetLocation(CALENDAR_CONTENT_TOOLS_TOP_WIDGET_LOCATION);
-		}
-		
-		DefaultWidget calendarSettingsDefaultWidget = widgetController.findDefaultWidget(calendarSettingsWidget, calendarContentToopsTopWidgetLocation);
-		if (calendarSettingsDefaultWidget == null) {
-			calendarSettingsDefaultWidget = widgetController.createDefaultWidget(calendarContentToopsTopWidgetLocation, calendarSettingsWidget);
-		}
+		ensureDefaultWidget(calendarSettingsWidget, CALENDAR_CONTENT_TOOLS_TOP_WIDGET_LOCATION);
 		
 	  // Add calendars visible to calendar content tools top widget space by default
 			
-	  DefaultWidget calendarsVisibleDefaultWidget = widgetController.findDefaultWidget(calendarsVisibleWidget, calendarContentToopsTopWidgetLocation);
-		if (calendarsVisibleDefaultWidget == null) {
-			calendarsVisibleDefaultWidget = widgetController.createDefaultWidget(calendarContentToopsTopWidgetLocation, calendarsVisibleWidget);
-	  }
+		ensureDefaultWidget(calendarsVisibleWidget, CALENDAR_CONTENT_TOOLS_TOP_WIDGET_LOCATION);
 
 		// Make sure every user has a default calendar
 
@@ -168,13 +148,34 @@ public class CalendarPluginDescriptor implements PluginDescriptor, PersistencePl
 		for (UserEntity userWithoutDefaultCalendar : usersWithoutDefaultCalendar) {
 			User user = userController.findUser(userWithoutDefaultCalendar);
 			String name = user.getFirstName() + ' ' + user.getLastName();
-			UserCalendar calendar = calendarController.createLocalUserCalendar(environment, userWithoutDefaultCalendar, defaultCalendarCategory, name);
+			UserCalendar calendar = calendarController.createLocalUserCalendar(environment, userWithoutDefaultCalendar, defaultCalendarCategory, name, DEFAULT_COLOR);
 			pluginSettingsController.setPluginUserSetting(getName(), DEFAULT_CALENDAR_ID_SETTING, calendar.getCalendar().getId().toString(), userWithoutDefaultCalendar);
 		}
 		
 		String defaultFirstDay = pluginSettingsController.getPluginSetting(getName(), DEFAULT_FIRSTDAY_SETTING);
 		if (!DEFAULT_FIRSTDAY.equals(defaultFirstDay)) {
 			pluginSettingsController.setPluginSetting(getName(), DEFAULT_FIRSTDAY_SETTING, DEFAULT_FIRSTDAY);
+		}
+	}
+
+	private Widget ensureWidget(String name, WidgetVisibility visibility) {
+		Widget widget = widgetController.findWidget(name);
+		if (widget == null) {
+			widget = widgetController.createWidget(name, visibility);
+		}
+		
+		return widget;
+	}
+
+	private void ensureDefaultWidget(Widget widget, String location) {
+		WidgetLocation widgetLocation = widgetController.findWidgetLocation(location);
+		if (widgetLocation == null) {
+			widgetLocation = widgetController.createWidgetLocation(location);
+		}
+		
+		DefaultWidget defaultWidget = widgetController.findDefaultWidget(widget, widgetLocation);
+		if (defaultWidget == null) {
+			defaultWidget = widgetController.createDefaultWidget(widgetLocation, widget);
 		}
 	}
 

@@ -73,15 +73,22 @@
             }
           });
           
+          var colorInput = dialog.find(".calendarSettingsSubscribeColor");
+          colorInput.spectrum({
+            showButtons: false
+          });
+          
           dialog.find(".calendarSettingsSubscribeCalendarButton").click(function (event) {
             var beforeEvent = $.Event("calendarSettingsWidget:beforeCalendarSubscribe");
             $(document).trigger(beforeEvent);    
             if (!beforeEvent.isDefaultPrevented()) {
               var url = subscribeUrlInput.val();
+              var color = $(colorInput).spectrum("get").toHexString();
               if (url && (url != _this._exampleSubscribeUrl)) {
                 RESTful.doPost(CONTEXTPATH + '/rest/calendar/subscribedCalendars', {
                   parameters: {
-                    url: url
+                    url: url,
+                    color: color
                   }
                 })
                 .success(function (data, textStatus, jqXHR) {

@@ -18,12 +18,13 @@ public class LocalCalendarDAO extends PluginDAO<LocalCalendar> {
 	
 	private static final long serialVersionUID = 4403330626269058560L;
 
-	public LocalCalendar create(Long environmentId, CalendarCategory calendarCategory, String name) {
+	public LocalCalendar create(Long environmentId, CalendarCategory calendarCategory, String name, String color) {
     LocalCalendar localCalendar = new LocalCalendar();
     
     localCalendar.setName(name);
     localCalendar.setEnvironmentId(environmentId);
     localCalendar.setCalendarCategory(calendarCategory);
+    localCalendar.setColor(color);
     
     getEntityManager().persist(localCalendar);
     

@@ -30,8 +30,7 @@
       <h:outputStylesheet library="css" name="grid960.gs/960_12_col.css"  /> -->
       <!-- Grid 960 styles -->
       <h:outputStylesheet library="css" name="grid960.gs/960_24_col.css"  /> 
-       <!-- Default Calendar CSS -->
-      <h:outputStylesheet library="css" name="calendarcolorprofiles.css"  />        
+       <!-- Default Calendar CSS --> 
       <h:outputStylesheet library="css" name="fullcalendar.css"  /> 
       <!-- jQuery -->
       
@@ -41,7 +40,7 @@
       <!-- jQuery UI -->
       
       <h:outputScript name="scripts/jquery-ui/js/jquery-ui-1.10.2.custom.js"/>    
-      <h:outputStylesheet name="scripts/jquery-ui/css/cupertino/jquery-ui-1.10.2.custom.css"/>
+      <h:outputStylesheet name="scripts/jquery-ui/css/ui-lightness/jquery-ui-1.10.2.custom.css"/>
             
       <!--  jQuery waypoints  -->
       
@@ -77,14 +76,13 @@
       </div>
       <div id="staticNavigationFade">
         <div id="staticNavigation" class="container_24 scrollblock">
-					<ui:include src="/core/widget-space.xhtml">
-						<ui:param name="location"
-							value="#{widgetSpaceBackingBean.environmentDockTop}" />
-					    <ui:param name="gridSize" value="8" />
-					
-						<ui:param name="sublocations"
-							value="#{widgetSpaceBackingBean.environmentDockTopSublocations}" />
-					</ui:include>
+          <ui:insert name="dockTop">
+		    <ui:include src="/core/widget-space.xhtml">
+			  <ui:param name="location" value="#{widgetSpaceBackingBean.environmentDockTop}" />
+			  <ui:param name="gridSize" value="8" />
+			  <ui:param name="sublocations" value="#{widgetSpaceBackingBean.environmentDockTopSublocations}" />
+		    </ui:include>
+          </ui:insert>
         </div>
       </div>
       <div id="content" class="container_24">      
@@ -94,35 +92,47 @@
 	      </ui:include>     
         </ui:insert>
 	      
-        <ui:include src="/core/widget-space.xhtml">
+        <ui:insert name="contentToolsBottom">
+          <ui:include src="/core/widget-space.xhtml">
 	        <ui:param name="location" value="#{widgetSpaceBackingBean.environmentContentToolsBottom}" />
 	      </ui:include>            
+        </ui:insert>
+        
+        <ui:insert name="contentSidebarLeft">
 	      <ui:include src="/core/widget-space.xhtml">
 	        <ui:param name="location" value="#{widgetSpaceBackingBean.environmentContentSidebarLeft}"/>
 	      </ui:include>
+        </ui:insert>
+        
+        <ui:insert name="contentSidebarRight">
 	      <ui:include src="/core/widget-space.xhtml">
 	        <ui:param name="location" value="#{widgetSpaceBackingBean.environmentContentSidebarRight}"/>
+           <ui:param name="gridSize" value="7" />
 	      </ui:include>      
-	      <ui:insert name="content">
-	        <ui:include src="/core/widget-space.xhtml">
-	          <ui:param name="location" value="#{widgetSpaceBackingBean.environmentContent}" />
-	        </ui:include>
-	      </ui:insert>
+        </ui:insert>
+        
+	    <ui:insert name="content">
+	      <ui:include src="/core/widget-space.xhtml">
+	        <ui:param name="location" value="#{widgetSpaceBackingBean.environmentContent}" />
+	      </ui:include>
+	    </ui:insert>
       </div>
       <div>
-        <ui:include src="/core/widget-space.xhtml">
-          <ui:param name="location" value="#{widgetSpaceBackingBean.environmentDockBottom}" />
-          <ui:param name="sublocations" value="#{widgetSpaceBackingBean.environmentDockBottomSublocations}"/>
-        </ui:include>
+        <ui:insert name="dockBottom">
+          <ui:include src="/core/widget-space.xhtml">
+            <ui:param name="location" value="#{widgetSpaceBackingBean.environmentDockBottom}" />
+            <ui:param name="sublocations" value="#{widgetSpaceBackingBean.environmentDockBottomSublocations}"/>
+          </ui:include>
+        </ui:insert>
       </div>
       <div>
-        <ui:include src="/core/widget-space.xhtml">
-          <ui:param name="location" value="#{widgetSpaceBackingBean.environmentFooter}" />
-          <ui:param name="sublocations" value="#{widgetSpaceBackingBean.environmentFooterSublocations}"/>
-        </ui:include>
+        <ui:insert name="footer">
+          <ui:include src="/core/widget-space.xhtml">
+            <ui:param name="location" value="#{widgetSpaceBackingBean.environmentFooter}" />
+            <ui:param name="sublocations" value="#{widgetSpaceBackingBean.environmentFooterSublocations}"/>
+          </ui:include>
+        </ui:insert>
       </div>
-      
-      
 
 	</h:body>
 

@@ -151,8 +151,6 @@
         var meta = datas[dataIndex].calendarMeta;
         if (meta.visible) {
           var events = datas[dataIndex].events;
-  
-          var colorProfile = widgetController.getCalendarColorProfile(meta.id);
           
           for (var i = 0, l = events.length; i < l; i++) {
             
@@ -175,8 +173,8 @@
               latitude: events[i].latitude,
               editable: editable,
               allDay: events[i].allDay,
-              borderColor: colorProfile.borderColor,
-              backgroundColor: colorProfile.backgroundColor
+              borderColor: meta.colorProfile.borderColor,
+              backgroundColor: meta.colorProfile.backgroundColor
             };
             
             var days = this._getDaySpan(startTime, endTime);
@@ -375,9 +373,7 @@
       this._localEventTypes = null;
       this._calendarMetas = new Array();
       this._calendarsInitialized = false;
-      this._nextColorProfile = 1;
-      this._colorProfileCount = 15;
-      
+
       // Register mode handlers
       
       this._modeHandlers = {
@@ -417,47 +413,16 @@
     getViewEndTime: function () {
       return this._modeHandler.getViewEndTime();
     },
-    getCalendarColorProfile: function (id) {
-      var localPrefix = window.location.protocol + '//' + window.location.host;
+    getCalendarColorProfile: function (meta) {
+      var borderColor = jQuery.Color(meta.color).lightness('-=0.2');
       
-      for (var i = 0, l = this._calendarMetas.length; i < l; i++) {
-        if (this._calendarMetas[i].id == id) {
-          var colorProfile = this._calendarMetas[i].colorProfile;
-          
-          if ((colorProfile.borderColor === undefined)&&(colorProfile.backgroundColor === undefined)) {
-            var selectorText = '.' + colorProfile.className;
-            
-            for (var stylesheetIndex = 0, stylesheetsLength = document.styleSheets.length; stylesheetIndex < stylesheetsLength; stylesheetIndex++) {
-              var styleSheet = document.styleSheets[stylesheetIndex];
-              
-              if (styleSheet.href && (styleSheet.href.indexOf(localPrefix) == 0)) {
-                var rules = styleSheet.cssRules||styleSheet.rules;
-                for (var ruleIndex = 0, rulesLength = rules.length; ruleIndex < rulesLength; ruleIndex++) {
-                  var rule = rules[ruleIndex];
-                  if (rule.selectorText && (rule.selectorText.toLowerCase() == selectorText.toLowerCase())) {
-                    colorProfile.backgroundColor = rule.style['backgroundColor'];
-                    colorProfile.borderColor = rule.style['borderColor'];
-                    break;
-                  }
-                }
-              }
-            }
-          }
-          
-          return colorProfile;
-        }
-      }
-
-      return null;
+      return {
+        backgroundColor: meta.color,
+        borderColor: borderColor.toRgbaString()
+      };
     },  
     
     /* Private */
-    
-    _getNextColorProfile: function () {
-      var colorProfile = 'calendarColorProfile_' + this._nextColorProfile;
-      this._nextColorProfile = (this._nextColorProfile % this._colorProfileCount) + 1;
-      return colorProfile;
-    },
 
     _changeMode: function (mode) {
       var event = $.Event("modeChange", {
@@ -718,11 +683,7 @@
         name: subscribedCalendar.name,
         type: subscribedCalendar.calendarType,
         visible: true,
-        colorProfile: {
-          className: this._getNextColorProfile(),
-          borderColor: undefined,
-          backgroundColor: undefined
-        }
+        colorProfile: this.getCalendarColorProfile(subscribedCalendar)
       };
       
       this._calendarMetas.push(calendarMeta);
@@ -798,11 +759,7 @@
           name: calendar.name,
           type: calendar.calendarType,
           visible: calendar.visible,
-          colorProfile: {
-            className: this._getNextColorProfile(),
-            borderColor: undefined,
-            backgroundColor: undefined
-          }
+          colorProfile: this.getCalendarColorProfile(calendar)
         });
       }
       

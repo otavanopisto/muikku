@@ -45,6 +45,14 @@ public class Calendar {
 		this.calendarCategory = calendarCategory;
 	}
   
+  public String getColor() {
+		return color;
+	}
+  
+  public void setColor(String color) {
+		this.color = color;
+	}
+  
   @Transient
   public CalendarType getCalendarType() {
   	return null;
@@ -64,4 +72,6 @@ public class Calendar {
 	
   @ManyToOne
   private CalendarCategory calendarCategory;
+  
+  private String color;
 }
