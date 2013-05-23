@@ -20,13 +20,13 @@
 						<div id="userIsRepresentingIndicator">#{User.findUser(localSession.loggedUser).firstName}
 							#{User.findUser(localSession.loggedUser).lastName}</div>
 						<span> <h:form>
-								<h:commandLink value="#{msg.endRepresentation}"
+								<h:commandLink value="Lopeta edustus"
 									action="#{localSession.endRepresentation()}" />
 							</h:form>
 						</span>
 					</c:if>
 					<c:if test="#{muikkuSession.loggedIn}">
-						<span> <h:commandLink value="#{msg.logOut}"
+						<span> <h:commandLink value="Kirjaudu ulos"
 								action="#{muikkuSession.logout()}" />
 						</span>
 					</c:if>

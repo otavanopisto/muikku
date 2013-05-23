@@ -9,7 +9,7 @@ import javax.servlet.annotation.WebListener;
 
 import org.apache.commons.lang3.LocaleUtils;
 
-import fi.muikku.i18n.LocaleVault;
+import fi.muikku.i18n.LocaleBackingBean;
 import fi.muikku.plugins.Plugins;
 
 @WebListener
@@ -17,13 +17,16 @@ public class PluginLoadListener implements ServletContextListener {
 
   @Inject
   private Plugins plugins;
+
+  @Inject
+  private LocaleBackingBean localeBackingBean;
   
   @Override
   public void contextInitialized(ServletContextEvent sce) {
     plugins.initialize();
     // TODO Incorrect place or just a misleading listener name? 
-    LocaleVault.add(ResourceBundle.getBundle("fi.muikku.i18n.Messages", LocaleUtils.toLocale("fi") ));
-    LocaleVault.add(ResourceBundle.getBundle("fi.muikku.i18n.Messages", LocaleUtils.toLocale("en") ));
+    localeBackingBean.add(ResourceBundle.getBundle("fi.muikku.i18n.Messages", LocaleUtils.toLocale("fi") ));
+    localeBackingBean.add(ResourceBundle.getBundle("fi.muikku.i18n.Messages", LocaleUtils.toLocale("en") ));
   }
 
   @Override
