@@ -110,7 +110,7 @@
             $(document).trigger(beforeEvent);    
             if (!beforeEvent.isDefaultPrevented()) {
               var url = subscribeUrlInput.val();
-              var color = dialog.find('.calendarSettingsSubscribeColor').spectrum("get").toHexString();
+              var color = dialog.find('.subscirbedCalendarColor').spectrum("get").toHexString();
               
               // TODO: Older browsers without native JSON support
               if (url && (url != _this._exampleSubscribeUrl)) {

@@ -26,7 +26,7 @@
       </div>
       <label>Choose a color for new Calendar</label>
       <div>
-        <input type="color" class="calendarSettingsSubscribeColor" value="rgb(64, 180, 64)"/>
+        <input type="color" class="subscirbedCalendarColor" value="rgb(64, 180, 64)"/>
       </div>
       
       <input name="subscribeNewCalendar" type="submit" value="Subscribe"/>
