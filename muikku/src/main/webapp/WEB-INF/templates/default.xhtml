@@ -89,12 +89,14 @@
         <ui:insert name="contentToolsTop">
 	      <ui:include src="/core/widget-space.xhtml">
 	        <ui:param name="location" value="#{widgetSpaceBackingBean.environmentContentToolsTop}" />
+            <ui:param name="sublocations" value="#{widgetSpaceBackingBean.environmentContentToolsTopSublocations}" />
 	      </ui:include>     
         </ui:insert>
 	      
         <ui:insert name="contentToolsBottom">
           <ui:include src="/core/widget-space.xhtml">
 	        <ui:param name="location" value="#{widgetSpaceBackingBean.environmentContentToolsBottom}" />
+            <ui:param name="sublocations" value="#{widgetSpaceBackingBean.environmentContentToolsBottomSublocations}" />
 	      </ui:include>            
         </ui:insert>
         
