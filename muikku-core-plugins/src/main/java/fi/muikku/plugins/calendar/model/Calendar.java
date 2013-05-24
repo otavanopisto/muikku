@@ -7,7 +7,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
@@ -27,22 +26,6 @@ public class Calendar {
   
   public void setName(String name) {
 		this.name = name;
-	}
-  
-  public Long getEnvironmentId() {
-		return environmentId;
-	}
-  
-  public void setEnvironmentId(Long environmentId) {
-		this.environmentId = environmentId;
-	}
-  
-  public CalendarCategory getCalendarCategory() {
-		return calendarCategory;
-	}
-  
-  public void setCalendarCategory(CalendarCategory calendarCategory) {
-		this.calendarCategory = calendarCategory;
 	}
   
   public String getColor() {
@@ -66,12 +49,6 @@ public class Calendar {
   @NotEmpty
   @Column (nullable = false)
   private String name;
-  
-  // ManyToOne Environment
-  private Long environmentId;
-	
-  @ManyToOne
-  private CalendarCategory calendarCategory;
   
   private String color;
 }

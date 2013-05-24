@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html">
+
+    <h:outputScript name="scripts/jquery.injectcss/jquery.injectCSS.js" target="head"/>
+    <h:outputScript name="scripts/jquery.color/jquery.color-2.1.2.js" target="head"/>
+
+    <h:outputScript name="scripts/gui/genericminicalendar.js" target="head"/>
+    <h:outputScript name="scripts/gui/dockcalendar.js" target="head"/>
+    <h:outputStylesheet name="css/dockcalendar.css"/>
+
+    <div class="widget dockCalendarWidget">
+      <h:outputLink styleClass="naviIconCalendar tooltip" value="#{request.contextPath}/calendar/index.jsf">
+        <span>Kalenteri <br/> <br/>
+	          Kalenterin avulla voit luoda tapahtumia ja pysyt ajan tasalla niistää.<br/> <br/>
+	          <span class="tooltipFastLink" onclick="">Luo kalenteritapahtuma</span>
+          <div class="miniCalendarContainer"></div>
+        </span>
+      </h:outputLink>
+
+      <input type="hidden" name="firstDay" value="#{calendarBackingBean.firstDay}"/>
+    </div>
+
+</ui:composition>

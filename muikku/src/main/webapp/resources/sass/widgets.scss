@@ -6,6 +6,30 @@
 
 /* staticNaviDock  */
 
+.newCalendarWidget {
+  display: inline-block;
+}
+
+.newCalendarButton {
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/calendar-settings.png'), $cToolIconGr...);
+}
+
+.newCalendarButton:hover{
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/calendar-settings.png'), $cToolIconGrHover...);
+}
+
+.newEventWidget {
+  display: inline-block;
+}
+
+.newEventButton {
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/calendar-settings.png'), $cToolIconGr...);
+}
+
+.newEventButton:hover{
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/calendar-settings.png'), $cToolIconGrHover...);
+}
+
 .calendarSettingsButton{
    @include naviIcon(url('../resources/gfx/icons/32x32/actions/calendar-settings.png'), $cToolIconGr...);
 }
@@ -92,13 +116,9 @@
 
 /* Calendar */
 
-
-
 .calendarSettingsWidget {
-  float: right;
   display: inline-block;
 }
-
 
 .calendarSettingsWeekFirstDayContainer {
   padding: 4px;
@@ -134,7 +154,6 @@
 
 
 .calendarsVisibleWidget {
-  float: right;
   display: inline-block;
 }
 
@@ -156,7 +175,6 @@
 .visibleCalendarContainer label {
   margin-left: 8px; 
 }
-
 
 /* Register */
 
@@ -206,14 +224,14 @@
 
 }
 
-.dockWidget{
-	  box-shadow: 1px 1px 5px #888;
-	  margin-top:4px;
-    float:left;
-    @include staticNaviGr($stNavGradColors...);
-    height:40px;
-    border: 2px solid #ededed;
-    border-radius: 10px;
+#staticNavigation .widgetSpace {
+  box-shadow: 1px 1px 5px #888;
+  margin-top:4px;
+  float:left;
+  @include staticNaviGr($stNavGradColors...);
+  height:40px;
+  border: 2px solid #ededed;
+  border-radius: 10px;
 }
 
 .widgetTitle {

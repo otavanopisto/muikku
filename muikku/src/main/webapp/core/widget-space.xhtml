@@ -7,7 +7,7 @@
 
   <ui:fragment rendered="#{widgetsBackingBean.hasWidgets(location)}">
     <ui:fragment rendered="#{!empty(gridSize)}">
-      <div class="widgetSpace grid_#{gridSize}">
+      <div class="widgetSpace grid_#{gridSize}" data-name="#{location}">
         <m:includeWidgets widgets="#{widgetsBackingBean.getWidgets(location)}"/>
         <div class="clear"/>
       </div>

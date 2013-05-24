@@ -1,0 +1,61 @@
+<div class="newEvent">
+  <!-- TODO: Localize -->
+  <div>
+    <label>Calendar</label>
+    <select name="calendarId">
+      {#calendars}
+        <option value="{id}">{name}</option>
+      {/calendars}
+    </select>  
+  </div>
+  <div>
+    <label>Type</label>
+    <select name="typeId">
+      {#types}
+        <option value="{id}">{name}</option>
+      {/types}
+    </select>
+  </div>
+  <div>
+    <label>Summary</label>
+    <input name="summary" type="text">
+  </div>
+  <div>
+    <label>Location</label>
+    <input name="location" type="text">
+  </div>
+  <div>
+    <label>Url</label>
+    <input name="url" type="text">
+  </div>
+  <div>
+    <label>Latitude</label>
+    <input name="latitude" type="text">
+  </div>
+  <div>
+    <label>Longitude</label>
+    <input name="longitude" type="text">
+  </div>
+  <div>
+    <label>All day</label>
+    {@if cond="{allDay}"}
+      <input checked="checked" name="allDay" type="checkbox">
+    {:else}
+      <input name="allDay" type="checkbox">
+    {/if}
+  </div>
+  <div>
+    <label>From</label>
+    <input type="text" name="fromDate"/>
+    <input type="text" name="fromTime"/>
+  </div>
+  <div>
+    <label>To</label>
+    <input type="text" name="toDate"/>
+    <input type="text" name="toTime"/>
+  </div>
+  <div>
+    <label>Description</label>
+    <textarea name="description"></textarea>
+  </div>
+</div>

@@ -45,21 +45,6 @@
                     <ignore />
                   </action>
                 </pluginExecution>
-                
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-antrun-plugin</artifactId>
-                    <versionRange>[1.7,)</versionRange>
-                    <goals>
-                      <goal>run</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  
-                  <action>
-                    <ignore />
-                  </action>
-                </pluginExecution>
               </pluginExecutions>
             </lifecycleMappingMetadata>
           </configuration>
@@ -187,15 +172,6 @@
             <version>${instrumentation-hibernate.version}</version>
           </dependency>
         </dependencies>
-        
-        <executions>
-          <execution>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-        </executions>
         <configuration>
           <tasks>
             <taskdef name="instrument" classname="org.hibernate.tool.instrument.javassist.InstrumentTask">
@@ -225,27 +201,8 @@
       <scope>provided</scope>
     </dependency>
     
-    <dependency>
-	  <groupId>org.apache.httpcomponents</groupId>
-	  <artifactId>httpclient</artifactId>
-	  <!-- 
-	  <scope>provided</scope>
-	   -->
-	</dependency>
 	    
-	<dependency>
-	  <groupId>org.apache.httpcomponents</groupId>
-	  <artifactId>httpcore</artifactId>
-	  <!-- 
-	  <scope>provided</scope>
-	   -->
-	</dependency>
 	
-	<dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-mapper-asl</artifactId>
-      <scope>provided</scope>
-    </dependency>
 
     <!-- 
     <dependency>
@@ -257,11 +214,6 @@
 
 	<!-- Calendar dependencies -->
 
-    <dependency>
-      <groupId>org.mnode.ical4j</groupId>
-      <artifactId>ical4j</artifactId>
-      <version>1.0.4</version>
-    </dependency>
     
     
   </dependencies>

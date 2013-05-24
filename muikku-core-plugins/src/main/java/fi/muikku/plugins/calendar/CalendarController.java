@@ -40,9 +40,7 @@ import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
-import fi.muikku.model.base.Environment;
 import fi.muikku.model.stub.users.UserEntity;
-import fi.muikku.plugins.calendar.dao.CalendarCategoryDAO;
 import fi.muikku.plugins.calendar.dao.CalendarDAO;
 import fi.muikku.plugins.calendar.dao.EventDAO;
 import fi.muikku.plugins.calendar.dao.LocalCalendarDAO;
@@ -52,7 +50,6 @@ import fi.muikku.plugins.calendar.dao.SubscribedCalendarDAO;
 import fi.muikku.plugins.calendar.dao.SubscribedEventDAO;
 import fi.muikku.plugins.calendar.dao.UserCalendarDAO;
 import fi.muikku.plugins.calendar.model.Calendar;
-import fi.muikku.plugins.calendar.model.CalendarCategory;
 import fi.muikku.plugins.calendar.model.Event;
 import fi.muikku.plugins.calendar.model.LocalCalendar;
 import fi.muikku.plugins.calendar.model.LocalEvent;
@@ -66,9 +63,6 @@ public class CalendarController {
 	
 	@Inject
 	private Logger logger;
-	
-	@Inject
-	private CalendarCategoryDAO calendarCategoryDAO;
 
 	@Inject
 	private CalendarDAO calendarDAO;
@@ -94,22 +88,10 @@ public class CalendarController {
 	@Inject
 	private SubscribedEventDAO subscribedEventDAO;
 	
-	/* CalendarCategory */
-
-	public CalendarCategory createCalendarCategory(String name) {
-		return calendarCategoryDAO.create(name);
-	}
+	/* UserCalendar */
 	
-	public CalendarCategory findCalendarCategoryById(Long id) {
-		return calendarCategoryDAO.findById(id);
-	}
-
-	public List<CalendarCategory> listCalendarCategories() {
-		return calendarCategoryDAO.listAll();
-	}
-	
-	public List<UserCalendar> listUserCalendars(Environment environment, UserEntity user) {
-		return userCalendarDAO.listByEnvironmentIdAndUserId(environment.getId(), user.getId());
+	public List<UserCalendar> listUserCalendars(UserEntity user) {
+		return userCalendarDAO.listByUserId(user.getId());
 	}
 
 	/* Calendar */
@@ -118,9 +100,9 @@ public class CalendarController {
 		return calendarDAO.findById(calendarId);
 	}
 	
-	public List<Calendar> listCalendars(Environment environment, UserEntity user) {
+	public List<Calendar> listCalendars(UserEntity user) {
 		List<Calendar> result = new ArrayList<>();
-		List<UserCalendar> userCalendars = userCalendarDAO.listByEnvironmentIdAndUserId(environment.getId(), user.getId());
+		List<UserCalendar> userCalendars = userCalendarDAO.listByUserId(user.getId());
 		for (UserCalendar userCalendar : userCalendars) {
 			result.add(userCalendar.getCalendar());
 		}
@@ -130,22 +112,18 @@ public class CalendarController {
 	public Calendar updateCalendarName(Calendar calendar, String name) {
 		return calendarDAO.updateName(calendar, name);
 	}
-
-	public Calendar updateCalendarCategory(Calendar calendar, CalendarCategory calendarCategory) {
-		return calendarDAO.updateCategory(calendar, calendarCategory);
-	}
 	
 	/* LocalCalendar */
 	
-	public UserCalendar createLocalUserCalendar(Environment environment, UserEntity user, CalendarCategory calendarCategory, String name, String color) {
-		LocalCalendar localCalendar = localCalendarDAO.create(environment.getId(), calendarCategory, name, color);
-		UserCalendar userCalendar = userCalendarDAO.create(localCalendar, environment.getId(), user.getId(), Boolean.TRUE);
+	public UserCalendar createLocalUserCalendar(UserEntity user, String name, String color, Boolean visible) {
+		LocalCalendar localCalendar = localCalendarDAO.create(name, color);
+		UserCalendar userCalendar = userCalendarDAO.create(localCalendar, user.getId(), visible);
 		return userCalendar;
 	}
 
-	public List<LocalCalendar> listUserLocalCalendars(Environment environment, UserEntity user) {
+	public List<LocalCalendar> listUserLocalCalendars(UserEntity user) {
 		List<LocalCalendar> result = new ArrayList<>();
-		List<UserCalendar> userCalendars = listUserCalendars(environment, user);
+		List<UserCalendar> userCalendars = listUserCalendars(user);
 		for (UserCalendar userCalendar : userCalendars) {
 		  if (userCalendar.getCalendar() instanceof LocalCalendar) {
 		  	result.add((LocalCalendar) userCalendar.getCalendar()); 
@@ -155,16 +133,28 @@ public class CalendarController {
 		return result;
 	}
 
+	public List<UserCalendar> listUserLocalUserCalendars(UserEntity user) {
+		List<UserCalendar> result = new ArrayList<>();
+		List<UserCalendar> userCalendars = listUserCalendars(user);
+		for (UserCalendar userCalendar : userCalendars) {
+		  if (userCalendar.getCalendar() instanceof LocalCalendar) {
+		  	result.add(userCalendar); 
+		  }	
+		}
+		
+		return result;
+	}
+
 	/* SubscribedCalendar */
 	
-	public UserCalendar createSubscribedUserCalendar(Environment environment, UserEntity user, CalendarCategory calendarCategory, String name, String url, String color) {
-		SubscribedCalendar subscribedCalendar = subscribedCalendarDAO.create(environment.getId(), calendarCategory, name, url, color);
-		UserCalendar userCalendar = userCalendarDAO.create(subscribedCalendar, environment.getId(), user.getId(), Boolean.TRUE);
+	public UserCalendar createSubscribedUserCalendar(UserEntity user, String name, String url, String color, Boolean visible) {
+		SubscribedCalendar subscribedCalendar = subscribedCalendarDAO.create(name, url, color);
+		UserCalendar userCalendar = userCalendarDAO.create(subscribedCalendar, user.getId(), visible);
 		return userCalendar;
 	}
 
-	public UserCalendar findSubscribedUserCalendar(Environment environment, UserEntity userEntity, String url) {
-		List<UserCalendar> userCalendars = userCalendarDAO.listByEnvironmentIdAndUserId(environment.getId(), userEntity.getId());
+	public UserCalendar findSubscribedUserCalendar(UserEntity userEntity, String url) {
+		List<UserCalendar> userCalendars = userCalendarDAO.listByUserId(userEntity.getId());
 		for (UserCalendar userCalendar : userCalendars) {
 			if (userCalendar.getCalendar() instanceof SubscribedCalendar) {
 				SubscribedCalendar subscribedCalendar = (SubscribedCalendar) userCalendar.getCalendar();
@@ -174,6 +164,31 @@ public class CalendarController {
 		}
 		
 		return null;
+	}
+
+	public List<UserCalendar> listUserSubscribedUserCalendars(UserEntity user) {
+		List<UserCalendar> result = new ArrayList<>();
+		List<UserCalendar> userCalendars = listUserCalendars(user);
+		for (UserCalendar userCalendar : userCalendars) {
+		  if (userCalendar.getCalendar() instanceof SubscribedCalendar) {
+		  	result.add(userCalendar); 
+		  }	
+		}
+		
+		return result;
+	}
+
+	public List<SubscribedCalendar> listUserSubscribedCalendars(UserEntity user) {
+		List<SubscribedCalendar> result = new ArrayList<>();
+		
+		List<UserCalendar> userCalendars = listUserCalendars(user);
+		for (UserCalendar userCalendar : userCalendars) {
+		  if (userCalendar.getCalendar() instanceof SubscribedCalendar) {
+		  	result.add((SubscribedCalendar) userCalendar.getCalendar()); 
+		  }	
+		}
+		
+		return result;
 	}
 
 	public net.fortuna.ical4j.model.Calendar loadIcsCalendar(String url) throws IOException, ParserException, URISyntaxException {
@@ -331,6 +346,10 @@ public class CalendarController {
 		localEventDAO.updateLongitude(localEvent, longitude);
 		
 		return localEvent;
+	}
+
+	public LocalEvent updateLocalEventCalendar(LocalEvent localEvent, LocalCalendar localCalendar) {
+		return localEventDAO.updateCalendar(localEvent, localCalendar);
 	}
 	
 	/* Events */

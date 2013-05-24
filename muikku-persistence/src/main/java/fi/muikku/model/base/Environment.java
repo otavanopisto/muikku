@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import fi.muikku.security.ContextReference;
 
 @Entity
+@Deprecated
 public class Environment implements ContextReference {
 
   public Long getId() {
