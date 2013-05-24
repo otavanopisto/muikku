@@ -126,9 +126,38 @@
       <artifactId>jackson-mapper-asl</artifactId>
     </dependency>
   </dependencies>
-
+    
   <build>
     <finalName>${project.artifactId}</finalName>
+    
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.jasig.maven</groupId>
+                    <artifactId>sass-maven-plugin</artifactId>
+                    <versionRange>[1.1.1,)</versionRange>
+                    <goals>
+                      <goal>update-stylesheets</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore />
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -178,6 +207,26 @@
 			</execution>
 		</executions>
 	  </plugin>
+      
+      <plugin>
+        <groupId>org.jasig.maven</groupId>
+        <artifactId>sass-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>sassProcessSource</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>update-stylesheets</goal>
+            </goals>
+            <inherited>false</inherited>
+            <configuration>
+              <sassSourceDirectory>${basedir}/src/main/webapp/resources/sass</sassSourceDirectory>
+              <destination>${project.build.directory}/resources/css</destination>
+            </configuration>
+          </execution>
+        </executions>
+        
+      </plugin>
     </plugins>
   </build>
 
