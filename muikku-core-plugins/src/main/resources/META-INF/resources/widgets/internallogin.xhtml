@@ -2,30 +2,30 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:h="http://java.sun.com/jsf/html">
-    
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+  
   <h:outputScript name="scripts/jshash/md5-min.js" target="head"/>
   <h:outputScript name="scripts/gui/internallogin.js" target="head"/>
 
   <div class="widget loginWidget">
     <h:form>
-    
       <h:messages/>
   
       <div class="formElementRow">
-        <h:outputLabel for="email" value="Saehkoepostiosoite" styleClass="formLabel" />
+        <h:outputLabel for="email" value="#{i18n.text['plugin.internalLogin.email']}" styleClass="formLabel" />
         <h:inputText id="email" redisplay="false" required="true" value="#{internalLoginWidgetBackingBean.email}">
           <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
         </h:inputText>
       </div>
   
       <div class="formElementRow">
-        <h:outputLabel for="password" value="Salasana" styleClass="formLabel" />
+        <h:outputLabel for="password" value="#{i18n.text['plugin.internalLogin.password']}" styleClass="formLabel" />
         <h:inputSecret id="password" redisplay="false" required="true" value="#{internalLoginWidgetBackingBean.password}"/>
       </div>
   
       <div class="formElementRow">
-        <h:commandButton action="#{internalLoginWidgetBackingBean.login}" value="Kirjaudu"/>
+        <h:commandButton action="#{internalLoginWidgetBackingBean.login}" value="#{i18n.text['plugin.internalLogin.login']}"/>
       </div>
     </h:form>
   </div>

@@ -12,6 +12,8 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import fi.muikku.Logged;
+import fi.muikku.i18n.LocaleBackingBean;
+import fi.muikku.plugin.LocalizedPluginDescriptor;
 import fi.muikku.plugin.PluginContextClassLoader;
 import fi.muikku.plugin.PluginDescriptor;
 import fi.muikku.plugin.Transactional;
@@ -20,6 +22,9 @@ import fi.muikku.plugin.Transactional;
 public class Plugins {
 
 	private Logger logger = Logger.getLogger(getClass().getName());
+	
+	@Inject
+	private LocaleBackingBean localeBackingBean;
 	
 	@Inject
   @Any
@@ -47,6 +52,9 @@ public class Plugins {
       
     	try {
     	  pluginDescriptor.init();
+    	  if (pluginDescriptor instanceof LocalizedPluginDescriptor) {
+    	    localeBackingBean.add(((LocalizedPluginDescriptor) pluginDescriptor).getLocaleBundles());
+    	  }
       	logger.info("Plugin '" + pluginDescriptor.getName() + "' initialized");
     	} catch (Exception e) {
     		logger.log(Level.SEVERE, "Failed to initialize plugin: " + pluginDescriptor.getName(), e);

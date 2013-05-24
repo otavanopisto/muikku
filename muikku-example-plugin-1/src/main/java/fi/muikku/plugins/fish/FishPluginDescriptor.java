@@ -20,7 +20,7 @@ import fi.muikku.plugin.PluginDescriptor;
 @Stateful
 public class FishPluginDescriptor implements PluginDescriptor {
 
-  private static final String FISH_WIDGET_LOCATION = WidgetLocations.ENVIRONMENT_HEADER;
+  private static final String FISH_WIDGET_LOCATION = "environment.header.left";
   private static final String FISH_WIDGET_NAME = "fish";
 
   @Inject
