@@ -1,5 +1,9 @@
 @CHARSET "UTF-8";
 
+.fishWidget {
+	text-align: left;
+}
+
 .fishImage {
 	display: inline-block;
 	width: 44px;
