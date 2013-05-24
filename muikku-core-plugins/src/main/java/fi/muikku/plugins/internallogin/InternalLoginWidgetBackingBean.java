@@ -10,7 +10,7 @@ import fi.muikku.session.local.LocalSessionController;
 
 @Named
 @Stateful
-@RequestScoped
+@RequestScoped  
 public class InternalLoginWidgetBackingBean {
   
   @Inject
