@@ -15,7 +15,7 @@
     {created|formatDate}
   </div>
 
-  <div class="communicatorItemTags">Tagit, kontekstilinkit</div>
+  <div class="communicatorItemTags">{#localize key="plugin.communicator.messagetags"/}</div>
 
   <input type="hidden" name="communicatorMessageId" value="{id}"/>
   <input type="hidden" name="communicatorMessageIdId" value="{communicatorMessageId.id}"/>
