@@ -10,7 +10,7 @@
   <div class="wallEntryTitle">
     <a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={creator.id}">{creator.fullName}</a>
 
-    {#localize key="fi.muikku.wall.onForumAreaTitle"/} <a class="wallEntryForumAreaLink" href="{@contextPath/}/forum/threads.jsf?area=#{forumAreaId}">{forumArea.name}</a>
+    {#localize key="plugin.wall.onForumAreaTitle"/} <a class="wallEntryForumAreaLink" href="{@contextPath/}/forum/threads.jsf?area=#{forumAreaId}">{forumArea.name}</a>
     
     <span class="wallEntryDate">{created|formatDate}</span>
   </div>
@@ -20,7 +20,7 @@
   </div>
   
   <div class="wallEntryFooter">
-    <a class="wallEntryReplyLink">{#localize key="fi.muikku.wall.reply"/}</a>
+    <a class="wallEntryReplyLink">{#localize key="plugin.wall.reply"/}</a>
   </div>
   
   <div class="wallEntryComments">

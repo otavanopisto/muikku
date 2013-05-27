@@ -28,10 +28,11 @@ function renderDustTemplate(templateName, json, callback) {
 
   var base = dust.makeBase({
     localize: function(chunk, context, bodies, params) {
+      return chunk.write(getLocaleText(params.key));
 //      var locale = getLocale();
 //      var localeText = locale.getText(params.key);
 //      return chunk.write(localeText);
-      return chunk.write(params.key);
+//      return chunk.write(params.key);
     }
   });
   

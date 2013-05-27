@@ -1,10 +1,11 @@
 package fi.muikku.plugin;
 
 import java.util.List;
-import java.util.ResourceBundle;
+
+import fi.muikku.i18n.LocaleBundle;
 
 public interface LocalizedPluginDescriptor {
   
-  public List<ResourceBundle> getLocaleBundles();
+  public List<LocaleBundle> getLocaleBundles();
 
 }

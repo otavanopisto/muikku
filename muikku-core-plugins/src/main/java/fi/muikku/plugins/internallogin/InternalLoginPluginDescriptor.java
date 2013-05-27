@@ -14,6 +14,8 @@ import org.apache.commons.lang3.LocaleUtils;
 import fi.muikku.controller.EnvironmentController;
 import fi.muikku.controller.UserController;
 import fi.muikku.controller.WidgetController;
+import fi.muikku.i18n.LocaleBundle;
+import fi.muikku.i18n.LocaleLocation;
 import fi.muikku.model.widgets.DefaultWidget;
 import fi.muikku.model.widgets.Widget;
 import fi.muikku.model.widgets.WidgetLocation;
@@ -68,10 +70,10 @@ public class InternalLoginPluginDescriptor implements PluginDescriptor, Localize
   }
 
   @Override
-  public List<ResourceBundle> getLocaleBundles() {
-    List<ResourceBundle> bundles = new ArrayList<ResourceBundle>();
-    bundles.add(ResourceBundle.getBundle("fi.muikku.plugins.internallogin.InternalLoginPluginMessages", LocaleUtils.toLocale("fi")));
-    bundles.add(ResourceBundle.getBundle("fi.muikku.plugins.internallogin.InternalLoginPluginMessages", LocaleUtils.toLocale("en")));
+  public List<LocaleBundle> getLocaleBundles() {
+    List<LocaleBundle> bundles = new ArrayList<LocaleBundle>();
+    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.internallogin.InternalLoginPluginMessages", LocaleUtils.toLocale("fi"))));
+    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.internallogin.InternalLoginPluginMessages", LocaleUtils.toLocale("en"))));
     return bundles;
   }
 
