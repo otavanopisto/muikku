@@ -26,8 +26,8 @@ public class PluginLoadListener implements ServletContextListener {
   public void contextInitialized(ServletContextEvent sce) {
     plugins.initialize();
     // TODO Incorrect place or just a misleading listener name?
-    localeBackingBean.add(LocaleLocation.GLOBAL, ResourceBundle.getBundle("fi.muikku.i18n.GlobalMessages", LocaleUtils.toLocale("fi")));
-    localeBackingBean.add(LocaleLocation.GLOBAL, ResourceBundle.getBundle("fi.muikku.i18n.GlobalMessages", LocaleUtils.toLocale("en")));
+    localeBackingBean.add(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.i18n.JavaScriptMessages", LocaleUtils.toLocale("fi")));
+    localeBackingBean.add(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.i18n.JavaScriptMessages", LocaleUtils.toLocale("en")));
     localeBackingBean.add(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.i18n.ApplicationMessages", LocaleUtils.toLocale("fi")));
     localeBackingBean.add(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.i18n.ApplicationMessages", LocaleUtils.toLocale("en")));
   }
