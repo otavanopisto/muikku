@@ -21,6 +21,8 @@ import fi.muikku.plugins.defaults.DefaultsPluginDescriptor;
 import fi.muikku.plugins.dock.DockPluginDescriptor;
 import fi.muikku.plugins.forum.ForumPluginDescriptor;
 import fi.muikku.plugins.internallogin.InternalLoginPluginDescriptor;
+import fi.muikku.plugins.language.LanguagePluginDescriptor;
+import fi.muikku.plugins.logout.LogoutPluginDescriptor;
 import fi.muikku.plugins.wall.WallPluginDescriptor;
 
 public class CorePluginsDescriptor implements PluginLibraryDescriptor {
@@ -39,6 +41,8 @@ public class CorePluginsDescriptor implements PluginLibraryDescriptor {
 			DefaultsPluginDescriptor.class,
 		  CalendarPluginDescriptor.class,
 		  InternalLoginPluginDescriptor.class,
+      LogoutPluginDescriptor.class,
+      LanguagePluginDescriptor.class,
 		  CommunicatorPluginDescriptor.class,
       CoursePickerPluginDescriptor.class,
       ForumPluginDescriptor.class,
