@@ -14,9 +14,13 @@ import fi.muikku.model.stub.users.UserEntity;
 import fi.muikku.plugins.communicator.dao.CommunicatorMessageDAO;
 import fi.muikku.plugins.communicator.dao.CommunicatorMessageIdDAO;
 import fi.muikku.plugins.communicator.dao.CommunicatorMessageRecipientDAO;
+import fi.muikku.plugins.communicator.dao.CommunicatorMessageSignatureDAO;
+import fi.muikku.plugins.communicator.dao.CommunicatorMessageTemplateDAO;
 import fi.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
+import fi.muikku.plugins.communicator.model.CommunicatorMessageSignature;
+import fi.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
 import fi.muikku.schooldata.CourseSchoolDataController;
 import fi.muikku.schooldata.UserSchoolDataController;
 import fi.muikku.session.SessionController;
@@ -48,6 +52,12 @@ public class CommunicatorController {
 
   @Inject
   private CommunicatorMessageIdDAO communicatorMessageIdDAO;
+
+  @Inject
+  private CommunicatorMessageTemplateDAO communicatorMessageTemplateDAO;
+  
+  @Inject
+  private CommunicatorMessageSignatureDAO communicatorMessageSignatureDAO;
   
   /**
    * 
@@ -106,4 +116,19 @@ public class CommunicatorController {
     return communicatorMessageDAO.countMessagesByRecipientAndMessageId(recipient, communicatorMessageId);
   }
   
+  public List<CommunicatorMessageTemplate> listMessageTemplates(UserEntity user) {
+    return communicatorMessageTemplateDAO.listByUser(user);
+  }
+  
+  public List<CommunicatorMessageSignature> listMessageSignatures(UserEntity user) {
+    return communicatorMessageSignatureDAO.listByUser(user);
+  }
+
+  public CommunicatorMessageTemplate getMessageTemplate(Long id) {
+    return communicatorMessageTemplateDAO.findById(id);
+  }
+  
+  public CommunicatorMessageSignature getMessageSignature(Long id) {
+    return communicatorMessageSignatureDAO.findById(id);
+  }
 }

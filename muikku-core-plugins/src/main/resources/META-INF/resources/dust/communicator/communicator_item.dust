@@ -9,7 +9,7 @@
   
   <div class="communicatorItemSenderName"><a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={sender.id}">{sender_tq.fullName}</a></div>
 
-  <div class="communicatorItemTitle">{caption} ({replyCount})</div>
+  <div class="communicatorItemTitle">{caption} {@if cond="{messageCount} > 1"} ({messageCount}){/if}</div>
 
   <div class="communicatorItemDate">
     {created|formatDate}
