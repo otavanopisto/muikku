@@ -193,7 +193,11 @@ public class CalendarPluginDescriptor implements PluginDescriptor, PersistencePl
 		  
 		  /* Backing Beans */
 		  
-		  CalendarBackingBean.class
+		  CalendarBackingBean.class,
+		  
+		  /* Schedulers */
+		  
+		  SubscribedCalendarUpdateScheduler.class
 		));
 	}
 	
