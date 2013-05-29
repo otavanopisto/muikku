@@ -22,14 +22,6 @@ public class UserCalendar {
 		this.userId = userId;
 	}
 	
-	public Long getEnvironmentId() {
-		return environmentId;
-	}
-	
-	public void setEnvironmentId(Long environmentId) {
-		this.environmentId = environmentId;
-	}
-	
 	public Boolean getVisible() {
 		return visible;
 	}
@@ -49,10 +41,6 @@ public class UserCalendar {
   @Id
 	@GeneratedValue (strategy = GenerationType.IDENTITY)
 	private Long id;
-	  
-  // ManyToOne UserEntity
-  @Column (name = "environment_id")
-	private Long environmentId;
 
   // ManyToOne UserEntity
   @Column (name = "user_id")

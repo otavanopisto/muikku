@@ -18,17 +18,18 @@
       <input type="hidden" name="environmentId" value="#{muikkuSession.environment.id}"/>
       <input type="hidden" name="userId" value="#{muikkuSession.user.id}"/>
     
+      <!-- TODO localize -->
       <div class="coursePickerTabs">
         <ul>
           <li>
-            <a href="#all">#{msg["coursePicker.allCoursesTab"]}</a>
+            <a href="#all">Kaikki kurssit</a>
           </li>
           <ui:fragment rendered="#{muikkuSession.loggedIn}">
             <li>
-              <a href="#my">#{msg["coursePicker.myCoursesTab"]}</a>
+              <a href="#my">Omat kurssit</a>
             </li>
             <li>
-              <a href="#plp">#{msg["coursePicker.personalLearningPlanTab"]}</a>
+              <a href="#plp">HOPS</a>
             </li>
           </ui:fragment>
         </ul>

@@ -15,45 +15,38 @@
       this._calendarsVisibleButton = this._widgetElement.find(".calendarsVisibleButton");
       this._calendarsVisibleButton.click($.proxy(this._onCalendarsVisibleButtonClick, this));
       $(document).mousedown($.proxy(this._onDocumentMouseDown, this));
-      
-      var _this = this;
-      RESTful.doGet(CONTEXTPATH + "/rest/calendar/calendars")
-        .success($.proxy(this._onCalendarsLoad, this));
     },
-    
-    _onCalendarsLoad: function (data, textStatus, jqXHR) {
-      this._calendars = data;
-    },
-    
     _onCalendarsVisibleButtonClick: function (event) {
       if (this._overlayVisible == false) {
-        var json = {};
-        
         var _this = this;
-        renderDustTemplate('/calendar/calendarsvisible.dust', { calendars : this._calendars }, function (text) {
-          var widgetOffset = _this._widgetElement.offset();
-          var widgetHeight = _this._widgetElement.outerHeight();
-          var widgetWidth =  _this._widgetElement.outerWidth();
-          var marginTop = 4;
-          
-          var calendarsVisibleContainer = $(text).appendTo(document.body);
-          $(calendarsVisibleContainer)
-            .css({
-              opacity: 0
-            })
-            .offset({
-              left: widgetOffset.left + widgetWidth - calendarsVisibleContainer.outerWidth(),
-              top: widgetOffset.top + widgetHeight + marginTop
-            })
-            .hide()
-            .css({
-              opacity: 1
-            })
-            .show("blind", { direction: "vertical" }, 300);
-          
-          _this._overlayVisible = true;
-          
-          calendarsVisibleContainer.find('input[type="checkbox"]').click(_this._calendarCheckboxClickListener);
+        
+        // TODO: Error handling
+        RESTful.doGet(CONTEXTPATH + "/rest/calendar/calendars").success(function (calendars, textStatus, jqXHR) {
+          renderDustTemplate('/calendar/calendarsvisible.dust', { calendars : calendars }, function (text) {
+            var widgetOffset = _this._widgetElement.offset();
+            var widgetHeight = _this._widgetElement.outerHeight();
+            var widgetWidth =  _this._widgetElement.outerWidth();
+            var marginTop = 4;
+            
+            var calendarsVisibleContainer = $(text).appendTo(document.body);
+            $(calendarsVisibleContainer)
+              .css({
+                opacity: 0
+              })
+              .offset({
+                left: widgetOffset.left + widgetWidth - calendarsVisibleContainer.outerWidth(),
+                top: widgetOffset.top + widgetHeight + marginTop
+              })
+              .hide()
+              .css({
+                opacity: 1
+              })
+              .show("blind", { direction: "vertical" }, 300);
+            
+            _this._overlayVisible = true;
+            
+            calendarsVisibleContainer.find('input[type="checkbox"]').click(_this._calendarCheckboxClickListener);
+          });
         });
       }
     },

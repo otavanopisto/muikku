@@ -3,10 +3,16 @@ package fi.muikku.plugins.communicator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.ApplicationScoped;
 
+import org.apache.commons.lang3.LocaleUtils;
+
+import fi.muikku.i18n.LocaleBundle;
+import fi.muikku.i18n.LocaleLocation;
+import fi.muikku.plugin.LocalizedPluginDescriptor;
 import fi.muikku.plugin.PersistencePluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
 import fi.muikku.plugin.RESTPluginDescriptor;
@@ -20,7 +26,7 @@ import fi.muikku.plugins.communicator.rest.CommunicatorRESTService;
 
 @ApplicationScoped
 @Stateful
-public class CommunicatorPluginDescriptor implements PluginDescriptor, PersistencePluginDescriptor, RESTPluginDescriptor {
+public class CommunicatorPluginDescriptor implements PluginDescriptor, PersistencePluginDescriptor, RESTPluginDescriptor, LocalizedPluginDescriptor {
 	
 	@Override
 	public String getName() {
@@ -59,4 +65,12 @@ public class CommunicatorPluginDescriptor implements PluginDescriptor, Persisten
 			CommunicatorRESTService.class
 		};
 	}
+
+  @Override
+  public List<LocaleBundle> getLocaleBundles() {
+    List<LocaleBundle> bundles = new ArrayList<LocaleBundle>();
+    bundles.add(new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.communicator.CommunicatorJsPluginMessages", LocaleUtils.toLocale("fi"))));
+    bundles.add(new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.communicator.CommunicatorJsPluginMessages", LocaleUtils.toLocale("en"))));
+    return bundles;
+  }
 }

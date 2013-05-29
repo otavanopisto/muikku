@@ -5,6 +5,7 @@ import java.util.Date;
 
 import fi.muikku.dao.DAO;
 import fi.muikku.plugin.PluginDAO;
+import fi.muikku.plugins.calendar.model.Calendar;
 import fi.muikku.plugins.calendar.model.LocalCalendar;
 import fi.muikku.plugins.calendar.model.LocalEvent;
 import fi.muikku.plugins.calendar.model.LocalEventType;
@@ -32,6 +33,12 @@ public class LocalEventDAO extends PluginDAO<LocalEvent> {
     
     return event;
   }
+
+	public LocalEvent updateCalendar(LocalEvent localEvent, Calendar calendar) {
+		localEvent.setCalendar(calendar);
+		getEntityManager().persist(localEvent);
+		return localEvent;
+	}
 
 	public LocalEvent updateType(LocalEvent localEvent, LocalEventType type) {
 		localEvent.setType(type);

@@ -7,12 +7,13 @@
   <f:view locale="#{muikkuSession.locale}">
   
     <h:head>
-      <!-- TODO: Localize -->
-      <title>Da MUiWKKU!!!</title>
+      <title>#{i18n.text['title']}</title>
       <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
       <script type="text/javascript">
         var CONTEXTPATH = "#{request.contextPath}";
       </script>
+      <script src="#{request.contextPath}/JavaScriptLocales"></script>
+      <h:outputScript name="scripts/gui/locales.js" target="head" />
       
       <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
       
@@ -89,12 +90,14 @@
         <ui:insert name="contentToolsTop">
 	      <ui:include src="/core/widget-space.xhtml">
 	        <ui:param name="location" value="#{widgetSpaceBackingBean.environmentContentToolsTop}" />
+            <ui:param name="sublocations" value="#{widgetSpaceBackingBean.environmentContentToolsTopSublocations}" />
 	      </ui:include>     
         </ui:insert>
 	      
         <ui:insert name="contentToolsBottom">
           <ui:include src="/core/widget-space.xhtml">
 	        <ui:param name="location" value="#{widgetSpaceBackingBean.environmentContentToolsBottom}" />
+            <ui:param name="sublocations" value="#{widgetSpaceBackingBean.environmentContentToolsBottomSublocations}" />
 	      </ui:include>            
         </ui:insert>
         

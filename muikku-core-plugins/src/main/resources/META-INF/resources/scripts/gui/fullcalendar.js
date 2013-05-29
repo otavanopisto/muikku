@@ -47,14 +47,14 @@
       
       this._calendarEventsLoadListener = $.proxy(this._onCalendarEventsLoad, this);
       this._afterEventCreateListener = $.proxy(this._onAfterEventCreate, this);
+      this._afterEventUpdateListener = $.proxy(this._onAfterEventUpdate, this);
       this._calendarVisibilityChangeListener = $.proxy(this._onCalendarVisibilityChange, this);
-      this._updateEventListener = $.proxy(this._onUpdateEvent, this);
       this._calendarSettingsChangeListener = $.proxy(this._onCalendarSettingsChange, this);
       
       widgetElement.on("calendarEventsLoad", this._calendarEventsLoadListener);      
-      widgetElement.on("afterEventCreate", this._afterEventCreateListener);      
+      widgetElement.on("afterEventCreate", this._afterEventCreateListener);       
+      widgetElement.on("afterEventUpdate", this._afterEventUpdateListener);      
       widgetElement.on("calendarVisibilityChange", this._calendarVisibilityChangeListener);   
-      widgetElement.on("updateEvent", this._updateEventListener);
       widgetElement.on("calendarSettingsChange", this._calendarSettingsChangeListener);
     },
     destroy: function () {
@@ -62,8 +62,8 @@
       
       widgetElement.off("calendarEventsLoad", this._calendarEventsLoadListener);      
       widgetElement.off("afterEventCreate", this._afterEventCreateListener);     
+      widgetElement.off("afterEventUpdate", this._afterEventUpdateListener);     
       widgetElement.off("calendarVisibilityChange", this._calendarVisibilityChangeListener);    
-      widgetElement.off("updateEvent", this._updateEventListener); 
       widgetElement.off("calendarSettingsChange", this._calendarSettingsChangeListener);
 
       this._fullCalendar.remove();
@@ -280,6 +280,34 @@
       this._reloadEvents(this._loadedDatas);
     },
     
+    _onAfterEventUpdate: function (event) {
+      var newEvent = event.event;
+      var originalEventData = event.originalEventData;
+      
+      // Remove original event
+      for (var i = 0, l = this._loadedDatas.length; i < l; i++) {
+        if (this._loadedDatas[i].calendarMeta.id == originalEventData.calendarId) {
+          for (var j = 0, jl = this._loadedDatas[i].events.length; j < jl; j++) {
+            if (this._loadedDatas[i].events[j].id == originalEventData.id) {
+              this._loadedDatas[i].events.splice(j, 1);
+              break;
+            }
+          }
+          break;
+        }
+      }
+      
+      // Push new event to loaded datas
+      for (var i = 0, l = this._loadedDatas.length; i < l; i++) {
+        if (this._loadedDatas[i].calendarMeta.id == newEvent.calendarId) {
+          this._loadedDatas[i].events.push(newEvent);
+          break;
+        }
+      }
+      
+      this._reloadEvents(this._loadedDatas);
+    },
+    
     _onCalendarVisibilityChange: function (event) {
       this._reloadEvents(this._loadedDatas);
     },
@@ -316,11 +344,6 @@
         event: event
       }));
     },
-    
-    _onUpdateEvent: function (event) {
-      this._fullCalendar.fullCalendar('rerenderEvents');
-    },
-
     _onCalendarSettingsChange: function (event) {
       if (this.getWidgetElement().find('input[name="firstDay"]').val() != this._fullCalendar.fullCalendar('firstDay')) {
         this._fullCalendar.remove();
@@ -363,7 +386,8 @@
     setup: function (widgetElement) {
       this._widgetElement = $(widgetElement);
       this._widgetElement.data("widgetController", this);
-      $(document).on("calendarSettingsWidget:afterCalendarSubscribe", $.proxy(this._onCalendarSettingsWidgetAfterCalendarSubscribe, this));      
+      $(document).on("newCalendarWidget:afterCalendarSubscribe", $.proxy(this._onNewCalendarWidgetAfterCalendarSubscribe, this));     
+      $(document).on("newEventWidget:eventCreate", $.proxy(this._onNewEventWidgetEventCreate, this));     
       $(document).on("calendarSettingsWidget:settingsSaved", $.proxy(this._onCalendarSettingsWidgetSettingsSaved, this));      
       $(document).on("calendarVisibleWidget:calendarShow", $.proxy(this._onCalendarVisibleWidgetCalendarShow, this));      
       $(document).on("calendarVisibleWidget:calendarHide", $.proxy(this._onCalendarVisibleWidgetCalendarHide, this));      
@@ -502,156 +526,7 @@
         i--;
       }
     },
-    
-    _openEventEditor: function (event) {
-      
-      var createField = function (dialogContent, className, label, editor) {
-        var field = $('<div class="fullCalendarWidgetEventEditorField"/>');
-        field.addClass("fullCalendarWidgetEventEditorField" + className);
-        
-        var label = $('<label>').text(label);
-        label.attr("for", editor.uniqueId().attr("id"));
-        
-        label.appendTo(field);
-        editor.appendTo(field);      
-        field.appendTo(dialogContent);   
-        
-        return field;
-      };
-      
-      // TODO: Localize
-      
-      var dialogContent = $('<div>')
-        .attr('title', "New Event");
-      
-      var allDayElement = $('<input name="allDay" type="checkbox"/>').attr('checked', event.allDay);
-      
-      var fromDate = $('<input name="fromDate" type="text"/>').datepicker();
-      fromDate.datepicker("setDate", event.start);
-      var fromTime = $('<input name="fromTime" type="text"/>').timepicker();
-      fromTime.timepicker("setTime", event.start);
-      
-      var toDate = $('<input name="toDate" type="text"/>').datepicker();
-      toDate.datepicker("setDate", event.end);
-      var toTime = $('<input name="toTime" type="text"/>').timepicker();
-      toTime.timepicker("setTime", event.end);
-      
-      allDayElement.change(function (events) {
-        if ($(this).is(":checked")) {
-          fromTime.hide();
-          toTime.hide();
-        } else {
-          fromTime.show();
-          toTime.show();
-        }
-      });
-      
-      if (event.allDay) {          
-        fromTime.hide();
-        toTime.hide();
-      }
 
-      var fromField = $('<div>')
-        .append(fromDate, fromTime);
-      
-      var toField = $('<div>')
-        .append(toDate, toTime);
-      
-      var calendarSelect = $('<select name="calendarId">');
-      for (var i = 0, l = this._calendarMetas.length; i < l; i++) {
-        var calendarMeta = this._calendarMetas[i];
-        if (calendarMeta.type == 'LOCAL') {
-          $('<option>')
-            .attr('value', calendarMeta.id)
-            .text(calendarMeta.name)
-            .appendTo(calendarSelect);
-        }
-      }
-      
-      var typeSelect = $('<select name="typeId">');
-      for (var i = 0, l = this._localEventTypes.length; i < l; i++) {
-        var type = this._localEventTypes[i];
-        $('<option>')
-          .attr('value', type.id)
-          .text(type.name)
-          .appendTo(typeSelect);
-      }
-      
-      createField(dialogContent, "Calendar", "Calendar", calendarSelect);
-      createField(dialogContent, "Type", "Type", typeSelect);
-      createField(dialogContent, "Summary", "Summary", $('<input name="summary" type="text"/>').val(event.summary));
-      createField(dialogContent, "AllDay", "All day", allDayElement);
-      createField(dialogContent, "From", "From", fromField);
-      createField(dialogContent, "To", "To", toField);
-      createField(dialogContent, "Description", "Description", $('<textarea name="description"/>').val(event.description));
-      dialogContent.data("event", event);
-      
-      var buttons = {};
-      
-      buttons["Cancel"] = function() {
-        $(this).trigger($.Event("editCancel", {
-          event: $(this).data('event')
-        }));
-        
-        $(this).dialog("close");
-      };
-      
-      buttons['Save'] = function() {
-        var calendarEvent = $(this).data('event');
-        
-        var startDate = $(this).find('input[name="fromDate"]').datepicker("getDate");
-        var endDate = $(this).find('input[name="toDate"]').datepicker("getDate");
-        if (!$(this).find('input[name="allDay"]').is(":checked")) {
-          var startTime = $(this).find('input[name="fromTime"]').timepicker("getTime");
-          var endTime = $(this).find('input[name="toTime"]').timepicker("getTime");
-          
-          startDate.setHours(startTime.getHours(), startTime.getMinutes(), 0, 0);
-          endDate.setHours(endTime.getHours(), endTime.getMinutes(), 0, 0);
-          calendarEvent.allDay = false;
-        } else {
-          startDate.setHours(0, 0, 0, 0);
-          endDate.setHours(23, 59, 59, 999);
-          calendarEvent.allDay = true;
-        }
-
-        calendarEvent.calendarId = $(this).find('select[name="calendarId"]').val();
-        calendarEvent.typeId = $(this).find('select[name="typeId"]').val();
-        calendarEvent.summary = $(this).find('input[name="summary"]').val();
-        calendarEvent.start = startDate;
-        calendarEvent.end = endDate;
-        calendarEvent.description = $(this).find('textarea[name="description"]').val();
-
-        var event = $.Event("eventEdit", {
-          event: calendarEvent
-        });
-        
-        $(this).trigger(event);
-        
-        if (!event.isDefaultPrevented()) {
-          $(this).dialog("close");
-        }
-      };
-      
-      dialogContent.dialog({
-        modal: true,
-        width: 500,
-        buttons: buttons
-      });
-      
-      var _this = this;
-      dialogContent.on("eventEdit", function (event) {
-        _this._widgetElement.trigger($.Event("updateEvent", {
-          event: event.event
-        }));
-      });
-      
-      dialogContent.on("editCancel", function (event) {
-        _this._widgetElement.trigger($.Event("cancelEventUpdate", {
-          event: event.event
-        }));
-      });
-    },
-    
     /* DOM Events*/
     
     _onNavigationLeftClick: function (event) {
@@ -674,9 +549,9 @@
     },
     
     /**
-     * Event triggered by calendar settings widget when new calendar has been subscribed
+     * Event triggered by new calendar widget when new calendar has been subscribed
      */
-    _onCalendarSettingsWidgetAfterCalendarSubscribe: function (event) {
+    _onNewCalendarWidgetAfterCalendarSubscribe: function (event) {
       var subscribedCalendar = event.subscribedCalendar;
       var calendarMeta = {
         id: subscribedCalendar.id,
@@ -689,6 +564,12 @@
       this._calendarMetas.push(calendarMeta);
       this._loadEvents();
     },  
+    
+    _onNewEventWidgetEventCreate: function (event) {
+      this._widgetElement.trigger($.Event("afterEventCreate", {
+        event: event.event
+      }));
+    },
 
     _onCalendarSettingsWidgetSettingsSaved: function (event) {
       this._widgetElement.find('input[name="firstDay"]').val(event.settings['firstDay']);
@@ -781,16 +662,33 @@
     },
     
     _onCreateEvent: function (event) {
-      this._openEventEditor(event.event);
+      var _this = this;
+      (new EventDialog(event.event))
+        .save(function (originalData, eventData) {
+          _this._widgetElement.trigger($.Event("updateEvent", {
+            originalData: originalData,
+            eventData: eventData
+          }));
+        })
+        .show();
     },
 
     _onEditEvent: function (event) {
-      this._openEventEditor(event.event);
+      var _this = this;
+      (new EventDialog(event.event))
+        .save(function (originalData, eventData) {
+          _this._widgetElement.trigger($.Event("updateEvent", {
+            originalData: originalData,
+            eventData: eventData
+          }));
+        })
+        .show();
     },
 
     _onUpdateEvent: function (event) {
-      var calendarEvent = event.event;
-      
+      var calendarEvent = event.eventData;
+      var originalEventData = event.originalData;
+
       if (calendarEvent.id == null) {
         // Creating new event 
         
@@ -810,18 +708,16 @@
           }
         })
         .success(function (data, textStatus, jqXHR) {
-          // calendarEvent.id = data.id;
           _this._widgetElement.trigger($.Event("afterEventCreate", {
             event: data
           }));
         });
-
       } else {
         // Updating existing event
-        
         var _this = this;
-        RESTful.doPut(CONTEXTPATH + '/rest/calendar/calendars/' + calendarEvent.calendarId + '/events/' + calendarEvent.id, {
+        RESTful.doPut(CONTEXTPATH + '/rest/calendar/calendars/' + originalEventData.calendarId + '/events/' + calendarEvent.id, {
           data: {
+            calendar_id: parseInt(calendarEvent.calendarId),
             type_id: parseInt(calendarEvent.typeId),
             summary: calendarEvent.summary,
             description: calendarEvent.description,
@@ -836,7 +732,8 @@
         })
         .success(function (data, textStatus, jqXHR) {
           _this._widgetElement.trigger($.Event("afterEventUpdate", {
-            event: calendarEvent
+            event: calendarEvent,
+            originalEventData: originalEventData
           }));
         });
       }

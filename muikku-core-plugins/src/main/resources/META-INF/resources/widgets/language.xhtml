@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html">
+
+  <div class="widget languageWidget">
+    <h:form>
+      <div class="formElementRow">
+        <h:commandLink value="#{i18n.text['plugin.language.fi']}" action="#{languageWidgetBackingBean.setLanguage('fi')}" />
+        <h:commandLink value="#{i18n.text['plugin.language.en']}" action="#{languageWidgetBackingBean.setLanguage('en')}" />
+      </div>
+    </h:form>
+  </div>
+    
+</ui:composition>

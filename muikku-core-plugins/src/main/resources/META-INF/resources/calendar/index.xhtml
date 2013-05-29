@@ -7,21 +7,27 @@
 
   <ui:define name="contentToolsTop">
     <ui:include src="/core/widget-space.xhtml">
-      <ui:param name="location" value="calendar.contentToolsTop" />
+      <ui:param name="location" value="calendar.contentToolsTopLeft" />
+      <ui:param name="gridSize" value="12" />
+    </ui:include>
+    
+    <ui:include src="/core/widget-space.xhtml">
+      <ui:param name="location" value="calendar.contentToolsTopRight" />
+      <ui:param name="gridSize" value="12" />
     </ui:include>
   </ui:define>
   
   <ui:define name="contentSidebarLeft">
     <ui:include src="/core/widget-space.xhtml">
       <ui:param name="location" value="calendar.contentSidebarLeft" />
-      <ui:param name="gridSize" value="7" />
+      <ui:param name="gridSize" value="0" />
     </ui:include>
   </ui:define>
 
   <ui:define name="content">
     <ui:include src="/core/widget-space.xhtml">
       <ui:param name="location" value="calendar.content" />
-      <ui:param name="gridSize" value="17" />
+      <ui:param name="gridSize" value="24" />
     </ui:include>
   </ui:define>
 

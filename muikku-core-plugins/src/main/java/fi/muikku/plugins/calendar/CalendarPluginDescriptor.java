@@ -15,7 +15,6 @@ import fi.muikku.controller.EnvironmentController;
 import fi.muikku.controller.PluginSettingsController;
 import fi.muikku.controller.UserController;
 import fi.muikku.controller.WidgetController;
-import fi.muikku.model.base.Environment;
 import fi.muikku.model.plugins.PluginUserSettingKey;
 import fi.muikku.model.stub.users.UserEntity;
 import fi.muikku.model.widgets.DefaultWidget;
@@ -25,7 +24,6 @@ import fi.muikku.model.widgets.WidgetVisibility;
 import fi.muikku.plugin.PersistencePluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
 import fi.muikku.plugin.RESTPluginDescriptor;
-import fi.muikku.plugins.calendar.dao.CalendarCategoryDAO;
 import fi.muikku.plugins.calendar.dao.CalendarDAO;
 import fi.muikku.plugins.calendar.dao.EventDAO;
 import fi.muikku.plugins.calendar.dao.LocalCalendarDAO;
@@ -35,7 +33,6 @@ import fi.muikku.plugins.calendar.dao.SubscribedCalendarDAO;
 import fi.muikku.plugins.calendar.dao.SubscribedEventDAO;
 import fi.muikku.plugins.calendar.dao.UserCalendarDAO;
 import fi.muikku.plugins.calendar.model.Calendar;
-import fi.muikku.plugins.calendar.model.CalendarCategory;
 import fi.muikku.plugins.calendar.model.Event;
 import fi.muikku.plugins.calendar.model.LocalAlert;
 import fi.muikku.plugins.calendar.model.LocalCalendar;
@@ -57,17 +54,20 @@ public class CalendarPluginDescriptor implements PluginDescriptor, PersistencePl
 	private static final String DEFAULT_FIRSTDAY = "1"; // Monday
 	private static final String DEFAULT_COLOR = "#ff0000";
 
+	@SuppressWarnings("unused")
 	private static final String CALENDAR_CONTENT_SIDEBAR_LEFT = "calendar.contentSidebarLeft";
 	private static final String CALENDAR_CONTENT_WIDGET_LOCATION = "calendar.content";
-	private static final String CALENDAR_CONTENT_TOOLS_TOP_WIDGET_LOCATION = "calendar.contentToolsTop";
+	private static final String CALENDAR_CONTENT_TOOLS_TOP_LEFT_WIDGET_LOCATION = "calendar.contentToolsTopLeft";
+	private static final String CALENDAR_CONTENT_TOOLS_TOP_RIGHT_WIDGET_LOCATION = "calendar.contentToolsTopRight";
 	
 	private static final String FULLCALENDAR_WIDGET_NAME = "fullcalendar";
 	private static final String MINICALENDAR_WIDGET_NAME = "minicalendar";
+	private static final String DOCKCALENDAR_WIDGET_NAME = "dockcalendar";
+	private static final String NEWCALENDAR_WIDGET_NAME = "newcalendar";
+	private static final String NEWEVENT_WIDGET_NAME = "newevent";
 	private static final String CALENDARSETTINGS_WIDGET_NAME = "calendarsettings";
 	private static final String CALENDARSVISIBLE_WIDGET_NAME = "calendarsvisible";
 
-	private static final String DEFAULT_CALENDAR_CATEGORY_ID_SETTING = "defaultCalendarCategoryId";
-	private static final String DEFAULT_CALENDAR_CATEGORY_NAME = "default";
 	private static final String DEFAULT_EVENT_TYPE_ID_SETTING = "defaultEventTypeId";
 	private static final String DEFAULT_EVENT_TYPE_NAME = "default";
 	private static final String DEFAULT_CALENDAR_ID_SETTING = "defaultCalendarId";
@@ -94,16 +94,7 @@ public class CalendarPluginDescriptor implements PluginDescriptor, PersistencePl
 	
 	@Override
 	public void init() {
-  	// Make sure we have a default calendar category and default local event type
-		
-		CalendarCategory defaultCalendarCategory = null;
-		Long defaultCategoryId = NumberUtils.createLong(pluginSettingsController.getPluginSetting(getName(), DEFAULT_CALENDAR_CATEGORY_ID_SETTING));
-		if (defaultCategoryId != null) {
-			defaultCalendarCategory = calendarController.findCalendarCategoryById(defaultCategoryId);
-		} else {
-			defaultCalendarCategory = calendarController.createCalendarCategory(DEFAULT_CALENDAR_CATEGORY_NAME);
-			pluginSettingsController.setPluginSetting(getName(), DEFAULT_CALENDAR_CATEGORY_ID_SETTING, defaultCalendarCategory.getId().toString());
-		}
+  	// Make sure we have a default local event type
 		
 		LocalEventType defaultLocalEventType = null;
 		Long defaultLocalEventTypeId = NumberUtils.createLong(pluginSettingsController.getPluginSetting(getName(), DEFAULT_EVENT_TYPE_ID_SETTING));
@@ -117,7 +108,11 @@ public class CalendarPluginDescriptor implements PluginDescriptor, PersistencePl
 		// Make sure we have registered calendar widgets 
 
 		Widget fullCalendarWidget = ensureWidget(FULLCALENDAR_WIDGET_NAME, WidgetVisibility.AUTHENTICATED);
+		@SuppressWarnings("unused")
 		Widget miniCalendarWidget = ensureWidget(MINICALENDAR_WIDGET_NAME, WidgetVisibility.AUTHENTICATED);
+		Widget dockCalendarWidget = ensureWidget(DOCKCALENDAR_WIDGET_NAME, WidgetVisibility.AUTHENTICATED);
+		Widget newCalendarWidget = ensureWidget(NEWCALENDAR_WIDGET_NAME, WidgetVisibility.AUTHENTICATED);
+		Widget newEventWidget = ensureWidget(NEWEVENT_WIDGET_NAME, WidgetVisibility.AUTHENTICATED);
 		Widget calendarSettingsWidget = ensureWidget(CALENDARSETTINGS_WIDGET_NAME, WidgetVisibility.AUTHENTICATED);
 		Widget calendarsVisibleWidget = ensureWidget(CALENDARSVISIBLE_WIDGET_NAME, WidgetVisibility.AUTHENTICATED);
 
@@ -125,30 +120,29 @@ public class CalendarPluginDescriptor implements PluginDescriptor, PersistencePl
 		
 		ensureDefaultWidget(fullCalendarWidget, CALENDAR_CONTENT_WIDGET_LOCATION);
 		
+		/**
 		// Add minicalendar as default to calendar content left sidebar and environment right sidebar
-		
 		ensureDefaultWidget(miniCalendarWidget, CALENDAR_CONTENT_SIDEBAR_LEFT);
 		ensureDefaultWidget(miniCalendarWidget, WidgetLocations.ENVIRONMENT_CONTENT_SIDEBAR_RIGHT);
+		**/
 		
-		// Add calendar settings to calendar content tools top widget space by default
-		
-		ensureDefaultWidget(calendarSettingsWidget, CALENDAR_CONTENT_TOOLS_TOP_WIDGET_LOCATION);
-		
-	  // Add calendars visible to calendar content tools top widget space by default
-			
-		ensureDefaultWidget(calendarsVisibleWidget, CALENDAR_CONTENT_TOOLS_TOP_WIDGET_LOCATION);
+		// Add calendar widgets to their default locations
+
+		ensureDefaultWidget(dockCalendarWidget, WidgetLocations.ENVIRONMENT_DOCK_TOP);
+		ensureDefaultWidget(newEventWidget, CALENDAR_CONTENT_TOOLS_TOP_LEFT_WIDGET_LOCATION);
+		ensureDefaultWidget(newCalendarWidget, CALENDAR_CONTENT_TOOLS_TOP_LEFT_WIDGET_LOCATION);
+		ensureDefaultWidget(calendarsVisibleWidget, CALENDAR_CONTENT_TOOLS_TOP_RIGHT_WIDGET_LOCATION);
+		ensureDefaultWidget(calendarSettingsWidget, CALENDAR_CONTENT_TOOLS_TOP_RIGHT_WIDGET_LOCATION);
 
 		// Make sure every user has a default calendar
 
 		PluginUserSettingKey defaultCalendarIdSetting = pluginSettingsController.getPluginUserSettingKey(getName(), DEFAULT_CALENDAR_ID_SETTING);
 
-		// TODO: Environment ???
-		Environment environment = environmentController.listEnvironments().get(0);
 		List<UserEntity> usersWithoutDefaultCalendar = pluginSettingsController.listUsersWithoutSetting(defaultCalendarIdSetting);
 		for (UserEntity userWithoutDefaultCalendar : usersWithoutDefaultCalendar) {
 			User user = userController.findUser(userWithoutDefaultCalendar);
 			String name = user.getFirstName() + ' ' + user.getLastName();
-			UserCalendar calendar = calendarController.createLocalUserCalendar(environment, userWithoutDefaultCalendar, defaultCalendarCategory, name, DEFAULT_COLOR);
+			UserCalendar calendar = calendarController.createLocalUserCalendar(userWithoutDefaultCalendar, name, DEFAULT_COLOR, Boolean.TRUE);
 			pluginSettingsController.setPluginUserSetting(getName(), DEFAULT_CALENDAR_ID_SETTING, calendar.getCalendar().getId().toString(), userWithoutDefaultCalendar);
 		}
 		
@@ -185,7 +179,6 @@ public class CalendarPluginDescriptor implements PluginDescriptor, PersistencePl
 			/* DAOs */	
 				
 			CalendarDAO.class,
-			CalendarCategoryDAO.class,
 			EventDAO.class,
 			LocalCalendarDAO.class,
 			LocalEventDAO.class,
@@ -200,7 +193,11 @@ public class CalendarPluginDescriptor implements PluginDescriptor, PersistencePl
 		  
 		  /* Backing Beans */
 		  
-		  CalendarBackingBean.class
+		  CalendarBackingBean.class,
+		  
+		  /* Schedulers */
+		  
+		  SubscribedCalendarUpdateScheduler.class
 		));
 	}
 	
@@ -208,7 +205,6 @@ public class CalendarPluginDescriptor implements PluginDescriptor, PersistencePl
 	public Class<?>[] getEntities() {
 		return new Class<?>[] {
 			Calendar.class,
-			CalendarCategory.class,
 			Event.class,
 			LocalAlert.class,
 			LocalCalendar.class,

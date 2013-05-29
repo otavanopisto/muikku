@@ -40,6 +40,23 @@ public class SubscribedEventDAO extends PluginDAO<SubscribedEvent> {
     return event;
   }
 
+	public SubscribedEvent findByCalendarAndUid(SubscribedCalendar subscribedCalendar, String uid) {
+		EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<SubscribedEvent> criteria = criteriaBuilder.createQuery(SubscribedEvent.class);
+    Root<SubscribedEvent> root = criteria.from(SubscribedEvent.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(SubscribedEvent_.calendar), subscribedCalendar),
+        criteriaBuilder.equal(root.get(SubscribedEvent_.uid), uid)
+      )
+    );
+   
+    return getSingleResult(entityManager.createQuery(criteria));
+	}
+
   public List<SubscribedEvent> listByCalendar(SubscribedCalendar calendar) {
     EntityManager entityManager = getEntityManager();
     
@@ -107,6 +124,10 @@ public class SubscribedEventDAO extends PluginDAO<SubscribedEvent> {
     );
    
     return entityManager.createQuery(criteria).getResultList();
+	}
+	
+	public void delete(SubscribedEvent subscribedEvent) {
+		delete(subscribedEvent);
 	}
   
 }
