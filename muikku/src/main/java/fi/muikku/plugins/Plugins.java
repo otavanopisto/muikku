@@ -13,7 +13,7 @@ import javax.inject.Inject;
 
 import fi.muikku.Logged;
 import fi.muikku.i18n.LocaleBackingBean;
-import fi.muikku.i18n.LocaleLocation;
+import fi.muikku.i18n.LocaleBundle;
 import fi.muikku.plugin.LocalizedPluginDescriptor;
 import fi.muikku.plugin.PluginContextClassLoader;
 import fi.muikku.plugin.PluginDescriptor;
@@ -54,7 +54,10 @@ public class Plugins {
     	try {
     	  pluginDescriptor.init();
     	  if (pluginDescriptor instanceof LocalizedPluginDescriptor) {
-    	    localeBackingBean.add(LocaleLocation.APPLICATION, ((LocalizedPluginDescriptor) pluginDescriptor).getLocaleBundles());
+    	    List<LocaleBundle> localeBundles = ((LocalizedPluginDescriptor) pluginDescriptor).getLocaleBundles();
+    	    for (LocaleBundle localeBundle : localeBundles) {
+    	      localeBackingBean.add(localeBundle.getLocation(), localeBundle.getBundle());
+    	    }
     	  }
       	logger.info("Plugin '" + pluginDescriptor.getName() + "' initialized");
     	} catch (Exception e) {

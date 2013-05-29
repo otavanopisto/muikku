@@ -43,7 +43,7 @@
       yksityinen
     {/if}
 
-	<a class="wallEntryReplyLink">{#localize key="fi.murkelo.wall.reply"/}</a>
+	<a class="wallEntryReplyLink">{#localize key="plugin.wall.reply"/}</a>
   </div>
   
   <div class="wallEntryComments">

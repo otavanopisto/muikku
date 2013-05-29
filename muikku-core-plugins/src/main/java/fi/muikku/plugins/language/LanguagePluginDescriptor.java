@@ -1,4 +1,4 @@
-package fi.muikku.plugins.internallogin;
+package fi.muikku.plugins.language;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,9 +25,9 @@ import fi.muikku.plugin.PluginDescriptor;
 
 @ApplicationScoped
 @Stateful
-public class InternalLoginPluginDescriptor implements PluginDescriptor, LocalizedPluginDescriptor {
+public class LanguagePluginDescriptor implements PluginDescriptor, LocalizedPluginDescriptor {
 
-  private static final String INTERNALLOGIN_WIDGET_NAME = "internallogin";
+  private static final String LANGUAGE_WIDGET_NAME = "language";
 
   @Inject
   private WidgetController widgetController;
@@ -40,14 +40,14 @@ public class InternalLoginPluginDescriptor implements PluginDescriptor, Localize
 
   @Override
   public String getName() {
-    return INTERNALLOGIN_WIDGET_NAME;
+    return LANGUAGE_WIDGET_NAME;
   }
   
   @Override
   public void init() {
-    Widget internalLoginWidget = widgetController.findWidget(INTERNALLOGIN_WIDGET_NAME);
+    Widget internalLoginWidget = widgetController.findWidget(LANGUAGE_WIDGET_NAME);
     if (internalLoginWidget == null) {
-      internalLoginWidget = widgetController.createWidget(INTERNALLOGIN_WIDGET_NAME, WidgetVisibility.UNAUTHENTICATED);
+      internalLoginWidget = widgetController.createWidget(LANGUAGE_WIDGET_NAME, WidgetVisibility.EVERYONE);
     }
     
     // TODO This is wrong. So wrong. Atrocious, even!
@@ -65,15 +65,15 @@ public class InternalLoginPluginDescriptor implements PluginDescriptor, Localize
   @Override
   public List<Class<?>> getBeans() {
     return new ArrayList<Class<?>>(Arrays.asList(
-      InternalLoginWidgetBackingBean.class
-    ));
+        LanguageWidgetBackingBean.class
+      ));
   }
 
   @Override
   public List<LocaleBundle> getLocaleBundles() {
     List<LocaleBundle> bundles = new ArrayList<LocaleBundle>();
-    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.internallogin.InternalLoginPluginMessages", LocaleUtils.toLocale("fi"))));
-    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.internallogin.InternalLoginPluginMessages", LocaleUtils.toLocale("en"))));
+    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.language.LanguagePluginMessages", LocaleUtils.toLocale("fi"))));
+    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.language.LanguagePluginMessages", LocaleUtils.toLocale("en"))));
     return bundles;
   }
 
