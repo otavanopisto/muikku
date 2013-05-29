@@ -196,13 +196,10 @@
 }
 
 #staticNavigation .widgetSpace {
-  box-shadow: 1px 1px 5px #888;
-  margin-top:4px;
-  float:left;
-  @include staticNaviGr($stNavGradColors...);
-  height:40px;
-  border: 2px solid #ededed;
-  border-radius: 10px;
+
+
+ height:40px;
+ 
 }
 
 .widgetTitle {

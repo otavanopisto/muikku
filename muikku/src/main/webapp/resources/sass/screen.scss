@@ -28,13 +28,13 @@ body {
  line-height:30px;
  }
   
- a.tooltip > span { 
+ a.tooltip > div { 
   @include rounded(3px);
   @include shadow(2px, 2px, 2px);
   @include tooltipTransition(0.1s,0.1s,0.1s,0.1s);
   @include gradient-top-bottom(#707070, #666);
   position:absolute;
-	width:200px;  
+ 
 	padding: 5px 10px;
 	margin-top: 20px; 
 	opacity: 1; 
@@ -48,7 +48,7 @@ body {
  
 
  
- a.tooltip:hover > span { 
+ a.tooltip:hover > div { 
  opacity: 1;
  text-decoration:none; 
  visibility: visible; 
@@ -101,11 +101,13 @@ body {
 
 #staticNavigationFade{
   @include fadetoAlpha-top-bottom;	
-	height:60px;
+	height:40px;
 	z-index:12;
 }
 
 #staticNavigation{
+	  @include  gradient-top-bottom(#f2f5f6,#c8d7dc); 
+  border: 1px solid #ededed;
 }
 
 
