@@ -18,9 +18,9 @@ $.widget("custom.communicatorautocomplete", $.ui.autocomplete, {
       imageUrl = item.image;
     
     var inner_html = 
-      '<a><div class="list_item_container">' + 
-      '<div class="image"><img src="' + imageUrl + '"></div>' +
-      '<div class="label">' + item.label + '</div></div></a>';
+      '<a><div class="communicator_autocomplete_item_container">' + 
+      '<div class="communicator_autocomplete_item_image"><img src="' + imageUrl + '"></div>' +
+      '<div class="communicator_autocomplete_item_label">' + item.label + '</div></div></a>';
     return $( "<li></li>" ).data( "item.autocomplete", item ).append(inner_html).appendTo( ul );
   }
 });
@@ -140,7 +140,7 @@ $.widget("custom.communicatorautocomplete", $.ui.autocomplete, {
         
         _this._communicatorContent.find("input[name='userInput']").communicatorautocomplete({
           source: function (request, response) {
-            response(_this._searchUsers(request.term));
+            response(_this._doSearch(request.term));
           },
           select: function (event, ui) {
             _this._selectRecipient(event, ui.item.id, ui.item.label);
@@ -252,9 +252,9 @@ $.widget("custom.communicatorautocomplete", $.ui.autocomplete, {
         
         _this._communicatorContent.find("input[name='send']").click($.proxy(_this._onPostReplyMessageClick, _this));
         _this._communicatorContent.find("input[name='cancel']").click($.proxy(_this._onCancelReplyClick, _this));
-        _this._communicatorContent.find("input[name='userInput']").autocomplete({
+        _this._communicatorContent.find("input[name='userInput']").communicatorautocomplete({
           source: function (request, response) {
-            response(_this._searchUsers(request.term));
+            response(_this._doSearch(request.term));
           },
           select: function (event, ui) {
             _this._selectRecipient(event, ui.item.id, ui.item.label);
@@ -337,6 +337,7 @@ $.widget("custom.communicatorautocomplete", $.ui.autocomplete, {
       }).success(function (data, textStatus, jqXHR) {
         for (var i = 0, l = data.length; i < l; i++) {
           users.push({
+            category: "Käyttäjät",
             label: data[i].fullName,
             id: data[i].id
           });
@@ -344,6 +345,48 @@ $.widget("custom.communicatorautocomplete", $.ui.autocomplete, {
       });
 
       return users;
+    },
+    _searchGroups: function (searchTerm) {
+      var _this = this;
+      var groups = new Array();
+      groups.push({
+        category: "Ryhmät",
+        label: "Opettajat",
+        id: -1
+      });
+
+      groups.push({
+        category: "Ryhmät",
+        label: "Tutorit",
+        id: -1
+      });
+
+      groups.push({
+        category: "Ryhmät",
+        label: "Opiskelijat",
+        id: -1
+      });
+      
+//      RESTful.doGet(CONTEXTPATH + "/rest/user/searchUsers", {
+//        parameters: {
+//          'searchString': searchTerm
+//        }
+//      }).success(function (data, textStatus, jqXHR) {
+//        for (var i = 0, l = data.length; i < l; i++) {
+//          users.push({
+//            label: data[i].fullName,
+//            id: data[i].id
+//          });
+//        }
+//      });
+
+      return groups;
+    },
+    _doSearch: function (searchTerm) {
+      var groups = this._searchGroups(searchTerm);
+      var users = this._searchUsers(searchTerm);
+      
+      return $.merge(groups, users);
     },
     _selectRecipient: function (event, id, name) {
       var _this = this;
