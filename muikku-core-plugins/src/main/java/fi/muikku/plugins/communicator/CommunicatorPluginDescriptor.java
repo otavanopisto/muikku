@@ -19,9 +19,13 @@ import fi.muikku.plugin.RESTPluginDescriptor;
 import fi.muikku.plugins.communicator.dao.CommunicatorMessageDAO;
 import fi.muikku.plugins.communicator.dao.CommunicatorMessageIdDAO;
 import fi.muikku.plugins.communicator.dao.CommunicatorMessageRecipientDAO;
+import fi.muikku.plugins.communicator.dao.CommunicatorMessageSignatureDAO;
+import fi.muikku.plugins.communicator.dao.CommunicatorMessageTemplateDAO;
 import fi.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
+import fi.muikku.plugins.communicator.model.CommunicatorMessageSignature;
+import fi.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
 import fi.muikku.plugins.communicator.rest.CommunicatorRESTService;
 
 @ApplicationScoped
@@ -44,6 +48,8 @@ public class CommunicatorPluginDescriptor implements PluginDescriptor, Persisten
       CommunicatorMessageDAO.class,
       CommunicatorMessageIdDAO.class,
       CommunicatorMessageRecipientDAO.class,
+      CommunicatorMessageTemplateDAO.class,
+      CommunicatorMessageSignatureDAO.class,
 		  
 		  /* Controllers */
 		  CommunicatorController.class
@@ -55,7 +61,9 @@ public class CommunicatorPluginDescriptor implements PluginDescriptor, Persisten
 		return new Class<?>[] {
 			CommunicatorMessage.class,
 			CommunicatorMessageId.class,
-			CommunicatorMessageRecipient.class
+			CommunicatorMessageRecipient.class,
+			CommunicatorMessageTemplate.class,
+			CommunicatorMessageSignature.class
 		};
 	}
 	
