@@ -12,7 +12,7 @@ public class FishPluginLibraryDescriptor implements PluginLibraryDescriptor {
 
 	@Override
 	public String getName() {
-		return "core-plugins";
+		return "example-plugin-1";
 	}
 	
 	@Override
