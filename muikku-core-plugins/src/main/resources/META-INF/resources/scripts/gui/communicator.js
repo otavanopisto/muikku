@@ -1,3 +1,30 @@
+$.widget("custom.communicatorautocomplete", $.ui.autocomplete, {
+  _renderMenu: function(ul, items) {
+    var _this = this;
+    var currentCategory = "";
+  
+    $.each(items, function(index, item) {
+      if (item.category != currentCategory) {
+        if (item.category)
+          ul.append( "<li class='ui-autocomplete-category'>" + item.category + "</li>" );
+        currentCategory = item.category;
+      }
+      _this._renderItemData(ul, item);
+    });
+  },
+  _renderItem: function(ul, item) {
+    var imageUrl = "/muikku/themes/default/gfx/fish.jpg";
+    if (item.image)
+      imageUrl = item.image;
+    
+    var inner_html = 
+      '<a><div class="list_item_container">' + 
+      '<div class="image"><img src="' + imageUrl + '"></div>' +
+      '<div class="label">' + item.label + '</div></div></a>';
+    return $( "<li></li>" ).data( "item.autocomplete", item ).append(inner_html).appendTo( ul );
+  }
+});
+
 (function() {
   
   CommunicatorWidgetController = $.klass(WidgetController, {
@@ -111,12 +138,12 @@
         _this._communicatorContent.find("input[name='send']").click($.proxy(_this._onPostMessageClick, _this));
         _this._communicatorContent.find("input[name='cancel']").click($.proxy(_this._onCancelMessageClick, _this));
         
-        _this._communicatorContent.find("input[name='userInput']").autocomplete({
+        _this._communicatorContent.find("input[name='userInput']").communicatorautocomplete({
           source: function (request, response) {
             response(_this._searchUsers(request.term));
           },
           select: function (event, ui) {
-            _this._selectRecipient(event, ui.item.value, ui.item.label);
+            _this._selectRecipient(event, ui.item.id, ui.item.label);
             $(this).val("");
             return false;
           }
@@ -230,7 +257,7 @@
             response(_this._searchUsers(request.term));
           },
           select: function (event, ui) {
-            _this._selectRecipient(event, ui.item.value, ui.item.label);
+            _this._selectRecipient(event, ui.item.id, ui.item.label);
             $(this).val("");
             return false;
           }
@@ -311,7 +338,7 @@
         for (var i = 0, l = data.length; i < l; i++) {
           users.push({
             label: data[i].fullName,
-            value: data[i].id
+            id: data[i].id
           });
         }
       });
