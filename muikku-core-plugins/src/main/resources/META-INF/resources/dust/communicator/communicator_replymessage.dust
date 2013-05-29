@@ -21,11 +21,11 @@
     </div>
     <div>
       {#localize key="plugin.communicator.newmessage.recipients"/}
-      <select>
-        <option value=""></option>
-        <option value="opiskelijat">{#localize key="plugin.communicator.newmessage.recipients.students"/}</option>
-        <option value="opettajat">{#localize key="plugin.communicator.newmessage.recipients.teachers"/}</option>
-      </select>
+<!--       <select> -->
+<!--         <option value=""></option> -->
+<!--         <option value="opiskelijat">{#localize key="plugin.communicator.newmessage.recipients.students"/}</option> -->
+<!--         <option value="opettajat">{#localize key="plugin.communicator.newmessage.recipients.teachers"/}</option> -->
+<!--       </select> -->
       <div class="recipientsList">
         {#recipients}
           {>"communicator/communicator_messagerecipient.dust"/}
