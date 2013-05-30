@@ -44,4 +44,17 @@ public class CommunicatorMessageSignatureDAO extends PluginDAO<CommunicatorMessa
     return entityManager.createQuery(criteria).getResultList();
   }
   
+  @Override
+  public void delete(CommunicatorMessageSignature messageSignature) {
+    super.delete(messageSignature);
+  }
+
+  public CommunicatorMessageSignature update(CommunicatorMessageSignature messageSignature, String name, String signature) {
+    messageSignature.setName(name);
+    messageSignature.setSignature(signature);
+    
+    getEntityManager().persist(messageSignature);
+    
+    return messageSignature;
+  }
 }

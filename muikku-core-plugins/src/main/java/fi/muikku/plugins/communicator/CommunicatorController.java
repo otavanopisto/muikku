@@ -69,17 +69,17 @@ public class CommunicatorController {
     return communicatorMessageDAO.listFirstMessagesByRecipient(userEntity);
   }
   
-  public void TEST_MAIL_SEND() {
-    CommunicatorMessageId communicatorMessageId = communicatorMessageIdDAO.create();
-    
-    CommunicatorMessage message = communicatorMessageDAO.create(communicatorMessageId, sessionController.getUser().getId(), 
-        "Test mail", "Testing mail creation", new Date());
-    communicatorMessageRecipientDAO.create(message, sessionController.getUser().getId());
-
-    message = communicatorMessageDAO.create(communicatorMessageId, sessionController.getUser().getId(), 
-        "Re: Test mail", "Reply to mail creation", new Date());
-    communicatorMessageRecipientDAO.create(message, sessionController.getUser().getId());
-  }
+//  public void TEST_MAIL_SEND() {
+//    CommunicatorMessageId communicatorMessageId = communicatorMessageIdDAO.create();
+//    
+//    CommunicatorMessage message = communicatorMessageDAO.create(communicatorMessageId, sessionController.getUser().getId(), 
+//        "Test mail", "Testing mail creation", new Date());
+//    communicatorMessageRecipientDAO.create(message, sessionController.getUser().getId());
+//
+//    message = communicatorMessageDAO.create(communicatorMessageId, sessionController.getUser().getId(), 
+//        "Re: Test mail", "Reply to mail creation", new Date());
+//    communicatorMessageRecipientDAO.create(message, sessionController.getUser().getId());
+//  }
 
   public CommunicatorMessageId createMessageId() {
     return communicatorMessageIdDAO.create();
@@ -130,5 +130,29 @@ public class CommunicatorController {
   
   public CommunicatorMessageSignature getMessageSignature(Long id) {
     return communicatorMessageSignatureDAO.findById(id);
+  }
+
+  public void deleteMessageTemplate(CommunicatorMessageTemplate messageTemplate) {
+    communicatorMessageTemplateDAO.delete(messageTemplate);
+  }
+
+  public void deleteMessageSignature(CommunicatorMessageSignature messageSignature) {
+    communicatorMessageSignatureDAO.delete(messageSignature);
+  }
+
+  public CommunicatorMessageTemplate editMessageTemplate(CommunicatorMessageTemplate messageTemplate, String name, String content) {
+    return communicatorMessageTemplateDAO.update(messageTemplate, name, content);
+  }
+
+  public CommunicatorMessageSignature editMessageSignature(CommunicatorMessageSignature messageSignature, String name, String signature) {
+    return communicatorMessageSignatureDAO.update(messageSignature, name, signature);
+  }
+
+  public CommunicatorMessageSignature createMessageSignature(String name, String content, UserEntity user) {
+    return communicatorMessageSignatureDAO.create(name, content, user);
+  }
+
+  public CommunicatorMessageTemplate createMessageTemplate(String name, String content, UserEntity user) {
+    return communicatorMessageTemplateDAO.create(name, content, user);
   }
 }

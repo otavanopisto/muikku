@@ -19,15 +19,15 @@ public class CommunicatorMessageTemplateDAO extends PluginDAO<CommunicatorMessag
   private static final long serialVersionUID = -7830619828801454118L;
 
   public CommunicatorMessageTemplate create(String name, String content, UserEntity user) {
-    CommunicatorMessageTemplate sig = new CommunicatorMessageTemplate();
+    CommunicatorMessageTemplate messageTemplate = new CommunicatorMessageTemplate();
     
-    sig.setName(name);
-    sig.setContent(content);
-    sig.setUser(user.getId());
+    messageTemplate.setName(name);
+    messageTemplate.setContent(content);
+    messageTemplate.setUser(user.getId());
     
-    getEntityManager().persist(sig);
+    getEntityManager().persist(messageTemplate);
     
-    return sig;
+    return messageTemplate;
   }
   
   public List<CommunicatorMessageTemplate> listByUser(UserEntity user) {
@@ -44,4 +44,17 @@ public class CommunicatorMessageTemplateDAO extends PluginDAO<CommunicatorMessag
     return entityManager.createQuery(criteria).getResultList();
   }
   
+  @Override
+  public void delete(CommunicatorMessageTemplate messageTemplate) {
+    super.delete(messageTemplate);
+  }
+
+  public CommunicatorMessageTemplate update(CommunicatorMessageTemplate messageTemplate, String name, String content) {
+    messageTemplate.setName(name);
+    messageTemplate.setContent(content);
+    
+    getEntityManager().persist(messageTemplate);
+    
+    return messageTemplate;
+  }
 }

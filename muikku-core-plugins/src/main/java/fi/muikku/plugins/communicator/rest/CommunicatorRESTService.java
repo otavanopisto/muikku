@@ -7,6 +7,7 @@ import java.util.List;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -250,6 +251,26 @@ public class CommunicatorRESTService extends PluginRESTService {
     ).build();
   }
   
+  @POST
+  @Path ("/{USERID}/templates")
+  public Response createUserMessageTemplate(
+      @PathParam ("USERID") Long userId,
+      @FormParam ("name") String name,
+      @FormParam ("content") String content
+   ) throws AuthorizationException {
+    UserEntity userEntity = userController.findUserEntity(userId);
+    
+    CommunicatorMessageTemplate messageTemplate = communicatorController.createMessageTemplate(name, content, userEntity);
+    
+    TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
+    Tranquility tranquility = tranquilityBuilder.createTranquility()
+      .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE));
+    
+    return Response.ok(
+      tranquility.entity(messageTemplate)
+    ).build();
+  }
+  
   @GET
   @Path ("/{USERID}/templates/{TEMPLATEID}")
   public Response getUserMessageTemplate(
@@ -264,6 +285,39 @@ public class CommunicatorRESTService extends PluginRESTService {
     
     return Response.ok(
       tranquility.entity(messageTemplate)
+    ).build();
+  }
+
+  @DELETE
+  @Path ("/{USERID}/templates/{TEMPLATEID}")
+  public Response deleteUserMessageTemplate(
+      @PathParam ("USERID") Long userId,
+      @PathParam ("TEMPLATEID") Long templateId
+   ) throws AuthorizationException {
+    CommunicatorMessageTemplate messageTemplate = communicatorController.getMessageTemplate(templateId);
+    communicatorController.deleteMessageTemplate(messageTemplate);
+    
+    return Response.ok().build();
+  }
+
+  @POST
+  @Path ("/{USERID}/templates/{TEMPLATEID}")
+  public Response editUserMessageTemplate(
+      @PathParam ("USERID") Long userId,
+      @PathParam ("TEMPLATEID") Long templateId,
+      @FormParam ("name") String name,
+      @FormParam ("content") String content
+   ) throws AuthorizationException {
+    CommunicatorMessageTemplate messageTemplate = communicatorController.getMessageTemplate(templateId);
+
+    CommunicatorMessageTemplate editMessageTemplate = communicatorController.editMessageTemplate(messageTemplate, name, content);
+    
+    TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
+    Tranquility tranquility = tranquilityBuilder.createTranquility()
+      .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE));
+    
+    return Response.ok(
+      tranquility.entity(editMessageTemplate)
     ).build();
   }
 
@@ -285,6 +339,26 @@ public class CommunicatorRESTService extends PluginRESTService {
     ).build();
   }
   
+  @POST
+  @Path ("/{USERID}/signatures")
+  public Response createUserMessageSignature(
+      @PathParam ("USERID") Long userId,
+      @FormParam ("name") String name,
+      @FormParam ("signature") String signature
+   ) throws AuthorizationException {
+    UserEntity userEntity = userController.findUserEntity(userId);
+
+    CommunicatorMessageSignature messageSignature = communicatorController.createMessageSignature(name, signature, userEntity);
+    
+    TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
+    Tranquility tranquility = tranquilityBuilder.createTranquility()
+      .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE));
+    
+    return Response.ok(
+      tranquility.entity(messageSignature)
+    ).build();
+  }
+  
   @GET
   @Path ("/{USERID}/signatures/{SIGNATUREID}")
   public Response getUserMessageSignature(
@@ -299,6 +373,39 @@ public class CommunicatorRESTService extends PluginRESTService {
     
     return Response.ok(
       tranquility.entity(messageSignature)
+    ).build();
+  }
+
+  @DELETE
+  @Path ("/{USERID}/signatures/{SIGNATUREID}")
+  public Response deleteUserMessageSignature(
+      @PathParam ("USERID") Long userId,
+      @PathParam ("SIGNATUREID") Long signatureId
+   ) throws AuthorizationException {
+    CommunicatorMessageSignature messageSignature = communicatorController.getMessageSignature(signatureId);
+    communicatorController.deleteMessageSignature(messageSignature);
+    
+    return Response.ok().build();
+  }
+
+  @POST
+  @Path ("/{USERID}/signatures/{SIGNATUREID}")
+  public Response editUserMessageSignature(
+      @PathParam ("USERID") Long userId,
+      @PathParam ("SIGNATUREID") Long signatureId,
+      @FormParam ("name") String name,
+      @FormParam ("signature") String signature
+   ) throws AuthorizationException {
+    CommunicatorMessageSignature messageSignature = communicatorController.getMessageSignature(signatureId);
+    
+    CommunicatorMessageSignature editMessageSignature = communicatorController.editMessageSignature(messageSignature, name, signature);
+
+    TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
+    Tranquility tranquility = tranquilityBuilder.createTranquility()
+      .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE));
+    
+    return Response.ok(
+      tranquility.entity(editMessageSignature)
     ).build();
   }
 
