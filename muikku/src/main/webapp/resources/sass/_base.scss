@@ -5,14 +5,28 @@
 
 
 /* Shadows */
-$sc: #999;
+$sc: #dadada;
+
+
 
 /* Generic background */
 
 $bgr : #fff;
 
+/* Action area background */
+
+$aBgr : #f8f8f8;
+
+
 
 /* Generic gradients (Grayscale) */
+
+/* Forms */
+
+$btnGr:#bfd255, #8eb92a, #72aa00 , #9ecb2d;;
+$btnBrd: #72aa00;
+$btnBrdH: #fff;
+
 
 /* Top-bottom 2 - color */
 
@@ -40,11 +54,18 @@ $eightColorGr-8:#fcfcfc;
 
 /* Spesific Gradients */
 
+
+  /* MainFunction Button */
+ 
+  $mainFuncBtnGr: #feccb1,#f17432,#ea5507,#fb955e;  
+  $mainFuncBtnBrd: #ea5507;
+  
 	/* Header top-bottom */
 	
 	$headerGradient-start:#deefff;
 	$headerGradient-end:#98bede;
-
+ 
+ 
 
 
 	/* Navigation icons */
@@ -67,29 +88,12 @@ $eightColorGr-8:#fcfcfc;
 	
 	/* Navigation Tooltip top-bottom */
 	
-	/* Static navigation top-bottom 2- color */
+	/* Static navigation top-bottom 4- color */
 	
-  	$stNavGradColors:#b8e1fc,#a9d2f3,#90bae4,#90bcea,#90bff0,#6ba8e5,#a2daf5,#bdf3fd;
+  	$stNavGradColors:#e2e2e2,#dbdbdb,#d1d1d1,#fefefe;
 	
 	/* Widget top-bottom */
     $widgetGr: #feffff , #eaf3f7, #cbe3ed;
-
-  /* content */
-  
-   /* contentTool icons */
-  
-    /* Active */
-    
-    $cToolIconGr: #fceabb,#fccd4d,#f8b500,#fbdf93;
-
-    /* Hover */
-    
-    $cToolIconGrHover: #fff,#fceabb,#fccd4d,#fbdf93;
-
-
-    /* Disabled */
-    
-    $cToolIconDisabledGr:#ffffff,#f1f1f1,#e1e1e1,#f6f6f6 ;
    
    /* contentTool app */
   
@@ -138,6 +142,27 @@ $dSlow:1s;
 
 /* Generic Mixins */
 
+@mixin shadow($s:$sc) {
+-webkit-box-shadow: 1px 1px 2px 1px $s;
+box-shadow: 1px 1px 2px 1px $s; 
+}
+@mixin iShadow($s:$sc) {
+    -webkit-box-shadow: inset 1px 1px 1px 1px $s;
+    box-shadow: inset 1px 1px 1px 1px  $s; 
+}
+
+
+@mixin rounded($radius) {
+ -webkit-border-radius: $radius; 
+ -moz-border-radius: $radius; 
+ -o-border-radius: $radius; 
+ border-radius: $radius; 
+}
+
+@mixin border($b){
+	border:1px solid $b;
+	}
+
 
 @mixin fadetoAlpha-top-bottom($fadeColor1:rgba(255,255,255,1),$fadeColor2:rgba(255,255,255,1),$fadeColor3:rgba(255,255,255,0)){
 background: #fff;
@@ -182,18 +207,8 @@ background: linear-gradient(to bottom, $fadeColor1 0%,$fadeColor2 50%,$fadeColor
 	background: linear-gradient(to bottom, $gr1 0%,$gr2 50%,$gr3 51%,$gr4 100%);
 }
 
-@mixin rounded($radius) {
- -webkit-border-radius: $radius; 
- -moz-border-radius: $radius; 
- -o-border-radius: $radius; 
- border-radius: $radius; 
-}
 
-@mixin shadow( $sLen1, $sLen2, $sLen3 ){
-    -webkit-box-shadow: $sLen1 $sLen2 $sLen3 $sc; 
-    -moz-box-shadow: $sLen1 $sLen2 $sLen3 $sc; 
-    box-shadow: $sLen1 $sLen2 $sLen3 $sc; 	
-}
+
 
 /* Spesific mixins */
 
