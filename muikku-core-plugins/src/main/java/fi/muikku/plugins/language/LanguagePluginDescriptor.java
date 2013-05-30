@@ -45,9 +45,9 @@ public class LanguagePluginDescriptor implements PluginDescriptor, LocalizedPlug
   
   @Override
   public void init() {
-    Widget internalLoginWidget = widgetController.findWidget(LANGUAGE_WIDGET_NAME);
-    if (internalLoginWidget == null) {
-      internalLoginWidget = widgetController.createWidget(LANGUAGE_WIDGET_NAME, WidgetVisibility.EVERYONE);
+    Widget languageWidget = widgetController.findWidget(LANGUAGE_WIDGET_NAME);
+    if (languageWidget == null) {
+      languageWidget = widgetController.createWidget(LANGUAGE_WIDGET_NAME, WidgetVisibility.EVERYONE);
     }
     
     // TODO This is wrong. So wrong. Atrocious, even!
@@ -56,9 +56,9 @@ public class LanguagePluginDescriptor implements PluginDescriptor, LocalizedPlug
 			widgetLocation = widgetController.createWidgetLocation("environment.header.right");
 		}
     
-    DefaultWidget defaultWidget = widgetController.findDefaultWidget(internalLoginWidget, widgetLocation);
+    DefaultWidget defaultWidget = widgetController.findDefaultWidget(languageWidget, widgetLocation);
     if (defaultWidget == null) {
-      defaultWidget = widgetController.createDefaultWidget(internalLoginWidget, widgetLocation);
+      defaultWidget = widgetController.createDefaultWidget(languageWidget, widgetLocation);
     }
   }
 

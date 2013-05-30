@@ -45,9 +45,9 @@ public class LogoutPluginDescriptor implements PluginDescriptor, LocalizedPlugin
   
   @Override
   public void init() {
-    Widget internalLoginWidget = widgetController.findWidget(LOGOUT_WIDGET_NAME);
-    if (internalLoginWidget == null) {
-      internalLoginWidget = widgetController.createWidget(LOGOUT_WIDGET_NAME, WidgetVisibility.AUTHENTICATED);
+    Widget logoutWidget = widgetController.findWidget(LOGOUT_WIDGET_NAME);
+    if (logoutWidget == null) {
+      logoutWidget = widgetController.createWidget(LOGOUT_WIDGET_NAME, WidgetVisibility.AUTHENTICATED);
     }
     
     // TODO This is wrong. So wrong. Atrocious, even!
@@ -56,9 +56,9 @@ public class LogoutPluginDescriptor implements PluginDescriptor, LocalizedPlugin
 			widgetLocation = widgetController.createWidgetLocation("environment.header.right");
 		}
     
-    DefaultWidget defaultWidget = widgetController.findDefaultWidget(internalLoginWidget, widgetLocation);
+    DefaultWidget defaultWidget = widgetController.findDefaultWidget(logoutWidget, widgetLocation);
     if (defaultWidget == null) {
-      defaultWidget = widgetController.createDefaultWidget(internalLoginWidget, widgetLocation);
+      defaultWidget = widgetController.createDefaultWidget(logoutWidget, widgetLocation);
     }
   }
 
