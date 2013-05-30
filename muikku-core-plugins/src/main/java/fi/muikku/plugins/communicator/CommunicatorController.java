@@ -69,17 +69,17 @@ public class CommunicatorController {
     return communicatorMessageDAO.listFirstMessagesByRecipient(userEntity);
   }
   
-  public void TEST_MAIL_SEND() {
-    CommunicatorMessageId communicatorMessageId = communicatorMessageIdDAO.create();
-    
-    CommunicatorMessage message = communicatorMessageDAO.create(communicatorMessageId, sessionController.getUser().getId(), 
-        "Test mail", "Testing mail creation", new Date());
-    communicatorMessageRecipientDAO.create(message, sessionController.getUser().getId());
-
-    message = communicatorMessageDAO.create(communicatorMessageId, sessionController.getUser().getId(), 
-        "Re: Test mail", "Reply to mail creation", new Date());
-    communicatorMessageRecipientDAO.create(message, sessionController.getUser().getId());
-  }
+//  public void TEST_MAIL_SEND() {
+//    CommunicatorMessageId communicatorMessageId = communicatorMessageIdDAO.create();
+//    
+//    CommunicatorMessage message = communicatorMessageDAO.create(communicatorMessageId, sessionController.getUser().getId(), 
+//        "Test mail", "Testing mail creation", new Date());
+//    communicatorMessageRecipientDAO.create(message, sessionController.getUser().getId());
+//
+//    message = communicatorMessageDAO.create(communicatorMessageId, sessionController.getUser().getId(), 
+//        "Re: Test mail", "Reply to mail creation", new Date());
+//    communicatorMessageRecipientDAO.create(message, sessionController.getUser().getId());
+//  }
 
   public CommunicatorMessageId createMessageId() {
     return communicatorMessageIdDAO.create();
