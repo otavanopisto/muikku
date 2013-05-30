@@ -22,6 +22,8 @@ import fi.muikku.plugins.communicator.CommunicatorController;
 import fi.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
+import fi.muikku.plugins.communicator.model.CommunicatorMessageSignature;
+import fi.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
 import fi.muikku.plugins.forum.ForumController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.security.AuthorizationException;
@@ -66,7 +68,7 @@ public class CommunicatorRESTService extends PluginRESTService {
     TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
     Tranquility tranquility = tranquilityBuilder.createTranquility()
       .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
-      .addInstruction(CommunicatorMessage.class, tranquilityBuilder.createPropertyInjectInstruction("replyCount", new ReplyCountValueGetter()))
+      .addInstruction(CommunicatorMessage.class, tranquilityBuilder.createPropertyInjectInstruction("messageCount", new MessageCountValueGetter()))
       .addInstruction(new SuperClassInstructionSelector(UserEntity.class), tranquilityBuilder.createPropertyInjectInstruction("hasPicture", new UserEntityHasPictureValueGetter()))
       .addInstruction(new SuperClassInstructionSelector(UserEntity.class), tranquilityBuilder.createPropertyInjectInstruction("fullName", new UserNameValueGetter()));
     
@@ -229,7 +231,77 @@ public class CommunicatorRESTService extends PluginRESTService {
       tranquility.entities(messageRecipients)
     ).build();
   }
+
+  @GET
+  @Path ("/{USERID}/templates")
+  public Response listUserMessageTemplates(
+      @PathParam ("USERID") Long userId
+   ) throws AuthorizationException {
+    UserEntity userEntity = userController.findUserEntity(userId);
+    
+    List<CommunicatorMessageTemplate> messageTemplates = communicatorController.listMessageTemplates(userEntity);
+    
+    TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
+    Tranquility tranquility = tranquilityBuilder.createTranquility()
+      .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE));
+    
+    return Response.ok(
+      tranquility.entities(messageTemplates)
+    ).build();
+  }
   
+  @GET
+  @Path ("/{USERID}/templates/{TEMPLATEID}")
+  public Response getUserMessageTemplate(
+      @PathParam ("USERID") Long userId,
+      @PathParam ("TEMPLATEID") Long templateId
+   ) throws AuthorizationException {
+    CommunicatorMessageTemplate messageTemplate = communicatorController.getMessageTemplate(templateId);
+    
+    TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
+    Tranquility tranquility = tranquilityBuilder.createTranquility()
+      .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE));
+    
+    return Response.ok(
+      tranquility.entity(messageTemplate)
+    ).build();
+  }
+
+  @GET
+  @Path ("/{USERID}/signatures")
+  public Response listUserMessageSignatures(
+      @PathParam ("USERID") Long userId
+   ) throws AuthorizationException {
+    UserEntity userEntity = userController.findUserEntity(userId);
+    
+    List<CommunicatorMessageSignature> messageSignatures = communicatorController.listMessageSignatures(userEntity);
+    
+    TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
+    Tranquility tranquility = tranquilityBuilder.createTranquility()
+      .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE));
+    
+    return Response.ok(
+      tranquility.entities(messageSignatures)
+    ).build();
+  }
+  
+  @GET
+  @Path ("/{USERID}/signatures/{SIGNATUREID}")
+  public Response getUserMessageSignature(
+      @PathParam ("USERID") Long userId,
+      @PathParam ("SIGNATUREID") Long signatureId
+   ) throws AuthorizationException {
+    CommunicatorMessageSignature messageSignature = communicatorController.getMessageSignature(signatureId);
+    
+    TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
+    Tranquility tranquility = tranquilityBuilder.createTranquility()
+      .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE));
+    
+    return Response.ok(
+      tranquility.entity(messageSignature)
+    ).build();
+  }
+
   private class UserEntityHasPictureValueGetter implements ValueGetter<Boolean> {
     @Override
     public Boolean getValue(TranquilizingContext context) {
@@ -247,13 +319,12 @@ public class CommunicatorRESTService extends PluginRESTService {
     }
   }
 
-  private class ReplyCountValueGetter implements ValueGetter<Long> {
+  private class MessageCountValueGetter implements ValueGetter<Long> {
     @Override
     public Long getValue(TranquilizingContext context) {
       CommunicatorMessage msg = (CommunicatorMessage) context.getEntityValue();
       UserEntity user = sessionController.getUser();
-      Long replyCount = communicatorController.countMessagesByRecipientAndMessageId(user, msg.getCommunicatorMessageId());
-      return replyCount--;
+      return communicatorController.countMessagesByRecipientAndMessageId(user, msg.getCommunicatorMessageId());
     }
   }
 

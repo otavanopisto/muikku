@@ -5,7 +5,7 @@
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-    template="/WEB-INF/templates/teese.xhtml">
+    template="/WEB-INF/templates/default.xhtml">
     
     <ui:define name="content">
       <c:set var="userId" value="#{param['userId']}" />
@@ -38,7 +38,7 @@
       <div class="userContacts">
         <c:forEach var="contact" items="#{User.listUserContacts(userEntity)}">
           <c:choose>
-            <c:when test="#{contact.type eq 'PHONE'}"css3 >
+            <c:when test="#{contact.type eq 'PHONE'}">
               <div class="userContact">Phone: #{contact.value}</div>
             </c:when>
             <c:when test="#{contact.type eq 'SKYPE'}">

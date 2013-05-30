@@ -1,5 +1,7 @@
 package fi.muikku.controller;
 
+import java.util.List;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -12,6 +14,7 @@ import fi.muikku.dao.users.UserContactDAO;
 import fi.muikku.dao.users.UserEntityDAO;
 import fi.muikku.dao.users.UserPictureDAO;
 import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserContact;
 import fi.muikku.schooldata.UserSchoolDataController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.session.SessionController;
@@ -64,11 +67,11 @@ public class GeneralUserController {
     return userPictureDAO.findUserHasPicture(user);
   }
   
-//  public List<UserContact> listUserContacts(UserEntity user) {
-//    boolean hidden = false;
-//    
-//    return userContactDAO.listByUser(user, hidden);
-//  }
+  public List<UserContact> listUserContacts(UserEntity user) {
+    boolean hidden = false;
+    
+    return userContactDAO.listByUser(user, hidden);
+  }
 //
 //  @Permit (MuikkuPermissions.MANAGE_USERS) // TODO: ???
 //  public List<EnvironmentUser> listEnvironmentUsers(@PermitContext Environment environment) {

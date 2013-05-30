@@ -124,35 +124,6 @@
   padding: 4px;
 }
 
-.calendarSettingsSubscribeCalendarContainer {
-  padding: 4px;
-}
-
-.calendarSettingsSubscribeUrl {
-  width: 100%;
-}
-
-.calendarSettingsSubscribeUrlEmpty {
-  color: #aaa;
-}
-
-.calendarSettingsSubscribeCalendarContainer {
-  margin-top: 4px; 
-}
-
-.calendarSettingsSubscribeCalendarOptionsContainer {
-  margin-top: 4px;
-}
-
-.calendarSettingsSubscribeCalendarOptionsContainer input {
-  margin-top: 4px; 
-}
-
-.calendarSettingsSubscribeCalendarOptionsContainer button {
-  margin-top: 8px; 
-}
-
-
 .calendarsVisibleWidget {
   display: inline-block;
 }
@@ -225,13 +196,10 @@
 }
 
 #staticNavigation .widgetSpace {
-  box-shadow: 1px 1px 5px #888;
-  margin-top:4px;
-  float:left;
-  @include staticNaviGr($stNavGradColors...);
-  height:40px;
-  border: 2px solid #ededed;
-  border-radius: 10px;
+
+
+ height:40px;
+ 
 }
 
 .widgetTitle {

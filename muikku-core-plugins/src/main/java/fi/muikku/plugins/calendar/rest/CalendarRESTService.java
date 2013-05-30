@@ -259,7 +259,7 @@ public class CalendarRESTService extends PluginRESTService {
   	  		name = url;
   	  	}
   	  	
-  	  	userCalendar = calendarController.createSubscribedUserCalendar(user, name, url, color, visibile);
+  	  	userCalendar = calendarController.createSubscribedUserCalendar(user, name, url, color, visibile, new Date());
   	  	
   	  	try {
   				calendarController.synchronizeSubscribedCalendar((SubscribedCalendar) userCalendar.getCalendar(), icsCalendar);

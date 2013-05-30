@@ -7,8 +7,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
@@ -55,6 +57,7 @@ import fi.muikku.plugins.calendar.model.LocalCalendar;
 import fi.muikku.plugins.calendar.model.LocalEvent;
 import fi.muikku.plugins.calendar.model.LocalEventType;
 import fi.muikku.plugins.calendar.model.SubscribedCalendar;
+import fi.muikku.plugins.calendar.model.SubscribedEvent;
 import fi.muikku.plugins.calendar.model.UserCalendar;
 
 @Dependent
@@ -147,8 +150,8 @@ public class CalendarController {
 
 	/* SubscribedCalendar */
 	
-	public UserCalendar createSubscribedUserCalendar(UserEntity user, String name, String url, String color, Boolean visible) {
-		SubscribedCalendar subscribedCalendar = subscribedCalendarDAO.create(name, url, color);
+	public UserCalendar createSubscribedUserCalendar(UserEntity user, String name, String url, String color, Boolean visible, Date lastSynchronized) {
+		SubscribedCalendar subscribedCalendar = subscribedCalendarDAO.create(name, url, color, lastSynchronized);
 		UserCalendar userCalendar = userCalendarDAO.create(subscribedCalendar, user.getId(), visible);
 		return userCalendar;
 	}
@@ -260,56 +263,88 @@ public class CalendarController {
 
 	@SuppressWarnings("unchecked")
   public void synchronizeSubscribedCalendar(SubscribedCalendar subscribedCalendar, net.fortuna.ical4j.model.Calendar icsCalendar) throws IOException, ParserException, URISyntaxException {
+		Set<String> removedUids = new HashSet<>();
+		
+		List<SubscribedEvent> existingEvents = subscribedEventDAO.listByCalendar(subscribedCalendar);
+		for (SubscribedEvent existingEvent : existingEvents) {
+			removedUids.add(existingEvent.getUid());
+		}
+		
 		Iterator<Component> componentIterator = icsCalendar.getComponents().iterator();
 		while (componentIterator.hasNext()) {
 			Component component = componentIterator.next();
 			if (component instanceof VEvent) {
 				VEvent event = (VEvent) component;
 				
-				Uid uid = event.getUid();
-				if (uid != null) {
+				Uid uidObject = event.getUid();
+				if (uidObject != null) {
   				Description description = event.getDescription();
-  				Summary summary = event.getSummary();
+  				Summary summaryObject = event.getSummary();
   				DtStart startDate = event.getStartDate();
   				DtEnd endDate = event.getEndDate();
   				Url eventUrl = event.getUrl();
   				Location location = event.getLocation();
   				Geo geographicPos = event.getGeographicPos();
-  				
+  				String uid = uidObject.getValue();
+		
   				if (startDate == null) {
-  					logger.warning("Subscribed event " + uid.getValue() + " does not have a start date. Skipping");
+  					logger.warning("Subscribed event " + uid + " does not have a start date. Skipping");
   					continue;
   				}
   				
   				Date start = startDate.getDate();
   				Date end = endDate == null ? start : endDate.getDate();
   				boolean allDay = isAllDayIcsEvent(event);
+  				String summary = summaryObject != null ? summaryObject.getValue() : null;
   				
-  				// TODO: Update...
-  			  // TODO: Repeats, Alerts, Invitees
+  				SubscribedEvent subscribedEvent = subscribedEventDAO.findByCalendarAndUid(subscribedCalendar, uid);
+  				if (subscribedEvent == null) { 
+    				subscribedEventDAO.create(
+     					subscribedCalendar, 
+    					uid, 
+    					summary, 
+    					description != null ? description.getValue() : null,
+  						location != null ? location.getValue() : null,
+  						start,
+  						end,
+    					eventUrl != null ? eventUrl.getValue() : null,
+    					allDay,
+    	  			geographicPos != null ? geographicPos.getLatitude() : null,
+    	  			geographicPos != null ? geographicPos.getLongitude(): null
+    				);
+  				} else {
+  					// TODO: Update exisiting event
+  				}
   				
-  				subscribedEventDAO.create(
-   					subscribedCalendar, 
-  					uid.getValue(), 
-  					summary != null ? summary.getValue() : null, 
-  					description != null ? description.getValue() : null,
-						location != null ? location.getValue() : null,
-						start,
-						end,
-  					eventUrl != null ? eventUrl.getValue() : null,
-  					allDay,
-  	  			geographicPos != null ? geographicPos.getLatitude() : null,
-  	  			geographicPos != null ? geographicPos.getLongitude(): null
-  				);
+  				removedUids.add(uid);
 				} else {
 					logger.warning("Skiped " + subscribedCalendar.getId() + " event because no uid could be found.");
 				}
 			}
 		}
+		
+		for (String removedUid : removedUids) {
+			SubscribedEvent removeEvent = subscribedEventDAO.findByCalendarAndUid(subscribedCalendar, removedUid);
+			if (removeEvent != null) {
+			  subscribedEventDAO.delete(removeEvent);
+			}
+		}
+		
+		subscribedCalendarDAO.updateLastSynchronized(subscribedCalendar, new Date(System.currentTimeMillis()));
 	}
 	
 	public void synchronizeSubscribedCalendar(SubscribedCalendar subscribedCalendar) throws IOException, ParserException, URISyntaxException {
 		synchronizeSubscribedCalendar(subscribedCalendar, loadIcsCalendar(subscribedCalendar.getUrl()));
+	}
+
+	public SubscribedCalendar getNextSubscribedCalendarToBeSynchronized() {
+		List<SubscribedCalendar> calendars = subscribedCalendarDAO.listAllOrderByLastSynchronizedAsc(0, 1);
+
+		if (calendars.size() == 1) {
+  		return calendars.get(0);
+		}
+		
+		return null;
 	}
 	
 	/* UserCalendar */

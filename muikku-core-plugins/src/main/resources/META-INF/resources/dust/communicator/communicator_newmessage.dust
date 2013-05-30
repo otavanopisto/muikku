@@ -1,23 +1,29 @@
 <div class="communicatorNewMessage">
   <form>
     <div>
-      <input type="button" name="send" value="{#localize key='plugin.communicator.newmessage.send'/}"/>
-      <input type="button" name="save" value="{#localize key='plugin.communicator.newmessage.save'/}"/>
-      <select>
+      <input type="button" name="send" value='{#localize key="plugin.communicator.newmessage.send"/}'/>
+      <input type="button" name="save" value='{#localize key="plugin.communicator.newmessage.save"/}'/>
+      <select name="templateSelector">
         <option value="">{#localize key="plugin.communicator.newmessage.templates"/}</option>
+        {#templates}
+          <option value="{id}">{name}</option>
+        {/templates}
       </select>
-      <select>
+      <select name="signatureSelector">
         <option value="">{#localize key="plugin.communicator.newmessage.signatures"/}</option>
+        {#signatures}
+          <option value="{id}">{name}</option>
+        {/signatures}
       </select>
-      <input type="button" name="cancel" value="{#localize key='plugin.communicator.newmessage.cancel'/}"/>
+      <input type="button" name="cancel" value='{#localize key="plugin.communicator.newmessage.cancel"/}'/>
     </div>
     <div>
       {#localize key="plugin.communicator.newmessage.recipients"/}
-      <select>
-        <option value=""></option>
-        <option value="opiskelijat">{#localize key="plugin.communicator.newmessage.recipients.students"/}</option>
-        <option value="opettajat">{#localize key="plugin.communicator.newmessage.recipients.teachers"/}</option>
-      </select>
+<!--       <select> -->
+<!--         <option value=""></option> -->
+<!--         <option value="opiskelijat">{#localize key="plugin.communicator.newmessage.recipients.students"/}</option> -->
+<!--         <option value="opettajat">{#localize key="plugin.communicator.newmessage.recipients.teachers"/}</option> -->
+<!--       </select> -->
       <div class="recipientsList">
       </div>
       <input type="text" name="userInput"/>
