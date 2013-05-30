@@ -131,4 +131,28 @@ public class CommunicatorController {
   public CommunicatorMessageSignature getMessageSignature(Long id) {
     return communicatorMessageSignatureDAO.findById(id);
   }
+
+  public void deleteMessageTemplate(CommunicatorMessageTemplate messageTemplate) {
+    communicatorMessageTemplateDAO.delete(messageTemplate);
+  }
+
+  public void deleteMessageSignature(CommunicatorMessageSignature messageSignature) {
+    communicatorMessageSignatureDAO.delete(messageSignature);
+  }
+
+  public CommunicatorMessageTemplate editMessageTemplate(CommunicatorMessageTemplate messageTemplate, String name, String content) {
+    return communicatorMessageTemplateDAO.update(messageTemplate, name, content);
+  }
+
+  public CommunicatorMessageSignature editMessageSignature(CommunicatorMessageSignature messageSignature, String name, String signature) {
+    return communicatorMessageSignatureDAO.update(messageSignature, name, signature);
+  }
+
+  public CommunicatorMessageSignature createMessageSignature(String name, String content, UserEntity user) {
+    return communicatorMessageSignatureDAO.create(name, content, user);
+  }
+
+  public CommunicatorMessageTemplate createMessageTemplate(String name, String content, UserEntity user) {
+    return communicatorMessageTemplateDAO.create(name, content, user);
+  }
 }

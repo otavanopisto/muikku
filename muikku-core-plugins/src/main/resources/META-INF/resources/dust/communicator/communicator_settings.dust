@@ -1,0 +1,38 @@
+<div class="communicatorSettings">
+  <div>
+    Viestipohjat
+    <select size="8" name="templateSelector">
+      {#templates}
+        <option value="{id}">{name}</option>
+      {/templates}
+    </select>
+
+    <input type="hidden" name="templateId" value="NEW" />
+    <input type="button" name="newTemplate" value="Uusi" />
+    <input type="button" name="editTemplate" value="Muokkaa" />
+    <input type="button" name="deleteTemplate" value="Poista" />
+
+    <input type="text" name="templateName" />
+    <textarea name="templateContent"></textarea>
+    <input type="button" name="saveTemplate" value="Tallenna" />
+  </div>
+
+  <div>
+    Allekirjoitukset
+    <select size="8" name="signatureSelector">
+      {#signatures}
+        <option value="{id}">{name}</option>
+      {/signatures}
+    </select>
+    
+    <input type="hidden" name="signatureId" value="NEW" />
+    <input type="button" name="newSignature" value="Uusi" />
+    <input type="button" name="editSignature" value="Muokkaa" />
+    <input type="button" name="deleteSignature" value="Poista" />
+
+    <input type="text" name="signatureName" />
+    <textarea name="signatureContent"></textarea>
+    <input type="button" name="saveSignature" value="Tallenna" />
+  </div>
+  
+</div>
