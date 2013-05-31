@@ -19,6 +19,7 @@ import fi.muikku.session.local.LocalSession;
   "FacesServlet",
   "jsp",
   "OAuth",
+  "JavaScriptLocaleServlet",
   "UserPictureUploadServlet"
 })
 public class LocalSessionFilter implements Filter {

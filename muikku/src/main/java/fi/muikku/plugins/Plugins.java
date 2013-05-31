@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import fi.muikku.Logged;
 import fi.muikku.i18n.LocaleBackingBean;
 import fi.muikku.i18n.LocaleBundle;
+import fi.muikku.i18n.LocaleController;
 import fi.muikku.plugin.LocalizedPluginDescriptor;
 import fi.muikku.plugin.PluginContextClassLoader;
 import fi.muikku.plugin.PluginDescriptor;
@@ -25,7 +26,7 @@ public class Plugins {
 	private Logger logger = Logger.getLogger(getClass().getName());
 	
 	@Inject
-	private LocaleBackingBean localeBackingBean;
+	private LocaleController localeController;
 	
 	@Inject
   @Any
@@ -56,7 +57,7 @@ public class Plugins {
     	  if (pluginDescriptor instanceof LocalizedPluginDescriptor) {
     	    List<LocaleBundle> localeBundles = ((LocalizedPluginDescriptor) pluginDescriptor).getLocaleBundles();
     	    for (LocaleBundle localeBundle : localeBundles) {
-    	      localeBackingBean.add(localeBundle.getLocation(), localeBundle.getBundle());
+    	      localeController.add(localeBundle.getLocation(), localeBundle.getBundle());
     	    }
     	  }
       	logger.info("Plugin '" + pluginDescriptor.getName() + "' initialized");

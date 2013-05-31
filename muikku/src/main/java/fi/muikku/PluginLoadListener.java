@@ -10,6 +10,7 @@ import javax.servlet.annotation.WebListener;
 import org.apache.commons.lang3.LocaleUtils;
 
 import fi.muikku.i18n.LocaleBackingBean;
+import fi.muikku.i18n.LocaleController;
 import fi.muikku.i18n.LocaleLocation;
 import fi.muikku.plugins.Plugins;
 
@@ -20,16 +21,16 @@ public class PluginLoadListener implements ServletContextListener {
   private Plugins plugins;
 
   @Inject
-  private LocaleBackingBean localeBackingBean;
+  private LocaleController localeController;
 
   @Override
   public void contextInitialized(ServletContextEvent sce) {
     plugins.initialize();
     // TODO Incorrect place or just a misleading listener name?
-    localeBackingBean.add(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.i18n.JavaScriptMessages", LocaleUtils.toLocale("fi")));
-    localeBackingBean.add(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.i18n.JavaScriptMessages", LocaleUtils.toLocale("en")));
-    localeBackingBean.add(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.i18n.ApplicationMessages", LocaleUtils.toLocale("fi")));
-    localeBackingBean.add(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.i18n.ApplicationMessages", LocaleUtils.toLocale("en")));
+    localeController.add(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.i18n.JavaScriptMessages", LocaleUtils.toLocale("fi")));
+    localeController.add(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.i18n.JavaScriptMessages", LocaleUtils.toLocale("en")));
+    localeController.add(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.i18n.ApplicationMessages", LocaleUtils.toLocale("fi")));
+    localeController.add(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.i18n.ApplicationMessages", LocaleUtils.toLocale("en")));
   }
 
   @Override

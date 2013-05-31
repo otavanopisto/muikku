@@ -25,12 +25,9 @@ public class SubscribedCalendarUpdateScheduler {
 	private CalendarController calendarController;
 
 	public void updateNextSubscribedCalendar(@Observes @Scheduled (schedule = fi.muikku.scheduler.Schedule.EVERY_MINUTE) ScheduledEvent event) {
-		logger.info("Synchronizing next subscribed calendar");
-		
 		SubscribedCalendar subscribedCalendar = calendarController.getNextSubscribedCalendarToBeSynchronized();
 		if (subscribedCalendar != null) {
 			logger.info("Synchronizing subscribed calendar #" + subscribedCalendar.getId());
-			
 			try {
 				calendarController.synchronizeSubscribedCalendar(subscribedCalendar);
 			} catch (IOException | ParserException | URISyntaxException e) {

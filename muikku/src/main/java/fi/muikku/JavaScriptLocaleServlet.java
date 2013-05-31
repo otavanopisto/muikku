@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import fi.muikku.i18n.LocaleBackingBean;
 
-@WebServlet(urlPatterns = "/JavaScriptLocales")
+@WebServlet(name = "JavaScriptLocaleServlet", urlPatterns = "/JavaScriptLocales")
 public class JavaScriptLocaleServlet extends HttpServlet {
 
   private static final long serialVersionUID = 1L;
@@ -24,14 +24,14 @@ public class JavaScriptLocaleServlet extends HttpServlet {
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     response.setContentType("application/javascript");
     ServletOutputStream out = response.getOutputStream();
-    out.println(localeBackingBean.getJsLocales(request.getLocale()));
+    out.println(localeBackingBean.getJsLocales(request.getParameter("lang")));
     out.flush();
     out.close();
   }
 
   @Override
   protected long getLastModified(HttpServletRequest req) {
-    return localeBackingBean.getJsLastModified(req.getLocale().getLanguage());
+    return localeBackingBean.getJsLastModified(req.getParameter("lang"));
   }
 
 }
