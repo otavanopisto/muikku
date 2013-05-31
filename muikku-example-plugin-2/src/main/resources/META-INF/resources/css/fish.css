@@ -1,0 +1,41 @@
+@CHARSET "UTF-8";
+
+.fishWidget {
+	text-align: left;
+}
+
+.fishImageStateful, .fishImageLocalized {
+	display: inline-block;
+	width: 44px;
+	height: 32px;
+	vertical-align: bottom;
+}
+
+.fishImageStateful {
+	background-image: url(#{resource['gfx/statefulfish.png']});
+}
+
+.fishImageLocalized {
+	background-image: url(#{resource['gfx/localizedfish.png']});
+}
+
+.fishText {
+	color: black;
+	vertical-align: bottom;
+	background-color: white;
+	border-radius: 5px;
+	padding: 5px;
+	margin-left: -1px;
+	z-index: 1000;
+}
+
+.fishNotch {
+	display: inline-block;
+	width: 0; 
+	height: 0; 
+	border-top: 8px solid transparent;
+	border-bottom: 8px solid transparent; 
+	border-right: 8px solid white;
+	margin-right: -1px; 
+	z-index: -1000;
+}
