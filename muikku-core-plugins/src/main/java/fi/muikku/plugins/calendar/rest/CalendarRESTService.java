@@ -298,6 +298,7 @@ public class CalendarRESTService extends PluginRESTService {
   		String description = jsonData.optString("description");
   		String location = jsonData.optString("location");
   		String url = jsonData.optString("url");
+  		String hangoutUrl = jsonData.optString("hangoutUrl");
   		Date start = new Date(jsonData.optLong("start"));
   		Date end = new Date(jsonData.optLong("end"));
   		Boolean allDay = jsonData.optBoolean("allDay");
@@ -310,7 +311,7 @@ public class CalendarRESTService extends PluginRESTService {
     		return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not find event type #" + typeId).build();
     	}
   		
-    	LocalEvent localEvent = calendarController.createLocalEvent(localCalendar, eventType, summary, description, location, url, start, end, allDay, latitude, longitude);
+    	LocalEvent localEvent = calendarController.createLocalEvent(localCalendar, eventType, summary, description, location, url, start, end, allDay, latitude, longitude, hangoutUrl);
     	
     	TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
       Tranquility tranquility = tranquilityBuilder.createTranquility();
@@ -325,14 +326,24 @@ public class CalendarRESTService extends PluginRESTService {
   
   @GET
   @Path ("/calendars/{CALENDARID}/events")
-  public Response getCalendarEvents(@PathParam ("CALENDARID") Long calendarId, @QueryParam ("timeMin") Long timeMin, @QueryParam ("timeMax") Long timeMax) {
+  public Response getCalendarEvents(@PathParam ("CALENDARID") Long calendarId, @QueryParam ("start") Long start, @QueryParam ("end") Long end) {
   	// TODO: Permissions
   	Calendar calendar = calendarController.findCalendar(calendarId);
   	if (calendar == null) {
   		return Response.status(Status.NOT_FOUND).build();
   	}
   	
-  	List<Event> events = calendarController.listCalendarEvents(calendar, timeMin != null ? new Date(timeMin) : null, timeMax != null ? new Date(timeMax) : null);
+  	if (((start != null)||(end != null)) && ((start == null)||(end == null))) {
+  		return Response.status(Status.BAD_REQUEST).entity("If either of start or end is present both need to be specified").build();
+  	}
+  	
+  	List<Event> events = null;
+  	
+  	if (start != null && end != null) {
+  		events = calendarController.listCalendarEvents(calendar, new Date(start), new Date(end));
+  	} else {
+  		events = calendarController.listCalendarEvents(calendar);
+  	}
 
   	TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
     Tranquility tranquility = tranquilityBuilder.createTranquility();

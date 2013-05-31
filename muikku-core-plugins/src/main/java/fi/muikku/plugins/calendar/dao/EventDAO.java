@@ -32,8 +32,8 @@ public class EventDAO extends PluginDAO<Event> {
    
     return entityManager.createQuery(criteria).getResultList();
   }
-  
-  public List<Event> listByCalendarStartTimeGe(Calendar calendar, Date startTime) {
+	
+	public List<Event> listByCalendarAndStartLeAndEndGe(Calendar calendar, Date start, Date end) {
 		EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -43,25 +43,8 @@ public class EventDAO extends PluginDAO<Event> {
     
     criteria.where(
     	criteriaBuilder.and(
-        criteriaBuilder.greaterThanOrEqualTo(root.get(Event_.start), startTime),
-        criteriaBuilder.equal(root.get(Event_.calendar), calendar)
-      )
-    );
-   
-    return entityManager.createQuery(criteria).getResultList();
-	}
-  
-  public List<Event> listByCalendarEndTimeLe(Calendar calendar, Date endTime) {
-		EntityManager entityManager = getEntityManager();
-    
-    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<Event> criteria = criteriaBuilder.createQuery(Event.class);
-    Root<Event> root = criteria.from(Event.class);
-    criteria.select(root);
-    
-    criteria.where(
-    	criteriaBuilder.and(
-        criteriaBuilder.lessThanOrEqualTo(root.get(Event_.end), endTime),
+        criteriaBuilder.greaterThanOrEqualTo(root.get(Event_.end), end),
+        criteriaBuilder.lessThanOrEqualTo(root.get(Event_.start), start),
         criteriaBuilder.equal(root.get(Event_.calendar), calendar)
       )
     );
@@ -69,23 +52,4 @@ public class EventDAO extends PluginDAO<Event> {
     return entityManager.createQuery(criteria).getResultList();
 	}
 
-	public List<Event> listByCalendarStartTimeGeEndTimeLe(Calendar calendar, Date startTime, Date endTime) {
-		EntityManager entityManager = getEntityManager();
-    
-    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<Event> criteria = criteriaBuilder.createQuery(Event.class);
-    Root<Event> root = criteria.from(Event.class);
-    criteria.select(root);
-    
-    criteria.where(
-    	criteriaBuilder.and(
-        criteriaBuilder.greaterThanOrEqualTo(root.get(Event_.start), startTime),
-        criteriaBuilder.lessThanOrEqualTo(root.get(Event_.end), endTime),
-        criteriaBuilder.equal(root.get(Event_.calendar), calendar)
-      )
-    );
-   
-    return entityManager.createQuery(criteria).getResultList();
-	}
-  
 }

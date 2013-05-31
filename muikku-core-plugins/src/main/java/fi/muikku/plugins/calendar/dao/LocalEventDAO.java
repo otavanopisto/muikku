@@ -15,7 +15,7 @@ public class LocalEventDAO extends PluginDAO<LocalEvent> {
 
 	private static final long serialVersionUID = -1572299088200049688L;
 
-	public LocalEvent create(LocalCalendar calendar, LocalEventType type, String summary, String description, String location, String url, Date start, Date end, Boolean allDay, BigDecimal latitude, BigDecimal longitude) {
+	public LocalEvent create(LocalCalendar calendar, LocalEventType type, String summary, String description, String location, String url, Date start, Date end, Boolean allDay, BigDecimal latitude, BigDecimal longitude, String hangoutUrl) {
 		LocalEvent event = new LocalEvent();
     event.setCalendar(calendar);
     event.setSummary(summary);
@@ -28,6 +28,7 @@ public class LocalEventDAO extends PluginDAO<LocalEvent> {
     event.setType(type);
     event.setLatitude(latitude);
     event.setLongitude(longitude);
+    event.setHangoutUrl(hangoutUrl);
     
     getEntityManager().persist(event);
     
@@ -96,6 +97,12 @@ public class LocalEventDAO extends PluginDAO<LocalEvent> {
 	
 	public LocalEvent updateLongitude(LocalEvent localEvent, BigDecimal longitude) {
 		localEvent.setLongitude(longitude);
+		getEntityManager().persist(localEvent);
+		return localEvent;
+	}
+	
+	public LocalEvent updateHangoutUrl(LocalEvent localEvent, String hangoutUrl) {
+		localEvent.setHangoutUrl(hangoutUrl);
 		getEntityManager().persist(localEvent);
 		return localEvent;
 	}
