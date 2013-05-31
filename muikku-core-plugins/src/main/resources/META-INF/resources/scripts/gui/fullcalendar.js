@@ -71,11 +71,11 @@
     },
     getViewStartTime: function () {
       var view = this._fullCalendar.fullCalendar('getView');
-      return view.start;
+      return view.visStart;
     },
     getViewEndTime: function () {
       var view = this._fullCalendar.fullCalendar('getView');
-      return view.end;
+      return view.visEnd;
     },
     getCalendarElement: function () {
       return this._fullCalendar;
@@ -492,8 +492,8 @@
       RESTful.doGet(CONTEXTPATH + "/rest/calendar/calendars/{calendarId}/events", {
         parameters: {
           calendarId: calendarMeta.id,
-          timeMin: startTime.getTime(),
-          timeMax: endTime.getTime()
+          start: startTime.getTime(),
+          end: endTime.getTime()
         }
       })
       .success(function (data, textStatus, jqXHR) {

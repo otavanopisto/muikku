@@ -326,14 +326,24 @@ public class CalendarRESTService extends PluginRESTService {
   
   @GET
   @Path ("/calendars/{CALENDARID}/events")
-  public Response getCalendarEvents(@PathParam ("CALENDARID") Long calendarId, @QueryParam ("timeMin") Long timeMin, @QueryParam ("timeMax") Long timeMax) {
+  public Response getCalendarEvents(@PathParam ("CALENDARID") Long calendarId, @QueryParam ("start") Long start, @QueryParam ("end") Long end) {
   	// TODO: Permissions
   	Calendar calendar = calendarController.findCalendar(calendarId);
   	if (calendar == null) {
   		return Response.status(Status.NOT_FOUND).build();
   	}
   	
-  	List<Event> events = calendarController.listCalendarEvents(calendar, timeMin != null ? new Date(timeMin) : null, timeMax != null ? new Date(timeMax) : null);
+  	if (((start != null)||(end != null)) && ((start == null)||(end == null))) {
+  		return Response.status(Status.BAD_REQUEST).entity("If either of start or end is present both need to be specified").build();
+  	}
+  	
+  	List<Event> events = null;
+  	
+  	if (start != null && end != null) {
+  		events = calendarController.listCalendarEvents(calendar, new Date(start), new Date(end));
+  	} else {
+  		events = calendarController.listCalendarEvents(calendar);
+  	}
 
   	TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
     Tranquility tranquility = tranquilityBuilder.createTranquility();
