@@ -298,6 +298,7 @@ public class CalendarRESTService extends PluginRESTService {
   		String description = jsonData.optString("description");
   		String location = jsonData.optString("location");
   		String url = jsonData.optString("url");
+  		String hangoutUrl = jsonData.optString("hangoutUrl");
   		Date start = new Date(jsonData.optLong("start"));
   		Date end = new Date(jsonData.optLong("end"));
   		Boolean allDay = jsonData.optBoolean("allDay");
@@ -310,7 +311,7 @@ public class CalendarRESTService extends PluginRESTService {
     		return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not find event type #" + typeId).build();
     	}
   		
-    	LocalEvent localEvent = calendarController.createLocalEvent(localCalendar, eventType, summary, description, location, url, start, end, allDay, latitude, longitude);
+    	LocalEvent localEvent = calendarController.createLocalEvent(localCalendar, eventType, summary, description, location, url, start, end, allDay, latitude, longitude, hangoutUrl);
     	
     	TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
       Tranquility tranquility = tranquilityBuilder.createTranquility();

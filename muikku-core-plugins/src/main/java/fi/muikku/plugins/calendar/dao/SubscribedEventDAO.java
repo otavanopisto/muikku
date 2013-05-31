@@ -20,7 +20,7 @@ public class SubscribedEventDAO extends PluginDAO<SubscribedEvent> {
 
 	private static final long serialVersionUID = -1572299088200049688L;
 
-	public SubscribedEvent create(SubscribedCalendar calendar, String uid, String summary, String description, String location, Date start, Date end, String url, Boolean allDay, BigDecimal latitude, BigDecimal longitude) {
+	public SubscribedEvent create(SubscribedCalendar calendar, String uid, String summary, String description, String location, Date start, Date end, String url, Boolean allDay, BigDecimal latitude, BigDecimal longitude, String hangoutUrl) {
 		SubscribedEvent event = new SubscribedEvent();
     
 		event.setUid(uid);
@@ -34,6 +34,7 @@ public class SubscribedEventDAO extends PluginDAO<SubscribedEvent> {
     event.setUrl(url);
     event.setLatitude(latitude);
     event.setLongitude(longitude);
+    event.setHangoutUrl(hangoutUrl);
     
     getEntityManager().persist(event);
     
@@ -125,9 +126,69 @@ public class SubscribedEventDAO extends PluginDAO<SubscribedEvent> {
    
     return entityManager.createQuery(criteria).getResultList();
 	}
+
+	public SubscribedEvent updateSummary(SubscribedEvent subscribedEvent, String summary) {
+		subscribedEvent.setSummary(summary);
+		getEntityManager().persist(subscribedEvent);
+		return subscribedEvent;
+	}
+
+	public SubscribedEvent updateDescription(SubscribedEvent subscribedEvent, String description) {
+		subscribedEvent.setDescription(description);
+		getEntityManager().persist(subscribedEvent);
+		return subscribedEvent;
+	}
+
+	public SubscribedEvent updateLocation(SubscribedEvent subscribedEvent, String location) {
+		subscribedEvent.setLocation(location);
+		getEntityManager().persist(subscribedEvent);
+		return subscribedEvent;
+	}
+
+	public SubscribedEvent updateStart(SubscribedEvent subscribedEvent, Date start) {
+		subscribedEvent.setStart(start);
+		getEntityManager().persist(subscribedEvent);
+		return subscribedEvent;
+	}
+
+	public SubscribedEvent updateEnd(SubscribedEvent subscribedEvent, Date end) {
+		subscribedEvent.setEnd(end);
+		getEntityManager().persist(subscribedEvent);
+		return subscribedEvent;
+	}
+
+	public SubscribedEvent updateUrl(SubscribedEvent subscribedEvent, String url) {
+		subscribedEvent.setUrl(url);
+		getEntityManager().persist(subscribedEvent);
+		return subscribedEvent;
+	}
+
+	public SubscribedEvent updateAllDay(SubscribedEvent subscribedEvent, boolean allDay) {
+		subscribedEvent.setAllDay(allDay);
+		getEntityManager().persist(subscribedEvent);
+		return subscribedEvent;
+	}
+
+	public SubscribedEvent updateLatitude(SubscribedEvent subscribedEvent, BigDecimal latitude) {
+		subscribedEvent.setLatitude(latitude);
+		getEntityManager().persist(subscribedEvent);
+		return subscribedEvent;
+	}
+
+	public SubscribedEvent updateLongitude(SubscribedEvent subscribedEvent, BigDecimal longitude) {
+		subscribedEvent.setLongitude(longitude);
+		getEntityManager().persist(subscribedEvent);
+		return subscribedEvent;
+	}
+
+	public SubscribedEvent updateHangoutUrl(SubscribedEvent subscribedEvent, String hangoutUrl) {
+		subscribedEvent.setHangoutUrl(hangoutUrl);
+		getEntityManager().persist(subscribedEvent);
+		return subscribedEvent;
+	}
 	
 	public void delete(SubscribedEvent subscribedEvent) {
-		delete(subscribedEvent);
+		super.delete(subscribedEvent);
 	}
   
 }

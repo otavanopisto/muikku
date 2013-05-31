@@ -57,6 +57,14 @@ public class Event {
   public void setLocation(String location) {
     this.location = location;
   }
+  
+  public String getHangoutUrl() {
+		return hangoutUrl;
+	}
+  
+  public void setHangoutUrl(String hangoutUrl) {
+		this.hangoutUrl = hangoutUrl;
+	}
 
 	public Date getStart() {
 		return start;
@@ -127,6 +135,8 @@ public class Event {
   private Calendar calendar;
 
   private String location;
+  
+  private String hangoutUrl;
 
   @Column(nullable = false)
   @NotNull
