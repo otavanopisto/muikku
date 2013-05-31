@@ -410,22 +410,12 @@ public class CalendarController {
 	/* Events */
 	
 	public List<Event> listCalendarEvents(Calendar calendar) {
-	  return listCalendarEvents(calendar, null, null);
+		return eventDAO.listByCalendar(calendar);
 	}
 	
-	public List<Event> listCalendarEvents(Calendar calendar, Date timeMin, Date timeMax) {
-		// TODO: This should be inclusive!
-		
-		
-		if (timeMin != null && timeMax == null) {
-			return eventDAO.listByCalendarStartTimeGe(calendar, timeMin);
-		} else if (timeMin == null && timeMax != null) {
-			return eventDAO.listByCalendarEndTimeLe(calendar, timeMax);
-		} else if (timeMin != null && timeMax != null) {
-			return eventDAO.listByCalendarStartTimeGeEndTimeLe(calendar, timeMin, timeMax);	
-		} else {
-			return eventDAO.listByCalendar(calendar);
-		}
+	public List<Event> listCalendarEvents(Calendar calendar, Date start, Date end) {
+		// time span end <= event start, time span start => event end
+		return eventDAO.listByCalendarAndStartLeAndEndGe(calendar, end, start);
 	}
 	
 	/* LocalEventType */
