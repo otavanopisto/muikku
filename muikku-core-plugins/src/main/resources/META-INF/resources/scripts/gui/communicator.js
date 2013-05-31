@@ -1,9 +1,70 @@
+$.widget("custom.communicatorautocomplete", $.ui.autocomplete, {
+  _renderMenu: function(ul, items) {
+    var _this = this;
+    var currentCategory = "";
+  
+    $.each(items, function(index, item) {
+      if (item.category != currentCategory) {
+        if (item.category)
+          ul.append( "<li class='ui-autocomplete-category'>" + item.category + "</li>" );
+        currentCategory = item.category;
+      }
+      _this._renderItemData(ul, item);
+    });
+  },
+  _renderItem: function(ul, item) {
+    var imageUrl = "/muikku/themes/default/gfx/fish.jpg";
+    if (item.image)
+      imageUrl = item.image;
+    
+    var inner_html = 
+      '<a><div class="communicator_autocomplete_item_container">' + 
+      '<div class="communicator_autocomplete_item_image"><img src="' + imageUrl + '"></div>' +
+      '<div class="communicator_autocomplete_item_label">' + item.label + '</div></div></a>';
+    return $( "<li></li>" ).data( "item.autocomplete", item ).append(inner_html).appendTo( ul );
+  }
+});
+
+$.fn.extend({
+  /**
+   * Thanks to
+   * https://github.com/Kasheftin/jquery-textarea-caret/blob/master/jquery.textarea.caret.js
+   */
+  
+  insertAtCaret: function(myValue) {
+    return this.each(function(i) {
+      if (document.selection) {
+        this.focus();
+        sel = document.selection.createRange();
+        sel.text = myValue;
+        this.focus();
+      }
+      else 
+      if (this.selectionStart || this.selectionStart == "0") {
+        var startPos = this.selectionStart;
+        var endPos = this.selectionEnd;
+        var scrollTop = this.scrollTop;
+        this.value = this.value.substring(0,startPos) + myValue + this.value.substring(endPos,this.value.length);
+        this.focus();
+        this.selectionStart = startPos + myValue.length;
+        this.selectionEnd = startPos + myValue.length;
+        this.scrollTop = scrollTop;
+      }
+      else {
+        this.value += myValue;
+        this.focus();
+      }
+    }
+  )}
+});
+
 (function() {
   
   CommunicatorWidgetController = $.klass(WidgetController, {
     initialize: function () {
     },
     setup: function (widgetElement) {
+      var _this = this;
       widgetElement = $(widgetElement);
       
       this._userId = widgetElement.find("input[name='userId']").val();
@@ -12,7 +73,18 @@
       
       this._tabsContainer = widgetElement.find('.communicatorTabs');
       this._tabsContainer.tabs();
-      $('#menu').menu();
+      $('#menu').menu({
+        select: function (event, ui) {
+          var a = $(ui.item).find("a");
+          if (a.attr("href") == "#inbox")
+            _this._showInbox();
+          
+          if (a.attr("href") == "#settings")
+            _this._showSettings();
+          
+          return false;
+        }
+      });
       this._newMessageButton.click($.proxy(this._onNewMessageClick, this));
       
       this._showInbox();
@@ -111,12 +183,12 @@
         _this._communicatorContent.find("input[name='send']").click($.proxy(_this._onPostMessageClick, _this));
         _this._communicatorContent.find("input[name='cancel']").click($.proxy(_this._onCancelMessageClick, _this));
         
-        _this._communicatorContent.find("input[name='userInput']").autocomplete({
+        _this._communicatorContent.find("input[name='userInput']").communicatorautocomplete({
           source: function (request, response) {
-            response(_this._searchUsers(request.term));
+            response(_this._doSearch(request.term));
           },
           select: function (event, ui) {
-            _this._selectRecipient(event, ui.item.value, ui.item.label);
+            _this._selectRecipient(event, ui.item.id, ui.item.label);
             $(this).val("");
             return false;
           }
@@ -139,10 +211,9 @@
             templateId: val
           }
         }).success(function (data, textStatus, jqXHR) {
-          textarea.val(data.content);
+          textarea.insertAtCaret(data.content);
         });
-      } else
-        textarea.val("");
+      }
     },
     _onSelectSignature: function (event) {
       var element = $(event.target);
@@ -156,7 +227,7 @@
             signatureId: val
           }
         }).success(function (data, textStatus, jqXHR) {
-          textarea.val(textarea.val() + "\n" + data.signature);
+          textarea.insertAtCaret(data.signature);
         });
       }
       
@@ -225,12 +296,12 @@
         
         _this._communicatorContent.find("input[name='send']").click($.proxy(_this._onPostReplyMessageClick, _this));
         _this._communicatorContent.find("input[name='cancel']").click($.proxy(_this._onCancelReplyClick, _this));
-        _this._communicatorContent.find("input[name='userInput']").autocomplete({
+        _this._communicatorContent.find("input[name='userInput']").communicatorautocomplete({
           source: function (request, response) {
-            response(_this._searchUsers(request.term));
+            response(_this._doSearch(request.term));
           },
           select: function (event, ui) {
-            _this._selectRecipient(event, ui.item.value, ui.item.label);
+            _this._selectRecipient(event, ui.item.id, ui.item.label);
             $(this).val("");
             return false;
           }
@@ -310,13 +381,56 @@
       }).success(function (data, textStatus, jqXHR) {
         for (var i = 0, l = data.length; i < l; i++) {
           users.push({
+            category: "Käyttäjät",
             label: data[i].fullName,
-            value: data[i].id
+            id: data[i].id
           });
         }
       });
 
       return users;
+    },
+    _searchGroups: function (searchTerm) {
+      var _this = this;
+      var groups = new Array();
+      groups.push({
+        category: "Ryhmät",
+        label: "Opettajat",
+        id: -1
+      });
+
+      groups.push({
+        category: "Ryhmät",
+        label: "Tutorit",
+        id: -1
+      });
+
+      groups.push({
+        category: "Ryhmät",
+        label: "Opiskelijat",
+        id: -1
+      });
+      
+//      RESTful.doGet(CONTEXTPATH + "/rest/user/searchUsers", {
+//        parameters: {
+//          'searchString': searchTerm
+//        }
+//      }).success(function (data, textStatus, jqXHR) {
+//        for (var i = 0, l = data.length; i < l; i++) {
+//          users.push({
+//            label: data[i].fullName,
+//            id: data[i].id
+//          });
+//        }
+//      });
+
+      return groups;
+    },
+    _doSearch: function (searchTerm) {
+      var groups = this._searchGroups(searchTerm);
+      var users = this._searchUsers(searchTerm);
+      
+      return $.merge(groups, users);
     },
     _selectRecipient: function (event, id, name) {
       var _this = this;
@@ -338,6 +452,188 @@
       if (!element.hasClass("recipient"))
         element = element.parents(".recipient");
       element.remove();
+    },
+    _showSettings: function () {
+      var _this = this;
+      this._clearContent();
+      var templates = this._loadMessageTemplates();
+      var signatures = this._loadMessageSignatures();
+      
+      var params = {
+        templates: templates,
+        signatures: signatures
+      };
+      
+      renderDustTemplate('communicator/communicator_settings.dust', params, function (text) {
+        _this._communicatorContent.append($.parseHTML(text));
+        
+//        _this._communicatorContent.find('.communicatorMessage').click($.proxy(_this._onMessageClick, _this));
+        
+//        $("select").change(function() {
+//          var str = "";
+//          $("select option:selected").each(function() {
+//            str += $(this).text() + " ";
+//          });
+//          $("div").text(str);
+//        });
+        
+        _this._communicatorContent.find('input[name="newTemplate"]').click(function (event) {
+          _this._communicatorContent.find('input[name="templateId"]').val("NEW");
+          _this._communicatorContent.find('input[name="templateName"]').val("");
+          _this._communicatorContent.find('textarea[name="templateContent"]').val("");
+        });
+        _this._communicatorContent.find('input[name="newSignature"]').click(function (event) {
+          _this._communicatorContent.find('input[name="signatureId"]').val("NEW");
+          _this._communicatorContent.find('input[name="signatureName"]').val("");
+          _this._communicatorContent.find('textarea[name="signatureContent"]').val("");
+        });
+        _this._communicatorContent.find('input[name="editTemplate"]').click(function (event) {
+          var select = _this._communicatorContent.find('select[name="templateSelector"]');
+          var val = select.find("option:selected").val();
+          _this._communicatorContent.find('input[name="templateId"]').val(val);
+          
+          if (val) {
+            RESTful.doGet(CONTEXTPATH + "/rest/communicator/{userId}/templates/{templateId}", {
+              parameters: {
+                'userId': _this._userId,
+                templateId: val
+              }
+            }).success(function (data, textStatus, jqXHR) {
+              var title = _this._communicatorContent.find('input[name="templateName"]');
+              var content = _this._communicatorContent.find('textarea[name="templateContent"]');
+              
+              title.val(data.name);
+              content.val(data.content);
+            });
+          }
+        });
+        _this._communicatorContent.find('input[name="editSignature"]').click(function (event) {
+          var select = _this._communicatorContent.find('select[name="signatureSelector"]');
+          var val = select.find("option:selected").val();
+          _this._communicatorContent.find('input[name="signatureId"]').val(val);
+          
+          if (val) {
+            RESTful.doGet(CONTEXTPATH + "/rest/communicator/{userId}/signatures/{signatureId}", {
+              parameters: {
+                'userId': _this._userId,
+                signatureId: val
+              }
+            }).success(function (data, textStatus, jqXHR) {
+              var title = _this._communicatorContent.find('input[name="signatureName"]');
+              var content = _this._communicatorContent.find('textarea[name="signatureContent"]');
+              
+              title.val(data.name);
+              content.val(data.signature);
+            });
+          }
+        });
+        _this._communicatorContent.find('input[name="deleteTemplate"]').click(function (event) {
+          var select = _this._communicatorContent.find('select[name="templateSelector"]');
+          var option = select.find("option:selected");
+          var val = option.val();
+          
+          if (val) {
+            RESTful.doDelete(CONTEXTPATH + "/rest/communicator/{userId}/templates/{templateId}", {
+              parameters: {
+                'userId': _this._userId,
+                templateId: val
+              }
+            }).success(function (data, textStatus, jqXHR) {
+              select.remove(option);
+            });
+          }
+        });
+        _this._communicatorContent.find('input[name="deleteSignature"]').click(function (event) {
+          var select = _this._communicatorContent.find('select[name="signatureSelector"]');
+          var option = select.find("option:selected");
+          var val = option.val();
+          
+          if (val) {
+            RESTful.doDelete(CONTEXTPATH + "/rest/communicator/{userId}/signatures/{signatureId}", {
+              parameters: {
+                'userId': _this._userId,
+                signatureId: val
+              }
+            }).success(function (data, textStatus, jqXHR) {
+              select.remove(option);
+            });
+          }
+        });
+        _this._communicatorContent.find('input[name="saveTemplate"]').click(function (event) {
+          var select = _this._communicatorContent.find('select[name="templateSelector"]');
+          var option = select.find("option:selected");
+          var val = _this._communicatorContent.find('input[name="templateId"]').val();
+          var name = _this._communicatorContent.find('input[name="templateName"]').val();
+          var content = _this._communicatorContent.find('textarea[name="templateContent"]').val();
+          if (val == "NEW") {
+            RESTful.doPost(CONTEXTPATH + "/rest/communicator/{userId}/templates", {
+              parameters: {
+                'userId': _this._userId,
+                name: name,
+                content: content
+              }
+            }).success(function (data, textStatus, jqXHR) {
+              var newOption = $("<option>");
+              newOption.text(data.name);
+              newOption.attr("value", data.id);
+              select.append(newOption);
+
+              _this._communicatorContent.find('input[name="templateId"]').val("NEW");
+              _this._communicatorContent.find('input[name="templateName"]').val("");
+              _this._communicatorContent.find('textarea[name="templateContent"]').val("");
+            });
+          } else {
+            RESTful.doPost(CONTEXTPATH + "/rest/communicator/{userId}/templates/{templateId}", {
+              parameters: {
+                'userId': _this._userId,
+                templateId: val,
+                name: name,
+                content: content
+              }
+            }).success(function (data, textStatus, jqXHR) {
+              option.text(name);
+            });
+          }
+        });
+        _this._communicatorContent.find('input[name="saveSignature"]').click(function (event) {
+          var select = _this._communicatorContent.find('select[name="signatureSelector"]');
+          var option = select.find("option:selected");
+          var val = _this._communicatorContent.find('input[name="signatureId"]').val();
+          var name = _this._communicatorContent.find('input[name="signatureName"]').val();
+          var content = _this._communicatorContent.find('textarea[name="signatureContent"]').val();
+
+          if (val == "NEW") {
+            RESTful.doPost(CONTEXTPATH + "/rest/communicator/{userId}/signatures", {
+              parameters: {
+                'userId': _this._userId,
+                signatureId: val,
+                name: name,
+                signature: content
+              }
+            }).success(function (data, textStatus, jqXHR) {
+              var newOption = $("<option>");
+              newOption.text(data.name);
+              newOption.attr("value", data.id);
+              select.append(newOption);
+              
+              _this._communicatorContent.find('input[name="signatureId"]').val("NEW");
+              _this._communicatorContent.find('input[name="signatureName"]').val("");
+              _this._communicatorContent.find('textarea[name="signatureContent"]').val("");
+            });
+          } else {
+            RESTful.doPost(CONTEXTPATH + "/rest/communicator/{userId}/signatures/{signatureId}", {
+              parameters: {
+                'userId': _this._userId,
+                signatureId: val,
+                name: name,
+                signature: content
+              }
+            }).success(function (data, textStatus, jqXHR) {
+              option.text(name);
+            });
+          }
+        });
+      });
     }
   });
   

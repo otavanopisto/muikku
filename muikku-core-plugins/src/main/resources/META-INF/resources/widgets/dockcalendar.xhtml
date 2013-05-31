@@ -13,12 +13,11 @@
 
     <div class="widget dockCalendarWidget">
       <h:outputLink styleClass="naviIconCalendar tooltip" value="#{request.contextPath}/calendar/index.jsf">
-        <span>Kalenteri <br/> <br/>
-	          Kalenterin avulla voit luoda tapahtumia ja pysyt ajan tasalla niistää.<br/> <br/>
-	          <span class="tooltipFastLink" onclick="">Luo kalenteritapahtuma</span>
-          <div class="miniCalendarContainer"></div>
-        </span>
+
+        <div class="miniCalendarContainer">
+        </div>
       </h:outputLink>
+     
 
       <input type="hidden" name="firstDay" value="#{calendarBackingBean.firstDay}"/>
     </div>

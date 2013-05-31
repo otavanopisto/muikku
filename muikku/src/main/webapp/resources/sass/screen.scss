@@ -28,13 +28,13 @@ body {
  line-height:30px;
  }
   
- a.tooltip > span { 
+ a.tooltip > div { 
   @include rounded(3px);
-  @include shadow(2px, 2px, 2px);
+  @include shadow;
   @include tooltipTransition(0.1s,0.1s,0.1s,0.1s);
   @include gradient-top-bottom(#707070, #666);
-  position:absolute;
-	width:200px;  
+  @include border($naviDynamicColor); 
+  position:absolute; 
 	padding: 5px 10px;
 	margin-top: 20px; 
 	opacity: 1; 
@@ -43,12 +43,12 @@ body {
 	font-size: $text; 
 	font-style: normal;  
 	color: #fff; 
-	border: 1px solid $naviDynamicColor; 
+
  }  
  
 
  
- a.tooltip:hover > span { 
+ a.tooltip:hover > div { 
  opacity: 1;
  text-decoration:none; 
  visibility: visible; 
@@ -101,24 +101,20 @@ body {
 
 #staticNavigationFade{
   @include fadetoAlpha-top-bottom;	
-	height:60px;
+	height:40px;
 	z-index:12;
 }
 
 #staticNavigation{
+	@include  gradient-top-bottom-four($stNavGradColors...); 
+  border: 1px solid #ededed;
+  -webkit-border-radius: 0px 0px 10px 10px;
+border-radius: 0px 0px 10px 10px; 
 }
 
 
 
-#naviDockSecondary{
-float:left;
-    @include staticNaviGr($stNavGradColors...);
-    height:40px;
-    margin:0;
-    width:690px; 
-    border: 2px solid #ededed;
-    border-radius: 10px;
-    }
+
 
 
 .stuck{
@@ -253,6 +249,9 @@ float:left;
 
 
 
+
+
+
 #footer {
   clear: both; 
 }
@@ -260,6 +259,16 @@ float:left;
 .buttonPanel {
   text-align: right;
   margin: 4px 0px 4px 0px;
+}
+.mainFunctionButtonContainer{
+text-align:center;
+@include rounded(10px);
+padding:20px 0 20px 0;
+background-color:$aBgr;
+}
+.mainFunctionMenuContainer{
+margin-top:5px;
+	
 }
 
 

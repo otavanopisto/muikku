@@ -9,24 +9,21 @@
     
     <ui:define name="content">
       <h:outputScript name="scripts/gui/communicator.js" target="head" />
-
  
-      
-      <h:form>
-        <h:commandButton action="#{Communicator.TEST_MAIL_SEND()}" value="TESTSEND" />
-      </h:form>
-    
       <div class="widget communicator">
         <input type="hidden" name="environmentId" value="#{muikkuSession.environment.id}"/>
         <input type="hidden" name="userId" value="#{muikkuSession.user.id}"/>
   
   
   
-        <input type="button" name="communicatorNewMessageButton" value="Uusi viesti"/>
+
 
  
         <div class="container_24">
-          <ul id="menu" class="grid_6">
+         <div class="grid_6">
+          <div class="mainFunctionButtonContainer"><input type="button" name="communicatorNewMessageButton" value="Uusi viesti"/></div>
+          <div class="mainFunctionMenuContainer" >
+          <ul id="menu">
             <li>
               <a href="#inbox">Postilaatikko</a>
             </li>
@@ -48,29 +45,21 @@
             <li>
               <a href="#req_t">Pyynnöt - opettaja</a>
             </li>
+            <li>
+              <a href="#settings">Asetukset</a>
+            </li>
           </ul>
+         </div>
+         </div>   
+
 
           <div id="inbox" class="tabContent grid_18">
             <div class="communicatorContent">
             </div>
           </div>
-          
-          <div id="news_s" class="tabContent">
-          </div>
-          <div id="news_t" class="tabContent">
-          </div>
-          <div id="sent_s" class="tabContent">
-          </div>
-          <div id="sent_t" class="tabContent">
-          </div>
-          <div id="req_s" class="tabContent">
-          </div>
-          <div id="req_t" class="tabContent">
-          </div>
 
         </div>
       </div>
-     
     </ui:define>
 
 </ui:composition>
