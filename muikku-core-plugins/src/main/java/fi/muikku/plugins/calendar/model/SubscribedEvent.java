@@ -21,6 +21,6 @@ public class SubscribedEvent extends Event {
 	
 	@NotNull
 	@NotEmpty
-	@Column (nullable = false)
+	@Column (nullable = false, unique = true)
 	private String uid;
 }
