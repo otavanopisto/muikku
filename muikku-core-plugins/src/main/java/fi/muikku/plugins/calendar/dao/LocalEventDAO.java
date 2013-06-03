@@ -107,4 +107,8 @@ public class LocalEventDAO extends PluginDAO<LocalEvent> {
 		return localEvent;
 	}
 	
+	public void delete(LocalEvent localEvent) {
+		super.delete(localEvent);
+	}
+	
 }
