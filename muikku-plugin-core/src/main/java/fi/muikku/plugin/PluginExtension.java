@@ -28,6 +28,8 @@ import org.sonatype.aether.util.artifact.DefaultArtifact;
 import fi.muikku.plugin.manager.PluginLibraryLoadInfo;
 import fi.muikku.plugin.manager.PluginManagerException;
 import fi.muikku.plugin.manager.SingletonPluginManager;
+import fi.muikku.security.Permit;
+import fi.muikku.security.PermitInterceptor;
 
 public class PluginExtension implements Extension {
 
@@ -118,10 +120,16 @@ public class PluginExtension implements Extension {
 		for (Method method : getBeanMethods(beanClass)) {
 			if (!Modifier.isStatic(method.getModifiers()) && Modifier.isPublic(method.getModifiers()) && !Modifier.isAbstract(method.getModifiers())) {
 				Map<String, Class<?>[]> parameters = new HashMap<>();
-				parameters.put("value", new Class<?>[] {
-					TransactionalInterceptor.class,
-					PluginContextClassLoaderInterceptor.class
-				});
+				
+				List<Class<?>> interceptors = new ArrayList<Class<?>>();
+				
+				interceptors.add(TransactionalInterceptor.class);
+				interceptors.add(PluginContextClassLoaderInterceptor.class);
+				
+				if (method.getAnnotation(Permit.class) != null)
+				  interceptors.add(PermitInterceptor.class);
+				
+				parameters.put("value", interceptors.toArray(new Class<?>[interceptors.size()]));
 				
 				Interceptors annotation = AnnotationInstanceProvider.of(Interceptors.class, parameters);
 				annotatedTypeBuilder.addToMethod(method, annotation);

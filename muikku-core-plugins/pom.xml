@@ -264,6 +264,10 @@
       <version>2.4</version>
       <classifier>jdk15</classifier>
     </dependency>
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>security</artifactId>
+    </dependency>
   </dependencies>
   
   <repositories>

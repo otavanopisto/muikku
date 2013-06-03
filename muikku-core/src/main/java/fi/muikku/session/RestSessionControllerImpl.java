@@ -10,7 +10,6 @@ import javax.inject.Named;
 import fi.muikku.dao.base.EnvironmentDAO;
 import fi.muikku.dao.courses.CourseEntityDAO;
 import fi.muikku.model.base.Environment;
-import fi.muikku.model.security.Permission;
 import fi.muikku.model.stub.courses.CourseEntity;
 import fi.muikku.model.stub.users.UserEntity;
 import fi.muikku.model.util.ResourceEntity;
@@ -76,28 +75,28 @@ public class RestSessionControllerImpl extends AbstractSessionController impleme
   }
   
   @Override
-  protected boolean hasEnvironmentPermissionImpl(Permission permission, Environment environment) {
+  protected boolean hasEnvironmentPermissionImpl(String permission, Environment environment) {
     return hasPermissionImpl(permission, environment);
   }
 
   @Override
-  protected boolean hasCoursePermissionImpl(Permission permission, CourseEntity course) {
+  protected boolean hasCoursePermissionImpl(String permission, CourseEntity course) {
     return hasPermissionImpl(permission, course);
   }
   
   @Override
-  protected boolean hasResourcePermissionImpl(Permission permission, ResourceEntity resource) {
+  protected boolean hasResourcePermissionImpl(String permission, ResourceEntity resource) {
     return hasPermissionImpl(permission, resource);
   }
 
   @Override
-  protected boolean hasPermissionImpl(Permission permission, ContextReference contextReference) {
-    PermissionResolver permissionResolver = getPermissionResolver(permission.getName());
+  protected boolean hasPermissionImpl(String permission, ContextReference contextReference) {
+    PermissionResolver permissionResolver = getPermissionResolver(permission);
 
     if (isLoggedIn()) {
-      return isSuperuser() || permissionResolver.hasPermission(permission.getName(), contextReference, getUser());
+      return isSuperuser() || permissionResolver.hasPermission(permission, contextReference, getUser());
     } else {
-      return permissionResolver.hasEveryonePermission(permission.getName(), contextReference);
+      return permissionResolver.hasEveryonePermission(permission, contextReference);
     }
   }
 
