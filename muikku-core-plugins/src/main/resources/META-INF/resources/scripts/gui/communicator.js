@@ -151,7 +151,7 @@ $.widget("custom.communicatorautocomplete", $.ui.autocomplete, {
         
         _this._communicatorContent.find("select[name='templateSelector']").change($.proxy(_this._onSelectTemplate, _this));
         _this._communicatorContent.find("select[name='signatureSelector']").change($.proxy(_this._onSelectSignature, _this));
-        _this._communicatorContent.find(".recipientsList").on("click", ".removeRecipient", $.proxy(_this._onRemoveRecipientClick, _this));
+        _this._communicatorContent.find(".cm-recipientsList").on("click", ".removeRecipient", $.proxy(_this._onRemoveRecipientClick, _this));
       });
     },
     _onSelectTemplate: function (event) {
@@ -265,7 +265,7 @@ $.widget("custom.communicatorautocomplete", $.ui.autocomplete, {
 
         _this._communicatorContent.find("select[name='templateSelector']").change($.proxy(_this._onSelectTemplate, _this));
         _this._communicatorContent.find("select[name='signatureSelector']").change($.proxy(_this._onSelectSignature, _this));
-        _this._communicatorContent.find(".recipientsList").on("click", ".removeRecipient", $.proxy(_this._onRemoveRecipientClick, _this));
+        _this._communicatorContent.find(".cm-recipientsList").on("click", ".removeRecipient", $.proxy(_this._onRemoveRecipientClick, _this));
       });
     },
     _onCancelMessageClick: function (event) {
@@ -283,7 +283,7 @@ $.widget("custom.communicatorautocomplete", $.ui.autocomplete, {
       var _this = this;
       var element = $(event.target);
       var newMessageElement = element.parents(".communicatorNewMessage");
-      var recipientListElement = newMessageElement.find(".recipientsList");
+      var recipientListElement = newMessageElement.find(".cm-recipientsList");
       var recipientIds = [];
       
       $(recipientListElement.children(".recipient")).each(function (index) {
@@ -305,7 +305,7 @@ $.widget("custom.communicatorautocomplete", $.ui.autocomplete, {
       var _this = this;
       var element = $(event.target);
       var newMessageElement = element.parents(".communicatorNewMessage");
-      var recipientListElement = newMessageElement.find(".recipientsList");
+      var recipientListElement = newMessageElement.find(".cm-recipientsList");
       var recipientIds = [];
       
       $(recipientListElement.children(".recipient")).each(function (index) {
@@ -392,7 +392,7 @@ $.widget("custom.communicatorautocomplete", $.ui.autocomplete, {
       var _this = this;
       var element = $(event.target);
       var recipientElement = element.hasClass("userSearchAutoCompleteUser") ? element : element.parents(".userSearchAutoCompleteUser");
-      var recipientListElement = element.parents(".communicatorNewMessage").find(".recipientsList"); 
+      var recipientListElement = element.parents(".communicatorNewMessage").find(".cm-recipientsList"); 
       
       var prms = {
         id: id,

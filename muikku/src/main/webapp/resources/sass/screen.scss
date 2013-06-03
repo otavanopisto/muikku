@@ -260,16 +260,34 @@ border-radius: 0px 0px 10px 10px;
   text-align: right;
   margin: 4px 0px 4px 0px;
 }
-.mainFunctionButtonContainer{
+
+/* mainFunction (.mf*) */
+
+.mf-buttonContainer{
 text-align:center;
 @include rounded(10px);
 padding:20px 0 20px 0;
 background-color:$aBgr;
 }
-.mainFunctionMenuContainer{
-margin-top:5px;
-	
+.mf-menuContainer{
+margin-top:5px;	
 }
+
+.mf-toolbar{
+@include rounded(4px); 	
+background-color:$aBgr;
+padding:10px 20px 10px 20px;
+}
+
+.mf-content{
+@include rounded(4px);  
+background-color:$aBgr;
+margin-top:5px;
+padding:10px 20px 10px 20px;
+}
+
+/* communicator (.cm*) */
+
 
 
 .wallEntry {
