@@ -260,6 +260,23 @@ public class CalendarController {
 		}
 
 	}
+	
+	/**
+	 * Checks for Google's X-GOOGLE-HANGOUT extension 
+	 * 
+	 * @return Hangout url or null if not present
+	 */
+	private String getHangoutUrl(VEvent event) {
+		Property property = event.getProperty("X-GOOGLE-HANGOUT");
+		if (property != null) {
+			String url = property.getValue();
+			if (StringUtils.isNotBlank(url)) {
+				return url;
+			}
+		}
+		
+		return null;
+	}
 
 	@SuppressWarnings("unchecked")
   public void synchronizeSubscribedCalendar(SubscribedCalendar subscribedCalendar, net.fortuna.ical4j.model.Calendar icsCalendar) throws IOException, ParserException, URISyntaxException {
@@ -278,13 +295,13 @@ public class CalendarController {
 				
 				Uid uidObject = event.getUid();
 				if (uidObject != null) {
-  				Description description = event.getDescription();
+  				Description descriptionObject = event.getDescription();
   				Summary summaryObject = event.getSummary();
   				DtStart startDate = event.getStartDate();
   				DtEnd endDate = event.getEndDate();
-  				Url eventUrl = event.getUrl();
-  				Location location = event.getLocation();
-  				Geo geographicPos = event.getGeographicPos();
+  				Url eventUrlObject = event.getUrl();
+  				Location locationObject = event.getLocation();
+  				Geo geographicPosObject = event.getGeographicPos();
   				String uid = uidObject.getValue();
 		
   				if (startDate == null) {
@@ -296,27 +313,30 @@ public class CalendarController {
   				Date end = endDate == null ? start : endDate.getDate();
   				boolean allDay = isAllDayIcsEvent(event);
   				String summary = summaryObject != null ? summaryObject.getValue() : null;
+  				String description = descriptionObject != null ? descriptionObject.getValue() : null;
+  				String location = locationObject != null ? locationObject.getValue() : null;
+  				String eventUrl = eventUrlObject != null ? eventUrlObject.getValue() : null;
+  				BigDecimal latitude = geographicPosObject != null ? geographicPosObject.getLatitude() : null;
+  				BigDecimal longitude = geographicPosObject != null ? geographicPosObject.getLongitude(): null;
+  				String hangoutUrl = getHangoutUrl(event);
   				
   				SubscribedEvent subscribedEvent = subscribedEventDAO.findByCalendarAndUid(subscribedCalendar, uid);
   				if (subscribedEvent == null) { 
-    				subscribedEventDAO.create(
-     					subscribedCalendar, 
-    					uid, 
-    					summary, 
-    					description != null ? description.getValue() : null,
-  						location != null ? location.getValue() : null,
-  						start,
-  						end,
-    					eventUrl != null ? eventUrl.getValue() : null,
-    					allDay,
-    	  			geographicPos != null ? geographicPos.getLatitude() : null,
-    	  			geographicPos != null ? geographicPos.getLongitude(): null
-    				);
+    				subscribedEventDAO.create(subscribedCalendar, uid, summary, description, location, start, end, eventUrl, allDay, latitude, longitude, hangoutUrl);
   				} else {
-  					// TODO: Update exisiting event
+  					subscribedEventDAO.updateSummary(subscribedEvent, summary);
+  					subscribedEventDAO.updateDescription(subscribedEvent, description);
+  					subscribedEventDAO.updateLocation(subscribedEvent, location);
+  					subscribedEventDAO.updateStart(subscribedEvent, start);
+  					subscribedEventDAO.updateEnd(subscribedEvent, end);
+  					subscribedEventDAO.updateUrl(subscribedEvent, eventUrl);
+  					subscribedEventDAO.updateAllDay(subscribedEvent, allDay);
+  					subscribedEventDAO.updateLatitude(subscribedEvent, latitude);
+  					subscribedEventDAO.updateLongitude(subscribedEvent, longitude);
+  					subscribedEventDAO.updateHangoutUrl(subscribedEvent, hangoutUrl);
   				}
   				
-  				removedUids.add(uid);
+  				removedUids.remove(uid);
 				} else {
 					logger.warning("Skiped " + subscribedCalendar.getId() + " event because no uid could be found.");
 				}
@@ -359,8 +379,8 @@ public class CalendarController {
 	
 	/* LocalEvents */
 
-	public LocalEvent createLocalEvent(LocalCalendar calendar, LocalEventType type, String summary, String description, String location, String url, Date start, Date end, Boolean allDay, BigDecimal latitude, BigDecimal longitude) {
-		return localEventDAO.create(calendar, type, summary, description, location, url, start, end, allDay, latitude, longitude);
+	public LocalEvent createLocalEvent(LocalCalendar calendar, LocalEventType type, String summary, String description, String location, String url, Date start, Date end, Boolean allDay, BigDecimal latitude, BigDecimal longitude, String hangoutUrl) {
+		return localEventDAO.create(calendar, type, summary, description, location, url, start, end, allDay, latitude, longitude, hangoutUrl);
 	}
 
 	public LocalEvent findLocalEventById(Long id) {
@@ -386,26 +406,20 @@ public class CalendarController {
 	public LocalEvent updateLocalEventCalendar(LocalEvent localEvent, LocalCalendar localCalendar) {
 		return localEventDAO.updateCalendar(localEvent, localCalendar);
 	}
+
+	public void deleteLocalEvent(LocalEvent localEvent) {
+		localEventDAO.delete(localEvent);
+	}
 	
 	/* Events */
 	
 	public List<Event> listCalendarEvents(Calendar calendar) {
-	  return listCalendarEvents(calendar, null, null);
+		return eventDAO.listByCalendar(calendar);
 	}
 	
-	public List<Event> listCalendarEvents(Calendar calendar, Date timeMin, Date timeMax) {
-		// TODO: This should be inclusive!
-		
-		
-		if (timeMin != null && timeMax == null) {
-			return eventDAO.listByCalendarStartTimeGe(calendar, timeMin);
-		} else if (timeMin == null && timeMax != null) {
-			return eventDAO.listByCalendarEndTimeLe(calendar, timeMax);
-		} else if (timeMin != null && timeMax != null) {
-			return eventDAO.listByCalendarStartTimeGeEndTimeLe(calendar, timeMin, timeMax);	
-		} else {
-			return eventDAO.listByCalendar(calendar);
-		}
+	public List<Event> listCalendarEvents(Calendar calendar, Date start, Date end) {
+		// time span end <= event start, time span start => event end
+		return eventDAO.listByCalendarAndStartLeAndEndGe(calendar, end, start);
 	}
 	
 	/* LocalEventType */

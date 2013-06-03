@@ -10,11 +10,6 @@
     <ui:define name="content">
       <h:outputScript name="scripts/gui/communicator.js" target="head" />
  
-      
-      <h:form>
-        <h:commandButton action="#{Communicator.TEST_MAIL_SEND()}" value="TESTSEND" />
-      </h:form>
-    
       <div class="widget communicator">
         <input type="hidden" name="environmentId" value="#{muikkuSession.environment.id}"/>
         <input type="hidden" name="userId" value="#{muikkuSession.user.id}"/>
@@ -43,6 +38,9 @@
             </li>
             <li>
               <a href="#req_t">Pyynnöt - opettaja</a>
+            </li>
+            <li>
+              <a href="#settings">Asetukset</a>
             </li>
           </ul>
          </div>

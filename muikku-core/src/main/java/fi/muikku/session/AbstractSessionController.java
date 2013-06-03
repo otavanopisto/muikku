@@ -63,8 +63,7 @@ public abstract class AbstractSessionController implements SessionController {
 
   @Override
   public boolean hasPermission(String permission, ContextReference contextReference) {
-    Permission perm = permissionDAO.findByName(permission);
-    return hasPermissionImpl(perm, contextReference);
+    return hasPermissionImpl(permission, contextReference);
   }
   
   protected boolean isSuperuser(UserEntity user) {
@@ -73,20 +72,17 @@ public abstract class AbstractSessionController implements SessionController {
 
   @Override
   public boolean hasEnvironmentPermission(String permission, Environment environment) {
-    Permission perm = permissionDAO.findByName(permission);
-    return hasEnvironmentPermissionImpl(perm, environment);
+    return hasEnvironmentPermissionImpl(permission, environment);
   }
   
   @Override
   public boolean hasCoursePermission(String permission, CourseEntity course) {
-    Permission perm = permissionDAO.findByName(permission);
-    return hasCoursePermissionImpl(perm, course);
+    return hasCoursePermissionImpl(permission, course);
   }
   
   @Override
   public boolean hasResourcePermission(String permission, ResourceEntity resource) {
-    Permission perm = permissionDAO.findByName(permission);
-    return hasResourcePermissionImpl(perm, resource);
+    return hasResourcePermissionImpl(permission, resource);
   }
   
   @Inject
@@ -116,11 +112,11 @@ public abstract class AbstractSessionController implements SessionController {
     return ret;
   }
   
-  protected abstract boolean hasPermissionImpl(Permission permission, ContextReference contextReference);
+  protected abstract boolean hasPermissionImpl(String permission, ContextReference contextReference);
   
-  protected abstract boolean hasEnvironmentPermissionImpl(Permission permission, Environment environment);
+  protected abstract boolean hasEnvironmentPermissionImpl(String permission, Environment environment);
 
-  protected abstract boolean hasCoursePermissionImpl(Permission permission, CourseEntity course);
+  protected abstract boolean hasCoursePermissionImpl(String permission, CourseEntity course);
   
-  protected abstract boolean hasResourcePermissionImpl(Permission permission, ResourceEntity resource);
+  protected abstract boolean hasResourcePermissionImpl(String permission, ResourceEntity resource);
 }

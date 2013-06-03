@@ -3,11 +3,13 @@ package fi.muikku.plugins.calendar;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.muikku.WidgetLocations;
@@ -15,12 +17,15 @@ import fi.muikku.controller.EnvironmentController;
 import fi.muikku.controller.PluginSettingsController;
 import fi.muikku.controller.UserController;
 import fi.muikku.controller.WidgetController;
+import fi.muikku.i18n.LocaleBundle;
+import fi.muikku.i18n.LocaleLocation;
 import fi.muikku.model.plugins.PluginUserSettingKey;
 import fi.muikku.model.stub.users.UserEntity;
 import fi.muikku.model.widgets.DefaultWidget;
 import fi.muikku.model.widgets.Widget;
 import fi.muikku.model.widgets.WidgetLocation;
 import fi.muikku.model.widgets.WidgetVisibility;
+import fi.muikku.plugin.LocalizedPluginDescriptor;
 import fi.muikku.plugin.PersistencePluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
 import fi.muikku.plugin.RESTPluginDescriptor;
@@ -47,7 +52,7 @@ import fi.muikku.schooldata.entity.User;
 
 @ApplicationScoped
 @Stateful
-public class CalendarPluginDescriptor implements PluginDescriptor, PersistencePluginDescriptor, RESTPluginDescriptor {
+public class CalendarPluginDescriptor implements PluginDescriptor, LocalizedPluginDescriptor, PersistencePluginDescriptor, RESTPluginDescriptor {
 
 	public static final String DEFAULT_FIRSTDAY_SETTING = "defaultFirstDay";
 
@@ -222,5 +227,13 @@ public class CalendarPluginDescriptor implements PluginDescriptor, PersistencePl
 		return new Class<?>[] {
 			CalendarRESTService.class
 		};
+	}
+
+	@Override
+	public List<LocaleBundle> getLocaleBundles() {
+		return Arrays.asList(
+	      new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.calendar.JsMessages", LocaleUtils.toLocale("fi"))),
+	      new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.calendar.JsMessages", LocaleUtils.toLocale("en")))
+	  );
 	}
 }

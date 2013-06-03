@@ -23,6 +23,9 @@ import fi.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
 import fi.muikku.schooldata.CourseSchoolDataController;
 import fi.muikku.schooldata.UserSchoolDataController;
+import fi.muikku.security.LoggedIn;
+import fi.muikku.security.Permit;
+import fi.muikku.security.PermitContext;
 import fi.muikku.session.SessionController;
 
 @Dependent
@@ -69,17 +72,17 @@ public class CommunicatorController {
     return communicatorMessageDAO.listFirstMessagesByRecipient(userEntity);
   }
   
-  public void TEST_MAIL_SEND() {
-    CommunicatorMessageId communicatorMessageId = communicatorMessageIdDAO.create();
-    
-    CommunicatorMessage message = communicatorMessageDAO.create(communicatorMessageId, sessionController.getUser().getId(), 
-        "Test mail", "Testing mail creation", new Date());
-    communicatorMessageRecipientDAO.create(message, sessionController.getUser().getId());
-
-    message = communicatorMessageDAO.create(communicatorMessageId, sessionController.getUser().getId(), 
-        "Re: Test mail", "Reply to mail creation", new Date());
-    communicatorMessageRecipientDAO.create(message, sessionController.getUser().getId());
-  }
+//  public void TEST_MAIL_SEND() {
+//    CommunicatorMessageId communicatorMessageId = communicatorMessageIdDAO.create();
+//    
+//    CommunicatorMessage message = communicatorMessageDAO.create(communicatorMessageId, sessionController.getUser().getId(), 
+//        "Test mail", "Testing mail creation", new Date());
+//    communicatorMessageRecipientDAO.create(message, sessionController.getUser().getId());
+//
+//    message = communicatorMessageDAO.create(communicatorMessageId, sessionController.getUser().getId(), 
+//        "Re: Test mail", "Reply to mail creation", new Date());
+//    communicatorMessageRecipientDAO.create(message, sessionController.getUser().getId());
+//  }
 
   public CommunicatorMessageId createMessageId() {
     return communicatorMessageIdDAO.create();
@@ -116,19 +119,53 @@ public class CommunicatorController {
     return communicatorMessageDAO.countMessagesByRecipientAndMessageId(recipient, communicatorMessageId);
   }
   
-  public List<CommunicatorMessageTemplate> listMessageTemplates(UserEntity user) {
+  @Permit (CommunicatorPermissionCollection.COMMUNICATOR_MANAGE_SETTINGS)
+  public List<CommunicatorMessageTemplate> listMessageTemplates(@PermitContext UserEntity user) {
     return communicatorMessageTemplateDAO.listByUser(user);
   }
   
-  public List<CommunicatorMessageSignature> listMessageSignatures(UserEntity user) {
+  @Permit (CommunicatorPermissionCollection.COMMUNICATOR_MANAGE_SETTINGS)
+  public List<CommunicatorMessageSignature> listMessageSignatures(@PermitContext UserEntity user) {
     return communicatorMessageSignatureDAO.listByUser(user);
   }
 
+  @Permit (CommunicatorPermissionCollection.COMMUNICATOR_MANAGE_SETTINGS)
   public CommunicatorMessageTemplate getMessageTemplate(Long id) {
     return communicatorMessageTemplateDAO.findById(id);
   }
   
+  @Permit (CommunicatorPermissionCollection.COMMUNICATOR_MANAGE_SETTINGS)
   public CommunicatorMessageSignature getMessageSignature(Long id) {
     return communicatorMessageSignatureDAO.findById(id);
+  }
+
+  @Permit (CommunicatorPermissionCollection.COMMUNICATOR_MANAGE_SETTINGS)
+  public void deleteMessageTemplate(@PermitContext CommunicatorMessageTemplate messageTemplate) {
+    communicatorMessageTemplateDAO.delete(messageTemplate);
+  }
+
+  @Permit (CommunicatorPermissionCollection.COMMUNICATOR_MANAGE_SETTINGS)
+  public void deleteMessageSignature(@PermitContext CommunicatorMessageSignature messageSignature) {
+    communicatorMessageSignatureDAO.delete(messageSignature);
+  }
+
+  @Permit (CommunicatorPermissionCollection.COMMUNICATOR_MANAGE_SETTINGS)
+  public CommunicatorMessageTemplate editMessageTemplate(@PermitContext CommunicatorMessageTemplate messageTemplate, String name, String content) {
+    return communicatorMessageTemplateDAO.update(messageTemplate, name, content);
+  }
+
+  @Permit (CommunicatorPermissionCollection.COMMUNICATOR_MANAGE_SETTINGS)
+  public CommunicatorMessageSignature editMessageSignature(@PermitContext CommunicatorMessageSignature messageSignature, String name, String signature) {
+    return communicatorMessageSignatureDAO.update(messageSignature, name, signature);
+  }
+
+  @Permit (CommunicatorPermissionCollection.COMMUNICATOR_MANAGE_SETTINGS)
+  public CommunicatorMessageSignature createMessageSignature(String name, String content, @PermitContext UserEntity user) {
+    return communicatorMessageSignatureDAO.create(name, content, user);
+  }
+
+  @Permit (CommunicatorPermissionCollection.COMMUNICATOR_MANAGE_SETTINGS)
+  public CommunicatorMessageTemplate createMessageTemplate(String name, String content, @PermitContext UserEntity user) {
+    return communicatorMessageTemplateDAO.create(name, content, user);
   }
 }

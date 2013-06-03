@@ -48,12 +48,14 @@
       this._calendarEventsLoadListener = $.proxy(this._onCalendarEventsLoad, this);
       this._afterEventCreateListener = $.proxy(this._onAfterEventCreate, this);
       this._afterEventUpdateListener = $.proxy(this._onAfterEventUpdate, this);
+      this._afterEventRemoveListener = $.proxy(this._onAfterEventRemove, this);
       this._calendarVisibilityChangeListener = $.proxy(this._onCalendarVisibilityChange, this);
       this._calendarSettingsChangeListener = $.proxy(this._onCalendarSettingsChange, this);
       
       widgetElement.on("calendarEventsLoad", this._calendarEventsLoadListener);      
       widgetElement.on("afterEventCreate", this._afterEventCreateListener);       
-      widgetElement.on("afterEventUpdate", this._afterEventUpdateListener);      
+      widgetElement.on("afterEventUpdate", this._afterEventUpdateListener);          
+      widgetElement.on("afterEventRemove", this._afterEventRemoveListener);    
       widgetElement.on("calendarVisibilityChange", this._calendarVisibilityChangeListener);   
       widgetElement.on("calendarSettingsChange", this._calendarSettingsChangeListener);
     },
@@ -62,7 +64,8 @@
       
       widgetElement.off("calendarEventsLoad", this._calendarEventsLoadListener);      
       widgetElement.off("afterEventCreate", this._afterEventCreateListener);     
-      widgetElement.off("afterEventUpdate", this._afterEventUpdateListener);     
+      widgetElement.off("afterEventUpdate", this._afterEventUpdateListener);       
+      widgetElement.off("afterEventRemove", this._afterEventRemoveListener);   
       widgetElement.off("calendarVisibilityChange", this._calendarVisibilityChangeListener);    
       widgetElement.off("calendarSettingsChange", this._calendarSettingsChangeListener);
 
@@ -71,11 +74,11 @@
     },
     getViewStartTime: function () {
       var view = this._fullCalendar.fullCalendar('getView');
-      return view.start;
+      return view.visStart;
     },
     getViewEndTime: function () {
       var view = this._fullCalendar.fullCalendar('getView');
-      return view.end;
+      return view.visEnd;
     },
     getCalendarElement: function () {
       return this._fullCalendar;
@@ -280,6 +283,25 @@
       this._reloadEvents(this._loadedDatas);
     },
     
+    _onAfterEventRemove: function (event) {
+      var eventId = event.id;
+      var calendarId = event.calendarId;
+      
+      for (var i = 0, l = this._loadedDatas.length; i < l; i++) {
+        if (this._loadedDatas[i].calendarMeta.id == calendarId) {
+          for (var j = 0, jl = this._loadedDatas[i].events.length; j < jl; j++) {
+            if (this._loadedDatas[i].events[j].id == eventId) { 
+              this._loadedDatas[i].events.splice(j, 1);
+              break;
+            }
+          }
+          break;
+        }
+      }
+      
+      this._reloadEvents(this._loadedDatas);
+    },
+    
     _onAfterEventUpdate: function (event) {
       var newEvent = event.event;
       var originalEventData = event.originalEventData;
@@ -391,6 +413,7 @@
       $(document).on("calendarSettingsWidget:settingsSaved", $.proxy(this._onCalendarSettingsWidgetSettingsSaved, this));      
       $(document).on("calendarVisibleWidget:calendarShow", $.proxy(this._onCalendarVisibleWidgetCalendarShow, this));      
       $(document).on("calendarVisibleWidget:calendarHide", $.proxy(this._onCalendarVisibleWidgetCalendarHide, this));      
+      $(document).on("calendarEventDialog:eventRemoved", $.proxy(this._onCalendarEventDialogEventRemoved, this));    
       
       this._initialMode = 'MONTH';
       this._modeHandler = null;
@@ -492,8 +515,8 @@
       RESTful.doGet(CONTEXTPATH + "/rest/calendar/calendars/{calendarId}/events", {
         parameters: {
           calendarId: calendarMeta.id,
-          timeMin: startTime.getTime(),
-          timeMax: endTime.getTime()
+          start: startTime.getTime(),
+          end: endTime.getTime()
         }
       })
       .success(function (data, textStatus, jqXHR) {
@@ -568,6 +591,13 @@
     _onNewEventWidgetEventCreate: function (event) {
       this._widgetElement.trigger($.Event("afterEventCreate", {
         event: event.event
+      }));
+    },
+    
+    _onCalendarEventDialogEventRemoved: function (event) {
+      this._widgetElement.trigger($.Event("afterEventRemove", {
+        calendarId: event.calendarId,
+        id: event.id
       }));
     },
 

@@ -13,11 +13,12 @@ import javax.validation.constraints.NotNull;
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.util.ArchivableEntity;
 import fi.muikku.model.util.SchoolDataEntity;
+import fi.muikku.security.ContextReference;
 import fi.muikku.security.User;
 
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
-public class UserEntity implements SchoolDataEntity, ArchivableEntity, User {
+public class UserEntity implements SchoolDataEntity, ArchivableEntity, User, ContextReference {
   
   public Long getId() {
     return id;
