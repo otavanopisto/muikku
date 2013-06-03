@@ -6,20 +6,19 @@ import java.util.List;
 
 import fi.muikku.plugin.PluginDescriptor;
 import fi.muikku.plugin.PluginLibraryDescriptor;
-import fi.muikku.plugins.fish.StatefulFishPluginDescriptor;
-import fi.muikku.plugins.fish.LocalizedFishPluginDescriptor;
+import fi.muikku.plugins.fish.DatabaseFishPluginDescriptor;
 
 public class FishPluginLibraryDescriptor implements PluginLibraryDescriptor {
 
 	@Override
 	public String getName() {
-		return "example-plugin-2";
+		return "example-plugin-3";
 	}
 	
 	@Override
 	public List<Class<? extends PluginDescriptor>> getPlugins() {
 		return new ArrayList<Class<? extends PluginDescriptor>>(Arrays.asList(
-		  LocalizedFishPluginDescriptor.class
+		  DatabaseFishPluginDescriptor.class
 		));
 	}
 }
