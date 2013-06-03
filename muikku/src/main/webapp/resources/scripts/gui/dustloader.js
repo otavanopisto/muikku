@@ -24,9 +24,23 @@ dust.helpers.contextPath = function(chunk, context, bodies) {
 function renderDustTemplate(templateName, json, callback) {
   var base = dust.makeBase({
     localize: function(chunk, context, bodies, params) {
-      return chunk.write(getLocaleText(params.key));
+      var args = new Array();
+      var i = 0;
+      while (true) {
+        if (params["arg" + i]) {
+          args.push(params["arg" + i]);
+        } else {
+          break;
+        }
+        
+        i++;
+      }
+      
+      var result = chunk.write(getLocaleText(params.key, args));
+      return result;
     }
   });
+  
   dust.render(templateName, base.push(json), function (err, text) {
     if (err) {
       var message = "Error occured while rendering dust template " + templateName + ": " + err;
