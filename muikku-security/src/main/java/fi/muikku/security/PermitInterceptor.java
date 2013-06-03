@@ -37,11 +37,13 @@ public class PermitInterceptor implements Serializable {
     Style style = permit.style();
 
     boolean permitted = false;
+
+    if (identityInstance.isUnsatisfied())
+      throw new RuntimeException("PermitInterceptor - Identity bean unavailable");
+    if (identityInstance.isAmbiguous())
+      throw new RuntimeException("PermitInterceptor - Identity bean is ambiguous");
     
     Identity identity = identityInstance.get();
-    
-    if (identity == null)
-      throw new RuntimeException("PermitInterceptor - Identity bean unavailable");
     
     switch (style) {
       case OR:
@@ -85,7 +87,7 @@ public class PermitInterceptor implements Serializable {
     if (resourceEntitys.size() == 1)
       return (ContextReference) resourceEntitys.get(0);
     else
-      throw new RuntimeException("PermitInterceptor.getResourceEntity - exactly one @PermitContext expected for " + ctx.getMethod().getDeclaringClass().getName() + "." + ctx.getMethod().getName());
+      throw new RuntimeException("PermitInterceptor.getPermitContext - exactly one @PermitContext expected for " + ctx.getMethod().getDeclaringClass().getName() + "." + ctx.getMethod().getName());
   }
 
   private List<Object> getParametersByAnnotation(InvocationContext ctx, @SuppressWarnings("rawtypes") Class annotationClass) {
