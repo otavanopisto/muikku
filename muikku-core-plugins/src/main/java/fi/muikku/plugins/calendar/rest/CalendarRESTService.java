@@ -427,7 +427,7 @@ public class CalendarRESTService extends PluginRESTService {
   	
     calendarController.deleteLocalEvent(localEvent);
 
-  	return Response.ok().build();
+  	return Response.noContent().build();
   }
 
 
