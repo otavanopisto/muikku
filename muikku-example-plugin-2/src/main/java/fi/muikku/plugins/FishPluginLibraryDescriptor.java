@@ -13,7 +13,7 @@ public class FishPluginLibraryDescriptor implements PluginLibraryDescriptor {
 
 	@Override
 	public String getName() {
-		return "fish";
+		return "example-plugin-2";
 	}
 	
 	@Override
