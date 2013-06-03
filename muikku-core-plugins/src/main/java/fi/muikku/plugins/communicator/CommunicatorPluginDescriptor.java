@@ -52,7 +52,10 @@ public class CommunicatorPluginDescriptor implements PluginDescriptor, Persisten
       CommunicatorMessageSignatureDAO.class,
 		  
 		  /* Controllers */
-		  CommunicatorController.class
+		  CommunicatorController.class,
+		  
+		  CommunicatorPermissionResolver.class,
+		  CommunicatorPermissionCollection.class
 		));
 	}
 	

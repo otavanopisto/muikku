@@ -22,7 +22,6 @@ import fi.muikku.dao.security.UserPasswordDAO;
 import fi.muikku.dao.users.UserEntityDAO;
 import fi.muikku.dao.users.UserImplDAO;
 import fi.muikku.model.base.Environment;
-import fi.muikku.model.security.Permission;
 import fi.muikku.model.security.UserPassword;
 import fi.muikku.model.stub.courses.CourseEntity;
 import fi.muikku.model.stub.users.UserEntity;
@@ -123,14 +122,12 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
 
   @Override
   public boolean hasEnvironmentPermission(String permission, Environment environment) {
-    Permission perm = permissionDAO.findByName(permission);
-    return hasEnvironmentPermissionImpl(perm, environment);
+    return hasEnvironmentPermissionImpl(permission, environment);
   }
   
   @Override
   public boolean hasCoursePermission(String permission, CourseEntity course) {
-    Permission perm = permissionDAO.findByName(permission);
-    return hasCoursePermissionImpl(perm, course);
+    return hasCoursePermissionImpl(permission, course);
   }
   
   /**
@@ -190,35 +187,35 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
   }
 
   @Override
-  protected boolean hasPermissionImpl(Permission permission, ContextReference contextReference) {
-    PermissionResolver permissionResolver = getPermissionResolver(permission.getName());
+  protected boolean hasPermissionImpl(String permission, ContextReference contextReference) {
+    PermissionResolver permissionResolver = getPermissionResolver(permission);
     
     if (isLoggedIn()) {
       if (!isRepresenting()) {
-        return isSuperuser() || permissionResolver.hasPermission(permission.getName(), contextReference, getUser());
+        return isSuperuser() || permissionResolver.hasPermission(permission, contextReference, getUser());
       } else {
-        boolean repHasPermission = permissionResolver.hasPermission(permission.getName(), contextReference, getRepresentedUser());
-        boolean loggedInHasPermission = isSuperuser(getLoggedUser()) || permissionResolver.hasPermission(permission.getName(), contextReference, getLoggedUser());
+        boolean repHasPermission = permissionResolver.hasPermission(permission, contextReference, getRepresentedUser());
+        boolean loggedInHasPermission = isSuperuser(getLoggedUser()) || permissionResolver.hasPermission(permission, contextReference, getLoggedUser());
 
         return repHasPermission && loggedInHasPermission;
       }
     } else {
-      return permissionResolver.hasEveryonePermission(permission.getName(), contextReference);
+      return permissionResolver.hasEveryonePermission(permission, contextReference);
     }
   }
   
   @Override
-  protected boolean hasEnvironmentPermissionImpl(Permission permission, Environment environment) {
+  protected boolean hasEnvironmentPermissionImpl(String permission, Environment environment) {
     return hasPermissionImpl(permission, environment);
   }
 
   @Override
-  protected boolean hasCoursePermissionImpl(Permission permission, CourseEntity course) {
+  protected boolean hasCoursePermissionImpl(String permission, CourseEntity course) {
     return hasPermissionImpl(permission, course);
   }
   
   @Override
-  protected boolean hasResourcePermissionImpl(Permission permission, ResourceEntity resource) {
+  protected boolean hasResourcePermissionImpl(String permission, ResourceEntity resource) {
     return hasPermissionImpl(permission, resource);
   }
   

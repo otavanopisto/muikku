@@ -30,6 +30,7 @@ import fi.muikku.model.users.UserContact;
 import fi.muikku.model.users.UserContactType;
 import fi.muikku.model.users.UserImpl;
 import fi.muikku.security.PermissionCollection;
+import fi.muikku.security.PermissionScope;
 import fi.muikku.utils.RequestUtils;
 
 /**
@@ -256,10 +257,12 @@ public class SeedDataImporter {
           try {
             String permissionScope = collection.getPermissionScope(permission);
 
-            Permission per = new Permission();
-            per.setName(permission);
-            per.setScope(permissionScope);
-            em.persist(per);
+            if (!PermissionScope.PERSONAL.equals(permissionScope)) {
+              Permission per = new Permission();
+              per.setName(permission);
+              per.setScope(permissionScope);
+              em.persist(per);
+            }
           } catch (Exception e) {
             e.printStackTrace();
           }
