@@ -26,13 +26,17 @@ public class AbstractPermissionResolver {
   @Any
   private Instance<CourseContextResolver> courseContextResolvers;
   
+  @Inject
+  @Any
+  private Instance<UserContextResolver> userContextResolvers;
+  
   /**
    * Uses ContextResolvers to resolve environment from ContextReference
    * 
    * @param contextReference
    * @return environment if found, else null
    */
-  protected Environment getEnvironment(ContextReference contextReference) {
+  protected Environment resolveEnvironment(ContextReference contextReference) {
     for (EnvironmentContextResolver resolver : environmentContextResolvers) {
       if (resolver.handlesContextReference(contextReference))
         return resolver.resolveEnvironment(contextReference);
@@ -47,10 +51,25 @@ public class AbstractPermissionResolver {
    * @param contextReference
    * @return course if found, else null
    */
-  protected CourseEntity getCourse(ContextReference contextReference) {
+  protected CourseEntity resolveCourse(ContextReference contextReference) {
     for (CourseContextResolver resolver : courseContextResolvers) {
       if (resolver.handlesContextReference(contextReference))
         return resolver.resolveCourse(contextReference);
+    }
+    
+    return null;
+  }
+
+  /**
+   * Uses ContextResolvers to resolve user from ContextReference
+   * 
+   * @param contextReference
+   * @return user if found, else null
+   */
+  protected UserEntity resolveUser(ContextReference contextReference) {
+    for (UserContextResolver resolver : userContextResolvers) {
+      if (resolver.handlesContextReference(contextReference))
+        return resolver.resolveUser(contextReference);
     }
     
     return null;

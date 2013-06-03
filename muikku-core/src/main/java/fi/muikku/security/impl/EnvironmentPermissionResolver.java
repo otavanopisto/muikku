@@ -42,12 +42,13 @@ public class EnvironmentPermissionResolver extends AbstractPermissionResolver im
     if (perm != null)
       return (PermissionScope.ENVIRONMENT.equals(perm.getScope()));
     else
-      throw new RuntimeException("EnvironmentPermissionResolver - Permission '" + permission + "' not found");
+      return false;
+//      throw new RuntimeException("EnvironmentPermissionResolver - Permission '" + permission + "' not found");
   }
 
   @Override
   public boolean hasPermission(String permission, ContextReference contextReference, User user) {
-    Environment environment = getEnvironment(contextReference);
+    Environment environment = resolveEnvironment(contextReference);
     Permission perm = permissionDAO.findByName(permission);
     UserEntity userEntity = getUserEntity(user);
 
@@ -62,7 +63,7 @@ public class EnvironmentPermissionResolver extends AbstractPermissionResolver im
 
   @Override
   public boolean hasEveryonePermission(String permission, ContextReference contextReference) {
-    Environment environment = getEnvironment(contextReference);
+    Environment environment = resolveEnvironment(contextReference);
     UserRole everyoneRole = getEveryoneRole();
     Permission perm = permissionDAO.findByName(permission);
     

@@ -29,9 +29,9 @@ input[type="button"],input[type="submit"]{
 
 
 
+/* Mainfunction (.mf-*) */
 
-
-.mainFunctionButtonContainer input{
+.mf-buttonContainer input{
     font-family: Verdana, sans-serif;
     font-size: 14px;
     color: #fff;
@@ -43,13 +43,39 @@ input[type="button"],input[type="submit"]{
  
 }
 
-.mainFunctionButtonContainer input:hover, input[type="button"]:hover, input[type="submit"]:hover{
+.mf-buttonContainer input:hover, input[type="button"]:hover, input[type="submit"]:hover{
      @include border($btnBrdH);
 }
 
 
-.mainFunctionButtonContainer input:active, input[type="button"]:active, input[type="submit"]:active{
+.mf-buttonContainer input:active, input[type="button"]:active, input[type="submit"]:active{
     @include iShadow; 
+}
+
+.mf-fieldRow{
+		
+}
+.mf-labelfield{
+  float:left;
+  font-weight:bold;
+  }
+
+.mf-textfield{
+  float:left;
+}
+
+.mf-selectedObjects{
+  min-height:20px;
+
+
+}
+
+
+/* Communicator (.cm-*) */
+.cm-recipients{
+	 @include rounded(4px);  
+	  padding:5px; 
+	  background-color:$saBgr;
 }
 
 input[type="text"]{    

@@ -17,6 +17,7 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.SystemException;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -406,6 +407,29 @@ public class CalendarRESTService extends PluginRESTService {
       tranquility.entity(localEvent)
     ).build();
   }
+  
+  @DELETE
+  @Path ("/calendars/{CALENDARID}/events/{EVENTID}")
+  public Response deleteCalendarEvent(
+  		@PathParam ("CALENDARID") Long calendarId, 
+  		@PathParam ("EVENTID") Long eventId) {
+  	
+  	// TODO: Permissions
+  	
+  	LocalEvent localEvent = calendarController.findLocalEventById(eventId);
+  	if (localEvent == null) {
+  		return Response.status(Status.NOT_FOUND).build();
+  	}
+  	
+  	if (!localEvent.getCalendar().getId().equals(calendarId)) {
+  		return Response.status(Status.NOT_FOUND).build();
+  	}
+  	
+    calendarController.deleteLocalEvent(localEvent);
+
+  	return Response.noContent().build();
+  }
+
 
   @POST
   @Path ("/localEventTypes") 

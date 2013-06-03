@@ -406,6 +406,10 @@ public class CalendarController {
 	public LocalEvent updateLocalEventCalendar(LocalEvent localEvent, LocalCalendar localCalendar) {
 		return localEventDAO.updateCalendar(localEvent, localCalendar);
 	}
+
+	public void deleteLocalEvent(LocalEvent localEvent) {
+		localEventDAO.delete(localEvent);
+	}
 	
 	/* Events */
 	
