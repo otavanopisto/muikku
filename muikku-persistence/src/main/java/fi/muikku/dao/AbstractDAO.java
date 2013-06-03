@@ -37,11 +37,11 @@ public abstract class AbstractDAO<T> implements Serializable {
     return query.getResultList();
   }
 
-  public Integer count() {
+  public Long count() {
     EntityManager entityManager = getEntityManager();
     Class<?> genericTypeClass = getGenericTypeClass();
     Query query = entityManager.createQuery("select count(o) from " + genericTypeClass.getName() + " o");
-    return (Integer) query.getSingleResult();
+    return (Long) query.getSingleResult();
   }
 
   protected void delete(T e) {
