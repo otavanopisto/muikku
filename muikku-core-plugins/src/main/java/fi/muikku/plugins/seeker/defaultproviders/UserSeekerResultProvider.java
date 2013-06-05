@@ -33,14 +33,21 @@ public class UserSeekerResultProvider implements SeekerResultProvider {
   private List<SeekerResult> seekerify(List<EnvironmentUser> list, String searchTerm) {
     List<SeekerResult> result = new ArrayList<SeekerResult>();
 
+    searchTerm = searchTerm.toLowerCase();
     String caption = localeController.getText(sessionController.getLocale(), "plugin.seeker.category.users");
+    String imageUrl;
     
     for (EnvironmentUser e : list) {
       User e2 = userController.findUser(e.getUser());
 
+      if (userController.getUserHasPicture(e.getUser()))
+        imageUrl = "/picture?userId=" + e.getUser().getId();
+      else
+        imageUrl = "/themes/default/gfx/fish.jpg";
+     
       // TODO remove
       if ((e2.getFirstName().toLowerCase().contains(searchTerm)) || (e2.getLastName().toLowerCase().contains(searchTerm)))
-        result.add(new DefaultSeekerResultImpl(e2.getFirstName() + " " + e2.getLastName(), caption, "/users/index.jsf?userId=" + e.getId(), ""));
+        result.add(new DefaultSeekerResultImpl(e2.getFirstName() + " " + e2.getLastName(), caption, "/users/index.jsf?userId=" + e.getId(), imageUrl));
     }
     
     return result;

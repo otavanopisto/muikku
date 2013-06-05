@@ -33,6 +33,7 @@ public class CourseSeekerResultProvider implements SeekerResultProvider {
   private List<SeekerResult> seekerify(List<CourseEntity> courses, String searchTerm) {
     List<SeekerResult> result = new ArrayList<SeekerResult>();
 
+    searchTerm = searchTerm.toLowerCase();
     String caption = localeController.getText(sessionController.getLocale(), "plugin.seeker.category.courses");
 
     for (CourseEntity c : courses) {

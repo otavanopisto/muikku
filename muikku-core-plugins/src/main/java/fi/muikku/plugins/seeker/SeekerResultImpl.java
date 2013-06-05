@@ -5,7 +5,11 @@ public class SeekerResultImpl implements SeekerResult {
   private String category;
   private String template;
 
-  public SeekerResultImpl(String category, String template) {
+  public SeekerResultImpl(String template) {
+    this.template = template;
+  }
+
+  public SeekerResultImpl(String template, String category) {
     this.category = category;
     this.template = template;
   }

@@ -2,7 +2,6 @@ package fi.muikku.plugins.communicator;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -24,13 +23,10 @@ public class CommunicatorSeekerResultProvider implements SeekerResultProvider {
   public List<SeekerResult> search(String searchTerm) {
     List<SeekerResult> result = new ArrayList<SeekerResult>();
     
-    Locale locale = sessionController.getLocale();
+    String searchTerms = localeController.getText(sessionController.getLocale(), "plugin.communicator.seekersearchterms").toLowerCase();
     
-    String caption = localeController.getText(locale, "plugin.communicator.seekercategory");
-    String searchtTerms = localeController.getText(locale, "plugin.communicator.seekersearchterms");
-    
-    if (searchtTerms.contains(searchTerm))
-      result.add(new SeekerResultImpl(caption, "communicator/communicator_seekerresult.dust"));
+    if (searchTerms.contains(searchTerm.toLowerCase()))
+      result.add(new SeekerResultImpl("communicator/communicator_seekerresult.dust"));
     
     return result; 
   }
