@@ -14,6 +14,10 @@ function getLocaleText(key, args) {
   return val;
 }
 
+function getLocale() {
+  return window._MUIKKU_LOCALE;
+}
+
 function getCurrentDate() {
   return $.datepicker.formatDate(getLocaleText('datePattern'), new Date());
 }
