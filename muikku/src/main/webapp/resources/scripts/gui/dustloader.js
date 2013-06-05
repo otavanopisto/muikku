@@ -13,6 +13,26 @@ dust.onLoad = function(name, callback) {
   });
 };
 
+dust.preload = function(name) {
+  var tmpl = dust.cache[name];
+  if (!tmpl) {
+    $.ajax(CONTEXTPATH + '/resources/dust/' + name, {
+      async: false,
+      success : function(data, textStatus, jqXHR) {
+        if (!dust.cache[name]) 
+          dust.loadSource(dust.compile(data, name));
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        var message = 'Could not find Dust template: ' + name;
+        
+        getNotificationQueue().addItem(new fi.internetix.s2nq.NotificationQueueItem(message, {
+          className: "notificationQueueCriticalItem"
+        }));
+      }
+    });
+  }
+};
+
 dust.filters.formatDate = function(value) {
   return getCurrentDate();
 };

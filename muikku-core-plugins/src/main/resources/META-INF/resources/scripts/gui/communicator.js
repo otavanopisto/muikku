@@ -80,14 +80,21 @@ $.fn.extend({
             _this._showInbox();
           
           if (a.attr("href") == "#settings")
-            _this._showSettings();
+            _this._showSettingsView();
           
           return false;
         }
       });
       this._newMessageButton.click($.proxy(this._onNewMessageClick, this));
       
-      this._showInbox();
+      var hash = window.location.hash.substring(1);
+      
+      if (hash == "new") {
+        this._showNewMessageView();
+      } else if (hash == "settings") {
+        this._showSettingsView();
+      } else
+        this._showInbox();
     },
     deinitialize: function () {
       var _this = this;
@@ -165,7 +172,7 @@ $.fn.extend({
         });
       });
     },
-    _onNewMessageClick: function (event) {
+    _showNewMessageView: function () {
       var _this = this;
       this._clearContent();
       
@@ -198,6 +205,9 @@ $.fn.extend({
         _this._communicatorContent.find("select[name='signatureSelector']").change($.proxy(_this._onSelectSignature, _this));
         _this._communicatorContent.find(".cm-recipientsList").on("click", ".removeRecipient", $.proxy(_this._onRemoveRecipientClick, _this));
       });
+    },
+    _onNewMessageClick: function (event) {
+      this._showNewMessageView();
     },
     _onSelectTemplate: function (event) {
       var element = $(event.target);
@@ -453,7 +463,7 @@ $.fn.extend({
         element = element.parents(".recipient");
       element.remove();
     },
-    _showSettings: function () {
+    _showSettingsView: function () {
       var _this = this;
       this._clearContent();
       var templates = this._loadMessageTemplates();

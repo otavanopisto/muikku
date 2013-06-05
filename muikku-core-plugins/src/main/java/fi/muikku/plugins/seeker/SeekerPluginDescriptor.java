@@ -19,7 +19,6 @@ import fi.muikku.model.widgets.Widget;
 import fi.muikku.model.widgets.WidgetLocation;
 import fi.muikku.model.widgets.WidgetVisibility;
 import fi.muikku.plugin.LocalizedPluginDescriptor;
-import fi.muikku.plugin.PersistencePluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
 import fi.muikku.plugin.RESTPluginDescriptor;
 import fi.muikku.plugins.seeker.defaultproviders.CourseSeekerResultProvider;
@@ -27,7 +26,7 @@ import fi.muikku.plugins.seeker.defaultproviders.UserSeekerResultProvider;
 
 @ApplicationScoped
 @Stateful
-public class SeekerPluginDescriptor implements PluginDescriptor, PersistencePluginDescriptor, RESTPluginDescriptor, LocalizedPluginDescriptor {
+public class SeekerPluginDescriptor implements PluginDescriptor, RESTPluginDescriptor, LocalizedPluginDescriptor {
 
   @Inject
   private WidgetController widgetController;
@@ -59,30 +58,9 @@ public class SeekerPluginDescriptor implements PluginDescriptor, PersistencePlug
 	@Override
 	public List<Class<?>> getBeans() {
 		return new ArrayList<Class<?>>(Arrays.asList(
-			/* DAOs */	
-//      CommunicatorMessageDAO.class,
-//      CommunicatorMessageIdDAO.class,
-//      CommunicatorMessageRecipientDAO.class,
-//      CommunicatorMessageTemplateDAO.class,
-//      CommunicatorMessageSignatureDAO.class,
-		  
-		  /* Controllers */
-//		  CommunicatorController.class,
-//		  
 		  CourseSeekerResultProvider.class,
 		  UserSeekerResultProvider.class
 		));
-	}
-	
-	@Override
-	public Class<?>[] getEntities() {
-		return new Class<?>[] {
-//			CommunicatorMessage.class,
-//			CommunicatorMessageId.class,
-//			CommunicatorMessageRecipient.class,
-//			CommunicatorMessageTemplate.class,
-//			CommunicatorMessageSignature.class
-		};
 	}
 	
 	@Override
@@ -95,8 +73,10 @@ public class SeekerPluginDescriptor implements PluginDescriptor, PersistencePlug
   @Override
   public List<LocaleBundle> getLocaleBundles() {
     List<LocaleBundle> bundles = new ArrayList<LocaleBundle>();
-//    bundles.add(new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.communicator.CommunicatorJsPluginMessages", LocaleUtils.toLocale("fi"))));
-//    bundles.add(new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.communicator.CommunicatorJsPluginMessages", LocaleUtils.toLocale("en"))));
+
+    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.seeker.SeekerPluginMessages", LocaleUtils.toLocale("fi"))));
+    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.seeker.SeekerPluginMessages", LocaleUtils.toLocale("en"))));
+    
     return bundles;
   }
 }

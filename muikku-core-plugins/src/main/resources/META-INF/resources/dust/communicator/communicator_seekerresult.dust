@@ -1,0 +1,8 @@
+<div class="seeker_autocomplete_item_container"> 
+  <div class="seeker_autocomplete_item_image"><img src="{item.image}"></div>
+  <div class="seeker_autocomplete_item_label">{#localize key="plugin.communicator.seekerresultcaption"/}</div>
+  <div class="communicator_seeker_autocomplete_item_content">
+    <a href="{@contextPath/}/communicator/index.jsf#new">+</a>
+    <a href="{@contextPath/}/communicator/index.jsf#settings">#</a>
+  </div>
+</div>
