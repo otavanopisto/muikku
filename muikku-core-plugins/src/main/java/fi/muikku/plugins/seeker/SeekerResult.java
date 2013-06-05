@@ -5,11 +5,7 @@ import fi.tranquil.TranquilEntity;
 @TranquilEntity
 public interface SeekerResult {
 
-  String getLink();
-  
-  String getLabel();
+  String getTemplate();
   
   String getCategory();
-  
-  String getImage();
 }

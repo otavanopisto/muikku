@@ -5,7 +5,6 @@ import java.util.Locale;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import fi.muikku.dao.base.EnvironmentDAO;
 import fi.muikku.dao.courses.CourseEntityDAO;
@@ -18,7 +17,6 @@ import fi.muikku.security.PermissionResolver;
 
 @Stateful
 @RequestScoped
-@Named ("restSession")
 @RestSesssion
 public class RestSessionControllerImpl extends AbstractSessionController implements RestSessionController {
   
@@ -102,5 +100,5 @@ public class RestSessionControllerImpl extends AbstractSessionController impleme
 
   private RestAuthentication authentication;
   private Long environmentId = 1l; // TODO
-  private Locale locale = new Locale("en", "US");
+  private Locale locale;
 }

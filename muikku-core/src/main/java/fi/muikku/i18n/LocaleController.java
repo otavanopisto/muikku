@@ -75,7 +75,11 @@ public class LocaleController {
     Map<String, String> entries = jsLocaleMaps.get(locale.getLanguage());
     StringBuffer sb = new StringBuffer();
     if (entries != null) {
-      sb.append("(function() {window._MUIKKU_LOCALEMAP = {");
+      sb.append("(function() {")
+        .append("window._MUIKKU_LOCALE='")
+        .append(locale.getLanguage())
+        .append("';")
+        .append("window._MUIKKU_LOCALEMAP = {");
       String key;
       Iterator<String> keyIterator = entries.keySet().iterator();
       while (keyIterator.hasNext()) {

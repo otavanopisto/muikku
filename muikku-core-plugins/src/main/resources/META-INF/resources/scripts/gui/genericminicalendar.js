@@ -8,64 +8,13 @@
     },
     
     setup: function (widgetElement, calendarContainer) {
-      var firstDay = parseInt($(widgetElement).find('input[name="firstDay"]').val());
-
       this._widgetElement = $(widgetElement);
       this._calendarContainer = calendarContainer;
       
-      var _this = this;
-      this._createMiniCalendar({
-        showOtherMonths: true,
-        selectOtherMonths: true,
-        showWeek: true,
-        firstDay: firstDay,
-        onSelect: function (text, inst) {
-          if ((inst.drawYear != inst.selectedYear) || (inst.drawMonth != inst.selectedMonth)) {
-            // Move to current month when "other month" has been selected
-            $(this).datepicker("setDate", $(this).datepicker("getDate"));
-            _this._updateDates();
-            _this._reloadEvents();
-          }
-        },
-        onChangeMonthYear: function (year, month, inst) {
-          _this._updateDates();
-          _this._reloadEvents();
-        },
-        beforeShowDay: function(date) {
-          var classes = new Array();
-          var summaries = new Array();
-          
-          var ymd = [date.getFullYear(), date.getMonth(), date.getDate()];
-          var key = ymd.join('-');
-          
-          if (_this._visibleEvents[key]) {
-            classes.push('has-events');
-            for (var i = 0, l = _this._visibleEvents[key].length; i < l; i++) {
-              var visibleEvent = _this._visibleEvents[key][i];
-              if (visibleEvent.summary) {
-                summaries.push(visibleEvent.summary);
-              }
-              
-              var className = "miniCalendar_" + visibleEvent.calendarId;
-              
-              if (classes.indexOf(className) == -1) {
-                classes.push(className);
-              }
-            }
-          }
-          
-          return [true, classes.join(' '), summaries.join('\n')];
-        }
-      });
-
-      this._updateDates();
-      
       $(document).on("calendarSettingsWidget:settingsSaved", $.proxy(this._onCalendarSettingsWidgetSettingsSaved, this)); 
       $(document).on("calendarVisibleWidget:calendarShow", $.proxy(this._onCalendarVisibleWidgetCalendarShow, this));      
-      $(document).on("calendarVisibleWidget:calendarHide", $.proxy(this._onCalendarVisibleWidgetCalendarHide, this));      
-      
-      RESTful.doGet(CONTEXTPATH + "/rest/calendar/calendars")
-        .success($.proxy(this._onCalendarsLoad, this));
+      $(document).on("calendarVisibleWidget:calendarHide", $.proxy(this._onCalendarVisibleWidgetCalendarHide, this));   
+      $(window).load($.proxy(this._onDocumentLoad, this));
     },
     destroy: function () {
       this._removeMiniCalendar();
@@ -196,6 +145,60 @@
         this._refreshVisibileEvents()
         this._miniCalendar.datepicker('refresh');
       }, this));
+    },
+    
+    _onDocumentLoad: function (event) {
+      var firstDay = parseInt($(this._widgetElement).find('input[name="firstDay"]').val());
+      
+      var _this = this;
+      this._createMiniCalendar({
+        showOtherMonths: true,
+        selectOtherMonths: true,
+        showWeek: true,
+        firstDay: firstDay,
+        onSelect: function (text, inst) {
+          if ((inst.drawYear != inst.selectedYear) || (inst.drawMonth != inst.selectedMonth)) {
+            // Move to current month when "other month" has been selected
+            $(this).datepicker("setDate", $(this).datepicker("getDate"));
+            _this._updateDates();
+            _this._reloadEvents();
+          }
+        },
+        onChangeMonthYear: function (year, month, inst) {
+          _this._updateDates();
+          _this._reloadEvents();
+        },
+        beforeShowDay: function(date) {
+          var classes = new Array();
+          var summaries = new Array();
+          
+          var ymd = [date.getFullYear(), date.getMonth(), date.getDate()];
+          var key = ymd.join('-');
+          
+          if (_this._visibleEvents[key]) {
+            classes.push('has-events');
+            for (var i = 0, l = _this._visibleEvents[key].length; i < l; i++) {
+              var visibleEvent = _this._visibleEvents[key][i];
+              if (visibleEvent.summary) {
+                summaries.push(visibleEvent.summary);
+              }
+              
+              var className = "miniCalendar_" + visibleEvent.calendarId;
+              
+              if (classes.indexOf(className) == -1) {
+                classes.push(className);
+              }
+            }
+          }
+          
+          return [true, classes.join(' '), summaries.join('\n')];
+        }
+      });
+
+      this._updateDates();   
+      
+      RESTful.doGet(CONTEXTPATH + "/rest/calendar/calendars")
+        .success($.proxy(this._onCalendarsLoad, this));
     },
     
     _onCalendarsLoad: function (calendars, textStatus, jqXHR) {

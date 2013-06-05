@@ -77,6 +77,8 @@ public class RestSessionFilter implements Filter {
           restSessionController.setAuthentication(localSessionRestAuthentication);
         } 
       }
+      
+      restSessionController.setLocale(request.getLocale());
     }
 
     sessionControllerDelegate.setImplementation(restSessionController);

@@ -9,3 +9,31 @@
 	background:url(../resources/gfx/temp/tux.png) center no-repeat;
     
 }
+
+
+.seeker_autocomplete_item_container {
+	position: relative;
+	height: 48px;
+}
+
+.seeker_autocomplete_item_label {
+	left: 50px;
+	position: absolute;
+}
+
+.seeker_autocomplete_item_image img {
+	width: 40px;
+	height: 40px;
+	position: absolute;
+	left: 4px;
+	top: 4px;
+}
+
+.communicator_seeker_autocomplete_item_content {
+	right: 4px;
+	position: absolute;
+}
+
+.communicator_seeker_autocomplete_item_content_link {
+	display: inline;
+}

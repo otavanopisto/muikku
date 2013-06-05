@@ -155,6 +155,9 @@ RESTfulImpl = $.klass({
       async: false,
       traditional: true,
       dataType: 'json',
+      headers: {
+        "Accept-Language": getLocale()
+      },
       accepts: {
         'json' : 'application/json'
       },
@@ -168,6 +171,9 @@ RESTfulImpl = $.klass({
     return $.ajax(url, {
       async: false,
       dataType: 'json',
+      headers: {
+        "Accept-Language": getLocale()
+      },
       accepts: {
         'json' : 'application/json'
       },
