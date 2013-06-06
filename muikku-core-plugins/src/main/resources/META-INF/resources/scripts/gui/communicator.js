@@ -320,7 +320,7 @@ $.fn.extend({
 
         _this._communicatorContent.find("select[name='templateSelector']").change($.proxy(_this._onSelectTemplate, _this));
         _this._communicatorContent.find("select[name='signatureSelector']").change($.proxy(_this._onSelectSignature, _this));
-        _this._communicatorContent.find(".cm-recipientsList").on("click", ".cm-removeRecipient", $.proxy(_this._onRemoveRecipientClick, _this));
+        _this._communicatorContent.find(".cm-recipientsList").on("click", ".removeRecipient", $.proxy(_this._onRemoveRecipientClick, _this));
       });
     },
     _onCancelMessageClick: function (event) {
