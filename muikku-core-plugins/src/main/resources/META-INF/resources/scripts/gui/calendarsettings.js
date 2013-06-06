@@ -15,31 +15,33 @@
       
       RESTful.doGet(CONTEXTPATH + '/rest/calendar/settings').success(function (data, textStatus, jqXHR) {
         renderDustTemplate('/calendar/calendarsettings.dust', data, function (text) {
+
+          var buttons = {};
+          buttons[getLocaleText('plugin.calendar.settingsDialog.saveButton')] = function() {
+            var _this = this;
+            RESTful.doPut(CONTEXTPATH + '/rest/calendar/settings', {
+              data: {
+                firstDay: $(this).find('select[name="firstDay"]').val()
+              }
+            })
+            .success(function (data, textStatus, jqXHR) {
+              $(document).trigger($.Event("calendarSettingsWidget:settingsSaved", {
+                settings: data
+              })); 
+              
+              $(_this).dialog("close"); 
+            });
+          };
+          buttons[getLocaleText('plugin.calendar.settingsDialog.cancelButton')] = function() {
+            $(this).dialog("close");
+          };
+
           var dialog = $(text)
-            .attr('title', "Calendar Settings")
+            .attr('title', getLocaleText("plugin.calendar.settingsDialog.title"))
             .dialog({
               modal: true,
               width: 500,
-              buttons: {
-                "Save": function() {
-                  var _this = this;
-                  RESTful.doPut(CONTEXTPATH + '/rest/calendar/settings', {
-                    data: {
-                      firstDay: $(this).find('select[name="firstDay"]').val()
-                    }
-                  })
-                  .success(function (data, textStatus, jqXHR) {
-                    $(document).trigger($.Event("calendarSettingsWidget:settingsSaved", {
-                      settings: data
-                    })); 
-                    
-                    $(_this).dialog("close"); 
-                  });
-                },
-                "Cancel": function() {
-                  $(this).dialog("close"); 
-                }
-              }
+              buttons: buttons
             }
           );
         });      

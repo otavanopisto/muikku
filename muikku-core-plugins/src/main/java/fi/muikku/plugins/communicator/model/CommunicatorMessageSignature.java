@@ -12,12 +12,13 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import fi.muikku.security.ContextReference;
 import fi.muikku.tranquil.UserEntityResolver;
 import fi.tranquil.TranquilityEntityField;
 
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
-public class CommunicatorMessageSignature {
+public class CommunicatorMessageSignature implements ContextReference {
 
   public Long getId() {
     return id;

@@ -1,5 +1,7 @@
-<div class="recipient">
+<div class="cm-recipient">
   <input type="hidden" name="userId" value="{id}" />
-  {name}
-  <div class="removeRecipient">x</div>
+  <div class="cm-recipientName">{name}</div>
+  <div class="cm-removeRecipient">x</div>
 </div>
+
+

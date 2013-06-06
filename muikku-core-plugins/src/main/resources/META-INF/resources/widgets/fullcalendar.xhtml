@@ -21,16 +21,16 @@
       <div class="fullCalendarWidgetSettings">
         <!-- TODO: Localize -->
         <div class="fullCalendarWidgetNavigationContainer">     
-          <button class="fullCalendarWidgetNavigationButton fullCalendarWidgetNavigationLeft">&#9668;</button>
-          <button class="fullCalendarWidgetNavigationButton fullCalendarWidgetNavigationToday">Today</button>
-          <button class="fullCalendarWidgetNavigationButton fullCalendarWidgetNavigationRight">&#9658;</button>
+          <button class="fullCalendarWidgetNavigationButton fullCalendarWidgetNavigationLeft">#{i18n.text['plugin.calendar.previous']}</button>
+          <button class="fullCalendarWidgetNavigationButton fullCalendarWidgetNavigationToday">#{i18n.text['plugin.calendar.today']}</button>
+          <button class="fullCalendarWidgetNavigationButton fullCalendarWidgetNavigationRight">#{i18n.text['plugin.calendar.next']}</button>
         </div>
       
         <div class="fullCalendarWidgetViewSelectionContainer">
-          <button class="fullCalendarWidgetModeButton" data-mode="EVENT_LIST">Event List</button>
-          <button class="fullCalendarWidgetModeButton" data-mode="DAY">Day</button>
-          <button class="fullCalendarWidgetModeButton" data-mode="WEEK">Week</button>
-          <button class="fullCalendarWidgetModeButton" data-mode="MONTH">Month</button>
+          <button class="fullCalendarWidgetModeButton" data-mode="EVENT_LIST">#{i18n.text['plugin.calendar.eventList']}</button>
+          <button class="fullCalendarWidgetModeButton" data-mode="DAY">#{i18n.text['plugin.calendar.day']}</button>
+          <button class="fullCalendarWidgetModeButton" data-mode="WEEK">#{i18n.text['plugin.calendar.week']}</button>
+          <button class="fullCalendarWidgetModeButton" data-mode="MONTH">#{i18n.text['plugin.calendar.month']}</button>
         </div>
       </div>      
       <input type="hidden" name="firstDay" value="#{calendarBackingBean.firstDay}"/>
