@@ -12,6 +12,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.UserTransaction;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 import fi.muikku.model.base.Environment;
 import fi.muikku.model.base.EnvironmentDefaults;
 import fi.muikku.model.base.SchoolDataSource;
@@ -173,7 +175,7 @@ public class SeedDataImporter {
       
       UserPassword pass = new UserPassword();
       pass.setUser(userEntity);
-      pass.setPasswordHash(RequestUtils.md5EncodeString(RequestUtils.md5EncodeString("qwe")));
+      pass.setPasswordHash(DigestUtils.md5Hex((DigestUtils.md5Hex("qwe"))));
       em.persist(pass);
       
       UserContact userContact = new UserContact();

@@ -10,6 +10,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.muikku.dao.base.EnvironmentDAO;
@@ -71,7 +72,7 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
   @Override
   public void login(String email, String password) {
     // TODO PK: Move to internal login plugin?
-    String passwordHash = RequestUtils.md5EncodeString(password);
+    String passwordHash = DigestUtils.md5Hex(password);
 
     UserImpl user = userImplDAO.findByEmail(email);
     UserPassword userPassword = userPasswordDAO.findByUser(user.getUserEntity());
