@@ -66,7 +66,7 @@
       // TODO: Localize
       // TODO: Proper error handling
       var _this = this;
-      renderDustTemplate('/calendar/newevent.dust', {
+      renderDustTemplate('/calendar/eventdialog.dust', {
         calendars: calendars,
         types: localEventTypes
       }, function (text) {
@@ -103,25 +103,29 @@
             allDay = true;
           }
           
-          if (_this._saveFunction) {
-            var dataEvent = {
-              id: _this._event.id,
-              calendarId: $(this).find('select[name="calendarId"]').val(),
-              typeId: $(this).find('select[name="typeId"]').val(),
-              summary: $(this).find('input[name="summary"]').val(),
-              location: $(this).find('input[name="location"]').val(),
-              url: $(this).find('input[name="url"]').val(),
-              latitude: $(this).find('input[name="latitude"]').val()||null,
-              longitude: $(this).find('input[name="longitude"]').val()||null,
-              start: startDate,
-              end: endDate,
-              description: $(this).find('textarea[name="description"]').val(),
-              allDay: allDay
-            };
-  
-            _this._saveFunction(_this._event, dataEvent);
-            
-            $(this).dialog("close");
+          if ($(this).find('form').valid()) {
+            if (_this._saveFunction) {
+              var dataEvent = {
+                id: _this._event.id,
+                calendarId: $(this).find('select[name="calendarId"]').val(),
+                typeId: $(this).find('select[name="typeId"]').val(),
+                summary: $(this).find('input[name="summary"]').val(),
+                location: $(this).find('input[name="location"]').val(),
+                url: $(this).find('input[name="url"]').val(),
+                latitude: $(this).find('input[name="latitude"]').val()||null,
+                longitude: $(this).find('input[name="longitude"]').val()||null,
+                start: startDate,
+                end: endDate,
+                description: $(this).find('textarea[name="description"]').val(),
+                allDay: allDay
+              };
+    
+              _this._saveFunction(_this._event, dataEvent);
+              
+              $(this).dialog("close");
+            }
+          } else {
+            $(this).find('.error').first().focus();
           }
         };
         
@@ -146,7 +150,7 @@
               .show()
           };
         } 
-  
+
         dialog.dialog({
           modal: true,
           width: 500,
@@ -157,6 +161,7 @@
         dialog.find('input[name="toDate"]').datepicker();
         dialog.find('input[name="fromTime"]').timepicker();
         dialog.find('input[name="toTime"]').timepicker();
+        dialog.find('form').validate();
         
         dialog.find('input[name="allDay"]').change(function (events) {
           if ($(this).is(":checked")) {
