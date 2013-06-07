@@ -4,11 +4,11 @@
 
 
 
-/* Shadows */
+/* Shadow */
 $sc: #dadada;
 
-
-
+/* Border */
+$brd:#dadada;
 /* Generic background */
 
 $bgr : #fff;
@@ -120,9 +120,20 @@ $eightColorGr-8:#fcfcfc;
     
     $tableHeaderFont:#ffffff ;    
 
+/* Communicator */
+
+/* Gradients */
+
+$newsGr: #ffffff , #c1cbff;
+$msgGr: #ffffff , #c1cbff;
+$reqGr: #ffffff , #c1cbff;
 
 /* Borders */
 
+
+$newsBrd:#ff7e16;
+$msgBrd:#495aff;
+$reqBrd:#d016ff;
 
 $naviDynamicColor:#FF6633;
 
@@ -163,8 +174,8 @@ box-shadow: 1px 1px 2px 1px $s;
  border-radius: $radius; 
 }
 
-@mixin border($b){
-	border:1px solid $b;
+@mixin border($c:$brd ,$w:1px){
+	border:$w solid $c;
 	}
 
 
@@ -327,3 +338,9 @@ $trd4:0.1s;
  background: -moz-linear-gradient(top, $bgColorStart 0%, $bgColorEnd 100%); 
  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$bgColorStart), color-stop(100%,$bgColorEnd));
  } 
+ 
+ 
+ 
+ /* Communicator Mixins */
+
+ 

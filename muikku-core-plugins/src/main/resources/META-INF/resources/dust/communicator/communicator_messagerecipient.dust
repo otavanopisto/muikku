@@ -1,7 +1,7 @@
-<div class="cm-recipient">
+<div class="cm-newMessage-recipient">
   <input type="hidden" name="userId" value="{id}" />
-  <div class="cm-recipientName">{name}</div>
-  <div class="cm-removeRecipient">x</div>
+  <div class="cm-newMessage-recipientName">{name}</div>
+  <div class="cm-newMessage-removeRecipient">x</div>
 </div>
 
 

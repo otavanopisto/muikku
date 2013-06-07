@@ -68,7 +68,7 @@ $.fn.extend({
       widgetElement = $(widgetElement);
       
       this._userId = widgetElement.find("input[name='userId']").val();
-      this._communicatorContent = widgetElement.find(".communicatorContent");
+      this._communicatorContent = widgetElement.find(".cm-content");
       this._newMessageButton = widgetElement.find("input[name='communicatorNewMessageButton']");
       
       this._tabsContainer = widgetElement.find('.communicatorTabs');
@@ -117,7 +117,7 @@ $.fn.extend({
         renderDustTemplate('communicator/communicator_items.dust', data, function (text) {
           _this._communicatorContent.append($.parseHTML(text));
           
-          _this._communicatorContent.find('.communicatorMessage').click($.proxy(_this._onMessageClick, _this));
+          _this._communicatorContent.find('.cm-message').click($.proxy(_this._onMessageClick, _this));
         });
       });
     },
@@ -155,7 +155,7 @@ $.fn.extend({
       this._clearContent();
       
       var element = $(event.target);
-      element = element.parents(".communicatorMessage");
+      element = element.parents(".cm-message");
       var messageId = $(element).find("input[name='communicatorMessageIdId']").val();
       
       RESTful.doGet(CONTEXTPATH + "/rest/communicator/{userId}/messages/{messageId}", {
@@ -203,7 +203,7 @@ $.fn.extend({
         
         _this._communicatorContent.find("select[name='templateSelector']").change($.proxy(_this._onSelectTemplate, _this));
         _this._communicatorContent.find("select[name='signatureSelector']").change($.proxy(_this._onSelectSignature, _this));
-        _this._communicatorContent.find(".cm-recipientsList").on("click", ".cm-removeRecipient", $.proxy(_this._onRemoveRecipientClick, _this));
+        _this._communicatorContent.find(".cm-newMessage-recipientsList").on("click", ".cm-newMessage-removeRecipient", $.proxy(_this._onRemoveRecipientClick, _this));
       });
     },
     _onNewMessageClick: function (event) {
@@ -211,7 +211,7 @@ $.fn.extend({
     },
     _onSelectTemplate: function (event) {
       var element = $(event.target);
-      var textarea = element.parents(".communicatorNewMessage").find("textarea[name='content']");
+      var textarea = element.parents("cm-newMessage").find("textarea[name='content']");
       var val = element.find("option:selected").val();
       
       if (val != "") {
@@ -227,7 +227,7 @@ $.fn.extend({
     },
     _onSelectSignature: function (event) {
       var element = $(event.target);
-      var textarea = element.parents(".communicatorNewMessage").find("textarea[name='content']");
+      var textarea = element.parents(".cm-newMessage").find("textarea[name='content']");
       var val = element.find("option:selected").val();
       
       if (val != "") {
@@ -319,28 +319,28 @@ $.fn.extend({
 
         _this._communicatorContent.find("select[name='templateSelector']").change($.proxy(_this._onSelectTemplate, _this));
         _this._communicatorContent.find("select[name='signatureSelector']").change($.proxy(_this._onSelectSignature, _this));
-        _this._communicatorContent.find(".cm-recipientsList").on("click", ".cm-removeRecipient", $.proxy(_this._onRemoveRecipientClick, _this));
+        _this._communicatorContent.find(".cm-newMessage-recipientsList").on("click", ".cm-newMessage-removeRecipient", $.proxy(_this._onRemoveRecipientClick, _this));
       });
     },
     _onCancelMessageClick: function (event) {
       var element = $(event.target);
-      var newMessageElement = element.parents(".communicatorNewMessage");
+      var newMessageElement = element.parents(".cm-newMessage");
       newMessageElement.remove();
       this._showInbox();
     },
     _onCancelReplyClick: function (event) {
       var element = $(event.target);
-      var newMessageElement = element.parents(".communicatorNewMessage");
+      var newMessageElement = element.parents(".cm-newMessage");
       newMessageElement.remove();
     },
     _onPostMessageClick: function (event) {
       var _this = this;
       var element = $(event.target);
-      var newMessageElement = element.parents(".communicatorNewMessage");
-      var recipientListElement = newMessageElement.find(".cm-recipientsList");
+      var newMessageElement = element.parents(".cm-newMessage");
+      var recipientListElement = newMessageElement.find(".cm-newMessage-recipientsList");
       var recipientIds = [];
       
-      $(recipientListElement.children(".recipient")).each(function (index) {
+      $(recipientListElement.children(".cm-newMessage-recipient")).each(function (index) {
         recipientIds.push($(this).find("input[name='userId']").val());
       });
       
@@ -358,11 +358,11 @@ $.fn.extend({
     _onPostReplyMessageClick: function (event) {
       var _this = this;
       var element = $(event.target);
-      var newMessageElement = element.parents(".communicatorNewMessage");
-      var recipientListElement = newMessageElement.find(".cm-recipientsList");
+      var newMessageElement = element.parents(".cm-newMessage");
+      var recipientListElement = newMessageElement.find(".cm-newMessage-recipientsList");
       var recipientIds = [];
       
-      $(recipientListElement.children(".recipient")).each(function (index) {
+      $(recipientListElement.children(".cm-newMessage-recipient")).each(function (index) {
         recipientIds.push($(this).find("input[name='userId']").val());
       });
       
@@ -446,7 +446,7 @@ $.fn.extend({
       var _this = this;
       var element = $(event.target);
       var recipientElement = element.hasClass("userSearchAutoCompleteUser") ? element : element.parents(".userSearchAutoCompleteUser");
-      var recipientListElement = element.parents(".communicatorNewMessage").find(".cm-recipientsList"); 
+      var recipientListElement = element.parents(".cm-newMessage").find(".cm-newMessage-recipientsList"); 
       
       var prms = {
         id: id,
@@ -459,8 +459,8 @@ $.fn.extend({
     },
     _onRemoveRecipientClick : function (event) {
       var element = $(event.target);
-      if (!element.hasClass("cm-recipient"))
-        element = element.parents(".cm-recipient");
+      if (!element.hasClass("cm-newMessage-recipient"))
+        element = element.parents(".cm-newMessage-recipient");
       element.remove();
     },
     _showSettingsView: function () {

@@ -1,38 +1,74 @@
-<div class="communicatorSettings">
-  <div>
-    Viestipohjat
-    <select size="8" name="templateSelector">
-      {#templates}
-        <option value="{id}">{name}</option>
-      {/templates}
-    </select>
+<div class="cm-settings">
+  <div class="mf-settings-settingForm cm-settings-templates">
+    <div class="mf-formTitle">Viestipohjat</div>
+    <div class="mf-formContent">
 
-    <input type="hidden" name="templateId" value="NEW" />
-    <input type="button" name="newTemplate" value="Uusi" />
-    <input type="button" name="editTemplate" value="Muokkaa" />
-    <input type="button" name="deleteTemplate" value="Poista" />
+        
+       <input type="button" name="saveTemplate" value="Tallenna" />
+       <div class="clear"></div>
+ 
+      <div class="cm-settings-templates-selectorContainer">
+       <div class="mf-settings-settingForm-toolBar cm-setting-templates-toolBar">
+	        <input type="hidden" name="templateId" value="NEW" />
+	        <input type="button" name="newTemplate" value="Uusi" />
+	        <input type="button" name="editTemplate" value="Muokkaa" />
+	        <input type="button" name="deleteTemplate" value="Poista" />
+        </div>
+        
+        <div>      
+			    <select size="8" name="templateSelector">
+			      {#templates}
+			        <option value="{id}">{name}</option>
+			      {/templates}
+			    </select>
+		    </div>
+    	</div>
+    	<div class="cm-setting-templates-editor">
 
-    <input type="text" name="templateName" />
-    <textarea name="templateContent"></textarea>
-    <input type="button" name="saveTemplate" value="Tallenna" />
+		    <div>
+		    <div>
+          <input type="text" name="templateName" />
+        </div>
+        <div>
+         <textarea name="templateContent"></textarea>
+		    </div>
+		    </div>
+
+
+      </div>
+    
+    <div class="clear"></div>
+    </div>
+    
   </div>
 
-  <div>
-    Allekirjoitukset
-    <select size="8" name="signatureSelector">
-      {#signatures}
-        <option value="{id}">{name}</option>
-      {/signatures}
-    </select>
-    
-    <input type="hidden" name="signatureId" value="NEW" />
-    <input type="button" name="newSignature" value="Uusi" />
-    <input type="button" name="editSignature" value="Muokkaa" />
-    <input type="button" name="deleteSignature" value="Poista" />
-
-    <input type="text" name="signatureName" />
-    <textarea name="signatureContent"></textarea>
-    <input type="button" name="saveSignature" value="Tallenna" />
+  <div class="mf-settings-settingForm cm-settings-signatures">
+     <div class="mf-formTitle">Allekirjoitukset</div>     
+     <div class="mf-formContent">
+     <input type="button" name="saveSignature" value="Tallenna" />
+      <div class="clear"></div>
+ 
+      <div class="cm-settings-signatures-selectorContainer">
+ 	      <div class="mf-settings-settingForm-toolBar cm-setting-signatures-toolBar"> 
+		      <input type="hidden" name="signatureId" value="NEW" />
+		      <input type="button" name="newSignature" value="Uusi" />
+		      <input type="button" name="editSignature" value="Muokkaa" />
+		      <input type="button" name="deleteSignature" value="Poista" />
+ 	      </div>
+ 	      <div>
+          <select size="8" name="signatureSelector">
+            {#signatures}
+              <option value="{id}">{name}</option>
+            {/signatures}
+          </select>          	      
+ 	      </div>
+    </div>
+    <div class="cm-setting-signatures-editor">
+      <div><input type="text" name="signatureName" /></div>
+      <div><textarea name="signatureContent"></textarea> </div>
+    </div>
+    <div class="clear"></div>
   </div>
   
+</div>
 </div>

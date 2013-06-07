@@ -1,31 +1,39 @@
 {#.}
-<div class="communicatorMessageView">
-  <a class="communicatorMessageReplyLink" href="#">{#localize key="plugin.communicator.reply"/}</a> <a class="communicatorMessageReplyAllLink" href="#">{#localize key="plugin.communicator.replyAll"/}</a>
+<div class="cm-message-view">
+  <a class="cm-message-replyLink" href="#">{#localize key="plugin.communicator.reply"/}</a> <a class="communicatorMessageReplyAllLink" href="#">{#localize key="plugin.communicator.replyAll"/}</a>
 
-  <div class="communicatorMessageSenderPictureContainer">
+  <div class="cm-message-senderPictureContainer">
     {?sender_tq.hasPicture} 
-      <img class="communicatorMessageSenderPicture" src="{@contextPath/}/picture?userId={sender.id}" width="50" height="50" />
+      <img class="cm-message-senderPicture" src="{@contextPath/}/picture?userId={sender.id}" width="50" height="50" />
     {:else}
-      <img class="communicatorMessageSenderPicture" src="{@contextPath/}/themes/default/gfx/fish.jpg" width="50" height="50" />
+      <img class="cm-message-senderPicture" src="{@contextPath/}/themes/default/gfx/fish.jpg" width="50" height="50" />
     {/sender_tq.hasPicture}
   </div>
   
-  <div class="communicatorMessageSenderName"><a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={sender.id}">{sender_tq.fullName}</a></div>
-  <div class="communicatorMessageRecipients">
-  -&gt;
-  {#recipients}
-    {fullName}  
-  {/recipients}
-  </div>
-  
-  <div class="communicatorMessageTitle">{caption}</div>
-  <div class="communicatorMessageContent">{content}</div>
+  <div class="cm-message-senderName"><a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={sender.id}">{sender_tq.fullName}</a></div>
 
-  <div class="communicatorMessageDate">
-    {created|formatDate}
+  <div>
+	  <div class="cm-message-recipients">
+	  -&gt;
+	  {#recipients}
+	    {fullName}  
+	  {/recipients}
+	  </div>  
   </div>
+   <div class="cm-message-header">
+    <span class="cm-message-date">
+      {created|formatDate}
+    </span>
+    <span class="cm-message-title">{caption}</span>
 
-  <div class="communicatorMessageTags">{#localize key="plugin.communicator.messagetags"/}</div>
+   </div>
+   <div class="clear"></div>
+
+  <div class="cm-message-content">{content}</div>
+
+
+
+  <div class="cm-message-tags">{#localize key="plugin.communicator.messagetags"/}</div>
 
   <input type="hidden" name="communicatorMessageId" value="{id}"/>
   <input type="hidden" name="communicatorMessageIdId" value="{communicatorMessageId.id}"/>
