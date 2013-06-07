@@ -1,98 +1,19 @@
 
 @import "_base.scss";
-
-
-.formLabel{
-margin-right:10px;
-font-weight:bold;
-	
-}
-.formElementRow{
-margin-bottom:5px;	
-	
-}
-
-
-input[type="button"],input[type="submit"]{
-    font-family: Verdana, sans-serif;
-    font-size: 11px;
-    color: #fff;
-    padding: 5px 5px 5px 5px;
-    @include gradient-top-bottom-four($btnGr...);
-    @include rounded(2px);
-    @include shadow;
-    @include border($btnBrd);
-    margin-right:4px;
-  
-}
-
-
-
-
-/* Mainfunction (.mf-*) */
-
-.mf-buttonContainer input{
-    font-family: Verdana, sans-serif;
-    font-size: 14px;
-    color: #fff;
-    padding: 5px 10px 5px 10px;
-    @include gradient-top-bottom-four($mainFuncBtnGr...);
-    @include rounded(2px);
-    @include shadow;
-    @include border($mainFuncBtnBrd);
- 
-}
-
-.mf-buttonContainer input:hover, input[type="button"]:hover, input[type="submit"]:hover{
-     @include border($btnBrdH);
-}
-
-
-.mf-buttonContainer input:active, input[type="button"]:active, input[type="submit"]:active{
-    @include iShadow; 
-}
-
-.mf-fieldRow{
-		
-}
-.mf-labelfield{
-  float:left;
-  font-weight:bold;
-  }
-
-.mf-textfield{
-  float:left;
-}
-
-.mf-selectedObjects{
-  min-height:20px;
-
-
-}
-
-
-/* Communicator (.cm-*) */
-.cm-recipients{
-	 @include rounded(4px);  
-	  padding:5px; 
-	  background-color:$saBgr;
-}
+/* Generic */
 
 input[type="text"]{    
-    padding: 5px;     
-    background: -moz-linear-gradient(center top , #FFFFFF,  #EEEEEE 1px, #FFFFFF 20px);    
-    background: -webkit-gradient(linear, left top, left 20, from(#FFFFFF), color-stop(5%, #EEEEEE) to(#FFFFFF));
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FBFBFB', endColorstr='#FFFFFF');
+    padding: 2px;     
     @include rounded(3px);
     @include border(#3a5900); 
     -moz-box-shadow: 0 0 2px #DDDDDD;
     -webkit-box-shadow: 0 0 2px #DDDDDD;
     box-shadow: 0 0 2px #DDDDDD;
+    font-size: 1em;
 }
 
 
-input[type="text"]:hover
-{
+input[type="text"]:hover{
      @include border(#3a5900);
 }
 input[type="text"]:focus
@@ -127,4 +48,162 @@ input[type="password"]:focus
     outline:0;
 }
 
+input[type="button"],input[type="submit"]{
+    font-family: Verdana, sans-serif;
+    font-size: 1.3em;
+    color: #fff;
+    padding: 5px 5px 5px 5px;
+    @include gradient-top-bottom-four($btnGr...);
+    @include rounded(2px);
+    @include shadow;
+    @include border($btnBrd);
+    margin-right:4px;
+  
+}
+
+
+
+.formLabel{
+margin-right:10px;
+font-weight:bold;
+	
+}
+.formElementRow{
+margin-bottom:5px;	
+	
+}
+
+
+
+
+
+/* Mainfunction (.mf-*) */
+
+
+.mf-buttonContainer input{
+    font-family: Verdana, sans-serif;
+    font-size: 1.3em;
+    color: #fff;
+    padding: 5px 10px 5px 10px;
+    @include gradient-top-bottom-four($mainFuncBtnGr...);
+    @include rounded(2px);
+    @include shadow;
+    @include border($mainFuncBtnBrd);
+ 
+}
+
+.mf-buttonContainer input:hover, input[type="button"]:hover, input[type="submit"]:hover{
+     @include border($btnBrdH);
+}
+
+
+.mf-buttonContainer input:active, input[type="button"]:active, input[type="submit"]:active{
+    @include iShadow; 
+}
+
+.mf-formTitle{
+    @include gradient-top-bottom;
+    @include rounded(4px);
+    @include shadow;
+    @include border(1px);
+    padding:5px;
+    font-size:1.5em;
+ }
+
+.mf-formContent{
+    margin-top:5px;
+    padding:5px;
+    font-size:1.3em;
+ }
+
+.mf-fieldRow{
+ margin-top:2px;
+}
+.mf-labelfield{
+  float:left;
+  font-weight:bold;
+  }
+
+.mf-textfield{
+  float:left;
+  margin-left:5px;
+}
+
+.mf-selectedObjects{
+}
+
+.mf-settings-settingForm{
+	  @include rounded(4px);  
+    padding:5px; 
+    background-color:$saBgr;
+	  margin-bottom:10px; 
+}
+
+/* Calendar */
+
+/* Communicator (.cm-*) */
+
+.cm-newMessage-recipients{
+	 @include rounded(4px);  
+	  min-height:20px;
+	  padding:5px; 
+	  background-color:$saBgr;
+}
+
+.cm-newMessage-recipient{
+	  @include border(#ededed);
+    @include rounded(4px);
+    @include gradient-top-bottom(#707070, #666);
+    @include shadow;
+    color:#fff;
+    float: left;
+    margin-right: 5px;
+    margin-top:5px;
+    padding: 3px
+	
+}
+
+.cm-newMessage-recipientName{
+	float:left;
+}
+
+.cm-newMessage-removeRecipient{
+	float:left;
+	cursor:pointer;
+  font-weight:bold;
+  margin-left:5px;
+ height:15px;
+ width:15px;
+ text-align:center;
+
+  @include rounded(4px);
+  @include gradient-top-bottom-four($mainFuncBtnGr...);
+}
+
+.cm-newMessage-message{
+	   margin-top:5px;
+     padding:5px; 
+     background-color:$saBgr;	
+	   @include rounded(4px);  
+}
+
+.cm-newMessage-message input[type="text"]{    
+width: 200px;
+}
+
+.cm-newMessage-content textarea{    
+width:100%;
+height:200px;
+}
+.cm-newMessage-subject{
+}
+
+.cm-settings-templates-selectorContainer, .cm-settings-signatures-selectorContainer, .cm-setting-templates-templateEditor{
+	float:left;
+	
+}
+.cm-settings-templates-selectorContainer select, .cm-settings-signatures-selectorContainer select{width:100%;}
+
+
+.cm-setting-templates-editor textarea, .cm-setting-signatures-editor textarea{width:400px;}
 

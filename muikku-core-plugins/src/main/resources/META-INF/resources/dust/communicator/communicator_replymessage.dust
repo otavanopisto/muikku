@@ -1,4 +1,4 @@
-<div class="communicatorNewMessage">
+<div class="cm-newMessage">
   <form>
     <input type="hidden" name="communicatorMessageId" value="{communicatorMessageId}" />
   
