@@ -1,0 +1,65 @@
+<div class="newEvent">
+  <form>
+    <!-- TODO: Localize -->
+    <div>
+      <label>Calendar</label>
+      <select name="calendarId">
+        {#calendars}
+          <option value="{id}">{name}</option>
+        {/calendars}
+      </select>  
+    </div>
+    <div>
+      <label>Type</label>
+      <select name="typeId">
+        {#types}
+          <option value="{id}">{name}</option>
+        {/types}
+      </select>
+    </div>
+    <div>
+      <label for="new-event-summary">Summary</label>
+      <input id="new-event-summary" name="summary" type="text" required="required">
+    </div>
+    <div>
+      <label for="new-event-location">Location</label>
+      <input id="new-event-location" name="location" type="text">
+    </div>
+    <div>
+      <label for="new-event-url">Url</label>
+      <input id="new-event-url" name="url" type="url">
+    </div>
+    <div>
+      <input name="latitude" type="hidden">
+    </div>
+    <div>
+      <input name="longitude" type="hidden">
+    </div>
+    <div>
+      <label for="new-event-allDay">All day</label>
+      {@if cond="{allDay}"}
+        <input id="new-event-allDay" checked="checked" name="allDay" type="checkbox">
+      {:else}
+        <input id="new-event-allDay" name="allDay" type="checkbox">
+      {/if}
+    </div>
+    <div>
+      <!-- TODO: Time is required when event is not a allday event -->
+      <!-- TODO: Event cannot start before ending -->
+      <label for="new-event-from">From</label>
+      <input id="new-event-from" type="text" name="fromDate" required="required"/>
+      <input type="text" name="fromTime"/>
+    </div>
+    <div>
+      <!-- TODO: Time is required when event is not a allday event -->
+      <!-- TODO: Event cannot start before ending -->
+      <label for="new-event-to">To</label>
+      <input id="new-event-to" type="text" name="toDate" required="required"/>
+      <input type="text" name="toTime"/>
+    </div>
+    <div>
+      <label for="new-event-description" >Description</label>
+      <textarea id="new-event-description" name="description"></textarea>
+    </div>
+  </form>
+</div>

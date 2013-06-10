@@ -76,25 +76,26 @@ $.fn.extend({
       $('#menu').menu({
         select: function (event, ui) {
           var a = $(ui.item).find("a");
-          if (a.attr("href") == "#inbox")
-            _this._showInbox();
           
-          if (a.attr("href") == "#settings")
-            _this._showSettingsView();
+          window.location.hash = a.attr("href");
           
           return false;
         }
       });
       this._newMessageButton.click($.proxy(this._onNewMessageClick, this));
       
-      var hash = window.location.hash.substring(1);
+      $(window).on("hashchange", function (event) {
+        var hash = window.location.hash.substring(1);
+        
+        if (hash == "new") {
+          _this._showNewMessageView();
+        } else if (hash == "settings") {
+          _this._showSettingsView();
+        } else
+          _this._showInbox();
+      });
       
-      if (hash == "new") {
-        this._showNewMessageView();
-      } else if (hash == "settings") {
-        this._showSettingsView();
-      } else
-        this._showInbox();
+      $(window).trigger("hashchange");
     },
     deinitialize: function () {
       var _this = this;
@@ -207,7 +208,7 @@ $.fn.extend({
       });
     },
     _onNewMessageClick: function (event) {
-      this._showNewMessageView();
+      window.location.hash = "#new";
     },
     _onSelectTemplate: function (event) {
       var element = $(event.target);
