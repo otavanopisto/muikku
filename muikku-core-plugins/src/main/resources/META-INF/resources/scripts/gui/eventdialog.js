@@ -130,7 +130,7 @@
         };
         
         var dialog = $(text)
-          .attr('title', _this._event.id ? 'Edit Event' : "New Event");
+          .attr('title', _this._event.id ? getLocaleText('plugin.calendar.eventDialog.editTitle') : getLocaleText('plugin.calendar.eventDialog.newTitle'));
         
         if (_this._event.id) {
           buttons["Delete"] = function() {
