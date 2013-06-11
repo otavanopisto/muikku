@@ -122,8 +122,6 @@ $.fn.extend({
       }).success(function (data, textStatus, jqXHR) {
         renderDustTemplate('communicator/communicator_items.dust', data, function (text) {
           _this._communicatorContent.append($.parseHTML(text));
-          
-//          _this._communicatorContent.find('.cm-message').click($.proxy(_this._onMessageClick, _this));
         });
       });
     },
