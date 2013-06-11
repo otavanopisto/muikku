@@ -8,7 +8,7 @@
        <div class="clear"></div>
  
       <div class="cm-settings-templates-selectorContainer">
-       <div class="mf-settings-settingForm-toolBar cm-setting-templates-toolBar">
+       <div class="mf-settings-settingForm-toolBar cm-setting-templates-toolbar">
 	        <input type="hidden" name="templateId" value="NEW" />
 	        <input type="button" name="newTemplate" value="Uusi" />
 	        <input type="button" name="editTemplate" value="Muokkaa" />
@@ -49,7 +49,7 @@
       <div class="clear"></div>
  
       <div class="cm-settings-signatures-selectorContainer">
- 	      <div class="mf-settings-settingForm-toolBar cm-setting-signatures-toolBar"> 
+ 	      <div class="mf-settings-settingForm-toolBar cm-setting-signatures-toolbar"> 
 		      <input type="hidden" name="signatureId" value="NEW" />
 		      <input type="button" name="newSignature" value="Uusi" />
 		      <input type="button" name="editSignature" value="Muokkaa" />
