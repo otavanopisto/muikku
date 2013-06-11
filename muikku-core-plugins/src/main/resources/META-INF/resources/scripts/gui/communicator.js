@@ -247,7 +247,7 @@ $.fn.extend({
     _onReplyMessageClick: function (event) {
       var _this = this;
       var element = $(event.target);
-      var replyAll = element.hasClass("cm-message-replyAllLink") || (element.parents(".cm-message-replyAllLink") != undefined);
+      var replyAll = element.hasClass("cm-message-replyAllLink");// || (element.parents(".cm-message-replyAllLink") != undefined);
       
       element = element.parents(".cm-message-view");
       
@@ -322,6 +322,8 @@ $.fn.extend({
         _this._communicatorContent.find("select[name='signatureSelector']").change($.proxy(_this._onSelectSignature, _this));
         _this._communicatorContent.find(".cm-newMessage-recipientsList").on("click", ".cm-newMessage-removeRecipient", $.proxy(_this._onRemoveRecipientClick, _this));
       });
+      
+      return false;
     },
     _onCancelMessageClick: function (event) {
       var element = $(event.target);
