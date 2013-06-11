@@ -168,8 +168,8 @@ $.fn.extend({
         renderDustTemplate('communicator/communicator_viewmessage.dust', data, function (text) {
           _this._communicatorContent.append($.parseHTML(text));
           
-          _this._communicatorContent.find('.communicatorMessageReplyLink').click($.proxy(_this._onReplyMessageClick, _this));
-          _this._communicatorContent.find('.communicatorMessageReplyAllLink').click($.proxy(_this._onReplyMessageClick, _this));
+          _this._communicatorContent.find('.cm-message-replyLink').click($.proxy(_this._onReplyMessageClick, _this));
+          _this._communicatorContent.find('.cm-message-replyAllLink').click($.proxy(_this._onReplyMessageClick, _this));
         });
       });
     },
@@ -247,9 +247,9 @@ $.fn.extend({
     _onReplyMessageClick: function (event) {
       var _this = this;
       var element = $(event.target);
-      var replyAll = element.hasClass("communicatorMessageReplyAllLink") || (element.parents(".communicatorMessageReplyAllLink") != undefined);
+      var replyAll = element.hasClass("cm-message-replyAllLink") || (element.parents(".cm-message-replyAllLink") != undefined);
       
-      element = element.parents(".communicatorMessageView");
+      element = element.parents(".cm-message-view");
       
       var communicatorMessageId = element.find("input[name='communicatorMessageId']").val();
       var communicatorMessageIdId = element.find("input[name='communicatorMessageIdId']").val();

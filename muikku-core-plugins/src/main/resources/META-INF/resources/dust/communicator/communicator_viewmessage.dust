@@ -1,6 +1,6 @@
 {#.}
 <div class="cm-message-view">
-  <a class="cm-message-replyLink" href="#">{#localize key="plugin.communicator.reply"/}</a> <a class="communicatorMessageReplyAllLink" href="#">{#localize key="plugin.communicator.replyAll"/}</a>
+  <a class="cm-message-replyLink" href="#">{#localize key="plugin.communicator.reply"/}</a> <a class="cm-message-replyAllLink" href="#">{#localize key="plugin.communicator.replyAll"/}</a>
 
   <div class="cm-message-senderPictureContainer">
     {?sender_tq.hasPicture} 
