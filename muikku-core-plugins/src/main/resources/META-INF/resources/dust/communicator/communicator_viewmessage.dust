@@ -10,19 +10,19 @@
     {/sender_tq.hasPicture}
   </div>
   
-  <div class="cm-message-senderName"><a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={sender.id}">{sender_tq.fullName}</a></div>
+  <div class="cm-message-senderName"><a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={sender}">{sender_tq.fullName}</a></div>
 
   <div>
-	  <div class="cm-message-recipients">
+	<div class="cm-message-recipients">
 	  -&gt;
 	  {#recipients}
 	    {fullName}  
 	  {/recipients}
-	  </div>  
+	</div>  
   </div>
    <div class="cm-message-header">
     <span class="cm-message-date">
-      {created|formatDate}
+      {created|formatDate} {created|formatTime}
     </span>
     <span class="cm-message-title">{caption}</span>
 

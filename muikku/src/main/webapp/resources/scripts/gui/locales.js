@@ -19,12 +19,19 @@ function getLocale() {
 }
 
 function getCurrentDate() {
-  return $.datepicker.formatDate(getLocaleText('datePattern'), new Date());
+  return formatDate(new Date());
+}
+
+function formatDate(d) {
+  return $.datepicker.formatDate(getLocaleText('datePattern'), d);
 }
 
 function getCurrentTime() {
+  return formatTime(new Date());
+}
+
+function formatTime(d) {
   // TODO Could use some elegance, surely...
-  var d = new Date();
   var val = getLocaleText('timePattern');
   val = val.replace('hh', ('00' + d.getHours()).slice(-2));
   val = val.replace('mm', ('00' + d.getMinutes()).slice(-2));
