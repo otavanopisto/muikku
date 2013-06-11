@@ -370,6 +370,12 @@ padding:10px 20px 10px 20px;
 	padding:5px;
 }
 
+.cm-replyMessage{
+	padding:5px 5px 5px 10px;
+	background-color:#fff;
+	    @include rounded(4px);
+}
+
 .wallEntry {
   margin-bottom: 7px;
   padding-bottom: 7px;
