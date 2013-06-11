@@ -4,7 +4,7 @@
 
   <div class="cm-message-senderPictureContainer">
     {?sender_tq.hasPicture} 
-      <img class="cm-message-senderPicture" src="{@contextPath/}/picture?userId={sender.id}" width="50" height="50" />
+      <img class="cm-message-senderPicture" src="{@contextPath/}/picture?userId={sender}" width="50" height="50" />
     {:else}
       <img class="cm-message-senderPicture" src="{@contextPath/}/themes/default/gfx/fish.jpg" width="50" height="50" />
     {/sender_tq.hasPicture}
