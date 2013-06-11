@@ -34,7 +34,13 @@ dust.preload = function(name) {
 };
 
 dust.filters.formatDate = function(value) {
-  return getCurrentDate();
+  var d = new Date(value);
+  return formatDate(d);
+};
+
+dust.filters.formatTime = function(value) {
+  var d = new Date(value);
+  return formatTime(d);
 };
 
 dust.helpers.contextPath = function(chunk, context, bodies) {

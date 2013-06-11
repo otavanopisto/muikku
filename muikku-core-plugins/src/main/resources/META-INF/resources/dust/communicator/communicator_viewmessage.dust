@@ -1,28 +1,28 @@
 {#.}
 <div class="cm-message-view">
-  <a class="cm-message-replyLink" href="#">{#localize key="plugin.communicator.reply"/}</a> <a class="communicatorMessageReplyAllLink" href="#">{#localize key="plugin.communicator.replyAll"/}</a>
+  <a class="cm-message-replyLink" href="#">{#localize key="plugin.communicator.reply"/}</a> <a class="cm-message-replyAllLink" href="#">{#localize key="plugin.communicator.replyAll"/}</a>
 
   <div class="cm-message-senderPictureContainer">
     {?sender_tq.hasPicture} 
-      <img class="cm-message-senderPicture" src="{@contextPath/}/picture?userId={sender.id}" width="50" height="50" />
+      <img class="cm-message-senderPicture" src="{@contextPath/}/picture?userId={sender}" width="50" height="50" />
     {:else}
       <img class="cm-message-senderPicture" src="{@contextPath/}/themes/default/gfx/fish.jpg" width="50" height="50" />
     {/sender_tq.hasPicture}
   </div>
   
-  <div class="cm-message-senderName"><a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={sender.id}">{sender_tq.fullName}</a></div>
+  <div class="cm-message-senderName"><a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={sender}">{sender_tq.fullName}</a></div>
 
   <div>
-	  <div class="cm-message-recipients">
+	<div class="cm-message-recipients">
 	  -&gt;
 	  {#recipients}
 	    {fullName}  
 	  {/recipients}
-	  </div>  
+	</div>  
   </div>
    <div class="cm-message-header">
     <span class="cm-message-date">
-      {created|formatDate}
+      {created|formatDate} {created|formatTime}
     </span>
     <span class="cm-message-title">{caption}</span>
 

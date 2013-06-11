@@ -168,8 +168,8 @@ $.fn.extend({
         renderDustTemplate('communicator/communicator_viewmessage.dust', data, function (text) {
           _this._communicatorContent.append($.parseHTML(text));
           
-          _this._communicatorContent.find('.communicatorMessageReplyLink').click($.proxy(_this._onReplyMessageClick, _this));
-          _this._communicatorContent.find('.communicatorMessageReplyAllLink').click($.proxy(_this._onReplyMessageClick, _this));
+          _this._communicatorContent.find('.cm-message-replyLink').click($.proxy(_this._onReplyMessageClick, _this));
+          _this._communicatorContent.find('.cm-message-replyAllLink').click($.proxy(_this._onReplyMessageClick, _this));
         });
       });
     },
@@ -247,9 +247,9 @@ $.fn.extend({
     _onReplyMessageClick: function (event) {
       var _this = this;
       var element = $(event.target);
-      var replyAll = element.hasClass("communicatorMessageReplyAllLink") || (element.parents(".communicatorMessageReplyAllLink") != undefined);
+      var replyAll = element.hasClass("cm-message-replyAllLink");// || (element.parents(".cm-message-replyAllLink") != undefined);
       
-      element = element.parents(".communicatorMessageView");
+      element = element.parents(".cm-message-view");
       
       var communicatorMessageId = element.find("input[name='communicatorMessageId']").val();
       var communicatorMessageIdId = element.find("input[name='communicatorMessageIdId']").val();
@@ -320,12 +320,10 @@ $.fn.extend({
 
         _this._communicatorContent.find("select[name='templateSelector']").change($.proxy(_this._onSelectTemplate, _this));
         _this._communicatorContent.find("select[name='signatureSelector']").change($.proxy(_this._onSelectSignature, _this));
-<<<<<<< HEAD
         _this._communicatorContent.find(".cm-newMessage-recipientsList").on("click", ".cm-newMessage-removeRecipient", $.proxy(_this._onRemoveRecipientClick, _this));
-=======
-        _this._communicatorContent.find(".cm-recipientsList").on("click", ".removeRecipient", $.proxy(_this._onRemoveRecipientClick, _this));
->>>>>>> 216db964be9c650b70b7d24d1698323658f4aef8
       });
+      
+      return false;
     },
     _onCancelMessageClick: function (event) {
       var element = $(event.target);

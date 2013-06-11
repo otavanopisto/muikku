@@ -1,10 +1,10 @@
 <div class="cm-item cm-message">
   <div class="cm-item-senderPictureContainer">
-    {?sender.hasPicture} 
-      <img class="cm-item-senderPicture" src="{@contextPath/}/picture?userId={sender.id}" width="50" height="50" />
+    {?sender_tq.hasPicture} 
+      <img class="cm-item-senderPicture" src="{@contextPath/}/picture?userId={sender}" width="50" height="50" />
     {:else}
       <img class="cm-item-senderPicture" src="{@contextPath/}/themes/default/gfx/fish.jpg" width="50" height="50" />
-    {/sender.hasPicture}
+    {/sender_tq.hasPicture}
   </div>
   
 
@@ -12,9 +12,9 @@
     <div class="cm-item-title">{caption} {@if cond="{messageCount} > 1"} ({messageCount}){/if}</div>
     <div>
 	    <span class="cm-item-date">
-	     {created|formatDate}
+	      {created|formatDate} {created|formatTime}
 	    </span>
-	    <span class="cm-item-senderName"><a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={sender.id}">{sender_tq.fullName}</a></span>
+	    <span class="cm-item-senderName"><a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={sender}">{sender_tq.fullName}</a></span>
     </div>
    </div>     
       
