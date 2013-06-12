@@ -1,7 +1,12 @@
 {#.}
 <div class="cm-message-view">
-  <a class="cm-message-replyLink" href="#">{#localize key="plugin.communicator.reply"/}</a> <a class="cm-message-replyAllLink" href="#">{#localize key="plugin.communicator.replyAll"/}</a>
 
+  <div class="mf-toolbar cm-message-toolbar">
+   <a class="mf-backLink" title="{#localize key="plugin.communicator.reply"/}" alt="{#localize key="plugin.communicator.reply"/}" href="#">
+   <a class="cm-message-replyLink" title="{#localize key="plugin.communicator.reply"/}" alt="{#localize key="plugin.communicator.reply"/}" href="#">
+  </a> <a class="cm-message-replyAllLink" title="{#localize key="plugin.communicator.replyAll"/}" alt="{#localize key="plugin.communicator.replyAll"/}" href="#"></a>
+  </div>
+  <div class="clear"></div>
   <div class="cm-message-senderPictureContainer">
     {?sender_tq.hasPicture} 
       <img class="cm-message-senderPicture" src="{@contextPath/}/picture?userId={sender}" width="50" height="50" />
@@ -10,7 +15,7 @@
     {/sender_tq.hasPicture}
   </div>
   
-  <div class="cm-message-senderName"><a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={sender}">{sender_tq.fullName}</a></div>
+  <div class="mf-person cm-message-senderName"><a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={sender}">{sender_tq.fullName}</a></div>
 
   <div>
 	<div class="cm-message-recipients">
