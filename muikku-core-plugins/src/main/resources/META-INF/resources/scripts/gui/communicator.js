@@ -67,6 +67,7 @@ $.fn.extend({
       var _this = this;
       widgetElement = $(widgetElement);
       
+      this._userPopup = widgetElement.find(".cm-userpopup-container")
       this._userId = widgetElement.find("input[name='userId']").val();
       this._communicatorContent = widgetElement.find(".cm-content");
       this._communicatorContent.on("click", ".cm-message", $.proxy(this._onMessageClick, this));
@@ -101,6 +102,23 @@ $.fn.extend({
       });
       
       $(window).trigger("hashchange");
+
+      
+      this._communicatorContent.on("mouseenter", ".cm-item-senderName", $.proxy(function (event) {
+        var oldid = this._userPopup.find("input[name='userId']").val();
+        var newid = 1;
+        
+        if (newid != oldid)
+          this._loadUserPopupContent(newid);
+        
+        if (!this._userPopup.is(":visible"))
+          this._userPopup.show();
+        
+      }, this));
+      this._communicatorContent.on("mouseleave", ".cm-item-senderName", $.proxy(function (event) { 
+        if (this._userPopup.is(":visible"))
+          this._userPopup.hide();
+      }, this));
     },
     deinitialize: function () {
       var _this = this;
@@ -651,6 +669,21 @@ $.fn.extend({
               option.text(name);
             });
           }
+        });
+      });
+    },
+    _loadUserPopupContent: function(userId) {
+      var _this = this;
+      RESTful.doGet(CONTEXTPATH + "/rest/communicator/userinfo/{userId}", {
+        parameters: {
+          'userId': userId
+        }
+      }).success(function (data, textStatus, jqXHR) {
+        renderDustTemplate('communicator/communicator_userpopup.dust', data, function (text) {
+          _this._userPopup.append($.parseHTML(text));
+//          
+//          _this._communicatorContent.find('.cm-message-replyLink').click($.proxy(_this._onReplyMessageClick, _this));
+//          _this._communicatorContent.find('.cm-message-replyAllLink').click($.proxy(_this._onReplyMessageClick, _this));
         });
       });
     }

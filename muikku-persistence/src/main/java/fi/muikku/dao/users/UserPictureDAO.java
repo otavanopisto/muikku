@@ -31,9 +31,10 @@ public class UserPictureDAO extends CoreDAO<UserPicture> {
     return userPicture;
   }
  
-  public UserPicture updateData(UserPicture userPicture, String contentType, byte[] data) {
+  public UserPicture updateData(UserPicture userPicture, String contentType, byte[] data, Date lastModified) {
     userPicture.setData(data);
     userPicture.setContentType(contentType);
+    userPicture.setLastModified(lastModified);
     
     getEntityManager().persist(userPicture);
     return userPicture;

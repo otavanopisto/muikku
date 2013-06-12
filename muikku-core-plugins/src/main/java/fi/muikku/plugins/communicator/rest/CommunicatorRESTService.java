@@ -234,6 +234,24 @@ public class CommunicatorRESTService extends PluginRESTService {
   }
 
   @GET
+  @Path ("/userinfo/{USERID}")
+  public Response getUserInfo(
+      @PathParam ("USERID") Long userId
+   ) throws AuthorizationException {
+    UserEntity user = userController.findUserEntity(userId);
+    
+    TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
+    Tranquility tranquility = tranquilityBuilder.createTranquility()
+      .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
+      .addInstruction(new SuperClassInstructionSelector(UserEntity.class), tranquilityBuilder.createPropertyInjectInstruction("hasPicture", new UserEntityHasPictureValueGetter()))
+      .addInstruction(new SuperClassInstructionSelector(UserEntity.class), tranquilityBuilder.createPropertyInjectInstruction("fullName", new UserNameValueGetter()));
+    
+    return Response.ok(
+      tranquility.entity(user)
+    ).build();
+  }
+
+  @GET
   @Path ("/{USERID}/templates")
   public Response listUserMessageTemplates(
       @PathParam ("USERID") Long userId
