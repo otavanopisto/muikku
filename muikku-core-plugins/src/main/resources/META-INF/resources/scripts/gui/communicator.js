@@ -87,6 +87,12 @@ $.fn.extend({
       });
       this._newMessageButton.click($.proxy(this._onNewMessageClick, this));
       
+      this._communicatorContent.tooltip({
+        items: ".cm-item-senderName",
+        tooltipClass: "cm-userpopup-container",
+        content: _this._getUserPopupContent
+      });
+
       $(window).on("hashchange", function (event) {
         var hash = window.location.hash.substring(1);
         
@@ -102,23 +108,6 @@ $.fn.extend({
       });
       
       $(window).trigger("hashchange");
-
-      
-      this._communicatorContent.on("mouseenter", ".cm-item-senderName", $.proxy(function (event) {
-        var oldid = this._userPopup.find("input[name='userId']").val();
-        var newid = 1;
-        
-        if (newid != oldid)
-          this._loadUserPopupContent(newid);
-        
-        if (!this._userPopup.is(":visible"))
-          this._userPopup.show();
-        
-      }, this));
-      this._communicatorContent.on("mouseleave", ".cm-item-senderName", $.proxy(function (event) { 
-        if (this._userPopup.is(":visible"))
-          this._userPopup.hide();
-      }, this));
     },
     deinitialize: function () {
       var _this = this;
@@ -672,18 +661,16 @@ $.fn.extend({
         });
       });
     },
-    _loadUserPopupContent: function(userId) {
-      var _this = this;
+    _getUserPopupContent: function(callback) {
+      var userId = 1; // TODO
+      
       RESTful.doGet(CONTEXTPATH + "/rest/communicator/userinfo/{userId}", {
         parameters: {
           'userId': userId
         }
       }).success(function (data, textStatus, jqXHR) {
         renderDustTemplate('communicator/communicator_userpopup.dust', data, function (text) {
-          _this._userPopup.append($.parseHTML(text));
-//          
-//          _this._communicatorContent.find('.cm-message-replyLink').click($.proxy(_this._onReplyMessageClick, _this));
-//          _this._communicatorContent.find('.cm-message-replyAllLink').click($.proxy(_this._onReplyMessageClick, _this));
+          callback($.parseHTML(text));
         });
       });
     }
