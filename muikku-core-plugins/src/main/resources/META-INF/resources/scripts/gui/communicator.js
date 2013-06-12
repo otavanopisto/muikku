@@ -67,8 +67,11 @@ $.fn.extend({
       var _this = this;
       widgetElement = $(widgetElement);
       
+      this._userPopup = widgetElement.find(".cm-userpopup-container")
       this._userId = widgetElement.find("input[name='userId']").val();
       this._communicatorContent = widgetElement.find(".cm-content");
+      this._communicatorContent.on("click", ".cm-message", $.proxy(this._onMessageClick, this));
+      
       this._newMessageButton = widgetElement.find("input[name='communicatorNewMessageButton']");
       
       this._tabsContainer = widgetElement.find('.communicatorTabs');
@@ -84,6 +87,12 @@ $.fn.extend({
       });
       this._newMessageButton.click($.proxy(this._onNewMessageClick, this));
       
+      this._communicatorContent.tooltip({
+        items: ".cm-item-senderName",
+        tooltipClass: "cm-userpopup-container",
+        content: _this._getUserPopupContent
+      });
+
       $(window).on("hashchange", function (event) {
         var hash = window.location.hash.substring(1);
         
@@ -91,6 +100,9 @@ $.fn.extend({
           _this._showNewMessageView();
         } else if (hash == "settings") {
           _this._showSettingsView();
+        } else if (hash.startsWith("in/")) {
+          var messageId = hash.substring(3);
+          _this._showMessage(messageId);
         } else
           _this._showInbox();
       });
@@ -117,8 +129,6 @@ $.fn.extend({
       }).success(function (data, textStatus, jqXHR) {
         renderDustTemplate('communicator/communicator_items.dust', data, function (text) {
           _this._communicatorContent.append($.parseHTML(text));
-          
-          _this._communicatorContent.find('.cm-message').click($.proxy(_this._onMessageClick, _this));
         });
       });
     },
@@ -152,12 +162,15 @@ $.fn.extend({
       return _data;
     },
     _onMessageClick: function (event) {
-      var _this = this;
-      this._clearContent();
-      
       var element = $(event.target);
       element = element.parents(".cm-message");
       var messageId = $(element).find("input[name='communicatorMessageIdId']").val();
+      
+      window.location.hash = "#in/" + messageId;
+    },
+    _showMessage: function(messageId) {
+      var _this = this;
+      this._clearContent();
       
       RESTful.doGet(CONTEXTPATH + "/rest/communicator/{userId}/messages/{messageId}", {
         parameters: {
@@ -645,6 +658,19 @@ $.fn.extend({
               option.text(name);
             });
           }
+        });
+      });
+    },
+    _getUserPopupContent: function(callback) {
+      var userId = 1; // TODO
+      
+      RESTful.doGet(CONTEXTPATH + "/rest/communicator/userinfo/{userId}", {
+        parameters: {
+          'userId': userId
+        }
+      }).success(function (data, textStatus, jqXHR) {
+        renderDustTemplate('communicator/communicator_userpopup.dust', data, function (text) {
+          callback($.parseHTML(text));
         });
       });
     }

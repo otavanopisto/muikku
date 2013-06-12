@@ -21,6 +21,7 @@ import org.apache.commons.io.IOUtils;
 import fi.muikku.dao.users.UserEntityDAO;
 import fi.muikku.dao.users.UserPictureDAO;
 import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserPicture;
 import fi.muikku.session.SessionController;
 
 @WebServlet (
@@ -61,7 +62,12 @@ public class UserPictureUploadServlet extends HttpServlet {
         
         UserEntity user = userEntityDAO.findById(userId);
         
-        userPictureDAO.create(user, contentType, data, new Date());
+        UserPicture userPicture = userPictureDAO.findByUser(user);
+        if (userPicture != null)
+          userPictureDAO.updateData(userPicture, contentType, data, new Date());
+        else
+          userPictureDAO.create(user, contentType, data, new Date());
+        
         resp.setStatus(200);
         
         tx.commit();

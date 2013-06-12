@@ -279,12 +279,18 @@ background-color:$aBgr;
 padding:10px 20px 10px 20px;
 }
 
+.mf-backLink{
+      @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-back.png'));
+}
+
 .mf-content{
 @include rounded(4px);  
 background-color:$aBgr;
 margin-top:5px;
 padding:10px 20px 10px 20px;
 }
+
+
 
 /* communicator (.cm-*) */
 
@@ -312,10 +318,22 @@ padding:10px 20px 10px 20px;
     padding:5px; 
     
 }
-.cm-message-replylink{
+
+.cm-message-toolbar{
+	padding:0;
+	height:35px;
 }
+
+.cm-message-replyLink{
+     @include naviIcon(url('../resources/gfx/icons/32x32/actions/communicator-reply.png'));
+}
+
 .cm-message-replyAllLink{
+      @include naviIcon(url('../resources/gfx/icons/32x32/actions/communicator-replyall.png'));
 }
+
+
+
 .cm-message-senderName{
 }
 .cm-message-recipients{
@@ -369,6 +387,16 @@ padding:10px 20px 10px 20px;
 	color:#fff;
 	padding:5px;
 }
+
+.cm-replyMessage{
+	padding:5px 5px 5px 10px;
+	background-color:#fff;
+	    @include rounded(4px);
+}
+
+
+
+
 
 .wallEntry {
   margin-bottom: 7px;
