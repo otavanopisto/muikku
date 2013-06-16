@@ -19,10 +19,6 @@
       }, function(text) {
         var buttons = {};
         
-        buttons[getLocaleText('plugin.calendar.removeEventDialog.noButton')] = function() {
-          $(this).dialog("close");
-        };
-        
         buttons[getLocaleText('plugin.calendar.removeEventDialog.yesButton')] = function() {
           if (_this._deleteFunction) {
             _this._deleteFunction(_this._event);
@@ -31,6 +27,10 @@
           $(this).dialog("close");
         };
         
+        buttons[getLocaleText('plugin.calendar.removeEventDialog.noButton')] = function() {
+          $(this).dialog("close");
+        };
+
         var dialog = $(text).attr('title', getLocaleText('plugin.calendar.removeEventDialog.title')).dialog({
           modal : true,
           width : 500,
@@ -63,20 +63,34 @@
     },
     _openDialog: function (calendars, localEventTypes) {
   
-      // TODO: Localize
       // TODO: Proper error handling
       var _this = this;
       renderDustTemplate('/calendar/eventdialog.dust', {
         calendars: calendars,
         types: localEventTypes
       }, function (text) {
-        var buttons = {
-          "Cancel": function() {
-            $(this).dialog("close"); 
-          }
-        };
+        var buttons = {};
+
+        if (_this._event.id) {
+          buttons[getLocaleText('plugin.calendar.eventDialog.delete')] = function() {
+            (new RemoveEventDialog(_this._event))
+              .remove(function (event) {
+                // TODO: Proper error handling
+                RESTful.doDelete(CONTEXTPATH + '/rest/calendar/calendars/' + _this._event.calendarId + '/events/' + event.id)
+                  .success(function (data, textStatus, jqXHR) {
+                    $(document).trigger($.Event("calendarEventDialog:eventRemoved", {
+                      id: event.id,
+                      calendarId: event.calendarId
+                    }));  
+                    
+                    $(dialog).dialog("close"); 
+                  });
+              })
+              .show()
+          };
+        } 
         
-        buttons["Save"] = function() {
+        buttons[getLocaleText('plugin.calendar.eventDialog.save')] = function() {
           var startDate = $(this).find('input[name="fromDate"]').datepicker("getDate");
           var endDate = $(this).find('input[name="toDate"]').datepicker("getDate");
           
@@ -128,28 +142,13 @@
             $(this).find('.error').first().focus();
           }
         };
-        
+
+        buttons[getLocaleText('plugin.calendar.eventDialog.cancel')] = function() {
+          $(this).dialog("close"); 
+        };
+
         var dialog = $(text)
-          .attr('title', _this._event.id ? getLocaleText('plugin.calendar.eventDialog.editTitle') : getLocaleText('plugin.calendar.eventDialog.newTitle'));
-        
-        if (_this._event.id) {
-          buttons["Delete"] = function() {
-            (new RemoveEventDialog(_this._event))
-              .remove(function (event) {
-                // TODO: Proper error handling
-                RESTful.doDelete(CONTEXTPATH + '/rest/calendar/calendars/' + _this._event.calendarId + '/events/' + event.id)
-                  .success(function (data, textStatus, jqXHR) {
-                    $(document).trigger($.Event("calendarEventDialog:eventRemoved", {
-                      id: event.id,
-                      calendarId: event.calendarId
-                    }));  
-                    
-                    $(dialog).dialog("close"); 
-                  });
-              })
-              .show()
-          };
-        } 
+        .attr('title', _this._event.id ? getLocaleText('plugin.calendar.eventDialog.editTitle') : getLocaleText('plugin.calendar.eventDialog.newTitle'));
 
         dialog.dialog({
           modal: true,
@@ -178,6 +177,11 @@
         dialog.find('input[name="summary"]').val(_this._event.summary);
         dialog.find('input[name="location"]').val(_this._event.location);
         dialog.find('input[name="url"]').val(_this._event.url);
+        if (_this._event.allDay) {
+          dialog.find('input[name="allDay"]').attr("checked", "checked");
+          dialog.find('input[name="fromTime"]').hide();
+          dialog.find('input[name="toTime"]').hide();
+        }
         dialog.find('input[name="latitude"]').val(_this._event.latitude);
         dialog.find('input[name="longitude"]').val(_this._event.longitude);
         dialog.find('textarea[name="description"]').val(_this._event.description);
