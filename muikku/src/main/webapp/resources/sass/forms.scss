@@ -183,7 +183,7 @@ margin-bottom:5px;
 	   margin-top:5px;
      padding:5px; 
      background-color:$saBgr;	
-	   @include rounded(4px);  
+	   @include rounded(4px);
 }
 
 .cm-newMessage-message input[type="text"]{    
@@ -194,6 +194,7 @@ width: 200px;
 width:100%;
 height:200px;
 }
+
 .cm-setting-signatures-toolbar, .cm-setting-templates-toolbar{
 	padding:5px;	
 }

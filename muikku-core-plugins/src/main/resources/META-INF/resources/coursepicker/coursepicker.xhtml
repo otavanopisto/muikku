@@ -35,40 +35,49 @@
         </ul>
 
         <div id="all" class="tabContent">
-          <div class="coursePickerAllCoursesFilterPane">
-            <input type="text" name="coursePickerSearch"/> <a href="#" class="coursePickerAllCoursesSearchBtn">-o</a>
-            <input type="button" name="coursePickerAllCoursesFilterBtn" value="Rajaa"/>
-            <div class="coursePickerAllCoursesFilterList">
+          <div class="mf-toolbar cp-allCourses-filterPane">
+ 
+            <div style="float:left;"><input type="text" name="coursePickerSearch"/></div>         <!-- WaS IST DAS?! <a href="#" class="cp-allCourses-searchBtn">-o</a> -->
+            <div style="float:left;"><input type="button" name="cp-allCourses-filterBtn" value="Rajaa"/>
+            
+            <div class="cp-allCourses-filterSelector-popup" style="display: none;">
+              <div class="cp-filterSelector-subTitle">Linjat</div>
+              <div class="cp-filterSelector-selectionContainer">
+                <div class="cp-filterSelection">
+                  <div class="cp-filterSelection-name">Lukio</div>
+                </div>
+                <div class="cp-filterSelection">
+                  <div class="cp-filterSelection-name">Peruskoulu</div>
+                </div>
+                <div class="cp-filterSelection">
+                  <div class="cp-filterSelection-name">Ammatillinen</div>
+                </div>
+              </div>
+              <div class="cp-filterSelector-subTitle">Muut</div>
+              <div class="cp-filterSelector-selectionContainer">
+                <div class="cp-filterSelection">
+                  <div class="cp-filterSelection-name">Pajat</div>
+                </div>
+                <div class="cp-filterSelection">
+                  <div class="cp-filterSelection-name">Ilmiöt</div>
+                </div>
+                <div class="cp-filterSelection">
+                  <div class="cp-filterSelection-name">Ryhäkurssit</div>
+                </div>
+              </div>
+
+            </div>
+            </div>
+
+                          <div class="clear"></div>
+
+            <div class="cp-filterList">
 <!--               <div class="coursePickerFilter">Filtteri1 <div class="coursePickerFilterRemoveBtn">x</div></div> -->
 <!--               <div class="coursePickerFilter">Filtteri2 <div class="coursePickerFilterRemoveBtn">x</div></div> -->
-            </div>
-            
-            <div class="coursePickerAllCoursesFilterSelectorPopup" style="display: none;">
-              <div>Linjat</div>
-              <div>
-                <div class="coursePickerFilterSelection">
-                  <div class="coursePickerFilterSelectionName">Lukio</div>
-                </div>
-                <div class="coursePickerFilterSelection">
-                  <div class="coursePickerFilterSelectionName">Peruskoulu</div>
-                </div>
-                <div class="coursePickerFilterSelection">
-                  <div class="coursePickerFilterSelectionName">Ammatillinen</div>
-                </div>
-              </div>
-              <div>Muut</div>
-              <div>
-                <div class="coursePickerFilterSelection">
-                  <div class="coursePickerFilterSelectionName">Pajat</div>
-                </div>
-                <div class="coursePickerFilterSelection">
-                  <div class="coursePickerFilterSelectionName">Ilmiöt</div>
-                </div>
-                <div class="coursePickerFilterSelection">
-                  <div class="coursePickerFilterSelectionName">Ryhmäkurssit</div>
-                </div>
-              </div>
-            </div>
+                
+                
+            </div>            
+                <div class="clear"></div>
           </div>
 
           <div id="allCoursesList">
@@ -77,15 +86,14 @@
 
         <ui:fragment rendered="#{muikkuSession.loggedIn}">
           <div id="my" class="tabContent">
-            <div class="coursePickerMyCoursesFilterPane">
-              <input type="text" name="coursePickerSearch"/> <a href="#" class="coursePickerMyCoursesSearchBtn">-o</a>
-<!--               <input type="button" name="coursePickerMyCoursesFilterBtn" value="Rajaa"/> -->
-              <div class="coursePickerFilterListPane">
+            <div class="cp-myCourses-filterPane">
+              <input type="text" name="coursePickerSearch"/> <a href="#" class="cp-myCourses-searchBtn">-o</a>
+<!--               <input type="button" name="cp-myCourses-filterBtn" value="Rajaa"/>  -->
+              <div class="cp-filterListPane">
                 <input type="checkbox" name="" /> Filtteri1
                 <input type="checkbox" name="" /> Filtteri2
               </div>
             </div>
-
             <div id="myCoursesList">
             </div>
           </div>        

@@ -1,47 +1,62 @@
 {#.}
-  <div class="coursePickerCourse">
+  <div class="cp-course">
     <input type="hidden" name="courseId" value="{id}"/>
-  
-    <div class="coursePickerCourseRating">Rating: {rating} ({ratingCount})</div>
-    <div class="coursePickerCourseName">Name: {name}</div>
-    
-    <div class="coursePickerCourseDetails" style="display: none;">
-      <input type="button" value="Tutustu" class="coursePickerCheckOutCourseButton"/>
+    <div class="cp-course-header">
+      <spam class="cp-course-name">Name: {name}</span>
+	    <span class="cp-course-rating">Rating: {rating} ({ratingCount})</span>
+    </div>
+    <div class="cp-course-details">
+      <div class="mf-toolbar cp-course-details-toolbar">
+      {?isMember}  
+          <input type="button" value="Tutustu" class="cp-course-tour-button"/>       
+      {:else}     
+        <input type="button" value="Tutustu" class="cp-course-tour-button"/>
+        <input type="button" value="Ilmoittaudu" class="cp-course-attend-button"/>
+      {/isMember}</div>
 
-      <div class="coursePickerCourseDescription">Desc: {description}</div>
-      <div class="coursePickerCourseTeachers">
-        {?teachers}
-          <div class="coursePickerCourseTeachersCaption">Kurssin opettaja(t)</div>
-          
-          {#teachers}
-            <div class="coursePickerCourseTeacher">
-              <div class="coursePickerCourseTeacherName">{fullName}</div>
-            </div>
-            <div class="coursePickerCourseTeacherPictureContainer">
-              {?hasPicture} 
-                <img class="coursePickerCourseTeacherPicture" src="{@contextPath/}/picture?userId={id}" width="50" height="50" />
-              {:else}
-                <img class="coursePickerCourseTeacherPicture" src="{@contextPath/}/themes/default/gfx/fish.jpg" width="50" height="50" />
-              {/hasPicture}
-            </div>
-          {/teachers}
-        {:else}
-          Kurssilla ei ole opettajia
-        {/teachers}
-      </div>
+      <div class="cp-course-detailsContainer">
+      
+      
+      
+      <div class="mf-textContent cp-course-details-description">Desc: {description}</div>
+      
+      <div class="cp-course-details-additionalInfo">
+	      <div class="cp-course-details-teachers">
+	        {?teachers}
+	          <div class="cp-course-details-teachers-caption">Kurssin opettaja(t)</div>
+	          
+	          {#teachers}
+	            <div class="cp-course-details-teacher">
+	              <div class="cp-course-details-teacher-picture-container">
+	                {?hasPicture} 
+	                  <img class="cp-course-details-teacher-picture" src="{@contextPath/}/picture?userId={id}" width="50" height="50" />
+	                {:else}
+	                  <img class="cp-course-details-teacher-picture" src="{@contextPath/}/themes/default/gfx/fish.jpg" width="50" height="50" />
+	                {/hasPicture}
+	              </div>
+
+	              <div class="cp-course-details-teacher-name">{fullName}</div>
+	              <div class="clear"></div>
+	            </div>
+
+	          {/teachers}
+	        {:else}
+	          Kurssilla ei ole opettajia
+	        {/teachers}
+	      </div>
 
       {?hasCourseFee}      
-        <div class="coursePickerCourseFee">Kurssi maksullinen</div>
+        <div class="cp-course-details-fee">Kurssi maksullinen</div>
       {/hasCourseFee}
 
       {?hasAssessmentFee}      
-        <div class="coursePickerCourseAssessmentFee">Arviointi maksullinen</div>
+        <div class="cp-course-details-assessmentFee">Arviointi maksullinen</div>
       {/hasAssessmentFee}
 
-      {?isMember}
-      {:else}
-        <input type="button" value="Ilmoittaudu" class="coursePickerAttendCourseButton"/>
-      {/isMember}
+   
+     </div>
+     <div class="clear"></div>
     </div>
+  </div>
   </div>
 {/.}

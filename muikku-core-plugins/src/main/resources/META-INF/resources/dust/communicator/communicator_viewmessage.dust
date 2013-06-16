@@ -2,7 +2,7 @@
 <div class="cm-message-view">
 
   <div class="mf-toolbar cm-message-toolbar">
-   <a class="mf-backLink" title="{#localize key="plugin.communicator.reply"/}" alt="{#localize key="plugin.communicator.reply"/}" href="#">
+   <a class="mf-backLink" title="{#localize key="plugin.communicator.reply"/}" alt="{#localize key="plugin.communicator.back"/}" href="#">
    <a class="cm-message-replyLink" title="{#localize key="plugin.communicator.reply"/}" alt="{#localize key="plugin.communicator.reply"/}" href="#">
   </a> <a class="cm-message-replyAllLink" title="{#localize key="plugin.communicator.replyAll"/}" alt="{#localize key="plugin.communicator.replyAll"/}" href="#"></a>
   </div>
@@ -34,7 +34,7 @@
    </div>
    <div class="clear"></div>
 
-  <div class="cm-message-content">{content}</div>
+  <div class="mf-textContent cm-message-content">{content}</div>
 
 
 

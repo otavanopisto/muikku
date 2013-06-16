@@ -16,38 +16,38 @@
       this._tabsContainer = widgetElement.find('.coursePickerTabs');
       this._tabsContainer.tabs();
       
-      var coursePickerAllCoursesSearchBtn = widgetElement.find(".coursePickerAllCoursesSearchBtn");
+      var coursePickerAllCoursesSearchBtn = widgetElement.find(".cp-allCourses-searchBtn");
       coursePickerAllCoursesSearchBtn.click($.proxy(this._onSearchAllCoursesClick, this));
 
-      var filterAllCoursesButton = widgetElement.find('input[name="coursePickerAllCoursesFilterBtn"]');
+      var filterAllCoursesButton = widgetElement.find('input[name="cp-allCourses-filterBtn"]');
       filterAllCoursesButton.click($.proxy(this._onFilterAllCoursesClick, this));
       
-      var searchMyCoursesButton = widgetElement.find('.coursePickerMyCoursesSearchBtn');
+      var searchMyCoursesButton = widgetElement.find('.cp-myCourses-searchBtn');
       if (searchMyCoursesButton) {
         searchMyCoursesButton.click($.proxy(this._onSearchMyCoursesClick, this));
       }
       
-      var filterPopup = widgetElement.find(".coursePickerAllCoursesFilterSelectorPopup");
-      filterPopup.find(".coursePickerFilterSelection").click($.proxy(this._onSelectAllCoursesFilterClick, this));
+      var filterPopup = widgetElement.find(".cp-allCourses-filterSelector-popup");
+      filterPopup.find(".cp-filterSelection").click($.proxy(this._onSelectAllCoursesFilterClick, this));
       
-      var filterList = widgetElement.find(".coursePickerAllCoursesFilterList");
-      filterList.on("click", ".coursePickerFilterRemoveBtn", $.proxy(this._onRemoveAllCoursesFilterClick, this));
+      var filterList = widgetElement.find(".cp-allCourses-filterList");
+      filterList.on("click", ".cp-filterRemoveBtn", $.proxy(this._onRemoveAllCoursesFilterClick, this));
 
-      this._allCoursesContainer.on("click", ".coursePickerAttendCourseButton", $.proxy(this._onJoinCourseClick, this));
-      this._allCoursesContainer.on("click", ".coursePickerCheckOutCourseButton", $.proxy(this._onCheckCourseClick, this));
-      this._allCoursesContainer.on("click", ".coursePickerCourseName", $.proxy(this._onCourseNameClick, this));
+      this._allCoursesContainer.on("click", ".cp-attendCourse-button", $.proxy(this._onJoinCourseClick, this));
+      this._allCoursesContainer.on("click", ".cp-checkOutCourse-button", $.proxy(this._onCheckCourseClick, this));
+      this._allCoursesContainer.on("click", ".cp-courseName", $.proxy(this._onCourseNameClick, this));
 
-      this._myCoursesContainer.on("click", ".coursePickerAttendCourseButton", $.proxy(this._onJoinCourseClick, this));
-      this._myCoursesContainer.on("click", ".coursePickerCheckOutCourseButton", $.proxy(this._onCheckCourseClick, this));
-      this._myCoursesContainer.on("click", ".coursePickerCourseName", $.proxy(this._onCourseNameClick, this));
+      this._myCoursesContainer.on("click", ".cp-attendCourse-button", $.proxy(this._onJoinCourseClick, this));
+      this._myCoursesContainer.on("click", ".cp-checkOutCourse-button", $.proxy(this._onCheckCourseClick, this));
+      this._myCoursesContainer.on("click", ".cp-courseName", $.proxy(this._onCourseNameClick, this));
     },
     deinitialize: function () {
   //    var widgetElement = this._widgetElement;
   //    
-  //    var searchAllCoursesButton = widgetElement.find('.coursePickerAllCoursesFilterBtn');
+  //    var searchAllCoursesButton = widgetElement.find('.cp-allCourses-FilterBtn');
   //    Event.stopObserving(searchAllCoursesButton, "click", this._searchAllCoursesClickListener);
   //    
-  //    var searchMyCoursesButton = widgetElement.find('.coursePickerMyCoursesFilterBtn');
+  //    var searchMyCoursesButton = widgetElement.find('.cp-myCourses-FilterBtn');
   //    if (searchMyCoursesButton) {
   //      Event.stopObserving(searchMyCoursesButton, "click", this._onSearchMyCoursesClick);
   //    }
@@ -100,15 +100,14 @@
     },
     _onCheckCourseClick: function (event) {
       var element = $(event.target);
-      var coursePickerCourse = element.parents(".coursePickerCourse");
-      
+      var coursePickerCourse = element.parents(".cp-course");
       var courseId = coursePickerCourse.find("input[name='courseId']").val();
       
       window.location = CONTEXTPATH + '/course/index.jsf?courseId=' + courseId;
     },
     _onJoinCourseClick: function (event) {
       var element = $(event.target);
-      var coursePickerCourse = element.parents(".coursePickerCourse");
+      var coursePickerCourse = element.parents(".cp-course");
       
       var courseId = coursePickerCourse.find("input[name='courseId']").val();
       
@@ -122,8 +121,8 @@
     },
     _onCourseNameClick: function (event) {
       var element = $(event.target);
-      var coursePickerCourse = element.parents(".coursePickerCourse");
-      var courseDetails = coursePickerCourse.find(".coursePickerCourseDetails");
+      var coursePickerCourse = element.parents(".cp-course");
+      var courseDetails = coursePickerCourse.find(".cp-courseDetails");
       
       if (courseDetails.is(':visible'))
         courseDetails.hide();
@@ -132,8 +131,8 @@
     },
     _onFilterAllCoursesClick: function (event) {
       var element = $(event.target);
-      var coursePickerCourse = element.parents(".coursePickerAllCoursesFilterPane");
-      var filterPopup = coursePickerCourse.find(".coursePickerAllCoursesFilterSelectorPopup");
+      var coursePickerCourse = element.parents(".cp-allCourses-filterPane");
+      var filterPopup = coursePickerCourse.find(".cp-allCourses-filterSelector-popup");
       
       if (filterPopup.is(':visible'))
         filterPopup.hide();
@@ -142,20 +141,20 @@
     }, 
     _onSelectAllCoursesFilterClick: function (event) {
       var element = $(event.target);
-      if (!element.hasClass("coursePickerFilterSelection"))
-        element = element.parents(".coursePickerFilterSelection");
+      if (!element.hasClass("cp-filterSelection"))
+        element = element.parents(".cp-filterSelection");
       
-      var filterNameElement = element.find(".coursePickerFilterSelectionName");
+      var filterNameElement = element.find(".cp-filterSelection-name");
       
-      var filterListElement = this._widgetElement.find(".coursePickerAllCoursesFilterList");
-      var filterElement = $("<div class=\"coursePickerFilter\">" + filterNameElement.text() + "<div class=\"coursePickerFilterRemoveBtn\">x</div></div>");
+      var filterListElement = this._widgetElement.find(".cp-filterList");
+      var filterElement = $("<div class=\"cp-filter\">" + "<span class=\"cp-filter-filternName\">" + filterNameElement.text() + "</span>"  + /* "<span class=\"cp-filterRemoveBtn\">x</span> */ "</div>");
       filterListElement.append(filterElement);
     },
     _onRemoveAllCoursesFilterClick: function (event) {
       var element = $(event.target);
       
-      if (!element.hasClass("coursePickerFilter"))
-        element = element.parents(".coursePickerFilter");
+      if (!element.hasClass("cp-filter"))
+        element = element.parents(".cp-filter");
       
       element.remove();
     }

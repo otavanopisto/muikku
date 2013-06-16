@@ -142,18 +142,21 @@ border-radius: 0px 0px 10px 10px;
   height:50px;
 }
 
-#globalSearch{
+.seeker{
+	  text-align:center;
+    position:relative;
+    top:109px;	
     font-size:1.3em;
     @include gradient-top-bottom-four($contInteractGr...);
-    height: 40px;
-    width: 220px;
+    height: 35px;
+    width: 165px;
     border: 2px solid #ededed;
     border-radius: 5px;
 }
 
-#globalSearchForm{
-    margin:5px;
-    float:right;
+.seeker input{
+    margin:5px 0 5px 0;
+
 }
 
 
@@ -170,9 +173,10 @@ border-radius: 0px 0px 10px 10px;
 }
 
 
-#languageSelector { 
-    margin-top:20px;
-    float:right;
+.languageWidget { 
+    position:absolute;
+   right:10px;
+    margin-top:105px;
     font-size:1.3em;
     @include gradient-top-bottom-four($contInteractGr...);
     height: 20px;
@@ -187,8 +191,10 @@ border-radius: 0px 0px 10px 10px;
     margin-left:2px;    
 }
 
-.languageSelection a {  
-    text-decoration:none;   
+.languageWidget a {  
+    text-decoration:none; 
+    padding: 3px;  
+    
 }
 
 .languageSelection a:hover {    
@@ -273,6 +279,12 @@ background-color:$aBgr;
 margin-top:5px;	
 }
 
+.mf-textContent{
+  @include shadow;
+  @include rounded(4px);  
+  background-color:#fff;	
+}
+
 .mf-toolbar{
 @include rounded(4px); 	
 background-color:$aBgr;
@@ -340,9 +352,7 @@ padding:10px 20px 10px 20px;
 }
 .cm-message-content{
 	padding:15px;
-	@include shadow;
-	@include rounded(4px);  
-	background-color:#fff;
+
 	font-size:1.3em;
 }
  
@@ -391,11 +401,149 @@ padding:10px 20px 10px 20px;
 .cm-replyMessage{
 	padding:5px 5px 5px 10px;
 	background-color:#fff;
-	    @include rounded(4px);
+	@include rounded(4px);
 }
 
 
+/* Coursepicker (.cp-*) */
 
+
+.cp-allCourses-filterPane{
+	
+}
+
+.cp-allCourses-searchBtn{}
+.cp-allCourses-filterBtn{}
+.cp-allCourses-filterSelector-popup{
+   @include rounded(4px);
+   @include border($brd);
+    background-color: $aBgr;
+    padding: 5px;
+    position: absolute;
+    width: 100px;
+}
+.cp-filterSelection{}
+
+.cp-filterSelector-subTitle{
+ font-weight:bold;
+ color:$subTitle;
+}
+
+.cp-filterSelector-selectionContainer{
+	padding-left:5px
+	
+}
+.cp-filterSelection-name{}
+.cp-filterList{}
+.cp-filter{
+  @include rounded(4px);
+  @include border($brd);
+  @include gradient-top-bottom(#707070, #666);
+  @include shadow;
+  color:#fff;
+  float:left;
+	padding:5px;
+	
+
+}
+.cp-allCourses-filterPane{
+	   background-color:$saBgr;
+	
+}
+.cp-myCourses-searchBtn{}
+.cp-filterListPane{}
+
+.cp-course{
+	  @include border(#ededed);
+    @include rounded(4px);
+    @include gradient-top-bottom;
+    @include shadow;
+    margin-top:5px; 
+    padding:10px;
+}
+
+
+.cp-course-header{
+    @include border(#ededed);
+    @include rounded(4px);
+    @include gradient-top-bottom(#707070, #666);	
+	  padding:5px;
+}
+.cp-course-rating{
+	float:right;
+	color:#fff;
+}
+.cp-course-name{
+color:$lukio;
+}
+
+.cp-course-toolbar{}
+.cp-course-toolbar-tour-button{}
+.cp-course-toolbar-attend-button{}
+
+.cp-course-details{}
+
+.cp-course-detailsContainer{
+		
+}
+.cp-course-details-description{
+	display:inline;
+	min-height:100px;
+	padding:10px;
+	width:70%;
+	float:left;
+	box-sizing:border-box;
+-moz-box-sizing:border-box;
+}
+
+.cp-course-details-additionalInfo{
+	display:inline;
+	min-height:100px;
+  padding:0 10px 10px 10px;
+  width:29%;
+	float:right;
+	background-color:$aBgr;
+  box-sizing:border-box;
+-moz-box-sizing:border-box;
+}
+.cp-course-details-teachers{
+
+	
+}
+.cp-course-details-teachers-caption{
+	font-weight:bold;
+	padding:5px 0 5px 0;
+}
+.cp-course-details-teacher{
+	border-bottom:solid 1px $brd;
+	min-heigth:60px;
+	
+
+}
+.cp-course-details-teacher-name{
+	font-weight:bold;
+	
+}
+.cp-course-details-teacher-picture-container{
+	float:left;
+  width:50px;
+  overflow:hidden;
+  padding:0 5px 0 5px;
+	
+}
+.cp-course-details-teacher-picture{}
+.cp-course-details-fee{}
+.cp-course-details-assessmentFee{}
+
+
+/*
+.cp-lukio
+.cp-ammattillinen
+.cp-peruskoulu
+.cp-ilmio
+.cp-paja
+.cp-ryhmakurssi
+*/
 
 
 .wallEntry {
