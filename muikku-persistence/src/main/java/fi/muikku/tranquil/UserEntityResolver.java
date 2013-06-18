@@ -5,6 +5,7 @@ import fi.tranquil.processing.PropertyAccessor;
 
 public class UserEntityResolver extends AbstractTranquilEntityResolver {
   
+  @Override
   public Object resolveEntity(Object entity, String idProperty) {
     PropertyAccessor propertyAccessor = new PropertyAccessor();
     
