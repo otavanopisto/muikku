@@ -15,7 +15,8 @@
   
   <properties>
     <instrumentation-hibernate.version>4.0.1.Final</instrumentation-hibernate.version>
-    <tranquil-model-gen.version>1.0.2-SNAPSHOT</tranquil-model-gen.version>
+    <tranquil-model-gen.version>1.0.3-SNAPSHOT</tranquil-model-gen.version>
+    <instrumentation-javassist.version>3.18.0-GA</instrumentation-javassist.version>
   </properties>
 
   <build>
@@ -179,6 +180,11 @@
             <artifactId>hibernate-entitymanager</artifactId>
             <version>${instrumentation-hibernate.version}</version>
           </dependency>
+          <dependency>
+        	<groupId>org.javassist</groupId>
+        	<artifactId>javassist</artifactId>
+        	<version>${instrumentation-javassist.version}</version>
+          </dependency>
         </dependencies>
         
         <executions>
@@ -190,7 +196,7 @@
           </execution>
         </executions>
         <configuration>
-          <tasks>
+          <target>
             <taskdef name="instrument" classname="org.hibernate.tool.instrument.javassist.InstrumentTask">
               <classpath>
                 <path refid="maven.runtime.classpath" />
@@ -202,7 +208,7 @@
                 <include name="**fi/muikku/model/**/*.class" />
               </fileset>
             </instrument>
-          </tasks>
+          </target>
         </configuration>
       </plugin>
     </plugins>
