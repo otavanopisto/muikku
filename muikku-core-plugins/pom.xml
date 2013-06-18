@@ -9,9 +9,11 @@
   </parent>
   
   <properties>
-    <instrumentation-hibernate.version>4.0.1.Final</instrumentation-hibernate.version>
     <tranquil-model-gen.version>1.0.3-SNAPSHOT</tranquil-model-gen.version>
+    <!-- 
+    <instrumentation-hibernate.version>4.0.1.Final</instrumentation-hibernate.version>
     <instrumentation-javassist.version>3.18.0-GA</instrumentation-javassist.version>
+     -->
   </properties>
 
   <artifactId>core-plugins</artifactId>
@@ -21,7 +23,6 @@
 
   <build>
     <finalName>${project.artifactId}</finalName>
-    
     <pluginManagement>
       <plugins>
         <plugin>
@@ -47,6 +48,7 @@
                   </action>
                 </pluginExecution>
                 
+                <!-- 
                 <pluginExecution>
                   <pluginExecutionFilter>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -61,13 +63,15 @@
                     <ignore />
                   </action>
                 </pluginExecution>
+                -->
+                
               </pluginExecutions>
             </lifecycleMappingMetadata>
           </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
-    
+
     <plugins>
       <plugin>
         <groupId>org.jasig.maven</groupId>
@@ -175,7 +179,7 @@
           </execution>
         </executions>
       </plugin>
-
+<!-- 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antrun-plugin</artifactId>
@@ -218,6 +222,7 @@
           </target>
         </configuration>
       </plugin>
+ -->     
     </plugins>
   </build>
 
