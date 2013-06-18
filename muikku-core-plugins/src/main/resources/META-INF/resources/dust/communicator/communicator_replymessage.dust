@@ -27,30 +27,37 @@
         {/recipients}
       </div>
      <div class="clear"></div>
-    
     </div>
-		<div>
-		
-      <div class="cm-newMessage-message">
-          <div class="mf-fieldRow cm-newMessage-subject">
-           <div class="mf-labelfield">{#localize key="plugin.communicator.subject"/}</div>
-           <div class="mf-textfield">
-            <input type="text" name="subject" value='{#localize key="plugin.communicator.subjectreplyprefix"/}{subject}' />
-           </div>
-          <div class="clear"></div>
-          <div class="cm-newMessage-content">
-            <div class="mf-labelfield">{#localize key="plugin.communicator.content"/}</div>
-            <div class="clear"></div>
 
-            <div class="">
-             <textarea name="content">
-                {content}
-             </textarea>
-            </div>
-          </div>    
+    <div>
+      <div class="cm-newMessage-message">
+        <div class="mf-fieldRow cm-newMessage-subject">
+          <div class="mf-labelfield">{#localize key="plugin.communicator.subject"/}</div>
+          <div class="mf-textfield">
+            <input type="text" name="subject" value='{#localize key="plugin.communicator.subjectreplyprefix"/}{subject}' />
+          </div>
         </div>
+        <div class="clear"></div>
+        <div class="cm-newMessage-content">
+          <div class="mf-labelfield">{#localize key="plugin.communicator.content"/}</div>
+          <div class="clear"></div>
+
+          <div class="">
+           <textarea name="content">
+             {content}
+           </textarea>
+          </div>
+        </div>  
+        <div class="cm-newMessage-tags">
+          <div class="mf-labelfield">{#localize key="plugin.communicator.messagetags"/}</div>
+          <div class="clear"></div>
+
+          <div class="">
+            <input type="text" name="tags" />
+          </div>
+        </div>    
       </div>		
-		</div>
+    </div>
   </form>
 
 </div>

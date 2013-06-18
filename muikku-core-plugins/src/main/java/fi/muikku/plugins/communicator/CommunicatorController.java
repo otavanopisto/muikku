@@ -10,6 +10,7 @@ import javax.inject.Named;
 
 import fi.muikku.dao.courses.CourseEntityDAO;
 import fi.muikku.dao.users.UserEntityDAO;
+import fi.muikku.model.base.Tag;
 import fi.muikku.model.stub.users.UserEntity;
 import fi.muikku.plugins.communicator.dao.CommunicatorMessageDAO;
 import fi.muikku.plugins.communicator.dao.CommunicatorMessageIdDAO;
@@ -23,7 +24,6 @@ import fi.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
 import fi.muikku.schooldata.CourseSchoolDataController;
 import fi.muikku.schooldata.UserSchoolDataController;
-import fi.muikku.security.LoggedIn;
 import fi.muikku.security.Permit;
 import fi.muikku.security.PermitContext;
 import fi.muikku.session.SessionController;
@@ -72,25 +72,13 @@ public class CommunicatorController {
     return communicatorMessageDAO.listFirstMessagesByRecipient(userEntity);
   }
   
-//  public void TEST_MAIL_SEND() {
-//    CommunicatorMessageId communicatorMessageId = communicatorMessageIdDAO.create();
-//    
-//    CommunicatorMessage message = communicatorMessageDAO.create(communicatorMessageId, sessionController.getUser().getId(), 
-//        "Test mail", "Testing mail creation", new Date());
-//    communicatorMessageRecipientDAO.create(message, sessionController.getUser().getId());
-//
-//    message = communicatorMessageDAO.create(communicatorMessageId, sessionController.getUser().getId(), 
-//        "Re: Test mail", "Reply to mail creation", new Date());
-//    communicatorMessageRecipientDAO.create(message, sessionController.getUser().getId());
-//  }
-
   public CommunicatorMessageId createMessageId() {
     return communicatorMessageIdDAO.create();
   }
   
   public CommunicatorMessage createMessage(CommunicatorMessageId communicatorMessageId, UserEntity sender, List<UserEntity> recipients, 
-      String caption, String content) {
-    CommunicatorMessage message = communicatorMessageDAO.create(communicatorMessageId, sender.getId(), caption, content, new Date());
+      String caption, String content, List<Tag> tags) {
+    CommunicatorMessage message = communicatorMessageDAO.create(communicatorMessageId, sender.getId(), caption, content, new Date(), tags);
     
     for (UserEntity recipient : recipients) {
       communicatorMessageRecipientDAO.create(message, recipient.getId());

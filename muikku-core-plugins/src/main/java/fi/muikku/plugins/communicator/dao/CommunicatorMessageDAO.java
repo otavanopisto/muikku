@@ -1,5 +1,6 @@
 package fi.muikku.plugins.communicator.dao;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.DAO;
+import fi.muikku.model.base.Tag;
 import fi.muikku.model.stub.users.UserEntity;
 import fi.muikku.plugin.PluginDAO;
 import fi.muikku.plugins.communicator.model.CommunicatorMessage;
@@ -24,14 +26,19 @@ public class CommunicatorMessageDAO extends PluginDAO<CommunicatorMessage> {
   private static final long serialVersionUID = -8721990589622544635L;
 
   public CommunicatorMessage create(CommunicatorMessageId communicatorMessageId, Long sender,
-      String caption, String content, Date created) {
+      String caption, String content, Date created, List<Tag> tags) {
     CommunicatorMessage msg = new CommunicatorMessage();
     
+    List<Long> tagIds = new ArrayList<Long>(tags.size());
+    for (Tag t : tags)
+      tagIds.add(t.getId());
+
     msg.setCommunicatorMessageId(communicatorMessageId);
     msg.setSender(sender);
     msg.setCaption(caption);
     msg.setContent(content);
     msg.setCreated(created);
+    msg.setTags(tagIds);
     
     getEntityManager().persist(msg);
     

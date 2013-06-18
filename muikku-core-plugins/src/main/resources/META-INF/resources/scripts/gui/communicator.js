@@ -214,6 +214,42 @@ $.fn.extend({
             return false;
           }
         });
+
+          
+        _this._communicatorContent.find("input[name='tags']").bind("keydown", function(event) {
+          // don't navigate away from the field on tab when selecting an item
+          if (event.keyCode === $.ui.keyCode.TAB && $(this).data("ui-autocomplete").menu.active) {
+            event.preventDefault();
+          }
+        }).autocomplete({
+          source : function(request, response) {
+            var term = _this._extractLast(request.term);
+            response(_this._doSearchTags(term));
+          },
+          search : function() {
+            // custom minLength
+            var term = _this._extractLast(this.value);
+            console.log("search " + term);
+            if (term.length < 2) {
+              return false;
+            }
+          },
+          focus : function() {
+            // prevent value inserted on focus
+            return false;
+          },
+          select : function(event, ui) {
+            var terms = _this._split(this.value);
+            // remove the current input
+            terms.pop();
+            // add the selected item
+            terms.push(ui.item.value);
+            // add placeholder to get the comma-and-space at the end
+            terms.push("");
+            this.value = terms.join(", ");
+            return false;
+          }
+        });
         
         _this._communicatorContent.find("select[name='templateSelector']").change($.proxy(_this._onSelectTemplate, _this));
         _this._communicatorContent.find("select[name='signatureSelector']").change($.proxy(_this._onSelectSignature, _this));
@@ -225,7 +261,7 @@ $.fn.extend({
     },
     _onSelectTemplate: function (event) {
       var element = $(event.target);
-      var textarea = element.parents("cm-newMessage").find("textarea[name='content']");
+      var textarea = element.parents(".cm-newMessage").find("textarea[name='content']");
       var val = element.find("option:selected").val();
       
       if (val != "") {
@@ -331,6 +367,41 @@ $.fn.extend({
           }
         });
 
+        _this._communicatorContent.find("input[name='tags']").bind("keydown", function(event) {
+          // don't navigate away from the field on tab when selecting an item
+          if (event.keyCode === $.ui.keyCode.TAB && $(this).data("ui-autocomplete").menu.active) {
+            event.preventDefault();
+          }
+        }).autocomplete({
+          source : function(request, response) {
+            var term = _this._extractLast(request.term);
+            response(_this._doSearchTags(term));
+          },
+          search : function() {
+            // custom minLength
+            var term = _this._extractLast(this.value);
+            console.log("search " + term);
+            if (term.length < 2) {
+              return false;
+            }
+          },
+          focus : function() {
+            // prevent value inserted on focus
+            return false;
+          },
+          select : function(event, ui) {
+            var terms = _this._split(this.value);
+            // remove the current input
+            terms.pop();
+            // add the selected item
+            terms.push(ui.item.value);
+            // add placeholder to get the comma-and-space at the end
+            terms.push("");
+            this.value = terms.join(", ");
+            return false;
+          }
+        });
+
         _this._communicatorContent.find("select[name='templateSelector']").change($.proxy(_this._onSelectTemplate, _this));
         _this._communicatorContent.find("select[name='signatureSelector']").change($.proxy(_this._onSelectSignature, _this));
         _this._communicatorContent.find(".cm-newMessage-recipientsList").on("click", ".cm-newMessage-removeRecipient", $.proxy(_this._onRemoveRecipientClick, _this));
@@ -342,7 +413,7 @@ $.fn.extend({
       var element = $(event.target);
       var newMessageElement = element.parents(".cm-newMessage");
       newMessageElement.remove();
-      this._showInbox();
+      window.location.hash = "in";
     },
     _onCancelReplyClick: function (event) {
       var element = $(event.target);
@@ -365,10 +436,11 @@ $.fn.extend({
           'userId': this._userId,
           'subject': newMessageElement.find("input[name='subject']").val(),
           'content': newMessageElement.find("textarea[name='content']").val(),
-          'recipients': recipientIds
+          'recipients': recipientIds,
+          'tags': newMessageElement.find("input[name='tags']").val()
         }
       }).success(function (data, textStatus, jqXHR) {
-        _this._showInbox();
+        window.location.hash = "in";
       });
     },
     _onPostReplyMessageClick: function (event) {
@@ -390,11 +462,31 @@ $.fn.extend({
           'messageId': messageId,
           'subject': newMessageElement.find("input[name='subject']").val(),
           'content': newMessageElement.find("textarea[name='content']").val(),
-          'recipients': recipientIds
+          'recipients': recipientIds,
+          'tags': newMessageElement.find("input[name='tags']").val()
         }
       }).success(function (data, textStatus, jqXHR) {
-        _this._showInbox();
+        window.location.hash = "in";
       });
+    },
+    _doSearchTags: function (searchTerm) {
+      var _this = this;
+      var tags = new Array();
+
+      RESTful.doGet(CONTEXTPATH + "/rest/tags/searchTags", {
+        parameters: {
+          'searchString': searchTerm
+        }
+      }).success(function (data, textStatus, jqXHR) {
+        for (var i = 0, l = data.length; i < l; i++) {
+          tags.push({
+            label: data[i].text,
+            id: data[i].id
+          });
+        }
+      });
+
+      return tags;
     },
     _searchUsers: function (searchTerm) {
       var _this = this;
@@ -673,6 +765,12 @@ $.fn.extend({
           callback($.parseHTML(text));
         });
       });
+    },
+    _split: function(val) {
+      return val.split(/,\s*/);
+    },
+    _extractLast: function(term) {
+      return this._split(term).pop();
     }
   });
   

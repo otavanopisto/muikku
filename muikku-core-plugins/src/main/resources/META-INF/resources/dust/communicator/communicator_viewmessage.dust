@@ -38,7 +38,11 @@
 
 
 
-  <div class="cm-message-tags">{#localize key="plugin.communicator.messagetags"/}</div>
+  <div class="cm-message-tags">
+    {#tags_tq}
+      {text}{@sep}, {/sep}
+    {/tags_tq}
+  </div>
 
   <input type="hidden" name="communicatorMessageId" value="{id}"/>
   <input type="hidden" name="communicatorMessageIdId" value="{communicatorMessageId.id}"/>

@@ -1,20 +1,15 @@
 package fi.muikku.tranquil;
 
 import fi.muikku.dao.users.UserEntityDAO;
-import fi.tranquil.processing.PropertyAccessor;
 
 public class UserEntityResolver extends AbstractTranquilEntityResolver {
   
   @Override
-  public Object resolveEntity(Object entity, String idProperty) {
-    PropertyAccessor propertyAccessor = new PropertyAccessor();
-    
+  public Object resolveEntity(Object id) {
     try {
-      Long id = (Long) propertyAccessor.extractProperty(entity, idProperty);
-      
       UserEntityDAO userEntityDAO = (UserEntityDAO) getManagedBean(UserEntityDAO.class);
       
-      return userEntityDAO.findById(id);
+      return userEntityDAO.findById((Long) id);
     } catch (Exception ex) {
       ex.printStackTrace();
     }

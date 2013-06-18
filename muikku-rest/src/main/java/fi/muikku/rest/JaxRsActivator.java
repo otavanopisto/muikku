@@ -24,7 +24,8 @@ public class JaxRsActivator extends Application {
 		List<Class<? extends AbstractRESTService>> coreServices = Arrays.asList(
 				PermissionRESTService.class,
 				CourseRESTService.class,
-				UserRESTService.class
+				UserRESTService.class,
+				TagRESTService.class
 		);
 		
 		classes = new HashSet<>();

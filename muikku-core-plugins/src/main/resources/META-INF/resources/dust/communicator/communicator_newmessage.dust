@@ -19,20 +19,20 @@
     </div>
     <div class="mf-content">
       <div class="cm-newMessage-recipients">
-       <div class="mf-fieldRow">
-         <div class="mf-labelfield">{#localize key="plugin.communicator.newmessage.recipients"/}</div>
-         <div class="mf-textfield cm-newMessage-userTextfield"><input type="text" name="userInput"/></div>
-       </div>
-       <div class="clear"></div>
-       <div class="mf-selectedObjects cm-newMessage-recipientsList"></div>
-       <div class="cm-newMessage-recipientSelector"></div>
-       <div class="clear"></div>
+        <div class="mf-fieldRow">
+          <div class="mf-labelfield">{#localize key="plugin.communicator.newmessage.recipients"/}</div>
+          <div class="mf-textfield cm-newMessage-userTextfield"><input type="text" name="userInput"/></div>
+        </div>
+        <div class="clear"></div>
+        <div class="mf-selectedObjects cm-newMessage-recipientsList"></div>
+        <div class="cm-newMessage-recipientSelector"></div>
+        <div class="clear"></div>
       </div>
       <div class="cm-newMessage-message">
           <div class="mf-fieldRow cm-newMessage-subject">
            <div class="mf-labelfield">{#localize key="plugin.communicator.subject"/}</div>
            <div class="mf-textfield">
-            <input type="text" name="subject" />
+             <input type="text" name="subject" />
            </div>
           <div class="clear"></div>
           <div class="cm-newMessage-content">
@@ -40,7 +40,15 @@
             <div class="clear"></div>
 
             <div class="">
-             <textarea name="content"></textarea>
+              <textarea name="content"></textarea>
+            </div>
+          </div>    
+          <div class="cm-newMessage-tags">
+            <div class="mf-labelfield">{#localize key="plugin.communicator.messagetags"/}</div>
+            <div class="clear"></div>
+
+            <div class="">
+              <input type="text" name="tags" />
             </div>
           </div>    
         </div>
