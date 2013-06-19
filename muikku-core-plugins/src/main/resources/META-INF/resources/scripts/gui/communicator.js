@@ -13,14 +13,14 @@ $.widget("custom.communicatorautocomplete", $.ui.autocomplete, {
     });
   },
   _renderItem: function(ul, item) {
-    var imageUrl = "/muikku/themes/default/gfx/fish.jpg";
+    var imageUrl = CONTEXTPATH + "/themes/default/gfx/fish.jpg";
     if (item.image)
       imageUrl = item.image;
     
     var inner_html = 
       '<a><div class="communicator_autocomplete_item_container">' + 
-      '<div class="communicator_autocomplete_item_image"><img src="' + imageUrl + '"></div>' +
-      '<div class="communicator_autocomplete_item_label">' + item.label + '</div></div></a>';
+      '<span class="communicator_autocomplete_item_image"><img width="25" height="25" src="' + imageUrl + '"></span>' +
+      '<span class="communicator_autocomplete_item_label">' + item.label + '</span></div></a>';
     return $( "<li></li>" ).data( "item.autocomplete", item ).append(inner_html).appendTo( ul );
   }
 });
@@ -88,7 +88,7 @@ $.fn.extend({
       this._newMessageButton.click($.proxy(this._onNewMessageClick, this));
       
       this._communicatorContent.tooltip({
-        items: ".cm-item-senderName",
+        items: ".mf-person",
         tooltipClass: "cm-userpopup-container",
         content: _this._getUserPopupContent
       });
@@ -324,6 +324,7 @@ $.fn.extend({
 
       var subject = "";
       var content = "";
+      var tags = "";
       
       RESTful.doGet(CONTEXTPATH + "/rest/communicator/{userId}/communicatormessages/{messageId}", {
         parameters: {
@@ -333,6 +334,14 @@ $.fn.extend({
       }).success(function (data, textStatus, jqXHR) {
         subject = data.caption;
         content = data.content;
+        
+        if (data.tags_tq.length > 0) {
+          tags = data.tags_tq[0].text;
+          
+          for (var tc = 1, tcl = data.tags_tq.length; tc < tcl; tc++) {
+            tags = tags + ", " + data.tags_tq[tc].text;
+          }
+        }
         
         if (!replyAll) {
           recipients.push({
@@ -348,7 +357,8 @@ $.fn.extend({
         content: content,
         recipients: recipients,
         templates: templates,
-        signatures: signatures
+        signatures: signatures,
+        tags: tags
       };
   
       renderDustTemplate('communicator/communicator_replymessage.dust', prms, function (text) {
@@ -446,7 +456,7 @@ $.fn.extend({
     _onPostReplyMessageClick: function (event) {
       var _this = this;
       var element = $(event.target);
-      var newMessageElement = element.parents(".cm-newMessage");
+      var newMessageElement = element.parents(".cm-replyMessage");
       var recipientListElement = newMessageElement.find(".cm-newMessage-recipientsList");
       var recipientIds = [];
       
@@ -498,10 +508,16 @@ $.fn.extend({
         }
       }).success(function (data, textStatus, jqXHR) {
         for (var i = 0, l = data.length; i < l; i++) {
+          var img = undefined;
+          
+          if (data[i].hasPicture)
+            img = CONTEXTPATH + "/picture?userId=" + data[i].id;
+          
           users.push({
             category: "Käyttäjät",
             label: data[i].fullName,
-            id: data[i].id
+            id: data[i].id,
+            image: img
           });
         }
       });
@@ -754,7 +770,7 @@ $.fn.extend({
       });
     },
     _getUserPopupContent: function(callback) {
-      var userId = 1; // TODO
+      var userId = $(this).find("input[name='mf-person-id']").val();
       
       RESTful.doGet(CONTEXTPATH + "/rest/communicator/userinfo/{userId}", {
         parameters: {

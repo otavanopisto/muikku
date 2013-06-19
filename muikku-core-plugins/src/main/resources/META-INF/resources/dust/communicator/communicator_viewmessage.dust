@@ -15,13 +15,16 @@
     {/sender_tq.hasPicture}
   </div>
   
-  <div class="mf-person cm-message-senderName"><a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={sender}">{sender_tq.fullName}</a></div>
+  <div class="mf-person cm-message-senderName">
+    <input type="hidden" name="mf-person-id" value="{sender}"/>
+    <a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={sender}">{sender_tq.fullName}</a>
+  </div>
 
   <div>
 	<div class="cm-message-recipients">
 	  -&gt;
 	  {#recipients}
-	    {fullName}  
+	    <span class="mf-person">{fullName}<input type="hidden" name="mf-person-id" value="{id}"/></span>
 	  {/recipients}
 	</div>  
   </div>

@@ -16,7 +16,7 @@ import fi.muikku.plugin.PluginDescriptor;
 
 @ApplicationScoped
 @Stateful
-public class CoursePickerPluginDescriptor implements PluginDescriptor, LocalizedPluginDescriptor {//, PersistencePluginDescriptor, RESTPluginDescriptor {
+public class CoursePickerPluginDescriptor implements PluginDescriptor, LocalizedPluginDescriptor {
 	
 	@Override
 	public String getName() {
@@ -41,32 +41,9 @@ public class CoursePickerPluginDescriptor implements PluginDescriptor, Localized
     List<LocaleBundle> bundles = new ArrayList<LocaleBundle>();
     bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.coursepicker.CoursePickerPluginMessages", LocaleUtils.toLocale("fi"))));
     bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.coursepicker.CoursePickerPluginMessages", LocaleUtils.toLocale("en"))));
+    bundles.add(new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.coursepicker.CoursePickerJsPluginMessages", LocaleUtils.toLocale("fi"))));
+    bundles.add(new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.coursepicker.CoursePickerJsPluginMessages", LocaleUtils.toLocale("en"))));
     return bundles;
   }
-  
-//	@Override
-//	public List<Class<?>> getBeans() {
-//		return new ArrayList<Class<?>>(Arrays.asList(
-//			/* DAOs */	
-//		  
-//		  /* Controllers */
-//
-//		));
-//	}
-	
-//	@Override
-//	public Class<?>[] getEntities() {
-//		return new Class<?>[] {
-//			CommunicatorMessage.class,
-//			CommunicatorMessageId.class,
-//			CommunicatorMessageRecipient.class
-//		};
-//	}
-//	
-//	@Override
-//	public Class<?>[] getRESTServices() {
-//		return new Class<?>[] {
-//			CommunicatorRESTService.class
-//		};
-//	}
+
 }

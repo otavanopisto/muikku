@@ -11,10 +11,13 @@
   <div class="cm-item-header">
     <div class="cm-item-title">{caption} {@if cond="{messageCount} > 1"} ({messageCount}){/if}</div>
     <div>
-	    <span class="cm-item-date">
-	      {created|formatDate} {created|formatTime}
-	    </span>
-	    <span class="cm-item-senderName"><a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={sender}">{sender_tq.fullName}</a></span>
+      <span class="cm-item-date">
+        {created|formatDate} {created|formatTime}
+      </span>
+      <span class="mf-person cm-item-senderName">
+        <input type="hidden" name="mf-person-id" value="{sender}"/>
+        <a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={sender}">{sender_tq.fullName}</a>
+      </span>
     </div>
    </div>     
       

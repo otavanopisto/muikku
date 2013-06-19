@@ -53,7 +53,7 @@
           <div class="clear"></div>
 
           <div class="">
-            <input type="text" name="tags" />
+            <input type="text" name="tags" value="{tags}" />
           </div>
         </div>    
       </div>		

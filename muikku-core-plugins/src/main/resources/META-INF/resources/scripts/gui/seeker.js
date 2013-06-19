@@ -28,6 +28,7 @@ $.widget("custom.seekerautocomplete", $.ui.autocomplete, {
     var listItem = $( "<li></li>" ).data( "item.autocomplete", item );
     
     var params = {
+      searchTerm: this.element.val(),
       item: item
     };
       

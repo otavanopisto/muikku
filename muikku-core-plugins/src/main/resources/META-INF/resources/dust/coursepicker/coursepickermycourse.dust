@@ -7,12 +7,7 @@
     </div>
     <div class="cp-course-details" style="display: none;">
       <div class="mf-toolbar cp-course-details-toolbar">
-        {?isMember}  
-          <input type="button" value='{#localize key="plugin.coursepicker.course.checkout" /}' class="cp-course-tour-button"/>       
-        {:else}     
-          <input type="button" value='{#localize key="plugin.coursepicker.course.checkout" /}' class="cp-course-tour-button"/>
-          <input type="button" value='{#localize key="plugin.coursepicker.course.signup" /}' class="cp-course-attend-button"/>
-        {/isMember}
+        <input type="button" value='{#localize key="plugin.coursepicker.course.checkout" /}' class="cp-course-tour-button"/>       
       </div>
 
       <div class="cp-course-detailsContainer">

@@ -8,16 +8,13 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.Lob;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.PersistenceException;
 import javax.persistence.Temporal;
@@ -142,7 +139,7 @@ public class CommunicatorMessage {
   private Boolean archivedBySender = Boolean.FALSE;
   
   @ElementCollection
-  @CollectionTable (name="communicatormessage_tags", joinColumns=@JoinColumn(name="communicatorMessage"))
+  @CollectionTable (name="communicatormessage_tags", joinColumns=@JoinColumn(name="communicatorMessage_id"))
   @Column
   @TranquilityEntityField(TagEntityResolver.class)
   private List<Long> tags = new ArrayList<Long>();
