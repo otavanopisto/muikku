@@ -49,7 +49,6 @@ public class PluginExtension implements Extension {
     repositories.add(new RemoteRepository("otavanopisto-releases", "default", "http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases"));
     
     pluginLoadInfos.add(new PluginLibraryLoadInfo("fi.muikku", "core-plugins", "1.0.0-SNAPSHOT"));
-    pluginLoadInfos.add(new PluginLibraryLoadInfo("fi.muikku", "example-plugin-1", "1.0.0-SNAPSHOT"));
     String eclipseWorkspace = System.getProperty("eclipse.workspace");
     
     SingletonPluginManager pluginManager;
