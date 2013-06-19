@@ -99,6 +99,7 @@
         <configuration>
           <source>${maven.compiler.source}</source>
           <target>${maven.compiler.target}</target>
+          <compilerArgument>-proc:none</compilerArgument>
         </configuration>
       </plugin>
       
@@ -131,7 +132,7 @@
           <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-jpamodelgen</artifactId>
-            <version>1.0.0.Final</version>
+            <version>1.2.0.Final</version>
           </dependency>
           <dependency>
             <groupId>fi.tranquil-model</groupId>
@@ -150,7 +151,6 @@
               <includes>
                 <include>**fi/muikku/plugins/**/*.java</include>
               </includes>
-          
               <outputDirectory>${basedir}/src/main/.metamodel</outputDirectory>
               <processors>
                 <processor>org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor</processor>
@@ -165,6 +165,9 @@
             </goals>
             <phase>generate-sources</phase>
             <configuration>
+              <additionalSourceDirectories>
+                <sourceDirectory>${basedir}/src/main/.metamodel</sourceDirectory>
+              </additionalSourceDirectories>
               <includes>
                 <include>**fi/muikku/plugins/**/*.java</include>
               </includes>
