@@ -72,6 +72,10 @@ public class CommunicatorController {
     return communicatorMessageDAO.listFirstMessagesByRecipient(userEntity);
   }
   
+  public List<CommunicatorMessage> listSentItems(UserEntity userEntity) {
+    return communicatorMessageDAO.listFirstMessagesByRecipient(userEntity);
+  }
+  
   public CommunicatorMessageId createMessageId() {
     return communicatorMessageIdDAO.create();
   }

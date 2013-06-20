@@ -107,6 +107,46 @@ public class CommunicatorRESTService extends PluginRESTService {
   }
 
   @GET
+  @Path ("/{USERID}/sentitems")
+  public Response listUserSentCommunicatorItems( 
+      @PathParam ("USERID") Long userId) {
+    UserEntity user = userController.findUserEntity(userId); 
+    List<CommunicatorMessage> receivedItems = communicatorController.listSentItems(user);
+
+    Collections.sort(receivedItems, new Comparator<CommunicatorMessage>() {
+      @Override
+      public int compare(CommunicatorMessage o1, CommunicatorMessage o2) {
+        return o2.getCreated().compareTo(o1.getCreated());
+      }
+    });
+    
+    TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
+    Tranquility tranquility = tranquilityBuilder.createTranquility()
+      .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
+      .addInstruction(CommunicatorMessage.class, tranquilityBuilder.createPropertyInjectInstruction("messageCount", new MessageCountValueGetter()))
+      .addInstruction(CommunicatorMessage.class, tranquilityBuilder.createPropertyInjectInstruction("recipients", new CommunicatorMessageRecipientsGetter()))
+      .addInstruction(new SuperClassInstructionSelector(UserEntity.class), tranquilityBuilder.createPropertyInjectInstruction("hasPicture", new UserEntityHasPictureValueGetter()))
+      .addInstruction(new SuperClassInstructionSelector(UserEntity.class), tranquilityBuilder.createPropertyInjectInstruction("fullName", new UserNameValueGetter()));
+    
+//    TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
+//    Tranquility tranquility = tranquilityBuilder.createTranquility()
+//      .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
+//      .addInstruction("wallEntry", tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
+//      .addInstruction("wallEntry.replies", tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
+//      .addInstruction("thread", tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
+//      .addInstruction(ForumThread.class, tranquilityBuilder.createPropertyInjectInstruction("replies", new ForumThreadReplyInjector()))
+//      .addInstruction(Wall.class, tranquilityBuilder.createPropertyInjectInstruction("wallName", new WallEntityNameGetter()))
+//      .addInstruction(UserEntity.class, tranquilityBuilder.createPropertyInjectInstruction("hasPicture", new UserEntityHasPictureValueGetter()))
+//      .addInstruction(UserEntity.class, tranquilityBuilder.createPropertyInjectInstruction("fullName", new UserNameValueGetter()));
+    
+    Collection<TranquilModelEntity> entities = tranquility.entities(receivedItems);
+    
+    return Response.ok(
+      entities
+    ).build();
+  }
+
+  @GET
   @Path ("/{USERID}/messages/{COMMUNICATORMESSAGEID}")
   public Response listUserCommunicatorMessagesByMessageId( 
       @PathParam ("USERID") Long userId,

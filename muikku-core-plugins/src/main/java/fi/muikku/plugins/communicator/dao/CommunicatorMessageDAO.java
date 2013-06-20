@@ -65,6 +65,25 @@ public class CommunicatorMessageDAO extends PluginDAO<CommunicatorMessage> {
     return entityManager.createQuery(criteria).getResultList();
   }
 
+  public List<CommunicatorMessage> listFirstMessagesBySender(UserEntity sender) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<CommunicatorMessage> criteria = criteriaBuilder.createQuery(CommunicatorMessage.class);
+    Root<CommunicatorMessage> root = criteria.from(CommunicatorMessage.class);
+
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(CommunicatorMessage_.sender), sender.getId()),
+            criteriaBuilder.equal(root.get(CommunicatorMessage_.archivedBySender), Boolean.FALSE)
+        )
+    );
+    criteria.groupBy(root.get(CommunicatorMessage_.communicatorMessageId));
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
   public List<CommunicatorMessage> listMessagesByRecipientAndMessageId(UserEntity recipient, CommunicatorMessageId communicatorMessageId) {
     EntityManager entityManager = getEntityManager(); 
     

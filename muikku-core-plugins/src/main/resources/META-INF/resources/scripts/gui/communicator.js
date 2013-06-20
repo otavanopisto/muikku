@@ -103,6 +103,11 @@ $.fn.extend({
         } else if (hash.startsWith("in/")) {
           var messageId = hash.substring(3);
           _this._showMessage(messageId);
+        } else if (hash == "sent") {
+          _this._showSentItems();
+        } else if (hash.startsWith("sent/")) {
+          var messageId = hash.substring(5);
+          _this._showMessage(messageId);
         } else
           _this._showInbox();
       });
@@ -128,6 +133,20 @@ $.fn.extend({
         }
       }).success(function (data, textStatus, jqXHR) {
         renderDustTemplate('communicator/communicator_items.dust', data, function (text) {
+          _this._communicatorContent.append($.parseHTML(text));
+        });
+      });
+    },
+    _showSentItems: function () {
+      var _this = this;
+      this._clearContent();
+      
+      RESTful.doGet(CONTEXTPATH + "/rest/communicator/{userId}/sentitems", {
+        parameters: {
+          'userId': this._userId
+        }
+      }).success(function (data, textStatus, jqXHR) {
+        renderDustTemplate('communicator/communicator_sentitems.dust', data, function (text) {
           _this._communicatorContent.append($.parseHTML(text));
         });
       });
@@ -166,7 +185,14 @@ $.fn.extend({
       element = element.parents(".cm-message");
       var messageId = $(element).find("input[name='communicatorMessageIdId']").val();
       
-      window.location.hash = "#in/" + messageId;
+      var box = "#in";
+      
+      if (window.location.hash) {
+        if (window.location.hash.startsWith("#sent"))
+          box = "#sent";
+      }
+      
+      window.location.hash = box + "/" + messageId;
     },
     _showMessage: function(messageId) {
       var _this = this;
@@ -181,10 +207,22 @@ $.fn.extend({
         renderDustTemplate('communicator/communicator_viewmessage.dust', data, function (text) {
           _this._communicatorContent.append($.parseHTML(text));
           
+          _this._communicatorContent.find('.mf-backLink').click($.proxy(_this._onMessageBackClick, _this));
           _this._communicatorContent.find('.cm-message-replyLink').click($.proxy(_this._onReplyMessageClick, _this));
           _this._communicatorContent.find('.cm-message-replyAllLink').click($.proxy(_this._onReplyMessageClick, _this));
         });
       });
+    },
+    _onMessageBackClick: function (event) {
+      var box = "#in";
+      
+      if (window.location.hash) {
+        if (window.location.hash.startsWith("#sent"))
+          box = "#sent";
+      }
+      
+      window.location.hash = box;
+      return false;
     },
     _showNewMessageView: function () {
       var _this = this;
@@ -772,15 +810,17 @@ $.fn.extend({
     _getUserPopupContent: function(callback) {
       var userId = $(this).find("input[name='mf-person-id']").val();
       
-      RESTful.doGet(CONTEXTPATH + "/rest/communicator/userinfo/{userId}", {
-        parameters: {
-          'userId': userId
-        }
-      }).success(function (data, textStatus, jqXHR) {
-        renderDustTemplate('communicator/communicator_userpopup.dust', data, function (text) {
-          callback($.parseHTML(text));
+      if (userId > 0) {
+        RESTful.doGet(CONTEXTPATH + "/rest/communicator/userinfo/{userId}", {
+          parameters: {
+            'userId': userId
+          }
+        }).success(function (data, textStatus, jqXHR) {
+          renderDustTemplate('communicator/communicator_userpopup.dust', data, function (text) {
+            callback($.parseHTML(text));
+          });
         });
-      });
+      }
     },
     _split: function(val) {
       return val.split(/,\s*/);

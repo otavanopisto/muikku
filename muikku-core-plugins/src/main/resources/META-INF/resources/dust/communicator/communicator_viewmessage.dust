@@ -2,9 +2,9 @@
 <div class="cm-message-view">
 
   <div class="mf-toolbar cm-message-toolbar">
-   <a class="mf-backLink" title="{#localize key="plugin.communicator.reply"/}" alt="{#localize key="plugin.communicator.back"/}" href="#">
-   <a class="cm-message-replyLink" title="{#localize key="plugin.communicator.reply"/}" alt="{#localize key="plugin.communicator.reply"/}" href="#">
-  </a> <a class="cm-message-replyAllLink" title="{#localize key="plugin.communicator.replyAll"/}" alt="{#localize key="plugin.communicator.replyAll"/}" href="#"></a>
+	<a class="mf-backLink" title="{#localize key="plugin.communicator.reply"/}" alt="{#localize key="plugin.communicator.back"/}" href="#"></a>
+	<a class="cm-message-replyLink" title="{#localize key="plugin.communicator.reply"/}" alt="{#localize key="plugin.communicator.reply"/}" href="#"></a>
+    <a class="cm-message-replyAllLink" title="{#localize key="plugin.communicator.replyAll"/}" alt="{#localize key="plugin.communicator.replyAll"/}" href="#"></a>
   </div>
   <div class="clear"></div>
   <div class="cm-message-senderPictureContainer">
@@ -24,7 +24,7 @@
 	<div class="cm-message-recipients">
 	  -&gt;
 	  {#recipients}
-	    <span class="mf-person">{fullName}<input type="hidden" name="mf-person-id" value="{id}"/></span>
+	    <span class="mf-person">{fullName}<input type="hidden" name="mf-person-id" value="{id}"/></span>{@sep}, {/sep}
 	  {/recipients}
 	</div>  
   </div>
@@ -39,8 +39,6 @@
 
   <div class="mf-textContent cm-message-content">{content}</div>
 
-
-
   <div class="cm-message-tags">
     {#tags_tq}
       {text}{@sep}, {/sep}
@@ -49,6 +47,5 @@
 
   <input type="hidden" name="communicatorMessageId" value="{id}"/>
   <input type="hidden" name="communicatorMessageIdId" value="{communicatorMessageId.id}"/>
-  
 </div>
 {/.}
