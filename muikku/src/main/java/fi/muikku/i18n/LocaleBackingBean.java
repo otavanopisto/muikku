@@ -22,7 +22,7 @@ public class LocaleBackingBean {
   @Inject
   private LocaleController localeController;
 
-  public long getJsLastModified(String language) {
+  public Long getJsLastModified(String language) {
     return localeController.getJsLastModified(LocaleUtils.toLocale(language));
   }
 

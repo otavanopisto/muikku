@@ -8,9 +8,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
 
@@ -18,6 +20,9 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 @Stateful
 public class LocaleController {
 
+	@Inject
+	private Logger logger;
+	
   public void add(LocaleLocation location, List<ResourceBundle> bundles) {
     for (ResourceBundle bundle : bundles) {
       add(location, bundle);
@@ -62,13 +67,19 @@ public class LocaleController {
     return DateFormatUtils.format(new Date(), localeMaps.get(locale.getLanguage()).get("timePattern"));
   }
 
-  public long getJsLastModified(Locale locale) {
-    Date d = jsLastModified.get(locale.getLanguage());
-    if (d == null) {
-      d = new Date((System.currentTimeMillis() / 1000) * 1000);
-      jsLastModified.put(locale.getLanguage(), d);
+  public Long getJsLastModified(Locale locale) {
+  	if (locale == null) {
+  		logger.warning("Tried to resolve last modified date of null locale");
+  		return null;
+  	}
+  	
+    Date date = jsLastModified.get(locale.getLanguage());
+    if (date == null) {
+      date = new Date((System.currentTimeMillis() / 1000) * 1000);
+      jsLastModified.put(locale.getLanguage(), date);
     }
-    return d.getTime();
+    
+    return date.getTime();
   }
 
   public String getJsLocales(Locale locale) {
