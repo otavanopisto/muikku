@@ -1,34 +1,57 @@
-{#.}
-<div class="communicatorMessageView">
-  <a class="communicatorMessageReplyLink" href="#">{#localize key="plugin.communicator.reply"/}</a> <a class="communicatorMessageReplyAllLink" href="#">{#localize key="plugin.communicator.replyAll"/}</a>
+<div class="cm-message-view-container">
+<div class="mf-toolbar cm-viewmessagethread-toolbar">
+  <a class="mf-backLink" title="{#localize key="plugin.communicator.back"/}" alt="{#localize key="plugin.communicator.back"/}" href="#"></a>
+  <a class="cm-message-trashMessageLink" title="{#localize key="plugin.communicator.trashMessage"/}" alt="{#localize key="plugin.communicator.trashMessage"/}" href="#"></a>
+</div>
 
-  <div class="communicatorMessageSenderPictureContainer">
+{#.}
+<div class="cm-message-view">
+
+  <div class="mf-toolbar cm-message-toolbar">
+    <a class="cm-message-replyLink" title="{#localize key="plugin.communicator.reply"/}" alt="{#localize key="plugin.communicator.reply"/}" href="#"></a>
+    <a class="cm-message-replyAllLink" title="{#localize key="plugin.communicator.replyAll"/}" alt="{#localize key="plugin.communicator.replyAll"/}" href="#"></a>
+  </div>
+  <div class="clear"></div>
+  <div class="cm-message-senderPictureContainer">
     {?sender_tq.hasPicture} 
-      <img class="communicatorMessageSenderPicture" src="{@contextPath/}/picture?userId={sender.id}" width="50" height="50" />
+      <img class="cm-message-senderPicture" src="{@contextPath/}/picture?userId={sender}" width="50" height="50" />
     {:else}
-      <img class="communicatorMessageSenderPicture" src="{@contextPath/}/themes/default/gfx/fish.jpg" width="50" height="50" />
+      <img class="cm-message-senderPicture" src="{@contextPath/}/themes/default/gfx/fish.jpg" width="50" height="50" />
     {/sender_tq.hasPicture}
   </div>
   
-  <div class="communicatorMessageSenderName"><a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={sender.id}">{sender_tq.fullName}</a></div>
-  <div class="communicatorMessageRecipients">
-  -&gt;
-  {#recipients}
-    {fullName}  
-  {/recipients}
-  </div>
-  
-  <div class="communicatorMessageTitle">{caption}</div>
-  <div class="communicatorMessageContent">{content}</div>
-
-  <div class="communicatorMessageDate">
-    {created|formatDate}
+  <div class="mf-person cm-message-senderName">
+    <input type="hidden" name="mf-person-id" value="{sender}"/>
+    <a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={sender}">{sender_tq.fullName}</a>
   </div>
 
-  <div class="communicatorMessageTags">{#localize key="plugin.communicator.messagetags"/}</div>
+  <div>
+	<div class="cm-message-recipients">
+	  -&gt;
+	  {#recipients}
+	    <span class="mf-person">{fullName}<input type="hidden" name="mf-person-id" value="{id}"/></span>{@sep}, {/sep}
+	  {/recipients}
+	</div>  
+  </div>
+   <div class="cm-message-header">
+    <span class="cm-message-date">
+      {created|formatDate} {created|formatTime}
+    </span>
+    <span class="cm-message-title">{caption}</span>
+
+   </div>
+   <div class="clear"></div>
+
+  <div class="mf-textContent cm-message-content">{content}</div>
+
+  <div class="cm-message-tags">
+    {#tags_tq}
+      {text}{@sep}, {/sep}
+    {/tags_tq}
+  </div>
 
   <input type="hidden" name="communicatorMessageId" value="{id}"/>
   <input type="hidden" name="communicatorMessageIdId" value="{communicatorMessageId.id}"/>
-  
 </div>
 {/.}
+</div>

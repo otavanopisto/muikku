@@ -1,7 +1,7 @@
 @import "_base.scss";
 
 
-/* Note: All in-development-unfinished-temp-styles are in temp.css */
+/* Note: All in-development- unfinished-temp-styles are in temp.css */
 
 html{
      height: 100%;
@@ -12,7 +12,7 @@ body {
     padding: 0;
     height: 100%;
     font-family: 'Open Sans',Verdana, sans-serif;
-    font-size: 0.9em;
+    font-size: 62.5%;
 }
 
 /* TODO: H1,H2,H3,H4,H5 */
@@ -85,7 +85,7 @@ body {
     position:relative;
     top:-10px;
     text-decoration: none;
-    font-size:24px;    
+    font-size:2.4em;    
 }
 
  a.header {
@@ -142,18 +142,21 @@ border-radius: 0px 0px 10px 10px;
   height:50px;
 }
 
-#globalSearch{
-    font-size:13px;
+.seeker{
+	  text-align:center;
+    position:relative;
+    top:109px;	
+    font-size:1.3em;
     @include gradient-top-bottom-four($contInteractGr...);
-    height: 40px;
-    width: 220px;
+    height: 35px;
+    width: 165px;
     border: 2px solid #ededed;
     border-radius: 5px;
 }
 
-#globalSearchForm{
-    margin:5px;
-    float:right;
+.seeker input{
+    margin:5px 0 5px 0;
+
 }
 
 
@@ -170,10 +173,11 @@ border-radius: 0px 0px 10px 10px;
 }
 
 
-#languageSelector { 
-    margin-top:20px;
-    float:right;
-    font-size:13px;
+.languageWidget { 
+    position:absolute;
+   right:10px;
+    margin-top:105px;
+    font-size:1.3em;
     @include gradient-top-bottom-four($contInteractGr...);
     height: 20px;
     width : 50px;
@@ -187,8 +191,10 @@ border-radius: 0px 0px 10px 10px;
     margin-left:2px;    
 }
 
-.languageSelection a {  
-    text-decoration:none;   
+.languageWidget a {  
+    text-decoration:none; 
+    padding: 3px;  
+    
 }
 
 .languageSelection a:hover {    
@@ -273,10 +279,20 @@ background-color:$aBgr;
 margin-top:5px;	
 }
 
+.mf-textContent{
+  @include shadow;
+  @include rounded(4px);  
+  background-color:#fff;	
+}
+
 .mf-toolbar{
 @include rounded(4px); 	
 background-color:$aBgr;
 padding:10px 20px 10px 20px;
+}
+
+.mf-backLink{
+      @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-back.png'));
 }
 
 .mf-content{
@@ -286,8 +302,250 @@ margin-top:5px;
 padding:10px 20px 10px 20px;
 }
 
-/* communicator (.cm*) */
 
+
+/* communicator (.cm-*) */
+
+.cm-content{	
+}
+.cm-item{
+	  @include rounded(4px);  
+    @include gradient-top-bottom;
+    @include shadow;
+    margin-bottom:5px;
+    min-height:50px;
+    padding:5px; 
+    background-color:$aBgr;	
+}
+.cm-message{
+    @include border($msgBrd,1px);
+    @include gradient-top-bottom($msgGr...);
+}
+.cm-message-view{
+	 @include rounded(4px);  
+    @include gradient-top-bottom;
+    @include shadow;
+    margin-bottom:10px;
+    min-height:50px;
+    padding:5px; 
+    
+}
+
+.cm-message-toolbar, .cm-viewmessagethread-toolbar {
+	padding:0;
+	height:40px;
+}
+
+.cm-message-replyLink {
+     @include naviIcon(url('../resources/gfx/icons/32x32/actions/communicator-reply.png'));
+}
+
+.cm-message-replyAllLink {
+      @include naviIcon(url('../resources/gfx/icons/32x32/actions/communicator-replyall.png'));
+}
+
+.cm-message-trashMessageLink {
+      @include naviIcon(url('../resources/gfx/icons/32x32/actions/communicator-trash.png'));
+}
+
+.cm-message-senderName{
+}
+.cm-message-recipients{
+}
+.cm-message-content{
+	padding:15px;
+
+	font-size:1.3em;
+}
+ 
+.cm-news{
+}
+.cm-request{
+}
+
+.cm-item-header{
+	float:left;	
+}
+
+.cm-item-senderPictureContainer, .cm-senderPictureContainer{
+  float:left;
+	@include border($brd);
+	@include shadow;
+	height:50px;
+	width:50px
+}
+.cm-item-senderName, .cm-message-senderName{
+	float:left;
+	margin-left: 0.5em;
+}
+.cm-item-title, .cm-message-title, .cm-message-date{
+
+   font-size: 2em;
+   margin-left: 0.5em;
+}
+
+.cm-item-date, .cm-message-date{
+	margin-left: 0.5em;
+	float:left;
+}
+	
+.cm-item-tags, .cm-message-tags{
+	margin-top:5px;
+	font-size:1.3em;
+	   @include border(#ededed);
+    @include rounded(4px);
+    @include gradient-top-bottom(#707070, #666);
+    @include shadow;
+	color:#fff;
+	padding:5px;
+}
+
+.cm-replyMessage{
+	padding:5px 5px 5px 10px;
+	background-color:#fff;
+	@include rounded(4px);
+}
+
+
+/* Coursepicker (.cp-*) */
+
+
+.cp-allCourses-filterPane{
+	
+}
+
+.cp-allCourses-searchBtn{}
+.cp-allCourses-filterBtn{}
+.cp-allCourses-filterSelector-popup{
+   @include rounded(4px);
+   @include border($brd);
+    background-color: $aBgr;
+    padding: 5px;
+    position: absolute;
+    width: 100px;
+}
+.cp-filterSelection{}
+
+.cp-filterSelector-subTitle{
+ font-weight:bold;
+ color:$subTitle;
+}
+
+.cp-filterSelector-selectionContainer{
+	padding-left:5px
+	
+}
+.cp-filterSelection-name{}
+.cp-filterList{}
+.cp-filter{
+  @include rounded(4px);
+  @include border($brd);
+  @include gradient-top-bottom(#707070, #666);
+  @include shadow;
+  color:#fff;
+  float:left;
+	padding:5px;
+	
+
+}
+.cp-allCourses-filterPane{
+	   background-color:$saBgr;
+	
+}
+.cp-myCourses-searchBtn{}
+.cp-filterListPane{}
+
+.cp-course{
+	  @include border(#ededed);
+    @include rounded(4px);
+    @include gradient-top-bottom;
+    @include shadow;
+    margin-top:5px; 
+    padding:10px;
+}
+
+
+.cp-course-header{
+    @include border(#ededed);
+    @include rounded(4px);
+    @include gradient-top-bottom(#707070, #666);	
+	  padding:5px;
+}
+.cp-course-rating{
+	float:right;
+	color:#fff;
+}
+.cp-course-name{
+color:$lukio;
+}
+
+.cp-course-toolbar{}
+.cp-course-toolbar-tour-button{}
+.cp-course-toolbar-attend-button{}
+
+.cp-course-details{}
+
+.cp-course-detailsContainer{
+		
+}
+.cp-course-details-description{
+	display:inline;
+	min-height:100px;
+	padding:10px;
+	width:70%;
+	float:left;
+	box-sizing:border-box;
+-moz-box-sizing:border-box;
+}
+
+.cp-course-details-additionalInfo{
+	display:inline;
+	min-height:100px;
+  padding:0 10px 10px 10px;
+  width:29%;
+	float:right;
+	background-color:$aBgr;
+  box-sizing:border-box;
+-moz-box-sizing:border-box;
+}
+.cp-course-details-teachers{
+
+	
+}
+.cp-course-details-teachers-caption{
+	font-weight:bold;
+	padding:5px 0 5px 0;
+}
+.cp-course-details-teacher{
+	border-bottom:solid 1px $brd;
+	min-heigth:60px;
+	
+
+}
+.cp-course-details-teacher-name{
+	font-weight:bold;
+	
+}
+.cp-course-details-teacher-picture-container{
+	float:left;
+  width:50px;
+  overflow:hidden;
+  padding:0 5px 0 5px;
+	
+}
+.cp-course-details-teacher-picture{}
+.cp-course-details-fee{}
+.cp-course-details-assessmentFee{}
+
+
+/*
+.cp-lukio
+.cp-ammattillinen
+.cp-peruskoulu
+.cp-ilmio
+.cp-paja
+.cp-ryhmakurssi
+*/
 
 
 .wallEntry {
@@ -306,12 +564,12 @@ padding:10px 20px 10px 20px;
 }
 
 .wallEntryDate, .wallEntryCommentDate {
-  font-size: 60%; 
+  font-size:1.3em; 
   float: right;
 }
 
 .wallEntryContent, .wallEntryCommentContent {
-  font-size: 90%;
+  font-size: 2.4em;
 }
 
 .wallEntryCourseLink, .wallEntryForumAreaLink {
@@ -338,7 +596,7 @@ padding:10px 20px 10px 20px;
 }
 
 .wallEntryFooter {
-  font-size: 75%;
+  font-size: 1.6em;
   color: #4444aa;
 }
 
@@ -361,7 +619,7 @@ padding:10px 20px 10px 20px;
 }
 
 .showUserName {
-  font-size: 300%;
+  font-size: 3.2em;
 }
 
 /* OAuth */
@@ -369,7 +627,7 @@ padding:10px 20px 10px 20px;
 .oAuthConfirmText {
     text-align: center;
     padding: 16px;
-    font-size: 14px;
+    font-size: 1.3em;
     font-weight: bold;
 }
 
@@ -377,7 +635,7 @@ padding:10px 20px 10px 20px;
   display: block;
   padding: 16px;
   border-radius: 8px;
-  font-size: 18px;
+  font-size: 1.8em;
   text-decoration: none;
   font-weight: bold;
   float: left;  
@@ -412,7 +670,7 @@ padding:10px 20px 10px 20px;
 }
 
 .forumThreadMessage, .forumThreadReplyMessage {
-  font-size: 75%;
+  font-size: 1.3em;
   margin-left: 70px;
   margin-top: 8px;
 }

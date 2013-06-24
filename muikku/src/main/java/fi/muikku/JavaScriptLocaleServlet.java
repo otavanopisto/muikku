@@ -31,7 +31,12 @@ public class JavaScriptLocaleServlet extends HttpServlet {
 
   @Override
   protected long getLastModified(HttpServletRequest req) {
-    return localeBackingBean.getJsLastModified(req.getParameter("lang"));
+    Long lastModified = localeBackingBean.getJsLastModified(req.getParameter("lang"));
+    if (lastModified != null) {
+    	return lastModified;
+    }
+    
+    return super.getLastModified(req);
   }
 
 }

@@ -39,7 +39,7 @@ public class SeekerRESTService extends PluginRESTService {
   
   @GET
   @Path ("/search")
-  public Response searchUsers(
+  public Response search(
       @QueryParam("searchString") String searchString
       ) {
     List<SeekerResult> results = new ArrayList<SeekerResult>();

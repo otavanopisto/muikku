@@ -9,8 +9,11 @@
   </parent>
   
   <properties>
+    <tranquil-model-gen.version>1.0.3-SNAPSHOT</tranquil-model-gen.version>
+    <!-- 
     <instrumentation-hibernate.version>4.0.1.Final</instrumentation-hibernate.version>
-    <tranquil-model-gen.version>1.0.2-SNAPSHOT</tranquil-model-gen.version>
+    <instrumentation-javassist.version>3.18.0-GA</instrumentation-javassist.version>
+     -->
   </properties>
 
   <artifactId>core-plugins</artifactId>
@@ -20,7 +23,6 @@
 
   <build>
     <finalName>${project.artifactId}</finalName>
-    
     <pluginManagement>
       <plugins>
         <plugin>
@@ -46,6 +48,7 @@
                   </action>
                 </pluginExecution>
                 
+                <!-- 
                 <pluginExecution>
                   <pluginExecutionFilter>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -60,13 +63,15 @@
                     <ignore />
                   </action>
                 </pluginExecution>
+                -->
+                
               </pluginExecutions>
             </lifecycleMappingMetadata>
           </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
-    
+
     <plugins>
       <plugin>
         <groupId>org.jasig.maven</groupId>
@@ -94,6 +99,7 @@
         <configuration>
           <source>${maven.compiler.source}</source>
           <target>${maven.compiler.target}</target>
+          <compilerArgument>-proc:none</compilerArgument>
         </configuration>
       </plugin>
       
@@ -126,7 +132,7 @@
           <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-jpamodelgen</artifactId>
-            <version>1.0.0.Final</version>
+            <version>1.2.0.Final</version>
           </dependency>
           <dependency>
             <groupId>fi.tranquil-model</groupId>
@@ -145,7 +151,6 @@
               <includes>
                 <include>**fi/muikku/plugins/**/*.java</include>
               </includes>
-          
               <outputDirectory>${basedir}/src/main/.metamodel</outputDirectory>
               <processors>
                 <processor>org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor</processor>
@@ -160,6 +165,9 @@
             </goals>
             <phase>generate-sources</phase>
             <configuration>
+              <additionalSourceDirectories>
+                <sourceDirectory>${basedir}/src/main/.metamodel</sourceDirectory>
+              </additionalSourceDirectories>
               <includes>
                 <include>**fi/muikku/plugins/**/*.java</include>
               </includes>
@@ -174,7 +182,7 @@
           </execution>
         </executions>
       </plugin>
-
+<!-- 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antrun-plugin</artifactId>
@@ -185,6 +193,11 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
             <version>${instrumentation-hibernate.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>${instrumentation-javassist.version}</version>
           </dependency>
         </dependencies>
         
@@ -197,7 +210,7 @@
           </execution>
         </executions>
         <configuration>
-          <tasks>
+          <target>
             <taskdef name="instrument" classname="org.hibernate.tool.instrument.javassist.InstrumentTask">
               <classpath>
                 <path refid="maven.runtime.classpath" />
@@ -209,9 +222,10 @@
                 <include name="**fi/muikku/plugins/**/*.class" />
               </fileset>
             </instrument>
-          </tasks>
+          </target>
         </configuration>
       </plugin>
+ -->     
     </plugins>
   </build>
 
@@ -267,6 +281,11 @@
     <dependency>
       <groupId>fi.muikku</groupId>
       <artifactId>security</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>2.4</version>
     </dependency>
   </dependencies>
   

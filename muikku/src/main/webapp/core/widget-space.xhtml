@@ -14,7 +14,7 @@
     </ui:fragment>
     
     <ui:fragment rendered="#{empty(gridSize)}">
-      <div class="widgetSpace">
+      <div class="widgetSpace" data-name="#{location}">
         <m:includeWidgets widgets="#{widgetsBackingBean.getWidgets(location)}"/>
         <div class="clear"/>
       </div>
@@ -22,11 +22,20 @@
   </ui:fragment>
 
   <ui:fragment rendered="#{!widgetsBackingBean.hasWidgets(location)}"> 
-    <c:forEach var="sublocation" items="#{sublocations}">    
-      <div class="widgetSpace grid_#{gridSize}">
-         <m:includeWidgets widgets="#{widgetsBackingBean.getWidgets(location, sublocation)}"/>
-         <div class="clear"/>
-      </div>
+    <c:forEach var="sublocation" items="#{sublocations}"> 
+      <ui:fragment rendered="#{!empty(gridSize)}">
+        <div class="widgetSpace grid_#{gridSize}" data-name="#{location}.#{sublocation}">
+           <m:includeWidgets widgets="#{widgetsBackingBean.getWidgets(location, sublocation)}"/>
+           <div class="clear"/>
+        </div>
+      </ui:fragment>
+      
+      <ui:fragment rendered="#{empty(gridSize)}">
+        <div class="widgetSpace" data-name="#{location}.#{sublocation}">
+           <m:includeWidgets widgets="#{widgetsBackingBean.getWidgets(location, sublocation)}"/>
+           <div class="clear"/>
+        </div>
+      </ui:fragment>
     </c:forEach>
   </ui:fragment>
 

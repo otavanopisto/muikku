@@ -50,21 +50,63 @@ var defaults = {
 		day: 'dddd, MMM d, yyyy'
 	},
 	columnFormat: {
-		month: 'ddd',
-		week: 'ddd M/d',
-		day: 'dddd M/d'
+		month: getLocaleText('plugin.calendar.fullCalendar.column.month'),
+		week: getLocaleText('plugin.calendar.fullCalendar.column.week'),
+		day: getLocaleText('plugin.calendar.fullCalendar.column.day')
 	},
 	timeFormat: { // for event elements
-		'': 'h(:mm)t' // default
+		'': ''//'h(:mm)t' // default
 	},
 	
 	// locale
 	isRTL: false,
 	firstDay: 0,
-	monthNames: ['January','February','March','April','May','June','July','August','September','October','November','December'],
-	monthNamesShort: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
-	dayNames: ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
-	dayNamesShort: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
+	monthNames: [
+    getLocaleText('plugin.calendar.fullCalendar.long.january'),
+    getLocaleText('plugin.calendar.fullCalendar.long.february'),
+    getLocaleText('plugin.calendar.fullCalendar.long.march'),
+    getLocaleText('plugin.calendar.fullCalendar.long.april'),
+    getLocaleText('plugin.calendar.fullCalendar.long.may'),
+    getLocaleText('plugin.calendar.fullCalendar.long.june'),
+    getLocaleText('plugin.calendar.fullCalendar.long.july'),
+    getLocaleText('plugin.calendar.fullCalendar.long.august'),
+    getLocaleText('plugin.calendar.fullCalendar.long.september'),
+    getLocaleText('plugin.calendar.fullCalendar.long.october'),
+    getLocaleText('plugin.calendar.fullCalendar.long.november'),
+    getLocaleText('plugin.calendar.fullCalendar.long.december')
+  ],
+	monthNamesShort: [
+    getLocaleText('plugin.calendar.fullCalendar.short.january'),
+    getLocaleText('plugin.calendar.fullCalendar.short.february'),
+    getLocaleText('plugin.calendar.fullCalendar.short.march'),
+    getLocaleText('plugin.calendar.fullCalendar.short.april'),
+    getLocaleText('plugin.calendar.fullCalendar.short.may'),
+    getLocaleText('plugin.calendar.fullCalendar.short.june'),
+    getLocaleText('plugin.calendar.fullCalendar.short.july'),
+    getLocaleText('plugin.calendar.fullCalendar.short.august'),
+    getLocaleText('plugin.calendar.fullCalendar.short.september'),
+    getLocaleText('plugin.calendar.fullCalendar.short.october'),
+    getLocaleText('plugin.calendar.fullCalendar.short.november'),
+    getLocaleText('plugin.calendar.fullCalendar.short.december')
+  ],
+	dayNames: [
+    getLocaleText('plugin.calendar.fullCalendar.long.sunday'),
+    getLocaleText('plugin.calendar.fullCalendar.long.monday'),
+    getLocaleText('plugin.calendar.fullCalendar.long.tuesday'),
+    getLocaleText('plugin.calendar.fullCalendar.long.wednesday'),
+    getLocaleText('plugin.calendar.fullCalendar.long.thursday'),
+    getLocaleText('plugin.calendar.fullCalendar.long.friday'),
+    getLocaleText('plugin.calendar.fullCalendar.long.saturday')
+  ],
+	dayNamesShort: [
+    getLocaleText('plugin.calendar.fullCalendar.short.sunday'),
+    getLocaleText('plugin.calendar.fullCalendar.short.monday'),
+    getLocaleText('plugin.calendar.fullCalendar.short.tuesday'),
+    getLocaleText('plugin.calendar.fullCalendar.short.wednesday'),
+    getLocaleText('plugin.calendar.fullCalendar.short.thursday'),
+    getLocaleText('plugin.calendar.fullCalendar.short.friday'),
+    getLocaleText('plugin.calendar.fullCalendar.short.saturday')
+  ],
 	buttonText: {
 		prev: "<span class='fc-text-arrow'>&lsaquo;</span>",
 		next: "<span class='fc-text-arrow'>&rsaquo;</span>",
@@ -2904,13 +2946,13 @@ function AgendaDayView(element, calendar) {
 
 setDefaults({
 	allDaySlot: true,
-	allDayText: 'all-day',
+	allDayText: getLocaleText('plugin.calendar.fullCalendar.allDay'),
 	firstHour: 6,
 	slotMinutes: 30,
 	defaultEventMinutes: 120,
-	axisFormat: 'h(:mm)tt',
+	axisFormat: getLocaleText('plugin.calendar.fullCalendar.timeFormat'),
 	timeFormat: {
-		agenda: 'h:mm{ - h:mm}'
+		agenda: getLocaleText('plugin.calendar.fullCalendar.agendaFormat')
 	},
 	dragOpacity: {
 		agenda: .5

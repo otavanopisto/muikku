@@ -1,21 +1,32 @@
-<div class="communicatorItem communicatorMessage">
-  <div class="communicatorItemSenderPictureContainer">
-    {?sender.hasPicture} 
-      <img class="communicatorItemSenderPicture" src="{@contextPath/}/picture?userId={sender.id}" width="50" height="50" />
+<div class="cm-item cm-message">
+  <div class="cm-item-senderPictureContainer">
+    {?sender_tq.hasPicture} 
+      <img class="cm-item-senderPicture" src="{@contextPath/}/picture?userId={sender}" width="50" height="50" />
     {:else}
-      <img class="communicatorItemSenderPicture" src="{@contextPath/}/themes/default/gfx/fish.jpg" width="50" height="50" />
-    {/sender.hasPicture}
+      <img class="cm-item-senderPicture" src="{@contextPath/}/themes/default/gfx/fish.jpg" width="50" height="50" />
+    {/sender_tq.hasPicture}
   </div>
   
-  <div class="communicatorItemSenderName"><a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={sender.id}">{sender_tq.fullName}</a></div>
 
-  <div class="communicatorItemTitle">{caption} {@if cond="{messageCount} > 1"} ({messageCount}){/if}</div>
-
-  <div class="communicatorItemDate">
-    {created|formatDate}
+  <div class="cm-item-header">
+    <div class="cm-item-title">{caption} {@if cond="{messageCount} > 1"} ({messageCount}){/if}</div>
+    <div>
+      <span class="cm-item-date">
+        {created|formatDate} {created|formatTime}
+      </span>
+      <span class="mf-person cm-item-senderName">
+        <input type="hidden" name="mf-person-id" value="{sender}"/>
+        <a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={sender}">{sender_tq.fullName}</a>
+      </span>
+    </div>
+   </div>     
+      
+  <div class="clear"></div>
+  <div class="cm-item-tags">
+    {#tags_tq}
+      {text}{@sep}, {/sep}
+    {/tags_tq}
   </div>
-
-  <div class="communicatorItemTags">{#localize key="plugin.communicator.messagetags"/}</div>
 
   <input type="hidden" name="communicatorMessageId" value="{id}"/>
   <input type="hidden" name="communicatorMessageIdId" value="{communicatorMessageId.id}"/>

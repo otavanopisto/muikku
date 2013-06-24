@@ -1,7 +1,10 @@
 @CHARSET "UTF-8";
 
 .fishWidget {
-	text-align: left;
+	    left: 200px;
+    position: relative;
+    text-align: left;
+    top: 71px;
 }
 
 .fishImage {

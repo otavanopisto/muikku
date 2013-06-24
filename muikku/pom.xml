@@ -221,7 +221,7 @@
             <inherited>false</inherited>
             <configuration>
               <sassSourceDirectory>${basedir}/src/main/webapp/resources/sass</sassSourceDirectory>
-              <destination>${project.build.directory}/resources/css</destination>
+              <destination>${project.build.directory}/${project.build.finalName}/resources/css</destination>
             </configuration>
           </execution>
         </executions>

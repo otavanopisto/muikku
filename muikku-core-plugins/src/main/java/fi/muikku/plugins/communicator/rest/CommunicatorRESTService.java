@@ -1,8 +1,12 @@
 package fi.muikku.plugins.communicator.rest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -16,7 +20,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
+import edu.emory.mathcs.backport.java.util.Collections;
+import fi.muikku.controller.TagController;
 import fi.muikku.controller.UserController;
+import fi.muikku.model.base.Tag;
 import fi.muikku.model.stub.users.UserEntity;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.communicator.CommunicatorController;
@@ -59,6 +66,9 @@ public class CommunicatorRESTService extends PluginRESTService {
   @Inject
   private ForumController forumController;
 
+  @Inject
+  private TagController tagController;
+
   @GET
   @Path ("/{USERID}/items")
   public Response listUserCommunicatorItems( 
@@ -66,10 +76,57 @@ public class CommunicatorRESTService extends PluginRESTService {
     UserEntity user = userController.findUserEntity(userId); 
     List<CommunicatorMessage> receivedItems = communicatorController.listReceivedItems(user);
 
+    Collections.sort(receivedItems, new Comparator<CommunicatorMessage>() {
+      @Override
+      public int compare(CommunicatorMessage o1, CommunicatorMessage o2) {
+        return o2.getCreated().compareTo(o1.getCreated());
+      }
+    });
+    
     TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
     Tranquility tranquility = tranquilityBuilder.createTranquility()
       .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
       .addInstruction(CommunicatorMessage.class, tranquilityBuilder.createPropertyInjectInstruction("messageCount", new MessageCountValueGetter()))
+      .addInstruction(new SuperClassInstructionSelector(UserEntity.class), tranquilityBuilder.createPropertyInjectInstruction("hasPicture", new UserEntityHasPictureValueGetter()))
+      .addInstruction(new SuperClassInstructionSelector(UserEntity.class), tranquilityBuilder.createPropertyInjectInstruction("fullName", new UserNameValueGetter()));
+    
+//    TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
+//    Tranquility tranquility = tranquilityBuilder.createTranquility()
+//      .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
+//      .addInstruction("wallEntry", tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
+//      .addInstruction("wallEntry.replies", tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
+//      .addInstruction("thread", tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
+//      .addInstruction(ForumThread.class, tranquilityBuilder.createPropertyInjectInstruction("replies", new ForumThreadReplyInjector()))
+//      .addInstruction(Wall.class, tranquilityBuilder.createPropertyInjectInstruction("wallName", new WallEntityNameGetter()))
+//      .addInstruction(UserEntity.class, tranquilityBuilder.createPropertyInjectInstruction("hasPicture", new UserEntityHasPictureValueGetter()))
+//      .addInstruction(UserEntity.class, tranquilityBuilder.createPropertyInjectInstruction("fullName", new UserNameValueGetter()));
+    
+    Collection<TranquilModelEntity> entities = tranquility.entities(receivedItems);
+    
+    return Response.ok(
+      entities
+    ).build();
+  }
+
+  @GET
+  @Path ("/{USERID}/sentitems")
+  public Response listUserSentCommunicatorItems( 
+      @PathParam ("USERID") Long userId) {
+    UserEntity user = userController.findUserEntity(userId); 
+    List<CommunicatorMessage> receivedItems = communicatorController.listSentItems(user);
+
+    Collections.sort(receivedItems, new Comparator<CommunicatorMessage>() {
+      @Override
+      public int compare(CommunicatorMessage o1, CommunicatorMessage o2) {
+        return o2.getCreated().compareTo(o1.getCreated());
+      }
+    });
+    
+    TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
+    Tranquility tranquility = tranquilityBuilder.createTranquility()
+      .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
+      .addInstruction(CommunicatorMessage.class, tranquilityBuilder.createPropertyInjectInstruction("messageCount", new MessageCountValueGetter()))
+      .addInstruction(CommunicatorMessage.class, tranquilityBuilder.createPropertyInjectInstruction("recipients", new CommunicatorMessageRecipientsGetter()))
       .addInstruction(new SuperClassInstructionSelector(UserEntity.class), tranquilityBuilder.createPropertyInjectInstruction("hasPicture", new UserEntityHasPictureValueGetter()))
       .addInstruction(new SuperClassInstructionSelector(UserEntity.class), tranquilityBuilder.createPropertyInjectInstruction("fullName", new UserNameValueGetter()));
     
@@ -128,18 +185,35 @@ public class CommunicatorRESTService extends PluginRESTService {
     ).build();
   }
 
+  @DELETE
+  @Path ("/{USERID}/messages/{COMMUNICATORMESSAGEID}")
+  public Response deleteMessage(
+      @PathParam ("USERID") Long userId,
+      @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId
+   ) throws AuthorizationException {
+    UserEntity user = sessionController.getUser();
+    
+    CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
+
+    communicatorController.archiveMessage(user, messageId);
+    
+    return Response.noContent().build();
+  }
+
   @POST
   @Path ("/{USERID}/messages")
   public Response postMessage(
       @PathParam ("USERID") Long userId,
       @FormParam ("subject") String subject,
       @FormParam ("content") String content,
-      @FormParam ("recipients") List<Long> recipientIds
+      @FormParam ("recipients") List<Long> recipientIds,
+      @FormParam ("tags") String tags
    ) throws AuthorizationException {
     UserEntity user = userController.findUserEntity(userId); // session?
     
     CommunicatorMessageId communicatorMessageId = communicatorController.createMessageId();
     
+    Set<Tag> tagList = parseTags(tags);
     List<UserEntity> recipients = new ArrayList<UserEntity>();
     
     for (Long recipientId : recipientIds) {
@@ -149,7 +223,7 @@ public class CommunicatorRESTService extends PluginRESTService {
         recipients.add(recipient);
     }
     
-    CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId, user, recipients, subject, content);
+    CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId, user, recipients, subject, content, tagList);
       
     TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
     Tranquility tranquility = tranquilityBuilder.createTranquility()
@@ -160,6 +234,22 @@ public class CommunicatorRESTService extends PluginRESTService {
     ).build();
   }
 
+  private Set<Tag> parseTags(String tags) {
+    List<String> tagStrs = Arrays.asList(tags.split("\\s*,\\s*"));
+    Set<Tag> result = new HashSet<Tag>();
+    
+    for (String t : tagStrs) {
+      Tag tag = tagController.findTag(t);
+      
+      if (tag == null)
+        tag = tagController.createTag(t);
+      
+      result.add(tag);
+    }
+    
+    return result;
+  }
+
   @POST
   @Path ("/{USERID}/messages/{COMMUNICATORMESSAGEID}")
   public Response postMessageReply(
@@ -167,12 +257,14 @@ public class CommunicatorRESTService extends PluginRESTService {
       @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId,
       @FormParam ("subject") String subject,
       @FormParam ("content") String content,
-      @FormParam ("recipients") List<Long> recipientIds
+      @FormParam ("recipients") List<Long> recipientIds,
+      @FormParam ("tags") String tags
    ) throws AuthorizationException {
     UserEntity user = userController.findUserEntity(userId); // session?
     
     CommunicatorMessageId communicatorMessageId2 = communicatorController.findCommunicatorMessageId(communicatorMessageId);
     
+    Set<Tag> tagList = parseTags(tags);
     List<UserEntity> recipients = new ArrayList<UserEntity>();
     
     for (Long recipientId : recipientIds) {
@@ -182,7 +274,7 @@ public class CommunicatorRESTService extends PluginRESTService {
         recipients.add(recipient);
     }
     
-    CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId2, user, recipients, subject, content);
+    CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId2, user, recipients, subject, content, tagList);
     
     TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
     Tranquility tranquility = tranquilityBuilder.createTranquility()
@@ -230,6 +322,24 @@ public class CommunicatorRESTService extends PluginRESTService {
     
     return Response.ok(
       tranquility.entities(messageRecipients)
+    ).build();
+  }
+
+  @GET
+  @Path ("/userinfo/{USERID}")
+  public Response getUserInfo(
+      @PathParam ("USERID") Long userId
+   ) throws AuthorizationException {
+    UserEntity user = userController.findUserEntity(userId);
+    
+    TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
+    Tranquility tranquility = tranquilityBuilder.createTranquility()
+      .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
+      .addInstruction(new SuperClassInstructionSelector(UserEntity.class), tranquilityBuilder.createPropertyInjectInstruction("hasPicture", new UserEntityHasPictureValueGetter()))
+      .addInstruction(new SuperClassInstructionSelector(UserEntity.class), tranquilityBuilder.createPropertyInjectInstruction("fullName", new UserNameValueGetter()));
+    
+    return Response.ok(
+      tranquility.entity(user)
     ).build();
   }
 
@@ -297,7 +407,7 @@ public class CommunicatorRESTService extends PluginRESTService {
     CommunicatorMessageTemplate messageTemplate = communicatorController.getMessageTemplate(templateId);
     communicatorController.deleteMessageTemplate(messageTemplate);
     
-    return Response.ok().build();
+    return Response.noContent().build();
   }
 
   @POST
@@ -385,7 +495,7 @@ public class CommunicatorRESTService extends PluginRESTService {
     CommunicatorMessageSignature messageSignature = communicatorController.getMessageSignature(signatureId);
     communicatorController.deleteMessageSignature(messageSignature);
     
-    return Response.ok().build();
+    return Response.noContent().build();
   }
 
   @POST

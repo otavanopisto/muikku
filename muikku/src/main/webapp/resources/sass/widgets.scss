@@ -75,13 +75,13 @@
     @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-diary.png')); 
 }
     
-.naviIconMail{
-   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-messaging.png')); 	    
+.naviIconCommunicator{
+   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-communicator.png')); 	    
 }
 
- .naviIconMail.disabled{
+ .naviIconCommunicator.disabled{
     opacity:0.2;
-    @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-messaging.png'));  
+    @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-communicator.png'));  
 }
 
 .naviIconStudyTracker{
@@ -94,12 +94,12 @@
 }
 
 .naviIconCalendar{
-   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-calendar.png'));
+   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-cal.png'));
 }
 
  .naviIconCalendar.disabled{
     opacity:0.2;
-    @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-calendar.png'));   
+    @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-cal.png'));   
 }
 
 
@@ -163,6 +163,15 @@
     text-align:right;
     color:#000;
     font-size:9px;
+    width:240px;
+    position:absolute;
+    top:5px;
+    right:5px;
+}
+
+.logoutWidget{
+    text-align:right;
+    color:#000;
     width:240px;
     position:absolute;
     top:5px;

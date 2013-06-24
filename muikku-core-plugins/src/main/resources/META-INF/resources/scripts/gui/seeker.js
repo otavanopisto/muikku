@@ -28,6 +28,7 @@ $.widget("custom.seekerautocomplete", $.ui.autocomplete, {
     var listItem = $( "<li></li>" ).data( "item.autocomplete", item );
     
     var params = {
+      searchTerm: this.element.val(),
       item: item
     };
       
@@ -55,8 +56,10 @@ $.widget("custom.seekerautocomplete", $.ui.autocomplete, {
           response(_this._doSearch(request.term));
         },
         select: function (event, ui) {
-          window.location.href = CONTEXTPATH + ui.item.link;
-          $(this).val("");
+          if (ui.item.link) {
+            window.location.href = CONTEXTPATH + ui.item.link;
+            $(this).val("");
+          }
           return false;
         }
       });

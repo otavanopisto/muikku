@@ -1,22 +1,29 @@
 package fi.muikku.plugins.communicator.model;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.PersistenceException;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import fi.muikku.tranquil.TagEntityResolver;
 import fi.muikku.tranquil.UserEntityResolver;
 import fi.tranquil.TranquilityEntityField;
 
@@ -76,6 +83,30 @@ public class CommunicatorMessage {
     this.archivedBySender = archivedBySender;
   }
 
+  public Set<Long> getTags() {
+    return tags;
+  }
+  
+  public void setTags(Set<Long> tags) {
+    this.tags = tags;
+  }
+  
+  public void addTag(Long tagId) {
+    if (!tags.contains(tagId)) {
+      tags.add(tagId);
+    } else {
+      throw new PersistenceException("Entity already has this tag");
+    }
+  }
+  
+  public void removeTag(Long tagId) {
+    if (tags.contains(tagId)) {
+      tags.remove(tagId);
+    } else {
+      throw new PersistenceException("Entity does not have this tag");
+    }
+  }
+  
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -106,4 +137,10 @@ public class CommunicatorMessage {
   @NotNull
   @Column(nullable = false)
   private Boolean archivedBySender = Boolean.FALSE;
+  
+  @ElementCollection
+  @CollectionTable (name="communicatormessage_tags", joinColumns=@JoinColumn(name="communicatorMessage_id"))
+  @Column
+  @TranquilityEntityField(TagEntityResolver.class)
+  private Set<Long> tags = new HashSet<Long>();
 }

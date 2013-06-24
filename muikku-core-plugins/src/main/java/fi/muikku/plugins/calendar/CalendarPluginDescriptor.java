@@ -202,7 +202,11 @@ public class CalendarPluginDescriptor implements PluginDescriptor, LocalizedPlug
 		  
 		  /* Schedulers */
 		  
-		  SubscribedCalendarUpdateScheduler.class
+		  SubscribedCalendarUpdateScheduler.class,
+		  
+		  /* Seeker */
+		  
+      CalendarSeekerResultProvider.class
 		));
 	}
 	

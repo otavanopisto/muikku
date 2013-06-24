@@ -2,6 +2,7 @@ package fi.muikku.plugins.communicator;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
@@ -10,6 +11,7 @@ import javax.inject.Named;
 
 import fi.muikku.dao.courses.CourseEntityDAO;
 import fi.muikku.dao.users.UserEntityDAO;
+import fi.muikku.model.base.Tag;
 import fi.muikku.model.stub.users.UserEntity;
 import fi.muikku.plugins.communicator.dao.CommunicatorMessageDAO;
 import fi.muikku.plugins.communicator.dao.CommunicatorMessageIdDAO;
@@ -23,7 +25,6 @@ import fi.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
 import fi.muikku.schooldata.CourseSchoolDataController;
 import fi.muikku.schooldata.UserSchoolDataController;
-import fi.muikku.security.LoggedIn;
 import fi.muikku.security.Permit;
 import fi.muikku.security.PermitContext;
 import fi.muikku.session.SessionController;
@@ -72,25 +73,17 @@ public class CommunicatorController {
     return communicatorMessageDAO.listFirstMessagesByRecipient(userEntity);
   }
   
-//  public void TEST_MAIL_SEND() {
-//    CommunicatorMessageId communicatorMessageId = communicatorMessageIdDAO.create();
-//    
-//    CommunicatorMessage message = communicatorMessageDAO.create(communicatorMessageId, sessionController.getUser().getId(), 
-//        "Test mail", "Testing mail creation", new Date());
-//    communicatorMessageRecipientDAO.create(message, sessionController.getUser().getId());
-//
-//    message = communicatorMessageDAO.create(communicatorMessageId, sessionController.getUser().getId(), 
-//        "Re: Test mail", "Reply to mail creation", new Date());
-//    communicatorMessageRecipientDAO.create(message, sessionController.getUser().getId());
-//  }
-
+  public List<CommunicatorMessage> listSentItems(UserEntity userEntity) {
+    return communicatorMessageDAO.listFirstMessagesByRecipient(userEntity);
+  }
+  
   public CommunicatorMessageId createMessageId() {
     return communicatorMessageIdDAO.create();
   }
   
   public CommunicatorMessage createMessage(CommunicatorMessageId communicatorMessageId, UserEntity sender, List<UserEntity> recipients, 
-      String caption, String content) {
-    CommunicatorMessage message = communicatorMessageDAO.create(communicatorMessageId, sender.getId(), caption, content, new Date());
+      String caption, String content, Set<Tag> tags) {
+    CommunicatorMessage message = communicatorMessageDAO.create(communicatorMessageId, sender.getId(), caption, content, new Date(), tags);
     
     for (UserEntity recipient : recipients) {
       communicatorMessageRecipientDAO.create(message, recipient.getId());
@@ -167,5 +160,19 @@ public class CommunicatorController {
   @Permit (CommunicatorPermissionCollection.COMMUNICATOR_MANAGE_SETTINGS)
   public CommunicatorMessageTemplate createMessageTemplate(String name, String content, @PermitContext UserEntity user) {
     return communicatorMessageTemplateDAO.create(name, content, user);
+  }
+
+  public void archiveMessage(UserEntity user, CommunicatorMessageId messageId) {
+    List<CommunicatorMessageRecipient> received = communicatorMessageRecipientDAO.listByUserAndMessageId(user, messageId);
+    
+    for (CommunicatorMessageRecipient recipient : received) {
+      communicatorMessageRecipientDAO.archiveRecipient(recipient);
+    }
+    
+    List<CommunicatorMessage> sent = communicatorMessageDAO.listBySenderAndMessageId(user, messageId);
+
+    for (CommunicatorMessage msg : sent) {
+      communicatorMessageDAO.archiveSent(msg);
+    }
   }
 }
