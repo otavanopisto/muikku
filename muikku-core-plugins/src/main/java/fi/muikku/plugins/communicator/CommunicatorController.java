@@ -2,6 +2,7 @@ package fi.muikku.plugins.communicator;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
@@ -81,7 +82,7 @@ public class CommunicatorController {
   }
   
   public CommunicatorMessage createMessage(CommunicatorMessageId communicatorMessageId, UserEntity sender, List<UserEntity> recipients, 
-      String caption, String content, List<Tag> tags) {
+      String caption, String content, Set<Tag> tags) {
     CommunicatorMessage message = communicatorMessageDAO.create(communicatorMessageId, sender.getId(), caption, content, new Date(), tags);
     
     for (UserEntity recipient : recipients) {
@@ -159,5 +160,19 @@ public class CommunicatorController {
   @Permit (CommunicatorPermissionCollection.COMMUNICATOR_MANAGE_SETTINGS)
   public CommunicatorMessageTemplate createMessageTemplate(String name, String content, @PermitContext UserEntity user) {
     return communicatorMessageTemplateDAO.create(name, content, user);
+  }
+
+  public void archiveMessage(UserEntity user, CommunicatorMessageId messageId) {
+    List<CommunicatorMessageRecipient> received = communicatorMessageRecipientDAO.listByUserAndMessageId(user, messageId);
+    
+    for (CommunicatorMessageRecipient recipient : received) {
+      communicatorMessageRecipientDAO.archiveRecipient(recipient);
+    }
+    
+    List<CommunicatorMessage> sent = communicatorMessageDAO.listBySenderAndMessageId(user, messageId);
+
+    for (CommunicatorMessage msg : sent) {
+      communicatorMessageDAO.archiveSent(msg);
+    }
   }
 }

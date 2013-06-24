@@ -210,6 +210,7 @@ $.fn.extend({
           _this._communicatorContent.find('.mf-backLink').click($.proxy(_this._onMessageBackClick, _this));
           _this._communicatorContent.find('.cm-message-replyLink').click($.proxy(_this._onReplyMessageClick, _this));
           _this._communicatorContent.find('.cm-message-replyAllLink').click($.proxy(_this._onReplyMessageClick, _this));
+          _this._communicatorContent.find('.cm-message-trashMessageLink').click($.proxy(_this._onTrashMessageClick, _this));
         });
       });
     },
@@ -334,7 +335,7 @@ $.fn.extend({
     _onReplyMessageClick: function (event) {
       var _this = this;
       var element = $(event.target);
-      var replyAll = element.hasClass("cm-message-replyAllLink");// || (element.parents(".cm-message-replyAllLink") != undefined);
+      var replyAll = element.hasClass("cm-message-replyAllLink");
       
       element = element.parents(".cm-message-view");
       
@@ -453,6 +454,26 @@ $.fn.extend({
         _this._communicatorContent.find("select[name='templateSelector']").change($.proxy(_this._onSelectTemplate, _this));
         _this._communicatorContent.find("select[name='signatureSelector']").change($.proxy(_this._onSelectSignature, _this));
         _this._communicatorContent.find(".cm-newMessage-recipientsList").on("click", ".cm-newMessage-removeRecipient", $.proxy(_this._onRemoveRecipientClick, _this));
+      });
+      
+      return false;
+    },
+    _onTrashMessageClick: function (event) {
+      var _this = this;
+      var element = $(event.target);
+      var replyAll = element.hasClass("cm-message-replyAllLink");
+      
+      element = element.parents(".cm-message-view-container");
+      
+      var communicatorMessageIdId = element.find("input[name='communicatorMessageIdId']").val();
+
+      RESTful.doDelete(CONTEXTPATH + "/rest/communicator/{userId}/messages/{messageIdId}", {
+        parameters: {
+          'userId': this._userId,
+          'messageIdId': communicatorMessageIdId
+        }
+      }).success(function (data, textStatus, jqXHR) {
+        window.location.hash = "in";
       });
       
       return false;

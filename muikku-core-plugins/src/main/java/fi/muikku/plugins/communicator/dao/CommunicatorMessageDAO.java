@@ -1,8 +1,9 @@
 package fi.muikku.plugins.communicator.dao;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -26,10 +27,10 @@ public class CommunicatorMessageDAO extends PluginDAO<CommunicatorMessage> {
   private static final long serialVersionUID = -8721990589622544635L;
 
   public CommunicatorMessage create(CommunicatorMessageId communicatorMessageId, Long sender,
-      String caption, String content, Date created, List<Tag> tags) {
+      String caption, String content, Date created, Set<Tag> tags) {
     CommunicatorMessage msg = new CommunicatorMessage();
     
-    List<Long> tagIds = new ArrayList<Long>(tags.size());
+    Set<Long> tagIds = new HashSet<Long>(tags.size());
     for (Tag t : tags)
       tagIds.add(t.getId());
 
@@ -142,6 +143,32 @@ public class CommunicatorMessageDAO extends PluginDAO<CommunicatorMessage> {
     );
     
     return entityManager.createQuery(criteria).getSingleResult();
+  }
+
+  public List<CommunicatorMessage> listBySenderAndMessageId(UserEntity sender, CommunicatorMessageId messageId) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<CommunicatorMessage> criteria = criteriaBuilder.createQuery(CommunicatorMessage.class);
+    Root<CommunicatorMessage> root = criteria.from(CommunicatorMessage.class);
+
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(CommunicatorMessage_.sender), sender.getId()),
+            criteriaBuilder.equal(root.get(CommunicatorMessage_.archivedBySender), Boolean.FALSE)
+        )
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
+  public CommunicatorMessage archiveSent(CommunicatorMessage msg) {
+    msg.setArchivedBySender(true);
+    
+    getEntityManager().persist(msg);
+    
+    return msg;
   }
   
 }

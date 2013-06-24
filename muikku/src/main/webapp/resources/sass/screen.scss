@@ -331,20 +331,22 @@ padding:10px 20px 10px 20px;
     
 }
 
-.cm-message-toolbar{
+.cm-message-toolbar, .cm-viewmessagethread-toolbar {
 	padding:0;
-	height:35px;
+	height:40px;
 }
 
-.cm-message-replyLink{
+.cm-message-replyLink {
      @include naviIcon(url('../resources/gfx/icons/32x32/actions/communicator-reply.png'));
 }
 
-.cm-message-replyAllLink{
+.cm-message-replyAllLink {
       @include naviIcon(url('../resources/gfx/icons/32x32/actions/communicator-replyall.png'));
 }
 
-
+.cm-message-trashMessageLink {
+      @include naviIcon(url('../resources/gfx/icons/32x32/actions/communicator-trash.png'));
+}
 
 .cm-message-senderName{
 }

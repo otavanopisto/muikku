@@ -1,9 +1,14 @@
+<div class="cm-message-view-container">
+<div class="mf-toolbar cm-viewmessagethread-toolbar">
+  <a class="mf-backLink" title="{#localize key="plugin.communicator.back"/}" alt="{#localize key="plugin.communicator.back"/}" href="#"></a>
+  <a class="cm-message-trashMessageLink" title="{#localize key="plugin.communicator.trashMessage"/}" alt="{#localize key="plugin.communicator.trashMessage"/}" href="#"></a>
+</div>
+
 {#.}
 <div class="cm-message-view">
 
   <div class="mf-toolbar cm-message-toolbar">
-	<a class="mf-backLink" title="{#localize key="plugin.communicator.reply"/}" alt="{#localize key="plugin.communicator.back"/}" href="#"></a>
-	<a class="cm-message-replyLink" title="{#localize key="plugin.communicator.reply"/}" alt="{#localize key="plugin.communicator.reply"/}" href="#"></a>
+    <a class="cm-message-replyLink" title="{#localize key="plugin.communicator.reply"/}" alt="{#localize key="plugin.communicator.reply"/}" href="#"></a>
     <a class="cm-message-replyAllLink" title="{#localize key="plugin.communicator.replyAll"/}" alt="{#localize key="plugin.communicator.replyAll"/}" href="#"></a>
   </div>
   <div class="clear"></div>
@@ -49,3 +54,4 @@
   <input type="hidden" name="communicatorMessageIdId" value="{communicatorMessageId.id}"/>
 </div>
 {/.}
+</div>

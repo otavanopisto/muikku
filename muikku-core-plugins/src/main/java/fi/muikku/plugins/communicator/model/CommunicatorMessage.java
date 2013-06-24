@@ -1,8 +1,8 @@
 package fi.muikku.plugins.communicator.model;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -83,11 +83,11 @@ public class CommunicatorMessage {
     this.archivedBySender = archivedBySender;
   }
 
-  public List<Long> getTags() {
+  public Set<Long> getTags() {
     return tags;
   }
   
-  public void setTags(List<Long> tags) {
+  public void setTags(Set<Long> tags) {
     this.tags = tags;
   }
   
@@ -142,5 +142,5 @@ public class CommunicatorMessage {
   @CollectionTable (name="communicatormessage_tags", joinColumns=@JoinColumn(name="communicatorMessage_id"))
   @Column
   @TranquilityEntityField(TagEntityResolver.class)
-  private List<Long> tags = new ArrayList<Long>();
+  private Set<Long> tags = new HashSet<Long>();
 }

@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -183,6 +185,21 @@ public class CommunicatorRESTService extends PluginRESTService {
     ).build();
   }
 
+  @DELETE
+  @Path ("/{USERID}/messages/{COMMUNICATORMESSAGEID}")
+  public Response deleteMessage(
+      @PathParam ("USERID") Long userId,
+      @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId
+   ) throws AuthorizationException {
+    UserEntity user = sessionController.getUser();
+    
+    CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
+
+    communicatorController.archiveMessage(user, messageId);
+    
+    return Response.noContent().build();
+  }
+
   @POST
   @Path ("/{USERID}/messages")
   public Response postMessage(
@@ -196,7 +213,7 @@ public class CommunicatorRESTService extends PluginRESTService {
     
     CommunicatorMessageId communicatorMessageId = communicatorController.createMessageId();
     
-    List<Tag> tagList = parseTags(tags);
+    Set<Tag> tagList = parseTags(tags);
     List<UserEntity> recipients = new ArrayList<UserEntity>();
     
     for (Long recipientId : recipientIds) {
@@ -217,9 +234,9 @@ public class CommunicatorRESTService extends PluginRESTService {
     ).build();
   }
 
-  private List<Tag> parseTags(String tags) {
+  private Set<Tag> parseTags(String tags) {
     List<String> tagStrs = Arrays.asList(tags.split("\\s*,\\s*"));
-    List<Tag> result = new ArrayList<Tag>();
+    Set<Tag> result = new HashSet<Tag>();
     
     for (String t : tagStrs) {
       Tag tag = tagController.findTag(t);
@@ -247,7 +264,7 @@ public class CommunicatorRESTService extends PluginRESTService {
     
     CommunicatorMessageId communicatorMessageId2 = communicatorController.findCommunicatorMessageId(communicatorMessageId);
     
-    List<Tag> tagList = parseTags(tags);
+    Set<Tag> tagList = parseTags(tags);
     List<UserEntity> recipients = new ArrayList<UserEntity>();
     
     for (Long recipientId : recipientIds) {
@@ -390,7 +407,7 @@ public class CommunicatorRESTService extends PluginRESTService {
     CommunicatorMessageTemplate messageTemplate = communicatorController.getMessageTemplate(templateId);
     communicatorController.deleteMessageTemplate(messageTemplate);
     
-    return Response.ok().build();
+    return Response.noContent().build();
   }
 
   @POST
@@ -478,7 +495,7 @@ public class CommunicatorRESTService extends PluginRESTService {
     CommunicatorMessageSignature messageSignature = communicatorController.getMessageSignature(signatureId);
     communicatorController.deleteMessageSignature(messageSignature);
     
-    return Response.ok().build();
+    return Response.noContent().build();
   }
 
   @POST
