@@ -7,6 +7,8 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 import fi.muikku.dao.base.EnvironmentDefaultsDAO;
 import fi.muikku.dao.security.UserPasswordDAO;
 import fi.muikku.dao.users.EnvironmentUserDAO;
@@ -34,7 +36,6 @@ import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.security.Permit;
 import fi.muikku.security.PermitContext;
 import fi.muikku.session.SessionController;
-import fi.muikku.utils.RequestUtils;
 
 @Dependent
 public class UserController {
@@ -129,7 +130,7 @@ public class UserController {
      * Create User    
      */
     userController.createUser(userEntity, firstName, lastName, email);
-    userPasswordDAO.create(userEntity, RequestUtils.md5EncodeString(passwordHash));
+    userPasswordDAO.create(userEntity, DigestUtils.md5Hex(passwordHash));
     
     /**
      * Give User Student Role

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    template="/WEB-INF/templates/default.xhtml">
+    
+  <ui:define name="contentSidebarLeft">
+    <ui:include src="/core/widget-space.xhtml">
+      <ui:param name="location" value="settings.plugins.pluginConfigurationLinks" />
+      <ui:param name="gridSize" value="0" />
+    </ui:include>
+  </ui:define>
+</ui:composition>

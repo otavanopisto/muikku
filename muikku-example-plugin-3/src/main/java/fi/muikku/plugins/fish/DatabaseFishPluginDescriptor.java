@@ -8,7 +8,6 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import fi.muikku.WidgetLocations;
 import fi.muikku.controller.WidgetController;
 import fi.muikku.model.widgets.DefaultWidget;
 import fi.muikku.model.widgets.Widget;
@@ -25,6 +24,8 @@ public class DatabaseFishPluginDescriptor implements PluginDescriptor, Persisten
 
   private static final String FISH_WIDGET_LOCATION = "environment.header.left";
   private static final String FISH_WIDGET_NAME = "fish";
+  private static final String FISH_ADMIN_WIDGET_LOCATION = "settings.plugins.pluginConfigurationLinks";
+  private static final String FISH_ADMIN_WIDGET_NAME = "fishadmin";
 
   @Inject
   private WidgetController widgetController;
@@ -49,6 +50,21 @@ public class DatabaseFishPluginDescriptor implements PluginDescriptor, Persisten
     DefaultWidget defaultWidget = widgetController.findDefaultWidget(widget, widgetLocation);
     if (defaultWidget == null) {
       defaultWidget = widgetController.createDefaultWidget(widget, widgetLocation);
+    }
+    
+    Widget adminWidget = widgetController.findWidget(FISH_ADMIN_WIDGET_NAME);
+    if (adminWidget == null) {
+      adminWidget = widgetController.createWidget(FISH_ADMIN_WIDGET_NAME, WidgetVisibility.AUTHENTICATED);
+    }
+
+    WidgetLocation adminWidgetLocation = widgetController.findWidgetLocation(FISH_ADMIN_WIDGET_LOCATION);
+    if (adminWidgetLocation == null) { // TODO: In a perfect world, there would be no null checks
+      adminWidgetLocation = widgetController.createWidgetLocation(FISH_ADMIN_WIDGET_LOCATION);
+    }
+
+    DefaultWidget adminDefaultWidget = widgetController.findDefaultWidget(adminWidget, adminWidgetLocation);
+    if (adminDefaultWidget == null) {
+      adminDefaultWidget = widgetController.createDefaultWidget(adminWidget, adminWidgetLocation);
     }
   }
 
