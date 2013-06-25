@@ -111,7 +111,7 @@ public class PluginExtension implements Extension {
 	}
 
 	private Properties getPluginLibrariesProperties() throws IOException {
-		return loadPropertiesFile("muikku-plugins");
+		return loadPropertiesFile("muikku-plugin-libraries");
 	}
 
 	private Properties getRepositoriesPropeties() throws IOException {
