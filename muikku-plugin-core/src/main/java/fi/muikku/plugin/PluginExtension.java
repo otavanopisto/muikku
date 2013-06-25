@@ -85,6 +85,7 @@ public class PluginExtension implements Extension {
 		String eclipseWorkspace = System.getProperty("eclipse.workspace");
 
 		SingletonPluginManager pluginManager;
+
 		try {
 			pluginManager = SingletonPluginManager.initialize(getClass().getClassLoader(), getPluginsFolder(), applicationArtifact, repositories, eclipseWorkspace);
 		} catch (PluginManagerException e1) {
