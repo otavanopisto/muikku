@@ -23,7 +23,7 @@
       {#localize key="plugin.communicator.newmessage.recipients"/}
       <div class="mf-selectedObjects cm-newMessage-recipientsList">
         {#recipients}
-          {>"communicator/communicator_replyrecipient.dust"/}
+          {>"communicator/communicator_messagerecipient.dust"/}
         {/recipients}
       </div>
      <div class="clear"></div>

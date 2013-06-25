@@ -149,7 +149,7 @@ margin-bottom:5px;
 	  background-color:$saBgr;
 }
 
-.cm-newMessage-recipient{
+.cm-newMessage-recipient, .cm-newMessage-recipientgroup {
 	  @include border(#ededed);
     @include rounded(4px);
     @include gradient-top-bottom(#707070, #666);
@@ -160,6 +160,10 @@ margin-bottom:5px;
     margin-top:5px;
     padding: 3px
 	
+}
+
+.cm-newMessage-recipientgroup {
+	@include gradient-top-bottom(#207020, #20FF20);
 }
 
 .cm-newMessage-recipientName{

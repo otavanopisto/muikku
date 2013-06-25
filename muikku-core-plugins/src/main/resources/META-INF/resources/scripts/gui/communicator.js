@@ -248,7 +248,7 @@ $.fn.extend({
             response(_this._doSearch(request.term));
           },
           select: function (event, ui) {
-            _this._selectRecipient(event, ui.item.id, ui.item.label);
+            _this._selectRecipient(event, ui.item.id, ui.item.label, ui.item.type);
             $(this).val("");
             return false;
           }
@@ -410,7 +410,7 @@ $.fn.extend({
             response(_this._doSearch(request.term));
           },
           select: function (event, ui) {
-            _this._selectRecipient(event, ui.item.id, ui.item.label);
+            _this._selectRecipient(event, ui.item.id, ui.item.label, ui.item.type);
             $(this).val("");
             return false;
           }
@@ -495,9 +495,14 @@ $.fn.extend({
       var newMessageElement = element.parents(".cm-newMessage");
       var recipientListElement = newMessageElement.find(".cm-newMessage-recipientsList");
       var recipientIds = [];
+      var recipientGroupIds = [];
       
       $(recipientListElement.children(".cm-newMessage-recipient")).each(function (index) {
         recipientIds.push($(this).find("input[name='userId']").val());
+      });
+      
+      $(recipientListElement.children(".cm-newMessage-recipientgroup")).each(function (index) {
+        recipientGroupIds.push($(this).find("input[name='groupId']").val());
       });
       
       RESTful.doPost(CONTEXTPATH + "/rest/communicator/{userId}/messages", {
@@ -506,6 +511,7 @@ $.fn.extend({
           'subject': newMessageElement.find("input[name='subject']").val(),
           'content': newMessageElement.find("textarea[name='content']").val(),
           'recipients': recipientIds,
+          'recipientGroups': recipientGroupIds,
           'tags': newMessageElement.find("input[name='tags']").val()
         }
       }).success(function (data, textStatus, jqXHR) {
@@ -518,9 +524,14 @@ $.fn.extend({
       var newMessageElement = element.parents(".cm-replyMessage");
       var recipientListElement = newMessageElement.find(".cm-newMessage-recipientsList");
       var recipientIds = [];
+      var recipientGroupIds = [];
       
       $(recipientListElement.children(".cm-newMessage-recipient")).each(function (index) {
         recipientIds.push($(this).find("input[name='userId']").val());
+      });
+      
+      $(recipientListElement.children(".cm-newMessage-recipientgroup")).each(function (index) {
+        recipientGroupIds.push($(this).find("input[name='groupId']").val());
       });
       
       var messageId = newMessageElement.find("input[name='communicatorMessageId']").val();
@@ -532,6 +543,7 @@ $.fn.extend({
           'subject': newMessageElement.find("input[name='subject']").val(),
           'content': newMessageElement.find("textarea[name='content']").val(),
           'recipients': recipientIds,
+          'recipientGroups': recipientGroupIds,
           'tags': newMessageElement.find("input[name='tags']").val()
         }
       }).success(function (data, textStatus, jqXHR) {
@@ -573,10 +585,11 @@ $.fn.extend({
             img = CONTEXTPATH + "/picture?userId=" + data[i].id;
           
           users.push({
-            category: "Käyttäjät",
+            category: getLocaleText("plugin.communicator.users"),
             label: data[i].fullName,
             id: data[i].id,
-            image: img
+            image: img,
+            type: "USER"
           });
         }
       });
@@ -585,39 +598,26 @@ $.fn.extend({
     },
     _searchGroups: function (searchTerm) {
       var _this = this;
-      var groups = new Array();
-      groups.push({
-        category: "Ryhmät",
-        label: "Opettajat",
-        id: -1
+      var userGroups = new Array();
+
+      RESTful.doGet(CONTEXTPATH + "/rest/usergroup/searchGroups", {
+        parameters: {
+          'searchString': searchTerm
+        }
+      }).success(function (data, textStatus, jqXHR) {
+        for (var i = 0, l = data.length; i < l; i++) {
+          userGroups.push({
+            category: getLocaleText("plugin.communicator.usergroups"),
+            label: data[i].name,
+            id: data[i].id,
+            memberCount: data[i].memberCount,
+            image: undefined, // TODO usergroup image
+            type: "GROUP"
+          });
+        }
       });
 
-      groups.push({
-        category: "Ryhmät",
-        label: "Tutorit",
-        id: -1
-      });
-
-      groups.push({
-        category: "Ryhmät",
-        label: "Opiskelijat",
-        id: -1
-      });
-      
-//      RESTful.doGet(CONTEXTPATH + "/rest/user/searchUsers", {
-//        parameters: {
-//          'searchString': searchTerm
-//        }
-//      }).success(function (data, textStatus, jqXHR) {
-//        for (var i = 0, l = data.length; i < l; i++) {
-//          users.push({
-//            label: data[i].fullName,
-//            id: data[i].id
-//          });
-//        }
-//      });
-
-      return groups;
+      return userGroups;
     },
     _doSearch: function (searchTerm) {
       var groups = this._searchGroups(searchTerm);
@@ -625,10 +625,9 @@ $.fn.extend({
       
       return $.merge(groups, users);
     },
-    _selectRecipient: function (event, id, name) {
+    _selectRecipient: function (event, id, name, type) {
       var _this = this;
       var element = $(event.target);
-      var recipientElement = element.hasClass("userSearchAutoCompleteUser") ? element : element.parents(".userSearchAutoCompleteUser");
       var recipientListElement = element.parents(".cm-newMessage").find(".cm-newMessage-recipientsList"); 
       
       var prms = {
@@ -636,9 +635,18 @@ $.fn.extend({
         name: name
       };
   
-      renderDustTemplate('communicator/communicator_messagerecipient.dust', prms, function (text) {
-        recipientListElement.append($.parseHTML(text));
-      });
+      if (type == "USER") {
+        renderDustTemplate('communicator/communicator_messagerecipient.dust', prms, function (text) {
+          recipientListElement.append($.parseHTML(text));
+        });
+      } else {
+        if (type == "GROUP") {
+          renderDustTemplate('communicator/communicator_messagerecipientgroup.dust', prms, function (text) {
+            recipientListElement.append($.parseHTML(text));
+          });
+        }
+      }
+        
     },
     _onRemoveRecipientClick : function (event) {
       var element = $(event.target);

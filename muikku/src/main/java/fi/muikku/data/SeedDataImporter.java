@@ -28,6 +28,7 @@ import fi.muikku.model.users.SystemUserRole;
 import fi.muikku.model.users.SystemUserRoleType;
 import fi.muikku.model.users.UserContact;
 import fi.muikku.model.users.UserContactType;
+import fi.muikku.model.users.UserGroup;
 import fi.muikku.model.users.UserImpl;
 import fi.muikku.security.PermissionCollection;
 import fi.muikku.security.PermissionScope;
@@ -83,6 +84,21 @@ public class SeedDataImporter {
       em.persist(env);
     }
 
+    if (findById(UserGroup.class, 1l) == null) {
+      // Local
+      
+      UserGroup group = new UserGroup();
+      group.setName("Opiskelijat");
+      em.persist(group);
+    }
+    
+    if (findById(UserGroup.class, 2l) == null) {
+      // Pyramus source
+      UserGroup group = new UserGroup();
+      group.setName("Opettajat");
+      em.persist(group);
+    }
+    
 //    if (em.createQuery("from EnvironmentWall where environment.id = " + env.getId().toString()).getResultList().size() == 0) {
 //      EnvironmentWall environmentWall = new EnvironmentWall();
 //      environmentWall.setEnvironment(env);

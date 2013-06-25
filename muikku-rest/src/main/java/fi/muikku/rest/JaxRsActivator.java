@@ -11,6 +11,7 @@ import javax.ws.rs.core.Application;
 import fi.muikku.plugin.manager.PluginManagerException;
 import fi.muikku.plugin.manager.SingletonPluginManager;
 import fi.muikku.rest.course.CourseRESTService;
+import fi.muikku.rest.user.UserGroupRESTService;
 import fi.muikku.rest.user.UserRESTService;
 
 @ApplicationPath("/rest")
@@ -25,7 +26,8 @@ public class JaxRsActivator extends Application {
 				PermissionRESTService.class,
 				CourseRESTService.class,
 				UserRESTService.class,
-				TagRESTService.class
+				TagRESTService.class,
+				UserGroupRESTService.class
 		);
 		
 		classes = new HashSet<>();

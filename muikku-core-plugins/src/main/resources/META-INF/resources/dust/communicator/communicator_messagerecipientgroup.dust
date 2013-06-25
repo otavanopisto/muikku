@@ -1,0 +1,8 @@
+<div class="mf-group cm-newMessage-recipientgroup">
+  <input type="hidden" name="groupId" value="{id}" />
+  <div class="cm-newMessage-recipientName">{name} ({memberCount})</div>
+  
+  <div class="cm-newMessage-removeRecipient">x</div>
+</div>
+
+

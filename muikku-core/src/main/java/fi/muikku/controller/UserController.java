@@ -1,5 +1,6 @@
 package fi.muikku.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.Dependent;
@@ -12,10 +13,12 @@ import fi.muikku.dao.users.EnvironmentUserDAO;
 import fi.muikku.dao.users.EnvironmentUserRoleDAO;
 import fi.muikku.dao.users.UserContactDAO;
 import fi.muikku.dao.users.UserEntityDAO;
+import fi.muikku.dao.users.UserGroupDAO;
+import fi.muikku.dao.users.UserGroupUserDAO;
 import fi.muikku.dao.users.UserPictureDAO;
+import fi.muikku.events.Archived;
 import fi.muikku.events.Created;
 import fi.muikku.events.Modified;
-import fi.muikku.events.Archived;
 import fi.muikku.events.UserEntityEvent;
 import fi.muikku.model.base.Environment;
 import fi.muikku.model.base.EnvironmentDefaults;
@@ -24,6 +27,7 @@ import fi.muikku.model.stub.users.UserEntity;
 import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.EnvironmentUserRole;
 import fi.muikku.model.users.UserContact;
+import fi.muikku.model.users.UserGroup;
 import fi.muikku.schooldata.UserSchoolDataController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.security.MuikkuPermissions;
@@ -63,6 +67,12 @@ public class UserController {
   private UserEntityDAO userEntityDAO;
 
   @Inject
+  private UserGroupDAO userGroupDAO;
+  
+  @Inject
+  private UserGroupUserDAO userGroupUserDAO;
+  
+  @Inject
   @Created
   private Event<UserEntityEvent> userCreatedEvent;
   
@@ -97,6 +107,18 @@ public class UserController {
     return userContactDAO.listByUser(user, hidden);
   }
   
+  public List<UserGroup> searchUserGroups(String searchTerm) {
+    List<UserGroup> grps = userGroupDAO.listAll();
+    List<UserGroup> filtered = new ArrayList<UserGroup>();
+    
+    for (UserGroup grp : grps) {
+      if (grp.getName().toLowerCase().contains(searchTerm.toLowerCase()))
+        filtered.add(grp);
+    }
+    
+    return filtered;
+  }
+  
   // TODO: Move to createUser and registration widget bean
   public void registerUser(SchoolDataSource dataSource, String firstName, String lastName, String email, String passwordHash) {
     Environment environment = sessionController.getEnvironment();
@@ -124,6 +146,25 @@ public class UserController {
   @Permit (MuikkuPermissions.MANAGE_USERS) // TODO: ???
   public List<EnvironmentUser> listEnvironmentUsers(@PermitContext Environment environment) {
     return environmentUserDAO.listByEnvironment(environment);
+  }
+
+  public List<EnvironmentUser> searchUsers(String searchTerm) {
+    List<EnvironmentUser> users = environmentUserDAO.listByEnvironment(sessionController.getEnvironment());
+    List<EnvironmentUser> filtered = new ArrayList<EnvironmentUser>();
+    
+    for (EnvironmentUser u : users) {
+      User user = findUser(u.getUser());
+      String fullName = (user.getFirstName() + " " + user.getLastName()).toLowerCase();
+      
+      if (fullName.contains(searchTerm))
+        filtered.add(u);
+    }
+    
+    return filtered;
+  }
+  
+  public Long getUserGroupMemberCount(UserGroup userGroup) {
+    return userGroupUserDAO.countByUserGroup(userGroup);
   }
 
   private void fireUserCreatedEvent(UserEntity userEntity) {

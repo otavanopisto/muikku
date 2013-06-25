@@ -75,9 +75,7 @@ public class UserRESTService extends AbstractRESTService {
   public Response searchUsers(
       @QueryParam("searchString") String searchString
       ) {
-    Environment environment = sessionController.getEnvironment();
-    
-    List<EnvironmentUser> eusers = userController.listEnvironmentUsers(environment);
+    List<EnvironmentUser> eusers = userController.searchUsers(searchString);
     List<UserEntity> users = new ArrayList<UserEntity>();
     for (EnvironmentUser e : eusers) 
       users.add(e.getUser());
