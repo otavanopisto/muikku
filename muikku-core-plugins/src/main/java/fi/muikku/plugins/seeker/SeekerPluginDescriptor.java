@@ -40,7 +40,7 @@ public class SeekerPluginDescriptor implements PluginDescriptor, RESTPluginDescr
   public void init() {
     Widget logoutWidget = widgetController.findWidget(getName());
     if (logoutWidget == null) {
-      logoutWidget = widgetController.createWidget(getName(), WidgetVisibility.AUTHENTICATED);
+      logoutWidget = widgetController.createWidget(getName(), 4, WidgetVisibility.AUTHENTICATED);
     }
     
     // TODO This is wrong. So wrong. Atrocious, even!

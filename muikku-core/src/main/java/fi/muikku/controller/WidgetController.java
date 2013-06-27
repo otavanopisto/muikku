@@ -36,8 +36,8 @@ public class WidgetController {
 
   /* Widget */
 
-  public Widget createWidget(String name, WidgetVisibility visibility) {
-    return widgetDAO.create(name, visibility);
+  public Widget createWidget(String name, Integer minimumSize, WidgetVisibility visibility) {
+    return widgetDAO.create(name, minimumSize, visibility);
   }
 
   public Widget findWidget(String name) {

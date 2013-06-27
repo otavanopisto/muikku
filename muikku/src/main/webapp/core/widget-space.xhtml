@@ -6,37 +6,10 @@
   xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd">
 
   <ui:fragment rendered="#{widgetsBackingBean.hasWidgets(location)}">
-    <ui:fragment rendered="#{!empty(gridSize)}">
-      <div class="widgetSpace grid_#{gridSize}" data-name="#{location}">
-        <m:includeWidgets widgets="#{widgetsBackingBean.getWidgets(location)}"/>
-        <div class="clear"/>
-      </div>
-    </ui:fragment>
-    
-    <ui:fragment rendered="#{empty(gridSize)}">
-      <div class="widgetSpace" data-name="#{location}">
-        <m:includeWidgets widgets="#{widgetsBackingBean.getWidgets(location)}"/>
-        <div class="clear"/>
-      </div>
-    </ui:fragment>
-  </ui:fragment>
-
-  <ui:fragment rendered="#{!widgetsBackingBean.hasWidgets(location)}"> 
-    <c:forEach var="sublocation" items="#{sublocations}"> 
-      <ui:fragment rendered="#{!empty(gridSize)}">
-        <div class="widgetSpace grid_#{gridSize}" data-name="#{location}.#{sublocation}">
-           <m:includeWidgets widgets="#{widgetsBackingBean.getWidgets(location, sublocation)}"/>
-           <div class="clear"/>
-        </div>
-      </ui:fragment>
-      
-      <ui:fragment rendered="#{empty(gridSize)}">
-        <div class="widgetSpace" data-name="#{location}.#{sublocation}">
-           <m:includeWidgets widgets="#{widgetsBackingBean.getWidgets(location, sublocation)}"/>
-           <div class="clear"/>
-        </div>
-      </ui:fragment>
-    </c:forEach>
+    <div class="widgetSpace grid_#{gridSize}" data-name="#{location}">
+      <m:includeWidgets widgets="#{widgetsBackingBean.getWidgets(location)}"/>
+      <div class="clear"/>
+    </div>
   </ui:fragment>
 
 </ui:composition>

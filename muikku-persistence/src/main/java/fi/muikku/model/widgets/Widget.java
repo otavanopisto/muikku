@@ -25,6 +25,14 @@ public class Widget {
   public void setName(String name) {
     this.name = name;
   }
+  
+  public Integer getMinimumSize() {
+		return minimumSize;
+	}
+  
+  public void setMinimumSize(Integer minimumSize) {
+		this.minimumSize = minimumSize;
+	}
 
   public WidgetVisibility getVisibility() {
 		return visibility;
@@ -42,6 +50,10 @@ public class Widget {
   @NotEmpty
   @NotNull
   private String name;
+
+  @Column (nullable = false)
+  @NotNull
+  private Integer minimumSize;
   
   @Column (nullable = false)
   @NotNull

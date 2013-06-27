@@ -47,7 +47,7 @@ public class InternalLoginPluginDescriptor implements PluginDescriptor, Localize
   public void init() {
     Widget internalLoginWidget = widgetController.findWidget(INTERNALLOGIN_WIDGET_NAME);
     if (internalLoginWidget == null) {
-      internalLoginWidget = widgetController.createWidget(INTERNALLOGIN_WIDGET_NAME, WidgetVisibility.UNAUTHENTICATED);
+      internalLoginWidget = widgetController.createWidget(INTERNALLOGIN_WIDGET_NAME, 4, WidgetVisibility.UNAUTHENTICATED);
     }
     
     // TODO This is wrong. So wrong. Atrocious, even!

@@ -17,7 +17,6 @@ import fi.muikku.dao.users.EnvironmentUserDAO;
 import fi.muikku.dao.users.SuperUserDAO;
 import fi.muikku.dao.users.SystemUserRoleDAO;
 import fi.muikku.model.base.Environment;
-import fi.muikku.model.security.Permission;
 import fi.muikku.model.stub.courses.CourseEntity;
 import fi.muikku.model.stub.users.UserEntity;
 import fi.muikku.model.util.ResourceEntity;

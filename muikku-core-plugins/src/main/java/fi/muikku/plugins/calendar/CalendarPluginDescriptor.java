@@ -112,14 +112,14 @@ public class CalendarPluginDescriptor implements PluginDescriptor, LocalizedPlug
 
 		// Make sure we have registered calendar widgets 
 
-		Widget fullCalendarWidget = ensureWidget(FULLCALENDAR_WIDGET_NAME, WidgetVisibility.AUTHENTICATED);
+		Widget fullCalendarWidget = ensureWidget(FULLCALENDAR_WIDGET_NAME, 18, WidgetVisibility.AUTHENTICATED);
 		@SuppressWarnings("unused")
-		Widget miniCalendarWidget = ensureWidget(MINICALENDAR_WIDGET_NAME, WidgetVisibility.AUTHENTICATED);
-		Widget dockCalendarWidget = ensureWidget(DOCKCALENDAR_WIDGET_NAME, WidgetVisibility.AUTHENTICATED);
-		Widget newCalendarWidget = ensureWidget(NEWCALENDAR_WIDGET_NAME, WidgetVisibility.AUTHENTICATED);
-		Widget newEventWidget = ensureWidget(NEWEVENT_WIDGET_NAME, WidgetVisibility.AUTHENTICATED);
-		Widget calendarSettingsWidget = ensureWidget(CALENDARSETTINGS_WIDGET_NAME, WidgetVisibility.AUTHENTICATED);
-		Widget calendarsVisibleWidget = ensureWidget(CALENDARSVISIBLE_WIDGET_NAME, WidgetVisibility.AUTHENTICATED);
+		Widget miniCalendarWidget = ensureWidget(MINICALENDAR_WIDGET_NAME, 8, WidgetVisibility.AUTHENTICATED);
+		Widget dockCalendarWidget = ensureWidget(DOCKCALENDAR_WIDGET_NAME, 1, WidgetVisibility.AUTHENTICATED);
+		Widget newCalendarWidget = ensureWidget(NEWCALENDAR_WIDGET_NAME, 1, WidgetVisibility.AUTHENTICATED);
+		Widget newEventWidget = ensureWidget(NEWEVENT_WIDGET_NAME, 1, WidgetVisibility.AUTHENTICATED);
+		Widget calendarSettingsWidget = ensureWidget(CALENDARSETTINGS_WIDGET_NAME, 1, WidgetVisibility.AUTHENTICATED);
+		Widget calendarsVisibleWidget = ensureWidget(CALENDARSVISIBLE_WIDGET_NAME, 1, WidgetVisibility.AUTHENTICATED);
 
 		// Add full widget as default to calendar content widget location
 		
@@ -133,7 +133,7 @@ public class CalendarPluginDescriptor implements PluginDescriptor, LocalizedPlug
 		
 		// Add calendar widgets to their default locations
 
-		ensureDefaultWidget(dockCalendarWidget, WidgetLocations.ENVIRONMENT_DOCK_TOP);
+		ensureDefaultWidget(dockCalendarWidget, WidgetLocations.ENVIRONMENT_DOCK_TOP_CENTER);
 		ensureDefaultWidget(newEventWidget, CALENDAR_CONTENT_TOOLS_TOP_LEFT_WIDGET_LOCATION);
 		ensureDefaultWidget(newCalendarWidget, CALENDAR_CONTENT_TOOLS_TOP_LEFT_WIDGET_LOCATION);
 		ensureDefaultWidget(calendarsVisibleWidget, CALENDAR_CONTENT_TOOLS_TOP_RIGHT_WIDGET_LOCATION);
@@ -157,10 +157,10 @@ public class CalendarPluginDescriptor implements PluginDescriptor, LocalizedPlug
 		}
 	}
 
-	private Widget ensureWidget(String name, WidgetVisibility visibility) {
+	private Widget ensureWidget(String name, Integer minimumSize, WidgetVisibility visibility) {
 		Widget widget = widgetController.findWidget(name);
 		if (widget == null) {
-			widget = widgetController.createWidget(name, visibility);
+			widget = widgetController.createWidget(name, minimumSize, visibility);
 		}
 		
 		return widget;

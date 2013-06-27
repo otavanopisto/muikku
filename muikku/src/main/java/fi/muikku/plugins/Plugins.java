@@ -12,7 +12,6 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import fi.muikku.Logged;
-import fi.muikku.i18n.LocaleBackingBean;
 import fi.muikku.i18n.LocaleBundle;
 import fi.muikku.i18n.LocaleController;
 import fi.muikku.plugin.LocalizedPluginDescriptor;

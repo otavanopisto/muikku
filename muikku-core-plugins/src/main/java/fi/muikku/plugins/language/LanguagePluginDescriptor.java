@@ -47,7 +47,7 @@ public class LanguagePluginDescriptor implements PluginDescriptor, LocalizedPlug
   public void init() {
     Widget languageWidget = widgetController.findWidget(LANGUAGE_WIDGET_NAME);
     if (languageWidget == null) {
-      languageWidget = widgetController.createWidget(LANGUAGE_WIDGET_NAME, WidgetVisibility.EVERYONE);
+      languageWidget = widgetController.createWidget(LANGUAGE_WIDGET_NAME, 1, WidgetVisibility.EVERYONE);
     }
     
     // TODO This is wrong. So wrong. Atrocious, even!

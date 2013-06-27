@@ -16,11 +16,12 @@ public class WidgetDAO extends CoreDAO<Widget> {
 
 	private static final long serialVersionUID = 536153345356856021L;
 
-	public Widget create(String name, WidgetVisibility visibility) {
+	public Widget create(String name, Integer minimumSize, WidgetVisibility visibility) {
 		
 		Widget widget = new Widget();
 		widget.setName(name);
 		widget.setVisibility(visibility);
+		widget.setMinimumSize(minimumSize);
 		
 		getEntityManager().persist(widget);
 		

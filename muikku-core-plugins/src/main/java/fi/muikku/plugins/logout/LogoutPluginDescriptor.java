@@ -47,7 +47,7 @@ public class LogoutPluginDescriptor implements PluginDescriptor, LocalizedPlugin
   public void init() {
     Widget logoutWidget = widgetController.findWidget(LOGOUT_WIDGET_NAME);
     if (logoutWidget == null) {
-      logoutWidget = widgetController.createWidget(LOGOUT_WIDGET_NAME, WidgetVisibility.AUTHENTICATED);
+      logoutWidget = widgetController.createWidget(LOGOUT_WIDGET_NAME, 1, WidgetVisibility.AUTHENTICATED);
     }
     
     // TODO This is wrong. So wrong. Atrocious, even!

@@ -53,13 +53,13 @@ public class CommunicatorPluginDescriptor implements PluginDescriptor, Persisten
 	public void init() {
     Widget logoutWidget = widgetController.findWidget(COMMUNICATOR_DOCKWIDGET);
     if (logoutWidget == null) {
-      logoutWidget = widgetController.createWidget(COMMUNICATOR_DOCKWIDGET, WidgetVisibility.AUTHENTICATED);
+      logoutWidget = widgetController.createWidget(COMMUNICATOR_DOCKWIDGET, 1, WidgetVisibility.AUTHENTICATED);
     }
     
     // TODO This is wrong. So wrong. Atrocious, even!
-    WidgetLocation widgetLocation = widgetController.findWidgetLocation(WidgetLocations.ENVIRONMENT_DOCK_TOP);
+    WidgetLocation widgetLocation = widgetController.findWidgetLocation(WidgetLocations.ENVIRONMENT_DOCK_TOP_CENTER);
     if (widgetLocation == null) {
-      widgetLocation = widgetController.createWidgetLocation(WidgetLocations.ENVIRONMENT_DOCK_TOP);
+      widgetLocation = widgetController.createWidgetLocation(WidgetLocations.ENVIRONMENT_DOCK_TOP_CENTER);
     }
     
     DefaultWidget defaultWidget = widgetController.findDefaultWidget(logoutWidget, widgetLocation);
