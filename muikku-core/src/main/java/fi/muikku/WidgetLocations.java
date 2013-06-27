@@ -17,8 +17,8 @@ public class WidgetLocations {
 	public static final String ENVIRONMENT_CONTENT_TOOLS_BOTTOM_LEFT = "environment.content-tools-bottom.left";
 	public static final String ENVIRONMENT_CONTENT_TOOLS_BOTTOM_CENTER = "environment.content-tools-bottom.center";
 	public static final String ENVIRONMENT_CONTENT_TOOLS_BOTTOM_RIGHT = "environment.content-tools-bottom.right";
-	public static final String ENVIRONMENT_CONTENT_SIDEBAR_LEFT = "environment.content-sidebar-left";
-	public static final String ENVIRONMENT_CONTENT_SIDEBAR_RIGHT = "environment.content-sidebar-right";
+	public static final String ENVIRONMENT_CONTENT_SIDEBAR_LEFT = "environment.content-sidebar.left";
+	public static final String ENVIRONMENT_CONTENT_SIDEBAR_RIGHT = "environment.content-sidebar.right";
 	public static final String ENVIRONMENT_DOCK_BOTTOM_LEFT = "environment.dock-bottom.left";
 	public static final String ENVIRONMENT_DOCK_BOTTOM_CENTER = "environment.dock-bottom.center";
 	public static final String ENVIRONMENT_DOCK_BOTTOM_RIGHT = "environment.dock-bottom.right";
@@ -41,8 +41,8 @@ public class WidgetLocations {
 	public static final String WORKSPACE_CONTENT_TOOLS_BOTTOM_LEFT = "workspace.content-tools-bottom.left";
 	public static final String WORKSPACE_CONTENT_TOOLS_BOTTOM_CENTER = "workspace.content-tools-bottom.center";
 	public static final String WORKSPACE_CONTENT_TOOLS_BOTTOM_RIGHT = "workspace.content-tools-bottom.right";
-	public static final String WORKSPACE_CONTENT_SIDEBAR_LEFT = "workspace.content-sidebar-left";
-	public static final String WORKSPACE_CONTENT_SIDEBAR_RIGHT = "workspace.content-sidebar-right";
+	public static final String WORKSPACE_CONTENT_SIDEBAR_LEFT = "workspace.content-sidebar.left";
+	public static final String WORKSPACE_CONTENT_SIDEBAR_RIGHT = "workspace.content-sidebar.right";
 	public static final String WORKSPACE_DOCK_BOTTOM_LEFT = "workspace.dock-bottom.left";
 	public static final String WORKSPACE_DOCK_BOTTOM_CENTER = "workspace.dock-bottom.center";
 	public static final String WORKSPACE_DOCK_BOTTOM_RIGHT = "workspace.dock-bottom.right";
