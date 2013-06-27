@@ -1,10 +1,15 @@
 package fi.muikku.plugins.fish;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import fi.muikku.plugins.fish.dao.FishMessageDAO;
+import fi.muikku.plugins.fish.model.FishMessage;
 
 @Dependent
 @Stateful
@@ -23,5 +28,17 @@ public class DatabaseFishWidgetController {
   
   public Long getCount() {
     return fishMessageDAO.count();
+  }
+  
+  public List<FishMessage> getAllMessages() {
+    return Collections.unmodifiableList(fishMessageDAO.listAll());
+  }
+  
+  public void addText(String text) {
+    fishMessageDAO.create(text);
+  }
+  
+  public void removeById(Long id) {
+    fishMessageDAO.delete(fishMessageDAO.findById(id));
   }
 }

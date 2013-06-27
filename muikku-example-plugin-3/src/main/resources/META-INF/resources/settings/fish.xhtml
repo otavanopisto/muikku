@@ -6,7 +6,38 @@
     template="/WEB-INF/templates/plugins.xhtml">
 
   <ui:define name="content">
-    
+      
+  <h:outputStylesheet name="css/fishsettings.css"/>
+    <div class="grid_22">  
+    <h:dataTable value="#{databaseFishWidgetBackingBean.allMessages}"
+                 var="msg"
+                 headerClass="grid_6"
+                 columnClasses="grid_6,grid_6,grid_6">
+                 
+      <h:column>
+        <f:facet name="header">#{i18n.text['plugin.fish.id']}</f:facet>
+        #{msg.id}
+      </h:column>
+      <h:column>
+        <f:facet name="header">#{i18n.text['plugin.fish.content']}</f:facet>
+        #{msg.content}
+      </h:column>
+      <h:column>
+        <f:facet name="header"></f:facet>
+        <h:form>
+          <h:commandButton action="#{databaseFishWidgetBackingBean.removeById(msg.id)}" value="#{i18n.text['plugin.fish.remove']}" />
+        </h:form>
+      </h:column>
+    </h:dataTable>
+    <hr class="fishSettingsSeparator" />
+    <h:form>
+      <h:inputText id="messageContent"
+                   value="#{databaseFishWidgetBackingBean.pendingMessage}"
+                   class="grid_6"/>
+      <h:commandButton action="#{databaseFishWidgetBackingBean.submitPendingMessage}"
+                       value="#{i18n.text['plugin.fish.submit']}"
+                       class="grid_3"/>
+    </h:form>
+    </div>
   </ui:define>
-
 </ui:composition>
