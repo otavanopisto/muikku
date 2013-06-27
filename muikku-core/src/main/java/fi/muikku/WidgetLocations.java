@@ -49,6 +49,10 @@ public class WidgetLocations {
 	public static final String WORKSPACE_FOOTER_LEFT = "workspace.footer.left";
 	public static final String WORKSPACE_FOOTER_CENTER = "workspace.footer.center";
 	public static final String WORKSPACE_FOOTER_RIGHT = "workspace.footer.right";
+	
+	// Plugin Settings Locations
+	
+	public static final String PLUGIN_SETTINGS_CONTENT_SIDEBAR_LEFT = "plugin-settings.content-sidebar.left";
 
 	public static String[] getAll() {
 		return new String[] {

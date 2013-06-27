@@ -288,4 +288,10 @@ public class WidgetSpaceBackingBean {
 				new WidgetSpaceSetItem(WidgetLocations.WORKSPACE_FOOTER_RIGHT, false, WidgetSpaceSizingStrategy.MINIMIZE)
 		);
 	}
+	
+	public WidgetSpaceSet getPluginSettingsContentSidebarSet() {
+	  return new WidgetSpaceSet(
+	    new WidgetSpaceSetItem(WidgetLocations.PLUGIN_SETTINGS_CONTENT_SIDEBAR_LEFT, false, WidgetSpaceSizingStrategy.MINIMIZE)
+	  );
+	}
 }
