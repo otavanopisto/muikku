@@ -2,6 +2,11 @@
 
 .fishWidget {
 	text-align: left;
+	padding-bottom: 10px;
+}
+
+.seeker {
+  position: static;
 }
 
 .fishImage {
@@ -29,6 +34,7 @@
 	border-top: 8px solid transparent;
 	border-bottom: 8px solid transparent; 
 	border-right: 8px solid white;
-	margin-right: -1px; 
+	margin-right: -1px;
+	margin-bottom: -4px;
 	z-index: -1000;
 }
