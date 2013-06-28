@@ -16,6 +16,7 @@ import fi.muikku.plugin.TranquilEntityLookups;
 import fi.muikku.plugin.TranquilEntityLookupsImpl;
 import fi.muikku.plugins.calendar.CalendarPluginDescriptor;
 import fi.muikku.plugins.communicator.CommunicatorPluginDescriptor;
+import fi.muikku.plugins.content.ContentPluginDescriptor;
 import fi.muikku.plugins.coursepicker.CoursePickerPluginDescriptor;
 import fi.muikku.plugins.defaults.DefaultsPluginDescriptor;
 import fi.muikku.plugins.forum.ForumPluginDescriptor;
@@ -51,7 +52,8 @@ public class CorePluginsDescriptor implements PluginLibraryDescriptor {
       WallPluginDescriptor.class,
       SeekerPluginDescriptor.class,
       GradingPluginDescriptor.class,
-      SettingsPluginDescriptor.class
+      SettingsPluginDescriptor.class,
+      ContentPluginDescriptor.class
 		));
 	}
 	
