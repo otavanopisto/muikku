@@ -289,7 +289,7 @@ public class WidgetSpaceBackingBean {
 		);
 	}
 	
-	public WidgetSpaceSet getPluginSettingsContentSidebarSet() {
+	public WidgetSpaceSet getPluginSettingsContentSet() {
 	  return new WidgetSpaceSet(
 	    new WidgetSpaceSetItem(WidgetLocations.PLUGIN_SETTINGS_CONTENT_SIDEBAR_LEFT, false, WidgetSpaceSizingStrategy.MINIMIZE)
 	  );
