@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+
+  <ui:define name="header">
+    <ui:include src="/core/widget-space-set.xhtml">
+      <ui:param name="set" value="#{widgetSpaceBackingBean.workspaceHeaderSet}" />
+    </ui:include>
+  </ui:define>
+
+  <ui:define name="dockTop">
+    <ui:include src="/core/widget-space-set.xhtml">
+      <ui:param name="set" value="#{widgetSpaceBackingBean.workspaceDockTopSet}" />
+    </ui:include>
+  </ui:define>
+
+  <ui:define name="contentToolsTop">
+    <ui:include src="/core/widget-space-set.xhtml">
+      <ui:param name="set" value="#{widgetSpaceBackingBean.workspaceContentToolsTopSet}" />
+    </ui:include>
+  </ui:define>
+
+  <ui:define name="content">
+    <ui:include src="/core/widget-space-set.xhtml">
+      <ui:param name="set" value="#{widgetSpaceBackingBean.workspaceContentSet}" />
+    </ui:include>
+  </ui:define>
+
+  <ui:define name="contentToolsBottom">
+    <ui:include src="/core/widget-space-set.xhtml">
+      <ui:param name="set" value="#{widgetSpaceBackingBean.workspaceContentToolsBottomSet}" />
+    </ui:include>
+  </ui:define>
+
+  <ui:define name="dockBottom">
+    <ui:include src="/core/widget-space-set.xhtml">
+      <ui:param name="set" value="#{widgetSpaceBackingBean.workspaceDockBottomSet}" />
+    </ui:include>
+  </ui:define>
+
+  <ui:define name="footer">
+    <ui:include src="/core/widget-space-set.xhtml">
+      <ui:param name="set" value="#{widgetSpaceBackingBean.workspaceFooterSet}" />
+    </ui:include>
+  </ui:define>
+
+</ui:composition>
