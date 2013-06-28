@@ -6,35 +6,14 @@
     template="/WEB-INF/templates/default.xhtml">
 
   <ui:define name="contentToolsTop">
-    <ui:include src="/core/widget-space.xhtml">
-      <ui:param name="location" value="calendar.contentToolsTopLeft" />
-      <ui:param name="gridSize" value="8" />
-    </ui:include>
-    
-    <ui:include src="/core/widget-space.xhtml">
-      <ui:param name="location" value="calendar.contentToolsTopRight" />
-      <ui:param name="gridSize" value="8" />
+    <ui:include src="/core/widget-space-set.xhtml">
+      <ui:param name="set" value="#{calendarBackingBean.contentToolsTopWidgetSpaceSet}" />
     </ui:include>
   </ui:define>
   
-  <ui:define name="contentSidebarLeft">
-    <ui:include src="/core/widget-space.xhtml">
-      <ui:param name="location" value="calendar.contentSidebarLeft" />
-      <ui:param name="gridSize" value="0" />
-    </ui:include>
-  </ui:define>
-
   <ui:define name="content">
-    <ui:include src="/core/widget-space.xhtml">
-      <ui:param name="location" value="calendar.content" />
-      <ui:param name="gridSize" value="24" />
-    </ui:include>
-  </ui:define>
-
-  <ui:define name="contentSidebarRight">
-    <ui:include src="/core/widget-space.xhtml">
-      <ui:param name="location" value="calendar.contentSidebarRight" />
-      <ui:param name="gridSize" value="0" />
+    <ui:include src="/core/widget-space-set.xhtml">
+      <ui:param name="set" value="#{calendarBackingBean.contentWidgetSpaceSet}" />
     </ui:include>
   </ui:define>
 

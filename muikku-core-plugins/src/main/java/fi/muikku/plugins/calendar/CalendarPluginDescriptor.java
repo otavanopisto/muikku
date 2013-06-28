@@ -12,7 +12,6 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
-import fi.muikku.WidgetLocations;
 import fi.muikku.controller.EnvironmentController;
 import fi.muikku.controller.PluginSettingsController;
 import fi.muikku.controller.UserController;
@@ -58,12 +57,21 @@ public class CalendarPluginDescriptor implements PluginDescriptor, LocalizedPlug
 
 	private static final String DEFAULT_FIRSTDAY = "1"; // Monday
 	private static final String DEFAULT_COLOR = "#ff0000";
-
-	@SuppressWarnings("unused")
-	private static final String CALENDAR_CONTENT_SIDEBAR_LEFT = "calendar.contentSidebarLeft";
-	private static final String CALENDAR_CONTENT_WIDGET_LOCATION = "calendar.content";
-	private static final String CALENDAR_CONTENT_TOOLS_TOP_LEFT_WIDGET_LOCATION = "calendar.contentToolsTopLeft";
-	private static final String CALENDAR_CONTENT_TOOLS_TOP_RIGHT_WIDGET_LOCATION = "calendar.contentToolsTopRight";
+	
+	private static final String FULL_CALENDAR_WIDGET_WIDGET_LOCATION = WidgetLocations.CALENDAR_CONTENT;
+	private static final String DOCK_CALENDAR_WIDGET_LOCATION = fi.muikku.WidgetLocations.ENVIRONMENT_DOCK_TOP_CENTER;
+	private static final String NEW_EVENT_WIDGET_LOCATION = WidgetLocations.CALENDAR_CONTENT_TOOLS_TOP_LEFT;
+	private static final String NEW_CALENDAR_WIDGET_LOCATION = WidgetLocations.CALENDAR_CONTENT_TOOLS_TOP_LEFT;
+	private static final String CALENDARS_VISIBLE_WIDGET_LOCATION = WidgetLocations.CALENDAR_CONTENT_TOOLS_TOP_RIGHT;
+	private static final String CALENDAR_SETTINGS_WIDGET_LOCATION = WidgetLocations.CALENDAR_CONTENT_TOOLS_TOP_RIGHT;
+	
+	private static final int FULL_CALENDAR_WIDGET_MINIMUM_SIZE = 18;
+	private static final int MINI_CALENDAR_WIDGET_MINIMUM_SIZE = 8;
+	private static final int DOCK_CALENDAR_WIDGET_MINIMUM_SIZE = 4;
+	private static final int NEW_CALENDAR_WIDGET_MINIMUM_SIZE = 2;
+	private static final int NEW_EVENT_WIDGET_MINIMUM_SIZE = 2;
+	private static final int CALENDAR_SETTINGS_WIDGET_MINIMUM_SIZE = 2;
+	private static final int CALENDARS_VISIBLE_WIDGET_MINIMUM_SIZE = 2;
 	
 	private static final String FULLCALENDAR_WIDGET_NAME = "fullcalendar";
 	private static final String MINICALENDAR_WIDGET_NAME = "minicalendar";
@@ -112,18 +120,18 @@ public class CalendarPluginDescriptor implements PluginDescriptor, LocalizedPlug
 
 		// Make sure we have registered calendar widgets 
 
-		Widget fullCalendarWidget = ensureWidget(FULLCALENDAR_WIDGET_NAME, 18, WidgetVisibility.AUTHENTICATED);
+		Widget fullCalendarWidget = ensureWidget(FULLCALENDAR_WIDGET_NAME, FULL_CALENDAR_WIDGET_MINIMUM_SIZE, WidgetVisibility.AUTHENTICATED);
 		@SuppressWarnings("unused")
-		Widget miniCalendarWidget = ensureWidget(MINICALENDAR_WIDGET_NAME, 8, WidgetVisibility.AUTHENTICATED);
-		Widget dockCalendarWidget = ensureWidget(DOCKCALENDAR_WIDGET_NAME, 1, WidgetVisibility.AUTHENTICATED);
-		Widget newCalendarWidget = ensureWidget(NEWCALENDAR_WIDGET_NAME, 1, WidgetVisibility.AUTHENTICATED);
-		Widget newEventWidget = ensureWidget(NEWEVENT_WIDGET_NAME, 1, WidgetVisibility.AUTHENTICATED);
-		Widget calendarSettingsWidget = ensureWidget(CALENDARSETTINGS_WIDGET_NAME, 1, WidgetVisibility.AUTHENTICATED);
-		Widget calendarsVisibleWidget = ensureWidget(CALENDARSVISIBLE_WIDGET_NAME, 1, WidgetVisibility.AUTHENTICATED);
+		Widget miniCalendarWidget = ensureWidget(MINICALENDAR_WIDGET_NAME, MINI_CALENDAR_WIDGET_MINIMUM_SIZE, WidgetVisibility.AUTHENTICATED);
+		Widget dockCalendarWidget = ensureWidget(DOCKCALENDAR_WIDGET_NAME, DOCK_CALENDAR_WIDGET_MINIMUM_SIZE, WidgetVisibility.AUTHENTICATED);
+		Widget newCalendarWidget = ensureWidget(NEWCALENDAR_WIDGET_NAME, NEW_CALENDAR_WIDGET_MINIMUM_SIZE, WidgetVisibility.AUTHENTICATED);
+		Widget newEventWidget = ensureWidget(NEWEVENT_WIDGET_NAME, NEW_EVENT_WIDGET_MINIMUM_SIZE, WidgetVisibility.AUTHENTICATED);
+		Widget calendarSettingsWidget = ensureWidget(CALENDARSETTINGS_WIDGET_NAME, CALENDAR_SETTINGS_WIDGET_MINIMUM_SIZE, WidgetVisibility.AUTHENTICATED);
+		Widget calendarsVisibleWidget = ensureWidget(CALENDARSVISIBLE_WIDGET_NAME, CALENDARS_VISIBLE_WIDGET_MINIMUM_SIZE, WidgetVisibility.AUTHENTICATED);
 
 		// Add full widget as default to calendar content widget location
-		
-		ensureDefaultWidget(fullCalendarWidget, CALENDAR_CONTENT_WIDGET_LOCATION);
+
+		ensureDefaultWidget(fullCalendarWidget, FULL_CALENDAR_WIDGET_WIDGET_LOCATION);
 		
 		/**
 		// Add minicalendar as default to calendar content left sidebar and environment right sidebar
@@ -132,12 +140,12 @@ public class CalendarPluginDescriptor implements PluginDescriptor, LocalizedPlug
 		**/
 		
 		// Add calendar widgets to their default locations
-
-		ensureDefaultWidget(dockCalendarWidget, WidgetLocations.ENVIRONMENT_DOCK_TOP_CENTER);
-		ensureDefaultWidget(newEventWidget, CALENDAR_CONTENT_TOOLS_TOP_LEFT_WIDGET_LOCATION);
-		ensureDefaultWidget(newCalendarWidget, CALENDAR_CONTENT_TOOLS_TOP_LEFT_WIDGET_LOCATION);
-		ensureDefaultWidget(calendarsVisibleWidget, CALENDAR_CONTENT_TOOLS_TOP_RIGHT_WIDGET_LOCATION);
-		ensureDefaultWidget(calendarSettingsWidget, CALENDAR_CONTENT_TOOLS_TOP_RIGHT_WIDGET_LOCATION);
+		
+		ensureDefaultWidget(dockCalendarWidget, DOCK_CALENDAR_WIDGET_LOCATION);
+		ensureDefaultWidget(newEventWidget, NEW_EVENT_WIDGET_LOCATION);
+		ensureDefaultWidget(newCalendarWidget, NEW_CALENDAR_WIDGET_LOCATION);
+		ensureDefaultWidget(calendarsVisibleWidget, CALENDARS_VISIBLE_WIDGET_LOCATION);
+		ensureDefaultWidget(calendarSettingsWidget, CALENDAR_SETTINGS_WIDGET_LOCATION);
 
 		// Make sure every user has a default calendar
 

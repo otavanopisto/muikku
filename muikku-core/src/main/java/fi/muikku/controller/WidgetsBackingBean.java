@@ -69,6 +69,9 @@ public class WidgetsBackingBean {
 				case MINIMIZE:
 					size = calculateWidgetSpaceMinimumSize(widgetSpaceSetItem);
 				break;
+				case SUM:
+					size = calculateWidgetSpaceSummedSize(widgetSpaceSetItem);
+				break;
 			}
 			
 			storeCalculatedWidgetSpaceSize(widgetSpaceSetItem.getName(), size);
@@ -86,6 +89,17 @@ public class WidgetsBackingBean {
 			if (minimumSize > size) {
 				size = minimumSize;
 			}
+		}
+		
+		return size;
+	}
+	
+	private Integer calculateWidgetSpaceSummedSize(WidgetSpaceSetItem widgetSpaceSetItem) {
+		Integer size = 0;
+		
+		List<LocatedWidget> widgetSpaceWidgets = getWidgets(widgetSpaceSetItem.getName());
+		for (LocatedWidget locatedWidget : widgetSpaceWidgets) {
+			size += locatedWidget.getWidget().getMinimumSize();
 		}
 		
 		return size;
