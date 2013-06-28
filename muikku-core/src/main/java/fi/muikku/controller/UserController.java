@@ -17,6 +17,7 @@ import fi.muikku.dao.users.UserContactDAO;
 import fi.muikku.dao.users.UserEntityDAO;
 import fi.muikku.dao.users.UserGroupDAO;
 import fi.muikku.dao.users.UserGroupUserDAO;
+import fi.muikku.dao.users.UserImplDAO;
 import fi.muikku.dao.users.UserPictureDAO;
 import fi.muikku.events.Archived;
 import fi.muikku.events.Created;
@@ -30,6 +31,7 @@ import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.EnvironmentUserRole;
 import fi.muikku.model.users.UserContact;
 import fi.muikku.model.users.UserGroup;
+import fi.muikku.model.users.UserImpl;
 import fi.muikku.schooldata.UserSchoolDataController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.security.MuikkuPermissions;
@@ -74,6 +76,9 @@ public class UserController {
   private UserGroupUserDAO userGroupUserDAO;
   
   @Inject
+  private UserImplDAO userImplDAO;
+  
+  @Inject
   @Created
   private Event<UserEntityEvent> userCreatedEvent;
   
@@ -84,7 +89,7 @@ public class UserController {
   @Inject
   @Archived
   private Event<UserEntityEvent> userRemovedEvent;
-
+  
   public User getUser(Long userId) {
     UserEntity userEntity = userEntityDAO.findById(userId);
     return userController.findUser(userEntity);
@@ -147,6 +152,10 @@ public class UserController {
   @Permit (MuikkuPermissions.MANAGE_USERS) // TODO: ???
   public List<EnvironmentUser> listEnvironmentUsers(@PermitContext Environment environment) {
     return environmentUserDAO.listByEnvironment(environment);
+  }
+  
+  public List<UserImpl> listAllUsers() {
+  	return userImplDAO.listAll();
   }
 
   public List<EnvironmentUser> searchUsers(String searchTerm) {

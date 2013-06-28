@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html" template="/settings/template.xhtml">
+
+  <ui:define name="content">
+
+    <h:dataTable id="users-table" value="#{settingsBackingBean.allUsers}" var="user" style="width:100%">
+      <f:facet name="header">
+        <h:outputText value="All Users" />
+      </f:facet>
+      
+      <h:column>
+        <f:facet name="header">
+          <h:outputText value="Id" />
+        </f:facet>
+        <h:outputText value="#{user.id}" />
+      </h:column>
+      
+      <h:column>
+        <f:facet name="header">
+          <h:outputText value="First Name" />
+        </f:facet>
+        <h:outputText value="#{user.firstName}" />
+      </h:column>
+      
+      <h:column>
+        <f:facet name="header">
+          <h:outputText value="Last Name" />
+        </f:facet>
+        <h:outputText value="#{user.lastName}" />
+      </h:column>
+      
+      <h:column>
+        <f:facet name="header">
+          <h:outputText value="Email" />
+        </f:facet>
+        <h:outputText value="#{user.email}" />
+      </h:column>
+      
+      <f:facet name="footer">
+        <h:outputText value="Count: #{settingsBackingBean.allUsers.size()}" />
+      </f:facet>
+      
+    </h:dataTable>
+    
+  </ui:define>
+
+</ui:composition>
