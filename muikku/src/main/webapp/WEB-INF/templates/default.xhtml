@@ -72,7 +72,7 @@
   
     <div id="header">
       <div id="headerContainer" class="container_24">
-        <ui:insert name="environmentHeader">
+        <ui:insert name="header">
           <ui:include src="/core/widget-space-set.xhtml">
             <ui:param name="set" value="#{widgetSpaceBackingBean.environmentHeaderSet}" />
           </ui:include>
@@ -97,21 +97,15 @@
         </ui:include>
       </ui:insert>
 
-      <ui:insert name="contentToolsBottom">
-        <ui:include src="/core/widget-space-set.xhtml">
-          <ui:param name="set" value="#{widgetSpaceBackingBean.environmentContentToolsBottomSet}" />
-        </ui:include>
-      </ui:insert>
-
-      <ui:insert name="contentToolsBottom">
-        <ui:include src="/core/widget-space-set.xhtml">
-          <ui:param name="set" value="#{widgetSpaceBackingBean.environmentContentSet}" />
-        </ui:include>
-      </ui:insert>
-
       <ui:insert name="content">
         <ui:include src="/core/widget-space-set.xhtml">
           <ui:param name="set" value="#{widgetSpaceBackingBean.environmentContentSet}" />
+        </ui:include>
+      </ui:insert>
+
+      <ui:insert name="contentToolsBottom">
+        <ui:include src="/core/widget-space-set.xhtml">
+          <ui:param name="set" value="#{widgetSpaceBackingBean.environmentContentToolsBottomSet}" />
         </ui:include>
       </ui:insert>
     </div>
