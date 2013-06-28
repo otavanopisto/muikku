@@ -44,6 +44,15 @@ public class WidgetController {
     return widgetDAO.findByName(name);
   }
 
+  public Widget ensureWidget(String name, Integer minimumSize, WidgetVisibility visibility) {
+		Widget widget = findWidget(name);
+		if (widget == null) {
+			widget = createWidget(name, minimumSize, visibility);
+		}
+		
+		return widget;
+	}
+
   /* WidgetLocation */
   
   public WidgetLocation createWidgetLocation(String name) {
@@ -127,5 +136,17 @@ public class WidgetController {
 
 	public boolean hasDefaultWidgets(String location) {
 		return hasDefaultWidgets(findWidgetLocation(location));
+	}
+
+	public void ensureDefaultWidget(Widget widget, String location) {
+		WidgetLocation widgetLocation = findWidgetLocation(location);
+		if (widgetLocation == null) {
+			widgetLocation = createWidgetLocation(location);
+		}
+		
+		DefaultWidget defaultWidget = findDefaultWidget(widget, widgetLocation);
+		if (defaultWidget == null) {
+			defaultWidget = createDefaultWidget(widgetLocation, widget);
+		}
 	}
 }
