@@ -37,4 +37,9 @@ public class WorkspaceType {
   @NotEmpty
   @Column (nullable = false)
   private String name;
+  
+  // TODO: Supported Grading Scales
+  // TODO: Course Data Source 
+  // TODO: Student Data Source
+  // TODO: Available Services
 }
