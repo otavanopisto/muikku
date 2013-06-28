@@ -20,9 +20,7 @@ import fi.muikku.i18n.LocaleBundle;
 import fi.muikku.i18n.LocaleLocation;
 import fi.muikku.model.plugins.PluginUserSettingKey;
 import fi.muikku.model.stub.users.UserEntity;
-import fi.muikku.model.widgets.DefaultWidget;
 import fi.muikku.model.widgets.Widget;
-import fi.muikku.model.widgets.WidgetLocation;
 import fi.muikku.model.widgets.WidgetVisibility;
 import fi.muikku.plugin.LocalizedPluginDescriptor;
 import fi.muikku.plugin.PersistencePluginDescriptor;
@@ -120,18 +118,18 @@ public class CalendarPluginDescriptor implements PluginDescriptor, LocalizedPlug
 
 		// Make sure we have registered calendar widgets 
 
-		Widget fullCalendarWidget = ensureWidget(FULLCALENDAR_WIDGET_NAME, FULL_CALENDAR_WIDGET_MINIMUM_SIZE, WidgetVisibility.AUTHENTICATED);
+		Widget fullCalendarWidget = widgetController.ensureWidget(FULLCALENDAR_WIDGET_NAME, FULL_CALENDAR_WIDGET_MINIMUM_SIZE, WidgetVisibility.AUTHENTICATED);
 		@SuppressWarnings("unused")
-		Widget miniCalendarWidget = ensureWidget(MINICALENDAR_WIDGET_NAME, MINI_CALENDAR_WIDGET_MINIMUM_SIZE, WidgetVisibility.AUTHENTICATED);
-		Widget dockCalendarWidget = ensureWidget(DOCKCALENDAR_WIDGET_NAME, DOCK_CALENDAR_WIDGET_MINIMUM_SIZE, WidgetVisibility.AUTHENTICATED);
-		Widget newCalendarWidget = ensureWidget(NEWCALENDAR_WIDGET_NAME, NEW_CALENDAR_WIDGET_MINIMUM_SIZE, WidgetVisibility.AUTHENTICATED);
-		Widget newEventWidget = ensureWidget(NEWEVENT_WIDGET_NAME, NEW_EVENT_WIDGET_MINIMUM_SIZE, WidgetVisibility.AUTHENTICATED);
-		Widget calendarSettingsWidget = ensureWidget(CALENDARSETTINGS_WIDGET_NAME, CALENDAR_SETTINGS_WIDGET_MINIMUM_SIZE, WidgetVisibility.AUTHENTICATED);
-		Widget calendarsVisibleWidget = ensureWidget(CALENDARSVISIBLE_WIDGET_NAME, CALENDARS_VISIBLE_WIDGET_MINIMUM_SIZE, WidgetVisibility.AUTHENTICATED);
+		Widget miniCalendarWidget = widgetController.ensureWidget(MINICALENDAR_WIDGET_NAME, MINI_CALENDAR_WIDGET_MINIMUM_SIZE, WidgetVisibility.AUTHENTICATED);
+		Widget dockCalendarWidget = widgetController.ensureWidget(DOCKCALENDAR_WIDGET_NAME, DOCK_CALENDAR_WIDGET_MINIMUM_SIZE, WidgetVisibility.AUTHENTICATED);
+		Widget newCalendarWidget = widgetController.ensureWidget(NEWCALENDAR_WIDGET_NAME, NEW_CALENDAR_WIDGET_MINIMUM_SIZE, WidgetVisibility.AUTHENTICATED);
+		Widget newEventWidget = widgetController.ensureWidget(NEWEVENT_WIDGET_NAME, NEW_EVENT_WIDGET_MINIMUM_SIZE, WidgetVisibility.AUTHENTICATED);
+		Widget calendarSettingsWidget = widgetController.ensureWidget(CALENDARSETTINGS_WIDGET_NAME, CALENDAR_SETTINGS_WIDGET_MINIMUM_SIZE, WidgetVisibility.AUTHENTICATED);
+		Widget calendarsVisibleWidget = widgetController.ensureWidget(CALENDARSVISIBLE_WIDGET_NAME, CALENDARS_VISIBLE_WIDGET_MINIMUM_SIZE, WidgetVisibility.AUTHENTICATED);
 
 		// Add full widget as default to calendar content widget location
 
-		ensureDefaultWidget(fullCalendarWidget, FULL_CALENDAR_WIDGET_WIDGET_LOCATION);
+		widgetController.ensureDefaultWidget(fullCalendarWidget, FULL_CALENDAR_WIDGET_WIDGET_LOCATION);
 		
 		/**
 		// Add minicalendar as default to calendar content left sidebar and environment right sidebar
@@ -141,11 +139,11 @@ public class CalendarPluginDescriptor implements PluginDescriptor, LocalizedPlug
 		
 		// Add calendar widgets to their default locations
 		
-		ensureDefaultWidget(dockCalendarWidget, DOCK_CALENDAR_WIDGET_LOCATION);
-		ensureDefaultWidget(newEventWidget, NEW_EVENT_WIDGET_LOCATION);
-		ensureDefaultWidget(newCalendarWidget, NEW_CALENDAR_WIDGET_LOCATION);
-		ensureDefaultWidget(calendarsVisibleWidget, CALENDARS_VISIBLE_WIDGET_LOCATION);
-		ensureDefaultWidget(calendarSettingsWidget, CALENDAR_SETTINGS_WIDGET_LOCATION);
+		widgetController.ensureDefaultWidget(dockCalendarWidget, DOCK_CALENDAR_WIDGET_LOCATION);
+		widgetController.ensureDefaultWidget(newEventWidget, NEW_EVENT_WIDGET_LOCATION);
+		widgetController.ensureDefaultWidget(newCalendarWidget, NEW_CALENDAR_WIDGET_LOCATION);
+		widgetController.ensureDefaultWidget(calendarsVisibleWidget, CALENDARS_VISIBLE_WIDGET_LOCATION);
+		widgetController.ensureDefaultWidget(calendarSettingsWidget, CALENDAR_SETTINGS_WIDGET_LOCATION);
 
 		// Make sure every user has a default calendar
 
@@ -162,27 +160,6 @@ public class CalendarPluginDescriptor implements PluginDescriptor, LocalizedPlug
 		String defaultFirstDay = pluginSettingsController.getPluginSetting(getName(), DEFAULT_FIRSTDAY_SETTING);
 		if (!DEFAULT_FIRSTDAY.equals(defaultFirstDay)) {
 			pluginSettingsController.setPluginSetting(getName(), DEFAULT_FIRSTDAY_SETTING, DEFAULT_FIRSTDAY);
-		}
-	}
-
-	private Widget ensureWidget(String name, Integer minimumSize, WidgetVisibility visibility) {
-		Widget widget = widgetController.findWidget(name);
-		if (widget == null) {
-			widget = widgetController.createWidget(name, minimumSize, visibility);
-		}
-		
-		return widget;
-	}
-
-	private void ensureDefaultWidget(Widget widget, String location) {
-		WidgetLocation widgetLocation = widgetController.findWidgetLocation(location);
-		if (widgetLocation == null) {
-			widgetLocation = widgetController.createWidgetLocation(location);
-		}
-		
-		DefaultWidget defaultWidget = widgetController.findDefaultWidget(widget, widgetLocation);
-		if (defaultWidget == null) {
-			defaultWidget = widgetController.createDefaultWidget(widgetLocation, widget);
 		}
 	}
 
