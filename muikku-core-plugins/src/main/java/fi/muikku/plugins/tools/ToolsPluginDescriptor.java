@@ -42,12 +42,12 @@ public class ToolsPluginDescriptor implements PluginDescriptor {
 
     Widget environmentToolsWidget = widgetController.findWidget(ENVIRONMENT_TOOLS_WIDGET_NAME);
     if (environmentToolsWidget == null) {
-      environmentToolsWidget = widgetController.createWidget(ENVIRONMENT_TOOLS_WIDGET_NAME, WidgetVisibility.AUTHENTICATED);
+      environmentToolsWidget = widgetController.createWidget(ENVIRONMENT_TOOLS_WIDGET_NAME, 8, WidgetVisibility.AUTHENTICATED);
     }
 
-    WidgetLocation environmentDockTopWidgetLocation = widgetController.findWidgetLocation(WidgetLocations.ENVIRONMENT_DOCK_TOP);
+    WidgetLocation environmentDockTopWidgetLocation = widgetController.findWidgetLocation(WidgetLocations.ENVIRONMENT_DOCK_TOP_CENTER);
     if (environmentDockTopWidgetLocation == null) {
-      environmentDockTopWidgetLocation = widgetController.createWidgetLocation(WidgetLocations.ENVIRONMENT_DOCK_TOP);
+      environmentDockTopWidgetLocation = widgetController.createWidgetLocation(WidgetLocations.ENVIRONMENT_DOCK_TOP_CENTER);
     }
     
     DefaultWidget environmentToolsDefaultWidget = widgetController.findDefaultWidget(environmentToolsWidget, environmentDockTopWidgetLocation);
