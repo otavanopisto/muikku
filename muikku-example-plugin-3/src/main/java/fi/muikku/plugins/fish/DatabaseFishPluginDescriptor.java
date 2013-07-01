@@ -35,7 +35,7 @@ public class DatabaseFishPluginDescriptor implements PluginDescriptor,
   private static final String FISH_WIDGET_NAME = "databasefish";
   private static final String FISH_ADMIN_WIDGET_LOCATION = WidgetLocations.PLUGIN_SETTINGS_CONTENT_SIDEBAR_LEFT;
   private static final String FISH_ADMIN_WIDGET_NAME = "fishadmin";
-  private static final Integer FISH_WIDGET_MINIMUM_SIZE = 4; 
+  private static final Integer FISH_WIDGET_MINIMUM_SIZE = 8; 
   private static final Integer FISH_ADMIN_MINIMUM_SIZE = 4; 
 
   @Inject
