@@ -1,8 +1,8 @@
-package fi.muikku.plugin.manager;
+package fi.muikku.plugin;
 
-public class PluginLibraryLoadInfo {
+public class PluginLibraryInfo {
 
-  public PluginLibraryLoadInfo(String groupId, String artifactId, String version) {
+  public PluginLibraryInfo(String groupId, String artifactId, String version) {
     this.groupId = groupId;
     this.artifactId = artifactId;
     this.version = version;
