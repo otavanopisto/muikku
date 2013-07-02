@@ -26,6 +26,14 @@ public class SettingsBackingBean {
 		);
 	}
 	
+	public WidgetSpaceSet getSettingsUsersContentToolsTopSet() {
+		return new WidgetSpaceSet(
+				new WidgetSpaceSetItem(WidgetLocations.SETTINGS_USERS_CONTENT_TOOLS_TOP_LEFT, false, WidgetSpaceSizingStrategy.MINIMIZE),
+				new WidgetSpaceSetItem(WidgetLocations.SETTINGS_USERS_CONTENT_TOOLS_TOP_CENTER, true, WidgetSpaceSizingStrategy.MAXIMIZE),
+				new WidgetSpaceSetItem(WidgetLocations.SETTINGS_USERS_CONTENT_TOOLS_TOP_RIGHT, false, WidgetSpaceSizingStrategy.MINIMIZE)
+		);
+	}
+	
 	public List<UserImpl> getAllUsers() {
 		List<UserImpl> users = userController.listAllUsers();
 		return users;

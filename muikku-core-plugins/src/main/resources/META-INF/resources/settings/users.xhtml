@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html" template="/settings/template.xhtml">
+  
+  <ui:define name="contentToolsTop">
+    <ui:include src="/core/widget-space-set.xhtml">
+      <ui:param name="set" value="#{settingsBackingBean.settingsUsersContentToolsTopSet}" />
+    </ui:include>
+  </ui:define>
 
   <ui:define name="content">
 
