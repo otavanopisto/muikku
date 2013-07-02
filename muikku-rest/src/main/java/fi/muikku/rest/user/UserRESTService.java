@@ -36,6 +36,7 @@ import fi.tranquil.instructions.SuperClassInstructionSelector;
 @Path("/user")
 @Stateless
 @Produces ("application/json")
+@Deprecated
 public class UserRESTService extends AbstractRESTService {
 
   @Inject 
