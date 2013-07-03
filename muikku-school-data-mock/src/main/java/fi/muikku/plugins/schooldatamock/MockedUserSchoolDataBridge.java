@@ -21,6 +21,7 @@ import fi.muikku.plugins.hsqldb.HSQLDBPluginController;
 import fi.muikku.plugins.schooldatamock.entities.MockedUser;
 import fi.muikku.plugins.schooldatamock.entities.MockedUserEmail;
 import fi.muikku.plugins.schooldatamock.entities.MockedUserImage;
+import fi.muikku.plugins.schooldatamock.entities.MockedUserProperty;
 import fi.muikku.schooldata.UserSchoolDataBridge;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.UserEmail;
@@ -318,32 +319,116 @@ public class MockedUserSchoolDataBridge implements UserSchoolDataBridge {
 
 	@Override
 	public UserProperty createUserProperty(String userIdentifier, String key, String value) {
-		// TODO Auto-generated method stub
+		Long userId = NumberUtils.createLong(userIdentifier);
+		
+		try {
+			PreparedStatement preparedStatement = executeInsert("insert into UserProperty (user_id, key, value) values (?, ?, ?)", userId, key, value);
+			ResultSet resultSet = preparedStatement.getGeneratedKeys();
+			if (resultSet.next()) {
+				String identifier = String.valueOf(resultSet.getLong(1));
+			  return new MockedUserProperty(identifier, userIdentifier, key, value);
+			}
+			
+		} catch (SQLException e) {
+			// TODO Proper error handling
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+
 		return null;
 	}
 
 	@Override
 	public UserProperty findUserProperty(String identifier) {
-		// TODO Auto-generated method stub
+		Long id = NumberUtils.createLong(identifier);
+		
+		try {
+			ResultSet resultSet = executeSelect("select user_id, key, value from UserProperty where id = ?", id);
+			if (resultSet.next()) {
+				String userId = resultSet.getString(1);
+				String key = resultSet.getString(2);
+				String value = resultSet.getString(3);
+				
+				return new MockedUserProperty(identifier, userId, key, value);
+			}
+		} catch (SQLException e) {
+			// TODO Proper error handling
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+		
 		return null;
 	}
-
+	
 	@Override
-	public List<UserProperty> listUserPropertiesByKey(String key) {
-		// TODO Auto-generated method stub
+	public UserProperty findUserPropertyByUserAndKey(String userIdentifier, String key) {
+		try {
+			ResultSet resultSet = executeSelect("select id, user_id, key, value from UserProperty where user_id = ? and key = ?", userIdentifier, key);
+			if (resultSet.next()) {
+				return new MockedUserProperty(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4));
+			}
+		} catch (SQLException e) {
+			// TODO Proper error handling
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+		
 		return null;
+	}
+	
+	@Override
+	public List<UserProperty> listUserPropertiesByUser(String userIdentifier) {
+		List<UserProperty> result = new ArrayList<UserProperty>();
+		
+		try {
+			ResultSet resultSet = executeSelect("select id, user_id, key, value from UserProperty where user_id = ?", userIdentifier);
+			while (resultSet.next()) {
+				String identifier = resultSet.getString(1);
+				String uid = resultSet.getString(2);
+				String propertyKey = resultSet.getString(3);
+				String value = resultSet.getString(4);
+				
+				result.add(new MockedUserProperty(identifier, uid, propertyKey, value));
+			}
+		} catch (SQLException e) {
+			// TODO Proper error handling
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+		
+		return result;
 	}
 
 	@Override
 	public UserProperty updateUserProperty(UserProperty userProperty) {
-		// TODO Auto-generated method stub
-		return null;
+		Long id = NumberUtils.createLong(userProperty.getIdentifier());
+		
+		try {
+			PreparedStatement preparedStatement = executeUpdate("update UserProperty set value = ? where id = ?", userProperty.getValue(), id);
+			if (preparedStatement.getUpdateCount() == 1) {
+				return userProperty;
+			} else {
+				// TODO Proper error handling
+				throw new RuntimeException("UserProperty updating failed");
+			}
+		} catch (SQLException e) {
+			// TODO Proper error handling
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
 	public void removeUserProperty(String identifier) {
-		// TODO Auto-generated method stub
+		Long id = NumberUtils.createLong(identifier);
 		
+		try {
+			executeDelete("delete from UserProperty where id = ?", id);
+		} catch (SQLException e) {
+			// TODO Proper error handling
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
 	}
 
 	private PreparedStatement executeInsert(String sql, Object... values) throws SQLException {
