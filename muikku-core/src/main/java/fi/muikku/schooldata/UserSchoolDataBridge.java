@@ -21,7 +21,7 @@ public interface UserSchoolDataBridge {
 	
 	public User updateUser(User user);
 	
-	public void removeUser(User user);
+	public void removeUser(String identifier);
 	
 	/* User Email */
 	
@@ -52,8 +52,10 @@ public interface UserSchoolDataBridge {
 	public UserProperty createUserProperty(String userIdentifier, String key, String value);
 	
 	public UserProperty findUserProperty(String identifier);
-	
-	public List<UserProperty> listUserPropertiesByKey(String key);
+
+	public UserProperty findUserPropertyByUserAndKey(String userIdentifier, String key);
+
+	public List<UserProperty> listUserPropertiesByUser(String userIdentifier);
 	
 	public UserProperty updateUserProperty(UserProperty userProperty);
 	
