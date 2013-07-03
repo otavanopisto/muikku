@@ -28,9 +28,6 @@ public class SchoolDataMockPluginDescriptor implements PluginDescriptor {
 	@Inject
 	private HSQLDBPluginController hsqldbPluginController;
 
-	@Inject
-	private MockedUserSchoolDataBridge userSchoolDataBridge;
-	
 	@Override
 	public String getName() {
 		return "school-data-mock";
@@ -45,8 +42,8 @@ public class SchoolDataMockPluginDescriptor implements PluginDescriptor {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
-}
-	
+	}
+
 	private File getCreateTablesScriptFile() throws URISyntaxException {
 		ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
 		URL initalScript = contextClassLoader.getResource("META-INF/resources/create_tables.sql");
@@ -60,9 +57,7 @@ public class SchoolDataMockPluginDescriptor implements PluginDescriptor {
 
 	@Override
 	public List<Class<?>> getBeans() {
-		return new ArrayList<Class<?>>(Arrays.asList(
-			MockedUserSchoolDataBridge.class
-		));
+		return new ArrayList<Class<?>>(Arrays.asList(MockedUserSchoolDataBridge.class));
 	}
 
 }
