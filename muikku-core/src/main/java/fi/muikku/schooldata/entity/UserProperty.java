@@ -12,5 +12,6 @@ public interface UserProperty {
 	public String getKey();
 	
 	public String getValue();
-	
+
+	public void setValue(String value);
 }
