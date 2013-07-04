@@ -9,6 +9,8 @@ import fi.muikku.schooldata.entity.UserProperty;
 
 public interface UserSchoolDataBridge {
 	
+	public String getSchoolDataSource();
+	
 	// TODO: Error handling...
 	
 	/* User */
@@ -18,6 +20,8 @@ public interface UserSchoolDataBridge {
 	public User findUser(String identifier);
 	
 	// TODO: Search / findUsers
+	
+	public List<User> listUsers();
 	
 	public User updateUser(User user);
 	
