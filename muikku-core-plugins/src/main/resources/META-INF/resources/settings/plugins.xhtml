@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"    
+    template="/WEB-INF/templates/plugins.xhtml">
+    
+    <ui:define name="content">
+      <h2>Pluginien asetukset</h2>
+      <h:form>
+      
+      <ui:repeat value="#{settingsBackingBean.allPlugins}"
+                 var="plugin">
+        <h:form>
+        <ui:fragment rendered="#{plugin.enabled}">
+          <h:commandButton action="#{settingsBackingBean.togglePlugin(plugin)}"
+                           value="#{i18n.text['plugin.settings.plugins.enablePlugin']}" />
+        </ui:fragment>
+        <ui:fragment rendered="#{!plugin.enabled}">
+          <h:commandButton action="#{settingsBackingBean.togglePlugin(plugin)}"
+                           value="#{i18n.text['plugin.settings.plugins.disablePlugin']}" />
+        </ui:fragment>
+        </h:form>
+        #{plugin.name} - #{plugin.library}
+      </ui:repeat>
+      </h:form>
+    </ui:define>
+</ui:composition>

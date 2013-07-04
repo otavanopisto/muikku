@@ -2,22 +2,27 @@ package fi.muikku.plugins.settings;
 
 import java.util.List;
 
-import javax.enterprise.context.Dependent;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import fi.muikku.controller.UserController;
 import fi.muikku.model.users.UserImpl;
+import fi.muikku.plugin.PluginLibraryInfo;
+import fi.muikku.plugins.settings.model.Plugin;
 import fi.muikku.widgets.WidgetSpaceSet;
 import fi.muikku.widgets.WidgetSpaceSetItem;
 import fi.muikku.widgets.WidgetSpaceSizingStrategy;
 
 @Named
-@Dependent
+@RequestScoped
 public class SettingsBackingBean {
 	
 	@Inject
 	private UserController userController;
+
+	@Inject
+	private PluginSettingsController pluginSettingsController;
 
 	public WidgetSpaceSet getContentWidgetSpaceSet() {
 		return new WidgetSpaceSet(
@@ -30,6 +35,22 @@ public class SettingsBackingBean {
 		List<UserImpl> users = userController.listAllUsers();
 		return users;
 	}
+
+  public List<PluginLibraryInfo> getAllLibraries() {
+    return pluginSettingsController.getAllLibraries();
+  }
+  
+  public List<Plugin> getPluginsByLibrary(PluginLibraryInfo pluginLibraryInfo) {
+    return pluginSettingsController.getPluginsByLibrary(pluginLibraryInfo);
+  }
+  
+  public List<Plugin> getAllPlugins() {
+    return pluginSettingsController.getAllPlugins();
+  }
+  
+  public void togglePlugin(Plugin plugin) {
+    pluginSettingsController.togglePlugin(plugin);
+  }
 
 }
 

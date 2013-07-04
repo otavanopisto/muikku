@@ -1,20 +1,30 @@
 package fi.muikku.plugins.settings;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.LocaleUtils;
+
 import fi.muikku.controller.WidgetController;
+import fi.muikku.i18n.LocaleBundle;
+import fi.muikku.i18n.LocaleLocation;
 import fi.muikku.model.widgets.WidgetVisibility;
+import fi.muikku.plugin.LocalizedPluginDescriptor;
+import fi.muikku.plugin.PersistencePluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
+import fi.muikku.plugins.settings.dao.PluginEntityDAO;
+import fi.muikku.plugins.settings.model.Plugin;
 
 @ApplicationScoped
 @Stateful
-public class SettingsPluginDescriptor implements PluginDescriptor {
+public class SettingsPluginDescriptor implements PluginDescriptor, PersistencePluginDescriptor, LocalizedPluginDescriptor {
 
 	private static final String DOCK_SETTINGS_WIDGET_LOCATION = fi.muikku.WidgetLocations.ENVIRONMENT_DOCK_TOP_CENTER;
 	private static final int DOCK_SETTINGS_WIDGET_MINIMUM_SIZE = 1;
@@ -50,8 +60,24 @@ public class SettingsPluginDescriptor implements PluginDescriptor {
 	@Override
 	public List<Class<?>> getBeans() {
 		return Collections.unmodifiableList(Arrays.asList(new Class<?>[] { 
-		  SettingsBackingBean.class 
+		  SettingsBackingBean.class,
+		  PluginSettingsController.class,
+		  PluginEntityDAO.class
 		}));
 	}
 
+  @Override
+  public Class<?>[] getEntities() {
+    return new Class<?>[] {
+      Plugin.class
+    };
+  }
+
+  @Override
+  public List<LocaleBundle> getLocaleBundles() {
+    List<LocaleBundle> bundles = new ArrayList<LocaleBundle>();
+    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.settings.SettingsPluginMessages", LocaleUtils.toLocale("fi"))));
+    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.settings.SettingsPluginMessages", LocaleUtils.toLocale("en"))));
+    return bundles;
+  }
 }
