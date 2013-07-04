@@ -1,5 +1,6 @@
 package fi.muikku.plugins.schooldatamock.entities;
 
+import fi.muikku.plugins.schooldatamock.MockedUserSchoolDataBridge;
 import fi.muikku.schooldata.entity.User;
 
 public class MockedUser implements User {
@@ -9,7 +10,12 @@ public class MockedUser implements User {
 		this.firstName = firstName;
 		this.lastName = lastName;
 	}
-
+	
+	@Override
+	public String getSchoolDataSource() {
+		return MockedUserSchoolDataBridge.SCHOOL_DATA_SOURCE;
+	}
+	
 	@Override
 	public String getIdentifier() {
 		return identifier;

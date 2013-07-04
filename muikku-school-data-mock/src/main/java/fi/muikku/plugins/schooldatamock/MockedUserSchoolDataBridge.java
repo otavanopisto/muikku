@@ -32,8 +32,15 @@ import fi.muikku.schooldata.entity.UserProperty;
 @Stateful
 public class MockedUserSchoolDataBridge implements UserSchoolDataBridge {
 	
+	public static final String SCHOOL_DATA_SOURCE = "mock";
+	
 	@Inject
 	private HSQLDBPluginController hsqldbPluginController;
+	
+	@Override
+	public String getSchoolDataSource() {
+		return SCHOOL_DATA_SOURCE;
+	}
 	
 	@Override
 	public User createUser(String firstName, String lastName) {
@@ -73,6 +80,24 @@ public class MockedUserSchoolDataBridge implements UserSchoolDataBridge {
 		}
 		
 		return null;
+	}
+	
+	@Override
+	public List<User> listUsers() {
+		 List<User> result = new ArrayList<User>();
+		
+		try {
+			ResultSet resultSet = executeSelect("select id, firstName, lastName from User");
+			while (resultSet.next()) {
+				result.add(new MockedUser(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3)));
+			}
+		} catch (SQLException e) {
+			// TODO Proper error handling
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+		
+		return result;
 	}
 
 	@Override
