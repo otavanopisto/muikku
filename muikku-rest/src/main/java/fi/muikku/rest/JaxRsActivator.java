@@ -12,7 +12,6 @@ import fi.muikku.plugin.manager.PluginManagerException;
 import fi.muikku.plugin.manager.SingletonPluginManager;
 import fi.muikku.rest.course.CourseRESTService;
 import fi.muikku.rest.user.UserGroupRESTService;
-import fi.muikku.rest.user.UserRESTService;
 import fi.muikku.rest.user.UsersRESTService;
 
 @ApplicationPath("/rest")
@@ -26,7 +25,6 @@ public class JaxRsActivator extends Application {
 		List<Class<? extends AbstractRESTService>> coreServices = Arrays.asList(
 				PermissionRESTService.class,
 				CourseRESTService.class,
-				UserRESTService.class,
 				UsersRESTService.class,
 				TagRESTService.class,
 				UserGroupRESTService.class
