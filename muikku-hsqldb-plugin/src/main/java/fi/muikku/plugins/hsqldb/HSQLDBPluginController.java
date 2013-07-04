@@ -60,12 +60,40 @@ public class HSQLDBPluginController {
 
 		return preparedStatement.executeQuery();
 	}
+
+	public PreparedStatement executeUpdate(Connection connection, String sql, Object[] values) throws SQLException {
+		PreparedStatement preparedStatement = connection.prepareStatement(sql);
+		
+		int parameterIndex = 1;
+		for (Object value : values) {
+			preparedStatement.setObject(parameterIndex, value);
+			parameterIndex++;
+		}
+		
+		preparedStatement.executeUpdate();
+		
+		return preparedStatement;
+	}	
+
+	public PreparedStatement executeDelete(Connection connection, String sql, Object[] values) throws SQLException {
+		PreparedStatement preparedStatement = connection.prepareStatement(sql);
+		
+		int parameterIndex = 1;
+		for (Object value : values) {
+			preparedStatement.setObject(parameterIndex, value);
+			parameterIndex++;
+		}
+		
+		preparedStatement.executeUpdate();
+		
+		return preparedStatement;
+	}	
 	
 	public void executeScript(Connection connection, File inputFile) throws IOException, SqlToolError, SQLException {
 		SqlFile sqlFile = new SqlFile(inputFile);
 		sqlFile.setConnection(connection);
 		sqlFile.execute();
-	}	
-	
+	}
+
 	
 }
