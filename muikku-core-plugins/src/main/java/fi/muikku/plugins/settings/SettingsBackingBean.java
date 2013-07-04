@@ -6,8 +6,8 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import fi.muikku.controller.UserController;
-import fi.muikku.model.users.UserImpl;
+import fi.muikku.schooldata.UserSchoolDataController;
+import fi.muikku.schooldata.entity.User;
 import fi.muikku.widgets.WidgetSpaceSet;
 import fi.muikku.widgets.WidgetSpaceSetItem;
 import fi.muikku.widgets.WidgetSpaceSizingStrategy;
@@ -17,7 +17,7 @@ import fi.muikku.widgets.WidgetSpaceSizingStrategy;
 public class SettingsBackingBean {
 	
 	@Inject
-	private UserController userController;
+	private UserSchoolDataController userSchoolDataController;
 
 	public WidgetSpaceSet getContentWidgetSpaceSet() {
 		return new WidgetSpaceSet(
@@ -34,8 +34,8 @@ public class SettingsBackingBean {
 		);
 	}
 	
-	public List<UserImpl> getAllUsers() {
-		List<UserImpl> users = userController.listAllUsers();
+	public List<User> getAllUsers() {
+		List<User> users = userSchoolDataController.listUsers();
 		return users;
 	}
 
