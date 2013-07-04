@@ -3,7 +3,7 @@ package fi.muikku.schooldata.entity;
 import fi.tranquil.TranquilEntity;
 
 @TranquilEntity
-public interface UserEmail {
+public interface UserEmail extends SchoolDataEntity {
 
 	public String getIdentifier();
 	

@@ -1,6 +1,6 @@
 package fi.muikku.schooldata.entity;
 
-public interface UserImage {
+public interface UserImage extends SchoolDataEntity {
 	
 	public String getIdentifier();
 
