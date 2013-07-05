@@ -18,7 +18,9 @@ public interface UserSchoolDataBridge {
 	public User createUser(String firstName, String lastName);
 	
 	public User findUser(String identifier);
-	
+
+	public User findUserByEmail(String email);
+
 	// TODO: Search / findUsers
 	
 	public List<User> listUsers();
