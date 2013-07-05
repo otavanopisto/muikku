@@ -20,6 +20,7 @@ import fi.muikku.model.courses.CourseUser;
 import fi.muikku.model.stub.courses.CourseEntity;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.rest.AbstractRESTService;
+import fi.muikku.schooldata.UserSchoolDataController;
 import fi.muikku.schooldata.entity.Course;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.security.AuthorizationException;
@@ -47,6 +48,9 @@ public class CourseRESTService extends AbstractRESTService {
   
   @Inject
   private UserController userController;
+  
+  @Inject
+  private UserSchoolDataController userSchoolDataController;
   
 //  @Inject
 //  private WallController wallController;
@@ -386,7 +390,7 @@ public class CourseRESTService extends AbstractRESTService {
     @Override
     public String getValue(TranquilizingContext context) {
       UserEntity userEntity = (UserEntity) context.getEntityValue();
-      User user = userController.findUser(userEntity);
+      User user = userSchoolDataController.findUser(userEntity);
       return user.getFirstName() + " " + user.getLastName();
     }
   }

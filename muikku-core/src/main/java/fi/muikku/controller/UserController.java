@@ -7,31 +7,23 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.apache.commons.codec.digest.DigestUtils;
-
 import fi.muikku.dao.base.EnvironmentDefaultsDAO;
-import fi.muikku.dao.security.UserPasswordDAO;
 import fi.muikku.dao.users.EnvironmentUserDAO;
 import fi.muikku.dao.users.EnvironmentUserRoleDAO;
 import fi.muikku.dao.users.UserContactDAO;
 import fi.muikku.dao.users.UserEntityDAO;
 import fi.muikku.dao.users.UserGroupDAO;
 import fi.muikku.dao.users.UserGroupUserDAO;
-import fi.muikku.dao.users.UserImplDAO;
 import fi.muikku.dao.users.UserPictureDAO;
 import fi.muikku.events.Archived;
 import fi.muikku.events.Created;
 import fi.muikku.events.Modified;
 import fi.muikku.events.UserEntityEvent;
 import fi.muikku.model.base.Environment;
-import fi.muikku.model.base.EnvironmentDefaults;
-import fi.muikku.model.base.SchoolDataSource;
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.EnvironmentUser;
-import fi.muikku.model.users.EnvironmentUserRole;
 import fi.muikku.model.users.UserContact;
 import fi.muikku.model.users.UserGroup;
-import fi.muikku.model.users.UserImpl;
 import fi.muikku.schooldata.UserSchoolDataController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.security.MuikkuPermissions;
@@ -42,9 +34,9 @@ import fi.muikku.session.SessionController;
 @Dependent
 public class UserController {
 
-  @Inject
-  private UserPasswordDAO userPasswordDAO;
-  
+	@Inject
+	private UserSchoolDataController userSchoolDataController;
+	
   @Inject
   private EnvironmentUserDAO environmentUserDAO;
   
@@ -64,9 +56,6 @@ public class UserController {
   private UserContactDAO userContactDAO;
   
   @Inject
-  private UserSchoolDataController userController;
-  
-  @Inject
   private UserEntityDAO userEntityDAO;
 
   @Inject
@@ -74,9 +63,6 @@ public class UserController {
   
   @Inject
   private UserGroupUserDAO userGroupUserDAO;
-  
-  @Inject
-  private UserImplDAO userImplDAO;
   
   @Inject
   @Created
@@ -89,16 +75,7 @@ public class UserController {
   @Inject
   @Archived
   private Event<UserEntityEvent> userRemovedEvent;
-  
-  public User getUser(Long userId) {
-    UserEntity userEntity = userEntityDAO.findById(userId);
-    return userController.findUser(userEntity);
-  }
-  
-  public User findUser(UserEntity userEntity) {
-    return userController.findUser(userEntity);
-  }
-
+    
   public UserEntity findUserEntity(Long userEntityId) {
     return userEntityDAO.findById(userEntityId);
   }
@@ -126,36 +103,33 @@ public class UserController {
   }
   
   // TODO: Move to createUser and registration widget bean
-  public void registerUser(SchoolDataSource dataSource, String firstName, String lastName, String email, String passwordHash) {
-    Environment environment = sessionController.getEnvironment();
 
-    UserEntity userEntity = userEntityDAO.create(dataSource, false);
-    
-    /**
-     * Create User    
-     */
-    userController.createUser(userEntity, firstName, lastName, email);
-    userPasswordDAO.create(userEntity, DigestUtils.md5Hex(passwordHash));
-    
-    /**
-     * Give User Student Role
-     */
-    // TODO
-    EnvironmentDefaults defaults = environmentDefaultsDAO.findByEnvironment(sessionController.getEnvironment());
-
-    EnvironmentUserRole userRole = defaults.getDefaultUserRole();
-    environmentUserDAO.create(userEntity, environment, userRole);
-
-    fireUserCreatedEvent(userEntity);
-  }
+//  public void registerUser(SchoolDataSource dataSource, String firstName, String lastName, String email, String passwordHash) {
+//    Environment environment = sessionController.getEnvironment();
+//
+//    UserEntity userEntity = userEntityDAO.create(dataSource, false);
+//    
+//    /**
+//     * Create User    
+//     */
+//    userController.createUser(userEntity, firstName, lastName, email);
+//    userPasswordDAO.create(userEntity, DigestUtils.md5Hex(passwordHash));
+//    
+//    /**
+//     * Give User Student Role
+//     */
+//    // TODO
+//    EnvironmentDefaults defaults = environmentDefaultsDAO.findByEnvironment(sessionController.getEnvironment());
+//
+//    EnvironmentUserRole userRole = defaults.getDefaultUserRole();
+//    environmentUserDAO.create(userEntity, environment, userRole);
+//
+//    fireUserCreatedEvent(userEntity);
+//  }
 
   @Permit (MuikkuPermissions.MANAGE_USERS) // TODO: ???
   public List<EnvironmentUser> listEnvironmentUsers(@PermitContext Environment environment) {
     return environmentUserDAO.listByEnvironment(environment);
-  }
-  
-  public List<UserImpl> listAllUsers() {
-  	return userImplDAO.listAll();
   }
 
   public List<EnvironmentUser> searchUsers(String searchTerm) {
@@ -163,7 +137,7 @@ public class UserController {
     List<EnvironmentUser> filtered = new ArrayList<EnvironmentUser>();
     
     for (EnvironmentUser u : users) {
-      User user = findUser(u.getUser());
+      User user = userSchoolDataController.findUser(u.getUser());
       String fullName = (user.getFirstName() + " " + user.getLastName()).toLowerCase();
       
       if (fullName.contains(searchTerm))

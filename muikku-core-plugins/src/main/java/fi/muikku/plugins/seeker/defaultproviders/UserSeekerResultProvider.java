@@ -11,6 +11,7 @@ import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.plugins.seeker.DefaultSeekerResultImpl;
 import fi.muikku.plugins.seeker.SeekerResult;
 import fi.muikku.plugins.seeker.SeekerResultProvider;
+import fi.muikku.schooldata.UserSchoolDataController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.session.SessionController;
 
@@ -25,6 +26,9 @@ public class UserSeekerResultProvider implements SeekerResultProvider {
   @Inject
   private UserController userController;
   
+  @Inject
+  private UserSchoolDataController userSchoolDataController;
+  
   @Override
   public List<SeekerResult> search(String searchTerm) {
     return seekerify(userController.listEnvironmentUsers(sessionController.getEnvironment()), searchTerm);
@@ -38,7 +42,7 @@ public class UserSeekerResultProvider implements SeekerResultProvider {
     String imageUrl;
     
     for (EnvironmentUser e : list) {
-      User e2 = userController.findUser(e.getUser());
+      User e2 = userSchoolDataController.findUser(e.getUser());
 
       if (userController.getUserHasPicture(e.getUser()))
         imageUrl = "/picture?userId=" + e.getUser().getId();

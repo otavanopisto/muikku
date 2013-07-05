@@ -45,6 +45,7 @@ import fi.muikku.plugins.calendar.model.SubscribedCalendar;
 import fi.muikku.plugins.calendar.model.SubscribedEvent;
 import fi.muikku.plugins.calendar.model.UserCalendar;
 import fi.muikku.plugins.calendar.rest.CalendarRESTService;
+import fi.muikku.schooldata.UserSchoolDataController;
 import fi.muikku.schooldata.entity.User;
 
 @ApplicationScoped
@@ -90,8 +91,8 @@ public class CalendarPluginDescriptor implements PluginDescriptor, LocalizedPlug
 	private EnvironmentController environmentController;
 
 	@Inject
-	private UserController userController;
-
+	private UserSchoolDataController userSchoolDataController;
+	
 	@Inject
 	private WidgetController widgetController;
 
@@ -151,7 +152,7 @@ public class CalendarPluginDescriptor implements PluginDescriptor, LocalizedPlug
 
 		List<UserEntity> usersWithoutDefaultCalendar = pluginSettingsController.listUsersWithoutSetting(defaultCalendarIdSetting);
 		for (UserEntity userWithoutDefaultCalendar : usersWithoutDefaultCalendar) {
-			User user = userController.findUser(userWithoutDefaultCalendar);
+			User user = userSchoolDataController.findUser(userWithoutDefaultCalendar);
 			String name = user.getFirstName() + ' ' + user.getLastName();
 			UserCalendar calendar = calendarController.createLocalUserCalendar(userWithoutDefaultCalendar, name, DEFAULT_COLOR, Boolean.TRUE);
 			pluginSettingsController.setPluginUserSetting(getName(), DEFAULT_CALENDAR_ID_SETTING, calendar.getCalendar().getId().toString(), userWithoutDefaultCalendar);
