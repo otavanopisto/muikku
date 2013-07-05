@@ -150,8 +150,6 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
   private void init() {
     loggedUserId = null;
     representedUserId = null;
-    // TODO: Implement environment
-    environmentId = 1l;
   }
 
   @Override
@@ -188,8 +186,6 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
   }
   
   private Locale locale;
-
-  private Long environmentId;
 
   private Long loggedUserId;
 

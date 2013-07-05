@@ -19,15 +19,14 @@ import fi.muikku.events.Archived;
 import fi.muikku.events.Created;
 import fi.muikku.events.Modified;
 import fi.muikku.events.UserEntityEvent;
-import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.UserContact;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserGroup;
 import fi.muikku.schooldata.UserSchoolDataController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.security.Permit;
-import fi.muikku.security.PermitContext;
 import fi.muikku.session.SessionController;
 
 @Dependent

@@ -246,8 +246,6 @@ public class WallController {
 
   public boolean canPostEntry(Wall wall) {
     if (wall instanceof EnvironmentWall) {
-      EnvironmentWall envWall = (EnvironmentWall) wall;
-
       return sessionController.hasEnvironmentPermission(MuikkuPermissions.WALL_WRITEENVIRONMENTWALL);
     }
 
@@ -285,7 +283,7 @@ public class WallController {
   public String getWallName(Wall wall) {
     switch (wall.getWallType()) {
     case COURSE:
-      CourseWall courseWall = courseWallDAO.findById(wall.getId());
+//      CourseWall courseWall = courseWallDAO.findById(wall.getId());
 //
 //      Course course = courseSchoolDataController.findCourse(courseController.findCourseEntityById(courseWall.getCourse()));
 //

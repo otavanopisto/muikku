@@ -3,7 +3,6 @@ package fi.muikku.dao.base;
 import fi.muikku.dao.CoreDAO;
 import fi.muikku.dao.DAO;
 import fi.muikku.model.base.EnvironmentDefaults;
-import fi.muikku.model.base.EnvironmentDefaults_;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
