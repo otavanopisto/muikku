@@ -32,7 +32,7 @@ import fi.muikku.schooldata.entity.UserProperty;
 @Stateful
 public class MockedUserSchoolDataBridge implements UserSchoolDataBridge {
 	
-	public static final String SCHOOL_DATA_SOURCE = "mock";
+	public static final String SCHOOL_DATA_SOURCE = "MOCK";
 	
 	@Inject
 	private HSQLDBPluginController hsqldbPluginController;
@@ -66,12 +66,9 @@ public class MockedUserSchoolDataBridge implements UserSchoolDataBridge {
 		Long id = NumberUtils.createLong(identifier);
 		
 		try {
-			ResultSet resultSet = executeSelect("select firstName, lastName from User where id = ?", id);
+			ResultSet resultSet = executeSelect("select id, firstName, lastName from User where id = ?", id);
 			if (resultSet.next()) {
-				String firstName = resultSet.getString(1);
-				String lastName = resultSet.getString(2);
-				
-				return new MockedUser(identifier, firstName, lastName);
+				return new MockedUser(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3));
 			}
 		} catch (SQLException e) {
 			// TODO Proper error handling
@@ -81,6 +78,22 @@ public class MockedUserSchoolDataBridge implements UserSchoolDataBridge {
 		
 		return null;
 	}
+	
+	@Override
+	public User findUserByEmail(String email) {
+		try {
+			ResultSet resultSet = executeSelect("select id, firstName, lastName from User where id = (select user_id from UserEmail where address = ?)", email);
+			if (resultSet.next()) {
+				return new MockedUser(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3));
+			}
+		} catch (SQLException e) {
+			// TODO Proper error handling
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+		
+		return null;
+  }
 	
 	@Override
 	public List<User> listUsers() {
