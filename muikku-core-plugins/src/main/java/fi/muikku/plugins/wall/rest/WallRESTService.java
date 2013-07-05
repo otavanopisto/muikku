@@ -15,7 +15,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import fi.muikku.controller.UserController;
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.forum.ForumController;
 import fi.muikku.plugins.forum.model.ForumThread;

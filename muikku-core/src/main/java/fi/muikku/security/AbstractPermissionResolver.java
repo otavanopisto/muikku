@@ -8,8 +8,8 @@ import javax.inject.Inject;
 import fi.muikku.dao.users.SystemUserRoleDAO;
 import fi.muikku.model.base.Environment;
 import fi.muikku.model.stub.courses.CourseEntity;
-import fi.muikku.model.stub.users.UserEntity;
 import fi.muikku.model.users.SystemUserRoleType;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserRole;
 
 @RequestScoped

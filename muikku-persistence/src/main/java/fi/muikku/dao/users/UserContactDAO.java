@@ -4,7 +4,7 @@ import java.util.List;
 
 import fi.muikku.dao.CoreDAO;
 import fi.muikku.dao.DAO;
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserContact;
 import fi.muikku.model.users.UserContactType;
 import fi.muikku.model.users.UserContact_;

@@ -24,7 +24,7 @@ import edu.emory.mathcs.backport.java.util.Collections;
 import fi.muikku.controller.TagController;
 import fi.muikku.controller.UserController;
 import fi.muikku.model.base.Tag;
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.communicator.CommunicatorController;
 import fi.muikku.plugins.communicator.model.CommunicatorMessage;

@@ -3,7 +3,7 @@ package fi.muikku.plugins.wall.dao;
 import java.util.Date;
 
 import fi.muikku.dao.DAO;
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugin.PluginDAO;
 import fi.muikku.plugins.wall.model.AbstractWallEntry;
 import fi.muikku.plugins.wall.model.WallEntryGuidanceRequestItem;

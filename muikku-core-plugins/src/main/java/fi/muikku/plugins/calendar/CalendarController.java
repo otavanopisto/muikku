@@ -42,7 +42,7 @@ import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.calendar.dao.CalendarDAO;
 import fi.muikku.plugins.calendar.dao.EventDAO;
 import fi.muikku.plugins.calendar.dao.LocalCalendarDAO;

@@ -11,7 +11,7 @@ import fi.muikku.controller.ResourceRightsController;
 import fi.muikku.model.base.Environment;
 import fi.muikku.model.security.ResourceRights;
 import fi.muikku.model.stub.courses.CourseEntity;
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.forum.dao.CourseForumAreaDAO;
 import fi.muikku.plugins.forum.dao.EnvironmentForumAreaDAO;
 import fi.muikku.plugins.forum.dao.ForumAreaDAO;

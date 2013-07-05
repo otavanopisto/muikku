@@ -5,7 +5,7 @@ import fi.muikku.dao.DAO;
 import fi.muikku.model.oauth.AccessToken;
 import fi.muikku.model.oauth.AccessToken_;
 import fi.muikku.model.oauth.Consumer;
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;

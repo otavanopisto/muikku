@@ -1,6 +1,6 @@
 package fi.muikku.security.impl;
 
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.security.ContextReference;
 import fi.muikku.security.UserContextResolver;
 

@@ -12,7 +12,7 @@ import fi.muikku.dao.DAO;
 import fi.muikku.model.plugins.PluginUserSetting;
 import fi.muikku.model.plugins.PluginUserSettingKey;
 import fi.muikku.model.plugins.PluginUserSetting_;
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 
 @DAO
 public class PluginUserSettingDAO extends CoreDAO<PluginUserSetting> {

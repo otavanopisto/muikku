@@ -13,7 +13,7 @@ import fi.muikku.dao.users.EnvironmentUserDAO;
 import fi.muikku.dao.users.SystemUserRoleDAO;
 import fi.muikku.model.courses.CourseUser;
 import fi.muikku.model.security.Permission;
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.UserRole;
 import fi.muikku.plugins.forum.model.CourseForumArea;

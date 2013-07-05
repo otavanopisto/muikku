@@ -19,7 +19,7 @@ import fi.muikku.controller.WidgetController;
 import fi.muikku.i18n.LocaleBundle;
 import fi.muikku.i18n.LocaleLocation;
 import fi.muikku.model.plugins.PluginUserSettingKey;
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.widgets.Widget;
 import fi.muikku.model.widgets.WidgetVisibility;
 import fi.muikku.plugin.LocalizedPluginDescriptor;

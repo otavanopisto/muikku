@@ -9,43 +9,36 @@ import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.CoreDAO;
 import fi.muikku.dao.DAO;
-import fi.muikku.model.base.SchoolDataSource;
-import fi.muikku.model.stub.users.UserEntity;
-
+import fi.muikku.model.users.UserEntity;
 
 @DAO
 public class UserEntityDAO extends CoreDAO<UserEntity> {
 
 	private static final long serialVersionUID = 3790128454976388680L;
 
-	public UserEntity create(SchoolDataSource dataSource, Boolean archived) {
-    UserEntity user = new UserEntity();
-    
-    user.setDataSource(dataSource);
-    user.setArchived(archived);
-    
-    getEntityManager().persist(user);
-    
-    return user;
-  }
+	public UserEntity create(Boolean archived) {
+		UserEntity user = new UserEntity();
+
+		user.setArchived(archived);
+
+		getEntityManager().persist(user);
+
+		return user;
+	}
 
 	public List<UserEntity> listByUserNotIn(List<UserEntity> users) {
-		EntityManager entityManager = getEntityManager(); 
-    
-    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<UserEntity> criteria = criteriaBuilder.createQuery(UserEntity.class);
-    Root<UserEntity> root = criteria.from(UserEntity.class);
-    criteria.select(root);
-    
-    if (!users.isEmpty()) {
-      criteria.where(
-        criteriaBuilder.not(
-      		root.in(users)
-      	)
-      );
-    }
-    
-    return entityManager.createQuery(criteria).getResultList();
+		EntityManager entityManager = getEntityManager();
+
+		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+		CriteriaQuery<UserEntity> criteria = criteriaBuilder.createQuery(UserEntity.class);
+		Root<UserEntity> root = criteria.from(UserEntity.class);
+		criteria.select(root);
+
+		if (!users.isEmpty()) {
+			criteria.where(criteriaBuilder.not(root.in(users)));
+		}
+
+		return entityManager.createQuery(criteria).getResultList();
 	}
 
 }

@@ -5,7 +5,7 @@ import java.util.List;
 import fi.muikku.dao.CoreDAO;
 import fi.muikku.dao.DAO;
 import fi.muikku.model.base.Environment;
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.EnvironmentUserRole;
 import fi.muikku.model.users.EnvironmentUser_;

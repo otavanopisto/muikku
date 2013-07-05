@@ -15,7 +15,7 @@ import fi.muikku.model.plugins.PluginSetting;
 import fi.muikku.model.plugins.PluginSettingKey;
 import fi.muikku.model.plugins.PluginUserSetting;
 import fi.muikku.model.plugins.PluginUserSettingKey;
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 
 @Dependent
 @Stateful

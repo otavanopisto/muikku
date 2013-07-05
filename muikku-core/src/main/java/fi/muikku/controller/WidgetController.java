@@ -11,7 +11,7 @@ import fi.muikku.dao.widgets.DefaultWidgetDAO;
 import fi.muikku.dao.widgets.UserWidgetDAO;
 import fi.muikku.dao.widgets.WidgetDAO;
 import fi.muikku.dao.widgets.WidgetLocationDAO;
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.widgets.DefaultWidget;
 import fi.muikku.model.widgets.UserWidget;
 import fi.muikku.model.widgets.Widget;

@@ -11,7 +11,7 @@ import fi.muikku.dao.security.PermissionDAO;
 import fi.muikku.dao.security.ResourceUserRolePermissionDAO;
 import fi.muikku.dao.users.EnvironmentUserDAO;
 import fi.muikku.dao.users.SystemUserRoleDAO;
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.security.AbstractPermissionResolver;
 import fi.muikku.security.ContextReference;
 import fi.muikku.security.PermissionResolver;

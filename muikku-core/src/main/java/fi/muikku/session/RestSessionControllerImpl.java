@@ -10,7 +10,7 @@ import fi.muikku.dao.base.EnvironmentDAO;
 import fi.muikku.dao.courses.CourseEntityDAO;
 import fi.muikku.model.base.Environment;
 import fi.muikku.model.stub.courses.CourseEntity;
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.util.ResourceEntity;
 import fi.muikku.security.ContextReference;
 import fi.muikku.security.PermissionResolver;

@@ -8,7 +8,7 @@ import fi.muikku.dao.oauth.ConsumerDAO;
 import fi.muikku.dao.users.UserEntityDAO;
 import fi.muikku.model.oauth.AccessToken;
 import fi.muikku.model.oauth.Consumer;
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.session.RestAuthentication;
 
 @RequestScoped

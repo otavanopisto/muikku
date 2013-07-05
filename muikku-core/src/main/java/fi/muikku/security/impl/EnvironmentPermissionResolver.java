@@ -11,7 +11,7 @@ import fi.muikku.model.base.Environment;
 import fi.muikku.model.security.EnvironmentUserPermissionOverride;
 import fi.muikku.model.security.Permission;
 import fi.muikku.model.security.PermissionOverrideState;
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.UserRole;
 import fi.muikku.security.AbstractPermissionResolver;

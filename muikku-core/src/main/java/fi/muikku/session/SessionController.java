@@ -5,7 +5,7 @@ import java.util.Locale;
 
 import fi.muikku.model.base.Environment;
 import fi.muikku.model.stub.courses.CourseEntity;
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.util.ResourceEntity;
 import fi.muikku.security.ContextReference;
 

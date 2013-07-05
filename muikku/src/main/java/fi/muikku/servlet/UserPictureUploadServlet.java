@@ -20,7 +20,7 @@ import org.apache.commons.io.IOUtils;
 
 import fi.muikku.dao.users.UserEntityDAO;
 import fi.muikku.dao.users.UserPictureDAO;
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserPicture;
 import fi.muikku.session.SessionController;
 

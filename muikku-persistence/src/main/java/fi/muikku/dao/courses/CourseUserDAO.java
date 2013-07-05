@@ -15,7 +15,7 @@ import fi.muikku.model.courses.CourseUserRole;
 import fi.muikku.model.courses.CourseUser_;
 import fi.muikku.model.stub.courses.CourseEntity;
 import fi.muikku.model.stub.courses.CourseEntity_;
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 
 @DAO
 public class CourseUserDAO extends CoreDAO<CourseUser> {

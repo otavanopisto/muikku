@@ -11,7 +11,7 @@ import fi.muikku.dao.courses.CourseImplDAO;
 import fi.muikku.events.Created;
 import fi.muikku.model.courses.CourseImpl;
 import fi.muikku.model.stub.courses.CourseEntity;
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.schooldata.CourseSchoolDataController;
 import fi.muikku.schooldata.entity.Course;
 import fi.muikku.schooldata.events.CourseEvent;

@@ -3,7 +3,7 @@ package fi.muikku.model.widgets;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 
 @Entity
 public class UserWidget extends LocatedWidget {

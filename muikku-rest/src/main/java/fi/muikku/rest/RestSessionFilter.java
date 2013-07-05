@@ -21,7 +21,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.muikku.rest.oauth.OAuthAuthentication;
 import fi.muikku.rest.oauth.OAuthRestAuthentication;
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.session.RestSessionController;
 import fi.muikku.session.RestSesssion;
 import fi.muikku.session.SessionControllerDelegate;

@@ -2,7 +2,7 @@ package fi.muikku.controller.messaging;
 
 import java.util.List;
 
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 
 public interface MessagingWidget {
 
