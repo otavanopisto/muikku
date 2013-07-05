@@ -39,6 +39,12 @@
       <artifactId>plugin</artifactId>
       <scope>provided</scope>
     </dependency>
+    
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>core-plugins</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <!-- HyperSQL -->
 

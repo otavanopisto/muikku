@@ -47,7 +47,13 @@ public class HSQLDBPluginDescriptor implements PluginDescriptor {
 	@Override
 	public List<Class<?>> getBeans() {
 		return new ArrayList<Class<?>>(Arrays.asList(
-			HSQLDBPluginController.class
+			/* Controllers */
+				
+			HSQLDBPluginController.class,
+			
+			/* Data Plugin Scripts Handlers */
+			
+			HSQLDBDataPluginScriptHandler.class
 		));
 	}
 
