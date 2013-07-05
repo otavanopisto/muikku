@@ -16,8 +16,10 @@ import javax.inject.Inject;
 
 import org.hsqldb.cmdline.SqlToolError;
 
+import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.plugin.PluginDescriptor;
 import fi.muikku.plugins.hsqldb.HSQLDBPluginController;
+import fi.muikku.schooldata.SchoolDataController;
 
 @ApplicationScoped
 @Stateful
@@ -28,6 +30,12 @@ public class SchoolDataMockPluginDescriptor implements PluginDescriptor {
 	@Inject
 	private HSQLDBPluginController hsqldbPluginController;
 
+	@Inject
+	private SchoolDataController schoolDataController;
+
+	@Inject
+	private MockedUserSchoolDataBridge userSchoolDataBridge;
+
 	@Override
 	public String getName() {
 		return "school-data-mock";
@@ -35,6 +43,19 @@ public class SchoolDataMockPluginDescriptor implements PluginDescriptor {
 
 	@Override
 	public void init() {
+		/**
+		 * Ensure that SchoolDataSource is defined
+		 */
+		
+		SchoolDataSource schoolDataSource = schoolDataController.findSchoolDataSource(MockedUserSchoolDataBridge.SCHOOL_DATA_SOURCE);
+		if (schoolDataSource == null) {
+			schoolDataController.createSchoolDataSource(MockedUserSchoolDataBridge.SCHOOL_DATA_SOURCE);
+		}
+		
+		/**
+		 * Create tables
+		 */
+		
 		try {
 			createTables();
 		} catch (SqlToolError | URISyntaxException | IOException | SQLException e) {
@@ -43,16 +64,16 @@ public class SchoolDataMockPluginDescriptor implements PluginDescriptor {
 			throw new RuntimeException(e);
 		}
 	}
-
-	private File getCreateTablesScriptFile() throws URISyntaxException {
+	
+	private File getScriptFile(String fileName) throws URISyntaxException {
 		ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-		URL initalScript = contextClassLoader.getResource("META-INF/resources/create_tables.sql");
+		URL initalScript = contextClassLoader.getResource("META-INF/resources/" + fileName);
 		return new File(initalScript.toURI());
 	}
 
 	private void createTables() throws URISyntaxException, IOException, SQLException, SqlToolError {
 		Connection connection = hsqldbPluginController.getConnection(DATABASE_NAME);
-		hsqldbPluginController.executeScript(connection, getCreateTablesScriptFile());
+		hsqldbPluginController.executeScript(connection, getScriptFile("create_tables.sql"));
 	}
 
 	@Override
