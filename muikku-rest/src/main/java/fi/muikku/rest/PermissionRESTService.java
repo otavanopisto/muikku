@@ -11,14 +11,12 @@ import javax.ws.rs.core.Response;
 
 import fi.muikku.controller.EnvironmentSettingsController;
 import fi.muikku.controller.ResourceRightsController;
-import fi.muikku.dao.base.EnvironmentDAO;
 import fi.muikku.dao.courses.CourseEntityDAO;
 import fi.muikku.dao.security.CourseUserRolePermissionDAO;
 import fi.muikku.dao.security.EnvironmentUserRolePermissionDAO;
 import fi.muikku.dao.security.PermissionDAO;
 import fi.muikku.dao.security.ResourceUserRolePermissionDAO;
 import fi.muikku.dao.users.UserRoleDAO;
-import fi.muikku.model.base.Environment;
 import fi.muikku.model.security.CourseUserRolePermission;
 import fi.muikku.model.security.EnvironmentUserRolePermission;
 import fi.muikku.model.security.Permission;
@@ -46,9 +44,6 @@ public class PermissionRESTService extends AbstractRESTService {
 
   @Inject 
   private CourseEntityDAO courseDAO;
-
-  @Inject 
-  private EnvironmentDAO environmentDAO;
 
   @Inject
   private PermissionDAO permissionDAO;
@@ -79,15 +74,13 @@ public class PermissionRESTService extends AbstractRESTService {
 
     UserRole userRole = userRoleDAO.findById(userRoleId);
     Permission permission = permissionDAO.findById(permissionId);
-    Environment environment = environmentDAO.findById(environmentId);
 
     if ((userRole == null) || (permission == null)) {
       return Response.status(Response.Status.NOT_FOUND).build();
     }
     
     try {
-      // TODO: Environment?
-      environmentSettingsController.addEnvironmentUserRolePermission(environment, userRole, permission);
+      environmentSettingsController.addEnvironmentUserRolePermission(userRole, permission);
       return Response.ok().build();
     } catch (ConstraintViolationException violationException) {
       return getConstraintViolations(violationException);
@@ -108,15 +101,14 @@ public class PermissionRESTService extends AbstractRESTService {
 
     UserRole userRole = userRoleDAO.findById(userRoleId);
     Permission permission = permissionDAO.findById(permissionId);
-    Environment environment = environmentDAO.findById(environmentId);
 
     if ((userRole == null) || (permission == null)) {
       return Response.status(Response.Status.NOT_FOUND).build();
     }
     
     try {
-      EnvironmentUserRolePermission rolePermission = environmentUserRolePermissionDAO.findByEnvironmentUserRoleAndPermission(
-          environment, userRole, permission);
+      EnvironmentUserRolePermission rolePermission = environmentUserRolePermissionDAO.findByUserRoleAndPermission(
+          userRole, permission);
 
       environmentSettingsController.deleteEnvironmentUserRolePermission(rolePermission);
       

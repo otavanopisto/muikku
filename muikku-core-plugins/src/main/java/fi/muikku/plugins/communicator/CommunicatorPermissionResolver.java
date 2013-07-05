@@ -4,7 +4,6 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import fi.muikku.controller.CourseController;
-import fi.muikku.controller.EnvironmentController;
 import fi.muikku.controller.ResourceRightsController;
 import fi.muikku.dao.courses.CourseUserDAO;
 import fi.muikku.dao.security.PermissionDAO;
@@ -41,9 +40,6 @@ public class CommunicatorPermissionResolver extends AbstractPermissionResolver i
   
   @Inject
   private CourseController courseController;
-  
-  @Inject
-  private EnvironmentController environmentController;
   
   @Inject
   private ResourceRightsController resourceRightsController;

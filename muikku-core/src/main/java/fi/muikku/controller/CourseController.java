@@ -20,7 +20,6 @@ import fi.muikku.events.CourseEntityEvent;
 import fi.muikku.events.CourseUserEvent;
 import fi.muikku.events.Created;
 import fi.muikku.events.Modified;
-import fi.muikku.model.base.Environment;
 import fi.muikku.model.base.EnvironmentDefaults;
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.courses.CourseSettings;
@@ -82,14 +81,14 @@ public class CourseController {
   private Event<CourseUserEvent> courseUserCreationEvent;
 
   public void TEST_COURSES() {
-    createCourse(sessionController.getEnvironment(), "Ukkosen testikurz #" + ((int) (Math.random() * 100)));
+    createCourse("Ukkosen testikurz #" + ((int) (Math.random() * 100)));
   }
   
   @LoggedIn
   @Permit(MuikkuPermissions.CREATE_COURSE)
-  public void createCourse(@PermitContext Environment environment, String name) {
+  public void createCourse(String name) {
     UserEntity creator = sessionController.getUser();
-    EnvironmentDefaults defaults = environmentDefaultsDAO.findByEnvironment(environment);
+    EnvironmentDefaults defaults = environmentDefaultsDAO.find();
 
     // TODO
     CourseSettingsTemplate template = courseSettingsTemplateDAO.findById(1l);
@@ -105,13 +104,13 @@ public class CourseController {
   }
 
   @Permit(MuikkuPermissions.LIST_COURSES)
-  public List<CourseEntity> listCourses(@PermitContext Environment environment) {
+  public List<CourseEntity> listCourses() {
     return courseEntityDAO.listAll();
   }
 
   // TODO: Rights
   // @Permit (MuikkuPermissions.LIST_COURSES)
-  public List<CourseEntity> findCoursesByEnvironmentAndUser(@PermitContext Environment environment, UserEntity userEntity) {
+  public List<CourseEntity> findCoursesByUser(UserEntity userEntity) {
     return courseUserDAO.listCoursesByUser(userEntity);
   }
 

@@ -64,7 +64,7 @@ public class CourseRESTService extends AbstractRESTService {
   @GET
   @Path ("/listAllCourses")
   public Response listAllCourses(@QueryParam("environmentId") Long environmentId) {
-    List<CourseEntity> courses = courseController.listCourses(sessionController.getEnvironment());
+    List<CourseEntity> courses = courseController.listCourses();
     
     TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
     Tranquility tranquility = tranquilityBuilder.createTranquility()
@@ -88,7 +88,7 @@ public class CourseRESTService extends AbstractRESTService {
   @Path ("/listUserCourses")
   public Response listUserCourses(@QueryParam("environmentId") Long environmentId, @QueryParam("userId") Long userId) {
     UserEntity userEntity = userController.findUserEntity(userId);
-    List<CourseEntity> courses = courseController.findCoursesByEnvironmentAndUser(sessionController.getEnvironment(), userEntity);
+    List<CourseEntity> courses = courseController.findCoursesByUser(userEntity);
     
     TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
     Tranquility tranquility = tranquilityBuilder.createTranquility()

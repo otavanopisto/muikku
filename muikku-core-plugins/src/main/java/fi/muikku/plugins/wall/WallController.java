@@ -12,7 +12,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import fi.muikku.controller.CourseController;
-import fi.muikku.controller.EnvironmentController;
 import fi.muikku.controller.UserController;
 import fi.muikku.dao.courses.CourseEntityDAO;
 import fi.muikku.dao.users.UserEntityDAO;
@@ -20,7 +19,6 @@ import fi.muikku.events.CourseEntityEvent;
 import fi.muikku.events.CourseUserEvent;
 import fi.muikku.events.Created;
 import fi.muikku.events.UserEntityEvent;
-import fi.muikku.model.base.Environment;
 import fi.muikku.model.courses.CourseUser;
 import fi.muikku.model.stub.courses.CourseEntity;
 import fi.muikku.model.users.UserEntity;
@@ -129,9 +127,6 @@ public class WallController {
   @Inject
   private CourseController courseController;
   
-  @Inject
-  private EnvironmentController environmentController;
-
   public WallEntryTextItem createWallEntryTextItem(AbstractWallEntry entry, String text, UserEntity user) {
     return wallEntryTextItemDAO.create(entry, text, user);
   }
@@ -140,12 +135,9 @@ public class WallController {
     List<UserFeedItem> feedItems = new ArrayList<UserFeedItem>();
 
     UserEntity loggedUser = sessionController.isLoggedIn() ? sessionController.getUser() : null;
-
-    Environment environment = sessionController.getEnvironment();
-
     UserWall wall = userWallDAO.findByUser(user);
     boolean ownsWall = loggedUser != null ? loggedUser.getId().equals(user.getId()) : false;
-    boolean hasAccess = sessionController.hasPermission(MuikkuPermissions.READ_ALL_WALLS, environment);
+    boolean hasAccess = sessionController.hasEnvironmentPermission(MuikkuPermissions.READ_ALL_WALLS);
 
     if (ownsWall || hasAccess) {
       /**
@@ -203,10 +195,9 @@ public class WallController {
 
       UserEntity wallOwner = userController.findUserEntity(userWall.getUser());
       UserEntity loggedUser = sessionController.isLoggedIn() ? sessionController.getUser() : null;
-      Environment environment = sessionController.getEnvironment();
 
       boolean ownsWall = loggedUser != null ? loggedUser.getId().equals(wallOwner.getId()) : false;
-      boolean hasAccess = sessionController.hasPermission(MuikkuPermissions.READ_ALL_WALLS, environment);
+      boolean hasAccess = sessionController.hasEnvironmentPermission(MuikkuPermissions.READ_ALL_WALLS);
 
       if (ownsWall || hasAccess) {
         /**
@@ -257,8 +248,7 @@ public class WallController {
     if (wall instanceof EnvironmentWall) {
       EnvironmentWall envWall = (EnvironmentWall) wall;
 
-      return sessionController.hasEnvironmentPermission(MuikkuPermissions.WALL_WRITEENVIRONMENTWALL, 
-          environmentController.findEnvironmentById(envWall.getEnvironment()));
+      return sessionController.hasEnvironmentPermission(MuikkuPermissions.WALL_WRITEENVIRONMENTWALL);
     }
 
     if (wall instanceof CourseWall) {
@@ -275,8 +265,8 @@ public class WallController {
     return false;
   }
 
-  public EnvironmentWall getEnvironmentWall(Environment environment) {
-    return environmentWallDAO.findByEnvironment(environment);
+  public EnvironmentWall getEnvironmentWall() {
+    return environmentWallDAO.find();
   }
 
   public UserWall getUserWall(UserEntity user) {
@@ -400,7 +390,7 @@ public class WallController {
     /**
      * Link Environment wall
      */
-    EnvironmentWall environmentWall = environmentWallDAO.findByEnvironment(sessionController.getEnvironment());
+    EnvironmentWall environmentWall = environmentWallDAO.find();
     userWallLinkDAO.create(userEntity, environmentWall);
   }
   

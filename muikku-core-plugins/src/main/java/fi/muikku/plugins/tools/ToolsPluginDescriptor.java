@@ -8,7 +8,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import fi.muikku.WidgetLocations;
-import fi.muikku.controller.EnvironmentController;
 import fi.muikku.controller.UserController;
 import fi.muikku.controller.WidgetController;
 import fi.muikku.model.widgets.DefaultWidget;
@@ -22,9 +21,6 @@ import fi.muikku.plugin.PluginDescriptor;
 public class ToolsPluginDescriptor implements PluginDescriptor {
 
   private static final String ENVIRONMENT_TOOLS_WIDGET_NAME = "environmenttools";
-
-  @Inject
-  private EnvironmentController environmentController;
 
   @Inject
   private UserController userController;

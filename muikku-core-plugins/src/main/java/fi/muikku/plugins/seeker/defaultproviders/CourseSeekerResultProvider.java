@@ -27,7 +27,7 @@ public class CourseSeekerResultProvider implements SeekerResultProvider {
   
   @Override
   public List<SeekerResult> search(String searchTerm) {
-    return seekerify(courseController.listCourses(sessionController.getEnvironment()), searchTerm);
+    return seekerify(courseController.listCourses(), searchTerm);
   }
 
   private List<SeekerResult> seekerify(List<CourseEntity> courses, String searchTerm) {

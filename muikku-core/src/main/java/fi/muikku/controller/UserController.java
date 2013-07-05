@@ -19,7 +19,6 @@ import fi.muikku.events.Archived;
 import fi.muikku.events.Created;
 import fi.muikku.events.Modified;
 import fi.muikku.events.UserEntityEvent;
-import fi.muikku.model.base.Environment;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.UserContact;
@@ -128,12 +127,12 @@ public class UserController {
 //  }
 
   @Permit (MuikkuPermissions.MANAGE_USERS) // TODO: ???
-  public List<EnvironmentUser> listEnvironmentUsers(@PermitContext Environment environment) {
-    return environmentUserDAO.listByEnvironment(environment);
+  public List<EnvironmentUser> listEnvironmentUsers() {
+    return environmentUserDAO.listAll();
   }
 
   public List<EnvironmentUser> searchUsers(String searchTerm) {
-    List<EnvironmentUser> users = environmentUserDAO.listByEnvironment(sessionController.getEnvironment());
+    List<EnvironmentUser> users = environmentUserDAO.listAll();
     List<EnvironmentUser> filtered = new ArrayList<EnvironmentUser>();
     
     for (EnvironmentUser u : users) {

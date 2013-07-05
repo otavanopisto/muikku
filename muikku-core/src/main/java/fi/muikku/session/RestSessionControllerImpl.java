@@ -6,9 +6,7 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
-import fi.muikku.dao.base.EnvironmentDAO;
 import fi.muikku.dao.courses.CourseEntityDAO;
-import fi.muikku.model.base.Environment;
 import fi.muikku.model.stub.courses.CourseEntity;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.util.ResourceEntity;
@@ -21,24 +19,11 @@ import fi.muikku.security.PermissionResolver;
 public class RestSessionControllerImpl extends AbstractSessionController implements RestSessionController {
   
   @Inject
-  private EnvironmentDAO environmentDAO;
-
-  @Inject
   private CourseEntityDAO courseDAO;
   
   @Override
   public void setAuthentication(RestAuthentication authentication) {
     this.authentication = authentication;
-  }
-
-  @Override
-  public Environment getEnvironment() {
-    return environmentDAO.findById(environmentId);
-  }
-  
-  @Override
-  public void setEnvironmentId(Long environmentId) {
-    this.environmentId = environmentId;
   }
 
   @Override
@@ -73,8 +58,8 @@ public class RestSessionControllerImpl extends AbstractSessionController impleme
   }
   
   @Override
-  protected boolean hasEnvironmentPermissionImpl(String permission, Environment environment) {
-    return hasPermissionImpl(permission, environment);
+  protected boolean hasEnvironmentPermissionImpl(String permission) {
+    return hasPermission(permission, null);
   }
 
   @Override
@@ -99,6 +84,6 @@ public class RestSessionControllerImpl extends AbstractSessionController impleme
   }
 
   private RestAuthentication authentication;
-  private Long environmentId = 1l; // TODO
   private Locale locale;
+
 }

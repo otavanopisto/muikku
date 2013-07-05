@@ -31,7 +31,7 @@ public class UserSeekerResultProvider implements SeekerResultProvider {
   
   @Override
   public List<SeekerResult> search(String searchTerm) {
-    return seekerify(userController.listEnvironmentUsers(sessionController.getEnvironment()), searchTerm);
+    return seekerify(userController.listEnvironmentUsers(), searchTerm);
   }
 
   private List<SeekerResult> seekerify(List<EnvironmentUser> list, String searchTerm) {

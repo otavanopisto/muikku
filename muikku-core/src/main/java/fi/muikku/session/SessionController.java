@@ -3,7 +3,6 @@ package fi.muikku.session;
 import java.util.List;
 import java.util.Locale;
 
-import fi.muikku.model.base.Environment;
 import fi.muikku.model.stub.courses.CourseEntity;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.util.ResourceEntity;
@@ -11,13 +10,6 @@ import fi.muikku.security.ContextReference;
 
 public interface SessionController {
 
-  /**
-   * Returns current environment
-   * 
-   * @return current environment
-   */
-  public Environment getEnvironment();
-  
   /**
    * Returns current locale
    * 
@@ -64,7 +56,7 @@ public interface SessionController {
    * @param permission requested permission
    * @return whether logged user has specified environment permission.
    */
-  public boolean hasEnvironmentPermission(String permission, Environment environment);
+  public boolean hasEnvironmentPermission(String permission);
   
   /**
    * Returns whether logged user has specified course permission.

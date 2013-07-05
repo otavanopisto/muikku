@@ -12,7 +12,6 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
-import fi.muikku.controller.EnvironmentController;
 import fi.muikku.controller.PluginSettingsController;
 import fi.muikku.controller.WidgetController;
 import fi.muikku.i18n.LocaleBundle;
@@ -85,9 +84,6 @@ public class CalendarPluginDescriptor implements PluginDescriptor, LocalizedPlug
 	
 	@Inject
 	private CalendarController calendarController;
-
-	@Inject
-	private EnvironmentController environmentController;
 
 	@Inject
 	private UserSchoolDataController userSchoolDataController;

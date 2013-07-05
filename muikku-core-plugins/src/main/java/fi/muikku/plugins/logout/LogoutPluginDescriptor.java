@@ -11,7 +11,6 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.LocaleUtils;
 
-import fi.muikku.controller.EnvironmentController;
 import fi.muikku.controller.UserController;
 import fi.muikku.controller.WidgetController;
 import fi.muikku.i18n.LocaleBundle;
@@ -31,9 +30,6 @@ public class LogoutPluginDescriptor implements PluginDescriptor, LocalizedPlugin
 
   @Inject
   private WidgetController widgetController;
-
-  @Inject
-  private EnvironmentController environmentController;
 
   @Inject
   private UserController userController;

@@ -12,14 +12,6 @@ import fi.muikku.model.users.EnvironmentUserRole;
 @Entity
 public class EnvironmentDefaults {
 
-  public Environment getEnvironment() {
-    return environment;
-  }
-
-  public void setEnvironment(Environment environment) {
-    this.environment = environment;
-  }
-
   public EnvironmentUserRole getDefaultUserRole() {
     return defaultUserRole;
   }
@@ -43,9 +35,6 @@ public class EnvironmentDefaults {
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
-  
-  @ManyToOne
-  private Environment environment;
   
   @ManyToOne
   private EnvironmentUserRole defaultUserRole;

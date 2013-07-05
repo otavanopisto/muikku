@@ -14,7 +14,6 @@ import fi.muikku.dao.security.PermissionDAO;
 import fi.muikku.dao.users.EnvironmentUserRoleDAO;
 import fi.muikku.dao.users.SystemUserRoleDAO;
 import fi.muikku.dao.users.UserRoleDAO;
-import fi.muikku.model.base.Environment;
 import fi.muikku.model.security.CourseUserRolePermission;
 import fi.muikku.model.security.EnvironmentUserRolePermission;
 import fi.muikku.model.security.Permission;
@@ -76,7 +75,7 @@ public class EnvironmentSettingsController {
   }
   
   public boolean hasEnvironmentRolePermission(UserRole userRole, Permission permission) {
-    return environmentUserRolePermissionDAO.hasEnvironmentPermissionAccess(sessionController.getEnvironment(), userRole, permission);
+    return environmentUserRolePermissionDAO.hasEnvironmentPermissionAccess(userRole, permission);
   }
 
   public boolean hasCourseRolePermission(@PermitContext CourseEntity course, UserRole userRole, Permission permission) {
@@ -84,9 +83,8 @@ public class EnvironmentSettingsController {
   }
   
   @Permit(MuikkuPermissions.MANAGE_SETTINGS)
-  public EnvironmentUserRolePermission addEnvironmentUserRolePermission(@PermitContext Environment environment, UserRole userRole, Permission permission) {
-    return environmentUserRolePermissionDAO.create(
-        environment, userRole, permission);
+  public EnvironmentUserRolePermission addEnvironmentUserRolePermission(UserRole userRole, Permission permission) {
+    return environmentUserRolePermissionDAO.create(userRole, permission);
   }
   
   @Permit(MuikkuPermissions.MANAGE_SETTINGS)

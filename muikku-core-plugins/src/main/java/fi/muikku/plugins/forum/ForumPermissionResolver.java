@@ -4,7 +4,6 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import fi.muikku.controller.CourseController;
-import fi.muikku.controller.EnvironmentController;
 import fi.muikku.controller.ResourceRightsController;
 import fi.muikku.dao.courses.CourseUserDAO;
 import fi.muikku.dao.security.PermissionDAO;
@@ -17,7 +16,6 @@ import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.UserRole;
 import fi.muikku.plugins.forum.model.CourseForumArea;
-import fi.muikku.plugins.forum.model.EnvironmentForumArea;
 import fi.muikku.plugins.forum.model.ForumArea;
 import fi.muikku.plugins.forum.model.ForumThread;
 import fi.muikku.security.AbstractPermissionResolver;
@@ -50,9 +48,6 @@ public class ForumPermissionResolver extends AbstractPermissionResolver implemen
   private CourseController courseController;
   
   @Inject
-  private EnvironmentController environmentController;
-  
-  @Inject
   private ResourceRightsController resourceRightsController;
   
   @Override
@@ -75,9 +70,8 @@ public class ForumPermissionResolver extends AbstractPermissionResolver implemen
           courseController.findCourseEntityById(courseForum.getCourse()), userEntity);
       userRole = courseUser.getCourseUserRole();
     } else {
-      EnvironmentForumArea environmentForum = (EnvironmentForumArea) forumArea;
-      EnvironmentUser environmentUser = environmentUserDAO.findByEnvironmentAndUser(
-          environmentController.findEnvironmentById(environmentForum.getEnvironment()), userEntity);
+//      EnvironmentForumArea environmentForum = (EnvironmentForumArea) forumArea;
+      EnvironmentUser environmentUser = environmentUserDAO.findByUserAndArchived(userEntity, Boolean.FALSE);
       userRole = environmentUser.getRole();
     }
     

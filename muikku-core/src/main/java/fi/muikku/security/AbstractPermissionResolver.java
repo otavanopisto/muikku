@@ -6,7 +6,6 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import fi.muikku.dao.users.SystemUserRoleDAO;
-import fi.muikku.model.base.Environment;
 import fi.muikku.model.stub.courses.CourseEntity;
 import fi.muikku.model.users.SystemUserRoleType;
 import fi.muikku.model.users.UserEntity;
@@ -17,10 +16,6 @@ public class AbstractPermissionResolver {
 
   @Inject
   private SystemUserRoleDAO systemUserRoleDAO;
-  
-  @Inject
-  @Any
-  private Instance<EnvironmentContextResolver> environmentContextResolvers;
 
   @Inject
   @Any
@@ -30,21 +25,6 @@ public class AbstractPermissionResolver {
   @Any
   private Instance<UserContextResolver> userContextResolvers;
   
-  /**
-   * Uses ContextResolvers to resolve environment from ContextReference
-   * 
-   * @param contextReference
-   * @return environment if found, else null
-   */
-  protected Environment resolveEnvironment(ContextReference contextReference) {
-    for (EnvironmentContextResolver resolver : environmentContextResolvers) {
-      if (resolver.handlesContextReference(contextReference))
-        return resolver.resolveEnvironment(contextReference);
-    }
-    
-    return null;
-  }
-
   /**
    * Uses ContextResolvers to resolve course from ContextReference
    * 

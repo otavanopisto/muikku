@@ -11,14 +11,12 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
-import fi.muikku.dao.base.EnvironmentDAO;
 import fi.muikku.dao.courses.CourseEntityDAO;
 import fi.muikku.dao.security.CourseUserRolePermissionDAO;
 import fi.muikku.dao.security.EnvironmentUserRolePermissionDAO;
 import fi.muikku.dao.security.PermissionDAO;
 import fi.muikku.dao.security.ResourceUserRolePermissionDAO;
 import fi.muikku.dao.users.UserEntityDAO;
-import fi.muikku.model.base.Environment;
 import fi.muikku.model.stub.courses.CourseEntity;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.util.ResourceEntity;
@@ -38,9 +36,6 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
 
   @Inject
   private CourseEntityDAO courseDAO;
-
-  @Inject
-  private EnvironmentDAO environmentDAO;
 
   @Inject
   private EnvironmentUserRolePermissionDAO environmentUserRolePermissionDAO;
@@ -101,8 +96,8 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
   }
 
   @Override
-  public boolean hasEnvironmentPermission(String permission, Environment environment) {
-    return hasEnvironmentPermissionImpl(permission, environment);
+  public boolean hasEnvironmentPermission(String permission) {
+    return hasEnvironmentPermissionImpl(permission);
   }
   
   @Override
@@ -143,13 +138,6 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
     return null;
   }
 
-  public Environment getEnvironment() {
-    if (environmentId != null)
-      return environmentDAO.findById(environmentId);
-    
-    return null;
-  }
-
   public CourseEntity getCourse() {
     // TODO Relevance?
     Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
@@ -185,8 +173,8 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
   }
   
   @Override
-  protected boolean hasEnvironmentPermissionImpl(String permission, Environment environment) {
-    return hasPermissionImpl(permission, environment);
+  protected boolean hasEnvironmentPermissionImpl(String permission) {
+    return hasPermissionImpl(permission, null);
   }
 
   @Override
