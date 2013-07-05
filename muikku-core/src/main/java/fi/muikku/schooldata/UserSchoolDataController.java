@@ -1,6 +1,7 @@
 package fi.muikku.schooldata;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -11,8 +12,13 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import fi.muikku.dao.DAO;
+import fi.muikku.dao.base.SchoolDataSourceDAO;
+import fi.muikku.dao.users.UserEntityDAO;
+import fi.muikku.dao.users.UserSchoolDataIdentifierDAO;
 import fi.muikku.model.base.SchoolDataSource;
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
+import fi.muikku.model.users.UserSchoolDataIdentifier;
 import fi.muikku.schooldata.entity.User;
 
 @Dependent
@@ -26,19 +32,90 @@ public class UserSchoolDataController {
 	@Any
 	private Instance<UserSchoolDataBridge> userBridges;
 	
+	@Inject
+	@DAO
+	private UserSchoolDataIdentifierDAO userSchoolDataIdentifierDAO;
+
+	@Inject
+	@DAO
+	private SchoolDataSourceDAO schoolDataSourceDAO;
+	
+	@Inject
+	@DAO
+	private UserEntityDAO userEntityDAO;
+	
 	public List<User> listUsers() {
+		// TODO: This method WILL cause performance problems, replace with something more sensible 
+		
 		List<User> result = new ArrayList<User>();
 		
 		for (UserSchoolDataBridge userBridge : getUserBridges()) {
 			result.addAll(userBridge.listUsers());
 		}
 		
+		// TODO: This is propably not the best place for this
+		ensureUserEntities(result);
+		
+		return result;
+	}
+
+	public List<User> listUsersByEmail(String email) {
+		List<User> result = new ArrayList<User>();
+		
+		for (UserSchoolDataBridge userBridge : getUserBridges()) {
+			User user = userBridge.findUserByEmail(email);
+			if (user != null) {
+			  result.add(user);
+			}
+		}
+		
+		// TODO: This is propably not the best place for this
+		ensureUserEntities(result);
+		
 		return result;
 	}
 	
+	public User findUser(SchoolDataSource schoolDataSource, UserEntity userEntity) {
+		User user = null;
+		
+		UserSchoolDataBridge userBridge = getUserBridge(schoolDataSource);
+		if (userBridge != null) {
+  		UserSchoolDataIdentifier schoolDataIdentifier = userSchoolDataIdentifierDAO.findByDataSourceAndUserEntity(schoolDataSource, userEntity);
+	  	if (schoolDataIdentifier != null) {
+	  		user = userBridge.findUser(schoolDataIdentifier.getIdentifier());
+		  }
+		}
+		
+		// TODO: This is propably not the best place for this
+		ensureUserEntities(Arrays.asList(user));
+		
+		return user;
+	}
+
 	public User findUser(UserEntity userEntity) {
-		UserSchoolDataBridge userBridge = getUserBridge(userEntity.getDataSource());
-		return userBridge.findUser(userEntity.getIdentifier());
+		// TODO: Support multiple source entity merging...
+		
+		List<UserSchoolDataIdentifier> identifiers = userSchoolDataIdentifierDAO.listByUserEntity(userEntity);
+		for (UserSchoolDataIdentifier identifier : identifiers) {
+			User user = findUser(identifier.getDataSource(), userEntity);
+			if (user != null) {
+				return user;
+			}
+		}
+		
+		// TODO: This is propably not the best place for this
+
+		return null;
+	}
+	
+	public UserEntity findUserEntity(User user) {
+		SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(user.getSchoolDataSource());
+		UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(schoolDataSource, user.getIdentifier());
+		if (userSchoolDataIdentifier != null) {
+			return userSchoolDataIdentifier.getUserEntity();
+		}
+		
+		return null;
 	}
 	
 	private UserSchoolDataBridge getUserBridge(SchoolDataSource schoolDataSource) {
@@ -64,4 +141,14 @@ public class UserSchoolDataController {
 		return Collections.unmodifiableList(result);
 	}
 	
+	private void ensureUserEntities(List<User> users) {
+		for (User user : users) {
+			SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(user.getSchoolDataSource());
+			UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(dataSource, user.getIdentifier());
+			if (userSchoolDataIdentifier == null) {
+				UserEntity userEntity = userEntityDAO.create(Boolean.FALSE);
+				userSchoolDataIdentifierDAO.create(dataSource, user.getIdentifier(), userEntity);
+			}
+		}
+	}
 }
