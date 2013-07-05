@@ -23,7 +23,7 @@ import fi.muikku.events.UserEntityEvent;
 import fi.muikku.model.base.Environment;
 import fi.muikku.model.courses.CourseUser;
 import fi.muikku.model.stub.courses.CourseEntity;
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.forum.dao.ForumThreadDAO;
 import fi.muikku.plugins.forum.dao.ForumThreadReplyDAO;
 import fi.muikku.plugins.forum.model.ForumArea;
@@ -55,9 +55,7 @@ import fi.muikku.plugins.wall.model.WallEntryReply;
 import fi.muikku.plugins.wall.model.WallEntryTextItem;
 import fi.muikku.plugins.wall.model.WallEntryVisibility;
 import fi.muikku.plugins.wall.model.WallSubscription;
-import fi.muikku.schooldata.CourseSchoolDataController;
 import fi.muikku.schooldata.UserSchoolDataController;
-import fi.muikku.schooldata.entity.Course;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.session.SessionController;
@@ -107,8 +105,8 @@ public class WallController {
   @Inject
   private UserSchoolDataController schoolUserController;
 
-  @Inject
-  private CourseSchoolDataController courseSchoolDataController;
+//  @Inject
+//  private CourseSchoolDataController courseSchoolDataController;
 
   @Inject
   private ForumThreadDAO forumThreadDAO;
@@ -298,11 +296,11 @@ public class WallController {
     switch (wall.getWallType()) {
     case COURSE:
       CourseWall courseWall = courseWallDAO.findById(wall.getId());
-
-      Course course = courseSchoolDataController.findCourse(courseController.findCourseEntityById(courseWall.getCourse()));
-
-      return course.getName();
-
+//
+//      Course course = courseSchoolDataController.findCourse(courseController.findCourseEntityById(courseWall.getCourse()));
+//
+//      return course.getName();
+      return null;
     case ENVIRONMENT:
       return "the Muikerosuikero";
 

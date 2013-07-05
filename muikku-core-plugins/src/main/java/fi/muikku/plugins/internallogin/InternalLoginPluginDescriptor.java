@@ -21,11 +21,14 @@ import fi.muikku.model.widgets.Widget;
 import fi.muikku.model.widgets.WidgetLocation;
 import fi.muikku.model.widgets.WidgetVisibility;
 import fi.muikku.plugin.LocalizedPluginDescriptor;
+import fi.muikku.plugin.PersistencePluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
+import fi.muikku.plugins.internallogin.dao.InternalAuthDAO;
+import fi.muikku.plugins.internallogin.model.InternalAuth;
 
 @ApplicationScoped
 @Stateful
-public class InternalLoginPluginDescriptor implements PluginDescriptor, LocalizedPluginDescriptor {
+public class InternalLoginPluginDescriptor implements PluginDescriptor, PersistencePluginDescriptor, LocalizedPluginDescriptor {
 
   private static final String INTERNALLOGIN_WIDGET_NAME = "internallogin";
 
@@ -65,8 +68,26 @@ public class InternalLoginPluginDescriptor implements PluginDescriptor, Localize
   @Override
   public List<Class<?>> getBeans() {
     return new ArrayList<Class<?>>(Arrays.asList(
-      InternalLoginWidgetBackingBean.class
+    	
+    	/* Controllers */
+      
+    	InternalLoginController.class,
+      
+    	/* DAOs*/
+    	
+    	InternalAuthDAO.class,
+    	
+      /* Backing Beans */
+      
+      InternalLoginWidgetBackingBean.class      
     ));
+  }
+  
+  @Override
+  public Class<?>[] getEntities() {
+  	return new Class<?>[] {
+  		InternalAuth.class
+  	};
   }
 
   @Override

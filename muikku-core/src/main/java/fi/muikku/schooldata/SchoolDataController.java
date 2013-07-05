@@ -1,46 +1,27 @@
 package fi.muikku.schooldata;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.ParameterizedType;
-import java.util.ServiceLoader;
-
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
+import javax.ejb.Stateful;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import fi.muikku.dao.DAO;
+import fi.muikku.dao.base.SchoolDataSourceDAO;
 import fi.muikku.model.base.SchoolDataSource;
-import fi.muikku.model.util.SchoolDataEntity;
 
-public abstract class SchoolDataController<T> {
+@Dependent
+@Stateful
+public class SchoolDataController {
 
-  @Inject
-  @Any 
-  private Instance<T> schoolDataControllerSource;
-  
-  protected T getSchoolDataController(SchoolDataEntity schoolDataEntity) {
-    return getSchoolDataController(schoolDataEntity.getDataSource());
-  }
-  
-  protected T getSchoolDataController(SchoolDataSource dataSource) {
-    ServiceLoader<SchoolDataBridgeDescriptor> ldr = ServiceLoader.load(SchoolDataBridgeDescriptor.class);
-    
-    for (SchoolDataBridgeDescriptor descriptor : ldr) {
-      if (descriptor.getIdentifier().equals(dataSource.getIdentifier())) {
-        Annotation qualifier = descriptor.getQualifier();
+	@Inject
+	@DAO
+	private SchoolDataSourceDAO schoolDataSourceDAO;
 
-        Instance<T> instance = schoolDataControllerSource.select(getGenericTypeClass(), qualifier);
+	public SchoolDataSource createSchoolDataSource(String identifier) {
+		return schoolDataSourceDAO.create(identifier);
+	}
 
-        return instance.get();
-      }
-    }
+	public SchoolDataSource findSchoolDataSource(String identifier) {
+		return schoolDataSourceDAO.findByIdentifier(identifier);
+	}
 
-    return null;
-  }
-
-  @SuppressWarnings("unchecked")
-  private Class<T> getGenericTypeClass() {
-    ParameterizedType parameterizedType = (ParameterizedType) getClass().getGenericSuperclass();
-    return (Class<T>) parameterizedType.getActualTypeArguments()[0];
-  }
-  
 }

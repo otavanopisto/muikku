@@ -8,9 +8,7 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
-import javax.inject.Named;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.muikku.dao.base.EnvironmentDAO;
@@ -19,40 +17,27 @@ import fi.muikku.dao.security.CourseUserRolePermissionDAO;
 import fi.muikku.dao.security.EnvironmentUserRolePermissionDAO;
 import fi.muikku.dao.security.PermissionDAO;
 import fi.muikku.dao.security.ResourceUserRolePermissionDAO;
-import fi.muikku.dao.security.UserPasswordDAO;
 import fi.muikku.dao.users.UserEntityDAO;
-import fi.muikku.dao.users.UserImplDAO;
 import fi.muikku.model.base.Environment;
-import fi.muikku.model.security.UserPassword;
 import fi.muikku.model.stub.courses.CourseEntity;
-import fi.muikku.model.stub.users.UserEntity;
-import fi.muikku.model.users.UserImpl;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.util.ResourceEntity;
 import fi.muikku.security.ContextReference;
 import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.security.PermissionResolver;
 import fi.muikku.security.Permit;
 import fi.muikku.session.AbstractSessionController;
-import fi.muikku.utils.RequestUtils;
 
 @Stateful
 @SessionScoped
-@Named ("localSession")
 @LocalSession
 public class LocalSessionControllerImpl extends AbstractSessionController implements LocalSessionController {
-
-  // TODO: In the right place? Refers to a local implementation
-  @Inject
-  private UserImplDAO userImplDAO;
   
   @Inject
   private UserEntityDAO userEntityDAO;
 
   @Inject
   private CourseEntityDAO courseDAO;
-
-  @Inject
-  private UserPasswordDAO userPasswordDAO;
 
   @Inject
   private EnvironmentDAO environmentDAO;
@@ -70,19 +55,13 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
   private ResourceUserRolePermissionDAO resourceUserRolePermissionDAO; 
 
   @Override
-  public void login(String email, String password) {
-    // TODO PK: Move to internal login plugin?
-    String passwordHash = DigestUtils.md5Hex(password);
-
-    UserImpl user = userImplDAO.findByEmail(email);
-    UserPassword userPassword = userPasswordDAO.findByUser(user.getUserEntity());
-
-    if (userPassword.getPasswordHash().equals(passwordHash))
-      loggedUserId = user.getId();
+  public void login(Long userId) {
+  	this.loggedUserId = userId;
   }
 
   @Override
   public void logout() {
+  	representedUserId = null;
     loggedUserId = null;
   }
 
