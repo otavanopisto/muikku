@@ -12,9 +12,10 @@ public class PluginEntityPopulator {
   
   public void populatePlugin(@Observes AfterPluginInitEvent event) {
     String name = event.getPluginName();
+    String library = event.getPluginLibrary();
     
-    if (pluginEntityDAO.listByName(name).isEmpty()) {
-      pluginEntityDAO.create(name, true);
+    if (pluginEntityDAO.findByNameAndLibrary(name, library) == null) {
+      pluginEntityDAO.create(name, library, true);
     }
   }
   

@@ -3,7 +3,9 @@ package fi.muikku.plugin.manager;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -206,6 +208,20 @@ public class SingletonPluginManager {
 		}
   }
   
+  public PluginLibraryDescriptor getLibraryDescriptorOfPluginDescriptor(PluginDescriptor pluginDescriptor) {
+    Class<? extends PluginDescriptor> pluginDescriptorClass = pluginDescriptor.getClass();
+    
+    if (libraryByPlugin.isEmpty()) {
+      for (PluginLibraryDescriptor pluginLibraryDescriptor : discoverPluginLibraries()) {
+        for (Class<? extends PluginDescriptor> pdClass: pluginLibraryDescriptor.getPlugins()) {
+          libraryByPlugin.put(pdClass, pluginLibraryDescriptor);
+        }
+      }
+    }
+    
+    return libraryByPlugin.get(pluginDescriptorClass);
+  }
+  
   public List<PluginLibraryInfo> getLoadedPluginLibraryInfos() {
     return Collections.unmodifiableList(loadedPluginLibraryInfos);
   }
@@ -222,5 +238,5 @@ public class SingletonPluginManager {
   private LibraryLoader libraryLoader;
   private MavenClient mavenClient;
   private List<PluginLibraryInfo> loadedPluginLibraryInfos = new ArrayList<>();
+  private Map<Class<? extends PluginDescriptor>, PluginLibraryDescriptor> libraryByPlugin = new HashMap<>();
 }
- 

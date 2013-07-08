@@ -3,6 +3,7 @@ package fi.muikku.dao.plugins;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -19,15 +20,16 @@ public class PluginEntityDAO extends fi.muikku.dao.CoreDAO<Plugin> {
    */
   private static final long serialVersionUID = -19075691136L;
   
-  public Plugin create(String name, Boolean isEnabled) {
+  public Plugin create(String name, String library, Boolean isEnabled) {
     Plugin plugin = new Plugin();
     plugin.setName(name);
+    plugin.setLibrary(library);
     plugin.setEnabled(isEnabled);
     getEntityManager().persist(plugin);
     return plugin;
   }
   
-  public List<Plugin> listByName(String name) {
+  public Plugin findByNameAndLibrary(String name, String library) {
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -35,10 +37,17 @@ public class PluginEntityDAO extends fi.muikku.dao.CoreDAO<Plugin> {
     Root<Plugin> root = criteria.from(Plugin.class);
     criteria.select(root);
     criteria.where(
-        criteriaBuilder.equal(root.get(Plugin_.name), name)
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(Plugin_.name), name),
+            criteriaBuilder.equal(root.get(Plugin_.library), library)
+        )
     );
     
-    return entityManager.createQuery(criteria).getResultList();
+    try {
+      return entityManager.createQuery(criteria).getSingleResult();
+    } catch (NoResultException noResultException) {
+      return null;
+    }
   }
   
   public Plugin updateEnabled(Plugin plugin, Boolean enabled) {
