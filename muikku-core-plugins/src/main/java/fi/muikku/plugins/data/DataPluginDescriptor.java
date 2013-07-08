@@ -8,12 +8,14 @@ import java.util.List;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.xml.sax.SAXException;
 
+import fi.muikku.plugin.AfterPluginsInitEvent;
 import fi.muikku.plugin.PersistencePluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
 import fi.muikku.plugins.data.dao.ProcessedScriptDAO;
@@ -33,16 +35,7 @@ public class DataPluginDescriptor implements PluginDescriptor, PersistencePlugin
 	
 	@Override
 	public void init() {
-		String xmlFilePath = System.getProperty("muikku-data");
-		if (StringUtils.isNotBlank(xmlFilePath)) {
-			try {
-				dataPluginController.processScripts(new File(xmlFilePath));
-			} catch (ParserConfigurationException | SAXException | IOException e) {
-				// TODO: Proper error handling
-				e.printStackTrace();
-				throw new RuntimeException(e);
-			}
-		}
+		
 	}
 
 	@Override
@@ -69,4 +62,17 @@ public class DataPluginDescriptor implements PluginDescriptor, PersistencePlugin
 		};
 	}
 
+	public void onAfterPluginsInit(@Observes AfterPluginsInitEvent event) {
+		String xmlFilePath = System.getProperty("muikku-data");
+		if (StringUtils.isNotBlank(xmlFilePath)) {
+			try {
+				dataPluginController.processScripts(new File(xmlFilePath));
+			} catch (ParserConfigurationException | SAXException | IOException e) {
+				// TODO: Proper error handling
+				e.printStackTrace();
+				throw new RuntimeException(e);
+			}
+		}
+	}
+	
 }
