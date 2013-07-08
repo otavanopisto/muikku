@@ -30,6 +30,6 @@ public class SchoolDataSource {
   
   @NotEmpty
   @NotNull
-  @Column (nullable = false)
+  @Column (nullable = false, unique = true)
   private String identifier;
 }
