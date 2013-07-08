@@ -8,8 +8,7 @@ import javax.inject.Named;
 
 import fi.muikku.controller.UserController;
 import fi.muikku.model.users.UserImpl;
-import fi.muikku.plugin.PluginLibraryInfo;
-import fi.muikku.plugins.settings.model.Plugin;
+import fi.muikku.model.plugins.Plugin;
 import fi.muikku.widgets.WidgetSpaceSet;
 import fi.muikku.widgets.WidgetSpaceSetItem;
 import fi.muikku.widgets.WidgetSpaceSizingStrategy;
@@ -35,14 +34,6 @@ public class SettingsBackingBean {
 		List<UserImpl> users = userController.listAllUsers();
 		return users;
 	}
-
-  public List<PluginLibraryInfo> getAllLibraries() {
-    return pluginSettingsController.getAllLibraries();
-  }
-  
-  public List<Plugin> getPluginsByLibrary(PluginLibraryInfo pluginLibraryInfo) {
-    return pluginSettingsController.getPluginsByLibrary(pluginLibraryInfo);
-  }
   
   public List<Plugin> getAllPlugins() {
     return pluginSettingsController.getAllPlugins();

@@ -17,14 +17,11 @@ import fi.muikku.i18n.LocaleBundle;
 import fi.muikku.i18n.LocaleLocation;
 import fi.muikku.model.widgets.WidgetVisibility;
 import fi.muikku.plugin.LocalizedPluginDescriptor;
-import fi.muikku.plugin.PersistencePluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
-import fi.muikku.plugins.settings.dao.PluginEntityDAO;
-import fi.muikku.plugins.settings.model.Plugin;
 
 @ApplicationScoped
 @Stateful
-public class SettingsPluginDescriptor implements PluginDescriptor, PersistencePluginDescriptor, LocalizedPluginDescriptor {
+public class SettingsPluginDescriptor implements PluginDescriptor, LocalizedPluginDescriptor {
 
 	private static final String DOCK_SETTINGS_WIDGET_LOCATION = fi.muikku.WidgetLocations.ENVIRONMENT_DOCK_TOP_CENTER;
 	private static final int DOCK_SETTINGS_WIDGET_MINIMUM_SIZE = 1;
@@ -62,16 +59,9 @@ public class SettingsPluginDescriptor implements PluginDescriptor, PersistencePl
 		return Collections.unmodifiableList(Arrays.asList(new Class<?>[] { 
 		  SettingsBackingBean.class,
 		  PluginSettingsController.class,
-		  PluginEntityDAO.class
 		}));
 	}
 
-  @Override
-  public Class<?>[] getEntities() {
-    return new Class<?>[] {
-      Plugin.class
-    };
-  }
 
   @Override
   public List<LocaleBundle> getLocaleBundles() {
