@@ -6,7 +6,6 @@
     setup: function (widgetElement) {
       widgetElement = $(widgetElement);
       this._widgetElement = widgetElement;
-      this._environmentId = widgetElement.find("input[name='environmentId']").val();
       this._userId = widgetElement.find("input[name='userId']").val();
       this._allCoursesContainer = $('#allCoursesList');
       this._myCoursesContainer = $('#myCoursesList');
@@ -59,7 +58,6 @@
       
       RESTful.doGet(CONTEXTPATH + "/rest/course/listAllCourses", {
         parameters: {
-          'environmentId': this._environmentId
         }
       }).success(function (data, textStatus, jqXHR) {
         renderDustTemplate('coursepicker/coursepickercourse.dust', data, function (text) {
@@ -74,7 +72,6 @@
       
       RESTful.doGet(CONTEXTPATH + "/rest/course/listAllCourses", {
         parameters: {
-          'environmentId': this._environmentId
         }
       }).success(function (data, textStatus, jqXHR) {
         renderDustTemplate('coursepicker/coursepickercourse.dust', data, function (text) {
@@ -89,7 +86,6 @@
       
       RESTful.doGet(CONTEXTPATH + "/rest/course/listUserCourses", {
         parameters: {
-          'environmentId': this._environmentId,
           'userId': this._userId
         }
       }).success(function (data, textStatus, jqXHR) {
