@@ -3,11 +3,15 @@ package fi.muikku.plugin.manager;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.collection.DependencyCollectionException;
 import org.sonatype.aether.graph.DependencyNode;
@@ -206,6 +210,29 @@ public class SingletonPluginManager {
 		}
   }
   
+  public PluginLibraryDescriptor getLibraryDescriptorOfPluginDescriptor(PluginDescriptor pluginDescriptor) {
+    Class<? extends PluginDescriptor> pluginDescriptorClass = pluginDescriptor.getClass();
+    
+    if (libraryByPlugin.isEmpty()) {
+      for (PluginLibraryDescriptor pluginLibraryDescriptor : discoverPluginLibraries()) {
+        for (Class<? extends PluginDescriptor> pdClass: pluginLibraryDescriptor.getPlugins()) {
+          libraryByPlugin.add(
+              new ImmutablePair<Class<? extends PluginDescriptor>, PluginLibraryDescriptor>(pdClass, pluginLibraryDescriptor)
+          );
+        }
+      }
+    }
+    
+    for (Pair<Class<? extends PluginDescriptor>, PluginLibraryDescriptor> pair : libraryByPlugin) {
+      Class<? extends PluginDescriptor> proxyedClass = pair.getLeft();
+      PluginLibraryDescriptor plDescriptor = pair.getRight();
+      if (proxyedClass.isAssignableFrom(pluginDescriptorClass)) {
+        return plDescriptor;
+      }
+    }
+    return null;
+  }
+  
   public List<PluginLibraryInfo> getLoadedPluginLibraryInfos() {
     return Collections.unmodifiableList(loadedPluginLibraryInfos);
   }
@@ -222,5 +249,5 @@ public class SingletonPluginManager {
   private LibraryLoader libraryLoader;
   private MavenClient mavenClient;
   private List<PluginLibraryInfo> loadedPluginLibraryInfos = new ArrayList<>();
+  private List<Pair<Class<? extends PluginDescriptor>, PluginLibraryDescriptor>> libraryByPlugin = new ArrayList<>();
 }
- 

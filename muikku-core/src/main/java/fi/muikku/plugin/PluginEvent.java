@@ -12,5 +12,13 @@ public class PluginEvent implements Serializable {
     this.pluginName = pluginName;
   }
 
+  public String getPluginLibrary() {
+    return pluginLibrary;
+  }
+  public void setPluginLibrary(String pluginLibrary) {
+    this.pluginLibrary = pluginLibrary;
+  }
+
   private String pluginName;
+  private String pluginLibrary;
 }

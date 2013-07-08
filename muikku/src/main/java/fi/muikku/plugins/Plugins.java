@@ -12,14 +12,20 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.hibernate.dialect.FirebirdDialect;
+
 import fi.muikku.Logged;
 import fi.muikku.i18n.LocaleBundle;
 import fi.muikku.i18n.LocaleController;
 import fi.muikku.plugin.AfterPluginInitEvent;
+import fi.muikku.plugin.BeforePluginInitEvent;
 import fi.muikku.plugin.LocalizedPluginDescriptor;
 import fi.muikku.plugin.PluginContextClassLoader;
 import fi.muikku.plugin.PluginDescriptor;
+import fi.muikku.plugin.PluginEvent;
 import fi.muikku.plugin.Transactional;
+import fi.muikku.plugin.manager.PluginManagerException;
+import fi.muikku.plugin.manager.SingletonPluginManager;
 
 @Dependent
 public class Plugins {
@@ -35,6 +41,9 @@ public class Plugins {
 	
 	@Inject
 	private Event<AfterPluginInitEvent> afterPluginInitEvent;
+	
+	@Inject
+	private Event<BeforePluginInitEvent> beforePluginInitEvent;
 	
 	public List<PluginDescriptor> getPlugins() {
 		List<PluginDescriptor> result = new ArrayList<>();
@@ -57,8 +66,9 @@ public class Plugins {
   		logger.info("Initializing plugin: " + pluginDescriptor.getName());
       
     	try {
+    	  firePluginInitEvent(pluginDescriptor, false);
     	  pluginDescriptor.init();
-    	  fireAfterPluginInitEvent(pluginDescriptor.getName());
+    	  firePluginInitEvent(pluginDescriptor, true);
     	  if (pluginDescriptor instanceof LocalizedPluginDescriptor) {
     	    List<LocaleBundle> localeBundles = ((LocalizedPluginDescriptor) pluginDescriptor).getLocaleBundles();
     	    for (LocaleBundle localeBundle : localeBundles) {
@@ -72,10 +82,31 @@ public class Plugins {
   	}
 	}
 
-  private void fireAfterPluginInitEvent(String name) {
-    AfterPluginInitEvent eventData = new AfterPluginInitEvent();
-    eventData.setPluginName(name);
-    afterPluginInitEvent.fire(eventData);
+  private void firePluginInitEvent(PluginDescriptor pluginDescriptor, boolean isAfter) {
+    PluginEvent eventData;
+    if (isAfter) {
+      eventData = new AfterPluginInitEvent();
+    } else {
+      eventData = new BeforePluginInitEvent();
+    }
+    
+    String pluginName = pluginDescriptor.getName();
+    String pluginLibrary = "";
+    try {
+      pluginLibrary = SingletonPluginManager.getInstance()
+          .getLibraryDescriptorOfPluginDescriptor(pluginDescriptor).getName();
+    } catch (PluginManagerException pluginManagerException) {
+      logger.severe("Failed to get descriptor of plugin: " + pluginName);
+    }
+    
+    eventData.setPluginName(pluginName);
+    eventData.setPluginLibrary(pluginLibrary);
+    
+    if (isAfter) {
+      afterPluginInitEvent.fire((AfterPluginInitEvent)eventData);
+    } else {
+      beforePluginInitEvent.fire((BeforePluginInitEvent)eventData);
+    }
   }
 
 }
