@@ -59,7 +59,7 @@ public class Plugins {
 	@Logged
 	@Transactional
 	@PluginContextClassLoader
-	public void initialize() throws PluginManagerException {
+	public void initialize() {
 		logger.info("Initializing plugins");
 
   	for (PluginDescriptor pluginDescriptor : getPlugins()) {
@@ -82,7 +82,7 @@ public class Plugins {
   	}
 	}
 
-  private void firePluginInitEvent(PluginDescriptor pluginDescriptor, boolean isAfter) throws PluginManagerException {
+  private void firePluginInitEvent(PluginDescriptor pluginDescriptor, boolean isAfter) {
     PluginEvent eventData;
     if (isAfter) {
       eventData = new AfterPluginInitEvent();
@@ -91,8 +91,13 @@ public class Plugins {
     }
     
     String pluginName = pluginDescriptor.getName();
-    String pluginLibrary = SingletonPluginManager.getInstance()
+    String pluginLibrary = "";
+    try {
+      pluginLibrary = SingletonPluginManager.getInstance()
           .getLibraryDescriptorOfPluginDescriptor(pluginDescriptor).getName();
+    } catch (PluginManagerException pluginManagerException) {
+      logger.severe("Failed to get descriptor of plugin: " + pluginName);
+    }
     
     eventData.setPluginName(pluginName);
     eventData.setPluginLibrary(pluginLibrary);

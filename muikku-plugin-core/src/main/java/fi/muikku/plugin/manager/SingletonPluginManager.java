@@ -10,6 +10,8 @@ import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.collection.DependencyCollectionException;
 import org.sonatype.aether.graph.DependencyNode;
@@ -214,12 +216,21 @@ public class SingletonPluginManager {
     if (libraryByPlugin.isEmpty()) {
       for (PluginLibraryDescriptor pluginLibraryDescriptor : discoverPluginLibraries()) {
         for (Class<? extends PluginDescriptor> pdClass: pluginLibraryDescriptor.getPlugins()) {
-          libraryByPlugin.put(pdClass, pluginLibraryDescriptor);
+          libraryByPlugin.add(
+              new ImmutablePair<Class<? extends PluginDescriptor>, PluginLibraryDescriptor>(pdClass, pluginLibraryDescriptor)
+          );
         }
       }
     }
     
-    return libraryByPlugin.get(pluginDescriptorClass);
+    for (Pair<Class<? extends PluginDescriptor>, PluginLibraryDescriptor> pair : libraryByPlugin) {
+      Class<? extends PluginDescriptor> proxyedClass = pair.getLeft();
+      PluginLibraryDescriptor plDescriptor = pair.getRight();
+      if (proxyedClass.isAssignableFrom(pluginDescriptorClass)) {
+        return plDescriptor;
+      }
+    }
+    return null;
   }
   
   public List<PluginLibraryInfo> getLoadedPluginLibraryInfos() {
@@ -238,5 +249,5 @@ public class SingletonPluginManager {
   private LibraryLoader libraryLoader;
   private MavenClient mavenClient;
   private List<PluginLibraryInfo> loadedPluginLibraryInfos = new ArrayList<>();
-  private Map<Class<? extends PluginDescriptor>, PluginLibraryDescriptor> libraryByPlugin = new HashMap<>();
+  private List<Pair<Class<? extends PluginDescriptor>, PluginLibraryDescriptor>> libraryByPlugin = new ArrayList<>();
 }
