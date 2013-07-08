@@ -11,6 +11,11 @@ import javax.inject.Inject;
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.plugin.PersistencePluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
+import fi.muikku.plugins.schooldatalocal.dao.LocalUserDAO;
+import fi.muikku.plugins.schooldatalocal.dao.LocalUserEmailDAO;
+import fi.muikku.plugins.schooldatalocal.dao.LocalUserImageDAO;
+import fi.muikku.plugins.schooldatalocal.dao.LocalUserPropertyDAO;
+import fi.muikku.plugins.schooldatalocal.dao.LocalUserPropertyKeyDAO;
 import fi.muikku.plugins.schooldatalocal.model.LocalUser;
 import fi.muikku.plugins.schooldatalocal.model.LocalUserImage;
 import fi.muikku.plugins.schooldatalocal.model.LocalUserEmail;
@@ -44,7 +49,26 @@ public class SchoolDataLocalPluginDescriptor implements PluginDescriptor, Persis
 
 	@Override
 	public List<Class<?>> getBeans() {
-		return new ArrayList<Class<?>>(Arrays.asList(LocalUserSchoolDataBridge.class));
+		return new ArrayList<Class<?>>(
+		  Arrays.asList(
+		  	
+		  	/* DAOs */
+		  		
+		  	LocalUserDAO.class,
+		  	LocalUserEmailDAO.class,
+		  	LocalUserImageDAO.class,
+		  	LocalUserPropertyKeyDAO.class,
+		  	LocalUserPropertyDAO.class,
+
+		  	/* Controllers */
+					
+		  	LocalUserSchoolDataController.class,
+		  		
+				/* School Data Bridges */	
+		  		
+			  LocalUserSchoolDataBridge.class
+			)
+		);
 	}
 	
 	@Override
