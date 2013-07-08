@@ -18,7 +18,9 @@ import fi.muikku.Logged;
 import fi.muikku.i18n.LocaleBundle;
 import fi.muikku.i18n.LocaleController;
 import fi.muikku.plugin.AfterPluginInitEvent;
+import fi.muikku.plugin.AfterPluginsInitEvent;
 import fi.muikku.plugin.BeforePluginInitEvent;
+import fi.muikku.plugin.BeforePluginsInitEvent;
 import fi.muikku.plugin.LocalizedPluginDescriptor;
 import fi.muikku.plugin.PluginContextClassLoader;
 import fi.muikku.plugin.PluginDescriptor;
@@ -45,6 +47,12 @@ public class Plugins {
 	@Inject
 	private Event<BeforePluginInitEvent> beforePluginInitEvent;
 	
+	@Inject
+	private Event<BeforePluginsInitEvent> beforePluginsInitEvent;
+	
+	@Inject
+	private Event<AfterPluginsInitEvent> afterPluginsInitEvent;
+	
 	public List<PluginDescriptor> getPlugins() {
 		List<PluginDescriptor> result = new ArrayList<>();
 		
@@ -62,6 +70,7 @@ public class Plugins {
 	public void initialize() {
 		logger.info("Initializing plugins");
 
+		firePluginsInitEvent(false);
   	for (PluginDescriptor pluginDescriptor : getPlugins()) {
   		logger.info("Initializing plugin: " + pluginDescriptor.getName());
       
@@ -80,6 +89,7 @@ public class Plugins {
     		logger.log(Level.SEVERE, "Failed to initialize plugin: " + pluginDescriptor.getName(), e);
     	}
   	}
+  	firePluginsInitEvent(true);
 	}
 
   private void firePluginInitEvent(PluginDescriptor pluginDescriptor, boolean isAfter) {
@@ -109,4 +119,11 @@ public class Plugins {
     }
   }
 
+  private void firePluginsInitEvent(boolean isAfter) {
+    if (isAfter) {
+      afterPluginsInitEvent.fire(new AfterPluginsInitEvent());
+    } else {
+      beforePluginsInitEvent.fire(new BeforePluginsInitEvent());
+    }
+  }
 }
