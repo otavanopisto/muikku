@@ -1,4 +1,4 @@
-package fi.muikku.plugins.settings.model;
+package fi.muikku.model.plugins;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,14 +32,6 @@ public class Plugin {
     this.enabled = enabled;
   }
 
-  public String getLibrary() {
-    return library;
-  }
-
-  public void setLibrary(String library) {
-    this.library = library;
-  }
-
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -52,9 +44,4 @@ public class Plugin {
   @Column (nullable = false)
   @NotNull
   private Boolean enabled;
-  
-  @Column (nullable = false)
-  @NotNull
-  @NotEmpty
-  private String library;
 }
