@@ -25,6 +25,7 @@ import fi.muikku.plugins.grading.GradingPluginDescriptor;
 import fi.muikku.plugins.internallogin.InternalLoginPluginDescriptor;
 import fi.muikku.plugins.language.LanguagePluginDescriptor;
 import fi.muikku.plugins.logout.LogoutPluginDescriptor;
+import fi.muikku.plugins.schooldatalocal.SchoolDataLocalPluginDescriptor;
 import fi.muikku.plugins.seeker.SeekerPluginDescriptor;
 import fi.muikku.plugins.settings.SettingsPluginDescriptor;
 import fi.muikku.plugins.wall.WallPluginDescriptor;
@@ -55,7 +56,8 @@ public class CorePluginsDescriptor implements PluginLibraryDescriptor {
       GradingPluginDescriptor.class,
       SettingsPluginDescriptor.class,
       ContentPluginDescriptor.class,
-      DataPluginDescriptor.class
+      DataPluginDescriptor.class,
+      SchoolDataLocalPluginDescriptor.class
 		));
 	}
 	
