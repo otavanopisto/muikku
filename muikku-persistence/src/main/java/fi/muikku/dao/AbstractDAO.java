@@ -52,6 +52,11 @@ public abstract class AbstractDAO<T> implements Serializable {
     getEntityManager().flush();
   }
 
+  protected T persist(T object) {
+  	getEntityManager().persist(object);
+  	return object;
+  }
+
   protected T getSingleResult(Query query) {
     @SuppressWarnings("unchecked")
     List<T> list = query.getResultList();
