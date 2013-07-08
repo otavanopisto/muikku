@@ -15,19 +15,65 @@ public interface UserSchoolDataBridge {
 	
 	/* User */
 	
-	public User createUser(String firstName, String lastName);
+	/**
+	 * Creates new user
+	 * 
+	 * @param firstName new user's first name
+	 * @param lastName new user's last name
+	 * @return created user
+	 * @throws SchoolDataBridgeRequestException when given parameters are not valid
+	 * @throws UnexpectedSchoolDataBridgeException when unexpected error occurs
+	 */
+	public User createUser(String firstName, String lastName) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
-	public User findUser(String identifier);
+	/**
+	 * Finds a user by it's identifier. If user cannot be found null is returned.
+	 * 
+	 * @param identifier user's identifier
+	 * @return user or null if user does not exist
+	 * @throws SchoolDataBridgeRequestException when given identifier is not valid
+	 * @throws UnexpectedSchoolDataBridgeException when unexpected error occurs
+	 */
+	public User findUser(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 
-	public User findUserByEmail(String email);
+	/**
+	 * Finds user by email. If user cannot be found null is returned.
+	 * 
+	 * @param email email address
+	 * @return user or null if user with given email cannot be found
+	 * @throws SchoolDataBridgeRequestException when given email is not valid
+	 * @throws UnexpectedSchoolDataBridgeException when unexpected error occurs
+	 */
+	public User findUserByEmail(String email) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 
 	// TODO: Search / findUsers
+
+	/**
+	 * Lists all users
+	 * 
+	 * @return list of all users managed by school data bridge.
+	 * @throws UnexpectedSchoolDataBridgeException when unexpected error occurs
+	 */	
+	public List<User> listUsers() throws UnexpectedSchoolDataBridgeException;
 	
-	public List<User> listUsers();
+	/**
+	 * Updates user
+	 * 
+	 * @param user
+	 * @return updated user
+	 * @throws SchoolDataBridgeRequestException when given user contains invalid data
+	 * @throws UnexpectedSchoolDataBridgeException when unexpected error occurs
+	 */
+	public User updateUser(User user) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
-	public User updateUser(User user);
-	
-	public void removeUser(String identifier);
+	/**
+	 * Removes a user
+	 * 
+	 * @param identifier user's identifier to be removed
+	 * @throws SchoolDataBridgeRequestException when given identifier is invalid or user does not exist
+	 * @throws UnexpectedSchoolDataBridgeException when unexpected error occurs
+	 */
+	public void removeUser(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
 	/* User Email */
 	

@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
@@ -29,6 +31,9 @@ public class UserSchoolDataController {
 	// TODO: Events
 	
 	@Inject
+	private Logger logger;
+	
+	@Inject
 	@Any
 	private Instance<UserSchoolDataBridge> userBridges;
 	
@@ -50,16 +55,20 @@ public class UserSchoolDataController {
 		List<User> result = new ArrayList<User>();
 		
 		for (UserSchoolDataBridge userBridge : getUserBridges()) {
-			result.addAll(userBridge.listUsers());
+			try {
+				result.addAll(userBridge.listUsers());
+			} catch (UnexpectedSchoolDataBridgeException e) {
+				logger.log(Level.SEVERE, "School Data Bridge reported a problem while listing users", e);
+			}
 		}
 		
-		// TODO: This is propably not the best place for this
+		// TODO: This is probably not the best place for this
 		ensureUserEntities(result);
 		
 		return result;
 	}
 
-	public List<User> listUsersByEmail(String email) {
+	public List<User> listUsersByEmail(String email) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
 		List<User> result = new ArrayList<User>();
 		
 		for (UserSchoolDataBridge userBridge : getUserBridges()) {
@@ -75,7 +84,7 @@ public class UserSchoolDataController {
 		return result;
 	}
 	
-	public User findUser(SchoolDataSource schoolDataSource, UserEntity userEntity) {
+	public User findUser(SchoolDataSource schoolDataSource, UserEntity userEntity) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
 		User user = null;
 		
 		UserSchoolDataBridge userBridge = getUserBridge(schoolDataSource);
@@ -97,13 +106,16 @@ public class UserSchoolDataController {
 		
 		List<UserSchoolDataIdentifier> identifiers = userSchoolDataIdentifierDAO.listByUserEntity(userEntity);
 		for (UserSchoolDataIdentifier identifier : identifiers) {
-			User user = findUser(identifier.getDataSource(), userEntity);
-			if (user != null) {
-				return user;
+			User user;
+			try {
+				user = findUser(identifier.getDataSource(), userEntity);
+				if (user != null) {
+					return user;
+				}
+			} catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
+				logger.log(Level.SEVERE, "SchoolDataBridge reported error while finding user", e);
 			}
 		}
-		
-		// TODO: This is propably not the best place for this
 
 		return null;
 	}
