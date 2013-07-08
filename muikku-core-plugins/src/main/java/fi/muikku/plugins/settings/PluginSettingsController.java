@@ -3,6 +3,7 @@ package fi.muikku.plugins.settings;
 import java.util.List;
 
 import javax.ejb.Stateful;
+import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -10,7 +11,6 @@ import fi.muikku.dao.plugins.PluginEntityDAO;
 import fi.muikku.model.plugins.Plugin;
 
 @Dependent
-@Stateful
 public class PluginSettingsController {
   
   @Inject
@@ -21,7 +21,8 @@ public class PluginSettingsController {
     return allPlugins;
   }
   
-  public void togglePlugin(Plugin plugin) {
+  public void togglePluginById(Long id) {
+    Plugin plugin = pluginDAO.findById(id);
     pluginDAO.updateEnabled(plugin, !plugin.getEnabled());
   }
 }

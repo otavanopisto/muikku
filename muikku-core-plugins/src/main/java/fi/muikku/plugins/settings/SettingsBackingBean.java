@@ -3,10 +3,12 @@ package fi.muikku.plugins.settings;
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import fi.muikku.controller.UserController;
+import fi.muikku.dao.plugins.PluginEntityDAO;
 import fi.muikku.model.users.UserImpl;
 import fi.muikku.model.plugins.Plugin;
 import fi.muikku.widgets.WidgetSpaceSet;
@@ -39,8 +41,16 @@ public class SettingsBackingBean {
     return pluginSettingsController.getAllPlugins();
   }
   
-  public void togglePlugin(Plugin plugin) {
-    pluginSettingsController.togglePlugin(plugin);
+  public void togglePlugin() {
+    FacesContext context = FacesContext.getCurrentInstance();
+    String idString = (String) context.getExternalContext().getRequestParameterMap().get(
+        "pluginId");
+    Long id = Long.valueOf(idString);
+    togglePluginById(id);
+  }
+  
+  public void togglePluginById(long id) {
+    pluginSettingsController.togglePluginById(id);
   }
 
 }
