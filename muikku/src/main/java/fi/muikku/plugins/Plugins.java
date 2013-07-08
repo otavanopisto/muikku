@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -14,6 +15,7 @@ import javax.inject.Inject;
 import fi.muikku.Logged;
 import fi.muikku.i18n.LocaleBundle;
 import fi.muikku.i18n.LocaleController;
+import fi.muikku.plugin.AfterPluginInitEvent;
 import fi.muikku.plugin.LocalizedPluginDescriptor;
 import fi.muikku.plugin.PluginContextClassLoader;
 import fi.muikku.plugin.PluginDescriptor;
@@ -30,6 +32,9 @@ public class Plugins {
 	@Inject
   @Any
   private Instance<PluginDescriptor> plugins;
+	
+	@Inject
+	private Event<AfterPluginInitEvent> afterPluginInitEvent;
 	
 	public List<PluginDescriptor> getPlugins() {
 		List<PluginDescriptor> result = new ArrayList<>();
@@ -53,6 +58,7 @@ public class Plugins {
       
     	try {
     	  pluginDescriptor.init();
+    	  fireAfterPluginInitEvent(pluginDescriptor.getName());
     	  if (pluginDescriptor instanceof LocalizedPluginDescriptor) {
     	    List<LocaleBundle> localeBundles = ((LocalizedPluginDescriptor) pluginDescriptor).getLocaleBundles();
     	    for (LocaleBundle localeBundle : localeBundles) {
@@ -65,5 +71,11 @@ public class Plugins {
     	}
   	}
 	}
+
+  private void fireAfterPluginInitEvent(String name) {
+    AfterPluginInitEvent eventData = new AfterPluginInitEvent();
+    eventData.setPluginName(name);
+    afterPluginInitEvent.fire(eventData);
+  }
 
 }

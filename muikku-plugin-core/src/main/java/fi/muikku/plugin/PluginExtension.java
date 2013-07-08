@@ -28,7 +28,7 @@ import org.sonatype.aether.artifact.Artifact;
 import org.sonatype.aether.repository.RemoteRepository;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
 
-import fi.muikku.plugin.manager.PluginLibraryLoadInfo;
+import fi.muikku.plugin.PluginLibraryInfo;
 import fi.muikku.plugin.manager.PluginManagerException;
 import fi.muikku.plugin.manager.SingletonPluginManager;
 import fi.muikku.security.Permit;
@@ -40,7 +40,7 @@ public class PluginExtension implements Extension {
 
 	void beforeBeanDiscovery(@Observes BeforeBeanDiscovery beforeBeanDiscovery, BeanManager beanManager) {
 		List<RemoteRepository> repositories = new ArrayList<>();
-		List<PluginLibraryLoadInfo> pluginLoadInfos = new ArrayList<>();
+		List<PluginLibraryInfo> pluginLoadInfos = new ArrayList<>();
 
 		String coreVersion = getClass().getPackage().getImplementationVersion();
 		Artifact applicationArtifact = new DefaultArtifact("fi.muikku", "muikku", "pom", coreVersion);
@@ -75,7 +75,7 @@ public class PluginExtension implements Extension {
   				String groupId = pluginLibraryArtifactId.substring(0, groupSeparator);
   				String artifactId = pluginLibraryArtifactId.substring(groupSeparator + 1);
   
-  				pluginLoadInfos.add(new PluginLibraryLoadInfo(groupId, artifactId, pluginLibraryVersion));
+  				pluginLoadInfos.add(new PluginLibraryInfo(groupId, artifactId, pluginLibraryVersion));
   			}
   		}
 		} catch (IOException e) {
@@ -92,7 +92,7 @@ public class PluginExtension implements Extension {
 			throw new ExceptionInInitializerError(e1);
 		}
 
-		for (PluginLibraryLoadInfo pluginLoadInfo : pluginLoadInfos) {
+		for (PluginLibraryInfo pluginLoadInfo : pluginLoadInfos) {
 			logger.info("Loading plugin library: " + pluginLoadInfo.toString());
 			try {
 				pluginManager.loadPluginLibrary(pluginLoadInfo);

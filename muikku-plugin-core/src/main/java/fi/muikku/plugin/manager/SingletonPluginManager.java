@@ -2,6 +2,7 @@ package fi.muikku.plugin.manager;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.ServiceLoader;
 import java.util.logging.Level;
@@ -18,6 +19,7 @@ import org.sonatype.aether.resolution.VersionResolutionException;
 import org.sonatype.aether.util.artifact.ArtifacIdUtils;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
 
+import fi.muikku.plugin.PluginLibraryInfo;
 import fi.muikku.plugin.PluginDescriptor;
 import fi.muikku.plugin.PluginLibraryDescriptor;
 import fi.muikku.plugin.RESTPluginDescriptor;
@@ -137,10 +139,12 @@ public class SingletonPluginManager {
    * @throws PluginManagerException 
    * @throws VersionResolutionException 
    */
-  public void loadPluginLibrary(PluginLibraryLoadInfo loadInfo) throws PluginManagerException {
+  public void loadPluginLibrary(PluginLibraryInfo loadInfo) throws PluginManagerException {
     String groupId = loadInfo.getGroupId();
     String artifactId = loadInfo.getArtifactId();
     String version = loadInfo.getVersion();
+    
+    loadedPluginLibraryInfos.add(loadInfo);
     
     try {
     	Artifact libraryArtifact = new DefaultArtifact(groupId, artifactId, "jar", version);
@@ -201,6 +205,10 @@ public class SingletonPluginManager {
 			throw new PluginManagerException(e);
 		}
   }
+  
+  public List<PluginLibraryInfo> getLoadedPluginLibraryInfos() {
+    return Collections.unmodifiableList(loadedPluginLibraryInfos);
+  }
 
   /** Returns the class loader that loads the plugins.
    * 
@@ -213,5 +221,6 @@ public class SingletonPluginManager {
   private List<Exclusion> applicationProvidedArtifacts = new ArrayList<>();
   private LibraryLoader libraryLoader;
   private MavenClient mavenClient;
+  private List<PluginLibraryInfo> loadedPluginLibraryInfos = new ArrayList<>();
 }
  

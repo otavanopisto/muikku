@@ -22,6 +22,7 @@ public class FishPluginDescriptor implements PluginDescriptor {
 
   private static final String FISH_WIDGET_LOCATION = "environment.header.left";
   private static final String FISH_WIDGET_NAME = "fish";
+  private static final int FISH_WIDGET_MINIMUM_SIZE = 8;
 
   @Inject
   private WidgetController widgetController;
@@ -35,7 +36,7 @@ public class FishPluginDescriptor implements PluginDescriptor {
   public void init() {
     Widget widget = widgetController.findWidget(FISH_WIDGET_NAME);
     if (widget == null) {
-      widget = widgetController.createWidget(FISH_WIDGET_NAME, WidgetVisibility.EVERYONE);
+      widget = widgetController.createWidget(FISH_WIDGET_NAME, FISH_WIDGET_MINIMUM_SIZE, WidgetVisibility.EVERYONE);
     }
 
     WidgetLocation widgetLocation = widgetController.findWidgetLocation(FISH_WIDGET_LOCATION);
