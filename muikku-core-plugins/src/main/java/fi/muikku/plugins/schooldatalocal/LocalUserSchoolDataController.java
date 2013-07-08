@@ -75,11 +75,8 @@ public class LocalUserSchoolDataController {
 		return localUserDAO.updateLastName(localUser, lastName);
 	}
 
-	public void removeUser(String identifier) {
-		LocalUser localUser = findUser(identifier);
-		if (localUser != null) {
-			localUserDAO.archive(localUser);
-		}
+	public void removeUser(LocalUser localUser) {
+		localUserDAO.archive(localUser);
 	}
 
 	public LocalUserEmail createUserEmail(String userIdentifier, String address) {

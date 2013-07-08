@@ -7,6 +7,8 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fi.muikku.plugins.schooldatalocal.entities.LocalUserEmailImpl;
 import fi.muikku.plugins.schooldatalocal.entities.LocalUserImageImpl;
 import fi.muikku.plugins.schooldatalocal.entities.LocalUserImpl;
@@ -15,6 +17,8 @@ import fi.muikku.plugins.schooldatalocal.model.LocalUser;
 import fi.muikku.plugins.schooldatalocal.model.LocalUserEmail;
 import fi.muikku.plugins.schooldatalocal.model.LocalUserImage;
 import fi.muikku.plugins.schooldatalocal.model.LocalUserProperty;
+import fi.muikku.schooldata.SchoolDataBridgeRequestException;
+import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 import fi.muikku.schooldata.UserSchoolDataBridge;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.UserEmail;
@@ -33,42 +37,79 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 		return LocalUserSchoolDataController.SCHOOL_DATA_SOURCE;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public User createUser(String firstName, String lastName) {
-		// TODO: Proper Error Handling
-		return toLocalUserImpl(localUserSchoolDataController.createUser(firstName, lastName));
+	public User createUser(String firstName, String lastName) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+		if (StringUtils.isNotBlank(firstName)) {
+			throw new SchoolDataBridgeRequestException("firstName is required");
+		}
+		
+		if (StringUtils.isNotBlank(lastName)) {
+			throw new SchoolDataBridgeRequestException("lastName is required");
+		}
+		
+		User userImpl = toLocalUserImpl(localUserSchoolDataController.createUser(firstName, lastName));
+		if (userImpl == null) {
+			throw new UnexpectedSchoolDataBridgeException("Failed to create local user");
+		}
+		
+		return userImpl;
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public User findUser(String identifier) {
-  	// TODO: Proper Error Handling
+	public User findUser(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+		if (!StringUtils.isNumeric(identifier)) {
+			throw new SchoolDataBridgeRequestException("identifier is invalid");
+		}
+		
 		return toLocalUserImpl(localUserSchoolDataController.findUser(identifier));
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public User findUserByEmail(String email) {
-	  // TODO: Proper Error Handling
-	  return toLocalUserImpl(localUserSchoolDataController.findUserByEmail(email));
+	public User findUserByEmail(String email) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+		return toLocalUserImpl(localUserSchoolDataController.findUserByEmail(email));
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public List<User> listUsers() {
-	  // TODO: Proper Error Handling
+	public List<User> listUsers() throws UnexpectedSchoolDataBridgeException {
 		List<User> result = new ArrayList<>();
 		
 		for (LocalUser localUser : localUserSchoolDataController.listUsers()) {
 			User user = toLocalUserImpl(localUser);
 			if (user != null) {
 			  result.add(user);
+			} else {
+				throw new UnexpectedSchoolDataBridgeException("Unexpected error occured while creating LocalUserImpl");
 			}
 		}
 		
 		return result;
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public User updateUser(User user) {
-		// TODO: Proper Error Handling
+	public User updateUser(User user) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+		if (StringUtils.isNotBlank(user.getFirstName())) {
+			throw new SchoolDataBridgeRequestException("firstName is required");
+		}
+		
+		if (StringUtils.isNotBlank(user.getLastName())) {
+			throw new SchoolDataBridgeRequestException("lastName is required");
+		}
+		
 		LocalUser localUser = localUserSchoolDataController.findUser(user.getIdentifier());
 		if (localUser != null) {
   		localUserSchoolDataController.updateUserFirstName(localUser, user.getFirstName());
@@ -76,13 +117,20 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   		return toLocalUserImpl(localUser);
 		}
 		
-		return null;
+		throw new UnexpectedSchoolDataBridgeException("Unexpected error occured while creating LocalUserImpl");
 	}
-
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void removeUser(String identifier) {
-		// TODO: Proper Error Handling
-		localUserSchoolDataController.removeUser(identifier);
+	public void removeUser(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+		LocalUser localUser = localUserSchoolDataController.findUser(identifier);
+		if (localUser != null) {
+			localUserSchoolDataController.removeUser(localUser);
+		} else {
+			throw new SchoolDataBridgeRequestException("Failed to remove user because it does not exist");
+		}
 	}
 
 	@Override
