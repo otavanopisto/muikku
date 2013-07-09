@@ -11,8 +11,6 @@ public interface UserSchoolDataBridge {
 	
 	public String getSchoolDataSource();
 	
-	// TODO: Error handling...
-	
 	/* User */
 	
 	/**
@@ -77,40 +75,145 @@ public interface UserSchoolDataBridge {
 	
 	/* User Email */
 	
-	public UserEmail createUserEmail(String userIdentifier, String address);
+
+	/**
+	 * Creates new email address for user
+	 * 
+	 * @param userIdentifier user's identifier
+	 * @param address email address
+	 * @return created UserEmail
+	 * @throws SchoolDataBridgeRequestException when given some of given parameters are invalid or user does not exist
+	 * @throws UnexpectedSchoolDataBridgeException when unexpected error occurs
+	 */
+	public UserEmail createUserEmail(String userIdentifier, String address) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
-	public UserEmail findUserEmail(String identifier);
+	/**
+	 * Finds user email by identifier
+	 * 
+	 * @param identifier user email identifier
+	 * @return user email or null if does not exist
+	 * @throws SchoolDataBridgeRequestException when identifier is invalid
+	 * @throws UnexpectedSchoolDataBridgeException when unexpected error occurs
+	 */
+	public UserEmail findUserEmail(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
-	public List<UserEmail> listUserEmailsByUserIdentifier(String userIdentifier);
+	/**
+	 * Lists user's email addresses
+	 * 
+	 * @param userIdentifier user's identififer
+	 * @return list of user's emails
+	 * @throws SchoolDataBridgeRequestException when user identifier is invalid
+	 * @throws UnexpectedSchoolDataBridgeException when unexpected error occurs
+	 */
+	public List<UserEmail> listUserEmailsByUserIdentifier(String userIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
-	public UserEmail updateUserEmail(UserEmail userEmail);
+	/**
+	 * Updates user email
+	 * 
+	 * @param userEmail new user email object
+	 * @return updated user email object
+	 * @throws SchoolDataBridgeRequestException when object contains invalid data
+	 * @throws UnexpectedSchoolDataBridgeException when unexpected error occurs
+	 */
+	public UserEmail updateUserEmail(UserEmail userEmail) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
-	public void removeUserEmail(String identifier);
+	/**
+	 * Removes user email
+	 * 
+	 * @param identifier identifier of user email
+	 * @throws SchoolDataBridgeRequestException when identifier is invalid or email does not exist
+	 * @throws UnexpectedSchoolDataBridgeException when unexpected error occurs
+	 */
+	public void removeUserEmail(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
 	/* User Image */
 	
-	public UserImage createUserImage(String userIdentifier, String contentType, byte[] content);
+	/**
+	 * Creates a user image
+	 * 
+	 * @param userIdentifier identifier of user
+	 * @param contentType content type of image
+	 * @param content image data
+	 * @return created image
+	 * @throws SchoolDataBridgeRequestException when given parameters are not valid
+	 * @throws UnexpectedSchoolDataBridgeException when unexpected error occurs
+	 */
+	public UserImage createUserImage(String userIdentifier, String contentType, byte[] content) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
-	public UserImage findUserImage(String identifier);
+	/**
+	 * Finds a user image by identifier
+	 * 
+	 * @param identifier identifier of image
+	 * @return user image or null if image does not exist
+	 * @throws SchoolDataBridgeRequestException when given identifier is not valid
+	 * @throws UnexpectedSchoolDataBridgeException when unexpected error occurs
+	 */
+	public UserImage findUserImage(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
-	public List<UserImage> listUserImagesByUserIdentifier(String userIdentifier);
+	/**
+	 * Lists all user images 
+	 * 
+	 * @param userIdentifier identifier of user
+	 * @return list of user's images
+	 * @throws SchoolDataBridgeRequestException when given user identifier is not valid
+	 * @throws UnexpectedSchoolDataBridgeException when unexpected error occurs
+	 */
+	public List<UserImage> listUserImagesByUserIdentifier(String userIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
-	public UserImage updateUserImage(UserImage userImage);
+	/**
+	 * Updates user image
+	 * 
+	 * @param userImage image update object 
+	 * @return updated image object
+	 * @throws SchoolDataBridgeRequestException when given object contains invalid values
+	 * @throws UnexpectedSchoolDataBridgeException when unexpected error occurs
+	 */
+	public UserImage updateUserImage(UserImage userImage) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
-	public void removeUserImage(String identifier);
+	/**
+	 * Removes user's image by identifier
+	 * 
+	 * @param identifier identifier of image to be removed
+	 * @throws SchoolDataBridgeRequestException when given identifier is invalid or image does not exist
+	 * @throws UnexpectedSchoolDataBridgeException when unexpected error occurs
+	 */
+	public void removeUserImage(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
 	/* User Properties */
 	
-	public UserProperty createUserProperty(String userIdentifier, String key, String value);
-	
-	public UserProperty findUserProperty(String identifier);
+	/**
+	 * Sets a property for the user. 
+	 * 
+	 * If property does not exist new property is automatically created
+	 * 
+	 * @param userIdentifier identifier of user
+	 * @param key property key
+	 * @param value property value
+	 * @return created / updated user property
+	 * @throws SchoolDataBridgeRequestException when given parameters are not valid
+	 * @throws UnexpectedSchoolDataBridgeException when unexpected error occurs
+	 */
+	public UserProperty setUserProperty(String userIdentifier, String key, String value) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 
-	public UserProperty findUserPropertyByUserAndKey(String userIdentifier, String key);
+	/**
+	 * Returns property for the user
+	 * 
+	 * @param userIdentifier identifier of user
+	 * @param key property key
+	 * @return
+	 * @throws SchoolDataBridgeRequestException when given parameters are not valid
+	 * @throws UnexpectedSchoolDataBridgeException when unexpected error occurs
+	 */
+	public UserProperty getUserProperty(String userIdentifier, String key) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 
-	public List<UserProperty> listUserPropertiesByUser(String userIdentifier);
-	
-	public UserProperty updateUserProperty(UserProperty userProperty);
-	
-	public void removeUserProperty(String identifier);
+	/**
+	 * Returns list of properties for user
+	 * 
+	 * @param userIdentifier identifier of user
+	 * @return list of user property objects
+	 * @throws SchoolDataBridgeRequestException when given user identifier is not valid
+	 * @throws UnexpectedSchoolDataBridgeException when unexpected error occurs
+	 */
+	public List<UserProperty> listUserPropertiesByUser(String userIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
 }
