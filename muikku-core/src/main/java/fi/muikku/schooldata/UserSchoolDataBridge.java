@@ -9,6 +9,11 @@ import fi.muikku.schooldata.entity.UserProperty;
 
 public interface UserSchoolDataBridge {
 	
+	/**
+	 * Returns school data source identifier
+	 * 
+	 * @return school data source identifier
+	 */
 	public String getSchoolDataSource();
 	
 	/* User */
@@ -74,7 +79,6 @@ public interface UserSchoolDataBridge {
 	public void removeUser(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
 	/* User Email */
-	
 
 	/**
 	 * Creates new email address for user
