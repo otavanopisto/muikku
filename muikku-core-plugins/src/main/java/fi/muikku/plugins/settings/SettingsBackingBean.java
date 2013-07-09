@@ -7,7 +7,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import fi.muikku.schooldata.UserSchoolDataController;
+import fi.muikku.schooldata.WorkspaceSchoolDataController;
 import fi.muikku.schooldata.entity.User;
+import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.model.plugins.Plugin;
 import fi.muikku.widgets.WidgetSpaceSet;
 import fi.muikku.widgets.WidgetSpaceSetItem;
@@ -19,6 +21,9 @@ public class SettingsBackingBean {
 	
 	@Inject
 	private UserSchoolDataController userSchoolDataController;
+	
+	@Inject
+	private WorkspaceSchoolDataController workspaceSchoolDataController;
 
 	@Inject
 	private PluginSettingsController pluginSettingsController;
@@ -38,9 +43,21 @@ public class SettingsBackingBean {
 		);
 	}
 	
+	public WidgetSpaceSet getSettingsWorkspacesContentToolsTopSet() {
+		return new WidgetSpaceSet(
+				new WidgetSpaceSetItem(WidgetLocations.SETTINGS_WORKSPACES_CONTENT_TOOLS_TOP_LEFT, false, WidgetSpaceSizingStrategy.MINIMIZE),
+				new WidgetSpaceSetItem(WidgetLocations.SETTINGS_WORKSPACES_CONTENT_TOOLS_TOP_CENTER, true, WidgetSpaceSizingStrategy.MAXIMIZE),
+				new WidgetSpaceSetItem(WidgetLocations.SETTINGS_WORKSPACES_CONTENT_TOOLS_TOP_RIGHT, false, WidgetSpaceSizingStrategy.MINIMIZE)
+		);
+	}
+	
 	public List<User> getAllUsers() {
 		List<User> users = userSchoolDataController.listUsers();
 		return users;
+	}
+	
+	public List<Workspace> getAllWorkspaces() {
+		return workspaceSchoolDataController.listWorkspaces();
 	}
   
   public List<Plugin> getAllPlugins() {

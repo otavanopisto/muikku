@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html" template="/settings/template.xhtml">
+  
+  <ui:define name="contentToolsTop">
+    <ui:include src="/core/widget-space-set.xhtml">
+      <ui:param name="set" value="#{settingsBackingBean.settingsWorkspacesContentToolsTopSet}" />
+    </ui:include>
+  </ui:define>
+
+  <ui:define name="content">
+
+    <h:dataTable id="workspaces-table" value="#{settingsBackingBean.allWorkspaces}" var="workspace" style="width:100%">
+      <f:facet name="header">
+        <h:outputText value="All Workspaces" />
+      </f:facet>
+      
+      <h:column>
+        <f:facet name="header">
+          <h:outputText value="Data Source" />
+        </f:facet>
+        <h:outputText value="#{workspace.schoolDataSource}" />
+      </h:column>
+      
+      <h:column>
+        <f:facet name="header">
+          <h:outputText value="Identifier" />
+        </f:facet>
+        <h:outputText value="#{workspace.identifier}" />
+      </h:column>
+      
+      <h:column>
+        <f:facet name="header">
+          <h:outputText value="Name" />
+        </f:facet>
+        <h:outputText value="#{workspace.name}" />
+      </h:column>
+      
+      <f:facet name="footer">
+        <h:outputText value="Count: #{settingsBackingBean.allWorkspaces.size()}" />
+      </f:facet>
+      
+    </h:dataTable>
+    
+  </ui:define>
+
+</ui:composition>
