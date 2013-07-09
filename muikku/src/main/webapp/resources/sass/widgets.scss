@@ -144,6 +144,15 @@
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-users-add.png'));  
 }
 
+.naviIconSettingsNavigationWorkspaces {
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-workspaces.png')); 	    
+}
+
+.naviIconSettingsNavigationWorkspaces.disabled{
+  opacity:0.2;
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-users.png'));  
+}
+
 /* Calendar */
 
 .calendarSettingsWidget {
