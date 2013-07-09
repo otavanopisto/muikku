@@ -1,14 +1,13 @@
 package fi.muikku.plugins.schooldatamock.entities;
 
 import fi.muikku.plugins.schooldatamock.SchoolDataMockPluginDescriptor;
-import fi.muikku.schooldata.entity.Workspace;
+import fi.muikku.schooldata.entity.WorkspaceType;
 
-public class MockedWorkspace implements Workspace {
+public class MockedWorkspaceType implements WorkspaceType {
 	
-	public MockedWorkspace(String identifier, String name, String workspaceTypeId) {
+	public MockedWorkspaceType(String identifier, String name) {
 		this.identifier = identifier;
 		this.name = name;
-		this.workspaceTypeId = workspaceTypeId;
 	}
 	
 	@Override
@@ -26,17 +25,6 @@ public class MockedWorkspace implements Workspace {
 		return name;
 	}
 	
-	@Override
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	@Override
-	public String getWorkspaceTypeId() {
-		return workspaceTypeId;
-	}
-	
 	private String identifier;
 	private String name;
-	private String workspaceTypeId;
 }
