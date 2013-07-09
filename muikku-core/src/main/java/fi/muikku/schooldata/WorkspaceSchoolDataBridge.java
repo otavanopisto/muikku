@@ -3,6 +3,7 @@ package fi.muikku.schooldata;
 import java.util.List;
 
 import fi.muikku.schooldata.entity.Workspace;
+import fi.muikku.schooldata.entity.WorkspaceType;
 
 public interface WorkspaceSchoolDataBridge {
 	
@@ -12,8 +13,10 @@ public interface WorkspaceSchoolDataBridge {
 	 * @return school data source identifier
 	 */
 	public String getSchoolDataSource();
+	
+	/* Workspaces */
 
-	public Workspace createWorkspace(String name) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+	public Workspace createWorkspace(String name, WorkspaceType type) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
 	public Workspace findWorkspace(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 
@@ -22,5 +25,11 @@ public interface WorkspaceSchoolDataBridge {
 	public Workspace updateWorkspace(Workspace workspace) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
 	public void removeWorkspace(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+	
+	/* Workspace Types */
+	
+	public WorkspaceType findWorkspaceType(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+
+	public List<WorkspaceType> listWorkspaceTypes() throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
 }

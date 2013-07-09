@@ -3,14 +3,10 @@ package fi.muikku.schooldata.entity;
 import fi.tranquil.TranquilEntity;
 
 @TranquilEntity
-public interface Workspace extends SchoolDataEntity {
+public interface WorkspaceType extends SchoolDataEntity {
 	
 	public String getIdentifier();
 	
 	public String getName();
-	
-	public void setName(String name);
-	
-	public String getWorkspaceTypeId();
 
 }
