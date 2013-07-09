@@ -10,7 +10,9 @@ import fi.muikku.schooldata.UserSchoolDataController;
 import fi.muikku.schooldata.WorkspaceSchoolDataController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
+import fi.muikku.schooldata.entity.WorkspaceType;
 import fi.muikku.model.plugins.Plugin;
+import fi.muikku.model.workspace.WorkspaceTypeEntity;
 import fi.muikku.widgets.WidgetSpaceSet;
 import fi.muikku.widgets.WidgetSpaceSetItem;
 import fi.muikku.widgets.WidgetSpaceSizingStrategy;
@@ -54,6 +56,14 @@ public class SettingsBackingBean {
 	public List<User> getAllUsers() {
 		List<User> users = userSchoolDataController.listUsers();
 		return users;
+	}
+	
+	public List<WorkspaceType> getAllWorkspaceTypes() {
+		return workspaceSchoolDataController.listWorkspaceTypes();
+	}
+	
+	public WorkspaceTypeEntity getWorkspaceTypeEntity(WorkspaceType workspaceType) {
+		return workspaceSchoolDataController.findWorkspaceTypeEntity(workspaceType);
 	}
 	
 	public List<Workspace> getAllWorkspaces() {

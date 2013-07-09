@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html" template="/settings/template.xhtml">
+  
+  <ui:define name="content">
+
+    <h:dataTable id="workspacetypes-table" value="#{settingsBackingBean.allWorkspaceTypes}" var="workspaceType" style="width:100%">
+      <f:facet name="header">
+        <h:outputText value="All Workspace Types" />
+      </f:facet>
+      
+      <h:column>
+        <f:facet name="header">
+          <h:outputText value="Data Source" />
+        </f:facet>
+        <h:outputText value="#{workspaceType.schoolDataSource}" />
+      </h:column>
+      
+      <h:column>
+        <f:facet name="header">
+          <h:outputText value="Identifier" />
+        </f:facet>
+        <h:outputText value="#{workspaceType.identifier}" />
+      </h:column>
+      
+      <h:column>
+        <f:facet name="header">
+          <h:outputText value="Name" />
+        </f:facet>
+        <h:outputText value="#{workspaceType.name}" />
+      </h:column>
+
+      <h:column>
+        <f:facet name="header">
+          <h:outputText value="Name" />
+        </f:facet>
+        <h:outputText value="#{workspaceType.name}" />
+      </h:column>
+      
+      <h:column>
+        <f:facet name="header">
+          <h:outputText value="Muikku Workspace Type" />
+        </f:facet>
+        <h:outputText value="#{settingsBackingBean.getWorkspaceTypeEntity(workspaceType).name}" rendered="#{settingsBackingBean.getWorkspaceTypeEntity(workspaceType) != null}"/>
+        <h:outputText value="Unassigned" rendered="#{settingsBackingBean.getWorkspaceTypeEntity(workspaceType) == null}"/>
+      </h:column>
+      
+      <f:facet name="footer">
+        <h:outputText value="Count: #{settingsBackingBean.allWorkspaceTypes.size()}" />
+      </f:facet>
+      
+    </h:dataTable>
+    
+  </ui:define>
+
+</ui:composition>
