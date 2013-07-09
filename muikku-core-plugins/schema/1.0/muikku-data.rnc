@@ -1,0 +1,13 @@
+default namespace = "https://raw.github.com/otavanopisto/muikku/master/muikku-core-plugins/schema/1.0/muikku-data.xsd"
+
+element data {
+    element script {
+        attribute run { "ONCE" | "ALWAYS" },
+        attribute handler { text },
+        attribute url { xsd:anyURI },
+        element parameter { 
+            attribute name { text },
+            text
+        }*
+    }*
+}
