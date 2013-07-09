@@ -5,7 +5,7 @@ import fi.muikku.dao.DAO;
 import fi.muikku.model.workspace.WorkspaceTypeEntity;
 
 @DAO
-public class WorkspaceEntityTypeDAO extends CoreDAO<WorkspaceTypeEntity> {
+public class WorkspaceTypeEntityDAO extends CoreDAO<WorkspaceTypeEntity> {
 
 	private static final long serialVersionUID = 2289284306254194974L;
 
