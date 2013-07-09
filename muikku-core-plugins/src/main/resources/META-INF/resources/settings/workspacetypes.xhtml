@@ -3,6 +3,36 @@
   xmlns:h="http://java.sun.com/jsf/html" template="/settings/template.xhtml">
   
   <ui:define name="content">
+  
+    <h3>Muikku Workspace Types</h3>
+  
+    <h:dataTable id="workspacetypes-table" value="#{settingsBackingBean.workspaceTypeEntities}" var="workspaceTypeEntity" style="width:100%">
+      <f:facet name="header">
+        <h:outputText value="All Workspace Types" />
+      </f:facet>
+      
+      <h:column>
+        <f:facet name="header">
+          <h:outputText value="Name" />
+        </f:facet>
+        <h:outputText value="#{workspaceTypeEntity.name}" />
+      </h:column>
+
+      <h:column>
+        <f:facet name="header">
+          <h:outputText value="Name" />
+        </f:facet>
+        <h:outputText value="#{workspaceType.name}" />
+      </h:column>
+      
+      <f:facet name="footer">
+        <h:outputText value="Count: #{settingsBackingBean.workspaceTypeEntities.size()}" />
+      </f:facet>
+      
+    </h:dataTable>
+    
+    <br/>
+    <h3>Workspace Types for School Data</h3>
 
     <h:dataTable id="workspacetypes-table" value="#{settingsBackingBean.allWorkspaceTypes}" var="workspaceType" style="width:100%">
       <f:facet name="header">

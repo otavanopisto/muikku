@@ -7,15 +7,13 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import fi.muikku.controller.UserController;
-import fi.muikku.dao.plugins.PluginEntityDAO;
+import fi.muikku.model.plugins.Plugin;
+import fi.muikku.model.workspace.WorkspaceTypeEntity;
 import fi.muikku.schooldata.UserSchoolDataController;
-import fi.muikku.schooldata.WorkspaceSchoolDataController;
+import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceType;
-import fi.muikku.model.plugins.Plugin;
-import fi.muikku.model.workspace.WorkspaceTypeEntity;
 import fi.muikku.widgets.WidgetSpaceSet;
 import fi.muikku.widgets.WidgetSpaceSetItem;
 import fi.muikku.widgets.WidgetSpaceSizingStrategy;
@@ -26,13 +24,13 @@ public class SettingsBackingBean {
 	
 	@Inject
 	private UserSchoolDataController userSchoolDataController;
-	
-	@Inject
-	private WorkspaceSchoolDataController workspaceSchoolDataController;
 
 	@Inject
 	private PluginSettingsController pluginSettingsController;
 
+	@Inject
+	private WorkspaceController workspaceController;
+	
 	public WidgetSpaceSet getContentWidgetSpaceSet() {
 		return new WidgetSpaceSet(
 				new WidgetSpaceSetItem(WidgetLocations.SETTINGS_CONTENT_SIDEBAR_LEFT, false, WidgetSpaceSizingStrategy.MINIMIZE),
@@ -61,16 +59,20 @@ public class SettingsBackingBean {
 		return users;
 	}
 	
+	public List<WorkspaceTypeEntity> getWorkspaceTypeEntities() {
+		return workspaceController.listWorkspaceTypeEntities();
+	}
+	
 	public List<WorkspaceType> getAllWorkspaceTypes() {
-		return workspaceSchoolDataController.listWorkspaceTypes();
+		return workspaceController.listWorkspaceTypes();
 	}
 	
 	public WorkspaceTypeEntity getWorkspaceTypeEntity(WorkspaceType workspaceType) {
-		return workspaceSchoolDataController.findWorkspaceTypeEntity(workspaceType);
+		return workspaceController.findWorkspaceTypeEntity(workspaceType);
 	}
 	
 	public List<Workspace> getAllWorkspaces() {
-		return workspaceSchoolDataController.listWorkspaces();
+		return workspaceController.listWorkspaces();
 	}
   
   public List<Plugin> getAllPlugins() {
