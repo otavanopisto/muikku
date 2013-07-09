@@ -3,7 +3,6 @@ package fi.muikku.plugins.schooldatamock;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Blob;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,12 +11,11 @@ import java.util.List;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
-import fi.muikku.plugins.hsqldb.HSQLDBPluginController;
 import fi.muikku.plugins.schooldatamock.entities.MockedUser;
 import fi.muikku.plugins.schooldatamock.entities.MockedUserEmail;
 import fi.muikku.plugins.schooldatamock.entities.MockedUserImage;
@@ -32,16 +30,11 @@ import fi.muikku.schooldata.entity.UserProperty;
 
 @Dependent
 @Stateful
-public class MockedUserSchoolDataBridge implements UserSchoolDataBridge {
-
-	public static final String SCHOOL_DATA_SOURCE = "MOCK";
-
-	@Inject
-	private HSQLDBPluginController hsqldbPluginController;
+public class MockedUserSchoolDataBridge extends AbstractMockedSchoolDataBridge implements UserSchoolDataBridge {
 
 	@Override
 	public String getSchoolDataSource() {
-		return SCHOOL_DATA_SOURCE;
+		return SchoolDataMockPluginDescriptor.SCHOOL_DATA_SOURCE;
 	}
 
 	@Override
@@ -64,7 +57,7 @@ public class MockedUserSchoolDataBridge implements UserSchoolDataBridge {
 	@Override
 	public User findUser(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
 		if (!NumberUtils.isNumber(identifier)) {
-			throw new SchoolDataBridgeRequestException("Identifier is not numeric");
+			throw new SchoolDataBridgeRequestException("Identifier has to be numeric");
 		}
 
 		Long id = NumberUtils.createLong(identifier);
@@ -113,6 +106,10 @@ public class MockedUserSchoolDataBridge implements UserSchoolDataBridge {
 
 	@Override
 	public User updateUser(User user) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+		if (!StringUtils.isNumeric(user.getIdentifier())) {
+			throw new SchoolDataBridgeRequestException("Identifier has to be numeric");
+		}
+		
 		Long id = NumberUtils.createLong(user.getIdentifier());
 
 		try {
@@ -131,7 +128,7 @@ public class MockedUserSchoolDataBridge implements UserSchoolDataBridge {
 	@Override
 	public void removeUser(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
 		if (!NumberUtils.isNumber(identifier)) {
-			throw new SchoolDataBridgeRequestException("Identifier is not numeric");
+			throw new SchoolDataBridgeRequestException("Identifier has to be numeric");
 		}
 
 		Long id = NumberUtils.createLong(identifier);
@@ -434,26 +431,6 @@ public class MockedUserSchoolDataBridge implements UserSchoolDataBridge {
 
 	private void deleteUserProperty(Long id) throws SQLException {
 		executeDelete("delete from UserProperty where id = ?", id);
-	}
-
-	private PreparedStatement executeInsert(String sql, Object... values) throws SQLException {
-		Connection connection = hsqldbPluginController.getConnection(SchoolDataMockPluginDescriptor.DATABASE_NAME);
-		return hsqldbPluginController.executeInsert(connection, sql, values);
-	}
-
-	private ResultSet executeSelect(String sql, Object... values) throws SQLException {
-		Connection connection = hsqldbPluginController.getConnection(SchoolDataMockPluginDescriptor.DATABASE_NAME);
-		return hsqldbPluginController.executeSelect(connection, sql, values);
-	}
-
-	private PreparedStatement executeUpdate(String sql, Object... values) throws SQLException {
-		Connection connection = hsqldbPluginController.getConnection(SchoolDataMockPluginDescriptor.DATABASE_NAME);
-		return hsqldbPluginController.executeUpdate(connection, sql, values);
-	}
-
-	private PreparedStatement executeDelete(String sql, Object... values) throws SQLException {
-		Connection connection = hsqldbPluginController.getConnection(SchoolDataMockPluginDescriptor.DATABASE_NAME);
-		return hsqldbPluginController.executeDelete(connection, sql, values);
 	}
 
 }

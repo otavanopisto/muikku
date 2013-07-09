@@ -1,6 +1,6 @@
 package fi.muikku.plugins.schooldatamock.entities;
 
-import fi.muikku.plugins.schooldatamock.MockedUserSchoolDataBridge;
+import fi.muikku.plugins.schooldatamock.SchoolDataMockPluginDescriptor;
 import fi.muikku.schooldata.entity.UserProperty;
 
 public class MockedUserProperty implements UserProperty {
@@ -13,7 +13,7 @@ public class MockedUserProperty implements UserProperty {
 	
 	@Override
 	public String getSchoolDataSource() {
-		return MockedUserSchoolDataBridge.SCHOOL_DATA_SOURCE;
+		return SchoolDataMockPluginDescriptor.SCHOOL_DATA_SOURCE;
 	}
 
 	@Override

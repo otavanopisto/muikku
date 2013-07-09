@@ -12,11 +12,13 @@ import java.util.List;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.hsqldb.cmdline.SqlToolError;
 
 import fi.muikku.model.base.SchoolDataSource;
+import fi.muikku.plugin.AfterPluginInitEvent;
 import fi.muikku.plugin.PluginDescriptor;
 import fi.muikku.plugins.hsqldb.HSQLDBPluginController;
 import fi.muikku.schooldata.SchoolDataController;
@@ -26,6 +28,8 @@ import fi.muikku.schooldata.SchoolDataController;
 public class SchoolDataMockPluginDescriptor implements PluginDescriptor {
 
 	public static final String DATABASE_NAME = "school-data-mock";
+
+	public static final String SCHOOL_DATA_SOURCE = "MOCK";
 
 	@Inject
 	private HSQLDBPluginController hsqldbPluginController;
@@ -47,15 +51,23 @@ public class SchoolDataMockPluginDescriptor implements PluginDescriptor {
 		 * Ensure that SchoolDataSource is defined
 		 */
 		
-		SchoolDataSource schoolDataSource = schoolDataController.findSchoolDataSource(MockedUserSchoolDataBridge.SCHOOL_DATA_SOURCE);
+		SchoolDataSource schoolDataSource = schoolDataController.findSchoolDataSource(SCHOOL_DATA_SOURCE);
 		if (schoolDataSource == null) {
-			schoolDataController.createSchoolDataSource(MockedUserSchoolDataBridge.SCHOOL_DATA_SOURCE);
+			schoolDataController.createSchoolDataSource(SCHOOL_DATA_SOURCE);
 		}
 		
+	}
+	
+	public void onAfterPluginInit(@Observes AfterPluginInitEvent event) {
+		if ("hsqldb".equals(event.getPluginLibrary()) && "hsqldb".equals(event.getPluginName())) {
+			onAfterHsqlDbPluginInit();
+		}
+	}
+	
+	private void onAfterHsqlDbPluginInit() {
 		/**
 		 * Create tables
 		 */
-		
 		try {
 			createTables();
 		} catch (SqlToolError | URISyntaxException | IOException | SQLException e) {
@@ -78,7 +90,13 @@ public class SchoolDataMockPluginDescriptor implements PluginDescriptor {
 
 	@Override
 	public List<Class<?>> getBeans() {
-		return new ArrayList<Class<?>>(Arrays.asList(MockedUserSchoolDataBridge.class));
+		return new ArrayList<Class<?>>(Arrays.asList(
+				
+				/* School Data Bridges */
+				
+				MockedUserSchoolDataBridge.class,
+				MockedWorkspaceSchoolDataBridge.class
+		));
 	}
 
 }
