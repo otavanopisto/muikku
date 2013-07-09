@@ -112,11 +112,8 @@ public class LocalUserSchoolDataController {
 		return null;
 	}
 
-	public void removeUserEmail(String identifier) {
-		LocalUserEmail localUserEmail = findUserEmail(identifier);
-		if (localUserEmail != null) {
-			localUserEmailDAO.archive(localUserEmail);
-		}
+	public void removeUserEmail(LocalUserEmail localUserEmail) {
+		localUserEmailDAO.archive(localUserEmail);
 	}
 
 	public LocalUserImage createUserImage(String userIdentifier, String contentType, byte[] data) {
@@ -157,13 +154,8 @@ public class LocalUserSchoolDataController {
 		return null;
 	}
 
-	public void removeUserImage(String identifier) {
-	  // TODO: Proper Error Handling
-
-		LocalUserImage localUserImage = findUserImage(identifier);
-		if (localUserImage != null) {
-			localUserImageDAO.delete(localUserImage);
-		}
+	public void removeUserImage(LocalUserImage localUserImage) {
+		localUserImageDAO.delete(localUserImage);
 	}
 
 	public LocalUserProperty findUserProperty(String identifier) {
@@ -218,11 +210,8 @@ public class LocalUserSchoolDataController {
 		return null;
 	}
 
-	public void removeUserProperty(String identifier) {
-		LocalUserProperty localUserProperty = findUserProperty(identifier);
-		if (localUserProperty != null) {
-			localUserPropertyDAO.delete(localUserProperty);
-		}
+	public void removeUserProperty(LocalUserProperty localUserProperty) {
+		localUserPropertyDAO.delete(localUserProperty);
 	}
 
 	private LocalUserPropertyKey getLocalUserPropertyKey(String name, boolean createMissing) {
