@@ -13,12 +13,15 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import fi.muikku.dao.DAO;
 import fi.muikku.dao.base.SchoolDataSourceDAO;
 import fi.muikku.dao.workspace.WorkspaceEntityDAO;
+import fi.muikku.dao.workspace.WorkspaceTypeSchoolDataIdentifierDAO;
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.model.workspace.WorkspaceTypeEntity;
+import fi.muikku.model.workspace.WorkspaceTypeSchoolDataIdentifier;
 import fi.muikku.schooldata.entity.Workspace;
+import fi.muikku.schooldata.entity.WorkspaceType;
 
 @Dependent
 @Stateful
@@ -35,12 +38,15 @@ public class WorkspaceSchoolDataController {
 	private Instance<WorkspaceSchoolDataBridge> workspaceBridges;
 	
 	@Inject
-	@DAO
 	private SchoolDataSourceDAO schoolDataSourceDAO;
 	
 	@Inject
-	@DAO
 	private WorkspaceEntityDAO workspaceEntityDAO;
+	
+	@Inject
+	private WorkspaceTypeSchoolDataIdentifierDAO workspaceTypeSchoolDataIdentifierDAO;
+	
+	/* Workspaces */
 	
 	public List<Workspace> listWorkspaces() {
 		// TODO: This method WILL cause performance problems, replace with something more sensible 
@@ -51,7 +57,7 @@ public class WorkspaceSchoolDataController {
 			try {
 				result.addAll(workspaceBridge.listWorkspaces());
 			} catch (UnexpectedSchoolDataBridgeException e) {
-				logger.log(Level.SEVERE, "School Data Bridge reported a problem while listing users", e);
+				logger.log(Level.SEVERE, "School Data Bridge reported a problem while listing workspaces", e);
 			}
 		}
 		
@@ -73,6 +79,54 @@ public class WorkspaceSchoolDataController {
 		SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(workspace.getSchoolDataSource());
 		WorkspaceEntity workspaceEntity = workspaceEntityDAO.findByDataSourceAndIdentifier(schoolDataSource, workspace.getIdentifier());
 		return workspaceEntity;
+	}
+	
+	/* Workspace Types */
+	
+	public List<WorkspaceType> listWorkspaceTypes() {
+		// TODO: This method WILL cause performance problems, replace with something more sensible 
+		
+		List<WorkspaceType> result = new ArrayList<>();
+		
+		for (WorkspaceSchoolDataBridge workspaceBridge : getWorkspaceBridges()) {
+			try {
+				result.addAll(workspaceBridge.listWorkspaceTypes());
+			} catch (UnexpectedSchoolDataBridgeException e) {
+				logger.log(Level.SEVERE, "School Data Bridge reported a problem while listing workspace types", e);
+			} catch (SchoolDataBridgeRequestException e) {
+				logger.log(Level.SEVERE, "School Data Bridge reported a problem while listing workspace types", e);
+			}
+		}
+		
+		return result;
+	}
+	
+	public List<WorkspaceType> listWorkspaceTypes(WorkspaceTypeEntity workspaceTypeEntity) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+		List<WorkspaceType> workspaceTypes = new ArrayList<>();
+		
+		List<WorkspaceTypeSchoolDataIdentifier> typeIdentifiers = workspaceTypeSchoolDataIdentifierDAO.listByWorkspaceTypeEntity(workspaceTypeEntity);
+		for (WorkspaceTypeSchoolDataIdentifier typeIdentifier : typeIdentifiers) {
+			WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(typeIdentifier.getDataSource());
+			if (workspaceBridge != null) {
+				workspaceTypes.add(workspaceBridge.findWorkspaceType(typeIdentifier.getIdentifier()));
+			}
+		}
+		
+		
+		return workspaceTypes;
+	}
+	
+	public WorkspaceTypeEntity findWorkspaceTypeEntity(WorkspaceType workspaceType) {
+		// TODO: Proper error handling
+		SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(workspaceType.getSchoolDataSource());
+		if (schoolDataSource != null) {
+	  	WorkspaceTypeSchoolDataIdentifier workspaceTypeSchoolDataIdentifier = workspaceTypeSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(schoolDataSource, workspaceType.getIdentifier());
+	  	if (workspaceTypeSchoolDataIdentifier != null) {
+	  		return workspaceTypeSchoolDataIdentifier.getWorkspaceTypeEntity();
+	  	}
+		} 
+
+		return null;
 	}
 	
 	private WorkspaceSchoolDataBridge getWorkspaceBridge(SchoolDataSource schoolDataSource) {
