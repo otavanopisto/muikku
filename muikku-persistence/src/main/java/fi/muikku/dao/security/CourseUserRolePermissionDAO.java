@@ -5,8 +5,8 @@ import fi.muikku.dao.DAO;
 import fi.muikku.model.security.CourseUserRolePermission;
 import fi.muikku.model.security.CourseUserRolePermission_;
 import fi.muikku.model.security.Permission;
-import fi.muikku.model.stub.courses.CourseEntity;
 import fi.muikku.model.users.UserRole;
+import fi.muikku.model.workspace.WorkspaceEntity;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -19,7 +19,7 @@ public class CourseUserRolePermissionDAO extends CoreDAO<CourseUserRolePermissio
 
 	private static final long serialVersionUID = 7065441642441234058L;
 
-	public CourseUserRolePermission create(CourseEntity course, UserRole userRole, Permission permission) {
+	public CourseUserRolePermission create(WorkspaceEntity course, UserRole userRole, Permission permission) {
     CourseUserRolePermission curpermission = new CourseUserRolePermission();
     
     curpermission.setCourse(course);
@@ -31,11 +31,11 @@ public class CourseUserRolePermissionDAO extends CoreDAO<CourseUserRolePermissio
     return curpermission;
   }
   
-  public boolean hasCoursePermissionAccess(CourseEntity course, UserRole userRole, Permission permission) {
+  public boolean hasCoursePermissionAccess(WorkspaceEntity course, UserRole userRole, Permission permission) {
     return findByUserRoleAndPermission(course, userRole, permission) != null;
   }
 
-  public CourseUserRolePermission findByUserRoleAndPermission(CourseEntity course, UserRole userRole, Permission permission) {
+  public CourseUserRolePermission findByUserRoleAndPermission(WorkspaceEntity course, UserRole userRole, Permission permission) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();

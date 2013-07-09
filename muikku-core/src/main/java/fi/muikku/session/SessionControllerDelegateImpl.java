@@ -6,9 +6,9 @@ import java.util.Locale;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 
-import fi.muikku.model.stub.courses.CourseEntity;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.util.ResourceEntity;
+import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.security.ContextReference;
 
 @RequestScoped 
@@ -51,7 +51,7 @@ public class SessionControllerDelegateImpl implements SessionControllerDelegate 
   }
 
   @Override
-  public boolean hasCoursePermission(String permission, CourseEntity course) {
+  public boolean hasCoursePermission(String permission, WorkspaceEntity course) {
     return implementation.hasCoursePermission(permission, course);
   }
 

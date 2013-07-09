@@ -1,7 +1,6 @@
 package fi.muikku.session.local;
 
 import java.util.Locale;
-import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
@@ -11,15 +10,14 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
-import fi.muikku.dao.courses.CourseEntityDAO;
 import fi.muikku.dao.security.CourseUserRolePermissionDAO;
 import fi.muikku.dao.security.EnvironmentUserRolePermissionDAO;
 import fi.muikku.dao.security.PermissionDAO;
 import fi.muikku.dao.security.ResourceUserRolePermissionDAO;
 import fi.muikku.dao.users.UserEntityDAO;
-import fi.muikku.model.stub.courses.CourseEntity;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.util.ResourceEntity;
+import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.security.ContextReference;
 import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.security.PermissionResolver;
@@ -33,9 +31,9 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
   
   @Inject
   private UserEntityDAO userEntityDAO;
-
-  @Inject
-  private CourseEntityDAO courseDAO;
+//
+//  @Inject
+//  private CourseEntityDAO courseDAO;
 
   @Inject
   private EnvironmentUserRolePermissionDAO environmentUserRolePermissionDAO;
@@ -101,7 +99,7 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
   }
   
   @Override
-  public boolean hasCoursePermission(String permission, CourseEntity course) {
+  public boolean hasCoursePermission(String permission, WorkspaceEntity course) {
     return hasCoursePermissionImpl(permission, course);
   }
   
@@ -138,13 +136,13 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
     return null;
   }
 
-  public CourseEntity getCourse() {
-    // TODO Relevance?
-    Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-    Long courseId = Long.valueOf(params.get("courseId"));
-
-    return courseDAO.findById(courseId);
-  }
+//  public WorkspaceEntity getCourse() {
+//    // TODO Relevance?
+//    Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+//    Long courseId = Long.valueOf(params.get("courseId"));
+//
+//    return courseDAO.findById(courseId);
+//  }
 
   @PostConstruct
   private void init() {
@@ -176,7 +174,7 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
   }
 
   @Override
-  protected boolean hasCoursePermissionImpl(String permission, CourseEntity course) {
+  protected boolean hasCoursePermissionImpl(String permission, WorkspaceEntity course) {
     return hasPermissionImpl(permission, course);
   }
   

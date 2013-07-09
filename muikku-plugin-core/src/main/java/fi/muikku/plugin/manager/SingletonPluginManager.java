@@ -3,9 +3,7 @@ package fi.muikku.plugin.manager;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,9 +21,9 @@ import org.sonatype.aether.resolution.VersionResolutionException;
 import org.sonatype.aether.util.artifact.ArtifacIdUtils;
 import org.sonatype.aether.util.artifact.DefaultArtifact;
 
-import fi.muikku.plugin.PluginLibraryInfo;
 import fi.muikku.plugin.PluginDescriptor;
 import fi.muikku.plugin.PluginLibraryDescriptor;
+import fi.muikku.plugin.PluginLibraryInfo;
 import fi.muikku.plugin.RESTPluginDescriptor;
 import fi.muikku.plugin.maven.MavenClient;
 

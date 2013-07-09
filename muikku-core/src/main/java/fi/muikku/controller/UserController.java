@@ -149,21 +149,21 @@ public class UserController {
     return userGroupUserDAO.countByUserGroup(userGroup);
   }
 
-  private void fireUserCreatedEvent(UserEntity userEntity) {
-    UserEntityEvent userEvent = new UserEntityEvent();
-    userEvent.setUserEntityId(userEntity.getId());
-    userCreatedEvent.fire(userEvent);
-  }
-
-  private void fireUserModifiedEvent(UserEntity userEntity) {
-    UserEntityEvent userEvent = new UserEntityEvent();
-    userEvent.setUserEntityId(userEntity.getId());
-    userModifiedEvent.fire(userEvent);
-  }
-
-  private void fireUserRemovedEvent(UserEntity userEntity) {
-    UserEntityEvent userEvent = new UserEntityEvent();
-    userEvent.setUserEntityId(userEntity.getId());
-    userRemovedEvent.fire(userEvent);
-  }
+//  private void fireUserCreatedEvent(UserEntity userEntity) {
+//    UserEntityEvent userEvent = new UserEntityEvent();
+//    userEvent.setUserEntityId(userEntity.getId());
+//    userCreatedEvent.fire(userEvent);
+//  }
+//
+//  private void fireUserModifiedEvent(UserEntity userEntity) {
+//    UserEntityEvent userEvent = new UserEntityEvent();
+//    userEvent.setUserEntityId(userEntity.getId());
+//    userModifiedEvent.fire(userEvent);
+//  }
+//
+//  private void fireUserRemovedEvent(UserEntity userEntity) {
+//    UserEntityEvent userEvent = new UserEntityEvent();
+//    userEvent.setUserEntityId(userEntity.getId());
+//    userRemovedEvent.fire(userEvent);
+//  }
 }

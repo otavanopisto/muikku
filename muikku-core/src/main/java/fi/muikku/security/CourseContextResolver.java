@@ -1,8 +1,8 @@
 package fi.muikku.security;
 
-import fi.muikku.model.stub.courses.CourseEntity;
+import fi.muikku.model.workspace.WorkspaceEntity;
 
 public interface CourseContextResolver extends ContextResolver {
 
-  CourseEntity resolveCourse(ContextReference contextReference);
+  WorkspaceEntity resolveCourse(ContextReference contextReference);
 }

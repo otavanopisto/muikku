@@ -12,8 +12,6 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.hibernate.dialect.FirebirdDialect;
-
 import fi.muikku.Logged;
 import fi.muikku.i18n.LocaleBundle;
 import fi.muikku.i18n.LocaleController;

@@ -8,7 +8,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.DAO;
-import fi.muikku.model.stub.courses.CourseEntity;
+import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugin.PluginDAO;
 import fi.muikku.plugins.forum.model.CourseForumArea;
 import fi.muikku.plugins.forum.model.CourseForumArea_;
@@ -19,7 +19,7 @@ public class CourseForumAreaDAO extends PluginDAO<CourseForumArea> {
   
 	private static final long serialVersionUID = 8627800028194294719L;
 
-	public CourseForumArea create(CourseEntity course, String name, Boolean archived) {
+	public CourseForumArea create(WorkspaceEntity course, String name, Boolean archived) {
     CourseForumArea courseForumArea = new CourseForumArea();
     
     courseForumArea.setCourse(course.getId());
@@ -31,7 +31,7 @@ public class CourseForumAreaDAO extends PluginDAO<CourseForumArea> {
     return courseForumArea;
   }
   
-  public List<CourseForumArea> listByCourse(CourseEntity course) {
+  public List<CourseForumArea> listByCourse(WorkspaceEntity course) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();

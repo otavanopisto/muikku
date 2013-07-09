@@ -9,7 +9,6 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import fi.muikku.dao.courses.CourseEntityDAO;
 import fi.muikku.dao.users.UserEntityDAO;
 import fi.muikku.model.base.Tag;
 import fi.muikku.model.users.UserEntity;
@@ -38,8 +37,8 @@ public class CommunicatorController {
   @Inject
   private SessionController sessionController;
 
-  @Inject
-  private CourseEntityDAO courseDAO;
+//  @Inject
+//  private CourseEntityDAO courseDAO;
   
   @Inject
   private UserSchoolDataController userController;

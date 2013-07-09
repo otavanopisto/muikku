@@ -11,18 +11,15 @@ import javax.ws.rs.core.Response;
 
 import fi.muikku.controller.EnvironmentSettingsController;
 import fi.muikku.controller.ResourceRightsController;
-import fi.muikku.dao.courses.CourseEntityDAO;
 import fi.muikku.dao.security.CourseUserRolePermissionDAO;
 import fi.muikku.dao.security.EnvironmentUserRolePermissionDAO;
 import fi.muikku.dao.security.PermissionDAO;
 import fi.muikku.dao.security.ResourceUserRolePermissionDAO;
 import fi.muikku.dao.users.UserRoleDAO;
-import fi.muikku.model.security.CourseUserRolePermission;
 import fi.muikku.model.security.EnvironmentUserRolePermission;
 import fi.muikku.model.security.Permission;
 import fi.muikku.model.security.ResourceRights;
 import fi.muikku.model.security.ResourceUserRolePermission;
-import fi.muikku.model.stub.courses.CourseEntity;
 import fi.muikku.model.users.UserRole;
 import fi.muikku.security.Admin;
 import fi.muikku.session.SessionController;
@@ -42,8 +39,8 @@ public class PermissionRESTService extends AbstractRESTService {
   @Inject 
   private UserRoleDAO userRoleDAO;
 
-  @Inject 
-  private CourseEntityDAO courseDAO;
+//  @Inject 
+//  private CourseEntityDAO courseDAO;
 
   @Inject
   private PermissionDAO permissionDAO;
@@ -118,66 +115,66 @@ public class PermissionRESTService extends AbstractRESTService {
     }
   }
 
-  @POST
-  @Path ("/addCourseUserRolePermission")
-  @Admin
-//  @Permit (Permissions.MANAGE_SYSTEM_SETTINGS)
-  public Response addCourseUserRolePermission(
-      @FormParam ("courseId") Long courseId,
-      @FormParam ("userRoleId") Long userRoleId,
-      @FormParam ("permissionId") Long permissionId
-   ) {
-    
-    // TODO: Security
+//  @POST
+//  @Path ("/addCourseUserRolePermission")
+//  @Admin
+////  @Permit (Permissions.MANAGE_SYSTEM_SETTINGS)
+//  public Response addCourseUserRolePermission(
+//      @FormParam ("courseId") Long courseId,
+//      @FormParam ("userRoleId") Long userRoleId,
+//      @FormParam ("permissionId") Long permissionId
+//   ) {
+//    
+//    // TODO: Security
+//
+//    UserRole userRole = userRoleDAO.findById(userRoleId);
+//    Permission permission = permissionDAO.findById(permissionId);
+//    WorkspaceEntity course = courseDAO.findById(courseId);
+//
+//    if ((userRole == null) || (permission == null)) {
+//      return Response.status(Response.Status.NOT_FOUND).build();
+//    }
+//    
+//    try {
+//      environmentSettingsController.addCourseUserRolePermission(course, userRole, permission);
+//
+//      return Response.ok().build();
+//    } catch (ConstraintViolationException violationException) {
+//      return getConstraintViolations(violationException);
+//    }
+//  }
 
-    UserRole userRole = userRoleDAO.findById(userRoleId);
-    Permission permission = permissionDAO.findById(permissionId);
-    CourseEntity course = courseDAO.findById(courseId);
-
-    if ((userRole == null) || (permission == null)) {
-      return Response.status(Response.Status.NOT_FOUND).build();
-    }
-    
-    try {
-      environmentSettingsController.addCourseUserRolePermission(course, userRole, permission);
-
-      return Response.ok().build();
-    } catch (ConstraintViolationException violationException) {
-      return getConstraintViolations(violationException);
-    }
-  }
-
-  @POST
-  @Path ("/deleteCourseUserRolePermission")
-  @Admin
-//  @Permit (Permissions.MANAGE_SYSTEM_SETTINGS)
-  public Response deleteCourseUserRolePermission(
-      @FormParam ("courseId") Long courseId,
-      @FormParam ("userRoleId") Long userRoleId,
-      @FormParam ("permissionId") Long permissionId
-   ) {
-    
-    // TODO: Security
-
-    UserRole userRole = userRoleDAO.findById(userRoleId);
-    Permission permission = permissionDAO.findById(permissionId);
-    CourseEntity course = courseDAO.findById(courseId);
-
-    if ((userRole == null) || (permission == null)) {
-      return Response.status(Response.Status.NOT_FOUND).build();
-    }
-    
-    try {
-      CourseUserRolePermission rolePermission = courseUserRolePermissionDAO.findByUserRoleAndPermission(
-          course, userRole, permission);
-      
-      environmentSettingsController.deleteCourseUserRolePermission(rolePermission);
-      
-      return Response.ok().build();
-    } catch (ConstraintViolationException violationException) {
-      return getConstraintViolations(violationException);
-    }
-  }
+//  @POST
+//  @Path ("/deleteCourseUserRolePermission")
+//  @Admin
+////  @Permit (Permissions.MANAGE_SYSTEM_SETTINGS)
+//  public Response deleteCourseUserRolePermission(
+//      @FormParam ("courseId") Long courseId,
+//      @FormParam ("userRoleId") Long userRoleId,
+//      @FormParam ("permissionId") Long permissionId
+//   ) {
+//    
+//    // TODO: Security
+//
+//    UserRole userRole = userRoleDAO.findById(userRoleId);
+//    Permission permission = permissionDAO.findById(permissionId);
+//    WorkspaceEntity course = courseDAO.findById(courseId);
+//
+//    if ((userRole == null) || (permission == null)) {
+//      return Response.status(Response.Status.NOT_FOUND).build();
+//    }
+//    
+//    try {
+//      CourseUserRolePermission rolePermission = courseUserRolePermissionDAO.findByUserRoleAndPermission(
+//          course, userRole, permission);
+//      
+//      environmentSettingsController.deleteCourseUserRolePermission(rolePermission);
+//      
+//      return Response.ok().build();
+//    } catch (ConstraintViolationException violationException) {
+//      return getConstraintViolations(violationException);
+//    }
+//  }
   
   @POST
   @Path ("/addResourceUserRolePermission")

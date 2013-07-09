@@ -13,15 +13,11 @@ import javax.inject.Named;
 
 import fi.muikku.controller.CourseController;
 import fi.muikku.controller.UserController;
-import fi.muikku.dao.courses.CourseEntityDAO;
 import fi.muikku.dao.users.UserEntityDAO;
-import fi.muikku.events.CourseEntityEvent;
-import fi.muikku.events.CourseUserEvent;
 import fi.muikku.events.Created;
 import fi.muikku.events.UserEntityEvent;
-import fi.muikku.model.courses.CourseUser;
-import fi.muikku.model.stub.courses.CourseEntity;
 import fi.muikku.model.users.UserEntity;
+import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.forum.dao.ForumThreadDAO;
 import fi.muikku.plugins.forum.dao.ForumThreadReplyDAO;
 import fi.muikku.plugins.forum.model.ForumArea;
@@ -85,8 +81,8 @@ public class WallController {
   @Inject
   private SessionController sessionController;
 
-  @Inject
-  private CourseEntityDAO courseDAO;
+//  @Inject
+//  private CourseEntityDAO courseDAO;
 
   @Inject
   private CourseWallDAO courseWallDAO;
@@ -182,58 +178,58 @@ public class WallController {
     return orderUserFeed(feedItems);
   }
 
-  public List<WallEntry> listWallEntries(Wall wall) {
-    // TODO
-    if (wall == null)
-      return null;
-
-    List<WallEntry> entries = new ArrayList<WallEntry>();
-
-    switch (wall.getWallType()) {
-    case USER: {
-      UserWall userWall = userWallDAO.findById(wall.getId());
-
-      UserEntity wallOwner = userController.findUserEntity(userWall.getUser());
-      UserEntity loggedUser = sessionController.isLoggedIn() ? sessionController.getUser() : null;
-
-      boolean ownsWall = loggedUser != null ? loggedUser.getId().equals(wallOwner.getId()) : false;
-      boolean hasAccess = sessionController.hasEnvironmentPermission(MuikkuPermissions.READ_ALL_WALLS);
-
-      if (ownsWall || hasAccess) {
-        /**
-         * Full access grants full listing of both the users wall and all linked walls
-         */
-        entries.addAll(wallEntryDAO.listEntriesByWall(wall));
-      } else {
-        /**
-         * When viewing other peoples walls, you only see public or owned entries
-         */
-
-        entries.addAll(wallEntryDAO.listPublicOrOwnedEntriesByWall(wall, loggedUser));
-      }
-    }
-      break;
-
-    case COURSE:
-      CourseWall courseWall = courseWallDAO.findById(wall.getId());
-
-      CourseEntity course = courseController.findCourseEntityById(courseWall.getCourse());
-
-      if (sessionController.hasCoursePermission(MuikkuPermissions.WALL_READALLCOURSEMESSAGES, course)) {
-        entries.addAll(wallEntryDAO.listEntriesByWall(courseWall));
-      } else {
-        entries.addAll(wallEntryDAO.listPublicOrOwnedEntriesByWall(courseWall, sessionController.getUser()));
-      }
-      break;
-
-    case ENVIRONMENT:
-      // TODO: oikeudet?
-      entries.addAll(wallEntryDAO.listEntriesByWall(wall));
-      break;
-    }
-
-    return orderWallEntries(entries);
-  }
+//  public List<WallEntry> listWallEntries(Wall wall) {
+//    // TODO
+//    if (wall == null)
+//      return null;
+//
+//    List<WallEntry> entries = new ArrayList<WallEntry>();
+//
+//    switch (wall.getWallType()) {
+//    case USER: {
+//      UserWall userWall = userWallDAO.findById(wall.getId());
+//
+//      UserEntity wallOwner = userController.findUserEntity(userWall.getUser());
+//      UserEntity loggedUser = sessionController.isLoggedIn() ? sessionController.getUser() : null;
+//
+//      boolean ownsWall = loggedUser != null ? loggedUser.getId().equals(wallOwner.getId()) : false;
+//      boolean hasAccess = sessionController.hasEnvironmentPermission(MuikkuPermissions.READ_ALL_WALLS);
+//
+//      if (ownsWall || hasAccess) {
+//        /**
+//         * Full access grants full listing of both the users wall and all linked walls
+//         */
+//        entries.addAll(wallEntryDAO.listEntriesByWall(wall));
+//      } else {
+//        /**
+//         * When viewing other peoples walls, you only see public or owned entries
+//         */
+//
+//        entries.addAll(wallEntryDAO.listPublicOrOwnedEntriesByWall(wall, loggedUser));
+//      }
+//    }
+//      break;
+//
+//    case COURSE:
+//      CourseWall courseWall = courseWallDAO.findById(wall.getId());
+//
+//      WorkspaceEntity course = courseController.findCourseEntityById(courseWall.getCourse());
+//
+//      if (sessionController.hasCoursePermission(MuikkuPermissions.WALL_READALLCOURSEMESSAGES, course)) {
+//        entries.addAll(wallEntryDAO.listEntriesByWall(courseWall));
+//      } else {
+//        entries.addAll(wallEntryDAO.listPublicOrOwnedEntriesByWall(courseWall, sessionController.getUser()));
+//      }
+//      break;
+//
+//    case ENVIRONMENT:
+//      // TODO: oikeudet?
+//      entries.addAll(wallEntryDAO.listEntriesByWall(wall));
+//      break;
+//    }
+//
+//    return orderWallEntries(entries);
+//  }
 
   public List<WallEntryItem> listWallEntryItems(AbstractWallEntry wallEntry) {
     // TODO: oikeudet
@@ -244,24 +240,24 @@ public class WallController {
     return wallEntryCommentDAO.listByWallEntry(wallEntry);
   }
 
-  public boolean canPostEntry(Wall wall) {
-    if (wall instanceof EnvironmentWall) {
-      return sessionController.hasEnvironmentPermission(MuikkuPermissions.WALL_WRITEENVIRONMENTWALL);
-    }
-
-    if (wall instanceof CourseWall) {
-      CourseWall courseWall = (CourseWall) wall;
-
-      return sessionController.hasCoursePermission(MuikkuPermissions.WALL_WRITECOURSEWALL, 
-          courseController.findCourseEntityById(courseWall.getCourse()));
-    }
-
-    if (wall instanceof UserWall) {
-      return true;
-    }
-
-    return false;
-  }
+//  public boolean canPostEntry(Wall wall) {
+//    if (wall instanceof EnvironmentWall) {
+//      return sessionController.hasEnvironmentPermission(MuikkuPermissions.WALL_WRITEENVIRONMENTWALL);
+//    }
+//
+//    if (wall instanceof CourseWall) {
+//      CourseWall courseWall = (CourseWall) wall;
+//
+//      return sessionController.hasCoursePermission(MuikkuPermissions.WALL_WRITECOURSEWALL, 
+//          courseController.findCourseEntityById(courseWall.getCourse()));
+//    }
+//
+//    if (wall instanceof UserWall) {
+//      return true;
+//    }
+//
+//    return false;
+//  }
 
   public EnvironmentWall getEnvironmentWall() {
     return environmentWallDAO.find();
@@ -271,7 +267,7 @@ public class WallController {
     return userWallDAO.findByUser(user);
   }
 
-  public CourseWall getCourseWall(CourseEntity course) {
+  public CourseWall getCourseWall(WorkspaceEntity course) {
     return courseWallDAO.findByCourse(course);
   }
 
@@ -323,23 +319,23 @@ public class WallController {
     return entries;
   }
 
-  private List<WallEntry> orderWallEntries(List<WallEntry> entries) {
-    Collections.sort(entries, new Comparator<WallEntry>() {
-
-      @Override
-      public int compare(WallEntry o1, WallEntry o2) {
-        Date d1 = wallEntryCommentDAO.findMaxDateByWallEntry(o1);
-        Date d2 = wallEntryCommentDAO.findMaxDateByWallEntry(o2);
-
-        d1 = d1 != null ? d1 : o1.getCreated();
-        d2 = d2 != null ? d2 : o2.getCreated();
-
-        return d2.compareTo(d1);
-      }
-    });
-
-    return entries;
-  }
+//  private List<WallEntry> orderWallEntries(List<WallEntry> entries) {
+//    Collections.sort(entries, new Comparator<WallEntry>() {
+//
+//      @Override
+//      public int compare(WallEntry o1, WallEntry o2) {
+//        Date d1 = wallEntryCommentDAO.findMaxDateByWallEntry(o1);
+//        Date d2 = wallEntryCommentDAO.findMaxDateByWallEntry(o2);
+//
+//        d1 = d1 != null ? d1 : o1.getCreated();
+//        d2 = d2 != null ? d2 : o2.getCreated();
+//
+//        return d2.compareTo(d1);
+//      }
+//    });
+//
+//    return entries;
+//  }
 
   public WallEntryGuidanceRequestItem createWallEntryGuidanceRequestItem(WallEntry entry, String text, UserEntity user) {
     return wallEntryGuidanceRequestItemDAO.create(entry, text, user);
@@ -362,17 +358,17 @@ public class WallController {
   }
 
   
-  public void onCourseCreateEvent(@Observes @Created CourseEntityEvent event) {
-    CourseEntity courseEntity = courseController.findCourseEntityById(event.getCourseEntityId());
-    courseWallDAO.create(courseEntity);
-  }
-  
-  public void onCourseUserCreateEvent(@Observes @Created CourseUserEvent event) {
-    CourseUser courseUser = courseController.findCourseUserById(event.getCourseUserId());
-    CourseWall courseWall = courseWallDAO.findByCourse(courseUser.getCourse());
-
-    userWallLinkDAO.create(courseUser.getUser(), courseWall);
-  }
+//  public void onCourseCreateEvent(@Observes @Created CourseEntityEvent event) {
+//    WorkspaceEntity courseEntity = courseController.findCourseEntityById(event.getCourseEntityId());
+//    courseWallDAO.create(courseEntity);
+//  }
+//  
+//  public void onCourseUserCreateEvent(@Observes @Created CourseUserEvent event) {
+//    CourseUser courseUser = courseController.findCourseUserById(event.getCourseUserId());
+//    CourseWall courseWall = courseWallDAO.findByCourse(courseUser.getCourse());
+//
+//    userWallLinkDAO.create(courseUser.getUser(), courseWall);
+//  }
   
   public void onUserCreatedEvent(@Observes @Created UserEntityEvent event) {
     /**

@@ -66,8 +66,7 @@ public class ForumPermissionResolver extends AbstractPermissionResolver implemen
     // TODO: typecasts
     if (forumArea instanceof CourseForumArea) {
       CourseForumArea courseForum = (CourseForumArea) forumArea;
-      CourseUser courseUser = courseUserDAO.findByCourseAndUser(
-          courseController.findCourseEntityById(courseForum.getCourse()), userEntity);
+      CourseUser courseUser = null; //courseUserDAO.findByCourseAndUser(courseController.findCourseEntityById(courseForum.getCourse()), userEntity);
       userRole = courseUser.getCourseUserRole();
     } else {
 //      EnvironmentForumArea environmentForum = (EnvironmentForumArea) forumArea;

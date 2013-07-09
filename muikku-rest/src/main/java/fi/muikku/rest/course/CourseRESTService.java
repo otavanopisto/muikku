@@ -1,39 +1,16 @@
 package fi.muikku.rest.course;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Response;
 
 import fi.muikku.controller.CourseController;
 import fi.muikku.controller.UserController;
-import fi.muikku.model.courses.CourseUser;
-import fi.muikku.model.stub.courses.CourseEntity;
-import fi.muikku.model.users.UserEntity;
 import fi.muikku.rest.AbstractRESTService;
 import fi.muikku.schooldata.UserSchoolDataController;
-import fi.muikku.schooldata.entity.Course;
-import fi.muikku.schooldata.entity.User;
-import fi.muikku.security.AuthorizationException;
-import fi.muikku.security.LoggedIn;
 import fi.muikku.session.SessionController;
-import fi.tranquil.TranquilModelEntity;
-import fi.tranquil.TranquilModelType;
-import fi.tranquil.Tranquility;
-import fi.tranquil.TranquilityBuilder;
 import fi.tranquil.TranquilityBuilderFactory;
-import fi.tranquil.TranquilizingContext;
-import fi.tranquil.instructions.PropertyInjectInstruction.ValueGetter;
-import fi.tranquil.instructions.SuperClassInstructionSelector;
 
 @Path("/course")
 @Stateless
@@ -61,70 +38,70 @@ public class CourseRESTService extends AbstractRESTService {
   @Inject
   private CourseController courseController;
   
-  @GET
-  @Path ("/listAllCourses")
-  public Response listAllCourses(@QueryParam("environmentId") Long environmentId) {
-    List<CourseEntity> courses = courseController.listCourses();
-    
-    TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
-    Tranquility tranquility = tranquilityBuilder.createTranquility()
-      .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
-      .addInstruction(CourseEntity.class, tranquilityBuilder.createPropertyInjectInstruction("name", new CourseNameInjector()))
-      .addInstruction(CourseEntity.class, tranquilityBuilder.createPropertyInjectInstruction("description", new CourseDescriptionInjector()))
-      .addInstruction(CourseEntity.class, tranquilityBuilder.createPropertyInjectInstruction("rating", new CourseRatingInjector()))
-      .addInstruction(CourseEntity.class, tranquilityBuilder.createPropertyInjectInstruction("ratingCount", new CourseRatingCountInjector()))
-      .addInstruction(CourseEntity.class, tranquilityBuilder.createPropertyInjectInstruction("isMember", new CourseIsMemberInjector()))
-      .addInstruction(CourseEntity.class, tranquilityBuilder.createPropertyInjectInstruction("teachers", new CourseTeachersGetter()));
-//      .addInstruction(CourseEntity.class, tranquilityBuilder.createPropertyInjectInstruction("course", new CourseSchoolDataInjector()));
-    
-    Collection<TranquilModelEntity> entities = tranquility.entities(courses);
-    
-    return Response.ok(
-      entities
-    ).build();
-  }
-
-  @GET
-  @Path ("/listUserCourses")
-  public Response listUserCourses(@QueryParam("environmentId") Long environmentId, @QueryParam("userId") Long userId) {
-    UserEntity userEntity = userController.findUserEntity(userId);
-    List<CourseEntity> courses = courseController.findCoursesByUser(userEntity);
-    
-    TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
-    Tranquility tranquility = tranquilityBuilder.createTranquility()
-      .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
-      .addInstruction(CourseEntity.class, tranquilityBuilder.createPropertyInjectInstruction("name", new CourseNameInjector()))
-      .addInstruction(CourseEntity.class, tranquilityBuilder.createPropertyInjectInstruction("description", new CourseDescriptionInjector()))
-      .addInstruction(CourseEntity.class, tranquilityBuilder.createPropertyInjectInstruction("rating", new CourseRatingInjector()))
-      .addInstruction(CourseEntity.class, tranquilityBuilder.createPropertyInjectInstruction("ratingCount", new CourseRatingCountInjector()))
-      .addInstruction(CourseEntity.class, tranquilityBuilder.createPropertyInjectInstruction("teachers", new CourseTeachersGetter()));
-//      .addInstruction(CourseEntity.class, tranquilityBuilder.createPropertyInjectInstruction("course", new CourseSchoolDataInjector()));
-    
-    Collection<TranquilModelEntity> entities = tranquility.entities(courses);
-    
-    return Response.ok(
-      entities
-    ).build();
-  }
-
-  @POST
-  @Path ("/{COURSEID}/joinCourse") 
-  @LoggedIn
-  public Response joinCourse(
-      @PathParam ("COURSEID") Long courseId
-   ) throws AuthorizationException {
-    CourseEntity courseEntity = courseController.findCourseEntityById(courseId);
-    
-    CourseUser courseUser = courseController.joinCourse(courseEntity);
-    
-    TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
-    Tranquility tranquility = tranquilityBuilder.createTranquility()
-      .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE));
-      
-    return Response.ok(
-      tranquility.entity(courseUser)
-    ).build();
-  }
+//  @GET
+//  @Path ("/listAllCourses")
+//  public Response listAllCourses(@QueryParam("environmentId") Long environmentId) {
+//    List<WorkspaceEntity> courses = courseController.listCourses();
+//    
+//    TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
+//    Tranquility tranquility = tranquilityBuilder.createTranquility()
+//      .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
+//      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("name", new CourseNameInjector()))
+//      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("description", new CourseDescriptionInjector()))
+//      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("rating", new CourseRatingInjector()))
+//      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("ratingCount", new CourseRatingCountInjector()))
+//      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("isMember", new CourseIsMemberInjector()))
+//      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("teachers", new CourseTeachersGetter()));
+////      .addInstruction(CourseEntity.class, tranquilityBuilder.createPropertyInjectInstruction("course", new CourseSchoolDataInjector()));
+//    
+//    Collection<TranquilModelEntity> entities = tranquility.entities(courses);
+//    
+//    return Response.ok(
+//      entities
+//    ).build();
+//  }
+//
+//  @GET
+//  @Path ("/listUserCourses")
+//  public Response listUserCourses(@QueryParam("environmentId") Long environmentId, @QueryParam("userId") Long userId) {
+//    UserEntity userEntity = userController.findUserEntity(userId);
+//    List<WorkspaceEntity> courses = courseController.findCoursesByUser(userEntity);
+//    
+//    TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
+//    Tranquility tranquility = tranquilityBuilder.createTranquility()
+//      .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
+//      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("name", new CourseNameInjector()))
+//      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("description", new CourseDescriptionInjector()))
+//      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("rating", new CourseRatingInjector()))
+//      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("ratingCount", new CourseRatingCountInjector()))
+//      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("teachers", new CourseTeachersGetter()));
+////      .addInstruction(CourseEntity.class, tranquilityBuilder.createPropertyInjectInstruction("course", new CourseSchoolDataInjector()));
+//    
+//    Collection<TranquilModelEntity> entities = tranquility.entities(courses);
+//    
+//    return Response.ok(
+//      entities
+//    ).build();
+//  }
+//
+//  @POST
+//  @Path ("/{COURSEID}/joinCourse") 
+//  @LoggedIn
+//  public Response joinCourse(
+//      @PathParam ("COURSEID") Long courseId
+//   ) throws AuthorizationException {
+//    WorkspaceEntity courseEntity = courseController.findCourseEntityById(courseId);
+//    
+//    CourseUser courseUser = courseController.joinCourse(courseEntity);
+//    
+//    TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
+//    Tranquility tranquility = tranquilityBuilder.createTranquility()
+//      .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE));
+//      
+//    return Response.ok(
+//      tranquility.entity(courseUser)
+//    ).build();
+//  }
   
   
 //  @GET
@@ -309,91 +286,91 @@ public class CourseRESTService extends AbstractRESTService {
 //    }
 //  }
 
-  private class CourseNameInjector implements ValueGetter<String> {
-    @Override
-    public String getValue(TranquilizingContext context) {
-      CourseEntity courseEntity = (CourseEntity) context.getEntityValue();
+//  private class CourseNameInjector implements ValueGetter<String> {
+//    @Override
+//    public String getValue(TranquilizingContext context) {
+//      WorkspaceEntity courseEntity = (WorkspaceEntity) context.getEntityValue();
+//
+//      Course course = courseController.findCourse(courseEntity);
+//      
+//      return course.getName();
+//    }
+//  }
+//
+//  private class CourseDescriptionInjector implements ValueGetter<String> {
+//    @Override
+//    public String getValue(TranquilizingContext context) {
+//      WorkspaceEntity courseEntity = (WorkspaceEntity) context.getEntityValue();
+//
+//      Course course = courseController.findCourse(courseEntity);
+//      
+//      return course.getDescription() != null ? course.getDescription() : "";
+//    }
+//  }
 
-      Course course = courseController.findCourse(courseEntity);
-      
-      return course.getName();
-    }
-  }
+//  private class CourseRatingInjector implements ValueGetter<Long> {
+//    @Override
+//    public Long getValue(TranquilizingContext context) {
+//      return new Long(8);
+//    }
+//  }
+//
+//  private class CourseRatingCountInjector implements ValueGetter<Long> {
+//    @Override
+//    public Long getValue(TranquilizingContext context) {
+//      return new Long(45);
+//    }
+//  }
+//
+//  private class CourseIsMemberInjector implements ValueGetter<Boolean> {
+//    @Override
+//    public Boolean getValue(TranquilizingContext context) {
+//      WorkspaceEntity courseEntity = (WorkspaceEntity) context.getEntityValue();
+//      
+//      if (sessionController.isLoggedIn())
+//        return courseController.isUserOnCourse(courseEntity);
+//      else
+//        return false;
+//    }
+//  }
+//  
+//  private class CourseTeachersGetter implements ValueGetter<Collection<TranquilModelEntity>> {
+//    @Override
+//    public Collection<TranquilModelEntity> getValue(TranquilizingContext context) {
+//      WorkspaceEntity courseEntity = (WorkspaceEntity) context.getEntityValue();
+//      
+//      List<CourseUser> teachers = courseController.listCourseTeachers(courseEntity);
+//      List<UserEntity> teacherUserEntities = new ArrayList<UserEntity>();
+//      
+//      for (CourseUser cu : teachers)
+//        teacherUserEntities.add(cu.getUser());
+//      
+//      TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
+//      Tranquility tranquility = tranquilityBuilder.createTranquility()
+//          .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
+//          .addInstruction(new SuperClassInstructionSelector(UserEntity.class), tranquilityBuilder.createPropertyInjectInstruction("hasPicture", new UserEntityHasPictureValueGetter()))
+//          .addInstruction(new SuperClassInstructionSelector(UserEntity.class), tranquilityBuilder.createPropertyInjectInstruction("fullName", new UserNameValueGetter()));
+//      
+//      return tranquility.entities(teacherUserEntities);
+//    }
+//  }
 
-  private class CourseDescriptionInjector implements ValueGetter<String> {
-    @Override
-    public String getValue(TranquilizingContext context) {
-      CourseEntity courseEntity = (CourseEntity) context.getEntityValue();
-
-      Course course = courseController.findCourse(courseEntity);
-      
-      return course.getDescription() != null ? course.getDescription() : "";
-    }
-  }
-
-  private class CourseRatingInjector implements ValueGetter<Long> {
-    @Override
-    public Long getValue(TranquilizingContext context) {
-      return new Long(8);
-    }
-  }
-
-  private class CourseRatingCountInjector implements ValueGetter<Long> {
-    @Override
-    public Long getValue(TranquilizingContext context) {
-      return new Long(45);
-    }
-  }
-
-  private class CourseIsMemberInjector implements ValueGetter<Boolean> {
-    @Override
-    public Boolean getValue(TranquilizingContext context) {
-      CourseEntity courseEntity = (CourseEntity) context.getEntityValue();
-      
-      if (sessionController.isLoggedIn())
-        return courseController.isUserOnCourse(courseEntity);
-      else
-        return false;
-    }
-  }
-  
-  private class CourseTeachersGetter implements ValueGetter<Collection<TranquilModelEntity>> {
-    @Override
-    public Collection<TranquilModelEntity> getValue(TranquilizingContext context) {
-      CourseEntity courseEntity = (CourseEntity) context.getEntityValue();
-      
-      List<CourseUser> teachers = courseController.listCourseTeachers(courseEntity);
-      List<UserEntity> teacherUserEntities = new ArrayList<UserEntity>();
-      
-      for (CourseUser cu : teachers)
-        teacherUserEntities.add(cu.getUser());
-      
-      TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
-      Tranquility tranquility = tranquilityBuilder.createTranquility()
-          .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
-          .addInstruction(new SuperClassInstructionSelector(UserEntity.class), tranquilityBuilder.createPropertyInjectInstruction("hasPicture", new UserEntityHasPictureValueGetter()))
-          .addInstruction(new SuperClassInstructionSelector(UserEntity.class), tranquilityBuilder.createPropertyInjectInstruction("fullName", new UserNameValueGetter()));
-      
-      return tranquility.entities(teacherUserEntities);
-    }
-  }
-
-  private class UserEntityHasPictureValueGetter implements ValueGetter<Boolean> {
-    @Override
-    public Boolean getValue(TranquilizingContext context) {
-      UserEntity user = (UserEntity) context.getEntityValue();
-      return userController.getUserHasPicture(user);
-    }
-  }
-
-  private class UserNameValueGetter implements ValueGetter<String> {
-    @Override
-    public String getValue(TranquilizingContext context) {
-      UserEntity userEntity = (UserEntity) context.getEntityValue();
-      User user = userSchoolDataController.findUser(userEntity);
-      return user.getFirstName() + " " + user.getLastName();
-    }
-  }
+//  private class UserEntityHasPictureValueGetter implements ValueGetter<Boolean> {
+//    @Override
+//    public Boolean getValue(TranquilizingContext context) {
+//      UserEntity user = (UserEntity) context.getEntityValue();
+//      return userController.getUserHasPicture(user);
+//    }
+//  }
+//
+//  private class UserNameValueGetter implements ValueGetter<String> {
+//    @Override
+//    public String getValue(TranquilizingContext context) {
+//      UserEntity userEntity = (UserEntity) context.getEntityValue();
+//      User user = userSchoolDataController.findUser(userEntity);
+//      return user.getFirstName() + " " + user.getLastName();
+//    }
+//  }
 
   
 }

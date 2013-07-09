@@ -8,9 +8,9 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
-import fi.muikku.model.stub.courses.CourseEntity;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.util.ArchivableEntity;
+import fi.muikku.model.workspace.WorkspaceEntity;
 
 @Entity
 public class CourseUser implements ArchivableEntity {
@@ -19,11 +19,11 @@ public class CourseUser implements ArchivableEntity {
     return id;
   }
 
-  public CourseEntity getCourse() {
+  public WorkspaceEntity getCourse() {
     return course;
   }
 
-  public void setCourse(CourseEntity course) {
+  public void setCourse(WorkspaceEntity course) {
     this.course = course;
   }
 
@@ -56,7 +56,7 @@ public class CourseUser implements ArchivableEntity {
   private Long id;
 
   @ManyToOne
-  private CourseEntity course;
+  private WorkspaceEntity course;
   
   @ManyToOne
   private UserEntity user;

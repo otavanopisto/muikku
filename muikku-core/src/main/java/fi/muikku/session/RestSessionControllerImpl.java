@@ -4,12 +4,10 @@ import java.util.Locale;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
 
-import fi.muikku.dao.courses.CourseEntityDAO;
-import fi.muikku.model.stub.courses.CourseEntity;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.util.ResourceEntity;
+import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.security.ContextReference;
 import fi.muikku.security.PermissionResolver;
 
@@ -18,8 +16,8 @@ import fi.muikku.security.PermissionResolver;
 @RestSesssion
 public class RestSessionControllerImpl extends AbstractSessionController implements RestSessionController {
   
-  @Inject
-  private CourseEntityDAO courseDAO;
+//  @Inject
+//  private CourseEntityDAO courseDAO;
   
   @Override
   public void setAuthentication(RestAuthentication authentication) {
@@ -63,7 +61,7 @@ public class RestSessionControllerImpl extends AbstractSessionController impleme
   }
 
   @Override
-  protected boolean hasCoursePermissionImpl(String permission, CourseEntity course) {
+  protected boolean hasCoursePermissionImpl(String permission, WorkspaceEntity course) {
     return hasPermissionImpl(permission, course);
   }
   

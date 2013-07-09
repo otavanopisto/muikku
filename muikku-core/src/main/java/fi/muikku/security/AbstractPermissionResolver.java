@@ -6,10 +6,10 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import fi.muikku.dao.users.SystemUserRoleDAO;
-import fi.muikku.model.stub.courses.CourseEntity;
 import fi.muikku.model.users.SystemUserRoleType;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserRole;
+import fi.muikku.model.workspace.WorkspaceEntity;
 
 @RequestScoped
 public class AbstractPermissionResolver {
@@ -31,7 +31,7 @@ public class AbstractPermissionResolver {
    * @param contextReference
    * @return course if found, else null
    */
-  protected CourseEntity resolveCourse(ContextReference contextReference) {
+  protected WorkspaceEntity resolveCourse(ContextReference contextReference) {
     for (CourseContextResolver resolver : courseContextResolvers) {
       if (resolver.handlesContextReference(contextReference))
         return resolver.resolveCourse(contextReference);

@@ -1,14 +1,14 @@
-package fi.muikku.model.stub.courses;
+package fi.muikku.model.workspace;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.util.ArchivableEntity;
@@ -16,12 +16,19 @@ import fi.muikku.model.util.SchoolDataEntity;
 import fi.muikku.security.ContextReference;
 
 @Entity
-@Inheritance(strategy=InheritanceType.JOINED)
-public class CourseEntity implements SchoolDataEntity, ArchivableEntity, ContextReference {
+public class WorkspaceEntity implements SchoolDataEntity, ArchivableEntity, ContextReference {
   
   public Long getId() {
     return id;
   }
+  
+  public String getIdentifier() {
+		return identifier;
+	}
+  
+  public void setIdentifier(String identifier) {
+		this.identifier = identifier;
+	}
 
   @Override
   public SchoolDataSource getDataSource() {
@@ -43,6 +50,11 @@ public class CourseEntity implements SchoolDataEntity, ArchivableEntity, Context
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
+
+	@NotEmpty
+	@NotNull
+	@Column(nullable = false)
+	private String identifier;
 
   @ManyToOne
   private SchoolDataSource dataSource;

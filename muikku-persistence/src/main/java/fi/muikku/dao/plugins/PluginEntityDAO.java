@@ -1,7 +1,5 @@
 package fi.muikku.dao.plugins;
 
-import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;

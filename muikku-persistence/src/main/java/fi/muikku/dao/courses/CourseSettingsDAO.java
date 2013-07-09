@@ -5,7 +5,7 @@ import fi.muikku.dao.DAO;
 import fi.muikku.model.courses.CourseSettings;
 import fi.muikku.model.courses.CourseSettings_;
 import fi.muikku.model.courses.CourseUserRole;
-import fi.muikku.model.stub.courses.CourseEntity;
+import fi.muikku.model.workspace.WorkspaceEntity;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -18,7 +18,7 @@ public class CourseSettingsDAO extends CoreDAO<CourseSettings> {
 
 	private static final long serialVersionUID = 7487711184683654401L;
 
-	public CourseSettings create(CourseEntity courseEntity, CourseUserRole defaultUserRole) {
+	public CourseSettings create(WorkspaceEntity courseEntity, CourseUserRole defaultUserRole) {
     CourseSettings courseSettings = new CourseSettings();
     
     courseSettings.setCourseEntity(courseEntity);
@@ -28,7 +28,7 @@ public class CourseSettingsDAO extends CoreDAO<CourseSettings> {
     return courseSettings;
   }
 
-  public CourseSettings findByCourse(CourseEntity courseEntity) {
+  public CourseSettings findByCourse(WorkspaceEntity courseEntity) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();

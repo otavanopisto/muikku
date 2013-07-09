@@ -6,7 +6,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.DAO;
-import fi.muikku.model.stub.courses.CourseEntity;
+import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugin.PluginDAO;
 import fi.muikku.plugins.wall.model.CourseWall;
 import fi.muikku.plugins.wall.model.CourseWall_;
@@ -17,7 +17,7 @@ public class CourseWallDAO extends PluginDAO<CourseWall> {
 
 	private static final long serialVersionUID = -4292824493620956200L;
 
-	public CourseWall create(CourseEntity course) {
+	public CourseWall create(WorkspaceEntity course) {
     CourseWall courseWall = new CourseWall();
     
     courseWall.setCourse(course.getId());
@@ -27,7 +27,7 @@ public class CourseWallDAO extends PluginDAO<CourseWall> {
     return courseWall;
   }
 
-  public CourseWall findByCourse(CourseEntity course) {
+  public CourseWall findByCourse(WorkspaceEntity course) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();

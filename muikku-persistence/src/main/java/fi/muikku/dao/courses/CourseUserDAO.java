@@ -13,20 +13,20 @@ import fi.muikku.dao.DAO;
 import fi.muikku.model.courses.CourseUser;
 import fi.muikku.model.courses.CourseUserRole;
 import fi.muikku.model.courses.CourseUser_;
-import fi.muikku.model.stub.courses.CourseEntity;
-import fi.muikku.model.stub.courses.CourseEntity_;
 import fi.muikku.model.users.UserEntity;
+import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.model.workspace.WorkspaceEntity_;
 
 @DAO
 public class CourseUserDAO extends CoreDAO<CourseUser> {
 
 	private static final long serialVersionUID = -850520598378547048L;
 
-	public CourseUser create(UserEntity user, CourseEntity course, CourseUserRole courseUserRole) {
+	public CourseUser create(UserEntity user, WorkspaceEntity course, CourseUserRole courseUserRole) {
     return create(user, course, courseUserRole, Boolean.FALSE);
   }
   
-  public CourseUser create(UserEntity user, CourseEntity course, CourseUserRole courseUserRole, Boolean archived) {
+  public CourseUser create(UserEntity user, WorkspaceEntity course, CourseUserRole courseUserRole, Boolean archived) {
     CourseUser courseUser = new CourseUser();
     
     courseUser.setUser(user);
@@ -40,7 +40,7 @@ public class CourseUserDAO extends CoreDAO<CourseUser> {
     return courseUser;
   }
 
-  public CourseUser findByCourseAndUser(CourseEntity course, UserEntity user) {
+  public CourseUser findByCourseAndUser(WorkspaceEntity course, UserEntity user) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -57,18 +57,18 @@ public class CourseUserDAO extends CoreDAO<CourseUser> {
     return getSingleResult(entityManager.createQuery(criteria));
   }
 
-  public List<CourseEntity> listCoursesByUser(UserEntity userEntity) {
+  public List<WorkspaceEntity> listCoursesByUser(UserEntity userEntity) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<CourseEntity> criteria = criteriaBuilder.createQuery(CourseEntity.class);
+    CriteriaQuery<WorkspaceEntity> criteria = criteriaBuilder.createQuery(WorkspaceEntity.class);
     Root<CourseUser> root = criteria.from(CourseUser.class);
-    Join<CourseUser, CourseEntity> join = root.join(CourseUser_.course);
+    Join<CourseUser, WorkspaceEntity> join = root.join(CourseUser_.course);
     
     criteria.select(root.get(CourseUser_.course));
     criteria.where(
         criteriaBuilder.and(
-            criteriaBuilder.equal(join.get(CourseEntity_.archived), Boolean.FALSE),
+            criteriaBuilder.equal(join.get(WorkspaceEntity_.archived), Boolean.FALSE),
             criteriaBuilder.equal(root.get(CourseUser_.archived), Boolean.FALSE),
             criteriaBuilder.equal(root.get(CourseUser_.user), userEntity)
         )
@@ -77,7 +77,7 @@ public class CourseUserDAO extends CoreDAO<CourseUser> {
     return entityManager.createQuery(criteria).getResultList();
   }
 
-  public List<CourseUser> listByCourseAndRole(CourseEntity courseEntity, CourseUserRole courseUserRole) {
+  public List<CourseUser> listByCourseAndRole(WorkspaceEntity courseEntity, CourseUserRole courseUserRole) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();

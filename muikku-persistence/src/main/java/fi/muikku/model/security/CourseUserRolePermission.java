@@ -4,7 +4,7 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 
-import fi.muikku.model.stub.courses.CourseEntity;
+import fi.muikku.model.workspace.WorkspaceEntity;
 
 @Entity
 @PrimaryKeyJoinColumn(name="id")
@@ -12,14 +12,14 @@ public class CourseUserRolePermission extends UserRolePermission {
 
   // TODO: Unique all?
   
-  public CourseEntity getCourse() {
+  public WorkspaceEntity getCourse() {
     return course;
   }
 
-  public void setCourse(CourseEntity course) {
+  public void setCourse(WorkspaceEntity course) {
     this.course = course;
   }
 
   @ManyToOne
-  private CourseEntity course;
+  private WorkspaceEntity course;
 }
