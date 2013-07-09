@@ -4,14 +4,13 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import fi.muikku.controller.CourseController;
-import fi.muikku.controller.EnvironmentController;
 import fi.muikku.controller.ResourceRightsController;
 import fi.muikku.dao.courses.CourseUserDAO;
 import fi.muikku.dao.security.PermissionDAO;
 import fi.muikku.dao.security.ResourceUserRolePermissionDAO;
 import fi.muikku.dao.users.EnvironmentUserDAO;
 import fi.muikku.dao.users.SystemUserRoleDAO;
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.security.AbstractPermissionResolver;
 import fi.muikku.security.ContextReference;
 import fi.muikku.security.PermissionResolver;
@@ -41,9 +40,6 @@ public class CommunicatorPermissionResolver extends AbstractPermissionResolver i
   
   @Inject
   private CourseController courseController;
-  
-  @Inject
-  private EnvironmentController environmentController;
   
   @Inject
   private ResourceRightsController resourceRightsController;

@@ -8,8 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
-import fi.muikku.model.base.Environment;
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.util.ArchivableEntity;
 
 @Entity
@@ -32,14 +31,6 @@ public class EnvironmentUser implements ArchivableEntity {
     return user;
   }
 
-  public Environment getEnvironment() {
-    return environment;
-  }
-
-  public void setEnvironment(Environment environment) {
-    this.environment = environment;
-  }
-
   public EnvironmentUserRole getRole() {
     return role;
   }
@@ -59,9 +50,6 @@ public class EnvironmentUser implements ArchivableEntity {
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
-  
-  @ManyToOne
-  private Environment environment;
   
   @ManyToOne
   private UserEntity user;

@@ -135,6 +135,15 @@
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-users.png'));  
 }
 
+.naviIconSettingsUserAdd {
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-users-add.png')); 	    
+}
+
+.naviIconSettingsUserAdd.disabled{
+  opacity:0.2;
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-users-add.png'));  
+}
+
 /* Calendar */
 
 .calendarSettingsWidget {
@@ -167,14 +176,6 @@
 .visibleCalendarContainer label {
   margin-left: 8px; 
 }
-
-/* Register */
-
-#registerWidget{
-    font-size: 10px;
-    width:210px;    
-}
-
 
 /* Login */
 

@@ -18,12 +18,14 @@ import fi.muikku.plugins.calendar.CalendarPluginDescriptor;
 import fi.muikku.plugins.communicator.CommunicatorPluginDescriptor;
 import fi.muikku.plugins.content.ContentPluginDescriptor;
 import fi.muikku.plugins.coursepicker.CoursePickerPluginDescriptor;
+import fi.muikku.plugins.data.DataPluginDescriptor;
 import fi.muikku.plugins.defaults.DefaultsPluginDescriptor;
 import fi.muikku.plugins.forum.ForumPluginDescriptor;
 import fi.muikku.plugins.grading.GradingPluginDescriptor;
 import fi.muikku.plugins.internallogin.InternalLoginPluginDescriptor;
 import fi.muikku.plugins.language.LanguagePluginDescriptor;
 import fi.muikku.plugins.logout.LogoutPluginDescriptor;
+import fi.muikku.plugins.schooldatalocal.SchoolDataLocalPluginDescriptor;
 import fi.muikku.plugins.seeker.SeekerPluginDescriptor;
 import fi.muikku.plugins.settings.SettingsPluginDescriptor;
 import fi.muikku.plugins.wall.WallPluginDescriptor;
@@ -53,7 +55,9 @@ public class CorePluginsDescriptor implements PluginLibraryDescriptor {
       SeekerPluginDescriptor.class,
       GradingPluginDescriptor.class,
       SettingsPluginDescriptor.class,
-      ContentPluginDescriptor.class
+      ContentPluginDescriptor.class,
+      DataPluginDescriptor.class,
+      SchoolDataLocalPluginDescriptor.class
 		));
 	}
 	

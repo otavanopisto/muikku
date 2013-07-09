@@ -18,4 +18,9 @@ public class SchoolBridgeController {
     return schoolDataSourceDAO.findById(id);
   }
   
+  public SchoolDataSource findSchoolDataSourceByIdentifier(String identifier) {
+    return schoolDataSourceDAO.findByIdentifier(identifier);
+  }
+  
+  
 }

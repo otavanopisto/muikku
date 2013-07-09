@@ -12,7 +12,7 @@ import javax.inject.Named;
 import fi.muikku.dao.courses.CourseEntityDAO;
 import fi.muikku.dao.users.UserEntityDAO;
 import fi.muikku.model.base.Tag;
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.communicator.dao.CommunicatorMessageDAO;
 import fi.muikku.plugins.communicator.dao.CommunicatorMessageIdDAO;
 import fi.muikku.plugins.communicator.dao.CommunicatorMessageRecipientDAO;
@@ -23,7 +23,6 @@ import fi.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
-import fi.muikku.schooldata.CourseSchoolDataController;
 import fi.muikku.schooldata.UserSchoolDataController;
 import fi.muikku.security.Permit;
 import fi.muikku.security.PermitContext;
@@ -45,8 +44,8 @@ public class CommunicatorController {
   @Inject
   private UserSchoolDataController userController;
   
-  @Inject
-  private CourseSchoolDataController courseSchoolDataController;
+//  @Inject
+//  private CourseSchoolDataController courseSchoolDataController;
 
   @Inject
   private CommunicatorMessageDAO communicatorMessageDAO;

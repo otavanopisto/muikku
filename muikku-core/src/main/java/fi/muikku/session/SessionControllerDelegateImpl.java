@@ -6,30 +6,14 @@ import java.util.Locale;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 
-import fi.muikku.model.base.Environment;
 import fi.muikku.model.stub.courses.CourseEntity;
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.util.ResourceEntity;
 import fi.muikku.security.ContextReference;
 
 @RequestScoped 
 @Named ("muikkuSession")
 public class SessionControllerDelegateImpl implements SessionControllerDelegate {
-
-  @Override
-  public Environment getEnvironment() {
-    return implementation.getEnvironment();  
-  }
-  
-  @Override
-  public void setEnvironmentId(Long environmentId) {
-    if (implementation instanceof MutableSessionController) {
-      ((MutableSessionController) implementation).setEnvironmentId(environmentId);
-    } else {
-      // TODO: Proper exception
-      throw new RuntimeException("Session controller is immutable");
-    }
-  }
 
   @Override
   public Locale getLocale() {
@@ -62,8 +46,8 @@ public class SessionControllerDelegateImpl implements SessionControllerDelegate 
   }
   
   @Override
-  public boolean hasEnvironmentPermission(String permission, Environment environment) {
-    return implementation.hasEnvironmentPermission(permission, environment);
+  public boolean hasEnvironmentPermission(String permission) {
+    return implementation.hasEnvironmentPermission(permission);
   }
 
   @Override

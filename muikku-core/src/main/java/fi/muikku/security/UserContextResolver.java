@@ -1,6 +1,6 @@
 package fi.muikku.security;
 
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 
 public interface UserContextResolver extends ContextResolver {
 

@@ -5,6 +5,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.session.local.LocalSession;
 import fi.muikku.session.local.LocalSessionController;
 
@@ -17,8 +18,15 @@ public class InternalLoginWidgetBackingBean {
   @LocalSession
   private LocalSessionController localSessionController;
 
+  @Inject
+  private InternalLoginController internalLoginController;
+ 
+  
   public void login() {
-    localSessionController.login(email, password);
+  	UserEntity userEntity = internalLoginController.findUserByEmailAndPassword(email, password);
+  	if (userEntity != null) {
+  		localSessionController.login(userEntity.getId());
+  	}
   }
   
   public String getEmail() {

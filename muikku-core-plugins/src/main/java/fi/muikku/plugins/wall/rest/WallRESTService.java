@@ -15,7 +15,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import fi.muikku.controller.UserController;
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.forum.ForumController;
 import fi.muikku.plugins.forum.model.ForumThread;
@@ -26,6 +26,7 @@ import fi.muikku.plugins.wall.model.Wall;
 import fi.muikku.plugins.wall.model.WallEntry;
 import fi.muikku.plugins.wall.model.WallEntryReply;
 import fi.muikku.plugins.wall.model.WallEntryVisibility;
+import fi.muikku.schooldata.UserSchoolDataController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.security.AuthorizationException;
 import fi.muikku.security.LoggedIn;
@@ -51,6 +52,9 @@ public class WallRESTService extends PluginRESTService {
   
   @Inject
   private UserController userController;
+  
+  @Inject
+  private UserSchoolDataController userSchoolDataController;
   
   @Inject
   private WallController wallController;
@@ -209,7 +213,7 @@ public class WallRESTService extends PluginRESTService {
     @Override
     public String getValue(TranquilizingContext context) {
       UserEntity userEntity = (UserEntity) context.getEntityValue();
-      User user = userController.findUser(userEntity);
+      User user = userSchoolDataController.findUser(userEntity);
       return user.getFirstName() + " " + user.getLastName();
     }
   }

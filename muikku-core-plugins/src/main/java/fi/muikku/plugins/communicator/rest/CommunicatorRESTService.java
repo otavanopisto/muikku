@@ -24,7 +24,7 @@ import edu.emory.mathcs.backport.java.util.Collections;
 import fi.muikku.controller.TagController;
 import fi.muikku.controller.UserController;
 import fi.muikku.model.base.Tag;
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.communicator.CommunicatorController;
 import fi.muikku.plugins.communicator.model.CommunicatorMessage;
@@ -33,6 +33,7 @@ import fi.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
 import fi.muikku.plugins.forum.ForumController;
+import fi.muikku.schooldata.UserSchoolDataController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.security.AuthorizationException;
 import fi.muikku.session.SessionController;
@@ -59,6 +60,9 @@ public class CommunicatorRESTService extends PluginRESTService {
   
   @Inject
   private UserController userController;
+
+  @Inject
+  private UserSchoolDataController userSchoolDataController;
   
   @Inject
   private CommunicatorController communicatorController;
@@ -531,7 +535,7 @@ public class CommunicatorRESTService extends PluginRESTService {
     @Override
     public String getValue(TranquilizingContext context) {
       UserEntity userEntity = (UserEntity) context.getEntityValue();
-      User user = userController.findUser(userEntity);
+      User user = userSchoolDataController.findUser(userEntity);
       return user.getFirstName() + " " + user.getLastName();
     }
   }

@@ -16,9 +16,8 @@ import fi.muikku.dao.security.PermissionDAO;
 import fi.muikku.dao.users.EnvironmentUserDAO;
 import fi.muikku.dao.users.SuperUserDAO;
 import fi.muikku.dao.users.SystemUserRoleDAO;
-import fi.muikku.model.base.Environment;
 import fi.muikku.model.stub.courses.CourseEntity;
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.util.ResourceEntity;
 import fi.muikku.security.ContextReference;
 import fi.muikku.security.PermissionResolver;
@@ -70,8 +69,8 @@ public abstract class AbstractSessionController implements SessionController {
   }
 
   @Override
-  public boolean hasEnvironmentPermission(String permission, Environment environment) {
-    return hasEnvironmentPermissionImpl(permission, environment);
+  public boolean hasEnvironmentPermission(String permission) {
+    return hasEnvironmentPermissionImpl(permission);
   }
   
   @Override
@@ -113,7 +112,7 @@ public abstract class AbstractSessionController implements SessionController {
   
   protected abstract boolean hasPermissionImpl(String permission, ContextReference contextReference);
   
-  protected abstract boolean hasEnvironmentPermissionImpl(String permission, Environment environment);
+  protected abstract boolean hasEnvironmentPermissionImpl(String permission);
 
   protected abstract boolean hasCoursePermissionImpl(String permission, CourseEntity course);
   

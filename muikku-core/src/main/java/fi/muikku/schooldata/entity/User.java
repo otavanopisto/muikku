@@ -3,18 +3,16 @@ package fi.muikku.schooldata.entity;
 import fi.tranquil.TranquilEntity;
 
 @TranquilEntity
-public interface User {
+public interface User extends SchoolDataEntity {
+	
+	public String getIdentifier();
+	
+	public String getFirstName();
+	
+	public void setFirstName(String firstName);
 
-  String getFirstName();
+	public String getLastName();
 
-  void setFirstName(String firstName);
-
-  String getLastName();
-
-  void setLastName(String lastName);
-
-  String getEmail();
-
-  void setEmail(String email);
+	public void setLastName(String lastName);
 
 }

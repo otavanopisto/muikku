@@ -7,7 +7,7 @@ import fi.muikku.dao.DAO;
 import fi.muikku.model.security.AuthSource;
 import fi.muikku.model.security.UserIdentification;
 import fi.muikku.model.security.UserIdentification_;
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;

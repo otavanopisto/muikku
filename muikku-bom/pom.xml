@@ -15,6 +15,7 @@
     <hibernate.version>4.0.1.Final</hibernate.version>
     <hibernate-validator.version>4.2.0.Final</hibernate-validator.version>
     <commons-lang.version>3.1</commons-lang.version>
+    <commons-io.version>2.4</commons-io.version>
     <commons-codec.version>1.8</commons-codec.version>
     <resteasy-jaxrs.version>2.3.2.Final</resteasy-jaxrs.version>
     <tranquil-model.version>1.0.3-SNAPSHOT</tranquil-model.version>
@@ -94,6 +95,12 @@
         <groupId>commons-codec</groupId>
         <artifactId>commons-codec</artifactId>
         <version>${commons-codec.version}</version>
+      </dependency>
+  
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>${commons-io.version}</version>
       </dependency>
   
       <dependency>

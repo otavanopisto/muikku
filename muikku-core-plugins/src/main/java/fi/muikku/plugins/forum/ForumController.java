@@ -8,10 +8,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import fi.muikku.controller.ResourceRightsController;
-import fi.muikku.model.base.Environment;
 import fi.muikku.model.security.ResourceRights;
 import fi.muikku.model.stub.courses.CourseEntity;
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.forum.dao.CourseForumAreaDAO;
 import fi.muikku.plugins.forum.dao.EnvironmentForumAreaDAO;
 import fi.muikku.plugins.forum.dao.ForumAreaDAO;
@@ -64,10 +63,10 @@ public class ForumController {
   }
   
   @Permit (ForumResourcePermissionCollection.FORUM_CREATEENVIRONMENTFORUM)
-  public EnvironmentForumArea createEnvironmentForumArea(@PermitContext Environment environment, String name) {
+  public EnvironmentForumArea createEnvironmentForumArea(String name) {
     UserEntity owner = sessionController.getUser();
     ResourceRights rights = resourceRightsController.create();
-    return environmentForumAreaDAO.create(environment, name, false, owner, rights);
+    return environmentForumAreaDAO.create(name, false, owner, rights);
   }
   
   @Permit (ForumResourcePermissionCollection.FORUM_WRITEAREA)
@@ -80,9 +79,9 @@ public class ForumController {
     return forumThreadReplyDAO.create(thread.getForumArea(), thread, message, sessionController.getUser());
   }
 
-  public List<EnvironmentForumArea> listEnvironmentForums(Environment environment) {
+  public List<EnvironmentForumArea> listEnvironmentForums() {
     return sessionController.filterResources(
-        environmentForumAreaDAO.listByEnvironment(environment), ForumResourcePermissionCollection.FORUM_WRITEAREA);
+        environmentForumAreaDAO.listAll(), ForumResourcePermissionCollection.FORUM_WRITEAREA);
   }
 
   public List<CourseForumArea> listCourseForums(CourseEntity course) {

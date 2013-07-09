@@ -12,7 +12,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import fi.muikku.controller.CourseController;
-import fi.muikku.controller.EnvironmentController;
 import fi.muikku.controller.UserController;
 import fi.muikku.dao.courses.CourseEntityDAO;
 import fi.muikku.dao.users.UserEntityDAO;
@@ -20,10 +19,9 @@ import fi.muikku.events.CourseEntityEvent;
 import fi.muikku.events.CourseUserEvent;
 import fi.muikku.events.Created;
 import fi.muikku.events.UserEntityEvent;
-import fi.muikku.model.base.Environment;
 import fi.muikku.model.courses.CourseUser;
 import fi.muikku.model.stub.courses.CourseEntity;
-import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.forum.dao.ForumThreadDAO;
 import fi.muikku.plugins.forum.dao.ForumThreadReplyDAO;
 import fi.muikku.plugins.forum.model.ForumArea;
@@ -55,9 +53,7 @@ import fi.muikku.plugins.wall.model.WallEntryReply;
 import fi.muikku.plugins.wall.model.WallEntryTextItem;
 import fi.muikku.plugins.wall.model.WallEntryVisibility;
 import fi.muikku.plugins.wall.model.WallSubscription;
-import fi.muikku.schooldata.CourseSchoolDataController;
 import fi.muikku.schooldata.UserSchoolDataController;
-import fi.muikku.schooldata.entity.Course;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.session.SessionController;
@@ -107,8 +103,8 @@ public class WallController {
   @Inject
   private UserSchoolDataController schoolUserController;
 
-  @Inject
-  private CourseSchoolDataController courseSchoolDataController;
+//  @Inject
+//  private CourseSchoolDataController courseSchoolDataController;
 
   @Inject
   private ForumThreadDAO forumThreadDAO;
@@ -131,9 +127,6 @@ public class WallController {
   @Inject
   private CourseController courseController;
   
-  @Inject
-  private EnvironmentController environmentController;
-
   public WallEntryTextItem createWallEntryTextItem(AbstractWallEntry entry, String text, UserEntity user) {
     return wallEntryTextItemDAO.create(entry, text, user);
   }
@@ -142,12 +135,9 @@ public class WallController {
     List<UserFeedItem> feedItems = new ArrayList<UserFeedItem>();
 
     UserEntity loggedUser = sessionController.isLoggedIn() ? sessionController.getUser() : null;
-
-    Environment environment = sessionController.getEnvironment();
-
     UserWall wall = userWallDAO.findByUser(user);
     boolean ownsWall = loggedUser != null ? loggedUser.getId().equals(user.getId()) : false;
-    boolean hasAccess = sessionController.hasPermission(MuikkuPermissions.READ_ALL_WALLS, environment);
+    boolean hasAccess = sessionController.hasEnvironmentPermission(MuikkuPermissions.READ_ALL_WALLS);
 
     if (ownsWall || hasAccess) {
       /**
@@ -205,10 +195,9 @@ public class WallController {
 
       UserEntity wallOwner = userController.findUserEntity(userWall.getUser());
       UserEntity loggedUser = sessionController.isLoggedIn() ? sessionController.getUser() : null;
-      Environment environment = sessionController.getEnvironment();
 
       boolean ownsWall = loggedUser != null ? loggedUser.getId().equals(wallOwner.getId()) : false;
-      boolean hasAccess = sessionController.hasPermission(MuikkuPermissions.READ_ALL_WALLS, environment);
+      boolean hasAccess = sessionController.hasEnvironmentPermission(MuikkuPermissions.READ_ALL_WALLS);
 
       if (ownsWall || hasAccess) {
         /**
@@ -257,10 +246,7 @@ public class WallController {
 
   public boolean canPostEntry(Wall wall) {
     if (wall instanceof EnvironmentWall) {
-      EnvironmentWall envWall = (EnvironmentWall) wall;
-
-      return sessionController.hasEnvironmentPermission(MuikkuPermissions.WALL_WRITEENVIRONMENTWALL, 
-          environmentController.findEnvironmentById(envWall.getEnvironment()));
+      return sessionController.hasEnvironmentPermission(MuikkuPermissions.WALL_WRITEENVIRONMENTWALL);
     }
 
     if (wall instanceof CourseWall) {
@@ -277,8 +263,8 @@ public class WallController {
     return false;
   }
 
-  public EnvironmentWall getEnvironmentWall(Environment environment) {
-    return environmentWallDAO.findByEnvironment(environment);
+  public EnvironmentWall getEnvironmentWall() {
+    return environmentWallDAO.find();
   }
 
   public UserWall getUserWall(UserEntity user) {
@@ -297,12 +283,12 @@ public class WallController {
   public String getWallName(Wall wall) {
     switch (wall.getWallType()) {
     case COURSE:
-      CourseWall courseWall = courseWallDAO.findById(wall.getId());
-
-      Course course = courseSchoolDataController.findCourse(courseController.findCourseEntityById(courseWall.getCourse()));
-
-      return course.getName();
-
+//      CourseWall courseWall = courseWallDAO.findById(wall.getId());
+//
+//      Course course = courseSchoolDataController.findCourse(courseController.findCourseEntityById(courseWall.getCourse()));
+//
+//      return course.getName();
+      return null;
     case ENVIRONMENT:
       return "the Muikerosuikero";
 
@@ -402,7 +388,7 @@ public class WallController {
     /**
      * Link Environment wall
      */
-    EnvironmentWall environmentWall = environmentWallDAO.findByEnvironment(sessionController.getEnvironment());
+    EnvironmentWall environmentWall = environmentWallDAO.find();
     userWallLinkDAO.create(userEntity, environmentWall);
   }
   

@@ -31,6 +31,11 @@ public class SettingsPluginDescriptor implements PluginDescriptor, LocalizedPlug
 	private static final int USERS_WIDGET_MINIMUM_SIZE = 1;
 	private static final String USERS_WIDGET_NAME = "settings-navigation-users";
 	
+	private static final String USERS_ADD_WIDGET_LOCATION = WidgetLocations.SETTINGS_USERS_CONTENT_TOOLS_TOP_RIGHT;
+	private static final int USERS_ADD_WIDGET_MINIMUM_SIZE = 1;
+	private static final String USERS_ADD_WIDGET_NAME = "settings-users-add";
+	
+	
 	@Inject
 	private WidgetController widgetController;
 	
@@ -52,6 +57,12 @@ public class SettingsPluginDescriptor implements PluginDescriptor, LocalizedPlug
 		 */
 		
 		widgetController.ensureDefaultWidget(widgetController.ensureWidget(USERS_WIDGET_NAME, USERS_WIDGET_MINIMUM_SIZE, WidgetVisibility.AUTHENTICATED), USERS_WIDGET_LOCATION);
+		
+		/**
+		 * Settings / users
+		 */
+
+		widgetController.ensureDefaultWidget(widgetController.ensureWidget(USERS_ADD_WIDGET_NAME, USERS_ADD_WIDGET_MINIMUM_SIZE, WidgetVisibility.AUTHENTICATED), USERS_ADD_WIDGET_LOCATION);
 	}
 
 	@Override

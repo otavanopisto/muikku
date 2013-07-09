@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html" template="/settings/template.xhtml">
+  
+  <ui:define name="contentToolsTop">
+    <ui:include src="/core/widget-space-set.xhtml">
+      <ui:param name="set" value="#{settingsBackingBean.settingsUsersContentToolsTopSet}" />
+    </ui:include>
+  </ui:define>
 
   <ui:define name="content">
 
@@ -11,9 +17,16 @@
       
       <h:column>
         <f:facet name="header">
-          <h:outputText value="Id" />
+          <h:outputText value="Data Source" />
         </f:facet>
-        <h:outputText value="#{user.id}" />
+        <h:outputText value="#{user.schoolDataSource}" />
+      </h:column>
+      
+      <h:column>
+        <f:facet name="header">
+          <h:outputText value="Identifier" />
+        </f:facet>
+        <h:outputText value="#{user.identifier}" />
       </h:column>
       
       <h:column>
@@ -28,13 +41,6 @@
           <h:outputText value="Last Name" />
         </f:facet>
         <h:outputText value="#{user.lastName}" />
-      </h:column>
-      
-      <h:column>
-        <f:facet name="header">
-          <h:outputText value="Email" />
-        </f:facet>
-        <h:outputText value="#{user.email}" />
       </h:column>
       
       <f:facet name="footer">

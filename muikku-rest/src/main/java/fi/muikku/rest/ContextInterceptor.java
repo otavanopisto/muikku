@@ -58,7 +58,7 @@ public class ContextInterceptor implements PreProcessInterceptor {
           
           switch (sessionContext.getType()) {
             case ENVIRONMENT:
-              sessionControllerDelegate.setEnvironmentId(contextId);
+
             break;
             case COURSE:
               // TODO Courses in seesion context :)
