@@ -52,9 +52,9 @@ public class DataPluginController {
 			if (item instanceof Element) {
 			  Element script = (Element) item;
 			  if ("script".equals(script.getTagName())) {
-	  			Run run = null;
-	  			String url = null;
-	  			String handler = null;
+	  			Run run = Run.valueOf(script.getAttribute("run"));
+	  			String url = script.getAttribute("url");
+	  			String handler = script.getAttribute("handler");
 	  			Map<String, String> parameters = new HashMap<String, String>();
 
 	  			NodeList scriptChildNodes = script.getChildNodes();
@@ -63,28 +63,15 @@ public class DataPluginController {
 			  		if (scriptChildItem instanceof Element) {
 			  			Element scriptChildElement = (Element) scriptChildItem;
 			  			
-			  			switch (scriptChildElement.getTagName()) {
-				  			case "run":
-				  				run = Run.valueOf(scriptChildElement.getTextContent());
-				  		  break;
-				  			case "url":
-				  				url = scriptChildElement.getTextContent();
-				  			break;				  			
-				  			case "handler":
-				  				handler = scriptChildElement.getTextContent();
-					  		break;
-				  			case "parameter":
-				  				String name = scriptChildElement.getAttribute("name");
-				  				String value = scriptChildElement.getTextContent();
+				  	  String name = scriptChildElement.getAttribute("name");
+				  		String value = scriptChildElement.getTextContent();
 				  				
-				  				if (StringUtils.isBlank(name)) {
-				  					// TODO: Proper error handling
-				  					throw new RuntimeException("parameter element requires a name");
-				  				}
-				  				
-				  				parameters.put(name, value);
-				  			break;
+				  		if (StringUtils.isBlank(name)) {
+				  			// TODO: Proper error handling
+				  			throw new RuntimeException("parameter element requires a name");
 				  		}
+				  				
+				  		parameters.put(name, value);
 			  		}
 			  	}
 
