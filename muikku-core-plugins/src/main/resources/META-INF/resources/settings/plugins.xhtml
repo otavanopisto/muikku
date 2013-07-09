@@ -8,22 +8,24 @@
     
     <ui:define name="content">
       <h2>Pluginien asetukset</h2>
-      <h:form>
       
       <ui:repeat value="#{settingsBackingBean.allPlugins}"
                  var="plugin">
         <h:form>
         <ui:fragment rendered="#{plugin.enabled}">
-          <h:commandButton action="#{settingsBackingBean.togglePlugin(plugin)}"
-                           value="#{i18n.text['plugin.settings.plugins.enablePlugin']}" />
+          <h:commandButton action="#{settingsBackingBean.togglePlugin}"
+                           value="#{i18n.text['plugin.settings.plugins.disablePlugin']}">
+            <f:param name="pluginId" value="#{plugin.id}" />
+          </h:commandButton>
         </ui:fragment>
         <ui:fragment rendered="#{!plugin.enabled}">
-          <h:commandButton action="#{settingsBackingBean.togglePlugin(plugin)}"
-                           value="#{i18n.text['plugin.settings.plugins.disablePlugin']}" />
+          <h:commandButton action="#{settingsBackingBean.togglePlugin}"
+                           value="#{i18n.text['plugin.settings.plugins.enablePlugin']}">
+            <f:param name="pluginId" value="#{plugin.id}" />
+          </h:commandButton>
         </ui:fragment>
         </h:form>
         #{plugin.library} - #{plugin.name}
       </ui:repeat>
-      </h:form>
     </ui:define>
 </ui:composition>
