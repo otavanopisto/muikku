@@ -8,5 +8,7 @@ public interface Workspace extends SchoolDataEntity {
 	public String getIdentifier();
 	
 	public String getName();
+	
+	public void setName(String name);
 
 }
