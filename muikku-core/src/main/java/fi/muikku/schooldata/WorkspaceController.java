@@ -12,6 +12,7 @@ import fi.muikku.dao.base.SchoolDataSourceDAO;
 import fi.muikku.dao.workspace.WorkspaceTypeEntityDAO;
 import fi.muikku.dao.workspace.WorkspaceTypeSchoolDataIdentifierDAO;
 import fi.muikku.model.base.SchoolDataSource;
+import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceTypeEntity;
 import fi.muikku.model.workspace.WorkspaceTypeSchoolDataIdentifier;
 import fi.muikku.schooldata.entity.Workspace;
@@ -64,6 +65,15 @@ public class WorkspaceController {
 			return null;
 		}
 	}
+	
+	public WorkspaceTypeEntity findWorkspaceTypeEntityByDataSourceAndIdentifier(String schoolDataSource, String identifier) {
+		WorkspaceType workspaceType = findWorkspaceTypeByDataSourceAndIdentifier(schoolDataSource, identifier);
+		if (workspaceType != null) {
+		  return findWorkspaceTypeEntity(workspaceType);
+		}
+		
+		return null;
+	}
 
 	public void setWorkspaceTypeEntity(WorkspaceType workspaceType, WorkspaceTypeEntity workspaceTypeEntity) {
 		// TODO: Proper error handling
@@ -89,6 +99,10 @@ public class WorkspaceController {
 
 	/* Workspace */
 	
+	public WorkspaceEntity findWorkspaceEntity(Workspace workspace) {
+		return workspaceSchoolDataController.findWorkspaceEntity(workspace);
+	}
+
 	public List<Workspace> listWorkspaces() {
 		return workspaceSchoolDataController.listWorkspaces();
 	}

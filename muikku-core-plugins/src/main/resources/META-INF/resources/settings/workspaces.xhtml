@@ -10,7 +10,7 @@
 
   <ui:define name="content">
 
-    <h:dataTable id="workspaces-table" value="#{settingsBackingBean.allWorkspaces}" var="workspace" style="width:100%">
+    <h:dataTable id="workspaces-table" value="#{workspaceViewBackingBean.workspaces}" var="workspace" style="width:100%">
       <f:facet name="header">
         <h:outputText value="All Workspaces" />
       </f:facet>
@@ -33,11 +33,19 @@
         <f:facet name="header">
           <h:outputText value="Name" />
         </f:facet>
-        <h:outputText value="#{workspace.name}" />
+        
+        <h:link outcome="/workspaces/#{workspace.id}" value="#{workspace.name}"/>
+      </h:column>
+      
+      <h:column>
+        <f:facet name="header">
+          <h:outputText value="Type" />
+        </f:facet>
+        <h:outputText value="#{workspace.typeName}" />
       </h:column>
       
       <f:facet name="footer">
-        <h:outputText value="Count: #{settingsBackingBean.allWorkspaces.size()}" />
+        <h:outputText value="Count: #{workspaceViewBackingBean.workspaces.size()}" />
       </f:facet>
       
     </h:dataTable>
