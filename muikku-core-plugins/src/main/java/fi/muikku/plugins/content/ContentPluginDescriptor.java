@@ -30,7 +30,7 @@ public class ContentPluginDescriptor implements PluginDescriptor {
 	
 	@Override
 	public void init() {
-		widgetController.ensureDefaultWidget(widgetController.ensureWidget(CONTENT_WIDGET_NAME, CONTENT_WIDGET_MINIMUM_SIZE, WidgetVisibility.AUTHENTICATED), CONTENT_WIDGET_LOCATION);
+		widgetController.ensureDefaultWidget(widgetController.ensureWidget(CONTENT_WIDGET_NAME, CONTENT_WIDGET_MINIMUM_SIZE, WidgetVisibility.EVERYONE), CONTENT_WIDGET_LOCATION);
 	}
 
 	@Override
