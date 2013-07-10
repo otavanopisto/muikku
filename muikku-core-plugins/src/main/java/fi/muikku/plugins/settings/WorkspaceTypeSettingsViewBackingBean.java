@@ -18,7 +18,7 @@ import fi.muikku.schooldata.entity.WorkspaceType;
 @Named
 @Stateful
 @RequestScoped
-public class WorkspaceTypeFormBackingBean implements Serializable {
+public class WorkspaceTypeSettingsViewBackingBean implements Serializable {
 	
 	private static final long serialVersionUID = -5900116972524666513L;
 	
@@ -50,6 +50,10 @@ public class WorkspaceTypeFormBackingBean implements Serializable {
 					entity != null ? entity.getId() : null)
 			);
 		}
+	}
+	
+	public List<WorkspaceTypeEntity> getWorkspaceTypeEntities() {
+		return workspaceController.listWorkspaceTypeEntities();
 	}
 	
 	public List<WorkspaceTypeBean> getWorkspaceTypes() {

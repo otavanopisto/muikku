@@ -8,7 +8,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import fi.muikku.model.plugins.Plugin;
-import fi.muikku.model.workspace.WorkspaceTypeEntity;
 import fi.muikku.schooldata.UserSchoolDataController;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.User;
@@ -55,10 +54,6 @@ public class SettingsBackingBean {
 	public List<User> getAllUsers() {
 		List<User> users = userSchoolDataController.listUsers();
 		return users;
-	}
-	
-	public List<WorkspaceTypeEntity> getWorkspaceTypeEntities() {
-		return workspaceController.listWorkspaceTypeEntities();
 	}
 	
   public List<Plugin> getAllPlugins() {
