@@ -83,6 +83,24 @@ public class WorkspaceSchoolDataController {
 	
 	/* Workspace Types */
 	
+	public WorkspaceType findWorkspaceTypeByDataSourceAndIdentifier(String schoolDataSourceIdentifier, String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+		SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSourceIdentifier);
+		if (schoolDataSource != null) {
+			return findWorkspaceTypeByDataSourceAndIdentifier(schoolDataSource, identifier);
+		} 
+		
+		return null;
+	}
+	
+	public WorkspaceType findWorkspaceTypeByDataSourceAndIdentifier(SchoolDataSource schoolDataSource, String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+		WorkspaceSchoolDataBridge schoolDataBridge = getWorkspaceBridge(schoolDataSource);
+		if (schoolDataBridge != null) {
+			return schoolDataBridge.findWorkspaceType(identifier);
+		}
+		
+		return null;
+	}
+
 	public List<WorkspaceType> listWorkspaceTypes() {
 		// TODO: This method WILL cause performance problems, replace with something more sensible 
 		
@@ -115,6 +133,8 @@ public class WorkspaceSchoolDataController {
 		
 		return workspaceTypes;
 	}
+	
+	/* WorkspaceTypeEntity */
 	
 	public WorkspaceTypeEntity findWorkspaceTypeEntity(WorkspaceType workspaceType) {
 		// TODO: Proper error handling
