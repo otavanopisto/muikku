@@ -3,6 +3,7 @@ package fi.muikku;
 import java.io.IOException;
 
 import javax.inject.Inject;
+import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -15,7 +16,11 @@ import fi.muikku.session.SessionController;
 import fi.muikku.session.SessionControllerDelegate;
 import fi.muikku.session.local.LocalSession;
 
-@WebFilter(servletNames = {
+@WebFilter(dispatcherTypes = {
+    DispatcherType.REQUEST,
+  	DispatcherType.FORWARD
+  },  
+  servletNames = {
   "FacesServlet",
   "jsp",
   "OAuth",
