@@ -14,7 +14,7 @@ import fi.muikku.plugin.PluginDescriptor;
 @ApplicationScoped
 @Stateful
 public class WorkspacePluginDescriptor implements PluginDescriptor {
-
+	
 	@Inject
 	private WidgetController widgetController;
 	
@@ -25,7 +25,9 @@ public class WorkspacePluginDescriptor implements PluginDescriptor {
 	
 	@Override
 	public void init() {
+		/* Default widgets for workspace */
 		
+		widgetController.ensureDefaultWidget("internallogin", WidgetLocations.WORKSPACE_HEADER_RIGHT);
 	}
 
 	@Override

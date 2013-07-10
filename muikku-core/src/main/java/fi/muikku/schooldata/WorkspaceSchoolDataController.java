@@ -30,7 +30,7 @@ import fi.muikku.schooldata.entity.WorkspaceType;
 @Stateful
 public class WorkspaceSchoolDataController { 
 	
-	private static final int MAX_URL_NAME_LENGTH = 20;
+	private static final int MAX_URL_NAME_LENGTH = 30;
 	
 	// TODO: Caching 
 	// TODO: Events
