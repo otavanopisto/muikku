@@ -2,8 +2,6 @@ package fi.muikku.plugins.settings;
 
 import java.util.List;
 
-import javax.ejb.Stateful;
-import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
