@@ -43,14 +43,6 @@ public class SettingsBackingBean {
 		);
 	}
 	
-	public WidgetSpaceSet getSettingsWorkspacesContentToolsTopSet() {
-		return new WidgetSpaceSet(
-				new WidgetSpaceSetItem(WidgetLocations.SETTINGS_WORKSPACES_CONTENT_TOOLS_TOP_LEFT, false, WidgetSpaceSizingStrategy.MINIMIZE),
-				new WidgetSpaceSetItem(WidgetLocations.SETTINGS_WORKSPACES_CONTENT_TOOLS_TOP_CENTER, true, WidgetSpaceSizingStrategy.MAXIMIZE),
-				new WidgetSpaceSetItem(WidgetLocations.SETTINGS_WORKSPACES_CONTENT_TOOLS_TOP_RIGHT, false, WidgetSpaceSizingStrategy.MINIMIZE)
-		);
-	}
-	
 	public List<User> getAllUsers() {
 		List<User> users = userSchoolDataController.listUsers();
 		return users;

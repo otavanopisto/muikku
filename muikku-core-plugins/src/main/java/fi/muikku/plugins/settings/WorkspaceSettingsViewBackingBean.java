@@ -14,11 +14,14 @@ import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceTypeEntity;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.Workspace;
+import fi.muikku.widgets.WidgetSpaceSet;
+import fi.muikku.widgets.WidgetSpaceSetItem;
+import fi.muikku.widgets.WidgetSpaceSizingStrategy;
 
 @Named
 @Stateful
 @RequestScoped
-public class WorkspaceViewBackingBean implements Serializable {
+public class WorkspaceSettingsViewBackingBean implements Serializable {
 
 	private static final long serialVersionUID = -5900116972524666513L;
 
@@ -32,10 +35,18 @@ public class WorkspaceViewBackingBean implements Serializable {
 	  for (Workspace workspace : workspaceController.listWorkspaces()) {
 	  	WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntity(workspace);
 	  	WorkspaceTypeEntity workspaceTypeEntity = workspaceController.findWorkspaceTypeEntityByDataSourceAndIdentifier(workspace.getSchoolDataSource(), workspace.getWorkspaceTypeId());
-	  	workspaces.add(new WorkspaceBean(workspaceEntity.getId(), workspace.getIdentifier(), workspace.getSchoolDataSource(), workspace.getName(), workspaceTypeEntity != null ? workspaceTypeEntity.getName() : null));
+	  	workspaces.add(new WorkspaceBean(workspaceEntity.getId(), workspace.getIdentifier(), workspace.getSchoolDataSource(), workspaceEntity.getUrlName(), workspace.getName(), workspaceTypeEntity != null ? workspaceTypeEntity.getName() : null));
 	  }
 	}
 
+	public WidgetSpaceSet getSettingsWorkspacesContentToolsTopSet() {
+		return new WidgetSpaceSet(
+				new WidgetSpaceSetItem(WidgetLocations.SETTINGS_WORKSPACES_CONTENT_TOOLS_TOP_LEFT, false, WidgetSpaceSizingStrategy.MINIMIZE),
+				new WidgetSpaceSetItem(WidgetLocations.SETTINGS_WORKSPACES_CONTENT_TOOLS_TOP_CENTER, true, WidgetSpaceSizingStrategy.MAXIMIZE),
+				new WidgetSpaceSetItem(WidgetLocations.SETTINGS_WORKSPACES_CONTENT_TOOLS_TOP_RIGHT, false, WidgetSpaceSizingStrategy.MINIMIZE)
+		);
+	}
+	
 	public List<WorkspaceBean> getWorkspaces() {
 		return workspaces;
 	}
@@ -48,10 +59,11 @@ public class WorkspaceViewBackingBean implements Serializable {
 
 	public class WorkspaceBean {
 
-		public WorkspaceBean(Long id, String identifier, String schoolDataSource, String name, String typeName) {
+		public WorkspaceBean(Long id, String identifier, String schoolDataSource, String urlName, String name, String typeName) {
 			this.id = id;
 			this.identifier = identifier;
 			this.schoolDataSource = schoolDataSource;
+			this.urlName = urlName;
 			this.name = name;
 			this.typeName = typeName;
 		}
@@ -80,6 +92,14 @@ public class WorkspaceViewBackingBean implements Serializable {
 			this.schoolDataSource = schoolDataSource;
 		}
 		
+		public String getUrlName() {
+			return urlName;
+		}
+		
+		public void setUrlName(String urlName) {
+			this.urlName = urlName;
+		}
+		
 		public String getName() {
 			return name;
 		}
@@ -99,6 +119,7 @@ public class WorkspaceViewBackingBean implements Serializable {
 		private Long id;
 		private String identifier;
 		private String schoolDataSource;
+		private String urlName;
 		private String name;
 		private String typeName;
 	}
