@@ -1,6 +1,6 @@
 /* Workspace Types */
 
-insert into WorkspaceType (name) values ,
+insert into WorkspaceType (name) values
   ('GENERIC'),
   ('COURSE'),
   ('GROUPWORK'),
