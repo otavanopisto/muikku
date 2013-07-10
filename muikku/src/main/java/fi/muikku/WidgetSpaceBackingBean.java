@@ -291,6 +291,7 @@ public class WidgetSpaceBackingBean {
 	
 	public WidgetSpaceSet getPluginSettingsContentSet() {
 	  return new WidgetSpaceSet(
+	    new WidgetSpaceSetItem(WidgetLocations.SETTINGS_CONTENT_SIDEBAR_LEFT, false, WidgetSpaceSizingStrategy.MINIMIZE),
 	    new WidgetSpaceSetItem(WidgetLocations.PLUGIN_SETTINGS_CONTENT_SIDEBAR_LEFT, false, WidgetSpaceSizingStrategy.MINIMIZE),
 	    new WidgetSpaceSetItem(WidgetLocations.ENVIRONMENT_CONTENT, true, WidgetSpaceSizingStrategy.MAXIMIZE)
 	  );
