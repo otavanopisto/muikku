@@ -14,6 +14,8 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fi.muikku.dao.base.SchoolDataSourceDAO;
 import fi.muikku.dao.workspace.WorkspaceEntityDAO;
 import fi.muikku.dao.workspace.WorkspaceTypeSchoolDataIdentifierDAO;
@@ -27,6 +29,8 @@ import fi.muikku.schooldata.entity.WorkspaceType;
 @Dependent
 @Stateful
 public class WorkspaceSchoolDataController { 
+	
+	private static final int MAX_URL_NAME_LENGTH = 20;
 	
 	// TODO: Caching 
 	// TODO: Events
@@ -184,8 +188,19 @@ public class WorkspaceSchoolDataController {
 			SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(workspace.getSchoolDataSource());
 			WorkspaceEntity workspaceEntity = workspaceEntityDAO.findByDataSourceAndIdentifier(dataSource, workspace.getIdentifier());
 			if (workspaceEntity == null) {
-				workspaceEntityDAO.create(dataSource, workspace.getIdentifier(), Boolean.FALSE);
+				String urlName = generateUrlName(workspace.getName());
+				workspaceEntityDAO.create(dataSource, workspace.getIdentifier(), urlName, Boolean.FALSE);
 			}
 		}
+	}
+
+	/**
+	 * Generates URL name from workspace name.
+	 * 
+	 * @param name original workspace name
+	 * @return URL name
+	 */
+	private String generateUrlName(String name) {
+		return StringUtils.substring(StringUtils.replace(StringUtils.stripAccents(StringUtils.lowerCase(StringUtils.trim(StringUtils.normalizeSpace(name)))), " ", "-").replaceAll("-{2,}", "-"), 0, MAX_URL_NAME_LENGTH);
 	}
 }

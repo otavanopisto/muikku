@@ -16,11 +16,12 @@ public class WorkspaceEntityDAO extends CoreDAO<WorkspaceEntity> {
   
 	private static final long serialVersionUID = -5129003092406973620L;
 
-	public WorkspaceEntity create(SchoolDataSource dataSource, String identifier, Boolean archived) {
+	public WorkspaceEntity create(SchoolDataSource dataSource, String identifier, String urlName, Boolean archived) {
     WorkspaceEntity workspaceEntity = new WorkspaceEntity();
     
     workspaceEntity.setDataSource(dataSource);
     workspaceEntity.setIdentifier(identifier);
+    workspaceEntity.setUrlName(urlName);
     workspaceEntity.setArchived(archived);
     
     getEntityManager().persist(workspaceEntity);
