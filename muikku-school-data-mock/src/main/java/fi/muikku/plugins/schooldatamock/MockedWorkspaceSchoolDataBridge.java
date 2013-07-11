@@ -14,11 +14,13 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.muikku.plugins.schooldatamock.entities.MockedWorkspace;
 import fi.muikku.plugins.schooldatamock.entities.MockedWorkspaceType;
+import fi.muikku.plugins.schooldatamock.entities.MockedWorkspaceUser;
 import fi.muikku.schooldata.SchoolDataBridgeRequestException;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 import fi.muikku.schooldata.WorkspaceSchoolDataBridge;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceType;
+import fi.muikku.schooldata.entity.WorkspaceUser;
 
 @Dependent
 @Stateful
@@ -151,6 +153,21 @@ public class MockedWorkspaceSchoolDataBridge extends AbstractMockedSchoolDataBri
 			ResultSet resultSet = executeSelect("select id, name from WorkspaceType");
 			while (resultSet.next()) {
 				result.add( new MockedWorkspaceType(resultSet.getString(1), resultSet.getString(2)) );
+			}
+		} catch (SQLException e) {
+			throw new UnexpectedSchoolDataBridgeException(e);
+		}
+
+		return result;
+	}
+
+	@Override
+	public List<WorkspaceUser> listWorkspaceUsers() throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+		List<WorkspaceUser> result = new ArrayList<>();
+		try {
+			ResultSet resultSet = executeSelect("select id, workspaceIdentifier, userIdentifier from WorkspaceUser");
+			while (resultSet.next()) {
+				result.add( new MockedWorkspaceUser(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3)) );
 			}
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
