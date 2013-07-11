@@ -16,6 +16,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
+import fi.muikku.plugins.schooldatamock.entities.MockedRole;
 import fi.muikku.plugins.schooldatamock.entities.MockedUser;
 import fi.muikku.plugins.schooldatamock.entities.MockedUserEmail;
 import fi.muikku.plugins.schooldatamock.entities.MockedUserImage;
@@ -23,10 +24,12 @@ import fi.muikku.plugins.schooldatamock.entities.MockedUserProperty;
 import fi.muikku.schooldata.SchoolDataBridgeRequestException;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 import fi.muikku.schooldata.UserSchoolDataBridge;
+import fi.muikku.schooldata.entity.Role;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.UserEmail;
 import fi.muikku.schooldata.entity.UserImage;
 import fi.muikku.schooldata.entity.UserProperty;
+import fi.muikku.schooldata.entity.UserRoleType;
 
 @Dependent
 @Stateful
@@ -408,6 +411,38 @@ public class MockedUserSchoolDataBridge extends AbstractMockedSchoolDataBridge i
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}
 
+		return result;
+	}
+	
+	@Override
+	public List<Role> listRoles() throws UnexpectedSchoolDataBridgeException {
+		List<Role> result = new ArrayList<>();
+		
+		try {
+			ResultSet resultSet = executeSelect("select id, name, type from Role");
+			while (resultSet.next()) {
+				result.add(new MockedRole(resultSet.getString(1), resultSet.getString(2), UserRoleType.valueOf(resultSet.getString(3))));
+			}
+		} catch (SQLException e) {
+			throw new UnexpectedSchoolDataBridgeException(e);
+		}
+		
+		return result;
+	}
+
+	@Override
+	public List<Role> listUserEnvironmentRoles(String userIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+		List<Role> result = new ArrayList<>();
+		
+		try {
+			ResultSet resultSet = executeSelect("select id, name, type from UserRole where user_id = ? and type = ?", userIdentifier, UserRoleType.ENVIRONMENT);
+			while (resultSet.next()) {
+				result.add(new MockedRole(resultSet.getString(1), resultSet.getString(2), UserRoleType.valueOf(resultSet.getString(3))));
+			}
+		} catch (SQLException e) {
+			throw new UnexpectedSchoolDataBridgeException(e);
+		}
+		
 		return result;
 	}
 

@@ -1,0 +1,6 @@
+insert into Role (name, type) values 
+  ('GUEST', 'ENVIRONMENT'),
+  ('STUDENT', 'ENVIRONMENT'),
+  ('TEACHER', 'ENVIRONMENT'),
+  ('WORKSPACE_STUDENT', 'WORKSPACE'),
+  ('WORKSPACE_TEACHER', 'WORKSPACE');

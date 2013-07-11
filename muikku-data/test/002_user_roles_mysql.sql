@@ -1,4 +1,4 @@
-INSERT INTO `UserRole` VALUES (2,'Manageri'),(3,'Opettaja'),(4,'Opiskelija'),(5,'Kurssin opettaja'),(6,'Kurssin opiskelija');
+INSERT INTO `UserRole` VALUES (2,'Manager'),(3,'Teacher'),(4,'Student'),(5,'Workspace Teacher'),(6,'Workspace Student');
 INSERT INTO EnvironmentUserRole values (2);
 INSERT INTO EnvironmentUserRole values (3);
 INSERT INTO EnvironmentUserRole values (4);
