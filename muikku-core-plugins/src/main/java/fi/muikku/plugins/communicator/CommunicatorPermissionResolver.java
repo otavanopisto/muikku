@@ -9,7 +9,6 @@ import fi.muikku.dao.courses.CourseUserDAO;
 import fi.muikku.dao.security.PermissionDAO;
 import fi.muikku.dao.security.ResourceUserRolePermissionDAO;
 import fi.muikku.dao.users.EnvironmentUserDAO;
-import fi.muikku.dao.users.SystemUserRoleDAO;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.security.AbstractPermissionResolver;
 import fi.muikku.security.ContextReference;
@@ -28,9 +27,6 @@ public class CommunicatorPermissionResolver extends AbstractPermissionResolver i
   
   @Inject
   private EnvironmentUserDAO environmentUserDAO;
-  
-  @Inject
-  private SystemUserRoleDAO systemUserRoleDAO;
 
   @Inject
   private CommunicatorPermissionCollection permissionCollection;

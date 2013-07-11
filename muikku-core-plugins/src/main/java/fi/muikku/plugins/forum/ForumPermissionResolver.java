@@ -9,7 +9,6 @@ import fi.muikku.dao.courses.CourseUserDAO;
 import fi.muikku.dao.security.PermissionDAO;
 import fi.muikku.dao.security.ResourceUserRolePermissionDAO;
 import fi.muikku.dao.users.EnvironmentUserDAO;
-import fi.muikku.dao.users.SystemUserRoleDAO;
 import fi.muikku.model.courses.CourseUser;
 import fi.muikku.model.security.Permission;
 import fi.muikku.model.users.UserEntity;
@@ -35,9 +34,6 @@ public class ForumPermissionResolver extends AbstractPermissionResolver implemen
   @Inject
   private EnvironmentUserDAO environmentUserDAO;
   
-  @Inject
-  private SystemUserRoleDAO systemUserRoleDAO;
-
   @Inject
   private ForumResourcePermissionCollection permissionCollection;
   

@@ -13,13 +13,15 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
-public abstract class UserRole {
+public class UserRole {
 
   public Long getId() {
     return id;
   }
 
-  public abstract UserRoleType getType();
+  public UserRoleType getType() {
+  	return null;
+  }
   
   public String getName() {
     return name;

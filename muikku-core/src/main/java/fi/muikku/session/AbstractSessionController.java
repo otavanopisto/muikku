@@ -15,7 +15,6 @@ import fi.muikku.dao.security.EnvironmentUserRolePermissionDAO;
 import fi.muikku.dao.security.PermissionDAO;
 import fi.muikku.dao.users.EnvironmentUserDAO;
 import fi.muikku.dao.users.SuperUserDAO;
-import fi.muikku.dao.users.SystemUserRoleDAO;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.util.ResourceEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
@@ -35,9 +34,6 @@ public abstract class AbstractSessionController implements SessionController {
 
   @Inject
   private EnvironmentUserDAO environmentUserDAO;
-
-  @Inject
-  private SystemUserRoleDAO systemUserRoleDAO;
 
   @Inject
   private EnvironmentUserPermissionOverrideDAO environmentUserPermissionOverrideDAO;

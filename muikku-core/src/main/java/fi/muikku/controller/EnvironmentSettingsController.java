@@ -12,7 +12,6 @@ import fi.muikku.dao.security.CourseUserRolePermissionDAO;
 import fi.muikku.dao.security.EnvironmentUserRolePermissionDAO;
 import fi.muikku.dao.security.PermissionDAO;
 import fi.muikku.dao.users.EnvironmentUserRoleDAO;
-import fi.muikku.dao.users.SystemUserRoleDAO;
 import fi.muikku.dao.users.UserRoleDAO;
 import fi.muikku.model.security.CourseUserRolePermission;
 import fi.muikku.model.security.EnvironmentUserRolePermission;
@@ -43,9 +42,6 @@ public class EnvironmentSettingsController {
   private EnvironmentUserRoleDAO environmentUserRoleDAO;
   
   @Inject
-  private SystemUserRoleDAO systemUserRoleDAO;
-  
-  @Inject
   private EnvironmentUserRolePermissionDAO environmentUserRolePermissionDAO;
 
   @Inject
@@ -55,7 +51,6 @@ public class EnvironmentSettingsController {
     List<UserRole> userRoles = new ArrayList<UserRole>();
     
     userRoles.addAll(environmentUserRoleDAO.listAll());
-    userRoles.addAll(systemUserRoleDAO.listAll());
     
     return userRoles;
   }
