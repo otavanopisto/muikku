@@ -69,7 +69,7 @@ public class WorkspaceEntity implements SchoolDataEntity, ArchivableEntity, Cont
 
 	@NotEmpty
 	@NotNull
-	@Column(nullable = false)
+	@Column(nullable = false, unique = true)
 	private String urlName;
   
   @NotNull

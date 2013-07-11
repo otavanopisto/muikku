@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.ejb.Stateful;
+import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -14,14 +14,16 @@ import fi.muikku.dao.users.UserGroupDAO;
 import fi.muikku.dao.users.UserGroupUserDAO;
 import fi.muikku.dao.users.UserPictureDAO;
 import fi.muikku.dao.users.UserSchoolDataIdentifierDAO;
+import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserGroup;
 import fi.muikku.schooldata.entity.User;
+import fi.muikku.schooldata.entity.UserEmail;
 
 @Dependent
-@Stateful
+@Stateless
 public class UserController {
-	
+
 	@Inject
 	private Logger logger;
 	
@@ -66,16 +68,37 @@ public class UserController {
 	
 	/* User */
 
-	public User findUser(UserEntity userEntity) {
-		return userSchoolDataController.findUser(userEntity);
+	public User findUser(SchoolDataSource schoolDataSource, UserEntity userEntity) {
+		return userSchoolDataController.findUser(schoolDataSource, userEntity);
 	}
 
+	public User findUser(String schoolDataSource, String userIdentifier) {
+		return userSchoolDataController.findUser(schoolDataSource, userIdentifier);
+	}
+	
+	public User findUser(UserEntity userEntity) {
+		// TODO: Support merging from several sources
+		
+		List<User> users = userSchoolDataController.listUsersByEntity(userEntity);
+		if (users.size() > 0) {
+			return users.get(0);
+		}
+		
+		return null;
+	}
+	
 	public List<User> listUsers() {
 		return userSchoolDataController.listUsers();
 	}
 
 	public List<User> listUsersByEmail(String email) {
 		return userSchoolDataController.listUsersByEmail(email);
+	}
+	
+	/* Emails */
+
+	public List<UserEmail> listUserEmails(User user) {
+		return userSchoolDataController.listUserEmails(user);
 	}
 	
 	/* UserGroup */

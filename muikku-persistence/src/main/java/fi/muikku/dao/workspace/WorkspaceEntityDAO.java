@@ -45,5 +45,19 @@ public class WorkspaceEntityDAO extends CoreDAO<WorkspaceEntity> {
    
     return getSingleResult( entityManager.createQuery(criteria) );
 	}
+
+	public WorkspaceEntity findByUrlName(String urlName) {
+		EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceEntity> criteria = criteriaBuilder.createQuery(WorkspaceEntity.class);
+    Root<WorkspaceEntity> root = criteria.from(WorkspaceEntity.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.equal(root.get(WorkspaceEntity_.urlName), urlName)
+    );
+   
+    return getSingleResult( entityManager.createQuery(criteria) );
+	}
  
 }
