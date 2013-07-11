@@ -25,10 +25,11 @@ import fi.muikku.model.workspace.WorkspaceTypeEntity;
 import fi.muikku.model.workspace.WorkspaceTypeSchoolDataIdentifier;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceType;
+import fi.muikku.schooldata.entity.WorkspaceUser;
 
 @Dependent
 @Stateful
-public class WorkspaceSchoolDataController { 
+class WorkspaceSchoolDataController { 
 	
 	private static final int MAX_URL_NAME_LENGTH = 30;
 	
@@ -72,18 +73,28 @@ public class WorkspaceSchoolDataController {
 		return result;
 	}
 	
-	public Workspace findWorkspace(WorkspaceEntity workspaceEntity) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+	public Workspace findWorkspace(WorkspaceEntity workspaceEntity) {
 		Workspace workspace = null;
 		
 		WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(workspaceEntity.getDataSource());
 		if (workspaceBridge != null) {
-  		workspace = workspaceBridge.findWorkspace(workspaceEntity.getIdentifier());
+  		try {
+				workspace = workspaceBridge.findWorkspace(workspaceEntity.getIdentifier());
+  		} catch (UnexpectedSchoolDataBridgeException e) {
+				logger.log(Level.SEVERE, "School Data Bridge reported a problem while finding workspace", e);
+			} catch (SchoolDataBridgeRequestException e) {
+				logger.log(Level.SEVERE, "School Data Bridge reported a problem while finding workspace", e);
+			}
 		}
 
-	  // TODO: This is probably not the best place for this
-		ensureWorkspaceEntities(Arrays.asList(workspace));
-
-		return workspace;
+		if (workspace != null) {
+  	  // TODO: This is probably not the best place for this
+  		ensureWorkspaceEntities(Arrays.asList(workspace));
+  
+  		return workspace;
+		}
+		
+		return null;
 	}
 	
 	/* Workspace Entities */
@@ -158,6 +169,26 @@ public class WorkspaceSchoolDataController {
 		
 		
 		return workspaceTypes;
+	}
+	
+	/* Workspace Users */
+	
+	public List<WorkspaceUser> listWorkspaceUsers(Workspace workspace) {
+		SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(workspace.getSchoolDataSource());
+		if (schoolDataSource != null) {
+			WorkspaceSchoolDataBridge schoolDataBridge = getWorkspaceBridge(schoolDataSource);
+			if (schoolDataBridge != null) {
+				try {
+					return schoolDataBridge.listWorkspaceUsers(workspace.getIdentifier());
+				} catch (UnexpectedSchoolDataBridgeException e) {
+					logger.log(Level.SEVERE, "School Data Bridge reported a problem while listing workspace users", e);
+				} catch (SchoolDataBridgeRequestException e) {
+					logger.log(Level.SEVERE, "School Data Bridge reported a problem while listing workspace users", e);
+				}
+			}
+		}
+
+		return null;
 	}
 	
 	private WorkspaceSchoolDataBridge getWorkspaceBridge(SchoolDataSource schoolDataSource) {

@@ -15,7 +15,7 @@ import fi.muikku.plugins.internallogin.dao.InternalAuthDAO;
 import fi.muikku.plugins.internallogin.model.InternalAuth;
 import fi.muikku.schooldata.SchoolDataBridgeRequestException;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
-import fi.muikku.schooldata.UserSchoolDataController;
+import fi.muikku.schooldata.UserController;
 import fi.muikku.schooldata.entity.User;
 
 @Dependent
@@ -29,7 +29,7 @@ public class InternalLoginController {
 	private InternalAuthDAO internalAuthDAO;
 	
 	@Inject
-  private UserSchoolDataController userSchoolDataController;
+  private UserController userController;
 	
 	public UserEntity findUserByEmailAndPassword(String email, String password) {
 		try {
@@ -51,10 +51,10 @@ public class InternalLoginController {
   private UserEntity findUserEntityByEmail(String email) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
   	UserEntity result = null;
   	
-  	List<User> users = userSchoolDataController.listUsersByEmail(email);
+  	List<User> users = userController.listUsersByEmail(email);
 
   	for (User user : users) {
-  		UserEntity userEntity = userSchoolDataController.findUserEntity(user);
+  		UserEntity userEntity = userController.findUserEntity(user);
   		if (userEntity != null) {
     		if (result == null) {
     			result = userEntity;

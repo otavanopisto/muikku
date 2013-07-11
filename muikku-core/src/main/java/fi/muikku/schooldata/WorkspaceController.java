@@ -4,11 +4,12 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ejb.Stateful;
+import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import fi.muikku.dao.base.SchoolDataSourceDAO;
+import fi.muikku.dao.workspace.WorkspaceEntityDAO;
 import fi.muikku.dao.workspace.WorkspaceTypeEntityDAO;
 import fi.muikku.dao.workspace.WorkspaceTypeSchoolDataIdentifierDAO;
 import fi.muikku.model.base.SchoolDataSource;
@@ -17,9 +18,10 @@ import fi.muikku.model.workspace.WorkspaceTypeEntity;
 import fi.muikku.model.workspace.WorkspaceTypeSchoolDataIdentifier;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceType;
+import fi.muikku.schooldata.entity.WorkspaceUser;
 
 @Dependent
-@Stateful
+@Stateless
 public class WorkspaceController {
 	
 	@Inject
@@ -28,6 +30,9 @@ public class WorkspaceController {
 	@Inject
 	private WorkspaceSchoolDataController workspaceSchoolDataController;
 
+	@Inject
+	private WorkspaceEntityDAO workspaceEntityDAO;
+	
 	@Inject
 	private WorkspaceTypeEntityDAO workspaceTypeEntityDAO; 
 
@@ -98,13 +103,41 @@ public class WorkspaceController {
 	}
 
 	/* Workspace */
-	
-	public WorkspaceEntity findWorkspaceEntity(Workspace workspace) {
-		return workspaceSchoolDataController.findWorkspaceEntity(workspace);
+
+	public Workspace findWorkspace(WorkspaceEntity workspaceEntity) {
+		return workspaceSchoolDataController.findWorkspace(workspaceEntity);
 	}
 
 	public List<Workspace> listWorkspaces() {
 		return workspaceSchoolDataController.listWorkspaces();
 	}
+	
+	/* Workspace Entity */
+	
+	public WorkspaceEntity findWorkspaceEntity(Workspace workspace) {
+		return workspaceSchoolDataController.findWorkspaceEntity(workspace);
+	}
+	
+	public WorkspaceEntity findWorkspaceEntityById(Long workspaceId) {
+		return workspaceEntityDAO.findById(workspaceId);
+	}
 
+	public WorkspaceEntity findWorkspaceEntityByUrlName(String urlName) {
+		return workspaceEntityDAO.findByUrlName(urlName);
+	}
+
+	/* WorkspaceUsers */
+	
+	public List<WorkspaceUser> listWorkspaceUsers(Workspace workspace) {
+		return workspaceSchoolDataController.listWorkspaceUsers(workspace);
+	}
+
+	public List<WorkspaceUser> listWorkspaceUsers(WorkspaceEntity workspaceEntity) {
+		Workspace workspace = findWorkspace(workspaceEntity);
+		if (workspace != null) {
+		  return workspaceSchoolDataController.listWorkspaceUsers(workspace);
+		} 
+
+		return null;
+	}
 }

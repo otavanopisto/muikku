@@ -9,6 +9,7 @@ import javax.persistence.ManyToOne;
 import fi.muikku.model.users.UserEntity;
 
 @Entity
+@Deprecated
 public class UserGroupUser {
 
   public Long getId() {

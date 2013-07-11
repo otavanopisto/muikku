@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    template="/workspaces/template.xhtml">
+   
+  <ui:define name="content">
+    
+    <table class="workspace-members" style="width: 100%">
+      <tr>
+        <th>First name</th>
+        <th>Last name</th>
+        <th>Email(s)</th>
+      </tr>
+      <ui:repeat var="user" value="#{workspaceViewBackingBean.workspaceUsers}">
+        <tr class="workspace-member">
+          <td>#{user.firstName}</td>
+          <td>#{user.lastName}</td>
+          <td>
+            <ui:repeat var="email" value="#{user.emails}" varStatus="vs">
+              <h:outputText value="#{email}"/>
+              <h:outputText value="," rendered="#{!vs.last}"/>
+            </ui:repeat>
+          </td>
+        </tr>
+      </ui:repeat>
+    </table>
+  </ui:define>
+
+  
+</ui:composition>

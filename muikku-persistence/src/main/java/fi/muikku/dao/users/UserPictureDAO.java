@@ -15,6 +15,7 @@ import javax.persistence.criteria.Root;
 
 
 @DAO
+@Deprecated
 public class UserPictureDAO extends CoreDAO<UserPicture> {
 
 	private static final long serialVersionUID = -9194908338771392057L;

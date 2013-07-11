@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
+@Deprecated
 public class UserGroup {
 
   public Long getId() {

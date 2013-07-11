@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import fi.muikku.model.plugins.Plugin;
-import fi.muikku.schooldata.UserSchoolDataController;
+import fi.muikku.schooldata.UserController;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.widgets.WidgetSpaceSet;
@@ -20,7 +20,7 @@ import fi.muikku.widgets.WidgetSpaceSizingStrategy;
 public class SettingsBackingBean {
 	
 	@Inject
-	private UserSchoolDataController userSchoolDataController;
+	private UserController userController;
 
 	@Inject
 	private PluginSettingsController pluginSettingsController;
@@ -44,7 +44,7 @@ public class SettingsBackingBean {
 	}
 	
 	public List<User> getAllUsers() {
-		List<User> users = userSchoolDataController.listUsers();
+		List<User> users = userController.listUsers();
 		return users;
 	}
 	

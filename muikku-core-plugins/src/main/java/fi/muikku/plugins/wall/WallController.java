@@ -12,7 +12,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import fi.muikku.controller.CourseController;
-import fi.muikku.controller.UserController;
 import fi.muikku.dao.users.UserEntityDAO;
 import fi.muikku.events.Created;
 import fi.muikku.events.UserEntityEvent;
@@ -49,7 +48,7 @@ import fi.muikku.plugins.wall.model.WallEntryReply;
 import fi.muikku.plugins.wall.model.WallEntryTextItem;
 import fi.muikku.plugins.wall.model.WallEntryVisibility;
 import fi.muikku.plugins.wall.model.WallSubscription;
-import fi.muikku.schooldata.UserSchoolDataController;
+import fi.muikku.schooldata.UserController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.session.SessionController;
@@ -97,7 +96,7 @@ public class WallController {
   private EnvironmentWallDAO environmentWallDAO;
 
   @Inject
-  private UserSchoolDataController schoolUserController;
+  private UserController userController;
 
 //  @Inject
 //  private CourseSchoolDataController courseSchoolDataController;
@@ -116,9 +115,6 @@ public class WallController {
 
   @Inject
   private WallEntryReplyDAO wallEntryReplyDAO;
-  
-  @Inject
-  private UserController userController;
   
   @Inject
   private CourseController courseController;
@@ -291,7 +287,7 @@ public class WallController {
     case USER:
       UserWall userWall = userWallDAO.findById(wall.getId());
 
-      User user = schoolUserController.findUser(userController.findUserEntity(userWall.getUser()));
+      User user = userController.findUser(userController.findUserEntityById(userWall.getUser()));
 
       return user.getFirstName() + " " + user.getLastName();
     }
@@ -374,7 +370,7 @@ public class WallController {
     /**
      * Create User Wall
      */
-    UserEntity userEntity = userController.findUserEntity(event.getUserEntityId());
+    UserEntity userEntity = userController.findUserEntityById(event.getUserEntityId());
     
     UserWall userWall = userWallDAO.create(userEntity);
 

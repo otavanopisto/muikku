@@ -166,6 +166,17 @@
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-plugins.png'));
 }
 
+/* Workspace */
+
+.naviIconWorkspaceNavigationMembers.disabled{
+  opacity:0.2;
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/workspace-navigation-members.png'));  
+}
+
+.naviIconWorkspaceNavigationMembers {
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/workspace-navigation-members.png'));
+}
+
 /* Calendar */
 
 .calendarSettingsWidget {

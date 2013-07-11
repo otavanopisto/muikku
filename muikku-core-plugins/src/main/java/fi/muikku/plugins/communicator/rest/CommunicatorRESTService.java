@@ -22,7 +22,6 @@ import javax.ws.rs.core.Response;
 
 import edu.emory.mathcs.backport.java.util.Collections;
 import fi.muikku.controller.TagController;
-import fi.muikku.controller.UserController;
 import fi.muikku.model.base.Tag;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugin.PluginRESTService;
@@ -33,7 +32,7 @@ import fi.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
 import fi.muikku.plugins.forum.ForumController;
-import fi.muikku.schooldata.UserSchoolDataController;
+import fi.muikku.schooldata.UserController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.security.AuthorizationException;
 import fi.muikku.session.SessionController;
@@ -60,9 +59,6 @@ public class CommunicatorRESTService extends PluginRESTService {
   
   @Inject
   private UserController userController;
-
-  @Inject
-  private UserSchoolDataController userSchoolDataController;
   
   @Inject
   private CommunicatorController communicatorController;
@@ -77,7 +73,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   @Path ("/{USERID}/items")
   public Response listUserCommunicatorItems( 
       @PathParam ("USERID") Long userId) {
-    UserEntity user = userController.findUserEntity(userId); 
+    UserEntity user = userController.findUserEntityById(userId); 
     List<CommunicatorMessage> receivedItems = communicatorController.listReceivedItems(user);
 
     Collections.sort(receivedItems, new Comparator<CommunicatorMessage>() {
@@ -116,7 +112,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   @Path ("/{USERID}/sentitems")
   public Response listUserSentCommunicatorItems( 
       @PathParam ("USERID") Long userId) {
-    UserEntity user = userController.findUserEntity(userId); 
+    UserEntity user = userController.findUserEntityById(userId); 
     List<CommunicatorMessage> receivedItems = communicatorController.listSentItems(user);
 
     Collections.sort(receivedItems, new Comparator<CommunicatorMessage>() {
@@ -157,7 +153,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   public Response listUserCommunicatorMessagesByMessageId( 
       @PathParam ("USERID") Long userId,
       @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId) {
-    UserEntity user = userController.findUserEntity(userId); 
+    UserEntity user = userController.findUserEntityById(userId); 
     
     CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
     
@@ -213,7 +209,7 @@ public class CommunicatorRESTService extends PluginRESTService {
       @FormParam ("recipients") List<Long> recipientIds,
       @FormParam ("tags") String tags
    ) throws AuthorizationException {
-    UserEntity user = userController.findUserEntity(userId); // session?
+    UserEntity user = userController.findUserEntityById(userId); // session?
     
     CommunicatorMessageId communicatorMessageId = communicatorController.createMessageId();
     
@@ -221,7 +217,7 @@ public class CommunicatorRESTService extends PluginRESTService {
     List<UserEntity> recipients = new ArrayList<UserEntity>();
     
     for (Long recipientId : recipientIds) {
-      UserEntity recipient = userController.findUserEntity(recipientId);
+      UserEntity recipient = userController.findUserEntityById(recipientId);
 
       if (recipient != null)
         recipients.add(recipient);
@@ -264,7 +260,7 @@ public class CommunicatorRESTService extends PluginRESTService {
       @FormParam ("recipients") List<Long> recipientIds,
       @FormParam ("tags") String tags
    ) throws AuthorizationException {
-    UserEntity user = userController.findUserEntity(userId); // session?
+    UserEntity user = userController.findUserEntityById(userId); // session?
     
     CommunicatorMessageId communicatorMessageId2 = communicatorController.findCommunicatorMessageId(communicatorMessageId);
     
@@ -272,7 +268,7 @@ public class CommunicatorRESTService extends PluginRESTService {
     List<UserEntity> recipients = new ArrayList<UserEntity>();
     
     for (Long recipientId : recipientIds) {
-      UserEntity recipient = userController.findUserEntity(recipientId);
+      UserEntity recipient = userController.findUserEntityById(recipientId);
 
       if (recipient != null)
         recipients.add(recipient);
@@ -334,7 +330,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   public Response getUserInfo(
       @PathParam ("USERID") Long userId
    ) throws AuthorizationException {
-    UserEntity user = userController.findUserEntity(userId);
+    UserEntity user = userController.findUserEntityById(userId);
     
     TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
     Tranquility tranquility = tranquilityBuilder.createTranquility()
@@ -352,7 +348,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   public Response listUserMessageTemplates(
       @PathParam ("USERID") Long userId
    ) throws AuthorizationException {
-    UserEntity userEntity = userController.findUserEntity(userId);
+    UserEntity userEntity = userController.findUserEntityById(userId);
     
     List<CommunicatorMessageTemplate> messageTemplates = communicatorController.listMessageTemplates(userEntity);
     
@@ -372,7 +368,7 @@ public class CommunicatorRESTService extends PluginRESTService {
       @FormParam ("name") String name,
       @FormParam ("content") String content
    ) throws AuthorizationException {
-    UserEntity userEntity = userController.findUserEntity(userId);
+    UserEntity userEntity = userController.findUserEntityById(userId);
     
     CommunicatorMessageTemplate messageTemplate = communicatorController.createMessageTemplate(name, content, userEntity);
     
@@ -440,7 +436,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   public Response listUserMessageSignatures(
       @PathParam ("USERID") Long userId
    ) throws AuthorizationException {
-    UserEntity userEntity = userController.findUserEntity(userId);
+    UserEntity userEntity = userController.findUserEntityById(userId);
     
     List<CommunicatorMessageSignature> messageSignatures = communicatorController.listMessageSignatures(userEntity);
     
@@ -460,7 +456,7 @@ public class CommunicatorRESTService extends PluginRESTService {
       @FormParam ("name") String name,
       @FormParam ("signature") String signature
    ) throws AuthorizationException {
-    UserEntity userEntity = userController.findUserEntity(userId);
+    UserEntity userEntity = userController.findUserEntityById(userId);
 
     CommunicatorMessageSignature messageSignature = communicatorController.createMessageSignature(name, signature, userEntity);
     
@@ -527,7 +523,7 @@ public class CommunicatorRESTService extends PluginRESTService {
     @Override
     public Boolean getValue(TranquilizingContext context) {
       UserEntity user = (UserEntity) context.getEntityValue();
-      return userController.getUserHasPicture(user);
+      return userController.hasPicture(user);
     }
   }
 
@@ -535,7 +531,7 @@ public class CommunicatorRESTService extends PluginRESTService {
     @Override
     public String getValue(TranquilizingContext context) {
       UserEntity userEntity = (UserEntity) context.getEntityValue();
-      User user = userSchoolDataController.findUser(userEntity);
+      User user = userController.findUser(userEntity);
       return user.getFirstName() + " " + user.getLastName();
     }
   }
@@ -558,7 +554,7 @@ public class CommunicatorRESTService extends PluginRESTService {
       List<UserEntity> recipients = new ArrayList<UserEntity>();
       
       for (CommunicatorMessageRecipient rcp : msgRecipients) {
-        UserEntity userEntity = userController.findUserEntity(rcp.getRecipient());
+        UserEntity userEntity = userController.findUserEntityById(rcp.getRecipient());
         recipients.add(userEntity);
       }
 
