@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
 import fi.muikku.model.users.UserEntity;
 
 @Entity
+@Deprecated
 public class UserPicture {
 
   /**

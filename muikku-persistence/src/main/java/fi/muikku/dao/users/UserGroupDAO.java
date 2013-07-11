@@ -6,6 +6,7 @@ import fi.muikku.model.users.UserGroup;
 
 
 @DAO
+@Deprecated
 public class UserGroupDAO extends CoreDAO<UserGroup> {
 
   private static final long serialVersionUID = -2602347893195385174L;
