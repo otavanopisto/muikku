@@ -12,11 +12,10 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.util.ArchivableEntity;
-import fi.muikku.model.util.SchoolDataEntity;
 import fi.muikku.security.ContextReference;
 
 @Entity
-public class WorkspaceEntity implements SchoolDataEntity, ArchivableEntity, ContextReference {
+public class WorkspaceEntity implements ArchivableEntity, ContextReference {
   
   public Long getId() {
     return id;
@@ -30,7 +29,6 @@ public class WorkspaceEntity implements SchoolDataEntity, ArchivableEntity, Cont
 		this.identifier = identifier;
 	}
 
-  @Override
   public SchoolDataSource getDataSource() {
     return dataSource;
   }
