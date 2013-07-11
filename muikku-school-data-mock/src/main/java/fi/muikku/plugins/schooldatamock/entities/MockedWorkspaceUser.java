@@ -25,10 +25,20 @@ public class MockedWorkspaceUser implements WorkspaceUser {
 	public String getUserIdentifier() {
 		return userIdentifier;
 	}
+	
+	@Override
+	public String getUserSchoolDataSource() {
+		return getSchoolDataSource();
+	}
 
 	@Override
 	public String getWorkspaceIdentifier() {
 		return workspaceIdentifier;
+	}
+
+	@Override
+	public String getWorkspaceSchoolDataSource() {
+		return getSchoolDataSource();
 	}
 
 	private String identifier;

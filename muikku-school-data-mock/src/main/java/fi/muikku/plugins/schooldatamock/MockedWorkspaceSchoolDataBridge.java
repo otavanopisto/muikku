@@ -162,10 +162,10 @@ public class MockedWorkspaceSchoolDataBridge extends AbstractMockedSchoolDataBri
 	}
 
 	@Override
-	public List<WorkspaceUser> listWorkspaceUsers() throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+	public List<WorkspaceUser> listWorkspaceUsers(String workspaceIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
 		List<WorkspaceUser> result = new ArrayList<>();
 		try {
-			ResultSet resultSet = executeSelect("select id, workspaceIdentifier, userIdentifier from WorkspaceUser");
+			ResultSet resultSet = executeSelect("select id, workspace_id, user_id from WorkspaceUser where workspace_id = ?", workspaceIdentifier);
 			while (resultSet.next()) {
 				result.add( new MockedWorkspaceUser(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3)) );
 			}
