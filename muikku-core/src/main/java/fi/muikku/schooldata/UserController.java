@@ -17,6 +17,7 @@ import fi.muikku.dao.users.UserSchoolDataIdentifierDAO;
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserGroup;
+import fi.muikku.schooldata.entity.Role;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.UserEmail;
 
@@ -118,4 +119,12 @@ public class UserController {
     
     return filtered;
   }
+  
+  /* Roles */
+
+	public List<Role> listRoles() {
+		return userSchoolDataController.listRoles();
+	}
+  
+  
 }

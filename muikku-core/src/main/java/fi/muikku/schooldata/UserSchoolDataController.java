@@ -21,6 +21,7 @@ import fi.muikku.dao.users.UserSchoolDataIdentifierDAO;
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserSchoolDataIdentifier;
+import fi.muikku.schooldata.entity.Role;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.UserEmail;
 
@@ -183,6 +184,22 @@ class UserSchoolDataController {
 		}
 		
 		return null;
+	}
+	
+	/* Roles*/
+
+	public List<Role> listRoles() {
+		List<Role> result = new ArrayList<>();
+		
+		for (UserSchoolDataBridge userBridge : getUserBridges()) {
+			try {
+				result.addAll(userBridge.listRoles());
+			} catch (UnexpectedSchoolDataBridgeException e) {
+				logger.log(Level.SEVERE, "School Data Bridge reported a problem while listing users", e);
+			}
+		}
+		
+		return result;
 	}
 	
 	private UserSchoolDataBridge getUserBridge(SchoolDataSource schoolDataSource) {
