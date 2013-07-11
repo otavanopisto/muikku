@@ -82,7 +82,14 @@ public class SettingsPluginDescriptor implements PluginDescriptor, LocalizedPlug
 	@Override
 	public List<Class<?>> getBeans() {
 		return Collections.unmodifiableList(Arrays.asList(new Class<?>[] { 
-		  SettingsBackingBean.class,
+		  /* Backing beans */ 
+				
+			SettingsBackingBean.class,
+		  WorkspaceSettingsViewBackingBean.class,
+		  WorkspaceTypeSettingsViewBackingBean.class,
+		  
+		  /* Controllers */
+		  
 		  PluginSettingsController.class,
 		}));
 	}

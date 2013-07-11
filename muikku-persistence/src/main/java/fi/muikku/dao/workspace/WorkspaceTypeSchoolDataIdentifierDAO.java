@@ -17,7 +17,17 @@ import fi.muikku.model.workspace.WorkspaceTypeSchoolDataIdentifier_;
 @DAO
 public class WorkspaceTypeSchoolDataIdentifierDAO extends CoreDAO<WorkspaceTypeSchoolDataIdentifier> {
 
-	private static final long serialVersionUID = -1469329918761324465L;
+	private static final long serialVersionUID = 689630016231701515L;
+
+	public WorkspaceTypeSchoolDataIdentifier create(SchoolDataSource dataSource, String identifier, WorkspaceTypeEntity workspaceTypeEntity) {
+		WorkspaceTypeSchoolDataIdentifier workspaceTypeSchoolDataIdentifier = new WorkspaceTypeSchoolDataIdentifier();
+		workspaceTypeSchoolDataIdentifier.setDataSource(dataSource);
+		workspaceTypeSchoolDataIdentifier.setIdentifier(identifier);
+		workspaceTypeSchoolDataIdentifier.setWorkspaceTypeEntity(workspaceTypeEntity);
+		getEntityManager().persist(workspaceTypeSchoolDataIdentifier);
+		return workspaceTypeSchoolDataIdentifier;
+	}
+	
 
 	public WorkspaceTypeSchoolDataIdentifier findByDataSourceAndIdentifier(SchoolDataSource dataSource, String identifier) {
 		EntityManager entityManager = getEntityManager();
@@ -65,6 +75,16 @@ public class WorkspaceTypeSchoolDataIdentifierDAO extends CoreDAO<WorkspaceTypeS
     );
 
 		return entityManager.createQuery(criteria).getResultList();
+	}
+
+	public WorkspaceTypeSchoolDataIdentifier updateWorkspaceTypeEntity(WorkspaceTypeSchoolDataIdentifier workspaceTypeSchoolDataIdentifier, WorkspaceTypeEntity workspaceTypeEntity) {
+		workspaceTypeSchoolDataIdentifier.setWorkspaceTypeEntity(workspaceTypeEntity);
+		return persist(workspaceTypeSchoolDataIdentifier);
+	}
+	
+	@Override
+	public void delete(WorkspaceTypeSchoolDataIdentifier workspaceTypeSchoolDataIdentifier) {
+		super.delete(workspaceTypeSchoolDataIdentifier);
 	}
 
 }

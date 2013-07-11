@@ -3,10 +3,12 @@
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
-    template="/WEB-INF/templates/workspace.xhtml">
-    
-    <ui:define name="content">
-      <p>TODO: Workspace content</p>
-    </ui:define>
+    template="/workspaces/template.xhtml">
+   
+  <ui:define name="content">
+    #{workspaceViewBackingBean.workspaceUrlName}
+    #{workspaceViewBackingBean.workspaceId}
+  </ui:define>
 
+  
 </ui:composition>

@@ -6,7 +6,7 @@
   
     <h3>Muikku Workspace Types</h3>
   
-    <h:dataTable id="workspacetypes-table" value="#{settingsBackingBean.workspaceTypeEntities}" var="workspaceTypeEntity" style="width:100%">
+    <h:dataTable id="workspacetypes-table" value="#{workspaceTypeSettingsViewBackingBean.workspaceTypeEntities}" var="workspaceTypeEntity" style="width:100%">
       <f:facet name="header">
         <h:outputText value="All Workspace Types" />
       </f:facet>
@@ -17,16 +17,9 @@
         </f:facet>
         <h:outputText value="#{workspaceTypeEntity.name}" />
       </h:column>
-
-      <h:column>
-        <f:facet name="header">
-          <h:outputText value="Name" />
-        </f:facet>
-        <h:outputText value="#{workspaceType.name}" />
-      </h:column>
       
       <f:facet name="footer">
-        <h:outputText value="Count: #{settingsBackingBean.workspaceTypeEntities.size()}" />
+        <h:outputText value="Count: #{workspaceTypeSettingsViewBackingBean.workspaceTypeEntities.size()}" />
       </f:facet>
       
     </h:dataTable>
@@ -34,52 +27,53 @@
     <br/>
     <h3>Workspace Types for School Data</h3>
 
-    <h:dataTable id="workspacetypes-table" value="#{settingsBackingBean.allWorkspaceTypes}" var="workspaceType" style="width:100%">
-      <f:facet name="header">
-        <h:outputText value="All Workspace Types" />
-      </f:facet>
-      
-      <h:column>
-        <f:facet name="header">
-          <h:outputText value="Data Source" />
-        </f:facet>
-        <h:outputText value="#{workspaceType.schoolDataSource}" />
-      </h:column>
-      
-      <h:column>
-        <f:facet name="header">
-          <h:outputText value="Identifier" />
-        </f:facet>
-        <h:outputText value="#{workspaceType.identifier}" />
-      </h:column>
-      
-      <h:column>
-        <f:facet name="header">
-          <h:outputText value="Name" />
-        </f:facet>
-        <h:outputText value="#{workspaceType.name}" />
-      </h:column>
-
-      <h:column>
-        <f:facet name="header">
-          <h:outputText value="Name" />
-        </f:facet>
-        <h:outputText value="#{workspaceType.name}" />
-      </h:column>
-      
-      <h:column>
-        <f:facet name="header">
-          <h:outputText value="Muikku Workspace Type" />
-        </f:facet>
-        <h:outputText value="#{settingsBackingBean.getWorkspaceTypeEntity(workspaceType).name}" rendered="#{settingsBackingBean.getWorkspaceTypeEntity(workspaceType) != null}"/>
-        <h:outputText value="Unassigned" rendered="#{settingsBackingBean.getWorkspaceTypeEntity(workspaceType) == null}"/>
-      </h:column>
-      
-      <f:facet name="footer">
-        <h:outputText value="Count: #{settingsBackingBean.allWorkspaceTypes.size()}" />
-      </f:facet>
-      
-    </h:dataTable>
+    <h:panelGroup layout="block" id="workspaceTypesContainer">
+      <h:form>
+        <h:dataTable id="workspacetypes-table" value="#{workspaceTypeSettingsViewBackingBean.workspaceTypes}" var="workspaceType" style="width:100%">
+          <f:facet name="header">
+            <h:outputText value="All Workspace Types" />
+          </f:facet>
+          
+          <h:column>
+            <f:facet name="header">
+              <h:outputText value="Data Source" />
+            </f:facet>
+            <h:outputText value="#{workspaceType.schoolDataSource}" />
+          </h:column>
+          
+          <h:column>
+            <f:facet name="header">
+              <h:outputText value="Identifier" />
+            </f:facet>
+            <h:outputText value="#{workspaceType.identifier}" />
+          </h:column>
+          
+          <h:column>
+            <f:facet name="header">
+              <h:outputText value="Name" />
+            </f:facet>
+            <h:outputText value="#{workspaceType.name}" />
+          </h:column>
+          
+          <h:column>
+            <f:facet name="header">
+              <h:outputText value="Muikku Workspace Type" />
+            </f:facet>
+            
+            <h:selectOneMenu value="#{workspaceType.workspaceEntityId}" >
+              <f:selectItems value="#{workspaceTypeSettingsViewBackingBean.workspaceTypeEntitySelectItems}"/>
+            </h:selectOneMenu>
+          </h:column>
+          
+          <f:facet name="footer">
+            <h:outputText value="Count: #{workspaceTypeSettingsViewBackingBean.workspaceTypes.size()}" />
+          </f:facet>
+        </h:dataTable>
+        
+        <h:commandButton action="#{workspaceTypeSettingsViewBackingBean.saveWorkspaceTypes}" value="Save"/>
+          
+      </h:form>
+    </h:panelGroup>
     
   </ui:define>
 

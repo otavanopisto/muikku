@@ -1,6 +1,7 @@
 package fi.muikku.schooldata;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -12,6 +13,8 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+
+import org.apache.commons.lang3.StringUtils;
 
 import fi.muikku.dao.base.SchoolDataSourceDAO;
 import fi.muikku.dao.workspace.WorkspaceEntityDAO;
@@ -26,6 +29,8 @@ import fi.muikku.schooldata.entity.WorkspaceType;
 @Dependent
 @Stateful
 public class WorkspaceSchoolDataController { 
+	
+	private static final int MAX_URL_NAME_LENGTH = 30;
 	
 	// TODO: Caching 
 	// TODO: Events
@@ -61,6 +66,9 @@ public class WorkspaceSchoolDataController {
 			}
 		}
 		
+	  // TODO: This is probably not the best place for this
+		ensureWorkspaceEntities(result);
+		
 		return result;
 	}
 	
@@ -71,9 +79,14 @@ public class WorkspaceSchoolDataController {
 		if (workspaceBridge != null) {
   		workspace = workspaceBridge.findWorkspace(workspaceEntity.getIdentifier());
 		}
-		
+
+	  // TODO: This is probably not the best place for this
+		ensureWorkspaceEntities(Arrays.asList(workspace));
+
 		return workspace;
 	}
+	
+	/* Workspace Entities */
 	
 	public WorkspaceEntity findWorkspaceEntity(Workspace workspace) {
 		SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(workspace.getSchoolDataSource());
@@ -81,8 +94,39 @@ public class WorkspaceSchoolDataController {
 		return workspaceEntity;
 	}
 	
+	public WorkspaceTypeEntity findWorkspaceTypeEntity(WorkspaceType workspaceType) {
+		// TODO: Proper error handling
+		SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(workspaceType.getSchoolDataSource());
+		if (schoolDataSource != null) {
+	  	WorkspaceTypeSchoolDataIdentifier workspaceTypeSchoolDataIdentifier = workspaceTypeSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(schoolDataSource, workspaceType.getIdentifier());
+	  	if (workspaceTypeSchoolDataIdentifier != null) {
+	  		return workspaceTypeSchoolDataIdentifier.getWorkspaceTypeEntity();
+	  	}
+		} 
+
+		return null;
+	}
+	
 	/* Workspace Types */
 	
+	public WorkspaceType findWorkspaceTypeByDataSourceAndIdentifier(String schoolDataSourceIdentifier, String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+		SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSourceIdentifier);
+		if (schoolDataSource != null) {
+			return findWorkspaceTypeByDataSourceAndIdentifier(schoolDataSource, identifier);
+		} 
+		
+		return null;
+	}
+	
+	public WorkspaceType findWorkspaceTypeByDataSourceAndIdentifier(SchoolDataSource schoolDataSource, String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+		WorkspaceSchoolDataBridge schoolDataBridge = getWorkspaceBridge(schoolDataSource);
+		if (schoolDataBridge != null) {
+			return schoolDataBridge.findWorkspaceType(identifier);
+		}
+		
+		return null;
+	}
+
 	public List<WorkspaceType> listWorkspaceTypes() {
 		// TODO: This method WILL cause performance problems, replace with something more sensible 
 		
@@ -116,19 +160,6 @@ public class WorkspaceSchoolDataController {
 		return workspaceTypes;
 	}
 	
-	public WorkspaceTypeEntity findWorkspaceTypeEntity(WorkspaceType workspaceType) {
-		// TODO: Proper error handling
-		SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(workspaceType.getSchoolDataSource());
-		if (schoolDataSource != null) {
-	  	WorkspaceTypeSchoolDataIdentifier workspaceTypeSchoolDataIdentifier = workspaceTypeSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(schoolDataSource, workspaceType.getIdentifier());
-	  	if (workspaceTypeSchoolDataIdentifier != null) {
-	  		return workspaceTypeSchoolDataIdentifier.getWorkspaceTypeEntity();
-	  	}
-		} 
-
-		return null;
-	}
-	
 	private WorkspaceSchoolDataBridge getWorkspaceBridge(SchoolDataSource schoolDataSource) {
 		Iterator<WorkspaceSchoolDataBridge> iterator = workspaceBridges.iterator();
 		while (iterator.hasNext()) {
@@ -150,5 +181,26 @@ public class WorkspaceSchoolDataController {
 		}
 		
 		return Collections.unmodifiableList(result);
+	}
+	
+	private void ensureWorkspaceEntities(List<Workspace> workspaces) {
+		for (Workspace workspace : workspaces) {
+			SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(workspace.getSchoolDataSource());
+			WorkspaceEntity workspaceEntity = workspaceEntityDAO.findByDataSourceAndIdentifier(dataSource, workspace.getIdentifier());
+			if (workspaceEntity == null) {
+				String urlName = generateUrlName(workspace.getName());
+				workspaceEntityDAO.create(dataSource, workspace.getIdentifier(), urlName, Boolean.FALSE);
+			}
+		}
+	}
+
+	/**
+	 * Generates URL name from workspace name.
+	 * 
+	 * @param name original workspace name
+	 * @return URL name
+	 */
+	private String generateUrlName(String name) {
+		return StringUtils.substring(StringUtils.replace(StringUtils.stripAccents(StringUtils.lowerCase(StringUtils.trim(StringUtils.normalizeSpace(name)))), " ", "-").replaceAll("-{2,}", "-"), 0, MAX_URL_NAME_LENGTH);
 	}
 }

@@ -50,6 +50,13 @@
       <groupId>fi.muikku</groupId>
       <artifactId>security</artifactId>
     </dependency>
+    
+    <!-- Pretty Faces -->
+    
+    <dependency>
+      <groupId>com.ocpsoft</groupId>
+      <artifactId>prettyfaces-jsf2</artifactId>
+    </dependency>
   </dependencies>
 
   <build>

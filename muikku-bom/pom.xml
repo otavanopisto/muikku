@@ -24,6 +24,7 @@
     <aether-connector-wagon.version>1.13.1</aether-connector-wagon.version>
     <deltaspike.version>0.3-incubating</deltaspike.version>
     <apache-httpcomponents.version>4.1.2</apache-httpcomponents.version>
+    <prettyfaces-jsf2.version>3.3.3</prettyfaces-jsf2.version>
   </properties>
 
   <dependencyManagement>
@@ -209,6 +210,12 @@
         <groupId>org.apache.deltaspike.core</groupId>
         <artifactId>deltaspike-core-impl</artifactId>
 		<version>${deltaspike.version}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>com.ocpsoft</groupId>
+        <artifactId>prettyfaces-jsf2</artifactId>
+        <version>${prettyfaces-jsf2.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

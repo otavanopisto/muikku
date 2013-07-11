@@ -38,6 +38,14 @@ public class WorkspaceEntity implements SchoolDataEntity, ArchivableEntity, Cont
   public void setDataSource(SchoolDataSource dataSource) {
     this.dataSource = dataSource;
   }
+  
+  public String getUrlName() {
+		return urlName;
+	}
+  
+  public void setUrlName(String urlName) {
+		this.urlName = urlName;
+	}
 
   public Boolean getArchived() {
     return archived;
@@ -56,8 +64,13 @@ public class WorkspaceEntity implements SchoolDataEntity, ArchivableEntity, Cont
 	@Column(nullable = false)
 	private String identifier;
 
-  @ManyToOne
+	@ManyToOne
   private SchoolDataSource dataSource;
+
+	@NotEmpty
+	@NotNull
+	@Column(nullable = false)
+	private String urlName;
   
   @NotNull
   @Column(nullable = false)

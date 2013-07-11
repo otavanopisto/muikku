@@ -149,4 +149,11 @@ public class WidgetController {
 			defaultWidget = createDefaultWidget(widgetLocation, widget);
 		}
 	}
+	
+	public void ensureDefaultWidget(String widgetName, String location) {
+		Widget widget = findWidget(widgetName);
+		if (widget != null) {
+		  ensureDefaultWidget(widget, location);
+		}
+	}
 }
