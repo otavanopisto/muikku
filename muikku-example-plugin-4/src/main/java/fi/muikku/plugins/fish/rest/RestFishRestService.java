@@ -25,23 +25,23 @@ public class RestFishRestService extends PluginRESTService {
   @GET
   @Path("/messages")
   public Response listMessages() {
-    return Response.ok(restFishController.getTexts()).build();
+    return Response.ok(restFishController.getMessages()).build();
   }
   
   @GET
   @Path("/messages/{index: [0-9]+}")
   public Response getMessage(@PathParam("index") int index) {
-    int count = restFishController.getCount();
+    long count = restFishController.getCount();
     if (index < 0 || index >= count) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    return Response.ok(restFishController.getText(index)).build();
+    return Response.ok(restFishController.getMessage(index)).build();
   }
   
   @GET
   @Path("/messages/random")
   public Response getRandomMessage() {
-    int index = new Random().nextInt(restFishController.getCount());
-    return Response.ok(restFishController.getText(index)).build();
+    int index = (new Random().nextInt(restFishController.getCount()));
+    return Response.ok(restFishController.getMessage(index)).build();
   }
 }

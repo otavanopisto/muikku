@@ -8,11 +8,4 @@ import java.util.Random;
 @Named
 @RequestScoped
 public class RestFishWidgetBackingBean {
-  @Inject
-  private RestFishController fishWidgetController;
-  
-  public String getText() {
-    int index = new Random().nextInt(fishWidgetController.getCount());
-    return fishWidgetController.getText(index);
-  }
 }

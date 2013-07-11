@@ -11,18 +11,16 @@ import javax.enterprise.context.Dependent;
 @Dependent
 public class RestFishController {
   
-  public String getText(int index) {
-    return texts[index];
+  public FishMessage getMessage(int index) {
+    return fishMessages.getMessages()[index];
   }
   
   public int getCount() {
-    return texts.length;
+    return (int)fishMessages.getCount();
   }
   
-  public List<String> getTexts() {
-    return Collections.unmodifiableList(
-        Arrays.asList(texts)
-        );
+  public FishMessages getMessages() {
+    return fishMessages; 
   }
   
   private static final String[] texts = {
@@ -45,4 +43,15 @@ public class RestFishController {
     "Syökää kanaa, syökää kanaa!",
     "Ajattelen, siis olen!",
   };
+  
+  private static final FishMessages fishMessages;
+  
+  static {
+    FishMessage[] fishMessageArray = new FishMessage[texts.length];
+    for (int i = 0; i < fishMessageArray.length; i++) {
+      fishMessageArray[i] = new FishMessage(texts[i]);
+    }
+    
+    fishMessages = new FishMessages(fishMessageArray);
+  }
 }
