@@ -2,6 +2,7 @@ package fi.muikku.schooldata;
 
 import java.util.List;
 
+import fi.muikku.schooldata.entity.Role;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.UserEmail;
 import fi.muikku.schooldata.entity.UserImage;
@@ -220,4 +221,10 @@ public interface UserSchoolDataBridge {
 	 */
 	public List<UserProperty> listUserPropertiesByUser(String userIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
+	/* Roles */
+	
+	public List<Role> listRoles() throws UnexpectedSchoolDataBridgeException;
+	
+	public List<Role> listUserEnvironmentRoles(String userIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+	 
 }
