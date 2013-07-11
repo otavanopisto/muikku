@@ -6,7 +6,7 @@ import fi.muikku.dao.CoreDAO;
 import fi.muikku.dao.DAO;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.EnvironmentUser;
-import fi.muikku.model.users.EnvironmentUserRole;
+import fi.muikku.model.users.EnvironmentRoleEntity;
 import fi.muikku.model.users.EnvironmentUser_;
 
 import javax.persistence.EntityManager;
@@ -19,7 +19,7 @@ public class EnvironmentUserDAO extends CoreDAO<EnvironmentUser> {
 
 	private static final long serialVersionUID = 8185071427513774677L;
 
-	public EnvironmentUser create(UserEntity user, EnvironmentUserRole role) {
+	public EnvironmentUser create(UserEntity user, EnvironmentRoleEntity role) {
 		EnvironmentUser environmentUser = new EnvironmentUser();
 
 		environmentUser.setUser(user);

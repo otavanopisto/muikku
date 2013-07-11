@@ -4,9 +4,9 @@ import fi.muikku.dao.CoreDAO;
 import fi.muikku.dao.DAO;
 import fi.muikku.model.security.Permission;
 import fi.muikku.model.security.ResourceRights;
-import fi.muikku.model.security.ResourceUserRolePermission;
+import fi.muikku.model.security.ResourceRolePermission;
 import fi.muikku.model.security.ResourceUserRolePermission_;
-import fi.muikku.model.users.UserRole;
+import fi.muikku.model.users.RoleEntity;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -15,15 +15,15 @@ import javax.persistence.criteria.Root;
 
 
 @DAO
-public class ResourceUserRolePermissionDAO extends CoreDAO<ResourceUserRolePermission> {
+public class ResourceRolePermissionDAO extends CoreDAO<ResourceRolePermission> {
 
 	private static final long serialVersionUID = 4464296827090661759L;
 
-	public ResourceUserRolePermission create(ResourceRights resourceRights, UserRole userRole, Permission permission) {
-    ResourceUserRolePermission rurpermission = new ResourceUserRolePermission();
+	public ResourceRolePermission create(ResourceRights resourceRights, RoleEntity role, Permission permission) {
+    ResourceRolePermission rurpermission = new ResourceRolePermission();
     
     rurpermission.setResourcePermission(resourceRights);
-    rurpermission.setUserRole(userRole);
+    rurpermission.setRole(role);
     rurpermission.setPermission(permission);
     
     getEntityManager().persist(rurpermission);
@@ -31,21 +31,22 @@ public class ResourceUserRolePermissionDAO extends CoreDAO<ResourceUserRolePermi
     return rurpermission;
   }
   
-  public boolean hasResourcePermissionAccess(ResourceRights resourceRights, UserRole userRole, Permission permission) {
-    return findByUserRoleAndPermission(resourceRights, userRole, permission) != null;
+	// TODO: Not a DAO method
+  public boolean hasResourcePermissionAccess(ResourceRights resourceRights, RoleEntity role, Permission permission) {
+    return findByUserRoleAndPermission(resourceRights, role, permission) != null;
   }
 
-  public ResourceUserRolePermission findByUserRoleAndPermission(ResourceRights resourceRights, UserRole userRole, Permission permission) {
+  public ResourceRolePermission findByUserRoleAndPermission(ResourceRights resourceRights, RoleEntity role, Permission permission) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<ResourceUserRolePermission> criteria = criteriaBuilder.createQuery(ResourceUserRolePermission.class);
-    Root<ResourceUserRolePermission> root = criteria.from(ResourceUserRolePermission.class);
+    CriteriaQuery<ResourceRolePermission> criteria = criteriaBuilder.createQuery(ResourceRolePermission.class);
+    Root<ResourceRolePermission> root = criteria.from(ResourceRolePermission.class);
     criteria.select(root);
     criteria.where(
         criteriaBuilder.and(
             criteriaBuilder.equal(root.get(ResourceUserRolePermission_.resourcePermission), resourceRights),
-            criteriaBuilder.equal(root.get(ResourceUserRolePermission_.userRole), userRole),
+            criteriaBuilder.equal(root.get(ResourceUserRolePermission_.role), role),
             criteriaBuilder.equal(root.get(ResourceUserRolePermission_.permission), permission)
         )
     );
@@ -54,7 +55,7 @@ public class ResourceUserRolePermissionDAO extends CoreDAO<ResourceUserRolePermi
   }
 
   @Override
-  public void delete(ResourceUserRolePermission userRolePermission) {
+  public void delete(ResourceRolePermission userRolePermission) {
     super.delete(userRolePermission);
   }
   

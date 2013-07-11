@@ -8,11 +8,11 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 
-import fi.muikku.model.users.UserRole;
+import fi.muikku.model.users.RoleEntity;
 
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
-public class UserRolePermission {
+public class RolePermission {
 
   /**
    * Returns internal unique id
@@ -23,13 +23,13 @@ public class UserRolePermission {
     return id;
   }
 
-  public void setUserRole(UserRole userRole) {
-    this.userRole = userRole;
-  }
-
-  public UserRole getUserRole() {
-    return userRole;
-  }
+  public RoleEntity getRole() {
+		return role;
+	}
+  
+  public void setRole(RoleEntity role) {
+		this.role = role;
+	}
 
   public Permission getPermission() {
     return permission;
@@ -47,5 +47,5 @@ public class UserRolePermission {
   private Permission permission;
   
   @ManyToOne
-  private UserRole userRole;
+  private RoleEntity role;
 }

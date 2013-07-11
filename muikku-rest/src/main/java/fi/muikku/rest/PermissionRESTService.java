@@ -11,16 +11,16 @@ import javax.ws.rs.core.Response;
 
 import fi.muikku.controller.EnvironmentSettingsController;
 import fi.muikku.controller.ResourceRightsController;
-import fi.muikku.dao.security.CourseUserRolePermissionDAO;
-import fi.muikku.dao.security.EnvironmentUserRolePermissionDAO;
+import fi.muikku.dao.security.CourseRolePermissionDAO;
+import fi.muikku.dao.security.EnvironmentRolePermissionDAO;
 import fi.muikku.dao.security.PermissionDAO;
-import fi.muikku.dao.security.ResourceUserRolePermissionDAO;
-import fi.muikku.dao.users.UserRoleDAO;
-import fi.muikku.model.security.EnvironmentUserRolePermission;
+import fi.muikku.dao.security.ResourceRolePermissionDAO;
+import fi.muikku.dao.users.RoleEntityDAO;
+import fi.muikku.model.security.EnvironmentRolePermission;
 import fi.muikku.model.security.Permission;
 import fi.muikku.model.security.ResourceRights;
-import fi.muikku.model.security.ResourceUserRolePermission;
-import fi.muikku.model.users.UserRole;
+import fi.muikku.model.security.ResourceRolePermission;
+import fi.muikku.model.users.RoleEntity;
 import fi.muikku.security.Admin;
 import fi.muikku.session.SessionController;
 
@@ -31,13 +31,13 @@ public class PermissionRESTService extends AbstractRESTService {
 
   
   @Inject
-  private EnvironmentUserRolePermissionDAO environmentUserRolePermissionDAO;
+  private EnvironmentRolePermissionDAO environmentUserRolePermissionDAO;
 
   @Inject
-  private CourseUserRolePermissionDAO courseUserRolePermissionDAO;
+  private CourseRolePermissionDAO courseUserRolePermissionDAO;
   
   @Inject 
-  private UserRoleDAO userRoleDAO;
+  private RoleEntityDAO userRoleDAO;
 
 //  @Inject 
 //  private CourseEntityDAO courseDAO;
@@ -46,7 +46,7 @@ public class PermissionRESTService extends AbstractRESTService {
   private PermissionDAO permissionDAO;
   
   @Inject
-  private ResourceUserRolePermissionDAO resourceUserRolePermissionDAO;
+  private ResourceRolePermissionDAO resourceUserRolePermissionDAO;
   
   @Inject
   private SessionController sessionController;
@@ -69,7 +69,7 @@ public class PermissionRESTService extends AbstractRESTService {
     
     // TODO: Security
 
-    UserRole userRole = userRoleDAO.findById(userRoleId);
+    RoleEntity userRole = userRoleDAO.findById(userRoleId);
     Permission permission = permissionDAO.findById(permissionId);
 
     if ((userRole == null) || (permission == null)) {
@@ -96,7 +96,7 @@ public class PermissionRESTService extends AbstractRESTService {
     
     // TODO: Security
 
-    UserRole userRole = userRoleDAO.findById(userRoleId);
+    RoleEntity userRole = userRoleDAO.findById(userRoleId);
     Permission permission = permissionDAO.findById(permissionId);
 
     if ((userRole == null) || (permission == null)) {
@@ -104,7 +104,7 @@ public class PermissionRESTService extends AbstractRESTService {
     }
     
     try {
-      EnvironmentUserRolePermission rolePermission = environmentUserRolePermissionDAO.findByUserRoleAndPermission(
+      EnvironmentRolePermission rolePermission = environmentUserRolePermissionDAO.findByUserRoleAndPermission(
           userRole, permission);
 
       environmentSettingsController.deleteEnvironmentUserRolePermission(rolePermission);
@@ -188,7 +188,7 @@ public class PermissionRESTService extends AbstractRESTService {
     
     // TODO: Security
 
-    UserRole userRole = userRoleDAO.findById(userRoleId);
+    RoleEntity userRole = userRoleDAO.findById(userRoleId);
     Permission permission = permissionDAO.findById(permissionId);
     ResourceRights resourceRights = resourceRightsController.findResourceRightsById(resourceRightsId);
 
@@ -217,7 +217,7 @@ public class PermissionRESTService extends AbstractRESTService {
     
     // TODO: Security
 
-    UserRole userRole = userRoleDAO.findById(userRoleId);
+    RoleEntity userRole = userRoleDAO.findById(userRoleId);
     Permission permission = permissionDAO.findById(permissionId);
     ResourceRights resourceRights = resourceRightsController.findResourceRightsById(resourceRightsId);
 
@@ -226,7 +226,7 @@ public class PermissionRESTService extends AbstractRESTService {
     }
     
     try {
-      ResourceUserRolePermission rolePermission = resourceUserRolePermissionDAO.findByUserRoleAndPermission(
+      ResourceRolePermission rolePermission = resourceUserRolePermissionDAO.findByUserRoleAndPermission(
           resourceRights, userRole, permission);
       
       resourceRightsController.deleteResourceUserRolePermission(rolePermission);

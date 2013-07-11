@@ -6,7 +6,7 @@ import javax.persistence.PrimaryKeyJoinColumn;
 
 @Entity
 @PrimaryKeyJoinColumn(name="id")
-public class ResourceUserRolePermission extends UserRolePermission {
+public class ResourceRolePermission extends RolePermission {
 
   // TODO: Unique all?
 

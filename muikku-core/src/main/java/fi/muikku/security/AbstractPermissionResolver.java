@@ -7,11 +7,11 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import fi.muikku.dao.users.EnvironmentUserRoleDAO;
-import fi.muikku.model.users.EnvironmentUserRole;
-import fi.muikku.model.users.EnvironmentUserRoleType;
+import fi.muikku.dao.users.EnvironmentRoleEntityDAO;
+import fi.muikku.model.users.EnvironmentRoleEntity;
+import fi.muikku.model.users.EnvironmentRoleType;
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.model.users.UserRole;
+import fi.muikku.model.users.RoleEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 
 @RequestScoped
@@ -26,7 +26,7 @@ public class AbstractPermissionResolver {
   private Instance<UserContextResolver> userContextResolvers;
   
   @Inject
-  private EnvironmentUserRoleDAO environmentUserRoleDAO;
+  private EnvironmentRoleEntityDAO environmentUserRoleDAO;
   
   /**
    * Uses ContextResolvers to resolve course from ContextReference
@@ -58,8 +58,8 @@ public class AbstractPermissionResolver {
     return null;
   }
 
-  protected UserRole getEveryoneRole() {
-    List<EnvironmentUserRole> roles = environmentUserRoleDAO.listByEnvironmentUserRoleType(EnvironmentUserRoleType.EVERYONE);
+  protected RoleEntity getEveryoneRole() {
+    List<EnvironmentRoleEntity> roles = environmentUserRoleDAO.listByEnvironmentRoleType(EnvironmentRoleType.EVERYONE);
     if (roles.size() == 1) {
     	return roles.get(0);
     }

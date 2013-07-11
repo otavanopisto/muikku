@@ -2,10 +2,10 @@ package fi.muikku.dao.security;
 
 import fi.muikku.dao.CoreDAO;
 import fi.muikku.dao.DAO;
-import fi.muikku.model.security.CourseUserRolePermission;
+import fi.muikku.model.security.CourseRolePermission;
 import fi.muikku.model.security.CourseUserRolePermission_;
 import fi.muikku.model.security.Permission;
-import fi.muikku.model.users.UserRole;
+import fi.muikku.model.users.RoleEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 
 import javax.persistence.EntityManager;
@@ -15,15 +15,15 @@ import javax.persistence.criteria.Root;
 
 
 @DAO
-public class CourseUserRolePermissionDAO extends CoreDAO<CourseUserRolePermission> {
+public class CourseRolePermissionDAO extends CoreDAO<CourseRolePermission> {
 
 	private static final long serialVersionUID = 7065441642441234058L;
 
-	public CourseUserRolePermission create(WorkspaceEntity course, UserRole userRole, Permission permission) {
-    CourseUserRolePermission curpermission = new CourseUserRolePermission();
+	public CourseRolePermission create(WorkspaceEntity course, RoleEntity role, Permission permission) {
+    CourseRolePermission curpermission = new CourseRolePermission();
     
     curpermission.setCourse(course);
-    curpermission.setUserRole(userRole);
+    curpermission.setRole(role);
     curpermission.setPermission(permission);
     
     getEntityManager().persist(curpermission);
@@ -31,21 +31,22 @@ public class CourseUserRolePermissionDAO extends CoreDAO<CourseUserRolePermissio
     return curpermission;
   }
   
-  public boolean hasCoursePermissionAccess(WorkspaceEntity course, UserRole userRole, Permission permission) {
-    return findByUserRoleAndPermission(course, userRole, permission) != null;
+	// TODO: Not a DAO method
+  public boolean hasCoursePermissionAccess(WorkspaceEntity course, RoleEntity role, Permission permission) {
+    return findByRoleAndPermission(course, role, permission) != null;
   }
 
-  public CourseUserRolePermission findByUserRoleAndPermission(WorkspaceEntity course, UserRole userRole, Permission permission) {
+  public CourseRolePermission findByRoleAndPermission(WorkspaceEntity course, RoleEntity role, Permission permission) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<CourseUserRolePermission> criteria = criteriaBuilder.createQuery(CourseUserRolePermission.class);
-    Root<CourseUserRolePermission> root = criteria.from(CourseUserRolePermission.class);
+    CriteriaQuery<CourseRolePermission> criteria = criteriaBuilder.createQuery(CourseRolePermission.class);
+    Root<CourseRolePermission> root = criteria.from(CourseRolePermission.class);
     criteria.select(root);
     criteria.where(
         criteriaBuilder.and(
             criteriaBuilder.equal(root.get(CourseUserRolePermission_.course), course),
-            criteriaBuilder.equal(root.get(CourseUserRolePermission_.userRole), userRole),
+            criteriaBuilder.equal(root.get(CourseUserRolePermission_.role), role),
             criteriaBuilder.equal(root.get(CourseUserRolePermission_.permission), permission)
         )
     );
@@ -54,7 +55,7 @@ public class CourseUserRolePermissionDAO extends CoreDAO<CourseUserRolePermissio
   }
 
   @Override
-  public void delete(CourseUserRolePermission courseUserRolePermission) {
+  public void delete(CourseRolePermission courseUserRolePermission) {
     super.delete(courseUserRolePermission);
   }
   

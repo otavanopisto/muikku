@@ -7,7 +7,7 @@ import fi.muikku.controller.CourseController;
 import fi.muikku.controller.ResourceRightsController;
 import fi.muikku.dao.courses.CourseUserDAO;
 import fi.muikku.dao.security.PermissionDAO;
-import fi.muikku.dao.security.ResourceUserRolePermissionDAO;
+import fi.muikku.dao.security.ResourceRolePermissionDAO;
 import fi.muikku.dao.users.EnvironmentUserDAO;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.security.AbstractPermissionResolver;
@@ -20,7 +20,7 @@ import fi.muikku.security.User;
 public class CommunicatorPermissionResolver extends AbstractPermissionResolver implements PermissionResolver {
 
   @Inject
-  private ResourceUserRolePermissionDAO resourceUserRolePermissionDAO;
+  private ResourceRolePermissionDAO resourceUserRolePermissionDAO;
   
   @Inject
   private CourseUserDAO courseUserDAO;

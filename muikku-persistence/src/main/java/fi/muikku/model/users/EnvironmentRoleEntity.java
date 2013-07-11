@@ -9,23 +9,23 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @PrimaryKeyJoinColumn(name="id")
-public class EnvironmentUserRole extends UserRole {
+public class EnvironmentRoleEntity extends RoleEntity {
 
   @Override
   public UserRoleType getType() {
     return UserRoleType.ENVIRONMENT;
   }
 
-  public EnvironmentUserRoleType getEnvironmentUserRoleType() {
-		return environmentUserRoleType;
+  public EnvironmentRoleType getEnvironmentRoleType() {
+		return environmentRoleType;
 	}
   
-  public void setEnvironmentUserRoleType(EnvironmentUserRoleType environmentUserRoleType) {
-		this.environmentUserRoleType = environmentUserRoleType;
+  public void setEnvironmentRoleType(EnvironmentRoleType environmentRoleType) {
+		this.environmentRoleType = environmentRoleType;
 	}
 
   @NotNull
   @Column (nullable = false)
   @Enumerated (EnumType.STRING)
-  private EnvironmentUserRoleType environmentUserRoleType;
+  private EnvironmentRoleType environmentRoleType;
 }

@@ -8,7 +8,7 @@ import fi.muikku.model.workspace.WorkspaceEntity;
 
 @Entity
 @PrimaryKeyJoinColumn(name="id")
-public class CourseUserRolePermission extends UserRolePermission {
+public class CourseRolePermission extends RolePermission {
 
   // TODO: Unique all?
   

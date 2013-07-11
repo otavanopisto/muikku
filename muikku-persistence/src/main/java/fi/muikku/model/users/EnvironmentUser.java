@@ -31,11 +31,11 @@ public class EnvironmentUser implements ArchivableEntity {
     return user;
   }
 
-  public EnvironmentUserRole getRole() {
+  public EnvironmentRoleEntity getRole() {
     return role;
   }
 
-  public void setRole(EnvironmentUserRole role) {
+  public void setRole(EnvironmentRoleEntity role) {
     this.role = role;
   }
 
@@ -55,7 +55,7 @@ public class EnvironmentUser implements ArchivableEntity {
   private UserEntity user;
   
   @ManyToOne
-  private EnvironmentUserRole role;
+  private EnvironmentRoleEntity role;
 
   @NotNull
   @Column(nullable = false)

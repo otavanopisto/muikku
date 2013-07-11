@@ -13,8 +13,6 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.UserTransaction;
 
 import fi.muikku.model.security.Permission;
-import fi.muikku.model.users.SystemUserRole;
-import fi.muikku.model.users.SystemUserRoleType;
 import fi.muikku.security.PermissionCollection;
 import fi.muikku.security.PermissionScope;
 
@@ -34,15 +32,6 @@ public class SeedDataImporter {
 
 	@PostConstruct
 	public void importData() {
-		for (SystemUserRoleType type : SystemUserRoleType.values()) {
-			if (em.createQuery("from SystemUserRole where name = '" + type.name() + "'").getResultList().size() == 0) {
-				SystemUserRole sur = new SystemUserRole();
-				sur.setName(type.name());
-				sur.setSystemUserRoleType(type);
-				em.persist(sur);
-			}
-		}
-
 		for (PermissionCollection collection : permissionCollections) {
 			List<String> permissions = collection.listPermissions();
 

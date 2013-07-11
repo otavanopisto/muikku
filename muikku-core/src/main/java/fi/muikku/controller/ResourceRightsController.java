@@ -9,11 +9,11 @@ import javax.inject.Named;
 
 import fi.muikku.dao.security.PermissionDAO;
 import fi.muikku.dao.security.ResourceRightsDAO;
-import fi.muikku.dao.security.ResourceUserRolePermissionDAO;
+import fi.muikku.dao.security.ResourceRolePermissionDAO;
 import fi.muikku.model.security.Permission;
 import fi.muikku.model.security.ResourceRights;
-import fi.muikku.model.security.ResourceUserRolePermission;
-import fi.muikku.model.users.UserRole;
+import fi.muikku.model.security.ResourceRolePermission;
+import fi.muikku.model.users.RoleEntity;
 import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.security.PermissionScope;
 import fi.muikku.security.Permit;
@@ -27,7 +27,7 @@ public class ResourceRightsController {
   private PermissionDAO permissionDAO;
   
   @Inject
-  private ResourceUserRolePermissionDAO resourceUserRolePermissionDAO;
+  private ResourceRolePermissionDAO resourceUserRolePermissionDAO;
   
   @Inject
   private ResourceRightsDAO resourceRightsDAO;
@@ -45,17 +45,17 @@ public class ResourceRightsController {
     return resourceRightsDAO.create();
   }
   
-  public boolean hasResourceRolePermission(ResourceRights resourceRights, UserRole userRole, Permission permission) {
-    return resourceUserRolePermissionDAO.hasResourcePermissionAccess(resourceRights, userRole, permission);
+  public boolean hasResourceRolePermission(ResourceRights resourceRights, RoleEntity role, Permission permission) {
+    return resourceUserRolePermissionDAO.hasResourcePermissionAccess(resourceRights, role, permission);
   }
   
   @Permit (MuikkuPermissions.MANAGE_RESOURCERIGHTS)
-  public ResourceUserRolePermission addResourceUserRolePermission(ResourceRights resourceRights, UserRole userRole, Permission permission) {
-    return resourceUserRolePermissionDAO.create(resourceRights, userRole, permission);
+  public ResourceRolePermission addResourceUserRolePermission(ResourceRights resourceRights, RoleEntity role, Permission permission) {
+    return resourceUserRolePermissionDAO.create(resourceRights, role, permission);
   }
   
   @Permit (MuikkuPermissions.MANAGE_RESOURCERIGHTS)
-  public void deleteResourceUserRolePermission(ResourceUserRolePermission rolePermission) {
+  public void deleteResourceUserRolePermission(ResourceRolePermission rolePermission) {
     resourceUserRolePermissionDAO.delete(rolePermission);
   }
 

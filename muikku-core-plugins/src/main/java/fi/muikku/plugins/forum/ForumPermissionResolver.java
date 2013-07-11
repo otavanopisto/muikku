@@ -7,13 +7,13 @@ import fi.muikku.controller.CourseController;
 import fi.muikku.controller.ResourceRightsController;
 import fi.muikku.dao.courses.CourseUserDAO;
 import fi.muikku.dao.security.PermissionDAO;
-import fi.muikku.dao.security.ResourceUserRolePermissionDAO;
+import fi.muikku.dao.security.ResourceRolePermissionDAO;
 import fi.muikku.dao.users.EnvironmentUserDAO;
 import fi.muikku.model.courses.CourseUser;
 import fi.muikku.model.security.Permission;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.EnvironmentUser;
-import fi.muikku.model.users.UserRole;
+import fi.muikku.model.users.RoleEntity;
 import fi.muikku.plugins.forum.model.CourseForumArea;
 import fi.muikku.plugins.forum.model.ForumArea;
 import fi.muikku.plugins.forum.model.ForumThread;
@@ -26,7 +26,7 @@ import fi.muikku.security.User;
 public class ForumPermissionResolver extends AbstractPermissionResolver implements PermissionResolver {
 
   @Inject
-  private ResourceUserRolePermissionDAO resourceUserRolePermissionDAO;
+  private ResourceRolePermissionDAO resourceUserRolePermissionDAO;
   
   @Inject
   private CourseUserDAO courseUserDAO;
@@ -57,7 +57,7 @@ public class ForumPermissionResolver extends AbstractPermissionResolver implemen
     Permission perm = permissionDAO.findByName(permission);
     UserEntity userEntity = getUserEntity(user);
     
-    UserRole userRole;
+    RoleEntity userRole;
     
     // TODO: typecasts
     if (forumArea instanceof CourseForumArea) {
@@ -79,7 +79,7 @@ public class ForumPermissionResolver extends AbstractPermissionResolver implemen
   @Override
   public boolean hasEveryonePermission(String permission, ContextReference contextReference) {
     ForumArea forumArea = getForumArea(contextReference);
-    UserRole userRole = getEveryoneRole();
+    RoleEntity userRole = getEveryoneRole();
     Permission perm = permissionDAO.findByName(permission);
     
     return resourceUserRolePermissionDAO.hasResourcePermissionAccess(

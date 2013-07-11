@@ -9,9 +9,9 @@ import javax.inject.Inject;
 
 import fi.muikku.dao.courses.CourseUserDAO;
 import fi.muikku.dao.security.CourseUserPermissionOverrideDAO;
-import fi.muikku.dao.security.CourseUserRolePermissionDAO;
+import fi.muikku.dao.security.CourseRolePermissionDAO;
 import fi.muikku.dao.security.EnvironmentUserPermissionOverrideDAO;
-import fi.muikku.dao.security.EnvironmentUserRolePermissionDAO;
+import fi.muikku.dao.security.EnvironmentRolePermissionDAO;
 import fi.muikku.dao.security.PermissionDAO;
 import fi.muikku.dao.users.EnvironmentUserDAO;
 import fi.muikku.dao.users.SuperUserDAO;
@@ -27,10 +27,10 @@ public abstract class AbstractSessionController implements SessionController {
   private SuperUserDAO superUserDAO;
 
   @Inject
-  private EnvironmentUserRolePermissionDAO environmentUserRolePermissionDAO;
+  private EnvironmentRolePermissionDAO environmentUserRolePermissionDAO;
 
   @Inject
-  private CourseUserRolePermissionDAO courseUserRolePermissionDAO;
+  private CourseRolePermissionDAO courseUserRolePermissionDAO;
 
   @Inject
   private EnvironmentUserDAO environmentUserDAO;

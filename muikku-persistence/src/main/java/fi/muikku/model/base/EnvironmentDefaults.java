@@ -7,16 +7,16 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 import fi.muikku.model.courses.CourseUserRole;
-import fi.muikku.model.users.EnvironmentUserRole;
+import fi.muikku.model.users.EnvironmentRoleEntity;
 
 @Entity
 public class EnvironmentDefaults {
 
-  public EnvironmentUserRole getDefaultUserRole() {
+  public EnvironmentRoleEntity getDefaultUserRole() {
     return defaultUserRole;
   }
 
-  public void setDefaultUserRole(EnvironmentUserRole defaultUserRole) {
+  public void setDefaultUserRole(EnvironmentRoleEntity defaultUserRole) {
     this.defaultUserRole = defaultUserRole;
   }
 
@@ -37,7 +37,7 @@ public class EnvironmentDefaults {
   private Long id;
   
   @ManyToOne
-  private EnvironmentUserRole defaultUserRole;
+  private EnvironmentRoleEntity defaultUserRole;
 
   @ManyToOne
   private CourseUserRole defaultCourseCreatorRole;

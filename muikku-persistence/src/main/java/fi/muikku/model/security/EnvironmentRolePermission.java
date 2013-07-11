@@ -5,6 +5,6 @@ import javax.persistence.PrimaryKeyJoinColumn;
 
 @Entity
 @PrimaryKeyJoinColumn(name="id")
-public class EnvironmentUserRolePermission extends UserRolePermission {
+public class EnvironmentRolePermission extends RolePermission {
 
 }

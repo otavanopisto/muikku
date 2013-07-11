@@ -1,6 +1,6 @@
 package fi.muikku.model.users;
 
-public enum EnvironmentUserRoleType {
+public enum EnvironmentRoleType {
 
 	NORMAL, 
 

@@ -13,7 +13,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
-public class UserRole {
+public class RoleEntity {
 
   public Long getId() {
     return id;
