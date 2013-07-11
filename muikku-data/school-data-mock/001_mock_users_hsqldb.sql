@@ -25,7 +25,15 @@ insert into User (firstName, lastName) values
 	('Tar', 'Telemnar'),
 	('Tar', 'Palantir'),
 	('Tar', 'Míriel'),
-	('Tar', 'Calion');
+	('Tar', 'Calion'),
+	('Ingwë', ''),
+	('Finwë', ''),
+	('Fangorn', ''),
+	('Finglas', ''),
+	('Fladrif', ''),
+	('Beechbone', ''),
+	('Bregalad', ''),
+	('Fimbrethil', '');
 	
 insert into UserEmail (user_id, address) values 
 	(00, 'elros-tar-minyatur@armenelos.me'),
@@ -54,5 +62,12 @@ insert into UserEmail (user_id, address) values
 	(23, 'tar-telemnar@armenelos.me'),
 	(24, 'tar-palantir@armenelos.me'),
 	(25, 'tar-miriel@armenelos.me'),
-	(26, 'tar-calion@armenelos.me');
+	(26, 'ingwe@vanyar.vlr'),
+	(27, 'finwe@vanyar.vlr'),
+	(28, 'fangorn@fangorn.me'),
+	(29, 'finglas@fangorn.me'),
+	(30, 'fladrif@fangorn.me'),
+	(31, 'beechbone@fangorn.me'),
+	(32, 'bregalad@fangorn.me'),
+	(33, 'fimbrethil@fangorn.me');
 
