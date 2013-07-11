@@ -166,6 +166,20 @@
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-plugins.png'));
 }
 
+.naviIconSettingsNavigationPlugins.disabled{
+  opacity:0.2;
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-plugins.png'));
+}
+
+.naviIconSettingsNavigationRoles {
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-roles.png'));
+}
+
+.naviIconSettingsNavigationRoles.disabled{
+  opacity:0.2;
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-roles.png'));
+}
+
 /* Workspace */
 
 .naviIconWorkspaceNavigationMembers.disabled{
