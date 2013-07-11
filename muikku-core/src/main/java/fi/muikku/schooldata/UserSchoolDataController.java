@@ -25,7 +25,7 @@ import fi.muikku.schooldata.entity.User;
 
 @Dependent
 @Stateful
-public class UserSchoolDataController { 
+class UserSchoolDataController { 
 	
 	// TODO: Caching 
 	// TODO: Events
@@ -68,13 +68,19 @@ public class UserSchoolDataController {
 		return result;
 	}
 
-	public List<User> listUsersByEmail(String email) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+	public List<User> listUsersByEmail(String email) {
 		List<User> result = new ArrayList<User>();
 		
 		for (UserSchoolDataBridge userBridge : getUserBridges()) {
-			User user = userBridge.findUserByEmail(email);
-			if (user != null) {
-			  result.add(user);
+			try {
+				User user = userBridge.findUserByEmail(email);
+				if (user != null) {
+				  result.add(user);
+				}
+			} catch (SchoolDataBridgeRequestException e) {
+				logger.log(Level.SEVERE, "SchoolDataBridge reported error while listing users by email", e);
+			} catch (UnexpectedSchoolDataBridgeException e) {
+				logger.log(Level.SEVERE, "SchoolDataBridge reported error while listing users by email", e);
 			}
 		}
 		
@@ -84,21 +90,30 @@ public class UserSchoolDataController {
 		return result;
 	}
 	
-	public User findUser(SchoolDataSource schoolDataSource, UserEntity userEntity) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+	public User findUser(SchoolDataSource schoolDataSource, UserEntity userEntity) {
 		User user = null;
 		
 		UserSchoolDataBridge userBridge = getUserBridge(schoolDataSource);
 		if (userBridge != null) {
   		UserSchoolDataIdentifier schoolDataIdentifier = userSchoolDataIdentifierDAO.findByDataSourceAndUserEntity(schoolDataSource, userEntity);
 	  	if (schoolDataIdentifier != null) {
-	  		user = userBridge.findUser(schoolDataIdentifier.getIdentifier());
+	  		try {
+					user = userBridge.findUser(schoolDataIdentifier.getIdentifier());
+	  		} catch (SchoolDataBridgeRequestException e) {
+					logger.log(Level.SEVERE, "SchoolDataBridge reported error while finding user", e);
+				} catch (UnexpectedSchoolDataBridgeException e) {
+					logger.log(Level.SEVERE, "SchoolDataBridge reported error while finding user", e);
+				}
 		  }
 		}
 		
-		// TODO: This is propably not the best place for this
-		ensureUserEntities(Arrays.asList(user));
+		if (user != null) {
+  		// TODO: This is propably not the best place for this
+  		ensureUserEntities(Arrays.asList(user));
+  		return user;
+		}
 		
-		return user;
+		return null;
 	}
 
 	public User findUser(UserEntity userEntity) {
@@ -106,14 +121,9 @@ public class UserSchoolDataController {
 		
 		List<UserSchoolDataIdentifier> identifiers = userSchoolDataIdentifierDAO.listByUserEntity(userEntity);
 		for (UserSchoolDataIdentifier identifier : identifiers) {
-			User user;
-			try {
-				user = findUser(identifier.getDataSource(), userEntity);
-				if (user != null) {
-					return user;
-				}
-			} catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
-				logger.log(Level.SEVERE, "SchoolDataBridge reported error while finding user", e);
+			User user = findUser(identifier.getDataSource(), userEntity);
+			if (user != null) {
+				return user;
 			}
 		}
 

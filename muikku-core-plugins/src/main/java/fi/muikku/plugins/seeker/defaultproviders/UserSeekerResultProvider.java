@@ -1,18 +1,13 @@
 package fi.muikku.plugins.seeker.defaultproviders;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import fi.muikku.controller.UserController;
 import fi.muikku.i18n.LocaleController;
-import fi.muikku.model.users.EnvironmentUser;
-import fi.muikku.plugins.seeker.DefaultSeekerResultImpl;
 import fi.muikku.plugins.seeker.SeekerResult;
 import fi.muikku.plugins.seeker.SeekerResultProvider;
-import fi.muikku.schooldata.UserSchoolDataController;
-import fi.muikku.schooldata.entity.User;
+import fi.muikku.schooldata.UserController;
 import fi.muikku.session.SessionController;
 
 public class UserSeekerResultProvider implements SeekerResultProvider {
@@ -22,18 +17,16 @@ public class UserSeekerResultProvider implements SeekerResultProvider {
   
   @Inject
   private LocaleController localeController;
-    
+  
   @Inject
   private UserController userController;
   
-  @Inject
-  private UserSchoolDataController userSchoolDataController;
-  
   @Override
   public List<SeekerResult> search(String searchTerm) {
-    return seekerify(userController.listEnvironmentUsers(), searchTerm);
+//    return seekerify(userController.listEnvironmentUsers(), searchTerm);
+  	return null;
   }
-
+/**
   private List<SeekerResult> seekerify(List<EnvironmentUser> list, String searchTerm) {
     List<SeekerResult> result = new ArrayList<SeekerResult>();
 
@@ -56,5 +49,5 @@ public class UserSeekerResultProvider implements SeekerResultProvider {
     
     return result;
   }
-  
+**/  
 }

@@ -2,10 +2,10 @@ package fi.muikku.plugins.communicator;
 
 import javax.inject.Inject;
 
-import fi.muikku.controller.UserController;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
+import fi.muikku.schooldata.UserController;
 import fi.muikku.security.ContextReference;
 import fi.muikku.security.UserContextResolver;
 
@@ -24,11 +24,11 @@ public class CommunicatorInboxOwnerContextResolverImpl implements UserContextRes
   @Override
   public UserEntity resolveUser(ContextReference contextReference) {
     if (CommunicatorMessageSignature.class.isInstance(contextReference)) {
-      return userController.findUserEntity(((CommunicatorMessageSignature) contextReference).getUser());
+      return userController.findUserEntityById(((CommunicatorMessageSignature) contextReference).getUser());
     }
 
     if (CommunicatorMessageTemplate.class.isInstance(contextReference)) {
-      return userController.findUserEntity(((CommunicatorMessageTemplate) contextReference).getUser());
+      return userController.findUserEntityById(((CommunicatorMessageTemplate) contextReference).getUser());
     }
     
     return null;

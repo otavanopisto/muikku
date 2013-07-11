@@ -6,9 +6,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import fi.muikku.controller.CourseController;
-import fi.muikku.controller.UserController;
 import fi.muikku.rest.AbstractRESTService;
-import fi.muikku.schooldata.UserSchoolDataController;
+import fi.muikku.schooldata.UserController;
 import fi.muikku.session.SessionController;
 import fi.tranquil.TranquilityBuilderFactory;
 
@@ -25,9 +24,6 @@ public class CourseRESTService extends AbstractRESTService {
   
   @Inject
   private UserController userController;
-  
-  @Inject
-  private UserSchoolDataController userSchoolDataController;
   
 //  @Inject
 //  private WallController wallController;

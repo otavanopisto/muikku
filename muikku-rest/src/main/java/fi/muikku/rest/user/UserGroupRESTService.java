@@ -11,9 +11,9 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import fi.muikku.controller.SchoolBridgeController;
-import fi.muikku.controller.UserController;
 import fi.muikku.model.users.UserGroup;
 import fi.muikku.rest.AbstractRESTService;
+import fi.muikku.schooldata.UserController;
 import fi.muikku.session.SessionController;
 import fi.muikku.session.local.LocalSession;
 import fi.muikku.session.local.LocalSessionController;

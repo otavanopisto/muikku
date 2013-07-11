@@ -11,7 +11,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
-import fi.muikku.controller.UserController;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.forum.ForumController;
@@ -20,7 +19,7 @@ import fi.muikku.plugins.forum.model.ForumThreadReply;
 import fi.muikku.plugins.wall.UserFeedItem;
 import fi.muikku.plugins.wall.WallController;
 import fi.muikku.plugins.wall.model.Wall;
-import fi.muikku.schooldata.UserSchoolDataController;
+import fi.muikku.schooldata.UserController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.session.SessionController;
 import fi.tranquil.TranquilModelEntity;
@@ -46,9 +45,6 @@ public class WallRESTService extends PluginRESTService {
   private UserController userController;
   
   @Inject
-  private UserSchoolDataController userSchoolDataController;
-  
-  @Inject
   private WallController wallController;
 
   @Inject
@@ -58,7 +54,7 @@ public class WallRESTService extends PluginRESTService {
   @Path ("/listUserFeedItems")
   public Response listUserFeedItems( 
       @QueryParam("userId") Long userId) {
-    UserEntity user = userController.findUserEntity(userId); 
+    UserEntity user = userController.findUserEntityById(userId); 
     
     List<UserFeedItem> userFeedItems = wallController.listUserFeedItems(user);
 
@@ -197,7 +193,7 @@ public class WallRESTService extends PluginRESTService {
     @Override
     public Boolean getValue(TranquilizingContext context) {
       UserEntity user = (UserEntity) context.getEntityValue();
-      return userController.getUserHasPicture(user);
+      return userController.hasPicture(user);
     }
   }
 
@@ -205,7 +201,7 @@ public class WallRESTService extends PluginRESTService {
     @Override
     public String getValue(TranquilizingContext context) {
       UserEntity userEntity = (UserEntity) context.getEntityValue();
-      User user = userSchoolDataController.findUser(userEntity);
+      User user = userController.findUser(userEntity);
       return user.getFirstName() + " " + user.getLastName();
     }
   }

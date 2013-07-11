@@ -11,7 +11,6 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.LocaleUtils;
 
-import fi.muikku.controller.UserController;
 import fi.muikku.controller.WidgetController;
 import fi.muikku.i18n.LocaleBundle;
 import fi.muikku.i18n.LocaleLocation;
@@ -33,9 +32,6 @@ public class InternalLoginPluginDescriptor implements PluginDescriptor, Persiste
 
   @Inject
   private WidgetController widgetController;
-
-  @Inject
-  private UserController userController;
 
   @Override
   public String getName() {
