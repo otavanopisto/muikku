@@ -9,6 +9,8 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.muikku.dao.DAO;
+import fi.muikku.dao.users.RoleEntityDAO;
+import fi.muikku.model.users.RoleEntity;
 import fi.muikku.plugins.schooldatalocal.dao.LocalUserDAO;
 import fi.muikku.plugins.schooldatalocal.dao.LocalUserEmailDAO;
 import fi.muikku.plugins.schooldatalocal.dao.LocalUserImageDAO;
@@ -46,8 +48,11 @@ public class LocalUserSchoolDataController {
 	@Inject
 	private LocalUserPropertyDAO localUserPropertyDAO;
 
+	@Inject
+	private RoleEntityDAO roleEntityDAO;
+	
 	public LocalUser createUser(String firstName, String lastName) {
-		return localUserDAO.create(firstName, lastName, Boolean.FALSE);
+		return localUserDAO.create(firstName, lastName, null, Boolean.FALSE);
 	}
 
 	public LocalUser findUser(String identifier) {
@@ -225,6 +230,18 @@ public class LocalUserSchoolDataController {
 		} else {
 			return null;
 		}
+	}
+	public RoleEntity findCoreRoleEntityById(Long id) {
+		return roleEntityDAO.findById(id);
+	}
+	
+
+	public RoleEntity findCoreRoleEntityByIdentifier(String identifier) {
+		return findCoreRoleEntityById(NumberUtils.createLong(identifier));
+	}
+	
+	public List<RoleEntity> listCoreRoleEntities() {
+		return roleEntityDAO.listAll();
 	}
 
 }

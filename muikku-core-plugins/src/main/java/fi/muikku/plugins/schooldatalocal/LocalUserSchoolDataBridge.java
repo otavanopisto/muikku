@@ -9,6 +9,8 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fi.muikku.model.users.RoleEntity;
+import fi.muikku.plugins.schooldatalocal.entities.LocalRoleImpl;
 import fi.muikku.plugins.schooldatalocal.entities.LocalUserEmailImpl;
 import fi.muikku.plugins.schooldatalocal.entities.LocalUserImageImpl;
 import fi.muikku.plugins.schooldatalocal.entities.LocalUserImpl;
@@ -20,6 +22,8 @@ import fi.muikku.plugins.schooldatalocal.model.LocalUserProperty;
 import fi.muikku.schooldata.SchoolDataBridgeRequestException;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 import fi.muikku.schooldata.UserSchoolDataBridge;
+import fi.muikku.schooldata.entity.Role;
+import fi.muikku.schooldata.entity.RoleType;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.UserEmail;
 import fi.muikku.schooldata.entity.UserImage;
@@ -347,6 +351,60 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 		return result;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<Role> listRoles() throws UnexpectedSchoolDataBridgeException {
+		List<Role> result = new ArrayList<>();
+		
+		List<RoleEntity> roleEntities = localUserSchoolDataController.listCoreRoleEntities();
+		for (RoleEntity roleEntity : roleEntities) {
+			result.add(new LocalRoleImpl(roleEntity.getId().toString(), roleEntity.getName(), RoleType.valueOf(roleEntity.getType().toString())));
+		}
+		
+		return result;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Role findRole(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+		if (!StringUtils.isNumeric(identifier)) {
+			throw new SchoolDataBridgeRequestException("identifier is invalid");
+		}
+
+		RoleEntity roleEntity = localUserSchoolDataController.findCoreRoleEntityByIdentifier(identifier);
+		if (roleEntity != null) {
+		  return new LocalRoleImpl(roleEntity.getId().toString(), roleEntity.getName(), RoleType.valueOf(roleEntity.getType().toString()));
+		} else {
+			throw new SchoolDataBridgeRequestException("Role not found");
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Role findUserEnvironmentRole(String userIdentifier) throws SchoolDataBridgeRequestException ,UnexpectedSchoolDataBridgeException {
+		LocalUser user = localUserSchoolDataController.findUser(userIdentifier);
+		if (user == null) {
+			throw new SchoolDataBridgeRequestException("User not found");
+		}
+		
+		Long roleId = user.getRoleId();
+		if (roleId != null) {
+			RoleEntity roleEntity = localUserSchoolDataController.findCoreRoleEntityById(roleId);
+			if (roleEntity == null) {
+				throw new UnexpectedSchoolDataBridgeException("User role could not be found");
+			}
+			
+		  return new LocalRoleImpl(roleEntity.getId().toString(), roleEntity.getName(), RoleType.valueOf(roleEntity.getType().toString()));
+		}
+		
+		return null;
+	};
+	
 	private User toLocalUserImpl(LocalUser localUser) {
 		if (localUser != null) {
 			return new LocalUserImpl(localUser.getId().toString(), localUser.getFirstName(), localUser.getLastName());
@@ -378,5 +436,4 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 		
 		return null;
 	}
-
 }

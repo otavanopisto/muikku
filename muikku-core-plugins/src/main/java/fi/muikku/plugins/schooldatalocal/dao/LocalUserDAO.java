@@ -9,10 +9,11 @@ public class LocalUserDAO extends PluginDAO<LocalUser> {
 
 	private static final long serialVersionUID = 3392878990947754605L;
 
-	public LocalUser create(String firstName, String lastName, Boolean archived) {
+	public LocalUser create(String firstName, String lastName, Long roleId, Boolean archived) {
 		LocalUser localUser = new LocalUser();
 		localUser.setFirstName(firstName);
 		localUser.setLastName(lastName);
+		localUser.setRoleId(roleId);
 		localUser.setArchived(archived);
 		
 		return persist(localUser);
@@ -25,6 +26,11 @@ public class LocalUserDAO extends PluginDAO<LocalUser> {
 
 	public LocalUser updateLastName(LocalUser localUser, String lastName) {
 		localUser.setLastName(lastName);
+		return persist(localUser);
+	}
+
+	public LocalUser updateRoleId(LocalUser localUser, Long roleId) {
+		localUser.setRoleId(roleId);
 		return persist(localUser);
 	}
 

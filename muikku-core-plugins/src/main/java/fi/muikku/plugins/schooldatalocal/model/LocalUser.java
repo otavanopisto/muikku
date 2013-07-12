@@ -39,6 +39,14 @@ public class LocalUser implements ArchivableEntity {
   public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
+  
+  public void setRoleId(Long roleId) {
+		this.roleId = roleId;
+	}
+  
+  public Long getRoleId() {
+		return roleId;
+	}
 
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
@@ -51,4 +59,7 @@ public class LocalUser implements ArchivableEntity {
   private String firstName;
   
   private String lastName;
+  
+  // Many To One reference into core RoleEntity 
+  private Long roleId;
 }
