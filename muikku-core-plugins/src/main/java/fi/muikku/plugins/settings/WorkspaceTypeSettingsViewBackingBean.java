@@ -2,6 +2,7 @@ package fi.muikku.plugins.settings;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -11,6 +12,7 @@ import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import edu.emory.mathcs.backport.java.util.Collections;
 import fi.muikku.model.workspace.WorkspaceTypeEntity;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.WorkspaceType;
@@ -40,13 +42,22 @@ public class WorkspaceTypeSettingsViewBackingBean implements Serializable {
 	@PostConstruct
 	public void init() {
 		workspaceTypes = new ArrayList<>();
-		for (WorkspaceType workspaceType : workspaceController.listWorkspaceTypes()) {
-			WorkspaceTypeEntity entity = workspaceController.findWorkspaceTypeEntity(workspaceType);
+		
+		List<WorkspaceType> types = workspaceController.listWorkspaceTypes();
+		Collections.sort(types, new Comparator<WorkspaceType>() {
+			@Override
+			public int compare(WorkspaceType o1, WorkspaceType o2) {
+				return o1.getIdentifier().compareTo(o2.getIdentifier());
+			}
+		});
+		
+		for (WorkspaceType type : types) {
+			WorkspaceTypeEntity entity = workspaceController.findWorkspaceTypeEntity(type);
 
 			workspaceTypes.add(new WorkspaceTypeBean(
-					workspaceType.getIdentifier(), 
-					workspaceType.getName(), 
-					workspaceType.getSchoolDataSource(),
+					type.getIdentifier(), 
+					type.getName(), 
+					type.getSchoolDataSource(),
 					entity != null ? entity.getId() : null)
 			);
 		}
