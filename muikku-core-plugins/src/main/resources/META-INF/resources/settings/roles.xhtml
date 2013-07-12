@@ -5,8 +5,87 @@
   <ui:define name="content">
   
     <h3>Muikku Roles</h3>
+    
+    <h:panelGroup layout="block" id="entities-container">
+      <h:form>
+        <h:dataTable id="roles-table" value="#{rolesSettingsViewBackingBean.roleEntities}" var="roleEntity" style="width:100%">
+          <f:facet name="header">
+            <h:outputText value="All Roles" />
+          </f:facet>
+          
+          <h:column>
+            <f:facet name="header">
+              <h:outputText value="Identifier" />
+            </f:facet>
+            <h:outputText value="#{roleEntity.id}" />
+          </h:column>
+          
+          <h:column>
+            <f:facet name="header">
+              <h:outputText value="Name" />
+            </f:facet>
+            <h:outputText value="#{roleEntity.name}" />
+          </h:column>
+          
+          <f:facet name="footer">
+            <h:outputText value="Count: #{rolesSettingsViewBackingBean.roleEntities.size()}" />
+          </f:facet>
+        </h:dataTable>
+        
+      </h:form>
+    </h:panelGroup>
+    
     <br/>
     <h3>Roles from School Data</h3>
+    
+    <h:panelGroup layout="block" id="roles-container">
+      <h:form>
+        <h:dataTable id="roles-table" value="#{rolesSettingsViewBackingBean.roles}" var="role" style="width:100%">
+          <f:facet name="header">
+            <h:outputText value="All Roles" />
+          </f:facet>
+          
+          <h:column>
+            <f:facet name="header">
+              <h:outputText value="Data Source" />
+            </f:facet>
+            <h:outputText value="#{role.schoolDataSource}" />
+          </h:column>
+          
+          <h:column>
+            <f:facet name="header">
+              <h:outputText value="Identifier" />
+            </f:facet>
+            <h:outputText value="#{role.identifier}" />
+          </h:column>
+          
+          <h:column>
+            <f:facet name="header">
+              <h:outputText value="Name" />
+            </f:facet>
+            <h:outputText value="#{role.name}" />
+          </h:column>
+          
+          <h:column>
+            <f:facet name="header">
+              <h:outputText value="Muikku Role" />
+            </f:facet>
+            
+            <h:selectOneMenu value="#{role.entityId}">
+              <f:selectItems value="#{rolesSettingsViewBackingBean.getRoleSelectItems(role.type)}"/>
+            </h:selectOneMenu>
+          </h:column>
+          
+          <f:facet name="footer">
+            <h:outputText value="Count: #{rolesSettingsViewBackingBean.roles.size()}" />
+          </f:facet>
+        </h:dataTable>
+        
+        <h:commandButton action="#{rolesSettingsViewBackingBean.saveRoles}" value="Save"/>
+          
+      </h:form>
+    </h:panelGroup>
+    
     
   </ui:define>
 

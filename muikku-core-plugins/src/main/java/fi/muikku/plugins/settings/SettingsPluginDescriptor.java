@@ -98,6 +98,7 @@ public class SettingsPluginDescriptor implements PluginDescriptor, LocalizedPlug
 				
 			SettingsBackingBean.class,
 		  WorkspaceSettingsViewBackingBean.class,
+		  RolesSettingsViewBackingBean.class,
 		  WorkspaceTypeSettingsViewBackingBean.class,
 		  
 		  /* Controllers */
