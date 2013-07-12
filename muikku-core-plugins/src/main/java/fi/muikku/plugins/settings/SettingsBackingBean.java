@@ -8,9 +8,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import fi.muikku.model.plugins.Plugin;
-import fi.muikku.schooldata.UserController;
 import fi.muikku.schooldata.WorkspaceController;
-import fi.muikku.schooldata.entity.User;
 import fi.muikku.widgets.WidgetSpaceSet;
 import fi.muikku.widgets.WidgetSpaceSetItem;
 import fi.muikku.widgets.WidgetSpaceSizingStrategy;
