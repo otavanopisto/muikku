@@ -223,8 +223,10 @@ public interface UserSchoolDataBridge {
 	
 	/* Roles */
 	
+	public Role findRole(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+
 	public List<Role> listRoles() throws UnexpectedSchoolDataBridgeException;
 	
-	public List<Role> listUserEnvironmentRoles(String userIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
-	 
+	public Role findUserEnvironmentRole(String userIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+
 }
