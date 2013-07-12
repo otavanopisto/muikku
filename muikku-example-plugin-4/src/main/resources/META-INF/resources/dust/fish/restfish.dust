@@ -1,0 +1,6 @@
+<div class="widget fishWidget">
+  <span class="fishImage"></span>
+  <span class="fishNotch"></span><span class="fishText">
+    {content}
+  </span>
+</div>
