@@ -39,15 +39,17 @@ class UserSchoolDataController {
 	private Instance<UserSchoolDataBridge> userBridges;
 	
 	@Inject
-	@Any
+  @SchoolDataBridgeEntityInitiator ( entity = User.class )
 	private Instance<SchoolDataEntityInitiator<User>> userInitiators;
 
 	@Inject
 	@Any
+	@SchoolDataBridgeEntityInitiator ( entity = UserEmail.class )
 	private Instance<SchoolDataEntityInitiator<UserEmail>> userEmailInitiators;
 
 	@Inject
 	@Any
+	@SchoolDataBridgeEntityInitiator ( entity = Role.class )
 	private Instance<SchoolDataEntityInitiator<Role>> roleInitiators;
 	
 	@Inject

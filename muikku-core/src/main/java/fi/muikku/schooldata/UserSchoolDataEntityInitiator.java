@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.ejb.Stateless;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import fi.muikku.dao.base.SchoolDataSourceDAO;
@@ -14,6 +16,9 @@ import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserSchoolDataIdentifier;
 import fi.muikku.schooldata.entity.User;
 
+@Stateless
+@Dependent
+@SchoolDataBridgeEntityInitiator ( entity = User.class )
 public class UserSchoolDataEntityInitiator implements SchoolDataEntityInitiator<User> {
 
 	@Inject
