@@ -18,6 +18,7 @@ import fi.muikku.model.users.RoleEntity;
 import fi.muikku.model.users.RoleSchoolDataIdentifier;
 import fi.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.muikku.schooldata.entity.Role;
+import fi.muikku.schooldata.entity.User;
 
 @Dependent
 @Stateless
@@ -45,6 +46,14 @@ public class RoleController {
   private RoleSchoolDataIdentifierDAO roleSchoolDataIdentifierDAO;
   
   /* Roles */
+
+	public Role findRole(SchoolDataSource dataSource, String identifier) {
+		return userSchoolDataController.findRole(dataSource,identifier);
+	}
+
+	public Role findUserEnvironmentRole(User user) {
+		return userSchoolDataController.findUserEnvironmentRole(user);
+	}
 
 	public List<Role> listRoles() {
 		return userSchoolDataController.listRoles();
@@ -96,11 +105,27 @@ public class RoleController {
 		return environmentRoleEntityDAO.listAll();
 	}
 
+	public EnvironmentRoleEntity findEnvironmentRoleEntity(Role role) {
+		RoleEntity roleEntity = findRoleEntity(role);
+		if (roleEntity instanceof EnvironmentRoleEntity) {
+			return (EnvironmentRoleEntity) roleEntity;
+		}
+		
+		return null;
+	}
+
 	/* Workspace Role Entities */
 	
 	public List<WorkspaceRoleEntity> listWorkspaceRoleEntities() {
 		return workspaceRoleEntityDAO.listAll();
 	}
   
-  
+	public WorkspaceRoleEntity findWorkspaceRoleEntity(Role role) {
+		RoleEntity roleEntity = findRoleEntity(role);
+		if (roleEntity instanceof WorkspaceRoleEntity) {
+			return (WorkspaceRoleEntity) roleEntity;
+		}
+		
+		return null;
+	}
 }
