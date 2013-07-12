@@ -13,7 +13,6 @@ import fi.muikku.dao.users.UserEntityDAO;
 import fi.muikku.dao.users.UserGroupDAO;
 import fi.muikku.dao.users.UserGroupUserDAO;
 import fi.muikku.dao.users.UserPictureDAO;
-import fi.muikku.dao.users.UserSchoolDataIdentifierDAO;
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserGroup;
@@ -39,9 +38,6 @@ public class UserController {
 	@Inject
 	private UserGroupUserDAO userGroupUserDAO;
 	
-	@Inject
-	private UserSchoolDataIdentifierDAO userSchoolDataIdentifierDAO;
-
 	@Inject
 	private SchoolDataSourceDAO schoolDataSourceDAO;
 
