@@ -20,9 +20,6 @@ import fi.muikku.widgets.WidgetSpaceSizingStrategy;
 public class SettingsBackingBean {
 	
 	@Inject
-	private UserController userController;
-
-	@Inject
 	private PluginSettingsController pluginSettingsController;
 
 	@Inject
@@ -33,19 +30,6 @@ public class SettingsBackingBean {
 				new WidgetSpaceSetItem(WidgetLocations.SETTINGS_CONTENT_SIDEBAR_LEFT, false, WidgetSpaceSizingStrategy.MINIMIZE),
 				new WidgetSpaceSetItem(fi.muikku.WidgetLocations.ENVIRONMENT_CONTENT, true, WidgetSpaceSizingStrategy.MAXIMIZE)
 		);
-	}
-	
-	public WidgetSpaceSet getSettingsUsersContentToolsTopSet() {
-		return new WidgetSpaceSet(
-				new WidgetSpaceSetItem(WidgetLocations.SETTINGS_USERS_CONTENT_TOOLS_TOP_LEFT, false, WidgetSpaceSizingStrategy.MINIMIZE),
-				new WidgetSpaceSetItem(WidgetLocations.SETTINGS_USERS_CONTENT_TOOLS_TOP_CENTER, true, WidgetSpaceSizingStrategy.MAXIMIZE),
-				new WidgetSpaceSetItem(WidgetLocations.SETTINGS_USERS_CONTENT_TOOLS_TOP_RIGHT, false, WidgetSpaceSizingStrategy.MINIMIZE)
-		);
-	}
-	
-	public List<User> getAllUsers() {
-		List<User> users = userController.listUsers();
-		return users;
 	}
 	
   public List<Plugin> getAllPlugins() {
