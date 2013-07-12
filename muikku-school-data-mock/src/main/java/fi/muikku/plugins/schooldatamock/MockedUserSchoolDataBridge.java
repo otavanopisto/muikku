@@ -413,6 +413,20 @@ public class MockedUserSchoolDataBridge extends AbstractMockedSchoolDataBridge i
 
 		return result;
 	}
+
+	@Override
+	public Role findRole(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+		try {
+			ResultSet resultSet = executeSelect("select id, name, type from Role where id = ?", identifier);
+			while (resultSet.next()) {
+				return new MockedRole(resultSet.getString(1), resultSet.getString(2), RoleType.valueOf(resultSet.getString(3)));
+			}
+		} catch (SQLException e) {
+			throw new UnexpectedSchoolDataBridgeException(e);
+		}
+		
+		return null;
+	}
 	
 	@Override
 	public List<Role> listRoles() throws UnexpectedSchoolDataBridgeException {
@@ -431,19 +445,17 @@ public class MockedUserSchoolDataBridge extends AbstractMockedSchoolDataBridge i
 	}
 
 	@Override
-	public List<Role> listUserEnvironmentRoles(String userIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-		List<Role> result = new ArrayList<>();
-		
+	public Role findUserEnvironmentRole(String userIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
 		try {
-			ResultSet resultSet = executeSelect("select id, name, type from UserRole where user_id = ? and type = ?", userIdentifier, RoleType.ENVIRONMENT);
-			while (resultSet.next()) {
-				result.add(new MockedRole(resultSet.getString(1), resultSet.getString(2), RoleType.valueOf(resultSet.getString(3))));
+			ResultSet resultSet = executeSelect("select r.id, r.name, r.type from User u, Role r where u.id = ? and u.role_id = r.id", userIdentifier);
+			if (resultSet.next()) {
+				return new MockedRole(resultSet.getString(1), resultSet.getString(2), RoleType.valueOf(resultSet.getString(3)));
 			}
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}
 		
-		return result;
+		return null;
 	}
 
 	private UserProperty findUserPropertyByUserAndKey(String userIdentifier, String key) throws SQLException {
