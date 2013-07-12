@@ -29,7 +29,7 @@ import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.UserEmail;
 import fi.muikku.schooldata.entity.UserImage;
 import fi.muikku.schooldata.entity.UserProperty;
-import fi.muikku.schooldata.entity.UserRoleType;
+import fi.muikku.schooldata.entity.RoleType;
 
 @Dependent
 @Stateful
@@ -421,7 +421,7 @@ public class MockedUserSchoolDataBridge extends AbstractMockedSchoolDataBridge i
 		try {
 			ResultSet resultSet = executeSelect("select id, name, type from Role");
 			while (resultSet.next()) {
-				result.add(new MockedRole(resultSet.getString(1), resultSet.getString(2), UserRoleType.valueOf(resultSet.getString(3))));
+				result.add(new MockedRole(resultSet.getString(1), resultSet.getString(2), RoleType.valueOf(resultSet.getString(3))));
 			}
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
@@ -435,9 +435,9 @@ public class MockedUserSchoolDataBridge extends AbstractMockedSchoolDataBridge i
 		List<Role> result = new ArrayList<>();
 		
 		try {
-			ResultSet resultSet = executeSelect("select id, name, type from UserRole where user_id = ? and type = ?", userIdentifier, UserRoleType.ENVIRONMENT);
+			ResultSet resultSet = executeSelect("select id, name, type from UserRole where user_id = ? and type = ?", userIdentifier, RoleType.ENVIRONMENT);
 			while (resultSet.next()) {
-				result.add(new MockedRole(resultSet.getString(1), resultSet.getString(2), UserRoleType.valueOf(resultSet.getString(3))));
+				result.add(new MockedRole(resultSet.getString(1), resultSet.getString(2), RoleType.valueOf(resultSet.getString(3))));
 			}
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);

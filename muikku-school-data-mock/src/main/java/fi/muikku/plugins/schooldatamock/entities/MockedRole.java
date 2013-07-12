@@ -2,11 +2,11 @@ package fi.muikku.plugins.schooldatamock.entities;
 
 import fi.muikku.plugins.schooldatamock.SchoolDataMockPluginDescriptor;
 import fi.muikku.schooldata.entity.Role;
-import fi.muikku.schooldata.entity.UserRoleType;
+import fi.muikku.schooldata.entity.RoleType;
 
 public class MockedRole implements Role {
 
-	public MockedRole(String identifier, String name, UserRoleType type) {
+	public MockedRole(String identifier, String name, RoleType type) {
 		this.identifier = identifier;
 		this.name = name;
 		this.type = type;
@@ -23,7 +23,7 @@ public class MockedRole implements Role {
 	}
 
 	@Override
-	public UserRoleType getType() {
+	public RoleType getType() {
 		return type;
 	}
 	
@@ -34,7 +34,7 @@ public class MockedRole implements Role {
 
 	private String identifier;
 	
-	private UserRoleType type;
+	private RoleType type;
 
 	private String name;
 }
