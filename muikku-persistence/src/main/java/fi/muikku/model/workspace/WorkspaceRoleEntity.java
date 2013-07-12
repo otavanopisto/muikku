@@ -1,4 +1,4 @@
-package fi.muikku.model.courses;
+package fi.muikku.model.workspace;
 
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
@@ -8,11 +8,11 @@ import fi.muikku.model.users.UserRoleType;
 
 @Entity
 @PrimaryKeyJoinColumn(name="id")
-public class CourseUserRole extends RoleEntity {
+public class WorkspaceRoleEntity extends RoleEntity {
 
   @Override
   public UserRoleType getType() {
-    return UserRoleType.COURSE;
+    return UserRoleType.WORKSPACE;
   }
 
 }

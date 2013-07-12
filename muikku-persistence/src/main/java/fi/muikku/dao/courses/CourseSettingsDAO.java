@@ -4,7 +4,7 @@ import fi.muikku.dao.CoreDAO;
 import fi.muikku.dao.DAO;
 import fi.muikku.model.courses.CourseSettings;
 import fi.muikku.model.courses.CourseSettings_;
-import fi.muikku.model.courses.CourseUserRole;
+import fi.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 
 import javax.persistence.EntityManager;
@@ -18,7 +18,7 @@ public class CourseSettingsDAO extends CoreDAO<CourseSettings> {
 
 	private static final long serialVersionUID = 7487711184683654401L;
 
-	public CourseSettings create(WorkspaceEntity courseEntity, CourseUserRole defaultUserRole) {
+	public CourseSettings create(WorkspaceEntity courseEntity, WorkspaceRoleEntity defaultUserRole) {
     CourseSettings courseSettings = new CourseSettings();
     
     courseSettings.setCourseEntity(courseEntity);

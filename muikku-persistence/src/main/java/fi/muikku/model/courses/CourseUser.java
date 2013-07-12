@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.util.ArchivableEntity;
+import fi.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 
 @Entity
@@ -35,11 +36,11 @@ public class CourseUser implements ArchivableEntity {
     this.user = user;
   }
 
-  public CourseUserRole getCourseUserRole() {
+  public WorkspaceRoleEntity getCourseUserRole() {
     return courseUserRole;
   }
 
-  public void setCourseUserRole(CourseUserRole courseUserRole) {
+  public void setCourseUserRole(WorkspaceRoleEntity courseUserRole) {
     this.courseUserRole = courseUserRole;
   }
   
@@ -62,7 +63,7 @@ public class CourseUser implements ArchivableEntity {
   private UserEntity user;
   
   @ManyToOne
-  private CourseUserRole courseUserRole;
+  private WorkspaceRoleEntity courseUserRole;
 
   @NotNull
   @Column(nullable = false)

@@ -1,6 +1,6 @@
 package fi.muikku.schooldata.entity;
 
-public enum UserRoleType {
+public enum RoleType {
 
 	ENVIRONMENT,
 	WORKSPACE

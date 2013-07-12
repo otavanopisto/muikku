@@ -6,6 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import fi.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 
 @Entity
@@ -15,11 +16,11 @@ public class CourseSettings {
     return id;
   }
 
-  public CourseUserRole getDefaultCourseUserRole() {
+  public WorkspaceRoleEntity getDefaultCourseUserRole() {
     return defaultCourseUserRole;
   }
 
-  public void setDefaultCourseUserRole(CourseUserRole defaultCourseUserRole) {
+  public void setDefaultCourseUserRole(WorkspaceRoleEntity defaultCourseUserRole) {
     this.defaultCourseUserRole = defaultCourseUserRole;
   }
   
@@ -39,5 +40,5 @@ public class CourseSettings {
   private WorkspaceEntity courseEntity;
   
   @ManyToOne
-  private CourseUserRole defaultCourseUserRole;
+  private WorkspaceRoleEntity defaultCourseUserRole;
 }
