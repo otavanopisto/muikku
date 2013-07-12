@@ -55,4 +55,9 @@ public class EnvironmentUserDAO extends CoreDAO<EnvironmentUser> {
 		return getSingleResult(entityManager.createQuery(criteria));
 	}
 
+	public EnvironmentUser updateRole(EnvironmentUser environmentUser, EnvironmentRoleEntity role) {
+		environmentUser.setRole(role);
+		return persist(environmentUser);
+	}
+
 }
