@@ -1,9 +1,5 @@
 package fi.muikku.plugins.fish;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 
