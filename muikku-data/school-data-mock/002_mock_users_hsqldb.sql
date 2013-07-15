@@ -3,7 +3,8 @@
  * 
  * 00 - 25: Rulers of Númenor (in student environment role)
  * 26 - 27: Vanyars Ingwë & Finwë (in guest role)
- * 28 - 33: Ents (in teacher role)
+ * 28 - 33: Ents (in teacher role),
+ * 34 - 35: Nazgûls (in Servant of Sauron role)
  * */
 insert into User (firstName, lastName, role_id) values 
 	('Elros Tar', 'Minyatur', 1),
@@ -40,7 +41,9 @@ insert into User (firstName, lastName, role_id) values
 	('Fladrif', '', 2),
 	('Beechbone', '', 2),
 	('Bregalad', '', 2),
-	('Fimbrethil', '', 2);
+	('Fimbrethil', '', 2),
+	('Witch-king Of Angmar', '', 3),
+	('Khamûl', '', 3)
 	
 insert into UserEmail (user_id, address) values 
 	(00, 'elros-tar-minyatur@armenelos.me'),
