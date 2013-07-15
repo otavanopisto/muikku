@@ -5,7 +5,7 @@ import fi.muikku.dao.DAO;
 import fi.muikku.model.security.Permission;
 import fi.muikku.model.security.ResourceRights;
 import fi.muikku.model.security.ResourceRolePermission;
-import fi.muikku.model.security.ResourceUserRolePermission_;
+import fi.muikku.model.security.ResourceRolePermission_;
 import fi.muikku.model.users.RoleEntity;
 
 import javax.persistence.EntityManager;
@@ -45,9 +45,9 @@ public class ResourceRolePermissionDAO extends CoreDAO<ResourceRolePermission> {
     criteria.select(root);
     criteria.where(
         criteriaBuilder.and(
-            criteriaBuilder.equal(root.get(ResourceUserRolePermission_.resourcePermission), resourceRights),
-            criteriaBuilder.equal(root.get(ResourceUserRolePermission_.role), role),
-            criteriaBuilder.equal(root.get(ResourceUserRolePermission_.permission), permission)
+            criteriaBuilder.equal(root.get(ResourceRolePermission_.resourcePermission), resourceRights),
+            criteriaBuilder.equal(root.get(ResourceRolePermission_.role), role),
+            criteriaBuilder.equal(root.get(ResourceRolePermission_.permission), permission)
         )
     );
     

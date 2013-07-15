@@ -10,8 +10,8 @@ import javax.persistence.criteria.Root;
 import fi.muikku.dao.CoreDAO;
 import fi.muikku.dao.DAO;
 import fi.muikku.model.users.EnvironmentRoleEntity;
+import fi.muikku.model.users.EnvironmentRoleEntity_;
 import fi.muikku.model.users.EnvironmentRoleType;
-import fi.muikku.model.users.EnvironmentUserRole_;
 
 @DAO
 public class EnvironmentRoleEntityDAO extends CoreDAO<EnvironmentRoleEntity> {
@@ -26,7 +26,7 @@ public class EnvironmentRoleEntityDAO extends CoreDAO<EnvironmentRoleEntity> {
     Root<EnvironmentRoleEntity> root = criteria.from(EnvironmentRoleEntity.class);
     criteria.select(root);
     criteria.where(
-      criteriaBuilder.equal(root.get(EnvironmentUserRole_.environmentUserRoleType), environmentUserRoleType)
+      criteriaBuilder.equal(root.get(EnvironmentRoleEntity_.environmentRoleType), environmentUserRoleType)
     );
     
     return entityManager.createQuery(criteria).getResultList();

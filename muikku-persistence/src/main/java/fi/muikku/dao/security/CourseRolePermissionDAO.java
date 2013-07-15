@@ -3,7 +3,7 @@ package fi.muikku.dao.security;
 import fi.muikku.dao.CoreDAO;
 import fi.muikku.dao.DAO;
 import fi.muikku.model.security.CourseRolePermission;
-import fi.muikku.model.security.CourseUserRolePermission_;
+import fi.muikku.model.security.CourseRolePermission_;
 import fi.muikku.model.security.Permission;
 import fi.muikku.model.users.RoleEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
@@ -45,9 +45,9 @@ public class CourseRolePermissionDAO extends CoreDAO<CourseRolePermission> {
     criteria.select(root);
     criteria.where(
         criteriaBuilder.and(
-            criteriaBuilder.equal(root.get(CourseUserRolePermission_.course), course),
-            criteriaBuilder.equal(root.get(CourseUserRolePermission_.role), role),
-            criteriaBuilder.equal(root.get(CourseUserRolePermission_.permission), permission)
+            criteriaBuilder.equal(root.get(CourseRolePermission_.course), course),
+            criteriaBuilder.equal(root.get(CourseRolePermission_.role), role),
+            criteriaBuilder.equal(root.get(CourseRolePermission_.permission), permission)
         )
     );
     
