@@ -52,6 +52,11 @@ public class SettingsPluginDescriptor implements PluginDescriptor, LocalizedPlug
   private static final int PLUGINS_WIDGET_MINIMUM_SIZE = 1;
   private static final String PLUGINS_WIDGET_NAME = "settings-navigation-plugins";
   private static final WidgetVisibility PLUGINS_WIDGET_VISIBILITY = WidgetVisibility.AUTHENTICATED;
+	
+	private static final String GRADINGSCALES_WIDGET_LOCATION = WidgetLocations.SETTINGS_CONTENT_SIDEBAR_LEFT;
+	private static final int GRADINGSCALES_WIDGET_MINIMUM_SIZE = 1;
+	private static final String GRADINGSCALES_WIDGET_NAME = "settings-navigation-grading-scales";
+  private static final WidgetVisibility GRADINGSCALES_WIDGET_VISIBILITY = WidgetVisibility.AUTHENTICATED;
   
 	private static final String USERS_ADD_WIDGET_LOCATION = WidgetLocations.SETTINGS_USERS_CONTENT_TOOLS_TOP_RIGHT;
 	private static final int USERS_ADD_WIDGET_MINIMUM_SIZE = 1;
@@ -83,6 +88,7 @@ public class SettingsPluginDescriptor implements PluginDescriptor, LocalizedPlug
 		widgetController.ensureDefaultWidget(widgetController.ensureWidget(WORKSPACES_WIDGET_NAME, WORKSPACES_WIDGET_MINIMUM_SIZE, WORKSPACES_WIDGET_VISIBILITY), WORKSPACES_WIDGET_LOCATION);
 		widgetController.ensureDefaultWidget(widgetController.ensureWidget(WORKSPACETYPES_WIDGET_NAME, WORKSPACETYPES_WIDGET_MINIMUM_SIZE, WORKSPACETYPES_WIDGET_VISIBILITY), WORKSPACETYPES_WIDGET_LOCATION);
     widgetController.ensureDefaultWidget(widgetController.ensureWidget(PLUGINS_WIDGET_NAME, PLUGINS_WIDGET_MINIMUM_SIZE, PLUGINS_WIDGET_VISIBILITY), PLUGINS_WIDGET_LOCATION);
+    widgetController.ensureDefaultWidget(widgetController.ensureWidget(GRADINGSCALES_WIDGET_NAME, GRADINGSCALES_WIDGET_MINIMUM_SIZE, GRADINGSCALES_WIDGET_VISIBILITY), GRADINGSCALES_WIDGET_LOCATION);
 
 		/**
 		 * Settings / users
@@ -101,6 +107,7 @@ public class SettingsPluginDescriptor implements PluginDescriptor, LocalizedPlug
 		  RolesSettingsViewBackingBean.class,
 		  WorkspaceTypeSettingsViewBackingBean.class,
 		  UsersSettingsViewBackingBean.class,
+		  GradingScalesSettingsViewBackingBean.class,
 		  
 		  /* Controllers */
 		  
