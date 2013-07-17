@@ -31,6 +31,8 @@ import org.sonatype.aether.util.artifact.DefaultArtifact;
 import fi.muikku.plugin.PluginLibraryInfo;
 import fi.muikku.plugin.manager.PluginManagerException;
 import fi.muikku.plugin.manager.SingletonPluginManager;
+import fi.muikku.rest.security.AuthorizedResource;
+import fi.muikku.rest.security.AuthorizedResourceInterceptor;
 import fi.muikku.security.Permit;
 import fi.muikku.security.PermitInterceptor;
 
@@ -185,8 +187,13 @@ public class PluginExtension implements Extension {
 				interceptors.add(TransactionalInterceptor.class);
 				interceptors.add(PluginContextClassLoaderInterceptor.class);
 
-				if (method.getAnnotation(Permit.class) != null)
+				if (method.getAnnotation(Permit.class) != null) {
 					interceptors.add(PermitInterceptor.class);
+				}
+				
+				if (method.getAnnotation(AuthorizedResource.class) != null) {
+				  interceptors.add(AuthorizedResourceInterceptor.class);
+				}
 
 				parameters.put("value", interceptors.toArray(new Class<?>[interceptors.size()]));
 

@@ -21,8 +21,13 @@ public class AuthorizedResourceInterceptor {
     try {
       System.out.println("@AuthorizedResource " + ic.getMethod().getName());
       result = ic.proceed();
-    } catch (AuthorizationException ex) {
-      result = Response.status(Status.FORBIDDEN).build();
+    } catch (Exception ex) {
+      if (ex instanceof AuthorizationException ||
+          ex.getCause() instanceof AuthorizationException) {
+        result = Response.status(Status.FORBIDDEN).entity("401 Forbidden").build();
+      } else {
+        throw ex;
+      }
     }
     
     return result;

@@ -21,9 +21,12 @@ import fi.muikku.model.security.Permission;
 import fi.muikku.model.security.ResourceRights;
 import fi.muikku.model.security.ResourceRolePermission;
 import fi.muikku.model.users.RoleEntity;
+import fi.muikku.rest.security.AuthorizedResource;
 import fi.muikku.security.Admin;
+import fi.muikku.security.AuthorizationException;
 import fi.muikku.session.SessionController;
 
+@AuthorizedResource
 @Path("/permission")
 @Stateless
 @Produces ("application/json")
@@ -59,13 +62,11 @@ public class PermissionRESTService extends AbstractRESTService {
   
   @POST
   @Path ("/addEnvironmentUserRolePermission")
-  @Admin
-//  @Permit (Permissions.MANAGE_SYSTEM_SETTINGS)
   public Response addEnvironmentUserRolePermission(
       @FormParam ("environmentId") Long environmentId,
       @FormParam ("userRoleId") Long userRoleId,
       @FormParam ("permissionId") Long permissionId
-   ) {
+   ) throws AuthorizationException {
     
     // TODO: Security
 
