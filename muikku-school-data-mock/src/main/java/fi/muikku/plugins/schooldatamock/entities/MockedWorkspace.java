@@ -5,10 +5,11 @@ import fi.muikku.schooldata.entity.Workspace;
 
 public class MockedWorkspace implements Workspace {
 	
-	public MockedWorkspace(String identifier, String name, String workspaceTypeId) {
+	public MockedWorkspace(String identifier, String name, String workspaceTypeId, String courseIdentifierIdentifier) {
 		this.identifier = identifier;
 		this.name = name;
 		this.workspaceTypeId = workspaceTypeId;
+		this.courseIdentifierIdentifier = courseIdentifierIdentifier;
 	}
 	
 	@Override
@@ -36,7 +37,13 @@ public class MockedWorkspace implements Workspace {
 		return workspaceTypeId;
 	}
 	
+	@Override
+	public String getCourseIdentifierIdentifier() {
+		return courseIdentifierIdentifier;
+	}
+	
 	private String identifier;
 	private String name;
 	private String workspaceTypeId;
+	private String courseIdentifierIdentifier;
 }
