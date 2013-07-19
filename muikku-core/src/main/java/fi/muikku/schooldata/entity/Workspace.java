@@ -12,5 +12,7 @@ public interface Workspace extends SchoolDataEntity {
 	public void setName(String name);
 	
 	public String getWorkspaceTypeId();
+	
+	public String getCourseIdentifierIdentifier();
 
 }
