@@ -20,6 +20,7 @@ insert into Workspace (course_identifier_id, name, type_id) values
 	(8, 'Dwarfish 1 - Basics of Khuzdul', 1),
 	(9, 'Dwarfish 2 - Iglishmêk', 1),
 	(10, 'Entish 1 - Fundamental Entish', 1),
+	(10, 'Entish 1 - Gathering at Isengard', 1),
 	(11, 'Orc 1 - Orcish', 1),
 	(12, 'Orc 2 - Black Speech', 1);
 	
