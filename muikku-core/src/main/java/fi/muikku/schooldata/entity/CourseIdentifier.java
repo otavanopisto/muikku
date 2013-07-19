@@ -11,4 +11,6 @@ public interface CourseIdentifier extends SchoolDataEntity {
 	
 	public String getSubjectIdentifier();
 	
+	public String getSubjectSchoolDataSource();
+	
 }
