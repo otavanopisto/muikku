@@ -20,6 +20,7 @@ import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceTypeEntity;
 import fi.muikku.model.workspace.WorkspaceTypeSchoolDataIdentifier;
+import fi.muikku.schooldata.entity.CourseIdentifier;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceType;
 import fi.muikku.schooldata.entity.WorkspaceUser;
@@ -61,22 +62,6 @@ class WorkspaceSchoolDataController {
 	
 	/* Workspaces */
 	
-	public List<Workspace> listWorkspaces() {
-		// TODO: This method WILL cause performance problems, replace with something more sensible 
-		
-		List<Workspace> result = new ArrayList<>();
-		
-		for (WorkspaceSchoolDataBridge workspaceBridge : getWorkspaceBridges()) {
-			try {
-				result.addAll(workspaceBridge.listWorkspaces());
-			} catch (UnexpectedSchoolDataBridgeException e) {
-				logger.log(Level.SEVERE, "School Data Bridge reported a problem while listing workspaces", e);
-			}
-		}
-		
-		return initWorkspaces(result);
-	}
-	
 	public Workspace findWorkspace(WorkspaceEntity workspaceEntity) {
 		WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(workspaceEntity.getDataSource());
 		if (workspaceBridge != null) {
@@ -93,6 +78,42 @@ class WorkspaceSchoolDataController {
 		
 		return null;
 	}
+	
+	public List<Workspace> listWorkspaces() {
+		// TODO: This method WILL cause performance problems, replace with something more sensible 
+		
+		List<Workspace> result = new ArrayList<>();
+		
+		for (WorkspaceSchoolDataBridge workspaceBridge : getWorkspaceBridges()) {
+			try {
+				result.addAll(workspaceBridge.listWorkspaces());
+			} catch (UnexpectedSchoolDataBridgeException e) {
+				logger.log(Level.SEVERE, "School Data Bridge reported a problem while listing workspaces", e);
+			}
+		}
+		
+		return initWorkspaces(result);
+	}
+
+	public List<Workspace> listWorkspacesByCourseIdentifier(CourseIdentifier courseIdentifier) {
+		SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(courseIdentifier.getSchoolDataSource());
+		if (schoolDataSource != null) {
+  		WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(schoolDataSource);
+  		if (workspaceBridge != null) {
+    		try {
+  				return initWorkspaces(workspaceBridge.listWorkspacesByCourseIdentifier(courseIdentifier.getIdentifier()));
+    		} catch (UnexpectedSchoolDataBridgeException e) {
+  				logger.log(Level.SEVERE, "School Data Bridge reported a problem while listing workspaces by course identifier", e);
+  			}
+  		} else {
+  			logger.log(Level.SEVERE, "School Data Bridge not found: " + courseIdentifier.getSchoolDataSource());
+  		}
+		} else {
+			logger.log(Level.SEVERE, "School Data Source not found: " + courseIdentifier.getSchoolDataSource());
+		}
+		
+		return null;
+	};
 	
 	/* Workspace Entities */
 	
@@ -308,5 +329,5 @@ class WorkspaceSchoolDataController {
 		}
 		
 		return workspaceUsers;
-	};
+	}
 }
