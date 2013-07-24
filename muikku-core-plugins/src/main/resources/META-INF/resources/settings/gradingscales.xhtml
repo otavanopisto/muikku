@@ -3,7 +3,7 @@
   xmlns:h="http://java.sun.com/jsf/html" template="/settings/template.xhtml">
   
   <ui:define name="content">
-
+   <div class="se-container se-gradingscales"> 
     <h:dataTable id="users-table" value="#{gradingScalesSettingsViewBackingBean.gradingScales}" var="gradingScale" style="width:100%">
       <f:facet name="header">
         <h:outputText value="All Users" />
@@ -35,7 +35,7 @@
       </f:facet>
       
     </h:dataTable>
-    
+    </div>
   </ui:define>
 
 </ui:composition>

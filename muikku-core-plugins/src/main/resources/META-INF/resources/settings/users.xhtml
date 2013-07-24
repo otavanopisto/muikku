@@ -9,7 +9,7 @@
   </ui:define>
 
   <ui:define name="content">
-
+   <div class="se-container se-users">
     <h:dataTable id="users-table" value="#{usersSettingsViewBackingBean.users}" var="user" style="width:100%">
       <f:facet name="header">
         <h:outputText value="All Users" />
@@ -55,7 +55,7 @@
       </f:facet>
       
     </h:dataTable>
-    
+    </div>
   </ui:define>
 
 </ui:composition>

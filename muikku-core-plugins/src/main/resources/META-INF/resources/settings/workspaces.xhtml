@@ -9,7 +9,7 @@
   </ui:define>
 
   <ui:define name="content">
-
+   <div class="se-container se-workspaces">
     <h:dataTable id="workspaces-table" value="#{workspaceSettingsViewBackingBean.workspaces}" var="workspace" style="width:100%">
       <f:facet name="header">
         <h:outputText value="All Workspaces" />
@@ -49,7 +49,7 @@
       </f:facet>
       
     </h:dataTable>
-    
+    </div>
   </ui:define>
 
 </ui:composition>

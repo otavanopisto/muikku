@@ -3,7 +3,7 @@
   xmlns:h="http://java.sun.com/jsf/html" template="/settings/template.xhtml">
   
   <ui:define name="content">
-
+      <div class="se-container se-courseidentfiers"> 
     <h:dataTable id="users-table" value="#{courseIdentifiersSettingsViewBackingBean.courseIdentifiers}" var="courseIdentifier" style="width:100%">
       <f:facet name="header">
         <h:outputText value="Course Identifiers" />
@@ -42,7 +42,7 @@
       </f:facet>
       
     </h:dataTable>
-    
+    </div>
   </ui:define>
 
 </ui:composition>
