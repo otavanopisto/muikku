@@ -7,6 +7,8 @@
     template="/WEB-INF/templates/plugins.xhtml">
     
     <ui:define name="content">
+    
+      <div class="se-container se-plugins"> 
       <h2>Pluginien asetukset</h2>
       
       <ui:repeat value="#{settingsBackingBean.allPlugins}"
@@ -27,5 +29,7 @@
         </h:form>
         #{plugin.library} - #{plugin.name}
       </ui:repeat>
+      
+      </div>
     </ui:define>
 </ui:composition>

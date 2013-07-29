@@ -3,7 +3,7 @@
   xmlns:h="http://java.sun.com/jsf/html" template="/settings/template.xhtml">
   
   <ui:define name="content">
-  
+   <div class="se-container se-workspacetypes"> 
     <h3>Muikku Workspace Types</h3>
   
     <h:dataTable id="workspacetypes-table" value="#{workspaceTypeSettingsViewBackingBean.workspaceTypeEntities}" var="workspaceTypeEntity" style="width:100%">
@@ -74,7 +74,7 @@
           
       </h:form>
     </h:panelGroup>
-    
+    </div>
   </ui:define>
 
 </ui:composition>

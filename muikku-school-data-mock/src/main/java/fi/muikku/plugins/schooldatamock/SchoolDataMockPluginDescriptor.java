@@ -96,7 +96,8 @@ public class SchoolDataMockPluginDescriptor implements PluginDescriptor {
 				
 				MockedUserSchoolDataBridge.class,
 				MockedWorkspaceSchoolDataBridge.class,
-				MockedGradingSchoolDataBridge.class
+				MockedGradingSchoolDataBridge.class,
+				MockedCourseMetaSchoolDataBridge.class
 		));
 	}
 

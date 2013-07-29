@@ -17,12 +17,14 @@ public interface WorkspaceSchoolDataBridge {
 	
 	/* Workspaces */
 
-	public Workspace createWorkspace(String name, WorkspaceType type) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+	public Workspace createWorkspace(String name, WorkspaceType type, String courseIdentifierIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
 	public Workspace findWorkspace(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 
 	public List<Workspace> listWorkspaces() throws UnexpectedSchoolDataBridgeException;
-	
+
+	public List<Workspace> listWorkspacesByCourseIdentifier(String courseIdentifierIdentifier) throws UnexpectedSchoolDataBridgeException;
+
 	public Workspace updateWorkspace(Workspace workspace) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
 	public void removeWorkspace(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;

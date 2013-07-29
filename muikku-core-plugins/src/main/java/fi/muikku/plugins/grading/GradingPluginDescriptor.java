@@ -1,6 +1,7 @@
 package fi.muikku.plugins.grading;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.ejb.Stateful;
@@ -37,7 +38,11 @@ public class GradingPluginDescriptor implements PluginDescriptor {
 
   @Override
   public List<Class<?>> getBeans() {
-    return new ArrayList<Class<?>>();
+  	return Collections.unmodifiableList(Arrays.asList(new Class<?>[] { 
+		  /* Backing beans */ 
+				
+  			StudentGradingViewBackingBean.class
+		}));
   }
 
 }

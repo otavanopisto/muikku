@@ -16,6 +16,7 @@ import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceTypeEntity;
 import fi.muikku.model.workspace.WorkspaceTypeSchoolDataIdentifier;
+import fi.muikku.schooldata.entity.CourseIdentifier;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceType;
 import fi.muikku.schooldata.entity.WorkspaceUser;
@@ -111,6 +112,10 @@ public class WorkspaceController {
 	public List<Workspace> listWorkspaces() {
 		return workspaceSchoolDataController.listWorkspaces();
 	}
+
+	public List<Workspace> listWorkspacesByCourseIdentifier(CourseIdentifier courseIdentifier) {
+		return workspaceSchoolDataController.listWorkspacesByCourseIdentifier(courseIdentifier);
+	}
 	
 	/* Workspace Entity */
 	
@@ -139,5 +144,10 @@ public class WorkspaceController {
 		} 
 
 		return null;
+	}
+
+	public int countWorkspaceUsers(WorkspaceEntity workspaceEntity) {
+		// TODO Optimize
+		return listWorkspaceUsers(workspaceEntity).size();
 	}
 }

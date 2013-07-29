@@ -3,7 +3,31 @@
   xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
 
   <ui:define name="content">
-    TODO: Student grading functionality 
+    
+    <h:form>
+      <div>
+        <h:outputLabel value="Course" />
+      </div>
+      
+      <div>
+        <h:selectOneMenu value="#{studentGradingViewBackingBean.workspaceId}">
+          <f:selectItems value="#{studentGradingViewBackingBean.workspaceSelectItems}"/>
+          <f:ajax render="@form"/>
+        </h:selectOneMenu>
+      </div>
+
+       <div>      
+         <h:outputLabel value="Student" />
+       </div>
+       
+       <div>
+        <h:selectOneMenu value="" rendered="#{studentGradingViewBackingBean.workspaceId != null}">
+          <f:selectItems value="#{studentGradingViewBackingBean.workspaceUserSelectItems}" />
+        </h:selectOneMenu>     
+      </div>
+    </h:form>
+ 
+
   </ui:define>
 
 </ui:composition>

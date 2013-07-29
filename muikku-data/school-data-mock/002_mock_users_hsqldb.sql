@@ -5,6 +5,7 @@
  * 26 - 27: Vanyars Ingwë & Finwë (in guest role)
  * 28 - 33: Ents (in teacher role),
  * 34 - 35: Nazgûls (in Servant of Sauron role)
+ * 36: Saruman (in Servant of Sauron role)
  * */
 insert into User (firstName, lastName, role_id) values 
 	('Elros Tar', 'Minyatur', 1),
@@ -43,7 +44,8 @@ insert into User (firstName, lastName, role_id) values
 	('Bregalad', '', 2),
 	('Fimbrethil', '', 2),
 	('Witch-king Of Angmar', '', 3),
-	('Khamûl', '', 3)
+	('Khamûl', '', 3),
+	('Saruman', 'The White', 3)
 	
 insert into UserEmail (user_id, address) values 
 	(00, 'elros-tar-minyatur@armenelos.me'),
@@ -82,5 +84,7 @@ insert into UserEmail (user_id, address) values
 	(31, 'fladrif@fangorn.me'),
 	(32, 'beechbone@fangorn.me'),
 	(33, 'bregalad@fangorn.me'),
-	(33, 'fimbrethil@fangorn.me');
-
+	(34, 'fimbrethil@fangorn.me'),
+	(35, 'witchking@minasmorgul.me'),
+	(36, 'khamul@minasmorgul.me'),
+	(37, 'sarumanwhite@isengard.me');
