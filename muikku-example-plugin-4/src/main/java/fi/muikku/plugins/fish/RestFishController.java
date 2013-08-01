@@ -18,7 +18,6 @@ public class RestFishController {
     return (int)fishMessages.getCount();
   }
   
-  @Permit(MuikkuPermissions.MANAGE_USERS)
   public FishMessages getMessages() {
     return fishMessages; 
   }

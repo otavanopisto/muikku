@@ -23,7 +23,6 @@ public class RestFishRestService extends PluginRESTService {
   @Inject
   private RestFishController restFishController;
   
-  @AuthorizedResource
   @GET
   @Path("/messages")
   public Response listMessages() {
