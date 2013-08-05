@@ -31,10 +31,10 @@ import fi.muikku.model.users.SystemUserRoleType;
 import fi.muikku.model.users.UserContact;
 import fi.muikku.model.users.UserContactType;
 import fi.muikku.model.users.UserGroup;
+import fi.muikku.model.users.UserGroupUser;
 import fi.muikku.model.users.UserImpl;
 import fi.muikku.security.PermissionCollection;
 import fi.muikku.security.PermissionScope;
-import fi.muikku.utils.RequestUtils;
 
 /**
  * Import seed data into the database on application startup.
@@ -87,7 +87,7 @@ public class SeedDataImporter {
     }
 
     if (findById(UserGroup.class, 1l) == null) {
-      // Local
+      // Students
       
       UserGroup group = new UserGroup();
       group.setName("Opiskelijat");
@@ -95,7 +95,8 @@ public class SeedDataImporter {
     }
     
     if (findById(UserGroup.class, 2l) == null) {
-      // Pyramus source
+      // Teachers
+      
       UserGroup group = new UserGroup();
       group.setName("Opettajat");
       em.persist(group);
@@ -220,6 +221,7 @@ public class SeedDataImporter {
       envUser.setRole(envManager);
       envUser.setUser(userEntity);
       em.persist(envUser);
+      
       /**
       UserWidget userWidget = new UserWidget();
       userWidget.setUser(userEntity);
@@ -260,6 +262,11 @@ public class SeedDataImporter {
 //      envWallLink.setWall(findFirst(EnvironmentWall.class, "from EnvironmentWall where environment.id = " + env.getId().toString()));
 //      em.persist(envWallLink);
     }
+
+    UserGroupUser uguchaga = new UserGroupUser();
+    uguchaga.setUser(userEntity);
+    uguchaga.setUserGroup(findById(UserGroup.class, 2l));
+    em.persist(uguchaga);
     
 //    EnvironmentWall sysWall = findById(EnvironmentWall.class, 1l);
 //    if (sysWall == null) {

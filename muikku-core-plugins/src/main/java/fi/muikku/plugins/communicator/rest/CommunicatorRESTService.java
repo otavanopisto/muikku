@@ -25,6 +25,8 @@ import fi.muikku.controller.TagController;
 import fi.muikku.controller.UserController;
 import fi.muikku.model.base.Tag;
 import fi.muikku.model.stub.users.UserEntity;
+import fi.muikku.model.users.UserGroup;
+import fi.muikku.model.users.UserGroupUser;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.communicator.CommunicatorController;
 import fi.muikku.plugins.communicator.model.CommunicatorMessage;
@@ -32,6 +34,7 @@ import fi.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
+import fi.muikku.plugins.communicator.model.InboxCommunicatorMessage;
 import fi.muikku.plugins.forum.ForumController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.security.AuthorizationException;
@@ -74,7 +77,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   public Response listUserCommunicatorItems( 
       @PathParam ("USERID") Long userId) {
     UserEntity user = userController.findUserEntity(userId); 
-    List<CommunicatorMessage> receivedItems = communicatorController.listReceivedItems(user);
+    List<InboxCommunicatorMessage> receivedItems = communicatorController.listReceivedItems(user);
 
     Collections.sort(receivedItems, new Comparator<CommunicatorMessage>() {
       @Override
@@ -86,7 +89,7 @@ public class CommunicatorRESTService extends PluginRESTService {
     TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
     Tranquility tranquility = tranquilityBuilder.createTranquility()
       .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
-      .addInstruction(CommunicatorMessage.class, tranquilityBuilder.createPropertyInjectInstruction("messageCount", new MessageCountValueGetter()))
+      .addInstruction(new SuperClassInstructionSelector(CommunicatorMessage.class), tranquilityBuilder.createPropertyInjectInstruction("messageCount", new MessageCountValueGetter()))
       .addInstruction(new SuperClassInstructionSelector(UserEntity.class), tranquilityBuilder.createPropertyInjectInstruction("hasPicture", new UserEntityHasPictureValueGetter()))
       .addInstruction(new SuperClassInstructionSelector(UserEntity.class), tranquilityBuilder.createPropertyInjectInstruction("fullName", new UserNameValueGetter()));
     
@@ -113,7 +116,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   public Response listUserSentCommunicatorItems( 
       @PathParam ("USERID") Long userId) {
     UserEntity user = userController.findUserEntity(userId); 
-    List<CommunicatorMessage> receivedItems = communicatorController.listSentItems(user);
+    List<InboxCommunicatorMessage> receivedItems = communicatorController.listSentItems(user);
 
     Collections.sort(receivedItems, new Comparator<CommunicatorMessage>() {
       @Override
@@ -125,8 +128,8 @@ public class CommunicatorRESTService extends PluginRESTService {
     TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
     Tranquility tranquility = tranquilityBuilder.createTranquility()
       .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
-      .addInstruction(CommunicatorMessage.class, tranquilityBuilder.createPropertyInjectInstruction("messageCount", new MessageCountValueGetter()))
-      .addInstruction(CommunicatorMessage.class, tranquilityBuilder.createPropertyInjectInstruction("recipients", new CommunicatorMessageRecipientsGetter()))
+      .addInstruction(new SuperClassInstructionSelector(CommunicatorMessage.class), tranquilityBuilder.createPropertyInjectInstruction("messageCount", new MessageCountValueGetter()))
+      .addInstruction(new SuperClassInstructionSelector(CommunicatorMessage.class), tranquilityBuilder.createPropertyInjectInstruction("recipients", new CommunicatorMessageRecipientsGetter()))
       .addInstruction(new SuperClassInstructionSelector(UserEntity.class), tranquilityBuilder.createPropertyInjectInstruction("hasPicture", new UserEntityHasPictureValueGetter()))
       .addInstruction(new SuperClassInstructionSelector(UserEntity.class), tranquilityBuilder.createPropertyInjectInstruction("fullName", new UserNameValueGetter()));
     
@@ -157,13 +160,13 @@ public class CommunicatorRESTService extends PluginRESTService {
     
     CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
     
-    List<CommunicatorMessage> receivedItems = communicatorController.listInboxMessagesByMessageId(user, messageId);
+    List<InboxCommunicatorMessage> receivedItems = communicatorController.listInboxMessagesByMessageId(user, messageId);
 
     TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
     Tranquility tranquility = tranquilityBuilder.createTranquility()
       .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
 //      .addInstruction(CommunicatorMessageItem.class, tranquilityBuilder.createPropertyInjectInstruction("type", new CommunicatorItemTypeGetter()))
-      .addInstruction(CommunicatorMessage.class, tranquilityBuilder.createPropertyInjectInstruction("recipients", new CommunicatorMessageRecipientsGetter()))
+      .addInstruction(new SuperClassInstructionSelector(CommunicatorMessage.class), tranquilityBuilder.createPropertyInjectInstruction("recipients", new CommunicatorMessageRecipientsGetter()))
       .addInstruction(new SuperClassInstructionSelector(UserEntity.class), tranquilityBuilder.createPropertyInjectInstruction("hasPicture", new UserEntityHasPictureValueGetter()))
       .addInstruction(new SuperClassInstructionSelector(UserEntity.class), tranquilityBuilder.createPropertyInjectInstruction("fullName", new UserNameValueGetter()));
     
@@ -207,6 +210,7 @@ public class CommunicatorRESTService extends PluginRESTService {
       @FormParam ("subject") String subject,
       @FormParam ("content") String content,
       @FormParam ("recipients") List<Long> recipientIds,
+      @FormParam ("recipientGroups") List<Long> recipientGroupIds,
       @FormParam ("tags") String tags
    ) throws AuthorizationException {
     UserEntity user = userController.findUserEntity(userId); // session?
@@ -223,6 +227,15 @@ public class CommunicatorRESTService extends PluginRESTService {
         recipients.add(recipient);
     }
     
+    for (Long groupId : recipientGroupIds) {
+      UserGroup group = userController.findUserGroup(groupId);
+      List<UserGroupUser> groupUsers = userController.listUserGroupUsers(group);
+      
+      for (UserGroupUser gusr : groupUsers) {
+        recipients.add(gusr.getUser());
+      }
+    }
+
     CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId, user, recipients, subject, content, tagList);
       
     TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
@@ -235,16 +248,18 @@ public class CommunicatorRESTService extends PluginRESTService {
   }
 
   private Set<Tag> parseTags(String tags) {
-    List<String> tagStrs = Arrays.asList(tags.split("\\s*,\\s*"));
     Set<Tag> result = new HashSet<Tag>();
     
-    for (String t : tagStrs) {
-      Tag tag = tagController.findTag(t);
-      
-      if (tag == null)
-        tag = tagController.createTag(t);
-      
-      result.add(tag);
+    if (tags != null) {
+      List<String> tagStrs = Arrays.asList(tags.split("\\s*,\\s*"));
+      for (String t : tagStrs) {
+        Tag tag = tagController.findTag(t);
+        
+        if (tag == null)
+          tag = tagController.createTag(t);
+        
+        result.add(tag);
+      }
     }
     
     return result;
@@ -258,6 +273,7 @@ public class CommunicatorRESTService extends PluginRESTService {
       @FormParam ("subject") String subject,
       @FormParam ("content") String content,
       @FormParam ("recipients") List<Long> recipientIds,
+      @FormParam ("recipientGroups") List<Long> recipientGroupIds,
       @FormParam ("tags") String tags
    ) throws AuthorizationException {
     UserEntity user = userController.findUserEntity(userId); // session?
@@ -272,6 +288,15 @@ public class CommunicatorRESTService extends PluginRESTService {
 
       if (recipient != null)
         recipients.add(recipient);
+    }
+    
+    for (Long groupId : recipientGroupIds) {
+      UserGroup group = userController.findUserGroup(groupId);
+      List<UserGroupUser> groupUsers = userController.listUserGroupUsers(group);
+      
+      for (UserGroupUser gusr : groupUsers) {
+        recipients.add(gusr.getUser());
+      }
     }
     
     CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId2, user, recipients, subject, content, tagList);

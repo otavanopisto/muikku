@@ -1,5 +1,7 @@
 package fi.muikku.dao.users;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -43,6 +45,22 @@ public class UserGroupUserDAO extends CoreDAO<UserGroup> {
     );
     
     return entityManager.createQuery(criteria).getSingleResult();
+  }
+
+  public List<UserGroupUser> listByUserGroup(UserGroup userGroup) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<UserGroupUser> criteria = criteriaBuilder.createQuery(UserGroupUser.class);
+    Root<UserGroupUser> root = criteria.from(UserGroupUser.class);
+
+    criteria.select(root);
+    
+    criteria.where(
+      criteriaBuilder.equal(root.get(UserGroupUser_.userGroup), userGroup)
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
   }
 
 }

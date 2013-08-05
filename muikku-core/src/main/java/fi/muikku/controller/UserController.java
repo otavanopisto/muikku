@@ -30,6 +30,7 @@ import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.EnvironmentUserRole;
 import fi.muikku.model.users.UserContact;
 import fi.muikku.model.users.UserGroup;
+import fi.muikku.model.users.UserGroupUser;
 import fi.muikku.schooldata.UserSchoolDataController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.security.MuikkuPermissions;
@@ -98,6 +99,10 @@ public class UserController {
     return userEntityDAO.findById(userEntityId);
   }
 
+  public UserGroup findUserGroup(Long userGroupId) {
+    return userGroupDAO.findById(userGroupId);
+  }
+  
   public boolean getUserHasPicture(UserEntity user) {
     return userPictureDAO.findUserHasPicture(user);
   }
@@ -149,6 +154,10 @@ public class UserController {
     return environmentUserDAO.listByEnvironment(environment);
   }
 
+  public List<UserGroupUser> listUserGroupUsers(UserGroup userGroup) {
+    return userGroupUserDAO.listByUserGroup(userGroup);
+  }
+  
   public List<EnvironmentUser> searchUsers(String searchTerm) {
     List<EnvironmentUser> users = environmentUserDAO.listByEnvironment(sessionController.getEnvironment());
     List<EnvironmentUser> filtered = new ArrayList<EnvironmentUser>();
