@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import fi.muikku.plugin.PluginDescriptor;
+import fi.muikku.plugins.material.renderer.CompositeMaterialRenderer;
 import fi.muikku.plugins.material.renderer.HtmlMaterialRenderer;
 
 public class MaterialPluginDescriptor implements PluginDescriptor {
@@ -22,6 +23,7 @@ public class MaterialPluginDescriptor implements PluginDescriptor {
   public List<Class<?>> getBeans() {
     return Arrays.asList(new Class<?>[] {
        HtmlMaterialRenderer.class, 
+       CompositeMaterialRenderer.class,
     });
   }
 
