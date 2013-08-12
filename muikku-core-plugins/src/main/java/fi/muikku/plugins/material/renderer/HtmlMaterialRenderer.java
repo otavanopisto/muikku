@@ -3,7 +3,6 @@ package fi.muikku.plugins.material.renderer;
 import javax.enterprise.context.ApplicationScoped;
 
 import fi.muikku.model.material.Material;
-import fi.muikku.material.MaterialRenderStrategy;
 import fi.muikku.material.MaterialRenderer;
 
 @ApplicationScoped
@@ -15,7 +14,19 @@ public class HtmlMaterialRenderer extends MaterialRenderer {
   }
 
   @Override
-  public String renderFragment(MaterialRenderStrategy renderStrategy, Material material) {
-    return material.getCharacterData(); // TODO: Editor
+  public String renderViewFragment(Material material) {
+    return material.getCharacterData();
+  }
+
+  @Override
+  public String renderEditorFragment(Material material) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public String renderWithRepliesFragment(Material material) {
+    // TODO Auto-generated method stub
+    return null;
   }
 }
