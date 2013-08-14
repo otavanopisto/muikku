@@ -2,8 +2,14 @@ package fi.muikku.dao.material;
 
 import java.util.Calendar;
 
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
 import fi.muikku.dao.CoreDAO;
 import fi.muikku.model.material.Material;
+import fi.muikku.model.material.Material_;
 import fi.muikku.model.users.UserEntity;
 
 public class MaterialDAO extends CoreDAO<Material> {
@@ -36,5 +42,19 @@ public class MaterialDAO extends CoreDAO<Material> {
   public void delete(Material material) {
     super.delete(material);
   }
-
+  
+  public Material findByUrlName(String urlName) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Material> criteria = criteriaBuilder.createQuery(Material.class);
+    Root<Material> root = criteria.from(Material.class);
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.equal(root.get(Material_.urlName), urlName)
+    );
+    
+    return getSingleResult(entityManager.createQuery(criteria));
+  }
+  
 }

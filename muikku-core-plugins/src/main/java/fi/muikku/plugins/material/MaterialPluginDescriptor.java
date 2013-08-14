@@ -24,6 +24,7 @@ public class MaterialPluginDescriptor implements PluginDescriptor {
     return Arrays.asList(new Class<?>[] {
        HtmlMaterialRenderer.class, 
        CompositeMaterialRenderer.class,
+       MaterialViewBackingBean.class
     });
   }
 

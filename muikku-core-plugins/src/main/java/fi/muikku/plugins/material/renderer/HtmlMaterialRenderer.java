@@ -20,8 +20,10 @@ public class HtmlMaterialRenderer extends MaterialRenderer {
 
   @Override
   public String renderEditorFragment(Material material) {
-    // TODO Auto-generated method stub
-    return null;
+    return "<h:form>" + 
+               "<h:inputTextarea value='#{htmlMaterialBackingBean.characterData}' />" +
+               "<f:param name='id' value='" + material.getId() + "' />" +
+           "</h:form>";
   }
 
   @Override
