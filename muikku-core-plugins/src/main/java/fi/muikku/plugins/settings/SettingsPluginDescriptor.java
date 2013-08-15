@@ -29,42 +29,42 @@ public class SettingsPluginDescriptor implements PluginDescriptor, LocalizedPlug
   private static final WidgetVisibility DOCK_SETTINGS_VISIBILITY = WidgetVisibility.AUTHENTICATED;
   
 	private static final String USERS_WIDGET_LOCATION = WidgetLocations.SETTINGS_CONTENT_SIDEBAR_LEFT;
-	private static final int USERS_WIDGET_MINIMUM_SIZE = 1;
+	private static final int USERS_WIDGET_MINIMUM_SIZE = 2;
 	private static final String USERS_WIDGET_NAME = "settings-navigation-users";
   private static final WidgetVisibility USERS_WIDGET_VISIBILITY = WidgetVisibility.AUTHENTICATED;
   
 	private static final String ROLES_WIDGET_LOCATION = WidgetLocations.SETTINGS_CONTENT_SIDEBAR_LEFT;
-	private static final int ROLES_WIDGET_MINIMUM_SIZE = 1;
+	private static final int ROLES_WIDGET_MINIMUM_SIZE = 2;
 	private static final String ROLES_WIDGET_NAME = "settings-navigation-roles";
   private static final WidgetVisibility ROLES_WIDGET_VISIBILITY = WidgetVisibility.AUTHENTICATED;
 	
 	private static final String WORKSPACES_WIDGET_LOCATION = WidgetLocations.SETTINGS_CONTENT_SIDEBAR_LEFT;
-	private static final int WORKSPACES_WIDGET_MINIMUM_SIZE = 1;
+	private static final int WORKSPACES_WIDGET_MINIMUM_SIZE = 2;
 	private static final String WORKSPACES_WIDGET_NAME = "settings-navigation-workspaces";
   private static final WidgetVisibility WORKSPACES_WIDGET_VISIBILITY = WidgetVisibility.AUTHENTICATED;
 	
 	private static final String WORKSPACETYPES_WIDGET_LOCATION = WidgetLocations.SETTINGS_CONTENT_SIDEBAR_LEFT;
-	private static final int WORKSPACETYPES_WIDGET_MINIMUM_SIZE = 1;
+	private static final int WORKSPACETYPES_WIDGET_MINIMUM_SIZE = 2;
 	private static final String WORKSPACETYPES_WIDGET_NAME = "settings-navigation-workspace-types";
   private static final WidgetVisibility WORKSPACETYPES_WIDGET_VISIBILITY = WidgetVisibility.AUTHENTICATED;
 	
 	private static final String PLUGINS_WIDGET_LOCATION = WidgetLocations.SETTINGS_CONTENT_SIDEBAR_LEFT;
-  private static final int PLUGINS_WIDGET_MINIMUM_SIZE = 1;
+  private static final int PLUGINS_WIDGET_MINIMUM_SIZE = 2;
   private static final String PLUGINS_WIDGET_NAME = "settings-navigation-plugins";
   private static final WidgetVisibility PLUGINS_WIDGET_VISIBILITY = WidgetVisibility.AUTHENTICATED;
 	
 	private static final String GRADINGSCALES_WIDGET_LOCATION = WidgetLocations.SETTINGS_CONTENT_SIDEBAR_LEFT;
-	private static final int GRADINGSCALES_WIDGET_MINIMUM_SIZE = 1;
+	private static final int GRADINGSCALES_WIDGET_MINIMUM_SIZE = 2;
 	private static final String GRADINGSCALES_WIDGET_NAME = "settings-navigation-grading-scales";
   private static final WidgetVisibility GRADINGSCALES_WIDGET_VISIBILITY = WidgetVisibility.AUTHENTICATED;
 	
 	private static final String COURSEIDENTIFIERS_WIDGET_LOCATION = WidgetLocations.SETTINGS_CONTENT_SIDEBAR_LEFT;
-	private static final int COURSEIDENTIFIERS_WIDGET_MINIMUM_SIZE = 1;
+	private static final int COURSEIDENTIFIERS_WIDGET_MINIMUM_SIZE = 2;
 	private static final String COURSEIDENTIFIERS_WIDGET_NAME = "settings-navigation-course-identifiers";
   private static final WidgetVisibility COURSEIDENTIFIERS_WIDGET_VISIBILITY = WidgetVisibility.AUTHENTICATED;
   
   
-	private static final String USERS_ADD_WIDGET_LOCATION = WidgetLocations.SETTINGS_USERS_CONTENT_TOOLS_TOP_RIGHT;
+	private static final String USERS_ADD_WIDGET_LOCATION = WidgetLocations.SETTINGS_USERS_CONTENT_TOOLS_TOP_LEFT ;
 	private static final int USERS_ADD_WIDGET_MINIMUM_SIZE = 1;
 	private static final String USERS_ADD_WIDGET_NAME = "settings-users-add";
 	private static final WidgetVisibility USERS_ADD_WIDGET_VISIBILITY = WidgetVisibility.AUTHENTICATED;

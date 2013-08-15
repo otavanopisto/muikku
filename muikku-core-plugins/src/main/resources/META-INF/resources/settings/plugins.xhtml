@@ -14,20 +14,32 @@
       <ui:repeat value="#{settingsBackingBean.allPlugins}"
                  var="plugin">
         <h:form>
+        
+             <div class="se-plugins-plugin">
         <ui:fragment rendered="#{plugin.enabled}">
-          <h:commandButton action="#{settingsBackingBean.togglePlugin}"
-                           value="#{i18n.text['plugin.settings.plugins.disablePlugin']}">
-            <f:param name="pluginId" value="#{plugin.id}" />
-          </h:commandButton>
+    
+<!--             value="#{i18n.text['plugin.settings.plugins.disablePlugin']}" --> 
+	          <h:commandButton action="#{settingsBackingBean.togglePlugin}" styleClass="btn-enabled"
+	               >  
+	            <f:param name="pluginId" value="#{plugin.id}" />
+	          </h:commandButton>
+	                             <span>#{plugin.library} - #{plugin.name}</span>
+
+      
+
         </ui:fragment>
         <ui:fragment rendered="#{!plugin.enabled}">
-          <h:commandButton action="#{settingsBackingBean.togglePlugin}"
-                           value="#{i18n.text['plugin.settings.plugins.enablePlugin']}">
+        <!-- value="#{i18n.text['plugin.settings.plugins.enablePlugin']}" -->
+          <h:commandButton action="#{settingsBackingBean.togglePlugin}" styleClass="btn-disabled"
+                           >
             <f:param name="pluginId" value="#{plugin.id}" />
+            
           </h:commandButton>
+                    <span>#{plugin.library} - #{plugin.name}</span>
         </ui:fragment>
+                  </div>
         </h:form>
-        #{plugin.library} - #{plugin.name}
+
       </ui:repeat>
       
       </div>
