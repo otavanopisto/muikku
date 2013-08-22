@@ -16,7 +16,7 @@ import fi.muikku.plugins.forum.dao.EnvironmentForumAreaDAO;
 import fi.muikku.plugins.forum.dao.ForumAreaDAO;
 import fi.muikku.plugins.forum.dao.ForumThreadDAO;
 import fi.muikku.plugins.forum.dao.ForumThreadReplyDAO;
-import fi.muikku.plugins.forum.model.CourseForumArea;
+import fi.muikku.plugins.forum.model.WorkspaceForumArea;
 import fi.muikku.plugins.forum.model.EnvironmentForumArea;
 import fi.muikku.plugins.forum.model.ForumArea;
 import fi.muikku.plugins.forum.model.ForumThread;
@@ -84,7 +84,7 @@ public class ForumController {
         environmentForumAreaDAO.listAll(), ForumResourcePermissionCollection.FORUM_WRITEAREA);
   }
 
-  public List<CourseForumArea> listCourseForums(WorkspaceEntity course) {
+  public List<WorkspaceForumArea> listCourseForums(WorkspaceEntity course) {
     return sessionController.filterResources(
         courseForumAreaDAO.listByCourse(course), ForumResourcePermissionCollection.FORUM_WRITEAREA);
   }

@@ -10,19 +10,19 @@ import javax.persistence.criteria.Root;
 import fi.muikku.dao.DAO;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugin.PluginDAO;
-import fi.muikku.plugins.forum.model.CourseForumArea;
+import fi.muikku.plugins.forum.model.WorkspaceForumArea;
 import fi.muikku.plugins.forum.model.CourseForumArea_;
 
 
 @DAO
-public class CourseForumAreaDAO extends PluginDAO<CourseForumArea> {
+public class CourseForumAreaDAO extends PluginDAO<WorkspaceForumArea> {
   
 	private static final long serialVersionUID = 8627800028194294719L;
 
-	public CourseForumArea create(WorkspaceEntity course, String name, Boolean archived) {
-    CourseForumArea courseForumArea = new CourseForumArea();
+	public WorkspaceForumArea create(WorkspaceEntity course, String name, Boolean archived) {
+    WorkspaceForumArea courseForumArea = new WorkspaceForumArea();
     
-    courseForumArea.setCourse(course.getId());
+    courseForumArea.setWorkspace(course.getId());
     courseForumArea.setName(name);
     courseForumArea.setArchived(archived);
     
@@ -31,12 +31,12 @@ public class CourseForumAreaDAO extends PluginDAO<CourseForumArea> {
     return courseForumArea;
   }
   
-  public List<CourseForumArea> listByCourse(WorkspaceEntity course) {
+  public List<WorkspaceForumArea> listByCourse(WorkspaceEntity course) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<CourseForumArea> criteria = criteriaBuilder.createQuery(CourseForumArea.class);
-    Root<CourseForumArea> root = criteria.from(CourseForumArea.class);
+    CriteriaQuery<WorkspaceForumArea> criteria = criteriaBuilder.createQuery(WorkspaceForumArea.class);
+    Root<WorkspaceForumArea> root = criteria.from(WorkspaceForumArea.class);
     criteria.select(root);
     criteria.where(
         criteriaBuilder.equal(root.get(CourseForumArea_.course), course.getId())

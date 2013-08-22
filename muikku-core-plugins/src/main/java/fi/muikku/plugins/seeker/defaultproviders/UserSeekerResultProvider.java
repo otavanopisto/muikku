@@ -1,13 +1,17 @@
 package fi.muikku.plugins.seeker.defaultproviders;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import fi.muikku.i18n.LocaleController;
+import fi.muikku.model.users.EnvironmentUser;
+import fi.muikku.plugins.seeker.DefaultSeekerResultImpl;
 import fi.muikku.plugins.seeker.SeekerResult;
 import fi.muikku.plugins.seeker.SeekerResultProvider;
 import fi.muikku.schooldata.UserController;
+import fi.muikku.schooldata.entity.User;
 import fi.muikku.session.SessionController;
 
 public class UserSeekerResultProvider implements SeekerResultProvider {
@@ -23,10 +27,9 @@ public class UserSeekerResultProvider implements SeekerResultProvider {
   
   @Override
   public List<SeekerResult> search(String searchTerm) {
-//    return seekerify(userController.listEnvironmentUsers(), searchTerm);
-  	return null;
+    return seekerify(userController.listEnvironmentUsers(), searchTerm);
   }
-/**
+
   private List<SeekerResult> seekerify(List<EnvironmentUser> list, String searchTerm) {
     List<SeekerResult> result = new ArrayList<SeekerResult>();
 
@@ -35,9 +38,9 @@ public class UserSeekerResultProvider implements SeekerResultProvider {
     String imageUrl;
     
     for (EnvironmentUser e : list) {
-      User e2 = userSchoolDataController.findUser(e.getUser());
+      User e2 = userController.findUser(e.getUser());
 
-      if (userController.getUserHasPicture(e.getUser()))
+      if (userController.hasPicture(e.getUser()))
         imageUrl = "/picture?userId=" + e.getUser().getId();
       else
         imageUrl = "/themes/default/gfx/fish.jpg";
@@ -49,5 +52,5 @@ public class UserSeekerResultProvider implements SeekerResultProvider {
     
     return result;
   }
-**/  
+  
 }
