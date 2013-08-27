@@ -23,7 +23,6 @@ import fi.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
 import fi.muikku.plugins.communicator.model.InboxCommunicatorMessage;
-import fi.muikku.schooldata.UserController;
 import fi.muikku.security.Permit;
 import fi.muikku.security.PermitContext;
 import fi.muikku.session.SessionController;
@@ -42,7 +41,7 @@ public class CommunicatorController {
 //  private CourseEntityDAO courseDAO;
   
   @Inject
-  private UserController userController;
+  private fi.muikku.schooldata.UserController userController;
   
 //  @Inject
 //  private CourseSchoolDataController courseSchoolDataController;
