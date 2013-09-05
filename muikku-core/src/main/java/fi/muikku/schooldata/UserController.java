@@ -6,16 +6,24 @@ import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import fi.muikku.dao.base.SchoolDataSourceDAO;
+import fi.muikku.dao.users.EnvironmentUserDAO;
 import fi.muikku.dao.users.UserEntityDAO;
 import fi.muikku.dao.users.UserGroupDAO;
 import fi.muikku.dao.users.UserGroupUserDAO;
 import fi.muikku.dao.users.UserPictureDAO;
+import fi.muikku.events.Archived;
+import fi.muikku.events.Created;
+import fi.muikku.events.Modified;
+import fi.muikku.events.UserEntityEvent;
 import fi.muikku.model.base.SchoolDataSource;
+import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserGroup;
+import fi.muikku.model.users.UserGroupUser;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.UserEmail;
 
@@ -32,6 +40,9 @@ public class UserController {
 	@Inject
 	private UserEntityDAO userEntityDAO;
 
+  @Inject
+  private EnvironmentUserDAO environmentUserDAO;
+	
 	@Inject
 	private UserGroupDAO userGroupDAO;
 
@@ -43,6 +54,18 @@ public class UserController {
 
   @Inject
   private UserPictureDAO userPictureDAO;
+  
+  @Inject
+  @Created
+  private Event<UserEntityEvent> userCreatedEvent;
+  
+  @Inject
+  @Modified
+  private Event<UserEntityEvent> userModifiedEvent;
+
+  @Inject
+  @Archived
+  private Event<UserEntityEvent> userRemovedEvent;
   
 	/* UserEntity */
 
@@ -103,6 +126,25 @@ public class UserController {
     return userGroupUserDAO.countByUserGroup(userGroup);
   }
   
+  public List<EnvironmentUser> listEnvironmentUsers() {
+    return environmentUserDAO.listAll();
+  }
+  
+  public List<EnvironmentUser> searchUsers(String searchTerm) {
+    List<EnvironmentUser> grps = environmentUserDAO.listAll();
+    List<EnvironmentUser> filtered = new ArrayList<EnvironmentUser>();
+    
+    for (EnvironmentUser grp : grps) {
+      User user = findUser(grp.getUser());
+      
+      if ((user.getFirstName().toLowerCase().contains(searchTerm.toLowerCase())) ||
+          (user.getLastName().toLowerCase().contains(searchTerm.toLowerCase())))
+        filtered.add(grp);
+    }
+    
+    return filtered;
+  }
+  
   public List<UserGroup> searchUserGroups(String searchTerm) {
     List<UserGroup> grps = userGroupDAO.listAll();
     List<UserGroup> filtered = new ArrayList<UserGroup>();
@@ -114,5 +156,32 @@ public class UserController {
     
     return filtered;
   }
+
+  public UserGroup findUserGroup(Long userGroupId) {
+    return userGroupDAO.findById(userGroupId);
+  }
   
+  public List<UserGroupUser> listUserGroupUsers(UserGroup userGroup) {
+    return userGroupUserDAO.listByUserGroup(userGroup);
+  }
+  
+  
+  private void fireUserCreatedEvent(UserEntity userEntity) {
+    UserEntityEvent userEvent = new UserEntityEvent();
+    userEvent.setUserEntityId(userEntity.getId());
+    userCreatedEvent.fire(userEvent);
+  }
+
+  private void fireUserModifiedEvent(UserEntity userEntity) {
+    UserEntityEvent userEvent = new UserEntityEvent();
+    userEvent.setUserEntityId(userEntity.getId());
+    userModifiedEvent.fire(userEvent);
+  }
+
+  private void fireUserRemovedEvent(UserEntity userEntity) {
+    UserEntityEvent userEvent = new UserEntityEvent();
+    userEvent.setUserEntityId(userEntity.getId());
+    userRemovedEvent.fire(userEvent);
+  }
+
 }

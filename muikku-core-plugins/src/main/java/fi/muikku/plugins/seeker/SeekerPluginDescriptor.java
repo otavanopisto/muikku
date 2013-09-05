@@ -21,7 +21,7 @@ import fi.muikku.model.widgets.WidgetVisibility;
 import fi.muikku.plugin.LocalizedPluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
 import fi.muikku.plugin.RESTPluginDescriptor;
-import fi.muikku.plugins.seeker.defaultproviders.CourseSeekerResultProvider;
+import fi.muikku.plugins.seeker.defaultproviders.WorkspaceSeekerResultProvider;
 import fi.muikku.plugins.seeker.defaultproviders.UserSeekerResultProvider;
 
 @ApplicationScoped
@@ -58,7 +58,7 @@ public class SeekerPluginDescriptor implements PluginDescriptor, RESTPluginDescr
 	@Override
 	public List<Class<?>> getBeans() {
 		return new ArrayList<Class<?>>(Arrays.asList(
-		  CourseSeekerResultProvider.class,
+		  WorkspaceSeekerResultProvider.class,
 		  UserSeekerResultProvider.class
 		));
 	}

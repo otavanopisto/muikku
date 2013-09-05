@@ -46,8 +46,9 @@ public class SeekerRESTService extends PluginRESTService {
     
     for (SeekerResultProvider provider : seekerResultProviders) {
       List<SeekerResult> result = provider.search(searchString);
-      
-      results.addAll(result);
+      if (result != null) {
+        results.addAll(result);
+      }
     }
     
     TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
