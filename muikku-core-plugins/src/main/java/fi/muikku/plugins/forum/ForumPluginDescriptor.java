@@ -16,7 +16,7 @@ import fi.muikku.plugins.forum.dao.ForumAreaDAO;
 import fi.muikku.plugins.forum.dao.ForumMessageDAO;
 import fi.muikku.plugins.forum.dao.ForumThreadDAO;
 import fi.muikku.plugins.forum.dao.ForumThreadReplyDAO;
-import fi.muikku.plugins.forum.model.CourseForumArea;
+import fi.muikku.plugins.forum.model.WorkspaceForumArea;
 import fi.muikku.plugins.forum.model.EnvironmentForumArea;
 import fi.muikku.plugins.forum.model.ForumArea;
 import fi.muikku.plugins.forum.model.ForumMessage;
@@ -59,7 +59,7 @@ public class ForumPluginDescriptor implements PluginDescriptor, PersistencePlugi
 	@Override
 	public Class<?>[] getEntities() {
 		return new Class<?>[] {
-      CourseForumArea.class,
+      WorkspaceForumArea.class,
       EnvironmentForumArea.class,
       ForumArea.class,
       ForumMessage.class,

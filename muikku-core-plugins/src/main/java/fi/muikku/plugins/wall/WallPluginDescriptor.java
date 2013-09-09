@@ -16,7 +16,7 @@ import fi.muikku.plugin.LocalizedPluginDescriptor;
 import fi.muikku.plugin.PersistencePluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
 import fi.muikku.plugin.RESTPluginDescriptor;
-import fi.muikku.plugins.wall.dao.CourseWallDAO;
+import fi.muikku.plugins.wall.dao.WorkspaceWallDAO;
 import fi.muikku.plugins.wall.dao.EnvironmentWallDAO;
 import fi.muikku.plugins.wall.dao.ForumAreaSubscriptionDAO;
 import fi.muikku.plugins.wall.dao.UserWallDAO;
@@ -29,7 +29,7 @@ import fi.muikku.plugins.wall.dao.WallEntryReplyDAO;
 import fi.muikku.plugins.wall.dao.WallEntryTextItemDAO;
 import fi.muikku.plugins.wall.dao.WallSubscriptionDAO;
 import fi.muikku.plugins.wall.model.AbstractWallEntry;
-import fi.muikku.plugins.wall.model.CourseWall;
+import fi.muikku.plugins.wall.model.WorkspaceWall;
 import fi.muikku.plugins.wall.model.EnvironmentWall;
 import fi.muikku.plugins.wall.model.ForumAreaSubscription;
 import fi.muikku.plugins.wall.model.UserWall;
@@ -60,7 +60,7 @@ public class WallPluginDescriptor implements PluginDescriptor, LocalizedPluginDe
 	public List<Class<?>> getBeans() {
 		return new ArrayList<Class<?>>(Arrays.asList(
 			/* DAOs */	
-      CourseWallDAO.class,
+      WorkspaceWallDAO.class,
       EnvironmentWallDAO.class,
       ForumAreaSubscriptionDAO.class,
       UserWallDAO.class,
@@ -82,7 +82,7 @@ public class WallPluginDescriptor implements PluginDescriptor, LocalizedPluginDe
 	public Class<?>[] getEntities() {
 		return new Class<?>[] {
 		  AbstractWallEntry.class,
-      CourseWall.class,
+      WorkspaceWall.class,
       EnvironmentWall.class,
       ForumAreaSubscription.class,
       UserWall.class,

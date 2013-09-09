@@ -17,6 +17,33 @@ body {
 
 /* TODO: H1,H2,H3,H4,H5 */
 
+h1,h2,h3,h4,h5{
+	color:$header;
+  @include fontShadow; 
+  font-weight:bold; 
+}
+
+h1{
+	 font-size:4em;
+
+}
+
+h2{
+	 font-size:3.5em;
+}
+
+h3{
+	 font-size:2em;
+}
+
+h4{
+	 font-size:1.75em;
+}
+
+h5{
+	font-size:1.5em;
+}
+
 /* TODO: P, a ... */
 
  a.tooltip {
@@ -28,32 +55,35 @@ body {
  line-height:30px;
  }
   
- a.tooltip > div { 
+ a.tooltip > span { 
   @include rounded(3px);
   @include shadow;
   @include tooltipTransition(0.1s,0.1s,0.1s,0.1s);
-  @include gradient-top-bottom(#707070, #666);
-  @include border($naviDynamicColor); 
+  @include gradient-top-bottom;
+  @include border; 
+
   position:absolute; 
-	padding: 5px 10px;
-	margin-top: 20px; 
-	opacity: 1; 
+
+	color:#000;
+	opacity: 0; 
 	visibility: hidden; 
 	z-index: 10; 
 	font-size: $text; 
 	font-style: normal;  
-	color: #fff; 
+ 
 
  }  
  
 
  
- a.tooltip:hover > div { 
+ a.tooltip:hover > span { 
+ text-align:center;
  opacity: 1;
+ padding:15px;
  text-decoration:none; 
  visibility: visible; 
  overflow: visible; 
- margin-top:35px; 
+ @include transitionDirection(0, 0, 0, 20px);
  display: inline; 
  } 
  
@@ -99,6 +129,38 @@ body {
   
 }
 
+#dynNaviWrapper{
+position:absolute;
+top:150px;
+left:0;
+
+  z-index:12;
+}
+#dynamicNavigation{
+}
+
+#dynamicNaviButton{
+border:1px solid #000;
+height:40px;
+width:40px;
+    @include gradient-top-bottom-four($btnGr...);
+    @include shadow;
+}
+
+#dynamicNaviContainer{
+display:none;
+border:1px solid #dadada;
+background-color:#ededed;
+padding:10px;
+-moz-border-radius: 0 10px 10px 0;
+border-radius: 0 10px 10px 0;
+} 
+
+#dynamicNaviContainer div{
+background-color:#fff;
+padding:5px;
+}
+
 #staticNavigationFade{
   @include fadetoAlpha-top-bottom;	
 	height:40px;
@@ -106,10 +168,8 @@ body {
 }
 
 #staticNavigation{
-	@include  gradient-top-bottom-four($stNavGradColors...); 
-  border: 1px solid #ededed;
-  -webkit-border-radius: 0px 0px 10px 10px;
-border-radius: 0px 0px 10px 10px; 
+  background-color:#ededed;
+  border: 1px solid #dadada;
 }
 
 
@@ -123,13 +183,20 @@ border-radius: 0px 0px 10px 10px;
 }
 
 .stuckStNav {
-    position:fixed;
+  position:fixed;
 	top:0;
 	left:50%;
-	margin-left:-480px;
+	margin-left:-481px;
 	
 }
 
+.stuckDNav {
+  position:fixed !important;
+  top:0;
+  left:0;
+
+  
+}
 
 #sessionPanel {
   position: relative;
@@ -267,7 +334,11 @@ border-radius: 0px 0px 10px 10px;
   margin: 4px 0px 4px 0px;
 }
 
-/* mainFunction (.mf*) */
+/* mainFunction (.mf*) 
+Idea is to have these styles shared amongst all possible functions
+This can also be done through SASS's extend feature with CSS's selectors.
+
+  */
 
 .mf-buttonContainer{
 text-align:center;
@@ -301,6 +372,29 @@ background-color:$aBgr;
 margin-top:5px;
 padding:10px 20px 10px 20px;
 }
+
+.mf-content-th{
+  border:1px solid $brd;
+  padding:5px;
+  font-weight:bold;
+  @include gradient-top-bottom;	
+}
+.mf-content-tbody{
+  background-color:$bgr;
+  border:1px solid $brd;	
+}
+.mf-content-tr{}
+
+.mf-content-td{
+ padding:0 0 0 5px;   	
+}
+
+.mf-content-tfoot{
+  border:1px solid $brd;
+  font-weight:bold;
+  @include gradient-top-bottom;   
+}
+
 
 
 
@@ -354,8 +448,8 @@ padding:10px 20px 10px 20px;
 }
 .cm-message-content{
 	padding:15px;
-
 	font-size:1.3em;
+	white-space: pre-line;
 }
  
 .cm-news{
@@ -546,6 +640,75 @@ color:$lukio;
 .cp-paja
 .cp-ryhmakurssi
 */
+
+
+/* Settings */
+
+.se-users, .se-roles, .se-workspaces, .se-workspacetypes, .se-plugins, .se-gradingscales, .se-courseidentifiers{
+  @extend .mf-content;  
+}
+
+
+se-container{
+	
+	
+}
+
+.se-container ul{
+  margin-left:20px;
+}
+
+.se-container th[scope="col"]{
+ @extend .mf-content-th;
+}
+
+.se-container th[scope="colgroup"]{
+  color:$header;
+  @include fontShadow;
+  font-size:1.3em;
+  padding:5px;
+  font-weight:bold;  
+}
+
+.se-container tbody{
+ @extend .mf-content-tbody;
+}
+
+
+.se-container td{
+  @extend .mf-content-td;
+
+}
+
+.se-container tfoot{
+  @extend .mf-content-tfoot;
+}
+
+.se-index{
+	
+}
+
+.se-widget-userAdd{
+  @extend .mf-buttonContainer;	
+  margin-top:5px;
+  padding:0;
+  width:40px;
+  height:40px;
+}
+
+.se-widget-userAdd a{
+    @include customIcon(url('../resources/gfx/icons/32x32/actions/settings-users-add.png'),$mainFuncBtnGr...);       
+    @include rounded(2px);
+    @include shadow;
+    @include border($mainFuncBtnBrd);	
+}
+
+div[data-name="settings.content-sidebar.left"]{
+
+	padding:0;
+	
+}
+
 
 
 .wallEntry {

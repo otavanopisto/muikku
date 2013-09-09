@@ -90,6 +90,7 @@ $.fn.extend({
       this._communicatorContent.tooltip({
         items: ".mf-person",
         tooltipClass: "cm-userpopup-container",
+        show: { delay: 500 },
         content: _this._getUserPopupContent
       });
 
@@ -248,7 +249,7 @@ $.fn.extend({
             response(_this._doSearch(request.term));
           },
           select: function (event, ui) {
-            _this._selectRecipient(event, ui.item.id, ui.item.label, ui.item.type);
+            _this._selectRecipient(event, ui.item);
             $(this).val("");
             return false;
           }
@@ -268,7 +269,6 @@ $.fn.extend({
           search : function() {
             // custom minLength
             var term = _this._extractLast(this.value);
-            console.log("search " + term);
             if (term.length < 2) {
               return false;
             }
@@ -410,7 +410,7 @@ $.fn.extend({
             response(_this._doSearch(request.term));
           },
           select: function (event, ui) {
-            _this._selectRecipient(event, ui.item.id, ui.item.label, ui.item.type);
+            _this._selectRecipient(event, ui.item);
             $(this).val("");
             return false;
           }
@@ -429,7 +429,6 @@ $.fn.extend({
           search : function() {
             // custom minLength
             var term = _this._extractLast(this.value);
-            console.log("search " + term);
             if (term.length < 2) {
               return false;
             }
@@ -497,7 +496,7 @@ $.fn.extend({
       var recipientIds = [];
       var recipientGroupIds = [];
       
-      $(recipientListElement.children(".cm-newMessage-recipient")).each(function (index) {
+      $(recipientListElement.children(".cm-newMessage-recipientuser")).each(function (index) {
         recipientIds.push($(this).find("input[name='userId']").val());
       });
       
@@ -526,7 +525,7 @@ $.fn.extend({
       var recipientIds = [];
       var recipientGroupIds = [];
       
-      $(recipientListElement.children(".cm-newMessage-recipient")).each(function (index) {
+      $(recipientListElement.children(".cm-newMessage-recipientuser")).each(function (index) {
         recipientIds.push($(this).find("input[name='userId']").val());
       });
       
@@ -573,7 +572,7 @@ $.fn.extend({
       var _this = this;
       var users = new Array();
 
-      RESTful.doGet(CONTEXTPATH + "/rest/user/searchUsers", {
+      RESTful.doGet(CONTEXTPATH + "/rest/users/searchUsers", {
         parameters: {
           'searchString': searchTerm
         }
@@ -625,22 +624,24 @@ $.fn.extend({
       
       return $.merge(groups, users);
     },
-    _selectRecipient: function (event, id, name, type) {
+    _selectRecipient: function (event, item) {
       var _this = this;
       var element = $(event.target);
       var recipientListElement = element.parents(".cm-newMessage").find(".cm-newMessage-recipientsList"); 
       
       var prms = {
-        id: id,
-        name: name
+        id: item.id,
+        name: item.label
       };
   
-      if (type == "USER") {
+      if (item.type == "USER") {
         renderDustTemplate('communicator/communicator_messagerecipient.dust', prms, function (text) {
           recipientListElement.append($.parseHTML(text));
         });
       } else {
-        if (type == "GROUP") {
+        if (item.type == "GROUP") {
+          prms.memberCount = item.memberCount;
+          
           renderDustTemplate('communicator/communicator_messagerecipientgroup.dust', prms, function (text) {
             recipientListElement.append($.parseHTML(text));
           });
@@ -740,7 +741,7 @@ $.fn.extend({
                 templateId: val
               }
             }).success(function (data, textStatus, jqXHR) {
-              select.remove(option);
+              option.remove();
             });
           }
         });
@@ -756,7 +757,7 @@ $.fn.extend({
                 signatureId: val
               }
             }).success(function (data, textStatus, jqXHR) {
-              select.remove(option);
+              option.remove();
             });
           }
         });
