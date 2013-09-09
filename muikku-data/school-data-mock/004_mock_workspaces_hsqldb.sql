@@ -26,12 +26,12 @@ insert into Workspace (course_identifier_id, name, description, type_id) values
 	
 /* Group Work Workspaces */
 	
-insert into Workspace (course_identifier_id, name, type_id) values
+insert into Workspace (course_identifier_id, name, description, type_id) values
 	(null, 'Public House - Green Dragon', 'Have fun!', 2),
 	(null, 'Hidden kingdom of Gondolin', 'Super duper mango banana!', 2),
 	(null, 'Minas Morgul - City of the Nazgûl', 'Place of the XXX', 2);	
 	
 /* Games */	
 	
-insert into Workspace (course_identifier_id, name, type_id) values
+insert into Workspace (course_identifier_id, name, description, type_id) values
 	(null, 'MERP', 'Middle Earth Role Playing Game', 3);	
