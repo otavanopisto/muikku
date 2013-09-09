@@ -22,7 +22,8 @@ public class HtmlMaterialRenderer extends MaterialRenderer {
   public String renderEditorFragment(Material material) {
     return "<h:form>" + 
                "<h:inputTextarea value='#{htmlMaterialBackingBean.characterData}' />" +
-               "<f:param name='id' value='" + material.getId() + "' />" +
+               "<h:inputHidden value='"+material.getId()+"' binding='#{htmlMaterialBackingBean.materialIdInput}' />" +
+               "<h:commandButton action='#{htmlMaterialBackingBean.updateMaterial}' value='Save' />" +
            "</h:form>";
   }
 

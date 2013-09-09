@@ -57,4 +57,9 @@ public class MaterialDAO extends CoreDAO<Material> {
     return getSingleResult(entityManager.createQuery(criteria));
   }
   
+  public Material updateCharacterData(Material material, String characterData) {
+    material.setCharacterData(characterData);
+    getEntityManager().persist(material);
+    return material;
+  }
 }

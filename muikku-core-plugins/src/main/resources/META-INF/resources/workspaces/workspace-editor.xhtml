@@ -8,12 +8,12 @@
     template="/workspaces/template.xhtml">
    
   <ui:define name="content">
-    <c:forEach var="material" items="#{workspaceViewBackingBean.renderedWorkspaceMaterials}">
+    <c:forEach var="material" items="#{workspaceMaterialEditorBackingBean.renderedWorkspaceMaterials}">
       <m:embedJSF jsfString="#{material}" />
     </c:forEach>
     
-    <a href="#{request.contextPath}/workspace/#{workspaceViewBackingBean.workspaceUrlName}">View</a>
-    <a href="#{request.contextPath}/workspace/editor/#{workspaceViewBackingBean.workspaceUrlName}">Edit</a>
+    <a href="#{request.contextPath}/workspace/#{workspaceMaterialEditorBackingBean.workspaceUrlName}">View</a>
+    <a href="#{request.contextPath}/workspace/editor/#{workspaceMaterialEditorBackingBean.workspaceUrlName}">Edit</a>
   
   </ui:define>
   
