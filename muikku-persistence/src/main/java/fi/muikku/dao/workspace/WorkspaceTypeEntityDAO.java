@@ -18,4 +18,9 @@ public class WorkspaceTypeEntityDAO extends CoreDAO<WorkspaceTypeEntity> {
     return workspaceType;
   }
 
+	public WorkspaceTypeEntity updateName(WorkspaceTypeEntity workspaceTypeEntity, String name) {
+		workspaceTypeEntity.setName(name);
+		return persist(workspaceTypeEntity);
+	}
+
 }
