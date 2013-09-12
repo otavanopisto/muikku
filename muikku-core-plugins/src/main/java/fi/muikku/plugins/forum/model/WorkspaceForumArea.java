@@ -6,16 +6,16 @@ import javax.persistence.PrimaryKeyJoinColumn;
 
 @Entity
 @PrimaryKeyJoinColumn(name="id")
-public class CourseForumArea extends ForumArea {
+public class WorkspaceForumArea extends ForumArea {
 
-  public Long getCourse() {
-    return course;
+  public Long getWorkspace() {
+    return workspace;
   }
 
-  public void setCourse(Long course) {
-    this.course = course;
+  public void setWorkspace(Long workspace) {
+    this.workspace = workspace;
   }
   
   @Column (name = "course_id")
-  private Long course;
+  private Long workspace;
 }

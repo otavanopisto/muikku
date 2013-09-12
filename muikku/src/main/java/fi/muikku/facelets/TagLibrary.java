@@ -9,6 +9,7 @@ public class TagLibrary extends AbstractTagLibrary {
 	public TagLibrary() {
 		super("http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd");
 		addTagHandler("includeWidgets", IncludeWidgets.class);
+		addTagHandler("embedJSF", EmbedJSF.class);
 		
 	  for (String userTag : USER_TAGS) {
 		  addUserTag(userTag);

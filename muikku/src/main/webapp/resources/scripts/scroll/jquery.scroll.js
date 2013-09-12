@@ -8,6 +8,11 @@ $(document).ready(function() {
 $('#staticNavigationFade').waypoint('sticky', {
   stuckClass : 'stuckStNav'
 });
+$('#dynamicNavigation').waypoint('sticky', {
+  wrapper:'<div id="dynNaviWrapper" />',
+  stuckClass : 'stuckDNav'
+});
+
 });
 
 

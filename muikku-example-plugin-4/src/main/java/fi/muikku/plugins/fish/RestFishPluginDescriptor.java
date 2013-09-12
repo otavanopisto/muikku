@@ -25,6 +25,8 @@ public class RestFishPluginDescriptor implements PluginDescriptor, RESTPluginDes
   private static final String FISH_WIDGET_LOCATION = "environment.header.left";
   private static final String FISH_WIDGET_NAME = "restfish";
   private static final int FISH_WIDGET_MINIMUM_SIZE = 8;
+  
+  public static final int FISH_WIDGET_UPDATE_INTERVAL = 10000;
 
   @Inject
   private WidgetController widgetController;

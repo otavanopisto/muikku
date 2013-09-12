@@ -12,17 +12,17 @@ import javax.inject.Named;
 import fi.muikku.dao.users.UserEntityDAO;
 import fi.muikku.model.base.Tag;
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.plugins.communicator.dao.CommunicatorMessageDAO;
 import fi.muikku.plugins.communicator.dao.CommunicatorMessageIdDAO;
 import fi.muikku.plugins.communicator.dao.CommunicatorMessageRecipientDAO;
 import fi.muikku.plugins.communicator.dao.CommunicatorMessageSignatureDAO;
 import fi.muikku.plugins.communicator.dao.CommunicatorMessageTemplateDAO;
+import fi.muikku.plugins.communicator.dao.InboxCommunicatorMessageDAO;
 import fi.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
-import fi.muikku.schooldata.UserController;
+import fi.muikku.plugins.communicator.model.InboxCommunicatorMessage;
 import fi.muikku.security.Permit;
 import fi.muikku.security.PermitContext;
 import fi.muikku.session.SessionController;
@@ -41,13 +41,13 @@ public class CommunicatorController {
 //  private CourseEntityDAO courseDAO;
   
   @Inject
-  private UserController userController;
+  private fi.muikku.schooldata.UserController userController;
   
 //  @Inject
 //  private CourseSchoolDataController courseSchoolDataController;
 
   @Inject
-  private CommunicatorMessageDAO communicatorMessageDAO;
+  private InboxCommunicatorMessageDAO communicatorMessageDAO;
   
   @Inject
   private CommunicatorMessageRecipientDAO communicatorMessageRecipientDAO;
@@ -67,11 +67,11 @@ public class CommunicatorController {
    * @return
    */
 
-  public List<CommunicatorMessage> listReceivedItems(UserEntity userEntity) {
+  public List<InboxCommunicatorMessage> listReceivedItems(UserEntity userEntity) {
     return communicatorMessageDAO.listFirstMessagesByRecipient(userEntity);
   }
   
-  public List<CommunicatorMessage> listSentItems(UserEntity userEntity) {
+  public List<InboxCommunicatorMessage> listSentItems(UserEntity userEntity) {
     return communicatorMessageDAO.listFirstMessagesByRecipient(userEntity);
   }
   
@@ -94,7 +94,7 @@ public class CommunicatorController {
     return communicatorMessageIdDAO.findById(communicatorMessageId);
   }
 
-  public List<CommunicatorMessage> listInboxMessagesByMessageId(UserEntity user, CommunicatorMessageId messageId) {
+  public List<InboxCommunicatorMessage> listInboxMessagesByMessageId(UserEntity user, CommunicatorMessageId messageId) {
     return communicatorMessageDAO.listMessagesByRecipientAndMessageId(user, messageId);
   }
 
@@ -167,7 +167,7 @@ public class CommunicatorController {
       communicatorMessageRecipientDAO.archiveRecipient(recipient);
     }
     
-    List<CommunicatorMessage> sent = communicatorMessageDAO.listBySenderAndMessageId(user, messageId);
+    List<InboxCommunicatorMessage> sent = communicatorMessageDAO.listBySenderAndMessageId(user, messageId);
 
     for (CommunicatorMessage msg : sent) {
       communicatorMessageDAO.archiveSent(msg);

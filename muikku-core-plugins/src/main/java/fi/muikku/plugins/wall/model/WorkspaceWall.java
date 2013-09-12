@@ -7,22 +7,22 @@ import javax.persistence.Transient;
 
 @Entity
 @PrimaryKeyJoinColumn(name="id")
-public class CourseWall extends Wall {
+public class WorkspaceWall extends Wall {
 
-  public Long getCourse() {
-    return course;
+  public Long getWorkspace() {
+    return workspace;
   }
 
-  public void setCourse(Long course) {
-    this.course = course;
+  public void setWorkspace(Long workspace) {
+    this.workspace = workspace;
   }
 
   @Override
   @Transient
   public WallType getWallType() {
-    return WallType.COURSE;
+    return WallType.WORKSPACE;
   }
   
-  @Column (name = "course_id")
-  private Long course;
+  @Column (name = "workspace_id")
+  private Long workspace;
 }

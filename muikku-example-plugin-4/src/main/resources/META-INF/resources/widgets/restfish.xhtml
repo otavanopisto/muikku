@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html">
@@ -7,6 +8,6 @@
     <h:outputStylesheet name="css/fish.css"/>
     <h:outputScript name="scripts/fish.js" />
     
-    <div id="fishContainer">
+    <div id="fishContainer" data-update-interval="#{restFishWidgetBackingBean.updateInterval}">
     </div>
 </ui:composition>

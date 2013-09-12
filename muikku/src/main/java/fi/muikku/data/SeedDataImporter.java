@@ -20,40 +20,40 @@ import fi.muikku.security.PermissionScope;
 @Singleton
 public class SeedDataImporter {
 
-	@PersistenceContext
-	private EntityManager em;
+  @PersistenceContext
+  private EntityManager em;
 
-	@Inject
-	private UserTransaction tx;
+  @Inject
+  private UserTransaction tx;
 
-	@Inject
-	@Any
-	private Instance<PermissionCollection> permissionCollections;
+  @Inject
+  @Any
+  private Instance<PermissionCollection> permissionCollections;
 
-	@PostConstruct
-	public void importData() {
-		for (PermissionCollection collection : permissionCollections) {
-			List<String> permissions = collection.listPermissions();
+  @PostConstruct
+  public void importData() {
+    for (PermissionCollection collection : permissionCollections) {
+      List<String> permissions = collection.listPermissions();
 
-			for (String permission : permissions) {
-				if (em.createQuery("from Permission where name = '" + permission + "'").getResultList().size() == 0) {
-					try {
-						String permissionScope = collection.getPermissionScope(permission);
+      for (String permission : permissions) {
+        if (em.createQuery("from Permission where name = '" + permission + "'").getResultList().size() == 0) {
+          try {
+            String permissionScope = collection.getPermissionScope(permission);
 
-						if (!PermissionScope.PERSONAL.equals(permissionScope)) {
-							Permission per = new Permission();
-							per.setName(permission);
-							per.setScope(permissionScope);
-							em.persist(per);
-						}
-						
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}
+            if (!PermissionScope.PERSONAL.equals(permissionScope)) {
+              Permission per = new Permission();
+              per.setName(permission);
+              per.setScope(permissionScope);
+              em.persist(per);
+            }
+            
+          } catch (Exception e) {
+            e.printStackTrace();
+          }
+        }
+      }
+    }
 
-	}
+  }
 
 }
