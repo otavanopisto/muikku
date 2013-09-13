@@ -14,8 +14,10 @@ import com.ocpsoft.pretty.faces.annotation.URLMappings;
 import com.ocpsoft.pretty.faces.annotation.URLMapping;
 
 import fi.muikku.controller.MaterialController;
+import fi.muikku.dao.workspace.WorkspaceMaterialDAO;
 import fi.muikku.model.material.Material;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.model.workspace.WorkspaceMaterial;
 import fi.muikku.schooldata.UserController;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.Workspace;
@@ -38,6 +40,9 @@ public class WorkspaceMaterialEditorBackingBean implements Serializable {
   
   @Inject
   private MaterialController materialController;
+  
+  @Inject
+  private WorkspaceMaterialDAO workspaceMaterialDAO;
 
   @PostConstruct
   public void init() {
@@ -84,7 +89,8 @@ public class WorkspaceMaterialEditorBackingBean implements Serializable {
     Long workspaceId = getWorkspaceId();
     if (workspaceId != null) {
       WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(getWorkspaceId());
-      for (Material material : workspaceEntity.getMaterials()) {
+      for (WorkspaceMaterial workspaceMaterial : workspaceMaterialDAO.listByWorkspaceEntity(workspaceEntity)) {
+        Material material = workspaceMaterial.getMaterial();
         String rendered = materialController.renderEditor(material);
         System.out.println(rendered);
         result.add(rendered);
