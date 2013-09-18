@@ -22,6 +22,11 @@ import fi.muikku.plugins.forum.model.ForumArea;
 import fi.muikku.plugins.forum.model.ForumMessage;
 import fi.muikku.plugins.forum.model.ForumThread;
 import fi.muikku.plugins.forum.model.ForumThreadReply;
+import fi.muikku.plugins.forum.wall.ForumAreaSubscription;
+import fi.muikku.plugins.forum.wall.ForumAreaSubscriptionDAO;
+import fi.muikku.plugins.forum.wall.ForumThreadSubscription;
+import fi.muikku.plugins.forum.wall.ForumThreadSubscriptionDAO;
+import fi.muikku.plugins.forum.wall.ForumWallEntryProvider;
 
 @ApplicationScoped
 @Stateful
@@ -46,13 +51,17 @@ public class ForumPluginDescriptor implements PluginDescriptor, PersistencePlugi
       ForumMessageDAO.class,
       ForumThreadDAO.class,
       ForumThreadReplyDAO.class,
+      ForumAreaSubscriptionDAO.class,
+      ForumThreadSubscriptionDAO.class,
 		  
 		  /* Controllers */
 		  ForumController.class,
 		  
 		  /* Other */
       ForumPermissionResolver.class,
-		  ForumResourcePermissionCollection.class
+		  ForumResourcePermissionCollection.class,
+		  
+		  ForumWallEntryProvider.class
 		));
 	}
 	
@@ -64,7 +73,9 @@ public class ForumPluginDescriptor implements PluginDescriptor, PersistencePlugi
       ForumArea.class,
       ForumMessage.class,
       ForumThread.class,
-      ForumThreadReply.class
+      ForumThreadReply.class,
+      ForumAreaSubscription.class,
+      ForumThreadSubscription.class
 		};
 	}
 	

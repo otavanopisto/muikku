@@ -39,19 +39,19 @@ public class MuikkuPermissions extends AbstractPermissionCollection implements P
   
   /* COURSE */
   
-  @Scope (PermissionScope.COURSE)
+  @Scope (PermissionScope.WORKSPACE)
   public static final String COURSE_MANAGECOURSESETTINGS = "COURSE_MANAGECOURSESETTINGS";
   
-  @Scope (PermissionScope.COURSE)
+  @Scope (PermissionScope.WORKSPACE)
   public static final String WALL_READALLCOURSEMESSAGES = "WALL_READALLCOURSEMESSAGES";
   
-  @Scope (PermissionScope.COURSE)
+  @Scope (PermissionScope.WORKSPACE)
   public static final String REPRESENT_COURSEUSER = "REPRESENT_COURSEUSER";
   
-  @Scope (PermissionScope.COURSE)
+  @Scope (PermissionScope.WORKSPACE)
   public static final String EVALUATE_USER = "EVALUATE_USER";
 
-  @Scope (PermissionScope.COURSE)
+  @Scope (PermissionScope.WORKSPACE)
   public static final String WALL_WRITECOURSEWALL = "WALL_WRITECOURSEWALL";
 
   /* RESOURCE */

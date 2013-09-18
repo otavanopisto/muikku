@@ -1,19 +1,25 @@
-package fi.muikku.plugins.wall.model;
+package fi.muikku.plugins.forum.wall;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
+import javax.persistence.ManyToOne;
+
+import fi.muikku.plugins.forum.model.ForumThread;
 
 @Entity
-@Inheritance(strategy=InheritanceType.JOINED)
-public abstract class WallSubscription {
+public class ForumThreadSubscription {
 
-  public abstract WallSubscriptionType getType();
-  
+  public ForumThread getForumThread() {
+    return forumThread;
+  }
+
+  public void setForumThread(ForumThread forumThread) {
+    this.forumThread = forumThread;
+  }
+
   public Long getId() {
     return id;
   }
@@ -32,4 +38,7 @@ public abstract class WallSubscription {
 
   @Column (name = "user_id")
   private Long user;
+
+  @ManyToOne
+  private ForumThread forumThread;
 }

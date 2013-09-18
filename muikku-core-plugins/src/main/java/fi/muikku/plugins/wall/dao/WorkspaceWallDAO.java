@@ -26,14 +26,14 @@ public class WorkspaceWallDAO extends PluginDAO<WorkspaceWall> {
     return courseWall;
   }
 
-  public WorkspaceWall findByCourse(WorkspaceEntity course) {
+  public WorkspaceWall findByWorkspace(WorkspaceEntity workspace) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<WorkspaceWall> criteria = criteriaBuilder.createQuery(WorkspaceWall.class);
     Root<WorkspaceWall> root = criteria.from(WorkspaceWall.class);
     criteria.select(root);
-    criteria.where(criteriaBuilder.equal(root.get(WorkspaceWall_.workspace), course.getId()));
+    criteria.where(criteriaBuilder.equal(root.get(WorkspaceWall_.workspace), workspace.getId()));
     
     return getSingleResult(entityManager.createQuery(criteria));
   }

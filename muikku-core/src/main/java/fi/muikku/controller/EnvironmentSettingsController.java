@@ -66,7 +66,7 @@ public class EnvironmentSettingsController {
   }
 
   public List<Permission> listCoursePermissions() {
-    return permissionDAO.listByScope(PermissionScope.COURSE);
+    return permissionDAO.listByScope(PermissionScope.WORKSPACE);
   }
   
   public boolean hasEnvironmentRolePermission(RoleEntity role, Permission permission) {

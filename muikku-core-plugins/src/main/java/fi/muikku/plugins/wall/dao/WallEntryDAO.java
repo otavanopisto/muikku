@@ -22,12 +22,12 @@ public class WallEntryDAO extends PluginDAO<WallEntry> {
 
 	private static final long serialVersionUID = 5562545925007839415L;
 
-	public WallEntry create(Wall wall, WallEntryVisibility visibility, UserEntity creator) {
+	public WallEntry create(Wall wall, String text, WallEntryVisibility visibility, UserEntity creator) {
     Date now = new Date();
-    return create(wall, visibility, creator, creator, now, now, Boolean.FALSE);
+    return create(wall, text, visibility, creator, creator, now, now, Boolean.FALSE);
   }
   
-  public WallEntry create(Wall wall, WallEntryVisibility visibility, UserEntity creator, UserEntity lastModfier, Date created, Date lastModified, Boolean archived) {
+  public WallEntry create(Wall wall, String text, WallEntryVisibility visibility, UserEntity creator, UserEntity lastModfier, Date created, Date lastModified, Boolean archived) {
     WallEntry wallEntry = new WallEntry();
     
     wallEntry.setWall(wall);
@@ -38,6 +38,7 @@ public class WallEntryDAO extends PluginDAO<WallEntry> {
     wallEntry.setCreator(creator.getId());
     wallEntry.setLastModifier(lastModfier.getId());
     wallEntry.setArchived(archived);
+    wallEntry.setText(text);
     
     getEntityManager().persist(wallEntry);
     
