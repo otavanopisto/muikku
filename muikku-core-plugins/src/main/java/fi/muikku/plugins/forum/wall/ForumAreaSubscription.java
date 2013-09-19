@@ -1,4 +1,4 @@
-package fi.muikku.plugins.wall.model;
+package fi.muikku.plugins.forum.wall;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -7,16 +7,17 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import fi.muikku.plugins.forum.model.ForumArea;
 
 @Entity
-public class UserWallSubscription {
+public class ForumAreaSubscription {
 
-  public Wall getWall() {
-    return wall;
+  public ForumArea getForumArea() {
+    return forumArea;
   }
 
-  public void setWall(Wall wall) {
-    this.wall = wall;
+  public void setForumArea(ForumArea forumArea) {
+    this.forumArea = forumArea;
   }
 
   public Long getId() {
@@ -39,5 +40,5 @@ public class UserWallSubscription {
   private Long user;
 
   @ManyToOne
-  private Wall wall;
+  private ForumArea forumArea;
 }

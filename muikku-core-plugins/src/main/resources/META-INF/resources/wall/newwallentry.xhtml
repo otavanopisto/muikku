@@ -6,7 +6,7 @@
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt">
 
-    <h:outputScript name="script/gui/wall.js" target="head" />
+    <h:outputScript name="scripts/gui/wall.js" target="head" />
 
     <!-- TODO Localize -->
     <div class="newWallEntry">
@@ -22,41 +22,33 @@
 
         <div id="wallJournal" class="tabContent">
           <div>
-            <h:form onsubmit="return false;">
-              <h:inputHidden id="restEndPoint" value="#{request.contextPath}/rest/wall/{wallId}/addTextEntry" />
-              <h:inputHidden id="restWaitMessage" value="Saveen niin, etta tuntuu..." />
-              <h:inputHidden id="wallId" value="#{wallId}"/>
-              <h:inputHidden id="visibility" value="PRIVATE"/>
-    
-              <h:outputLabel for="text" value="Kirjoita p&#228;iv&#228;kirjaan:"/>
-              <h:inputText id="text" value="" />
-              <h:message for="text" errorClass="invalid"/>
-              
-              <div class="buttonPanel">
-                <h:link onclick="RESTful.postEventListener(event);" value="L&#228;het&#228;" styleClass="formButton"/>
-              </div>
-            </h:form>
+            <label>Kirjoita p&#228;iv&#228;kirjaan:</label>
+            <input name="newWallEntryText" type="text" />
+            
+            <div class="mf-buttonContainer">
+              <input type="button" name="newWallEntryButton" value="L&#228;het&#228;"/>
+            </div>
           </div>
         </div>
           
-        <div id="wallGuidance" class="tabContent">
-          <div>
-            <h:form onsubmit="return false;">
-              <h:inputHidden id="restEndPoint" value="#{request.contextPath}/rest/wall/{wallId}/addGuidanceRequest" />
-              <h:inputHidden id="restWaitMessage" value="Saveen niin, etta tuntuu..." />
-              <h:inputHidden id="wallId" value="#{wallId}"/>
-              <h:inputHidden id="visibility" value="PRIVATE"/>
+<!--         <div id="wallGuidance" class="tabContent"> -->
+<!--           <div> -->
+<!--             <h:form onsubmit="return false;"> -->
+<!--               <h:inputHidden id="restEndPoint" value="#{request.contextPath}/rest/wall/{wallId}/addGuidanceRequest" /> -->
+<!--               <h:inputHidden id="restWaitMessage" value="Saveen niin, etta tuntuu..." /> -->
+<!--               <h:inputHidden id="wallId" value="#{wallId}"/> -->
+<!--               <h:inputHidden id="visibility" value="PRIVATE"/> -->
     
-              <h:outputLabel for="text" value="Ohjauspyynt&#246;:"/>
-              <h:inputText id="text" value="" />
-              <h:message for="text" errorClass="invalid"/>
+<!--               <h:outputLabel for="text" value="Ohjauspyynt&#246;:"/> -->
+<!--               <h:inputText id="text" value="" /> -->
+<!--               <h:message for="text" errorClass="invalid"/> -->
               
-              <div class="buttonPanel">
-                <h:link onclick="RESTful.postEventListener(event);" value="L&#228;het&#228;" styleClass="formButton"/>
-              </div>
-            </h:form>
-          </div>
-        </div>        
+<!--               <div class="mf-buttonContainer"> -->
+<!--                 <input type="button" name="newGuidanceRequestButton" value="L&#228;het&#228;"/> -->
+<!--               </div> -->
+<!--             </h:form> -->
+<!--           </div> -->
+<!--         </div>         -->
       </div>
     </div>
     
