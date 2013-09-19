@@ -62,6 +62,15 @@ public class WidgetController {
   public WidgetLocation findWidgetLocation(String name) {
     return widgetLocationDAO.findByName(name);
   }
+  
+  public WidgetLocation ensureWidgetLocation(String name) {
+  	WidgetLocation widgetLocation = findWidgetLocation(name);
+  	if (widgetLocation == null) {
+  		widgetLocation = createWidgetLocation(name);
+  	}
+  	
+  	return widgetLocation;
+  }
 
   /* UserWidget */
 
