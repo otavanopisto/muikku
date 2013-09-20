@@ -1,47 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
-
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+  xmlns:ui="http://java.sun.com/jsf/facelets" 
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html" 
+  template="/WEB-INF/templates/default.xhtml">
+  
   <ui:define name="header">
-    <ui:include src="/core/widget-space-set.xhtml">
-      <ui:param name="set" value="#{workspaceWidgetSpacesBackingBean.workspaceHeaderSet}" />
-    </ui:include>
+    <m:widgetSpaceSet>
+      <m:widgetSpace name="workspace.header.left" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
+      <m:widgetSpace name="workspace.header.center" keepEmpty="true" sizing="MAXIMIZE"></m:widgetSpace>
+      <m:widgetSpace name="workspace.header.right" keepEmpty="false" sizing="MINIMIZE">
+        <m:widget name="internallogin" min-size="4" visibility="UNAUTHENTICATED"/>    
+        <m:widget name="logout" min-size="1" visibility="AUTHENTICATED"/>    
+      </m:widgetSpace>
+    </m:widgetSpaceSet>
   </ui:define>
 
   <ui:define name="dockTop">
-    <ui:include src="/core/widget-space-set.xhtml">
-      <ui:param name="set" value="#{workspaceWidgetSpacesBackingBean.workspaceDockTopSet}" />
-    </ui:include>
+    <m:widgetSpaceSet>
+      <m:widgetSpace name="workspace.dock-top.left" keepEmpty="false" sizing="SUM">
+        <m:widget name="workspace-navigation-members" min-size="1" visibility="AUTHENTICATED"/>
+      </m:widgetSpace>
+      <m:widgetSpace name="workspace.dock-top.center" keepEmpty="true" sizing="MAXIMIZE"></m:widgetSpace>
+      <m:widgetSpace name="workspace.dock-top.right" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
+    </m:widgetSpaceSet>
   </ui:define>
 
   <ui:define name="contentToolsTop">
-    <ui:include src="/core/widget-space-set.xhtml">
-      <ui:param name="set" value="#{workspaceWidgetSpacesBackingBean.workspaceContentToolsTopSet}" />
-    </ui:include>
+    <m:widgetSpaceSet>
+      <m:widgetSpace name="workspace.content-tools-top.left" keepEmpty="false" sizing="SUM">
+      </m:widgetSpace>
+      <m:widgetSpace name="workspace.content-tools-top.center" keepEmpty="true" sizing="MAXIMIZE"></m:widgetSpace>
+      <m:widgetSpace name="workspace.content-tools-top.right" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
+    </m:widgetSpaceSet>
   </ui:define>
 
   <ui:define name="contentArea">
-    <ui:include src="/core/widget-space-set.xhtml">
-      <ui:param name="set" value="#{workspaceWidgetSpacesBackingBean.workspaceContentSet}" />
-    </ui:include>
+    <m:widgetSpaceSet>
+      <m:widgetSpace name="workspace.content-sidebar.left" keepEmpty="false" sizing="SUM"></m:widgetSpace>
+      <m:widgetSpace name="workspace.content" keepEmpty="true" sizing="MAXIMIZE">
+        <m:widget name="content" min-size="1" visibility="EVERYONE"/>      
+      </m:widgetSpace>
+      <m:widgetSpace name="workspace.content-sidebar.right" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
+    </m:widgetSpaceSet>
   </ui:define>
-
+  
   <ui:define name="contentToolsBottom">
-    <ui:include src="/core/widget-space-set.xhtml">
-      <ui:param name="set" value="#{workspaceWidgetSpacesBackingBean.workspaceContentToolsBottomSet}" />
-    </ui:include>
+    <m:widgetSpaceSet>
+      <m:widgetSpace name="workspace.content-tools-bottom.left" keepEmpty="false" sizing="SUM"></m:widgetSpace>
+      <m:widgetSpace name="workspace.content-tools-bottom.center" keepEmpty="true" sizing="MAXIMIZE"></m:widgetSpace>
+      <m:widgetSpace name="workspace.content-tools-bottom.right" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
+    </m:widgetSpaceSet>
   </ui:define>
 
   <ui:define name="dockBottom">
-    <ui:include src="/core/widget-space-set.xhtml">
-      <ui:param name="set" value="#{workspaceWidgetSpacesBackingBean.workspaceDockBottomSet}" />
-    </ui:include>
+    <m:widgetSpaceSet>
+      <m:widgetSpace name="workspace.dock-bottom.left" keepEmpty="false" sizing="SUM"></m:widgetSpace>
+      <m:widgetSpace name="workspace.dock-bottom.center" keepEmpty="true" sizing="MAXIMIZE"></m:widgetSpace>
+      <m:widgetSpace name="workspace.dock-bottom.right" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
+    </m:widgetSpaceSet>
   </ui:define>
 
   <ui:define name="footer">
-    <ui:include src="/core/widget-space-set.xhtml">
-      <ui:param name="set" value="#{workspaceWidgetSpacesBackingBean.workspaceFooterSet}" />
-    </ui:include>
+    <m:widgetSpaceSet>
+      <m:widgetSpace name="workspace.footer.left" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
+      <m:widgetSpace name="workspace.footer.center" keepEmpty="true" sizing="MAXIMIZE"></m:widgetSpace>
+      <m:widgetSpace name="workspace.footer.right" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
+    </m:widgetSpaceSet>
   </ui:define>
 
 </ui:composition>
