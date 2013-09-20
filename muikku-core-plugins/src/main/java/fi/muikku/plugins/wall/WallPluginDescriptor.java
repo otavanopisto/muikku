@@ -16,31 +16,22 @@ import fi.muikku.plugin.LocalizedPluginDescriptor;
 import fi.muikku.plugin.PersistencePluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
 import fi.muikku.plugin.RESTPluginDescriptor;
-import fi.muikku.plugins.wall.dao.WorkspaceWallDAO;
 import fi.muikku.plugins.wall.dao.EnvironmentWallDAO;
-import fi.muikku.plugins.wall.dao.ForumAreaSubscriptionDAO;
 import fi.muikku.plugins.wall.dao.UserWallDAO;
 import fi.muikku.plugins.wall.dao.UserWallSubscriptionDAO;
 import fi.muikku.plugins.wall.dao.WallDAO;
 import fi.muikku.plugins.wall.dao.WallEntryDAO;
-import fi.muikku.plugins.wall.dao.WallEntryGuidanceRequestItemDAO;
-import fi.muikku.plugins.wall.dao.WallEntryItemDAO;
 import fi.muikku.plugins.wall.dao.WallEntryReplyDAO;
-import fi.muikku.plugins.wall.dao.WallEntryTextItemDAO;
-import fi.muikku.plugins.wall.dao.WallSubscriptionDAO;
+import fi.muikku.plugins.wall.dao.WorkspaceWallDAO;
+import fi.muikku.plugins.wall.impl.DefaultWallEntryProvider;
 import fi.muikku.plugins.wall.model.AbstractWallEntry;
-import fi.muikku.plugins.wall.model.WorkspaceWall;
 import fi.muikku.plugins.wall.model.EnvironmentWall;
-import fi.muikku.plugins.wall.model.ForumAreaSubscription;
 import fi.muikku.plugins.wall.model.UserWall;
 import fi.muikku.plugins.wall.model.UserWallSubscription;
 import fi.muikku.plugins.wall.model.Wall;
 import fi.muikku.plugins.wall.model.WallEntry;
-import fi.muikku.plugins.wall.model.WallEntryGuidanceRequestItem;
-import fi.muikku.plugins.wall.model.WallEntryItem;
 import fi.muikku.plugins.wall.model.WallEntryReply;
-import fi.muikku.plugins.wall.model.WallEntryTextItem;
-import fi.muikku.plugins.wall.model.WallSubscription;
+import fi.muikku.plugins.wall.model.WorkspaceWall;
 import fi.muikku.plugins.wall.rest.WallRESTService;
 
 @ApplicationScoped
@@ -62,19 +53,17 @@ public class WallPluginDescriptor implements PluginDescriptor, LocalizedPluginDe
 			/* DAOs */	
       WorkspaceWallDAO.class,
       EnvironmentWallDAO.class,
-      ForumAreaSubscriptionDAO.class,
       UserWallDAO.class,
       UserWallSubscriptionDAO.class,
       WallDAO.class,
       WallEntryDAO.class,
-      WallEntryGuidanceRequestItemDAO.class,
-      WallEntryItemDAO.class,
       WallEntryReplyDAO.class,
-      WallEntryTextItemDAO.class,
-      WallSubscriptionDAO.class,
-		  
+      
 		  /* Controllers */
-		  WallController.class
+		  WallController.class,
+		  
+		  /* Other */
+		  DefaultWallEntryProvider.class
 		));
 	}
 	
@@ -84,16 +73,11 @@ public class WallPluginDescriptor implements PluginDescriptor, LocalizedPluginDe
 		  AbstractWallEntry.class,
       WorkspaceWall.class,
       EnvironmentWall.class,
-      ForumAreaSubscription.class,
       UserWall.class,
       UserWallSubscription.class,
       Wall.class,
       WallEntry.class,
-      WallEntryGuidanceRequestItem.class,
-      WallEntryItem.class,
       WallEntryReply.class,
-      WallEntryTextItem.class,
-      WallSubscription.class,
 		};
 	}
 	

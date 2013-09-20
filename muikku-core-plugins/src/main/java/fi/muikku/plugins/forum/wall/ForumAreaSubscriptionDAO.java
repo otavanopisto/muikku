@@ -1,4 +1,4 @@
-package fi.muikku.plugins.wall.dao;
+package fi.muikku.plugins.forum.wall;
 
 import java.util.List;
 
@@ -11,9 +11,6 @@ import fi.muikku.dao.DAO;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugin.PluginDAO;
 import fi.muikku.plugins.forum.model.ForumArea;
-import fi.muikku.plugins.wall.model.ForumAreaSubscription;
-import fi.muikku.plugins.wall.model.ForumAreaSubscription_;
-
 
 @DAO
 public class ForumAreaSubscriptionDAO extends PluginDAO<ForumAreaSubscription> {

@@ -11,6 +11,10 @@
     <c:forEach var="material" items="#{workspaceViewBackingBean.renderedWorkspaceMaterials}">
       <m:embedJSF jsfString="#{material}" />
     </c:forEach>
+    
+    <a href="#{request.contextPath}/workspace/#{workspaceViewBackingBean.workspaceUrlName}">View</a>
+    <a href="#{request.contextPath}/workspace/editor/#{workspaceViewBackingBean.workspaceUrlName}">Edit</a>
+  
   </ui:define>
   
 </ui:composition>

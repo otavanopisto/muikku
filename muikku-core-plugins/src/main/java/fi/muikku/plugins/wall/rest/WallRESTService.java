@@ -11,7 +11,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import fi.muikku.model.users.UserEntity;
@@ -19,8 +18,9 @@ import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.forum.ForumController;
 import fi.muikku.plugins.forum.model.ForumThread;
 import fi.muikku.plugins.forum.model.ForumThreadReply;
-import fi.muikku.plugins.wall.UserFeedItem;
+import fi.muikku.plugins.wall.WallFeedItem;
 import fi.muikku.plugins.wall.WallController;
+import fi.muikku.plugins.wall.model.UserWall;
 import fi.muikku.plugins.wall.model.Wall;
 import fi.muikku.plugins.wall.model.WallEntry;
 import fi.muikku.plugins.wall.model.WallEntryReply;
@@ -37,6 +37,7 @@ import fi.tranquil.TranquilityBuilder;
 import fi.tranquil.TranquilityBuilderFactory;
 import fi.tranquil.TranquilizingContext;
 import fi.tranquil.instructions.PropertyInjectInstruction.ValueGetter;
+import fi.tranquil.instructions.SuperClassInstructionSelector;
 
 @Path("/wall")
 @Stateless
@@ -58,46 +59,54 @@ public class WallRESTService extends PluginRESTService {
   @Inject
   private ForumController forumController;
   
-  @GET
-  @Path ("/listUserFeedItems")
-  public Response listUserFeedItems( 
-      @QueryParam("userId") Long userId) {
-    UserEntity user = userController.findUserEntityById(userId); 
-    
-    List<UserFeedItem> userFeedItems = wallController.listUserFeedItems(user);
-
-    TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
-    Tranquility tranquility = tranquilityBuilder.createTranquility()
-      .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
-      .addInstruction("wallEntry", tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
-      .addInstruction("wallEntry.replies", tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
-      .addInstruction("thread", tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
-      .addInstruction(ForumThread.class, tranquilityBuilder.createPropertyInjectInstruction("replies", new ForumThreadReplyInjector()))
-      .addInstruction(Wall.class, tranquilityBuilder.createPropertyInjectInstruction("wallName", new WallEntityNameGetter()))
-      .addInstruction(UserEntity.class, tranquilityBuilder.createPropertyInjectInstruction("hasPicture", new UserEntityHasPictureValueGetter()))
-      .addInstruction(UserEntity.class, tranquilityBuilder.createPropertyInjectInstruction("fullName", new UserNameValueGetter()));
-    
-    Collection<TranquilModelEntity> entities = tranquility.entities(userFeedItems);
-    
-    return Response.ok(
-      entities
-    ).build();
-  }
+//  @GET
+//  @Path ("/listUserFeedItems")
+//  public Response listUserFeedItems( 
+//      @QueryParam("userId") Long userId) {
+//    UserEntity user = userController.findUserEntityById(userId); 
+//    
+//    List<UserFeedItem> userFeedItems = wallController.listUserFeedItems(user);
+//
+//    TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
+//    Tranquility tranquility = tranquilityBuilder.createTranquility()
+//      .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
+//      .addInstruction("wallEntry", tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
+//      .addInstruction("wallEntry.replies", tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
+//      .addInstruction("thread", tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
+//      .addInstruction(ForumThread.class, tranquilityBuilder.createPropertyInjectInstruction("replies", new ForumThreadReplyInjector()))
+//      .addInstruction(Wall.class, tranquilityBuilder.createPropertyInjectInstruction("wallName", new WallEntityNameGetter()))
+//      .addInstruction(UserEntity.class, tranquilityBuilder.createPropertyInjectInstruction("hasPicture", new UserEntityHasPictureValueGetter()))
+//      .addInstruction(UserEntity.class, tranquilityBuilder.createPropertyInjectInstruction("fullName", new UserNameValueGetter()));
+//    
+//    Collection<TranquilModelEntity> entities = tranquility.entities(userFeedItems);
+//    
+//    return Response.ok(
+//      entities
+//    ).build();
+//  }
   
   @GET
   @Path ("/{WALLID}/listWallEntries")
   public Response listWallEntries( 
       @PathParam ("WALLID") Long wallId) {
     
-    Wall wall = wallController.findWallById(wallId); 
+    UserWall userWall = wallController.findUserWallById(wallId); 
 
-    List<WallEntry> entries = wallController.listWallEntries(wall);
+    List<WallFeedItem> entries = wallController.listUserWallFeed(userWall);
     
     TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
     Tranquility tranquility = tranquilityBuilder.createTranquility()
       .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
       .addInstruction("replies", tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
-      .addInstruction(UserEntity.class, tranquilityBuilder.createPropertyInjectInstruction("hasPicture", new UserEntityHasPictureValueGetter()));
+
+      .addInstruction("wallEntry", tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
+      .addInstruction("wallEntry.replies", tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
+      .addInstruction("thread", tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
+      .addInstruction(ForumThread.class, tranquilityBuilder.createPropertyInjectInstruction("replies", new ForumThreadReplyInjector()))
+      .addInstruction(Wall.class, tranquilityBuilder.createPropertyInjectInstruction("wallName", new WallEntityNameGetter()))
+
+      .addInstruction(new SuperClassInstructionSelector(UserEntity.class), tranquilityBuilder.createPropertyInjectInstruction("hasPicture", new UserEntityHasPictureValueGetter()))
+      .addInstruction(new SuperClassInstructionSelector(UserEntity.class), tranquilityBuilder.createPropertyInjectInstruction("fullName", new UserNameValueGetter()));
     
     Collection<TranquilModelEntity> entities = tranquility.entities(entries);
     
@@ -121,10 +130,8 @@ public class WallRESTService extends PluginRESTService {
     if (!wallController.canPostEntry(wall))
       throw new AuthorizationException("Not authorized");
 
-    WallEntry entry = wallController.createWallEntry(wall, WallEntryVisibility.valueOf(visibility), user);
+    WallEntry entry = wallController.createWallEntry(wall, text, WallEntryVisibility.valueOf(visibility), user);
 
-    wallController.createWallEntryTextItem(entry, text, user);
-    
     TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
     Tranquility tranquility = tranquilityBuilder.createTranquility()
       .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
@@ -134,36 +141,6 @@ public class WallRESTService extends PluginRESTService {
       tranquility.entity(entry)
     ).build();
   }
-
-  @POST
-  @Path ("/{WALLID}/addGuidanceRequest") 
-  @LoggedIn
-  public Response addGuidanceRequest(
-      @PathParam ("WALLID") Long wallId,
-      @FormParam ("text") String text,
-      @FormParam ("visibility") String visibility
-   ) throws AuthorizationException {
-    UserEntity user = sessionController.getUser();
-
-    Wall wall = wallController.findWallById(wallId);
-
-    if (!wallController.canPostEntry(wall))
-      throw new AuthorizationException("Not authorized");
-
-    WallEntry entry = wallController.createWallEntry(wall, WallEntryVisibility.valueOf(visibility), user);
-    
-    wallController.createWallEntryGuidanceRequestItem(entry, text, user);
-    
-    TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
-    Tranquility tranquility = tranquilityBuilder.createTranquility()
-      .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
-      .addInstruction(UserEntity.class, tranquilityBuilder.createPropertyInjectInstruction("hasPicture", new UserEntityHasPictureValueGetter()));
-
-    return Response.ok(
-      tranquility.entity(entry)
-    ).build();
-  }
-
 
   @POST
   @Path ("/{WALLID}/addWallEntryComment") 
@@ -184,8 +161,7 @@ public class WallRESTService extends PluginRESTService {
 
     WallEntry wallEntry = wallController.findWallEntryById(wallEntryId);
     
-    WallEntryReply reply = wallController.createWallEntryReply(wall, wallEntry, user);
-    wallController.createWallEntryTextItem(reply, text, user);
+    WallEntryReply reply = wallController.createWallEntryReply(wall, wallEntry, text, user);
     
     TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
     Tranquility tranquility = tranquilityBuilder.createTranquility()

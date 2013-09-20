@@ -52,6 +52,10 @@ public class WorkspaceController {
 	public WorkspaceTypeEntity findWorkspaceTypeEntity(WorkspaceType workspaceType) {
 		return workspaceSchoolDataController.findWorkspaceTypeEntity(workspaceType);
 	}
+	
+	public WorkspaceTypeEntity updateWorkspaceTypeEntityName(WorkspaceTypeEntity workspaceTypeEntity, String name) {
+		return workspaceTypeEntityDAO.updateName(workspaceTypeEntity, name);
+	}
 
 	/* WorkspaceType */
 

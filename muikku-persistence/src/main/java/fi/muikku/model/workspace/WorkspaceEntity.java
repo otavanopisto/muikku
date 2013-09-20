@@ -59,14 +59,6 @@ public class WorkspaceEntity implements ArchivableEntity, ContextReference {
     this.archived = archived;
   }
 
-  public List<Material> getMaterials() {
-    return materials;
-  }
-
-  public void setMaterials(List<Material> materials) {
-    this.materials = materials;
-  }
-
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -88,10 +80,4 @@ public class WorkspaceEntity implements ArchivableEntity, ContextReference {
   @Column(nullable = false)
   private Boolean archived = Boolean.FALSE;
   
-  @ManyToMany
-  @JoinTable(
-      name="__WorkspaceEntityMaterials",
-      joinColumns={@JoinColumn(name="WorkspaceEntity", referencedColumnName="id")},
-      inverseJoinColumns={@JoinColumn(name="Material", referencedColumnName="id")})
-  private List<Material> materials;
 }

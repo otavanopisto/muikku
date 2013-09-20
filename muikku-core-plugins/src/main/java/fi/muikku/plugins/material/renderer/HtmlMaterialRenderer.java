@@ -6,7 +6,7 @@ import fi.muikku.model.material.Material;
 import fi.muikku.material.MaterialRenderer;
 
 @ApplicationScoped
-public class HtmlMaterialRenderer implements MaterialRenderer {
+public class HtmlMaterialRenderer extends MaterialRenderer {
 
   @Override
   public String getTargetType() {
@@ -14,27 +14,22 @@ public class HtmlMaterialRenderer implements MaterialRenderer {
   }
 
   @Override
-  public String renderView(Material material) {
-    return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-    "<ui:composition xmlns=\"http://www.w3.org/1999/xhtml\" " +
-    "xmlns:m=\"http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd\" " +
-    "xmlns:ui=\"http://java.sun.com/jsf/facelets\" " +
-    "xmlns:f=\"http://java.sun.com/jsf/core\" " +
-    "xmlns:h=\"http://java.sun.com/jsf/html\"> " +
-    material.getCharacterData() +
-    "</ui:composition>";
+  public String renderViewFragment(Material material) {
+    return material.getCharacterData();
   }
 
   @Override
-  public String renderEditor(Material material) {
-    // TODO Auto-generated method stub
-    return null;
+  public String renderEditorFragment(Material material) {
+    return "<h:form>" + 
+               "<h:inputTextarea value='#{htmlMaterialBackingBean.characterData}' />" +
+               "<h:inputHidden value='"+material.getId()+"' binding='#{htmlMaterialBackingBean.materialIdInput}' />" +
+               "<h:commandButton action='#{htmlMaterialBackingBean.updateMaterial}' value='Save' />" +
+           "</h:form>";
   }
 
   @Override
-  public String renderWithReplies(Material material) {
+  public String renderWithRepliesFragment(Material material) {
     // TODO Auto-generated method stub
     return null;
   }
-
 }

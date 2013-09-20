@@ -5,53 +5,48 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import fi.muikku.controller.ResourceRightsController;
 import fi.muikku.dao.users.UserEntityDAO;
 import fi.muikku.events.CourseEntityEvent;
 import fi.muikku.events.CourseUserEvent;
 import fi.muikku.events.Created;
 import fi.muikku.events.UserEntityEvent;
+import fi.muikku.model.security.ResourceRights;
+import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.plugins.forum.dao.EnvironmentForumAreaDAO;
+import fi.muikku.plugins.forum.dao.ForumAreaDAO;
+import fi.muikku.plugins.forum.dao.ForumMessageDAO;
 import fi.muikku.plugins.forum.dao.ForumThreadDAO;
-import fi.muikku.plugins.forum.dao.ForumThreadReplyDAO;
 import fi.muikku.plugins.forum.model.ForumArea;
-import fi.muikku.plugins.forum.model.ForumThread;
-import fi.muikku.plugins.forum.model.ForumThreadReply;
-import fi.muikku.plugins.wall.dao.WorkspaceWallDAO;
 import fi.muikku.plugins.wall.dao.EnvironmentWallDAO;
-import fi.muikku.plugins.wall.dao.ForumAreaSubscriptionDAO;
 import fi.muikku.plugins.wall.dao.UserWallDAO;
 import fi.muikku.plugins.wall.dao.UserWallSubscriptionDAO;
 import fi.muikku.plugins.wall.dao.WallDAO;
 import fi.muikku.plugins.wall.dao.WallEntryDAO;
-import fi.muikku.plugins.wall.dao.WallEntryGuidanceRequestItemDAO;
-import fi.muikku.plugins.wall.dao.WallEntryItemDAO;
 import fi.muikku.plugins.wall.dao.WallEntryReplyDAO;
-import fi.muikku.plugins.wall.dao.WallEntryTextItemDAO;
-import fi.muikku.plugins.wall.dao.WallSubscriptionDAO;
-import fi.muikku.plugins.wall.model.AbstractWallEntry;
+import fi.muikku.plugins.wall.dao.WorkspaceWallDAO;
 import fi.muikku.plugins.wall.model.EnvironmentWall;
-import fi.muikku.plugins.wall.model.ForumAreaSubscription;
 import fi.muikku.plugins.wall.model.UserWall;
-import fi.muikku.plugins.wall.model.UserWallSubscription;
 import fi.muikku.plugins.wall.model.Wall;
 import fi.muikku.plugins.wall.model.WallEntry;
-import fi.muikku.plugins.wall.model.WallEntryGuidanceRequestItem;
-import fi.muikku.plugins.wall.model.WallEntryItem;
 import fi.muikku.plugins.wall.model.WallEntryReply;
-import fi.muikku.plugins.wall.model.WallEntryTextItem;
 import fi.muikku.plugins.wall.model.WallEntryVisibility;
-import fi.muikku.plugins.wall.model.WallSubscription;
 import fi.muikku.plugins.wall.model.WorkspaceWall;
 import fi.muikku.schooldata.UserController;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.User;
+import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.session.SessionController;
 
@@ -74,25 +69,16 @@ public class WallController {
   private UserWallSubscriptionDAO userWallLinkDAO;
 
   @Inject
-  private ForumAreaSubscriptionDAO forumAreaSubscriptionDAO;
-
-  @Inject
-  private WallSubscriptionDAO wallSubscriptionDAO;
-  
-  @Inject
   private SessionController sessionController;
 
 //  @Inject
 //  private CourseEntityDAO courseDAO;
 
   @Inject
-  private WorkspaceWallDAO courseWallDAO;
+  private WorkspaceWallDAO workspaceWallDAO;
 
   @Inject
   private WallEntryReplyDAO wallEntryCommentDAO;
-
-  @Inject
-  private WallEntryItemDAO abstractWallEntryItemDAO;
 
   @Inject
   private EnvironmentWallDAO environmentWallDAO;
@@ -104,135 +90,218 @@ public class WallController {
 //  private CourseSchoolDataController courseSchoolDataController;
 
   @Inject
-  private ForumThreadDAO forumThreadDAO;
-
-  @Inject
-  private ForumThreadReplyDAO forumThreadReplyDAO;
-
-  @Inject
-  private WallEntryTextItemDAO wallEntryTextItemDAO;
-
-  @Inject
-  private WallEntryGuidanceRequestItemDAO wallEntryGuidanceRequestItemDAO;
-
-  @Inject
   private WallEntryReplyDAO wallEntryReplyDAO;
   
   @Inject
   private WorkspaceController workspaceController;
+  
+  @Inject
+  @Any
+  private Instance<WallEntryProvider> wallEntryProviders;
 
-  public WallEntryTextItem createWallEntryTextItem(AbstractWallEntry entry, String text, UserEntity user) {
-    return wallEntryTextItemDAO.create(entry, text, user);
-  }
-
-  public List<UserFeedItem> listUserFeedItems(UserEntity user) {
-    List<UserFeedItem> feedItems = new ArrayList<UserFeedItem>();
-
-    UserEntity loggedUser = sessionController.isLoggedIn() ? sessionController.getUser() : null;
-    UserWall wall = userWallDAO.findByUser(user);
-    boolean ownsWall = loggedUser != null ? loggedUser.getId().equals(user.getId()) : false;
-    boolean hasAccess = sessionController.hasEnvironmentPermission(MuikkuPermissions.READ_ALL_WALLS);
-
-    if (ownsWall || hasAccess) {
-      /**
-       * Full access grants full listing of both the users wall and all linked walls
-       */
-      List<WallEntry> entriesByWall = wallEntryDAO.listEntriesByWall(wall);
-
-      for (WallEntry entry : entriesByWall) {
-        feedItems.add(new UserFeedWallEntryItem(entry));
+  
+  
+  @Inject
+  private EnvironmentForumAreaDAO forumAreaDAO_TEMP;
+  
+  @Inject
+  private ForumThreadDAO forumThreadDAO_TEMP;
+  
+  @Inject
+  private ResourceRightsController resourceRightsController_TEMP;
+  
+  public void TEST_DATA() {
+    Random R = new Random();
+    
+    
+    List<Workspace> workspaces = workspaceController.listWorkspaces();
+    
+    for (Workspace w : workspaces) {
+      WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntity(w);
+      
+      WorkspaceWall wall = workspaceWallDAO.findByWorkspace(workspaceEntity);
+      
+      if (wall == null) {
+        workspaceWallDAO.create(workspaceEntity);
       }
-
-      List<WallSubscription> subscriptions = wallSubscriptionDAO.listByUser(user);
-      for (WallSubscription subscription : subscriptions) {
-        switch (subscription.getType()) {
-        case WALL:
-          UserWallSubscription userWallSubscription = userWallLinkDAO.findById(subscription.getId());
-
-          List<WallEntry> userWallSubEntries = wallEntryDAO.listEntriesByWall(userWallSubscription.getWall());
-          for (WallEntry entry : userWallSubEntries) {
-            feedItems.add(new UserFeedWallEntryItem(entry));
-          }
-
-          break;
-        case FORUM:
-          ForumAreaSubscription forumAreaSubscription = forumAreaSubscriptionDAO.findById(subscription.getId());
-
-          ForumArea forumArea = forumAreaSubscription.getForumArea();
-
-          List<ForumThread> forumThreads = forumThreadDAO.listByForumArea(forumArea);
-
-          for (ForumThread thread : forumThreads) {
-            List<ForumThreadReply> replies = forumThreadReplyDAO.listByForumThread(thread);
-            feedItems.add(new UserFeedForumThreadItem(thread, replies));
-          }
-          break;
-        }
-      }
-    } else {
-      System.out.println("No rights for feed of user x");
     }
+    
+    Workspace workspace = workspaces.get(R.nextInt(workspaces.size()));
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntity(workspace);
+    WorkspaceWall wall = workspaceWallDAO.findByWorkspace(workspaceEntity);
+    
+    List<EnvironmentUser> users = userController.listEnvironmentUsers();
+    EnvironmentUser environmentUser = users.get(R.nextInt(users.size()));
+    UserEntity userEntity = environmentUser.getUser();
+    
+    int r = R.nextInt(24180);
+    
+    switch (R.nextInt(3)) {
+      case 1:
+        // Guidance Request
+      break;
 
-    return orderUserFeed(feedItems);
+      case 2:
+        // Forum message
+        ForumArea forumArea = forumAreaDAO_TEMP.findById(1l);
+        if (forumArea == null) {
+          ResourceRights rights = resourceRightsController_TEMP.create();
+          forumArea = forumAreaDAO_TEMP.create("Foorumi.", false, sessionController.getUser(), rights);
+        }
+          
+        forumThreadDAO_TEMP.create(forumArea, "Foorumikirjoitus #" + r, "Testidatakirjoitus numero " + r, userEntity);
+      break;
+      
+      case 3:
+        // Assessment request
+      break;
+
+      default:
+        wallEntryDAO.create(wall, "Hei mä postaan #" + r, WallEntryVisibility.PUBLIC, userEntity);
+    }
   }
+  
+  
+//  public WallEntryTextItem createWallEntryTextItem(AbstractWallEntry entry, String text, UserEntity user) {
+//    return wallEntryTextItemDAO.create(entry, text, user);
+//  }
+//
+//  public List<UserFeedItem> listUserFeedItems(UserEntity user) {
+//    List<UserFeedItem> feedItems = new ArrayList<UserFeedItem>();
+//    UserEntity loggedUser = sessionController.isLoggedIn() ? sessionController.getUser() : null;
+//    UserWall wall = userWallDAO.findByUser(user);
+//    boolean ownsWall = loggedUser != null ? loggedUser.getId().equals(user.getId()) : false;
+//    boolean hasAccess = sessionController.hasEnvironmentPermission(MuikkuPermissions.READ_ALL_WALLS);
+//
+//    if (ownsWall || hasAccess) {
+//      /**
+//       * Full access grants full listing of both the users wall and all linked walls
+//       */
+//      List<WallEntry> entriesByWall = wallEntryDAO.listEntriesByWall(wall);
+//
+//      for (WallEntry entry : entriesByWall) {
+//        feedItems.add(new UserFeedWallEntryItem(entry));
+//      }
+//
+//      List<WallSubscription> subscriptions = wallSubscriptionDAO.listByUser(user);
+//      for (WallSubscription subscription : subscriptions) {
+//        switch (subscription.getType()) {
+//        case WALL:
+//          UserWallSubscription userWallSubscription = userWallLinkDAO.findById(subscription.getId());
+//
+//          List<WallEntry> userWallSubEntries = wallEntryDAO.listEntriesByWall(userWallSubscription.getWall());
+//          for (WallEntry entry : userWallSubEntries) {
+//            feedItems.add(new UserFeedWallEntryItem(entry));
+//          }
+//
+//          break;
+//        case FORUM:
+//          ForumAreaSubscription forumAreaSubscription = forumAreaSubscriptionDAO.findById(subscription.getId());
+//
+//          ForumArea forumArea = forumAreaSubscription.getForumArea();
+//
+//          List<ForumThread> forumThreads = forumThreadDAO.listByForumArea(forumArea);
+//
+//          for (ForumThread thread : forumThreads) {
+//            List<ForumThreadReply> replies = forumThreadReplyDAO.listByForumThread(thread);
+//            feedItems.add(new UserFeedForumThreadItem(thread, replies));
+//          }
+//          break;
+//        }
+//      }
+//    } else {
+//      System.out.println("No rights for feed of user x");
+//    }
+//    return orderUserFeed(feedItems);
+//  }
 
-  public List<WallEntry> listWallEntries(Wall wall) {
-    // TODO
+  public List<WallFeedItem> listUserWallFeed(UserWall wall) {
     if (wall == null)
       return null;
 
-    List<WallEntry> entries = new ArrayList<WallEntry>();
+    List<WallFeedItem> entries = new ArrayList<WallFeedItem>();
 
-    switch (wall.getWallType()) {
-    case USER: {
-      UserWall userWall = userWallDAO.findById(wall.getId());
-
-      UserEntity wallOwner = userController.findUserEntityById(userWall.getUser());
-      UserEntity loggedUser = sessionController.isLoggedIn() ? sessionController.getUser() : null;
-
-      boolean ownsWall = loggedUser != null ? loggedUser.getId().equals(wallOwner.getId()) : false;
-      boolean hasAccess = sessionController.hasEnvironmentPermission(MuikkuPermissions.READ_ALL_WALLS);
-
-      if (ownsWall || hasAccess) {
-        /**
-         * Full access grants full listing of both the users wall and all linked walls
-         */
-        entries.addAll(wallEntryDAO.listEntriesByWall(wall));
-      } else {
-        /**
-         * When viewing other peoples walls, you only see public or owned entries
-         */
-
-        entries.addAll(wallEntryDAO.listPublicOrOwnedEntriesByWall(wall, loggedUser));
-      }
-    }
-      break;
-
-    case WORKSPACE:
-      WorkspaceWall courseWall = courseWallDAO.findById(wall.getId());
-
-      WorkspaceEntity course = workspaceController.findWorkspaceEntityById(courseWall.getWorkspace());
-
-      if (sessionController.hasCoursePermission(MuikkuPermissions.WALL_READALLCOURSEMESSAGES, course)) {
-        entries.addAll(wallEntryDAO.listEntriesByWall(courseWall));
-      } else {
-        entries.addAll(wallEntryDAO.listPublicOrOwnedEntriesByWall(courseWall, sessionController.getUser()));
-      }
-      break;
-
-    case ENVIRONMENT:
-      // TODO: oikeudet?
-      entries.addAll(wallEntryDAO.listEntriesByWall(wall));
-      break;
+    for (WallEntryProvider provider : wallEntryProviders) {
+      entries.addAll(provider.listWallEntryItems(wall));
     }
 
-    return orderWallEntries(entries);
-  }
+    // Friends
+    
+    // ...
+    
+    // Users Workspaces
+    
+    // TODO: User
+    List<Workspace> workspaces = workspaceController.listWorkspaces();
+    
+    for (Workspace workspace : workspaces) {
+      WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntity(workspace);
+      WorkspaceWall workspaceWall = workspaceWallDAO.findByWorkspace(workspaceEntity);
+      
+      for (WallEntryProvider provider : wallEntryProviders) {
+        entries.addAll(provider.listWallEntryItems(workspaceWall));
+      }
+    }
+    
+    return orderUserFeed(entries);
+  }  
 
-  public List<WallEntryItem> listWallEntryItems(AbstractWallEntry wallEntry) {
-    // TODO: oikeudet
-    return abstractWallEntryItemDAO.listByWallEntry(wallEntry);
-  }
+//  public List<WallEntry> listWallEntries(Wall wall) {
+//    // TODO
+//    if (wall == null)
+//      return null;
+//
+//    List<WallEntry> entries = new ArrayList<WallEntry>();
+//    switch (wall.getWallType()) {
+//    case USER: {
+//      UserWall userWall = userWallDAO.findById(wall.getId());
+//
+//      UserEntity wallOwner = userController.findUserEntityById(userWall.getUser());
+//      UserEntity loggedUser = sessionController.isLoggedIn() ? sessionController.getUser() : null;
+//
+//      boolean ownsWall = loggedUser != null ? loggedUser.getId().equals(wallOwner.getId()) : false;
+//      boolean hasAccess = sessionController.hasEnvironmentPermission(MuikkuPermissions.READ_ALL_WALLS);
+//
+//      if (ownsWall || hasAccess) {
+//        /**
+//         * Full access grants full listing of both the users wall and all linked walls
+//         */
+//        entries.addAll(wallEntryDAO.listEntriesByWall(wall));
+//      } else {
+//        /**
+//         * When viewing other peoples walls, you only see public or owned entries
+//         */
+//
+//        entries.addAll(wallEntryDAO.listPublicOrOwnedEntriesByWall(wall, loggedUser));
+//      }
+//    }
+//      break;
+//
+//    case WORKSPACE:
+//      WorkspaceWall courseWall = courseWallDAO.findById(wall.getId());
+//
+//      WorkspaceEntity course = workspaceController.findWorkspaceEntityById(courseWall.getWorkspace());
+//
+//      if (sessionController.hasCoursePermission(MuikkuPermissions.WALL_READALLCOURSEMESSAGES, course)) {
+//        entries.addAll(wallEntryDAO.listEntriesByWall(courseWall));
+//      } else {
+//        entries.addAll(wallEntryDAO.listPublicOrOwnedEntriesByWall(courseWall, sessionController.getUser()));
+//      }
+//      break;
+//
+//    case ENVIRONMENT:
+//      // TODO: oikeudet?
+//      entries.addAll(wallEntryDAO.listEntriesByWall(wall));
+//      break;
+//    }
+
+//    return orderWallEntries(entries);
+//  }
+
+//  public List<WallEntryItem> listWallEntryItems(AbstractWallEntry wallEntry) {
+//    // TODO: oikeudet
+//    return abstractWallEntryItemDAO.listByWallEntry(wallEntry);
+//  }
 
   public List<WallEntryReply> listWallEntryComments(WallEntry wallEntry) {
     return wallEntryCommentDAO.listByWallEntry(wallEntry);
@@ -265,8 +334,8 @@ public class WallController {
     return userWallDAO.findByUser(user);
   }
 
-  public WorkspaceWall getCourseWall(WorkspaceEntity course) {
-    return courseWallDAO.findByCourse(course);
+  public WorkspaceWall getWorkspaceWall(WorkspaceEntity workspace) {
+    return workspaceWallDAO.findByWorkspace(workspace);
   }
 
   public String getWallType(Wall wall) {
@@ -277,11 +346,11 @@ public class WallController {
   public String getWallName(Wall wall) {
     switch (wall.getWallType()) {
     case WORKSPACE:
-      WorkspaceWall courseWall = courseWallDAO.findById(wall.getId());
+      WorkspaceWall workspaceWall = workspaceWallDAO.findById(wall.getId());
 
-      WorkspaceEntity course = workspaceController.findWorkspaceEntityById(courseWall.getWorkspace());
+      WorkspaceEntity workspace = workspaceController.findWorkspaceEntityById(workspaceWall.getWorkspace());
 
-      return course.getUrlName();
+      return workspace.getUrlName();
     case ENVIRONMENT:
       return "the Muikerosuikero";
 
@@ -301,11 +370,11 @@ public class WallController {
     return !wallEntry.getWall().getId().equals(wall.getId());
   }
 
-  private List<UserFeedItem> orderUserFeed(List<UserFeedItem> entries) {
-    Collections.sort(entries, new Comparator<UserFeedItem>() {
+  private List<WallFeedItem> orderUserFeed(List<WallFeedItem> entries) {
+    Collections.sort(entries, new Comparator<WallFeedItem>() {
 
       @Override
-      public int compare(UserFeedItem o1, UserFeedItem o2) {
+      public int compare(WallFeedItem o1, WallFeedItem o2) {
         Date d1 = o1.getDate();
         Date d2 = o2.getDate();
 
@@ -316,34 +385,30 @@ public class WallController {
     return entries;
   }
 
-  private List<WallEntry> orderWallEntries(List<WallEntry> entries) {
-    Collections.sort(entries, new Comparator<WallEntry>() {
+//  private List<WallEntry> orderWallEntries(List<WallEntry> entries) {
+//    Collections.sort(entries, new Comparator<WallEntry>() {
+//
+//      @Override
+//      public int compare(WallEntry o1, WallEntry o2) {
+//        Date d1 = wallEntryCommentDAO.findMaxDateByWallEntry(o1);
+//        Date d2 = wallEntryCommentDAO.findMaxDateByWallEntry(o2);
+//
+//        d1 = d1 != null ? d1 : o1.getCreated();
+//        d2 = d2 != null ? d2 : o2.getCreated();
+//
+//        return d2.compareTo(d1);
+//      }
+//    });
+//
+//    return entries;
+//  }
 
-      @Override
-      public int compare(WallEntry o1, WallEntry o2) {
-        Date d1 = wallEntryCommentDAO.findMaxDateByWallEntry(o1);
-        Date d2 = wallEntryCommentDAO.findMaxDateByWallEntry(o2);
-
-        d1 = d1 != null ? d1 : o1.getCreated();
-        d2 = d2 != null ? d2 : o2.getCreated();
-
-        return d2.compareTo(d1);
-      }
-    });
-
-    return entries;
+  public WallEntry createWallEntry(Wall wall, String text, WallEntryVisibility visibility, UserEntity user) {
+    return wallEntryDAO.create(wall, text, visibility, user);
   }
 
-  public WallEntryGuidanceRequestItem createWallEntryGuidanceRequestItem(WallEntry entry, String text, UserEntity user) {
-    return wallEntryGuidanceRequestItemDAO.create(entry, text, user);
-  }
-
-  public WallEntry createWallEntry(Wall wall, WallEntryVisibility visibility, UserEntity user) {
-    return wallEntryDAO.create(wall, visibility, user);
-  }
-
-  public WallEntryReply createWallEntryReply(Wall wall, WallEntry wallEntry, UserEntity user) {
-    return wallEntryReplyDAO.create(wall, wallEntry, user);
+  public WallEntryReply createWallEntryReply(Wall wall, WallEntry wallEntry, String text, UserEntity user) {
+    return wallEntryReplyDAO.create(wall, wallEntry, text, user);
   }
 
   public WallEntry findWallEntryById(Long wallEntryId) {
@@ -354,10 +419,13 @@ public class WallController {
     return wallDAO.findById(wallId);
   }
 
+  public UserWall findUserWallById(Long wallId) {
+    return userWallDAO.findById(wallId);
+  }
   
   public void onCourseCreateEvent(@Observes @Created CourseEntityEvent event) {
     WorkspaceEntity courseEntity = workspaceController.findWorkspaceEntityById(event.getCourseEntityId());
-    courseWallDAO.create(courseEntity);
+    workspaceWallDAO.create(courseEntity);
   }
   
   public void onCourseUserCreateEvent(@Observes @Created CourseUserEvent event) {
@@ -377,14 +445,24 @@ public class WallController {
     
     UserWall userWall = userWallDAO.create(userEntity);
 
-    WallEntry wallEntry = wallEntryDAO.create(userWall, WallEntryVisibility.PRIVATE, userEntity);
-    wallEntryTextItemDAO.create(wallEntry, "Joined Muikku", userEntity);
+//    WallEntry wallEntry = 
+    wallEntryDAO.create(userWall, "Joined Muikku", WallEntryVisibility.PRIVATE, userEntity);
 
     /**
      * Link Environment wall
      */
     EnvironmentWall environmentWall = environmentWallDAO.find();
     userWallLinkDAO.create(userEntity, environmentWall);
+  }
+
+
+  public WorkspaceWall findWorkspaceWall(WorkspaceEntity workspaceEntity) {
+    return workspaceWallDAO.findByWorkspace(workspaceEntity);
+  }
+
+
+  public WorkspaceWall findWorkspaceWallById(Long id) {
+    return workspaceWallDAO.findById(id);
   }
   
 }

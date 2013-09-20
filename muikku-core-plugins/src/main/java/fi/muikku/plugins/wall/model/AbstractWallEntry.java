@@ -1,8 +1,6 @@
 package fi.muikku.plugins.wall.model;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,15 +9,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import fi.muikku.model.util.ArchivableEntity;
+import fi.muikku.tranquil.UserEntityResolver;
+import fi.tranquil.TranquilityEntityField;
 
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
@@ -77,21 +76,12 @@ public abstract class AbstractWallEntry implements ArchivableEntity {
     this.lastModified = lastModified;
   }
 
-  @Transient
-  public List<WallEntryItem> getItems() {
-    return items;
+  public String getText() {
+    return text;
   }
 
-  public void addItem(WallEntryItem item) {
-    item.setWallEntry(this);
-    items.add(item);
-  }
-  
-  public void removeItem(WallEntryItem item) {
-    if (this.equals(item.getWallEntry())) {
-      item.setWallEntry(null);
-      items.remove(item);
-    }
+  public void setText(String text) {
+    this.text = text;
   }
 
   @Id
@@ -101,15 +91,16 @@ public abstract class AbstractWallEntry implements ArchivableEntity {
   @ManyToOne
   private Wall wall;
   
-  @OneToMany
-  @JoinColumn (name = "wallEntry_id")
-  private List<WallEntryItem> items = new ArrayList<WallEntryItem>();
+  @NotNull
+  @NotEmpty
+  private String text;
 
   @NotNull
   @Column(nullable = false)
   private Boolean archived = Boolean.FALSE;
 
   @Column (name = "creator_id")
+  @TranquilityEntityField(UserEntityResolver.class)
   private Long creator;
   
   @NotNull
@@ -118,6 +109,7 @@ public abstract class AbstractWallEntry implements ArchivableEntity {
   private Date created;
   
   @Column (name = "lastModifier_id")
+  @TranquilityEntityField(UserEntityResolver.class)
   private Long lastModifier;
   
   @NotNull

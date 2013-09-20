@@ -22,7 +22,7 @@ public class WallEntryReplyDAO extends PluginDAO<WallEntryReply> {
 
 	private static final long serialVersionUID = 4197097795887500969L;
 
-	public WallEntryReply create(Wall wall, WallEntry wallEntry, UserEntity creator) {
+	public WallEntryReply create(Wall wall, WallEntry wallEntry, String text, UserEntity creator) {
     WallEntryReply comment = new WallEntryReply();
     
     Date now = new Date();
@@ -32,6 +32,7 @@ public class WallEntryReplyDAO extends PluginDAO<WallEntryReply> {
     comment.setLastModified(now);
     comment.setCreator(creator.getId());
     comment.setLastModifier(creator.getId());
+    comment.setText(text);
     
     getEntityManager().persist(comment);
     

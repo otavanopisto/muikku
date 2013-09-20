@@ -5,6 +5,9 @@ import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Transient;
 
+import fi.muikku.tranquil.UserEntityResolver;
+import fi.tranquil.TranquilityEntityField;
+
 @Entity
 @PrimaryKeyJoinColumn(name="id")
 public class UserWall extends Wall {
@@ -24,5 +27,6 @@ public class UserWall extends Wall {
   }
   
   @Column (name = "user_id")
+  @TranquilityEntityField(UserEntityResolver.class)
   private Long user;
 }

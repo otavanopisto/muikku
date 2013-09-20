@@ -9,7 +9,7 @@
     <!-- param['courseId'] -->
 
     <div class="widget wallWidget">
-      <c:set var="wall" value="#{Wall.getCourseWall(Course.findCourseEntityById(param['courseId']))}" />
+      <c:set var="wall" value="#{Wall.getWorkspaceWall(WorkspaceController.findWorkspaceEntityById(param['workspaceId']))}" />
       <input type="hidden" name="wallId" value="#{wall.id}"/>
     
       <div>Kurssin sein&#228;m&#228;</div>

@@ -22,4 +22,13 @@ public class MaterialController {
     }
   }
 
+  public String renderEditor(Material material) {
+    MaterialRenderer materialRenderer = materialRendererRepository.getRendererFor(material.getType());
+    if (materialRenderer != null) {
+      return materialRenderer.renderEditor(material);
+    } else {
+      return null;
+    }
+  }
+
 }

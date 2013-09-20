@@ -49,6 +49,7 @@ public class WorkspacePluginDescriptor implements PluginDescriptor {
 		  /* Backing beans */ 
 				
 			WorkspaceViewBackingBean.class,
+			WorkspaceMaterialEditorBackingBean.class,
 			WorkspaceWidgetSpacesBackingBean.class
 		}));
 	}
