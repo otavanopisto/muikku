@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.faces.application.Application;
 import javax.faces.component.UIComponent;
+import javax.faces.component.html.HtmlOutputText;
 import javax.faces.view.facelets.CompositeFaceletHandler;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.FaceletHandler;
@@ -27,9 +29,12 @@ public class WidgetSpaceTagHandler extends AbstractWidgetTagHandler {
 	@Override
 	public void apply(FaceletContext context, UIComponent parent) throws IOException {
 		if ((!empty)||(keepEmptyAttribute.getBoolean(context))) {
-			// FIXME: These get added twice at postback
 			
-			parent.getChildren().add(new HtmlFragmentComponent(new StringBuilder()
+			Application application = context.getFacesContext().getApplication();
+			
+			HtmlOutputText prefix = (HtmlOutputText) application.createComponent(HtmlOutputText.COMPONENT_TYPE);
+			prefix.setEscape(false);
+			prefix.setValue(new StringBuilder()
     	  .append("<div class=")
     	  .append('"')
     	  .append("widgetSpace grid_")
@@ -39,13 +44,21 @@ public class WidgetSpaceTagHandler extends AbstractWidgetTagHandler {
     	  .append('"')
     	  .append(getName(context))
     	  .append('"')
-    	  .append(">").toString()));
-    
+    	  .append(">").toString());
+			
+			HtmlOutputText postfix = (HtmlOutputText) application.createComponent(HtmlOutputText.COMPONENT_TYPE);
+			prefix.setEscape(false);
+			prefix.setValue("</div>");
+			
+			List<UIComponent> children = parent.getChildren();
+			
+			children.add(0, prefix);
+			children.add(postfix);
+			
     	this.nextHandler.apply(context, parent);
-    
-      parent.getChildren().add(new HtmlFragmentComponent( "</div>" ));
 		}
 	}
+	
   
   public List<WidgetInfo> getWidgetInfos() {
   	List<WidgetInfo> widgetInfos = new ArrayList<>();
