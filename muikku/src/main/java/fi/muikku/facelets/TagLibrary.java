@@ -9,9 +9,9 @@ public class TagLibrary extends AbstractTagLibrary {
 	public TagLibrary() {
 		super("http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd");
 
-		addTagHandler("widgetSpaceSet", WidgetSpaceSetTagHandler.class);
-		addTagHandler("widgetSpace", WidgetSpaceTagHandler.class);
-		addTagHandler("widget", WidgetTagHandler.class);
+		addComponent("widgetSpaceSet", "fi.muikku.facelet.WidgetSpaceSet", null);
+		addComponent("widgetSpace", "fi.muikku.facelet.WidgetSpace", null);
+		addComponent("widget", "fi.muikku.facelet.Widget", null, WidgetComponentHandler.class);
 
 		addTagHandler("includeWidgets", IncludeWidgets.class);
 		addTagHandler("embedJSF", EmbedJSF.class);

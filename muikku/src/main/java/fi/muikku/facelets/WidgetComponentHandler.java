@@ -4,44 +4,35 @@ import java.io.IOException;
 
 import javax.el.VariableMapper;
 import javax.faces.component.UIComponent;
+import javax.faces.view.facelets.ComponentConfig;
+import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagConfig;
 import javax.faces.view.facelets.TagException;
 
 import com.sun.faces.facelets.el.VariableMapperWrapper;
 
-import fi.muikku.model.widgets.WidgetVisibility;
-
-public class WidgetTagHandler extends AbstractWidgetTagHandler {
+public class WidgetComponentHandler extends ComponentHandler {
 
 	private static final String WIDGET_PATH = "/widgets/%s.xhtml";
 
-	public WidgetTagHandler(TagConfig config) {
+	public WidgetComponentHandler(ComponentConfig config) {
 		super(config);
 		
 		nameAttribute = getAttribute("name");
-		minSizeAttribute = getAttribute("min-size");
-		visibilityAttribute = getAttribute("visibility");
+		sizeAttribute = getAttribute("size");
+		renderedAttribute = getAttribute("rendered");
 	}
-
+	
 	@Override
 	public void apply(FaceletContext context, UIComponent parent) throws IOException {
-		WidgetVisibility visibility = getVisibility();
-		boolean visible = visibility == WidgetVisibility.EVERYONE;
-		if (!visible) {
-			visible = getSessionController().isLoggedIn() == (visibility == WidgetVisibility.AUTHENTICATED);
-		}
- 		
-		if (visible) {
-		  includeWidget(context, parent, getName());
+		super.apply(context, parent);
+		
+		if (getRendered(context)) {
+		  includeWidget(context, parent, getName(context));
 		}
 	}
 	
-  private String getWidgetPath(String widgetName) {
-		return String.format(WIDGET_PATH, widgetName);
-	}
-
 	private void includeWidget(FaceletContext context, UIComponent parent, String widgetName) {
 		String path = getWidgetPath(widgetName);
 		
@@ -57,19 +48,27 @@ public class WidgetTagHandler extends AbstractWidgetTagHandler {
 		}
 	}
 	
-	public String getName() {
-		return nameAttribute.getValue();
+	private String getWidgetPath(String widgetName) {
+		return String.format(WIDGET_PATH, widgetName);
 	}
 	
-	public WidgetVisibility getVisibility() {
-		return WidgetVisibility.valueOf(visibilityAttribute.getValue());
+	public String getName(FaceletContext context) {	
+		return nameAttribute.getValue(context);
+	}
+
+	public int getMinimumSize(FaceletContext context) {
+		return sizeAttribute.getInt(context);
 	}
 	
-	public int getMinimumSize() {
-		return minSizeAttribute.getInt(null);
+	private boolean getRendered(FaceletContext context) {
+		if (renderedAttribute == null) {
+			return true;
+		}
+		
+		return renderedAttribute.getBoolean(context);
 	}
 	
 	private TagAttribute nameAttribute;
-	private TagAttribute minSizeAttribute;
-	private TagAttribute visibilityAttribute;
+	private TagAttribute sizeAttribute;
+	private TagAttribute renderedAttribute;
 }
