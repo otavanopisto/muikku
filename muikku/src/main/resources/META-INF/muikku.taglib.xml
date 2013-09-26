@@ -4,6 +4,63 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facelettaglibrary_2_0.xsd"
 	version="2.0">
 	
-	<library-class>fi.muikku.facelets.TagLibrary</library-class>
+  <namespace>http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd</namespace>
+  
+  <tag>
+    <tag-name>widgetSpaceSet</tag-name>
+    <component>
+      <component-type>fi.muikku.facelet.WidgetSpaceSet</component-type>
+    </component>
+  </tag>
 
+  <tag>
+    <tag-name>widgetSpace</tag-name>
+    <component>
+      <component-type>fi.muikku.facelet.WidgetSpace</component-type>
+    </component>
+    <attribute>
+      <description>Widget space name</description>
+      <name>name</name>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <description>Controls whether widget space will be rendered if does not contain any widgets or not</description>
+      <name>keepEmpty</name>
+      <type>java.lang.Boolean</type>
+    </attribute>
+    <attribute>
+      <description>Controls how widget space size is calculated. MINIMIZE: Widget space is size is defined by widest contained widget, SUM: Widget space size is sum of all contained widgets, MAXIMIZE: Widget space takes all remaining space within widget space set</description>
+      <name>sizing</name>
+      <type>java.lang.String</type>
+    </attribute>
+  </tag>
+  
+  <tag>
+    <tag-name>widget</tag-name>
+    <component>
+      <component-type>fi.muikku.facelet.Widget</component-type>
+      <handler-class>fi.muikku.facelets.WidgetComponentHandler</handler-class>
+    </component>
+    <attribute>
+      <description>Widget name (must equal to widget xhtml file name, e.g. example widget must have a corresponding xhtml file in /src/main/resources/META-INF/resources/widgets/example.xhtml)</description>
+      <name>name</name>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <description>Minimum size of the widget</description>
+      <name>size</name>
+      <type>java.lang.Integer</type>
+    </attribute>
+    <attribute>
+      <description>Controls whether widget is rendered or not</description>
+      <name>rendered</name>
+      <type>java.lang.Boolean</type>
+    </attribute>
+  </tag>
+  
+  <tag>
+    <tag-name>embedJSF</tag-name>
+    <handler-class>fi.muikku.facelets.EmbedJSF</handler-class>
+  </tag>
+  
 </facelet-taglib>
