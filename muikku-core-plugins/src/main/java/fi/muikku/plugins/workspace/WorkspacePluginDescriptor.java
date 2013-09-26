@@ -30,11 +30,11 @@ public class WorkspacePluginDescriptor implements PluginDescriptor {
 	@Override
 	public List<Class<?>> getBeans() {
 		return Collections.unmodifiableList(Arrays.asList(new Class<?>[] { 
-		  /* Backing beans */ 
+		  
+			/* Backing beans */ 
 				
-			WorkspaceViewBackingBean.class,
-			WorkspaceMaterialEditorBackingBean.class,
-			WorkspaceWidgetSpacesBackingBean.class
+			WorkspaceViewBackingBean.class
+			
 		}));
 	}
 
