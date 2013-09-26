@@ -37,14 +37,14 @@ public class WidgetsBackingBean {
 		boolean loggedIn = sessionController.isLoggedIn();
 		
 		if (loggedIn) {
-      result.addAll(widgetController.listLocationUserWidgets(location, sessionController.getUser()));
+      result.addAll(widgetController.listWidgetSpaceUserWidgets(location, sessionController.getUser()));
     }
 		
     if (result.isEmpty()) {
     	if (loggedIn) {
-        result.addAll(widgetController.listLocationDefaultWidgetsByVisibilities(location, Arrays.asList(WidgetVisibility.EVERYONE, WidgetVisibility.AUTHENTICATED)));
+        result.addAll(widgetController.listWidgetSpaceDefaultWidgetsByVisibilities(location, Arrays.asList(WidgetVisibility.EVERYONE, WidgetVisibility.AUTHENTICATED)));
     	} else {
-        result.addAll(widgetController.listLocationDefaultWidgetsByVisibilities(location, Arrays.asList(WidgetVisibility.EVERYONE, WidgetVisibility.UNAUTHENTICATED)));
+        result.addAll(widgetController.listWidgetSpaceDefaultWidgetsByVisibilities(location, Arrays.asList(WidgetVisibility.EVERYONE, WidgetVisibility.UNAUTHENTICATED)));
     	}
     }
     

@@ -16,7 +16,7 @@ import fi.muikku.i18n.LocaleBundle;
 import fi.muikku.i18n.LocaleLocation;
 import fi.muikku.model.widgets.DefaultWidget;
 import fi.muikku.model.widgets.Widget;
-import fi.muikku.model.widgets.WidgetLocation;
+import fi.muikku.model.widgets.WidgetSpace;
 import fi.muikku.model.widgets.WidgetVisibility;
 import fi.muikku.plugin.LocalizedPluginDescriptor;
 import fi.muikku.plugin.PersistencePluginDescriptor;
@@ -52,14 +52,14 @@ public class DatabaseFishPluginDescriptor implements PluginDescriptor,
       widget = widgetController.createWidget(FISH_WIDGET_NAME, FISH_WIDGET_MINIMUM_SIZE, WidgetVisibility.EVERYONE);
     }
 
-    WidgetLocation widgetLocation = widgetController.findWidgetLocation(FISH_WIDGET_LOCATION);
-    if (widgetLocation == null) { // TODO: In a perfect world, there would be no null checks
-      widgetLocation = widgetController.createWidgetLocation(FISH_WIDGET_LOCATION);
+    WidgetSpace widgetSpace = widgetController.findWidgetSpace(FISH_WIDGET_LOCATION);
+    if (widgetSpace == null) { // TODO: In a perfect world, there would be no null checks
+      widgetSpace = widgetController.createWidgetSpace(FISH_WIDGET_LOCATION);
     }
 
-    DefaultWidget defaultWidget = widgetController.findDefaultWidget(widget, widgetLocation);
+    DefaultWidget defaultWidget = widgetController.findDefaultWidget(widget, widgetSpace);
     if (defaultWidget == null) {
-      defaultWidget = widgetController.createDefaultWidget(widget, widgetLocation);
+      defaultWidget = widgetController.createDefaultWidget(widget, widgetSpace);
     }
     
     Widget adminWidget = widgetController.findWidget(FISH_ADMIN_WIDGET_NAME);
@@ -69,14 +69,14 @@ public class DatabaseFishPluginDescriptor implements PluginDescriptor,
                                                   WidgetVisibility.AUTHENTICATED);
     }
 
-    WidgetLocation adminWidgetLocation = widgetController.findWidgetLocation(FISH_ADMIN_WIDGET_LOCATION);
-    if (adminWidgetLocation == null) { // TODO: In a perfect world, there would be no null checks
-      adminWidgetLocation = widgetController.createWidgetLocation(FISH_ADMIN_WIDGET_LOCATION);
+    WidgetSpace adminWidgetSpace = widgetController.findWidgetSpace(FISH_ADMIN_WIDGET_LOCATION);
+    if (adminWidgetSpace == null) { // TODO: In a perfect world, there would be no null checks
+      adminWidgetSpace = widgetController.createWidgetSpace(FISH_ADMIN_WIDGET_LOCATION);
     }
 
-    DefaultWidget adminDefaultWidget = widgetController.findDefaultWidget(adminWidget, adminWidgetLocation);
+    DefaultWidget adminDefaultWidget = widgetController.findDefaultWidget(adminWidget, adminWidgetSpace);
     if (adminDefaultWidget == null) {
-      adminDefaultWidget = widgetController.createDefaultWidget(adminWidget, adminWidgetLocation);
+      adminDefaultWidget = widgetController.createDefaultWidget(adminWidget, adminWidgetSpace);
     }
   }
 
