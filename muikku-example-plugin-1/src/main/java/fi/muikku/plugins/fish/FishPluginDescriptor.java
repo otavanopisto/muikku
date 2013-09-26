@@ -8,7 +8,6 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import fi.muikku.WidgetLocations;
 import fi.muikku.controller.WidgetController;
 import fi.muikku.model.widgets.DefaultWidget;
 import fi.muikku.model.widgets.Widget;

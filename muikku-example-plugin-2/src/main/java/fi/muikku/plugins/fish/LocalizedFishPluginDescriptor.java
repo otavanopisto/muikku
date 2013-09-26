@@ -11,7 +11,6 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.LocaleUtils;
 
-import fi.muikku.WidgetLocations;
 import fi.muikku.controller.WidgetController;
 import fi.muikku.i18n.LocaleBundle;
 import fi.muikku.i18n.LocaleLocation;

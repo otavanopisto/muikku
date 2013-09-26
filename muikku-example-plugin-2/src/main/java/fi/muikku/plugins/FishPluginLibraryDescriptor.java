@@ -6,7 +6,6 @@ import java.util.List;
 
 import fi.muikku.plugin.PluginDescriptor;
 import fi.muikku.plugin.PluginLibraryDescriptor;
-import fi.muikku.plugins.fish.StatefulFishPluginDescriptor;
 import fi.muikku.plugins.fish.LocalizedFishPluginDescriptor;
 
 public class FishPluginLibraryDescriptor implements PluginLibraryDescriptor {

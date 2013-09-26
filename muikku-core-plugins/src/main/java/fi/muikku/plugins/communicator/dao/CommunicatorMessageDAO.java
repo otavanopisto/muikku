@@ -1,25 +1,8 @@
 package fi.muikku.plugins.communicator.dao;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.Root;
-
 import fi.muikku.dao.DAO;
-import fi.muikku.model.base.Tag;
-import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugin.PluginDAO;
 import fi.muikku.plugins.communicator.model.CommunicatorMessage;
-import fi.muikku.plugins.communicator.model.CommunicatorMessageId;
-import fi.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
-import fi.muikku.plugins.communicator.model.CommunicatorMessageRecipient_;
-import fi.muikku.plugins.communicator.model.CommunicatorMessage_;
 
 @DAO
 public class CommunicatorMessageDAO extends PluginDAO<CommunicatorMessage> {

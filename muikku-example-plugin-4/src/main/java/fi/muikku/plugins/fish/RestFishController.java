@@ -3,9 +3,6 @@ package fi.muikku.plugins.fish;
 import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 
-import fi.muikku.security.MuikkuPermissions;
-import fi.muikku.security.Permit;
-
 @Stateless
 @Dependent
 public class RestFishController {
