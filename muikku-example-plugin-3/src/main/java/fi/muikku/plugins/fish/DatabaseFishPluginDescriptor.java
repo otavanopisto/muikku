@@ -11,7 +11,6 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.LocaleUtils;
 
-import fi.muikku.WidgetLocations;
 import fi.muikku.controller.WidgetController;
 import fi.muikku.i18n.LocaleBundle;
 import fi.muikku.i18n.LocaleLocation;
@@ -31,9 +30,9 @@ public class DatabaseFishPluginDescriptor implements PluginDescriptor,
                                                      PersistencePluginDescriptor,
                                                      LocalizedPluginDescriptor {
 
-  private static final String FISH_WIDGET_LOCATION = WidgetLocations.ENVIRONMENT_HEADER_LEFT;
+  private static final String FISH_WIDGET_LOCATION = "environment.header.right";
   private static final String FISH_WIDGET_NAME = "databasefish";
-  private static final String FISH_ADMIN_WIDGET_LOCATION = WidgetLocations.PLUGIN_SETTINGS_CONTENT_SIDEBAR_LEFT;
+  private static final String FISH_ADMIN_WIDGET_LOCATION = "plugin-settings.content-sidebar.left";
   private static final String FISH_ADMIN_WIDGET_NAME = "fishadmin";
   private static final Integer FISH_WIDGET_MINIMUM_SIZE = 8; 
   private static final Integer FISH_ADMIN_MINIMUM_SIZE = 4; 
