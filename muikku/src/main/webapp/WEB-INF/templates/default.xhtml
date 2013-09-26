@@ -108,9 +108,13 @@
       <div id="headerContainer" class="container_24">
         <ui:insert name="header">
           <m:widgetSpaceSet>
-            <m:widgetSpace name="environment.header.left" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
+            <m:widgetSpace name="environment.header.left" keepEmpty="false" sizing="MINIMIZE">
+              <m:widget name="seeker" size="4" rendered="#{sessionBackingBean.loggedIn}"/>
+            </m:widgetSpace>
             <m:widgetSpace name="environment.header.center" keepEmpty="true" sizing="MAXIMIZE"></m:widgetSpace>
-            <m:widgetSpace name="environment.header.right" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
+            <m:widgetSpace name="environment.header.right" keepEmpty="false" sizing="MINIMIZE">
+              <m:widget name="internallogin" size="4" rendered="#{!sessionBackingBean.loggedIn}"/>
+            </m:widgetSpace>
           </m:widgetSpaceSet>
         </ui:insert>
       </div>
