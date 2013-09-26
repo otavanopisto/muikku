@@ -114,6 +114,7 @@
             <m:widgetSpace name="environment.header.center" keepEmpty="true" sizing="MAXIMIZE"></m:widgetSpace>
             <m:widgetSpace name="environment.header.right" keepEmpty="false" sizing="MINIMIZE">
               <m:widget name="internallogin" size="4" rendered="#{!sessionBackingBean.loggedIn}"/>
+              <m:widget name="logout" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
             </m:widgetSpace>
           </m:widgetSpaceSet>
         </ui:insert>
