@@ -23,11 +23,6 @@ import fi.muikku.plugin.PluginDescriptor;
 @Stateful
 public class SettingsPluginDescriptor implements PluginDescriptor, LocalizedPluginDescriptor {
 
-	private static final String DOCK_SETTINGS_WIDGET_LOCATION = fi.muikku.WidgetLocations.ENVIRONMENT_DOCK_TOP_CENTER;
-	private static final int DOCK_SETTINGS_WIDGET_MINIMUM_SIZE = 1;
-	private static final String DOCK_SETTINGS_WIDGET_NAME = "docksettings";
-  private static final WidgetVisibility DOCK_SETTINGS_VISIBILITY = WidgetVisibility.AUTHENTICATED;
-  
 	private static final String USERS_WIDGET_LOCATION = WidgetLocations.SETTINGS_CONTENT_SIDEBAR_LEFT;
 	private static final int USERS_WIDGET_MINIMUM_SIZE = 2;
 	private static final String USERS_WIDGET_NAME = "settings-navigation-users";
@@ -79,12 +74,6 @@ public class SettingsPluginDescriptor implements PluginDescriptor, LocalizedPlug
 	
 	@Override
 	public void init() {
-		/**
-		 * Dock widget
-		 */
-		
-		widgetController.ensureDefaultWidget(widgetController.ensureWidget(DOCK_SETTINGS_WIDGET_NAME, DOCK_SETTINGS_WIDGET_MINIMUM_SIZE, DOCK_SETTINGS_VISIBILITY), DOCK_SETTINGS_WIDGET_LOCATION);
-		
 		/**
 		 * Settings navigation widgets
 		 */

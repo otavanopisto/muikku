@@ -58,7 +58,6 @@ public class CalendarPluginDescriptor implements PluginDescriptor, LocalizedPlug
 	private static final String DEFAULT_COLOR = "#ff0000";
 	
 	private static final String FULL_CALENDAR_WIDGET_WIDGET_LOCATION = WidgetLocations.CALENDAR_CONTENT;
-	private static final String DOCK_CALENDAR_WIDGET_LOCATION = fi.muikku.WidgetLocations.ENVIRONMENT_DOCK_TOP_CENTER;
 	private static final String NEW_EVENT_WIDGET_LOCATION = WidgetLocations.CALENDAR_CONTENT_TOOLS_TOP_LEFT;
 	private static final String NEW_CALENDAR_WIDGET_LOCATION = WidgetLocations.CALENDAR_CONTENT_TOOLS_TOP_LEFT;
 	private static final String CALENDARS_VISIBLE_WIDGET_LOCATION = WidgetLocations.CALENDAR_CONTENT_TOOLS_TOP_RIGHT;
@@ -66,7 +65,6 @@ public class CalendarPluginDescriptor implements PluginDescriptor, LocalizedPlug
 	
 	private static final int FULL_CALENDAR_WIDGET_MINIMUM_SIZE = 18;
 	private static final int MINI_CALENDAR_WIDGET_MINIMUM_SIZE = 8;
-	private static final int DOCK_CALENDAR_WIDGET_MINIMUM_SIZE = 4;
 	private static final int NEW_CALENDAR_WIDGET_MINIMUM_SIZE = 2;
 	private static final int NEW_EVENT_WIDGET_MINIMUM_SIZE = 2;
 	private static final int CALENDAR_SETTINGS_WIDGET_MINIMUM_SIZE = 2;
@@ -74,7 +72,6 @@ public class CalendarPluginDescriptor implements PluginDescriptor, LocalizedPlug
 	
 	private static final String FULLCALENDAR_WIDGET_NAME = "fullcalendar";
 	private static final String MINICALENDAR_WIDGET_NAME = "minicalendar";
-	private static final String DOCKCALENDAR_WIDGET_NAME = "dockcalendar";
 	private static final String NEWCALENDAR_WIDGET_NAME = "newcalendar";
 	private static final String NEWEVENT_WIDGET_NAME = "newevent";
 	private static final String CALENDARSETTINGS_WIDGET_NAME = "calendarsettings";
@@ -119,7 +116,6 @@ public class CalendarPluginDescriptor implements PluginDescriptor, LocalizedPlug
 		Widget fullCalendarWidget = widgetController.ensureWidget(FULLCALENDAR_WIDGET_NAME, FULL_CALENDAR_WIDGET_MINIMUM_SIZE, WidgetVisibility.AUTHENTICATED);
 		@SuppressWarnings("unused")
 		Widget miniCalendarWidget = widgetController.ensureWidget(MINICALENDAR_WIDGET_NAME, MINI_CALENDAR_WIDGET_MINIMUM_SIZE, WidgetVisibility.AUTHENTICATED);
-		Widget dockCalendarWidget = widgetController.ensureWidget(DOCKCALENDAR_WIDGET_NAME, DOCK_CALENDAR_WIDGET_MINIMUM_SIZE, WidgetVisibility.AUTHENTICATED);
 		Widget newCalendarWidget = widgetController.ensureWidget(NEWCALENDAR_WIDGET_NAME, NEW_CALENDAR_WIDGET_MINIMUM_SIZE, WidgetVisibility.AUTHENTICATED);
 		Widget newEventWidget = widgetController.ensureWidget(NEWEVENT_WIDGET_NAME, NEW_EVENT_WIDGET_MINIMUM_SIZE, WidgetVisibility.AUTHENTICATED);
 		Widget calendarSettingsWidget = widgetController.ensureWidget(CALENDARSETTINGS_WIDGET_NAME, CALENDAR_SETTINGS_WIDGET_MINIMUM_SIZE, WidgetVisibility.AUTHENTICATED);
@@ -137,7 +133,6 @@ public class CalendarPluginDescriptor implements PluginDescriptor, LocalizedPlug
 		
 		// Add calendar widgets to their default locations
 		
-		widgetController.ensureDefaultWidget(dockCalendarWidget, DOCK_CALENDAR_WIDGET_LOCATION);
 		widgetController.ensureDefaultWidget(newEventWidget, NEW_EVENT_WIDGET_LOCATION);
 		widgetController.ensureDefaultWidget(newCalendarWidget, NEW_CALENDAR_WIDGET_LOCATION);
 		widgetController.ensureDefaultWidget(calendarsVisibleWidget, CALENDARS_VISIBLE_WIDGET_LOCATION);
