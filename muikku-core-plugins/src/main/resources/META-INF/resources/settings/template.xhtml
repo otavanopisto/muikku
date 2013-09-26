@@ -1,11 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:h="http://java.sun.com/jsf/html" template="/WEB-INF/templates/default.xhtml">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+  xmlns:ui="http://java.sun.com/jsf/facelets" 
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html" 
+  template="/WEB-INF/templates/default.xhtml">
  
   <ui:define name="contentArea">
-    <ui:include src="/core/widget-space-set.xhtml">
-      <ui:param name="set" value="#{settingsBackingBean.contentWidgetSpaceSet}" />
-    </ui:include>
+    <m:widgetSpaceSet>
+      <m:widgetSpace name="settings.content-sidebar.left" keepEmpty="false" sizing="MINIMIZE">
+        <m:widget name="settings-navigation-users" size="2" rendered="#{sessionBackingBean.loggedIn}"/>
+        <m:widget name="settings-navigation-roles" size="2" rendered="#{sessionBackingBean.loggedIn}"/>
+        <m:widget name="settings-navigation-workspaces" size="2" rendered="#{sessionBackingBean.loggedIn}"/>
+        <m:widget name="settings-navigation-workspace-types" size="2" rendered="#{sessionBackingBean.loggedIn}"/>
+        <m:widget name="settings-navigation-plugins" size="2" rendered="#{sessionBackingBean.loggedIn}"/>
+        <m:widget name="settings-navigation-grading-scales" size="2" rendered="#{sessionBackingBean.loggedIn}"/>
+        <m:widget name="settings-navigation-course-identifiers" size="2" rendered="#{sessionBackingBean.loggedIn}"/>
+      </m:widgetSpace>
+      <m:widgetSpace name="environment.content" keepEmpty="true" sizing="MAXIMIZE">
+        <m:widget name="content" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
+      </m:widgetSpace>
+    </m:widgetSpaceSet>
   </ui:define>
   
 </ui:composition>
