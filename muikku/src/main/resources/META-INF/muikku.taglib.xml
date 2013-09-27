@@ -17,6 +17,7 @@
     <tag-name>widgetSpace</tag-name>
     <component>
       <component-type>fi.muikku.facelet.WidgetSpace</component-type>
+      <handler-class>fi.muikku.facelets.WidgetSpaceComponentHandler</handler-class>
     </component>
     <attribute>
       <description>Widget space name</description>
@@ -56,6 +57,12 @@
       <name>rendered</name>
       <type>java.lang.Boolean</type>
     </attribute>
+  </tag>
+  
+  <tag>
+    <description>Used to include external widgets into widget spaces. Meant to be used by WidgetSpaceController only.</description>
+    <tag-name>includeWidgets</tag-name>
+    <handler-class>fi.muikku.facelets.IncludeWidgetsTagHandler</handler-class>
   </tag>
   
   <tag>
