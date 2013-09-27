@@ -21,16 +21,6 @@ public class WidgetsBackingBean {
 
 	@Inject
 	private WidgetController widgetController;
-
-	public boolean hasWidgets(String location) {
-		if (sessionController.isLoggedIn()) {
-			if (widgetController.hasUserWidgets(location, sessionController.getUser())) {
-				return true;
-			} 
-		} 
-			
-		return widgetController.hasDefaultWidgets(location);
-	}
 	
 	public List<LocatedWidget> getWidgets(String location) {
 		List<LocatedWidget> result = new ArrayList<>();
