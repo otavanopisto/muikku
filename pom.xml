@@ -23,6 +23,7 @@
     <module>muikku-rest</module>
     <module>muikku-school-data-mock</module>
     <module>muikku-security</module>
+    <module>muikku</module>
   </modules>
 
 </project>
