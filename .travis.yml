@@ -18,7 +18,7 @@ before_deploy: "echo 'Starting deployment'"
 deploy:
   provider: openshift
   user: 
-	secure: "GQJ9pnxqprCV2LK7zdjK2rXIQtACGLAmkXPx3XSO6YRE/kRlkmyKxP7ys3SsNfaXjvxvL/c9aADpaaMIqHlkUz5ZTqFB6FO0lopN39ap6G9wEJxxTJ7Q8e+1oKIekg935+/bgc5XhkitAvs0VhZoUJv4g7z0ISduV1ec+lVmafM="
+    secure: "GQJ9pnxqprCV2LK7zdjK2rXIQtACGLAmkXPx3XSO6YRE/kRlkmyKxP7ys3SsNfaXjvxvL/c9aADpaaMIqHlkUz5ZTqFB6FO0lopN39ap6G9wEJxxTJ7Q8e+1oKIekg935+/bgc5XhkitAvs0VhZoUJv4g7z0ISduV1ec+lVmafM="
   password:
     secure: "GcYgFF+d3nzXyYQyMIdn2Q15T4qEwaVwbOj1T5Vj1D2BBGylQZuTg2e3jBHoPCl6MRhejivDn27zz9k9ZDWY4l/9Tw84jH4fRXRWsCaay+CfpJ63GWK6Hpd4u0B8FkdLizsEFg/VRD9YR4mac5mxI6A/mlV5wd7J130SqVN9pV0="
   app: muikku
