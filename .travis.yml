@@ -14,7 +14,7 @@ branches:
     
 after_success:
   - mvn package -f muikku/pom.xml -Popenshift
-before_deploy: "Ready for DEPLOYMENT????"  
+before_deploy: "echo 'Starting deployment'"
 deploy:
   provider: openshift
   user:
@@ -26,4 +26,4 @@ deploy:
   on:
     jdk: openjdk7
     branch: devel
-after_deploy: "I have deployed"
+after_deploy: "echo 'Deployed'"
