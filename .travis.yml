@@ -7,14 +7,6 @@ jdk:
   - oraclejdk7
   - openjdk7
 
-deploy:
-  provider: openshift
-  user:
-    secure: "IULca5XuovOnLRrgL6VBzwcAs4u1cxL6AMMpLFovCc4+aFw1N29mPMGMc1mmLSI51cn2FRGcbc7J+MZHPrtL6c215X5KdBjMVIJxyoJq8ZRzrXfHfbmhgZLNG6BvLjKocH9sQXFdTY4zHi+GafeSFFUzdZnMMrHoBmCiAozbOLI="
-  password:
-    secure: "Y9yuZuoc8Mx4NQSsPpOC0JbmrTVy4LhQZt9iuPK+YAoIHi0TlpYwTY8ewQSJrMziyfQoHd9+lEU/T2kl0ll9njf94QlBAKrmqSW5H11xqQ7VJIPNQqxxcc2aAQD0NOwtV52OJ3e1FKzlkT/jpvHMBreEOY/6xnwADUf0uccJw6M="
-  domain: oodev
-
 # whitelist
 branches:
   only:
@@ -22,3 +14,13 @@ branches:
     
 after_success:
   - mvn package -f muikku/pom.xml -Popenshift
+  
+deploy:
+  provider: openshift
+  user:
+    secure: "IULca5XuovOnLRrgL6VBzwcAs4u1cxL6AMMpLFovCc4+aFw1N29mPMGMc1mmLSI51cn2FRGcbc7J+MZHPrtL6c215X5KdBjMVIJxyoJq8ZRzrXfHfbmhgZLNG6BvLjKocH9sQXFdTY4zHi+GafeSFFUzdZnMMrHoBmCiAozbOLI="
+  password:
+    secure: "Y9yuZuoc8Mx4NQSsPpOC0JbmrTVy4LhQZt9iuPK+YAoIHi0TlpYwTY8ewQSJrMziyfQoHd9+lEU/T2kl0ll9njf94QlBAKrmqSW5H11xqQ7VJIPNQqxxcc2aAQD0NOwtV52OJ3e1FKzlkT/jpvHMBreEOY/6xnwADUf0uccJw6M="
+  domain: oodev
+  app:
+    devel: muikku
