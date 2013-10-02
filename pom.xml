@@ -16,6 +16,7 @@
     <module>muikku-core</module>
     <module>muikku-core-plugins</module>
     <module>muikku-hsqldb-plugin</module>
+    <module>muikku-h2db-plugin</module>
     <module>muikku-parent</module>
     <module>muikku-persistence</module>
     <module>muikku-plugin</module>
