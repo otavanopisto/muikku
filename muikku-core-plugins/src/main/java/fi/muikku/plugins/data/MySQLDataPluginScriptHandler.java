@@ -84,7 +84,8 @@ public class MySQLDataPluginScriptHandler implements DataPluginScriptHandler {
 		return null;
 	}
 	
-	private Connection getConnection() throws SQLException {
+	@Override
+	public Connection getConnection(Map<String, String> parameters) throws SQLException {
 		return getDataSource().getConnection();
 	}
 	
@@ -93,7 +94,7 @@ public class MySQLDataPluginScriptHandler implements DataPluginScriptHandler {
 		
 		logger.info("Executing sql: " + sql);
 		
-		Connection connection = getConnection();
+		Connection connection = getConnection(null);
 		Statement statement = connection.createStatement();
 		statement.execute(sql);
 	}
