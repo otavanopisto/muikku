@@ -11,7 +11,12 @@ jdk:
 branches:
   only:
     - devel
-    
+
+env:
+  global:
+    - secure: "CB9V3CmnZRuNapNI8QYEO+tawsvqgEqLOM1FoIjHiPf2bMdmjud0dwcQWNuiMJzWR0FJaARvqQWmndP7SePNUaeIkkRoGJ0InmIrXwWtvGq/YKdxEWC8JpMxeONjKNZ6w1LhtRHpHKDxa9P1EgvyDMtg9pPIgDtoab86lXCK+2A="
+    - secure: "HCRUaOrwfMQQgtlFI5iKEa1CAKmf9R6GgifIpIjgLERgzxTzn3hJQkR9GvVpqB5Vo/50mCQM07LI6wB/Q9yI5b9d3M4Ey9RJebRRiHSvUyoOG8/tYHmZ8rphDVqInJSFDDcjHkGWI4KbPCe9cFvIuXhqWKensUEOl9WDFKDl4Uw="  
+
 after_success:
   - mvn package -f muikku/pom.xml -Popenshift
 before_deploy: "echo 'Starting deployment'"
