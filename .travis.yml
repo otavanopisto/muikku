@@ -19,6 +19,8 @@ env:
 
 after_success:
   - mvn package -f muikku/pom.xml -Popenshift
+  - python travis-prepare-maven.py
+  - mvn deploy --settings ~/.m2/mySettings.xml
 before_deploy: "echo 'Starting deployment'"
 deploy:
   provider: openshift
