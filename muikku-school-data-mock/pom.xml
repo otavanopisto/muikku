@@ -39,19 +39,18 @@
       <artifactId>plugin</artifactId>
       <scope>provided</scope>
     </dependency>
-    
-    <!-- hsqldb-plugin -->
-
-    <dependency>
-      <groupId>fi.muikku</groupId>
-      <artifactId>hsqldb-plugin</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-      <scope>provided</scope>
-    </dependency>
 
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
+    </dependency>
+    
+    <!-- Core plugins -->
+  
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>core-plugins</artifactId>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
   
