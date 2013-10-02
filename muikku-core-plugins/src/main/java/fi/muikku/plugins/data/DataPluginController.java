@@ -103,6 +103,17 @@ public class DataPluginController {
 			}
 		}
 	}
+
+	public DataPluginScriptHandler getHandler(String name) {
+		Iterator<DataPluginScriptHandler> handlers = scriptHandlers.iterator();
+		while (handlers.hasNext()) {
+			DataPluginScriptHandler handler = handlers.next();
+			if (handler.getName().equals(name))
+				return handler;
+		}
+		
+		return null;
+	}
 	
 	private void runScript(ScriptInfo scriptInfo) {
 		DataPluginScriptHandler scriptHandler = getHandler(scriptInfo.getHandler());
@@ -112,17 +123,6 @@ public class DataPluginController {
 		}
 		
 		scriptHandler.executeScript(scriptInfo.getUrl(), scriptInfo.getParameters());
-	}
-	
-	private DataPluginScriptHandler getHandler(String name) {
-		Iterator<DataPluginScriptHandler> handlers = scriptHandlers.iterator();
-		while (handlers.hasNext()) {
-			DataPluginScriptHandler handler = handlers.next();
-			if (handler.getName().equals(name))
-				return handler;
-		}
-		
-		return null;
 	}
 
 	private enum Run {
