@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -73,6 +74,17 @@ public class HSQLDBDataPluginScriptHandler implements DataPluginScriptHandler {
 			e.printStackTrace();
 			throw new RuntimeException(e);		
 		}
+	}
+	
+	@Override
+	public Connection getConnection(Map<String, String> parameters) throws SQLException {
+		String database = parameters.get("database");
+		if (StringUtils.isBlank(database)) {
+		  // TODO Proper error handling
+			throw new RuntimeException("Database parameter is required");
+		}
+		
+		return hsqldbPluginController.getConnection(database);
 	}
 	
 }
