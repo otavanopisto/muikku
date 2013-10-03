@@ -37,42 +37,43 @@ public class HSQLDBDataPluginScriptHandler implements DataPluginScriptHandler {
 	}
 
 	@Override
-	public void executeScript(String uri, Map<String, String> parameters) {
+	public void executeScript(String uri, Map<String, String> parameters) throws IOException, SQLException {
+		URL url = new URL(uri);
+		URLConnection connection = url.openConnection();
+		connection.setDoInput(true);
+		connection.setDoOutput(true);
+		
+		InputStream inputStream = connection.getInputStream();
+		try {
+			executeScript(inputStream, parameters);
+		} finally {
+			inputStream.close();
+		}
+	}
+	
+	@Override
+	public void executeScript(InputStream inputStream, Map<String, String> parameters) throws IOException, SQLException {
 		String database = parameters.get("database");
 		if (StringUtils.isBlank(database)) {
 		  // TODO Proper error handling
 			throw new RuntimeException("Database parameter is required");
 		}
 		
+		File tempFile = File.createTempFile("muikku-sqldb-plugin", ".sql");
 		try {
-  		URL url = new URL(uri);
-  		File tempFile = File.createTempFile("muikku-sqldb-plugin", ".sql");
+  		FileOutputStream fileOutputStream = new FileOutputStream(tempFile);
   		try {
-  			URLConnection connection = url.openConnection();
-  			connection.setDoInput(true);
-  			connection.setDoOutput(true);
-  			
-  			InputStream inputStream = connection.getInputStream();
-  			try {
-  				FileOutputStream fileOutputStream = new FileOutputStream(tempFile);
-  				try {
-  				  IOUtils.copy(inputStream, fileOutputStream);
-  				} finally {
-  					fileOutputStream.flush();
-  					fileOutputStream.close();
-  				}
-  
-  		    hsqldbPluginController.executeScript(hsqldbPluginController.getConnection(database), tempFile);
-  			} finally {
-  				inputStream.close();
-  			}
+  		  IOUtils.copy(inputStream, fileOutputStream);
   		} finally {
-  			tempFile.delete();
+  			fileOutputStream.flush();
+  			fileOutputStream.close();
   		}
-		} catch (IOException | SqlToolError | SQLException e) {
-			// TODO Proper error handling
-			e.printStackTrace();
-			throw new RuntimeException(e);		
+  
+      hsqldbPluginController.executeScript(hsqldbPluginController.getConnection(database), tempFile);
+		} catch (SqlToolError e) {
+			throw new SQLException(e);
+		} finally {
+			tempFile.delete();
 		}
 	}
 	

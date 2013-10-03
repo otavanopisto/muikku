@@ -34,7 +34,7 @@ public class H2DBDataPluginScriptHandler implements DataPluginScriptHandler {
 	}
 
 	@Override
-	public void executeScript(String uri, Map<String, String> parameters) {
+	public void executeScript(String uri, Map<String, String> parameters) throws IOException, SQLException {
 		try {
 			URL url = new URL(uri);
 			URLConnection connection = url.openConnection();
@@ -42,21 +42,21 @@ public class H2DBDataPluginScriptHandler implements DataPluginScriptHandler {
 			connection.setDoOutput(true);
 			
 			InputStream inputStream = connection.getInputStream();
-			String sql = IOUtils.toString(inputStream);
-			inputStream.close();
-			
-			h2DBPluginController.executeScript(h2DBPluginController.getConnection(), sql);
-  		
+			try {
+			  executeScript(inputStream, parameters);
+			} finally {
+			  inputStream.close();
+			}
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
+	}
+	
+	@Override
+	public void executeScript(InputStream inputStream, Map<String, String> parameters) throws IOException, SQLException {
+		String sql = IOUtils.toString(inputStream);
+		h2DBPluginController.executeScript(h2DBPluginController.getConnection(), sql);
 	}
 	
 	@Override

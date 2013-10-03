@@ -2,6 +2,7 @@
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -122,7 +123,12 @@ public class DataPluginController {
 			throw new RuntimeException("Could not find script handler '" + scriptInfo.getHandler() + "'");
 		}
 		
-		scriptHandler.executeScript(scriptInfo.getUrl(), scriptInfo.getParameters());
+		try {
+			scriptHandler.executeScript(scriptInfo.getUrl(), scriptInfo.getParameters());
+		} catch (IOException | SQLException e) {
+			// TODO: Proper error handling
+			throw new RuntimeException("Failed to execute script '" + scriptInfo.getUrl() + "'");
+		}
 	}
 
 	private enum Run {
