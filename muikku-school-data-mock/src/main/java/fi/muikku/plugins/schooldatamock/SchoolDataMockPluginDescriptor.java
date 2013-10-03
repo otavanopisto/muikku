@@ -1,8 +1,10 @@
 package fi.muikku.plugins.schooldatamock;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -62,6 +64,12 @@ public class SchoolDataMockPluginDescriptor implements PluginDescriptor {
 		 */
 		try {
 			schoolDataMockPluginController.executeScript(getScriptFile("create_tables.sql"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -71,6 +79,7 @@ public class SchoolDataMockPluginDescriptor implements PluginDescriptor {
 	private File getScriptFile(String fileName) throws URISyntaxException {
 		ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
 		URL initalScript = contextClassLoader.getResource("META-INF/resources/" + fileName);
+		System.out.println(initalScript.toString());
 		return new File(initalScript.toURI());
 	}
 

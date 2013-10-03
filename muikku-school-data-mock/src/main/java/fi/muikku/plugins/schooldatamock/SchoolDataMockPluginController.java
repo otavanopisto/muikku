@@ -1,6 +1,8 @@
 package fi.muikku.plugins.schooldatamock;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -80,10 +82,15 @@ public class SchoolDataMockPluginController {
 		return preparedStatement;
 	}	
 	
-	public void executeScript(File scriptFile) {
+	public void executeScript(File scriptFile) throws IOException, SQLException {
 		Map<String, String> parameters = new HashMap<>();
 		parameters.put("database", DATABASE_NAME);
-		getScriptHandler().executeScript(scriptFile.toURI().toString(), parameters);
+		FileInputStream fileInputStream = new FileInputStream(scriptFile);
+		try {
+		  getScriptHandler().executeScript(fileInputStream, parameters);
+		} finally {
+			fileInputStream.close();
+		}
 	}
 	
 	private Connection getConnection() throws SQLException {
