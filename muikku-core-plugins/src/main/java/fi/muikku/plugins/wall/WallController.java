@@ -25,8 +25,6 @@ import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.forum.dao.EnvironmentForumAreaDAO;
-import fi.muikku.plugins.forum.dao.ForumAreaDAO;
-import fi.muikku.plugins.forum.dao.ForumMessageDAO;
 import fi.muikku.plugins.forum.dao.ForumThreadDAO;
 import fi.muikku.plugins.forum.model.ForumArea;
 import fi.muikku.plugins.wall.dao.EnvironmentWallDAO;

@@ -24,13 +24,13 @@ public class LocatedWidget {
     this.widget = widget;
   }
   
-  public WidgetLocation getLocation() {
-    return location;
-  }
+  public WidgetSpace getWidgetSpace() {
+		return widgetSpace;
+	}
   
-  public void setLocation(WidgetLocation location) {
-    this.location = location;
-  }
+  public void setWidgetSpace(WidgetSpace widgetSpace) {
+		this.widgetSpace = widgetSpace;
+	}
 
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
@@ -40,6 +40,6 @@ public class LocatedWidget {
   private Widget widget;
 
   @ManyToOne
-  private WidgetLocation location;
+  private WidgetSpace widgetSpace;
 
 }

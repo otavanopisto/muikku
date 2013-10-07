@@ -7,7 +7,7 @@ import fi.muikku.dao.DAO;
 import fi.muikku.model.widgets.DefaultWidget;
 import fi.muikku.model.widgets.DefaultWidget_;
 import fi.muikku.model.widgets.Widget;
-import fi.muikku.model.widgets.WidgetLocation;
+import fi.muikku.model.widgets.WidgetSpace;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -20,9 +20,9 @@ public class DefaultWidgetDAO extends CoreDAO<DefaultWidget> {
 
 	private static final long serialVersionUID = -7622310449871596550L;
 
-	public DefaultWidget create(Widget widget, WidgetLocation location) {
+	public DefaultWidget create(Widget widget, WidgetSpace widgetSpace) {
     DefaultWidget defaultWidget = new DefaultWidget();
-    defaultWidget.setLocation(location);
+    defaultWidget.setWidgetSpace(widgetSpace);
     defaultWidget.setWidget(widget);
     
     getEntityManager().persist(defaultWidget);
@@ -30,7 +30,7 @@ public class DefaultWidgetDAO extends CoreDAO<DefaultWidget> {
     return defaultWidget;
   }
 
-	public DefaultWidget findByWidgetAndLocation(Widget widget, WidgetLocation location) {
+	public DefaultWidget findByWidgetAndWidgetSpace(Widget widget, WidgetSpace widgetSpace) {
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -40,14 +40,14 @@ public class DefaultWidgetDAO extends CoreDAO<DefaultWidget> {
     criteria.where(
         criteriaBuilder.and(          
           criteriaBuilder.equal(root.get(DefaultWidget_.widget), widget),
-          criteriaBuilder.equal(root.get(DefaultWidget_.location), location)
+          criteriaBuilder.equal(root.get(DefaultWidget_.widgetSpace), widgetSpace)
         )
     );
    
     return getSingleResult( entityManager.createQuery(criteria) );
   }
 
-  public List<DefaultWidget> listByLocation(WidgetLocation location) {
+  public List<DefaultWidget> listByWidgetSpace(WidgetSpace widgetSpace) {
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -55,13 +55,13 @@ public class DefaultWidgetDAO extends CoreDAO<DefaultWidget> {
     Root<DefaultWidget> root = criteria.from(DefaultWidget.class);
     criteria.select(root);
     criteria.where(
-      criteriaBuilder.equal(root.get(DefaultWidget_.location), location)
+      criteriaBuilder.equal(root.get(DefaultWidget_.widgetSpace), widgetSpace)
     );
    
     return entityManager.createQuery(criteria).getResultList();
   }
 
-	public Long countByLocation(WidgetLocation location) {
+	public Long countByWidgetSpace(WidgetSpace widgetSpace) {
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -70,7 +70,7 @@ public class DefaultWidgetDAO extends CoreDAO<DefaultWidget> {
     criteria.select(criteriaBuilder.count(root));
     
     criteria.where(
-      criteriaBuilder.equal(root.get(DefaultWidget_.location), location)
+      criteriaBuilder.equal(root.get(DefaultWidget_.widgetSpace), widgetSpace)
     );
    
     return entityManager.createQuery(criteria).getSingleResult();

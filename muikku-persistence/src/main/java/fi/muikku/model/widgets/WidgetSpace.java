@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
-public class WidgetLocation {
+public class WidgetSpace {
   
   public Long getId() {
     return id;

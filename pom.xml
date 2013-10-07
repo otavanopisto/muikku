@@ -1,0 +1,28 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+ 
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>fi.muikku</groupId>
+  <artifactId>module</artifactId>
+  <packaging>pom</packaging>
+  <version>1.0</version>
+
+  <name>Module Package for Muikku</name>
+
+  <modules>
+    <module>muikku-bom</module>
+    <module>muikku-core</module>
+    <module>muikku-core-plugins</module>
+    <module>muikku-hsqldb-plugin</module>
+    <module>muikku-parent</module>
+    <module>muikku-persistence</module>
+    <module>muikku-plugin</module>
+    <module>muikku-plugin-core</module>
+    <module>muikku-rest</module>
+    <module>muikku-school-data-mock</module>
+    <module>muikku-security</module>
+  </modules>
+
+</project>
