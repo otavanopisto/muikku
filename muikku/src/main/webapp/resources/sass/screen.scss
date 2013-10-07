@@ -163,7 +163,7 @@ padding:5px;
 
 #staticNavigationFade{
   @include fadetoAlpha-top-bottom;	
-	height:40px;
+  height:60px;
 	z-index:12;
 }
 
@@ -172,6 +172,8 @@ padding:5px;
   border: 1px solid #dadada;
 }
 
+
+/* Styles for waypoints */
 
 .stuck{
     position:fixed;
@@ -183,16 +185,24 @@ padding:5px;
 	top:0;
 	left:50%;
 	margin-left:-481px;
+
 	
 }
 
 .stuckDNav {
   position:fixed !important;
+
   top:0;
   left:0;
-
-  
 }
+
+
+.stNavScrollStyles{
+	background-color:#fff !important; 
+	border:2px solid #dadada !important;
+	
+}
+
 
 #sessionPanel {
   position: relative;
