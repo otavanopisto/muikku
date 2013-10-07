@@ -14,15 +14,11 @@ import org.apache.commons.lang3.LocaleUtils;
 import fi.muikku.controller.WidgetController;
 import fi.muikku.i18n.LocaleBundle;
 import fi.muikku.i18n.LocaleLocation;
-import fi.muikku.model.widgets.DefaultWidget;
-import fi.muikku.model.widgets.Widget;
-import fi.muikku.model.widgets.WidgetLocation;
-import fi.muikku.model.widgets.WidgetVisibility;
 import fi.muikku.plugin.LocalizedPluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
 import fi.muikku.plugin.RESTPluginDescriptor;
-import fi.muikku.plugins.seeker.defaultproviders.WorkspaceSeekerResultProvider;
 import fi.muikku.plugins.seeker.defaultproviders.UserSeekerResultProvider;
+import fi.muikku.plugins.seeker.defaultproviders.WorkspaceSeekerResultProvider;
 
 @ApplicationScoped
 @Stateful
@@ -38,21 +34,7 @@ public class SeekerPluginDescriptor implements PluginDescriptor, RESTPluginDescr
 	
   @Override
   public void init() {
-    Widget logoutWidget = widgetController.findWidget(getName());
-    if (logoutWidget == null) {
-      logoutWidget = widgetController.createWidget(getName(), 4, WidgetVisibility.AUTHENTICATED);
-    }
-    
-    // TODO This is wrong. So wrong. Atrocious, even!
-    WidgetLocation widgetLocation = widgetController.findWidgetLocation("environment.header.left");
-    if (widgetLocation == null) {
-      widgetLocation = widgetController.createWidgetLocation("environment.header.left");
-    }
-    
-    DefaultWidget defaultWidget = widgetController.findDefaultWidget(logoutWidget, widgetLocation);
-    if (defaultWidget == null) {
-      defaultWidget = widgetController.createDefaultWidget(logoutWidget, widgetLocation);
-    }
+
   }
 
 	@Override

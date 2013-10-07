@@ -14,10 +14,6 @@ import org.apache.commons.lang3.LocaleUtils;
 import fi.muikku.controller.WidgetController;
 import fi.muikku.i18n.LocaleBundle;
 import fi.muikku.i18n.LocaleLocation;
-import fi.muikku.model.widgets.DefaultWidget;
-import fi.muikku.model.widgets.Widget;
-import fi.muikku.model.widgets.WidgetLocation;
-import fi.muikku.model.widgets.WidgetVisibility;
 import fi.muikku.plugin.LocalizedPluginDescriptor;
 import fi.muikku.plugin.PersistencePluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
@@ -28,33 +24,16 @@ import fi.muikku.plugins.internallogin.model.InternalAuth;
 @Stateful
 public class InternalLoginPluginDescriptor implements PluginDescriptor, PersistencePluginDescriptor, LocalizedPluginDescriptor {
 
-  private static final String INTERNALLOGIN_WIDGET_NAME = "internallogin";
-
   @Inject
   private WidgetController widgetController;
 
   @Override
   public String getName() {
-    return INTERNALLOGIN_WIDGET_NAME;
+    return "internallogin";
   }
   
   @Override
   public void init() {
-    Widget internalLoginWidget = widgetController.findWidget(INTERNALLOGIN_WIDGET_NAME);
-    if (internalLoginWidget == null) {
-      internalLoginWidget = widgetController.createWidget(INTERNALLOGIN_WIDGET_NAME, 4, WidgetVisibility.UNAUTHENTICATED);
-    }
-    
-    // TODO This is wrong. So wrong. Atrocious, even!
-    WidgetLocation widgetLocation = widgetController.findWidgetLocation("environment.header.right");
-		if (widgetLocation == null) {
-			widgetLocation = widgetController.createWidgetLocation("environment.header.right");
-		}
-    
-    DefaultWidget defaultWidget = widgetController.findDefaultWidget(internalLoginWidget, widgetLocation);
-    if (defaultWidget == null) {
-      defaultWidget = widgetController.createDefaultWidget(internalLoginWidget, widgetLocation);
-    }
   }
 
   @Override

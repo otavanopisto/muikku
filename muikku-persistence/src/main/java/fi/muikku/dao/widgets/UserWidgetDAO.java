@@ -8,7 +8,7 @@ import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.widgets.UserWidget;
 import fi.muikku.model.widgets.UserWidget_;
 import fi.muikku.model.widgets.Widget;
-import fi.muikku.model.widgets.WidgetLocation;
+import fi.muikku.model.widgets.WidgetSpace;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -21,9 +21,9 @@ public class UserWidgetDAO extends CoreDAO<UserWidget> {
 
 	private static final long serialVersionUID = -6906701705459034005L;
 
-	public UserWidget create(Widget widget, WidgetLocation widgetLocation, UserEntity userEntity) {
+	public UserWidget create(Widget widget, WidgetSpace widgetSpace, UserEntity userEntity) {
 		UserWidget userWidget = new UserWidget();
-		userWidget.setLocation(widgetLocation);
+		userWidget.setWidgetSpace(widgetSpace);
 		userWidget.setUser(userEntity);
 		userWidget.setWidget(widget);
 		
@@ -32,7 +32,7 @@ public class UserWidgetDAO extends CoreDAO<UserWidget> {
 		return userWidget;
 	}
 
-	public UserWidget findByWidgetLocationAndUser(Widget widget, WidgetLocation location, UserEntity user) {
+	public UserWidget findByWidgetSpaceAndUser(Widget widget, WidgetSpace widgetSpace, UserEntity user) {
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -41,7 +41,7 @@ public class UserWidgetDAO extends CoreDAO<UserWidget> {
     criteria.select(root);
     criteria.where(
         criteriaBuilder.and(          
-          criteriaBuilder.equal(root.get(UserWidget_.location), location),
+          criteriaBuilder.equal(root.get(UserWidget_.widgetSpace), widgetSpace),
           criteriaBuilder.equal(root.get(UserWidget_.user), user),
           criteriaBuilder.equal(root.get(UserWidget_.widget), widget)
         )
@@ -50,7 +50,7 @@ public class UserWidgetDAO extends CoreDAO<UserWidget> {
     return getSingleResult( entityManager.createQuery(criteria) );
   }
 	
-	public List<UserWidget> listByLocationAndUser(WidgetLocation location, UserEntity user) {
+	public List<UserWidget> listByWidgetSpaceAndUser(WidgetSpace location, UserEntity user) {
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -59,7 +59,7 @@ public class UserWidgetDAO extends CoreDAO<UserWidget> {
     criteria.select(root);
     criteria.where(
         criteriaBuilder.and(          
-          criteriaBuilder.equal(root.get(UserWidget_.location), location),
+          criteriaBuilder.equal(root.get(UserWidget_.widgetSpace), location),
           criteriaBuilder.equal(root.get(UserWidget_.user), user)
         )
     );
@@ -67,7 +67,7 @@ public class UserWidgetDAO extends CoreDAO<UserWidget> {
     return entityManager.createQuery(criteria).getResultList();
   }
 
-	public Long countByLocationAndUser(WidgetLocation location, UserEntity user) {
+	public Long countByWidgetSpaceAndUser(WidgetSpace location, UserEntity user) {
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -76,7 +76,7 @@ public class UserWidgetDAO extends CoreDAO<UserWidget> {
     criteria.select(criteriaBuilder.count(root));
     criteria.where(
         criteriaBuilder.and(          
-          criteriaBuilder.equal(root.get(UserWidget_.location), location),
+          criteriaBuilder.equal(root.get(UserWidget_.widgetSpace), location),
           criteriaBuilder.equal(root.get(UserWidget_.user), user)
         )
     );

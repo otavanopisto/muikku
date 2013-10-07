@@ -1,0 +1,12 @@
+language: java
+# See https://github.com/Jasig/sass-maven-plugin/issues/47
+before_install:
+  - unset GEM_PATH
+jdk:
+  - oraclejdk7
+  - openjdk7
+  
+# whitelist
+branches:
+  only:
+    - devel

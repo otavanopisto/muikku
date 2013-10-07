@@ -14,10 +14,6 @@ import org.apache.commons.lang3.LocaleUtils;
 import fi.muikku.controller.WidgetController;
 import fi.muikku.i18n.LocaleBundle;
 import fi.muikku.i18n.LocaleLocation;
-import fi.muikku.model.widgets.DefaultWidget;
-import fi.muikku.model.widgets.Widget;
-import fi.muikku.model.widgets.WidgetLocation;
-import fi.muikku.model.widgets.WidgetVisibility;
 import fi.muikku.plugin.LocalizedPluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
 
@@ -25,33 +21,17 @@ import fi.muikku.plugin.PluginDescriptor;
 @Stateful
 public class LanguagePluginDescriptor implements PluginDescriptor, LocalizedPluginDescriptor {
 
-  private static final String LANGUAGE_WIDGET_NAME = "language";
-
   @Inject
   private WidgetController widgetController;
 
   @Override
   public String getName() {
-    return LANGUAGE_WIDGET_NAME;
+    return "language";
   }
   
   @Override
   public void init() {
-    Widget languageWidget = widgetController.findWidget(LANGUAGE_WIDGET_NAME);
-    if (languageWidget == null) {
-      languageWidget = widgetController.createWidget(LANGUAGE_WIDGET_NAME, 1, WidgetVisibility.EVERYONE);
-    }
     
-    // TODO This is wrong. So wrong. Atrocious, even!
-    WidgetLocation widgetLocation = widgetController.findWidgetLocation("environment.header.right");
-		if (widgetLocation == null) {
-			widgetLocation = widgetController.createWidgetLocation("environment.header.right");
-		}
-    
-    DefaultWidget defaultWidget = widgetController.findDefaultWidget(languageWidget, widgetLocation);
-    if (defaultWidget == null) {
-      defaultWidget = widgetController.createDefaultWidget(languageWidget, widgetLocation);
-    }
   }
 
   @Override

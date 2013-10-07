@@ -11,14 +11,9 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.LocaleUtils;
 
-import fi.muikku.WidgetLocations;
 import fi.muikku.controller.WidgetController;
 import fi.muikku.i18n.LocaleBundle;
 import fi.muikku.i18n.LocaleLocation;
-import fi.muikku.model.widgets.DefaultWidget;
-import fi.muikku.model.widgets.Widget;
-import fi.muikku.model.widgets.WidgetLocation;
-import fi.muikku.model.widgets.WidgetVisibility;
 import fi.muikku.plugin.LocalizedPluginDescriptor;
 import fi.muikku.plugin.PersistencePluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
@@ -44,8 +39,6 @@ public class CommunicatorPluginDescriptor implements PluginDescriptor, Persisten
   @Inject
   private WidgetController widgetController;
 
-  private static final String COMMUNICATOR_DOCKWIDGET = "dockcommunicator";
-  
 	@Override
 	public String getName() {
 		return "communicator";
@@ -53,21 +46,7 @@ public class CommunicatorPluginDescriptor implements PluginDescriptor, Persisten
 	
 	@Override
 	public void init() {
-    Widget logoutWidget = widgetController.findWidget(COMMUNICATOR_DOCKWIDGET);
-    if (logoutWidget == null) {
-      logoutWidget = widgetController.createWidget(COMMUNICATOR_DOCKWIDGET, 1, WidgetVisibility.AUTHENTICATED);
-    }
-    
-    // TODO This is wrong. So wrong. Atrocious, even!
-    WidgetLocation widgetLocation = widgetController.findWidgetLocation(WidgetLocations.ENVIRONMENT_DOCK_TOP_CENTER);
-    if (widgetLocation == null) {
-      widgetLocation = widgetController.createWidgetLocation(WidgetLocations.ENVIRONMENT_DOCK_TOP_CENTER);
-    }
-    
-    DefaultWidget defaultWidget = widgetController.findDefaultWidget(logoutWidget, widgetLocation);
-    if (defaultWidget == null) {
-      defaultWidget = widgetController.createDefaultWidget(logoutWidget, widgetLocation);
-    }
+
 	}
 
 	@Override

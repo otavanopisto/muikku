@@ -83,7 +83,7 @@ h5{
  text-decoration:none; 
  visibility: visible; 
  overflow: visible; 
- @include transitionDirection(0, 0, 0, 20px);
+ @include transitionDirection(0, 0, 0, 38px);
  display: inline; 
  } 
  
@@ -171,10 +171,6 @@ padding:5px;
   background-color:#ededed;
   border: 1px solid #dadada;
 }
-
-
-
-
 
 
 .stuck{

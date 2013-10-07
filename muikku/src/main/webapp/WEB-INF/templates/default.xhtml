@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+<html xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+  xmlns:h="http://java.sun.com/jsf/html" 
+  xmlns:f="http://java.sun.com/jsf/core"
   xmlns:ui="http://java.sun.com/jsf/facelets">
 
 <f:view locale="#{muikkuSession.locale}">
@@ -104,9 +107,17 @@
     <div id="header">
       <div id="headerContainer" class="container_24">
         <ui:insert name="header">
-          <ui:include src="/core/widget-space-set.xhtml">
-            <ui:param name="set" value="#{widgetSpaceBackingBean.environmentHeaderSet}" />
-          </ui:include>
+          <m:widgetSpaceSet>
+            <m:widgetSpace name="environment.header.left" keepEmpty="false" sizing="MINIMIZE">
+              <m:widget name="seeker" size="4" rendered="#{sessionBackingBean.loggedIn}"/>
+            </m:widgetSpace>
+            <m:widgetSpace name="environment.header.center" keepEmpty="true" sizing="MAXIMIZE"></m:widgetSpace>
+            <m:widgetSpace name="environment.header.right" keepEmpty="false" sizing="MINIMIZE">
+              <m:widget name="internallogin" size="4" rendered="#{!sessionBackingBean.loggedIn}"/>
+              <m:widget name="logout" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
+              <m:widget name="language" size="1"/>
+            </m:widgetSpace>
+          </m:widgetSpaceSet>
         </ui:insert>
       </div>
     </div>
@@ -117,9 +128,17 @@
       <div id="staticNavigation" class="container_24 scrollblock">
          
         <ui:insert name="dockTop">
-          <ui:include src="/core/widget-space-set.xhtml">
-            <ui:param name="set" value="#{widgetSpaceBackingBean.environmentDockTopSet}" />
-          </ui:include>
+          <m:widgetSpaceSet>
+            <m:widgetSpace name="environment.dock-top.left" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
+            <m:widgetSpace name="environment.dock-top.center" keepEmpty="true" sizing="MAXIMIZE">
+              <m:widget name="dockcalendar" size="4" rendered="#{sessionBackingBean.loggedIn}"/>
+              <m:widget name="dockstudentgrading" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
+              <m:widget name="dockcommunicator" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
+            </m:widgetSpace>
+            <m:widgetSpace name="environment.dock-top.right" keepEmpty="false" sizing="MINIMIZE">
+              <m:widget name="docksettings" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
+            </m:widgetSpace>
+          </m:widgetSpaceSet>
         </ui:insert>
       </div>
     </div>
@@ -128,37 +147,49 @@
 
     <div id="content" class="container_24">
       <ui:insert name="contentToolsTop">
-        <ui:include src="/core/widget-space-set.xhtml">
-          <ui:param name="set" value="#{widgetSpaceBackingBean.environmentContentToolsTopSet}" />
-        </ui:include>
+        <m:widgetSpaceSet>
+          <m:widgetSpace name="environment.content-tools-top.left" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
+          <m:widgetSpace name="environment.content-tools-top.center" keepEmpty="true" sizing="MAXIMIZE"></m:widgetSpace>
+          <m:widgetSpace name="environment.content-tools-top.right" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
+        </m:widgetSpaceSet>
       </ui:insert>
-
+      
       <ui:insert name="contentArea">
-        <ui:include src="/core/widget-space-set.xhtml">
-          <ui:param name="set" value="#{widgetSpaceBackingBean.environmentContentSet}" />
-        </ui:include>
+        <m:widgetSpaceSet>
+          <m:widgetSpace name="environment.content-sidebar.left" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
+          <m:widgetSpace name="environment.content" keepEmpty="true" sizing="MAXIMIZE">
+            <m:widget name="content" size="1"/>    
+          </m:widgetSpace>
+          <m:widgetSpace name="environment.content-sidebar.right" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
+        </m:widgetSpaceSet>
       </ui:insert>
 
       <ui:insert name="contentToolsBottom">
-        <ui:include src="/core/widget-space-set.xhtml">
-          <ui:param name="set" value="#{widgetSpaceBackingBean.environmentContentToolsBottomSet}" />
-        </ui:include>
+        <m:widgetSpaceSet>
+          <m:widgetSpace name="environment.content-tools-bottom.left" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
+          <m:widgetSpace name="environment.content-tools-bottom.center" keepEmpty="true" sizing="MAXIMIZE"></m:widgetSpace>
+          <m:widgetSpace name="environment.content-tools-bottom.right" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
+        </m:widgetSpaceSet>
       </ui:insert>
     </div>
 
     <div>
       <ui:insert name="dockBottom">
-        <ui:include src="/core/widget-space-set.xhtml">
-          <ui:param name="set" value="#{widgetSpaceBackingBean.environmentDockBottomSet}" />
-        </ui:include>
+        <m:widgetSpaceSet>
+          <m:widgetSpace name="environment.dock-bottom.left" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
+          <m:widgetSpace name="environment.dock-bottom.center" keepEmpty="true" sizing="MAXIMIZE"></m:widgetSpace>
+          <m:widgetSpace name="environment.dock-bottom.right" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
+        </m:widgetSpaceSet>
       </ui:insert>
     </div>
     
     <div>
       <ui:insert name="footer">
-        <ui:include src="/core/widget-space-set.xhtml">
-          <ui:param name="set" value="#{widgetSpaceBackingBean.environmentFooterSet}" />
-        </ui:include>
+        <m:widgetSpaceSet>
+          <m:widgetSpace name="environment.footer.left" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
+          <m:widgetSpace name="environment.footer.center" keepEmpty="true" sizing="MAXIMIZE"></m:widgetSpace>
+          <m:widgetSpace name="environment.footer.right" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
+        </m:widgetSpaceSet>
       </ui:insert>
     </div> 
   

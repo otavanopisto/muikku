@@ -13,7 +13,6 @@ import javax.ws.rs.core.Response.Status;
 
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.fish.RestFishController;
-import fi.muikku.rest.security.AuthorizedResource;
 
 @RequestScoped
 @Path("/fish")

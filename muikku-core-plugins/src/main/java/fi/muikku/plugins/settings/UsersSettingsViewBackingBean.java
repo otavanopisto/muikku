@@ -17,9 +17,6 @@ import fi.muikku.schooldata.RoleController;
 import fi.muikku.schooldata.UserController;
 import fi.muikku.schooldata.entity.Role;
 import fi.muikku.schooldata.entity.User;
-import fi.muikku.widgets.WidgetSpaceSet;
-import fi.muikku.widgets.WidgetSpaceSetItem;
-import fi.muikku.widgets.WidgetSpaceSizingStrategy;
 
 @Named
 @Stateful
@@ -55,14 +52,6 @@ public class UsersSettingsViewBackingBean implements Serializable {
 				return result;
 			}
 		});
-	}
-		
-	public WidgetSpaceSet getSettingsUsersContentToolsTopSet() {
-		return new WidgetSpaceSet(
-				new WidgetSpaceSetItem(WidgetLocations.SETTINGS_USERS_CONTENT_TOOLS_TOP_LEFT, false, WidgetSpaceSizingStrategy.MINIMIZE),
-				new WidgetSpaceSetItem(WidgetLocations.SETTINGS_USERS_CONTENT_TOOLS_TOP_CENTER, true, WidgetSpaceSizingStrategy.MAXIMIZE),
-				new WidgetSpaceSetItem(WidgetLocations.SETTINGS_USERS_CONTENT_TOOLS_TOP_RIGHT, false, WidgetSpaceSizingStrategy.MINIMIZE)
-		);
 	}
 
 	public List<UserBean> getUsers() {

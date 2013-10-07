@@ -11,13 +11,12 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.LocaleUtils;
 
-import fi.muikku.WidgetLocations;
 import fi.muikku.controller.WidgetController;
 import fi.muikku.i18n.LocaleBundle;
 import fi.muikku.i18n.LocaleLocation;
 import fi.muikku.model.widgets.DefaultWidget;
 import fi.muikku.model.widgets.Widget;
-import fi.muikku.model.widgets.WidgetLocation;
+import fi.muikku.model.widgets.WidgetSpace;
 import fi.muikku.model.widgets.WidgetVisibility;
 import fi.muikku.plugin.LocalizedPluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
@@ -45,14 +44,14 @@ public class LocalizedFishPluginDescriptor implements PluginDescriptor, Localize
       widget = widgetController.createWidget(FISH_WIDGET_NAME, FISH_WIDGET_MINIMUM_SIZE, WidgetVisibility.EVERYONE);
     }
 
-    WidgetLocation widgetLocation = widgetController.findWidgetLocation(FISH_WIDGET_LOCATION);
-    if (widgetLocation == null) { // TODO: In a perfect world, there would be no null checks
-      widgetLocation = widgetController.createWidgetLocation(FISH_WIDGET_LOCATION);
+    WidgetSpace widgetSpace = widgetController.findWidgetSpace(FISH_WIDGET_LOCATION);
+    if (widgetSpace == null) { // TODO: In a perfect world, there would be no null checks
+      widgetSpace = widgetController.createWidgetSpace(FISH_WIDGET_LOCATION);
     }
 
-    DefaultWidget defaultWidget = widgetController.findDefaultWidget(widget, widgetLocation);
+    DefaultWidget defaultWidget = widgetController.findDefaultWidget(widget, widgetSpace);
     if (defaultWidget == null) {
-      defaultWidget = widgetController.createDefaultWidget(widget, widgetLocation);
+      defaultWidget = widgetController.createDefaultWidget(widget, widgetSpace);
     }
   }
 

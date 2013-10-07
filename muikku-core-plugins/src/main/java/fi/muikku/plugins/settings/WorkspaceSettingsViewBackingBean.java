@@ -14,9 +14,6 @@ import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceTypeEntity;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.Workspace;
-import fi.muikku.widgets.WidgetSpaceSet;
-import fi.muikku.widgets.WidgetSpaceSetItem;
-import fi.muikku.widgets.WidgetSpaceSizingStrategy;
 
 @Named
 @Stateful
@@ -37,14 +34,6 @@ public class WorkspaceSettingsViewBackingBean implements Serializable {
 	  	WorkspaceTypeEntity workspaceTypeEntity = workspaceController.findWorkspaceTypeEntityByDataSourceAndIdentifier(workspace.getSchoolDataSource(), workspace.getWorkspaceTypeId());
 	  	workspaces.add(new WorkspaceBean(workspaceEntity.getId(), workspace.getIdentifier(), workspace.getSchoolDataSource(), workspaceEntity.getUrlName(), workspace.getName(), workspaceTypeEntity != null ? workspaceTypeEntity.getName() : null));
 	  }
-	}
-
-	public WidgetSpaceSet getSettingsWorkspacesContentToolsTopSet() {
-		return new WidgetSpaceSet(
-				new WidgetSpaceSetItem(WidgetLocations.SETTINGS_WORKSPACES_CONTENT_TOOLS_TOP_LEFT, false, WidgetSpaceSizingStrategy.MINIMIZE),
-				new WidgetSpaceSetItem(WidgetLocations.SETTINGS_WORKSPACES_CONTENT_TOOLS_TOP_CENTER, true, WidgetSpaceSizingStrategy.MAXIMIZE),
-				new WidgetSpaceSetItem(WidgetLocations.SETTINGS_WORKSPACES_CONTENT_TOOLS_TOP_RIGHT, false, WidgetSpaceSizingStrategy.MINIMIZE)
-		);
 	}
 	
 	public List<WorkspaceBean> getWorkspaces() {
