@@ -1,6 +1,5 @@
 package fi.muikku.plugins.forum.wall;
 
-import java.util.Date;
 import java.util.List;
 
 import fi.muikku.plugins.forum.model.ForumThread;
@@ -14,22 +13,12 @@ public class UserFeedForumThreadItem extends WallFeedItem {
   private ForumThread thread;
 
   public UserFeedForumThreadItem(ForumThread thread, List<ForumThreadReply> replies) {
-    super();
+    super(thread.getCreated(), "wall/threadwallentry.dust");
     this.thread = thread;
   }
 
   public ForumThread getThread() {
     return thread;
-  }
-  
-  @Override
-  public Date getDate() {
-    return thread.getCreated();
-  }
-
-  @Override
-  public String getDustTemplate() {
-    return "wall/threadwallentry.dust";
   }
 
 }
