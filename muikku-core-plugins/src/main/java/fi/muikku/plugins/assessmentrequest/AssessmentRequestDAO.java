@@ -1,5 +1,6 @@
 package fi.muikku.plugins.assessmentrequest;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -18,11 +19,12 @@ public class AssessmentRequestDAO extends PluginDAO<AssessmentRequest> {
 
   private static final long serialVersionUID = -596724055841154832L;
 
-  public AssessmentRequest create(WorkspaceEntity workspaceEntity, UserEntity student, String message) {
+  public AssessmentRequest create(WorkspaceEntity workspaceEntity, UserEntity student, Date date, String message) {
     AssessmentRequest assessmentRequest = new AssessmentRequest();
     
     assessmentRequest.setWorkspace(workspaceEntity.getId());
     assessmentRequest.setStudent(student.getId());
+    assessmentRequest.setDate(date);
     assessmentRequest.setMessage(message);
     
     getEntityManager().persist(assessmentRequest);

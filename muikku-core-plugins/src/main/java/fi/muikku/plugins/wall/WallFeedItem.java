@@ -5,9 +5,29 @@ import java.util.Date;
 import fi.tranquil.TranquilEntity;
 
 @TranquilEntity
-public abstract class WallFeedItem {
+public class WallFeedItem {
 
-  public abstract Date getDate();
+  public WallFeedItem(Date date, String dustTemplate) {
+    this.date = date;
+    this.dustTemplate = dustTemplate;
+  }
+
+  public Date getDate() {
+    return date;
+  }
   
-  public abstract String getDustTemplate();
+  public String getDustTemplate() {
+    return dustTemplate;
+  }
+  
+  public void setDustTemplate(String dustTemplate) {
+    this.dustTemplate = dustTemplate;
+  }
+
+  public void setDate(Date date) {
+    this.date = date;
+  }
+
+  private Date date;
+  private String dustTemplate;
 }

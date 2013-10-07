@@ -24,9 +24,8 @@ import fi.muikku.model.security.ResourceRights;
 import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.plugins.assessmentrequest.AssessmentRequestController;
 import fi.muikku.plugins.forum.dao.EnvironmentForumAreaDAO;
-import fi.muikku.plugins.forum.dao.ForumAreaDAO;
-import fi.muikku.plugins.forum.dao.ForumMessageDAO;
 import fi.muikku.plugins.forum.dao.ForumThreadDAO;
 import fi.muikku.plugins.forum.model.ForumArea;
 import fi.muikku.plugins.wall.dao.EnvironmentWallDAO;
@@ -110,6 +109,9 @@ public class WallController {
   @Inject
   private ResourceRightsController resourceRightsController_TEMP;
   
+  @Inject
+  private AssessmentRequestController assessmentRequestController;
+  
   public void TEST_DATA() {
     Random R = new Random();
     
@@ -136,7 +138,7 @@ public class WallController {
     
     int r = R.nextInt(24180);
     
-    switch (R.nextInt(3)) {
+    switch (R.nextInt(4)) {
       case 1:
         // Guidance Request
       break;
@@ -154,6 +156,8 @@ public class WallController {
       
       case 3:
         // Assessment request
+        
+        assessmentRequestController.create(workspaceEntity, userEntity, new Date(), "Arvioi mut, beibe! #" + r);
       break;
 
       default:
