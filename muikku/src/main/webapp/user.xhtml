@@ -9,7 +9,7 @@
     
     <ui:define name="content">
       <c:set var="userId" value="#{param['userId']}" />
-      <c:set var="userEntity" value="#{User.findUserEntity(userId)}" />
+      <c:set var="userEntity" value="#{User.findUserEntityById(userId)}" />
       <c:set var="user" value="#{User.findUser(userEntity)}" />
     
       <div class="showUserName">
@@ -18,7 +18,7 @@
 
       <div class="showUserPicture">
         <c:choose>
-          <c:when test="#{User.getUserHasPicture(userEntity)}">
+          <c:when test="#{User.hasPicture(userEntity)}">
             <img src="#{request.contextPath}/picture?userId=#{userEntity.id}" />
           </c:when>
           <c:otherwise>

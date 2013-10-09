@@ -1,6 +1,7 @@
 package fi.muikku.plugins.assessmentrequest;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -62,6 +63,11 @@ public class AssessmentRequestWallEntryProvider implements WallEntryProvider {
     }
     
     return feedItems;
+  }
+
+  @Override
+  public List<String> listRequiredJavaScripts() {
+    return Collections.emptyList();
   }
 
 }
