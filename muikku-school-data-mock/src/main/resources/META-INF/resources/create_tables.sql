@@ -1,3 +1,19 @@
+/* Clear */
+
+DROP TABLE IF EXISTS GradingScaleItem;
+DROP TABLE IF EXISTS GradingScale;
+DROP TABLE IF EXISTS UserEmail;
+DROP TABLE IF EXISTS UserImage;
+DROP TABLE IF EXISTS UserProperty;
+DROP TABLE IF EXISTS WorkspaceType;
+DROP TABLE IF EXISTS WorkspaceUser;
+DROP TABLE IF EXISTS UserWorkspaceRole;
+DROP TABLE IF EXISTS Workspace;
+DROP TABLE IF EXISTS User;
+DROP TABLE IF EXISTS Role;
+DROP TABLE IF EXISTS Subject;
+DROP TABLE IF EXISTS CourseIdentifier;
+
 /* School Data Course Meta */
 
 CREATE TABLE Subject (
