@@ -1,9 +1,9 @@
-language: java
-script: mvn install
+# Language 
 
-# See https://github.com/Jasig/sass-maven-plugin/issues/47
-before_install:
-  - unset GEM_PATH
+language: java
+
+# Maven 
+script: mvn install
   
 # JDK versions
 jdk:
@@ -23,9 +23,11 @@ env:
     - secure: "aElFlZr4gMr4Vufxq+1PYiEEcImxjOk8k/GTvwcp06fR7JvL8MuejS7Uvwzd2ValZ3rDFYO2g5qD147GaXVahozt+WHUF9f4tbGwKo9W6jGzqg90RgzchsSyJ4cdU0gKZh3YyjZ9PwiHO3WBu+qfSypsMNJIStLAl9fC9qeKFZk="
 
 # Install required packages
+# Fix for See https://github.com/Jasig/sass-maven-plugin/issues/47
 before_install:
   - sudo apt-get update -qq
   - sudo apt-get install -qq sshpass
+  - unset GEM_PATH
 
 # Deploy
 after_success:
