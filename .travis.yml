@@ -17,10 +17,10 @@ branches:
 # Global environment variables
 env:
   global:
-	- secure: "b9aQxHbcuh/7RMYEcmkb6rLuf2xdyfLoZZFm//QMihc05Qx/6mDF6jcQ3XfKA2Xt5+WzbqcdaZhJ7PtMbVCsVxp3kcn075Ub2j31BJbqtdiaqwGUQOJI7pIF856+CUFB2GSP3l5oBBFm2x0g8h1RxmrR1dGvD5qg7fX/tUkOUwQ="
-	- secure: "fc0XJXKqrTls906K5aXrQEf7+d71pzAx56jDlqiqqfrdwgl6Bx10M5dX8T6VyVx3JTI8EUEEVt681qJc2nwtNTxVdhX+n9gwUBQKf9w6JFl7KMr3dQsNb47iN8/oPnb9t0sCd24HRz7RJTWNZpkgKFueitJX0cWlLNe2Rqm38Ag="
-	- secure: "hjVECtYy62LGfLn7xHVK9hbFJBn0kQq9ZWxx40tAmZQfqNsskYKlRbfVZ5qvmtauflKkPge3tGN6oD7MMAVv2McWpy/hAMVBK6vwnnGZRf4KJyOogbtGEad2nnEG33I4DVCk21C7TTCs7LFH+FsPdJ70CmkwHlaCJsmuwLTk+Bk="
-	- secure: "aElFlZr4gMr4Vufxq+1PYiEEcImxjOk8k/GTvwcp06fR7JvL8MuejS7Uvwzd2ValZ3rDFYO2g5qD147GaXVahozt+WHUF9f4tbGwKo9W6jGzqg90RgzchsSyJ4cdU0gKZh3YyjZ9PwiHO3WBu+qfSypsMNJIStLAl9fC9qeKFZk="
+    - secure: "b9aQxHbcuh/7RMYEcmkb6rLuf2xdyfLoZZFm//QMihc05Qx/6mDF6jcQ3XfKA2Xt5+WzbqcdaZhJ7PtMbVCsVxp3kcn075Ub2j31BJbqtdiaqwGUQOJI7pIF856+CUFB2GSP3l5oBBFm2x0g8h1RxmrR1dGvD5qg7fX/tUkOUwQ="
+    - secure: "fc0XJXKqrTls906K5aXrQEf7+d71pzAx56jDlqiqqfrdwgl6Bx10M5dX8T6VyVx3JTI8EUEEVt681qJc2nwtNTxVdhX+n9gwUBQKf9w6JFl7KMr3dQsNb47iN8/oPnb9t0sCd24HRz7RJTWNZpkgKFueitJX0cWlLNe2Rqm38Ag="
+    - secure: "hjVECtYy62LGfLn7xHVK9hbFJBn0kQq9ZWxx40tAmZQfqNsskYKlRbfVZ5qvmtauflKkPge3tGN6oD7MMAVv2McWpy/hAMVBK6vwnnGZRf4KJyOogbtGEad2nnEG33I4DVCk21C7TTCs7LFH+FsPdJ70CmkwHlaCJsmuwLTk+Bk="
+    - secure: "aElFlZr4gMr4Vufxq+1PYiEEcImxjOk8k/GTvwcp06fR7JvL8MuejS7Uvwzd2ValZ3rDFYO2g5qD147GaXVahozt+WHUF9f4tbGwKo9W6jGzqg90RgzchsSyJ4cdU0gKZh3YyjZ9PwiHO3WBu+qfSypsMNJIStLAl9fC9qeKFZk="
 
 # Install required packages
 before_install:
