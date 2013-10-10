@@ -2,7 +2,6 @@ package fi.muikku.plugins.h2db;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.sql.Connection;
@@ -35,21 +34,16 @@ public class H2DBDataPluginScriptHandler implements DataPluginScriptHandler {
 
 	@Override
 	public void executeScript(String uri, Map<String, String> parameters) throws IOException, SQLException {
+		URL url = new URL(uri);
+		URLConnection connection = url.openConnection();
+		connection.setDoInput(true);
+		connection.setDoOutput(true);
+		
+		InputStream inputStream = connection.getInputStream();
 		try {
-			URL url = new URL(uri);
-			URLConnection connection = url.openConnection();
-			connection.setDoInput(true);
-			connection.setDoOutput(true);
-			
-			InputStream inputStream = connection.getInputStream();
-			try {
-			  executeScript(inputStream, parameters);
-			} finally {
-			  inputStream.close();
-			}
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		  executeScript(inputStream, parameters);
+		} finally {
+		  inputStream.close();
 		}
 	}
 	

@@ -9,7 +9,7 @@
   <packaging>pom</packaging>
   <version>1.0</version>
 
-  <name>Module Package for Muikku</name>
+  <name>Muikku Module Package</name>
 
   <modules>
     <module>muikku-bom</module>
@@ -26,5 +26,20 @@
     <module>muikku-security</module>
     <module>muikku</module>
   </modules>
+  
+  <distributionManagement>
+    <snapshotRepository>
+      <uniqueVersion>false</uniqueVersion>
+      <id>otavanopisto-snapshots</id>
+      <name>Otavan Opisto Snapshots</name>
+      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <uniqueVersion>false</uniqueVersion>
+      <id>otavanopisto-releases</id>
+      <name>Otavan Opisto Releases</name>
+      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases</url>
+    </repository>
+  </distributionManagement>
 
 </project>

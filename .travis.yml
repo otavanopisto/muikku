@@ -1,36 +1,39 @@
+# Language 
+
 language: java
-script: mvn install
-# See https://github.com/Jasig/sass-maven-plugin/issues/47
-before_install:
-  - unset GEM_PATH
+
+# Maven 
+script: mvn test
+  
+# JDK versions
 jdk:
-  - oraclejdk7
   - openjdk7
 
-# whitelist
+# whitelist devel
 branches:
   only:
     - devel
 
+# Global environment variables
 env:
   global:
+    - secure: "b9aQxHbcuh/7RMYEcmkb6rLuf2xdyfLoZZFm//QMihc05Qx/6mDF6jcQ3XfKA2Xt5+WzbqcdaZhJ7PtMbVCsVxp3kcn075Ub2j31BJbqtdiaqwGUQOJI7pIF856+CUFB2GSP3l5oBBFm2x0g8h1RxmrR1dGvD5qg7fX/tUkOUwQ="
+    - secure: "fc0XJXKqrTls906K5aXrQEf7+d71pzAx56jDlqiqqfrdwgl6Bx10M5dX8T6VyVx3JTI8EUEEVt681qJc2nwtNTxVdhX+n9gwUBQKf9w6JFl7KMr3dQsNb47iN8/oPnb9t0sCd24HRz7RJTWNZpkgKFueitJX0cWlLNe2Rqm38Ag="
+    - secure: "hjVECtYy62LGfLn7xHVK9hbFJBn0kQq9ZWxx40tAmZQfqNsskYKlRbfVZ5qvmtauflKkPge3tGN6oD7MMAVv2McWpy/hAMVBK6vwnnGZRf4KJyOogbtGEad2nnEG33I4DVCk21C7TTCs7LFH+FsPdJ70CmkwHlaCJsmuwLTk+Bk="
+    - secure: "aElFlZr4gMr4Vufxq+1PYiEEcImxjOk8k/GTvwcp06fR7JvL8MuejS7Uvwzd2ValZ3rDFYO2g5qD147GaXVahozt+WHUF9f4tbGwKo9W6jGzqg90RgzchsSyJ4cdU0gKZh3YyjZ9PwiHO3WBu+qfSypsMNJIStLAl9fC9qeKFZk="
     - secure: "CB9V3CmnZRuNapNI8QYEO+tawsvqgEqLOM1FoIjHiPf2bMdmjud0dwcQWNuiMJzWR0FJaARvqQWmndP7SePNUaeIkkRoGJ0InmIrXwWtvGq/YKdxEWC8JpMxeONjKNZ6w1LhtRHpHKDxa9P1EgvyDMtg9pPIgDtoab86lXCK+2A="
-    - secure: "HCRUaOrwfMQQgtlFI5iKEa1CAKmf9R6GgifIpIjgLERgzxTzn3hJQkR9GvVpqB5Vo/50mCQM07LI6wB/Q9yI5b9d3M4Ey9RJebRRiHSvUyoOG8/tYHmZ8rphDVqInJSFDDcjHkGWI4KbPCe9cFvIuXhqWKensUEOl9WDFKDl4Uw="  
+    - secure: "HCRUaOrwfMQQgtlFI5iKEa1CAKmf9R6GgifIpIjgLERgzxTzn3hJQkR9GvVpqB5Vo/50mCQM07LI6wB/Q9yI5b9d3M4Ey9RJebRRiHSvUyoOG8/tYHmZ8rphDVqInJSFDDcjHkGWI4KbPCe9cFvIuXhqWKensUEOl9WDFKDl4Uw="
 
+# Install required packages
+# Fix for See https://github.com/Jasig/sass-maven-plugin/issues/47
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq sshpass
+  - unset GEM_PATH
+
+# Prepare maven, deploy artifacts and update staging server
 after_success:
-  - mvn package -f muikku/pom.xml -Popenshift
   - python travis-prepare-maven.py
   - mvn deploy --settings ~/.m2/mySettings.xml
-before_deploy: "echo 'Starting deployment'"
-deploy:
-  provider: openshift
-  user: 
-    secure: "GQJ9pnxqprCV2LK7zdjK2rXIQtACGLAmkXPx3XSO6YRE/kRlkmyKxP7ys3SsNfaXjvxvL/c9aADpaaMIqHlkUz5ZTqFB6FO0lopN39ap6G9wEJxxTJ7Q8e+1oKIekg935+/bgc5XhkitAvs0VhZoUJv4g7z0ISduV1ec+lVmafM="
-  password:
-    secure: "GcYgFF+d3nzXyYQyMIdn2Q15T4qEwaVwbOj1T5Vj1D2BBGylQZuTg2e3jBHoPCl6MRhejivDn27zz9k9ZDWY4l/9Tw84jH4fRXRWsCaay+CfpJ63GWK6Hpd4u0B8FkdLizsEFg/VRD9YR4mac5mxI6A/mlV5wd7J130SqVN9pV0="
-  app: muikku
-  domain: oodev
-  on:
-    jdk: openjdk7
-    branch: devel
-after_deploy: "echo 'Deployed'"
+  - sshpass -e ssh -p $DEPLOY_PORT -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null $DEPLOY_USER@$DEPLOY_HOST cat < $TRAVIS_BUILD_DIR/muikku/target/muikku.war ">" /tmp/ROOT.war
+  - sshpass -e ssh -p $DEPLOY_PORT -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null $DEPLOY_USER@$DEPLOY_HOST 'bash -s < ~/bin/deploy.sh' 

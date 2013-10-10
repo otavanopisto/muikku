@@ -1,9 +1,7 @@
 package fi.muikku.plugins.schooldatamock;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,26 +61,22 @@ public class SchoolDataMockPluginDescriptor implements PluginDescriptor {
 		 * Create tables
 		 */
 		try {
-			schoolDataMockPluginController.executeScript(getScriptFile("create_tables.sql"));
+			ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+			InputStream scriptStream = contextClassLoader.getResourceAsStream("META-INF/resources/create_tables.sql");
+			try {
+				schoolDataMockPluginController.executeScript(scriptStream);
+			} finally {
+				scriptStream.close();
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 	
-	private File getScriptFile(String fileName) throws URISyntaxException {
-		ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-		URL initalScript = contextClassLoader.getResource("META-INF/resources/" + fileName);
-		System.out.println(initalScript.toString());
-		return new File(initalScript.toURI());
-	}
-
 	@Override
 	public List<Class<?>> getBeans() {
 		return new ArrayList<Class<?>>(Arrays.asList(
