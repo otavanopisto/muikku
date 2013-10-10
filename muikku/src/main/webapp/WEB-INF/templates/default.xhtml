@@ -159,9 +159,11 @@
       
       <ui:insert name="contentArea">
         <m:widgetSpaceSet>
-          <m:widgetSpace name="environment.content-sidebar.left" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
-          <m:widgetSpace name="environment.content" keepEmpty="true" sizing="MAXIMIZE">
-            <m:widget name="content" size="1"/>    
+          <m:widgetSpace name="environment.content-sidebar.left" keepEmpty="false" sizing="MINIMIZE">
+
+          </m:widgetSpace>
+          <m:widgetSpace name="environment.content" keepEmpty="true" sizing="MAXIMIZE"> 
+			      <m:widget name="content" />   
           </m:widgetSpace>
           <m:widgetSpace name="environment.content-sidebar.right" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
         </m:widgetSpaceSet>
@@ -197,9 +199,9 @@
     </div> 
   
   <script>
-		$( "#dynamicNaviButton" ).click(function() {
-		$( "#dynamicNaviContainer" ).toggle( "slide", 500 );
-		});
+    $( "#dynamicNaviButton" ).click(function() {
+    $( "#dynamicNaviContainer" ).toggle( "slide", 500 );
+    });
    </script>  
   </h:body>
 

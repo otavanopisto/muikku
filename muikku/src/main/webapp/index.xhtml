@@ -1,11 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+  xmlns:h="http://java.sun.com/jsf/html" 
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
     template="/WEB-INF/templates/default.xhtml">
     
   <ui:define name="content">
-  </ui:define>
+    <div>
+	    <m:widgetSpaceSet>
+	     <m:widgetSpace name="index.content.primary.left" keepEmpty="false" sizing="MAXIMIZE">
+	      <m:widget name="home-students" />
+	      <m:widget name="home-courses" />
+	     </m:widgetSpace>
+	     <m:widgetSpace name="index.content.secondary.right" keepEmpty="false" sizing="MINIMIZE">
+	      <m:widget name="home-wallfeed" />
+	      <m:widget name="home-calendar" />      
+	     </m:widgetSpace>
+	   </m:widgetSpaceSet>     
+    </div>
+    <div>
+			<m:widgetSpaceSet>
+				<m:widgetSpace name="index.content.secondary" keepEmpty="false" sizing="MAXIMIZE">
+				 
+				</m:widgetSpace>
+        <m:widgetSpace name="index.content.secondary" keepEmpty="false" sizing="MINIMIZE">
+        </m:widgetSpace>
+        <m:widgetSpace name="index.content.secondary" keepEmpty="false" sizing="MINIMIZE">
+        </m:widgetSpace>
+			</m:widgetSpaceSet>
+		</div>
+	</ui:define>
 
 </ui:composition>
