@@ -2,7 +2,6 @@ package fi.muikku.plugins.data;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.sql.Connection;
@@ -36,41 +35,32 @@ public class MySQLDataPluginScriptHandler implements DataPluginScriptHandler {
 	}
 
 	@Override
-	public void executeScript(String uri, Map<String, String> parameters) {
+	public void executeScript(String uri, Map<String, String> parameters) throws IOException, SQLException {
+		URL url = new URL(uri);
+		
+		URLConnection connection = url.openConnection();
+		connection.setDoInput(true);
+		connection.setDoOutput(true);
+		
+		InputStream inputStream = connection.getInputStream();
 		try {
-			URL url = new URL(uri);
-			
-			URLConnection connection = url.openConnection();
-			connection.setDoInput(true);
-			connection.setDoOutput(true);
-			
-			InputStream inputStream = connection.getInputStream();
-			try {
-	  		String sqlString = IOUtils.toString(inputStream);
-	  		if (StringUtils.isNotBlank(sqlString)) {
-	  			StringTokenizer sqlTokenizer = new StringTokenizer(sqlString, ";");
-	  			while (sqlTokenizer.hasMoreTokens()) {
-	  				String sql = StringUtils.trim(sqlTokenizer.nextToken());
-	  				if (StringUtils.isNotBlank(sql)) {
-	  				  executeSql(sql);
-	  				}
-	  			}
-	  		}
-			} finally {
-				inputStream.close();
+			executeScript(inputStream, parameters);
+		} finally {
+			inputStream.close();
+		}
+	}
+	
+	@Override
+	public void executeScript(InputStream inputStream, Map<String, String> parameters) throws IOException, SQLException {
+		String sqlString = IOUtils.toString(inputStream);
+		if (StringUtils.isNotBlank(sqlString)) {
+			StringTokenizer sqlTokenizer = new StringTokenizer(sqlString, ";");
+			while (sqlTokenizer.hasMoreTokens()) {
+				String sql = StringUtils.trim(sqlTokenizer.nextToken());
+				if (StringUtils.isNotBlank(sql)) {
+				  executeSql(sql);
+				}
 			}
-		} catch (SQLException e) {
-			// TODO Proper error handling
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		} catch (MalformedURLException e) {
-			// TODO Proper error handling
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		} catch (IOException e) {
-			// TODO Proper error handling
-			e.printStackTrace();
-			throw new RuntimeException(e);
 		}
 	}
 	
@@ -84,7 +74,8 @@ public class MySQLDataPluginScriptHandler implements DataPluginScriptHandler {
 		return null;
 	}
 	
-	private Connection getConnection() throws SQLException {
+	@Override
+	public Connection getConnection(Map<String, String> parameters) throws SQLException {
 		return getDataSource().getConnection();
 	}
 	
@@ -93,7 +84,7 @@ public class MySQLDataPluginScriptHandler implements DataPluginScriptHandler {
 		
 		logger.info("Executing sql: " + sql);
 		
-		Connection connection = getConnection();
+		Connection connection = getConnection(null);
 		Statement statement = connection.createStatement();
 		statement.execute(sql);
 	}

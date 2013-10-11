@@ -2,6 +2,7 @@
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -103,18 +104,8 @@ public class DataPluginController {
 			}
 		}
 	}
-	
-	private void runScript(ScriptInfo scriptInfo) {
-		DataPluginScriptHandler scriptHandler = getHandler(scriptInfo.getHandler());
-		if (scriptHandler == null) {
-			// TODO: Proper error handling
-			throw new RuntimeException("Could not find script handler '" + scriptInfo.getHandler() + "'");
-		}
-		
-		scriptHandler.executeScript(scriptInfo.getUrl(), scriptInfo.getParameters());
-	}
-	
-	private DataPluginScriptHandler getHandler(String name) {
+
+	public DataPluginScriptHandler getHandler(String name) {
 		Iterator<DataPluginScriptHandler> handlers = scriptHandlers.iterator();
 		while (handlers.hasNext()) {
 			DataPluginScriptHandler handler = handlers.next();
@@ -123,6 +114,21 @@ public class DataPluginController {
 		}
 		
 		return null;
+	}
+	
+	private void runScript(ScriptInfo scriptInfo) {
+		DataPluginScriptHandler scriptHandler = getHandler(scriptInfo.getHandler());
+		if (scriptHandler == null) {
+			// TODO: Proper error handling
+			throw new RuntimeException("Could not find script handler '" + scriptInfo.getHandler() + "'");
+		}
+		
+		try {
+			scriptHandler.executeScript(scriptInfo.getUrl(), scriptInfo.getParameters());
+		} catch (IOException | SQLException e) {
+			// TODO: Proper error handling
+			throw new RuntimeException("Failed to execute script '" + scriptInfo.getUrl() + "'");
+		}
 	}
 
 	private enum Run {

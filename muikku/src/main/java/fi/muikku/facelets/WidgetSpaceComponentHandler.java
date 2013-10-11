@@ -43,13 +43,14 @@ public class WidgetSpaceComponentHandler extends ComponentHandler {
 		VariableMapper orig = context.getVariableMapper();
 		context.setVariableMapper(new VariableMapperWrapper(orig));
 		try {
-			this.nextHandler.apply(context, parent);
       context.includeFacelet(parent, new URL(null, "data://text/plain;base64," + Base64.encodeBase64String(jsfBuilder.toString().getBytes("UTF-8")), new DataStreamHandler()));
 		} catch (IOException e) {
 			throw new TagException(this.tag, "Failed to include widget space widgets");
 		} finally {
 			context.setVariableMapper(orig);
 		}
+		
+		super.apply(context, parent);
 	}
 	
 	public String getName(FaceletContext context) {	

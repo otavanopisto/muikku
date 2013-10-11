@@ -7,14 +7,10 @@
     <artifactId>parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
-  
-  <properties>
-  </properties>
 
-  <artifactId>school-data-mock</artifactId>
+  <artifactId>h2db-plugin</artifactId>
   <packaging>jar</packaging>
-  <name>Muikku School Data Mock</name>
-  <description>School Data Bridge that can be used for testing puposes.  </description>
+  <name>Muikku plugin that provides H2 support</name>
 
   <build>
     <finalName>${project.artifactId}</finalName>
@@ -39,18 +35,16 @@
       <artifactId>plugin</artifactId>
       <scope>provided</scope>
     </dependency>
-
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-    </dependency>
     
-    <!-- Core plugins -->
-  
     <dependency>
       <groupId>fi.muikku</groupId>
       <artifactId>core-plugins</artifactId>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>1.3.173</version>
     </dependency>
   </dependencies>
   
@@ -66,4 +60,5 @@
       <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases</url>
     </repository>
   </repositories>
+  <description>Plugin for Muikku that provides a H2 script handler. Plugin is mainly indented to be used for testing purposes.</description>
 </project>
