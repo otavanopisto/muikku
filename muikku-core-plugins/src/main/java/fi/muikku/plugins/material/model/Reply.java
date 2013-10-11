@@ -1,4 +1,4 @@
-package fi.muikku.model.material;
+package fi.muikku.plugins.material.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

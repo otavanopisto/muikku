@@ -9,9 +9,8 @@
     template="/workspaces/template.xhtml">
    
   <ui:define name="content">
-    <c:forEach var="material" items="#{workspaceViewBackingBean.workspaceMaterials}">
-      <composite:materialEditor material="#{material}" />
-    </c:forEach>
+    <composite:materialView materialType="#{workspaceViewBackingBean.workspaceMaterial.type}"
+                            materialId="#{workspaceViewBackingBean.workspaceMaterial.id}"/>
     
     <a href="#{request.contextPath}/workspace/#{workspaceViewBackingBean.workspaceUrlName}">View</a>
     <a href="#{request.contextPath}/workspace/editor/#{workspaceViewBackingBean.workspaceUrlName}">Edit</a>

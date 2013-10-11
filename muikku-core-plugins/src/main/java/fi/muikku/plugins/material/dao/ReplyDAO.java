@@ -1,7 +1,7 @@
-package fi.muikku.dao.material;
+package fi.muikku.plugins.material.dao;
 
 import fi.muikku.dao.CoreDAO;
-import fi.muikku.model.material.Reply;
+import fi.muikku.plugins.material.model.Reply;
 
 public class ReplyDAO extends CoreDAO<Reply> {
 

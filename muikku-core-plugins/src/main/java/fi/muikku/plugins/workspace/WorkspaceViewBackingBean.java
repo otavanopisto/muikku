@@ -13,10 +13,9 @@ import javax.inject.Named;
 import com.ocpsoft.pretty.faces.annotation.URLMapping;
 import com.ocpsoft.pretty.faces.annotation.URLMappings;
 
-import fi.muikku.dao.workspace.WorkspaceMaterialDAO;
-import fi.muikku.model.material.Material;
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.model.workspace.WorkspaceMaterial;
+import fi.muikku.plugins.material.dao.MaterialDAO;
+import fi.muikku.plugins.material.model.Material;
 import fi.muikku.schooldata.UserController;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.User;
@@ -41,7 +40,7 @@ public class WorkspaceViewBackingBean implements Serializable {
 	private UserController userController;
 	
 	@Inject
-	private WorkspaceMaterialDAO workspaceMaterialDAO;
+	private MaterialDAO materialDAO;
 
 	@PostConstruct
 	public void init() {
@@ -107,19 +106,17 @@ public class WorkspaceViewBackingBean implements Serializable {
 		return result;
 	}
 	
-	public List<Material> getWorkspaceMaterials() {
-	  List<Material> result = new ArrayList<>();
-	  
+	public Material getWorkspaceMaterial() {
 		Long workspaceId = getWorkspaceId();
 		if (workspaceId != null) {
-			WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(getWorkspaceId());
-			for (WorkspaceMaterial workspaceMaterial : workspaceMaterialDAO.listByWorkspaceEntity(workspaceEntity)) { 
-			  Material material = workspaceMaterial.getMaterial();
-			  result.add(material);
-			}
+  		WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceId);
+  		if (workspaceEntity != null) {
+    	  Material material = materialDAO.findByWorkspaceEntity(workspaceEntity);
+    	  return material;
+  		}
 		}
-		
-		return result;
+
+		return null;
 	}
 
 	private Long workspaceId;
