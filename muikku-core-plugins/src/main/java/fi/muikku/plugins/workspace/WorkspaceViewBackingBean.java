@@ -13,7 +13,6 @@ import javax.inject.Named;
 import com.ocpsoft.pretty.faces.annotation.URLMapping;
 import com.ocpsoft.pretty.faces.annotation.URLMappings;
 
-import fi.muikku.controller.MaterialController;
 import fi.muikku.dao.workspace.WorkspaceMaterialDAO;
 import fi.muikku.model.material.Material;
 import fi.muikku.model.workspace.WorkspaceEntity;
@@ -40,9 +39,6 @@ public class WorkspaceViewBackingBean implements Serializable {
 
 	@Inject
 	private UserController userController;
-	
-	@Inject
-	private MaterialController materialController;
 	
 	@Inject
 	private WorkspaceMaterialDAO workspaceMaterialDAO;
@@ -111,17 +107,15 @@ public class WorkspaceViewBackingBean implements Serializable {
 		return result;
 	}
 	
-	public List<String> getRenderedWorkspaceMaterials() {
-	  List<String> result = new ArrayList<>();
+	public List<Material> getWorkspaceMaterials() {
+	  List<Material> result = new ArrayList<>();
 	  
 		Long workspaceId = getWorkspaceId();
 		if (workspaceId != null) {
 			WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(getWorkspaceId());
 			for (WorkspaceMaterial workspaceMaterial : workspaceMaterialDAO.listByWorkspaceEntity(workspaceEntity)) { 
 			  Material material = workspaceMaterial.getMaterial();
-			  String rendered = materialController.renderView(material);
-			  System.out.println(rendered);
-			  result.add(rendered);
+			  result.add(material);
 			}
 		}
 		
