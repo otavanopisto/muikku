@@ -59,7 +59,7 @@ public class DataPluginController {
 	  			String handler = script.getAttribute("handler");
 	  			Map<String, String> parameters = new HashMap<String, String>();
 	  			
-	  			if (!url.matches("\b(([a-z]{1,}):\\/\\/)")) {
+	  			if (!url.matches("[a-z]{1,}://.*")) {
 	  				url = new File(file.getParent(), url).toURI().toString();
 	  			}
 
