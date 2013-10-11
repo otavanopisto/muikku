@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<data xmlns="../muikku-core-plugins/schema/1.0/muikku-data.xsd">
+  <script
+    run="ONCE"
+    handler="MySQL"
+    url="test/001_user_groups_mysql.sql" />
+  <script
+    run="ONCE"
+    handler="MySQL"
+    url="test/002_user_roles_mysql.sql" />
+  <script
+    run="ONCE"
+    handler="MySQL"
+    url="test/003_workspace_types_mysql.sql" />
+  <script
+    run="ONCE"
+    handler="MySQL"
+    url="school-data-local/001_create_users_mysql.sql" />
+  <script
+    run="ALWAYS"
+    handler="H2/HSQLDB"
+    url="school-data-mock/001_mock_roles_hsqldb.sql">
+    <parameter name="database">school-data-mock</parameter>
+  </script>
+  <script
+    run="ALWAYS"
+    handler="H2/HSQLDB"
+    url="school-data-mock/002_mock_users_hsqldb.sql">
+    <parameter name="database">school-data-mock</parameter>
+  </script>
+  <script
+    run="ALWAYS"
+    handler="H2/HSQLDB"
+    url="school-data-mock/003_mock_subjects_courseidentifiers_hsqldb.sql">
+    <parameter name="database">school-data-mock</parameter>
+  </script>
+  <script
+    run="ALWAYS"
+    handler="H2/HSQLDB"
+    url="school-data-mock/004_mock_workspaces_hsqldb.sql">
+    <parameter name="database">school-data-mock</parameter>
+  </script>
+  <script
+    run="ALWAYS"
+    handler="H2/HSQLDB"
+    url="school-data-mock/005_mock_workspace_users_hsqldb.sql">
+    <parameter name="database">school-data-mock</parameter>
+  </script>
+  <script
+    run="ALWAYS"
+    handler="H2/HSQLDB"
+    url="school-data-mock/006_mock_gradingscales_hsqldb.sql">
+    <parameter name="database">school-data-mock</parameter>
+  </script>
+</data>
