@@ -21,7 +21,7 @@ public class HtmlMaterialBackingBean implements Serializable {
   HtmlMaterialDAO htmlMaterialDAO;
   
   public String renderMaterial(Long materialId) {
-    return getMaterial(materialId).getCharacterData();
+    return getMaterial(materialId).getHtml();
   }
   
   public HtmlMaterial getMaterial(Long materialId) {
