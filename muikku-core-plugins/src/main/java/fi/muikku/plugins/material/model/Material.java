@@ -7,13 +7,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
-
-import fi.muikku.model.users.UserEntity;
-import fi.muikku.model.workspace.WorkspaceEntity;
 
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
@@ -39,14 +35,6 @@ public class Material {
     this.title = title;
   }
 
-  public Long getCreatorId() {
-    return creatorId;
-  }
-
-  public void setCreatorId(Long creator) {
-    this.creatorId = creator;
-  }
-
   public String getUrlName() {
     return urlName;
   }
@@ -69,20 +57,20 @@ public class Material {
   
   @NotEmpty
   @NotNull
-  @Column
+  @Column (nullable = false)
   private String type;
   
+  @NotEmpty
   @NotNull
-  @Column
+  @Column (nullable = false)
   private String title;
   
+  @NotEmpty
   @NotNull
-  @Column(unique=true)
+  @Column (nullable = false, unique = true)
   private String urlName;
   
-  @Column
-  private Long creatorId;
-  
-  @Column
+  @NotNull
+  @Column (nullable = false)
   private Long workspaceEntityId;
 }
