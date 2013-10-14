@@ -342,3 +342,45 @@
 .calendarWidget div.fullCalendar .today.fullCalendarEventfulDay {
   border-color: green;
 }
+
+
+/* frontpage widgets */
+
+.wi-info{
+	
+}
+
+.wi-news{}
+
+.wi-students{}
+
+.wi-students ul{
+  padding:20px;
+}
+
+.wi-students li{
+  padding:5px;
+}
+
+.wi-students li:nth-child(odd) {
+  background:#ededed;
+}
+
+.wi-calendar{}
+.wi-wallfeed{}
+
+.wi-courses{}
+
+.wi-courses ul{
+  padding:20px;
+}
+
+.wi-courses li{
+  padding:5px;
+}
+
+.wi-courses li:nth-child(odd) {
+	background:#ededed;
+}
+
+
