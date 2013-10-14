@@ -50,7 +50,7 @@ public class Material {
   public void setWorkspaceEntityId(Long workspaceEntityId) {
     this.workspaceEntityId = workspaceEntityId;
   }
-
+  
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -67,7 +67,7 @@ public class Material {
   
   @NotEmpty
   @NotNull
-  @Column (nullable = false, unique = true)
+  @Column (nullable = false)
   private String urlName;
   
   @NotNull
