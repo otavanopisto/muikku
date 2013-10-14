@@ -1,9 +1,10 @@
-	package fi.muikku.plugins.data;
+package fi.muikku.plugins.data;
 
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -57,6 +58,10 @@ public class DataPluginController {
 	  			String url = script.getAttribute("url");
 	  			String handler = script.getAttribute("handler");
 	  			Map<String, String> parameters = new HashMap<String, String>();
+	  			
+	  			if (!url.matches("[a-z]{1,}://.*")) {
+	  				url = new File(file.getParent(), url).toURI().toString();
+	  			}
 
 	  			NodeList scriptChildNodes = script.getChildNodes();
 			  	for (int j= 0, jl = scriptChildNodes.getLength(); j< jl; j++) {
@@ -105,11 +110,13 @@ public class DataPluginController {
 		}
 	}
 
-	public DataPluginScriptHandler getHandler(String name) {
+	public DataPluginScriptHandler getHandler(String names) {
+		List<String> handlerNames = Arrays.asList(names.split("/"));
+		
 		Iterator<DataPluginScriptHandler> handlers = scriptHandlers.iterator();
 		while (handlers.hasNext()) {
 			DataPluginScriptHandler handler = handlers.next();
-			if (handler.getName().equals(name))
+			if (handlerNames.contains(handler.getName()))
 				return handler;
 		}
 		
