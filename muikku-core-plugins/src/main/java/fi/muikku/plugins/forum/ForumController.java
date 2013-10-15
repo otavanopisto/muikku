@@ -11,7 +11,7 @@ import fi.muikku.controller.ResourceRightsController;
 import fi.muikku.model.security.ResourceRights;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.plugins.forum.dao.CourseForumAreaDAO;
+import fi.muikku.plugins.forum.dao.WorkspaceForumAreaDAO;
 import fi.muikku.plugins.forum.dao.EnvironmentForumAreaDAO;
 import fi.muikku.plugins.forum.dao.ForumAreaDAO;
 import fi.muikku.plugins.forum.dao.ForumThreadDAO;
@@ -36,7 +36,7 @@ public class ForumController {
   private EnvironmentForumAreaDAO environmentForumAreaDAO;
 
   @Inject
-  private CourseForumAreaDAO courseForumAreaDAO;
+  private WorkspaceForumAreaDAO workspaceForumAreaDAO;
 
   @Inject
   private ForumAreaDAO forumAreaDAO;
@@ -84,9 +84,9 @@ public class ForumController {
         environmentForumAreaDAO.listAll(), ForumResourcePermissionCollection.FORUM_WRITEAREA);
   }
 
-  public List<WorkspaceForumArea> listCourseForums(WorkspaceEntity course) {
+  public List<WorkspaceForumArea> listCourseForums(WorkspaceEntity workspace) {
     return sessionController.filterResources(
-        courseForumAreaDAO.listByCourse(course), ForumResourcePermissionCollection.FORUM_WRITEAREA);
+        workspaceForumAreaDAO.listByWorkspace(workspace), ForumResourcePermissionCollection.FORUM_WRITEAREA);
   }
 
   @Permit (ForumResourcePermissionCollection.FORUM_LISTTHREADS)

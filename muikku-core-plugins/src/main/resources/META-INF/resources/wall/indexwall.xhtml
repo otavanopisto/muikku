@@ -8,6 +8,10 @@
 
     <h:outputScript name="scripts/gui/userwall.js" target="head"/>
     
+    <c:forEach items="#{Wall.listRequiredJSFiles()}" var="jsFile">
+      <h:outputScript name="#{jsFile}" target="head"/>
+    </c:forEach>    
+    
     <div class="widget userWallWidget">
       <c:set var="wall" value="#{Wall.getUserWall(muikkuSession.user)}" />
       <input type="hidden" name="wallId" value="#{wall.id}"/>

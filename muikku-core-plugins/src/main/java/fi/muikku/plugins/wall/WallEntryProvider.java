@@ -8,4 +8,5 @@ public interface WallEntryProvider {
 
   List<WallFeedItem> listWallEntryItems(Wall wall);
   
+  List<String> listRequiredJavaScripts();
 }

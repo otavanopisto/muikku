@@ -427,6 +427,17 @@ public class WallController {
     return userWallDAO.findById(wallId);
   }
   
+  public List<String> listRequiredJSFiles() {
+    List<String> result = new ArrayList<String>();
+    
+    for (WallEntryProvider wallEntryProvider : wallEntryProviders) {
+      List<String> v = wallEntryProvider.listRequiredJavaScripts();
+      if (v != null)
+        result.addAll(v);
+    }
+    return result;
+  }
+  
   public void onCourseCreateEvent(@Observes @Created CourseEntityEvent event) {
     WorkspaceEntity courseEntity = workspaceController.findWorkspaceEntityById(event.getCourseEntityId());
     workspaceWallDAO.create(courseEntity);
