@@ -2,30 +2,29 @@ package fi.muikku.plugins.material;
 
 import java.io.Serializable;
 
+import javax.enterprise.context.RequestScoped;
 import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import fi.muikku.plugins.material.dao.HtmlMaterialDAO;
 import fi.muikku.plugins.material.model.HtmlMaterial;
 
 @Named
+@RequestScoped
 public class HtmlMaterialBackingBean implements Serializable {
   
-  /**
-   * 
-   */
   private static final long serialVersionUID = -1205161035039949658L;
   
   @Inject
-  HtmlMaterialDAO htmlMaterialDAO;
+  private HtmlMaterialController htmlMaterialController;
   
   public String renderMaterial(Long materialId) {
-    return getMaterial(materialId).getHtml();
-  }
-  
-  public HtmlMaterial getMaterial(Long materialId) {
-    return htmlMaterialDAO.findById(materialId);
+  	HtmlMaterial htmlMaterial = htmlMaterialController.findHtmlMaterialById(materialId);
+  	if (htmlMaterial != null) { 
+      return htmlMaterial.getHtml();
+  	}
+  	
+  	return null;
   }
   
   public void save(ActionEvent event) {
