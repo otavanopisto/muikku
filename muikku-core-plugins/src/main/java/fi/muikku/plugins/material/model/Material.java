@@ -43,14 +43,6 @@ public class Material {
     this.urlName = urlName;
   }
 
-  public Long getWorkspaceEntityId() {
-    return workspaceEntityId;
-  }
-
-  public void setWorkspaceEntityId(Long workspaceEntityId) {
-    this.workspaceEntityId = workspaceEntityId;
-  }
-  
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -69,8 +61,4 @@ public class Material {
   @NotNull
   @Column (nullable = false)
   private String urlName;
-  
-  @NotNull
-  @Column (nullable = false)
-  private Long workspaceEntityId;
 }
