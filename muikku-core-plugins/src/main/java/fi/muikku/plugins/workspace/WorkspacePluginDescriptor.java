@@ -9,11 +9,16 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import fi.muikku.controller.WidgetController;
+import fi.muikku.plugin.PersistencePluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
+import fi.muikku.plugins.workspace.dao.WorkspaceFolderDAO;
+import fi.muikku.plugins.workspace.dao.WorkspaceMaterialDAO;
+import fi.muikku.plugins.workspace.model.WorkspaceFolder;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 
 @ApplicationScoped
 @Stateful
-public class WorkspacePluginDescriptor implements PluginDescriptor {
+public class WorkspacePluginDescriptor implements PluginDescriptor, PersistencePluginDescriptor {
 
 	@Inject
 	private WidgetController widgetController;
@@ -30,12 +35,34 @@ public class WorkspacePluginDescriptor implements PluginDescriptor {
 	@Override
 	public List<Class<?>> getBeans() {
 		return Collections.unmodifiableList(Arrays.asList(new Class<?>[] { 
+			
+			/* Controllers */
+				
+			WorkspaceMaterialController.class,
 		  
 			/* Backing beans */ 
 				
-			WorkspaceViewBackingBean.class
+			WorkspaceViewBackingBean.class,
+			WorkspaceMaterialBackingBean.class,
+			
+			/* Request Handlers */
+			
+			WorkspaceBinaryMaterialHandler.class,
+			
+			/* DAOs */
+			
+			WorkspaceMaterialDAO.class,
+			WorkspaceFolderDAO.class
 			
 		}));
+	}
+	
+	@Override
+	public Class<?>[] getEntities() {
+		return new Class<?>[] {
+			WorkspaceFolder.class,
+			WorkspaceMaterial.class
+		};
 	}
 
 }

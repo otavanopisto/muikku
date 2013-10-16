@@ -9,12 +9,6 @@
     template="/workspaces/template.xhtml">
    
   <ui:define name="content">
-    <composite:materialView materialType="#{workspaceViewBackingBean.workspaceMaterial.type}"
-                            materialId="#{workspaceViewBackingBean.workspaceMaterial.id}"/>
-    
-    <a href="#{request.contextPath}/workspace/#{workspaceViewBackingBean.workspaceUrlName}">View</a>
-    <a href="#{request.contextPath}/workspace/editor/#{workspaceViewBackingBean.workspaceUrlName}">Edit</a>
-  
   </ui:define>
   
 </ui:composition>
