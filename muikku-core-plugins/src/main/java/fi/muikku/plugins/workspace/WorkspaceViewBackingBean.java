@@ -14,8 +14,6 @@ import com.ocpsoft.pretty.faces.annotation.URLMapping;
 import com.ocpsoft.pretty.faces.annotation.URLMappings;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.plugins.material.dao.MaterialDAO;
-import fi.muikku.plugins.material.model.Material;
 import fi.muikku.schooldata.UserController;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.User;
@@ -38,9 +36,6 @@ public class WorkspaceViewBackingBean implements Serializable {
 
 	@Inject
 	private UserController userController;
-	
-	@Inject
-	private MaterialDAO materialDAO;
 
 	@PostConstruct
 	public void init() {
@@ -104,19 +99,6 @@ public class WorkspaceViewBackingBean implements Serializable {
 		}
 
 		return result;
-	}
-	
-	public Material getWorkspaceMaterial() {
-		Long workspaceId = getWorkspaceId();
-		if (workspaceId != null) {
-  		WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceId);
-  		if (workspaceEntity != null) {
-    	  Material material = materialDAO.findByWorkspaceEntity(workspaceEntity);
-    	  return material;
-  		}
-		}
-
-		return null;
 	}
 
 	private Long workspaceId;
