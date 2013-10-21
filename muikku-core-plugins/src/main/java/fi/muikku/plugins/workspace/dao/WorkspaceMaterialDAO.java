@@ -48,8 +48,10 @@ public class WorkspaceMaterialDAO extends PluginDAO<WorkspaceMaterial> {
     Root<WorkspaceMaterial> root = criteria.from(WorkspaceMaterial.class);
     criteria.select(root);
     criteria.where(
-      criteriaBuilder.equal(root.get(WorkspaceMaterial_.folder), folder),
-      criteriaBuilder.equal(root.get(WorkspaceMaterial_.urlName), urlName)
+  		criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(WorkspaceMaterial_.folder), folder),
+        criteriaBuilder.equal(root.get(WorkspaceMaterial_.urlName), urlName)
+      )
     );
    
     return getSingleResult(entityManager.createQuery(criteria));
