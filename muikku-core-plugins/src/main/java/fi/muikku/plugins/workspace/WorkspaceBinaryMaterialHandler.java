@@ -27,7 +27,7 @@ public class WorkspaceBinaryMaterialHandler implements RequestHandler {
 	private WorkspaceMaterialController workspaceMaterialController;
 	
 	public WorkspaceBinaryMaterialHandler() {
-		pattern = Pattern.compile("\\/workspace\\/[a-zA-Z0-9\\_\\-\\.]*\\/materials\\/images\\/[a-zA-Z0-9_\\-\\.\\/]*");
+		pattern = Pattern.compile("\\/workspace\\/[a-zA-Z0-9\\_\\-\\.]*\\/materials\\/binary\\/[a-zA-Z0-9_\\-\\.\\/]*");
 	}
 
 	@Override
