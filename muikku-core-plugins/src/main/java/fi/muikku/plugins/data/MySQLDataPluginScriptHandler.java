@@ -80,13 +80,15 @@ public class MySQLDataPluginScriptHandler implements DataPluginScriptHandler {
 	}
 	
 	private void executeSql(String sql) throws SQLException {
-		// TODO: Transaction?
-		
 		logger.info("Executing sql: " + sql);
 		
 		Connection connection = getConnection(null);
-		Statement statement = connection.createStatement();
-		statement.execute(sql);
+		try {
+		  Statement statement = connection.createStatement();
+		  statement.execute(sql);
+		} finally {
+		  connection.close();
+		}
 	}
 
 }
