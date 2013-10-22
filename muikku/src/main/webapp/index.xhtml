@@ -7,11 +7,11 @@
     template="/WEB-INF/templates/default.xhtml">
     
   <ui:define name="content">
-   <h:panelGroup layout="block" styleClass="container_24"> 
+
 		 <m:widgetSpaceSet>
 		   <m:widgetSpace name="index.content.primary.left" keepEmpty="false" sizing="MINIMIZE" styleClass="jahve">
 	       <!--  Not logged in -->
-	        <m:widget name="home-courses" rendered="#{!sessionBackingBean.loggedIn}" size="8" />
+	        <m:widget name="internallogin" rendered="#{!sessionBackingBean.loggedIn}" size="8" />
 	       <!--  Logged in -->
 	        <m:widget name="home-students" rendered="#{sessionBackingBean.loggedIn}" size="8" />
 	       <!--  Both -->
@@ -23,7 +23,7 @@
 	          <m:widget name="home-courses" rendered="#{sessionBackingBean.loggedIn}" size="8" /> 
 	     </m:widgetSpace>
 		 </m:widgetSpaceSet>
-	 </h:panelGroup>  
+
 	 
 	 <div class="clear"></div>
 
@@ -37,6 +37,12 @@
 	  <m:widgetSpace name="index.content.secondary.center" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
 	  <m:widgetSpace name="index.content.secondary.right" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
 	 </m:widgetSpaceSet>
+	    <div class="clear"></div>
+
+
+
+
+	 
  </ui:define>
 
 </ui:composition>

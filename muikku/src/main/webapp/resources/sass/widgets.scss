@@ -1,5 +1,6 @@
 
 @import "_base.scss";
+@import "commons.scss";
 
 /* Widgets */
 
@@ -259,13 +260,14 @@
 /* Login */
 
 .loginWidget{
+	  background:#ededed;
+	  padding:10px ;
+	  @include rounded(5px);
     text-align:right;
     color:#000;
     font-size:9px;
     width:240px;
-    position:absolute;
-    top:5px;
-    right:5px;
+
 }
 
 .logoutWidget{
@@ -344,42 +346,107 @@
 }
 
 
+
+/* Navigation */
+
+.wi-navigation-textlinks{
+   padding:6px 0 0 0;
+
+	vertical-align:middle;
+}
+.wi-navigation-textlinks span{
+   font-size:2em;
+}
+
+.wi-navigation-textlinks span:after{
+   content:"|";
+}
+
+.wi-navigation-textlinks span:last-child:after{
+   content:none;
+}
+
+
+
 /* frontpage widgets */
 
-.wi-info{
+.wi-frontpage-info{
 	
 }
 
-.wi-news{}
+.wi-news{
 
-.wi-students{}
+}
 
-.wi-students ul{
+.wi-news-item-content{
+  padding:5px;
+  float:left;
+  
+}
+
+
+.wi-news-item{
+	margin-top:10px;
+	padding:10px;
+
+}
+
+.wi-news-primary-item{
+box-sizing:border-box;
+-moz-box-sizing:border-box; 	
+  margin-top:10px;
+  border:1px solid $brd;
+  @include rounded(4px);
+}
+
+.wi-news-secondary-item{
+box-sizing:border-box;
+-moz-box-sizing:border-box; 	
+  margin-top:10px;
+  border:1px solid $brd;
+  @include rounded(4px);
+}
+
+.wi-news-item-picture{
+  background:url("http://farm8.staticflickr.com/7363/9872617353_fb529696e9.jpg") no-repeat ;
+  background-size:100%;
+  height:200px;
+  width:200px;
+  float:left;
+}
+
+.wi-news-item-content-description{
+@extend .co-content;	
+}
+
+.wi-frontpage-students{}
+
+.wi-frontpage-students ul{
   padding:20px;
 }
 
-.wi-students li{
+.wi-frontpage-students li{
   padding:5px;
 }
 
-.wi-students li:nth-child(odd) {
+.wi-frontpage-students li:nth-child(odd) {
   background:#ededed;
 }
 
-.wi-calendar{}
-.wi-wallfeed{}
+.wi-frontpage-calendar{}
+.wi-frontpage-wallfeed{}
 
-.wi-courses{}
+.wi-frontpage-courses{}
 
-.wi-courses ul{
+.wi-frontpage-courses ul{
   padding:20px;
 }
 
-.wi-courses li{
+.wi-frontpage-courses li{
   padding:5px;
 }
 
-.wi-courses li:nth-child(odd) {
+.wi-frontpage-courses li:nth-child(odd) {
 	background:#ededed;
 }
 

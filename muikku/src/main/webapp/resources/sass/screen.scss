@@ -329,25 +329,12 @@ padding:5px;
 
 */
 
-
-
-
-
-
-#footer {
-  clear: both; 
-}
-
 .buttonPanel {
   text-align: right;
   margin: 4px 0px 4px 0px;
 }
 
-
-
-
-
-/* communicator (.cm-*) */
+/* communicator (.co-*) */
 
 .cm-content{	
 }
@@ -594,7 +581,7 @@ color:$lukio;
 /* Settings */
 
 .se-users, .se-roles, .se-workspaces, .se-workspacetypes, .se-plugins, .se-gradingscales, .se-courseidentifiers{
-  @extend .cm-content;  
+  @extend .co-content;  
 }
 
 
@@ -608,7 +595,7 @@ se-container{
 }
 
 .se-container th[scope="col"]{
- @extend .cm-content-th;
+ @extend .co-content-th;
 }
 
 .se-container th[scope="colgroup"]{
@@ -620,17 +607,17 @@ se-container{
 }
 
 .se-container tbody{
- @extend .cm-content-tbody;
+ @extend .co-content-tbody;
 }
 
 
 .se-container td{
-  @extend .cm-content-td;
+  @extend .co-content-td;
 
 }
 
 .se-container tfoot{
-  @extend .cm-content-tfoot;
+  @extend .co-content-tfoot;
 }
 
 .se-index{
@@ -638,7 +625,7 @@ se-container{
 }
 
 .se-widget-userAdd{
-  @extend .cm-buttonContainer;	
+  @extend .co-buttonContainer;	
   margin-top:5px;
   padding:0;
   width:40px;

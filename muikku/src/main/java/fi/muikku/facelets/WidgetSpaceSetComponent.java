@@ -9,6 +9,8 @@ import javax.faces.component.FacesComponent;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIComponentBase;
 import javax.faces.context.FacesContext;
+import javax.faces.view.facelets.ComponentConfig;
+import javax.faces.view.facelets.TagAttribute;
 
 import fi.muikku.widgets.WidgetSpaceSizingStrategy;
 
@@ -16,7 +18,7 @@ import fi.muikku.widgets.WidgetSpaceSizingStrategy;
 public class WidgetSpaceSetComponent extends UIComponentBase {
 	
 	private final static int GRID_SIZE = 24;
-
+	
 	@Override
 	public boolean getRendersChildren() {
 		return true;
@@ -25,14 +27,15 @@ public class WidgetSpaceSetComponent extends UIComponentBase {
 	@Override
 	public void encodeBegin(FacesContext context) throws IOException {
 		int spaceLeft = GRID_SIZE;
-		
+		String styleClass = (String) getAttributes().get("styleClass");
 		List<WidgetSpaceComponent> widgetSpaces = getWidgetSpaces();
 		List<WidgetSpaceComponent> maximizeWidgetSpaces = new ArrayList<>();
 		
 		for (WidgetSpaceComponent widgetSpace : widgetSpaces) {
 			List<WidgetComponent> widgets = getWidgetComponents(widgetSpace);
 			widgetSpace.setEmpty(widgets.size() == 0);
-			
+      widgetSpace.setStyleClass(styleClass);
+      
 			if (widgetSpace.getSizing() != WidgetSpaceSizingStrategy.MAXIMIZE) {
 				int size = 0;
 				for (UIComponent widgetComponent : widgets) {
@@ -56,6 +59,7 @@ public class WidgetSpaceSetComponent extends UIComponentBase {
 				}
 				
 				widgetSpace.setSize(size);
+
 				spaceLeft -= size;
 			} else {
 				maximizeWidgetSpaces.add(widgetSpace);
@@ -102,4 +106,5 @@ public class WidgetSpaceSetComponent extends UIComponentBase {
 		return getClass().getPackage().toString();
 	}
 	
+	private TagAttribute styleClassAttribute;
 }

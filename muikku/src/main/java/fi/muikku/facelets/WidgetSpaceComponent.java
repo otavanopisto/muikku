@@ -25,6 +25,10 @@ public class WidgetSpaceComponent extends UIComponentBase {
   		writer.write('"');
   	  writer.write("widgetSpace grid_");
   	  writer.write(String.valueOf( getSize() ));
+  	  if (getStyleClass() != null) {
+  	    writer.write(" ");
+  	    writer.write(getStyleClass());
+  	  }
   	  writer.write('"');
   	  writer.write(" data-name=");
   	  writer.write('"');
@@ -87,6 +91,15 @@ public class WidgetSpaceComponent extends UIComponentBase {
 		return empty;
 	}
 	
+	public String getStyleClass() {
+    return styleClass;
+  }
+
+  public void setStyleClass(String styleClass) {
+    this.styleClass = styleClass;
+  }
+
+  private String styleClass;
 	private String name;
 	private Boolean keepEmpty;
 	private WidgetSpaceSizingStrategy sizing;

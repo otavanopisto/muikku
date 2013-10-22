@@ -1,5 +1,7 @@
 /* Everything temp here, keeping static styles clean */
 
+@import "_base.scss";
+
 .tempUserProfileWidgetPicture{
 	width:50px;
 	height:50px;
@@ -10,6 +12,30 @@
     
 }
 
+/* Index  */
+
+.index-footer{
+  position:fixed;
+  bottom:0;
+  width:960px;
+  margin-left:0;
+  border:1px solid #ededed;
+  background:#dadada;
+  @include rounded(5px);
+  
+  
+}
+
+.index-footer-block{
+  border:1px solid #000;
+  float:left; 
+  margin:10px;
+  padding:10px;
+  background:#fff;
+}
+
+
+.index-footer-block-content{}
 
 .seeker_autocomplete_item_container {
 	position: relative;
