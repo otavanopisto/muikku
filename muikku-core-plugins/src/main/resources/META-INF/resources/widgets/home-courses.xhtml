@@ -8,17 +8,10 @@
   
   <ul>
       <li>KUR- Kurssi (Tekstiä)</li>
-      <li>KUR- Kurssi (Tekstiä)</li>
-      <li>KUR- Kurssi (Tekstiä)</li>
-      <li>KUR- Kurssi (Tekstiä)</li>
-      <li>KUR- Kurssi (Tekstiä)</li>
-      <li>KUR- Kurssi (Tekstiä)</li>
-      <li>KUR- Kurssi (Tekstiä)</li>
-      <li>KUR- Kurssi (Tekstiä)</li>
-      <li>KUR- Kurssi (Tekstiä)</li>
-      <li>KUR- Kurssi (Tekstiä)</li>
-      <li>KUR- Kurssi (Tekstiä)</li>
-      <li>KUR- Kurssi (Tekstiä)</li>
+
+      <ui:repeat var="workspace" value="#{Workspace.listWorkspaces()}" varStatus="ws_status">
+        <li>#{workspace.name}</li>
+      </ui:repeat>
 
     </ul>
  
