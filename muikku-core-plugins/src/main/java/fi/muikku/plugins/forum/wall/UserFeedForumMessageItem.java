@@ -10,7 +10,7 @@ public class UserFeedForumMessageItem extends WallFeedItem {
   private ForumMessage forumMessage;
 
   public UserFeedForumMessageItem(ForumMessage message) {
-    super(message.getCreated(), "wall/forummessagewallentry.dust");
+    super(message.getCreated());
     this.forumMessage = message;
   }
 
