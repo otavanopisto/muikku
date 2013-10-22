@@ -1,6 +1,8 @@
 package fi.muikku.plugins.wall.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -115,6 +117,13 @@ public class DefaultWallEntryProvider implements WallEntryProvider {
     }
     
     return entries;
+  }
+
+  @Override
+  public List<String> listRequiredJavaScripts() {
+    return Arrays.asList(
+        "scripts/gui/wall_entry.js"
+    );
   }
 
 }

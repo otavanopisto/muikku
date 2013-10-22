@@ -10,7 +10,7 @@ import javax.enterprise.context.ApplicationScoped;
 import fi.muikku.plugin.PersistencePluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
 import fi.muikku.plugin.RESTPluginDescriptor;
-import fi.muikku.plugins.forum.dao.CourseForumAreaDAO;
+import fi.muikku.plugins.forum.dao.WorkspaceForumAreaDAO;
 import fi.muikku.plugins.forum.dao.EnvironmentForumAreaDAO;
 import fi.muikku.plugins.forum.dao.ForumAreaDAO;
 import fi.muikku.plugins.forum.dao.ForumMessageDAO;
@@ -45,7 +45,7 @@ public class ForumPluginDescriptor implements PluginDescriptor, PersistencePlugi
 	public List<Class<?>> getBeans() {
 		return new ArrayList<Class<?>>(Arrays.asList(
 			/* DAOs */
-		  CourseForumAreaDAO.class,
+		  WorkspaceForumAreaDAO.class,
       EnvironmentForumAreaDAO.class,
       ForumAreaDAO.class,
       ForumMessageDAO.class,

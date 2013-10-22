@@ -11,6 +11,7 @@ import javax.inject.Inject;
 
 import fi.muikku.dao.base.SchoolDataSourceDAO;
 import fi.muikku.dao.users.EnvironmentUserDAO;
+import fi.muikku.dao.users.UserContactDAO;
 import fi.muikku.dao.users.UserEntityDAO;
 import fi.muikku.dao.users.UserGroupDAO;
 import fi.muikku.dao.users.UserGroupUserDAO;
@@ -21,6 +22,7 @@ import fi.muikku.events.Modified;
 import fi.muikku.events.UserEntityEvent;
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.users.EnvironmentUser;
+import fi.muikku.model.users.UserContact;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserGroup;
 import fi.muikku.model.users.UserGroupUser;
@@ -54,6 +56,9 @@ public class UserController {
 
   @Inject
   private UserPictureDAO userPictureDAO;
+  
+  @Inject
+  private UserContactDAO userContactDAO;
   
   @Inject
   @Created
@@ -118,6 +123,10 @@ public class UserController {
 
 	public List<UserEmail> listUserEmails(User user) {
 		return userSchoolDataController.listUserEmails(user);
+	}
+	
+	public List<UserContact> listUserContacts(UserEntity userEntity) {
+	  return userContactDAO.listAllByUser(userEntity);
 	}
 	
 	/* UserGroup */

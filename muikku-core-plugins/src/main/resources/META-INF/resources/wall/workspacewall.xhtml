@@ -8,6 +8,10 @@
     <h:outputScript name="scripts/gui/wall.js" target="head"/>
     <!-- param['courseId'] -->
 
+    <c:forEach items="#{Wall.listRequiredJSFiles()}" var="jsFile">
+      <h:outputScript name="#{jsFile}" target="head"/>
+    </c:forEach>    
+
     <div class="widget wallWidget">
       <c:set var="wall" value="#{Wall.getWorkspaceWall(WorkspaceController.findWorkspaceEntityById(param['workspaceId']))}" />
       <input type="hidden" name="wallId" value="#{wall.id}"/>
@@ -19,7 +23,6 @@
       </ui:include>
 
       <div class="wallEntries">
-
       </div>
     </div>
     
