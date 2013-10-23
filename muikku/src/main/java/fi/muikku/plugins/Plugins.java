@@ -1,6 +1,8 @@
 package fi.muikku.plugins;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
@@ -23,6 +25,7 @@ import fi.muikku.plugin.LocalizedPluginDescriptor;
 import fi.muikku.plugin.PluginContextClassLoader;
 import fi.muikku.plugin.PluginDescriptor;
 import fi.muikku.plugin.PluginEvent;
+import fi.muikku.plugin.PrioritizedPluginDescriptor;
 import fi.muikku.plugin.Transactional;
 import fi.muikku.plugin.manager.PluginManagerException;
 import fi.muikku.plugin.manager.SingletonPluginManager;
@@ -67,9 +70,26 @@ public class Plugins {
 	@PluginContextClassLoader
 	public void initialize() {
 		logger.info("Initializing plugins");
-
+		
+		List<PluginDescriptor> plugins = getPlugins();
+		Collections.sort(plugins, new Comparator<PluginDescriptor>() {
+			
+			@Override
+			public int compare(PluginDescriptor o1, PluginDescriptor o2) {
+				return getPriority(o1) - getPriority(o2);
+			}
+			
+			private int getPriority(PluginDescriptor plugin) {
+				if (plugin instanceof PrioritizedPluginDescriptor) {
+					return ((PrioritizedPluginDescriptor) plugin).getPriority();
+				}
+				
+				return 0;
+			}
+ 		});
+		
 		firePluginsInitEvent(false);
-  	for (PluginDescriptor pluginDescriptor : getPlugins()) {
+  	for (PluginDescriptor pluginDescriptor : plugins) {
   		logger.info("Initializing plugin: " + pluginDescriptor.getName());
       
     	try {
@@ -87,6 +107,7 @@ public class Plugins {
     		logger.log(Level.SEVERE, "Failed to initialize plugin: " + pluginDescriptor.getName(), e);
     	}
   	}
+  	
   	firePluginsInitEvent(true);
 	}
 
