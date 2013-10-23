@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.plugin.PersistencePluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
+import fi.muikku.plugin.PrioritizedPluginDescriptor;
 import fi.muikku.plugins.schooldatalocal.dao.LocalUserDAO;
 import fi.muikku.plugins.schooldatalocal.dao.LocalUserEmailDAO;
 import fi.muikku.plugins.schooldatalocal.dao.LocalUserImageDAO;
@@ -25,7 +26,7 @@ import fi.muikku.schooldata.SchoolDataController;
 
 @ApplicationScoped
 @Stateful
-public class SchoolDataLocalPluginDescriptor implements PluginDescriptor, PersistencePluginDescriptor{
+public class SchoolDataLocalPluginDescriptor implements PluginDescriptor, PersistencePluginDescriptor, PrioritizedPluginDescriptor {
 
 	@Inject
 	private SchoolDataController schoolDataController;
@@ -33,6 +34,12 @@ public class SchoolDataLocalPluginDescriptor implements PluginDescriptor, Persis
 	@Override
 	public String getName() {
 		return "school-data-local";
+	}
+	
+	@Override
+	public int getPriority() {
+		// Prioritized as first school data bridge
+		return -10;
 	}
 
 	@Override
