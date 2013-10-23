@@ -17,10 +17,11 @@ public class WorkspaceFolderDAO extends PluginDAO<WorkspaceFolder> {
 	
 	private static final long serialVersionUID = 9095130166469638314L;
 
-	public WorkspaceFolder create(Long workspaceEntityId, WorkspaceFolder parent) {
+	public WorkspaceFolder create(Long workspaceEntityId, WorkspaceFolder parent, String urlName) {
 		WorkspaceFolder workspaceFolder = new WorkspaceFolder();
 		workspaceFolder.setWorkspaceEntityId(workspaceEntityId);
 		workspaceFolder.setParent(parent);
+		workspaceFolder.setUrlName(urlName);
 		return persist(workspaceFolder);
 	}
 

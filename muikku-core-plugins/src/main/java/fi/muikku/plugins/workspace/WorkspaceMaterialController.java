@@ -55,17 +55,17 @@ public class WorkspaceMaterialController {
 	
 	/* Folder */
 	
-	public WorkspaceFolder createWorkspaceFolder(WorkspaceEntity workspaceEntity) {
+	public WorkspaceFolder createWorkspaceFolder(WorkspaceEntity workspaceEntity, String urlName) {
 		if (workspaceEntity != null) {
-  		return workspaceFolderDAO.create(workspaceEntity.getId(), null);
+  		return workspaceFolderDAO.create(workspaceEntity.getId(), null, urlName);
 		} 
 		
 		return null;
 	}
 
-	public WorkspaceFolder createWorkspaceFolder(WorkspaceFolder parent) {
+	public WorkspaceFolder createWorkspaceFolder(WorkspaceFolder parent, String urlName) {
 		if (parent != null) {
-  		return workspaceFolderDAO.create(null, parent);
+  		return workspaceFolderDAO.create(null, parent, urlName);
 		}
 		
 		return null;
