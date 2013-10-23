@@ -379,29 +379,32 @@
 }
 
 .wi-news-item-content{
-  padding:5px;
-  float:left;
-  
+
 }
 
 
 .wi-news-item{
 	margin-top:10px;
-	padding:10px;
+
 
 }
 
 .wi-news-primary-item{
-box-sizing:border-box;
--moz-box-sizing:border-box; 	
+	padding:21px;
+  margin-top:10px;
+  border:1px solid $brd;
+  @include rounded(4px);
+}
+
+.wi-news-primary-item-bottom{
+  padding:21px;
   margin-top:10px;
   border:1px solid $brd;
   @include rounded(4px);
 }
 
 .wi-news-secondary-item{
-box-sizing:border-box;
--moz-box-sizing:border-box; 	
+  padding:21px;
   margin-top:10px;
   border:1px solid $brd;
   @include rounded(4px);
@@ -416,7 +419,10 @@ box-sizing:border-box;
 }
 
 .wi-news-item-content-description{
-@extend .co-content;	
+  float:left;
+box-sizing:border-box;
+-moz-box-sizing:border-box;   
+background-color:$aBgr;
 }
 
 .wi-frontpage-students{}
