@@ -2,20 +2,19 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html">
 
- <div class="wi-courses">
-  <h3>Kurssit</h3>
-  
-  
-  <ul>
+
+  <div class="wi-courses">
+    <h3>Kurssit</h3>
+
+    <ul>
       <li>KUR- Kurssi (Tekstiä)</li>
 
-      <ui:repeat var="workspace" value="#{Workspace.listWorkspaces()}" varStatus="ws_status">
+      <ui:repeat var="workspace" value="#{CourseList.listWorkspacesByContext(courselist, 'MY_COURSES')}" varStatus="ws_status">
         <li>#{workspace.name}</li>
       </ui:repeat>
 
     </ul>
- 
- </div>
+  </div>
 
 
 </ui:composition>
