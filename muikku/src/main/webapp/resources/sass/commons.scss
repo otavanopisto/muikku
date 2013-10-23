@@ -1,4 +1,4 @@
-/* common (.cm*) 
+/* common (.co*) 
 Idea is to have these styles shared amongst all possible functionalities
 To be used through SASS's extend feature with CSS's selectors.
 
@@ -59,4 +59,15 @@ padding:10px 20px 10px 20px;
   border:1px solid $brd;
   font-weight:bold;
   @include gradient-top-bottom;   
+}
+
+.co-widget-configure{
+@include rounded(2px);  
+background-color:$aBgr;
+}
+
+.co-widget{
+  padding:20px;
+  border:1px solid $brd;
+  @include rounded(5px);
 }

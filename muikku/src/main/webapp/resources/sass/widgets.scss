@@ -390,25 +390,20 @@
 }
 
 .wi-news-primary-item{
-	padding:21px;
-  margin-top:10px;
-  border:1px solid $brd;
-  @include rounded(4px);
+	margin-top:10px;
+  @extend .co-widget;
 }
 
 .wi-news-primary-item-bottom{
-  padding:21px;
   margin-top:10px;
-  border:1px solid $brd;
-  @include rounded(5px);
+  @extend .co-widget;
 }
 
 .wi-news-secondary-item{
-  padding:21px;
+
   margin-top:10px;
-  border:1px solid $brd;
-  @include rounded(5px);
-}
+  @extend .co-widget;
+  }
 
 .wi-news-item-picture{
   background:url("http://farm8.staticflickr.com/7363/9872617353_fb529696e9.jpg") no-repeat ;
@@ -426,9 +421,7 @@ background-color:$aBgr;
 }
 
 .wi-frontpage-students{
-	 padding:20px;
-  border:1px solid $brd;
-    @include rounded(5px);
+  @extend .co-widget;
 }
 	
 
@@ -448,9 +441,7 @@ background-color:$aBgr;
 
 .wi-frontpage-calendar{
 	margin-top:10px;
-	padding:20px;
-  border:1px solid $brd;
-  @include rounded(5px);
+  @extend .co-widget;
 }
 
 .wi-frontpage-calendar-container{
@@ -461,9 +452,7 @@ background-color:$aBgr;
 
 .wi-frontpage-wallfeed{
 	margin-top:10px;
-	padding:20px;
-  border:1px solid $brd;
-  @include rounded(5px);
+  @extend .co-widget;
 	
 }
 
@@ -478,9 +467,7 @@ background-color:$aBgr;
 }
 
 .wi-frontpage-courses{
-	padding:20px;
-	border:1px solid $brd;
-	  @include rounded(5px);
+  @extend .co-widget;
 }
 
 .wi-frontpage-courses ul{
