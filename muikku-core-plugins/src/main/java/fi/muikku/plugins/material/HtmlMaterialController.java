@@ -15,6 +15,10 @@ public class HtmlMaterialController {
 	@Inject
 	private HtmlMaterialDAO htmlMaterialDAO;
 	
+	public HtmlMaterial createHtmlMaterial(String urlName, String title, String html) {
+		return htmlMaterialDAO.create(urlName, title, html);
+	}
+	
 	public HtmlMaterial findHtmlMaterialById(Long id) {
 		return htmlMaterialDAO.findById(id);
 	}
