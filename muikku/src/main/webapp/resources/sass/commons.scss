@@ -6,56 +6,56 @@ To be used through SASS's extend feature with CSS's selectors.
   
   @import "_base.scss";
 
-.cm-buttonContainer{
+.co-buttonContainer{
 text-align:center;
 @include rounded(10px);
 padding:20px 0 20px 0;
 background-color:$aBgr;
 }
-.cm-menuContainer{
+.co-menuContainer{
 margin-top:5px; 
 }
 
-.cm-textContent{
+.co-textContent{
   @include shadow;
   @include rounded(4px);  
   background-color:#fff;  
 }
 
-.cm-toolbar{
+.co-toolbar{
 @include rounded(4px);  
 background-color:$aBgr;
 padding:10px 20px 10px 20px;
 }
 
-.cm-backLink{
+.co-backLink{
       @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-back.png'));
 }
 
-.cm-content{
+.co-content{
 @include rounded(4px);  
 background-color:$aBgr;
 margin-top:5px;
 padding:10px 20px 10px 20px;
 }
 
-.cm-content-th{
+.co-content-th{
   border:1px solid $brd;
   padding:5px;
   font-weight:bold;
   @include gradient-top-bottom; 
 }
-.cm-content-tbody{
+.co-content-tbody{
   background-color:$bgr;
   border:1px solid $brd;  
 }
-.cm-content-tr{}
+.co-content-tr{}
 
-.cm-content-td{
+.co-content-td{
  padding:0 0 0 5px;     
 }
 
-.cm-content-tfoot{
+.co-content-tfoot{
   border:1px solid $brd;
   font-weight:bold;
   @include gradient-top-bottom;   

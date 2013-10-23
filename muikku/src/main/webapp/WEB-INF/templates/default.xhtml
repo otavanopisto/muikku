@@ -113,7 +113,7 @@
             </m:widgetSpace>
             <m:widgetSpace name="environment.header.center" keepEmpty="true" sizing="MAXIMIZE"></m:widgetSpace>
             <m:widgetSpace name="environment.header.right" keepEmpty="false" sizing="MINIMIZE">
-              <m:widget name="internallogin" size="4" rendered="#{!sessionBackingBean.loggedIn}"/>
+        <!--       <m:widget name="internallogin" size="4" rendered="#{!sessionBackingBean.loggedIn}"/>  -->
               <m:widget name="logout" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
               <m:widget name="language" size="1"/>
             </m:widgetSpace>
@@ -136,7 +136,7 @@
               <m:widget name="dockcommunicator" size="2" />
             </m:widgetSpace>
             <m:widgetSpace name="environment.dock-top.center" keepEmpty="false" sizing="MAXIMIZE">
-              <m:widget name="home-textlinks" size="4" />
+              <m:widget name="home-textlinks" size="4" rendered="#{!sessionBackingBean.loggedIn}" />
             </m:widgetSpace>
             <m:widgetSpace name="environment.dock-top.right" keepEmpty="false" sizing="MINIMIZE">
               <m:widget name="docksettings" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
@@ -148,11 +148,13 @@
 
 
 
-    <div id="content" class="container_24">
+    <div id="content" class="container_24 jahve">
       <ui:insert name="contentToolsTop">
-        <m:widgetSpaceSet>
+        <m:widgetSpaceSet styleClass="jahve">
           <m:widgetSpace name="environment.content-tools-top.left" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
-          <m:widgetSpace name="environment.content-tools-top.center" keepEmpty="true" sizing="MAXIMIZE"></m:widgetSpace>
+          <m:widgetSpace name="environment.content-tools-top.center" keepEmpty="true" sizing="MAXIMIZE">
+          <m:widget name="home-footer" rendered="#{!sessionBackingBean.loggedIn}"/>
+          </m:widgetSpace>
           <m:widgetSpace name="environment.content-tools-top.right" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
         </m:widgetSpaceSet>
       </ui:insert>
