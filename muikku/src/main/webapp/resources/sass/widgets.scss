@@ -400,14 +400,14 @@
   padding:21px;
   margin-top:10px;
   border:1px solid $brd;
-  @include rounded(4px);
+  @include rounded(5px);
 }
 
 .wi-news-secondary-item{
   padding:21px;
   margin-top:10px;
   border:1px solid $brd;
-  @include rounded(4px);
+  @include rounded(5px);
 }
 
 .wi-news-item-picture{
@@ -425,7 +425,13 @@ box-sizing:border-box;
 background-color:$aBgr;
 }
 
-.wi-frontpage-students{}
+.wi-frontpage-students{
+	 padding:20px;
+  border:1px solid $brd;
+    @include rounded(5px);
+}
+	
+
 
 .wi-frontpage-students ul{
   padding:20px;
@@ -433,23 +439,58 @@ background-color:$aBgr;
 
 .wi-frontpage-students li{
   padding:5px;
+    @include rounded(5px);
 }
 
 .wi-frontpage-students li:nth-child(odd) {
   background:#ededed;
 }
 
-.wi-frontpage-calendar{}
-.wi-frontpage-wallfeed{}
+.wi-frontpage-calendar{
+	margin-top:10px;
+	padding:20px;
+  border:1px solid $brd;
+  @include rounded(5px);
+}
 
-.wi-frontpage-courses{}
+.wi-frontpage-calendar-container{
+  background-color:$aBgr;
+  height:200px;
+}
+	
+
+.wi-frontpage-wallfeed{
+	margin-top:10px;
+	padding:20px;
+  border:1px solid $brd;
+  @include rounded(5px);
+	
+}
+
+.wi-frontpage-wallfeed div{
+  padding:5px;
+}
+
+.wi-frontpage-wallfeed-item{
+  padding:5px;
+  border:1px solid $brd;
+  margin-bottom:1px;
+}
+
+.wi-frontpage-courses{
+	padding:20px;
+	border:1px solid $brd;
+	  @include rounded(5px);
+}
 
 .wi-frontpage-courses ul{
   padding:20px;
+  
 }
 
 .wi-frontpage-courses li{
   padding:5px;
+      @include rounded(5px);
 }
 
 .wi-frontpage-courses li:nth-child(odd) {
