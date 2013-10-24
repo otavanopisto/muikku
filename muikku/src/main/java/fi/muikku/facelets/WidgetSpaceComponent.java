@@ -23,7 +23,10 @@ public class WidgetSpaceComponent extends UIComponentBase {
   		ResponseWriter writer = context.getResponseWriter();
   		writer.write("<div class=");
   		writer.write('"');
-  	  writer.write("widgetSpace grid_");
+  		if (getChildren().size() != 0)
+  		  writer.write("widgetSpace grid_");
+  		else
+  		  writer.write("widgetSpace container_");
   	  writer.write(String.valueOf( getSize() ));
   	  if (getStyleClass() != null) {
   	    writer.write(" ");
