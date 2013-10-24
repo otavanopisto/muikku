@@ -2,15 +2,15 @@
   <input type="hidden" name="wallEntryId" value="{id}"/>
 
   {?forumMessage.creator_tq.hasPicture} 
-    <img class="wallEntryUserPicture" src="{@contextPath/}/picture?userId={forumMessage.creator}" width="50" height="50" />
+    <img class="wallEntryUserPicture" src="{@contextPath/}/picture?userId={forumMessage.creator}" width="25" height="25" />
   {:else}
-    <img class="wallEntryUserPicture" src="{@contextPath/}/themes/default/gfx/fish.jpg" width="50" height="50" />
+    <img class="wallEntryUserPicture" src="{@contextPath/}/themes/default/gfx/fish.jpg" width="25" height="25" />
   {/forumMessage.creator_tq.hasPicture}  
   
   <div class="wallEntryTitle">
     <a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={forumMessage.creator}">{forumMessage.creator_tq.fullName}</a>
 
-    {#localize key="plugin.wall.onForumAreaTitle"/} <a class="wallEntryForumAreaLink" href="{@contextPath/}/forum/threads.jsf?area=#{forumMessage.forumArea.id}">{forumMessage.forumArea.name}</a>
+    {#localize key="plugin.wall.onForumAreaTitle"/} <a class="wallEntryForumAreaLink" href="{@contextPath/}/forum/threads.jsf?area={forumMessage.forumArea.id}">{forumMessage.forumArea.name}</a>
     
     <span class="wallEntryDate">{forumMessage.created|formatDate}</span>
   </div>

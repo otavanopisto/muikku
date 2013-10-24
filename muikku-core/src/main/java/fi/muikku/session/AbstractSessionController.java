@@ -7,13 +7,6 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import fi.muikku.dao.courses.CourseUserDAO;
-import fi.muikku.dao.security.CourseUserPermissionOverrideDAO;
-import fi.muikku.dao.security.CourseRolePermissionDAO;
-import fi.muikku.dao.security.EnvironmentUserPermissionOverrideDAO;
-import fi.muikku.dao.security.EnvironmentRolePermissionDAO;
-import fi.muikku.dao.security.PermissionDAO;
-import fi.muikku.dao.users.EnvironmentUserDAO;
 import fi.muikku.dao.users.SuperUserDAO;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.util.ResourceEntity;
@@ -25,27 +18,6 @@ public abstract class AbstractSessionController implements SessionController {
 
   @Inject
   private SuperUserDAO superUserDAO;
-
-  @Inject
-  private EnvironmentRolePermissionDAO environmentUserRolePermissionDAO;
-
-  @Inject
-  private CourseRolePermissionDAO courseUserRolePermissionDAO;
-
-  @Inject
-  private EnvironmentUserDAO environmentUserDAO;
-
-  @Inject
-  private EnvironmentUserPermissionOverrideDAO environmentUserPermissionOverrideDAO;
-
-  @Inject
-  private CourseUserPermissionOverrideDAO courseUserPermissionOverrideDAO;
-  
-  @Inject
-  private PermissionDAO permissionDAO;
-  
-  @Inject
-  private CourseUserDAO courseUserDAO;
 
   @Override
   public boolean isSuperuser() {

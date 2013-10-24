@@ -113,7 +113,7 @@ class WorkspaceSchoolDataController {
 		}
 		
 		return null;
-	};
+	}
 	
 	/* Workspace Entities */
 	

@@ -649,9 +649,9 @@ div[data-name="settings.content-sidebar.left"]{
   margin-bottom: 7px;
   padding-bottom: 7px;
   border-bottom: 1px solid #4444aa;
-  padding-left: 68px;
+  padding-left: 45px;
   position: relative;
-  min-height: 60px;
+  min-height: 36px;
 }
 
 .wallEntryCreator, .wallEntryCommentCreator {
@@ -661,12 +661,11 @@ div[data-name="settings.content-sidebar.left"]{
 }
 
 .wallEntryDate, .wallEntryCommentDate {
-  font-size:1.3em; 
   float: right;
 }
 
 .wallEntryContent, .wallEntryCommentContent {
-  font-size: 2.4em;
+
 }
 
 .wallEntryCourseLink, .wallEntryForumAreaLink {
@@ -683,9 +682,9 @@ div[data-name="settings.content-sidebar.left"]{
 }
 
 .wallEntryComment {
-  padding-left: 68px;
+  padding-left: 45px;
   position: relative;
-  min-height: 60px;
+  min-height: 36px;
 }
 
 .wallEntryCommentTitle, .wallEntryTitle {
@@ -693,7 +692,6 @@ div[data-name="settings.content-sidebar.left"]{
 }
 
 .wallEntryFooter {
-  font-size: 1.6em;
   color: #4444aa;
 }
 
@@ -706,9 +704,9 @@ div[data-name="settings.content-sidebar.left"]{
   position: absolute;
   left: 0;
   
-  margin: 5px 5px 5px 5px;
-  width: 50px;
-  height: 50px;
+  margin: 5px;
+  width: 25px;
+  height: 25px;
 }
 
 .wallEntryGuidanceRequest {
