@@ -67,7 +67,7 @@ $.fn.extend({
       var _this = this;
       widgetElement = $(widgetElement);
       
-      this._userPopup = widgetElement.find(".cm-userpopup-container")
+      this._userPopup = widgetElement.find(".cm-userpopup-container");
       this._userId = widgetElement.find("input[name='userId']").val();
       this._communicatorContent = widgetElement.find(".cm-content");
       this._communicatorContent.on("click", ".cm-message", $.proxy(this._onMessageClick, this));

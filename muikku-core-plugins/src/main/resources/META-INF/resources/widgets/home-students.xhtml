@@ -2,30 +2,13 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html">
 
- <div class="wi-frontpage-students">
- <h3>Opiskelijat</h3>
-  <ul>
-			<li>Etunimi Sukunimi</li>
-			<li>Etunimi Sukunimi</li>
-			<li>Etunimi Sukunimi</li>
-			<li>Etunimi Sukunimi</li>
-			<li>Etunimi Sukunimi</li>
-			<li>Etunimi Sukunimi</li>
-			<li>Etunimi Sukunimi</li>
-			<li>Etunimi Sukunimi</li>
-			<li>Etunimi Sukunimi</li>
-			<li>Etunimi Sukunimi</li>
-			<li>Etunimi Sukunimi</li>
-			<li>Etunimi Sukunimi</li>
-			<li>Etunimi Sukunimi</li>
-			<li>Etunimi Sukunimi</li>
-			<li>Etunimi Sukunimi</li>
-			<li>Etunimi Sukunimi</li>
-			<li>Etunimi Sukunimi</li>
-			<li>Etunimi Sukunimi</li>
-			<li>Etunimi Sukunimi</li>
-			<li>Etunimi Sukunimi</li>
-		</ul> 
- </div>
+  <div class="wi-frontpage-students">
+    <h3>Opiskelijat</h3>
+    <ul>
+      <ui:repeat var="user" value="#{User.listUsers()}">
+        <li>#{user.firstName} #{user.lastName}</li>
+      </ui:repeat>
+    </ul>
+  </div>
 
 </ui:composition>
