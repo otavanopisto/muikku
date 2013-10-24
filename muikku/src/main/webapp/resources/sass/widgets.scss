@@ -435,6 +435,11 @@ background-color:$aBgr;
     @include rounded(5px);
 }
 
+.wi-frontpage-students li a{
+  text-decoration: none;
+  color: #000000;
+}
+
 .wi-frontpage-students li:nth-child(odd) {
   background:#ededed;
 }
