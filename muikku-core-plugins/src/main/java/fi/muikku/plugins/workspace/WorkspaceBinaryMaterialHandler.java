@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import fi.muikku.RequestHandler;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.material.model.BinaryMaterial;
+import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.schooldata.WorkspaceController;
 
@@ -58,20 +59,28 @@ public class WorkspaceBinaryMaterialHandler implements RequestHandler {
   				return true;
   			}
   			
-  			if (!(workspaceMaterial.getMaterial() instanceof BinaryMaterial)) {
-  				response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-  				return true;
-  			}
-  			
-  			BinaryMaterial binaryMaterial = (BinaryMaterial) workspaceMaterial.getMaterial();
-  			
-  			response.setContentType(binaryMaterial.getContentType());
-  			ServletOutputStream outputStream = response.getOutputStream();
-  			try {
-  				outputStream.write(binaryMaterial.getContent());
-  			} finally {
-  				outputStream.flush();
-  				outputStream.close();
+  			if (workspaceMaterial.getMaterial() instanceof BinaryMaterial) {
+    			BinaryMaterial binaryMaterial = (BinaryMaterial) workspaceMaterial.getMaterial();
+    			
+    			response.setContentType(binaryMaterial.getContentType());
+    			ServletOutputStream outputStream = response.getOutputStream();
+    			try {
+    				outputStream.write(binaryMaterial.getContent());
+    			} finally {
+    				outputStream.flush();
+    				outputStream.close();
+    			}
+  			} else if (workspaceMaterial.getMaterial() instanceof HtmlMaterial) {
+  				HtmlMaterial htmlMaterial = (HtmlMaterial) workspaceMaterial.getMaterial();
+    			
+    			response.setContentType("text/html; charset=UTF-8");
+    			ServletOutputStream outputStream = response.getOutputStream();
+    			try {
+    				outputStream.write(htmlMaterial.getHtml().getBytes("UTF-8"));
+    			} finally {
+    				outputStream.flush();
+    				outputStream.close();
+    			}
   			}
   			
   		} else {

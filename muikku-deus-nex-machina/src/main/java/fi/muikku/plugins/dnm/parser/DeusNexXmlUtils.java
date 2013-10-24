@@ -22,7 +22,15 @@ import org.w3c.dom.NodeList;
 
 public class DeusNexXmlUtils {
 
-	
+	public static Double getChildValueDoble(Element parent, String name) throws XPathExpressionException {
+		String childValue = getChildValue(parent, name);
+		if (StringUtils.isNotBlank(childValue)) {
+  		return NumberUtils.createDouble(childValue);
+		}
+		
+		return null;
+	}
+
 	public static int getChildValueInt(Element parent, String name) throws XPathExpressionException {
 		return getChildValueInteger(parent, name);
 	}
