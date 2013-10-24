@@ -1,5 +1,33 @@
-/* Variables */
 
+/* Functions */
+
+@function prc($target, $container) {
+  @return ($target / $container);
+}
+
+
+
+
+
+
+/* Variables */
+$grid-columns: 24;
+$grid-size: prc(100%, 24);
+
+
+@mixin grid_x {
+	$grids: null;
+  @for $i from 1 through $grid-columns{
+  .grid_#{$i} {
+     width: $grid-size * $i;
+     }
+  $grids:append($grids, unquote(".grid_#{$i}"), comma);   
+  }
+  
+ #{$grids}{
+ float:left;
+ }
+}
 /* COLORS */
 
 /* Fonts */

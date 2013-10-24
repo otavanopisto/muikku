@@ -1,0 +1,25 @@
+@import "_base.scss";
+
+
+/* My Custom Grid */
+
+.container_24{
+width:960px;
+margin-left:auto;
+margin-right:auto; 
+}
+
+
+@include grid_x;
+
+
+/* http://sonspring.com/journal/clearing-floats */
+
+.clear {
+  clear: both;
+  display: block;
+  overflow: hidden;
+  visibility: hidden;
+  width: 0;
+  height: 0;
+}
