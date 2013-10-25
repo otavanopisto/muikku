@@ -28,7 +28,7 @@ import fi.muikku.schooldata.WorkspaceController;
 @URLMappings(mappings = { 
   @URLMapping(
 	  id = "workspace-material", 
-  	pattern = "/workspace/#{workspaceMaterialBackingBean.workspaceUrlName}/materials/#{ /[a-zA-Z0-9_\\/\\.\\-]*/ workspaceMaterialBackingBean.workspaceMaterialPath}", 
+  	pattern = "/workspace/#{workspaceMaterialBackingBean.workspaceUrlName}/materials/#{ /[a-zA-Z0-9_\\/\\.\\\\-][a-zA-Z0-9_\\/\\.\\\\-]*/ workspaceMaterialBackingBean.workspaceMaterialPath}", 
   	viewId = "/workspaces/workspace-material.jsf"
   )}
 )
