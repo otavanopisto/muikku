@@ -1,19 +1,26 @@
 package fi.muikku.plugins.dnm;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
-import javax.enterprise.context.Dependent;
+import javax.enterprise.context.ApplicationScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.dnm.parser.DeusNexException;
+import fi.muikku.plugins.dnm.parser.DeusNexInternalException;
 import fi.muikku.plugins.dnm.parser.content.ConnectFieldOption;
 import fi.muikku.plugins.dnm.parser.content.DeusNexContentParser;
 import fi.muikku.plugins.dnm.parser.content.DeusNexEmbeddedItemElementHandler;
@@ -35,13 +42,17 @@ import fi.muikku.plugins.material.HtmlMaterialController;
 import fi.muikku.plugins.material.model.BinaryMaterial;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
+import fi.muikku.plugins.workspace.WorkspaceMaterialUtils;
 import fi.muikku.plugins.workspace.model.WorkspaceFolder;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 
-@Dependent
+@ApplicationScoped
 @Stateful
 public class DeusNexMachinaController {
+	
+	private final static String LOOKUP_MATERIAL_URLNAME = "[_DEUS_NEX_MACHINE_LOOKUP_]";
 	
 	@Inject
 	private HtmlMaterialController htmlMaterialController; 
@@ -53,10 +64,11 @@ public class DeusNexMachinaController {
 	private WorkspaceMaterialController workspaceMaterialController;
 	
 	@PostConstruct
-	public void init() {
+	public void init() throws IOException {
 		deusNexStructureParser = new DeusNexStructureParser();
+		loadLookup();
 	}
-	
+
 	public DeusNexDocument parseDeusNexDocument(InputStream inputStream) throws DeusNexException {
 		return deusNexStructureParser.parseDocument(inputStream);
 	}
@@ -77,6 +89,11 @@ public class DeusNexMachinaController {
 			WorkspaceFolder folder = (WorkspaceFolder) findNode(parent, folderResource);
 			if (folder == null) {
 				folder = createFolder(parent, folderResource);
+				try {
+					setResourceWorkspaceNodeId(resource.getNo(), folder.getId());
+				} catch (IOException e) {
+					throw new DeusNexInternalException("Failed to store resourceNo lookup file", e);
+				}
 			}
 			
 			for (Resource childResource : folderResource.getResources()) {
@@ -86,6 +103,12 @@ public class DeusNexMachinaController {
   		Material material = createMaterial(resource, deusNexDocument);
   		if (material != null) {
   			WorkspaceNode workspaceNode = workspaceMaterialController.createWorkspaceMaterial(parent, material, material.getUrlName());
+  			
+  			try {
+					setResourceWorkspaceNodeId(resource.getNo(), workspaceNode.getId());
+				} catch (IOException e) {
+					throw new DeusNexInternalException("Failed to store resourceNo lookup file", e);
+				}
   			
   			if (resource instanceof ResourceContainer) {
     			for (Resource childResource : ((ResourceContainer) resource).getResources()) {
@@ -162,8 +185,42 @@ public class DeusNexMachinaController {
 	private WorkspaceNode findNode(WorkspaceNode parent, Folder folderResource) {
 		return workspaceMaterialController.findWorkspaceNodeByParentAndUrlName(parent, folderResource.getName());
 	}
+	
+	private void setResourceWorkspaceNodeId(Integer resourceNo, Long workspaceNodeId) throws IOException {
+		lookupProperties.put(String.valueOf(resourceNo), String.valueOf(workspaceNodeId));
+		storeLookup();
+	}
+	
+	private Long getResourceWorkspaceNodeId(Integer resourceNo) {
+		return NumberUtils.createLong(lookupProperties.getProperty(String.valueOf(resourceNo)));
+	}
+	
+	private void loadLookup() throws IOException {
+		lookupProperties = new Properties();
+
+		BinaryMaterial lookupMaterial = binaryMaterialController.findBinaryMaterialdByUrlName(LOOKUP_MATERIAL_URLNAME);
+		if (lookupMaterial != null) {
+			InputStream lookupStream = new ByteArrayInputStream(lookupMaterial.getContent());
+			lookupProperties.load(lookupStream);
+			lookupStream.close();
+		}
+	}
+	
+	private void storeLookup() throws IOException {
+		ByteArrayOutputStream lookupStream = new ByteArrayOutputStream();
+		lookupProperties.store(lookupStream, null);
+		lookupStream.close();
+		
+		BinaryMaterial lookupMaterial = binaryMaterialController.findBinaryMaterialdByUrlName(LOOKUP_MATERIAL_URLNAME);
+		if (lookupMaterial == null) {
+			binaryMaterialController.createBinaryMaterial(LOOKUP_MATERIAL_URLNAME, LOOKUP_MATERIAL_URLNAME, "text/x-java-properties", lookupStream.toByteArray());
+		} else {
+			binaryMaterialController.updateBinaryMaterialContent(lookupMaterial, lookupStream.toByteArray());
+		}
+	}
 
 	private DeusNexStructureParser deusNexStructureParser;
+	private Properties lookupProperties;
 	
 	private class FieldElementsHandler implements DeusNexFieldElementHandler {
 		
@@ -217,21 +274,40 @@ public class DeusNexMachinaController {
 		
 		@Override
 		public Node handleEmbeddedDocument(org.w3c.dom.Document ownerDocument, String title, Integer queryType, Integer resourceNo, Integer embeddedResourceNo) {
-			// TODO: iframe can not be the final solution for this.
+			// TODO: This is just for show, real implementation depends on HtmlMaterial implementation
+			
+			String type = "_";
+			String relativePath = null;
 			Resource resource = deusNexDocument.getResourceByNo(resourceNo);
 			if (resource != null) {
-				Resource parentResource = deusNexDocument.getAncestorByType(resource, Type.FOLDER);
-  			String relativePath = parentResource != null ? DeusNexDocumentUtils.getRelativePath(deusNexDocument, resource, parentResource) : resource.getName();
-  			
+				// Resource is within same deus nex document
+  			Resource parentResource = deusNexDocument.getAncestorByType(resource, Type.FOLDER);
+  			relativePath = parentResource != null ? DeusNexDocumentUtils.getRelativePath(deusNexDocument, resource, parentResource) : resource.getName();
+  			type = "DND";
+			} else {
+				Long workspaceNodeId = getResourceWorkspaceNodeId(resourceNo);
+				if (workspaceNodeId != null) {
+					// Resource has been imported before
+					WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceNodeId);
+					if (workspaceMaterial != null) {
+						String contextPath = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
+						relativePath = contextPath + WorkspaceMaterialUtils.getCompletePath(workspaceMaterial);
+		  			type = "POOL";
+					} 
+				}
+			}
+			
+			if (relativePath != null) {
   			Element iframeElement = ownerDocument.createElement("iframe");
-  			
-  			iframeElement.setAttribute("src", relativePath + "?embed=true");
+  			iframeElement.setAttribute("src", relativePath + "?embed=true&on=" + resourceNo + "&rt=" + type);
   			iframeElement.setAttribute("title", title);
   			iframeElement.setAttribute("seamless", "seamless");
   			iframeElement.setAttribute("border", "0");
   			iframeElement.setAttribute("frameborder", "0");
   			iframeElement.setAttribute("width", "100%");
   			return iframeElement;
+			} else {
+				System.out.println("Warning: Embedded document " + resourceNo + " could not be found.");
 			}
 			
 			return null;
