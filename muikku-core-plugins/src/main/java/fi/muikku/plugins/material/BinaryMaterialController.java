@@ -22,5 +22,13 @@ public class BinaryMaterialController {
 	public BinaryMaterial finBinaryMaterialById(Long id) {
 		return binaryMaterialDAO.findById(id);
 	}
+
+	public BinaryMaterial findBinaryMaterialdByUrlName(String urlName) {
+		return binaryMaterialDAO.findByUrlName(urlName);
+	}
+
+	public BinaryMaterial updateBinaryMaterialContent(BinaryMaterial binaryMaterial, byte[] content) {
+		return binaryMaterialDAO.updateContent(binaryMaterial, content);
+	}
 	
 }
