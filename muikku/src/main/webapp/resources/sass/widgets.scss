@@ -48,6 +48,20 @@
    @include naviIcon(url('../resources/gfx/icons/32x32/actions/calendars-visible.png'));
 }
 
+.naviIconHome{
+   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-home.png'));
+}
+
+.naviIconHome.disabled{
+   opacity:0.2;
+   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-home.png'));
+}
+
+.naviIconHome:hover{
+   opacity:0.2;
+   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-home.png'));
+}
+
 .naviIconCoursePicker{
    @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-coursepicker.png'));
 }
@@ -328,3 +342,45 @@
 .calendarWidget div.fullCalendar .today.fullCalendarEventfulDay {
   border-color: green;
 }
+
+
+/* frontpage widgets */
+
+.wi-info{
+	
+}
+
+.wi-news{}
+
+.wi-students{}
+
+.wi-students ul{
+  padding:20px;
+}
+
+.wi-students li{
+  padding:5px;
+}
+
+.wi-students li:nth-child(odd) {
+  background:#ededed;
+}
+
+.wi-calendar{}
+.wi-wallfeed{}
+
+.wi-courses{}
+
+.wi-courses ul{
+  padding:20px;
+}
+
+.wi-courses li{
+  padding:5px;
+}
+
+.wi-courses li:nth-child(odd) {
+	background:#ededed;
+}
+
+

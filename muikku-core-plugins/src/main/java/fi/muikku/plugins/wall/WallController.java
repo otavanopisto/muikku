@@ -24,6 +24,7 @@ import fi.muikku.model.security.ResourceRights;
 import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.plugins.assessmentrequest.AssessmentRequestController;
 import fi.muikku.plugins.forum.dao.EnvironmentForumAreaDAO;
 import fi.muikku.plugins.forum.dao.ForumThreadDAO;
 import fi.muikku.plugins.forum.model.ForumArea;
@@ -108,6 +109,9 @@ public class WallController {
   @Inject
   private ResourceRightsController resourceRightsController_TEMP;
   
+  @Inject
+  private AssessmentRequestController assessmentRequestController;
+  
   public void TEST_DATA() {
     Random R = new Random();
     
@@ -134,7 +138,7 @@ public class WallController {
     
     int r = R.nextInt(24180);
     
-    switch (R.nextInt(3)) {
+    switch (R.nextInt(4)) {
       case 1:
         // Guidance Request
       break;
@@ -152,6 +156,8 @@ public class WallController {
       
       case 3:
         // Assessment request
+        
+        assessmentRequestController.create(workspaceEntity, userEntity, new Date(), "Arvioi mut, beibe! #" + r);
       break;
 
       default:
@@ -419,6 +425,17 @@ public class WallController {
 
   public UserWall findUserWallById(Long wallId) {
     return userWallDAO.findById(wallId);
+  }
+  
+  public List<String> listRequiredJSFiles() {
+    List<String> result = new ArrayList<String>();
+    
+    for (WallEntryProvider wallEntryProvider : wallEntryProviders) {
+      List<String> v = wallEntryProvider.listRequiredJavaScripts();
+      if (v != null)
+        result.addAll(v);
+    }
+    return result;
   }
   
   public void onCourseCreateEvent(@Observes @Created CourseEntityEvent event) {

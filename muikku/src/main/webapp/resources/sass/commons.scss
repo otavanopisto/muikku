@@ -1,0 +1,62 @@
+/* common (.cm*) 
+Idea is to have these styles shared amongst all possible functionalities
+To be used through SASS's extend feature with CSS's selectors.
+
+  */
+  
+  @import "_base.scss";
+
+.cm-buttonContainer{
+text-align:center;
+@include rounded(10px);
+padding:20px 0 20px 0;
+background-color:$aBgr;
+}
+.cm-menuContainer{
+margin-top:5px; 
+}
+
+.cm-textContent{
+  @include shadow;
+  @include rounded(4px);  
+  background-color:#fff;  
+}
+
+.cm-toolbar{
+@include rounded(4px);  
+background-color:$aBgr;
+padding:10px 20px 10px 20px;
+}
+
+.cm-backLink{
+      @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-back.png'));
+}
+
+.cm-content{
+@include rounded(4px);  
+background-color:$aBgr;
+margin-top:5px;
+padding:10px 20px 10px 20px;
+}
+
+.cm-content-th{
+  border:1px solid $brd;
+  padding:5px;
+  font-weight:bold;
+  @include gradient-top-bottom; 
+}
+.cm-content-tbody{
+  background-color:$bgr;
+  border:1px solid $brd;  
+}
+.cm-content-tr{}
+
+.cm-content-td{
+ padding:0 0 0 5px;     
+}
+
+.cm-content-tfoot{
+  border:1px solid $brd;
+  font-weight:bold;
+  @include gradient-top-bottom;   
+}

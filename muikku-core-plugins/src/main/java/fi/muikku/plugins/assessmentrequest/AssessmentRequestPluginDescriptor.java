@@ -32,8 +32,11 @@ public class AssessmentRequestPluginDescriptor implements PluginDescriptor, Pers
 		  
 		  /* Controllers */
 		  
+		  AssessmentRequestController.class,
+		  
 		  /* Other */
 		  
+		  AssessmentRequestPermissions.class,
 		  AssessmentRequestWallEntryProvider.class
 		));
 	}

@@ -8,6 +8,10 @@
 
     <h:outputScript name="scripts/gui/userwall.js" target="head"/>
     
+    <c:forEach items="#{Wall.listRequiredJSFiles()}" var="jsFile">
+      <h:outputScript name="#{jsFile}" target="head"/>
+    </c:forEach>    
+    
     <div class="widget userWallWidget">
       <c:set var="userEntity" value="#{User.findUserEntity(userId)}"/>
       <c:set var="wall" value="#{Wall.getUserWall(userEntity)}" />
@@ -19,14 +23,6 @@
       </ui:include>
       
       <div class="wallEntries">
-<!--         <c:set var="userWallEntryItems" value="${Wall.listWallEntries(wall)}"/> -->
-        
-<!--         <c:forEach var="wallEntry" items="#{userWallEntryItems}"> -->
-<!--           <ui:include src="/fragments/wallentry.xhtml"> -->
-<!--             <ui:param name="wall" value="${wall}" /> -->
-<!--             <ui:param name="wallEntry" value="${wallEntry}" /> -->
-<!--           </ui:include> -->
-<!--         </c:forEach> -->
       </div>
     </div>
     

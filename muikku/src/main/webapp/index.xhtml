@@ -1,11 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+  xmlns:h="http://java.sun.com/jsf/html" 
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
     template="/WEB-INF/templates/default.xhtml">
     
   <ui:define name="content">
-  </ui:define>
+   <h:panelGroup layout="block" styleClass="container_24"> 
+		 <m:widgetSpaceSet>
+		   <m:widgetSpace name="index.content.primary.left" keepEmpty="false" sizing="MINIMIZE" styleClass="jahve">
+	       <!--  Not logged in -->
+	        <m:widget name="home-courses" rendered="#{!sessionBackingBean.loggedIn}" size="8" />
+	       <!--  Logged in -->
+	        <m:widget name="home-students" rendered="#{sessionBackingBean.loggedIn}" size="8" />
+	       <!--  Both -->
+	     </m:widgetSpace>     
+	     <m:widgetSpace name="index.content.primary.right" keepEmpty="false" sizing="MINIMIZE">
+	         <!--  Not logged in -->  
+	          <m:widget name="home-info" size="15" rendered="#{!sessionBackingBean.loggedIn}"/>
+	         <!--  Logged in -->
+	          <m:widget name="home-courses" rendered="#{sessionBackingBean.loggedIn}" size="8" /> 
+	     </m:widgetSpace>
+		 </m:widgetSpaceSet>
+	 </h:panelGroup>  
+	 
+	 <div class="clear"></div>
+
+	 	<m:widgetSpaceSet>		
+	 	 <m:widgetSpace name="index.content.secondary.left" keepEmpty="false" sizing="MAXIMIZE"> 
+	     <m:widget name="home-news"  rendered="#{!sessionBackingBean.loggedIn}"/>
+	     <m:widget name="home-wallfeed"  rendered="#{sessionBackingBean.loggedIn}" />
+	     <m:widget name="home-calendar"  rendered="#{sessionBackingBean.loggedIn}"/>
+	    <!--     <m:widget name="home-video" size="15" rendered="#{!sessionBackingBean.loggedIn}"/>				  -->
+		</m:widgetSpace>
+	  <m:widgetSpace name="index.content.secondary.center" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
+	  <m:widgetSpace name="index.content.secondary.right" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
+	 </m:widgetSpaceSet>
+ </ui:define>
 
 </ui:composition>

@@ -1,0 +1,31 @@
+<div class="wallEntry">
+  <input type="hidden" name="wallEntryId" value="{id}"/>
+
+  {?forumMessage.creator_tq.hasPicture} 
+    <img class="wallEntryUserPicture" src="{@contextPath/}/picture?userId={forumMessage.creator}" width="50" height="50" />
+  {:else}
+    <img class="wallEntryUserPicture" src="{@contextPath/}/themes/default/gfx/fish.jpg" width="50" height="50" />
+  {/forumMessage.creator_tq.hasPicture}  
+  
+  <div class="wallEntryTitle">
+    <a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={forumMessage.creator}">{forumMessage.creator_tq.fullName}</a>
+
+    {#localize key="plugin.wall.onForumAreaTitle"/} <a class="wallEntryForumAreaLink" href="{@contextPath/}/forum/threads.jsf?area=#{forumMessage.forumArea.id}">{forumMessage.forumArea.name}</a>
+    
+    <span class="wallEntryDate">{forumMessage.created|formatDate}</span>
+  </div>
+  
+  <div class="wallEntryContent">
+    <div class="wallEntryItem">{forumMessage.message}</div>
+  </div>
+  
+<!--   <div class="wallEntryFooter"> -->
+<!--     <a class="wallEntryReplyLink">{#localize key="plugin.wall.reply"/}</a> -->
+<!--   </div> -->
+  
+<!--   <div class="wallEntryComments"> -->
+<!--     {#replies} -->
+<!--       {>"threadwallentryreply.dust"/} -->
+<!--     {/replies} -->
+<!--   </div> -->
+</div>

@@ -129,11 +129,14 @@
          
         <ui:insert name="dockTop">
           <m:widgetSpaceSet>
-            <m:widgetSpace name="environment.dock-top.left" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
-            <m:widgetSpace name="environment.dock-top.center" keepEmpty="true" sizing="MAXIMIZE">
-              <m:widget name="dockcalendar" size="4" rendered="#{sessionBackingBean.loggedIn}"/>
-              <m:widget name="dockstudentgrading" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
-              <m:widget name="dockcommunicator" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
+            <m:widgetSpace name="environment.dock-top.left" keepEmpty="false" sizing="SUM">
+              <m:widget name="dockhome" size="1" />
+              <m:widget name="dockcalendar" size="1" />
+              <m:widget name="dockstudentgrading" size="1" />
+              <m:widget name="dockcommunicator" size="2" />
+            </m:widgetSpace>
+            <m:widgetSpace name="environment.dock-top.center" keepEmpty="false" sizing="MAXIMIZE">
+              <m:widget name="home-textlinks" size="4" />
             </m:widgetSpace>
             <m:widgetSpace name="environment.dock-top.right" keepEmpty="false" sizing="MINIMIZE">
               <m:widget name="docksettings" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
@@ -156,9 +159,11 @@
       
       <ui:insert name="contentArea">
         <m:widgetSpaceSet>
-          <m:widgetSpace name="environment.content-sidebar.left" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
-          <m:widgetSpace name="environment.content" keepEmpty="true" sizing="MAXIMIZE">
-            <m:widget name="content" size="1"/>    
+          <m:widgetSpace name="environment.content-sidebar.left" keepEmpty="false" sizing="MINIMIZE">
+
+          </m:widgetSpace>
+          <m:widgetSpace name="environment.content" keepEmpty="true" sizing="MAXIMIZE"> 
+			      <m:widget name="content" />   
           </m:widgetSpace>
           <m:widgetSpace name="environment.content-sidebar.right" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
         </m:widgetSpaceSet>
@@ -194,9 +199,9 @@
     </div> 
   
   <script>
-		$( "#dynamicNaviButton" ).click(function() {
-		$( "#dynamicNaviContainer" ).toggle( "slide", 500 );
-		});
+    $( "#dynamicNaviButton" ).click(function() {
+    $( "#dynamicNaviContainer" ).toggle( "slide", 500 );
+    });
    </script>  
   </h:body>
 

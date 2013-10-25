@@ -1,5 +1,8 @@
 @import "_base.scss";
 
+/* commons.scss contains all the common extendable styles  */
+
+@import "commons.scss";
 
 /* Note: All in-development- unfinished-temp-styles are in temp.css */
 
@@ -83,7 +86,7 @@ h5{
  text-decoration:none; 
  visibility: visible; 
  overflow: visible; 
- @include transitionDirection(0, 0, 0, 20px);
+ @include transitionDirection(0, 0, 0, 38px);
  display: inline; 
  } 
  
@@ -163,7 +166,7 @@ padding:5px;
 
 #staticNavigationFade{
   @include fadetoAlpha-top-bottom;	
-	height:40px;
+  height:60px;
 	z-index:12;
 }
 
@@ -173,9 +176,7 @@ padding:5px;
 }
 
 
-
-
-
+/* Styles for waypoints */
 
 .stuck{
     position:fixed;
@@ -187,16 +188,24 @@ padding:5px;
 	top:0;
 	left:50%;
 	margin-left:-481px;
+
 	
 }
 
 .stuckDNav {
   position:fixed !important;
+
   top:0;
   left:0;
-
-  
 }
+
+
+.stNavScrollStyles{
+	background-color:#fff !important; 
+	border:2px solid #dadada !important;
+	
+}
+
 
 #sessionPanel {
   position: relative;
@@ -334,66 +343,6 @@ padding:5px;
   margin: 4px 0px 4px 0px;
 }
 
-/* mainFunction (.mf*) 
-Idea is to have these styles shared amongst all possible functions
-This can also be done through SASS's extend feature with CSS's selectors.
-
-  */
-
-.mf-buttonContainer{
-text-align:center;
-@include rounded(10px);
-padding:20px 0 20px 0;
-background-color:$aBgr;
-}
-.mf-menuContainer{
-margin-top:5px;	
-}
-
-.mf-textContent{
-  @include shadow;
-  @include rounded(4px);  
-  background-color:#fff;	
-}
-
-.mf-toolbar{
-@include rounded(4px); 	
-background-color:$aBgr;
-padding:10px 20px 10px 20px;
-}
-
-.mf-backLink{
-      @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-back.png'));
-}
-
-.mf-content{
-@include rounded(4px);  
-background-color:$aBgr;
-margin-top:5px;
-padding:10px 20px 10px 20px;
-}
-
-.mf-content-th{
-  border:1px solid $brd;
-  padding:5px;
-  font-weight:bold;
-  @include gradient-top-bottom;	
-}
-.mf-content-tbody{
-  background-color:$bgr;
-  border:1px solid $brd;	
-}
-.mf-content-tr{}
-
-.mf-content-td{
- padding:0 0 0 5px;   	
-}
-
-.mf-content-tfoot{
-  border:1px solid $brd;
-  font-weight:bold;
-  @include gradient-top-bottom;   
-}
 
 
 
@@ -645,7 +594,7 @@ color:$lukio;
 /* Settings */
 
 .se-users, .se-roles, .se-workspaces, .se-workspacetypes, .se-plugins, .se-gradingscales, .se-courseidentifiers{
-  @extend .mf-content;  
+  @extend .cm-content;  
 }
 
 
@@ -659,7 +608,7 @@ se-container{
 }
 
 .se-container th[scope="col"]{
- @extend .mf-content-th;
+ @extend .cm-content-th;
 }
 
 .se-container th[scope="colgroup"]{
@@ -671,17 +620,17 @@ se-container{
 }
 
 .se-container tbody{
- @extend .mf-content-tbody;
+ @extend .cm-content-tbody;
 }
 
 
 .se-container td{
-  @extend .mf-content-td;
+  @extend .cm-content-td;
 
 }
 
 .se-container tfoot{
-  @extend .mf-content-tfoot;
+  @extend .cm-content-tfoot;
 }
 
 .se-index{
@@ -689,7 +638,7 @@ se-container{
 }
 
 .se-widget-userAdd{
-  @extend .mf-buttonContainer;	
+  @extend .cm-buttonContainer;	
   margin-top:5px;
   padding:0;
   width:40px;
@@ -704,9 +653,7 @@ se-container{
 }
 
 div[data-name="settings.content-sidebar.left"]{
-
-	padding:0;
-	
+	padding:0;	
 }
 
 
