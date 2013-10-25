@@ -1,14 +1,18 @@
 package fi.muikku.plugins.dnm;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
 
 import com.ocpsoft.pretty.faces.annotation.URLAction;
 import com.ocpsoft.pretty.faces.annotation.URLMapping;
@@ -38,33 +42,46 @@ public class DeusNexMachinaImportBackingBean {
 	private DeusNexMachinaController deusNexMachinaController;
 
 	@URLAction
-	public void load() throws IOException {
+	public void load() throws IOException, ZipException, DeusNexException {
 		// TODO: Security
 		// TODO: Proper error handling
 		
 		WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
 		
-		URL url = new URL(getScriptUrl());
-		URLConnection connection = url.openConnection();
-		connection.setDoInput(true);
-		connection.setDoOutput(true);
-
-		InputStream inputStream = connection.getInputStream();
-		try {
-			deusNexMachinaController.importDeusNexDocument(workspaceEntity, inputStream);
-		} catch (DeusNexException e) {
-			e.printStackTrace();
-		} finally {
-			inputStream.close();
+		File xmlFile = new File(getFile() + ".xml");
+		if (!xmlFile.exists()) {
+			File zipFile = new File(getFile() + ".zip");
+			if (!zipFile.exists()) {
+				throw new FileNotFoundException();
+			} else {
+				unzipFile(zipFile, xmlFile);
+			}
 		}
+	
+  	if (!xmlFile.exists()) {
+  		throw new FileNotFoundException();
+  	}
+  	
+  	InputStream inputStream = new FileInputStream(xmlFile);
+  	try {
+  	  deusNexMachinaController.importDeusNexDocument(workspaceEntity, inputStream);
+  	} finally {
+  		inputStream.close();
+  	}
+	}
+
+	private void unzipFile(File zipFile, File xmlFile) throws ZipException {
+		ZipFile zipArchive = new ZipFile(zipFile);
+	  zipArchive.setPassword(System.getProperty("muikku-deus-nex-machina-password"));
+	  zipArchive.extractFile(xmlFile.getName(), xmlFile.getParent());
+	}
+
+	public String getFile() {
+		return file;
 	}
 	
-	public String getScriptUrl() {
-		return scriptUrl;
-	}
-	
-	public void setScriptUrl(String scriptUrl) {
-		this.scriptUrl = scriptUrl;
+	public void setFile(String file) {
+		this.file = file;
 	}
 	
 	public Long getWorkspaceEntityId() {
@@ -76,7 +93,7 @@ public class DeusNexMachinaImportBackingBean {
 	}
 	
 	@URLQueryParameter (value = "file")
-	private String scriptUrl;
+	private String file;
 	
 	@URLQueryParameter (value = "workspaceEntityId")
 	private Long workspaceEntityId;
