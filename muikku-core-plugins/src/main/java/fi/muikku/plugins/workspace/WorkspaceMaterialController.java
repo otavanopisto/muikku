@@ -33,6 +33,20 @@ public class WorkspaceMaterialController {
 	@Inject
 	private WorkspaceNodeDAO workspaceNodeDAO;
 	
+	/* Node */
+
+	public WorkspaceNode findWorkspaceNodeById(Long workspaceMaterialId) {
+		return workspaceNodeDAO.findById(workspaceMaterialId);
+	}
+	
+	public WorkspaceNode findWorkspaceNodeByParentAndUrlName(WorkspaceNode parent, String urlName) {
+		return workspaceNodeDAO.findByParentAndUrlName(parent, urlName);
+	}
+	
+	public List<WorkspaceNode> listWorkspaceNodesByParent(WorkspaceNode parent) {
+		return workspaceNodeDAO.listByParent(parent);
+	}
+
 	/* Material */
 	
 	public WorkspaceMaterial createWorkspaceMaterial(WorkspaceNode parent, Material material, String urlName) {
@@ -81,14 +95,6 @@ public class WorkspaceMaterialController {
 	
 	public WorkspaceFolder findWorkspaceFolderById(Long workspaceFolderId) {
 		return workspaceFolderDAO.findById(workspaceFolderId);
-	}
-	
-	public WorkspaceNode findWorkspaceNodeByParentAndUrlName(WorkspaceNode parent, String urlName) {
-		return workspaceNodeDAO.findByParentAndUrlName(parent, urlName);
-	}
-	
-	public List<WorkspaceNode> listWorkspaceNodesByParent(WorkspaceNode parent) {
-		return workspaceNodeDAO.listByParent(parent);
 	}
 	
 }
