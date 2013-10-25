@@ -1,9 +1,11 @@
 package fi.muikku.plugins.workspace;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -12,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.ocpsoft.pretty.faces.annotation.URLAction;
 import com.ocpsoft.pretty.faces.annotation.URLMappings;
 import com.ocpsoft.pretty.faces.annotation.URLMapping;
+import com.ocpsoft.pretty.faces.annotation.URLQueryParameter;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.material.model.Material;
@@ -38,7 +41,7 @@ public class WorkspaceMaterialBackingBean {
 	private WorkspaceMaterialController workspaceMaterialController;
 
 	@URLAction
-	public void init() throws FileNotFoundException {
+	public void init() throws IOException {
 		if (StringUtils.isBlank(getWorkspaceUrlName())) {
 			throw new FileNotFoundException();
 		}
@@ -59,8 +62,26 @@ public class WorkspaceMaterialBackingBean {
 	  	throw new FileNotFoundException();
 	  }
 	  
+	  if (Boolean.TRUE == getEmbed()) {
+	  	FacesContext.getCurrentInstance().getExternalContext().redirect(new StringBuilder()
+        .append(FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath())
+        .append("/workspace/")
+        .append(workspaceEntity.getUrlName())
+        .append("/materials/binary/")
+        .append(workspaceMaterial.getPath())
+        .toString());
+	  }
+	  
 	  materialId = material.getId();
 	  materialType = material.getType();
+	}
+	
+	public Boolean getEmbed() {
+		return embed;
+	}
+	
+	public void setEmbed(Boolean embed) {
+		this.embed = embed;
 	}
 	
 	public Long getMaterialId() {
@@ -95,7 +116,8 @@ public class WorkspaceMaterialBackingBean {
 		this.workspaceUrlName = workspaceUrlName;
 	}
 
-
+	@URLQueryParameter ("embed")
+	private Boolean embed;
 	private Long workspaceMaterialId;
 	private String workspaceMaterialPath;
 	private Long materialId;

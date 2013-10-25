@@ -7,6 +7,10 @@
   template="/workspaces/template.xhtml">
 
   <ui:define name="content">
+  
+    <h:outputScript name="scripts/gui/workspace-material.js" target="head"/>
+  
+  
     <h2>Material</h2>
     <comp:material-view materialId="#{workspaceMaterialBackingBean.materialId}"
                         materialType="#{workspaceMaterialBackingBean.materialType}" />

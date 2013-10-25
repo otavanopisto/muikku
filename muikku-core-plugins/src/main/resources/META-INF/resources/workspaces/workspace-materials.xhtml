@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:ui="http://java.sun.com/jsf/facelets" 
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html" 
+  xmlns:comp="http://java.sun.com/jsf/composite/composite"
+  template="/workspaces/template.xhtml">
+
+  <ui:define name="content">
+    <h2>Materials</h2>
+    
+    <ui:repeat value="#{workspaceMaterialsBackingBean.listWorkspaceNodes(workspaceMaterialsBackingBean.rootFolder)}" var="folder">
+    
+      <h:panelGroup layout="block" styleClass="workspace-folder">
+        <h:outputLink value="#{request.contextPath}/workspace/#{workspaceMaterialsBackingBean.workspaceUrlName}/materials/#{folder.path}">#{folder.urlName}</h:outputLink>
+        
+        <ui:repeat value="#{workspaceMaterialsBackingBean.listWorkspaceMaterials(folder)}" var="material">
+          <h:panelGroup layout="block" styleClass="workspace-material">
+            <h:outputLink value="#{request.contextPath}/workspace/#{workspaceMaterialsBackingBean.workspaceUrlName}/materials/#{material.path}">#{material.material.title}</h:outputLink>
+          </h:panelGroup>
+        </ui:repeat>
+        
+      </h:panelGroup>
+    
+    </ui:repeat>
+
+  </ui:define>
+
+</ui:composition>

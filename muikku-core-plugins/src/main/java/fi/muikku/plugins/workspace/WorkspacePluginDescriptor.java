@@ -13,8 +13,12 @@ import fi.muikku.plugin.PersistencePluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
 import fi.muikku.plugins.workspace.dao.WorkspaceFolderDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialDAO;
+import fi.muikku.plugins.workspace.dao.WorkspaceNodeDAO;
+import fi.muikku.plugins.workspace.dao.WorkspaceRootFolderDAO;
 import fi.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
+import fi.muikku.plugins.workspace.model.WorkspaceNode;
+import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 
 @ApplicationScoped
 @Stateful
@@ -44,6 +48,7 @@ public class WorkspacePluginDescriptor implements PluginDescriptor, PersistenceP
 				
 			WorkspaceViewBackingBean.class,
 			WorkspaceMaterialBackingBean.class,
+			WorkspaceMaterialsBackingBean.class,
 			
 			/* Request Handlers */
 			
@@ -51,8 +56,10 @@ public class WorkspacePluginDescriptor implements PluginDescriptor, PersistenceP
 			
 			/* DAOs */
 			
+			WorkspaceRootFolderDAO.class,
 			WorkspaceMaterialDAO.class,
-			WorkspaceFolderDAO.class
+			WorkspaceFolderDAO.class,
+			WorkspaceNodeDAO.class
 			
 		}));
 	}
@@ -60,6 +67,8 @@ public class WorkspacePluginDescriptor implements PluginDescriptor, PersistenceP
 	@Override
 	public Class<?>[] getEntities() {
 		return new Class<?>[] {
+			WorkspaceNode.class,
+			WorkspaceRootFolder.class,
 			WorkspaceFolder.class,
 			WorkspaceMaterial.class
 		};
