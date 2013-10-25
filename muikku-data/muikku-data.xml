@@ -15,11 +15,12 @@
   <script
     run="ONCE"
     handler="MySQL"
-    url="test/004_materials_mysql.sql" />
+    url="school-data-local/001_create_users_mysql.sql" />
   <script
     run="ONCE"
     handler="MySQL"
-    url="school-data-local/001_create_users_mysql.sql" />
+    url="school-data-mock/000_mock_workspaces_mysql.sql">
+  </script>
   <script
     run="ALWAYS"
     handler="H2/HSQLDB"
