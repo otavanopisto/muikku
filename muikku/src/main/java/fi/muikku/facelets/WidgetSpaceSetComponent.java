@@ -34,7 +34,8 @@ public class WidgetSpaceSetComponent extends UIComponentBase {
 		for (WidgetSpaceComponent widgetSpace : widgetSpaces) {
 			List<WidgetComponent> widgets = getWidgetComponents(widgetSpace);
 			widgetSpace.setEmpty(widgets.size() == 0);
-      widgetSpace.setStyleClass(styleClass);
+			if (widgetSpace.getStyleClass() == null)
+			  widgetSpace.setStyleClass(styleClass);
       
 			if (widgetSpace.getSizing() != WidgetSpaceSizingStrategy.MAXIMIZE) {
 				int size = 0;
