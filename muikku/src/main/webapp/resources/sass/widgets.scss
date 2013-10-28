@@ -422,6 +422,7 @@ background-color:$aBgr;
 
 .wi-frontpage-students{
   @extend .co-widget;
+
 }
 	
 
@@ -485,4 +486,24 @@ background-color:$aBgr;
 	background:#ededed;
 }
 
+.wi-frontpage-students-toolarea{
+  height:20px;
+  padding:4px;
+  position:relative;
+  float:right;
+  top:-15px;
+  right:-15px;
+  
+}
+
+.wi-tools-move{
+	@include shadow;
+  @extend .co-toolbar;
+}
+
+
+.wi-tools-move-link{
+  @include customIcon(url('../resources/gfx/icons/32x32/actions/tools-move.png'),20px);
+  display:block;
+}
 
