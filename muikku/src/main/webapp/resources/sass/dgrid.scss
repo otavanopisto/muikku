@@ -1,7 +1,17 @@
 @import "_grid.scss";
 
+/* Include the pre-created styles */
+
+@include grid_x;
+@include grid_x_nomargin;
+@include grid_x_othermargin;
+
+
 
 /* My Custom Grid */
+
+/* TODO: better name, needs changes in the java side */
+
 
 .container_24{
 width:$container-size;
@@ -10,9 +20,6 @@ margin-right:auto;
 }
 
 
-@include grid_x;
-@include grid_x_nomargin;
-@include grid_x_othermargin;
 
 /* http://sonspring.com/journal/clearing-floats */
 

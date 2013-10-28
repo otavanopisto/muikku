@@ -62,7 +62,9 @@ margin-top:5px;
   @include gradient-top-bottom;   
 }
 
-.co-widget-configure{
+.co-settings-floater{
+display:none;
+visibility:0;
 @include rounded(2px);  
 background-color:$aBgr;
 }
@@ -70,8 +72,7 @@ background-color:$aBgr;
 
 
 .co-widget{
-/*  margin-left:5px;
-  margin-right:5px;	*/ 
+
   padding:20px;
   border:1px solid $brd;
   @include rounded(5px);

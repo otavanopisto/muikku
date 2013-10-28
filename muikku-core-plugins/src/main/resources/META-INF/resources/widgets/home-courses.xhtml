@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:h="http://java.sun.com/jsf/html">
+<ui:composition 
+xmlns="http://www.w3.org/1999/xhtml" 
+xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+xmlns:ui="http://java.sun.com/jsf/facelets" 
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:h="http://java.sun.com/jsf/html">
 
   <div class="wi-frontpage-courses">
+    <div class="wi-frontpage-widget-toolarea">
+	
+				<m:widget name="settings-widget-move" rendered="#{sessionBackingBean.loggedIn}" />
+        <m:widget name="settings-widget-edit" rendered="#{sessionBackingBean.loggedIn}" />
+
+		<div class="clear"></div>
+		</div>
     <h3>Kurssit</h3>
 
     <ul>

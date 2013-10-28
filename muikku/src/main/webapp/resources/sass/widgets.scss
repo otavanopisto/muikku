@@ -479,16 +479,18 @@ background-color:$aBgr;
 
 .wi-frontpage-courses li{
   padding:5px;
-      @include rounded(5px);
+  @include rounded(5px);
 }
 
 .wi-frontpage-courses li:nth-child(odd) {
 	background:#ededed;
 }
 
-.wi-frontpage-students-toolarea{
-  height:20px;
-  padding:4px;
+.wi-frontpage-widget-toolarea{
+	@include shadow;
+	@include rounded(5px);
+  @extend .co-settings-floater;
+  padding:5px;
   position:relative;
   float:right;
   top:-15px;
@@ -496,14 +498,27 @@ background-color:$aBgr;
   
 }
 
-.wi-tools-move{
-	@include shadow;
-  @extend .co-toolbar;
+.wi-frontpage-widget-toolarea div{
+  float:right;
+  
+}
+
+.wi-settings-move{
+
 }
 
 
-.wi-tools-move-link{
+.wi-settings-move-link{
   @include customIcon(url('../resources/gfx/icons/32x32/actions/tools-move.png'),20px);
   display:block;
+    margin-left:10px;
 }
 
+.wi-settings-edit{
+
+}
+.wi-settings-edit-link{
+  @include customIcon(url('../resources/gfx/icons/32x32/actions/settings.png'),20px);
+  display:block;
+    margin-left:10px;
+}
