@@ -83,8 +83,20 @@ public class DeusNexContentParser {
 				}
 				
 				
-
-				contents.put(lang, DeusNexXmlUtils.serializeElement(localeDocument));
+				Element htmlElement = ownerDocument.createElement("html"); 
+				Element bodyElement = ownerDocument.createElement("body");
+				htmlElement.appendChild(bodyElement);
+				
+				NodeList childNodes = localeDocument.getChildNodes();
+				for (int i = childNodes.getLength() - 1; i >= 0; i--) {
+					if (bodyElement.getFirstChild() != null) {
+						bodyElement.insertBefore(childNodes.item(i), bodyElement.getFirstChild());
+					} else {
+						bodyElement.appendChild(childNodes.item(i));
+					}
+				}
+				
+				contents.put(lang, DeusNexXmlUtils.serializeElement(htmlElement));
 			}
 		} catch (XPathExpressionException | TransformerException e) {
 			throw new DeusNexInternalException("Internal Error occurred while processing document", e);
