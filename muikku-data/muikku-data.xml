@@ -22,6 +22,10 @@
     url="school-data-mock/000_mock_workspaces_mysql.sql">
   </script>
   <script
+    run="ONCE"
+    handler="MySQL"
+    url="school-data-mock/007_workspace_settings.sql" />
+  <script
     run="ALWAYS"
     handler="H2/HSQLDB"
     url="school-data-mock/001_mock_roles_hsqldb.sql">
