@@ -9,20 +9,9 @@
   <ui:define name="content">
     <h2>Materials</h2>
     
-    <ui:repeat value="#{workspaceMaterialsBackingBean.listWorkspaceNodes(workspaceMaterialsBackingBean.rootFolder)}" var="folder">
-    
-      <h:panelGroup layout="block" styleClass="workspace-folder">
-        <h:outputLink value="#{request.contextPath}/workspace/#{workspaceMaterialsBackingBean.workspaceUrlName}/materials/#{folder.path}">#{folder.urlName}</h:outputLink>
-        
-        <ui:repeat value="#{workspaceMaterialsBackingBean.listWorkspaceMaterials(folder)}" var="material">
-          <h:panelGroup layout="block" styleClass="workspace-material">
-            <h:outputLink value="#{request.contextPath}/workspace/#{workspaceMaterialsBackingBean.workspaceUrlName}/materials/#{material.path}">#{material.material.title}</h:outputLink>
-          </h:panelGroup>
-        </ui:repeat>
-        
-      </h:panelGroup>
-    
-    </ui:repeat>
+    <ui:include src="/workspaces/workspace-material-list.xhtml">
+      <ui:param name="nodes" value="#{workspaceMaterialsBackingBean.listWorkspaceNodes(workspaceMaterialsBackingBean.rootFolder)}" />
+    </ui:include>
 
   </ui:define>
 
