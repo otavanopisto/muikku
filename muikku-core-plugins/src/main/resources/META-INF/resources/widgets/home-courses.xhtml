@@ -8,19 +8,20 @@ xmlns:h="http://java.sun.com/jsf/html">
 
   <div class="wi-frontpage-courses">
     <div class="wi-frontpage-widget-toolarea">
-	
-				<m:widget name="settings-widget-move" rendered="#{sessionBackingBean.loggedIn}" />
-        <m:widget name="settings-widget-edit" rendered="#{sessionBackingBean.loggedIn}" />
 
-		<div class="clear"></div>
-		</div>
+      <m:widget name="settings-widget-move" rendered="#{sessionBackingBean.loggedIn}" />
+      <m:widget name="settings-widget-edit" rendered="#{sessionBackingBean.loggedIn}" />
+
+      <div class="clear"></div>
+    </div>
+    
     <h3>Kurssit</h3>
 
     <ul>
       <li>KUR- Kurssi (Tekstiä)</li>
 
       <ui:repeat var="workspace" value="#{CourseList.listWorkspacesByContext(courselist, 'MY_COURSES')}" varStatus="ws_status">
-        <li>#{workspace.name}</li>
+        <li><a href="#{request.contextPath}/workspace/#{Workspace.findWorkspaceEntity(workspace).urlName}">#{workspace.name}</a></li>
       </ui:repeat>
 
     </ul>

@@ -481,21 +481,25 @@ background-color:$aBgr;
   @extend .co-widget;
 }
 
-.wi-frontpage-courses ul{
+.wi-frontpage-courses ul {
   padding:20px;
-  
 }
 
-.wi-frontpage-courses li{
+.wi-frontpage-courses li {
   padding:5px;
   @include rounded(5px);
+}
+
+.wi-frontpage-courses li a {
+  text-decoration: none;
+  color: #000000;
 }
 
 .wi-frontpage-courses li:nth-child(odd) {
 	background:#ededed;
 }
 
-.wi-frontpage-widget-toolarea{
+.wi-frontpage-widget-toolarea {
 	@include shadow;
 	@include rounded(5px);
   @extend .co-settings-floater;
