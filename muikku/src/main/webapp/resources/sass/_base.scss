@@ -1,4 +1,6 @@
-/* Variables */
+
+
+
 
 /* COLORS */
 
@@ -26,6 +28,10 @@ $aBgr : #f8f8f8;
 
 $saBgr : #e3eaf2;
 
+
+/* toolbar background */
+
+$tBgr : #ffe19a;
 
 
 /* Generic gradients (Grayscale) */
@@ -220,18 +226,13 @@ background: linear-gradient(to bottom, $fadeColor1 0%,$fadeColor2 50%,$fadeColor
   float:left;    
 }
 
-@mixin customIcon($iconUrl,$gr1:$fourColorGr-1,$gr2:$fourColorGr-2,$gr3:$fourColorGr-3,$gr4:$fourColorGr-4,$bgr:$fourColorGr-1){
+@mixin customIcon($iconUrl,$size:32px){
+  height:$size;
+  width:$size;  
+  background: $iconUrl no-repeat center;
+  background-size:100%;
   
-  background: $bgr $iconUrl no-repeat center;
-  background: $iconUrl no-repeat center, -moz-linear-gradient(top, $gr1 0%, $gr2 50%, $gr3 51%, $gr4 100%);
-  background: $iconUrl no-repeat center, -webkit-gradient(linear, left top, left bottom, color-stop(0%,$gr1), color-stop(50%,$gr2), color-stop(51%,$gr3), color-stop(100%,$gr4));
-  background: $iconUrl no-repeat center, -webkit-linear-gradient(top, $gr1 0%,$gr2 50%,$gr3 51%,$gr4 100%);
-  background: $iconUrl no-repeat center, -o-linear-gradient(top, $gr1 0%,$gr2 50%,$gr3 51%,$gr4 100%);
-  background: $iconUrl no-repeat center, -ms-linear-gradient(top, $gr1 0%,$gr2 50%,$gr3 51%,$gr4 100%);
-  background: $iconUrl no-repeat center, linear-gradient(to bottom, $gr1 0%,$gr2 50%,$gr3 51%,$gr4 100%); 
-  height:35px;
-  width:35px;
-  float:left;    
+
 }
 
 

@@ -2,7 +2,6 @@ package fi.muikku.plugins.forum.wall;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -133,7 +132,7 @@ public class ForumWallEntryProvider implements WallEntryProvider {
   @Override
   public List<String> listRequiredJavaScripts() {
     return Arrays.asList(
-        "scripts/gui/forumwallentries.js"
+        "scripts/gui/forum_wallentry.js"
     );
   }
 

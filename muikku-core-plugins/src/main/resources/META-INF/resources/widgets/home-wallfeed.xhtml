@@ -1,7 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:h="http://java.sun.com/jsf/html">
-  <div class="wi-courses"></div>
+<ui:composition
+xmlns="http://www.w3.org/1999/xhtml" 
+xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+xmlns:ui="http://java.sun.com/jsf/facelets" 
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:h="http://java.sun.com/jsf/html">
+
+  <div class="wi-frontpage-wallfeed">
+    <div class="wi-frontpage-widget-toolarea">  
+        <m:widget name="settings-widget-move" rendered="#{sessionBackingBean.loggedIn}" />
+        <m:widget name="settings-widget-edit" rendered="#{sessionBackingBean.loggedIn}" />
+      <div class="clear"></div>
+    </div>
+    <h3>Seinämä</h3>
+  
+<!--     <div class="wi-frontpage-wallfeed-item">Tapahtuma</div> -->
+<!--     <div class="wi-frontpage-wallfeed-item">Päiväkirjamerkintä</div> -->
+<!--     <div class="wi-frontpage-wallfeed-item">Viesti kommentti</div>   -->
+    
+    <h:form>
+      <h:commandButton action="#{Wall.TEST_DATA()}" value="TESTDATA" />
+    </h:form>
+  
+    <ui:include src="/wall/indexwall.xhtml" />
+  </div>
 
 
 </ui:composition>

@@ -13,7 +13,7 @@ public class UserFeedForumThreadItem extends WallFeedItem {
   private ForumThread thread;
 
   public UserFeedForumThreadItem(ForumThread thread, List<ForumThreadReply> replies) {
-    super(thread.getCreated(), "wall/threadwallentry.dust");
+    super(thread.getCreated());
     this.thread = thread;
   }
 

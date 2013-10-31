@@ -95,5 +95,23 @@ public class CourseUserDAO extends CoreDAO<CourseUser> {
     
     return entityManager.createQuery(criteria).getResultList();
   }
+
+  public List<CourseUser> listByUser(UserEntity userEntity) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<CourseUser> criteria = criteriaBuilder.createQuery(CourseUser.class);
+    Root<CourseUser> root = criteria.from(CourseUser.class);
+    
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(CourseUser_.archived), Boolean.FALSE),
+            criteriaBuilder.equal(root.get(CourseUser_.user), userEntity)
+        )
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
   
 }

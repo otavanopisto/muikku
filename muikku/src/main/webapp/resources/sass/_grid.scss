@@ -1,0 +1,56 @@
+/* Functions */
+
+@function prc($target, $container) {
+  @return ($target / $container);
+}
+
+
+/* Variables */
+
+$grid-margin: 5px;
+$container-size:960px;
+$grid-columns: 24;
+$grid-size: prc($container-size, $grid-columns);
+
+/* Mixins */
+
+@mixin grid_x {
+	$grids: null;
+	$grids-nomargin: null;
+
+	@for $i from 1 through $grid-columns{
+	  .grid_#{$i} {
+	     width: $grid-size * $i - $grid-margin * 2;
+	     }
+	    $grids:append($grids, unquote(".grid_#{$i}"), comma);   
+	  }
+	  
+		#{$grids}{ 
+		  float:left;
+		  margin-left:$grid-margin;
+			margin-right:$grid-margin;
+		 }
+	 
+}
+
+@mixin grid_x_nomargin{
+	@for $i from 1 through $grid-columns{
+	  .grid_#{$i}[class*='nomargin'] {
+	     width: $grid-size * $i;
+	     }
+	}
+
+}
+ 
+@mixin grid_x_othermargin{
+	@for $i from 1 through $grid-columns{
+	  .grid_#{$i}[class*='alpha'], .grid_#{$i}[class*='omega']  {
+	     width: $grid-size * $i - 5px;
+	     }
+	}
+
+}
+
+
+ 
+ 

@@ -32,6 +32,7 @@ public class WallEntryReplyDAO extends PluginDAO<WallEntryReply> {
     comment.setLastModified(now);
     comment.setCreator(creator.getId());
     comment.setLastModifier(creator.getId());
+    comment.setWall(wall);
     comment.setText(text);
     
     getEntityManager().persist(comment);

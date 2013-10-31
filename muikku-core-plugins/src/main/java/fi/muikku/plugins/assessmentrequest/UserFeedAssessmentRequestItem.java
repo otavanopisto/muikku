@@ -9,7 +9,7 @@ public class UserFeedAssessmentRequestItem extends WallFeedItem {
   private AssessmentRequest assessmentRequest;
 
   public UserFeedAssessmentRequestItem(AssessmentRequest assessmentRequest) {
-    super(assessmentRequest.getDate(), "wall/assessmentrequestwallentry.dust");
+    super(assessmentRequest.getDate());
     this.assessmentRequest = assessmentRequest;
   }
 

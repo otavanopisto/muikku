@@ -11,6 +11,11 @@
     <component>
       <component-type>fi.muikku.facelet.WidgetSpaceSet</component-type>
     </component>
+    <attribute>
+      <description>Additional class attributes for all child widgetSpaces.</description>
+      <name>styleClass</name>
+      <type>java.lang.String</type>
+    </attribute>
   </tag>
 
   <tag>
@@ -32,6 +37,11 @@
     <attribute>
       <description>Controls how widget space size is calculated. MINIMIZE: Widget space is size is defined by widest contained widget, SUM: Widget space size is sum of all contained widgets, MAXIMIZE: Widget space takes all remaining space within widget space set</description>
       <name>sizing</name>
+      <type>java.lang.String</type>
+    </attribute>
+    <attribute>
+      <description>Additional class attributes for generated div.</description>
+      <name>styleClass</name>
       <type>java.lang.String</type>
     </attribute>
   </tag>

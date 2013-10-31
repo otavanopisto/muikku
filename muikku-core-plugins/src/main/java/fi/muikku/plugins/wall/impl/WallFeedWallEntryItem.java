@@ -10,7 +10,7 @@ public class WallFeedWallEntryItem extends WallFeedItem {
   private WallEntry wallEntry;
 
   public WallFeedWallEntryItem(WallEntry entry) {
-    super(entry.getCreated(), "wall/wallentry.dust");
+    super(entry.getCreated());
     this.wallEntry = entry;
   }
 

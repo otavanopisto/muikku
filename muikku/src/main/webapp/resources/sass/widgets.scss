@@ -1,5 +1,6 @@
 
 @import "_base.scss";
+@import "commons.scss";
 
 /* Widgets */
 
@@ -259,13 +260,14 @@
 /* Login */
 
 .loginWidget{
+	  background:#ededed;
+	  padding:10px ;
+	  @include rounded(5px);
     text-align:right;
     color:#000;
     font-size:9px;
     width:240px;
-    position:absolute;
-    top:5px;
-    right:5px;
+
 }
 
 .logoutWidget{
@@ -344,43 +346,179 @@
 }
 
 
+
+/* Navigation */
+
+.wi-navigation-textlinks{
+   padding:6px 0 0 0;
+
+	vertical-align:middle;
+}
+.wi-navigation-textlinks span{
+   font-size:2em;
+}
+
+.wi-navigation-textlinks span:after{
+   content:"|";
+}
+
+.wi-navigation-textlinks span:last-child:after{
+   content:none;
+}
+
+
+
 /* frontpage widgets */
 
-.wi-info{
+.wi-frontpage-info{
 	
 }
 
-.wi-news{}
+.wi-news{
 
-.wi-students{}
+}
 
-.wi-students ul{
+.wi-news-item-content{
+
+}
+
+
+.wi-news-item{
+	margin-top:10px;
+
+
+}
+
+.wi-news-primary-item{
+	margin-top:10px;
+  @extend .co-widget;
+}
+
+.wi-news-primary-item-bottom{
+  margin-top:10px;
+  @extend .co-widget;
+}
+
+.wi-news-secondary-item{
+
+  margin-top:10px;
+  @extend .co-widget;
+  }
+
+.wi-news-item-picture{
+  background:url("http://farm8.staticflickr.com/7363/9872617353_fb529696e9.jpg") no-repeat ;
+  background-size:100%;
+  height:200px;
+  width:200px;
+  float:left;
+}
+
+.wi-news-item-content-description{
+  float:left;
+box-sizing:border-box;
+-moz-box-sizing:border-box;   
+background-color:$aBgr;
+}
+
+.wi-frontpage-students{
+  @extend .co-widget;
+
+}
+	
+
+
+.wi-frontpage-students ul{
   padding:20px;
 }
 
-.wi-students li{
+.wi-frontpage-students li{
   padding:5px;
+    @include rounded(5px);
 }
 
-.wi-students li:nth-child(odd) {
+.wi-frontpage-students li a{
+  text-decoration: none;
+  color: #000000;
+}
+
+.wi-frontpage-students li:nth-child(odd) {
   background:#ededed;
 }
 
-.wi-calendar{}
-.wi-wallfeed{}
-
-.wi-courses{}
-
-.wi-courses ul{
-  padding:20px;
+.wi-frontpage-calendar{
+	margin-top:10px;
+  @extend .co-widget;
 }
 
-.wi-courses li{
+.wi-frontpage-calendar-container{
+  background-color:$aBgr;
+  height:200px;
+}
+	
+
+.wi-frontpage-wallfeed {
+	margin-top:10px;
+  @extend .co-widget;
+	
+}
+
+.wi-frontpage-wallfeed-item{
   padding:5px;
+  border:1px solid $brd;
+  margin-bottom:1px;
 }
 
-.wi-courses li:nth-child(odd) {
+.wi-frontpage-courses{
+  @extend .co-widget;
+}
+
+.wi-frontpage-courses ul{
+  padding:20px;
+  
+}
+
+.wi-frontpage-courses li{
+  padding:5px;
+  @include rounded(5px);
+}
+
+.wi-frontpage-courses li:nth-child(odd) {
 	background:#ededed;
 }
 
+.wi-frontpage-widget-toolarea{
+	@include shadow;
+	@include rounded(5px);
+  @extend .co-settings-floater;
+  padding:5px;
+  position:relative;
+  float:right;
+  top:-15px;
+  right:-15px;
+  
+}
 
+.wi-frontpage-widget-toolarea div{
+  float:right;
+  
+}
+
+.wi-settings-move{
+
+}
+
+
+.wi-settings-move-link{
+  @include customIcon(url('../resources/gfx/icons/32x32/actions/tools-move.png'),20px);
+  display:block;
+    margin-left:10px;
+}
+
+.wi-settings-edit{
+
+}
+.wi-settings-edit-link{
+  @include customIcon(url('../resources/gfx/icons/32x32/actions/settings.png'),20px);
+  display:block;
+    margin-left:10px;
+}

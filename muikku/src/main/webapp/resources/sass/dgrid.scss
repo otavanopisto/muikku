@@ -1,0 +1,46 @@
+@import "_grid.scss";
+
+/* Include the pre-created styles */
+
+@include grid_x;
+@include grid_x_nomargin;
+@include grid_x_othermargin;
+
+
+
+/* My Custom Grid */
+
+/* TODO: better name, needs changes in the java side */
+
+
+.container_24{
+width:$container-size;
+margin-left:auto;
+margin-right:auto; 
+}
+
+
+
+/* http://sonspring.com/journal/clearing-floats */
+
+.clear {
+  clear: both;
+  display: block;
+  overflow: hidden;
+  visibility: hidden;
+  width: 0;
+  height: 0;
+}
+
+.alpha {
+  margin-left: 0;
+}
+
+.omega {
+  margin-right: 0;
+}
+
+.nomargin{
+  margin-right:0;
+  margin-left:0;  
+}
