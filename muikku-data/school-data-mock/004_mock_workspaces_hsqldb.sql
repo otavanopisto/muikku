@@ -4,7 +4,8 @@ insert into WorkspaceType (name) values
   ('GENERIC'),
   ('COURSE'),
   ('GROUPWORK'),
-  ('GAME');
+  ('GAME'),
+  ('POOL');
 
 /** Language Courses **/
 
@@ -35,3 +36,12 @@ insert into Workspace (id, course_identifier_id, name, description, type_id) val
 	
 insert into Workspace (id, course_identifier_id, name, description, type_id) values
 	(18, null, 'MERP', 'Middle Earth Role Playing Game', (select min(id) from WorkspaceType) + 3);	
+	
+/* Pool */	
+	
+insert into Workspace (id, course_identifier_id, name, description, type_id) values
+	(19, null, 'POOL', 'Material Pool', (select min(id) from WorkspaceType) + 4);
+	
+/* Muikku 2 Coursers */
+
+insert into Workspace (id, course_identifier_id, name, description, type_id) values (20, (select min(id) from CourseIdentifier) + 0, 's21 - Suomen kielen perusteiden varmentaminen (OO)', 'Tällä kurssilla kerrataan suomen kielen perusrakenteita ja -sanastoa. Tavoitteena on vahvistaa peruskielitaitoa ja oppia uusia tapoja opiskella.', (select min(id) from WorkspaceType) + 1);
