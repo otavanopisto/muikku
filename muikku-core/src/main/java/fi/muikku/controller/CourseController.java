@@ -8,8 +8,8 @@ import javax.inject.Named;
 
 import fi.muikku.dao.base.EnvironmentDefaultsDAO;
 import fi.muikku.dao.base.SchoolDataSourceDAO;
-import fi.muikku.dao.courses.CourseSettingsDAO;
-import fi.muikku.dao.courses.CourseSettingsTemplateDAO;
+import fi.muikku.dao.workspace.WorkspaceSettingsDAO;
+import fi.muikku.dao.workspace.WorkspaceSettingsTemplateDAO;
 import fi.muikku.dao.workspace.WorkspaceRoleEntityDAO;
 import fi.muikku.events.Archived;
 import fi.muikku.events.CourseEntityEvent;
@@ -33,13 +33,13 @@ public class CourseController {
   private EnvironmentDefaultsDAO environmentDefaultsDAO;
 
   @Inject
-  private CourseSettingsTemplateDAO courseSettingsTemplateDAO;
+  private WorkspaceSettingsTemplateDAO courseSettingsTemplateDAO;
 
   @Inject
   private SchoolDataSourceDAO schoolDataSourceDAO;
 
   @Inject
-  private CourseSettingsDAO courseSettingsDAO;
+  private WorkspaceSettingsDAO courseSettingsDAO;
 
 //  @Inject
 //  private CourseUserDAO courseUserDAO;
