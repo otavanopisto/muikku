@@ -43,6 +43,18 @@ public class WorkspaceMaterialController {
 		return workspaceNodeDAO.findByParentAndUrlName(parent, urlName);
 	}
 	
+	public WorkspaceNode findWorkspaceNodeByWorkspaceEntityAndPath(WorkspaceEntity workspaceEntity, String path) {
+    String[] pathElements = path.split("/");
+    WorkspaceNode parent = findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
+    
+    for (int i = 0, l = pathElements.length; i < l - 1; i++) {
+      String pathElement = pathElements[i];
+      parent = findWorkspaceNodeByParentAndUrlName(parent, pathElement);
+    }
+    
+    return findWorkspaceNodeByParentAndUrlName(parent, pathElements[pathElements.length - 1]);
+  }
+	
 	public List<WorkspaceNode> listWorkspaceNodesByParent(WorkspaceNode parent) {
 		return workspaceNodeDAO.listByParent(parent);
 	}
@@ -61,31 +73,32 @@ public class WorkspaceMaterialController {
 		return workspaceMaterialDAO.findByFolderAndUrlName(parent, urlName);
 	}
 
-	public WorkspaceMaterial findWorkspaceMaterialByWorkspaceEntityAndPath(WorkspaceEntity workspaceEntity, String path) {
-		String[] pathElements = path.split("/");
-		WorkspaceNode parent = findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
-		
-		for (int i = 0, l = pathElements.length; i < l - 1; i++) {
-			String pathElement = pathElements[i];
-			parent = findWorkspaceNodeByParentAndUrlName(parent, pathElement);
-		}
-		
-		return findWorkspaceMaterialByParentAndUrlName(parent, pathElements[pathElements.length - 1]);
-	}
-
+  public WorkspaceMaterial findWorkspaceMaterialByWorkspaceEntityAndPath(WorkspaceEntity workspaceEntity, String path) {
+    return (WorkspaceMaterial) findWorkspaceNodeByWorkspaceEntityAndPath(workspaceEntity, path);
+  }
+  
 	public List<WorkspaceMaterial> listWorkspaceMaterialsByParent(WorkspaceNode parent) {
 		return workspaceMaterialDAO.listByParent(parent);
 	}
 	
 	/* Root Folder */
 	
-	public WorkspaceRootFolder createWorkspaceFolder(WorkspaceEntity workspaceEntity) {
+	public WorkspaceRootFolder createWorkspaceRootFolder(WorkspaceEntity workspaceEntity) {
     return workspaceRootFolderDAO.create(workspaceEntity);
 	}
 	
 	public WorkspaceRootFolder findWorkspaceRootFolderByWorkspaceEntity(WorkspaceEntity workspaceEntity) {
 		return workspaceRootFolderDAO.findByWorkspaceEntityId(workspaceEntity.getId());
 	}
+
+  public WorkspaceRootFolder findWorkspaceRootFolderByWorkspaceNode(WorkspaceNode workspaceNode) {
+    WorkspaceNode node = workspaceNode;
+    while ((node != null) && (!(node instanceof WorkspaceRootFolder))) {
+      node = node.getParent();
+    }
+
+    return (WorkspaceRootFolder) node;
+  }
 	
 	/* Folder */
 
