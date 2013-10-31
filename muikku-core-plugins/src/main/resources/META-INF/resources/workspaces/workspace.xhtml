@@ -5,16 +5,10 @@
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+    xmlns:composite="http://java.sun.com/jsf/composite/composite"
     template="/workspaces/template.xhtml">
    
   <ui:define name="content">
-    <c:forEach var="material" items="#{workspaceViewBackingBean.renderedWorkspaceMaterials}">
-      <m:embedJSF jsfString="#{material}" />
-    </c:forEach>
-    
-    <a href="#{request.contextPath}/workspace/#{workspaceViewBackingBean.workspaceUrlName}">View</a>
-    <a href="#{request.contextPath}/workspace/editor/#{workspaceViewBackingBean.workspaceUrlName}">Edit</a>
-  
   </ui:define>
   
 </ui:composition>
