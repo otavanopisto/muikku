@@ -16,7 +16,12 @@ public class WorkspaceRootFolder extends WorkspaceNode {
   public void setWorkspaceEntityId(Long workspaceEntityId) {
     this.workspaceEntityId = workspaceEntityId;
   }
-  
+
+  @Transient
+  public WorkspaceNodeType getType() {
+    return WorkspaceNodeType.ROOT_FOLDER;
+  }
+
   @Transient
   @Override
   public String getPath() {

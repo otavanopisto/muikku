@@ -37,7 +37,12 @@ public class WorkspaceNode {
 	public void setParent(WorkspaceNode parent) {
 		this.parent = parent;
 	}
-	
+
+  @Transient
+  public WorkspaceNodeType getType() {
+    return null;
+  }
+  
   @Transient
   public String getPath() {
   	if (getParent() != null) {
