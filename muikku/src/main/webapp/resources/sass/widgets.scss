@@ -224,6 +224,15 @@
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/workspace-navigation-members.png'));
 }
 
+.naviIconWorkspaceNavigationMaterials.disabled{
+  opacity:0.2;
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/workspace-navigation-materials.png'));  
+}
+
+.naviIconWorkspaceNavigationMaterials {
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/workspace-navigation-materials.png'));
+}
+
 /* Calendar */
 
 .calendarSettingsWidget {
