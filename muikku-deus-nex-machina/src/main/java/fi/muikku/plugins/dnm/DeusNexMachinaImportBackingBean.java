@@ -83,7 +83,7 @@ public class DeusNexMachinaImportBackingBean {
 	      String pathElement = pathElements[i];
 	      parentNode = workspaceMaterialController.findWorkspaceNodeByParentAndUrlName(parent, pathElement);
 	      if (parentNode == null) {
-	        parentNode = workspaceMaterialController.createWorkspaceFolder(parent, pathElement);
+	        parentNode = workspaceMaterialController.createWorkspaceFolder(parent, pathElement, pathElement);
 	      }
 
 	      parent = parentNode;

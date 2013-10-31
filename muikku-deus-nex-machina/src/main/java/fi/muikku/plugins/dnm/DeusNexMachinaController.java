@@ -188,7 +188,7 @@ public class DeusNexMachinaController {
 	}
 
 	private WorkspaceFolder createFolder(WorkspaceNode parent, Folder resource) {
-		return workspaceMaterialController.createWorkspaceFolder(parent, resource.getName());
+		return workspaceMaterialController.createWorkspaceFolder(parent, resource.getTitle(), resource.getName());
 	}
 	
 	private WorkspaceNode findNode(WorkspaceNode parent, Resource resource) {

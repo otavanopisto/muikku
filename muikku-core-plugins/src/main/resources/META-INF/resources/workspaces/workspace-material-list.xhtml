@@ -8,7 +8,7 @@
   <c:forEach var="node" items="#{nodes}">
     <c:choose>
       <c:when test="#{node.type eq 'FOLDER'}">
-        <h4>#{node.urlName}</h4>
+        <h4>#{node.title}</h4>
         <ui:include src="/workspaces/workspace-material-list.xhtml">
           <ui:param name="nodes" value="#{workspaceMaterialsBackingBean.listWorkspaceNodes(node)}" />
         </ui:include>

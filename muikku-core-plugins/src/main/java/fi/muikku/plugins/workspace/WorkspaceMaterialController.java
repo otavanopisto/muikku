@@ -102,8 +102,8 @@ public class WorkspaceMaterialController {
 	
 	/* Folder */
 
-	public WorkspaceFolder createWorkspaceFolder(WorkspaceNode parent, String urlName) {
-		return workspaceFolderDAO.create(parent, urlName);
+	public WorkspaceFolder createWorkspaceFolder(WorkspaceNode parent, String title, String urlName) {
+		return workspaceFolderDAO.create(parent, title, urlName);
 	}
 	
 	public WorkspaceFolder findWorkspaceFolderById(Long workspaceFolderId) {
