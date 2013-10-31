@@ -11,6 +11,8 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.lang3.StringUtils;
+
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 
@@ -21,7 +23,13 @@ import com.ocpsoft.pretty.faces.annotation.URLQueryParameter;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.dnm.parser.DeusNexException;
+import fi.muikku.plugins.workspace.WorkspaceMaterialController;
+import fi.muikku.plugins.workspace.model.WorkspaceFolder;
+import fi.muikku.plugins.workspace.model.WorkspaceNode;
+import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.muikku.schooldata.WorkspaceController;
+import fi.muikku.security.Admin;
+import fi.muikku.security.LoggedIn;
 
 @RequestScoped
 @Stateful
@@ -38,16 +46,55 @@ public class DeusNexMachinaImportBackingBean {
 	@Inject
 	private WorkspaceController workspaceController;
 	
-	@Inject
+  @Inject
+  private WorkspaceMaterialController workspaceMaterialController;
+
+  @Inject
 	private DeusNexMachinaController deusNexMachinaController;
 
 	@URLAction
+	@LoggedIn
+	@Admin
 	public void load() throws IOException, ZipException, DeusNexException {
 		// TODO: Security
 		// TODO: Proper error handling
 		
-		WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
-		
+	  if (StringUtils.isBlank(targetFolder)) {
+	    throw new FileNotFoundException();
+	  }
+	  
+	  String[] targetFolderPath = StringUtils.stripStart(targetFolder, "/").split("/", 2);
+	  String workspaceUrl = targetFolderPath[0];
+	  String path = targetFolderPath[1];
+	  WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByUrlName(workspaceUrl);
+	  if (workspaceEntity == null) {
+      throw new FileNotFoundException();
+	  }
+	  
+	  WorkspaceNode parentNode = null;
+	  if (StringUtils.isBlank(path)) {
+	    parentNode = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
+	  } else {
+	    String[] pathElements = path.split("/");
+	    parentNode = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
+	    WorkspaceNode parent = parentNode;
+	    
+	    for (int i = 0, l = pathElements.length; i < l; i++) {
+	      String pathElement = pathElements[i];
+	      parentNode = workspaceMaterialController.findWorkspaceNodeByParentAndUrlName(parent, pathElement);
+	      if (parentNode == null) {
+	        parentNode = workspaceMaterialController.createWorkspaceFolder(parent, pathElement);
+	      }
+
+	      parent = parentNode;
+	    }
+	  }
+	  
+	  if (!((parentNode instanceof WorkspaceRootFolder)||(parentNode instanceof WorkspaceFolder))) {
+	    // TODO: Proper exception
+	    throw new RuntimeException("Invalid target folder");
+	  }
+	  
 		File xmlFile = new File(getFile() + ".xml");
 		if (!xmlFile.exists()) {
 			File zipFile = new File(getFile() + ".zip");
@@ -64,7 +111,7 @@ public class DeusNexMachinaImportBackingBean {
   	
   	InputStream inputStream = new FileInputStream(xmlFile);
   	try {
-  	  deusNexMachinaController.importDeusNexDocument(workspaceEntity, inputStream);
+  	  deusNexMachinaController.importDeusNexDocument(parentNode, inputStream);
   	} finally {
   		inputStream.close();
   	}
@@ -84,17 +131,17 @@ public class DeusNexMachinaImportBackingBean {
 		this.file = file;
 	}
 	
-	public Long getWorkspaceEntityId() {
-		return workspaceEntityId;
-	}
+	public String getTargetFolder() {
+    return targetFolder;
+  }
 	
-	public void setWorkspaceEntityId(Long workspaceEntityId) {
-		this.workspaceEntityId = workspaceEntityId;
-	}
+	public void setTargetFolder(String targetFolder) {
+    this.targetFolder = targetFolder;
+  }
 	
 	@URLQueryParameter (value = "file")
 	private String file;
 	
-	@URLQueryParameter (value = "workspaceEntityId")
-	private Long workspaceEntityId;
+	@URLQueryParameter (value = "targetFolder")
+	private String targetFolder;
 }

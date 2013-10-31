@@ -19,7 +19,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.dnm.parser.DeusNexException;
 import fi.muikku.plugins.dnm.parser.DeusNexInternalException;
 import fi.muikku.plugins.dnm.parser.content.ConnectFieldOption;
@@ -74,9 +73,9 @@ public class DeusNexMachinaController {
 		return deusNexStructureParser.parseDocument(inputStream);
 	}
 	
-	public void importDeusNexDocument(WorkspaceEntity workspaceEntity, InputStream inputStream) throws DeusNexException {
+	public void importDeusNexDocument(WorkspaceNode parentNode, InputStream inputStream) throws DeusNexException {
 		DeusNexDocument desNexDocument = parseDeusNexDocument(inputStream);
-		WorkspaceRootFolder rootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
+		WorkspaceRootFolder rootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(parentNode);
 
 		for (Resource resource : desNexDocument.getRootFolder().getResources()) {
 		  importResource(rootFolder, rootFolder, resource, desNexDocument);
