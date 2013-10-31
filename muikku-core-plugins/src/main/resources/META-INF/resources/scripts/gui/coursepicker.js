@@ -41,15 +41,6 @@
       this._myCoursesContainer.on("click", ".cp-course-name", $.proxy(this._onCourseNameClick, this));
     },
     deinitialize: function () {
-  //    var widgetElement = this._widgetElement;
-  //    
-  //    var searchAllCoursesButton = widgetElement.find('.cp-allCourses-FilterBtn');
-  //    Event.stopObserving(searchAllCoursesButton, "click", this._searchAllCoursesClickListener);
-  //    
-  //    var searchMyCoursesButton = widgetElement.find('.cp-myCourses-FilterBtn');
-  //    if (searchMyCoursesButton) {
-  //      Event.stopObserving(searchMyCoursesButton, "click", this._onSearchMyCoursesClick);
-  //    }
     },
     _initializeAllCoursesList: function () {
       var _this = this;

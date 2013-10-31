@@ -8,18 +8,18 @@ import fi.muikku.model.workspace.WorkspaceEntity;
 
 @Entity
 @PrimaryKeyJoinColumn(name="id")
-public class CourseRolePermission extends RolePermission {
+public class WorkspaceRolePermission extends RolePermission {
 
   // TODO: Unique all?
   
-  public WorkspaceEntity getCourse() {
-    return course;
+  public WorkspaceEntity getWorkspace() {
+    return workspace;
   }
 
-  public void setCourse(WorkspaceEntity course) {
-    this.course = course;
+  public void setWorkspace(WorkspaceEntity workspace) {
+    this.workspace = workspace;
   }
 
   @ManyToOne
-  private WorkspaceEntity course;
+  private WorkspaceEntity workspace;
 }

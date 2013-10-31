@@ -1,4 +1,4 @@
-package fi.muikku.model.courses;
+package fi.muikku.model.workspace;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,18 +14,18 @@ import fi.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 
 @Entity
-public class CourseUser implements ArchivableEntity {
+public class WorkspaceUserEntity implements ArchivableEntity {
 
   public Long getId() {
     return id;
   }
 
-  public WorkspaceEntity getCourse() {
-    return course;
+  public WorkspaceEntity getWorkspaceEntity() {
+    return workspaceEntity;
   }
 
-  public void setCourse(WorkspaceEntity course) {
-    this.course = course;
+  public void setWorkspaceEntity(WorkspaceEntity workspaceEntity) {
+    this.workspaceEntity = workspaceEntity;
   }
 
   public UserEntity getUser() {
@@ -36,12 +36,12 @@ public class CourseUser implements ArchivableEntity {
     this.user = user;
   }
 
-  public WorkspaceRoleEntity getCourseUserRole() {
-    return courseUserRole;
+  public WorkspaceRoleEntity getWorkspaceUserRole() {
+    return workspaceUserRole;
   }
 
-  public void setCourseUserRole(WorkspaceRoleEntity courseUserRole) {
-    this.courseUserRole = courseUserRole;
+  public void setWorkspaceUserRole(WorkspaceRoleEntity workspaceUserRole) {
+    this.workspaceUserRole = workspaceUserRole;
   }
   
   public Boolean getArchived() {
@@ -57,13 +57,13 @@ public class CourseUser implements ArchivableEntity {
   private Long id;
 
   @ManyToOne
-  private WorkspaceEntity course;
+  private WorkspaceEntity workspaceEntity;
   
   @ManyToOne
   private UserEntity user;
   
   @ManyToOne
-  private WorkspaceRoleEntity courseUserRole;
+  private WorkspaceRoleEntity workspaceUserRole;
 
   @NotNull
   @Column(nullable = false)

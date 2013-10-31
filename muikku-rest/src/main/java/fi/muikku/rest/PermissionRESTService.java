@@ -11,7 +11,7 @@ import javax.ws.rs.core.Response;
 
 import fi.muikku.controller.EnvironmentSettingsController;
 import fi.muikku.controller.ResourceRightsController;
-import fi.muikku.dao.security.CourseRolePermissionDAO;
+import fi.muikku.dao.security.WorkspaceRolePermissionDAO;
 import fi.muikku.dao.security.EnvironmentRolePermissionDAO;
 import fi.muikku.dao.security.PermissionDAO;
 import fi.muikku.dao.security.ResourceRolePermissionDAO;
@@ -37,7 +37,7 @@ public class PermissionRESTService extends AbstractRESTService {
   private EnvironmentRolePermissionDAO environmentUserRolePermissionDAO;
 
   @Inject
-  private CourseRolePermissionDAO courseUserRolePermissionDAO;
+  private WorkspaceRolePermissionDAO courseUserRolePermissionDAO;
   
   @Inject 
   private RoleEntityDAO userRoleDAO;

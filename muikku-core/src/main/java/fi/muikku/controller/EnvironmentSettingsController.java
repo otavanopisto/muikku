@@ -8,12 +8,12 @@ import javax.enterprise.inject.Model;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import fi.muikku.dao.security.CourseRolePermissionDAO;
+import fi.muikku.dao.security.WorkspaceRolePermissionDAO;
 import fi.muikku.dao.security.EnvironmentRolePermissionDAO;
 import fi.muikku.dao.security.PermissionDAO;
 import fi.muikku.dao.users.EnvironmentRoleEntityDAO;
 import fi.muikku.dao.users.RoleEntityDAO;
-import fi.muikku.model.security.CourseRolePermission;
+import fi.muikku.model.security.WorkspaceRolePermission;
 import fi.muikku.model.security.EnvironmentRolePermission;
 import fi.muikku.model.security.Permission;
 import fi.muikku.model.users.RoleEntity;
@@ -45,7 +45,7 @@ public class EnvironmentSettingsController {
   private EnvironmentRolePermissionDAO environmentUserRolePermissionDAO;
 
   @Inject
-  private CourseRolePermissionDAO courseUserRolePermissionDAO;
+  private WorkspaceRolePermissionDAO courseUserRolePermissionDAO;
   
   public List<RoleEntity> listEnvironmentUserRoles() {
     List<RoleEntity> roles = new ArrayList<RoleEntity>();
@@ -88,12 +88,12 @@ public class EnvironmentSettingsController {
   }
   
   @Permit(MuikkuPermissions.COURSE_MANAGECOURSESETTINGS)
-  public CourseRolePermission addCourseUserRolePermission(@PermitContext WorkspaceEntity course, RoleEntity role, Permission permission) {
+  public WorkspaceRolePermission addCourseUserRolePermission(@PermitContext WorkspaceEntity course, RoleEntity role, Permission permission) {
     return courseUserRolePermissionDAO.create(course, role, permission);
   }
   
   @Permit(MuikkuPermissions.COURSE_MANAGECOURSESETTINGS)
-  public void deleteCourseUserRolePermission(@PermitContext CourseRolePermission rolePermission) {
+  public void deleteCourseUserRolePermission(@PermitContext WorkspaceRolePermission rolePermission) {
     courseUserRolePermissionDAO.delete(rolePermission);
   }
   

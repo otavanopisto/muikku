@@ -10,7 +10,6 @@ import fi.muikku.dao.base.EnvironmentDefaultsDAO;
 import fi.muikku.dao.base.SchoolDataSourceDAO;
 import fi.muikku.dao.courses.CourseSettingsDAO;
 import fi.muikku.dao.courses.CourseSettingsTemplateDAO;
-import fi.muikku.dao.courses.CourseUserDAO;
 import fi.muikku.dao.workspace.WorkspaceRoleEntityDAO;
 import fi.muikku.events.Archived;
 import fi.muikku.events.CourseEntityEvent;
@@ -42,8 +41,8 @@ public class CourseController {
   @Inject
   private CourseSettingsDAO courseSettingsDAO;
 
-  @Inject
-  private CourseUserDAO courseUserDAO;
+//  @Inject
+//  private CourseUserDAO courseUserDAO;
 
   @Inject
   private WorkspaceRoleEntityDAO courseUserRoleDAO;

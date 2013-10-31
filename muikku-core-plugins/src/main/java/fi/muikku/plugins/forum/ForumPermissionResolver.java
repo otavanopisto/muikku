@@ -4,16 +4,16 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import fi.muikku.controller.ResourceRightsController;
-import fi.muikku.dao.courses.CourseUserDAO;
 import fi.muikku.dao.security.PermissionDAO;
 import fi.muikku.dao.security.ResourceRolePermissionDAO;
 import fi.muikku.dao.users.EnvironmentUserDAO;
-import fi.muikku.model.courses.CourseUser;
+import fi.muikku.dao.workspace.WorkspaceUserEntityDAO;
 import fi.muikku.model.security.Permission;
 import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.RoleEntity;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.plugins.forum.model.ForumArea;
 import fi.muikku.plugins.forum.model.ForumThread;
 import fi.muikku.plugins.forum.model.WorkspaceForumArea;
@@ -30,7 +30,7 @@ public class ForumPermissionResolver extends AbstractPermissionResolver implemen
   private ResourceRolePermissionDAO resourceUserRolePermissionDAO;
   
   @Inject
-  private CourseUserDAO courseUserDAO;
+  private WorkspaceUserEntityDAO workspaceUserEntityDAO;
   
   @Inject
   private EnvironmentUserDAO environmentUserDAO;
@@ -66,8 +66,8 @@ public class ForumPermissionResolver extends AbstractPermissionResolver implemen
       
       WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceForum.getWorkspace());
       
-      CourseUser courseUser = courseUserDAO.findByCourseAndUser(workspaceEntity, userEntity);
-      userRole = courseUser.getCourseUserRole();
+      WorkspaceUserEntity workspaceUser = workspaceUserEntityDAO.findByCourseAndUser(workspaceEntity, userEntity);
+      userRole = workspaceUser.getWorkspaceUserRole();
     } else {
       EnvironmentUser environmentUser = environmentUserDAO.findByUserAndArchived(userEntity, Boolean.FALSE);
       userRole = environmentUser.getRole();
