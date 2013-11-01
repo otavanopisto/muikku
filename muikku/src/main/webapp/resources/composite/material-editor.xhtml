@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:composite="http://java.sun.com/jsf/composite">
+   
+    <composite:interface>
+      <composite:attribute name="material" />
+    </composite:interface>
+ 
+    <composite:implementation>
+      <ui:include src="/material-editors/#{cc.attrs.material.type}.xhtml">
+        <ui:param name="material" value="#{cc.attrs.material}" />
+      </ui:include>
+    </composite:implementation>
+</html>

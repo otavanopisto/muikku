@@ -41,22 +41,13 @@
       this._myCoursesContainer.on("click", ".cp-course-name", $.proxy(this._onCourseNameClick, this));
     },
     deinitialize: function () {
-  //    var widgetElement = this._widgetElement;
-  //    
-  //    var searchAllCoursesButton = widgetElement.find('.cp-allCourses-FilterBtn');
-  //    Event.stopObserving(searchAllCoursesButton, "click", this._searchAllCoursesClickListener);
-  //    
-  //    var searchMyCoursesButton = widgetElement.find('.cp-myCourses-FilterBtn');
-  //    if (searchMyCoursesButton) {
-  //      Event.stopObserving(searchMyCoursesButton, "click", this._onSearchMyCoursesClick);
-  //    }
     },
     _initializeAllCoursesList: function () {
       var _this = this;
       
       _this._allCoursesContainer.children().remove();
       
-      RESTful.doGet(CONTEXTPATH + "/rest/course/listAllCourses", {
+      RESTful.doGet(CONTEXTPATH + "/rest/course/", {
         parameters: {
         }
       }).success(function (data, textStatus, jqXHR) {
@@ -70,7 +61,7 @@
       
       _this._allCoursesContainer.children().remove();
       
-      RESTful.doGet(CONTEXTPATH + "/rest/course/listAllCourses", {
+      RESTful.doGet(CONTEXTPATH + "/rest/course/", {
         parameters: {
         }
       }).success(function (data, textStatus, jqXHR) {
@@ -97,22 +88,22 @@
     _onCheckCourseClick: function (event) {
       var element = $(event.target);
       var coursePickerCourse = element.parents(".cp-course");
-      var courseId = coursePickerCourse.find("input[name='courseId']").val();
+      var workspaceId = coursePickerCourse.find("input[name='workspaceId']").val();
       
-      window.location = CONTEXTPATH + '/course/index.jsf?courseId=' + courseId;
+      window.location = CONTEXTPATH + '/course/index.jsf?courseId=' + workspaceId;
     },
     _onJoinCourseClick: function (event) {
       var element = $(event.target);
       var coursePickerCourse = element.parents(".cp-course");
       
-      var courseId = coursePickerCourse.find("input[name='courseId']").val();
+      var workspaceId = coursePickerCourse.find("input[name='workspaceId']").val();
       
-      RESTful.doPost(CONTEXTPATH + "/rest/course/{courseId}/joinCourse", {
+      RESTful.doPost(CONTEXTPATH + "/rest/course/{workspaceId}/joinWorkspace", {
         parameters: {
-          'courseId': courseId
+          'workspaceId': workspaceId
         }
       }).success(function (data, textStatus, jqXHR) {
-        window.location = CONTEXTPATH + '/course/index.jsf?courseId=' + courseId;
+        window.location = CONTEXTPATH + '/course/index.jsf?courseId=' + workspaceId;
       });
     },
     _onCourseNameClick: function (event) {

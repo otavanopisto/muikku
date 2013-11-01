@@ -133,6 +133,13 @@ public class WallController {
     WorkspaceWall wall = workspaceWallDAO.findByWorkspace(workspaceEntity);
     
     List<EnvironmentUser> users = userController.listEnvironmentUsers();
+    
+    for (EnvironmentUser envUser : users) {
+      UserWall userWall = userWallDAO.findByUser(envUser.getUser());
+      if (userWall == null)
+        userWallDAO.create(envUser.getUser());
+    }
+    
     EnvironmentUser environmentUser = users.get(R.nextInt(users.size()));
     UserEntity userEntity = environmentUser.getUser();
     

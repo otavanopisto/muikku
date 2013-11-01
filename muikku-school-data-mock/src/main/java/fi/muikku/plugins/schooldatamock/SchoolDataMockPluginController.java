@@ -28,57 +28,77 @@ public class SchoolDataMockPluginController {
 	private DataPluginController dataPluginController;
 	
 	public PreparedStatement executeInsert(String sql, Object... values) throws SQLException {
-		PreparedStatement preparedStatement = getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-		
-		int parameterIndex = 1;
-		for (Object value : values) {
-			preparedStatement.setObject(parameterIndex, value);
-			parameterIndex++;
+		Connection connection = getConnection();
+		try {
+  		PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+  		
+  		int parameterIndex = 1;
+  		for (Object value : values) {
+  			preparedStatement.setObject(parameterIndex, value);
+  			parameterIndex++;
+  		}
+  		
+  		preparedStatement.executeUpdate();
+  		
+  		return preparedStatement;
+		} finally {
+			connection.close();
 		}
-		
-		preparedStatement.executeUpdate();
-		
-		return preparedStatement;
 	}
 	
 	public ResultSet executeSelect(String sql, Object... values) throws SQLException {
-		PreparedStatement preparedStatement = getConnection().prepareStatement(sql);
-		
-		int parameterIndex = 1;
-		for (Object value : values) {
-			preparedStatement.setObject(parameterIndex, value);
-			parameterIndex++;
+		Connection connection = getConnection();
+		try {
+  		PreparedStatement preparedStatement = connection.prepareStatement(sql);
+  		
+  		int parameterIndex = 1;
+  		for (Object value : values) {
+  			preparedStatement.setObject(parameterIndex, value);
+  			parameterIndex++;
+  		}
+  
+  		return preparedStatement.executeQuery();
+		} finally {
+			connection.close();
 		}
-
-		return preparedStatement.executeQuery();
 	}
 
 	public PreparedStatement executeUpdate(String sql, Object[] values) throws SQLException {
-		PreparedStatement preparedStatement = getConnection().prepareStatement(sql);
-		
-		int parameterIndex = 1;
-		for (Object value : values) {
-			preparedStatement.setObject(parameterIndex, value);
-			parameterIndex++;
+		Connection connection = getConnection();
+		try {
+  		PreparedStatement preparedStatement = connection.prepareStatement(sql);
+  		
+  		int parameterIndex = 1;
+  		for (Object value : values) {
+  			preparedStatement.setObject(parameterIndex, value);
+  			parameterIndex++;
+  		}
+  		
+  		preparedStatement.executeUpdate();
+  		
+  		return preparedStatement;
+		} finally {
+			connection.close();
 		}
-		
-		preparedStatement.executeUpdate();
-		
-		return preparedStatement;
 	}	
 
 	public PreparedStatement executeDelete(String sql, Object[] values) throws SQLException {
-		PreparedStatement preparedStatement = getConnection().prepareStatement(sql);
-		
-		int parameterIndex = 1;
-		for (Object value : values) {
-			preparedStatement.setObject(parameterIndex, value);
-			parameterIndex++;
+		Connection connection = getConnection();
+		try {
+  		PreparedStatement preparedStatement = connection.prepareStatement(sql);
+  		
+  		int parameterIndex = 1;
+  		for (Object value : values) {
+  			preparedStatement.setObject(parameterIndex, value);
+  			parameterIndex++;
+  		}
+  		
+  		preparedStatement.executeUpdate();
+  		
+  		return preparedStatement;
+		} finally {
+			connection.close();
 		}
-		
-		preparedStatement.executeUpdate();
-		
-		return preparedStatement;
 	}	
 	
 	public void executeScript(InputStream inputStream) throws IOException, SQLException {

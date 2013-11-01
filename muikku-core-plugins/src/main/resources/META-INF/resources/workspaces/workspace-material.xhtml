@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:ui="http://java.sun.com/jsf/facelets" 
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html" 
+  xmlns:comp="http://java.sun.com/jsf/composite/composite"
+  template="/workspaces/template.xhtml">
+
+  <ui:define name="content">
+  
+    <h:outputScript name="scripts/gui/workspace-material.js" target="head"/>
+  
+  
+    <h2>Material</h2>
+    <comp:material-view materialId="#{workspaceMaterialBackingBean.materialId}"
+                        materialType="#{workspaceMaterialBackingBean.materialType}" />
+  </ui:define>
+
+</ui:composition>

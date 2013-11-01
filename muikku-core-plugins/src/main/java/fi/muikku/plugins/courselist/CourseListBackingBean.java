@@ -7,10 +7,10 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import fi.muikku.dao.courses.CourseUserDAO;
-import fi.muikku.model.courses.CourseUser;
+import fi.muikku.dao.workspace.WorkspaceUserEntityDAO;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.session.SessionController;
@@ -29,7 +29,7 @@ public class CourseListBackingBean {
   private CourseListSelectionDAO courseListSelectionDAO;
   
   @Inject
-  private CourseUserDAO courseUserDAO;
+  private WorkspaceUserEntityDAO workspaceUserEntityDAO;
   
   @Inject
   private UserFavouriteWorkspaceDAO userFavouriteWorkspaceDAO;
@@ -48,11 +48,11 @@ public class CourseListBackingBean {
     
     switch (selection) {
       case MY_COURSES: {
-        List<CourseUser> courseUsers = courseUserDAO.listByUser(userEntity);
+        List<WorkspaceUserEntity> workspaceUsers = workspaceUserEntityDAO.listByUser(userEntity);
         List<Workspace> workspaces = new ArrayList<Workspace>();
         
-        for (CourseUser courseUser : courseUsers) {
-          Workspace workspace = workspaceController.findWorkspace(courseUser.getCourse());
+        for (WorkspaceUserEntity workspaceUser : workspaceUsers) {
+          Workspace workspace = workspaceController.findWorkspace(workspaceUser.getWorkspaceEntity());
           workspaces.add(workspace);
         }
         
