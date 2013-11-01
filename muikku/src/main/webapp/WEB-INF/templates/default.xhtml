@@ -213,17 +213,17 @@
     
     $( "div[class*='wi-frontpage']" ).mouseenter(function() {
       var tools =  $(this).find(".wi-frontpage-widget-toolarea");
-       tools.show( "slide", 500 );
+       tools.show( "slide", 50 );
        
       });
 
     $( "div[class*='wi-frontpage']" ).mouseleave(function() {
       var tools =  $(this).find(".wi-frontpage-widget-toolarea");
-       tools.hide( "slide", 500 );
+       tools.hide( "slide", 50 );
       });
 
 
-    $( "div[class*='wi-frontpage']" ).draggable({ snapMode: "inner" });
+    $( "div[class*='wi-frontpage-dynamic']" ).draggable({ snapMode: "inner" });
    </script>  
   </h:body>
 

@@ -4,6 +4,14 @@
 
 /* Widgets */
 
+div[data-name*='index.content'] > div:not(:first-child){
+margin-top:10px;
+}
+
+div[data-name*='environment.content'] > div:not(:first-child){
+margin-top:10px;
+}
+
 
 /* staticNaviDock  */
 
@@ -370,23 +378,41 @@
 
 /* frontpage widgets */
 
-.wi-frontpage-info{
+.wi-frontpage-static-personalTopics{
+	@extend .co-widget;
+	@include gradient-top-bottom(#fff,$hlBgr);
+
+}
+
+.wi-frontpage-static-personalTopics > div:not(:first-child) {
+ margin-left:10px;
+}
+
+.wi-headlines-container{
+	background-color:#fff;
+	float:left;
+	@include shadow;
+	padding:10px 10px 10px 30px;
 	
 }
 
-.wi-news{
+.wi-headlines-topic{
+	font-size:1.5em;
+  
+}
 
+.wi-frontpage-dynamic-info{	
+}
+
+.wi-news{
 }
 
 .wi-news-item-content{
-
 }
 
 
 .wi-news-item{
 	margin-top:10px;
-
-
 }
 
 .wi-news-primary-item{
@@ -400,7 +426,6 @@
 }
 
 .wi-news-secondary-item{
-
   margin-top:10px;
   @extend .co-widget;
   }
@@ -414,75 +439,67 @@
 }
 
 .wi-news-item-content-description{
-  float:left;
-box-sizing:border-box;
--moz-box-sizing:border-box;   
-background-color:$aBgr;
+	float:left;
+	box-sizing:border-box;
+	-moz-box-sizing:border-box;   
+	background-color:$aBgr;
 }
 
-.wi-frontpage-students{
+.wi-frontpage-dynamic-students{
   @extend .co-widget;
-
 }
 	
-
-
-.wi-frontpage-students ul{
+.wi-frontpage-dynamic-students ul{
   padding:20px;
 }
 
-.wi-frontpage-students li{
+.wi-frontpage-dynamic-students li{
   padding:5px;
-    @include rounded(5px);
+  @include rounded(5px);
 }
 
-.wi-frontpage-students li a{
+.wi-frontpage-dynamic-students li a{
   text-decoration: none;
   color: #000000;
 }
 
-.wi-frontpage-students li:nth-child(odd) {
+.wi-frontpage-dynamic-students li:nth-child(odd) {
   background:#ededed;
 }
 
-.wi-frontpage-calendar{
-	margin-top:10px;
+.wi-frontpage-dynamic-calendar{
   @extend .co-widget;
 }
 
-.wi-frontpage-calendar-container{
+.wi-frontpage-calendar-dynamic{
   background-color:$aBgr;
   height:200px;
 }
 	
-
-.wi-frontpage-wallfeed {
-	margin-top:10px;
+.wi-frontpage-dynamic-wallfeed {
   @extend .co-widget;
-	
-}
+ }
 
-.wi-frontpage-wallfeed-item{
+.wi-frontpage-dynamic-wallfeed-item{
   padding:5px;
   border:1px solid $brd;
   margin-bottom:1px;
 }
 
-.wi-frontpage-courses{
+.wi-frontpage-dynamic-courses{
   @extend .co-widget;
 }
 
-.wi-frontpage-courses ul{
-  padding:20px;
-  
+.wi-frontpage-dynamic-courses ul{
+  padding:20px;  
 }
 
-.wi-frontpage-courses li{
+.wi-frontpage-dynamic-courses li{
   padding:5px;
   @include rounded(5px);
 }
 
-.wi-frontpage-courses li:nth-child(odd) {
+.wi-frontpage-dynamic-courses li:nth-child(odd) {
 	background:#ededed;
 }
 
@@ -494,8 +511,7 @@ background-color:$aBgr;
   position:relative;
   float:right;
   top:-15px;
-  right:-15px;
-  
+  right:-15px; 
 }
 
 .wi-frontpage-widget-toolarea div{
@@ -504,21 +520,20 @@ background-color:$aBgr;
 }
 
 .wi-settings-move{
-
 }
 
 
 .wi-settings-move-link{
   @include customIcon(url('../resources/gfx/icons/32x32/actions/tools-move.png'),20px);
   display:block;
-    margin-left:10px;
+  margin-left:10px;
 }
 
 .wi-settings-edit{
-
 }
+
 .wi-settings-edit-link{
   @include customIcon(url('../resources/gfx/icons/32x32/actions/settings.png'),20px);
   display:block;
-    margin-left:10px;
+  margin-left:10px;
 }
