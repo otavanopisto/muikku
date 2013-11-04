@@ -89,8 +89,10 @@
       var element = $(event.target);
       var coursePickerCourse = element.parents(".cp-course");
       var workspaceId = coursePickerCourse.find("input[name='workspaceId']").val();
+      var workspaceUrl = coursePickerCourse.find("input[name='workspaceUrl']").val();
       
-      window.location = CONTEXTPATH + '/course/index.jsf?courseId=' + workspaceId;
+//      window.location = CONTEXTPATH + '/course/index.jsf?courseId=' + workspaceId;
+      window.location = CONTEXTPATH + '/workspace/' + workspaceUrl;
     },
     _onJoinCourseClick: function (event) {
       var element = $(event.target);
