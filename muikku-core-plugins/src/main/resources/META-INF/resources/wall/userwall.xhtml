@@ -13,7 +13,7 @@
     </c:forEach>    
     
     <div class="widget wallWidget">
-      <c:set var="userEntity" value="#{User.findUserEntity(userId)}"/>
+      <c:set var="userEntity" value="#{User.findUserEntityById(userId)}"/>
       <c:set var="wall" value="#{Wall.getUserWall(userEntity)}" />
       <input type="hidden" name="wallId" value="#{wall.id}"/>
       <input type="hidden" name="userId" value="#{muikkuSession.user.id}"/>
