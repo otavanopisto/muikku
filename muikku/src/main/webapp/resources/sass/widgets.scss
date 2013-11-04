@@ -547,11 +547,20 @@ margin-top:10px;
   margin-left:10px;
 }
 
+.wi-settings-remove{
+}
+
+.wi-settings-remove-link{
+  @include customIcon(url('../resources/gfx/icons/32x32/actions/tools-remove.png'),20px);
+  display:block;
+  margin-left:10px;
+}
+
 .wi-settings-edit{
 }
 
 .wi-settings-edit-link{
-  @include customIcon(url('../resources/gfx/icons/32x32/actions/settings.png'),20px);
+  @include customIcon(url('../resources/gfx/icons/32x32/actions/tools-settings.png'),20px);
   display:block;
   margin-left:10px;
 }
