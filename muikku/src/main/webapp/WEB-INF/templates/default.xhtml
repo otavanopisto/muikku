@@ -77,7 +77,7 @@
   </h:head>
 
   <h:body>
-    <m:widget name="navigation-dynamic"></m:widget>
+    <m:widget name="navigation-dynamic" rendered="#{sessionBackingBean.loggedIn}"></m:widget>
   
     <div id="header">
       <div id="headerContainer" class="container_24">
@@ -104,12 +104,13 @@
          
         <ui:insert name="dockTop">
           <m:widgetSpaceSet>
-            <m:widgetSpace name="environment.dock-top.left" keepEmpty="false" sizing="SUM">
+            <m:widgetSpace name="environment.dock-top.left" keepEmpty="false" sizing="MAXIMIZE">
               <m:widget name="dock-home" size="1" />
               <m:widget name="dock-calendar" size="1" />
               <m:widget name="dock-studentgrading" size="1" />
               <m:widget name="dock-coursepicker" size="1" />
-              <m:widget name="dock-communicator" size="2" />
+              <m:widget name="dock-communicator" size="1" />
+              <m:widget name="dock-students" size="1" />
             </m:widgetSpace>
             <m:widgetSpace name="environment.dock-top.center" keepEmpty="true" sizing="MAXIMIZE">
               <m:widget name="home-textlinks" size="4" rendered="#{!sessionBackingBean.loggedIn}" />
