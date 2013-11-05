@@ -3,12 +3,14 @@
   DefaultWallEntryController = $.klass(WallEntryController, {
     render: function (data) {
       // TODO: sync issues with renderDustTemplate
+      dust.preload('wall/wallentryitem.dust');
       dust.preload('wall/wallentry.dust');
+      dust.preload('wall/wallentryreply.dust');
       
       var rtn = undefined;
       this._wallId = data.wallEntry.wall.id;
       
-      renderDustTemplate('wall/wallentry.dust', data, function (text) {
+      renderDustTemplate('wall/wallentryitem.dust', data, function (text) {
         rtn = $.parseHTML(text);
       });
       

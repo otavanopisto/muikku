@@ -22,7 +22,7 @@ public class WallEntry extends AbstractWallEntry {
     this.visibility = visibility;
   }
 
-  @Transient
+//  @Transient
   public List<WallEntryReply> getReplies() {
     return replies;
   }
