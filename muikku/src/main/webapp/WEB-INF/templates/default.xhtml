@@ -77,37 +77,7 @@
   </h:head>
 
   <h:body>
-      <div id="dynamicNavigation">
-      <div id="dynamicNaviButton"></div>
-      <div id="dynamicNaviContainer">
-        <div>
-          <h4>Viimeisimmät kurssit</h4>
-         <ul>
-          <li>Kur1 - Kurssi</li>
-          <li>Kur2 - Kurssi</li>
-          <li>Kur3 - Kurssi</li>
-          <li>Kur4 - Kurssi</li>
-          <li>Kur5 - Kurssi</li>
-          <li>Kur6 - Kurssi</li>
-          <li>Kur7 - Kurssi</li>
-          <li>Kur8 - Kurssi</li>          
-        </ul> 
-        </div>
-        <div>
-         <h4>Alkavat ryhmäkurssit</h4>
-         <ul>
-          <li>Kur1 - Kurssi</li>
-          <li>Kur2 - Kurssi</li>
-          <li>Kur3 - Kurssi</li>
-          <li>Kur4 - Kurssi</li>
-          <li>Kur5 - Kurssi</li>
-          <li>Kur6 - Kurssi</li>
-          <li>Kur7 - Kurssi</li>
-          <li>Kur8 - Kurssi</li>
-        </ul>
-        </div>
-      </div>
-    </div>
+    <m:widget name="navigation-dynamic"></m:widget>
   
     <div id="header">
       <div id="headerContainer" class="container_24">
@@ -141,7 +111,7 @@
               <m:widget name="dock-coursepicker" size="1" />
               <m:widget name="dock-communicator" size="2" />
             </m:widgetSpace>
-            <m:widgetSpace name="environment.dock-top.center" keepEmpty="false" sizing="MAXIMIZE">
+            <m:widgetSpace name="environment.dock-top.center" keepEmpty="true" sizing="MAXIMIZE">
               <m:widget name="home-textlinks" size="4" rendered="#{!sessionBackingBean.loggedIn}" />
             </m:widgetSpace>
             <m:widgetSpace name="environment.dock-top.right" keepEmpty="false" sizing="MINIMIZE">

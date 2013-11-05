@@ -7,7 +7,7 @@ xmlns:f="http://java.sun.com/jsf/core"
 xmlns:h="http://java.sun.com/jsf/html">
 
   <div class="wi-frontpage-dynamic-students">
-    <m:widget name="widget-toolarea" rendered="#{sessionBackingBean.loggedIn}" />
+    <ui:include src="/facelets/widget-toolarea.xhtml" />
     <h3>Opiskelijat</h3>
     <ul>
       <ui:repeat var="user" value="#{User.listUsers()}">
