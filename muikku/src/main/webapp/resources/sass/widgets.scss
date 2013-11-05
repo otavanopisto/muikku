@@ -71,12 +71,33 @@ margin-top:10px;
    @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-home.png'));
 }
 
+
+.naviIconStudents{
+   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-students.png'));
+}
+
+.naviIconStudents.disabled{
+   opacity:0.5;
+   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-students.png'));
+}
+
+.naviIconStudents:hover{
+   opacity:0.2;
+   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-students.png'));
+}
+
+
 .naviIconCoursePicker{
    @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-coursepicker.png'));
 }
 
 .naviIconCoursePicker.disabled{
 	 opacity:0.2;
+   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-coursepicker.png'));
+}
+
+.naviIconCoursePicker:hover{
+   opacity:0.2;
    @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-coursepicker.png'));
 }
 
@@ -89,11 +110,21 @@ margin-top:10px;
    @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-forum.png')) 
 }
 
+ .naviIconForum:hover{
+   opacity:0.2;
+   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-forum.png')) 
+}
+
 .naviIconDiary{
    @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-diary.png'));	
 }
 
  .naviIconDiary.disabled{
+    opacity:0.2;
+    @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-diary.png')); 
+}
+
+ .naviIconDiary:hover{
     opacity:0.2;
     @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-diary.png')); 
 }
@@ -107,6 +138,11 @@ margin-top:10px;
     @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-communicator.png'));  
 }
 
+ .naviIconCommunicator:hover{
+    opacity:0.2;
+    @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-communicator.png'));  
+}
+
 .naviIconStudyTracker{
    @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-studytracker.png')); 	  
 }
@@ -116,11 +152,21 @@ margin-top:10px;
     @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-studytracker.png'));    
 }
 
+ .naviIconStudyTracker:hover{
+    opacity:0.2;
+    @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-studytracker.png'));    
+}
+
 .naviIconCalendar{
    @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-cal.png'));
 }
 
  .naviIconCalendar.disabled{
+    opacity:0.2;
+    @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-cal.png'));   
+}
+
+ .naviIconCalendar:hover{
     opacity:0.2;
     @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-cal.png'));   
 }
@@ -141,7 +187,7 @@ margin-top:10px;
    @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-student-grading.png')); 	    
 }
 
- .naviIconStudentGrading.disabled{
+ .naviIconStudentGrading:hover{
     opacity:0.2;
     @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-student-grading.png'));  
 }
@@ -512,7 +558,7 @@ margin-top:10px;
   @include rounded(5px);
 }
 
-.wi-frontpage-dynamic-courses li a {
+.wi-frontpage-courses li a {
   text-decoration: none;
   color: #000000;
 }
