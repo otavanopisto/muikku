@@ -1,10 +1,10 @@
 {#.}
   <div class="cp-course">
-    <input type="hidden" name="workspaceId" value="{id}"/>
-    <input type="hidden" name="workspaceUrl" value="{urlName}"/>
+    <input type="hidden" name="workspaceId" value="{workspaceEntity.id}"/>
+    <input type="hidden" name="workspaceUrl" value="{workspaceEntity.urlName}"/>
     <div class="cp-course-header">
-      <span class="cp-course-name">{name}</span>
-	  <span class="cp-course-rating">{rating} ({ratingCount})</span>
+      <span class="cp-course-name">{workspaceEntity.name}</span>
+	  <span class="cp-course-rating">{workspaceEntity.rating} ({workspaceEntity.ratingCount})</span>
     </div>
     <div class="cp-course-details" style="display: none;">
       <div class="mf-toolbar cp-course-details-toolbar">
@@ -12,14 +12,14 @@
       </div>
 
       <div class="cp-course-detailsContainer">
-        <div class="mf-textContent cp-course-details-description">{description}</div>
+        <div class="mf-textContent cp-course-details-description">{workspaceEntity.description}</div>
         
         <div class="cp-course-details-additionalInfo">
   	      <div class="cp-course-details-teachers">
-  	        {?teachers}
+  	        {?workspaceEntity.teachers}
   	          <div class="cp-course-details-teachers-caption">{#localize key="plugin.coursepicker.course.teachers" /}</div>
   	          
-  	          {#teachers}
+  	          {#workspaceEntity.teachers}
   	            <div class="cp-course-details-teacher">
   	              <div class="cp-course-details-teacher-picture-container">
   	                {?hasPicture} 
@@ -33,19 +33,19 @@
   	              <div class="clear"></div>
   	            </div>
   
-  	          {/teachers}
+  	          {/workspaceEntity.teachers}
   	        {:else}
   	          {#localize key="plugin.coursepicker.course.noteachers" /}
-  	        {/teachers}
+  	        {/workspaceEntity.teachers}
   	      </div>
   
-          {?hasCourseFee}      
+          {?workspaceEntity.hasCourseFee}      
             <div class="cp-course-details-fee">{#localize key="plugin.coursepicker.course.coursehasfee" /}</div>
-          {/hasCourseFee}
+          {/workspaceEntity.hasCourseFee}
   
-          {?hasAssessmentFee}      
+          {?workspaceEntity.hasAssessmentFee}      
             <div class="cp-course-details-assessmentFee">{#localize key="plugin.coursepicker.course.assessmenthasfee" /}</div>
-          {/hasAssessmentFee}
+          {/workspaceEntity.hasAssessmentFee}
         </div>
         <div class="clear"></div>
       </div>

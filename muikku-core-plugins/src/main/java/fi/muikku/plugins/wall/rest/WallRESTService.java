@@ -18,9 +18,8 @@ import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.forum.ForumController;
 import fi.muikku.plugins.forum.model.ForumThread;
 import fi.muikku.plugins.forum.model.ForumThreadReply;
-import fi.muikku.plugins.wall.WallFeedItem;
 import fi.muikku.plugins.wall.WallController;
-import fi.muikku.plugins.wall.impl.WallFeedWallEntryItem;
+import fi.muikku.plugins.wall.WallFeedItem;
 import fi.muikku.plugins.wall.model.UserWall;
 import fi.muikku.plugins.wall.model.Wall;
 import fi.muikku.plugins.wall.model.WallEntry;
@@ -106,6 +105,7 @@ public class WallRESTService extends PluginRESTService {
       .addInstruction("forumMessage", tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
       .addInstruction(ForumThread.class, tranquilityBuilder.createPropertyInjectInstruction("replies", new ForumThreadReplyInjector()))
       .addInstruction(Wall.class, tranquilityBuilder.createPropertyInjectInstruction("wallName", new WallEntityNameGetter()))
+      .addInstruction(Wall.class, tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
 
       .addInstruction(new SuperClassInstructionSelector(UserEntity.class), tranquilityBuilder.createPropertyInjectInstruction("hasPicture", new UserEntityHasPictureValueGetter()))
       .addInstruction(new SuperClassInstructionSelector(UserEntity.class), tranquilityBuilder.createPropertyInjectInstruction("fullName", new UserNameValueGetter()));

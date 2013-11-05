@@ -91,11 +91,12 @@ public class CourseRESTService extends AbstractRESTService {
     TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
     Tranquility tranquility = tranquilityBuilder.createTranquility()
       .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
-//      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("name", new CourseNameInjector()))
-//      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("description", new CourseDescriptionInjector()))
-//      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("rating", new CourseRatingInjector()))
-//      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("ratingCount", new CourseRatingCountInjector()))
-//      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("teachers", new CourseTeachersGetter()));
+      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("name", new CourseNameInjector()))
+      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("description", new CourseDescriptionInjector()))
+      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("rating", new CourseRatingInjector()))
+      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("ratingCount", new CourseRatingCountInjector()))
+      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("isMember", new CourseIsMemberInjector()))
+      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("teachers", new CourseTeachersGetter()))
 //      .addInstruction(CourseEntity.class, tranquilityBuilder.createPropertyInjectInstruction("course", new CourseSchoolDataInjector()));
     ;
     Collection<TranquilModelEntity> entities = tranquility.entities(courses);

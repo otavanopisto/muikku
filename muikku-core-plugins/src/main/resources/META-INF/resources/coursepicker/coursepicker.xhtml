@@ -11,10 +11,6 @@
     <h:outputScript name="scripts/gui/coursepicker.js" target="head" />
     
     <div class="widget coursePicker">
-      <h:form>
-        <h:commandButton action="#{Course.TEST_COURSES()}" value="CREATETESTCOURSE" />
-      </h:form>
-
       <input type="hidden" name="userId" value="#{muikkuSession.user.id}"/>
     
       <!-- TODO localize -->
