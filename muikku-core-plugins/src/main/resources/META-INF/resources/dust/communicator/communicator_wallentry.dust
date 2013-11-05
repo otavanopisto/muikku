@@ -15,7 +15,7 @@
     {/if}
 
     {@if cond="'{wall.wallType}' == 'COURSE'"}
-      kurssilla <a class="wallEntryCourseLink" href="{@contextPath/}/course/index.jsf?courseId={wall.id}">{wall.wallName}</a>
+      kurssilla <a class="wallEntryCourseLink" href="{@contextPath/}/workspace/{wall.workspace_tq.urlName}">{wall.wallName}</a>
     {/if}
 
     {@if cond="'{wall.wallType}' == 'USER'"}
