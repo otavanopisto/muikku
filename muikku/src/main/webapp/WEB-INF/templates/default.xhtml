@@ -131,7 +131,7 @@
         <m:widgetSpaceSet styleClass="nomargin">
           <m:widgetSpace name="environment.content-tools-top.left" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
           <m:widgetSpace name="environment.content-tools-top.center" keepEmpty="true" sizing="MAXIMIZE">
-          <m:widget name="home-footer" rendered="#{!sessionBackingBean.loggedIn}"/>
+            <ui:insert name="content-tools-center" />
           </m:widgetSpace>
           <m:widgetSpace name="environment.content-tools-top.right" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
         </m:widgetSpaceSet>
@@ -140,12 +140,15 @@
       <ui:insert name="contentArea">
         <m:widgetSpaceSet styleClass="nomargin">
           <m:widgetSpace name="environment.content-sidebar.left" keepEmpty="false" sizing="MINIMIZE">
-
+             <ui:insert name="content-sidebar-left" />
           </m:widgetSpace>
           <m:widgetSpace name="environment.content" keepEmpty="true" sizing="MAXIMIZE"> 
-			      <m:widget name="content" />   
+			      <!--  <m:widget name="content" />   -->			      
+			      <ui:insert name="content" />
           </m:widgetSpace>
-          <m:widgetSpace name="environment.content-sidebar.right" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
+          <m:widgetSpace name="environment.content-sidebar.right" keepEmpty="false" sizing="MINIMIZE">
+            <ui:insert name="sidebar-right" />
+          </m:widgetSpace>
         </m:widgetSpaceSet>
       </ui:insert>
 
@@ -172,7 +175,9 @@
       <ui:insert name="footer">
         <m:widgetSpaceSet styleClass="nomargin">
           <m:widgetSpace name="environment.footer.left" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
-          <m:widgetSpace name="environment.footer.center" keepEmpty="true" sizing="MAXIMIZE"></m:widgetSpace>
+          <m:widgetSpace name="environment.footer.center" keepEmpty="true" sizing="MAXIMIZE">
+          <m:widget name="home-footer" rendered="#{!sessionBackingBean.loggedIn}"/>
+          </m:widgetSpace>
           <m:widgetSpace name="environment.footer.right" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
         </m:widgetSpaceSet>
       </ui:insert>
