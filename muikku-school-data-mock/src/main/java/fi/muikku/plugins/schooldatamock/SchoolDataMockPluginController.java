@@ -27,78 +27,58 @@ public class SchoolDataMockPluginController {
 	@Inject
 	private DataPluginController dataPluginController;
 	
-	public PreparedStatement executeInsert(String sql, Object... values) throws SQLException {
-		Connection connection = getConnection();
-		try {
-  		PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-  		
-  		int parameterIndex = 1;
-  		for (Object value : values) {
-  			preparedStatement.setObject(parameterIndex, value);
-  			parameterIndex++;
-  		}
-  		
-  		preparedStatement.executeUpdate();
-  		
-  		return preparedStatement;
-		} finally {
-			connection.close();
+	public PreparedStatement executeInsert(Connection connection, String sql, Object... values) throws SQLException {
+		PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+		
+		int parameterIndex = 1;
+		for (Object value : values) {
+			preparedStatement.setObject(parameterIndex, value);
+			parameterIndex++;
 		}
+		
+		preparedStatement.executeUpdate();
+		
+		return preparedStatement;
 	}
 	
-	public ResultSet executeSelect(String sql, Object... values) throws SQLException {
-		Connection connection = getConnection();
-		try {
-  		PreparedStatement preparedStatement = connection.prepareStatement(sql);
-  		
-  		int parameterIndex = 1;
-  		for (Object value : values) {
-  			preparedStatement.setObject(parameterIndex, value);
-  			parameterIndex++;
-  		}
-  
-  		return preparedStatement.executeQuery();
-		} finally {
-			connection.close();
+	public ResultSet executeSelect(Connection connection, String sql, Object... values) throws SQLException {
+		PreparedStatement preparedStatement = connection.prepareStatement(sql);
+		
+		int parameterIndex = 1;
+		for (Object value : values) {
+			preparedStatement.setObject(parameterIndex, value);
+			parameterIndex++;
 		}
+
+		return preparedStatement.executeQuery();
 	}
 
-	public PreparedStatement executeUpdate(String sql, Object[] values) throws SQLException {
-		Connection connection = getConnection();
-		try {
-  		PreparedStatement preparedStatement = connection.prepareStatement(sql);
-  		
-  		int parameterIndex = 1;
-  		for (Object value : values) {
-  			preparedStatement.setObject(parameterIndex, value);
-  			parameterIndex++;
-  		}
-  		
-  		preparedStatement.executeUpdate();
-  		
-  		return preparedStatement;
-		} finally {
-			connection.close();
+	public PreparedStatement executeUpdate(Connection connection, String sql, Object... values) throws SQLException {
+		PreparedStatement preparedStatement = connection.prepareStatement(sql);
+		
+		int parameterIndex = 1;
+		for (Object value : values) {
+			preparedStatement.setObject(parameterIndex, value);
+			parameterIndex++;
 		}
+		
+		preparedStatement.executeUpdate();
+		
+		return preparedStatement;
 	}	
 
-	public PreparedStatement executeDelete(String sql, Object[] values) throws SQLException {
-		Connection connection = getConnection();
-		try {
-  		PreparedStatement preparedStatement = connection.prepareStatement(sql);
-  		
-  		int parameterIndex = 1;
-  		for (Object value : values) {
-  			preparedStatement.setObject(parameterIndex, value);
-  			parameterIndex++;
-  		}
-  		
-  		preparedStatement.executeUpdate();
-  		
-  		return preparedStatement;
-		} finally {
-			connection.close();
+	public PreparedStatement executeDelete(Connection connection, String sql, Object... values) throws SQLException {
+		PreparedStatement preparedStatement = connection.prepareStatement(sql);
+		
+		int parameterIndex = 1;
+		for (Object value : values) {
+			preparedStatement.setObject(parameterIndex, value);
+			parameterIndex++;
 		}
+		
+		preparedStatement.executeUpdate();
+		
+		return preparedStatement; 
 	}	
 	
 	public void executeScript(InputStream inputStream) throws IOException, SQLException {
@@ -107,7 +87,7 @@ public class SchoolDataMockPluginController {
 	  getScriptHandler().executeScript(inputStream, parameters);
 	}
 	
-	private Connection getConnection() throws SQLException {
+	public Connection getConnection() throws SQLException {
 		Map<String, String> parameters = new HashMap<>();
 		parameters.put("database", DATABASE_NAME);
 		return getScriptHandler().getConnection(parameters);

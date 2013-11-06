@@ -1,5 +1,6 @@
 package fi.muikku.plugins.schooldatamock;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -7,6 +8,7 @@ import java.util.List;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -20,8 +22,11 @@ import fi.muikku.schooldata.entity.Subject;
 
 @Dependent
 @Stateful
-public class MockedCourseMetaSchoolDataBridge extends AbstractMockedSchoolDataBridge implements CourseMetaSchoolDataBridge {
+public class MockedCourseMetaSchoolDataBridge  implements CourseMetaSchoolDataBridge {
 
+  @Inject
+  private SchoolDataMockPluginController schoolDataMockPluginController;
+  
 	@Override
 	public String getSchoolDataSource() {
 		return SchoolDataMockPluginDescriptor.SCHOOL_DATA_SOURCE;
@@ -33,11 +38,16 @@ public class MockedCourseMetaSchoolDataBridge extends AbstractMockedSchoolDataBr
 			throw new SchoolDataBridgeRequestException("Identifier has to be numeric");
 		}
 
-		try {
-			ResultSet resultSet = executeSelect("select id, name from Subject where id = ?", identifier);
-			if (resultSet.next()) {
-				return new MockedSubject(resultSet.getString(1), resultSet.getString(2));
-			}
+    try {
+      Connection connection = schoolDataMockPluginController.getConnection();
+  		try {
+  			ResultSet resultSet = schoolDataMockPluginController.executeSelect(connection, "select id, name from Subject where id = ?", identifier);
+  			if (resultSet.next()) {
+  				return new MockedSubject(resultSet.getString(1), resultSet.getString(2));
+  			}
+  	  } finally {
+  	    connection.close();
+  	  }
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}
@@ -50,10 +60,15 @@ public class MockedCourseMetaSchoolDataBridge extends AbstractMockedSchoolDataBr
 		List<Subject> result = new ArrayList<>();
 
 		try {
-			ResultSet resultSet = executeSelect("select id, name from Subject");
-			while (resultSet.next()) {
-				result.add(new MockedSubject(resultSet.getString(1), resultSet.getString(2)));
-			}
+		  Connection connection = schoolDataMockPluginController.getConnection();
+      try {
+  			ResultSet resultSet = schoolDataMockPluginController.executeSelect(connection, "select id, name from Subject");
+  			while (resultSet.next()) {
+  				result.add(new MockedSubject(resultSet.getString(1), resultSet.getString(2)));
+  			}
+      } finally {
+        connection.close();
+      }
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}
@@ -68,10 +83,15 @@ public class MockedCourseMetaSchoolDataBridge extends AbstractMockedSchoolDataBr
 		}
 
 		try {
-			ResultSet resultSet = executeSelect("select id, code, subject_id from CourseIdentifier where id = ?", identifier);
-			if (resultSet.next()) {
-				return new MockedCourseIdentifier(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3));
-			}
+      Connection connection = schoolDataMockPluginController.getConnection();
+      try {
+  			ResultSet resultSet = schoolDataMockPluginController.executeSelect(connection, "select id, code, subject_id from CourseIdentifier where id = ?", identifier);
+  			if (resultSet.next()) {
+  				return new MockedCourseIdentifier(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3));
+  			}
+      } finally {
+        connection.close();
+      }
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}
@@ -84,10 +104,15 @@ public class MockedCourseMetaSchoolDataBridge extends AbstractMockedSchoolDataBr
 		List<CourseIdentifier> result = new ArrayList<>();
 
 		try {
-			ResultSet resultSet = executeSelect("select id, code, subject_id from CourseIdentifier");
-			while (resultSet.next()) {
-				result.add(new MockedCourseIdentifier(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3)));
-			}
+      Connection connection = schoolDataMockPluginController.getConnection();
+      try {
+  			ResultSet resultSet = schoolDataMockPluginController.executeSelect(connection, "select id, code, subject_id from CourseIdentifier");
+  			while (resultSet.next()) {
+  				result.add(new MockedCourseIdentifier(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3)));
+  			}
+      } finally {
+        connection.close();
+      }
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}
@@ -100,10 +125,15 @@ public class MockedCourseMetaSchoolDataBridge extends AbstractMockedSchoolDataBr
 		List<CourseIdentifier> result = new ArrayList<>();
 
 		try {
-			ResultSet resultSet = executeSelect("select id, code, subject_id from CourseIdentifier where subject_id = ?", subjectIdentifier);
-			while (resultSet.next()) {
-				result.add(new MockedCourseIdentifier(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3)));
-			}
+      Connection connection = schoolDataMockPluginController.getConnection();
+      try {
+  			ResultSet resultSet = schoolDataMockPluginController.executeSelect(connection, "select id, code, subject_id from CourseIdentifier where subject_id = ?", subjectIdentifier);
+  			while (resultSet.next()) {
+  				result.add(new MockedCourseIdentifier(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3)));
+  			}
+      } finally {
+        connection.close();
+      }
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}
