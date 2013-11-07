@@ -21,16 +21,18 @@
     <m:widgetSpaceSet>
     
       <m:widgetSpace name="workspace.dock-top.left" keepEmpty="false" sizing="SUM">
-        <m:widget name="dock-home" size="1" rendered="#{sessionBackingBean.loggedIn}"/> 
-        <m:widget name="dock-calendar" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
-        <m:widget name="dock-studentgrading" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
-        <m:widget name="dock-coursepicker" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
-        <m:widget name="dock-communicator" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
-        <m:widget name="workspace-navigation-materials" size="1" rendered="#{sessionBackingBean.loggedIn}"/>   
-        <m:widget name="workspace-navigation-members" size="1" rendered="#{sessionBackingBean.loggedIn}"/>   
+        <m:widget name="dock-environment-home" size="1" rendered="#{sessionBackingBean.loggedIn}"/> 
+        <m:widget name="dock-environment-calendar" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
+        <m:widget name="dock-environment-studentgrading" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
+        <m:widget name="dock-environment-coursepicker" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
+        <m:widget name="dock-environment-communicator" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
       </m:widgetSpace>
-      <m:widgetSpace name="workspace.dock-top.center" keepEmpty="true" sizing="MAXIMIZE"></m:widgetSpace>
-      <m:widgetSpace name="workspace.dock-top.right" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
+      <m:widgetSpace name="workspace.dock-top.center" keepEmpty="true" sizing="MAXIMIZE">
+        <m:widget name="dock-workspace-home" size="1" rendered="#{sessionBackingBean.loggedIn}"/>   
+        <m:widget name="dock-workspace-materials" size="1" rendered="#{sessionBackingBean.loggedIn}"/>   
+        <m:widget name="dock-workspace-members" size="1" rendered="#{sessionBackingBean.loggedIn}"/>      
+      </m:widgetSpace>
+      <m:widgetSpace name="workspace.dock-top.right" keepEmpty="false" sizing="SUM"></m:widgetSpace>
     </m:widgetSpaceSet>
   </ui:define>
 
