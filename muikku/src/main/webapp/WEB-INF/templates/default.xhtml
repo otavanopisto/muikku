@@ -149,35 +149,36 @@
 
 
     <div id="content" class="container_24">
-      <ui:insert name="contentToolsTop">
+    
+      <ui:insert name="content.tools.top">
         <m:widgetSpaceSet styleClass="nomargin">
-            <ui:insert name="content.tools-top.left">
+            <ui:insert name="content.tools.top.left">
              <ui:include src="/facelets/generic/content-tools-top-left.xhtml">
                <ui:param name="sizing" value="SUM" />
                <ui:param name="keepEmpty" value="false" />
-               <ui:param name="name" value="generic.tools-top.left" />               
+               <ui:param name="name" value="generic.tools.top.left" />               
              </ui:include>
            </ui:insert>
-           <ui:insert name="content.tools-top.center">
+           <ui:insert name="content.tools.top.center">
              <ui:include src="/facelets/generic/content-tools-top-center.xhtml">
                <ui:param name="sizing" value="MAXIMIZE" />
                <ui:param name="keepEmpty" value="true" />
-               <ui:param name="name" value="generic.tools-top.center" />                    
+               <ui:param name="name" value="generic.tools.top.center" />                    
              </ui:include>         
            </ui:insert>
-           <ui:insert name="content.tools-top.right">
+           <ui:insert name="content.tools.top.right">
              <ui:include src="/facelets/generic/content-tools-top-right.xhtml">
                <ui:param name="sizing" value="MINIMIZE" />
                <ui:param name="keepEmpty" value="false" />
-               <ui:param name="name" value="generic.tools-top.right" />           
+               <ui:param name="name" value="generic.tools.top.right" />           
               </ui:include>          
             </ui:insert>       
         </m:widgetSpaceSet>
       </ui:insert>
-
+       <div class="clear"></div>
       <ui:insert name="contentArea">
-        <m:widgetSpaceSet styleClass="nomargin">
-          <m:widgetSpace name="generic.content.left" keepEmpty="false" sizing="SUM">        
+        <m:widgetSpaceSet>
+          <m:widgetSpace name="generic.content.left" keepEmpty="true" sizing="SUM">        
              <ui:insert name="content.left"></ui:insert>
           </m:widgetSpace>
           <m:widgetSpace name="generic.content.center" keepEmpty="true" sizing="MAXIMIZE">       
