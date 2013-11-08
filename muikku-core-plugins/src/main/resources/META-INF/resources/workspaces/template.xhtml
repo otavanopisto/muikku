@@ -6,75 +6,15 @@
   xmlns:h="http://java.sun.com/jsf/html" 
   template="/WEB-INF/templates/default.xhtml">
   
-  <ui:define name="header">
-    <m:widgetSpaceSet>
-      <m:widgetSpace name="workspace.header.left" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
-      <m:widgetSpace name="workspace.header.center" keepEmpty="true" sizing="MAXIMIZE"></m:widgetSpace>
-      <m:widgetSpace name="workspace.header.right" keepEmpty="false" sizing="MINIMIZE">
-        <m:widget name="internallogin" size="4" rendered="#{!sessionBackingBean.loggedIn}"/>    
-        <m:widget name="logout" size="1" rendered="#{sessionBackingBean.loggedIn}"/>   
+
+
+  <ui:define name="dock.top.center">    
+      <m:widgetSpace name="workspace.dock-top.center" keepEmpty="true" sizing="MAXIMIZE">
+        <m:widget name="dock-workspace-home" size="1" rendered="#{sessionBackingBean.loggedIn}"/>   
+        <m:widget name="dock-workspace-materials" size="1" rendered="#{sessionBackingBean.loggedIn}"/>   
+        <m:widget name="dock-workspace-members" size="1" rendered="#{sessionBackingBean.loggedIn}"/>      
       </m:widgetSpace>
-    </m:widgetSpaceSet>
   </ui:define>
 
-  <ui:define name="dockTop">
-    <m:widgetSpaceSet>
-    
-      <m:widgetSpace name="workspace.dock-top.left" keepEmpty="false" sizing="SUM">
-        <m:widget name="dock-home" size="1" rendered="#{sessionBackingBean.loggedIn}"/> 
-        <m:widget name="dock-calendar" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
-        <m:widget name="dock-studentgrading" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
-        <m:widget name="dock-coursepicker" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
-        <m:widget name="dock-communicator" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
-        <m:widget name="workspace-navigation-materials" size="1" rendered="#{sessionBackingBean.loggedIn}"/>   
-        <m:widget name="workspace-navigation-members" size="1" rendered="#{sessionBackingBean.loggedIn}"/>   
-      </m:widgetSpace>
-      <m:widgetSpace name="workspace.dock-top.center" keepEmpty="true" sizing="MAXIMIZE"></m:widgetSpace>
-      <m:widgetSpace name="workspace.dock-top.right" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
-    </m:widgetSpaceSet>
-  </ui:define>
-
-  <ui:define name="contentToolsTop">
-    <m:widgetSpaceSet>
-      <m:widgetSpace name="workspace.content-tools-top.left" keepEmpty="false" sizing="SUM">
-      </m:widgetSpace>
-      <m:widgetSpace name="workspace.content-tools-top.center" keepEmpty="true" sizing="MAXIMIZE"></m:widgetSpace>
-      <m:widgetSpace name="workspace.content-tools-top.right" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
-    </m:widgetSpaceSet>
-  </ui:define>
-
-  <ui:define name="contentArea">
-    <m:widgetSpaceSet>
-      <m:widgetSpace name="workspace.content-sidebar.left" keepEmpty="false" sizing="SUM"></m:widgetSpace>
-      <m:widgetSpace name="workspace.content" keepEmpty="true" sizing="MAXIMIZE">
-        <m:widget name="content" size="1"/>      
-      </m:widgetSpace>
-      <m:widgetSpace name="workspace.content-sidebar.right" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
-    </m:widgetSpaceSet>
-  </ui:define>
-  
-  <ui:define name="contentToolsBottom">
-    <m:widgetSpaceSet>
-      <m:widgetSpace name="workspace.content-tools-bottom.left" keepEmpty="false" sizing="SUM"></m:widgetSpace>
-      <m:widgetSpace name="workspace.content-tools-bottom.center" keepEmpty="true" sizing="MAXIMIZE"></m:widgetSpace>
-      <m:widgetSpace name="workspace.content-tools-bottom.right" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
-    </m:widgetSpaceSet>
-  </ui:define>
-
-  <ui:define name="dockBottom">
-    <m:widgetSpaceSet>
-      <m:widgetSpace name="workspace.dock-bottom.left" keepEmpty="false" sizing="SUM"></m:widgetSpace>
-      <m:widgetSpace name="workspace.dock-bottom.center" keepEmpty="true" sizing="MAXIMIZE"></m:widgetSpace>
-      <m:widgetSpace name="workspace.dock-bottom.right" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
-    </m:widgetSpaceSet>
-  </ui:define>
-
-  <ui:define name="footer">
-    <m:widgetSpaceSet>
-      <m:widgetSpace name="workspace.footer.left" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
-      <m:widgetSpace name="workspace.footer.center" keepEmpty="true" sizing="MAXIMIZE"></m:widgetSpace>
-      <m:widgetSpace name="workspace.footer.right" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
-    </m:widgetSpaceSet>
-  </ui:define>
 
 </ui:composition>
