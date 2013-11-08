@@ -9,6 +9,14 @@
     template="/workspaces/template.xhtml">
    
   <ui:define name="content">
+    <m:widgetSpaceSet>
+      <m:widgetSpace name="workspace.content-tools-top.left" keepEmpty="false" sizing="SUM">
+      </m:widgetSpace>
+      <m:widgetSpace name="workspace.content-tools-top.center" keepEmpty="true" sizing="MAXIMIZE">
+        <m:widget name="workspace-wallfeed"/>
+      </m:widgetSpace>
+      <m:widgetSpace name="workspace.content-tools-top.right" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
+    </m:widgetSpaceSet>
   </ui:define>
   
 </ui:composition>
