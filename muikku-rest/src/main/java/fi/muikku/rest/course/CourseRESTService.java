@@ -14,7 +14,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
-import fi.muikku.controller.CourseController;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
@@ -112,16 +111,24 @@ public class CourseRESTService extends AbstractRESTService {
   public Response joinCourse(
       @PathParam ("WORKSPACEID") Long workspaceId
    ) throws AuthorizationException {
-    WorkspaceEntity courseEntity = workspaceController.findWorkspaceEntityById(workspaceId);
     
-    WorkspaceUserEntity workspaceUser = workspaceController.joinCourse(courseEntity);
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceId);
+    UserEntity userEntity = sessionController.getUser();
+    WorkspaceUserEntity workspaceUserEntity = workspaceController.findWorkspaceUserEntityByWorkspaceAndUser(workspaceEntity, userEntity);
+        
+    if (workspaceUserEntity == null) {
+      User user = userController.findUser(userEntity);
+      Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+      WorkspaceUser workspaceUser = workspaceController.createWorkspaceUser(workspace, user);
+      workspaceUserEntity = workspaceController.findWorkspaceUserEntity(workspaceUser);
+    }
     
     TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
     Tranquility tranquility = tranquilityBuilder.createTranquility()
       .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE));
       
     return Response.ok(
-      tranquility.entity(workspaceUser)
+      tranquility.entity(workspaceUserEntity)
     ).build();
   }
   
