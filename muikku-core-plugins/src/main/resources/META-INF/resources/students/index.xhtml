@@ -1,12 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
     xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
     template="/WEB-INF/templates/default.xhtml">
+ 
+   <ui:define name="content.tools.top.left">
+   
+    <!-- TODO: define search scope  -->
+     
+     <m:widgetSpace name="generic.content.tools-top.left" keepEmpty="false" sizing="MINIMIZE">
+       <m:widget name="students-search" size="3" />     
+     </m:widgetSpace>
+          
+   </ui:define> 
+
+   <ui:define name="content.tools.top.center">
+  
+     
+     <m:widgetSpace name="generic.content.tools-top.center" keepEmpty="false" sizing="MAXIMIZE">
+       <m:widget name="students-tools"/>     
+     </m:widgetSpace>
+          
+   </ui:define> 
+
+  
+  <ui:define name="content.left">
+       <m:widget name="students-filters" size="3" />     
+  </ui:define> 
     
-  <ui:define name="content">
-    TODO: implement Lindex
+  <ui:define name="content.center">
+    <m:widget name="students-browser"></m:widget>
   </ui:define>
 
 </ui:composition>
