@@ -7,7 +7,7 @@ import javax.inject.Named;
 @Named
 @Stateful
 @RequestScoped
-public class GenericWorkspaceBackingBean {
+public class WorkspaceNavigationBackingBean {
 
   public String getWorkspaceUrlName() {
     return workspaceUrlName;

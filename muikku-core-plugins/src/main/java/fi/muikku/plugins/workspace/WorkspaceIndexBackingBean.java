@@ -33,13 +33,17 @@ import fi.muikku.schooldata.entity.WorkspaceUser;
     viewId = "/workspaces/workspace.jsf"
   )    
 })
-public class WorkspaceIndexBackingBean extends GenericWorkspaceBackingBean {
+public class WorkspaceIndexBackingBean {
 
 	@Inject
 	private WorkspaceController workspaceController;
 
 	@Inject
 	private UserController userController;
+
+  @Inject
+  @Named
+	private WorkspaceNavigationBackingBean workspaceNavigationBackingBean;
 
 	@URLAction
 	public void init() throws FileNotFoundException {
@@ -52,6 +56,8 @@ public class WorkspaceIndexBackingBean extends GenericWorkspaceBackingBean {
     if (workspaceEntity == null) {
       throw new FileNotFoundException();
     }
+    
+    workspaceNavigationBackingBean.setWorkspaceUrlName(urlName);
 
     workspaceId = workspaceEntity.getId();
 	}
@@ -63,7 +69,14 @@ public class WorkspaceIndexBackingBean extends GenericWorkspaceBackingBean {
 	public void setWorkspaceId(Long workspaceId) {
 		this.workspaceId = workspaceId;
 	}
-	
+	public String getWorkspaceUrlName() {
+    return workspaceUrlName;
+  }
+
+  public void setWorkspaceUrlName(String workspaceUrlName) {
+    this.workspaceUrlName = workspaceUrlName;
+  }
+
 	public Workspace getWorkspace() {
 		Long workspaceId = getWorkspaceId();
 		if (workspaceId != null) {
@@ -102,6 +115,7 @@ public class WorkspaceIndexBackingBean extends GenericWorkspaceBackingBean {
 	}
 
 	private Long workspaceId;
+  private String workspaceUrlName;
 
 	public class WorkspaceUserBean {
 

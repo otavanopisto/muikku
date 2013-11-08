@@ -46,7 +46,7 @@ public class WorkspacePluginDescriptor implements PluginDescriptor, PersistenceP
 		  
 			/* Backing beans */ 
 				
-      GenericWorkspaceBackingBean.class,
+      WorkspaceNavigationBackingBean.class,
 			WorkspaceIndexBackingBean.class,
       WorkspaceMembersBackingBean.class,
 			WorkspaceMaterialBackingBean.class,
