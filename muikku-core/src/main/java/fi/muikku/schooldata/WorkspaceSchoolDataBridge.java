@@ -2,6 +2,7 @@ package fi.muikku.schooldata;
 
 import java.util.List;
 
+import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceType;
 import fi.muikku.schooldata.entity.WorkspaceUser;
@@ -36,6 +37,8 @@ public interface WorkspaceSchoolDataBridge {
 	public List<WorkspaceType> listWorkspaceTypes() throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
 	/* Workspace Users */
+
+  public WorkspaceUser createWorkspaceUser(Workspace workspace, User user) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
 	public WorkspaceUser findWorkspaceUser(String identifier) throws UnexpectedSchoolDataBridgeException;
 	
