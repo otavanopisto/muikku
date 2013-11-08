@@ -2,5 +2,8 @@ INSERT INTO `WorkspaceEntity` (id, archived, identifier, urlName, dataSource_id)
 insert into WorkspaceNode (urlName) select concat('__we-', id) from WorkspaceEntity where id not in (select workspaceEntityId from WorkspaceRootFolder);
 insert into WorkspaceRootFolder (id, workspaceEntityId) select id, substring(urlName from 6) from WorkspaceNode where urlName like '__we-%';
 update WorkspaceNode n, WorkspaceEntity w set n.urlName = w.urlName where w.id = substring(n.urlName from 6);
-insert into WorkspaceUserEntity (user_id, workspaceEntity_id, workspaceUserRole_id, archived) values (2, 20, 5, false);
-insert into WorkspaceUserEntity (user_id, workspaceEntity_id, workspaceUserRole_id, archived) values (3, 20, 5, false);
+
+insert into WorkspaceUserEntity (user_id, identifier, workspaceEntity_id, workspaceUserRole_id, archived) values (2, '', 20, 5, false);
+insert into WorkspaceUserEntity (user_id, identifier, workspaceEntity_id, workspaceUserRole_id, archived) values (3, '', 20, 5, false);
+
+
