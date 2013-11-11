@@ -6,9 +6,7 @@
   xmlns:h="http://java.sun.com/jsf/html" 
   template="/WEB-INF/templates/default.xhtml">
  
-  <ui:define name="contentArea">
-    <m:widgetSpaceSet>
-      <m:widgetSpace name="settings.content-sidebar.left" keepEmpty="false" sizing="MINIMIZE">
+  <ui:define name="content.left">
         <m:widget name="settings-navigation-users" size="2" rendered="#{sessionBackingBean.loggedIn}"/>
         <m:widget name="settings-navigation-roles" size="2" rendered="#{sessionBackingBean.loggedIn}"/>
         <m:widget name="settings-navigation-workspaces" size="2" rendered="#{sessionBackingBean.loggedIn}"/>
@@ -16,11 +14,11 @@
         <m:widget name="settings-navigation-plugins" size="2" rendered="#{sessionBackingBean.loggedIn}"/>
         <m:widget name="settings-navigation-grading-scales" size="2" rendered="#{sessionBackingBean.loggedIn}"/>
         <m:widget name="settings-navigation-course-identifiers" size="2" rendered="#{sessionBackingBean.loggedIn}"/>
-      </m:widgetSpace>
-      <m:widgetSpace name="environment.content" keepEmpty="true" sizing="MAXIMIZE">
-        <m:widget name="content" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
-      </m:widgetSpace>
-    </m:widgetSpaceSet>
   </ui:define>
   
+  
+  
+  <ui:define name="content.center">
+   <m:widget name="content" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
+  </ui:define>
 </ui:composition>
