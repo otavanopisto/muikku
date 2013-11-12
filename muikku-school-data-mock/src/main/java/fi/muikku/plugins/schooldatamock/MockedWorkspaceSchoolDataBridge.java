@@ -223,14 +223,14 @@ public class MockedWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBridg
 	}
 
   @Override
-  public WorkspaceUser createWorkspaceUser(Workspace workspace, User user) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+  public WorkspaceUser createWorkspaceUser(Workspace workspace, User user, String roleSchoolDataSource, String roleIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
     try {
       Connection connection = schoolDataMockPluginController.getConnection();
       try {
-        PreparedStatement preparedStatement = schoolDataMockPluginController.executeInsert(connection, "insert into WorkspaceUser (workspace_school_data_source, workspace_identifier, user_school_data_source, user_identifier) values (?, ?, ?, ?)", workspace.getSchoolDataSource(), workspace.getIdentifier(), user.getSchoolDataSource(), user.getIdentifier());
+        PreparedStatement preparedStatement = schoolDataMockPluginController.executeInsert(connection, "insert into WorkspaceUser (workspace_school_data_source, workspace_identifier, user_school_data_source, user_identifier, role_school_data_source, role_identifier) values (?, ?, ?, ?, ?, ?)", workspace.getSchoolDataSource(), workspace.getIdentifier(), user.getSchoolDataSource(), user.getIdentifier());
         ResultSet resultSet = preparedStatement.getGeneratedKeys();
         if (resultSet.next()) {
-          return new MockedWorkspaceUser(resultSet.getString(1), workspace.getSchoolDataSource(), workspace.getIdentifier(), user.getSchoolDataSource(), user.getIdentifier());
+          return new MockedWorkspaceUser(resultSet.getString(1), workspace.getSchoolDataSource(), workspace.getIdentifier(), user.getSchoolDataSource(), user.getIdentifier(), roleSchoolDataSource, roleIdentifier);
         }
       } finally {
         connection.close();
@@ -247,9 +247,12 @@ public class MockedWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBridg
     try {
       Connection connection = schoolDataMockPluginController.getConnection();
       try {
-        ResultSet resultSet = schoolDataMockPluginController.executeSelect(connection, "select id, workspace_school_data_source, workspace_identifier, user_school_data_source, user_identifier from WorkspaceUser where id = ?", identifier);
+        ResultSet resultSet = schoolDataMockPluginController.executeSelect(connection, "select id, workspace_school_data_source, workspace_identifier, user_school_data_source, user_identifier, role_school_data_source, role_identifier from WorkspaceUser where id = ?", identifier);
         if (resultSet.next()) {
-          return new MockedWorkspaceUser(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5));
+          String roleDataSource = resultSet.getString(6);
+          String roleIdentifier = resultSet.getString(7);
+          
+          return new MockedWorkspaceUser(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), roleDataSource, roleIdentifier);
         }
       } finally {
         connection.close();
@@ -267,9 +270,12 @@ public class MockedWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBridg
 		try {
 	    Connection connection = schoolDataMockPluginController.getConnection();
 	    try {
-        ResultSet resultSet = schoolDataMockPluginController.executeSelect(connection, "select id, workspace_school_data_source, workspace_identifier, user_school_data_source, user_identifier from WorkspaceUser where workspace_identifier = ?", workspaceIdentifier);
+        ResultSet resultSet = schoolDataMockPluginController.executeSelect(connection, "select id, workspace_school_data_source, workspace_identifier, user_school_data_source, user_identifier, role_school_data_source, role_identifier from WorkspaceUser where workspace_identifier = ?", workspaceIdentifier);
         while (resultSet.next()) {
-          result.add( new MockedWorkspaceUser(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5)) );
+          String roleDataSource = resultSet.getString(6);
+          String roleIdentifier = resultSet.getString(7);
+          
+          result.add( new MockedWorkspaceUser(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), roleDataSource, roleIdentifier));
         }
 	    } finally {
 	      connection.close();
