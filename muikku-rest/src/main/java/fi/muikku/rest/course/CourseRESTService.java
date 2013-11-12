@@ -117,9 +117,12 @@ public class CourseRESTService extends AbstractRESTService {
     WorkspaceUserEntity workspaceUserEntity = workspaceController.findWorkspaceUserEntityByWorkspaceAndUser(workspaceEntity, userEntity);
         
     if (workspaceUserEntity == null) {
+      // TODO: Role
+      String roleSchoolDataSource = "MOCK";
+      String roleIdentifier = "5";
       User user = userController.findUser(userEntity);
       Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-      WorkspaceUser workspaceUser = workspaceController.createWorkspaceUser(workspace, user);
+      WorkspaceUser workspaceUser = workspaceController.createWorkspaceUser(workspace, user, roleSchoolDataSource, roleIdentifier);
       workspaceUserEntity = workspaceController.findWorkspaceUserEntity(workspaceUser);
     }
     
