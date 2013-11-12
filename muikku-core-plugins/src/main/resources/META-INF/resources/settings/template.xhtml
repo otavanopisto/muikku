@@ -6,19 +6,21 @@
   xmlns:h="http://java.sun.com/jsf/html" 
   template="/WEB-INF/templates/default.xhtml">
  
-  <ui:define name="content.left">
-        <m:widget name="settings-navigation-users" size="2" rendered="#{sessionBackingBean.loggedIn}"/>
-        <m:widget name="settings-navigation-roles" size="2" rendered="#{sessionBackingBean.loggedIn}"/>
-        <m:widget name="settings-navigation-workspaces" size="2" rendered="#{sessionBackingBean.loggedIn}"/>
-        <m:widget name="settings-navigation-workspace-types" size="2" rendered="#{sessionBackingBean.loggedIn}"/>
-        <m:widget name="settings-navigation-plugins" size="2" rendered="#{sessionBackingBean.loggedIn}"/>
-        <m:widget name="settings-navigation-grading-scales" size="2" rendered="#{sessionBackingBean.loggedIn}"/>
-        <m:widget name="settings-navigation-course-identifiers" size="2" rendered="#{sessionBackingBean.loggedIn}"/>
-  </ui:define>
+	<ui:define name="content.left.widgetspace">
+   <m:widgetSpace name="generic.content.left" keepEmpty="true" sizing="MINIMIZE" styleClass="nomargin">     
+	   <m:widget name="settings-navigation-users" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
+	   <m:widget name="settings-navigation-roles" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
+	   <m:widget name="settings-navigation-workspaces" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
+	   <m:widget name="settings-navigation-workspace-types" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
+	   <m:widget name="settings-navigation-plugins" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
+	   <m:widget name="settings-navigation-grading-scales" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
+	   <m:widget name="settings-navigation-course-identifiers" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
+	 </m:widgetSpace>
+	</ui:define>
+	  
   
   
-  
-  <ui:define name="content.center">
+  <ui:define name="content.center.widget">
    <m:widget name="content" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
   </ui:define>
 </ui:composition>

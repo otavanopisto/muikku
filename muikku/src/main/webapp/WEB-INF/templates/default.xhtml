@@ -170,15 +170,21 @@
        <div class="clear"></div>
       <ui:insert name="contentArea">
         <m:widgetSpaceSet>
+         <ui:insert name="content.left.widgetspace">
           <m:widgetSpace name="generic.content.left" keepEmpty="true" sizing="SUM" styleClass="nomargin">        
-             <ui:insert name="content.left"></ui:insert>
+             <ui:insert name="content.left.widget"></ui:insert>
           </m:widgetSpace>
+         </ui:insert> 
+         <ui:insert name="content.center.widgetspace">
           <m:widgetSpace name="generic.content.center" keepEmpty="true" sizing="MAXIMIZE" styleClass="nomargin">       
-            <ui:insert name="content.center"></ui:insert>
+            <ui:insert name="content.center.widget"></ui:insert>
           </m:widgetSpace>
+        </ui:insert>
+        <ui:insert name="content.center.widgetwidgetspace">        
           <m:widgetSpace name="generic.content.right" keepEmpty="false" sizing="MINIMIZE" styleClass="nomargin">
-            <ui:insert name="content.right"></ui:insert>
-          </m:widgetSpace>          
+            <ui:insert name="content.right.widget"></ui:insert>
+          </m:widgetSpace>
+        </ui:insert>        
         </m:widgetSpaceSet>
       </ui:insert>
       <ui:insert name="contentToolsBottom">
