@@ -227,7 +227,7 @@ public class MockedWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBridg
     try {
       Connection connection = schoolDataMockPluginController.getConnection();
       try {
-        PreparedStatement preparedStatement = schoolDataMockPluginController.executeInsert(connection, "insert into WorkspaceUser (workspace_school_data_source, workspace_identifier, user_school_data_source, user_identifier, role_school_data_source, role_identifier) values (?, ?, ?, ?, ?, ?)", workspace.getSchoolDataSource(), workspace.getIdentifier(), user.getSchoolDataSource(), user.getIdentifier());
+        PreparedStatement preparedStatement = schoolDataMockPluginController.executeInsert(connection, "insert into WorkspaceUser (workspace_school_data_source, workspace_identifier, user_school_data_source, user_identifier, role_school_data_source, role_identifier) values (?, ?, ?, ?, ?, ?)", workspace.getSchoolDataSource(), workspace.getIdentifier(), user.getSchoolDataSource(), user.getIdentifier(), roleSchoolDataSource, roleIdentifier);
         ResultSet resultSet = preparedStatement.getGeneratedKeys();
         if (resultSet.next()) {
           return new MockedWorkspaceUser(resultSet.getString(1), workspace.getSchoolDataSource(), workspace.getIdentifier(), user.getSchoolDataSource(), user.getIdentifier(), roleSchoolDataSource, roleIdentifier);
