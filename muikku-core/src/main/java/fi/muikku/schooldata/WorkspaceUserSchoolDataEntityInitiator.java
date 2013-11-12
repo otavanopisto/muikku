@@ -10,39 +10,40 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fi.muikku.dao.base.SchoolDataSourceDAO;
-import fi.muikku.dao.users.UserEntityDAO;
-import fi.muikku.dao.users.UserSchoolDataIdentifierDAO;
-import fi.muikku.dao.workspace.WorkspaceEntityDAO;
 import fi.muikku.dao.workspace.WorkspaceUserEntityDAO;
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.model.users.UserSchoolDataIdentifier;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
+import fi.muikku.schooldata.entity.Role;
+import fi.muikku.schooldata.entity.User;
+import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceUser;
 
 @Stateless
 @Dependent
 @SchoolDataBridgeEntityInitiator ( entity = WorkspaceUser.class )
 public class WorkspaceUserSchoolDataEntityInitiator implements SchoolDataEntityInitiator<WorkspaceUser> {
-	
-	@Inject
-	private Logger logger;
 
+  @Inject
+	private Logger logger;
+  
+  @Inject
+  private UserController userController;
+
+  @Inject
+  private RoleController roleController;
+
+  @Inject
+	private WorkspaceController workspaceController;
+	
 	@Inject
 	private SchoolDataSourceDAO schoolDataSourceDAO;
 
-  @Inject
-	private UserEntityDAO userEntityDAO;
-  
-  @Inject
-  private UserSchoolDataIdentifierDAO userSchoolDataIdentifierDAO;
-
-  @Inject
-  private WorkspaceEntityDAO workspaceEntityDAO;
-  
 	@Inject
 	private WorkspaceUserEntityDAO workspaceUserEntityDAO;
 
@@ -52,26 +53,20 @@ public class WorkspaceUserSchoolDataEntityInitiator implements SchoolDataEntityI
 
 	@Override
 	public WorkspaceUser single(WorkspaceUser workspaceUser) {
-	  SchoolDataSource userDataSource = schoolDataSourceDAO.findByIdentifier(workspaceUser.getUserSchoolDataSource());
-	  SchoolDataSource workspaceDataSource = schoolDataSourceDAO.findByIdentifier(workspaceUser.getWorkspaceSchoolDataSource());
-    
-		UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(userDataSource, workspaceUser.getUserIdentifier());
-		if (userSchoolDataIdentifier == null) {
-      // TODO: Proper error handling
-      return null;
-    }
-		
-    UserEntity userEntity = userSchoolDataIdentifier.getUserEntity(); 
-		
-		WorkspaceEntity workspaceEntity = workspaceEntityDAO.findByDataSourceAndIdentifier(workspaceDataSource, workspaceUser.getWorkspaceIdentifier());
-		if (workspaceEntity == null) {
-      // TODO: Proper error handling
-      return null;
-    }
-		  
+	  User user = userController.findUser(workspaceUser.getUserSchoolDataSource(), workspaceUser.getUserIdentifier());
+	  UserEntity userEntity = userController.findUserEntity(user);
+	  Workspace workspace = workspaceController.findWorkspace(workspaceUser.getWorkspaceSchoolDataSource(), workspaceUser.getWorkspaceIdentifier());
+		WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntity(workspace);
+
 		WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityDAO.findByWorkspaceAndUser(workspaceEntity, userEntity);
 		if (workspaceUserEntity == null) {
-	    WorkspaceRoleEntity roleEntity = null;
+		  WorkspaceRoleEntity roleEntity = null;
+		  if (StringUtils.isNotBlank(workspaceUser.getRoleIdentifier()) && StringUtils.isNotBlank(workspaceUser.getRoleSchoolDataSource())) {
+		    SchoolDataSource roleDataSource = schoolDataSourceDAO.findByIdentifier(workspaceUser.getRoleSchoolDataSource());
+		    Role role = roleController.findRole(roleDataSource, workspaceUser.getRoleIdentifier());
+		    roleEntity = roleController.findWorkspaceRoleEntity(role);
+		  }
+
 	    workspaceUserEntityDAO.create(userEntity, workspaceEntity, workspaceUser.getIdentifier(), roleEntity);
 		}
 
