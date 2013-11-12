@@ -38,10 +38,11 @@ public interface WorkspaceSchoolDataBridge {
 	
 	/* Workspace Users */
 
-  public WorkspaceUser createWorkspaceUser(Workspace workspace, User user) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+  public WorkspaceUser createWorkspaceUser(Workspace workspace, User user, String roleSchoolDataSource, String roleIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
 	public WorkspaceUser findWorkspaceUser(String identifier) throws UnexpectedSchoolDataBridgeException;
 	
 	public List<WorkspaceUser> listWorkspaceUsers(String workspaceIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
+
 }
