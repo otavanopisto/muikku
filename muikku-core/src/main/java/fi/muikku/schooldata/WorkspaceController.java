@@ -131,6 +131,16 @@ public class WorkspaceController {
 		return workspaceSchoolDataController.findWorkspace(workspaceEntity);
 	}
 
+  public Workspace findWorkspace(String schoolDataSourceName, String identifier) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSourceName);
+    // TODO: Error handling
+    return findWorkspace(schoolDataSource, identifier);
+  }
+  
+  public Workspace findWorkspace(SchoolDataSource schoolDataSource, String identifier) {
+    return workspaceSchoolDataController.findWorkspace(schoolDataSource, identifier);
+  }
+  
 	public List<Workspace> listWorkspaces() {
 		return workspaceSchoolDataController.listWorkspaces();
 	}
@@ -159,8 +169,8 @@ public class WorkspaceController {
 	
 	/* WorkspaceUsers */
   
-  public WorkspaceUser createWorkspaceUser(Workspace workspace, User user) {
-    return workspaceSchoolDataController.createWorkspaceUser(workspace, user);
+  public WorkspaceUser createWorkspaceUser(Workspace workspace, User user, String roleSchoolDataSource, String roleIdentifier) {
+    return workspaceSchoolDataController.createWorkspaceUser(workspace, user, roleSchoolDataSource, roleIdentifier);
   }
 
   public WorkspaceUserEntity findWorkspaceUserEntity(WorkspaceUser workspaceUser) {
@@ -198,5 +208,5 @@ public class WorkspaceController {
   public WorkspaceUserEntity findWorkspaceUserEntityByWorkspaceAndUser(WorkspaceEntity workspaceEntity, UserEntity user) {
     return workspaceUserEntityDAO.findByWorkspaceAndUser(workspaceEntity, user);
   }
-
+  
 }
