@@ -7,7 +7,7 @@
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     template="/WEB-INF/templates/default.xhtml">
     
-    <ui:define name="content.center">
+    <ui:define name="content.center.widget">
       <c:set var="userId" value="#{param['userId']}" />
       <c:set var="userEntity" value="#{User.findUserEntityById(userId)}" />
       <c:set var="user" value="#{User.findUser(userEntity)}" />
