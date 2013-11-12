@@ -187,7 +187,7 @@ class UserSchoolDataController {
 		UserSchoolDataBridge userBridge = getUserBridge(schoolDataSource);
 		if (userBridge != null) {
 			try {
-				return userBridge.findRole(identifier);
+				return initRole(userBridge.findRole(identifier));
 			} catch (SchoolDataBridgeRequestException e) {
 				logger.log(Level.SEVERE, "School Data Bridge reported a problem while finding a role", e);
 			} catch (UnexpectedSchoolDataBridgeException e) {
