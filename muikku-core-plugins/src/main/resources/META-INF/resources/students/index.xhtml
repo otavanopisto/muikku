@@ -4,31 +4,25 @@
     xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
-    template="/WEB-INF/templates/default.xhtml">
+    template="template.xhtml">
  
-   <ui:define name="content.tools.top.left">
-   
-    <!-- TODO: define search scope  -->
-     
+       <ui:define name="content.tools.top.left">   
+    <!-- TODO: define search scope  -->     
      <m:widgetSpace name="generic.content.tools-top.left" keepEmpty="false" sizing="MINIMIZE">
        <m:widget name="students-search" size="3" />     
-     </m:widgetSpace>
-          
+     </m:widgetSpace>          
    </ui:define> 
 
-   <ui:define name="content.tools.top.center"> 
-     
+   <ui:define name="content.tools.top.center">      
      <m:widgetSpace name="generic.content.tools-top.center" keepEmpty="false" sizing="MAXIMIZE">
        <m:widget name="students-tools"/>     
-     </m:widgetSpace>
-          
+     </m:widgetSpace>      
    </ui:define> 
 
   
   <ui:define name="content.left.widget">
-       <m:widget name="students-filters" size="4" />     
+    <m:widget name="students-filters" size="4" />     
   </ui:define> 
-    
   <ui:define name="content.center.widget">
     <m:widget name="students-browser"></m:widget>
   </ui:define>

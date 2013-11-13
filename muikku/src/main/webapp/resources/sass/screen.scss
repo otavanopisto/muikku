@@ -643,6 +643,63 @@ div[data-name="settings.content-sidebar.left"]{
 
 
 
+/* Student browser (.st*) */
+
+.st-filters{
+	padding:0 5px 0 5px;
+}
+
+.st-content-tool-search{
+	padding:5px;
+}
+
+.st-content-tools{
+	 padding:5px;
+	
+}
+
+.st-content-browser{
+		
+}
+
+.st-content-browser > div{
+    margin-bottom:5px;
+}
+
+.st-content-browser-item{
+	padding:5px;
+}
+
+
+.st-content-student-info{
+	border:1px solid $brd;
+	@include rounded(5px);
+	padding:10px;
+}
+
+.st-content-student-tabs{	
+}
+
+.st-content-timeline{
+   padding:5px;
+   border:1px solid $brd;
+   @include rounded(5px);
+}
+
+.st-content-guidanceLog{
+   padding:5px;
+    border:1px solid $brd;
+      @include rounded(5px);
+}
+
+
+.st-content-wallfeed{
+   padding:5px;
+
+    border:1px solid $brd;
+      @include rounded(5px);
+}
+
 
 .wallEntry {
   margin-bottom: 7px;

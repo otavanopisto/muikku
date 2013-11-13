@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition 
+xmlns="http://www.w3.org/1999/xhtml" 
+xmlns:ui="http://java.sun.com/jsf/facelets" 
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+
+   <ui:define name="content.tools.top.left">       
+   </ui:define> 
+
+   <ui:define name="content.tools.top.center">            
+   </ui:define> 
+
+  
+  <ui:define name="content.left.widget"> 
+  </ui:define> 
+
+
+  <div class="st-content-student">
+    <div class="grid_24 nomargin">
+    
+      <div class="st-content-student-info">
+        <h3>Etunimi Sukunimi</h3>
+        <div>Kirjautunut viimeksi:dd/mm/yyyy</div>
+        <div>Viimeisin suoritettu opinto</div>
+        <div>Viimeisin tehtävä</div>
+      </div>
+    </div>
+    <div class="grid_24 nomargin noLid">
+      <div class="st-content-student-tabs">
+        <div class="grid_24 nomargin">   
+          <div class="st-content-timeline">
+            <iframe src="http://cdn.knightlab.com/libs/timeline/latest/embed/index.html?source=0Agl_Dv6iEbDadHdKcHlHcTB5bzhvbF9iTWwyMmJHdkE" height='500' width="100%" frameborder='0'></iframe>
+          </div>     
+        </div>
+				<div class="grid_12 alpha">
+				  <div class="st-content-guidanceLog">
+				      <ui:include src="/facelets/widget-toolarea.xhtml" />
+            <h3>Opiskelutapahtumat</h3>
+						<c:forEach begin="1" end="100">
+
+								<div class="st-content-guidanceLog-item" style="border: 1px solid #ededed;margin-top:5px;">
+									<h:outputLink styleClass="studentLink tooltip" value="#{request.contextPath}/students/studentselected.jsf">Opiskelija</h:outputLink>
+								</div>
+
+						</c:forEach>
+					</div>     
+				</div>
+				<div class="grid_12 omega">
+				  <div class="st-content-wallfeed">
+				      <ui:include src="/facelets/widget-toolarea.xhtml" />
+				    <h3>Opiskelijan seinämä</h3>
+            <c:forEach begin="1" end="100">
+
+                <div class="st-content-wallfeed-item" style="border: 1px solid #ededed; margin-top:5px;">
+                  <h:outputLink styleClass="studentLink tooltip" value="#{request.contextPath}/students/studentselected.jsf">Opiskelija</h:outputLink>
+                </div>
+
+            </c:forEach>				  
+				  </div>     
+				</div>
+				<div class="clear"></div>
+			</div>
+    </div>
+  </div>
+  
+
+</ui:composition>

@@ -32,6 +32,16 @@ margin-right:auto;
   height: 0;
 }
 
+
+
+.noLid{
+ margin-top:0;	
+}
+
+.halfLid{
+ margin-top:$grid-margin;
+}
+
 .alpha {
   margin-left: 0;
 }
@@ -44,3 +54,4 @@ margin-right:auto;
   margin-right:0;
   margin-left:0;  
 }
+

@@ -4,7 +4,6 @@
   @return ($target / $container);
 }
 
-
 /* Variables */
 
 $grid-margin: 5px;
@@ -27,9 +26,12 @@ $grid-size: prc($container-size, $grid-columns);
 	  
 		#{$grids}{ 
 		  float:left;
+      margin-top:$grid-margin * 2;
 		  margin-left:$grid-margin;
 			margin-right:$grid-margin;
 		 }
+	 
+	 
 	 
 }
 
@@ -41,6 +43,7 @@ $grid-size: prc($container-size, $grid-columns);
 	}
 
 }
+
  
 @mixin grid_x_othermargin{
 	@for $i from 1 through $grid-columns{

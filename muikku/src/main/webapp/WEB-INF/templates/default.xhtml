@@ -82,7 +82,7 @@
     <div id="header">
       <div id="headerContainer" class="container_24">
         <ui:insert name="header">
-          <m:widgetSpaceSet>
+          <m:widgetSpaceSet styleClass="noLid">
            <ui:insert name="header.left">
               <ui:include src="/facelets/generic/header-left.xhtml">
                <ui:param name="sizing" value="MINIMIZE" />
@@ -114,7 +114,7 @@
     <div id="staticNavigationFade">
       <div id="staticNavigation" class="container_24 scrollblock">        
         <ui:insert name="dock.top">
-         <m:widgetSpaceSet>      
+         <m:widgetSpaceSet styleClass="noLid">      
            <ui:insert name="dock.top.left">
              <ui:include src="/facelets/generic/dock-top-left.xhtml">
                <ui:param name="sizing" value="SUM" />
