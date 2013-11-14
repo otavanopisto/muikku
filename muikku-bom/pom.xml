@@ -26,6 +26,7 @@
     <deltaspike.version>0.3-incubating</deltaspike.version>
     <apache-httpcomponents.version>4.1.2</apache-httpcomponents.version>
     <prettyfaces-jsf2.version>3.3.3</prettyfaces-jsf2.version>
+    <nekohtml.version>1.9.6.2</nekohtml.version>
   </properties>
 
   <dependencyManagement>
@@ -218,6 +219,12 @@
         <artifactId>prettyfaces-jsf2</artifactId>
         <version>${prettyfaces-jsf2.version}</version>
       </dependency>
+        
+      <dependency>
+        <groupId>nekohtml</groupId>
+        <artifactId>nekohtml</artifactId>
+        <version>${nekohtml.version}</version>
+      </dependency>   
     </dependencies>
   </dependencyManagement>
 
