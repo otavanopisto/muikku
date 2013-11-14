@@ -31,8 +31,13 @@ $saBgr : #e3eaf2;
 
 /* toolbar background */
 
-$tBgr : #ffe19a;
+$tBgr : #ffda8b;
 
+
+
+/* highlighted background */
+
+$hlBgr: #fff8c1;
 
 /* Generic gradients (Grayscale) */
 
@@ -218,12 +223,13 @@ background: linear-gradient(to bottom, $fadeColor1 0%,$fadeColor2 50%,$fadeColor
 
 
 
-@mixin naviIcon($iconUrl,$gr1:$fourColorGr-1,$gr2:$fourColorGr-2,$gr3:$fourColorGr-3,$gr4:$fourColorGr-4){
+@mixin naviIcon($iconUrl){
   background: $iconUrl no-repeat center;
-  height:30px;
-  width:30px;
-  margin:5px 5px 5px 5px;
-  float:left;    
+  height:20px;
+  width:20px;
+  margin:10px 5px 0 5px;
+  float:left;  
+  background-size:100%;  
 }
 
 @mixin customIcon($iconUrl,$size:32px){

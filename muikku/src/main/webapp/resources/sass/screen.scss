@@ -64,14 +64,12 @@ h5{
   @include tooltipTransition(0.1s,0.1s,0.1s,0.1s);
   @include gradient-top-bottom;
   @include border; 
-
   position:absolute; 
-
 	color:#000;
 	opacity: 0; 
 	visibility: hidden; 
 	z-index: 10; 
-	font-size: $text; 
+	font-size:1em; 
 	font-style: normal;  
  
 
@@ -86,7 +84,7 @@ h5{
  text-decoration:none; 
  visibility: visible; 
  overflow: visible; 
- @include transitionDirection(0, 0, 0, 38px);
+ @include transitionDirection(25px, 0, 0, 0);
  display: inline; 
  } 
  
@@ -642,6 +640,9 @@ se-container{
 div[data-name="settings.content-sidebar.left"]{
 	padding:0;	
 }
+
+
+
 
 .wallEntry {
   margin-bottom: 7px;

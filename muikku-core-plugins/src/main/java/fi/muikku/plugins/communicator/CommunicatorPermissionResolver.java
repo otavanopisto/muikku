@@ -5,7 +5,6 @@ import javax.inject.Inject;
 
 import fi.muikku.controller.CourseController;
 import fi.muikku.controller.ResourceRightsController;
-import fi.muikku.dao.courses.CourseUserDAO;
 import fi.muikku.dao.security.PermissionDAO;
 import fi.muikku.dao.security.ResourceRolePermissionDAO;
 import fi.muikku.dao.users.EnvironmentUserDAO;
@@ -21,9 +20,6 @@ public class CommunicatorPermissionResolver extends AbstractPermissionResolver i
 
   @Inject
   private ResourceRolePermissionDAO resourceUserRolePermissionDAO;
-  
-  @Inject
-  private CourseUserDAO courseUserDAO;
   
   @Inject
   private EnvironmentUserDAO environmentUserDAO;

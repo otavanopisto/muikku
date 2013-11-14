@@ -39,19 +39,26 @@ public class WorkspaceMaterialsBackingBean {
 	@Inject
 	private WorkspaceMaterialController workspaceMaterialController;
 
+	@Inject
+  @Named
+  private WorkspaceNavigationBackingBean workspaceNavigationBackingBean;
+
 	@URLAction
 	public void init() throws FileNotFoundException {
-		if (StringUtils.isBlank(getWorkspaceUrlName())) {
+	  String urlName = getWorkspaceUrlName();
+	  
+		if (StringUtils.isBlank(urlName)) {
 			throw new FileNotFoundException();
 		}
 		
-		WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByUrlName(getWorkspaceUrlName());
-
+		WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByUrlName(urlName);
 		if (workspaceEntity == null) {
 			throw new FileNotFoundException();
 		}
 		
 		rootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
+    
+    workspaceNavigationBackingBean.setWorkspaceUrlName(urlName);
 	}
 	
 	public List<WorkspaceNode> listWorkspaceNodes(WorkspaceNode workspaceNode) {

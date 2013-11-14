@@ -7,13 +7,9 @@ xmlns:f="http://java.sun.com/jsf/core"
 xmlns:h="http://java.sun.com/jsf/html">
 
 
-  <div class="wi-frontpage-calendar">
+  <div class="wi-frontpage-dynamic-calendar">
+    <ui:include src="/facelets/widget-toolarea.xhtml" />
 
-    <div class="wi-frontpage-widget-toolarea">  
-        <m:widget name="settings-widget-move" rendered="#{sessionBackingBean.loggedIn}" />
-        <m:widget name="settings-widget-edit" rendered="#{sessionBackingBean.loggedIn}" />
-      <div class="clear"></div>
-    </div>
     <h3>Kalenteri</h3>
     <div class="wi-frontpage-calendar-container"></div>
   </div>

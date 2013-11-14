@@ -14,8 +14,11 @@ import org.apache.commons.lang3.StringUtils;
 
 import fi.muikku.dao.base.SchoolDataSourceDAO;
 import fi.muikku.dao.workspace.WorkspaceEntityDAO;
+import fi.muikku.dao.workspace.WorkspaceSettingsDAO;
+import fi.muikku.dao.workspace.WorkspaceSettingsTemplateDAO;
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.model.workspace.WorkspaceSettingsTemplate;
 import fi.muikku.schooldata.entity.Workspace;
 
 @Stateless
@@ -34,6 +37,11 @@ public class WorkspaceSchoolDataEntityInitiator implements SchoolDataEntityIniti
 	@Inject
 	private WorkspaceEntityDAO workspaceEntityDAO;
 
+  @Inject
+  private WorkspaceSettingsTemplateDAO workspaceSettingsTemplateDAO;
+  @Inject
+  private WorkspaceSettingsDAO workspaceSettingsDAO;
+	
 	@Inject
 	@Any
 	private Instance<SchoolDataEntityInitiator<Workspace>> workspaceInitiators;
@@ -44,7 +52,11 @@ public class WorkspaceSchoolDataEntityInitiator implements SchoolDataEntityIniti
 		WorkspaceEntity workspaceEntity = workspaceEntityDAO.findByDataSourceAndIdentifier(dataSource, workspace.getIdentifier());
 		if (workspaceEntity == null) {
 			String urlName = generateUrlName(workspace.getName());
-			workspaceEntityDAO.create(dataSource, workspace.getIdentifier(), urlName, Boolean.FALSE);
+			workspaceEntity = workspaceEntityDAO.create(dataSource, workspace.getIdentifier(), urlName, Boolean.FALSE);
+			
+			// TODO Correct template here?
+			WorkspaceSettingsTemplate workspaceSettingsTemplate = workspaceSettingsTemplateDAO.findById(1l);
+			workspaceSettingsDAO.create(workspaceEntity, workspaceSettingsTemplate.getDefaultWorkspaceUserRole());
 		}
 
 		return workspace;

@@ -7,14 +7,10 @@
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     template="/WEB-INF/templates/default.xhtml">
     
-  <ui:define name="content">
+  <ui:define name="content.center.widget">
     <h:outputScript name="scripts/gui/coursepicker.js" target="head" />
-    
-    <div class="widget coursePicker">
-      <h:form>
-        <h:commandButton action="#{Course.TEST_COURSES()}" value="CREATETESTCOURSE" />
-      </h:form>
 
+    <div class="widget coursePicker">
       <input type="hidden" name="userId" value="#{muikkuSession.user.id}"/>
     
       <!-- TODO localize -->
@@ -36,7 +32,8 @@
         <div id="all" class="tabContent">
           <div class="mf-toolbar cp-allCourses-filterPane">
  
-            <div style="float:left;"><input type="text" name="coursePickerSearch"/></div>         <!-- WaS IST DAS?! <a href="#" class="cp-allCourses-searchBtn">-o</a> -->
+            <div style="float:left;"><input type="text" name="coursePickerSearch"/></div>
+            <a href="#" class="cp-allCourses-searchBtn">-o</a>
             <div style="float:left;"><input type="button" name="cp-allCourses-filterBtn" value="Rajaa"/>
             
             <div class="cp-allCourses-filterSelector-popup" style="display: none;">

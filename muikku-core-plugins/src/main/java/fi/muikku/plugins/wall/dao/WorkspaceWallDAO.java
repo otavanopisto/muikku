@@ -16,14 +16,14 @@ public class WorkspaceWallDAO extends PluginDAO<WorkspaceWall> {
 
 	private static final long serialVersionUID = -4292824493620956200L;
 
-	public WorkspaceWall create(WorkspaceEntity course) {
-    WorkspaceWall courseWall = new WorkspaceWall();
+	public WorkspaceWall create(WorkspaceEntity workspace) {
+    WorkspaceWall workspaceWall = new WorkspaceWall();
     
-    courseWall.setWorkspace(course.getId());
+    workspaceWall.setWorkspace(workspace.getId());
     
-    getEntityManager().persist(courseWall);
+    getEntityManager().persist(workspaceWall);
     
-    return courseWall;
+    return workspaceWall;
   }
 
   public WorkspaceWall findByWorkspace(WorkspaceEntity workspace) {

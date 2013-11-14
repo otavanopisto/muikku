@@ -18,6 +18,13 @@ public class EnvironmentRoleEntityDAO extends CoreDAO<EnvironmentRoleEntity> {
 
 	private static final long serialVersionUID = 7781839501190084061L;
 
+  public EnvironmentRoleEntity create(String name, EnvironmentRoleType environmentRoleType) {
+    EnvironmentRoleEntity environmentRoleEntity = new EnvironmentRoleEntity();
+    environmentRoleEntity.setEnvironmentRoleType(environmentRoleType);
+    environmentRoleEntity.setName(name);
+    return persist(environmentRoleEntity);
+  }
+  
 	public List<EnvironmentRoleEntity> listByEnvironmentRoleType(EnvironmentRoleType environmentUserRoleType) {
     EntityManager entityManager = getEntityManager(); 
     

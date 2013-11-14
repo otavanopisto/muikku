@@ -1,5 +1,6 @@
 package fi.muikku.plugins.schooldatamock;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,6 +9,7 @@ import java.util.List;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -18,14 +20,18 @@ import fi.muikku.plugins.schooldatamock.entities.MockedWorkspaceUser;
 import fi.muikku.schooldata.SchoolDataBridgeRequestException;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 import fi.muikku.schooldata.WorkspaceSchoolDataBridge;
+import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceType;
 import fi.muikku.schooldata.entity.WorkspaceUser;
 
 @Dependent
 @Stateful
-public class MockedWorkspaceSchoolDataBridge extends AbstractMockedSchoolDataBridge implements WorkspaceSchoolDataBridge {
-	
+public class MockedWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBridge {
+
+  @Inject
+  private SchoolDataMockPluginController schoolDataMockPluginController;
+
 	@Override
 	public String getSchoolDataSource() {
 		return SchoolDataMockPluginDescriptor.SCHOOL_DATA_SOURCE;
@@ -42,12 +48,16 @@ public class MockedWorkspaceSchoolDataBridge extends AbstractMockedSchoolDataBri
 		}
 		
 		try {
-			PreparedStatement preparedStatement = executeInsert("insert into Workspace (name, description, type_id, course_identifier_id) values (?, ?, ?, ?)", name, description, type.getIdentifier(), courseIdentifierIdentifier);
-			ResultSet resultSet = preparedStatement.getGeneratedKeys();
-			if (resultSet.next()) {
-				return new MockedWorkspace(resultSet.getString(1), name, description, type.getIdentifier(), courseIdentifierIdentifier);
-			}
-
+	    Connection connection = schoolDataMockPluginController.getConnection();
+	    try {
+  			PreparedStatement preparedStatement = schoolDataMockPluginController.executeInsert(connection, "insert into Workspace (name, description, type_id, course_identifier_id) values (?, ?, ?, ?)", name, description, type.getIdentifier(), courseIdentifierIdentifier);
+  			ResultSet resultSet = preparedStatement.getGeneratedKeys();
+  			if (resultSet.next()) {
+  				return new MockedWorkspace(resultSet.getString(1), name, description, type.getIdentifier(), courseIdentifierIdentifier);
+  			}
+	    } finally {
+	      connection.close();
+	    }
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}
@@ -64,10 +74,15 @@ public class MockedWorkspaceSchoolDataBridge extends AbstractMockedSchoolDataBri
 		Long id = NumberUtils.createLong(identifier);
 
 		try {
-			ResultSet resultSet = executeSelect("select id, name, description, type_id, course_identifier_id from Workspace where id = ?", id);
-			if (resultSet.next()) {
-				return new MockedWorkspace(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5));
-			}
+	    Connection connection = schoolDataMockPluginController.getConnection();
+	    try {
+  			ResultSet resultSet = schoolDataMockPluginController.executeSelect(connection, "select id, name, description, type_id, course_identifier_id from Workspace where id = ?", id);
+  			if (resultSet.next()) {
+  				return new MockedWorkspace(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5));
+  			}
+	    } finally {
+	      connection.close();
+	    }			
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}
@@ -80,10 +95,15 @@ public class MockedWorkspaceSchoolDataBridge extends AbstractMockedSchoolDataBri
 		List<Workspace> result = new ArrayList<>();
 
 		try {
-			ResultSet resultSet = executeSelect("select id, name, description, type_id, course_identifier_id from Workspace");
-			while (resultSet.next()) {
-				result.add(new MockedWorkspace(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5)));
-			}
+	    Connection connection = schoolDataMockPluginController.getConnection();
+	    try {
+  			ResultSet resultSet = schoolDataMockPluginController.executeSelect(connection, "select id, name, description, type_id, course_identifier_id from Workspace");
+  			while (resultSet.next()) {
+  				result.add(new MockedWorkspace(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5)));
+  			}
+	    } finally {
+	      connection.close();
+	    }
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}
@@ -96,10 +116,15 @@ public class MockedWorkspaceSchoolDataBridge extends AbstractMockedSchoolDataBri
 		List<Workspace> result = new ArrayList<>();
 
 		try {
-			ResultSet resultSet = executeSelect("select id, name, description, type_id, course_identifier_id from Workspace where course_identifier_id = ?", courseIdentifierIdentifier);
-			while (resultSet.next()) {
-				result.add(new MockedWorkspace(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5)));
-			}
+	    Connection connection = schoolDataMockPluginController.getConnection();
+	    try {
+  			ResultSet resultSet = schoolDataMockPluginController.executeSelect(connection, "select id, name, description, type_id, course_identifier_id from Workspace where course_identifier_id = ?", courseIdentifierIdentifier);
+  			while (resultSet.next()) {
+  				result.add(new MockedWorkspace(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5)));
+  			}    
+  	  } finally {
+  	    connection.close();
+  	  }
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}
@@ -116,12 +141,17 @@ public class MockedWorkspaceSchoolDataBridge extends AbstractMockedSchoolDataBri
 		Long id = NumberUtils.createLong(workspace.getIdentifier());
 
 		try {
-			PreparedStatement preparedStatement = executeUpdate("update Workspace set name = ? where id = ?", workspace.getName(), id);
-			if (preparedStatement.getUpdateCount() == 1) {
-				return workspace;
-			} else {
-				throw new UnexpectedSchoolDataBridgeException("Workspace updating failed");
-			}
+	    Connection connection = schoolDataMockPluginController.getConnection();
+	    try {
+  			PreparedStatement preparedStatement = schoolDataMockPluginController.executeUpdate(connection, "update Workspace set name = ? where id = ?", workspace.getName(), id);
+  			if (preparedStatement.getUpdateCount() == 1) {
+  				return workspace;
+  			} else {
+  				throw new UnexpectedSchoolDataBridgeException("Workspace updating failed");
+  			}
+	    } finally {
+	      connection.close();
+	    }
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}
@@ -136,7 +166,12 @@ public class MockedWorkspaceSchoolDataBridge extends AbstractMockedSchoolDataBri
 		Long id = NumberUtils.createLong(identifier);
 
 		try {
-			executeDelete("delete from Workspace where id = ?", id);
+	    Connection connection = schoolDataMockPluginController.getConnection();
+	    try {
+	      schoolDataMockPluginController.executeDelete(connection, "delete from Workspace where id = ?", id);
+	    } finally {
+	      connection.close();
+	    }
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}
@@ -151,10 +186,15 @@ public class MockedWorkspaceSchoolDataBridge extends AbstractMockedSchoolDataBri
 		Long id = NumberUtils.createLong(identifier);
 
 		try {
-			ResultSet resultSet = executeSelect("select id, name from WorkspaceType where id = ?", id);
-			if (resultSet.next()) {
-				return new MockedWorkspaceType(resultSet.getString(1), resultSet.getString(2));
-			}
+	    Connection connection = schoolDataMockPluginController.getConnection();
+	    try {
+  			ResultSet resultSet = schoolDataMockPluginController.executeSelect(connection, "select id, name from WorkspaceType where id = ?", id);
+  			if (resultSet.next()) {
+  				return new MockedWorkspaceType(resultSet.getString(1), resultSet.getString(2));
+  			}
+      } finally {
+        connection.close();
+      }
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}
@@ -166,10 +206,15 @@ public class MockedWorkspaceSchoolDataBridge extends AbstractMockedSchoolDataBri
 	public List<WorkspaceType> listWorkspaceTypes() throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
 		List<WorkspaceType> result = new ArrayList<>();
 		try {
-			ResultSet resultSet = executeSelect("select id, name from WorkspaceType");
-			while (resultSet.next()) {
-				result.add( new MockedWorkspaceType(resultSet.getString(1), resultSet.getString(2)) );
-			}
+	    Connection connection = schoolDataMockPluginController.getConnection();
+	    try {
+  			ResultSet resultSet = schoolDataMockPluginController.executeSelect(connection, "select id, name from WorkspaceType");
+  			while (resultSet.next()) {
+  				result.add( new MockedWorkspaceType(resultSet.getString(1), resultSet.getString(2)) );
+  			}
+	    } finally {
+	      connection.close();
+	    }
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}
@@ -177,14 +222,64 @@ public class MockedWorkspaceSchoolDataBridge extends AbstractMockedSchoolDataBri
 		return result;
 	}
 
+  @Override
+  public WorkspaceUser createWorkspaceUser(Workspace workspace, User user, String roleSchoolDataSource, String roleIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+    try {
+      Connection connection = schoolDataMockPluginController.getConnection();
+      try {
+        PreparedStatement preparedStatement = schoolDataMockPluginController.executeInsert(connection, "insert into WorkspaceUser (workspace_school_data_source, workspace_identifier, user_school_data_source, user_identifier, role_school_data_source, role_identifier) values (?, ?, ?, ?, ?, ?)", workspace.getSchoolDataSource(), workspace.getIdentifier(), user.getSchoolDataSource(), user.getIdentifier(), roleSchoolDataSource, roleIdentifier);
+        ResultSet resultSet = preparedStatement.getGeneratedKeys();
+        if (resultSet.next()) {
+          return new MockedWorkspaceUser(resultSet.getString(1), workspace.getSchoolDataSource(), workspace.getIdentifier(), user.getSchoolDataSource(), user.getIdentifier(), roleSchoolDataSource, roleIdentifier);
+        }
+      } finally {
+        connection.close();
+      }
+    } catch (SQLException e) {
+      throw new UnexpectedSchoolDataBridgeException(e);
+    }
+
+    return null;
+  }
+  
+	@Override
+	public WorkspaceUser findWorkspaceUser(String identifier) throws UnexpectedSchoolDataBridgeException {
+    try {
+      Connection connection = schoolDataMockPluginController.getConnection();
+      try {
+        ResultSet resultSet = schoolDataMockPluginController.executeSelect(connection, "select id, workspace_school_data_source, workspace_identifier, user_school_data_source, user_identifier, role_school_data_source, role_identifier from WorkspaceUser where id = ?", identifier);
+        if (resultSet.next()) {
+          String roleDataSource = resultSet.getString(6);
+          String roleIdentifier = resultSet.getString(7);
+          
+          return new MockedWorkspaceUser(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), roleDataSource, roleIdentifier);
+        }
+      } finally {
+        connection.close();
+      }
+    } catch (SQLException e) {
+      throw new UnexpectedSchoolDataBridgeException(e);
+    }
+
+    return null;
+	}
+	
 	@Override
 	public List<WorkspaceUser> listWorkspaceUsers(String workspaceIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
 		List<WorkspaceUser> result = new ArrayList<>();
 		try {
-			ResultSet resultSet = executeSelect("select id, workspace_id, user_id from WorkspaceUser where workspace_id = ?", workspaceIdentifier);
-			while (resultSet.next()) {
-				result.add( new MockedWorkspaceUser(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3)) );
-			}
+	    Connection connection = schoolDataMockPluginController.getConnection();
+	    try {
+        ResultSet resultSet = schoolDataMockPluginController.executeSelect(connection, "select id, workspace_school_data_source, workspace_identifier, user_school_data_source, user_identifier, role_school_data_source, role_identifier from WorkspaceUser where workspace_identifier = ?", workspaceIdentifier);
+        while (resultSet.next()) {
+          String roleDataSource = resultSet.getString(6);
+          String roleIdentifier = resultSet.getString(7);
+          
+          result.add( new MockedWorkspaceUser(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), roleDataSource, roleIdentifier));
+        }
+	    } finally {
+	      connection.close();
+	    }
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}

@@ -19,7 +19,7 @@ import org.jboss.resteasy.spi.interception.PreProcessInterceptor;
 
 import fi.muikku.session.SessionControllerDelegate;
 
-@Provider
+//@Provider
 @ServerInterceptor
 public class ContextInterceptor implements PreProcessInterceptor {
   

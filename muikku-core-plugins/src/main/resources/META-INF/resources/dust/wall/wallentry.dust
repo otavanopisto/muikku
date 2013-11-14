@@ -1,36 +1,36 @@
 <div class="wallEntry">
-  <input type="hidden" name="wallEntryId" value="{wallEntry.id}"/>
+  <input type="hidden" name="wallEntryId" value="{id}"/>
 
-  {?wallEntry.creator.hasPicture} 
-    <img class="wallEntryUserPicture" src="{@contextPath/}/picture?userId={wallEntry.creator}" width="50" height="50" />
+  {?creator.hasPicture} 
+    <img class="wallEntryUserPicture" src="{@contextPath/}/picture?userId={creator}" width="50" height="50" />
   {:else}
     <img class="wallEntryUserPicture" src="{@contextPath/}/themes/default/gfx/fish.jpg" width="50" height="50" />
-  {/wallEntry.creator.hasPicture}  
+  {/creator.hasPicture}  
   
   <div class="wallEntryTitle">
-    <a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={wallEntry.creator}">{wallEntry.creator_tq.fullName}</a>
+    <a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={creator}">{creator_tq.fullName}</a>
 
-    {@if cond="'{wallEntry.wall.wallType}' == 'ENVIRONMENT'"}
-      &gt; <b>{wallEntry.wall.wallName}</b>
+    {@if cond="'{wall.wallType}' == 'ENVIRONMENT'"}
+      &gt; <b>{wall.wallName}</b>
     {/if}
 
-    {@if cond="'{wallEntry.wall.wallType}' == 'WORKSPACE'"}
-      kurssilla <a class="wallEntryCourseLink" href="{@contextPath/}/course/index.jsf?courseId={wallEntry.wall.id}">{wallEntry.wall.wallName}</a>
+    {@if cond="'{wall.wallType}' == 'WORKSPACE'"}
+      kurssilla <a class="wallEntryCourseLink" href="{@contextPath/}/workspace/{wall.workspace_tq.urlName}">{wall.wallName}</a>
     {/if}
 
-    {@if cond="'{wallEntry.wall.wallType}' == 'USER'"}
-      &gt; <a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={wallEntry.wall.creator}">{wallEntry.wall.wallName}</a>
+    {@if cond="'{wall.wallType}' == 'USER'"}
+      &gt; <a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={wall.creator}">{wall.wallName}</a>
     {/if}
     
-    <span class="wallEntryDate">{wallEntry.created|formatDate}</span>
+    <span class="wallEntryDate">{created|formatDate}</span>
   </div>
   
   <div class="wallEntryContent">
-    <div class="wallEntryItem">{wallEntry.text}</div>
+    <div class="wallEntryItem">{text}</div>
   </div>
   
   <div class="wallEntryFooter">
-    {@if cond="'{wallEntry.visibility}' == 'PRIVATE'"}
+    {@if cond="'{visibility}' == 'PRIVATE'"}
       yksityinen
     {/if}
 
@@ -38,9 +38,9 @@
   </div>
   
   <div class="wallEntryComments">
-    {#wallEntry.replies}
+    {#replies}
       {>"wall/wallentryreply.dust"/}
-    {/wallEntry.replies}
+    {/replies}
   </div>
   
   

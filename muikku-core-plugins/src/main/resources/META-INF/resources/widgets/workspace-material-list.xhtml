@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition 
+xmlns="http://www.w3.org/1999/xhtml" 
+xmlns:ui="http://java.sun.com/jsf/facelets" 
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+  <div class="ws-materials-list">
+    <h5>Material list</h5>
+		<c:forEach var="node" items="#{workspaceMaterialsBackingBean.listWorkspaceNodes(workspaceMaterialsBackingBean.rootFolder)}">
+			<c:choose>
+				<c:when test="#{node.type eq 'FOLDER'}">
+					<h4>#{node.title}</h4>
+					<ui:include src="/workspaces/workspace-material-list.xhtml">
+						<ui:param name="nodes"
+							value="#{workspaceMaterialsBackingBean.listWorkspaceNodes(node)}" />
+					</ui:include>
+				</c:when>
+				<c:when test="#{node.type eq 'MATERIAL'}">
+					<h:panelGroup layout="block" styleClass="workspace-material">
+						<h:outputLink
+							value="#{request.contextPath}/workspace/#{workspaceMaterialsBackingBean.workspaceUrlName}/materials/#{node.path}">#{node.material.title}</h:outputLink>
+					</h:panelGroup>
+				</c:when>
+			</c:choose>
+		</c:forEach>
+  </div>
+  
+
+</ui:composition>

@@ -6,25 +6,20 @@
   xmlns:ui="http://java.sun.com/jsf/facelets"
     template="/WEB-INF/templates/default.xhtml">
     
-  <ui:define name="content">
+  <ui:define name="content.center.widget">
 
     <m:widgetSpaceSet >
       <m:widgetSpace name="index.content.primary.left" keepEmpty="false" sizing="MINIMIZE" styleClass="alpha">
         <!--  Not logged in -->
         <m:widget name="internallogin" rendered="#{!sessionBackingBean.loggedIn}" size="8"/>
         <!--  Logged in -->
-        <m:widget name="home-students" rendered="#{sessionBackingBean.loggedIn}" size="8"/>
+        <m:widget name="temp-rolepick" rendered="#{sessionBackingBean.loggedIn}" size="10"/>
         <!--  Both -->
       </m:widgetSpace>
       <m:widgetSpace name="index.content.primary.right" keepEmpty="false" sizing="MINIMIZE"  styleClass="omega">
         <!--  Not logged in -->
         <m:widget name="home-info" size="16" rendered="#{!sessionBackingBean.loggedIn}" />
         <!--  Logged in -->
-        <m:widget name="home-courses" rendered="#{sessionBackingBean.loggedIn}" size="16">
-          <ui:param name="courselist" value="home-courses" />
-        </m:widget>
-        <m:widget name="home-wallfeed" rendered="#{sessionBackingBean.loggedIn}" size="16"/>
-        <m:widget name="home-calendar" rendered="#{sessionBackingBean.loggedIn}" size="16"/>
       </m:widgetSpace>
     </m:widgetSpaceSet>
 

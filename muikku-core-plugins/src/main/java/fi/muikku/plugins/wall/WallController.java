@@ -24,6 +24,7 @@ import fi.muikku.model.security.ResourceRights;
 import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.plugins.assessmentrequest.AssessmentRequestController;
 import fi.muikku.plugins.forum.dao.EnvironmentForumAreaDAO;
 import fi.muikku.plugins.forum.dao.ForumThreadDAO;
@@ -133,6 +134,13 @@ public class WallController {
     WorkspaceWall wall = workspaceWallDAO.findByWorkspace(workspaceEntity);
     
     List<EnvironmentUser> users = userController.listEnvironmentUsers();
+    
+    for (EnvironmentUser envUser : users) {
+      UserWall userWall = userWallDAO.findByUser(envUser.getUser());
+      if (userWall == null)
+        userWallDAO.create(envUser.getUser());
+    }
+    
     EnvironmentUser environmentUser = users.get(R.nextInt(users.size()));
     UserEntity userEntity = environmentUser.getUser();
     
@@ -223,6 +231,8 @@ public class WallController {
     if (wall == null)
       return null;
 
+    UserEntity userEntity = userController.findUserEntityById(wall.getUser());
+    
     List<WallFeedItem> entries = new ArrayList<WallFeedItem>();
 
     for (WallEntryProvider provider : wallEntryProviders) {
@@ -235,12 +245,10 @@ public class WallController {
     
     // Users Workspaces
     
-    // TODO: User
-    List<Workspace> workspaces = workspaceController.listWorkspaces();
+    List<WorkspaceUserEntity> workspaceUsers = workspaceController.listWorkspaceEntitiesByUser(userEntity);
     
-    for (Workspace workspace : workspaces) {
-      WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntity(workspace);
-      WorkspaceWall workspaceWall = workspaceWallDAO.findByWorkspace(workspaceEntity);
+    for (WorkspaceUserEntity workspaceUser : workspaceUsers) {
+      WorkspaceWall workspaceWall = getWorkspaceWall(workspaceUser.getWorkspaceEntity());
       
       for (WallEntryProvider provider : wallEntryProviders) {
         entries.addAll(provider.listWallEntryItems(workspaceWall));
@@ -331,15 +339,32 @@ public class WallController {
   }
 
   public EnvironmentWall getEnvironmentWall() {
-    return environmentWallDAO.find();
+    EnvironmentWall environmentWall = environmentWallDAO.find();
+    
+    if (environmentWall == null)
+      environmentWall = environmentWallDAO.create();
+    
+    return environmentWall;
   }
 
   public UserWall getUserWall(UserEntity user) {
-    return userWallDAO.findByUser(user);
+    UserWall userWall = userWallDAO.findByUser(user);
+    
+    // TODO 
+    if (userWall == null)
+      userWall = userWallDAO.create(user);
+    
+    return userWall;
   }
 
   public WorkspaceWall getWorkspaceWall(WorkspaceEntity workspace) {
-    return workspaceWallDAO.findByWorkspace(workspace);
+    WorkspaceWall workspaceWall = workspaceWallDAO.findByWorkspace(workspace);
+    
+    // TODO
+    if (workspaceWall == null)
+      workspaceWall = workspaceWallDAO.create(workspace);
+    
+    return workspaceWall;
   }
 
   public String getWallType(Wall wall) {

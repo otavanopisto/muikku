@@ -86,15 +86,6 @@ public class DefaultWallEntryProvider implements WallEntryProvider {
       case ENVIRONMENT:
         // TODO: oikeudet?
         entries.addAll(wallEntryDAO.listEntriesByWall(wall));
-
-//        List<Workspace> workspaces = workspaceController.listWorkspaces();
-//        
-//        for (Workspace workspace : workspaces) {
-//          WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntity(workspace);
-//          WorkspaceWall workspaceWall = wallController.findWorkspaceWall(workspaceEntity);
-//          
-//          entries.addAll(listWorkspaceEntries(workspaceWall));
-//        }
       break;
     }
 

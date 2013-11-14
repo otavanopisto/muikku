@@ -5,7 +5,7 @@
     xmlns:h="http://java.sun.com/jsf/html"
     template="/workspaces/template.xhtml">
    
-  <ui:define name="content">
+  <ui:define name="content.center.widget">
     
     <table class="workspace-members" style="width: 100%">
       <tr>
@@ -13,7 +13,7 @@
         <th>Last name</th>
         <th>Email(s)</th>
       </tr>
-      <ui:repeat var="user" value="#{workspaceViewBackingBean.workspaceUsers}">
+      <ui:repeat var="user" value="#{workspaceMembersBackingBean.workspaceUsers}">
         <tr class="workspace-member">
           <td>#{user.firstName}</td>
           <td>#{user.lastName}</td>

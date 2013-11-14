@@ -7,6 +7,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import fi.muikku.tranquil.UserEntityResolver;
+import fi.tranquil.TranquilityEntityField;
+
 
 @Entity
 public class UserWallSubscription {
@@ -36,6 +39,7 @@ public class UserWallSubscription {
   private Long id;
 
   @Column (name = "user_id")
+  @TranquilityEntityField(UserEntityResolver.class)
   private Long user;
 
   @ManyToOne

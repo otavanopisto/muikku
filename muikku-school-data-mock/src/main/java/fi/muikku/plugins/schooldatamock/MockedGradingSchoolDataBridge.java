@@ -1,5 +1,6 @@
 package fi.muikku.plugins.schooldatamock;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -7,6 +8,7 @@ import java.util.List;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -20,8 +22,11 @@ import fi.muikku.schooldata.entity.GradingScaleItem;
 
 @Dependent
 @Stateful
-public class MockedGradingSchoolDataBridge extends AbstractMockedSchoolDataBridge implements GradingSchoolDataBridge {
+public class MockedGradingSchoolDataBridge implements GradingSchoolDataBridge {
 
+  @Inject
+  private SchoolDataMockPluginController schoolDataMockPluginController;
+  
 	@Override
 	public String getSchoolDataSource() {
 		return SchoolDataMockPluginDescriptor.SCHOOL_DATA_SOURCE;
@@ -36,10 +41,15 @@ public class MockedGradingSchoolDataBridge extends AbstractMockedSchoolDataBridg
 		Long id = NumberUtils.createLong(identifier);
 
 		try {
-			ResultSet resultSet = executeSelect("select id, name from GradingScale where id = ?", id);
-			if (resultSet.next()) {
-				return new MockedGradingScale(resultSet.getString(1), resultSet.getString(2));
-			}
+      Connection connection = schoolDataMockPluginController.getConnection();
+      try {
+  			ResultSet resultSet = schoolDataMockPluginController.executeSelect(connection, "select id, name from GradingScale where id = ?", id);
+  			if (resultSet.next()) {
+  				return new MockedGradingScale(resultSet.getString(1), resultSet.getString(2));
+  			}
+      } finally {
+        connection.close();
+      }
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}
@@ -52,10 +62,15 @@ public class MockedGradingSchoolDataBridge extends AbstractMockedSchoolDataBridg
 		List<GradingScale> result = new ArrayList<>();
 
 		try {
-			ResultSet resultSet = executeSelect("select id, name from GradingScale");
-			while (resultSet.next()) {
-				result.add(new MockedGradingScale(resultSet.getString(1), resultSet.getString(2)));
-			}
+      Connection connection = schoolDataMockPluginController.getConnection();
+      try {
+  			ResultSet resultSet = schoolDataMockPluginController.executeSelect(connection, "select id, name from GradingScale");
+  			while (resultSet.next()) {
+  				result.add(new MockedGradingScale(resultSet.getString(1), resultSet.getString(2)));
+  			}
+      } finally {
+        connection.close();
+      }
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}
@@ -72,10 +87,15 @@ public class MockedGradingSchoolDataBridge extends AbstractMockedSchoolDataBridg
 		Long id = NumberUtils.createLong(identifier);
 
 		try {
-			ResultSet resultSet = executeSelect("select id, grading_scale_id, name from GradingScaleItem where id = ?", id);
-			if (resultSet.next()) {
-				return new MockedGradingScaleItem(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3));
-			}
+      Connection connection = schoolDataMockPluginController.getConnection();
+      try {
+  			ResultSet resultSet = schoolDataMockPluginController.executeSelect(connection, "select id, grading_scale_id, name from GradingScaleItem where id = ?", id);
+  			if (resultSet.next()) {
+  				return new MockedGradingScaleItem(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3));
+  			}
+      } finally {
+        connection.close();
+      }
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}
@@ -88,10 +108,15 @@ public class MockedGradingSchoolDataBridge extends AbstractMockedSchoolDataBridg
 		List<GradingScaleItem> result = new ArrayList<>();
 
 		try {
-			ResultSet resultSet = executeSelect("select id, grading_scale_id, name from GradingScaleItem");
-			while (resultSet.next()) {
-				result.add(new MockedGradingScaleItem(resultSet.getString(1), resultSet.getString(2), resultSet.getString(2)));
-			}
+      Connection connection = schoolDataMockPluginController.getConnection();
+      try {
+  			ResultSet resultSet = schoolDataMockPluginController.executeSelect(connection, "select id, grading_scale_id, name from GradingScaleItem");
+  			while (resultSet.next()) {
+  				result.add(new MockedGradingScaleItem(resultSet.getString(1), resultSet.getString(2), resultSet.getString(2)));
+  			}
+      } finally {
+        connection.close();
+      }
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}

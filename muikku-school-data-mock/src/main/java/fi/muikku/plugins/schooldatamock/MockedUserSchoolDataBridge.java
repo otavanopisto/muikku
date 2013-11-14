@@ -3,6 +3,7 @@ package fi.muikku.plugins.schooldatamock;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Blob;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,6 +12,7 @@ import java.util.List;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -33,7 +35,10 @@ import fi.muikku.schooldata.entity.RoleType;
 
 @Dependent
 @Stateful
-public class MockedUserSchoolDataBridge extends AbstractMockedSchoolDataBridge implements UserSchoolDataBridge {
+public class MockedUserSchoolDataBridge implements UserSchoolDataBridge {
+
+  @Inject
+  private SchoolDataMockPluginController schoolDataMockPluginController;
 
 	@Override
 	public String getSchoolDataSource() {
@@ -43,13 +48,17 @@ public class MockedUserSchoolDataBridge extends AbstractMockedSchoolDataBridge i
 	@Override
 	public User createUser(String firstName, String lastName) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
 		try {
-			PreparedStatement preparedStatement = executeInsert("insert into User (firstName, lastName) values (?, ?)", firstName, lastName);
-			ResultSet resultSet = preparedStatement.getGeneratedKeys();
-			if (resultSet.next()) {
-				String identifier = String.valueOf(resultSet.getLong(1));
-				return new MockedUser(identifier, firstName, lastName);
-			}
-
+      Connection connection = schoolDataMockPluginController.getConnection();
+      try {
+  			PreparedStatement preparedStatement = schoolDataMockPluginController.executeInsert(connection, "insert into User (firstName, lastName) values (?, ?)", firstName, lastName);
+  			ResultSet resultSet = preparedStatement.getGeneratedKeys();
+  			if (resultSet.next()) {
+  				String identifier = String.valueOf(resultSet.getLong(1));
+  				return new MockedUser(identifier, firstName, lastName);
+  			}
+      } finally {
+        connection.close();
+      }
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}
@@ -66,10 +75,15 @@ public class MockedUserSchoolDataBridge extends AbstractMockedSchoolDataBridge i
 		Long id = NumberUtils.createLong(identifier);
 
 		try {
-			ResultSet resultSet = executeSelect("select id, firstName, lastName from User where id = ?", id);
-			if (resultSet.next()) {
-				return new MockedUser(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3));
-			}
+      Connection connection = schoolDataMockPluginController.getConnection();
+      try {
+  			ResultSet resultSet = schoolDataMockPluginController.executeSelect(connection, "select id, firstName, lastName from User where id = ?", id);
+  			if (resultSet.next()) {
+  				return new MockedUser(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3));
+  			}
+      } finally {
+        connection.close();
+      }
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}
@@ -80,10 +94,15 @@ public class MockedUserSchoolDataBridge extends AbstractMockedSchoolDataBridge i
 	@Override
 	public User findUserByEmail(String email) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
 		try {
-			ResultSet resultSet = executeSelect("select id, firstName, lastName from User where id = (select user_id from UserEmail where address = ?)", email);
-			if (resultSet.next()) {
-				return new MockedUser(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3));
-			}
+      Connection connection = schoolDataMockPluginController.getConnection();
+      try {
+  			ResultSet resultSet = schoolDataMockPluginController.executeSelect(connection, "select id, firstName, lastName from User where id = (select user_id from UserEmail where address = ?)", email);
+  			if (resultSet.next()) {
+  				return new MockedUser(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3));
+  			}
+      } finally {
+        connection.close();
+      }
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}
@@ -96,10 +115,15 @@ public class MockedUserSchoolDataBridge extends AbstractMockedSchoolDataBridge i
 		List<User> result = new ArrayList<User>();
 
 		try {
-			ResultSet resultSet = executeSelect("select id, firstName, lastName from User");
-			while (resultSet.next()) {
-				result.add(new MockedUser(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3)));
-			}
+      Connection connection = schoolDataMockPluginController.getConnection();
+      try {
+  			ResultSet resultSet = schoolDataMockPluginController.executeSelect(connection, "select id, firstName, lastName from User");
+  			while (resultSet.next()) {
+  				result.add(new MockedUser(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3)));
+  			}
+      } finally {
+        connection.close();
+      }
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}
@@ -116,13 +140,17 @@ public class MockedUserSchoolDataBridge extends AbstractMockedSchoolDataBridge i
 		Long id = NumberUtils.createLong(user.getIdentifier());
 
 		try {
-			PreparedStatement preparedStatement = executeUpdate("update User set firstName = ?, lastName = ? where id = ?", user.getFirstName(), user.getLastName(),
-					id);
-			if (preparedStatement.getUpdateCount() == 1) {
-				return user;
-			} else {
-				throw new UnexpectedSchoolDataBridgeException("User updating failed");
-			}
+      Connection connection = schoolDataMockPluginController.getConnection();
+      try {
+  			PreparedStatement preparedStatement = schoolDataMockPluginController.executeUpdate(connection, "update User set firstName = ?, lastName = ? where id = ?", user.getFirstName(), user.getLastName(), id);
+  			if (preparedStatement.getUpdateCount() == 1) {
+  				return user;
+  			} else {
+  				throw new UnexpectedSchoolDataBridgeException("User updating failed");
+  			}
+      } finally {
+        connection.close();
+      }
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}
@@ -137,7 +165,12 @@ public class MockedUserSchoolDataBridge extends AbstractMockedSchoolDataBridge i
 		Long id = NumberUtils.createLong(identifier);
 
 		try {
-			executeDelete("delete from User where id = ?", id);
+      Connection connection = schoolDataMockPluginController.getConnection();
+      try {
+        schoolDataMockPluginController.executeDelete(connection, "delete from User where id = ?", id);
+      } finally {
+        connection.close();
+      }
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}
@@ -148,13 +181,17 @@ public class MockedUserSchoolDataBridge extends AbstractMockedSchoolDataBridge i
 		Long userId = NumberUtils.createLong(userIdentifier);
 
 		try {
-			PreparedStatement preparedStatement = executeInsert("insert into UserEmail (user_id, address) values (?, ?)", userId, address);
-			ResultSet resultSet = preparedStatement.getGeneratedKeys();
-			if (resultSet.next()) {
-				String identifier = String.valueOf(resultSet.getLong(1));
-				return new MockedUserEmail(identifier, userIdentifier, address);
-			}
-
+      Connection connection = schoolDataMockPluginController.getConnection();
+      try {
+  			PreparedStatement preparedStatement = schoolDataMockPluginController.executeInsert(connection, "insert into UserEmail (user_id, address) values (?, ?)", userId, address);
+  			ResultSet resultSet = preparedStatement.getGeneratedKeys();
+  			if (resultSet.next()) {
+  				String identifier = String.valueOf(resultSet.getLong(1));
+  				return new MockedUserEmail(identifier, userIdentifier, address);
+  			}
+      } finally {
+        connection.close();
+      }
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}
@@ -167,13 +204,18 @@ public class MockedUserSchoolDataBridge extends AbstractMockedSchoolDataBridge i
 		Long id = NumberUtils.createLong(identifier);
 
 		try {
-			ResultSet resultSet = executeSelect("select user_id, address from UserEmail where id = ?", id);
-			if (resultSet.next()) {
-				String userId = resultSet.getString(1);
-				String address = resultSet.getString(2);
-
-				return new MockedUserEmail(identifier, userId, address);
-			}
+      Connection connection = schoolDataMockPluginController.getConnection();
+      try {
+  			ResultSet resultSet = schoolDataMockPluginController.executeSelect(connection, "select user_id, address from UserEmail where id = ?", id);
+  			if (resultSet.next()) {
+  				String userId = resultSet.getString(1);
+  				String address = resultSet.getString(2);
+  
+  				return new MockedUserEmail(identifier, userId, address);
+  			}
+      } finally {
+        connection.close();
+      }
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}
@@ -188,14 +230,19 @@ public class MockedUserSchoolDataBridge extends AbstractMockedSchoolDataBridge i
 		Long userId = NumberUtils.createLong(userIdentifier);
 
 		try {
-			ResultSet resultSet = executeSelect("select id, user_id, address from UserEmail where user_id = ?", userId);
-			while (resultSet.next()) {
-				String id = resultSet.getString(1);
-				String uid = resultSet.getString(2);
-				String address = resultSet.getString(3);
-
-				result.add(new MockedUserEmail(id, uid, address));
-			}
+      Connection connection = schoolDataMockPluginController.getConnection();
+      try {
+			  ResultSet resultSet = schoolDataMockPluginController.executeSelect(connection, "select id, user_id, address from UserEmail where user_id = ?", userId);
+  			while (resultSet.next()) {
+  				String id = resultSet.getString(1);
+  				String uid = resultSet.getString(2);
+  				String address = resultSet.getString(3);
+  
+  				result.add(new MockedUserEmail(id, uid, address));
+  			}
+      } finally {
+        connection.close();
+      }
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}
@@ -208,12 +255,17 @@ public class MockedUserSchoolDataBridge extends AbstractMockedSchoolDataBridge i
 		Long id = NumberUtils.createLong(userEmail.getIdentifier());
 
 		try {
-			PreparedStatement preparedStatement = executeUpdate("update UserEmail set address = ? where id = ?", userEmail.getAddress(), id);
-			if (preparedStatement.getUpdateCount() == 1) {
-				return userEmail;
-			} else {
-				throw new UnexpectedSchoolDataBridgeException("UserEmail updating failed");
-			}
+      Connection connection = schoolDataMockPluginController.getConnection();
+      try {
+  			PreparedStatement preparedStatement = schoolDataMockPluginController.executeUpdate(connection, "update UserEmail set address = ? where id = ?", userEmail.getAddress(), id);
+  			if (preparedStatement.getUpdateCount() == 1) {
+  				return userEmail;
+  			} else {
+  				throw new UnexpectedSchoolDataBridgeException("UserEmail updating failed");
+  			}
+      } finally {
+        connection.close();
+      }
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}
@@ -224,7 +276,12 @@ public class MockedUserSchoolDataBridge extends AbstractMockedSchoolDataBridge i
 		Long id = NumberUtils.createLong(identifier);
 
 		try {
-			executeDelete("delete from UserEmail where id = ?", id);
+      Connection connection = schoolDataMockPluginController.getConnection();
+      try {
+        schoolDataMockPluginController.executeDelete(connection, "delete from UserEmail where id = ?", id);
+      } finally {
+        connection.close();
+      }
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}
@@ -236,14 +293,17 @@ public class MockedUserSchoolDataBridge extends AbstractMockedSchoolDataBridge i
 		Long userId = NumberUtils.createLong(userIdentifier);
 
 		try {
-			PreparedStatement preparedStatement = executeInsert("insert into UserImage (user_id, content_type, content) values (?, ?, ?)", userId, contentType,
-					content);
-			ResultSet resultSet = preparedStatement.getGeneratedKeys();
-			if (resultSet.next()) {
-				String identifier = String.valueOf(resultSet.getLong(1));
-				return new MockedUserImage(identifier, userIdentifier, contentType, content);
-			}
-
+      Connection connection = schoolDataMockPluginController.getConnection();
+      try {
+  			PreparedStatement preparedStatement = schoolDataMockPluginController.executeInsert(connection, "insert into UserImage (user_id, content_type, content) values (?, ?, ?)", userId, contentType, content);
+  			ResultSet resultSet = preparedStatement.getGeneratedKeys();
+  			if (resultSet.next()) {
+  				String identifier = String.valueOf(resultSet.getLong(1));
+  				return new MockedUserImage(identifier, userIdentifier, contentType, content);
+  			}
+      } finally {
+        connection.close();
+      }
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}
@@ -256,20 +316,25 @@ public class MockedUserSchoolDataBridge extends AbstractMockedSchoolDataBridge i
 		Long id = NumberUtils.createLong(identifier);
 
 		try {
-			ResultSet resultSet = executeSelect("select user_id, content_type, content from UserImage where id = ?", id);
-			if (resultSet.next()) {
-				String userId = resultSet.getString(1);
-				String contentType = resultSet.getString(2);
-				Blob contentBlob = resultSet.getBlob(3);
-
-				InputStream contentStream = contentBlob.getBinaryStream();
-				try {
-					byte[] content = IOUtils.toByteArray(contentStream);
-					return new MockedUserImage(identifier, userId, contentType, content);
-				} finally {
-					contentStream.close();
-				}
-			}
+      Connection connection = schoolDataMockPluginController.getConnection();
+      try {
+  			ResultSet resultSet = schoolDataMockPluginController.executeSelect(connection, "select user_id, content_type, content from UserImage where id = ?", id);
+  			if (resultSet.next()) {
+  				String userId = resultSet.getString(1);
+  				String contentType = resultSet.getString(2);
+  				Blob contentBlob = resultSet.getBlob(3);
+  
+  				InputStream contentStream = contentBlob.getBinaryStream();
+  				try {
+  					byte[] content = IOUtils.toByteArray(contentStream);
+  					return new MockedUserImage(identifier, userId, contentType, content);
+  				} finally {
+  					contentStream.close();
+  				}
+  			}
+      } finally {
+        connection.close();
+      }
 		} catch (SQLException | IOException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}
@@ -284,21 +349,26 @@ public class MockedUserSchoolDataBridge extends AbstractMockedSchoolDataBridge i
 		Long userId = NumberUtils.createLong(userIdentifier);
 
 		try {
-			ResultSet resultSet = executeSelect("select id, user_id, content_type, content from UserImage where user_id = ?", userId);
-			while (resultSet.next()) {
-				String identifier = resultSet.getString(1);
-				String uid = resultSet.getString(2);
-				String contentType = resultSet.getString(3);
-				Blob contentBlob = resultSet.getBlob(4);
-
-				InputStream contentStream = contentBlob.getBinaryStream();
-				try {
-					byte[] content = IOUtils.toByteArray(contentStream);
-					result.add(new MockedUserImage(identifier, uid, contentType, content));
-				} finally {
-					contentStream.close();
-				}
-			}
+      Connection connection = schoolDataMockPluginController.getConnection();
+      try {
+  			ResultSet resultSet = schoolDataMockPluginController.executeSelect(connection, "select id, user_id, content_type, content from UserImage where user_id = ?", userId);
+  			while (resultSet.next()) {
+  				String identifier = resultSet.getString(1);
+  				String uid = resultSet.getString(2);
+  				String contentType = resultSet.getString(3);
+  				Blob contentBlob = resultSet.getBlob(4);
+  
+  				InputStream contentStream = contentBlob.getBinaryStream();
+  				try {
+  					byte[] content = IOUtils.toByteArray(contentStream);
+  					result.add(new MockedUserImage(identifier, uid, contentType, content));
+  				} finally {
+  					contentStream.close();
+  				}
+  			}
+      } finally {
+        connection.close();
+      }
 		} catch (SQLException | IOException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}
@@ -310,13 +380,17 @@ public class MockedUserSchoolDataBridge extends AbstractMockedSchoolDataBridge i
 	public UserImage updateUserImage(UserImage userImage) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
 		Long id = NumberUtils.createLong(userImage.getIdentifier());
 		try {
-			PreparedStatement preparedStatement = executeUpdate("update UserImage set content_type = ?, content = ? where id = ?", userImage.getContentType(),
-					userImage.getContent(), id);
-			if (preparedStatement.getUpdateCount() == 1) {
-				return userImage;
-			} else {
-				throw new UnexpectedSchoolDataBridgeException("UserEmail updating failed");
-			}
+      Connection connection = schoolDataMockPluginController.getConnection();
+      try {
+  			PreparedStatement preparedStatement = schoolDataMockPluginController.executeUpdate(connection, "update UserImage set content_type = ?, content = ? where id = ?", userImage.getContentType(), userImage.getContent(), id);
+  			if (preparedStatement.getUpdateCount() == 1) {
+  				return userImage;
+  			} else {
+  				throw new UnexpectedSchoolDataBridgeException("UserEmail updating failed");
+  			}
+      } finally {
+        connection.close();
+      }
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}
@@ -327,7 +401,12 @@ public class MockedUserSchoolDataBridge extends AbstractMockedSchoolDataBridge i
 		Long id = NumberUtils.createLong(identifier);
 
 		try {
-			executeDelete("delete from UserImage where id = ?", id);
+      Connection connection = schoolDataMockPluginController.getConnection();
+      try {
+        schoolDataMockPluginController.executeDelete(connection, "delete from UserImage where id = ?", id);
+      } finally {
+        connection.close();
+      }
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}		
@@ -365,11 +444,16 @@ public class MockedUserSchoolDataBridge extends AbstractMockedSchoolDataBridge i
 	private UserProperty createUserProperty(String userIdentifier, String key, String value) throws SQLException {
 		Long userId = NumberUtils.createLong(userIdentifier);
 
-		PreparedStatement preparedStatement = executeInsert("insert into UserProperty (user_id, key, value) values (?, ?, ?)", userId, key, value);
-		ResultSet resultSet = preparedStatement.getGeneratedKeys();
-		if (resultSet.next()) {
-			return new MockedUserProperty(userIdentifier, key, value);
-		}
+		Connection connection = schoolDataMockPluginController.getConnection();
+    try {
+  		PreparedStatement preparedStatement = schoolDataMockPluginController.executeInsert(connection, "insert into UserProperty (user_id, key, value) values (?, ?, ?)", userId, key, value);
+  		ResultSet resultSet = preparedStatement.getGeneratedKeys();
+  		if (resultSet.next()) {
+  			return new MockedUserProperty(userIdentifier, key, value);
+  		}
+    } finally {
+      connection.close();
+    }
 
 		return null;
 	}
@@ -377,23 +461,33 @@ public class MockedUserSchoolDataBridge extends AbstractMockedSchoolDataBridge i
 	private UserProperty findUserProperty(String identifier) throws SQLException {
 		Long id = NumberUtils.createLong(identifier);
 
-		ResultSet resultSet = executeSelect("select user_id, key, value from UserProperty where id = ?", id);
-		if (resultSet.next()) {
-			String userId = resultSet.getString(1);
-			String key = resultSet.getString(2);
-			String value = resultSet.getString(3);
-
-			return new MockedUserProperty(userId, key, value);
-		}
+    Connection connection = schoolDataMockPluginController.getConnection();
+    try {
+  		ResultSet resultSet = schoolDataMockPluginController.executeSelect(connection, "select user_id, key, value from UserProperty where id = ?", id);
+  		if (resultSet.next()) {
+  			String userId = resultSet.getString(1);
+  			String key = resultSet.getString(2);
+  			String value = resultSet.getString(3);
+  
+  			return new MockedUserProperty(userId, key, value);
+  		}
+    } finally {
+      connection.close();
+    }
 
 		return null;
 	}
 
 	private Long findUserPropertyIdByUserAndKey(String userIdentifier, String key) throws SQLException {
-		ResultSet resultSet = executeSelect("select id from UserProperty where user_id = ? and key = ?", userIdentifier, key);
-		if (resultSet.next()) {
-			return resultSet.getLong(1);
-		}
+    Connection connection = schoolDataMockPluginController.getConnection();
+    try {
+  		ResultSet resultSet = schoolDataMockPluginController.executeSelect(connection, "select id from UserProperty where user_id = ? and key = ?", userIdentifier, key);
+  		if (resultSet.next()) {
+  			return resultSet.getLong(1);
+  		}
+    } finally {
+      connection.close();
+    }
 
 		return null;
 	}
@@ -403,10 +497,15 @@ public class MockedUserSchoolDataBridge extends AbstractMockedSchoolDataBridge i
 		List<UserProperty> result = new ArrayList<UserProperty>();
 
 		try {
-			ResultSet resultSet = executeSelect("select user_id, key, value from UserProperty where user_id = ?", userIdentifier);
-			while (resultSet.next()) {
-				result.add(new MockedUserProperty(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3)));
-			}
+	    Connection connection = schoolDataMockPluginController.getConnection();
+	    try {
+  			ResultSet resultSet = schoolDataMockPluginController.executeSelect(connection, "select user_id, key, value from UserProperty where user_id = ?", userIdentifier);
+  			while (resultSet.next()) {
+  				result.add(new MockedUserProperty(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3)));
+  			}
+      } finally {
+        connection.close();
+      }
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}
@@ -417,10 +516,15 @@ public class MockedUserSchoolDataBridge extends AbstractMockedSchoolDataBridge i
 	@Override
 	public Role findRole(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
 		try {
-			ResultSet resultSet = executeSelect("select id, name, type from Role where id = ?", identifier);
-			while (resultSet.next()) {
-				return new MockedRole(resultSet.getString(1), resultSet.getString(2), RoleType.valueOf(resultSet.getString(3)));
-			}
+	    Connection connection = schoolDataMockPluginController.getConnection();
+	    try {
+  			ResultSet resultSet = schoolDataMockPluginController.executeSelect(connection, "select id, name, type from Role where id = ?", identifier);
+  			while (resultSet.next()) {
+  				return new MockedRole(resultSet.getString(1), resultSet.getString(2), RoleType.valueOf(resultSet.getString(3)));
+  			}
+      } finally {
+        connection.close();
+      }
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}
@@ -433,10 +537,15 @@ public class MockedUserSchoolDataBridge extends AbstractMockedSchoolDataBridge i
 		List<Role> result = new ArrayList<>();
 		
 		try {
-			ResultSet resultSet = executeSelect("select id, name, type from Role");
-			while (resultSet.next()) {
-				result.add(new MockedRole(resultSet.getString(1), resultSet.getString(2), RoleType.valueOf(resultSet.getString(3))));
-			}
+	    Connection connection = schoolDataMockPluginController.getConnection();
+	    try {
+  			ResultSet resultSet = schoolDataMockPluginController.executeSelect(connection, "select id, name, type from Role");
+  			while (resultSet.next()) {
+  				result.add(new MockedRole(resultSet.getString(1), resultSet.getString(2), RoleType.valueOf(resultSet.getString(3))));
+  			}
+      } finally {
+        connection.close();
+      }
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}
@@ -447,10 +556,15 @@ public class MockedUserSchoolDataBridge extends AbstractMockedSchoolDataBridge i
 	@Override
 	public Role findUserEnvironmentRole(String userIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
 		try {
-			ResultSet resultSet = executeSelect("select r.id, r.name, r.type from User u, Role r where u.id = ? and u.role_id = r.id", userIdentifier);
-			if (resultSet.next()) {
-				return new MockedRole(resultSet.getString(1), resultSet.getString(2), RoleType.valueOf(resultSet.getString(3)));
-			}
+	    Connection connection = schoolDataMockPluginController.getConnection();
+	    try {
+  			ResultSet resultSet = schoolDataMockPluginController.executeSelect(connection, "select r.id, r.name, r.type from User u, Role r where u.id = ? and u.role_id = r.id", userIdentifier);
+  			if (resultSet.next()) {
+  				return new MockedRole(resultSet.getString(1), resultSet.getString(2), RoleType.valueOf(resultSet.getString(3)));
+  			}
+      } finally {
+        connection.close();
+      }
 		} catch (SQLException e) {
 			throw new UnexpectedSchoolDataBridgeException(e);
 		}
@@ -459,25 +573,40 @@ public class MockedUserSchoolDataBridge extends AbstractMockedSchoolDataBridge i
 	}
 
 	private UserProperty findUserPropertyByUserAndKey(String userIdentifier, String key) throws SQLException {
-		ResultSet resultSet = executeSelect("select user_id, key, value from UserProperty where user_id = ? and key = ?", userIdentifier, key);
-		if (resultSet.next()) {
-			return new MockedUserProperty(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3));
-		}
+    Connection connection = schoolDataMockPluginController.getConnection();
+    try {
+  		ResultSet resultSet = schoolDataMockPluginController.executeSelect(connection, "select user_id, key, value from UserProperty where user_id = ? and key = ?", userIdentifier, key);
+  		if (resultSet.next()) {
+  			return new MockedUserProperty(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3));
+  		}
+    } finally {
+      connection.close();
+    }
 		
 		return null;
 	}
 	
 	private UserProperty updateUserProperty(Long id, String value) throws SQLException {
-		PreparedStatement preparedStatement = executeUpdate("update UserProperty set value = ? where id = ?", value, id);
-		if (preparedStatement.getUpdateCount() == 1) {
-			return findUserProperty(id.toString());
-		}
+    Connection connection = schoolDataMockPluginController.getConnection();
+    try {
+  		PreparedStatement preparedStatement = schoolDataMockPluginController.executeUpdate(connection, "update UserProperty set value = ? where id = ?", value, id);
+  		if (preparedStatement.getUpdateCount() == 1) {
+  			return findUserProperty(id.toString());
+  		}
+    } finally {
+      connection.close();
+    }
 		
 		return null;
 	}
 
 	private void deleteUserProperty(Long id) throws SQLException {
-		executeDelete("delete from UserProperty where id = ?", id);
+    Connection connection = schoolDataMockPluginController.getConnection();
+    try {
+      schoolDataMockPluginController.executeDelete(connection, "delete from UserProperty where id = ?", id);
+    } finally {
+      connection.close();
+    }
 	}
 
 }
