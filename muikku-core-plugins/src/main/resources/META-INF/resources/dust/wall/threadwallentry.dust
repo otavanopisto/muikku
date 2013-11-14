@@ -8,7 +8,7 @@
   {/creator.hasPicture}  
   
   <div class="wallEntryTitle">
-    <a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={creator.id}">{creator.fullName}</a>
+    <a class="wallEntryCreator" href="{@contextPath/}/user/{creator.id}">{creator.fullName}</a>
 
     {#localize key="plugin.wall.onForumAreaTitle"/} <a class="wallEntryForumAreaLink" href="{@contextPath/}/forum/threads.jsf?area=#{forumAreaId}">{forumArea.name}</a>
     

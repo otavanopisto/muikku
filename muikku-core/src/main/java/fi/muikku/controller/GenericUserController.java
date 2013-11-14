@@ -15,6 +15,8 @@ import fi.muikku.model.users.UserGroupUser;
 import fi.muikku.schooldata.UserController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.UserEmail;
+import fi.muikku.session.local.LocalSession;
+import fi.muikku.session.local.LocalSessionController;
 
 @RequestScoped
 @Named ("User")
@@ -22,6 +24,15 @@ public class GenericUserController {
 
   @Inject
   private UserController userController;
+  
+  @Inject
+  @LocalSession
+  private LocalSessionController localSessionController;
+  
+  public void representUser(Long userId) {
+    localSessionController.representUser(userId);
+  }
+  
   
 	/* UserEntity */
 

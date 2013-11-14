@@ -10,10 +10,6 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
-import fi.muikku.dao.security.WorkspaceRolePermissionDAO;
-import fi.muikku.dao.security.EnvironmentRolePermissionDAO;
-import fi.muikku.dao.security.PermissionDAO;
-import fi.muikku.dao.security.ResourceRolePermissionDAO;
 import fi.muikku.dao.users.UserEntityDAO;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.util.ResourceEntity;
@@ -31,21 +27,6 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
   
   @Inject
   private UserEntityDAO userEntityDAO;
-//
-//  @Inject
-//  private CourseEntityDAO courseDAO;
-
-  @Inject
-  private EnvironmentRolePermissionDAO environmentUserRolePermissionDAO;
-
-  @Inject
-  private WorkspaceRolePermissionDAO courseUserRolePermissionDAO;
-  
-  @Inject
-  private PermissionDAO permissionDAO;
-  
-  @Inject
-  private ResourceRolePermissionDAO resourceUserRolePermissionDAO; 
 
   @Override
   public void login(Long userId) {

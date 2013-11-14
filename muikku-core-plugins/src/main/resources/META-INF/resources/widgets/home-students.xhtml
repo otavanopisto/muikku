@@ -11,7 +11,7 @@ xmlns:h="http://java.sun.com/jsf/html">
     <h3>Opiskelijat</h3>
     <ul>
       <ui:repeat var="user" value="#{User.listUsers()}">
-        <li><a href="#{request.contextPath}/user.jsf?userId=#{User.findUserEntity(user).id}">#{user.firstName} #{user.lastName}</a></li>
+        <li><a href="#{request.contextPath}/user/#{User.findUserEntity(user).id}">#{user.firstName} #{user.lastName}</a></li>
       </ui:repeat>
     </ul>
   </div>

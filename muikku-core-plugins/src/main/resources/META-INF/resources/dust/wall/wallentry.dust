@@ -8,7 +8,7 @@
   {/creator.hasPicture}  
   
   <div class="wallEntryTitle">
-    <a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={creator}">{creator_tq.fullName}</a>
+    <a class="wallEntryCreator" href="{@contextPath/}/user/{creator}">{creator_tq.fullName}</a>
 
     {@if cond="'{wall.wallType}' == 'ENVIRONMENT'"}
       &gt; <b>{wall.wallName}</b>
@@ -19,7 +19,7 @@
     {/if}
 
     {@if cond="'{wall.wallType}' == 'USER'"}
-      &gt; <a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={wall.creator}">{wall.wallName}</a>
+      &gt; <a class="wallEntryCreator" href="{@contextPath/}/user/{wall.creator}">{wall.wallName}</a>
     {/if}
     
     <span class="wallEntryDate">{created|formatDate}</span>

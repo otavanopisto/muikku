@@ -8,7 +8,7 @@
   {/assessmentRequest.student_tq.hasPicture}  
   
   <div class="wallEntryTitle">
-    <a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={assessmentRequest.student_tq.id}">{assessmentRequest.student_tq.fullName}</a>
+    <a class="wallEntryCreator" href="{@contextPath/}/user/{assessmentRequest.student_tq.id}">{assessmentRequest.student_tq.fullName}</a>
 
      pyysi arviointia kurssilla <a class="wallEntryCourseLink" href="{@contextPath/}/workspace/{assessmentRequest.workspace_tq.urlName}">{assessmentRequest.workspace_tq.urlName}</a>
 

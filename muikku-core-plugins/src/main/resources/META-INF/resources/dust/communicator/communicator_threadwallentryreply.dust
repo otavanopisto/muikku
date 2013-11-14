@@ -6,7 +6,7 @@
   {/creator.hasPicture}  
 
   <div class="wallEntryCommentTitle">
-    <a class="wallEntryCommentCreator" href="{@contextPath/}/user.jsf?userId={creator.id}">{creator.fullName}</a>
+    <a class="wallEntryCommentCreator" href="{@contextPath/}/user/{creator.id}">{creator.fullName}</a>
     <span class="wallEntryCommentDate">{created|formatDate}</span>
   </div>
 

@@ -9,18 +9,14 @@
     template="/WEB-INF/templates/default.xhtml">
     
     <ui:define name="content.center">
-      <c:set var="userId" value="#{param['userId']}" />
-      <c:set var="userEntity" value="#{User.findUserEntityById(userId)}" />
-      <c:set var="user" value="#{User.findUser(userEntity)}" />
-    
       <div class="showUserName">
-        #{user.firstName} #{user.lastName}
+        #{userIndexBackingBean.user.firstName} #{userIndexBackingBean.user.lastName}
       </div>
 
       <div class="showUserPicture">
         <c:choose>
-          <c:when test="#{User.hasPicture(userEntity)}">
-            <img src="#{request.contextPath}/picture?userId=#{userEntity.id}" />
+          <c:when test="#{User.hasPicture(userIndexBackingBean.userEntity)}">
+            <img src="#{request.contextPath}/picture?userId=#{userIndexBackingBean.userEntity.id}" />
           </c:when>
           <c:otherwise>
             <img src="#{request.contextPath}/themes/default/gfx/fish.jpg" />
@@ -31,13 +27,13 @@
       <div class="">
         <form method="post" action="#{request.contextPath}/pictureupload" enctype="multipart/form-data">
           <input type="file" name="pictureFile"/><br/>
-          <input type="hidden" name="userId" value="#{userEntity.id}"/>
+          <input type="hidden" name="userId" value="#{userIndexBackingBean.userEntity.id}"/>
           <input type="submit" value="Paivita kuva"/>
         </form>
       </div>
       
       <div class="userContacts">
-        <c:forEach var="contact" items="#{User.listUserContacts(userEntity)}">
+        <c:forEach var="contact" items="#{User.listUserContacts(userIndexBackingBean.userEntity)}">
           <c:choose>
             <c:when test="#{contact.type eq 'PHONE'}">
               <div class="userContact">Phone: #{contact.value}</div>
@@ -55,9 +51,21 @@
         </c:forEach>
       </div>
 
+<!--       <div class=""> -->
+<!--         <h:form> -->
+<!--           <div class="formElementRow"> -->
+<!--             <h:commandLink action="#{Friend.createFriendRequest(userIndexBackingBean.userEntity, 'B mi frnd')}" value="Add friend"/> -->
+<!--           </div> -->
+<!--         </h:form> -->
+<!--       </div> -->
+
+<!--       <m:widget name="representuser-button"> -->
+<!--         <ui:param name="userId" value="#{userIndexBackingBean.userEntity.id}" /> -->
+<!--       </m:widget> -->
+
       <div class="showUserWall">
         <ui:include src="/wall/userwall.xhtml">
-          <ui:param name="userId" value="#{userId}" />
+          <ui:param name="userId" value="#{userIndexBackingBean.userEntity.id}" />
         </ui:include>
       </div>
     </ui:define>
