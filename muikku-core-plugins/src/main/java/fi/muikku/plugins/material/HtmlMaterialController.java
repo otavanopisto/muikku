@@ -29,6 +29,8 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import fi.muikku.plugins.material.dao.HtmlMaterialDAO;
+import fi.muikku.plugins.material.events.HtmlMaterialAfterProcessEvent;
+import fi.muikku.plugins.material.events.HtmlMaterialBeforeProcessEvent;
 import fi.muikku.plugins.material.events.HtmlMaterialBeforeSerializeEvent;
 import fi.muikku.plugins.material.events.HtmlMaterialProcessEvent;
 import fi.muikku.plugins.material.model.HtmlMaterial;
@@ -37,6 +39,12 @@ import fi.muikku.plugins.material.model.HtmlMaterial;
 @Stateless
 public class HtmlMaterialController {
   
+  @Inject
+  private Event<HtmlMaterialBeforeProcessEvent> beforeProcessEvent;
+
+  @Inject
+  private Event<HtmlMaterialAfterProcessEvent> afterProcessEvent;
+
   @Inject
   private Event<HtmlMaterialProcessEvent> processEvent;
 
@@ -68,9 +76,11 @@ public class HtmlMaterialController {
 
         Document document = parser.getDocument();
         
-        HtmlMaterialProcessEvent event = new HtmlMaterialProcessEvent(materialId, document);
-        processEvent.fire(event);
-        return event.getDocument();
+        this.beforeProcessEvent.fire(new HtmlMaterialBeforeProcessEvent(materialId, document));
+        this.processEvent.fire(new HtmlMaterialProcessEvent(materialId, document));
+        this.afterProcessEvent.fire(new HtmlMaterialAfterProcessEvent(materialId, document));
+
+        return document;
       } finally {
         htmlReader.close();
       }
