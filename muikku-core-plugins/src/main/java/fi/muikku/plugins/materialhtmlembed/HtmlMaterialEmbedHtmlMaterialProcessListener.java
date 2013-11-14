@@ -16,7 +16,7 @@ import org.xml.sax.SAXException;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.material.HtmlMaterialController;
-import fi.muikku.plugins.material.HtmlMaterialProcessEvent;
+import fi.muikku.plugins.material.events.HtmlMaterialProcessEvent;
 import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
