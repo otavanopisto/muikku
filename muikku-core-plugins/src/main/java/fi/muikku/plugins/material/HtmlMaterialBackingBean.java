@@ -5,7 +5,6 @@ import java.io.Serializable;
 import java.io.StringWriter;
 
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.event.Event;
 import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -33,9 +32,6 @@ public class HtmlMaterialBackingBean implements Serializable {
   
   private static final long serialVersionUID = -1205161035039949658L;
   
-  @Inject
-  private Event<HtmlMaterialProcessEvent> beforeRenderEvent;
-
   @Inject
   private HtmlMaterialController htmlMaterialController;
   
