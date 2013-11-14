@@ -15,4 +15,8 @@ public interface WorkspaceUser extends SchoolDataEntity {
 	
 	public String getWorkspaceSchoolDataSource();
 	
+	public String getRoleSchoolDataSource();
+	
+	public String getRoleIdentifier();
+	
 }

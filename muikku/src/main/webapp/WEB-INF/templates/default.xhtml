@@ -111,12 +111,8 @@
         </ui:insert>
       </div>
     </div>
-
     <div id="staticNavigationFade">
-
-
-      <div id="staticNavigation" class="container_24 scrollblock">
-         
+      <div id="staticNavigation" class="container_24 scrollblock">        
         <ui:insert name="dock.top">
          <m:widgetSpaceSet>      
            <ui:insert name="dock.top.left">
@@ -145,11 +141,7 @@
         <div class="clear"></div>
       </div>
     </div>
-
-
-
-    <div id="content" class="container_24">
-    
+    <div id="content" class="container_24">   
       <ui:insert name="content.tools.top">
         <m:widgetSpaceSet styleClass="nomargin">
             <ui:insert name="content.tools.top.left">
@@ -178,18 +170,23 @@
        <div class="clear"></div>
       <ui:insert name="contentArea">
         <m:widgetSpaceSet>
-          <m:widgetSpace name="generic.content.left" keepEmpty="true" sizing="SUM">        
-             <ui:insert name="content.left"></ui:insert>
+         <ui:insert name="content.left.widgetspace">
+          <m:widgetSpace name="generic.content.left" keepEmpty="true" sizing="SUM" styleClass="nomargin">        
+             <ui:insert name="content.left.widget"></ui:insert>
           </m:widgetSpace>
-          <m:widgetSpace name="generic.content.center" keepEmpty="true" sizing="MAXIMIZE">       
-            <ui:insert name="content.center"></ui:insert>
+         </ui:insert> 
+         <ui:insert name="content.center.widgetspace">
+          <m:widgetSpace name="generic.content.center" keepEmpty="true" sizing="MAXIMIZE" styleClass="nomargin">       
+            <ui:insert name="content.center.widget"></ui:insert>
           </m:widgetSpace>
-          <m:widgetSpace name="generic.content.right" keepEmpty="false" sizing="MINIMIZE">
-            <ui:insert name="content.right"></ui:insert>
-          </m:widgetSpace>          
+        </ui:insert>
+        <ui:insert name="content.center.widgetwidgetspace">        
+          <m:widgetSpace name="generic.content.right" keepEmpty="false" sizing="MINIMIZE" styleClass="nomargin">
+            <ui:insert name="content.right.widget"></ui:insert>
+          </m:widgetSpace>
+        </ui:insert>        
         </m:widgetSpaceSet>
       </ui:insert>
-
       <ui:insert name="contentToolsBottom">
         <m:widgetSpaceSet styleClass="nomargin">
             <ui:insert name="content.tools-bottom.left">
@@ -240,8 +237,6 @@
                <ui:param name="name" value="generic.dock-bottom.right" />           
               </ui:include>          
             </ui:insert>           
-        
-
         </m:widgetSpaceSet>
       </ui:insert>
     </div>
@@ -258,25 +253,25 @@
       </ui:insert>
     </div> 
   
-  <script>
-    $( "#dynamicNaviButton" ).click(function() {
-    $( "#dynamicNaviContainer" ).toggle( "slide", 500 );
-    });
-    
-    $( "div[class*='wi-frontpage']" ).mouseenter(function() {
-      var tools =  $(this).find(".wi-frontpage-widget-toolarea");
-       tools.show( "slide", 50 );
-       
-      });
-
-    $( "div[class*='wi-frontpage']" ).mouseleave(function() {
-      var tools =  $(this).find(".wi-frontpage-widget-toolarea");
-       tools.hide( "slide", 50 );
-      });
-
-
-    $( "div[class*='wi-frontpage-dynamic']" ).draggable({ snapMode: "inner" });
-   </script>  
+	  <script>
+	    $( "#dynamicNaviButton" ).click(function() {
+	    $( "#dynamicNaviContainer" ).toggle( "slide", 500 );
+	    });
+	    
+	    $( "div[class*='wi-frontpage']" ).mouseenter(function() {
+	      var tools =  $(this).find(".wi-frontpage-widget-toolarea");
+	       tools.show( "slide", 50 );
+	       
+	      });
+	
+	    $( "div[class*='wi-frontpage']" ).mouseleave(function() {
+	      var tools =  $(this).find(".wi-frontpage-widget-toolarea");
+	       tools.hide( "slide", 50 );
+	      });
+	
+	
+	    $( "div[class*='wi-frontpage-dynamic']" ).draggable({ snapMode: "inner" });
+	   </script>  
   </h:body>
 
 </f:view>
