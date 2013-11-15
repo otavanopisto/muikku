@@ -7,9 +7,9 @@
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     template="/WEB-INF/templates/default.xhtml">
     
-  <ui:define name="content.center">
+  <ui:define name="content.center.widget">
     <h:outputScript name="scripts/gui/coursepicker.js" target="head" />
-    
+
     <div class="widget coursePicker">
       <input type="hidden" name="userId" value="#{muikkuSession.user.id}"/>
     

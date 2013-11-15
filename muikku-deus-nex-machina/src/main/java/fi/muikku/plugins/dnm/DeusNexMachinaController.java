@@ -48,7 +48,8 @@ public class DeusNexMachinaController {
 	@Inject
 	private BinaryMaterialController binaryMaterialController;
 
-	@Inject WorkspaceMaterialController workspaceMaterialController;
+	@Inject 
+	WorkspaceMaterialController workspaceMaterialController;
 	
 	@PostConstruct
 	public void init() throws IOException {
