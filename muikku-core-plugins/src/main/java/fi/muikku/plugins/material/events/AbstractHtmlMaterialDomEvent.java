@@ -40,7 +40,7 @@ public abstract class AbstractHtmlMaterialDomEvent extends MaterialEvent {
     return null;
   }
 
-  public Document importChildren(Element parentElement, Element foreignParentElement) {
+  public Document replaceWithForeignChildren(Element parentElement, Element foreignParentElement) {
     Document ownerDocument = parentElement.getOwnerDocument();
     
     Node nextSibling = parentElement.getNextSibling();
@@ -59,12 +59,12 @@ public abstract class AbstractHtmlMaterialDomEvent extends MaterialEvent {
     
     return ownerDocument;
   }
-
-  public Document importDocumentBody(Element parentElement, Document foreignDocument) {
+  
+  public Document replaceWithForeignDocumentBody(Element parentElement, Document foreignDocument) {
     Element foreignBody = getBodyElement(foreignDocument);
-    return importChildren(parentElement, foreignBody);
+    return replaceWithForeignChildren(parentElement, foreignBody);
   }
-
+  
   public Node findNodeByXPath(Node contextNode, String expression) throws XPathExpressionException {
     return (Node) XPathFactory.newInstance().newXPath().evaluate(expression, contextNode, XPathConstants.NODE);
   }
