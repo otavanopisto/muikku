@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.Serializable;
 
 import javax.enterprise.context.RequestScoped;
-import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.transform.TransformerException;
@@ -34,7 +33,4 @@ public class HtmlMaterialBackingBean implements Serializable {
   	return null;
   }
   
-  public void save(ActionEvent event) {
-    
-  }
 }
