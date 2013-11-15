@@ -4,31 +4,21 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
 import javax.enterprise.context.ApplicationScoped;
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 
 import org.apache.commons.lang.math.NumberUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 import fi.muikku.plugins.dnm.parser.DeusNexException;
 import fi.muikku.plugins.dnm.parser.DeusNexInternalException;
-import fi.muikku.plugins.dnm.parser.content.ConnectFieldOption;
 import fi.muikku.plugins.dnm.parser.content.DeusNexContentParser;
-import fi.muikku.plugins.dnm.parser.content.DeusNexEmbeddedItemElementHandler;
-import fi.muikku.plugins.dnm.parser.content.DeusNexFieldElementHandler;
-import fi.muikku.plugins.dnm.parser.content.OptionListOption;
-import fi.muikku.plugins.dnm.parser.content.RightAnswer;
 import fi.muikku.plugins.dnm.parser.structure.DeusNexDocument;
-import fi.muikku.plugins.dnm.parser.structure.DeusNexDocumentUtils;
 import fi.muikku.plugins.dnm.parser.structure.DeusNexStructureParser;
 import fi.muikku.plugins.dnm.parser.structure.model.Binary;
 import fi.muikku.plugins.dnm.parser.structure.model.Document;
@@ -42,9 +32,7 @@ import fi.muikku.plugins.material.HtmlMaterialController;
 import fi.muikku.plugins.material.model.BinaryMaterial;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
-import fi.muikku.plugins.workspace.WorkspaceMaterialUtils;
 import fi.muikku.plugins.workspace.model.WorkspaceFolder;
-import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 
@@ -60,8 +48,7 @@ public class DeusNexMachinaController {
 	@Inject
 	private BinaryMaterialController binaryMaterialController;
 
-	@Inject
-	private WorkspaceMaterialController workspaceMaterialController;
+	@Inject WorkspaceMaterialController workspaceMaterialController;
 	
 	@PostConstruct
 	public void init() throws IOException {
@@ -172,7 +159,7 @@ public class DeusNexMachinaController {
 	
 	private String parseDocumentContent(WorkspaceRootFolder rootFolder, Element document, DeusNexDocument deusNexDocument) throws DeusNexException {
 		Map<String, String> localeContents = new DeusNexContentParser()
-		  .setEmbeddedItemElementHandler(new EmbeddedItemHandler(rootFolder, deusNexDocument))
+		  .setEmbeddedItemElementHandler(new EmbeddedItemHandler(this, rootFolder, deusNexDocument))
 		  .parseContent(document);
 		String contentFi = localeContents.get("fi");
 		return contentFi;
@@ -180,7 +167,7 @@ public class DeusNexMachinaController {
 	
 	private String parseQueryContent(WorkspaceRootFolder rootFolder, Element document, DeusNexDocument deusNexDocument) throws DeusNexException {
 		Map<String, String> localeContents = new DeusNexContentParser()
-		  .setEmbeddedItemElementHandler(new EmbeddedItemHandler(rootFolder, deusNexDocument))
+		  .setEmbeddedItemElementHandler(new EmbeddedItemHandler(this, rootFolder, deusNexDocument))
 		  .setFieldElementHandler(new FieldElementsHandler(deusNexDocument))
 		  .parseContent(document);
 		String contentFi = localeContents.get("fi");
@@ -200,7 +187,7 @@ public class DeusNexMachinaController {
 		storeLookup();
 	}
 	
-	private Long getResourceWorkspaceNodeId(Integer resourceNo) {
+	Long getResourceWorkspaceNodeId(Integer resourceNo) {
 		return NumberUtils.createLong(lookupProperties.getProperty(String.valueOf(resourceNo)));
 	}
 	
@@ -230,181 +217,4 @@ public class DeusNexMachinaController {
 
 	private DeusNexStructureParser deusNexStructureParser;
 	private Properties lookupProperties;
-	
-	private class FieldElementsHandler implements DeusNexFieldElementHandler {
-		
-		public FieldElementsHandler(DeusNexDocument deusNexDocument) {
-			this.deusNexDocument = deusNexDocument;
-		}
-		
-		@Override
-		public Node handleTextField(org.w3c.dom.Document ownerDocument, String paramName, Integer columns, List<RightAnswer> rightAnswers) {
-			// TODO: This is just for show, real implementation depends on QueryMaterial implementation
-
-			Element inputElement = ownerDocument.createElement("input");
-			inputElement.setAttribute("type", "text");
-			inputElement.setAttribute("name", paramName);
-			inputElement.setAttribute("size", String.valueOf(columns));
-			
-			return inputElement;
-		}
-		
-		@Override
-		public Node handleOptionList(org.w3c.dom.Document ownerDocument, String paramName, String type, List<OptionListOption> options) {
-			// TODO: This is just for show, real implementation depends on QueryMaterial implementation
-
-			Element selectElement = ownerDocument.createElement("select");
-			selectElement.setAttribute("name", paramName);
-			
-			for (OptionListOption option : options) {
-				Element optionElement = ownerDocument.createElement("option");
-				optionElement.setAttribute("value", option.getName());
-				optionElement.setTextContent(option.getText());
-				selectElement.appendChild(optionElement);
-			}
-			
-			return selectElement;
-		}
-		
-		@Override
-		public Node handleConnectField(org.w3c.dom.Document ownerDocument, String paramName, List<ConnectFieldOption> options) {
-			return null;
-		}
-		
-		@SuppressWarnings("unused")
-		private DeusNexDocument deusNexDocument;
-	}
-	
-	private class EmbeddedItemHandler implements DeusNexEmbeddedItemElementHandler {
-		
-		public EmbeddedItemHandler(WorkspaceRootFolder rootFolder, DeusNexDocument deusNexDocument) {
-			this.rootFolder = rootFolder;
-			this.deusNexDocument = deusNexDocument;
-		}
-		
-		@Override
-		public Node handleEmbeddedDocument(org.w3c.dom.Document ownerDocument, String title, Integer queryType, Integer resourceNo, Integer embeddedResourceNo) {
-			// TODO: This is just for show, real implementation depends on HtmlMaterial implementation
-			
-			String relativePath = getResourcePath(resourceNo);
-			if (relativePath != null) {
-  			Element iframeElement = ownerDocument.createElement("iframe");
-  			iframeElement.setAttribute("src", relativePath);
-  			iframeElement.setAttribute("title", title);
-  			iframeElement.setAttribute("seamless", "seamless");
-  			iframeElement.setAttribute("border", "0");
-  			iframeElement.setAttribute("frameborder", "0");
-  			iframeElement.setAttribute("width", "100%");
-  			iframeElement.setTextContent("Browser does not support iframes");
-  			return iframeElement;
-			} else {
-				System.out.println("Warning: Embedded document " + resourceNo + " could not be found.");
-			}
-			
-			return null;
-		}
-
-		@Override
-		public Node handleEmbeddedImage(org.w3c.dom.Document ownerDocument, String title, String alt, Integer width, Integer height, Integer hspace, String align, Integer resourceNo) {
-			String relativePath = getResourcePath(resourceNo);
-			if (relativePath != null) {
-				Element imgElement = ownerDocument.createElement("img");
-  			imgElement.setAttribute("src", relativePath);
-  			imgElement.setAttribute("title", title);
-  			imgElement.setAttribute("alt", alt);
-  			imgElement.setAttribute("width", String.valueOf(width));
-  			imgElement.setAttribute("height", String.valueOf(height));
-  			imgElement.setAttribute("hspace", String.valueOf(hspace));
-  			imgElement.setAttribute("align", align);
-  			return imgElement;
-			} else {
-				System.out.println("Warning: Embedded image " + resourceNo + " could not be found.");
-			}
-
-			return null;
-		}
-		
-		@Override
-		public Node handleEmbeddedAudio(org.w3c.dom.Document ownerDocument, Integer resourceNo, Boolean showAsLink, String fileName, String linkText, Boolean autoStart, Boolean loop) {
-			String path = getResourcePath(resourceNo);
-			if (path != null) {
-				Element audioElement = ownerDocument.createElement("audio");
-				
-				String contentType = getResorceContentType(resourceNo);
-				if (StringUtils.isNotBlank(contentType)) {
-    			Element sourceElement = ownerDocument.createElement("source");
-    			sourceElement.setAttribute("src", path + "?embed=true");
-    			sourceElement.setAttribute("type", contentType);
-				} else {
-					System.out.println("Warning: Embedded audio " + resourceNo + " content type could not be resolved.");
-				}
-				
-				if (autoStart) {
-				  audioElement.setAttribute("autoplay", "autoplay");
-				}
-
-				if (loop) {
-				  audioElement.setAttribute("loop", "loop");
-				}
-
-  			return audioElement;
-			} else {
-				System.out.println("Warning: Embedded audio " + resourceNo + " could not be found.");
-			}
-
-			return null;
-		}
-		
-		private String getResourcePath(Integer resourceNo) {
-			String contextPath = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
-			String path = null;
-			String type = null;
-			
-			Resource resource = deusNexDocument.getResourceByNo(resourceNo);
-			if (resource != null) {
-				path = contextPath + WorkspaceMaterialUtils.getCompletePath(rootFolder) + "/" + DeusNexDocumentUtils.getRelativePath(deusNexDocument, resource, deusNexDocument.getRootFolder()); 
-  			type = "DND";
-			} else {
-				Long workspaceNodeId = getResourceWorkspaceNodeId(resourceNo);
-				if (workspaceNodeId != null) {
-					// Resource has been imported before
-					WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceNodeId);
-					if (workspaceMaterial != null) {
-						path = contextPath + WorkspaceMaterialUtils.getCompletePath(workspaceMaterial);
-		  			type = "POOL";
-					} 
-				}
-			}
-			
-			if (path != null) {
-				path += "?embed=true&on=" + resourceNo + "&rt=" + type;
-			}
-			
-			return path;
-		}
-		
-		private String getResorceContentType(Integer resourceNo) {
-			Resource resource = deusNexDocument.getResourceByNo(resourceNo);
-			if (resource != null) {
-				if (resource instanceof Binary) {
-					return ((Binary) resource).getContentType();
-				}
-			}
-			
-			Long workspaceNodeId = getResourceWorkspaceNodeId(resourceNo);
-			if (workspaceNodeId != null) {
-  			WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceNodeId);
-  			if (workspaceMaterial != null) {
-  				if (workspaceMaterial.getMaterial() instanceof BinaryMaterial) {
-  					return ((BinaryMaterial) workspaceMaterial.getMaterial()).getContentType();
-  				}
-  			}
-			}
-			
-			return null;
-		}
-
-		private WorkspaceRootFolder rootFolder;
-		private DeusNexDocument deusNexDocument;
-	}
 }
