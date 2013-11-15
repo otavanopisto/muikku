@@ -2,6 +2,9 @@ package fi.muikku.plugins.workspace;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -12,8 +15,8 @@ import javax.inject.Named;
 import org.apache.commons.lang3.StringUtils;
 
 import com.ocpsoft.pretty.faces.annotation.URLAction;
-import com.ocpsoft.pretty.faces.annotation.URLMappings;
 import com.ocpsoft.pretty.faces.annotation.URLMapping;
+import com.ocpsoft.pretty.faces.annotation.URLMappings;
 import com.ocpsoft.pretty.faces.annotation.URLQueryParameter;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
@@ -39,10 +42,10 @@ public class WorkspaceMaterialBackingBean {
 	
 	@Inject
 	private WorkspaceMaterialController workspaceMaterialController;
-
-	@URLAction
+	
+	@URLAction 
 	public void init() throws IOException {
-		if (StringUtils.isBlank(getWorkspaceUrlName())) {
+	  if (StringUtils.isBlank(getWorkspaceUrlName())) {
 			throw new FileNotFoundException();
 		}
 		
@@ -87,10 +90,18 @@ public class WorkspaceMaterialBackingBean {
 	public Long getMaterialId() {
 		return materialId;
 	}
+	
+	public void setMaterialId(Long materialId) {
+    this.materialId = materialId;
+  }
 
 	public String getMaterialType() {
 		return materialType;
 	}
+	
+	public void setMaterialType(String materialType) {
+    this.materialType = materialType;
+  }
 	
 	public Long getWorkspaceMaterialId() {
 		return workspaceMaterialId;
@@ -114,6 +125,28 @@ public class WorkspaceMaterialBackingBean {
 
 	public void setWorkspaceUrlName(String workspaceUrlName) {
 		this.workspaceUrlName = workspaceUrlName;
+	}
+	
+	public void save() {
+	  String queryFieldPrefix = "material-form:queryform:";
+	  
+	  Map<String, String> values = new HashMap<>();
+	  Map<String, String> requestParameterMap = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+	  
+	  Iterator<String> parameterNames = requestParameterMap.keySet().iterator();
+	  while (parameterNames.hasNext()) {
+	    String parameterName = parameterNames.next();
+	    if (StringUtils.startsWith(parameterName, queryFieldPrefix)) {
+	      String value = requestParameterMap.get(parameterName);
+	      values.put(StringUtils.removeStart(parameterName, queryFieldPrefix), value);
+	    }
+	  }
+	  
+	  for (String key : values.keySet()) {
+	    String value = values.get(key);
+	    
+	    System.out.println(key + " == " + value);
+	  }
 	}
 
 	@URLQueryParameter ("embed")

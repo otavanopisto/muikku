@@ -9,11 +9,20 @@
   <ui:define name="content.center.widget">
   
     <h:outputScript name="scripts/gui/workspace-material.js" target="head"/>
+     
+    <h:form>
+      <h2>Material #{workspaceMaterialBackingBean.materialId}</h2>
+      
+      <ui:include src="/material-views/#{workspaceMaterialBackingBean.getMaterialType()}.xhtml">
+        <ui:param name="materialId" value="#{workspaceMaterialBackingBean.getMaterialId()}" />
+      </ui:include>
   
-  
-    <h2>Material</h2>
-    <comp:material-view materialId="#{workspaceMaterialBackingBean.materialId}"
-                        materialType="#{workspaceMaterialBackingBean.materialType}" />
+      <h:panelGroup styleClass="workspace-material-submit-container">
+        <h:commandButton action="#{workspaceMaterialBackingBean.save}" value="Save"/>
+      </h:panelGroup>
+     
+    </h:form>
+    
   </ui:define>
 
 </ui:composition>
