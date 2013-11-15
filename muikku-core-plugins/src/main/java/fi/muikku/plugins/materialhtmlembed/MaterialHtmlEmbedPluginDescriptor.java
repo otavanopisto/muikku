@@ -23,7 +23,7 @@ public class MaterialHtmlEmbedPluginDescriptor implements PluginDescriptor {
         
       /* Listeners */
       
-      HtmlMaterialEmbedHtmlMaterialProcessListener.class
+      HtmlMaterialEmbedListeners.class
     });
   }
 
