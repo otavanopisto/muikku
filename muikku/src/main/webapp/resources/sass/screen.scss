@@ -649,6 +649,13 @@ div[data-name="settings.content-sidebar.left"]{
 	padding:0 5px 0 5px;
 }
 
+.st-content-tool-search-tags{
+	@extend .co-content;
+	padding:5px;
+	min-height:200px;
+	
+}
+
 .st-content-tool-search{
 	padding:5px;
 }
@@ -692,6 +699,20 @@ div[data-name="settings.content-sidebar.left"]{
       @include rounded(5px);
 }
 
+.st-content-guidanceLog-item{
+   padding:5px;
+    border:1px solid $brd;
+}
+.st-content-guidanceLog-item-phone{
+background-color:#9c79ff;
+}
+
+.st-content-guidanceLog-item-message{
+background-color:#ff79fa;
+}
+.st-content-guidanceLog-item-evaluation{
+background-color:#ffb27f;
+}
 
 .st-content-wallfeed{
    padding:5px;
@@ -699,6 +720,26 @@ div[data-name="settings.content-sidebar.left"]{
     border:1px solid $brd;
       @include rounded(5px);
 }
+
+.st-content-wallfeed-item{
+   padding:5px;
+
+    border:1px solid $brd;
+}
+.st-content-wallfeed-item-evaluationRequest{
+background-color:#c7f6ff;
+   margin-bottom:5px;
+}
+
+.st-content-wallfeed-item-message{
+background-color:#ff79fa;
+   margin-bottom:5px;
+}
+.st-content-wallfeed-item-course{
+background-color:#ffb27f;
+   margin-bottom:5px;
+}
+
 
 
 .wallEntry {

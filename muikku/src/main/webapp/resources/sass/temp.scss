@@ -97,3 +97,23 @@ background-color:$aBgr;
     font-weight:bold;
     text-decoration:none;
 }
+
+.wireframe-body #content{
+	border:2px solid #ededed;
+	min-height: 100px !important;
+}
+
+.wireframe-body #footer{
+  border:2px solid #ededed;
+
+}
+
+.wireframe{
+	padding:10px;
+	box-sizing:border-box;
+  -moz-box-sizing:border-box; /* Firefox */
+}
+
+.wireframe:hover{
+	background-color:#dadada;
+}
