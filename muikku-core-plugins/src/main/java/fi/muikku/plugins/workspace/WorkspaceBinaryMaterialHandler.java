@@ -28,7 +28,7 @@ public class WorkspaceBinaryMaterialHandler implements RequestHandler {
 	private WorkspaceMaterialController workspaceMaterialController;
 	
 	public WorkspaceBinaryMaterialHandler() {
-		pattern = Pattern.compile("\\/workspace\\/[a-zA-Z0-9\\_\\-\\.\\,]*\\/materials\\/binary\\/[a-zA-Z0-9_\\-\\.\\/]*");
+		pattern = Pattern.compile("\\/workspace\\/[a-zA-Z0-9\\_\\-\\.\\,]*\\/materials\\.binary\\/[a-zA-Z0-9_\\-\\.\\/]*");
 	}
 
 	@Override
@@ -42,10 +42,10 @@ public class WorkspaceBinaryMaterialHandler implements RequestHandler {
   			return false;
   		}
   		
-  		String[] pathParts = StringUtils.removeStart(pathInfo, "/workspace/").split("/", 4);
-  		if (pathParts.length == 4) {
+  		String[] pathParts = StringUtils.removeStart(pathInfo, "/workspace/").split("/", 3);
+  		if (pathParts.length == 3) {
   			String workspaceUrl = pathParts[0];
-  			String materialPath = pathParts[3];
+  			String materialPath = pathParts[2];
   			
   			WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByUrlName(workspaceUrl);
   			if (workspaceEntity == null) {
@@ -68,7 +68,6 @@ public class WorkspaceBinaryMaterialHandler implements RequestHandler {
     				outputStream.write(binaryMaterial.getContent());
     			} finally {
     				outputStream.flush();
-    				outputStream.close();
     			}
   			} else if (workspaceMaterial.getMaterial() instanceof HtmlMaterial) {
   				HtmlMaterial htmlMaterial = (HtmlMaterial) workspaceMaterial.getMaterial();
@@ -79,7 +78,6 @@ public class WorkspaceBinaryMaterialHandler implements RequestHandler {
     				outputStream.write(htmlMaterial.getHtml().getBytes("UTF-8"));
     			} finally {
     				outputStream.flush();
-    				outputStream.close();
     			}
   			}
   			
