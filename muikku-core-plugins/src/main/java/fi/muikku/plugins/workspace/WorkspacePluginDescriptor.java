@@ -49,12 +49,13 @@ public class WorkspacePluginDescriptor implements PluginDescriptor, PersistenceP
       WorkspaceNavigationBackingBean.class,
 			WorkspaceIndexBackingBean.class,
       WorkspaceMembersBackingBean.class,
-			WorkspaceMaterialBackingBean.class,
+			WorkspaceHtmlMaterialBackingBean.class,
 			WorkspaceMaterialsBackingBean.class,
 			
 			/* Request Handlers */
 			
 			WorkspaceBinaryMaterialHandler.class,
+			WorkspaceMaterialHandler.class,
 			
 			/* DAOs */
 			
