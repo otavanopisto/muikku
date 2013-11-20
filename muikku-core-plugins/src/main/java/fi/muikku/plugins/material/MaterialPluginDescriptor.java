@@ -29,10 +29,6 @@ public class MaterialPluginDescriptor implements PluginDescriptor, PersistencePl
   @Override
   public List<Class<?>> getBeans() {
     return Arrays.asList(new Class<?>[] {
-      /* Backing Beans */
-    		
-      HtmlMaterialBackingBean.class,
-      BinaryMaterialBackingBean.class,
       
       /* Controllers */
       
