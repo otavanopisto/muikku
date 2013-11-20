@@ -6,17 +6,17 @@ public class TextField {
   
   public static class RightAnswer {
     
-    public RightAnswer(double points, String text, boolean caseSensitive, boolean normalizeWhitespace) {
+    public RightAnswer(Double points, String text, boolean caseSensitive, boolean normalizeWhitespace) {
       this.points = points;
       this.text = text;
       this.caseSensitive = caseSensitive;
       this.normalizeWhitespace = normalizeWhitespace;
     }
 
-    public double getPoints() {
+    public Double getPoints() {
       return points;
     }
-    public void setPoints(double points) {
+    public void setPoints(Double points) {
       this.points = points;
     }
     
@@ -42,7 +42,7 @@ public class TextField {
       this.normalizeWhitespace = normalizeWhitespace;
     }
 
-    private double points;
+    private Double points;
     private String text;
     private boolean caseSensitive;
     private boolean normalizeWhitespace;
