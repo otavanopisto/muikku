@@ -134,7 +134,7 @@ public class HtmlMaterialEmbedListeners {
   public void onBeforeHtmlMaterialSerialize(@Observes HtmlMaterialBeforeSerializeEvent event) {
     Document document = event.getDocument();
     String formName = "material-form"; 
-    attatchToForm(formName, getDocumentFormElements(document));
+    attachToForm(formName, getDocumentFormElements(document));
   }
 
   private List<Element> getDocumentFormElements(Document document) {
@@ -158,7 +158,7 @@ public class HtmlMaterialEmbedListeners {
     return result;
   }
 
-  private void attatchToForm(String formName, List<Element> elements) {
+  private void attachToForm(String formName, List<Element> elements) {
     for (Element element : elements) {
       element.setAttribute("form", formName);
       String name = new StringBuilder()
