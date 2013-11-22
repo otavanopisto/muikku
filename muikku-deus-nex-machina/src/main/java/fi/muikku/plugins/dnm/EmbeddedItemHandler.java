@@ -3,6 +3,7 @@ package fi.muikku.plugins.dnm;
 import javax.faces.context.FacesContext;
 
 import org.apache.commons.lang3.StringUtils;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -101,6 +102,26 @@ class EmbeddedItemHandler implements DeusNexEmbeddedItemElementHandler {
 		return null;
 	}
 	
+	@Override
+	public Node handleEmbeddedHyperlink(Document ownerDocument, Integer resourceNo, String target, String fileName, String linkText) {
+	  String path = getResourcePath(resourceNo);
+    if (path != null) {
+      Element hyperLinkElement = ownerDocument.createElement("a");
+      hyperLinkElement.setAttribute("href", path);
+      if (StringUtils.isNotBlank(target)) {
+        hyperLinkElement.setAttribute("target", target);
+      }
+      
+      hyperLinkElement.setTextContent(linkText);
+      
+      return hyperLinkElement;
+    } else {
+      System.out.println("Warning: Embedded hyperlink " + resourceNo + " could not be found.");
+    }
+
+    return null;
+	}
+	
 	private String getResourcePath(Integer resourceNo) {
 		String contextPath = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
 		String path = null;
@@ -152,4 +173,5 @@ class EmbeddedItemHandler implements DeusNexEmbeddedItemElementHandler {
 
 	private WorkspaceRootFolder rootFolder;
 	private DeusNexDocument deusNexDocument;
+
 }
