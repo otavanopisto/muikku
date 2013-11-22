@@ -130,12 +130,27 @@ public class DeusNexContentParser {
 				return handleEmbeddedItemDocument(ownerDocument, embeddedItemElement);
 			case "audio":
 				return handleEmbeddedItemAudio(ownerDocument, embeddedItemElement);
+			case "hyperlink":
+			  return handleEmbeddedItemHyperLink(ownerDocument, embeddedItemElement);
 		}
 		
 		throw new DeusNexInternalException("Unknown ix:embeddeditem type '" + type + "'");
 	}
 
-	private Node handleEmbeddedItemAudio(Document ownerDocument, Element embeddedItemElement) throws XPathExpressionException {
+	private Node handleEmbeddedItemHyperLink(Document ownerDocument, Element embeddedItemElement) throws XPathExpressionException {
+	  Integer resourceNo = DeusNexXmlUtils.getChildValueInteger(embeddedItemElement, "parameters/resourceno");
+    String fileName = DeusNexXmlUtils.getChildValue(embeddedItemElement, "parameters/filename");
+    String linkText = DeusNexXmlUtils.getChildValue(embeddedItemElement, "parameters/linktext");
+    String target = DeusNexXmlUtils.getChildValue(embeddedItemElement, "parameters/target");
+    
+    if (embeddedItemElementHandler != null) {
+      return embeddedItemElementHandler.handleEmbeddedHyperlink(ownerDocument, resourceNo, target, fileName, linkText);
+    } else {
+      return null;
+    }
+  }
+
+  private Node handleEmbeddedItemAudio(Document ownerDocument, Element embeddedItemElement) throws XPathExpressionException {
 		Integer resourceNo = DeusNexXmlUtils.getChildValueInteger(embeddedItemElement, "parameters/resourceno");
 		Boolean showAsLink = "1".equals(DeusNexXmlUtils.getChildValue(embeddedItemElement, "parameters/showaslink"));
 		String fileName = DeusNexXmlUtils.getChildValue(embeddedItemElement, "parameters/filename");

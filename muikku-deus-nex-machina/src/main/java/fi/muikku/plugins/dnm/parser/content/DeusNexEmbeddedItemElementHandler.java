@@ -10,4 +10,6 @@ public interface DeusNexEmbeddedItemElementHandler {
 	public Node handleEmbeddedImage(Document ownerDocument, String title, String alt, Integer width, Integer height, Integer hspace, String align, Integer resourceno);
 
 	public Node handleEmbeddedAudio(Document ownerDocument, Integer resourceNo, Boolean showAsLink, String fileName, String linkText, Boolean autoStart, Boolean loop);
+	
+	public Node handleEmbeddedHyperlink(Document ownerDocument, Integer resourceNo, String target, String fileName, String linkText);
 }
