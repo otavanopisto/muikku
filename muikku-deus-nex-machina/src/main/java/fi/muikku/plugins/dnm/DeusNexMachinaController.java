@@ -40,7 +40,7 @@ import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 @Stateful
 public class DeusNexMachinaController {
 	
-	private final static String LOOKUP_MATERIAL_URLNAME = "[_DEUS_NEX_MACHINE_LOOKUP_]";
+	private final static String LOOKUP_MATERIAL_URLNAME = "[_DEUS_NEX_MACHINA_LOOKUP_]";
 	
 	@Inject
 	private HtmlMaterialController htmlMaterialController; 
@@ -66,12 +66,12 @@ public class DeusNexMachinaController {
 		WorkspaceRootFolder rootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(parentNode);
 
 		for (Resource resource : desNexDocument.getRootFolder().getResources()) {
-		  importResource(rootFolder, rootFolder, resource, desNexDocument);
+		  importResource(rootFolder, parentNode, resource, desNexDocument);
 		}
 	}
 	
 	private void importResource(WorkspaceRootFolder rootFolder, WorkspaceNode parent, Resource resource, DeusNexDocument deusNexDocument) throws DeusNexException {
-		WorkspaceNode node = findNode(parent, resource);
+	  WorkspaceNode node = findNode(parent, resource);
 		
 		if (resource.getType() == Type.FOLDER) {
 			Folder folderResource = (Folder) resource;
