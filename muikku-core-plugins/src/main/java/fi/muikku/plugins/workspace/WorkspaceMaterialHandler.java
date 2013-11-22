@@ -27,7 +27,7 @@ public class WorkspaceMaterialHandler implements RequestHandler {
 	private WorkspaceMaterialController workspaceMaterialController;
 	
 	public WorkspaceMaterialHandler() {
-		pattern = Pattern.compile("\\/workspace\\/[a-zA-Z0-9\\_\\-\\.\\,]*\\/materials\\/[a-zA-Z0-9_\\-\\.\\/]*");
+		pattern = Pattern.compile("\\/workspace\\/[a-zA-Z0-9\\_\\-\\.\\,]*\\/materials\\/[a-zA-Z0-9_\\-\\.\\/]{1,}");
 	}
 
 	@Override
