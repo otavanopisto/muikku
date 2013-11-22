@@ -55,7 +55,7 @@ public class DeusNexMachinaImportBackingBean {
 	@URLAction
 	@LoggedIn
 	@Admin
-	public void load() throws IOException, ZipException, DeusNexException {
+	public void load() throws IOException {
 		// TODO: Security
 		// TODO: Proper error handling
 		
@@ -101,7 +101,12 @@ public class DeusNexMachinaImportBackingBean {
 			if (!zipFile.exists()) {
 				throw new FileNotFoundException();
 			} else {
-				unzipFile(zipFile, xmlFile);
+				try {
+          unzipFile(zipFile, xmlFile);
+        } catch (ZipException e) {
+          e.printStackTrace();
+          throw new IOException(e);
+        }
 			}
 		}
 	
@@ -111,7 +116,12 @@ public class DeusNexMachinaImportBackingBean {
   	
   	InputStream inputStream = new FileInputStream(xmlFile);
   	try {
-  	  deusNexMachinaController.importDeusNexDocument(parentNode, inputStream);
+  	  try {
+        deusNexMachinaController.importDeusNexDocument(parentNode, inputStream);
+      } catch (DeusNexException e) {
+        e.printStackTrace();
+        throw new IOException(e);
+      }
   	} finally {
   		inputStream.close();
   	}
