@@ -35,7 +35,13 @@ public class FieldTranslator {
   public Object translateTextField(List<RightAnswer> rightAnswers) {
     List<TextField.RightAnswer> translatedAnswers = new ArrayList<>();
     for (fi.muikku.plugins.dnm.parser.content.RightAnswer rightAnswer : rightAnswers) {
-      translatedAnswers.add(new TextField.RightAnswer(rightAnswer.getPoints(), rightAnswer.getText(), true, false));
+      Double points;
+      if (rightAnswer.getPoints() == null) {
+        points = 0.0;
+      } else {
+        points = rightAnswer.getPoints();
+      }
+      translatedAnswers.add(new TextField.RightAnswer(points, rightAnswer.getText(), true, false));
     }
     return new TextField(translatedAnswers);
   }
