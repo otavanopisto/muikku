@@ -20,6 +20,7 @@ import fi.muikku.plugins.schooldatamock.entities.MockedWorkspaceUser;
 import fi.muikku.schooldata.SchoolDataBridgeRequestException;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 import fi.muikku.schooldata.WorkspaceSchoolDataBridge;
+import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceType;
 import fi.muikku.schooldata.entity.WorkspaceUser;
@@ -221,16 +222,61 @@ public class MockedWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBridg
 		return result;
 	}
 
+  @Override
+  public WorkspaceUser createWorkspaceUser(Workspace workspace, User user, String roleSchoolDataSource, String roleIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+    try {
+      Connection connection = schoolDataMockPluginController.getConnection();
+      try {
+        PreparedStatement preparedStatement = schoolDataMockPluginController.executeInsert(connection, "insert into WorkspaceUser (workspace_school_data_source, workspace_identifier, user_school_data_source, user_identifier, role_school_data_source, role_identifier) values (?, ?, ?, ?, ?, ?)", workspace.getSchoolDataSource(), workspace.getIdentifier(), user.getSchoolDataSource(), user.getIdentifier(), roleSchoolDataSource, roleIdentifier);
+        ResultSet resultSet = preparedStatement.getGeneratedKeys();
+        if (resultSet.next()) {
+          return new MockedWorkspaceUser(resultSet.getString(1), workspace.getSchoolDataSource(), workspace.getIdentifier(), user.getSchoolDataSource(), user.getIdentifier(), roleSchoolDataSource, roleIdentifier);
+        }
+      } finally {
+        connection.close();
+      }
+    } catch (SQLException e) {
+      throw new UnexpectedSchoolDataBridgeException(e);
+    }
+
+    return null;
+  }
+  
+	@Override
+	public WorkspaceUser findWorkspaceUser(String identifier) throws UnexpectedSchoolDataBridgeException {
+    try {
+      Connection connection = schoolDataMockPluginController.getConnection();
+      try {
+        ResultSet resultSet = schoolDataMockPluginController.executeSelect(connection, "select id, workspace_school_data_source, workspace_identifier, user_school_data_source, user_identifier, role_school_data_source, role_identifier from WorkspaceUser where id = ?", identifier);
+        if (resultSet.next()) {
+          String roleDataSource = resultSet.getString(6);
+          String roleIdentifier = resultSet.getString(7);
+          
+          return new MockedWorkspaceUser(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), roleDataSource, roleIdentifier);
+        }
+      } finally {
+        connection.close();
+      }
+    } catch (SQLException e) {
+      throw new UnexpectedSchoolDataBridgeException(e);
+    }
+
+    return null;
+	}
+	
 	@Override
 	public List<WorkspaceUser> listWorkspaceUsers(String workspaceIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
 		List<WorkspaceUser> result = new ArrayList<>();
 		try {
 	    Connection connection = schoolDataMockPluginController.getConnection();
 	    try {
-  			ResultSet resultSet = schoolDataMockPluginController.executeSelect(connection, "select id, workspace_id, user_id from WorkspaceUser where workspace_id = ?", workspaceIdentifier);
-  			while (resultSet.next()) {
-  				result.add( new MockedWorkspaceUser(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3)) );
-  			}
+        ResultSet resultSet = schoolDataMockPluginController.executeSelect(connection, "select id, workspace_school_data_source, workspace_identifier, user_school_data_source, user_identifier, role_school_data_source, role_identifier from WorkspaceUser where workspace_identifier = ?", workspaceIdentifier);
+        while (resultSet.next()) {
+          String roleDataSource = resultSet.getString(6);
+          String roleIdentifier = resultSet.getString(7);
+          
+          result.add( new MockedWorkspaceUser(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getString(5), roleDataSource, roleIdentifier));
+        }
 	    } finally {
 	      connection.close();
 	    }

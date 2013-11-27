@@ -329,18 +329,21 @@ public class DeusNexMachinaController {
 			String path = getResourcePath(resourceNo);
 			if (path != null) {
 				Element audioElement = ownerDocument.createElement("audio");
-				
 				String contentType = getResorceContentType(resourceNo);
-				if (StringUtils.isNotBlank(contentType)) {
-    			Element sourceElement = ownerDocument.createElement("source");
-    			sourceElement.setAttribute("src", path + "?embed=true");
-    			sourceElement.setAttribute("type", contentType);
+				if (StringUtils.isNotBlank(contentType)) { //TODO loop here to load sources with different type so the sounds will work on all systems
+					Element sourceElement = ownerDocument.createElement("source");
+					sourceElement.setAttribute("src", path);
+					sourceElement.setAttribute("type", contentType);
+					audioElement.appendChild(sourceElement);
+					
 				} else {
 					System.out.println("Warning: Embedded audio " + resourceNo + " content type could not be resolved.");
 				}
 				
 				if (autoStart) {
 				  audioElement.setAttribute("autoplay", "autoplay");
+				}else{
+					audioElement.setAttribute("controls", "controls");
 				}
 
 				if (loop) {

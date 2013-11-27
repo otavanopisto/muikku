@@ -22,24 +22,22 @@ public class WorkspaceUserEntityDAO extends CoreDAO<WorkspaceUserEntity> {
 
 	private static final long serialVersionUID = -850520598378547048L;
 
-	public WorkspaceUserEntity create(UserEntity user, WorkspaceEntity workspace, WorkspaceRoleEntity workspaceUserRole) {
-    return create(user, workspace, workspaceUserRole, Boolean.FALSE);
+	public WorkspaceUserEntity create(UserEntity user, WorkspaceEntity workspace, String identifier, WorkspaceRoleEntity workspaceUserRole) {
+    return create(user, workspace, workspaceUserRole, identifier, Boolean.FALSE);
   }
   
-  public WorkspaceUserEntity create(UserEntity user, WorkspaceEntity workspaceEntity, WorkspaceRoleEntity workspaceUserRole, Boolean archived) {
+  public WorkspaceUserEntity create(UserEntity user, WorkspaceEntity workspaceEntity, WorkspaceRoleEntity workspaceUserRole, String identifier, Boolean archived) {
     WorkspaceUserEntity workspaceUserEntity = new WorkspaceUserEntity();
     
     workspaceUserEntity.setUser(user);
     workspaceUserEntity.setWorkspaceEntity(workspaceEntity);
     workspaceUserEntity.setWorkspaceUserRole(workspaceUserRole);
-    
+    workspaceUserEntity.setIdentifier(identifier);
     workspaceUserEntity.setArchived(archived);
     
-    getEntityManager().persist(workspaceUserEntity);
-    
-    return workspaceUserEntity;
+    return persist(workspaceUserEntity);
   }
-
+  
   public WorkspaceUserEntity findByCourseAndUser(WorkspaceEntity workspace, UserEntity user) {
     EntityManager entityManager = getEntityManager(); 
     

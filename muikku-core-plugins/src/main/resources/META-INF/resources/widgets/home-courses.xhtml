@@ -1,23 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition 
-xmlns="http://www.w3.org/1999/xhtml" 
-xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
-xmlns:ui="http://java.sun.com/jsf/facelets" 
-xmlns:f="http://java.sun.com/jsf/core"
-xmlns:h="http://java.sun.com/jsf/html">
+    xmlns="http://www.w3.org/1999/xhtml" 
+    xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+    xmlns:ui="http://java.sun.com/jsf/facelets" 
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
 
-  <div class="wi-frontpage-dynamic-courses">
+  <h:outputScript name="scripts/gui/courselist.js" target="head"/>
+
+  <div class="widget courselist wi-frontpage-dynamic-courses">
     <ui:include src="/facelets/widget-toolarea.xhtml" />    
-    <h3>Kurssit</h3>
+    
+    <c:set target="#{CourseList}" property="context" value="#{courselist}" />
+    <c:set target="#{CourseList}" property="defaultSelection" value="MY_COURSES" />
+
+    <c:choose>
+      <c:when test="#{CourseList.courseListSelection eq 'FAVOURITES'}">
+        <h3>Suosikkikurssit</h3>
+      </c:when>
+      
+      <c:otherwise>
+        <h3>Omat kurssit</h3>
+      </c:otherwise>
+    </c:choose>
 
     <ul>
-      <li>KUR- Kurssi (Tekstiä)</li>
+      <c:if test="#{empty CourseList.listWorkspacesByContext()}">
+        Ei kursseja, kokeile <a href="#{request.contextPath}/coursepicker/coursepicker.jsf">kurssipoimuria</a>.
+      </c:if>
 
-      <ui:repeat var="workspace" value="#{CourseList.listWorkspacesByContext(courselist, 'MY_COURSES')}" varStatus="ws_status">
+      <ui:repeat var="workspace" value="#{CourseList.listWorkspacesByContext()}" varStatus="ws_status">
         <li><a href="#{request.contextPath}/workspace/#{Workspace.findWorkspaceEntity(workspace).urlName}">#{workspace.name}</a></li>
       </ui:repeat>
 
     </ul>
+    
+    <div class="courselist-settings" title="Asetukset" style="display: none;">
+      <p>
+        <div>Valitse näytettävä lista</div>
+        
+        <h:form>
+          <h:selectOneMenu value="#{CourseList.courseListSelection}">
+            <f:selectItems value="#{CourseList.courseListSelectionValues}" />
+          </h:selectOneMenu>
+        
+          <h:commandButton value="Tallenna" action="#{CourseList.saveSettings()}" />
+        </h:form>
+      </p>
+    </div>
   </div>
 
 

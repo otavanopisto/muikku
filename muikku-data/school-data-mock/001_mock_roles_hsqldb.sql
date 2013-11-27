@@ -1,7 +1,7 @@
-insert into Role (name, type) values 
-  ('GUEST', 'ENVIRONMENT'),
-  ('STUDENT', 'ENVIRONMENT'),
-  ('TEACHER', 'ENVIRONMENT'),
-  ('SERVANT_OF_SAURON', 'ENVIRONMENT'),
-  ('WORKSPACE_STUDENT', 'WORKSPACE'),
-  ('WORKSPACE_TEACHER', 'WORKSPACE');
+insert into Role (id, name, type) values 
+  (1, 'GUEST', 'ENVIRONMENT'),
+  (2, 'STUDENT', 'ENVIRONMENT'),
+  (3, 'TEACHER', 'ENVIRONMENT'),
+  (4, 'SERVANT_OF_SAURON', 'ENVIRONMENT'),
+  (5, 'WORKSPACE_STUDENT', 'WORKSPACE'),
+  (6, 'WORKSPACE_TEACHER', 'WORKSPACE');
