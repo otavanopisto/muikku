@@ -23,7 +23,6 @@ margin-top:5px;
 }
 
 .co-toolbar{
-
 @include rounded(4px);  
 background-color:$tBgr;
 
@@ -63,10 +62,9 @@ margin-top:5px;
 }
 
 .co-settings-floater{
-display:none;
-visibility:0;
-@include rounded(2px);  
-background-color:$aBgr;
+	display:none;
+	@include rounded(2px);  
+	background-color:$aBgr;
 }
 
 
@@ -76,6 +74,7 @@ background-color:$aBgr;
   border:1px solid $brd;
   @include rounded(5px);
 }
+
 
 
 /* Forms */

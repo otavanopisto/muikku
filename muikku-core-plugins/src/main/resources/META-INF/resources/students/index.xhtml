@@ -4,6 +4,7 @@
     xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"    
     template="template.xhtml">
  
        <ui:define name="content.tools.top.left">   
@@ -20,7 +21,24 @@
       <m:widget name="students-filters" />     
   </ui:define> 
   <ui:define name="content.center.widget">
-    <m:widget name="students-browser"></m:widget>
+	  <div class="st-content-browser">
+	    <c:forEach begin="1" end="100">
+	      <div class="grid_4">
+	        <div class="st-content-browser-item" style="border:1px solid #ededed;">
+             <div class="st-content-browser-item-actions actions-vertical">
+               <m:widget name="user-instance-action-bookmark" rendered="#{sessionBackingBean.loggedIn}" />
+               <div class="clear"></div>
+             </div>	        
+	           <div>
+	            <img src="http://sarvela.pp.fi/lintu2013/koskikara_20130301_alamalmi_3.jpg" width="100px" alt="Koskikara Åke"></img>
+	            <h:outputLink styleClass="studentLink tooltip" value="#{request.contextPath}/students/studentselected.jsf">Opiskelija</h:outputLink>
+	           </div>
+
+	        </div>
+	      </div>
+	    </c:forEach>
+	  </div>
+
   </ui:define>
 
 </ui:composition>

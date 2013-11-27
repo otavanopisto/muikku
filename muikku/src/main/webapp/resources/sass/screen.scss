@@ -80,7 +80,7 @@ h5{
  
 
  
- a.tooltip:hover > span { 
+ a.tooltip:hover > span {
  text-align:center;
  opacity: 1;
  padding:15px;
@@ -622,7 +622,6 @@ se-container{
 }
 
 .se-index{
-	
 }
 
 .se-widget-userAdd{
@@ -652,24 +651,24 @@ div[data-name="settings.content-sidebar.left"]{
 	padding:0 5px 0 5px;
 }
 
-.st-content-tool-search-tags{
+.st-content-search-tags{
 	@extend .co-content;
 	padding:10px;	
 }
-.st-content-tool-search-tags-header{
+.st-content-search-tags-header{
   @extend .co-content;
 }
 
-.st-content-tool-search-tags-content{
+.st-content-search-tags{
   @extend .co-textContent;
   padding:10px; 
 }
 
-.st-content-tool-search-tag:first-child{
+.st-content-search-tag:first-child{
 
 }
 
-.st-content-tool-search-tag{
+.st-content-search-tag{
 	@extend .co-filter;
   @include gradient-top-bottom-four($mainFuncBtnGr...);
   padding:2px 5px 2px 5px;
@@ -680,11 +679,11 @@ div[data-name="settings.content-sidebar.left"]{
 
 
 
-.st-content-tool-search{
+.st-content-action-search{
 	padding:5px;
 }
 
-.st-content-tools{
+.st-content-actions{
 	 padding:5px;
 	
 }
@@ -694,19 +693,124 @@ div[data-name="settings.content-sidebar.left"]{
 }
 
 .st-content-browser > div{
+
     margin-bottom:5px;
+    
 }
 
 .st-content-browser-item{
+	background-color:#fff;
 	padding:5px;
+	@extend .co-widget;
 }
+
+.st-content-browser-item-effect{
+
+	width:200px; 
+	height:200px;
+	
+}
+
+
+
+
+.st-content-browser-item a{
+ text-decoration:none;
+ font-weight:bold;
+ font-size:1.4em;
+}
+
+
+.st-content-browser-item-actions{
+  background-color:#fff;
+  padding:5px;
+  @extend .co-widget;
+
+}
+
+
 
 
 .st-content-student-info{
-	border:1px solid $brd;
-	@include rounded(5px);
-	padding:10px;
+
 }
+
+
+.st-content-student-info-actions{
+	@extend .co-toolbar;
+  @extend .co-widget;
+  margin-top:5px;
+}
+
+.st-content-student-info-user{
+  @extend .co-widget;
+}
+
+
+.st-content-student-info-details{
+  @extend .co-widget;
+ 
+}
+
+.st-content-student-info-details span{
+margin-left:10px;
+}
+
+
+
+.st-content-student-info-contacts{
+  @extend .co-widget;
+      margin-top:5px;
+}
+
+.st-content-student-info-headlines{
+  @extend .co-widget;
+  margin-top:5px;
+}
+
+
+.st-info-details-lastLogin{
+	
+}
+
+
+.st-info-details-latestStudy{
+  
+}
+
+
+
+.st-info-details-latestTask{
+  
+}
+
+
+
+.st-info-details-contacts{
+  
+}
+
+
+
+.st-info-details-achievements{
+  
+}
+
+.st-info-details-timeLeft{
+  
+}
+
+
+
+
+
+.st-content-student-info-action-message{
+}
+
+.st-content-student-info-action-profile{
+
+}
+
 .st-content-student .ui-tabs, .ui-tabs-panel{  
  padding:0 !important;
 }
@@ -763,7 +867,6 @@ background-color:#ffb27f;
 }
 
 
-.st-search-a
 
 .wallEntry {
   margin-bottom: 7px;

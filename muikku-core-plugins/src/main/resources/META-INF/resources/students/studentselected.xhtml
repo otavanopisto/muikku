@@ -7,7 +7,132 @@
     template="template.xhtml">
     
   <ui:define name="content.center.widget">
-    <m:widget name="students-student"></m:widget>
+
+
+   <ui:define name="content.tools.top.left">       
+   </ui:define> 
+
+   <ui:define name="content.tools.top.center">            
+   </ui:define> 
+
+  
+  <ui:define name="content.left.widget"> 
+  </ui:define> 
+  
+
+
+  <div class="st-content-student">
+    
+  
+      <div class="st-content-student-info grid_24 nomargin noLid">
+         <div class="grid_6 alpha noLid">
+	        <div class="st-content-student-info-user">
+	
+	          <h3>Etunimi Sukunimi</h3>
+	          <img src="http://sarvela.pp.fi/lintu2013/koskikara_20130301_alamalmi_3.jpg" width="100px" alt="Koskikara Åke"></img>
+	        </div>    
+	        <div class="st-content-student-info-actions">
+		        <m:widget name="user-instance-action-message" rendered="#{sessionBackingBean.loggedIn}" />
+		        <m:widget name="user-instance-action-profile" rendered="#{sessionBackingBean.loggedIn}" />
+        <div class="clear">
+      </div>    
+      </div>
+	       </div>  	 
+	       <div class="grid_18 omega noLid">
+          <div class="st-content-student-info-details">                 
+            <span class="st-info-details-lastLogin">Kirjautunut viimeksi:dd/mm/yyyy</span>
+            <span class="st-info-details-latestStudy">Viimeisin suoritettu opinto: dd/mm/yyyy</span>
+            <span class="st-info-details-latestTask">Viimeisin tehtävä: dd/mm/yyyy</span>
+            <span class="st-info-details-achievements">Suoritusmäärät: 123566</span>        
+          </div>
+          <div class="st-content-student-info-contacts">
+            <span class="st-info-user-contact">Yhteyshenkilö</span>
+            <span class="st-info-user-contact">Yhteyshenkilö</span>
+            <span class="st-info-user-contact">Yhteyshenkilö</span>
+            <span class="st-info-user-contact">Yhteyshenkilö</span>
+            <span class="st-info-user-contact">Yhteyshenkilö</span> 
+          </div>
+          <div class="st-content-student-info-headlines">
+            <span class="st-info-details-timeLeft ">Opiskeluaikaa jäljellä: 123 päivää </span>             
+          </div>
+        </div>  
+      </div>
+
+      <div class="clear"></div>
+    <div class="grid_24 nomargin">
+
+      <div id="studentTabs">
+        <ul>
+          <li><a href="#studentTab-1">Opiskeluprofiili</a></li>
+          <li><a href="#studentTab-2">Opiskelutapahtumat</a></li>
+          <li><a href="#studentTab-3">HOPS</a></li>
+          <li><a href="#studentTab-4">Suoritusrekisteri</a></li>
+        </ul>
+        <div id="studentTab-1" class="container_24 tabContent">
+          <div class="grid_24 nomargin noLid">
+            <div class="st-content-student-tabs">
+              <div class="grid_24">   
+                <div class="st-content-timeline">
+                  <iframe src='http://cdn.knightlab.com/libs/timeline/latest/embed/index.html?source=0Aic1yNyiWpsjdHlGLUEzeTkwNzhLNWdKdW5uQXJDNlE' width='100%' height='500' frameborder='0'></iframe>          
+                </div>     
+              </div>
+              
+              
+              <div class="grid_12 ">
+                <div class="st-content-guidanceLog">
+                    <ui:include src="/facelets/widget-toolarea.xhtml" />
+                  <h3>Opiskelutapahtumat</h3>
+                 <div class="st-content-guidanceLog-item" style="border: 1px solid #ededed;margin-top:5px;">
+                   <div class="st-content-guidanceLog-item-phone">
+                     <h:outputLink styleClass="studentLink tooltip" value="">Puhelu</h:outputLink>
+                    </div>
+                   <div class="st-content-guidanceLog-item-message">
+                     <h:outputLink styleClass="studentLink tooltip" value="">viesti</h:outputLink>
+                    </div>
+                   <div class="st-content-guidanceLog-item-evaluation">
+                     <h:outputLink styleClass="studentLink tooltip" value="">arviointi</h:outputLink>
+                    </div>
+                 </div>            
+                </div>     
+              </div>
+              <div class="grid_12">
+                <div class="st-content-wallfeed">
+                    <ui:include src="/facelets/widget-toolarea.xhtml" />
+                  <h3>Opiskelijan seinämä</h3>
+              <div class="st-content-wallfeed-item" style="border: 1px solid #ededed;margin-top:5px;">
+                   <div class="st-content-wallfeed-item-evaluationRequest">
+                     <h:outputLink styleClass="studentLink tooltip" value="">Arviointipyyntö</h:outputLink>
+                    </div>
+                   <div class="st-content-wallfeed-item-message">
+                     <h:outputLink styleClass="studentLink tooltip" value="">viesti</h:outputLink>
+                    </div>
+                   <div class="st-content-wallfeed-item-course">
+                     <h:outputLink styleClass="studentLink tooltip" value="">Kurssi</h:outputLink>
+                    </div>
+                 </div>         
+                </div>     
+              </div>
+              <div class="clear"></div>
+            </div>
+          </div>          
+              <div class="clear"></div>
+        </div>
+        <div id="studentTab-2">Lorem ipsum dolor sit amet, consectetuer
+          adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet
+          dolore magna aliquam erat volutpat.</div>
+        <div id="studentTab-3">Lorem ipsum dolor sit amet, consectetuer
+          adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet
+          dolore magna aliquam erat volutpat.</div>
+      </div>
+
+
+    </div>
+
+  </div>
+  
+  <script>
+    $( "#studentTabs" ).tabs();
+  </script>
   </ui:define>
 
 </ui:composition>
