@@ -4,12 +4,45 @@
 
 /* Widgets */
 
+
+/* General styles with selectors */
+
+
 div[data-name*='index.content'] > div:not(:first-child){
-margin-top:10px;
+ margin-top:10px;
 }
 
 div[data-name*='environment.content'] > div:not(:first-child){
-margin-top:10px;
+ margin-top:10px;
+}
+
+div[class*='action']{
+float:left;
+}
+
+div[class*='action']:not(:first-child){
+ margin-left:10px;
+}
+
+
+div[class*='action-vertical']{
+float:none !important; 
+}
+
+div[class*='action-vertical']:not(:first-child){
+ margin-top:10px !important;
+}
+
+div[class*='actions']{
+@include gradient-top-bottom(#fff,#f8f8f8,#fff) ;	
+float:none;
+margin-left:0 !important;
+}
+
+div[class*='actions-vertical']{
+@include gradient-top-bottom(#fff,#f8f8f8,#fff) ; 
+float:right;
+margin-left:0 !important;
 }
 
 
@@ -286,6 +319,60 @@ margin-top:10px;
 .naviIconWorkspaceNavigationMaterials {
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/workspace-navigation-materials.png'));
 }
+/* Student browser */
+
+	.naviIconUser{
+	   @include customIcon(url('../resources/gfx/icons/32x32/actions/navigate-userprofile.png'),20px);
+	   float:left;
+	}
+	
+	.naviIconUser.disabled{
+	   opacity:0.5;
+	   @include customIcon(url('../resources/gfx/icons/32x32/actions/navigate-userprofile.png'),20px);
+	 float:left;   
+	}
+	
+	.naviIconUser:hover{
+	   opacity:0.2;
+	   @include customIcon(url('../resources/gfx/icons/32x32/actions/navigate-userprofile.png'),20px);
+	 float:left;   
+	}
+	
+	    
+	.naviIconMessage{
+	 @include customIcon(url('../resources/gfx/icons/32x32/actions/navigate-communicator.png'),20px);      
+	 float:left;   
+	}
+	
+	 .naviIconMessage.disabled{
+	    opacity:0.2;
+	    @include customIcon(url('../resources/gfx/icons/32x32/actions/navigate-communicator.png'),20px);  
+	 float:left;    
+	}
+	
+	 .naviIconMessage:hover{
+	    opacity:0.2;
+	    @include customIcon(url('../resources/gfx/icons/32x32/actions/navigate-communicator.png'),20px);  
+	 float:left;    
+	}
+	
+  .naviIconBookmark{
+   @include customIcon(url('../resources/gfx/icons/32x32/actions/tools-bookmark.png'),24px,15px);      
+   float:left;   
+  }
+  
+   .naviIconBookmark.disabled{
+      opacity:0.2;
+      @include customIcon(url('../resources/gfx/icons/32x32/actions/tools-bookmark.png'),24px,15px);  
+      float:left;    
+  }
+  
+   .naviIconBookmark:hover{
+      opacity:0.2;
+      @include customIcon(url('../resources/gfx/icons/32x32/actions/tool-bookmark.png'),24px,15px);  
+      float:left;    
+  }	
+
 
 /* Calendar */
 
@@ -553,7 +640,6 @@ margin-top:10px;
 
 
 .wi-frontpage-dynamic-courses li{
-
   padding:5px;
   @include rounded(5px);
 }
@@ -571,6 +657,7 @@ margin-top:10px;
 	@include shadow;
 	@include rounded(5px);
   @extend .co-settings-floater;
+  display:none; 
   padding:5px;
   position:relative;
   float:right;

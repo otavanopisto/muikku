@@ -1,5 +1,7 @@
 
 @import "_base.scss";
+@import "commons.scss";
+
 /* Generic */
 
 input[type="text"]{    
@@ -76,68 +78,6 @@ margin-bottom:5px;
 
 
 
-/* Mainfunction (.mf-*) */
-
-
-.mf-buttonContainer input{
-    font-family: Verdana, sans-serif;
-    font-size: 1.3em;
-    color: #fff;
-    padding: 5px 10px 5px 10px;
-    @include gradient-top-bottom-four($mainFuncBtnGr...);
-    @include rounded(2px);
-    @include shadow;
-    @include border($mainFuncBtnBrd);
- 
-}
-
-.mf-buttonContainer input:hover, input[type="button"]:hover, input[type="submit"]:hover{
-     @include border($btnBrdH);
-}
-
-
-.mf-buttonContainer input:active, input[type="button"]:active, input[type="submit"]:active{
-    @include iShadow; 
-}
-
-.mf-formTitle{
-    @include gradient-top-bottom;
-    @include rounded(4px);
-    @include shadow;
-    @include border(1px);
-    padding:5px;
-    font-size:1.5em;
- }
-
-.mf-formContent{
-    margin-top:5px;
-    padding:5px;
-    font-size:1.3em;
- }
-
-.mf-fieldRow{
- margin-top:2px;
-}
-.mf-labelfield{
-  float:left;
-  font-weight:bold;
-  }
-
-.mf-textfield{
-  float:left;
-  margin-left:5px;
-}
-
-.mf-selectedObjects{
-}
-
-.mf-settings-settingForm{
-	  @include rounded(4px);  
-    padding:5px; 
-    background-color:$saBgr;
-	  margin-bottom:10px; 
-}
-
 /* Calendar */
 
 /* Communicator (.cm-*) */
@@ -150,11 +90,7 @@ margin-bottom:5px;
 }
 
 .cm-newMessage-recipient, .cm-newMessage-recipientgroup {
-	  @include border(#ededed);
-    @include rounded(4px);
-    @include gradient-top-bottom(#707070, #666);
-    @include shadow;
-    color:#fff;
+	  @extend .co-filter;
     float: left;
     margin-right: 5px;
     margin-top:5px;
@@ -171,16 +107,9 @@ margin-bottom:5px;
 }
 
 .cm-newMessage-removeRecipient{
+	@extend .co-filter-remove;
 	float:left;
-	cursor:pointer;
-  font-weight:bold;
-  margin-left:5px;
- height:15px;
- width:15px;
- text-align:center;
 
-  @include rounded(4px);
-  @include gradient-top-bottom-four($mainFuncBtnGr...);
 }
 
 .cm-newMessage-message{

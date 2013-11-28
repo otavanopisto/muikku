@@ -232,9 +232,9 @@ background: linear-gradient(to bottom, $fadeColor1 0%,$fadeColor2 50%,$fadeColor
   background-size:100%;  
 }
 
-@mixin customIcon($iconUrl,$size:32px){
-  height:$size;
-  width:$size;  
+@mixin customIcon($iconUrl,$height:20px,$width:20px){
+  height:$height;
+  width:$width;  
   background: $iconUrl no-repeat center;
   background-size:100%;
   

@@ -23,7 +23,6 @@ margin-top:5px;
 }
 
 .co-toolbar{
-
 @include rounded(4px);  
 background-color:$tBgr;
 
@@ -63,17 +62,97 @@ margin-top:5px;
 }
 
 .co-settings-floater{
-display:none;
-visibility:0;
-@include rounded(2px);  
-background-color:$aBgr;
+	display:none;
+	@include rounded(2px);  
+	background-color:$aBgr;
 }
 
 
 
 .co-widget{
-
   padding:20px;
   border:1px solid $brd;
   @include rounded(5px);
+}
+
+
+
+/* Forms */
+
+.co-buttonContainer input{
+    font-family: Verdana, sans-serif;
+    font-size: 1.3em;
+    color: #fff;
+    padding: 5px 10px 5px 10px;
+    @include gradient-top-bottom-four($mainFuncBtnGr...);
+    @include rounded(2px);
+    @include shadow;
+    @include border($mainFuncBtnBrd);
+ 
+}
+
+.co-buttonContainer input:hover, input[type="button"]:hover, input[type="submit"]:hover{
+     @include border($btnBrdH);
+}
+
+
+.co-buttonContainer input:active, input[type="button"]:active, input[type="submit"]:active{
+    @include iShadow; 
+}
+
+.co-formTitle{
+    @include gradient-top-bottom;
+    @include rounded(4px);
+    @include shadow;
+    @include border(1px);
+    padding:5px;
+    font-size:1.5em;
+ }
+
+.co-formContent{
+    margin-top:5px;
+    padding:5px;
+    font-size:1.3em;
+ }
+
+.co-fieldRow{
+ margin-top:2px;
+}
+.co-labelfield{
+  float:left;
+  font-weight:bold;
+  }
+
+.co-textfield{
+  float:left;
+  margin-left:5px;
+}
+
+.co-selectedObjects{
+}
+
+.co-settings-settingForm{
+    @include rounded(4px);  
+    padding:5px; 
+    background-color:$saBgr;
+    margin-bottom:10px; 
+}
+
+.co-filter{
+    @include border(#ededed);
+    @include rounded(4px);
+    @include gradient-top-bottom(#707070, #666);
+    @include shadow;
+    color:#fff;
+}
+.co-filter-remove{
+	  content:"X";
+		cursor:pointer;
+		font-weight:bold;
+		margin-left:5px;
+		height:15px;
+		width:15px;
+		text-align:center;
+		@include rounded(4px);
+		@include gradient-top-bottom-four($mainFuncBtnGr...);
 }

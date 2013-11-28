@@ -76,7 +76,7 @@
 
   </h:head>
 
-  <h:body>
+  <h:body styleClass="wireframe-body">
     <m:widget name="navigation-dynamic" rendered="#{sessionBackingBean.loggedIn}"></m:widget>
   
     <div id="header">
@@ -109,6 +109,7 @@
            </ui:insert>                                
           </m:widgetSpaceSet>
         </ui:insert>
+        <div class="clear"></div>        
       </div>
     </div>
     <div id="staticNavigationFade">
@@ -168,7 +169,7 @@
 
         </m:widgetSpaceSet>
       </ui:insert>
-       <div class="clear"></div>
+      <div class="clear"></div>
       <ui:insert name="contentArea">
         <m:widgetSpaceSet>
          <ui:insert name="content.left.widgetspace">
@@ -188,6 +189,7 @@
         </ui:insert>        
         </m:widgetSpaceSet>
       </ui:insert>
+      <div class="clear"></div> 
       <ui:insert name="contentToolsBottom">
         <m:widgetSpaceSet styleClass="nomargin">
             <ui:insert name="content.tools.bottom.left">
@@ -213,6 +215,7 @@
             </ui:insert>   
         </m:widgetSpaceSet>
       </ui:insert>
+      <div class="clear"></div> 
     </div>
     <div id="socialNavigation">
       <ui:insert name="dock.bottom">
@@ -241,7 +244,7 @@
         </m:widgetSpaceSet>
       </ui:insert>
      
-
+      <div class="clear"></div> 
  
     </div>
     <div id="footer">
@@ -270,8 +273,8 @@
 	              </ui:include>          
 	            </ui:insert>       
 	        </m:widgetSpaceSet>
-	      </ui:insert>    
-	      <div class="clear"></div>
+	      </ui:insert>   
+	      <div class="clear"></div> 
       </div>
     </div>    
 
