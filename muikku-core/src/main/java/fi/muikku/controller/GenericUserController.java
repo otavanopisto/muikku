@@ -1,5 +1,7 @@
 package fi.muikku.controller;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
@@ -56,11 +58,33 @@ public class GenericUserController {
 	}
 	
 	public List<User> listUsers() {
-		return userController.listUsers();
+		return sortUsersBySurName(userController.listUsers());
 	}
 
 	public List<User> listUsersByEmail(String email) {
 		return userController.listUsersByEmail(email);
+	}
+
+	private List<User> sortUsersBySurName(List<User> users) {
+    Collections.sort(users, new Comparator<User>() {
+
+      @Override
+      public int compare(User o1, User o2) {
+        String l1 = o1.getLastName();
+        String l2 = o2.getLastName();
+        String f1 = o1.getFirstName();
+        String f2 = o2.getFirstName();
+        
+        int i = l1 == null ? l2 == null ? 0 : -1 : l2 == null ? 1 : l1.compareTo(l2);
+        
+        if (i != 0)
+          return i;
+        else
+          return f1 == null ? f2 == null ? 0 : -1 : f2 == null ? 1 : f1.compareTo(f2);
+      }
+    });
+
+    return users;
 	}
 	
 	/* Emails */

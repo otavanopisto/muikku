@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.util.ArchivableEntity;
 import fi.muikku.model.workspace.WorkspaceRoleEntity;
@@ -18,6 +20,14 @@ public class WorkspaceUserEntity implements ArchivableEntity {
 
   public Long getId() {
     return id;
+  }
+  
+  public String getIdentifier() {
+    return identifier;
+  }
+  
+  public void setIdentifier(String identifier) {
+    this.identifier = identifier;
   }
 
   public WorkspaceEntity getWorkspaceEntity() {
@@ -55,6 +65,11 @@ public class WorkspaceUserEntity implements ArchivableEntity {
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
+
+  @NotEmpty
+  @NotNull
+  @Column(nullable = false)
+  private String identifier;
 
   @ManyToOne
   private WorkspaceEntity workspaceEntity;

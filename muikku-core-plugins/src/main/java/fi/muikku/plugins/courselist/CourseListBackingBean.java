@@ -1,12 +1,16 @@
 package fi.muikku.plugins.courselist;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import edu.emory.mathcs.backport.java.util.Collections;
 import fi.muikku.dao.workspace.WorkspaceUserEntityDAO;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
@@ -34,17 +38,15 @@ public class CourseListBackingBean {
   @Inject
   private UserFavouriteWorkspaceDAO userFavouriteWorkspaceDAO;
   
-  public List<Workspace> listWorkspacesByContext(String context, String defaultSelection) {
+  /**
+   * Lists workspaces by selection, context and logged user.
+   * 
+   * @return
+   */
+  public List<Workspace> listWorkspacesByContext() {
     UserEntity userEntity = sessionController.getUser();
     
-    CourseListSelection listSelection = courseListSelectionDAO.findByUserAndContext(userEntity, context);
-    CourseListSelectionEnum selection;
-    
-    if (listSelection != null)
-      selection = listSelection.getSelection();
-    else {
-      selection = CourseListSelectionEnum.valueOf(defaultSelection);
-    }
+    CourseListSelectionEnum selection = getContextSelection();
     
     switch (selection) {
       case MY_COURSES: {
@@ -56,7 +58,7 @@ public class CourseListBackingBean {
           workspaces.add(workspace);
         }
         
-        return workspaces;
+        return orderWorkspaces(workspaces);
       }
         
       case FAVOURITES: {
@@ -70,11 +72,108 @@ public class CourseListBackingBean {
           workspaces.add(workspace);
         }
         
-        return workspaces;
+        return orderWorkspaces(workspaces);
       }
       
       default:
         throw new RuntimeException("Selection type not covered.");
     }
   }
+
+  /**
+   * Saves list selection for current logged user and context. 
+   */
+  public void saveSettings() {
+    UserEntity user = sessionController.getUser();
+    CourseListSelection selection = courseListSelectionDAO.findByUserAndContext(user, context);
+    
+    if (selection == null)
+      courseListSelectionDAO.create(user, context, courseListSelection);
+    else
+      courseListSelectionDAO.updateSelection(selection, courseListSelection);
+  }
+  
+  /**
+   * Returns selection enum from database for current logged user and given context.
+   * If selection doesn't exist, default selection is used.
+   * 
+   * @param context
+   * @param defaultSelection
+   * @return
+   */
+  private CourseListSelectionEnum getContextSelection() {
+    UserEntity userEntity = sessionController.getUser();
+    
+    CourseListSelection listSelection = courseListSelectionDAO.findByUserAndContext(userEntity, context);
+    CourseListSelectionEnum selection;
+    
+    if (listSelection != null)
+      selection = listSelection.getSelection();
+    else {
+      selection = CourseListSelectionEnum.valueOf(defaultSelection);
+    }
+    
+    return selection;
+  }
+  
+  private List<Workspace> orderWorkspaces(List<Workspace> workspaces) {
+    Collections.sort(workspaces, new Comparator<Workspace>() {
+
+      @Override
+      public int compare(Workspace o1, Workspace o2) {
+        String n1 = o1.getName();
+        String n2 = o2.getName();
+        
+        return n1 == null ? n2 == null ? 0 : -1 : n2 == null ? 1 : n1.compareTo(n2);
+      }
+      
+    });
+    
+    return workspaces;
+  }
+  
+  public CourseListSelectionEnum getCourseListSelection() {
+    if (courseListSelection == null)
+      courseListSelection = getContextSelection();
+    
+    return courseListSelection;
+  }
+
+  public void setCourseListSelection(CourseListSelectionEnum courseListSelection) {
+    this.courseListSelection = courseListSelection;
+  }
+
+  public Map<String,Object> getCourseListSelectionValues() {
+    return courseListSelectionValues;
+  }  
+  
+  public String getContext() {
+    return context;
+  }
+
+  public void setContext(String context) {
+    this.context = context;
+  }
+
+  public String getDefaultSelection() {
+    return defaultSelection;
+  }
+
+  public void setDefaultSelection(String defaultSelection) {
+    this.defaultSelection = defaultSelection;
+  }
+
+  // Label, Value
+  private static Map<String,Object> courseListSelectionValues;
+  
+  static {
+    courseListSelectionValues = new LinkedHashMap<String, Object>();
+    for (CourseListSelectionEnum v : CourseListSelectionEnum.values()) {
+      courseListSelectionValues.put(v.name(), v);
+    }
+  }
+
+  private String context;
+  private String defaultSelection;   
+  private CourseListSelectionEnum courseListSelection;
 }
