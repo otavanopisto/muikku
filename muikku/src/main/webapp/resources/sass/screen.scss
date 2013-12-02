@@ -692,13 +692,22 @@ div[data-name="settings.content-sidebar.left"]{
 		
 }
 
-.st-content-browser > div{
+.st-content-browser > div, .st{
 
     margin-bottom:5px;
     
 }
 
 .st-content-browser-item{
+  background-color:#fff;
+  padding:5px;
+  @extend .co-widget;
+}
+
+.st-content-browser-history{}
+
+
+.st-content-browser-history-item{
 	background-color:#fff;
 	padding:5px;
 	@extend .co-widget;
