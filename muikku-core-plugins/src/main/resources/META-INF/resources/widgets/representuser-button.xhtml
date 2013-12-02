@@ -4,8 +4,10 @@
 
   <div class="widget representuser-button">
     <h:form>
+      <h:inputHidden id="represent-userId" value="#{userId}" />
+    
       <div class="formElementRow">
-        <h:commandLink action="#{User.representUser(userId)}" value="Represent user" />
+        <h:commandLink action="#{User.representUser(represent-userId)}" value="Represent user" />
       </div>
     </h:form>
   </div>
