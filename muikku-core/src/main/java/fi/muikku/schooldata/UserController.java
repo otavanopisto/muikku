@@ -9,6 +9,8 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fi.muikku.dao.base.SchoolDataSourceDAO;
 import fi.muikku.dao.users.EnvironmentUserDAO;
 import fi.muikku.dao.users.UserContactDAO;
@@ -146,9 +148,11 @@ public class UserController {
     for (EnvironmentUser grp : grps) {
       User user = findUser(grp.getUser());
       
-      if ((user.getFirstName().toLowerCase().contains(searchTerm.toLowerCase())) ||
-          (user.getLastName().toLowerCase().contains(searchTerm.toLowerCase())))
-        filtered.add(grp);
+      if (!StringUtils.isEmpty(user.getFirstName()) && !StringUtils.isEmpty(user.getLastName())) {
+        if ((user.getFirstName().toLowerCase().contains(searchTerm.toLowerCase())) ||
+            (user.getLastName().toLowerCase().contains(searchTerm.toLowerCase())))
+          filtered.add(grp);
+      }
     }
     
     return filtered;

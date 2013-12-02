@@ -28,6 +28,7 @@ public class FriendsPluginDescriptor implements PluginDescriptor, PersistencePlu
 	public List<Class<?>> getBeans() {
 		return new ArrayList<Class<?>>(Arrays.asList(
 			/* DAOs */
+		  FriendDAO.class,
 		  FriendRequestDAO.class,
 		  
 		  /* Controllers */
@@ -41,6 +42,7 @@ public class FriendsPluginDescriptor implements PluginDescriptor, PersistencePlu
 	@Override
 	public Class<?>[] getEntities() {
 		return new Class<?>[] {
+		  Friend.class,
       FriendRequest.class
 		};
 	}

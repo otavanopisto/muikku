@@ -31,6 +31,7 @@ import fi.muikku.plugins.material.MaterialPluginDescriptor;
 import fi.muikku.plugins.schooldatalocal.SchoolDataLocalPluginDescriptor;
 import fi.muikku.plugins.seeker.SeekerPluginDescriptor;
 import fi.muikku.plugins.settings.SettingsPluginDescriptor;
+import fi.muikku.plugins.students.StudentsPluginDescriptor;
 import fi.muikku.plugins.user.UserPluginDescriptor;
 import fi.muikku.plugins.wall.WallPluginDescriptor;
 import fi.muikku.plugins.workspace.WorkspacePluginDescriptor;
@@ -67,7 +68,8 @@ public class CorePluginsDescriptor implements PluginLibraryDescriptor {
       CourseListPluginDescriptor.class,
       FriendsPluginDescriptor.class,
       LoggedUserPluginDescriptor.class,
-      UserPluginDescriptor.class
+      UserPluginDescriptor.class,
+      StudentsPluginDescriptor.class
 		));
 	}
 	
