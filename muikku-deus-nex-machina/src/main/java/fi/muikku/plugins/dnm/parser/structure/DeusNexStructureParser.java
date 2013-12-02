@@ -13,6 +13,7 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.text.translate.NumericEntityUnescaper;
+import org.apache.html.dom.HTMLAnchorElementImpl;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
@@ -80,12 +81,28 @@ public class DeusNexStructureParser {
 				return parseFCKDocument(resourceElement);
 			case 38:
 				return parseFCKQuery(resourceElement);
+			case 11:
+			  return parseLink(resourceElement);
 			default:
 				throw new DeusNexInternalException("Unimplemented resource type " + type);
 		}
 	}
 	
-	private Binary parseBinary(Element resourceElement) throws DeusNexSyntaxException, XPathExpressionException, DeusNexInternalException {
+	private Resource parseLink(Element resourceElement) throws DeusNexInternalException {
+    Document document = new Document();
+    Element linkElement = resourceElement.getOwnerDocument().createElement("a");
+    try {
+      linkElement.setAttribute("href", DeusNexXmlUtils.getChildValue(resourceElement, "path"));
+      linkElement.setTextContent(DeusNexXmlUtils.getChildValue(resourceElement, "title"));
+      parseBasicResourceProperties(resourceElement, document);
+      document.setDocument(linkElement);
+    } catch (DOMException | XPathExpressionException | DeusNexSyntaxException e) {
+      throw new DeusNexInternalException("Link parsing failed", e);
+    }
+    return document;
+  }
+
+  private Binary parseBinary(Element resourceElement) throws DeusNexSyntaxException, XPathExpressionException, DeusNexInternalException {
 		Binary binary = new Binary();
 		parseBasicResourceProperties(resourceElement, binary);
 		
