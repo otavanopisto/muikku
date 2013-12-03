@@ -1,7 +1,5 @@
 package fi.muikku.dao.users;
 
-import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -11,21 +9,19 @@ import fi.muikku.dao.CoreDAO;
 import fi.muikku.dao.DAO;
 import fi.muikku.model.users.EnvironmentRoleEntity;
 import fi.muikku.model.users.EnvironmentRoleEntity_;
-import fi.muikku.model.users.EnvironmentRoleType;
 
 @DAO
 public class EnvironmentRoleEntityDAO extends CoreDAO<EnvironmentRoleEntity> {
 
 	private static final long serialVersionUID = 7781839501190084061L;
 
-  public EnvironmentRoleEntity create(String name, EnvironmentRoleType environmentRoleType) {
+  public EnvironmentRoleEntity create(String name) {
     EnvironmentRoleEntity environmentRoleEntity = new EnvironmentRoleEntity();
-    environmentRoleEntity.setEnvironmentRoleType(environmentRoleType);
     environmentRoleEntity.setName(name);
     return persist(environmentRoleEntity);
   }
-  
-	public List<EnvironmentRoleEntity> listByEnvironmentRoleType(EnvironmentRoleType environmentUserRoleType) {
+
+  public EnvironmentRoleEntity findByName(String roleName) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -33,10 +29,10 @@ public class EnvironmentRoleEntityDAO extends CoreDAO<EnvironmentRoleEntity> {
     Root<EnvironmentRoleEntity> root = criteria.from(EnvironmentRoleEntity.class);
     criteria.select(root);
     criteria.where(
-      criteriaBuilder.equal(root.get(EnvironmentRoleEntity_.environmentRoleType), environmentUserRoleType)
+      criteriaBuilder.equal(root.get(EnvironmentRoleEntity_.name), roleName)
     );
     
-    return entityManager.createQuery(criteria).getResultList();
+    return getSingleResult(entityManager.createQuery(criteria));
   }
 
 }

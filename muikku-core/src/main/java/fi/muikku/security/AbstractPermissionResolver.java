@@ -1,17 +1,14 @@
 package fi.muikku.security;
 
-import java.util.List;
-
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import fi.muikku.dao.users.EnvironmentRoleEntityDAO;
-import fi.muikku.model.users.EnvironmentRoleEntity;
-import fi.muikku.model.users.EnvironmentRoleType;
-import fi.muikku.model.users.UserEntity;
+import fi.muikku.dao.users.SystemRoleEntityDAO;
 import fi.muikku.model.users.RoleEntity;
+import fi.muikku.model.users.SystemRoleType;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 
 @RequestScoped
@@ -26,7 +23,7 @@ public class AbstractPermissionResolver {
   private Instance<UserContextResolver> userContextResolvers;
   
   @Inject
-  private EnvironmentRoleEntityDAO environmentUserRoleDAO;
+  private SystemRoleEntityDAO systemUserRoleDAO;
   
   /**
    * Uses ContextResolvers to resolve course from ContextReference
@@ -59,14 +56,7 @@ public class AbstractPermissionResolver {
   }
 
   protected RoleEntity getEveryoneRole() {
-    List<EnvironmentRoleEntity> roles = environmentUserRoleDAO.listByEnvironmentRoleType(EnvironmentRoleType.EVERYONE);
-    if (roles.size() == 1) {
-    	return roles.get(0);
-    }
-    
-    // TODO: Proper error handling
-    
-    throw new RuntimeException("Several EVERYONE roles found");
+    return systemUserRoleDAO.findByRoleType(SystemRoleType.EVERYONE);
   }
   
   protected UserEntity getUserEntity(User user) {

@@ -1,39 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
-  xmlns:h="http://java.sun.com/jsf/html" 
-  xmlns:f="http://java.sun.com/jsf/core"
+<ui:composition 
+  xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd" 
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core" 
   xmlns:ui="http://java.sun.com/jsf/facelets"
-    template="/WEB-INF/templates/default.xhtml">
-    
+  template="/WEB-INF/templates/default.xhtml">
+
   <ui:define name="content.center.widget">
-    <m:widgetSpaceSet >
+    <m:widgetSpaceSet>
       <m:widgetSpace name="index.content.headlines" keepEmpty="false" sizing="MAXIMIZE" styleClass="nomargin">
         <!--  Not logged in -->
 
         <!--  Logged in -->
-          <m:widget name="home-personaltopics" rendered="#{sessionBackingBean.loggedIn}" size="8" />        
-    
+        <m:widget name="home-personaltopics" rendered="#{sessionBackingBean.loggedIn}" size="8" />
+
         <!--  Both -->
       </m:widgetSpace>
-     </m:widgetSpaceSet>     
-    <m:widgetSpaceSet >
+    </m:widgetSpaceSet>
+    <m:widgetSpaceSet>
       <m:widgetSpace name="index.content.primary.left" keepEmpty="false" sizing="MINIMIZE" styleClass="alpha">
         <!--  Not logged in -->
-        <m:widget name="internallogin" rendered="#{!sessionBackingBean.loggedIn}" size="8"/>
+        <m:widget name="internallogin" rendered="#{!sessionBackingBean.loggedIn}" size="8" />
         <!--  Logged in -->
-        <m:widget name="home-students" rendered="#{sessionBackingBean.loggedIn}" size="8"/>
+        <m:widget name="home-students" rendered="#{sessionBackingBean.loggedIn}" size="8" />
         <!--  Both -->
       </m:widgetSpace>
-      <m:widgetSpace name="index.content.primary.right" keepEmpty="false" sizing="MINIMIZE"  styleClass="omega">
+      <m:widgetSpace name="index.content.primary.right" keepEmpty="false" sizing="MINIMIZE" styleClass="omega">
         <!--  Not logged in -->
         <m:widget name="home-info" size="16" rendered="#{!sessionBackingBean.loggedIn}" />
         <!--  Logged in -->
         <m:widget name="home-courses" rendered="#{sessionBackingBean.loggedIn}" size="16">
           <ui:param name="courselist" value="home-courses" />
         </m:widget>
-        <m:widget name="home-wallfeed" rendered="#{sessionBackingBean.loggedIn}" size="16"/>
-        <m:widget name="home-calendar" rendered="#{sessionBackingBean.loggedIn}" size="16"/>
+        <m:widget name="home-wallfeed" rendered="#{sessionBackingBean.loggedIn}" size="16" />
+        <m:widget name="home-calendar" rendered="#{sessionBackingBean.loggedIn}" size="16" />
       </m:widgetSpace>
     </m:widgetSpaceSet>
 
@@ -49,7 +50,7 @@
       <m:widgetSpace name="index.content.secondary.center" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
       <m:widgetSpace name="index.content.secondary.right" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
     </m:widgetSpaceSet>
-    
+
     <div class="clear"></div>
 
   </ui:define>

@@ -117,14 +117,6 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
     return null;
   }
 
-//  public WorkspaceEntity getCourse() {
-//    // TODO Relevance?
-//    Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-//    Long courseId = Long.valueOf(params.get("courseId"));
-//
-//    return courseDAO.findById(courseId);
-//  }
-
   @PostConstruct
   private void init() {
     loggedUserId = null;

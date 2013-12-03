@@ -31,7 +31,7 @@ public class EnvironmentUserPermissionOverrideDAO extends CoreDAO<EnvironmentUse
     return override;
   }
   
-  public EnvironmentUserPermissionOverride findByEnvironmentUserRoleAndPermission(EnvironmentUser environmentUser, Permission permission) {
+  public EnvironmentUserPermissionOverride findByEnvironmentUserAndPermission(EnvironmentUser environmentUser, Permission permission) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();

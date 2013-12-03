@@ -197,4 +197,8 @@ public class UserController {
     userRemovedEvent.fire(userEvent);
   }
 
+  public EnvironmentUser findEnvironmentUserByUserEntity(UserEntity userEntity) {
+    return environmentUserDAO.findByUserEntity(userEntity);
+  }
+
 }

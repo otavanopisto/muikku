@@ -42,6 +42,10 @@ public class EnvironmentUserDAO extends CoreDAO<EnvironmentUser> {
 		return entityManager.createQuery(criteria).getResultList();
 	}
 
+  public EnvironmentUser findByUserEntity(UserEntity user) {
+    return findByUserAndArchived(user, Boolean.FALSE);
+  }
+  
 	public EnvironmentUser findByUserAndArchived(UserEntity user, Boolean archived) {
 		EntityManager entityManager = getEntityManager();
 
