@@ -5,5 +5,9 @@ update WorkspaceNode n, WorkspaceEntity w set n.urlName = w.urlName where w.id =
 
 insert into WorkspaceUserEntity (user_id, identifier, workspaceEntity_id, workspaceUserRole_id, archived) values (2, '', 20, 5, false);
 insert into WorkspaceUserEntity (user_id, identifier, workspaceEntity_id, workspaceUserRole_id, archived) values (3, '', 20, 5, false);
+insert into WorkspaceUserEntity (user_id, identifier, workspaceEntity_id, workspaceUserRole_id, archived) values (2, '', 21, 5, false);
+insert into WorkspaceUserEntity (user_id, identifier, workspaceEntity_id, workspaceUserRole_id, archived) values (3, '', 21, 5, false);
+insert into WorkspaceUserEntity (user_id, identifier, workspaceEntity_id, workspaceUserRole_id, archived) values (2, '', 22, 5, false);
+insert into WorkspaceUserEntity (user_id, identifier, workspaceEntity_id, workspaceUserRole_id, archived) values (3, '', 22, 5, false);
 
 
