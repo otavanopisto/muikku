@@ -107,7 +107,7 @@ public class WallRESTService extends PluginRESTService {
       .addInstruction("forumMessage", tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
       .addInstruction(ForumThread.class, tranquilityBuilder.createPropertyInjectInstruction("replies", new ForumThreadReplyInjector()))
       .addInstruction(Wall.class, tranquilityBuilder.createPropertyInjectInstruction("wallName", new WallEntityNameGetter()))
-      .addInstruction(Wall.class, tranquilityBuilder.createPropertyInjectInstruction("wallType", new WallEntityTypeGetter()))
+//      .addInstruction(Wall.class, tranquilityBuilder.createPropertyInjectInstruction("wallType", new WallEntityTypeGetter()))
       .addInstruction(Wall.class, tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
 
       .addInstruction(new SuperClassInstructionSelector(UserEntity.class), tranquilityBuilder.createPropertyInjectInstruction("hasPicture", new UserEntityHasPictureValueGetter()))

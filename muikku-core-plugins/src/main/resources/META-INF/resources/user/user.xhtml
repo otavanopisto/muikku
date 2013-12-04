@@ -72,6 +72,12 @@
 <!--       </m:widget> -->
 
       <div class="showUserWall">
+        <c:set var="wall" value="#{Wall.getUserWall(userIndexBackingBean.userEntity)}" />
+
+        <ui:include src="/wall/newwallentry.xhtml">
+          <ui:param name="wallId" value="#{wall.id}" />
+        </ui:include>
+      
         <ui:include src="/wall/userwall.xhtml">
           <ui:param name="userId" value="#{userIndexBackingBean.userEntity.id}" />
         </ui:include>
