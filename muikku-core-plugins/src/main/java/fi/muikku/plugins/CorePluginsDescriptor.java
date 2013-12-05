@@ -23,6 +23,7 @@ import fi.muikku.plugins.data.DataPluginDescriptor;
 import fi.muikku.plugins.forum.ForumPluginDescriptor;
 import fi.muikku.plugins.friends.FriendsPluginDescriptor;
 import fi.muikku.plugins.grading.GradingPluginDescriptor;
+import fi.muikku.plugins.guidancerequest.GuidanceRequestPluginDescriptor;
 import fi.muikku.plugins.internallogin.InternalLoginPluginDescriptor;
 import fi.muikku.plugins.language.LanguagePluginDescriptor;
 import fi.muikku.plugins.loggeduser.LoggedUserPluginDescriptor;
@@ -69,7 +70,8 @@ public class CorePluginsDescriptor implements PluginLibraryDescriptor {
       FriendsPluginDescriptor.class,
       LoggedUserPluginDescriptor.class,
       UserPluginDescriptor.class,
-      StudentsPluginDescriptor.class
+      StudentsPluginDescriptor.class,
+      GuidanceRequestPluginDescriptor.class
 		));
 	}
 	

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    template="/WEB-INF/templates/default.xhtml">
+    
+  <ui:define name="content.center.widget">
+    <h:form>
+      <div class="formElementRow">
+        Message:
+        <h:inputTextarea value="#{guidanceRequestsBackingBean.newGuidanceRequestMessage}" />
+      
+        <h:commandLink action="#{guidanceRequestsBackingBean.createGuidanceRequest}" value="Add request"/>
+      </div>
+    </h:form>
+
+    <ui:repeat var="assessmentRequest" value="#{guidanceRequestsBackingBean.listOwnedGuidanceRequests()}">
+      <div>
+        <div>#{assessmentRequest.date}</div>
+        <div>#{assessmentRequest.message}</div>
+      </div>
+    </ui:repeat>
+  </ui:define>
+
+</ui:composition>
