@@ -92,6 +92,10 @@ public class UserController {
 		return userEntityDAO.listAll();
 	}
 	
+	public void updateLastLogin(UserEntity userEntity) {
+	  userEntityDAO.updateLastLogin(userEntity);
+	}
+	
 	/* User */
 
 	public User findUser(SchoolDataSource schoolDataSource, UserEntity userEntity) {

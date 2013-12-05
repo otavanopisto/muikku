@@ -46,9 +46,15 @@
         </div>
         <div class="grid_18 omega noLid">
           <div class="st-content-student-info-details">
-            <span class="st-info-details-lastLogin">Kirjautunut viimeksi:dd/mm/yyyy</span> <span class="st-info-details-latestStudy">Viimeisin suoritettu
-              opinto: dd/mm/yyyy</span> <span class="st-info-details-latestTask">Viimeisin tehtävä: dd/mm/yyyy</span> <span class="st-info-details-achievements">Suoritusmäärät:
-              123566</span>
+            <span class="st-info-details-lastLogin">
+              Kirjautunut viimeksi: 
+              <h:outputText value="#{studentViewBackingBean.userEntity.lastLogin}">
+                <f:convertDateTime pattern="d.M.yyyy" />
+              </h:outputText>
+            </span>
+            <span class="st-info-details-latestStudy">Viimeisin suoritettu opinto: dd/mm/yyyy</span>
+            <span class="st-info-details-latestTask">Viimeisin tehtävä: dd/mm/yyyy</span> 
+            <span class="st-info-details-achievements">Suoritusmäärät: 123566</span>
           </div>
           <div class="st-content-student-info-contacts">
             <span class="st-info-user-contact">Yhteyshenkilö</span> <span class="st-info-user-contact">Yhteyshenkilö</span> <span class="st-info-user-contact">Yhteyshenkilö</span>

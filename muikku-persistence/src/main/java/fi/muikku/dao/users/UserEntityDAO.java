@@ -1,5 +1,6 @@
 package fi.muikku.dao.users;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -41,4 +42,11 @@ public class UserEntityDAO extends CoreDAO<UserEntity> {
 		return entityManager.createQuery(criteria).getResultList();
 	}
 
+	public UserEntity updateLastLogin(UserEntity userEntity) {
+	  userEntity.setLastLogin(new Date());
+	  
+	  getEntityManager().persist(userEntity);
+	  
+	  return userEntity; 
+	}
 }

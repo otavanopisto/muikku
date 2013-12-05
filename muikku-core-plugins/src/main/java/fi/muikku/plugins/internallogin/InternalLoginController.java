@@ -71,6 +71,8 @@ public class InternalLoginController {
   	return result;
   }
   
-  
+  public void updateLastLogin(UserEntity userEntity) {
+    userController.updateLastLogin(userEntity);
+  }
   
 }
