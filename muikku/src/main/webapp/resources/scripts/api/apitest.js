@@ -11,10 +11,12 @@
     
     api.workspace.workspaceEntities.read(2)
       .callback(function (err, result) {
-        if (err) {
-          console.error(err);
+        if (!err) {
+          renderDustTemplate('apitest/single.dust', result, function (text) {
+            $(text).appendTo('#content');
+          });
         } else {
-          console.log(["Workspace entity", result]);
+          alert(err);
         }
       }); 
     
@@ -22,36 +24,46 @@
     
     api.workspace.workspaceEntities.read()
       .callback(function (err, result) {
-        if (err) {
-          console.error(err);
+        if (!err) {
+          renderDustTemplate('apitest/list.dust', result, function (text) {
+            $(text).appendTo('#content');
+          });
         } else {
-          console.log(["Workspace entities", result]);
+          alert(err);
         }
       });
 
     // Batch read
     
     api.batch({
-      workspaceEntities: api.workspace.workspaceEntities.read(2),
-      members: api.workspace.workspaces.users.read(2)
+      workspaceEntity: api.workspace.workspaceEntities.read(2),
+      users: api.workspace.workspaces.users.read(2)
     })
     .callback(function (err, result) {
-      console.log(["Batch result", result]);
+      if (!err) {
+        renderDustTemplate('apitest/batch.dust', result, function (text) {
+          $(text).appendTo('#content');
+        });
+      } else {
+        alert(err);
+      }
     });
     
     // Event on single entity
 
     api.workspace.workspaceEntities.read(2)
       .on('$', function (workspaceEntity, callback) {
-        api.workspace.workspaces.read(workspaceEntity.id)
-          .callback(function (err, result) {
-            delete workspaceEntity.id;
-            workspaceEntity.workspace = result;
-            callback();
-          });
+        workspaceEntity.idSine = Math.sin(workspaceEntity.id);
+        callback();
       })
       .callback(function (err, result) {
-        console.log(["Event result", result]);
+        if (!err) {
+          renderDustTemplate('apitest/event_single.dust', result, function (text) {
+            $(text).appendTo('#content');
+          });
+        } else {
+          alert(err);
+        }
       });
     
     // Event on list (adds idSine property into all entities)
@@ -65,21 +77,39 @@
         callback();
       })
       .callback(function (err, result) {
-        console.log(["Event result", result]);
+        if (!err) {
+          renderDustTemplate('apitest/event_list.dust', result, function (text) {
+            $(text).appendTo('#content');
+          });
+        } else {
+          alert(err);
+        }
       });
 
     // Replace property (replaces id with workspace)
     api.workspace.workspaceEntities.read(2)
       .replace('$', 'id', 'workspace', api.workspace.workspaces)
       .callback(function (err, result) {
-        console.log(["Replaced result", result]);
+        if (!err) {
+          renderDustTemplate('apitest/replace_single.dust', result, function (text) {
+            $(text).appendTo('#content');
+          });
+        } else {
+          alert(err);
+        }
       });
     // Replace property in list (replaces id with workspace)
 
     api.workspace.workspaceEntities.read()
       .replace('$', 'id', 'workspace', api.workspace.workspaces)
       .callback(function (err, result) {
-        console.log(["Replaced result", result]);
+        if (!err) {
+          renderDustTemplate('apitest/replace_list.dust', result, function (text) {
+            $(text).appendTo('#content');
+          });
+        } else {
+          alert(err);
+        }
       });
   });
   

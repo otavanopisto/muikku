@@ -1,0 +1,21 @@
+<div class="apitest">
+  <h4>Single request (id replaced with workspace)</h4>
+  
+  <div> 
+    <label style="font-weight: bold; width: 120px; display: inline-block">urlName</label> 
+    <span>{urlName}</span> 
+  </div>  
+  <div> 
+    <label style="font-weight: bold; width: 120px; display: inline-block">workspace.identifier</label> 
+    <span>{workspace.identifier}</span> 
+  </div>
+  <div> 
+    <label style="font-weight: bold; width: 120px; display: inline-block">workspace.description</label> 
+    <span>{workspace.description}</span> 
+  </div>
+  <div> 
+    <label style="font-weight: bold; width: 120px; display: inline-block">workspace.name</label> 
+    <span>{workspace.name}</span> 
+  </div>
+
+</div>
