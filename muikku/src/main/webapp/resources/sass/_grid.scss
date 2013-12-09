@@ -1,56 +1,95 @@
+
+
 /* Functions */
 
 @function prc($target, $container) {
   @return ($target / $container);
 }
 
-/* Variables */
-
-$grid-margin: 5px;
-$container-size:960px;
-$grid-columns: 24;
-$grid-size: prc($container-size, $grid-columns);
-
-/* Mixins */
-
-@mixin grid_x {
-	$grids: null;
-	$grids-nomargin: null;
-
-	@for $i from 1 through $grid-columns{
-	  .grid_#{$i} {
-	     width: $grid-size * $i - $grid-margin * 2;
-	     }
-	    $grids:append($grids, unquote(".grid_#{$i}"), comma);   
-	  }
-	  
-		#{$grids}{ 
-		  float:left;
-      margin-top:$grid-margin * 2;
-		  margin-left:$grid-margin;
-			margin-right:$grid-margin;
-		 }
-	 
-	 
-	 
+@function half($grid-value) {
+  @return ($grid-value / 2);
 }
 
-@mixin grid_x_nomargin{
-	@for $i from 1 through $grid-columns{
-	  .grid_#{$i}[class*='nomargin'] {
-	     width: $grid-size * $i;
-	     }
-	}
+/* Variables */
+
+$grid-margin-pixel: 5px;
+$container-size:960px;
+$grid-columns: 24;
+$grid-margin-divided:prc($container-size, $grid-margin-pixel);
+$grid-margin-percent:prc(100, $grid-margin-divided);
+/* Mixins */
+
+@mixin grid_x($size:$container-size,$cols:$grid-columns) {
+
+  $grids: null;
+  $grids-nomargin: null;
+
+  $grid-instance-size: prc($size, $cols);
+  
+  @for $i from 1 through $cols{
+
+    @if $size < 481px{
+      $grid-half: half($i);      
+       @if $grid-half > 6{ 
+	      .grid_#{$i} {
+	         width: 50% - $grid-margin-percent * 2;
+	       } 
+	       
+	       }@else{
+	        .grid_#{$i} {
+	           width: 50%  - $grid-margin-percent * 2;
+	         } 	       
+	       }
+
+    } @else {  
+    .grid_#{$i} {
+       width: $grid-instance-size * $i - $grid-margin-pixel * 2;
+       }
+    }  
+      $grids:append($grids, unquote(".grid_#{$i}"), comma);   
+    }
+    
+    #{$grids}{ 
+      float:left;
+      margin-top:$grid-margin-pixel * 2;
+      margin-left:$grid-margin-pixel;
+      margin-right:$grid-margin-pixel;
+     }
+}
+
+
+@mixin grid_x_nomargin($size:$container-size, $cols:$grid-columns){
+  
+  $grid-instance-size: prc($size, $cols);	
+	
+	@for $i from 1 through $cols{
+    @if $size == 480px{
+    .grid_#{$i}[class*='nomargin'] {
+         width: $size;
+       }
+    } @else {  
+    .grid_#{$i}[class*='nomargin'] {
+       width: $grid-instance-size * $i;
+       }
+    }  
+  }
 
 }
 
  
-@mixin grid_x_othermargin{
-	@for $i from 1 through $grid-columns{
-	  .grid_#{$i}[class*='alpha'], .grid_#{$i}[class*='omega']  {
-	     width: $grid-size * $i - 5px;
-	     }
-	}
+@mixin grid_x_othermargin($size:$container-size,$cols:$grid-columns){
+  $grid-instance-size: prc($size, $cols);
+	@for $i from 1 through $cols{
+    @if $size == 480px{
+     .grid_#{$i}[class*='alpha'], .grid_#{$i}[class*='omega']{
+         width: $size - 5px;
+       }
+    } @else { 	
+     .grid_#{$i}[class*='alpha'], .grid_#{$i}[class*='omega']  {
+       width: $grid-instance-size * $i - 5px;
+       }
+     }
+  }
 
 }
 

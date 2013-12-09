@@ -22,8 +22,10 @@
   </ui:define> 
   <ui:define name="content.center.widget">
 	  <div class="st-content-browser">
-	     <div class="grid_20 noLid nomargin">
+	     <div class="grid_20 noLid omega">
 	      <div class="st-content-browser-history">
+                 <h3>Historia</h3>
+
 		      <c:forEach begin="1" end="10">
 		        <div class="grid_4">
 		          <div class="st-content-browser-history-item" style="border:1px solid #ededed;">
@@ -33,7 +35,7 @@
 
 		               <div class="clear"></div>
 		             </div>         -->
-                 <h3>Historia</h3> 
+ 
 		             <div>
 		              <img src="http://sarvela.pp.fi/lintu2013/koskikara_20130301_alamalmi_3.jpg" width="20px" alt="Koskikara Åke"></img>
 		              <h:outputLink styleClass="studentLink tooltip" value="#{request.contextPath}/students/studentselected.jsf">Opiskelija</h:outputLink>
@@ -41,7 +43,8 @@
 		
 		          </div>
 		        </div>
-		      </c:forEach>	        
+		      </c:forEach>	  
+		    <div class="clear"></div>      
 	      </div>     
 	     </div>
 	    <c:forEach begin="1" end="100">
