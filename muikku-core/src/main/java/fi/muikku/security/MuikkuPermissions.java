@@ -14,9 +14,6 @@ public class MuikkuPermissions extends AbstractPermissionCollection implements P
   public static final String CREATE_COURSE = "CREATE_COURSE";
   
   @Scope (PermissionScope.ENVIRONMENT)
-  public static final String JOIN_COURSE = "JOIN_COURSE";
-  
-  @Scope (PermissionScope.ENVIRONMENT)
   public static final String LIST_COURSES = "LIST_COURSES";
   
   @Scope (PermissionScope.ENVIRONMENT)
@@ -37,8 +34,11 @@ public class MuikkuPermissions extends AbstractPermissionCollection implements P
   @Scope (PermissionScope.ENVIRONMENT)
   public static final String LIST_CALENDARS = "LIST_CALENDARS";
   
-  /* COURSE */
+  /* WORKSPACE */
   
+  @Scope (PermissionScope.WORKSPACE)
+  public static final String JOIN_COURSE = "JOIN_COURSE";
+
   @Scope (PermissionScope.WORKSPACE)
   public static final String COURSE_MANAGECOURSESETTINGS = "COURSE_MANAGECOURSESETTINGS";
   

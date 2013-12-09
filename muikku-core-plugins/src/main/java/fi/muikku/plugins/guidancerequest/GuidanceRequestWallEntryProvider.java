@@ -41,6 +41,8 @@ public class GuidanceRequestWallEntryProvider implements WallEntryProvider {
       
       WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceWall.getWorkspace());
       
+      // TODO: rights - workspace "manager"
+      
       List<WorkspaceGuidanceRequest> requests = guidanceRequestController.listWorkspaceGuidanceRequestsByWorkspace(workspaceEntity);
       
       for (GuidanceRequest request : requests) {
@@ -52,6 +54,8 @@ public class GuidanceRequestWallEntryProvider implements WallEntryProvider {
       UserWall userWall = wallController.findUserWallById(wall.getId());
       
       UserEntity user = userController.findUserEntityById(userWall.getUser());
+
+      // TODO: rights - by user and tutor
       
       List<GuidanceRequest> requests = guidanceRequestController.listGuidanceRequestsByStudent(user);
       
