@@ -9,7 +9,7 @@ public class MaterialHtmlFieldPluginDescriptor implements PluginDescriptor {
 
   @Override
   public String getName() {
-    return "materialhtmlembed";
+    return "materialhtmlfield";
   }
 
   @Override
@@ -22,8 +22,10 @@ public class MaterialHtmlFieldPluginDescriptor implements PluginDescriptor {
     return Arrays.asList(new Class<?>[] {
         
       /* Listeners */
-      
+     
+      /*
       HtmlMaterialFieldListeners.class
+      */
     });
   }
 

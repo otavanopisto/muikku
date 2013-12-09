@@ -20,16 +20,18 @@ import org.xml.sax.SAXException;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.material.HtmlMaterialController;
-import fi.muikku.plugins.material.events.HtmlMaterialBeforeSerializeEvent;
-import fi.muikku.plugins.material.events.HtmlMaterialProcessEvent;
 import fi.muikku.plugins.material.model.HtmlMaterial;
+import fi.muikku.plugins.material.processing.HtmlMaterialBeforeSerializeContext;
+import fi.muikku.plugins.material.processing.HtmlMaterialProcessingContext;
+import fi.muikku.plugins.material.processing.MaterialProcessor;
+import fi.muikku.plugins.material.processing.MaterialProcessorAdapter;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.servlet.ContextPath;
 
 @RequestScoped
-public class HtmlMaterialEmbedListeners {
+public class HtmlMaterialEmbedListeners extends MaterialProcessorAdapter {
   
   private static final boolean ADD_DEBUG_MARKERS = false;
   
@@ -53,7 +55,7 @@ public class HtmlMaterialEmbedListeners {
   public void init() {
   }
   
-  public void onHtmlMaterialProcess(@Observes HtmlMaterialProcessEvent event) {
+  public void processMaterial(HtmlMaterialProcessingContext event) {
     Document document = event.getDocument();
 
     NodeList iframes = document.getElementsByTagName("iframe");
@@ -131,7 +133,7 @@ public class HtmlMaterialEmbedListeners {
       .toString();
   }
 
-  public void onBeforeHtmlMaterialSerialize(@Observes HtmlMaterialBeforeSerializeEvent event) {
+  public void beforeSerializeMaterial(HtmlMaterialBeforeSerializeContext event) {
     Document document = event.getDocument();
     String formName = "material-form"; 
     attachToForm(formName, getDocumentFormElements(document));

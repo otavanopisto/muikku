@@ -2,7 +2,7 @@ package fi.muikku.plugins.material.model.field;
 
  import java.util.List;
 
-public class TextField {
+public class TextField implements Field {
   
   public static class RightAnswer {
     
@@ -48,8 +48,10 @@ public class TextField {
     private boolean normalizeWhitespace;
   }
 
-  public TextField(List<RightAnswer> rightAnswers) {
+  public TextField(String name, Integer columns, List<RightAnswer> rightAnswers) {
     this.setRightAnswers(rightAnswers);
+    this.setName(name);
+    this.setColumns(columns);
   }
   
   public List<RightAnswer> getRightAnswers() {
@@ -59,7 +61,31 @@ public class TextField {
   public void setRightAnswers(List<RightAnswer> rightAnswers) {
     this.rightAnswers = rightAnswers;
   }
+  
+  
+  @Override
+  public String getType() {
+    return "application/vnd.muikku.field.text";
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public Integer getColumns() {
+    return columns;
+  }
+
+  public void setColumns(Integer columns) {
+    this.columns = columns;
+  }
 
   private List<RightAnswer> rightAnswers;
+  private String name;
+  private Integer columns;
   
 }

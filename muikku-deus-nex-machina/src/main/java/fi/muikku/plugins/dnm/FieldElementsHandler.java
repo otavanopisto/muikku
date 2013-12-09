@@ -56,7 +56,7 @@ class FieldElementsHandler implements DeusNexFieldElementHandler {
   public Node handleTextField(org.w3c.dom.Document ownerDocument, String paramName, Integer columns, List<RightAnswer> rightAnswers) {
     // TODO: This is just for show, real implementation depends on QueryMaterial implementation
    
-    Object textFieldData = fieldTranslator.translateTextField(rightAnswers);
+    Object textFieldData = fieldTranslator.translateTextField(paramName, columns, rightAnswers);
 
     Element inputElement = ownerDocument.createElement("input");
     inputElement.setAttribute("type", "text");
@@ -70,7 +70,7 @@ class FieldElementsHandler implements DeusNexFieldElementHandler {
   public Node handleOptionList(org.w3c.dom.Document ownerDocument, String paramName, String type, List<OptionListOption> options) {
     // TODO: This is just for show, real implementation depends on QueryMaterial implementation
     
-    Object optionListFieldData = fieldTranslator.translateOptionList(options);
+    Object optionListFieldData = fieldTranslator.translateOptionList(paramName, type, options);
 
     Element selectElement = ownerDocument.createElement("select");
     selectElement.setAttribute("name", paramName);
@@ -87,9 +87,7 @@ class FieldElementsHandler implements DeusNexFieldElementHandler {
 
   @Override
   public Node handleConnectField(org.w3c.dom.Document ownerDocument, String paramName, List<ConnectFieldOption> options) {
-    // TODO: This is just for show, real implementation depends on QueryMaterial implementation
-
-    Object connectFieldData = fieldTranslator.translateConnectField(options);
+    Object connectFieldData = fieldTranslator.translateConnectField(paramName, options);
 
     Element table = ownerDocument.createElement("table");
     Element tbody = ownerDocument.createElement("tbody");

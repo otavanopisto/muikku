@@ -15,13 +15,15 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import fi.muikku.plugins.material.HtmlMaterialController;
-import fi.muikku.plugins.material.events.HtmlMaterialProcessEvent;
+import fi.muikku.plugins.material.processing.HtmlMaterialProcessingContext;
+import fi.muikku.plugins.material.processing.MaterialProcessor;
+import fi.muikku.plugins.material.processing.MaterialProcessorAdapter;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.servlet.ContextPath;
 
 @RequestScoped
-public class HtmlMaterialFieldListeners {
+public class HtmlMaterialFieldListeners extends MaterialProcessorAdapter {
   
   @Inject
   private Logger logger;
@@ -43,9 +45,9 @@ public class HtmlMaterialFieldListeners {
   public void init() {
   }
   
-  public void onHtmlMaterialProcess(@Observes HtmlMaterialProcessEvent event) {
-    Document document = event.getDocument();
-
+  public void processMaterial(HtmlMaterialProcessingContext context) {
+    Document document = context.getDocument();
+    
     NodeList objects = document.getElementsByTagName("object");
     for (int i = objects.getLength() - 1; i >= 0; i--) {
       Node objectNode = objects.item(i);
@@ -69,5 +71,9 @@ public class HtmlMaterialFieldListeners {
           parentNode.removeChild(objectNode);
       }
     }
+  }
+  
+  public int getProcessingStage() {
+    return 1000;
   }
 }

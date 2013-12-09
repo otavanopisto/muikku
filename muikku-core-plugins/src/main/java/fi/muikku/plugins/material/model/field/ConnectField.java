@@ -2,7 +2,7 @@ package fi.muikku.plugins.material.model.field;
 
 import java.util.List;
 
-public class ConnectField {
+public class ConnectField implements Field {
   
   public static class Field {
     public Field(String name, String text) {
@@ -49,7 +49,8 @@ public class ConnectField {
     private String counterpart;
   }
   
-  public ConnectField(List<Field> fields, List<Field> counterparts, List<Connection> connections) {
+  public ConnectField(String name, List<Field> fields, List<Field> counterparts, List<Connection> connections) {
+    this.setName(name);
     this.setFields(fields);
     this.setCounterparts(counterparts);
     this.setConnections(connections);
@@ -77,8 +78,23 @@ public class ConnectField {
   public void setConnections(List<Connection> connections) {
     this.connections = connections;
   }
+  
+  @Override
+  public String getType() {
+    return "application/vnd.muikku.field.connect";
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
 
   private List<Field> fields;
   private List<Field> counterparts;
   private List<Connection> connections;
+  private String name;
+
 }

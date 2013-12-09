@@ -3,11 +3,16 @@ package fi.muikku.plugins.material;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.ejb.Stateless;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
@@ -29,27 +34,19 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import fi.muikku.plugins.material.dao.HtmlMaterialDAO;
-import fi.muikku.plugins.material.events.HtmlMaterialAfterProcessEvent;
-import fi.muikku.plugins.material.events.HtmlMaterialBeforeProcessEvent;
-import fi.muikku.plugins.material.events.HtmlMaterialBeforeSerializeEvent;
-import fi.muikku.plugins.material.events.HtmlMaterialProcessEvent;
 import fi.muikku.plugins.material.model.HtmlMaterial;
+import fi.muikku.plugins.material.processing.HtmlMaterialAfterProcessingContext;
+import fi.muikku.plugins.material.processing.HtmlMaterialBeforeProcessingContext;
+import fi.muikku.plugins.material.processing.HtmlMaterialBeforeSerializeContext;
+import fi.muikku.plugins.material.processing.HtmlMaterialProcessingContext;
+import fi.muikku.plugins.material.processing.MaterialProcessor;
 
 @Dependent
 @Stateless
 public class HtmlMaterialController {
   
   @Inject
-  private Event<HtmlMaterialBeforeProcessEvent> beforeProcessEvent;
-
-  @Inject
-  private Event<HtmlMaterialAfterProcessEvent> afterProcessEvent;
-
-  @Inject
-  private Event<HtmlMaterialProcessEvent> processEvent;
-
-  @Inject
-  private Event<HtmlMaterialBeforeSerializeEvent> beforeSerializeEvent;
+  private Instance<MaterialProcessor> materialProcessors;
 
 	@Inject
 	private HtmlMaterialDAO htmlMaterialDAO;
@@ -73,13 +70,39 @@ public class HtmlMaterialController {
       try {
         InputSource inputSource = new InputSource(htmlReader);
         parser.parse(inputSource);
-
+        
+        
         Document document = parser.getDocument();
         
-        this.beforeProcessEvent.fire(new HtmlMaterialBeforeProcessEvent(materialId, document));
-        this.processEvent.fire(new HtmlMaterialProcessEvent(materialId, document));
-        this.afterProcessEvent.fire(new HtmlMaterialAfterProcessEvent(materialId, document));
-
+        SortedSet<Integer> stages = new TreeSet<>();
+        for (MaterialProcessor materialProcessor : materialProcessors) {
+          stages.add(materialProcessor.getProcessingStage());
+        }
+        
+        for (Integer stage : stages) {
+          for (MaterialProcessor materialProcessor : materialProcessors) {
+            if (stage.intValue() == materialProcessor.getProcessingStage()) {
+              materialProcessor.beforeProcessMaterial(new HtmlMaterialBeforeProcessingContext(materialId, document));
+            }
+          }
+        }
+        
+        for (Integer stage : stages) {
+          for (MaterialProcessor materialProcessor : materialProcessors) {
+            if (stage.intValue() == materialProcessor.getProcessingStage()) {
+              materialProcessor.processMaterial(new HtmlMaterialProcessingContext(materialId, document));
+            }
+          }
+        }
+        
+        for (Integer stage : stages) {
+          for (MaterialProcessor materialProcessor : materialProcessors) {
+            if (stage.intValue() == materialProcessor.getProcessingStage()) {
+              materialProcessor.afterProcessMaterial(new HtmlMaterialAfterProcessingContext(materialId, document));
+            }
+          }
+        }
+          
         return document;
       } finally {
         htmlReader.close();
@@ -91,8 +114,21 @@ public class HtmlMaterialController {
 
   public String getSerializedHtmlDocument(HtmlMaterial htmlMaterial) throws SAXException, IOException, XPathExpressionException, TransformerException {
     Document processedHtmlDocument = getProcessedHtmlDocument(htmlMaterial);
-    HtmlMaterialBeforeSerializeEvent event = new HtmlMaterialBeforeSerializeEvent(htmlMaterial.getId(), processedHtmlDocument);
-    beforeSerializeEvent.fire(event);
+    HtmlMaterialBeforeSerializeContext event = new HtmlMaterialBeforeSerializeContext(htmlMaterial.getId(), processedHtmlDocument);
+    
+    SortedSet<Integer> stages = new TreeSet<>();
+    for (MaterialProcessor materialProcessor : materialProcessors) {
+      stages.add(materialProcessor.getProcessingStage());
+    }
+    
+    for (Integer stage : stages) {
+      for (MaterialProcessor materialProcessor : materialProcessors) {
+        if (stage.intValue() == materialProcessor.getProcessingStage()) {
+          materialProcessor.beforeSerializeMaterial(event);
+        }
+      }
+    }
+
     return serializeDocument(event.getDocument());
   }
     

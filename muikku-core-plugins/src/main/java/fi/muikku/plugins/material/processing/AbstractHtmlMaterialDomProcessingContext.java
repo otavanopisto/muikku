@@ -1,4 +1,4 @@
-package fi.muikku.plugins.material.events;
+package fi.muikku.plugins.material.processing;
 
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -9,12 +9,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public abstract class AbstractHtmlMaterialDomEvent extends MaterialEvent {
+public abstract class AbstractHtmlMaterialDomProcessingContext extends ProcessingContext {
 
-  public AbstractHtmlMaterialDomEvent() {
+  public AbstractHtmlMaterialDomProcessingContext() {
   }
 
-  public AbstractHtmlMaterialDomEvent(Long materialId, Document document) {
+  public AbstractHtmlMaterialDomProcessingContext(Long materialId, Document document) {
     super(materialId);
     this.document = document;
   }
