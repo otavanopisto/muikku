@@ -20,11 +20,13 @@ import fi.muikku.model.security.EnvironmentRolePermission;
 import fi.muikku.model.security.Permission;
 import fi.muikku.model.security.ResourceRights;
 import fi.muikku.model.security.ResourceRolePermission;
+import fi.muikku.model.security.WorkspaceRolePermission;
 import fi.muikku.model.users.RoleEntity;
+import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.rest.security.AuthorizedResource;
+import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.security.Admin;
 import fi.muikku.security.AuthorizationException;
-import fi.muikku.session.SessionController;
 
 @AuthorizedResource
 @Path("/permission")
@@ -32,27 +34,23 @@ import fi.muikku.session.SessionController;
 @Produces ("application/json")
 public class PermissionRESTService extends AbstractRESTService {
 
-  
   @Inject
   private EnvironmentRolePermissionDAO environmentUserRolePermissionDAO;
 
   @Inject
-  private WorkspaceRolePermissionDAO courseUserRolePermissionDAO;
+  private WorkspaceRolePermissionDAO workspaceUserRolePermissionDAO;
   
   @Inject 
   private RoleEntityDAO userRoleDAO;
-
-//  @Inject 
-//  private CourseEntityDAO courseDAO;
 
   @Inject
   private PermissionDAO permissionDAO;
   
   @Inject
   private ResourceRolePermissionDAO resourceUserRolePermissionDAO;
-  
+
   @Inject
-  private SessionController sessionController;
+  private WorkspaceController workspaceController;
   
   @Inject
   private ResourceRightsController resourceRightsController;
@@ -63,7 +61,6 @@ public class PermissionRESTService extends AbstractRESTService {
   @POST
   @Path ("/addEnvironmentUserRolePermission")
   public Response addEnvironmentUserRolePermission(
-      @FormParam ("environmentId") Long environmentId,
       @FormParam ("userRoleId") Long userRoleId,
       @FormParam ("permissionId") Long permissionId
    ) throws AuthorizationException {
@@ -90,7 +87,6 @@ public class PermissionRESTService extends AbstractRESTService {
   @Admin
 //  @Permit (Permissions.MANAGE_SYSTEM_SETTINGS)
   public Response deleteEnvironmentUserRolePermission(
-      @FormParam ("environmentId") Long environmentId,
       @FormParam ("userRoleId") Long userRoleId,
       @FormParam ("permissionId") Long permissionId
    ) {
@@ -116,66 +112,66 @@ public class PermissionRESTService extends AbstractRESTService {
     }
   }
 
-//  @POST
-//  @Path ("/addCourseUserRolePermission")
-//  @Admin
-////  @Permit (Permissions.MANAGE_SYSTEM_SETTINGS)
-//  public Response addCourseUserRolePermission(
-//      @FormParam ("courseId") Long courseId,
-//      @FormParam ("userRoleId") Long userRoleId,
-//      @FormParam ("permissionId") Long permissionId
-//   ) {
-//    
-//    // TODO: Security
-//
-//    UserRole userRole = userRoleDAO.findById(userRoleId);
-//    Permission permission = permissionDAO.findById(permissionId);
-//    WorkspaceEntity course = courseDAO.findById(courseId);
-//
-//    if ((userRole == null) || (permission == null)) {
-//      return Response.status(Response.Status.NOT_FOUND).build();
-//    }
-//    
-//    try {
-//      environmentSettingsController.addCourseUserRolePermission(course, userRole, permission);
-//
-//      return Response.ok().build();
-//    } catch (ConstraintViolationException violationException) {
-//      return getConstraintViolations(violationException);
-//    }
-//  }
+  @POST
+  @Path ("/addCourseUserRolePermission")
+  @Admin
+//  @Permit (Permissions.MANAGE_SYSTEM_SETTINGS)
+  public Response addWorkspaceUserRolePermission(
+      @FormParam ("workspaceId") Long workspaceId,
+      @FormParam ("userRoleId") Long userRoleId,
+      @FormParam ("permissionId") Long permissionId
+   ) {
+    
+    // TODO: Security
 
-//  @POST
-//  @Path ("/deleteCourseUserRolePermission")
-//  @Admin
-////  @Permit (Permissions.MANAGE_SYSTEM_SETTINGS)
-//  public Response deleteCourseUserRolePermission(
-//      @FormParam ("courseId") Long courseId,
-//      @FormParam ("userRoleId") Long userRoleId,
-//      @FormParam ("permissionId") Long permissionId
-//   ) {
-//    
-//    // TODO: Security
-//
-//    UserRole userRole = userRoleDAO.findById(userRoleId);
-//    Permission permission = permissionDAO.findById(permissionId);
-//    WorkspaceEntity course = courseDAO.findById(courseId);
-//
-//    if ((userRole == null) || (permission == null)) {
-//      return Response.status(Response.Status.NOT_FOUND).build();
-//    }
-//    
-//    try {
-//      CourseUserRolePermission rolePermission = courseUserRolePermissionDAO.findByUserRoleAndPermission(
-//          course, userRole, permission);
-//      
-//      environmentSettingsController.deleteCourseUserRolePermission(rolePermission);
-//      
-//      return Response.ok().build();
-//    } catch (ConstraintViolationException violationException) {
-//      return getConstraintViolations(violationException);
-//    }
-//  }
+    RoleEntity userRole = userRoleDAO.findById(userRoleId);
+    Permission permission = permissionDAO.findById(permissionId);
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceId);
+
+    if ((userRole == null) || (permission == null)) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
+    try {
+      environmentSettingsController.addWorkspaceUserRolePermission(workspaceEntity, userRole, permission);
+
+      return Response.ok().build();
+    } catch (ConstraintViolationException violationException) {
+      return getConstraintViolations(violationException);
+    }
+  }
+
+  @POST
+  @Path ("/deleteCourseUserRolePermission")
+  @Admin
+//  @Permit (Permissions.MANAGE_SYSTEM_SETTINGS)
+  public Response deleteWorkspaceUserRolePermission(
+      @FormParam ("workspaceId") Long workspaceId,
+      @FormParam ("userRoleId") Long userRoleId,
+      @FormParam ("permissionId") Long permissionId
+   ) {
+    
+    // TODO: Security
+
+    RoleEntity userRole = userRoleDAO.findById(userRoleId);
+    Permission permission = permissionDAO.findById(permissionId);
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceId);
+
+    if ((userRole == null) || (permission == null)) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
+    try {
+      WorkspaceRolePermission rolePermission = workspaceUserRolePermissionDAO.findByRoleAndPermission(
+          workspaceEntity, userRole, permission);
+      
+      environmentSettingsController.deleteWorkspaceUserRolePermission(rolePermission);
+      
+      return Response.ok().build();
+    } catch (ConstraintViolationException violationException) {
+      return getConstraintViolations(violationException);
+    }
+  }
   
   @POST
   @Path ("/addResourceUserRolePermission")

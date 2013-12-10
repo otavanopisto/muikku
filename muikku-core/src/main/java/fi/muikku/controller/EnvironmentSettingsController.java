@@ -8,29 +8,25 @@ import javax.enterprise.inject.Model;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import fi.muikku.dao.security.WorkspaceRolePermissionDAO;
 import fi.muikku.dao.security.EnvironmentRolePermissionDAO;
 import fi.muikku.dao.security.PermissionDAO;
+import fi.muikku.dao.security.WorkspaceRolePermissionDAO;
 import fi.muikku.dao.users.EnvironmentRoleEntityDAO;
 import fi.muikku.dao.users.RoleEntityDAO;
-import fi.muikku.model.security.WorkspaceRolePermission;
 import fi.muikku.model.security.EnvironmentRolePermission;
 import fi.muikku.model.security.Permission;
+import fi.muikku.model.security.WorkspaceRolePermission;
 import fi.muikku.model.users.RoleEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.security.PermissionScope;
 import fi.muikku.security.Permit;
 import fi.muikku.security.PermitContext;
-import fi.muikku.session.SessionController;
 
 @Stateful
 @Model
 @Named ("environmentSettings")
 public class EnvironmentSettingsController {
-
-  @Inject
-  private SessionController sessionController;
 
   @Inject
   private RoleEntityDAO userEntityDAO;
@@ -59,13 +55,13 @@ public class EnvironmentSettingsController {
     return permissionDAO.listByScope(PermissionScope.ENVIRONMENT);
   }
 
-  public List<RoleEntity> listCourseUserRoles() {
+  public List<RoleEntity> listWorkspaceUserRoles() {
     List<RoleEntity> userRoles = userEntityDAO.listAll();
     
     return userRoles;
   }
 
-  public List<Permission> listCoursePermissions() {
+  public List<Permission> listWorkspacePermissions() {
     return permissionDAO.listByScope(PermissionScope.WORKSPACE);
   }
   
@@ -73,7 +69,7 @@ public class EnvironmentSettingsController {
     return environmentUserRolePermissionDAO.hasEnvironmentPermissionAccess(role, permission);
   }
 
-  public boolean hasCourseRolePermission(@PermitContext WorkspaceEntity course, RoleEntity role, Permission permission) {
+  public boolean hasWorkspaceRolePermission(@PermitContext WorkspaceEntity course, RoleEntity role, Permission permission) {
     return courseUserRolePermissionDAO.hasCoursePermissionAccess(course, role, permission);
   }
   
@@ -88,12 +84,12 @@ public class EnvironmentSettingsController {
   }
   
   @Permit(MuikkuPermissions.COURSE_MANAGECOURSESETTINGS)
-  public WorkspaceRolePermission addCourseUserRolePermission(@PermitContext WorkspaceEntity course, RoleEntity role, Permission permission) {
+  public WorkspaceRolePermission addWorkspaceUserRolePermission(@PermitContext WorkspaceEntity course, RoleEntity role, Permission permission) {
     return courseUserRolePermissionDAO.create(course, role, permission);
   }
   
   @Permit(MuikkuPermissions.COURSE_MANAGECOURSESETTINGS)
-  public void deleteCourseUserRolePermission(@PermitContext WorkspaceRolePermission rolePermission) {
+  public void deleteWorkspaceUserRolePermission(@PermitContext WorkspaceRolePermission rolePermission) {
     courseUserRolePermissionDAO.delete(rolePermission);
   }
   

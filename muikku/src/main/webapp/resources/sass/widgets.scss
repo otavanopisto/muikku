@@ -300,6 +300,15 @@ margin-left:0 !important;
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-course-identifiers.png'));
 }
 
+.naviIconSettingsNavigationPermissions {
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-course-identifiers.png'));
+}
+
+.naviIconSettingsNavigationPermissions.disabled{
+  opacity:0.2;
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-course-identifiers.png'));
+}
+
 /* Workspace */
 
 .naviIconWorkspaceNavigationMembers.disabled{
