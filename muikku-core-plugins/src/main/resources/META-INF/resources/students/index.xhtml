@@ -20,25 +20,57 @@
   </ui:define>
   
   <ui:define name="content.center.widget">
+
+
     <h:outputScript name="scripts/gui/students.js" target="head" />
 
-    <div id="st-content-browser" class="st-content-browser">
-      <c:forEach begin="1" end="100">
-        <div class="grid_4">
-          <div class="st-content-browser-item" style="border: 1px solid #ededed;">
-            <div class="st-content-browser-item-actions actions-vertical">
-              <m:widget name="user-instance-action-bookmark" rendered="#{sessionBackingBean.loggedIn}" />
-              <div class="clear"></div>
-            </div>
+	  <div class="st-content-browser">
+	     <div class="grid_20 noLid omega">
+	      <div class="st-content-browser-history">
+                 <h3>Historia</h3>
 
-            <div>
-              <img src="http://sarvela.pp.fi/lintu2013/koskikara_20130301_alamalmi_3.jpg" width="100px" alt="Koskikara Åke"></img>
-              <h:outputLink styleClass="studentLink tooltip" value="#{request.contextPath}/students/studentselected.jsf">Opiskelija</h:outputLink>
-            </div>
-          </div>
-        </div>
-      </c:forEach>
-    </div>
+		      <c:forEach begin="1" end="10">
+		        <div class="grid_4">
+		          <div class="st-content-browser-history-item" style="border:1px solid #ededed;">
+		          
+		          <!--  TODO: Widgetspaceset 
+		             <div class="st-content-browser-item-actions">
+
+		               <div class="clear"></div>
+		             </div>         -->
+ 
+		             <div>
+		              <img src="http://sarvela.pp.fi/lintu2013/koskikara_20130301_alamalmi_3.jpg" width="20px" alt="Koskikara Åke"></img>
+		              <h:outputLink styleClass="studentLink tooltip" value="#{request.contextPath}/students/studentselected.jsf">Opiskelija</h:outputLink>
+		             </div>
+		
+		          </div>
+		        </div>
+		      </c:forEach>	  
+		    <div class="clear"></div>      
+	      </div>     
+	     </div>
+
+
+	    <div id="st-content-browser" class="st-content-browser">
+	      <c:forEach begin="1" end="100">
+	        <div class="grid_4">
+	          <div class="st-content-browser-item" style="border: 1px solid #ededed;">
+	            <div class="st-content-browser-item-actions actions-vertical">
+	              <m:widget name="user-instance-action-bookmark" rendered="#{sessionBackingBean.loggedIn}" />
+	              <div class="clear"></div>
+	            </div>
+	
+	            <div>
+	              <img src="http://sarvela.pp.fi/lintu2013/koskikara_20130301_alamalmi_3.jpg" width="100px" alt="Koskikara Åke"></img>
+	              <h:outputLink styleClass="studentLink tooltip" value="#{request.contextPath}/students/studentselected.jsf">Opiskelija</h:outputLink>
+	            </div>
+	          </div>
+	        </div>
+	      </c:forEach>
+	    </div>
+	  </div>
+	 
 
   </ui:define>
 
