@@ -32,12 +32,12 @@ $grid-margin-percent:prc(100, $grid-margin-divided);
       $grid-half: half($i);      
        @if $grid-half > 6{ 
 	      .grid_#{$i} {
-	         width: 50% - $grid-margin-percent * 2;
+	         width: $size - $grid-margin-pixel * 2;
 	       } 
 	       
 	       }@else{
 	        .grid_#{$i} {
-	           width: 50%  - $grid-margin-percent * 2;
+	           width: half($size)  - $grid-margin-pixel * 2;
 	         } 	       
 	       }
 
