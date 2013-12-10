@@ -4,7 +4,8 @@
 
 $desktop:960px;
 $tablet:768px;
-$phone:480px;
+$phone_l:480px;
+$phone_s:320px;
 $gridCols:24;
 
 
@@ -42,17 +43,27 @@ $gridCols:24;
 @include grid_x_othermargin($tablet, $gridCols);
 }
 
-/* Include the pre-created styles: Phone */
 
 @media screen and (max-width: 480px){
+  
 .container_24{
-  width:100%;
-  border:1px solid #000;
+  width:480px;
+} 
+@include grid_x($phone_l, $gridCols);
+@include grid_x_nomargin($phone_l, $gridCols);
+@include grid_x_othermargin($phone_l, $gridCols);
 }
 
-@include grid_x($phone,24);
-@include grid_x_nomargin($phone,24);
-@include grid_x_othermargin($phone,24);
+/* Include the pre-created styles: Phone */
+
+@media screen and (max-width: 320px){
+.container_24{
+  width:320px;
+}
+
+@include grid_x($phone_s,24);
+@include grid_x_nomargin($phone_s,24);
+@include grid_x_othermargin($phone_s,24);
 }
 
 
