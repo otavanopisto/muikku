@@ -328,6 +328,16 @@ margin-left:0 !important;
 .naviIconWorkspaceNavigationMaterials {
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/workspace-navigation-materials.png'));
 }
+
+.naviIconWorkspaceNavigationGuidanceRequest.disabled{
+  opacity:0.2;
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/workspace-navigation-members.png'));  
+}
+
+.naviIconWorkspaceNavigationGuidanceRequest {
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/workspace-navigation-members.png'));
+}
+
 /* Student browser */
 
 	.naviIconUser{
