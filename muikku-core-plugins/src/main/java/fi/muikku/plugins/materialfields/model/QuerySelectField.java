@@ -1,4 +1,4 @@
-package fi.muikku.plugins.material.queryfields.model;
+package fi.muikku.plugins.materialfields.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;

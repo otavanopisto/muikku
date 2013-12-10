@@ -1,4 +1,4 @@
-package fi.muikku.plugins.material.queryfields.model;
+package fi.muikku.plugins.materialfields.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,7 +9,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @PrimaryKeyJoinColumn(name="id")
-public class QueryDrawField extends QueryField{
+public class QueryTextField extends QueryField{
 	
     public String getText() {
 		return text;
@@ -18,21 +18,9 @@ public class QueryDrawField extends QueryField{
 		this.text = text;
 	}
 
-	public String getCanvasHtml() {
-		return canvasHtml;
-	}
-	public void setCanvasHtml(String canvasHtml) {
-		this.canvasHtml = canvasHtml;
-	}
-
 	@NotEmpty
 	@NotNull
 	@Column (nullable = false)
 	private String text;
-	
-	@NotEmpty
-	@NotNull
-	@Column (nullable = false)
-	private String canvasHtml;
 	
 }
