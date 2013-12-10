@@ -28,8 +28,4 @@ public class QueryTextField extends QueryField{
 	@Column (nullable = false)
 	private String text;
 	
-	@NotEmpty
-	@NotNull
-	@Column (nullable = false)
-    private boolean caseSensitive;
 }
