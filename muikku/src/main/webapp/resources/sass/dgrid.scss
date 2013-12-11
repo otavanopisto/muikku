@@ -44,7 +44,7 @@ $gridCols:24;
 }
 
 
-@media screen and (max-width: 480px){
+@media handheld and (max-width: 480px){
   
 .container_24{
   width:480px;
@@ -56,7 +56,7 @@ $gridCols:24;
 
 /* Include the pre-created styles: Phone */
 
-@media screen and (max-width: 320px){
+@media handheld and (max-width: 320px){
 .container_24{
   width:320px;
 }
