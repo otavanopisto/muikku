@@ -39,5 +39,10 @@ public class GuidanceRequestController {
   public List<GuidanceRequest> listGuidanceRequestsByStudent(UserEntity student) {
     return guidanceRequestDAO.listByStudent(student);
   }
+
+  public List<WorkspaceGuidanceRequest> listWorkspaceGuidanceRequestsByWorkspaceAndUser(WorkspaceEntity workspaceEntity,
+      UserEntity userEntity) {
+    return workspaceGuidanceRequestDAO.listByWorkspaceAndUser(workspaceEntity, userEntity);
+  }
   
 }

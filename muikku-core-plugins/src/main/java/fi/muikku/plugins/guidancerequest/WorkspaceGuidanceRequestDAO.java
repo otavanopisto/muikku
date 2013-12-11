@@ -43,6 +43,23 @@ public class WorkspaceGuidanceRequestDAO extends PluginDAO<WorkspaceGuidanceRequ
     
     return entityManager.createQuery(criteria).getResultList();
   }
+
+  public List<WorkspaceGuidanceRequest> listByWorkspaceAndUser(WorkspaceEntity workspaceEntity, UserEntity userEntity) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceGuidanceRequest> criteria = criteriaBuilder.createQuery(WorkspaceGuidanceRequest.class);
+    Root<WorkspaceGuidanceRequest> root = criteria.from(WorkspaceGuidanceRequest.class);
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(WorkspaceGuidanceRequest_.workspace), workspaceEntity.getId()),
+            criteriaBuilder.equal(root.get(WorkspaceGuidanceRequest_.student), userEntity.getId())
+        )
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
   
   
 }
