@@ -1,8 +1,9 @@
-@import "_base.scss";
-
-/* commons.scss contains all the common extendable styles  */
-
-@import "commons.scss";
+/* Lets import all the necessary support files */
+@import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
+@import "_commons.scss";
+@import "_forms.scss";
+@import "_widgets.scss";
+@import "_notif-queue.scss";
 
 /* Note: All in-development- unfinished-temp-styles are in temp.css */
 
