@@ -3,6 +3,8 @@ Idea is to have these styles shared amongst all possible functionalities
 To be used through SASS's extend feature with CSS's selectors.
 
   */
+@import "_base.scss"; 
+  
 
 .co-buttonContainer{
 text-align:center;
@@ -18,6 +20,8 @@ margin-top:5px;
   @include rounded(4px);  
   background-color:#fff;  
 }
+
+
 
 .co-toolbar{
 @include rounded(4px);  
@@ -152,4 +156,18 @@ margin-top:5px;
 		text-align:center;
 		@include rounded(4px);
 		@include gradient-top-bottom-four($mainFuncBtnGr...);
+}
+
+/* Widgets */
+
+.co-widget-container{
+  
+}
+
+.co-widget-header{
+	   @include gradient-top-bottom; 
+}
+
+.co-widget-content{
+    
 }
