@@ -124,6 +124,44 @@ $text: 12px;
 
 /* Generic Mixins */
 
+/* Borders */
+
+
+
+@mixin border($c:$brd ,$w:1px){
+  border:$w solid $c;
+  }
+
+@mixin border($bwidth:1px,$bcolor:$brd,$btype:solid){
+	border: $bwidth $btype $bcolor;
+}
+
+/* Corners */
+
+@mixin rounded($radius:5px) {
+ border-radius: $radius; 
+}
+
+@mixin rounded-top-left($radius:5px) {
+ border-top-left-radius: $radius; 
+}
+
+@mixin rounded-top-right($radius:5px) {
+ border-top-right-radius: $radius; 
+}
+
+@mixin rounded-bottom-left($radius:5px) {
+ border-bottom-left-radius: $radius; 
+}
+
+@mixin rounded-bottom-right($radius:5px) {
+ border-bottom-right-radius: $radius; 
+}
+
+@mixin border-all(){
+	
+}
+
 @mixin buttonLedGr($col1,$col2,$col3,$col4,$prcCol2,$prcCol3){
 background: $col1;
 background: -moz-radial-gradient(center, ellipse cover, $col1 0%, $col2 $prcCol2, $col3 $prcCol3, $col4 100%);
@@ -159,16 +197,7 @@ box-shadow: 1px 1px 2px 1px $s;
 }
 
 
-@mixin rounded($radius) {
- -webkit-border-radius: $radius; 
- -moz-border-radius: $radius; 
- -o-border-radius: $radius; 
- border-radius: $radius; 
-}
 
-@mixin border($c:$brd ,$w:1px){
-  border:$w solid $c;
-  }
 
 
 @mixin fadetoAlpha-top-bottom($fadeColor1:rgba(255,255,255,1),$fadeColor2:rgba(255,255,255,1),$fadeColor3:rgba(255,255,255,0)){
@@ -209,6 +238,9 @@ background: linear-gradient(to bottom, $fadeColor1 0%,$fadeColor2 50%,$fadeColor
 
 
 /* Spesific mixins */
+
+
+
 
 /* Content interaction*/
 
