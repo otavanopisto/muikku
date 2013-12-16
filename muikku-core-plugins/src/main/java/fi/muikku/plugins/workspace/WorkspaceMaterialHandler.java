@@ -36,8 +36,16 @@ public class WorkspaceMaterialHandler implements RequestHandler {
 		// TODO: Cache
 		
 		String pathInfo = StringUtils.removeStart(request.getRequestURI(), request.getContextPath());
+		int querySeparatorIndex = pathInfo.indexOf("?");
+		String matchedString;
+		if (querySeparatorIndex == -1) {
+		  matchedString = pathInfo;
+		} else {
+		  matchedString = pathInfo.substring(querySeparatorIndex);
+		}
+		
 		if (StringUtils.isNotBlank(pathInfo)) {
-  		if (!pattern.matcher(pathInfo).matches()) {
+  		if (!pattern.matcher(matchedString).matches()) {
   			return false;
   		}
   		

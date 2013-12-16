@@ -21,11 +21,7 @@ public class MaterialHtmlFieldPluginDescriptor implements PluginDescriptor {
   public List<Class<?>> getBeans() {
     return Arrays.asList(new Class<?>[] {
         
-      /* Listeners */
-     
-      /*
       HtmlMaterialFieldListeners.class
-      */
     });
   }
 
