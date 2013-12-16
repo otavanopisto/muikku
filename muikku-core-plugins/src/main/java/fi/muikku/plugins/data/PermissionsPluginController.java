@@ -10,11 +10,14 @@ import javax.inject.Inject;
 
 import fi.muikku.dao.security.EnvironmentRolePermissionDAO;
 import fi.muikku.dao.security.PermissionDAO;
+import fi.muikku.dao.security.WorkspaceRolePermissionDAO;
 import fi.muikku.dao.users.RoleEntityDAO;
+import fi.muikku.dao.workspace.WorkspaceEntityDAO;
 import fi.muikku.dao.workspace.WorkspaceSettingsTemplateDAO;
 import fi.muikku.dao.workspace.WorkspaceSettingsTemplateRolePermissionDAO;
 import fi.muikku.model.security.Permission;
 import fi.muikku.model.users.RoleEntity;
+import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceSettingsTemplate;
 import fi.muikku.security.MuikkuPermissionCollection;
 import fi.muikku.security.PermissionScope;
@@ -31,12 +34,18 @@ public class PermissionsPluginController {
 
 	@Inject
 	private RoleEntityDAO roleEntityDAO;
+
+  @Inject
+  private WorkspaceEntityDAO workspaceEntityDAO;
 	
 	@Inject
 	private WorkspaceSettingsTemplateRolePermissionDAO workspaceSettingsTemplateRolePermissionDAO; 
 
 	@Inject
 	private WorkspaceSettingsTemplateDAO workspaceSettingsTemplateDAO;
+	
+	@Inject
+	private WorkspaceRolePermissionDAO workspaceRolePermissionDAO;
 	
   @Inject
   @Any
@@ -70,6 +79,7 @@ public class PermissionsPluginController {
                   break;
                   
                   case PermissionScope.WORKSPACE:
+                    List<WorkspaceEntity> workspaces = workspaceEntityDAO.listAll();
                     WorkspaceSettingsTemplate workspaceSettingsTemplate = workspaceSettingsTemplateDAO.findById(1l); 
                     
                     for (int i = 0; i < defaultRoles.length; i++) {
@@ -77,6 +87,11 @@ public class PermissionsPluginController {
                       RoleEntity roleEntity = roleEntityDAO.findByName(roleName);
 
                       workspaceSettingsTemplateRolePermissionDAO.create(workspaceSettingsTemplate, roleEntity, permission);
+
+                      // TODO Workspace creation & templates - is this necessary and bulletproof?
+                      for (WorkspaceEntity workspace: workspaces) {
+                        workspaceRolePermissionDAO.create(workspace, roleEntity, permission);
+                      }
                     }
                   break;
                 }
