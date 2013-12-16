@@ -4,14 +4,13 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import fi.muikku.security.AbstractPermissionCollection;
-import fi.muikku.security.PermissionCollection;
+import fi.muikku.security.AbstractMuikkuPermissionCollection;
+import fi.muikku.security.MuikkuPermissionCollection;
 import fi.muikku.security.PermissionScope;
 import fi.muikku.security.Scope;
 
 @ApplicationScoped
-public class ForumResourcePermissionCollection extends AbstractPermissionCollection 
-    implements PermissionCollection {
+public class ForumResourcePermissionCollection extends AbstractMuikkuPermissionCollection implements MuikkuPermissionCollection {
 
   @Scope (PermissionScope.ENVIRONMENT)
   public static final String FORUM_CREATEENVIRONMENTFORUM = "FORUM_CREATEENVIRONMENTFORUM";
@@ -35,5 +34,10 @@ public class ForumResourcePermissionCollection extends AbstractPermissionCollect
   @Override
   public String getPermissionScope(String permission) throws NoSuchFieldException {
     return getPermissionScope(ForumResourcePermissionCollection.class, permission);
+  }
+  
+  @Override
+  public String[] getDefaultRoles(String permission) throws NoSuchFieldException {
+    return getDefaultRoles(ForumResourcePermissionCollection.class, permission);
   }
 }

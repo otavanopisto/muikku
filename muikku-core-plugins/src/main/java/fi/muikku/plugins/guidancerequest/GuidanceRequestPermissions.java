@@ -4,13 +4,13 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import fi.muikku.security.AbstractPermissionCollection;
-import fi.muikku.security.PermissionCollection;
+import fi.muikku.security.AbstractMuikkuPermissionCollection;
+import fi.muikku.security.MuikkuPermissionCollection;
 import fi.muikku.security.PermissionScope;
 import fi.muikku.security.Scope;
 
 @ApplicationScoped
-public class GuidanceRequestPermissions extends AbstractPermissionCollection implements PermissionCollection {
+public class GuidanceRequestPermissions extends AbstractMuikkuPermissionCollection implements MuikkuPermissionCollection {
   
   @Scope (PermissionScope.ENVIRONMENT)
   public static final String CREATE_GUIDANCEREQUEST = "CREATE_GUIDANCEREQUEST";
@@ -34,5 +34,10 @@ public class GuidanceRequestPermissions extends AbstractPermissionCollection imp
   @Override
   public String getPermissionScope(String permission) throws NoSuchFieldException {
     return getPermissionScope(GuidanceRequestPermissions.class, permission);
+  }
+  
+  @Override
+  public String[] getDefaultRoles(String permission) throws NoSuchFieldException {
+    return getDefaultRoles(GuidanceRequestPermissions.class, permission);
   }
 }

@@ -46,7 +46,6 @@ import fi.muikku.schooldata.UserController;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
-import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.session.SessionController;
 
 @Dependent
@@ -299,13 +298,13 @@ public class WallController {
 
   public boolean canPostEntry(Wall wall) {
     if (wall instanceof EnvironmentWall) {
-      return sessionController.hasEnvironmentPermission(MuikkuPermissions.WALL_WRITEENVIRONMENTWALL);
+      return sessionController.hasEnvironmentPermission(WallPermissions.WALL_WRITEENVIRONMENTWALL);
     }
 
     if (wall instanceof WorkspaceWall) {
       WorkspaceWall courseWall = (WorkspaceWall) wall;
 
-      return sessionController.hasCoursePermission(MuikkuPermissions.WALL_WRITECOURSEWALL, 
+      return sessionController.hasCoursePermission(WallPermissions.WALL_WRITECOURSEWALL, 
           workspaceController.findWorkspaceEntityById(courseWall.getWorkspace()));
     }
 

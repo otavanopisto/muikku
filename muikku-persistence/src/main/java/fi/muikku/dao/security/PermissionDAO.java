@@ -18,6 +18,17 @@ public class PermissionDAO extends CoreDAO<Permission> {
 
 	private static final long serialVersionUID = 1865691516876354591L;
 
+	public Permission create(String name, String scope) {
+	  Permission permission = new Permission();
+	  
+	  permission.setName(name);
+	  permission.setScope(scope);
+	  
+	  getEntityManager().persist(permission);
+	  
+	  return permission;
+	}
+	
 	public Permission findByName(String name) {
     EntityManager entityManager = getEntityManager(); 
     
