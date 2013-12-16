@@ -129,7 +129,7 @@ class EmbeddedItemHandler implements DeusNexEmbeddedItemElementHandler {
 		
 		Resource resource = deusNexDocument.getResourceByNo(resourceNo);
 		if (resource != null) {
-			path = contextPath + WorkspaceMaterialUtils.getCompletePath(rootFolder) + "/" + DeusNexDocumentUtils.getRelativePath(deusNexDocument, resource, deusNexDocument.getRootFolder()); 
+			path = contextPath + WorkspaceMaterialUtils.getCompletePath(rootFolder) + "/materials/" + DeusNexDocumentUtils.getRelativePath(deusNexDocument, resource, deusNexDocument.getRootFolder()); 
 			type = "DND";
 		} else {
 			Long workspaceNodeId = this.deusNexMachinaController.getResourceWorkspaceNodeId(resourceNo);
