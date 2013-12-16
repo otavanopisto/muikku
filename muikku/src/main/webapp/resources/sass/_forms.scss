@@ -3,7 +3,7 @@
 input[type="text"] {    
   padding: 5px;     
   @include rounded(3px);
-  @include border(#3a5900); 
+  @include border(#3a5900,1px); 
   -moz-box-shadow: 0 0 2px #DDDDDD;
   -webkit-box-shadow: 0 0 2px #DDDDDD;
   box-shadow: 0 0 2px #DDDDDD;
@@ -11,18 +11,18 @@ input[type="text"] {
 }
 
 input[type="text"]:hover {
-  @include border(#3a5900);
+  @include border(#3a5900,1px);
 }
 
 input[type="text"]:focus {
   box-shadow:0 0 9px #3a5900;
-  @include border(#3a5900);
+  @include border(#3a5900,1px);
   outline:0;
 }
 
 input[type="password"] {
   padding: 5px;   
-   @include border(#b90000);    
+   @include border(#b90000,1px);    
   background: -moz-linear-gradient(center top , #FFFFFF,  #EEEEEE 1px, #FFFFFF 20px);    
   background: -webkit-gradient(linear, left top, left 20, from(#FFFFFF), color-stop(5%, #EEEEEE) to(#FFFFFF));
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FBFBFB', endColorstr='#FFFFFF');
@@ -38,7 +38,7 @@ input[type="password"]:hover {
 
 input[type="password"]:focus {
   box-shadow:0 0 9px #b90000;
-  @include border(#b90000);
+  @include border(#b90000,1px);
   outline:0;
 }
 
@@ -49,7 +49,7 @@ input[type="button"],input[type="submit"] {
   @include gradient-top-bottom-four($btnGr...);
   @include rounded(2px);
   @include shadow;
-  @include border($btnBrd);
+  @include border($btnBrd,1px);
   margin-right:4px;
 }
 

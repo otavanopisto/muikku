@@ -126,8 +126,6 @@ $text: 12px;
 
 /* Borders */
 
-
-
 @mixin border($c:$brd ,$w:1px){
   border:$w solid $c;
   }

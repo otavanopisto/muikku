@@ -145,11 +145,11 @@ left:0;
 }
 
 #dynamicNaviButton{
-border:1px solid #000;
-height:40px;
-width:40px;
-    @include gradient-top-bottom-four($btnGr...);
-    @include shadow;
+  border:1px solid #000;
+  height:40px;
+  width:40px;
+  @include gradient-top-bottom-four($btnGr...);
+  @include shadow;
 }
 
 #dynamicNaviContainer{
