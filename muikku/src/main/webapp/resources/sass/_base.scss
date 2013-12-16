@@ -69,7 +69,7 @@ $fourColorGr-4:#f7f7f7;
   
 
  $headerGradient-start:#deefff;
-  $headerGradient-end:#98bede;
+ $headerGradient-end:#98bede;
  
 
 
@@ -128,9 +128,6 @@ $text: 12px;
 
 
 
-@mixin border($c:$brd ,$w:1px){
-  border:$w solid $c;
-  }
 
 @mixin border($bwidth:1px,$bcolor:$brd,$btype:solid){
 	border: $bwidth $btype $bcolor;
@@ -315,8 +312,7 @@ $trd1:0.1s;
 $trd2:0.1s;
 $trd3:0.1s;
 $trd4:0.1s;
-  
-  -webkit-transition-property:$pr1,$pr2,$pr3,$pr4; 
+ -webkit-transition-property:$pr1,$pr2,$pr3,$pr4; 
  -webkit-transition-duration:$trd1,$trd2,$trd3,$trd4; 
  -webkit-transition-timing-function:$tf1,$tf2,$tf3,$tf4; 
  -moz-transition-property:$pr1,$pr2,$pr3,$pr4;

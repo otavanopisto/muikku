@@ -44,6 +44,23 @@ margin-left:0 !important;
 
 /* staticNaviDock  */
 
+
+/* Containers */
+
+.dock-static-container{}
+.dock-workspace-container{
+    @include gradient-top-bottom;
+    @include rounded-bottom-left; 
+    @include rounded-bottom-right;
+    @include border;
+    border-top:0;
+    padding:13px;
+ 
+}
+
+
+
+
 .newCalendarWidget {
   display: inline-block;
 }

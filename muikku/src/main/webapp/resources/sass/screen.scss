@@ -175,6 +175,8 @@ padding:5px;
 #staticNavigation{
   background-color:#ededed;
   border: 1px solid #dadada;
+  @include rounded-bottom-left;
+  @include rounded-bottom-right;
 }
 
 
@@ -196,7 +198,6 @@ padding:5px;
 
 .stuckDNav {
   position:fixed !important;
-
   top:0;
   left:0;
 }
@@ -204,7 +205,6 @@ padding:5px;
 
 .stNavScrollStyles{
 	background-color:#fff !important; 
-	border:2px solid #dadada !important;
 	
 }
 
@@ -223,20 +223,11 @@ padding:5px;
 .seeker{
 	  text-align:center;
     position:relative;
-    top:109px;	
-    font-size:1.3em;
-    @include gradient-top-bottom-four($contInteractGr...);
-    height: 35px;
-    width: 165px;
-    border: 2px solid #ededed;
-    border-radius: 5px;
+    top:104px;	
+    @include gradient-top-bottom;
+    @include rounded-top-left; 
+    @include rounded-top-right;
 }
-
-.seeker input{
-    margin:5px 0 5px 0;
-
-}
-
 
 
 #globalSearchFormIcon{

@@ -289,6 +289,17 @@
 	
 	
 	    $( "div[class*='wi-frontpage-dynamic']" ).draggable({ snapMode: "inner" });
+	      
+
+	    $( "#seeker" ).focus(function() {
+	      $('#seeker').val('');
+	    });
+
+	     $( "#seeker" ).blur(function() {
+	       var sval = this.defaultValue;
+	        $('#seeker').val(sval);
+	      });
+	    
 	   </script>  
   </h:body>
 
