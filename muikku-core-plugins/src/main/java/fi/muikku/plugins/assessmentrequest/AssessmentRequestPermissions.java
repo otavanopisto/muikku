@@ -4,13 +4,13 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import fi.muikku.security.AbstractPermissionCollection;
-import fi.muikku.security.PermissionCollection;
+import fi.muikku.security.AbstractMuikkuPermissionCollection;
+import fi.muikku.security.MuikkuPermissionCollection;
 import fi.muikku.security.PermissionScope;
 import fi.muikku.security.Scope;
 
 @ApplicationScoped
-public class AssessmentRequestPermissions extends AbstractPermissionCollection implements PermissionCollection {
+public class AssessmentRequestPermissions extends AbstractMuikkuPermissionCollection implements MuikkuPermissionCollection {
 
   @Scope (PermissionScope.WORKSPACE)
   public static final String CREATE_WORKSPACE_ASSESSMENTREQUEST = "CREATE_WORKSPACE_ASSESSMENTREQUEST";
@@ -31,5 +31,10 @@ public class AssessmentRequestPermissions extends AbstractPermissionCollection i
   @Override
   public String getPermissionScope(String permission) throws NoSuchFieldException {
     return getPermissionScope(AssessmentRequestPermissions.class, permission);
+  }
+
+  @Override
+  public String[] getDefaultRoles(String permission) throws NoSuchFieldException {
+    return getDefaultRoles(AssessmentRequestPermissions.class, permission);
   }
 }

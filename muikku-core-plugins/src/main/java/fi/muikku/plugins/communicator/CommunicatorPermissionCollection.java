@@ -4,14 +4,13 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 
-import fi.muikku.security.AbstractPermissionCollection;
-import fi.muikku.security.PermissionCollection;
+import fi.muikku.security.AbstractMuikkuPermissionCollection;
+import fi.muikku.security.MuikkuPermissionCollection;
 import fi.muikku.security.PermissionScope;
 import fi.muikku.security.Scope;
 
 @ApplicationScoped
-public class CommunicatorPermissionCollection extends AbstractPermissionCollection 
-    implements PermissionCollection {
+public class CommunicatorPermissionCollection extends AbstractMuikkuPermissionCollection implements MuikkuPermissionCollection {
 
   @Scope (PermissionScope.PERSONAL)
   public static final String COMMUNICATOR_MANAGE_SETTINGS = "COMMUNICATOR_MANAGE_SETTINGS";
@@ -29,5 +28,10 @@ public class CommunicatorPermissionCollection extends AbstractPermissionCollecti
   @Override
   public String getPermissionScope(String permission) throws NoSuchFieldException {
     return getPermissionScope(CommunicatorPermissionCollection.class, permission);
+  }
+  
+  @Override
+  public String[] getDefaultRoles(String permission) throws NoSuchFieldException {
+    return getDefaultRoles(CommunicatorPermissionCollection.class, permission);
   }
 }
