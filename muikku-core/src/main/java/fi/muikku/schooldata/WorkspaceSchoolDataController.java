@@ -73,6 +73,25 @@ class WorkspaceSchoolDataController {
 	private Instance<SchoolDataEntityInitiator<WorkspaceUser>> workspaceUserInitiators;
 	
 	/* Workspaces */
+
+  public Workspace createWorkspace(String schoolDataSourceIdentifier, String name, String description, WorkspaceType type, String courseIdentifierIdentifier) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSourceIdentifier);
+    
+    WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(schoolDataSource);
+    if (workspaceBridge != null) {
+      try {
+        return initWorkspace(workspaceBridge.createWorkspace(name, description, type, courseIdentifierIdentifier));
+      } catch (UnexpectedSchoolDataBridgeException e) {
+        logger.log(Level.SEVERE, "School Data Bridge reported a problem while finding workspace", e);
+      } catch (SchoolDataBridgeRequestException e) {
+        logger.log(Level.SEVERE, "School Data Bridge reported a problem while finding workspace", e);
+      }
+    } else {
+      logger.log(Level.SEVERE, "School Data Bridge not found: " + schoolDataSource);
+    }
+    
+    return null;
+  }
 	
 	public Workspace findWorkspace(WorkspaceEntity workspaceEntity) {
 	  return findWorkspace(workspaceEntity.getDataSource(), workspaceEntity.getIdentifier());
