@@ -1,5 +1,7 @@
 package fi.muikku.plugins.workspace.rest;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -11,6 +13,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -47,9 +50,32 @@ public class WorkspaceRESTService extends PluginRESTService {
 		
 	@GET
 	@Path ("/workspaceEntities/")
-	public Response listWorkspaceEntities() {
-		List<WorkspaceEntity> workspaceEntities = workspaceController.listWorkspaceEntities();
-		
+	public Response listWorkspaceEntities(
+	    @QueryParam ("schoolDataSource") String schoolDataSource, 
+	    @QueryParam ("identifier") String identifier) {
+	  
+	  List<WorkspaceEntity> workspaceEntities = null;
+	  
+	  if (StringUtils.isNotBlank(schoolDataSource)) {
+	    
+      if (StringUtils.isNotBlank(identifier)) {
+        Workspace workspace = workspaceController.findWorkspace(schoolDataSource, identifier);
+        if (workspace != null) {
+          workspaceEntities = Arrays.asList(workspaceController.findWorkspaceEntity(workspace));
+        } else {
+          workspaceEntities = Collections.emptyList();
+        }
+      } else {
+        workspaceEntities = workspaceController.listWorkspaceEntitiesBySchoolDataSource(schoolDataSource);
+      }
+	  } else {
+	    if (StringUtils.isNotBlank(identifier)) {
+	      return Response.status(Status.BAD_REQUEST).entity("Cannot define identifier without schoolDataSource").build();
+	    }
+	    
+	    workspaceEntities = workspaceController.listWorkspaceEntities();
+	  }
+
 		return Response.ok(
 		  tranquilityBuilderFactory.createBuilder()
 		    .createTranquility()
