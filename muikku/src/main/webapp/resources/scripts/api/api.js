@@ -24,12 +24,11 @@
       this._clientRequest = null;
     },
     
-    /**
-    create: function () {
-      this._client.create.apply(window, arguments);
+    create: function (data) {
+      this._client.create(data);
       return this;
     },
-    **/
+
     read: function () {
       var request = new RequestImpl(this._client);
       return request.read.apply(request, arguments);
@@ -52,7 +51,8 @@
       this._client = new $.RestClient(CONTEXTPATH + '/rest/' + service + '/', {
         ajax: {
           async: false
-        }
+        },
+        stringifyData: true
       });
     },
     add: function (resources) {
