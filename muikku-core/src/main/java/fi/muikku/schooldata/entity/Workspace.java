@@ -14,8 +14,12 @@ public interface Workspace extends SchoolDataEntity {
   public String getDescription();
   
   public void setDescription(String description);
+  
+  // TODO: public String getWorkspaceTypeDataSource();
 	
 	public String getWorkspaceTypeId();
+	
+  // TODO: public String getCourseIdentifierDataSource();
 	
 	public String getCourseIdentifierIdentifier();
 
