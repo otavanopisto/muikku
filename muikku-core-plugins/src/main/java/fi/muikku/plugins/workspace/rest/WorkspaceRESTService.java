@@ -14,10 +14,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.Workspace;
+import fi.muikku.schooldata.entity.WorkspaceCompact;
+import fi.muikku.schooldata.entity.WorkspaceType;
 import fi.muikku.schooldata.entity.WorkspaceUser;
 import fi.tranquil.TranquilityBuilderFactory;
 
@@ -41,12 +45,6 @@ public class WorkspaceRESTService extends PluginRESTService {
 	// WorkspaceEntity 
 	// 
 		
-	@POST
-	@Path ("/workspaceEntities/")
-	public Response createWorkspaceEntity() {
-		return null;
-	}
-	
 	@GET
 	@Path ("/workspaceEntities/")
 	public Response listWorkspaceEntities() {
@@ -77,8 +75,45 @@ public class WorkspaceRESTService extends PluginRESTService {
 	
 	@POST
 	@Path ("/workspaces/")
-	public Response createWorkspace() {
-		return null;
+	public Response createWorkspace(WorkspaceCompact workspaceData) {
+	  if (StringUtils.isNotBlank(workspaceData.getIdentifier())) {
+      return Response.status(Status.BAD_REQUEST).entity("Identifier can not be specified when creating a workspace").build();
+    }
+	  
+    if (StringUtils.isBlank(workspaceData.getSchoolDataSource())) {
+      return Response.status(Status.BAD_REQUEST).entity("SchoolDataSource must be defined when creating a workspace").build();
+    }
+
+    if (StringUtils.isBlank(workspaceData.getName())) {
+      return Response.status(Status.BAD_REQUEST).entity("name must be defined when creating a workspace").build();
+    }
+
+    if (StringUtils.isBlank(workspaceData.getWorkspaceTypeId())) {
+      return Response.status(Status.BAD_REQUEST).entity("workspaceTypeId must be defined when creating a workspace").build();
+    }
+
+    if (StringUtils.isBlank(workspaceData.getCourseIdentifierIdentifier())) {
+      return Response.status(Status.BAD_REQUEST).entity("courseIdentifierIdentifier must be defined when creating a workspace").build();
+    }
+
+    // TODO: Incorrect school data source
+    WorkspaceType workspaceType = workspaceController.findWorkspaceTypeByDataSourceAndIdentifier(workspaceData.getSchoolDataSource(), workspaceData.getWorkspaceTypeId());
+    if (workspaceType == null) {
+      return Response.status(Status.BAD_REQUEST).entity("workspace type could not be found").build();
+    }
+    
+    Workspace workspace = workspaceController.createWorkspace(
+        workspaceData.getSchoolDataSource(),
+        workspaceData.getName(),
+        workspaceData.getDescription(),
+        workspaceType,
+        workspaceData.getCourseIdentifierIdentifier());
+
+    return Response.ok(
+        tranquilityBuilderFactory.createBuilder()
+          .createTranquility()
+          .entity(workspace)
+    ).build();
 	}
 	
 	@GET
