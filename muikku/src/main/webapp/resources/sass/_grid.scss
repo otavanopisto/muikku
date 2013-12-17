@@ -18,6 +18,7 @@ $container-size:960px;
 $grid-columns: 24;
 $grid-margin-divided:prc($container-size, $grid-margin-pixel);
 $grid-margin-percent:prc(100, $grid-margin-divided);
+
 /* Mixins */
 
 @mixin grid_x($size:$container-size,$cols:$grid-columns) {

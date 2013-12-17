@@ -2,34 +2,17 @@
 
 input[type="text"] {    
   padding: 5px;     
-  @include rounded(3px);
-  @include border(#3a5900,1px); 
-  -moz-box-shadow: 0 0 2px #DDDDDD;
-  -webkit-box-shadow: 0 0 2px #DDDDDD;
-  box-shadow: 0 0 2px #DDDDDD;
-  font-size: 1em;
-}
-
-input[type="text"]:hover {
-  @include border(#3a5900,1px);
-}
-
-input[type="text"]:focus {
-  box-shadow:0 0 9px #3a5900;
-  @include border(#3a5900,1px);
-  outline:0;
+  @extend .co-input-textfield;
+  &:hover {@extend .co-input-textfield-hover;}
+  &:focus {@extend .co-input-textfield-focus;}
 }
 
 input[type="password"] {
   padding: 5px;   
-   @include border(#b90000,1px);    
-  background: -moz-linear-gradient(center top , #FFFFFF,  #EEEEEE 1px, #FFFFFF 20px);    
-  background: -webkit-gradient(linear, left top, left 20, from(#FFFFFF), color-stop(5%, #EEEEEE) to(#FFFFFF));
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FBFBFB', endColorstr='#FFFFFF');
-  @include rounded(3px);
-  -moz-box-shadow: 0 0 2px #DDDDDD;
-  -webkit-box-shadow: 0 0 2px #DDDDDD;
-  box-shadow: 0 0 2px #DDDDDD;
+  @include border(#b90000);    
+  @extend .co-input-textfield;
+  &:hover {@extend .co-input-textfield-hover;}
+  &:focus {@extend .co-input-textfield-focus;}
 }
 
 input[type="password"]:hover {
@@ -37,8 +20,7 @@ input[type="password"]:hover {
 }
 
 input[type="password"]:focus {
-  box-shadow:0 0 9px #b90000;
-  @include border(#b90000,1px);
+  @include border(#b90000);
   outline:0;
 }
 
@@ -62,6 +44,14 @@ input[type="button"],input[type="submit"] {
   margin-bottom:5px;
 }
 
+/* Seeker */
+
+.seeker input{
+  margin:5px 0 5px 0;
+  @extend .co-input-textfield;
+  &:hover {@extend .co-input-textfield-hover;}
+  &:focus {@extend .co-input-textfield-focus;}
+}
 
 /* Calendar */
 
@@ -86,7 +76,7 @@ input[type="button"],input[type="submit"] {
   @include gradient-top-bottom(#207020, #20FF20);
 }
 
-.cm-newMessage-recipientName{
+.cm-newMessage-recipientName {
   float:left;
 }
 
