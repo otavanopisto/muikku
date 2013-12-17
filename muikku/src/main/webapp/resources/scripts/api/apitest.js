@@ -111,6 +111,16 @@
           alert(err);
         }
       });
+        
+    $('#post-test').click(function (event) {
+      api.workspace.workspaces.create({
+        "schoolDataSource": "MOCK",
+        "name": "Test Workspace",
+        "description": "Workspace created via new REST API",
+        "workspaceTypeId": "2",
+        "courseIdentifierIdentifier": "2"
+      });
+    });
   });
   
 })(window);
