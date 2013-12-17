@@ -24,26 +24,25 @@
       this._clientRequest = null;
     },
     
-    create: function (data) {
-      this._client.create(data);
-      return this;
+    create: function () {
+      var request = new RequestImpl(this._client);
+      return request.create.apply(request, arguments);
     },
 
     read: function () {
       var request = new RequestImpl(this._client);
       return request.read.apply(request, arguments);
     },
-    /**
+
     update: function () {
-      this._client.update.apply(window, arguments);
-      return this;
+      var request = new RequestImpl(this._client);
+      return request.update.apply(request, arguments);
     },
-    
+
     del: function () {
-      this._client.destroy.apply(window, arguments);
-      return this;
-    },
-    **/
+      var request = new RequestImpl(this._client);
+      return request.del.apply(request, arguments);
+    }
   });
   
   ServiceImpl = $.klass({
@@ -215,11 +214,26 @@
       this._client = client;
     },
     
+    create: function (data) {
+      this._clientRequest = this._client.create.apply(window, arguments);
+      return this;
+    }, 
+    
     read: function () {
       this._clientRequest = this._client.read.apply(window, arguments);
       return this;
     },
 
+    update: function () {
+      this._clientRequest = this._client.update.apply(window, arguments);
+      return this;
+    },
+    
+    del: function () {
+      this._clientRequest = this._client.del.apply(window, arguments);
+      return this;
+    },
+    
     callback: function (callback) {
       this._clientRequest.done($.proxy(function (data, textStatus, jqXHR) {
         this.handleResponse(data, function (node) {
