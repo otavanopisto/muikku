@@ -5,6 +5,8 @@ import java.util.ArrayList;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.validation.constraints.NotNull;
 
@@ -14,37 +16,11 @@ import org.hibernate.validator.constraints.NotEmpty;
 @PrimaryKeyJoinColumn(name="id")
 public class QuerySelectField extends QueryField{
 	
-	public static class Option implements Serializable {
-		
-	    public Option(String name, Double points, String optText) {
-	        this.name = name;
-	        this.optText = optText;
-	    }
-	    
-	    public String getOptText() {
-			return optText;
-		}
-		public void setOptText(String optText) {
-			this.optText = optText;
-		}
-		public String getName() {
-			return name;
-		}
-		public void setName(String name) {
-			this.name = name;
-		}
-
-		private static final long serialVersionUID = -7908385182285507614L;
-	    
-		private String optText;
-		private String name;
-	}
-	
-	public ArrayList<Option> getOptions() {
+	public ArrayList<SelectFieldOption> getOptions() {
 		return options;
 	}
 
-	public void setOptions(ArrayList<Option> options) {
+	public void setOptions(ArrayList<SelectFieldOption> options) {
 		this.options = options;
 	}
 	
@@ -55,8 +31,10 @@ public class QuerySelectField extends QueryField{
 	public void setText(String text) {
 		this.text = text;
 	}
-
-	private ArrayList<Option> options = new ArrayList<Option>();
+	
+	@OneToMany
+	@JoinColumn (name = "option_id")
+	private ArrayList<SelectFieldOption> options = new ArrayList<SelectFieldOption>();
 	
 	@NotEmpty
 	@NotNull
