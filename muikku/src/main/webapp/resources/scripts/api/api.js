@@ -49,7 +49,11 @@
   
   ServiceImpl = $.klass({
     init: function (service) {
-      this._client = new $.RestClient(CONTEXTPATH + '/rest/' + service + '/');
+      this._client = new $.RestClient(CONTEXTPATH + '/rest/' + service + '/', {
+        ajax: {
+          async: false
+        }
+      });
     },
     add: function (resources) {
       var current = this;
