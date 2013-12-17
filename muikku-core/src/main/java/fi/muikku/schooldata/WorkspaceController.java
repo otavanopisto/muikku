@@ -170,6 +170,20 @@ public class WorkspaceController {
   public List<WorkspaceEntity> listWorkspaceEntities() {
     return workspaceEntityDAO.listAll();
   }
+
+  public List<WorkspaceEntity> listWorkspaceEntitiesBySchoolDataSource(String schoolDataSource) {
+    SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
+    if (dataSource != null) {
+      return listWorkspaceEntitiesBySchoolDataSource(dataSource);
+    } else {
+      logger.log(Level.SEVERE, "Could not find school data source '" + schoolDataSource + "' while listing workspaceEntities by school data source");
+      return null;
+    }
+  }
+
+  public List<WorkspaceEntity> listWorkspaceEntitiesBySchoolDataSource(SchoolDataSource schoolDataSource) {
+    return workspaceEntityDAO.listByDataSource(schoolDataSource);
+  }
 	
 	/* WorkspaceUsers */
   
