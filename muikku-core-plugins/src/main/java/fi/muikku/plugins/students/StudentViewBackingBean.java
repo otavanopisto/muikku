@@ -5,12 +5,14 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import com.ocpsoft.pretty.faces.annotation.URLAction;
 import com.ocpsoft.pretty.faces.annotation.URLMappings;
 import com.ocpsoft.pretty.faces.annotation.URLMapping;
 
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.schooldata.UserController;
 import fi.muikku.schooldata.entity.User;
+import fi.muikku.security.Permit;
 
 
 @Named
@@ -18,7 +20,7 @@ import fi.muikku.schooldata.entity.User;
 @RequestScoped
 @URLMappings(mappings = {
   @URLMapping(
-      id = "students", 
+      id = "students-studentselected", 
       pattern = "/students/#{studentViewBackingBean.studentId}/", 
       viewId = "/students/studentselected.jsf")
 })
@@ -27,6 +29,11 @@ public class StudentViewBackingBean {
   
   @Inject
   private UserController userController;
+  
+  @URLAction
+  @Permit (StudentsViewPermissions.MANAGE_STUDENTS_VIEW_STUDENT)
+  public void load() {
+  }
   
   public User getUser() {
     return userController.findUser(getUserEntity());
