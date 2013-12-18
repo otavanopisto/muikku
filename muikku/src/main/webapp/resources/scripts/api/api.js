@@ -26,21 +26,25 @@
     
     create: function () {
       var request = new RequestImpl(this._client);
+      this._client.opts.stringifyData = true;
       return request.create.apply(request, arguments);
     },
 
     read: function () {
       var request = new RequestImpl(this._client);
+      this._client.opts.stringifyData = false;
       return request.read.apply(request, arguments);
     },
 
     update: function () {
       var request = new RequestImpl(this._client);
+      this._client.opts.stringifyData = true;
       return request.update.apply(request, arguments);
     },
 
     del: function () {
       var request = new RequestImpl(this._client);
+      this._client.opts.stringifyData = true;
       return request.del.apply(request, arguments);
     }
   });
@@ -50,8 +54,7 @@
       this._client = new $.RestClient(CONTEXTPATH + '/rest/' + service + '/', {
         ajax: {
           async: false
-        },
-        stringifyData: true
+        }
       });
     },
     add: function (resources) {
@@ -81,7 +84,7 @@
       return this;
     },
     
-    replace: function (path, property, newProperty, resource) {
+    _add: function (path, property, newProperty, resource, removeOriginalProperty) {
       return this.on(path, function (parent, callback) {
         if ($.isArray(parent)) {
           var callbacks = new Array();
@@ -98,7 +101,10 @@
             if (!err) {
               for (var i = 0, l = results.length; i < l; i++) {
                 var element = elements[i];
-                delete element[property];
+                if (removeOriginalProperty) {
+                  delete element[property];
+                }
+                
                 element[newProperty] = results[i];
               }
 
@@ -112,7 +118,10 @@
           var idProperty = parent[property];
           resource.read(idProperty).callback(function (err, result) {
             if (!err) {
-              delete parent[property];
+              if (removeOriginalProperty) {
+                delete parent[property];
+              }
+              
               parent[newProperty] = result;
               callback();
             } else {
@@ -121,6 +130,14 @@
           });
         }
       });
+    },
+    
+    replace: function (path, property, newProperty, resource) {
+      return this._add(path, property, newProperty, resource, true);
+    },
+    
+    add: function (path, property, newProperty, resource) {
+      return this._add(path, property, newProperty, resource, false);
     },
     
     handleResponse: function (data, callback) {
