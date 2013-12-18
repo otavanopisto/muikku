@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -216,7 +217,25 @@ public class WorkspaceRESTService extends PluginRESTService {
         .entity(workspace)
     ).build();
   }
-	
+
+  @DELETE
+  @Path ("/workspaces/{WORKSPACE_ENTITY_ID}")
+  public Response updateWorkspace(@PathParam ("WORKSPACE_ENTITY_ID") Long workspaceEntityId) {
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+    if (workspace == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    workspaceController.removeWorkspace(workspace);
+    
+    return Response.noContent().build();
+  }
+  
 	//
 	// Members
 	//
