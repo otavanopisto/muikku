@@ -75,5 +75,10 @@ public class WorkspaceEntityDAO extends CoreDAO<WorkspaceEntity> {
    
     return entityManager.createQuery(criteria).getResultList();
   }
+
+  public WorkspaceEntity updateArchived(WorkspaceEntity workspaceEntity, Boolean archived) {
+    workspaceEntity.setArchived(archived);
+    return persist(workspaceEntity);
+  }
  
 }
