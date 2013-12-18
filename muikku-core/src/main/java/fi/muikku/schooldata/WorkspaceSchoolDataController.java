@@ -130,6 +130,23 @@ class WorkspaceSchoolDataController {
 		return initWorkspaces(result);
 	}
 
+  public Workspace updateWorkspace(Workspace workspace) {
+    WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(workspace.getSchoolDataSource());
+    if (workspaceBridge != null) {
+      try {
+        return initWorkspace(workspaceBridge.updateWorkspace(workspace));
+      } catch (UnexpectedSchoolDataBridgeException e) {
+        logger.log(Level.SEVERE, "School Data Bridge reported a problem while updating workspace", e);
+      } catch (SchoolDataBridgeRequestException e) {
+        logger.log(Level.SEVERE, "School Data Bridge reported a problem while updating workspace", e);
+      }
+    } else {
+      logger.log(Level.SEVERE, "School Data Bridge not found: " + workspace.getSchoolDataSource());
+    }
+    
+    return null;
+  }
+
 	public List<Workspace> listWorkspacesByCourseIdentifier(CourseIdentifier courseIdentifier) {
 		SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(courseIdentifier.getSchoolDataSource());
 		if (schoolDataSource != null) {
@@ -149,7 +166,7 @@ class WorkspaceSchoolDataController {
 		
 		return null;
 	}
-	
+  
 	/* Workspace Entities */
 	
 	public WorkspaceEntity findWorkspaceEntity(Workspace workspace) {
@@ -310,6 +327,15 @@ class WorkspaceSchoolDataController {
 		
 		return null;
 	}
+  
+  private WorkspaceSchoolDataBridge getWorkspaceBridge(String schoolDataSourceIdentifier) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSourceIdentifier);
+    if (schoolDataSource != null) {
+      return getWorkspaceBridge(schoolDataSource);
+    }
+    
+    return null;
+  }
 	
 	private List<WorkspaceSchoolDataBridge> getWorkspaceBridges() {
 		List<WorkspaceSchoolDataBridge> result = new ArrayList<>();
@@ -413,4 +439,5 @@ class WorkspaceSchoolDataController {
 		
 		return workspaceUsers;
 	}
+
 }

@@ -152,7 +152,11 @@ public class WorkspaceController {
 	public List<Workspace> listWorkspacesByCourseIdentifier(CourseIdentifier courseIdentifier) {
 		return workspaceSchoolDataController.listWorkspacesByCourseIdentifier(courseIdentifier);
 	}
-	
+
+	public Workspace updateWorkspace(Workspace workspace) {
+	  return workspaceSchoolDataController.updateWorkspace(workspace);
+  }
+
 	/* Workspace Entity */
 	
 	public WorkspaceEntity findWorkspaceEntity(Workspace workspace) {
