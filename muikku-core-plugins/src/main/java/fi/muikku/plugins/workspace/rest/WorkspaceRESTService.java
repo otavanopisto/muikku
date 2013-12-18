@@ -10,6 +10,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -173,6 +174,48 @@ public class WorkspaceRESTService extends PluginRESTService {
 		    .entity(workspace)
 		).build();
 	}
+  
+  @PUT
+  @Path ("/workspaces/{WORKSPACE_ENTITY_ID}")
+  public Response getWorkspace(@PathParam ("WORKSPACE_ENTITY_ID") Long workspaceEntityId, WorkspaceCompact workspaceData) {
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+    if (workspace == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+
+    if (isChanged(workspaceData.getSchoolDataSource(), workspace.getSchoolDataSource())) {
+      return Response.status(Status.BAD_REQUEST).entity("SchoolDataSource can not be changed").build();
+    }
+
+    if (isChanged(workspaceData.getIdentifier(), workspace.getIdentifier())) {
+      return Response.status(Status.BAD_REQUEST).entity("identifier can not be changed").build();
+    }
+
+    // TODO: CourseIdentifierIdentififer should be updateable
+    if (isChanged(workspaceData.getWorkspaceTypeId(), workspace.getWorkspaceTypeId())) {
+      return Response.status(Status.BAD_REQUEST).entity("courseIdentifierIdentifier can not be changed").build();
+    }
+    
+    // TODO: WorkspaceTypeId should be updateable
+    if (isChanged(workspaceData.getCourseIdentifierIdentifier(), workspace.getCourseIdentifierIdentifier())) {
+      return Response.status(Status.BAD_REQUEST).entity("workspaceTypeId can not be changed").build();
+    }
+
+    workspace.setDescription(workspaceData.getDescription());
+    workspace.setName(workspaceData.getName());
+    workspaceController.updateWorkspace(workspace);
+    
+    return Response.ok(
+      tranquilityBuilderFactory.createBuilder()
+        .createTranquility()
+        .entity(workspace)
+    ).build();
+  }
 	
 	//
 	// Members
@@ -199,5 +242,13 @@ public class WorkspaceRESTService extends PluginRESTService {
         .entities(workspaceUsers)
     ).build();
   }
-	
+  
+  private boolean isChanged(Object object1, Object object2) {
+    if (object1 == null) {
+      return false;
+    }
+    
+    return !object1.equals(object2);
+  }
+  
 }
