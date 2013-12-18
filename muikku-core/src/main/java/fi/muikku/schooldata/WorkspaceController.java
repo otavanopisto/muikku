@@ -157,9 +157,18 @@ public class WorkspaceController {
 	  return workspaceSchoolDataController.updateWorkspace(workspace);
   }
 
+  public void removeWorkspace(Workspace workspace) {
+    WorkspaceEntity workspaceEntity = workspaceSchoolDataController.findWorkspaceEntity(workspace);
+    if (workspaceEntity != null) {
+      archiveWorkspaceEntity(workspaceEntity);
+    }
+    
+    workspaceSchoolDataController.removeWorkspace(workspace);
+  }
+
 	/* Workspace Entity */
 	
-	public WorkspaceEntity findWorkspaceEntity(Workspace workspace) {
+  public WorkspaceEntity findWorkspaceEntity(Workspace workspace) {
 		return workspaceSchoolDataController.findWorkspaceEntity(workspace);
 	}
 	
@@ -188,7 +197,11 @@ public class WorkspaceController {
   public List<WorkspaceEntity> listWorkspaceEntitiesBySchoolDataSource(SchoolDataSource schoolDataSource) {
     return workspaceEntityDAO.listByDataSource(schoolDataSource);
   }
-	
+
+  public WorkspaceEntity archiveWorkspaceEntity(WorkspaceEntity workspaceEntity) {
+    return workspaceEntityDAO.updateArchived(workspaceEntity, Boolean.TRUE);
+  }
+
 	/* WorkspaceUsers */
   
   public WorkspaceUser createWorkspaceUser(Workspace workspace, User user, String roleSchoolDataSource, String roleIdentifier) {
