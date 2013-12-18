@@ -177,7 +177,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @PUT
   @Path ("/workspaces/{WORKSPACE_ENTITY_ID}")
-  public Response getWorkspace(@PathParam ("WORKSPACE_ENTITY_ID") Long workspaceEntityId, WorkspaceCompact workspaceData) {
+  public Response updateWorkspace(@PathParam ("WORKSPACE_ENTITY_ID") Long workspaceEntityId, WorkspaceCompact workspaceData) {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
