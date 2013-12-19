@@ -72,7 +72,10 @@ public class DefaultWallEntryProvider implements WallEntryProvider {
           /**
            * When viewing other peoples walls, you only see public or owned entries
            */
-          entries.addAll(wallEntryDAO.listPublicOrOwnedEntriesByWall(wall, loggedUser));
+          if (sessionController.isLoggedIn())
+            entries.addAll(wallEntryDAO.listPublicOrOwnedEntriesByWall(wall, loggedUser));
+          else
+            entries.addAll(wallEntryDAO.listPublicEntriesByWall(wall));
         }
       break;
 

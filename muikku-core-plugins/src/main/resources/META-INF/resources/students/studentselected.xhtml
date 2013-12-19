@@ -73,9 +73,16 @@
           <ul>
             <li><a href="#studentTab-1">Opiskeluprofiili</a></li>
             <li><a href="#studentTab-2">Opiskelutapahtumat</a></li>
-            <li><a href="#studentTab-3">HOPS</a></li>
-            <li><a href="#studentTab-4">Suoritusrekisteri</a></li>
+
+            <ui:fragment rendered="#{muikkuSession.hasEnvironmentPermission('MANAGE_STUDENTS_VIEW_STUDENT_STUDYPLAN')}">
+              <li><a href="#studentTab-3">HOPS</a></li>
+            </ui:fragment>
+            
+            <ui:fragment rendered="#{muikkuSession.hasEnvironmentPermission('MANAGE_STUDENTS_VIEW_STUDENT_CREDITS')}">
+              <li><a href="#studentTab-4">Suoritusrekisteri</a></li>
+            </ui:fragment>
           </ul>
+          
           <div id="studentTab-1" class="container_24 tabContent">
             <div class="grid_24 nomargin noLid">
               <div class="st-content-student-tabs">
@@ -134,8 +141,14 @@
           </div>
           <div id="studentTab-2">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna
             aliquam erat volutpat.</div>
-          <div id="studentTab-3">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna
-            aliquam erat volutpat.</div>
+          <ui:fragment rendered="#{muikkuSession.hasEnvironmentPermission('MANAGE_STUDENTS_STUDYPLAN_VIEW')}">
+            <div id="studentTab-3">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna
+              aliquam erat volutpat.</div>
+          </ui:fragment>
+          <ui:fragment rendered="#{muikkuSession.hasEnvironmentPermission('MANAGE_STUDENTS_CREDITS_VIEW')}">
+            <div id="studentTab-4">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna
+              aliquam erat volutpat.</div>
+          </ui:fragment>
         </div>
 
 
