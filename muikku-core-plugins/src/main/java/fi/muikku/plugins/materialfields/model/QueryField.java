@@ -15,10 +15,10 @@ import org.hibernate.validator.constraints.NotEmpty;
 @Inheritance(strategy=InheritanceType.JOINED)
 public class QueryField {
 	
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getName() {
@@ -54,7 +54,7 @@ public class QueryField {
 	
 	@Id
 	@GeneratedValue (strategy = GenerationType.IDENTITY)
-	private long id;
+	private Long id;
 	
 	private String name;
 	
