@@ -1,11 +1,7 @@
 (function() {
   
   $(document).ready(function (event) {
-    var api = mApi([
-      'workspace/workspaces', 
-      'workspace/workspaceEntities',
-      'workspace/workspaces/users'
-    ]);
+    var api = mApi();
 
     // Single request
     
