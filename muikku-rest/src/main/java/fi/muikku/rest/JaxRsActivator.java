@@ -11,6 +11,7 @@ import javax.ws.rs.core.Application;
 import fi.muikku.plugin.manager.PluginManagerException;
 import fi.muikku.plugin.manager.SingletonPluginManager;
 import fi.muikku.rest.course.CourseRESTService;
+import fi.muikku.rest.meta.MetaRESTService;
 import fi.muikku.rest.user.UserGroupRESTService;
 import fi.muikku.rest.user.UsersRESTService;
 
@@ -23,6 +24,7 @@ public class JaxRsActivator extends Application {
 		// TODO: There is probably more sophisticated way to do this (extending deployment scanner or something...)
 		
 		List<Class<? extends AbstractRESTService>> coreServices = Arrays.asList(
+		    MetaRESTService.class,
 				PermissionRESTService.class,
 				CourseRESTService.class,
 				UsersRESTService.class,
