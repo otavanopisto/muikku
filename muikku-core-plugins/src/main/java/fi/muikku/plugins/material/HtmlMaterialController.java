@@ -140,6 +140,9 @@ public class HtmlMaterialController {
       TransformerFactory transformerFactory = TransformerFactory.newInstance();
       Transformer transformer = transformerFactory.newTransformer();
       transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+      transformer.setOutputProperty(OutputKeys.METHOD, "html");
+      transformer.setOutputProperty(OutputKeys.VERSION, "5");
+      transformer.setOutputProperty(OutputKeys.INDENT, "no");
 
       Element bodyElement = (Element) bodyNode;
 
