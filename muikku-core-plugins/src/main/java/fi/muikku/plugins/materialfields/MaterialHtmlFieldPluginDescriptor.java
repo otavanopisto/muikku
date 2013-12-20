@@ -4,14 +4,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import fi.muikku.plugin.PluginDescriptor;
-import fi.muikku.plugins.material.model.field.TextField.RightAnswer;
 import fi.muikku.plugins.materialfields.dao.QueryDrawFieldDAO;
 import fi.muikku.plugins.materialfields.dao.QueryFieldDAO;
 import fi.muikku.plugins.materialfields.dao.QuerySelectFieldDAO;
 import fi.muikku.plugins.materialfields.dao.QueryTextFieldDAO;
 import fi.muikku.plugins.materialfields.dao.RightAnswerDAO;
 import fi.muikku.plugins.materialfields.dao.SelectFieldOptionDAO;
-import fi.muikku.plugins.materialfields.model.SelectFieldOption;
 
 public class MaterialHtmlFieldPluginDescriptor implements PluginDescriptor {
 

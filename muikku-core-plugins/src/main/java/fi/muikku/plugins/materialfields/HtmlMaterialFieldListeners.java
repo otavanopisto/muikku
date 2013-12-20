@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.w3c.dom.Document;
@@ -16,7 +15,6 @@ import org.w3c.dom.NodeList;
 
 import fi.muikku.plugins.material.HtmlMaterialController;
 import fi.muikku.plugins.material.processing.HtmlMaterialProcessingContext;
-import fi.muikku.plugins.material.processing.MaterialProcessor;
 import fi.muikku.plugins.material.processing.MaterialProcessorAdapter;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.muikku.schooldata.WorkspaceController;

@@ -2,16 +2,15 @@ package fi.muikku.plugins.wall.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.plugins.wall.WallFeedItem;
 import fi.muikku.plugins.wall.WallController;
 import fi.muikku.plugins.wall.WallEntryProvider;
+import fi.muikku.plugins.wall.WallFeedItem;
 import fi.muikku.plugins.wall.dao.UserWallDAO;
 import fi.muikku.plugins.wall.dao.WallEntryDAO;
 import fi.muikku.plugins.wall.dao.WorkspaceWallDAO;

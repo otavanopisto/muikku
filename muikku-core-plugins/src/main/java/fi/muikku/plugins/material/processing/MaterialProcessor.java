@@ -1,7 +1,5 @@
 package fi.muikku.plugins.material.processing;
 
-import org.w3c.dom.Document;
-
 public interface MaterialProcessor {
   
   public void beforeProcessMaterial(HtmlMaterialBeforeProcessingContext context);

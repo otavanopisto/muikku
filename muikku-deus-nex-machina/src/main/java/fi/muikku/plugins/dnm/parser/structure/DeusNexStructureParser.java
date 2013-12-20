@@ -13,7 +13,6 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.text.translate.NumericEntityUnescaper;
-import org.apache.html.dom.HTMLAnchorElementImpl;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;

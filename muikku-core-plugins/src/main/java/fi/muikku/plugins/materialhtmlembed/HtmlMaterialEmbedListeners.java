@@ -8,7 +8,6 @@ import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -23,7 +22,6 @@ import fi.muikku.plugins.material.HtmlMaterialController;
 import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.material.processing.HtmlMaterialBeforeSerializeContext;
 import fi.muikku.plugins.material.processing.HtmlMaterialProcessingContext;
-import fi.muikku.plugins.material.processing.MaterialProcessor;
 import fi.muikku.plugins.material.processing.MaterialProcessorAdapter;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;

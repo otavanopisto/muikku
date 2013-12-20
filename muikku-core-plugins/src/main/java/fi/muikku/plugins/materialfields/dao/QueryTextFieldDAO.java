@@ -1,7 +1,6 @@
 package fi.muikku.plugins.materialfields.dao;
 
 import fi.muikku.plugin.PluginDAO;
-import fi.muikku.plugins.materialfields.model.QuerySelectField;
 import fi.muikku.plugins.materialfields.model.QueryTextField;
 
 public class QueryTextFieldDAO extends PluginDAO<QueryTextField> {
