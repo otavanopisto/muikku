@@ -1,18 +1,15 @@
 package fi.muikku.plugins.dnm.translator;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import fi.muikku.plugins.dnm.parser.content.ConnectFieldOption;
 import fi.muikku.plugins.dnm.parser.content.OptionListOption;
 import fi.muikku.plugins.dnm.parser.content.RightAnswer;
 import fi.muikku.plugins.material.model.field.ConnectField;
+import fi.muikku.plugins.material.model.field.MemoField;
 import fi.muikku.plugins.material.model.field.OptionListField;
 import fi.muikku.plugins.material.model.field.TextField;
-import fi.muikku.plugins.material.model.field.ConnectField.Connection;
-import fi.muikku.plugins.material.model.field.ConnectField.Field;
 
 public class FieldTranslator {
   
@@ -44,6 +41,10 @@ public class FieldTranslator {
       translatedAnswers.add(new TextField.RightAnswer(points, rightAnswer.getText(), true, false));
     }
     return new TextField(name, columns, translatedAnswers);
+  }
+
+  public MemoField translateMemoField(String name, Integer columns, Integer rows, String help, String hint) {
+    return new MemoField(name, columns, rows, help, hint);
   }
   
   public Object translateOptionList(String name, String listType, List<OptionListOption> options) {
