@@ -3,10 +3,9 @@ package fi.muikku.plugins.dnm;
 import java.io.IOException;
 import java.util.List;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -16,9 +15,7 @@ import fi.muikku.plugins.dnm.parser.content.OptionListOption;
 import fi.muikku.plugins.dnm.parser.content.RightAnswer;
 import fi.muikku.plugins.dnm.parser.structure.DeusNexDocument;
 import fi.muikku.plugins.dnm.translator.FieldTranslator;
-import fi.muikku.plugins.material.model.field.ConnectField;
-import fi.muikku.plugins.material.model.field.OptionListField;
-import fi.muikku.plugins.material.model.field.TextField;
+import fi.muikku.plugins.material.model.field.MemoField;
 
 class FieldElementsHandler implements DeusNexFieldElementHandler {
 
@@ -64,6 +61,22 @@ class FieldElementsHandler implements DeusNexFieldElementHandler {
     inputElement.setAttribute("size", String.valueOf(columns));
 
     return wrapWithObjectElement(ownerDocument, "application/vnd.muikku.field.text", inputElement, textFieldData);
+  }
+
+  @Override
+  public Node handleMemoField(Document ownerDocument, String paramName, Integer columns, Integer rows, String help, String hint) {
+    // TODO: This is just for show, real implementation depends on QueryMaterial implementation
+    
+    MemoField fieldData = fieldTranslator.translateMemoField(paramName, columns, rows, help, hint);
+
+    Element textAreaElement = ownerDocument.createElement("textarea");
+    textAreaElement.setAttribute("name", paramName);
+    textAreaElement.setAttribute("cols", String.valueOf(columns));
+    textAreaElement.setAttribute("rows", String.valueOf(rows));
+    textAreaElement.setAttribute("placeholder", help);
+    textAreaElement.setAttribute("title", hint);
+
+    return wrapWithObjectElement(ownerDocument, fieldData.getType(), textAreaElement, fieldData);
   }
 
   @Override

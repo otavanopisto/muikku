@@ -67,6 +67,13 @@ public class DeusNexContentParser {
 					Node replacement = handleTextField(ownerDocument, element);
 					replaceElement(ownerDocument, element, replacement);
 				}
+        
+        NodeList memoFieldNodeList = localeDocument.getElementsByTagName("ixf:memofield");
+        for (int i = memoFieldNodeList.getLength() - 1; i >= 0; i--) {
+          Element element = (Element) memoFieldNodeList.item(i);
+          Node replacement = handleMemoField(ownerDocument, element);
+          replaceElement(ownerDocument, element, replacement);
+        }
 				
 				NodeList optionListNodeList = localeDocument.getElementsByTagName("ixf:optionlist");
 				for (int i = optionListNodeList.getLength() - 1; i >= 0; i--) {
@@ -96,7 +103,7 @@ public class DeusNexContentParser {
 					}
 				}
 				
-				contents.put(lang, DeusNexXmlUtils.serializeElement(htmlElement));
+				contents.put(lang, DeusNexXmlUtils.serializeElement(htmlElement, true, false, "html", "5"));
 			}
 		} catch (XPathExpressionException | TransformerException e) {
 			throw new DeusNexInternalException("Internal Error occurred while processing document", e);
@@ -234,6 +241,20 @@ public class DeusNexContentParser {
 		
 		return null;
 	}
+  
+  private Node handleMemoField(Document ownerDocument, Element embeddedItemElement) throws XPathExpressionException {
+    String paramName = DeusNexXmlUtils.getChildValue(embeddedItemElement, "paramname");
+    Integer columns = DeusNexXmlUtils.getChildValueInteger(embeddedItemElement, "columns");
+    Integer rows = DeusNexXmlUtils.getChildValueInteger(embeddedItemElement, "rows");
+    String help = DeusNexXmlUtils.getChildValue(embeddedItemElement, "help");
+    String hint = DeusNexXmlUtils.getChildValue(embeddedItemElement, "hint");
+    
+    if (fieldElementHandler != null) {
+      return fieldElementHandler.handleMemoField(ownerDocument, paramName, columns, rows, help, hint);
+    }
+    
+    return null;
+  }
 	
 	private Node handleConnectField(Document ownerDocument, Element fieldElement) throws XPathExpressionException {
 		String paramName = DeusNexXmlUtils.getChildValue(fieldElement, "paramname");

@@ -12,5 +12,7 @@ public interface DeusNexFieldElementHandler {
 	public Node handleTextField(Document ownerDocument, String paramName, Integer columns, List<RightAnswer> rightAnswers);
 
 	public Node handleConnectField(Document ownerDocument, String paramName, List<ConnectFieldOption> options);
-	
+	 
+  public Node handleMemoField(Document ownerDocument, String paramName, Integer columns, Integer rows, String help, String hint);
+
 }
