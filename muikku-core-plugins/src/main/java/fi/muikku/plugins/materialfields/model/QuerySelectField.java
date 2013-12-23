@@ -22,10 +22,6 @@ public class QuerySelectField extends QueryField{
 		this.text = text;
 	}
 	
-  @Id
-  @GeneratedValue (strategy = GenerationType.IDENTITY)
-  private Long id;
-	
 	@NotEmpty
 	@NotNull
 	@Column (nullable = false)

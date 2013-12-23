@@ -1,8 +1,10 @@
 package fi.muikku.plugins.materialfields.dao;
 
+import fi.muikku.dao.DAO;
 import fi.muikku.plugin.PluginDAO;
 import fi.muikku.plugins.materialfields.model.QueryDrawField;
 
+@DAO
 public class QueryDrawFieldDAO extends PluginDAO<QueryDrawField> {
 
   private static final long serialVersionUID = 752946302740645731L;
