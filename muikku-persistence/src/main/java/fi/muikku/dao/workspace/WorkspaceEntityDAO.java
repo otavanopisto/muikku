@@ -1,5 +1,7 @@
 package fi.muikku.dao.workspace;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -59,5 +61,24 @@ public class WorkspaceEntityDAO extends CoreDAO<WorkspaceEntity> {
    
     return getSingleResult( entityManager.createQuery(criteria) );
 	}
+
+  public List<WorkspaceEntity> listByDataSource(SchoolDataSource dataSource) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceEntity> criteria = criteriaBuilder.createQuery(WorkspaceEntity.class);
+    Root<WorkspaceEntity> root = criteria.from(WorkspaceEntity.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.equal(root.get(WorkspaceEntity_.dataSource), dataSource)
+    );
+   
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
+  public WorkspaceEntity updateArchived(WorkspaceEntity workspaceEntity, Boolean archived) {
+    workspaceEntity.setArchived(archived);
+    return persist(workspaceEntity);
+  }
  
 }
