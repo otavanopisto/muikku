@@ -32,14 +32,17 @@ public class StudentsPluginDescriptor implements PluginDescriptor, PersistencePl
 		  
 			/* Backing beans */ 
 
-		  StudentViewBackingBean.class
+		  StudentViewBackingBean.class,
+		  StudentsViewBackingBean.class,
 			
 			/* Request Handlers */
 			
 			
 			/* DAOs */
 			
-			
+			/* Other */
+		  
+		  StudentsViewPermissions.class
 		}));
 	}
 	

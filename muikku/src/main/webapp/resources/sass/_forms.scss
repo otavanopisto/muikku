@@ -2,18 +2,17 @@
 
 input[type="text"] {    
   padding: 5px;     
-    @extend .co-input-textfield;
-    &:hover {@extend .co-input-textfield-hover;}
-    &:focus {@extend .co-input-textfield-focus;}
+  @extend .co-input-textfield;
+  &:hover {@extend .co-input-textfield-hover;}
+  &:focus {@extend .co-input-textfield-focus;}
 }
-
 
 input[type="password"] {
   padding: 5px;   
-   @include border(#b90000);    
-    @extend .co-input-textfield;
-    &:hover {@extend .co-input-textfield-hover;}
-    &:focus {@extend .co-input-textfield-focus;}
+  @include border(#b90000);    
+  @extend .co-input-textfield;
+  &:hover {@extend .co-input-textfield-hover;}
+  &:focus {@extend .co-input-textfield-focus;}
 }
 
 input[type="password"]:hover {
@@ -32,7 +31,7 @@ input[type="button"],input[type="submit"] {
   @include gradient-top-bottom-four($btnGr...);
   @include rounded(2px);
   @include shadow;
-  @include border($btnBrd);
+  @include border($btnBrd,1px);
   margin-right:4px;
 }
 
@@ -45,14 +44,13 @@ input[type="button"],input[type="submit"] {
   margin-bottom:5px;
 }
 
-
 /* Seeker */
 
 .seeker input{
-    margin:5px 0 5px 0;
-    @extend .co-input-textfield;
-    &:hover {@extend .co-input-textfield-hover;}
-    &:focus {@extend .co-input-textfield-focus;}
+  margin:5px 0 5px 0;
+  @extend .co-input-textfield;
+  &:hover {@extend .co-input-textfield-hover;}
+  &:focus {@extend .co-input-textfield-focus;}
 }
 
 /* Calendar */
@@ -78,7 +76,7 @@ input[type="button"],input[type="submit"] {
   @include gradient-top-bottom(#207020, #20FF20);
 }
 
-.cm-newMessage-recipientName{
+.cm-newMessage-recipientName {
   float:left;
 }
 

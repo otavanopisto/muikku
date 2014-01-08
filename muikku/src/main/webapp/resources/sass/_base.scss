@@ -24,12 +24,9 @@ $aBgr : #f8f8f8;
 
 $saBgr : #e3eaf2;
 
-
 /* toolbar background */
 
 $tBgr : #ffda8b;
-
-
 
 /* highlighted background */
 
@@ -43,11 +40,9 @@ $btnGr:#bfd255, #8eb92a, #72aa00 , #9ecb2d;;
 $btnBrd: #72aa00;
 $btnBrdH: #fff;
 
-
 /* Top-bottom 2 - color */
 $gradient-start:#fff;
 $gradient-end:#e5e5e5;
-
 
 /* Top-bottom 4 - color */
 
@@ -56,33 +51,20 @@ $fourColorGr-2:#fcfcfc;
 $fourColorGr-3:#f4f4f4;
 $fourColorGr-4:#f7f7f7;
 
-
-
-
-
-  /* MainFunction Button */
+/* MainFunction Button */
  
-  $mainFuncBtnGr: #feccb1,#f17432,#ea5507,#fb955e;  
-  $mainFuncBtnBrd: #ea5507;
+$mainFuncBtnGr: #feccb1,#f17432,#ea5507,#fb955e;  
+$mainFuncBtnBrd: #ea5507;
   
-	/* Header top-bottom */
+/* Header top-bottom */
   
-
- $headerGradient-start:#deefff;
- $headerGradient-end:#98bede;
- 
-
-
-
+$headerGradient-start:#deefff;
+$headerGradient-end:#98bede;
 		
-		
-	/* Content interaction top-bottom 4-color */
+/* Content interaction top-bottom 4-color */
 	
-    $contInteractGr:#e0f3fa,#d8f0fc,#b8e2f6,#b6dffd;
+$contInteractGr:#e0f3fa,#d8f0fc,#b8e2f6,#b6dffd;
 	
-
-
-
 /* Communicator */
 
 /* Gradients */
@@ -92,7 +74,6 @@ $msgGr: #ffffff , #c1cbff;
 $reqGr: #ffffff , #c1cbff;
 
 /* Borders */
-
 
 $newsBrd:#ff7e16;
 $msgBrd:#495aff;
@@ -115,22 +96,14 @@ $ryhmakurssi:#744ad3;
 
 $text: 12px;
 
-
-
-
 /* Transition durations */
-
-
 
 /* Generic Mixins */
 
 /* Borders */
 
-
-
-
-@mixin border($bwidth:1px,$bcolor:$brd,$btype:solid){
-	border: $bwidth $btype $bcolor;
+@mixin border($bwidth:1px,$bcolor:$brd,$btype:solid) {
+  border: $bwidth $btype $bcolor;
 }
 
 /* Corners */
@@ -155,60 +128,51 @@ $text: 12px;
  border-bottom-right-radius: $radius; 
 }
 
-@mixin border-all(){
+@mixin border-all() {
 	
 }
 
-@mixin buttonLedGr($col1,$col2,$col3,$col4,$prcCol2,$prcCol3){
-background: $col1;
-background: -moz-radial-gradient(center, ellipse cover, $col1 0%, $col2 $prcCol2, $col3 $prcCol3, $col4 100%);
-background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,$col1), color-stop($prcCol2,$col2), color-stop($prcCol3,$col3), color-stop(100%,$col4));
-background: -webkit-radial-gradient(center, ellipse cover, $col1 0%,$col2 $prcCol2,$col3 $prcCol3,$col4 100%);
-background: -o-radial-gradient(center, ellipse cover, $col1 0%,$col2 $prcCol2,$col3 $prcCol3,$col4 100%);
-background: -ms-radial-gradient(center, ellipse cover, $col1 0%,$col2 $prcCol2,$col3 $prcCol3,$col4 100%);
-background: radial-gradient(ellipse at center, $col1 0%,$col2 $prcCol2,$col3 $prcCol3,$col4 100%);
-
+@mixin buttonLedGr($col1,$col2,$col3,$col4,$prcCol2,$prcCol3) {
+  background: $col1;
+  background: -moz-radial-gradient(center, ellipse cover, $col1 0%, $col2 $prcCol2, $col3 $prcCol3, $col4 100%);
+  background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,$col1), color-stop($prcCol2,$col2), color-stop($prcCol3,$col3), color-stop(100%,$col4));
+  background: -webkit-radial-gradient(center, ellipse cover, $col1 0%,$col2 $prcCol2,$col3 $prcCol3,$col4 100%);
+  background: -o-radial-gradient(center, ellipse cover, $col1 0%,$col2 $prcCol2,$col3 $prcCol3,$col4 100%);
+  background: -ms-radial-gradient(center, ellipse cover, $col1 0%,$col2 $prcCol2,$col3 $prcCol3,$col4 100%);
+  background: radial-gradient(ellipse at center, $col1 0%,$col2 $prcCol2,$col3 $prcCol3,$col4 100%);
 }
 
-@mixin buttonLedSh($shadows...){
+@mixin buttonLedSh($shadows...) {
   -moz-box-shadow: $shadows;
   -webkit-box-shadow: $shadows;
-   box-shadow: $shadows;
+  box-shadow: $shadows;
 }
   
-
-@mixin fontShadow{
+@mixin fontShadow {
   text-shadow: 1px 1px 3px rgba(150, 150, 150, 0.37);
 }
 
-
 @mixin shadow($s:$sc) {
--webkit-box-shadow: 1px 1px 2px 1px $s;
-box-shadow: 1px 1px 2px 1px $s; 
+  -webkit-box-shadow: 1px 1px 2px 1px $s;
+  box-shadow: 1px 1px 2px 1px $s; 
 }
-
 
 @mixin iShadow($s:$sc) {
-    -webkit-box-shadow: inset 1px 1px 1px 1px $s;
-    box-shadow: inset 1px 1px 1px 1px  $s; 
+  -webkit-box-shadow: inset 1px 1px 1px 1px $s;
+  box-shadow: inset 1px 1px 1px 1px  $s; 
 }
 
-
-
-
-
-@mixin fadetoAlpha-top-bottom($fadeColor1:rgba(255,255,255,1),$fadeColor2:rgba(255,255,255,1),$fadeColor3:rgba(255,255,255,0)){
-background: #fff;
-background: -moz-linear-gradient(top, $fadeColor1 0%, $fadeColor2 50%, $fadeColor3 100%);
-background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$fadeColor1), color-stop(50%,$fadeColor2), color-stop(100%,$fadeColor3));
-background: -webkit-linear-gradient(top, $fadeColor1 0%,$fadeColor2 50%,$fadeColor3 100%);
-background: -o-linear-gradient(top, $fadeColor1 0%,$fadeColor2 50%,$fadeColor3 100%);
-background: -ms-linear-gradient(top, $fadeColor1 0%,$fadeColor2 50%,$fadeColor3 100%);
-background: linear-gradient(to bottom, $fadeColor1 0%,$fadeColor2 50%,$fadeColor3 100%);
+@mixin fadetoAlpha-top-bottom($fadeColor1:rgba(255,255,255,1),$fadeColor2:rgba(255,255,255,1),$fadeColor3:rgba(255,255,255,0)) {
+  background: #fff;
+  background: -moz-linear-gradient(top, $fadeColor1 0%, $fadeColor2 50%, $fadeColor3 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$fadeColor1), color-stop(50%,$fadeColor2), color-stop(100%,$fadeColor3));
+  background: -webkit-linear-gradient(top, $fadeColor1 0%,$fadeColor2 50%,$fadeColor3 100%);
+  background: -o-linear-gradient(top, $fadeColor1 0%,$fadeColor2 50%,$fadeColor3 100%);
+  background: -ms-linear-gradient(top, $fadeColor1 0%,$fadeColor2 50%,$fadeColor3 100%);
+  background: linear-gradient(to bottom, $fadeColor1 0%,$fadeColor2 50%,$fadeColor3 100%);
 }
 
-
-@mixin gradient-top-bottom($bgColorStart:$gradient-start, $bgColorEnd:$gradient-end,$bgr:$gradient-start){
+@mixin gradient-top-bottom($bgColorStart:$gradient-start, $bgColorEnd:$gradient-end,$bgr:$gradient-start) {
   background: $bgr; 
   background: -moz-linear-gradient(top, $bgColorStart 0%,  $bgColorEnd 100%);
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$bgColorStart), color-stop(100%,$bgColorEnd));
@@ -216,12 +180,9 @@ background: linear-gradient(to bottom, $fadeColor1 0%,$fadeColor2 50%,$fadeColor
   background: -o-linear-gradient(top, $bgColorStart 0%,$bgColorEnd 100%);
   background: -ms-linear-gradient(top, $bgColorStart 0%,$bgColorEnd 100%);
   background: linear-gradient(to bottom, $bgColorStart 0%,$bgColorEnd 100%);
-
 }
 
-
-
-@mixin gradient-top-bottom-four($gr1:$fourColorGr-1,$gr2:$fourColorGr-2,$gr3:$fourColorGr-3,$gr4:$fourColorGr-4,$bgr:$fourColorGr-1){
+@mixin gradient-top-bottom-four($gr1:$fourColorGr-1,$gr2:$fourColorGr-2,$gr3:$fourColorGr-3,$gr4:$fourColorGr-4,$bgr:$fourColorGr-1) {
   background: $bgr;
   background: -moz-linear-gradient(top, $gr1 0%, $gr2 50%, $gr3 51%, $gr4 100%);
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$gr1), color-stop(50%,$gr2), color-stop(51%,$gr3), color-stop(100%,$gr4));
@@ -231,24 +192,13 @@ background: linear-gradient(to bottom, $fadeColor1 0%,$fadeColor2 50%,$fadeColor
   background: linear-gradient(to bottom, $gr1 0%,$gr2 50%,$gr3 51%,$gr4 100%);
 }
 
-
-
-
-/* Spesific mixins */
-
-
-
+/* Specific mixins */
 
 /* Content interaction*/
 
-
 /* Static navigation */
 
-
-
-
-
-@mixin naviIcon($iconUrl){
+@mixin naviIcon($iconUrl) {
   background: $iconUrl no-repeat center;
   height:20px;
   width:20px;
@@ -257,85 +207,70 @@ background: linear-gradient(to bottom, $fadeColor1 0%,$fadeColor2 50%,$fadeColor
   background-size:100%;  
 }
 
-@mixin customIcon($iconUrl,$height:20px,$width:20px){
+@mixin customIcon($iconUrl,$height:20px,$width:20px) {
   height:$height;
   width:$width;  
   background: $iconUrl no-repeat center;
   background-size:100%;
-  
-
 }
-
-
 
 /* Dynamic Navigation */
 
-
-@mixin dynNaviGr($iconUrl,$gr1,$gr2){
-box-shadow: 5px 10px 6px -2px #ededed;
-background: $iconUrl no-repeat center right #b8bac6;
-background: $iconUrl no-repeat center right, -moz-linear-gradient(top, $gr1 0%, $gr2 100%);
-background: $iconUrl no-repeat center right, -webkit-gradient(linear, left top, left bottom, color-stop(0%,$gr1), color-stop(100%,$gr2));
-background: $iconUrl no-repeat center right, -webkit-linear-gradient(top, $gr1 0%,$gr2 100%);
-background: $iconUrl no-repeat center right, -o-linear-gradient(top, $gr1 0%,$gr2 100%);
-background: $iconUrl no-repeat center right, -ms-linear-gradient(top, $gr1 0%,$gr2 100%);
-background: $iconUrl no-repeat center right, linear-gradient(to bottom, $gr1 0%,$gr2 100%); 
+@mixin dynNaviGr($iconUrl,$gr1,$gr2) {
+  box-shadow: 5px 10px 6px -2px #ededed;
+  background: $iconUrl no-repeat center right #b8bac6;
+  background: $iconUrl no-repeat center right, -moz-linear-gradient(top, $gr1 0%, $gr2 100%);
+  background: $iconUrl no-repeat center right, -webkit-gradient(linear, left top, left bottom, color-stop(0%,$gr1), color-stop(100%,$gr2));
+  background: $iconUrl no-repeat center right, -webkit-linear-gradient(top, $gr1 0%,$gr2 100%);
+  background: $iconUrl no-repeat center right, -o-linear-gradient(top, $gr1 0%,$gr2 100%);
+  background: $iconUrl no-repeat center right, -ms-linear-gradient(top, $gr1 0%,$gr2 100%);
+  background: $iconUrl no-repeat center right, linear-gradient(to bottom, $gr1 0%,$gr2 100%); 
 }
 
-
-
-
-@mixin dynNaviTransition($trd1:0.6s,$trd2:0.6s,$trd3:0.1s,$trd4:0.1s,$pr1:opacity,$pr2:visibility,$pr3:margin,$tf1:ease-in-out,$tf2:ease-in-out,$tf3:ease-in-out,$tf4:ease-in-out){
- -webkit-transition-property:$pr1,$pr2,$pr3; 
- -webkit-transition-duration:$trd1,$trd2,$trd3; 
- -webkit-transition-timing-function:$tf1,$tf2,$tf3; 
- -moz-transition-property:$pr1,$pr2,$pr3;
- -moz-transition-duration:$trd1,$trd2, $trd3; 
- -moz-transition-timing-function:$tf1,$tf2,$tf3; 
- -o-transition-property:$pr1,$pr2,$pr3;
- -o-transition-duration:$trd1,$trd2,$trd3; 
- -o-transition-timing-function:$tf1,$tf2,$tf3; 
- transition-property:$pr1,$pr2,$pr3;
- transition-duration:$trd1,$trd2,$trd3; 
- transition-timing-function: $tf1,$tf2,$tf3; ;  
+@mixin dynNaviTransition($trd1:0.6s,$trd2:0.6s,$trd3:0.1s,$trd4:0.1s,$pr1:opacity,$pr2:visibility,$pr3:margin,$tf1:ease-in-out,$tf2:ease-in-out,$tf3:ease-in-out,$tf4:ease-in-out) {
+  -webkit-transition-property:$pr1,$pr2,$pr3; 
+  -webkit-transition-duration:$trd1,$trd2,$trd3; 
+  -webkit-transition-timing-function:$tf1,$tf2,$tf3; 
+  -moz-transition-property:$pr1,$pr2,$pr3;
+  -moz-transition-duration:$trd1,$trd2, $trd3; 
+  -moz-transition-timing-function:$tf1,$tf2,$tf3; 
+  -o-transition-property:$pr1,$pr2,$pr3;
+  -o-transition-duration:$trd1,$trd2,$trd3; 
+  -o-transition-timing-function:$tf1,$tf2,$tf3; 
+  transition-property:$pr1,$pr2,$pr3;
+  transition-duration:$trd1,$trd2,$trd3; 
+  transition-timing-function: $tf1,$tf2,$tf3; ;  
 }
-
-
 
 /* Tooltip */
 
-
-
-
-@mixin tooltipTransition($trd1,$trd2,$trd3,$trd4,$pr1:opacity,$pr2:visibility,$pr3:margin-left,$pr4:margin-top,$tf1:ease-in-out,$tf2:ease-in-out,$tf3:ease-in-out,$tf4:ease-in-out){
-$trd1:0.1s;
-$trd2:0.1s;
-$trd3:0.1s;
-$trd4:0.1s;
- -webkit-transition-property:$pr1,$pr2,$pr3,$pr4; 
- -webkit-transition-duration:$trd1,$trd2,$trd3,$trd4; 
- -webkit-transition-timing-function:$tf1,$tf2,$tf3,$tf4; 
- -moz-transition-property:$pr1,$pr2,$pr3,$pr4;
- -moz-transition-duration:$trd1,$trd2, $trd3,$trd4; 
- -moz-transition-timing-function:$tf1,$tf2,$tf3,$tf4; 
- -o-transition-property:$pr1,$pr2,$pr3,$pr4;
- -o-transition-duration:$trd1,$trd2,$trd3,$trd4; 
- -o-transition-timing-function:$tf1,$tf2,$tf3,$tf4; 
- transition-property:$pr1,$pr2,$pr3,$pr4;
- transition-duration:$trd1,$trd2,$trd3,$trd4; 
- transition-timing-function: $tf1,$tf2,$tf3,$tf4; ;  
+@mixin tooltipTransition($trd1,$trd2,$trd3,$trd4,$pr1:opacity,$pr2:visibility,$pr3:margin-left,$pr4:margin-top,$tf1:ease-in-out,$tf2:ease-in-out,$tf3:ease-in-out,$tf4:ease-in-out) {
+  $trd1:0.1s;
+  $trd2:0.1s;
+  $trd3:0.1s;
+  $trd4:0.1s;
+  -webkit-transition-property:$pr1,$pr2,$pr3,$pr4; 
+  -webkit-transition-duration:$trd1,$trd2,$trd3,$trd4; 
+  -webkit-transition-timing-function:$tf1,$tf2,$tf3,$tf4; 
+  -moz-transition-property:$pr1,$pr2,$pr3,$pr4;
+  -moz-transition-duration:$trd1,$trd2, $trd3,$trd4; 
+  -moz-transition-timing-function:$tf1,$tf2,$tf3,$tf4; 
+  -o-transition-property:$pr1,$pr2,$pr3,$pr4;
+  -o-transition-duration:$trd1,$trd2,$trd3,$trd4; 
+  -o-transition-timing-function:$tf1,$tf2,$tf3,$tf4; 
+  transition-property:$pr1,$pr2,$pr3,$pr4;
+  transition-duration:$trd1,$trd2,$trd3,$trd4; 
+  transition-timing-function: $tf1,$tf2,$tf3,$tf4; ;  
 }
 
-
-
-@mixin tooltipBackGround( $bgColorStart, $bgColorEnd){
- background: $bgColorStart; 
- background: -moz-linear-gradient(top, $bgColorStart 0%, $bgColorEnd 100%); 
- background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$bgColorStart), color-stop(100%,$bgColorEnd));
- } 
+@mixin tooltipBackGround( $bgColorStart, $bgColorEnd) {
+  background: $bgColorStart; 
+  background: -moz-linear-gradient(top, $bgColorStart 0%, $bgColorEnd 100%); 
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$bgColorStart), color-stop(100%,$bgColorEnd));
+} 
  
- @mixin transitionDirection($val1:0,$val2:0,$val3:0,$val4:0){
- margin:$val1 $val2 $val3 $val4;
- }
+@mixin transitionDirection($val1:0,$val2:0,$val3:0,$val4:0) {
+  margin:$val1 $val2 $val3 $val4;
+}
 
  

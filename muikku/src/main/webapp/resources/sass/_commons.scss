@@ -6,11 +6,11 @@ To be used through SASS's extend feature with CSS's selectors.
 @import "_base.scss"; 
   
 .co-input-textfield{
-	  @include border(1px,#dadada);
-	  color:#dadada;
+    @include border(1px,#dadada);
+    color:#dadada;
     font-weight:bold;
-    background-color:#ededed;	
-	
+    background-color:#ededed; 
+  
 }
 
 
@@ -25,7 +25,7 @@ To be used through SASS's extend feature with CSS's selectors.
 
 .co-input-textfield-focus{
     @include border(1px,#000); 
-	  color:#000;
+    color:#000;
     font-weight:bold;
     background-color:#fff; 
 
@@ -92,9 +92,9 @@ margin-top:5px;
 }
 
 .co-settings-floater{
-	display:none;
-	@include rounded(2px);  
-	background-color:$aBgr;
+  display:none;
+  @include rounded(2px);  
+  background-color:$aBgr;
 }
 
 .co-widget{
@@ -144,9 +144,9 @@ margin-top:5px;
  }
 
 .co-fieldRow{
-	 margin-top:2px;
-	}
-	
+   margin-top:2px;
+  }
+  
 .co-labelfield{
   float:left;
   font-weight:bold;
@@ -175,15 +175,15 @@ margin-top:5px;
     color:#fff;
 }
 .co-filter-remove{
-	  content:"X";
-		cursor:pointer;
-		font-weight:bold;
-		margin-left:5px;
-		height:15px;
-		width:15px;
-		text-align:center;
-		@include rounded(4px);
-		@include gradient-top-bottom-four($mainFuncBtnGr...);
+    content:"X";
+    cursor:pointer;
+    font-weight:bold;
+    margin-left:5px;
+    height:15px;
+    width:15px;
+    text-align:center;
+    @include rounded(4px);
+    @include gradient-top-bottom-four($mainFuncBtnGr...);
 }
 
 /* Widgets */
@@ -193,7 +193,7 @@ margin-top:5px;
 }
 
 .co-widget-header{
-	@include gradient-top-bottom; 
+  @include gradient-top-bottom; 
 }
 
 .co-widget-content{

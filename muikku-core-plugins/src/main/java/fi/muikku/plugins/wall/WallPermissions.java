@@ -22,17 +22,17 @@ public class WallPermissions extends AbstractMuikkuPermissionCollection implemen
   public static final String READ_ALL_WALLS = "READ_ALL_WALLS";
   
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultPermissionRoles ({ "Manager", "Teacher" })
+  @DefaultPermissionRoles ({ MANAGER, TEACHER })
   public static final String WALL_WRITEENVIRONMENTWALL = "WALL_WRITEENVIRONMENTWALL";
   
   /* Workspace */
   
   @Scope (PermissionScope.WORKSPACE)
-  @DefaultPermissionRoles ({ "Manager", "Workspace Teacher" })
+  @DefaultPermissionRoles ({ MANAGER, WORKSPACE_TEACHER })
   public static final String WALL_READALLCOURSEMESSAGES = "WALL_READALLCOURSEMESSAGES";
 
   @Scope (PermissionScope.WORKSPACE)
-  @DefaultPermissionRoles ({ "Manager", "Workspace Teacher", "Workspace Student" })
+  @DefaultPermissionRoles ({ MANAGER, WORKSPACE_TEACHER, WORKSPACE_STUDENT })
   public static final String WALL_WRITECOURSEWALL = "WALL_WRITECOURSEWALL";
   
   @Override

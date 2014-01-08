@@ -4,62 +4,56 @@
 /* General styles with selectors */
 
 
-div[data-name*='index.content'] > div:not(:first-child){
- margin-top:10px;
+div[data-name*='index.content'] > div:not(:first-child) {
+  margin-top:10px;
 }
 
-div[data-name*='environment.content'] > div:not(:first-child){
- margin-top:10px;
+div[data-name*='environment.content'] > div:not(:first-child) {
+  margin-top:10px;
 }
 
-div[class*='action']{
-float:left;
+div[class*='action'] {
+  float:left;
 }
 
-div[class*='action']:not(:first-child){
- margin-left:10px;
+div[class*='action']:not(:first-child) {
+  margin-left:10px;
 }
 
-
-div[class*='action-vertical']{
-float:none !important; 
+div[class*='action-vertical'] {
+  float:none !important; 
 }
 
 div[class*='action-vertical']:not(:first-child){
- margin-top:10px !important;
+  margin-top:10px !important;
 }
 
-div[class*='actions']{
-@include gradient-top-bottom(#fff,#f8f8f8,#fff) ;	
-float:none;
-margin-left:0 !important;
+div[class*='actions'] {
+  @include gradient-top-bottom(#fff,#f8f8f8,#fff) ;	
+  float:none;
+  margin-left:0 !important;
 }
 
-div[class*='actions-vertical']{
-@include gradient-top-bottom(#fff,#f8f8f8,#fff) ; 
-float:right;
-margin-left:0 !important;
+div[class*='actions-vertical'] {
+  @include gradient-top-bottom(#fff,#f8f8f8,#fff) ; 
+  float:right;
+  margin-left:0 !important;
 }
-
 
 /* staticNaviDock  */
-
 
 /* Containers */
 
 .dock-static-container{}
-.dock-workspace-container{
-    @include gradient-top-bottom;
-    @include rounded-bottom-left; 
-    @include rounded-bottom-right;
-    @include border;
-    border-top:0;
-    padding:13px;
- 
+
+.dock-workspace-container {
+  @include gradient-top-bottom;
+  @include rounded-bottom-left; 
+  @include rounded-bottom-right;
+  @include border;
+  border-top:0;
+  padding:13px;
 }
-
-
-
 
 .newCalendarWidget {
   display: inline-block;
@@ -69,7 +63,7 @@ margin-left:0 !important;
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/calendar-settings.png'));
 }
 
-.newCalendarButton:hover{
+.newCalendarButton:hover {
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/calendar-settings.png'));
 }
 
@@ -81,163 +75,157 @@ margin-left:0 !important;
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/calendar-settings.png'));
 }
 
-.newEventButton:hover{
+.newEventButton:hover {
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/calendar-settings.png'));
 }
 
-.calendarSettingsButton{
-   @include naviIcon(url('../resources/gfx/icons/32x32/actions/calendar-settings.png'));
+.calendarSettingsButton {
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/calendar-settings.png'));
 }
 
-.calendarSettingsButton:hover{
-   @include naviIcon(url('../resources/gfx/icons/32x32/actions/calendar-settings.png'));
+.calendarSettingsButton:hover {
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/calendar-settings.png'));
 }
 
-
-.calendarsVisibleButton{
-   @include naviIcon(url('../resources/gfx/icons/32x32/actions/calendars-visible.png'));
+.calendarsVisibleButton {
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/calendars-visible.png'));
 }
 
-
-.calendarsVisibleButton:hover{
-   @include naviIcon(url('../resources/gfx/icons/32x32/actions/calendars-visible.png'));
+.calendarsVisibleButton:hover {
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/calendars-visible.png'));
 }
 
-.naviIconHome{
-   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-home.png'));
+.naviIconHome {
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-home.png'));
 }
 
-.naviIconHome.disabled{
-   opacity:0.2;
-   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-home.png'));
+.naviIconHome.disabled {
+  opacity:0.2;
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-home.png'));
 }
 
-.naviIconHome:hover{
-   opacity:0.2;
-   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-home.png'));
+.naviIconHome:hover {
+  opacity:0.2;
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-home.png'));
 }
 
-
-.naviIconStudents{
-   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-students.png'));
+.naviIconStudents {
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-students.png'));
 }
 
-.naviIconStudents.disabled{
-   opacity:0.5;
-   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-students.png'));
+.naviIconStudents.disabled {
+  opacity:0.5;
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-students.png'));
 }
 
-.naviIconStudents:hover{
-   opacity:0.2;
-   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-students.png'));
+.naviIconStudents:hover {
+  opacity:0.2;
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-students.png'));
 }
 
-
-.naviIconCoursePicker{
-   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-coursepicker.png'));
+.naviIconCoursePicker {
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-coursepicker.png'));
 }
 
-.naviIconCoursePicker.disabled{
-	 opacity:0.2;
-   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-coursepicker.png'));
+.naviIconCoursePicker.disabled {
+ opacity:0.2;
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-coursepicker.png'));
 }
 
-.naviIconCoursePicker:hover{
-   opacity:0.2;
-   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-coursepicker.png'));
+.naviIconCoursePicker:hover {
+  opacity:0.2;
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-coursepicker.png'));
 }
 
-.naviIconForum{
-   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-forum.png'));
+.naviIconForum {
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-forum.png'));
 }
 
- .naviIconForum.disabled{
-   opacity:0.2;
-   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-forum.png')) 
+.naviIconForum.disabled {
+  opacity:0.2;
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-forum.png')) 
 }
 
- .naviIconForum:hover{
-   opacity:0.2;
-   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-forum.png')) 
+.naviIconForum:hover {
+  opacity:0.2;
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-forum.png')) 
 }
 
-.naviIconDiary{
+.naviIconDiary {
    @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-diary.png'));	
 }
 
- .naviIconDiary.disabled{
-    opacity:0.2;
-    @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-diary.png')); 
+.naviIconDiary.disabled {
+  opacity:0.2;
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-diary.png')); 
 }
 
- .naviIconDiary:hover{
-    opacity:0.2;
-    @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-diary.png')); 
+.naviIconDiary:hover {
+  opacity:0.2;
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-diary.png')); 
 }
     
-.naviIconCommunicator{
-   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-communicator.png')); 	    
+.naviIconCommunicator {
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-communicator.png')); 	    
 }
 
- .naviIconCommunicator.disabled{
-    opacity:0.2;
-    @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-communicator.png'));  
+.naviIconCommunicator.disabled {
+  opacity:0.2;
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-communicator.png'));  
 }
 
- .naviIconCommunicator:hover{
-    opacity:0.2;
-    @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-communicator.png'));  
+.naviIconCommunicator:hover {
+  opacity:0.2;
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-communicator.png'));  
 }
 
-.naviIconStudyTracker{
-   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-studytracker.png')); 	  
+.naviIconStudyTracker {
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-studytracker.png')); 	  
 }
 
- .naviIconStudyTracker.disabled{
-    opacity:0.2;
-    @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-studytracker.png'));    
+.naviIconStudyTracker.disabled {
+  opacity:0.2;
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-studytracker.png'));    
 }
 
- .naviIconStudyTracker:hover{
-    opacity:0.2;
-    @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-studytracker.png'));    
+.naviIconStudyTracker:hover {
+  opacity:0.2;
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-studytracker.png'));    
 }
 
-.naviIconCalendar{
-   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-cal.png'));
+.naviIconCalendar {
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-cal.png'));
 }
 
- .naviIconCalendar.disabled{
-    opacity:0.2;
-    @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-cal.png'));   
+.naviIconCalendar.disabled {
+  opacity:0.2;
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-cal.png'));   
 }
 
- .naviIconCalendar:hover{
-    opacity:0.2;
-    @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-cal.png'));   
+.naviIconCalendar:hover {
+  opacity:0.2;
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-cal.png'));   
 }
 
 
-.naviIconLogout{
-   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-logout.png'));	
-    float:right;    
+.naviIconLogout {
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-logout.png'));	
+  float:right;    
 }
 
-.naviIconSettings{
-   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-settings.png'));  
-    float:right;      
+.naviIconSettings {
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-settings.png'));  
+  float:right;      
 }
-
 
 .naviIconStudentGrading {
-   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-student-grading.png')); 	    
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-student-grading.png')); 	    
 }
 
- .naviIconStudentGrading:hover{
-    opacity:0.2;
-    @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-student-grading.png'));  
+.naviIconStudentGrading:hover {
+  opacity:0.2;
+  @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-student-grading.png'));  
 }
-
 
 /* Settings navigation */
 
@@ -245,7 +233,7 @@ margin-left:0 !important;
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-users.png')); 	    
 }
 
-.naviIconSettingsNavigationUsers.disabled{
+.naviIconSettingsNavigationUsers.disabled {
   opacity:0.2;
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-users.png'));  
 }
@@ -254,7 +242,7 @@ margin-left:0 !important;
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-users-add.png')); 	    
 }
 
-.naviIconSettingsUserAdd.disabled{
+.naviIconSettingsUserAdd.disabled {
   opacity:0.2;
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-users-add.png'));  
 }
@@ -263,7 +251,7 @@ margin-left:0 !important;
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-workspaces.png')); 	    
 }
 
-.naviIconSettingsNavigationWorkspaces.disabled{
+.naviIconSettingsNavigationWorkspaces.disabled {
   opacity:0.2;
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-workspaces.png'));  
 }
@@ -272,7 +260,7 @@ margin-left:0 !important;
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-workspace-types.png')); 	    
 }
 
-.naviIconSettingsNavigationWorkspaceTypes.disabled{
+.naviIconSettingsNavigationWorkspaceTypes.disabled {
   opacity:0.2;
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-workspace-types.png'));  
 }
@@ -281,7 +269,7 @@ margin-left:0 !important;
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-plugins.png'));
 }
 
-.naviIconSettingsNavigationPlugins.disabled{
+.naviIconSettingsNavigationPlugins.disabled {
   opacity:0.2;
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-plugins.png'));
 }
@@ -290,7 +278,7 @@ margin-left:0 !important;
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-roles.png'));
 }
 
-.naviIconSettingsNavigationRoles.disabled{
+.naviIconSettingsNavigationRoles.disabled {
   opacity:0.2;
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-roles.png'));
 }
@@ -299,7 +287,7 @@ margin-left:0 !important;
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-grading-scales.png'));
 }
 
-.naviIconSettingsNavigationGradingScales.disabled{
+.naviIconSettingsNavigationGradingScales.disabled {
   opacity:0.2;
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-grading-scales.png'));
 }
@@ -308,7 +296,7 @@ margin-left:0 !important;
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-course-identifiers.png'));
 }
 
-.naviIconSettingsNavigationCourseIdentifiers.disabled{
+.naviIconSettingsNavigationCourseIdentifiers.disabled {
   opacity:0.2;
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-course-identifiers.png'));
 }
@@ -317,14 +305,14 @@ margin-left:0 !important;
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-course-identifiers.png'));
 }
 
-.naviIconSettingsNavigationPermissions.disabled{
+.naviIconSettingsNavigationPermissions.disabled {
   opacity:0.2;
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-course-identifiers.png'));
 }
 
 /* Workspace */
 
-.naviIconWorkspaceNavigationMembers.disabled{
+.naviIconWorkspaceNavigationMembers.disabled {
   opacity:0.2;
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/workspace-navigation-members.png'));  
 }
@@ -333,7 +321,7 @@ margin-left:0 !important;
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/workspace-navigation-members.png'));
 }
 
-.naviIconWorkspaceNavigationMaterials.disabled{
+.naviIconWorkspaceNavigationMaterials.disabled {
   opacity:0.2;
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/workspace-navigation-materials.png'));  
 }
@@ -341,63 +329,62 @@ margin-left:0 !important;
 .naviIconWorkspaceNavigationMaterials {
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/workspace-navigation-materials.png'));
 }
+
 /* Student browser */
 
-	.naviIconUser{
-	   @include customIcon(url('../resources/gfx/icons/32x32/actions/navigate-userprofile.png'),20px);
-	   float:left;
-	}
+.naviIconUser {
+  @include customIcon(url('../resources/gfx/icons/32x32/actions/navigate-userprofile.png'),20px);
+	float:left;
+}
 	
-	.naviIconUser.disabled{
-	   opacity:0.5;
-	   @include customIcon(url('../resources/gfx/icons/32x32/actions/navigate-userprofile.png'),20px);
-	 float:left;   
-	}
+.naviIconUser.disabled {
+  opacity:0.5;
+  @include customIcon(url('../resources/gfx/icons/32x32/actions/navigate-userprofile.png'),20px);
+	float:left;   
+}
 	
-	.naviIconUser:hover{
-	   opacity:0.2;
-	   @include customIcon(url('../resources/gfx/icons/32x32/actions/navigate-userprofile.png'),20px);
-	 float:left;   
-	}
+.naviIconUser:hover {
+  opacity:0.2;
+  @include customIcon(url('../resources/gfx/icons/32x32/actions/navigate-userprofile.png'),20px);
+  float:left;   
+}
 	
 	    
-	.naviIconMessage{
-	 @include customIcon(url('../resources/gfx/icons/32x32/actions/navigate-communicator.png'),20px);      
-	 float:left;   
-	}
-	
-	 .naviIconMessage.disabled{
-	    opacity:0.2;
-	    @include customIcon(url('../resources/gfx/icons/32x32/actions/navigate-communicator.png'),20px);  
-	 float:left;    
-	}
-	
-	 .naviIconMessage:hover{
-	    opacity:0.2;
-	    @include customIcon(url('../resources/gfx/icons/32x32/actions/navigate-communicator.png'),20px);  
-	 float:left;    
-	}
-	
-  .naviIconBookmark{
-   @include customIcon(url('../resources/gfx/icons/32x32/actions/tools-bookmark.png'),24px,15px);      
-   float:left;   
-  }
-  
-   .naviIconBookmark.disabled{
-      opacity:0.2;
-      @include customIcon(url('../resources/gfx/icons/32x32/actions/tools-bookmark.png'),24px,15px);  
-      float:left;    
-  }
-  
-   .naviIconBookmark:hover{
-      opacity:0.2;
-      @include customIcon(url('../resources/gfx/icons/32x32/actions/tool-bookmark.png'),24px,15px);  
-      float:left;    
-  }	
+.naviIconMessage { 
+  @include customIcon(url('../resources/gfx/icons/32x32/actions/navigate-communicator.png'),20px);
+  float: left;
+}
 
+.naviIconMessage.disabled {
+  opacity: 0.2; 
+  @include customIcon(url('../resources/gfx/icons/32x32/actions/navigate-communicator.png'),20px);
+  float: left;
+}
+
+.naviIconMessage:hover {
+  opacity: 0.2; 
+  @include customIcon(url('../resources/gfx/icons/32x32/actions/navigate-communicator.png'),20px);
+  float: left;
+}
+
+.naviIconBookmark { 
+  @include customIcon(url('../resources/gfx/icons/32x32/actions/tools-bookmark.png'),24px,15px);
+  float: left;
+}
+
+.naviIconBookmark.disabled {
+  opacity: 0.2; 
+  @include customIcon(url('../resources/gfx/icons/32x32/actions/tools-bookmark.png'),24px,15px);
+  float: left;
+}
+
+.naviIconBookmark:hover {
+  opacity: 0.2; 
+  @include customIcon(url('../resources/gfx/icons/32x32/actions/tool-bookmark.png'),24px,15px);
+  float: left;
+}
 
 /* Calendar */
-
 .calendarSettingsWidget {
   display: inline-block;
 }
@@ -431,59 +418,50 @@ margin-left:0 !important;
 
 /* Login */
 
-.loginWidget{
-	  background:#ededed;
-	  padding:10px ;
-	  @include rounded(5px);
-    text-align:right;
-    color:#000;
-    font-size:9px;
-    width:240px;
-
+.loginWidget {
+  background: #ededed;
+  padding: 10px; 
+  @include rounded(5px);
+  text-align: right;
+  color: #000;
+  font-size: 9px;
+  width: 240px;
 }
 
-.logoutWidget{
-    text-align:right;
-    color:#000;
-    width:240px;
-    position:absolute;
-    top:5px;
-    right:5px;
+.logoutWidget {
+  text-align: right;
+  color: #000;
+  width: 240px;
+  position: absolute;
+  top: 5px;
+  right: 5px;
 }
-
 
 /* Userprofile */
- #userProfileWidget{
-    text-align:right;
-    color:#000;
-    font-size: 10px;
-    width:210px;
-    position:absolute;
-    top:5px;
-    right:5px;
+
+#userProfileWidget {
+  text-align: right;
+  color: #000;
+  font-size: 10px;
+  width: 210px;
+  position: absolute;
+  top: 5px;
+  right: 5px;
 }
 
-#userProfileWidgetInfo{
-	float:left;
-	margin-left:70px;   
+#userProfileWidgetInfo {
+  float: left;
+  margin-left: 70px;
 }
 
-#userProfileNavigationContainer{
-
+#userProfileNavigationContainer {
 }
-
-
-
 
 .widget {
-
 }
 
 #staticNavigation .widgetSpace {
-
-
- height:40px;
- 
+  height: 40px;
 }
 
 .widgetTitle {
@@ -517,84 +495,75 @@ margin-left:0 !important;
   border-color: green;
 }
 
-
-
 /* Navigation */
 
-.wi-navigation-textlinks{
-   padding:6px 0 0 0;
-
-	vertical-align:middle;
-}
-.wi-navigation-textlinks span{
-   font-size:2em;
+.wi-navigation-textlinks {
+  padding: 6px 0 0 0;
+  vertical-align: middle;
 }
 
-.wi-navigation-textlinks span:after{
-   content:"|";
+.wi-navigation-textlinks span {
+  font-size: 2em;
+}
+
+.wi-navigation-textlinks span:after {
+  content: "|";
 }
 
 .wi-navigation-textlinks span:last-child:after{
    content:none;
 }
 
-
-
 /* frontpage widgets */
-
-.wi-frontpage-static-personalTopics{
-	@extend .co-widget;
-	@include gradient-top-bottom(#fff,$hlBgr);
-
+.wi-frontpage-static-personalTopics { 
+  @extend .co-widget; 
+  @include gradient-top-bottom(#fff,$hlBgr);
 }
 
-.wi-frontpage-static-personalTopics > div:not(:first-child) {
- margin-left:10px;
+.wi-frontpage-static-personalTopics > div:not(:first-child ) {
+  margin-left: 10px;
 }
 
-.wi-headlines-container{
-	background-color:#fff;
-	float:left;
-	@include shadow;
-	padding:10px 10px 10px 30px;
-	
+.wi-headlines-container {
+  background-color: #fff;
+  float: left; 
+  @include shadow;
+  padding: 10px 10px 10px 30px;
 }
 
-.wi-headlines-topic{
-	font-size:1.5em;
-  
+.wi-headlines-topic {
+  font-size: 1.5em;
 }
 
-.wi-frontpage-dynamic-info{	
+.wi-frontpage-dynamic-info {
 }
 
-.wi-news{
+.wi-news {
 }
 
-.wi-news-item-content{
+.wi-news-item-content {
 }
 
-
-.wi-news-item{
-	margin-top:10px;
+.wi-news-item {
+  margin-top: 10px;
 }
 
-.wi-news-primary-item{
+.wi-news-primary-item {
 	margin-top:10px;
   @extend .co-widget;
 }
 
-.wi-news-primary-item-bottom{
+.wi-news-primary-item-bottom {
   margin-top:10px;
   @extend .co-widget;
 }
 
-.wi-news-secondary-item{
+.wi-news-secondary-item {
   margin-top:10px;
-  @extend .co-widget;
-  }
+  @extend .co-widget; 
+}
 
-.wi-news-item-picture{
+.wi-news-item-picture {
   background:url("http://farm8.staticflickr.com/7363/9872617353_fb529696e9.jpg") no-repeat ;
   background-size:100%;
   height:200px;
@@ -602,27 +571,27 @@ margin-left:0 !important;
   float:left;
 }
 
-.wi-news-item-content-description{
+.wi-news-item-content-description {
 	float:left;
 	box-sizing:border-box;
 	-moz-box-sizing:border-box;   
 	background-color:$aBgr;
 }
 
-.wi-frontpage-dynamic-students{
+.wi-frontpage-dynamic-students {
   @extend .co-widget;
 }
 	
-.wi-frontpage-dynamic-students ul{
+.wi-frontpage-dynamic-students ul {
   padding:20px;
 }
 
-.wi-frontpage-dynamic-students li{
+.wi-frontpage-dynamic-students li {
   padding:5px;
   @include rounded(5px);
 }
 
-.wi-frontpage-dynamic-students li a{
+.wi-frontpage-dynamic-students li a {
   text-decoration: none;
   color: #000000;
 }
@@ -631,11 +600,11 @@ margin-left:0 !important;
   background:#ededed;
 }
 
-.wi-frontpage-dynamic-calendar{
+.wi-frontpage-dynamic-calendar {
   @extend .co-widget;
 }
 
-.wi-frontpage-calendar-dynamic{
+.wi-frontpage-calendar-dynamic {
   background-color:$aBgr;
   height:200px;
 }
@@ -644,24 +613,21 @@ margin-left:0 !important;
   @extend .co-widget;
  }
 
-.wi-frontpage-dynamic-wallfeed-item{
+.wi-frontpage-dynamic-wallfeed-item {
   padding:5px;
   border:1px solid $brd;
   margin-bottom:1px;
 }
 
-.wi-frontpage-dynamic-courses{
+.wi-frontpage-dynamic-courses {
   @extend .co-widget;
 }
 
-
-.wi-frontpage-dynamic-courses ul{
+.wi-frontpage-dynamic-courses ul {
   padding:20px;  
-
 }
 
-
-.wi-frontpage-dynamic-courses li{
+.wi-frontpage-dynamic-courses li {
   padding:5px;
   @include rounded(5px);
 }
@@ -687,39 +653,37 @@ margin-left:0 !important;
   right:-15px; 
 }
 
-.wi-frontpage-widget-toolarea div{
+.wi-frontpage-widget-toolarea div {
   float:right;
-  
 }
 
-.wi-settings-move{
+.wi-settings-move {
 }
 
-
-.wi-settings-move-link{
+.wi-settings-move-link {
   @include customIcon(url('../resources/gfx/icons/32x32/actions/tools-move.png'),20px);
   display:block;
   margin-left:10px;
 }
 
-.wi-settings-remove{
+.wi-settings-remove {
 }
 
-.wi-settings-remove-link{
+.wi-settings-remove-link {
   @include customIcon(url('../resources/gfx/icons/32x32/actions/tools-remove.png'),20px);
   display:block;
   margin-left:10px;
 }
 
-.wi-settings-edit{
+.wi-settings-edit {
 }
 
-.wi-settings-edit-link{
+.wi-settings-edit-link {
   @include customIcon(url('../resources/gfx/icons/32x32/actions/tools-settings.png'),20px);
   display:block;
   margin-left:10px;
 }
 
-#filterSelectList{
+#filterSelectList {
 	width:100%;
 }

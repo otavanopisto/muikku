@@ -8,47 +8,47 @@ import javax.enterprise.context.ApplicationScoped;
 public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implements MuikkuPermissionCollection {
 
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultPermissionRoles ({ "Manager" })
+  @DefaultPermissionRoles ({ MANAGER })
   public static final String REPRESENT_USER = "REPRESENT_USER";
   
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultPermissionRoles ({ "Manager" })
+  @DefaultPermissionRoles ({ MANAGER })
   public static final String CREATE_COURSE = "CREATE_COURSE";
   
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultPermissionRoles ({ "Manager", "Student", "Teacher" })
+  @DefaultPermissionRoles ({ MANAGER, STUDENT, TEACHER })
   public static final String LIST_COURSES = "LIST_COURSES";
   
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultPermissionRoles ({ "Manager" })
+  @DefaultPermissionRoles ({ MANAGER })
   public static final String MANAGE_SETTINGS = "MANAGE_SETTINGS";
   
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultPermissionRoles ({ "Manager" })
+  @DefaultPermissionRoles ({ MANAGER })
   public static final String MANAGE_USERS = "MANAGE_USERS";
   
   /* WORKSPACE */
   
   @Scope (PermissionScope.WORKSPACE)
-  @DefaultPermissionRoles ({ "Manager", "Student", "Teacher" })
+  @DefaultPermissionRoles ({ MANAGER, STUDENT, TEACHER })
   public static final String JOIN_COURSE = "JOIN_COURSE";
 
   @Scope (PermissionScope.WORKSPACE)
-  @DefaultPermissionRoles ({ "Manager", "Workspace Teacher" })
+  @DefaultPermissionRoles ({ MANAGER, WORKSPACE_TEACHER })
   public static final String COURSE_MANAGECOURSESETTINGS = "COURSE_MANAGECOURSESETTINGS";
   
   @Scope (PermissionScope.WORKSPACE)
-  @DefaultPermissionRoles ({ "Manager", "Workspace Teacher" })
+  @DefaultPermissionRoles ({ MANAGER, WORKSPACE_TEACHER })
   public static final String REPRESENT_COURSEUSER = "REPRESENT_COURSEUSER";
   
   @Scope (PermissionScope.WORKSPACE)
-  @DefaultPermissionRoles ({ "Manager", "Workspace Teacher" })
+  @DefaultPermissionRoles ({ MANAGER, WORKSPACE_TEACHER })
   public static final String EVALUATE_USER = "EVALUATE_USER";
 
   /* RESOURCE */
   
   @Scope (PermissionScope.RESOURCE)
-  @DefaultPermissionRoles ({ "Manager" })
+  @DefaultPermissionRoles ({ MANAGER })
   public static final String MANAGE_RESOURCERIGHTS = "MANAGE_RESOURCERIGHTS";
   
   @Override
