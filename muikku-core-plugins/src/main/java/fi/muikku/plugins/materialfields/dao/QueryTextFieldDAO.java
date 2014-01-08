@@ -18,7 +18,7 @@ public class QueryTextFieldDAO extends PluginDAO<QueryTextField> {
     queryfield.setHint(hint);
     queryfield.setType("text");
     queryfield.setMandatory(mandatory);
-    queryfield.setText(text);
+    queryfield.setPlaceholderText(text);
 
     return persist(queryfield);
   }

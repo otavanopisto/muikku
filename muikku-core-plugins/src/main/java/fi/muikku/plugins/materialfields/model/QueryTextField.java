@@ -11,16 +11,14 @@ import org.hibernate.validator.constraints.NotEmpty;
 @PrimaryKeyJoinColumn(name="id")
 public class QueryTextField extends QueryField{
 	
-    public String getText() {
-		return text;
+  public String getPlaceholderText() {
+		return placeholderText;
 	}
-	public void setText(String text) {
-		this.text = text;
+	public void setPlaceholderText(String text) {
+		this.placeholderText = text;
 	}
 
-	@NotEmpty
-	@NotNull
-	@Column (nullable = false)
-	private String text;
+	@Column
+	private String placeholderText;
 	
 }
