@@ -15,7 +15,7 @@ $gridCols:24;
 /* TODO: better name, needs changes in the java side */
 
 
-.container_24{
+.container_24 {
 	width:$desktop;
 	margin-left:auto;
 	margin-right:auto; 
@@ -33,37 +33,40 @@ $gridCols:24;
 
 /* Include the pre-created styles: Tablet */
 
-@media screen and (max-width: 768px){
+@media screen and (max-width: 768px) {
 	
-.container_24{
-  width:$tablet;
-}	
-@include grid_x($tablet, $gridCols);
-@include grid_x_nomargin($tablet, $gridCols);
-@include grid_x_othermargin($tablet, $gridCols);
+  .container_24 {
+    width:$tablet;
+  }
+
+  @include grid_x($tablet, $gridCols);
+  @include grid_x_nomargin($tablet, $gridCols);
+  @include grid_x_othermargin($tablet, $gridCols);
 }
 
 
-@media handheld and (max-width: 480px){
+@media handheld and (max-width: 480px) {
   
-.container_24{
-  width:480px;
-} 
-@include grid_x($phone_l, $gridCols);
-@include grid_x_nomargin($phone_l, $gridCols);
-@include grid_x_othermargin($phone_l, $gridCols);
+  .container_24 {
+    width:480px;
+  }
+   
+  @include grid_x($phone_l, $gridCols);
+  @include grid_x_nomargin($phone_l, $gridCols);
+  @include grid_x_othermargin($phone_l, $gridCols);
 }
 
 /* Include the pre-created styles: Phone */
 
 @media handheld and (max-width: 320px){
-.container_24{
-  width:320px;
-}
 
-@include grid_x($phone_s,24);
-@include grid_x_nomargin($phone_s,24);
-@include grid_x_othermargin($phone_s,24);
+  .container_24 {
+    width:320px;
+  }
+  
+  @include grid_x($phone_s,24);
+  @include grid_x_nomargin($phone_s,24);
+  @include grid_x_othermargin($phone_s,24);
 }
 
 
@@ -80,11 +83,11 @@ $gridCols:24;
 
 
 
-.noLid{
+.noLid {
  margin-top:0;	
 }
 
-.halfLid{
+.halfLid {
  margin-top:$grid-margin-pixel;
 }
 
@@ -96,8 +99,7 @@ $gridCols:24;
   margin-right: 0;
 }
 
-.nomargin{
+.nomargin {
   margin-right:0;
   margin-left:0;  
 }
-
