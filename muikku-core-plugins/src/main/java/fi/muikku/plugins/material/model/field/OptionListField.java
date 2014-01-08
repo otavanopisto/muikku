@@ -2,9 +2,15 @@ package fi.muikku.plugins.material.model.field;
 
 import java.util.List;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 public class OptionListField implements Field {
   
   public static class Option {
+    public Option() {
+      
+    }
+    
     public Option(String name, Double points, String text) {
       this.name = name;
       this.points = points;
@@ -27,6 +33,10 @@ public class OptionListField implements Field {
     private Double points;
     private String text;
   }
+  
+  public OptionListField() {
+    
+  }
 
   public OptionListField(String name, String listType, List<Option> options) {
     this.setOptions(options);
@@ -43,6 +53,7 @@ public class OptionListField implements Field {
   }
   
   @Override
+  @JsonIgnore
   public String getType() {
     return "application/vnd.muikku.field.option-list";
   }

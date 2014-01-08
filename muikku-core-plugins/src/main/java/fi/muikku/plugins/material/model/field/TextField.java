@@ -2,9 +2,15 @@ package fi.muikku.plugins.material.model.field;
 
  import java.util.List;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 public class TextField implements Field {
   
   public static class RightAnswer {
+    
+    public RightAnswer() {
+      
+    }
     
     public RightAnswer(Double points, String text, boolean caseSensitive, boolean normalizeWhitespace) {
       this.points = points;
@@ -47,6 +53,10 @@ public class TextField implements Field {
     private boolean caseSensitive;
     private boolean normalizeWhitespace;
   }
+  
+  public TextField() {
+    
+  }
 
   public TextField(String name, Integer columns, List<RightAnswer> rightAnswers) {
     this.setRightAnswers(rightAnswers);
@@ -64,6 +74,7 @@ public class TextField implements Field {
   
   
   @Override
+  @JsonIgnore
   public String getType() {
     return "application/vnd.muikku.field.text";
   }

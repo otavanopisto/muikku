@@ -2,9 +2,16 @@ package fi.muikku.plugins.material.model.field;
 
 import java.util.List;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 public class ConnectField implements Field {
   
   public static class Field {
+    
+    public Field() {
+      
+    }
+    
     public Field(String name, String text) {
       this.name = name;
       this.text = text;
@@ -28,6 +35,11 @@ public class ConnectField implements Field {
   }
   
   public static class Connection {
+    
+    public Connection() {
+      
+    }
+    
     public Connection(String field, String counterpart) {
       this.field = field;
       this.counterpart = counterpart;
@@ -47,6 +59,10 @@ public class ConnectField implements Field {
     }
     private String field;
     private String counterpart;
+  }
+  
+  public ConnectField() {
+    
   }
   
   public ConnectField(String name, List<Field> fields, List<Field> counterparts, List<Connection> connections) {
@@ -80,6 +96,7 @@ public class ConnectField implements Field {
   }
   
   @Override
+  @JsonIgnore
   public String getType() {
     return "application/vnd.muikku.field.connect";
   }

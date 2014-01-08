@@ -1,5 +1,6 @@
 package fi.muikku.plugins.materialfields;
 
+import java.io.IOException;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -8,12 +9,17 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import fi.muikku.plugins.material.HtmlMaterialController;
+import fi.muikku.plugins.material.model.field.OptionListField;
+import fi.muikku.plugins.material.model.field.TextField;
 import fi.muikku.plugins.material.processing.HtmlMaterialProcessingContext;
 import fi.muikku.plugins.material.processing.MaterialProcessorAdapter;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
@@ -25,6 +31,9 @@ public class HtmlMaterialFieldListeners extends MaterialProcessorAdapter {
   
   @Inject
   private Logger logger;
+  
+  @Inject
+  private HtmlMaterialFieldController htmlMaterialFieldController;
 
   @Inject
   private WorkspaceController workspaceController;
