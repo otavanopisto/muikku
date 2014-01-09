@@ -29,16 +29,18 @@ public class MaterialHtmlFieldPluginDescriptor implements PluginDescriptor {
         
       HtmlMaterialFieldListeners.class,
       
-      /** DAO's **/
+      /** DAOs **/
       
-      QueryDrawFieldDAO.class,
       QueryFieldDAO.class,
+      QueryDrawFieldDAO.class,
       QuerySelectFieldDAO.class,
       QueryTextFieldDAO.class,
       RightAnswerDAO.class,
-      SelectFieldOptionDAO.class
+      SelectFieldOptionDAO.class,
       
-      /***********/
+      /** Controllers **/
+      
+      QueryTextFieldController.class
       
     });
   }
