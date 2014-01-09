@@ -13,10 +13,14 @@ import fi.muikku.plugin.PersistencePluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
 import fi.muikku.plugins.workspace.dao.WorkspaceFolderDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialDAO;
+import fi.muikku.plugins.workspace.dao.WorkspaceMaterialReplyDAO;
+import fi.muikku.plugins.workspace.dao.WorkspaceMaterialTextFieldAnswerDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceNodeDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceRootFolderDAO;
 import fi.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialTextFieldAnswer;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 
@@ -44,6 +48,7 @@ public class WorkspacePluginDescriptor implements PluginDescriptor, PersistenceP
 				
 			WorkspaceMaterialController.class,
       WorkspaceMaterialReplyController.class,
+      WorkspaceMaterialFieldAnswerController.class,
 		  
 			/* Backing beans */ 
 				
@@ -63,7 +68,9 @@ public class WorkspacePluginDescriptor implements PluginDescriptor, PersistenceP
 			WorkspaceRootFolderDAO.class,
 			WorkspaceMaterialDAO.class,
 			WorkspaceFolderDAO.class,
-			WorkspaceNodeDAO.class
+			WorkspaceNodeDAO.class,
+			WorkspaceMaterialReplyDAO.class,
+      WorkspaceMaterialTextFieldAnswerDAO.class
 			
 		}));
 	}
@@ -74,7 +81,9 @@ public class WorkspacePluginDescriptor implements PluginDescriptor, PersistenceP
 			WorkspaceNode.class,
 			WorkspaceRootFolder.class,
 			WorkspaceFolder.class,
-			WorkspaceMaterial.class
+			WorkspaceMaterial.class,
+			WorkspaceMaterialReply.class,
+			WorkspaceMaterialTextFieldAnswer.class
 		};
 	}
 
