@@ -19,10 +19,9 @@ import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 
 class EmbeddedItemHandler implements DeusNexEmbeddedItemElementHandler {
 	
-	/**
-   * 
-   */
+  // TODO: This reference is a bit strange
   private final DeusNexMachinaController deusNexMachinaController;
+  
   public EmbeddedItemHandler(DeusNexMachinaController deusNexMachinaController, WorkspaceRootFolder rootFolder, DeusNexDocument deusNexDocument) {
 		this.deusNexMachinaController = deusNexMachinaController;
     this.rootFolder = rootFolder;
@@ -160,6 +159,7 @@ class EmbeddedItemHandler implements DeusNexEmbeddedItemElementHandler {
 		
 		Long workspaceNodeId = this.deusNexMachinaController.getResourceWorkspaceNodeId(resourceNo);
 		if (workspaceNodeId != null) {
+		  // TODO: This reference is a bit strange
 			WorkspaceMaterial workspaceMaterial = this.deusNexMachinaController.workspaceMaterialController.findWorkspaceMaterialById(workspaceNodeId);
 			if (workspaceMaterial != null) {
 				if (workspaceMaterial.getMaterial() instanceof BinaryMaterial) {
