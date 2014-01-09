@@ -4,6 +4,7 @@ import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.materialfields.dao.QuerySelectFieldDAO;
 import fi.muikku.plugins.materialfields.model.QuerySelectField;
 
@@ -14,8 +15,8 @@ public class QuerySelectFieldController {
   @Inject
   QuerySelectFieldDAO querySelectFieldDAO;
 
-  public QuerySelectField createQuerySelectField(String name, String help, String hint, boolean mandatory, String text) {
-    return querySelectFieldDAO.create(name, help, hint, mandatory, text);
+  public QuerySelectField createQuerySelectField(Material material, String name, Boolean mandatory, String text) {
+    return querySelectFieldDAO.create(material, name, mandatory, text);
   }
 
   public QuerySelectField findQuerySelectFieldbyId(Long id) {
