@@ -1,6 +1,12 @@
 package fi.muikku.plugins.material.model.field;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 public class MemoField implements Field {
+  
+  public MemoField() {
+    
+  }
   
   public MemoField(String name, Integer columns, Integer rows, String help, String hint) {
     super();
@@ -12,6 +18,7 @@ public class MemoField implements Field {
   }
 
   @Override
+  @JsonIgnore
   public String getType() {
     return "application/vnd.muikku.field.memo";
   }

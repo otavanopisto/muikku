@@ -25,6 +25,9 @@ public class HtmlMaterialFieldListeners extends MaterialProcessorAdapter {
   
   @Inject
   private Logger logger;
+  
+  @Inject
+  private HtmlMaterialFieldController htmlMaterialFieldController;
 
   @Inject
   private WorkspaceController workspaceController;

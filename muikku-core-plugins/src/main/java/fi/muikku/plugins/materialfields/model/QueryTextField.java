@@ -23,5 +23,4 @@ public class QueryTextField extends QueryField {
   @NotNull
   @Column(nullable = false)
   private String text;
-
 }
