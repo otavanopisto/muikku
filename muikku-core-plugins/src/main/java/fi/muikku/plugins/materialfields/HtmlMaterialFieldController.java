@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -14,7 +14,7 @@ import fi.muikku.plugins.material.model.field.OptionListField;
 import fi.muikku.plugins.material.model.field.TextField;
 import fi.muikku.plugins.materialfields.dao.QueryTextFieldDAO;
 
-@RequestScoped
+@Dependent
 public class HtmlMaterialFieldController {
   
   @Inject
