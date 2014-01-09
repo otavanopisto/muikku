@@ -58,7 +58,6 @@ public class QueryField {
   @ManyToOne
   private Material material;
 
-	@NotEmpty
 	@NotNull
 	@Column (nullable = false)
 	private Boolean mandatory;
