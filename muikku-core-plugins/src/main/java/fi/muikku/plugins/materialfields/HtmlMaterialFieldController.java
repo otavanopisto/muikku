@@ -23,10 +23,7 @@ public class HtmlMaterialFieldController {
   @Inject
   private QueryTextFieldDAO queryTextFieldDAO;
   
-  public void decodeQueryFieldFromJson(String contentType, String jsonData) {
-    // TODO: Can not be null
-    Material material = null;
-    
+  public void decodeQueryFieldFromJson(Material material, String contentType, String jsonData) {
     try {
       switch (contentType) {
         case "application/vnd.muikku.field.option-list": {
