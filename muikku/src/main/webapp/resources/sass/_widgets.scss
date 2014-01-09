@@ -426,6 +426,7 @@ div[class*='actions-vertical'] {
   color: #000;
   font-size: 9px;
   width: 240px;
+  float:right;
 }
 
 .logoutWidget {
@@ -435,6 +436,22 @@ div[class*='actions-vertical'] {
   position: absolute;
   top: 5px;
   right: 5px;
+}
+
+
+/* Language */
+
+.languageWidget { 
+  position:absolute;
+  margin-top:118px;
+  margin-left:51px;  
+  font-size:1.3em;
+  @include gradient-top-bottom-four($contInteractGr...);
+  height: 20px;
+  width : 50px;
+
+  border: 2px solid #ededed;
+  border-radius: 5px;
 }
 
 /* Userprofile */
