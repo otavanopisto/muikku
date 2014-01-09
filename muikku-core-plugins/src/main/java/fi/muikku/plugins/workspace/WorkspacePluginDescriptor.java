@@ -43,6 +43,7 @@ public class WorkspacePluginDescriptor implements PluginDescriptor, PersistenceP
 			/* Controllers */
 				
 			WorkspaceMaterialController.class,
+      WorkspaceMaterialReplyController.class,
 		  
 			/* Backing beans */ 
 				
