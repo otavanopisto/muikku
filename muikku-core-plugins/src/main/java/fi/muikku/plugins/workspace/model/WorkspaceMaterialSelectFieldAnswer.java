@@ -50,5 +50,6 @@ public class WorkspaceMaterialSelectFieldAnswer  {
   @ManyToOne
   private QuerySelectField queryField;
   
+  @ManyToOne
   private SelectFieldOption value;
 }
