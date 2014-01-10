@@ -70,6 +70,11 @@ public class HtmlMaterialFieldListeners extends MaterialProcessorAdapter {
               Element childElement = (Element) child;
               if ("content".equals(childElement.getAttribute("name"))) {
                 logger.log(Level.INFO, "Decoding element: " + childElement.getAttribute("value"));
+                try {
+                  htmlMaterialFieldController.decodeQueryFieldFromJson(((Element) objectNode).getAttribute("type"), childElement.getAttribute("value"));
+                } catch (Exception ex) {
+                  logger.log(Level.SEVERE, ex.toString());
+                }
               }
             } else {
               parentNode.insertBefore(child, objectNode);

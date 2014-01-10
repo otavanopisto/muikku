@@ -58,10 +58,12 @@ public class TextField implements Field {
     
   }
 
-  public TextField(String name, Integer columns, List<RightAnswer> rightAnswers) {
+  public TextField(String name, Integer columns, List<RightAnswer> rightAnswers, String help, String hint) {
     this.setRightAnswers(rightAnswers);
     this.setName(name);
     this.setColumns(columns);
+    this.setHelp(help);
+    this.setHint(hint);
   }
   
   public List<RightAnswer> getRightAnswers() {
@@ -95,8 +97,26 @@ public class TextField implements Field {
     this.columns = columns;
   }
 
+  public String getHint() {
+    return hint;
+  }
+
+  public void setHint(String hint) {
+    this.hint = hint;
+  }
+
+  public String getHelp() {
+    return help;
+  }
+
+  public void setHelp(String help) {
+    this.help = help;
+  }
+
   private List<RightAnswer> rightAnswers;
   private String name;
   private Integer columns;
+  private String hint;
+  private String help;
   
 }
