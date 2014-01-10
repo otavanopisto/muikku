@@ -40,4 +40,21 @@ public class SelectFieldOptionDAO extends PluginDAO<SelectFieldOption> {
 
     return entityManager.createQuery(criteria).getResultList();
   }
+
+  public SelectFieldOption findBySelectFieldAndName(QuerySelectField selectField, String name) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<SelectFieldOption> criteria = criteriaBuilder.createQuery(SelectFieldOption.class);
+    Root<SelectFieldOption> root = criteria.from(SelectFieldOption.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(SelectFieldOption_.selectField), selectField),
+        criteriaBuilder.equal(root.get(SelectFieldOption_.name), name)
+      )
+    );
+
+    return getSingleResult(entityManager.createQuery(criteria));
+  }
 }
