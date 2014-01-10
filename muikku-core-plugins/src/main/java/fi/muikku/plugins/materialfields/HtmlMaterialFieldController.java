@@ -1,14 +1,28 @@
 package fi.muikku.plugins.materialfields;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.cyberneko.html.parsers.DOMParser;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
+import fi.muikku.plugins.material.HtmlMaterialController;
+import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.material.model.field.OptionListField;
 import fi.muikku.plugins.material.model.field.TextField;
@@ -21,8 +35,46 @@ public class HtmlMaterialFieldController {
   private Logger logger;
   
   @Inject
-  private QueryTextFieldDAO queryTextFieldDAO;
+  private HtmlMaterialController htmlMaterialController;
   
+  @Inject
+  private QueryTextFieldDAO queryTextFieldDAO;
+
+  public HtmlMaterial createMaterialFields(HtmlMaterial htmlMaterial) throws SAXException, IOException, XPathExpressionException {
+    String html = htmlMaterial.getHtml();
+    
+    if (StringUtils.isNotBlank(html)) {
+      DOMParser parser = new DOMParser();
+      StringReader htmlReader = new StringReader(html);
+      try {
+        InputSource inputSource = new InputSource(htmlReader);
+        parser.parse(inputSource);
+        Document document = parser.getDocument();
+        
+        
+        NodeList objectNodeList = document.getElementsByTagName("object");
+        for (int i = 0, l = objectNodeList.getLength(); i < l; i++) {
+          Node objectNode = objectNodeList.item(i);
+          if (objectNode instanceof Element) {
+            Element objectElement = (Element) objectNode;
+            if (objectElement.hasAttribute("type")) {
+              String type = objectElement.getAttribute("type");
+              Element contentParamElement = (Element) XPathFactory.newInstance().newXPath().evaluate("param[@name=\"content\"]", objectElement, XPathConstants.NODE);
+              if (contentParamElement != null) {
+                String value = contentParamElement.getAttribute("value");
+                decodeQueryFieldFromJson(htmlMaterial, type, value); 
+              }
+            }
+          }
+        }
+      } finally {
+        htmlReader.close();
+      }
+    }
+    
+    return htmlMaterial;
+  }
+
   public void decodeQueryFieldFromJson(Material material, String contentType, String jsonData) {
     try {
       switch (contentType) {
