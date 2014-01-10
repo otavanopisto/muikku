@@ -14,12 +14,14 @@ import fi.muikku.plugin.PluginDescriptor;
 import fi.muikku.plugins.workspace.dao.WorkspaceFolderDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialReplyDAO;
+import fi.muikku.plugins.workspace.dao.WorkspaceMaterialSelectFieldAnswerDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialTextFieldAnswerDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceNodeDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceRootFolderDAO;
 import fi.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialSelectFieldAnswer;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialTextFieldAnswer;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
@@ -70,7 +72,8 @@ public class WorkspacePluginDescriptor implements PluginDescriptor, PersistenceP
 			WorkspaceFolderDAO.class,
 			WorkspaceNodeDAO.class,
 			WorkspaceMaterialReplyDAO.class,
-      WorkspaceMaterialTextFieldAnswerDAO.class
+      WorkspaceMaterialTextFieldAnswerDAO.class,
+      WorkspaceMaterialSelectFieldAnswerDAO.class
 			
 		}));
 	}
@@ -83,7 +86,8 @@ public class WorkspacePluginDescriptor implements PluginDescriptor, PersistenceP
 			WorkspaceFolder.class,
 			WorkspaceMaterial.class,
 			WorkspaceMaterialReply.class,
-			WorkspaceMaterialTextFieldAnswer.class
+			WorkspaceMaterialTextFieldAnswer.class,
+			WorkspaceMaterialSelectFieldAnswer.class
 		};
 	}
 
