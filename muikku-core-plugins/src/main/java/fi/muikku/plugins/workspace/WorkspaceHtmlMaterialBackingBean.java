@@ -28,10 +28,15 @@ import fi.muikku.plugins.material.HtmlMaterialController;
 import fi.muikku.plugins.material.MaterialController;
 import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.material.model.Material;
+import fi.muikku.plugins.materialfields.QueryFieldController;
 import fi.muikku.plugins.materialfields.QueryTextFieldController;
+import fi.muikku.plugins.materialfields.model.QueryField;
+import fi.muikku.plugins.materialfields.model.QuerySelectField;
 import fi.muikku.plugins.materialfields.model.QueryTextField;
+import fi.muikku.plugins.materialfields.model.SelectFieldOption;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialSelectFieldAnswer;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialTextFieldAnswer;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.security.LoggedIn;
@@ -61,6 +66,9 @@ public class WorkspaceHtmlMaterialBackingBean {
 
   @Inject
   private HtmlMaterialController htmlMaterialController;
+
+  @Inject
+  private QueryFieldController queryFieldController;
 
   @Inject
   private QueryTextFieldController queryTextFieldController;
@@ -186,19 +194,38 @@ public class WorkspaceHtmlMaterialBackingBean {
         fieldMaterial = htmlMaterial;
       }
       
-      QueryTextField queryTextField = queryTextFieldController.findQueryTextFieldByMaterialAndName(fieldMaterial, fieldName); 
-      if (queryTextField == null) {
+      QueryField queryField = queryFieldController.findQueryTextFieldByMaterialAndName(fieldMaterial, fieldName); 
+      if (queryField == null) {
         throw new MaterialQueryIntegrityExeption("Material #" + fieldMaterial.getId() + " does not contain field '" + fieldName + "'");
       }
       
       String value = answers.get(name);
-      WorkspaceMaterialTextFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialTextFieldAnswerByQueryFieldAndReply(queryTextField, workspaceMaterialReply);
-      if (fieldAnswer != null) {
-        // Update answer
-        fieldAnswer = workspaceMaterialFieldAnswerController.updateWorkspaceMaterialTextFieldAnswerValue(fieldAnswer, value);
-      } else {
-        // Create answer
-        fieldAnswer = workspaceMaterialFieldAnswerController.createWorkspaceMaterialTextFieldAnswer(queryTextField, workspaceMaterialReply, value);
+      if (queryField instanceof QueryTextField) {
+        QueryTextField queryTextField = (QueryTextField) queryField;
+        WorkspaceMaterialTextFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialTextFieldAnswerByQueryFieldAndReply(queryTextField, workspaceMaterialReply);
+        if (fieldAnswer != null) {
+          // Update answer
+          fieldAnswer = workspaceMaterialFieldAnswerController.updateWorkspaceMaterialTextFieldAnswerValue(fieldAnswer, value);
+        } else {
+          // Create answer
+          fieldAnswer = workspaceMaterialFieldAnswerController.createWorkspaceMaterialTextFieldAnswer(queryTextField, workspaceMaterialReply, value);
+        }        
+      } else if (queryField instanceof QuerySelectField) {
+        QuerySelectField selectField = (QuerySelectField) queryField;
+        SelectFieldOption option = null;
+        if (StringUtils.isNotBlank(value)) {
+          option = queryFieldController.findQuerySelectFieldOptionByFieldAndName(selectField, value);
+          if (option == null) {
+            throw new MaterialQueryIntegrityExeption("SelectFieldOption #" + selectField.getId() + " does not contain option '" + value + "'");
+          }
+        }
+        
+        WorkspaceMaterialSelectFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialSelectFieldAnswerByQueryFieldAndReply(selectField, workspaceMaterialReply);
+        if (fieldAnswer != null) {
+          fieldAnswer = workspaceMaterialFieldAnswerController.updateWorkspaceMaterialSelectFieldAnswerValue(fieldAnswer, option);
+        } else {
+          fieldAnswer = workspaceMaterialFieldAnswerController.createWorkspaceMaterialSelectFieldAnswer(selectField, workspaceMaterialReply, option);
+        }
       }
     }
   }
