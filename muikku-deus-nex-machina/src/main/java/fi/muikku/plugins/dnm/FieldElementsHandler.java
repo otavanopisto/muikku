@@ -50,10 +50,10 @@ class FieldElementsHandler implements DeusNexFieldElementHandler {
   }
 
   @Override
-  public Node handleTextField(org.w3c.dom.Document ownerDocument, String paramName, Integer columns, List<RightAnswer> rightAnswers) {
+  public Node handleTextField(org.w3c.dom.Document ownerDocument, String paramName, Integer columns, List<RightAnswer> rightAnswers, String help, String hint) {
     // TODO: This is just for show, real implementation depends on QueryMaterial implementation
    
-    Object textFieldData = fieldTranslator.translateTextField(paramName, columns, rightAnswers);
+    Object textFieldData = fieldTranslator.translateTextField(paramName, columns, rightAnswers, help, hint);
 
     Element inputElement = ownerDocument.createElement("input");
     inputElement.setAttribute("type", "text");
@@ -80,7 +80,7 @@ class FieldElementsHandler implements DeusNexFieldElementHandler {
   }
 
   @Override
-  public Node handleOptionList(org.w3c.dom.Document ownerDocument, String paramName, String type, List<OptionListOption> options) {
+  public Node handleOptionList(org.w3c.dom.Document ownerDocument, String paramName, String type, List<OptionListOption> options, String help, String hint) {
     // TODO: This is just for show, real implementation depends on QueryMaterial implementation
     
     Object optionListFieldData = fieldTranslator.translateOptionList(paramName, type, options);
@@ -99,7 +99,7 @@ class FieldElementsHandler implements DeusNexFieldElementHandler {
   }
 
   @Override
-  public Node handleConnectField(org.w3c.dom.Document ownerDocument, String paramName, List<ConnectFieldOption> options) {
+  public Node handleConnectField(org.w3c.dom.Document ownerDocument, String paramName, List<ConnectFieldOption> options, String help, String hint) {
     Object connectFieldData = fieldTranslator.translateConnectField(paramName, options);
 
     Element table = ownerDocument.createElement("table");

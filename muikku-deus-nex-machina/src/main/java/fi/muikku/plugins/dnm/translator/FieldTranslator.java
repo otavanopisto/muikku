@@ -29,7 +29,7 @@ public class FieldTranslator {
     return result;
   }
   
-  public Object translateTextField(String name, Integer columns, List<RightAnswer> rightAnswers) {
+  public Object translateTextField(String name, Integer columns, List<RightAnswer> rightAnswers, String help, String hint) {
     List<TextField.RightAnswer> translatedAnswers = new ArrayList<>();
     for (fi.muikku.plugins.dnm.parser.content.RightAnswer rightAnswer : rightAnswers) {
       Double points;
@@ -40,7 +40,7 @@ public class FieldTranslator {
       }
       translatedAnswers.add(new TextField.RightAnswer(points, rightAnswer.getText(), true, false));
     }
-    return new TextField(name, columns, translatedAnswers);
+    return new TextField(name, columns, translatedAnswers, help, hint);
   }
 
   public MemoField translateMemoField(String name, Integer columns, Integer rows, String help, String hint) {

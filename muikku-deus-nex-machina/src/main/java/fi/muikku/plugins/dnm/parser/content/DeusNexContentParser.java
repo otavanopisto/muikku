@@ -217,11 +217,29 @@ public class DeusNexContentParser {
 		}
 		
 		if (fieldElementHandler != null) {
-			return fieldElementHandler.handleOptionList(ownerDocument, paramName, type, options);
+			return fieldElementHandler.handleOptionList(ownerDocument, paramName, type, options, helpOf(fieldElement), hintOf(fieldElement));
 		}
 		
 		return null;
 	}
+
+  private String hintOf(Element fieldElement) throws XPathExpressionException {
+    List<Element> hintElements = DeusNexXmlUtils.getElementsByXPath(fieldElement,"hint");
+    String hint = "";
+    if (!hintElements.isEmpty()) {
+      hint = hintElements.get(0).getTextContent();
+    }
+    return hint;
+  }
+
+  private String helpOf(Element fieldElement) throws XPathExpressionException {
+    List<Element> helpElements = DeusNexXmlUtils.getElementsByXPath(fieldElement,"help");
+		String help = "";
+		if (!helpElements.isEmpty()) {
+		  help = helpElements.get(0).getTextContent();
+		}
+    return help;
+  }
 	
 	private Node handleTextField(Document ownerDocument, Element fieldElement) throws XPathExpressionException {
 		String paramName = DeusNexXmlUtils.getChildValue(fieldElement, "paramname");
@@ -236,7 +254,7 @@ public class DeusNexContentParser {
 		}
 		
 		if (fieldElementHandler != null) {
-			return fieldElementHandler.handleTextField(ownerDocument, paramName, columns, rightAnswers);
+			return fieldElementHandler.handleTextField(ownerDocument, paramName, columns, rightAnswers, helpOf(fieldElement), hintOf(fieldElement));
 		}
 		
 		return null;
@@ -271,7 +289,7 @@ public class DeusNexContentParser {
 		}
 		
 		if (fieldElementHandler != null) {
-			return fieldElementHandler.handleConnectField(ownerDocument, paramName, options);
+			return fieldElementHandler.handleConnectField(ownerDocument, paramName, options, helpOf(fieldElement), hintOf(fieldElement));
 		}
 		
 		return null;
