@@ -36,10 +36,10 @@ public class MaterialHtmlFieldPluginDescriptor implements PluginDescriptor, Pers
         
       HtmlMaterialFieldListeners.class,
       
-      /** DAO's **/
+      /** DAOs **/
       
-      QueryDrawFieldDAO.class,
       QueryFieldDAO.class,
+      QueryDrawFieldDAO.class,
       QuerySelectFieldDAO.class,
       QueryTextFieldDAO.class,
       RightAnswerDAO.class,
@@ -47,8 +47,7 @@ public class MaterialHtmlFieldPluginDescriptor implements PluginDescriptor, Pers
       
       /** Controllers **/
       HtmlMaterialFieldController.class,
-      
-      /***********/
+      QueryTextFieldController.class
       
     });
   }
@@ -64,5 +63,4 @@ public class MaterialHtmlFieldPluginDescriptor implements PluginDescriptor, Pers
         SelectFieldOption.class,
     };
   }
-
 }

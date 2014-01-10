@@ -8,17 +8,19 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
-@PrimaryKeyJoinColumn(name="id")
-public class QueryTextField extends QueryField{
-	
-  public String getPlaceholderText() {
-		return placeholderText;
-	}
-	public void setPlaceholderText(String text) {
-		this.placeholderText = text;
-	}
+@PrimaryKeyJoinColumn(name = "id")
+public class QueryTextField extends QueryField {
 
-	@Column
-	private String placeholderText;
-	
+  public String getText() {
+    return text;
+  }
+
+  public void setText(String text) {
+    this.text = text;
+  }
+
+  @NotEmpty
+  @NotNull
+  @Column(nullable = false)
+  private String text;
 }

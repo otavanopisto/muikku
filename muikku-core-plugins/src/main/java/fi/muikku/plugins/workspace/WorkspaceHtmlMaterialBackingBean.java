@@ -25,9 +25,14 @@ import com.ocpsoft.pretty.faces.annotation.URLQueryParameter;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.material.HtmlMaterialController;
 import fi.muikku.plugins.material.model.HtmlMaterial;
-import fi.muikku.plugins.material.model.Material;
+import fi.muikku.plugins.materialfields.QueryTextFieldController;
+import fi.muikku.plugins.materialfields.model.QueryTextField;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialTextFieldAnswer;
 import fi.muikku.schooldata.WorkspaceController;
+import fi.muikku.security.LoggedIn;
+import fi.muikku.session.SessionController;
 
 @SuppressWarnings("el-syntax")
 @Named
@@ -50,6 +55,18 @@ public class WorkspaceHtmlMaterialBackingBean {
 
   @Inject
   private HtmlMaterialController htmlMaterialController;
+
+  @Inject
+  private QueryTextFieldController queryTextFieldController;
+
+  @Inject
+  private WorkspaceMaterialReplyController workspaceMaterialReplyController;
+  
+  @Inject
+  private WorkspaceMaterialFieldAnswerController workspaceMaterialFieldAnswerController;
+  
+  @Inject
+  private SessionController sessionController;
 	
 	@URLAction 
 	public void init() throws IOException, XPathExpressionException, SAXException, TransformerException {
@@ -65,17 +82,15 @@ public class WorkspaceHtmlMaterialBackingBean {
 			throw new FileNotFoundException();
 		}
 		
-		WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialByWorkspaceEntityAndPath(workspaceEntity, getWorkspaceMaterialPath());
+		workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialByWorkspaceEntityAndPath(workspaceEntity, getWorkspaceMaterialPath());
 		if (workspaceMaterial == null) {
 			throw new FileNotFoundException();
 		}
 
-	  Material material = workspaceMaterial.getMaterial();
-	  if (!(material instanceof HtmlMaterial)) {
+	  if (!(workspaceMaterial.getMaterial() instanceof HtmlMaterial)) {
 	  	throw new FileNotFoundException();
 	  }
 	  
-	  HtmlMaterial htmlMaterial = (HtmlMaterial) material;
 	  
 	  if (Boolean.TRUE == getEmbed()) {
 	  	FacesContext.getCurrentInstance().getExternalContext().redirect(new StringBuilder()
@@ -86,7 +101,15 @@ public class WorkspaceHtmlMaterialBackingBean {
         .append(workspaceMaterial.getPath())
         .toString());
 	  } else {
+	    HtmlMaterial htmlMaterial = (HtmlMaterial) workspaceMaterial.getMaterial();
 	    this.html = htmlMaterialController.getSerializedHtmlDocument(htmlMaterial);
+	    
+	    if (sessionController.isLoggedIn()) {
+	      workspaceMaterialReply = workspaceMaterialReplyController.findMaterialReplyByMaterialAndUserEntity(workspaceMaterial, sessionController.getUser());
+	      if (workspaceMaterialReply == null) {
+	        workspaceMaterialReply = workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, sessionController.getUser());
+	      }
+	    }
 	  }
 	}
 	
@@ -118,10 +141,11 @@ public class WorkspaceHtmlMaterialBackingBean {
     return html;
   }
 	
+	@LoggedIn
 	public void save() {
 	  String queryFieldPrefix = "material-form:queryform:";
 	  
-	  Map<String, String> values = new HashMap<>();
+	  Map<String, String> answers = new HashMap<>();
 	  Map<String, String> requestParameterMap = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
 	  
 	  Iterator<String> parameterNames = requestParameterMap.keySet().iterator();
@@ -129,16 +153,35 @@ public class WorkspaceHtmlMaterialBackingBean {
 	    String parameterName = parameterNames.next();
 	    if (StringUtils.startsWith(parameterName, queryFieldPrefix)) {
 	      String value = requestParameterMap.get(parameterName);
-	      values.put(StringUtils.removeStart(parameterName, queryFieldPrefix), value);
+	      answers.put(StringUtils.removeStart(parameterName, queryFieldPrefix), value);
 	    }
 	  }
 	  
-	  for (String key : values.keySet()) {
-	    String value = values.get(key);
-	    
-	    System.out.println(key + " == " + value);
-	  }
+	  saveAnswers(answers);
 	}
+
+  private void saveAnswers(Map<String, String> answers) {
+    HtmlMaterial htmlMaterial = (HtmlMaterial) workspaceMaterial.getMaterial();
+    
+    for (String name : answers.keySet()) {
+      QueryTextField queryTextField = queryTextFieldController.findQueryTextFieldByMaterialAndName(htmlMaterial, name); 
+      if (queryTextField == null) {
+        // TODO: Error should be thrown if field does not exist, field creation on save time is done
+        // just to ease the pains of development phase
+        queryTextField = queryTextFieldController.createQueryTextField(htmlMaterial, name, Boolean.FALSE, name);
+      }
+      
+      String value = answers.get(name);
+      WorkspaceMaterialTextFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialTextFieldAnswerByQueryFieldAndReply(queryTextField, workspaceMaterialReply);
+      if (fieldAnswer != null) {
+        // Update answer
+        fieldAnswer = workspaceMaterialFieldAnswerController.updateWorkspaceMaterialTextFieldAnswerValue(fieldAnswer, value);
+      } else {
+        // Create answer
+        fieldAnswer = workspaceMaterialFieldAnswerController.createWorkspaceMaterialTextFieldAnswer(queryTextField, workspaceMaterialReply, value);
+      }
+    }
+  }
 
 	@URLQueryParameter ("embed")
 	private Boolean embed;
@@ -148,4 +191,8 @@ public class WorkspaceHtmlMaterialBackingBean {
 	private String workspaceMaterialPath;
 
 	private String workspaceUrlName;
+	
+	private WorkspaceMaterial workspaceMaterial;
+	
+	private WorkspaceMaterialReply workspaceMaterialReply;
 }

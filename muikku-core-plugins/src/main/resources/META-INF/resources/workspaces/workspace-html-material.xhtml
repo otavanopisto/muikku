@@ -11,13 +11,11 @@
     <h:outputScript name="scripts/gui/workspace-material.js" target="head"/>
      
     <h:form id="material-form">
-      <h2>Material</h2>
-
-      <h:panelGroup styleClass="workspace-html-material-container">
+        <h:panelGroup styleClass="workspace-html-material-container">
         <h:outputText value="#{workspaceHtmlMaterialBackingBean.html}" escape="false"/>
       </h:panelGroup>
       
-      <h:panelGroup styleClass="workspace-material-submit-container">
+      <h:panelGroup styleClass="workspace-material-submit-container" rendered="#{sessionBackingBean.loggedIn}">
         <h:commandButton action="#{workspaceHtmlMaterialBackingBean.save}" value="Save"/>
       </h:panelGroup>
      
