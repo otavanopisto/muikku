@@ -32,6 +32,7 @@ public class MaterialPluginDescriptor implements PluginDescriptor, PersistencePl
       
       /* Controllers */
       
+      MaterialController.class,
       BinaryMaterialController.class,
       HtmlMaterialController.class,
        
