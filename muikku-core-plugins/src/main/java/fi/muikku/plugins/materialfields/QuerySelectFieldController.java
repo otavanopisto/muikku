@@ -15,8 +15,8 @@ public class QuerySelectFieldController {
   @Inject
   QuerySelectFieldDAO querySelectFieldDAO;
 
-  public QuerySelectField createQuerySelectField(Material material, String name, Boolean mandatory, String text) {
-    return querySelectFieldDAO.create(material, name, mandatory, text);
+  public QuerySelectField createQuerySelectField(Material material, String name, Boolean mandatory) {
+    return querySelectFieldDAO.create(material, name, mandatory);
   }
 
   public QuerySelectField findQuerySelectFieldbyId(Long id) {

@@ -1,23 +1,21 @@
 package fi.muikku.plugins.materialfields.model;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
-@PrimaryKeyJoinColumn(name = "id")
-public class SelectFieldOption implements Serializable {
+public class SelectFieldOption {
 
-  private static final long serialVersionUID = -7908385182285507614L;
+  public Long getId() {
+    return id;
+  }
 
   public String getOptText() {
     return optText;
@@ -42,14 +40,6 @@ public class SelectFieldOption implements Serializable {
   public void setSelectField(QuerySelectField selectField) {
     this.selectField = selectField;
   }
-  
-  public Long getId() {
-    return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
-  }
 
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
@@ -66,5 +56,5 @@ public class SelectFieldOption implements Serializable {
   private String name;
 
   @ManyToOne
-  private QuerySelectField selectField; //TODO find out why this is not included in generated metamodel
+  private QuerySelectField selectField; 
 }
