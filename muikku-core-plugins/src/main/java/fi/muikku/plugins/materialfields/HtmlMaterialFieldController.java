@@ -5,7 +5,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.Dependent;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import org.codehaus.jackson.JsonParseException;
