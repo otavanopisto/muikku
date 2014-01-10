@@ -209,8 +209,8 @@ div[class*='actions-vertical'] {
 
 
 .naviIconLogout {
-  @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-logout.png'));	
-  float:right;    
+  @include customIcon(url('../resources/gfx/icons/32x32/actions/navigate-logout.png'),25px,20px);	 
+  float:right;
 }
 
 .naviIconSettings {
@@ -369,6 +369,8 @@ div[class*='actions-vertical'] {
 
 .naviIconBookmark { 
   @include customIcon(url('../resources/gfx/icons/32x32/actions/tools-bookmark.png'),24px,15px);
+
+  
   float: left;
 }
 
@@ -429,21 +431,34 @@ div[class*='actions-vertical'] {
   float:right;
 }
 
-.logoutWidget {
+.loggedUserWidget {
+  @include rounded(5px);	
+  background: #ededed;
+  padding: 10px; 
   text-align: right;
   color: #000;
+  font-size: 9px;
   width: 240px;
-  position: absolute;
-  top: 5px;
-  right: 5px;
+  float:right;
 }
+
+.logoutWidget {
+  @include rounded;  
+  @include gradient-top-bottom;
+	text-align: right;
+  color: #000;
+  padding:6px;
+  position: absolute;
+  margin-top:96px;
+  margin-left:285px;  
+  }
 
 
 /* Language */
 
 .languageWidget { 
   position:absolute;
-  margin-top:118px;
+  margin-top:110px;
   margin-left:51px;  
   font-size:1.3em;
   @include gradient-top-bottom-four($contInteractGr...);
@@ -700,6 +715,21 @@ div[class*='actions-vertical'] {
   display:block;
   margin-left:10px;
 }
+
+.wi-user-info{
+	
+}
+.wi-user-name{
+  font-size:2em;
+  font-weight:bold;
+  color:#3a374d;
+}
+
+.wi-user-functions{
+  @extend .co-toolbar;
+  height:30px;
+}
+
 
 #filterSelectList {
 	width:100%;
