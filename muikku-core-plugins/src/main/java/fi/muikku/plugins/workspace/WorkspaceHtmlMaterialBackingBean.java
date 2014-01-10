@@ -14,6 +14,7 @@ import javax.inject.Named;
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathExpressionException;
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.xml.sax.SAXException;
 
@@ -24,7 +25,9 @@ import com.ocpsoft.pretty.faces.annotation.URLQueryParameter;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.material.HtmlMaterialController;
+import fi.muikku.plugins.material.MaterialController;
 import fi.muikku.plugins.material.model.HtmlMaterial;
+import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.materialfields.QueryTextFieldController;
 import fi.muikku.plugins.materialfields.model.QueryTextField;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
@@ -52,6 +55,9 @@ public class WorkspaceHtmlMaterialBackingBean {
 	
 	@Inject
 	private WorkspaceMaterialController workspaceMaterialController;
+	
+	@Inject
+  private MaterialController materialController;
 
   @Inject
   private HtmlMaterialController htmlMaterialController;
@@ -142,7 +148,7 @@ public class WorkspaceHtmlMaterialBackingBean {
   }
 	
 	@LoggedIn
-	public void save() {
+	public void save() throws MaterialQueryIntegrityExeption {
 	  String queryFieldPrefix = "material-form:queryform:";
 	  
 	  Map<String, String> answers = new HashMap<>();
@@ -160,15 +166,29 @@ public class WorkspaceHtmlMaterialBackingBean {
 	  saveAnswers(answers);
 	}
 
-  private void saveAnswers(Map<String, String> answers) {
+  private void saveAnswers(Map<String, String> answers) throws MaterialQueryIntegrityExeption {
     HtmlMaterial htmlMaterial = (HtmlMaterial) workspaceMaterial.getMaterial();
     
     for (String name : answers.keySet()) {
-      QueryTextField queryTextField = queryTextFieldController.findQueryTextFieldByMaterialAndName(htmlMaterial, name); 
+      String[] nameParts = name.split(":");
+      String fieldName = nameParts[nameParts.length - 1];
+      Material fieldMaterial = null;
+          
+      if (nameParts.length > 1) {
+        Long fieldMaterialId = NumberUtils.createLong(nameParts[nameParts.length - 2]);
+        Material material = materialController.findMaterialById(fieldMaterialId);
+        if (material == null) {
+          throw new MaterialQueryIntegrityExeption("Embedded field " + name + " points to non-existing material");
+        } 
+        
+        fieldMaterial = material;
+      } else {
+        fieldMaterial = htmlMaterial;
+      }
+      
+      QueryTextField queryTextField = queryTextFieldController.findQueryTextFieldByMaterialAndName(fieldMaterial, fieldName); 
       if (queryTextField == null) {
-        // TODO: Error should be thrown if field does not exist, field creation on save time is done
-        // just to ease the pains of development phase
-        queryTextField = queryTextFieldController.createQueryTextField(htmlMaterial, name, Boolean.FALSE, name);
+        throw new MaterialQueryIntegrityExeption("Material #" + fieldMaterial.getId() + " does not contain field '" + fieldName + "'");
       }
       
       String value = answers.get(name);

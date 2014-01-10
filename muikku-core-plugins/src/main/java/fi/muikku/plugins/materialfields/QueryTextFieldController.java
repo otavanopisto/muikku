@@ -15,8 +15,8 @@ public class QueryTextFieldController {
   @Inject
   private QueryTextFieldDAO queryTextFieldDAO;
 
-  public QueryTextField createQueryTextField(Material material, String name, Boolean mandatory, String text) {
-    return queryTextFieldDAO.create(material, name, mandatory, text);
+  public QueryTextField createQueryTextField(Material material, String name, Boolean mandatory) {
+    return queryTextFieldDAO.create(material, name, mandatory);
   }
 
   public QueryTextField findQueryTextFieldbyId(Long id) {

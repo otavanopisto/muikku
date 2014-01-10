@@ -16,14 +16,13 @@ public class QueryTextFieldDAO extends PluginDAO<QueryTextField> {
 
   private static final long serialVersionUID = -5327160259588566934L;
 
-  public QueryTextField create(Material material, String name, Boolean mandatory, String text) {
+  public QueryTextField create(Material material, String name, Boolean mandatory) {
 
     QueryTextField queryTextField = new QueryTextField();
 
     queryTextField.setMaterial(material);
     queryTextField.setName(name);
     queryTextField.setMandatory(mandatory);
-    queryTextField.setText(text);
 
     return persist(queryTextField);
   }
