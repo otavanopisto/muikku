@@ -26,8 +26,9 @@ import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.material.model.field.MemoField;
 import fi.muikku.plugins.material.model.field.OptionListField;
+import fi.muikku.plugins.material.model.field.OptionListField.Option;
 import fi.muikku.plugins.material.model.field.TextField;
-import fi.muikku.plugins.materialfields.dao.QueryTextFieldDAO;
+import fi.muikku.plugins.materialfields.model.QuerySelectField;
 
 @Dependent
 public class HtmlMaterialFieldController {
@@ -40,6 +41,9 @@ public class HtmlMaterialFieldController {
 
   @Inject
   private QueryTextFieldController queryTextFieldController;
+
+  @Inject
+  private QuerySelectFieldController querySelectFieldController;
 
   public HtmlMaterial createMaterialFields(HtmlMaterial htmlMaterial) throws SAXException, IOException, XPathExpressionException {
     String html = htmlMaterial.getHtml();
@@ -93,6 +97,11 @@ public class HtmlMaterialFieldController {
     switch (contentType) {
       case "application/vnd.muikku.field.option-list":
         OptionListField optionListField = objectMapper.readValue(jsonData, OptionListField.class);
+        QuerySelectField querySelectField = querySelectFieldController.createQuerySelectField(material, optionListField.getName(), Boolean.FALSE);
+        for (Option option : optionListField.getOptions()) {
+          querySelectFieldController.createSelectFieldOption(querySelectField, option.getName(), option.getText());
+        }
+        
         logger.log(Level.INFO, optionListField.toString());
       break;
       case "application/vnd.muikku.field.text":
