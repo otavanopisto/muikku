@@ -48,7 +48,6 @@ public class MaterialHtmlFieldPluginDescriptor implements PluginDescriptor, Pers
       /** Controllers **/
       
       QueryFieldController.class,
-      HtmlMaterialFieldController.class,
       QueryTextFieldController.class,
       QuerySelectFieldController.class
       
