@@ -206,7 +206,7 @@ a.header {
 .seeker {
   text-align:center;
   position:relative;
-  top:104px;	
+  top:106px;	
   @include gradient-top-bottom;
   @include rounded-top-left; 
   @include rounded-top-right;
@@ -222,17 +222,7 @@ a.header {
   background: url('../resources/gfx/icons/32x32/actions/navigate-search.png') no-repeat center;
 }
 
-.languageWidget { 
-  position:absolute;
-  right:10px;
-  margin-top:105px;
-  font-size:1.3em;
-  @include gradient-top-bottom-four($contInteractGr...);
-  height: 20px;
-  width : 50px;
-  border: 2px solid #ededed;
-  border-radius: 5px;
-}
+
 
 .languageSelection {
   float:left;
