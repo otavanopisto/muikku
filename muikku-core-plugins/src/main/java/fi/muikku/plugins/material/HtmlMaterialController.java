@@ -32,6 +32,7 @@ import org.xml.sax.SAXException;
 
 import fi.muikku.plugins.material.dao.HtmlMaterialDAO;
 import fi.muikku.plugins.material.events.HtmlMaterialCreateEvent;
+import fi.muikku.plugins.material.events.HtmlMaterialUpdateEvent;
 import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.material.processing.HtmlMaterialAfterProcessingContext;
 import fi.muikku.plugins.material.processing.HtmlMaterialBeforeProcessingContext;
@@ -50,11 +51,14 @@ public class HtmlMaterialController {
 	private HtmlMaterialDAO htmlMaterialDAO;
 	
 	@Inject
-	private Event<HtmlMaterialCreateEvent> materialCreated;
-	
+	private Event<HtmlMaterialCreateEvent> materialCreateEvent;
+
+  @Inject
+  private Event<HtmlMaterialUpdateEvent> materialUpdateEvent;
+  
 	public HtmlMaterial createHtmlMaterial(String urlName, String title, String html) {
 		HtmlMaterial material = htmlMaterialDAO.create(urlName, title, html);
-		materialCreated.fire(new HtmlMaterialCreateEvent(material));
+		materialCreateEvent.fire(new HtmlMaterialCreateEvent(material));
 		return material;
 	}
 	
