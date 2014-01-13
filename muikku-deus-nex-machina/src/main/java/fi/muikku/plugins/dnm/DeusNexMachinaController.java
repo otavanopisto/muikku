@@ -12,13 +12,11 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.ApplicationScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
-import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
 
 import fi.muikku.plugins.dnm.parser.DeusNexException;
 import fi.muikku.plugins.dnm.parser.DeusNexInternalException;
@@ -37,9 +35,7 @@ import fi.muikku.plugins.dnm.parser.structure.model.Type;
 import fi.muikku.plugins.material.BinaryMaterialController;
 import fi.muikku.plugins.material.HtmlMaterialController;
 import fi.muikku.plugins.material.model.BinaryMaterial;
-import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.material.model.Material;
-import fi.muikku.plugins.materialfields.HtmlMaterialFieldController;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.muikku.plugins.workspace.WorkspaceMaterialUtils;
 import fi.muikku.plugins.workspace.model.WorkspaceFolder;
@@ -218,9 +214,6 @@ public class DeusNexMachinaController {
 	@Inject 
 	WorkspaceMaterialController workspaceMaterialController;
 	
-	@Inject
-	private HtmlMaterialFieldController htmlMaterialFieldController;
-	
 	@PostConstruct
 	public void init() throws IOException {
 		deusNexStructureParser = new DeusNexStructureParser();
@@ -306,12 +299,7 @@ public class DeusNexMachinaController {
 		String urlName = resource.getName();
 		String html = parseDocumentContent(rootFolder, resource.getDocument(), deusNexDocument);
 		
-		HtmlMaterial htmlMaterial = htmlMaterialController.createHtmlMaterial(urlName, title, html);
-		try {
-      return htmlMaterialFieldController.createMaterialFields(htmlMaterial);
-    } catch (XPathExpressionException | SAXException | IOException e) {
-      throw new DeusNexInternalException("Field processing failed", e);
-    }
+		return htmlMaterialController.createHtmlMaterial(urlName, title, html);
 	}
 
 	private Material createQueryMaterial(WorkspaceRootFolder rootFolder, Query resource, DeusNexDocument deusNexDocument) throws DeusNexException {
@@ -321,12 +309,7 @@ public class DeusNexMachinaController {
 		String urlName = resource.getName();
 		String html = parseQueryContent(rootFolder, resource.getDocument(), deusNexDocument);
 		
-    HtmlMaterial htmlMaterial = htmlMaterialController.createHtmlMaterial(urlName, title, html);
-    try {
-      return htmlMaterialFieldController.createMaterialFields(htmlMaterial);
-    } catch (XPathExpressionException | SAXException | IOException e) {
-      throw new DeusNexInternalException("Field processing failed", e);
-    }
+		return htmlMaterialController.createHtmlMaterial(urlName, title, html);
 	}
 
 	private BinaryMaterial createBinaryMaterial(Binary resource) {
