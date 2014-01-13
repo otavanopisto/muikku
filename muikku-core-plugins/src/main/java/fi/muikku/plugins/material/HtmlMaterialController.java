@@ -8,6 +8,7 @@ import java.util.TreeSet;
 
 import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.xml.transform.OutputKeys;
@@ -30,6 +31,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import fi.muikku.plugins.material.dao.HtmlMaterialDAO;
+import fi.muikku.plugins.material.events.HtmlMaterialCreateEvent;
 import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.material.processing.HtmlMaterialAfterProcessingContext;
 import fi.muikku.plugins.material.processing.HtmlMaterialBeforeProcessingContext;
@@ -47,8 +49,13 @@ public class HtmlMaterialController {
 	@Inject
 	private HtmlMaterialDAO htmlMaterialDAO;
 	
+	@Inject
+	private Event<HtmlMaterialCreateEvent> materialCreated;
+	
 	public HtmlMaterial createHtmlMaterial(String urlName, String title, String html) {
-		return htmlMaterialDAO.create(urlName, title, html);
+		HtmlMaterial material = htmlMaterialDAO.create(urlName, title, html);
+		materialCreated.fire(new HtmlMaterialCreateEvent(material));
+		return material;
 	}
 	
 	public HtmlMaterial findHtmlMaterialById(Long id) {
