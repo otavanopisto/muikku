@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import fi.muikku.plugins.material.dao.BinaryMaterialDAO;
 import fi.muikku.plugins.material.events.BinaryMaterialCreateEvent;
+import fi.muikku.plugins.material.events.BinaryMaterialUpdateEvent;
 import fi.muikku.plugins.material.model.BinaryMaterial;
 
 @Dependent
@@ -17,11 +18,14 @@ public class BinaryMaterialController {
 	private BinaryMaterialDAO binaryMaterialDAO;
   
   @Inject
-  private Event<BinaryMaterialCreateEvent> materialCreated;
+  private Event<BinaryMaterialCreateEvent> materialCreateEvent;
 
+  @Inject
+  private Event<BinaryMaterialUpdateEvent> materialUpdateEvent;
+  
 	public BinaryMaterial createBinaryMaterial(String title, String urlName, String contentType, byte[] content) {
 	  BinaryMaterial material = binaryMaterialDAO.create(title, urlName, contentType, content);
-    materialCreated.fire(new BinaryMaterialCreateEvent(material));
+    materialCreateEvent.fire(new BinaryMaterialCreateEvent(material));
     return material;
 	}
 	
@@ -34,7 +38,9 @@ public class BinaryMaterialController {
 	}
 
 	public BinaryMaterial updateBinaryMaterialContent(BinaryMaterial binaryMaterial, byte[] content) {
-		return binaryMaterialDAO.updateContent(binaryMaterial, content);
+		BinaryMaterial material = binaryMaterialDAO.updateContent(binaryMaterial, content);
+		materialUpdateEvent.fire(new BinaryMaterialUpdateEvent(material));
+		return material;
 	}
 	
 }
