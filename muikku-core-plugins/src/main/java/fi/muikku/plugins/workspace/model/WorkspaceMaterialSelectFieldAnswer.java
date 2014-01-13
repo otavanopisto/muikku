@@ -47,6 +47,7 @@ public class WorkspaceMaterialSelectFieldAnswer  {
   @ManyToOne
   private WorkspaceMaterialReply reply;
 
+  // TODO: Remove this
   @ManyToOne
   private QuerySelectField queryField;
   
