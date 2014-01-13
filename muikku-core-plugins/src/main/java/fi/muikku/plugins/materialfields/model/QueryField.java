@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
+import javax.persistence.PersistenceException;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -44,6 +46,11 @@ public class QueryField {
   
   public void setMandatory(Boolean mandatory) {
     this.mandatory = mandatory;
+  }
+  
+  @Transient
+  public String getType() {
+    throw new PersistenceException("type not found");
   }
 	
 	@Id
