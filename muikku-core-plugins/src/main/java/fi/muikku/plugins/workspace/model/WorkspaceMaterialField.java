@@ -56,9 +56,7 @@ public class WorkspaceMaterialField {
   @Column (nullable = false)
   private String name;
   
-  @NotEmpty
-  @NotNull
-  @Column (nullable = false)
+  @ManyToOne
   private QueryField queryField;
   
   @ManyToOne

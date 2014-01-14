@@ -2,6 +2,11 @@ package fi.muikku.plugins.workspace;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -26,8 +31,10 @@ import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.materialfields.QueryFieldController;
 import fi.muikku.plugins.materialfields.QueryTextFieldController;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.muikku.schooldata.WorkspaceController;
+import fi.muikku.security.LoggedIn;
 import fi.muikku.session.SessionController;
 
 @SuppressWarnings("el-syntax")
@@ -66,6 +73,12 @@ public class WorkspaceHtmlMaterialBackingBean {
   
   @Inject
   private SessionController sessionController;
+  
+  @Inject
+  private WorkspaceMaterialFieldController workspaceMaterialFieldController;
+  
+  @Inject
+  private WorkspaceMaterialFieldAnswerController workspaceMaterialFieldAnswerController;
 	
 	@URLAction 
 	public void init() throws IOException, XPathExpressionException, SAXException, TransformerException {
@@ -138,6 +151,32 @@ public class WorkspaceHtmlMaterialBackingBean {
 	
 	public String getHtml() {
     return html;
+  }
+	
+  @LoggedIn
+  public void save() {
+    String queryFieldPrefix = "material-form:queryform:";
+
+    Map<String, String> answers = new HashMap<>();
+    Map<String, String> requestParameterMap = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+
+    //TODO: create WorkspaceMaterialFields..
+    
+    Iterator<String> parameterNames = requestParameterMap.keySet().iterator();
+    while (parameterNames.hasNext()) {
+      String parameterName = parameterNames.next();
+      if (StringUtils.startsWith(parameterName, queryFieldPrefix)) {
+        String value = requestParameterMap.get(parameterName);
+        answers.put(StringUtils.removeStart(parameterName, queryFieldPrefix), value);
+        for(WorkspaceMaterialField field : workspaceMaterialFieldController.findWorkspaceMaterialFieldsByMaterial(workspaceMaterial)){
+          if(field.getName().equals(parameterName)){
+            workspaceMaterialFieldAnswerController.createWorkspaceMaterialFieldAnswer(workspaceMaterialReply, value, field);
+          }
+        }
+      }
+
+    }
+    
   }
 	
 //	@LoggedIn
