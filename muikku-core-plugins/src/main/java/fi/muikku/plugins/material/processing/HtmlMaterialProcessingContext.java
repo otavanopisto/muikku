@@ -7,8 +7,8 @@ public class HtmlMaterialProcessingContext extends AbstractHtmlMaterialDomProces
   public HtmlMaterialProcessingContext() {
   }
   
-  public HtmlMaterialProcessingContext(Long materialId, Document document) {
-    super(materialId, document);
+  public HtmlMaterialProcessingContext(String fieldPrefix, Long materialId, Document document) {
+    super(fieldPrefix, materialId, document);
   }
   
 }
