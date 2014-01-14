@@ -10,6 +10,7 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -31,7 +32,7 @@ import fi.muikku.servlet.ContextPath;
 @RequestScoped
 public class HtmlMaterialEmbedListeners extends MaterialProcessorAdapter {
   
-  private static final boolean ADD_DEBUG_MARKERS = false;
+private static final boolean ADD_DEBUG_MARKERS = false;
   
   @Inject
   private Logger logger;
@@ -135,7 +136,31 @@ public class HtmlMaterialEmbedListeners extends MaterialProcessorAdapter {
   public void beforeSerializeMaterial(HtmlMaterialBeforeSerializeContext event) {
     Document document = event.getDocument();
     String formName = "material-form"; 
-    attachToForm(formName, getDocumentFormElements(document));
+    
+    List<String> assignedNames = new ArrayList<>();
+    List<Element> formElements = getDocumentFormElements(document);
+    for (Element formElement : formElements) {
+      String formElementName = formElement.getAttribute("name");
+      int index = 0;
+      do {
+        StringBuilder assignedNameBuilder = new StringBuilder();
+        if (StringUtils.isNotBlank(event.getFieldPrefix())) {
+          assignedNameBuilder.append(event.getFieldPrefix());
+          assignedNameBuilder.append(':');
+        }
+            
+        assignedNameBuilder.append(formElementName);
+        assignedNameBuilder.append(':');
+        assignedNameBuilder.append(index);
+        
+        String assignedName = DigestUtils.md5Hex(assignedNameBuilder.toString());
+
+        formElement.setAttribute("name", assignedName);
+        index++;
+      } while (assignedNames.contains(formElementName));
+    }
+    
+    attachToForm(formName, formElements);
   }
 
   private List<Element> getDocumentFormElements(Document document) {
