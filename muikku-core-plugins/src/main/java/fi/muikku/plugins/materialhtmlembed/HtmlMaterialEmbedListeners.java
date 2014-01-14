@@ -55,6 +55,7 @@ public class HtmlMaterialEmbedListeners extends MaterialProcessorAdapter {
   
   public void processMaterial(HtmlMaterialProcessingContext event) {
     Document document = event.getDocument();
+    String fieldPrefix = event.getFieldPrefix();
 
     NodeList iframes = document.getElementsByTagName("iframe");
     for (int i = iframes.getLength() - 1; i >= 0; i--) {
@@ -75,7 +76,7 @@ public class HtmlMaterialEmbedListeners extends MaterialProcessorAdapter {
               if (workspaceMaterial != null) {
                 if (workspaceMaterial.getMaterial() instanceof HtmlMaterial) {
                   try {
-                    Document embeddedDocument = htmlMaterialController.getProcessedHtmlDocument((HtmlMaterial) workspaceMaterial.getMaterial());
+                    Document embeddedDocument = htmlMaterialController.getProcessedHtmlDocument(fieldPrefix, (HtmlMaterial) workspaceMaterial.getMaterial());
                     for (Element formElement : getDocumentFormElements(embeddedDocument)) {
                       // If form elements have "id" -attribute specified, we remove it
                       formElement.removeAttribute("id"); 
