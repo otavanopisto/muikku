@@ -20,6 +20,7 @@ import fi.muikku.plugins.communicator.CommunicatorPluginDescriptor;
 import fi.muikku.plugins.courselist.CourseListPluginDescriptor;
 import fi.muikku.plugins.coursepicker.CoursePickerPluginDescriptor;
 import fi.muikku.plugins.data.DataPluginDescriptor;
+import fi.muikku.plugins.data.PermissionDataPluginDescriptor;
 import fi.muikku.plugins.forum.ForumPluginDescriptor;
 import fi.muikku.plugins.friends.FriendsPluginDescriptor;
 import fi.muikku.plugins.grading.GradingPluginDescriptor;
@@ -71,7 +72,8 @@ public class CorePluginsDescriptor implements PluginLibraryDescriptor {
       LoggedUserPluginDescriptor.class,
       UserPluginDescriptor.class,
       StudentsPluginDescriptor.class,
-      GuidanceRequestPluginDescriptor.class
+      GuidanceRequestPluginDescriptor.class,
+      PermissionDataPluginDescriptor.class
 		));
 	}
 	

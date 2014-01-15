@@ -82,5 +82,23 @@ public class WallEntryDAO extends PluginDAO<WallEntry> {
     
     return entityManager.createQuery(criteria).getResultList();
   }
+
+  public List<WallEntry> listPublicEntriesByWall(Wall wall) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WallEntry> criteria = criteriaBuilder.createQuery(WallEntry.class);
+    Root<WallEntry> root = criteria.from(WallEntry.class);
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(WallEntry_.wall), wall),
+            criteriaBuilder.equal(root.get(WallEntry_.archived), Boolean.FALSE),
+            criteriaBuilder.equal(root.get(WallEntry_.visibility), WallEntryVisibility.PUBLIC)
+        )
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
   
 }

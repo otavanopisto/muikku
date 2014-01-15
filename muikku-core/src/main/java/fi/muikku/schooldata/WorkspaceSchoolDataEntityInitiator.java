@@ -13,12 +13,15 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.muikku.dao.base.SchoolDataSourceDAO;
+import fi.muikku.dao.security.WorkspaceRolePermissionDAO;
 import fi.muikku.dao.workspace.WorkspaceEntityDAO;
 import fi.muikku.dao.workspace.WorkspaceSettingsDAO;
 import fi.muikku.dao.workspace.WorkspaceSettingsTemplateDAO;
+import fi.muikku.dao.workspace.WorkspaceSettingsTemplateRolePermissionDAO;
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceSettingsTemplate;
+import fi.muikku.model.workspace.WorkspaceSettingsTemplateRolePermission;
 import fi.muikku.schooldata.entity.Workspace;
 
 @Stateless
@@ -38,10 +41,17 @@ public class WorkspaceSchoolDataEntityInitiator implements SchoolDataEntityIniti
 	private WorkspaceEntityDAO workspaceEntityDAO;
 
   @Inject
-  private WorkspaceSettingsTemplateDAO workspaceSettingsTemplateDAO;
-  @Inject
   private WorkspaceSettingsDAO workspaceSettingsDAO;
-	
+
+  @Inject
+  private WorkspaceRolePermissionDAO workspaceRolePermissionDAO;
+
+  @Inject
+  private WorkspaceSettingsTemplateDAO workspaceSettingsTemplateDAO;
+
+  @Inject
+  private WorkspaceSettingsTemplateRolePermissionDAO workspaceSettingsTemplateRolePermissionDAO;
+  
 	@Inject
 	@Any
 	private Instance<SchoolDataEntityInitiator<Workspace>> workspaceInitiators;
@@ -57,6 +67,11 @@ public class WorkspaceSchoolDataEntityInitiator implements SchoolDataEntityIniti
 			// TODO Correct template here?
 			WorkspaceSettingsTemplate workspaceSettingsTemplate = workspaceSettingsTemplateDAO.findById(1l);
 			workspaceSettingsDAO.create(workspaceEntity, workspaceSettingsTemplate.getDefaultWorkspaceUserRole());
+			
+			List<WorkspaceSettingsTemplateRolePermission> permissionTemplates = workspaceSettingsTemplateRolePermissionDAO.listByTemplate(workspaceSettingsTemplate);
+			for (WorkspaceSettingsTemplateRolePermission permissionTemplate : permissionTemplates) {
+			  workspaceRolePermissionDAO.create(workspaceEntity, permissionTemplate.getRole(), permissionTemplate.getPermission());
+			}
 		}
 
 		return workspace;

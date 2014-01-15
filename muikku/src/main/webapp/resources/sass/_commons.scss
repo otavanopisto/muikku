@@ -3,14 +3,73 @@ Idea is to have these styles shared amongst all possible functionalities
 To be used through SASS's extend feature with CSS's selectors.
 
   */
+@import "_base.scss"; 
   
-  @import "_base.scss";
+  
+
+.co-input-textfield{
+    @include border(1px,#dadada);
+    color:#303030;
+    font-weight:bold;
+    background-color:#f9f9f9; 
+  
+}
+
+
+.co-input-textfield-hover{
+    @include border(1px,#ededed);   
+    color:#000;
+    font-weight:bold;
+    background-color:#fff; 
+  
+}
+
+
+.co-input-textfield-focus{
+    @include border(1px,$header); 
+    color:#000;
+    font-weight:bold;
+    background-color:#fff; 
+
+  
+}
+
+
+.co-input-textfield-blur{
+    @include border(1px,#dadada);
+    color:#dadada;
+    font-weight:bold;
+    background-color:#ededed; 
+  
+}
+
+
+.co-input-textfield-blur-hover{
+    @include border(1px,#ededed);   
+    color:#000;
+    font-weight:bold;
+    background-color:#fafafa; 
+  
+}
+
+
+.co-input-textfield-blur-focus{
+    @include border(1px,$header); 
+    color:#000;
+    font-weight:bold;
+    background-color:#fff; 
+
+  
+}
+
+
 
 .co-buttonContainer{
 text-align:center;
 @include rounded(10px);
 background-color:$aBgr;
 }
+
 .co-menuContainer{
 margin-top:5px; 
 }
@@ -23,7 +82,7 @@ margin-top:5px;
 
 .co-toolbar{
 @include rounded(4px);  
-background-color:$tBgr;
+@include gradient-top-bottom($lightGr...);
 
 }
 
@@ -44,10 +103,12 @@ margin-top:5px;
   font-weight:bold;
   @include gradient-top-bottom; 
 }
+
 .co-content-tbody{
   background-color:$bgr;
   border:1px solid $brd;  
 }
+
 .co-content-tr{}
 
 .co-content-td{
@@ -61,12 +122,10 @@ margin-top:5px;
 }
 
 .co-settings-floater{
-	display:none;
-	@include rounded(2px);  
-	background-color:$aBgr;
+  display:none;
+  @include rounded(2px);  
+  background-color:$aBgr;
 }
-
-
 
 .co-widget{
   padding:20px;
@@ -115,12 +174,13 @@ margin-top:5px;
  }
 
 .co-fieldRow{
- margin-top:2px;
-}
+   margin-top:2px;
+  }
+  
 .co-labelfield{
   float:left;
   font-weight:bold;
-  }
+}
 
 .co-textfield{
   float:left;
@@ -145,13 +205,27 @@ margin-top:5px;
     color:#fff;
 }
 .co-filter-remove{
-	  content:"X";
-		cursor:pointer;
-		font-weight:bold;
-		margin-left:5px;
-		height:15px;
-		width:15px;
-		text-align:center;
-		@include rounded(4px);
-		@include gradient-top-bottom-four($mainFuncBtnGr...);
+    content:"X";
+    cursor:pointer;
+    font-weight:bold;
+    margin-left:5px;
+    height:15px;
+    width:15px;
+    text-align:center;
+    @include rounded(4px);
+    @include gradient-top-bottom-four($mainFuncBtnGr...);
+}
+
+/* Widgets */
+
+.co-widget-container{
+  
+}
+
+.co-widget-header{
+  @include gradient-top-bottom; 
+}
+
+.co-widget-content{
+    
 }

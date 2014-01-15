@@ -74,7 +74,7 @@ public class ForumWallEntryProvider implements WallEntryProvider {
         
         if (userWall != null) {
           // User will see his own "subscriptions" but other users cannot see them
-          if (userWall.getUser().equals(loggedUser.getId())) {
+          if (sessionController.isLoggedIn() && userWall.getUser().equals(loggedUser.getId())) {
             List<ForumAreaSubscription> areaSubscriptions = forumAreaSubscriptionDAO.listByUser(loggedUser);
             List<ForumThreadSubscription> threadSubscriptions = forumThreadSubscriptionDAO.listByUser(loggedUser);
         
@@ -97,8 +97,11 @@ public class ForumWallEntryProvider implements WallEntryProvider {
             }
           }
 
+          UserEntity wallUser = userController.findUserEntityById(userWall.getUser());
+          
+          // TODO Rights to view the forum area
           // Posts
-          List<ForumMessage> contributedThreads = forumMessageDAO.listByContributingUser(loggedUser);
+          List<ForumMessage> contributedThreads = forumMessageDAO.listByContributingUser(wallUser);
 
           for (ForumMessage contributedThread : contributedThreads) {
             feedItems.add(new UserFeedForumMessageItem(contributedThread));

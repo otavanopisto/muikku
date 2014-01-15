@@ -18,6 +18,7 @@ import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugin.LocalizedPluginDescriptor;
 import fi.muikku.plugin.PersistencePluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
+import fi.muikku.plugin.PrioritizedPluginDescriptor;
 import fi.muikku.plugin.RESTPluginDescriptor;
 import fi.muikku.plugins.wall.dao.EnvironmentWallDAO;
 import fi.muikku.plugins.wall.dao.UserWallDAO;
@@ -41,7 +42,7 @@ import fi.muikku.schooldata.WorkspaceController;
 
 @ApplicationScoped
 @Stateful
-public class WallPluginDescriptor implements PluginDescriptor, LocalizedPluginDescriptor, PersistencePluginDescriptor, RESTPluginDescriptor {
+public class WallPluginDescriptor implements PluginDescriptor, LocalizedPluginDescriptor, PersistencePluginDescriptor, RESTPluginDescriptor, PrioritizedPluginDescriptor {
 	
   @Inject
   private WorkspaceController workspaceController;
@@ -94,7 +95,8 @@ public class WallPluginDescriptor implements PluginDescriptor, LocalizedPluginDe
 		  WallController.class,
 		  
 		  /* Other */
-		  DefaultWallEntryProvider.class
+		  DefaultWallEntryProvider.class,
+		  WallPermissions.class
 		));
 	}
 	
@@ -125,5 +127,10 @@ public class WallPluginDescriptor implements PluginDescriptor, LocalizedPluginDe
     bundles.add(new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.wall.WallJsPluginMessages", LocaleUtils.toLocale("fi"))));
     bundles.add(new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.wall.WallJsPluginMessages", LocaleUtils.toLocale("en"))));
     return bundles;
+  }
+
+  @Override
+  public int getPriority() {
+    return PrioritizedPluginDescriptor.NORMAL + 1;
   }
 }

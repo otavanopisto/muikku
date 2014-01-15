@@ -1,0 +1,25 @@
+<div class="apitest">
+  <h4>Single request (modified in event)</h4>
+  
+  <div> 
+    <label style="font-weight: bold; width: 120px; display: inline-block">urlName</label> 
+    <span>{urlName}</span> 
+  </div>
+  <div> 
+    <label style="font-weight: bold; width: 120px; display: inline-block">dataSource_id</label> 
+    <span>{dataSource_id}</span> 
+  </div>
+  <div> 
+    <label style="font-weight: bold; width: 120px; display: inline-block">id</label> 
+    <span>{id}</span> 
+  </div>
+  <div> 
+    <label style="font-weight: bold; width: 120px; display: inline-block">identifier</label> 
+    <span>{identifier}</span> 
+  </div>
+  <div> 
+    <label style="font-weight: bold; width: 120px; display: inline-block">idSine</label> 
+    <span>{idSine}</span> 
+  </div>
+  
+</div>

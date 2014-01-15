@@ -1,0 +1,192 @@
+/* Generic */
+
+input[type="text"] {    
+  padding: 5px;     
+  @extend .co-input-textfield-blur;
+  &:hover {@extend .co-input-textfield-blur-hover;}
+  &:focus {@extend .co-input-textfield-blur-focus;}
+}
+
+input[type="password"] {
+  padding: 5px;   
+  @include border(#b90000);    
+  @extend .co-input-textfield;
+  &:hover {@extend .co-input-textfield-hover;}
+  &:focus {@extend .co-input-textfield-focus;}
+}
+
+input[type="password"]:hover {
+  border:1px solid #b90000;
+}
+
+input[type="password"]:focus {
+  @include border(#b90000);
+  outline:0;
+}
+
+input[type="button"],input[type="submit"] {
+  font-size: 1em;
+  color: #fff;
+  padding: 2px;
+  @include gradient-top-bottom-four($btnGr...);
+  @include rounded(2px);
+  @include shadow;
+  @include border($btnBrd,1px);
+  margin-right:4px;
+}
+
+.formLabel {
+  margin-right:10px;
+  font-weight:bold;	
+}
+
+.formElementRow {
+  margin-bottom:5px;
+}
+
+/* Login */
+.loginWidget input[type="text"] {    
+  padding: 5px;     
+  @extend .co-input-textfield;
+  &:hover {@extend .co-input-textfield-hover;}
+  &:focus {@extend .co-input-textfield-focus;}
+}
+
+
+/* Seeker */
+
+.seeker input{
+  margin:5px 0 5px 0;
+  @extend .co-input-textfield;
+  &:hover {@extend .co-input-textfield-hover;}
+  &:focus {@extend .co-input-textfield-focus;}
+}
+
+/* Calendar */
+
+/* Communicator (.cm-*) */
+
+.cm-newMessage-recipients {
+  @include rounded(4px);  
+  min-height:20px;
+  padding:5px; 
+  background-color:$saBgr;
+}
+
+.cm-newMessage-recipient, .cm-newMessage-recipientgroup {
+  @extend .co-filter;
+  float: left;
+  margin-right: 5px;
+  margin-top:5px;
+  padding: 3px	
+}
+
+.cm-newMessage-recipientgroup {
+  @include gradient-top-bottom(#207020, #20FF20);
+}
+
+.cm-newMessage-recipientName {
+  float:left;
+}
+
+.cm-newMessage-removeRecipient {
+  @extend .co-filter-remove;
+  float:left;
+}
+
+.cm-newMessage-message {
+  margin-top:5px;
+  padding:5px; 
+  background-color:$saBgr;	
+  @include rounded(4px);
+}
+
+.cm-newMessage-message input[type="text"] {    
+  width: 200px;
+}
+
+.cm-newMessage-content textarea {    
+  width:100%;
+  height:200px;
+}
+
+.cm-setting-signatures-toolbar, .cm-setting-templates-toolbar {
+  padding:5px;	
+}
+
+.cm-newMessage-subject {
+}
+
+.cm-settings-templates-selectorContainer, .cm-settings-signatures-selectorContainer {
+  float:left;
+  width:50%;
+  box-sizing:border-box;
+  -moz-box-sizing:border-box;
+}
+
+.cm-settings-templates-selectorContainer select, .cm-settings-signatures-selectorContainer select { 
+  width:100%;
+}
+
+.cm-setting-templates-editor, .cm-setting-signatures-editor {
+  float:left;
+  width: 50%;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+
+.cm-setting-templates-editor textarea, .cm-setting-signatures-editor textarea {
+  width:100%;height:20em;
+}
+
+/* Settings */
+
+.se-plugins form {
+  margin-bottom:5px;
+  border:1px solid #dadada;
+  padding:4px;
+  background:#fff;
+  border-top-left-radius:10px 50% ;
+  border-bottom-left-radius:10px 50% ;
+}
+
+.se-plugins-plugin input {
+  border:1px solid #dadada;
+  padding:4px !important;
+  width:20px;
+  height:20px;
+  border-radius:50%;
+}
+
+/* LED -type of buttons */
+
+input[class="btn-enabled"] {
+  @include buttonLedGr(#fcfcfc,#b4e391,#61c419,#061900,24%,50%);
+  @include buttonLedSh(inset 0 1px 0 rgba(100,100,100,0.5),inset 0 4px 2px rgba(255,255,255,0.5),inset 0 -3px 1px rgba(100,100,100,0.1),inset 0 1px 2px rgba(255,255,255,0.3));
+}
+
+input[class="btn-enabled"]:hover {
+  @include buttonLedGr(#D1FFBA,#5DFF00,#61c419,#061900,34%,70%);
+  @include buttonLedSh(inset 0 1px 0 rgba(100,100,100,0.5),inset 0 6px 2px rgba(255,255,255,0.5),inset 0 -2px 1px rgba(100,100,100,0.1),inset 0 1px 2px rgba(255,255,255,0.3)); 
+}
+
+input[class="btn-enabled"]:active {
+  @include buttonLedGr(#fcfcfc,#b4e391,#61c419,#061900,4%,50%); 
+  @include buttonLedSh(inset 0 1px 0 rgba(100,100,100,0.5),inset 0 2px 1px rgba(100,100,100,0.2),inset 0 -4px 1px rgba(100,100,100,0.2),inset 0 1px 2px rgba(255,255,255,0.7)); 
+}
+
+input[class="btn-disabled"] {
+  @include buttonLedGr(#ffec9e,#f16f5c,#f02f17,#190904,24%,50%);
+  @include buttonLedSh(inset 0 1px 0 rgba(100,100,100,0.5),inset 0 2px 2px rgba(255,255,255,0.5),inset 0 -3px 1px rgba(100,100,100,0.1),inset 0 1px 4px rgba(255,255,255,0.3)); 
+}
+
+input[class="btn-disabled"]:hover {
+  @include buttonLedGr(#ffec9e,#ff6a4d,#ff0000, #190904,44%,70%);
+  @include buttonLedSh(inset 0 1px 2px rgba(100,100,100,0.5),inset 0 4px 2px rgba(255,255,255,0.5),inset 0 -6px 1px rgba(100,100,100,0.1),inset 0 1px 2px rgba(255,255,255,0.3)); 
+}
+
+input[class="btn-disabled"]:active {
+  @include buttonLedGr(#efe7e6,#f16f5c,#f02f17,#190904,4%,50%);
+  @include buttonLedSh(inset 0 1px 0 rgba(100,100,100,0.5),inset 0 4px 1px rgba(100,100,100,0.1),inset 0 -4px 1px rgba(100,100,100,0.2),inset 0 1px 2px rgba(255,255,255,0.7)); 
+}
+
