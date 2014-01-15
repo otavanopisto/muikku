@@ -56,6 +56,7 @@ public class GuidanceRequestPluginDescriptor implements PluginDescriptor, Persis
 	@Override
 	public Class<?>[] getRESTServices() {
 		return new Class<?>[] {
+		    GuidanceRequestRESTService.class
 		};
 	}
 }
