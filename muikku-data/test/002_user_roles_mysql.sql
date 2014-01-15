@@ -1,7 +1,9 @@
-INSERT INTO RoleEntity VALUES (1,'EVERYONE'), (2,'Manager'), (3,'Teacher'), (4,'Student'), (5,'Workspace Teacher'), (6,'Workspace Student');
+INSERT INTO RoleEntity VALUES (1,'EVERYONE'), (2,'Manager'), (3,'Teacher'), (4,'Student'), (5,'Workspace Teacher'), (6,'Workspace Student'), (7,'Head of Dpt.'), (8,'Study advisor');
 INSERT INTO EnvironmentRoleEntity (id) values (2);
 INSERT INTO EnvironmentRoleEntity (id) values (3);
 INSERT INTO EnvironmentRoleEntity (id) values (4);
+INSERT INTO EnvironmentRoleEntity (id) values (7);
+INSERT INTO EnvironmentRoleEntity (id) values (8);
 INSERT INTO WorkspaceRoleEntity values (5);
 INSERT INTO WorkspaceRoleEntity values (6);
 INSERT INTO SystemRoleEntity (id, roleType) values (1, 'EVERYONE');

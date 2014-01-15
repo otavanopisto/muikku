@@ -76,7 +76,6 @@ public class WallPluginDescriptor implements PluginDescriptor, LocalizedPluginDe
       if (userWall == null)
         wallController.createUserWall(userEntity);
     }
-	
 	}
 
 	@Override

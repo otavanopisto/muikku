@@ -8,14 +8,15 @@
     template="/WEB-INF/templates/default.xhtml">
     
   <ui:define name="content.center.widget">
-    <h:form>
-      <div class="formElementRow">
-        Message:
-        <h:inputTextarea value="#{guidanceRequestsBackingBean.newGuidanceRequestMessage}" />
+    <h:outputScript name="scripts/gui/guidancerequest.js" target="head" />
+  
+    <div class="widget newGuidanceRequest">
+      <input type="hidden" name="newGuidanceRequestContext" value="ENVIRONMENT" />
+      Message:
+      <textarea cols="50" rows="5" name="newGuidanceRequestMessage"></textarea>
       
-        <h:commandLink action="#{guidanceRequestsBackingBean.createGuidanceRequest}" value="Add request"/>
-      </div>
-    </h:form>
+      <input name="newGuidanceRequestSubmit" type="button" value="Lähetä ohjauspyyntö"/>
+    </div>
 
     <ui:repeat var="assessmentRequest" value="#{guidanceRequestsBackingBean.listOwnedGuidanceRequests()}">
       <div>
