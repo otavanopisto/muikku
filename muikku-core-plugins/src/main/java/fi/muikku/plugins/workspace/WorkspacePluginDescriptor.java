@@ -70,6 +70,10 @@ public class WorkspacePluginDescriptor implements PluginDescriptor, PersistenceP
 			WorkspaceBinaryMaterialHandler.class,
 			WorkspaceMaterialHandler.class,
 			
+			/* Workspace Field Persist Handlers */
+			
+			WorkspaceMaterialTextFieldAnswerPersistenceHandler.class,
+			
 			/* DAOs */
 			
 			WorkspaceRootFolderDAO.class,
