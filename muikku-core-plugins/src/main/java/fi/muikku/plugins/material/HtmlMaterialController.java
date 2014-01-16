@@ -3,6 +3,8 @@ package fi.muikku.plugins.material;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -21,6 +23,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.cyberneko.html.parsers.DOMParser;
 import org.w3c.dom.Document;
@@ -117,6 +120,37 @@ public class HtmlMaterialController {
     }
     
     return null;
+  }
+
+  public void assignMaterialFieldNames(NodeList formFieldNodes, String fieldPrefix, boolean preserveUnencoded) {
+    List<String> assignedNames = new ArrayList<>();
+    for (int i = 0, l = formFieldNodes.getLength(); i < l; i++) {
+      Element formElement = (Element) formFieldNodes.item(i);
+
+      String formElementName = formElement.getAttribute("name");
+      int index = 0;
+      do {
+        StringBuilder assignedNameBuilder = new StringBuilder();
+        if (StringUtils.isNotBlank(fieldPrefix)) {
+          assignedNameBuilder.append(fieldPrefix);
+          assignedNameBuilder.append(':');
+        }
+
+        assignedNameBuilder.append(formElementName);
+        assignedNameBuilder.append(':');
+        assignedNameBuilder.append(index);
+
+        String assignedNameUnencoded = assignedNameBuilder.toString();
+        String assignedName = DigestUtils.md5Hex(assignedNameUnencoded);
+
+        if (preserveUnencoded) {
+          formElement.setAttribute("data-unencoded-name", assignedNameUnencoded);
+        }
+        
+        formElement.setAttribute("name", assignedName);
+        index++;
+      } while (assignedNames.contains(formElementName));
+    }
   }
 
   public String getSerializedHtmlDocument(String fieldPrefix, HtmlMaterial htmlMaterial) throws SAXException, IOException, XPathExpressionException, TransformerException {

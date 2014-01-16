@@ -1,16 +1,16 @@
 package fi.muikku.plugins.materialhtmlembed;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -78,7 +78,9 @@ private static final boolean ADD_DEBUG_MARKERS = false;
                 if (workspaceMaterial.getMaterial() instanceof HtmlMaterial) {
                   try {
                     Document embeddedDocument = htmlMaterialController.getProcessedHtmlDocument(fieldPrefix, (HtmlMaterial) workspaceMaterial.getMaterial());
-                    for (Element formElement : getDocumentFormElements(embeddedDocument)) {
+                    NodeList formElements = getDocumentFormElements(embeddedDocument);
+                    for (int j = 0, jl = formElements.getLength(); j < jl; j++) {
+                      Element formElement = (Element) formElements.item(j);
                       // If form elements have "id" -attribute specified, we remove it
                       formElement.removeAttribute("id"); 
                       String originalName = formElement.getAttribute("name");
@@ -108,6 +110,9 @@ private static final boolean ADD_DEBUG_MARKERS = false;
                   } catch (SAXException | IOException e) {
                     // Processing failed, let iframe to be as-is and log the failure.
                     logger.log(Level.SEVERE, "iframe processing failed", e);
+                  } catch (XPathExpressionException e) {
+                    // Processing failed, let the document to be as-is and log the failure.
+                    logger.log(Level.SEVERE, "form element processing failed", e);
                   }
                 }
               }
@@ -135,57 +140,25 @@ private static final boolean ADD_DEBUG_MARKERS = false;
 
   public void beforeSerializeMaterial(HtmlMaterialBeforeSerializeContext event) {
     Document document = event.getDocument();
-    String formName = "material-form"; 
-    
-    List<String> assignedNames = new ArrayList<>();
-    List<Element> formElements = getDocumentFormElements(document);
-    for (Element formElement : formElements) {
-      String formElementName = formElement.getAttribute("name");
-      int index = 0;
-      do {
-        StringBuilder assignedNameBuilder = new StringBuilder();
-        if (StringUtils.isNotBlank(event.getFieldPrefix())) {
-          assignedNameBuilder.append(event.getFieldPrefix());
-          assignedNameBuilder.append(':');
-        }
-            
-        assignedNameBuilder.append(formElementName);
-        assignedNameBuilder.append(':');
-        assignedNameBuilder.append(index);
-        
-        String assignedName = DigestUtils.md5Hex(assignedNameBuilder.toString());
-
-        formElement.setAttribute("name", assignedName);
-        index++;
-      } while (assignedNames.contains(formElementName));
+    String fieldPrefix = event.getFieldPrefix();
+    try {
+      NodeList formElements = getDocumentFormElements(document);
+      htmlMaterialController.assignMaterialFieldNames(getDocumentFormElements(document), fieldPrefix, false);
+      String formName = "material-form"; 
+      attachToForm(formName, formElements);
+    } catch (XPathExpressionException e) {
+      // TODO: This is a critical error and should not be ignored!
+      logger.log(Level.SEVERE, "Field name processing failed", e);
     }
-    
-    attachToForm(formName, formElements);
   }
 
-  private List<Element> getDocumentFormElements(Document document) {
-    List<Element> result = new ArrayList<>();
-    result.addAll(nodeListAsList(document.getElementsByTagName("input")));
-    result.addAll(nodeListAsList(document.getElementsByTagName("textarea")));
-    result.addAll(nodeListAsList(document.getElementsByTagName("select")));
-    return result;
+  private NodeList getDocumentFormElements(Document document) throws XPathExpressionException {
+    return (NodeList) XPathFactory.newInstance().newXPath().evaluate("//INPUT|//TEXTAREA|//SELECT", document, XPathConstants.NODESET);
   }
 
-  private List<Element> nodeListAsList(NodeList nodeList) {
-    List<Element> result = new ArrayList<>();
-    
-    for (int i = 0, l = nodeList.getLength(); i < l; i++) {
-      Node node = nodeList.item(i);
-      if (node instanceof Element) {
-        result.add((Element) node); 
-      }
-    }
-    
-    return result;
-  }
-
-  private void attachToForm(String formName, List<Element> elements) {
-    for (Element element : elements) {
+  private void attachToForm(String formName, NodeList formElementList) {
+    for (int i = 0, l = formElementList.getLength(); i < l; i++) {
+      Element element = (Element) formElementList.item(i);
       element.setAttribute("form", formName);
       String name = new StringBuilder()
         .append(formName)
