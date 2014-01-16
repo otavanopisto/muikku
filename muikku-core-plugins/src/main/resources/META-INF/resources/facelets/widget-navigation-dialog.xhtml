@@ -6,9 +6,17 @@ xmlns:ui="http://java.sun.com/jsf/facelets"
 xmlns:f="http://java.sun.com/jsf/core"
 xmlns:h="http://java.sun.com/jsf/html">
 
-  <div class="wi-frontpage-widget-toolarea">  
-    <m:widget name="settings-widget-edit" rendered="#{sessionBackingBean.loggedIn}" />
-    <div class="clear"></div>
-  </div>
-  
+
+
+		      <p>
+		        <div>#{toolCaption}</div>
+		        
+		        <h:form>
+		          <h:commandButton value="Tallenna" action="#{CourseList.saveSettings()}" />
+		        </h:form>
+		      </p>
+
+
+
+
 </ui:composition>
