@@ -15,11 +15,10 @@ import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
 public class WorkspaceMaterialFieldController {
 
   @Inject
-  WorkspaceMaterialFieldDAO workspaceMaterialFieldDAO;
+  private WorkspaceMaterialFieldDAO workspaceMaterialFieldDAO;
   
   public List<WorkspaceMaterialField> findWorkspaceMaterialFieldsByMaterial(WorkspaceMaterial material){
     return workspaceMaterialFieldDAO.findMaterialFieldByMaterial(material);
   }
-  
   
 }
