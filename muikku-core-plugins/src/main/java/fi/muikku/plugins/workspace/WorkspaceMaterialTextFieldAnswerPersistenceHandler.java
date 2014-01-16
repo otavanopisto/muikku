@@ -27,7 +27,7 @@ public class WorkspaceMaterialTextFieldAnswerPersistenceHandler implements Works
   }
 
   @Override
-  public void persistField(String fieldPrefix, WorkspaceMaterialReply reply, WorkspaceMaterialField workspaceMaterialField, Map<String, String> requestParameterMap) {
+  public void persistField(String fieldPrefix, WorkspaceMaterialReply reply, WorkspaceMaterialField workspaceMaterialField, Map<String, String> requestParameterMap) throws MaterialQueryIntegrityExeption {
     String parameterName = fieldPrefix + workspaceMaterialField.getName();
     String value = requestParameterMap.get(parameterName);
     QueryTextField queryField = (QueryTextField) workspaceMaterialField.getQueryField();

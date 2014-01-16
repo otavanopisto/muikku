@@ -161,7 +161,7 @@ public class WorkspaceHtmlMaterialBackingBean {
   }
 	
   @LoggedIn
-  public void save() {
+  public void save() throws MaterialQueryIntegrityExeption {
     String queryFieldPrefix = "material-form:queryform:";
 
     Map<String, String> requestParameterMap = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();

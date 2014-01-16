@@ -8,6 +8,6 @@ import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 public interface WorkspaceMaterialFieldAnswerPersistenceHandler {
 
   public String getFieldType();
-  public void persistField(String fieldPrefix, WorkspaceMaterialReply reply, WorkspaceMaterialField workspaceMaterialField, Map<String, String> requestParameterMap);
+  public void persistField(String fieldPrefix, WorkspaceMaterialReply reply, WorkspaceMaterialField workspaceMaterialField, Map<String, String> requestParameterMap) throws MaterialQueryIntegrityExeption;
   
 }
