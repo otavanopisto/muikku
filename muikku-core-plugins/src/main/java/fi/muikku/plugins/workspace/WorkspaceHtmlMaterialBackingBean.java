@@ -2,12 +2,14 @@ package fi.muikku.plugins.workspace;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -47,7 +49,7 @@ import fi.muikku.session.SessionController;
   )}
 )
 public class WorkspaceHtmlMaterialBackingBean {
-	
+  
 	@Inject
 	private WorkspaceController workspaceController;
 	
@@ -75,8 +77,9 @@ public class WorkspaceHtmlMaterialBackingBean {
   @Inject
   private WorkspaceMaterialFieldController workspaceMaterialFieldController;
   
+  @Any
   @Inject
-  private WorkspaceMaterialFieldAnswerController workspaceMaterialFieldAnswerController;
+  private Instance<WorkspaceMaterialFieldAnswerPersistenceHandler> fieldPersistenceHandlers;
 	
 	@URLAction 
 	public void init() throws IOException, XPathExpressionException, SAXException, TransformerException {
@@ -101,6 +104,12 @@ public class WorkspaceHtmlMaterialBackingBean {
 	  	throw new FileNotFoundException();
 	  }
 	  
+	  try {
+      workspaceMaterialFieldController.createWorkspaceMaterialFields(workspaceMaterial.getId().toString(), workspaceMaterial);
+    } catch (MaterialQueryIntegrityExeption e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
 	  
 	  if (Boolean.TRUE == getEmbed()) {
 	  	FacesContext.getCurrentInstance().getExternalContext().redirect(new StringBuilder()
@@ -155,102 +164,31 @@ public class WorkspaceHtmlMaterialBackingBean {
   public void save() {
     String queryFieldPrefix = "material-form:queryform:";
 
-    Map<String, String> answers = new HashMap<>();
     Map<String, String> requestParameterMap = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-
-    //TODO: create WorkspaceMaterialFields..
     
-    Iterator<String> parameterNames = requestParameterMap.keySet().iterator();
-    while (parameterNames.hasNext()) {
-      String parameterName = parameterNames.next();
-      if (StringUtils.startsWith(parameterName, queryFieldPrefix)) {
-        String value = requestParameterMap.get(parameterName);
-        answers.put(StringUtils.removeStart(parameterName, queryFieldPrefix), value);
-        for(WorkspaceMaterialField field : workspaceMaterialFieldController.findWorkspaceMaterialFieldsByMaterial(workspaceMaterial)){
-          if(field.getName().equals(parameterName)){
-            workspaceMaterialFieldAnswerController.createWorkspaceMaterialFieldAnswer(workspaceMaterialReply, value, field);
-          }
-        }
+    List<WorkspaceMaterialField> fields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByWorkspaceMaterial(workspaceMaterial);
+    for (WorkspaceMaterialField field : fields) {
+      WorkspaceMaterialFieldAnswerPersistenceHandler fieldPersistenceHandler = getFieldPersistenceHandler(field);
+      if (fieldPersistenceHandler != null) {
+        fieldPersistenceHandler.persistField(queryFieldPrefix, workspaceMaterialReply, field, requestParameterMap);
+      } else {
+        // TODO: Proper error handling
+        throw new RuntimeException("Field type " + field.getQueryField().getType() + " does not have a persistence handler");
       }
-
     }
-    
   }
 	
-//	@LoggedIn
-//  public void save() throws MaterialQueryIntegrityExeption {
-//    String queryFieldPrefix = "material-form:queryform:";
-//    
-//    Map<String, String> answers = new HashMap<>();
-//    Map<String, String> requestParameterMap = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-//    
-//    Iterator<String> parameterNames = requestParameterMap.keySet().iterator();
-//    while (parameterNames.hasNext()) {
-//      String parameterName = parameterNames.next();
-//      if (StringUtils.startsWith(parameterName, queryFieldPrefix)) {
-//        String value = requestParameterMap.get(parameterName);
-//        answers.put(StringUtils.removeStart(parameterName, queryFieldPrefix), value);
-//      }
-//    }
-//    
-//    saveAnswers(answers);
-//  }
-//
-//  private void saveAnswers(Map<String, String> answers) throws MaterialQueryIntegrityExeption {
-//    HtmlMaterial htmlMaterial = (HtmlMaterial) workspaceMaterial.getMaterial();
-//    
-//    for (String name : answers.keySet()) {
-//      String[] nameParts = name.split(":");
-//      String fieldName = nameParts[nameParts.length - 1];
-//      Material fieldMaterial = null;
-//          
-//      if (nameParts.length > 1) {
-//        Long fieldMaterialId = NumberUtils.createLong(nameParts[nameParts.length - 2]);
-//        Material material = materialController.findMaterialById(fieldMaterialId);
-//        if (material == null) {
-//          throw new MaterialQueryIntegrityExeption("Embedded field " + name + " points to non-existing material");
-//        } 
-//        
-//        fieldMaterial = material;
-//      } else {
-//        fieldMaterial = htmlMaterial;
-//      }
-//      
-//      QueryField queryField = queryFieldController.findQueryTextFieldByMaterialAndName(fieldMaterial, fieldName); 
-//      if (queryField == null) {
-//        throw new MaterialQueryIntegrityExeption("Material #" + fieldMaterial.getId() + " does not contain field '" + fieldName + "'");
-//      }
-//      
-//      String value = answers.get(name);
-//      if (queryField instanceof QueryTextField) {
-//        QueryTextField queryTextField = (QueryTextField) queryField;
-//        WorkspaceMaterialTextFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialTextFieldAnswerByQueryFieldAndReply(queryTextField, workspaceMaterialReply);
-//        if (fieldAnswer != null) {
-//          // Update answer
-//          fieldAnswer = workspaceMaterialFieldAnswerController.updateWorkspaceMaterialTextFieldAnswerValue(fieldAnswer, value);
-//        } else {
-//          // Create answer
-//          fieldAnswer = workspaceMaterialFieldAnswerController.createWorkspaceMaterialTextFieldAnswer(queryTextField, workspaceMaterialReply, value);
-//        }        
-//      } else if (queryField instanceof QuerySelectField) {
-//        QuerySelectField selectField = (QuerySelectField) queryField;
-//        SelectFieldOption option = null;
-//        if (StringUtils.isNotBlank(value)) {
-//          option = queryFieldController.findQuerySelectFieldOptionByFieldAndName(selectField, value);
-//          if (option == null) {
-//            throw new MaterialQueryIntegrityExeption("SelectFieldOption #" + selectField.getId() + " does not contain option '" + value + "'");
-//          }
-//        }
-//        
-//        WorkspaceMaterialSelectFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialSelectFieldAnswerByQueryFieldAndReply(selectField, workspaceMaterialReply);
-//        if (fieldAnswer != null) {
-//          fieldAnswer = workspaceMaterialFieldAnswerController.updateWorkspaceMaterialSelectFieldAnswerValue(fieldAnswer, option);
-//        } else {
-//          fieldAnswer = workspaceMaterialFieldAnswerController.createWorkspaceMaterialSelectFieldAnswer(selectField, workspaceMaterialReply, option);
-//        }
-//      }
-//    }
-//  }
+  private WorkspaceMaterialFieldAnswerPersistenceHandler getFieldPersistenceHandler(WorkspaceMaterialField field) {
+    Iterator<WorkspaceMaterialFieldAnswerPersistenceHandler> iterator = fieldPersistenceHandlers.iterator();
+    while (iterator.hasNext()) {
+      WorkspaceMaterialFieldAnswerPersistenceHandler persistenceHandler = iterator.next();
+      if (persistenceHandler.getFieldType().equals(field.getQueryField().getType())) {
+        return persistenceHandler;
+      }
+    }
+    
+    return null;
+  }
 
 	@URLQueryParameter ("embed")
 	private Boolean embed;
