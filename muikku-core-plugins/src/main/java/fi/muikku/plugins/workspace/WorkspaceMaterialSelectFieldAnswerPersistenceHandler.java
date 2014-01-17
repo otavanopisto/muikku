@@ -5,9 +5,13 @@ import java.util.Map;
 import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import fi.muikku.plugins.material.MaterialQueryIntegrityExeption;
 import fi.muikku.plugins.materialfields.QueryFieldController;
@@ -60,9 +64,24 @@ public class WorkspaceMaterialSelectFieldAnswerPersistenceHandler implements Wor
   }
 
   @Override
-  public void loadField(String fieldPrefix, Document document, WorkspaceMaterialReply reply, WorkspaceMaterialField workspaceMaterialField) {
-    // TODO Auto-generated method stub
-    
+  public void loadField(String fieldPrefix, Document document, WorkspaceMaterialReply reply, WorkspaceMaterialField workspaceMaterialField) throws MaterialQueryIntegrityExeption {
+    String parameterName = fieldPrefix + workspaceMaterialField.getName();
+    QuerySelectField queryField = (QuerySelectField) workspaceMaterialField.getQueryField();
+    WorkspaceMaterialSelectFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialSelectFieldAnswerByQueryFieldAndReply(queryField, reply);
+    if ((fieldAnswer != null) && (fieldAnswer.getValue() != null)) {
+      String optionName = fieldAnswer.getValue().getName();
+      
+      try {
+        Element optionElement = (Element) XPathFactory.newInstance().newXPath().evaluate("//SELECT[@name=\"" + parameterName + "\"]/OPTION[@value=\"" + optionName + "\"]", document, XPathConstants.NODE);
+        if (optionElement != null) {
+          optionElement.setAttribute("selected", "selected");
+        } else {
+          throw new MaterialQueryIntegrityExeption("Could not find select / option for field '" + queryField.getName() + "/" + optionName + "'");
+        }
+      } catch (XPathExpressionException e) {
+        throw new MaterialQueryIntegrityExeption("Could not find select / option for field '" + queryField.getName() + "/" + optionName + "'");
+      }
+    }
   }
 
 }
