@@ -16,5 +16,9 @@ public class SessionBackingBean {
 	public boolean getLoggedIn() {
 		return sessionController.isLoggedIn();
 	}
+
+	public String getResourceLibrary() {
+		return "muikku";
+	}
 	
 }
