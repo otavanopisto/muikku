@@ -192,7 +192,7 @@ public class WorkspaceHtmlMaterialBackingBean {
   }
 	
   @LoggedIn
-  public void save() throws MaterialQueryPersistanceExeption, MaterialQueryIntegrityExeption {
+  public String save() throws MaterialQueryPersistanceExeption, MaterialQueryIntegrityExeption {
     Map<String, String> requestParameterMap = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
     
     List<WorkspaceMaterialField> fields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByWorkspaceMaterial(workspaceMaterial);
@@ -205,7 +205,7 @@ public class WorkspaceHtmlMaterialBackingBean {
       }
     }
     
-    this.html = null;
+    return "pretty:workspace-html-material";
   }
 	
   private WorkspaceMaterialFieldAnswerPersistenceHandler getFieldPersistenceHandler(WorkspaceMaterialField field) {
