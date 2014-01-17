@@ -14,9 +14,13 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.transform.TransformerException;
+import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.lang3.StringUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.ocpsoft.pretty.faces.annotation.URLAction;
@@ -27,6 +31,8 @@ import com.ocpsoft.pretty.faces.annotation.URLQueryParameter;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.material.HtmlMaterialController;
 import fi.muikku.plugins.material.MaterialController;
+import fi.muikku.plugins.material.MaterialQueryIntegrityExeption;
+import fi.muikku.plugins.material.MaterialQueryPersistanceExeption;
 import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.materialfields.QueryFieldController;
 import fi.muikku.plugins.materialfields.QueryTextFieldController;
@@ -49,6 +55,9 @@ import fi.muikku.session.SessionController;
   )}
 )
 public class WorkspaceHtmlMaterialBackingBean {
+  
+  private static final String FORM_ID = "material-form"; 
+  private static final String FIELD_PREFIX = FORM_ID + ":queryform:";
   
 	@Inject
 	private WorkspaceController workspaceController;
@@ -82,7 +91,7 @@ public class WorkspaceHtmlMaterialBackingBean {
   private Instance<WorkspaceMaterialFieldAnswerPersistenceHandler> fieldPersistenceHandlers;
 	
 	@URLAction 
-	public void init() throws IOException, XPathExpressionException, SAXException, TransformerException {
+	public void init() throws IOException, XPathExpressionException, SAXException, TransformerException, MaterialQueryPersistanceExeption, MaterialQueryIntegrityExeption {
 	  // TODO: Proper error handling
 	  
 	  if (StringUtils.isBlank(getWorkspaceUrlName())) {
@@ -120,15 +129,33 @@ public class WorkspaceHtmlMaterialBackingBean {
         .append(workspaceMaterial.getPath())
         .toString());
 	  } else {
-	    HtmlMaterial htmlMaterial = (HtmlMaterial) workspaceMaterial.getMaterial();
-	    this.html = htmlMaterialController.getSerializedHtmlDocument(workspaceMaterial.getId().toString(), htmlMaterial);
+	    String fieldPrefix = workspaceMaterial.getId().toString();
 	    
-	    if (sessionController.isLoggedIn()) {
-	      workspaceMaterialReply = workspaceMaterialReplyController.findMaterialReplyByMaterialAndUserEntity(workspaceMaterial, sessionController.getUser());
-	      if (workspaceMaterialReply == null) {
-	        workspaceMaterialReply = workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, sessionController.getUser());
-	      }
-	    }
+      if (sessionController.isLoggedIn()) {
+        workspaceMaterialReply = workspaceMaterialReplyController.findMaterialReplyByMaterialAndUserEntity(workspaceMaterial, sessionController.getUser());
+        if (workspaceMaterialReply == null) {
+          workspaceMaterialReply = workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, sessionController.getUser());
+        }
+      }
+	    
+	    HtmlMaterial htmlMaterial = (HtmlMaterial) workspaceMaterial.getMaterial();
+	    Document processedHtmlDocument = htmlMaterialController.getProcessedHtmlDocument(fieldPrefix, htmlMaterial);
+	    NodeList formElements = getDocumentFormElements(processedHtmlDocument);
+	    
+      htmlMaterialController.assignMaterialFieldNames(formElements, fieldPrefix, false);
+      htmlMaterialController.attachMaterialFieldToForm(FORM_ID, FIELD_PREFIX, formElements);
+      
+      List<WorkspaceMaterialField> workspaceMaterialFields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByWorkspaceMaterial(workspaceMaterial);
+      for (WorkspaceMaterialField workspaceMaterialField : workspaceMaterialFields) {
+        WorkspaceMaterialFieldAnswerPersistenceHandler fieldPersistenceHandler = getFieldPersistenceHandler(workspaceMaterialField);
+        if (fieldPersistenceHandler == null) {
+          throw new MaterialQueryPersistanceExeption("Field type " + workspaceMaterialField.getQueryField().getType() + " does not have a persistence handler");
+        }
+        
+        fieldPersistenceHandler.loadField(FIELD_PREFIX, processedHtmlDocument, workspaceMaterialReply, workspaceMaterialField);
+      }
+      
+	    this.html = htmlMaterialController.getSerializedHtmlDocument(fieldPrefix, processedHtmlDocument, htmlMaterial);
 	  }
 	}
 	
@@ -160,22 +187,25 @@ public class WorkspaceHtmlMaterialBackingBean {
     return html;
   }
 	
+	public String getFormId() {
+    return FORM_ID;
+  }
+	
   @LoggedIn
-  public void save() throws MaterialQueryIntegrityExeption {
-    String queryFieldPrefix = "material-form:queryform:";
-
+  public void save() throws MaterialQueryPersistanceExeption, MaterialQueryIntegrityExeption {
     Map<String, String> requestParameterMap = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
     
     List<WorkspaceMaterialField> fields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByWorkspaceMaterial(workspaceMaterial);
     for (WorkspaceMaterialField field : fields) {
       WorkspaceMaterialFieldAnswerPersistenceHandler fieldPersistenceHandler = getFieldPersistenceHandler(field);
       if (fieldPersistenceHandler != null) {
-        fieldPersistenceHandler.persistField(queryFieldPrefix, workspaceMaterialReply, field, requestParameterMap);
+        fieldPersistenceHandler.persistField(FIELD_PREFIX, workspaceMaterialReply, field, requestParameterMap);
       } else {
-        // TODO: Proper error handling
-        throw new RuntimeException("Field type " + field.getQueryField().getType() + " does not have a persistence handler");
+        throw new MaterialQueryPersistanceExeption("Field type " + field.getQueryField().getType() + " does not have a persistence handler");
       }
     }
+    
+    this.html = null;
   }
 	
   private WorkspaceMaterialFieldAnswerPersistenceHandler getFieldPersistenceHandler(WorkspaceMaterialField field) {
@@ -188,6 +218,10 @@ public class WorkspaceHtmlMaterialBackingBean {
     }
     
     return null;
+  }
+
+  private NodeList getDocumentFormElements(Document document) throws XPathExpressionException {
+    return (NodeList) XPathFactory.newInstance().newXPath().evaluate("//INPUT|//TEXTAREA|//SELECT", document, XPathConstants.NODESET);
   }
 
 	@URLQueryParameter ("embed")

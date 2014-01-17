@@ -7,7 +7,9 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.w3c.dom.Document;
 
+import fi.muikku.plugins.material.MaterialQueryIntegrityExeption;
 import fi.muikku.plugins.materialfields.QueryFieldController;
 import fi.muikku.plugins.materialfields.model.QuerySelectField;
 import fi.muikku.plugins.materialfields.model.SelectFieldOption;
@@ -55,6 +57,12 @@ public class WorkspaceMaterialSelectFieldAnswerPersistenceHandler implements Wor
         fieldAnswer = workspaceMaterialFieldAnswerController.createWorkspaceMaterialSelectFieldAnswer(queryField, reply, null);
       }
     }
+  }
+
+  @Override
+  public void loadField(String fieldPrefix, Document document, WorkspaceMaterialReply reply, WorkspaceMaterialField workspaceMaterialField) {
+    // TODO Auto-generated method stub
+    
   }
 
 }

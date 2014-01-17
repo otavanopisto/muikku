@@ -153,8 +153,7 @@ public class HtmlMaterialController {
     }
   }
 
-  public String getSerializedHtmlDocument(String fieldPrefix, HtmlMaterial htmlMaterial) throws SAXException, IOException, XPathExpressionException, TransformerException {
-    Document processedHtmlDocument = getProcessedHtmlDocument(fieldPrefix, htmlMaterial);
+  public String getSerializedHtmlDocument(String fieldPrefix, Document processedHtmlDocument, HtmlMaterial htmlMaterial) throws SAXException, IOException, XPathExpressionException, TransformerException {
     HtmlMaterialBeforeSerializeContext event = new HtmlMaterialBeforeSerializeContext(fieldPrefix, htmlMaterial.getId(), processedHtmlDocument);
     
     SortedSet<Integer> stages = new TreeSet<>();
@@ -202,5 +201,17 @@ public class HtmlMaterialController {
 
   private Node findNodeByXPath(Node contextNode, String expression) throws XPathExpressionException {
     return (Node) XPathFactory.newInstance().newXPath().evaluate(expression, contextNode, XPathConstants.NODE);
+  }
+
+  public void attachMaterialFieldToForm(String formId, String fieldPrefix, NodeList formElements) {
+    for (int i = 0, l = formElements.getLength(); i < l; i++) {
+      Element element = (Element) formElements.item(i);
+      element.setAttribute("form", formId);
+      String name = new StringBuilder()
+        .append(fieldPrefix)
+        .append(element.getAttribute("name"))
+        .toString();
+      element.setAttribute("name", name);
+    }
   }
 }

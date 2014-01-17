@@ -21,7 +21,6 @@ import org.xml.sax.SAXException;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.material.HtmlMaterialController;
 import fi.muikku.plugins.material.model.HtmlMaterial;
-import fi.muikku.plugins.material.processing.HtmlMaterialBeforeSerializeContext;
 import fi.muikku.plugins.material.processing.HtmlMaterialProcessingContext;
 import fi.muikku.plugins.material.processing.MaterialProcessorAdapter;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
@@ -138,34 +137,8 @@ private static final boolean ADD_DEBUG_MARKERS = false;
       .toString();
   }
 
-  public void beforeSerializeMaterial(HtmlMaterialBeforeSerializeContext event) {
-    Document document = event.getDocument();
-    String fieldPrefix = event.getFieldPrefix();
-    try {
-      NodeList formElements = getDocumentFormElements(document);
-      htmlMaterialController.assignMaterialFieldNames(getDocumentFormElements(document), fieldPrefix, false);
-      String formName = "material-form"; 
-      attachToForm(formName, formElements);
-    } catch (XPathExpressionException e) {
-      // TODO: This is a critical error and should not be ignored!
-      logger.log(Level.SEVERE, "Field name processing failed", e);
-    }
-  }
-
   private NodeList getDocumentFormElements(Document document) throws XPathExpressionException {
     return (NodeList) XPathFactory.newInstance().newXPath().evaluate("//INPUT|//TEXTAREA|//SELECT", document, XPathConstants.NODESET);
   }
 
-  private void attachToForm(String formName, NodeList formElementList) {
-    for (int i = 0, l = formElementList.getLength(); i < l; i++) {
-      Element element = (Element) formElementList.item(i);
-      element.setAttribute("form", formName);
-      String name = new StringBuilder()
-        .append(formName)
-        .append(":queryform:")
-        .append(element.getAttribute("name"))
-        .toString();
-      element.setAttribute("name", name);
-    }
-  }
 }

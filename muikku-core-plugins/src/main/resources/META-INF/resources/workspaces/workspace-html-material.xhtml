@@ -10,7 +10,7 @@
   
     <h:outputScript name="scripts/gui/workspace-material.js" target="head"/>
      
-    <h:form id="material-form">
+    <h:form id="#{workspaceHtmlMaterialBackingBean.formId}">
         <h:panelGroup styleClass="workspace-html-material-container">
         <h:outputText value="#{workspaceHtmlMaterialBackingBean.html}" escape="false"/>
       </h:panelGroup>
