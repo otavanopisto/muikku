@@ -1,4 +1,4 @@
-package fi.muikku.plugins.workspace;
+package fi.muikku.plugins.material;
 
 public class MaterialQueryIntegrityExeption extends Exception {
   
