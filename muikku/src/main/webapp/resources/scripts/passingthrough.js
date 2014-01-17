@@ -38,77 +38,39 @@ $(document).ready(function() {
 
     // fastlinks and dialogs for dock applications -->
     
-    $( "div[class*='wi-dock-navi']" ).mouseenter(function() {
+    $( "div[class*='wi-dock-static-navi']" ).mouseenter(function() {
+      var tools = $(this).find("[class*='dock-navi-tt-container']");
+      tools.show( "fade", 250 );
+    });
+
+    $( "div[class*='wi-dock-static-navi']" ).mouseleave(function() {
       var tools =  $(this).find("[class*='dock-navi-tt-container']");
-       tools.show( "drop", 150 );
-       
-      });
-
-    $( "div[class*='wi-dock-navi']" ).mouseleave(function() {
-      var tools =  $(this).find("[class*='dock-navi-tt-container']");
-       tools.hide( "drop", 150 );
-      });
-
-
+       tools.hide( "fade", 250 );
+    });
 
     
-   
-       $(function() {
-         
-         // Creates dialogs from every element with pseudclass tt-dialog //
-         
-
-         
-         var ttDockParents =  $("[class*='dock-navi-tt-container']");
-         
-         for (var i = 0; i < ttDockParents.length; i++)
-         {
+    $("div[class*='dock-static-navi-button'] div[class*='tt-menu-link']").click(function (event) {
+      $(".ui-dialog-content").dialog("close");
+      var dTitle = this.innerHTML;
+      
+      
+      renderDustTemplate($(this).data('dust-template'), {}, function (text) {
+        $(text).dialog({
           
-
-            var linkParent = $(ttDockParents)[i];
-            var rootParent = $(linkParent).parent()[0];
-  
-             if (linkParent.children.length > 0){
-              var links = $(linkParent).find( "div[class*='tt-menu-link']" );
-
-              for (var i=0; i < links.length; i++){
-                var link = $(links)[i];
-               
-                var lnam = $(link).attr("data-name");
-                var dclass = 'div[class*="tt-dialog-' + lnam + '"]:hidden';
-                var dlog = $(dclass)[0];
-                
-                $( dlog ).dialog({
-                  autoOpen: false,
-                  show: {
-                    effect: "blind",
-                    duration: 1000
-                  },
-                  hide: {
-                    effect: "explode",
-                    duration: 1000
-                  }
-                });                
-                
-                $(link).click(function() {
-                  $( dlog ).dialog( "open" );
-                });
-                } 
-             
-             }
-                
-            
-       
-     
-        
-            
-           
-         }
-         
-         
-
-
-
+          title: dTitle,
           
-       });
+          show: {
+            effect: "fade",
+            duration: 500
+            },
+          hide: {
+            effect: "fade",
+            duration: 500
+            }
+        });
+      });      
+    
+    });
+    
+
 });

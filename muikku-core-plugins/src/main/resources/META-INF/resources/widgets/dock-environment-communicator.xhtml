@@ -2,35 +2,19 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html">
 
-  <div class="widget wi-dock-navi-communicator">
-   <h:outputLink styleClass="naviIconCommunicator menu-tooltip" value="#{request.contextPath}/communicator/index.jsf">
-       
-   </h:outputLink>
-
-   <div class="dock-navi-tt-container-communicator" style="display:none;">
-     <ui:include src="/facelets/widget-navigation-tooltip.xhtml">
-       <ui:param name="toolCaption" value="Viestin"/>
-       <ui:param name="toolName" value="communicator"/>
-     </ui:include>   
-    </div>
-
-	   <div class="tt-dialog-guidanceRequest" title="Uusi ohjauspyynto" style="display:none;">
-	     <ui:include src="/facelets/widget-navigation-dialog.xhtml">
-	       <ui:param name="toolName" value="communicator" />
-	       <ui:param name="toolCaption" value="Uusi ohjauspyyntö"/>
-	       <ui:param name="subTool" value="newReq" />
-	     </ui:include>
-	   </div>
-<!-- 	  
-	   <div class="tt-dialog-newMessage" title="Uusi viesti" style="display:none;">
-	     <ui:include src="/facelets/widget-navigation-dialog.xhtml">
-	       <ui:param name="toolName" value="communicator" />
-	       <ui:param name="toolCaption" value="Uusi viesti"/>
-	       <ui:param name="subTool" value="newMsg" />
-	     </ui:include>
-	  </div>
-
- -->
+  <div class="widget wi-dock-static-navi-button-communicator">
+	   <h:outputLink styleClass="naviIconCommunicator menu-tooltip" value="#{request.contextPath}/communicator/index.jsf">
+	       
+	   </h:outputLink>
+		
+		<div class="dock-navi-tt-container-communicator" style="display:none;">
+		  <ui:include src="/facelets/widget-navigation-tooltip.xhtml">
+		    <ui:param name="toolCaption" value="Viesti"/>
+        <ui:param name="subToolValue1" value="Uusi viesti"/>
+        <ui:param name="subToolValue2" value="Uusi ohjauspyyntö"/>
+		    <ui:param name="toolName" value="communicator"/>
+		  </ui:include>   
+		 </div>
   </div>
 
 
