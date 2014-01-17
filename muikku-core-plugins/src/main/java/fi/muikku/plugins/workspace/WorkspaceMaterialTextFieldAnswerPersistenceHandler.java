@@ -5,9 +5,15 @@ import java.util.Map;
 import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.lang3.StringUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
+import fi.muikku.plugins.material.MaterialQueryIntegrityExeption;
 import fi.muikku.plugins.materialfields.model.QueryTextField;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
@@ -45,5 +51,30 @@ public class WorkspaceMaterialTextFieldAnswerPersistenceHandler implements Works
       }
     }
   }
+
+  @Override
+  public void loadField(String fieldPrefix, Document document, WorkspaceMaterialReply reply, WorkspaceMaterialField workspaceMaterialField) throws MaterialQueryIntegrityExeption {
+    String parameterName = fieldPrefix + workspaceMaterialField.getName();
+    
+    QueryTextField queryField = (QueryTextField) workspaceMaterialField.getQueryField();
+    WorkspaceMaterialTextFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialTextFieldAnswerByQueryFieldAndReply(queryField, reply);
+    if ((fieldAnswer != null) && StringUtils.isNotBlank(fieldAnswer.getValue())) {
+      try {
+        Element inputElement = (Element) XPathFactory.newInstance().newXPath().evaluate("//INPUT[@name=\"" + parameterName + "\"]|//TEXTAREA[@name=\"" + parameterName + "\"]", document, XPathConstants.NODE);
+        if (inputElement != null) {
+          if ("TEXTAREA".equals(inputElement.getTagName())) {
+            inputElement.setTextContent(fieldAnswer.getValue());
+          } else {
+            inputElement.setAttribute("value", fieldAnswer.getValue());
+          }
+        } else {
+          throw new MaterialQueryIntegrityExeption("Could not find input element for field '" + queryField.getName() + "'");
+        }
+      } catch (XPathExpressionException e) {
+        throw new MaterialQueryIntegrityExeption("Could not find input element for field '" + queryField.getName() + "'");
+      }
+    }
+  }
+  
 
 }
