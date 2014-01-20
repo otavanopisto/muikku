@@ -9,6 +9,7 @@ import fi.muikku.plugins.material.dao.BinaryMaterialDAO;
 import fi.muikku.plugins.material.dao.HtmlMaterialDAO;
 import fi.muikku.plugins.material.dao.MaterialDAO;
 import fi.muikku.plugins.material.dao.ReplyDAO;
+import fi.muikku.plugins.material.fieldprocessing.ConnectFieldMaterialFieldProcessor;
 import fi.muikku.plugins.material.fieldprocessing.MemoFieldMaterialFieldProcessor;
 import fi.muikku.plugins.material.fieldprocessing.SelectFieldMaterialFieldProcessor;
 import fi.muikku.plugins.material.fieldprocessing.TextFieldMaterialFieldProcessor;
@@ -51,6 +52,7 @@ public class MaterialPluginDescriptor implements PluginDescriptor, PersistencePl
       MemoFieldMaterialFieldProcessor.class,
       SelectFieldMaterialFieldProcessor.class,
       TextFieldMaterialFieldProcessor.class,
+      ConnectFieldMaterialFieldProcessor.class,
       
       /* Listeners */
 
