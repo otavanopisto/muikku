@@ -1,4 +1,4 @@
-package fi.muikku.plugins.materialfields;
+package fi.muikku.plugins.material;
 
 import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;

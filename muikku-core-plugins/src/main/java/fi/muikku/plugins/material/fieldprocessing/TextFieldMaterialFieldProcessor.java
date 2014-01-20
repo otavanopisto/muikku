@@ -9,9 +9,9 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import fi.muikku.plugins.material.MaterialFieldProcessor;
+import fi.muikku.plugins.material.QueryTextFieldController;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.material.model.field.TextField;
-import fi.muikku.plugins.materialfields.QueryTextFieldController;
 
 public class TextFieldMaterialFieldProcessor implements MaterialFieldProcessor {
 

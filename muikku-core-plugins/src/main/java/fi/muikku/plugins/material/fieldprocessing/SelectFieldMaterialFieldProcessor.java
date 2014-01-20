@@ -9,10 +9,10 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import fi.muikku.plugins.material.MaterialFieldProcessor;
+import fi.muikku.plugins.material.QuerySelectFieldController;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.material.model.field.OptionListField;
 import fi.muikku.plugins.material.model.field.OptionListField.Option;
-import fi.muikku.plugins.materialfields.QuerySelectFieldController;
 import fi.muikku.plugins.materialfields.model.QuerySelectField;
 
 public class SelectFieldMaterialFieldProcessor implements MaterialFieldProcessor {

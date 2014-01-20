@@ -50,14 +50,7 @@ public class MaterialHtmlFieldPluginDescriptor implements PluginDescriptor, Pers
       QuerySelectFieldOptionDAO.class,
       QueryConnectFieldDAO.class,
       QueryConnectFieldTermDAO.class,
-      QueryConnectFieldCounterpartDAO.class,
-      
-      /** Controllers **/
-      
-      QueryFieldController.class,
-      QueryTextFieldController.class,
-      QuerySelectFieldController.class,
-      QueryConnectFieldController.class
+      QueryConnectFieldCounterpartDAO.class
       
     });
   }
