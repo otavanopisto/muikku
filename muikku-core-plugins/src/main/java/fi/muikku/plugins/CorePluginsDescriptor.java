@@ -27,7 +27,6 @@ import fi.muikku.plugins.language.LanguagePluginDescriptor;
 import fi.muikku.plugins.logout.LogoutPluginDescriptor;
 import fi.muikku.plugins.material.MaterialPluginDescriptor;
 import fi.muikku.plugins.materialfields.MaterialHtmlFieldPluginDescriptor;
-import fi.muikku.plugins.materialhtmlembed.MaterialHtmlEmbedPluginDescriptor;
 import fi.muikku.plugins.schooldatalocal.SchoolDataLocalPluginDescriptor;
 import fi.muikku.plugins.seeker.SeekerPluginDescriptor;
 import fi.muikku.plugins.settings.SettingsPluginDescriptor;
@@ -62,7 +61,6 @@ public class CorePluginsDescriptor implements PluginLibraryDescriptor {
       SchoolDataLocalPluginDescriptor.class,
       WorkspacePluginDescriptor.class,
       MaterialPluginDescriptor.class,
-      MaterialHtmlEmbedPluginDescriptor.class,
       AssessmentRequestPluginDescriptor.class,
       CourseListPluginDescriptor.class,
       MaterialHtmlFieldPluginDescriptor.class

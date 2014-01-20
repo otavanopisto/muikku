@@ -1,4 +1,4 @@
-package fi.muikku.plugins.materialhtmlembed;
+package fi.muikku.plugins.material;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -19,7 +19,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.plugins.material.HtmlMaterialController;
 import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.material.processing.HtmlMaterialProcessingContext;
 import fi.muikku.plugins.material.processing.MaterialProcessorAdapter;
