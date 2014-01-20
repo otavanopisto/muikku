@@ -86,6 +86,10 @@ public class WorkspaceHtmlMaterialBackingBean {
   @Inject
   private WorkspaceMaterialFieldController workspaceMaterialFieldController;
   
+  @Inject
+  @Named
+  private WorkspaceNavigationBackingBean workspaceNavigationBackingBean;
+  
   @Any
   @Inject
   private Instance<WorkspaceMaterialFieldAnswerPersistenceHandler> fieldPersistenceHandlers;
@@ -112,6 +116,8 @@ public class WorkspaceHtmlMaterialBackingBean {
 	  if (!(workspaceMaterial.getMaterial() instanceof HtmlMaterial)) {
 	  	throw new FileNotFoundException();
 	  }
+	  
+	  workspaceNavigationBackingBean.setWorkspaceUrlName(getWorkspaceUrlName());
 	  
 	  // TODO: This should be done when the material is imported, not when it's viewed
 	  try {
