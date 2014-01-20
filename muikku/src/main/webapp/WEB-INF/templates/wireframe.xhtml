@@ -20,21 +20,19 @@
 
     <!-- CSS to remove all default styles -->
     <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/cssreset-min.css" />
+    
     <!-- Screen CSS -->
     <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/screen.css" />
-    <!--  Generic forms  -->
-    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/forms.css" />
-    <!--  Widgets   -->
-    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/widgets.css" />
+    
     <!--  Temporary styles -->
     <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/temp.css" />
     
     <!-- Dynamic Grid -->
     <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/dgrid.css" />
     
-    
     <!-- Default Calendar CSS -->
     <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/fullcalendar.css" />
+    
     <!-- jQuery -->
 
     <h:outputScript name="scripts/jquery/jquery-1.9.1.js" />
@@ -42,7 +40,7 @@
 
     <!-- jQuery UI -->
 
-    <h:outputScript name="scripts/jquery-ui/js/jquery-ui-1.10.2.custom.js" />
+    <h:outputScript name="scripts/jquery/jquery-ui/js/jquery-ui-1.10.2.custom.js" />
     <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/jquery-ui.css" />
 
     <!-- jQuery Validation -->
@@ -57,12 +55,34 @@
     <!--  jQuery scroll  -->
 
     <h:outputScript name="scripts/scroll/jquery.scroll.js" />
+    
+    <!-- Functions that have no home yet. Find a home for them? -->
+    
+    <h:outputScript name="scripts/passingthrough.js" target="head"/>
 
     <!-- Dust -->
     <h:outputScript name="scripts/dustjs/dust-full-1.1.1.js" />
     <h:outputScript name="scripts/dustjs/dust-helpers-1.1.0.js" />
     <h:outputScript name="scripts/gui/dustloader.js" />
-
+    
+    <!-- Async -->
+    
+    <h:outputScript name="scripts/async/async.js" />
+    
+    <!-- ObjectPath -->
+    
+    <h:outputScript name="scripts/objectpathjs/interpreter.js" />
+    <h:outputScript name="scripts/objectpathjs/parse.js" />
+    <h:outputScript name="scripts/objectpathjs/tokens.js" />
+    
+    <!-- jQuery REST -->
+    
+    <h:outputScript name="scripts/jquery.rest/jquery.rest.min.js"/>
+    
+    <!-- Api -->
+    
+    <h:outputScript name="scripts/api/api.js"/>
+    
     <!-- REST -->
     <h:outputScript name="scripts/gui/restful.js" />
 
