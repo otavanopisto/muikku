@@ -2,9 +2,9 @@ package fi.muikku.plugins.workspace;
 
 import javax.inject.Inject;
 
-import fi.muikku.plugins.materialfields.model.QuerySelectField;
-import fi.muikku.plugins.materialfields.model.QueryTextField;
-import fi.muikku.plugins.materialfields.model.QuerySelectFieldOption;
+import fi.muikku.plugins.material.model.QuerySelectField;
+import fi.muikku.plugins.material.model.QuerySelectFieldOption;
+import fi.muikku.plugins.material.model.QueryTextField;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialFieldAnswerDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialSelectFieldAnswerDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialTextFieldAnswerDAO;

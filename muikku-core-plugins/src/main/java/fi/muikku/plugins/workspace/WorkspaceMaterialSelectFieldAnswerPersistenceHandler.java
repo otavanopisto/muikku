@@ -15,8 +15,8 @@ import org.w3c.dom.Element;
 
 import fi.muikku.plugins.material.MaterialQueryIntegrityExeption;
 import fi.muikku.plugins.material.QueryFieldController;
-import fi.muikku.plugins.materialfields.model.QuerySelectField;
-import fi.muikku.plugins.materialfields.model.QuerySelectFieldOption;
+import fi.muikku.plugins.material.model.QuerySelectField;
+import fi.muikku.plugins.material.model.QuerySelectFieldOption;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialSelectFieldAnswer;

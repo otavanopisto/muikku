@@ -1,9 +1,9 @@
-package fi.muikku.plugins.materialfields.dao;
+package fi.muikku.plugins.material.dao;
 
 import fi.muikku.dao.DAO;
 import fi.muikku.plugin.PluginDAO;
 import fi.muikku.plugins.material.model.Material;
-import fi.muikku.plugins.materialfields.model.QueryConnectField;
+import fi.muikku.plugins.material.model.QueryConnectField;
 
 @DAO
 public class QueryConnectFieldDAO extends PluginDAO<QueryConnectField> {

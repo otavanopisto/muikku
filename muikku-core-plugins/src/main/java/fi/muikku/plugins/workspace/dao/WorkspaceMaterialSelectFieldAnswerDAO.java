@@ -6,8 +6,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.plugin.PluginDAO;
-import fi.muikku.plugins.materialfields.model.QuerySelectField;
-import fi.muikku.plugins.materialfields.model.QuerySelectFieldOption;
+import fi.muikku.plugins.material.model.QuerySelectField;
+import fi.muikku.plugins.material.model.QuerySelectFieldOption;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialSelectFieldAnswer;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialSelectFieldAnswer_;

@@ -4,9 +4,9 @@ import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import fi.muikku.plugins.material.dao.QueryTextFieldDAO;
 import fi.muikku.plugins.material.model.Material;
-import fi.muikku.plugins.materialfields.dao.QueryTextFieldDAO;
-import fi.muikku.plugins.materialfields.model.QueryTextField;
+import fi.muikku.plugins.material.model.QueryTextField;
 
 @Stateless
 @Dependent

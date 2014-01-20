@@ -13,11 +13,11 @@ import org.codehaus.jackson.map.ObjectMapper;
 import fi.muikku.plugins.material.MaterialFieldProcessor;
 import fi.muikku.plugins.material.QueryConnectFieldController;
 import fi.muikku.plugins.material.model.Material;
+import fi.muikku.plugins.material.model.QueryConnectField;
+import fi.muikku.plugins.material.model.QueryConnectFieldCounterpart;
 import fi.muikku.plugins.material.model.field.ConnectField;
 import fi.muikku.plugins.material.model.field.ConnectField.Connection;
 import fi.muikku.plugins.material.model.field.ConnectField.Field;
-import fi.muikku.plugins.materialfields.model.QueryConnectField;
-import fi.muikku.plugins.materialfields.model.QueryConnectFieldCounterpart;
 
 public class ConnectFieldMaterialFieldProcessor implements MaterialFieldProcessor {
 

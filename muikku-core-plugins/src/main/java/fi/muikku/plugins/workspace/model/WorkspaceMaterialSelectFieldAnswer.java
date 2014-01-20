@@ -6,8 +6,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
-import fi.muikku.plugins.materialfields.model.QuerySelectField;
-import fi.muikku.plugins.materialfields.model.QuerySelectFieldOption;
+import fi.muikku.plugins.material.model.QuerySelectField;
+import fi.muikku.plugins.material.model.QuerySelectFieldOption;
 
 @Entity
 public class WorkspaceMaterialSelectFieldAnswer  {

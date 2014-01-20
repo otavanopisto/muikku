@@ -1,4 +1,4 @@
-package fi.muikku.plugins.materialfields.model;
+package fi.muikku.plugins.material.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,7 +14,6 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
-import fi.muikku.plugins.material.model.Material;
 
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)

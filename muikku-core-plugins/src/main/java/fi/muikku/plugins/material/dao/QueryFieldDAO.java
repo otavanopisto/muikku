@@ -1,4 +1,4 @@
-package fi.muikku.plugins.materialfields.dao;
+package fi.muikku.plugins.material.dao;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -8,7 +8,7 @@ import javax.persistence.criteria.Root;
 import fi.muikku.dao.DAO;
 import fi.muikku.plugin.PluginDAO;
 import fi.muikku.plugins.material.model.Material;
-import fi.muikku.plugins.materialfields.model.QueryField;
+import fi.muikku.plugins.material.model.QueryField;
 import fi.muikku.plugins.materialfields.model.QueryField_;
 
 @DAO

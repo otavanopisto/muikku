@@ -5,23 +5,23 @@ import java.util.List;
 
 import fi.muikku.plugin.PersistencePluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
-import fi.muikku.plugins.materialfields.dao.QueryConnectFieldCounterpartDAO;
-import fi.muikku.plugins.materialfields.dao.QueryConnectFieldDAO;
-import fi.muikku.plugins.materialfields.dao.QueryConnectFieldTermDAO;
-import fi.muikku.plugins.materialfields.dao.QueryDrawFieldDAO;
-import fi.muikku.plugins.materialfields.dao.QueryFieldDAO;
-import fi.muikku.plugins.materialfields.dao.QuerySelectFieldDAO;
-import fi.muikku.plugins.materialfields.dao.QueryTextFieldDAO;
-import fi.muikku.plugins.materialfields.dao.QuerySelectFieldOptionDAO;
-import fi.muikku.plugins.materialfields.model.QueryConnectField;
-import fi.muikku.plugins.materialfields.model.QueryConnectFieldCounterpart;
-import fi.muikku.plugins.materialfields.model.QueryConnectFieldOption;
-import fi.muikku.plugins.materialfields.model.QueryConnectFieldTerm;
-import fi.muikku.plugins.materialfields.model.QueryDrawField;
-import fi.muikku.plugins.materialfields.model.QueryField;
-import fi.muikku.plugins.materialfields.model.QuerySelectField;
-import fi.muikku.plugins.materialfields.model.QueryTextField;
-import fi.muikku.plugins.materialfields.model.QuerySelectFieldOption;
+import fi.muikku.plugins.material.dao.QueryConnectFieldCounterpartDAO;
+import fi.muikku.plugins.material.dao.QueryConnectFieldDAO;
+import fi.muikku.plugins.material.dao.QueryConnectFieldTermDAO;
+import fi.muikku.plugins.material.dao.QueryDrawFieldDAO;
+import fi.muikku.plugins.material.dao.QueryFieldDAO;
+import fi.muikku.plugins.material.dao.QuerySelectFieldDAO;
+import fi.muikku.plugins.material.dao.QuerySelectFieldOptionDAO;
+import fi.muikku.plugins.material.dao.QueryTextFieldDAO;
+import fi.muikku.plugins.material.model.QueryConnectField;
+import fi.muikku.plugins.material.model.QueryConnectFieldCounterpart;
+import fi.muikku.plugins.material.model.QueryConnectFieldOption;
+import fi.muikku.plugins.material.model.QueryConnectFieldTerm;
+import fi.muikku.plugins.material.model.QueryDrawField;
+import fi.muikku.plugins.material.model.QueryField;
+import fi.muikku.plugins.material.model.QuerySelectField;
+import fi.muikku.plugins.material.model.QuerySelectFieldOption;
+import fi.muikku.plugins.material.model.QueryTextField;
 
 public class MaterialHtmlFieldPluginDescriptor implements PluginDescriptor, PersistencePluginDescriptor {
 
@@ -43,14 +43,7 @@ public class MaterialHtmlFieldPluginDescriptor implements PluginDescriptor, Pers
       
       /** DAOs **/
       
-      QueryFieldDAO.class,
-      QueryDrawFieldDAO.class,
-      QuerySelectFieldDAO.class,
-      QueryTextFieldDAO.class,
-      QuerySelectFieldOptionDAO.class,
-      QueryConnectFieldDAO.class,
-      QueryConnectFieldTermDAO.class,
-      QueryConnectFieldCounterpartDAO.class
+      
       
     });
   }
@@ -58,15 +51,7 @@ public class MaterialHtmlFieldPluginDescriptor implements PluginDescriptor, Pers
   @Override
   public Class<?>[] getEntities() {
     return new Class<?>[] {
-        QueryDrawField.class,
-        QueryTextField.class,
-        QueryField.class,
-        QuerySelectField.class,
-        QuerySelectFieldOption.class,
-        QueryConnectField.class,
-        QueryConnectFieldOption.class,
-        QueryConnectFieldTerm.class,
-        QueryConnectFieldCounterpart.class,
+        ,
     };
   }
 }

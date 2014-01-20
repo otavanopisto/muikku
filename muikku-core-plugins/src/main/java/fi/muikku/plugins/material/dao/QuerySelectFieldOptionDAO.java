@@ -1,4 +1,4 @@
-package fi.muikku.plugins.materialfields.dao;
+package fi.muikku.plugins.material.dao;
 
 import java.util.List;
 
@@ -9,8 +9,8 @@ import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.DAO;
 import fi.muikku.plugin.PluginDAO;
-import fi.muikku.plugins.materialfields.model.QuerySelectField;
-import fi.muikku.plugins.materialfields.model.QuerySelectFieldOption;
+import fi.muikku.plugins.material.model.QuerySelectField;
+import fi.muikku.plugins.material.model.QuerySelectFieldOption;
 import fi.muikku.plugins.materialfields.model.SelectFieldOption_;
 
 @DAO

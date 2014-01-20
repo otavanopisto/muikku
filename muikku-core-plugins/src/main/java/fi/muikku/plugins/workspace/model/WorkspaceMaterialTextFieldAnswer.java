@@ -6,7 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
-import fi.muikku.plugins.materialfields.model.QueryTextField;
+import fi.muikku.plugins.material.model.QueryTextField;
 
 @Entity
 public class WorkspaceMaterialTextFieldAnswer  {

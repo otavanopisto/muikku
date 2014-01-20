@@ -4,12 +4,12 @@ import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import fi.muikku.plugins.material.dao.QueryFieldDAO;
+import fi.muikku.plugins.material.dao.QuerySelectFieldOptionDAO;
 import fi.muikku.plugins.material.model.Material;
-import fi.muikku.plugins.materialfields.dao.QueryFieldDAO;
-import fi.muikku.plugins.materialfields.dao.QuerySelectFieldOptionDAO;
-import fi.muikku.plugins.materialfields.model.QueryField;
-import fi.muikku.plugins.materialfields.model.QuerySelectField;
-import fi.muikku.plugins.materialfields.model.QuerySelectFieldOption;
+import fi.muikku.plugins.material.model.QueryField;
+import fi.muikku.plugins.material.model.QuerySelectField;
+import fi.muikku.plugins.material.model.QuerySelectFieldOption;
 
 @Stateless
 @Dependent

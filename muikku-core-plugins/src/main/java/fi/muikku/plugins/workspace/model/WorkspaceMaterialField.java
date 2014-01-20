@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
-import fi.muikku.plugins.materialfields.model.QueryField;
+import fi.muikku.plugins.material.model.QueryField;
 
 @Entity
 public class WorkspaceMaterialField {

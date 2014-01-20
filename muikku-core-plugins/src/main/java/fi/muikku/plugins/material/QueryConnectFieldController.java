@@ -4,13 +4,13 @@ import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import fi.muikku.plugins.material.dao.QueryConnectFieldCounterpartDAO;
+import fi.muikku.plugins.material.dao.QueryConnectFieldDAO;
+import fi.muikku.plugins.material.dao.QueryConnectFieldTermDAO;
 import fi.muikku.plugins.material.model.Material;
-import fi.muikku.plugins.materialfields.dao.QueryConnectFieldCounterpartDAO;
-import fi.muikku.plugins.materialfields.dao.QueryConnectFieldDAO;
-import fi.muikku.plugins.materialfields.dao.QueryConnectFieldTermDAO;
-import fi.muikku.plugins.materialfields.model.QueryConnectField;
-import fi.muikku.plugins.materialfields.model.QueryConnectFieldCounterpart;
-import fi.muikku.plugins.materialfields.model.QueryConnectFieldTerm;
+import fi.muikku.plugins.material.model.QueryConnectField;
+import fi.muikku.plugins.material.model.QueryConnectFieldCounterpart;
+import fi.muikku.plugins.material.model.QueryConnectFieldTerm;
 
 @Stateless
 @Dependent
