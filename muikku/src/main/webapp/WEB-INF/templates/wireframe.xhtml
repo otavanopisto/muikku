@@ -19,26 +19,22 @@
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
 
     <!-- CSS to remove all default styles -->
-    <h:outputStylesheet library="css" name="cssreset-min.css" />
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/cssreset-min.css" />
     <!-- Screen CSS -->
-    <h:outputStylesheet library="css" name="screen.css" />
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/screen.css" />
     <!--  Generic forms  -->
-    <h:outputStylesheet library="css" name="forms.css" />
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/forms.css" />
     <!--  Widgets   -->
-    <h:outputStylesheet library="css" name="widgets.css" />
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/widgets.css" />
     <!--  Temporary styles -->
-    <h:outputStylesheet library="css" name="temp.css" />
-    <!-- Grid 960 styles 
-      <h:outputStylesheet library="css" name="grid960.gs/960_12_col.css"  /> -->
-    <!-- Grid 960 styles 
-    <h:outputStylesheet library="css" name="grid960.gs/960_24_col.css" /> -->
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/temp.css" />
     
     <!-- Dynamic Grid -->
-    <h:outputStylesheet library="css" name="dgrid.css" />
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/dgrid.css" />
     
     
     <!-- Default Calendar CSS -->
-    <h:outputStylesheet library="css" name="fullcalendar.css" />
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/fullcalendar.css" />
     <!-- jQuery -->
 
     <h:outputScript name="scripts/jquery/jquery-1.9.1.js" />
@@ -47,7 +43,7 @@
     <!-- jQuery UI -->
 
     <h:outputScript name="scripts/jquery-ui/js/jquery-ui-1.10.2.custom.js" />
-    <h:outputStylesheet name="scripts/jquery-ui/css/ui-lightness/jquery-ui-1.10.3.custom.css" />
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/jquery-ui.css" />
 
     <!-- jQuery Validation -->
 

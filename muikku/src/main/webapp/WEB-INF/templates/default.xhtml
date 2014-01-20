@@ -19,21 +19,17 @@
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
 
     <!-- CSS to remove all default styles -->
-    <h:outputStylesheet library="css" name="cssreset-min.css" />
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/cssreset-min.css" />
     <!-- Screen CSS -->
-    <h:outputStylesheet library="css" name="screen.css" />
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/screen.css" />
     <!--  Temporary styles -->
-    <h:outputStylesheet library="css" name="temp.css" />
-    <!-- Grid 960 styles 
-      <h:outputStylesheet library="css" name="grid960.gs/960_12_col.css"  /> -->
-    <!-- Grid 960 styles 
-    <h:outputStylesheet library="css" name="grid960.gs/960_24_col.css" /> -->
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/temp.css" />
     
     <!-- Dynamic Grid -->
-    <h:outputStylesheet library="css" name="dgrid.css" />
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/dgrid.css" />
     
     <!-- Default Calendar CSS -->
-    <h:outputStylesheet library="css" name="fullcalendar.css" />
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/fullcalendar.css" />
 
     <!-- jQuery -->
 

@@ -18,7 +18,7 @@ public class SessionBackingBean {
 	}
 
 	public String getResourceLibrary() {
-		return "muikku";
+		return "theme-muikku";
 	}
 	
 }
