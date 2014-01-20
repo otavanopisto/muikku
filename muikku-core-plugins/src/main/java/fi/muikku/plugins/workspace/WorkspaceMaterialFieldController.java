@@ -64,7 +64,7 @@ public class WorkspaceMaterialFieldController {
           Element formFieldElement = (Element) formFieldNodes.item(i);
           String unencodedName = formFieldElement.getAttribute("data-unencoded-name");
           String encodedName = formFieldElement.getAttribute("name");
-          
+
           String[] nameParts = unencodedName.split(":");
           String fieldName = nameParts[nameParts.length - 2];
           Material fieldMaterial = null;

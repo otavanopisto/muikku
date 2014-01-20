@@ -104,6 +104,7 @@ class FieldElementsHandler implements DeusNexFieldElementHandler {
 
     Element table = ownerDocument.createElement("table");
     Element tbody = ownerDocument.createElement("tbody");
+    int fieldCount = 0;
     for (ConnectFieldOption connectFieldOption : options) {
       Element tr = ownerDocument.createElement("tr");
       Element tdLeft = ownerDocument.createElement("td");
@@ -111,7 +112,8 @@ class FieldElementsHandler implements DeusNexFieldElementHandler {
       Element tdRight = ownerDocument.createElement("td");
       Element input = ownerDocument.createElement("input");
       input.setAttribute("type", "text");
-      input.setAttribute("name", "");
+      input.setAttribute("name", paramName);
+      input.setAttribute("data-fieldcount", String.valueOf(fieldCount));
 
       tdLeft.setTextContent(connectFieldOption.getTerm());
       tdCenter.appendChild(input);
@@ -120,6 +122,7 @@ class FieldElementsHandler implements DeusNexFieldElementHandler {
       tr.appendChild(tdCenter);
       tr.appendChild(tdRight);
       tbody.appendChild(tr);
+      fieldCount++;
     }
 
     table.appendChild(tbody);

@@ -126,7 +126,7 @@ public class HtmlMaterialController {
     List<String> assignedNames = new ArrayList<>();
     for (int i = 0, l = formFieldNodes.getLength(); i < l; i++) {
       Element formElement = (Element) formFieldNodes.item(i);
-
+      
       String formElementName = formElement.getAttribute("name");
       int index = 0;
       do {
@@ -141,7 +141,12 @@ public class HtmlMaterialController {
         assignedNameBuilder.append(index);
 
         String assignedNameUnencoded = assignedNameBuilder.toString();
-        String assignedName = DigestUtils.md5Hex(assignedNameUnencoded);
+        String assignedName;
+        if(formElement.hasAttribute("data-fieldcount")){
+          assignedName = DigestUtils.md5Hex(assignedNameUnencoded+formElement.getAttribute("data-fieldcount"));
+        }else{
+          assignedName = DigestUtils.md5Hex(assignedNameUnencoded);
+        }
 
         if (preserveUnencoded) {
           formElement.setAttribute("data-unencoded-name", assignedNameUnencoded);
