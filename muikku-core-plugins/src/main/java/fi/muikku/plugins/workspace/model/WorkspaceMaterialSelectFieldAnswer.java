@@ -7,7 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 import fi.muikku.plugins.materialfields.model.QuerySelectField;
-import fi.muikku.plugins.materialfields.model.SelectFieldOption;
+import fi.muikku.plugins.materialfields.model.QuerySelectFieldOption;
 
 @Entity
 public class WorkspaceMaterialSelectFieldAnswer  {
@@ -32,11 +32,11 @@ public class WorkspaceMaterialSelectFieldAnswer  {
     this.queryField = queryField;
   }
   
-  public SelectFieldOption getValue() {
+  public QuerySelectFieldOption getValue() {
     return value;
   }
   
-  public void setValue(SelectFieldOption value) {
+  public void setValue(QuerySelectFieldOption value) {
     this.value = value;
   }
   
@@ -52,5 +52,5 @@ public class WorkspaceMaterialSelectFieldAnswer  {
   private QuerySelectField queryField;
   
   @ManyToOne
-  private SelectFieldOption value;
+  private QuerySelectFieldOption value;
 }

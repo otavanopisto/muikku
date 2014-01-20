@@ -10,43 +10,43 @@ import javax.persistence.criteria.Root;
 import fi.muikku.dao.DAO;
 import fi.muikku.plugin.PluginDAO;
 import fi.muikku.plugins.materialfields.model.QuerySelectField;
-import fi.muikku.plugins.materialfields.model.SelectFieldOption;
+import fi.muikku.plugins.materialfields.model.QuerySelectFieldOption;
 import fi.muikku.plugins.materialfields.model.SelectFieldOption_;
 
 @DAO
-public class SelectFieldOptionDAO extends PluginDAO<SelectFieldOption> {
+public class QuerySelectFieldOptionDAO extends PluginDAO<QuerySelectFieldOption> {
 
   private static final long serialVersionUID = -5327160259588566934L;
 
-  public SelectFieldOption create(String name, String text, QuerySelectField field) {
+  public QuerySelectFieldOption create(String name, String text, QuerySelectField field) {
 
-    SelectFieldOption selectFieldOption = new SelectFieldOption();
-    selectFieldOption.setName(name);
-    selectFieldOption.setText(text);
-    selectFieldOption.setSelectField(field);
+    QuerySelectFieldOption querySelectFieldOption = new QuerySelectFieldOption();
+    querySelectFieldOption.setName(name);
+    querySelectFieldOption.setText(text);
+    querySelectFieldOption.setSelectField(field);
 
-    return persist(selectFieldOption);
+    return persist(querySelectFieldOption);
 
   }
 
-  public List<SelectFieldOption> listByField(QuerySelectField field) {
+  public List<QuerySelectFieldOption> listByField(QuerySelectField field) {
     EntityManager entityManager = getEntityManager();
 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<SelectFieldOption> criteria = criteriaBuilder.createQuery(SelectFieldOption.class);
-    Root<SelectFieldOption> root = criteria.from(SelectFieldOption.class);
+    CriteriaQuery<QuerySelectFieldOption> criteria = criteriaBuilder.createQuery(QuerySelectFieldOption.class);
+    Root<QuerySelectFieldOption> root = criteria.from(QuerySelectFieldOption.class);
     criteria.select(root);
     criteria.where(criteriaBuilder.equal(root.get(SelectFieldOption_.selectField), field));
 
     return entityManager.createQuery(criteria).getResultList();
   }
 
-  public SelectFieldOption findBySelectFieldAndName(QuerySelectField selectField, String name) {
+  public QuerySelectFieldOption findBySelectFieldAndName(QuerySelectField selectField, String name) {
     EntityManager entityManager = getEntityManager();
 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<SelectFieldOption> criteria = criteriaBuilder.createQuery(SelectFieldOption.class);
-    Root<SelectFieldOption> root = criteria.from(SelectFieldOption.class);
+    CriteriaQuery<QuerySelectFieldOption> criteria = criteriaBuilder.createQuery(QuerySelectFieldOption.class);
+    Root<QuerySelectFieldOption> root = criteria.from(QuerySelectFieldOption.class);
     criteria.select(root);
     criteria.where(
       criteriaBuilder.and(

@@ -16,7 +16,7 @@ import org.w3c.dom.Element;
 import fi.muikku.plugins.material.MaterialQueryIntegrityExeption;
 import fi.muikku.plugins.materialfields.QueryFieldController;
 import fi.muikku.plugins.materialfields.model.QuerySelectField;
-import fi.muikku.plugins.materialfields.model.SelectFieldOption;
+import fi.muikku.plugins.materialfields.model.QuerySelectFieldOption;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialSelectFieldAnswer;
@@ -41,7 +41,7 @@ public class WorkspaceMaterialSelectFieldAnswerPersistenceHandler implements Wor
     String parameterName = fieldPrefix + workspaceMaterialField.getName();
     String value = requestParameterMap.get(parameterName);
     QuerySelectField queryField = (QuerySelectField) workspaceMaterialField.getQueryField();
-    SelectFieldOption option = null;
+    QuerySelectFieldOption option = null;
     if (StringUtils.isNotBlank(value)) {
       option = queryFieldController.findQuerySelectFieldOptionByFieldAndName(queryField, value);
       if (option == null) {

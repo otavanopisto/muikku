@@ -12,7 +12,7 @@ import fi.muikku.plugins.materialfields.dao.QueryDrawFieldDAO;
 import fi.muikku.plugins.materialfields.dao.QueryFieldDAO;
 import fi.muikku.plugins.materialfields.dao.QuerySelectFieldDAO;
 import fi.muikku.plugins.materialfields.dao.QueryTextFieldDAO;
-import fi.muikku.plugins.materialfields.dao.SelectFieldOptionDAO;
+import fi.muikku.plugins.materialfields.dao.QuerySelectFieldOptionDAO;
 import fi.muikku.plugins.materialfields.model.QueryConnectField;
 import fi.muikku.plugins.materialfields.model.QueryConnectFieldCounterpart;
 import fi.muikku.plugins.materialfields.model.QueryConnectFieldOption;
@@ -21,7 +21,7 @@ import fi.muikku.plugins.materialfields.model.QueryDrawField;
 import fi.muikku.plugins.materialfields.model.QueryField;
 import fi.muikku.plugins.materialfields.model.QuerySelectField;
 import fi.muikku.plugins.materialfields.model.QueryTextField;
-import fi.muikku.plugins.materialfields.model.SelectFieldOption;
+import fi.muikku.plugins.materialfields.model.QuerySelectFieldOption;
 
 public class MaterialHtmlFieldPluginDescriptor implements PluginDescriptor, PersistencePluginDescriptor {
 
@@ -47,7 +47,7 @@ public class MaterialHtmlFieldPluginDescriptor implements PluginDescriptor, Pers
       QueryDrawFieldDAO.class,
       QuerySelectFieldDAO.class,
       QueryTextFieldDAO.class,
-      SelectFieldOptionDAO.class,
+      QuerySelectFieldOptionDAO.class,
       QueryConnectFieldDAO.class,
       QueryConnectFieldTermDAO.class,
       QueryConnectFieldCounterpartDAO.class,
@@ -69,7 +69,7 @@ public class MaterialHtmlFieldPluginDescriptor implements PluginDescriptor, Pers
         QueryTextField.class,
         QueryField.class,
         QuerySelectField.class,
-        SelectFieldOption.class,
+        QuerySelectFieldOption.class,
         QueryConnectField.class,
         QueryConnectFieldOption.class,
         QueryConnectFieldTerm.class,

@@ -7,7 +7,7 @@ import javax.persistence.criteria.Root;
 
 import fi.muikku.plugin.PluginDAO;
 import fi.muikku.plugins.materialfields.model.QuerySelectField;
-import fi.muikku.plugins.materialfields.model.SelectFieldOption;
+import fi.muikku.plugins.materialfields.model.QuerySelectFieldOption;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialSelectFieldAnswer;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialSelectFieldAnswer_;
@@ -16,7 +16,7 @@ public class WorkspaceMaterialSelectFieldAnswerDAO extends PluginDAO<WorkspaceMa
 	
   private static final long serialVersionUID = 3744204546402170002L;
 
-  public WorkspaceMaterialSelectFieldAnswer create(QuerySelectField queryField, WorkspaceMaterialReply reply, SelectFieldOption value) {
+  public WorkspaceMaterialSelectFieldAnswer create(QuerySelectField queryField, WorkspaceMaterialReply reply, QuerySelectFieldOption value) {
 		WorkspaceMaterialSelectFieldAnswer workspaceMaterialSelectFieldAnswer = new WorkspaceMaterialSelectFieldAnswer();
 		
 		workspaceMaterialSelectFieldAnswer.setQueryField(queryField);
@@ -43,7 +43,7 @@ public class WorkspaceMaterialSelectFieldAnswerDAO extends PluginDAO<WorkspaceMa
     return getSingleResult(entityManager.createQuery(criteria));
   }
   
-  public WorkspaceMaterialSelectFieldAnswer updateValue(WorkspaceMaterialSelectFieldAnswer workspaceMaterialSelectFieldAnswer, SelectFieldOption value) {
+  public WorkspaceMaterialSelectFieldAnswer updateValue(WorkspaceMaterialSelectFieldAnswer workspaceMaterialSelectFieldAnswer, QuerySelectFieldOption value) {
     workspaceMaterialSelectFieldAnswer.setValue(value);
     return persist(workspaceMaterialSelectFieldAnswer);
   }

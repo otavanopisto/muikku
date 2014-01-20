@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
-public class SelectFieldOption {
+public class QuerySelectFieldOption {
 
   public Long getId() {
     return id;

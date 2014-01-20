@@ -6,10 +6,10 @@ import javax.inject.Inject;
 
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.materialfields.dao.QueryFieldDAO;
-import fi.muikku.plugins.materialfields.dao.SelectFieldOptionDAO;
+import fi.muikku.plugins.materialfields.dao.QuerySelectFieldOptionDAO;
 import fi.muikku.plugins.materialfields.model.QueryField;
 import fi.muikku.plugins.materialfields.model.QuerySelectField;
-import fi.muikku.plugins.materialfields.model.SelectFieldOption;
+import fi.muikku.plugins.materialfields.model.QuerySelectFieldOption;
 
 @Stateless
 @Dependent
@@ -19,7 +19,7 @@ public class QueryFieldController {
   private QueryFieldDAO queryFieldDAO;
   
   @Inject
-  private SelectFieldOptionDAO selectFieldOptionDAO;
+  private QuerySelectFieldOptionDAO querySelectFieldOptionDAO;
 
   /* TextField */
   
@@ -29,8 +29,8 @@ public class QueryFieldController {
   
   /* SelectField */
 
-  public SelectFieldOption findQuerySelectFieldOptionByFieldAndName(QuerySelectField selectField, String name) {
-    return selectFieldOptionDAO.findBySelectFieldAndName(selectField, name);
+  public QuerySelectFieldOption findQuerySelectFieldOptionByFieldAndName(QuerySelectField selectField, String name) {
+    return querySelectFieldOptionDAO.findBySelectFieldAndName(selectField, name);
   }
 
 }

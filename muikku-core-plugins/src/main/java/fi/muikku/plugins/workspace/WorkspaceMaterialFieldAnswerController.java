@@ -4,7 +4,7 @@ import javax.inject.Inject;
 
 import fi.muikku.plugins.materialfields.model.QuerySelectField;
 import fi.muikku.plugins.materialfields.model.QueryTextField;
-import fi.muikku.plugins.materialfields.model.SelectFieldOption;
+import fi.muikku.plugins.materialfields.model.QuerySelectFieldOption;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialFieldAnswerDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialSelectFieldAnswerDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialTextFieldAnswerDAO;
@@ -50,7 +50,7 @@ public class WorkspaceMaterialFieldAnswerController {
   /* SelectField */
 
   public WorkspaceMaterialSelectFieldAnswer createWorkspaceMaterialSelectFieldAnswer(QuerySelectField queryField, WorkspaceMaterialReply reply,
-      SelectFieldOption value) {
+      QuerySelectFieldOption value) {
     return workspaceMaterialSelectFieldAnswerDAO.create(queryField, reply, value);
   }
 
@@ -59,7 +59,7 @@ public class WorkspaceMaterialFieldAnswerController {
   }
 
   public WorkspaceMaterialSelectFieldAnswer updateWorkspaceMaterialSelectFieldAnswerValue(
-      WorkspaceMaterialSelectFieldAnswer workspaceMaterialSelectFieldAnswer, SelectFieldOption value) {
+      WorkspaceMaterialSelectFieldAnswer workspaceMaterialSelectFieldAnswer, QuerySelectFieldOption value) {
     return workspaceMaterialSelectFieldAnswerDAO.updateValue(workspaceMaterialSelectFieldAnswer, value);
   }
 
