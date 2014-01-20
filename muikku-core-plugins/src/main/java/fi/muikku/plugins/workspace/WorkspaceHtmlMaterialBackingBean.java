@@ -113,6 +113,7 @@ public class WorkspaceHtmlMaterialBackingBean {
 	  	throw new FileNotFoundException();
 	  }
 	  
+	  // TODO: This should be done when the material is imported, not when it's viewed
 	  try {
       workspaceMaterialFieldController.createWorkspaceMaterialFields(workspaceMaterial.getId().toString(), workspaceMaterial);
     } catch (MaterialQueryIntegrityExeption e) {
