@@ -69,7 +69,7 @@ public class WorkspaceMaterialFieldController {
           String fieldName = nameParts[nameParts.length - 2];
           Material fieldMaterial = null;
           
-          if (nameParts.length > 2) {
+          if (nameParts.length > 3) {
             Long fieldMaterialId = NumberUtils.createLong(nameParts[nameParts.length - 3]);
             Material material = materialController.findMaterialById(fieldMaterialId);
             if (material == null) {
