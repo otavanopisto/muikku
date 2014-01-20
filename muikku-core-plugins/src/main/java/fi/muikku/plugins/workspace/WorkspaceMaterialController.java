@@ -13,8 +13,12 @@ import fi.muikku.plugins.workspace.dao.WorkspaceFolderDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceNodeDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceRootFolderDAO;
+import fi.muikku.plugins.workspace.events.WorkspaceFolderCreateEvent;
+import fi.muikku.plugins.workspace.events.WorkspaceFolderUpdateEvent;
 import fi.muikku.plugins.workspace.events.WorkspaceMaterialCreateEvent;
 import fi.muikku.plugins.workspace.events.WorkspaceMaterialUpdateEvent;
+import fi.muikku.plugins.workspace.events.WorkspaceRootFolderCreateEvent;
+import fi.muikku.plugins.workspace.events.WorkspaceRootFolderUpdateEvent;
 import fi.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
@@ -35,6 +39,18 @@ public class WorkspaceMaterialController {
 
 	@Inject
 	private WorkspaceNodeDAO workspaceNodeDAO;
+  
+  @Inject
+  private Event<WorkspaceRootFolderCreateEvent> workspaceRootFolderCreateEvent;
+  
+  @Inject
+  private Event<WorkspaceRootFolderUpdateEvent> workspaceRootFolderUpdateEvent;
+  
+  @Inject
+  private Event<WorkspaceFolderCreateEvent> workspaceFolderCreateEvent;
+  
+  @Inject
+  private Event<WorkspaceFolderUpdateEvent> workspaceFolderUpdateEvent;
 	
 	@Inject
 	private Event<WorkspaceMaterialCreateEvent> workspaceMaterialCreateEvent;
@@ -95,7 +111,9 @@ public class WorkspaceMaterialController {
 	/* Root Folder */
 	
 	public WorkspaceRootFolder createWorkspaceRootFolder(WorkspaceEntity workspaceEntity) {
-    return workspaceRootFolderDAO.create(workspaceEntity);
+    WorkspaceRootFolder workspaceRootFolder = workspaceRootFolderDAO.create(workspaceEntity);
+    workspaceRootFolderCreateEvent.fire(new WorkspaceRootFolderCreateEvent(workspaceRootFolder));
+    return workspaceRootFolder;
 	}
 	
 	public WorkspaceRootFolder findWorkspaceRootFolderByWorkspaceEntity(WorkspaceEntity workspaceEntity) {
@@ -114,7 +132,9 @@ public class WorkspaceMaterialController {
 	/* Folder */
 
 	public WorkspaceFolder createWorkspaceFolder(WorkspaceNode parent, String title, String urlName) {
-		return workspaceFolderDAO.create(parent, title, urlName);
+		WorkspaceFolder workspaceFolder = workspaceFolderDAO.create(parent, title, urlName);
+		workspaceFolderCreateEvent.fire(new WorkspaceFolderCreateEvent(workspaceFolder));
+		return workspaceFolder;
 	}
 	
 	public WorkspaceFolder findWorkspaceFolderById(Long workspaceFolderId) {
