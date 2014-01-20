@@ -36,12 +36,11 @@ public class WorkspaceMaterialTextFieldAnswerPersistenceHandler implements Works
   public void persistField(String fieldPrefix, WorkspaceMaterialReply reply, WorkspaceMaterialField workspaceMaterialField, Map<String, String> requestParameterMap) throws MaterialQueryIntegrityExeption {
     String parameterName = fieldPrefix + workspaceMaterialField.getName();
     String value = requestParameterMap.get(parameterName);
-    QueryTextField queryField = (QueryTextField) workspaceMaterialField.getQueryField();
     
-    WorkspaceMaterialTextFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialTextFieldAnswerByQueryFieldAndReply(queryField, reply);
+    WorkspaceMaterialTextFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialTextFieldAnswerByQueryFieldAndReply(workspaceMaterialField, reply);
     if (StringUtils.isNotBlank(value)) {
       if (fieldAnswer == null) {
-        fieldAnswer = workspaceMaterialFieldAnswerController.createWorkspaceMaterialTextFieldAnswer(queryField, reply, value);
+        fieldAnswer = workspaceMaterialFieldAnswerController.createWorkspaceMaterialTextFieldAnswer(workspaceMaterialField, reply, value);
       } else {
         fieldAnswer = workspaceMaterialFieldAnswerController.updateWorkspaceMaterialTextFieldAnswerValue(fieldAnswer, value);
       }
@@ -57,7 +56,7 @@ public class WorkspaceMaterialTextFieldAnswerPersistenceHandler implements Works
     String parameterName = fieldPrefix + workspaceMaterialField.getName();
     
     QueryTextField queryField = (QueryTextField) workspaceMaterialField.getQueryField();
-    WorkspaceMaterialTextFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialTextFieldAnswerByQueryFieldAndReply(queryField, reply);
+    WorkspaceMaterialTextFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialTextFieldAnswerByQueryFieldAndReply(workspaceMaterialField, reply);
     if ((fieldAnswer != null) && StringUtils.isNotBlank(fieldAnswer.getValue())) {
       try {
         Element inputElement = (Element) XPathFactory.newInstance().newXPath().evaluate("//INPUT[@name=\"" + parameterName + "\"]|//TEXTAREA[@name=\"" + parameterName + "\"]", document, XPathConstants.NODE);

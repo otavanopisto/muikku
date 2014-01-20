@@ -6,8 +6,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.plugin.PluginDAO;
-import fi.muikku.plugins.material.model.QuerySelectField;
 import fi.muikku.plugins.material.model.QuerySelectFieldOption;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialSelectFieldAnswer;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialSelectFieldAnswer_;
@@ -16,17 +16,17 @@ public class WorkspaceMaterialSelectFieldAnswerDAO extends PluginDAO<WorkspaceMa
 	
   private static final long serialVersionUID = 3744204546402170002L;
 
-  public WorkspaceMaterialSelectFieldAnswer create(QuerySelectField queryField, WorkspaceMaterialReply reply, QuerySelectFieldOption value) {
+  public WorkspaceMaterialSelectFieldAnswer create(WorkspaceMaterialField field, WorkspaceMaterialReply reply, QuerySelectFieldOption value) {
 		WorkspaceMaterialSelectFieldAnswer workspaceMaterialSelectFieldAnswer = new WorkspaceMaterialSelectFieldAnswer();
 		
-		workspaceMaterialSelectFieldAnswer.setQueryField(queryField);
+		workspaceMaterialSelectFieldAnswer.setField(field);
 		workspaceMaterialSelectFieldAnswer.setReply(reply);
     workspaceMaterialSelectFieldAnswer.setValue(value);
 		
 		return persist(workspaceMaterialSelectFieldAnswer);
 	}
 
-  public WorkspaceMaterialSelectFieldAnswer findByQueryFieldAndReply(QuerySelectField queryField, WorkspaceMaterialReply reply) {
+  public WorkspaceMaterialSelectFieldAnswer findByQueryFieldAndReply(WorkspaceMaterialField field, WorkspaceMaterialReply reply) {
     EntityManager entityManager = getEntityManager();
 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -35,7 +35,7 @@ public class WorkspaceMaterialSelectFieldAnswerDAO extends PluginDAO<WorkspaceMa
     criteria.select(root);
     criteria.where(
       criteriaBuilder.and(
-        criteriaBuilder.equal(root.get(WorkspaceMaterialSelectFieldAnswer_.queryField), queryField),
+        criteriaBuilder.equal(root.get(WorkspaceMaterialSelectFieldAnswer_.field), field),
         criteriaBuilder.equal(root.get(WorkspaceMaterialSelectFieldAnswer_.reply), reply)
       )
     );

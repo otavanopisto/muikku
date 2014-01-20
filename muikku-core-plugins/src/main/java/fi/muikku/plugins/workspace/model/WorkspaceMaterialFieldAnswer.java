@@ -4,12 +4,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 
-
 @Entity
+@Inheritance (strategy = InheritanceType.JOINED)
 public class WorkspaceMaterialFieldAnswer {
-  
+
   public Long getId() {
     return id;
   }
@@ -22,20 +24,12 @@ public class WorkspaceMaterialFieldAnswer {
     this.reply = reply;
   }
   
-  public WorkspaceMaterialField getWorkspaceMaterialField() {
-    return workspaceMaterialField;
-  }
-
-  public void setWorkspaceMaterialField(WorkspaceMaterialField workspaceMaterialField) {
-    this.workspaceMaterialField = workspaceMaterialField;
-  }
-
-  public String getValue() {
-    return value;
+  public WorkspaceMaterialField getField() {
+    return field;
   }
   
-  public void setValue(String value) {
-    this.value = value;
+  public void setField(WorkspaceMaterialField field) {
+    this.field = field;
   }
   
   @Id
@@ -46,7 +40,6 @@ public class WorkspaceMaterialFieldAnswer {
   private WorkspaceMaterialReply reply;
 
   @ManyToOne
-  private WorkspaceMaterialField workspaceMaterialField;
+  private WorkspaceMaterialField field;
   
-  private String value;
 }

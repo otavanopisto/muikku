@@ -13,7 +13,6 @@ import fi.muikku.plugin.PersistencePluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
 import fi.muikku.plugins.workspace.dao.WorkspaceFolderDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialDAO;
-import fi.muikku.plugins.workspace.dao.WorkspaceMaterialFieldAnswerDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialFieldDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialReplyDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialSelectFieldAnswerDAO;
@@ -82,7 +81,6 @@ public class WorkspacePluginDescriptor implements PluginDescriptor, PersistenceP
 			WorkspaceFolderDAO.class,
 			WorkspaceNodeDAO.class,
 			WorkspaceMaterialReplyDAO.class,
-			WorkspaceMaterialFieldAnswerDAO.class,
       WorkspaceMaterialTextFieldAnswerDAO.class,
       WorkspaceMaterialSelectFieldAnswerDAO.class,
       WorkspaceMaterialFieldDAO.class

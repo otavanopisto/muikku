@@ -6,7 +6,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.plugin.PluginDAO;
-import fi.muikku.plugins.material.model.QueryTextField;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialTextFieldAnswer;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialTextFieldAnswer_;
@@ -15,17 +15,17 @@ public class WorkspaceMaterialTextFieldAnswerDAO extends PluginDAO<WorkspaceMate
 	
   private static final long serialVersionUID = 3744204546402170002L;
 
-  public WorkspaceMaterialTextFieldAnswer create(QueryTextField queryField, WorkspaceMaterialReply reply, String value) {
+  public WorkspaceMaterialTextFieldAnswer create(WorkspaceMaterialField field, WorkspaceMaterialReply reply, String value) {
 		WorkspaceMaterialTextFieldAnswer workspaceMaterialTextFieldAnswer = new WorkspaceMaterialTextFieldAnswer();
 		
-		workspaceMaterialTextFieldAnswer.setQueryField(queryField);
+		workspaceMaterialTextFieldAnswer.setField(field);
 		workspaceMaterialTextFieldAnswer.setReply(reply);
     workspaceMaterialTextFieldAnswer.setValue(value);
 		
 		return persist(workspaceMaterialTextFieldAnswer);
 	}
 
-  public WorkspaceMaterialTextFieldAnswer findByQueryFieldAndReply(QueryTextField queryField, WorkspaceMaterialReply reply) {
+  public WorkspaceMaterialTextFieldAnswer findByQueryFieldAndReply(WorkspaceMaterialField field, WorkspaceMaterialReply reply) {
     EntityManager entityManager = getEntityManager();
 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -34,7 +34,7 @@ public class WorkspaceMaterialTextFieldAnswerDAO extends PluginDAO<WorkspaceMate
     criteria.select(root);
     criteria.where(
       criteriaBuilder.and(
-        criteriaBuilder.equal(root.get(WorkspaceMaterialTextFieldAnswer_.queryField), queryField),
+        criteriaBuilder.equal(root.get(WorkspaceMaterialTextFieldAnswer_.field), field),
         criteriaBuilder.equal(root.get(WorkspaceMaterialTextFieldAnswer_.reply), reply)
       )
     );

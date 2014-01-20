@@ -49,16 +49,16 @@ public class WorkspaceMaterialSelectFieldAnswerPersistenceHandler implements Wor
       }
     }
     
-    WorkspaceMaterialSelectFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialSelectFieldAnswerByQueryFieldAndReply(queryField, reply);
+    WorkspaceMaterialSelectFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialSelectFieldAnswerByQueryFieldAndReply(workspaceMaterialField, reply);
     if (option != null) {
       if (fieldAnswer != null) {
         fieldAnswer = workspaceMaterialFieldAnswerController.updateWorkspaceMaterialSelectFieldAnswerValue(fieldAnswer, option);
       } else {
-        fieldAnswer = workspaceMaterialFieldAnswerController.createWorkspaceMaterialSelectFieldAnswer(queryField, reply, option);
+        fieldAnswer = workspaceMaterialFieldAnswerController.createWorkspaceMaterialSelectFieldAnswer(workspaceMaterialField, reply, option);
       }
     } else {
       if (fieldAnswer != null) {
-        fieldAnswer = workspaceMaterialFieldAnswerController.createWorkspaceMaterialSelectFieldAnswer(queryField, reply, null);
+        fieldAnswer = workspaceMaterialFieldAnswerController.createWorkspaceMaterialSelectFieldAnswer(workspaceMaterialField, reply, null);
       }
     }
   }
@@ -67,7 +67,7 @@ public class WorkspaceMaterialSelectFieldAnswerPersistenceHandler implements Wor
   public void loadField(String fieldPrefix, Document document, WorkspaceMaterialReply reply, WorkspaceMaterialField workspaceMaterialField) throws MaterialQueryIntegrityExeption {
     String parameterName = fieldPrefix + workspaceMaterialField.getName();
     QuerySelectField queryField = (QuerySelectField) workspaceMaterialField.getQueryField();
-    WorkspaceMaterialSelectFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialSelectFieldAnswerByQueryFieldAndReply(queryField, reply);
+    WorkspaceMaterialSelectFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialSelectFieldAnswerByQueryFieldAndReply(workspaceMaterialField, reply);
     if ((fieldAnswer != null) && (fieldAnswer.getValue() != null)) {
       String optionName = fieldAnswer.getValue().getName();
       
