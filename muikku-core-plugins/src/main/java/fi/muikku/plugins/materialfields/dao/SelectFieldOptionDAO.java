@@ -18,11 +18,11 @@ public class SelectFieldOptionDAO extends PluginDAO<SelectFieldOption> {
 
   private static final long serialVersionUID = -5327160259588566934L;
 
-  public SelectFieldOption create(String name, String optText, QuerySelectField field) {
+  public SelectFieldOption create(String name, String text, QuerySelectField field) {
 
     SelectFieldOption selectFieldOption = new SelectFieldOption();
     selectFieldOption.setName(name);
-    selectFieldOption.setOptText(optText);
+    selectFieldOption.setText(text);
     selectFieldOption.setSelectField(field);
 
     return persist(selectFieldOption);

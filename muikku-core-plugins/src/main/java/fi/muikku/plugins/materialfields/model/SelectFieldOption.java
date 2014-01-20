@@ -17,14 +17,14 @@ public class SelectFieldOption {
     return id;
   }
 
-  public String getOptText() {
-    return optText;
+  public String getText() {
+    return text;
   }
-
-  public void setOptText(String optText) {
-    this.optText = optText;
+  
+  public void setText(String text) {
+    this.text = text;
   }
-
+  
   public String getName() {
     return name;
   }
@@ -48,7 +48,7 @@ public class SelectFieldOption {
   @NotEmpty
   @NotNull
   @Column(nullable = false)
-  private String optText;
+  private String text;
 
   @NotEmpty
   @NotNull
