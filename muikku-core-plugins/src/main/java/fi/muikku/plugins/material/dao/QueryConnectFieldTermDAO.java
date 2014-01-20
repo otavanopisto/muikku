@@ -12,7 +12,7 @@ import fi.muikku.plugin.PluginDAO;
 import fi.muikku.plugins.material.model.QueryConnectField;
 import fi.muikku.plugins.material.model.QueryConnectFieldCounterpart;
 import fi.muikku.plugins.material.model.QueryConnectFieldTerm;
-import fi.muikku.plugins.materialfields.model.QueryConnectFieldTerm_;
+import fi.muikku.plugins.material.model.QueryConnectFieldTerm_;
 
 @DAO
 public class QueryConnectFieldTermDAO extends PluginDAO<QueryConnectFieldTerm> {

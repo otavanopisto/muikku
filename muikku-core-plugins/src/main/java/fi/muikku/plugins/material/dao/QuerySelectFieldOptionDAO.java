@@ -11,7 +11,7 @@ import fi.muikku.dao.DAO;
 import fi.muikku.plugin.PluginDAO;
 import fi.muikku.plugins.material.model.QuerySelectField;
 import fi.muikku.plugins.material.model.QuerySelectFieldOption;
-import fi.muikku.plugins.materialfields.model.SelectFieldOption_;
+import fi.muikku.plugins.material.model.QuerySelectFieldOption_;
 
 @DAO
 public class QuerySelectFieldOptionDAO extends PluginDAO<QuerySelectFieldOption> {
@@ -36,7 +36,7 @@ public class QuerySelectFieldOptionDAO extends PluginDAO<QuerySelectFieldOption>
     CriteriaQuery<QuerySelectFieldOption> criteria = criteriaBuilder.createQuery(QuerySelectFieldOption.class);
     Root<QuerySelectFieldOption> root = criteria.from(QuerySelectFieldOption.class);
     criteria.select(root);
-    criteria.where(criteriaBuilder.equal(root.get(SelectFieldOption_.selectField), field));
+    criteria.where(criteriaBuilder.equal(root.get(QuerySelectFieldOption_.selectField), field));
 
     return entityManager.createQuery(criteria).getResultList();
   }
@@ -50,8 +50,8 @@ public class QuerySelectFieldOptionDAO extends PluginDAO<QuerySelectFieldOption>
     criteria.select(root);
     criteria.where(
       criteriaBuilder.and(
-        criteriaBuilder.equal(root.get(SelectFieldOption_.selectField), selectField),
-        criteriaBuilder.equal(root.get(SelectFieldOption_.name), name)
+        criteriaBuilder.equal(root.get(QuerySelectFieldOption_.selectField), selectField),
+        criteriaBuilder.equal(root.get(QuerySelectFieldOption_.name), name)
       )
     );
 

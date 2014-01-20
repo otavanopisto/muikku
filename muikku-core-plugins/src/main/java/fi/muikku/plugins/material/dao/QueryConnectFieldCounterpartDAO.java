@@ -11,7 +11,7 @@ import fi.muikku.dao.DAO;
 import fi.muikku.plugin.PluginDAO;
 import fi.muikku.plugins.material.model.QueryConnectField;
 import fi.muikku.plugins.material.model.QueryConnectFieldCounterpart;
-import fi.muikku.plugins.materialfields.model.QueryConnectFieldCounterpart_;
+import fi.muikku.plugins.material.model.QueryConnectFieldCounterpart_;
 
 @DAO
 public class QueryConnectFieldCounterpartDAO extends PluginDAO<QueryConnectFieldCounterpart> {

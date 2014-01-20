@@ -9,7 +9,7 @@ import fi.muikku.dao.DAO;
 import fi.muikku.plugin.PluginDAO;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.material.model.QueryField;
-import fi.muikku.plugins.materialfields.model.QueryField_;
+import fi.muikku.plugins.material.model.QueryField_;
 
 @DAO
 public class QueryFieldDAO extends PluginDAO<QueryField> {
