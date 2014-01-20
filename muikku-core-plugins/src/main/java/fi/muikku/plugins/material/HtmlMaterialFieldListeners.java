@@ -1,4 +1,4 @@
-package fi.muikku.plugins.materialfields;
+package fi.muikku.plugins.material;
 
 import java.util.Locale;
 import java.util.logging.Level;
@@ -13,7 +13,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import fi.muikku.plugins.material.HtmlMaterialController;
 import fi.muikku.plugins.material.processing.HtmlMaterialProcessingContext;
 import fi.muikku.plugins.material.processing.MaterialProcessorAdapter;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
