@@ -119,14 +119,6 @@ public class WorkspaceHtmlMaterialBackingBean {
 	  
 	  workspaceNavigationBackingBean.setWorkspaceUrlName(getWorkspaceUrlName());
 	  
-	  // TODO: This should be done when the material is imported, not when it's viewed
-	  try {
-      workspaceMaterialFieldController.createWorkspaceMaterialFields(workspaceMaterial.getId().toString(), workspaceMaterial);
-    } catch (MaterialQueryIntegrityExeption e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-	  
 	  if (Boolean.TRUE == getEmbed()) {
 	  	FacesContext.getCurrentInstance().getExternalContext().redirect(new StringBuilder()
         .append(FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath())
