@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
@@ -12,6 +13,8 @@ import fi.muikku.plugins.workspace.dao.WorkspaceFolderDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceNodeDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceRootFolderDAO;
+import fi.muikku.plugins.workspace.events.WorkspaceMaterialCreateEvent;
+import fi.muikku.plugins.workspace.events.WorkspaceMaterialUpdateEvent;
 import fi.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
@@ -33,6 +36,12 @@ public class WorkspaceMaterialController {
 	@Inject
 	private WorkspaceNodeDAO workspaceNodeDAO;
 	
+	@Inject
+	private Event<WorkspaceMaterialCreateEvent> workspaceMaterialCreateEvent;
+	
+	@Inject
+  private Event<WorkspaceMaterialUpdateEvent> workspaceMaterialUpdateEvent;
+  
 	/* Node */
 
 	public WorkspaceNode findWorkspaceNodeById(Long workspaceMaterialId) {
@@ -62,7 +71,9 @@ public class WorkspaceMaterialController {
 	/* Material */
 	
 	public WorkspaceMaterial createWorkspaceMaterial(WorkspaceNode parent, Material material, String urlName) {
-		return workspaceMaterialDAO.create(parent, material, urlName);
+		WorkspaceMaterial workspaceMaterial = workspaceMaterialDAO.create(parent, material, urlName);
+		workspaceMaterialCreateEvent.fire(new WorkspaceMaterialCreateEvent(workspaceMaterial));
+		return workspaceMaterial;
 	}
 	
 	public WorkspaceMaterial findWorkspaceMaterialById(Long workspaceMaterialId) {
