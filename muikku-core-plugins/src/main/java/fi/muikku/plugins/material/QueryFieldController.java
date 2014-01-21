@@ -20,10 +20,10 @@ public class QueryFieldController {
   
   @Inject
   private QuerySelectFieldOptionDAO querySelectFieldOptionDAO;
-
-  /* TextField */
   
-  public QueryField findQueryTextFieldByMaterialAndName(Material material, String name) {
+  /* QueryField */
+
+  public QueryField findQueryFieldByMaterialAndName(Material material, String name) {
     return queryFieldDAO.findByMaterialAndName(material, name);
   }
   
