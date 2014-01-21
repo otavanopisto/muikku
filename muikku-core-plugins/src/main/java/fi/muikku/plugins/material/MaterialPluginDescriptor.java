@@ -83,8 +83,7 @@ public class MaterialPluginDescriptor implements PluginDescriptor, PersistencePl
       /* Listeners */
 
       HtmlMaterialCreateListener.class,
-      HtmlMaterialEmbedListeners.class,
-      HtmlMaterialFieldListeners.class
+      HtmlMaterialEmbedListeners.class
     });
   }
 
