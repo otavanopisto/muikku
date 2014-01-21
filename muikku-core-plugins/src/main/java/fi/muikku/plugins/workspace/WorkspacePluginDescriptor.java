@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import fi.muikku.controller.WidgetController;
 import fi.muikku.plugin.PersistencePluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
+import fi.muikku.plugins.workspace.fieldrendering.HtmlMaterialConnectFieldRenderer;
 import fi.muikku.plugins.workspace.dao.WorkspaceFolderDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialFieldDAO;
@@ -85,6 +86,10 @@ public class WorkspacePluginDescriptor implements PluginDescriptor, PersistenceP
       WorkspaceMaterialTextFieldAnswerDAO.class,
       WorkspaceMaterialSelectFieldAnswerDAO.class,
       WorkspaceMaterialFieldDAO.class,
+      
+      /* Field Renderer */
+      
+      HtmlMaterialConnectFieldRenderer.class,
       
       /* Listeners */
       
