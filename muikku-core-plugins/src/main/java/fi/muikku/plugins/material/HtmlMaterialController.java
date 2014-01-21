@@ -69,11 +69,11 @@ public class HtmlMaterialController {
 		return htmlMaterialDAO.findById(id);
 	}
 	
-	public Document getProcessedHtmlDocument(String fieldPrefix, HtmlMaterial htmlMaterial) throws SAXException, IOException {
-    return processHtml(fieldPrefix, htmlMaterial.getId(), htmlMaterial.getHtml());
+	public Document getProcessedHtmlDocument(HtmlMaterial htmlMaterial) throws SAXException, IOException {
+    return processHtml(htmlMaterial.getId(), htmlMaterial.getHtml());
 	}
 	
-	private Document processHtml(String fieldPrefix, Long materialId, String html) throws SAXException, IOException {
+	private Document processHtml(Long materialId, String html) throws SAXException, IOException {
     if (StringUtils.isNotBlank(html)) {
       DOMParser parser = new DOMParser();
       StringReader htmlReader = new StringReader(html);
@@ -92,7 +92,7 @@ public class HtmlMaterialController {
         for (Integer stage : stages) {
           for (MaterialProcessor materialProcessor : materialProcessors) {
             if (stage.intValue() == materialProcessor.getProcessingStage()) {
-              materialProcessor.beforeProcessMaterial(new HtmlMaterialBeforeProcessingContext(fieldPrefix, materialId, document));
+              materialProcessor.beforeProcessMaterial(new HtmlMaterialBeforeProcessingContext(materialId, document));
             }
           }
         }
@@ -100,7 +100,7 @@ public class HtmlMaterialController {
         for (Integer stage : stages) {
           for (MaterialProcessor materialProcessor : materialProcessors) {
             if (stage.intValue() == materialProcessor.getProcessingStage()) {
-              materialProcessor.processMaterial(new HtmlMaterialProcessingContext(fieldPrefix, materialId, document));
+              materialProcessor.processMaterial(new HtmlMaterialProcessingContext(materialId, document));
             }
           }
         }
@@ -108,7 +108,7 @@ public class HtmlMaterialController {
         for (Integer stage : stages) {
           for (MaterialProcessor materialProcessor : materialProcessors) {
             if (stage.intValue() == materialProcessor.getProcessingStage()) {
-              materialProcessor.afterProcessMaterial(new HtmlMaterialAfterProcessingContext(fieldPrefix, materialId, document));
+              materialProcessor.afterProcessMaterial(new HtmlMaterialAfterProcessingContext(materialId, document));
             }
           }
         }
@@ -158,8 +158,8 @@ public class HtmlMaterialController {
     }
   }
 
-  public String getSerializedHtmlDocument(String fieldPrefix, Document processedHtmlDocument, HtmlMaterial htmlMaterial) throws SAXException, IOException, XPathExpressionException, TransformerException {
-    HtmlMaterialBeforeSerializeContext event = new HtmlMaterialBeforeSerializeContext(fieldPrefix, htmlMaterial.getId(), processedHtmlDocument);
+  public String getSerializedHtmlDocument(Document processedHtmlDocument, HtmlMaterial htmlMaterial) throws SAXException, IOException, XPathExpressionException, TransformerException {
+    HtmlMaterialBeforeSerializeContext event = new HtmlMaterialBeforeSerializeContext(htmlMaterial.getId(), processedHtmlDocument);
     
     SortedSet<Integer> stages = new TreeSet<>();
     for (MaterialProcessor materialProcessor : materialProcessors) {

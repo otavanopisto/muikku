@@ -14,19 +14,14 @@ public abstract class AbstractHtmlMaterialDomProcessingContext extends Processin
   public AbstractHtmlMaterialDomProcessingContext() {
   }
 
-  public AbstractHtmlMaterialDomProcessingContext(String fieldPrefix, Long materialId, Document document) {
+  public AbstractHtmlMaterialDomProcessingContext(Long materialId, Document document) {
     super(materialId);
     
-    this.fieldPrefix = fieldPrefix;
     this.document = document;
   }
   
   public Document getDocument() {
     return document;
-  }
-  
-  public String getFieldPrefix() {
-    return fieldPrefix;
   }
 
   public Element getBodyElement() {
@@ -76,5 +71,4 @@ public abstract class AbstractHtmlMaterialDomProcessingContext extends Processin
   }
   
   private Document document;
-  private String fieldPrefix;
 }

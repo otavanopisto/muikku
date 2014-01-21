@@ -7,8 +7,8 @@ public class HtmlMaterialBeforeSerializeContext extends AbstractHtmlMaterialDomP
   public HtmlMaterialBeforeSerializeContext() {
   }
   
-  public HtmlMaterialBeforeSerializeContext(String fieldPrefix, Long materialId, Document document) {
-    super(fieldPrefix, materialId, document);
+  public HtmlMaterialBeforeSerializeContext(Long materialId, Document document) {
+    super(materialId, document);
   }
   
 }
