@@ -4,7 +4,7 @@ package fi.muikku.plugins.material.model.field;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
-public class TextField implements Field {
+public class TextField extends Field {
   
   public static class RightAnswer {
     
@@ -59,8 +59,8 @@ public class TextField implements Field {
   }
 
   public TextField(String name, Integer columns, List<RightAnswer> rightAnswers, String help, String hint) {
+    super(name);
     this.setRightAnswers(rightAnswers);
-    this.setName(name);
     this.setColumns(columns);
     this.setHelp(help);
     this.setHint(hint);
@@ -79,14 +79,6 @@ public class TextField implements Field {
   @JsonIgnore
   public String getType() {
     return "application/vnd.muikku.field.text";
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
   }
 
   public Integer getColumns() {
@@ -114,7 +106,6 @@ public class TextField implements Field {
   }
 
   private List<RightAnswer> rightAnswers;
-  private String name;
   private Integer columns;
   private String hint;
   private String help;

@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
-public class OptionListField implements Field {
+public class OptionListField extends Field {
   
   public static class Option {
     public Option() {
@@ -39,8 +39,8 @@ public class OptionListField implements Field {
   }
 
   public OptionListField(String name, String listType, List<Option> options) {
+    super(name);
     this.setOptions(options);
-    this.setName(name);
     this.setListType(listType);
   }
   
@@ -58,14 +58,6 @@ public class OptionListField implements Field {
     return "application/vnd.muikku.field.option-list";
   }
 
-  public String getName() {
-    return name;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
   public String getListType() {
     return listType;
   }
@@ -75,7 +67,6 @@ public class OptionListField implements Field {
   }
 
   private List<Option> options;
-  private String name;
   private String listType;
   
 }
