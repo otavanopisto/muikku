@@ -54,7 +54,6 @@ private static final boolean ADD_DEBUG_MARKERS = false;
   
   public void processMaterial(HtmlMaterialProcessingContext event) {
     Document document = event.getDocument();
-    String fieldPrefix = event.getFieldPrefix();
 
     NodeList iframes = document.getElementsByTagName("iframe");
     for (int i = iframes.getLength() - 1; i >= 0; i--) {
@@ -74,18 +73,21 @@ private static final boolean ADD_DEBUG_MARKERS = false;
               WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialByWorkspaceEntityAndPath(workspaceEntity, materialPath);
               if (workspaceMaterial != null) {
                 if (workspaceMaterial.getMaterial() instanceof HtmlMaterial) {
+                  HtmlMaterial htmlMaterial = (HtmlMaterial) workspaceMaterial.getMaterial();
+                  
                   try {
-                    Document embeddedDocument = htmlMaterialController.getProcessedHtmlDocument(fieldPrefix, (HtmlMaterial) workspaceMaterial.getMaterial());
-                    NodeList formElements = getDocumentFormElements(embeddedDocument);
-                    for (int j = 0, jl = formElements.getLength(); j < jl; j++) {
-                      Element formElement = (Element) formElements.item(j);
-                      // If form elements have "id" -attribute specified, we remove it
-                      formElement.removeAttribute("id"); 
-                      String originalName = formElement.getAttribute("name");
-                      String assignedName = assignFormElementName(workspaceMaterial.getMaterial().getId(), originalName);
-                      formElement.setAttribute("name", assignedName); 
+                    Document embeddedDocument = htmlMaterialController.getProcessedHtmlDocument((HtmlMaterial) workspaceMaterial.getMaterial());
+                    NodeList objectNodeList = (NodeList) XPathFactory.newInstance().newXPath().evaluate("//OBJECT", document, XPathConstants.NODESET);
+                    
+                    for (int objectIndex = 0, objectsLength = objectNodeList.getLength(); objectIndex < objectsLength; objectIndex++) {
+                      Element objectElement = (Element) objectNodeList.item(objectIndex);
+                      if (!objectElement.hasAttribute("data-embed-id")) {
+                        objectElement.setAttribute("data-embed-id", htmlMaterial.getId().toString());
+                      } else {
+                        objectElement.setAttribute("data-embed-id", htmlMaterial.getId().toString() + ":" + objectElement.getAttribute("data-embed-id"));
+                      }
                     }
-
+                    
                     Node parent = iframeElement.getParentNode();
                     Node nextSibling = iframeElement.getNextSibling();
 
@@ -126,18 +128,6 @@ private static final boolean ADD_DEBUG_MARKERS = false;
     result.setAttribute("style", style);
     result.appendChild(ownerDocument.createTextNode(text));
     return result;
-  }
-
-  private String assignFormElementName(Long materialId, String originalName) {
-    return new StringBuilder()
-      .append(materialId)
-      .append(':')
-      .append(originalName)
-      .toString();
-  }
-
-  private NodeList getDocumentFormElements(Document document) throws XPathExpressionException {
-    return (NodeList) XPathFactory.newInstance().newXPath().evaluate("//INPUT|//TEXTAREA|//SELECT", document, XPathConstants.NODESET);
   }
 
 }
