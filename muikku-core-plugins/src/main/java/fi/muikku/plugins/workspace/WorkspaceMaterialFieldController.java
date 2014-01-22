@@ -37,16 +37,12 @@ public class WorkspaceMaterialFieldController {
     return workspaceMaterialFieldDAO.create(name, queryField, workspaceMaterial);
   }
   
-  public List<WorkspaceMaterialField> findWorkspaceMaterialFieldsByMaterial(WorkspaceMaterial material){
-    return workspaceMaterialFieldDAO.findMaterialFieldByMaterial(material);
-  }
-
-  public List<WorkspaceMaterialField> listWorkspaceMaterialFieldsByWorkspaceMaterial(WorkspaceMaterial workspaceMaterial) {
+  public List<WorkspaceMaterialField> listWorkspaceMaterialFieldsByWorkspaceMaterial(WorkspaceMaterial workspaceMaterial){
     return workspaceMaterialFieldDAO.listByWorkspaceMaterial(workspaceMaterial);
   }
   
   public WorkspaceMaterialField findWorkspaceMaterialFieldByWorkspaceMaterialAndName(WorkspaceMaterial workspaceMaterial, String name) {
-    return workspaceMaterialFieldDAO.findMaterialFieldByWorkspaceMaterialAndName(workspaceMaterial, name); 
+    return workspaceMaterialFieldDAO.findByWorkspaceMaterialAndName(workspaceMaterial, name); 
   }
   
   public String getAssignedFieldName(String workspaceMaterialId, String embedId, String fieldName, Collection<String> assignedNames) {

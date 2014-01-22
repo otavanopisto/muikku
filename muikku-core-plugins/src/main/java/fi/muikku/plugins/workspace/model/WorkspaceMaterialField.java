@@ -39,14 +39,14 @@ public class WorkspaceMaterialField {
     this.queryField = queryField;
   }
 
-  public WorkspaceMaterial getMaterial() {
-    return material;
+  public WorkspaceMaterial getWorkspaceMaterial() {
+    return workspaceMaterial;
   }
-
-  public void setMaterial(WorkspaceMaterial material) {
-    this.material = material;
+  
+  public void setWorkspaceMaterial(WorkspaceMaterial workspaceMaterial) {
+    this.workspaceMaterial = workspaceMaterial;
   }
-
+  
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -60,6 +60,6 @@ public class WorkspaceMaterialField {
   private QueryField queryField;
   
   @ManyToOne
-  private WorkspaceMaterial material;
+  private WorkspaceMaterial workspaceMaterial;
   
 }

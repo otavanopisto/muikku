@@ -19,31 +19,18 @@ public class WorkspaceMaterialFieldDAO extends PluginDAO<WorkspaceMaterialField>
 
   private static final long serialVersionUID = 6804548350145556078L;
 
-  public WorkspaceMaterialField create(String name, QueryField field, WorkspaceMaterial material) {
+  public WorkspaceMaterialField create(String name, QueryField field, WorkspaceMaterial workspaceMaterial) {
 
     WorkspaceMaterialField workspaceMaterialField = new WorkspaceMaterialField();
 
     workspaceMaterialField.setName(name);
-    workspaceMaterialField.setMaterial(material);
+    workspaceMaterialField.setWorkspaceMaterial(workspaceMaterial);
     workspaceMaterialField.setQueryField(field);
 
     return persist(workspaceMaterialField);
   }
-  
-  public List<WorkspaceMaterialField> findMaterialFieldByMaterial(WorkspaceMaterial material){
-    EntityManager entityManager = getEntityManager();
 
-    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<WorkspaceMaterialField> criteria = criteriaBuilder.createQuery(WorkspaceMaterialField.class);
-    Root<WorkspaceMaterialField> root = criteria.from(WorkspaceMaterialField.class);
-    criteria.select(root);
-    criteria.where(criteriaBuilder.equal(root.get(WorkspaceMaterialField_.material), material));
-
-    return entityManager.createQuery(criteria).getResultList();
-    
-  }
-
-  public WorkspaceMaterialField findMaterialFieldByWorkspaceMaterialAndName(WorkspaceMaterial workspaceMaterial, String name) {
+  public WorkspaceMaterialField findByWorkspaceMaterialAndName(WorkspaceMaterial workspaceMaterial, String name) {
     EntityManager entityManager = getEntityManager();
 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -52,7 +39,7 @@ public class WorkspaceMaterialFieldDAO extends PluginDAO<WorkspaceMaterialField>
     criteria.select(root);
     criteria.where(
       criteriaBuilder.and(
-        criteriaBuilder.equal(root.get(WorkspaceMaterialField_.material), workspaceMaterial),
+        criteriaBuilder.equal(root.get(WorkspaceMaterialField_.workspaceMaterial), workspaceMaterial),
         criteriaBuilder.equal(root.get(WorkspaceMaterialField_.name), name)
       )
     );
@@ -68,7 +55,7 @@ public class WorkspaceMaterialFieldDAO extends PluginDAO<WorkspaceMaterialField>
     Root<WorkspaceMaterialField> root = criteria.from(WorkspaceMaterialField.class);
     criteria.select(root);
     criteria.where(
-      criteriaBuilder.equal(root.get(WorkspaceMaterialField_.material), workspaceMaterial)
+      criteriaBuilder.equal(root.get(WorkspaceMaterialField_.workspaceMaterial), workspaceMaterial)
     );
 
     return entityManager.createQuery(criteria).getResultList();
