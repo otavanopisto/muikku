@@ -13,8 +13,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 import fi.muikku.plugins.material.MaterialFieldProcessor;
 import fi.muikku.plugins.material.QueryConnectFieldController;
 import fi.muikku.plugins.material.fieldmeta.ConnectFieldMeta;
-import fi.muikku.plugins.material.fieldmeta.ConnectFieldMeta.Connection;
-import fi.muikku.plugins.material.fieldmeta.ConnectFieldMeta.Field;
+import fi.muikku.plugins.material.fieldmeta.ConnectFieldOptionMeta;
+import fi.muikku.plugins.material.fieldmeta.ConnectFieldConnectionMeta;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.material.model.QueryConnectField;
 import fi.muikku.plugins.material.model.QueryConnectFieldCounterpart;
@@ -33,19 +33,19 @@ public class ConnectFieldMaterialFieldProcessor implements MaterialFieldProcesso
     
     Map<String, QueryConnectFieldCounterpart> counterpartMap = new HashMap<>();
     Map<String, String> connectionMap = new HashMap<>(); 
-    for (Connection connection : connectFieldMeta.getConnections()) {
-      connectionMap.put(connection.getCounterpart(), connection.getField()); 
+    for (ConnectFieldConnectionMeta connectFieldConnectionMeta : connectFieldMeta.getConnections()) {
+      connectionMap.put(connectFieldConnectionMeta.getCounterpart(), connectFieldConnectionMeta.getField()); 
     }
     
-    for (Field counterpart : connectFieldMeta.getCounterparts()) {
+    for (ConnectFieldOptionMeta counterpart : connectFieldMeta.getCounterparts()) {
       QueryConnectFieldCounterpart connectFieldCounterpart = queryConnectFieldController.createConnectFieldCounterpart(queryConnectField, counterpart.getName(), counterpart.getText()); 
       String termName = connectionMap.get(counterpart.getName());
       counterpartMap.put(termName, connectFieldCounterpart);
     }
     
-    for (Field field : connectFieldMeta.getFields()) {
-      QueryConnectFieldCounterpart counterpart = counterpartMap.get(field.getName());
-      queryConnectFieldController.createConnectFieldTerm(queryConnectField, field.getName(), field.getText(), counterpart);
+    for (ConnectFieldOptionMeta connectFieldOptionMeta : connectFieldMeta.getFields()) {
+      QueryConnectFieldCounterpart counterpart = counterpartMap.get(connectFieldOptionMeta.getName());
+      queryConnectFieldController.createConnectFieldTerm(queryConnectField, connectFieldOptionMeta.getName(), connectFieldOptionMeta.getText(), counterpart);
     }
     
   }

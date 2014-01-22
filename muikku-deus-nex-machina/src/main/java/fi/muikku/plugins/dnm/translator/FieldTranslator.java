@@ -7,6 +7,8 @@ import fi.muikku.plugins.dnm.parser.content.ConnectFieldOption;
 import fi.muikku.plugins.dnm.parser.content.OptionListOption;
 import fi.muikku.plugins.dnm.parser.content.RightAnswer;
 import fi.muikku.plugins.material.fieldmeta.ConnectFieldMeta;
+import fi.muikku.plugins.material.fieldmeta.ConnectFieldOptionMeta;
+import fi.muikku.plugins.material.fieldmeta.ConnectFieldConnectionMeta;
 import fi.muikku.plugins.material.fieldmeta.MemoFieldMeta;
 import fi.muikku.plugins.material.fieldmeta.SelectFieldMeta;
 import fi.muikku.plugins.material.fieldmeta.TextFieldMeta;
@@ -57,9 +59,9 @@ public class FieldTranslator {
   
   public ConnectFieldMeta translateConnectField(String name, List<ConnectFieldOption> options) {
     
-    List<ConnectFieldMeta.Field> fields = new ArrayList<ConnectFieldMeta.Field>();
-    List<ConnectFieldMeta.Field> counterparts = new ArrayList<ConnectFieldMeta.Field>();;
-    List<ConnectFieldMeta.Connection> connections = new ArrayList<>();
+    List<ConnectFieldOptionMeta> connectFieldOptionMetas = new ArrayList<ConnectFieldOptionMeta>();
+    List<ConnectFieldOptionMeta> counterparts = new ArrayList<ConnectFieldOptionMeta>();;
+    List<ConnectFieldConnectionMeta> connectFieldConnectionMetas = new ArrayList<>();
     
     for (int i = 0; i < options.size(); i++) {
       
@@ -67,11 +69,11 @@ public class FieldTranslator {
       String fieldName = String.valueOf(i+1);
       String counterpartName = getExcelStyleLetterIndex(i);
       
-      fields.add(new ConnectFieldMeta.Field(fieldName, option.getTerm()));
-      counterparts.add(new ConnectFieldMeta.Field(counterpartName, option.getEquivalent()));
-      connections.add(new ConnectFieldMeta.Connection(fieldName, option.getAnswer()));
+      connectFieldOptionMetas.add(new ConnectFieldOptionMeta(fieldName, option.getTerm()));
+      counterparts.add(new ConnectFieldOptionMeta(counterpartName, option.getEquivalent()));
+      connectFieldConnectionMetas.add(new ConnectFieldConnectionMeta(fieldName, option.getAnswer()));
     }
     
-    return new ConnectFieldMeta(name, fields, counterparts, connections);
+    return new ConnectFieldMeta(name, connectFieldOptionMetas, counterparts, connectFieldConnectionMetas);
   }
 }

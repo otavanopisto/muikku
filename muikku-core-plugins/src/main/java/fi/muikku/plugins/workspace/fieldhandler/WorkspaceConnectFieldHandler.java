@@ -46,19 +46,19 @@ public class WorkspaceConnectFieldHandler implements WorkspaceFieldHandler {
       Element tdCounterpartElement = ownerDocument.createElement("td");
       Element inputElement = ownerDocument.createElement("input");
       
-      fi.muikku.plugins.material.fieldmeta.ConnectFieldMeta.Field field = rowIndex < fieldsSize ? connectFieldMeta.getFields().get(rowIndex) : null;
-      fi.muikku.plugins.material.fieldmeta.ConnectFieldMeta.Field counterpart = rowIndex < counterpartsSize ? connectFieldMeta.getCounterparts().get(rowIndex) : null;
+      fi.muikku.plugins.material.fieldmeta.ConnectFieldOptionMeta connectFieldOptionMeta = rowIndex < fieldsSize ? connectFieldMeta.getFields().get(rowIndex) : null;
+      fi.muikku.plugins.material.fieldmeta.ConnectFieldOptionMeta counterpart = rowIndex < counterpartsSize ? connectFieldMeta.getCounterparts().get(rowIndex) : null;
 
       tdTermElement.setAttribute("class", "muikku-connect-field-term-cell");
       tdValueElement.setAttribute("class", "muikku-connect-field-value-cell");
       tdCounterpartElement.setAttribute("class", "muikku-connect-field-counterpart-cell");
       
-      if (field != null) {
-        tdTermElement.setTextContent((rowIndex + 1) + " - " + field.getText());
-        tdTermElement.setAttribute("data-muikku-connect-field-option-name", field.getName());
+      if (connectFieldOptionMeta != null) {
+        tdTermElement.setTextContent((rowIndex + 1) + " - " + connectFieldOptionMeta.getText());
+        tdTermElement.setAttribute("data-muikku-connect-field-option-name", connectFieldOptionMeta.getName());
 
         inputElement.setAttribute("type", "text");
-        inputElement.setAttribute("name", workspaceMaterialField.getName() + "." + field.getName());
+        inputElement.setAttribute("name", workspaceMaterialField.getName() + "." + connectFieldOptionMeta.getName());
         inputElement.setAttribute("class", "muikku-connect-field-value");
         
         tdValueElement.appendChild(inputElement);
