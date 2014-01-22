@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
@@ -47,6 +48,9 @@ import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 @Stateful
 public class DeusNexMachinaController {
 
+  @Inject 
+  private Logger logger;
+  
   private class EmbeddedItemHandler implements DeusNexEmbeddedItemElementHandler {
   	
     public EmbeddedItemHandler(DeusNexMachinaController deusNexMachinaController, WorkspaceRootFolder rootFolder, DeusNexDocument deusNexDocument) {
@@ -257,6 +261,8 @@ public class DeusNexMachinaController {
 			}
 		} else {
 			if (node == null) {
+			  logger.info("importting " + resource.getPath());
+			  
     		Material material = createMaterial(rootFolder, resource, deusNexDocument);
     		if (material != null) {
     			WorkspaceNode workspaceNode = workspaceMaterialController.createWorkspaceMaterial(parent, material, material.getUrlName());
@@ -274,7 +280,7 @@ public class DeusNexMachinaController {
       		}
     		}
 			} else {
-				System.out.println(node.getPath() + " already exists, skipping");
+			  logger.info(node.getPath() + " already exists, skipping");
 			}
 		}
 	}
