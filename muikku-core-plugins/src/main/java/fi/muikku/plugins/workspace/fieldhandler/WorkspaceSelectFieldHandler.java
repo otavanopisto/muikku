@@ -15,6 +15,7 @@ import org.w3c.dom.Node;
 
 import fi.muikku.plugins.material.MaterialQueryIntegrityExeption;
 import fi.muikku.plugins.material.QueryFieldController;
+import fi.muikku.plugins.material.fieldmeta.SelectFieldOptionMeta;
 import fi.muikku.plugins.material.fieldmeta.SelectFieldMeta;
 import fi.muikku.plugins.material.model.QuerySelectField;
 import fi.muikku.plugins.material.model.QuerySelectFieldOption;
@@ -48,15 +49,15 @@ public class WorkspaceSelectFieldHandler extends AbstractWorkspaceFieldHandler {
     Element selectElement = ownerDocument.createElement("select");
     selectElement.setAttribute("name", parameterName);
     
-    for (SelectFieldMeta.Option option : selectFieldMeta.getOptions()) {
+    for (SelectFieldOptionMeta selectFieldOptionMeta : selectFieldMeta.getOptions()) {
       Element optionElement = ownerDocument.createElement("option");
-      optionElement.setAttribute("value", option.getName());
+      optionElement.setAttribute("value", selectFieldOptionMeta.getName());
       
-      if ((fieldAnswer != null) && (fieldAnswer.getValue() != null) && fieldAnswer.getValue().getName().equals(option.getName())) {
+      if ((fieldAnswer != null) && (fieldAnswer.getValue() != null) && fieldAnswer.getValue().getName().equals(selectFieldOptionMeta.getName())) {
         optionElement.setAttribute("selected", "selected");
       }
       
-      optionElement.setTextContent(option.getText());
+      optionElement.setTextContent(selectFieldOptionMeta.getText());
       selectElement.appendChild(optionElement);
     }
 

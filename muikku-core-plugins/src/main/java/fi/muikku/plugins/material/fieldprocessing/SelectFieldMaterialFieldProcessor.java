@@ -10,8 +10,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import fi.muikku.plugins.material.MaterialFieldProcessor;
 import fi.muikku.plugins.material.QuerySelectFieldController;
+import fi.muikku.plugins.material.fieldmeta.SelectFieldOptionMeta;
 import fi.muikku.plugins.material.fieldmeta.SelectFieldMeta;
-import fi.muikku.plugins.material.fieldmeta.SelectFieldMeta.Option;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.material.model.QuerySelectField;
 
@@ -26,8 +26,8 @@ public class SelectFieldMaterialFieldProcessor implements MaterialFieldProcessor
     
     SelectFieldMeta selectFieldMeta = objectMapper.readValue(content, SelectFieldMeta.class);
     QuerySelectField querySelectField = querySelectFieldController.createQuerySelectField(material, selectFieldMeta.getName(), Boolean.FALSE);
-    for (Option option : selectFieldMeta.getOptions()) {
-      querySelectFieldController.createSelectFieldOption(querySelectField, option.getName(), option.getText());
+    for (SelectFieldOptionMeta selectFieldOptionMeta : selectFieldMeta.getOptions()) {
+      querySelectFieldController.createSelectFieldOption(querySelectField, selectFieldOptionMeta.getName(), selectFieldOptionMeta.getText());
     }
   }
 

@@ -10,6 +10,7 @@ import fi.muikku.plugins.material.fieldmeta.ConnectFieldMeta;
 import fi.muikku.plugins.material.fieldmeta.ConnectFieldOptionMeta;
 import fi.muikku.plugins.material.fieldmeta.ConnectFieldConnectionMeta;
 import fi.muikku.plugins.material.fieldmeta.MemoFieldMeta;
+import fi.muikku.plugins.material.fieldmeta.SelectFieldOptionMeta;
 import fi.muikku.plugins.material.fieldmeta.SelectFieldMeta;
 import fi.muikku.plugins.material.fieldmeta.TextFieldMeta;
 
@@ -50,9 +51,9 @@ public class FieldTranslator {
   }
   
   public SelectFieldMeta translateOptionList(String name, String listType, List<OptionListOption> options) {
-    List<SelectFieldMeta.Option> translatedOptions = new ArrayList<>();
+    List<SelectFieldOptionMeta> translatedOptions = new ArrayList<>();
     for (OptionListOption option : options) {
-      translatedOptions.add(new SelectFieldMeta.Option(option.getName(), option.getPoints(), option.getText()));
+      translatedOptions.add(new SelectFieldOptionMeta(option.getName(), option.getPoints(), option.getText()));
     }
     return new SelectFieldMeta(name, listType, translatedOptions);
   }

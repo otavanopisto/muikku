@@ -6,50 +6,22 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 
 public class SelectFieldMeta extends FieldMeta {
   
-  public static class Option {
-    public Option() {
-      
-    }
-    
-    public Option(String name, Double points, String text) {
-      this.name = name;
-      this.points = points;
-      this.text = text;
-    }
-
-    public String getName() {
-      return name;
-    }
-
-    public Double getPoints() {
-      return points;
-    }
-
-    public String getText() {
-      return text;
-    }
-
-    private String name;
-    private Double points;
-    private String text;
-  }
-  
   public SelectFieldMeta() {
     
   }
 
-  public SelectFieldMeta(String name, String listType, List<Option> options) {
+  public SelectFieldMeta(String name, String listType, List<SelectFieldOptionMeta> selectFieldOptionMetas) {
     super(name);
-    this.setOptions(options);
+    this.setOptions(selectFieldOptionMetas);
     this.setListType(listType);
   }
   
-  public List<Option> getOptions() {
-    return options;
+  public List<SelectFieldOptionMeta> getOptions() {
+    return selectFieldOptionMetas;
   }
 
-  public void setOptions(List<Option> options) {
-    this.options = options;
+  public void setOptions(List<SelectFieldOptionMeta> selectFieldOptionMetas) {
+    this.selectFieldOptionMetas = selectFieldOptionMetas;
   }
   
   @Override
@@ -66,7 +38,7 @@ public class SelectFieldMeta extends FieldMeta {
     this.listType = listType;
   }
 
-  private List<Option> options;
+  private List<SelectFieldOptionMeta> selectFieldOptionMetas;
   private String listType;
   
 }
