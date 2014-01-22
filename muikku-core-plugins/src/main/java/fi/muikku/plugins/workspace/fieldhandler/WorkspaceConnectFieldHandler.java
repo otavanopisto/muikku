@@ -11,7 +11,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import fi.muikku.plugins.material.MaterialQueryIntegrityExeption;
-import fi.muikku.plugins.material.model.field.ConnectField;
+import fi.muikku.plugins.material.fieldmeta.ConnectField;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 
@@ -46,8 +46,8 @@ public class WorkspaceConnectFieldHandler implements WorkspaceFieldHandler {
       Element tdCounterpartElement = ownerDocument.createElement("td");
       Element inputElement = ownerDocument.createElement("input");
       
-      fi.muikku.plugins.material.model.field.ConnectField.Field field = rowIndex < fieldsSize ? connectField.getFields().get(rowIndex) : null;
-      fi.muikku.plugins.material.model.field.ConnectField.Field counterpart = rowIndex < counterpartsSize ? connectField.getCounterparts().get(rowIndex) : null;
+      fi.muikku.plugins.material.fieldmeta.ConnectField.Field field = rowIndex < fieldsSize ? connectField.getFields().get(rowIndex) : null;
+      fi.muikku.plugins.material.fieldmeta.ConnectField.Field counterpart = rowIndex < counterpartsSize ? connectField.getCounterparts().get(rowIndex) : null;
 
       tdTermElement.setAttribute("class", "muikku-connect-field-term-cell");
       tdValueElement.setAttribute("class", "muikku-connect-field-value-cell");

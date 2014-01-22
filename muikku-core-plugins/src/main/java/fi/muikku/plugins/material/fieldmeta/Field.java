@@ -1,4 +1,4 @@
-package fi.muikku.plugins.material.model.field;
+package fi.muikku.plugins.material.fieldmeta;
 
 public class Field {
   

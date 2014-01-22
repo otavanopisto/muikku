@@ -1,4 +1,4 @@
-package fi.muikku.plugins.material.model.field;
+package fi.muikku.plugins.material.fieldmeta;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 

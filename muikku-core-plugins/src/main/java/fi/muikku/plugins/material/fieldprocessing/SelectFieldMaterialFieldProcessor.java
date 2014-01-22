@@ -10,10 +10,10 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import fi.muikku.plugins.material.MaterialFieldProcessor;
 import fi.muikku.plugins.material.QuerySelectFieldController;
+import fi.muikku.plugins.material.fieldmeta.SelectField;
+import fi.muikku.plugins.material.fieldmeta.SelectField.Option;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.material.model.QuerySelectField;
-import fi.muikku.plugins.material.model.field.SelectField;
-import fi.muikku.plugins.material.model.field.SelectField.Option;
 
 public class SelectFieldMaterialFieldProcessor implements MaterialFieldProcessor {
 

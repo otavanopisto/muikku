@@ -27,10 +27,10 @@ import fi.muikku.plugins.material.HtmlMaterialController;
 import fi.muikku.plugins.material.MaterialController;
 import fi.muikku.plugins.material.MaterialQueryIntegrityExeption;
 import fi.muikku.plugins.material.QueryFieldController;
+import fi.muikku.plugins.material.fieldmeta.Field;
 import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.material.model.QueryField;
-import fi.muikku.plugins.material.model.field.Field;
 import fi.muikku.plugins.workspace.events.WorkspaceMaterialCreateEvent;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 

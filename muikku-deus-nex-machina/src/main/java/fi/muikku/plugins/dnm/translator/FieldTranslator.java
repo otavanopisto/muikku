@@ -6,10 +6,10 @@ import java.util.List;
 import fi.muikku.plugins.dnm.parser.content.ConnectFieldOption;
 import fi.muikku.plugins.dnm.parser.content.OptionListOption;
 import fi.muikku.plugins.dnm.parser.content.RightAnswer;
-import fi.muikku.plugins.material.model.field.ConnectField;
-import fi.muikku.plugins.material.model.field.MemoField;
-import fi.muikku.plugins.material.model.field.SelectField;
-import fi.muikku.plugins.material.model.field.TextField;
+import fi.muikku.plugins.material.fieldmeta.ConnectField;
+import fi.muikku.plugins.material.fieldmeta.MemoField;
+import fi.muikku.plugins.material.fieldmeta.SelectField;
+import fi.muikku.plugins.material.fieldmeta.TextField;
 
 public class FieldTranslator {
   
