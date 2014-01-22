@@ -29,7 +29,7 @@ public class FieldTranslator {
     return result;
   }
   
-  public Object translateTextField(String name, Integer columns, List<RightAnswer> rightAnswers, String help, String hint) {
+  public TextField translateTextField(String name, Integer columns, List<RightAnswer> rightAnswers, String help, String hint) {
     List<TextField.RightAnswer> translatedAnswers = new ArrayList<>();
     for (fi.muikku.plugins.dnm.parser.content.RightAnswer rightAnswer : rightAnswers) {
       Double points;
@@ -47,7 +47,7 @@ public class FieldTranslator {
     return new MemoField(name, columns, rows, help, hint);
   }
   
-  public Object translateOptionList(String name, String listType, List<OptionListOption> options) {
+  public OptionListField translateOptionList(String name, String listType, List<OptionListOption> options) {
     List<OptionListField.Option> translatedOptions = new ArrayList<>();
     for (OptionListOption option : options) {
       translatedOptions.add(new OptionListField.Option(option.getName(), option.getPoints(), option.getText()));
@@ -55,7 +55,7 @@ public class FieldTranslator {
     return new OptionListField(name, listType, translatedOptions);
   }
   
-  public Object translateConnectField(String name, List<ConnectFieldOption> options) {
+  public ConnectField translateConnectField(String name, List<ConnectFieldOption> options) {
     
     List<ConnectField.Field> fields = new ArrayList<ConnectField.Field>();
     List<ConnectField.Field> counterparts = new ArrayList<ConnectField.Field>();;
