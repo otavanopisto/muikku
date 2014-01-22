@@ -12,8 +12,8 @@ import fi.muikku.plugins.material.MaterialFieldProcessor;
 import fi.muikku.plugins.material.QuerySelectFieldController;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.material.model.QuerySelectField;
-import fi.muikku.plugins.material.model.field.OptionListField;
-import fi.muikku.plugins.material.model.field.OptionListField.Option;
+import fi.muikku.plugins.material.model.field.SelectField;
+import fi.muikku.plugins.material.model.field.SelectField.Option;
 
 public class SelectFieldMaterialFieldProcessor implements MaterialFieldProcessor {
 
@@ -24,16 +24,16 @@ public class SelectFieldMaterialFieldProcessor implements MaterialFieldProcessor
   public void process(Material material, String content) throws JsonParseException, JsonMappingException, IOException {
     ObjectMapper objectMapper = new ObjectMapper();
     
-    OptionListField optionListField = objectMapper.readValue(content, OptionListField.class);
-    QuerySelectField querySelectField = querySelectFieldController.createQuerySelectField(material, optionListField.getName(), Boolean.FALSE);
-    for (Option option : optionListField.getOptions()) {
+    SelectField selectField = objectMapper.readValue(content, SelectField.class);
+    QuerySelectField querySelectField = querySelectFieldController.createQuerySelectField(material, selectField.getName(), Boolean.FALSE);
+    for (Option option : selectField.getOptions()) {
       querySelectFieldController.createSelectFieldOption(querySelectField, option.getName(), option.getText());
     }
   }
 
   @Override
   public String getType() {
-    return "application/vnd.muikku.field.option-list";
+    return "application/vnd.muikku.field.select";
   }
 
 }

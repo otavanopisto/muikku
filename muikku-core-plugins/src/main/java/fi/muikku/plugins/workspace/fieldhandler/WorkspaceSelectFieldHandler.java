@@ -17,13 +17,13 @@ import fi.muikku.plugins.material.MaterialQueryIntegrityExeption;
 import fi.muikku.plugins.material.QueryFieldController;
 import fi.muikku.plugins.material.model.QuerySelectField;
 import fi.muikku.plugins.material.model.QuerySelectFieldOption;
-import fi.muikku.plugins.material.model.field.OptionListField;
+import fi.muikku.plugins.material.model.field.SelectField;
 import fi.muikku.plugins.workspace.WorkspaceMaterialFieldAnswerController;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialSelectFieldAnswer;
 
-public class WorkspaceOptionListFieldHandler extends AbstractWorkspaceFieldHandler {
+public class WorkspaceSelectFieldHandler extends AbstractWorkspaceFieldHandler {
 
   @Inject
   private QueryFieldController queryFieldController;
@@ -33,14 +33,14 @@ public class WorkspaceOptionListFieldHandler extends AbstractWorkspaceFieldHandl
   
   @Override
   public String getType() {
-    return "application/vnd.muikku.field.option-list";
+    return "application/vnd.muikku.field.select";
   }
 
   @Override
   public void renderField(Document ownerDocument, Element objectElement, String content, WorkspaceMaterialField workspaceMaterialField,
       WorkspaceMaterialReply workspaceMaterialReply) throws JsonParseException, JsonMappingException, IOException {
 
-    OptionListField optionListField = (new ObjectMapper()).readValue(content, OptionListField.class);
+    SelectField selectField = (new ObjectMapper()).readValue(content, SelectField.class);
     
     String parameterName = getHtmlFieldName(workspaceMaterialField.getName());
     WorkspaceMaterialSelectFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialSelectFieldAnswerByQueryFieldAndReply(workspaceMaterialField, workspaceMaterialReply);
@@ -48,7 +48,7 @@ public class WorkspaceOptionListFieldHandler extends AbstractWorkspaceFieldHandl
     Element selectElement = ownerDocument.createElement("select");
     selectElement.setAttribute("name", parameterName);
     
-    for (OptionListField.Option option : optionListField.getOptions()) {
+    for (SelectField.Option option : selectField.getOptions()) {
       Element optionElement = ownerDocument.createElement("option");
       optionElement.setAttribute("value", option.getName());
       

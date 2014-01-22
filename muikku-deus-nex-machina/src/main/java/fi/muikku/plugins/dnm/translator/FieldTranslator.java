@@ -8,7 +8,7 @@ import fi.muikku.plugins.dnm.parser.content.OptionListOption;
 import fi.muikku.plugins.dnm.parser.content.RightAnswer;
 import fi.muikku.plugins.material.model.field.ConnectField;
 import fi.muikku.plugins.material.model.field.MemoField;
-import fi.muikku.plugins.material.model.field.OptionListField;
+import fi.muikku.plugins.material.model.field.SelectField;
 import fi.muikku.plugins.material.model.field.TextField;
 
 public class FieldTranslator {
@@ -47,12 +47,12 @@ public class FieldTranslator {
     return new MemoField(name, columns, rows, help, hint);
   }
   
-  public OptionListField translateOptionList(String name, String listType, List<OptionListOption> options) {
-    List<OptionListField.Option> translatedOptions = new ArrayList<>();
+  public SelectField translateOptionList(String name, String listType, List<OptionListOption> options) {
+    List<SelectField.Option> translatedOptions = new ArrayList<>();
     for (OptionListOption option : options) {
-      translatedOptions.add(new OptionListField.Option(option.getName(), option.getPoints(), option.getText()));
+      translatedOptions.add(new SelectField.Option(option.getName(), option.getPoints(), option.getText()));
     }
-    return new OptionListField(name, listType, translatedOptions);
+    return new SelectField(name, listType, translatedOptions);
   }
   
   public ConnectField translateConnectField(String name, List<ConnectFieldOption> options) {

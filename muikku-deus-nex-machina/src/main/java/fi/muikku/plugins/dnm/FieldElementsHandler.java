@@ -15,7 +15,11 @@ import fi.muikku.plugins.dnm.parser.content.OptionListOption;
 import fi.muikku.plugins.dnm.parser.content.RightAnswer;
 import fi.muikku.plugins.dnm.parser.structure.DeusNexDocument;
 import fi.muikku.plugins.dnm.translator.FieldTranslator;
+import fi.muikku.plugins.material.model.field.ConnectField;
+import fi.muikku.plugins.material.model.field.Field;
 import fi.muikku.plugins.material.model.field.MemoField;
+import fi.muikku.plugins.material.model.field.SelectField;
+import fi.muikku.plugins.material.model.field.TextField;
 
 class FieldElementsHandler implements DeusNexFieldElementHandler {
 
@@ -24,11 +28,11 @@ class FieldElementsHandler implements DeusNexFieldElementHandler {
     this.fieldTranslator = new FieldTranslator();
   }
 
-  private Element wrapWithObjectElement(org.w3c.dom.Document ownerDocument, String type, Element content, Object metadata) {
+  private Element wrapWithObjectElement(org.w3c.dom.Document ownerDocument, Element content, Field fieldMeta) {
     ObjectMapper objectMapper = new ObjectMapper();
     
     Element objectElement = ownerDocument.createElement("object");
-    objectElement.setAttribute("type", type);
+    objectElement.setAttribute("type", fieldMeta.getType());
 
     Element paramTypeElement = ownerDocument.createElement("param");
     paramTypeElement.setAttribute("name", "type");
@@ -37,7 +41,7 @@ class FieldElementsHandler implements DeusNexFieldElementHandler {
     Element paramContentElement = ownerDocument.createElement("param");
     paramContentElement.setAttribute("name", "content");
     try {
-      paramContentElement.setAttribute("value", objectMapper.writeValueAsString(metadata));
+      paramContentElement.setAttribute("value", objectMapper.writeValueAsString(fieldMeta));
     } catch (DOMException | IOException e) {
       e.printStackTrace();
     }
@@ -53,14 +57,14 @@ class FieldElementsHandler implements DeusNexFieldElementHandler {
   public Node handleTextField(org.w3c.dom.Document ownerDocument, String paramName, Integer columns, List<RightAnswer> rightAnswers, String help, String hint) {
     // TODO: This is just for show, real implementation depends on QueryMaterial implementation
    
-    Object textFieldData = fieldTranslator.translateTextField(paramName, columns, rightAnswers, help, hint);
+    TextField textFieldData = fieldTranslator.translateTextField(paramName, columns, rightAnswers, help, hint);
 
     Element inputElement = ownerDocument.createElement("input");
     inputElement.setAttribute("type", "text");
     inputElement.setAttribute("name", paramName);
     inputElement.setAttribute("size", String.valueOf(columns));
 
-    return wrapWithObjectElement(ownerDocument, "application/vnd.muikku.field.text", inputElement, textFieldData);
+    return wrapWithObjectElement(ownerDocument, inputElement, textFieldData);
   }
 
   @Override
@@ -76,14 +80,14 @@ class FieldElementsHandler implements DeusNexFieldElementHandler {
     textAreaElement.setAttribute("placeholder", help);
     textAreaElement.setAttribute("title", hint);
 
-    return wrapWithObjectElement(ownerDocument, fieldData.getType(), textAreaElement, fieldData);
+    return wrapWithObjectElement(ownerDocument, textAreaElement, fieldData);
   }
 
   @Override
   public Node handleOptionList(org.w3c.dom.Document ownerDocument, String paramName, String type, List<OptionListOption> options, String help, String hint) {
     // TODO: This is just for show, real implementation depends on QueryMaterial implementation
     
-    Object optionListFieldData = fieldTranslator.translateOptionList(paramName, type, options);
+    SelectField optionListFieldData = fieldTranslator.translateOptionList(paramName, type, options);
 
     Element selectElement = ownerDocument.createElement("select");
     selectElement.setAttribute("name", paramName);
@@ -95,12 +99,12 @@ class FieldElementsHandler implements DeusNexFieldElementHandler {
       selectElement.appendChild(optionElement);
     }
 
-    return wrapWithObjectElement(ownerDocument, "application/vnd.muikku.field.option-list", selectElement, optionListFieldData);
+    return wrapWithObjectElement(ownerDocument, selectElement, optionListFieldData);
   }
 
   @Override
   public Node handleConnectField(org.w3c.dom.Document ownerDocument, String paramName, List<ConnectFieldOption> options, String help, String hint) {
-    Object connectFieldData = fieldTranslator.translateConnectField(paramName, options);
+    ConnectField connectFieldData = fieldTranslator.translateConnectField(paramName, options);
 
     Element table = ownerDocument.createElement("table");
     Element tbody = ownerDocument.createElement("tbody");
@@ -127,7 +131,7 @@ class FieldElementsHandler implements DeusNexFieldElementHandler {
 
     table.appendChild(tbody);
 
-    return wrapWithObjectElement(ownerDocument, "application/vnd.muikku.field.connect", table, connectFieldData);
+    return wrapWithObjectElement(ownerDocument, table, connectFieldData);
   }
 
   @SuppressWarnings("unused")
