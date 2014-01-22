@@ -1,10 +1,13 @@
 package fi.muikku.rest.course;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -14,10 +17,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
+import fi.muikku.controller.messaging.MessagingWidget;
+import fi.muikku.i18n.LocaleController;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.model.workspace.WorkspaceRoleEntity;
+import fi.muikku.model.workspace.WorkspaceSettings;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.rest.AbstractRESTService;
+import fi.muikku.schooldata.RoleController;
 import fi.muikku.schooldata.UserController;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.User;
@@ -50,7 +58,17 @@ public class CourseRESTService extends AbstractRESTService {
   private UserController userController;
   
   @Inject
+  private RoleController roleController;
+  
+  @Inject
   private WorkspaceController workspaceController;
+  
+  @Inject
+  private LocaleController localeController;
+
+  @Inject
+  @Any
+  private Instance<MessagingWidget> messagingWidgets;
   
   @GET
   @Path ("/")
@@ -111,13 +129,32 @@ public class CourseRESTService extends AbstractRESTService {
     WorkspaceUserEntity workspaceUserEntity = workspaceController.findWorkspaceUserEntityByWorkspaceAndUser(workspaceEntity, userEntity);
         
     if (workspaceUserEntity == null) {
-      // TODO: Role
-      String roleSchoolDataSource = "MOCK";
-      String roleIdentifier = "5";
-      User user = userController.findUser(userEntity);
-      Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-      WorkspaceUser workspaceUser = workspaceController.createWorkspaceUser(workspace, user, roleSchoolDataSource, roleIdentifier);
+      WorkspaceSettings workspaceSettings = workspaceController.findWorkspaceSettings(workspaceEntity);
+      WorkspaceRoleEntity defaultWorkspaceUserRole = workspaceSettings.getDefaultWorkspaceUserRole();
+      WorkspaceUser workspaceUser = workspaceController.createWorkspaceUser(workspaceEntity, userEntity, defaultWorkspaceUserRole);
       workspaceUserEntity = workspaceController.findWorkspaceUserEntity(workspaceUser);
+
+      // TODO: should this work based on permission? Permission -> Roles -> Recipients
+      WorkspaceRoleEntity role = roleController.ROLE_WORKSPACE_TEACHER();
+      List<WorkspaceUserEntity> workspaceTeachers = workspaceController.listWorkspaceUserEntitiesByRole(workspaceEntity, role);
+      List<UserEntity> teachers = new ArrayList<UserEntity>();
+      
+      Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+      String workspaceName = workspace.getName();
+      
+      User user = userController.findUser(userEntity);
+      String userName = user.getFirstName() + " " + user.getLastName();
+      
+      for (WorkspaceUserEntity cu : workspaceTeachers)
+        teachers.add(cu.getUser());
+      
+      for (MessagingWidget messagingWidget : messagingWidgets) {
+        String caption = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.caption");
+        String content = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.content");
+        caption = MessageFormat.format(caption, workspaceName);
+        content = MessageFormat.format(content, userName, workspaceName);
+        messagingWidget.postMessage(userEntity, caption, content, teachers);
+      }
     }
     
     TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
@@ -185,9 +222,7 @@ public class CourseRESTService extends AbstractRESTService {
     public Collection<TranquilModelEntity> getValue(TranquilizingContext context) {
       WorkspaceEntity courseEntity = (WorkspaceEntity) context.getEntityValue();
       
-      // TODO Define teachers
-      
-      List<WorkspaceUserEntity> teachers = workspaceController.listWorkspaceUserEntities(courseEntity);
+      List<WorkspaceUserEntity> teachers = workspaceController.listWorkspaceUserEntitiesByRole(courseEntity, roleController.ROLE_WORKSPACE_TEACHER());
       List<UserEntity> teacherUserEntities = new ArrayList<UserEntity>();
       
       for (WorkspaceUserEntity cu : teachers)

@@ -337,29 +337,16 @@ $.fn.extend({
       var element = $(event.target);
       var replyAll = element.hasClass("cm-message-replyAllLink");
       
+      var element = $(event.target);
       element = element.parents(".cm-message-view");
       
+      var newMessageElement = element.find(".cm-replyMessage");
+
       var communicatorMessageId = element.find("input[name='communicatorMessageId']").val();
       var communicatorMessageIdId = element.find("input[name='communicatorMessageIdId']").val();
       var recipients = [];
       var templates = this._loadMessageTemplates();
       var signatures = this._loadMessageSignatures();
-      
-      if (replyAll) {
-        RESTful.doGet(CONTEXTPATH + "/rest/communicator/{userId}/communicatormessages/{messageId}/recipients", {
-          parameters: {
-            'userId': this._userId,
-            'messageId': communicatorMessageId
-          }
-        }).success(function (data, textStatus, jqXHR) {
-          for (var i = 0, l = data.length; i < l; i++) {
-            recipients.push({
-              'id': data[i].recipient,
-              'name': data[i].recipient_tq.fullName
-            });
-          }
-        });
-      }
 
       var subject = "";
       var content = "";
@@ -372,7 +359,7 @@ $.fn.extend({
         }
       }).success(function (data, textStatus, jqXHR) {
         subject = data.caption;
-        content = data.content;
+        content = "\n\n\n" + data.content;
         
         if (data.tags_tq.length > 0) {
           tags = data.tags_tq[0].text;
@@ -382,78 +369,112 @@ $.fn.extend({
           }
         }
         
-        if (!replyAll) {
-          recipients.push({
-            'id': data.sender_tq.id,
-            'name': data.sender_tq.fullName
-          });
-        }
+        recipients.push({
+          'id': data.sender_tq.id,
+          'name': data.sender_tq.fullName
+        });
       });
-      
-      var prms = {
-        communicatorMessageId: communicatorMessageIdId,
-        subject: subject,
-        content: content,
-        recipients: recipients,
-        templates: templates,
-        signatures: signatures,
-        tags: tags
-      };
-  
-      renderDustTemplate('communicator/communicator_replymessage.dust', prms, function (text) {
-        element.append($.parseHTML(text));
-        
-        _this._communicatorContent.find("input[name='send']").click($.proxy(_this._onPostReplyMessageClick, _this));
-        _this._communicatorContent.find("input[name='cancel']").click($.proxy(_this._onCancelReplyClick, _this));
-        _this._communicatorContent.find("input[name='userInput']").communicatorautocomplete({
-          source: function (request, response) {
-            response(_this._doSearch(request.term));
-          },
-          select: function (event, ui) {
-            _this._selectRecipient(event, ui.item);
-            $(this).val("");
-            return false;
+
+      if (replyAll) {
+        RESTful.doGet(CONTEXTPATH + "/rest/communicator/{userId}/communicatormessages/{messageId}/recipients", {
+          parameters: {
+            'userId': this._userId,
+            'messageId': communicatorMessageId
+          }
+        }).success(function (data, textStatus, jqXHR) {
+          for (var i = 0, l = data.length; i < l; i++) {
+            if (_this._userId != data[i].recipient) {
+              recipients.push({
+                'id': data[i].recipient,
+                'name': data[i].recipient_tq.fullName
+              });
+            }
           }
         });
+      }
 
-        _this._communicatorContent.find("input[name='tags']").bind("keydown", function(event) {
-          // don't navigate away from the field on tab when selecting an item
-          if (event.keyCode === $.ui.keyCode.TAB && $(this).data("ui-autocomplete").menu.active) {
-            event.preventDefault();
-          }
-        }).autocomplete({
-          source : function(request, response) {
-            var term = _this._extractLast(request.term);
-            response(_this._doSearchTags(term));
-          },
-          search : function() {
-            // custom minLength
-            var term = _this._extractLast(this.value);
-            if (term.length < 2) {
+      if (!newMessageElement.length) {
+        var prms = {
+          communicatorMessageId: communicatorMessageIdId,
+          subject: subject,
+          content: content,
+          recipients: recipients,
+          templates: templates,
+          signatures: signatures,
+          tags: tags
+        };
+    
+        renderDustTemplate('communicator/communicator_replymessage.dust', prms, function (text) {
+          element.append($.parseHTML(text));
+          
+          _this._communicatorContent.find("input[name='send']").click($.proxy(_this._onPostReplyMessageClick, _this));
+          _this._communicatorContent.find("input[name='cancel']").click($.proxy(_this._onCancelReplyClick, _this));
+          _this._communicatorContent.find("input[name='userInput']").communicatorautocomplete({
+            source: function (request, response) {
+              response(_this._doSearch(request.term));
+            },
+            select: function (event, ui) {
+              _this._selectRecipient(event, ui.item);
+              $(this).val("");
               return false;
             }
-          },
-          focus : function() {
-            // prevent value inserted on focus
-            return false;
-          },
-          select : function(event, ui) {
-            var terms = _this._split(this.value);
-            // remove the current input
-            terms.pop();
-            // add the selected item
-            terms.push(ui.item.value);
-            // add placeholder to get the comma-and-space at the end
-            terms.push("");
-            this.value = terms.join(", ");
-            return false;
-          }
+          });
+  
+          _this._communicatorContent.find("input[name='tags']").bind("keydown", function(event) {
+            // don't navigate away from the field on tab when selecting an item
+            if (event.keyCode === $.ui.keyCode.TAB && $(this).data("ui-autocomplete").menu.active) {
+              event.preventDefault();
+            }
+          }).autocomplete({
+            source : function(request, response) {
+              var term = _this._extractLast(request.term);
+              response(_this._doSearchTags(term));
+            },
+            search : function() {
+              // custom minLength
+              var term = _this._extractLast(this.value);
+              if (term.length < 2) {
+                return false;
+              }
+            },
+            focus : function() {
+              // prevent value inserted on focus
+              return false;
+            },
+            select : function(event, ui) {
+              var terms = _this._split(this.value);
+              // remove the current input
+              terms.pop();
+              // add the selected item
+              terms.push(ui.item.value);
+              // add placeholder to get the comma-and-space at the end
+              terms.push("");
+              this.value = terms.join(", ");
+              return false;
+            }
+          });
+  
+          _this._communicatorContent.find("select[name='templateSelector']").change($.proxy(_this._onSelectTemplate, _this));
+          _this._communicatorContent.find("select[name='signatureSelector']").change($.proxy(_this._onSelectSignature, _this));
+          _this._communicatorContent.find(".cm-newMessage-recipientsList").on("click", ".cm-newMessage-removeRecipient", $.proxy(_this._onRemoveRecipientClick, _this));
         });
+      } else {
+        
+        var recipientListElement = newMessageElement.find(".cm-newMessage-recipientsList");
 
-        _this._communicatorContent.find("select[name='templateSelector']").change($.proxy(_this._onSelectTemplate, _this));
-        _this._communicatorContent.find("select[name='signatureSelector']").change($.proxy(_this._onSelectSignature, _this));
-        _this._communicatorContent.find(".cm-newMessage-recipientsList").on("click", ".cm-newMessage-removeRecipient", $.proxy(_this._onRemoveRecipientClick, _this));
-      });
+        recipientListElement.children(".cm-newMessage-recipient").remove();
+        
+        for (var i = 0; i < recipients.length; i++) {
+//          var prms = {
+//            id: recipients[i].id,
+//            name: recipients[i].name
+//          };
+//  
+          renderDustTemplate('communicator/communicator_messagerecipient.dust', recipients[i], function (text) {
+            recipientListElement.append($.parseHTML(text));
+          });
+        }
+      }
       
       return false;
     },
