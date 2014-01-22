@@ -11,7 +11,10 @@ import javax.inject.Inject;
 import fi.muikku.controller.WidgetController;
 import fi.muikku.plugin.PersistencePluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
-import fi.muikku.plugins.workspace.fieldrendering.HtmlMaterialConnectFieldRenderer;
+import fi.muikku.plugins.workspace.fieldhandler.WorkspaceConnectFieldHandler;
+import fi.muikku.plugins.workspace.fieldhandler.WorkspaceMemoFieldHandler;
+import fi.muikku.plugins.workspace.fieldhandler.WorkspaceOptionListFieldHandler;
+import fi.muikku.plugins.workspace.fieldhandler.WorkspaceTextFieldHandler;
 import fi.muikku.plugins.workspace.dao.WorkspaceFolderDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialFieldDAO;
@@ -70,12 +73,6 @@ public class WorkspacePluginDescriptor implements PluginDescriptor, PersistenceP
 			WorkspaceBinaryMaterialHandler.class,
 			WorkspaceMaterialHandler.class,
 			
-			/* Workspace Field Persist Handlers */
-			
-			WorkspaceMaterialTextFieldAnswerPersistenceHandler.class,
-      WorkspaceMaterialSelectFieldAnswerPersistenceHandler.class,
-      WorkspaceMaterialConnectFieldAnswerPersistenceHandler.class,
-			
 			/* DAOs */
 			
 			WorkspaceRootFolderDAO.class,
@@ -87,9 +84,13 @@ public class WorkspacePluginDescriptor implements PluginDescriptor, PersistenceP
       WorkspaceMaterialSelectFieldAnswerDAO.class,
       WorkspaceMaterialFieldDAO.class,
       
-      /* Field Renderer */
+      /* Field Handlers */
       
-      HtmlMaterialConnectFieldRenderer.class,
+      WorkspaceTextFieldHandler.class,
+      WorkspaceMemoFieldHandler.class,
+      WorkspaceOptionListFieldHandler.class,
+      WorkspaceOptionListFieldHandler.class,
+      WorkspaceConnectFieldHandler.class,
       
       /* Listeners */
       

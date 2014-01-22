@@ -44,7 +44,7 @@ import fi.muikku.plugins.material.QueryFieldController;
 import fi.muikku.plugins.material.QueryTextFieldController;
 import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.material.model.field.Field;
-import fi.muikku.plugins.workspace.fieldrendering.HtmlMaterialFieldRenderer;
+import fi.muikku.plugins.workspace.fieldhandler.WorkspaceFieldHandler;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
@@ -66,7 +66,6 @@ import fi.muikku.session.SessionController;
 public class WorkspaceHtmlMaterialBackingBean {
   
   private static final String FORM_ID = "material-form"; 
-  private static final String FIELD_PREFIX = FORM_ID + ":queryform:";
   
 	@Inject
 	private WorkspaceController workspaceController;
@@ -101,12 +100,8 @@ public class WorkspaceHtmlMaterialBackingBean {
   
   @Any
   @Inject
-  private Instance<WorkspaceMaterialFieldAnswerPersistenceHandler> fieldPersistenceHandlers;
+  private Instance<WorkspaceFieldHandler> fieldHandlers;
   
-  @Inject
-  @Any
-  private Instance<HtmlMaterialFieldRenderer> fieldRenderers;
-	
 	@URLAction 
 	public void init() throws IOException, XPathExpressionException, SAXException, TransformerException, MaterialQueryPersistanceExeption, MaterialQueryIntegrityExeption {
 	  // TODO: Proper error handling
@@ -151,16 +146,6 @@ public class WorkspaceHtmlMaterialBackingBean {
 	    HtmlMaterial htmlMaterial = (HtmlMaterial) workspaceMaterial.getMaterial();
 	    Document processedHtmlDocument = htmlMaterialController.getProcessedHtmlDocument(htmlMaterial);
 	    renderDocumentFields(processedHtmlDocument);
-	    
-      List<WorkspaceMaterialField> workspaceMaterialFields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByWorkspaceMaterial(workspaceMaterial);
-      for (WorkspaceMaterialField workspaceMaterialField : workspaceMaterialFields) {
-        WorkspaceMaterialFieldAnswerPersistenceHandler fieldPersistenceHandler = getFieldPersistenceHandler(workspaceMaterialField);
-        if (fieldPersistenceHandler == null) {
-          throw new MaterialQueryPersistanceExeption("Field type " + workspaceMaterialField.getQueryField().getType() + " does not have a persistence handler");
-        }
-        
-        fieldPersistenceHandler.loadField(FIELD_PREFIX, processedHtmlDocument, workspaceMaterialReply, workspaceMaterialField);
-      }
       
 	    this.html = htmlMaterialController.getSerializedHtmlDocument(processedHtmlDocument, htmlMaterial);
 	  }
@@ -204,27 +189,15 @@ public class WorkspaceHtmlMaterialBackingBean {
     
     List<WorkspaceMaterialField> fields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByWorkspaceMaterial(workspaceMaterial);
     for (WorkspaceMaterialField field : fields) {
-      WorkspaceMaterialFieldAnswerPersistenceHandler fieldPersistenceHandler = getFieldPersistenceHandler(field);
-      if (fieldPersistenceHandler != null) {
-        fieldPersistenceHandler.persistField(FIELD_PREFIX, workspaceMaterialReply, field, requestParameterMap);
+      WorkspaceFieldHandler fieldHandler = getFieldHandler(field.getQueryField().getType());
+      if (fieldHandler != null) {
+        fieldHandler.persistField(workspaceMaterialReply, field, requestParameterMap);
       } else {
         throw new MaterialQueryPersistanceExeption("Field type " + field.getQueryField().getType() + " does not have a persistence handler");
       }
     }
     
     return "pretty:workspace-html-material";
-  }
-	
-  private WorkspaceMaterialFieldAnswerPersistenceHandler getFieldPersistenceHandler(WorkspaceMaterialField field) {
-    Iterator<WorkspaceMaterialFieldAnswerPersistenceHandler> iterator = fieldPersistenceHandlers.iterator();
-    while (iterator.hasNext()) {
-      WorkspaceMaterialFieldAnswerPersistenceHandler persistenceHandler = iterator.next();
-      if (persistenceHandler.getFieldType().equals(field.getQueryField().getType())) {
-        return persistenceHandler;
-      }
-    }
-    
-    return null;
   }
   
   private void renderDocumentFields(Document document) throws MaterialQueryIntegrityExeption, XPathExpressionException, JsonParseException, JsonMappingException, IOException {
@@ -240,15 +213,15 @@ public class WorkspaceHtmlMaterialBackingBean {
         String content = (String) XPathFactory.newInstance().newXPath().evaluate("PARAM[@name=\"content\"]/@value", objectElement, XPathConstants.STRING);
         String embedId = objectElement.getAttribute("data-embed-id");
       
-        HtmlMaterialFieldRenderer fieldRenderer = getFieldRenderer(type);
-        if (fieldRenderer != null) {
+        WorkspaceFieldHandler fieldHandler = getFieldHandler(type);
+        if (fieldHandler != null) {
           Field field = objectMapper.readValue(content, Field.class);
           String assignedName = workspaceMaterialFieldController.getAssignedFieldName(workspaceMaterial.getId().toString(), embedId, field.getName(), assignedNames);
           assignedNames.add(assignedName);
           String fieldName = DigestUtils.md5Hex(assignedName);
           WorkspaceMaterialField workspaceMaterialField = workspaceMaterialFieldController.findWorkspaceMaterialFieldByWorkspaceMaterialAndName(workspaceMaterial, fieldName);
           if (workspaceMaterialField != null) {
-            fieldRenderer.renderField(objectElement.getOwnerDocument(), objectElement, content, workspaceMaterialField);
+            fieldHandler.renderField(objectElement.getOwnerDocument(), objectElement, content, workspaceMaterialField, workspaceMaterialReply);
           } else {
             throw new MaterialQueryIntegrityExeption(workspaceMaterial.getId() + " does not contain field " + fieldName);
           }
@@ -257,12 +230,12 @@ public class WorkspaceHtmlMaterialBackingBean {
     }
   }
   
-  private HtmlMaterialFieldRenderer getFieldRenderer(String type) {
-    Iterator<HtmlMaterialFieldRenderer> fieldRendererIterator = fieldRenderers.iterator();
-    while (fieldRendererIterator.hasNext()) {
-      HtmlMaterialFieldRenderer fieldRenderer = fieldRendererIterator.next();
-      if (fieldRenderer.getType().equals(type)) {
-        return fieldRenderer;
+  private WorkspaceFieldHandler getFieldHandler(String type) {
+    Iterator<WorkspaceFieldHandler> fieldHandlerIterator = fieldHandlers.iterator();
+    while (fieldHandlerIterator.hasNext()) {
+      WorkspaceFieldHandler fieldHandler = fieldHandlerIterator.next();
+      if (fieldHandler.getType().equals(type)) {
+        return fieldHandler;
       }
     }
     

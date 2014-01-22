@@ -1,8 +1,7 @@
-package fi.muikku.plugins.workspace.fieldrendering;
+package fi.muikku.plugins.workspace.fieldhandler;
 
 import java.io.IOException;
-
-import javax.enterprise.context.RequestScoped;
+import java.util.Map;
 
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -11,11 +10,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import fi.muikku.plugins.material.MaterialQueryIntegrityExeption;
 import fi.muikku.plugins.material.model.field.ConnectField;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 
-@RequestScoped
-public class HtmlMaterialConnectFieldRenderer implements HtmlMaterialFieldRenderer {
+public class WorkspaceConnectFieldHandler implements WorkspaceFieldHandler {
 
   private static final int ALPHABET_SIZE = 26;
 
@@ -25,7 +25,9 @@ public class HtmlMaterialConnectFieldRenderer implements HtmlMaterialFieldRender
   }
 
   @Override
-  public void renderField(Document ownerDocument, Element objectElement, String content, WorkspaceMaterialField workspaceMaterialField) throws JsonParseException, JsonMappingException, IOException {
+  public void renderField(Document ownerDocument, Element objectElement, String content, WorkspaceMaterialField workspaceMaterialField,
+      WorkspaceMaterialReply workspaceMaterialReply) throws JsonParseException, JsonMappingException, IOException {
+
     ConnectField connectField = (new ObjectMapper()).readValue(content, ConnectField.class);
     
     Element tableElement = ownerDocument.createElement("table");
@@ -74,10 +76,15 @@ public class HtmlMaterialConnectFieldRenderer implements HtmlMaterialFieldRender
     }
     
     tableElement.appendChild(tbodyElement);
-    Node objectParent = objectElement.getParentNode();
     
+    Node objectParent = objectElement.getParentNode();
     objectParent.insertBefore(tableElement, objectElement);
     objectParent.removeChild(objectElement);
+  }
+
+  @Override
+  public void persistField(WorkspaceMaterialReply reply, WorkspaceMaterialField workspaceMaterialField, Map<String, String> requestParameterMap)
+      throws MaterialQueryIntegrityExeption {
   }
 
   private String getExcelStyleLetterIndex(int numericIndex) {   
@@ -93,5 +100,7 @@ public class HtmlMaterialConnectFieldRenderer implements HtmlMaterialFieldRender
     
     return result;
   }
+
+  
   
 }
