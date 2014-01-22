@@ -14,7 +14,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import fi.muikku.plugins.material.MaterialQueryIntegrityExeption;
-import fi.muikku.plugins.material.fieldmeta.TextField;
+import fi.muikku.plugins.material.fieldmeta.TextFieldMeta;
 import fi.muikku.plugins.workspace.WorkspaceMaterialFieldAnswerController;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
@@ -34,7 +34,7 @@ public class WorkspaceTextFieldHandler extends AbstractWorkspaceFieldHandler {
   public void renderField(Document ownerDocument, Element objectElement, String content, WorkspaceMaterialField workspaceMaterialField,
       WorkspaceMaterialReply workspaceMaterialReply) throws JsonParseException, JsonMappingException, IOException {
 
-    TextField textField = (new ObjectMapper()).readValue(content, TextField.class);
+    TextFieldMeta textFieldMeta = (new ObjectMapper()).readValue(content, TextFieldMeta.class);
     
     String parameterName = getHtmlFieldName(workspaceMaterialField.getName());
     String value = null;
@@ -48,9 +48,9 @@ public class WorkspaceTextFieldHandler extends AbstractWorkspaceFieldHandler {
     inputElement.setAttribute("class", "muikku-text-field");
     inputElement.setAttribute("type", "text");
     inputElement.setAttribute("name", parameterName);
-    inputElement.setAttribute("size", String.valueOf(textField.getColumns()));
-    inputElement.setAttribute("placeholder", textField.getHelp());
-    inputElement.setAttribute("title", textField.getHint());
+    inputElement.setAttribute("size", String.valueOf(textFieldMeta.getColumns()));
+    inputElement.setAttribute("placeholder", textFieldMeta.getHelp());
+    inputElement.setAttribute("title", textFieldMeta.getHint());
     inputElement.setAttribute("value", value);
     
     Node objectParent = objectElement.getParentNode();

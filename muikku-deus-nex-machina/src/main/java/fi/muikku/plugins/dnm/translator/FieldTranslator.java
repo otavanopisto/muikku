@@ -6,10 +6,10 @@ import java.util.List;
 import fi.muikku.plugins.dnm.parser.content.ConnectFieldOption;
 import fi.muikku.plugins.dnm.parser.content.OptionListOption;
 import fi.muikku.plugins.dnm.parser.content.RightAnswer;
-import fi.muikku.plugins.material.fieldmeta.ConnectField;
-import fi.muikku.plugins.material.fieldmeta.MemoField;
-import fi.muikku.plugins.material.fieldmeta.SelectField;
-import fi.muikku.plugins.material.fieldmeta.TextField;
+import fi.muikku.plugins.material.fieldmeta.ConnectFieldMeta;
+import fi.muikku.plugins.material.fieldmeta.MemoFieldMeta;
+import fi.muikku.plugins.material.fieldmeta.SelectFieldMeta;
+import fi.muikku.plugins.material.fieldmeta.TextFieldMeta;
 
 public class FieldTranslator {
   
@@ -29,8 +29,8 @@ public class FieldTranslator {
     return result;
   }
   
-  public TextField translateTextField(String name, Integer columns, List<RightAnswer> rightAnswers, String help, String hint) {
-    List<TextField.RightAnswer> translatedAnswers = new ArrayList<>();
+  public TextFieldMeta translateTextField(String name, Integer columns, List<RightAnswer> rightAnswers, String help, String hint) {
+    List<TextFieldMeta.RightAnswer> translatedAnswers = new ArrayList<>();
     for (fi.muikku.plugins.dnm.parser.content.RightAnswer rightAnswer : rightAnswers) {
       Double points;
       if (rightAnswer.getPoints() == null) {
@@ -38,28 +38,28 @@ public class FieldTranslator {
       } else {
         points = rightAnswer.getPoints();
       }
-      translatedAnswers.add(new TextField.RightAnswer(points, rightAnswer.getText(), true, false));
+      translatedAnswers.add(new TextFieldMeta.RightAnswer(points, rightAnswer.getText(), true, false));
     }
-    return new TextField(name, columns, translatedAnswers, help, hint);
+    return new TextFieldMeta(name, columns, translatedAnswers, help, hint);
   }
 
-  public MemoField translateMemoField(String name, Integer columns, Integer rows, String help, String hint) {
-    return new MemoField(name, columns, rows, help, hint);
+  public MemoFieldMeta translateMemoField(String name, Integer columns, Integer rows, String help, String hint) {
+    return new MemoFieldMeta(name, columns, rows, help, hint);
   }
   
-  public SelectField translateOptionList(String name, String listType, List<OptionListOption> options) {
-    List<SelectField.Option> translatedOptions = new ArrayList<>();
+  public SelectFieldMeta translateOptionList(String name, String listType, List<OptionListOption> options) {
+    List<SelectFieldMeta.Option> translatedOptions = new ArrayList<>();
     for (OptionListOption option : options) {
-      translatedOptions.add(new SelectField.Option(option.getName(), option.getPoints(), option.getText()));
+      translatedOptions.add(new SelectFieldMeta.Option(option.getName(), option.getPoints(), option.getText()));
     }
-    return new SelectField(name, listType, translatedOptions);
+    return new SelectFieldMeta(name, listType, translatedOptions);
   }
   
-  public ConnectField translateConnectField(String name, List<ConnectFieldOption> options) {
+  public ConnectFieldMeta translateConnectField(String name, List<ConnectFieldOption> options) {
     
-    List<ConnectField.Field> fields = new ArrayList<ConnectField.Field>();
-    List<ConnectField.Field> counterparts = new ArrayList<ConnectField.Field>();;
-    List<ConnectField.Connection> connections = new ArrayList<>();
+    List<ConnectFieldMeta.Field> fields = new ArrayList<ConnectFieldMeta.Field>();
+    List<ConnectFieldMeta.Field> counterparts = new ArrayList<ConnectFieldMeta.Field>();;
+    List<ConnectFieldMeta.Connection> connections = new ArrayList<>();
     
     for (int i = 0; i < options.size(); i++) {
       
@@ -67,11 +67,11 @@ public class FieldTranslator {
       String fieldName = String.valueOf(i+1);
       String counterpartName = getExcelStyleLetterIndex(i);
       
-      fields.add(new ConnectField.Field(fieldName, option.getTerm()));
-      counterparts.add(new ConnectField.Field(counterpartName, option.getEquivalent()));
-      connections.add(new ConnectField.Connection(fieldName, option.getAnswer()));
+      fields.add(new ConnectFieldMeta.Field(fieldName, option.getTerm()));
+      counterparts.add(new ConnectFieldMeta.Field(counterpartName, option.getEquivalent()));
+      connections.add(new ConnectFieldMeta.Connection(fieldName, option.getAnswer()));
     }
     
-    return new ConnectField(name, fields, counterparts, connections);
+    return new ConnectFieldMeta(name, fields, counterparts, connections);
   }
 }

@@ -15,7 +15,7 @@ import org.w3c.dom.Node;
 
 import fi.muikku.plugins.material.MaterialQueryIntegrityExeption;
 import fi.muikku.plugins.material.QueryFieldController;
-import fi.muikku.plugins.material.fieldmeta.SelectField;
+import fi.muikku.plugins.material.fieldmeta.SelectFieldMeta;
 import fi.muikku.plugins.material.model.QuerySelectField;
 import fi.muikku.plugins.material.model.QuerySelectFieldOption;
 import fi.muikku.plugins.workspace.WorkspaceMaterialFieldAnswerController;
@@ -40,7 +40,7 @@ public class WorkspaceSelectFieldHandler extends AbstractWorkspaceFieldHandler {
   public void renderField(Document ownerDocument, Element objectElement, String content, WorkspaceMaterialField workspaceMaterialField,
       WorkspaceMaterialReply workspaceMaterialReply) throws JsonParseException, JsonMappingException, IOException {
 
-    SelectField selectField = (new ObjectMapper()).readValue(content, SelectField.class);
+    SelectFieldMeta selectFieldMeta = (new ObjectMapper()).readValue(content, SelectFieldMeta.class);
     
     String parameterName = getHtmlFieldName(workspaceMaterialField.getName());
     WorkspaceMaterialSelectFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialSelectFieldAnswerByQueryFieldAndReply(workspaceMaterialField, workspaceMaterialReply);
@@ -48,7 +48,7 @@ public class WorkspaceSelectFieldHandler extends AbstractWorkspaceFieldHandler {
     Element selectElement = ownerDocument.createElement("select");
     selectElement.setAttribute("name", parameterName);
     
-    for (SelectField.Option option : selectField.getOptions()) {
+    for (SelectFieldMeta.Option option : selectFieldMeta.getOptions()) {
       Element optionElement = ownerDocument.createElement("option");
       optionElement.setAttribute("value", option.getName());
       

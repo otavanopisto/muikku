@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
-public class ConnectField extends Field {
+public class ConnectFieldMeta extends FieldMeta {
 
   public static class Field {
 
@@ -68,11 +68,11 @@ public class ConnectField extends Field {
     private String counterpart;
   }
 
-  public ConnectField() {
+  public ConnectFieldMeta() {
 
   }
 
-  public ConnectField(String name, List<Field> fields, List<Field> counterparts, List<Connection> connections) {
+  public ConnectFieldMeta(String name, List<Field> fields, List<Field> counterparts, List<Connection> connections) {
     super(name);
     this.setFields(fields);
     this.setCounterparts(counterparts);

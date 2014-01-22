@@ -2,13 +2,13 @@ package fi.muikku.plugins.material.fieldmeta;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
-public class MemoField extends Field {
+public class MemoFieldMeta extends FieldMeta {
   
-  public MemoField() {
+  public MemoFieldMeta() {
     
   }
   
-  public MemoField(String name, Integer columns, Integer rows, String help, String hint) {
+  public MemoFieldMeta(String name, Integer columns, Integer rows, String help, String hint) {
     super(name);
     this.columns = columns;
     this.rows = rows;

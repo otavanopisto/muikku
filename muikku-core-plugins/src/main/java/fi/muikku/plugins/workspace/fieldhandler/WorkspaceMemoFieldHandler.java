@@ -11,7 +11,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import fi.muikku.plugins.material.MaterialQueryIntegrityExeption;
-import fi.muikku.plugins.material.fieldmeta.MemoField;
+import fi.muikku.plugins.material.fieldmeta.MemoFieldMeta;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 
@@ -26,14 +26,14 @@ public class WorkspaceMemoFieldHandler implements WorkspaceFieldHandler {
   public void renderField(Document ownerDocument, Element objectElement, String content, WorkspaceMaterialField workspaceMaterialField,
       WorkspaceMaterialReply workspaceMaterialReply) throws JsonParseException, JsonMappingException, IOException {
 
-    MemoField memoField = (new ObjectMapper()).readValue(content, MemoField.class);
+    MemoFieldMeta memoFieldMeta = (new ObjectMapper()).readValue(content, MemoFieldMeta.class);
     
     Element textAreaElement = ownerDocument.createElement("textarea");
-    textAreaElement.setAttribute("name", memoField.getName());
-    textAreaElement.setAttribute("cols", String.valueOf(memoField.getColumns()));
-    textAreaElement.setAttribute("rows", String.valueOf(memoField.getRows()));
-    textAreaElement.setAttribute("placeholder", memoField.getHelp());
-    textAreaElement.setAttribute("title", memoField.getHint());
+    textAreaElement.setAttribute("name", memoFieldMeta.getName());
+    textAreaElement.setAttribute("cols", String.valueOf(memoFieldMeta.getColumns()));
+    textAreaElement.setAttribute("rows", String.valueOf(memoFieldMeta.getRows()));
+    textAreaElement.setAttribute("placeholder", memoFieldMeta.getHelp());
+    textAreaElement.setAttribute("title", memoFieldMeta.getHint());
     
     Node objectParent = objectElement.getParentNode();
     objectParent.insertBefore(textAreaElement, objectElement);

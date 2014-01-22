@@ -15,11 +15,11 @@ import fi.muikku.plugins.dnm.parser.content.OptionListOption;
 import fi.muikku.plugins.dnm.parser.content.RightAnswer;
 import fi.muikku.plugins.dnm.parser.structure.DeusNexDocument;
 import fi.muikku.plugins.dnm.translator.FieldTranslator;
-import fi.muikku.plugins.material.fieldmeta.ConnectField;
-import fi.muikku.plugins.material.fieldmeta.Field;
-import fi.muikku.plugins.material.fieldmeta.MemoField;
-import fi.muikku.plugins.material.fieldmeta.SelectField;
-import fi.muikku.plugins.material.fieldmeta.TextField;
+import fi.muikku.plugins.material.fieldmeta.ConnectFieldMeta;
+import fi.muikku.plugins.material.fieldmeta.FieldMeta;
+import fi.muikku.plugins.material.fieldmeta.MemoFieldMeta;
+import fi.muikku.plugins.material.fieldmeta.SelectFieldMeta;
+import fi.muikku.plugins.material.fieldmeta.TextFieldMeta;
 
 class FieldElementsHandler implements DeusNexFieldElementHandler {
 
@@ -28,7 +28,7 @@ class FieldElementsHandler implements DeusNexFieldElementHandler {
     this.fieldTranslator = new FieldTranslator();
   }
 
-  private Element wrapWithObjectElement(org.w3c.dom.Document ownerDocument, Element content, Field fieldMeta) {
+  private Element wrapWithObjectElement(org.w3c.dom.Document ownerDocument, Element content, FieldMeta fieldMeta) {
     ObjectMapper objectMapper = new ObjectMapper();
     
     Element objectElement = ownerDocument.createElement("object");
@@ -57,7 +57,7 @@ class FieldElementsHandler implements DeusNexFieldElementHandler {
   public Node handleTextField(org.w3c.dom.Document ownerDocument, String paramName, Integer columns, List<RightAnswer> rightAnswers, String help, String hint) {
     // TODO: This is just for show, real implementation depends on QueryMaterial implementation
    
-    TextField textFieldData = fieldTranslator.translateTextField(paramName, columns, rightAnswers, help, hint);
+    TextFieldMeta textFieldData = fieldTranslator.translateTextField(paramName, columns, rightAnswers, help, hint);
 
     Element inputElement = ownerDocument.createElement("input");
     inputElement.setAttribute("type", "text");
@@ -71,7 +71,7 @@ class FieldElementsHandler implements DeusNexFieldElementHandler {
   public Node handleMemoField(Document ownerDocument, String paramName, Integer columns, Integer rows, String help, String hint) {
     // TODO: This is just for show, real implementation depends on QueryMaterial implementation
     
-    MemoField fieldData = fieldTranslator.translateMemoField(paramName, columns, rows, help, hint);
+    MemoFieldMeta fieldData = fieldTranslator.translateMemoField(paramName, columns, rows, help, hint);
 
     Element textAreaElement = ownerDocument.createElement("textarea");
     textAreaElement.setAttribute("name", paramName);
@@ -87,7 +87,7 @@ class FieldElementsHandler implements DeusNexFieldElementHandler {
   public Node handleOptionList(org.w3c.dom.Document ownerDocument, String paramName, String type, List<OptionListOption> options, String help, String hint) {
     // TODO: This is just for show, real implementation depends on QueryMaterial implementation
     
-    SelectField optionListFieldData = fieldTranslator.translateOptionList(paramName, type, options);
+    SelectFieldMeta optionListFieldData = fieldTranslator.translateOptionList(paramName, type, options);
 
     Element selectElement = ownerDocument.createElement("select");
     selectElement.setAttribute("name", paramName);
@@ -104,7 +104,7 @@ class FieldElementsHandler implements DeusNexFieldElementHandler {
 
   @Override
   public Node handleConnectField(org.w3c.dom.Document ownerDocument, String paramName, List<ConnectFieldOption> options, String help, String hint) {
-    ConnectField connectFieldData = fieldTranslator.translateConnectField(paramName, options);
+    ConnectFieldMeta connectFieldData = fieldTranslator.translateConnectField(paramName, options);
 
     Element table = ownerDocument.createElement("table");
     Element tbody = ownerDocument.createElement("tbody");

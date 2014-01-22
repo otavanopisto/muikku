@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
-public class SelectField extends Field {
+public class SelectFieldMeta extends FieldMeta {
   
   public static class Option {
     public Option() {
@@ -34,11 +34,11 @@ public class SelectField extends Field {
     private String text;
   }
   
-  public SelectField() {
+  public SelectFieldMeta() {
     
   }
 
-  public SelectField(String name, String listType, List<Option> options) {
+  public SelectFieldMeta(String name, String listType, List<Option> options) {
     super(name);
     this.setOptions(options);
     this.setListType(listType);

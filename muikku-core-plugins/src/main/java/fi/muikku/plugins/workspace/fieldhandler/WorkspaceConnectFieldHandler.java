@@ -11,7 +11,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import fi.muikku.plugins.material.MaterialQueryIntegrityExeption;
-import fi.muikku.plugins.material.fieldmeta.ConnectField;
+import fi.muikku.plugins.material.fieldmeta.ConnectFieldMeta;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 
@@ -28,15 +28,15 @@ public class WorkspaceConnectFieldHandler implements WorkspaceFieldHandler {
   public void renderField(Document ownerDocument, Element objectElement, String content, WorkspaceMaterialField workspaceMaterialField,
       WorkspaceMaterialReply workspaceMaterialReply) throws JsonParseException, JsonMappingException, IOException {
 
-    ConnectField connectField = (new ObjectMapper()).readValue(content, ConnectField.class);
+    ConnectFieldMeta connectFieldMeta = (new ObjectMapper()).readValue(content, ConnectFieldMeta.class);
     
     Element tableElement = ownerDocument.createElement("table");
     tableElement.setAttribute("class", "muikku-connect-field-table");
 
     Element tbodyElement = ownerDocument.createElement("tbody");
     
-    int fieldsSize = connectField.getFields().size();
-    int counterpartsSize = connectField.getCounterparts().size();
+    int fieldsSize = connectFieldMeta.getFields().size();
+    int counterpartsSize = connectFieldMeta.getCounterparts().size();
     int rowCount = Math.max(fieldsSize, counterpartsSize);
     
     for (int rowIndex = 0; rowIndex < rowCount; rowIndex++) {
@@ -46,8 +46,8 @@ public class WorkspaceConnectFieldHandler implements WorkspaceFieldHandler {
       Element tdCounterpartElement = ownerDocument.createElement("td");
       Element inputElement = ownerDocument.createElement("input");
       
-      fi.muikku.plugins.material.fieldmeta.ConnectField.Field field = rowIndex < fieldsSize ? connectField.getFields().get(rowIndex) : null;
-      fi.muikku.plugins.material.fieldmeta.ConnectField.Field counterpart = rowIndex < counterpartsSize ? connectField.getCounterparts().get(rowIndex) : null;
+      fi.muikku.plugins.material.fieldmeta.ConnectFieldMeta.Field field = rowIndex < fieldsSize ? connectFieldMeta.getFields().get(rowIndex) : null;
+      fi.muikku.plugins.material.fieldmeta.ConnectFieldMeta.Field counterpart = rowIndex < counterpartsSize ? connectFieldMeta.getCounterparts().get(rowIndex) : null;
 
       tdTermElement.setAttribute("class", "muikku-connect-field-term-cell");
       tdValueElement.setAttribute("class", "muikku-connect-field-value-cell");

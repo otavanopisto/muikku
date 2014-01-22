@@ -1,11 +1,11 @@
 package fi.muikku.plugins.material.fieldmeta;
 
-public class Field {
+public class FieldMeta {
   
-  public Field() {
+  public FieldMeta() {
   }
   
-  public Field(String name) {
+  public FieldMeta(String name) {
     this.name = name;
   }
 

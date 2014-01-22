@@ -10,8 +10,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import fi.muikku.plugins.material.MaterialFieldProcessor;
 import fi.muikku.plugins.material.QuerySelectFieldController;
-import fi.muikku.plugins.material.fieldmeta.SelectField;
-import fi.muikku.plugins.material.fieldmeta.SelectField.Option;
+import fi.muikku.plugins.material.fieldmeta.SelectFieldMeta;
+import fi.muikku.plugins.material.fieldmeta.SelectFieldMeta.Option;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.material.model.QuerySelectField;
 
@@ -24,9 +24,9 @@ public class SelectFieldMaterialFieldProcessor implements MaterialFieldProcessor
   public void process(Material material, String content) throws JsonParseException, JsonMappingException, IOException {
     ObjectMapper objectMapper = new ObjectMapper();
     
-    SelectField selectField = objectMapper.readValue(content, SelectField.class);
-    QuerySelectField querySelectField = querySelectFieldController.createQuerySelectField(material, selectField.getName(), Boolean.FALSE);
-    for (Option option : selectField.getOptions()) {
+    SelectFieldMeta selectFieldMeta = objectMapper.readValue(content, SelectFieldMeta.class);
+    QuerySelectField querySelectField = querySelectFieldController.createQuerySelectField(material, selectFieldMeta.getName(), Boolean.FALSE);
+    for (Option option : selectFieldMeta.getOptions()) {
       querySelectFieldController.createSelectFieldOption(querySelectField, option.getName(), option.getText());
     }
   }

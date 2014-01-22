@@ -27,7 +27,7 @@ import fi.muikku.plugins.material.HtmlMaterialController;
 import fi.muikku.plugins.material.MaterialController;
 import fi.muikku.plugins.material.MaterialQueryIntegrityExeption;
 import fi.muikku.plugins.material.QueryFieldController;
-import fi.muikku.plugins.material.fieldmeta.Field;
+import fi.muikku.plugins.material.fieldmeta.FieldMeta;
 import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.material.model.QueryField;
@@ -69,7 +69,7 @@ public class WorkspaceMaterialCreateListener {
             String content = (String) XPathFactory.newInstance().newXPath().evaluate("PARAM[@name=\"content\"]/@value", objectElement, XPathConstants.STRING);
             String embedId = objectElement.getAttribute("data-embed-id");
             Material fieldMaterial = null;
-            Field field = objectMapper.readValue(content, Field.class);
+            FieldMeta fieldMeta = objectMapper.readValue(content, FieldMeta.class);
             
             if (StringUtils.isNotBlank(embedId)) {
               String[] embedIds = embedId.split(":");
@@ -82,8 +82,8 @@ public class WorkspaceMaterialCreateListener {
               throw new MaterialQueryIntegrityExeption("EmbedId " + embedId + " points to non-existing material");
             }
             
-            QueryField queryField = queryFieldController.findQueryFieldByMaterialAndName(fieldMaterial, field.getName());
-            String assignedName = workspaceMaterialFieldController.getAssignedFieldName(workspaceMaterial.getId().toString(), embedId, field.getName(), assignedNames);
+            QueryField queryField = queryFieldController.findQueryFieldByMaterialAndName(fieldMaterial, fieldMeta.getName());
+            String assignedName = workspaceMaterialFieldController.getAssignedFieldName(workspaceMaterial.getId().toString(), embedId, fieldMeta.getName(), assignedNames);
             assignedNames.add(assignedName);
             String fieldName = DigestUtils.md5Hex(assignedName);
             

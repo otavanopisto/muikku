@@ -10,7 +10,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import fi.muikku.plugins.material.MaterialFieldProcessor;
 import fi.muikku.plugins.material.QueryTextFieldController;
-import fi.muikku.plugins.material.fieldmeta.TextField;
+import fi.muikku.plugins.material.fieldmeta.TextFieldMeta;
 import fi.muikku.plugins.material.model.Material;
 
 public class TextFieldMaterialFieldProcessor implements MaterialFieldProcessor {
@@ -21,8 +21,8 @@ public class TextFieldMaterialFieldProcessor implements MaterialFieldProcessor {
   @Override
   public void process(Material material, String content) throws JsonParseException, JsonMappingException, IOException {
     ObjectMapper objectMapper = new ObjectMapper();
-    TextField textField = objectMapper.readValue(content, TextField.class);
-    queryTextFieldController.createQueryTextField(material, textField.getName(), Boolean.FALSE);
+    TextFieldMeta textFieldMeta = objectMapper.readValue(content, TextFieldMeta.class);
+    queryTextFieldController.createQueryTextField(material, textFieldMeta.getName(), Boolean.FALSE);
   }
 
   @Override

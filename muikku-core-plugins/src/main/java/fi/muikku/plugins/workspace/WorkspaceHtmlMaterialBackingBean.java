@@ -42,7 +42,7 @@ import fi.muikku.plugins.material.MaterialQueryIntegrityExeption;
 import fi.muikku.plugins.material.MaterialQueryPersistanceExeption;
 import fi.muikku.plugins.material.QueryFieldController;
 import fi.muikku.plugins.material.QueryTextFieldController;
-import fi.muikku.plugins.material.fieldmeta.Field;
+import fi.muikku.plugins.material.fieldmeta.FieldMeta;
 import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.workspace.fieldhandler.WorkspaceFieldHandler;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
@@ -215,8 +215,8 @@ public class WorkspaceHtmlMaterialBackingBean {
       
         WorkspaceFieldHandler fieldHandler = getFieldHandler(type);
         if (fieldHandler != null) {
-          Field field = objectMapper.readValue(content, Field.class);
-          String assignedName = workspaceMaterialFieldController.getAssignedFieldName(workspaceMaterial.getId().toString(), embedId, field.getName(), assignedNames);
+          FieldMeta fieldMeta = objectMapper.readValue(content, FieldMeta.class);
+          String assignedName = workspaceMaterialFieldController.getAssignedFieldName(workspaceMaterial.getId().toString(), embedId, fieldMeta.getName(), assignedNames);
           assignedNames.add(assignedName);
           String fieldName = DigestUtils.md5Hex(assignedName);
           WorkspaceMaterialField workspaceMaterialField = workspaceMaterialFieldController.findWorkspaceMaterialFieldByWorkspaceMaterialAndName(workspaceMaterial, fieldName);

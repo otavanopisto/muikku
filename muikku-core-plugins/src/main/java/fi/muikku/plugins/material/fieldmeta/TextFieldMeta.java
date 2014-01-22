@@ -4,7 +4,7 @@ package fi.muikku.plugins.material.fieldmeta;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
 
-public class TextField extends Field {
+public class TextFieldMeta extends FieldMeta {
   
   public static class RightAnswer {
     
@@ -54,11 +54,11 @@ public class TextField extends Field {
     private boolean normalizeWhitespace;
   }
   
-  public TextField() {
+  public TextFieldMeta() {
     
   }
 
-  public TextField(String name, Integer columns, List<RightAnswer> rightAnswers, String help, String hint) {
+  public TextFieldMeta(String name, Integer columns, List<RightAnswer> rightAnswers, String help, String hint) {
     super(name);
     this.setRightAnswers(rightAnswers);
     this.setColumns(columns);
