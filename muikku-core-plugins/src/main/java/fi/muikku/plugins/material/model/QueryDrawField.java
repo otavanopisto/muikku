@@ -32,7 +32,7 @@ public class QueryDrawField extends QueryField {
   @Transient
   @Override
   public String getType() {
-    return "draw";
+    return "application/vnd.muikku.field.draw";
   }
 
   @NotEmpty

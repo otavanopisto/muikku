@@ -11,7 +11,7 @@ public class QuerySelectField extends QueryField {
   @Transient
   @Override
   public String getType() {
-    return "select";
+    return "application/vnd.muikku.field.select";
   }
   
 }

@@ -11,7 +11,7 @@ public class QueryConnectField extends QueryField {
   @Transient
   @Override
   public String getType() {
-    return "connect";
+    return "application/vnd.muikku.field.connect";
   }
   
 }

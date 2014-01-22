@@ -11,7 +11,7 @@ public class QueryTextField extends QueryField {
   @Transient
   @Override
   public String getType() {
-    return "text";
+    return "application/vnd.muikku.field.text";
   }
   
 }
