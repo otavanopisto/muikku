@@ -43,7 +43,7 @@ public class QueryConnectFieldTermDAO extends PluginDAO<QueryConnectFieldTerm> {
     return entityManager.createQuery(criteria).getResultList();
   }
 
-  public QueryConnectFieldTerm findBySelectFieldAndName(QueryConnectField connectField, String name) {
+  public QueryConnectFieldTerm findByFieldAndName(QueryConnectField connectField, String name) {
     EntityManager entityManager = getEntityManager();
 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
