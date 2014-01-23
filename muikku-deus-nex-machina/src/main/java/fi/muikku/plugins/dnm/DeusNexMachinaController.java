@@ -74,7 +74,7 @@ public class DeusNexMachinaController {
   			iframeElement.setTextContent("Browser does not support iframes");
   			return iframeElement;
   		} else {
-  			System.out.println("Warning: Embedded document " + resourceNo + " could not be found.");
+  		  logger.warning("Embedded document " + resourceNo + " could not be found.");
   		}
   		
   		return null;
@@ -94,7 +94,7 @@ public class DeusNexMachinaController {
   			imgElement.setAttribute("align", align);
   			return imgElement;
   		} else {
-  			System.out.println("Warning: Embedded image " + resourceNo + " could not be found.");
+  		  logger.warning("Embedded image " + resourceNo + " could not be found.");
   		}
   
   		return null;
@@ -112,7 +112,7 @@ public class DeusNexMachinaController {
     			sourceElement.setAttribute("src", path + "?embed=true");
     			sourceElement.setAttribute("type", contentType);
   			} else {
-  				System.out.println("Warning: Embedded audio " + resourceNo + " content type could not be resolved.");
+  			  logger.warning("Embedded audio " + resourceNo + " content type could not be resolved.");
   			}
   			
   			if (autoStart) {
@@ -125,7 +125,7 @@ public class DeusNexMachinaController {
   
   			return audioElement;
   		} else {
-  			System.out.println("Warning: Embedded audio " + resourceNo + " could not be found.");
+  		  logger.warning("Embedded audio " + resourceNo + " could not be found.");
   		}
   
   		return null;
@@ -145,7 +145,7 @@ public class DeusNexMachinaController {
         
         return hyperLinkElement;
       } else {
-        System.out.println("Warning: Embedded hyperlink " + resourceNo + " could not be found.");
+        logger.warning("Embedded hyperlink " + resourceNo + " could not be found.");
       }
   
       return null;
@@ -156,20 +156,20 @@ public class DeusNexMachinaController {
   		String path = null;
   		String type = null;
   		
-  		Resource resource = deusNexDocument.getResourceByNo(resourceNo);
-  		if (resource != null) {
-  			path = contextPath + WorkspaceMaterialUtils.getCompletePath(rootFolder) + "/materials/" + DeusNexDocumentUtils.getRelativePath(deusNexDocument, resource, deusNexDocument.getRootFolder()); 
-  			type = "DND";
+  		Long workspaceNodeId = getResourceWorkspaceNodeId(resourceNo);
+  		if (workspaceNodeId != null) {
+  		  // Resource has been imported before
+  		  WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceNodeId);
+  		  if (workspaceMaterial != null) {
+  		    path = contextPath + WorkspaceMaterialUtils.getCompletePath(workspaceMaterial);
+  		    type = "POOL";
+  		  } 
   		} else {
-  			Long workspaceNodeId = getResourceWorkspaceNodeId(resourceNo);
-  			if (workspaceNodeId != null) {
-  				// Resource has been imported before
-  				WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceNodeId);
-  				if (workspaceMaterial != null) {
-  					path = contextPath + WorkspaceMaterialUtils.getCompletePath(workspaceMaterial);
-  	  			type = "POOL";
-  				} 
-  			}
+  		  Resource resource = deusNexDocument.getResourceByNo(resourceNo);
+  		  if (resource != null) {
+  		    path = contextPath + WorkspaceMaterialUtils.getCompletePath(rootFolder) + "/materials/" + DeusNexDocumentUtils.getRelativePath(deusNexDocument, resource, deusNexDocument.getRootFolder());
+  		    type = "DND";
+  		  }
   		}
   		
   		if (path != null) {
@@ -261,7 +261,7 @@ public class DeusNexMachinaController {
 			}
 		} else {
 			if (node == null) {
-			  logger.info("importting " + resource.getPath());
+			  logger.fine("importting " + resource.getPath());
 			  
     		Material material = createMaterial(rootFolder, resource, deusNexDocument);
     		if (material != null) {
