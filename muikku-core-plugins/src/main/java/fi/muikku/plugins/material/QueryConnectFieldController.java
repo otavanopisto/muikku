@@ -1,5 +1,7 @@
 package fi.muikku.plugins.material;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -41,10 +43,22 @@ public class QueryConnectFieldController {
     return queryConnectFieldTermDAO.create(connectField, name, text, counterpart);
   }
 
+  public QueryConnectFieldTerm findQueryConnectFieldTermByFieldAndName(QueryConnectField connectField, String name) {
+    return queryConnectFieldTermDAO.findByFieldAndName(connectField, name);
+  }
+
+  public List<QueryConnectFieldTerm> listConnectFieldTermsByField(QueryConnectField field) {
+    return queryConnectFieldTermDAO.listByField(field);
+  }
+
   /* Connect Field Counterparts */
   
   public QueryConnectFieldCounterpart createConnectFieldCounterpart(QueryConnectField connectField, String name, String text) {
     return queryConnectFieldCounterpartDAO.create(connectField, name, text);
+  }
+
+  public QueryConnectFieldCounterpart findQueryConnectFieldCounterpartByFieldAndName(QueryConnectField connectField, String name) {
+    return queryConnectFieldCounterpartDAO.findByFieldAndName(connectField, name);
   }
 
 }
