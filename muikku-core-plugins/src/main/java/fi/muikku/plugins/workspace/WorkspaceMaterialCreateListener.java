@@ -62,7 +62,7 @@ public class WorkspaceMaterialCreateListener {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
   
-        NodeList objectNodeList = (NodeList) XPathFactory.newInstance().newXPath().evaluate("//OBJECT", document, XPathConstants.NODESET);
+        NodeList objectNodeList = document.getElementsByTagName("object");
         for (int i = 0, l = objectNodeList.getLength(); i < l; i++) {
           Element objectElement = (Element) objectNodeList.item(i);
           if (objectElement.hasAttribute("type")) {
