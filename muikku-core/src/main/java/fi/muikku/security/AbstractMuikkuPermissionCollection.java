@@ -8,6 +8,9 @@ public class AbstractMuikkuPermissionCollection extends AbstractPermissionCollec
   public static final String TEACHER = "Teacher";
   public static final String STUDENT = "Student";
   
+  public static final String HEAD_OF_DPT = "Head of Dpt.";
+  public static final String STUDY_ADVISOR = "Study advisor";
+  
   public static final String WORKSPACE_TEACHER = "Workspace Teacher";
   public static final String WORKSPACE_STUDENT = "Workspace Student";
   

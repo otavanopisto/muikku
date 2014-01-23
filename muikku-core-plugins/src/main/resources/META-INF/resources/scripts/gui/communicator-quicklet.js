@@ -8,7 +8,31 @@
       widgetElement = $(widgetElement);
       this._widgetElement = widgetElement;
 
-      $(".tt-menu-communicator-link-req").click(function (event) {
+      $(".tt-menu-link-communicator-msg").click(function (event) {
+        $(".ui-dialog-content").dialog("close");
+
+        var dTitle = $(this).text();
+        
+        renderDustTemplate("communicator/communicator_newmessage.dust", {}, function (text) {
+          $(text).dialog({
+            title: dTitle,
+            
+            show: {
+              effect: "fade",
+              duration: 500
+              },
+            hide: {
+              effect: "fade",
+              duration: 500
+              },
+            open: function(event, ui) {
+//              $(this).on("click", "input[name='newGuidanceRequestSubmit']", _this._onCreateNewGuidanceRequestClick);
+            }
+          });
+        });      
+      });
+
+      $(".tt-menu-link-communicator-req").click(function (event) {
         $(".ui-dialog-content").dialog("close");
 
         var context = {
