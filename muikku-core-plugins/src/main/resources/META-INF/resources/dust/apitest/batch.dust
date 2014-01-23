@@ -1,0 +1,24 @@
+<div class="apitest">
+  <h4>Batch request</h4>
+  
+  <div> 
+    <label style="font-weight: bold; width: 120px; display: inline-block">urlName</label> 
+    <span>{workspaceEntity.urlName}</span> 
+  </div>
+
+  <div style="margin-top: 10px;">
+    <h5>Users</h5>
+    {#users}
+      <div style="margin-bottom: 5px;">
+        <div> 
+          <label style="font-weight: bold; width: 120px; display: inline-block">schoolDataSource</label> 
+          <span>{schoolDataSource}</span> 
+        </div>
+        <div> 
+          <label style="font-weight: bold; width: 120px; display: inline-block">identifier</label> 
+          <span>{identifier}</span>
+        </div>
+      </div>
+    {/users}
+  </div>
+</div>

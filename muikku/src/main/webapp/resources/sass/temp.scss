@@ -9,9 +9,9 @@
 .tempUserProfileWidgetPicture{
 	width:50px;
 	height:50px;
-	  border: 1px solid #aaa;
-	  border-radius: 2px;
-	  box-shadow: 1px 1px 3px #888;
+	border: 1px solid #aaa;
+	border-radius: 2px;
+	box-shadow: 1px 1px 3px #888;
 	background:url(../resources/gfx/temp/tux.png) center no-repeat;
     
 }
@@ -96,4 +96,24 @@ background-color:$aBgr;
     color: #fff;
     font-weight:bold;
     text-decoration:none;
+}
+
+.wireframe-body #content{
+	border:2px solid #ededed;
+	min-height: 100px !important;
+}
+
+.wireframe-body #footer{
+  border:2px solid #ededed;
+
+}
+
+.wireframe{
+	padding:10px;
+	box-sizing:border-box;
+  -moz-box-sizing:border-box; /* Firefox */
+}
+
+.wireframe:hover{
+	background-color:#dadada;
 }

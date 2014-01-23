@@ -1,0 +1,23 @@
+{#.}
+  <div class="grid_4">
+    <div class="st-content-browser-item" style="border:1px solid #ededed;">
+      <div class="st-content-browser-item-actions actions-vertical">
+        <div class="widget st-action-bookmark action-vertical">
+          <a href="#" class="naviIconBookmark tooltip"></a>
+        </div>
+         
+        <div class="clear"></div>
+      </div>
+                
+      <div>
+        {?hasPicture} 
+          <img class="cm-item-senderPicture" src="{@contextPath/}/picture?userId={sender}" alt="Koskikara Åke" width="50" />
+        {:else}
+          <img class="cm-item-senderPicture" src="{@contextPath/}/themes/default/gfx/fish.jpg" alt="Koskikara Åke" width="100px" />
+        {/hasPicture}
+  
+        <a href="{@contextPath/}/students/{id}/" class="studentLink tooltip">{fullName}</a>
+      </div>
+    </div>
+  </div>
+{/.}

@@ -8,7 +8,12 @@
     xmlns:composite="http://java.sun.com/jsf/composite/composite"
     template="/workspaces/template.xhtml">
    
-  <ui:define name="content">
+  <ui:define name="content.center.widget">
+    <m:widgetSpaceSet>
+      <m:widgetSpace name="workspace.content-tools-top.center" keepEmpty="true" sizing="MAXIMIZE">
+        <m:widget name="workspace-wallfeed"/>
+      </m:widgetSpace>
+    </m:widgetSpaceSet>
   </ui:define>
   
 </ui:composition>

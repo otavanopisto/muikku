@@ -13,7 +13,6 @@ import fi.muikku.dao.users.EnvironmentRoleEntityDAO;
 import fi.muikku.dao.users.RoleSchoolDataIdentifierDAO;
 import fi.muikku.dao.workspace.WorkspaceRoleEntityDAO;
 import fi.muikku.model.base.SchoolDataSource;
-import fi.muikku.model.users.EnvironmentRoleType;
 import fi.muikku.model.users.RoleEntity;
 import fi.muikku.model.users.RoleSchoolDataIdentifier;
 import fi.muikku.schooldata.entity.Role;
@@ -47,8 +46,7 @@ public class RoleSchoolDataEntityInitiator implements SchoolDataEntityInitiator<
 	    
 	    switch (entity.getType()) {
 	      case ENVIRONMENT:
-	        EnvironmentRoleType environmentRoleType = EnvironmentRoleType.NORMAL;
-	        roleEntity = environmentRoleEntityDAO.create(entity.getName(), environmentRoleType);
+	        roleEntity = environmentRoleEntityDAO.create(entity.getName());
 	      break;
 	      case WORKSPACE:
 	        roleEntity = workspaceRoleEntityDAO.create(entity.getName());

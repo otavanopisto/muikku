@@ -9,7 +9,7 @@
   
 
   <div class="cm-userpopup">
-    <span class="cm-userPopup-senderName"><a href="{@contextPath/}/user.jsf?userId={id}">{fullName}</a></span>
+    <span class="cm-userPopup-senderName"><a href="{@contextPath/}/user/{id}">{fullName}</a></span>
   </div>     
       
   <input type="hidden" name="userId" value="{id}"/>

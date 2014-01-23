@@ -47,7 +47,7 @@ public class UserSeekerResultProvider implements SeekerResultProvider {
      
       // TODO remove
       if ((e2.getFirstName().toLowerCase().contains(searchTerm)) || (e2.getLastName().toLowerCase().contains(searchTerm)))
-        result.add(new DefaultSeekerResultImpl(e2.getFirstName() + " " + e2.getLastName(), caption, "/user.jsf?userId=" + e.getId(), imageUrl));
+        result.add(new DefaultSeekerResultImpl(e2.getFirstName() + " " + e2.getLastName(), caption, "/user/" + e.getId(), imageUrl));
     }
     
     return result;

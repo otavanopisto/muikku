@@ -1,0 +1,6 @@
+<div class="seeker_autocomplete_item_container">
+  <div class="seeker_autocomplete_item_image"><img src="{@contextPath/}/resources/gfx/icons/32x32/actions/navigate-communicator.png"></div>
+  <div class="seeker_autocomplete_item_label">
+      <a href="{@contextPath/}/guidancerequest/index.jsf">Ohjauspyyntö</a>
+  </div>
+</div>

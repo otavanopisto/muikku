@@ -20,11 +20,13 @@ import fi.muikku.plugins.forum.model.ForumThread;
 import fi.muikku.plugins.forum.model.ForumThreadReply;
 import fi.muikku.plugins.wall.WallController;
 import fi.muikku.plugins.wall.WallFeedItem;
+import fi.muikku.plugins.wall.model.EnvironmentWall;
 import fi.muikku.plugins.wall.model.UserWall;
 import fi.muikku.plugins.wall.model.Wall;
 import fi.muikku.plugins.wall.model.WallEntry;
 import fi.muikku.plugins.wall.model.WallEntryReply;
 import fi.muikku.plugins.wall.model.WallEntryVisibility;
+import fi.muikku.plugins.wall.model.WorkspaceWall;
 import fi.muikku.schooldata.UserController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.security.AuthorizationException;
@@ -90,9 +92,9 @@ public class WallRESTService extends PluginRESTService {
   public Response listWallEntries( 
       @PathParam ("WALLID") Long wallId) {
     
-    UserWall userWall = wallController.findUserWallById(wallId); 
+    Wall wall = wallController.findWallById(wallId); 
 
-    List<WallFeedItem> entries = wallController.listUserWallFeed(userWall);
+    List<WallFeedItem> entries = wallController.listWallFeed(wall);
     
     TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
     Tranquility tranquility = tranquilityBuilder.createTranquility()
@@ -101,10 +103,12 @@ public class WallRESTService extends PluginRESTService {
       .addInstruction("wallEntry", tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
       .addInstruction("wallEntry.replies", tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
       .addInstruction("assessmentRequest", tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
+      .addInstruction("guidanceRequest", tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
       .addInstruction("thread", tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
       .addInstruction("forumMessage", tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
       .addInstruction(ForumThread.class, tranquilityBuilder.createPropertyInjectInstruction("replies", new ForumThreadReplyInjector()))
       .addInstruction(Wall.class, tranquilityBuilder.createPropertyInjectInstruction("wallName", new WallEntityNameGetter()))
+//      .addInstruction(Wall.class, tranquilityBuilder.createPropertyInjectInstruction("wallType", new WallEntityTypeGetter()))
       .addInstruction(Wall.class, tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
 
       .addInstruction(new SuperClassInstructionSelector(UserEntity.class), tranquilityBuilder.createPropertyInjectInstruction("hasPicture", new UserEntityHasPictureValueGetter()))
@@ -202,6 +206,24 @@ public class WallRESTService extends PluginRESTService {
     }
   }
 
+  private class WallEntityTypeGetter implements ValueGetter<String> {
+    @Override
+    public String getValue(TranquilizingContext context) {
+      Wall wall = (Wall) context.getEntityValue();
+      
+      if (wall instanceof WorkspaceWall)
+        return "WORKSPACE";
+      
+      if (wall instanceof UserWall)
+        return "USER";
+      
+      if (wall instanceof EnvironmentWall)
+        return "ENVIRONMENT";
+      
+      return "";
+    }
+  }
+  
   private class ForumThreadReplyInjector implements ValueGetter<Collection<TranquilModelEntity>> {
     @Override
     public Collection<TranquilModelEntity> getValue(TranquilizingContext context) {

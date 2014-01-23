@@ -18,10 +18,6 @@
       <input type="hidden" name="wallId" value="#{wall.id}"/>
       <input type="hidden" name="userId" value="#{muikkuSession.user.id}"/>
 
-      <ui:include src="/wall/newwallentry.xhtml">
-        <ui:param name="wallId" value="#{wall.id}" />
-      </ui:include>
-      
       <div class="wallEntries">
       </div>
     </div>

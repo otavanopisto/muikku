@@ -9,6 +9,8 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fi.muikku.dao.base.SchoolDataSourceDAO;
 import fi.muikku.dao.users.EnvironmentUserDAO;
 import fi.muikku.dao.users.UserContactDAO;
@@ -90,6 +92,10 @@ public class UserController {
 		return userEntityDAO.listAll();
 	}
 	
+	public void updateLastLogin(UserEntity userEntity) {
+	  userEntityDAO.updateLastLogin(userEntity);
+	}
+	
 	/* User */
 
 	public User findUser(SchoolDataSource schoolDataSource, UserEntity userEntity) {
@@ -146,9 +152,11 @@ public class UserController {
     for (EnvironmentUser grp : grps) {
       User user = findUser(grp.getUser());
       
-      if ((user.getFirstName().toLowerCase().contains(searchTerm.toLowerCase())) ||
-          (user.getLastName().toLowerCase().contains(searchTerm.toLowerCase())))
-        filtered.add(grp);
+      if (!StringUtils.isEmpty(user.getFirstName()) && !StringUtils.isEmpty(user.getLastName())) {
+        if ((user.getFirstName().toLowerCase().contains(searchTerm.toLowerCase())) ||
+            (user.getLastName().toLowerCase().contains(searchTerm.toLowerCase())))
+          filtered.add(grp);
+      }
     }
     
     return filtered;
@@ -191,6 +199,10 @@ public class UserController {
     UserEntityEvent userEvent = new UserEntityEvent();
     userEvent.setUserEntityId(userEntity.getId());
     userRemovedEvent.fire(userEvent);
+  }
+
+  public EnvironmentUser findEnvironmentUserByUserEntity(UserEntity userEntity) {
+    return environmentUserDAO.findByUserEntity(userEntity);
   }
 
 }

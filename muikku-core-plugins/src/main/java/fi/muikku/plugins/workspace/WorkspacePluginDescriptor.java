@@ -11,10 +11,13 @@ import javax.inject.Inject;
 import fi.muikku.controller.WidgetController;
 import fi.muikku.plugin.PersistencePluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
+
 import fi.muikku.plugins.workspace.fieldhandler.WorkspaceConnectFieldHandler;
 import fi.muikku.plugins.workspace.fieldhandler.WorkspaceMemoFieldHandler;
 import fi.muikku.plugins.workspace.fieldhandler.WorkspaceSelectFieldHandler;
 import fi.muikku.plugins.workspace.fieldhandler.WorkspaceTextFieldHandler;
+
+import fi.muikku.plugin.RESTPluginDescriptor;
 import fi.muikku.plugins.workspace.dao.WorkspaceFolderDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialConnectFieldAnswerDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialDAO;
@@ -34,10 +37,11 @@ import fi.muikku.plugins.workspace.model.WorkspaceMaterialSelectFieldAnswer;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialTextFieldAnswer;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
+import fi.muikku.plugins.workspace.rest.WorkspaceRESTService;
 
 @ApplicationScoped
 @Stateful
-public class WorkspacePluginDescriptor implements PluginDescriptor, PersistencePluginDescriptor {
+public class WorkspacePluginDescriptor implements PluginDescriptor, PersistencePluginDescriptor, RESTPluginDescriptor {
 
 	@Inject
 	private WidgetController widgetController;
@@ -117,5 +121,12 @@ public class WorkspacePluginDescriptor implements PluginDescriptor, PersistenceP
 			WorkspaceMaterialField.class
 		};
 	}
+
+  @Override
+  public Class<?>[] getRESTServices() {
+    return new Class<?>[] {
+      WorkspaceRESTService.class  
+    };
+  }
 
 }

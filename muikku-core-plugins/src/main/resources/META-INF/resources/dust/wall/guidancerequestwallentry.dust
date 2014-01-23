@@ -1,0 +1,33 @@
+<div class="wallEntry">
+<!--   <input type="hidden" name="wallEntryId" value="{id}"/> -->
+
+  {?guidanceRequest.student_tq.hasPicture} 
+    <img class="wallEntryUserPicture" src="{@contextPath/}/picture?userId={guidanceRequest.student_tq.id}" width="50" height="50" />
+  {:else}
+    <img class="wallEntryUserPicture" src="{@contextPath/}/themes/default/gfx/fish.jpg" width="50" height="50" />
+  {/guidanceRequest.student_tq.hasPicture}  
+  
+  <div class="wallEntryTitle">
+    <a class="wallEntryCreator" href="{@contextPath/}/user/{guidanceRequest.student_tq.id}">{guidanceRequest.student_tq.fullName}</a>
+
+      pyysi ohjausta 
+      {?guidanceRequest.workspace}
+      kurssilla <a class="wallEntryCourseLink" href="{@contextPath/}/workspace/{guidanceRequest.workspace_tq.urlName}">{guidanceRequest.workspace_tq.urlName}</a>
+      {/guidanceRequest.workspace}
+    <span class="wallEntryDate">{guidanceRequest.date|formatDate}</span>
+  </div>
+  
+  <div class="wallEntryContent">
+    <div class="wallEntryItem">{guidanceRequest.message}</div>
+  </div>
+  
+<!--   <div class="wallEntryFooter"> -->
+<!--     <a class="wallEntryReplyLink">{#localize key="plugin.wall.reply"/}</a> -->
+<!--   </div> -->
+  
+  <div class="wallEntryComments">
+<!--     {#replies} -->
+<!--       {>"threadwallentryreply.dust"/} -->
+<!--     {/replies} -->
+  </div>
+</div>

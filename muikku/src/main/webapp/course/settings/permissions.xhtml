@@ -21,22 +21,22 @@
         <tr>
           <td></td>
           
-          <c:forEach var="userRole" items="#{environmentSettings.listCourseUserRoles()}">
+          <c:forEach var="userRole" items="#{environmentSettings.listWorkspaceUserRoles()}">
             <td>#{userRole.name}</td>
           </c:forEach>
         </tr>
         
-        <c:forEach var="permission" items="#{environmentSettings.listCoursePermissions()}">
+        <c:forEach var="permission" items="#{environmentSettings.listWorkspacePermissions()}">
           <tr>
             <td>#{permission.name}</td>
           
-            <c:forEach var="userRole" items="#{environmentSettings.listCourseUserRoles()}">
+            <c:forEach var="userRole" items="#{environmentSettings.listWorkspaceUserRoles()}">
               <td>
                 <input type="hidden" name="permissionId" value="#{permission.id}"/>
                 <input type="hidden" name="userRoleId" value="#{userRole.id}"/>
                 
                 <c:choose>
-                  <c:when test="#{environmentSettings.hasCourseRolePermission(Course.findCourseEntityById(param['courseId']), userRole, permission)}">
+                  <c:when test="#{environmentSettings.hasWorkspaceRolePermission(Course.findCourseEntityById(param['courseId']), userRole, permission)}">
                     <input type="checkbox" class="userRolePermissionsCheckbox" name="chkbx.#{userRole.id}.#{permission.id}" checked="checked"/>
                   </c:when>
                   <c:otherwise>

@@ -52,7 +52,7 @@ public class EnvironmentPermissionResolver extends AbstractPermissionResolver im
 
     EnvironmentUser environmentUser = environmentUserDAO.findByUserAndArchived(userEntity, Boolean.FALSE);
   
-    EnvironmentUserPermissionOverride override = environmentUserPermissionOverrideDAO.findByEnvironmentUserRoleAndPermission(environmentUser, perm);
+    EnvironmentUserPermissionOverride override = environmentUserPermissionOverrideDAO.findByEnvironmentUserAndPermission(environmentUser, perm);
     if (override != null)
       return override.getState() == PermissionOverrideState.ALLOW;
     else

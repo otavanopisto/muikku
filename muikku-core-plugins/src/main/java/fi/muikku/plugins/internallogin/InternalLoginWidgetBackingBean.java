@@ -20,12 +20,12 @@ public class InternalLoginWidgetBackingBean {
 
   @Inject
   private InternalLoginController internalLoginController;
- 
   
   public void login() {
   	UserEntity userEntity = internalLoginController.findUserByEmailAndPassword(email, password);
   	if (userEntity != null) {
   		localSessionController.login(userEntity.getId());
+  		internalLoginController.updateLastLogin(userEntity);
   	}
   }
   

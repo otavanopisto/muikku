@@ -6,7 +6,7 @@
   {/creator_tq.hasPicture}  
 
   <div class="wallEntryCommentTitle">
-    <a class="wallEntryCommentCreator" href="{@contextPath/}/user.jsf?userId={creator_tq.id}">{creator_tq.fullName}</a>
+    <a class="wallEntryCommentCreator" href="{@contextPath/}/user/{creator_tq.id}">{creator_tq.fullName}</a>
     <span class="wallEntryCommentDate">{created|formatDate}</span>
   </div>
 

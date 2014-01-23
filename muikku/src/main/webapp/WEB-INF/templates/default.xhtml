@@ -22,10 +22,6 @@
     <h:outputStylesheet library="css" name="cssreset-min.css" />
     <!-- Screen CSS -->
     <h:outputStylesheet library="css" name="screen.css" />
-    <!--  Generic forms  -->
-    <h:outputStylesheet library="css" name="forms.css" />
-    <!--  Widgets   -->
-    <h:outputStylesheet library="css" name="widgets.css" />
     <!--  Temporary styles -->
     <h:outputStylesheet library="css" name="temp.css" />
     <!-- Grid 960 styles 
@@ -36,9 +32,9 @@
     <!-- Dynamic Grid -->
     <h:outputStylesheet library="css" name="dgrid.css" />
     
-    
     <!-- Default Calendar CSS -->
     <h:outputStylesheet library="css" name="fullcalendar.css" />
+    
     <!-- jQuery -->
 
     <h:outputScript name="scripts/jquery/jquery-1.9.1.js" />
@@ -46,8 +42,8 @@
 
     <!-- jQuery UI -->
 
-    <h:outputScript name="scripts/jquery-ui/js/jquery-ui-1.10.2.custom.js" />
-    <h:outputStylesheet name="scripts/jquery-ui/css/ui-lightness/jquery-ui-1.10.2.custom.css" />
+    <h:outputScript name="scripts/jquery/jquery-ui/js/jquery-ui-1.10.2.custom.js" />
+    <h:outputStylesheet library="css" name="jquery-ui-1.10.3.custom.css" />
 
     <!-- jQuery Validation -->
 
@@ -66,7 +62,25 @@
     <h:outputScript name="scripts/dustjs/dust-full-1.1.1.js" />
     <h:outputScript name="scripts/dustjs/dust-helpers-1.1.0.js" />
     <h:outputScript name="scripts/gui/dustloader.js" />
-
+    
+    <!-- Async -->
+    
+    <h:outputScript name="scripts/async/async.js" />
+    
+    <!-- ObjectPath -->
+    
+    <h:outputScript name="scripts/objectpathjs/interpreter.js" />
+    <h:outputScript name="scripts/objectpathjs/parse.js" />
+    <h:outputScript name="scripts/objectpathjs/tokens.js" />
+    
+    <!-- jQuery REST -->
+    
+    <h:outputScript name="scripts/jquery.rest/jquery.rest.min.js"/>
+    
+    <!-- Api -->
+    
+    <h:outputScript name="scripts/api/api.js"/>
+    
     <!-- REST -->
     <h:outputScript name="scripts/gui/restful.js" />
 
@@ -82,7 +96,7 @@
     <div id="header">
       <div id="headerContainer" class="container_24">
         <ui:insert name="header">
-          <m:widgetSpaceSet>
+          <m:widgetSpaceSet styleClass="noLid">
            <ui:insert name="header.left">
               <ui:include src="/facelets/generic/header-left.xhtml">
                <ui:param name="sizing" value="MINIMIZE" />
@@ -114,12 +128,12 @@
     <div id="staticNavigationFade">
       <div id="staticNavigation" class="container_24 scrollblock">        
         <ui:insert name="dock.top">
-         <m:widgetSpaceSet>      
+         <m:widgetSpaceSet styleClass="noLid">      
            <ui:insert name="dock.top.left">
              <ui:include src="/facelets/generic/dock-top-left.xhtml">
                <ui:param name="sizing" value="SUM" />
                <ui:param name="keepEmpty" value="false" />
-               <ui:param name="name" value="generic.dock.top.left" />               
+               <ui:param name="name" value="generic.dock-top.left" />               
              </ui:include>
            </ui:insert>
            <ui:insert name="dock.top.center">
@@ -144,27 +158,28 @@
     <div id="content" class="container_24">   
       <ui:insert name="content.tools.top">
         <m:widgetSpaceSet styleClass="nomargin">
-            <ui:insert name="content.tools.top.left">
+           <ui:insert name="content.tools.top.left">
              <ui:include src="/facelets/generic/content-tools-top-left.xhtml">
                <ui:param name="sizing" value="SUM" />
                <ui:param name="keepEmpty" value="false" />
-               <ui:param name="name" value="generic.tools.top.left" />               
+               <ui:param name="name" value="generic.content-tools-top.left" />               
              </ui:include>
            </ui:insert>
            <ui:insert name="content.tools.top.center">
              <ui:include src="/facelets/generic/content-tools-top-center.xhtml">
                <ui:param name="sizing" value="MAXIMIZE" />
                <ui:param name="keepEmpty" value="true" />
-               <ui:param name="name" value="generic.tools.top.center" />                    
+               <ui:param name="name" value="generic.content-tools-top.center" />                    
              </ui:include>         
            </ui:insert>
            <ui:insert name="content.tools.top.right">
              <ui:include src="/facelets/generic/content-tools-top-right.xhtml">
                <ui:param name="sizing" value="MINIMIZE" />
                <ui:param name="keepEmpty" value="false" />
-               <ui:param name="name" value="generic.tools.top.right" />           
+               <ui:param name="name" value="generic.content-tools-top.right" />           
               </ui:include>          
-            </ui:insert>       
+            </ui:insert> 
+
         </m:widgetSpaceSet>
       </ui:insert>
        <div class="clear"></div>
@@ -180,7 +195,7 @@
             <ui:insert name="content.center.widget"></ui:insert>
           </m:widgetSpace>
         </ui:insert>
-        <ui:insert name="content.center.widgetwidgetspace">        
+        <ui:insert name="content.right.widgetspace">        
           <m:widgetSpace name="generic.content.right" keepEmpty="false" sizing="MINIMIZE" styleClass="nomargin">
             <ui:insert name="content.right.widget"></ui:insert>
           </m:widgetSpace>
@@ -189,21 +204,21 @@
       </ui:insert>
       <ui:insert name="contentToolsBottom">
         <m:widgetSpaceSet styleClass="nomargin">
-            <ui:insert name="content.tools-bottom.left">
+            <ui:insert name="content.tools.bottom.left">
              <ui:include src="/facelets/generic/content-tools-bottom-left.xhtml">
                <ui:param name="sizing" value="SUM" />
                <ui:param name="keepEmpty" value="false" />
                <ui:param name="name" value="generic.tools-bottom.left" />               
              </ui:include>
            </ui:insert>
-           <ui:insert name="content.tools-bottom.center">
+           <ui:insert name="content.tools.bottom.center">
              <ui:include src="/facelets/generic/content-tools-bottom-center.xhtml">
                <ui:param name="sizing" value="MAXIMIZE" />
                <ui:param name="keepEmpty" value="true" />
                <ui:param name="name" value="generic.tools-bottom.center" />                    
              </ui:include>         
            </ui:insert>
-           <ui:insert name="content.tools-bottom.right">
+           <ui:insert name="content.tools.bottom.right">
              <ui:include src="/facelets/generic/content-tools-bottom-right.xhtml">
                <ui:param name="sizing" value="MINIMIZE" />
                <ui:param name="keepEmpty" value="false" />
@@ -213,7 +228,7 @@
         </m:widgetSpaceSet>
       </ui:insert>
     </div>
-    <div>
+    <div id="socialNavigation">
       <ui:insert name="dock.bottom">
         <m:widgetSpaceSet styleClass="nomargin">       
             <ui:insert name="dock.bottom.left">
@@ -239,19 +254,41 @@
             </ui:insert>           
         </m:widgetSpaceSet>
       </ui:insert>
+     
+
+ 
     </div>
-    
-    <div>
-      <ui:insert name="footer">
-        <m:widgetSpaceSet styleClass="nomargin">
-          <m:widgetSpace name="environment.footer.left" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
-          <m:widgetSpace name="environment.footer.center" keepEmpty="true" sizing="MAXIMIZE">
-          <m:widget name="home-footer" rendered="#{!sessionBackingBean.loggedIn}"/>
-          </m:widgetSpace>
-          <m:widgetSpace name="environment.footer.right" keepEmpty="false" sizing="MINIMIZE"></m:widgetSpace>
-        </m:widgetSpaceSet>
-      </ui:insert>
-    </div> 
+    <div id="footer">
+      <div id="footerContainer" class="container_24">
+	      <ui:insert name="footer">
+	        <m:widgetSpaceSet styleClass="nomargin">
+	            <ui:insert name="footer.left">
+	             <ui:include src="/facelets/generic/footer-left.xhtml">
+	               <ui:param name="sizing" value="SUM" />
+	               <ui:param name="keepEmpty" value="false" />
+	               <ui:param name="name" value="generic.dock-bottom.left" />               
+	             </ui:include>
+	           </ui:insert>
+	           <ui:insert name="footer.center">
+	             <ui:include src="/facelets/generic/footer-center.xhtml">
+	               <ui:param name="sizing" value="MAXIMIZE" />
+	               <ui:param name="keepEmpty" value="true" />
+	               <ui:param name="name" value="generic.dock-bottom.center" />                    
+	             </ui:include>         
+	           </ui:insert>
+	           <ui:insert name="footer.right">
+	             <ui:include src="/facelets/generic/footer-right.xhtml">
+	               <ui:param name="sizing" value="MINIMIZE" />
+	               <ui:param name="keepEmpty" value="false" />
+	               <ui:param name="name" value="generic.dock-bottom.right" />           
+	              </ui:include>          
+	            </ui:insert>       
+	        </m:widgetSpaceSet>
+	      </ui:insert>    
+	      <div class="clear"></div>
+      </div>
+    </div>    
+
   
 	  <script>
 	    $( "#dynamicNaviButton" ).click(function() {
@@ -271,6 +308,17 @@
 	
 	
 	    $( "div[class*='wi-frontpage-dynamic']" ).draggable({ snapMode: "inner" });
+	      
+
+	    $( "#seeker" ).focus(function() {
+	      $('#seeker').val('');
+	    });
+
+	     $( "#seeker" ).blur(function() {
+	       var sval = this.defaultValue;
+	        $('#seeker').val(sval);
+	      });
+	    
 	   </script>  
   </h:body>
 

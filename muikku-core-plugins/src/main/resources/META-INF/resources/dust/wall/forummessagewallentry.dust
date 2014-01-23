@@ -8,7 +8,7 @@
   {/forumMessage.creator_tq.hasPicture}  
   
   <div class="wallEntryTitle">
-    <a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={forumMessage.creator}">{forumMessage.creator_tq.fullName}</a>
+    <a class="wallEntryCreator" href="{@contextPath/}/user/{forumMessage.creator}">{forumMessage.creator_tq.fullName}</a>
 
     {#localize key="plugin.wall.onForumAreaTitle"/} <a class="wallEntryForumAreaLink" href="{@contextPath/}/forum/threads.jsf?area={forumMessage.forumArea.id}">{forumMessage.forumArea.name}</a>
     

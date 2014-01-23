@@ -9,21 +9,14 @@
       this._wallId = widgetElement.find("input[name='wallId']").val();
       this._userId = widgetElement.find("input[name='userId']").val();
       this._wallEntriesContainer = widgetElement.find(".wallEntries");
-//      this._wallEntriesContainer.on("click", ".wallEntryReplyLink", $.proxy(this._onEntryElementClick, this));
-//      this._wallEntriesContainer.on("submit", ".wallEntryCommentFormForm", $.proxy(this._onPostCommentClick, this));
       
+      this._listWallEntries();
       
-      widgetElement.find("input[name='newWallEntryButton']").click($.proxy(this._onNewWallEntryButtonClick, this));
-      widgetElement.find("input[name='newGuidanceRequestButton']").click($.proxy(this._onNewGuidanceRequestButtonClick, this));
-
-      this._listUserFeedItems();
-      
-      this._tabsContainer = widgetElement.find('.newWallEntryTabs');
-//      this._tabControl = new S2.UI.Tabs(this._tabsContainer);
+      $(document).on('wall_newWallEntry', $.proxy(this._onNewWallEntryNotification, this));
     },
     deinitialize: function () {
     },
-    _listUserFeedItems: function () {
+    _listWallEntries: function () {
       var _this = this;
 
       RESTful.doGet(CONTEXTPATH + "/rest/wall/{wallId}/listWallEntries", {
@@ -31,6 +24,8 @@
           'wallId': this._wallId
         }
       }).success(function (data, textStatus, jqXHR) {
+        _this._wallEntriesContainer.children().remove();
+        
         for (var i = 0, len = data.length; i < len; i++) {
           var dataNode = data[i];
           var renderer = _this._getWallItemRenderer(dataNode.wallFeedItemName);
@@ -44,23 +39,13 @@
 
       return new controllerClass();
     },
-    _onNewWallEntryButtonClick: function () {
+    _onNewWallEntryNotification: function (e, eventInfo) {
       var _this = this;
-      var wallId = this._wallId;
-      var text = this._widgetElement.find("input[name='newWallEntryText']").val();
-      var visibility = "PUBLIC";
-      
-      RESTful.doPost(CONTEXTPATH + '/rest/wall/{wallId}/addTextEntry', {
-        parameters: {
-          'wallId': wallId,
-          'text': text,
-          'visibility': visibility
-        }
-      }).success(function (data, textStatus, jqXHR) {
-        renderDustTemplate('wall/wallentry.dust', data, function (text) {
+      if (eventInfo.wallId == _this._wallId) {
+        renderDustTemplate('wall/wallentry.dust', eventInfo.newEntryData, function (text) {
           _this._wallEntriesContainer.append($.parseHTML(text));
         });
-      });
+      }
     }
   });
   

@@ -1,5 +1,7 @@
 package fi.muikku.model.users;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -7,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 import fi.muikku.model.util.ArchivableEntity;
@@ -29,6 +33,14 @@ public class UserEntity implements ArchivableEntity, User, ContextReference {
     this.archived = archived;
   }
 
+  public Date getLastLogin() {
+    return lastLogin;
+  }
+
+  public void setLastLogin(Date lastLogin) {
+    this.lastLogin = lastLogin;
+  }
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -36,4 +48,7 @@ public class UserEntity implements ArchivableEntity, User, ContextReference {
   @NotNull
   @Column(nullable = false)
   private Boolean archived = Boolean.FALSE;
+  
+  @Temporal (value=TemporalType.TIMESTAMP)
+  private Date lastLogin;
 }

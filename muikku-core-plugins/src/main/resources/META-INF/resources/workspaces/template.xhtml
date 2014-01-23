@@ -9,10 +9,14 @@
 
 
   <ui:define name="dock.top.center">    
-      <m:widgetSpace name="workspace.dock-top.center" keepEmpty="true" sizing="MAXIMIZE">
-        <m:widget name="dock-workspace-home" size="1" rendered="#{sessionBackingBean.loggedIn}"/>   
-        <m:widget name="dock-workspace-materials" size="1" rendered="#{sessionBackingBean.loggedIn}"/>   
-        <m:widget name="dock-workspace-members" size="1" rendered="#{sessionBackingBean.loggedIn}"/>      
+      <m:widgetSpace name="workspace.dock-top.center" keepEmpty="true" styleClass="alpha noLid" sizing="MAXIMIZE">
+       <div class="dock-workspace-container">
+        <m:widget name="dock-workspace-home" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
+        <m:widget name="dock-workspace-materials" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
+        <m:widget name="dock-workspace-members" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
+        <m:widget name="dock-workspace-guidancerequest" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
+        <div class="clear"></div>
+        </div>
       </m:widgetSpace>
   </ui:define>
 

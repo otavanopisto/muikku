@@ -7,7 +7,7 @@
     {/creator.hasPicture}
   </div>
   
-  <div class="communicatorItemSenderName"><a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={creator.id}">{creator.fullName}</a></div>
+  <div class="communicatorItemSenderName"><a class="wallEntryCreator" href="{@contextPath/}/user/{creator.id}">{creator.fullName}</a></div>
 
   <div class="communicatorItemContext">
     {@if cond="'{wall.wallType}' == 'ENVIRONMENT'"}
@@ -19,7 +19,7 @@
     {/if}
 
     {@if cond="'{wall.wallType}' == 'USER'"}
-      <a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={wall.creatorId}">{wall.wallName}</a>
+      <a class="wallEntryCreator" href="{@contextPath/}/user/{wall.creatorId}">{wall.wallName}</a>
     {/if}
   </div>
 

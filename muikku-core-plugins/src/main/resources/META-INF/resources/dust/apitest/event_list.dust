@@ -1,0 +1,29 @@
+<div class="apitest">
+  <h4>List request (modified in event)</h4>
+  
+  {#.}
+    <div style="margin-bottom: 10px;">
+      <div> 
+        <label style="font-weight: bold; width: 120px; display: inline-block">urlName</label> 
+        <span>{urlName}</span> 
+      </div>
+      <div> 
+        <label style="font-weight: bold; width: 120px; display: inline-block">dataSource_id</label> 
+        <span>{dataSource_id}</span> 
+      </div>
+      <div> 
+        <label style="font-weight: bold; width: 120px; display: inline-block">id</label> 
+        <span>{id}</span> 
+      </div>
+      <div> 
+        <label style="font-weight: bold; width: 120px; display: inline-block">identifier</label> 
+        <span>{identifier}</span> 
+      </div>
+      <div> 
+        <label style="font-weight: bold; width: 120px; display: inline-block">idSine</label> 
+        <span>{idSine}</span> 
+      </div>
+     </div>
+  {/.}
+
+</div>

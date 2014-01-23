@@ -22,7 +22,7 @@
   
   <div class="mf-person cm-message-senderName">
     <input type="hidden" name="mf-person-id" value="{sender}"/>
-    <a class="wallEntryCreator" href="{@contextPath/}/user.jsf?userId={sender}">{sender_tq.fullName}</a>
+    <a class="wallEntryCreator" href="{@contextPath/}/user/{sender}">{sender_tq.fullName}</a>
   </div>
 
   <div>

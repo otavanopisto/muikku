@@ -127,6 +127,10 @@ public class WorkspaceController {
 
 	/* Workspace */
 
+  public Workspace createWorkspace(String schoolDataSource, String name, String description, WorkspaceType type, String courseIdentifierIdentifier) {
+    return workspaceSchoolDataController.createWorkspace(schoolDataSource, name, description, type, courseIdentifierIdentifier);
+  }
+  
 	public Workspace findWorkspace(WorkspaceEntity workspaceEntity) {
 		return workspaceSchoolDataController.findWorkspace(workspaceEntity);
 	}
@@ -148,10 +152,23 @@ public class WorkspaceController {
 	public List<Workspace> listWorkspacesByCourseIdentifier(CourseIdentifier courseIdentifier) {
 		return workspaceSchoolDataController.listWorkspacesByCourseIdentifier(courseIdentifier);
 	}
-	
+
+	public Workspace updateWorkspace(Workspace workspace) {
+	  return workspaceSchoolDataController.updateWorkspace(workspace);
+  }
+
+  public void removeWorkspace(Workspace workspace) {
+    WorkspaceEntity workspaceEntity = workspaceSchoolDataController.findWorkspaceEntity(workspace);
+    if (workspaceEntity != null) {
+      archiveWorkspaceEntity(workspaceEntity);
+    }
+    
+    workspaceSchoolDataController.removeWorkspace(workspace);
+  }
+
 	/* Workspace Entity */
 	
-	public WorkspaceEntity findWorkspaceEntity(Workspace workspace) {
+  public WorkspaceEntity findWorkspaceEntity(Workspace workspace) {
 		return workspaceSchoolDataController.findWorkspaceEntity(workspace);
 	}
 	
@@ -166,7 +183,25 @@ public class WorkspaceController {
   public List<WorkspaceEntity> listWorkspaceEntities() {
     return workspaceEntityDAO.listAll();
   }
-	
+
+  public List<WorkspaceEntity> listWorkspaceEntitiesBySchoolDataSource(String schoolDataSource) {
+    SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
+    if (dataSource != null) {
+      return listWorkspaceEntitiesBySchoolDataSource(dataSource);
+    } else {
+      logger.log(Level.SEVERE, "Could not find school data source '" + schoolDataSource + "' while listing workspaceEntities by school data source");
+      return null;
+    }
+  }
+
+  public List<WorkspaceEntity> listWorkspaceEntitiesBySchoolDataSource(SchoolDataSource schoolDataSource) {
+    return workspaceEntityDAO.listByDataSource(schoolDataSource);
+  }
+
+  public WorkspaceEntity archiveWorkspaceEntity(WorkspaceEntity workspaceEntity) {
+    return workspaceEntityDAO.updateArchived(workspaceEntity, Boolean.TRUE);
+  }
+
 	/* WorkspaceUsers */
   
   public WorkspaceUser createWorkspaceUser(Workspace workspace, User user, String roleSchoolDataSource, String roleIdentifier) {

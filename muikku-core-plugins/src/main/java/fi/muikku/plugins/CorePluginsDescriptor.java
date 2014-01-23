@@ -20,15 +20,21 @@ import fi.muikku.plugins.communicator.CommunicatorPluginDescriptor;
 import fi.muikku.plugins.courselist.CourseListPluginDescriptor;
 import fi.muikku.plugins.coursepicker.CoursePickerPluginDescriptor;
 import fi.muikku.plugins.data.DataPluginDescriptor;
+import fi.muikku.plugins.data.PermissionDataPluginDescriptor;
 import fi.muikku.plugins.forum.ForumPluginDescriptor;
+import fi.muikku.plugins.friends.FriendsPluginDescriptor;
 import fi.muikku.plugins.grading.GradingPluginDescriptor;
+import fi.muikku.plugins.guidancerequest.GuidanceRequestPluginDescriptor;
 import fi.muikku.plugins.internallogin.InternalLoginPluginDescriptor;
 import fi.muikku.plugins.language.LanguagePluginDescriptor;
+import fi.muikku.plugins.loggeduser.LoggedUserPluginDescriptor;
 import fi.muikku.plugins.logout.LogoutPluginDescriptor;
 import fi.muikku.plugins.material.MaterialPluginDescriptor;
 import fi.muikku.plugins.schooldatalocal.SchoolDataLocalPluginDescriptor;
 import fi.muikku.plugins.seeker.SeekerPluginDescriptor;
 import fi.muikku.plugins.settings.SettingsPluginDescriptor;
+import fi.muikku.plugins.students.StudentsPluginDescriptor;
+import fi.muikku.plugins.user.UserPluginDescriptor;
 import fi.muikku.plugins.wall.WallPluginDescriptor;
 import fi.muikku.plugins.workspace.WorkspacePluginDescriptor;
 
@@ -61,7 +67,13 @@ public class CorePluginsDescriptor implements PluginLibraryDescriptor {
       WorkspacePluginDescriptor.class,
       MaterialPluginDescriptor.class,
       AssessmentRequestPluginDescriptor.class,
-      CourseListPluginDescriptor.class
+      CourseListPluginDescriptor.class,
+      FriendsPluginDescriptor.class,
+      LoggedUserPluginDescriptor.class,
+      UserPluginDescriptor.class,
+      StudentsPluginDescriptor.class,
+      GuidanceRequestPluginDescriptor.class,
+      PermissionDataPluginDescriptor.class
 		));
 	}
 	
