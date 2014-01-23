@@ -7,9 +7,6 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
@@ -71,50 +68,47 @@ private static final boolean ADD_DEBUG_MARKERS = false;
             WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByUrlName(workspaceUrlName);
             if (workspaceEntity != null) {
               WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialByWorkspaceEntityAndPath(workspaceEntity, materialPath);
-              if (workspaceMaterial != null) {
-                if (workspaceMaterial.getMaterial() instanceof HtmlMaterial) {
-                  HtmlMaterial htmlMaterial = (HtmlMaterial) workspaceMaterial.getMaterial();
-                  
-                  try {
-                    Document embeddedDocument = htmlMaterialController.getProcessedHtmlDocument((HtmlMaterial) workspaceMaterial.getMaterial());
-                    NodeList objectNodeList = (NodeList) XPathFactory.newInstance().newXPath().evaluate("//OBJECT", document, XPathConstants.NODESET);
-                    
-                    for (int objectIndex = 0, objectsLength = objectNodeList.getLength(); objectIndex < objectsLength; objectIndex++) {
-                      Element objectElement = (Element) objectNodeList.item(objectIndex);
-                      if (!objectElement.hasAttribute("data-embed-id")) {
-                        objectElement.setAttribute("data-embed-id", htmlMaterial.getId().toString());
-                      } else {
-                        objectElement.setAttribute("data-embed-id", htmlMaterial.getId().toString() + ":" + objectElement.getAttribute("data-embed-id"));
-                      }
-                    }
-                    
-                    Node parent = iframeElement.getParentNode();
-                    Node nextSibling = iframeElement.getNextSibling();
+              if ((workspaceMaterial != null) && (workspaceMaterial.getMaterial() instanceof HtmlMaterial)) {
+                HtmlMaterial htmlMaterial = (HtmlMaterial) workspaceMaterial.getMaterial();
+                
+                try {
+                  Document embeddedDocument = htmlMaterialController.getProcessedHtmlDocument((HtmlMaterial) workspaceMaterial.getMaterial());
+                  NodeList objectNodeList = embeddedDocument.getElementsByTagName("object");
 
-                    if (ADD_DEBUG_MARKERS) {
-                      Element iframeStartMarker = createIframeMarker(iframeElement.getOwnerDocument(), "#" + workspaceMaterial.getMaterial().getId() + " / " + workspaceMaterial.getMaterial().getTitle() + " >>>>>>>>>>", "background: green; color: #fff; border: 1px dotted #000; text-align: center;");
-                      parent.insertBefore(iframeStartMarker, iframeElement);
+                  for (int objectIndex = 0, objectsLength = objectNodeList.getLength(); objectIndex < objectsLength; objectIndex++) {
+                    Element objectElement = (Element) objectNodeList.item(objectIndex);
+                    if (!objectElement.hasAttribute("data-embed-id")) {
+                      objectElement.setAttribute("data-embed-id", htmlMaterial.getId().toString());
+                    } else {
+                      objectElement.setAttribute("data-embed-id", htmlMaterial.getId().toString() + ":" + objectElement.getAttribute("data-embed-id"));
                     }
-                    
-                    event.replaceWithForeignDocumentBody(iframeElement, embeddedDocument);
-                    
-                    if (ADD_DEBUG_MARKERS) {
-                      Element iframeEndMarker = createIframeMarker(iframeElement.getOwnerDocument(), "<<<<<<<<<< #" + workspaceMaterial.getMaterial().getId() + " / " + workspaceMaterial.getMaterial().getTitle(), "background: red; color: #fff; border: 1px dotted #000; text-align: center;");
-                      if (nextSibling != null) {
-                        parent.insertBefore(iframeEndMarker, nextSibling);
-                      } else {
-                        parent.appendChild(iframeEndMarker);
-                      }
-                    }
-                    
-                  } catch (SAXException | IOException e) {
-                    // Processing failed, let iframe to be as-is and log the failure.
-                    logger.log(Level.SEVERE, "iframe processing failed", e);
-                  } catch (XPathExpressionException e) {
-                    // Processing failed, let the document to be as-is and log the failure.
-                    logger.log(Level.SEVERE, "form element processing failed", e);
                   }
-                }
+                  
+                  Node parent = iframeElement.getParentNode();
+                  Node nextSibling = iframeElement.getNextSibling();
+
+                  if (ADD_DEBUG_MARKERS) {
+                    Element iframeStartMarker = createIframeMarker(iframeElement.getOwnerDocument(), "#" + workspaceMaterial.getMaterial().getId() + " / " + workspaceMaterial.getMaterial().getTitle() + " >>>>>>>>>>", "background: green; color: #fff; border: 1px dotted #000; text-align: center;");
+                    parent.insertBefore(iframeStartMarker, iframeElement);
+                  }
+                  
+                  event.replaceWithForeignDocumentBody(iframeElement, embeddedDocument);
+                  
+                  if (ADD_DEBUG_MARKERS) {
+                    Element iframeEndMarker = createIframeMarker(iframeElement.getOwnerDocument(), "<<<<<<<<<< #" + workspaceMaterial.getMaterial().getId() + " / " + workspaceMaterial.getMaterial().getTitle(), "background: red; color: #fff; border: 1px dotted #000; text-align: center;");
+                    if (nextSibling != null) {
+                      parent.insertBefore(iframeEndMarker, nextSibling);
+                    } else {
+                      parent.appendChild(iframeEndMarker);
+                    }
+                  }
+                  
+                } catch (SAXException | IOException e) {
+                  // Processing failed, let iframe to be as-is and log the failure.
+                  logger.log(Level.SEVERE, "iframe processing failed", e);
+                } 
+              } else {
+                logger.log(Level.WARNING, "Embedded material: " + StringUtils.join(pathEntries, "/") + " could not be found"); 
               }
             }
           }
