@@ -41,7 +41,7 @@ public class QueryConnectFieldCounterpartDAO extends PluginDAO<QueryConnectField
     return entityManager.createQuery(criteria).getResultList();
   }
 
-  public QueryConnectFieldCounterpart findBySelectFieldAndName(QueryConnectField connectField, String name) {
+  public QueryConnectFieldCounterpart findByFieldAndName(QueryConnectField connectField, String name) {
     EntityManager entityManager = getEntityManager();
 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
