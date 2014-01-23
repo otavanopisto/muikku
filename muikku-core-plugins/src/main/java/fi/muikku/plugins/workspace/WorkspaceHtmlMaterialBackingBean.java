@@ -205,8 +205,8 @@ public class WorkspaceHtmlMaterialBackingBean {
     objectMapper.configure(Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     List<String> assignedNames = new ArrayList<>();
 
-    NodeList objectNodeList = (NodeList) XPathFactory.newInstance().newXPath().evaluate("//OBJECT", document, XPathConstants.NODESET);
-    for (int i = 0, l = objectNodeList.getLength(); i < l; i++) {
+    NodeList objectNodeList = document.getElementsByTagName("object");
+    for (int i = objectNodeList.getLength() - 1; i >= 0; i--) {
       Element objectElement = (Element) objectNodeList.item(i);
       if (objectElement.hasAttribute("type")) {
         String type = objectElement.getAttribute("type");
