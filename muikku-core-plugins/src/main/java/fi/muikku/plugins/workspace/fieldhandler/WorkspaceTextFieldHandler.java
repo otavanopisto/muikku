@@ -51,7 +51,10 @@ public class WorkspaceTextFieldHandler extends AbstractWorkspaceFieldHandler {
     inputElement.setAttribute("size", String.valueOf(textFieldMeta.getColumns()));
     inputElement.setAttribute("placeholder", textFieldMeta.getHelp());
     inputElement.setAttribute("title", textFieldMeta.getHint());
-    inputElement.setAttribute("value", value);
+    
+    if (StringUtils.isNotEmpty(value)) {
+      inputElement.setAttribute("value", value);
+    }
     
     Node objectParent = objectElement.getParentNode();
     objectParent.insertBefore(inputElement, objectElement);
