@@ -2,9 +2,13 @@ package fi.muikku.plugins.workspace;
 
 import javax.inject.Inject;
 
+import fi.muikku.plugins.material.model.QueryConnectFieldCounterpart;
+import fi.muikku.plugins.material.model.QueryConnectFieldTerm;
 import fi.muikku.plugins.material.model.QuerySelectFieldOption;
+import fi.muikku.plugins.workspace.dao.WorkspaceMaterialConnectFieldAnswerDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialSelectFieldAnswerDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialTextFieldAnswerDAO;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialConnectFieldAnswer;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialSelectFieldAnswer;
@@ -17,6 +21,9 @@ public class WorkspaceMaterialFieldAnswerController {
 
   @Inject
   private WorkspaceMaterialSelectFieldAnswerDAO workspaceMaterialSelectFieldAnswerDAO;
+
+  @Inject
+  private WorkspaceMaterialConnectFieldAnswerDAO workspaceMaterialConnectFieldAnswerDAO;
 
   /* TextField */
 
@@ -49,4 +56,18 @@ public class WorkspaceMaterialFieldAnswerController {
     return workspaceMaterialSelectFieldAnswerDAO.updateValue(workspaceMaterialSelectFieldAnswer, value);
   }
 
+  /* ConnectField */
+  
+  public WorkspaceMaterialConnectFieldAnswer createWorkspaceMaterialConnectFieldAnswer(WorkspaceMaterialField field, WorkspaceMaterialReply reply, QueryConnectFieldTerm term, QueryConnectFieldCounterpart counterpart) {
+    return workspaceMaterialConnectFieldAnswerDAO.create(field, reply, term, counterpart);
+  }
+  
+  public WorkspaceMaterialConnectFieldAnswer findWorkspaceMaterialConnectFieldAnswerByFieldAndReplyAndTerm(WorkspaceMaterialField field, WorkspaceMaterialReply reply, QueryConnectFieldTerm term) {
+    return workspaceMaterialConnectFieldAnswerDAO.findByQueryFieldAndReplyAndTerm(field, reply, term);
+  }
+  
+  public WorkspaceMaterialConnectFieldAnswer updateWorkspaceMaterialConnectFieldAnswerCounterpart(WorkspaceMaterialConnectFieldAnswer workspaceMaterialConnectFieldAnswer, QueryConnectFieldCounterpart counterpart) {
+    return workspaceMaterialConnectFieldAnswerDAO.updateCounterpart(workspaceMaterialConnectFieldAnswer, counterpart);
+  }
+  
 }
