@@ -51,6 +51,7 @@ $(document).ready(function() {
     
     $("div[class*='dock-static-navi-button'] div[class*='tt-menu-link']").click(function (event) {
       $(".ui-dialog-content").dialog("close");
+
       var dTitle = this.innerHTML;
       
       
