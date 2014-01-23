@@ -7,7 +7,10 @@
   template="/workspaces/template.xhtml">
 
   <ui:define name="content.center.widget">
+    <h:outputStylesheet library="css" name="workspace-material.html.css" />
   
+    <h:outputScript name="scripts/jquery.jsplumb/jquery.jsPlumb-1.5.5-min.js" target="head"/>
+    <h:outputScript name="scripts/gui/muikku-connect-field-component.js" target="head"/>
     <h:outputScript name="scripts/gui/workspace-material.js" target="head"/>
      
     <h:form id="#{workspaceHtmlMaterialBackingBean.formId}">

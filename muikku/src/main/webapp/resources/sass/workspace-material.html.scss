@@ -1,0 +1,31 @@
+@import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
+@import "_commons.scss";
+
+$gap-width: 50px;
+
+.muikku-connect-field-counterparts, .muikku-connect-field-gap, .muikku-connect-field-terms {
+  display: table-cell;
+}
+
+.muikku-connect-field-gap {
+  width: $gap-width;  
+}
+
+.muikku-connect-field-counterpart, .muikku-connect-field-term {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 20px;
+  padding-right: 20px;
+  background: rgba(0, 0, 0, 0.05);
+  margin: 4px;
+  @include border(1px,#dadada);
+  @include rounded(10px);
+}
+
+.muikku-connect-field-term {
+  text-align: right;
+}
+
+.muikku-connect-field-counterpart {
+  text-align: left;
+}
