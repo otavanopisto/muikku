@@ -1,6 +1,7 @@
 package fi.muikku.plugins.dnm;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.jackson.map.ObjectMapper;
@@ -9,6 +10,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import fi.muikku.plugins.dnm.parser.DeusNexException;
+import fi.muikku.plugins.dnm.parser.DeusNexInternalException;
 import fi.muikku.plugins.dnm.parser.content.ConnectFieldOption;
 import fi.muikku.plugins.dnm.parser.content.DeusNexFieldElementHandler;
 import fi.muikku.plugins.dnm.parser.content.OptionListOption;
@@ -19,6 +22,7 @@ import fi.muikku.plugins.material.fieldmeta.ConnectFieldMeta;
 import fi.muikku.plugins.material.fieldmeta.FieldMeta;
 import fi.muikku.plugins.material.fieldmeta.MemoFieldMeta;
 import fi.muikku.plugins.material.fieldmeta.SelectFieldMeta;
+import fi.muikku.plugins.material.fieldmeta.SelectFieldOptionMeta;
 import fi.muikku.plugins.material.fieldmeta.TextFieldMeta;
 
 class FieldElementsHandler implements DeusNexFieldElementHandler {
@@ -29,6 +33,14 @@ class FieldElementsHandler implements DeusNexFieldElementHandler {
   }
 
   private Element wrapWithObjectElement(org.w3c.dom.Document ownerDocument, Element content, FieldMeta fieldMeta) {
+    return wrapWithObjectElement(ownerDocument, new Element[] { content}, fieldMeta);
+  }
+  
+  private Element wrapWithObjectElement(org.w3c.dom.Document ownerDocument, List<Element> contents, FieldMeta fieldMeta) {
+    return wrapWithObjectElement(ownerDocument, contents.toArray(new Element[0]), fieldMeta);
+  }
+
+  private Element wrapWithObjectElement(org.w3c.dom.Document ownerDocument, Element[] contents, FieldMeta fieldMeta) {
     ObjectMapper objectMapper = new ObjectMapper();
     
     Element objectElement = ownerDocument.createElement("object");
@@ -48,7 +60,10 @@ class FieldElementsHandler implements DeusNexFieldElementHandler {
 
     objectElement.appendChild(paramTypeElement);
     objectElement.appendChild(paramContentElement);
-    objectElement.appendChild(content);
+
+    for (Element content : contents) {
+      objectElement.appendChild(content);
+    }
     
     return objectElement;
   }
@@ -84,22 +99,96 @@ class FieldElementsHandler implements DeusNexFieldElementHandler {
   }
 
   @Override
-  public Node handleOptionList(org.w3c.dom.Document ownerDocument, String paramName, String type, List<OptionListOption> options, String help, String hint) {
+  public Node handleOptionList(org.w3c.dom.Document ownerDocument, String paramName, String type, List<OptionListOption> options, Integer size, String help, String hint) throws DeusNexException {
     // TODO: This is just for show, real implementation depends on QueryMaterial implementation
     
-    SelectFieldMeta optionListFieldData = fieldTranslator.translateOptionList(paramName, type, options);
+    SelectFieldMeta selectFieldMeta = fieldTranslator.translateOptionList(paramName, type, size, options);
 
+    switch (selectFieldMeta.getListType()) {
+      case "radio_horz":
+        return handleRadioHorzSelectField(ownerDocument, selectFieldMeta);
+      case "radio":
+        return handleRadioSelectField(ownerDocument, selectFieldMeta);
+      case "list":
+        return handleListSelectField(ownerDocument, selectFieldMeta);
+      case "dropdown":
+        return handleDropdownSelectField(ownerDocument, selectFieldMeta);
+      default:
+        throw new DeusNexInternalException("Unrecognized select field type: " + selectFieldMeta.getListType());
+    }
+  }
+  
+  private Node handleRadioHorzSelectField(Document ownerDocument, SelectFieldMeta selectFieldMeta) {
+    List<Element> elements = new ArrayList<>();
+
+    for (SelectFieldOptionMeta option : selectFieldMeta.getOptions()) {
+      Element inputElement = ownerDocument.createElement("input");
+      inputElement.setAttribute("type", "radio");
+      inputElement.setAttribute("value", option.getName());
+      inputElement.setAttribute("name", selectFieldMeta.getName());
+      
+      // TODO: Label For ...
+      Element labelElement = ownerDocument.createElement("label");
+      labelElement.setTextContent(option.getText());
+      
+      elements.add(inputElement);
+      elements.add(labelElement);
+    }
+
+    return wrapWithObjectElement(ownerDocument, elements, selectFieldMeta);
+  }
+  
+  private Node handleRadioSelectField(Document ownerDocument, SelectFieldMeta selectFieldMeta) {
+    List<Element> elements = new ArrayList<>();
+
+    for (SelectFieldOptionMeta option : selectFieldMeta.getOptions()) {
+      Element inputElement = ownerDocument.createElement("input");
+      inputElement.setAttribute("type", "radio");
+      inputElement.setAttribute("value", option.getName());
+      inputElement.setAttribute("name", selectFieldMeta.getName());
+      
+      // TODO: Label For ...
+      Element labelElement = ownerDocument.createElement("label");
+      labelElement.setTextContent(option.getText());
+      
+      elements.add(inputElement);
+      elements.add(labelElement);
+      elements.add(ownerDocument.createElement("br"));
+    }
+
+    return wrapWithObjectElement(ownerDocument, elements, selectFieldMeta);
+  }
+  
+  private Node handleDropdownSelectField(Document ownerDocument, SelectFieldMeta selectFieldMeta) {
     Element selectElement = ownerDocument.createElement("select");
-    selectElement.setAttribute("name", paramName);
+    selectElement.setAttribute("name", selectFieldMeta.getName());
 
-    for (OptionListOption option : options) {
+    for (SelectFieldOptionMeta option : selectFieldMeta.getOptions()) {
       Element optionElement = ownerDocument.createElement("option");
       optionElement.setAttribute("value", option.getName());
       optionElement.setTextContent(option.getText());
       selectElement.appendChild(optionElement);
     }
 
-    return wrapWithObjectElement(ownerDocument, selectElement, optionListFieldData);
+    return wrapWithObjectElement(ownerDocument, selectElement, selectFieldMeta);
+  }
+  
+  private Node handleListSelectField(Document ownerDocument, SelectFieldMeta selectFieldMeta) {
+    Element selectElement = ownerDocument.createElement("select");
+    selectElement.setAttribute("name", selectFieldMeta.getName());
+    
+    if (selectFieldMeta.getSize() != null) {
+      selectElement.setAttribute("size", String.valueOf(selectFieldMeta.getSize()));
+    }
+    
+    for (SelectFieldOptionMeta option : selectFieldMeta.getOptions()) {
+      Element optionElement = ownerDocument.createElement("option");
+      optionElement.setAttribute("value", option.getName());
+      optionElement.setTextContent(option.getText());
+      selectElement.appendChild(optionElement);
+    }
+
+    return wrapWithObjectElement(ownerDocument, selectElement, selectFieldMeta);
   }
 
   @Override

@@ -201,9 +201,11 @@ public class DeusNexContentParser {
 		}
 	}
 	
-	private Node handleOptionListField(Document ownerDocument, Element fieldElement) throws XPathExpressionException {
+	private Node handleOptionListField(Document ownerDocument, Element fieldElement) throws XPathExpressionException, DeusNexException {
 		String paramName = DeusNexXmlUtils.getChildValue(fieldElement, "paramname");
 		String type = DeusNexXmlUtils.getChildValue(fieldElement, "type");
+		Integer size = DeusNexXmlUtils.getChildValueInteger(fieldElement, "fieldsvisible");
+		
 		List<OptionListOption> options = new ArrayList<>();
 		
 		List<Element> optionElements = DeusNexXmlUtils.getElementsByXPath(fieldElement, "option");
@@ -217,7 +219,7 @@ public class DeusNexContentParser {
 		}
 		
 		if (fieldElementHandler != null) {
-			return fieldElementHandler.handleOptionList(ownerDocument, paramName, type, options, helpOf(fieldElement), hintOf(fieldElement));
+			return fieldElementHandler.handleOptionList(ownerDocument, paramName, type, options, size, helpOf(fieldElement), hintOf(fieldElement));
 		}
 		
 		return null;
@@ -241,7 +243,7 @@ public class DeusNexContentParser {
     return help;
   }
 	
-	private Node handleTextField(Document ownerDocument, Element fieldElement) throws XPathExpressionException {
+	private Node handleTextField(Document ownerDocument, Element fieldElement) throws XPathExpressionException, DeusNexException {
 		String paramName = DeusNexXmlUtils.getChildValue(fieldElement, "paramname");
 		Integer columns = DeusNexXmlUtils.getChildValueInteger(fieldElement, "columns");
 		
@@ -260,7 +262,7 @@ public class DeusNexContentParser {
 		return null;
 	}
   
-  private Node handleMemoField(Document ownerDocument, Element embeddedItemElement) throws XPathExpressionException {
+  private Node handleMemoField(Document ownerDocument, Element embeddedItemElement) throws XPathExpressionException, DeusNexException {
     String paramName = DeusNexXmlUtils.getChildValue(embeddedItemElement, "paramname");
     Integer columns = DeusNexXmlUtils.getChildValueInteger(embeddedItemElement, "columns");
     Integer rows = DeusNexXmlUtils.getChildValueInteger(embeddedItemElement, "rows");
@@ -274,7 +276,7 @@ public class DeusNexContentParser {
     return null;
   }
 	
-	private Node handleConnectField(Document ownerDocument, Element fieldElement) throws XPathExpressionException {
+	private Node handleConnectField(Document ownerDocument, Element fieldElement) throws XPathExpressionException, DeusNexException {
 		String paramName = DeusNexXmlUtils.getChildValue(fieldElement, "paramname");
 		
 		List<ConnectFieldOption> options = new ArrayList<>();

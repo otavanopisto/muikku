@@ -50,12 +50,12 @@ public class FieldTranslator {
     return new MemoFieldMeta(name, columns, rows, help, hint);
   }
   
-  public SelectFieldMeta translateOptionList(String name, String listType, List<OptionListOption> options) {
+  public SelectFieldMeta translateOptionList(String name, String listType, Integer size, List<OptionListOption> options) {
     List<SelectFieldOptionMeta> translatedOptions = new ArrayList<>();
     for (OptionListOption option : options) {
       translatedOptions.add(new SelectFieldOptionMeta(option.getName(), option.getPoints(), option.getText()));
     }
-    return new SelectFieldMeta(name, listType, translatedOptions);
+    return new SelectFieldMeta(name, listType, size, translatedOptions);
   }
   
   public ConnectFieldMeta translateConnectField(String name, List<ConnectFieldOption> options) {
