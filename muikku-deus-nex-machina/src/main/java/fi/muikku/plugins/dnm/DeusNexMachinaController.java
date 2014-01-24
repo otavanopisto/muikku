@@ -4,6 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -11,7 +13,6 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
 import javax.enterprise.context.ApplicationScoped;
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 
 import org.apache.commons.lang.math.NumberUtils;
@@ -24,7 +25,6 @@ import fi.muikku.plugins.dnm.parser.DeusNexInternalException;
 import fi.muikku.plugins.dnm.parser.content.DeusNexContentParser;
 import fi.muikku.plugins.dnm.parser.content.DeusNexEmbeddedItemElementHandler;
 import fi.muikku.plugins.dnm.parser.structure.DeusNexDocument;
-import fi.muikku.plugins.dnm.parser.structure.DeusNexDocumentUtils;
 import fi.muikku.plugins.dnm.parser.structure.DeusNexStructureParser;
 import fi.muikku.plugins.dnm.parser.structure.model.Binary;
 import fi.muikku.plugins.dnm.parser.structure.model.Document;
@@ -43,6 +43,7 @@ import fi.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
+import fi.muikku.servlet.ContextPath;
 
 @ApplicationScoped
 @Stateful
@@ -51,6 +52,10 @@ public class DeusNexMachinaController {
   @Inject 
   private Logger logger;
   
+  @Inject
+  @ContextPath
+  private String contextPath;
+
   private class EmbeddedItemHandler implements DeusNexEmbeddedItemElementHandler {
   	
     public EmbeddedItemHandler(DeusNexMachinaController deusNexMachinaController, WorkspaceRootFolder rootFolder, DeusNexDocument deusNexDocument) {
@@ -152,7 +157,6 @@ public class DeusNexMachinaController {
   	}
   	
   	private String getResourcePath(Integer resourceNo) {
-  		String contextPath = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
   		String path = null;
   		String type = null;
   		
@@ -161,13 +165,15 @@ public class DeusNexMachinaController {
   		  // Resource has been imported before
   		  WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceNodeId);
   		  if (workspaceMaterial != null) {
-  		    path = contextPath + WorkspaceMaterialUtils.getCompletePath(workspaceMaterial);
+  		    path = contextPath + "/" + WorkspaceMaterialUtils.getCompletePath(workspaceMaterial);
   		    type = "POOL";
   		  } 
   		} else {
   		  Resource resource = deusNexDocument.getResourceByNo(resourceNo);
   		  if (resource != null) {
-  		    path = contextPath + WorkspaceMaterialUtils.getCompletePath(rootFolder) + "/materials/" + DeusNexDocumentUtils.getRelativePath(deusNexDocument, resource, deusNexDocument.getRootFolder());
+  		    String rootPath = WorkspaceMaterialUtils.getCompletePath(rootFolder);
+  		    String resourcePath = getResourcePath(deusNexDocument, resource);
+  		    path = contextPath + "/" + rootPath + resourcePath;
   		    type = "DND";
   		  }
   		}
@@ -178,6 +184,20 @@ public class DeusNexMachinaController {
   		
   		return path;
   	}
+  	
+  	private String getResourcePath(DeusNexDocument deusNexDocument, Resource resource) {
+      List<String> result = new ArrayList<String>();
+      
+      ResourceContainer parent = deusNexDocument.getParent(resource);
+      do {
+        result.add(0, parent.getName()); 
+        parent = deusNexDocument.getParent(parent);
+      } while (parent != null);
+      
+      result.add(resource.getName());
+      
+      return StringUtils.join(result, '/');
+    }
   	
   	private String getResorceContentType(Integer resourceNo) {
   		Resource resource = deusNexDocument.getResourceByNo(resourceNo);
