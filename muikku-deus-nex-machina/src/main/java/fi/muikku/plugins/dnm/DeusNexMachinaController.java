@@ -112,7 +112,7 @@ public class DeusNexMachinaController {
   		  if (showAsLink) {
   		    Element linkElement = ownerDocument.createElement("a");
   		    linkElement.setTextContent(linkText);
-  		    linkElement.setAttribute("target", "_newwindow");
+  		    linkElement.setAttribute("target", "_blank");
   		    linkElement.setAttribute("href", path);
   		    return linkElement;
   		  } else {
