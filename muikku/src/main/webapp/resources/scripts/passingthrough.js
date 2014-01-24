@@ -48,30 +48,4 @@ $(document).ready(function() {
        tools.hide( "fade", 250 );
     });
 
-    
-    $("div[class*='dock-static-navi-button'] div[class*='tt-menu-link']").click(function (event) {
-      $(".ui-dialog-content").dialog("close");
-
-      var dTitle = this.innerHTML;
-      
-      
-      renderDustTemplate($(this).data('dust-template'), {}, function (text) {
-        $(text).dialog({
-          
-          title: dTitle,
-          
-          show: {
-            effect: "fade",
-            duration: 500
-            },
-          hide: {
-            effect: "fade",
-            duration: 500
-            }
-        });
-      });      
-    
-    });
-    
-
 });
