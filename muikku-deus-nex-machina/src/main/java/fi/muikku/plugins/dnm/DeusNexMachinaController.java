@@ -294,9 +294,12 @@ public class DeusNexMachinaController {
   				}
     			
     			if (resource instanceof ResourceContainer) {
-      			for (Resource childResource : ((ResourceContainer) resource).getResources()) {
-      				importResource(rootFolder, workspaceNode, childResource, deusNexDocument);
-      			}
+    			  List<Resource> childResources = ((ResourceContainer) resource).getResources();
+    			  if (childResources != null) {
+        			for (Resource childResource : childResources) {
+        				importResource(rootFolder, workspaceNode, childResource, deusNexDocument);
+        			}
+    			  }
       		}
     		}
 			} else {
