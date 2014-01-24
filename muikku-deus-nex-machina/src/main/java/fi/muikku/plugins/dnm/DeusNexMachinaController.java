@@ -109,26 +109,35 @@ public class DeusNexMachinaController {
   	public Node handleEmbeddedAudio(org.w3c.dom.Document ownerDocument, Integer resourceNo, Boolean showAsLink, String fileName, String linkText, Boolean autoStart, Boolean loop) {
   		String path = getResourcePath(resourceNo);
   		if (path != null) {
-  			Element audioElement = ownerDocument.createElement("audio");
-  			
-  			String contentType = getResorceContentType(resourceNo);
-  			if (StringUtils.isNotBlank(contentType)) {
-    			Element sourceElement = ownerDocument.createElement("source");
-    			sourceElement.setAttribute("src", path + "?embed=true");
-    			sourceElement.setAttribute("type", contentType);
-  			} else {
-  			  logger.warning("Embedded audio " + resourceNo + " content type could not be resolved.");
-  			}
-  			
-  			if (autoStart) {
-  			  audioElement.setAttribute("autoplay", "autoplay");
-  			}
-  
-  			if (loop) {
-  			  audioElement.setAttribute("loop", "loop");
-  			}
-  
-  			return audioElement;
+  		  if (showAsLink) {
+  		    Element linkElement = ownerDocument.createElement("a");
+  		    linkElement.setTextContent(linkText);
+  		    linkElement.setAttribute("target", "_newwindow");
+  		    linkElement.setAttribute("href", path);
+  		    return linkElement;
+  		  } else {
+    			Element audioElement = ownerDocument.createElement("audio");
+    			
+    			String contentType = getResorceContentType(resourceNo);
+    			if (StringUtils.isNotBlank(contentType)) {
+      			Element sourceElement = ownerDocument.createElement("source");
+      			sourceElement.setAttribute("src", path + "?embed=true");
+      			sourceElement.setAttribute("type", contentType);
+      			audioElement.appendChild(sourceElement);
+    			} else {
+    			  logger.warning("Embedded audio " + resourceNo + " content type could not be resolved.");
+    			}
+    			
+    			if (autoStart) {
+    			  audioElement.setAttribute("autoplay", "autoplay");
+    			}
+    
+    			if (loop) {
+    			  audioElement.setAttribute("loop", "loop");
+    			}
+    
+    			return audioElement;
+  		  }
   		} else {
   		  logger.warning("Embedded audio " + resourceNo + " could not be found.");
   		}
