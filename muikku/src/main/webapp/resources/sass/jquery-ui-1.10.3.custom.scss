@@ -199,6 +199,12 @@
 	left: 0;
 	cursor: default;
 }
+
+.ui-autocomplete-category{
+	@extend .co-widget-header;
+	padding:5px;
+	
+} 
 .ui-button {
 	display: inline-block;
 	position: relative;
@@ -542,9 +548,10 @@ button.ui-button::-moz-focus-inner {
 	position: absolute;
 }
 .ui-menu .ui-menu-item {
-	margin: 0;
+	margin: 5px;
 	padding: 0;
 	width: 100%;
+
 	/* support: IE10, see #8844 */
 	list-style-image: url(data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7);
 }

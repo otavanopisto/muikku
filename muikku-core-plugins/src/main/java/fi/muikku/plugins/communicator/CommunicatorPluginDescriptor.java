@@ -66,7 +66,11 @@ public class CommunicatorPluginDescriptor implements PluginDescriptor, Persisten
 		  CommunicatorPermissionResolver.class,
 		  CommunicatorPermissionCollection.class,
 		  
-		  CommunicatorSeekerResultProvider.class
+		  CommunicatorSeekerResultProvider.class,
+		  
+		  /* Misc */
+		  
+		  CommunicatorMessagingWidget.class
 		));
 	}
 	

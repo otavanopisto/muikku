@@ -1,0 +1,31 @@
+<div class="cm-newGuidanceRequest">
+  <form>
+    <div class="mf-toolbar">
+      <input type="button" name="newGuidanceRequestSubmit" value='{#localize key="plugin.communicator.newmessage.send"/}'/>
+<!--       <input type="button" name="cancel" value='{#localize key="plugin.communicator.newmessage.cancel"/}'/> -->
+    </div>
+
+    <div class="mf-content">
+      <input type="hidden" name="newGuidanceRequestContext" value="{newGuidanceRequestContext}" />
+      <input type="hidden" name="newGuidanceRequestContextId" value="{newGuidanceRequestContextId}" />
+      <div class="cm-newGuidanceRequest-message">
+<!--         <div class="mf-fieldRow cm-newMessage-subject"> -->
+<!--           <div class="mf-labelfield">{#localize key="plugin.communicator.subject"/}</div> -->
+<!--           <div class="mf-textfield"> -->
+<!--           	<input type="text" name="subject" /> -->
+<!--           </div> -->
+<!--         </div> -->
+<!--         <div class="clear"></div> -->
+        <div class="cm-newGuidanceRequest-content">
+          <div class="mf-labelfield">{#localize key="plugin.communicator.content"/}</div>
+          <div class="clear"></div>
+
+          <div class="">
+            <textarea name="newGuidanceRequestMessage"></textarea>
+          </div>
+        </div>    
+      </div>
+    </div>
+  </form>
+
+</div>

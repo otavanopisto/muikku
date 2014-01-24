@@ -9,7 +9,7 @@
   
   <div class="wallEntryTitle">
     <a class="wallEntryCreator" href="{@contextPath/}/user/{guidanceRequest.student_tq.id}">{guidanceRequest.student_tq.fullName}</a>
-
+      &nbsp;
       pyysi ohjausta 
       {?guidanceRequest.workspace}
       kurssilla <a class="wallEntryCourseLink" href="{@contextPath/}/workspace/{guidanceRequest.workspace_tq.urlName}">{guidanceRequest.workspace_tq.urlName}</a>

@@ -1,10 +1,13 @@
 package fi.muikku.rest.course;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -14,10 +17,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
+import fi.muikku.controller.messaging.MessagingWidget;
+import fi.muikku.i18n.LocaleController;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.model.workspace.WorkspaceRoleEntity;
+import fi.muikku.model.workspace.WorkspaceSettings;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.rest.AbstractRESTService;
+import fi.muikku.schooldata.RoleController;
 import fi.muikku.schooldata.UserController;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.User;
@@ -49,14 +57,18 @@ public class CourseRESTService extends AbstractRESTService {
   @Inject
   private UserController userController;
   
-//  @Inject
-//  private WallController wallController;
-//
-//  @Inject
-//  private ForumController forumController;
-//  
+  @Inject
+  private RoleController roleController;
+  
   @Inject
   private WorkspaceController workspaceController;
+  
+  @Inject
+  private LocaleController localeController;
+
+  @Inject
+  @Any
+  private Instance<MessagingWidget> messagingWidgets;
   
   @GET
   @Path ("/")
@@ -117,13 +129,32 @@ public class CourseRESTService extends AbstractRESTService {
     WorkspaceUserEntity workspaceUserEntity = workspaceController.findWorkspaceUserEntityByWorkspaceAndUser(workspaceEntity, userEntity);
         
     if (workspaceUserEntity == null) {
-      // TODO: Role
-      String roleSchoolDataSource = "MOCK";
-      String roleIdentifier = "5";
-      User user = userController.findUser(userEntity);
-      Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-      WorkspaceUser workspaceUser = workspaceController.createWorkspaceUser(workspace, user, roleSchoolDataSource, roleIdentifier);
+      WorkspaceSettings workspaceSettings = workspaceController.findWorkspaceSettings(workspaceEntity);
+      WorkspaceRoleEntity defaultWorkspaceUserRole = workspaceSettings.getDefaultWorkspaceUserRole();
+      WorkspaceUser workspaceUser = workspaceController.createWorkspaceUser(workspaceEntity, userEntity, defaultWorkspaceUserRole);
       workspaceUserEntity = workspaceController.findWorkspaceUserEntity(workspaceUser);
+
+      // TODO: should this work based on permission? Permission -> Roles -> Recipients
+      WorkspaceRoleEntity role = roleController.ROLE_WORKSPACE_TEACHER();
+      List<WorkspaceUserEntity> workspaceTeachers = workspaceController.listWorkspaceUserEntitiesByRole(workspaceEntity, role);
+      List<UserEntity> teachers = new ArrayList<UserEntity>();
+      
+      Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+      String workspaceName = workspace.getName();
+      
+      User user = userController.findUser(userEntity);
+      String userName = user.getFirstName() + " " + user.getLastName();
+      
+      for (WorkspaceUserEntity cu : workspaceTeachers)
+        teachers.add(cu.getUser());
+      
+      for (MessagingWidget messagingWidget : messagingWidgets) {
+        String caption = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.caption");
+        String content = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.content");
+        caption = MessageFormat.format(caption, workspaceName);
+        content = MessageFormat.format(content, userName, workspaceName);
+        messagingWidget.postMessage(userEntity, caption, content, teachers);
+      }
     }
     
     TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
@@ -135,189 +166,6 @@ public class CourseRESTService extends AbstractRESTService {
     ).build();
   }
   
-  
-//  @GET
-//  @Path ("/{WALLID}/listWallEntries")
-//  public Response listWallEntries( 
-//      @PathParam ("WALLID") Long wallId) {
-//    
-//    Wall wall = wallController.findWallById(wallId); 
-//
-//    List<WallEntry> entries = wallController.listWallEntries(wall);
-//    
-//    TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
-//    Tranquility tranquility = tranquilityBuilder.createTranquility()
-//      .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
-//      .addInstruction("replies", tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
-//      .addInstruction(UserEntity.class, tranquilityBuilder.createPropertyInjectInstruction("hasPicture", new UserEntityHasPictureValueGetter()));
-//    
-//    Collection<TranquilModelEntity> entities = tranquility.entities(entries);
-//    
-//    return Response.ok(
-//      entities
-//    ).build();
-//  }
-//
-//  @POST
-//  @Path ("/{WALLID}/addTextEntry") 
-//  @LoggedIn
-//  public Response addTextEntry(
-//      @PathParam ("WALLID") Long wallId,
-//      @FormParam ("text") String text,
-//      @FormParam ("visibility") String visibility
-//   ) throws AuthorizationException {
-//    UserEntity user = sessionController.getUser();
-//
-//    Wall wall = wallController.findWallById(wallId);
-//
-//    if (!wallController.canPostEntry(wall))
-//      throw new AuthorizationException("Not authorized");
-//
-//    try {
-//      WallEntry entry = wallController.createWallEntry(wall, WallEntryVisibility.valueOf(visibility), user);
-//
-//      wallController.createWallEntryTextItem(entry, text, user);
-//      
-//      TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
-//      Tranquility tranquility = tranquilityBuilder.createTranquility()
-//        .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
-//        .addInstruction(UserEntity.class, tranquilityBuilder.createPropertyInjectInstruction("hasPicture", new UserEntityHasPictureValueGetter()));
-//      
-//      return Response.ok(
-//        tranquility.entity(entry)
-//      ).build();
-//    } catch (ConstraintViolationException violationException) {
-//      return getConstraintViolations(violationException);
-//    }
-//  }
-//
-//  @POST
-//  @Path ("/{WALLID}/addGuidanceRequest") 
-//  @LoggedIn
-//  public Response addGuidanceRequest(
-//      @PathParam ("WALLID") Long wallId,
-//      @FormParam ("text") String text,
-//      @FormParam ("visibility") String visibility
-//   ) throws AuthorizationException {
-//    UserEntity user = sessionController.getUser();
-//
-//    Wall wall = wallController.findWallById(wallId);
-//
-//    if (!wallController.canPostEntry(wall))
-//      throw new AuthorizationException("Not authorized");
-//
-//    try {
-//      WallEntry entry = wallController.createWallEntry(wall, WallEntryVisibility.valueOf(visibility), user);
-//      
-//      wallController.createWallEntryGuidanceRequestItem(entry, text, user);
-//      
-//      TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
-//      Tranquility tranquility = tranquilityBuilder.createTranquility()
-//        .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
-//        .addInstruction(UserEntity.class, tranquilityBuilder.createPropertyInjectInstruction("hasPicture", new UserEntityHasPictureValueGetter()));
-//
-//      return Response.ok(
-//        tranquility.entity(entry)
-//      ).build();
-//    } catch (ConstraintViolationException violationException) {
-//      return getConstraintViolations(violationException);
-//    }
-//  }
-//
-//
-//  @POST
-//  @Path ("/{WALLID}/addWallEntryComment") 
-//  @LoggedIn
-//  public Response addWallEntryComment(
-//      @PathParam ("WALLID") Long wallId,
-//      @FormParam ("wallEntryId") Long wallEntryId,
-//      @FormParam ("text") String text
-//   ) throws AuthorizationException {
-//    UserEntity user = sessionController.getUser();
-//
-//    Wall wall = wallController.findWallById(wallId);
-//
-//    // TODO: oikeudet entryyn
-//    
-//    if (!wallController.canPostEntry(wall))
-//      throw new AuthorizationException("Not authorized");
-//
-//    WallEntry wallEntry = wallController.findWallEntryById(wallEntryId);
-//    
-//    try {
-//      WallEntryReply reply = wallController.createWallEntryReply(wall, wallEntry, user);
-//      wallController.createWallEntryTextItem(reply, text, user);
-//      
-//      TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
-//      Tranquility tranquility = tranquilityBuilder.createTranquility()
-//        .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
-//        .addInstruction(UserEntity.class, tranquilityBuilder.createPropertyInjectInstruction("hasPicture", new UserEntityHasPictureValueGetter()));
-//
-//      return Response.ok(
-//          tranquility.entity(reply)
-//        ).build();
-//      
-//    } catch (ConstraintViolationException violationException) {
-//      return getConstraintViolations(violationException);
-//    }
-//  }
-//  
-//  private class UserEntityHasPictureValueGetter implements ValueGetter<Boolean> {
-//    @Override
-//    public Boolean getValue(TranquilizingContext context) {
-//      UserEntity user = (UserEntity) context.getEntityValue();
-//      return userController.getUserHasPicture(user);
-//    }
-//  }
-//
-//  private class UserNameValueGetter implements ValueGetter<String> {
-//    @Override
-//    public String getValue(TranquilizingContext context) {
-//      UserEntity userEntity = (UserEntity) context.getEntityValue();
-//      User user = userController.findUser(userEntity);
-//      return user.getFirstName() + " " + user.getLastName();
-//    }
-//  }
-//
-//  private class WallEntityNameGetter implements ValueGetter<String> {
-//    @Override
-//    public String getValue(TranquilizingContext context) {
-//      Wall wall = (Wall) context.getEntityValue();
-//      return wallController.getWallName(wall);
-//    }
-//  }
-//
-//  private class ForumThreadReplyInjector implements ValueGetter<Collection<TranquilModelEntity>> {
-//    @Override
-//    public Collection<TranquilModelEntity> getValue(TranquilizingContext context) {
-//      ForumThread forumThread = (ForumThread) context.getEntityValue();
-//      
-//      List<ForumThreadReply> replies = forumController.listForumThreadReplies(forumThread);
-//      TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
-//      Tranquility tranquility = tranquilityBuilder.createTranquility()
-//          .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
-//          .addInstruction(UserEntity.class, tranquilityBuilder.createPropertyInjectInstruction("hasPicture", new UserEntityHasPictureValueGetter()))
-//          .addInstruction(UserEntity.class, tranquilityBuilder.createPropertyInjectInstruction("fullName", new UserNameValueGetter()));
-//      
-//      return tranquility.entities(replies);
-//    }
-//  }
-  
-//  private class CourseSchoolDataInjector implements ValueGetter<TranquilModelEntity> {
-//    @Override
-//    public TranquilModelEntity getValue(TranquilizingContext context) {
-//      CourseEntity courseEntity = (CourseEntity) context.getEntityValue();
-//
-//      Course course = courseController.findCourse(courseEntity);
-//      
-//      TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
-//      Tranquility tranquility = tranquilityBuilder.createTranquility()
-//          .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE));
-//      
-//      return tranquility.entity(course);
-//    }
-//  }
-
   private class CourseNameInjector implements ValueGetter<String> {
     @Override
     public String getValue(TranquilizingContext context) {
@@ -374,9 +222,7 @@ public class CourseRESTService extends AbstractRESTService {
     public Collection<TranquilModelEntity> getValue(TranquilizingContext context) {
       WorkspaceEntity courseEntity = (WorkspaceEntity) context.getEntityValue();
       
-      // TODO Define teachers
-      
-      List<WorkspaceUserEntity> teachers = workspaceController.listWorkspaceUserEntities(courseEntity);
+      List<WorkspaceUserEntity> teachers = workspaceController.listWorkspaceUserEntitiesByRole(courseEntity, roleController.ROLE_WORKSPACE_TEACHER());
       List<UserEntity> teacherUserEntities = new ArrayList<UserEntity>();
       
       for (WorkspaceUserEntity cu : teachers)
