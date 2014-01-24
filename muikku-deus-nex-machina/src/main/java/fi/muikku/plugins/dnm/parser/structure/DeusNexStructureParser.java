@@ -88,13 +88,22 @@ public class DeusNexStructureParser {
 	}
 	
 	private Resource parseLink(Element resourceElement) throws DeusNexInternalException {
+	  // TODO: Add support for proper link materials
     Document document = new Document();
+    
     Element linkElement = resourceElement.getOwnerDocument().createElement("a");
     try {
       linkElement.setAttribute("href", DeusNexXmlUtils.getChildValue(resourceElement, "path"));
       linkElement.setTextContent(DeusNexXmlUtils.getChildValue(resourceElement, "title"));
       parseBasicResourceProperties(resourceElement, document);
-      document.setDocument(linkElement);
+      
+      Element documentElement = resourceElement.getOwnerDocument().createElement("document");
+      Element fckDocumentElement = resourceElement.getOwnerDocument().createElement("fckdocument");
+      fckDocumentElement.setAttribute("lang", "fi");
+      fckDocumentElement.appendChild(linkElement);
+      documentElement.appendChild(fckDocumentElement);
+      
+      document.setDocument(documentElement);
     } catch (DOMException | XPathExpressionException | DeusNexSyntaxException e) {
       throw new DeusNexInternalException("Link parsing failed", e);
     }
