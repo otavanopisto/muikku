@@ -10,10 +10,11 @@ public class SelectFieldMeta extends FieldMeta {
     
   }
 
-  public SelectFieldMeta(String name, String listType, List<SelectFieldOptionMeta> selectFieldOptionMetas) {
+  public SelectFieldMeta(String name, String listType, Integer size, List<SelectFieldOptionMeta> selectFieldOptionMetas) {
     super(name);
     this.setOptions(selectFieldOptionMetas);
     this.setListType(listType);
+    this.setSize(size);
   }
   
   public List<SelectFieldOptionMeta> getOptions() {
@@ -38,7 +39,15 @@ public class SelectFieldMeta extends FieldMeta {
     this.listType = listType;
   }
 
+  public Integer getSize() {
+    return size;
+  }
+  
+  public void setSize(Integer size) {
+    this.size = size;
+  }
+  
   private List<SelectFieldOptionMeta> selectFieldOptionMetas;
   private String listType;
-  
+  private Integer size;
 }

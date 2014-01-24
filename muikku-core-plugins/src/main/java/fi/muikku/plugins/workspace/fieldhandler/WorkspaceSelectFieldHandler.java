@@ -15,8 +15,8 @@ import org.w3c.dom.Node;
 
 import fi.muikku.plugins.material.MaterialQueryIntegrityExeption;
 import fi.muikku.plugins.material.QueryFieldController;
-import fi.muikku.plugins.material.fieldmeta.SelectFieldOptionMeta;
 import fi.muikku.plugins.material.fieldmeta.SelectFieldMeta;
+import fi.muikku.plugins.material.fieldmeta.SelectFieldOptionMeta;
 import fi.muikku.plugins.material.model.QuerySelectField;
 import fi.muikku.plugins.material.model.QuerySelectFieldOption;
 import fi.muikku.plugins.workspace.WorkspaceMaterialFieldAnswerController;
@@ -46,8 +46,27 @@ public class WorkspaceSelectFieldHandler extends AbstractWorkspaceFieldHandler {
     String parameterName = getHtmlFieldName(workspaceMaterialField.getName());
     WorkspaceMaterialSelectFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialSelectFieldAnswerByQueryFieldAndReply(workspaceMaterialField, workspaceMaterialReply);
     
+    switch (selectFieldMeta.getListType()) {
+      case "list":
+      case "dropdown":
+        renderSelectField(ownerDocument, objectElement, selectFieldMeta, parameterName, fieldAnswer);
+      break;
+      case "radio":
+        renderRadioField(ownerDocument, objectElement, selectFieldMeta, parameterName, fieldAnswer, true);
+      break;
+      case "radio_horz":
+        renderRadioField(ownerDocument, objectElement, selectFieldMeta, parameterName, fieldAnswer, false);
+      break;
+    }
+  }
+
+  private void renderSelectField(Document ownerDocument, Element objectElement, SelectFieldMeta selectFieldMeta, String parameterName, WorkspaceMaterialSelectFieldAnswer fieldAnswer) {
     Element selectElement = ownerDocument.createElement("select");
     selectElement.setAttribute("name", parameterName);
+    
+    if (selectFieldMeta.getSize() != null) {
+      selectElement.setAttribute("size", String.valueOf(selectFieldMeta.getSize()));
+    }
     
     for (SelectFieldOptionMeta selectFieldOptionMeta : selectFieldMeta.getOptions()) {
       Element optionElement = ownerDocument.createElement("option");
@@ -60,9 +79,39 @@ public class WorkspaceSelectFieldHandler extends AbstractWorkspaceFieldHandler {
       optionElement.setTextContent(selectFieldOptionMeta.getText());
       selectElement.appendChild(optionElement);
     }
-
+    
     Node objectParent = objectElement.getParentNode();
     objectParent.insertBefore(selectElement, objectElement);
+    objectParent.removeChild(objectElement);
+  }
+
+  private void renderRadioField(Document ownerDocument, Element objectElement, SelectFieldMeta selectFieldMeta, String parameterName,
+      WorkspaceMaterialSelectFieldAnswer fieldAnswer, boolean horizontal) {
+    
+    Node objectParent = objectElement.getParentNode();
+    objectParent.insertBefore(objectElement, objectElement);
+    
+    for (SelectFieldOptionMeta option : selectFieldMeta.getOptions()) {
+      Element inputElement = ownerDocument.createElement("input");
+      inputElement.setAttribute("type", "radio");
+      inputElement.setAttribute("value", option.getName());
+      inputElement.setAttribute("name", parameterName);
+      
+      if ((fieldAnswer != null) && (fieldAnswer.getValue() != null) && fieldAnswer.getValue().getName().equals(option.getName())) {
+        inputElement.setAttribute("checked", "checked");
+      }
+      
+      // TODO: Label For ...
+      Element labelElement = ownerDocument.createElement("label");
+      labelElement.setTextContent(option.getText());
+
+      objectParent.insertBefore(inputElement, objectElement);  
+      objectParent.insertBefore(labelElement, objectElement);
+      if (!horizontal) {
+        objectParent.insertBefore(ownerDocument.createElement("br"), objectElement);      
+      }
+    }
+    
     objectParent.removeChild(objectElement);
   }
 
