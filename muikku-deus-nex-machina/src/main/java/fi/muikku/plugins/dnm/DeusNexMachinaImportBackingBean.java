@@ -22,7 +22,6 @@ import com.ocpsoft.pretty.faces.annotation.URLMappings;
 import com.ocpsoft.pretty.faces.annotation.URLQueryParameter;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.plugins.dnm.parser.DeusNexException;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
@@ -118,7 +117,7 @@ public class DeusNexMachinaImportBackingBean {
   	try {
   	  try {
         deusNexMachinaController.importDeusNexDocument(parentNode, inputStream);
-      } catch (DeusNexException e) {
+      } catch (Throwable e) {
         e.printStackTrace();
         throw new IOException(e);
       }
