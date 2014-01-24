@@ -57,6 +57,10 @@ public class WorkspaceSelectFieldHandler extends AbstractWorkspaceFieldHandler {
       case "radio_horz":
         renderRadioField(ownerDocument, objectElement, selectFieldMeta, parameterName, fieldAnswer, false);
       break;
+      case "checklist":
+        // TODO: Add proper checklist support
+        renderSelectField(ownerDocument, objectElement, selectFieldMeta, parameterName, fieldAnswer);
+      break;
     }
   }
 

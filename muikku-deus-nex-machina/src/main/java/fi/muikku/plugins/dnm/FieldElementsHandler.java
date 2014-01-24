@@ -113,6 +113,9 @@ class FieldElementsHandler implements DeusNexFieldElementHandler {
         return handleListSelectField(ownerDocument, selectFieldMeta);
       case "dropdown":
         return handleDropdownSelectField(ownerDocument, selectFieldMeta);
+      case "checklist":
+        // TODO: Add proper checklist support
+        return handleDropdownSelectField(ownerDocument, selectFieldMeta);
       default:
         throw new DeusNexInternalException("Unrecognized select field type: " + selectFieldMeta.getListType());
     }
