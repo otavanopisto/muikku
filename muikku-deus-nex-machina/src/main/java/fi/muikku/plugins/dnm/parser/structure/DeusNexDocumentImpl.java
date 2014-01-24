@@ -1,6 +1,7 @@
 package fi.muikku.plugins.dnm.parser.structure;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import fi.muikku.plugins.dnm.parser.structure.model.ResourceContainer;
@@ -44,18 +45,24 @@ public class DeusNexDocumentImpl implements DeusNexDocument {
 		resourceMap.put(resource.getNo(), resource);
 		
 		if (resource instanceof ResourceContainer) {
-			for (Resource child : ((ResourceContainer) resource).getResources()) {
-				mapResources(child);
-			}
+		  List<Resource> children = ((ResourceContainer) resource).getResources();
+		  if (children != null) {
+			  for (Resource child : children) {
+				  mapResources(child);
+			  }
+		  }
 		}
 	}
 	
 	private void mapParents(Resource resource) {
 		if (resource instanceof ResourceContainer) {
-			for (Resource child : ((ResourceContainer) resource).getResources()) {
-				parents.put(child.getNo(), resource.getNo());
-				mapParents(child);
-			}
+		  List<Resource> children = ((ResourceContainer) resource).getResources();
+		  if (children != null) {
+  			for (Resource child : children) {
+  				parents.put(child.getNo(), resource.getNo());
+  				mapParents(child);
+  			}
+		  }
 		}
 	}
 
