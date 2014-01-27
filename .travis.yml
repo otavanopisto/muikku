@@ -37,3 +37,8 @@ after_success:
   - mvn deploy --settings ~/.m2/mySettings.xml
   - sshpass -e ssh -p $DEPLOY_PORT -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null $DEPLOY_USER@$DEPLOY_HOST cat < $TRAVIS_BUILD_DIR/muikku/target/muikku.war ">" /tmp/ROOT.war
   - sshpass -e ssh -p $DEPLOY_PORT -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null $DEPLOY_USER@$DEPLOY_HOST 'bash -s < ~/bin/deploy.sh' 
+
+# Notifications 
+notifications:
+  irc:
+    - "chat.freenode.net#otavanopisto-muikku"
