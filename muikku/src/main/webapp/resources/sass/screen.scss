@@ -93,6 +93,7 @@ a.tooltip:hover > span {
 
 a.menu-tooltip {
   outline:none;
+  z-index:1000;
 }
   
 a.menu-tooltip strong {
@@ -143,10 +144,10 @@ div[class*="tt-menu-link"]:hover {
 }
 
 div[class*="dock-navi-tt-container"]{
-	padding-top:30px;
   position:absolute;
   margin-left:1px;
-  margin-top:1px;
+  margin-top:30px;
+  z-index: 100;
 }
 
 .tt-communicator{

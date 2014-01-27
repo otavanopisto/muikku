@@ -8,15 +8,16 @@
     template="/WEB-INF/templates/default.xhtml">
     
   <ui:define name="content.center.widget">
-    <h:form>
-      <div class="formElementRow">
-        Message:
-        <h:inputTextarea value="#{workspaceGuidanceRequestsBackingBean.newGuidanceRequestMessage}" />
-        <h:inputHidden value="#{workspaceGuidanceRequestsBackingBean.workspaceId}" />
+    <h:outputScript name="scripts/gui/guidancerequest.js" target="head" />
+    
+    <div class="widget newGuidanceRequest">
+      <input type="hidden" name="newGuidanceRequestContext" value="WORKSPACE" />
+      <input type="hidden" name="newGuidanceRequestContextId" value="#{workspaceGuidanceRequestsBackingBean.workspaceId}" />
+      Message:
+      <textarea cols="50" rows="5" name="newGuidanceRequestMessage"></textarea>
       
-        <h:commandButton action="#{workspaceGuidanceRequestsBackingBean.createGuidanceRequest}" value="Add request"/>
-      </div>
-    </h:form>
+      <input name="newGuidanceRequestSubmit" type="button" value="Lähetä ohjauspyyntö"/>
+    </div>
 
     <ui:repeat var="assessmentRequest" value="#{workspaceGuidanceRequestsBackingBean.listOwnedGuidanceRequests()}">
       <div>

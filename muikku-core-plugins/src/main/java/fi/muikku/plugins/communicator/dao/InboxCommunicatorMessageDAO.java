@@ -15,12 +15,14 @@ import fi.muikku.dao.DAO;
 import fi.muikku.model.base.Tag;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugin.PluginDAO;
+import fi.muikku.plugins.communicator.CommunicatorInboxOwnerContextResolverImpl;
 import fi.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageRecipient_;
 import fi.muikku.plugins.communicator.model.CommunicatorMessage_;
 import fi.muikku.plugins.communicator.model.InboxCommunicatorMessage;
+import fi.muikku.plugins.communicator.model.InboxCommunicatorMessage_;
 
 @DAO
 public class InboxCommunicatorMessageDAO extends PluginDAO<InboxCommunicatorMessage> {
@@ -31,9 +33,13 @@ public class InboxCommunicatorMessageDAO extends PluginDAO<InboxCommunicatorMess
       String caption, String content, Date created, Set<Tag> tags) {
     InboxCommunicatorMessage msg = new InboxCommunicatorMessage();
     
-    Set<Long> tagIds = new HashSet<Long>(tags.size());
-    for (Tag t : tags)
-      tagIds.add(t.getId());
+    int s = tags != null ? tags.size() : 0;
+    Set<Long> tagIds = new HashSet<Long>(s);
+    
+    if (tags != null) {
+      for (Tag t : tags)
+        tagIds.add(t.getId());
+    }
 
     msg.setCommunicatorMessageId(communicatorMessageId);
     msg.setSender(sender);
@@ -106,6 +112,46 @@ public class InboxCommunicatorMessageDAO extends PluginDAO<InboxCommunicatorMess
             criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.recipient), recipient.getId()),
             criteriaBuilder.equal(msgJoin.get(CommunicatorMessage_.communicatorMessageId), communicatorMessageId),
             criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.archivedByReceiver), Boolean.FALSE)
+        )
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+  
+  /**
+   * Lists all messages where user has contributed as sender or recipient.
+   * 
+   * @param user
+   * @param communicatorMessageId
+   * @return
+   */
+  public List<InboxCommunicatorMessage> listByMessageId(UserEntity user, CommunicatorMessageId communicatorMessageId) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<InboxCommunicatorMessage> criteria = criteriaBuilder.createQuery(InboxCommunicatorMessage.class);
+
+    Root<InboxCommunicatorMessage> root2 = criteria.from(InboxCommunicatorMessage.class);
+    Root<CommunicatorMessageRecipient> root = criteria.from(CommunicatorMessageRecipient.class);
+    Join<CommunicatorMessageRecipient, CommunicatorMessage> msgJoin = root.join(CommunicatorMessageRecipient_.communicatorMessage);
+
+    criteria.distinct(true);
+    criteria.select(root2);
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.or(
+                criteriaBuilder.and(
+                    criteriaBuilder.equal(root2.get(InboxCommunicatorMessage_.communicatorMessageId), communicatorMessageId),
+                    criteriaBuilder.equal(root2.get(InboxCommunicatorMessage_.sender), user.getId()),
+                    criteriaBuilder.equal(root2.get(InboxCommunicatorMessage_.archivedBySender), Boolean.FALSE)
+                ),
+                criteriaBuilder.and(
+                    root2.in(msgJoin),
+                    criteriaBuilder.equal(msgJoin.get(InboxCommunicatorMessage_.communicatorMessageId), communicatorMessageId),
+                    criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.recipient), user.getId()),
+                    criteriaBuilder.equal(root.get(CommunicatorMessageRecipient_.archivedByReceiver), Boolean.FALSE)
+                )
+            )
         )
     );
     
