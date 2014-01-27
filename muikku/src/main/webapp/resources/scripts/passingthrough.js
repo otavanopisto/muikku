@@ -48,5 +48,4 @@ $(document).ready(function() {
        tools.hide( "fade", 250 );
     });
 
-
 });
