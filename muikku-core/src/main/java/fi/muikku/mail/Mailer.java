@@ -11,8 +11,8 @@ public class Mailer {
   @Inject
   private MailBridge bridge;
   
-  public void sendMail(MimeType mimeType, String sender, List<String> to, List<String> cc, List<String> bcc, String content) {
-    bridge.sendMail(mimeType, sender, to, cc, bcc, content);
+  public void sendMail(MimeType mimeType, String from, List<String> to, List<String> cc, List<String> bcc, String content) {
+    bridge.sendMail(mimeType, from, to, cc, bcc, content);
   }
   
   
