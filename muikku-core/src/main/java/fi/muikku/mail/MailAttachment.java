@@ -1,15 +1,13 @@
 package fi.muikku.mail;
 
-import javax.activation.MimeType;
-
 public class MailAttachment {
   
-  public MailAttachment(MimeType mimeType, byte[] content) {
+  public MailAttachment(String mimeType, byte[] content) {
     this.mimeType = mimeType;
     this.content = content;
   }
   
-  public MimeType getMimeType() {
+  public String getMimeType() {
     return mimeType;
   }
   
@@ -17,6 +15,6 @@ public class MailAttachment {
     return content;
   }
 
-  private final MimeType mimeType;
+  private final String mimeType;
   private final byte[] content;
 }

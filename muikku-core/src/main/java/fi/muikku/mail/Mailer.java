@@ -19,28 +19,19 @@ public class Mailer {
   @Inject
   private MailBridge bridge;
   
-  public void sendMail(MimeType mimeType, String from, List<String> to, List<String> cc, List<String> bcc, String content, List<MailAttachment> attachments) {
-    bridge.sendMail(mimeType, from, to, cc, bcc, content, attachments);
+  public void sendMail(MailType mailType, String from, List<String> to, List<String> cc, List<String> bcc, String content, List<MailAttachment> attachments) {
+    bridge.sendMail(mailType, from, to, cc, bcc, content, attachments);
   }
   
   public void sendMailSimple(String from, String to, String content) {
     List<String> toList = new ArrayList<>();
     toList.add(to);
-    try {
-      MimeType mimeType = new MimeType("text", "plain");
-      this.sendMail(mimeType, from, toList, new ArrayList<String>(), new ArrayList<String>(), content, new ArrayList<MailAttachment>());
-    } catch (MimeTypeParseException ex) {
-      logger.log(Level.SEVERE, "Could not parse text/plain mimetype");
-    }
+    this.sendMail(MailType.PLAINTEXT, from, toList, new ArrayList<String>(), new ArrayList<String>(), content, new ArrayList<MailAttachment>());
+
   }
   
   public void sendMailToGroup(String from, List<String> bcc, String content) {
-    try {
-      MimeType mimeType = new MimeType("text", "plain");
-      this.sendMail(mimeType, from, new ArrayList<String>(), new ArrayList<String>(), bcc, content, new ArrayList<MailAttachment>());
-    } catch (MimeTypeParseException ex) {
-      logger.log(Level.SEVERE, "Could not parse text/plain mimetype");
-    }
+      this.sendMail(MailType.PLAINTEXT, from, new ArrayList<String>(), new ArrayList<String>(), bcc, content, new ArrayList<MailAttachment>());
   }
   
   
