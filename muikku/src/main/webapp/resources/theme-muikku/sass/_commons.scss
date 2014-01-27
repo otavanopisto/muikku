@@ -69,7 +69,8 @@ To be used through SASS's extend feature with CSS's selectors.
 }
 
 .co-backLink {
-   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-back.png'));
+  @include naviIcon();  
+  @include background-image('gfx/icons/32x32/actions/navigate-back.png'); 
 }
 
 .co-content {

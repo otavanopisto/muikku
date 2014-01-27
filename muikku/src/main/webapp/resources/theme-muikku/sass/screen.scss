@@ -283,10 +283,10 @@ a.header {
   border: 1px solid #000;
   border-radius: 5px;
   box-shadow: 1px 1px 5px #888;   
-  background: url('../resources/gfx/icons/32x32/actions/navigate-search.png') no-repeat center;
+  background-postion:center;
+  background-repeat:no-repeat;
+  @include background-image('gfx/icons/32x32/actions/navigate-search.png');
 }
-
-
 
 .languageSelection {
   float:left;
@@ -326,8 +326,9 @@ a.header {
   width:300px;
   bottom:0;   
   box-shadow: 5px 10px 6px -2px #dadada;
-  @include dynNaviGr(url('../resources/gfx/icons/32x32/actions/navigate-chevron_r.png'),#fff,#fff);
+  @include dynNaviGr(#fff,#fff);
   @include dynNaviTransition;
+  @include background-image('gfx/icons/32x32/actions/navigate-chevron_r.png');
 }
 
 #dynamicNaviPersonal:hover {
@@ -335,7 +336,8 @@ a.header {
   visibility:visible;
   margin-left:-40px;
   border:1px dotted #ededed;
-  @include dynNaviGr(url('../resources/gfx/icons/32x32/actions/navigate-chevron_l.png'),#fff,#ededed);    
+  @include dynNaviGr(#fff,#ededed); 
+  @include background-image('gfx/icons/32x32/actions/navigate-chevron_l.png');   
 }
 
 /*
@@ -390,15 +392,18 @@ a.header {
 }
 
 .cm-message-replyLink {
-     @include naviIcon(url('../resources/gfx/icons/32x32/actions/communicator-reply.png'));
+  @include naviIcon();  
+  @include background-image('gfx/icons/32x32/actions/communicator-reply.png'); 
 }
 
 .cm-message-replyAllLink {
-      @include naviIcon(url('../resources/gfx/icons/32x32/actions/communicator-replyall.png'));
+  @include naviIcon();  
+  @include background-image('gfx/icons/32x32/actions/communicator-replyall.png'); 
 }
 
 .cm-message-trashMessageLink {
-      @include naviIcon(url('../resources/gfx/icons/32x32/actions/communicator-trash.png'));
+  @include naviIcon();  
+  @include background-image('gfx/icons/32x32/actions/communicator-trash.png');
 }
 
 .cm-message-senderName {
@@ -673,7 +678,8 @@ se-container {
 }
 
 .se-widget-userAdd a {
-  @include customIcon(url('../resources/gfx/icons/32x32/actions/settings-users-add.png'),$mainFuncBtnGr...);       
+  @include customIcon($mainFuncBtnGr...);    
+  @include background-image('gfx/icons/32x32/actions/settings-users-add.png');      
   @include rounded(2px);
   @include shadow;
   @include border($mainFuncBtnBrd);	

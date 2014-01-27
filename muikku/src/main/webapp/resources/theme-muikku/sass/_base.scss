@@ -1,3 +1,5 @@
+@import "_jsf.scss";
+
 /* COLORS */
 
 /* Fonts */
@@ -203,8 +205,9 @@ $text: 12px;
 
 /* Static navigation */
 
-@mixin naviIcon($iconUrl) {
-  background: $iconUrl no-repeat center;
+@mixin naviIcon() {
+  background-position:center;
+  background-repeat:no-repeat;
   height:20px;
   width:20px;
   margin:10px 5px 0 5px;
@@ -212,24 +215,27 @@ $text: 12px;
   background-size:100%;  
 }
 
-@mixin customIcon($iconUrl,$height:20px,$width:20px) {
+@mixin customIcon($height:20px,$width:20px) {
   height:$height;
   width:$width;  
-  background: $iconUrl no-repeat center;
+  background-repeat:no-repeat;
+  background-position:center;
   background-size:100%;
 }
 
 /* Dynamic Navigation */
 
-@mixin dynNaviGr($iconUrl,$gr1,$gr2) {
+@mixin dynNaviGr($gr1,$gr2) {
   box-shadow: 5px 10px 6px -2px #ededed;
-  background: $iconUrl no-repeat center right #b8bac6;
-  background: $iconUrl no-repeat center right, -moz-linear-gradient(top, $gr1 0%, $gr2 100%);
-  background: $iconUrl no-repeat center right, -webkit-gradient(linear, left top, left bottom, color-stop(0%,$gr1), color-stop(100%,$gr2));
-  background: $iconUrl no-repeat center right, -webkit-linear-gradient(top, $gr1 0%,$gr2 100%);
-  background: $iconUrl no-repeat center right, -o-linear-gradient(top, $gr1 0%,$gr2 100%);
-  background: $iconUrl no-repeat center right, -ms-linear-gradient(top, $gr1 0%,$gr2 100%);
-  background: $iconUrl no-repeat center right, linear-gradient(to bottom, $gr1 0%,$gr2 100%); 
+  background-repeat: no-repeat;
+  background-position:center right;
+  background: no-repeat center right #b8bac6;
+  background: -moz-linear-gradient(top, $gr1 0%, $gr2 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,$gr1), color-stop(100%,$gr2));
+  background: -webkit-linear-gradient(top, $gr1 0%,$gr2 100%);
+  background: -o-linear-gradient(top, $gr1 0%,$gr2 100%);
+  background: -ms-linear-gradient(top, $gr1 0%,$gr2 100%);
+  background: linear-gradient(to bottom, $gr1 0%,$gr2 100%); 
 }
 
 @mixin dynNaviTransition($trd1:0.6s,$trd2:0.6s,$trd3:0.1s,$trd4:0.1s,$pr1:opacity,$pr2:visibility,$pr3:margin,$tf1:ease-in-out,$tf2:ease-in-out,$tf3:ease-in-out,$tf4:ease-in-out) {

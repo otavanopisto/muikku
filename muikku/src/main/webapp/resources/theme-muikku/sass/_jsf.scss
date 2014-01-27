@@ -1,0 +1,9 @@
+/* JSF theme settings */
+
+/* Theme name, not the folder name. theme- preface will be included automatically! */
+$theme:muikku;
+
+/* CSS Background-image loader, has to be use in every background-image rule */
+@mixin background-image($imgSrc) {
+  background-image:(url('#' + '{resource["theme-' + $theme + ':' + $imgSrc + '"]}'));
+}

@@ -64,11 +64,13 @@ div[class*="wi-dock-navi"]{
 }
 
 .newCalendarButton {
-  @include naviIcon(url('../gfx/icons/32x32/actions/calendar-settings.png'));
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/calendar-settings.png');
 }
 
 .newCalendarButton:hover {
-  @include naviIcon(url('../gfx/icons/32x32/actions/calendar-settings.png'));
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/calendar-settings.png');
 }
 
 .newEventWidget {
@@ -76,317 +78,352 @@ div[class*="wi-dock-navi"]{
 }
 
 .newEventButton {
-  @include naviIcon(url('../gfx/icons/32x32/actions/calendar-settings.png'));
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/calendar-settings.png');
 }
 
 .newEventButton:hover {
-  @include naviIcon(url('../gfx/icons/32x32/actions/calendar-settings.png'));
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/calendar-settings.png');
 }
 
 .calendarSettingsButton {
-  @include naviIcon(url('../gfx/icons/32x32/actions/calendar-settings.png'));
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/calendar-settings.png');
 }
 
 .calendarSettingsButton:hover {
-  @include naviIcon(url('../gfx/icons/32x32/actions/calendar-settings.png'));
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/calendar-settings.png');
 }
 
 .calendarsVisibleButton {
-  @include naviIcon(url('../gfx/icons/32x32/actions/calendars-visible.png'));
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/calendar-visible.png');
 }
 
 .calendarsVisibleButton:hover {
-  @include naviIcon(url('../gfx/icons/32x32/actions/calendars-visible.png'));
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/calendar-visible.png');
 }
 
 .naviIconHome {
-  @include naviIcon(url('../gfx/icons/32x32/actions/navigate-home.png'));
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/navigate-home.png');
 }
 
 .naviIconHome.disabled {
-
-  @include naviIcon(url('../gfx/icons/32x32/actions/navigate-home.png'));
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/navigate-home.png');
 }
 
 .naviIconHome:hover {
-
-  @include naviIcon(url('../gfx/icons/32x32/actions/navigate-home.png'));
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/navigate-home.png');
 }
 
 .naviIconStudents {
-  @include naviIcon(url('../gfx/icons/32x32/actions/navigate-students.png'));
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/navigate-students.png');
 }
 
 .naviIconStudents.disabled {
   opacity:0.5;
-  @include naviIcon(url('../gfx/icons/32x32/actions/navigate-students.png'));
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/navigate-students.png');
 }
 
 .naviIconStudents:hover {
-
-  @include naviIcon(url('../gfx/icons/32x32/actions/navigate-students.png'));
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/navigate-students.png');
 }
 
 .naviIconCoursePicker {
-  @include naviIcon(url('../gfx/icons/32x32/actions/navigate-coursepicker.png'));
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/navigate-coursepicker.png');
 }
 
 .naviIconCoursePicker.disabled {
-
-  @include naviIcon(url('../gfx/icons/32x32/actions/navigate-coursepicker.png'));
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/navigate-coursepicker.png');
 }
 
 .naviIconCoursePicker:hover {
-
-  @include naviIcon(url('../gfx/icons/32x32/actions/navigate-coursepicker.png'));
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/navigate-coursepicker.png');
 }
 
 .naviIconForum {
-  @include naviIcon(url('../gfx/icons/32x32/actions/navigate-forum.png'));
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/navigate-forum.png');
 }
 
 .naviIconForum.disabled {
-
-  @include naviIcon(url('../gfx/icons/32x32/actions/navigate-forum.png')) 
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/navigate-forum.png');
 }
 
 .naviIconForum:hover {
-
-  @include naviIcon(url('../gfx/icons/32x32/actions/navigate-forum.png')) 
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/navigate-forum.png');
 }
 
 .naviIconDiary {
-   @include naviIcon(url('../gfx/icons/32x32/actions/navigate-diary.png'));	
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/navigate-diary.png');	
 }
 
 .naviIconDiary.disabled {
-
-  @include naviIcon(url('../gfx/icons/32x32/actions/navigate-diary.png')); 
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/navigate-diary.png'); 
 }
 
 .naviIconDiary:hover {
-
-  @include naviIcon(url('../gfx/icons/32x32/actions/navigate-diary.png')); 
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/navigate-diary.png'); 
 }
     
 .naviIconCommunicator {
-  @include naviIcon(url('../gfx/icons/32x32/actions/navigate-communicator.png')); 	    
+  @include naviIcon(); 	
+  @include background-image('gfx/icons/32x32/actions/navigate-communicator.png');     
 }
 
 .naviIconCommunicator.disabled {
-
-  @include naviIcon(url('../gfx/icons/32x32/actions/navigate-communicator.png'));  
+  @include naviIcon();  
+  @include background-image('gfx/icons/32x32/actions/navigate-communicator.png'); 
 }
 
 .naviIconCommunicator:hover {
-
-  @include naviIcon(url('../gfx/icons/32x32/actions/navigate-communicator.png'));  
+  @include naviIcon();  
+  @include background-image('gfx/icons/32x32/actions/navigate-communicator.png');  
 }
 
 .naviIconStudyTracker {
-  @include naviIcon(url('../gfx/icons/32x32/actions/navigate-studytracker.png')); 	  
+  @include naviIcon(); 	
+  @include background-image('gfx/icons/32x32/actions/navigate-studytracker.png');   
 }
 
 .naviIconStudyTracker.disabled {
-
-  @include naviIcon(url('../gfx/icons/32x32/actions/navigate-studytracker.png'));    
+  @include naviIcon();  
+  @include background-image('gfx/icons/32x32/actions/navigate-studytracker.png');    
 }
 
 .naviIconStudyTracker:hover {
-
-  @include naviIcon(url('../gfx/icons/32x32/actions/navigate-studytracker.png'));    
+  @include naviIcon();  
+  @include background-image('gfx/icons/32x32/actions/navigate-studytracker.png');   
 }
 
 .naviIconCalendar {
-  @include naviIcon(url('../gfx/icons/32x32/actions/navigate-cal.png'));
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/navigate-cal.png');   
 }
 
 .naviIconCalendar.disabled {
-
-  @include naviIcon(url('../gfx/icons/32x32/actions/navigate-cal.png'));   
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/navigate-cal.png');    
 }
 
 .naviIconCalendar:hover {
-
-  @include naviIcon(url('../gfx/icons/32x32/actions/navigate-cal.png'));   
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/navigate-cal.png');     
 }
 
 
 .naviIconLogout {
-  @include customIcon(url('../gfx/icons/32x32/actions/navigate-logout.png'),25px,20px);	 
+  @include customIcon(25px,20px);	
+  @include background-image('gfx/icons/32x32/actions/navigate-logout.png');  
   float:right;
 }
 
 .naviIconSettings {
-  @include naviIcon(url('../gfx/icons/32x32/actions/navigate-settings.png'));  
+  @include naviIcon();  
+  @include background-image('gfx/icons/32x32/actions/navigate-settings.png');    
   float:right;      
 }
 
 .naviIconStudentGrading {
-  @include naviIcon(url('../gfx/icons/32x32/actions/navigate-student-grading.png')); 	    
+  @include naviIcon(); 
+  @include background-image('gfx/icons/32x32/actions/navigate-student-grading.png'); 	    
 }
 
 .naviIconStudentGrading:hover {
-
-  @include naviIcon(url('../gfx/icons/32x32/actions/navigate-student-grading.png'));  
+  @include naviIcon(); 
+  @include background-image('gfx/icons/32x32/actions/navigate-student-grading.png');  
 }
 
 /* Settings navigation */
 
 .naviIconSettingsNavigationUsers {
-  @include naviIcon(url('../gfx/icons/32x32/actions/settings-users.png')); 	    
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/settings-users.png');  	    
 }
 
 .naviIconSettingsNavigationUsers.disabled {
-
-  @include naviIcon(url('../gfx/icons/32x32/actions/settings-users.png'));  
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/settings-users.png');   
 }
 
 .naviIconSettingsUserAdd {
-  @include naviIcon(url('../gfx/icons/32x32/actions/settings-users-add.png')); 	    
+  @include naviIcon(); 	 
+  @include background-image('gfx/icons/32x32/actions/settings-users-add.png');   
 }
 
 .naviIconSettingsUserAdd.disabled {
-
-  @include naviIcon(url('../gfx/icons/32x32/actions/settings-users-add.png'));  
+  @include naviIcon();   
+  @include background-image('gfx/icons/32x32/actions/settings-users-add.png');  
 }
 
 .naviIconSettingsNavigationWorkspaces {
-  @include naviIcon(url('../gfx/icons/32x32/actions/settings-workspaces.png')); 	    
+  @include naviIcon(); 	
+  @include background-image('gfx/icons/32x32/actions/settings-workspaces.png');      
 }
 
 .naviIconSettingsNavigationWorkspaces.disabled {
-
-  @include naviIcon(url('../gfx/icons/32x32/actions/settings-workspaces.png'));  
+  @include naviIcon();  
+  @include background-image('gfx/icons/32x32/actions/settings-workspaces.png');    
 }
 
 .naviIconSettingsNavigationWorkspaceTypes {
-  @include naviIcon(url('../gfx/icons/32x32/actions/settings-workspace-types.png')); 	    
+  @include naviIcon(); 
+  @include background-image('gfx/icons/32x32/actions/settings-workspace-types.png');	    
 }
 
 .naviIconSettingsNavigationWorkspaceTypes.disabled {
-
-  @include naviIcon(url('../gfx/icons/32x32/actions/settings-workspace-types.png'));  
+  @include naviIcon(); 
+  @include background-image('gfx/icons/32x32/actions/settings-workspace-types.png');  
 }
 
 .naviIconSettingsNavigationPlugins {
-  @include naviIcon(url('../gfx/icons/32x32/actions/settings-plugins.png'));
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/settings-plugins.png'); 
 }
 
 .naviIconSettingsNavigationPlugins.disabled {
-
-  @include naviIcon(url('../gfx/icons/32x32/actions/settings-plugins.png'));
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/settings-plugins.png'); 
 }
 
 .naviIconSettingsNavigationRoles {
-  @include naviIcon(url('../gfx/icons/32x32/actions/settings-roles.png'));
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/settings-roles.png'); 
 }
 
 .naviIconSettingsNavigationRoles.disabled {
-
-  @include naviIcon(url('../gfx/icons/32x32/actions/settings-roles.png'));
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/settings-roles.png'); 
 }
 
 .naviIconSettingsNavigationGradingScales {
-  @include naviIcon(url('../gfx/icons/32x32/actions/settings-grading-scales.png'));
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/settings-grading-scales.png'); 
 }
 
 .naviIconSettingsNavigationGradingScales.disabled {
-
-  @include naviIcon(url('../gfx/icons/32x32/actions/settings-grading-scales.png'));
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/settings-grading-scales.png'); 
 }
 
 .naviIconSettingsNavigationCourseIdentifiers {
-  @include naviIcon(url('../gfx/icons/32x32/actions/settings-course-identifiers.png'));
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/settings-course-identifiers.png'); 
 }
 
 .naviIconSettingsNavigationCourseIdentifiers.disabled {
-
-  @include naviIcon(url('../gfx/icons/32x32/actions/settings-course-identifiers.png'));
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/settings-course-identifiers.png'); 
 }
 
 .naviIconSettingsNavigationPermissions {
-  @include naviIcon(url('../gfx/icons/32x32/actions/settings-course-identifiers.png'));
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/settings-course-identifiers.png'); 
 }
 
 .naviIconSettingsNavigationPermissions.disabled {
-
-  @include naviIcon(url('../gfx/icons/32x32/actions/settings-course-identifiers.png'));
+  @include naviIcon();
+  @include background-image('gfx/icons/32x32/actions/settings-course-identifiers.png'); 
 }
 
 /* Workspace */
 
 .naviIconWorkspaceNavigationMembers.disabled {
-
-  @include naviIcon(url('../gfx/icons/32x32/actions/workspace-navigation-members.png'));  
+  @include naviIcon();  
+  @include background-image('gfx/icons/32x32/actions/workspace-navigation-members.png'); 
 }
 
 .naviIconWorkspaceNavigationMembers {
-  @include naviIcon(url('../gfx/icons/32x32/actions/workspace-navigation-members.png'));
+  @include naviIcon();  
+  @include background-image('gfx/icons/32x32/actions/workspace-navigation-members.png'); 
 }
 
 .naviIconWorkspaceNavigationMaterials.disabled {
-
-  @include naviIcon(url('../gfx/icons/32x32/actions/workspace-navigation-materials.png'));  
+  @include naviIcon();  
+  @include background-image('gfx/icons/32x32/actions/workspace-navigation-materials.png'); 
 }
 
 .naviIconWorkspaceNavigationMaterials {
-  @include naviIcon(url('../gfx/icons/32x32/actions/workspace-navigation-materials.png'));
+  @include naviIcon();  
+  @include background-image('gfx/icons/32x32/actions/workspace-navigation-materials.png'); 
 }
 
 /* Student browser */
 
 .naviIconUser {
-  @include customIcon(url('../gfx/icons/32x32/actions/navigate-userprofile.png'),20px);
+  @include customIcon(20px);
+  @include background-image('gfx/icons/32x32/actions/navigate-userprofile.png');
 	float:left;
 }
 	
 .naviIconUser.disabled {
   opacity:0.5;
-  @include customIcon(url('../gfx/icons/32x32/actions/navigate-userprofile.png'),20px);
+  @include customIcon(20px);
+  @include background-image('gfx/icons/32x32/actions/navigate-userprofile.png');
 	float:left;   
 }
 	
 .naviIconUser:hover {
-
-  @include customIcon(url('../gfx/icons/32x32/actions/navigate-userprofile.png'),20px);
+  @include customIcon(20px);
+  @include background-image('gfx/icons/32x32/actions/navigate-userprofile.png');
   float:left;   
 }
 	
 	    
 .naviIconMessage { 
-  @include customIcon(url('../gfx/icons/32x32/actions/navigate-communicator.png'),20px);
+  @include customIcon(20px);
+  @include background-image('gfx/icons/32x32/actions/navigate-communicator.png');
   float: left;
 }
 
 .naviIconMessage.disabled {
   opacity: 0.2; 
-  @include customIcon(url('../gfx/icons/32x32/actions/navigate-communicator.png'),20px);
+  @include customIcon(20px);
+  @include background-image('gfx/icons/32x32/actions/navigate-communicator.png');
   float: left;
 }
 
 .naviIconMessage:hover {
   opacity: 0.2; 
-  @include customIcon(url('../gfx/icons/32x32/actions/navigate-communicator.png'),20px);
+  @include customIcon(20px);
+  @include background-image('gfx/icons/32x32/actions/navigate-communicator.png');
   float: left;
 }
 
 .naviIconBookmark { 
-  @include customIcon(url('../gfx/icons/32x32/actions/tools-bookmark.png'),24px,15px);
-
-  
+  @include customIcon(24px,15px);
+  @include background-image('gfx/icons/32x32/actions/tools-bookmark.png');
   float: left;
 }
 
 .naviIconBookmark.disabled {
   opacity: 0.2; 
-  @include customIcon(url('../gfx/icons/32x32/actions/tools-bookmark.png'),24px,15px);
+  @include customIcon(24px,15px);
+  @include background-image('gfx/icons/32x32/actions/tools-bookmark.png');
   float: left;
 }
 
 .naviIconBookmark:hover {
   opacity: 0.2; 
-  @include customIcon(url('../gfx/icons/32x32/actions/tool-bookmark.png'),24px,15px);
+  @include customIcon(24px,15px);
+  @include background-image('gfx/icons/32x32/actions/tools-bookmark.png');
   float: left;
 }
 
@@ -697,7 +734,8 @@ div[class*="wi-dock-navi"]{
 }
 
 .wi-settings-move-link {
-  @include customIcon(url('../gfx/icons/32x32/actions/tools-move.png'),20px);
+  @include customIcon(20px);
+  @incude background-image('gfx/icons/32x32/actions/tools-move.png');
   display:block;
   margin-left:10px;
 }
@@ -706,7 +744,8 @@ div[class*="wi-dock-navi"]{
 }
 
 .wi-settings-remove-link {
-  @include customIcon(url('../gfx/icons/32x32/actions/tools-remove.png'),20px);
+  @include customIcon(20px);
+  @incude background-image('gfx/icons/32x32/actions/tools-remove.png');
   display:block;
   margin-left:10px;
 }
@@ -715,7 +754,8 @@ div[class*="wi-dock-navi"]{
 }
 
 .wi-settings-edit-link {
-  @include customIcon(url('../gfx/icons/32x32/actions/tools-settings.png'),20px);
+  @include customIcon(20px);
+  @incude background-image('gfx/icons/32x32/actions/tools-settings.png');
   display:block;
   margin-left:10px;
 }
