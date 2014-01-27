@@ -18,7 +18,7 @@ public class DummyMailBridgePluginLibraryDescriptor implements PluginLibraryDesc
 
 	@Override
 	public String getName() {
-		return "h2db";
+		return "dummy-mail-bridge";
 	}
 
 	@Override
