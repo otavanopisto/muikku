@@ -1,5 +1,7 @@
 package fi.muikku.mail;
 
+import org.apache.commons.codec.binary.Hex;
+
 public class MailAttachment {
   
   public MailAttachment(String mimeType, byte[] content) {
@@ -13,6 +15,10 @@ public class MailAttachment {
   
   public byte[] getContent() {
     return content;
+  }
+  
+  public String toString() {
+    return "Type: " + mimeType + " Content: 0x" + Hex.encodeHexString(content);
   }
 
   private final String mimeType;
