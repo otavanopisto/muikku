@@ -2,9 +2,9 @@
 
 input[type="text"] {    
   padding: 5px;     
-  @extend .co-input-textfield;
-  &:hover {@extend .co-input-textfield-hover;}
-  &:focus {@extend .co-input-textfield-focus;}
+  @extend .co-input-textfield-blur;
+  &:hover {@extend .co-input-textfield-blur-hover;}
+  &:focus {@extend .co-input-textfield-blur-focus;}
 }
 
 input[type="password"] {
@@ -43,6 +43,15 @@ input[type="button"],input[type="submit"] {
 .formElementRow {
   margin-bottom:5px;
 }
+
+/* Login */
+.loginWidget input[type="text"] {    
+  padding: 5px;     
+  @extend .co-input-textfield;
+  &:hover {@extend .co-input-textfield-hover;}
+  &:focus {@extend .co-input-textfield-focus;}
+}
+
 
 /* Seeker */
 

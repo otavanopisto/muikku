@@ -20,21 +20,25 @@ public class GuidanceRequestController {
   @Inject
   private WorkspaceGuidanceRequestDAO workspaceGuidanceRequestDAO;
 
-//  @Permit (GuidanceRequestPermissions.CREATE_GUIDANCEREQUEST)
+  @Permit (GuidanceRequestPermissions.CREATE_GUIDANCEREQUEST)
   public GuidanceRequest createGuidanceRequest(UserEntity student, Date date, String message) {
     return guidanceRequestDAO.create(student, date, message);
   }
   
-//  @Permit (GuidanceRequestPermissions.CREATE_WORKSPACE_GUIDANCEREQUEST)
+  @Permit (GuidanceRequestPermissions.CREATE_WORKSPACE_GUIDANCEREQUEST)
   public GuidanceRequest createWorkspaceGuidanceRequest(@PermitContext WorkspaceEntity workspaceEntity, UserEntity student, Date date, String message) {
     return workspaceGuidanceRequestDAO.create(workspaceEntity, student, date, message);
   }
   
-//  @Permit (GuidanceRequestPermissions.LIST_WORKSPACE_GUIDANCEREQUESTS)
+  @Permit (GuidanceRequestPermissions.LIST_WORKSPACE_GUIDANCEREQUESTS)
   public List<WorkspaceGuidanceRequest> listWorkspaceGuidanceRequestsByWorkspace(@PermitContext WorkspaceEntity workspaceEntity) {
     return workspaceGuidanceRequestDAO.listByWorkspace(workspaceEntity);
   }
 
+  /**
+   * TODO: methods that return owned guidancerequests and if the user has managed groups, also the group's users' requests
+   */
+  
   // TODO rights
   public List<GuidanceRequest> listGuidanceRequestsByStudent(UserEntity student) {
     return guidanceRequestDAO.listByStudent(student);
