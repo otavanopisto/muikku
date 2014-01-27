@@ -23,6 +23,11 @@ body {
   padding:0;
 }
 
+.hidden{
+
+	display:none;
+}
+
 h1,h2,h3,h4,h5 {
   color:$header;
   @include fontShadow; 
@@ -51,7 +56,7 @@ h5 {
 
 /* TODO: P, a ... */
 
-a.tooltip {
+a.tooltip, a.tooltip-menu {
   outline:none;
 }
   
@@ -83,16 +88,79 @@ a.tooltip:hover > span {
   overflow: visible; 
   @include transitionDirection(25px, 0, 0, 0);
   display: inline; 
-} 
+}
+
+
+a.menu-tooltip {
+  outline:none;
+}
+  
+a.menu-tooltip strong {
+  line-height:30px;
+}
+  
+a.menu-tooltip > span { 
+  @include rounded(3px);
+  @include shadow;
+  @include tooltipTransition(0.1s,0.1s,0.1s,0.1s);
+  @include gradient-top-bottom;
+  @include border; 
+  position:absolute; 
+  color:#000;
+  opacity: 0; 
+  visibility: hidden; 
+  z-index: 10; 
+  font-size:1em; 
+  font-style: normal;   
+}  
  
-span.tooltipFastLink {
+a.menu-tooltip:hover > span {
+  opacity: 1;
+  padding:15px;
+  text-decoration:none; 
+  visibility: visible; 
+  overflow: visible; 
+  @include transitionDirection(17px, 6px, 0, 0);
+  display: inline; 
+} 
+
+
+
+
+
+div[class*="tt-menu-link"]:before {
+ content:"<-";
+}
+ 
+div[class*="tt-menu-link"] {
+	padding:5px;
   color:$naviDynamicColor;
   text-decoration:underline;
 }
 
-span.tooltipFastLink:hover {
-  color:#fff;
-  tex-decoration:none;
+div[class*="tt-menu-link"]:hover {
+  text-decoration:none;
+}
+
+div[class*="dock-navi-tt-container"]{
+	padding-top:30px;
+  position:absolute;
+  margin-left:1px;
+  margin-top:1px;
+}
+
+.tt-communicator{
+	background-color:#fff;
+	@include shadow;
+	min-height:60px;
+  max-width:150px;
+  padding:20px;
+
+		
+}
+
+.widgetSpace {
+  min-height:1px;
 }
 
 #header {
@@ -100,10 +168,6 @@ span.tooltipFastLink:hover {
   text-align: center;
   height:150px;
   color: #fff;
-}
-
-.widgetSpace {
-  min-height:1px;
 }
 
 #feader {
@@ -206,7 +270,7 @@ a.header {
 .seeker {
   text-align:center;
   position:relative;
-  top:104px;	
+  top:106px;	
   @include gradient-top-bottom;
   @include rounded-top-left; 
   @include rounded-top-right;

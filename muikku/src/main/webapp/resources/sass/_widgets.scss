@@ -42,6 +42,10 @@ div[class*='actions-vertical'] {
 
 /* staticNaviDock  */
 
+div[class*="wi-dock-static-navi"]{
+ float:left;
+}
+
 /* Containers */
 
 .dock-static-container{}
@@ -100,12 +104,12 @@ div[class*='actions-vertical'] {
 }
 
 .naviIconHome.disabled {
-  opacity:0.2;
+
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-home.png'));
 }
 
 .naviIconHome:hover {
-  opacity:0.2;
+
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-home.png'));
 }
 
@@ -119,7 +123,7 @@ div[class*='actions-vertical'] {
 }
 
 .naviIconStudents:hover {
-  opacity:0.2;
+
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-students.png'));
 }
 
@@ -128,12 +132,12 @@ div[class*='actions-vertical'] {
 }
 
 .naviIconCoursePicker.disabled {
- opacity:0.2;
+
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-coursepicker.png'));
 }
 
 .naviIconCoursePicker:hover {
-  opacity:0.2;
+
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-coursepicker.png'));
 }
 
@@ -142,12 +146,12 @@ div[class*='actions-vertical'] {
 }
 
 .naviIconForum.disabled {
-  opacity:0.2;
+
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-forum.png')) 
 }
 
 .naviIconForum:hover {
-  opacity:0.2;
+
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-forum.png')) 
 }
 
@@ -156,12 +160,12 @@ div[class*='actions-vertical'] {
 }
 
 .naviIconDiary.disabled {
-  opacity:0.2;
+
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-diary.png')); 
 }
 
 .naviIconDiary:hover {
-  opacity:0.2;
+
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-diary.png')); 
 }
     
@@ -170,12 +174,12 @@ div[class*='actions-vertical'] {
 }
 
 .naviIconCommunicator.disabled {
-  opacity:0.2;
+
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-communicator.png'));  
 }
 
 .naviIconCommunicator:hover {
-  opacity:0.2;
+
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-communicator.png'));  
 }
 
@@ -184,12 +188,12 @@ div[class*='actions-vertical'] {
 }
 
 .naviIconStudyTracker.disabled {
-  opacity:0.2;
+
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-studytracker.png'));    
 }
 
 .naviIconStudyTracker:hover {
-  opacity:0.2;
+
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-studytracker.png'));    
 }
 
@@ -198,19 +202,19 @@ div[class*='actions-vertical'] {
 }
 
 .naviIconCalendar.disabled {
-  opacity:0.2;
+
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-cal.png'));   
 }
 
 .naviIconCalendar:hover {
-  opacity:0.2;
+
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-cal.png'));   
 }
 
 
 .naviIconLogout {
-  @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-logout.png'));	
-  float:right;    
+  @include customIcon(url('../resources/gfx/icons/32x32/actions/navigate-logout.png'),25px,20px);	 
+  float:right;
 }
 
 .naviIconSettings {
@@ -223,7 +227,7 @@ div[class*='actions-vertical'] {
 }
 
 .naviIconStudentGrading:hover {
-  opacity:0.2;
+
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/navigate-student-grading.png'));  
 }
 
@@ -234,7 +238,7 @@ div[class*='actions-vertical'] {
 }
 
 .naviIconSettingsNavigationUsers.disabled {
-  opacity:0.2;
+
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-users.png'));  
 }
 
@@ -243,7 +247,7 @@ div[class*='actions-vertical'] {
 }
 
 .naviIconSettingsUserAdd.disabled {
-  opacity:0.2;
+
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-users-add.png'));  
 }
 
@@ -252,7 +256,7 @@ div[class*='actions-vertical'] {
 }
 
 .naviIconSettingsNavigationWorkspaces.disabled {
-  opacity:0.2;
+
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-workspaces.png'));  
 }
 
@@ -261,7 +265,7 @@ div[class*='actions-vertical'] {
 }
 
 .naviIconSettingsNavigationWorkspaceTypes.disabled {
-  opacity:0.2;
+
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-workspace-types.png'));  
 }
 
@@ -270,7 +274,7 @@ div[class*='actions-vertical'] {
 }
 
 .naviIconSettingsNavigationPlugins.disabled {
-  opacity:0.2;
+
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-plugins.png'));
 }
 
@@ -279,7 +283,7 @@ div[class*='actions-vertical'] {
 }
 
 .naviIconSettingsNavigationRoles.disabled {
-  opacity:0.2;
+
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-roles.png'));
 }
 
@@ -288,7 +292,7 @@ div[class*='actions-vertical'] {
 }
 
 .naviIconSettingsNavigationGradingScales.disabled {
-  opacity:0.2;
+
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-grading-scales.png'));
 }
 
@@ -297,7 +301,7 @@ div[class*='actions-vertical'] {
 }
 
 .naviIconSettingsNavigationCourseIdentifiers.disabled {
-  opacity:0.2;
+
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-course-identifiers.png'));
 }
 
@@ -306,14 +310,14 @@ div[class*='actions-vertical'] {
 }
 
 .naviIconSettingsNavigationPermissions.disabled {
-  opacity:0.2;
+
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/settings-course-identifiers.png'));
 }
 
 /* Workspace */
 
 .naviIconWorkspaceNavigationMembers.disabled {
-  opacity:0.2;
+
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/workspace-navigation-members.png'));  
 }
 
@@ -322,7 +326,7 @@ div[class*='actions-vertical'] {
 }
 
 .naviIconWorkspaceNavigationMaterials.disabled {
-  opacity:0.2;
+
   @include naviIcon(url('../resources/gfx/icons/32x32/actions/workspace-navigation-materials.png'));  
 }
 
@@ -344,7 +348,7 @@ div[class*='actions-vertical'] {
 }
 	
 .naviIconUser:hover {
-  opacity:0.2;
+
   @include customIcon(url('../resources/gfx/icons/32x32/actions/navigate-userprofile.png'),20px);
   float:left;   
 }
@@ -369,6 +373,8 @@ div[class*='actions-vertical'] {
 
 .naviIconBookmark { 
   @include customIcon(url('../resources/gfx/icons/32x32/actions/tools-bookmark.png'),24px,15px);
+
+  
   float: left;
 }
 
@@ -429,21 +435,34 @@ div[class*='actions-vertical'] {
   float:right;
 }
 
-.logoutWidget {
+.loggedUserWidget {
+  @include rounded(5px);	
+  background: #ededed;
+  padding: 10px; 
   text-align: right;
   color: #000;
+  font-size: 9px;
   width: 240px;
-  position: absolute;
-  top: 5px;
-  right: 5px;
+  float:right;
 }
+
+.logoutWidget {
+  @include rounded;  
+  @include gradient-top-bottom;
+	text-align: right;
+  color: #000;
+  padding:6px;
+  position: absolute;
+  margin-top:96px;
+  margin-left:285px;  
+  }
 
 
 /* Language */
 
 .languageWidget { 
   position:absolute;
-  margin-top:118px;
+  margin-top:110px;
   margin-left:51px;  
   font-size:1.3em;
   @include gradient-top-bottom-four($contInteractGr...);
@@ -700,6 +719,21 @@ div[class*='actions-vertical'] {
   display:block;
   margin-left:10px;
 }
+
+.wi-user-info{
+	
+}
+.wi-user-name{
+  font-size:2em;
+  font-weight:bold;
+  color:#3a374d;
+}
+
+.wi-user-functions{
+  @extend .co-toolbar;
+  height:30px;
+}
+
 
 #filterSelectList {
 	width:100%;

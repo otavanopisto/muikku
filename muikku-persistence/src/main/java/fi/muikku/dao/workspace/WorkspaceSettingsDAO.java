@@ -28,7 +28,7 @@ public class WorkspaceSettingsDAO extends CoreDAO<WorkspaceSettings> {
     return courseSettings;
   }
 
-  public WorkspaceSettings findByCourse(WorkspaceEntity workspaceEntity) {
+  public WorkspaceSettings findByWorkspace(WorkspaceEntity workspaceEntity) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();

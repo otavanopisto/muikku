@@ -17,6 +17,8 @@ import fi.muikku.dao.workspace.WorkspaceUserEntityDAO;
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.model.workspace.WorkspaceRoleEntity;
+import fi.muikku.model.workspace.WorkspaceSettings;
 import fi.muikku.model.workspace.WorkspaceTypeEntity;
 import fi.muikku.model.workspace.WorkspaceTypeSchoolDataIdentifier;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
@@ -56,10 +58,13 @@ public class WorkspaceController {
 	private SessionController sessionController;
 	
 	@Inject
-	private WorkspaceSettingsDAO courseSettingsDAO;
+	private WorkspaceSettingsDAO workspaceSettingsDAO;
 
 	@Inject
 	private WorkspaceUserEntityDAO workspaceUserEntityDAO;
+	
+	@Inject
+	private UserController userController;
 	
 	/* WorkspaceTypeEntity */
 	
@@ -204,6 +209,12 @@ public class WorkspaceController {
 
 	/* WorkspaceUsers */
   
+  public WorkspaceUser createWorkspaceUser(WorkspaceEntity workspaceEntity, UserEntity userEntity, WorkspaceRoleEntity role) {
+    Workspace workspace = findWorkspace(workspaceEntity);
+    User user = userController.findUser(userEntity);
+    return createWorkspaceUser(workspace, user, "LOCAL", role.getId().toString());
+  }
+  
   public WorkspaceUser createWorkspaceUser(Workspace workspace, User user, String roleSchoolDataSource, String roleIdentifier) {
     return workspaceSchoolDataController.createWorkspaceUser(workspace, user, roleSchoolDataSource, roleIdentifier);
   }
@@ -236,12 +247,22 @@ public class WorkspaceController {
     return workspaceUserEntityDAO.listByWorkspace(workspaceEntity);
   }
 
+  public List<WorkspaceUserEntity> listWorkspaceUserEntitiesByRole(WorkspaceEntity workspaceEntity, WorkspaceRoleEntity role) {
+    return workspaceUserEntityDAO.listByWorkspaceAndRole(workspaceEntity, role);
+  }
+
   public List<WorkspaceUserEntity> listWorkspaceEntitiesByUser(UserEntity userEntity) {
     return workspaceUserEntityDAO.listByUser(userEntity);
   }
 
   public WorkspaceUserEntity findWorkspaceUserEntityByWorkspaceAndUser(WorkspaceEntity workspaceEntity, UserEntity user) {
     return workspaceUserEntityDAO.findByWorkspaceAndUser(workspaceEntity, user);
+  }
+  
+  /* WorkspaceSettings */
+  
+  public WorkspaceSettings findWorkspaceSettings(WorkspaceEntity workspaceEntity) {
+    return workspaceSettingsDAO.findByWorkspace(workspaceEntity);
   }
   
 }

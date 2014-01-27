@@ -116,9 +116,9 @@ public class CommunicatorRESTService extends PluginRESTService {
   public Response listUserSentCommunicatorItems( 
       @PathParam ("USERID") Long userId) {
     UserEntity user = userController.findUserEntityById(userId); 
-    List<InboxCommunicatorMessage> receivedItems = communicatorController.listSentItems(user);
+    List<InboxCommunicatorMessage> sentItems = communicatorController.listSentItems(user);
 
-    Collections.sort(receivedItems, new Comparator<CommunicatorMessage>() {
+    Collections.sort(sentItems, new Comparator<CommunicatorMessage>() {
       @Override
       public int compare(CommunicatorMessage o1, CommunicatorMessage o2) {
         return o2.getCreated().compareTo(o1.getCreated());
@@ -144,7 +144,7 @@ public class CommunicatorRESTService extends PluginRESTService {
 //      .addInstruction(UserEntity.class, tranquilityBuilder.createPropertyInjectInstruction("hasPicture", new UserEntityHasPictureValueGetter()))
 //      .addInstruction(UserEntity.class, tranquilityBuilder.createPropertyInjectInstruction("fullName", new UserNameValueGetter()));
     
-    Collection<TranquilModelEntity> entities = tranquility.entities(receivedItems);
+    Collection<TranquilModelEntity> entities = tranquility.entities(sentItems);
     
     return Response.ok(
       entities
@@ -160,7 +160,7 @@ public class CommunicatorRESTService extends PluginRESTService {
     
     CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
     
-    List<InboxCommunicatorMessage> receivedItems = communicatorController.listInboxMessagesByMessageId(user, messageId);
+    List<InboxCommunicatorMessage> receivedItems = communicatorController.listMessagesByMessageId(user, messageId);
 
     TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
     Tranquility tranquility = tranquilityBuilder.createTranquility()

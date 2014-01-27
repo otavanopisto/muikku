@@ -34,7 +34,9 @@
     
     <!-- Default Calendar CSS -->
     <h:outputStylesheet library="css" name="fullcalendar.css" />
-    
+
+ 
+
     <!-- jQuery -->
 
     <h:outputScript name="scripts/jquery/jquery-1.9.1.js" />
@@ -58,6 +60,10 @@
 
     <h:outputScript name="scripts/scroll/jquery.scroll.js" />
 
+    <!-- Functions that have no home yet. Find a home for them? -->
+    
+    <h:outputScript name="scripts/passingthrough.js" target="head"/>   
+    
     <!-- Dust -->
     <h:outputScript name="scripts/dustjs/dust-full-1.1.1.js" />
     <h:outputScript name="scripts/dustjs/dust-helpers-1.1.0.js" />
@@ -87,7 +93,10 @@
     <!-- Widget Controller -->
 
     <h:outputScript name="scripts/gui/widgetcontroller.js" />
-
+    
+    
+    
+    
   </h:head>
 
   <h:body>
@@ -289,37 +298,6 @@
       </div>
     </div>    
 
-  
-	  <script>
-	    $( "#dynamicNaviButton" ).click(function() {
-	    $( "#dynamicNaviContainer" ).toggle( "slide", 500 );
-	    });
-	    
-	    $( "div[class*='wi-frontpage']" ).mouseenter(function() {
-	      var tools =  $(this).find(".wi-frontpage-widget-toolarea");
-	       tools.show( "slide", 50 );
-	       
-	      });
-	
-	    $( "div[class*='wi-frontpage']" ).mouseleave(function() {
-	      var tools =  $(this).find(".wi-frontpage-widget-toolarea");
-	       tools.hide( "slide", 50 );
-	      });
-	
-	
-	    $( "div[class*='wi-frontpage-dynamic']" ).draggable({ snapMode: "inner" });
-	      
-
-	    $( "#seeker" ).focus(function() {
-	      $('#seeker').val('');
-	    });
-
-	     $( "#seeker" ).blur(function() {
-	       var sval = this.defaultValue;
-	        $('#seeker').val(sval);
-	      });
-	    
-	   </script>  
   </h:body>
 
 </f:view>
