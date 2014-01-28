@@ -45,10 +45,6 @@ private static final boolean ADD_DEBUG_MARKERS = false;
   @ContextPath
   private String contextPath;
   
-  @PostConstruct
-  public void init() {
-  }
-  
   public void processMaterial(HtmlMaterialProcessingContext event) {
     Document document = event.getDocument();
 

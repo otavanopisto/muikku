@@ -6,6 +6,8 @@ import javax.persistence.Lob;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 @Entity
 @PrimaryKeyJoinColumn(name="id")
 public class BinaryMaterial extends Material {
@@ -32,6 +34,7 @@ public class BinaryMaterial extends Material {
   private byte[] content;
   
   @NotNull
+  @NotEmpty
   @Column (nullable = false)
   private String contentType;
 }

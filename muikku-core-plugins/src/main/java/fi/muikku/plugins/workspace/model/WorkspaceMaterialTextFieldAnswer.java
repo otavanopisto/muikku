@@ -1,6 +1,7 @@
 package fi.muikku.plugins.workspace.model;
 
 import javax.persistence.Entity;
+import javax.persistence.Lob;
 import javax.persistence.PrimaryKeyJoinColumn;
 
 @Entity
@@ -15,5 +16,6 @@ public class WorkspaceMaterialTextFieldAnswer extends WorkspaceMaterialFieldAnsw
     this.value = value;
   }
   
+  @Lob
   private String value;
 }

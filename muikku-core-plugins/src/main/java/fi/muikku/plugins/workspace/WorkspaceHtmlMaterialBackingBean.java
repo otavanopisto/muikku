@@ -103,7 +103,7 @@ public class WorkspaceHtmlMaterialBackingBean {
   private Instance<WorkspaceFieldHandler> fieldHandlers;
   
 	@URLAction 
-	public void init() throws IOException, XPathExpressionException, SAXException, TransformerException, MaterialQueryPersistanceExeption, MaterialQueryIntegrityExeption {
+	public void init() throws IOException, XPathExpressionException, SAXException, TransformerException, MaterialQueryIntegrityExeption {
 	  // TODO: Proper error handling
 	  
 	  if (StringUtils.isBlank(getWorkspaceUrlName())) {

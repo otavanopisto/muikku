@@ -26,21 +26,9 @@ public class QueryConnectFieldTermDAO extends PluginDAO<QueryConnectFieldTerm> {
     queryConnectFieldTerm.setText(text);
     queryConnectFieldTerm.setConnectField(connectField);
     queryConnectFieldTerm.setCounterpart(counterpart);
-    
+
     return persist(queryConnectFieldTerm);
 
-  }
-
-  public List<QueryConnectFieldTerm> listByField(QueryConnectField connectField) {
-    EntityManager entityManager = getEntityManager();
-
-    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    CriteriaQuery<QueryConnectFieldTerm> criteria = criteriaBuilder.createQuery(QueryConnectFieldTerm.class);
-    Root<QueryConnectFieldTerm> root = criteria.from(QueryConnectFieldTerm.class);
-    criteria.select(root);
-    criteria.where(criteriaBuilder.equal(root.get(QueryConnectFieldTerm_.connectField), connectField));
-
-    return entityManager.createQuery(criteria).getResultList();
   }
 
   public QueryConnectFieldTerm findByFieldAndName(QueryConnectField connectField, String name) {
@@ -58,5 +46,17 @@ public class QueryConnectFieldTermDAO extends PluginDAO<QueryConnectFieldTerm> {
     );
 
     return getSingleResult(entityManager.createQuery(criteria));
+  }
+
+  public List<QueryConnectFieldTerm> listByField(QueryConnectField connectField) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<QueryConnectFieldTerm> criteria = criteriaBuilder.createQuery(QueryConnectFieldTerm.class);
+    Root<QueryConnectFieldTerm> root = criteria.from(QueryConnectFieldTerm.class);
+    criteria.select(root);
+    criteria.where(criteriaBuilder.equal(root.get(QueryConnectFieldTerm_.connectField), connectField));
+
+    return entityManager.createQuery(criteria).getResultList();
   }
 }

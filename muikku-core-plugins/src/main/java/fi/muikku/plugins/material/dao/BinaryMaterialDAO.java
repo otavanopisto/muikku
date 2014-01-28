@@ -21,7 +21,6 @@ public class BinaryMaterialDAO extends PluginDAO<BinaryMaterial> {
 		binaryMaterial.setTitle(title);
 		binaryMaterial.setType("binary");
 		binaryMaterial.setUrlName(urlName);
-		
 		return persist(binaryMaterial);
 	}
 

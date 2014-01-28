@@ -34,9 +34,9 @@ public class HtmlMaterialCreateListener {
     String html = htmlMaterial.getHtml();
 
     if (StringUtils.isNotBlank(html)) {
-      DOMParser parser = new DOMParser();
       StringReader htmlReader = new StringReader(html);
       try {
+        DOMParser parser = new DOMParser();
         InputSource inputSource = new InputSource(htmlReader);
         parser.parse(inputSource);
         Document document = parser.getDocument();

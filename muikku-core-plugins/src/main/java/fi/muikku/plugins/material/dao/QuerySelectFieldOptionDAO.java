@@ -24,9 +24,8 @@ public class QuerySelectFieldOptionDAO extends PluginDAO<QuerySelectFieldOption>
     querySelectFieldOption.setName(name);
     querySelectFieldOption.setText(text);
     querySelectFieldOption.setSelectField(field);
-
+    
     return persist(querySelectFieldOption);
-
   }
 
   public List<QuerySelectFieldOption> listByField(QuerySelectField field) {
