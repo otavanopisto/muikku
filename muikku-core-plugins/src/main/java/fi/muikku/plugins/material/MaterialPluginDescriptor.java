@@ -8,11 +8,28 @@ import fi.muikku.plugin.PluginDescriptor;
 import fi.muikku.plugins.material.dao.BinaryMaterialDAO;
 import fi.muikku.plugins.material.dao.HtmlMaterialDAO;
 import fi.muikku.plugins.material.dao.MaterialDAO;
-import fi.muikku.plugins.material.dao.ReplyDAO;
+import fi.muikku.plugins.material.dao.QueryConnectFieldCounterpartDAO;
+import fi.muikku.plugins.material.dao.QueryConnectFieldDAO;
+import fi.muikku.plugins.material.dao.QueryConnectFieldTermDAO;
+import fi.muikku.plugins.material.dao.QueryFieldDAO;
+import fi.muikku.plugins.material.dao.QuerySelectFieldDAO;
+import fi.muikku.plugins.material.dao.QuerySelectFieldOptionDAO;
+import fi.muikku.plugins.material.dao.QueryTextFieldDAO;
+import fi.muikku.plugins.material.fieldprocessing.ConnectFieldMaterialFieldProcessor;
+import fi.muikku.plugins.material.fieldprocessing.MemoFieldMaterialFieldProcessor;
+import fi.muikku.plugins.material.fieldprocessing.SelectFieldMaterialFieldProcessor;
+import fi.muikku.plugins.material.fieldprocessing.TextFieldMaterialFieldProcessor;
 import fi.muikku.plugins.material.model.BinaryMaterial;
 import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.material.model.Material;
-import fi.muikku.plugins.material.model.Reply;
+import fi.muikku.plugins.material.model.QueryConnectField;
+import fi.muikku.plugins.material.model.QueryConnectFieldCounterpart;
+import fi.muikku.plugins.material.model.QueryConnectFieldOption;
+import fi.muikku.plugins.material.model.QueryConnectFieldTerm;
+import fi.muikku.plugins.material.model.QueryField;
+import fi.muikku.plugins.material.model.QuerySelectField;
+import fi.muikku.plugins.material.model.QuerySelectFieldOption;
+import fi.muikku.plugins.material.model.QueryTextField;
 
 public class MaterialPluginDescriptor implements PluginDescriptor, PersistencePluginDescriptor {
 
@@ -29,22 +46,41 @@ public class MaterialPluginDescriptor implements PluginDescriptor, PersistencePl
   @Override
   public List<Class<?>> getBeans() {
     return Arrays.asList(new Class<?>[] {
-      /* Backing Beans */
-    		
-      HtmlMaterialBackingBean.class,
-      BinaryMaterialBackingBean.class,
       
       /* Controllers */
       
+      MaterialController.class,
       BinaryMaterialController.class,
       HtmlMaterialController.class,
+      QueryFieldController.class,
+      QueryTextFieldController.class,
+      QuerySelectFieldController.class,
+      QueryConnectFieldController.class,
        
       /* DAOs */
       
       HtmlMaterialDAO.class,
       BinaryMaterialDAO.class,
       MaterialDAO.class,
-      ReplyDAO.class
+      QueryFieldDAO.class,
+      QuerySelectFieldDAO.class,
+      QueryTextFieldDAO.class,
+      QuerySelectFieldOptionDAO.class,
+      QueryConnectFieldDAO.class,
+      QueryConnectFieldTermDAO.class,
+      QueryConnectFieldCounterpartDAO.class,
+      
+      /* Field Processors */
+      
+      MemoFieldMaterialFieldProcessor.class,
+      SelectFieldMaterialFieldProcessor.class,
+      TextFieldMaterialFieldProcessor.class,
+      ConnectFieldMaterialFieldProcessor.class,
+      
+      /* Listeners */
+
+      HtmlMaterialCreateListener.class,
+      HtmlMaterialEmbedListeners.class
     });
   }
 
@@ -54,7 +90,14 @@ public class MaterialPluginDescriptor implements PluginDescriptor, PersistencePl
       BinaryMaterial.class,
       HtmlMaterial.class,
       Material.class,
-      Reply.class
+      QueryTextField.class,
+      QueryField.class,
+      QuerySelectField.class,
+      QuerySelectFieldOption.class,
+      QueryConnectField.class,
+      QueryConnectFieldOption.class,
+      QueryConnectFieldTerm.class,
+      QueryConnectFieldCounterpart.class
     };
   }
 }

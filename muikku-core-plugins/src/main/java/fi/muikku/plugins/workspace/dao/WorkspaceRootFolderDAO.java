@@ -32,9 +32,7 @@ public class WorkspaceRootFolderDAO extends PluginDAO<WorkspaceRootFolder> {
     Root<WorkspaceRootFolder> root = criteria.from(WorkspaceRootFolder.class);
     criteria.select(root);
     criteria.where(
-   		criteriaBuilder.and(
-        criteriaBuilder.equal(root.get(WorkspaceRootFolder_.workspaceEntityId), workspaceEntityId)
-      )
+      criteriaBuilder.equal(root.get(WorkspaceRootFolder_.workspaceEntityId), workspaceEntityId)
     );
    
     return getSingleResult(entityManager.createQuery(criteria));

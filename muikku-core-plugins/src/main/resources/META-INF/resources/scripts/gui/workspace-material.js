@@ -7,5 +7,9 @@
       $(this).css("height", scrollHeight);
     });
   });
-  
+
+  jsPlumb.ready(function() {
+    $(".muikku-connect-field-table").muikkuConnectField();
+  }); 
+
 }).call(this);
