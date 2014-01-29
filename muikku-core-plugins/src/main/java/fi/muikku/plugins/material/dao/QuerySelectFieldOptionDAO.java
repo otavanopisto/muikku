@@ -56,4 +56,9 @@ public class QuerySelectFieldOptionDAO extends PluginDAO<QuerySelectFieldOption>
 
     return getSingleResult(entityManager.createQuery(criteria));
   }
+
+  public QuerySelectFieldOption updateText(QuerySelectFieldOption querySelectFieldOption, String text) {
+    querySelectFieldOption.setText(text);
+    return persist(querySelectFieldOption);
+  }
 }

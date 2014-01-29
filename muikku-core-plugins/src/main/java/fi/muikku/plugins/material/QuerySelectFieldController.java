@@ -29,11 +29,23 @@ public class QuerySelectFieldController {
   public QuerySelectField findQuerySelectFieldbyId(Long id) {
     return querySelectFieldDAO.findById(id);
   }
+
+  public QuerySelectField findQuerySelectFieldByMaterialAndName(Material material, String name) {
+    return querySelectFieldDAO.findByMaterialAndName(material, name);
+  }
   
   /* QuerySelectFieldOption */
   
-  public QuerySelectFieldOption createSelectFieldOption(QuerySelectField querySelectField, String name, String text) {
+  public QuerySelectFieldOption createQuerySelectFieldOption(QuerySelectField querySelectField, String name, String text) {
     return querySelectFieldOptionDAO.create(name, text, querySelectField);
+  }
+
+  public QuerySelectFieldOption findQuerySelectFieldOptionBySelectFieldAndName(QuerySelectField selectField, String name) {
+    return querySelectFieldOptionDAO.findBySelectFieldAndName(selectField, name);
+  }
+
+  public QuerySelectFieldOption updateQuerySelectFieldOptionText(QuerySelectFieldOption querySelectFieldOption, String text) {
+    return querySelectFieldOptionDAO.updateText(querySelectFieldOption, text);
   }
 
 }

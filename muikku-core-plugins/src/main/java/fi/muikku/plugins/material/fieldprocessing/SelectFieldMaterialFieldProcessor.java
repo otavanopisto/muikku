@@ -14,6 +14,7 @@ import fi.muikku.plugins.material.fieldmeta.SelectFieldOptionMeta;
 import fi.muikku.plugins.material.fieldmeta.SelectFieldMeta;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.material.model.QuerySelectField;
+import fi.muikku.plugins.material.model.QuerySelectFieldOption;
 
 public class SelectFieldMaterialFieldProcessor implements MaterialFieldProcessor {
 
@@ -25,9 +26,18 @@ public class SelectFieldMaterialFieldProcessor implements MaterialFieldProcessor
     ObjectMapper objectMapper = new ObjectMapper();
     
     SelectFieldMeta selectFieldMeta = objectMapper.readValue(content, SelectFieldMeta.class);
-    QuerySelectField querySelectField = querySelectFieldController.createQuerySelectField(material, selectFieldMeta.getName());
+    QuerySelectField querySelectField = querySelectFieldController.findQuerySelectFieldByMaterialAndName(material, selectFieldMeta.getName());
+    if (querySelectField == null) {
+      querySelectField = querySelectFieldController.createQuerySelectField(material, selectFieldMeta.getName());
+    }
+    
     for (SelectFieldOptionMeta selectFieldOptionMeta : selectFieldMeta.getOptions()) {
-      querySelectFieldController.createSelectFieldOption(querySelectField, selectFieldOptionMeta.getName(), selectFieldOptionMeta.getText());
+      QuerySelectFieldOption querySelectFieldOption = querySelectFieldController.findQuerySelectFieldOptionBySelectFieldAndName(querySelectField, selectFieldOptionMeta.getName());
+      if (querySelectFieldOption == null) {
+        querySelectFieldController.createQuerySelectFieldOption(querySelectField, selectFieldOptionMeta.getName(), selectFieldOptionMeta.getText());
+      } else {
+        querySelectFieldController.updateQuerySelectFieldOptionText(querySelectFieldOption, selectFieldOptionMeta.getText());
+      }
     }
   }
 
