@@ -10,13 +10,12 @@ public class QuerySelectFieldDAO extends PluginDAO<QuerySelectField> {
 	
 	private static final long serialVersionUID = -5327160259588566934L;
 	
-	public QuerySelectField create(Material material, String name, Boolean mandatory){
+	public QuerySelectField create(Material material, String name){
 		
 		QuerySelectField querySelectField = new QuerySelectField();
 		
 		querySelectField.setMaterial(material);
 		querySelectField.setName(name);
-		querySelectField.setMandatory(mandatory);
 		
 		return persist(querySelectField);
 	}

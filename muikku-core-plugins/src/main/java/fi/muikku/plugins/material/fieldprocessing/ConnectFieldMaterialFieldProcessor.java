@@ -29,7 +29,7 @@ public class ConnectFieldMaterialFieldProcessor implements MaterialFieldProcesso
     ObjectMapper objectMapper = new ObjectMapper();
     
     ConnectFieldMeta connectFieldMeta = objectMapper.readValue(content, ConnectFieldMeta.class);
-    QueryConnectField queryConnectField = queryConnectFieldController.createQueryConnectField(material, connectFieldMeta.getName(), Boolean.FALSE);
+    QueryConnectField queryConnectField = queryConnectFieldController.createQueryConnectField(material, connectFieldMeta.getName());
     
     Map<String, QueryConnectFieldCounterpart> counterpartMap = new HashMap<>();
     Map<String, String> connectionMap = new HashMap<>(); 

@@ -25,7 +25,7 @@ public class SelectFieldMaterialFieldProcessor implements MaterialFieldProcessor
     ObjectMapper objectMapper = new ObjectMapper();
     
     SelectFieldMeta selectFieldMeta = objectMapper.readValue(content, SelectFieldMeta.class);
-    QuerySelectField querySelectField = querySelectFieldController.createQuerySelectField(material, selectFieldMeta.getName(), Boolean.FALSE);
+    QuerySelectField querySelectField = querySelectFieldController.createQuerySelectField(material, selectFieldMeta.getName());
     for (SelectFieldOptionMeta selectFieldOptionMeta : selectFieldMeta.getOptions()) {
       querySelectFieldController.createSelectFieldOption(querySelectField, selectFieldOptionMeta.getName(), selectFieldOptionMeta.getText());
     }

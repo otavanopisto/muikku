@@ -29,8 +29,8 @@ public class QueryConnectFieldController {
 
   /* Connect Field */
   
-  public QueryConnectField createQueryConnectField(Material material, String name, Boolean mandatory) {
-    return queryConnectFieldDAO.create(material, name, mandatory);
+  public QueryConnectField createQueryConnectField(Material material, String name) {
+    return queryConnectFieldDAO.create(material, name);
   }
 
   public QueryConnectField findQueryConnectFieldbyId(Long id) {

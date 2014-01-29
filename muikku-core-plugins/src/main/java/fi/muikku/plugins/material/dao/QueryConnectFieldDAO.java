@@ -10,13 +10,12 @@ public class QueryConnectFieldDAO extends PluginDAO<QueryConnectField> {
 	
   private static final long serialVersionUID = 5188632608986411717L;
 
-  public QueryConnectField create(Material material, String name, Boolean mandatory){
+  public QueryConnectField create(Material material, String name){
 		
 		QueryConnectField queryConnectField = new QueryConnectField();
 		
 		queryConnectField.setMaterial(material);
 		queryConnectField.setName(name);
-		queryConnectField.setMandatory(mandatory);
 		
 		return persist(queryConnectField);
 	}

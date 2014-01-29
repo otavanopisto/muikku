@@ -37,14 +37,6 @@ public class QueryField {
 	public void setMaterial(Material material) {
     this.material = material;
   }
-
-  public Boolean getMandatory() {
-    return mandatory;
-  }
-  
-  public void setMandatory(Boolean mandatory) {
-    this.mandatory = mandatory;
-  }
   
   @Transient
   public String getType() {
@@ -62,9 +54,5 @@ public class QueryField {
   
   @ManyToOne
   private Material material;
-
-	@NotNull
-	@Column (nullable = false)
-	private Boolean mandatory;
 
 }

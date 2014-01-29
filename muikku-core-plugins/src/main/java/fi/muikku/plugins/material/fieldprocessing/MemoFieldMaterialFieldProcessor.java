@@ -22,7 +22,7 @@ public class MemoFieldMaterialFieldProcessor implements MaterialFieldProcessor {
   public void process(Material material, String content) throws JsonParseException, JsonMappingException, IOException {
     ObjectMapper objectMapper = new ObjectMapper();
     MemoFieldMeta memoFieldMeta = objectMapper.readValue(content, MemoFieldMeta.class);
-    queryTextFieldController.createQueryTextField(material, memoFieldMeta.getName(), Boolean.FALSE);
+    queryTextFieldController.createQueryTextField(material, memoFieldMeta.getName());
   }
 
   @Override

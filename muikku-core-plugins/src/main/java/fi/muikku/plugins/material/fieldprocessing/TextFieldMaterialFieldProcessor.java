@@ -22,7 +22,7 @@ public class TextFieldMaterialFieldProcessor implements MaterialFieldProcessor {
   public void process(Material material, String content) throws JsonParseException, JsonMappingException, IOException {
     ObjectMapper objectMapper = new ObjectMapper();
     TextFieldMeta textFieldMeta = objectMapper.readValue(content, TextFieldMeta.class);
-    queryTextFieldController.createQueryTextField(material, textFieldMeta.getName(), Boolean.FALSE);
+    queryTextFieldController.createQueryTextField(material, textFieldMeta.getName());
   }
 
   @Override
