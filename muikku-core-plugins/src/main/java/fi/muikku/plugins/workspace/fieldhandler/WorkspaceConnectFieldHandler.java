@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -81,7 +82,7 @@ public class WorkspaceConnectFieldHandler implements WorkspaceFieldHandler {
         tdTermElement.setAttribute("data-muikku-connect-field-option-name", connectFieldTermMeta.getName());
 
         inputElement.setAttribute("type", "text");
-        inputElement.setAttribute("name", workspaceMaterialField.getName() + "." + connectFieldTermMeta.getName());
+        inputElement.setAttribute("name", DigestUtils.md5Hex(workspaceMaterialField.getName() + "." + term.getId()));
         inputElement.setAttribute("class", "muikku-connect-field-value");
 
         WorkspaceMaterialConnectFieldAnswer connectFieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialConnectFieldAnswerByFieldAndReplyAndTerm(workspaceMaterialField, workspaceMaterialReply, term);
@@ -118,7 +119,7 @@ public class WorkspaceConnectFieldHandler implements WorkspaceFieldHandler {
     if (queryConnectField != null) {
       List<QueryConnectFieldTerm> terms = queryConnectFieldController.listConnectFieldTermsByField(queryConnectField);
       for (QueryConnectFieldTerm term : terms) {
-        String parameterName = workspaceMaterialField.getName() + "." + term.getName();
+        String parameterName = DigestUtils.md5Hex(workspaceMaterialField.getName() + "." + term.getId());
         String parameterValue = requestParameterMap.get(parameterName);
         QueryConnectFieldCounterpart counterpart = StringUtils.isNotEmpty(parameterValue) ? queryConnectFieldController.findQueryConnectFieldCounterpartByFieldAndName(queryConnectField, parameterValue) : null;
         
