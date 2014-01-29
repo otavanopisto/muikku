@@ -7,3 +7,7 @@ $theme:muikku;
 @mixin background-image($imgSrc) {
   background-image:(url('#' + '{resource["theme-' + $theme + ':' + $imgSrc + '"]}'));
 }
+
+@mixin background-image-external($imgSrc) {
+  background-image:url($imgSrc);
+}

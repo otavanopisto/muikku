@@ -29,20 +29,20 @@ div[class*='action-vertical']:not(:first-child){
 }
 
 div[class*='actions'] {
-  @include gradient-top-bottom(#fff,#f8f8f8,#fff) ;	
+  @include gradient-top-bottom(#fff,#f8f8f8,#fff);	
   float:none;
   margin-left:0 !important;
 }
 
 div[class*='actions-vertical'] {
-  @include gradient-top-bottom(#fff,#f8f8f8,#fff) ; 
+  @include gradient-top-bottom(#fff,#f8f8f8,#fff); 
   float:right;
   margin-left:0 !important;
 }
 
 /* staticNaviDock  */
 
-div[class*="wi-dock-navi"]{
+div[class*="wi-dock-navi"] {
  float:left;
 }
 
@@ -428,6 +428,7 @@ div[class*="wi-dock-navi"]{
 }
 
 /* Calendar */
+
 .calendarSettingsWidget {
   display: inline-block;
 }
@@ -492,7 +493,7 @@ div[class*="wi-dock-navi"]{
   position: absolute;
   margin-top:96px;
   margin-left:285px;  
-  }
+}
 
 
 /* Language */
@@ -505,7 +506,6 @@ div[class*="wi-dock-navi"]{
   @include gradient-top-bottom-four($contInteractGr...);
   height: 20px;
   width : 50px;
-
   border: 2px solid #ededed;
   border-radius: 5px;
 }
@@ -588,6 +588,7 @@ div[class*="wi-dock-navi"]{
 }
 
 /* frontpage widgets */
+
 .wi-frontpage-static-personalTopics { 
   @extend .co-widget; 
   @include gradient-top-bottom(#fff,$hlBgr);
@@ -638,7 +639,7 @@ div[class*="wi-dock-navi"]{
 
 .wi-news-item-picture {
   background-repeat: no-repeat ;
-  @include background-image('http://farm8.staticflickr.com/7363/9872617353_fb529696e9.jpg');
+  @include background-image-external('http://farm8.staticflickr.com/7363/9872617353_fb529696e9.jpg');
   background-size:100%;
   height:200px;
   width:200px;
@@ -742,6 +743,7 @@ div[class*="wi-dock-navi"]{
 }
 
 .wi-settings-remove {
+  
 }
 
 .wi-settings-remove-link {
@@ -752,6 +754,7 @@ div[class*="wi-dock-navi"]{
 }
 
 .wi-settings-edit {
+  
 }
 
 .wi-settings-edit-link {
@@ -761,16 +764,17 @@ div[class*="wi-dock-navi"]{
   margin-left:10px;
 }
 
-.wi-user-info{
+.wi-user-info {
 	
 }
-.wi-user-name{
+
+.wi-user-name {
   font-size:2em;
   font-weight:bold;
   color:#3a374d;
 }
 
-.wi-user-functions{
+.wi-user-functions {
   @extend .co-toolbar;
   height:30px;
 }
