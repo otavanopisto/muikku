@@ -13,13 +13,6 @@ public class MaterialDAO extends PluginDAO<Material> {
 
 	private static final long serialVersionUID = 148925841493479490L;
 
-	public Material create(String type, String title) {
-		Material material = new Material();
-		material.setType(type);
-		material.setTitle(title);
-		return persist(material);
-	}
-
 	public Material findByUrlName(String urlName) {
 		EntityManager entityManager = getEntityManager();
 

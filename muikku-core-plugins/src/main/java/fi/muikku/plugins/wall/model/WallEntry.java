@@ -8,7 +8,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.PersistenceException;
 import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.Transient;
 
 @Entity
 @PrimaryKeyJoinColumn(name="id")

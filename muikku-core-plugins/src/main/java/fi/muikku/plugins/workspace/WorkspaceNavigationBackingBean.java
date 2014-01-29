@@ -1,7 +1,5 @@
 package fi.muikku.plugins.workspace;
 
-import java.io.FileNotFoundException;
-
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
