@@ -85,7 +85,7 @@
 
 .notificationQueueLoadingItem {
   background-color: #EEEEEE;
-  background-image: url("ajax-loader.gif");
+  @include background-image('ajax-loader.gif');
   background-position: 18px center;
   background-repeat: no-repeat;
   color: #1E1E1E;

@@ -637,7 +637,8 @@ div[class*="wi-dock-navi"]{
 }
 
 .wi-news-item-picture {
-  background:url("http://farm8.staticflickr.com/7363/9872617353_fb529696e9.jpg") no-repeat ;
+  background-repeat: no-repeat ;
+  @include background-image('http://farm8.staticflickr.com/7363/9872617353_fb529696e9.jpg');
   background-size:100%;
   height:200px;
   width:200px;
