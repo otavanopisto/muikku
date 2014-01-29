@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -26,6 +27,12 @@ public class BinaryMaterial extends Material {
 	
 	public void setContentType(String contentType) {
 		this.contentType = contentType;
+	}
+	
+	@Override
+	@Transient
+	public String getType() {
+	  return "binary";
 	}
 
   @NotNull
