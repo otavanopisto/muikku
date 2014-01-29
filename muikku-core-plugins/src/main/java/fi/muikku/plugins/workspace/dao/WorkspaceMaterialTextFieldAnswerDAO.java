@@ -20,12 +20,12 @@ public class WorkspaceMaterialTextFieldAnswerDAO extends PluginDAO<WorkspaceMate
 		
 		workspaceMaterialTextFieldAnswer.setField(field);
 		workspaceMaterialTextFieldAnswer.setReply(reply);
-    workspaceMaterialTextFieldAnswer.setValue(value);
+		workspaceMaterialTextFieldAnswer.setValue(value);
 		
 		return persist(workspaceMaterialTextFieldAnswer);
 	}
 
-  public WorkspaceMaterialTextFieldAnswer findByQueryFieldAndReply(WorkspaceMaterialField field, WorkspaceMaterialReply reply) {
+  public WorkspaceMaterialTextFieldAnswer findByFieldAndReply(WorkspaceMaterialField field, WorkspaceMaterialReply reply) {
     EntityManager entityManager = getEntityManager();
 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();

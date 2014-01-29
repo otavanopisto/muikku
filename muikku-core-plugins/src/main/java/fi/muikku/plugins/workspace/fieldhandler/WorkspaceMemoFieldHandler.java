@@ -39,7 +39,7 @@ public class WorkspaceMemoFieldHandler extends AbstractWorkspaceFieldHandler {
     String parameterName = getHtmlFieldName(workspaceMaterialField.getName());
     String value = null;
         
-    WorkspaceMaterialTextFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialTextFieldAnswerByQueryFieldAndReply(workspaceMaterialField, workspaceMaterialReply);
+    WorkspaceMaterialTextFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialTextFieldAnswerByFieldAndReply(workspaceMaterialField, workspaceMaterialReply);
     if (fieldAnswer != null) {
       value = fieldAnswer.getValue();
     }
@@ -66,7 +66,7 @@ public class WorkspaceMemoFieldHandler extends AbstractWorkspaceFieldHandler {
     String parameterName = getHtmlFieldName(workspaceMaterialField.getName());
     String value = requestParameterMap.get(parameterName);
     
-    WorkspaceMaterialTextFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialTextFieldAnswerByQueryFieldAndReply(workspaceMaterialField, reply);
+    WorkspaceMaterialTextFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialTextFieldAnswerByFieldAndReply(workspaceMaterialField, reply);
     if (StringUtils.isNotBlank(value)) {
       if (fieldAnswer == null) {
         fieldAnswer = workspaceMaterialFieldAnswerController.createWorkspaceMaterialTextFieldAnswer(workspaceMaterialField, reply, value);
