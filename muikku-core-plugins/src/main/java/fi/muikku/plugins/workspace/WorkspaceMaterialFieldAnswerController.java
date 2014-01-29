@@ -47,7 +47,7 @@ public class WorkspaceMaterialFieldAnswerController {
     return workspaceMaterialSelectFieldAnswerDAO.create(field, reply, value);
   }
 
-  public WorkspaceMaterialSelectFieldAnswer findWorkspaceMaterialSelectFieldAnswerByQueryFieldAndReply(WorkspaceMaterialField field, WorkspaceMaterialReply reply) {
+  public WorkspaceMaterialSelectFieldAnswer findWorkspaceMaterialSelectFieldAnswerByFieldAndReply(WorkspaceMaterialField field, WorkspaceMaterialReply reply) {
     return workspaceMaterialSelectFieldAnswerDAO.findByQueryFieldAndReply(field, reply);
   }
 

@@ -44,7 +44,7 @@ public class WorkspaceSelectFieldHandler extends AbstractWorkspaceFieldHandler {
     SelectFieldMeta selectFieldMeta = (new ObjectMapper()).readValue(content, SelectFieldMeta.class);
     
     String parameterName = getHtmlFieldName(workspaceMaterialField.getName());
-    WorkspaceMaterialSelectFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialSelectFieldAnswerByQueryFieldAndReply(workspaceMaterialField, workspaceMaterialReply);
+    WorkspaceMaterialSelectFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialSelectFieldAnswerByFieldAndReply(workspaceMaterialField, workspaceMaterialReply);
     
     switch (selectFieldMeta.getListType()) {
       case "list":
@@ -135,7 +135,7 @@ public class WorkspaceSelectFieldHandler extends AbstractWorkspaceFieldHandler {
       }
     }
     
-    WorkspaceMaterialSelectFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialSelectFieldAnswerByQueryFieldAndReply(workspaceMaterialField, reply);
+    WorkspaceMaterialSelectFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialSelectFieldAnswerByFieldAndReply(workspaceMaterialField, reply);
     if (option != null) {
       if (fieldAnswer != null) {
         fieldAnswer = workspaceMaterialFieldAnswerController.updateWorkspaceMaterialSelectFieldAnswerValue(fieldAnswer, option);
