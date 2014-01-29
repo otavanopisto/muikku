@@ -1,9 +1,15 @@
 package fi.muikku.plugins.material.dao;
 
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
 import fi.muikku.dao.DAO;
 import fi.muikku.plugin.PluginDAO;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.material.model.QueryConnectField;
+import fi.muikku.plugins.material.model.QueryConnectField_;
 
 @DAO
 public class QueryConnectFieldDAO extends PluginDAO<QueryConnectField> {
@@ -19,5 +25,22 @@ public class QueryConnectFieldDAO extends PluginDAO<QueryConnectField> {
 		
 		return persist(queryConnectField);
 	}
+
+  public QueryConnectField findByMaterialAndName(Material material, String name) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<QueryConnectField> criteria = criteriaBuilder.createQuery(QueryConnectField.class);
+    Root<QueryConnectField> root = criteria.from(QueryConnectField.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(QueryConnectField_.material), material),
+        criteriaBuilder.equal(root.get(QueryConnectField_.name), name)
+      )
+    );
+
+    return getSingleResult(entityManager.createQuery(criteria));
+  }
 
 }

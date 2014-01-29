@@ -57,4 +57,9 @@ public class QueryConnectFieldCounterpartDAO extends PluginDAO<QueryConnectField
 
     return getSingleResult(entityManager.createQuery(criteria));
   }
+
+  public QueryConnectFieldCounterpart updateText(QueryConnectFieldCounterpart connectFieldCounterpart, String text) {
+    connectFieldCounterpart.setText(text);
+    return persist(connectFieldCounterpart);
+  }
 }

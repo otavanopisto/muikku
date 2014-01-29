@@ -33,8 +33,12 @@ public class QueryConnectFieldController {
     return queryConnectFieldDAO.create(material, name);
   }
 
-  public QueryConnectField findQueryConnectFieldbyId(Long id) {
+  public QueryConnectField findQueryConnectFieldById(Long id) {
     return queryConnectFieldDAO.findById(id);
+  }
+
+  public QueryConnectField findQueryConnectFieldByMaterialAndName(Material material, String name) {
+    return queryConnectFieldDAO.findByMaterialAndName(material, name);
   }
 
   /* Connect Field Terms */
@@ -51,6 +55,14 @@ public class QueryConnectFieldController {
     return queryConnectFieldTermDAO.listByField(field);
   }
 
+  public QueryConnectFieldTerm updateConnectFieldTermText(QueryConnectFieldTerm queryConnectFieldTerm, String text) {
+    return queryConnectFieldTermDAO.updateText(queryConnectFieldTerm, text);
+  }
+
+  public QueryConnectFieldTerm updateConnectFieldTermCounterpart(QueryConnectFieldTerm queryConnectFieldTerm, QueryConnectFieldCounterpart counterpart) {
+    return queryConnectFieldTermDAO.updateCounterpart(queryConnectFieldTerm, counterpart);
+  }
+
   /* Connect Field Counterparts */
   
   public QueryConnectFieldCounterpart createConnectFieldCounterpart(QueryConnectField field, String name, String text) {
@@ -59,6 +71,10 @@ public class QueryConnectFieldController {
 
   public QueryConnectFieldCounterpart findQueryConnectFieldCounterpartByFieldAndName(QueryConnectField field, String name) {
     return queryConnectFieldCounterpartDAO.findByFieldAndName(field, name);
+  }
+
+  public QueryConnectFieldCounterpart updateConnectFieldCounterpartText(QueryConnectFieldCounterpart connectFieldCounterpart, String text) {
+    return queryConnectFieldCounterpartDAO.updateText(connectFieldCounterpart, text);
   }
 
 }

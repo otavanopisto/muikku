@@ -59,4 +59,14 @@ public class QueryConnectFieldTermDAO extends PluginDAO<QueryConnectFieldTerm> {
 
     return entityManager.createQuery(criteria).getResultList();
   }
+
+  public QueryConnectFieldTerm updateText(QueryConnectFieldTerm queryConnectFieldTerm, String text) {
+    queryConnectFieldTerm.setText(text);
+    return persist(queryConnectFieldTerm);
+  }
+
+  public QueryConnectFieldTerm updateCounterpart(QueryConnectFieldTerm queryConnectFieldTerm, QueryConnectFieldCounterpart counterpart) {
+    queryConnectFieldTerm.setCounterpart(counterpart);
+    return persist(queryConnectFieldTerm);
+  }
 }
