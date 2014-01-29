@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
+import javax.persistence.PersistenceException;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
@@ -40,7 +41,7 @@ public class WorkspaceNode {
 
   @Transient
   public WorkspaceNodeType getType() {
-    return null;
+    throw new PersistenceException("Not implemented");
   }
   
   @Transient
