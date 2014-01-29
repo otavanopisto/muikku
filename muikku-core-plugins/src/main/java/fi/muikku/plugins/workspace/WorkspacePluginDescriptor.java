@@ -6,17 +6,9 @@ import java.util.List;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 
-import fi.muikku.controller.WidgetController;
 import fi.muikku.plugin.PersistencePluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
-
-import fi.muikku.plugins.workspace.fieldhandler.WorkspaceConnectFieldHandler;
-import fi.muikku.plugins.workspace.fieldhandler.WorkspaceMemoFieldHandler;
-import fi.muikku.plugins.workspace.fieldhandler.WorkspaceSelectFieldHandler;
-import fi.muikku.plugins.workspace.fieldhandler.WorkspaceTextFieldHandler;
-
 import fi.muikku.plugin.RESTPluginDescriptor;
 import fi.muikku.plugins.workspace.dao.WorkspaceFolderDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialConnectFieldAnswerDAO;
@@ -27,6 +19,10 @@ import fi.muikku.plugins.workspace.dao.WorkspaceMaterialSelectFieldAnswerDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialTextFieldAnswerDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceNodeDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceRootFolderDAO;
+import fi.muikku.plugins.workspace.fieldhandler.WorkspaceConnectFieldHandler;
+import fi.muikku.plugins.workspace.fieldhandler.WorkspaceMemoFieldHandler;
+import fi.muikku.plugins.workspace.fieldhandler.WorkspaceSelectFieldHandler;
+import fi.muikku.plugins.workspace.fieldhandler.WorkspaceTextFieldHandler;
 import fi.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialConnectFieldAnswer;
@@ -42,9 +38,6 @@ import fi.muikku.plugins.workspace.rest.WorkspaceRESTService;
 @ApplicationScoped
 @Stateful
 public class WorkspacePluginDescriptor implements PluginDescriptor, PersistencePluginDescriptor, RESTPluginDescriptor {
-
-	@Inject
-	private WidgetController widgetController;
 	
 	@Override
 	public String getName() {

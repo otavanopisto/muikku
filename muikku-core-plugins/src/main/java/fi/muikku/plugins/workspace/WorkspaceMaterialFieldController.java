@@ -9,9 +9,6 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
-import fi.muikku.plugins.material.HtmlMaterialController;
-import fi.muikku.plugins.material.MaterialController;
-import fi.muikku.plugins.material.QueryFieldController;
 import fi.muikku.plugins.material.model.QueryField;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialFieldDAO;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
@@ -20,15 +17,6 @@ import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
 @Stateless
 @Dependent
 public class WorkspaceMaterialFieldController {
-
-  @Inject
-  private HtmlMaterialController htmlMaterialController;
-  
-  @Inject
-  private QueryFieldController queryFieldController;
-  
-  @Inject
-  private MaterialController materialController;
   
   @Inject
   private WorkspaceMaterialFieldDAO workspaceMaterialFieldDAO;

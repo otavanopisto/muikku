@@ -43,19 +43,22 @@ public class WorkspaceMaterialController {
   @Inject
   private Event<WorkspaceRootFolderCreateEvent> workspaceRootFolderCreateEvent;
   
+  @SuppressWarnings("unused")
   @Inject
   private Event<WorkspaceRootFolderUpdateEvent> workspaceRootFolderUpdateEvent;
   
   @Inject
   private Event<WorkspaceFolderCreateEvent> workspaceFolderCreateEvent;
   
+  @SuppressWarnings("unused")
   @Inject
   private Event<WorkspaceFolderUpdateEvent> workspaceFolderUpdateEvent;
 	
 	@Inject
 	private Event<WorkspaceMaterialCreateEvent> workspaceMaterialCreateEvent;
 	
-	@Inject
+	@SuppressWarnings("unused")
+  @Inject
   private Event<WorkspaceMaterialUpdateEvent> workspaceMaterialUpdateEvent;
   
 	/* Node */

@@ -37,11 +37,8 @@ import com.ocpsoft.pretty.faces.annotation.URLQueryParameter;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.material.HtmlMaterialController;
-import fi.muikku.plugins.material.MaterialController;
 import fi.muikku.plugins.material.MaterialQueryIntegrityExeption;
 import fi.muikku.plugins.material.MaterialQueryPersistanceExeption;
-import fi.muikku.plugins.material.QueryFieldController;
-import fi.muikku.plugins.material.QueryTextFieldController;
 import fi.muikku.plugins.material.fieldmeta.FieldMeta;
 import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.workspace.fieldhandler.WorkspaceFieldHandler;
@@ -72,18 +69,9 @@ public class WorkspaceHtmlMaterialBackingBean {
 	
 	@Inject
 	private WorkspaceMaterialController workspaceMaterialController;
-	
-	@Inject
-  private MaterialController materialController;
 
   @Inject
   private HtmlMaterialController htmlMaterialController;
-
-  @Inject
-  private QueryFieldController queryFieldController;
-
-  @Inject
-  private QueryTextFieldController queryTextFieldController;
 
   @Inject
   private WorkspaceMaterialReplyController workspaceMaterialReplyController;
