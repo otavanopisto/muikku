@@ -6,59 +6,11 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 
 public class TextFieldMeta extends FieldMeta {
   
-  public static class RightAnswer {
-    
-    public RightAnswer() {
-      
-    }
-    
-    public RightAnswer(Double points, String text, boolean caseSensitive, boolean normalizeWhitespace) {
-      this.points = points;
-      this.text = text;
-      this.caseSensitive = caseSensitive;
-      this.normalizeWhitespace = normalizeWhitespace;
-    }
-
-    public Double getPoints() {
-      return points;
-    }
-    public void setPoints(Double points) {
-      this.points = points;
-    }
-    
-    public String getText() {
-      return text;
-    }
-    public void setText(String text) {
-      this.text = text;
-    }
-    
-    public boolean isCaseSensitive() {
-      return caseSensitive;
-    }
-    public void setCaseSensitive(boolean caseSensitive) {
-      this.caseSensitive = caseSensitive;
-    }
-    
-    public boolean isNormalizeWhitespace() {
-      return normalizeWhitespace;
-    }
-
-    public void setNormalizeWhitespace(boolean normalizeWhitespace) {
-      this.normalizeWhitespace = normalizeWhitespace;
-    }
-
-    private Double points;
-    private String text;
-    private boolean caseSensitive;
-    private boolean normalizeWhitespace;
-  }
-  
   public TextFieldMeta() {
     
   }
 
-  public TextFieldMeta(String name, Integer columns, List<RightAnswer> rightAnswers, String help, String hint) {
+  public TextFieldMeta(String name, Integer columns, List<TextFieldRightAnswer> rightAnswers, String help, String hint) {
     super(name);
     this.setRightAnswers(rightAnswers);
     this.setColumns(columns);
@@ -66,11 +18,11 @@ public class TextFieldMeta extends FieldMeta {
     this.setHint(hint);
   }
   
-  public List<RightAnswer> getRightAnswers() {
+  public List<TextFieldRightAnswer> getRightAnswers() {
     return rightAnswers;
   }
 
-  public void setRightAnswers(List<RightAnswer> rightAnswers) {
+  public void setRightAnswers(List<TextFieldRightAnswer> rightAnswers) {
     this.rightAnswers = rightAnswers;
   }
   
@@ -105,7 +57,7 @@ public class TextFieldMeta extends FieldMeta {
     this.help = help;
   }
 
-  private List<RightAnswer> rightAnswers;
+  private List<TextFieldRightAnswer> rightAnswers;
   private Integer columns;
   private String hint;
   private String help;

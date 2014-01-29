@@ -13,6 +13,7 @@ import fi.muikku.plugins.material.fieldmeta.MemoFieldMeta;
 import fi.muikku.plugins.material.fieldmeta.SelectFieldOptionMeta;
 import fi.muikku.plugins.material.fieldmeta.SelectFieldMeta;
 import fi.muikku.plugins.material.fieldmeta.TextFieldMeta;
+import fi.muikku.plugins.material.fieldmeta.TextFieldRightAnswer;
 
 public class FieldTranslator {
   
@@ -33,7 +34,7 @@ public class FieldTranslator {
   }
   
   public TextFieldMeta translateTextField(String name, Integer columns, List<RightAnswer> rightAnswers, String help, String hint) {
-    List<TextFieldMeta.RightAnswer> translatedAnswers = new ArrayList<>();
+    List<TextFieldRightAnswer> translatedAnswers = new ArrayList<>();
     for (fi.muikku.plugins.dnm.parser.content.RightAnswer rightAnswer : rightAnswers) {
       Double points;
       if (rightAnswer.getPoints() == null) {
@@ -41,8 +42,9 @@ public class FieldTranslator {
       } else {
         points = rightAnswer.getPoints();
       }
-      translatedAnswers.add(new TextFieldMeta.RightAnswer(points, rightAnswer.getText(), true, false));
+      translatedAnswers.add(new TextFieldRightAnswer(points, rightAnswer.getText(), true, false));
     }
+    
     return new TextFieldMeta(name, columns, translatedAnswers, help, hint);
   }
 
