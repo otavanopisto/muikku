@@ -36,12 +36,12 @@ public class QueryConnectFieldOption {
     this.text = text;
   }
   
-  public QueryConnectField getConnectField() {
-    return connectField;
+  public QueryConnectField getField() {
+    return field;
   }
   
-  public void setConnectField(QueryConnectField connectField) {
-    this.connectField = connectField;
+  public void setField(QueryConnectField field) {
+    this.field = field;
   }
 
   @Id
@@ -59,5 +59,5 @@ public class QueryConnectFieldOption {
   private String name;
 
   @ManyToOne
-  private QueryConnectField connectField; 
+  private QueryConnectField field; 
 }

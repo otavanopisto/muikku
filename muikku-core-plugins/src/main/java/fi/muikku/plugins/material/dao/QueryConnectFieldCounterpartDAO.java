@@ -18,30 +18,30 @@ public class QueryConnectFieldCounterpartDAO extends PluginDAO<QueryConnectField
 
   private static final long serialVersionUID = -5327160259588566934L;
 
-  public QueryConnectFieldCounterpart create(QueryConnectField connectField, String name, String text) {
+  public QueryConnectFieldCounterpart create(QueryConnectField field, String name, String text) {
 
     QueryConnectFieldCounterpart queryConnectFieldCounterpart = new QueryConnectFieldCounterpart();
     queryConnectFieldCounterpart.setName(name);
     queryConnectFieldCounterpart.setText(text);
-    queryConnectFieldCounterpart.setConnectField(connectField);
+    queryConnectFieldCounterpart.setField(field);
     
     return persist(queryConnectFieldCounterpart);
 
   }
 
-  public List<QueryConnectFieldCounterpart> listByField(QueryConnectField connectField) {
+  public List<QueryConnectFieldCounterpart> listByField(QueryConnectField field) {
     EntityManager entityManager = getEntityManager();
 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<QueryConnectFieldCounterpart> criteria = criteriaBuilder.createQuery(QueryConnectFieldCounterpart.class);
     Root<QueryConnectFieldCounterpart> root = criteria.from(QueryConnectFieldCounterpart.class);
     criteria.select(root);
-    criteria.where(criteriaBuilder.equal(root.get(QueryConnectFieldCounterpart_.connectField), connectField));
+    criteria.where(criteriaBuilder.equal(root.get(QueryConnectFieldCounterpart_.field), field));
 
     return entityManager.createQuery(criteria).getResultList();
   }
 
-  public QueryConnectFieldCounterpart findByFieldAndName(QueryConnectField connectField, String name) {
+  public QueryConnectFieldCounterpart findByFieldAndName(QueryConnectField field, String name) {
     EntityManager entityManager = getEntityManager();
 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -50,7 +50,7 @@ public class QueryConnectFieldCounterpartDAO extends PluginDAO<QueryConnectField
     criteria.select(root);
     criteria.where(
       criteriaBuilder.and(
-        criteriaBuilder.equal(root.get(QueryConnectFieldCounterpart_.connectField), connectField),
+        criteriaBuilder.equal(root.get(QueryConnectFieldCounterpart_.field), field),
         criteriaBuilder.equal(root.get(QueryConnectFieldCounterpart_.name), name)
       )
     );

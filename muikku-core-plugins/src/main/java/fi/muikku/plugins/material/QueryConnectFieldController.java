@@ -39,12 +39,12 @@ public class QueryConnectFieldController {
 
   /* Connect Field Terms */
   
-  public QueryConnectFieldTerm createConnectFieldTerm(QueryConnectField connectField, String name, String text, QueryConnectFieldCounterpart counterpart) {
-    return queryConnectFieldTermDAO.create(connectField, name, text, counterpart);
+  public QueryConnectFieldTerm createConnectFieldTerm(QueryConnectField field, String name, String text, QueryConnectFieldCounterpart counterpart) {
+    return queryConnectFieldTermDAO.create(field, name, text, counterpart);
   }
 
-  public QueryConnectFieldTerm findQueryConnectFieldTermByFieldAndName(QueryConnectField connectField, String name) {
-    return queryConnectFieldTermDAO.findByFieldAndName(connectField, name);
+  public QueryConnectFieldTerm findQueryConnectFieldTermByFieldAndName(QueryConnectField field, String name) {
+    return queryConnectFieldTermDAO.findByFieldAndName(field, name);
   }
 
   public List<QueryConnectFieldTerm> listConnectFieldTermsByField(QueryConnectField field) {
@@ -53,12 +53,12 @@ public class QueryConnectFieldController {
 
   /* Connect Field Counterparts */
   
-  public QueryConnectFieldCounterpart createConnectFieldCounterpart(QueryConnectField connectField, String name, String text) {
-    return queryConnectFieldCounterpartDAO.create(connectField, name, text);
+  public QueryConnectFieldCounterpart createConnectFieldCounterpart(QueryConnectField field, String name, String text) {
+    return queryConnectFieldCounterpartDAO.create(field, name, text);
   }
 
-  public QueryConnectFieldCounterpart findQueryConnectFieldCounterpartByFieldAndName(QueryConnectField connectField, String name) {
-    return queryConnectFieldCounterpartDAO.findByFieldAndName(connectField, name);
+  public QueryConnectFieldCounterpart findQueryConnectFieldCounterpartByFieldAndName(QueryConnectField field, String name) {
+    return queryConnectFieldCounterpartDAO.findByFieldAndName(field, name);
   }
 
 }
