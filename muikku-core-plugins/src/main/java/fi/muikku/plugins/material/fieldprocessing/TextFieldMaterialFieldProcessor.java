@@ -12,6 +12,7 @@ import fi.muikku.plugins.material.MaterialFieldProcessor;
 import fi.muikku.plugins.material.QueryTextFieldController;
 import fi.muikku.plugins.material.fieldmeta.TextFieldMeta;
 import fi.muikku.plugins.material.model.Material;
+import fi.muikku.plugins.material.model.QueryTextField;
 
 public class TextFieldMaterialFieldProcessor implements MaterialFieldProcessor {
 
@@ -22,7 +23,11 @@ public class TextFieldMaterialFieldProcessor implements MaterialFieldProcessor {
   public void process(Material material, String content) throws JsonParseException, JsonMappingException, IOException {
     ObjectMapper objectMapper = new ObjectMapper();
     TextFieldMeta textFieldMeta = objectMapper.readValue(content, TextFieldMeta.class);
-    queryTextFieldController.createQueryTextField(material, textFieldMeta.getName());
+    
+    QueryTextField queryTextField = queryTextFieldController.findQueryTextFieldByMaterialAndName(material, textFieldMeta.getName());
+    if (queryTextField == null) {
+      queryTextFieldController.createQueryTextField(material, textFieldMeta.getName());
+    }
   }
 
   @Override
