@@ -295,6 +295,45 @@
     	<artifactId>jackson-mapper-asl</artifactId>
     	<scope>provided</scope>
     </dependency>
+    
+    
+    <!-- JUnit -->
+    
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+      
+    <!-- Selenium -->
+
+    <dependency>
+	  <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+	  <scope>test</scope>
+    </dependency>
+    
+    <dependency>
+	  <groupId>org.apache.httpcomponents</groupId>
+	  <artifactId>httpcore</artifactId>
+	  <version>4.2.3</version>
+	  <scope>test</scope>
+	</dependency>
+
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-java</artifactId>
+      <scope>test</scope>
+    </dependency>  
+    
+    <!-- Sauce Labs -->
+	 
+    <dependency>
+      <groupId>com.saucelabs</groupId>
+      <artifactId>sauce_junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
   
   <repositories>
