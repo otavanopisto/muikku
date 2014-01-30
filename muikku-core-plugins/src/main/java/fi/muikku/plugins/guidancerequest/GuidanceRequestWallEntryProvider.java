@@ -44,9 +44,10 @@ public class GuidanceRequestWallEntryProvider implements WallEntryProvider {
       // TODO: rights - workspace "manager"
       
       List<WorkspaceGuidanceRequest> requests = guidanceRequestController.listWorkspaceGuidanceRequestsByWorkspace(workspaceEntity);
-      
-      for (GuidanceRequest request : requests) {
-        feedItems.add(new UserFeedGuidanceRequestItem(request));
+      if (requests != null) {
+        for (GuidanceRequest request : requests) {
+          feedItems.add(new UserFeedGuidanceRequestItem(request));
+        }
       }
     }
 

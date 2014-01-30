@@ -57,8 +57,10 @@ public class AssessmentRequestWallEntryProvider implements WallEntryProvider {
       
       List<AssessmentRequest> assessmentRequests = assessmentRequestController.listByWorkspace(workspaceEntity);
       
-      for (AssessmentRequest assessmentRequest : assessmentRequests) {
-        feedItems.add(new UserFeedAssessmentRequestItem(assessmentRequest));
+      if (assessmentRequests != null) {
+        for (AssessmentRequest assessmentRequest : assessmentRequests) {
+          feedItems.add(new UserFeedAssessmentRequestItem(assessmentRequest));
+        }
       }
     }
     

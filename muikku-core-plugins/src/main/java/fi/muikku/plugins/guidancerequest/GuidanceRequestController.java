@@ -12,12 +12,14 @@ import javax.inject.Inject;
 
 import fi.muikku.controller.messaging.MessagingWidget;
 import fi.muikku.i18n.LocaleController;
+import fi.muikku.mail.Mailer;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserGroup;
 import fi.muikku.model.users.UserGroupUser;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.schooldata.UserController;
 import fi.muikku.schooldata.entity.User;
+import fi.muikku.schooldata.entity.UserEmail;
 import fi.muikku.security.PermissionResolver;
 import fi.muikku.security.Permit;
 import fi.muikku.security.PermitContext;
@@ -40,6 +42,9 @@ public class GuidanceRequestController {
   
   @Inject
   private LocaleController localeController;
+  
+  @Inject
+  private Mailer mailer;
 
   @Inject
   @Any
@@ -82,14 +87,26 @@ public class GuidanceRequestController {
 
     if (!recipients.isEmpty()) {
       User user = userController.findUser(student);
+      List<UserEmail> studentEmails = userController.listUserEmails(user);
+      String studentEmail = studentEmails.get(0).getAddress();
       String userName = user.getFirstName() + " " + user.getLastName();
-      
+
+      String caption = localeController.getText(sessionController.getLocale(), "plugin.guidancerequest.newGuidanceRequest.mail.subject");
+      String content = localeController.getText(sessionController.getLocale(), "plugin.guidancerequest.newGuidanceRequest.mail.content");
+
       for (MessagingWidget messagingWidget : messagingWidgets) {
-        String caption = localeController.getText(sessionController.getLocale(), "plugin.guidancerequest.newGuidanceRequest.mail.subject");
-        String content = localeController.getText(sessionController.getLocale(), "plugin.guidancerequest.newGuidanceRequest.mail.content");
         caption = MessageFormat.format(caption, userName);
         content = MessageFormat.format(content, userName, message);
         messagingWidget.postMessage(student, caption, content, recipients);
+      }
+
+      for (UserEntity receiver : recipients) {
+        User receiverUser = userController.findUser(receiver);
+        List<UserEmail> receiverMail = userController.listUserEmails(receiverUser);
+        
+        for (UserEmail email : receiverMail) {
+          mailer.sendMail(studentEmail, email.getAddress(), content);
+        }
       }
     }
     
