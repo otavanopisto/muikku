@@ -18,9 +18,13 @@ public class GuidanceRequestPermissions extends AbstractMuikkuPermissionCollecti
   public static final String CREATE_GUIDANCEREQUEST = "CREATE_GUIDANCEREQUEST";
 
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultPermissionRoles ({ HEAD_OF_DPT, STUDY_ADVISOR })
+//  @DefaultPermissionRoles ({ HEAD_OF_DPT, STUDY_ADVISOR })
   public static final String LIST_GUIDANCEREQUESTS = "LIST_GUIDANCEREQUESTS";
   
+  @Scope (PermissionScope.USERGROUP)
+  @DefaultPermissionRoles ({ GROUP_TEACHER })
+  public static final String RECEIVE_USERGROUP_GUIDANCEREQUESTS = "RECEIVE_USERGROUP_GUIDANCEREQUESTS";
+
   @Scope (PermissionScope.WORKSPACE)
   @DefaultPermissionRoles ({ WORKSPACE_STUDENT, WORKSPACE_TEACHER, HEAD_OF_DPT, STUDY_ADVISOR })
   public static final String CREATE_WORKSPACE_GUIDANCEREQUEST = "CREATE_WORKSPACE_GUIDANCEREQUEST";
@@ -28,6 +32,10 @@ public class GuidanceRequestPermissions extends AbstractMuikkuPermissionCollecti
   @Scope (PermissionScope.WORKSPACE)
   @DefaultPermissionRoles ({ WORKSPACE_TEACHER, HEAD_OF_DPT })
   public static final String LIST_WORKSPACE_GUIDANCEREQUESTS = "LIST_WORKSPACE_GUIDANCEREQUESTS";
+
+  @Scope (PermissionScope.WORKSPACE)
+  @DefaultPermissionRoles ({ WORKSPACE_TEACHER })
+  public static final String RECEIVE_WORKSPACE_GUIDANCEREQUESTS = "RECEIVE_WORKSPACE_GUIDANCEREQUESTS";
 
   @Override
   public List<String> listPermissions() {

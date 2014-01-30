@@ -10,13 +10,16 @@ import javax.inject.Inject;
 
 import fi.muikku.dao.security.EnvironmentRolePermissionDAO;
 import fi.muikku.dao.security.PermissionDAO;
+import fi.muikku.dao.security.UserGroupRolePermissionDAO;
 import fi.muikku.dao.security.WorkspaceRolePermissionDAO;
 import fi.muikku.dao.users.RoleEntityDAO;
+import fi.muikku.dao.users.UserGroupDAO;
 import fi.muikku.dao.workspace.WorkspaceEntityDAO;
 import fi.muikku.dao.workspace.WorkspaceSettingsTemplateDAO;
 import fi.muikku.dao.workspace.WorkspaceSettingsTemplateRolePermissionDAO;
 import fi.muikku.model.security.Permission;
 import fi.muikku.model.users.RoleEntity;
+import fi.muikku.model.users.UserGroup;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceSettingsTemplate;
 import fi.muikku.security.MuikkuPermissionCollection;
@@ -46,7 +49,13 @@ public class PermissionsPluginController {
 	
 	@Inject
 	private WorkspaceRolePermissionDAO workspaceRolePermissionDAO;
+
+	@Inject
+	private UserGroupDAO userGroupDAO;
 	
+  @Inject
+  private UserGroupRolePermissionDAO userGroupRolePermissionDAO;
+
   @Inject
   @Any
   private Instance<MuikkuPermissionCollection> permissionCollections;
@@ -91,6 +100,20 @@ public class PermissionsPluginController {
                       // TODO Workspace creation & templates - is this necessary and bulletproof?
                       for (WorkspaceEntity workspace: workspaces) {
                         workspaceRolePermissionDAO.create(workspace, roleEntity, permission);
+                      }
+                    }
+                  break;
+                  
+                  case PermissionScope.USERGROUP:
+                    List<UserGroup> userGroups = userGroupDAO.listAll();
+                    
+                    for (int i = 0; i < defaultRoles.length; i++) {
+                      String roleName = defaultRoles[i];
+                      RoleEntity roleEntity = roleEntityDAO.findByName(roleName);
+
+                      // TODO Workspace creation & templates - is this necessary and bulletproof?
+                      for (UserGroup userGroup: userGroups) {
+                        userGroupRolePermissionDAO.create(userGroup, roleEntity, permission);
                       }
                     }
                   break;

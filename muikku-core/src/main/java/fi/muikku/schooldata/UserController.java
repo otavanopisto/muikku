@@ -182,6 +182,10 @@ public class UserController {
     return userGroupUserDAO.listByUserGroup(userGroup);
   }
   
+  public List<UserGroup> listUserGroupsByUser(UserEntity userEntity) {
+    return userGroupDAO.listByUser(userEntity);
+  }
+  
   
   private void fireUserCreatedEvent(UserEntity userEntity) {
     UserEntityEvent userEvent = new UserEntityEvent();
