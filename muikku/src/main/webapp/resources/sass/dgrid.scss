@@ -14,7 +14,6 @@ $gridCols:24;
 
 /* TODO: better name, needs changes in the java side */
 
-
 .container_24{
 	width:$desktop;
 	margin-left:auto;
@@ -33,12 +32,13 @@ $gridCols:24;
 
 @media screen and (max-width: 768px){
 	
-.container_24{
-  width:$tablet;
-}	
-@include grid_x($tablet, $gridCols);
-@include grid_x_nomargin($tablet, $gridCols);
-@include grid_x_othermargin($tablet, $gridCols);
+	.container_24{
+	  width:$tablet;
+	}	
+	@include grid_x($tablet, $gridCols);
+	@include grid_x_nomargin($tablet, $gridCols);
+	@include grid_x_othermargin($tablet, $gridCols);
+	
 }
 
 

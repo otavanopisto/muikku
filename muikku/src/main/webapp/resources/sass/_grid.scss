@@ -14,7 +14,7 @@
 /* Variables */
 
 $grid-margin-pixel: 5px;
-$container-size:960px;
+$container-size:768px;
 
 $grid-margin-divided:prc($container-size, $grid-margin-pixel);
 $grid-margin-percent:prc(100, $grid-margin-divided);
