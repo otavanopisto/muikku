@@ -144,7 +144,7 @@ public class WorkspaceSelectFieldHandler extends AbstractWorkspaceFieldHandler {
       }
     } else {
       if (fieldAnswer != null) {
-        fieldAnswer = workspaceMaterialFieldAnswerController.createWorkspaceMaterialSelectFieldAnswer(workspaceMaterialField, reply, null);
+        workspaceMaterialFieldAnswerController.updateWorkspaceMaterialSelectFieldAnswerValue(fieldAnswer, null);
       }
     }
   }

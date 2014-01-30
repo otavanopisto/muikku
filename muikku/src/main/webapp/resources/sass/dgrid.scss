@@ -24,8 +24,6 @@ $gridCols:24;
 
 /* Include the pre-created styles: Desktop*/
 
-
-
 @include grid_x($desktop, $gridCols);
 @include grid_x_nomargin($desktop, $gridCols);
 @include grid_x_othermargin($desktop, $gridCols);
@@ -44,7 +42,7 @@ $gridCols:24;
 }
 
 
-@media handheld and (max-width: 480px){
+@media screen and (max-width: 480px){
   
 .container_24{
   width:480px;
@@ -56,7 +54,7 @@ $gridCols:24;
 
 /* Include the pre-created styles: Phone */
 
-@media handheld and (max-width: 320px){
+@media screen and (max-width: 320px){
 .container_24{
   width:320px;
 }
