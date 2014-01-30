@@ -72,7 +72,7 @@ public class CommunicatorController {
   }
   
   public List<InboxCommunicatorMessage> listSentItems(UserEntity userEntity) {
-    return communicatorMessageDAO.listFirstMessagesByRecipient(userEntity);
+    return communicatorMessageDAO.listFirstMessagesBySender(userEntity);
   }
   
   public CommunicatorMessageId createMessageId() {
@@ -172,5 +172,16 @@ public class CommunicatorController {
     for (CommunicatorMessage msg : sent) {
       communicatorMessageDAO.archiveSent(msg);
     }
+  }
+
+  /**
+   * List all messages with id user has sent or received.
+   * 
+   * @param user
+   * @param messageId
+   * @return
+   */
+  public List<InboxCommunicatorMessage> listMessagesByMessageId(UserEntity user, CommunicatorMessageId messageId) {
+    return communicatorMessageDAO.listByMessageId(user, messageId);
   }
 }

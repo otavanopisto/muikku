@@ -92,10 +92,14 @@ public class DeusNexXmlUtils {
 		return (NodeList) XPathFactory.newInstance().newXPath().evaluate(expression, contextNode, XPathConstants.NODESET);
 	}
 
-	public static String serializeElement(Element element) throws TransformerException {
+	public static String serializeElement(Element element, boolean omitXmlDeclaration, boolean indent, String method, String version) throws TransformerException {
 		TransformerFactory transformerFactory = TransformerFactory.newInstance();
 		Transformer transformer = transformerFactory.newTransformer();
-		transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+		transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, omitXmlDeclaration ? "yes" : "no");
+    transformer.setOutputProperty(OutputKeys.METHOD, method);
+    transformer.setOutputProperty(OutputKeys.VERSION, version);
+    transformer.setOutputProperty(OutputKeys.INDENT, indent ? "yes" : "no");
+    
 		StringWriter writer = new StringWriter();
     transformer.transform(new DOMSource(element), new StreamResult(writer));
     return writer.getBuffer().toString();

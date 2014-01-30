@@ -11,6 +11,7 @@ import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.wall.WallController;
 import fi.muikku.plugins.wall.WallEntryProvider;
 import fi.muikku.plugins.wall.WallFeedItem;
+
 import fi.muikku.plugins.wall.WallPermissions;
 import fi.muikku.plugins.wall.dao.UserWallDAO;
 import fi.muikku.plugins.wall.dao.WallEntryDAO;

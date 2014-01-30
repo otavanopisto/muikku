@@ -10,6 +10,7 @@
   <h:head>
     <title>#{i18n.text['title']}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <script type="text/javascript">
         var CONTEXTPATH = "#{request.contextPath}";
       </script>
@@ -59,6 +60,10 @@
     <!--  jQuery scroll  -->
 
     <h:outputScript name="scripts/scroll/jquery.scroll.js" />
+
+    <!--  jQuery Touch Punch  -->
+
+    <h:outputScript name="scripts/jquery.ui.touch-punch/jquery.ui.touch-punch.min.js" />
 
     <!-- Functions that have no home yet. Find a home for them? -->
     

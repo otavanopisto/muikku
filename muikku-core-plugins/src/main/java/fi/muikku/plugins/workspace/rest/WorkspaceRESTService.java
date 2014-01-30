@@ -3,7 +3,6 @@ package fi.muikku.plugins.workspace.rest;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -35,9 +34,6 @@ import fi.tranquil.TranquilityBuilderFactory;
 @Stateful
 @Produces ("application/json")
 public class WorkspaceRESTService extends PluginRESTService {
-	
-	@Inject
-	private Logger logger;
 
 	@SuppressWarnings("cdi-ambiguous-dependency")
 	@Inject

@@ -14,7 +14,6 @@ import com.ocpsoft.pretty.faces.annotation.URLMapping;
 import com.ocpsoft.pretty.faces.annotation.URLMappings;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.schooldata.UserController;
 import fi.muikku.schooldata.WorkspaceController;
 
 @Named
@@ -31,9 +30,6 @@ public class WorkspaceIndexBackingBean {
 
 	@Inject
 	private WorkspaceController workspaceController;
-
-	@Inject
-	private UserController userController;
 
   @Inject
   @Named

@@ -9,7 +9,6 @@ import javax.faces.component.FacesComponent;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIComponentBase;
 import javax.faces.context.FacesContext;
-import javax.faces.view.facelets.ComponentConfig;
 import javax.faces.view.facelets.TagAttribute;
 
 import fi.muikku.widgets.WidgetSpaceSizingStrategy;

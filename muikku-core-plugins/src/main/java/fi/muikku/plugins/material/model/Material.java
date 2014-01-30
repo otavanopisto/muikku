@@ -7,6 +7,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.PersistenceException;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -23,12 +25,9 @@ public class Material {
     this.id = id;
   }
 
+  @Transient
   public String getType() {
-    return type;
-  }
-
-  public void setType(String type) {
-    this.type = type;
+    throw new PersistenceException("Not Implemented");
   }
   
   public String getTitle() {
@@ -50,11 +49,6 @@ public class Material {
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
-  
-  @NotEmpty
-  @NotNull
-  @Column (nullable = false)
-  private String type;
   
   @NotEmpty
   @NotNull

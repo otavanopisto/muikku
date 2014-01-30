@@ -67,6 +67,13 @@ public class DeusNexContentParser {
 					Node replacement = handleTextField(ownerDocument, element);
 					replaceElement(ownerDocument, element, replacement);
 				}
+        
+        NodeList memoFieldNodeList = localeDocument.getElementsByTagName("ixf:memofield");
+        for (int i = memoFieldNodeList.getLength() - 1; i >= 0; i--) {
+          Element element = (Element) memoFieldNodeList.item(i);
+          Node replacement = handleMemoField(ownerDocument, element);
+          replaceElement(ownerDocument, element, replacement);
+        }
 				
 				NodeList optionListNodeList = localeDocument.getElementsByTagName("ixf:optionlist");
 				for (int i = optionListNodeList.getLength() - 1; i >= 0; i--) {
@@ -96,7 +103,7 @@ public class DeusNexContentParser {
 					}
 				}
 				
-				contents.put(lang, DeusNexXmlUtils.serializeElement(htmlElement));
+				contents.put(lang, DeusNexXmlUtils.serializeElement(htmlElement, true, false, "html", "5"));
 			}
 		} catch (XPathExpressionException | TransformerException e) {
 			throw new DeusNexInternalException("Internal Error occurred while processing document", e);
@@ -130,12 +137,27 @@ public class DeusNexContentParser {
 				return handleEmbeddedItemDocument(ownerDocument, embeddedItemElement);
 			case "audio":
 				return handleEmbeddedItemAudio(ownerDocument, embeddedItemElement);
+			case "hyperlink":
+			  return handleEmbeddedItemHyperLink(ownerDocument, embeddedItemElement);
 		}
 		
 		throw new DeusNexInternalException("Unknown ix:embeddeditem type '" + type + "'");
 	}
 
-	private Node handleEmbeddedItemAudio(Document ownerDocument, Element embeddedItemElement) throws XPathExpressionException {
+	private Node handleEmbeddedItemHyperLink(Document ownerDocument, Element embeddedItemElement) throws XPathExpressionException {
+	  Integer resourceNo = DeusNexXmlUtils.getChildValueInteger(embeddedItemElement, "parameters/resourceno");
+    String fileName = DeusNexXmlUtils.getChildValue(embeddedItemElement, "parameters/filename");
+    String linkText = DeusNexXmlUtils.getChildValue(embeddedItemElement, "parameters/linktext");
+    String target = DeusNexXmlUtils.getChildValue(embeddedItemElement, "parameters/target");
+    
+    if (embeddedItemElementHandler != null) {
+      return embeddedItemElementHandler.handleEmbeddedHyperlink(ownerDocument, resourceNo, target, fileName, linkText);
+    } else {
+      return null;
+    }
+  }
+
+  private Node handleEmbeddedItemAudio(Document ownerDocument, Element embeddedItemElement) throws XPathExpressionException {
 		Integer resourceNo = DeusNexXmlUtils.getChildValueInteger(embeddedItemElement, "parameters/resourceno");
 		Boolean showAsLink = "1".equals(DeusNexXmlUtils.getChildValue(embeddedItemElement, "parameters/showaslink"));
 		String fileName = DeusNexXmlUtils.getChildValue(embeddedItemElement, "parameters/filename");
@@ -179,9 +201,11 @@ public class DeusNexContentParser {
 		}
 	}
 	
-	private Node handleOptionListField(Document ownerDocument, Element fieldElement) throws XPathExpressionException {
+	private Node handleOptionListField(Document ownerDocument, Element fieldElement) throws XPathExpressionException, DeusNexException {
 		String paramName = DeusNexXmlUtils.getChildValue(fieldElement, "paramname");
 		String type = DeusNexXmlUtils.getChildValue(fieldElement, "type");
+		Integer size = DeusNexXmlUtils.getChildValueInteger(fieldElement, "fieldsvisible");
+		
 		List<OptionListOption> options = new ArrayList<>();
 		
 		List<Element> optionElements = DeusNexXmlUtils.getElementsByXPath(fieldElement, "option");
@@ -195,13 +219,31 @@ public class DeusNexContentParser {
 		}
 		
 		if (fieldElementHandler != null) {
-			return fieldElementHandler.handleOptionList(ownerDocument, paramName, type, options);
+			return fieldElementHandler.handleOptionList(ownerDocument, paramName, type, options, size, helpOf(fieldElement), hintOf(fieldElement));
 		}
 		
 		return null;
 	}
+
+  private String hintOf(Element fieldElement) throws XPathExpressionException {
+    List<Element> hintElements = DeusNexXmlUtils.getElementsByXPath(fieldElement,"hint");
+    String hint = "";
+    if (!hintElements.isEmpty()) {
+      hint = hintElements.get(0).getTextContent();
+    }
+    return hint;
+  }
+
+  private String helpOf(Element fieldElement) throws XPathExpressionException {
+    List<Element> helpElements = DeusNexXmlUtils.getElementsByXPath(fieldElement,"help");
+		String help = "";
+		if (!helpElements.isEmpty()) {
+		  help = helpElements.get(0).getTextContent();
+		}
+    return help;
+  }
 	
-	private Node handleTextField(Document ownerDocument, Element fieldElement) throws XPathExpressionException {
+	private Node handleTextField(Document ownerDocument, Element fieldElement) throws XPathExpressionException, DeusNexException {
 		String paramName = DeusNexXmlUtils.getChildValue(fieldElement, "paramname");
 		Integer columns = DeusNexXmlUtils.getChildValueInteger(fieldElement, "columns");
 		
@@ -214,13 +256,27 @@ public class DeusNexContentParser {
 		}
 		
 		if (fieldElementHandler != null) {
-			return fieldElementHandler.handleTextField(ownerDocument, paramName, columns, rightAnswers);
+			return fieldElementHandler.handleTextField(ownerDocument, paramName, columns, rightAnswers, helpOf(fieldElement), hintOf(fieldElement));
 		}
 		
 		return null;
 	}
+  
+  private Node handleMemoField(Document ownerDocument, Element embeddedItemElement) throws XPathExpressionException, DeusNexException {
+    String paramName = DeusNexXmlUtils.getChildValue(embeddedItemElement, "paramname");
+    Integer columns = DeusNexXmlUtils.getChildValueInteger(embeddedItemElement, "columns");
+    Integer rows = DeusNexXmlUtils.getChildValueInteger(embeddedItemElement, "rows");
+    String help = DeusNexXmlUtils.getChildValue(embeddedItemElement, "help");
+    String hint = DeusNexXmlUtils.getChildValue(embeddedItemElement, "hint");
+    
+    if (fieldElementHandler != null) {
+      return fieldElementHandler.handleMemoField(ownerDocument, paramName, columns, rows, help, hint);
+    }
+    
+    return null;
+  }
 	
-	private Node handleConnectField(Document ownerDocument, Element fieldElement) throws XPathExpressionException {
+	private Node handleConnectField(Document ownerDocument, Element fieldElement) throws XPathExpressionException, DeusNexException {
 		String paramName = DeusNexXmlUtils.getChildValue(fieldElement, "paramname");
 		
 		List<ConnectFieldOption> options = new ArrayList<>();
@@ -235,7 +291,7 @@ public class DeusNexContentParser {
 		}
 		
 		if (fieldElementHandler != null) {
-			return fieldElementHandler.handleConnectField(ownerDocument, paramName, options);
+			return fieldElementHandler.handleConnectField(ownerDocument, paramName, options, helpOf(fieldElement), hintOf(fieldElement));
 		}
 		
 		return null;

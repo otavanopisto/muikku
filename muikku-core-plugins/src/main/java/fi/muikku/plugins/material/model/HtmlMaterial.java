@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -19,6 +20,12 @@ public class HtmlMaterial extends Material {
   public void setHtml(String html) {
 		this.html = html;
 	}
+  
+  @Override
+  @Transient
+  public String getType() {
+    return "html";
+  }
 
   @NotEmpty
   @NotNull
