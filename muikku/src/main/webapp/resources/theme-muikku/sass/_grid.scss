@@ -108,7 +108,7 @@ $grid-margin-percent:prc(100, $grid-margin-divided);
        @if $size < 321px{
        
          .grid_#{$i}[class*='alpha'], .grid_#{$i}[class*='omega']{
-             width: $size - $grid-margin-pixel - 5px;
+             width: $size - 5px;
            }   
     
           }@else{ 
