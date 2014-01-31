@@ -99,6 +99,8 @@ $grid-margin-percent:prc(100, $grid-margin-divided);
 }
 
  
+ 
+ 
 @mixin grid_x_othermargin($size:$container-size,$cols:$grid-columns){
   $grid-instance-size: prc($size, $cols);
 	@for $i from 1 through $cols{
