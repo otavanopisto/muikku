@@ -6,10 +6,10 @@ To be used through SASS's extend feature with CSS's selectors.
 @import "_base.scss"; 
 
 .co-input-textfield {
-  @include border(1px,#dadada);
-  color:#303030;
+  @include border(1px,#ededed);   
+  color:#606060;
   font-weight:bold;
-  background-color:#f9f9f9; 
+  background-color:#fff; 
 }
 
 .co-input-textfield-hover {
@@ -28,16 +28,16 @@ To be used through SASS's extend feature with CSS's selectors.
 
 .co-input-textfield-blur {
   @include border(1px,#dadada);
-  color:#dadada;
+  color:#606060;
   font-weight:bold;
-  background-color:#ededed; 
+  background-color:#fff; 
 }
 
 .co-input-textfield-blur-hover {
-  @include border(1px,#ededed);   
+	@include border(1px,#ededed);
   color:#000;
   font-weight:bold;
-  background-color:#fafafa; 
+  background-color:#fff; 
 }
 
 .co-input-textfield-blur-focus {
