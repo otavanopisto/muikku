@@ -103,21 +103,30 @@ $grid-margin-percent:prc(100, $grid-margin-divided);
   $grid-instance-size: prc($size, $cols);
 	@for $i from 1 through $cols{
     @if $size < 480px{
-      $grid-half: half($i);      
-      
-      @if $grid-half > 6{     
-			     .grid_#{$i}[class*='alpha'], .grid_#{$i}[class*='omega']{
-			         width: $size - 5px;
-		        }
-	       }@else{
-	          .grid_#{$i}[class*='alpha'], .grid_#{$i}[class*='omega']{
-               width: half($size) - 5px;
-            }         
-	       }       
-    } @else { 	
-     .grid_#{$i}[class*='alpha'], .grid_#{$i}[class*='omega']  {
-       width: $grid-instance-size * $i - 5px;
-       }
+       @if $size < 321px{
+       
+         .grid_#{$i}[class*='alpha'], .grid_#{$i}[class*='omega']{
+             width: $size - $grid-margin-pixel - 5px;
+           }   
+    
+          }@else{ 
+    
+			      $grid-half: half($i);      
+			      
+			      @if $grid-half > 6{     
+						     .grid_#{$i}[class*='alpha'], .grid_#{$i}[class*='omega']{
+						         width: $size - 5px;
+					        }
+				       }@else{
+				          .grid_#{$i}[class*='alpha'], .grid_#{$i}[class*='omega']{
+			               width: half($size) - 5px;
+			            }         
+				       }       
+				    } @else { 	
+				     .grid_#{$i}[class*='alpha'], .grid_#{$i}[class*='omega']  {
+				       width: $grid-instance-size * $i - 5px;
+				       }
+        }      
      }
   }
 
