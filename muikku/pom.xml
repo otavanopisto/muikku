@@ -220,8 +220,8 @@
             </goals>
             <inherited>false</inherited>
             <configuration>
-              <sassSourceDirectory>${basedir}/src/main/webapp/resources/sass</sassSourceDirectory>
-              <destination>${project.build.directory}/${project.build.finalName}/resources/css</destination>
+              <sassSourceDirectory>${basedir}/src/main/webapp/resources/theme-muikku/sass</sassSourceDirectory>
+              <destination>${project.build.directory}/${project.build.finalName}/resources/theme-muikku/css</destination>
             </configuration>
           </execution>
         </executions>
