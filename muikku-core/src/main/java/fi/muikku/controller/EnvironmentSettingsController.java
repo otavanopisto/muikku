@@ -70,7 +70,7 @@ public class EnvironmentSettingsController {
   }
 
   public boolean hasWorkspaceRolePermission(@PermitContext WorkspaceEntity course, RoleEntity role, Permission permission) {
-    return courseUserRolePermissionDAO.hasCoursePermissionAccess(course, role, permission);
+    return courseUserRolePermissionDAO.hasWorkspacePermissionAccess(course, role, permission);
   }
   
   @Permit(MuikkuPermissions.MANAGE_SETTINGS)

@@ -4,6 +4,7 @@ public enum UserRoleType {
 
   SYSTEM,
 	ENVIRONMENT,
-  WORKSPACE 
+  WORKSPACE,
+  GROUP
   
 }
