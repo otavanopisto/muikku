@@ -72,8 +72,8 @@ $grid-margin-percent:prc(100, $grid-margin-divided);
 	@for $i from 1 through $cols{
     @if $size < 481px{
       @if $size < 321px{
-          .grid_#{$i} {
-             width: $size - $grid-margin-pixel * 2;
+          .grid_#{$i}[class*='nomargin'] {
+             width: $size;
            } 
                 
       }@else{                    
@@ -115,6 +115,7 @@ $grid-margin-percent:prc(100, $grid-margin-divided);
     
 			      $grid-half: half($i);      
 			      
+			      
 			      @if $grid-half > 6{     
 						     .grid_#{$i}[class*='alpha'], .grid_#{$i}[class*='omega']{
 						         width: $size - 5px;
@@ -125,8 +126,8 @@ $grid-margin-percent:prc(100, $grid-margin-divided);
 			            }         
 				       }       
 				    } @else { 	
-				     .grid_#{$i}[class*='alpha'], .grid_#{$i}[class*='omega']  {
-				       width: $grid-instance-size * $i - 5px;
+				     .grid_#{$i}[class*='alpha'], .grid_#{$i}[class*='omega']{
+				        width: $grid-instance-size * $i - 5px;
 				       }
         }      
      }
