@@ -11,7 +11,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.Select;
 
-public class Story21 extends SeleniumTest {
+public class Story21IT extends SeleniumTestBase {
 
   private static final String TEST_PAGE = "/workspace/pool/materials.html/selenium/teht/us21";
 

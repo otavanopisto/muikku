@@ -5,7 +5,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class SeleniumTest {
+public class SeleniumTestBase {
 
   // Source: http://en.wikipedia.org/wiki/Pangram
   public static final String PANGRAM_ENGLISH = "The quick brown fox jumps over the lazy dog";

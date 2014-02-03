@@ -3,7 +3,7 @@ package fi.muikku.plugins.workspace.test.ui;
 import org.junit.Before;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
-public class Story21Firefox extends Story21 {
+public class Story20FirefoxIT extends Story20IT {
 
   @Before
   public void setUp() throws Exception {
