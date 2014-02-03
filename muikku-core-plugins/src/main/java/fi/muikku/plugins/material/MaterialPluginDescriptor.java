@@ -60,6 +60,7 @@ public class MaterialPluginDescriptor implements PluginDescriptor, PersistencePl
       QueryTextFieldController.class,
       QuerySelectFieldController.class,
       QueryConnectFieldController.class,
+      QueryChecklistFieldController.class,
        
       /* DAOs */
       
