@@ -4,4 +4,5 @@
 /.classpath
 /.factorypath
 .DS_Store
+.sass-cache
 /.externalToolBuilders

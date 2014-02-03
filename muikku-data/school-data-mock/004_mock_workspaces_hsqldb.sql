@@ -45,3 +45,5 @@ insert into Workspace (id, course_identifier_id, name, description, type_id) val
 /* Muikku 2 Coursers */
 
 insert into Workspace (id, course_identifier_id, name, description, type_id) values (20, (select min(id) from CourseIdentifier) + 0, 's21 - Suomen kielen perusteiden varmentaminen (OO)', 'Tällä kurssilla kerrataan suomen kielen perusrakenteita ja -sanastoa. Tavoitteena on vahvistaa peruskielitaitoa ja oppia uusia tapoja opiskella.', (select min(id) from WorkspaceType) + 1);
+insert into Workspace (id, course_identifier_id, name, description, type_id) values (21, (select min(id) from CourseIdentifier) + 0, 'ge1_3', 'ge1_3', (select min(id) from WorkspaceType) + 1);
+insert into Workspace (id, course_identifier_id, name, description, type_id) values (22, (select min(id) from CourseIdentifier) + 0, 'ena1_2', 'ena1_2', (select min(id) from WorkspaceType) + 1);

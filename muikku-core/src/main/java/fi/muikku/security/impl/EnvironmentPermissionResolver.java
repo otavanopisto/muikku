@@ -42,7 +42,6 @@ public class EnvironmentPermissionResolver extends AbstractPermissionResolver im
       return (PermissionScope.ENVIRONMENT.equals(perm.getScope()));
     else
       return false;
-//      throw new RuntimeException("EnvironmentPermissionResolver - Permission '" + permission + "' not found");
   }
 
   @Override

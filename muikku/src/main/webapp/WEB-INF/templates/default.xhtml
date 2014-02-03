@@ -10,6 +10,7 @@
   <h:head>
     <title>#{i18n.text['title']}</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <script type="text/javascript">
         var CONTEXTPATH = "#{request.contextPath}";
       </script>
@@ -19,23 +20,19 @@
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css' />
 
     <!-- CSS to remove all default styles -->
-    <h:outputStylesheet library="css" name="cssreset-min.css" />
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/cssreset-min.css" />
+    
     <!-- Screen CSS -->
-    <h:outputStylesheet library="css" name="screen.css" />
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/screen.css" />
+    
     <!--  Temporary styles -->
-    <h:outputStylesheet library="css" name="temp.css" />
-    <!-- Grid 960 styles 
-      <h:outputStylesheet library="css" name="grid960.gs/960_12_col.css"  /> -->
-    <!-- Grid 960 styles 
-    <h:outputStylesheet library="css" name="grid960.gs/960_24_col.css" /> -->
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/temp.css" />
     
     <!-- Dynamic Grid -->
-    <h:outputStylesheet library="css" name="dgrid.css" />
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/dgrid.css" />
     
     <!-- Default Calendar CSS -->
-    <h:outputStylesheet library="css" name="fullcalendar.css" />
-
- 
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/fullcalendar.css" />
 
     <!-- jQuery -->
 
@@ -45,7 +42,7 @@
     <!-- jQuery UI -->
 
     <h:outputScript name="scripts/jquery/jquery-ui/js/jquery-ui-1.10.2.custom.js" />
-    <h:outputStylesheet library="css" name="jquery-ui-1.10.3.custom.css" />
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/jquery-ui.css" />
 
     <!-- jQuery Validation -->
 
@@ -59,6 +56,10 @@
     <!--  jQuery scroll  -->
 
     <h:outputScript name="scripts/scroll/jquery.scroll.js" />
+
+    <!--  jQuery Touch Punch  -->
+
+    <h:outputScript name="scripts/jquery.ui.touch-punch/jquery.ui.touch-punch.min.js" />
 
     <!-- Functions that have no home yet. Find a home for them? -->
     
@@ -93,9 +94,6 @@
     <!-- Widget Controller -->
 
     <h:outputScript name="scripts/gui/widgetcontroller.js" />
-    
-    
-    
     
   </h:head>
 
@@ -263,9 +261,7 @@
             </ui:insert>           
         </m:widgetSpaceSet>
       </ui:insert>
-     
 
- 
     </div>
     <div id="footer">
       <div id="footerContainer" class="container_24">

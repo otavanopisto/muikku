@@ -1,0 +1,117 @@
+/* Everything temp here, keeping static styles clean */
+
+@import "_base.scss";
+
+/* commons.scss contains all the common extendable styles  */
+
+@import "commons.scss";
+
+.tempUserProfileWidgetPicture{
+	width:50px;
+	height:50px;
+	border: 1px solid #aaa;
+	border-radius: 2px;
+	box-shadow: 1px 1px 3px #888;
+}
+
+/* Index  */
+
+.index-footer{
+  position:fixed;
+  bottom:0;
+  width:960px;
+  margin-left:0;
+  border:1px solid #ededed;
+  background:#dadada;
+  @include rounded(5px);
+  
+  
+}
+
+.index-footer-block{
+  border:1px solid #000;
+  float:left; 
+  margin:10px;
+  padding:10px;
+  background:#fff;
+}
+
+
+.index-footer-block-content{}
+
+.seeker_autocomplete_item_container {
+	position: relative;
+	height: 48px;
+}
+
+.seeker_autocomplete_item_label {
+	left: 50px;
+	position: absolute;
+}
+
+.seeker_autocomplete_item_image img {
+	width: 40px;
+	height: 40px;
+	position: absolute;
+	left: 4px;
+	top: 4px;
+}
+
+.communicator_seeker_autocomplete_item_content {
+	right: 4px;
+	position: absolute;
+}
+
+.communicator_seeker_autocomplete_item_content_link {
+	display: inline;
+}
+
+.temp-frontpage-rolepick{
+  @extend .co-widget;
+@include rounded(4px);  
+background-color:$aBgr;
+
+
+}
+.temp-frontpage-rolepick-links{
+ float:right;
+}
+
+
+.temp-frontpage-rolepick-links div{
+	    font-family: Verdana, sans-serif;
+    font-size: 1.3em;
+    color: #fff;
+    padding: 15px 20px 15px 20px;
+    @include gradient-top-bottom-four($mainFuncBtnGr...);
+    @include rounded(2px);
+    @include shadow;
+    @include border($mainFuncBtnBrd);
+    margin-bottom:5px;
+}
+
+.temp-frontpage-rolepick-links a{
+    color: #fff;
+    font-weight:bold;
+    text-decoration:none;
+}
+
+.wireframe-body #content{
+	border:2px solid #ededed;
+	min-height: 100px !important;
+}
+
+.wireframe-body #footer{
+  border:2px solid #ededed;
+
+}
+
+.wireframe{
+	padding:10px;
+	box-sizing:border-box;
+  -moz-box-sizing:border-box; /* Firefox */
+}
+
+.wireframe:hover{
+	background-color:#dadada;
+}

@@ -12,7 +12,6 @@ public class HtmlMaterialDAO extends PluginDAO<HtmlMaterial> {
 		
 		htmlMaterial.setHtml(html);
 		htmlMaterial.setTitle(title);
-		htmlMaterial.setType("html");
 		htmlMaterial.setUrlName(urlName);
 		
 		return persist(htmlMaterial);
