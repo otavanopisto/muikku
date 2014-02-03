@@ -1,316 +1,372 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>fi.muikku</groupId>
-    <artifactId>parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-  </parent>
-  
-  <properties>
-    <tranquil-model-gen.version>1.0.3-SNAPSHOT</tranquil-model-gen.version>
-    <!-- 
-    <instrumentation-hibernate.version>4.0.1.Final</instrumentation-hibernate.version>
-    <instrumentation-javassist.version>3.18.0-GA</instrumentation-javassist.version>
-     -->
-  </properties>
+	<parent>
+		<groupId>fi.muikku</groupId>
+		<artifactId>parent</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
 
-  <artifactId>core-plugins</artifactId>
-  <packaging>jar</packaging>
-  <name>Muikku Plugin Core</name>
-  <description>Muikku Plugin Core</description>
+	<properties>
+		<tranquil-model-gen.version>1.0.3-SNAPSHOT</tranquil-model-gen.version>
+		<!-- <instrumentation-hibernate.version>4.0.1.Final</instrumentation-hibernate.version> 
+			<instrumentation-javassist.version>3.18.0-GA</instrumentation-javassist.version> -->
+		<cargo.plugin.version>1.4.6</cargo.plugin.version>
+	</properties>
 
-  <build>
-    <finalName>${project.artifactId}</finalName>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.eclipse.m2e</groupId>
-          <artifactId>lifecycle-mapping</artifactId>
-          <version>1.0.0</version>
-          <configuration>
-            <lifecycleMappingMetadata>
-              <pluginExecutions>
-                <pluginExecution>
-                
-                  <pluginExecutionFilter>
-                    <groupId>org.jasig.maven</groupId>
-                    <artifactId>sass-maven-plugin</artifactId>
-                    <versionRange>[1.1.1,)</versionRange>
-                    <goals>
-                      <goal>update-stylesheets</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  
-                  <action>
-                    <ignore />
-                  </action>
-                </pluginExecution>
-                
-                <!-- 
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-antrun-plugin</artifactId>
-                    <versionRange>[1.7,)</versionRange>
-                    <goals>
-                      <goal>run</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  
-                  <action>
-                    <ignore />
-                  </action>
-                </pluginExecution>
-                -->
-                
-              </pluginExecutions>
-            </lifecycleMappingMetadata>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
+	<artifactId>core-plugins</artifactId>
+	<packaging>jar</packaging>
+	<name>Muikku Plugin Core</name>
+	<description>Muikku Plugin Core</description>
 
-    <plugins>
-      <plugin>
-        <groupId>org.jasig.maven</groupId>
-        <artifactId>sass-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>sassProcessSource</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>update-stylesheets</goal>
-            </goals>
-            <inherited>false</inherited>
-            <configuration>
-              <sassSourceDirectory>${basedir}/src/main/resources/META-INF/resources/sass</sassSourceDirectory>
-              <destination>${project.build.directory}/classes/META-INF/resources/css</destination>
-            </configuration>
-          </execution>
-        </executions>
-        
-      </plugin>
-      
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.1</version>
-        <configuration>
-          <source>${maven.compiler.source}</source>
-          <target>${maven.compiler.target}</target>
-          <compilerArgument>-proc:none</compilerArgument>
-        </configuration>
-      </plugin>
-      
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <version>1.7</version>
-        <executions>
-          <execution>
-            <id>add-source</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>add-source</goal>
-            </goals>
-            <configuration>
-              <sources>
-                <source>${basedir}/src/main/.metamodel</source>
-                <source>${basedir}/src/main/.tranquilmodel</source>
-              </sources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      
-      <plugin>
-        <groupId>org.bsc.maven</groupId>
-        <artifactId>maven-processor-plugin</artifactId>
-        <version>2.2.1</version>
-        <dependencies>
-          <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-jpamodelgen</artifactId>
-            <version>1.2.0.Final</version>
-          </dependency>
-          <dependency>
-            <groupId>fi.tranquil-model</groupId>
-            <artifactId>tranquil-model-gen</artifactId>
-            <version>${tranquil-model-gen.version}</version>
-          </dependency>
-        </dependencies>
-        <executions>
-          <execution>
-            <id>process-metamodel</id>
-            <goals>
-              <goal>process</goal>
-            </goals>
-            <phase>generate-sources</phase>
-            <configuration>
-              <includes>
-                <include>**fi/muikku/plugins/**/*.java</include>
-              </includes>
-              <outputDirectory>${basedir}/src/main/.metamodel</outputDirectory>
-              <processors>
-                <processor>org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor</processor>
-              </processors>
-            </configuration>
-          </execution>
+	<build>
+		<finalName>${project.artifactId}</finalName>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
 
-          <execution>
-            <id>process-tranquilmodel</id>
-            <goals>
-              <goal>process</goal>
-            </goals>
-            <phase>generate-sources</phase>
-            <configuration>
-              <additionalSourceDirectories>
-                <sourceDirectory>${basedir}/src/main/.metamodel</sourceDirectory>
-              </additionalSourceDirectories>
-              <includes>
-                <include>**fi/muikku/plugins/**/*.java</include>
-              </includes>
-              <outputDirectory>${basedir}/src/main/.tranquilmodel</outputDirectory>
-              <processors>
-                <processor>fi.tranquil.TranquilModelAnnotationProcessor</processor>
-              </processors>
-              <optionMap>
-                <lookupPackage>fi.muikku.plugins.coreplugins</lookupPackage>
-              </optionMap>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-<!-- 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.7</version>
+									<pluginExecutionFilter>
+										<groupId>org.jasig.maven</groupId>
+										<artifactId>sass-maven-plugin</artifactId>
+										<versionRange>[1.1.1,)</versionRange>
+										<goals>
+											<goal>update-stylesheets</goal>
+										</goals>
+									</pluginExecutionFilter>
 
-        <dependencies>
-          <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>${instrumentation-hibernate.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>org.javassist</groupId>
-            <artifactId>javassist</artifactId>
-            <version>${instrumentation-javassist.version}</version>
-          </dependency>
-        </dependencies>
-        
-        <executions>
-          <execution>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <target>
-            <taskdef name="instrument" classname="org.hibernate.tool.instrument.javassist.InstrumentTask">
-              <classpath>
-                <path refid="maven.runtime.classpath" />
-                <path refid="maven.plugin.classpath" />
-              </classpath>
-            </taskdef>
-            <instrument verbose="true">
-              <fileset dir="${project.build.outputDirectory}">
-                <include name="**fi/muikku/plugins/**/*.class" />
-              </fileset>
-            </instrument>
-          </target>
-        </configuration>
-      </plugin>
- -->     
-    </plugins>
-  </build>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
 
-  <dependencies>
-  
-    <!-- Core provided dependencies -->
-  
-    <dependency>
-      <groupId>fi.muikku</groupId>
-      <artifactId>plugin</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    
-    <dependency>
-	  <groupId>org.apache.httpcomponents</groupId>
-	  <artifactId>httpclient</artifactId>
-	  <!-- 
-	  <scope>provided</scope>
-	   -->
-	</dependency>
-	    
-	<dependency>
-	  <groupId>org.apache.httpcomponents</groupId>
-	  <artifactId>httpcore</artifactId>
-	  <!-- 
-	  <scope>provided</scope>
-	   -->
-	</dependency>
+								<!-- <pluginExecution> <pluginExecutionFilter> <groupId>org.apache.maven.plugins</groupId> 
+									<artifactId>maven-antrun-plugin</artifactId> <versionRange>[1.7,)</versionRange> 
+									<goals> <goal>run</goal> </goals> </pluginExecutionFilter> <action> <ignore 
+									/> </action> </pluginExecution> -->
 
-    <!-- 
-    <dependency>
-      <groupId>net.java.dev.rome</groupId>
-      <artifactId>rome</artifactId>
-      <version>1.0.0</version>
-    </dependency>
-    -->
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 
-	<!-- Calendar dependencies -->
+		<plugins>
+			<plugin>
+				<groupId>org.jasig.maven</groupId>
+				<artifactId>sass-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>sassProcessSource</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>update-stylesheets</goal>
+						</goals>
+						<inherited>false</inherited>
+						<configuration>
+							<sassSourceDirectory>${basedir}/src/main/resources/META-INF/resources/sass</sassSourceDirectory>
+							<destination>${project.build.directory}/classes/META-INF/resources/css</destination>
+						</configuration>
+					</execution>
+				</executions>
 
-    <dependency>
-      <groupId>org.mnode.ical4j</groupId>
-      <artifactId>ical4j</artifactId>
-      <version>1.0.4</version>
-    </dependency>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.1</version>
+				<configuration>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+					<compilerArgument>-proc:none</compilerArgument>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.7</version>
+				<executions>
+					<execution>
+						<id>add-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${basedir}/src/main/.metamodel</source>
+								<source>${basedir}/src/main/.tranquilmodel</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+            
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>2.12</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+			<plugin>
+				<groupId>org.codehaus.cargo</groupId>
+				<artifactId>cargo-maven2-plugin</artifactId>
+				<version>${cargo.plugin.version}</version>
+				<configuration>
+					<container>
+						<containerId>jboss71x</containerId>
+						<zipUrlInstaller>
+							<url>http://download.jboss.org/jbossas/7.1/jboss-as-7.1.1.Final/jboss-as-7.1.1.Final.zip</url>
+							<downloadDir>${project.build.directory}/downloads</downloadDir>
+							<extractDir>${project.build.directory}/extracts</extractDir>
+						</zipUrlInstaller>
+					</container>
+					<configuration>
+						<type>runtime</type>
+						<properties>
+							<cargo.hostname>localhost</cargo.hostname>
+							<cargo.jboss.management-native.port>9990</cargo.jboss.management-native.port>
+						</properties>
+					</configuration>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>org.jboss.as</groupId>
+						<artifactId>jboss-as-controller-client</artifactId>
+						<version>7.1.1.Final</version>
+					</dependency>
+				</dependencies>
+                <executions>
+                    <execution>
+                        <id>start-jbossas</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>start</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>stop-jbossas</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+			</plugin>
 
 
-    <dependency>
-      <groupId>net.sf.json-lib</groupId>
-      <artifactId>json-lib</artifactId>
-      <version>2.4</version>
-      <classifier>jdk15</classifier>
-    </dependency>
-    <dependency>
-      <groupId>fi.muikku</groupId>
-      <artifactId>security</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>nekohtml</groupId>
-      <artifactId>nekohtml</artifactId>
-    </dependency>
-    <dependency>
-    	<groupId>org.codehaus.jackson</groupId>
-    	<artifactId>jackson-mapper-asl</artifactId>
-    	<scope>provided</scope>
-    </dependency>
-  </dependencies>
-  
-  <repositories>
-    <repository>
-      <id>otavanopisto-snapshots</id>
-      <name>Otavan Opisto Snapshots</name>
-      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/snapshots</url>
-    </repository>
-    <repository>
-      <id>otavanopisto-releases</id>
-      <name>Otavan Opisto Releases</name>
-      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases</url>
-    </repository>
-    <repository>
-      <id>caldav4j</id>
-      <url>https://caldav4j.googlecode.com/svn/maven/</url>
-    </repository>
-  </repositories>
+			<plugin>
+				<groupId>org.bsc.maven</groupId>
+				<artifactId>maven-processor-plugin</artifactId>
+				<version>2.2.1</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.hibernate</groupId>
+						<artifactId>hibernate-jpamodelgen</artifactId>
+						<version>1.2.0.Final</version>
+					</dependency>
+					<dependency>
+						<groupId>fi.tranquil-model</groupId>
+						<artifactId>tranquil-model-gen</artifactId>
+						<version>${tranquil-model-gen.version}</version>
+					</dependency>
+				</dependencies>
+				<executions>
+					<execution>
+						<id>process-metamodel</id>
+						<goals>
+							<goal>process</goal>
+						</goals>
+						<phase>generate-sources</phase>
+						<configuration>
+							<includes>
+								<include>**fi/muikku/plugins/**/*.java</include>
+							</includes>
+							<outputDirectory>${basedir}/src/main/.metamodel</outputDirectory>
+							<processors>
+								<processor>org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor</processor>
+							</processors>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>process-tranquilmodel</id>
+						<goals>
+							<goal>process</goal>
+						</goals>
+						<phase>generate-sources</phase>
+						<configuration>
+							<additionalSourceDirectories>
+								<sourceDirectory>${basedir}/src/main/.metamodel</sourceDirectory>
+							</additionalSourceDirectories>
+							<includes>
+								<include>**fi/muikku/plugins/**/*.java</include>
+							</includes>
+							<outputDirectory>${basedir}/src/main/.tranquilmodel</outputDirectory>
+							<processors>
+								<processor>fi.tranquil.TranquilModelAnnotationProcessor</processor>
+							</processors>
+							<optionMap>
+								<lookupPackage>fi.muikku.plugins.coreplugins</lookupPackage>
+							</optionMap>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-antrun-plugin</artifactId> 
+				<version>1.7</version> <dependencies> <dependency> <groupId>org.hibernate</groupId> 
+				<artifactId>hibernate-entitymanager</artifactId> <version>${instrumentation-hibernate.version}</version> 
+				</dependency> <dependency> <groupId>org.javassist</groupId> <artifactId>javassist</artifactId> 
+				<version>${instrumentation-javassist.version}</version> </dependency> </dependencies> 
+				<executions> <execution> <phase>process-classes</phase> <goals> <goal>run</goal> 
+				</goals> </execution> </executions> <configuration> <target> <taskdef name="instrument" 
+				classname="org.hibernate.tool.instrument.javassist.InstrumentTask"> <classpath> 
+				<path refid="maven.runtime.classpath" /> <path refid="maven.plugin.classpath" 
+				/> </classpath> </taskdef> <instrument verbose="true"> <fileset dir="${project.build.outputDirectory}"> 
+				<include name="**fi/muikku/plugins/**/*.class" /> </fileset> </instrument> 
+				</target> </configuration> </plugin> -->
+		</plugins>
+	</build>
+
+	<dependencies>
+
+		<!-- Core provided dependencies -->
+
+		<dependency>
+			<groupId>fi.muikku</groupId>
+			<artifactId>plugin</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<!-- <scope>provided</scope> -->
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpcore</artifactId>
+			<!-- <scope>provided</scope> -->
+		</dependency>
+
+		<!-- <dependency> <groupId>net.java.dev.rome</groupId> <artifactId>rome</artifactId> 
+			<version>1.0.0</version> </dependency> -->
+
+		<!-- Calendar dependencies -->
+
+		<dependency>
+			<groupId>org.mnode.ical4j</groupId>
+			<artifactId>ical4j</artifactId>
+			<version>1.0.4</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>net.sf.json-lib</groupId>
+			<artifactId>json-lib</artifactId>
+			<version>2.4</version>
+			<classifier>jdk15</classifier>
+		</dependency>
+		<dependency>
+			<groupId>fi.muikku</groupId>
+			<artifactId>security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>nekohtml</groupId>
+			<artifactId>nekohtml</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>repository.jboss.org_thirdparty-releases</id>
+			<name>JBoss.org third party releases repository</name>
+			<url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+		<pluginRepository>
+			<id>repository.jboss.org_thirdparty-uploads</id>
+			<name>JBoss.org third party uploads repository</name>
+			<url>https://repository.jboss.org/nexus/content/repositories/thirdparty-uploads</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<repositories>
+		<repository>
+			<id>otavanopisto-snapshots</id>
+			<name>Otavan Opisto Snapshots</name>
+			<url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/snapshots</url>
+		</repository>
+		<repository>
+			<id>otavanopisto-releases</id>
+			<name>Otavan Opisto Releases</name>
+			<url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases</url>
+		</repository>
+		<repository>
+			<id>caldav4j</id>
+			<url>https://caldav4j.googlecode.com/svn/maven/</url>
+		</repository>
+		<repository>
+			<id>repository.jboss.org_thirdparty-releases</id>
+			<name>JBoss.org third party releases repository</name>
+			<url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>repository.jboss.org_thirdparty-uploads</id>
+			<name>JBoss.org third party uploads repository</name>
+			<url>https://repository.jboss.org/nexus/content/repositories/thirdparty-uploads</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
 </project>
