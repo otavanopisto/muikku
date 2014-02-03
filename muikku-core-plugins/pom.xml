@@ -304,6 +304,68 @@
 			<artifactId>jackson-mapper-asl</artifactId>
 			<scope>provided</scope>
 		</dependency>
+
+        <dependency>
+          <groupId>net.sf.json-lib</groupId>
+          <artifactId>json-lib</artifactId>
+          <version>2.4</version>
+          <classifier>jdk15</classifier>
+        </dependency>
+        <dependency>
+          <groupId>fi.muikku</groupId>
+          <artifactId>security</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>commons-io</groupId>
+          <artifactId>commons-io</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>nekohtml</groupId>
+          <artifactId>nekohtml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        
+        
+        <!-- JUnit -->
+        
+        <dependency>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+          <scope>test</scope>
+        </dependency>
+          
+        <!-- Selenium -->
+
+        <dependency>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+          <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+          <groupId>org.apache.httpcomponents</groupId>
+          <artifactId>httpcore</artifactId>
+          <version>4.2.3</version>
+          <scope>test</scope>
+        </dependency>
+
+        <dependency>
+          <groupId>org.seleniumhq.selenium</groupId>
+          <artifactId>selenium-java</artifactId>
+          <scope>test</scope>
+        </dependency>  
+        
+        <!-- Sauce Labs -->
+         
+        <dependency>
+          <groupId>com.saucelabs</groupId>
+          <artifactId>sauce_junit</artifactId>
+          <scope>test</scope>
+        </dependency>
 	</dependencies>
 
 	<pluginRepositories>
@@ -346,6 +408,10 @@
 			<id>caldav4j</id>
 			<url>https://caldav4j.googlecode.com/svn/maven/</url>
 		</repository>
+        <repository>
+            <id>saucelabs</id>
+            <url>https://repository-saucelabs.forge.cloudbees.com/release</url>
+        </repository>
 		<repository>
 			<id>repository.jboss.org_thirdparty-releases</id>
 			<name>JBoss.org third party releases repository</name>
@@ -368,5 +434,5 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
-	</repositories>
+  </repositories>
 </project>

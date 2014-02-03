@@ -73,6 +73,12 @@
       <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases</url>
     </repository>
     
+    <repository>
+      <id>saucelabs-repository</id>
+      <url>http://repository-saucelabs.forge.cloudbees.com/release</url>
+      <releases/>
+      <snapshots/>
+    </repository>
   </repositories>
 
   <pluginRepositories>
