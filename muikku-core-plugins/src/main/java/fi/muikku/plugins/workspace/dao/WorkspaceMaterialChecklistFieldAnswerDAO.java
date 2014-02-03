@@ -6,7 +6,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.plugin.PluginDAO;
-import fi.muikku.plugins.material.model.QuerySelectFieldOption;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialChecklistFieldAnswer;
@@ -16,7 +15,7 @@ public class WorkspaceMaterialChecklistFieldAnswerDAO extends PluginDAO<Workspac
 	
   private static final long serialVersionUID = 8767283875784190142L;
 
-  public WorkspaceMaterialChecklistFieldAnswer create(WorkspaceMaterialField field, WorkspaceMaterialReply reply, QuerySelectFieldOption value) {
+  public WorkspaceMaterialChecklistFieldAnswer create(WorkspaceMaterialField field, WorkspaceMaterialReply reply) {
 		WorkspaceMaterialChecklistFieldAnswer workspaceMaterialChecklistFieldAnswer = new WorkspaceMaterialChecklistFieldAnswer();
 		
 		workspaceMaterialChecklistFieldAnswer.setField(field);
