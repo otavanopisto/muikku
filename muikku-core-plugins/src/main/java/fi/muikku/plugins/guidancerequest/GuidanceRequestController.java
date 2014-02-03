@@ -105,7 +105,7 @@ public class GuidanceRequestController {
         List<UserEmail> receiverMail = userController.listUserEmails(receiverUser);
         
         for (UserEmail email : receiverMail) {
-          mailer.sendMail(studentEmail, email.getAddress(), content);
+          mailer.sendMail(studentEmail, email.getAddress(), caption, content);
         }
       }
     }
