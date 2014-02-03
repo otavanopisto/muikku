@@ -14,12 +14,22 @@
 
     <div class="widget wi-dock-static-navi-button-calendar">
       <h:outputLink styleClass="naviIconCalendar tooltip" value="#{request.contextPath}/calendar/index.jsf">
-        <!-- TODO: minical is hidden because it does not work  -->
-        <div class="miniCalendarContainer" style="display: none"></div>
-      </h:outputLink>
-     
 
-      <input type="hidden" name="firstDay" value="#{calendarBackingBean.firstDay}"/>
+      </h:outputLink>
+       <!-- TODO: minical is hidden because it does not work  -->
+     <div class="dock-navi-tt-container-calendar" style="display: none;">     
+      <div class="tt-calendar">
+        <h5>Kalenteri</h5>
+        <div class="tt-menu-calendar-toolbar">
+          <div class="miniCalendarContainer" ></div>
+          <input type="hidden" name="firstDay" value="#{calendarBackingBean.firstDay}"/>    
+        </div>
+        <div class="tt-menu-calendar-content">
+          <p>Henkilökohtainen kalenterisi </p>
+        </div>
+      </div>
+    </div>
+
     </div>
 
 </ui:composition>

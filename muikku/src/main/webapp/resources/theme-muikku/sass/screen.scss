@@ -142,20 +142,18 @@ div[class*="tt-menu-link"]:hover {
 }
 
 div[class*="dock-navi-tt-container"]{
-	padding-top:30px;
+	margin-top:30px;
   position:absolute;
   margin-left:1px;
-  margin-top:1px;
+  margin-top:31px;
 }
 
-.tt-communicator{
+div[class*="dock-navi-tt-container"] > div{
 	background-color:#fff;
 	@include shadow;
 	min-height:60px;
   max-width:150px;
   padding:20px;
-
-		
 }
 
 .widgetSpace {
