@@ -16,7 +16,6 @@ $gridCols:24;
 
 
 .container_24 {
-
 	width:$desktop;
 	margin-left:auto;
 	margin-right:auto; 
@@ -33,11 +32,12 @@ $gridCols:24;
 /* Include the pre-created styles: Tablet */
 
 @media screen and (max-width: 768px) {
-	
-
+	 
   .container_24 {
     width:$tablet;
   }
+  
+
 
   @include grid_x($tablet, $gridCols);
   @include grid_x_nomargin($tablet, $gridCols);
@@ -45,7 +45,7 @@ $gridCols:24;
 }
 
 @media screen and (max-width: 480px){
-  
+
   .container_24 {
     width:480px;
   }

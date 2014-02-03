@@ -14,7 +14,11 @@
 /* Variables */
 
 $grid-margin-pixel: 5px;
-$container-size:768px;
+$container-size:960px;
+
+
+
+
 
 $grid-margin-divided:prc($container-size, $grid-margin-pixel);
 $grid-margin-percent:prc(100, $grid-margin-divided);
@@ -26,6 +30,8 @@ $grid-margin-percent:prc(100, $grid-margin-divided);
   $grids: null;
   $grids-nomargin: null;
   $grid-instance-size: prc($size, $cols);
+  $stuckMargin: half($size) + 1;
+
   
   @for $i from 1 through $cols{
 
@@ -62,6 +68,20 @@ $grid-margin-percent:prc(100, $grid-margin-divided);
       margin-left:$grid-margin-pixel;
       margin-right:$grid-margin-pixel;
      }
+     
+	   .stuckStNav {
+	    position:fixed;
+	    top:0;
+	    left:50%;
+	    margin-left: -$stuckMargin;
+	  }
+	  
+	  .stuckDNav {
+	    position:fixed !important;
+	    top:0;
+	    left:0;
+	  }      
+	     
 }
 
 
