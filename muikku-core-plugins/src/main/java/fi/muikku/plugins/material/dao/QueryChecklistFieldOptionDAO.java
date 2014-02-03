@@ -40,7 +40,7 @@ public class QueryChecklistFieldOptionDAO extends PluginDAO<QueryChecklistFieldO
     return entityManager.createQuery(criteria).getResultList();
   }
 
-  public QueryChecklistFieldOption findBySelectFieldAndName(QueryChecklistField selectField, String name) {
+  public QueryChecklistFieldOption findByFieldAndName(QueryChecklistField selectField, String name) {
     EntityManager entityManager = getEntityManager();
 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
