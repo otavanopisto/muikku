@@ -9,16 +9,16 @@
     <version>1.0.0-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
-  
-	<properties>
-		<tranquil-model-gen.version>1.0.3-SNAPSHOT</tranquil-model-gen.version>
-		<!-- <instrumentation-hibernate.version>4.0.1.Final</instrumentation-hibernate.version> 
-			<instrumentation-javassist.version>3.18.0-GA</instrumentation-javassist.version> -->
-		<cargo.plugin.version>1.4.6</cargo.plugin.version>
-        <integrationtest.serverport>8080</integrationtest.serverport>
-        <integrationtest.serverhost>localhost</integrationtest.serverhost>
-        <integrationtest.contextpath>muikku</integrationtest.contextpath>
-	</properties>
+
+  <properties>
+    <tranquil-model-gen.version>1.0.3-SNAPSHOT</tranquil-model-gen.version>
+    <!-- <instrumentation-hibernate.version>4.0.1.Final</instrumentation-hibernate.version> 
+      <instrumentation-javassist.version>3.18.0-GA</instrumentation-javassist.version> -->
+    <cargo.plugin.version>1.4.6</cargo.plugin.version>
+    <integrationtest.serverport>8080</integrationtest.serverport>
+    <integrationtest.serverhost>localhost</integrationtest.serverhost>
+    <integrationtest.contextpath>muikku</integrationtest.contextpath>
+  </properties>
 
   <artifactId>core-plugins</artifactId>
   <packaging>jar</packaging>
@@ -178,7 +178,7 @@
               </cargo.runtime.args>
               <cargo.datasource.datasource.muikku>
                 cargo.datasource.driver=org.h2.Driver|
-                cargo.datasource.url=jdbc:h2:mem:data;DB_CLOSE_DELAY=-1|
+                cargo.datasource.url=jdbc:h2:file:../data;AUTO_SERVER=TRUE|
                 cargo.datasource.jndi=jdbc/muikku|
                 cargo.datasource.username=sa|
                 cargo.datasource.password=sa|
@@ -228,6 +228,34 @@
             <goals>
               <goal>stop</goal>
             </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>2.5</version>
+        <executions>
+          <execution>
+            <id>post-integration-clean</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+            <configuration>
+              <excludeDefaultDirectories>true</excludeDefaultDirectories>
+              <failOnError>false</failOnError>
+              <filesets>
+                <fileset>
+                  <directory>${project.build.directory}</directory>
+                  <useDefaultExcludes>false</useDefaultExcludes>
+                  <includes>
+                    <include>*.h2.db</include>
+                    <include>*.trace.db</include>
+                  </includes>
+                </fileset>
+              </filesets>
+            </configuration>
           </execution>
         </executions>
       </plugin>
