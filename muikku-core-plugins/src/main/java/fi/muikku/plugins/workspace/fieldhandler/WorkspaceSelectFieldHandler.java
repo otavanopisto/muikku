@@ -116,18 +116,18 @@ public class WorkspaceSelectFieldHandler extends AbstractWorkspaceFieldHandler {
   }
 
   @Override
-  public void persistField(WorkspaceMaterialReply reply, WorkspaceMaterialField workspaceMaterialField, Map<String, String> requestParameterMap)
+  public void persistField(WorkspaceMaterialReply reply, WorkspaceMaterialField workspaceMaterialField, Map<String, String[]> requestParameterMap)
       throws MaterialQueryIntegrityExeption {
     
     String parameterName = getHtmlFieldName(workspaceMaterialField.getName());
+    String parameterValue = getRequestParameterMapFirstValue(requestParameterMap, parameterName);
     
-    String value = requestParameterMap.get(parameterName);
     QuerySelectField queryField = (QuerySelectField) workspaceMaterialField.getQueryField();
     QuerySelectFieldOption option = null;
-    if (StringUtils.isNotBlank(value)) {
-      option = queryFieldController.findQuerySelectFieldOptionByFieldAndName(queryField, value);
+    if (StringUtils.isNotBlank(parameterValue)) {
+      option = queryFieldController.findQuerySelectFieldOptionByFieldAndName(queryField, parameterValue);
       if (option == null) {
-        throw new MaterialQueryIntegrityExeption("SelectFieldOption #" + queryField.getId() + " does not contain option '" + value + "'");
+        throw new MaterialQueryIntegrityExeption("SelectFieldOption #" + queryField.getId() + " does not contain option '" + parameterValue + "'");
       }
     }
     

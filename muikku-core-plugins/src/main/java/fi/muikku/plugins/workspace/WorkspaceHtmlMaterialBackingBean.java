@@ -173,7 +173,7 @@ public class WorkspaceHtmlMaterialBackingBean {
 	
   @LoggedIn
   public String save() throws MaterialQueryPersistanceExeption, MaterialQueryIntegrityExeption {
-    Map<String, String> requestParameterMap = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+    Map<String, String[]> requestParameterMap = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterValuesMap();
     
     List<WorkspaceMaterialField> fields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByWorkspaceMaterial(workspaceMaterial);
     for (WorkspaceMaterialField field : fields) {
