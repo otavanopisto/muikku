@@ -30,7 +30,6 @@
     <junit.version>4.10</junit.version>
     <sauce_junit.version>[1.0.0,)</sauce_junit.version>
     <selenium-java.version>2.25.0</selenium-java.version>
-    <guava.version>16.0</guava.version>
   </properties>
 
   <dependencyManagement>
@@ -240,13 +239,6 @@
       </dependency>
       
       <!-- Selenium -->
-
-      <dependency>
-		<groupId>com.google.guava</groupId>
-		<artifactId>guava</artifactId>
-		<version>${guava.version}</version>
-        <scope>test</scope>
-      </dependency>
      
       <dependency>
         <groupId>com.saucelabs</groupId>
