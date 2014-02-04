@@ -37,8 +37,23 @@ public class SeleniumTestBase {
   private static final String STUDENT1_USERNAME = "st1@oo.fi";
   private static final String STUDENT1_PASSWORD = "qwe";
   
+  protected String getHostname() {
+    // return System.getProperty("integrationtest.serverhost");
+    return HOST;
+  }
+  
+  protected String getContextPath() {
+    // return "/" + System.getProperty("integrationtest.contextpath");
+    return CONTEXTPATH;
+  }
+  
+  protected int getPort() {
+    // return Integer.parseInt(System.getProperty("integrationtest.serverport"), 10);
+    return PORT;
+  }
+  
   protected URL getAppUrl(String path) throws MalformedURLException {
-    return new URL(PROTOCOL, HOST, PORT, CONTEXTPATH + path);
+    return new URL(PROTOCOL, getHostname(), getPort(), getContextPath() + path);
   }
  
   protected boolean checkServerUp() {

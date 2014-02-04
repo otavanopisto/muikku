@@ -176,16 +176,16 @@
                 -Dintegrationtest.contextpath=${integrationtest.contextpath}
               </cargo.runtime.args>
               <cargo.datasource.datasource.muikku>
-                cargo.datasource.driver=com.mysql.jdbc.Driver|
-                cargo.datasource.url=jdbc:mysql://localhost:3306/muikku|
+                cargo.datasource.driver=org.h2.Driver|
+                cargo.datasource.url=jdbc:h2:mem:data;DB_CLOSE_DELAY=-1|
                 cargo.datasource.jndi=jdbc/muikku|
-                cargo.datasource.username=muikku|
-                cargo.datasource.password=muikku|
+                cargo.datasource.username=sa|
+                cargo.datasource.password=sa|
                 cargo.datasource.transactionsupport=LOCAL_TRANSACTION
               </cargo.datasource.datasource.muikku>
               <cargo.datasource.datasource.muikku-h2>
                 cargo.datasource.driver=org.h2.Driver|
-                cargo.datasource.url=jdbc:h2:mem:;DB_CLOSE_DELAY=-1|
+                cargo.datasource.url=jdbc:h2:mem:mock;DB_CLOSE_DELAY=-1|
                 cargo.datasource.jndi=jdbc/muikku-h2|
                 cargo.datasource.username=sa|
                 cargo.datasource.password=sa|
@@ -230,7 +230,6 @@
           </execution>
         </executions>
       </plugin>
-
 
       <plugin>
         <groupId>org.bsc.maven</groupId>
@@ -407,7 +406,7 @@
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpcore</artifactId>
-      <version>4.2.3</version>
+      <!-- <version>4.2.3</version> -->
       <scope>test</scope>
     </dependency>
 

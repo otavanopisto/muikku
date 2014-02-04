@@ -4,13 +4,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Map.Entry;
+
 import org.junit.After;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
-public class Story20IT extends SeleniumTestBase {
+public class Story20Base extends SeleniumTestBase {
 
   private static final String TEST_PAGE = "/workspace/pool/materials.html/selenium/teht/us20";
   
@@ -27,12 +29,6 @@ public class Story20IT extends SeleniumTestBase {
 
   protected RemoteWebDriver getDriver() {
     return driver;
-  }
-
-  @Test
-  public void testSanity() throws Exception {
-    assertNotNull(driver);
-    assertTrue("Server down", checkServerUp());
   }
 
   @Test
