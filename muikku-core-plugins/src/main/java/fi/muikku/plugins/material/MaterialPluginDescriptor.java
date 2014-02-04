@@ -34,6 +34,7 @@ import fi.muikku.plugins.material.model.QueryConnectFieldCounterpart;
 import fi.muikku.plugins.material.model.QueryConnectFieldOption;
 import fi.muikku.plugins.material.model.QueryConnectFieldTerm;
 import fi.muikku.plugins.material.model.QueryField;
+import fi.muikku.plugins.material.model.QueryFileField;
 import fi.muikku.plugins.material.model.QuerySelectField;
 import fi.muikku.plugins.material.model.QuerySelectFieldOption;
 import fi.muikku.plugins.material.model.QueryTextField;
@@ -113,7 +114,8 @@ public class MaterialPluginDescriptor implements PluginDescriptor, PersistencePl
       QueryConnectFieldTerm.class,
       QueryConnectFieldCounterpart.class,
       QueryChecklistField.class,
-      QueryChecklistFieldOption.class
+      QueryChecklistFieldOption.class,
+      QueryFileField.class
     };
   }
 }
