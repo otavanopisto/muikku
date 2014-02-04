@@ -4,7 +4,6 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 
 @RequestScoped
-@Stateful
 public class ServletObjectsContainer {
 
   public void setContextPath(String contextPath) {
