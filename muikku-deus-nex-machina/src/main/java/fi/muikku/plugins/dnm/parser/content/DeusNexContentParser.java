@@ -89,7 +89,13 @@ public class DeusNexContentParser {
 					Node replacement = handleConnectField(ownerDocument, element);
 					replaceElement(ownerDocument, element, replacement);
 				}
-				
+				//ixf:uploadfilefield
+        NodeList fileFieldNodeList = localeDocument.getElementsByTagName("ixf:uploadfilefield");
+        for (int i = fileFieldNodeList.getLength() - 1; i >= 0; i--) {
+          Element element = (Element) fileFieldNodeList.item(i);
+          Node replacement = handleFileField(ownerDocument, element);
+          replaceElement(ownerDocument, element, replacement);
+        }
 				
 				Element htmlElement = ownerDocument.createElement("html"); 
 				Element bodyElement = ownerDocument.createElement("body");
@@ -305,6 +311,18 @@ public class DeusNexContentParser {
     return null;
   }
 	
+  private Node handleFileField(Document ownerDocument, Element embeddedItemElement) throws XPathExpressionException, DeusNexException {
+    String paramName = DeusNexXmlUtils.getChildValue(embeddedItemElement, "paramname");
+    String help = DeusNexXmlUtils.getChildValue(embeddedItemElement, "help");
+    String hint = DeusNexXmlUtils.getChildValue(embeddedItemElement, "hint");
+    
+    if (fieldElementHandler != null) {
+      return fieldElementHandler.handleFileField(ownerDocument, paramName, help, hint);
+    }
+    
+    return null;
+  }
+  
 	private Node handleConnectField(Document ownerDocument, Element fieldElement) throws XPathExpressionException, DeusNexException {
 		String paramName = DeusNexXmlUtils.getChildValue(fieldElement, "paramname");
 		

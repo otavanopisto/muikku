@@ -28,7 +28,6 @@ import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 
 public class WorkspaceChecklistFieldHandler extends AbstractWorkspaceFieldHandler {
 
-  
   @Inject
   private WorkspaceMaterialFieldAnswerController workspaceMaterialFieldAnswerController;
 
