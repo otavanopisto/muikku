@@ -2,12 +2,17 @@ package fi.muikku.plugins.workspace;
 
 import javax.inject.Inject;
 
+import fi.muikku.plugins.material.model.QueryChecklistFieldOption;
 import fi.muikku.plugins.material.model.QueryConnectFieldCounterpart;
 import fi.muikku.plugins.material.model.QueryConnectFieldTerm;
 import fi.muikku.plugins.material.model.QuerySelectFieldOption;
+import fi.muikku.plugins.workspace.dao.WorkspaceMaterialChecklistFieldAnswerDAO;
+import fi.muikku.plugins.workspace.dao.WorkspaceMaterialChecklistFieldAnswerOptionDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialConnectFieldAnswerDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialSelectFieldAnswerDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialTextFieldAnswerDAO;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialChecklistFieldAnswer;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialChecklistFieldAnswerOption;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialConnectFieldAnswer;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
@@ -24,6 +29,12 @@ public class WorkspaceMaterialFieldAnswerController {
 
   @Inject
   private WorkspaceMaterialConnectFieldAnswerDAO workspaceMaterialConnectFieldAnswerDAO;
+
+  @Inject
+  private WorkspaceMaterialChecklistFieldAnswerDAO workspaceMaterialChecklistFieldAnswerDAO;
+
+  @Inject
+  private WorkspaceMaterialChecklistFieldAnswerOptionDAO workspaceMaterialChecklistFieldAnswerOptionDAO;
 
   /* TextField */
 
@@ -70,4 +81,30 @@ public class WorkspaceMaterialFieldAnswerController {
     return workspaceMaterialConnectFieldAnswerDAO.updateCounterpart(workspaceMaterialConnectFieldAnswer, counterpart);
   }
   
+  /* ChecklistField */
+  
+  public WorkspaceMaterialChecklistFieldAnswer createWorkspaceMaterialChecklistFieldAnswer(WorkspaceMaterialField field, WorkspaceMaterialReply reply) {
+    return workspaceMaterialChecklistFieldAnswerDAO.create(field, reply);
+  }
+
+  public WorkspaceMaterialChecklistFieldAnswer findWorkspaceMaterialChecklistFieldAnswerByFieldAndReply(WorkspaceMaterialField field, WorkspaceMaterialReply reply) {
+    return workspaceMaterialChecklistFieldAnswerDAO.findByQueryFieldAndReply(field, reply);
+  }
+  
+  /* ChecklistFieldOption */
+
+  public WorkspaceMaterialChecklistFieldAnswerOption createWorkspaceMaterialChecklistFieldAnswerOption(WorkspaceMaterialChecklistFieldAnswer fieldAnswer,
+      QueryChecklistFieldOption option) {
+    return workspaceMaterialChecklistFieldAnswerOptionDAO.create(fieldAnswer, option);
+  }
+  
+  public WorkspaceMaterialChecklistFieldAnswerOption findWorkspaceMaterialChecklistFieldAnswerOptionByFieldAnswerAndOption(
+      WorkspaceMaterialChecklistFieldAnswer fieldAnswer, QueryChecklistFieldOption option) {
+    return workspaceMaterialChecklistFieldAnswerOptionDAO.findByFieldAnswerAndOption(fieldAnswer, option);
+  }
+
+  public void deleteWorkspaceMaterialChecklistFieldAnswerOption(WorkspaceMaterialChecklistFieldAnswerOption answerOption) {
+    workspaceMaterialChecklistFieldAnswerOptionDAO.delete(answerOption);
+  }
+
 }
