@@ -1,5 +1,7 @@
 package fi.muikku.plugins.material;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -42,6 +44,10 @@ public class QueryChecklistFieldController {
 
   public QueryChecklistFieldOption findQueryChecklistFieldOptionByFieldAndName(QueryChecklistField field, String name) {
     return queryChecklistFieldOptionDAO.findByFieldAndName(field, name);
+  }
+
+  public List<QueryChecklistFieldOption> listQueryChecklistFieldOptionsByField(QueryChecklistField field) {
+    return queryChecklistFieldOptionDAO.listByField(field);
   }
 
   public QueryChecklistFieldOption updateQueryChecklistFieldOptionText(QueryChecklistFieldOption queryChecklistFieldOption, String text) {
