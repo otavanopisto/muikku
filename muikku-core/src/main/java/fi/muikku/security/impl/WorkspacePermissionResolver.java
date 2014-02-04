@@ -3,13 +3,17 @@ package fi.muikku.security.impl;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
-import fi.muikku.dao.security.EnvironmentRolePermissionDAO;
-import fi.muikku.dao.security.EnvironmentUserPermissionOverrideDAO;
 import fi.muikku.dao.security.PermissionDAO;
-import fi.muikku.dao.users.EnvironmentUserDAO;
+import fi.muikku.dao.security.WorkspaceRolePermissionDAO;
+import fi.muikku.dao.security.WorkspaceUserPermissionOverrideDAO;
+import fi.muikku.dao.workspace.WorkspaceUserEntityDAO;
 import fi.muikku.model.security.Permission;
+import fi.muikku.model.security.PermissionOverrideState;
+import fi.muikku.model.security.WorkspaceUserPermissionOverride;
 import fi.muikku.model.users.RoleEntity;
 import fi.muikku.model.users.UserEntity;
+import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.security.AbstractPermissionResolver;
 import fi.muikku.security.ContextReference;
 import fi.muikku.security.PermissionResolver;
@@ -23,13 +27,13 @@ public class WorkspacePermissionResolver extends AbstractPermissionResolver impl
   private PermissionDAO permissionDAO;
   
   @Inject
-  private EnvironmentUserPermissionOverrideDAO environmentUserPermissionOverrideDAO;
+  private WorkspaceUserPermissionOverrideDAO workspaceUserPermissionOverrideDAO;
   
   @Inject
-  private EnvironmentUserDAO environmentUserDAO;
+  private WorkspaceUserEntityDAO workspaceUserDAO;
 
   @Inject
-  private EnvironmentRolePermissionDAO environmentUserRolePermissionDAO;
+  private WorkspaceRolePermissionDAO workspaceUserRolePermissionDAO;
 
   @Override
   public boolean handlesPermission(String permission) {
@@ -39,24 +43,21 @@ public class WorkspacePermissionResolver extends AbstractPermissionResolver impl
       return (PermissionScope.WORKSPACE.equals(perm.getScope()));
     else
       return false;
-//      throw new RuntimeException("EnvironmentPermissionResolver - Permission '" + permission + "' not found");
   }
 
-  // TODO Implement workspace rights
-  
   @Override
   public boolean hasPermission(String permission, ContextReference contextReference, User user) {
     Permission perm = permissionDAO.findByName(permission);
     UserEntity userEntity = getUserEntity(user);
 
-    return true;
-//    EnvironmentUser environmentUser = environmentUserDAO.findByUserAndArchived(userEntity, Boolean.FALSE);
-//  
-//    EnvironmentUserPermissionOverride override = environmentUserPermissionOverrideDAO.findByEnvironmentUserRoleAndPermission(environmentUser, perm);
-//    if (override != null)
-//      return override.getState() == PermissionOverrideState.ALLOW;
-//    else
-//      return environmentUserRolePermissionDAO.hasEnvironmentPermissionAccess(environmentUser.getRole(), perm);
+    WorkspaceEntity workspace = (WorkspaceEntity) contextReference;
+    WorkspaceUserEntity workspaceUser = workspaceUserDAO.findByWorkspaceAndUser(workspace, userEntity);
+  
+    WorkspaceUserPermissionOverride override = workspaceUserPermissionOverrideDAO.findByCourseUserAndPermission(workspaceUser, perm);
+    if (override != null)
+      return override.getState() == PermissionOverrideState.ALLOW;
+    else
+      return workspaceUserRolePermissionDAO.hasWorkspacePermissionAccess(workspace, workspaceUser.getWorkspaceUserRole(), perm);
   }
 
   @Override
@@ -64,6 +65,6 @@ public class WorkspacePermissionResolver extends AbstractPermissionResolver impl
     RoleEntity everyoneRole = getEveryoneRole();
     Permission perm = permissionDAO.findByName(permission);
     
-    return true;// environmentUserRolePermissionDAO.hasEnvironmentPermissionAccess(everyoneRole, perm);
+    return workspaceUserRolePermissionDAO.hasWorkspacePermissionAccess((WorkspaceEntity) contextReference, everyoneRole, perm);
   }
 }

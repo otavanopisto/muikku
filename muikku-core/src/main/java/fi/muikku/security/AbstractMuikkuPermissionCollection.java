@@ -14,6 +14,9 @@ public class AbstractMuikkuPermissionCollection extends AbstractPermissionCollec
   public static final String WORKSPACE_TEACHER = "Workspace Teacher";
   public static final String WORKSPACE_STUDENT = "Workspace Student";
   
+  public static final String GROUP_TEACHER = "Group Teacher";
+  public static final String GROUP_STUDENT = "Group Student";
+  
   protected String[] getDefaultRoles(Class<?> collectionClass, String permission) throws NoSuchFieldException {
     DefaultPermissionRoles annotation = collectionClass.getField(permission).getAnnotation(DefaultPermissionRoles.class);
 

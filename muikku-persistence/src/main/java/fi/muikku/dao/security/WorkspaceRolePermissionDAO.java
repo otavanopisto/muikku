@@ -32,7 +32,7 @@ public class WorkspaceRolePermissionDAO extends CoreDAO<WorkspaceRolePermission>
   }
   
 	// TODO: Not a DAO method
-  public boolean hasCoursePermissionAccess(WorkspaceEntity workspace, RoleEntity role, Permission permission) {
+  public boolean hasWorkspacePermissionAccess(WorkspaceEntity workspace, RoleEntity role, Permission permission) {
     return findByRoleAndPermission(workspace, role, permission) != null;
   }
 

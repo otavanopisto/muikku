@@ -3,11 +3,19 @@ insert into WorkspaceNode (urlName) select concat('__we-', id) from WorkspaceEnt
 insert into WorkspaceRootFolder (id, workspaceEntityId) select id, substring(urlName from 6) from WorkspaceNode where urlName like '__we-%';
 update WorkspaceNode n, WorkspaceEntity w set n.urlName = w.urlName where w.id = substring(n.urlName from 6);
 
-insert into WorkspaceUserEntity (user_id, identifier, workspaceEntity_id, workspaceUserRole_id, archived) values (2, '', 20, 5, false);
-insert into WorkspaceUserEntity (user_id, identifier, workspaceEntity_id, workspaceUserRole_id, archived) values (3, '', 20, 5, false);
-insert into WorkspaceUserEntity (user_id, identifier, workspaceEntity_id, workspaceUserRole_id, archived) values (2, '', 21, 5, false);
-insert into WorkspaceUserEntity (user_id, identifier, workspaceEntity_id, workspaceUserRole_id, archived) values (3, '', 21, 5, false);
-insert into WorkspaceUserEntity (user_id, identifier, workspaceEntity_id, workspaceUserRole_id, archived) values (2, '', 22, 5, false);
-insert into WorkspaceUserEntity (user_id, identifier, workspaceEntity_id, workspaceUserRole_id, archived) values (3, '', 22, 5, false);
+insert into WorkspaceUserEntity (user_id, identifier, workspaceEntity_id, workspaceUserRole_id, archived) values (1, '', 20, 5, false);
+insert into WorkspaceUserEntity (user_id, identifier, workspaceEntity_id, workspaceUserRole_id, archived) values (1, '', 21, 5, false);
+insert into WorkspaceUserEntity (user_id, identifier, workspaceEntity_id, workspaceUserRole_id, archived) values (1, '', 22, 5, false);
+
+insert into WorkspaceUserEntity (user_id, identifier, workspaceEntity_id, workspaceUserRole_id, archived) values (6, '', 20, 5, false);
+insert into WorkspaceUserEntity (user_id, identifier, workspaceEntity_id, workspaceUserRole_id, archived) values (6, '', 21, 5, false);
+insert into WorkspaceUserEntity (user_id, identifier, workspaceEntity_id, workspaceUserRole_id, archived) values (6, '', 22, 5, false);
+
+insert into WorkspaceUserEntity (user_id, identifier, workspaceEntity_id, workspaceUserRole_id, archived) values (2, '', 20, 6, false);
+insert into WorkspaceUserEntity (user_id, identifier, workspaceEntity_id, workspaceUserRole_id, archived) values (3, '', 20, 6, false);
+insert into WorkspaceUserEntity (user_id, identifier, workspaceEntity_id, workspaceUserRole_id, archived) values (2, '', 21, 6, false);
+insert into WorkspaceUserEntity (user_id, identifier, workspaceEntity_id, workspaceUserRole_id, archived) values (3, '', 21, 6, false);
+insert into WorkspaceUserEntity (user_id, identifier, workspaceEntity_id, workspaceUserRole_id, archived) values (2, '', 22, 6, false);
+insert into WorkspaceUserEntity (user_id, identifier, workspaceEntity_id, workspaceUserRole_id, archived) values (3, '', 22, 6, false);
 
 

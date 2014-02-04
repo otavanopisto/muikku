@@ -3,12 +3,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>fi.muikku</groupId>
-		<artifactId>parent</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
-	</parent>
-
+  <parent>
+    <groupId>fi.muikku</groupId>
+    <artifactId>parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  
 	<properties>
 		<tranquil-model-gen.version>1.0.3-SNAPSHOT</tranquil-model-gen.version>
 		<!-- <instrumentation-hibernate.version>4.0.1.Final</instrumentation-hibernate.version> 
