@@ -14,11 +14,13 @@ import fi.muikku.plugins.material.dao.QueryConnectFieldCounterpartDAO;
 import fi.muikku.plugins.material.dao.QueryConnectFieldDAO;
 import fi.muikku.plugins.material.dao.QueryConnectFieldTermDAO;
 import fi.muikku.plugins.material.dao.QueryFieldDAO;
+import fi.muikku.plugins.material.dao.QueryFileFieldDAO;
 import fi.muikku.plugins.material.dao.QuerySelectFieldDAO;
 import fi.muikku.plugins.material.dao.QuerySelectFieldOptionDAO;
 import fi.muikku.plugins.material.dao.QueryTextFieldDAO;
 import fi.muikku.plugins.material.fieldprocessing.ChecklistFieldMaterialFieldProcessor;
 import fi.muikku.plugins.material.fieldprocessing.ConnectFieldMaterialFieldProcessor;
+import fi.muikku.plugins.material.fieldprocessing.FileFieldMaterialFieldProcessor;
 import fi.muikku.plugins.material.fieldprocessing.MemoFieldMaterialFieldProcessor;
 import fi.muikku.plugins.material.fieldprocessing.SelectFieldMaterialFieldProcessor;
 import fi.muikku.plugins.material.fieldprocessing.TextFieldMaterialFieldProcessor;
@@ -62,6 +64,7 @@ public class MaterialPluginDescriptor implements PluginDescriptor, PersistencePl
       QuerySelectFieldController.class,
       QueryConnectFieldController.class,
       QueryChecklistFieldController.class,
+      QueryFileFieldController.class,
        
       /* DAOs */
       
@@ -77,6 +80,7 @@ public class MaterialPluginDescriptor implements PluginDescriptor, PersistencePl
       QueryConnectFieldCounterpartDAO.class,
       QueryChecklistFieldDAO.class,
       QueryChecklistFieldOptionDAO.class,
+      QueryFileFieldDAO.class,
       
       /* Field Processors */
       
@@ -85,6 +89,7 @@ public class MaterialPluginDescriptor implements PluginDescriptor, PersistencePl
       TextFieldMaterialFieldProcessor.class,
       ConnectFieldMaterialFieldProcessor.class,
       ChecklistFieldMaterialFieldProcessor.class,
+      FileFieldMaterialFieldProcessor.class,
       
       /* Listeners */
 
