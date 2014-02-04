@@ -43,7 +43,10 @@ public class UserSeekerResultProvider implements SeekerResultProvider {
       if (userController.hasPicture(e.getUser()))
         imageUrl = "/picture?userId=" + e.getUser().getId();
       else
-        imageUrl = "/themes/default/gfx/fish.jpg";
+    
+        // TODO teematuki
+        
+        imageUrl = "/tmp/userprofile.png";
      
       // TODO remove
       if ((e2.getFirstName().toLowerCase().contains(searchTerm)) || (e2.getLastName().toLowerCase().contains(searchTerm)))

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+  xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:h="http://java.sun.com/jsf/html">
+
+
+    <!-- Dialog Box -->
+    <div id="tt-menu-communicator-dialog-form" title="Diip">
+      <h:form id="dialog-communicator-form">
+        <h:inputText value="Sinuhe epyktiitti" style="width: 260px;" />
+          
+        <!-- Save Action -->
+        
+        <h:commandButton value="Tallenna">         
+          <f:ajax execute="@form" render="@form" onevent="processCompleteEvent">
+          </f:ajax>
+        </h:commandButton>
+        
+        <input type="button" onclick="$('#tt-menu-communicator-dialog-form').dialog('close');" value="Sulje" />
+      </h:form>
+    </div>
+
+   
+</ui:composition>
