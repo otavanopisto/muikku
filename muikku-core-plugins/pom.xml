@@ -18,6 +18,11 @@
         <integrationtest.serverport>8080</integrationtest.serverport>
         <integrationtest.serverhost>localhost</integrationtest.serverhost>
         <integrationtest.contextpath>muikku</integrationtest.contextpath>
+        <integrationtest.datasource.jdbc.muikku.driver>org.h2.Driver</integrationtest.datasource.jdbc.muikku.driver>
+        <integrationtest.datasource.jdbc.muikku.url>jdbc:h2:mem:data;DB_CLOSE_DELAY=-1</integrationtest.datasource.jdbc.muikku.url>
+        <integrationtest.datasource.jdbc.muikku.jndi>java:/jdbc/muikku</integrationtest.datasource.jdbc.muikku.jndi>
+        <integrationtest.datasource.jdbc.muikku.username>sa</integrationtest.datasource.jdbc.muikku.username>
+        <integrationtest.datasource.jdbc.muikku.password>sa</integrationtest.datasource.jdbc.muikku.password>
 	</properties>
 
   <artifactId>core-plugins</artifactId>
@@ -153,6 +158,16 @@
                 <artifactId>h2</artifactId>
               </dependency>
             </dependencies>
+            <systemProperties>
+              <integrationtest.serverhost>${integrationtest.serverhost}</integrationtest.serverhost>
+              <integrationtest.serverport>${integrationtest.serverport}</integrationtest.serverport>
+              <integrationtest.contextpath>${integrationtest.contextpath}</integrationtest.contextpath>
+              <integrationtest.datasource.jdbc.muikku.driver>${integrationtest.datasource.jdbc.muikku.driver}</integrationtest.datasource.jdbc.muikku.driver>
+              <integrationtest.datasource.jdbc.muikku.url>${integrationtest.datasource.jdbc.muikku.url}</integrationtest.datasource.jdbc.muikku.url>
+         	  <integrationtest.datasource.jdbc.muikku.jndi>${integrationtest.datasource.jdbc.muikku.jndi}</integrationtest.datasource.jdbc.muikku.jndi>
+         	  <integrationtest.datasource.jdbc.muikku.username>${integrationtest.datasource.jdbc.muikku.username}</integrationtest.datasource.jdbc.muikku.username>
+              <integrationtest.datasource.jdbc.muikku.password>${integrationtest.datasource.jdbc.muikku.password}</integrationtest.datasource.jdbc.muikku.password>
+            </systemProperties>
           </container>
           <configuration>
             <type>standalone</type>
@@ -172,16 +187,13 @@
                 -Dmuikku-plugin-repositories=../../../muikku-data/muikku-plugin-repositories.properties
                 -Dmuikku-data=../../../muikku-data/muikku-data.xml
                 -Dcom.arjuna.ats.arjuna.allowMultipleLastResources=true
-                -Dintegrationtest.serverhost=${integrationtest.serverhost}
-                -Dintegrationtest.serverport=${integrationtest.serverport}
-                -Dintegrationtest.contextpath=${integrationtest.contextpath}
               </cargo.runtime.args>
               <cargo.datasource.datasource.muikku>
-                cargo.datasource.driver=org.h2.Driver|
-                cargo.datasource.url=jdbc:h2:mem:data;DB_CLOSE_DELAY=-1|
-                cargo.datasource.jndi=jdbc/muikku|
-                cargo.datasource.username=sa|
-                cargo.datasource.password=sa|
+                cargo.datasource.driver=${integrationtest.datasource.jdbc.muikku.driver}|
+                cargo.datasource.url=${integrationtest.datasource.jdbc.muikku.url}|
+                cargo.datasource.jndi=${integrationtest.datasource.jdbc.muikku.jndi}|
+                cargo.datasource.username=${integrationtest.datasource.jdbc.muikku.username}|
+                cargo.datasource.password=${integrationtest.datasource.jdbc.muikku.password}|
                 cargo.datasource.transactionsupport=LOCAL_TRANSACTION
               </cargo.datasource.datasource.muikku>
               <cargo.datasource.datasource.muikku-h2>

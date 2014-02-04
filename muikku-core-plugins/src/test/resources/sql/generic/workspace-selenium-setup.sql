@@ -1,0 +1,1 @@
+insert into WorkspaceEntity (dataSource_id, identifier, urlName, archived) values ((select id from SchoolDataSource where identifier = 'selenium-tests'), 'selenium-test-wp', 'selenium-tests', false);
