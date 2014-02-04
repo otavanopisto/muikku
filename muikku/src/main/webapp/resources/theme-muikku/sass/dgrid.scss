@@ -15,17 +15,18 @@ $gridCols:24;
 /* TODO: better name, needs changes in the java side */
 
 
+
+
 .container_24 {
 	width:$desktop;
 	margin-left:auto;
 	margin-right:auto; 
 }
 
-
 /* Include the pre-created styles: Desktop*/
 
 @include grid_x($desktop, $gridCols);
-@include grid_x_nomargin($desktop, $gridCols);
+@include grid_x_nomargin($desktop, $gridCols); 
 @include grid_x_othermargin($desktop, $gridCols);
 
 
@@ -36,7 +37,6 @@ $gridCols:24;
   .container_24 {
     width:$tablet;
   }
-  
 
 
   @include grid_x($tablet, $gridCols);
@@ -44,10 +44,12 @@ $gridCols:24;
   @include grid_x_othermargin($tablet, $gridCols);
 }
 
+/* Include the pre-created styles: Phone */
+
 @media screen and (max-width: 480px){
 
   .container_24 {
-    width:480px;
+    width:$phone_l;
   }
    
   @include grid_x($phone_l, $gridCols);
@@ -55,12 +57,12 @@ $gridCols:24;
   @include grid_x_othermargin($phone_l, $gridCols);
 }
 
-/* Include the pre-created styles: Phone */
+
 
 @media screen and (max-width: 320px){
 
   .container_24 {
-    width:320px;
+    width:$phone_s;
   }
   
   @include grid_x($phone_s,24);
