@@ -1,1 +1,1 @@
-INSERT INTO `UserGroup` VALUES (1,'Opiskelijat'),(2,'Opettajat');
+INSERT INTO `UserGroup` VALUES (1,'Opiskelijat'),(2,'Opettajat'),(3,'Pikkupoppoo');

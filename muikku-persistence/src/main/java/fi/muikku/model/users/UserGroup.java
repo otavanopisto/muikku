@@ -9,9 +9,10 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import fi.muikku.security.ContextReference;
+
 @Entity
-@Deprecated
-public class UserGroup {
+public class UserGroup implements ContextReference {
 
   public Long getId() {
     return id;

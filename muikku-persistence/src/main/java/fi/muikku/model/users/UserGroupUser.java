@@ -6,10 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
-import fi.muikku.model.users.UserEntity;
-
 @Entity
-@Deprecated
 public class UserGroupUser {
 
   public Long getId() {
@@ -32,6 +29,14 @@ public class UserGroupUser {
     this.user = user;
   }
 
+  public UserGroupRoleEntity getRole() {
+    return role;
+  }
+
+  public void setRole(UserGroupRoleEntity role) {
+    this.role = role;
+  }
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -41,4 +46,7 @@ public class UserGroupUser {
   
   @ManyToOne
   private UserEntity user;
+  
+  @ManyToOne
+  private UserGroupRoleEntity role;
 }

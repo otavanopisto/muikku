@@ -18,6 +18,6 @@ public interface WorkspaceFieldHandler {
 
   public void renderField(Document ownerDocument, Element objectElement, String content, WorkspaceMaterialField workspaceMaterialField, WorkspaceMaterialReply workspaceMaterialReply) throws JsonParseException, JsonMappingException, IOException, MaterialQueryIntegrityExeption;
 
-  public void persistField(WorkspaceMaterialReply reply, WorkspaceMaterialField workspaceMaterialField, Map<String, String> requestParameterMap) throws MaterialQueryIntegrityExeption;
+  public void persistField(WorkspaceMaterialReply reply, WorkspaceMaterialField workspaceMaterialField, Map<String, String[]> requestParameterMap) throws MaterialQueryIntegrityExeption;
   
 }

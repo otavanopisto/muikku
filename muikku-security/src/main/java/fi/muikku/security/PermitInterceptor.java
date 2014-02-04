@@ -74,7 +74,8 @@ public class PermitInterceptor implements Serializable {
     else
       System.out.println("ACCESS DENIED TO: " + ctx.getMethod().getDeclaringClass().getSimpleName() + "." + ctx.getMethod().getName());
     
-    throw new AuthorizationException("Access denied");
+    return null;
+//    throw new AuthorizationException("Access denied");
   }
   
   private ContextReference getPermitContext(InvocationContext ctx) {

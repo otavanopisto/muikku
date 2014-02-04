@@ -10,6 +10,7 @@
     <groupId>fi.muikku</groupId>
     <artifactId>parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
 
   <properties>
@@ -220,8 +221,8 @@
             </goals>
             <inherited>false</inherited>
             <configuration>
-              <sassSourceDirectory>${basedir}/src/main/webapp/resources/sass</sassSourceDirectory>
-              <destination>${project.build.directory}/${project.build.finalName}/resources/css</destination>
+              <sassSourceDirectory>${basedir}/src/main/webapp/resources/theme-muikku/sass</sassSourceDirectory>
+              <destination>${project.build.directory}/${project.build.finalName}/resources/theme-muikku/css</destination>
             </configuration>
           </execution>
         </executions>

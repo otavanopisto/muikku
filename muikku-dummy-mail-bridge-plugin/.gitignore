@@ -1,4 +1,7 @@
+/.project
+/.settings
 /target
-.project
-.classpath
-.settings
+/.classpath
+/.factorypath
+/.DS_Store
+/.externalToolBuilders
