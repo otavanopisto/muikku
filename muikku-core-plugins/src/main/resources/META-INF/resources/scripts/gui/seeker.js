@@ -13,15 +13,6 @@ $.widget("custom.seekerautocomplete", $.ui.autocomplete, {
     });
   },
   _renderItem: function(ul, item) {
-//    var imageUrl = "/muikku/themes/default/gfx/fish.jpg";
-//    if (item.image)
-//      imageUrl = item.image;
-    
-//    var inner_html = 
-//      '<a><div class="seeker_autocomplete_item_container">' + 
-//      '<div class="seeker_autocomplete_item_image"><img src="' + imageUrl + '"></div>' +
-//      '<div class="seeker_autocomplete_item_label">' + item.label + '</div></div></a>';
-    
     dust.preload(item.template);
 
     var inner_html = undefined;
@@ -53,7 +44,24 @@ $.widget("custom.seekerautocomplete", $.ui.autocomplete, {
 
       widgetElement.find("input[name='seekerInput']").seekerautocomplete({
         source: function (request, response) {
-          response(_this._doSearch(request.term));
+          $.ajax({
+            url : CONTEXTPATH + "/rest/seeker/search",
+            dataType : "json",
+            data : {
+              searchString : request.term
+            },
+            headers: {
+              "Accept-Language": getLocale()
+            },
+            accepts: {
+              'json' : 'application/json'
+            },
+            success : function(data) {
+              response(data);
+            }
+          });
+          
+//          response(_this._doSearch(request.term));
         },
         select: function (event, ui) {
           if (ui.item.link) {
@@ -67,7 +75,8 @@ $.widget("custom.seekerautocomplete", $.ui.autocomplete, {
     },
     deinitialize: function () {
     },
-    _doSearch: function (searchTerm) {
+    _doSearch: function (searchTerm, response) {
+      // TODO: Doesnt work, causes input delays
       var _this = this;
       var users = new Array();
 
