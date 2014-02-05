@@ -427,6 +427,15 @@ div[class*="wi-dock-static-navi"]{
   float: left;
 }
 
+.header-icon-communicator{
+  @include background-image('gfx/icons/32x32/actions/navigate-communicator.png'); 
+	background-size:15px 10px;
+	background-repeat:no-repeat;
+	background-position:10px;
+	padding-left:30px;
+}
+
+
 /* Calendar */
 
 .calendarSettingsWidget {
@@ -436,6 +445,7 @@ div[class*="wi-dock-static-navi"]{
 .calendarSettingsWeekFirstDayContainer {
   padding: 4px;
 }
+
 
 .calendarsVisibleWidget {
   display: inline-block;
@@ -779,6 +789,16 @@ div[class*="wi-dock-static-navi"]{
   height:30px;
 }
 
+.sk-autocomplete-item-container{
+	background-color:#e3e3e3;
+	font-size:1.05em;
+	padding:10px;
+	@include shadow();
+}
+
+.sk-autocomplete-item{
+  margin-left:20px;
+}
 
 #filterSelectList {
 	width:100%;

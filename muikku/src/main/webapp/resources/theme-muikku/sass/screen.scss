@@ -146,6 +146,7 @@ div[class*="dock-navi-tt-container"]{
   position:absolute;
   margin-left:1px;
   margin-top:31px;
+  z-index:100;
 }
 
 div[class*="dock-navi-tt-container"] > div{
