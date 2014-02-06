@@ -29,7 +29,7 @@
     <nekohtml.version>1.9.6.2</nekohtml.version>
     <junit.version>4.10</junit.version>
     <sauce_junit.version>[1.0.0,)</sauce_junit.version>
-    <selenium-java.version>2.25.0</selenium-java.version>
+    <selenium-java.version>2.39.0</selenium-java.version>
   </properties>
 
   <dependencyManagement>
