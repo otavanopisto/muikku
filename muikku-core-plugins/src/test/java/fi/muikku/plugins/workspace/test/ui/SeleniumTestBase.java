@@ -1,11 +1,32 @@
 package fi.muikku.plugins.workspace.test.ui;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.StringTokenizer;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.TestName;
+import org.openqa.selenium.remote.RemoteWebDriver;
+
+import fi.muikku.test.TestSqlFiles;
 
 public class SeleniumTestBase {
+  
+  @Rule
+  public TestName testName; // MUST BE PUBLIC
 
   // Source: http://en.wikipedia.org/wiki/Pangram
   public static final String PANGRAM_ENGLISH = "The quick brown fox jumps over the lazy dog";
@@ -30,26 +51,20 @@ public class SeleniumTestBase {
   // Source: http://fi.wikipedia.org/wiki/Pangrammi#Suomi
   public static final String PANGRAM_FINNISH = "Charles Darwin jammaili Åken hevixylofonilla Qatarin yöpub Zeligissä.";
 
-  private static final String CONTEXTPATH = "/muikku";
-  private static final int PORT = 8080;
   private static final String PROTOCOL = "http";
-  private static final String HOST = "localhost";
   private static final String STUDENT1_USERNAME = "st1@oo.fi";
   private static final String STUDENT1_PASSWORD = "qwe";
   
   protected String getHostname() {
-    // return System.getProperty("integrationtest.serverhost");
-    return HOST;
+    return System.getProperty("integrationtest.serverhost");
   }
   
   protected String getContextPath() {
-    // return "/" + System.getProperty("integrationtest.contextpath");
-    return CONTEXTPATH;
+    return "/" + System.getProperty("integrationtest.contextpath");
   }
   
   protected int getPort() {
-    // return Integer.parseInt(System.getProperty("integrationtest.serverport"), 10);
-    return PORT;
+    return Integer.parseInt(System.getProperty("integrationtest.serverport"), 10);
   }
   
   protected URL getAppUrl(String path) throws MalformedURLException {
@@ -73,4 +88,99 @@ public class SeleniumTestBase {
   protected String getStudent1Password() {
     return STUDENT1_PASSWORD;
   }
+
+  @Before
+  public void setUp() throws Exception {
+    Connection connection = getConnection();
+    try {
+      connection.setAutoCommit(true);
+      
+      String[] files = new String[] {};
+      
+      for (Method method : getClass().getMethods()) {
+        if (method.getName() == testName.getMethodName()) {
+          files = method.getAnnotation(TestSqlFiles.class).value();
+          break;
+        }
+      }
+      
+      for (String file : files) {
+        runSql(connection, "sql/" + file + "-setup.sql");
+      }
+      
+    } finally {
+      connection.close();
+    }
+    
+  }
+
+  @After
+  public void tearDown() throws Exception {
+    driver.quit();
+
+    Connection connection = getConnection();
+    try {
+      connection.setAutoCommit(true);
+      
+      String[] files = new String[] {};
+      
+      for (Method method : getClass().getMethods()) {
+        if (method.getName() == testName.getMethodName()) {
+          files = method.getAnnotation(TestSqlFiles.class).value();
+          break;
+        }
+      }
+      
+      for (String file : files) {
+        runSql(connection, "sql/" + file + "-teardown.sql");
+      }
+      
+    } finally {
+      connection.close();
+    }
+  }
+
+  private Connection getConnection() throws SQLException, ClassNotFoundException {
+    String driver = System.getProperty("integrationtest.datasource.jdbc.muikku.driver");
+    String url = System.getProperty("integrationtest.datasource.jdbc.muikku.url");
+    String username = System.getProperty("integrationtest.datasource.jdbc.muikku.username");
+    String password = System.getProperty("integrationtest.datasource.jdbc.muikku.password");
+    
+    Class.forName(driver);
+    return DriverManager.getConnection(url, username, password);
+  }
+  
+  private void runSql(Connection connection, String file) throws IOException, SQLException {
+    ClassLoader classLoader = getClass().getClassLoader();
+    InputStream sqlStream = classLoader.getResourceAsStream(file);
+    if (sqlStream != null) {
+      try {
+        String sqlString = IOUtils.toString(sqlStream);
+        
+        StringTokenizer sqlTokenizer = new StringTokenizer(sqlString, ";");
+        while (sqlTokenizer.hasMoreTokens()) {
+          String sql = StringUtils.trim(sqlTokenizer.nextToken());
+          if (StringUtils.isNotBlank(sql)) {
+            Statement statement = connection.createStatement();
+            statement.execute(sql);
+          }
+        }
+      } finally {
+        sqlStream.close();
+      }
+    } else {
+      throw new FileNotFoundException(file);
+    }
+  }
+  
+
+  protected void setDriver(RemoteWebDriver driver) {
+    this.driver = driver;
+  }
+
+  protected RemoteWebDriver getDriver() {
+    return driver;
+  }
+  
+  private RemoteWebDriver driver;
 }
