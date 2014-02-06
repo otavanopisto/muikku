@@ -23,6 +23,7 @@ import fi.muikku.plugins.workspace.dao.WorkspaceNodeDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceRootFolderDAO;
 import fi.muikku.plugins.workspace.fieldhandler.WorkspaceChecklistFieldHandler;
 import fi.muikku.plugins.workspace.fieldhandler.WorkspaceConnectFieldHandler;
+import fi.muikku.plugins.workspace.fieldhandler.WorkspaceFileFieldHandler;
 import fi.muikku.plugins.workspace.fieldhandler.WorkspaceMemoFieldHandler;
 import fi.muikku.plugins.workspace.fieldhandler.WorkspaceSelectFieldHandler;
 import fi.muikku.plugins.workspace.fieldhandler.WorkspaceTextFieldHandler;
@@ -98,6 +99,7 @@ public class WorkspacePluginDescriptor implements PluginDescriptor, PersistenceP
       WorkspaceSelectFieldHandler.class,
       WorkspaceConnectFieldHandler.class,
       WorkspaceChecklistFieldHandler.class,
+      WorkspaceFileFieldHandler.class,
       
       /* Listeners */
       
