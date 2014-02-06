@@ -1,0 +1,1 @@
+delete from WorkspaceEntity where dataSource_id = (select id from SchoolDataSource where identifier = 'selenium-tests') and identifier = 'selenium-test-wp';
