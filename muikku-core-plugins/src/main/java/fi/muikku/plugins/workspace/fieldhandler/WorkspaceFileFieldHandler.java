@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.persistence.PersistenceException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.JsonParseException;
@@ -13,13 +14,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import fi.muikku.files.TempFileUtils;
 import fi.muikku.plugins.material.MaterialQueryIntegrityExeption;
+import fi.muikku.plugins.material.MaterialQueryPersistanceExeption;
 import fi.muikku.plugins.material.fieldmeta.FileFieldMeta;
-import fi.muikku.plugins.material.fieldmeta.MemoFieldMeta;
 import fi.muikku.plugins.workspace.WorkspaceMaterialFieldAnswerController;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
-import fi.muikku.plugins.workspace.model.WorkspaceMaterialTextFieldAnswer;
 
 public class WorkspaceFileFieldHandler extends AbstractWorkspaceFieldHandler {
 
@@ -62,10 +63,44 @@ public class WorkspaceFileFieldHandler extends AbstractWorkspaceFieldHandler {
 
   @Override
   public void persistField(WorkspaceMaterialReply reply, WorkspaceMaterialField workspaceMaterialField, Map<String, String[]> requestParameterMap)
-      throws MaterialQueryIntegrityExeption {
-      
-    //TODO add file saving logic here
+      throws MaterialQueryIntegrityExeption, MaterialQueryPersistanceExeption {
     
+    String fieldName = getHtmlFieldName(workspaceMaterialField.getName());
+    Integer fileCount = getRequestParameterMapFirstIntegerValue(requestParameterMap, fieldName + "-file-count");
+    if (fileCount == null) {
+      throw new MaterialQueryPersistanceExeption("Invalid request");
+    }
+    
+    if (fileCount > 0) {
+      // TODO: support for multiple files
+      if (fileCount != 1) {
+        throw new MaterialQueryPersistanceExeption("Field does not allow multiple files");
+      }
+      
+      for (int fileIndex = 0; fileIndex < fileCount; fileIndex++) {
+        String fieldPrefix = fieldName + '.' + fileIndex;
+        
+        String fileId = getRequestParameterMapFirstValue(requestParameterMap, fieldPrefix + "-file-id");
+        String contentType = getRequestParameterMapFirstValue(requestParameterMap, fieldPrefix + "-content-type");
+        String filename = getRequestParameterMapFirstValue(requestParameterMap, fieldPrefix + "-filename");
+        try {
+          byte[] fileData = TempFileUtils.getTempFileData(fileId);
+          if (fileData == null) {
+            throw new PersistenceException("Temp file does not exist");
+          }
+  
+          System.out.println(fileData.length);
+          System.out.println(contentType);
+          System.out.println(filename);
+          
+          TempFileUtils.deleteTempFile(fileId);
+        } catch (IOException e) {
+          throw new PersistenceException("Failed to retrieve file data", e);
+        }
+      }
+    } else {
+
+    }
   }
 
 }
