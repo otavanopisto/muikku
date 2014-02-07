@@ -15,6 +15,7 @@
         autoUpload : true,
         add : $.proxy(this._onFileUploadAdd, this),
         done : $.proxy(this._onFileUploadDone, this),
+        always: $.proxy(this._onFileUploadAlways, this),
         progress : $.proxy(this._onFileUploadProgress, this)
       });
       
@@ -40,6 +41,8 @@
           value : fileId
         }).appendTo(fileElement);
       }
+      
+      this.element.closest('form').submit($.proxy(this._onFormSubmit, this));
 
       this.element.hide();
     },
@@ -124,6 +127,8 @@
     },
 
     _onFileUploadAdd : function(e, data) {
+      this.element.closest('form').find('input[type="submit"]').attr('disabled', 'disabled');
+      
       data.context = this._findFileElementByIndex(this._fileIndex);
       
       if (data.context.length == 0) {
@@ -158,10 +163,18 @@
         this._fileIndex++;
       }
     },
+    
+    _onFileUploadAlways: function () {
+      this.element.closest('form').find('input[type="submit"]').removeAttr('disabled');
+    },
 
     _onFileUploadProgress : function(e, data) {
       var progress = parseInt(data.loaded / data.total * 100, 10);
       this._updateFileProgress(data.context.data('file-index'), progress);
+    },
+    
+    _onFormSubmit: function (event) {
+      this.element.remove();
     },
     
     _destroy : function() {
