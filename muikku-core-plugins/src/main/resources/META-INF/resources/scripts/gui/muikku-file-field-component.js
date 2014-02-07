@@ -23,36 +23,45 @@
         'name' : this._fieldName + '-file-count',
         'value': '0'
       }).insertAfter(this.element);
+      
+      var fileCount = this.element.data('file-count')||0;
+      for (var i = 0; i < fileCount; i++) {
+        var fileElement = this._createFileElement(i);
+        var fileId = this.element.data('file-' + i + '.file-id');
+        
+        this._updateFileMeta(i, fileId, this.element.data('file-' + i + '.filename'), this.element.data('file-' + i + '.content-type'));
+        this._updateFileProgress(i, 100);
+        
+        $('<input>').attr({
+          type : 'hidden',
+          name : this._fieldName + '.' + i + '-original-file-id',
+          value : fileId
+        }).appendTo(fileElement);
+      }
 
       this.element.hide();
     },
-
-    _onFileUploadAdd : function(e, data) {
-      if (!this._multiple) {
-        var existingFile = this.element.parent().find('.muikku-file-input-field-file');
-        data.context = existingFile.length == 1 ? existingFile : null;
-      }
-      
-      if (!data.context) {
-        data.context = $('<div>')
-          .addClass('muikku-file-input-field-file')
-          .append($('<div>')
-            .addClass('muikku-file-input-field-file-progress')
-            .progressbar({
-              value: 0
-            })
-          )
-          .appendTo(this.element.parent());
-      }
-      
-      data.submit();
+    
+    _findFileElementByIndex: function (index) {
+      return this.element.parent().find('.muikku-file-input-field-file[data-file-index="' + index + '"]');
     },
-
-    _onFileUploadDone : function(e, data) {
-      var fieldPrefix = this._fieldName + '.' + this._fileIndex;
-      var fileId = data._response.result.fileId;
-      var fileName = data.files[0].name;
-      var contentType = data.files[0].type;
+    
+    _createFileElement: function (index) {
+      return $('<div>')
+        .addClass('muikku-file-input-field-file')
+        .attr('data-file-index', index)
+        .append($('<div>')
+          .addClass('muikku-file-input-field-file-progress')
+          .progressbar({
+            value: 0
+          })
+        )
+        .appendTo(this.element.parent());
+    },
+    
+    _updateFileMeta: function (fileIndex, fileId, fileName, contentType) {
+      var fileElement = this._findFileElementByIndex(fileIndex);
+      var fieldPrefix = this._fieldName + '.' + fileIndex;
       
       var fileIdElement = this.element.parent().find('input[name="' + fieldPrefix + '-file-id"]');
       if (fileIdElement.length == 0) {
@@ -60,36 +69,58 @@
           type : 'hidden',
           name : fieldPrefix + '-content-type',
           value : contentType
-        }).appendTo(data.context);
+        }).appendTo(fileElement);
   
         $('<input>').attr({
           type : 'hidden',
           name : fieldPrefix + '-filename',
           value : fileName
-        }).appendTo(data.context);
+        }).appendTo(fileElement);
   
         $('<input>').attr({
           type : 'hidden',
           name : fieldPrefix + '-file-id',
-          value : data._response.result.fileId
-        }).appendTo(data.context);
-        
+          value : fileId
+        }).appendTo(fileElement);
+
         this._fileCount.val(parseInt(this._fileCount.val()) + 1);
-        if (this._multiple) {
-          this._fileIndex++;
-        }
       } else {
-        data.context.find('input[name="' + fieldPrefix + '-content-type"]').val(contentType);
-        data.context.find('input[name="' + fieldPrefix + '-filename"]').val(fileName);
-        data.context.find('input[name="' + fieldPrefix + '-file-id"]').val(fileId);
+        fileElement.find('input[name="' + fieldPrefix + '-content-type"]').val(contentType);
+        fileElement.find('input[name="' + fieldPrefix + '-filename"]').val(fileName);
+        fileElement.find('input[name="' + fieldPrefix + '-file-id"]').val(fileId);
+      }
+    },
+    
+    _updateFileProgress: function (index, progress) {
+      this._findFileElementByIndex(index).find('.muikku-file-input-field-file-progress').progressbar("value", progress);
+    },
+
+    _onFileUploadAdd : function(e, data) {
+      data.context = this._findFileElementByIndex(this._fileIndex);
+      
+      if (data.context.length == 0) {
+        data.context = this._createFileElement(this._fileIndex);
+      }
+      
+      data.submit();
+    },
+
+    _onFileUploadDone : function(e, data) {
+      var fileId = data._response.result.fileId;
+      var fileName = data.files[0].name;
+      var contentType = data.files[0].type;
+      this._updateFileMeta(this._fileIndex, fileId, fileName, contentType);
+
+      if (this._multiple) {
+        this._fileIndex++;
       }
     },
 
     _onFileUploadProgress : function(e, data) {
       var progress = parseInt(data.loaded / data.total * 100, 10);
-      data.context.find('.muikku-file-input-field-file-progress').progressbar("value", progress);
+      this._updateFileProgress(data.context.data('file-index'), progress);
     },
-
+    
     _destroy : function() {
 
     }
