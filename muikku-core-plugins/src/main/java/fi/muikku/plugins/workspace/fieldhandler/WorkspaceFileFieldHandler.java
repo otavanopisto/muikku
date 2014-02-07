@@ -1,6 +1,7 @@
 package fi.muikku.plugins.workspace.fieldhandler;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -21,6 +22,7 @@ import fi.muikku.plugins.material.fieldmeta.FileFieldMeta;
 import fi.muikku.plugins.workspace.WorkspaceMaterialFieldAnswerController;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswer;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswerFile;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 
 public class WorkspaceFileFieldHandler extends AbstractWorkspaceFieldHandler {
@@ -38,14 +40,9 @@ public class WorkspaceFileFieldHandler extends AbstractWorkspaceFieldHandler {
       WorkspaceMaterialReply workspaceMaterialReply) throws JsonParseException, JsonMappingException, IOException {
 
     FileFieldMeta fileFieldMeta = (new ObjectMapper()).readValue(content, FileFieldMeta.class);
+    WorkspaceMaterialFileFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialFileFieldAnswerByFieldAndReply(workspaceMaterialField, workspaceMaterialReply);
     
     String parameterName = getHtmlFieldName(workspaceMaterialField.getName());
-    String value = null;
-        
-    /*WorkspaceMaterialTextFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialTextFieldAnswerByFieldAndReply(workspaceMaterialField, workspaceMaterialReply);
-    if (fieldAnswer != null) {
-      value = fieldAnswer.getValue();
-    }*/
     
     Element inputElement = ownerDocument.createElement("input");
     inputElement.setAttribute("type", "file");
@@ -53,10 +50,19 @@ public class WorkspaceFileFieldHandler extends AbstractWorkspaceFieldHandler {
     inputElement.setAttribute("name", parameterName);
     inputElement.setAttribute("placeholder", fileFieldMeta.getHelp());
     inputElement.setAttribute("title", fileFieldMeta.getHint());
-    if (StringUtils.isNotEmpty(value)) {
-      inputElement.setTextContent(value);
-    }
     
+    if (fieldAnswer != null) {
+      List<WorkspaceMaterialFileFieldAnswerFile> answerFiles = workspaceMaterialFieldAnswerController.listWorkspaceMaterialFileFieldAnswerFilesByFieldAnswer(fieldAnswer);
+      inputElement.setAttribute("data-file-count", String.valueOf(answerFiles.size()));
+          
+      for (int i = 0, l = answerFiles.size(); i < l; i++) {
+        WorkspaceMaterialFileFieldAnswerFile answerFile = answerFiles.get(i);
+        inputElement.setAttribute("data-file-" + i + ".file-id", answerFile.getFileId()); 
+        inputElement.setAttribute("data-file-" + i + ".content-type", answerFile.getContentType()); 
+        inputElement.setAttribute("data-file-" + i + ".filename", answerFile.getFileName()); 
+      }
+    }
+
     Node objectParent = objectElement.getParentNode();
     objectParent.insertBefore(inputElement, objectElement);
     objectParent.removeChild(objectElement);
@@ -87,18 +93,37 @@ public class WorkspaceFileFieldHandler extends AbstractWorkspaceFieldHandler {
       for (int fileIndex = 0; fileIndex < fileCount; fileIndex++) {
         String fieldPrefix = fieldName + '.' + fileIndex;
         
+        String originalFileId = getRequestParameterMapFirstValue(requestParameterMap, fieldPrefix + "-original-file-id");
         String fileId = getRequestParameterMapFirstValue(requestParameterMap, fieldPrefix + "-file-id");
         String contentType = getRequestParameterMapFirstValue(requestParameterMap, fieldPrefix + "-content-type");
         String fileName = getRequestParameterMapFirstValue(requestParameterMap, fieldPrefix + "-filename");
+
         try {
-          byte[] fileData = TempFileUtils.getTempFileData(fileId);
-          if (fileData == null) {
-            throw new PersistenceException("Temp file does not exist");
+          if (StringUtils.isNotBlank(fileId)) {
+            if (!StringUtils.equals(originalFileId, fileId)) {
+              byte[] fileData = TempFileUtils.getTempFileData(fileId);
+              if (fileData == null) {
+                throw new PersistenceException("Temp file does not exist");
+              }
+              
+              if (StringUtils.isNotBlank(originalFileId)) {
+                WorkspaceMaterialFileFieldAnswerFile fieldAnswerFile = workspaceMaterialFieldAnswerController.findWorkspaceMaterialFileFieldAnswerFileByFileId(originalFileId);
+                workspaceMaterialFieldAnswerController.updateWorkspaceMaterialFileFieldAnswerFileFileId(fieldAnswerFile, fileId);
+                workspaceMaterialFieldAnswerController.updateWorkspaceMaterialFileFieldAnswerFileContentType(fieldAnswerFile, contentType);
+                workspaceMaterialFieldAnswerController.updateWorkspaceMaterialFileFieldAnswerFileFileName(fieldAnswerFile, fileName);
+                workspaceMaterialFieldAnswerController.updateWorkspaceMaterialFileFieldAnswerFileContent(fieldAnswerFile, fileData);
+              } else {
+                workspaceMaterialFieldAnswerController.createWorkspaceMaterialFileFieldAnswerFile(fieldAnswer, fileData, contentType, fileId, fileName);
+              }
+              
+              TempFileUtils.deleteTempFile(fileId);
+            }
+          } else {
+            if (StringUtils.isNotBlank(originalFileId)) {
+              WorkspaceMaterialFileFieldAnswerFile fieldAnswerFile = workspaceMaterialFieldAnswerController.findWorkspaceMaterialFileFieldAnswerFileByFileId(originalFileId);
+              workspaceMaterialFieldAnswerController.deleteWorkspaceMaterialFileFieldAnswerFile(fieldAnswerFile);
+            }
           }
-          
-          workspaceMaterialFieldAnswerController.createWorkspaceMaterialFileFieldAnswerFile(fieldAnswer, fileData, contentType, fileId, fileName);
-          
-          TempFileUtils.deleteTempFile(fileId);
         } catch (IOException e) {
           throw new PersistenceException("Failed to retrieve file data", e);
         }
