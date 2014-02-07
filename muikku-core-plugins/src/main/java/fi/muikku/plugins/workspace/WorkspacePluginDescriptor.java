@@ -16,6 +16,8 @@ import fi.muikku.plugins.workspace.dao.WorkspaceMaterialChecklistFieldAnswerOpti
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialConnectFieldAnswerDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialFieldDAO;
+import fi.muikku.plugins.workspace.dao.WorkspaceMaterialFileFieldAnswerDAO;
+import fi.muikku.plugins.workspace.dao.WorkspaceMaterialFileFieldAnswerFileDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialReplyDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialSelectFieldAnswerDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialTextFieldAnswerDAO;
@@ -34,6 +36,8 @@ import fi.muikku.plugins.workspace.model.WorkspaceMaterialChecklistFieldAnswerOp
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialConnectFieldAnswer;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialFieldAnswer;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswer;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswerFile;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialSelectFieldAnswer;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialTextFieldAnswer;
@@ -91,6 +95,8 @@ public class WorkspacePluginDescriptor implements PluginDescriptor, PersistenceP
       WorkspaceMaterialFieldDAO.class,
       WorkspaceMaterialChecklistFieldAnswerDAO.class,
       WorkspaceMaterialChecklistFieldAnswerOptionDAO.class,
+      WorkspaceMaterialFileFieldAnswerDAO.class,
+      WorkspaceMaterialFileFieldAnswerFileDAO.class,
       
       /* Field Handlers */
       
@@ -122,7 +128,9 @@ public class WorkspacePluginDescriptor implements PluginDescriptor, PersistenceP
       WorkspaceMaterialConnectFieldAnswer.class,
 			WorkspaceMaterialField.class,
       WorkspaceMaterialChecklistFieldAnswer.class,
-      WorkspaceMaterialChecklistFieldAnswerOption.class
+      WorkspaceMaterialChecklistFieldAnswerOption.class,
+      WorkspaceMaterialFileFieldAnswer.class,
+      WorkspaceMaterialFileFieldAnswerFile.class
 		};
 	}
 
