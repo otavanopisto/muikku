@@ -11,7 +11,9 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.Select;
 
-public class Story21Base extends SeleniumTestBase {
+import fi.muikku.test.TestSqlFiles;
+
+public abstract class Story21Base extends SeleniumTestBase {
 
   private static final String TEST_PAGE = "/workspace/pool/materials.html/selenium/teht/us21";
 
@@ -24,12 +26,11 @@ public class Story21Base extends SeleniumTestBase {
   }
 
   @Test
-  public void testSanity() throws Exception {
-    assertNotNull(driver);
-    assertTrue("Server down", checkServerUp());
-  }
-  
-  @Test
+  @TestSqlFiles({
+    "generic/selenium-school-data-source", 
+    "generic/workspace-selenium",
+    "workspace-material/workspace-material",
+  })
   public void testDropdownSave() throws Exception {
     By dropdownFieldBy = By.cssSelector("#material-form p:nth-child(3) select");
     By saveButtonBy = By.cssSelector("#material-form input[type=\"submit\"]");
@@ -113,6 +114,11 @@ public class Story21Base extends SeleniumTestBase {
   }
   
   @Test
+  @TestSqlFiles({
+    "generic/selenium-school-data-source", 
+    "generic/workspace-selenium",
+    "workspace-material/workspace-material",
+  })
   public void testListSave() throws Exception {
     By listFieldBy = By.cssSelector("#material-form select[size=\"3\"]");
     By saveButtonBy = By.cssSelector("#material-form input[type=\"submit\"]");
@@ -156,11 +162,6 @@ public class Story21Base extends SeleniumTestBase {
     passwordInput.sendKeys(getStudent1Password());
 
     loginButton.click();
-  }
-
-  @After
-  public void tearDown() throws Exception {
-    driver.quit();
   }
 
   private RemoteWebDriver driver;

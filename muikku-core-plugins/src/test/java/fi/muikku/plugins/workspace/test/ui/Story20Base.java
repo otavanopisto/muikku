@@ -9,7 +9,7 @@ import org.openqa.selenium.WebElement;
 
 import fi.muikku.test.TestSqlFiles;
 
-public class Story20Base extends SeleniumTestBase {
+public abstract class Story20Base extends SeleniumTestBase {
 
   private static final String TEST_PAGE = "/workspace/pool/materials.html/selenium/teht/us20";
   
@@ -20,12 +20,11 @@ public class Story20Base extends SeleniumTestBase {
   private static final String MEMOFIELD_COLUMNS = "20";
   private static final String MEMOFIELD_ROWS = "2";
   
-
-
   @Test
   @TestSqlFiles({
     "generic/selenium-school-data-source", 
-    "generic/workspace-selenium"
+    "generic/workspace-selenium",
+    "workspace-material/workspace-material",
   })
   public void testTextFieldAttributes() throws Exception {
     By textInputBy = By.cssSelector("#material-form input[type=\"text\"]");
@@ -42,7 +41,8 @@ public class Story20Base extends SeleniumTestBase {
   @Test
   @TestSqlFiles({
     "generic/selenium-school-data-source", 
-    "generic/workspace-selenium"
+    "generic/workspace-selenium",
+    "workspace-material/workspace-material",
   })
   public void testMemoFieldAttributes() throws Exception {
     By memoFieldBy = By.cssSelector("#material-form textarea");
@@ -60,7 +60,8 @@ public class Story20Base extends SeleniumTestBase {
   @Test
   @TestSqlFiles({
     "generic/selenium-school-data-source", 
-    "generic/workspace-selenium"
+    "generic/workspace-selenium",
+    "workspace-material/workspace-material",
   })
   public void testTextFieldSave() throws Exception {
     By textFieldBy = By.cssSelector("#material-form input[type=\"text\"]");
@@ -121,7 +122,8 @@ public class Story20Base extends SeleniumTestBase {
   @Test
   @TestSqlFiles({
     "generic/selenium-school-data-source", 
-    "generic/workspace-selenium"
+    "generic/workspace-selenium",
+    "workspace-material/workspace-material",
   })
   public void testMemoFieldSave() throws Exception {
     By memoFieldBy = By.cssSelector("#material-form textarea");

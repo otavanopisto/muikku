@@ -1,17 +1,21 @@
 package fi.muikku.plugins.workspace.test.ui;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.StringTokenizer;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -23,11 +27,11 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 
 import fi.muikku.test.TestSqlFiles;
 
-public class SeleniumTestBase {
+public abstract class SeleniumTestBase {
   
   @Rule
-  public TestName testName; // MUST BE PUBLIC
-
+  public TestName testName = new TestName();
+  
   // Source: http://en.wikipedia.org/wiki/Pangram
   public static final String PANGRAM_ENGLISH = "The quick brown fox jumps over the lazy dog";
   public static final String PANGRAM_POLISH = "Mężny bądź, chroń pułk twój i sześć flag";
@@ -71,16 +75,6 @@ public class SeleniumTestBase {
     return new URL(PROTOCOL, getHostname(), getPort(), getContextPath() + path);
   }
  
-  protected boolean checkServerUp() {
-    try {
-      URL indexUrl = getAppUrl("/");
-      HttpURLConnection httpUrlConnection = (HttpURLConnection) indexUrl.openConnection();
-      return httpUrlConnection.getResponseCode() == HttpURLConnection.HTTP_OK;
-    } catch (IOException e) {
-      return false;
-    }
-  }
-  
   protected String getStudent1Username() {
     return STUDENT1_USERNAME;
   }
@@ -90,51 +84,55 @@ public class SeleniumTestBase {
   }
 
   @Before
-  public void setUp() throws Exception {
+  public void baseSetUp() throws Exception {
+    Logger.getLogger(getClass().getCanonicalName()).log(Level.INFO, "Starting setUp.");
     Connection connection = getConnection();
     try {
-      connection.setAutoCommit(true);
-      
       String[] files = new String[] {};
-      
-      for (Method method : getClass().getMethods()) {
-        if (method.getName() == testName.getMethodName()) {
-          files = method.getAnnotation(TestSqlFiles.class).value();
-          break;
-        }
+
+      Method method = getClass().getMethod(testName.getMethodName(), new Class<?>[] {});
+      if (method != null) {
+        files = method.getAnnotation(TestSqlFiles.class).value();
+        Logger.getLogger(getClass().getCanonicalName()).log(Level.INFO, "Processing files: " + files.toString());
       }
       
       for (String file : files) {
         runSql(connection, "sql/" + file + "-setup.sql");
       }
       
+      connection.commit();
+      Logger.getLogger(getClass().getCanonicalName()).log(Level.INFO, "Committed setUp.");
     } finally {
       connection.close();
     }
     
   }
 
+
   @After
-  public void tearDown() throws Exception {
+  public void baseTearDown() throws Exception {
+    Logger.getLogger(getClass().getCanonicalName()).log(Level.INFO, "Starting tearDown.");
     driver.quit();
 
     Connection connection = getConnection();
     try {
-      connection.setAutoCommit(true);
-      
       String[] files = new String[] {};
       
-      for (Method method : getClass().getMethods()) {
-        if (method.getName() == testName.getMethodName()) {
-          files = method.getAnnotation(TestSqlFiles.class).value();
-          break;
-        }
+      Method method = getClass().getMethod(testName.getMethodName(), new Class<?>[] {});
+      if (method != null) {
+        files = method.getAnnotation(TestSqlFiles.class).value();
+        Logger.getLogger(getClass().getCanonicalName()).log(Level.INFO, "Processing files: " + files.toString());
       }
       
-      for (String file : files) {
+      List<String> filesList = Arrays.asList(files);
+      Collections.reverse(filesList);
+      
+      for (String file : filesList) {
         runSql(connection, "sql/" + file + "-teardown.sql");
       }
       
+      connection.commit();
+      Logger.getLogger(getClass().getCanonicalName()).log(Level.INFO, "Committed tearDown.");
     } finally {
       connection.close();
     }
@@ -145,6 +143,13 @@ public class SeleniumTestBase {
     String url = System.getProperty("integrationtest.datasource.jdbc.muikku.url");
     String username = System.getProperty("integrationtest.datasource.jdbc.muikku.username");
     String password = System.getProperty("integrationtest.datasource.jdbc.muikku.password");
+    
+    System.out.println(driver);
+    System.out.println(url);
+    System.out.println(username);
+    System.out.println(password);
+    
+    System.out.println(new File(".").getAbsolutePath());
     
     Class.forName(driver);
     return DriverManager.getConnection(url, username, password);
@@ -157,14 +162,16 @@ public class SeleniumTestBase {
       try {
         String sqlString = IOUtils.toString(sqlStream);
         
-        StringTokenizer sqlTokenizer = new StringTokenizer(sqlString, ";");
-        while (sqlTokenizer.hasMoreTokens()) {
-          String sql = StringUtils.trim(sqlTokenizer.nextToken());
+        String[] sqls = sqlString.split(";(?=([^\']*\'[^\']*\')*[^\']*$)"); // Quote-aware split on ';'
+        for (String sql : sqls) {
+          sql = sql.trim();
           if (StringUtils.isNotBlank(sql)) {
             Statement statement = connection.createStatement();
             statement.execute(sql);
+            Logger.getLogger(getClass().getCanonicalName()).log(Level.INFO, "Executing test SQL: " + sql);
           }
         }
+        
       } finally {
         sqlStream.close();
       }

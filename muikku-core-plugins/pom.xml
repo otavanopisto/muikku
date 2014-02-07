@@ -18,7 +18,7 @@
     <integrationtest.serverhost>localhost</integrationtest.serverhost>
     <integrationtest.contextpath>muikku</integrationtest.contextpath>
     <integrationtest.datasource.jdbc.muikku.driver>org.h2.Driver</integrationtest.datasource.jdbc.muikku.driver>
-    <integrationtest.datasource.jdbc.muikku.url>jdbc:h2:file:../data;AUTO_SERVER=TRUE</integrationtest.datasource.jdbc.muikku.url>
+    <integrationtest.datasource.jdbc.muikku.url>jdbc:h2:file:${project.build.directory}/data;AUTO_SERVER=TRUE</integrationtest.datasource.jdbc.muikku.url>
     <integrationtest.datasource.jdbc.muikku.jndi>java:/jdbc/muikku</integrationtest.datasource.jdbc.muikku.jndi>
     <integrationtest.datasource.jdbc.muikku.username>sa</integrationtest.datasource.jdbc.muikku.username>
     <integrationtest.datasource.jdbc.muikku.password>sa</integrationtest.datasource.jdbc.muikku.password>
@@ -215,6 +215,14 @@
                 cargo.datasource.transactionsupport=LOCAL_TRANSACTION
               </cargo.datasource.datasource.muikku-h2>
             </properties>
+            <xmlReplacements>
+              <xmlReplacement>
+                <file>configuration/standalone.xml</file>
+                <xpathExpression>//deployment-scanner</xpathExpression>
+                <attributeName>deployment-timeout</attributeName>
+                <value>240000</value>
+              </xmlReplacement>
+            </xmlReplacements>
           </configuration>
           <deployables>
             <deployable>
