@@ -28,8 +28,10 @@
       for (var i = 0; i < fileCount; i++) {
         var fileElement = this._createFileElement(i);
         var fileId = this.element.data('file-' + i + '.file-id');
+        var fileName = this.element.data('file-' + i + '.filename');
         
-        this._updateFileMeta(i, fileId, this.element.data('file-' + i + '.filename'), this.element.data('file-' + i + '.content-type'));
+        this._updateFileMeta(i, fileId, fileName, this.element.data('file-' + i + '.content-type'));
+        this._updateFileLabel(i, fileName);
         this._updateFileProgress(i, 100);
         
         $('<input>').attr({
@@ -55,6 +57,9 @@
           .progressbar({
             value: 0
           })
+        )
+        .append($('<label>')
+          .addClass('muikku-file-input-field-file-label')
         )
         .appendTo(this.element.parent());
     },
@@ -94,6 +99,10 @@
     _updateFileProgress: function (index, progress) {
       this._findFileElementByIndex(index).find('.muikku-file-input-field-file-progress').progressbar("value", progress);
     },
+    
+    _updateFileLabel: function (index, text) {
+      this._findFileElementByIndex(index).find('.muikku-file-input-field-file-label').text(text);
+    },
 
     _onFileUploadAdd : function(e, data) {
       data.context = this._findFileElementByIndex(this._fileIndex);
@@ -110,7 +119,8 @@
       var fileName = data.files[0].name;
       var contentType = data.files[0].type;
       this._updateFileMeta(this._fileIndex, fileId, fileName, contentType);
-
+      this._updateFileLabel(this._fileIndex, fileName);
+      
       if (this._multiple) {
         this._fileIndex++;
       }
