@@ -28,13 +28,7 @@ public class TempFileUploadServlet extends HttpServlet {
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     Part file = req.getPart("file");
     
-    String fileId = new StringBuilder()
-      .append(Thread.currentThread().getId())
-      .append('-')
-      .append(System.currentTimeMillis())
-      .toString();
-        
-    File tempFile = File.createTempFile(fileId, ".upload");
+    File tempFile = TempFileUtils.createTempFile();
     FileOutputStream fileOutputStream = new FileOutputStream(tempFile);
     try {
       IOUtils.copy(file.getInputStream(), fileOutputStream);
@@ -44,7 +38,7 @@ public class TempFileUploadServlet extends HttpServlet {
     }
     
     Map<String, String> output = new HashMap<>();
-    output.put("fileId", fileId);
+    output.put("fileId", tempFile.getName());
     
     resp.setContentType("application/json");
     ServletOutputStream servletOutputStream = resp.getOutputStream();
@@ -54,5 +48,5 @@ public class TempFileUploadServlet extends HttpServlet {
       servletOutputStream.flush();
     }
   }
-
+  
 }
