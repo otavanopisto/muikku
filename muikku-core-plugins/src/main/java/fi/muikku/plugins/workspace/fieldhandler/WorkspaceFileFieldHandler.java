@@ -20,6 +20,7 @@ import fi.muikku.plugins.material.MaterialQueryPersistanceExeption;
 import fi.muikku.plugins.material.fieldmeta.FileFieldMeta;
 import fi.muikku.plugins.workspace.WorkspaceMaterialFieldAnswerController;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswer;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 
 public class WorkspaceFileFieldHandler extends AbstractWorkspaceFieldHandler {
@@ -71,33 +72,38 @@ public class WorkspaceFileFieldHandler extends AbstractWorkspaceFieldHandler {
       throw new MaterialQueryPersistanceExeption("Invalid request");
     }
     
+    WorkspaceMaterialFileFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialFileFieldAnswerByFieldAndReply(workspaceMaterialField, reply);
+
     if (fileCount > 0) {
+      if (fieldAnswer == null) {
+        fieldAnswer = workspaceMaterialFieldAnswerController.createWorkspaceMaterialFileFieldAnswer(workspaceMaterialField, reply);
+      }
+      
       // TODO: support for multiple files
       if (fileCount != 1) {
         throw new MaterialQueryPersistanceExeption("Field does not allow multiple files");
-      }
-      
+      } 
+        
       for (int fileIndex = 0; fileIndex < fileCount; fileIndex++) {
         String fieldPrefix = fieldName + '.' + fileIndex;
         
         String fileId = getRequestParameterMapFirstValue(requestParameterMap, fieldPrefix + "-file-id");
         String contentType = getRequestParameterMapFirstValue(requestParameterMap, fieldPrefix + "-content-type");
-        String filename = getRequestParameterMapFirstValue(requestParameterMap, fieldPrefix + "-filename");
+        String fileName = getRequestParameterMapFirstValue(requestParameterMap, fieldPrefix + "-filename");
         try {
           byte[] fileData = TempFileUtils.getTempFileData(fileId);
           if (fileData == null) {
             throw new PersistenceException("Temp file does not exist");
           }
-  
-          System.out.println(fileData.length);
-          System.out.println(contentType);
-          System.out.println(filename);
+          
+          workspaceMaterialFieldAnswerController.createWorkspaceMaterialFileFieldAnswerFile(fieldAnswer, fileData, contentType, fileId, fileName);
           
           TempFileUtils.deleteTempFile(fileId);
         } catch (IOException e) {
           throw new PersistenceException("Failed to retrieve file data", e);
         }
       }
+
     } else {
 
     }
