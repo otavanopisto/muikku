@@ -1,5 +1,3 @@
-
-
 .muikku-file-input-field-file {
   margin-top: 8px;
   margin-bottom: 8px;
@@ -11,6 +9,27 @@
   position: absolute;
   margin-top: -20px;
   margin-left: 10px;
+}
+
+.muikku-file-input-field-file-remove, .muikku-file-input-field-file-restore {
+  display: block;
+  text-decoration: none;
+  position: absolute; 
+  margin-top: -20px;
+  right: 10px;
+}
+
+.muikku-file-input-field-file-remove {
+  color: #f00;
+}
+
+.muikku-file-input-field-file-restore {
+  color: #00f;
+}
+
+
+.muikku-file-input-field-file-removed .muikku-file-input-field-file-label {
+  text-decoration:line-through;
 }
 
 .muikku-connect-field-counterparts,.muikku-connect-field-gap,.muikku-connect-field-terms

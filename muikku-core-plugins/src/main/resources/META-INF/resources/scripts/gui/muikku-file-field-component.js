@@ -49,6 +49,8 @@
     },
     
     _createFileElement: function (index) {
+      // TODO: Localize
+      
       return $('<div>')
         .addClass('muikku-file-input-field-file')
         .attr('data-file-index', index)
@@ -60,6 +62,23 @@
         )
         .append($('<label>')
           .addClass('muikku-file-input-field-file-label')
+        )
+        .append($('<a>')
+          .attr({
+            'href': 'javascript:void(null)'
+          })
+          .html('Remove')
+          .click($.proxy(this._onFileRemoveClick, this))
+          .addClass('muikku-file-input-field-file-remove')
+        )
+        .append($('<a>')
+          .hide()
+          .attr({
+            'href': 'javascript:void(null)'
+          })
+          .html('Restore')
+          .click($.proxy(this._onFileRestoreClick, this))
+          .addClass('muikku-file-input-field-file-restore')
         )
         .appendTo(this.element.parent());
     },
@@ -112,6 +131,20 @@
       }
       
       data.submit();
+    },
+    
+    _onFileRemoveClick: function (event) {
+      var file = $(event.target).closest('.muikku-file-input-field-file');
+      file.addClass('muikku-file-input-field-file-removed');
+      file.find('.muikku-file-input-field-file-remove').hide();
+      file.find('.muikku-file-input-field-file-restore').show();
+    },
+    
+    _onFileRestoreClick: function (event) {
+      var file = $(event.target).closest('.muikku-file-input-field-file');
+      file.removeClass('muikku-file-input-field-file-removed');
+      file.find('.muikku-file-input-field-file-restore').hide();
+      file.find('.muikku-file-input-field-file-remove').show();
     },
 
     _onFileUploadDone : function(e, data) {
