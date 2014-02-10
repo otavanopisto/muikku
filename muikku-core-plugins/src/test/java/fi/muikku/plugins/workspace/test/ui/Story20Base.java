@@ -11,7 +11,7 @@ import fi.muikku.test.TestSqlFiles;
 
 public abstract class Story20Base extends SeleniumTestBase {
 
-  private static final String TEST_PAGE = "/workspace/pool/materials.html/selenium/teht/us20";
+  private static final String TEST_PAGE = "/workspace/selenium-tests/materials.html/selenium/teht/us20";
   
   private static final String TEXTFIELD_HINT_TEXT = "Vihjeteksti";
   private static final String TEXTFIELD_HELP_TEXT = "Ohjeteksti";
