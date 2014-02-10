@@ -11,6 +11,7 @@ import fi.muikku.plugins.material.fieldmeta.ChecklistFieldOptionMeta;
 import fi.muikku.plugins.material.fieldmeta.ConnectFieldMeta;
 import fi.muikku.plugins.material.fieldmeta.ConnectFieldOptionMeta;
 import fi.muikku.plugins.material.fieldmeta.ConnectFieldConnectionMeta;
+import fi.muikku.plugins.material.fieldmeta.FileFieldMeta;
 import fi.muikku.plugins.material.fieldmeta.MemoFieldMeta;
 import fi.muikku.plugins.material.fieldmeta.SelectFieldOptionMeta;
 import fi.muikku.plugins.material.fieldmeta.SelectFieldMeta;
@@ -89,4 +90,9 @@ public class FieldTranslator {
     
     return new ConnectFieldMeta(name, connectFieldOptionMetas, counterparts, connectFieldConnectionMetas);
   }
+  
+  public FileFieldMeta translateFileField(String name, String help, String hint) {
+    return new FileFieldMeta(name, help, hint);
+  }
+  
 }
