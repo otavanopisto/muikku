@@ -44,7 +44,9 @@
       
       this.element.closest('form').submit($.proxy(this._onFormSubmit, this));
 
-      this.element.hide();
+      this.element
+        .attr("disabled", "disabled")
+        .hide();
     },
     
     _findFileElementByIndex: function (index) {
@@ -174,7 +176,12 @@
     },
     
     _onFormSubmit: function (event) {
-      this.element.remove();
+      this._uploader.remove();
+      this.element.closest('form').find('.muikku-file-input-field-file-removed').each($.proxy(function (index, fileElement) {
+        var fileIndex = $(fileElement).data('file-index');
+        var fieldPrefix = this._fieldName + '.' + fileIndex;
+        $(fileElement).find('input[name="' + fieldPrefix + '-file-id"]').val('');
+      }, this));
     },
     
     _destroy : function() {
