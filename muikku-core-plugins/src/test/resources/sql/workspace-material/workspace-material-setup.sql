@@ -135,7 +135,7 @@ INSERT INTO queryselectfieldoption VALUES (10001,'1','Valinta 1',10003),
     (10010,'1','Valinta 1',10006),
     (10011,'2','Valinta 2',10006),
     (10012,'3','Valinta 3',10006);
-INSERT INTO querytextfield VALUES (10001);
+INSERT INTO querytextfield VALUES (10001), (10002);
 INSERT INTO workspacefolder VALUES ('selenium',10032),
     ('teht',10033);
 INSERT INTO workspacematerial VALUES (10034,10002),
