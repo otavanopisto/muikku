@@ -7,10 +7,14 @@
       this._multiple = this.element.attr("multiple") == 'multiple';
       this._fileIndex = 0;
       
+      var uploaderContainer = $('<div>')
+        .addClass('muikku-file-input-field-file-uploader-container')
+        .insertAfter(this.element);
+      
       this._uploader = $('<input>').attr({
         'type' : 'file',
         'name' : 'file'
-      }).insertAfter(this.element).fileupload({
+      }).appendTo(uploaderContainer).fileupload({
         url : CONTEXTPATH + '/tempFileUploadServlet',
         autoUpload : true,
         add : $.proxy(this._onFileUploadAdd, this),
@@ -18,6 +22,9 @@
         always: $.proxy(this._onFileUploadAlways, this),
         progress : $.proxy(this._onFileUploadProgress, this)
       });
+      
+      // TODO: Localize
+      $('<span>').html('Add files by clicking here or by dragging files into this box').appendTo(uploaderContainer);
       
       this._fileCount = $('<input>').attr({
         'type' : 'hidden',

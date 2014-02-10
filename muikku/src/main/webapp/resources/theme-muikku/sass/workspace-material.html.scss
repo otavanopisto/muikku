@@ -27,6 +27,27 @@
   color: #00f;
 }
 
+.muikku-file-input-field-file-uploader-container {
+  border: 1px dotted #000;
+  position: relative;
+  padding: 20px;
+}
+
+.muikku-file-input-field-file-uploader-container input[type="file"] {
+  width: 100%;
+  opacity: 0;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  cursor: pointer;
+}
+
+.muikku-file-input-field-file-uploader-container span {
+  text-align: center;  
+  display: block;
+}
 
 .muikku-file-input-field-file-removed .muikku-file-input-field-file-label {
   text-decoration:line-through;
