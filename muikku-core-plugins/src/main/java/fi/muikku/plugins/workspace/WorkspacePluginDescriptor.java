@@ -1,12 +1,19 @@
 package fi.muikku.plugins.workspace;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.ApplicationScoped;
 
+import org.apache.commons.lang3.LocaleUtils;
+
+import fi.muikku.i18n.LocaleBundle;
+import fi.muikku.i18n.LocaleLocation;
+import fi.muikku.plugin.LocalizedPluginDescriptor;
 import fi.muikku.plugin.PersistencePluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
 import fi.muikku.plugin.RESTPluginDescriptor;
@@ -47,7 +54,7 @@ import fi.muikku.plugins.workspace.rest.WorkspaceRESTService;
 
 @ApplicationScoped
 @Stateful
-public class WorkspacePluginDescriptor implements PluginDescriptor, PersistencePluginDescriptor, RESTPluginDescriptor {
+public class WorkspacePluginDescriptor implements PluginDescriptor, PersistencePluginDescriptor, RESTPluginDescriptor, LocalizedPluginDescriptor {
 	
 	@Override
 	public String getName() {
@@ -139,6 +146,14 @@ public class WorkspacePluginDescriptor implements PluginDescriptor, PersistenceP
     return new Class<?>[] {
       WorkspaceRESTService.class  
     };
+  }
+  
+  @Override
+  public List<LocaleBundle> getLocaleBundles() {
+    List<LocaleBundle> bundles = new ArrayList<LocaleBundle>();
+    bundles.add(new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.workspace.WorkspaceJsPluginMessages", LocaleUtils.toLocale("en"))));
+    bundles.add(new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.workspace.WorkspaceJsPluginMessages", LocaleUtils.toLocale("fi"))));
+    return bundles;
   }
 
 }

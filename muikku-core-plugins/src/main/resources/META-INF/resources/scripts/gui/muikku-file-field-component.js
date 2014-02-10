@@ -23,8 +23,7 @@
         progress : $.proxy(this._onFileUploadProgress, this)
       });
       
-      // TODO: Localize
-      $('<span>').html('Add files by clicking here or by dragging files into this box').appendTo(uploaderContainer);
+      $('<span>').html(getLocaleText('plugin.workspace.fileField.fieldHint')).appendTo(uploaderContainer);
       
       this._fileCount = $('<input>').attr({
         'type' : 'hidden',
@@ -61,8 +60,6 @@
     },
     
     _createFileElement: function (index) {
-      // TODO: Localize
-      
       return $('<div>')
         .addClass('muikku-file-input-field-file')
         .attr('data-file-index', index)
@@ -79,7 +76,7 @@
           .attr({
             'href': 'javascript:void(null)'
           })
-          .html('Remove')
+          .html(getLocaleText('plugin.workspace.fileField.removeLink'))
           .click($.proxy(this._onFileRemoveClick, this))
           .addClass('muikku-file-input-field-file-remove')
         )
@@ -88,7 +85,7 @@
           .attr({
             'href': 'javascript:void(null)'
           })
-          .html('Restore')
+          .html(getLocaleText('plugin.workspace.fileField.restoreLink'))
           .click($.proxy(this._onFileRestoreClick, this))
           .addClass('muikku-file-input-field-file-restore')
         )
