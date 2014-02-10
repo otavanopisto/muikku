@@ -5,42 +5,48 @@ To be used through SASS's extend feature with CSS's selectors.
   */
 @import "_base.scss"; 
 
-.co-input-textfield {
+.co-input-textfield,
+.co-textarea {
   @include border(1px,#ededed);   
   color:#606060;
   font-weight:bold;
   background-color:#fff; 
 }
 
-.co-input-textfield-hover {
+.co-input-textfield-hover,
+.co-textarea-hover {
   @include border(1px,#ededed);   
   color:#000;
   font-weight:bold;
   background-color:#fff; 
 }
 
-.co-input-textfield-focus {
+.co-input-textfield-focus,
+.co-textarea-focus {
   @include border(1px,$header); 
   color:#000;
   font-weight:bold;
   background-color:#fff; 
 }
 
-.co-input-textfield-blur {
+.co-input-textfield-blur,
+.co-textarea-blur {
   @include border(1px,#dadada);
   color:#606060;
   font-weight:bold;
   background-color:#fff; 
 }
 
-.co-input-textfield-blur-hover {
+.co-input-textfield-blur-hover,
+.co-textarea-blur-hover {
 	@include border(1px,#ededed);
   color:#000;
   font-weight:bold;
   background-color:#fff; 
 }
 
-.co-input-textfield-blur-focus {
+.co-input-textfield-blur-focus,
+.co-textarea-blur-focus {
   @include border(1px,$header); 
   color:#000;
   font-weight:bold;

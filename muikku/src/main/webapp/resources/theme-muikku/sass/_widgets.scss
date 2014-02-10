@@ -512,7 +512,7 @@ div[class*="wi-dock-static-navi"]{
   position:absolute;
   margin-top:110px;
   margin-left:51px;  
-  font-size:1.3em;
+  font-size:1em;
   @include gradient-top-bottom-four($contInteractGr...);
   height: 20px;
   width : 50px;
@@ -586,7 +586,7 @@ div[class*="wi-dock-static-navi"]{
 }
 
 .wi-navigation-textlinks span {
-  font-size: 2em;
+  font-size: 1.425em;
 }
 
 .wi-navigation-textlinks span:after {
