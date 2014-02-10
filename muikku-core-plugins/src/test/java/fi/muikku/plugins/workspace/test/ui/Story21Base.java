@@ -16,15 +16,6 @@ import fi.muikku.test.TestSqlFiles;
 public abstract class Story21Base extends SeleniumTestBase {
 
   private static final String TEST_PAGE = "/workspace/pool/materials.html/selenium/teht/us21";
-
-  protected void setDriver(RemoteWebDriver driver) {
-    this.driver = driver;
-  }
-
-  protected RemoteWebDriver getDriver() {
-    return driver;
-  }
-
   @Test
   @TestSqlFiles({
     "generic/selenium-school-data-source", 
@@ -35,82 +26,82 @@ public abstract class Story21Base extends SeleniumTestBase {
     By dropdownFieldBy = By.cssSelector("#material-form p:nth-child(3) select");
     By saveButtonBy = By.cssSelector("#material-form input[type=\"submit\"]");
 
-    driver.get(getAppUrl(TEST_PAGE).toString());
+    getDriver().get(getAppUrl(TEST_PAGE).toString());
     loginStudent1();
     
     // Test saving
     
-    new Select(driver.findElement(dropdownFieldBy)).selectByValue("2");
-    driver.findElement(saveButtonBy).click();
-    assertEquals("2", driver.findElement(dropdownFieldBy).getAttribute("value"));
+    new Select(getDriver().findElement(dropdownFieldBy)).selectByValue("2");
+    getDriver().findElement(saveButtonBy).click();
+    assertEquals("2", getDriver().findElement(dropdownFieldBy).getAttribute("value"));
     
-    driver.get(getAppUrl(TEST_PAGE).toString());
-    assertEquals("2", driver.findElement(dropdownFieldBy).getAttribute("value"));
+    getDriver().get(getAppUrl(TEST_PAGE).toString());
+    assertEquals("2", getDriver().findElement(dropdownFieldBy).getAttribute("value"));
 
     // Test changing
     
-    new Select(driver.findElement(dropdownFieldBy)).selectByValue("3");
-    driver.findElement(saveButtonBy).click();
-    assertEquals("3", driver.findElement(dropdownFieldBy).getAttribute("value"));
+    new Select(getDriver().findElement(dropdownFieldBy)).selectByValue("3");
+    getDriver().findElement(saveButtonBy).click();
+    assertEquals("3", getDriver().findElement(dropdownFieldBy).getAttribute("value"));
     
-    driver.get(getAppUrl(TEST_PAGE).toString());
-    assertEquals("3", driver.findElement(dropdownFieldBy).getAttribute("value"));
+    getDriver().get(getAppUrl(TEST_PAGE).toString());
+    assertEquals("3", getDriver().findElement(dropdownFieldBy).getAttribute("value"));
   }
 
   @Test
   public void testRadioHorizontalSave() throws Exception {
     By saveButtonBy = By.cssSelector("#material-form input[type=\"submit\"]");
 
-    driver.get(getAppUrl(TEST_PAGE).toString());
+    getDriver().get(getAppUrl(TEST_PAGE).toString());
     loginStudent1();
     
     // Test saving
 
-    driver.findElement(By.cssSelector("#material-form p:nth-child(5) input[value=\"2\"]")).click();
+    getDriver().findElement(By.cssSelector("#material-form p:nth-child(5) input[value=\"2\"]")).click();
+   
+    getDriver().findElement(saveButtonBy).click();
+    assertEquals("2", getDriver().findElement(By.cssSelector("#material-form p:nth-child(5) input[type=\"radio\"]:checked")).getAttribute("value"));
     
-    driver.findElement(saveButtonBy).click();
-    assertEquals("2", driver.findElement(By.cssSelector("#material-form p:nth-child(5) input[type=\"radio\"]:checked")).getAttribute("value"));
-    
-    driver.get(getAppUrl(TEST_PAGE).toString());
-    assertEquals("2", driver.findElement(By.cssSelector("#material-form p:nth-child(5) input[type=\"radio\"]:checked")).getAttribute("value"));
+    getDriver().get(getAppUrl(TEST_PAGE).toString());
+    assertEquals("2", getDriver().findElement(By.cssSelector("#material-form p:nth-child(5) input[type=\"radio\"]:checked")).getAttribute("value"));
     
     // Test changing
 
-    driver.findElement(By.cssSelector("#material-form p:nth-child(5) input[value=\"3\"]")).click();
+    getDriver().findElement(By.cssSelector("#material-form p:nth-child(5) input[value=\"3\"]")).click();
     
-    driver.findElement(saveButtonBy).click();
-    assertEquals("3", driver.findElement(By.cssSelector("#material-form p:nth-child(5) input[type=\"radio\"]:checked")).getAttribute("value"));
+    getDriver().findElement(saveButtonBy).click();
+    assertEquals("3", getDriver().findElement(By.cssSelector("#material-form p:nth-child(5) input[type=\"radio\"]:checked")).getAttribute("value"));
     
-    driver.get(getAppUrl(TEST_PAGE).toString());
-    assertEquals("3", driver.findElement(By.cssSelector("#material-form p:nth-child(5) input[type=\"radio\"]:checked")).getAttribute("value"));
+    getDriver().get(getAppUrl(TEST_PAGE).toString());
+    assertEquals("3", getDriver().findElement(By.cssSelector("#material-form p:nth-child(5) input[type=\"radio\"]:checked")).getAttribute("value"));
   }
 
   @Test
   public void testRadioVerticalSave() throws Exception {
     By saveButtonBy = By.cssSelector("#material-form input[type=\"submit\"]");
 
-    driver.get(getAppUrl(TEST_PAGE).toString());
+    getDriver().get(getAppUrl(TEST_PAGE).toString());
     loginStudent1();
     
     // Test saving
 
-    driver.findElement(By.cssSelector("#material-form p:nth-child(7) input[value=\"2\"]")).click();
+    getDriver().findElement(By.cssSelector("#material-form p:nth-child(7) input[value=\"2\"]")).click();
     
-    driver.findElement(saveButtonBy).click();
-    assertEquals("2", driver.findElement(By.cssSelector("#material-form p:nth-child(7) input[type=\"radio\"]:checked")).getAttribute("value"));
+    getDriver().findElement(saveButtonBy).click();
+    assertEquals("2", getDriver().findElement(By.cssSelector("#material-form p:nth-child(7) input[type=\"radio\"]:checked")).getAttribute("value"));
     
-    driver.get(getAppUrl(TEST_PAGE).toString());
-    assertEquals("2", driver.findElement(By.cssSelector("#material-form p:nth-child(7) input[type=\"radio\"]:checked")).getAttribute("value"));
+    getDriver().get(getAppUrl(TEST_PAGE).toString());
+    assertEquals("2", getDriver().findElement(By.cssSelector("#material-form p:nth-child(7) input[type=\"radio\"]:checked")).getAttribute("value"));
     
     // Test changing
 
-    driver.findElement(By.cssSelector("#material-form p:nth-child(7) input[value=\"3\"]")).click();
+    getDriver().findElement(By.cssSelector("#material-form p:nth-child(7) input[value=\"3\"]")).click();
     
-    driver.findElement(saveButtonBy).click();
-    assertEquals("3", driver.findElement(By.cssSelector("#material-form p:nth-child(7) input[type=\"radio\"]:checked")).getAttribute("value"));
+    getDriver().findElement(saveButtonBy).click();
+    assertEquals("3", getDriver().findElement(By.cssSelector("#material-form p:nth-child(7) input[type=\"radio\"]:checked")).getAttribute("value"));
     
-    driver.get(getAppUrl(TEST_PAGE).toString());
-    assertEquals("3", driver.findElement(By.cssSelector("#material-form p:nth-child(7) input[type=\"radio\"]:checked")).getAttribute("value"));
+    getDriver().get(getAppUrl(TEST_PAGE).toString());
+    assertEquals("3", getDriver().findElement(By.cssSelector("#material-form p:nth-child(7) input[type=\"radio\"]:checked")).getAttribute("value"));
   }
   
   @Test
@@ -123,36 +114,36 @@ public abstract class Story21Base extends SeleniumTestBase {
     By listFieldBy = By.cssSelector("#material-form select[size=\"3\"]");
     By saveButtonBy = By.cssSelector("#material-form input[type=\"submit\"]");
 
-    driver.get(getAppUrl(TEST_PAGE).toString());
+    getDriver().get(getAppUrl(TEST_PAGE).toString());
     loginStudent1();
     
     // Test saving
     
-    new Select(driver.findElement(listFieldBy)).selectByValue("2");
-    driver.findElement(saveButtonBy).click();
-    assertEquals("2", driver.findElement(listFieldBy).getAttribute("value"));
+    new Select(getDriver().findElement(listFieldBy)).selectByValue("2");
+    getDriver().findElement(saveButtonBy).click();
+    assertEquals("2", getDriver().findElement(listFieldBy).getAttribute("value"));
     
-    driver.get(getAppUrl(TEST_PAGE).toString());
-    assertEquals("2", driver.findElement(listFieldBy).getAttribute("value"));
+    getDriver().get(getAppUrl(TEST_PAGE).toString());
+    assertEquals("2", getDriver().findElement(listFieldBy).getAttribute("value"));
 
     // Test changing
     
-    new Select(driver.findElement(listFieldBy)).selectByValue("3");
-    driver.findElement(saveButtonBy).click();
-    assertEquals("3", driver.findElement(listFieldBy).getAttribute("value"));
+    new Select(getDriver().findElement(listFieldBy)).selectByValue("3");
+    getDriver().findElement(saveButtonBy).click();
+    assertEquals("3", getDriver().findElement(listFieldBy).getAttribute("value"));
     
-    driver.get(getAppUrl(TEST_PAGE).toString());
-    assertEquals("3", driver.findElement(listFieldBy).getAttribute("value"));
+    getDriver().get(getAppUrl(TEST_PAGE).toString());
+    assertEquals("3", getDriver().findElement(listFieldBy).getAttribute("value"));
   }
   
   private void loginStudent1() throws InterruptedException {
-    WebElement usernameInput = driver.findElement(By.cssSelector(".loginWidget input[type=\"text\"]"));
+    WebElement usernameInput = getDriver().findElement(By.cssSelector(".loginWidget input[type=\"text\"]"));
     assertNotNull(usernameInput);
 
-    WebElement passwordInput = driver.findElement(By.cssSelector(".loginWidget input[type=\"password\"]"));
+    WebElement passwordInput = getDriver().findElement(By.cssSelector(".loginWidget input[type=\"password\"]"));
     assertNotNull(passwordInput);
 
-    WebElement loginButton = driver.findElement(By.cssSelector(".loginWidget input[type=\"submit\"]"));
+    WebElement loginButton = getDriver().findElement(By.cssSelector(".loginWidget input[type=\"submit\"]"));
     assertNotNull(loginButton);
 
     usernameInput.click();
@@ -163,6 +154,4 @@ public abstract class Story21Base extends SeleniumTestBase {
 
     loginButton.click();
   }
-
-  private RemoteWebDriver driver;
 }

@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -161,6 +162,9 @@ public abstract class SeleniumTestBase {
     if (sqlStream != null) {
       try {
         String sqlString = IOUtils.toString(sqlStream);
+        
+        Pattern commentPattern = Pattern.compile("--.*$", Pattern.MULTILINE);
+        sqlString = commentPattern.matcher(sqlString).replaceAll("");
         
         String[] sqls = sqlString.split(";(?=([^\']*\'[^\']*\')*[^\']*$)"); // Quote-aware split on ';'
         for (String sql : sqls) {
