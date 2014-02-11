@@ -299,14 +299,56 @@ public class WorkspaceRESTService extends PluginRESTService {
     Material material = materialController.findMaterialById(workspaceMaterial.getMaterial_id());
     if (material == null) {
       return Response.status(Status.NOT_FOUND).entity("material not found").build();
-    }
-    
-    ;
+    };
     
     return Response.ok(
         tranquilityBuilderFactory.createBuilder()
           .createTranquility()
           .entity(workspaceMaterialController.createWorkspaceMaterial(parent, material, workspaceMaterial.getUrlName()))
+    ).build();
+  }
+  
+  //
+  // Nodes
+  // 
+  
+  @GET
+  @Path ("/nodes/")
+  public Response listWorkspaceMaterials(@QueryParam ("parentId") Long parentId, @QueryParam ("workspaceEntityId") Long workspaceEntityId) {
+    if (parentId == null && workspaceEntityId == null) {
+      return Response.status(Status.BAD_REQUEST).entity("either parentId or workspaceEntityId must be specified when listing workspace nodes").build();
+    }
+
+    if (parentId != null && workspaceEntityId != null) {
+      return Response.status(Status.BAD_REQUEST).entity("parentId and workspaceEntityId can not both be specified when listing workspace nodes").build();
+    }
+
+    WorkspaceNode parent = null;
+    if (parentId != null) {
+      parent = workspaceMaterialController.findWorkspaceNodeById(parentId);
+      if (parent == null) {
+        return Response.status(Status.NOT_FOUND).entity("parent not found").build();
+      }
+    } else if (workspaceEntityId != null) {
+      WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+      if (workspaceEntity == null) {
+        return Response.status(Status.NOT_FOUND).entity("parent not found").build();
+      }
+      
+      parent = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
+      if (parent == null) {
+        return Response.status(Status.NOT_FOUND).entity("parent not found").build();
+      }
+    }
+    
+    if (parent == null) {
+      return Response.status(Status.NOT_FOUND).entity("parent not found").build();
+    }
+    
+    return Response.ok(
+      tranquilityBuilderFactory.createBuilder()
+        .createTranquility()
+        .entities(workspaceMaterialController.listWorkspaceNodesByParent(parent))
     ).build();
   }
 
