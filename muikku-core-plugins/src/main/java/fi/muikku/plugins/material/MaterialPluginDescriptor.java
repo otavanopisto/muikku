@@ -5,6 +5,7 @@ import java.util.List;
 
 import fi.muikku.plugin.PersistencePluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
+import fi.muikku.plugin.RESTPluginDescriptor;
 import fi.muikku.plugins.material.dao.BinaryMaterialDAO;
 import fi.muikku.plugins.material.dao.HtmlMaterialDAO;
 import fi.muikku.plugins.material.dao.MaterialDAO;
@@ -38,8 +39,9 @@ import fi.muikku.plugins.material.model.QueryFileField;
 import fi.muikku.plugins.material.model.QuerySelectField;
 import fi.muikku.plugins.material.model.QuerySelectFieldOption;
 import fi.muikku.plugins.material.model.QueryTextField;
+import fi.muikku.plugins.material.rest.MaterialRESTService;
 
-public class MaterialPluginDescriptor implements PluginDescriptor, PersistencePluginDescriptor {
+public class MaterialPluginDescriptor implements PluginDescriptor, PersistencePluginDescriptor, RESTPluginDescriptor {
 
   @Override
   public String getName() {
@@ -97,6 +99,13 @@ public class MaterialPluginDescriptor implements PluginDescriptor, PersistencePl
       HtmlMaterialCreateListener.class,
       HtmlMaterialEmbedListeners.class
     });
+  }
+  
+  @Override
+  public Class<?>[] getRESTServices() {
+    return new Class<?>[] {
+      MaterialRESTService.class
+    };
   }
 
   @Override
