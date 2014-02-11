@@ -19,6 +19,7 @@ import fi.muikku.plugins.dnm.parser.DeusNexException;
 import fi.muikku.plugins.dnm.parser.DeusNexInternalException;
 import fi.muikku.plugins.dnm.parser.DeusNexSyntaxException;
 import fi.muikku.plugins.dnm.parser.DeusNexXmlUtils;
+import fi.muikku.plugins.material.fieldmeta.ChecklistFieldOptionMeta;
 
 public class DeusNexContentParser {
 	
@@ -88,7 +89,13 @@ public class DeusNexContentParser {
 					Node replacement = handleConnectField(ownerDocument, element);
 					replaceElement(ownerDocument, element, replacement);
 				}
-				
+				//ixf:uploadfilefield
+        NodeList fileFieldNodeList = localeDocument.getElementsByTagName("ixf:uploadfilefield");
+        for (int i = fileFieldNodeList.getLength() - 1; i >= 0; i--) {
+          Element element = (Element) fileFieldNodeList.item(i);
+          Node replacement = handleFileField(ownerDocument, element);
+          replaceElement(ownerDocument, element, replacement);
+        }
 				
 				Element htmlElement = ownerDocument.createElement("html"); 
 				Element bodyElement = ownerDocument.createElement("body");
@@ -204,26 +211,54 @@ public class DeusNexContentParser {
 	private Node handleOptionListField(Document ownerDocument, Element fieldElement) throws XPathExpressionException, DeusNexException {
 		String paramName = DeusNexXmlUtils.getChildValue(fieldElement, "paramname");
 		String type = DeusNexXmlUtils.getChildValue(fieldElement, "type");
-		Integer size = DeusNexXmlUtils.getChildValueInteger(fieldElement, "fieldsvisible");
-		
-		List<OptionListOption> options = new ArrayList<>();
-		
-		List<Element> optionElements = DeusNexXmlUtils.getElementsByXPath(fieldElement, "option");
-		for (Element optionElement : optionElements) {
-			String optionName = optionElement.getAttribute("name");
-			String pointsStr = optionElement.getAttribute("points");
-			Double optionPoints = StringUtils.isNotBlank(pointsStr) ? NumberUtils.createDouble(pointsStr) : null;
-			String optionText = optionElement.getTextContent();
-			
-			options.add(new OptionListOption(optionName, optionPoints, optionText));
+		if ("checklist".equals(type)) {
+		  return handleCheckListField(ownerDocument, fieldElement, paramName);
+		} else {
+  		return handleSingleOptionListField(ownerDocument, fieldElement, paramName, type);
 		}
-		
-		if (fieldElementHandler != null) {
-			return fieldElementHandler.handleOptionList(ownerDocument, paramName, type, options, size, helpOf(fieldElement), hintOf(fieldElement));
-		}
-		
-		return null;
 	}
+
+  private Node handleCheckListField(Document ownerDocument, Element fieldElement, String paramName) throws XPathExpressionException {
+    List<ChecklistFieldOptionMeta> options = new ArrayList<>();
+    
+    List<Element> optionElements = DeusNexXmlUtils.getElementsByXPath(fieldElement, "option");
+    for (Element optionElement : optionElements) {
+      String optionName = optionElement.getAttribute("name");
+      String pointsStr = optionElement.getAttribute("points");
+      Double optionPoints = StringUtils.isNotBlank(pointsStr) ? NumberUtils.createDouble(pointsStr) : null;
+      String optionText = optionElement.getTextContent();
+      
+      options.add(new ChecklistFieldOptionMeta(optionName, optionPoints, optionText));
+    }
+    
+    if (fieldElementHandler != null) {
+      return fieldElementHandler.handleChecklistField(ownerDocument, paramName, options, helpOf(fieldElement), hintOf(fieldElement));
+    }
+    
+    return null;
+  }
+
+  private Node handleSingleOptionListField(Document ownerDocument, Element fieldElement, String paramName, String type) throws XPathExpressionException, DeusNexException {
+    Integer size = DeusNexXmlUtils.getChildValueInteger(fieldElement, "fieldsvisible");
+    
+    List<OptionListOption> options = new ArrayList<>();
+    
+    List<Element> optionElements = DeusNexXmlUtils.getElementsByXPath(fieldElement, "option");
+    for (Element optionElement : optionElements) {
+    	String optionName = optionElement.getAttribute("name");
+    	String pointsStr = optionElement.getAttribute("points");
+    	Double optionPoints = StringUtils.isNotBlank(pointsStr) ? NumberUtils.createDouble(pointsStr) : null;
+    	String optionText = optionElement.getTextContent();
+    	
+    	options.add(new OptionListOption(optionName, optionPoints, optionText));
+    }
+    
+    if (fieldElementHandler != null) {
+    	return fieldElementHandler.handleOptionList(ownerDocument, paramName, type, options, size, helpOf(fieldElement), hintOf(fieldElement));
+    }
+    
+    return null;
+  }
 
   private String hintOf(Element fieldElement) throws XPathExpressionException {
     List<Element> hintElements = DeusNexXmlUtils.getElementsByXPath(fieldElement,"hint");
@@ -276,6 +311,18 @@ public class DeusNexContentParser {
     return null;
   }
 	
+  private Node handleFileField(Document ownerDocument, Element embeddedItemElement) throws XPathExpressionException, DeusNexException {
+    String paramName = DeusNexXmlUtils.getChildValue(embeddedItemElement, "paramname");
+    String help = DeusNexXmlUtils.getChildValue(embeddedItemElement, "help");
+    String hint = DeusNexXmlUtils.getChildValue(embeddedItemElement, "hint");
+    
+    if (fieldElementHandler != null) {
+      return fieldElementHandler.handleFileField(ownerDocument, paramName, help, hint);
+    }
+    
+    return null;
+  }
+  
 	private Node handleConnectField(Document ownerDocument, Element fieldElement) throws XPathExpressionException, DeusNexException {
 		String paramName = DeusNexXmlUtils.getChildValue(fieldElement, "paramname");
 		

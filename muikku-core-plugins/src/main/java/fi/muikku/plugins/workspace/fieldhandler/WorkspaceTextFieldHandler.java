@@ -62,18 +62,18 @@ public class WorkspaceTextFieldHandler extends AbstractWorkspaceFieldHandler {
   }
 
   @Override
-  public void persistField(WorkspaceMaterialReply reply, WorkspaceMaterialField workspaceMaterialField, Map<String, String> requestParameterMap)
+  public void persistField(WorkspaceMaterialReply reply, WorkspaceMaterialField workspaceMaterialField, Map<String, String[]> requestParameterMap)
       throws MaterialQueryIntegrityExeption {
 
-    String parameterName = getHtmlFieldName(workspaceMaterialField.getName());
-    String value = requestParameterMap.get(parameterName);
+    String parameterName = getHtmlFieldName(workspaceMaterialField.getName());    
+    String parameterValue = getRequestParameterMapFirstValue(requestParameterMap, parameterName);
     
     WorkspaceMaterialTextFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialTextFieldAnswerByFieldAndReply(workspaceMaterialField, reply);
-    if (StringUtils.isNotBlank(value)) {
+    if (StringUtils.isNotBlank(parameterValue)) {
       if (fieldAnswer == null) {
-        fieldAnswer = workspaceMaterialFieldAnswerController.createWorkspaceMaterialTextFieldAnswer(workspaceMaterialField, reply, value);
+        fieldAnswer = workspaceMaterialFieldAnswerController.createWorkspaceMaterialTextFieldAnswer(workspaceMaterialField, reply, parameterValue);
       } else {
-        fieldAnswer = workspaceMaterialFieldAnswerController.updateWorkspaceMaterialTextFieldAnswerValue(fieldAnswer, value);
+        fieldAnswer = workspaceMaterialFieldAnswerController.updateWorkspaceMaterialTextFieldAnswerValue(fieldAnswer, parameterValue);
       }
     } else {
       if (fieldAnswer != null) {

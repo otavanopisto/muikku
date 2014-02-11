@@ -58,6 +58,13 @@
       <groupId>com.ocpsoft</groupId>
       <artifactId>prettyfaces-jsf2</artifactId>
     </dependency>
+    
+    <!-- Commons IO -->
+
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
   </dependencies>
 
   <build>

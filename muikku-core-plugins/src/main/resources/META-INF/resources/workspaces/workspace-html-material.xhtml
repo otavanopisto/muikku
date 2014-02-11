@@ -7,11 +7,22 @@
   template="/workspaces/template.xhtml">
 
   <ui:define name="content.center.widget">
-    <h:outputStylesheet library="css" name="workspace-material.html.css" />
-  
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/workspace-material.html.css" />
+
     <h:outputScript name="scripts/jquery.jsplumb/jquery.jsPlumb-1.5.5-min.js" target="head"/>
     <h:outputScript name="scripts/gui/muikku-connect-field-component.js" target="head"/>
     <h:outputScript name="scripts/gui/workspace-material.js" target="head"/>
+    <h:outputScript name="scripts/jquery.fileupload/load-image.min.js" target="head"/>
+    <h:outputScript name="scripts/jquery.fileupload/canvas-to-blob.min.js" target="head"/>
+    <h:outputScript name="scripts/jquery.fileupload/jquery.iframe-transport.js" target="head"/>
+    <h:outputScript name="scripts/jquery.fileupload/jquery.fileupload.js" target="head"/>
+    <h:outputScript name="scripts/jquery.fileupload/jquery.fileupload-process.js" target="head"/>
+    <h:outputScript name="scripts/jquery.fileupload/jquery.fileupload-image.js" target="head"/>
+	
+	
+	
+
+	<h:outputScript name="scripts/gui/muikku-file-field-component.js" target="head"/>
      
     <h:form id="#{workspaceHtmlMaterialBackingBean.formId}">
         <h:panelGroup styleClass="workspace-html-material-container">

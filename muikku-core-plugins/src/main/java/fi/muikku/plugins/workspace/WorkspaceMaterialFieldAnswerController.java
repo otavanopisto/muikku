@@ -1,15 +1,26 @@
 package fi.muikku.plugins.workspace;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
+import fi.muikku.plugins.material.model.QueryChecklistFieldOption;
 import fi.muikku.plugins.material.model.QueryConnectFieldCounterpart;
 import fi.muikku.plugins.material.model.QueryConnectFieldTerm;
 import fi.muikku.plugins.material.model.QuerySelectFieldOption;
+import fi.muikku.plugins.workspace.dao.WorkspaceMaterialChecklistFieldAnswerDAO;
+import fi.muikku.plugins.workspace.dao.WorkspaceMaterialChecklistFieldAnswerOptionDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialConnectFieldAnswerDAO;
+import fi.muikku.plugins.workspace.dao.WorkspaceMaterialFileFieldAnswerDAO;
+import fi.muikku.plugins.workspace.dao.WorkspaceMaterialFileFieldAnswerFileDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialSelectFieldAnswerDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialTextFieldAnswerDAO;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialChecklistFieldAnswer;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialChecklistFieldAnswerOption;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialConnectFieldAnswer;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswer;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswerFile;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialSelectFieldAnswer;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialTextFieldAnswer;
@@ -24,6 +35,18 @@ public class WorkspaceMaterialFieldAnswerController {
 
   @Inject
   private WorkspaceMaterialConnectFieldAnswerDAO workspaceMaterialConnectFieldAnswerDAO;
+
+  @Inject
+  private WorkspaceMaterialChecklistFieldAnswerDAO workspaceMaterialChecklistFieldAnswerDAO;
+
+  @Inject
+  private WorkspaceMaterialChecklistFieldAnswerOptionDAO workspaceMaterialChecklistFieldAnswerOptionDAO;
+
+  @Inject
+  private WorkspaceMaterialFileFieldAnswerDAO workspaceMaterialFileFieldAnswerDAO;
+
+  @Inject
+  private WorkspaceMaterialFileFieldAnswerFileDAO workspaceMaterialFileFieldAnswerFileDAO;
 
   /* TextField */
 
@@ -68,6 +91,76 @@ public class WorkspaceMaterialFieldAnswerController {
   
   public WorkspaceMaterialConnectFieldAnswer updateWorkspaceMaterialConnectFieldAnswerCounterpart(WorkspaceMaterialConnectFieldAnswer workspaceMaterialConnectFieldAnswer, QueryConnectFieldCounterpart counterpart) {
     return workspaceMaterialConnectFieldAnswerDAO.updateCounterpart(workspaceMaterialConnectFieldAnswer, counterpart);
+  }
+  
+  /* ChecklistField */
+  
+  public WorkspaceMaterialChecklistFieldAnswer createWorkspaceMaterialChecklistFieldAnswer(WorkspaceMaterialField field, WorkspaceMaterialReply reply) {
+    return workspaceMaterialChecklistFieldAnswerDAO.create(field, reply);
+  }
+
+  public WorkspaceMaterialChecklistFieldAnswer findWorkspaceMaterialChecklistFieldAnswerByFieldAndReply(WorkspaceMaterialField field, WorkspaceMaterialReply reply) {
+    return workspaceMaterialChecklistFieldAnswerDAO.findByQueryFieldAndReply(field, reply);
+  }
+  
+  /* ChecklistFieldOption */
+
+  public WorkspaceMaterialChecklistFieldAnswerOption createWorkspaceMaterialChecklistFieldAnswerOption(WorkspaceMaterialChecklistFieldAnswer fieldAnswer,
+      QueryChecklistFieldOption option) {
+    return workspaceMaterialChecklistFieldAnswerOptionDAO.create(fieldAnswer, option);
+  }
+  
+  public WorkspaceMaterialChecklistFieldAnswerOption findWorkspaceMaterialChecklistFieldAnswerOptionByFieldAnswerAndOption(
+      WorkspaceMaterialChecklistFieldAnswer fieldAnswer, QueryChecklistFieldOption option) {
+    return workspaceMaterialChecklistFieldAnswerOptionDAO.findByFieldAnswerAndOption(fieldAnswer, option);
+  }
+
+  public void deleteWorkspaceMaterialChecklistFieldAnswerOption(WorkspaceMaterialChecklistFieldAnswerOption answerOption) {
+    workspaceMaterialChecklistFieldAnswerOptionDAO.delete(answerOption);
+  }
+  
+  /* FileField */
+  
+  public WorkspaceMaterialFileFieldAnswer createWorkspaceMaterialFileFieldAnswer(WorkspaceMaterialField field, WorkspaceMaterialReply reply) {
+    return workspaceMaterialFileFieldAnswerDAO.create(field, reply);
+  }
+
+  public WorkspaceMaterialFileFieldAnswer findWorkspaceMaterialFileFieldAnswerByFieldAndReply(WorkspaceMaterialField field, WorkspaceMaterialReply reply) {
+    return workspaceMaterialFileFieldAnswerDAO.findByQueryFieldAndReply(field, reply);
+  }
+  
+  /* FileFieldFile */
+
+  public WorkspaceMaterialFileFieldAnswerFile createWorkspaceMaterialFileFieldAnswerFile(WorkspaceMaterialFileFieldAnswer fieldAnswer, byte[] content, String contentType, String fileId, String fileName) {
+    return workspaceMaterialFileFieldAnswerFileDAO.create(fieldAnswer, content, contentType, fileId, fileName);
+  }
+
+  public WorkspaceMaterialFileFieldAnswerFile findWorkspaceMaterialFileFieldAnswerFileByFileId(String fileId) {
+    return workspaceMaterialFileFieldAnswerFileDAO.findByFileId(fileId);
+  }
+  
+  public List<WorkspaceMaterialFileFieldAnswerFile> listWorkspaceMaterialFileFieldAnswerFilesByFieldAnswer(WorkspaceMaterialFileFieldAnswer fieldAnswer) {
+    return workspaceMaterialFileFieldAnswerFileDAO.listByFieldAnswer(fieldAnswer);
+  }
+  
+  public void deleteWorkspaceMaterialFileFieldAnswerFile(WorkspaceMaterialFileFieldAnswerFile fieldAnswerFile) {
+    workspaceMaterialFileFieldAnswerFileDAO.delete(fieldAnswerFile);
+  }
+
+  public WorkspaceMaterialFileFieldAnswerFile updateWorkspaceMaterialFileFieldAnswerFileFileId(WorkspaceMaterialFileFieldAnswerFile fieldAnswerFile, String fileId) {
+    return workspaceMaterialFileFieldAnswerFileDAO.updateFileId(fieldAnswerFile, fileId);
+  }
+
+  public WorkspaceMaterialFileFieldAnswerFile updateWorkspaceMaterialFileFieldAnswerFileContentType(WorkspaceMaterialFileFieldAnswerFile fieldAnswerFile, String contentType) {
+    return workspaceMaterialFileFieldAnswerFileDAO.updateContentType(fieldAnswerFile, contentType);
+  }
+
+  public WorkspaceMaterialFileFieldAnswerFile updateWorkspaceMaterialFileFieldAnswerFileFileName(WorkspaceMaterialFileFieldAnswerFile fieldAnswerFile, String fileName) {
+    return workspaceMaterialFileFieldAnswerFileDAO.updateFileName(fieldAnswerFile, fileName);
+  }
+
+  public WorkspaceMaterialFileFieldAnswerFile updateWorkspaceMaterialFileFieldAnswerFileContent(WorkspaceMaterialFileFieldAnswerFile fieldAnswerFile, byte[] content) {
+    return workspaceMaterialFileFieldAnswerFileDAO.updateContent(fieldAnswerFile, content);
   }
   
 }
