@@ -63,6 +63,14 @@ public class GuidanceRequestWallEntryProvider implements WallEntryProvider {
         if (!(request instanceof WorkspaceGuidanceRequest))
           feedItems.add(new UserFeedGuidanceRequestItem(request));
       }
+      
+      List<GuidanceRequest> byManager = guidanceRequestController.listGuidanceRequestsByManager(user);
+      if (byManager != null) {
+        for (GuidanceRequest request : byManager) {
+          feedItems.add(new UserFeedGuidanceRequestItem(request));
+        }        
+      }
+        
     }
     
     return feedItems;

@@ -110,7 +110,6 @@ public class GuidanceRequestController {
       }
     }
     
-    
     return guidanceRequest;
   }
   
@@ -131,6 +130,35 @@ public class GuidanceRequestController {
   // TODO rights
   public List<GuidanceRequest> listGuidanceRequestsByStudent(UserEntity student) {
     return guidanceRequestDAO.listByStudent(student);
+  }
+
+  @Permit (GuidanceRequestPermissions.RECEIVE_USERGROUP_GUIDANCEREQUESTS)
+  public List<GuidanceRequest> listGuidanceRequestsByGroup(@PermitContext UserGroup group) {
+    List<UserGroupUser> users = userController.listUserGroupUsers(group);
+    List<GuidanceRequest> list = new ArrayList<GuidanceRequest>();
+    
+    for (UserGroupUser user : users) {
+      list.addAll(guidanceRequestDAO.listByStudent(user.getUser()));
+    }
+
+    return list;
+  }
+
+  public List<GuidanceRequest> listGuidanceRequestsByManager(UserEntity manager) {
+    PermissionResolver per = getPermissionResolver(GuidanceRequestPermissions.RECEIVE_USERGROUP_GUIDANCEREQUESTS);
+    
+    List<UserGroup> managedGroups = userController.listUserGroupsByUser(manager);
+    List<GuidanceRequest> list = new ArrayList<GuidanceRequest>();
+    
+    for (UserGroup group : managedGroups) {
+      if (per.hasPermission(GuidanceRequestPermissions.RECEIVE_USERGROUP_GUIDANCEREQUESTS, group, manager)) {
+        List<GuidanceRequest> byGroup = listGuidanceRequestsByGroup(group);
+        if (byGroup != null)
+          list.addAll(byGroup);
+      }
+    }
+    
+    return list;
   }
 
   public List<WorkspaceGuidanceRequest> listWorkspaceGuidanceRequestsByWorkspaceAndUser(WorkspaceEntity workspaceEntity,

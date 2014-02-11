@@ -13,7 +13,7 @@
         {?hasPicture} 
           <img class="cm-item-senderPicture" src="{@contextPath/}/picture?userId={sender}" alt="Koskikara Åke" width="50" />
         {:else}
-          <img class="cm-item-senderPicture" src="{@contextPath/}/themes/default/gfx/fish.jpg" alt="Koskikara Åke" width="100px" />
+          <img class="cm-item-senderPicture" src="{@contextPath/}/tmp/userprofile.png" alt="Koskikara Åke" width="100px" />
         {/hasPicture}
   
         <a href="{@contextPath/}/students/{id}/" class="studentLink tooltip">{fullName}</a>

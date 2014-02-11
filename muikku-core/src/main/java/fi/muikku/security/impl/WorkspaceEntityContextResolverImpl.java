@@ -3,18 +3,23 @@ package fi.muikku.security.impl;
 import fi.muikku.model.security.WorkspaceRolePermission;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.security.ContextReference;
-import fi.muikku.security.CourseContextResolver;
+import fi.muikku.security.WorkspaceContextResolver;
 
-public class CourseEntityContextResolverImpl implements CourseContextResolver {
+public class WorkspaceEntityContextResolverImpl implements WorkspaceContextResolver {
 
   @Override
   public boolean handlesContextReference(ContextReference contextReference) {
     return 
+        WorkspaceEntity.class.isInstance(contextReference) ||
         WorkspaceRolePermission.class.isInstance(contextReference);
   }
 
   @Override
-  public WorkspaceEntity resolveCourse(ContextReference contextReference) {
+  public WorkspaceEntity resolveWorkspace(ContextReference contextReference) {
+    if (WorkspaceEntity.class.isInstance(contextReference)) {
+      return (WorkspaceEntity) contextReference;
+    }
+    
     if (WorkspaceRolePermission.class.isInstance(contextReference)) {
       return ((WorkspaceRolePermission) contextReference).getWorkspace();
     }

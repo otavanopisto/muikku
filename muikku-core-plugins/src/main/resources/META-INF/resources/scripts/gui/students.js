@@ -15,57 +15,50 @@
     deinitialize: function () {
     },
     _onSearchStudentsInputChange: function (event) {
-      var term = this._searchStudentsInput.val();
-      var users = this._searchUsers(term);
       var _this = this;
       
-      renderDustTemplate('students/student_searchresult.dust', users, function (text) {
-        _this._studentsContainer.children().remove();
-        _this._studentsContainer.append($.parseHTML(text));
-      });
+      if (this._timer)
+        clearTimeout(this._timer);
+      
+      this._timer = setTimeout(function() {
+        var term = _this._searchStudentsInput.val();
+        _this._searchUsers(term);
+      }, 500);
     },
     _searchUsers: function (searchTerm) {
       var _this = this;
-      var users = new Array();
 
-      RESTful.doGet(CONTEXTPATH + "/rest/users/searchUsers", {
-        parameters: {
-          'searchString': searchTerm
-        }
-      }).success(function (data, textStatus, jqXHR) {
-        users = data;
-      });
-
-      return users;
-    },
-    _searchGroups: function (searchTerm) {
-      var _this = this;
-      var userGroups = new Array();
-
-      RESTful.doGet(CONTEXTPATH + "/rest/usergroup/searchGroups", {
-        parameters: {
-          'searchString': searchTerm
-        }
-      }).success(function (data, textStatus, jqXHR) {
-        for (var i = 0, l = data.length; i < l; i++) {
-          userGroups.push({
-            category: getLocaleText("plugin.communicator.usergroups"),
-            label: data[i].name,
-            id: data[i].id,
-            memberCount: data[i].memberCount,
-            image: undefined, // TODO usergroup image
-            type: "GROUP"
+      if (_this.xhr)
+        _this.xhr.abort();
+      _this.xhr = $.ajax({
+        url : CONTEXTPATH + "/rest/users/searchUsers",
+        dataType : "json",
+        data : {
+          searchString : searchTerm
+        },
+        headers: {
+          "Accept-Language": getLocale()
+        },
+        accepts: {
+          'json' : 'application/json'
+        },
+        success : function(data) {
+          renderDustTemplate('students/student_searchresult.dust', data, function (text) {
+            _this._studentsContainer.children().remove();
+            _this._studentsContainer.append($.parseHTML(text));
           });
         }
       });
-
-      return userGroups;
-    },
-    _doSearch: function (searchTerm) {
-      var groups = this._searchGroups(searchTerm);
-      var users = this._searchUsers(searchTerm);
       
-      return $.merge(groups, users);
+//      RESTful.doGet(CONTEXTPATH + "/rest/users/searchUsers", {
+//        parameters: {
+//          'searchString': searchTerm
+//        }
+//      }).success(function (data, textStatus, jqXHR) {
+//        users = data;
+//      });
+
+//      return users;
     },
     _split: function(val) {
       return val.split(/,\s*/);

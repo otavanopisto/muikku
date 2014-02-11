@@ -46,7 +46,6 @@
           <div class="cm-newMessage-tags">
             <div class="mf-labelfield">{#localize key="plugin.communicator.messagetags"/}</div>
             <div class="clear"></div>
-
             <div class="">
               <input type="text" name="tags" />
             </div>

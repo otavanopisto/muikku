@@ -16,7 +16,7 @@ public class AbstractPermissionResolver {
 
   @Inject
   @Any
-  private Instance<CourseContextResolver> courseContextResolvers;
+  private Instance<WorkspaceContextResolver> courseContextResolvers;
   
   @Inject
   @Any
@@ -31,10 +31,10 @@ public class AbstractPermissionResolver {
    * @param contextReference
    * @return course if found, else null
    */
-  protected WorkspaceEntity resolveCourse(ContextReference contextReference) {
-    for (CourseContextResolver resolver : courseContextResolvers) {
+  protected WorkspaceEntity resolveWorkspace(ContextReference contextReference) {
+    for (WorkspaceContextResolver resolver : courseContextResolvers) {
       if (resolver.handlesContextReference(contextReference))
-        return resolver.resolveCourse(contextReference);
+        return resolver.resolveWorkspace(contextReference);
     }
     
     return null;

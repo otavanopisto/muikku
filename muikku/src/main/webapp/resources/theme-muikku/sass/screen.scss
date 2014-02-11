@@ -142,20 +142,19 @@ div[class*="tt-menu-link"]:hover {
 }
 
 div[class*="dock-navi-tt-container"]{
-	padding-top:30px;
+	margin-top:30px;
   position:absolute;
   margin-left:1px;
-  margin-top:1px;
+  margin-top:31px;
+  z-index:100;
 }
 
-.tt-communicator{
+div[class*="dock-navi-tt-container"] > div{
 	background-color:#fff;
 	@include shadow;
 	min-height:60px;
   max-width:150px;
   padding:20px;
-
-		
 }
 
 .widgetSpace {
@@ -239,18 +238,6 @@ a.header {
   top:0
 }
 
-.stuckStNav {
-  position:fixed;
-  top:0;
-  left:50%;
-  margin-left:-481px;
-}
-
-.stuckDNav {
-  position:fixed !important;
-  top:0;
-  left:0;
-}
 
 .stNavScrollStyles {
   background-color:#fff !important; 
