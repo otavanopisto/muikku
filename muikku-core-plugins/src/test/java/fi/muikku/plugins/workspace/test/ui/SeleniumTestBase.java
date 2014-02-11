@@ -22,12 +22,25 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
+import fi.muikku.plugins.material.model.HtmlMaterialCompact;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialCompact;
+import fi.muikku.schooldata.entity.WorkspaceCompact;
 import fi.muikku.test.TestSqlFiles;
 
 public abstract class SeleniumTestBase {
@@ -189,7 +202,86 @@ public abstract class SeleniumTestBase {
       throw new FileNotFoundException(file);
     }
   }
+
+  protected WorkspaceCompact createWorkspace(String schoolDataSource, String name, String description, String workspaceTypeId, String courseIdentifierIdentifier) throws JsonGenerationException, JsonMappingException, IOException, URISyntaxException {
+    WorkspaceCompact workspace = new WorkspaceCompact();
+    workspace.setCourseIdentifierIdentifier(courseIdentifierIdentifier);
+    workspace.setDescription(description);
+    workspace.setSchoolDataSource(schoolDataSource);
+    workspace.setWorkspaceTypeId(workspaceTypeId);
+    workspace.setName(name);
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    String data = objectMapper.writeValueAsString(workspace);  
+
+    String resultString = restPostRequest("/workspace/workspaces/", data);
+    return objectMapper.readValue(resultString, WorkspaceCompact.class);
+  }
   
+  protected HtmlMaterialCompact createHtmlMaterial(String urlName, String title, String html) throws JsonGenerationException, JsonMappingException, IOException, URISyntaxException {
+    HtmlMaterialCompact htmlMaterial = new HtmlMaterialCompact();
+    htmlMaterial.setHtml(html);
+    htmlMaterial.setTitle(title);
+    htmlMaterial.setUrlName(urlName);
+    
+    ObjectMapper objectMapper = new ObjectMapper();
+    String data = objectMapper.writeValueAsString(htmlMaterial);  
+
+    String resultString = restPostRequest("/materials/html/", data);
+    return objectMapper.readValue(resultString, HtmlMaterialCompact.class);
+  }
+  
+  protected WorkspaceMaterialCompact createWorkspaceMaterial(Long materialId, Long parentId, String urlName) throws JsonGenerationException, JsonMappingException, IOException, URISyntaxException {
+    WorkspaceMaterialCompact workspaceMaterial = new WorkspaceMaterialCompact();
+    
+    workspaceMaterial.setMaterial_id(materialId);
+    workspaceMaterial.setParent_id(parentId);
+    workspaceMaterial.setUrlName(urlName);
+    
+    ObjectMapper objectMapper = new ObjectMapper();
+    String data = objectMapper.writeValueAsString(workspaceMaterial);  
+
+    String resultString = restPostRequest("/workspace/materials/", data);
+    return objectMapper.readValue(resultString, WorkspaceMaterialCompact.class);
+  }
+
+  protected void deleteWorkspaceMaterial(WorkspaceMaterialCompact workspaceMaterial) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  protected void deleteHtmlMaterial(HtmlMaterialCompact htmlMaterial) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  protected void deleteWorkspace(WorkspaceCompact workspace) {
+    // TODO Auto-generated method stub
+  }
+  
+  private String restPostRequest(String path, String data) throws JsonGenerationException, JsonMappingException, IOException, URISyntaxException {
+    HttpClient client = HttpClientBuilder.create().build();
+    
+    HttpPost httpPost = new HttpPost(getAppUri("/rest" + path));
+    httpPost.setHeader("Content-Type", " application/json");
+    httpPost.setHeader("Accept", " application/json");
+
+    httpPost.setEntity(new StringEntity(data, "UTF-8"));
+    HttpResponse response = client.execute(httpPost);
+    HttpEntity entity = response.getEntity();
+    
+    try {
+      int status = response.getStatusLine().getStatusCode();
+      if (status == 204) {
+        return null;
+      }
+      
+      String responseText = IOUtils.toString(entity.getContent());
+      return responseText;
+    } finally {
+      EntityUtils.consume(entity);
+    }
+  } 
 
   protected void setDriver(RemoteWebDriver driver) {
     this.driver = driver;
