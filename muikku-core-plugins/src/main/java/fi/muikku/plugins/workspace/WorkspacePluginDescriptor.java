@@ -116,7 +116,11 @@ public class WorkspacePluginDescriptor implements PluginDescriptor, PersistenceP
       
       /* Listeners */
       
-      WorkspaceMaterialCreateListener.class
+      WorkspaceMaterialCreateListener.class,
+      
+      /* SchoolDataEntityInitiators */
+      
+      WorkspaceRootFolderEntityInitiator.class
 			
 		}));
 	}
