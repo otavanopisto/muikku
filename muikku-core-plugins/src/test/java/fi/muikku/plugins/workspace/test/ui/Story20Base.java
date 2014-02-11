@@ -27,9 +27,9 @@ public abstract class Story20Base extends SeleniumTestBase {
   public void testTextFieldAttributes() throws Exception {
     WorkspaceCompact workspace = createWorkspace("MOCK", "selenium-tests", "Workspace for selenium tests", "2", "2");
     try {
-      HtmlMaterialCompact htmlMaterial = createHtmlMaterial("us20-textfield", "User Story #20 Material", "<html><body><p>Testi k&auml;ytt&auml;j&auml;tarinalle #100020: Opiskeljana haluan voida vastata tekstimuotoiseen kentt&auml;&auml;n</p><p><strong>Yksirivinen tekstikentt&auml;:</strong></p><p><object type=''application/vnd.muikku.field.text''><param name=''type'' value=''application/json''><param name=''content'' value=''{&quot;name&quot;:&quot;param1&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:20,&quot;hint&quot;:&quot;Vihjeteksti&quot;,&quot;help&quot;:&quot;Ohjeteksti&quot;}''><input name=''param1'' size=''20'' type=''text''></object></body></html>");
+      HtmlMaterialCompact htmlMaterial = createHtmlMaterial("us20-textfield", "User Story #20 Material", "<html><body><p>Testi k&auml;ytt&auml;j&auml;tarinalle #100020: Opiskeljana haluan voida vastata tekstimuotoiseen kentt&auml;&auml;n</p><p><strong>Yksirivinen tekstikentt&auml;:</strong></p><p><object type='application/vnd.muikku.field.text'><param name='type' value='application/json'><param name='content' value='{&quot;name&quot;:&quot;param1&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:20,&quot;hint&quot;:&quot;Vihjeteksti&quot;,&quot;help&quot;:&quot;Ohjeteksti&quot;}'><input name='param1' size='20' type='text'></object></body></html>");
       try {
-        WorkspaceMaterialCompact workspaceMaterial = createWorkspaceMaterial(htmlMaterial.getId(), null, htmlMaterial.getUrlName());
+        WorkspaceMaterialCompact workspaceMaterial = createWorkspaceMaterial(workspace, htmlMaterial.getId(), htmlMaterial.getUrlName());
         try {
           By textInputBy = By.cssSelector("#material-form input[type=\"text\"]");
           getDriver().get(getAppUrl("/workspace/selenium-tests/materials.html/us20-textfield").toString());
