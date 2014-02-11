@@ -22,6 +22,11 @@ import org.apache.commons.lang3.StringUtils;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugin.PluginRESTService;
+import fi.muikku.plugins.material.MaterialController;
+import fi.muikku.plugins.material.model.Material;
+import fi.muikku.plugins.workspace.WorkspaceMaterialController;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialCompact;
+import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceCompact;
@@ -38,7 +43,13 @@ public class WorkspaceRESTService extends PluginRESTService {
 	@SuppressWarnings("cdi-ambiguous-dependency")
 	@Inject
 	private TranquilityBuilderFactory tranquilityBuilderFactory;
+	
+	@Inject
+  private MaterialController materialController;
 
+  @Inject
+	private WorkspaceMaterialController workspaceMaterialController;
+	
 	@Inject
 	private WorkspaceController workspaceController;
 	
@@ -132,7 +143,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspaceData.getDescription(),
         workspaceType,
         workspaceData.getCourseIdentifierIdentifier());
-
+    
     return Response.ok(
         tranquilityBuilderFactory.createBuilder()
           .createTranquility()
@@ -257,7 +268,48 @@ public class WorkspaceRESTService extends PluginRESTService {
         .entities(workspaceUsers)
     ).build();
   }
+
+  //  
+  //  Materials
+  //
   
+  @POST
+  @Path ("/materials/")
+  public Response createWorkspaceMaterial(WorkspaceMaterialCompact workspaceMaterial) {
+    if (workspaceMaterial.getId() != null) {
+      return Response.status(Status.BAD_REQUEST).entity("id can not be specified when creating new WorkspaceMaterial").build();
+    }
+    
+    if (workspaceMaterial.getMaterial_id() == null) {
+      return Response.status(Status.BAD_REQUEST).entity("material_id is required when creating new WorkspaceMaterial").build();
+    }
+    
+    if (StringUtils.isBlank(workspaceMaterial.getUrlName())) {
+      return Response.status(Status.BAD_REQUEST).entity("urlName is required when creating new WorkspaceMaterial").build();
+    }
+    
+    WorkspaceNode parent = null;
+    if (workspaceMaterial.getParent_id() != null) {
+      parent = workspaceMaterialController.findWorkspaceNodeById(workspaceMaterial.getParent_id());
+      if (parent == null) {
+        return Response.status(Status.NOT_FOUND).entity("parent not found").build();
+      }
+    }
+    
+    Material material = materialController.findMaterialById(workspaceMaterial.getMaterial_id());
+    if (material == null) {
+      return Response.status(Status.NOT_FOUND).entity("material not found").build();
+    }
+    
+    ;
+    
+    return Response.ok(
+        tranquilityBuilderFactory.createBuilder()
+          .createTranquility()
+          .entity(workspaceMaterialController.createWorkspaceMaterial(parent, material, workspaceMaterial.getUrlName()))
+    ).build();
+  }
+
   private boolean isChanged(Object object1, Object object2) {
     if (object1 == null) {
       return false;
@@ -265,5 +317,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     return !object1.equals(object2);
   }
+  
+  
   
 }
