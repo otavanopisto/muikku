@@ -26,7 +26,7 @@ import fi.muikku.plugins.workspace.model.WorkspaceMaterialConnectFieldAnswer;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 
-public class WorkspaceConnectFieldHandler implements WorkspaceFieldHandler {
+public class WorkspaceConnectFieldHandler extends AbstractWorkspaceFieldHandler {
   
   @Inject
   private WorkspaceMaterialFieldAnswerController workspaceMaterialFieldAnswerController;
@@ -112,7 +112,7 @@ public class WorkspaceConnectFieldHandler implements WorkspaceFieldHandler {
   }
 
   @Override
-  public void persistField(WorkspaceMaterialReply reply, WorkspaceMaterialField workspaceMaterialField, Map<String, String> requestParameterMap)
+  public void persistField(WorkspaceMaterialReply reply, WorkspaceMaterialField workspaceMaterialField, Map<String, String[]> requestParameterMap)
       throws MaterialQueryIntegrityExeption {
     
     QueryConnectField queryConnectField = (QueryConnectField) workspaceMaterialField.getQueryField();
@@ -120,7 +120,7 @@ public class WorkspaceConnectFieldHandler implements WorkspaceFieldHandler {
       List<QueryConnectFieldTerm> terms = queryConnectFieldController.listConnectFieldTermsByField(queryConnectField);
       for (QueryConnectFieldTerm term : terms) {
         String parameterName = DigestUtils.md5Hex(workspaceMaterialField.getName() + "." + term.getId());
-        String parameterValue = requestParameterMap.get(parameterName);
+        String parameterValue = getRequestParameterMapFirstValue(requestParameterMap, parameterName);
         QueryConnectFieldCounterpart counterpart = StringUtils.isNotEmpty(parameterValue) ? queryConnectFieldController.findQueryConnectFieldCounterpartByFieldAndName(queryConnectField, parameterValue) : null;
         
         WorkspaceMaterialConnectFieldAnswer connectFieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialConnectFieldAnswerByFieldAndReplyAndTerm(workspaceMaterialField, reply, term);

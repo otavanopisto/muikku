@@ -11,6 +11,8 @@ import fi.muikku.plugin.PersistencePluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
 import fi.muikku.plugin.RESTPluginDescriptor;
 import fi.muikku.plugins.workspace.dao.WorkspaceFolderDAO;
+import fi.muikku.plugins.workspace.dao.WorkspaceMaterialChecklistFieldAnswerDAO;
+import fi.muikku.plugins.workspace.dao.WorkspaceMaterialChecklistFieldAnswerOptionDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialConnectFieldAnswerDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialFieldDAO;
@@ -19,12 +21,15 @@ import fi.muikku.plugins.workspace.dao.WorkspaceMaterialSelectFieldAnswerDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialTextFieldAnswerDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceNodeDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceRootFolderDAO;
+import fi.muikku.plugins.workspace.fieldhandler.WorkspaceChecklistFieldHandler;
 import fi.muikku.plugins.workspace.fieldhandler.WorkspaceConnectFieldHandler;
 import fi.muikku.plugins.workspace.fieldhandler.WorkspaceMemoFieldHandler;
 import fi.muikku.plugins.workspace.fieldhandler.WorkspaceSelectFieldHandler;
 import fi.muikku.plugins.workspace.fieldhandler.WorkspaceTextFieldHandler;
 import fi.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialChecklistFieldAnswer;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialChecklistFieldAnswerOption;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialConnectFieldAnswer;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialFieldAnswer;
@@ -83,14 +88,16 @@ public class WorkspacePluginDescriptor implements PluginDescriptor, PersistenceP
       WorkspaceMaterialSelectFieldAnswerDAO.class,
       WorkspaceMaterialConnectFieldAnswerDAO.class,
       WorkspaceMaterialFieldDAO.class,
+      WorkspaceMaterialChecklistFieldAnswerDAO.class,
+      WorkspaceMaterialChecklistFieldAnswerOptionDAO.class,
       
       /* Field Handlers */
       
       WorkspaceTextFieldHandler.class,
       WorkspaceMemoFieldHandler.class,
       WorkspaceSelectFieldHandler.class,
-      WorkspaceSelectFieldHandler.class,
       WorkspaceConnectFieldHandler.class,
+      WorkspaceChecklistFieldHandler.class,
       
       /* Listeners */
       
@@ -111,7 +118,9 @@ public class WorkspacePluginDescriptor implements PluginDescriptor, PersistenceP
 			WorkspaceMaterialTextFieldAnswer.class,
 			WorkspaceMaterialSelectFieldAnswer.class,
       WorkspaceMaterialConnectFieldAnswer.class,
-			WorkspaceMaterialField.class
+			WorkspaceMaterialField.class,
+      WorkspaceMaterialChecklistFieldAnswer.class,
+      WorkspaceMaterialChecklistFieldAnswerOption.class
 		};
 	}
 

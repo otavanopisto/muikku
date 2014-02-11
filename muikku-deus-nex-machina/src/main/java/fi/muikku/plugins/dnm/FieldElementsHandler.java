@@ -18,6 +18,8 @@ import fi.muikku.plugins.dnm.parser.content.OptionListOption;
 import fi.muikku.plugins.dnm.parser.content.RightAnswer;
 import fi.muikku.plugins.dnm.parser.structure.DeusNexDocument;
 import fi.muikku.plugins.dnm.translator.FieldTranslator;
+import fi.muikku.plugins.material.fieldmeta.ChecklistFieldMeta;
+import fi.muikku.plugins.material.fieldmeta.ChecklistFieldOptionMeta;
 import fi.muikku.plugins.material.fieldmeta.ConnectFieldMeta;
 import fi.muikku.plugins.material.fieldmeta.FieldMeta;
 import fi.muikku.plugins.material.fieldmeta.MemoFieldMeta;
@@ -113,12 +115,32 @@ class FieldElementsHandler implements DeusNexFieldElementHandler {
         return handleListSelectField(ownerDocument, selectFieldMeta);
       case "dropdown":
         return handleDropdownSelectField(ownerDocument, selectFieldMeta);
-      case "checklist":
-        // TODO: Add proper checklist support
-        return handleDropdownSelectField(ownerDocument, selectFieldMeta);
       default:
         throw new DeusNexInternalException("Unrecognized select field type: " + selectFieldMeta.getListType());
     }
+  }
+
+  @Override
+  public Node handleChecklistField(Document ownerDocument, String paramName, List<ChecklistFieldOptionMeta> options, String helpOf, String hintOf) {
+    ChecklistFieldMeta checklistFieldMeta = fieldTranslator.translateChecklistField(paramName, options);
+    
+    List<Element> elements = new ArrayList<>();
+
+    for (ChecklistFieldOptionMeta option : checklistFieldMeta.getOptions()) {
+      Element inputElement = ownerDocument.createElement("input");
+      inputElement.setAttribute("type", "checkbox");
+      inputElement.setAttribute("value", option.getName());
+      inputElement.setAttribute("name", checklistFieldMeta.getName());
+      
+      // TODO: Label For ...
+      Element labelElement = ownerDocument.createElement("label");
+      labelElement.setTextContent(option.getText());
+      
+      elements.add(inputElement);
+      elements.add(labelElement);
+    }
+
+    return wrapWithObjectElement(ownerDocument, elements, checklistFieldMeta);
   }
   
   private Node handleRadioHorzSelectField(Document ownerDocument, SelectFieldMeta selectFieldMeta) {

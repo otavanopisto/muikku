@@ -6,6 +6,8 @@ import java.util.List;
 import fi.muikku.plugins.dnm.parser.content.ConnectFieldOption;
 import fi.muikku.plugins.dnm.parser.content.OptionListOption;
 import fi.muikku.plugins.dnm.parser.content.RightAnswer;
+import fi.muikku.plugins.material.fieldmeta.ChecklistFieldMeta;
+import fi.muikku.plugins.material.fieldmeta.ChecklistFieldOptionMeta;
 import fi.muikku.plugins.material.fieldmeta.ConnectFieldMeta;
 import fi.muikku.plugins.material.fieldmeta.ConnectFieldOptionMeta;
 import fi.muikku.plugins.material.fieldmeta.ConnectFieldConnectionMeta;
@@ -58,6 +60,14 @@ public class FieldTranslator {
       translatedOptions.add(new SelectFieldOptionMeta(option.getName(), option.getPoints(), option.getText()));
     }
     return new SelectFieldMeta(name, listType, size, translatedOptions);
+  }
+
+  public ChecklistFieldMeta translateChecklistField(String paramName, List<ChecklistFieldOptionMeta> options) {
+    List<ChecklistFieldOptionMeta> translatedOptions = new ArrayList<>();
+    for (ChecklistFieldOptionMeta option : options) {
+      translatedOptions.add(new ChecklistFieldOptionMeta(option.getName(), option.getPoints(), option.getText()));
+    }
+    return new ChecklistFieldMeta(paramName, translatedOptions);
   }
   
   public ConnectFieldMeta translateConnectField(String name, List<ConnectFieldOption> options) {
