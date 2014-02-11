@@ -112,7 +112,10 @@ public abstract class SeleniumTestBase {
 
       Method method = getClass().getMethod(testName.getMethodName(), new Class<?>[] {});
       if (method != null) {
-        files = method.getAnnotation(TestSqlFiles.class).value();
+        TestSqlFiles annotation = method.getAnnotation(TestSqlFiles.class);
+        if (annotation != null) {
+          files = annotation.value();
+        }
         Logger.getLogger(getClass().getCanonicalName()).log(Level.INFO, "Processing files: " + files.toString());
       }
       

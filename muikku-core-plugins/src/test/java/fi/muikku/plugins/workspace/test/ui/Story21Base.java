@@ -15,7 +15,7 @@ import fi.muikku.test.TestSqlFiles;
 
 public abstract class Story21Base extends SeleniumTestBase {
 
-  private static final String TEST_PAGE = "/workspace/pool/materials.html/selenium/teht/us21";
+  private static final String TEST_PAGE = "/workspace/selenium-tests/materials.html/selenium/teht/us21";
   @Test
   @TestSqlFiles({
     "generic/selenium-school-data-source", 
@@ -49,6 +49,11 @@ public abstract class Story21Base extends SeleniumTestBase {
   }
 
   @Test
+  @TestSqlFiles({
+    "generic/selenium-school-data-source", 
+    "generic/workspace-selenium",
+    "workspace-material/workspace-material",
+  })
   public void testRadioHorizontalSave() throws Exception {
     By saveButtonBy = By.cssSelector("#material-form input[type=\"submit\"]");
 
@@ -77,6 +82,11 @@ public abstract class Story21Base extends SeleniumTestBase {
   }
 
   @Test
+  @TestSqlFiles({
+    "generic/selenium-school-data-source", 
+    "generic/workspace-selenium",
+    "workspace-material/workspace-material",
+  })
   public void testRadioVerticalSave() throws Exception {
     By saveButtonBy = By.cssSelector("#material-form input[type=\"submit\"]");
 

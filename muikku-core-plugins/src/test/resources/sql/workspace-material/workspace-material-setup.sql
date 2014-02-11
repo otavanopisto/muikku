@@ -135,7 +135,7 @@ INSERT INTO queryselectfieldoption VALUES (10001,'1','Valinta 1',10003),
     (10010,'1','Valinta 1',10006),
     (10011,'2','Valinta 2',10006),
     (10012,'3','Valinta 3',10006);
-INSERT INTO querytextfield VALUES (10001);
+INSERT INTO querytextfield VALUES (10001), (10002);
 INSERT INTO workspacefolder VALUES ('selenium',10032),
     ('teht',10033);
 INSERT INTO workspacematerial VALUES (10034,10002),
@@ -164,23 +164,24 @@ INSERT INTO workspacematerial VALUES (10034,10002),
     (10057,10025),
     (10058,10026),
     (10059,10027);
-INSERT INTO workspacematerialfield VALUES (10001,'8e2c010a5e55cdfe5a8019e0156b1364',10001,10034),
-    (10002,'4af7f3cba5d9b1f9f7411fbed3de488b',10002,10034),
-    (10003,'3500d8fb1bddeafbb54086074d258dab',10003,10039),
-    (10004,'8dc539a708537ba2a266c043365d798a',10004,10039),
-    (10005,'c3fca45a221c5dfd287fd6936184a5a6',10005,10039),
-    (10006,'4d3f80dfa3207f12be6f886c507d3688',10006,10039),
-    (10007,'afa15a0a4def3ca7ccc3fef04b561a71',10007,10044),
-    (10008,'4614bab46e682340b063ff70429885f1',10008,10044),
-    (10009,'ab8136ff1150e0c8ee36349969df53bb',10009,10049),
-    (10010,'0cadcc7b44a929ebc0f0c639a8faae7b',10007,10059),
-    (10011,'0e410d0d9c4e0fd674254ff7f0f5a207',10008,10059),
-    (10012,'31ce354e6086a451a0ae2b0ba5af6d65',10003,10059),
-    (10013,'2a9cd1ea11120ededb59d5849debd74b',10004,10059),
-    (10014,'4827c775869af836e9a30e1f0d15bc03',10005,10059),
-    (10015,'38c00a29725de8f64ea50fdbfdb5e961',10006,10059),
-    (10016,'5183adbaf3ba8eea33fdcf6aefafe132',10001,10059),
-    (10017,'fa8c0ccf0e14b5dfce2dec99614df2a8',10002,10059);
+INSERT INTO workspacematerialfield VALUES 
+    (10001,'6a6048d0e897343815180557b37f6b60',10001,10034), -- md5('10034:param1:0')
+    (10002,'4d876a6ee9b4bcdfef7b1272ee6a8b8d',10002,10034), -- md5('10034:param2:0')
+    (10003,'a4f9c70c17124606737347814849060b',10003,10039), -- md5('10039:param1:0')
+    (10004,'393b907c25bf97d3da5ce98519219fa2',10004,10039), -- md5('10039:param2:0')
+    (10005,'055c37040cdc8b820a51ec98779e9175',10005,10039), -- md5('10039:param3:0')
+    (10006,'aaf3137d35059e3208ec99154edbe102',10006,10039), -- md5('10039:param4:0')
+    (10007,'8c0547e8fc4b830e9f7a661e814a9ba4',10007,10044), -- md5('10044:param1:0')
+    (10008,'1481c61b005a48efebb720080acf233b',10008,10044), -- md5('10044:param2:0')
+    (10009,'31baf277ce748cc92a41f4730a4aaf50',10009,10049), -- md5('10049:param1:0')
+    (10010,'0b3d3b6009948d36ecf6cadb35b01627',10007,10059), -- md5('10059:12:param1:0')
+    (10011,'7d0b7ec14cdc75b5f66a8b4336386472',10008,10059), -- md5('10059:12:param2:0')
+    (10012,'a5987c56f6dfce58e93ec69cab0aebeb',10003,10059), -- md5('10059:7:param1:0')
+    (10013,'01f3709eafad2cefea3aaa89b6907f47',10004,10059), -- md5('10059:7:param2:0')
+    (10014,'784a43d39714fced7f83e179ffd75d4e',10005,10059), -- md5('10059:7:param3:0')
+    (10015,'fcc4e369c3ed3c3b6ecfad2596f8e917',10006,10059), -- md5('10059:7:param4:0')
+    (10016,'cbf36db52d08f3074f6f2ce836667312',10001,10059), -- md5('10059:2:param1:0')
+    (10017,'1b682ea573e7b00a3fc8896ece4d89e9',10002,10059); -- md5('10059:2:param2:0')
 INSERT INTO workspacenode VALUES (10032,'selenium',(select id from WorkspaceNode where urlName = 'selenium-tests')),
     (10033,'teht',10032),
     (10034,'us20',10033),
