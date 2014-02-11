@@ -24,12 +24,16 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.After;
@@ -38,8 +42,10 @@ import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.openqa.selenium.remote.RemoteWebDriver;
 
+import fi.muikku.model.workspace.WorkspaceEntityCompact;
 import fi.muikku.plugins.material.model.HtmlMaterialCompact;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialCompact;
+import fi.muikku.plugins.workspace.model.WorkspaceRootFolderCompact;
 import fi.muikku.schooldata.entity.WorkspaceCompact;
 import fi.muikku.test.TestSqlFiles;
 
@@ -128,9 +134,7 @@ public abstract class SeleniumTestBase {
     } finally {
       connection.close();
     }
-    
   }
-
 
   @After
   public void baseTearDown() throws Exception {
@@ -217,8 +221,41 @@ public abstract class SeleniumTestBase {
     ObjectMapper objectMapper = new ObjectMapper();
     String data = objectMapper.writeValueAsString(workspace);  
 
-    String resultString = restPostRequest("/workspace/workspaces/", data);
+    String resultString = restPostRequest("/workspace/workspaces/", data).getContent();
     return objectMapper.readValue(resultString, WorkspaceCompact.class);
+  }
+  
+  protected WorkspaceEntityCompact getWorkspaceEntity(String schoolDataSource, String identifier) throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
+    String resultString = restGetRequest("/workspace/workspaceEntities/?schoolDataSource=" + schoolDataSource + "&identifier=" + identifier).getContent();
+    
+    ObjectMapper objectMapper = new ObjectMapper();
+    WorkspaceEntityCompact[] workspaceEntities = objectMapper.readValue(resultString, WorkspaceEntityCompact[].class);
+    if (workspaceEntities != null && workspaceEntities.length == 1) {
+      return workspaceEntities[0];
+    }
+    
+    return null;
+  }
+  
+  protected WorkspaceEntityCompact getWorkspaceEntity(WorkspaceCompact workspace) throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
+    return getWorkspaceEntity(workspace.getSchoolDataSource(), workspace.getIdentifier());
+  }
+  
+  protected WorkspaceRootFolderCompact getWorkspaceRootFolder(WorkspaceCompact workspace) throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
+    WorkspaceEntityCompact workspaceEntity = getWorkspaceEntity(workspace);
+    if (workspaceEntity == null) {
+      return null;
+    }
+    
+    String resultString = restGetRequest("/workspace/nodes/?workspaceEntityId=" + workspaceEntity.getId()).getContent();
+    
+    ObjectMapper objectMapper = new ObjectMapper();
+    WorkspaceRootFolderCompact[] rootFolders = objectMapper.readValue(resultString, WorkspaceRootFolderCompact[].class);
+    if (rootFolders != null && rootFolders.length == 1) {
+      return rootFolders[0];
+    }
+    
+    return null;
   }
   
   protected HtmlMaterialCompact createHtmlMaterial(String urlName, String title, String html) throws JsonGenerationException, JsonMappingException, IOException, URISyntaxException {
@@ -230,7 +267,7 @@ public abstract class SeleniumTestBase {
     ObjectMapper objectMapper = new ObjectMapper();
     String data = objectMapper.writeValueAsString(htmlMaterial);  
 
-    String resultString = restPostRequest("/materials/html/", data);
+    String resultString = restPostRequest("/materials/html/", data).getContent();
     return objectMapper.readValue(resultString, HtmlMaterialCompact.class);
   }
   
@@ -244,8 +281,17 @@ public abstract class SeleniumTestBase {
     ObjectMapper objectMapper = new ObjectMapper();
     String data = objectMapper.writeValueAsString(workspaceMaterial);  
 
-    String resultString = restPostRequest("/workspace/materials/", data);
+    String resultString = restPostRequest("/workspace/materials/", data).getContent();
     return objectMapper.readValue(resultString, WorkspaceMaterialCompact.class);
+  }
+  
+  protected WorkspaceMaterialCompact createWorkspaceMaterial(WorkspaceCompact workspace, Long materialId, String urlName) throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
+    WorkspaceRootFolderCompact rootFolder = getWorkspaceRootFolder(workspace);
+    if (rootFolder != null) {
+      return createWorkspaceMaterial(materialId, rootFolder.getId(), urlName);
+    }
+    
+    return null;
   }
 
   protected void deleteWorkspaceMaterial(WorkspaceMaterialCompact workspaceMaterial) {
@@ -262,30 +308,39 @@ public abstract class SeleniumTestBase {
     // TODO Auto-generated method stub
   }
   
-  private String restPostRequest(String path, String data) throws JsonGenerationException, JsonMappingException, IOException, URISyntaxException {
-    HttpClient client = HttpClientBuilder.create().build();
-    
+  private RestResponse restGetRequest(String path) throws JsonGenerationException, JsonMappingException, IOException, URISyntaxException {
+    HttpGet httpGet = new HttpGet(getAppUri("/rest" + path));
+    return executeRestRequest(httpGet);
+  }
+  
+  private RestResponse restPostRequest(String path, String data) throws JsonGenerationException, JsonMappingException, IOException, URISyntaxException {
     HttpPost httpPost = new HttpPost(getAppUri("/rest" + path));
-    httpPost.setHeader("Content-Type", " application/json");
-    httpPost.setHeader("Accept", " application/json");
-
     httpPost.setEntity(new StringEntity(data, "UTF-8"));
-    HttpResponse response = client.execute(httpPost);
+    
+    return executeRestRequest(httpPost);
+  } 
+
+  private RestResponse executeRestRequest(HttpRequestBase httpRequest) throws IOException, ClientProtocolException {
+    HttpClient client = HttpClientBuilder.create().build();
+
+    httpRequest.setHeader("Content-Type", " application/json");
+    httpRequest.setHeader("Accept", " application/json");
+
+    HttpResponse response = client.execute(httpRequest);
     HttpEntity entity = response.getEntity();
     
     try {
       int status = response.getStatusLine().getStatusCode();
       if (status == 204) {
-        return null;
+        return new RestResponse(status, null);
       }
       
-      String responseText = IOUtils.toString(entity.getContent());
-      return responseText;
+      return new RestResponse(status, IOUtils.toString(entity.getContent()));
     } finally {
       EntityUtils.consume(entity);
     }
   } 
-
+  
   protected void setDriver(RemoteWebDriver driver) {
     this.driver = driver;
   }
@@ -295,4 +350,24 @@ public abstract class SeleniumTestBase {
   }
   
   private RemoteWebDriver driver;
+  
+  private class RestResponse {
+    
+    public RestResponse(int statusCode, String content) {
+      this.statusCode = statusCode;
+      this.content = content;
+    }
+    
+    @SuppressWarnings("unused")
+    public int getStatusCode() {
+      return statusCode;
+    }
+    
+    public String getContent() {
+      return content;
+    }
+    
+    private int statusCode;
+    private String content;
+  }
 }
