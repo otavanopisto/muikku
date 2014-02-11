@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -75,7 +77,11 @@ public abstract class SeleniumTestBase {
   protected URL getAppUrl(String path) throws MalformedURLException {
     return new URL(PROTOCOL, getHostname(), getPort(), getContextPath() + path);
   }
- 
+
+  protected URI getAppUri(String path) throws MalformedURLException, URISyntaxException {
+    return getAppUrl(path).toURI();
+  }
+  
   protected String getStudent1Username() {
     return STUDENT1_USERNAME;
   }
