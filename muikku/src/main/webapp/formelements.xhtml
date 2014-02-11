@@ -163,76 +163,65 @@
       </div>
     </div>
     <div id="content" class="container_24">  
-      <ui:insert name="content.tools.top">
-        <m:widgetSpaceSet styleClass="nomargin">
-           <ui:insert name="content.tools.top.left">
-             <ui:include src="/facelets/generic/content-tools-top-left.xhtml">
-               <ui:param name="sizing" value="SUM" />
-               <ui:param name="keepEmpty" value="false" />
-               <ui:param name="name" value="generic.content-tools-top.left" />               
-             </ui:include>
-           </ui:insert>
-           <ui:insert name="content.tools.top.center">
-             <ui:include src="/facelets/generic/content-tools-top-center.xhtml">
-               <ui:param name="sizing" value="MAXIMIZE" />
-               <ui:param name="keepEmpty" value="true" />
-               <ui:param name="name" value="generic.content-tools-top.center" />                    
-             </ui:include>         
-           </ui:insert>
-           <ui:insert name="content.tools.top.right">
-             <ui:include src="/facelets/generic/content-tools-top-right.xhtml">
-               <ui:param name="sizing" value="MINIMIZE" />
-               <ui:param name="keepEmpty" value="false" />
-               <ui:param name="name" value="generic.content-tools-top.right" />           
-              </ui:include>          
-            </ui:insert> 
-        </m:widgetSpaceSet>
-      </ui:insert>
-       <div class="clear"></div>
-      <ui:insert name="contentArea">
-        <m:widgetSpaceSet>
-         <ui:insert name="content.left.widgetspace">
-          <m:widgetSpace name="generic.content.left" keepEmpty="true" sizing="SUM" styleClass="nomargin">        
-             <ui:insert name="content.left.widget"></ui:insert>
-          </m:widgetSpace>
-         </ui:insert> 
-         <ui:insert name="content.center.widgetspace">
-          <m:widgetSpace name="generic.content.center" keepEmpty="true" sizing="MAXIMIZE" styleClass="nomargin">       
-            <ui:insert name="content.center.widget"></ui:insert>
-          </m:widgetSpace>
-        </ui:insert>
-        <ui:insert name="content.right.widgetspace">        
-          <m:widgetSpace name="generic.content.right" keepEmpty="false" sizing="MINIMIZE" styleClass="nomargin">
-            <ui:insert name="content.right.widget"></ui:insert>
-          </m:widgetSpace>
-        </ui:insert>        
-        </m:widgetSpaceSet>
-      </ui:insert>
-      <ui:insert name="contentToolsBottom">
-        <m:widgetSpaceSet styleClass="nomargin">
-            <ui:insert name="content.tools.bottom.left">
-             <ui:include src="/facelets/generic/content-tools-bottom-left.xhtml">
-               <ui:param name="sizing" value="SUM" />
-               <ui:param name="keepEmpty" value="false" />
-               <ui:param name="name" value="generic.tools-bottom.left" />               
-             </ui:include>
-           </ui:insert>
-           <ui:insert name="content.tools.bottom.center">
-             <ui:include src="/facelets/generic/content-tools-bottom-center.xhtml">
-               <ui:param name="sizing" value="MAXIMIZE" />
-               <ui:param name="keepEmpty" value="true" />
-               <ui:param name="name" value="generic.tools-bottom.center" />                    
-             </ui:include>         
-           </ui:insert>
-           <ui:insert name="content.tools.bottom.right">
-             <ui:include src="/facelets/generic/content-tools-bottom-right.xhtml">
-               <ui:param name="sizing" value="MINIMIZE" />
-               <ui:param name="keepEmpty" value="false" />
-               <ui:param name="name" value="generic.tools-bottom.right" />           
-              </ui:include>          
-            </ui:insert>   
-        </m:widgetSpaceSet>
-      </ui:insert>
+    
+      <form id="default-form" class="">
+        <div class="formElementRow">
+          <div><label class="formLabel" for="default-textfield">Textfield</label></div>
+          <input type="text" id="default-textfield" name="default-textfield"/>
+        </div>
+        
+        <div class="formElementRow">
+          <div><label class="formLabel" for="default-textarea">Textarea</label></div>
+          <textarea id="default-textarea" name="default-textarea"></textarea>
+        </div>
+        
+        <div class="formElementRow">
+          <div><label class="formLabel">Radiolist</label></div>
+          <input type="radio" id="default-radio-1" name="default-radio" value="1"/> <label for="default-radio-1">List item number 1.</label><br/>
+          <input type="radio" id="default-radio-2" name="default-radio" value="2" checked="checked"/> <label for="default-radio-2">List item number 2. selected</label><br/>
+          <input type="radio" id="default-radio-3" name="default-radio" value="3"/> <label for="default-radio-3">List item number 3.</label><br/>
+        </div>
+        
+        <div class="formElementRow">
+          <div><label class="formLabel">Radiolist horizontal</label></div>
+          <input type="radio" id="default-radio-h-1" name="default-radio-h" value="1"/> <label for="default-radio-h-1">List item number 1.</label>
+          <input type="radio" id="default-radio-h-2" name="default-radio-h" value="2" checked="checked"/> <label for="default-radio-h-2">List item number 2. selected</label>
+          <input type="radio" id="default-radio-h-3" name="default-radio-h" value="3"/> <label for="default-radio-h-3">List item number 3.</label>
+        </div>
+        
+        <div class="formElementRow">
+          <div><label class="formLabel">Checklist</label></div>
+          <input type="checkbox" id="default-checkbox-1" name="default-checkbox" value="1"/> <label for="default-checkbox-1">List item number 1.</label><br/>
+          <input type="checkbox" id="default-checkbox-2" name="default-checkbox" value="2" checked="checked"/> <label for="default-checkbox-2">List item number 2. selected</label><br/>
+          <input type="checkbox" id="default-checkbox-3" name="default-checkbox" value="3"/> <label for="default-checkbox-3">List item number 3.</label><br/>
+        </div>
+        
+        <div class="formElementRow">
+          <div><label class="formLabel">Checklist horizontal</label></div>
+          <input type="checkbox" id="default-checkbox-h-1" name="default-checkbox-h" value="1"/> <label for="default-checkbox-h-1">List item number 1.</label>
+          <input type="checkbox" id="default-checkbox-h-2" name="default-checkbox-h" value="2" checked="checked"/> <label for="default-checkbox-h-2">List item number 2. selected</label>
+          <input type="checkbox" id="default-checkbox-h-3" name="default-checkbox-h" value="3"/> <label for="default-checkbox-h-3">List item number 3.</label>
+        </div>
+        
+        <div class="formElementRow">
+          <div><label class="formLabel">Select</label></div>
+          <select id="default-select" name="default-select">
+            <option value="1">Option number 1.</option>
+            <option value="2">Option number 2.</option>
+            <option value="3">Option number 3.</option>
+            <option value="4">Option number 4.</option>
+          </select>
+        </div>
+        
+        <div class="formElementRow">
+          <div><label class="formLabel">Buttons and Submits</label></div>
+          <input type="button" id="default-button" name="default-button" value="Default Button"/> 
+          <input type="submit" id="default-submit" name="default-submit" value="Default Submit"/>
+          <input type="reset" id="default-reset" name="default-reset" value="Default Reset"/>
+        </div>
+        
+      </form>
+
     </div>
     <div id="socialNavigation">
       <ui:insert name="dock.bottom">

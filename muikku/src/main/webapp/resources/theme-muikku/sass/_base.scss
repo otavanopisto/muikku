@@ -9,7 +9,7 @@ $title:#000;
 $subTitle:#4e4e4e;
 
 /* Shadow */
-$sc: #dadada;
+$sc: rgba(218,218,218,1);
 
 /* Border */
 $brd:#dadada;
@@ -163,6 +163,12 @@ $text: 12px;
   -webkit-box-shadow: 1px 1px 2px 1px $s;
   box-shadow: 1px 1px 2px 1px $s; 
 }
+
+@mixin formElementFocusShadow($s:$sc) {
+  -webkit-box-shadow: 0 0 8px $s;
+  box-shadow: 0 0 8px $s; 
+}
+
 
 @mixin iShadow($s:$sc) {
   -webkit-box-shadow: inset 1px 1px 1px 1px $s;
