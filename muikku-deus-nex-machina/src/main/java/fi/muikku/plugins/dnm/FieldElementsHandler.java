@@ -22,6 +22,7 @@ import fi.muikku.plugins.material.fieldmeta.ChecklistFieldMeta;
 import fi.muikku.plugins.material.fieldmeta.ChecklistFieldOptionMeta;
 import fi.muikku.plugins.material.fieldmeta.ConnectFieldMeta;
 import fi.muikku.plugins.material.fieldmeta.FieldMeta;
+import fi.muikku.plugins.material.fieldmeta.FileFieldMeta;
 import fi.muikku.plugins.material.fieldmeta.MemoFieldMeta;
 import fi.muikku.plugins.material.fieldmeta.SelectFieldMeta;
 import fi.muikku.plugins.material.fieldmeta.SelectFieldOptionMeta;
@@ -247,9 +248,22 @@ class FieldElementsHandler implements DeusNexFieldElementHandler {
 
     return wrapWithObjectElement(ownerDocument, table, connectFieldData);
   }
+  
+  @Override
+  public Node handleFileField(Document ownerDocument, String paramName, String help, String hint) throws DeusNexException {
+    FileFieldMeta fileFieldData = fieldTranslator.translateFileField(paramName, help, hint);
+    
+    Element inputElement = ownerDocument.createElement("input");
+    inputElement.setAttribute("type", "file");
+    inputElement.setAttribute("name", paramName);
+    
+    // TODO Auto-generated method stub
+    return wrapWithObjectElement(ownerDocument, inputElement, fileFieldData);
+  }
 
   @SuppressWarnings("unused")
   private DeusNexDocument deusNexDocument;
 
   private FieldTranslator fieldTranslator;
+
 }

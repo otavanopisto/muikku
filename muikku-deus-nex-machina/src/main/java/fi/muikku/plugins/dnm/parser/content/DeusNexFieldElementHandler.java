@@ -19,5 +19,8 @@ public interface DeusNexFieldElementHandler {
   public Node handleMemoField(Document ownerDocument, String paramName, Integer columns, Integer rows, String help, String hint) throws DeusNexException;
 
   public Node handleChecklistField(Document ownerDocument, String paramName, List<ChecklistFieldOptionMeta> options, String helpOf, String hintOf);
+  
+  public Node handleFileField(Document ownerDocument, String paramName, String help, String hint) throws DeusNexException;
+
 
 }
