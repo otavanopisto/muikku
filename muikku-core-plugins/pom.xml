@@ -460,6 +460,8 @@
       <artifactId>selenium-java</artifactId>
       <scope>test</scope>
     </dependency>
+    
+    <!-- The compile-scoped dependencies are incompatible with newest Selenium -->
 
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>

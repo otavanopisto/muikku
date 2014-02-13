@@ -32,9 +32,11 @@ before_install:
   - unset GEM_PATH
 
 # Prepare maven, deploy artifacts and update staging server
+# -Dmaven.test.skip is because integration tests install container and
+# run browser; both are a bad idea on a build server
 after_success:
   - python travis-prepare-maven.py
-  - mvn deploy --settings ~/.m2/mySettings.xml
+  - mvn deploy -DskipITs -Dcargo.maven.skip=true --settings ~/.m2/mySettings.xml
   - sshpass -e ssh -p $DEPLOY_PORT -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null $DEPLOY_USER@$DEPLOY_HOST cat < $TRAVIS_BUILD_DIR/muikku/target/muikku.war ">" /tmp/ROOT.war
   - sshpass -e ssh -p $DEPLOY_PORT -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null $DEPLOY_USER@$DEPLOY_HOST 'bash -s < ~/bin/deploy.sh' 
 
