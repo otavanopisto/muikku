@@ -24,33 +24,6 @@ public abstract class Story20Base extends SeleniumTestBase {
   private static final String MEMOFIELD_ROWS = "2";
   
   @Test
-  public void testTextFieldAttributes() throws Exception {
-    WorkspaceCompact workspace = createWorkspace("MOCK", "selenium-tests", "Workspace for selenium tests", "2", "2");
-    try {
-      HtmlMaterialCompact htmlMaterial = createHtmlMaterial("us20-textfield", "User Story #20 Material", "<html><body><p>Testi k&auml;ytt&auml;j&auml;tarinalle #100020: Opiskeljana haluan voida vastata tekstimuotoiseen kentt&auml;&auml;n</p><p><strong>Yksirivinen tekstikentt&auml;:</strong></p><p><object type='application/vnd.muikku.field.text'><param name='type' value='application/json'><param name='content' value='{&quot;name&quot;:&quot;param1&quot;,&quot;rightAnswers&quot;:[],&quot;columns&quot;:20,&quot;hint&quot;:&quot;Vihjeteksti&quot;,&quot;help&quot;:&quot;Ohjeteksti&quot;}'><input name='param1' size='20' type='text'></object></body></html>");
-      try {
-        WorkspaceMaterialCompact workspaceMaterial = createWorkspaceMaterial(workspace, htmlMaterial.getId(), htmlMaterial.getUrlName());
-        try {
-          By textInputBy = By.cssSelector("#material-form input[type=\"text\"]");
-          getDriver().get(getAppUrl("/workspace/selenium-tests/materials.html/us20-textfield").toString());
-  
-          // Can we find the text input?
-          assertNotNull(getDriver().findElement(textInputBy));
-          assertEquals("text", getDriver().findElement(textInputBy).getAttribute("type"));
-          assertEquals(TEXTFIELD_HINT_TEXT, getDriver().findElement(textInputBy).getAttribute("title"));
-          assertEquals(TEXTFIELD_HELP_TEXT, getDriver().findElement(textInputBy).getAttribute("placeholder"));
-        } finally {
-          deleteWorkspaceMaterial(workspaceMaterial);
-        }
-      } finally {
-        deleteHtmlMaterial(htmlMaterial);
-      }
-    } finally {
-      deleteWorkspace(workspace);
-    }
-  }
-
-  @Test
   @TestSqlFiles({
     "generic/selenium-school-data-source", 
     "generic/workspace-selenium",
