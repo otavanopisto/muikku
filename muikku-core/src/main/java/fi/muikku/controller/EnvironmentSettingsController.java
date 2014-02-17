@@ -83,12 +83,12 @@ public class EnvironmentSettingsController {
     environmentUserRolePermissionDAO.delete(rolePermission);
   }
   
-  @Permit(MuikkuPermissions.COURSE_MANAGECOURSESETTINGS)
+  @Permit(MuikkuPermissions.WORKSPACE_MANAGEWORKSPACESETTINGS)
   public WorkspaceRolePermission addWorkspaceUserRolePermission(@PermitContext WorkspaceEntity course, RoleEntity role, Permission permission) {
     return courseUserRolePermissionDAO.create(course, role, permission);
   }
   
-  @Permit(MuikkuPermissions.COURSE_MANAGECOURSESETTINGS)
+  @Permit(MuikkuPermissions.WORKSPACE_MANAGEWORKSPACESETTINGS)
   public void deleteWorkspaceUserRolePermission(@PermitContext WorkspaceRolePermission rolePermission) {
     courseUserRolePermissionDAO.delete(rolePermission);
   }

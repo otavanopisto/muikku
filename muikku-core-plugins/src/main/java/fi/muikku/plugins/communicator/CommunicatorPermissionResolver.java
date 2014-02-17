@@ -3,7 +3,6 @@ package fi.muikku.plugins.communicator;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
-import fi.muikku.controller.CourseController;
 import fi.muikku.controller.ResourceRightsController;
 import fi.muikku.dao.security.PermissionDAO;
 import fi.muikku.dao.security.ResourceRolePermissionDAO;
@@ -29,9 +28,6 @@ public class CommunicatorPermissionResolver extends AbstractPermissionResolver i
   
   @Inject
   private PermissionDAO permissionDAO;
-  
-  @Inject
-  private CourseController courseController;
   
   @Inject
   private ResourceRightsController resourceRightsController;

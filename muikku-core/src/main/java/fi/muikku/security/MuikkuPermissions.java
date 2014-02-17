@@ -13,11 +13,11 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
   
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultPermissionRoles ({ MANAGER })
-  public static final String CREATE_COURSE = "CREATE_COURSE";
+  public static final String CREATE_WORKSPACE = "CREATE_WORKSPACE";
   
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultPermissionRoles ({ MANAGER, STUDENT, TEACHER })
-  public static final String LIST_COURSES = "LIST_COURSES";
+  public static final String LIST_WORKSPACES = "LIST_WORKSPACES";
   
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultPermissionRoles ({ MANAGER })
@@ -31,15 +31,15 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
   
   @Scope (PermissionScope.WORKSPACE)
   @DefaultPermissionRoles ({ MANAGER, STUDENT, TEACHER })
-  public static final String JOIN_COURSE = "JOIN_COURSE";
+  public static final String JOIN_WORKSPACE = "JOIN_WORKSPACE";
 
   @Scope (PermissionScope.WORKSPACE)
   @DefaultPermissionRoles ({ MANAGER, WORKSPACE_TEACHER })
-  public static final String COURSE_MANAGECOURSESETTINGS = "COURSE_MANAGECOURSESETTINGS";
+  public static final String WORKSPACE_MANAGEWORKSPACESETTINGS = "WORKSPACE_MANAGEWORKSPACESETTINGS";
   
   @Scope (PermissionScope.WORKSPACE)
   @DefaultPermissionRoles ({ MANAGER, WORKSPACE_TEACHER })
-  public static final String REPRESENT_COURSEUSER = "REPRESENT_COURSEUSER";
+  public static final String REPRESENT_WORKSPACEUSER = "REPRESENT_WORKSPACEUSER";
   
   @Scope (PermissionScope.WORKSPACE)
   @DefaultPermissionRoles ({ MANAGER, WORKSPACE_TEACHER })
