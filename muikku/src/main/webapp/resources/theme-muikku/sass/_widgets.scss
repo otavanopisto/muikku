@@ -685,6 +685,10 @@ div[class*="wi-dock-static-navi"]{
   background:#ededed;
 }
 
+.wi-frontpage-info {
+  @extend .co-widget;
+}
+
 .wi-frontpage-dynamic-calendar {
   @extend .co-widget;
 }
