@@ -116,11 +116,11 @@ To be used through SASS's extend feature with CSS's selectors.
 }
 
 .co-widget {
-  padding:10px 15px 15px 15px;
-  border-top:1px solid $w-brd-top;
+  padding:15px;
   box-shadow:$w-sc;
   background:$w-bgr;
   min-height:3em;
+  border:1px solid $w-brd;
 }
 
 /* Forms */
