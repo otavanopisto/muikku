@@ -1,6 +1,5 @@
 package fi.muikku.plugins.workspace.test.ui;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -173,14 +172,6 @@ public abstract class SeleniumTestBase {
     String url = System.getProperty("integrationtest.datasource.jdbc.muikku.url");
     String username = System.getProperty("integrationtest.datasource.jdbc.muikku.username");
     String password = System.getProperty("integrationtest.datasource.jdbc.muikku.password");
-    
-    System.out.println(driver);
-    System.out.println(url);
-    System.out.println(username);
-    System.out.println(password);
-    
-    System.out.println(new File(".").getAbsolutePath());
-    
     Class.forName(driver);
     return DriverManager.getConnection(url, username, password);
   }
@@ -298,17 +289,29 @@ public abstract class SeleniumTestBase {
   }
 
   protected void deleteWorkspaceMaterial(WorkspaceMaterialCompact workspaceMaterial) throws JsonGenerationException, JsonMappingException, IOException, URISyntaxException {
-    restDeleteRequest("/workspaces/materials/" + workspaceMaterial.getId());
+    RestResponse response = restDeleteRequest("/workspace/materials/" + workspaceMaterial.getId());
+    if (response.getStatusCode() != 204) {
+      throw new IOException(response.toString());
+    }
   }
 
   protected void deleteHtmlMaterial(HtmlMaterialCompact htmlMaterial) throws JsonGenerationException, JsonMappingException, IOException, URISyntaxException {
-    restDeleteRequest("/materials/html/" + htmlMaterial.getId());
+    RestResponse response = restDeleteRequest("/materials/html/" + htmlMaterial.getId());
+    if (response.getStatusCode() != 204) {
+      throw new IOException(response.toString());
+    }
   }
 
   protected void deleteWorkspace(WorkspaceCompact workspace) throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
     WorkspaceEntityCompact workspaceEntity = getWorkspaceEntity(workspace);
     if (workspaceEntity != null) {
-      restDeleteRequest("/workspaces/workspaces/" + workspaceEntity.getId());
+      RestResponse response = restDeleteRequest("/workspace/workspaces/" + workspaceEntity.getId() + "?permanently=true");
+      
+      if (response.getStatusCode() != 204) {
+        throw new IOException(response.toString());
+      }
+    } else {
+      throw new IOException("Could not find workspaceEntity for " + workspace.getSchoolDataSource() + "/" + workspace.getIdentifier());
     }
   }
   
@@ -341,10 +344,10 @@ public abstract class SeleniumTestBase {
     try {
       int status = response.getStatusLine().getStatusCode();
       if (status == 204) {
-        return new RestResponse(status, null);
+        return new RestResponse(httpRequest, status, null);
       }
       
-      return new RestResponse(status, IOUtils.toString(entity.getContent()));
+      return new RestResponse(httpRequest, status, IOUtils.toString(entity.getContent()));
     } finally {
       EntityUtils.consume(entity);
     }
@@ -362,12 +365,12 @@ public abstract class SeleniumTestBase {
   
   private class RestResponse {
     
-    public RestResponse(int statusCode, String content) {
+    public RestResponse(HttpRequestBase httpRequest, int statusCode, String content) {
+      this.httpRequest = httpRequest;
       this.statusCode = statusCode;
       this.content = content;
     }
     
-    @SuppressWarnings("unused")
     public int getStatusCode() {
       return statusCode;
     }
@@ -376,6 +379,11 @@ public abstract class SeleniumTestBase {
       return content;
     }
     
+    public String toString() {
+      return httpRequest.getMethod() + ": " + httpRequest.getURI().toString() + " returned " + getStatusCode();
+    }
+    
+    private HttpRequestBase httpRequest;
     private int statusCode;
     private String content;
   }
