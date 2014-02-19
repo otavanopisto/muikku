@@ -32,6 +32,10 @@ public class WorkspaceMaterialFieldController {
   public WorkspaceMaterialField findWorkspaceMaterialFieldByWorkspaceMaterialAndName(WorkspaceMaterial workspaceMaterial, String name) {
     return workspaceMaterialFieldDAO.findByWorkspaceMaterialAndName(workspaceMaterial, name); 
   }
+
+  public void deleteWorkspaceMaterialField(WorkspaceMaterialField workspaceMaterialField) {
+    workspaceMaterialFieldDAO.delete(workspaceMaterialField);
+  }
   
   public String getAssignedFieldName(String workspaceMaterialId, String embedId, String fieldName, Collection<String> assignedNames) {
     StringBuilder fieldNameBuilder = new StringBuilder()
