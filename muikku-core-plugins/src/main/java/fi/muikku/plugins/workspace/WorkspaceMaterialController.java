@@ -16,6 +16,7 @@ import fi.muikku.plugins.workspace.dao.WorkspaceRootFolderDAO;
 import fi.muikku.plugins.workspace.events.WorkspaceFolderCreateEvent;
 import fi.muikku.plugins.workspace.events.WorkspaceFolderUpdateEvent;
 import fi.muikku.plugins.workspace.events.WorkspaceMaterialCreateEvent;
+import fi.muikku.plugins.workspace.events.WorkspaceMaterialDeleteEvent;
 import fi.muikku.plugins.workspace.events.WorkspaceMaterialUpdateEvent;
 import fi.muikku.plugins.workspace.events.WorkspaceRootFolderCreateEvent;
 import fi.muikku.plugins.workspace.events.WorkspaceRootFolderUpdateEvent;
@@ -60,6 +61,9 @@ public class WorkspaceMaterialController {
 	@SuppressWarnings("unused")
   @Inject
   private Event<WorkspaceMaterialUpdateEvent> workspaceMaterialUpdateEvent;
+
+	@Inject
+  private Event<WorkspaceMaterialDeleteEvent> workspaceMaterialDeleteEvent;
   
 	/* Node */
 
@@ -112,6 +116,7 @@ public class WorkspaceMaterialController {
 	}
   
 	public void deleteWorkspaceMaterial(WorkspaceMaterial workspaceMaterial) {
+	  workspaceMaterialDeleteEvent.fire(new WorkspaceMaterialDeleteEvent(workspaceMaterial));
 	  workspaceMaterialDAO.delete(workspaceMaterial);
   }
   
@@ -134,7 +139,7 @@ public class WorkspaceMaterialController {
     }
 
     return (WorkspaceRootFolder) node;
-  }
+  } 
 	
 	/* Folder */
 
