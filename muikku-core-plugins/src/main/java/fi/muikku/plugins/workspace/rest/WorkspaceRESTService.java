@@ -25,6 +25,7 @@ import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.material.MaterialController;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialCompact;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.schooldata.WorkspaceController;
@@ -306,6 +307,25 @@ public class WorkspaceRESTService extends PluginRESTService {
           .createTranquility()
           .entity(workspaceMaterialController.createWorkspaceMaterial(parent, material, workspaceMaterial.getUrlName()))
     ).build();
+  }
+  
+  @DELETE
+  @Path ("/materials/{ID}")
+  public Response deleteWorkspaceMaterial(@QueryParam ("ID") Long workspaceMaterialId) {
+    // TODO: Security
+    
+    if (workspaceMaterialId == null) {
+      return Response.status(Status.NOT_FOUND).entity("workspace material not found").build();
+    }
+    
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
+    if (workspaceMaterial == null) {
+      return Response.status(Status.NOT_FOUND).entity("workspace material not found").build();
+    }
+    
+    workspaceMaterialController.deleteWorkspaceMaterial(workspaceMaterial);
+    
+    return Response.noContent().build();
   }
   
   //

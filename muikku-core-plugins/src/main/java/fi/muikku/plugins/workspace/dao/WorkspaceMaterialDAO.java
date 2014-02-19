@@ -59,4 +59,8 @@ public class WorkspaceMaterialDAO extends PluginDAO<WorkspaceMaterial> {
     return getSingleResult(entityManager.createQuery(criteria));
 	}
 	
+	public void delete(WorkspaceMaterial workspaceMaterial) {
+	  super.delete(workspaceMaterial);
+	}
+	
 }

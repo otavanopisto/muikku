@@ -110,8 +110,12 @@ public class WorkspaceMaterialController {
 	public List<WorkspaceMaterial> listWorkspaceMaterialsByParent(WorkspaceNode parent) {
 		return workspaceMaterialDAO.listByParent(parent);
 	}
-	
-	/* Root Folder */
+  
+	public void deleteWorkspaceMaterial(WorkspaceMaterial workspaceMaterial) {
+	  workspaceMaterialDAO.delete(workspaceMaterial);
+  }
+  
+  /* Root Folder */
 	
 	public WorkspaceRootFolder createWorkspaceRootFolder(WorkspaceEntity workspaceEntity) {
     WorkspaceRootFolder workspaceRootFolder = workspaceRootFolderDAO.create(workspaceEntity);
@@ -143,5 +147,5 @@ public class WorkspaceMaterialController {
 	public WorkspaceFolder findWorkspaceFolderById(Long workspaceFolderId) {
 		return workspaceFolderDAO.findById(workspaceFolderId);
 	}
-	
+
 }
