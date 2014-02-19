@@ -27,4 +27,8 @@ public class QueryFieldController {
     return queryFieldDAO.listByMaterial(material);
   }
 
+  public void deleteQueryField(QueryField queryField) {
+    queryFieldDAO.delete(queryField);
+  }
+
 }

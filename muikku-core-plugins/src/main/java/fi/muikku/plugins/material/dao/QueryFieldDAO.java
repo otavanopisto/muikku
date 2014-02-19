@@ -48,5 +48,9 @@ public class QueryFieldDAO extends PluginDAO<QueryField> {
 
     return entityManager.createQuery(criteria).getResultList();
   }
+  
+  public void delete(QueryField queryField) {
+    super.delete(queryField);
+  }
 
 }
