@@ -60,5 +60,11 @@ public class WorkspaceMaterialFieldDAO extends PluginDAO<WorkspaceMaterialField>
 
     return entityManager.createQuery(criteria).getResultList();
   }
+  
+  public void delete(WorkspaceMaterialField workspaceMaterialField) {
+    super.delete(workspaceMaterialField);
+    // TODO: Why is manual flush needed?
+    flush();
+  }
 
 }

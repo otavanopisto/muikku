@@ -51,6 +51,8 @@ public class QueryFieldDAO extends PluginDAO<QueryField> {
   
   public void delete(QueryField queryField) {
     super.delete(queryField);
+    // TODO: Why is manual flush needed?
+    flush();
   }
 
 }
