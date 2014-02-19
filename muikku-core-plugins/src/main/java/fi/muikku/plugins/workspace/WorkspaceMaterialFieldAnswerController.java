@@ -11,6 +11,7 @@ import fi.muikku.plugins.material.model.QuerySelectFieldOption;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialChecklistFieldAnswerDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialChecklistFieldAnswerOptionDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialConnectFieldAnswerDAO;
+import fi.muikku.plugins.workspace.dao.WorkspaceMaterialFieldAnswerDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialFileFieldAnswerDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialFileFieldAnswerFileDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialSelectFieldAnswerDAO;
@@ -19,6 +20,7 @@ import fi.muikku.plugins.workspace.model.WorkspaceMaterialChecklistFieldAnswer;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialChecklistFieldAnswerOption;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialConnectFieldAnswer;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialFieldAnswer;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswer;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswerFile;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
@@ -26,6 +28,9 @@ import fi.muikku.plugins.workspace.model.WorkspaceMaterialSelectFieldAnswer;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialTextFieldAnswer;
 
 public class WorkspaceMaterialFieldAnswerController {
+
+  @Inject
+  private WorkspaceMaterialFieldAnswerDAO workspaceMaterialFieldAnswerDAO;
 
   @Inject
   private WorkspaceMaterialTextFieldAnswerDAO workspaceMaterialTextFieldAnswerDAO;
@@ -47,6 +52,16 @@ public class WorkspaceMaterialFieldAnswerController {
 
   @Inject
   private WorkspaceMaterialFileFieldAnswerFileDAO workspaceMaterialFileFieldAnswerFileDAO;
+  
+  /* Generic */
+
+  public List<WorkspaceMaterialFieldAnswer> listWorkspaceMaterialFieldAnswersByField(WorkspaceMaterialField field) {
+    return workspaceMaterialFieldAnswerDAO.listByField(field);
+  }
+  
+  public void deleteWorkspaceMaterialFieldAnswer(WorkspaceMaterialFieldAnswer answer) {
+    workspaceMaterialFieldAnswerDAO.delete(answer);
+  }
 
   /* TextField */
 

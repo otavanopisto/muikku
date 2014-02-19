@@ -22,6 +22,7 @@ import fi.muikku.plugins.workspace.dao.WorkspaceMaterialChecklistFieldAnswerDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialChecklistFieldAnswerOptionDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialConnectFieldAnswerDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialDAO;
+import fi.muikku.plugins.workspace.dao.WorkspaceMaterialFieldAnswerDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialFieldDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialFileFieldAnswerDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialFileFieldAnswerFileDAO;
@@ -104,6 +105,7 @@ public class WorkspacePluginDescriptor implements PluginDescriptor, PersistenceP
       WorkspaceMaterialChecklistFieldAnswerOptionDAO.class,
       WorkspaceMaterialFileFieldAnswerDAO.class,
       WorkspaceMaterialFileFieldAnswerFileDAO.class,
+      WorkspaceMaterialFieldAnswerDAO.class,
       
       /* Field Handlers */
       
@@ -118,6 +120,7 @@ public class WorkspacePluginDescriptor implements PluginDescriptor, PersistenceP
       
       WorkspaceMaterialCreateListener.class,
       WorkspaceMaterialDeleteListener.class,
+      WorkspaceMaterialFieldDeleteListener.class,
       
       /* SchoolDataEntityInitiators */
       
