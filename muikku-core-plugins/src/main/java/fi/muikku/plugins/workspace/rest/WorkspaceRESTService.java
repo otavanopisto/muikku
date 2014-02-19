@@ -311,7 +311,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @DELETE
   @Path ("/materials/{ID}")
-  public Response deleteWorkspaceMaterial(@QueryParam ("ID") Long workspaceMaterialId) {
+  public Response deleteWorkspaceMaterial(@PathParam("ID") Long workspaceMaterialId) {
     // TODO: Security
     
     if (workspaceMaterialId == null) {
