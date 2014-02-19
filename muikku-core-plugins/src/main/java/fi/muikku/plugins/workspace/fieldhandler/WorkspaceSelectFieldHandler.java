@@ -14,7 +14,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 import fi.muikku.plugins.material.MaterialQueryIntegrityExeption;
-import fi.muikku.plugins.material.QueryFieldController;
+import fi.muikku.plugins.material.QuerySelectFieldController;
 import fi.muikku.plugins.material.fieldmeta.SelectFieldMeta;
 import fi.muikku.plugins.material.fieldmeta.SelectFieldOptionMeta;
 import fi.muikku.plugins.material.model.QuerySelectField;
@@ -27,7 +27,7 @@ import fi.muikku.plugins.workspace.model.WorkspaceMaterialSelectFieldAnswer;
 public class WorkspaceSelectFieldHandler extends AbstractWorkspaceFieldHandler {
 
   @Inject
-  private QueryFieldController queryFieldController;
+  private QuerySelectFieldController querySelectFieldController;
 
   @Inject
   private WorkspaceMaterialFieldAnswerController workspaceMaterialFieldAnswerController;
@@ -125,7 +125,7 @@ public class WorkspaceSelectFieldHandler extends AbstractWorkspaceFieldHandler {
     QuerySelectField queryField = (QuerySelectField) workspaceMaterialField.getQueryField();
     QuerySelectFieldOption option = null;
     if (StringUtils.isNotBlank(parameterValue)) {
-      option = queryFieldController.findQuerySelectFieldOptionByFieldAndName(queryField, parameterValue);
+      option = querySelectFieldController.findQuerySelectFieldOptionBySelectFieldAndName(queryField, parameterValue);
       if (option == null) {
         throw new MaterialQueryIntegrityExeption("SelectFieldOption #" + queryField.getId() + " does not contain option '" + parameterValue + "'");
       }
