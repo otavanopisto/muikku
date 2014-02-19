@@ -66,6 +66,10 @@ public class HtmlMaterialController {
 	public HtmlMaterial findHtmlMaterialById(Long id) {
 		return htmlMaterialDAO.findById(id);
 	}
+
+  public void deleteHtmlMaterial(HtmlMaterial htmlMaterial) {
+    htmlMaterialDAO.delete(htmlMaterial);
+  }
 	
 	public Document getProcessedHtmlDocument(HtmlMaterial htmlMaterial) throws SAXException, IOException {
     return processHtml(htmlMaterial.getId(), htmlMaterial.getHtml());

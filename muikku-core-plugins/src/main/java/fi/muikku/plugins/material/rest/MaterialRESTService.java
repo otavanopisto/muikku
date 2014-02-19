@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -13,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.material.HtmlMaterialController;
+import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.material.model.HtmlMaterialCompact;
 import fi.tranquil.TranquilityBuilderFactory;
 
@@ -35,7 +37,7 @@ public class MaterialRESTService extends PluginRESTService {
 	
 	@POST
 	@Path ("/html/")
-	public Response createWorkspace(HtmlMaterialCompact htmlMaterial) {
+	public Response createHtmlMaterial(HtmlMaterialCompact htmlMaterial) {
 	  if (htmlMaterial.getId() != null) {
       return Response.status(Status.BAD_REQUEST).entity("id can not be specified when creating new HtmlMaterial").build();
     }
@@ -57,6 +59,23 @@ public class MaterialRESTService extends PluginRESTService {
           .createTranquility()
           .entity(htmlMaterialController.createHtmlMaterial(htmlMaterial.getUrlName(), htmlMaterial.getTitle(), htmlMaterial.getHtml()))
     ).build();
+	}
+	
+	public Response deleteHtmlMaterial(@QueryParam ("ID") Long htmlMaterialId) {
+	  // TODO: Security
+    
+    if (htmlMaterialId == null) {
+      return Response.status(Status.NOT_FOUND).entity("Html material not found").build();
+    }
+    
+    HtmlMaterial htmlMaterial = htmlMaterialController.findHtmlMaterialById(htmlMaterialId);
+    if (htmlMaterial == null) {
+      return Response.status(Status.NOT_FOUND).entity("Html material not found").build();
+    }
+    
+    htmlMaterialController.deleteHtmlMaterial(htmlMaterial);
+    
+    return Response.noContent().build();
 	}
   
 }
