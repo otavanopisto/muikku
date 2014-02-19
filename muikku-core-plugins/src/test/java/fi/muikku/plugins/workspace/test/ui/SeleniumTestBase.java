@@ -109,31 +109,33 @@ public abstract class SeleniumTestBase {
   protected String getStudent1Password() {
     return STUDENT1_PASSWORD;
   }
+  
+  private String[] getSqlFiles() throws NoSuchMethodException, SecurityException {
+    Method method = getClass().getMethod(testName.getMethodName(), new Class<?>[] {});
+    TestSqlFiles annotation = method.getAnnotation(TestSqlFiles.class);
+    if (annotation != null) {
+      return annotation.value();
+    }
+    
+    return null;
+  }
 
   @Before
   public void baseSetUp() throws Exception {
-    Logger.getLogger(getClass().getCanonicalName()).log(Level.INFO, "Starting setUp.");
-    Connection connection = getConnection();
-    try {
-      String[] files = new String[] {};
-
-      Method method = getClass().getMethod(testName.getMethodName(), new Class<?>[] {});
-      if (method != null) {
-        TestSqlFiles annotation = method.getAnnotation(TestSqlFiles.class);
-        if (annotation != null) {
-          files = annotation.value();
+    String[] sqlFiles = getSqlFiles();
+    if (sqlFiles != null && sqlFiles.length > 0) {
+      Connection connection = getConnection();
+      try {
+        String[] files = new String[] {};      
+        for (String file : files) {
+          runSql(connection, "sql/" + file + "-setup.sql");
         }
-        Logger.getLogger(getClass().getCanonicalName()).log(Level.INFO, "Processing files: " + files.toString());
+        
+        connection.commit();
+        Logger.getLogger(getClass().getCanonicalName()).log(Level.INFO, "Committed setUp.");
+      } finally {
+        connection.close();
       }
-      
-      for (String file : files) {
-        runSql(connection, "sql/" + file + "-setup.sql");
-      }
-      
-      connection.commit();
-      Logger.getLogger(getClass().getCanonicalName()).log(Level.INFO, "Committed setUp.");
-    } finally {
-      connection.close();
     }
   }
 
@@ -142,27 +144,27 @@ public abstract class SeleniumTestBase {
     Logger.getLogger(getClass().getCanonicalName()).log(Level.INFO, "Starting tearDown.");
     driver.quit();
 
-    Connection connection = getConnection();
-    try {
-      String[] files = new String[] {};
-      
-      Method method = getClass().getMethod(testName.getMethodName(), new Class<?>[] {});
-      if (method != null) {
-        files = method.getAnnotation(TestSqlFiles.class).value();
-        Logger.getLogger(getClass().getCanonicalName()).log(Level.INFO, "Processing files: " + files.toString());
+    String[] sqlFiles = getSqlFiles();
+    if (sqlFiles != null && sqlFiles.length > 0) {
+      Connection connection = getConnection();
+      try {
+        Method method = getClass().getMethod(testName.getMethodName(), new Class<?>[] {});
+        if (method != null) {
+          sqlFiles = method.getAnnotation(TestSqlFiles.class).value();
+        }
+        
+        List<String> filesList = Arrays.asList(sqlFiles);
+        Collections.reverse(filesList);
+        
+        for (String file : filesList) {
+          runSql(connection, "sql/" + file + "-teardown.sql");
+        }
+        
+        connection.commit();
+        Logger.getLogger(getClass().getCanonicalName()).log(Level.INFO, "Committed tearDown.");
+      } finally {
+        connection.close();
       }
-      
-      List<String> filesList = Arrays.asList(files);
-      Collections.reverse(filesList);
-      
-      for (String file : filesList) {
-        runSql(connection, "sql/" + file + "-teardown.sql");
-      }
-      
-      connection.commit();
-      Logger.getLogger(getClass().getCanonicalName()).log(Level.INFO, "Committed tearDown.");
-    } finally {
-      connection.close();
     }
   }
 
@@ -295,14 +297,12 @@ public abstract class SeleniumTestBase {
     return null;
   }
 
-  protected void deleteWorkspaceMaterial(WorkspaceMaterialCompact workspaceMaterial) {
-    // TODO Auto-generated method stub
-    
+  protected void deleteWorkspaceMaterial(WorkspaceMaterialCompact workspaceMaterial) throws JsonGenerationException, JsonMappingException, IOException, URISyntaxException {
+    restDeleteRequest("/workspaces/materials/" + workspaceMaterial.getId());
   }
 
-  protected void deleteHtmlMaterial(HtmlMaterialCompact htmlMaterial) {
-    // TODO Auto-generated method stub
-    
+  protected void deleteHtmlMaterial(HtmlMaterialCompact htmlMaterial) throws JsonGenerationException, JsonMappingException, IOException, URISyntaxException {
+    restDeleteRequest("/materials/html/" + htmlMaterial.getId());
   }
 
   protected void deleteWorkspace(WorkspaceCompact workspace) throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
