@@ -26,6 +26,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -304,8 +305,11 @@ public abstract class SeleniumTestBase {
     
   }
 
-  protected void deleteWorkspace(WorkspaceCompact workspace) {
-    // TODO Auto-generated method stub
+  protected void deleteWorkspace(WorkspaceCompact workspace) throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
+    WorkspaceEntityCompact workspaceEntity = getWorkspaceEntity(workspace);
+    if (workspaceEntity != null) {
+      restDeleteRequest("/workspaces/workspaces/" + workspaceEntity.getId());
+    }
   }
   
   private RestResponse restGetRequest(String path) throws JsonGenerationException, JsonMappingException, IOException, URISyntaxException {
@@ -320,6 +324,11 @@ public abstract class SeleniumTestBase {
     return executeRestRequest(httpPost);
   } 
 
+  private RestResponse restDeleteRequest(String path) throws JsonGenerationException, JsonMappingException, IOException, URISyntaxException {
+    HttpDelete httpDelete = new HttpDelete(getAppUri("/rest" + path));
+    return executeRestRequest(httpDelete);
+  }
+  
   private RestResponse executeRestRequest(HttpRequestBase httpRequest) throws IOException, ClientProtocolException {
     HttpClient client = HttpClientBuilder.create().build();
 
