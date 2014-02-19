@@ -20,7 +20,7 @@ public class ContentSearchPluginDescriptor implements PluginDescriptor {
 
 	@Override
 	public String getName() {
-		return "communicator";
+		return "contentsearch";
 	}
 	
 	@Override
