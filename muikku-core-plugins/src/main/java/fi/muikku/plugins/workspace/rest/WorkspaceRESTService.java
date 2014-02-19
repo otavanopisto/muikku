@@ -228,7 +228,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @DELETE
   @Path ("/workspaces/{WORKSPACE_ENTITY_ID}")
-  public Response updateWorkspace(@PathParam ("WORKSPACE_ENTITY_ID") Long workspaceEntityId) {
+  public Response deleteWorkspace(@PathParam ("WORKSPACE_ENTITY_ID") Long workspaceEntityId, @QueryParam ("permanently") Boolean permanently) {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
@@ -239,8 +239,12 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
     
-    workspaceController.removeWorkspace(workspace);
-    
+    if (Boolean.TRUE.equals(permanently)) {
+      workspaceController.deleteWorkspace(workspace);
+    } else {
+      workspaceController.archiveWorkspace(workspace);
+    }
+
     return Response.noContent().build();
   }
   

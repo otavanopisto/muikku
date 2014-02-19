@@ -81,4 +81,8 @@ public class WorkspaceEntityDAO extends CoreDAO<WorkspaceEntity> {
     return persist(workspaceEntity);
   }
  
+  public void delete(WorkspaceEntity workspaceEntity) {
+    super.delete(workspaceEntity);
+  }
+  
 }
