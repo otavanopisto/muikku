@@ -1,5 +1,7 @@
 package fi.muikku.plugins.material;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -19,6 +21,10 @@ public class QueryFieldController {
 
   public QueryField findQueryFieldByMaterialAndName(Material material, String name) {
     return queryFieldDAO.findByMaterialAndName(material, name);
+  }
+  
+  public List<QueryField> listQueryFieldsByMaterial(Material material) {
+    return queryFieldDAO.listByMaterial(material);
   }
 
 }
