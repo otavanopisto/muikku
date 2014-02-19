@@ -117,6 +117,7 @@ public class WorkspacePluginDescriptor implements PluginDescriptor, PersistenceP
       /* Listeners */
       
       WorkspaceMaterialCreateListener.class,
+      WorkspaceMaterialDeleteListener.class,
       
       /* SchoolDataEntityInitiators */
       
