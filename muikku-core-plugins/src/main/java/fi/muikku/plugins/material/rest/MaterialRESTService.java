@@ -3,8 +3,10 @@ package fi.muikku.plugins.material.rest;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
@@ -61,7 +63,9 @@ public class MaterialRESTService extends PluginRESTService {
     ).build();
 	}
 	
-	public Response deleteHtmlMaterial(@QueryParam ("ID") Long htmlMaterialId) {
+	@DELETE
+  @Path ("/html/{ID}")
+	public Response deleteHtmlMaterial(@PathParam ("ID") Long htmlMaterialId) {
 	  // TODO: Security
     
     if (htmlMaterialId == null) {
