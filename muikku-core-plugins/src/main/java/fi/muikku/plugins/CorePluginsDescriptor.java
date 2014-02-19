@@ -17,6 +17,7 @@ import fi.muikku.plugin.TranquilEntityLookupsImpl;
 import fi.muikku.plugins.assessmentrequest.AssessmentRequestPluginDescriptor;
 import fi.muikku.plugins.calendar.CalendarPluginDescriptor;
 import fi.muikku.plugins.communicator.CommunicatorPluginDescriptor;
+import fi.muikku.plugins.contentsearch.ContentSearchPluginDescriptor;
 import fi.muikku.plugins.courselist.CourseListPluginDescriptor;
 import fi.muikku.plugins.coursepicker.CoursePickerPluginDescriptor;
 import fi.muikku.plugins.data.DataPluginDescriptor;
@@ -73,7 +74,8 @@ public class CorePluginsDescriptor implements PluginLibraryDescriptor {
       UserPluginDescriptor.class,
       StudentsPluginDescriptor.class,
       GuidanceRequestPluginDescriptor.class,
-      PermissionDataPluginDescriptor.class
+      PermissionDataPluginDescriptor.class,
+      ContentSearchPluginDescriptor.class
 		));
 	}
 	
