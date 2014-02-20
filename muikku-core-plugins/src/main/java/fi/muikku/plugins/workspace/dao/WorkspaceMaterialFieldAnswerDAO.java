@@ -34,8 +34,6 @@ public class WorkspaceMaterialFieldAnswerDAO extends PluginDAO<WorkspaceMaterial
   
   public void delete(WorkspaceMaterialFieldAnswer workspaceMaterialFieldAnswer) {
     super.delete(workspaceMaterialFieldAnswer);
-    // TODO: Why is manual flush needed?
-    flush();
   }
 
 }
