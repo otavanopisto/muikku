@@ -41,12 +41,16 @@ public class WorkspaceMaterialFieldController {
     return workspaceMaterialField;
   }
   
+  public WorkspaceMaterialField findWorkspaceMaterialFieldByWorkspaceMaterialAndName(WorkspaceMaterial workspaceMaterial, String name) {
+    return workspaceMaterialFieldDAO.findByWorkspaceMaterialAndName(workspaceMaterial, name); 
+  }
+  
   public List<WorkspaceMaterialField> listWorkspaceMaterialFieldsByWorkspaceMaterial(WorkspaceMaterial workspaceMaterial){
     return workspaceMaterialFieldDAO.listByWorkspaceMaterial(workspaceMaterial);
   }
-  
-  public WorkspaceMaterialField findWorkspaceMaterialFieldByWorkspaceMaterialAndName(WorkspaceMaterial workspaceMaterial, String name) {
-    return workspaceMaterialFieldDAO.findByWorkspaceMaterialAndName(workspaceMaterial, name); 
+
+  public List<WorkspaceMaterialField> listWorkspaceMaterialFieldsByQueryField(QueryField queryField) {
+    return workspaceMaterialFieldDAO.listByQueryField(queryField);
   }
 
   public void deleteWorkspaceMaterialField(WorkspaceMaterialField workspaceMaterialField) {
