@@ -114,15 +114,29 @@ public class WorkspaceMaterialController {
 	public List<WorkspaceMaterial> listWorkspaceMaterialsByParent(WorkspaceNode parent) {
 		return workspaceMaterialDAO.listByParent(parent);
 	}
+
+  public List<WorkspaceMaterial> listWorkspaceMaterialsByMaterial(Material material) {
+    return workspaceMaterialDAO.listByMaterial(material);
+  }
   
 	public void deleteWorkspaceMaterial(WorkspaceMaterial workspaceMaterial) {
 	  workspaceMaterialDeleteEvent.fire(new WorkspaceMaterialDeleteEvent(workspaceMaterial));
+	  
+	  List<WorkspaceNode> childNodes = workspaceNodeDAO.listByParent(workspaceMaterial);
+	  for (WorkspaceNode childNode : childNodes) {
+	    if (childNode instanceof WorkspaceMaterial) {
+	      deleteWorkspaceMaterial((WorkspaceMaterial) childNode);
+	    } else if (childNode instanceof WorkspaceFolder) {
+	      deleteWorkspaceFolder((WorkspaceFolder) childNode);
+	    } 
+	  }
+	  
 	  workspaceMaterialDAO.delete(workspaceMaterial);
   }
   
   /* Root Folder */
-	
-	public WorkspaceRootFolder createWorkspaceRootFolder(WorkspaceEntity workspaceEntity) {
+
+  public WorkspaceRootFolder createWorkspaceRootFolder(WorkspaceEntity workspaceEntity) {
     WorkspaceRootFolder workspaceRootFolder = workspaceRootFolderDAO.create(workspaceEntity);
     workspaceRootFolderCreateEvent.fire(new WorkspaceRootFolderCreateEvent(workspaceRootFolder));
     return workspaceRootFolder;
@@ -152,5 +166,9 @@ public class WorkspaceMaterialController {
 	public WorkspaceFolder findWorkspaceFolderById(Long workspaceFolderId) {
 		return workspaceFolderDAO.findById(workspaceFolderId);
 	}
+  
+  public void deleteWorkspaceFolder(WorkspaceFolder workspaceFolder) {
+    workspaceFolderDAO.delete(workspaceFolder);
+  }
 
 }
