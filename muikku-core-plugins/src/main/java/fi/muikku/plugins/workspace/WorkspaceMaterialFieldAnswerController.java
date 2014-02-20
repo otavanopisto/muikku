@@ -130,6 +130,10 @@ public class WorkspaceMaterialFieldAnswerController {
     return workspaceMaterialChecklistFieldAnswerOptionDAO.findByFieldAnswerAndOption(fieldAnswer, option);
   }
 
+  public List<WorkspaceMaterialChecklistFieldAnswerOption> listWorkspaceMaterialChecklistFieldAnswerOptions(WorkspaceMaterialChecklistFieldAnswer fieldAnsewr) {
+    return workspaceMaterialChecklistFieldAnswerOptionDAO.listByFieldAnswer(fieldAnsewr);
+  }
+
   public void deleteWorkspaceMaterialChecklistFieldAnswerOption(WorkspaceMaterialChecklistFieldAnswerOption answerOption) {
     workspaceMaterialChecklistFieldAnswerOptionDAO.delete(answerOption);
   }
