@@ -121,6 +121,8 @@ public class WorkspacePluginDescriptor implements PluginDescriptor, PersistenceP
       WorkspaceMaterialCreateListener.class,
       WorkspaceMaterialDeleteListener.class,
       WorkspaceMaterialFieldDeleteListener.class,
+      HtmlMaterialDeleteListener.class,
+      QueryFieldDeleteListener.class,
       
       /* SchoolDataEntityInitiators */
       
