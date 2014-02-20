@@ -18,7 +18,7 @@ public class DummyMailBridge implements MailBridge {
   private Logger logger;
   
   @Override
-  public void sendMail(MailType mimeType, String from, List<String> to, List<String> cc, List<String> bcc, String content, List<MailAttachment> attachments) {
+  public void sendMail(MailType mimeType, String from, List<String> to, List<String> cc, List<String> bcc, String subject, String content, List<MailAttachment> attachments) {
     StringBuilder message = new StringBuilder();
     message.append("DUMMY MAIL: Type: ");
     message.append(mimeType.toString());
@@ -39,6 +39,8 @@ public class DummyMailBridge implements MailBridge {
       message.append(email);
       message.append(" ");
     }
+    message.append("Subject: ");
+    message.append(subject);
     message.append("Content: ");
     message.append(content);
     message.append(" Attachments: ");
