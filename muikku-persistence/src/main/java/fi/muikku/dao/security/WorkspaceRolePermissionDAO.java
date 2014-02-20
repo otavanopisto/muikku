@@ -1,5 +1,7 @@
 package fi.muikku.dao.security;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -54,9 +56,23 @@ public class WorkspaceRolePermissionDAO extends CoreDAO<WorkspaceRolePermission>
     return getSingleResult(entityManager.createQuery(criteria));
   }
 
+  public List<WorkspaceRolePermission> listByWorkspaceEntity(WorkspaceEntity workspaceEntity) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceRolePermission> criteria = criteriaBuilder.createQuery(WorkspaceRolePermission.class);
+    Root<WorkspaceRolePermission> root = criteria.from(WorkspaceRolePermission.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.equal(root.get(WorkspaceRolePermission_.workspace), workspaceEntity)
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+  
   @Override
-  public void delete(WorkspaceRolePermission workspaceUserRolePermission) {
-    super.delete(workspaceUserRolePermission);
+  public void delete(WorkspaceRolePermission workspaceRolePermission) {
+    super.delete(workspaceRolePermission);
   }
   
 }

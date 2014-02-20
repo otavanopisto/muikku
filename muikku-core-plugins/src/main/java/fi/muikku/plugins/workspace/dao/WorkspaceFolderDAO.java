@@ -18,4 +18,8 @@ public class WorkspaceFolderDAO extends PluginDAO<WorkspaceFolder> {
 		return persist(workspaceFolder);
 	}
 
+	public void delete(WorkspaceFolder workspaceFolder) {
+	  super.delete(workspaceFolder);
+	}
+	
 }

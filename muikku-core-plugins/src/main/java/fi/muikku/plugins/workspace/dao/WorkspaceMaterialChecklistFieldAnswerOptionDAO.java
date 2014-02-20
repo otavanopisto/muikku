@@ -1,5 +1,7 @@
 package fi.muikku.plugins.workspace.dao;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -39,6 +41,20 @@ public class WorkspaceMaterialChecklistFieldAnswerOptionDAO extends PluginDAO<Wo
     );
 
     return getSingleResult(entityManager.createQuery(criteria));
+  }
+  
+  public List<WorkspaceMaterialChecklistFieldAnswerOption> listByFieldAnswer(WorkspaceMaterialChecklistFieldAnswer fieldAnswer) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceMaterialChecklistFieldAnswerOption> criteria = criteriaBuilder.createQuery(WorkspaceMaterialChecklistFieldAnswerOption.class);
+    Root<WorkspaceMaterialChecklistFieldAnswerOption> root = criteria.from(WorkspaceMaterialChecklistFieldAnswerOption.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.equal(root.get(WorkspaceMaterialChecklistFieldAnswerOption_.fieldAnswer), fieldAnswer)
+    );
+
+    return entityManager.createQuery(criteria).getResultList();
   }
   
   @Override

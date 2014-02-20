@@ -57,8 +57,26 @@ public class QuerySelectFieldOptionDAO extends PluginDAO<QuerySelectFieldOption>
     return getSingleResult(entityManager.createQuery(criteria));
   }
 
+  public List<QuerySelectFieldOption> listBySelectField(QuerySelectField selectField) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<QuerySelectFieldOption> criteria = criteriaBuilder.createQuery(QuerySelectFieldOption.class);
+    Root<QuerySelectFieldOption> root = criteria.from(QuerySelectFieldOption.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.equal(root.get(QuerySelectFieldOption_.selectField), selectField)
+    );
+
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
   public QuerySelectFieldOption updateText(QuerySelectFieldOption querySelectFieldOption, String text) {
     querySelectFieldOption.setText(text);
     return persist(querySelectFieldOption);
+  }
+  
+  public void delete(QuerySelectFieldOption querySelectFieldOption) {
+    super.delete(querySelectFieldOption);
   }
 }

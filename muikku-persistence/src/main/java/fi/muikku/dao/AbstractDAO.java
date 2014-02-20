@@ -46,6 +46,8 @@ public abstract class AbstractDAO<T> implements Serializable {
 
   protected void delete(T e) {
     getEntityManager().remove(e);
+    // TODO: Why is manual flush needed?
+    flush();
   }
 
   public void flush() {

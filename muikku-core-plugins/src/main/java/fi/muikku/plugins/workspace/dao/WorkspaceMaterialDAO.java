@@ -58,5 +58,23 @@ public class WorkspaceMaterialDAO extends PluginDAO<WorkspaceMaterial> {
    
     return getSingleResult(entityManager.createQuery(criteria));
 	}
+
+  public List<WorkspaceMaterial> listByMaterial(Material material) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceMaterial> criteria = criteriaBuilder.createQuery(WorkspaceMaterial.class);
+    Root<WorkspaceMaterial> root = criteria.from(WorkspaceMaterial.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.equal(root.get(WorkspaceMaterial_.material), material)
+    );
+   
+    return entityManager.createQuery(criteria).getResultList();
+  }
+	
+	public void delete(WorkspaceMaterial workspaceMaterial) {
+	  super.delete(workspaceMaterial);
+	}
 	
 }

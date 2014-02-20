@@ -1,5 +1,7 @@
 package fi.muikku.plugins.workspace.dao;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -23,7 +25,7 @@ public class WorkspaceMaterialReplyDAO extends PluginDAO<WorkspaceMaterialReply>
 		return persist(workspaceMaterialReply);
 	}
 
-  public WorkspaceMaterialReply findByMaterialAndUserId(WorkspaceMaterial workspaceMaterial, Long userEntityId) {
+  public WorkspaceMaterialReply findByWorkspaceMaterialAndUserEntityId(WorkspaceMaterial workspaceMaterial, Long userEntityId) {
     EntityManager entityManager = getEntityManager();
 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -38,6 +40,26 @@ public class WorkspaceMaterialReplyDAO extends PluginDAO<WorkspaceMaterialReply>
     );
 
     return getSingleResult(entityManager.createQuery(criteria));
+  }
+
+  public List<WorkspaceMaterialReply> listByWorkspaceMaterial(WorkspaceMaterial workspaceMaterial) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceMaterialReply> criteria = criteriaBuilder.createQuery(WorkspaceMaterialReply.class);
+    Root<WorkspaceMaterialReply> root = criteria.from(WorkspaceMaterialReply.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(WorkspaceMaterialReply_.workspaceMaterial), workspaceMaterial)
+      )
+    );
+
+    return entityManager.createQuery(criteria).getResultList();
+  }
+  
+  public void delete(WorkspaceMaterialReply workspaceMaterialReply) {
+    super.delete(workspaceMaterialReply);
   }
   
 }
