@@ -1,6 +1,5 @@
 package fi.muikku.plugins.workspace.test.ui;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,6 +25,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
@@ -108,31 +108,33 @@ public abstract class SeleniumTestBase {
   protected String getStudent1Password() {
     return STUDENT1_PASSWORD;
   }
+  
+  private String[] getSqlFiles() throws NoSuchMethodException, SecurityException {
+    Method method = getClass().getMethod(testName.getMethodName(), new Class<?>[] {});
+    TestSqlFiles annotation = method.getAnnotation(TestSqlFiles.class);
+    if (annotation != null) {
+      return annotation.value();
+    }
+    
+    return null;
+  }
 
   @Before
   public void baseSetUp() throws Exception {
-    Logger.getLogger(getClass().getCanonicalName()).log(Level.INFO, "Starting setUp.");
-    Connection connection = getConnection();
-    try {
-      String[] files = new String[] {};
-
-      Method method = getClass().getMethod(testName.getMethodName(), new Class<?>[] {});
-      if (method != null) {
-        TestSqlFiles annotation = method.getAnnotation(TestSqlFiles.class);
-        if (annotation != null) {
-          files = annotation.value();
+    String[] sqlFiles = getSqlFiles();
+    if (sqlFiles != null && sqlFiles.length > 0) {
+      Connection connection = getConnection();
+      try {
+        String[] files = new String[] {};      
+        for (String file : files) {
+          runSql(connection, "sql/" + file + "-setup.sql");
         }
-        Logger.getLogger(getClass().getCanonicalName()).log(Level.INFO, "Processing files: " + files.toString());
+        
+        connection.commit();
+        Logger.getLogger(getClass().getCanonicalName()).log(Level.INFO, "Committed setUp.");
+      } finally {
+        connection.close();
       }
-      
-      for (String file : files) {
-        runSql(connection, "sql/" + file + "-setup.sql");
-      }
-      
-      connection.commit();
-      Logger.getLogger(getClass().getCanonicalName()).log(Level.INFO, "Committed setUp.");
-    } finally {
-      connection.close();
     }
   }
 
@@ -141,27 +143,27 @@ public abstract class SeleniumTestBase {
     Logger.getLogger(getClass().getCanonicalName()).log(Level.INFO, "Starting tearDown.");
     driver.quit();
 
-    Connection connection = getConnection();
-    try {
-      String[] files = new String[] {};
-      
-      Method method = getClass().getMethod(testName.getMethodName(), new Class<?>[] {});
-      if (method != null) {
-        files = method.getAnnotation(TestSqlFiles.class).value();
-        Logger.getLogger(getClass().getCanonicalName()).log(Level.INFO, "Processing files: " + files.toString());
+    String[] sqlFiles = getSqlFiles();
+    if (sqlFiles != null && sqlFiles.length > 0) {
+      Connection connection = getConnection();
+      try {
+        Method method = getClass().getMethod(testName.getMethodName(), new Class<?>[] {});
+        if (method != null) {
+          sqlFiles = method.getAnnotation(TestSqlFiles.class).value();
+        }
+        
+        List<String> filesList = Arrays.asList(sqlFiles);
+        Collections.reverse(filesList);
+        
+        for (String file : filesList) {
+          runSql(connection, "sql/" + file + "-teardown.sql");
+        }
+        
+        connection.commit();
+        Logger.getLogger(getClass().getCanonicalName()).log(Level.INFO, "Committed tearDown.");
+      } finally {
+        connection.close();
       }
-      
-      List<String> filesList = Arrays.asList(files);
-      Collections.reverse(filesList);
-      
-      for (String file : filesList) {
-        runSql(connection, "sql/" + file + "-teardown.sql");
-      }
-      
-      connection.commit();
-      Logger.getLogger(getClass().getCanonicalName()).log(Level.INFO, "Committed tearDown.");
-    } finally {
-      connection.close();
     }
   }
 
@@ -170,14 +172,6 @@ public abstract class SeleniumTestBase {
     String url = System.getProperty("integrationtest.datasource.jdbc.muikku.url");
     String username = System.getProperty("integrationtest.datasource.jdbc.muikku.username");
     String password = System.getProperty("integrationtest.datasource.jdbc.muikku.password");
-    
-    System.out.println(driver);
-    System.out.println(url);
-    System.out.println(username);
-    System.out.println(password);
-    
-    System.out.println(new File(".").getAbsolutePath());
-    
     Class.forName(driver);
     return DriverManager.getConnection(url, username, password);
   }
@@ -294,18 +288,31 @@ public abstract class SeleniumTestBase {
     return null;
   }
 
-  protected void deleteWorkspaceMaterial(WorkspaceMaterialCompact workspaceMaterial) {
-    // TODO Auto-generated method stub
-    
+  protected void deleteWorkspaceMaterial(WorkspaceMaterialCompact workspaceMaterial) throws JsonGenerationException, JsonMappingException, IOException, URISyntaxException {
+    RestResponse response = restDeleteRequest("/workspace/materials/" + workspaceMaterial.getId());
+    if (response.getStatusCode() != 204) {
+      throw new IOException(response.toString());
+    }
   }
 
-  protected void deleteHtmlMaterial(HtmlMaterialCompact htmlMaterial) {
-    // TODO Auto-generated method stub
-    
+  protected void deleteHtmlMaterial(HtmlMaterialCompact htmlMaterial) throws JsonGenerationException, JsonMappingException, IOException, URISyntaxException {
+    RestResponse response = restDeleteRequest("/materials/html/" + htmlMaterial.getId());
+    if (response.getStatusCode() != 204) {
+      throw new IOException(response.toString());
+    }
   }
 
-  protected void deleteWorkspace(WorkspaceCompact workspace) {
-    // TODO Auto-generated method stub
+  protected void deleteWorkspace(WorkspaceCompact workspace) throws JsonParseException, JsonMappingException, IOException, URISyntaxException {
+    WorkspaceEntityCompact workspaceEntity = getWorkspaceEntity(workspace);
+    if (workspaceEntity != null) {
+      RestResponse response = restDeleteRequest("/workspace/workspaces/" + workspaceEntity.getId() + "?permanently=true");
+      
+      if (response.getStatusCode() != 204) {
+        throw new IOException(response.toString());
+      }
+    } else {
+      throw new IOException("Could not find workspaceEntity for " + workspace.getSchoolDataSource() + "/" + workspace.getIdentifier());
+    }
   }
   
   private RestResponse restGetRequest(String path) throws JsonGenerationException, JsonMappingException, IOException, URISyntaxException {
@@ -320,6 +327,11 @@ public abstract class SeleniumTestBase {
     return executeRestRequest(httpPost);
   } 
 
+  private RestResponse restDeleteRequest(String path) throws JsonGenerationException, JsonMappingException, IOException, URISyntaxException {
+    HttpDelete httpDelete = new HttpDelete(getAppUri("/rest" + path));
+    return executeRestRequest(httpDelete);
+  }
+  
   private RestResponse executeRestRequest(HttpRequestBase httpRequest) throws IOException, ClientProtocolException {
     HttpClient client = HttpClientBuilder.create().build();
 
@@ -332,10 +344,10 @@ public abstract class SeleniumTestBase {
     try {
       int status = response.getStatusLine().getStatusCode();
       if (status == 204) {
-        return new RestResponse(status, null);
+        return new RestResponse(httpRequest, status, null);
       }
       
-      return new RestResponse(status, IOUtils.toString(entity.getContent()));
+      return new RestResponse(httpRequest, status, IOUtils.toString(entity.getContent()));
     } finally {
       EntityUtils.consume(entity);
     }
@@ -353,12 +365,12 @@ public abstract class SeleniumTestBase {
   
   private class RestResponse {
     
-    public RestResponse(int statusCode, String content) {
+    public RestResponse(HttpRequestBase httpRequest, int statusCode, String content) {
+      this.httpRequest = httpRequest;
       this.statusCode = statusCode;
       this.content = content;
     }
     
-    @SuppressWarnings("unused")
     public int getStatusCode() {
       return statusCode;
     }
@@ -367,6 +379,11 @@ public abstract class SeleniumTestBase {
       return content;
     }
     
+    public String toString() {
+      return httpRequest.getMethod() + ": " + httpRequest.getURI().toString() + " returned " + getStatusCode();
+    }
+    
+    private HttpRequestBase httpRequest;
     private int statusCode;
     private String content;
   }

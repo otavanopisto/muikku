@@ -1,17 +1,16 @@
 package fi.muikku.dao.workspace;
 
-import fi.muikku.dao.CoreDAO;
-import fi.muikku.dao.DAO;
-import fi.muikku.model.workspace.WorkspaceSettings;
-import fi.muikku.model.workspace.WorkspaceRoleEntity;
-import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.model.workspace.WorkspaceSettings_;
-
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.muikku.dao.CoreDAO;
+import fi.muikku.dao.DAO;
+import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.model.workspace.WorkspaceRoleEntity;
+import fi.muikku.model.workspace.WorkspaceSettings;
+import fi.muikku.model.workspace.WorkspaceSettings_;
 
 @DAO
 public class WorkspaceSettingsDAO extends CoreDAO<WorkspaceSettings> {
@@ -28,7 +27,7 @@ public class WorkspaceSettingsDAO extends CoreDAO<WorkspaceSettings> {
     return courseSettings;
   }
 
-  public WorkspaceSettings findByWorkspace(WorkspaceEntity workspaceEntity) {
+  public WorkspaceSettings findByWorkspaceEntity(WorkspaceEntity workspaceEntity) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -40,6 +39,10 @@ public class WorkspaceSettingsDAO extends CoreDAO<WorkspaceSettings> {
     );
     
     return getSingleResult(entityManager.createQuery(criteria));
+  }
+  
+  public void delete(WorkspaceSettings workspaceSettings) {
+    super.delete(workspaceSettings);
   }
   
 }

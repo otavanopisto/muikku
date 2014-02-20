@@ -1,5 +1,7 @@
 package fi.muikku.plugins.workspace;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -20,8 +22,15 @@ public class WorkspaceMaterialReplyController {
     return workspaceMaterialReplyDAO.create(workspaceMaterial, userEntity.getId());
   }
 
-  public WorkspaceMaterialReply findMaterialReplyByMaterialAndUserEntity(WorkspaceMaterial workspaceMaterial, UserEntity userEntity) {
-    return workspaceMaterialReplyDAO.findByMaterialAndUserId(workspaceMaterial, userEntity.getId());
+  public WorkspaceMaterialReply findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(WorkspaceMaterial morkspaceMaterial, UserEntity userEntity) {
+    return workspaceMaterialReplyDAO.findByWorkspaceMaterialAndUserEntityId(morkspaceMaterial, userEntity.getId());
   }
 
+  public List<WorkspaceMaterialReply> listWorkspaceMaterialRepliesByWorkspaceMaterial(WorkspaceMaterial workspaceMaterial) {
+    return workspaceMaterialReplyDAO.listByWorkspaceMaterial(workspaceMaterial);
+  }
+  
+  public void deleteWorkspaceMaterialReply(WorkspaceMaterialReply workspaceMaterialReply) {
+    workspaceMaterialReplyDAO.delete(workspaceMaterialReply); 
+  }
 }

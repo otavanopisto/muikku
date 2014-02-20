@@ -32,6 +32,7 @@ import org.xml.sax.SAXException;
 
 import fi.muikku.plugins.material.dao.HtmlMaterialDAO;
 import fi.muikku.plugins.material.events.HtmlMaterialCreateEvent;
+import fi.muikku.plugins.material.events.HtmlMaterialDeleteEvent;
 import fi.muikku.plugins.material.events.HtmlMaterialUpdateEvent;
 import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.material.processing.HtmlMaterialAfterProcessingContext;
@@ -52,7 +53,10 @@ public class HtmlMaterialController {
 	
 	@Inject
 	private Event<HtmlMaterialCreateEvent> materialCreateEvent;
-
+	
+	@Inject
+  private Event<HtmlMaterialDeleteEvent> materialDeleteEvent;
+  
   @SuppressWarnings("unused")
   @Inject
   private Event<HtmlMaterialUpdateEvent> materialUpdateEvent;
@@ -66,6 +70,11 @@ public class HtmlMaterialController {
 	public HtmlMaterial findHtmlMaterialById(Long id) {
 		return htmlMaterialDAO.findById(id);
 	}
+
+  public void deleteHtmlMaterial(HtmlMaterial htmlMaterial) {
+    materialDeleteEvent.fire(new HtmlMaterialDeleteEvent(htmlMaterial));
+    htmlMaterialDAO.delete(htmlMaterial);
+  }
 	
 	public Document getProcessedHtmlDocument(HtmlMaterial htmlMaterial) throws SAXException, IOException {
     return processHtml(htmlMaterial.getId(), htmlMaterial.getHtml());

@@ -9,12 +9,14 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import fi.muikku.dao.base.SchoolDataSourceDAO;
+import fi.muikku.dao.security.WorkspaceRolePermissionDAO;
 import fi.muikku.dao.workspace.WorkspaceEntityDAO;
 import fi.muikku.dao.workspace.WorkspaceSettingsDAO;
 import fi.muikku.dao.workspace.WorkspaceTypeEntityDAO;
 import fi.muikku.dao.workspace.WorkspaceTypeSchoolDataIdentifierDAO;
 import fi.muikku.dao.workspace.WorkspaceUserEntityDAO;
 import fi.muikku.model.base.SchoolDataSource;
+import fi.muikku.model.security.WorkspaceRolePermission;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleEntity;
@@ -27,7 +29,6 @@ import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceType;
 import fi.muikku.schooldata.entity.WorkspaceUser;
-import fi.muikku.session.SessionController;
 
 @Dependent
 @Stateless
@@ -38,9 +39,6 @@ public class WorkspaceController {
 	
 	@Inject
 	private WorkspaceSchoolDataController workspaceSchoolDataController;
-  
-  @Inject
-  private UserSchoolDataController userSchoolDataController;
 
 	@Inject
 	private WorkspaceEntityDAO workspaceEntityDAO;
@@ -55,9 +53,6 @@ public class WorkspaceController {
 	private SchoolDataSourceDAO schoolDataSourceDAO;
 	
 	@Inject
-	private SessionController sessionController;
-	
-	@Inject
 	private WorkspaceSettingsDAO workspaceSettingsDAO;
 
 	@Inject
@@ -65,6 +60,9 @@ public class WorkspaceController {
 	
 	@Inject
 	private UserController userController;
+
+  @Inject
+  private WorkspaceRolePermissionDAO workspaceRolePermissionDAO;
 	
 	/* WorkspaceTypeEntity */
 	
@@ -161,8 +159,8 @@ public class WorkspaceController {
 	public Workspace updateWorkspace(Workspace workspace) {
 	  return workspaceSchoolDataController.updateWorkspace(workspace);
   }
-
-  public void removeWorkspace(Workspace workspace) {
+  
+  public void archiveWorkspace(Workspace workspace) {
     WorkspaceEntity workspaceEntity = workspaceSchoolDataController.findWorkspaceEntity(workspace);
     if (workspaceEntity != null) {
       archiveWorkspaceEntity(workspaceEntity);
@@ -171,8 +169,17 @@ public class WorkspaceController {
     workspaceSchoolDataController.removeWorkspace(workspace);
   }
 
+  public void deleteWorkspace(Workspace workspace) {
+    WorkspaceEntity workspaceEntity = workspaceSchoolDataController.findWorkspaceEntity(workspace);
+    if (workspaceEntity != null) {
+      deleteWorkspaceEntity(workspaceEntity);
+    }
+    
+    workspaceSchoolDataController.removeWorkspace(workspace);
+  }
+
 	/* Workspace Entity */
-	
+
   public WorkspaceEntity findWorkspaceEntity(Workspace workspace) {
 		return workspaceSchoolDataController.findWorkspaceEntity(workspace);
 	}
@@ -206,9 +213,34 @@ public class WorkspaceController {
   public WorkspaceEntity archiveWorkspaceEntity(WorkspaceEntity workspaceEntity) {
     return workspaceEntityDAO.updateArchived(workspaceEntity, Boolean.TRUE);
   }
+  
+  private void deleteWorkspaceEntity(WorkspaceEntity workspaceEntity) {
+    // Delete role permissions
+    
+    List<WorkspaceRolePermission> workspaceRolePermissions = workspaceRolePermissionDAO.listByWorkspaceEntity(workspaceEntity);
+    for (WorkspaceRolePermission workspaceRolePermission : workspaceRolePermissions) {
+      workspaceRolePermissionDAO.delete(workspaceRolePermission);
+    }
+    
+    // Delete settings
+    
+    WorkspaceSettings workspaceSettings = findWorkspaceSettings(workspaceEntity);
+    if (workspaceSettings != null) {
+      workspaceSettingsDAO.delete(workspaceSettings);
+    }
+    
+    // Workspace Users
+
+    List<WorkspaceUser> workspaceUsers = listWorkspaceUsers(workspaceEntity);
+    for (WorkspaceUser workspaceUser : workspaceUsers) {
+      deleteWorkspaceUser(workspaceUser);
+    }
+
+    workspaceEntityDAO.delete(workspaceEntity);
+  }
 
 	/* WorkspaceUsers */
-  
+
   public WorkspaceUser createWorkspaceUser(WorkspaceEntity workspaceEntity, UserEntity userEntity, WorkspaceRoleEntity role) {
     Workspace workspace = findWorkspace(workspaceEntity);
     User user = userController.findUser(userEntity);
@@ -235,6 +267,14 @@ public class WorkspaceController {
 
 		return null;
 	}
+  
+  private void deleteWorkspaceUser(WorkspaceUser workspaceUser) {
+    // TODO: Remove users via bridge also
+    WorkspaceUserEntity workspaceUserEntity = findWorkspaceUserEntity(workspaceUser);
+    if (workspaceUserEntity != null) {
+      workspaceUserEntityDAO.delete(workspaceUserEntity);
+    }
+  }
 
 	public int countWorkspaceUsers(WorkspaceEntity workspaceEntity) {
 		// TODO Optimize
@@ -262,7 +302,7 @@ public class WorkspaceController {
   /* WorkspaceSettings */
   
   public WorkspaceSettings findWorkspaceSettings(WorkspaceEntity workspaceEntity) {
-    return workspaceSettingsDAO.findByWorkspace(workspaceEntity);
+    return workspaceSettingsDAO.findByWorkspaceEntity(workspaceEntity);
   }
   
 }
