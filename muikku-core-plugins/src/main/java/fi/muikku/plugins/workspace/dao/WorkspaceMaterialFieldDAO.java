@@ -60,11 +60,23 @@ public class WorkspaceMaterialFieldDAO extends PluginDAO<WorkspaceMaterialField>
 
     return entityManager.createQuery(criteria).getResultList();
   }
+
+  public List<WorkspaceMaterialField> listByQueryField(QueryField queryField) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceMaterialField> criteria = criteriaBuilder.createQuery(WorkspaceMaterialField.class);
+    Root<WorkspaceMaterialField> root = criteria.from(WorkspaceMaterialField.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.equal(root.get(WorkspaceMaterialField_.queryField), queryField)
+    );
+
+    return entityManager.createQuery(criteria).getResultList();
+  }
   
   public void delete(WorkspaceMaterialField workspaceMaterialField) {
     super.delete(workspaceMaterialField);
-    // TODO: Why is manual flush needed?
-    flush();
   }
 
 }
