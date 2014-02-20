@@ -16,6 +16,6 @@ public class WorkspaceForumArea extends ForumArea {
     this.workspace = workspace;
   }
   
-  @Column (name = "course_id")
+  @Column (name = "workspace_id")
   private Long workspace;
 }

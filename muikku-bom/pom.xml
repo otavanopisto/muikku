@@ -27,6 +27,9 @@
     <apache-httpcomponents.version>4.1.2</apache-httpcomponents.version>
     <prettyfaces-jsf2.version>3.3.3</prettyfaces-jsf2.version>
     <nekohtml.version>1.9.6.2</nekohtml.version>
+    <junit.version>4.10</junit.version>
+    <sauce_junit.version>[1.0.0,)</sauce_junit.version>
+    <selenium-java.version>2.39.0</selenium-java.version>
   </properties>
 
   <dependencyManagement>
@@ -172,11 +175,11 @@
         <version>${muikku.version}</version>
       </dependency> 
 
-    <dependency>
-      <groupId>fi.muikku</groupId>
-      <artifactId>core-plugins</artifactId>
+      <dependency>
+        <groupId>fi.muikku</groupId>
+        <artifactId>core-plugins</artifactId>
         <version>${muikku.version}</version>
-    </dependency>
+      </dependency>
     
       <dependency>
         <groupId>fi.muikku</groupId>
@@ -225,6 +228,31 @@
         <artifactId>nekohtml</artifactId>
         <version>${nekohtml.version}</version>
       </dependency>   
+      
+      <!-- JUnit -->
+      
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit.version}</version>
+        <scope>test</scope>
+      </dependency>
+      
+      <!-- Selenium -->
+     
+      <dependency>
+        <groupId>com.saucelabs</groupId>
+        <artifactId>sauce_junit</artifactId>
+        <version>${sauce_junit.version}</version>
+        <scope>test</scope>
+      </dependency>
+     
+      <dependency>
+        <groupId>org.seleniumhq.selenium</groupId>
+        <artifactId>selenium-java</artifactId>
+        <version>${selenium-java.version}</version>
+        <scope>test</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 

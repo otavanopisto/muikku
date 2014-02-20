@@ -37,15 +37,9 @@ public class CommunicatorController {
   @Inject
   private SessionController sessionController;
 
-//  @Inject
-//  private CourseEntityDAO courseDAO;
-  
   @Inject
   private fi.muikku.schooldata.UserController userController;
   
-//  @Inject
-//  private CourseSchoolDataController courseSchoolDataController;
-
   @Inject
   private InboxCommunicatorMessageDAO communicatorMessageDAO;
   
