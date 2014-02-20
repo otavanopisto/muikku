@@ -19,8 +19,10 @@ public class WorkspaceMaterialDeleteListener {
 
   @Inject
   private WorkspaceMaterialReplyController workspaceMaterialReplyController;
+  
   public void onWorkspaceMaterialDelete(@Observes WorkspaceMaterialDeleteEvent event) {
     WorkspaceMaterial workspaceMaterial = event.getWorkspaceNode();
+    
     List<WorkspaceMaterialField> workspaceMaterialFields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByWorkspaceMaterial(workspaceMaterial);
     for (WorkspaceMaterialField workspaceMaterialField : workspaceMaterialFields) {
       workspaceMaterialFieldController.deleteWorkspaceMaterialField(workspaceMaterialField);
