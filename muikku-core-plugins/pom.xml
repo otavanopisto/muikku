@@ -10,8 +10,9 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
   <properties>
+    <skipTests>true</skipTests>
     <tranquil-model-gen.version>1.0.3-SNAPSHOT</tranquil-model-gen.version>
-    <!-- <instrumentation-hibernate.version>4.0.1.Final</instrumentation-hibernate.version> 
+    <!-- <instrumentation-hibernate.version>4.0.1.Final</instrumentation-hibernate.version>
       <instrumentation-javassist.version>3.18.0-GA</instrumentation-javassist.version> -->
     <cargo.plugin.version>1.4.6</cargo.plugin.version>
     <integrationtest.serverport>8080</integrationtest.serverport>
@@ -55,9 +56,9 @@
                   </action>
                 </pluginExecution>
 
-                <!-- <pluginExecution> <pluginExecutionFilter> <groupId>org.apache.maven.plugins</groupId> 
-                  <artifactId>maven-antrun-plugin</artifactId> <versionRange>[1.7,)</versionRange> 
-                  <goals> <goal>run</goal> </goals> </pluginExecutionFilter> <action> <ignore 
+                <!-- <pluginExecution> <pluginExecutionFilter> <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-antrun-plugin</artifactId> <versionRange>[1.7,)</versionRange>
+                  <goals> <goal>run</goal> </goals> </pluginExecutionFilter> <action> <ignore
                   /> </action> </pluginExecution> -->
 
               </pluginExecutions>
@@ -125,6 +126,7 @@
         <artifactId>maven-failsafe-plugin</artifactId>
         <version>2.12</version>
         <configuration>
+          <skipTests>${skipTests}</skipTests>
           <systemPropertyVariables>
             <integrationtest.serverhost>${integrationtest.serverhost}</integrationtest.serverhost>
             <integrationtest.serverport>${integrationtest.serverport}</integrationtest.serverport>
@@ -151,6 +153,7 @@
         <artifactId>cargo-maven2-plugin</artifactId>
         <version>${cargo.plugin.version}</version>
         <configuration>
+          <skip>${skipTests}</skip>
           <container>
             <containerId>jboss71x</containerId>
             <zipUrlInstaller>
@@ -348,17 +351,17 @@
           </execution>
         </executions>
       </plugin>
-      <!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-antrun-plugin</artifactId> 
-        <version>1.7</version> <dependencies> <dependency> <groupId>org.hibernate</groupId> 
-        <artifactId>hibernate-entitymanager</artifactId> <version>${instrumentation-hibernate.version}</version> 
-        </dependency> <dependency> <groupId>org.javassist</groupId> <artifactId>javassist</artifactId> 
-        <version>${instrumentation-javassist.version}</version> </dependency> </dependencies> 
-        <executions> <execution> <phase>process-classes</phase> <goals> <goal>run</goal> 
-        </goals> </execution> </executions> <configuration> <target> <taskdef name="instrument" 
-        classname="org.hibernate.tool.instrument.javassist.InstrumentTask"> <classpath> 
-        <path refid="maven.runtime.classpath" /> <path refid="maven.plugin.classpath" 
-        /> </classpath> </taskdef> <instrument verbose="true"> <fileset dir="${project.build.outputDirectory}"> 
-        <include name="**fi/muikku/plugins/**/*.class" /> </fileset> </instrument> 
+      <!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.7</version> <dependencies> <dependency> <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-entitymanager</artifactId> <version>${instrumentation-hibernate.version}</version>
+        </dependency> <dependency> <groupId>org.javassist</groupId> <artifactId>javassist</artifactId>
+        <version>${instrumentation-javassist.version}</version> </dependency> </dependencies>
+        <executions> <execution> <phase>process-classes</phase> <goals> <goal>run</goal>
+        </goals> </execution> </executions> <configuration> <target> <taskdef name="instrument"
+        classname="org.hibernate.tool.instrument.javassist.InstrumentTask"> <classpath>
+        <path refid="maven.runtime.classpath" /> <path refid="maven.plugin.classpath"
+        /> </classpath> </taskdef> <instrument verbose="true"> <fileset dir="${project.build.outputDirectory}">
+        <include name="**fi/muikku/plugins/**/*.class" /> </fileset> </instrument>
         </target> </configuration> </plugin> -->
     </plugins>
   </build>
@@ -384,8 +387,8 @@
       <artifactId>httpcore</artifactId>
       <!-- <scope>provided</scope> -->
     </dependency>
-    
-    <!-- <dependency> <groupId>net.java.dev.rome</groupId> <artifactId>rome</artifactId> 
+
+    <!-- <dependency> <groupId>net.java.dev.rome</groupId> <artifactId>rome</artifactId>
       <version>1.0.0</version> </dependency> -->
 
     <!-- Calendar dependencies -->
@@ -460,7 +463,7 @@
       <artifactId>selenium-java</artifactId>
       <scope>test</scope>
     </dependency>
-    
+
     <!-- The compile-scoped dependencies are incompatible with newest Selenium -->
 
     <dependency>
@@ -476,14 +479,14 @@
       <version>4.3</version>
       <scope>test</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>15.0</version>
       <scope>test</scope>
     </dependency>
-    
+
 
     <!-- Sauce Labs -->
 
