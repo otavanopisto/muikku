@@ -76,6 +76,19 @@ public class LoginBackingBean {
               case NEW_ACCOUNT:
                 // User created new account
               break;
+              case CONFLICT:
+                switch (result.getConflictReason()) {
+                  case EMAIL_BELONGS_TO_ANOTHER_USER:
+                    // Could not login, one or more of the email addresses belong to another user
+                  break;
+                  case LOGGED_IN_AS_DIFFERENT_USER:
+                    // Could not login, user is already logged in as a another user
+                  break;
+                  case SEVERAL_USERS_BY_EMAILS:
+                    // Could not login, several users found by email addresses
+                  break;
+                }                 
+              break;
               case PROCESSING:
                 throw new AuthenticationHandleException("Erroneous authentication provider status: PROCESSING without redirectUrl");
             }
