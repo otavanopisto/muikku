@@ -82,6 +82,8 @@ public class LoginBackingBean {
                   break;
                 }                 
               break;
+              case INVALID_CREDENTIALS:
+                throw new AuthenticationHandleException("Erroneous authentication provider status: INVALID_CREDENTIALS in external login page");
               case PROCESSING:
                 throw new AuthenticationHandleException("Erroneous authentication provider status: PROCESSING without redirectUrl");
             }
