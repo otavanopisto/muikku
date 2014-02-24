@@ -64,7 +64,7 @@ public class UserEmailEntityDAO extends CoreDAO<UserEmailEntity> {
       criteriaBuilder.equal(root.get(UserEmailEntity_.address), address)
     );
     
-    return entityManager.createQuery(criteria).getSingleResult();
+    return getSingleResult(entityManager.createQuery(criteria));
   }
   
   /**
@@ -87,7 +87,35 @@ public class UserEmailEntityDAO extends CoreDAO<UserEmailEntity> {
     
     return entityManager.createQuery(criteria).getResultList();
   }
-  
+
+  public List<UserEmailEntity> listByAddresses(List<String> addresses) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<UserEmailEntity> criteria = criteriaBuilder.createQuery(UserEmailEntity.class);
+    Root<UserEmailEntity> root = criteria.from(UserEmailEntity.class);
+    criteria.select(root);
+    criteria.where(
+      root.get(UserEmailEntity_.address).in(addresses)
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
+  public List<UserEntity> listUsersByAddresses(List<String> addresses) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<UserEntity> criteria = criteriaBuilder.createQuery(UserEntity.class);
+    Root<UserEmailEntity> root = criteria.from(UserEmailEntity.class);
+    criteria.select(root.get(UserEmailEntity_.user));
+    criteria.where(
+      root.get(UserEmailEntity_.address).in(addresses)
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
   public UserEmailEntity updateAddress(UserEmailEntity userEmail, String address) {
     userEmail.setAddress(address);
     
