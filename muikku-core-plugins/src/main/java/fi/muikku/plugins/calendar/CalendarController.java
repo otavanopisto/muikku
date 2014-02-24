@@ -33,14 +33,14 @@ import net.fortuna.ical4j.model.property.Url;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
+//import org.apache.http.HttpEntity;
+//import org.apache.http.HttpResponse;
+//import org.apache.http.client.methods.HttpGet;
+//import org.apache.http.conn.scheme.PlainSocketFactory;
+//import org.apache.http.conn.scheme.Scheme;
+//import org.apache.http.conn.scheme.SchemeRegistry;
+//import org.apache.http.impl.client.DefaultHttpClient;
+//import org.apache.http.util.EntityUtils;
 
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.calendar.dao.CalendarDAO;
@@ -195,32 +195,33 @@ public class CalendarController {
 	}
 
 	public net.fortuna.ical4j.model.Calendar loadIcsCalendar(String url) throws IOException, ParserException, URISyntaxException {
-		DefaultHttpClient httpClient = new DefaultHttpClient();
-		
-		SchemeRegistry schemeRegistry = httpClient.getConnectionManager().getSchemeRegistry();
-		if (!schemeRegistry.getSchemeNames().contains("webcal")) {
-		  schemeRegistry.register(new Scheme("webcal", 80, PlainSocketFactory.getSocketFactory()));
-		}
-		
-		HttpGet httpGet = new HttpGet(new URI(url));
-		
-		HttpResponse response = httpClient.execute(httpGet);
-		if (response.getStatusLine().getStatusCode() == 200) {
-		  HttpEntity entity = response.getEntity();
-		  try {
-		  	InputStream content = entity.getContent();
-		  	try {
-			  	CalendarBuilder builder = new CalendarBuilder();
-  	  	  return builder.build(content);
-		  	} finally {
-		  		content.close();
-		  	}
-		  } finally {
-		  	EntityUtils.consume(entity);
-		  }
-		} else {
-			throw new IOException(response.getStatusLine().getReasonPhrase());
-		}
+	  throw new IOException();
+//		DefaultHttpClient httpClient = new DefaultHttpClient();
+//		
+//		SchemeRegistry schemeRegistry = httpClient.getConnectionManager().getSchemeRegistry();
+//		if (!schemeRegistry.getSchemeNames().contains("webcal")) {
+//		  schemeRegistry.register(new Scheme("webcal", 80, PlainSocketFactory.getSocketFactory()));
+//		}
+//		
+//		HttpGet httpGet = new HttpGet(new URI(url));
+//		
+//		HttpResponse response = httpClient.execute(httpGet);
+//		if (response.getStatusLine().getStatusCode() == 200) {
+//		  HttpEntity entity = response.getEntity();
+//		  try {
+//		  	InputStream content = entity.getContent();
+//		  	try {
+//			  	CalendarBuilder builder = new CalendarBuilder();
+//  	  	  return builder.build(content);
+//		  	} finally {
+//		  		content.close();
+//		  	}
+//		  } finally {
+//		  	EntityUtils.consume(entity);
+//		  }
+//		} else {
+//			throw new IOException(response.getStatusLine().getReasonPhrase());
+//		}
 	}
 	
 	public String getIcsCalendarName(net.fortuna.ical4j.model.Calendar calendar) {

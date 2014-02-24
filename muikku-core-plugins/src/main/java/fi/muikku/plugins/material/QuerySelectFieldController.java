@@ -1,5 +1,7 @@
 package fi.muikku.plugins.material;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -43,9 +45,17 @@ public class QuerySelectFieldController {
   public QuerySelectFieldOption findQuerySelectFieldOptionBySelectFieldAndName(QuerySelectField selectField, String name) {
     return querySelectFieldOptionDAO.findBySelectFieldAndName(selectField, name);
   }
+  
+  public List<QuerySelectFieldOption> listQuerySelectFieldOptionsBySelectField(QuerySelectField selectField) {
+    return querySelectFieldOptionDAO.listBySelectField(selectField);
+  }
 
   public QuerySelectFieldOption updateQuerySelectFieldOptionText(QuerySelectFieldOption querySelectFieldOption, String text) {
     return querySelectFieldOptionDAO.updateText(querySelectFieldOption, text);
+  }
+  
+  public void deleteQuerySelectFieldOption(QuerySelectFieldOption querySelectFieldOption) {
+    querySelectFieldOptionDAO.delete(querySelectFieldOption);
   }
 
 }

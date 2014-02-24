@@ -109,5 +109,9 @@ public class WorkspaceUserEntityDAO extends CoreDAO<WorkspaceUserEntity> {
     
     return entityManager.createQuery(criteria).getResultList();
   }
+  
+  public void delete(WorkspaceUserEntity workspaceUserEntity) {
+    super.delete(workspaceUserEntity);
+  }
 
 }

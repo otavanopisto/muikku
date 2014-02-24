@@ -1,5 +1,7 @@
 package fi.muikku.plugins.material.dao;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -31,6 +33,24 @@ public class QueryFieldDAO extends PluginDAO<QueryField> {
     );
 
     return getSingleResult(entityManager.createQuery(criteria));
+  }
+
+  public List<QueryField> listByMaterial(Material material) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<QueryField> criteria = criteriaBuilder.createQuery(QueryField.class);
+    Root<QueryField> root = criteria.from(QueryField.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.equal(root.get(QueryField_.material), material)
+    );
+
+    return entityManager.createQuery(criteria).getResultList();
+  }
+  
+  public void delete(QueryField queryField) {
+    super.delete(queryField);
   }
 
 }

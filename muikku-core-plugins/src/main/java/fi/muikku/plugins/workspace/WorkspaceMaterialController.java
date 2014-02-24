@@ -16,6 +16,7 @@ import fi.muikku.plugins.workspace.dao.WorkspaceRootFolderDAO;
 import fi.muikku.plugins.workspace.events.WorkspaceFolderCreateEvent;
 import fi.muikku.plugins.workspace.events.WorkspaceFolderUpdateEvent;
 import fi.muikku.plugins.workspace.events.WorkspaceMaterialCreateEvent;
+import fi.muikku.plugins.workspace.events.WorkspaceMaterialDeleteEvent;
 import fi.muikku.plugins.workspace.events.WorkspaceMaterialUpdateEvent;
 import fi.muikku.plugins.workspace.events.WorkspaceRootFolderCreateEvent;
 import fi.muikku.plugins.workspace.events.WorkspaceRootFolderUpdateEvent;
@@ -60,6 +61,9 @@ public class WorkspaceMaterialController {
 	@SuppressWarnings("unused")
   @Inject
   private Event<WorkspaceMaterialUpdateEvent> workspaceMaterialUpdateEvent;
+
+	@Inject
+  private Event<WorkspaceMaterialDeleteEvent> workspaceMaterialDeleteEvent;
   
 	/* Node */
 
@@ -110,10 +114,29 @@ public class WorkspaceMaterialController {
 	public List<WorkspaceMaterial> listWorkspaceMaterialsByParent(WorkspaceNode parent) {
 		return workspaceMaterialDAO.listByParent(parent);
 	}
-	
-	/* Root Folder */
-	
-	public WorkspaceRootFolder createWorkspaceRootFolder(WorkspaceEntity workspaceEntity) {
+
+  public List<WorkspaceMaterial> listWorkspaceMaterialsByMaterial(Material material) {
+    return workspaceMaterialDAO.listByMaterial(material);
+  }
+  
+	public void deleteWorkspaceMaterial(WorkspaceMaterial workspaceMaterial) {
+	  workspaceMaterialDeleteEvent.fire(new WorkspaceMaterialDeleteEvent(workspaceMaterial));
+	  
+	  List<WorkspaceNode> childNodes = workspaceNodeDAO.listByParent(workspaceMaterial);
+	  for (WorkspaceNode childNode : childNodes) {
+	    if (childNode instanceof WorkspaceMaterial) {
+	      deleteWorkspaceMaterial((WorkspaceMaterial) childNode);
+	    } else if (childNode instanceof WorkspaceFolder) {
+	      deleteWorkspaceFolder((WorkspaceFolder) childNode);
+	    } 
+	  }
+	  
+	  workspaceMaterialDAO.delete(workspaceMaterial);
+  }
+  
+  /* Root Folder */
+
+  public WorkspaceRootFolder createWorkspaceRootFolder(WorkspaceEntity workspaceEntity) {
     WorkspaceRootFolder workspaceRootFolder = workspaceRootFolderDAO.create(workspaceEntity);
     workspaceRootFolderCreateEvent.fire(new WorkspaceRootFolderCreateEvent(workspaceRootFolder));
     return workspaceRootFolder;
@@ -130,7 +153,7 @@ public class WorkspaceMaterialController {
     }
 
     return (WorkspaceRootFolder) node;
-  }
+  } 
 	
 	/* Folder */
 
@@ -143,5 +166,9 @@ public class WorkspaceMaterialController {
 	public WorkspaceFolder findWorkspaceFolderById(Long workspaceFolderId) {
 		return workspaceFolderDAO.findById(workspaceFolderId);
 	}
-	
+  
+  public void deleteWorkspaceFolder(WorkspaceFolder workspaceFolder) {
+    workspaceFolderDAO.delete(workspaceFolder);
+  }
+
 }

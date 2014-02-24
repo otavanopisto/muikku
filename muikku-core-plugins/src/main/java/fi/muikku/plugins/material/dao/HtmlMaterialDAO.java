@@ -17,4 +17,8 @@ public class HtmlMaterialDAO extends PluginDAO<HtmlMaterial> {
 		return persist(htmlMaterial);
 	}
 	
+	public void delete(HtmlMaterial htmlMaterial) {
+	  super.delete(htmlMaterial);
+	}
+	
 }
