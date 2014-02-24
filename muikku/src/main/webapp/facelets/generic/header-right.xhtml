@@ -10,9 +10,8 @@ xmlns:h="http://java.sun.com/jsf/html">
      <m:widget name="language" size="1"/> 
      <m:widget name="logout" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
      <m:widget name="internallogin" size="7" rendered="#{!sessionBackingBean.loggedIn}"/>
+     <m:widget name="externallogin" size="7" rendered="#{!sessionBackingBean.loggedIn}"/>
      <m:widget name="loggeduser" size="6" rendered="#{sessionBackingBean.loggedIn}"/>
- 
-
    </m:widgetSpace>
   
 </ui:composition>
