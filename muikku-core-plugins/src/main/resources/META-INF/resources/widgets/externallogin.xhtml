@@ -6,9 +6,11 @@
   
   <h:panelGroup layout="block" styleClass="widget externalLoginWidget">
     <ui:repeat var="authSource" value="#{externalLoginWidgetBackingBean.credentialessAuthSources}">
-      <h:link outcome="/login.jsf" value="#{authSource.name}" styleClass="externalLoginSource-#{authSource.strategy}">
-        <f:param name="authSourceId" value="#{authSource.id}"/>
-      </h:link>
+      <h:panelGroup layout="block" styleClass="externalLoginSourceContainer">
+        <h:link outcome="/login.jsf" value="#{authSource.name}" styleClass="externalLoginSource-#{authSource.strategy}">
+          <f:param name="authSourceId" value="#{authSource.id}"/>
+        </h:link>
+      </h:panelGroup>
     </ui:repeat>
   </h:panelGroup>
 
