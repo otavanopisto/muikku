@@ -1,0 +1,97 @@
+package fi.muikku.plugins.credentiallogin;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.ejb.Stateful;
+import javax.enterprise.context.RequestScoped;
+import javax.faces.model.SelectItem;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import fi.muikku.auth.AuthSourceController;
+import fi.muikku.auth.AuthenticationHandleException;
+import fi.muikku.auth.AuthenticationProvider;
+import fi.muikku.auth.AuthenticationResult;
+import fi.muikku.model.security.AuthSource;
+
+@Named
+@Stateful
+@RequestScoped
+public class CredentialLoginWidgetBackingBean {
+
+  @Inject
+  private AuthSourceController authSourceController;
+
+  public List<SelectItem> getSourceSelectItems() {
+    List<SelectItem> result = new ArrayList<>();
+
+    List<AuthSource> authSources = authSourceController.listCredentialAuthSources();
+    for (AuthSource authSource : authSources) {
+      result.add(new SelectItem(authSource.getId(), authSource.getName()));
+    }
+
+    return result;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  public Long getAuthSourceId() {
+    return authSourceId;
+  }
+
+  public void setAuthSourceId(Long authSourceId) {
+    this.authSourceId = authSourceId;
+  }
+
+  public void login() throws AuthenticationHandleException {
+    AuthSource authSource = authSourceController.findAuthSourceById(authSourceId);
+    if (authSource != null) {
+      AuthenticationProvider authenticationProvider = authSourceController.findAuthenticationProvider(authSource);
+      if (authenticationProvider != null) {
+        Map<String, String[]> requestParameters = new HashMap<String, String[]>();
+        requestParameters.put("email", new String[] { getEmail() });
+        requestParameters.put("password", new String[] { getPassword() });
+
+        AuthenticationResult result = authenticationProvider.processLogin(authSource, requestParameters);
+        switch (result.getStatus()) {
+          case NEW_ACCOUNT:
+            // TODO: First time the user logged in
+          break;
+          case LOGIN:
+            // TODO: User logged in
+          break;
+          case INVALID_CREDENTIALS:
+            // TODO: Invalid credentials
+          break;
+          default:
+            throw new AuthenticationHandleException("Invalid authentication status:" + result.getStatus());
+        }
+      } else {
+        throw new AuthenticationHandleException("Invalid authenticationProvider");
+      }
+    } else {
+      throw new AuthenticationHandleException("Invalid authSourceId");
+    }
+  }
+
+  private String email;
+  private String password;
+  private Long authSourceId;
+}
