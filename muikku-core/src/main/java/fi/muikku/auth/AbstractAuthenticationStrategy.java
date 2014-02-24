@@ -105,6 +105,7 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
     UserEntity loggedUser = sessionController.getLoggedUser();
     if ((loggedUser == null) || loggedUser.getId().equals(user.getId())) {
       sessionController.login(user.getId());
+      userController.updateLastLogin(user);
       return new AuthenticationResult(newAccount ? Status.NEW_ACCOUNT : Status.LOGIN);
     } else {
       return new AuthenticationResult(Status.CONFLICT, ConflictReason.LOGGED_IN_AS_DIFFERENT_USER);
