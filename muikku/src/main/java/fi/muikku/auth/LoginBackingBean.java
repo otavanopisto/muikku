@@ -1,12 +1,9 @@
 package fi.muikku.auth;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
@@ -16,8 +13,8 @@ import javax.inject.Named;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
-import com.ocpsoft.pretty.faces.annotation.URLMappings;
 import com.ocpsoft.pretty.faces.annotation.URLMapping;
+import com.ocpsoft.pretty.faces.annotation.URLMappings;
 
 import fi.muikku.model.security.AuthSource;
 
@@ -25,17 +22,13 @@ import fi.muikku.model.security.AuthSource;
 @Named
 @URLMappings(mappings = { @URLMapping(id = "login", pattern = "/login", viewId = "/login.jsf") })
 public class LoginBackingBean {
-  
+
   @Inject
   private AuthSourceController authSourceController;
   
   @Inject
   private LoginSessionBean loginSessionBean;
   
-  @Inject
-  @Any
-  private Instance<AuthenticationProvider> authenticationProviders;
-
   public void preRenderViewListener(ComponentSystemEvent event) throws AuthenticationHandleException, IOException {
     FacesContext facesContext = FacesContext.getCurrentInstance();
     ExternalContext externalContext = facesContext.getExternalContext();
@@ -56,7 +49,7 @@ public class LoginBackingBean {
     if (authSourceId != null) {
       AuthSource authSource = authSourceController.findAuthSourceById(authSourceId);
       if (authSource != null) {
-        AuthenticationProvider authenticationProvider = findAuthenticationProvider(authSource);
+        AuthenticationProvider authenticationProvider = authSourceController.findAuthenticationProvider(authSource);
         if (authenticationProvider != null) {
           
           AuthenticationResult result = authenticationProvider.processLogin(authSource, requestParameters);
@@ -107,17 +100,5 @@ public class LoginBackingBean {
       }
     } 
   }  
-  
-  private AuthenticationProvider findAuthenticationProvider(AuthSource authSource) {
-    Iterator<AuthenticationProvider> providerIterator = authenticationProviders.iterator();
-    while (providerIterator.hasNext()) {
-      AuthenticationProvider provider = providerIterator.next();
-      if (provider.getName().equals(authSource.getStrategy())) {
-        return provider;
-      }
-    }
-    
-    return null;
-  }
   
 }
