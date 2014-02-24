@@ -18,8 +18,8 @@ public class UserIdentificationController {
 
   // UserIdentifications
   
-  public UserIdentification createUserIdentification(UserEntity userEntity, AuthSource authSource, String uniqueId) {
-    return userIdentificationDAO.create(userEntity, authSource, uniqueId);
+  public UserIdentification createUserIdentification(UserEntity userEntity, AuthSource authSource, String externalId) {
+    return userIdentificationDAO.create(userEntity, authSource, externalId);
   }
  
   public UserIdentification findUserIdentificationByAuthSourceAndExternalId(AuthSource authSource, String externalId) {
