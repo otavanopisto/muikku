@@ -29,6 +29,6 @@ public interface AuthenticationProvider {
    * @param requestContext
    * @throws AuthenticationException
    */
-  public AuthenticationResult processLogin(AuthSource authSource, Map<String, String[]> requestParameters);
+  public AuthenticationResult processLogin(AuthSource authSource, Map<String, String[]> requestParameters) throws AuthenticationHandleException;
   
 }

@@ -39,14 +39,14 @@ public abstract class OAuthAuthenticationStrategy extends AbstractAuthentication
   
   protected abstract String getOAuthCallbackURL(AuthSource authSource);
 
-  protected abstract AuthenticationResult processResponse(AuthSource authSource, Map<String, String[]> requestParameters, OAuthService service, String[] requestedScopes);
+  protected abstract AuthenticationResult processResponse(AuthSource authSource, Map<String, String[]> requestParameters, OAuthService service, String[] requestedScopes) throws AuthenticationHandleException;
   
   public boolean requiresCredentials() {
     return false;
   }
   
   @Override
-  public AuthenticationResult processLogin(AuthSource authSource, Map<String, String[]> requestParameters) {
+  public AuthenticationResult processLogin(AuthSource authSource, Map<String, String[]> requestParameters) throws AuthenticationHandleException {
     if (!"rsp".equals(getFirstRequestParameter(requestParameters, "_stg"))) {
       String[] scopes;
 

@@ -26,6 +26,7 @@ import org.scribe.model.Verb;
 import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 
+import fi.muikku.auth.AuthenticationHandleException;
 import fi.muikku.auth.AuthenticationResult;
 import fi.muikku.auth.OAuthAuthenticationStrategy;
 import fi.muikku.model.security.AuthSource;
@@ -68,7 +69,7 @@ public class GoogleAuthenticationStrategy extends OAuthAuthenticationStrategy {
   }
   
   @Override
-  protected AuthenticationResult processResponse(AuthSource authSource, Map<String, String[]> requestParameters, OAuthService service, String[] requestedScopes) {
+  protected AuthenticationResult processResponse(AuthSource authSource, Map<String, String[]> requestParameters, OAuthService service, String[] requestedScopes) throws AuthenticationHandleException {
     ObjectMapper objectMapper = new ObjectMapper();
 
     String verifier = getFirstRequestParameter(requestParameters, "code");
@@ -87,6 +88,7 @@ public class GoogleAuthenticationStrategy extends OAuthAuthenticationStrategy {
       // TODO: Token should be added to session, e.g.: sessionController.addOAuthAccessToken(getName(), expiresAt, accessToken.getToken());
     } catch (IOException e) {
       logger.log(Level.SEVERE, "Token extraction failed a JSON parsing error", e);
+      throw new AuthenticationHandleException(e);
     }
     
     List<String> scopesList = Arrays.asList(requestedScopes);
@@ -103,6 +105,7 @@ public class GoogleAuthenticationStrategy extends OAuthAuthenticationStrategy {
         userInfo = objectMapper.readValue(response.getBody(), GoogleUserInfo.class);
       } catch (IOException e) {
         logger.log(Level.SEVERE, "Logging in failed because of a JSON parsing exception", e);
+        throw new AuthenticationHandleException(e);
       }
     }
 
