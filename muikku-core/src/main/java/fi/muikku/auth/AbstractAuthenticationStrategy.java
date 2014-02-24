@@ -5,13 +5,30 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import fi.muikku.auth.AuthenticationResult.ConflictReason;
+import fi.muikku.auth.AuthenticationResult.Status;
+import fi.muikku.controller.UserEntityController;
 import fi.muikku.model.security.AuthSource;
 import fi.muikku.model.security.AuthSourceSetting;
+import fi.muikku.model.security.UserIdentification;
+import fi.muikku.model.users.UserEntity;
+import fi.muikku.session.local.LocalSession;
+import fi.muikku.session.local.LocalSessionController;
 
 public abstract class AbstractAuthenticationStrategy implements AuthenticationProvider {
-  
+
+  @Inject
+  @LocalSession
+  private LocalSessionController sessionController;
+
   @Inject
   private AuthSourceController authSourceController; 
+
+  @Inject
+  private UserIdentificationController userIdentificationController;
+
+  @Inject
+  private UserEntityController userEntityController;
   
   protected String getFirstRequestParameter(Map<String, String[]> requestParameters, String key) {
     String[] value = requestParameters.get(key);
@@ -32,12 +49,53 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
   }
 
   protected AuthenticationResult processExternalLogin(AuthSource authSource, Map<String, String[]> requestParameters, String externalId, List<String> emails, String firstName, String lastName) {
-    // TODO: This method should check whether user exists by finding existing user by externalId and given email addresses
-    //   > If just one user exists, login the user 
-    //   > If more than one user is found, it should raise a conflict exception
-    //   > If no users are found, register it as a new user
-    // After successful identification missing names and emails should be added
-    return null;
+    List<UserEntity> emailUsers = userEntityController.listUsersByEmails(emails);
+    if (emailUsers.size() > 1) {
+      return new AuthenticationResult(Status.CONFLICT, ConflictReason.SEVERAL_USERS_BY_EMAILS);
+    }
+    
+    UserEntity emailUser = emailUsers.size() == 1 ? emailUsers.get(0) : null;
+    boolean newAccount = false;
+
+    UserIdentification userIdentification = userIdentificationController.findUserIdentificationByAuthSourceAndExternalId(authSource, externalId);
+    if (userIdentification != null) {
+      // User has identified by this auth source before
+      if (emailUser != null && emailUser.getId() != userIdentification.getUser().getId()) {
+        return new AuthenticationResult(Status.CONFLICT, ConflictReason.EMAIL_BELONGS_TO_ANOTHER_USER);
+      }
+    } else {
+      // User has not used this auth source before
+      if (emailUser != null) {
+        // But has existing user in the system, so we attach the identification into the same user
+        userIdentification = userIdentificationController.createUserIdentification(emailUser, authSource, externalId);
+      } else {
+        // New user account
+        UserEntity user = userEntityController.createUserEntity();
+        userIdentification = userIdentificationController.createUserIdentification(user, authSource, externalId);
+        newAccount = true;
+      }
+    }
+    
+    List<String> existingAddresses = userEntityController.listUserEmailAddresses(userIdentification.getUser());
+    for (String email : emails) {
+      if (!existingAddresses.contains(email)) {
+        userEntityController.addUserEmail(userIdentification.getUser(), email);
+      }
+    }
+    
+    return login(userIdentification, newAccount);
   }
+
+  private AuthenticationResult login(UserIdentification userIdentification, boolean newAccount) {
+    UserEntity user = userIdentification.getUser();
+    UserEntity loggedUser = sessionController.getLoggedUser();
+    if ((loggedUser == null) || loggedUser.getId().equals(user.getId())) {
+      sessionController.login(user.getId());
+      return new AuthenticationResult(newAccount ? Status.NEW_ACCOUNT : Status.LOGIN);
+    } else {
+      return new AuthenticationResult(Status.CONFLICT, ConflictReason.LOGGED_IN_AS_DIFFERENT_USER);
+    }
+  }
+
 
 }
