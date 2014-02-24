@@ -33,7 +33,16 @@ public class LoginSessionBean {
     this.authSourceId = authSourceId;
   } 
   
+  public String getPostLoginRedirectUrl() {
+    return postLoginRedirectUrl;
+  }
+  
+  public void setPostLoginRedirectUrl(String postLoginRedirectUrl) {
+    this.postLoginRedirectUrl = postLoginRedirectUrl;
+  }
+  
   private Token requestToken;
   private String[] requestedScopes;
   private Long authSourceId;
+  private String postLoginRedirectUrl;
 }

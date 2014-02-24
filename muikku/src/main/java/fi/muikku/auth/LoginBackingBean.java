@@ -48,6 +48,11 @@ public class LoginBackingBean {
       loginSessionBean.setAuthSourceId(authSourceId);
     } 
     
+    String redirectUrl = externalContext.getRequestParameterMap().get("redirectUrl");
+    if (StringUtils.isNotBlank(redirectUrl)) {
+      loginSessionBean.setPostLoginRedirectUrl(redirectUrl);
+    }
+    
     if (authSourceId != null) {
       AuthSource authSource = authSourceController.findAuthSourceById(authSourceId);
       if (authSource != null) {
@@ -59,6 +64,7 @@ public class LoginBackingBean {
             externalContext.redirect(result.getRedirectUrl());
           } else {
             loginSessionBean.setAuthSourceId(null);
+            String postLoginRedirectUrl = loginSessionBean.getPostLoginRedirectUrl();
             
             switch (result.getStatus()) {
               case GRANT:
@@ -73,6 +79,12 @@ public class LoginBackingBean {
               case PROCESSING:
                 throw new AuthenticationHandleException("Erroneous authentication provider status: PROCESSING without redirectUrl");
             }
+            
+            if (StringUtils.isBlank(postLoginRedirectUrl)) {
+              postLoginRedirectUrl = externalContext.getRequestContextPath() + "/";
+            }
+            
+            externalContext.redirect(postLoginRedirectUrl);
           }
         } else {
           throw new AuthenticationHandleException("Invalid authenticationProvider");
