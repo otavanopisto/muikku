@@ -104,4 +104,15 @@ public class UserEntityController {
     return userEmailEntityDAO.listByUser(user);
   }
 
+  /**
+   * Updates the last login time of the given user entity to the current time.
+   * 
+   * @param userEntity The user entity to be updated
+   * 
+   *  @return The updated user entity
+   */
+  public UserEntity updateLastLogin(UserEntity userEntity) {
+    return userEntityDAO.updateLastLogin(userEntity);
+  }
+
 }

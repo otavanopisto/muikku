@@ -18,7 +18,9 @@ import fi.muikku.plugin.LocalizedPluginDescriptor;
 import fi.muikku.plugin.PersistencePluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
 import fi.muikku.plugins.internallogin.dao.InternalAuthDAO;
+import fi.muikku.plugins.internallogin.dao.PasswordResetRequestDAO;
 import fi.muikku.plugins.internallogin.model.InternalAuth;
+import fi.muikku.plugins.internallogin.model.PasswordResetRequest;
 
 @ApplicationScoped
 @Stateful
@@ -47,17 +49,20 @@ public class InternalLoginPluginDescriptor implements PluginDescriptor, Persiste
     	/* DAOs*/
     	
     	InternalAuthDAO.class,
+      PasswordResetRequestDAO.class,
     	
       /* Backing Beans */
       
-      InternalLoginWidgetBackingBean.class      
+      InternalLoginWidgetBackingBean.class, 
+      ForgotPasswordBackingBean.class      
     ));
   }
   
   @Override
   public Class<?>[] getEntities() {
   	return new Class<?>[] {
-  		InternalAuth.class
+  		InternalAuth.class,
+      PasswordResetRequest.class
   	};
   }
 

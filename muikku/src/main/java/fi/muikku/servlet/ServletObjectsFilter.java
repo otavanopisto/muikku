@@ -27,8 +27,10 @@ public class ServletObjectsFilter implements Filter {
 	  if (req instanceof HttpServletRequest) {
 	    HttpServletRequest request = (HttpServletRequest) req;
 	    servletObjectsContainer.setContextPath(request.getContextPath());
+	    String currentUrl = request.getRequestURL().toString();
+	    String pathInfo = request.getRequestURI();
+	    servletObjectsContainer.setBaseUrl(currentUrl.substring(0, currentUrl.length() - pathInfo.length()) + request.getContextPath());
 	  }
-	  
 	  chain.doFilter(req, resp);
 	}
 

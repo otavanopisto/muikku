@@ -32,18 +32,7 @@ public class UserEmailEntityDAO extends CoreDAO<UserEmailEntity> {
     userEmail.setUser(user);
     userEmail.setAddress(address);
     
-    getEntityManager().persist(userEmail);
-    
-    return userEmail;
-  }
-  
-  /**
-   * Deletes the given user email address.
-   * 
-   * @param userEmail The email address to delete
-   */
-  public void delete(UserEmailEntity userEmail) {
-    super.delete(userEmail);
+    return persist(userEmail);
   }
   
   /**
@@ -64,7 +53,7 @@ public class UserEmailEntityDAO extends CoreDAO<UserEmailEntity> {
       criteriaBuilder.equal(root.get(UserEmailEntity_.address), address)
     );
     
-    return entityManager.createQuery(criteria).getSingleResult();
+    return getSingleResult(entityManager.createQuery(criteria));
   }
   
   /**
@@ -90,10 +79,16 @@ public class UserEmailEntityDAO extends CoreDAO<UserEmailEntity> {
   
   public UserEmailEntity updateAddress(UserEmailEntity userEmail, String address) {
     userEmail.setAddress(address);
-    
-    getEntityManager().persist(userEmail);
-    
-    return userEmail;
- }
+    return persist(userEmail);
+  }
+
+  /**
+   * Deletes the given user email address.
+   * 
+   * @param userEmail The email address to delete
+   */
+  public void delete(UserEmailEntity userEmail) {
+    super.delete(userEmail);
+  }
 
 }
