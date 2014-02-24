@@ -7,11 +7,15 @@ import javax.inject.Inject;
 
 import fi.muikku.auth.AuthenticationResult.ConflictReason;
 import fi.muikku.auth.AuthenticationResult.Status;
+import fi.muikku.controller.SchoolBridgeController;
 import fi.muikku.controller.UserEntityController;
+import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.security.AuthSource;
 import fi.muikku.model.security.AuthSourceSetting;
 import fi.muikku.model.security.UserIdentification;
 import fi.muikku.model.users.UserEntity;
+import fi.muikku.schooldata.UserController;
+import fi.muikku.schooldata.entity.User;
 import fi.muikku.session.local.LocalSession;
 import fi.muikku.session.local.LocalSessionController;
 
@@ -29,6 +33,12 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
 
   @Inject
   private UserEntityController userEntityController;
+
+  @Inject
+  private UserController userController;
+  
+  @Inject
+  private SchoolBridgeController schoolBridgeController;
   
   protected String getFirstRequestParameter(Map<String, String[]> requestParameters, String key) {
     String[] value = requestParameters.get(key);
@@ -70,8 +80,12 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
         userIdentification = userIdentificationController.createUserIdentification(emailUser, authSource, externalId);
       } else {
         // New user account
-        UserEntity user = userEntityController.createUserEntity();
-        userIdentification = userIdentificationController.createUserIdentification(user, authSource, externalId);
+        // TODO: How to determine where this user should be created?
+        
+        SchoolDataSource schoolDataSource = schoolBridgeController.findSchoolDataSourceByIdentifier("LOCAL");
+        User user = userController.createUser(schoolDataSource, firstName, lastName);
+        UserEntity userEntity = userController.findUserEntity(user);
+        userIdentification = userIdentificationController.createUserIdentification(userEntity, authSource, externalId);
         newAccount = true;
       }
     }
