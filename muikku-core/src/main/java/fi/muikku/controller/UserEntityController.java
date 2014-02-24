@@ -24,10 +24,6 @@ public class UserEntityController {
   @Inject
   private UserEmailEntityDAO userEmailEntityDAO;
 
-  public UserEntity createUserEntity() {
-    return userEntityDAO.create(Boolean.FALSE);
-  }
-
   /**
    * Adds a new email address to the given user.
    * 
