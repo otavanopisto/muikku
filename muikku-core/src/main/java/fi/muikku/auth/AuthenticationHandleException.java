@@ -7,5 +7,9 @@ public class AuthenticationHandleException extends Exception {
   public AuthenticationHandleException(String message) {
     super(message);
   }
+  
+  public AuthenticationHandleException(Throwable cause) {
+    super(cause);
+  }
 
 }
