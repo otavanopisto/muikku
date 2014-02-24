@@ -20,6 +20,7 @@ import fi.muikku.plugins.communicator.CommunicatorPluginDescriptor;
 import fi.muikku.plugins.contentsearch.ContentSearchPluginDescriptor;
 import fi.muikku.plugins.courselist.CourseListPluginDescriptor;
 import fi.muikku.plugins.coursepicker.CoursePickerPluginDescriptor;
+import fi.muikku.plugins.credentiallogin.CredentialLoginPluginDescriptor;
 import fi.muikku.plugins.data.DataPluginDescriptor;
 import fi.muikku.plugins.data.PermissionDataPluginDescriptor;
 import fi.muikku.plugins.externallogin.ExternalLoginPluginDescriptor;
@@ -27,7 +28,7 @@ import fi.muikku.plugins.forum.ForumPluginDescriptor;
 import fi.muikku.plugins.friends.FriendsPluginDescriptor;
 import fi.muikku.plugins.grading.GradingPluginDescriptor;
 import fi.muikku.plugins.guidancerequest.GuidanceRequestPluginDescriptor;
-import fi.muikku.plugins.internallogin.InternalLoginPluginDescriptor;
+import fi.muikku.plugins.internalauth.InternalAuthPluginDescriptor;
 import fi.muikku.plugins.language.LanguagePluginDescriptor;
 import fi.muikku.plugins.loggeduser.LoggedUserPluginDescriptor;
 import fi.muikku.plugins.logout.LogoutPluginDescriptor;
@@ -54,8 +55,9 @@ public class CorePluginsDescriptor implements PluginLibraryDescriptor {
 	public List<Class<? extends PluginDescriptor>> getPlugins() {
 		return new ArrayList<Class<? extends PluginDescriptor>>(Arrays.asList(
 		  CalendarPluginDescriptor.class,
-		  InternalLoginPluginDescriptor.class,
+		  InternalAuthPluginDescriptor.class,
       ExternalLoginPluginDescriptor.class,
+      CredentialLoginPluginDescriptor.class,
       LogoutPluginDescriptor.class,
       LanguagePluginDescriptor.class,
 		  CommunicatorPluginDescriptor.class,
