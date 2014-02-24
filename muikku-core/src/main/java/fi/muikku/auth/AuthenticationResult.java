@@ -53,7 +53,8 @@ public class AuthenticationResult {
     GRANT,
     LOGIN,
     NEW_ACCOUNT,
-    CONFLICT
+    CONFLICT, 
+    INVALID_CREDENTIALS
   }
   
   public static enum ConflictReason {
