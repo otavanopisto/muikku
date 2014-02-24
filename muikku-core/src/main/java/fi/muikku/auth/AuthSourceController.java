@@ -53,6 +53,21 @@ public class AuthSourceController {
     return result;
   }
   
+  public List<AuthSource> listCredentialAuthSources() {
+    List<AuthSource> result = new ArrayList<>();
+    
+    List<AuthenticationProvider> authenticationProviders = listCredentialAuthenticationProviders();
+    for (AuthenticationProvider authenticationProvider : authenticationProviders) {
+      AuthSource authSource = findAuthSourceByStrategy(authenticationProvider.getName());
+      if (authSource != null) {
+        result.add(authSource);
+      }
+    }
+    
+    return result;
+  }
+  
+  
   // AuthSourceSettings
 
   public AuthSourceSetting findAuthSourceSettingsByKey(AuthSource authSource, String key) {
