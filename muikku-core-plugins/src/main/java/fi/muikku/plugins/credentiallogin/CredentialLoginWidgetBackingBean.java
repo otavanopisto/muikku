@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.model.SelectItem;
@@ -24,16 +25,26 @@ public class CredentialLoginWidgetBackingBean {
 
   @Inject
   private AuthSourceController authSourceController;
+  
+  @PostConstruct
+  public void init() {
+    List<AuthSource> authSources = authSourceController.listCredentialAuthSources();
+    if (!authSources.isEmpty()) {
+      singleSource = authSources.size() == 1;
+      
+      sourceSelectItems = new ArrayList<>();
+      for (AuthSource authSource : authSources) {
+        sourceSelectItems.add(new SelectItem(authSource.getId(), authSource.getName()));
+      }
+      
+      authSourceId = authSources.get(0).getId();
+    } else {
+      // TODO: Proper error handling
+    }
+  }
 
   public List<SelectItem> getSourceSelectItems() {
-    List<SelectItem> result = new ArrayList<>();
-
-    List<AuthSource> authSources = authSourceController.listCredentialAuthSources();
-    for (AuthSource authSource : authSources) {
-      result.add(new SelectItem(authSource.getId(), authSource.getName()));
-    }
-
-    return result;
+    return sourceSelectItems;
   }
 
   public String getEmail() {
@@ -59,7 +70,11 @@ public class CredentialLoginWidgetBackingBean {
   public void setAuthSourceId(Long authSourceId) {
     this.authSourceId = authSourceId;
   }
-
+  
+  public boolean isSingleSource() {
+    return singleSource;
+  }
+  
   public void login() throws AuthenticationHandleException {
     AuthSource authSource = authSourceController.findAuthSourceById(authSourceId);
     if (authSource != null) {
@@ -94,4 +109,6 @@ public class CredentialLoginWidgetBackingBean {
   private String email;
   private String password;
   private Long authSourceId;
+  private boolean singleSource;
+  private List<SelectItem> sourceSelectItems;
 }

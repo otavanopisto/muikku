@@ -8,7 +8,7 @@ import javax.persistence.criteria.Root;
 import fi.muikku.dao.DAO;
 import fi.muikku.plugin.PluginDAO;
 import fi.muikku.plugins.internalauth.model.InternalAuth;
-import fi.muikku.plugins.internallogin.model.InternalAuth_;
+import fi.muikku.plugins.internalauth.model.InternalAuth_;
 
 @DAO
 public class InternalAuthDAO extends PluginDAO<InternalAuth> {
