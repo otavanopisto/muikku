@@ -8,6 +8,8 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -16,7 +18,9 @@ import fi.muikku.auth.AuthSourceController;
 import fi.muikku.auth.AuthenticationHandleException;
 import fi.muikku.auth.AuthenticationProvider;
 import fi.muikku.auth.AuthenticationResult;
+import fi.muikku.i18n.LocaleController;
 import fi.muikku.model.security.AuthSource;
+import fi.muikku.session.SessionController;
 
 @Named
 @Stateful
@@ -25,7 +29,13 @@ public class CredentialLoginWidgetBackingBean {
 
   @Inject
   private AuthSourceController authSourceController;
+
+  @Inject
+  private LocaleController localeController;
   
+  @Inject
+  private SessionController sessionController;
+
   @PostConstruct
   public void init() {
     List<AuthSource> authSources = authSourceController.listCredentialAuthSources();
@@ -93,7 +103,7 @@ public class CredentialLoginWidgetBackingBean {
             // TODO: User logged in
           break;
           case INVALID_CREDENTIALS:
-            // TODO: Invalid credentials
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(localeController.getText(sessionController.getLocale(), "plugin.credentialLogin.invalidCredentials")));
           break;
           default:
             throw new AuthenticationHandleException("Invalid authentication status:" + result.getStatus());
