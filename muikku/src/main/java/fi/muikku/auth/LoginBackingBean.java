@@ -80,8 +80,10 @@ public class LoginBackingBean {
                   case SEVERAL_USERS_BY_EMAILS:
                     // Could not login, several users found by email addresses
                   break;
-                }                 
-              break;
+                }         
+                
+                // TODO: Proper error handling
+                throw new AuthenticationHandleException(result.getConflictReason().toString());
               case INVALID_CREDENTIALS:
                 throw new AuthenticationHandleException("Erroneous authentication provider status: INVALID_CREDENTIALS in external login page");
               case PROCESSING:
