@@ -54,7 +54,8 @@ public class InternalLoginPluginDescriptor implements PluginDescriptor, Persiste
       /* Backing Beans */
       
       InternalLoginWidgetBackingBean.class, 
-      ForgotPasswordBackingBean.class      
+      ForgotPasswordBackingBean.class,      
+      ResetPasswordBackingBean.class      
     ));
   }
   

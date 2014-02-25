@@ -9,21 +9,21 @@
     
   <ui:define name="content.center.widget">
 
-    <div>#{i18n.text['plugin.internalLogin.forgotPassword.instructions']}</div>
+    <h:panelGroup layout="block">#{i18n.text['plugin.internalLogin.forgotPassword.instructions']}</h:panelGroup>
 
     <h:form>
       <h:messages/>
       
-      <div class="formElementRow">
+      <h:panelGroup layout="block" styleClass="formElementRow">
         <h:outputLabel for="email" value="#{i18n.text['plugin.internalLogin.forgotPassword.email']}" styleClass="formLabel" />
         <h:inputText id="email" redisplay="false" value="#{forgotPasswordBackingBean.email}" required="true">
           <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
         </h:inputText>
-      </div>
+      </h:panelGroup>
   
-      <div class="formElementRow">
+      <h:panelGroup layout="block" styleClass="formElementRow">
         <h:commandButton action="#{forgotPasswordBackingBean.resetPassword}" value="#{i18n.text['plugin.internalLogin.forgotPassword.send']}"/>
-      </div>
+      </h:panelGroup>
     
     </h:form>
   </ui:define>

@@ -7,6 +7,9 @@ import javax.inject.Named;
 
 import org.apache.deltaspike.core.util.StringUtils;
 
+import com.ocpsoft.pretty.faces.annotation.URLMapping;
+import com.ocpsoft.pretty.faces.annotation.URLMappings;
+
 import fi.muikku.controller.UserEntityController;
 import fi.muikku.i18n.LocaleController;
 import fi.muikku.mail.Mailer;
@@ -18,6 +21,13 @@ import fi.muikku.session.SessionController;
 @Named
 @Stateful
 @RequestScoped  
+@URLMappings (
+    mappings = @URLMapping(
+      viewId = "/forgotpassword/index.jsf",
+      pattern = "/forgotpassword",
+      id = "forgotpassword"
+    )     
+  )
 public class ForgotPasswordBackingBean {
 
   @Inject
@@ -37,7 +47,7 @@ public class ForgotPasswordBackingBean {
   
   @Inject 
   @BaseUrl
-  String baseUrl;
+  private String baseUrl;
 
   /**
    * Method invoked when the user clicks the Send button in the Forgot Password view.
