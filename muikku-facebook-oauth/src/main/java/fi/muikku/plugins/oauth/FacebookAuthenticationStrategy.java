@@ -101,7 +101,7 @@ public class FacebookAuthenticationStrategy extends OAuthAuthenticationStrategy 
     }    
     
     if (meObject != null)
-      return processExternalLogin(authSource, requestParameters, meObject.getId(), Arrays.asList(meObject.getEmail()), meObject.getFirstName(), meObject.getLastName());
+      return processLogin(authSource, requestParameters, meObject.getId(), Arrays.asList(meObject.getEmail()), meObject.getFirstName(), meObject.getLastName());
     else {
       return new AuthenticationResult(AuthenticationResult.Status.GRANT);
     }

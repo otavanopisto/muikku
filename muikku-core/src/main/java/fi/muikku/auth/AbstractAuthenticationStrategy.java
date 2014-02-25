@@ -58,7 +58,7 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
     return null;
   }
 
-  protected AuthenticationResult processExternalLogin(AuthSource authSource, Map<String, String[]> requestParameters, String externalId, List<String> emails, String firstName, String lastName) {
+  protected AuthenticationResult processLogin(AuthSource authSource, Map<String, String[]> requestParameters, String externalId, List<String> emails, String firstName, String lastName) {
     List<UserEntity> emailUsers = userEntityController.listUsersByEmails(emails);
     if (emailUsers.size() > 1) {
       return new AuthenticationResult(Status.CONFLICT, ConflictReason.SEVERAL_USERS_BY_EMAILS);

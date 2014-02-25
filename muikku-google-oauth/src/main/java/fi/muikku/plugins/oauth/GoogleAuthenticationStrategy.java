@@ -110,7 +110,7 @@ public class GoogleAuthenticationStrategy extends OAuthAuthenticationStrategy {
     }
 
     if (userInfo != null)
-      return processExternalLogin(authSource, requestParameters, userInfo.getId(), Arrays.asList(userInfo.getEmail()), userInfo.getGivenName(), userInfo.getFamilyName());
+      return processLogin(authSource, requestParameters, userInfo.getId(), Arrays.asList(userInfo.getEmail()), userInfo.getGivenName(), userInfo.getFamilyName());
     else {
       return new AuthenticationResult(AuthenticationResult.Status.GRANT);
     }

@@ -59,7 +59,7 @@ public class InternalAuthenticationStrategy extends AbstractAuthenticationStrate
       if (userEntity != null) {
         User user = userController.findUser(userEntity);
         if (user != null) {
-          return processExternalLogin(authSource, requestParameters, DigestUtils.md5Hex("INTERNAL-" + internalAuth.getId()), Arrays.asList(email), user.getFirstName(), user.getLastName());
+          return processLogin(authSource, requestParameters, DigestUtils.md5Hex("INTERNAL-" + internalAuth.getId()), Arrays.asList(email), user.getFirstName(), user.getLastName());
         }
       }
     }
