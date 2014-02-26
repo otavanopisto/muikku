@@ -472,7 +472,7 @@ div[class*="wi-dock-static-navi"]{
 
 /* Login */
 
-.loginWidget {
+.credentialLoginWidget, .externalLoginWidget {
   background: #ededed;
   padding: 10px; 
   @include rounded(5px);

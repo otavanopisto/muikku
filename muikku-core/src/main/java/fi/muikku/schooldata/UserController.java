@@ -75,7 +75,7 @@ public class UserController {
   private Event<UserEntityEvent> userRemovedEvent;
   
 	/* UserEntity */
-
+  
 	public UserEntity findUserEntityById(Long id) {
 		return userEntityDAO.findById(id);
 	}
@@ -98,6 +98,10 @@ public class UserController {
 	
 	/* User */
 
+	public User createUser(SchoolDataSource schoolDataSource, String firstName, String lastName) {	  
+	  return userSchoolDataController.createUser(schoolDataSource, firstName, lastName);
+	}
+	
 	public User findUser(SchoolDataSource schoolDataSource, UserEntity userEntity) {
 		return userSchoolDataController.findUser(schoolDataSource, userEntity);
 	}
