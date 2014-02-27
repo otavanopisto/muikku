@@ -14,26 +14,21 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-
 @DAO
 public class UserIdentificationDAO extends CoreDAO<UserIdentification> {
 
 	private static final long serialVersionUID = -3862910101039448995L;
 
-	public UserIdentification create(UserEntity user, String externalId, AuthSource authSource) {
-    EntityManager entityManager = getEntityManager(); 
-    
+	public UserIdentification create(UserEntity user, AuthSource authSource, String externalId) {
     UserIdentification userIdentification = new UserIdentification();
     userIdentification.setAuthSource(authSource);
     userIdentification.setExternalId(externalId);
     userIdentification.setUser(user);
-    
-    entityManager.persist(userIdentification);
 
-    return userIdentification;
+    return persist(userIdentification);
   }
   
-  public UserIdentification findByExternalId(String externalId, AuthSource authSource) {
+  public UserIdentification findByAuthSourceAndExternalId(AuthSource authSource, String externalId) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();

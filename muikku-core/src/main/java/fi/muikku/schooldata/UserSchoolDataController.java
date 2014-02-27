@@ -14,8 +14,6 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import fi.muikku.dao.base.SchoolDataSourceDAO;
-import fi.muikku.dao.users.RoleSchoolDataIdentifierDAO;
-import fi.muikku.dao.users.UserEntityDAO;
 import fi.muikku.dao.users.UserSchoolDataIdentifierDAO;
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.users.UserEntity;
@@ -57,14 +55,23 @@ class UserSchoolDataController {
 
 	@Inject
 	private SchoolDataSourceDAO schoolDataSourceDAO;
-	
-	@Inject
-	private UserEntityDAO userEntityDAO;
-	
-	@Inject
-  private RoleSchoolDataIdentifierDAO roleSchoolDataIdentifierDAO;
 
 	/* User */
+
+  public User createUser(SchoolDataSource schoolDataSource, String firstName, String lastName) {
+    UserSchoolDataBridge userBridge = getUserBridge(schoolDataSource);
+    if (userBridge != null) {
+      try {
+        return initUser(userBridge.createUser(firstName, lastName));
+      } catch (SchoolDataBridgeRequestException e) {
+        logger.log(Level.SEVERE, "School Data Bridge reported a problem while creating an user", e);
+      } catch (UnexpectedSchoolDataBridgeException e) {
+        logger.log(Level.SEVERE, "School Data Bridge reported a problem while creating an user", e);
+      }
+    }
+    
+    return null;
+  }
 
 	public User findUser(SchoolDataSource schoolDataSource, UserEntity userEntity) {
 		UserSchoolDataBridge userBridge = getUserBridge(schoolDataSource);
