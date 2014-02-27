@@ -1,4 +1,4 @@
-package fi.muikku.plugins.internallogin.dao;
+package fi.muikku.plugins.internalauth.dao;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -7,8 +7,8 @@ import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.DAO;
 import fi.muikku.plugin.PluginDAO;
-import fi.muikku.plugins.internallogin.model.InternalAuth;
-import fi.muikku.plugins.internallogin.model.InternalAuth_;
+import fi.muikku.plugins.internalauth.model.InternalAuth;
+import fi.muikku.plugins.internalauth.model.InternalAuth_;
 
 @DAO
 public class InternalAuthDAO extends PluginDAO<InternalAuth> {
@@ -19,10 +19,7 @@ public class InternalAuthDAO extends PluginDAO<InternalAuth> {
 		InternalAuth internalAuth = new InternalAuth();
 		internalAuth.setPassword(password);
 		internalAuth.setUserEntityId(userEntityId);
-		
-		getEntityManager().persist(internalAuth);
-		
-		return internalAuth;
+		return persist(internalAuth);
 	}
 
 	public InternalAuth findByUserIdAndPassword(Long userEntityId, String password) {

@@ -61,4 +61,8 @@
     url="school-data-mock/006_mock_gradingscales_hsqldb.sql">
     <parameter name="database">school-data-mock</parameter>
   </script>
+  <script
+    run="ONCE"
+    handler="MySQL"
+    url="auth/001_internal_auth_mysql.sql" />
 </data>

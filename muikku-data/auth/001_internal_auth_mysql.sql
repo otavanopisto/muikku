@@ -1,0 +1,1 @@
+insert into AuthSource (name, strategy) values ('Internal', 'internalauth');

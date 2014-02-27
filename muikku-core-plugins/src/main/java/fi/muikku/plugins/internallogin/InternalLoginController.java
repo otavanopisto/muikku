@@ -1,5 +1,6 @@
 package fi.muikku.plugins.internallogin;
 
+import java.util.Map;
 import java.util.UUID;
 
 import javax.ejb.Stateful;
@@ -8,11 +9,13 @@ import javax.inject.Inject;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
+import fi.muikku.auth.AuthSourceController;
+import fi.muikku.auth.AuthenticationProvider;
+import fi.muikku.auth.AuthenticationResult;
 import fi.muikku.controller.UserEntityController;
+import fi.muikku.model.security.AuthSource;
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.plugins.internallogin.dao.InternalAuthDAO;
 import fi.muikku.plugins.internallogin.dao.PasswordResetRequestDAO;
-import fi.muikku.plugins.internallogin.model.InternalAuth;
 import fi.muikku.plugins.internallogin.model.PasswordResetRequest;
 
 @Dependent
@@ -20,34 +23,13 @@ import fi.muikku.plugins.internallogin.model.PasswordResetRequest;
 public class InternalLoginController {
 	
 	@Inject
-	private InternalAuthDAO internalAuthDAO;
-
-	@Inject
   private PasswordResetRequestDAO passwordResetRequestDAO;
 	
 	@Inject
   private UserEntityController userEntityController;
 	
-	/**
-	 * Returns the user entity corresponding to the given email address and password. If not found, returns <code>null</code>.
-	 *  
-	 * @param email Email address
-	 * @param password Password
-	 * 
-	 * @return The user entity corresponding to the given credentials, or <code>null</code> if not found
-	 */
-	public UserEntity findUserByEmailAndPassword(String email, String password) {
-    UserEntity userEntity = userEntityController.findUserByEmailAddress(email);
-		if (userEntity != null) {
-	   	String passwordHash = DigestUtils.md5Hex(password);
-	   	InternalAuth internalAuth = internalAuthDAO.findByUserIdAndPassword(userEntity.getId(), passwordHash);
-	   	if (internalAuth != null) {
-	   		return userEntity;
-	   	}
-	  }
-  	return null;
-	}
-	
+	@Inject
+	private AuthSourceController authSourceController;
 	/**
 	 * Creates a new password reset request for the given user.
 	 * 
