@@ -70,7 +70,7 @@ select {
 
 /* Login */
 
-.loginWidget input[type="text"] {    
+.credentialLoginWidget input[type="text"] {    
   padding: 5px;     
   @extend .co-input-textfield;
   &:hover {@extend .co-input-textfield-hover;}

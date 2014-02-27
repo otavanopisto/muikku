@@ -1,5 +1,7 @@
 package fi.muikku.controller;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -21,7 +23,7 @@ public class UserEntityController {
   
   @Inject
   private UserEmailEntityDAO userEmailEntityDAO;
-  
+
   /**
    * Adds a new email address to the given user.
    * 
@@ -111,6 +113,25 @@ public class UserEntityController {
    */
   public UserEmailEntity findUserEmailEntityById(Long id) {
     return userEmailEntityDAO.findById(id);
+  }
+
+  public List<String> listUserEmailAddresses(UserEntity user) {
+    List<String> result = new ArrayList<>();
+    
+    List<UserEmailEntity> userEmailEntities = listEmailsByUser(user);
+    for (UserEmailEntity userEmailEntity : userEmailEntities) {
+      result.add(userEmailEntity.getAddress());
+    }
+    
+    return result;
+  }
+
+  public List<UserEntity> listUsersByEmails(List<String> addresses) {
+    if (addresses.isEmpty()) {
+      return Collections.emptyList();
+    }
+    
+    return userEmailEntityDAO.listUsersByAddresses(addresses);
   }
 
 }

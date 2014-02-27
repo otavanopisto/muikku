@@ -16,16 +16,8 @@
       
       <h:form id="confirmEmailChange">
         <h:inputHidden value="${confirmEmailChangeBackingBean.confirmationHash}" />
-        
-        <ui:fragment rendered="#{!muikkuSession.loggedIn}">
-          Username:
-          <h:inputText value="#{confirmEmailChangeBackingBean.userName}" />
-        </ui:fragment>
-        
-        Password:
-        <h:inputSecret id="pwd" value="#{confirmEmailChangeBackingBean.passwordHash}" />
-        
-        <h:commandButton onclick="$('#confirmEmailChange\\:pwd').val(hex_md5($('#confirmEmailChange\\:pwd').val())); return true;" action="#{confirmEmailChangeBackingBean.confirm()}" value="Confirm" />
+       
+        <h:commandButton action="#{confirmEmailChangeBackingBean.confirm()}" value="Confirm" />
       </h:form>
     </ui:define>
 

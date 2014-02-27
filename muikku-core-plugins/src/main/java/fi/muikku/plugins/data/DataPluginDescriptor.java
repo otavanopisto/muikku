@@ -63,10 +63,13 @@ public class DataPluginDescriptor implements PluginDescriptor, PersistencePlugin
 	}
 
 	public void onAfterPluginsInit(@Observes AfterPluginsInitEvent event) {
-		String xmlFilePath = System.getProperty("muikku-data");
-		if (StringUtils.isNotBlank(xmlFilePath)) {
+		String xmlFilePaths = System.getProperty("muikku-data");
+		if (StringUtils.isNotBlank(xmlFilePaths)) {
 			try {
-				dataPluginController.processScripts(new File(xmlFilePath));
+			  String[] files = xmlFilePaths.split(",");
+			  for (String file : files) {
+  				dataPluginController.processScripts(new File(file));
+			  }
 			} catch (ParserConfigurationException | SAXException | IOException e) {
 				// TODO: Proper error handling
 				e.printStackTrace();
