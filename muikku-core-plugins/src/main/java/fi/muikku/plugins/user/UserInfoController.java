@@ -51,7 +51,7 @@ public class UserInfoController {
   public void confirmEmailChange(UserEntity user, String passwordHash, UserPendingEmailChange pendingEmailChange) {
     UserEmailEntity userEmail = userEntityController.findUserEmailEntityById(pendingEmailChange.getUserEmailEntity());
     
-    if (user.getId().equals(userEmail.getUser().getId())) {
+    if (user.getId().equals(userEmail.getUser())) {
       // Confirm password
       if (internalLoginController.confirmUserPassword(userEmail.getUser(), passwordHash)) {
         // Change Email
