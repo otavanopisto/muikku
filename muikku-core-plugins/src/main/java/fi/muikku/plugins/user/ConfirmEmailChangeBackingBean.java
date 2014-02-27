@@ -11,29 +11,54 @@ import com.ocpsoft.pretty.faces.annotation.URLAction;
 import com.ocpsoft.pretty.faces.annotation.URLMapping;
 import com.ocpsoft.pretty.faces.annotation.URLMappings;
 
+import fi.muikku.controller.UserEntityController;
+import fi.muikku.model.users.UserEntity;
+import fi.muikku.plugins.internallogin.InternalLoginController;
+import fi.muikku.session.SessionController;
+
 
 @Named
 @Stateful
 @RequestScoped
 @URLMappings(mappings = {
   @URLMapping(
-      id = "confirmEmailChange", 
-      pattern = "/user/confirmEmailChange/h/#{confirmEmailChangeBackingBean.confirmationHash}", 
+      id = "user-confirmEmailChange", 
+      pattern = "/user-confirmEmailChange/h/#{confirmEmailChangeBackingBean.confirmationHash}", 
       viewId = "/user/confirmemailchange.jsf")
 })
 public class ConfirmEmailChangeBackingBean {
   
   @Inject
+  private UserEntityController userEntityController;
+  
+  @Inject
   private UserInfoController userInfoController;
+  
+  @Inject
+  private SessionController sessionController;
+  
+  @Inject
+  private InternalLoginController internalLoginController;
   
   @URLAction
   public void init() throws FileNotFoundException {
   }
 
   public void confirm() {
+    UserPendingEmailChange change = getPendingEmailChange();
     
+    if (!sessionController.isLoggedIn()) {
+      UserEntity userEntity = internalLoginController.findUserByEmailAndPassword(userName, passwordHash);
+
+      userInfoController.confirmEmailChange(userEntity, passwordHash, change);
+    } else
+      userInfoController.confirmEmailChange(sessionController.getUser(), passwordHash, change);
   }
   
+  public UserPendingEmailChange getPendingEmailChange() {
+    return userInfoController.findPendingEmailChangeByHash(confirmationHash);
+  }
+
   public String getConfirmationHash() {
     return confirmationHash;
   }

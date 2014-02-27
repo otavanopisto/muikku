@@ -74,5 +74,12 @@ public class InternalLoginController {
   public void updateLastLogin(UserEntity userEntity) {
     userController.updateLastLogin(userEntity);
   }
+
+  public boolean confirmUserPassword(UserEntity user, String password) {
+    String passwordHash = DigestUtils.md5Hex(password);
+    InternalAuth internalAuth = internalAuthDAO.findByUserIdAndPassword(user.getId(), passwordHash);
+
+    return internalAuth != null;
+  }
   
 }

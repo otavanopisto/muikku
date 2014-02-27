@@ -5,7 +5,12 @@ import javax.inject.Inject;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
+import fi.muikku.controller.EnvironmentSettingsController;
+import fi.muikku.controller.UserEntityController;
+import fi.muikku.mail.Mailer;
+import fi.muikku.model.users.UserEmailEntity;
 import fi.muikku.model.users.UserEntity;
+import fi.muikku.plugins.internallogin.InternalLoginController;
 import fi.muikku.schooldata.UserController;
 
 @Dependent
@@ -17,32 +22,48 @@ public class UserInfoController {
   @Inject
   private UserController userController;
   
-  public UserPendingEmailChange createEmailChange(UserEntity userEntity, String newEmail) {
+  @Inject
+  private UserEntityController userEntityController;
+  
+  @Inject
+  private InternalLoginController internalLoginController;
+  
+  @Inject
+  private EnvironmentSettingsController environmentSettingsController;
+  
+  @Inject
+  private Mailer mailer;
+
+  public UserPendingEmailChange createEmailChange(UserEmailEntity userEmailEntity, String newEmail) {
     String confirmationHash = DigestUtils.md5Hex(
-        userEntity.getId() + 
+        userEmailEntity.getId() + 
         newEmail +
         System.currentTimeMillis()
         );
-    return userPendingEmailChangeDAO.create(userEntity, newEmail, confirmationHash);
+    
+    return userPendingEmailChangeDAO.create(userEmailEntity, newEmail, confirmationHash);
   }
   
-  public boolean hasPendingEmailChange(UserEntity userEntity) {
-    return userPendingEmailChangeDAO.findByUser(userEntity) != null;
+  public boolean hasPendingEmailChange(UserEmailEntity userEmailEntity) {
+    return userPendingEmailChangeDAO.findByUserEmailEntity(userEmailEntity) != null;
   }
 
-  public UserPendingEmailChange findPendingEmailChange(UserEntity userEntity) {
-    return userPendingEmailChangeDAO.findByUser(userEntity);
+  public void confirmEmailChange(UserEntity user, String passwordHash, UserPendingEmailChange pendingEmailChange) {
+    UserEmailEntity userEmail = userEntityController.findUserEmailEntityById(pendingEmailChange.getUserEmailEntity());
+    
+    if (user.getId().equals(userEmail.getUser())) {
+      // Confirm password
+      if (internalLoginController.confirmUserPassword(userEmail.getUser(), passwordHash)) {
+        // Change Email
+        userEntityController.updateUserEmail(userEmail, pendingEmailChange.getNewEmail());
+        
+        // Delete Pender
+        userPendingEmailChangeDAO.delete(pendingEmailChange);
+      }
+    }
   }
-  
-  public void confirmEmailChange(String passwordHash, UserPendingEmailChange pendingEmailChange) {
-    UserEntity userEntity = userController.findUserEntityById(pendingEmailChange.getUser());
-    
-    // Confirm password
-    
-    // Change Email
-    
-    
-    // Delete Pender
-    userPendingEmailChangeDAO.delete(pendingEmailChange);
+
+  public UserPendingEmailChange findPendingEmailChangeByHash(String confirmationHash) {
+    return userPendingEmailChangeDAO.findByConfirmationHash(confirmationHash);
   }
 }
