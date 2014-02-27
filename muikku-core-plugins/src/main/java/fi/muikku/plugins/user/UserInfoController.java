@@ -10,8 +10,8 @@ import fi.muikku.controller.UserEntityController;
 import fi.muikku.mail.Mailer;
 import fi.muikku.model.users.UserEmailEntity;
 import fi.muikku.model.users.UserEntity;
+import fi.muikku.plugins.internallogin.InternalLoginController;
 import fi.muikku.schooldata.UserController;
-import fi.muikku.session.SessionController;
 
 @Dependent
 public class UserInfoController {
@@ -26,14 +26,14 @@ public class UserInfoController {
   private UserEntityController userEntityController;
   
   @Inject
+  private InternalLoginController internalLoginController;
+  
+  @Inject
   private EnvironmentSettingsController environmentSettingsController;
   
   @Inject
   private Mailer mailer;
 
-  @Inject
-  private SessionController sessionController;
-  
   public UserPendingEmailChange createEmailChange(UserEmailEntity userEmailEntity, String newEmail) {
     String confirmationHash = DigestUtils.md5Hex(
         userEmailEntity.getId() + 
@@ -48,17 +48,18 @@ public class UserInfoController {
     return userPendingEmailChangeDAO.findByUserEmailEntity(userEmailEntity) != null;
   }
 
-  public void confirmEmailChange(UserPendingEmailChange pendingEmailChange) {
+  public void confirmEmailChange(UserEntity user, String passwordHash, UserPendingEmailChange pendingEmailChange) {
     UserEmailEntity userEmail = userEntityController.findUserEmailEntityById(pendingEmailChange.getUserEmailEntity());
     
-    UserEntity user = sessionController.getUser();
-    
     if (user.getId().equals(userEmail.getUser().getId())) {
-      // Change Email
-      userEntityController.updateUserEmail(userEmail, pendingEmailChange.getNewEmail());
-      
-      // Delete Pender
-      userPendingEmailChangeDAO.delete(pendingEmailChange);
+      // Confirm password
+      if (internalLoginController.confirmUserPassword(userEmail.getUser(), passwordHash)) {
+        // Change Email
+        userEntityController.updateUserEmail(userEmail, pendingEmailChange.getNewEmail());
+        
+        // Delete Pender
+        userPendingEmailChangeDAO.delete(pendingEmailChange);
+      }
     }
   }
 

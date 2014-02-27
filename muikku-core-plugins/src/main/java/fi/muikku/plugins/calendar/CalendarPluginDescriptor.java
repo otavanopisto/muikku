@@ -14,6 +14,7 @@ import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.muikku.controller.PluginSettingsController;
+import fi.muikku.controller.WidgetController;
 import fi.muikku.i18n.LocaleBundle;
 import fi.muikku.i18n.LocaleLocation;
 import fi.muikku.model.plugins.PluginUserSettingKey;
@@ -64,6 +65,9 @@ public class CalendarPluginDescriptor implements PluginDescriptor, LocalizedPlug
 	@Inject
 	private UserController userController;
 	
+	@Inject
+	private WidgetController widgetController;
+
 	@Inject
 	private PluginSettingsController pluginSettingsController;
 	
@@ -159,11 +163,9 @@ public class CalendarPluginDescriptor implements PluginDescriptor, LocalizedPlug
 		List<UserEntity> usersWithoutDefaultCalendar = pluginSettingsController.listUsersWithoutSetting(defaultCalendarIdSetting);
 		for (UserEntity userWithoutDefaultCalendar : usersWithoutDefaultCalendar) {
 			User user = userController.findUser(userWithoutDefaultCalendar);
-			if (user != null) {
-			  String name = user.getFirstName() + ' ' + user.getLastName();
-			  UserCalendar calendar = calendarController.createLocalUserCalendar(userWithoutDefaultCalendar, name, DEFAULT_COLOR, Boolean.TRUE);
-  			pluginSettingsController.setPluginUserSetting(getName(), DEFAULT_CALENDAR_ID_SETTING, calendar.getCalendar().getId().toString(), userWithoutDefaultCalendar);
-			}
+			String name = user.getFirstName() + ' ' + user.getLastName();
+			UserCalendar calendar = calendarController.createLocalUserCalendar(userWithoutDefaultCalendar, name, DEFAULT_COLOR, Boolean.TRUE);
+			pluginSettingsController.setPluginUserSetting(getName(), DEFAULT_CALENDAR_ID_SETTING, calendar.getCalendar().getId().toString(), userWithoutDefaultCalendar);
 		}
 		
 		String defaultFirstDay = pluginSettingsController.getPluginSetting(getName(), DEFAULT_FIRSTDAY_SETTING);

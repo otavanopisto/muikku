@@ -46,11 +46,11 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 	 */
 	@Override
 	public User createUser(String firstName, String lastName) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-		if (StringUtils.isBlank(firstName)) {
+		if (StringUtils.isNotBlank(firstName)) {
 			throw new SchoolDataBridgeRequestException("firstName is required");
 		}
 		
-		if (StringUtils.isBlank(lastName)) {
+		if (StringUtils.isNotBlank(lastName)) {
 			throw new SchoolDataBridgeRequestException("lastName is required");
 		}
 		

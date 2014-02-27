@@ -13,8 +13,6 @@
     <module>muikku-core</module>
     <module>muikku-core-plugins</module>
     <module>muikku-hsqldb-plugin</module>
-    <module>muikku-google-oauth</module>
-    <module>muikku-facebook-oauth</module>
     <module>muikku-h2db-plugin</module>
     <module>muikku-persistence</module>
     <module>muikku-plugin</module>

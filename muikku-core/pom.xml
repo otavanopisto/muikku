@@ -50,14 +50,6 @@
     <dependency>
       <groupId>fi.muikku</groupId>
       <artifactId>security</artifactId>
-    </dependency> 
-    
-    <!-- Jackson -->
-    
-    <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-mapper-asl</artifactId>
-      <scope>provided</scope>
     </dependency>
     
     <!-- Pretty Faces -->
@@ -73,14 +65,6 @@
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
     </dependency>
-    
-    <!-- Scribe -->
-
-    <dependency>
-	  <groupId>org.scribe</groupId>
-	  <artifactId>scribe</artifactId>
-	</dependency>
-	
   </dependencies>
 
   <build>
