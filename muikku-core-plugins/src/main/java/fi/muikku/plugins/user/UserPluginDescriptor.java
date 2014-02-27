@@ -43,7 +43,6 @@ public class UserPluginDescriptor implements PluginDescriptor, PersistencePlugin
 			UserIndexBackingBean.class,
 			UserEmailChangeBackingBean.class,
 			ConfirmEmailChangeBackingBean.class,
-			EditUserInfoBackingBean.class,
 			
 			/* Request Handlers */
 			

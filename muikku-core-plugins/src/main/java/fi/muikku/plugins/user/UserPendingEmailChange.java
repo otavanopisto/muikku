@@ -9,12 +9,23 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import fi.muikku.tranquil.UserEntityResolver;
+import fi.tranquil.TranquilityEntityField;
+
 
 @Entity
 public class UserPendingEmailChange {
 
   public Long getId() {
     return id;
+  }
+
+  public Long getUser() {
+    return user;
+  }
+
+  public void setUser(Long user) {
+    this.user = user;
   }
 
   public String getNewEmail() {
@@ -33,20 +44,13 @@ public class UserPendingEmailChange {
     this.confirmationHash = confirmationHash;
   }
 
-  public Long getUserEmailEntity() {
-    return userEmailEntity;
-  }
-
-  public void setUserEmailEntity(Long userEmailEntity) {
-    this.userEmailEntity = userEmailEntity;
-  }
-
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column (name = "userEmailEntity_id")
-  private Long userEmailEntity;
+  @Column (name = "user_id")
+  @TranquilityEntityField(UserEntityResolver.class)
+  private Long user;
 
   @NotNull
   @NotEmpty

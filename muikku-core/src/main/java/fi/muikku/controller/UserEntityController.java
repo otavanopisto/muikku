@@ -55,11 +55,11 @@ public class UserEntityController {
    */
   public UserEmailEntity updateUserEmail(UserEmailEntity userEmail, String address) {
     // TODO is address a valid email?
-//    UserEmailEntity dbEmail = userEmailEntityDAO.findByAddress(address);
-//    if (dbEmail != null && !dbEmail.getId().equals(userEmail.getId())) {
-//      // TODO error handling; address is already in use
-//      return userEmail;
-//    }
+    UserEmailEntity dbEmail = userEmailEntityDAO.findByAddress(address);
+    if (dbEmail != null && !dbEmail.getId().equals(userEmail.getId())) {
+      // TODO error handling; address is already in use
+      return userEmail;
+    }
     return userEmailEntityDAO.updateAddress(userEmail, address);
   }
   
@@ -102,15 +102,6 @@ public class UserEntityController {
    */
   public List<UserEmailEntity> listEmailsByUser(UserEntity user) {
     return userEmailEntityDAO.listByUser(user);
-  }
-
-  /**
-   * Returns UserEmailEntity
-   * 
-   * @param id
-   */
-  public UserEmailEntity findUserEmailEntityById(Long id) {
-    return userEmailEntityDAO.findById(id);
   }
 
 }

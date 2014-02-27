@@ -48,10 +48,7 @@ public class EnvironmentSettingsController {
   public String getBaseUrl() {
     HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
 
-    if ((request.getServerPort() != 80) && (request.getServerPort() != 443))
-      return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
-    else
-      return request.getScheme() + "://" + request.getServerName() + request.getContextPath();
+    return "https://" + request.getServerName() + request.getContextPath();
   }
   
   public String getSystemEmailSenderAddress() {

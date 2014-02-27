@@ -8,24 +8,15 @@
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     template="/WEB-INF/templates/default.xhtml">
     
-    
     <ui:define name="content.center.widget">
-      <h:outputScript name="scripts/jshash/md5-min.js" target="head"/>
+      asd
       
-      <p>Confirm new email address #{confirmEmailChangeBackingBean.pendingEmailChange.newEmail}.</p>
+      ${confirmEmailChangeBackingBean.confirmationHash}
       
-      <h:form id="confirmEmailChange">
+      <h:form>
         <h:inputHidden value="${confirmEmailChangeBackingBean.confirmationHash}" />
         
-        <ui:fragment rendered="#{!muikkuSession.loggedIn}">
-          Username:
-          <h:inputText value="#{confirmEmailChangeBackingBean.userName}" />
-        </ui:fragment>
         
-        Password:
-        <h:inputSecret id="pwd" value="#{confirmEmailChangeBackingBean.passwordHash}" />
-        
-        <h:commandButton onclick="$('#confirmEmailChange\\:pwd').val(hex_md5($('#confirmEmailChange\\:pwd').val())); return true;" action="#{confirmEmailChangeBackingBean.confirm()}" value="Confirm" />
       </h:form>
     </ui:define>
 
