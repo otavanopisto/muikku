@@ -1,4 +1,4 @@
-package fi.muikku.plugins.internallogin.dao;
+package fi.muikku.plugins.forgotpassword.dao;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -7,7 +7,7 @@ import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.DAO;
 import fi.muikku.plugin.PluginDAO;
-import fi.muikku.plugins.internallogin.model.PasswordResetRequest;
+import fi.muikku.plugins.forgotpassword.model.PasswordResetRequest;
 import fi.muikku.plugins.internallogin.model.PasswordResetRequest_;
 
 @DAO

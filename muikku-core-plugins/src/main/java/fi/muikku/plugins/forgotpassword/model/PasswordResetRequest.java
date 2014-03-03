@@ -1,4 +1,4 @@
-package fi.muikku.plugins.internallogin.model;
+package fi.muikku.plugins.forgotpassword.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

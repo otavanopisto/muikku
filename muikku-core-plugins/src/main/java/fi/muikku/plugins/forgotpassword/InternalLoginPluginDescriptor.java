@@ -1,4 +1,4 @@
-package fi.muikku.plugins.internallogin;
+package fi.muikku.plugins.forgotpassword;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,8 +17,8 @@ import fi.muikku.i18n.LocaleLocation;
 import fi.muikku.plugin.LocalizedPluginDescriptor;
 import fi.muikku.plugin.PersistencePluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
-import fi.muikku.plugins.internallogin.dao.PasswordResetRequestDAO;
-import fi.muikku.plugins.internallogin.model.PasswordResetRequest;
+import fi.muikku.plugins.forgotpassword.dao.PasswordResetRequestDAO;
+import fi.muikku.plugins.forgotpassword.model.PasswordResetRequest;
 
 @ApplicationScoped
 @Stateful

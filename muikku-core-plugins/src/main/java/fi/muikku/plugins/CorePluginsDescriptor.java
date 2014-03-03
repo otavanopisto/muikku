@@ -24,6 +24,7 @@ import fi.muikku.plugins.credentiallogin.CredentialLoginPluginDescriptor;
 import fi.muikku.plugins.data.DataPluginDescriptor;
 import fi.muikku.plugins.data.PermissionDataPluginDescriptor;
 import fi.muikku.plugins.externallogin.ExternalLoginPluginDescriptor;
+import fi.muikku.plugins.forgotpassword.InternalLoginPluginDescriptor;
 import fi.muikku.plugins.forum.ForumPluginDescriptor;
 import fi.muikku.plugins.friends.FriendsPluginDescriptor;
 import fi.muikku.plugins.grading.GradingPluginDescriptor;
@@ -56,6 +57,7 @@ public class CorePluginsDescriptor implements PluginLibraryDescriptor {
 		return new ArrayList<Class<? extends PluginDescriptor>>(Arrays.asList(
 		  CalendarPluginDescriptor.class,
 		  InternalAuthPluginDescriptor.class,
+		  InternalLoginPluginDescriptor.class,
       ExternalLoginPluginDescriptor.class,
       CredentialLoginPluginDescriptor.class,
       LogoutPluginDescriptor.class,

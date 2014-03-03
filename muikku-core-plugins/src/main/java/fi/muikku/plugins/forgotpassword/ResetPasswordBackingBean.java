@@ -1,4 +1,4 @@
-package fi.muikku.plugins.internallogin;
+package fi.muikku.plugins.forgotpassword;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;

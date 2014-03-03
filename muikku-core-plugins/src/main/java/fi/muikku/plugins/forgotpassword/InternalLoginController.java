@@ -1,4 +1,4 @@
-package fi.muikku.plugins.internallogin;
+package fi.muikku.plugins.forgotpassword;
 
 import java.util.Map;
 import java.util.UUID;
@@ -15,8 +15,8 @@ import fi.muikku.auth.AuthenticationResult;
 import fi.muikku.controller.UserEntityController;
 import fi.muikku.model.security.AuthSource;
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.plugins.internallogin.dao.PasswordResetRequestDAO;
-import fi.muikku.plugins.internallogin.model.PasswordResetRequest;
+import fi.muikku.plugins.forgotpassword.dao.PasswordResetRequestDAO;
+import fi.muikku.plugins.forgotpassword.model.PasswordResetRequest;
 
 @Dependent
 @Stateful

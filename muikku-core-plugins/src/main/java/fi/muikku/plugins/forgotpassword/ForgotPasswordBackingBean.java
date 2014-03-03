@@ -1,4 +1,4 @@
-package fi.muikku.plugins.internallogin;
+package fi.muikku.plugins.forgotpassword;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -14,7 +14,7 @@ import fi.muikku.controller.UserEntityController;
 import fi.muikku.i18n.LocaleController;
 import fi.muikku.mail.Mailer;
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.plugins.internallogin.model.PasswordResetRequest;
+import fi.muikku.plugins.forgotpassword.model.PasswordResetRequest;
 import fi.muikku.servlet.BaseUrl;
 import fi.muikku.session.SessionController;
 

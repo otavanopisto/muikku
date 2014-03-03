@@ -15,14 +15,14 @@
       <h:messages/>
       
       <h:panelGroup layout="block" styleClass="formElementRow">
-        <h:outputLabel for="email" value="#{i18n.text['plugin.internalLogin.forgotPassword.email']}" styleClass="formLabel" />
+        <h:outputLabel for="email" value="#{i18n.text['plugin.forgotpassword.forgotPassword.email']}" styleClass="formLabel" />
         <h:inputText id="email" redisplay="false" value="#{forgotPasswordBackingBean.email}" required="true">
           <f:validateRegex pattern="[\w\.-]*[a-zA-Z0-9_]@[\w\.-]*[a-zA-Z0-9]\.[a-zA-Z][a-zA-Z\.]*[a-zA-Z]" />
         </h:inputText>
       </h:panelGroup>
   
       <h:panelGroup layout="block" styleClass="formElementRow">
-        <h:commandButton action="#{forgotPasswordBackingBean.resetPassword}" value="#{i18n.text['plugin.internalLogin.forgotPassword.send']}"/>
+        <h:commandButton action="#{forgotPasswordBackingBean.resetPassword}" value="#{i18n.text['plugin.forgotpassword.forgotPassword.send']}"/>
       </h:panelGroup>
     
     </h:form>
