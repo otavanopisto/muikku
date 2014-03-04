@@ -23,6 +23,7 @@ import fi.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
 import fi.muikku.plugins.communicator.model.InboxCommunicatorMessage;
+import fi.muikku.plugins.notifier.NotifierController;
 import fi.muikku.security.Permit;
 import fi.muikku.security.PermitContext;
 import fi.muikku.session.SessionController;
@@ -55,6 +56,9 @@ public class CommunicatorController {
   @Inject
   private CommunicatorMessageSignatureDAO communicatorMessageSignatureDAO;
   
+  @Inject
+  private NotifierController notifierController;
+  
   /**
    * 
    * @param user
@@ -80,6 +84,8 @@ public class CommunicatorController {
     for (UserEntity recipient : recipients) {
       communicatorMessageRecipientDAO.create(message, recipient.getId());
     }
+    
+    notifierController.sendNotification(new CommunicatorNewInboxMessageNotification(), sender, recipients);
     
     return message;
   }
