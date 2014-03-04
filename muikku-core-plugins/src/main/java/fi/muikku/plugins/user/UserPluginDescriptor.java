@@ -31,7 +31,8 @@ public class UserPluginDescriptor implements PluginDescriptor, PersistencePlugin
 				
 			/* Backing beans */ 
 				
-			UserIndexBackingBean.class
+			UserIndexBackingBean.class,
+			UserChangePasswordBackingBean.class
 			
 			/* Request Handlers */
 			
