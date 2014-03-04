@@ -8,7 +8,7 @@ import javax.persistence.criteria.Root;
 import fi.muikku.dao.DAO;
 import fi.muikku.plugin.PluginDAO;
 import fi.muikku.plugins.forgotpassword.model.PasswordResetRequest;
-import fi.muikku.plugins.internallogin.model.PasswordResetRequest_;
+import fi.muikku.plugins.forgotpassword.model.PasswordResetRequest_;
 
 @DAO
 public class PasswordResetRequestDAO extends PluginDAO<PasswordResetRequest> {
@@ -50,6 +50,25 @@ public class PasswordResetRequestDAO extends PluginDAO<PasswordResetRequest> {
     criteria.select(root);
     criteria.where(
       criteriaBuilder.equal(root.get(PasswordResetRequest_.userEntityId), userEntityId)
+    );
+    return getSingleResult(entityManager.createQuery(criteria));
+  }
+
+  /**
+   * Returns a password reset request with the specified hash, or <code>null</code> if not found.
+   * 
+   * @param userEntityId User entity identifier
+   * 
+   * @return The password reset request of the given hash, or <code>null</code> if not found
+   */
+  public PasswordResetRequest findByResetHash(String resetHash) {
+    EntityManager entityManager = getEntityManager();
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<PasswordResetRequest> criteria = criteriaBuilder.createQuery(PasswordResetRequest.class);
+    Root<PasswordResetRequest> root = criteria.from(PasswordResetRequest.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.equal(root.get(PasswordResetRequest_.resetHash), resetHash)
     );
     return getSingleResult(entityManager.createQuery(criteria));
   }

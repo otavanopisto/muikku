@@ -85,6 +85,17 @@ public class UserEntityController {
     UserEmailEntity userEmail = userEmailEntityDAO.findByAddress(address);
     return userEmail == null ? null : userEmail.getUser();
   }
+  
+  /**
+   * Returns the user corresponding to the given id. If the id does not belong to any user, returns <code>null</code>.
+   * 
+   * @param id The identifier.
+   * 
+   * @return The user corresponding to the given id, or <code>null</code> if not found 
+   */
+  public UserEntity findUserById(long id) {
+    return userEntityDAO.findById(id);
+  }
 
   /**
    * Returns a list of all users.

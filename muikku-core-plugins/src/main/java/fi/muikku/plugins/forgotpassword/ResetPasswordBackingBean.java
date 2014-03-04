@@ -12,6 +12,12 @@ import com.ocpsoft.pretty.faces.annotation.URLMappings;
 import com.ocpsoft.pretty.faces.annotation.URLMapping;
 import com.ocpsoft.pretty.faces.annotation.URLQueryParameter;
 
+import fi.muikku.controller.UserEntityController;
+import fi.muikku.model.users.UserEntity;
+import fi.muikku.plugins.forgotpassword.dao.PasswordResetRequestDAO;
+import fi.muikku.plugins.forgotpassword.model.PasswordResetRequest;
+import fi.muikku.plugins.internalauth.InternalAuthController;
+
 @Named
 @Stateful
 @RequestScoped  
@@ -24,29 +30,33 @@ import com.ocpsoft.pretty.faces.annotation.URLQueryParameter;
 )
 public class ResetPasswordBackingBean {
 
-//  @Inject
-//  private LocaleController localeController;
-//
-//  @Inject
-//  private SessionController sessionController;
-//
-//  @Inject
-//  private InternalLoginController internalLoginController;
-//
-//  @Inject
-//  private UserEntityController userEntityController;
-
   @URLQueryParameter ("h")
   private String hash;
-
+  
+  @Inject
+  private ForgotPasswordController internalLoginController;
+  
+  @Inject
+  private UserEntityController userEntityController;
+  
+  @Inject
+  private InternalAuthController internalAuthController;
+  
   @URLAction
   public void load() {
-    // TODO Does hash point to a valid PasswordResetRequest
-    // TODO Figure out UserEntity via PasswordResetRequest. Store reference here?
+    PasswordResetRequest passwordResetRequest = internalLoginController.findPasswordResetRequestByResetHash(hash);
+    if (passwordResetRequest != null) {
+      UserEntity userEntity = userEntityController.findUserById(passwordResetRequest.getUserEntityId());
+      if (userEntity != null) {
+        userEntityId = userEntity.getId();
+      }
+    }
   }
 
   public void savePassword() {
-    // TODO Compare password1/password2 + update InternalAuth for stored user entity reference
+    if (getPassword1().equals(getPassword2())) {
+      internalAuthController.updateUserEntityPassword(userEntityId, getPassword1());
+    }
   }
   
   public String getPassword1() {
@@ -75,4 +85,5 @@ public class ResetPasswordBackingBean {
 
   private String password1;
   private String password2;  
+  private long userEntityId;
 }

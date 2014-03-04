@@ -20,7 +20,7 @@ import fi.muikku.plugins.forgotpassword.model.PasswordResetRequest;
 
 @Dependent
 @Stateful
-public class InternalLoginController {
+public class ForgotPasswordController {
 	
 	@Inject
   private PasswordResetRequestDAO passwordResetRequestDAO;
@@ -50,6 +50,17 @@ public class InternalLoginController {
    */
   public PasswordResetRequest findPasswordResetRequestByUser(UserEntity userEntity) {
     return passwordResetRequestDAO.findByUserEntityId(userEntity.getId());
+  }
+
+	/**
+   * Returns a password reset request for the given hash. If there's no request with given hash, return <code>null</code>.
+   * 
+   * @param resetHash the reset hash.
+   * 
+   * @return The password reset request for the given hash, or <code>null</code> if not found
+   */
+  public PasswordResetRequest findPasswordResetRequestByResetHash(String resetHash) {
+    return passwordResetRequestDAO.findByResetHash(resetHash);
   }
   
   /**

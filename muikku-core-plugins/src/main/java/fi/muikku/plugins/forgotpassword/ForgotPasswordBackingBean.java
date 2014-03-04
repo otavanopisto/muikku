@@ -40,7 +40,7 @@ public class ForgotPasswordBackingBean {
   private Mailer mailer;
 
   @Inject
-  private InternalLoginController internalLoginController;
+  private ForgotPasswordController internalLoginController;
 
   @Inject
   private UserEntityController userEntityController;

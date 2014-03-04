@@ -22,14 +22,14 @@ import fi.muikku.plugins.forgotpassword.model.PasswordResetRequest;
 
 @ApplicationScoped
 @Stateful
-public class InternalLoginPluginDescriptor implements PluginDescriptor, PersistencePluginDescriptor, LocalizedPluginDescriptor {
+public class ForgotPasswordPluginDescriptor implements PluginDescriptor, PersistencePluginDescriptor, LocalizedPluginDescriptor {
 
   @Inject
   private WidgetController widgetController;
 
   @Override
   public String getName() {
-    return "internallogin";
+    return "forgotpassword";
   }
   
   @Override
@@ -42,7 +42,7 @@ public class InternalLoginPluginDescriptor implements PluginDescriptor, Persiste
     	
     	/* Controllers */
       
-    	InternalLoginController.class,
+    	ForgotPasswordController.class,
       
     	/* DAOs*/
     	
@@ -65,8 +65,8 @@ public class InternalLoginPluginDescriptor implements PluginDescriptor, Persiste
   @Override
   public List<LocaleBundle> getLocaleBundles() {
     List<LocaleBundle> bundles = new ArrayList<LocaleBundle>();
-    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.internallogin.InternalLoginPluginMessages", LocaleUtils.toLocale("fi"))));
-    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.internallogin.InternalLoginPluginMessages", LocaleUtils.toLocale("en"))));
+    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.forgotpassword.ForgotPasswordPluginMessages", LocaleUtils.toLocale("fi"))));
+    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.forgotpassword.ForgotPasswordPluginMessages", LocaleUtils.toLocale("en"))));
     return bundles;
   }
 
