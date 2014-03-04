@@ -55,7 +55,8 @@ public class ResetPasswordBackingBean {
 
         if (getPassword1().equals(getPassword2())) {
           String hashed = DigestUtils.md5Hex(getPassword1());
-          internalAuthController.updateUserEntityPassword(userEntityId, getPassword1());
+          hashed = DigestUtils.md5Hex(hashed);
+          internalAuthController.updateUserEntityPassword(userEntityId, hashed);
         }
       }
     }
