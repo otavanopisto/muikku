@@ -72,9 +72,9 @@ public class ForgotPasswordBackingBean {
         resetRequest = internalLoginController.updateResetHash(resetRequest);
       }
       // TODO Email could be added to the reset link for added security (email+hash rather than just hash)
-      String resetLink = baseUrl + "/forgotpassword/reset.jsf?h=" + resetRequest.getResetHash();
-      String mailSubject = localeController.getText(sessionController.getLocale(), "plugin.internalLogin.forgotPassword.mailSubject");
-      String mailContent = localeController.getText(sessionController.getLocale(), "plugin.internalLogin.forgotPassword.mailContent", new String[] { resetLink });
+      String resetLink = baseUrl + "/forgotpassword/reset?h=" + resetRequest.getResetHash();
+      String mailSubject = localeController.getText(sessionController.getLocale(), "plugin.forgotpassword.forgotPassword.mailSubject");
+      String mailContent = localeController.getText(sessionController.getLocale(), "plugin.forgotpassword.forgotPassword.mailContent", new String[] { resetLink });
       // TODO System sender address needs to be configurable
       mailer.sendMail(null, email, mailSubject, mailContent);
       // TODO Information handling; need to let the user know that the mail has been successfully sent

@@ -7,6 +7,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.ws.rs.QueryParam;
 
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.codec.digest.Md5Crypt;
+
 import com.ocpsoft.pretty.faces.annotation.URLAction;
 import com.ocpsoft.pretty.faces.annotation.URLMappings;
 import com.ocpsoft.pretty.faces.annotation.URLMapping;
@@ -31,7 +34,7 @@ import fi.muikku.plugins.internalauth.InternalAuthController;
 public class ResetPasswordBackingBean {
 
   @URLQueryParameter ("h")
-  private String hash;
+  private String urlHash;
   
   @Inject
   private ForgotPasswordController internalLoginController;
@@ -42,20 +45,19 @@ public class ResetPasswordBackingBean {
   @Inject
   private InternalAuthController internalAuthController;
   
-  @URLAction
-  public void load() {
-    PasswordResetRequest passwordResetRequest = internalLoginController.findPasswordResetRequestByResetHash(hash);
+  public void savePassword() {
+    long userEntityId;
+    PasswordResetRequest passwordResetRequest = internalLoginController.findPasswordResetRequestByResetHash(urlHash);
     if (passwordResetRequest != null) {
       UserEntity userEntity = userEntityController.findUserById(passwordResetRequest.getUserEntityId());
       if (userEntity != null) {
         userEntityId = userEntity.getId();
-      }
-    }
-  }
 
-  public void savePassword() {
-    if (getPassword1().equals(getPassword2())) {
-      internalAuthController.updateUserEntityPassword(userEntityId, getPassword1());
+        if (getPassword1().equals(getPassword2())) {
+          String hashed = DigestUtils.md5Hex(getPassword1());
+          internalAuthController.updateUserEntityPassword(userEntityId, getPassword1());
+        }
+      }
     }
   }
   
@@ -75,15 +77,14 @@ public class ResetPasswordBackingBean {
     this.password2 = password2;
   }
   
-  public String getHash() {
-    return hash;
+  public String getUrlHash() {
+    return urlHash;
   }
-  
-  public void setHash(String hash) {
-    this.hash = hash;
+
+  public void setUrlHash(String urlHash) {
+    this.urlHash = urlHash;
   }
 
   private String password1;
   private String password2;  
-  private long userEntityId;
 }

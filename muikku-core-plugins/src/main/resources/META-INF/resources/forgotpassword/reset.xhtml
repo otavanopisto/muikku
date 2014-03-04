@@ -10,6 +10,7 @@
   <ui:define name="content.center.widget">
   
     <h:form>
+    
       <h:messages/>
       
       <h:panelGroup layout="block" styleClass="formElementRow">
@@ -23,7 +24,7 @@
       </h:panelGroup>
   
       <h:panelGroup layout="block" styleClass="formElementRow">
-        <h:commandButton action="#{forgotPasswordBackingBean.savePassword}"/> <!--  value="#{i18n.text['plugin.forgotpassword.forgotPassword.save']}" -->
+        <h:commandButton action="#{resetPasswordBackingBean.savePassword}"/> <!--  value="#{i18n.text['plugin.forgotpassword.forgotPassword.save']}" -->
       </h:panelGroup>
     
     </h:form>
