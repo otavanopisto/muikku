@@ -19,4 +19,8 @@
     <resource-handler>fi.muikku.plugins.PluginResourceHandler</resource-handler>
   </application>
 
+  <factory>
+    <exception-handler-factory>fi.muikku.errors.ExceptionHandlerFactory</exception-handler-factory>
+  </factory>
+
 </faces-config>
