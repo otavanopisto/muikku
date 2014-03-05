@@ -5,6 +5,7 @@
   top: 0px;
   left: 0px;
   right: 0px;
+  z-index: 9999;
 }
 
 .notification-queue-items {
@@ -40,7 +41,7 @@
   background: #549fca;
 }
 
-.notification-queue-item-warning {
+.notification-queue-item-warn {
   background: #ffce65;
   color:#6a4902;
 }

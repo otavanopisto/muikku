@@ -6,28 +6,20 @@
   <h:panelGroup layout="block" styleClass="notification-queue">
     <h:panelGroup layout="block" styleClass="notification-queue-items">
       <ui:insert name="messages">
-        <ul>
-          <ui:repeat var="message" value="#{facesContext.messageList}">
-            <ui:fragment rendered="#{message.notificationSeverity eq 'INFO'}">
-              <li class="notification-queue-item notification-queue-item-info"><span>#{message.summary}</span> <a href="javascript:void(null)"></a></li>
-            </ui:fragment>
-            <ui:fragment rendered="#{message.notificationSeverity eq 'WARN'}">
-              <li class="notification-queue-item notification-queue-item-warning"><span>#{message.summary}</span> <a href="javascript:void(null)"></a></li>
-            </ui:fragment>
-            <ui:fragment rendered="#{message.notificationSeverity eq 'ERROR'}">
-              <li class="notification-queue-item notification-queue-item-error"><span>#{message.summary}</span> <a href="javascript:void(null)"></a></li>
-            </ui:fragment>
-            <ui:fragment rendered="#{message.notificationSeverity eq 'FATAL'}">
-              <li class="notification-queue-item notification-queue-item-fatal"><span>#{message.summary}</span> <a href="javascript:void(null)"></a></li>
-            </ui:fragment>
-            <ui:fragment rendered="#{message.notificationSeverity eq 'SUCCESS'}">
-              <li class="notification-queue-item notification-queue-item-success"><span>#{message.summary}</span> <a href="javascript:void(null)"></a></li>
-            </ui:fragment>
-            <ui:fragment rendered="#{message.notificationSeverity eq 'LOADING'}">
-              <li class="notification-queue-item notification-queue-item-loading"><span>#{message.summary}</span> <a href="javascript:void(null)"></a></li>
-            </ui:fragment>
-          </ui:repeat>
-        </ul>
+        <ui:repeat var="message" value="#{facesContext.messageList}">
+          <ui:fragment rendered="#{message.severity.ordinal eq 0}">
+            <div data-severity="info" class="notification-queue-item notification-queue-item-info"><span>#{message.summary}</span> <a href="javascript:void(null)"></a></div>
+          </ui:fragment>
+          <ui:fragment rendered="#{message.severity.ordinal eq 1}">
+            <div data-severity="warn" class="notification-queue-item notification-queue-item-warn"><span>#{message.summary}</span> <a href="javascript:void(null)"></a></div>
+          </ui:fragment>
+          <ui:fragment rendered="#{message.severity.ordinal eq 2}">
+            <div data-severity="error" class="notification-queue-item notification-queue-item-error"><span>#{message.summary}</span> <a href="javascript:void(null)"></a></div>
+          </ui:fragment>
+          <ui:fragment rendered="#{message.severity.ordinal eq 3}">
+            <div data-severity="fatal" class="notification-queue-item notification-queue-item-fatal"><span>#{message.summary}</span> <a href="javascript:void(null)"></a></div>
+          </ui:fragment>
+        </ui:repeat>
         <h:messages globalOnly="false" style="display: none" />
       </ui:insert>
     </h:panelGroup>
