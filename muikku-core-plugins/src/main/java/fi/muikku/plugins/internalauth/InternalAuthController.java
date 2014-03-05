@@ -64,4 +64,10 @@ public class InternalAuthController {
   	return result;
   }
   
+  public boolean confirmUserPassword(UserEntity user, String password) {
+    String passwordHash = DigestUtils.md5Hex(password);
+    InternalAuth internalAuth = internalAuthDAO.findByUserIdAndPassword(user.getId(), passwordHash);
+
+    return internalAuth != null;
+  }
 }
