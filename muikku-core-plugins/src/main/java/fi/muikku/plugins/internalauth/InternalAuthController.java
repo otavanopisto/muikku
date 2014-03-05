@@ -70,4 +70,13 @@ public class InternalAuthController {
 
     return internalAuth != null;
   }
+
+  public void updateUserPassword(UserEntity user, String passwordHash, String newPasswordHash) {
+    if (confirmUserPassword(user, passwordHash)) {
+      String passwordHashCoded = DigestUtils.md5Hex(passwordHash);
+      String newPasswordHashCoded = DigestUtils.md5Hex(newPasswordHash);
+      
+      internalAuthDAO.updatePassword(user, passwordHashCoded, newPasswordHashCoded);
+    }
+  }
 }
