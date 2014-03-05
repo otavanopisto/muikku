@@ -13,6 +13,7 @@ import com.ocpsoft.pretty.faces.annotation.URLMappings;
 
 import fi.muikku.plugins.internalauth.InternalAuthController;
 import fi.muikku.schooldata.UserController;
+import fi.muikku.session.SessionController;
 
 @Named
 @Stateful
@@ -32,6 +33,9 @@ public class UserChangePasswordBackingBean {
 	@Inject
 	private InternalAuthController internalAuthController;
 
+	@Inject
+	private SessionController sessionController;
+	
 	@URLAction
 	public void init() throws FileNotFoundException {
 	}
@@ -39,7 +43,9 @@ public class UserChangePasswordBackingBean {
 	public void changePassword() {
 	  if (newPasswordHash != null) {
 	    if (newPasswordHash.equals(newPasswordHashAgain)) {
-	      internalAuthController.
+	      if (internalAuthController.confirmUserPassword(sessionController.getUser(), passwordHash)) {
+	        internalAuthController.updateUserPassword(sessionController.getUser(), passwordHash, newPasswordHash);
+	      }
 	    }
 	  }
 	}

@@ -64,4 +64,19 @@ public class InternalAuthController {
   	return result;
   }
   
+  public boolean confirmUserPassword(UserEntity user, String password) {
+    String passwordHash = DigestUtils.md5Hex(password);
+    InternalAuth internalAuth = internalAuthDAO.findByUserIdAndPassword(user.getId(), passwordHash);
+
+    return internalAuth != null;
+  }
+
+  public void updateUserPassword(UserEntity user, String passwordHash, String newPasswordHash) {
+    if (confirmUserPassword(user, passwordHash)) {
+      String passwordHashCoded = DigestUtils.md5Hex(passwordHash);
+      String newPasswordHashCoded = DigestUtils.md5Hex(newPasswordHash);
+      
+      internalAuthDAO.updatePassword(user, passwordHashCoded, newPasswordHashCoded);
+    }
+  }
 }

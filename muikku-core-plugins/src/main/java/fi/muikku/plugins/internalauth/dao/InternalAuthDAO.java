@@ -6,6 +6,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.DAO;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugin.PluginDAO;
 import fi.muikku.plugins.internalauth.model.InternalAuth;
 import fi.muikku.plugins.internalauth.model.InternalAuth_;
@@ -37,6 +38,12 @@ public class InternalAuthDAO extends PluginDAO<InternalAuth> {
     );
    
     return getSingleResult(entityManager.createQuery(criteria));
+  }
+
+  public void updatePassword(UserEntity user, String passwordHash, String newPasswordHash) {
+    InternalAuth internalAuth = findByUserIdAndPassword(user.getId(), passwordHash);
+    internalAuth.setPassword(newPasswordHash);
+    persist(internalAuth);
   }
 	
 }
