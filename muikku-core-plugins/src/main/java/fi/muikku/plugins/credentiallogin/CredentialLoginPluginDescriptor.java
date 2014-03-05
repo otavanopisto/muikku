@@ -43,6 +43,9 @@ public class CredentialLoginPluginDescriptor implements PluginDescriptor, Locali
     List<LocaleBundle> bundles = new ArrayList<LocaleBundle>();
     bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.credentiallogin.CredentialLoginPluginMessages", LocaleUtils.toLocale("fi"))));
     bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.credentiallogin.CredentialLoginPluginMessages", LocaleUtils.toLocale("en"))));
+    bundles.add(new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.credentiallogin.CredentialLoginJsPluginMessages", LocaleUtils.toLocale("fi"))));
+    bundles.add(new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.credentiallogin.CredentialLoginJsPluginMessages", LocaleUtils.toLocale("en"))));
+
     return bundles;
   }
 
