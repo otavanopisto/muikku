@@ -1,39 +1,15 @@
-.notificationQueueItemRemoveLink {
-  cursor: pointer; 
-  position: absolute;
-  right: 12px;
-  top: 12px;
-  width: 20px; 
-  height: 20px; 
-  display: block; 
-  background: rgba(0,0,0,0.3);
-  border: 1px solid rgba(0,0,0,0.5);    
-  font-size: 14px;
-}
+@import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
 
-.notificationQueueItemRemoveLink:hover {
-  background: rgba(0,0,0,0.5);
-  border: 1px solid rgba(0,0,0,0.7);
-}
-
-.notificationQueueItemRemoveLink:after {
-  content: 'x';
-  color: #fff;  
-}
-
-.notificationQueueItemRemoveLink:hover {
-  background: rgba(0,0,0,0.5);
-  border: 1px solid rgba(0,0,0,0.5);
-}
-
-.notificationQueue {
+.notification-queue {
   position: fixed;
   top: 0px;
   left: 0px;
   right: 0px;
+  z-index: 9999;
+  height: 0px;
 }
 
-.notificationQueueItemsContainer {
+.notification-queue-items {
   margin-left: auto;
   margin-right: auto;
   width: 500px;
@@ -43,7 +19,7 @@
   background: #666;
 }
 
-.notificationQueueItem {
+.notification-queue-item {
   text-align: center;
   color: #fff;
   padding: 12px 16px 16px 16px;
@@ -56,38 +32,47 @@
   word-wrap: break-word;
 }
 
-.notificationQueueItemLast {
+.notification-queue-item:last-child {
   border-bottom-right-radius: 4px;
   border-bottom-left-radius: 4px;
   margin-bottom: 0px;
 }
 
-.notificationQueueInfoItem {
+.notification-queue-item-info {
   background: #549fca;
 }
 
-.notificationQueueSuccessItem {
-  background: #49af4e;
-}
-
-.notificationQueueWarningItem {
+.notification-queue-item-warn {
   background: #ffce65;
-  color: #6a4902;
+  color:#6a4902;
 }
 
-.notificationQueueErrorItem {
-  background: #ff2200;
+.notification-queue-item-error {
+  background: #ff6600;
 }
 
-.notificationQueueCriticalItem {
+.notification-queue-item-fatal {
   background: #bf3000;
 }
 
-.notificationQueueLoadingItem {
-  background-color: #EEEEEE;
-  @include background-image('ajax-loader.gif');
-  background-position: 18px center;
+.notification-queue-item-success {
+  background: #49af4e;
+}
+
+.notification-queue-item-loading {
+  background-color: #000;
+  @include background-image('gfx/eventqueueloader.png');
+  background-position: 8px center;
   background-repeat: no-repeat;
-  color: #1E1E1E;
-  z-index: 9999;
+  z-index:9999;
+}
+
+.notification-queue-item a {
+  @include background-image('gfx/eventqueueclose.png');
+  top: 12px;
+  cursor: pointer;
+  height: 24px;
+  position: absolute;
+  right: 8px;
+  width: 24px;
 }
