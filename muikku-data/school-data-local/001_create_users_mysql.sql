@@ -25,7 +25,7 @@ insert into LocalUserEmail (user_id, address, archived) values (3, 'st2@oo.fi', 
 insert into InternalAuth (id, password, userEntityId) values (3, '3675ac5c859c806b26e02e6f9fd62192', 3);
 insert into UserSchoolDataIdentifier (identifier, dataSource_id, userEntity_id) values ('3', (select id from SchoolDataSource where identifier = 'LOCAL'), 3);
 insert into UserGroupUser (id, userGroup_id, user_id, role_id) values (3, 3, 3, 10);
-insert into UserEmailEntity (id,user_id,address) values (3, 3, 'st3@oo.fi');
+insert into UserEmailEntity (id,user_id,address) values (3, 3, 'st2@oo.fi');
 
 insert into UserEntity (id, archived) values (4, false);
 insert into EnvironmentUser (id, archived, role_id, user_id) values (4, false, 7, 4);
