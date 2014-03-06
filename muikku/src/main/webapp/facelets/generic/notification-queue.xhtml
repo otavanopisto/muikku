@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html">
+
+
+  <h:panelGroup layout="block" styleClass="notification-queue">
+    <h:panelGroup layout="block" styleClass="notification-queue-items">
+      <ui:insert name="messages">
+        <ui:repeat var="message" value="#{facesContext.messageList}">
+          <ui:fragment rendered="#{message.severity.ordinal eq 0}">
+            <div data-severity="info" class="notification-queue-item notification-queue-item-info"><span>#{message.summary}</span> <a href="javascript:void(null)"></a></div>
+          </ui:fragment>
+          <ui:fragment rendered="#{message.severity.ordinal eq 1}">
+            <div data-severity="warn" class="notification-queue-item notification-queue-item-warn"><span>#{message.summary}</span> <a href="javascript:void(null)"></a></div>
+          </ui:fragment>
+          <ui:fragment rendered="#{message.severity.ordinal eq 2}">
+            <div data-severity="error" class="notification-queue-item notification-queue-item-error"><span>#{message.summary}</span> <a href="javascript:void(null)"></a></div>
+          </ui:fragment>
+          <ui:fragment rendered="#{message.severity.ordinal eq 3}">
+            <div data-severity="fatal" class="notification-queue-item notification-queue-item-fatal"><span>#{message.summary}</span> <a href="javascript:void(null)"></a></div>
+          </ui:fragment>
+        </ui:repeat>
+        <h:messages globalOnly="false" style="display: none" />
+      </ui:insert>
+    </h:panelGroup>
+  </h:panelGroup>
+
+</ui:composition>

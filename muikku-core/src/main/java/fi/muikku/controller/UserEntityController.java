@@ -147,4 +147,8 @@ public class UserEntityController {
     return userEmailEntityDAO.listUsersByAddresses(addresses);
   }
 
+  public UserEmailEntity findUserEmailEntityById(Long id) {
+    return userEmailEntityDAO.findById(id);
+  }
+
 }
