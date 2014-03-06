@@ -2,6 +2,7 @@ package fi.muikku.plugins.forgotpassword;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.application.FacesMessage;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -17,6 +18,7 @@ import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.forgotpassword.model.PasswordResetRequest;
 import fi.muikku.servlet.BaseUrl;
 import fi.muikku.session.SessionController;
+import fi.muikku.utils.FacesUtils;
 
 @Named
 @Stateful
@@ -61,7 +63,7 @@ public class ForgotPasswordBackingBean {
     }
     UserEntity userEntity = userEntityController.findUserByEmailAddress(email);
     if (userEntity == null) {
-      // TODO Error handling; the given email address does not correspond to any user
+      FacesUtils.addMessage(FacesMessage.SEVERITY_WARN, localeController.getText(sessionController.getLocale(), "plugin.forgotpassword.forgotPassword.noUserFound", new String[] { email }));
     }
     else {
       PasswordResetRequest resetRequest = internalLoginController.findPasswordResetRequestByUser(userEntity);
@@ -77,7 +79,7 @@ public class ForgotPasswordBackingBean {
       String mailContent = localeController.getText(sessionController.getLocale(), "plugin.forgotpassword.forgotPassword.mailContent", new String[] { resetLink });
       // TODO System sender address needs to be configurable
       mailer.sendMail(null, email, mailSubject, mailContent);
-      // TODO Information handling; need to let the user know that the mail has been successfully sent
+      FacesUtils.addMessage(FacesMessage.SEVERITY_INFO, localeController.getText(sessionController.getLocale(), "plugin.forgotPassword.forgotPassword.mailSent", new String[] { email }));
     }
   }
   
