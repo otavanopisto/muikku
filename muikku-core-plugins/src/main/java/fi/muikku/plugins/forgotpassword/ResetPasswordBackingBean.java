@@ -1,8 +1,12 @@
 package fi.muikku.plugins.forgotpassword;
 
+import java.io.IOException;
+
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -61,7 +65,15 @@ public class ResetPasswordBackingBean {
           String hashed = DigestUtils.md5Hex(getPassword1());
           hashed = DigestUtils.md5Hex(hashed);
           internalAuthController.updateUserEntityPassword(userEntityId, hashed);
-          FacesUtils.addMessage(FacesMessage.SEVERITY_INFO, localeController.getText(sessionController.getLocale(), "plugin.forgotpassword.resetPassword.passwordChanged"));
+          FacesUtils.addPostRedirectMessage(FacesMessage.SEVERITY_INFO, localeController.getText(sessionController.getLocale(), "plugin.forgotpassword.resetPassword.passwordChanged"));
+          ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+          try {
+            context.redirect(context.getRequestContextPath());
+          }
+          catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
         }
         else {
           FacesUtils.addMessage(FacesMessage.SEVERITY_WARN, localeController.getText(sessionController.getLocale(), "plugin.forgotpassword.resetPassword.passwordMismatch"));
