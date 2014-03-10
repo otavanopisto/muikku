@@ -6,37 +6,51 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.DAO;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugin.PluginDAO;
 import fi.muikku.plugins.internalauth.model.InternalAuth;
 import fi.muikku.plugins.internalauth.model.InternalAuth_;
 
 @DAO
 public class InternalAuthDAO extends PluginDAO<InternalAuth> {
-	
-	private static final long serialVersionUID = 5095222172173498678L;
 
-	public InternalAuth create(Long userEntityId, String password) {
-		InternalAuth internalAuth = new InternalAuth();
-		internalAuth.setPassword(password);
-		internalAuth.setUserEntityId(userEntityId);
-		return persist(internalAuth);
-	}
+  private static final long serialVersionUID = 5095222172173498678L;
 
-	public InternalAuth findByUserIdAndPassword(Long userEntityId, String password) {
+  public InternalAuth create(Long userEntityId, String password) {
+    InternalAuth internalAuth = new InternalAuth();
+    internalAuth.setPassword(password);
+    internalAuth.setUserEntityId(userEntityId);
+    return persist(internalAuth);
+  }
+
+  public InternalAuth findByUserId(Long userEntityId) {
     EntityManager entityManager = getEntityManager();
-    
+
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<InternalAuth> criteria = criteriaBuilder.createQuery(InternalAuth.class);
     Root<InternalAuth> root = criteria.from(InternalAuth.class);
     criteria.select(root);
-    criteria.where(
-    	criteriaBuilder.and(
-          criteriaBuilder.equal(root.get(InternalAuth_.userEntityId), userEntityId),
-          criteriaBuilder.equal(root.get(InternalAuth_.password), password)
-    	)
-    );
-   
+    criteria.where(criteriaBuilder.equal(root.get(InternalAuth_.userEntityId), userEntityId));
+
     return getSingleResult(entityManager.createQuery(criteria));
   }
-	
+
+  public InternalAuth findByUserIdAndPassword(Long userEntityId, String password) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<InternalAuth> criteria = criteriaBuilder.createQuery(InternalAuth.class);
+    Root<InternalAuth> root = criteria.from(InternalAuth.class);
+    criteria.select(root);
+    criteria.where(criteriaBuilder.and(criteriaBuilder.equal(root.get(InternalAuth_.userEntityId), userEntityId),
+        criteriaBuilder.equal(root.get(InternalAuth_.password), password)));
+
+    return getSingleResult(entityManager.createQuery(criteria));
+  }
+
+  public void updatePassword(UserEntity user, String passwordHash, String newPasswordHash) {
+    InternalAuth internalAuth = findByUserIdAndPassword(user.getId(), passwordHash);
+    internalAuth.setPassword(newPasswordHash);
+    persist(internalAuth);
+  }
 }

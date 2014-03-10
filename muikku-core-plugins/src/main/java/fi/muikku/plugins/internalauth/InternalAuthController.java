@@ -20,48 +20,75 @@ import fi.muikku.schooldata.entity.User;
 @Dependent
 @Stateful
 public class InternalAuthController {
-	
-	@Inject
-	private Logger logger;
-	
-	@Inject
-	private InternalAuthDAO internalAuthDAO;
-	
-	@Inject
+
+  @Inject
+  private Logger logger;
+
+  @Inject
+  private InternalAuthDAO internalAuthDAO;
+
+  @Inject
   private UserController userController;
-	
-  public InternalAuth findInternalAuthByEmailAndPassword(String email, String password) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+
+  public InternalAuth findInternalAuthByEmailAndPassword(String email, String password) throws SchoolDataBridgeRequestException,
+      UnexpectedSchoolDataBridgeException {
     String passwordHash = DigestUtils.md5Hex(password);
     UserEntity userEntity = findUserEntityByEmail(email);
     if (userEntity != null) {
       InternalAuth internalAuth = internalAuthDAO.findByUserIdAndPassword(userEntity.getId(), passwordHash);
       return internalAuth;
     }
-    
+
     return null;
   }
 
-  private UserEntity findUserEntityByEmail(String email) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-  	UserEntity result = null;
-  	
-  	List<User> users = userController.listUsersByEmail(email);
-
-  	for (User user : users) {
-  		UserEntity userEntity = userController.findUserEntity(user);
-  		if (userEntity != null) {
-    		if (result == null) {
-    			result = userEntity;
-    		} else {
-    			if (!result.getId().equals(userEntity.getId())) {
-    				// TODO: Proper error handling
-    				logger.severe("Several UserEntities found with given email: " + email);
-    				throw new RuntimeException("Several UserEntities found with given email: " + email);
-    			}
-    		}
-  		}
-  	}
-  	
-  	return result;
+  public boolean updateUserEntityPassword(Long userEntityId, String hashedPassword) {
+    InternalAuth internalAuth = internalAuthDAO.findByUserId(userEntityId);
+    if (internalAuth != null) {
+      internalAuth.setPassword(hashedPassword);
+      return true;
+    } else {
+      return false;
+    }
   }
+
+  private UserEntity findUserEntityByEmail(String email) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+    UserEntity result = null;
+
+    List<User> users = userController.listUsersByEmail(email);
+
+    for (User user : users) {
+      UserEntity userEntity = userController.findUserEntity(user);
+      if (userEntity != null) {
+        if (result == null) {
+          result = userEntity;
+        } else {
+          if (!result.getId().equals(userEntity.getId())) {
+            // TODO: Proper error handling
+            logger.severe("Several UserEntities found with given email: " + email);
+            throw new RuntimeException("Several UserEntities found with given email: " + email);
+          }
+        }
+      }
+    }
+
+    return result;
+  }
+
   
+  public boolean confirmUserPassword(UserEntity user, String password) {
+    String passwordHash = DigestUtils.md5Hex(password);
+    InternalAuth internalAuth = internalAuthDAO.findByUserIdAndPassword(user.getId(), passwordHash);
+
+    return internalAuth != null;
+  }
+
+  public void updateUserPassword(UserEntity user, String passwordHash, String newPasswordHash) {
+    if (confirmUserPassword(user, passwordHash)) {
+      String passwordHashCoded = DigestUtils.md5Hex(passwordHash);
+      String newPasswordHashCoded = DigestUtils.md5Hex(newPasswordHash);
+      
+      internalAuthDAO.updatePassword(user, passwordHashCoded, newPasswordHashCoded);
+    }
+  }
 }
