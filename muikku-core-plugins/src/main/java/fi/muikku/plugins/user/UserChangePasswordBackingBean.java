@@ -1,12 +1,14 @@
 package fi.muikku.plugins.user;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.validator.ValidatorException;
 import javax.inject.Inject;
@@ -22,6 +24,7 @@ import fi.muikku.i18n.LocaleController;
 import fi.muikku.plugins.internalauth.InternalAuthController;
 import fi.muikku.schooldata.UserController;
 import fi.muikku.session.SessionController;
+import fi.muikku.utils.FacesUtils;
 
 @Named
 @Stateful
@@ -56,6 +59,16 @@ public class UserChangePasswordBackingBean {
 	    if (newPasswordHash.equals(newPasswordHashAgain)) {
 	      if (internalAuthController.confirmUserPassword(sessionController.getUser(), passwordHash)) {
 	        internalAuthController.updateUserPassword(sessionController.getUser(), passwordHash, newPasswordHash);
+
+          FacesUtils.addPostRedirectMessage(FacesMessage.SEVERITY_INFO, localeController.getText(sessionController.getLocale(), "plugin.userinfo.changePassword.passwordChanged"));
+          ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+          try {
+            context.redirect(context.getRequestContextPath());
+          }
+          catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
 	      }
 	    }
 	  }
