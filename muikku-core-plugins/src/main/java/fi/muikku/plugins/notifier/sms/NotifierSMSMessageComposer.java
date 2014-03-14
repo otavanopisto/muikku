@@ -1,4 +1,4 @@
-package fi.muikku.plugins.notifier;
+package fi.muikku.plugins.notifier.sms;
 
 public interface NotifierSMSMessageComposer {
 

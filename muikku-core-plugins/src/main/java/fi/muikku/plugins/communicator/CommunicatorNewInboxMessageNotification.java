@@ -1,23 +1,36 @@
 package fi.muikku.plugins.communicator;
 
-import fi.muikku.plugins.notifier.NotifierAction;
-import fi.muikku.plugins.notifier.NotifierEmailMessageComposer;
+import javax.enterprise.inject.Default;
 
+import fi.muikku.notifier.NotifierAction;
+import fi.muikku.notifier.NotifierContext;
+import fi.muikku.plugins.notifier.email.NotifierEmailContent;
+import fi.muikku.plugins.notifier.email.NotifierEmailMessageComposer;
+
+@Default
+@NotifierEmailContent(CommunicatorNewInboxMessageNotification.NAME)
 public class CommunicatorNewInboxMessageNotification implements NotifierAction, NotifierEmailMessageComposer {
 
+  public static final String NAME = "communicator-inbox-new";
+  
   @Override
-  public String getEmailSubject() {
+  public String getEmailSubject(NotifierContext context) {
     return "Uusi viesti Muikussa";
   }
 
   @Override
-  public String getEmailContent() {
-    return "Uusi viesti Muikussa diipadaapa";
+  public String getEmailContent(NotifierContext context) {
+    return "Uusi viesti Muikussa";
   }
 
   @Override
   public String getName() {
-    return "communicator-inbox-new";
+    return NAME;
+  }
+
+  @Override
+  public String getDisplayName() {
+    return "Viestin - Uusi viesti";
   }
 
 }

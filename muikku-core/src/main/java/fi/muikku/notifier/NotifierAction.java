@@ -1,7 +1,8 @@
-package fi.muikku.plugins.notifier;
+package fi.muikku.notifier;
 
 public interface NotifierAction {
   
   String getName();
+  String getDisplayName();
   
 }

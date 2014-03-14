@@ -48,7 +48,8 @@ public class GuidanceRequestPluginDescriptor implements PluginDescriptor, Persis
 		  GuidanceRequestsBackingBean.class,
 		  WorkspaceGuidanceRequestsBackingBean.class,
 		  GuidanceRequestSeekerResultProvider.class,
-		  CreateGuidanceRequestBackingBean.class
+		  CreateGuidanceRequestBackingBean.class,
+		  GuidanceRequestNotification.class
 		));
 	}
 	

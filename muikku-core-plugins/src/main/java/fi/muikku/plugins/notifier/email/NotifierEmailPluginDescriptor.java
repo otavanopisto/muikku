@@ -1,4 +1,4 @@
-package fi.muikku.plugins.notifier;
+package fi.muikku.plugins.notifier.email;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,13 +6,10 @@ import java.util.List;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import fi.muikku.controller.WidgetController;
 import fi.muikku.i18n.LocaleBundle;
-import fi.muikku.notifier.NotifierController;
-import fi.muikku.plugin.AfterPluginsInitEvent;
 import fi.muikku.plugin.LocalizedPluginDescriptor;
 import fi.muikku.plugin.PersistencePluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
@@ -20,14 +17,14 @@ import fi.muikku.plugin.RESTPluginDescriptor;
 
 @ApplicationScoped
 @Stateful
-public class NotifierPluginDescriptor implements PluginDescriptor, PersistencePluginDescriptor, RESTPluginDescriptor, LocalizedPluginDescriptor {
-
+public class NotifierEmailPluginDescriptor implements PluginDescriptor, PersistencePluginDescriptor, RESTPluginDescriptor, LocalizedPluginDescriptor {
+	
   @Inject
-  private NotifierController notifierController;
-  
+  private WidgetController widgetController;
+
 	@Override
 	public String getName() {
-		return "notifier";
+		return "notifier-email";
 	}
 	
 	@Override
@@ -35,17 +32,7 @@ public class NotifierPluginDescriptor implements PluginDescriptor, PersistencePl
 
 	}
 
-  public void onAfterPluginsInit(@Observes AfterPluginsInitEvent event) {
-    try {
-      notifierController.processActionsAndMethods();
-    } catch (Exception e) {
-      // TODO: Proper error handling
-      e.printStackTrace();
-      throw new RuntimeException(e);
-    }
-  }
-
-  @Override
+	@Override
 	public List<Class<?>> getBeans() {
 		return new ArrayList<Class<?>>(Arrays.asList(
 			/* DAOs */	
@@ -53,7 +40,7 @@ public class NotifierPluginDescriptor implements PluginDescriptor, PersistencePl
 		    
 		  /* Controllers */
 		  
-		  UserNotifierSettingsBackingBean.class
+		  NotifierEmailMethod.class
 		  
 		  /* Misc */
 		  
@@ -69,7 +56,6 @@ public class NotifierPluginDescriptor implements PluginDescriptor, PersistencePl
 	@Override
 	public Class<?>[] getRESTServices() {
 		return new Class<?>[] {
-		    NotifierRESTService.class
 		};
 	}
 

@@ -12,6 +12,7 @@ import javax.inject.Named;
 import fi.muikku.dao.users.UserEntityDAO;
 import fi.muikku.model.base.Tag;
 import fi.muikku.model.users.UserEntity;
+import fi.muikku.notifier.NotifierController;
 import fi.muikku.plugins.communicator.dao.CommunicatorMessageIdDAO;
 import fi.muikku.plugins.communicator.dao.CommunicatorMessageRecipientDAO;
 import fi.muikku.plugins.communicator.dao.CommunicatorMessageSignatureDAO;
@@ -23,7 +24,6 @@ import fi.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
 import fi.muikku.plugins.communicator.model.InboxCommunicatorMessage;
-import fi.muikku.plugins.notifier.NotifierController;
 import fi.muikku.security.Permit;
 import fi.muikku.security.PermitContext;
 import fi.muikku.session.SessionController;
@@ -84,8 +84,6 @@ public class CommunicatorController {
     for (UserEntity recipient : recipients) {
       communicatorMessageRecipientDAO.create(message, recipient.getId());
     }
-    
-    notifierController.sendNotification(new CommunicatorNewInboxMessageNotification(), sender, recipients);
     
     return message;
   }
