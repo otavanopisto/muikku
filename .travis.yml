@@ -1,43 +1,27 @@
-# Language 
-
 language: java
-
-# Maven 
 script: mvn test
-  
-# JDK versions
 jdk:
-  - openjdk7
-
-# whitelist devel
+- openjdk7
 branches:
   only:
-    - devel
-
-# Global environment variables
+  - devel
 env:
   global:
-    - secure: "CB9V3CmnZRuNapNI8QYEO+tawsvqgEqLOM1FoIjHiPf2bMdmjud0dwcQWNuiMJzWR0FJaARvqQWmndP7SePNUaeIkkRoGJ0InmIrXwWtvGq/YKdxEWC8JpMxeONjKNZ6w1LhtRHpHKDxa9P1EgvyDMtg9pPIgDtoab86lXCK+2A="
-    - secure: "HCRUaOrwfMQQgtlFI5iKEa1CAKmf9R6GgifIpIjgLERgzxTzn3hJQkR9GvVpqB5Vo/50mCQM07LI6wB/Q9yI5b9d3M4Ey9RJebRRiHSvUyoOG8/tYHmZ8rphDVqInJSFDDcjHkGWI4KbPCe9cFvIuXhqWKensUEOl9WDFKDl4Uw="
-
-# Fix for See https://github.com/Jasig/sass-maven-plugin/issues/47
+  - secure: CB9V3CmnZRuNapNI8QYEO+tawsvqgEqLOM1FoIjHiPf2bMdmjud0dwcQWNuiMJzWR0FJaARvqQWmndP7SePNUaeIkkRoGJ0InmIrXwWtvGq/YKdxEWC8JpMxeONjKNZ6w1LhtRHpHKDxa9P1EgvyDMtg9pPIgDtoab86lXCK+2A=
+  - secure: HCRUaOrwfMQQgtlFI5iKEa1CAKmf9R6GgifIpIjgLERgzxTzn3hJQkR9GvVpqB5Vo/50mCQM07LI6wB/Q9yI5b9d3M4Ey9RJebRRiHSvUyoOG8/tYHmZ8rphDVqInJSFDDcjHkGWI4KbPCe9cFvIuXhqWKensUEOl9WDFKDl4Uw=
+  - secure: F9OXURTBRIQvHY1clK2Tf/waw7gEjnPIb/o7uUpVCbMEX3aqivDoFGu4UpuLLLm+sfr9lQCJTAUdOCz5EJ4PXqF6NeQijb59Q/Sw86ejbGG8M9rhL3lKC5oL3krFwxf33RBZ4zyuXE5MEHZ8mO5pyKn4VLPphJcuTCywaNjiQBc=
 before_install:
-  - unset GEM_PATH
-
-# Prepare maven, deploy artifacts and update staging server
-# -Dmaven.test.skip is because integration tests install container and
-# run browser; both are a bad idea on a build server
+- unset GEM_PATH
 after_success:
-  - python travis-prepare-maven.py
-  - mvn deploy --settings ~/.m2/mySettings.xml
-
-# Notifications 
+- python travis-prepare-maven.py
+- mvn deploy --settings ~/.m2/mySettings.xml
+- wget -q $DEPLOY_PING
 notifications:
   irc:
     channels:
-      - "chat.freenode.net#otavanopisto-muikku"
+    - chat.freenode.net#otavanopisto-muikku
     use_notice: true
     skip_join: true
     template:
-      - "%{repository} (%{commit}) : %{message} %{foo} "
-      - "Build details: %{build_url}"
+    - '%{repository} (%{commit}) : %{message} %{foo} '
+    - 'Build details: %{build_url}'
