@@ -15,7 +15,6 @@ before_install:
 after_success:
 - python travis-prepare-maven.py
 - mvn deploy --settings ~/.m2/mySettings.xml
-- wget -q $DEPLOY_PING
 notifications:
   irc:
     channels:
@@ -25,3 +24,9 @@ notifications:
     template:
     - '%{repository} (%{commit}) : %{message} %{foo} '
     - 'Build details: %{build_url}'
+  webhooks:
+    urls: 
+      - $DEPLOY_PING
+    on_success: always
+    on_failure: never
+    on_start: false
