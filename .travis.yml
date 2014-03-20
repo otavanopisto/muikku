@@ -9,7 +9,6 @@ env:
   global:
   - secure: CB9V3CmnZRuNapNI8QYEO+tawsvqgEqLOM1FoIjHiPf2bMdmjud0dwcQWNuiMJzWR0FJaARvqQWmndP7SePNUaeIkkRoGJ0InmIrXwWtvGq/YKdxEWC8JpMxeONjKNZ6w1LhtRHpHKDxa9P1EgvyDMtg9pPIgDtoab86lXCK+2A=
   - secure: HCRUaOrwfMQQgtlFI5iKEa1CAKmf9R6GgifIpIjgLERgzxTzn3hJQkR9GvVpqB5Vo/50mCQM07LI6wB/Q9yI5b9d3M4Ey9RJebRRiHSvUyoOG8/tYHmZ8rphDVqInJSFDDcjHkGWI4KbPCe9cFvIuXhqWKensUEOl9WDFKDl4Uw=
-  - secure: F9OXURTBRIQvHY1clK2Tf/waw7gEjnPIb/o7uUpVCbMEX3aqivDoFGu4UpuLLLm+sfr9lQCJTAUdOCz5EJ4PXqF6NeQijb59Q/Sw86ejbGG8M9rhL3lKC5oL3krFwxf33RBZ4zyuXE5MEHZ8mO5pyKn4VLPphJcuTCywaNjiQBc=
 before_install:
 - unset GEM_PATH
 after_success:
@@ -26,7 +25,7 @@ notifications:
     - 'Build details: %{build_url}'
   webhooks:
     urls: 
-      - $DEPLOY_PING
+    - http://build.staging.fi/travis.php
     on_success: always
     on_failure: never
     on_start: false
