@@ -8,6 +8,10 @@ $theme:muikku;
   background-image:(url('#' + '{resource["theme-' + $theme + ':' + $imgSrc + '"]}'));
 }
 
+@mixin main-background($imgSrc1,$imgSrc2) {
+  background: (url('#' + '{resource["theme-' + $theme + ':' + $imgSrc1 + '"]}')), (url('#' + '{resource["theme-' + $theme + ':' + $imgSrc2 + '"]}')) #f6fcff;
+}
+
 @mixin background-image-external($imgSrc) {
   background-image:url($imgSrc);
 }
