@@ -131,10 +131,6 @@ a.menu-tooltip:hover > span {
   display: inline; 
 } 
 
-
-
-
-
 div[class*="tt-menu-link"]:before {
  content:"<-";
 }
@@ -226,29 +222,62 @@ a.header {
   padding:5px;
 }
 
-#staticNavigationFade {
-  /* @include fadetoAlpha-top-bottom; */	
-  height:60px;
+#staticNavigationWrapper {
+  height:80px;
   z-index:12;
+  position:relative;
+  border-top:1px solid #71c3e1;
+  background: -moz-linear-gradient(top,  rgba(36,108,162,0.15) 0%, rgba(255,255,255,0) 66%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(36,108,162,0.15)), color-stop(66%,rgba(255,255,255,0)));
+  background: -webkit-linear-gradient(top,  rgba(36,108,162,0.15) 0%,rgba(255,255,255,0) 66%);
+  background: -o-linear-gradient(top,  rgba(36,108,162,0.15) 0%,rgba(255,255,255,0) 66%);
+  background: -ms-linear-gradient(top,  rgba(36,108,162,0.15) 0%,rgba(255,255,255,0) 66%);
+  background: linear-gradient(to bottom,  rgba(36,108,162,0.15) 0%,rgba(255,255,255,0) 66%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#26246ca2', endColorstr='#00ffffff',GradientType=0 );
+}
+
+#staticNavigationBG {
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:0;
+  right:0;
+  height:80px;
+  z-index:13;
+  background:#216aa1;
+  border-bottom:1px solid #ebf7ff;
+  opacity:0.5;
 }
 
 #staticNavigation {
-  background-color:#ededed;
-  border: 1px solid #dadada;
-  @include rounded-bottom-left;
-  @include rounded-bottom-right;
+  position:absolute;
+  top:0;
+  bottom:0;
+  left:0;
+  right:0;
+  height:60px;
+  z-index:14;
+  padding:10px;
 }
 
 /* Styles for waypoints */
 
-.stuck {
+#staticNavigationWrapper.stuckStNav {
   position:fixed;
-  top:0
+  top:0;
+  left:0;
+  right:0;
 }
 
+.stuckDNav {
+  position:fixed !important;
+  top:0;
+  left:0;
+} 
 
-.stNavScrollStyles {
-  background-color:#fff !important; 
+#staticNavigationBG.stNavScrollStyles {
+  opacity:0.95; 
+  background:#2c9fcc;
 }
 
 #sessionPanel {
