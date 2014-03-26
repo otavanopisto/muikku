@@ -18,12 +18,24 @@ $(document).ready(function() {
 	/* Style functions */
 	
 	$('#staticNavigationWrapper').waypoint(function(direction) {
-	  if(direction == 'down')
-	    $('#staticNavigationBG').addClass("stNavScrollStyles", 800, "easeOutQuint");
-	  else
-	    $('#staticNavigationBG').removeClass("stNavScrollStyles");
-	});
+	  if(direction == 'down') {
+	    $('#staticNavigationBG').addClass("stNavScrollStyles").stop().animate({
+	    	backgroundColor:"#2c9fcc",
+	    	opacity:"0.95",
+	    	duration: 800,
+	    	easing: "easeOutQuint",
 
+	    });
+	  } else {
+		  $('#staticNavigationBG').removeClass("stNavScrollStyles").stop().animate({
+			backgroundColor:"#216aa1",
+			opacity:"0.5",
+	    	duration: 200,
+	    	easing: "easeOutQuint",
+
+	    });
+	  }
+	});
 
 });
 

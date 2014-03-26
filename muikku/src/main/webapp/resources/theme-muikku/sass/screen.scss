@@ -223,10 +223,9 @@ a.header {
 }
 
 #staticNavigationWrapper {
-  height:80px;
+  height:82px;
   z-index:12;
   position:relative;
-  border-top:1px solid #71c3e1;
   background: -moz-linear-gradient(top,  rgba(36,108,162,0.15) 0%, rgba(255,255,255,0) 66%);
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(36,108,162,0.15)), color-stop(66%,rgba(255,255,255,0)));
   background: -webkit-linear-gradient(top,  rgba(36,108,162,0.15) 0%,rgba(255,255,255,0) 66%);
@@ -245,6 +244,7 @@ a.header {
   height:80px;
   z-index:13;
   background:#216aa1;
+  border-top:1px solid #71c3e1;
   border-bottom:1px solid #ebf7ff;
   opacity:0.5;
 }
