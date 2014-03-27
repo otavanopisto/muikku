@@ -3,6 +3,17 @@
 
 /* General styles with selectors */
 
+div[class*='dock-static-navi-button'] a{
+  font-size:24pt;
+  color:#fff;
+  text-decoration:none;
+  margin-right:50px;
+}
+
+div[data-name="generic.dock-top.left"] div:last-child > a{
+	margin-right:0;
+}
+
 
 div[data-name*='index.content'] > div:not(:first-child) {
   margin-top:10px;
@@ -107,6 +118,10 @@ div[class*="wi-dock-static-navi"]{
   @include background-image('gfx/icons/32x32/actions/calendar-visible.png');
 }
 
+
+
+
+/*  Deprecating 27.3.2014
 .naviIconHome {
   @include naviIcon();
   @include background-image('gfx/icons/32x32/actions/navigate-home.png');
@@ -250,6 +265,8 @@ div[class*="wi-dock-static-navi"]{
   @include naviIcon(); 
   @include background-image('gfx/icons/32x32/actions/navigate-student-grading.png');  
 }
+
+*/
 
 /* Settings navigation */
 
