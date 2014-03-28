@@ -8,6 +8,9 @@ div[class*='dock-static-navi-button'] a{
   color:#fff;
   text-decoration:none;
   margin-right:50px;
+  &hover{
+  
+  }
 }
 
 div[data-name="generic.dock-top.left"] div:last-child > a{

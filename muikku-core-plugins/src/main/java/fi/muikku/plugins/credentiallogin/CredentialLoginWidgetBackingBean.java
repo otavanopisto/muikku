@@ -9,7 +9,6 @@ import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -21,6 +20,7 @@ import fi.muikku.auth.AuthenticationResult;
 import fi.muikku.i18n.LocaleController;
 import fi.muikku.model.security.AuthSource;
 import fi.muikku.session.SessionController;
+import fi.muikku.utils.FacesUtils;
 
 @Named
 @Stateful
@@ -103,7 +103,7 @@ public class CredentialLoginWidgetBackingBean {
             // TODO: User logged in
           break;
           case INVALID_CREDENTIALS:
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(localeController.getText(sessionController.getLocale(), "plugin.credentialLogin.invalidCredentials")));
+            FacesUtils.addMessage(FacesMessage.SEVERITY_WARN, localeController.getText(sessionController.getLocale(), "plugin.credentialLogin.invalidCredentials"));
           break;
           default:
             throw new AuthenticationHandleException("Invalid authentication status:" + result.getStatus());

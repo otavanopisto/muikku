@@ -36,6 +36,9 @@
     
     <!-- Default Calendar CSS -->
     <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/fullcalendar.css" />
+    
+    <!-- Event Queue CSS -->
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/eventqueue.css" />
 
     <!-- jQuery -->
 
@@ -98,9 +101,14 @@
 
     <h:outputScript name="scripts/gui/widgetcontroller.js" />
     
+    <!-- Notification Queue -->
+    
+    <h:outputScript name="scripts/notificationqueue/notificationqueue.js" />
   </h:head>
 
   <h:body>
+    <ui:include src="/facelets/generic/notification-queue.xhtml"/>
+  
     <m:widget name="navigation-dynamic" rendered="#{sessionBackingBean.loggedIn}"></m:widget>
   
     <div id="header">

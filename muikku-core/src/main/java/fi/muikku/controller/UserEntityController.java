@@ -85,6 +85,17 @@ public class UserEntityController {
     UserEmailEntity userEmail = userEmailEntityDAO.findByAddress(address);
     return userEmail == null ? null : userEmail.getUser();
   }
+  
+  /**
+   * Returns the user corresponding to the given id. If the id does not belong to any user, returns <code>null</code>.
+   * 
+   * @param id The identifier.
+   * 
+   * @return The user corresponding to the given id, or <code>null</code> if not found 
+   */
+  public UserEntity findUserById(long id) {
+    return userEntityDAO.findById(id);
+  }
 
   /**
    * Returns a list of all users.
@@ -106,6 +117,17 @@ public class UserEntityController {
     return userEmailEntityDAO.listByUser(user);
   }
 
+  /**
+   * Updates the last login time of the given user entity to the current time.
+   * 
+   * @param userEntity The user entity to be updated
+   * 
+   *  @return The updated user entity
+   */
+  public UserEntity updateLastLogin(UserEntity userEntity) {
+    return userEntityDAO.updateLastLogin(userEntity);
+  }
+  
   public List<String> listUserEmailAddresses(UserEntity user) {
     List<String> result = new ArrayList<>();
     
@@ -123,6 +145,10 @@ public class UserEntityController {
     }
     
     return userEmailEntityDAO.listUsersByAddresses(addresses);
+  }
+
+  public UserEmailEntity findUserEmailEntityById(Long id) {
+    return userEmailEntityDAO.findById(id);
   }
 
 }

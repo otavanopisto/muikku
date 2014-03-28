@@ -5,8 +5,10 @@ import java.util.List;
 
 import javax.ejb.Stateful;
 import javax.enterprise.inject.Model;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
 
 import fi.muikku.dao.security.EnvironmentRolePermissionDAO;
 import fi.muikku.dao.security.PermissionDAO;
@@ -42,6 +44,20 @@ public class EnvironmentSettingsController {
 
   @Inject
   private WorkspaceRolePermissionDAO courseUserRolePermissionDAO;
+  
+  public String getBaseUrl() {
+    HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+
+    if ((request.getServerPort() != 80) && (request.getServerPort() != 443))
+      return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+    else
+      return request.getScheme() + "://" + request.getServerName() + request.getContextPath();
+  }
+  
+  public String getSystemEmailSenderAddress() {
+    // TODO Put tis in da base.
+    return "muikku@muikku.fi";
+  }
   
   public List<RoleEntity> listEnvironmentUserRoles() {
     List<RoleEntity> roles = new ArrayList<RoleEntity>();
