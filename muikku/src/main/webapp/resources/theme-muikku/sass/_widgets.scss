@@ -4,13 +4,13 @@
 /* General styles with selectors */
 
 div[class*='dock-static-navi-button'] a {
-  font-size:24pt;
+  font-size:30pt;
   color:#fff;
   text-decoration:none;
   margin-right:50px;
-  
+  @include iconShadow;
   &:hover {
-  
+    @include iconShadow(#ffffbe);
   }
 }
 

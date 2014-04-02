@@ -220,6 +220,11 @@ $text: 12px;
 
 /* Static navigation */
 
+@mixin iconShadow($col:#2f6481) {
+ text-shadow: 0 0 10px $col; 
+}
+
+
 @mixin naviIcon() {
   background-position:center;
   background-repeat:no-repeat;
