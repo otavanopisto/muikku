@@ -3,12 +3,13 @@
 
 /* General styles with selectors */
 
-div[class*='dock-static-navi-button'] a{
+div[class*='dock-static-navi-button'] a {
   font-size:24pt;
   color:#fff;
   text-decoration:none;
   margin-right:50px;
-  &hover{
+  
+  &:hover {
   
   }
 }

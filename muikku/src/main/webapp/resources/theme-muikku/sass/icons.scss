@@ -8,7 +8,7 @@
   @include font-srcs('fonts/icomoon.eot?#iefix','embedded-opentype', /* IE6-IE8 - NOT WORKING!!! JSF libraries do not work with webparams */
   'fonts/icomoon.woff','woff', /* Modern Browsers */
   'fonts/icomoon.ttf','truetype', /* Safari, Android, iOS */
-  'fonts/icomoon.svg#icomoon','svg'); /* old IOS - NOT WORKING!!! JSF libraries do not work with webparams */ 
+  'fonts/icomoon.svg#icomoon','svg'); /* old IOS - NOT WORKING!!! JSF libraries do not work with webparams DEM BASTARDS! */ 
   font-weight: normal;  
   font-style: normal;
   unicode-range:U+e600;
@@ -18,6 +18,7 @@
   font-family: 'icomoon';
   speak: none;
   font-style: normal;
+  
   font-weight: normal;
   font-variant: normal;
   text-transform: none;
