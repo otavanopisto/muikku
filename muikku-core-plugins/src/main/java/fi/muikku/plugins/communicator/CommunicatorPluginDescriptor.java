@@ -70,7 +70,8 @@ public class CommunicatorPluginDescriptor implements PluginDescriptor, Persisten
 		  
 		  /* Misc */
 		  
-		  CommunicatorMessagingWidget.class
+		  CommunicatorMessagingWidget.class,
+		  CommunicatorNewInboxMessageNotification.class
 		));
 	}
 	

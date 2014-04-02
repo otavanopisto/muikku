@@ -12,6 +12,7 @@ html {
 }
 
 body {
+
   margin: 0;
   padding: 0;
   font-family: 'Open Sans',Verdana, sans-serif;
@@ -146,19 +147,27 @@ div[class*="tt-menu-link"]:hover {
 }
 
 div[class*="dock-navi-tt-container"]{
-	margin-top:30px;
   position:absolute;
+  left:0;
+  right:0;
+  min-height:230px;
   margin-left:1px;
-  margin-top:31px;
+  margin-top:29px;
   z-index:100;
+  background: -moz-linear-gradient(top,  rgba(207,238,250,1) 0%, rgba(207,238,250,1) 30%, rgba(207,238,250,1) 33%, rgba(207,238,250,0) 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(207,238,250,1)), color-stop(30%,rgba(207,238,250,1)), color-stop(33%,rgba(207,238,250,1)), color-stop(100%,rgba(207,238,250,0)));
+  background: -webkit-linear-gradient(top,  rgba(207,238,250,1) 0%,rgba(207,238,250,1) 30%,rgba(207,238,250,1) 33%,rgba(207,238,250,0) 100%);
+  background: -o-linear-gradient(top,  rgba(207,238,250,1) 0%,rgba(207,238,250,1) 30%,rgba(207,238,250,1) 33%,rgba(207,238,250,0) 100%);
+  background: -ms-linear-gradient(top,  rgba(207,238,250,1) 0%,rgba(207,238,250,1) 30%,rgba(207,238,250,1) 33%,rgba(207,238,250,0) 100%);
+  background: linear-gradient(to bottom,  rgba(207,238,250,1) 0%,rgba(207,238,250,1) 30%,rgba(207,238,250,1) 33%,rgba(207,238,250,0) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cfeefa', endColorstr='#00cfeefa',GradientType=0 );
 }
 
 div[class*="dock-navi-tt-container"] > div{
-	background-color:#fff;
-	@include shadow;
-	min-height:60px;
-  max-width:250px;
+	min-height:230px;
   padding:20px;
+  opacity:0.9;
+  background-color:#d0eefa;
 }
 
 .widgetSpace {

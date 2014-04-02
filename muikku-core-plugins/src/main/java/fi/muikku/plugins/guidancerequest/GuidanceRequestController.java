@@ -3,7 +3,9 @@ package fi.muikku.plugins.guidancerequest;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
@@ -12,14 +14,13 @@ import javax.inject.Inject;
 
 import fi.muikku.controller.messaging.MessagingWidget;
 import fi.muikku.i18n.LocaleController;
-import fi.muikku.mail.Mailer;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserGroup;
 import fi.muikku.model.users.UserGroupUser;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.notifier.NotifierController;
 import fi.muikku.schooldata.UserController;
 import fi.muikku.schooldata.entity.User;
-import fi.muikku.schooldata.entity.UserEmail;
 import fi.muikku.security.PermissionResolver;
 import fi.muikku.security.Permit;
 import fi.muikku.security.PermitContext;
@@ -43,9 +44,12 @@ public class GuidanceRequestController {
   @Inject
   private LocaleController localeController;
   
-  @Inject
-  private Mailer mailer;
+//  @Inject
+//  private Mailer mailer;
 
+  @Inject
+  private NotifierController notifierController;
+  
   @Inject
   @Any
   private Instance<MessagingWidget> messagingWidgets;
@@ -54,6 +58,9 @@ public class GuidanceRequestController {
   @Any
   private Instance<PermissionResolver> permissionResolvers;
 
+  @Inject
+  private GuidanceRequestNotification guidanceRequestNotification;
+  
   protected PermissionResolver getPermissionResolver(String permission) {
     for (PermissionResolver resolver : permissionResolvers) {
       if (resolver.handlesPermission(permission))
@@ -87,27 +94,21 @@ public class GuidanceRequestController {
 
     if (!recipients.isEmpty()) {
       User user = userController.findUser(student);
-      List<UserEmail> studentEmails = userController.listUserEmails(user);
-      String studentEmail = studentEmails.get(0).getAddress();
       String userName = user.getFirstName() + " " + user.getLastName();
 
       String caption = localeController.getText(sessionController.getLocale(), "plugin.guidancerequest.newGuidanceRequest.mail.subject");
       String content = localeController.getText(sessionController.getLocale(), "plugin.guidancerequest.newGuidanceRequest.mail.content");
+      caption = MessageFormat.format(caption, userName);
+      content = MessageFormat.format(content, userName, message);
 
       for (MessagingWidget messagingWidget : messagingWidgets) {
-        caption = MessageFormat.format(caption, userName);
-        content = MessageFormat.format(content, userName, message);
         messagingWidget.postMessage(student, caption, content, recipients);
       }
-
-      for (UserEntity receiver : recipients) {
-        User receiverUser = userController.findUser(receiver);
-        List<UserEmail> receiverMail = userController.listUserEmails(receiverUser);
-        
-        for (UserEmail email : receiverMail) {
-          mailer.sendMail(studentEmail, email.getAddress(), caption, content);
-        }
-      }
+      
+      Map<String, Object> params = new HashMap<String, Object>();
+      params.put("guidanceRequest", guidanceRequest);
+      
+      notifierController.sendNotification(guidanceRequestNotification, student, recipients, params);
     }
     
     return guidanceRequest;

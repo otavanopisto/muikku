@@ -12,6 +12,7 @@ import javax.inject.Named;
 import fi.muikku.dao.users.UserEntityDAO;
 import fi.muikku.model.base.Tag;
 import fi.muikku.model.users.UserEntity;
+import fi.muikku.notifier.NotifierController;
 import fi.muikku.plugins.communicator.dao.CommunicatorMessageIdDAO;
 import fi.muikku.plugins.communicator.dao.CommunicatorMessageRecipientDAO;
 import fi.muikku.plugins.communicator.dao.CommunicatorMessageSignatureDAO;
@@ -54,6 +55,9 @@ public class CommunicatorController {
   
   @Inject
   private CommunicatorMessageSignatureDAO communicatorMessageSignatureDAO;
+  
+  @Inject
+  private NotifierController notifierController;
   
   /**
    * 

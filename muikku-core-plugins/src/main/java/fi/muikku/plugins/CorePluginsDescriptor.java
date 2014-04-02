@@ -34,6 +34,9 @@ import fi.muikku.plugins.language.LanguagePluginDescriptor;
 import fi.muikku.plugins.loggeduser.LoggedUserPluginDescriptor;
 import fi.muikku.plugins.logout.LogoutPluginDescriptor;
 import fi.muikku.plugins.material.MaterialPluginDescriptor;
+import fi.muikku.plugins.notifier.NotifierPluginDescriptor;
+import fi.muikku.plugins.notifier.email.NotifierEmailPluginDescriptor;
+import fi.muikku.plugins.notifier.sms.NotifierSMSPluginDescriptor;
 import fi.muikku.plugins.schooldatalocal.SchoolDataLocalPluginDescriptor;
 import fi.muikku.plugins.seeker.SeekerPluginDescriptor;
 import fi.muikku.plugins.settings.SettingsPluginDescriptor;
@@ -81,7 +84,10 @@ public class CorePluginsDescriptor implements PluginLibraryDescriptor {
       StudentsPluginDescriptor.class,
       GuidanceRequestPluginDescriptor.class,
       PermissionDataPluginDescriptor.class,
-      ContentSearchPluginDescriptor.class
+      ContentSearchPluginDescriptor.class,
+      NotifierPluginDescriptor.class,
+      NotifierEmailPluginDescriptor.class,
+      NotifierSMSPluginDescriptor.class
 		));
 	}
 	
