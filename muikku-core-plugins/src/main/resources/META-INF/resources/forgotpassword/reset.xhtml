@@ -10,21 +10,19 @@
   <ui:define name="content.center.widget">
   
     <h:form>
-    
-      <h:messages/>
       
       <h:panelGroup layout="block" styleClass="formElementRow">
-        <h:outputLabel for="password1" styleClass="formLabel" value="#{i18n.text['plugin.forgotpassword.forgotPassword.password']}" />
+        <h:outputLabel for="password1" styleClass="formLabel" value="#{i18n.text['plugin.forgotpassword.resetPassword.password']}" />
         <h:inputSecret id="password1" redisplay="false" required="true" value="#{resetPasswordBackingBean.password1}"/>
       </h:panelGroup>
 
       <h:panelGroup layout="block" styleClass="formElementRow">
-        <h:outputLabel for="password2" styleClass="formLabel" value="#{i18n.text['plugin.forgotpassword.forgotPassword.passwordAgain']}" />
+        <h:outputLabel for="password2" styleClass="formLabel" value="#{i18n.text['plugin.forgotpassword.resetPassword.passwordAgain']}" />
         <h:inputSecret id="password2" redisplay="false" required="true" value="#{resetPasswordBackingBean.password2}"/>
       </h:panelGroup>
   
       <h:panelGroup layout="block" styleClass="formElementRow">
-        <h:commandButton action="#{resetPasswordBackingBean.savePassword}" value="#{i18n.text['plugin.forgotpassword.forgotPassword.save']}" />
+        <h:commandButton action="#{resetPasswordBackingBean.savePassword}" value="#{i18n.text['plugin.forgotpassword.resetPassword.save']}" />
       </h:panelGroup>
     
     </h:form>

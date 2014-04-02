@@ -1,25 +1,28 @@
 package fi.muikku.plugins.forgotpassword;
 
-import javax.annotation.PostConstruct;
+import java.io.IOException;
+
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.ws.rs.QueryParam;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.codec.digest.Md5Crypt;
 
-import com.ocpsoft.pretty.faces.annotation.URLAction;
 import com.ocpsoft.pretty.faces.annotation.URLMappings;
 import com.ocpsoft.pretty.faces.annotation.URLMapping;
 import com.ocpsoft.pretty.faces.annotation.URLQueryParameter;
 
 import fi.muikku.controller.UserEntityController;
+import fi.muikku.i18n.LocaleController;
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.plugins.forgotpassword.dao.PasswordResetRequestDAO;
 import fi.muikku.plugins.forgotpassword.model.PasswordResetRequest;
 import fi.muikku.plugins.internalauth.InternalAuthController;
+import fi.muikku.session.SessionController;
+import fi.muikku.utils.FacesUtils;
 
 @Named
 @Stateful
@@ -37,7 +40,13 @@ public class ResetPasswordBackingBean {
   private String urlHash;
   
   @Inject
-  private ForgotPasswordController internalLoginController;
+  private LocaleController localeController;
+
+  @Inject
+  private SessionController sessionController;
+
+  @Inject
+  private ForgotPasswordController forgotPasswordController;
   
   @Inject
   private UserEntityController userEntityController;
@@ -47,18 +56,32 @@ public class ResetPasswordBackingBean {
   
   public void savePassword() {
     long userEntityId;
-    PasswordResetRequest passwordResetRequest = internalLoginController.findPasswordResetRequestByResetHash(urlHash);
+    PasswordResetRequest passwordResetRequest = forgotPasswordController.findPasswordResetRequestByResetHash(urlHash);
     if (passwordResetRequest != null) {
       UserEntity userEntity = userEntityController.findUserById(passwordResetRequest.getUserEntityId());
       if (userEntity != null) {
         userEntityId = userEntity.getId();
-
         if (getPassword1().equals(getPassword2())) {
           String hashed = DigestUtils.md5Hex(getPassword1());
           hashed = DigestUtils.md5Hex(hashed);
           internalAuthController.updateUserEntityPassword(userEntityId, hashed);
+          FacesUtils.addPostRedirectMessage(FacesMessage.SEVERITY_INFO, localeController.getText(sessionController.getLocale(), "plugin.forgotpassword.resetPassword.passwordChanged"));
+          ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
+          try {
+            context.redirect(context.getRequestContextPath());
+          }
+          catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
+        }
+        else {
+          FacesUtils.addMessage(FacesMessage.SEVERITY_WARN, localeController.getText(sessionController.getLocale(), "plugin.forgotpassword.resetPassword.passwordMismatch"));
         }
       }
+    }
+    else {
+      // TODO invalid URL hash
     }
   }
   
