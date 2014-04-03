@@ -11,14 +11,14 @@
   'fonts/icomoon.svg#icomoon','svg'); /* old IOS - NOT WORKING!!! JSF libraries do not work with webparams DEM BASTARDS! */ 
   font-weight: normal;  
   font-style: normal;
-  unicode-range:U+e600;
+  
 }
 
 [class^="icon-"], [class*=" icon-"] {
   font-family: 'icomoon';
   speak: none;
   font-style: normal;
-  
+  text-decoration:none;
   font-weight: normal;
   font-variant: normal;
   text-transform: none;
@@ -72,7 +72,7 @@
   content: "\e60d";
 }
 .icon-home:before {
-  content: "\e60e";
+  content: "\e60e"; 
 }
 .icon-signout:before {
   content: "\e60f";

@@ -6,7 +6,7 @@
 div[class*='dock-static-navi-button'] a {
   font-size:30pt;
   color:#fff;
-  text-decoration:none;
+  text-decoration:noneR;
   margin-right:50px;
   @include iconShadow;
   &:hover {
