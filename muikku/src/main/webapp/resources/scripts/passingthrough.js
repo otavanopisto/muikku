@@ -40,12 +40,13 @@ $(document).ready(function() {
     
     $( "div[class*='wi-dock-static-navi']" ).mouseenter(function() {
       var tools = $(this).find("[class*='dock-navi-tt-container']");
-      tools.stop().show("fade", 50);
+      tools.stop().show("fade", 200);
+      
     });
 
     $( "div[class*='wi-dock-static-navi']" ).mouseleave(function() {
       var tools =  $(this).find("[class*='dock-navi-tt-container']");
-       tools.stop().hide("fade", 50);
+       tools.stop().hide("fade", 100);
     });
 
 });
