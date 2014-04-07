@@ -215,21 +215,16 @@ a.header {
 }
 
 #dynNaviWrapper {
-  position:absolute;
-  top:150px;
-  left:0;
-  z-index:12; 
+	position: absolute;
+	top: 21px;
+	left: 0;
+	z-index: 14;
 }
 
 #dynamicNavigation {
 }
 
 #dynamicNaviButton {
-  border:1px solid #000;
-  height:40px;
-  width:40px;
-  @include gradient-top-bottom-four($btnGr...);
-  @include shadow;
 }
 
 #dynamicNaviContainer {
