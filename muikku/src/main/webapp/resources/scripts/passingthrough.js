@@ -41,12 +41,20 @@ $(document).ready(function() {
     $( "div[class*='wi-dock-static-navi']" ).mouseenter(function() {
       var tools = $(this).find("[class*='dock-navi-tt-container']");
       tools.stop().show("fade", 100);
+      var offset = tools.offset();
+      tools.css({
+    	width: $( window ).width(),
+    	left:-offset.left
+      });
       
     });
 
     $( "div[class*='wi-dock-static-navi']" ).mouseleave(function() {
       var tools =  $(this).find("[class*='dock-navi-tt-container']");
-       tools.stop().hide("fade", 50);
+       tools.stop().hide();
+       tools.css({
+       	left:'0px'
+       });
     });
 
 });
