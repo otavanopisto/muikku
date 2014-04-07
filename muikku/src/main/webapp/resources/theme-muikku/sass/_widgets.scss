@@ -7,7 +7,6 @@ div[class*='dock-static-navi-button'] a {
   font-size:30pt;
   color:#fff;
   text-decoration:noneR;
-  margin-right:50px;
   @include iconShadow;
   &:hover {
     @include iconShadow(#ffffbe);
@@ -59,6 +58,8 @@ div[class*='actions-vertical'] {
 
 div[class*="wi-dock-static-navi"]{
  float:left;
+ margin-right:35px;
+ height:61px; /* ToDo: Temporary fix to prevetn tooltip to vanish before user can place mouse cursor on top of it. */
 }
 
 /* Containers */
@@ -123,9 +124,8 @@ div[class*="wi-dock-static-navi"]{
 }
 
 
-
-
 /*  Deprecating 27.3.2014
+
 .naviIconHome {
   @include naviIcon();
   @include background-image('gfx/icons/32x32/actions/navigate-home.png');

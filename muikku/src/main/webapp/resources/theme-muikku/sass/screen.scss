@@ -29,7 +29,7 @@ body {
 
 .hidden {
 	display:none;
-	
+
 }
 
 h1,h2,h3,h4,h5 {
@@ -146,7 +146,7 @@ div[class*="tt-menu-link"]:hover {
   text-decoration:none;
 }
 
-div[class*="dock-navi-tt-container"]{
+div[class*="dock-navi-tt-container"] {
   position:absolute;
   left:0;
   right:0;
@@ -154,7 +154,7 @@ div[class*="dock-navi-tt-container"]{
   margin-left:1px;
   margin-top:19px;
   z-index:100;
-  background: -moz-linear-gradient(top,  rgba(207,238,250,1) 0%, rgba(207,238,250,1) 30%, rgba(207,238,250,1) 33%, rgba(207,238,250,0) 100%);
+ background: -moz-linear-gradient(top,  rgba(207,238,250,1) 0%, rgba(207,238,250,1) 30%, rgba(207,238,250,1) 33%, rgba(207,238,250,0) 100%);
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(207,238,250,1)), color-stop(30%,rgba(207,238,250,1)), color-stop(33%,rgba(207,238,250,1)), color-stop(100%,rgba(207,238,250,0)));
   background: -webkit-linear-gradient(top,  rgba(207,238,250,1) 0%,rgba(207,238,250,1) 30%,rgba(207,238,250,1) 33%,rgba(207,238,250,0) 100%);
   background: -o-linear-gradient(top,  rgba(207,238,250,1) 0%,rgba(207,238,250,1) 30%,rgba(207,238,250,1) 33%,rgba(207,238,250,0) 100%);
@@ -166,8 +166,24 @@ div[class*="dock-navi-tt-container"]{
 div[class*="dock-navi-tt-container"] > div{
 	min-height:230px;
   padding:20px;
-  opacity:0.9;
+  opacity:0.85;
   background-color:#d0eefa;
+}
+
+div[class*="dock-navi-tt-container"] {
+
+  h5, p, div, span {
+    color:#4a4a4a;
+  }
+  
+  h5 {
+    font-size:1.5em;
+  }
+  
+  a {
+    color:#0099ff;
+  }
+  
 }
 
 .widgetSpace {
@@ -264,9 +280,9 @@ a.header {
   bottom:0;
   left:0;
   right:0;
-  height:45px;
+  height:40px;
   z-index:14;
-  padding-top:20px;
+  padding:20px;
 }
 
 /* Styles for waypoints */
