@@ -6,11 +6,14 @@
 div[class*='dock-static-navi-button'] a, div[class*='icon-dynamic-navi'] {
   font-size:30pt;
   color:#fff;
-  text-decoration:noneR;
+  text-decoration:none;
   @include iconShadow;
   &:hover {
     @include iconShadow(#ffffbe);
   }
+  padding:10px 10px 0 10px;
+  height:61px;
+  display:inline-block;
 }
 
 div[data-name="generic.dock-top.left"] div:last-child > a{
@@ -56,15 +59,14 @@ div[class*='actions-vertical'] {
 
 /* staticNaviDock  */
 
-div[class*="wi-dock-static-navi"]{
- float:left;
- margin-right:35px;
- height:65px; /* ToDo: Temporary fix to prevetn tooltip to vanish before user can place mouse cursor on top of it. */
+div[class*="wi-dock-static-navi"] {
+  float:left;
+  margin-right:15px;
 }
 
 /* Containers */
 
-.dock-static-container{}
+.dock-static-container {}
 
 .dock-workspace-container {
   @include gradient-top-bottom;
@@ -565,7 +567,7 @@ div[class*="wi-dock-static-navi"]{
 }
 
 #staticNavigation .widgetSpace {
-  height: 40px;
+  height: 60px;
 }
 
 .widgetTitle {
