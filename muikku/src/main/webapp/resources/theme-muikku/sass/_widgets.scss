@@ -3,7 +3,7 @@
 
 /* General styles with selectors */
 
-div[class*='dock-static-navi-button'] a {
+div[class*='dock-static-navi-button'] a, div[class*='icon-dynamic-navi'] {
   font-size:30pt;
   color:#fff;
   text-decoration:noneR;
