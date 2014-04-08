@@ -153,7 +153,7 @@ div[class*="dock-navi-tt-container"] {
   min-height:230px;
   margin-left:1px;
   z-index:100;
- background: -moz-linear-gradient(top,  rgba(207,238,250,1) 0%, rgba(207,238,250,1) 30%, rgba(207,238,250,1) 33%, rgba(207,238,250,0) 100%);
+  background: -moz-linear-gradient(top,  rgba(207,238,250,1) 0%, rgba(207,238,250,1) 30%, rgba(207,238,250,1) 33%, rgba(207,238,250,0) 100%);
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(207,238,250,1)), color-stop(30%,rgba(207,238,250,1)), color-stop(33%,rgba(207,238,250,1)), color-stop(100%,rgba(207,238,250,0)));
   background: -webkit-linear-gradient(top,  rgba(207,238,250,1) 0%,rgba(207,238,250,1) 30%,rgba(207,238,250,1) 33%,rgba(207,238,250,0) 100%);
   background: -o-linear-gradient(top,  rgba(207,238,250,1) 0%,rgba(207,238,250,1) 30%,rgba(207,238,250,1) 33%,rgba(207,238,250,0) 100%);
@@ -172,7 +172,7 @@ div[class*="dock-navi-tt-container"] > div{
 div[class*="dock-navi-tt-container"] {
 
   h5, p, div, span {
-    color:#4a4a4a;
+    color:#000000;
   }
   
   h5 {

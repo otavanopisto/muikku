@@ -39,14 +39,26 @@ $(document).ready(function() {
     // fastlinks and dialogs for dock applications -->
     
     $( "div[class*='wi-dock-static-navi']" ).mouseenter(function() {
-      var tools = $(this).find("[class*='dock-navi-tt-container']");
-      tools.stop().show("fade", 100);
+      var tooltip = $(this).find("[class*='dock-navi-tt-container']");
+      tooltip.stop().show("fade", 100);
+      var innerTooltip = tooltip.children('div');
+      var tOffsets = tooltip.offset();
+      tooltip.css({
+    	width: $(window).width(),
+    	left:-tOffsets.left,
+      });
+      innerTooltip.css({
+    	  paddingLeft: tOffsets.left + 20
+      });
       
     });
 
     $( "div[class*='wi-dock-static-navi']" ).mouseleave(function() {
-      var tools =  $(this).find("[class*='dock-navi-tt-container']");
-       tools.stop().hide("fade", 50);
+      var tooltip =  $(this).find("[class*='dock-navi-tt-container']");
+      tooltip.stop().hide();
+      tooltip.css({
+       	left:'0px'
+      });
     });
 
 });
