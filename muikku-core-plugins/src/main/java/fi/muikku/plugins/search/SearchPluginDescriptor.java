@@ -32,7 +32,11 @@ public class SearchPluginDescriptor implements PluginDescriptor {
         
         /* Listeners */
         
-        IndexListener.class
+        IndexListener.class,
+        
+        /* Processors */
+        
+        IndexEntityProcessor.class
         
     ));
   }
