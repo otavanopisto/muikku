@@ -22,7 +22,7 @@ $(document).ready(function() {
 	    $('#staticNavigationBG').addClass("stNavScrollStyles").stop().animate({
 	    	backgroundColor:"#2c9fcc",
 	    	opacity:"0.95",
-	    	duration: 800,
+	    	duration: 600,
 	    	easing: "easeOutQuint",
 
 	    });

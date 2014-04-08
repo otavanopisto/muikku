@@ -167,6 +167,8 @@ div[class*="dock-navi-tt-container"] > div{
   padding:40px 20px 20px 20px;
   opacity:0.85;
   background-color:#d0eefa;
+  @include background-image('gfx/tooltip-arrow.png');
+  background-repeat:no-repeat;
 }
 
 div[class*="dock-navi-tt-container"] {
