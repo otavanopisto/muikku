@@ -11,20 +11,20 @@ import javax.persistence.EntityManager;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
 
-import fi.muikku.dao.events.IndexAddEvent;
-import fi.muikku.dao.events.IndexRemoveEvent;
+import fi.muikku.dao.events.EntityAddEvent;
+import fi.muikku.dao.events.EntityRemoveEvent;
 
 public abstract class AbstractDAO<T> implements Serializable {
-	
-	private static final long serialVersionUID = 8339666122625087683L;
 
-	@Inject
-	Event<IndexAddEvent> indexAddEvent;
-	
-	@Inject
-	Event<IndexRemoveEvent> indexRemoveEvent;
-	
-	@SuppressWarnings("unchecked")
+  private static final long serialVersionUID = 8339666122625087683L;
+
+  @Inject
+  private Event<EntityAddEvent> entityAddEvent;
+
+  @Inject
+  private Event<EntityRemoveEvent> entityRemoveEvent;
+
+  @SuppressWarnings("unchecked")
   public T findById(Long id) {
     EntityManager entityManager = getEntityManager();
     return (T) entityManager.find(getGenericTypeClass(), id);
@@ -56,8 +56,8 @@ public abstract class AbstractDAO<T> implements Serializable {
   }
 
   protected void delete(T e) {
+    entityRemoveEvent.fire(new EntityRemoveEvent(e));
     getEntityManager().remove(e);
-    indexRemoveEvent.fire(new IndexRemoveEvent(e));
     // TODO: Why is manual flush needed?
     flush();
   }
@@ -67,9 +67,9 @@ public abstract class AbstractDAO<T> implements Serializable {
   }
 
   protected T persist(T object) {
-  	getEntityManager().persist(object);
-  	indexAddEvent.fire(new IndexAddEvent(object));
-  	return object;
+    entityAddEvent.fire(new EntityAddEvent(object));
+    getEntityManager().persist(object);
+    return object;
   }
 
   protected T getSingleResult(Query query) {
@@ -84,26 +84,26 @@ public abstract class AbstractDAO<T> implements Serializable {
 
     throw new NonUniqueResultException("SingleResult query returned " + list.size() + " elements");
   }
-  
+
   private Class<?> getFirstTypeArgument(ParameterizedType parameterizedType) {
-  	return (Class<?>) parameterizedType.getActualTypeArguments()[0];
+    return (Class<?>) parameterizedType.getActualTypeArguments()[0];
   }
 
-	protected Class<?> getGenericTypeClass() {
-  	Type genericSuperclass = getClass().getGenericSuperclass();
-  	
-  	if (genericSuperclass instanceof ParameterizedType) { 
-  		return getFirstTypeArgument((ParameterizedType) genericSuperclass);
-  	} else {
-  		// It's probably a weld proxy class
-  		if (genericSuperclass instanceof Class<?>) {
-    		if (AbstractDAO.class.isAssignableFrom((Class<?>) genericSuperclass)) {
-    			return getFirstTypeArgument((ParameterizedType) ((Class<?>) genericSuperclass).getGenericSuperclass());
-    		}
-  		}
-  	}
-  
-		return null;
+  protected Class<?> getGenericTypeClass() {
+    Type genericSuperclass = getClass().getGenericSuperclass();
+
+    if (genericSuperclass instanceof ParameterizedType) {
+      return getFirstTypeArgument((ParameterizedType) genericSuperclass);
+    } else {
+      // It's probably a weld proxy class
+      if (genericSuperclass instanceof Class<?>) {
+        if (AbstractDAO.class.isAssignableFrom((Class<?>) genericSuperclass)) {
+          return getFirstTypeArgument((ParameterizedType) ((Class<?>) genericSuperclass).getGenericSuperclass());
+        }
+      }
+    }
+
+    return null;
   }
 
   protected abstract EntityManager getEntityManager();
