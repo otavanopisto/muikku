@@ -5,14 +5,25 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
+
+import fi.muikku.dao.events.IndexAddEvent;
+import fi.muikku.dao.events.IndexRemoveEvent;
 
 public abstract class AbstractDAO<T> implements Serializable {
 	
 	private static final long serialVersionUID = 8339666122625087683L;
 
+	@Inject
+	Event<IndexAddEvent> indexAddEvent;
+	
+	@Inject
+	Event<IndexRemoveEvent> indexRemoveEvent;
+	
 	@SuppressWarnings("unchecked")
   public T findById(Long id) {
     EntityManager entityManager = getEntityManager();
@@ -46,6 +57,7 @@ public abstract class AbstractDAO<T> implements Serializable {
 
   protected void delete(T e) {
     getEntityManager().remove(e);
+    indexRemoveEvent.fire(new IndexRemoveEvent(e));
     // TODO: Why is manual flush needed?
     flush();
   }
@@ -56,6 +68,7 @@ public abstract class AbstractDAO<T> implements Serializable {
 
   protected T persist(T object) {
   	getEntityManager().persist(object);
+  	indexAddEvent.fire(new IndexAddEvent(object));
   	return object;
   }
 
