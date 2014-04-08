@@ -11,6 +11,7 @@ html {
   height: 100%;
 }
 
+
 body {
   margin: 0;
   padding: 0;
@@ -171,6 +172,7 @@ div[class*="dock-navi-tt-container"] > div{
   background-repeat:no-repeat;
 }
 
+
 div[class*="dock-navi-tt-container"] {
 
   h5, p, div, span {
@@ -218,8 +220,8 @@ a.header {
 
 #dynNaviWrapper {
 	position: absolute;
-	top: 21px;
-	left: 0;
+	top: 10px;
+	left: 5px;
 	z-index: 14;
 }
 
@@ -231,15 +233,13 @@ a.header {
 
 #dynamicNaviContainer {
   display:none;
-  border:1px solid #dadada;
-  background-color:#ededed;
+  background-color:#7ccdeb;
   padding:10px;
-  -moz-border-radius: 0 10px 10px 0;
-  border-radius: 0 10px 10px 0;
+  
 } 
 
 #dynamicNaviContainer div {
-  background-color:#fff;
+
   padding:5px;
 }
 
@@ -292,8 +292,7 @@ a.header {
 
 .stuckDNav {
   position:fixed !important;
-  top:0;
-  left:0;
+
 } 
 
 #staticNavigationBG.stNavScrollStyles {
