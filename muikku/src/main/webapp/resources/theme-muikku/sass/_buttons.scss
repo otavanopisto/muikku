@@ -1,0 +1,21 @@
+.bt-generic {
+  text-transform:uppercase;
+  border-radius:5px;
+  display:inline-block;
+  padding:8px 12px;
+  line-height:1.5em;
+  color:#ffffff;
+  @include buttonFontShadow;
+  cursor:pointer;
+  @include buttonShadow;
+  
+  &.bt-login {
+    background-color:#52b050;
+    border:1px solid #69c367;
+    font-size:1.1em;
+  }
+
+  
+
+}
+
