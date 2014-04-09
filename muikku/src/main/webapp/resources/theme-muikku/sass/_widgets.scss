@@ -502,7 +502,7 @@ div[class*="wi-dock-static-navi"] {
 }
 
 .loginWidgetWrapper {
-  display:block;
+  display:none;
   text-align:left;
   position:absolute;
   right:0;
@@ -513,6 +513,7 @@ div[class*="wi-dock-static-navi"] {
   padding:15px;
   border-radius:2px;
   width:300px;
+  @include dropDownElementShadow();
   
   .loginBoxTopArrow {
     @include background-image('gfx/login-box-arrow.png');
