@@ -186,7 +186,6 @@ $text: 12px;
   box-shadow: 0 0 8px $s; 
 }
 
-
 @mixin iShadow($s:$sc) {
   -webkit-box-shadow: inset 1px 1px 1px 1px $s;
   box-shadow: inset 1px 1px 1px 1px  $s; 
@@ -231,7 +230,6 @@ $text: 12px;
 @mixin iconShadow($col:#2f6481) {
  text-shadow: 0 0 10px $col; 
 }
-
 
 @mixin naviIcon() {
   background-position:center;

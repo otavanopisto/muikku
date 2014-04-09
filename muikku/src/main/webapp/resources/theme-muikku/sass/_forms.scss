@@ -101,18 +101,10 @@ select {
     }
   }
   
-
-  input[type="submit"] {
-    font-size: 1em;
-    color: #fff;
-    padding: 5px;
-    @include gradient-top-bottom-four($btnGr...);
-    @include rounded(5px);
-    @include shadow;
-    @include border($btnBrd,1px);
-    margin-right:4px;
+  input[type="button"] {
+   float:right;
   }
-
+  
 }
 
 /* Seeker */
