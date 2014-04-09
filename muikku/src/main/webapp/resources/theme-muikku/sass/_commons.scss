@@ -12,6 +12,7 @@ To be used through SASS's extend feature with CSS's selectors.
   background-color:#fff; 
 }
 
+
 .co-input-textfield-hover,
 .co-textarea-hover {
   @include border(1px,#ededed);   
