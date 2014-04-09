@@ -29,6 +29,14 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Lets reset the font when text used inside the same element as icon */
+[class^="icon-"] span, [class*=" icon-"] span {
+  font-family: 'Open Sans';
+  padding-left:4px;
+  display:inline-block;
+  margin-top:-2px;
+}
+
 .icon-move:before {
   content: "\e600";
 }

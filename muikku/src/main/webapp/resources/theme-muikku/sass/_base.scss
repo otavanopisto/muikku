@@ -164,8 +164,12 @@ $text: 12px;
   box-shadow: $shadows;
 }
   
-@mixin fontShadow {
+@mixin fontShadow() {
   text-shadow: 1px 1px 3px rgba(150, 150, 150, 0.37);
+}
+
+@mixin buttonFontShadow() {
+  text-shadow: 1px 1px 1px rgba(150, 150, 150, 0.37);
 }
 
 @mixin shadow($s:$sc) {

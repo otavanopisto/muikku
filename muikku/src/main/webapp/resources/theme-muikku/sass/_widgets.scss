@@ -495,7 +495,12 @@ div[class*="wi-dock-static-navi"] {
 
 /* Login */
 
-.credentialLoginWidget, .externalLoginWidget {
+.loginWidgetWrapper {
+  display:none;
+}
+
+.credentialLoginWidget, 
+.externalLoginWidget {
   background: #ededed;
   padding: 10px; 
   @include rounded(5px);
@@ -503,7 +508,6 @@ div[class*="wi-dock-static-navi"] {
   color: #000;
   font-size: 9px;
   width: 240px;
-  float:right;
 }
 
 .loggedUserWidget {
@@ -533,8 +537,6 @@ div[class*="wi-dock-static-navi"] {
 
 .languageWidget { 
   position:absolute;
-  margin-top:110px;
-  margin-left:51px;  
   font-size:1em;
   @include gradient-top-bottom-four($contInteractGr...);
   height: 20px;

@@ -2,6 +2,7 @@
 @import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
 @import "_commons.scss";
 @import "_forms.scss";
+@import "_buttons.scss";
 @import "_widgets.scss";
 @import "_notif-queue.scss";
 
@@ -198,6 +199,25 @@ div[class*="dock-navi-tt-container"] {
   text-align: center;
   height:150px;
   color: #fff;
+  position:relative;
+  
+  #headerLogoTextContainer {
+    position:absolute;
+    left:0;
+    top:0;
+    @include background-image('gfx/muikku-header-text.png');
+    background-repeat:no-repeat; 
+  }
+  
+  #headerFishContainer {
+    position:absolute;
+    left:50px;
+    top:50px;
+    @include background-image('gfx/muikku-header-fish.png');
+    background-repeat:no-repeat; 
+  }
+  
+  
 }
 
 #feader {

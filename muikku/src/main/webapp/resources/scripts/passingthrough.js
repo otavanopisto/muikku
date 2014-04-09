@@ -52,14 +52,14 @@ $(document).ready(function() {
       // Sets tooltip's width same as view port width 
       // and left position is adjusted accordingly
       tooltip.css({
-    	width: $(window).width(),
-    	left:-tOffset + 'px'
+    	  width: $(window).width(),
+    	  left:-tOffset + 'px'
       });
       
       // Sets tooltip's inner elements padding-left same as tooltip's left position 
       // and sets background-position relative to icons position
       innerTooltip.css({
-    	  paddingLeft: paddingOffset + 'px', 
+          paddingLeft: paddingOffset + 'px', 
     	  backgroundPosition: iconOffset + 'px 0px'
       });
       
