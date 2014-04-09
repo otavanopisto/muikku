@@ -1,8 +1,30 @@
 $(document).ready(function() {
     // Dynamic navigation -->
-    
+	
+
+    	  
+    	  
       $( "#dynamicNaviButton" ).click(function() {
-       $( "#dynamicNaviContainer" ).toggle( "slide", 500 );
+          var bgr = $('.wi-dock-dynami-navi-contentBgr');
+          var ht = $(window).height();
+          var container = $('#dynamicNaviContainer');
+    	  bgr.height(ht).css(
+    	    		{opacity: 0}	  
+    	    	  );    	  
+          container.toggle( "slide", 100, function(){
+        	 var time = 500;
+        	 if ($(this).css("display") == "none"){
+                 bgr.animate({opacity: 0});   
+       		 
+        	 }else{
+        		 bgr.animate({opacity: .95}, time,"easeInOutQuint");      		 
+        		 
+        	 }
+        	  
+          } );
+
+          
+
       });
 
     // Widget settings tool area -->

@@ -137,7 +137,7 @@ a.menu-tooltip:hover > span {
 div[class*="tt-menu-link"]:before {
  content:"<-";
 }
- 
+
 div[class*="tt-menu-link"] {
 	padding:5px;
   color:$naviDynamicColor;
@@ -241,22 +241,32 @@ a.header {
 #dynNaviWrapper {
 	position: absolute;
 	top: 10px;
-	left: 5px;
 	z-index: 14;
 }
 
 #dynamicNavigation {
 }
-
 #dynamicNaviButton {
+}
+
+.wi-dock-dynami-navi-contentBgr{
+ position:absolute;
+ top:72px;
+ left:0;
+ width:300px;
+ background-color:#7ccdeb;
+ z-index:-1;
+  
 }
 
 #dynamicNaviContainer {
   display:none;
-  background-color:#7ccdeb;
   padding:10px;
-  
+  z-index:16;
+
 } 
+
+
 
 #dynamicNaviContainer div {
 
