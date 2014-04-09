@@ -176,6 +176,10 @@ $text: 12px;
   box-shadow: 0 0 5px rgba(0,0,0,0.2); 
 }
 
+@mixin dropDownElementShadow($shadow:0 12px 30px rgba(0,0,0,0.14)) {
+  box-shadow: $shadow; 
+}
+
 @mixin shadow($s:$sc) {
   -webkit-box-shadow: 1px 1px 2px 1px $s;
   box-shadow: 1px 1px 2px 1px $s; 
