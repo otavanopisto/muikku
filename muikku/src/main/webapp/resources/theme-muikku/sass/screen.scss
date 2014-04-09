@@ -263,9 +263,10 @@ a.header {
 }
 
 #dynamicNaviContainer {
-  display:none;
   padding:10px;
-  z-index:16;
+  opacity:0;
+  margin-left:-300px;
+  z-index:15;
 
 } 
 
