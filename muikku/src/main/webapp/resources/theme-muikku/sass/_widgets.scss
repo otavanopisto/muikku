@@ -495,19 +495,53 @@ div[class*="wi-dock-static-navi"] {
 
 /* Login */
 
+.loginWidget {
+  position:absolute;
+  right:0;
+  top:20px;
+}
+
 .loginWidgetWrapper {
-  display:none;
+  display:block;
+  text-align:left;
+  position:absolute;
+  right:0;
+  top:50px;
+  z-index:20;
+  border:3px solid #50a850;
+  background:#ffffff;
+  padding:15px;
+  border-radius:2px;
+  width:300px;
+  
+  .loginBoxTopArrow {
+    @include background-image('gfx/login-box-arrow.png');
+    background-repeat:no-repeat; 
+    background-position:top right;
+    height:20px;
+    width:30px;
+    position:absolute;
+    top:-15px;
+    right:10px;
+    z-index:21;
+  }
+  
 }
 
 .credentialLoginWidget, 
-.externalLoginWidget {
-  background: #ededed;
-  padding: 10px; 
-  @include rounded(5px);
-  text-align: right;
-  color: #000;
-  font-size: 9px;
-  width: 240px;
+.externalLoginWidget,
+.forgotpasswordWidget {
+
+  a {
+    color:#4a8fbd;
+    text-decoration:none;
+  
+    &:hover {
+      color:#0099ff;
+    }
+  
+  }
+
 }
 
 .loggedUserWidget {

@@ -195,26 +195,29 @@ div[class*="dock-navi-tt-container"] {
 }
 
 #header {
-  /* @include gradient-top-bottom($headerGradient-start, $headerGradient-end); */
-  text-align: center;
   height:150px;
   color: #fff;
   position:relative;
   
-  #headerLogoTextContainer {
-    position:absolute;
-    left:0;
-    top:0;
-    @include background-image('gfx/muikku-header-text.png');
-    background-repeat:no-repeat; 
-  }
+  #headerContainer {
+    position:relative; 
   
-  #headerFishContainer {
-    position:absolute;
-    left:50px;
-    top:50px;
-    @include background-image('gfx/muikku-header-fish.png');
-    background-repeat:no-repeat; 
+    #headerLogoTextContainer {
+      position:absolute;
+      left:0;
+      top:0;
+      @include background-image('gfx/muikku-header-text.png');
+      background-repeat:no-repeat; 
+    }
+    
+    #headerFishContainer {
+      position:absolute;
+      left:50px;
+      top:50px;
+      @include background-image('gfx/muikku-header-fish.png');
+      background-repeat:no-repeat; 
+    }
+  
   }
   
   

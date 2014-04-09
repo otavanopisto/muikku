@@ -9,7 +9,6 @@ To be used through SASS's extend feature with CSS's selectors.
 .co-textarea {
   @include border(1px,#ededed);   
   color:#606060;
-  font-weight:bold;
   background-color:#fff; 
 }
 
@@ -17,7 +16,6 @@ To be used through SASS's extend feature with CSS's selectors.
 .co-textarea-hover {
   @include border(1px,#ededed);   
   color:#000;
-  font-weight:bold;
   background-color:#fff; 
 }
 
@@ -25,7 +23,6 @@ To be used through SASS's extend feature with CSS's selectors.
 .co-textarea-focus {
   @include border(1px,$header); 
   color:#000;
-  font-weight:bold;
   background-color:#fff; 
 }
 
@@ -33,7 +30,6 @@ To be used through SASS's extend feature with CSS's selectors.
 .co-textarea-blur {
   @include border(1px,#dadada);
   color:#606060;
-  font-weight:bold;
   background-color:#fff; 
 }
 
@@ -41,7 +37,6 @@ To be used through SASS's extend feature with CSS's selectors.
 .co-textarea-blur-hover {
 	@include border(1px,#ededed);
   color:#000;
-  font-weight:bold;
   background-color:#fff; 
 }
 
@@ -49,7 +44,6 @@ To be used through SASS's extend feature with CSS's selectors.
 .co-textarea-blur-focus {
   @include border(1px,$header); 
   color:#000;
-  font-weight:bold;
   background-color:#fff;
 }
 
