@@ -496,9 +496,14 @@ div[class*="wi-dock-static-navi"] {
 /* Login */
 
 .loginWidget {
-  position:absolute;
-  right:0;
-  top:20px;
+/* This widget can be positioned absolutely or float to right */
+/*   position:absolute; */
+/*   right:0; */
+/*   top:20px; */
+
+  position:relative;
+  float:right;
+  margin-top:10px;
 }
 
 .loginWidgetWrapper {
@@ -540,20 +545,63 @@ div[class*="wi-dock-static-navi"] {
     &:hover {
       color:#0099ff;
     }
-  
   }
+}
 
+.forgotpasswordWidget {
+  margin-top:10px;
 }
 
 .loggedUserWidget {
-  @include rounded(5px);	
-  background: #ededed;
-  padding: 10px; 
-  text-align: right;
-  color: #000;
-  font-size: 9px;
-  width: 240px;
+/* This widget can be positioned absolutely or float to right */
+/*   position:absolute; */
+/*   right:0; */
+/*   top:20px; */
+
+  position:relative;
   float:right;
+  margin-top:10px;
+  
+  .loggedUserBadgeWrapper {
+  
+    .loggedUserPicture {
+      @incude border(2px,#fff,solid);
+      background:#fff;
+      height:48px;
+      width:48px;
+      float:left;
+      border-radius:24px;
+      margin:0 4px 0 0;
+    }
+    .loggedUserInfoWrapper {
+       @incude border(2px,#fff,solid);
+       background:#fff;
+       height:48px;
+       float:left;
+       border-top-left-radius:24px;
+       border-bottom-left-radius:24px;
+    
+      .loggedUserName {
+        color:#3c77a0;
+        text-transform:uppercase;
+        min-width:100px;
+        padding:13px 12px 14px 20px;
+        float:left;
+        height:1.5em;
+      }
+      
+      .loggedUserActions {
+        min-width:60px;
+        float:left;
+        height:1.5em;
+        padding:13px 12px 14px 12px;
+      }
+    
+    }
+    
+
+  
+  }
 }
 
 .logoutWidget {
