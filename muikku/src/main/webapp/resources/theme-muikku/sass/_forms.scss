@@ -27,7 +27,7 @@ input[type="reset"] {
   @include gradient-top-bottom-four($btnGr...);
   @include rounded(5px);
   @include shadow;
-  @include border($btnBrd,1px);
+  @include border(1px,$btnBrd,solid);
   margin-right:4px;
 }
 
@@ -100,11 +100,6 @@ select {
       @include formElementFocusShadow(rgba(0, 153, 255,0.4));
     }
   }
-  
-  input[type="submit"] {
-   float:right; 
-  }
-  
 }
 
 /* Seeker */
