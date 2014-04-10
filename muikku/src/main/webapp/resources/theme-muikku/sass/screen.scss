@@ -177,6 +177,8 @@ div[class*="dock-navi-tt-container"] > div{
 }
 
 
+
+
 div[class*="dock-navi-tt-container"] {
 
   h5, p, div, span {
@@ -192,6 +194,16 @@ div[class*="dock-navi-tt-container"] {
   }
   
 }
+
+.wi-dock-search{
+	opacity:0;
+	display:none;
+	font-size: 1.23em;
+	margin-left: -283px;
+	position: absolute;
+	top: 23px;
+}
+
 
 .widgetSpace {
   min-height:1px;

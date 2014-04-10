@@ -149,15 +149,18 @@
     
       <m:widget name="navigation-dynamic" rendered="#{sessionBackingBean.loggedIn}"></m:widget> 
       <div id="staticNavigationBG"></div>
+ 
       <div id="staticNavigation" class="container_24 scrollblock">        
         <ui:insert name="dock.top">
          <m:widgetSpaceSet styleClass="noLid">      
            <ui:insert name="dock.top.left">
+  
              <ui:include src="/facelets/generic/dock-top-left.xhtml">
                <ui:param name="sizing" value="SUM" />
                <ui:param name="keepEmpty" value="false" />
                <ui:param name="name" value="generic.dock-top.left" />               
              </ui:include>
+
            </ui:insert>
            <ui:insert name="dock.top.center">
              <ui:include src="/facelets/generic/dock-top-center.xhtml">
@@ -177,7 +180,9 @@
         </ui:insert>
         <div class="clear"></div>
       </div>
-    </div>
+
+     </div>
+
     <div id="content" class="container_24">  
       <ui:insert name="content.tools.top">
         <m:widgetSpaceSet styleClass="nomargin">
