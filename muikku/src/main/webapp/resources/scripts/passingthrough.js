@@ -12,12 +12,12 @@ $(document).ready(function() {
     	    		{opacity: 0}	  
     	    	  );    	  
           container.toggle( "slide", 100, function(){
-        	 var time = 500;
+        	 var time = 50;
         	 if ($(this).css("display") == "none"){
                  bgr.animate({opacity: 0});   
        		 
         	 }else{
-        		 bgr.animate({opacity: .95}, time,"easeInOutQuint");      		 
+        		 bgr.animate({opacity: .95}, time);      		 
         		 
         	 }
         	  
