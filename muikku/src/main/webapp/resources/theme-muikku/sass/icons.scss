@@ -4,7 +4,6 @@
 @font-face {
   font-family: 'icomoon';
   @include font-src('fonts/icomoon.eot'); /* IE9 */
-
   @include font-srcs('fonts/icomoon.eot?#iefix','embedded-opentype', /* IE6-IE8 - NOT WORKING!!! JSF libraries do not work with webparams */
   'fonts/icomoon.woff','woff', /* Modern Browsers */
   'fonts/icomoon.ttf','truetype', /* Safari, Android, iOS */
@@ -23,10 +22,18 @@
   font-variant: normal;
   text-transform: none;
   line-height: 1;
-
+  
   /* Better Font Rendering =========== */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Lets reset the font when text used inside the same element as icon */
+[class^="icon-"] span, [class*=" icon-"] span {
+  font-family: 'Open Sans';
+  padding-left:4px;
+  display:inline-block;
+  float:right;
 }
 
 .icon-move:before {

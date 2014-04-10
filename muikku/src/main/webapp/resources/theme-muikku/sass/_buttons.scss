@@ -1,0 +1,59 @@
+/* Fake buttons */
+
+.bt-generic {
+  text-transform:uppercase;
+  border-radius:3px;
+  display:inline-block;
+  padding:8px 12px;
+  line-height:1.5em;
+  color:#ffffff;
+  cursor:pointer;
+  @include buttonFontShadow;
+  @include buttonShadow;
+  
+  &.bt-login {
+    background-color:#52b050;
+    border:1px solid #73c071;
+    font-size:1.1em;
+    background: rgb(107,187,105);
+    @include gradient-top-bottom(rgba(107,187,105,1),rgba(76,163,74,1),#52b050);
+  }
+  
+  &.bt-login-active {
+    background-color:#52b050;
+    border:1px solid #73c071;
+    font-size:1.1em;
+    background: rgb(107,187,105);
+    @include gradient-top-bottom(rgba(76,163,74,1),rgba(107,187,105,1),#52b050);
+  }
+
+}
+
+/* Real buttons */
+
+input[type="button"],
+input[type="submit"],
+input[type="reset"] {
+
+  &.bt-generic {
+    text-transform:uppercase;
+    border-radius:3px;
+    display:inline-block;
+    padding:8px 12px;
+    line-height:1.5em;
+    color:#ffffff;
+    cursor:pointer;
+    @include buttonFontShadow;
+    @include buttonShadow;
+    
+    &.bt-login {
+      background-color:#52b050;
+      border:1px solid #73c071;
+      font-size:1.1em;
+      background: rgb(107,187,105);
+      @include gradient-top-bottom(rgba(107,187,105,1),rgba(76,163,74,1),#52b050);
+    }
+  }
+
+}
+

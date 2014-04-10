@@ -144,7 +144,7 @@ $text: 12px;
  border-bottom-right-radius: $radius; 
 }
 
-@mixin border-all() {
+@mixin border-all() { 
 	
 }
 
@@ -164,8 +164,20 @@ $text: 12px;
   box-shadow: $shadows;
 }
   
-@mixin fontShadow {
+@mixin fontShadow() {
   text-shadow: 1px 1px 3px rgba(150, 150, 150, 0.37);
+}
+
+@mixin buttonFontShadow() {
+  text-shadow: 0 0 1px rgba(0,0,0,0.5);
+}
+
+@mixin buttonShadow() {
+  box-shadow: 0 0 5px rgba(0,0,0,0.2); 
+}
+
+@mixin dropDownElementShadow($shadow:0 12px 30px rgba(0,0,0,0.14)) {
+  box-shadow: $shadow; 
 }
 
 @mixin shadow($s:$sc) {
@@ -177,7 +189,6 @@ $text: 12px;
   -webkit-box-shadow: 0 0 8px $s;
   box-shadow: 0 0 8px $s; 
 }
-
 
 @mixin iShadow($s:$sc) {
   -webkit-box-shadow: inset 1px 1px 1px 1px $s;
@@ -223,7 +234,6 @@ $text: 12px;
 @mixin iconShadow($col:#2f6481) {
  text-shadow: 0 0 10px $col; 
 }
-
 
 @mixin naviIcon() {
   background-position:center;

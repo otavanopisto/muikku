@@ -2,6 +2,7 @@
 @import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
 @import "_commons.scss";
 @import "_forms.scss";
+@import "_buttons.scss";
 @import "_widgets.scss";
 @import "_notif-queue.scss";
 
@@ -30,7 +31,10 @@ body {
 
 .hidden {
 	display:none;
+}
 
+.alignRight {
+  text-align:right;
 }
 
 h1,h2,h3,h4,h5 {
@@ -136,7 +140,7 @@ a.menu-tooltip:hover > span {
 div[class*="tt-menu-link"]:before {
  content:"<-";
 }
- 
+
 div[class*="tt-menu-link"] {
 	padding:5px;
   color:$naviDynamicColor;
@@ -194,10 +198,32 @@ div[class*="dock-navi-tt-container"] {
 }
 
 #header {
-  /* @include gradient-top-bottom($headerGradient-start, $headerGradient-end); */
-  text-align: center;
   height:150px;
   color: #fff;
+  position:relative;
+  
+  #headerContainer {
+    position:relative; 
+  
+    #headerLogoTextContainer {
+      position:absolute;
+      left:0;
+      top:0;
+      @include background-image('gfx/muikku-header-text.png');
+      background-repeat:no-repeat; 
+    }
+    
+    #headerFishContainer {
+      position:absolute;
+      left:50px;
+      top:50px;
+      @include background-image('gfx/muikku-header-fish.png');
+      background-repeat:no-repeat; 
+    }
+  
+  }
+  
+  
 }
 
 #feader {
@@ -234,15 +260,17 @@ a.header {
  top:72px;
  left:0;
  width:300px;
+ opacity:.95;
  background-color:#7ccdeb;
  z-index:-1;
   
 }
 
 #dynamicNaviContainer {
-  display:none;
   padding:10px;
-  z-index:16;
+  opacity:0;
+  margin-left:-300px;
+  z-index:15;
 
 } 
 
