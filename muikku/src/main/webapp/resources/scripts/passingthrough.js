@@ -12,6 +12,7 @@ $(document).ready(function() {
     $( "#dynamicNaviButton" ).click(function() {
     	var container = $('#dynamicNaviContainer');
 
+
         if (container.css("opacity") == "0"){
         	container.css({
         		"display" : "block"
