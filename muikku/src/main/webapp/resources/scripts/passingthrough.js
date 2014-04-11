@@ -71,49 +71,31 @@ $(document).ready(function() {
     	var hasSearch = $(this).has("input[id='seeker']").length ? "1" : "0";
     	var search = $(".wi-dock-search");
 
-
-
-
-    	
-        
         if(hasSearch == "1"){
         	search.show("drop", 100);     	
-	    }else{
-	    	tooltip.stop().show("blind", 100, function(){
-	    		
-	
-	
-	    		
-	    	} );
+	    } else {
+	    	tooltip.stop().show("fade", 100);
 	    }
-
-    	
+        
         // Offsets
         var iconOffset = tooltip.parent().offset().left + 15;
         var tOffset = tooltip.offset().left;
         var paddingOffset = tOffset + 20;
-        
-        
+           
         // Sets tooltip's inner elements padding-left same as tooltip's left position 
         // and sets background-position relative to icons position
         innerTooltip.css({
         	paddingLeft: paddingOffset + 'px',
         	backgroundPosition: iconOffset + 'px 0px'
         });
-        
-        
+           
         // Sets tooltip's width same as view port width 
         // and left position is adjusted accordingly
         tooltip.css({
         	width: $(window).width(),
         	left:-tOffset + 'px'
         });
-    	
-    	
 
-            
-
-        
     });
 
     $("div[class*='wi-dock-static-navi']").mouseleave(function() {
@@ -122,9 +104,9 @@ $(document).ready(function() {
     	var search = $(".wi-dock-search");
 
     	
-        if(hasSearch == "1"){
+        if(hasSearch == "1") {
             	search.hide("drop", 100);     	
-        }else{
+        } else {
         	
         	tooltip.stop().hide();
         	tooltip.css({
