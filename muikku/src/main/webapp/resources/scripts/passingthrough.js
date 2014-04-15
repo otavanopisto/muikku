@@ -66,6 +66,53 @@ $(document).ready(function() {
 
     // fastlinks and dialogs for dock applications -->
     
+    
+    // Search field toggle
+    
+    
+    
+    $(".icon-search").click(function(){
+
+    	
+    	var sc = $(".wi-dock-search");
+      
+    	sc.css({
+    		"display" : "block",
+    	     opacity : 1
+        });
+    	
+    	sc.animate({width:300},{
+    		duration : 300,
+    		easing : "easeInOutElastic",
+            complete: function(){
+                var seeker = $("#seeker");
+            	
+    			seeker.focus();
+    			seeker.blur(function(){
+    				
+    				sc.animate({width:0},{
+    					duration : 900,
+    					easing : "easeInOutElastic",
+    				    complete : function(){
+    				    	
+    	    				sc.css({
+    	    					"display" : "none",
+    	    					 opacity : 0
+    	    				});
+    				    }
+    				});
+    				
+    			});
+    		}
+    		
+    	});
+
+    });
+    
+    
+    // Toooltip 
+    
+    
     $("div[class*='wi-dock-static-navi']").mouseenter(function() {
     	var tooltip = $(this).find("[class*='dock-navi-tt-container']");
     	var innerTooltip = tooltip.children('div');
@@ -79,7 +126,7 @@ $(document).ready(function() {
     		duration : 200,
     		easing: "easeInOutElastic",
     		complete : function(){
-
+               // This is for added functions. 
     		}
 
     		
@@ -126,13 +173,7 @@ $(document).ready(function() {
 
     		
     	});
-    	
-    	
-    	
 
-        
-    
-    
     });
 
 });
