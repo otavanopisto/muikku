@@ -212,9 +212,11 @@ div[class*="dock-navi-tt-container"] {
 }
 
 #header {
-  height:150px;
+  height:100px;
   color: #fff;
   position:relative;
+  
+ 
   
   #headerContainer {
     position:relative; 
@@ -233,6 +235,42 @@ div[class*="dock-navi-tt-container"] {
       position:absolute;
       left:330px;
       top:10px;
+      @include background-image('gfx/muikku-header-fishes.png');
+      background-repeat:no-repeat; 
+      height:135px;
+      width:200px;
+    }
+  
+  }
+  
+  
+}
+
+
+#headerBig {
+  height:150px;
+  color: #fff;
+  position:relative;
+  
+ 
+  
+  #headerContainerBig {
+    position:relative; 
+  
+    #headerLogoTextContainerBig {
+      position:absolute;
+      left:-20px;
+      top:10px;
+      @include background-image('gfx/muikku-header-text.png');
+      background-repeat:no-repeat; 
+      height:115px;
+      width:380px;
+    }
+    
+    #headerFishContainerBig {
+      position:absolute;
+      left:330px;
+      top:10px;
       @include background-image('gfx/muikku-header-fish.png');
       background-repeat:no-repeat; 
       height:135px;
@@ -243,6 +281,9 @@ div[class*="dock-navi-tt-container"] {
   
   
 }
+
+
+
 
 #feader {
   position:relative;

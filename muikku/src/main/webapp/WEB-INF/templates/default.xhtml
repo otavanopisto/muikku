@@ -110,12 +110,11 @@
     <ui:include src="/facelets/generic/notification-queue.xhtml"/>
   
 
-  
+  <ui:insert name="header">
     <div id="header">
       <div id="headerContainer" class="container_24">
       <div id="headerLogoTextContainer"></div>
       <div id="headerFishContainer"></div>
-        <ui:insert name="header">
           <m:widgetSpaceSet styleClass="noLid">
            <ui:insert name="header.left">
               <ui:include src="/facelets/generic/header-left.xhtml">
@@ -142,9 +141,10 @@
               </ui:include>          
            </ui:insert>                                
           </m:widgetSpaceSet>
-        </ui:insert>
       </div>
     </div>
+  </ui:insert>
+  
     <div id="staticNavigationWrapper">
     
       <m:widget name="navigation-dynamic" rendered="#{sessionBackingBean.loggedIn}"></m:widget> 

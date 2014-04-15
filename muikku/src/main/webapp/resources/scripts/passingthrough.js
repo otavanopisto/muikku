@@ -72,7 +72,6 @@ $(document).ready(function() {
     
     
     $(".icon-search").click(function(){
-
     	
     	var sc = $(".wi-dock-search");
       
@@ -82,7 +81,7 @@ $(document).ready(function() {
         });
     	
     	sc.animate({width:300},{
-    		duration : 300,
+    		duration : 100,
     		easing : "easeInOutElastic",
             complete: function(){
                 var seeker = $("#seeker");
@@ -91,7 +90,7 @@ $(document).ready(function() {
     			seeker.blur(function(){
     				
     				sc.animate({width:0},{
-    					duration : 900,
+    					duration : 100,
     					easing : "easeInOutElastic",
     				    complete : function(){
     				    	
