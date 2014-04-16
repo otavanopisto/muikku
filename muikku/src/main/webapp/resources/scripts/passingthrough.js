@@ -177,8 +177,7 @@ $(document).ready(function() {
     		
     	});
     	
-    	
->>>>>>> branch 'FTR-26_DEFAULT_VISUALS' of https://github.com/otavanopisto/muikku.git
+
         // Offsets
         
         var iconOffset = tooltip.parent().offset().left + 15;
