@@ -197,19 +197,16 @@ div[class*="dock-navi-tt-container"] {
 }
 
 .wi-dock-search{
-
   display:none;
   opacity:0;
   width:0;
-	font-size: 1.23em;
+	font-size: 1.43em;
 	margin-left: 50px;
 	position: absolute;
 	top: 23px;
 	width:0;
   overflow:hidden;
 }
-
-
 
 .widgetSpace {
   min-height:1px;
@@ -231,7 +228,7 @@ div[class*="dock-navi-tt-container"] {
       height:115px;
       width:380px;
     }
-    
+        
     #headerFishContainer {
       position:absolute;
       left:330px;
@@ -241,20 +238,14 @@ div[class*="dock-navi-tt-container"] {
       height:135px;
       width:200px;
     }
-  
   }
-  
-  
 }
 
 
 #headerBig {
   height:150px;
   color: #fff;
-  position:relative;
-  
- 
-  
+  position:relative;  
   #headerContainerBig {
     position:relative; 
   
@@ -283,9 +274,6 @@ div[class*="dock-navi-tt-container"] {
   
 }
 
-
-
-
 #feader {
   position:relative;
   top:-10px;
@@ -312,6 +300,7 @@ a.header {
 
 #dynamicNavigation {
 }
+
 #dynamicNaviButton {
 }
 
@@ -331,10 +320,7 @@ a.header {
   opacity:0;
   margin-left:-300px;
   z-index:15;
-
 } 
-
-
 
 #dynamicNaviContainer div {
 

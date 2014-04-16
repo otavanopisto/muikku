@@ -107,10 +107,10 @@ select {
 /* Seeker */
 
 #seeker{
-
   @extend .co-input-textfield;
   &:hover {@extend .co-input-textfield-hover;}
   &:focus {@extend .co-input-textfield-focus;}
+  @include rounded(5px);
 }
 
 /* Calendar */
