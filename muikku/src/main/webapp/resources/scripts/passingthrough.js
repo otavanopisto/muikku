@@ -1,10 +1,7 @@
 $(document).ready(function() {
 
-  
-
-  
-  // Dynamic navigation
-  
+	// Dynamic navigation
+	
 	var ht = $(window).height();
 	var bgr = $('.wi-dock-dynami-navi-contentBgr');
 	bgr.height(ht);
@@ -115,30 +112,75 @@ $(document).ready(function() {
     });
 
     
+    
+    // Search field toggle
+    
+    
+    
+    $(".icon-search").click(function(){
+    	
+    	var sc = $(".wi-dock-search");
+      
+    	sc.css({
+    		"display" : "block",
+    	     opacity : 1
+        });
+    	
+    	sc.animate({width:300},{
+    		duration : 100,
+    		easing : "easeInOutElastic",
+            complete: function(){
+                var seeker = $("#seeker");
+            	
+    			seeker.focus();
+    			seeker.blur(function(){
+    				
+    				sc.animate({width:0},{
+    					duration : 100,
+    					easing : "easeInOutElastic",
+    				    complete : function(){
+    				    	
+    	    				sc.css({
+    	    					"display" : "none",
+    	    					 opacity : 0
+    	    				});
+    				    }
+    				});
+    				
+    			});
+    		}
+    		
+    	});
+
+    });
+    
+    
+    // Toooltip 
+    
+    
     $("div[class*='wi-dock-static-navi']").mouseenter(function() {
     	var tooltip = $(this).find("[class*='dock-navi-tt-container']");
     	var innerTooltip = tooltip.children('div');
-//    	var hasSearch = $(this).has("input[id='seeker']").length ? "1" : "0";
-//    	var search = $(".wi-dock-search");
+
+    	tooltip.css({
+    		"display" : "block",
+    	     opacity : 1
+        });   			
+
+    	tooltip.animate({height:"300px"}, {
+    		duration : 200,
+    		easing: "easeInOutElastic",
+    		complete : function(){
+               // This is for added functions. 
+    		}
+
+    		
+    	});
     	
     	
-
-
-
-	      tooltip.css({
-          "display" : "block",
-          });
-	      
-        tooltip.animate({
-          "height" : "300px",
-   
-           }, {
-             duration: 100,
-             easing: "easeOutSine"
-          });
-          
-
+>>>>>>> branch 'FTR-26_DEFAULT_VISUALS' of https://github.com/otavanopisto/muikku.git
         // Offsets
+        
         var iconOffset = tooltip.parent().offset().left + 15;
         var tOffset = tooltip.offset().left;
         var paddingOffset = tOffset + 20;
@@ -169,20 +211,23 @@ $(document).ready(function() {
     $("div[class*='wi-dock-static-navi']").mouseleave(function() {
     	var tooltip =  $(this).find("[class*='dock-navi-tt-container']");
 
-          tooltip.animate({
-            "height" : "0",
-             }, {
-               duration: 100,
-               easing: "easeOutSine",
-               complete: function() {
-                 tooltip.css({
-                   "display" : "none",
-                    "left" : "0"
-                     });              
-                 }
-            });
-      
-    });
+    	     	
+    	tooltip.animate({height:"0"}, {
+    		duration : 100,
+    		easing: "easeInOutElastic",
+    		complete : function(){
+            	tooltip.css({
+            		"display" : "none",
+            	     opacity : 0,
+            	    "left" : "0"
+            	     
+                });   			
+    			
+    		}
+
+    		
+    	});
+
 
 });
 
