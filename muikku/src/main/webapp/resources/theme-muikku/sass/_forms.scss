@@ -102,10 +102,12 @@ select {
   }
 }
 
+
+
 /* Seeker */
 
-.seeker input{
-  margin:5px 0 5px 0;
+#seeker{
+
   @extend .co-input-textfield;
   &:hover {@extend .co-input-textfield-hover;}
   &:focus {@extend .co-input-textfield-focus;}

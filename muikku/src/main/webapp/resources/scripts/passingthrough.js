@@ -1,5 +1,10 @@
 $(document).ready(function() {
-	// Dynamic navigation
+
+  
+
+  
+  // Dynamic navigation
+  
 	var ht = $(window).height();
 	var bgr = $('.wi-dock-dynami-navi-contentBgr');
 	bgr.height(ht);
@@ -23,14 +28,14 @@ $(document).ready(function() {
             }, 200, "easeOutSine");    
             
             } else {
-            	container.animate({
+              container.animate({
             		"margin-left" : "-300px",
             		opacity : 0
                  }, {
                 	 duration: 200,
                 	 easing: "easeOutSine",
                 	 complete: function() {
-                		 container.css({
+                	   container.css({
                 			 "display" : "none"
                          });              
                      }
@@ -63,59 +68,123 @@ $(document).ready(function() {
     	$('#seeker').val(sval);
     });
 
+
+  
+    
+    
     // fastlinks and dialogs for dock applications -->
+
+    
+    
+    $("a[class*='icon-search']").click(function(){
+   
+      var sc = $(".wi-dock-search");
+      var visible = sc.css("opacity");
+      
+      if(visible == "0"){
+        sc.css({
+          "display" : "block",
+          opacity : 1
+          });
+        
+        sc.animate({
+          "width" : "300px"
+             }, {
+             duration: 100,
+             easing: "easeOutSine"
+               
+          });      
+     }else{
+        sc.animate({
+          "width" : "0",
+           }, {
+             duration: 100,
+             easing: "easeOutSine",
+             complete: function() {
+               sc.css({
+                 "display" : "none",
+                  "opacity" : "0"
+                   
+                   });              
+               }
+          }); 
+        
+      }
+      
+
+    });
+
     
     $("div[class*='wi-dock-static-navi']").mouseenter(function() {
     	var tooltip = $(this).find("[class*='dock-navi-tt-container']");
     	var innerTooltip = tooltip.children('div');
-    	var hasSearch = $(this).has("input[id='seeker']").length ? "1" : "0";
-    	var search = $(".wi-dock-search");
+//    	var hasSearch = $(this).has("input[id='seeker']").length ? "1" : "0";
+//    	var search = $(".wi-dock-search");
+    	
+    	
 
-        if(hasSearch == "1"){
-        	search.show("drop", 100);     	
-	    } else {
-	    	tooltip.stop().show("fade", 100);
-	    }
-        
+
+
+	      tooltip.css({
+          "display" : "block",
+          });
+	      
+        tooltip.animate({
+          "height" : "300px",
+   
+           }, {
+             duration: 100,
+             easing: "easeOutSine"
+          });
+          
+
         // Offsets
         var iconOffset = tooltip.parent().offset().left + 15;
         var tOffset = tooltip.offset().left;
         var paddingOffset = tOffset + 20;
-           
+                  
         // Sets tooltip's inner elements padding-left same as tooltip's left position 
         // and sets background-position relative to icons position
         innerTooltip.css({
-        	paddingLeft: paddingOffset + 'px',
-        	backgroundPosition: iconOffset + 'px 0px'
+          paddingLeft: paddingOffset + 'px',
+          backgroundPosition: iconOffset + 'px 0px'
         });
            
         // Sets tooltip's width same as view port width 
         // and left position is adjusted accordingly
+        
         tooltip.css({
-        	width: $(window).width(),
-        	left:-tOffset + 'px'
-        });
+          width: $(window).width(),
+          left:-tOffset + 'px'
+        });      
+
+
+        
+        
+
+
 
     });
 
     $("div[class*='wi-dock-static-navi']").mouseleave(function() {
     	var tooltip =  $(this).find("[class*='dock-navi-tt-container']");
-    	var hasSearch = $(this).has("input[id='seeker']").length ? "1" : "0";
-    	var search = $(".wi-dock-search");
 
-    	
-        if(hasSearch == "1") {
-            	search.hide("drop", 100);     	
-        } else {
-        	
-        	tooltip.stop().hide();
-        	tooltip.css({
-        		left: "0px"
+          tooltip.animate({
+            "height" : "0",
+             }, {
+               duration: 100,
+               easing: "easeOutSine",
+               complete: function() {
+                 tooltip.css({
+                   "display" : "none",
+                    "left" : "0"
+                     });              
+                 }
             });
-        	
-        }
-    
-    
+      
     });
 
 });
+
+
+

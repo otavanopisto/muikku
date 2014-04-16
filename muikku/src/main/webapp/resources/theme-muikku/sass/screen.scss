@@ -155,7 +155,7 @@ div[class*="dock-navi-tt-container"] {
   position:absolute;
   left:0;
   right:0;
-  min-height:230px;
+  height:230px;
   margin-left:1px;
   z-index:100;
   background: -moz-linear-gradient(top,  rgba(207,238,250,1) 0%, rgba(207,238,250,1) 30%, rgba(207,238,250,1) 33%, rgba(207,238,250,0) 100%);
@@ -196,12 +196,16 @@ div[class*="dock-navi-tt-container"] {
 }
 
 .wi-dock-search{
-    display:none;
+  display:none;
+  opacity: 0;
 	font-size: 1.23em;
 	margin-left: 50px;
 	position: absolute;
 	top: 23px;
+	width:0;
+  overflow:hidden;
 }
+
 
 
 .widgetSpace {
@@ -211,8 +215,7 @@ div[class*="dock-navi-tt-container"] {
 #header {
   height:150px;
   color: #fff;
-  position:relative;
-  
+  position:relative;  
   #headerContainer {
     position:relative; 
   
