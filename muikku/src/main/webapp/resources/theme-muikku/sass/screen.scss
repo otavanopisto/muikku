@@ -219,19 +219,10 @@ div[class*="dock-navi-tt-container"] {
   #headerContainer {
     position:relative; 
   
-    #headerLogoTextContainer {
-      position:absolute;
-      left:-20px;
-      top:10px;
-      @include background-image('gfx/muikku-header-text.png');
-      background-repeat:no-repeat; 
-      height:115px;
-      width:380px;
-    }
         
     #headerFishContainer {
       position:absolute;
-      left:330px;
+      left:430px;
       top:10px;
       @include background-image('gfx/muikku-header-fishes.png');
       background-repeat:no-repeat; 
