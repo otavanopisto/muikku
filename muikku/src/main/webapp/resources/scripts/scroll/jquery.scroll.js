@@ -7,12 +7,41 @@ $(document).ready(function() {
     /* Sticky shortcut */ 
   
 	$('#staticNavigationWrapper').waypoint('sticky', {
-	  stuckClass : 'stuckStNav'
+	  stuckClass : 'stuckStNav',
+	  handler : function(direction){
+      if(direction == 'down'){
+        $('.loggedUserPicture').css({
+          "position" : "fixed",
+          "z-index"  : "14"
+        });
+        $('.loggedUserPicture').stop().animate({
+          duration: 6000,
+          top: "15px",
+          easing: "easeOutQuint",
+          complete: function(){
+
+          }
+        
+        });       
+      }else{        
+        $('.loggedUserPicture').css({
+          "position" : "static"          
+        });
+        $('.loggedUserPicture').stop().animate({
+          duration: 6000,
+          easing: "easeOutQuint",
+          complete: function(){
+          }        
+        });        
+      }	    
+	  }   
 	});
+
 	
 	$('#dynamicNavigation').waypoint('sticky', {
 	  wrapper:'<div id="dynNaviWrapper" />',
-	  stuckClass : 'stuckDNav'
+	  stuckClass : 'stuckDNav',
+	 
 	});
 	
 	/* Style functions */
@@ -22,10 +51,15 @@ $(document).ready(function() {
 	    $('#staticNavigationBG').addClass("stNavScrollStyles").stop().animate({
 	    	backgroundColor:"#2c9fcc",
 	    	opacity:"0.95",
+
 	    	duration: 600,
 	    	easing: "easeOutQuint",
 
 	    });
+	    
+
+      	    
+	    
 	  } else {
 		  $('#staticNavigationBG').removeClass("stNavScrollStyles").stop().animate({
 			backgroundColor:"#216aa1",
