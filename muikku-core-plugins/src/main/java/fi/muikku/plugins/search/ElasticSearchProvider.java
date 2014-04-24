@@ -96,13 +96,13 @@ public class ElasticSearchProvider implements SearchProvider {
   }
 
   @Override
-  public void addToIndex(Map<String, Object> entity) {
+  public void addToIndex(String typeName, Map<String, Object> entity) {
     ObjectMapper mapper = new ObjectMapper();
     String json;
     try {
       json = mapper.writeValueAsString(entity);
       Long id = (Long)entity.get("id");
-      IndexResponse response = elasticClient.prepareIndex("muikku", entity.getClass().getSimpleName(), id.toString()).setSource(json).execute().actionGet();
+      IndexResponse response = elasticClient.prepareIndex("muikku", typeName, id.toString()).setSource(json).execute().actionGet();
     } catch (IOException e) {
       logger.log(Level.SEVERE, "Adding to index failed because of exception", e);
     }
@@ -110,13 +110,13 @@ public class ElasticSearchProvider implements SearchProvider {
   }
 
   @Override
-  public void deleteFromIndex(Map<String, Object> entity) { // Map<String, Object>
+  public void deleteFromIndex(String typeName, Map<String, Object> entity) { // Map<String, Object>
     ObjectMapper mapper = new ObjectMapper();
     String json;
     try {
       json = mapper.writeValueAsString(entity);
       Long id = (Long)entity.get("id");
-      DeleteResponse response = elasticClient.prepareDelete("muikku", entity.getClass().getSimpleName(), id.toString()).execute().actionGet();
+      DeleteResponse response = elasticClient.prepareDelete("muikku", typeName, id.toString()).execute().actionGet();
     } catch (IOException e) {
       logger.log(Level.SEVERE, "Removing item from index failed because of exception", e);
     }

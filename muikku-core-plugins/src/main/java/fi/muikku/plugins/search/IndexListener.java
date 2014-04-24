@@ -34,7 +34,7 @@ public class IndexListener {
       try {
         Map<String, Object> indexEntity = indexEntityProcessor.process(entityAddEvent.getEntity());
         if(indexEntity != null){
-          provider.addToIndex(indexEntity);
+          provider.addToIndex(entityAddEvent.getEntity().getClass().getSimpleName(), indexEntity);
         }
       } catch (IllegalArgumentException | IllegalAccessException e) {
         logger.log(Level.SEVERE, "Entity processing exception", e);
@@ -49,7 +49,7 @@ public class IndexListener {
       try {
         Map<String, Object> indexEntity = indexEntityProcessor.process(entityRemoveEvent.getEntity());
         if(indexEntity != null){
-          provider.deleteFromIndex(indexEntity);
+          provider.deleteFromIndex(entityRemoveEvent.getEntity().getClass().getSimpleName(), indexEntity);
         }
       } catch (IllegalArgumentException | IllegalAccessException e) {
         logger.log(Level.SEVERE, "Entity processing exception", e);
