@@ -13,25 +13,30 @@ import fi.muikku.plugins.search.annotations.Indexable;
 
 @Stateless
 public class IndexEntityProcessor {
-  
-  public Map<String, Object> process(Object entity) throws IllegalArgumentException, IllegalAccessException{
-    
-    if(entity.getClass().isAnnotationPresent(Indexable.class)){
+
+  public Map<String, Object> process(Object entity) throws IllegalArgumentException, IllegalAccessException {
+
+    if (entity.getClass().isAnnotationPresent(Indexable.class)) {
       Map<String, Object> indexObject = new HashMap<String, Object>();
-      for(Field field : entity.getClass().getDeclaredFields()){
-        if(!field.isAnnotationPresent(IndexIgnore.class)){
-          if(field.isAnnotationPresent(IndexName.class)){
-            Annotation a = field.getAnnotation(IndexName.class);
-            IndexName indexName = (IndexName) a;
-            indexObject.put(indexName.fieldName(), field.get(entity));
-          }else{
-            indexObject.put(field.getName(), field.get(entity));
+      Class<?> i = entity.getClass();
+      while (i != null && i != Object.class) {
+        for (Field field : i.getDeclaredFields()) {
+          if (!field.isAnnotationPresent(IndexIgnore.class)) {
+            field.setAccessible(true);
+            if (field.isAnnotationPresent(IndexName.class)) {
+              Annotation a = field.getAnnotation(IndexName.class);
+              IndexName indexName = (IndexName) a;
+              indexObject.put(indexName.fieldName(), field.get(entity));
+            } else {
+              indexObject.put(field.getName(), field.get(entity));
+            }
           }
         }
+        i = i.getSuperclass();
       }
       return indexObject;
     }
-    
+
     return null;
   }
 
