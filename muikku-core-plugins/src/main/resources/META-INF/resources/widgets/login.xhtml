@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html">
+    
+    
+  <h:outputScript name="scripts/gui/login.js" target="head"/>
+  
+
+  <div class="widget loginWidget">
+    <div class="loginWidgetButton">
+      <div class="bt-generic icon-signout bt-login"><span>Kirjaudu sisään</span></div>
+    </div>
+    <div class="loginWidgetWrapper">
+      <div class="loginBoxTopArrow"></div>
+      <ui:include src="credentiallogin.xhtml" />
+      <ui:include src="externallogin.xhtml" />
+      <ui:include src="forgotpassword.xhtml" />
+    </div>
+  </div>
+    
+</ui:composition>

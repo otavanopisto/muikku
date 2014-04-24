@@ -21,6 +21,9 @@
 
     <!-- CSS to remove all default styles -->
     <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/cssreset-min.css" />
+
+    <!-- Icons -->
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/icons.css" />
     
     <!-- Screen CSS -->
     <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/screen.css" />
@@ -106,11 +109,12 @@
   <h:body>
     <ui:include src="/facelets/generic/notification-queue.xhtml"/>
   
-    <m:widget name="navigation-dynamic" rendered="#{sessionBackingBean.loggedIn}"></m:widget>
-  
+
+  <ui:insert name="header">
     <div id="header">
       <div id="headerContainer" class="container_24">
-        <ui:insert name="header">
+      <div id="headerLogoTextContainer"></div>
+      <div id="headerFishContainer"></div>
           <m:widgetSpaceSet styleClass="noLid">
            <ui:insert name="header.left">
               <ui:include src="/facelets/generic/header-left.xhtml">
@@ -137,10 +141,13 @@
               </ui:include>          
            </ui:insert>                                
           </m:widgetSpaceSet>
-        </ui:insert>
       </div>
     </div>
-    <div id="staticNavigationFade">
+  </ui:insert>
+  
+    <div id="staticNavigationWrapper"> 
+      <m:widget name="navigation-dynamic" rendered="#{sessionBackingBean.loggedIn}"></m:widget> 
+      <div id="staticNavigationBG"></div>
       <div id="staticNavigation" class="container_24 scrollblock">        
         <ui:insert name="dock.top">
          <m:widgetSpaceSet styleClass="noLid">      
@@ -169,7 +176,8 @@
         </ui:insert>
         <div class="clear"></div>
       </div>
-    </div>
+     </div>
+
     <div id="content" class="container_24">  
       <ui:insert name="content.tools.top">
         <m:widgetSpaceSet styleClass="nomargin">

@@ -62,20 +62,7 @@ $grid-margin-percent:prc(100, $grid-margin-divided);
       margin-top:$grid-margin-pixel * 2;
       margin-left:$grid-margin-pixel;
       margin-right:$grid-margin-pixel;
-     }
-    
-	   .stuckStNav {
-	    position:fixed;
-	    top:0;
-	    left:50%;
-	    margin-left: -$stuckMargin;
-	  }
-	  
-	  .stuckDNav {
-	    position:fixed !important;
-	    top:0;
-	    left:0;
-	  }      
+    }     
 	  
 }
 

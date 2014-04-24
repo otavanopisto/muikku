@@ -4,7 +4,8 @@ form * {
   outline:none; /* Lets remove form field highlights made by Chrome */
 }
 
-input[type="text"] {    
+input[type="text"],
+input[type="password"] {    
   padding: 5px;     
   @extend .co-input-textfield-blur;
   &:hover {@extend .co-input-textfield-blur-hover;}
@@ -12,8 +13,9 @@ input[type="text"] {
     @extend .co-input-textfield-blur-focus;
     @include formElementFocusShadow(rgba(0, 153, 255,0.4));
   }
-  @include rounded(4px);
-  width:20em; /* Default width */
+  width:100%;
+  box-sizing:border-box;
+  -moz-box-sizing:border-box;
 }
 
 input[type="button"],
@@ -23,23 +25,22 @@ input[type="reset"] {
   color: #fff;
   padding: 5px;
   @include gradient-top-bottom-four($btnGr...);
-  @include rounded(4px);
+  @include rounded(5px);
   @include shadow;
-  @include border($btnBrd,1px);
+  @include border(1px,$btnBrd,solid);
   margin-right:4px;
 }
 
 input[type="checkbox"], 
 input[type="radio"] {
   margin:0 2px 0 2px;
-  
   &:hover {
     @include formElementFocusShadow(rgba(0, 153, 255,0.6));
   }
 }
 
 textarea {
-  padding: 5px;     
+  padding: 5px;  
   @extend .co-input-textfield-blur;
   &:hover {@extend .co-textarea-blur-hover;}
   &:focus {
@@ -70,34 +71,46 @@ select {
 
 /* Login */
 
-.credentialLoginWidget input[type="text"] {    
-  padding: 5px;     
-  @extend .co-input-textfield;
-  &:hover {@extend .co-input-textfield-hover;}
-  &:focus {@extend .co-input-textfield-focus;}
-  width:15em;
+.credentialLoginWidget {
+  
+  input[type="text"] {  
+    padding: 10px 8px;
+    margin-bottom:10px;
+    @include border(1px,solid,#50a850);     
+    @extend .co-input-textfield;
+      &:hover {
+        @extend .co-input-textfield-hover;
+      }
+      &:focus {
+        @extend .co-input-textfield-focus;
+      }
+  }
+  
+  input[type="password"] {
+    padding: 10px 8px;
+    margin-bottom:10px;
+    width:100%;   
+    @include border(1px,solid,#50a850);    
+    @extend .co-input-textfield;
+      &:hover {
+        @extend .co-input-textfield-hover;
+      }
+      &:focus {
+      @extend .co-input-textfield-focus;
+      @include formElementFocusShadow(rgba(0, 153, 255,0.4));
+    }
+  }
 }
 
-input[type="password"] {
-  padding: 5px;   
-  @include border(#b90000);    
-  @extend .co-input-textfield;
-  &:hover {@extend .co-input-textfield-hover;}
-    &:focus {
-    @extend .co-input-textfield-focus;
-    @include formElementFocusShadow(rgba(0, 153, 255,0.4));
-  }
-  @include rounded(4px);
-  width:15em;
-}
+
 
 /* Seeker */
 
-.seeker input{
-  margin:5px 0 5px 0;
+#seeker{
   @extend .co-input-textfield;
   &:hover {@extend .co-input-textfield-hover;}
   &:focus {@extend .co-input-textfield-focus;}
+  @include rounded(5px);
 }
 
 /* Calendar */

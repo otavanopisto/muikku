@@ -1,0 +1,116 @@
+@import "_jsf.scss";
+
+
+@font-face {
+  font-family: 'icomoon';
+  @include font-src('fonts/icomoon.eot'); /* IE9 */
+  @include font-srcs('fonts/icomoon.eot?#iefix','embedded-opentype', /* IE6-IE8 - NOT WORKING!!! JSF libraries do not work with webparams */
+  'fonts/icomoon.woff','woff', /* Modern Browsers */
+  'fonts/icomoon.ttf','truetype', /* Safari, Android, iOS */
+  'fonts/icomoon.svg#icomoon','svg'); /* old IOS - NOT WORKING!!! JSF libraries do not work with webparams DEM BASTARDS! */ 
+  font-weight: normal;  
+  font-style: normal;
+  
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  font-family: 'icomoon';
+  speak: none;
+  font-style: normal;
+  text-decoration:none;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Lets reset the font when text used inside the same element as icon */
+[class^="icon-"] span, [class*=" icon-"] span {
+  font-family: 'Open Sans';
+  padding-left:4px;
+  display:inline-block;
+  float:right;
+}
+
+.icon-move:before {
+  content: "\e600";
+}
+.icon-dynamic-navi:before {
+  content: "\e601";
+}
+.icon-calendar:before {
+  content: "\e602";
+}
+.icon-bell:before {
+  content: "\e603";
+}
+.icon-books:before {
+  content: "\e604";
+}
+.icon-search:before {
+  content: "\e605";
+}
+.icon-cogs:before {
+  content: "\e606";
+}
+.icon-envelope-alt:before {
+  content: "\e607";
+}
+.icon-google-plus:before {
+  content: "\e608";
+}
+.icon-facebook:before {
+  content: "\e609";
+}
+.icon-twitter:before {
+  content: "\e60a";
+}
+.icon-envelope:before {
+  content: "\e60b";
+}
+.icon-cog:before {
+  content: "\e60c";
+}
+.icon-trash:before {
+  content: "\e60d";
+}
+.icon-home:before {
+  content: "\e60e"; 
+}
+.icon-signout:before {
+  content: "\e60f";
+}
+.icon-signin:before {
+  content: "\e610";
+}
+.icon-thumbs-up:before {
+  content: "\e611";
+}
+.icon-thumbs-down:before {
+  content: "\e612";
+}
+.icon-reorder:before {
+  content: "\e613";
+}
+.icon-pencil:before {
+  content: "\e614";
+}
+.icon-star:before {
+  content: "\e615";
+}
+.icon-star-empty:before {
+  content: "\e616";
+}
+.icon-clock:before {
+  content: "\e617";
+}
+.icon-arrow-left:before {
+  content: "\e618";
+}
+.icon-uniE601:before {
+  content: "\e619";
+}
