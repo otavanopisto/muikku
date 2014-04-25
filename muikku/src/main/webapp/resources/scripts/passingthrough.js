@@ -13,8 +13,6 @@ $(document).ready(function() {
     	  
     $( "#dynamicNaviButton" ).click(function() {
     	var container = $('#dynamicNaviContainer');
-
-
         if (container.css("opacity") == "0"){
         	container.css({
         		"display" : "block"
@@ -65,9 +63,6 @@ $(document).ready(function() {
     	$('#seeker').val(sval);
     });
 
-
-  
-    
     
     // fastlinks and dialogs for dock applications -->
 
@@ -104,14 +99,9 @@ $(document).ready(function() {
                    
                    });              
                }
-          }); 
-        
+          });  
       }
-      
-
     });
-
-    
     
     // Search field toggle
     
@@ -171,10 +161,8 @@ $(document).ready(function() {
     		duration : 200,
     		easing: "easeInOutElastic",
     		complete : function(){
-               // This is for added functions. 
+               // This is for added functions. In the future. Of mankind.
     		}
-
-    		
     	});
     	
 
@@ -198,13 +186,6 @@ $(document).ready(function() {
           width: $(window).width(),
           left:-tOffset + 'px'
         });      
-
-
-        
-        
-
-
-
     });
 
     $("div[class*='wi-dock-static-navi']").mouseleave(function() {
@@ -223,11 +204,7 @@ $(document).ready(function() {
                 });   			
     			
     		}
-
-    		
     	});
-
-
     });
     
 

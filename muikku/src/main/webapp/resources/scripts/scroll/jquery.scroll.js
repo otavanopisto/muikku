@@ -5,15 +5,13 @@
 $(document).ready(function() {
   
     /* Sticky shortcut */ 
-    
-  
-  
+
 	$('#staticNavigationWrapper').waypoint('sticky', {
-	  stuckClass : 'stuckStNav',
-	  handler : function(direction){
-	    var lup = $('.loggedUserPicture');
-	    var luw = $('.loggedUserWidget');
-      var luwPos = luw.position();	    
+	  stuckClass : 'stuckStNav'
+ /*   handler : function(direction){
+      var lup = $('.loggedUserPicture');
+      var luw = $('.loggedUserWidget');
+      var luwPos = luw.position();      
       var lupPos = lup.position(); 
       if(direction == 'down'){
         lup.css({
@@ -23,39 +21,34 @@ $(document).ready(function() {
           "z-index"  : "14"
         });
         lup.animate({
-          duration: 600,
-          top: "15px",
-          right : "5px",  
-          easing: "easeOutQuint"
-        });       
+         duration: 100,
+         top: "15px",
+         easing: "easeOutQuint"
+       });       
       }else{        
         lup.animate({
-          duration: 600,
+          duration: 100,
           top: luwPos.top,
           right : luwPos.right,          
           easing: "easeOutQuint"},
          {complete : function(){
            lup.css({
-             
              "position" : "static",
               top: "auto",
               left: "auto",  
               right: "auto"      
-              
            });
-
           }
         });
 
-      }	    
-	  }   
+      }     
+    }   */
 	});
 
 	
 	$('#dynamicNavigation').waypoint('sticky', {
 	  wrapper:'<div id="dynNaviWrapper" />',
-	  stuckClass : 'stuckDNav',
-	 
+	  stuckClass : 'stuckDNav'	 
 	});
 	
 	/* Style functions */
@@ -65,15 +58,10 @@ $(document).ready(function() {
 	    $('#staticNavigationBG').addClass("stNavScrollStyles").stop().animate({
 	    	backgroundColor:"#2c9fcc",
 	    	opacity:"0.95",
-
 	    	duration: 600,
 	    	easing: "easeOutQuint",
-
 	    });
-	    
 
-      	    
-	    
 	  } else {
 		  $('#staticNavigationBG').removeClass("stNavScrollStyles").stop().animate({
 			backgroundColor:"#216aa1",

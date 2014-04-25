@@ -6,7 +6,6 @@ form * {
 
 input[type="text"],
 input[type="password"] {    
-  margin:5px;
   padding: 5px;     
   @extend .co-input-textfield-blur;
   &:hover {@extend .co-input-textfield-blur-hover;}
@@ -22,7 +21,6 @@ input[type="password"] {
 input[type="button"],
 input[type="submit"],
 input[type="reset"] {
-  margin:5px;
   font-size: 1em;
   color: #fff;
   padding: 5px;
@@ -39,6 +37,11 @@ input[type="radio"] {
   &:hover {
     @include formElementFocusShadow(rgba(0, 153, 255,0.6));
   }
+}
+
+div[class*="form-container"] input{
+	margin:5px;
+	
 }
 
 textarea {
