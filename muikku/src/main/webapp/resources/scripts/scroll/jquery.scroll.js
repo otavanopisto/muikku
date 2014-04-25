@@ -5,34 +5,48 @@
 $(document).ready(function() {
   
     /* Sticky shortcut */ 
+    
+  
   
 	$('#staticNavigationWrapper').waypoint('sticky', {
 	  stuckClass : 'stuckStNav',
 	  handler : function(direction){
+	    var lup = $('.loggedUserPicture');
+	    var luw = $('.loggedUserWidget');
+      var luwPos = luw.position();	    
+      var lupPos = lup.position(); 
       if(direction == 'down'){
-        $('.loggedUserPicture').css({
+        lup.css({
           "position" : "fixed",
+           top: lupPos.top,
+           right : lupPos.right,  
           "z-index"  : "14"
         });
-        $('.loggedUserPicture').stop().animate({
-          duration: 6000,
+        lup.animate({
+          duration: 600,
           top: "15px",
-          easing: "easeOutQuint",
-          complete: function(){
-
-          }
-        
+          right : "5px",  
+          easing: "easeOutQuint"
         });       
       }else{        
-        $('.loggedUserPicture').css({
-          "position" : "static"          
+        lup.animate({
+          duration: 600,
+          top: luwPos.top,
+          right : luwPos.right,          
+          easing: "easeOutQuint"},
+         {complete : function(){
+           lup.css({
+             
+             "position" : "static",
+              top: "auto",
+              left: "auto",  
+              right: "auto"      
+              
+           });
+
+          }
         });
-        $('.loggedUserPicture').stop().animate({
-          duration: 6000,
-          easing: "easeOutQuint",
-          complete: function(){
-          }        
-        });        
+
       }	    
 	  }   
 	});
