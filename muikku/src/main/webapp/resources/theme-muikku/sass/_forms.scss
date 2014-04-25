@@ -6,6 +6,7 @@ form * {
 
 input[type="text"],
 input[type="password"] {    
+  margin:5px;
   padding: 5px;     
   @extend .co-input-textfield-blur;
   &:hover {@extend .co-input-textfield-blur-hover;}
@@ -21,6 +22,7 @@ input[type="password"] {
 input[type="button"],
 input[type="submit"],
 input[type="reset"] {
+  margin:5px;
   font-size: 1em;
   color: #fff;
   padding: 5px;
@@ -56,6 +58,10 @@ select {
  
 }
 
+div[class*='form-container']{
+width:300px;
+}
+
 .formLabel {
   margin-right:10px;
   font-weight:bold;	
@@ -75,6 +81,7 @@ select {
   
   input[type="text"] {  
     padding: 10px 8px;
+
     margin-bottom:10px;
     @include border(1px,solid,#50a850);     
     @extend .co-input-textfield;
