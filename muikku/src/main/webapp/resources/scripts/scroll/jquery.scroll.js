@@ -14,10 +14,11 @@ $(document).ready(function() {
       var lp = $('.loggedUserPicture');
       var lw = $('.loggedUserWidget');
       var lpPosRight = ( $(window).width() - $("#content").width() ) / 2;
-      var lpPosInit= lpPosRight + lw.width() ;
+      var lpPosInit = lpPosRight + lw.width() ;
       
       lp.css({
     	  "position" : "fixed",
+    	   "right" : lpPosInit + 'px'
        });
 
       
@@ -42,7 +43,6 @@ $(document).ready(function() {
             	    	  "position" : "static",
             	    	  "right" : "",
             	    	  "top" : "",
-            	    	  "left" : ""	  
             	       });
 
             		 
