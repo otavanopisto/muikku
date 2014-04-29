@@ -10,7 +10,8 @@
     
     <ui:define name="content.center.widget">
       <ui:repeat var="email" value="#{editUserInfoBackingBean.listUserEmails()}">
-        <div>
+        <div class="ps-editMail co-widget">
+        <div class="ps-editMail-form-container">
           #{email.address}
 
           <h:form rendered="#{!userEmailChangeBackingBean.hasPendingEmailChange(email)}">
@@ -22,7 +23,7 @@
           <ui:fragment rendered="#{userEmailChangeBackingBean.hasPendingEmailChange(email)}">
             Change pending confirmation.
           </ui:fragment>        
-        
+          </div>
         </div>
       </ui:repeat>
       

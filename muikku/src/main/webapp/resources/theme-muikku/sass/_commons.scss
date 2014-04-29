@@ -7,49 +7,43 @@ To be used through SASS's extend feature with CSS's selectors.
 
 .co-input-textfield,
 .co-textarea {
-  @include border(1px,#ededed);   
+  @include border(1px,#ededed,solid);   
   color:#606060;
-  font-weight:bold;
   background-color:#fff; 
 }
 
 .co-input-textfield-hover,
 .co-textarea-hover {
-  @include border(1px,#ededed);   
+  @include border(1px,#ededed,solid);   
   color:#000;
-  font-weight:bold;
   background-color:#fff; 
 }
 
 .co-input-textfield-focus,
 .co-textarea-focus {
-  @include border(1px,$header); 
+  @include border(1px,$header,solid); 
   color:#000;
-  font-weight:bold;
   background-color:#fff; 
 }
 
 .co-input-textfield-blur,
 .co-textarea-blur {
-  @include border(1px,#dadada);
+  @include border(1px,#dadada,solid);
   color:#606060;
-  font-weight:bold;
   background-color:#fff; 
 }
 
 .co-input-textfield-blur-hover,
 .co-textarea-blur-hover {
-	@include border(1px,#ededed);
+	@include border(1px,#ededed,solid);
   color:#000;
-  font-weight:bold;
   background-color:#fff; 
 }
 
 .co-input-textfield-blur-focus,
 .co-textarea-blur-focus {
-  @include border(1px,$header); 
+  @include border(1px,$header,solid); 
   color:#000;
-  font-weight:bold;
   background-color:#fff;
 }
 
@@ -116,9 +110,11 @@ To be used through SASS's extend feature with CSS's selectors.
 }
 
 .co-widget {
-  padding:20px;
-  border:1px solid $brd;
-  @include rounded(5px);
+  padding:15px;
+  box-shadow:$w-sc;
+  background:$w-bgr;
+  min-height:3em;
+  border:1px solid $w-brd;
 }
 
 /* Forms */
@@ -131,11 +127,11 @@ To be used through SASS's extend feature with CSS's selectors.
   @include gradient-top-bottom-four($mainFuncBtnGr...);
   @include rounded(2px);
   @include shadow;
-  @include border($mainFuncBtnBrd); 
+  @include border(1px,$mainFuncBtnBrd,solid); 
 }
 
 .co-buttonContainer input:hover, input[type="button"]:hover, input[type="submit"]:hover {
-  @include border($btnBrdH);
+  @include border(1px,$btnBrdH,solid);
 }
 
 .co-buttonContainer input:active, input[type="button"]:active, input[type="submit"]:active {
@@ -181,7 +177,7 @@ To be used through SASS's extend feature with CSS's selectors.
 }
 
 .co-filter {
-  @include border(#ededed);
+  @include border(1px,#ededed,solid);
   @include rounded(4px);
   @include gradient-top-bottom(#707070, #666);
   @include shadow;

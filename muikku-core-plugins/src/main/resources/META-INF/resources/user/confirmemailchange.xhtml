@@ -11,22 +11,25 @@
     
     <ui:define name="content.center.widget">
       <h:outputScript name="scripts/jshash/md5-min.js" target="head"/>
-      
-      <p>Confirm new email address #{confirmEmailChangeBackingBean.pendingEmailChange.newEmail}.</p>
-      
-      <h:form id="confirmEmailChange">
-        <h:inputHidden value="${confirmEmailChangeBackingBean.confirmationHash}" />
-        
-        <ui:fragment rendered="#{!muikkuSession.loggedIn}">
-          Username:
-          <h:inputText value="#{confirmEmailChangeBackingBean.userName}" />
-        </ui:fragment>
-        
-        Password:
-        <h:inputSecret id="pwd" value="#{confirmEmailChangeBackingBean.passwordHash}" />
-        
-        <h:commandButton onclick="$('#confirmEmailChange\\:pwd').val(hex_md5($('#confirmEmailChange\\:pwd').val())); return true;" action="#{confirmEmailChangeBackingBean.confirm()}" value="Confirm" />
-      </h:form>
+      <div class="ps-changeMail co-widget">
+      <div class="ps-changeMail-form-container">
+	      <p>Confirm new email address #{confirmEmailChangeBackingBean.pendingEmailChange.newEmail}.</p>
+	      
+	      <h:form id="confirmEmailChange">
+	        <h:inputHidden value="${confirmEmailChangeBackingBean.confirmationHash}" />
+	        
+	        <ui:fragment rendered="#{!muikkuSession.loggedIn}">
+	          Username:
+	          <h:inputText value="#{confirmEmailChangeBackingBean.userName}" />
+	        </ui:fragment>
+	        
+	        Password:
+	        <h:inputSecret id="pwd" value="#{confirmEmailChangeBackingBean.passwordHash}" />
+	        
+	        <h:commandButton onclick="$('#confirmEmailChange\\:pwd').val(hex_md5($('#confirmEmailChange\\:pwd').val())); return true;" action="#{confirmEmailChangeBackingBean.confirm()}" value="Confirm" />
+	      </h:form>
+        </div>
+      </div>
     </ui:define>
 
 </ui:composition>

@@ -26,8 +26,10 @@ import fi.muikku.model.base.Tag;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserGroup;
 import fi.muikku.model.users.UserGroupUser;
+import fi.muikku.notifier.NotifierController;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.communicator.CommunicatorController;
+import fi.muikku.plugins.communicator.CommunicatorNewInboxMessageNotification;
 import fi.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
@@ -72,6 +74,12 @@ public class CommunicatorRESTService extends PluginRESTService {
   @Inject
   private TagController tagController;
 
+  @Inject
+  private CommunicatorNewInboxMessageNotification communicatorNewInboxMessageNotification;
+  
+  @Inject
+  private NotifierController notifierController;
+  
   @GET
   @Path ("/{USERID}/items")
   public Response listUserCommunicatorItems( 
@@ -238,6 +246,8 @@ public class CommunicatorRESTService extends PluginRESTService {
 
     CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId, user, recipients, subject, content, tagList);
       
+    notifierController.sendNotification(communicatorNewInboxMessageNotification, user, recipients);
+    
     TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
     Tranquility tranquility = tranquilityBuilder.createTranquility()
       .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE));
@@ -300,6 +310,8 @@ public class CommunicatorRESTService extends PluginRESTService {
     }
     
     CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId2, user, recipients, subject, content, tagList);
+
+    notifierController.sendNotification(communicatorNewInboxMessageNotification, user, recipients);
     
     TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
     Tranquility tranquility = tranquilityBuilder.createTranquility()

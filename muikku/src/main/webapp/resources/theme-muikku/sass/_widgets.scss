@@ -3,6 +3,23 @@
 
 /* General styles with selectors */
 
+div[class*='dock-static-navi-button'] a, div[class*='icon-dynamic-navi'] {
+  font-size:30pt;
+  color:#fff;
+  text-decoration:none;
+  @include iconShadow;
+  &:hover {
+    @include iconShadow(#ffffbe);
+  }
+  padding:10px 10px 0 10px;
+  height:61px;
+  display:inline-block;
+}
+
+div[data-name="generic.dock-top.left"] div:last-child > a{
+	margin-right:0;
+}
+
 
 div[data-name*='index.content'] > div:not(:first-child) {
   margin-top:10px;
@@ -42,13 +59,14 @@ div[class*='actions-vertical'] {
 
 /* staticNaviDock  */
 
-div[class*="wi-dock-static-navi"]{
- float:left;
+div[class*="wi-dock-static-navi"] {
+  float:left;
+  margin-right:15px;
 }
 
 /* Containers */
 
-.dock-static-container{}
+.dock-static-container {}
 
 .dock-workspace-container {
   @include gradient-top-bottom;
@@ -106,6 +124,9 @@ div[class*="wi-dock-static-navi"]{
   @include naviIcon();
   @include background-image('gfx/icons/32x32/actions/calendar-visible.png');
 }
+
+
+/*  Deprecating 27.3.2014
 
 .naviIconHome {
   @include naviIcon();
@@ -250,6 +271,8 @@ div[class*="wi-dock-static-navi"]{
   @include naviIcon(); 
   @include background-image('gfx/icons/32x32/actions/navigate-student-grading.png');  
 }
+
+*/
 
 /* Settings navigation */
 
@@ -472,26 +495,113 @@ div[class*="wi-dock-static-navi"]{
 
 /* Login */
 
-.credentialLoginWidget, .externalLoginWidget {
-  background: #ededed;
-  padding: 10px; 
-  @include rounded(5px);
-  text-align: right;
-  color: #000;
-  font-size: 9px;
-  width: 240px;
+.loginWidget {
+/* This widget can be positioned absolutely or float to right */
+/*   position:absolute; */
+/*   right:0; */
+/*   top:20px; */
+
+  position:relative;
   float:right;
+  margin-top:10px;
+}
+
+.loginWidgetWrapper {
+  display:none;
+  text-align:left;
+  position:absolute;
+  right:0;
+  top:50px;
+  z-index:20;
+  border:3px solid #50a850;
+  background:#ffffff;
+  padding:15px;
+  border-radius:2px;
+  width:300px;
+  @include dropDownElementShadow();
+  
+  .loginBoxTopArrow {
+    @include background-image('gfx/login-box-arrow.png');
+    background-repeat:no-repeat; 
+    background-position:top right;
+    height:20px;
+    width:30px;
+    position:absolute;
+    top:-15px;
+    right:10px;
+    z-index:21;
+  }
+  
+}
+
+.credentialLoginWidget, 
+.externalLoginWidget,
+.forgotpasswordWidget {
+
+  a {
+    color:#4a8fbd;
+    text-decoration:none;
+  
+    &:hover {
+      color:#0099ff;
+    }
+  }
+}
+
+.forgotpasswordWidget {
+  margin-top:10px;
 }
 
 .loggedUserWidget {
-  @include rounded(5px);	
-  background: #ededed;
-  padding: 10px; 
-  text-align: right;
-  color: #000;
-  font-size: 9px;
-  width: 240px;
+/* This widget can be positioned absolutely or float to right */
+/*   position:absolute; */
+/*   right:0; */
+/*   top:20px; */
+
+  position:relative;
   float:right;
+  margin-top:10px;
+  
+  .loggedUserBadgeWrapper {
+  
+    .loggedUserPicture {
+      @incude border(2px,#fff,solid);
+      background:#fff;
+      height:48px;
+      width:48px;
+      float:left;
+      border-radius:24px;
+      margin:0 4px 0 0;
+    }
+    .loggedUserInfoWrapper {
+       @incude border(2px,#fff,solid);
+       background:#fff;
+       height:48px;
+       float:left;
+       border-top-left-radius:24px;
+       border-bottom-left-radius:24px;
+    
+      .loggedUserName {
+        color:#3c77a0;
+        text-transform:uppercase;
+        min-width:100px;
+        padding:13px 12px 14px 20px;
+        float:left;
+        height:1.5em;
+      }
+      
+      .loggedUserActions {
+        min-width:60px;
+        float:left;
+        height:1.5em;
+        padding:13px 12px 14px 12px;
+      }
+    
+    }
+    
+
+  
+  }
 }
 
 .logoutWidget {
@@ -510,8 +620,6 @@ div[class*="wi-dock-static-navi"]{
 
 .languageWidget { 
   position:absolute;
-  margin-top:110px;
-  margin-left:51px;  
   font-size:1em;
   @include gradient-top-bottom-four($contInteractGr...);
   height: 20px;
@@ -544,7 +652,7 @@ div[class*="wi-dock-static-navi"]{
 }
 
 #staticNavigation .widgetSpace {
-  height: 40px;
+  height: 60px;
 }
 
 .widgetTitle {
@@ -683,6 +791,10 @@ div[class*="wi-dock-static-navi"]{
 
 .wi-frontpage-dynamic-students li:nth-child(odd) {
   background:#ededed;
+}
+
+.wi-frontpage-info {
+  @extend .co-widget;
 }
 
 .wi-frontpage-dynamic-calendar {
