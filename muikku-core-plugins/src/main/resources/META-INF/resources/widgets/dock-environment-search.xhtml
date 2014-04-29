@@ -6,6 +6,9 @@ xmlns:ui="http://java.sun.com/jsf/facelets"
 xmlns:f="http://java.sun.com/jsf/core"
 xmlns:h="http://java.sun.com/jsf/html">
 
+
+  <h:outputScript name="scripts/gui/seeker.js" target="head" />
+
   <div class="widget wi-dock-static-navi-button-search">
     <h:outputLink styleClass="icon-search" value="#"/>
     <div class="dock-navi-tt-container-search" style="display: none;">
@@ -13,8 +16,11 @@ xmlns:h="http://java.sun.com/jsf/html">
         <h5>Haku</h5>
       </div>
     </div>
-  <div class="wi-dock-search"><input id="seeker" type="text" name="seekerInput" value="mitä etsit?" size="30"/></div>  
-      
+    <div class=" wi-dock-search">
+      <div class="widget seeker">
+        <input id="seeker" type="text" name="seekerInput" value="mitä etsit?" size="30"/>
+      </div>  
+    </div>
   </div>
 
 
