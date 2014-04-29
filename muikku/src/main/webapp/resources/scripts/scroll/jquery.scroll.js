@@ -18,11 +18,9 @@ $(document).ready(function() {
       
       lp.css({
     	  "position" : "fixed",
-    	   "right" : lpPosInit + 'px'
+    	  "right" : lpPosInit + 'px'
        });
 
-      
-      
       if(direction == 'down'){
           lp.animate({
       		right : lpPosRight,
@@ -43,15 +41,10 @@ $(document).ready(function() {
             	    	  "position" : "static",
             	    	  "right" : "",
             	    	  "top" : "",
-            	       });
-
-            		 
+            	       }); 
             	 }
             });  
-    	  
       }
-      
-
     }   
 	});
 
