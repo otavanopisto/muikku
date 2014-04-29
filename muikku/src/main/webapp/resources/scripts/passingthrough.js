@@ -20,14 +20,14 @@ $(document).ready(function() {
             container.animate({
             	"margin-left" : "0",
                 opacity : 1
-            }, 200, "easeOutSine");    
+            }, 100, "easeOutSine");    
             
             } else {
               container.animate({
             		"margin-left" : "-300px",
             		opacity : 0
                  }, {
-                	 duration: 200,
+                	 duration: 100,
                 	 easing: "easeOutSine",
                 	 complete: function() {
                 	   container.css({
@@ -50,6 +50,7 @@ $(document).ready(function() {
     });
   
     // Widget dragging --> 
+    
     $( "div[class*='wi-frontpage-dynamic']" ).draggable({ snapMode: "inner" });
         
     // Seeker functionalities -->
@@ -174,6 +175,7 @@ $(document).ready(function() {
                   
         // Sets tooltip's inner elements padding-left same as tooltip's left position 
         // and sets background-position relative to icons position
+        
         innerTooltip.css({
           paddingLeft: paddingOffset + 'px',
           backgroundPosition: iconOffset + 'px 0px'
@@ -206,8 +208,6 @@ $(document).ready(function() {
     		}
     	});
     });
-    
-
 });
 
 
