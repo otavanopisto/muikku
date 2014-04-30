@@ -79,75 +79,46 @@ $(document).ready(function() {
           "display" : "block",
           opacity : 1
           });
-        
-        sc.animate({
+        // Lest start the Ukkonen's Animaception
+        sc.clearQueue().stop().animate({
           "width" : "300px"
-             }, {
-             duration: 100,
-             easing: "easeOutSine"
-               
-          });      
-     }else{
+        }, {
+           duration: 100,
+           easing: "easeOutSine",
+           complete: function(){
+        	   var seeker = $("#seeker");
+        	   seeker.focus();
+        	   seeker.blur(function(){
+        		   sc.clearQueue().stop().animate({width:0},{
+        			   duration : 100,
+        			   easing : "easeInOutQuad",
+        			   complete : function(){
+        				   sc.css({
+        					   "display" : "none",
+        					   opacity : 0
+   	    				});
+   				    }
+   				});
+   			});
+   		}
+        });      
+     } else {
         sc.animate({
           "width" : "0",
-           }, {
-             duration: 100,
-             easing: "easeOutSine",
-             complete: function() {
+        }, {
+           duration: 100,
+           easing: "easeOutSine",
+           complete: function() {
                sc.css({
                  "display" : "none",
-                  "opacity" : "0"
-                   
-                   });              
-               }
-          });  
+                 "opacity" : "0"
+               });              
+            }
+         });  
       }
     });
     
-    // Search field toggle
-    
-    
-    
-    $(".icon-search").click(function(){
-    	
-    	var sc = $(".wi-dock-search");
-      
-    	sc.css({
-    		"display" : "block",
-    	     opacity : 1
-        });
-    	
-    	sc.animate({width:300},{
-    		duration : 100,
-    		easing : "easeInOutElastic",
-            complete: function(){
-                var seeker = $("#seeker");
-            	
-    			seeker.focus();
-    			seeker.blur(function(){
-    				
-    				sc.animate({width:0},{
-    					duration : 100,
-    					easing : "easeInOutElastic",
-    				    complete : function(){
-    				    	
-    	    				sc.css({
-    	    					"display" : "none",
-    	    					 opacity : 0
-    	    				});
-    				    }
-    				});
-    				
-    			});
-    		}
-    		
-    	});
-
-    });
-    
-    
     // Toooltip 
-    
     
     $("div[class*='wi-dock-static-navi']").mouseenter(function() {
     	var tooltip = $(this).find("[class*='dock-navi-tt-container']");
@@ -155,7 +126,6 @@ $(document).ready(function() {
 
     	tooltip.css({
     		"display" : "block"
-    	     
         });
 
     	tooltip.animate({
@@ -194,8 +164,6 @@ $(document).ready(function() {
 
     $("div[class*='wi-dock-static-navi']").mouseleave(function() {
     	var tooltip =  $(this).find("[class*='dock-navi-tt-container']");
-    	
-//    	tooltip.clearQueue().stop();
     	
     	tooltip.clearQueue().finish().animate({
     		height:"0",
