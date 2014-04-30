@@ -5,44 +5,47 @@
 $(document).ready(function() {
   
     /* Sticky shortcut */ 
-
+    
+	
+	
 	$('#staticNavigationWrapper').waypoint('sticky', {
-	  stuckClass : 'stuckStNav'
- /*   handler : function(direction){
-      var lup = $('.loggedUserPicture');
-      var luw = $('.loggedUserWidget');
-      var luwPos = luw.position();      
-      var lupPos = lup.position(); 
-      if(direction == 'down'){
-        lup.css({
-          "position" : "fixed",
-           top: lupPos.top,
-           right : lupPos.right,  
-          "z-index"  : "14"
-        });
-        lup.animate({
-         duration: 100,
-         top: "15px",
-         easing: "easeOutQuint"
-       });       
-      }else{        
-        lup.animate({
-          duration: 100,
-          top: luwPos.top,
-          right : luwPos.right,          
-          easing: "easeOutQuint"},
-         {complete : function(){
-           lup.css({
-             "position" : "static",
-              top: "auto",
-              left: "auto",  
-              right: "auto"      
-           });
-          }
-        });
+	  stuckClass : 'stuckStNav',
+      handler : function(direction){
+      var lp = $('.loggedUserPicture');
+      var lw = $('.loggedUserWidget');
+      var lpPosRight = ( $(window).width() - $("#content").width() ) / 2;
+      var lpPosInit = lpPosRight + lw.width() ;
+      
+      lp.css({
+    	  "position" : "fixed",
+    	  "right" : lpPosInit + 'px'
+       });
 
-      }     
-    }   */
+      if(direction == 'down'){
+          lp.animate({
+      		right : lpPosRight,
+      		top : 15
+           }, {
+          	 duration: 200,
+          	 easing: "easeOutSine",
+          });
+      }else{
+          lp.animate({
+        		right : lpPosInit,
+        		top : 10
+             }, {
+            	 duration : 200,
+            	 easing : "easeOutSine",
+            	 complete : function(){
+            	      lp.css({
+            	    	  "position" : "static",
+            	    	  "right" : "",
+            	    	  "top" : "",
+            	       }); 
+            	 }
+            });  
+      }
+    }   
 	});
 
 	
