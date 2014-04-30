@@ -154,19 +154,21 @@ $(document).ready(function() {
     	var innerTooltip = tooltip.children('div');
 
     	tooltip.css({
-    		"display" : "block",
-    	     opacity : 1
-        });   			
+    		"display" : "block"
+    	     
+        });
 
-    	tooltip.animate({height:"300px"}, {
-    		duration : 200,
-    		easing: "easeInOutElastic",
+    	tooltip.animate({
+    		height:"300px",
+    		opacity:1
+    	}, {
+    		duration : 175,
+    		easing: "easeInOutQuad",
     		complete : function(){
-               // This is for added functions. In the future. Of mankind.
-    		}
+              // This is for added functions. In the future. Of mankind.
+    		}      
     	});
     	
-
         // Offsets
         
         var iconOffset = tooltip.parent().offset().left + 15;
@@ -192,19 +194,21 @@ $(document).ready(function() {
 
     $("div[class*='wi-dock-static-navi']").mouseleave(function() {
     	var tooltip =  $(this).find("[class*='dock-navi-tt-container']");
-
-    	     	
-    	tooltip.animate({height:"0"}, {
+    	
+//    	tooltip.clearQueue().stop();
+    	
+    	tooltip.clearQueue().finish().animate({
+    		height:"0",
+    		opacity:0
+    	}, {
     		duration : 100,
-    		easing: "easeInOutElastic",
+    		easing: "easeInOutQuad",
     		complete : function(){
             	tooltip.css({
             		"display" : "none",
             	     opacity : 0,
             	    "left" : "0"
-            	     
                 });   			
-    			
     		}
     	});
     });
