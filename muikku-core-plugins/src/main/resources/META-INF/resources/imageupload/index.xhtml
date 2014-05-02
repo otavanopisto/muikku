@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+  <h:outputScript name="scripts/jcrop/jquery.Jcrop.min.js" target="head" />
+  <h:outputStylesheet name="scripts/jcrop/jquery.Jcrop.min.css" target="head" />
+  
+  <ui:define name="content.center.widget">
+  
+  	<img src="http://placecage.com/400/400" id="upload_image" />
+	
+	<script>
+	$(function() {
+		$("#upload_image").Jcrop();
+	})
+	</script>
+  
+  </ui:define>
+
+</ui:composition>
