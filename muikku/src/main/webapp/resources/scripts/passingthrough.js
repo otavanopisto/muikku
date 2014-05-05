@@ -64,11 +64,8 @@ $(document).ready(function() {
     	$('#seeker').val(sval);
     });
 
-    
     // fastlinks and dialogs for dock applications -->
 
-    
-    
     $("a[class*='icon-search']").click(function(){
    
       var sc = $(".wi-dock-search");
@@ -77,96 +74,68 @@ $(document).ready(function() {
       if(visible == "0"){
         sc.css({
           "display" : "block",
-          opacity : 1
+          "opacity" : "1"
           });
-        
-        sc.animate({
+        // Lets start the Ukkonen's Animaception
+        sc.clearQueue().stop().animate({
           "width" : "300px"
-             }, {
-             duration: 100,
-             easing: "easeOutSine"
-               
-          });      
-     }else{
-        sc.animate({
+        }, {
+           duration: 100,
+           easing: "easeOutSine",
+           complete: function(){
+        	   var seeker = $("#seeker");
+        	   seeker.focus();
+        	   seeker.blur(function(){
+        		   sc.clearQueue().stop().animate({width:0},{
+        			   duration : 100,
+        			   easing : "easeInOutQuad",
+        			   complete : function(){
+        				   sc.css({
+        					   "display" : "none",
+        					   "opacity" : "0"
+   	    				});
+   				    }
+   				});
+   			});
+   		}
+        });      
+     } else {
+        sc.clearQueue().stop().animate({
           "width" : "0",
-           }, {
-             duration: 100,
-             easing: "easeOutSine",
-             complete: function() {
+        }, {
+           duration: 100,
+           easing: "easeOutSine",
+           complete: function() {
                sc.css({
                  "display" : "none",
-                  "opacity" : "0"
-                   
-                   });              
-               }
-          });  
+                 "opacity" : "0"
+               });              
+            }
+         });  
       }
     });
     
-    // Search field toggle
-    
-    
-    
-    $(".icon-search").click(function(){
-    	
-    	var sc = $(".wi-dock-search");
-      
-    	sc.css({
-    		"display" : "block",
-    	     opacity : 1
-        });
-    	
-    	sc.animate({width:300},{
-    		duration : 100,
-    		easing : "easeInOutElastic",
-            complete: function(){
-                var seeker = $("#seeker");
-            	
-    			seeker.focus();
-    			seeker.blur(function(){
-    				
-    				sc.animate({width:0},{
-    					duration : 100,
-    					easing : "easeInOutElastic",
-    				    complete : function(){
-    				    	
-    	    				sc.css({
-    	    					"display" : "none",
-    	    					 opacity : 0
-    	    				});
-    				    }
-    				});
-    				
-    			});
-    		}
-    		
-    	});
-
-    });
-    
-    
     // Toooltip 
-    
     
     $("div[class*='wi-dock-static-navi']").mouseenter(function() {
     	var tooltip = $(this).find("[class*='dock-navi-tt-container']");
     	var innerTooltip = tooltip.children('div');
 
     	tooltip.css({
-    		"display" : "block",
-    	     opacity : 1
-        });   			
+    		"display" : "block"
+        });
 
-    	tooltip.animate({height:"300px"}, {
-    		duration : 200,
-    		easing: "easeInOutElastic",
+    	tooltip.animate({
+    		height:"300px",
+    		opacity:1
+    	}, {
+    		duration : 175,
+    		easing: "easeInOutQuad",
     		complete : function(){
-               // This is for added functions. In the future. Of mankind.
-    		}
+              // This is for added functions. In the future. Of mankind.
+    		}      
     	});
     	
-
         // Offsets
         
         var iconOffset = tooltip.parent().offset().left + 15;
@@ -192,19 +161,19 @@ $(document).ready(function() {
 
     $("div[class*='wi-dock-static-navi']").mouseleave(function() {
     	var tooltip =  $(this).find("[class*='dock-navi-tt-container']");
-
-    	     	
-    	tooltip.animate({height:"0"}, {
+    	
+    	tooltip.clearQueue().finish().animate({
+    		height:"0",
+    		opacity:0
+    	}, {
     		duration : 100,
-    		easing: "easeInOutElastic",
+    		easing: "easeInOutQuad",
     		complete : function(){
             	tooltip.css({
             		"display" : "none",
             	     opacity : 0,
             	    "left" : "0"
-            	     
                 });   			
-    			
     		}
     	});
     });
