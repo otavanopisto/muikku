@@ -1,26 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:c="http://java.sun.com/jsp/jstl/core"
-    template="/WEB-INF/templates/default.xhtml">
-  
-  <ui:define name="content.center.widget">
-	<h:outputStylesheet name="scripts/jcrop/jcrop.css" target="head" />
-	<h:outputScript name="scripts/jcrop/jcrop.js" target="head" />
-	<h:outputScript name="scripts/gui/image-dialog.js" target="head" />
-	<form method="post" action="" id="file_upload">
-		<input type="file" name="file" />
-	</form>
-	
-	<script>
-	$(function() {
-		$("#file_upload").imageDialog();
-	});
-	</script>
-  
-  </ui:define>
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                template="/WEB-INF/templates/default.xhtml">
+
+    <ui:define name="content.center.widget">
+        <h:outputStylesheet name="scripts/jcrop/jcrop.css" target="head" />
+        <h:outputStylesheet name="css/imagedialog.css" target="head" />
+        <h:outputScript name="scripts/jcrop/jcrop.js" target="head" />
+        <h:outputScript name="scripts/gui/image-dialog.js" target="head" />
+        <div id="image_dialog"></div>
+
+        <script>
+            $(function() {
+                $("#image_dialog").imageDialog();
+
+                $("#image_dialog").on('imageDialog.okClick', function(evt, data) {
+
+                    var formData = new FormData();
+                    formData.append('file', data.imageData);
+
+                    $.ajax({
+                        type: 'POST',
+                        url: CONTEXTPATH + '/tempFileUploadServlet',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (data) {
+                            alert(JSON.stringify(data));
+                        }
+                    });
+                });
+            });
+        </script>
+
+    </ui:define>
 
 </ui:composition>
