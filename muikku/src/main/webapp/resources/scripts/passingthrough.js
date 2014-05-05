@@ -64,11 +64,8 @@ $(document).ready(function() {
     	$('#seeker').val(sval);
     });
 
-    
     // fastlinks and dialogs for dock applications -->
 
-    
-    
     $("a[class*='icon-search']").click(function(){
    
       var sc = $(".wi-dock-search");
@@ -77,9 +74,9 @@ $(document).ready(function() {
       if(visible == "0"){
         sc.css({
           "display" : "block",
-          opacity : 1
+          "opacity" : "1"
           });
-        // Lest start the Ukkonen's Animaception
+        // Lets start the Ukkonen's Animaception
         sc.clearQueue().stop().animate({
           "width" : "300px"
         }, {
@@ -95,7 +92,7 @@ $(document).ready(function() {
         			   complete : function(){
         				   sc.css({
         					   "display" : "none",
-        					   opacity : 0
+        					   "opacity" : "0"
    	    				});
    				    }
    				});
@@ -103,7 +100,7 @@ $(document).ready(function() {
    		}
         });      
      } else {
-        sc.animate({
+        sc.clearQueue().stop().animate({
           "width" : "0",
         }, {
            duration: 100,
