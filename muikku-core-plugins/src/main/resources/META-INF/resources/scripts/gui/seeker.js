@@ -26,7 +26,7 @@ $.widget("custom.seekerautocomplete", $.ui.autocomplete, {
     renderDustTemplate(item.template, params, function (text) {
       inner_html = $.parseHTML(text);
       listItem.append(inner_html);
-      listItem.appendTo(ul);
+      listItem.appendTo($('.tt-search'));
     });
     
     return listItem;
