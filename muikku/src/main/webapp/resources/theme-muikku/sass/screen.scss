@@ -385,14 +385,6 @@ a.header {
   height:50px;
 }
 
-.seeker {
-  text-align:center;
-  position:relative;
-  top:106px;	
-  @include gradient-top-bottom;
-  @include rounded-top-left; 
-  @include rounded-top-right;
-}
 
 #globalSearchFormIcon {
   height:30px;
