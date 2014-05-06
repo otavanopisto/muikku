@@ -92,7 +92,7 @@ $(document).ready(function() {
         			   complete : function(){
         				   sc.css({
         					   "display" : "none",
-        					   "opacity" : "0"
+        					   "opacity" : "1"
    	    				});
    				    }
    				});
