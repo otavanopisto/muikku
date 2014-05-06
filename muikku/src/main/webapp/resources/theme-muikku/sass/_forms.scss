@@ -117,10 +117,13 @@ width:300px;
 /* Seeker */
 
 #seeker{
-  @extend .co-input-textfield;
-  &:hover {@extend .co-input-textfield-hover;}
-  &:focus {@extend .co-input-textfield-focus;}
+  &:focus {
+    border:1px solid #fff;
+  }
+  padding:11px;
   @include rounded(5px);
+  outline:none;
+  color:#4a4a4a;
 }
 
 /* Calendar */
