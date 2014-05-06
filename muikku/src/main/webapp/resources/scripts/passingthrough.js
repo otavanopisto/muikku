@@ -102,6 +102,7 @@ $(document).ready(function() {
      } else {
         sc.clearQueue().stop().animate({
           "width" : "0",
+          "opacity" : "0"
         }, {
            duration: 100,
            easing: "easeOutSine",

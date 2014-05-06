@@ -177,9 +177,6 @@ div[class*="dock-navi-tt-container"] > div{
   background-repeat:no-repeat;
 }
 
-
-
-
 div[class*="dock-navi-tt-container"] {
 
   h5, p, div, span {
@@ -201,9 +198,11 @@ div[class*="dock-navi-tt-container"] {
   opacity:0;
   width:0;
 	font-size: 1.43em;
-	margin-left: 50px;
+	margin-left: 55px;
+	padding-left:5px;
 	position: absolute;
-	top: 23px;
+	top: 15px;
+	height:70px;
 	width:0;
   overflow:hidden;
 }
@@ -219,7 +218,6 @@ div[class*="dock-navi-tt-container"] {
   #headerContainer {
     position:relative; 
   
-        
     #headerFishContainer {
       position:absolute;
       left:430px;
