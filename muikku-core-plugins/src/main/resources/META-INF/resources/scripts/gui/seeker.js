@@ -1,12 +1,14 @@
 $.widget("custom.seekerautocomplete", $.ui.autocomplete, {
+	
+
   _renderMenu: function(ul, items) {
     var _this = this;
     var currentCategory = "";
-  
+
     $.each(items, function(index, item) {
       if (item.category != currentCategory) {
         if (item.category)
-          ul.append( "<li class='ui-autocomplete-category'>" + item.category + "</li>" );
+         $('#searchResult > ul').append( "<li class='ui-autocomplete-category'>" + item.category + "</li>" );
         currentCategory = item.category;
       }
       _this._renderItemData(ul, item);
@@ -22,11 +24,12 @@ $.widget("custom.seekerautocomplete", $.ui.autocomplete, {
       searchTerm: this.element.val(),
       item: item
     };
-      
+
     renderDustTemplate(item.template, params, function (text) {
       inner_html = $.parseHTML(text);
       listItem.append(inner_html);
-      listItem.appendTo($('.tt-search'));
+      listItem.appendTo($('#searchResults > ul'));
+
     });
     
     return listItem;
@@ -69,14 +72,22 @@ $.widget("custom.seekerautocomplete", $.ui.autocomplete, {
             $(this).val("");
           }
           return false;
-        }
+        },
+        
+        search : function(event, ui){
+      	  $('#searchResults > ul').empty();
+          },
+      	   
+          appendTo : "#searchResults .sk-hideResults",
       });
       
     },
     deinitialize: function () {
     },
     _doSearch: function (searchTerm, response) {
+    	
       // TODO: Doesnt work, causes input delays
+    	
       var _this = this;
       var users = new Array();
 

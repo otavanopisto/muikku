@@ -902,6 +902,15 @@ div[class*="wi-dock-static-navi"] {
   height:30px;
 }
 
+#searchResults{
+  .ui-autocomplete {
+       cursor: default;
+       position:static;
+  }
+
+}
+
+
 .sk-autocomplete-item-container{
 	background-color:#e3e3e3;
 
@@ -928,6 +937,13 @@ div[class*="sk-autocomplete-item"]{
 .sk-autocomplete-item-label{
   margin-left:20px;
 }
+
+.sk-hideResults{
+ with:0;
+ height:0;
+ opacity:0;
+}
+
 
 #filterSelectList {
 	width:100%;

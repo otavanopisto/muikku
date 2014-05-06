@@ -13,8 +13,10 @@ xmlns:h="http://java.sun.com/jsf/html">
 
     <h:outputLink styleClass="icon-search" value="#"/>
     <div class="dock-navi-tt-container-search" style="display: none;">
-      <div class="tt-search">
+      <div id="searchResults" class="tt-search">
         <h5>Haku</h5>
+        <ul class="ui-autocomplete ui-menu ui-widget ui-widget-content ui-corner-all"></ul>
+        <div class="sk-hideResults"></div>
       </div>
     </div>
   <div class="wi-dock-search seeker widget"><input id="seeker" type="text" name="seekerInput" size="30"/></div>  
