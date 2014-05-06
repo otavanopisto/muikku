@@ -92,7 +92,7 @@ $(document).ready(function() {
         			   complete : function(){
         				   sc.css({
         					   "display" : "none",
-        					   "opacity" : "1"
+        					   "opacity" : "0"
    	    				});
    				    }
    				});
@@ -102,6 +102,7 @@ $(document).ready(function() {
      } else {
         sc.clearQueue().stop().animate({
           "width" : "0",
+          "opacity" : "0"
         }, {
            duration: 100,
            easing: "easeOutSine",
