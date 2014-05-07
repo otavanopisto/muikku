@@ -65,56 +65,56 @@ $(document).ready(function() {
     });
 
     // fastlinks and dialogs for dock applications -->
-
+    
     $("a[class*='icon-search']").click(function(){
-   
-      var sc = $(".wi-dock-search");
-      var visible = sc.css("opacity");
 
-      if(visible == 0){
-          sc.css({
-            display: "block",
-          });
-        // Lets start the Ukkonen's Animaception
-        sc.clearQueue().stop().animate({
-        	width: 300,
-            opacity: 1
+    	if ($(".wi-dock-search:hidden").length !== 0) {
+        $(".wi-dock-search")
+        .show()
+        .clearQueue()
+        .stop()
+        .animate({
+          width: '300px',
+          opacity: 1,
+         }, {
+           duration : 100,
+           easing : "easeInOutQuad",
+           complete : function(){
+             $(this).show();
+             $("#seeker").focus();
+             $("#seeker").blur(function(){
+               $(".wi-dock-search")
+               .clearQueue()
+               .stop()
+               .animate({
+                 width: 0,
+                 opacity: 0
+               }, {
+                 duration : 100,
+                 easing : "easeInOutQuad",
+                 complete : function(){
+                   $(this).hide();
+                 }
+               });
+             });
+           }
+         });
+    	} else {
+        $(".wi-dock-search")
+        .css({'display': 'block'})
+        .clearQueue()
+        .stop()
+        .animate({
+          width: '0px',
+          opacity: 0,
         }, {
-           duration: 100,
-           easing: "easeOutSine",
-           complete: function(){
-        	   var seeker = $("#seeker");
-        	   seeker.focus();
-        	   seeker.blur(function(){
-        		   sc.clearQueue().stop().animate({
-        			   width: 0,
-        			   opacity: 0
-        			},{
-        			   duration : 100,
-        			   easing : "easeInOutQuad",
-        			   complete : function(){
-        				   sc.css({
-        					   display: "none"
-   	    				   });
-   				        }
-   				   });
-   			   });
-   			}
-        });      
-     } else {
-         sc.clearQueue().stop().animate({
-           width: 0,
-           opacity: 0
-        }, {
-           duration: 100,
-           easing: "easeOutSine",
-           complete: function() {
-               sc.css({
-                 display: "none"
-               }); 
-            }
-         });  
-      }
+          duration : 100,
+          easing : "easeInOutQuad",
+          complete: function () {
+            $(this).hide();
+          }
+        });
+    	}
     });
     
     // Toooltip 

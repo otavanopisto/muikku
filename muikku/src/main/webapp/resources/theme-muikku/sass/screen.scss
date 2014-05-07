@@ -195,7 +195,6 @@ div[class*="dock-navi-tt-container"] {
 
 .wi-dock-search{
   display:none;
-  opacity:0;
   width:0;
 	font-size: 1.43em;
 	margin-left: 55px;
@@ -203,8 +202,8 @@ div[class*="dock-navi-tt-container"] {
 	position: absolute;
 	top: 15px;
 	height:70px;
-	width:0;
   overflow:hidden;
+  opacity:0;
 }
 
 .widgetSpace {
