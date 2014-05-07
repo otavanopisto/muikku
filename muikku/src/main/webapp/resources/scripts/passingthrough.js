@@ -70,15 +70,15 @@ $(document).ready(function() {
    
       var sc = $(".wi-dock-search");
       var visible = sc.css("opacity");
-      
-      if(visible == "0"){
-        sc.css({
-          "display" : "block",
-          "opacity" : "1"
+
+      if(visible == 0){
+          sc.css({
+            display: "block",
           });
         // Lets start the Ukkonen's Animaception
         sc.clearQueue().stop().animate({
-          "width" : "300px"
+        	width: 300,
+            opacity: 1
         }, {
            duration: 100,
            easing: "easeOutSine",
@@ -86,31 +86,32 @@ $(document).ready(function() {
         	   var seeker = $("#seeker");
         	   seeker.focus();
         	   seeker.blur(function(){
-        		   sc.clearQueue().stop().animate({width:0},{
+        		   sc.clearQueue().stop().animate({
+        			   width: 0,
+        			   opacity: 0
+        			},{
         			   duration : 100,
         			   easing : "easeInOutQuad",
         			   complete : function(){
         				   sc.css({
-        					   "display" : "none",
-        					   "opacity" : "0"
-   	    				});
-   				    }
-   				});
-   			});
-   		}
+        					   display: "none"
+   	    				   });
+   				        }
+   				   });
+   			   });
+   			}
         });      
      } else {
-        sc.clearQueue().stop().animate({
-          "width" : "0",
-          "opacity" : "0"
+         sc.clearQueue().stop().animate({
+           width: 0,
+           opacity: 0
         }, {
            duration: 100,
            easing: "easeOutSine",
            complete: function() {
                sc.css({
-                 "display" : "none",
-                 "opacity" : "0"
-               });              
+                 display: "none"
+               }); 
             }
          });  
       }
