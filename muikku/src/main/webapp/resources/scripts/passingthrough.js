@@ -117,65 +117,69 @@ $(document).ready(function() {
     	}
     });
     
-    // Toooltip 
+    // Tooltip 
     
     $("div[class*='wi-dock-static-navi']").mouseenter(function() {
-    	var tooltip = $(this).find("[class*='dock-navi-tt-container']");
-    	var innerTooltip = tooltip.children('div');
+      var tooltip = $(this).children("[class*='dock-navi-tt-container']");
+      var innerTooltip = tooltip.children('div');
+      
+      tooltip.show();
+      
+      // Offsets
+      
+      var iconOffset = tooltip.parent().offset().left + 15;
+      var tOffset = tooltip.offset().left;
+      var paddingOffset = tOffset + 20;
+                
+      // Sets tooltip's inner elements padding-left same as tooltip's left position 
+      // and sets background-position relative to icons position
+      
+      innerTooltip.css({
+        paddingLeft: paddingOffset + 'px',
+        backgroundPosition: iconOffset + 'px 0px'
+      });
+      
+      // Sets tooltip's width same as view port width 
+      // and left position is adjusted accordingly
+      
+      tooltip.css({
+        width: $(window).width(),
+        left:-tOffset + 'px'
+      });     
+      
+      tooltip
+      .animate({
+      	height: '300px',
+      	opacity: 1
+      }, {
+      	duration : 175,
+      	easing: "easeInOutQuad",
+      	complete : function(){
+          // This is for added functions. In the future. Of mankind.
+      	}      
+      });
 
-    	tooltip.css({
-    		"display" : "block"
-        });
-
-    	tooltip.animate({
-    		height:"300px",
-    		opacity:1
-    	}, {
-    		duration : 175,
-    		easing: "easeInOutQuad",
-    		complete : function(){
-              // This is for added functions. In the future. Of mankind.
-    		}      
-    	});
-    	
-        // Offsets
-        
-        var iconOffset = tooltip.parent().offset().left + 15;
-        var tOffset = tooltip.offset().left;
-        var paddingOffset = tOffset + 20;
-                  
-        // Sets tooltip's inner elements padding-left same as tooltip's left position 
-        // and sets background-position relative to icons position
-        
-        innerTooltip.css({
-          paddingLeft: paddingOffset + 'px',
-          backgroundPosition: iconOffset + 'px 0px'
-        });
-           
-        // Sets tooltip's width same as view port width 
-        // and left position is adjusted accordingly
-        
-        tooltip.css({
-          width: $(window).width(),
-          left:-tOffset + 'px'
-        });      
     });
 
     $("div[class*='wi-dock-static-navi']").mouseleave(function() {
     	var tooltip =  $(this).find("[class*='dock-navi-tt-container']");
     	
-    	tooltip.clearQueue().finish().animate({
-    		height:"0",
-    		opacity:0
+    	tooltip
+    	.clearQueue()
+    	.finish()
+    	.animate({
+    		height: '0px',
+    		opacity: 0
     	}, {
-    		duration : 100,
+    		duration: 100,
     		easing: "easeInOutQuad",
-    		complete : function(){
-            	tooltip.css({
-            		"display" : "none",
-            	     opacity : 0,
-            	    "left" : "0"
-                });   			
+    		complete: function() {
+        	tooltip
+        	.hide()
+        	.css({
+        	  opacity: 0,
+        	  left : '0px'
+          });   			
     		}
     	});
     });
