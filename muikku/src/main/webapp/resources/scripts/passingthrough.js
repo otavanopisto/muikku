@@ -152,7 +152,7 @@ $(document).ready(function() {
       	height: '300px',
       	opacity: 1
       }, {
-      	duration : 175,
+      	duration : 200,
       	easing: "easeInOutQuad",
       	complete : function(){
           // This is for added functions. In the future. Of mankind.
@@ -167,21 +167,12 @@ $(document).ready(function() {
     	tooltip
     	.clearQueue()
     	.finish()
-    	.animate({
-    		height: '0px',
-    		opacity: 0
-    	}, {
-    		duration: 100,
-    		easing: "easeInOutQuad",
-    		complete: function() {
-        	tooltip
-        	.hide()
-        	.css({
-        	  opacity: 0,
-        	  left : '0px'
-          });   			
-    		}
-    	});
+    	.css({
+    	  height: '0px',
+    	  left: '0px',
+    	  opacity: 0
+    	})
+    	.hide();
     });
 });
 
