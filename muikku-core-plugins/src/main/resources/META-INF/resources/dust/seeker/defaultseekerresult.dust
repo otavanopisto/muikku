@@ -1,10 +1,10 @@
 <a>
-  <div class="seeker_autocomplete_item_container"> 
-    <div class="seeker_autocomplete_item_image">
+  <div class="sk-autocomplete-container"> 
+    <div class="sk-autocomplete-item-image">
       {?item.image}
         <img src="{@contextPath/}{item.image}">
       {/item.image}
     </div>
-    <div class="seeker_autocomplete_item_label">{item.label}</div>
+    <div class="sk-autocomplete-item-label">{item.label}</div>
   </div>
 </a>

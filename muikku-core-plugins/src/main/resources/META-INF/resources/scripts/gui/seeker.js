@@ -64,7 +64,7 @@ $.widget("custom.seekerautocomplete", $.ui.autocomplete, {
             }
           });
           
-//          response(_this._doSearch(request.term));
+          response(_this._doSearch(request.term));
         },
         select: function (event, ui) {
           if (ui.item.link) {
