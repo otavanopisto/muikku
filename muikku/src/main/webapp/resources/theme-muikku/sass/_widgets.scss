@@ -3,7 +3,7 @@
 
 /* General styles with selectors */
 
-div[class*='dock-static-navi-button'] a, div[class*='icon-dynamic-navi'] {
+div[class*='dock-static-navi-button'] > a, div[class*='icon-dynamic-navi'] {
   font-size:30pt;
   color:#fff;
   text-decoration:none;
@@ -914,20 +914,15 @@ div[class*="wi-dock-static-navi"] {
 
 .sk-autocomplete-item-container{
 	background-color:#e3e3e3;
-
 	padding:10px;
 }
 
 div[class*="sk-autocomplete-item"]{
-	font-size:0.5em;
+
 }
 
 .sk-autocomplete-item-image{
 
-}
-
-.sk-autocomplete-item-label{
-  
 }
 
 .sk-autocomplete-item-link{
@@ -937,6 +932,7 @@ div[class*="sk-autocomplete-item"]{
 
 .sk-autocomplete-item-label{
   margin-left:20px;
+    font-size:1em;
 }
 
 .sk-hideResults{
