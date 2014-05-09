@@ -1,8 +1,8 @@
 (function() {
   'use strict';
-  
+
   function flipAndRotateImage(data, degrees, flip, callback) {
-    $('<img>')  
+    $('<img>')
       .css('visibility', 'hidden')
       .attr('src', data)
       .load(function () {
@@ -12,11 +12,11 @@
               'width': $(this).width(),
               'height': $(this).height()
             }).get(0);
-          
+
           var image = $(this).get(0);
           var tmpContext = tmpCanvas.getContext('2d');
           tmpContext.drawImage(image, 0, 0);
-          
+
           if (degrees != 0) {
             tmpContext.save();
             tmpContext.translate(tmpCanvas.width >> 1, tmpCanvas.height >> 1);
@@ -24,7 +24,7 @@
             tmpContext.drawImage(tmpCanvas, -image.width >> 1,-image.width >> 1);
             tmpContext.restore();
           }
-          
+
           if (flip) {
             tmpContext.save();
             if (flip == 'VERTICAL') {
@@ -37,7 +37,7 @@
             tmpContext.drawImage(tmpCanvas, 0, 0);
             tmpContext.restore();
           };
-  
+
           callback(tmpCanvas.toDataURL('image/png'));
         } catch (e) {
           callback(data);
@@ -52,14 +52,14 @@
       okButtonText: 'Ok',
       cancelButtonText: 'Cancel',
       uploadHintText: 'Change image by clicking here or by dragging image file into this box',
-      imageWidth: 128,
+      imageWidth: 192,
       imageHeight: 128
     },
     _create : function() {
       if (!window.FileReader) {
         alert('Your browser does not support FileReader');
       }
-      
+
       $('<div>')
         .addClass('image-dialog-upload-field-container')
         .append(
@@ -77,23 +77,27 @@
             .text(this.options.uploadHintText)
         )
         .appendTo(this.element);
-      
+
       $('<div>')
         .addClass('image-dialog-preview-container')
         .append($('<canvas>').addClass('image-dialog-preview'))
         .appendTo(this.element);
-      
+
       $('<div>')
         .addClass('image-dialog-image-container')
         .append(
           $('<img>')
             .load($.proxy(this._onImageLoad, this))
             .addClass('image-dialog-image')
-        )
+         )
+         .append(
+           $('<div>')
+           .addClass('image-dialog-zoom')
+         )
         .appendTo(this.element);
-      
+
       this._jCropApi = null;
-        
+
       this.element.dialog({
         modal: true,
         width: 660,
@@ -110,16 +114,20 @@
           }
         }, {
           'text': this.options.cancelButtonText,
-          'click': function(event) { 
+          'click': function(event) {
             $(this).dialog("close");
           }
         }]
       });
     },
-    
+
     _onImageLoad: function (event) {
       var imageElement = $(event.target);
-      
+
+      if (this._jCropApi) {
+        this._jCropApi.destroy();
+      }
+
       var originalWidth = $(imageElement).width();
       var originalHeight = $(imageElement).height();
       var xRatio = originalWidth / this.element.find('.image-dialog-image-container').width();
@@ -127,11 +135,7 @@
       var ratio = xRatio > yRatio ? xRatio : yRatio;
       var newWidth = originalWidth / ratio;
       var newHeight = originalHeight / ratio;
-      
-      if (this._jCropApi) {
-        this._jCropApi.destroy();
-      }
-      
+
       var _this = this;
       $(imageElement)
         .attr({
@@ -140,7 +144,6 @@
           'data-ratio': ratio
         })
         .Jcrop({
-          aspectRatio: 1,
           setSelect: [0, 0, this.options.imageWidth, this.options.imageHeight],
           minSize: [1, 1],
           onChange: $.proxy(this._onCropChange, this),
@@ -152,14 +155,16 @@
           _this._jCropApi = this;
           _this.element.find('.image-dialog-image-container').removeClass('image-dialog-image-loading');
         });
+
+        this.element.find('.image-dialog-zoom').html((1.0/ratio).toFixed(2) + "x");
     },
-    
+
     _onUploadFieldChange: function (event) {
       var files = event.target.files;
       if (files.length == 1) {
         var file = files[0];
         if (file.type.match('image.*')) {
-          this.element.find('.image-dialog-image-container').addClass('image-dialog-image-loading');    
+          this.element.find('.image-dialog-image-container').addClass('image-dialog-image-loading');
           setTimeout($.proxy(function () {
             var reader = new FileReader();
             reader.onload = $.proxy(this._onFileReaderLoad, this);
@@ -168,7 +173,7 @@
         }
       };
     },
-    
+
     _onFileReaderLoad: function (event) {
       var fileReader = event.target;
       var src = fileReader.result;
@@ -180,11 +185,11 @@
         try {
           var dataIndex = src.indexOf('base64,');
           var dataStr = src.substring(dataIndex + 7);
-          data = atob(dataStr);        
+          data = atob(dataStr);
           var exifdata = EXIF.readFromBinaryFile(new BinaryFile(data));
           switch (EXIF.getTag({exifdata: exifdata}, "Orientation")) {
             case 2:
-              flip = 'HORIZONTAL'; 
+              flip = 'HORIZONTAL';
             break;
             case 3:
               rotate = 180;
@@ -207,41 +212,58 @@
               rotate = -90;
             break;
           }
-          
+
         } catch (e) {
         }
       }
-      
+
       this.element.find('.image-dialog-image')
         .removeAttr('width')
-        .removeAttr('height');    
-      
+        .removeAttr('height');
+
       if (data && ((rotate != 0) || flip)) {
         flipAndRotateImage(src, rotate, flip, $.proxy(function (dataUrl) {
           this.element.find('.image-dialog-image').attr('src', dataUrl);
-        }, this)); 
+        }, this));
       } else {
         this.element.find('.image-dialog-image').attr('src', src);
       }
     },
-    
+
     _onCropChange: function(coords) {
       if (coords.w > 0 && coords.h > 0) {
         var previewCanvas = this.element.find('.image-dialog-preview');
-        var canvasHeight = previewCanvas.height();
-        var canvasWidth = previewCanvas.width();
+        var maxWidth = this.element.find('.image-dialog-preview-container').width();
+        var maxHeight = this.element.find('.image-dialog-preview-container').height();
+        var canvasWidth;
+        var canvasHeight;
+        if (coords.w > coords.h) {
+        	canvasWidth = maxWidth;
+        	canvasHeight = maxWidth * (coords.h / coords.w);
+        } else {
+        	canvasHeight = maxHeight;
+        	canvasWidth = maxWidth * (coords.w / coords.h);
+        }
         var ratio = this.element.find('.image-dialog-image').data('ratio');
-        
+
         previewCanvas.attr({
           width: canvasWidth,
-          height: canvasHeight,
+          height: canvasHeight
         });
-        
+
         var previewContext = previewCanvas.get(0).getContext('2d');
-        previewContext.drawImage(this.element.find('.image-dialog-image').get(0), coords.x * ratio, coords.y * ratio, coords.w * ratio, coords.h * ratio, 0, 0, canvasHeight, canvasWidth);
+        previewContext.drawImage(this.element.find('.image-dialog-image').get(0),
+                                 coords.x * ratio,
+                                 coords.y * ratio,
+                                 coords.w * ratio,
+                                 coords.h * ratio,
+                                 0,
+                                 0,
+                                 canvasWidth,
+                                 canvasHeight);
       }
     },
-    
+
     _destroy : function() {
     }
   });

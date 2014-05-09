@@ -1,8 +1,6 @@
 .image-dialog-upload-field-container {
     border: 2px dashed #aaa;
-    width: 128px;
-    height: 128px;
-    position: relative;
+    height: 64px;
     text-align: center;
 }
 
@@ -19,33 +17,51 @@
 
 .image-dialog-upload-field-hint {
     display: table-cell;
-    height: 120px;
+    height: 64px;
     padding: 4px;
     vertical-align: middle;
 }
 
 .image-dialog-preview-container {
+    position: relative;
     border: 1px solid #666;
-    width: 128px;
+    width: 360px;
+    height: 360px;
+    display: block;
     padding: 1px;
-    margin-top: 4px;
-    line-height: 0px;
+    margin-top: 8px;
+    margin-left: auto;
+    margin-right: auto;
+    overflow: visible;
+    resize: both;
 }
 
 .image-dialog-preview {
-    width: 128px;
-    height: 128px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    -webkit-transform: translate(-50%, -50%);
 }
 
 .image-dialog-image-container {
-    position: absolute;
     top: 6px;
-    margin-left: 138px;
     height: 268px;
-    width: 500px;
+    width: 640px;
+    margin-top: 8px;
     background: #aaa;
     overflow: hidden;
     text-align: center;
+    position: relative;
+}
+
+.image-dialog-zoom {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    color: #000;
+    background-color: #fff;
+    z-index: 1000;
 }
 
 .image-dialog-image-loading {
