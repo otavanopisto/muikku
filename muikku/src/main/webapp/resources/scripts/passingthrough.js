@@ -71,7 +71,10 @@ $(document).ready(function() {
     // fastlinks and dialogs for dock applications -->
     
     $("a[class*='icon-search']").click(function(){
-
+      if ($("#seeker").data('blurring') == 'true') {
+        return
+      };
+      
     	if ($(".wi-dock-search:hidden").length !== 0) {
         $(".wi-dock-search")
         .show()
@@ -87,6 +90,7 @@ $(document).ready(function() {
              $(this).show();
              $("#seeker").focus();
              $("#seeker").blur(function(){
+               $("#seeker").data('blurring', 'true');
                $(".wi-dock-search")
                .clearQueue()
                .stop()
@@ -97,6 +101,7 @@ $(document).ready(function() {
                  duration : 100,
                  easing : "easeInOutQuad",
                  complete : function(){
+                   $("#seeker").data('blurring', 'false');
                    $(this).hide();
                  }
                });
@@ -105,7 +110,6 @@ $(document).ready(function() {
          });
     	} else {
         $(".wi-dock-search")
-//        .css({'display': 'block'})
         .show()
         .clearQueue()
         .stop()
