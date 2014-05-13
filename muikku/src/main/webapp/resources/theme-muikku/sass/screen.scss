@@ -292,7 +292,7 @@ a.header {
 #dynamicNaviButton {
 }
 
-.wi-dock-dynami-navi-contentBgr{
+.wi-dock-dynami-navi-contentBgr {
  position:absolute;
  top:72px;
  left:0;
@@ -304,15 +304,20 @@ a.header {
 }
 
 #dynamicNaviContainer {
-  padding:10px;
   opacity:0;
   margin-left:-300px;
   z-index:15;
 } 
 
-#dynamicNaviContainer div {
+#dynamicNaviContainer {
+  div {
+    padding:15px;
+  }
 
-  padding:5px;
+  .wi-dock-dynami-navi-contentBgr {
+    padding:0;
+  }
+
 }
 
 #staticNavigationWrapper {

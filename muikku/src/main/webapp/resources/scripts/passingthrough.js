@@ -2,41 +2,45 @@ $(document).ready(function() {
 
 	// Dynamic navigation
 	
-	var ht = $(window).height();
-	var bgr = $('.wi-dock-dynami-navi-contentBgr');
-	bgr.height(ht);
-	
-	$(window).resize(function(){
-		bgr.height($(window).height());
-        
+  if ($('.wi-dock-dynami-navi-contentBgr').length > 0) {
+    // ToDo: Calculate naviContainer height based on scroll event's scrollTop value
+    var height = $(window).height();
+    var naviContent = $('.wi-dock-dynami-navi-contentBgr');
+    var tOffset = naviContent.offset();
+    naviContent.height(height - tOffset.top);
+
+    $(window).resize(function(){
+      height = $(window).height();
+      naviContent.height(height - tOffset.top);
     });
+  }
+
+	$('#dynamicNaviContainer').hide();
     	  
-    $( "#dynamicNaviButton" ).click(function() {
-    	var container = $('#dynamicNaviContainer');
-        if (container.css("opacity") == "0"){
-        	container.css({
-        		"display" : "block"
-            });
-            container.animate({
-            	"margin-left" : "0",
-                opacity : 1
-            }, 100, "easeOutSine");    
-            
-            } else {
-              container.animate({
-            		"margin-left" : "-300px",
-            		opacity : 0
-                 }, {
-                	 duration: 100,
-                	 easing: "easeOutSine",
-                	 complete: function() {
-                	   container.css({
-                			 "display" : "none"
-                         });              
-                     }
-                });
-            }
+	$("a[class*='icon-dynamic-navi']").click(function() {
+    var container = $('#dynamicNaviContainer');
+      if ($('#dynamicNaviContainer:hidden').length !== 0) {
+      container
+      .show()
+      .animate({
+        "margin-left" : "0",
+        opacity : 1
+      }, 100, "easeOutSine");
+
+    } else {
+      container
+      .animate({
+        "margin-left" : "-300px",
+        opacity : 0
+      }, {
+        duration : 100,
+        easing : "easeOutSine",
+        complete : function() {
+          container.hide();
+        }
       });
+    }
+  });
 
     // Widget settings tool area -->
 	$( "div[class*='wi-frontpage']" ).mouseenter(function() {
@@ -101,7 +105,8 @@ $(document).ready(function() {
          });
     	} else {
         $(".wi-dock-search")
-        .css({'display': 'block'})
+//        .css({'display': 'block'})
+        .show()
         .clearQueue()
         .stop()
         .animate({
