@@ -1,12 +1,16 @@
 <a>
   <div class="sk-autocomplete-container"> 
-    <div class="sk-autocomplete-item-image">
+
     <!-- 
+    <div class="sk-autocomplete-item-image">
+
       {?item.image}
         <img src="{@contextPath/}{item.image}">
       {/item.image}
-     -->
+    
     </div>
+ -->
+
     <div class="sk-autocomplete-item-label">{item.label}</div>
   </div>
 </a>

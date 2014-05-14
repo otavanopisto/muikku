@@ -26,7 +26,7 @@ public class CoursePickerSeekerResultProvider implements SeekerResultProvider {
     String searchTerms = localeController.getText(sessionController.getLocale(), "plugin.coursepicker.seekersearchterms").toLowerCase();
     
     if (searchTerms.contains(searchTerm.toLowerCase()))
-      result.add(new DefaultSeekerResultImpl(localeController.getText(sessionController.getLocale(), "plugin.coursepicker.coursepicker"), 
+      result.add(new CoursePickerSeekerResult(localeController.getText(sessionController.getLocale(), "plugin.coursepicker.coursepicker"), 
           null, "/coursepicker/coursepicker.jsf", null));
     
     return result; 
