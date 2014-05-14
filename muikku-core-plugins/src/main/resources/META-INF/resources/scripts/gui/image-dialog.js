@@ -52,7 +52,7 @@
       okButtonText: 'Ok',
       cancelButtonText: 'Cancel',
       uploadHintText: 'Change image by clicking here or by dragging image file into this box',
-      imageMaxSize: 200
+      imageMaxSize: 512
     },
     _create : function() {
       if (!window.FileReader) {
@@ -178,7 +178,7 @@
             originalWidth,
             originalHeight);
 
-      cropInitialSize *= scaleFactor;
+      cropInitialSize = (0.9*cropInitialSize*scaleFactor)/ratio;
 
       var jCropOptions = {
           minSize: [1, 1],
@@ -195,16 +195,15 @@
       } else {
           jCropOptions['setSelect'] =
                   [0, 0, cropInitialSize*aspect, cropInitialSize];
+
           jCropOptions['aspectRatio'] = aspect;
       }
 
       var _this = this;
       $(imageElement)
         .data('ratio', ratio)
-        .attr('width', newWidth)
-        .width(newWidth)
-        .attr('height', newHeight)
-        .height(newHeight)
+        .css('width', newWidth)
+        .css('height', newHeight)
         .Jcrop(jCropOptions, function () {
           _this._jCropApi = this;
           _this.element.find('.image-dialog-image-container').removeClass('image-dialog-image-loading');
@@ -317,10 +316,11 @@
 
     _onCropChange: function(coords) {
       if (coords.w > 0 && coords.h > 0) {
+        var fullImage = this.element.find('.image-dialog-image');
         var previewCanvas = this.element.find('.image-dialog-preview');
         var maxWidth = this.element.find('.image-dialog-preview-container').width();
         var maxHeight = this.element.find('.image-dialog-preview-container').height();
-        var ratio = this.element.find('.image-dialog-image').data('ratio');
+        var ratio = fullImage.data('ratio');
 
         var canvasWidth = coords.w * ratio;
         var canvasHeight = coords.h * ratio;
@@ -346,6 +346,9 @@
         finalWidth *= scaleFactor;
         finalHeight *= scaleFactor;
 
+        finalWidth = finalWidth | 0;
+        finalHeight = finalHeight | 0;
+
         previewCanvas.attr({
           width: finalWidth,
           height: finalHeight
@@ -357,12 +360,24 @@
 
         this._refreshPreviewInfo();
 
+        var left = (coords.x * ratio) | 0;
+        var top = (coords.y * ratio) | 0;
+        var right = (coords.x2 * ratio) | 0;
+        var bottom = (coords.y2 * ratio) | 0;
+        var fullWidth = fullImage.get(0).naturalWidth;
+        var fullHeight = fullImage.get(0).naturalHeight;
+
+        left = left < 0 ? 0 : left;
+        right = fullWidth < right ? fullWidth : right;
+        top  = top < 0 ? 0 : top;
+        bottom = fullHeight < bottom ? fullHeight : bottom;
+
         var previewContext = previewCanvas.get(0).getContext('2d');
         previewContext.drawImage(this.element.find('.image-dialog-image').get(0),
-                                 coords.x * ratio,
-                                 coords.y * ratio,
-                                 coords.w * ratio,
-                                 coords.h * ratio,
+                                 left,
+                                 top,
+                                 right - left,
+                                 bottom - top,
                                  0,
                                  0,
                                  finalWidth,
