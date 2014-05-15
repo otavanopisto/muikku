@@ -1,0 +1,5 @@
+<a>
+  <div class="sk-autocomplete-container"> 
+    <div class="sk-autocomplete-item-label icon-books">{item.label}</div>
+  </div>
+</a>
