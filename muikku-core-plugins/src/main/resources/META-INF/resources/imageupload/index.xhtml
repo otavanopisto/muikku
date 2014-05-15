@@ -17,7 +17,10 @@
 
         <script>
             $(function() {
-                $("#image_dialog").imageDialog({imageMinSize:512});
+                $("#image_dialog").imageDialog({
+                    imageMinSize:512,
+                    cropMinDimensions: [128, 128]
+                });
 
                 $("#image_dialog").on('imageDialog.okClick', function(evt, data) {
 

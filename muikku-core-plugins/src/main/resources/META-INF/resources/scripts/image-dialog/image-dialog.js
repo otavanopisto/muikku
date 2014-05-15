@@ -59,8 +59,15 @@
       imageMaxSize: 512,
       /** Images with either width or height smaller than this will be
        * enlarged to fit.
+       *
+       * WARNING: if you use this with 'free' aspect ratio, remember to
+       * set the cropMinDimensions properly! Otherwise the user can
+       * crop very narrow strips that will be resized to large images.
        */
       imageMinSize: 0,
+      /** The minimum crop dimensions, as a 2-element array.
+       */
+      cropMinDimensions: [1, 1],
       /** Entries for the aspect ratio chooser. If there's only one entry,
        * the chooser is not shown.
        */
@@ -109,11 +116,7 @@
 
       $('<div>')
             .addClass('image-dialog-info-container')
-            .appendTo(this.element);
-
-      if (this.options.aspectRatios.length !== 1) {
-          this.element.find('.image-dialog-info-container')
-              .append(
+            .append(
                     $('<select>')
                     .addClass('image-dialog-aspect')
                     .append(
@@ -126,7 +129,11 @@
                         })
                     )
                     .on('change', $.proxy(this._onAspectChange, this))
-            );
+            )
+            .appendTo(this.element);
+
+      if (this.options.aspectRatios.length === 1) {
+          this.element.find('.image-dialog-aspect').hide();
       }
 
       $('<div>')
@@ -212,7 +219,7 @@
       cropInitialSize = (0.9*cropInitialSize*scaleFactor)/ratio;
 
       var jCropOptions = {
-          minSize: [1, 1],
+          minSize: this.options.cropMinDimensions,
           onChange: $.proxy(this._onCropChange, this),
           onSelect: $.proxy(this._onCropChange, this),
           allowSelect: true,
