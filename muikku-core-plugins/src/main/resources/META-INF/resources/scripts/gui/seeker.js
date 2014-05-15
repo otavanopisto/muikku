@@ -64,7 +64,7 @@ $.widget("custom.seekerautocomplete", $.ui.autocomplete, {
             }
           });
           
-          response(_this._doSearch(request.term));
+
         },
         select: function (event, ui) {
           if (ui.item.link) {
@@ -87,23 +87,6 @@ $.widget("custom.seekerautocomplete", $.ui.autocomplete, {
       
     },
     deinitialize: function () {
-    },
-    _doSearch: function (searchTerm, response) {
-    	
-      // TODO: Doesnt work, causes input delays
-    	
-      var _this = this;
-      var users = new Array();
-
-      RESTful.doGet(CONTEXTPATH + "/rest/seeker/search", {
-        parameters: {
-          'searchString': searchTerm
-        }
-      }).success(function (data, textStatus, jqXHR) {
-        users = data;
-      });
-
-      return users;
     }
   });
   

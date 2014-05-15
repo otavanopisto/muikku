@@ -36,6 +36,8 @@
   float:right;
 }
 
+
+
 .icon-move:before {
   content: "\e600";
 }
@@ -79,7 +81,7 @@
   content: "\e60d";
 }
 .icon-home:before {
-  content: "\e60e"; 
+  content: "\e60e";
 }
 .icon-signout:before {
   content: "\e60f";
@@ -87,10 +89,10 @@
 .icon-signin:before {
   content: "\e610";
 }
-.icon-thumbs-up:before {
+.icon-thumb-up:before {
   content: "\e611";
 }
-.icon-thumbs-down:before {
+.icon-thumb-down:before {
   content: "\e612";
 }
 .icon-reorder:before {
@@ -111,6 +113,15 @@
 .icon-arrow-left:before {
   content: "\e618";
 }
-.icon-uniE601:before {
+.icon-arrow-right:before {
   content: "\e619";
+}
+.icon-book:before {
+  content: "\e61a";
+}
+.icon-profile:before {
+  content: "\e61b";
+}
+.icon-user:before {
+  content: "\e61c";
 }
