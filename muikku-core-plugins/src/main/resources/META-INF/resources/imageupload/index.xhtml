@@ -9,15 +9,15 @@
 
     <ui:define name="content.center.widget">
         <h:outputStylesheet name="scripts/jcrop/jcrop.css" target="head" />
-        <h:outputStylesheet name="css/imagedialog.css" target="head" />
+        <h:outputStylesheet name="scripts/image-dialog/image-dialog.css" target="head" />
         <h:outputScript name="scripts/jcrop/jcrop.js" target="head" />
-        <h:outputScript name="scripts/gui/image-dialog.js" target="head" />
+        <h:outputScript name="scripts/image-dialog/image-dialog.js" target="head" />
 
         <div id="image_dialog"></div>
 
         <script>
             $(function() {
-                $("#image_dialog").imageDialog();
+                $("#image_dialog").imageDialog({imageMinSize:512});
 
                 $("#image_dialog").on('imageDialog.okClick', function(evt, data) {
 

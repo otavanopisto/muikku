@@ -51,8 +51,38 @@
     options : {
       okButtonText: 'Ok',
       cancelButtonText: 'Cancel',
+      /** The text shown inside the upload box/drop target. */
       uploadHintText: 'Change image by clicking here or by dragging image file into this box',
-      imageMaxSize: 512
+      /** Images with either width or height larger than this will be
+       * shrunk to fit.
+       */
+      imageMaxSize: 512,
+      /** Images with either width or height smaller than this will be
+       * enlarged to fit.
+       */
+      imageMinSize: 0,
+      /** Entries for the aspect ratio chooser. If there's only one entry,
+       * the chooser is not shown.
+       */
+      aspectRatios: [
+          {'text': "1:1",
+           'ratio': 1},
+          {'text': "3:2",
+           'ratio': 1.5},
+          {'text': "2:3",
+           'ratio': 0.75},
+          {'text': "1:&radic;2",
+           'ratio': 0.707107},
+          {'text': "&radic;2:1",
+           'ratio': 1.707107},
+          {'text': "Free",
+           'ratio': "free"}
+      ],
+      /** The contents of the image (in base64 form) will be inserted
+       * into this element after the user clicks OK. Can be a selector,
+       * a DOM element or a jQuery object.
+       */
+      formField: null
     },
     _create : function() {
       if (!window.FileReader) {
@@ -78,33 +108,26 @@
         .appendTo(this.element);
 
       $('<div>')
-              .addClass('image-dialog-info-container')
+            .addClass('image-dialog-info-container')
+            .appendTo(this.element);
+
+      if (this.options.aspectRatios.length !== 1) {
+          this.element.find('.image-dialog-info-container')
               .append(
                     $('<select>')
                     .addClass('image-dialog-aspect')
                     .append(
-                        $('<option>')
-                        .val('1.0')
-                        .html('1:1'),
-                        $('<option>')
-                        .val('1.5')
-                        .html('3:2'),
-                        $('<option>')
-                        .val('0.75')
-                        .html('2:3'),
-                        $('<option>')
-                        .val('0.707107')
-                        .html('1:&radic;2'),
-                        $('<option>')
-                        .val('1.707107')
-                        .html('&radic;2:1'),
-                        $('<option>')
-                        .val('NaN')
-                        .html('Free')
+                        $.map(this.options.aspectRatios, function(aspectRatio) {
+                            return $('<option>')
+                            .val(aspectRatio.ratio === "free"
+                                 ? Number.NaN
+                                 : aspectRatio.ratio)
+                            .html(aspectRatio.text);
+                        })
                     )
                     .on('change', $.proxy(this._onAspectChange, this))
-            )
-            .appendTo(this.element);
+            );
+      }
 
       $('<div>')
         .addClass('image-dialog-preview-container')
@@ -127,6 +150,7 @@
 
       this._jCropApi = null;
 
+      var _this = this;
       this.element.dialog({
         modal: true,
         width: 660,
@@ -136,6 +160,9 @@
             $(this).dialog("close");
             var contentType = 'image/png';
             var imageData = $(this).find('.image-dialog-preview').get(0).toDataURL(contentType);
+            if (_this.options.formField !== null) {
+                $(_this.options.formField).val(imageData);
+            }
             $(this).trigger(jQuery.Event("imageDialog.okClick"), {
               contentType: contentType,
               imageData: imageData
@@ -161,6 +188,8 @@
       var invRatio = this._calculateScaleFactor(
               originalWidth,
               originalHeight,
+              0,
+              0,
               container.width(),
               container.height());
       var ratio = 1/invRatio;
@@ -175,6 +204,8 @@
       var scaleFactor = this._calculateScaleFactor(
             cropInitialSize,
             cropInitialSize,
+            0,
+            0,
             originalWidth,
             originalHeight);
 
@@ -202,8 +233,10 @@
       var _this = this;
       $(imageElement)
         .data('ratio', ratio)
-        .css('width', newWidth)
-        .css('height', newHeight)
+        .css('width', newWidth|0)
+        .css('height', newHeight|0)
+        .attr('width', newWidth|0)
+        .attr('height', newHeight|0)
         .Jcrop(jCropOptions, function () {
           _this._jCropApi = this;
           _this.element.find('.image-dialog-image-container').removeClass('image-dialog-image-loading');
@@ -298,20 +331,33 @@
       }
     },
 
-    _calculateScaleFactor: function(width, height, maxWidth, maxHeight) {
-        var xScaleFactor = 1;
-        var yScaleFactor = 1;
+    _calculateScaleFactor: function(width,
+                                    height,
+                                    minWidth,
+                                    minHeight,
+                                    maxWidth,
+                                    maxHeight) {
+        var scaleFactors = [];
 
+        if (width < minWidth) {
+            scaleFactors.push(minWidth/width);
+        }
+        if (height < minHeight) {
+            scaleFactors.push(minHeight/height);
+        }
         if (width > maxWidth) {
-            xScaleFactor = maxWidth/width;
+            scaleFactors.push(maxWidth/width);
         }
         if (height > maxHeight) {
-            yScaleFactor = maxHeight/height;
+            scaleFactors.push(maxHeight/height);
         }
 
-        return xScaleFactor < yScaleFactor
-                          ? xScaleFactor
-                          : yScaleFactor;
+        if (scaleFactors.length === 0) {
+            return 1;
+        } else {
+            scaleFactors.sort();
+            return scaleFactors[0];
+        }
     },
 
     _onCropChange: function(coords) {
@@ -324,7 +370,9 @@
 
         var canvasWidth = coords.w * ratio;
         var canvasHeight = coords.h * ratio;
-        if (canvasWidth > maxWidth || canvasHeight > maxHeight) {
+        if (this.options.imageMinSize > 0
+            || canvasWidth > maxWidth
+            || canvasHeight > maxHeight) {
             if (coords.w > coords.h) {
                 canvasWidth = maxWidth;
                 canvasHeight = maxWidth * (coords.h / coords.w);
@@ -340,6 +388,8 @@
         var scaleFactor = this._calculateScaleFactor(
                 finalWidth,
                 finalHeight,
+                this.options.imageMinSize,
+                this.options.imageMinSize,
                 this.options.imageMaxSize,
                 this.options.imageMaxSize);
 

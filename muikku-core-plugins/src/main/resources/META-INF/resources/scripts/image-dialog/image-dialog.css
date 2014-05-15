@@ -60,6 +60,10 @@
     z-index: 1000;
 }
 
+.image-dialog-image {
+    display: inline-block;
+}
+
 .image-dialog-image-container {
     top: 6px;
     height: 400px;
