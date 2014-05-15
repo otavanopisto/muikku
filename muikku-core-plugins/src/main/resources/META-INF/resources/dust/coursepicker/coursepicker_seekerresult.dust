@@ -1,5 +1,5 @@
-<div class="sk-autocomplete-item-container">
-  <div class="sk-autocomplete-item">
-    Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+<a>
+  <div class="sk-autocomplete-container"> 
+    <div class="sk-autocomplete-item-label icon-books">{item.label}</div>
   </div>
-</div>
+</a>
