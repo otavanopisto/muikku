@@ -85,8 +85,8 @@
           {'text': "Free",
            'ratio': "free"}
       ],
-      /** The contents of the image (in base64 form) will be inserted
-       * into this element after the user clicks OK. Can be a selector,
+      /** The contents of the image (as a "data:" URL) will be inserted
+       * into this form field after the user clicks OK. Can be a selector,
        * a DOM element or a jQuery object.
        */
       formField: null

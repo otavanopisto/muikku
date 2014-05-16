@@ -15,28 +15,14 @@
 
         <div id="image_dialog"></div>
 
+        <form>
+            <input id="url" type="textarea" rows="25" cols="25" />
+        </form>
+
         <script>
             $(function() {
                 $("#image_dialog").imageDialog({
-                    imageMinSize:512,
-                    cropMinDimensions: [128, 128]
-                });
-
-                $("#image_dialog").on('imageDialog.okClick', function(evt, data) {
-
-                    var formData = new FormData();
-                    formData.append('file', data.imageData);
-
-                    $.ajax({
-                        type: 'POST',
-                        url: CONTEXTPATH + '/tempFileUploadServlet',
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        success: function (data) {
-                            alert(JSON.stringify(data));
-                        }
-                    });
+                    formField: "#url"
                 });
             });
         </script>
