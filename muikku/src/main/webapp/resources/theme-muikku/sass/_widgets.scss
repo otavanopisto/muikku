@@ -3,7 +3,8 @@
 
 /* General styles with selectors */
 
-div[class*='dock-static-navi-button'] a, div[class*='icon-dynamic-navi'] {
+div[class*='dock-static-navi-button'] > a, 
+div[class*='dock-dynamic-navi-button'] > a {
   font-size:30pt;
   color:#fff;
   text-decoration:none;
@@ -902,16 +903,45 @@ div[class*="wi-dock-static-navi"] {
   height:30px;
 }
 
-.sk-autocomplete-item-container{
-	background-color:#e3e3e3;
-	font-size:1.05em;
-	padding:10px;
-	@include shadow();
+#searchResults{
+  .ui-autocomplete {
+       cursor: default;
+       position:static;
+  }
+  
+
 }
 
-.sk-autocomplete-item{
-  margin-left:20px;
+
+.sk-autocomplete-item-container{
+	background-color:#e3e3e3;
+	padding:10px;
 }
+
+div[class*="sk-autocomplete-item"]{
+
+}
+
+.sk-autocomplete-item-image{
+
+}
+
+.sk-autocomplete-item-link{
+  text-decoration:none;
+}
+
+
+.sk-autocomplete-item-label{
+  margin-left:20px;
+    font-size:1em;
+}
+
+.sk-hideResults{
+ with:0;
+ height:0;
+ opacity:0;
+}
+
 
 #filterSelectList {
 	width:100%;

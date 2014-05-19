@@ -1,4 +1,5 @@
 /* Lets import all the necessary support files */
+
 @import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
 @import "_commons.scss";
 @import "_forms.scss";
@@ -11,7 +12,6 @@
 html {
   height: 100%;
 }
-
 
 body {
   margin: 0;
@@ -177,9 +177,6 @@ div[class*="dock-navi-tt-container"] > div{
   background-repeat:no-repeat;
 }
 
-
-
-
 div[class*="dock-navi-tt-container"] {
 
   h5, p, div, span {
@@ -198,14 +195,15 @@ div[class*="dock-navi-tt-container"] {
 
 .wi-dock-search{
   display:none;
-  opacity:0;
   width:0;
 	font-size: 1.43em;
-	margin-left: 50px;
+	margin-left: 55px;
+	padding-left:5px;
 	position: absolute;
-	top: 23px;
-	width:0;
+	top: 15px;
+	height:70px;
   overflow:hidden;
+  opacity:0;
 }
 
 .widgetSpace {
@@ -219,7 +217,6 @@ div[class*="dock-navi-tt-container"] {
   #headerContainer {
     position:relative; 
   
-        
     #headerFishContainer {
       position:absolute;
       left:430px;
@@ -295,7 +292,7 @@ a.header {
 #dynamicNaviButton {
 }
 
-.wi-dock-dynami-navi-contentBgr{
+.wi-dock-dynami-navi-contentBgr {
  position:absolute;
  top:72px;
  left:0;
@@ -307,15 +304,20 @@ a.header {
 }
 
 #dynamicNaviContainer {
-  padding:10px;
   opacity:0;
   margin-left:-300px;
   z-index:15;
 } 
 
-#dynamicNaviContainer div {
+#dynamicNaviContainer {
+  div {
+    padding:15px;
+  }
 
-  padding:5px;
+  .wi-dock-dynami-navi-contentBgr {
+    padding:0;
+  }
+
 }
 
 #staticNavigationWrapper {
@@ -385,14 +387,6 @@ a.header {
   height:50px;
 }
 
-.seeker {
-  text-align:center;
-  position:relative;
-  top:106px;	
-  @include gradient-top-bottom;
-  @include rounded-top-left; 
-  @include rounded-top-right;
-}
 
 #globalSearchFormIcon {
   height:30px;
