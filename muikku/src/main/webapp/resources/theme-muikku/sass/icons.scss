@@ -28,15 +28,18 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Lets reset the font when text used inside the same element as icon */
+/* Lets reset the font when text used inside the same element as icon 
+
+- Removed this from working, it interfered with search result
+
 [class^="icon-"] span, [class*=" icon-"] span {
   font-family: 'Open Sans';
   padding-left:4px;
   display:inline-block;
-  float:right;
+
 }
 
-
+*/
 .icon-move:before {
   content: "\e600";
 }

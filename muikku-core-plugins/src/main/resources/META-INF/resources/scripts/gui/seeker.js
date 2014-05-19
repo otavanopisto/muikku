@@ -81,7 +81,7 @@ $.widget("custom.seekerautocomplete", $.ui.autocomplete, {
         appendTo : "#searchResults .sk-hideResults",
  
         change: function( event, ui ) {
-          $('#searchResults > ul').empty();        	  
+         $('#searchResults > ul').empty();        	  
         }
       });
       
