@@ -1,5 +1,7 @@
 package fi.muikku.plugins.search;
 
+import java.beans.IntrospectionException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
@@ -20,12 +22,12 @@ public class IndexListener {
   @Any
   @Inject
   private Instance<SearchProvider> searchProviders;
-  
+
   @Inject
   private IndexEntityProcessor indexEntityProcessor;
-  
+
   @Inject
-  Logger logger;
+  private Logger logger;
 
   public void onIndexAdded(@Observes EntityAddEvent entityAddEvent) {
     Iterator<SearchProvider> providers = searchProviders.iterator();
@@ -33,10 +35,10 @@ public class IndexListener {
       SearchProvider provider = providers.next();
       try {
         Map<String, Object> indexEntity = indexEntityProcessor.process(entityAddEvent.getEntity());
-        if(indexEntity != null){
-          provider.addToIndex(entityAddEvent.getEntity().getClass().getSimpleName(), indexEntity);
+        if (indexEntity != null) {
+          provider.addOrUpdateIndex(entityAddEvent.getEntity().getClass().getSimpleName(), indexEntity);
         }
-      } catch (IllegalArgumentException | IllegalAccessException e) {
+      } catch (IllegalArgumentException | IllegalAccessException | SecurityException | InvocationTargetException | IntrospectionException | IndexIdMissingException e) {
         logger.log(Level.SEVERE, "Entity processing exception", e);
       }
     }
@@ -48,10 +50,10 @@ public class IndexListener {
       SearchProvider provider = providers.next();
       try {
         Map<String, Object> indexEntity = indexEntityProcessor.process(entityRemoveEvent.getEntity());
-        if(indexEntity != null){
-          provider.deleteFromIndex(entityRemoveEvent.getEntity().getClass().getSimpleName(), indexEntity);
+        if (indexEntity != null) {
+          provider.deleteFromIndex(entityRemoveEvent.getEntity().getClass().getSimpleName(), (Long) indexEntity.get("id"));
         }
-      } catch (IllegalArgumentException | IllegalAccessException e) {
+      } catch (IllegalArgumentException | IllegalAccessException | SecurityException | InvocationTargetException | IntrospectionException | IndexIdMissingException e) {
         logger.log(Level.SEVERE, "Entity processing exception", e);
       }
     }

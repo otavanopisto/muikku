@@ -13,9 +13,6 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.index.IndexResponse;
@@ -30,8 +27,6 @@ import static org.elasticsearch.node.NodeBuilder.*;
 @ApplicationScoped
 @Stateful
 public class ElasticSearchProvider implements SearchProvider {
-
-  private Client elasticClient;
 
   @Inject
   private Logger logger;
@@ -48,7 +43,7 @@ public class ElasticSearchProvider implements SearchProvider {
   }
 
   @Override
-  public SearchResult search(Map<String, String> Query, int start, int lastResult, Class<?>... types) {
+  public SearchResult search(Map<String, String> Query, int start, int maxResults, Class<?>... types) {
     String[] typenames = new String[types.length];
     for (int i = 0; i < types.length; i++) {
       typenames[i] = types[i].getSimpleName();
@@ -57,51 +52,49 @@ public class ElasticSearchProvider implements SearchProvider {
     List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
     SearchHit[] results = response.getHits().getHits();
     for (SearchHit hit : results) {
-      Map<String,Object> hitSource = hit.getSource();
+      Map<String, Object> hitSource = hit.getSource();
       searchResults.add(hitSource);
     }
-    SearchResult result = new SearchResult(searchResults.size(), start, lastResult, searchResults);
-    return result;
-  }
-  
-  @Override
-  public SearchResult freeTextSearch(String text, int start, int lastResult) {
-    SearchResponse response = elasticClient.prepareSearch().setQuery(
-          QueryBuilders.matchQuery("_all", text)
-        ).setFrom(start).setSize(lastResult).execute().actionGet();
-    List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
-    SearchHit[] results = response.getHits().getHits();
-    for (SearchHit hit : results) {
-      Map<String,Object> hitSource = hit.getSource();
-      searchResults.add(hitSource);
-    }
-    SearchResult result = new SearchResult(searchResults.size(), start, lastResult, searchResults);
+    SearchResult result = new SearchResult(searchResults.size(), start, maxResults, searchResults);
     return result;
   }
 
   @Override
-  public SearchResult matchAllSearch(int start, int lastResult) {
-    SearchResponse response = elasticClient.prepareSearch().setQuery(
-          QueryBuilders.matchAllQuery()
-        ).setFrom(start).setSize(lastResult).execute().actionGet();
+  public SearchResult freeTextSearch(String text, int start, int maxResults) {
+    SearchResponse response = elasticClient.prepareSearch().setQuery(QueryBuilders.matchQuery("_all", text)).setFrom(start).setSize(maxResults).execute()
+        .actionGet();
     List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
     SearchHit[] results = response.getHits().getHits();
     for (SearchHit hit : results) {
-      Map<String,Object> hitSource = hit.getSource();
+      Map<String, Object> hitSource = hit.getSource();
       searchResults.add(hitSource);
     }
-    SearchResult result = new SearchResult(searchResults.size(), start, lastResult, searchResults);
+    SearchResult result = new SearchResult(searchResults.size(), start, maxResults, searchResults);
     return result;
-    
   }
 
   @Override
-  public void addToIndex(String typeName, Map<String, Object> entity) {
+  public SearchResult matchAllSearch(int start, int maxResults) {
+    SearchResponse response = elasticClient.prepareSearch().setQuery(QueryBuilders.matchAllQuery()).setFrom(start).setSize(maxResults).execute().actionGet();
+    List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
+    SearchHit[] results = response.getHits().getHits();
+    for (SearchHit hit : results) {
+      Map<String, Object> hitSource = hit.getSource();
+      searchResults.add(hitSource);
+    }
+    SearchResult result = new SearchResult(searchResults.size(), start, maxResults, searchResults);
+    return result;
+
+  }
+
+  @Override
+  public void addOrUpdateIndex(String typeName, Map<String, Object> entity) {
     ObjectMapper mapper = new ObjectMapper();
     String json;
     try {
       json = mapper.writeValueAsString(entity);
-      Long id = (Long)entity.get("id");
+      Long id = (Long) entity.get("id");
+      @SuppressWarnings("unused")
       IndexResponse response = elasticClient.prepareIndex("muikku", typeName, id.toString()).setSource(json).execute().actionGet();
     } catch (IOException e) {
       logger.log(Level.SEVERE, "Adding to index failed because of exception", e);
@@ -110,19 +103,11 @@ public class ElasticSearchProvider implements SearchProvider {
   }
 
   @Override
-  public void deleteFromIndex(String typeName, Map<String, Object> entity) { // Map<String, Object>
-    ObjectMapper mapper = new ObjectMapper();
-    String json;
-    try {
-      json = mapper.writeValueAsString(entity);
-      Long id = (Long)entity.get("id");
-      DeleteResponse response = elasticClient.prepareDelete("muikku", typeName, id.toString()).execute().actionGet();
-    } catch (IOException e) {
-      logger.log(Level.SEVERE, "Removing item from index failed because of exception", e);
-    }
-
+  public void deleteFromIndex(String typeName, Long id) {
+    @SuppressWarnings("unused")
+    DeleteResponse response = elasticClient.prepareDelete("muikku", typeName, id.toString()).execute().actionGet();
   }
 
-
+  private Client elasticClient;
 
 }
