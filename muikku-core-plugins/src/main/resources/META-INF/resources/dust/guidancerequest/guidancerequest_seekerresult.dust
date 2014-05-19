@@ -1,9 +1,10 @@
 <div class="sk-autocomplete-container">
-  <div class="sk-autocomplete-item-image">
-  <!-- 
+  <!--  <div class="sk-autocomplete-item-image">
+ 
     <img src="{@contextPath/}/resources/gfx/icons/32x32/actions/navigate-communicator.png"></div>
-  -->
-  <div class="sk-autocomplete-item-label">
+  
+  
+  </div> -->
+  <div class="sk-autocomplete-item-label icon-envelope-alt">
       <a href="{@contextPath/}/guidancerequest/index.jsf">Ohjauspyyntö</a>
   </div>
-</div>
