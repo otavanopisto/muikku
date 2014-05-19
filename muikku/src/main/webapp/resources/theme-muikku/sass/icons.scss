@@ -40,7 +40,6 @@
 }
 
 */
-
 .icon-move:before {
   content: "\e600";
 }
@@ -92,10 +91,10 @@
 .icon-signin:before {
   content: "\e610";
 }
-.icon-thumbs-up:before {
+.icon-thumb-up:before {
   content: "\e611";
 }
-.icon-thumbs-down:before {
+.icon-thumb-down:before {
   content: "\e612";
 }
 .icon-reorder:before {
@@ -113,30 +112,24 @@
 .icon-clock:before {
   content: "\e617";
 }
-.icon-book:before {
-  content: "\e61a";
-}
-.icon-file:before {
-  content: "\e61b";
-}
-.icon-profile:before {
-  content: "\e61c";
-}
-.icon-user:before {
-  content: "\e61e";
-}
-.icon-eye-blocked:before {
-  content: "\e61f";
-}
 .icon-arrow-left:before {
   content: "\e618";
 }
 .icon-arrow-right:before {
   content: "\e619";
 }
+.icon-book:before {
+  content: "\e61a";
+}
 .icon-file:before {
   content: "\e61d";
 }
-.icon-eye-blocked:before {
+.icon-profile:before {
+  content: "\e61b";
+}
+.icon-user:before {
+  content: "\e61c";
+}
+.icon-spinner:before {
   content: "\e61e";
 }
