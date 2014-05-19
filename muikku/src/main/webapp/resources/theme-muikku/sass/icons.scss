@@ -2,19 +2,19 @@
 
 
 @font-face {
-  font-family: 'icomoon';
-  @include font-src('fonts/icomoon.eot'); /* IE9 */
-  @include font-srcs('fonts/icomoon.eot?#iefix','embedded-opentype', /* IE6-IE8 - NOT WORKING!!! JSF libraries do not work with webparams */
-  'fonts/icomoon.woff','woff', /* Modern Browsers */
-  'fonts/icomoon.ttf','truetype', /* Safari, Android, iOS */
-  'fonts/icomoon.svg#icomoon','svg'); /* old IOS - NOT WORKING!!! JSF libraries do not work with webparams DEM BASTARDS! */ 
+  font-family: 'muikku';
+  @include font-src('fonts/muikku.eot'); /* IE9 */
+  @include font-srcs('fonts/muikku.eot?#iefix','embedded-opentype', /* IE6-IE8 - NOT WORKING!!! JSF libraries do not work with webparams */
+  'fonts/muikku.woff','woff', /* Modern Browsers */
+  'fonts/muikku.ttf','truetype', /* Safari, Android, iOS */
+  'fonts/muikku.svg#muikku','svg'); /* old IOS - NOT WORKING!!! JSF libraries do not work with webparams DEM BASTARDS! */ 
   font-weight: normal;  
   font-style: normal;
   
 }
 
 [class^="icon-"], [class*=" icon-"] {
-  font-family: 'icomoon';
+  font-family: 'muikku';
   speak: none;
   font-style: normal;
   text-decoration:none;
@@ -35,7 +35,6 @@
   display:inline-block;
   float:right;
 }
-
 
 
 .icon-move:before {
@@ -124,4 +123,10 @@
 }
 .icon-user:before {
   content: "\e61c";
+}
+.icon-file:before {
+  content: "\e61d";
+}
+.icon-eye-blocked:before {
+  content: "\e61e";
 }
