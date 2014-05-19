@@ -443,7 +443,9 @@
     },
 
     _onAspectChange: function(event) {
-        this._jCropApi.destroy();
+        if (this._jCropApi !== null) {
+            this._jCropApi.destroy();
+        }
         this._refresh(this.element.find('.image-dialog-image'));
     },
 
