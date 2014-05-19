@@ -4,46 +4,44 @@
 
 $(document).ready(function() {
   
-    /* Sticky shortcut */ 
-    
-	
-	
+  /* Sticky shortcut */ 
+
 	$('#staticNavigationWrapper').waypoint('sticky', {
 	  stuckClass : 'stuckStNav',
-      handler : function(direction){
-      var lp = $('.loggedUserPicture');
-      var lw = $('.loggedUserWidget');
-      var lpPosRight = ( $(window).width() - $("#content").width() ) / 2;
-      var lpPosInit = lpPosRight + lw.width() ;
-      
-      lp.css({
-    	  "position" : "fixed",
-    	  "right" : lpPosInit + 'px'
-       });
+    handler : function(direction){
+    var lp = $('.loggedUserPicture');
+    var lw = $('.loggedUserWidget');
+    var lpPosRight = ( $(window).width() - $("#content").width() ) / 2;
+    var lpPosInit = lpPosRight + lw.width() ;
+    
+    lp.css({
+  	  "position" : "fixed",
+  	  "right" : lpPosInit + 'px'
+     });
 
-      if(direction == 'down'){
-          lp.animate({
-      		right : lpPosRight,
-      		top : 15
-           }, {
-          	 duration: 200,
-          	 easing: "easeOutSine",
-          });
-      }else{
-          lp.animate({
-        		right : lpPosInit,
-        		top : 10
-             }, {
-            	 duration : 200,
-            	 easing : "easeOutSine",
-            	 complete : function(){
-            	      lp.css({
-            	    	  "position" : "static",
-            	    	  "right" : "",
-            	    	  "top" : "",
-            	       }); 
-            	 }
-            });  
+    if (direction == 'down') {
+      lp.animate({
+        right : lpPosRight,
+        top : 15
+      }, {
+        duration : 200,
+        easing : "easeOutSine"
+      });
+    } else {
+        lp.animate({
+          right : lpPosInit,
+          top : 10
+        }, {
+          duration : 200,
+          easing : "easeOutSine",
+          complete : function() {
+            lp.css({
+              "position" : "static",
+              "right" : "",
+              "top" : ""
+            });
+          }
+        });
       }
     }   
 	});
@@ -51,7 +49,7 @@ $(document).ready(function() {
 	
 	$('#dynamicNavigation').waypoint('sticky', {
 	  wrapper:'<div id="dynNaviWrapper" />',
-	  stuckClass : 'stuckDNav'	 
+	  stuckClass : 'stuckDNav'
 	});
 	
 	/* Style functions */
