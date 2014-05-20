@@ -12,7 +12,7 @@
         <div class="lu-user-name">#{User.findUser(muikkuSession.user).firstName} #{User.findUser(muikkuSession.user).lastName}</div>
         <div class="lu-actions">
 	        <h:form>
-            <h:commandLink styleClass="lu-action-edit icon-pencil"  action="#{logoutWidgetBackingBean.logout}"/>
+<!--        <h:commandLink styleClass="lu-action-edit icon-pencil"  action="#{logoutWidgetBackingBean.logout}"/>  -->
             <h:commandLink styleClass="lu-action-signout icon-signout"  action="#{logoutWidgetBackingBean.logout}"/>
 	        </h:form>
         </div>
