@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import fi.muikku.i18n.LocaleController;
 import fi.muikku.plugins.seeker.DefaultSeekerResultImpl;
 import fi.muikku.plugins.seeker.SeekerResult;
+import fi.muikku.plugins.seeker.SeekerResultImpl;
 import fi.muikku.plugins.seeker.SeekerResultProvider;
 import fi.muikku.session.SessionController;
 
@@ -26,8 +27,7 @@ public class CoursePickerSeekerResultProvider implements SeekerResultProvider {
     String searchTerms = localeController.getText(sessionController.getLocale(), "plugin.coursepicker.seekersearchterms").toLowerCase();
     
     if (searchTerms.contains(searchTerm.toLowerCase()))
-      result.add(new CoursePickerSeekerResult(localeController.getText(sessionController.getLocale(), "plugin.coursepicker.coursepicker"), 
-          null, "/coursepicker/coursepicker.jsf", null));
+      result.add(new SeekerResultImpl("coursepicker/coursepicker_seekerresult.dust"));
     
     return result; 
   }

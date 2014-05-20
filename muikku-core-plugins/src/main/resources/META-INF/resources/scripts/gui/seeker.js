@@ -64,7 +64,7 @@ $.widget("custom.seekerautocomplete", $.ui.autocomplete, {
             }
           });
           
-          response(_this._doSearch(request.term));
+
         },
         select: function (event, ui) {
           if (ui.item.link) {
@@ -75,35 +75,19 @@ $.widget("custom.seekerautocomplete", $.ui.autocomplete, {
         },
         
         search : function(event, ui){
-      	  $('#searchResults > ul').empty();
+  //   	  $('#searchResults > ul').empty();
         },
 
         appendTo : "#searchResults .sk-hideResults",
  
         change: function( event, ui ) {
-          $('#searchResults > ul').empty();        	  
+
+ //        $('#searchResults > ul').empty();        	  
         }
       });
       
     },
     deinitialize: function () {
-    },
-    _doSearch: function (searchTerm, response) {
-    	
-      // TODO: Doesnt work, causes input delays
-    	
-      var _this = this;
-      var users = new Array();
-
-      RESTful.doGet(CONTEXTPATH + "/rest/seeker/search", {
-        parameters: {
-          'searchString': searchTerm
-        }
-      }).success(function (data, textStatus, jqXHR) {
-        users = data;
-      });
-
-      return users;
     }
   });
   
