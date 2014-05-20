@@ -553,7 +553,7 @@ div[class*="wi-dock-static-navi"] {
   margin-top:10px;
 }
 
-.loggedUserWidget {
+.lu-widget {
 /* This widget can be positioned absolutely or float to right */
 /*   position:absolute; */
 /*   right:0; */
@@ -563,9 +563,9 @@ div[class*="wi-dock-static-navi"] {
   float:right;
   margin-top:10px;
   
-  .loggedUserBadgeWrapper {
+  .lu-badgeContainer {
   
-    .loggedUserPicture {
+    .lu-user-picture {
       @incude border(2px,#fff,solid);
       background:#fff;
       height:48px;
@@ -575,7 +575,7 @@ div[class*="wi-dock-static-navi"] {
       margin:0 4px 0 0;
       z-index:15;
     }
-    .loggedUserInfoWrapper {
+    .lu-infoContainer {
        @incude border(2px,#fff,solid);
        background:#fff;
        height:48px;
@@ -583,7 +583,7 @@ div[class*="wi-dock-static-navi"] {
        border-top-left-radius:24px;
        border-bottom-left-radius:24px;
     
-      .loggedUserName {
+      .lu-user-name {
         color:#3c77a0;
         text-transform:uppercase;
         min-width:100px;
@@ -592,13 +592,23 @@ div[class*="wi-dock-static-navi"] {
         height:1.5em;
       }
       
-      .loggedUserActions {
+      .lu-actions {
         min-width:60px;
         float:left;
         height:1.5em;
-        padding:13px 12px 14px 12px;
+        padding:13px 12px 10px 10px;
+        a:not(:first-child){
+         margin-left:15px;
+        }
       }
-    
+
+
+      a[class*="lu-action"] {
+       color:#3C77A0;
+       font-size:1.5em;
+
+      }
+  
     }
     
 

@@ -5,12 +5,17 @@
     xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:c="http://java.sun.com/jsp/jstl/core">
 
-  <div class="widget loggedUserWidget">
-    <div class="loggedUserBadgeWrapper">
-      <div class="loggedUserPicture"></div>
-      <div class="loggedUserInfoWrapper">
-        <div class="loggedUserName">#{User.findUser(muikkuSession.user).firstName} #{User.findUser(muikkuSession.user).lastName}</div>
-        <div class="loggedUserActions"></div>
+  <div class="widget lu-widget" id="loggedUserWidget">
+    <div class="lu-badgeContainer">
+      <div class="lu-user-picture" id="loggedUserPicture"></div>
+      <div class="lu-infoContainer">
+        <div class="lu-user-name">#{User.findUser(muikkuSession.user).firstName} #{User.findUser(muikkuSession.user).lastName}</div>
+        <div class="lu-actions">
+	        <h:form>
+            <h:commandLink styleClass="lu-action-edit icon-pencil"  action="#{logoutWidgetBackingBean.logout}"/>
+            <h:commandLink styleClass="lu-action-signout icon-signout"  action="#{logoutWidgetBackingBean.logout}"/>
+	        </h:form>
+        </div>
       </div>
     </div>
     <c:if test="#{loggedUserWidgetBackingBean.representing}">

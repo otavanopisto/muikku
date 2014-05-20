@@ -9,8 +9,8 @@ $(document).ready(function() {
 	$('#staticNavigationWrapper').waypoint('sticky', {
 	  stuckClass : 'stuckStNav',
     handler : function(direction){
-    var lp = $('.loggedUserPicture');
-    var lw = $('.loggedUserWidget');
+    var lp = $('#loggedUserPicture');
+    var lw = $('#loggedUserWidget');
     var lpPosRight = ( $(window).width() - $("#content").width() ) / 2;
     var lpPosInit = lpPosRight + lw.width() ;
     
@@ -23,9 +23,11 @@ $(document).ready(function() {
       lp.animate({
         right : lpPosRight,
         top : 15
+        
       }, {
         duration : 200,
         easing : "easeOutSine"
+        	
       });
     } else {
         lp.animate({
