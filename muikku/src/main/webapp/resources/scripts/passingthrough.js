@@ -91,6 +91,16 @@ $(document).ready(function() {
              $("#seeker").focus();
              $("#seeker").blur(function(){
                $("#seeker").data('blurring', 'true');
+               // Lets hide search tooltip as well.
+               $(".dock-navi-tt-container-search")
+               .clearQueue()
+               .finish()
+               .css({
+                 height: '0px',
+                 left: '0px',
+                 opacity: 0
+               })
+               .hide();
                $(".wi-dock-search")
                .clearQueue()
                .stop()
@@ -132,56 +142,63 @@ $(document).ready(function() {
       var tooltip = $(this).children("[class*='dock-navi-tt-container']");
       var innerTooltip = tooltip.children('div');
       
-      tooltip.show();
-      
-      // Offsets
-      
-      var iconOffset = tooltip.parent().offset().left + 15;
-      var tOffset = tooltip.offset().left;
-      var paddingOffset = tOffset + 20;
-                
-      // Sets tooltip's inner elements padding-left same as tooltip's left position 
-      // and sets background-position relative to icons position
-      
-      innerTooltip.css({
-        paddingLeft: paddingOffset + 'px',
-        backgroundPosition: iconOffset + 'px 0px'
-      });
-      
-      // Sets tooltip's width same as view port width 
-      // and left position is adjusted accordingly
-      
-      tooltip.css({
-        width: $(window).width(),
-        left:-tOffset + 'px'
-      });     
-      
-      tooltip
-      .animate({
-      	height: '300px',
-      	opacity: 1
-      }, {
-      	duration : 200,
-      	easing: "easeInOutQuad",
-      	complete : function(){
-          // This is for added functions. In the future. Of mankind.
-      	}      
-      });
+      // Lets prevent search results from disappearing
+      if ($(".wi-dock-search:hidden").length !== 0) {
+        tooltip.show();
+        
+        // Offsets
+        
+        var iconOffset = tooltip.parent().offset().left + 15;
+        var tOffset = tooltip.offset().left;
+        var paddingOffset = tOffset + 20;
+                  
+        // Sets tooltip's inner elements padding-left same as tooltip's left position 
+        // and sets background-position relative to icons position
+        
+        innerTooltip.css({
+          paddingLeft: paddingOffset + 'px',
+          backgroundPosition: iconOffset + 'px 0px'
+        });
+        
+        // Sets tooltip's width same as view port width 
+        // and left position is adjusted accordingly
+        
+        tooltip.css({
+          width: $(window).width(),
+          left:-tOffset + 'px'
+        });     
+        
+        tooltip
+        .animate({
+        	height: '300px',
+        	opacity: 1
+        }, {
+        	duration : 200,
+        	easing: "easeInOutQuad",
+        	complete : function(){
+            // This is for added functions. In the future. Of mankind.
+        	}      
+        });
+      }
 
     });
 
     $("div[class*='wi-dock-static-navi']").mouseleave(function() {
-    	var tooltip =  $(this).find("[class*='dock-navi-tt-container']");
+      var tooltip =  $(this).find("[class*='dock-navi-tt-container']");
     	
-    	tooltip
-    	.clearQueue()
-    	.finish()
-    	.css({
-    	  height: '0px',
-    	  left: '0px',
-    	  opacity: 0
-    	})
-    	.hide();
+      // Lets prevent search results from disappearing
+    	if ($(".wi-dock-search:hidden").length !== 0) {
+      	tooltip
+      	.clearQueue()
+      	.finish()
+      	.css({
+      	  height: '0px',
+      	  left: '0px',
+      	  opacity: 0
+      	})
+      	.hide();
+    }
+    	
     });
 });
 
