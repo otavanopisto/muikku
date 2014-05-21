@@ -24,9 +24,10 @@ public class CommunicatorSeekerResultProvider implements SeekerResultProvider {
     List<SeekerResult> result = new ArrayList<SeekerResult>();
     
     String searchTerms = localeController.getText(sessionController.getLocale(), "plugin.communicator.seekersearchterms").toLowerCase();
-    
-    if (searchTerms.contains(searchTerm.toLowerCase()))
-      result.add(new SeekerResultImpl("communicator/communicator_seekerresult.dust"));
+
+ // Removed until communicator id DONE    
+//    if (searchTerms.contains(searchTerm.toLowerCase()))
+//      result.add(new SeekerResultImpl("communicator/communicator_seekerresult.dust"));
     
     return result; 
   }
