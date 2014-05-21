@@ -42,6 +42,14 @@ public class CommunicatorMessage {
   public void setCommunicatorMessageId(CommunicatorMessageId communicatorMessageId) {
     this.communicatorMessageId = communicatorMessageId;
   }
+  
+  public CommunicatorMessageCategory getCategory() {
+    return category;
+  }
+  
+  public void setCategory(CommunicatorMessageCategory category) {
+    this.category = category;
+  }
 
   public String getCaption() {
     return caption;
@@ -117,6 +125,9 @@ public class CommunicatorMessage {
   @Column (name = "sender_id")
   @TranquilityEntityField(UserEntityResolver.class)
   private Long sender;
+  
+  @ManyToOne
+  private CommunicatorMessageCategory category;
   
   @NotNull
   @NotEmpty

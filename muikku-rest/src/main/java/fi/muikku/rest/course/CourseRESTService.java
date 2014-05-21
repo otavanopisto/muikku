@@ -153,7 +153,7 @@ public class CourseRESTService extends AbstractRESTService {
         String content = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.content");
         caption = MessageFormat.format(caption, workspaceName);
         content = MessageFormat.format(content, userName, workspaceName);
-        messagingWidget.postMessage(userEntity, caption, content, teachers);
+        messagingWidget.postMessage(userEntity, null, caption, content, teachers);
       }
     }
     

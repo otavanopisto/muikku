@@ -528,6 +528,7 @@ $.fn.extend({
       RESTful.doPost(CONTEXTPATH + "/rest/communicator/{userId}/messages", {
         parameters: {
           'userId': this._userId,
+          'category': 'message',
           'subject': newMessageElement.find("input[name='subject']").val(),
           'content': newMessageElement.find("textarea[name='content']").val(),
           'recipients': recipientIds,
@@ -560,6 +561,7 @@ $.fn.extend({
         parameters: {
           'userId': this._userId,
           'messageId': messageId,
+          'category': 'message',
           'subject': newMessageElement.find("input[name='subject']").val(),
           'content': newMessageElement.find("textarea[name='content']").val(),
           'recipients': recipientIds,
