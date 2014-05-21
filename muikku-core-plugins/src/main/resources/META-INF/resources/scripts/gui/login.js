@@ -13,8 +13,8 @@
 		   	});
 		  });
 		  $(".loginWidgetWrapper").bind('click', function(e){
-            //return false;
-			e.stopPropagation();
+        //return false;
+			  e.stopPropagation();
 		  });
 	  });
 	});
