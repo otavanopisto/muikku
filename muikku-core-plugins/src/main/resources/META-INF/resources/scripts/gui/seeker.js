@@ -75,14 +75,14 @@ $.widget("custom.seekerautocomplete", $.ui.autocomplete, {
         },
         
         search : function(event, ui){
-  //   	  $('#searchResults > ul').empty();
+      	  $('#searchResults > ul').empty();
         },
 
         appendTo : "#searchResults .sk-hideResults",
  
         change: function( event, ui ) {
 
- //        $('#searchResults > ul').empty();        	  
+           $('#searchResults > ul').empty();        	  
         }
       });
       
