@@ -62,12 +62,18 @@ select {
 }
 
 div[class*='form-container']{
-width:300px;
+  width:300px;
 }
 
-.formLabel {
+div[class*='ps-edit-container']{
+	padding:10px;
+}
+
+.formLabel, label {
   margin-right:10px;
-  font-weight:bold;	
+  font-weight:bold;
+  padding:5px 5px 5px 0;	
+  display:block;
 }
 
 .formElementRow {
