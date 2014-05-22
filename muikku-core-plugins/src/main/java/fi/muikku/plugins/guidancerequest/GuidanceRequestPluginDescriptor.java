@@ -7,9 +7,13 @@ import java.util.ResourceBundle;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
 
 import org.apache.commons.lang3.LocaleUtils;
 
+import fi.muikku.controller.messaging.MessagingWidget;
 import fi.muikku.i18n.LocaleBundle;
 import fi.muikku.i18n.LocaleLocation;
 import fi.muikku.plugin.LocalizedPluginDescriptor;
@@ -20,7 +24,13 @@ import fi.muikku.plugin.RESTPluginDescriptor;
 @ApplicationScoped
 @Stateful
 public class GuidanceRequestPluginDescriptor implements PluginDescriptor, PersistencePluginDescriptor, RESTPluginDescriptor, LocalizedPluginDescriptor {
-	
+
+  public static final String MESSAGING_CATEGORY = "guidancerequest";
+  
+  @Inject
+  @Any
+  private Instance<MessagingWidget> messagingWidgets;
+  
 	@Override
 	public String getName() {
 		return "guidancerequest";
@@ -28,6 +38,9 @@ public class GuidanceRequestPluginDescriptor implements PluginDescriptor, Persis
 	
 	@Override
 	public void init() {
+	  for (MessagingWidget messagingWidget : messagingWidgets) {
+	    messagingWidget.persistCategory(MESSAGING_CATEGORY);
+	  }
 	}
 
 	@Override

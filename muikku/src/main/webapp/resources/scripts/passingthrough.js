@@ -60,13 +60,13 @@ $(document).ready(function() {
     // Seeker functionalities -->
       
     $( "#seeker" ).focus(function() {
-    	$('#seeker').val('');
+    	$('#seeker').select();
     });
-
-    $( "#seeker" ).blur(function() {
-    	var sval = this.defaultValue;
-    	$('#seeker').val(sval);
-    });
+//
+//    $( "#seeker" ).blur(function() {
+//    	var sval = this.defaultValue;
+//    	$('#seeker').val(sval);
+//    });
 
     // fastlinks and dialogs for dock applications -->
     

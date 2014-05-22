@@ -13,12 +13,14 @@ import fi.muikku.dao.users.UserEntityDAO;
 import fi.muikku.model.base.Tag;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.notifier.NotifierController;
+import fi.muikku.plugins.communicator.dao.CommunicatorMessageCategoryDAO;
 import fi.muikku.plugins.communicator.dao.CommunicatorMessageIdDAO;
 import fi.muikku.plugins.communicator.dao.CommunicatorMessageRecipientDAO;
 import fi.muikku.plugins.communicator.dao.CommunicatorMessageSignatureDAO;
 import fi.muikku.plugins.communicator.dao.CommunicatorMessageTemplateDAO;
 import fi.muikku.plugins.communicator.dao.InboxCommunicatorMessageDAO;
 import fi.muikku.plugins.communicator.model.CommunicatorMessage;
+import fi.muikku.plugins.communicator.model.CommunicatorMessageCategory;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageSignature;
@@ -43,6 +45,9 @@ public class CommunicatorController {
   
   @Inject
   private InboxCommunicatorMessageDAO communicatorMessageDAO;
+
+  @Inject
+  private CommunicatorMessageCategoryDAO communicatorMessageCategoryDAO;
   
   @Inject
   private CommunicatorMessageRecipientDAO communicatorMessageRecipientDAO;
@@ -73,14 +78,22 @@ public class CommunicatorController {
     return communicatorMessageDAO.listFirstMessagesBySender(userEntity);
   }
   
+  public CommunicatorMessageCategory persistCategory(String category) {
+    CommunicatorMessageCategory categoryEntity = communicatorMessageCategoryDAO.findByName(category);
+    if (categoryEntity == null) {
+      categoryEntity = communicatorMessageCategoryDAO.create(category);
+    }
+    return categoryEntity;
+  }
+  
   public CommunicatorMessageId createMessageId() {
     return communicatorMessageIdDAO.create();
   }
   
   public CommunicatorMessage createMessage(CommunicatorMessageId communicatorMessageId, UserEntity sender, List<UserEntity> recipients, 
-      String caption, String content, Set<Tag> tags) {
-    CommunicatorMessage message = communicatorMessageDAO.create(communicatorMessageId, sender.getId(), caption, content, new Date(), tags);
-    
+      CommunicatorMessageCategory category, String caption, String content, Set<Tag> tags) {
+    CommunicatorMessage message = communicatorMessageDAO.create(communicatorMessageId, sender.getId(), category, caption, content, new Date(), tags);
+
     for (UserEntity recipient : recipients) {
       communicatorMessageRecipientDAO.create(message, recipient.getId());
     }

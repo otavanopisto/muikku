@@ -64,12 +64,10 @@ $.widget("custom.seekerautocomplete", $.ui.autocomplete, {
             }
           });
           
-
         },
         select: function (event, ui) {
           if (ui.item.link) {
             window.location.href = CONTEXTPATH + ui.item.link;
-            $(this).val("");
           }
           return false;
         },
@@ -81,8 +79,7 @@ $.widget("custom.seekerautocomplete", $.ui.autocomplete, {
         appendTo : "#searchResults .sk-hideResults",
  
         change: function( event, ui ) {
-
-           $('#searchResults > ul').empty();        	  
+//          $('#searchResults > ul').empty();        	  
         }
       });
       

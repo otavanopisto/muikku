@@ -15,8 +15,8 @@ import fi.muikku.dao.DAO;
 import fi.muikku.model.base.Tag;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugin.PluginDAO;
-import fi.muikku.plugins.communicator.CommunicatorInboxOwnerContextResolverImpl;
 import fi.muikku.plugins.communicator.model.CommunicatorMessage;
+import fi.muikku.plugins.communicator.model.CommunicatorMessageCategory;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageRecipient_;
@@ -30,7 +30,7 @@ public class InboxCommunicatorMessageDAO extends PluginDAO<InboxCommunicatorMess
   private static final long serialVersionUID = -8721990589622544635L;
 
   public InboxCommunicatorMessage create(CommunicatorMessageId communicatorMessageId, Long sender,
-      String caption, String content, Date created, Set<Tag> tags) {
+      CommunicatorMessageCategory category, String caption, String content, Date created, Set<Tag> tags) {
     InboxCommunicatorMessage msg = new InboxCommunicatorMessage();
     
     int s = tags != null ? tags.size() : 0;
@@ -43,6 +43,7 @@ public class InboxCommunicatorMessageDAO extends PluginDAO<InboxCommunicatorMess
 
     msg.setCommunicatorMessageId(communicatorMessageId);
     msg.setSender(sender);
+    msg.setCategory(category);
     msg.setCaption(caption);
     msg.setContent(content);
     msg.setCreated(created);

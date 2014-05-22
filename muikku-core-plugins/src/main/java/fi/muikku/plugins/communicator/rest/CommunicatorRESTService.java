@@ -31,6 +31,7 @@ import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.communicator.CommunicatorController;
 import fi.muikku.plugins.communicator.CommunicatorNewInboxMessageNotification;
 import fi.muikku.plugins.communicator.model.CommunicatorMessage;
+import fi.muikku.plugins.communicator.model.CommunicatorMessageCategory;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageSignature;
@@ -215,6 +216,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   @Path ("/{USERID}/messages")
   public Response postMessage(
       @PathParam ("USERID") Long userId,
+      @FormParam ("category") String category,
       @FormParam ("subject") String subject,
       @FormParam ("content") String content,
       @FormParam ("recipients") List<Long> recipientIds,
@@ -243,8 +245,11 @@ public class CommunicatorRESTService extends PluginRESTService {
         recipients.add(gusr.getUser());
       }
     }
+    
+    // TODO Category not existing at this point would technically indicate an invalid state
+    CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(category);
 
-    CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId, user, recipients, subject, content, tagList);
+    CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId, user, recipients, categoryEntity, subject, content, tagList);
       
     notifierController.sendNotification(communicatorNewInboxMessageNotification, user, recipients);
     
@@ -280,6 +285,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   public Response postMessageReply(
       @PathParam ("USERID") Long userId,
       @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId,
+      @FormParam ("category") String category,
       @FormParam ("subject") String subject,
       @FormParam ("content") String content,
       @FormParam ("recipients") List<Long> recipientIds,
@@ -308,8 +314,11 @@ public class CommunicatorRESTService extends PluginRESTService {
         recipients.add(gusr.getUser());
       }
     }
+
+    // TODO Category not existing at this point would technically indicate an invalid state
+    CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(category);
     
-    CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId2, user, recipients, subject, content, tagList);
+    CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId2, user, recipients, categoryEntity, subject, content, tagList);
 
     notifierController.sendNotification(communicatorNewInboxMessageNotification, user, recipients);
     
