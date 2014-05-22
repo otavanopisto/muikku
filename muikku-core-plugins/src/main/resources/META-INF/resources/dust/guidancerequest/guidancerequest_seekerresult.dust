@@ -8,3 +8,4 @@
   <div class="sk-autocomplete-item-label icon-envelope-alt">
       <a href="{@contextPath/}/guidancerequest/index.jsf">Ohjauspyyntö</a>
   </div>
+</div>

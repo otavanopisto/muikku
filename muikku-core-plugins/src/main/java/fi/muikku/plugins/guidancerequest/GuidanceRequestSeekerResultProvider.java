@@ -25,9 +25,9 @@ public class GuidanceRequestSeekerResultProvider implements SeekerResultProvider
     
     String searchTerms = "ohjauspyyntö"; 
 //        localeController.getText(sessionController.getLocale(), "plugin.communicator.seekersearchterms").toLowerCase();
-    
-    if (searchTerms.contains(searchTerm.toLowerCase()))
-      result.add(new SeekerResultImpl("guidancerequest/guidancerequest_seekerresult.dust"));
+// Removed until communicator works    
+//    if (searchTerms.contains(searchTerm.toLowerCase()))
+//      result.add(new SeekerResultImpl("guidancerequest/guidancerequest_seekerresult.dust"));
     
     return result; 
   }

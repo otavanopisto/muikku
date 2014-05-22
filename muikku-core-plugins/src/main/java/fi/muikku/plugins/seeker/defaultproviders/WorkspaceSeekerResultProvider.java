@@ -42,7 +42,7 @@ public class WorkspaceSeekerResultProvider implements SeekerResultProvider {
       
       // TODO remove
       if ((workspace.getName().toLowerCase().contains(searchTerm)) || (workspace.getDescription().toLowerCase().contains(searchTerm)))
-        result.add(new DefaultSeekerResultImpl(workspace.getName(), caption, "/workspace/" + e.getUrlName(), ""));
+        result.add(new WorkspaceSeekerResult(workspace.getName(), caption, "/workspace/" + e.getUrlName(), ""));
     }
     
     return result;
