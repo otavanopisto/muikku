@@ -62,11 +62,6 @@ $(document).ready(function() {
     $( "#seeker" ).focus(function() {
     	$('#seeker').select();
     });
-//
-//    $( "#seeker" ).blur(function() {
-//    	var sval = this.defaultValue;
-//    	$('#seeker').val(sval);
-//    });
 
     // fastlinks and dialogs for dock applications -->
     
