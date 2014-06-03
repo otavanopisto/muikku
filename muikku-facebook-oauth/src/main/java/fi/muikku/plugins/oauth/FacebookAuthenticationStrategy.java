@@ -33,6 +33,7 @@ import fi.muikku.auth.AuthenticationHandleException;
 import fi.muikku.auth.AuthenticationResult;
 import fi.muikku.auth.OAuthAuthenticationStrategy;
 import fi.muikku.model.security.AuthSource;
+import fi.muikku.session.SessionController;
 
 @Dependent
 @Stateless
@@ -40,6 +41,9 @@ public class FacebookAuthenticationStrategy extends OAuthAuthenticationStrategy 
   
   @Inject
   private Logger logger;
+
+  @Inject
+  private SessionController sessionController;
   
   public FacebookAuthenticationStrategy() {
     super("email");
@@ -90,14 +94,14 @@ public class FacebookAuthenticationStrategy extends OAuthAuthenticationStrategy 
     }
     
     Integer expiresIn = extractExpires(accessToken);
-    @SuppressWarnings("unused")
-    Date expiresAt = null;
+
+    Date expires = null;
     if (expiresIn != null) {
       Calendar calendar = new GregorianCalendar();
       calendar.setTime(new Date());
       calendar.add(Calendar.SECOND, expiresIn);
-      expiresAt = calendar.getTime();
-      // TODO: Token should be added to session, e.g.: sessionController.addOAuthAccessToken(getName(), expiresAt, accessToken.getToken());
+      expires = calendar.getTime();
+      sessionController.addOAuthAccessToken("facebook", expires, accessToken.getToken());
     }    
     
     if (meObject != null)
