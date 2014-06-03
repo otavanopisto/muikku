@@ -106,5 +106,10 @@ public interface CalendarEvent {
    */
   public List<CalendarEventReminder> getEventReminders();
   
-  // TODO: recurrence
+  /**
+   * Returns calendar event recurrence data or null for single events
+   * 
+   * @return calendar event recurrence data or null for single events
+   */
+  public CalendarEventRecurrence getRecurrence();
 }
