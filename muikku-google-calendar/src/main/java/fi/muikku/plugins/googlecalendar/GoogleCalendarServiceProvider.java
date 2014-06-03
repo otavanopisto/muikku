@@ -20,7 +20,6 @@ import fi.muikku.session.AccessToken;
 import fi.muikku.session.SessionController;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
@@ -29,20 +28,34 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
 
     private final String summary;
     private final String description;
+    private final String id;
 
-    public GoogleCalendar(String summary, String description) {
+    public GoogleCalendar(String summary,
+                          String description,
+                          String id) {
       this.summary = summary;
       this.description = description;
+      this.id = id;
     }
 
     @Override
     public String getSummary() {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      return summary;
     }
 
     @Override
     public String getDescription() {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      return description;
+    }
+
+    @Override
+    public String getId() {
+      return id;
+    }
+
+    @Override
+    public String getServiceProvider() {
+      return "google";
     }
   }
 
@@ -62,22 +75,24 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
 
   @Override
   public List<fi.muikku.calendar.Calendar> listCalendars() throws CalendarServiceException {
-      try {
-          Calendar client = new Calendar.Builder(TRANSPORT,
-                  JSON_FACTORY,
-                  getCredential()).build();
+    try {
+      Calendar client = new Calendar.Builder(TRANSPORT,
+              JSON_FACTORY,
+              getCredential()).build();
 
-          ArrayList<fi.muikku.calendar.Calendar> result = new ArrayList<>();
-          for (CalendarListEntry entry
-                  : client.calendarList().list().execute().getItems()) {
-              result.add(
-                      new GoogleCalendar(entry.getSummary(), entry.getDescription()));
-          }
-
-          return result;
-      } catch (IOException ex) {
-          throw new CalendarServiceException(ex);
+      ArrayList<fi.muikku.calendar.Calendar> result = new ArrayList<>();
+      for (CalendarListEntry entry
+              : client.calendarList().list().execute().getItems()) {
+        result.add(
+                new GoogleCalendar(entry.getSummary(),
+                                   entry.getDescription(),
+                                   entry.getId()));
       }
+
+      return result;
+    } catch (IOException ex) {
+      throw new CalendarServiceException(ex);
+    }
   }
 
   private GoogleCredential getCredential() {
