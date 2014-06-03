@@ -1,6 +1,7 @@
 package fi.muikku.plugins.workspace;
 
 import java.io.FileNotFoundException;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -15,7 +16,6 @@ import com.ocpsoft.pretty.faces.annotation.URLAction;
 import com.ocpsoft.pretty.faces.annotation.URLMappings;
 import com.ocpsoft.pretty.faces.annotation.URLMapping;
 
-import edu.emory.mathcs.backport.java.util.Collections;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;

@@ -10,8 +10,6 @@ import fi.muikku.plugin.PluginDAO;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.material.model.QueryFileField;
 import fi.muikku.plugins.material.model.QueryFileField_;
-import fi.muikku.plugins.material.model.QueryTextField;
-import fi.muikku.plugins.material.model.QueryTextField_;
 
 @DAO
 public class QueryFileFieldDAO extends PluginDAO<QueryFileField> {

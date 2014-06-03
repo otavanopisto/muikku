@@ -1,6 +1,7 @@
 package fi.muikku.plugins.courselist;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -10,7 +11,6 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import edu.emory.mathcs.backport.java.util.Collections;
 import fi.muikku.dao.workspace.WorkspaceUserEntityDAO;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;

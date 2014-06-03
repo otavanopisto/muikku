@@ -2,6 +2,7 @@ package fi.muikku.plugins.settings;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -12,7 +13,6 @@ import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import edu.emory.mathcs.backport.java.util.Collections;
 import fi.muikku.model.users.EnvironmentRoleEntity;
 import fi.muikku.model.users.RoleEntity;
 import fi.muikku.model.workspace.WorkspaceRoleEntity;

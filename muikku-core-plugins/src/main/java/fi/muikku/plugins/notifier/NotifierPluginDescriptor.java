@@ -9,7 +9,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import fi.muikku.controller.WidgetController;
 import fi.muikku.i18n.LocaleBundle;
 import fi.muikku.notifier.NotifierController;
 import fi.muikku.plugin.AfterPluginsInitEvent;

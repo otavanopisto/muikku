@@ -7,7 +7,6 @@ import javax.inject.Inject;
 
 import fi.muikku.i18n.LocaleController;
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.plugins.seeker.DefaultSeekerResultImpl;
 import fi.muikku.plugins.seeker.SeekerResult;
 import fi.muikku.plugins.seeker.SeekerResultProvider;
 import fi.muikku.schooldata.WorkspaceController;

@@ -3,6 +3,7 @@ package fi.muikku.plugins.communicator.rest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -20,7 +21,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-import edu.emory.mathcs.backport.java.util.Collections;
 import fi.muikku.controller.TagController;
 import fi.muikku.model.base.Tag;
 import fi.muikku.model.users.UserEntity;

@@ -2,8 +2,6 @@ package fi.muikku.plugins.material.imageupload;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Date;
-
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -18,11 +16,6 @@ import javax.transaction.UserTransaction;
 
 import org.apache.commons.io.IOUtils;
 
-import fi.muikku.dao.users.UserEntityDAO;
-import fi.muikku.dao.users.UserPictureDAO;
-import fi.muikku.model.users.UserEntity;
-import fi.muikku.model.users.UserPicture;
-import fi.muikku.session.SessionController;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

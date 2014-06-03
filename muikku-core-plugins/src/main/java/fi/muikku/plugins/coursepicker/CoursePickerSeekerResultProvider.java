@@ -6,7 +6,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import fi.muikku.i18n.LocaleController;
-import fi.muikku.plugins.seeker.DefaultSeekerResultImpl;
 import fi.muikku.plugins.seeker.SeekerResult;
 import fi.muikku.plugins.seeker.SeekerResultImpl;
 import fi.muikku.plugins.seeker.SeekerResultProvider;
