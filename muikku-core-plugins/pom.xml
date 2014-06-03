@@ -388,17 +388,6 @@
             <!-- <scope>provided</scope> -->
         </dependency>
 
-        <!-- <dependency> <groupId>net.java.dev.rome</groupId> <artifactId>rome</artifactId>
-        <version>1.0.0</version> </dependency> -->
-
-        <!-- Calendar dependencies -->
-
-        <dependency>
-            <groupId>org.mnode.ical4j</groupId>
-            <artifactId>ical4j</artifactId>
-            <version>1.0.4</version>
-        </dependency>
-
         <dependency>
             <groupId>org.elasticsearch</groupId>
             <artifactId>elasticsearch</artifactId>
@@ -562,10 +551,6 @@
             <id>otavanopisto-releases</id>
             <name>Otavan Opisto Releases</name>
             <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases</url>
-        </repository>
-        <repository>
-            <id>caldav4j</id>
-            <url>https://caldav4j.googlecode.com/svn/maven/</url>
         </repository>
         <repository>
             <id>repository.jboss.org_thirdparty-releases</id>
