@@ -1,4 +1,4 @@
-	package fi.muikku.plugins.calendar;
+package fi.muikku.plugins.calendar;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
@@ -6,6 +6,10 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 
 import fi.muikku.calendar.CalendarServiceProvider;
+import fi.muikku.calendar.Calendar;
+import fi.muikku.calendar.CalendarServiceException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Dependent
 @Stateful
@@ -13,10 +17,21 @@ public class CalendarController {
 
   @Any
 	private Instance<CalendarServiceProvider> serviceProviders;
-  
+
+  public List<Calendar> listCalendars() throws CalendarServiceException
+  {
+    List<Calendar> result = new ArrayList<>();
+
+    for (CalendarServiceProvider sp : serviceProviders) {
+      result.addAll(sp.listCalendars());
+    }
+
+    return result;
+  }
+
 //  @Inject
 //  private Logger logger;
-//  
+//
 //	@Inject
 //	private CalendarDAO calendarDAO;
 //
@@ -31,18 +46,18 @@ public class CalendarController {
 //
 //	@Inject
 //	private LocalEventDAO localEventDAO;
-//	
+//
 //	@Inject
 //	private LocalEventTypeDAO localEventTypeDAO;
 //
 //	@Inject
 //	private SubscribedCalendarDAO subscribedCalendarDAO;
-//	
+//
 //	@Inject
 //	private SubscribedEventDAO subscribedEventDAO;
-//	
+//
 //	/* UserCalendar */
-//	
+//
 //	public List<UserCalendar> listUserCalendars(UserEntity user) {
 //		return userCalendarDAO.listByUserId(user.getId());
 //	}
@@ -52,7 +67,7 @@ public class CalendarController {
 //	public Calendar findCalendar(Long calendarId) {
 //		return calendarDAO.findById(calendarId);
 //	}
-//	
+//
 //	public List<Calendar> listCalendars(UserEntity user) {
 //		List<Calendar> result = new ArrayList<>();
 //		List<UserCalendar> userCalendars = userCalendarDAO.listByUserId(user.getId());
@@ -65,9 +80,9 @@ public class CalendarController {
 //	public Calendar updateCalendarName(Calendar calendar, String name) {
 //		return calendarDAO.updateName(calendar, name);
 //	}
-//	
+//
 //	/* LocalCalendar */
-//	
+//
 //	public UserCalendar createLocalUserCalendar(UserEntity user, String name, String color, Boolean visible) {
 //		LocalCalendar localCalendar = localCalendarDAO.create(name, color);
 //		UserCalendar userCalendar = userCalendarDAO.create(localCalendar, user.getId(), visible);
@@ -79,10 +94,10 @@ public class CalendarController {
 //		List<UserCalendar> userCalendars = listUserCalendars(user);
 //		for (UserCalendar userCalendar : userCalendars) {
 //		  if (userCalendar.getCalendar() instanceof LocalCalendar) {
-//		  	result.add((LocalCalendar) userCalendar.getCalendar()); 
-//		  }	
+//		  	result.add((LocalCalendar) userCalendar.getCalendar());
+//		  }
 //		}
-//		
+//
 //		return result;
 //	}
 //
@@ -91,15 +106,15 @@ public class CalendarController {
 //		List<UserCalendar> userCalendars = listUserCalendars(user);
 //		for (UserCalendar userCalendar : userCalendars) {
 //		  if (userCalendar.getCalendar() instanceof LocalCalendar) {
-//		  	result.add(userCalendar); 
-//		  }	
+//		  	result.add(userCalendar);
+//		  }
 //		}
-//		
+//
 //		return result;
 //	}
 //
 //	/* SubscribedCalendar */
-//	
+//
 //	public UserCalendar createSubscribedUserCalendar(UserEntity user, String name, String url, String color, Boolean visible, Date lastSynchronized) {
 //		SubscribedCalendar subscribedCalendar = subscribedCalendarDAO.create(name, url, color, lastSynchronized);
 //		UserCalendar userCalendar = userCalendarDAO.create(subscribedCalendar, user.getId(), visible);
@@ -115,7 +130,7 @@ public class CalendarController {
 //					return userCalendar;
 //			}
 //		}
-//		
+//
 //		return null;
 //	}
 //
@@ -124,37 +139,37 @@ public class CalendarController {
 //		List<UserCalendar> userCalendars = listUserCalendars(user);
 //		for (UserCalendar userCalendar : userCalendars) {
 //		  if (userCalendar.getCalendar() instanceof SubscribedCalendar) {
-//		  	result.add(userCalendar); 
-//		  }	
+//		  	result.add(userCalendar);
+//		  }
 //		}
-//		
+//
 //		return result;
 //	}
 //
 //	public List<SubscribedCalendar> listUserSubscribedCalendars(UserEntity user) {
 //		List<SubscribedCalendar> result = new ArrayList<>();
-//		
+//
 //		List<UserCalendar> userCalendars = listUserCalendars(user);
 //		for (UserCalendar userCalendar : userCalendars) {
 //		  if (userCalendar.getCalendar() instanceof SubscribedCalendar) {
-//		  	result.add((SubscribedCalendar) userCalendar.getCalendar()); 
-//		  }	
+//		  	result.add((SubscribedCalendar) userCalendar.getCalendar());
+//		  }
 //		}
-//		
+//
 //		return result;
 //	}
 //
 //	public net.fortuna.ical4j.model.Calendar loadIcsCalendar(String url) throws IOException, ParserException, URISyntaxException {
 //	  throw new IOException();
 ////		DefaultHttpClient httpClient = new DefaultHttpClient();
-////		
+////
 ////		SchemeRegistry schemeRegistry = httpClient.getConnectionManager().getSchemeRegistry();
 ////		if (!schemeRegistry.getSchemeNames().contains("webcal")) {
 ////		  schemeRegistry.register(new Scheme("webcal", 80, PlainSocketFactory.getSocketFactory()));
 ////		}
-////		
+////
 ////		HttpGet httpGet = new HttpGet(new URI(url));
-////		
+////
 ////		HttpResponse response = httpClient.execute(httpGet);
 ////		if (response.getStatusLine().getStatusCode() == 200) {
 ////		  HttpEntity entity = response.getEntity();
@@ -173,36 +188,36 @@ public class CalendarController {
 ////			throw new IOException(response.getStatusLine().getReasonPhrase());
 ////		}
 //	}
-//	
+//
 //	public String getIcsCalendarName(net.fortuna.ical4j.model.Calendar calendar) {
 //		Property property = calendar.getProperty("X-WR-CALNAME");
 //		if (property != null && StringUtils.isNotBlank(property.getValue())) {
 //			// Check for X-WR-CALNAME extension
 //			return property.getValue();
 //		}
-//		
+//
 //		// If name could not be found from extension calendar does not contain name information
 //		return null;
 //	}
-//	
+//
 //	public boolean isAllDayIcsEvent(VEvent event) {
 //		// Scan X-FUNAMBOL-ALLDAY and X-MICROSOFT-CDO-ALLDAYEVENT extensions for all-day info
-//		
+//
 //		Boolean extensionAllDay = getBooleanIcsComponentProperty(event, "X-FUNAMBOL-ALLDAY");
 //		if (extensionAllDay != null) {
 //			return extensionAllDay;
 //		}
-//		
+//
 //		extensionAllDay = getBooleanIcsComponentProperty(event, "X-MICROSOFT-CDO-ALLDAYEVENT");
 //		if (extensionAllDay != null) {
 //			return extensionAllDay;
 //		}
-//		
+//
 //		// If extensions are not defined we try to figure it out from the start and end dates
 //		if (event.getEndDate() == null) {
 //			return true;
 //		}
-//		
+//
 //		long millisecondsBetween = event.getEndDate().getDate().getTime() - event.getStartDate().getDate().getTime();
 //		if (millisecondsBetween < DateUtils.MILLIS_PER_DAY) {
 //			return false;
@@ -211,10 +226,10 @@ public class CalendarController {
 //		}
 //
 //	}
-//	
+//
 //	/**
-//	 * Checks for Google's X-GOOGLE-HANGOUT extension 
-//	 * 
+//	 * Checks for Google's X-GOOGLE-HANGOUT extension
+//	 *
 //	 * @return Hangout url or null if not present
 //	 */
 //	private String getHangoutUrl(VEvent event) {
@@ -225,25 +240,25 @@ public class CalendarController {
 //				return url;
 //			}
 //		}
-//		
+//
 //		return null;
 //	}
 //
 //	@SuppressWarnings("unchecked")
 //  public void synchronizeSubscribedCalendar(SubscribedCalendar subscribedCalendar, net.fortuna.ical4j.model.Calendar icsCalendar) throws IOException, ParserException, URISyntaxException {
 //		Set<String> removedUids = new HashSet<>();
-//		
+//
 //		List<SubscribedEvent> existingEvents = subscribedEventDAO.listByCalendar(subscribedCalendar);
 //		for (SubscribedEvent existingEvent : existingEvents) {
 //			removedUids.add(existingEvent.getUid());
 //		}
-//		
+//
 //		Iterator<Component> componentIterator = icsCalendar.getComponents().iterator();
 //		while (componentIterator.hasNext()) {
 //			Component component = componentIterator.next();
 //			if (component instanceof VEvent) {
 //				VEvent event = (VEvent) component;
-//				
+//
 //				Uid uidObject = event.getUid();
 //				if (uidObject != null) {
 //  				Description descriptionObject = event.getDescription();
@@ -254,12 +269,12 @@ public class CalendarController {
 //  				Location locationObject = event.getLocation();
 //  				Geo geographicPosObject = event.getGeographicPos();
 //  				String uid = uidObject.getValue();
-//		
+//
 //  				if (startDate == null) {
 //  					logger.warning("Subscribed event " + uid + " does not have a start date. Skipping");
 //  					continue;
 //  				}
-//  				
+//
 //  				Date start = startDate.getDate();
 //  				Date end = endDate == null ? start : endDate.getDate();
 //  				boolean allDay = isAllDayIcsEvent(event);
@@ -270,9 +285,9 @@ public class CalendarController {
 //  				BigDecimal latitude = geographicPosObject != null ? geographicPosObject.getLatitude() : null;
 //  				BigDecimal longitude = geographicPosObject != null ? geographicPosObject.getLongitude(): null;
 //  				String hangoutUrl = getHangoutUrl(event);
-//  				
+//
 //  				SubscribedEvent subscribedEvent = subscribedEventDAO.findByCalendarAndUid(subscribedCalendar, uid);
-//  				if (subscribedEvent == null) { 
+//  				if (subscribedEvent == null) {
 //    				subscribedEventDAO.create(subscribedCalendar, uid, summary, description, location, start, end, eventUrl, allDay, latitude, longitude, hangoutUrl);
 //  				} else {
 //  					subscribedEventDAO.updateSummary(subscribedEvent, summary);
@@ -286,24 +301,24 @@ public class CalendarController {
 //  					subscribedEventDAO.updateLongitude(subscribedEvent, longitude);
 //  					subscribedEventDAO.updateHangoutUrl(subscribedEvent, hangoutUrl);
 //  				}
-//  				
+//
 //  				removedUids.remove(uid);
 //				} else {
 //					logger.warning("Skiped " + subscribedCalendar.getId() + " event because no uid could be found.");
 //				}
 //			}
 //		}
-//		
+//
 //		for (String removedUid : removedUids) {
 //			SubscribedEvent removeEvent = subscribedEventDAO.findByCalendarAndUid(subscribedCalendar, removedUid);
 //			if (removeEvent != null) {
 //			  subscribedEventDAO.delete(removeEvent);
 //			}
 //		}
-//		
+//
 //		subscribedCalendarDAO.updateLastSynchronized(subscribedCalendar, new Date(System.currentTimeMillis()));
 //	}
-//	
+//
 //	public void synchronizeSubscribedCalendar(SubscribedCalendar subscribedCalendar) throws IOException, ParserException, URISyntaxException {
 //		synchronizeSubscribedCalendar(subscribedCalendar, loadIcsCalendar(subscribedCalendar.getUrl()));
 //	}
@@ -314,10 +329,10 @@ public class CalendarController {
 //		if (calendars.size() == 1) {
 //  		return calendars.get(0);
 //		}
-//		
+//
 //		return null;
 //	}
-//	
+//
 //	/* UserCalendar */
 //
 //	public UserCalendar findUserCalendarByCalendarAndUser(Calendar calendar, UserEntity user) {
@@ -327,7 +342,7 @@ public class CalendarController {
 //	public UserCalendar updateUserCalendarVisible(UserCalendar userCalendar, Boolean visible) {
 //		return userCalendarDAO.updateVisible(userCalendar, visible);
 //	}
-//	
+//
 //	/* LocalEvents */
 //
 //	public LocalEvent createLocalEvent(LocalCalendar calendar, LocalEventType type, String summary, String description, String location, String url, Date start, Date end, Boolean allDay, BigDecimal latitude, BigDecimal longitude, String hangoutUrl) {
@@ -337,9 +352,9 @@ public class CalendarController {
 //	public LocalEvent findLocalEventById(Long id) {
 //		return localEventDAO.findById(id);
 //	}
-//	
+//
 //	public LocalEvent updateLocalEvent(LocalEvent localEvent, LocalEventType type, String summary, String description, String location, String url, Date start, Date end, Boolean allDay, BigDecimal latitude, BigDecimal longitude) {
-//		
+//
 //		localEventDAO.updateType(localEvent, type);
 //		localEventDAO.updateSummary(localEvent, summary);
 //		localEventDAO.updateDescription(localEvent, description);
@@ -350,7 +365,7 @@ public class CalendarController {
 //		localEventDAO.updateAllDay(localEvent, allDay);
 //		localEventDAO.updateLatitude(localEvent, latitude);
 //		localEventDAO.updateLongitude(localEvent, longitude);
-//		
+//
 //		return localEvent;
 //	}
 //
@@ -361,20 +376,20 @@ public class CalendarController {
 //	public void deleteLocalEvent(LocalEvent localEvent) {
 //		localEventDAO.delete(localEvent);
 //	}
-//	
+//
 //	/* Events */
-//	
+//
 //	public List<Event> listCalendarEvents(Calendar calendar) {
 //		return eventDAO.listByCalendar(calendar);
 //	}
-//	
+//
 //	public List<Event> listCalendarEvents(Calendar calendar, Date start, Date end) {
 //		// time span end <= event start, time span start => event end
 //		return eventDAO.listByCalendarAndStartLeAndEndGe(calendar, end, start);
 //	}
-//	
+//
 //	/* LocalEventType */
-//	
+//
 //	public LocalEventType createLocalEventType(String name) {
 //		return localEventTypeDAO.create(name);
 //	}
@@ -386,15 +401,15 @@ public class CalendarController {
 //	public List<LocalEventType> listLocalEventTypes() {
 //		return localEventTypeDAO.listAll();
 //	}
-//	
+//
 //	/* Private */
-//	
+//
 //	private Boolean getBooleanIcsComponentProperty(Component component, String propertyName) {
 //		Property property = component.getProperty(propertyName);
 //		if (property != null) {
 //			return "1".equals(property.getValue());
 //		}
-//		
+//
 //		return null;
 //	}
 }
