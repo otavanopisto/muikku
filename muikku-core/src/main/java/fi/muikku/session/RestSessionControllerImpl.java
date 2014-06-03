@@ -1,6 +1,10 @@
 package fi.muikku.session;
 
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -81,7 +85,18 @@ public class RestSessionControllerImpl extends AbstractSessionController impleme
     }
   }
 
+  @Override
+  public void addOAuthAccessToken(String strategy, Date expires, String accessToken) {
+    accessTokens.put(strategy, new AccessToken(accessToken, expires));
+  }
+
+  @Override
+  public AccessToken getOAuthAccessToken(String strategy) {
+    return accessTokens.get(strategy);
+  }
+
   private RestAuthentication authentication;
   private Locale locale;
 
+  private Map<String, AccessToken> accessTokens = Collections.synchronizedMap(new HashMap<String, AccessToken>());
 }
