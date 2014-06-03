@@ -10,7 +10,23 @@ public interface CalendarServiceProvider {
    * @return name of calendar service provider
    */
   public String getName();
+  
+  /**
+   * Returns whether service provider is read only
+   * 
+   * @return whether service provider is read only
+   */
+  public boolean isReadOnly();
 
+  /**
+   * Creates a new calendar
+   * 
+   * @param summary calendar summary (title)
+   * @param description calendar description
+   * @return
+   */
+  public Calendar createCalendar(String summary, String description);
+  
   /**
    * Returns a calendar by id
    * 
