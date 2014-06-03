@@ -99,5 +99,12 @@ public interface CalendarEvent {
    */
   public Map<String, String> getExtendedProperties(); 
   
-  // TODO: recurrence, reminders
+  /**
+   * Returns list of reminders for the event
+   * 
+   * @return list of reminders for the event
+   */
+  public List<CalendarEventReminder> getEventReminders();
+  
+  // TODO: recurrence
 }
