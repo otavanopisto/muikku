@@ -139,6 +139,17 @@ public class CalendarController {
     
     return calendarEvent;
   }
+
+  public void deleteCalendarEvent(UserCalendar userCalendar, String eventId) throws CalendarServiceException {
+    CalendarServiceProvider provider = getCalendarServiceProvider(userCalendar.getCalendarProvider());
+    
+    Calendar calendar = provider.findCalendar(userCalendar.getCalendarId());
+    if (calendar == null) {
+      throw new CalendarServiceException("Could not find calendar for user calendar #" + userCalendar.getId());
+    }
+    
+    // TODO: Implement actual deleting
+  }
   
   public Calendar loadCalendar(UserCalendar userCalendar) throws CalendarServiceException {
     CalendarServiceProvider provider = getCalendarServiceProvider(userCalendar.getCalendarProvider());

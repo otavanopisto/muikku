@@ -283,8 +283,26 @@ public class CalendarRESTService extends PluginRESTService {
   @DELETE
   @Path ("/calendars/{CALID}/events/{EVTID}")
   @LoggedIn
-  public Response deleteEvent(@PathParam ("CALID") Long calendarId, @PathParam ("EVTID") Long eventId) {
-    return Response.status(501).build();
+  public Response deleteEvent(@PathParam ("CALID") Long calendarId, @PathParam ("EVTID") String eventId) {
+    if (calendarId == null || StringUtils.isBlank(eventId)) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
+    UserCalendar userCalendar = calendarController.findUserCalendar(calendarId);
+    if (userCalendar == null) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
+    if (!userCalendar.getUserId().equals(sessionController.getUser().getId())) {
+      return Response.status(Response.Status.FORBIDDEN).build();
+    }
+    
+    try {
+      calendarController.deleteCalendarEvent(userCalendar, eventId);
+      return Response.noContent().build();
+    } catch (CalendarServiceException e) {
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
   }
   
   private CalendarEvent createEventRestModel(UserCalendar userCalendar, fi.muikku.calendar.CalendarEvent calendarEvent) {
