@@ -85,7 +85,7 @@ public class CalendarController {
       throw new CalendarServiceException("Could not find calendar for user calendar #" + userCalendar.getId());
     }
     
-    // TODO: Implement actual deleting
+    provider.deleteCalendar(calendar);
   }
 
   public CalendarEvent createCalendarEvent(UserCalendar userCalendar, String summary, String description, CalendarEventStatus status, 
@@ -147,7 +147,7 @@ public class CalendarController {
       throw new CalendarServiceException("Could not find calendar for user calendar #" + userCalendar.getId());
     }
     
-    // TODO: Implement actual deleting
+    provider.deleteEvent(calendar, eventId);
   }
   
   public Calendar loadCalendar(UserCalendar userCalendar) throws CalendarServiceException {

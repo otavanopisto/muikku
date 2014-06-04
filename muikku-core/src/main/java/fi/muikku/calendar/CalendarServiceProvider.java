@@ -56,6 +56,14 @@ public interface CalendarServiceProvider {
   public Calendar updateCalendar(Calendar calendar) throws CalendarServiceException;;
 
   /**
+   * Removes a calendar
+   * 
+   * @param calendar calendar to be removed
+   * @throws CalendarServiceException
+   */
+  public void deleteCalendar(Calendar calendar) throws CalendarServiceException;
+  
+  /**
    * Creates new calendar event into the calendar.
    *
    * @param calendarId calendar identifier
@@ -112,4 +120,13 @@ public interface CalendarServiceProvider {
    * @throws CalendarServiceException when service provider reports an error
    */
   public CalendarEvent updateEvent(CalendarEvent calendarEvent) throws CalendarServiceException;
+  
+  /**
+   * Removes a calendar event
+   * 
+   * @param calendar calendar which owns the event to be removed
+   * @param eventId id of event to be removed
+   * @throws CalendarServiceException when service provider reports an error
+   */
+  public void deleteEvent(Calendar calendar, String eventId) throws CalendarServiceException;
 }
