@@ -1,19 +1,27 @@
 package fi.muikku.plugins.calendar.rest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
-import fi.muikku.calendar.Calendar;
 import fi.muikku.calendar.CalendarServiceException;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.calendar.CalendarController;
+import fi.muikku.plugins.calendar.model.UserCalendar;
+import fi.muikku.plugins.calendar.rest.model.Calendar;
+import fi.muikku.plugins.calendar.rest.model.CalendarEvent;
+import fi.muikku.security.LoggedIn;
+import fi.muikku.session.SessionController;
 
 @RequestScoped
 @Path ("/calendar")
@@ -23,361 +31,90 @@ public class CalendarRESTService extends PluginRESTService {
 	@Inject
 	private CalendarController calendarController;
 
+  @Inject
+	private SessionController sessionController;
+	
+	@POST
+  @Path ("/calendars/")
+  @LoggedIn
+	public Response createCalendar(Calendar calendar) {
+	  return Response.status(501).build();
+	}
+	
   @GET
-  @Path ("/calendars")
+  @Path ("/calendars/")
+  @LoggedIn
   public Response listCalendars() {
-    List<Calendar> calendars = calendarController.listCalendars();
-    return Response.ok(calendars).build();
+    List<Calendar> result = new ArrayList<>();
+    
+    try {
+      List<UserCalendar> userCalendars = calendarController.listUserCalendars(sessionController.getUser());
+      for (UserCalendar userCalendar : userCalendars) {
+        fi.muikku.calendar.Calendar calendar = calendarController.loadCalendar(userCalendar);
+        result.add(new Calendar(
+          userCalendar.getId(), 
+          calendar.getSummary(), 
+          calendar.getDescription())
+        );
+      }      
+    } catch (CalendarServiceException e) {
+      e.printStackTrace();
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
+    
+    return Response.ok(result).build();
   }
-
-//  	// TODO: Permissions
-//		// List all calendars user has permissions
-//
-//  	UserEntity user = sessionController.getUser();
-//  	List<UserCalendar> userCalendars = null;
-//  	List<Calendar> calendars = new ArrayList<>();
-//
-//		if (StringUtils.isBlank(calendarType)) {
-//			userCalendars = calendarController.listUserCalendars(user);
-//  	} else {
-//  		CalendarType type = CalendarType.valueOf(calendarType);
-//  		switch (type) {
-//  			case LOCAL:
-//  				userCalendars = calendarController.listUserLocalUserCalendars(user);
-//  			break;
-//  			case SUBSCRIBED:
-//  				userCalendars = calendarController.listUserSubscribedUserCalendars(user);
-//  			break;
-//  		}
-//  	}
-//
-//		for (UserCalendar userCalendar : userCalendars) {
-//  		calendars.add(userCalendar.getCalendar());
-//  	}
-//
-//  	TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
-//    Tranquility tranquility = tranquilityBuilder
-//    		.createTranquility()
-//        .addInstruction(new SuperClassInstructionSelector(Calendar.class), tranquilityBuilder.createPropertyInjectInstruction("visible", new CalendarVisiblityValueGetter(userCalendars)));
-//
-//    return Response.ok(
-//    		tranquility.entities(calendars)
-//    ).build();
-//  }
-//
-//  @GET
-//  @Path ("/calendars/{CALENDARID}")
-//  public Response getCalendar(@PathParam ("CALENDARID") Long calendarId) {
-//  	// TODO: Permissions
-//  	Calendar calendar = calendarController.findCalendar(calendarId);
-//  	if (calendar == null) {
-//  		return Response.status(Status.NOT_FOUND).build();
-//  	}
-//
-//  	UserEntity user = sessionController.getUser();
-//
-//  	UserCalendar userCalendar = calendarController.findUserCalendarByCalendarAndUser(calendar, user);
-//  	if (userCalendar == null) {
-//  		return Response.status(Status.NOT_FOUND).build();
-//  	}
-//
-//  	TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
-//    Tranquility tranquility = tranquilityBuilder
-//    		.createTranquility()
-//        .addInstruction(new SuperClassInstructionSelector(Calendar.class), tranquilityBuilder.createPropertyInjectInstruction("visible", new CalendarVisiblityValueGetter(Arrays.asList(userCalendar))));
-//
-//    TranquilModelEntity entity = tranquility.entity(calendar);
-//
-//    return Response.ok(
-//    	entity
-//    ).build();
-//  }
-//
-//  @PUT
-//  @Path ("/calendars/{CALENDARID}")
-//  public Response saveCalendar(@PathParam ("CALENDARID") Long calendarId, String data) {
-//  	// TODO: Permissions
-//  	Calendar calendar = calendarController.findCalendar(calendarId);
-//  	if (calendar == null) {
-//  		return Response.status(Status.NOT_FOUND).build();
-//  	}
-//
-//  	UserEntity user = sessionController.getUser();
-//
-//  	UserCalendar userCalendar = calendarController.findUserCalendarByCalendarAndUser(calendar, user);
-//  	if (userCalendar == null) {
-//  		return Response.status(Status.NOT_FOUND).build();
-//  	}
-//
-//		JSONObject jsonData = JSONObject.fromObject(data);
-//		@SuppressWarnings("unchecked") Set<String> keys = jsonData.keySet();
-//
-//		for (String key : keys) {
-//			switch (key) {
-//				case "visible":
-//					Boolean visible = jsonData.optBoolean("visible");
-//					if (visible != null) {
-//						calendarController.updateUserCalendarVisible(userCalendar, visible);
-//					}
-//			  break;
-//				case "name":
-//					String name = jsonData.optString("name");
-//					if (name != null) {
-//						calendarController.updateCalendarName(calendar, name);
-//					}
-//				break;
-//				default:
-//					// TODO: Proper error handling
-//					throw new RuntimeException("Calendar property " + key + " can not be updated");
-//			}
-//		}
-//
-//  	TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
-//    Tranquility tranquility = tranquilityBuilder.createTranquility();
-//    TranquilModelEntity entity = tranquility.entity(calendar);
-//
-//    return Response.ok(
-//    	entity
-//    ).build();
-//  }
-//
-//  /**
-//   * Creates a new calendar.
-//   *
-//   * Expects JSON -formatted string
-//   *
-//   *  {
-//   *    "color": "hex string",
-//   *    "calendarType": "LOCAL"/"SUBSCRIBED",
-//   *    "visible": true/false,
-//   *    "name": when calendarType == LOCAL, a name of the calendar
-//   *    "url": when calendarType == SUBSCRIBED, a url to the remote calendar
-//   *  }
-//   *
-//   * Returns
-//   *
-//   *  {
-//   *    "id": id
-//   *    "environment_id": environment id,
-//   *    "name": "Name of the calendar",
-//   *    "color": "hex string",
-//   *    "calendarType": "LOCAL"/"SUBSCRIBED",
-//   *    "visible": true/false,
-//   *    "url": when calendarType == SUBSCRIBED, a url to the remote calendar
-//   *  }
-//   */
-//
-//  @POST
-//  @Path ("/calendars")
-//  public Response createCalendar(String data) {
-//
-//  	JSONObject jsonData = JSONObject.fromObject(data);
-//
-//  	// TODO: Better error handling
-//  	String color = jsonData.getString("color");
-//  	CalendarType calendarType = CalendarType.valueOf(jsonData.getString("calendarType"));
-//  	Boolean visibile = jsonData.getBoolean("visible");
-//  	String name = null;
-//  	UserCalendar userCalendar = null;
-//
-//  	UserEntity user = sessionController.getUser();
-//
-//  	switch (calendarType) {
-//  		case LOCAL:
-//  			name = jsonData.getString("name");
-//  			userCalendar = calendarController.createLocalUserCalendar(user, name, color, visibile);
-//  	  break;
-//  		case SUBSCRIBED:
-//  			String url = jsonData.getString("url");
-//
-//  			net.fortuna.ical4j.model.Calendar icsCalendar;
-//  			try {
-//  				icsCalendar = calendarController.loadIcsCalendar(StringUtils.trim(url));
-//  			} catch (IOException | ParserException | URISyntaxException e) {
-//  	  		// TODO: Localize
-//  	  		return Response.status(Status.BAD_REQUEST).entity("Could subscribe to calendar in " + url).build();
-//  			}
-//
-//  	  	if (icsCalendar == null) {
-//  	  		// TODO: Localize
-//  	  		return Response.status(Status.BAD_REQUEST).entity("Could subscribe to calendar in " + url).build();
-//  	  	}
-//
-//  	  	name = calendarController.getIcsCalendarName(icsCalendar);
-//  	  	if (StringUtils.isBlank(name)) {
-//  	  		name = url;
-//  	  	}
-//
-//  	  	userCalendar = calendarController.createSubscribedUserCalendar(user, name, url, color, visibile, new Date());
-//
-//  	  	try {
-//  				calendarController.synchronizeSubscribedCalendar((SubscribedCalendar) userCalendar.getCalendar(), icsCalendar);
-//  			} catch (IOException | ParserException | URISyntaxException e) {
-//  				logger.log(Level.SEVERE, "Calendar synchronization failed", e);
-//  			}
-//
-//  		break;
-//  	}
-//
-//    TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
-//    Tranquility tranquility = tranquilityBuilder.createTranquility()
-//    		.addInstruction(new SuperClassInstructionSelector(Calendar.class), tranquilityBuilder.createPropertyInjectInstruction("visible", new CalendarVisiblityValueGetter(Arrays.asList(userCalendar))));
-//
-//    return Response.ok(
-//    	tranquility.entity(userCalendar.getCalendar())
-//    ).build();
-//  }
-//
-//  @POST
-//  @Path ("/calendars/{CALENDARID}/events")
-//  public Response createCalendarEvent(@PathParam ("CALENDARID") Long calendarId, String data) {
-//
-//  	// TODO: Permissions
-//  	Calendar calendar = calendarController.findCalendar(calendarId);
-//  	if (calendar == null) {
-//  		return Response.status(Status.NOT_FOUND).build();
-//  	}
-//
-//  	if (calendar instanceof LocalCalendar) {
-//  		LocalCalendar localCalendar = (LocalCalendar) calendar;
-//
-//  		JSONObject jsonData = JSONObject.fromObject(data);
-//
-//  		String summary = jsonData.optString("summary");
-//  		String description = jsonData.optString("description");
-//  		String location = jsonData.optString("location");
-//  		String url = jsonData.optString("url");
-//  		String hangoutUrl = jsonData.optString("hangoutUrl");
-//  		Date start = new Date(jsonData.optLong("start"));
-//  		Date end = new Date(jsonData.optLong("end"));
-//  		Boolean allDay = jsonData.optBoolean("allDay");
-//  		BigDecimal latitude = getBigDecimal(jsonData, "latitude");
-//  		BigDecimal longitude = getBigDecimal(jsonData, "longitude");
-//  		Long typeId = jsonData.optLong("type_id");
-//
-//  		LocalEventType eventType = calendarController.findLocalEventType(typeId);
-//  		if (eventType == null) {
-//    		return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not find event type #" + typeId).build();
-//    	}
-//
-//    	LocalEvent localEvent = calendarController.createLocalEvent(localCalendar, eventType, summary, description, location, url, start, end, allDay, latitude, longitude, hangoutUrl);
-//
-//    	TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
-//      Tranquility tranquility = tranquilityBuilder.createTranquility();
-//
-//      return Response.ok(
-//      	tranquility.entity(localEvent)
-//      ).build();
-//  	} else {
-//  		return Response.status(Status.BAD_REQUEST).entity("Cannot add event into subscribed calendar").build();
-//  	}
-//  }
-//
-//  @GET
-//  @Path ("/calendars/{CALENDARID}/events")
-//  public Response getCalendarEvents(@PathParam ("CALENDARID") Long calendarId, @QueryParam ("start") Long start, @QueryParam ("end") Long end) {
-//  	// TODO: Permissions
-//  	Calendar calendar = calendarController.findCalendar(calendarId);
-//  	if (calendar == null) {
-//  		return Response.status(Status.NOT_FOUND).build();
-//  	}
-//
-//  	if (((start != null)||(end != null)) && ((start == null)||(end == null))) {
-//  		return Response.status(Status.BAD_REQUEST).entity("If either of start or end is present both need to be specified").build();
-//  	}
-//
-//  	List<Event> events = null;
-//
-//  	if (start != null && end != null) {
-//  		events = calendarController.listCalendarEvents(calendar, new Date(start), new Date(end));
-//  	} else {
-//  		events = calendarController.listCalendarEvents(calendar);
-//  	}
-//
-//  	TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
-//    Tranquility tranquility = tranquilityBuilder.createTranquility();
-//
-//    return Response.ok(
-//    	tranquility.entities(events)
-//    ).build();
-//  }
-//
-//  @PUT
-//  @Path ("/calendars/{CALENDARID}/events/{EVENTID}")
-//  public Response updateCalendarEvent(
-//  		@PathParam ("CALENDARID") Long calendarId,
-//  		@PathParam ("EVENTID") Long eventId,
-//  		String data) {
-//
-//  	// TODO: Permissions
-//
-//  	LocalEvent localEvent = calendarController.findLocalEventById(eventId);
-//  	if (localEvent == null) {
-//  		return Response.status(Status.NOT_FOUND).build();
-//  	}
-//
-//  	if (!localEvent.getCalendar().getId().equals(calendarId)) {
-//  		return Response.status(Status.NOT_FOUND).build();
-//  	}
-//
-//  	JSONObject jsonData = JSONObject.fromObject(data);
-//
-//		Long targetCalendarId = jsonData.optLong("calendar_id");
-//		Long typeId = jsonData.optLong("type_id");
-//		String summary = jsonData.optString("summary");
-//		String description = jsonData.optString("description");
-//		String location = jsonData.optString("location");
-//		String url = jsonData.optString("url");
-//		Date start = new Date(jsonData.optLong("start"));
-//		Date end = new Date(jsonData.optLong("end"));
-//		Boolean allDay = jsonData.optBoolean("allDay");
-//		BigDecimal latitude = getBigDecimal(jsonData, "latitude");
-//		BigDecimal longitude = getBigDecimal(jsonData, "longitude");
-//
-//		LocalEventType eventType = calendarController.findLocalEventType(typeId);
-//		if (eventType == null) {
-//  		return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not find event type #" + typeId).build();
-//  	}
-//
-//		calendarController.updateLocalEvent(localEvent, eventType, summary, description, location, url, start, end, allDay, latitude, longitude);
-//  	if ((targetCalendarId != null) && (targetCalendarId != calendarId)) {
-//  		// Event has been moved into new calendar
-//  		// TODO: Check that user has permission to target calendar
-//  		LocalCalendar targetCalendar = (LocalCalendar) calendarController.findCalendar(targetCalendarId);
-//  		calendarController.updateLocalEventCalendar(localEvent, targetCalendar);
-//  	}
-//
-//
-//  	TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
-//    Tranquility tranquility = tranquilityBuilder.createTranquility();
-//
-//  	return Response.ok(
-//      tranquility.entity(localEvent)
-//    ).build();
-//  }
-//
-//  @DELETE
-//  @Path ("/calendars/{CALENDARID}/events/{EVENTID}")
-//  public Response deleteCalendarEvent(
-//  		@PathParam ("CALENDARID") Long calendarId,
-//  		@PathParam ("EVENTID") Long eventId) {
-//
-//  	// TODO: Permissions
-//
-//  	LocalEvent localEvent = calendarController.findLocalEventById(eventId);
-//  	if (localEvent == null) {
-//  		return Response.status(Status.NOT_FOUND).build();
-//  	}
-//
-//  	if (!localEvent.getCalendar().getId().equals(calendarId)) {
-//  		return Response.status(Status.NOT_FOUND).build();
-//  	}
-//
-//    calendarController.deleteLocalEvent(localEvent);
-//
-//  	return Response.noContent().build();
-//  }
-//
+  
+  @PUT
+  @Path ("/calendars/{CALID}")
+  @LoggedIn
+  public Response updateCalendar(@PathParam ("CALID") Long calendarId, Calendar calendar) {
+    return Response.status(501).build();
+  }
+  
+  @DELETE
+  @Path ("/calendars/{CALID}")
+  @LoggedIn
+  public Response deleteCalendar(@PathParam ("CALID") Long calendarId, Calendar calendar) {
+    return Response.status(501).build();
+  }
+  
+  @POST
+  @Path ("/calendars/{CALID}/events/")
+  @LoggedIn
+  public Response createEvent(@PathParam ("CALID") Long calendarId, CalendarEvent event) {
+    return Response.status(501).build();
+  }
+  
+  @GET
+  @Path ("/calendars/{CALID}/events/")
+  @LoggedIn
+  public Response getEvents(@PathParam ("CALID") Long calendarId) {
+    return Response.status(501).build();
+  }
+  
+  @GET
+  @Path ("/calendars/{CALID}/events/{EVTID}")
+  @LoggedIn
+  public Response getEvent(@PathParam ("CALID") Long calendarId, @PathParam ("EVTID") Long eventId) {
+    return Response.status(501).build();
+  }
+  
+  @PUT
+  @Path ("/calendars/{CALID}/events/{EVTID}")
+  @LoggedIn
+  public Response getEvent(@PathParam ("CALID") Long calendarId, @PathParam ("EVTID") Long eventId, CalendarEvent event) {
+    return Response.status(501).build();
+  }
+  
+  @DELETE
+  @Path ("/calendars/{CALID}/events/{EVTID}")
+  @LoggedIn
+  public Response deleteEvent(@PathParam ("CALID") Long calendarId, @PathParam ("EVTID") Long eventId) {
+    return Response.status(501).build();
+  }
+  
+  
 //
 //  @POST
 //  @Path ("/localEventTypes")
