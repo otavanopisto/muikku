@@ -1,18 +1,83 @@
 	package fi.muikku.plugins.calendar;
 
-import javax.ejb.Stateful;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
 
+import org.apache.commons.collections.CollectionUtils;
+
+import fi.muikku.calendar.Calendar;
 import fi.muikku.calendar.CalendarServiceProvider;
+import fi.muikku.plugins.calendar.dao.UserCalendarDAO;
+import fi.muikku.plugins.calendar.model.UserCalendar;
+import fi.muikku.session.SessionController;
 
 @Dependent
-@Stateful
+@Stateless
 public class CalendarController {
 
+  @Inject
+  private SessionController sessionController;
+
+  @Inject 
   @Any
-	private Instance<CalendarServiceProvider> serviceProviders;
+  private Instance<CalendarServiceProvider> serviceProviders;
+
+  @Inject
+  private UserCalendarDAO userCalendarDAO;
+  
+  public List<Calendar> listCalendars() {
+    Long loggedUserId = sessionController.getUser().getId();
+    if (loggedUserId == null) {
+      // TODO: Better error handling
+      return null;
+    }
+    
+    List<Calendar> result = new ArrayList<>();
+    
+    List<UserCalendar> userCalendars = userCalendarDAO.listByUserId(loggedUserId);
+    for (UserCalendar userCalendar : userCalendars) {
+      CalendarServiceProvider provider = getCalendarServiceProvider(userCalendar.getCalendarProvider());
+      if (provider != null) {
+        Calendar calendar = provider.findCalendar(userCalendar.getCalendarId());
+        if (calendar != null) {
+          result.add(calendar);
+        } else {
+          // TODO: Better error handling
+        }
+      } else {
+        // TODO: Better error handling
+      }
+    }
+
+    return result;
+  }
+  
+  private CalendarServiceProvider getCalendarServiceProvider(String name) {
+    Iterator<CalendarServiceProvider> iterator = serviceProviders.iterator();
+    while (iterator.hasNext()) {
+      CalendarServiceProvider serviceProvider = iterator.next();
+      if (name.equals(serviceProvider.getName())) {
+        return serviceProvider;
+      }
+    }
+    
+    return null;
+  }
+
+  @SuppressWarnings("unused")
+  private List<CalendarServiceProvider> getCalendarServiceProviders() {
+    List<CalendarServiceProvider> result = new ArrayList<>();
+    CollectionUtils.addAll(result, serviceProviders.iterator());
+    return Collections.unmodifiableList(result);
+  }
   
 //  @Inject
 //  private Logger logger;
