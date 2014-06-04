@@ -19,7 +19,6 @@ import fi.muikku.calendar.CalendarServiceProvider;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.calendar.dao.UserCalendarDAO;
 import fi.muikku.plugins.calendar.model.UserCalendar;
-import fi.muikku.session.SessionController;
 
 @Dependent
 @Stateless
@@ -31,6 +30,20 @@ public class CalendarController {
 
   @Inject
   private UserCalendarDAO userCalendarDAO;
+  
+  public UserCalendar createCalendar(UserEntity user, String serviceProvider, String summary, String description, Boolean visible) throws CalendarServiceException {
+    CalendarServiceProvider provider = getCalendarServiceProvider(serviceProvider);
+    if (provider != null) {
+      Calendar calendar = provider.createCalendar(summary, description);
+      if (calendar == null) {
+        throw new CalendarServiceException("Could create calendar for service provider: " + serviceProvider);
+      } else {
+        return userCalendarDAO.create(calendar.getId(), serviceProvider, user.getId(), visible);
+      }
+    } else {
+      throw new CalendarServiceException("Could not find calendar service provider: " + serviceProvider);
+    }
+  }
   
   public List<UserCalendar> listUserCalendars(UserEntity user) {
     return userCalendarDAO.listByUserId(user.getId());
