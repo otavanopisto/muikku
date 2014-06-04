@@ -25,6 +25,7 @@ public interface CalendarServiceProvider {
    * @param summary calendar summary (title)
    * @param description calendar description
    * @return
+   * @throws CalendarServiceException when service provider reports an error
    */
   public Calendar createCalendar(String summary, String description) throws CalendarServiceException;
 
@@ -33,6 +34,7 @@ public interface CalendarServiceProvider {
    *
    * @param id calendar identifier
    * @return a calendar
+   * @throws CalendarServiceException when service provider reports an error
    */
   public Calendar findCalendar(String id) throws CalendarServiceException;
 
@@ -40,6 +42,7 @@ public interface CalendarServiceProvider {
    * Returns a list of public calendars
    *
    * @return a list of public calendars
+   * @throws CalendarServiceException when service provider reports an error
    */
   public List<Calendar> listPublicCalendars() throws CalendarServiceException;
   
@@ -48,6 +51,7 @@ public interface CalendarServiceProvider {
    * 
    * @param calendar calendar to be updated
    * @return updated calendar
+   * @throws CalendarServiceException when service provider reports an error
    */
   public Calendar updateCalendar(Calendar calendar) throws CalendarServiceException;;
 
@@ -64,6 +68,7 @@ public interface CalendarServiceProvider {
    * @param reminders list of reminders
    * @param recurrence event recurrence data
    * @return newly created event
+   * @throws CalendarServiceException when service provider reports an error
    */
   public CalendarEvent createEvent(String calendarId, String summary, String description, CalendarEventStatus status,
       List<CalendarEventAttendee> attendees, CalendarEventTemporalField start, CalendarEventTemporalField end,
@@ -75,6 +80,7 @@ public interface CalendarServiceProvider {
    *
    * @param id id of the calendar event
    * @return a single calendar event
+   * @throws CalendarServiceException when service provider reports an error
    */
   public CalendarEvent findEvent(String id) throws CalendarServiceException;
 
@@ -83,6 +89,7 @@ public interface CalendarServiceProvider {
    *
    * @param calendarId
    * @return
+   * @throws CalendarServiceException when service provider reports an error
    */
   public List<CalendarEvent> listEvents(String... calendarId) throws CalendarServiceException;
 
@@ -93,6 +100,7 @@ public interface CalendarServiceProvider {
    * @param minTime
    * @param maxTime
    * @return a list of events from specified calendars within a specified time span
+   * @throws CalendarServiceException when service provider reports an error
    */
   public List<CalendarEvent> listEvents(Date minTime, Date maxTime, String... calendarId) throws CalendarServiceException;
 
@@ -101,6 +109,7 @@ public interface CalendarServiceProvider {
    * 
    * @param calendarEvent event to be updated
    * @return updated calendar event
+   * @throws CalendarServiceException when service provider reports an error
    */
   public CalendarEvent updateEvent(CalendarEvent calendarEvent) throws CalendarServiceException;
 }
