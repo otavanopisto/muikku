@@ -1,6 +1,13 @@
 package fi.muikku.plugins.googlecalendar;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
@@ -14,10 +21,12 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
+import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventAttendee;
 import com.google.api.services.calendar.model.EventDateTime;
+
 import fi.muikku.calendar.CalendarEvent;
 import fi.muikku.calendar.CalendarEventAttendee;
 import fi.muikku.calendar.CalendarEventRecurrence;
@@ -25,16 +34,9 @@ import fi.muikku.calendar.CalendarEventReminder;
 import fi.muikku.calendar.CalendarEventStatus;
 import fi.muikku.calendar.CalendarEventTemporalField;
 import fi.muikku.calendar.CalendarServiceException;
-
 import fi.muikku.calendar.CalendarServiceProvider;
 import fi.muikku.session.AccessToken;
 import fi.muikku.session.SessionController;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
 
@@ -105,6 +107,8 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
       return result;
     } catch (IOException ex) {
       throw new CalendarServiceException(ex);
+    } catch (GeneralSecurityException e) {
+      throw new CalendarServiceException(e);
     }
   }
 
@@ -117,15 +121,14 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
   public fi.muikku.calendar.Calendar createCalendar(String summary,
                                                     String description)
           throws CalendarServiceException {
-    Calendar client = getClient();
 
     com.google.api.services.calendar.model.Calendar calendar = new com.google.api.services.calendar.model.Calendar();
 
     calendar.setSummary(summary);
     calendar.setDescription(description);
     try {
-      calendar = client.calendars().insert(calendar).execute();
-    } catch (IOException ex) {
+      calendar = getClient().calendars().insert(calendar).execute();
+    } catch (IOException | GeneralSecurityException ex) {
       throw new CalendarServiceException(ex);
     }
 
@@ -135,13 +138,12 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
   @Override
   public fi.muikku.calendar.Calendar findCalendar(String id) throws CalendarServiceException {
     try {
-      com.google.api.services.calendar.model.Calendar result =
-              getClient().calendars().get(id).execute();
+      com.google.api.services.calendar.model.Calendar result = getClient().calendars().get(id).execute();
       return new
         GoogleCalendar(result.getSummary(), result.getDescription(), id);
     } catch (GoogleJsonResponseException ex) {
       return null;
-    } catch (IOException ex) {
+    } catch (IOException | GeneralSecurityException ex) {
       throw new CalendarServiceException(ex);
     }
   }
@@ -174,7 +176,7 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
                               .setTimeZone(end.getTimeZone().getDisplayName())))
       /* TODO: Reminders & Recurrence */
               .execute();
-    } catch (IOException ex) {
+    } catch (IOException | GeneralSecurityException ex) {
       throw new CalendarServiceException(ex);
     }
 
@@ -196,13 +198,27 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
-  private Calendar getClient() {
-    return new Calendar.Builder(TRANSPORT,
-            JSON_FACTORY,
-            getCredential()).build();
+  private Calendar getClient() throws GeneralSecurityException, IOException {
+    return new Calendar.Builder(TRANSPORT, JSON_FACTORY, getServiceAccountCredential()).build();
+  }
+  
+  private GoogleCredential getServiceAccountCredential() throws GeneralSecurityException, IOException {
+    String accountId = System.getProperty("muikku.googleServiceAccount.accountId");
+    String accountUser = System.getProperty("muikku.googleServiceAccount.accountUser");
+    java.io.File keyFile = new java.io.File(System.getProperty("muikku.googleServiceAccount.keyFile"));
+
+    return new GoogleCredential.Builder()
+      .setTransport(new NetHttpTransport())
+      .setJsonFactory(new JacksonFactory())
+      .setServiceAccountId(accountId)
+      .setServiceAccountScopes(Arrays.asList(CalendarScopes.CALENDAR))
+      .setServiceAccountPrivateKeyFromP12File(keyFile)
+      .setServiceAccountUser(accountUser)
+      .build();
   }
 
-  private GoogleCredential getCredential() {
+  @SuppressWarnings("unused")
+  private GoogleCredential getAccessTokenCredential() {
     AccessToken googleAccessToken = sessionController.getOAuthAccessToken("google");
     if (googleAccessToken != null) {
       Details details = new Details();
