@@ -2,8 +2,11 @@ package fi.muikku.plugins.calendar;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
 
 import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
@@ -14,8 +17,14 @@ import javax.inject.Inject;
 import org.apache.commons.collections.CollectionUtils;
 
 import fi.muikku.calendar.Calendar;
+import fi.muikku.calendar.CalendarEvent;
+import fi.muikku.calendar.CalendarEventAttendee;
+import fi.muikku.calendar.CalendarEventRecurrence;
+import fi.muikku.calendar.CalendarEventReminder;
+import fi.muikku.calendar.CalendarEventStatus;
 import fi.muikku.calendar.CalendarServiceException;
 import fi.muikku.calendar.CalendarServiceProvider;
+import fi.muikku.calendar.DefaultCalendarEventTemporalField;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.calendar.dao.UserCalendarDAO;
 import fi.muikku.plugins.calendar.model.UserCalendar;
@@ -76,6 +85,20 @@ public class CalendarController {
     
     // TODO: Implement actual deleting
   }
+
+  public CalendarEvent createCalendarEvent(UserCalendar userCalendar, String summary, String description, CalendarEventStatus status, 
+    Date start, TimeZone startTimeZone, Date end, TimeZone endTimeZone, List<CalendarEventAttendee> attendees, List<CalendarEventReminder> reminders, 
+    CalendarEventRecurrence recurrence, Map<String, String> extendedProperties) throws CalendarServiceException {
+    
+    CalendarServiceProvider provider = getCalendarServiceProvider(userCalendar.getCalendarProvider());
+    
+    Calendar calendar = provider.findCalendar(userCalendar.getCalendarId());
+    if (calendar == null) {
+      throw new CalendarServiceException("Could not find calendar calendar for user calendar #" + userCalendar.getId());
+    }
+    
+    return provider.createEvent(calendar.getId(), summary, description, status, attendees, new DefaultCalendarEventTemporalField(start, startTimeZone), new DefaultCalendarEventTemporalField(end, endTimeZone), reminders, recurrence);
+  }
   
   public Calendar loadCalendar(UserCalendar userCalendar) throws CalendarServiceException {
     CalendarServiceProvider provider = getCalendarServiceProvider(userCalendar.getCalendarProvider());
@@ -105,6 +128,7 @@ public class CalendarController {
     CollectionUtils.addAll(result, serviceProviders.iterator());
     return Collections.unmodifiableList(result);
   }
+  
 //  @Inject
 //  private Logger logger;
 //

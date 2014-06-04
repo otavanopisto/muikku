@@ -17,11 +17,15 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.muikku.calendar.CalendarServiceException;
+import fi.muikku.calendar.DefaultCalendarEventAttendee;
+import fi.muikku.calendar.DefaultCalendarEventReminder;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.calendar.CalendarController;
 import fi.muikku.plugins.calendar.model.UserCalendar;
 import fi.muikku.plugins.calendar.rest.model.Calendar;
 import fi.muikku.plugins.calendar.rest.model.CalendarEvent;
+import fi.muikku.plugins.calendar.rest.model.CalendarEventAttendee;
+import fi.muikku.plugins.calendar.rest.model.CalendarEventReminder;
 import fi.muikku.security.LoggedIn;
 import fi.muikku.session.SessionController;
 
@@ -104,15 +108,69 @@ public class CalendarRESTService extends PluginRESTService {
   @DELETE
   @Path ("/calendars/{CALID}")
   @LoggedIn
-  public Response deleteCalendar(@PathParam ("CALID") Long calendarId, Calendar calendar) {
-    return Response.status(501).build();
+  public Response deleteCalendar(@PathParam ("CALID") Long calendarId) {
+    if (calendarId == null) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
+    UserCalendar userCalendar = calendarController.findUserCalendar(calendarId);
+    if (!userCalendar.getUserId().equals(sessionController.getUser().getId())) {
+      return Response.status(Response.Status.FORBIDDEN).build();
+    }
+    
+    try {
+      calendarController.deleteCalendar(userCalendar);
+    } catch (CalendarServiceException e) {
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
+    
+    return Response.ok().build();
   }
   
   @POST
   @Path ("/calendars/{CALID}/events/")
   @LoggedIn
   public Response createEvent(@PathParam ("CALID") Long calendarId, CalendarEvent event) {
-    return Response.status(501).build();
+    if (event == null || calendarId == null || event.getCalendarId() == null) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
+    if (!calendarId.equals(event.getCalendarId())) {
+      return Response.status(Response.Status.BAD_REQUEST).entity("Event calendar id does not match path calendar id").build();
+    }
+    
+    if (StringUtils.isBlank(event.getSummary())) {
+      return Response.status(Response.Status.BAD_REQUEST).entity("Event summarys is required").build();
+    }
+    
+    UserCalendar userCalendar = calendarController.findUserCalendar(calendarId);
+    if (!userCalendar.getUserId().equals(sessionController.getUser().getId())) {
+      return Response.status(Response.Status.FORBIDDEN).build();
+    }
+    
+    try {
+      List<fi.muikku.calendar.CalendarEventAttendee> attendees = new ArrayList<>();
+      List<fi.muikku.calendar.CalendarEventReminder> reminders = new ArrayList<>();
+      fi.muikku.calendar.CalendarEventRecurrence recurrence = null;
+      
+      for (CalendarEventAttendee attendee : event.getAttendees()) {
+        attendees.add(new DefaultCalendarEventAttendee(attendee.getComment(), attendee.getEmail(), attendee.getDisplayName(), attendee.getStatus())); 
+      }
+      
+      for (CalendarEventReminder reminder : event.getReminders()) {
+        reminders.add(new DefaultCalendarEventReminder(reminder.getMinutesBefore(), reminder.getType()));
+      }
+      
+      // TODO: Recurrence
+
+      calendarController.createCalendarEvent(userCalendar, event.getSummary(), event.getDescription(), event.getStatus(), 
+          event.getStart(), event.getStartTimeZone(), event.getEnd(), event.getEndTimeZone(), attendees, reminders, recurrence, 
+          event.getExtendedProperties());
+    } catch (CalendarServiceException e) {
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
+    
+    return Response.ok().build();
   }
   
   @GET
