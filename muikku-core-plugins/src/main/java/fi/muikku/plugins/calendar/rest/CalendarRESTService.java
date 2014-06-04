@@ -1,36 +1,34 @@
 package fi.muikku.plugins.calendar.rest;
 
+import java.util.List;
+
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Response;
 
+import fi.muikku.calendar.Calendar;
 import fi.muikku.plugin.PluginRESTService;
+import fi.muikku.plugins.calendar.CalendarController;
 
 @RequestScoped
 @Path ("/calendar")
 @Produces ("application/json")
 public class CalendarRESTService extends PluginRESTService {
 
-//	
-//	@Inject
-//	private Logger logger;
-//
-//	@Inject
-//	private SessionController sessionController;
-//
-//	@Inject
-//	private CalendarController calendarController;
-//	
-//	@Inject
-//	private PluginSettingsController pluginSettingsController;
-//	
-//	@SuppressWarnings("cdi-ambiguous-dependency")
-//	@Inject
-//	private TranquilityBuilderFactory tranquilityBuilderFactory;
-//
-//  @GET
-//  @Path ("/calendars")
-//  public Response listCalendars(@QueryParam ("calendarType") String calendarType) {
+	@Inject
+	private CalendarController calendarController;
+
+  @GET
+  @Path ("/calendars")
+  public Response listCalendars() {
+    List<Calendar> calendars = calendarController.listCalendars();
+    return Response.ok(calendars).build();
+  }
+  
 //  	// TODO: Permissions
 //		// List all calendars user has permissions
 //  	

@@ -13,6 +13,12 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.model.CalendarListEntry;
+import fi.muikku.calendar.CalendarEvent;
+import fi.muikku.calendar.CalendarEventAttendee;
+import fi.muikku.calendar.CalendarEventRecurrence;
+import fi.muikku.calendar.CalendarEventReminder;
+import fi.muikku.calendar.CalendarEventStatus;
+import fi.muikku.calendar.CalendarEventTemporalField;
 import fi.muikku.calendar.CalendarServiceException;
 
 import fi.muikku.calendar.CalendarServiceProvider;
@@ -20,9 +26,45 @@ import fi.muikku.session.AccessToken;
 import fi.muikku.session.SessionController;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.logging.Logger;
 
 public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
+
+  @Override
+  public boolean isReadOnly() {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public fi.muikku.calendar.Calendar createCalendar(String summary, String description) throws CalendarServiceException {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public fi.muikku.calendar.Calendar findCalendar(String id) throws CalendarServiceException {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public CalendarEvent createEvent(String calendarId, String summary, String description, CalendarEventStatus status, List<CalendarEventAttendee> attendees, CalendarEventTemporalField start, CalendarEventTemporalField end, List<CalendarEventReminder> reminders, CalendarEventRecurrence recurrence) throws CalendarServiceException {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public CalendarEvent findEvent(String id) throws CalendarServiceException {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public List<CalendarEvent> listEvents(String... calendarId) throws CalendarServiceException {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public List<CalendarEvent> listEvents(Date minTime, Date maxTime, String... calendarId) throws CalendarServiceException {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
 
   private static class GoogleCalendar implements fi.muikku.calendar.Calendar {
 
@@ -74,7 +116,8 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
   }
 
   @Override
-  public List<fi.muikku.calendar.Calendar> listCalendars() throws CalendarServiceException {
+  public List<fi.muikku.calendar.Calendar> listPublicCalendars()
+          throws CalendarServiceException {
     try {
       Calendar client = new Calendar.Builder(TRANSPORT,
               JSON_FACTORY,
