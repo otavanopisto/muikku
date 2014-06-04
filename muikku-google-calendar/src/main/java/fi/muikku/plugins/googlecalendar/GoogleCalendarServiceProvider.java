@@ -18,7 +18,6 @@ import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventAttendee;
 import com.google.api.services.calendar.model.EventDateTime;
-import com.google.api.services.calendar.model.Events;
 import fi.muikku.calendar.CalendarEvent;
 import fi.muikku.calendar.CalendarEventAttendee;
 import fi.muikku.calendar.CalendarEventRecurrence;
@@ -115,7 +114,9 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
   }
 
   @Override
-  public fi.muikku.calendar.Calendar createCalendar(String summary, String description) throws CalendarServiceException {
+  public fi.muikku.calendar.Calendar createCalendar(String summary,
+                                                    String description)
+          throws CalendarServiceException {
     Calendar client = getClient();
 
     com.google.api.services.calendar.model.Calendar calendar = new com.google.api.services.calendar.model.Calendar();
@@ -123,7 +124,7 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
     calendar.setSummary(summary);
     calendar.setDescription(description);
     try {
-      client.calendars().insert(calendar).execute();
+      calendar = client.calendars().insert(calendar).execute();
     } catch (IOException ex) {
       throw new CalendarServiceException(ex);
     }
