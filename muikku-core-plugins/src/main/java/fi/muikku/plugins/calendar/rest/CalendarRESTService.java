@@ -14,12 +14,19 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fi.muikku.calendar.CalendarServiceException;
+import fi.muikku.calendar.DefaultCalendar;
+import fi.muikku.calendar.DefaultCalendarEventAttendee;
+import fi.muikku.calendar.DefaultCalendarEventReminder;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.calendar.CalendarController;
 import fi.muikku.plugins.calendar.model.UserCalendar;
 import fi.muikku.plugins.calendar.rest.model.Calendar;
 import fi.muikku.plugins.calendar.rest.model.CalendarEvent;
+import fi.muikku.plugins.calendar.rest.model.CalendarEventAttendee;
+import fi.muikku.plugins.calendar.rest.model.CalendarEventReminder;
 import fi.muikku.security.LoggedIn;
 import fi.muikku.session.SessionController;
 
@@ -69,51 +76,256 @@ public class CalendarRESTService extends PluginRESTService {
   @Path ("/calendars/{CALID}")
   @LoggedIn
   public Response updateCalendar(@PathParam ("CALID") Long calendarId, Calendar calendar) {
-    return Response.status(501).build();
+    if (calendar == null || calendarId == null) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
+    if (calendar.getId() == null) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
+    if (!calendar.getId().equals(calendarId)) {
+      return Response.status(Response.Status.BAD_REQUEST).entity("Calendar id is immutable").build();
+    }
+    
+    if (StringUtils.isBlank(calendar.getSummary())) {
+      return Response.status(Response.Status.BAD_REQUEST).entity("Calendar summary is required").build();
+    }
+    
+    UserCalendar userCalendar = calendarController.findUserCalendar(calendarId);
+    if (userCalendar == null) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
+    if (!userCalendar.getUserId().equals(sessionController.getUser().getId())) {
+      return Response.status(Response.Status.FORBIDDEN).build();
+    }
+    
+    try {
+      calendarController.updateCalendar(userCalendar, new DefaultCalendar(userCalendar.getCalendarId(), userCalendar.getCalendarProvider(), calendar.getSummary(), calendar.getDescription()));
+    } catch (CalendarServiceException e) {
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
+    
+    return Response.noContent().build();
   }
   
   @DELETE
   @Path ("/calendars/{CALID}")
   @LoggedIn
-  public Response deleteCalendar(@PathParam ("CALID") Long calendarId, Calendar calendar) {
-    return Response.status(501).build();
+  public Response deleteCalendar(@PathParam ("CALID") Long calendarId) {
+    if (calendarId == null) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
+    UserCalendar userCalendar = calendarController.findUserCalendar(calendarId);
+    if (userCalendar == null) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
+    if (!userCalendar.getUserId().equals(sessionController.getUser().getId())) {
+      return Response.status(Response.Status.FORBIDDEN).build();
+    }
+    
+    try {
+      calendarController.deleteCalendar(userCalendar);
+    } catch (CalendarServiceException e) {
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
+    
+    return Response.noContent().build();
   }
   
   @POST
   @Path ("/calendars/{CALID}/events/")
   @LoggedIn
   public Response createEvent(@PathParam ("CALID") Long calendarId, CalendarEvent event) {
-    return Response.status(501).build();
+    if (event == null || calendarId == null || event.getCalendarId() == null) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
+    if (!calendarId.equals(event.getCalendarId())) {
+      return Response.status(Response.Status.BAD_REQUEST).entity("Event calendar id does not match path calendar id").build();
+    }
+    
+    if (StringUtils.isBlank(event.getSummary())) {
+      return Response.status(Response.Status.BAD_REQUEST).entity("Event summarys is required").build();
+    }
+    
+    UserCalendar userCalendar = calendarController.findUserCalendar(calendarId);
+    if (userCalendar == null) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
+    if (!userCalendar.getUserId().equals(sessionController.getUser().getId())) {
+      return Response.status(Response.Status.FORBIDDEN).build();
+    }
+    
+    try {
+      List<fi.muikku.calendar.CalendarEventAttendee> attendees = new ArrayList<>();
+      List<fi.muikku.calendar.CalendarEventReminder> reminders = new ArrayList<>();
+      fi.muikku.calendar.CalendarEventRecurrence recurrence = null;
+      
+      for (CalendarEventAttendee attendee : event.getAttendees()) {
+        attendees.add(new DefaultCalendarEventAttendee(attendee.getComment(), attendee.getEmail(), attendee.getDisplayName(), attendee.getStatus())); 
+      }
+      
+      for (CalendarEventReminder reminder : event.getReminders()) {
+        reminders.add(new DefaultCalendarEventReminder(reminder.getMinutesBefore(), reminder.getType()));
+      }
+      
+      // TODO: Recurrence
+
+      fi.muikku.calendar.CalendarEvent calendarEvent = calendarController.createCalendarEvent(userCalendar, event.getSummary(), event.getDescription(), event.getStatus(), 
+          event.getStart(), event.getStartTimeZone(), event.getEnd(), event.getEndTimeZone(), attendees, reminders, recurrence, 
+          event.getExtendedProperties());
+      
+      return Response.ok(createEventRestModel(userCalendar, calendarEvent)).build();
+    } catch (CalendarServiceException e) {
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
   }
   
   @GET
   @Path ("/calendars/{CALID}/events/")
   @LoggedIn
   public Response getEvents(@PathParam ("CALID") Long calendarId) {
-    return Response.status(501).build();
+    if (calendarId == null) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
+    UserCalendar userCalendar = calendarController.findUserCalendar(calendarId);
+    if (userCalendar == null) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
+    if (!userCalendar.getUserId().equals(sessionController.getUser().getId())) {
+      return Response.status(Response.Status.FORBIDDEN).build();
+    }
+    
+    try {
+      List<CalendarEvent> result = new ArrayList<>();
+      
+      List<fi.muikku.calendar.CalendarEvent> calendarEvents = calendarController.listCalendarEvents(userCalendar);
+      for (fi.muikku.calendar.CalendarEvent calendarEvent : calendarEvents) { 
+        result.add(createEventRestModel(userCalendar, calendarEvent));
+      }
+      
+      return Response.ok(result).build();
+    } catch (CalendarServiceException e) {
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
   }
   
   @GET
   @Path ("/calendars/{CALID}/events/{EVTID}")
   @LoggedIn
-  public Response getEvent(@PathParam ("CALID") Long calendarId, @PathParam ("EVTID") Long eventId) {
-    return Response.status(501).build();
+  public Response getEvent(@PathParam ("CALID") Long calendarId, @PathParam ("EVTID") String eventId) {
+    if (calendarId == null || StringUtils.isBlank(eventId)) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
+    UserCalendar userCalendar = calendarController.findUserCalendar(calendarId);
+    if (userCalendar == null) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
+    if (!userCalendar.getUserId().equals(sessionController.getUser().getId())) {
+      return Response.status(Response.Status.FORBIDDEN).build();
+    }
+    
+    try {
+      fi.muikku.calendar.CalendarEvent calendarEvent = calendarController.findCalendarEvent(userCalendar, eventId);
+      if (calendarEvent == null) {
+        return Response.status(Response.Status.NOT_FOUND).build();
+      }
+      
+      return Response.ok(createEventRestModel(userCalendar, calendarEvent)).build();
+    } catch (CalendarServiceException e) {
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
   }
   
   @PUT
   @Path ("/calendars/{CALID}/events/{EVTID}")
   @LoggedIn
-  public Response getEvent(@PathParam ("CALID") Long calendarId, @PathParam ("EVTID") Long eventId, CalendarEvent event) {
-    return Response.status(501).build();
+  public Response updateEvent(@PathParam ("CALID") Long calendarId, @PathParam ("EVTID") String eventId, CalendarEvent event) {
+    if (calendarId == null || StringUtils.isBlank(eventId)) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
+    if (event == null) {
+      return Response.status(Response.Status.BAD_REQUEST).build();
+    }
+    
+    UserCalendar userCalendar = calendarController.findUserCalendar(calendarId);
+    if (userCalendar == null) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
+    if (!userCalendar.getUserId().equals(sessionController.getUser().getId())) {
+      return Response.status(Response.Status.FORBIDDEN).build();
+    }
+    
+    try {
+      fi.muikku.calendar.CalendarEvent calendarEvent = calendarController.findCalendarEvent(userCalendar, eventId);
+      if (calendarEvent == null) {
+        return Response.status(Response.Status.NOT_FOUND).build();
+      }
+      
+      calendarController.updateCalendarEvent(userCalendar, calendarEvent);
+      
+      return Response.noContent().build();
+    } catch (CalendarServiceException e) {
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
   }
   
   @DELETE
   @Path ("/calendars/{CALID}/events/{EVTID}")
   @LoggedIn
-  public Response deleteEvent(@PathParam ("CALID") Long calendarId, @PathParam ("EVTID") Long eventId) {
-    return Response.status(501).build();
+  public Response deleteEvent(@PathParam ("CALID") Long calendarId, @PathParam ("EVTID") String eventId) {
+    if (calendarId == null || StringUtils.isBlank(eventId)) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
+    UserCalendar userCalendar = calendarController.findUserCalendar(calendarId);
+    if (userCalendar == null) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
+    if (!userCalendar.getUserId().equals(sessionController.getUser().getId())) {
+      return Response.status(Response.Status.FORBIDDEN).build();
+    }
+    
+    try {
+      calendarController.deleteCalendarEvent(userCalendar, eventId);
+      return Response.noContent().build();
+    } catch (CalendarServiceException e) {
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
   }
   
+  private CalendarEvent createEventRestModel(UserCalendar userCalendar, fi.muikku.calendar.CalendarEvent calendarEvent) {
+    List<CalendarEventAttendee> attendees = new ArrayList<>();
+    List<CalendarEventReminder> reminders = new ArrayList<>();
+     
+    for (fi.muikku.calendar.CalendarEventAttendee calendarEventAttendee : calendarEvent.getAttendees()) {
+      attendees.add(new CalendarEventAttendee(calendarEventAttendee.getEmail(), calendarEventAttendee.getDisplayName(), 
+          calendarEventAttendee.getStatus(), calendarEventAttendee.getComment()));
+    }
+    
+    for (fi.muikku.calendar.CalendarEventReminder calendarEventReminder : calendarEvent.getEventReminders()) {
+      reminders.add(new CalendarEventReminder(calendarEventReminder.getType(), calendarEventReminder.getMinutesBefore()));
+    }
+    
+    // TODO: Recurrence
+
+    return new CalendarEvent(userCalendar.getId(), calendarEvent.getSummary(), calendarEvent.getDescription(), calendarEvent.getStatus(), 
+        calendarEvent.getStart().getDateTime(), calendarEvent.getStart().getTimeZone(), 
+        calendarEvent.getEnd().getDateTime(), calendarEvent.getEnd().getTimeZone(), 
+        calendarEvent.getCreated(), calendarEvent.getUpdated(), calendarEvent.getExtendedProperties(), attendees, reminders);
+  }
   
 //
 //  @POST
