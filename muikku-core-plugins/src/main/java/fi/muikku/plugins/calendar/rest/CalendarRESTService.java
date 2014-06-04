@@ -69,6 +69,18 @@ public class CalendarRESTService extends PluginRESTService {
   @Path ("/calendars/{CALID}")
   @LoggedIn
   public Response updateCalendar(@PathParam ("CALID") Long calendarId, Calendar calendar) {
+    if (calendar == null) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
+    if (calendar.getId() == null) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
+    if (!calendar.getId().equals(calendarId)) {
+      return Response.status(Response.Status.BAD_REQUEST).entity("Calendar id is immutable").build();
+    }
+    
     return Response.status(501).build();
   }
   
