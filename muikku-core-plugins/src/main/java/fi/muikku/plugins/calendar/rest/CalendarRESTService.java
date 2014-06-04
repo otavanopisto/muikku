@@ -14,6 +14,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fi.muikku.calendar.CalendarServiceException;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.calendar.CalendarController;
@@ -69,7 +71,7 @@ public class CalendarRESTService extends PluginRESTService {
   @Path ("/calendars/{CALID}")
   @LoggedIn
   public Response updateCalendar(@PathParam ("CALID") Long calendarId, Calendar calendar) {
-    if (calendar == null) {
+    if (calendar == null || calendarId == null) {
       return Response.status(Response.Status.NOT_FOUND).build();
     }
     
@@ -81,7 +83,22 @@ public class CalendarRESTService extends PluginRESTService {
       return Response.status(Response.Status.BAD_REQUEST).entity("Calendar id is immutable").build();
     }
     
-    return Response.status(501).build();
+    if (StringUtils.isBlank(calendar.getSubject())) {
+      return Response.status(Response.Status.BAD_REQUEST).entity("Calendar subject is required").build();
+    }
+    
+    UserCalendar userCalendar = calendarController.findUserCalendar(calendar.getId());
+    if (!userCalendar.getUserId().equals(sessionController.getUser().getId())) {
+      return Response.status(Response.Status.FORBIDDEN).build();
+    }
+    
+    try {
+      calendarController.updateCalendar(userCalendar, calendar.getSubject(), calendar.getDescription());
+    } catch (CalendarServiceException e) {
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
+    
+    return Response.ok().build();
   }
   
   @DELETE
