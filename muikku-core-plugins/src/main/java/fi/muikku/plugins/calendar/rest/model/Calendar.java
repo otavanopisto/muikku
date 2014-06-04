@@ -5,9 +5,9 @@ public class Calendar {
   public Calendar() {
   }
 
-  public Calendar(Long id, String subject, String description) {
+  public Calendar(Long id, String summary, String description) {
     this.id = id;
-    this.subject = subject;
+    this.summary = summary;
     this.description = description;
   }
   
@@ -18,13 +18,13 @@ public class Calendar {
   public void setId(Long id) {
     this.id = id;
   }
-
-  public String getSubject() {
-    return subject;
+  
+  public String getSummary() {
+    return summary;
   }
-
-  public void setSubject(String subject) {
-    this.subject = subject;
+  
+  public void setSummary(String summary) {
+    this.summary = summary;
   }
 
   public String getDescription() {
@@ -36,6 +36,6 @@ public class Calendar {
   }
 
   private Long id;
-  private String subject;
+  private String summary;
   private String description;
 }

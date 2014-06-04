@@ -42,6 +42,14 @@ public interface CalendarServiceProvider {
    * @return a list of public calendars
    */
   public List<Calendar> listPublicCalendars() throws CalendarServiceException;
+  
+  /**
+   * Updates a calendar
+   * 
+   * @param calendar calendar to be updated
+   * @return updated calendar
+   */
+  public Calendar updateCalendar(Calendar calendar) throws CalendarServiceException;;
 
   /**
    * Creates new calendar event into the calendar.
@@ -87,4 +95,12 @@ public interface CalendarServiceProvider {
    * @return a list of events from specified calendars within a specified time span
    */
   public List<CalendarEvent> listEvents(Date minTime, Date maxTime, String... calendarId) throws CalendarServiceException;
+
+  /**
+   * Updates existing calendar event
+   * 
+   * @param calendarEvent event to be updated
+   * @return updated calendar event
+   */
+  public CalendarEvent updateEvent(CalendarEvent calendarEvent) throws CalendarServiceException;
 }

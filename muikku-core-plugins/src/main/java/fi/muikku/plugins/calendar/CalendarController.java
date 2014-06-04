@@ -63,17 +63,18 @@ public class CalendarController {
     return userCalendarDAO.listByUserId(user.getId());
   }
 
-  public UserCalendar updateCalendar(UserCalendar userCalendar, String subject, String description) throws CalendarServiceException {
+  public Calendar updateCalendar(UserCalendar userCalendar, Calendar calendar) throws CalendarServiceException {
     CalendarServiceProvider provider = getCalendarServiceProvider(userCalendar.getCalendarProvider());
     
-    Calendar calendar = provider.findCalendar(userCalendar.getCalendarId());
-    if (calendar == null) {
-      throw new CalendarServiceException("Could not find calendar for user calendar #" + userCalendar.getId());
+    if (!userCalendar.getCalendarProvider().equals(calendar.getServiceProvider())) {
+      throw new CalendarServiceException("Tried to change calendar provider with update calendar call");
     }
     
-    // TODO: Implement actual updating
+    if (!userCalendar.getCalendarId().equals(calendar.getId())) {
+      throw new CalendarServiceException("Tried to change calendar id with update calendar call");
+    }
     
-    return userCalendar;
+    return provider.updateCalendar(calendar);
   }
   
   public void deleteCalendar(UserCalendar userCalendar) throws CalendarServiceException {
@@ -135,9 +136,7 @@ public class CalendarController {
       throw new CalendarServiceException("Cannot update event without id");
     }
     
-    // TODO: Implement actual updating
-    
-    return calendarEvent;
+    return provider.updateEvent(calendarEvent);
   }
 
   public void deleteCalendarEvent(UserCalendar userCalendar, String eventId) throws CalendarServiceException {

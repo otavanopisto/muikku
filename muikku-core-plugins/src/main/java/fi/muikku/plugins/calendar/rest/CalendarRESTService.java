@@ -17,6 +17,7 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.muikku.calendar.CalendarServiceException;
+import fi.muikku.calendar.DefaultCalendar;
 import fi.muikku.calendar.DefaultCalendarEventAttendee;
 import fi.muikku.calendar.DefaultCalendarEventReminder;
 import fi.muikku.plugin.PluginRESTService;
@@ -87,8 +88,8 @@ public class CalendarRESTService extends PluginRESTService {
       return Response.status(Response.Status.BAD_REQUEST).entity("Calendar id is immutable").build();
     }
     
-    if (StringUtils.isBlank(calendar.getSubject())) {
-      return Response.status(Response.Status.BAD_REQUEST).entity("Calendar subject is required").build();
+    if (StringUtils.isBlank(calendar.getSummary())) {
+      return Response.status(Response.Status.BAD_REQUEST).entity("Calendar summary is required").build();
     }
     
     UserCalendar userCalendar = calendarController.findUserCalendar(calendarId);
@@ -101,7 +102,7 @@ public class CalendarRESTService extends PluginRESTService {
     }
     
     try {
-      calendarController.updateCalendar(userCalendar, calendar.getSubject(), calendar.getDescription());
+      calendarController.updateCalendar(userCalendar, new DefaultCalendar(userCalendar.getCalendarId(), userCalendar.getCalendarProvider(), calendar.getSummary(), calendar.getDescription()));
     } catch (CalendarServiceException e) {
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
