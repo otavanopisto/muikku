@@ -44,6 +44,24 @@ public interface CalendarServiceProvider {
   public List<Calendar> listPublicCalendars();
   
   /**
+   * Creates new calendar event into the calendar.
+   * 
+   * @param calendarId calendar identifier 
+   * @param summary event summary (title)
+   * @param description event description
+   * @param status event status
+   * @param attendees list of attendees
+   * @param start start time
+   * @param end end time
+   * @param reminders list of reminders
+   * @param recurrence event recurrence data
+   * @return newly created event
+   */
+  public CalendarEvent createEvent(String calendarId, String summary, String description, CalendarEventStatus status,
+      List<CalendarEventAttendee> attendees, CalendarEventTemporalField start, CalendarEventTemporalField end,
+      List<CalendarEventReminder> reminders, CalendarEventRecurrence recurrence);
+  
+  /**
    * Returns single calendar event by id
    * 
    * @param id id of the calendar event
