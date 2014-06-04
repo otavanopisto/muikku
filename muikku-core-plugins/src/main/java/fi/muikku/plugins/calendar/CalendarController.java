@@ -67,7 +67,7 @@ public class CalendarController {
     
     Calendar calendar = provider.findCalendar(userCalendar.getCalendarId());
     if (calendar == null) {
-      throw new CalendarServiceException("Could not find calendar calendar for user calendar #" + userCalendar.getId());
+      throw new CalendarServiceException("Could not find calendar for user calendar #" + userCalendar.getId());
     }
     
     // TODO: Implement actual updating
@@ -80,7 +80,7 @@ public class CalendarController {
     
     Calendar calendar = provider.findCalendar(userCalendar.getCalendarId());
     if (calendar == null) {
-      throw new CalendarServiceException("Could not find calendar calendar for user calendar #" + userCalendar.getId());
+      throw new CalendarServiceException("Could not find calendar for user calendar #" + userCalendar.getId());
     }
     
     // TODO: Implement actual deleting
@@ -94,10 +94,21 @@ public class CalendarController {
     
     Calendar calendar = provider.findCalendar(userCalendar.getCalendarId());
     if (calendar == null) {
-      throw new CalendarServiceException("Could not find calendar calendar for user calendar #" + userCalendar.getId());
+      throw new CalendarServiceException("Could not find calendar for user calendar #" + userCalendar.getId());
     }
     
     return provider.createEvent(calendar.getId(), summary, description, status, attendees, new DefaultCalendarEventTemporalField(start, startTimeZone), new DefaultCalendarEventTemporalField(end, endTimeZone), reminders, recurrence);
+  }
+
+  public fi.muikku.calendar.CalendarEvent findCalendarEvent(UserCalendar userCalendar, String eventId) throws CalendarServiceException {
+    CalendarServiceProvider provider = getCalendarServiceProvider(userCalendar.getCalendarProvider());
+    
+    Calendar calendar = provider.findCalendar(userCalendar.getCalendarId());
+    if (calendar == null) {
+      throw new CalendarServiceException("Could not find calendar for user calendar #" + userCalendar.getId());
+    }
+
+    return provider.findEvent(eventId);
   }
 
   public List<fi.muikku.calendar.CalendarEvent> listCalendarEvents(UserCalendar userCalendar) throws CalendarServiceException {
@@ -105,7 +116,7 @@ public class CalendarController {
     
     Calendar calendar = provider.findCalendar(userCalendar.getCalendarId());
     if (calendar == null) {
-      throw new CalendarServiceException("Could not find calendar calendar for user calendar #" + userCalendar.getId());
+      throw new CalendarServiceException("Could not find calendar for user calendar #" + userCalendar.getId());
     }
 
     return provider.listEvents(calendar.getId());
@@ -117,7 +128,7 @@ public class CalendarController {
       Calendar calendar = provider.findCalendar(userCalendar.getCalendarId());
       return calendar;
     } else {
-      throw new CalendarServiceException("Could not find calendar service provider: " + userCalendar.getCalendarProvider());
+      throw new CalendarServiceException("Could not find calendar provider: " + userCalendar.getCalendarProvider());
     }
   }
 

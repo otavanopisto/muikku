@@ -207,24 +207,7 @@ public class CalendarRESTService extends PluginRESTService {
       
       List<fi.muikku.calendar.CalendarEvent> calendarEvents = calendarController.listCalendarEvents(userCalendar);
       for (fi.muikku.calendar.CalendarEvent calendarEvent : calendarEvents) { 
-        List<CalendarEventAttendee> attendees = new ArrayList<>();
-        List<CalendarEventReminder> reminders = new ArrayList<>();
-         
-        for (fi.muikku.calendar.CalendarEventAttendee calendarEventAttendee : calendarEvent.getAttendees()) {
-          attendees.add(new CalendarEventAttendee(calendarEventAttendee.getEmail(), calendarEventAttendee.getDisplayName(), 
-              calendarEventAttendee.getStatus(), calendarEventAttendee.getComment()));
-        }
-        
-        for (fi.muikku.calendar.CalendarEventReminder calendarEventReminder : calendarEvent.getEventReminders()) {
-          reminders.add(new CalendarEventReminder(calendarEventReminder.getType(), calendarEventReminder.getMinutesBefore()));
-        }
-        
-        // TODO: Recurrence
-
-        result.add(new CalendarEvent(calendarId, calendarEvent.getSummary(), calendarEvent.getDescription(), calendarEvent.getStatus(), 
-            calendarEvent.getStart().getDateTime(), calendarEvent.getStart().getTimeZone(), 
-            calendarEvent.getEnd().getDateTime(), calendarEvent.getEnd().getTimeZone(), 
-            calendarEvent.getCreated(), calendarEvent.getUpdated(), calendarEvent.getExtendedProperties(), attendees, reminders));
+        result.add(createEventRestModel(userCalendar, calendarEvent));
       }
       
       return Response.ok(result).build();
@@ -236,8 +219,30 @@ public class CalendarRESTService extends PluginRESTService {
   @GET
   @Path ("/calendars/{CALID}/events/{EVTID}")
   @LoggedIn
-  public Response getEvent(@PathParam ("CALID") Long calendarId, @PathParam ("EVTID") Long eventId) {
-    return Response.status(501).build();
+  public Response getEvent(@PathParam ("CALID") Long calendarId, @PathParam ("EVTID") String eventId) {
+    if (calendarId == null || StringUtils.isBlank(eventId)) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
+    UserCalendar userCalendar = calendarController.findUserCalendar(calendarId);
+    if (userCalendar == null) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
+    if (!userCalendar.getUserId().equals(sessionController.getUser().getId())) {
+      return Response.status(Response.Status.FORBIDDEN).build();
+    }
+    
+    try {
+      fi.muikku.calendar.CalendarEvent calendarEvent = calendarController.findCalendarEvent(userCalendar, eventId);
+      if (calendarEvent == null) {
+        return Response.status(Response.Status.NOT_FOUND).build();
+      }
+      
+      return Response.ok(createEventRestModel(userCalendar, calendarEvent)).build();
+    } catch (CalendarServiceException e) {
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
   }
   
   @PUT
@@ -254,6 +259,26 @@ public class CalendarRESTService extends PluginRESTService {
     return Response.status(501).build();
   }
   
+  private CalendarEvent createEventRestModel(UserCalendar userCalendar, fi.muikku.calendar.CalendarEvent calendarEvent) {
+    List<CalendarEventAttendee> attendees = new ArrayList<>();
+    List<CalendarEventReminder> reminders = new ArrayList<>();
+     
+    for (fi.muikku.calendar.CalendarEventAttendee calendarEventAttendee : calendarEvent.getAttendees()) {
+      attendees.add(new CalendarEventAttendee(calendarEventAttendee.getEmail(), calendarEventAttendee.getDisplayName(), 
+          calendarEventAttendee.getStatus(), calendarEventAttendee.getComment()));
+    }
+    
+    for (fi.muikku.calendar.CalendarEventReminder calendarEventReminder : calendarEvent.getEventReminders()) {
+      reminders.add(new CalendarEventReminder(calendarEventReminder.getType(), calendarEventReminder.getMinutesBefore()));
+    }
+    
+    // TODO: Recurrence
+
+    return new CalendarEvent(userCalendar.getId(), calendarEvent.getSummary(), calendarEvent.getDescription(), calendarEvent.getStatus(), 
+        calendarEvent.getStart().getDateTime(), calendarEvent.getStart().getTimeZone(), 
+        calendarEvent.getEnd().getDateTime(), calendarEvent.getEnd().getTimeZone(), 
+        calendarEvent.getCreated(), calendarEvent.getUpdated(), calendarEvent.getExtendedProperties(), attendees, reminders);
+  }
   
 //
 //  @POST
