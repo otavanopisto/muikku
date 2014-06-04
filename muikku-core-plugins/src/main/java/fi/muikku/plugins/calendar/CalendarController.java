@@ -15,6 +15,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import fi.muikku.calendar.Calendar;
 import fi.muikku.calendar.CalendarEvent;
@@ -120,6 +121,23 @@ public class CalendarController {
     }
 
     return provider.listEvents(calendar.getId());
+  }
+
+  public CalendarEvent updateCalendarEvent(UserCalendar userCalendar, CalendarEvent calendarEvent) throws CalendarServiceException {
+    CalendarServiceProvider provider = getCalendarServiceProvider(userCalendar.getCalendarProvider());
+    
+    Calendar calendar = provider.findCalendar(userCalendar.getCalendarId());
+    if (calendar == null) {
+      throw new CalendarServiceException("Could not find calendar for user calendar #" + userCalendar.getId());
+    }
+    
+    if (StringUtils.isBlank(calendarEvent.getId())) {
+      throw new CalendarServiceException("Cannot update event without id");
+    }
+    
+    // TODO: Implement actual updating
+    
+    return calendarEvent;
   }
   
   public Calendar loadCalendar(UserCalendar userCalendar) throws CalendarServiceException {

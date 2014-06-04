@@ -106,7 +106,7 @@ public class CalendarRESTService extends PluginRESTService {
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
     
-    return Response.ok().build();
+    return Response.noContent().build();
   }
   
   @DELETE
@@ -132,7 +132,7 @@ public class CalendarRESTService extends PluginRESTService {
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
     
-    return Response.ok().build();
+    return Response.noContent().build();
   }
   
   @POST
@@ -175,14 +175,14 @@ public class CalendarRESTService extends PluginRESTService {
       
       // TODO: Recurrence
 
-      calendarController.createCalendarEvent(userCalendar, event.getSummary(), event.getDescription(), event.getStatus(), 
+      fi.muikku.calendar.CalendarEvent calendarEvent = calendarController.createCalendarEvent(userCalendar, event.getSummary(), event.getDescription(), event.getStatus(), 
           event.getStart(), event.getStartTimeZone(), event.getEnd(), event.getEndTimeZone(), attendees, reminders, recurrence, 
           event.getExtendedProperties());
+      
+      return Response.ok(createEventRestModel(userCalendar, calendarEvent)).build();
     } catch (CalendarServiceException e) {
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
-    
-    return Response.ok().build();
   }
   
   @GET
@@ -248,8 +248,36 @@ public class CalendarRESTService extends PluginRESTService {
   @PUT
   @Path ("/calendars/{CALID}/events/{EVTID}")
   @LoggedIn
-  public Response getEvent(@PathParam ("CALID") Long calendarId, @PathParam ("EVTID") Long eventId, CalendarEvent event) {
-    return Response.status(501).build();
+  public Response updateEvent(@PathParam ("CALID") Long calendarId, @PathParam ("EVTID") String eventId, CalendarEvent event) {
+    if (calendarId == null || StringUtils.isBlank(eventId)) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
+    if (event == null) {
+      return Response.status(Response.Status.BAD_REQUEST).build();
+    }
+    
+    UserCalendar userCalendar = calendarController.findUserCalendar(calendarId);
+    if (userCalendar == null) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
+    if (!userCalendar.getUserId().equals(sessionController.getUser().getId())) {
+      return Response.status(Response.Status.FORBIDDEN).build();
+    }
+    
+    try {
+      fi.muikku.calendar.CalendarEvent calendarEvent = calendarController.findCalendarEvent(userCalendar, eventId);
+      if (calendarEvent == null) {
+        return Response.status(Response.Status.NOT_FOUND).build();
+      }
+      
+      calendarController.updateCalendarEvent(userCalendar, calendarEvent);
+      
+      return Response.noContent().build();
+    } catch (CalendarServiceException e) {
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
   }
   
   @DELETE
