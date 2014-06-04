@@ -11,6 +11,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import fi.muikku.calendar.Calendar;
+import fi.muikku.calendar.CalendarServiceException;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.calendar.CalendarController;
 
@@ -28,14 +29,14 @@ public class CalendarRESTService extends PluginRESTService {
     List<Calendar> calendars = calendarController.listCalendars();
     return Response.ok(calendars).build();
   }
-  
+
 //  	// TODO: Permissions
 //		// List all calendars user has permissions
-//  	
+//
 //  	UserEntity user = sessionController.getUser();
 //  	List<UserCalendar> userCalendars = null;
 //  	List<Calendar> calendars = new ArrayList<>();
-//  	
+//
 //		if (StringUtils.isBlank(calendarType)) {
 //			userCalendars = calendarController.listUserCalendars(user);
 //  	} else {
@@ -53,17 +54,17 @@ public class CalendarRESTService extends PluginRESTService {
 //		for (UserCalendar userCalendar : userCalendars) {
 //  		calendars.add(userCalendar.getCalendar());
 //  	}
-//		
+//
 //  	TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
 //    Tranquility tranquility = tranquilityBuilder
 //    		.createTranquility()
 //        .addInstruction(new SuperClassInstructionSelector(Calendar.class), tranquilityBuilder.createPropertyInjectInstruction("visible", new CalendarVisiblityValueGetter(userCalendars)));
-//  	
+//
 //    return Response.ok(
 //    		tranquility.entities(calendars)
 //    ).build();
 //  }
-//  
+//
 //  @GET
 //  @Path ("/calendars/{CALENDARID}")
 //  public Response getCalendar(@PathParam ("CALENDARID") Long calendarId) {
@@ -72,26 +73,26 @@ public class CalendarRESTService extends PluginRESTService {
 //  	if (calendar == null) {
 //  		return Response.status(Status.NOT_FOUND).build();
 //  	}
-//  	
+//
 //  	UserEntity user = sessionController.getUser();
-//  	
+//
 //  	UserCalendar userCalendar = calendarController.findUserCalendarByCalendarAndUser(calendar, user);
 //  	if (userCalendar == null) {
 //  		return Response.status(Status.NOT_FOUND).build();
 //  	}
-//  	
+//
 //  	TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
 //    Tranquility tranquility = tranquilityBuilder
 //    		.createTranquility()
 //        .addInstruction(new SuperClassInstructionSelector(Calendar.class), tranquilityBuilder.createPropertyInjectInstruction("visible", new CalendarVisiblityValueGetter(Arrays.asList(userCalendar))));
 //
 //    TranquilModelEntity entity = tranquility.entity(calendar);
-//  	
+//
 //    return Response.ok(
 //    	entity
 //    ).build();
 //  }
-//  
+//
 //  @PUT
 //  @Path ("/calendars/{CALENDARID}")
 //  public Response saveCalendar(@PathParam ("CALENDARID") Long calendarId, String data) {
@@ -100,17 +101,17 @@ public class CalendarRESTService extends PluginRESTService {
 //  	if (calendar == null) {
 //  		return Response.status(Status.NOT_FOUND).build();
 //  	}
-//  	
+//
 //  	UserEntity user = sessionController.getUser();
-//  	
+//
 //  	UserCalendar userCalendar = calendarController.findUserCalendarByCalendarAndUser(calendar, user);
 //  	if (userCalendar == null) {
 //  		return Response.status(Status.NOT_FOUND).build();
 //  	}
-//  	
+//
 //		JSONObject jsonData = JSONObject.fromObject(data);
 //		@SuppressWarnings("unchecked") Set<String> keys = jsonData.keySet();
-//		
+//
 //		for (String key : keys) {
 //			switch (key) {
 //				case "visible":
@@ -130,31 +131,31 @@ public class CalendarRESTService extends PluginRESTService {
 //					throw new RuntimeException("Calendar property " + key + " can not be updated");
 //			}
 //		}
-//  	
+//
 //  	TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
 //    Tranquility tranquility = tranquilityBuilder.createTranquility();
 //    TranquilModelEntity entity = tranquility.entity(calendar);
-//  	
+//
 //    return Response.ok(
 //    	entity
 //    ).build();
 //  }
-//  
+//
 //  /**
 //   * Creates a new calendar.
-//   * 
+//   *
 //   * Expects JSON -formatted string
-//   * 
+//   *
 //   *  {
 //   *    "color": "hex string",
 //   *    "calendarType": "LOCAL"/"SUBSCRIBED",
 //   *    "visible": true/false,
-//   *    "name": when calendarType == LOCAL, a name of the calendar 
+//   *    "name": when calendarType == LOCAL, a name of the calendar
 //   *    "url": when calendarType == SUBSCRIBED, a url to the remote calendar
 //   *  }
-//   *  
+//   *
 //   * Returns
-//   * 
+//   *
 //   *  {
 //   *    "id": id
 //   *    "environment_id": environment id,
@@ -167,20 +168,20 @@ public class CalendarRESTService extends PluginRESTService {
 //   */
 //
 //  @POST
-//  @Path ("/calendars") 
+//  @Path ("/calendars")
 //  public Response createCalendar(String data) {
-//  	
+//
 //  	JSONObject jsonData = JSONObject.fromObject(data);
-//  	
+//
 //  	// TODO: Better error handling
 //  	String color = jsonData.getString("color");
 //  	CalendarType calendarType = CalendarType.valueOf(jsonData.getString("calendarType"));
 //  	Boolean visibile = jsonData.getBoolean("visible");
 //  	String name = null;
 //  	UserCalendar userCalendar = null;
-//  	
+//
 //  	UserEntity user = sessionController.getUser();
-//  	
+//
 //  	switch (calendarType) {
 //  		case LOCAL:
 //  			name = jsonData.getString("name");
@@ -188,7 +189,7 @@ public class CalendarRESTService extends PluginRESTService {
 //  	  break;
 //  		case SUBSCRIBED:
 //  			String url = jsonData.getString("url");
-//  			
+//
 //  			net.fortuna.ical4j.model.Calendar icsCalendar;
 //  			try {
 //  				icsCalendar = calendarController.loadIcsCalendar(StringUtils.trim(url));
@@ -196,28 +197,28 @@ public class CalendarRESTService extends PluginRESTService {
 //  	  		// TODO: Localize
 //  	  		return Response.status(Status.BAD_REQUEST).entity("Could subscribe to calendar in " + url).build();
 //  			}
-//  			
+//
 //  	  	if (icsCalendar == null) {
 //  	  		// TODO: Localize
 //  	  		return Response.status(Status.BAD_REQUEST).entity("Could subscribe to calendar in " + url).build();
 //  	  	}
-//  	  	
+//
 //  	  	name = calendarController.getIcsCalendarName(icsCalendar);
 //  	  	if (StringUtils.isBlank(name)) {
 //  	  		name = url;
 //  	  	}
-//  	  	
+//
 //  	  	userCalendar = calendarController.createSubscribedUserCalendar(user, name, url, color, visibile, new Date());
-//  	  	
+//
 //  	  	try {
 //  				calendarController.synchronizeSubscribedCalendar((SubscribedCalendar) userCalendar.getCalendar(), icsCalendar);
 //  			} catch (IOException | ParserException | URISyntaxException e) {
 //  				logger.log(Level.SEVERE, "Calendar synchronization failed", e);
 //  			}
-//  	  	
+//
 //  		break;
 //  	}
-//    
+//
 //    TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
 //    Tranquility tranquility = tranquilityBuilder.createTranquility()
 //    		.addInstruction(new SuperClassInstructionSelector(Calendar.class), tranquilityBuilder.createPropertyInjectInstruction("visible", new CalendarVisiblityValueGetter(Arrays.asList(userCalendar))));
@@ -230,13 +231,13 @@ public class CalendarRESTService extends PluginRESTService {
 //  @POST
 //  @Path ("/calendars/{CALENDARID}/events")
 //  public Response createCalendarEvent(@PathParam ("CALENDARID") Long calendarId, String data) {
-//  
+//
 //  	// TODO: Permissions
 //  	Calendar calendar = calendarController.findCalendar(calendarId);
 //  	if (calendar == null) {
 //  		return Response.status(Status.NOT_FOUND).build();
 //  	}
-//  	
+//
 //  	if (calendar instanceof LocalCalendar) {
 //  		LocalCalendar localCalendar = (LocalCalendar) calendar;
 //
@@ -258,12 +259,12 @@ public class CalendarRESTService extends PluginRESTService {
 //  		if (eventType == null) {
 //    		return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not find event type #" + typeId).build();
 //    	}
-//  		
+//
 //    	LocalEvent localEvent = calendarController.createLocalEvent(localCalendar, eventType, summary, description, location, url, start, end, allDay, latitude, longitude, hangoutUrl);
-//    	
+//
 //    	TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
 //      Tranquility tranquility = tranquilityBuilder.createTranquility();
-//    	
+//
 //      return Response.ok(
 //      	tranquility.entity(localEvent)
 //      ).build();
@@ -271,7 +272,7 @@ public class CalendarRESTService extends PluginRESTService {
 //  		return Response.status(Status.BAD_REQUEST).entity("Cannot add event into subscribed calendar").build();
 //  	}
 //  }
-//  
+//
 //  @GET
 //  @Path ("/calendars/{CALENDARID}/events")
 //  public Response getCalendarEvents(@PathParam ("CALENDARID") Long calendarId, @QueryParam ("start") Long start, @QueryParam ("end") Long end) {
@@ -280,13 +281,13 @@ public class CalendarRESTService extends PluginRESTService {
 //  	if (calendar == null) {
 //  		return Response.status(Status.NOT_FOUND).build();
 //  	}
-//  	
+//
 //  	if (((start != null)||(end != null)) && ((start == null)||(end == null))) {
 //  		return Response.status(Status.BAD_REQUEST).entity("If either of start or end is present both need to be specified").build();
 //  	}
-//  	
+//
 //  	List<Event> events = null;
-//  	
+//
 //  	if (start != null && end != null) {
 //  		events = calendarController.listCalendarEvents(calendar, new Date(start), new Date(end));
 //  	} else {
@@ -295,30 +296,30 @@ public class CalendarRESTService extends PluginRESTService {
 //
 //  	TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
 //    Tranquility tranquility = tranquilityBuilder.createTranquility();
-//  	
+//
 //    return Response.ok(
 //    	tranquility.entities(events)
 //    ).build();
 //  }
-//  
+//
 //  @PUT
 //  @Path ("/calendars/{CALENDARID}/events/{EVENTID}")
 //  public Response updateCalendarEvent(
-//  		@PathParam ("CALENDARID") Long calendarId, 
-//  		@PathParam ("EVENTID") Long eventId, 
+//  		@PathParam ("CALENDARID") Long calendarId,
+//  		@PathParam ("EVENTID") Long eventId,
 //  		String data) {
-//  	
+//
 //  	// TODO: Permissions
-//  	
+//
 //  	LocalEvent localEvent = calendarController.findLocalEventById(eventId);
 //  	if (localEvent == null) {
 //  		return Response.status(Status.NOT_FOUND).build();
 //  	}
-//  	
+//
 //  	if (!localEvent.getCalendar().getId().equals(calendarId)) {
 //  		return Response.status(Status.NOT_FOUND).build();
 //  	}
-//  	
+//
 //  	JSONObject jsonData = JSONObject.fromObject(data);
 //
 //		Long targetCalendarId = jsonData.optLong("calendar_id");
@@ -332,12 +333,12 @@ public class CalendarRESTService extends PluginRESTService {
 //		Boolean allDay = jsonData.optBoolean("allDay");
 //		BigDecimal latitude = getBigDecimal(jsonData, "latitude");
 //		BigDecimal longitude = getBigDecimal(jsonData, "longitude");
-//		
+//
 //		LocalEventType eventType = calendarController.findLocalEventType(typeId);
 //		if (eventType == null) {
 //  		return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Could not find event type #" + typeId).build();
 //  	}
-//		
+//
 //		calendarController.updateLocalEvent(localEvent, eventType, summary, description, location, url, start, end, allDay, latitude, longitude);
 //  	if ((targetCalendarId != null) && (targetCalendarId != calendarId)) {
 //  		// Event has been moved into new calendar
@@ -345,8 +346,8 @@ public class CalendarRESTService extends PluginRESTService {
 //  		LocalCalendar targetCalendar = (LocalCalendar) calendarController.findCalendar(targetCalendarId);
 //  		calendarController.updateLocalEventCalendar(localEvent, targetCalendar);
 //  	}
-//  	
-//  	
+//
+//
 //  	TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
 //    Tranquility tranquility = tranquilityBuilder.createTranquility();
 //
@@ -354,24 +355,24 @@ public class CalendarRESTService extends PluginRESTService {
 //      tranquility.entity(localEvent)
 //    ).build();
 //  }
-//  
+//
 //  @DELETE
 //  @Path ("/calendars/{CALENDARID}/events/{EVENTID}")
 //  public Response deleteCalendarEvent(
-//  		@PathParam ("CALENDARID") Long calendarId, 
+//  		@PathParam ("CALENDARID") Long calendarId,
 //  		@PathParam ("EVENTID") Long eventId) {
-//  	
+//
 //  	// TODO: Permissions
-//  	
+//
 //  	LocalEvent localEvent = calendarController.findLocalEventById(eventId);
 //  	if (localEvent == null) {
 //  		return Response.status(Status.NOT_FOUND).build();
 //  	}
-//  	
+//
 //  	if (!localEvent.getCalendar().getId().equals(calendarId)) {
 //  		return Response.status(Status.NOT_FOUND).build();
 //  	}
-//  	
+//
 //    calendarController.deleteLocalEvent(localEvent);
 //
 //  	return Response.noContent().build();
@@ -379,58 +380,58 @@ public class CalendarRESTService extends PluginRESTService {
 //
 //
 //  @POST
-//  @Path ("/localEventTypes") 
+//  @Path ("/localEventTypes")
 //  public Response createLocalEventType(@FormParam ("name") String name) throws SystemException {
 //  	LocalEventType eventType = calendarController.createLocalEventType(name);
-//  	
+//
 //  	TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
 //    Tranquility tranquility = tranquilityBuilder.createTranquility();
-//  	
+//
 //    return Response.ok(
 //    	tranquility.entity(eventType)
 //    ).build();
 //  }
 //
 //  @GET
-//  @Path ("/localEventTypes") 
+//  @Path ("/localEventTypes")
 //  public Response listLocalEventTypes() {
 //  	List<LocalEventType> eventTypes = calendarController.listLocalEventTypes();
-//  	
+//
 //  	TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
 //    Tranquility tranquility = tranquilityBuilder.createTranquility();
-//  	
+//
 //    return Response.ok(
 //    	tranquility.entities(eventTypes)
 //    ).build();
 //  }
-//  
+//
 //  @GET
 //  @Path ("/settings")
 //  public Response listSettings() {
 //  	UserEntity user = sessionController.getUser();
-//  	
+//
 //  	Map<String, Object> settings = new HashMap<>();
-//  	
+//
 //  	String firstDay = pluginSettingsController.getPluginUserSetting("calendar", CalendarPluginDescriptor.DEFAULT_FIRSTDAY_SETTING, user);
 //  	if (StringUtils.isBlank(firstDay)) {
 //  		firstDay = pluginSettingsController.getPluginSetting("calendar", CalendarPluginDescriptor.DEFAULT_FIRSTDAY_SETTING);
 //  	}
-//  	
+//
 //  	settings.put("firstDay", firstDay);
-//  	
+//
 //    return Response.ok(
 //      settings
 //    ).build();
 //  }
-//  
+//
 //  @PUT
 //  @Path ("/settings")
 //  public Response updateSetting(String data) {
 //  	UserEntity user = sessionController.getUser();
-//  	
+//
 //  	JSONObject jsonData = JSONObject.fromObject(data);
 //  	@SuppressWarnings("unchecked") Set<String> keys = jsonData.keySet();
-//  	
+//
 //		for (String key : keys) {
 //			switch (key) {
 //				case "firstDay":
@@ -450,16 +451,16 @@ public class CalendarRESTService extends PluginRESTService {
 //		if (object == null) {
 //			return null;
 //		}
-//		
+//
 //		String value = null;
-//		
+//
 //		if (object instanceof JSONObject) {
 //			JSONObject jsonObject = (JSONObject) object;
-//			
+//
 //  		if (jsonObject.isNullObject()) {
 //  			return null;
 //  		}
-//  
+//
 //  		value = jsonObject.toString();
 //		} else if (object instanceof String) {
 //			value = (String) object;
@@ -467,21 +468,21 @@ public class CalendarRESTService extends PluginRESTService {
 //
 //		return NumberUtils.createBigDecimal(value);
 //	}
-//  
+//
 //  public static class CalendarVisiblityValueGetter implements ValueGetter<Boolean> {
-//  	
+//
 //  	public CalendarVisiblityValueGetter(List<UserCalendar> userCalendars) {
 //			for (UserCalendar userCalendar : userCalendars) {
 //				visibilities.put(userCalendar.getCalendar().getId(), userCalendar.getVisible());
 //			}
 //		}
-//  	
+//
 //  	@Override
 //  	public Boolean getValue(TranquilizingContext context) {
 //  		Calendar calendar = (Calendar) context.getEntityValue();
 //  		return visibilities.get(calendar.getId());
 //  	}
-//  	
+//
 //  	private Map<Long, Boolean> visibilities = new HashMap<>();
 //  }
 }

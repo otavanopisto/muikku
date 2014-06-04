@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import org.apache.commons.collections.CollectionUtils;
 
 import fi.muikku.calendar.Calendar;
+import fi.muikku.calendar.CalendarServiceException;
 import fi.muikku.calendar.CalendarServiceProvider;
 import fi.muikku.plugins.calendar.dao.UserCalendarDAO;
 import fi.muikku.plugins.calendar.model.UserCalendar;
@@ -43,18 +44,22 @@ public class CalendarController {
     List<Calendar> result = new ArrayList<>();
 
     List<UserCalendar> userCalendars = userCalendarDAO.listByUserId(loggedUserId);
-    for (UserCalendar userCalendar : userCalendars) {
-      CalendarServiceProvider provider = getCalendarServiceProvider(userCalendar.getCalendarProvider());
-      if (provider != null) {
-        Calendar calendar = provider.findCalendar(userCalendar.getCalendarId());
-        if (calendar != null) {
-          result.add(calendar);
+    try {
+      for (UserCalendar userCalendar : userCalendars) {
+        CalendarServiceProvider provider = getCalendarServiceProvider(userCalendar.getCalendarProvider());
+        if (provider != null) {
+          Calendar calendar = provider.findCalendar(userCalendar.getCalendarId());
+          if (calendar != null) {
+            result.add(calendar);
+          } else {
+            // TODO: Better error handling
+          }
         } else {
           // TODO: Better error handling
         }
-      } else {
-        // TODO: Better error handling
       }
+    } catch (CalendarServiceException ex) {
+      // TODO: Exception handling
     }
 
     return result;
