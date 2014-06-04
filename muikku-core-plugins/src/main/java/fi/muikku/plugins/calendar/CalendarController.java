@@ -44,9 +44,26 @@ public class CalendarController {
       throw new CalendarServiceException("Could not find calendar service provider: " + serviceProvider);
     }
   }
+
+  public UserCalendar findUserCalendar(Long id) {
+    return userCalendarDAO.findById(id);
+  }
   
   public List<UserCalendar> listUserCalendars(UserEntity user) {
     return userCalendarDAO.listByUserId(user.getId());
+  }
+
+  public UserCalendar updateCalendar(UserCalendar userCalendar, String subject, String description) throws CalendarServiceException {
+    CalendarServiceProvider provider = getCalendarServiceProvider(userCalendar.getCalendarProvider());
+    
+    Calendar calendar = provider.findCalendar(userCalendar.getCalendarId());
+    if (calendar == null) {
+      throw new CalendarServiceException("Could not find calendar calendar for user calendar #" + userCalendar.getId());
+    }
+    
+    // TODO: Implement actual updating
+    
+    return userCalendar;
   }
   
   public Calendar loadCalendar(UserCalendar userCalendar) throws CalendarServiceException {
@@ -460,4 +477,6 @@ public class CalendarController {
 //
 //		return null;
 //	}
+
+
 }
