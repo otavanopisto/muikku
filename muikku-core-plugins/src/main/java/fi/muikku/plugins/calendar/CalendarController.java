@@ -16,6 +16,7 @@ import org.apache.commons.collections.CollectionUtils;
 import fi.muikku.calendar.Calendar;
 import fi.muikku.calendar.CalendarServiceException;
 import fi.muikku.calendar.CalendarServiceProvider;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.calendar.dao.UserCalendarDAO;
 import fi.muikku.plugins.calendar.model.UserCalendar;
 import fi.muikku.session.SessionController;
@@ -25,44 +26,24 @@ import fi.muikku.session.SessionController;
 public class CalendarController {
 
   @Inject
-  private SessionController sessionController;
-
-  @Inject
   @Any
   private Instance<CalendarServiceProvider> serviceProviders;
 
   @Inject
   private UserCalendarDAO userCalendarDAO;
-
-  public List<Calendar> listCalendars() {
-    Long loggedUserId = sessionController.getUser().getId();
-    if (loggedUserId == null) {
-      // TODO: Better error handling
-      return null;
+  
+  public List<UserCalendar> listUserCalendars(UserEntity user) {
+    return userCalendarDAO.listByUserId(user.getId());
+  }
+  
+  public Calendar loadCalendar(UserCalendar userCalendar) throws CalendarServiceException {
+    CalendarServiceProvider provider = getCalendarServiceProvider(userCalendar.getCalendarProvider());
+    if (provider != null) {
+      Calendar calendar = provider.findCalendar(userCalendar.getCalendarId());
+      return calendar;
+    } else {
+      throw new CalendarServiceException("Could not find calendar service provider: " + userCalendar.getCalendarProvider());
     }
-
-    List<Calendar> result = new ArrayList<>();
-
-    List<UserCalendar> userCalendars = userCalendarDAO.listByUserId(loggedUserId);
-    try {
-      for (UserCalendar userCalendar : userCalendars) {
-        CalendarServiceProvider provider = getCalendarServiceProvider(userCalendar.getCalendarProvider());
-        if (provider != null) {
-          Calendar calendar = provider.findCalendar(userCalendar.getCalendarId());
-          if (calendar != null) {
-            result.add(calendar);
-          } else {
-            // TODO: Better error handling
-          }
-        } else {
-          // TODO: Better error handling
-        }
-      }
-    } catch (CalendarServiceException ex) {
-      // TODO: Exception handling
-    }
-
-    return result;
   }
 
   private CalendarServiceProvider getCalendarServiceProvider(String name) {
