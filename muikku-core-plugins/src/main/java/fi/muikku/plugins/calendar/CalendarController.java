@@ -99,6 +99,17 @@ public class CalendarController {
     
     return provider.createEvent(calendar.getId(), summary, description, status, attendees, new DefaultCalendarEventTemporalField(start, startTimeZone), new DefaultCalendarEventTemporalField(end, endTimeZone), reminders, recurrence);
   }
+
+  public List<fi.muikku.calendar.CalendarEvent> listCalendarEvents(UserCalendar userCalendar) throws CalendarServiceException {
+    CalendarServiceProvider provider = getCalendarServiceProvider(userCalendar.getCalendarProvider());
+    
+    Calendar calendar = provider.findCalendar(userCalendar.getCalendarId());
+    if (calendar == null) {
+      throw new CalendarServiceException("Could not find calendar calendar for user calendar #" + userCalendar.getId());
+    }
+
+    return provider.listEvents(calendar.getId());
+  }
   
   public Calendar loadCalendar(UserCalendar userCalendar) throws CalendarServiceException {
     CalendarServiceProvider provider = getCalendarServiceProvider(userCalendar.getCalendarProvider());

@@ -91,7 +91,11 @@ public class CalendarRESTService extends PluginRESTService {
       return Response.status(Response.Status.BAD_REQUEST).entity("Calendar subject is required").build();
     }
     
-    UserCalendar userCalendar = calendarController.findUserCalendar(calendar.getId());
+    UserCalendar userCalendar = calendarController.findUserCalendar(calendarId);
+    if (userCalendar == null) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
     if (!userCalendar.getUserId().equals(sessionController.getUser().getId())) {
       return Response.status(Response.Status.FORBIDDEN).build();
     }
@@ -114,6 +118,10 @@ public class CalendarRESTService extends PluginRESTService {
     }
     
     UserCalendar userCalendar = calendarController.findUserCalendar(calendarId);
+    if (userCalendar == null) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
     if (!userCalendar.getUserId().equals(sessionController.getUser().getId())) {
       return Response.status(Response.Status.FORBIDDEN).build();
     }
@@ -144,6 +152,10 @@ public class CalendarRESTService extends PluginRESTService {
     }
     
     UserCalendar userCalendar = calendarController.findUserCalendar(calendarId);
+    if (userCalendar == null) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
     if (!userCalendar.getUserId().equals(sessionController.getUser().getId())) {
       return Response.status(Response.Status.FORBIDDEN).build();
     }
@@ -177,7 +189,48 @@ public class CalendarRESTService extends PluginRESTService {
   @Path ("/calendars/{CALID}/events/")
   @LoggedIn
   public Response getEvents(@PathParam ("CALID") Long calendarId) {
-    return Response.status(501).build();
+    if (calendarId == null) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
+    UserCalendar userCalendar = calendarController.findUserCalendar(calendarId);
+    if (userCalendar == null) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
+    if (!userCalendar.getUserId().equals(sessionController.getUser().getId())) {
+      return Response.status(Response.Status.FORBIDDEN).build();
+    }
+    
+    try {
+      List<CalendarEvent> result = new ArrayList<>();
+      
+      List<fi.muikku.calendar.CalendarEvent> calendarEvents = calendarController.listCalendarEvents(userCalendar);
+      for (fi.muikku.calendar.CalendarEvent calendarEvent : calendarEvents) { 
+        List<CalendarEventAttendee> attendees = new ArrayList<>();
+        List<CalendarEventReminder> reminders = new ArrayList<>();
+         
+        for (fi.muikku.calendar.CalendarEventAttendee calendarEventAttendee : calendarEvent.getAttendees()) {
+          attendees.add(new CalendarEventAttendee(calendarEventAttendee.getEmail(), calendarEventAttendee.getDisplayName(), 
+              calendarEventAttendee.getStatus(), calendarEventAttendee.getComment()));
+        }
+        
+        for (fi.muikku.calendar.CalendarEventReminder calendarEventReminder : calendarEvent.getEventReminders()) {
+          reminders.add(new CalendarEventReminder(calendarEventReminder.getType(), calendarEventReminder.getMinutesBefore()));
+        }
+        
+        // TODO: Recurrence
+
+        result.add(new CalendarEvent(calendarId, calendarEvent.getSummary(), calendarEvent.getDescription(), calendarEvent.getStatus(), 
+            calendarEvent.getStart().getDateTime(), calendarEvent.getStart().getTimeZone(), 
+            calendarEvent.getEnd().getDateTime(), calendarEvent.getEnd().getTimeZone(), 
+            calendarEvent.getCreated(), calendarEvent.getUpdated(), calendarEvent.getExtendedProperties(), attendees, reminders));
+      }
+      
+      return Response.ok(result).build();
+    } catch (CalendarServiceException e) {
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+    }
   }
   
   @GET
