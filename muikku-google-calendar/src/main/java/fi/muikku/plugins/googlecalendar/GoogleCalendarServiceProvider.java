@@ -24,6 +24,7 @@ import fi.muikku.calendar.CalendarEventRecurrence;
 import fi.muikku.calendar.CalendarEventReminder;
 import fi.muikku.calendar.CalendarEventStatus;
 import fi.muikku.calendar.CalendarEventTemporalField;
+import fi.muikku.calendar.CalendarEventUser;
 import fi.muikku.calendar.CalendarServiceException;
 
 import fi.muikku.calendar.CalendarServiceProvider;
@@ -33,6 +34,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -52,6 +54,74 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
       this.id = id;
     }
 
+    public String getSummary() {
+      return summary;
+    }
+
+    public String getDescription() {
+      return description;
+    }
+
+    public String getId() {
+      return id;
+    }
+  }
+
+  private static class GoogleCalendarEvent implements CalendarEvent {
+
+    private String id;
+    private String calendarId;
+    private String summary;
+    private String description;
+    private CalendarEventStatus status;
+    private List<CalendarEventAttendee> attendees;
+    private CalendarEventUser organizer;
+    private CalendarEventTemporalField start;
+    private CalendarEventTemporalField end;
+    private Date created;
+    private Date updated;
+    private Map<String, String> extendedProperties;
+    private List<CalendarEventReminder> reminders;
+    private CalendarEventRecurrence recurrence;
+
+    public GoogleCalendarEvent(
+    String id,
+    String calendarId,
+    String summary,
+    String description,
+    CalendarEventStatus status,
+    List<CalendarEventAttendee> attendees,
+    CalendarEventUser organizer,
+    CalendarEventTemporalField start,
+    CalendarEventTemporalField end,
+    Date created,
+    Date updated,
+    Map<String, String> extendedProperties,
+    List<CalendarEventReminder> reminders,
+    CalendarEventRecurrence recurrence) {
+      this.id = id;
+      this.calendarId = calendarId;
+      this.attendees = attendees;
+
+
+    }
+
+
+    @Override
+    public String getId() {
+      return id;
+    }
+
+    @Override
+    public String getCalendarId() {
+      return calendarId;
+    }
+
+    @Override
+    public String getServiceProvider() {
+      return "google";
+    }
+
     @Override
     public String getSummary() {
       return summary;
@@ -63,14 +133,55 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
     }
 
     @Override
-    public String getId() {
-      return id;
+    public CalendarEventStatus getStatus() {
+      return status;
     }
 
     @Override
-    public String getServiceProvider() {
-      return "google";
+    public List<CalendarEventAttendee> getAttendees() {
+      return attendees;
     }
+
+    @Override
+    public CalendarEventUser getOrganizer() {
+      return organizer;
+    }
+
+    @Override
+    public CalendarEventTemporalField getStart() {
+      return start;
+    }
+
+    @Override
+    public CalendarEventTemporalField getEnd() {
+      return end;
+    }
+
+    @Override
+    public Date getCreated() {
+      return created;
+    }
+
+    @Override
+    public Date getUpdated() {
+      return updated;
+    }
+
+    @Override
+    public Map<String, String> getExtendedProperties() {
+      return extendedProperties;
+    }
+
+    @Override
+    public List<CalendarEventReminder> getEventReminders() {
+      return reminders;
+    }
+
+    @Override
+    public CalendarEventRecurrence getRecurrence() {
+      return recurrence;
+    }
+
   }
 
   private static final HttpTransport TRANSPORT = new NetHttpTransport();
@@ -147,7 +258,9 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
   }
 
   @Override
-  public CalendarEvent createEvent(String calendarId, String summary, String description, CalendarEventStatus status, List<CalendarEventAttendee> attendees, CalendarEventTemporalField start, CalendarEventTemporalField end, List<CalendarEventReminder> reminders, CalendarEventRecurrence recurrence) throws CalendarServiceException {
+  public CalendarEvent createEvent(String calendarId,
+          String summary,
+          String description, CalendarEventStatus status, List<CalendarEventAttendee> attendees, CalendarEventTemporalField start, CalendarEventTemporalField end, List<CalendarEventReminder> reminders, CalendarEventRecurrence recurrence) throws CalendarServiceException {
     ArrayList<EventAttendee> googleAttendees = new ArrayList<>();
     for (CalendarEventAttendee attendee : attendees) {
      googleAttendees.add(
@@ -160,7 +273,7 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
     }
 
     try {
-      getClient().events().insert(calendarId,
+      Event event = getClient().events().insert(calendarId,
               new Event()
                       .setSummary(summary)
                       .setDescription(description)

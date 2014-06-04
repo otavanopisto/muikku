@@ -43,6 +43,7 @@ public interface CalendarServiceProvider {
    */
   public List<Calendar> listPublicCalendars() throws CalendarServiceException;
 
+
   /**
    * Creates new calendar event into the calendar.
    *
