@@ -39,6 +39,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.SimpleTimeZone;
+import java.util.TimeZone;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
@@ -76,6 +79,27 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
     public String getServiceProvider() {
       return "google";
     }
+  }
+
+  private static class GoogleCalendarEventTemporalField implements CalendarEventTemporalField {
+    private Date dateTime;
+    private TimeZone timeZone;
+
+    public GoogleCalendarEventTemporalField(Date dateTime, TimeZone timeZone) {
+      this.dateTime = dateTime;
+      this.timeZone = timeZone;
+    }
+
+    @Override
+    public Date getDateTime() {
+      return dateTime;
+    }
+
+    @Override
+    public TimeZone getTimeZone() {
+      return timeZone;
+    }
+
   }
 
   private static class GoogleCalendarEventUser implements CalendarEventUser {
@@ -375,12 +399,86 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
 
   @Override
   public List<CalendarEvent> listEvents(String... calendarId) throws CalendarServiceException {
-    throw new UnsupportedOperationException("Not supported yet.");
+    ArrayList<CalendarEvent> result = new ArrayList<>();
+
+    for (String calId : calendarId) {
+      try {
+        for (Event event : getClient().events().list(calId).execute().getItems()) {
+          result.add(
+                  new GoogleCalendarEvent(
+                          event.getId(),
+                          calId,
+                          event.getSummary(),
+                          event.getDescription(),
+                          CalendarEventStatus.valueOf(event.getStatus().toUpperCase(Locale.ROOT)),
+                          null, // TODO: Attendees
+                          new GoogleCalendarEventUser(
+                                  event.getOrganizer().getDisplayName(),
+                                  event.getOrganizer().getEmail()),
+                          new GoogleCalendarEventTemporalField(
+                                  new Date(event.getStart().getDateTime().getValue()),
+                                  SimpleTimeZone.getTimeZone(event.getStart().getTimeZone())),
+                          new GoogleCalendarEventTemporalField(
+                                  new Date(event.getEnd().getDateTime().getValue()),
+                                  SimpleTimeZone.getTimeZone(event.getEnd().getTimeZone())),
+                          new Date(event.getCreated().getValue()),
+                          new Date(event.getUpdated().getValue()),
+                          new HashMap<String, String>(),
+                          null, // TODO: Reminders
+                          null  // TODO: Recurrence
+                  ));
+        }
+      } catch (GeneralSecurityException | IOException ex) {
+        throw new CalendarServiceException(ex);
+      }
+    }
+
+    return result;
   }
 
   @Override
   public List<CalendarEvent> listEvents(Date minTime, Date maxTime, String... calendarId) throws CalendarServiceException {
-    throw new UnsupportedOperationException("Not supported yet.");
+    ArrayList<CalendarEvent> result = new ArrayList<>();
+
+    for (String calId : calendarId) {
+      try {
+        for (Event event : getClient()
+                .events()
+                .list(calId)
+                .setTimeMin(new DateTime(minTime))
+                .setTimeMax(new DateTime(maxTime))
+                .execute()
+                .getItems()) {
+          result.add(
+                  new GoogleCalendarEvent(
+                          event.getId(),
+                          calId,
+                          event.getSummary(),
+                          event.getDescription(),
+                          CalendarEventStatus.valueOf(event.getStatus().toUpperCase(Locale.ROOT)),
+                          null, // TODO: Attendees
+                          new GoogleCalendarEventUser(
+                                  event.getOrganizer().getDisplayName(),
+                                  event.getOrganizer().getEmail()),
+                          new GoogleCalendarEventTemporalField(
+                                  new Date(event.getStart().getDateTime().getValue()),
+                                  SimpleTimeZone.getTimeZone(event.getStart().getTimeZone())),
+                          new GoogleCalendarEventTemporalField(
+                                  new Date(event.getEnd().getDateTime().getValue()),
+                                  SimpleTimeZone.getTimeZone(event.getEnd().getTimeZone())),
+                          new Date(event.getCreated().getValue()),
+                          new Date(event.getUpdated().getValue()),
+                          new HashMap<String, String>(),
+                          null, // TODO: Reminders
+                          null  // TODO: Recurrence
+                  ));
+        }
+      } catch (GeneralSecurityException | IOException ex) {
+        throw new CalendarServiceException(ex);
+      }
+    }
+
+    return result;
   }
 
   @Override
@@ -435,7 +533,7 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
 
   @Override
   public void deleteEvent(fi.muikku.calendar.Calendar calendar, String eventId) throws CalendarServiceException {
-    throw new UnsupportedOperationException("Not supported yet.");
+    getClient().events().delete(calendar.getId(), eventId).execute();
   }
 
 
