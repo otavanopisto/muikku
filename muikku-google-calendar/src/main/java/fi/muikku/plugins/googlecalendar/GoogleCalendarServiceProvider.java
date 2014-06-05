@@ -302,17 +302,17 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
 
   @Override
   public CalendarEvent findEvent(fi.muikku.calendar.Calendar calendar, String eventId) throws CalendarServiceException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    throw new UnsupportedOperationException("Not supported yet.");
   }
 
   @Override
   public fi.muikku.calendar.Calendar updateCalendar(fi.muikku.calendar.Calendar calendar) throws CalendarServiceException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    throw new UnsupportedOperationException("Not supported yet.");
   }
 
   @Override
   public void deleteCalendar(fi.muikku.calendar.Calendar calendar) throws CalendarServiceException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    throw new UnsupportedOperationException("Not supported yet.");
   }
 
 
@@ -375,12 +375,12 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
 
   @Override
   public List<CalendarEvent> listEvents(String... calendarId) throws CalendarServiceException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    throw new UnsupportedOperationException("Not supported yet.");
   }
 
   @Override
   public List<CalendarEvent> listEvents(Date minTime, Date maxTime, String... calendarId) throws CalendarServiceException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    throw new UnsupportedOperationException("Not supported yet.");
   }
 
   @Override
@@ -435,7 +435,7 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
 
   @Override
   public void deleteEvent(fi.muikku.calendar.Calendar calendar, String eventId) throws CalendarServiceException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    throw new UnsupportedOperationException("Not supported yet.");
   }
 
 
