@@ -1,5 +1,6 @@
 package fi.muikku.plugins.calendar.rest.model;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -9,12 +10,18 @@ import fi.muikku.calendar.CalendarEventStatus;
 
 public class CalendarEvent {
 
-  public CalendarEvent(Long calendarId, String summary, String description, CalendarEventStatus status, Date start, TimeZone startTimeZone, Date end,
+  public CalendarEvent(Long calendarId, String summary, String description, String url, String location, 
+      String videoCallLink, BigDecimal longitude, BigDecimal latitude, CalendarEventStatus status, Date start, TimeZone startTimeZone, Date end,
       TimeZone endTimeZone, Date created, Date updated, Map<String, String> extendedProperties, List<CalendarEventAttendee> attendees,
       List<CalendarEventReminder> reminders) {
     this.calendarId = calendarId;
     this.summary = summary;
     this.description = description;
+    this.url = url;
+    this.location = location;
+    this.videoCallLink = videoCallLink;
+    this.longitude = longitude;
+    this.latitude = latitude;
     this.status = status;
     this.start = start;
     this.startTimeZone = startTimeZone;
@@ -49,6 +56,46 @@ public class CalendarEvent {
 
   public void setDescription(String description) {
     this.description = description;
+  }
+  
+  public String getUrl() {
+    return url;
+  }
+  
+  public void setUrl(String url) {
+    this.url = url;
+  }
+  
+  public String getLocation() {
+    return location;
+  }
+  
+  public void setLocation(String location) {
+    this.location = location;
+  }
+  
+  public String getVideoCallLink() {
+    return videoCallLink;
+  }
+  
+  public void setVideoCallLink(String videoCallLink) {
+    this.videoCallLink = videoCallLink;
+  }
+  
+  public BigDecimal getLatitude() {
+    return latitude;
+  }
+  
+  public void setLatitude(BigDecimal latitude) {
+    this.latitude = latitude;
+  }
+  
+  public BigDecimal getLongitude() {
+    return longitude;
+  }
+  
+  public void setLongitude(BigDecimal longitude) {
+    this.longitude = longitude;
   }
 
   public CalendarEventStatus getStatus() {
@@ -134,6 +181,11 @@ public class CalendarEvent {
   private Long calendarId;
   private String summary;
   private String description;
+  private String url;
+  private String location;
+  private String videoCallLink;
+  private BigDecimal longitude;
+  private BigDecimal latitude;
   private CalendarEventStatus status;
   private Date start;
   private TimeZone startTimeZone;
