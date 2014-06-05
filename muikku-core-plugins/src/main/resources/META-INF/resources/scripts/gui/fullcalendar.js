@@ -270,8 +270,8 @@
       this._loadedDatas = datas;
     },
     
-    _onAfterEventCreate: function (event) {
-      var newEvent = event.event;
+    _onAfterEventCreate: function (event, data) {
+      var newEvent = data.event;
       
       for (var i = 0, l = this._loadedDatas.length; i < l; i++) {
         if (this._loadedDatas[i].calendarMeta.id == newEvent['calendar_id']) {
@@ -356,15 +356,15 @@
     },
     
     _onEventDrop: function(event, dayDelta, minuteDelta, allDay, revertFunc) {
-      this.getWidgetElement().trigger($.Event("updateEvent", {
+      this.getWidgetElement().trigger("updateEvent", {
         event: event
-      }));
+      });
     },
     
     _onEventResize: function(event, dayDelta, minuteDelta, revertFunc) {
-      this.getWidgetElement().trigger($.Event("updateEvent", {
+      this.getWidgetElement().trigger("updateEvent", {
         event: event
-      }));
+      });
     },
     _onCalendarSettingsChange: function (event) {
       if (this.getWidgetElement().find('input[name="firstDay"]').val() != this._fullCalendar.fullCalendar('firstDay')) {
@@ -579,10 +579,10 @@
       this._loadEvents();
     },  
     
-    _onNewEventWidgetEventCreate: function (event) {
-      this._widgetElement.trigger($.Event("afterEventCreate", {
+    _onNewEventWidgetEventCreate: function (event, data) {
+      this._widgetElement.trigger("afterEventCreate", {
         event: event.event
-      }));
+      });
     },
     
     _onCalendarEventDialogEventRemoved: function (event) {
@@ -686,10 +686,10 @@
       var _this = this;
       (new EventDialog(event.event))
         .save(function (originalData, eventData) {
-          _this._widgetElement.trigger($.Event("updateEvent", {
+          _this._widgetElement.trigger("updateEvent", {
             originalData: originalData,
             eventData: eventData
-          }));
+          });
         })
         .show();
     },
@@ -698,65 +698,69 @@
       var _this = this;
       (new EventDialog(event.event))
         .save(function (originalData, eventData) {
-          _this._widgetElement.trigger($.Event("updateEvent", {
+          _this._widgetElement.trigger("updateEvent", {
             originalData: originalData,
             eventData: eventData
-          }));
+          });
         })
         .show();
     },
 
-    _onUpdateEvent: function (event) {
-      var calendarEvent = event.eventData;
-      var originalEventData = event.originalData;
+    _onUpdateEvent: function (event, data) {
+      var calendarEvent = data.eventData;
+      var originalEventData = data.originalData;
+      var timeZone = new Date().getTimezoneOffset();
+      // TODO: attendees, reminders
+      var attendees = []; 
+      var reminders = [];
 
       if (calendarEvent.id == null) {
-        // Creating new event 
-        
-        var _this = this;
-        RESTful.doPost(CONTEXTPATH + '/rest/calendar/calendars/' + calendarEvent.calendarId + '/events', {
-          data: {
-            type_id: parseInt(calendarEvent.typeId),
-            summary: calendarEvent.summary,
-            description: calendarEvent.description,
-            location: calendarEvent.location,
-            url: calendarEvent.url,
-            start: calendarEvent.start.getTime(),
-            end: calendarEvent.end.getTime(),
-            allDay: calendarEvent.allDay,
-            latitude: calendarEvent.latitude,
-            longitude: calendarEvent.longitude
-          }
-        })
-        .success(function (data, textStatus, jqXHR) {
-          _this._widgetElement.trigger($.Event("afterEventCreate", {
-            event: data
-          }));
-        });
-      } else {
-        // Updating existing event
-        var _this = this;
-        RESTful.doPut(CONTEXTPATH + '/rest/calendar/calendars/' + originalEventData.calendarId + '/events/' + calendarEvent.id, {
-          data: {
-            calendar_id: parseInt(calendarEvent.calendarId),
-            type_id: parseInt(calendarEvent.typeId),
-            summary: calendarEvent.summary,
-            description: calendarEvent.description,
-            location: calendarEvent.location,
-            url: calendarEvent.url,
-            start: calendarEvent.start.getTime(),
-            end: calendarEvent.end.getTime(),
-            allDay: calendarEvent.allDay,
-            latitude: calendarEvent.latitude,
-            longitude: calendarEvent.longitude
-          }
-        })
-        .success(function (data, textStatus, jqXHR) {
-          _this._widgetElement.trigger($.Event("afterEventUpdate", {
+        mApi().calendar.calendars.create(calendarEvent.calendarId, {
+          calendarId: calendarEvent.calendarId,
+          summary: calendarEvent.summary,
+          description: calendarEvent.description,
+          location: calendarEvent.location,
+          latitude:calendarEvent.latitude,
+          longitude: calendarEvent.longitude,
+          url: calendarEvent.url,
+          status: 'CONFIRMED',
+          start: calendarEvent.start,
+          startTimeZone: timeZone,
+          end: calendarEvent.end,
+          endTimeZone: timeZone,
+          allDay: calendarEvent.allDay,
+          attendees: attendees,
+          reminders: reminders
+        }).callback($.proxy(function (err, result) {
+          this._widgetElement.trigger("afterEventCreate", {
             event: calendarEvent,
             originalEventData: originalEventData
-          }));
-        });
+          });
+        }, this));   
+      } else {
+        mApi().calendar.calendars.update(calendarEvent.calendarId, calendarEvent.id, {
+          id: calendarEvent.id,
+          calendarId: calendarEvent.calendarId,
+          summary: calendarEvent.summary,
+          description: calendarEvent.description,
+          location: calendarEvent.location,
+          latitude:calendarEvent.latitude,
+          longitude: calendarEvent.longitude,
+          url: calendarEvent.url,
+          status: 'CONFIRMED',
+          start: calendarEvent.start,
+          startTimeZone: timeZone,
+          end: calendarEvent.end,
+          endTimeZone: timeZone,
+          allDay: calendarEvent.allDay,
+          attendees: attendees,
+          reminders: reminders
+        }).callback($.proxy(function (err, result) {
+          this._widgetElement.trigger("afterEventUpdate", {
+            event: calendarEvent,
+            originalEventData: originalEventData
+          });
+        }, this)); 
       }
     }
   });
