@@ -24,6 +24,7 @@ import com.google.api.services.calendar.model.EventDateTime;
 
 import fi.muikku.calendar.CalendarEvent;
 import fi.muikku.calendar.CalendarEventAttendee;
+import fi.muikku.calendar.CalendarEventLocation;
 import fi.muikku.calendar.CalendarEventRecurrence;
 import fi.muikku.calendar.CalendarEventReminder;
 import fi.muikku.calendar.CalendarEventStatus;
@@ -31,6 +32,7 @@ import fi.muikku.calendar.CalendarEventTemporalField;
 import fi.muikku.calendar.CalendarEventUser;
 import fi.muikku.calendar.CalendarServiceException;
 import fi.muikku.calendar.CalendarServiceProvider;
+import fi.muikku.calendar.DefaultCalendarEventLocation;
 import fi.muikku.session.AccessToken;
 import fi.muikku.session.SessionController;
 import java.io.IOException;
@@ -51,10 +53,12 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
     private final String summary;
     private final String description;
     private final String id;
+    private final boolean writable;
 
     public GoogleCalendar(String summary,
             String description,
-            String id) {
+            String id,
+            boolean writable) {
       this.summary = summary;
       this.description = description;
       this.id = id;
@@ -78,6 +82,11 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
     @Override
     public String getServiceProvider() {
       return "google";
+    }
+
+    @Override
+    public boolean isWritable() {
+      return writable;
     }
   }
 
@@ -141,6 +150,8 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
     private Map<String, String> extendedProperties;
     private List<CalendarEventReminder> reminders;
     private CalendarEventRecurrence recurrence;
+    private String url;
+    private CalendarEventLocation location;
 
     public GoogleCalendarEvent(
         String id,
@@ -171,6 +182,8 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
       this.extendedProperties = extendedProperties;
       this.reminders = reminders;
       this.recurrence = recurrence;
+      this.url = null;
+      this.location = null;
     }
 
 
@@ -249,6 +262,16 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
       return recurrence;
     }
 
+    @Override
+    public String getUrl() {
+      return url;
+    }
+
+    @Override
+    public CalendarEventLocation getLocation() {
+      return location;
+    }
+
   }
 
   private static final HttpTransport TRANSPORT = new NetHttpTransport();
@@ -277,7 +300,8 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
         result.add(
                 new GoogleCalendar(entry.getSummary(),
                         entry.getDescription(),
-                        entry.getId()));
+                        entry.getId(),
+                        isWritable(entry)));
       }
 
       return result;
@@ -308,7 +332,7 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
       throw new CalendarServiceException(ex);
     }
 
-    return new GoogleCalendar(summary, description, calendar.getId());
+    return new GoogleCalendar(summary, description, calendar.getId(), true);
   }
 
   @Override
@@ -316,7 +340,10 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
     try {
       com.google.api.services.calendar.model.Calendar result = getClient().calendars().get(id).execute();
       return new
-        GoogleCalendar(result.getSummary(), result.getDescription(), id);
+        GoogleCalendar(result.getSummary(),
+                       result.getDescription(),
+                       id,
+                       isWritable(result));
     } catch (GoogleJsonResponseException ex) {
       return null;
     } catch (IOException | GeneralSecurityException ex) {
@@ -533,9 +560,25 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
 
   @Override
   public void deleteEvent(fi.muikku.calendar.Calendar calendar, String eventId) throws CalendarServiceException {
-    getClient().events().delete(calendar.getId(), eventId).execute();
+    try {
+      getClient().events().delete(calendar.getId(), eventId).execute();
+    } catch (GeneralSecurityException | IOException ex) {
+      throw new CalendarServiceException(ex);
+    }
   }
 
+  private boolean isWritable(CalendarListEntry entry) {
+    if ("reader".equals(entry.getAccessRole())
+            || "freeBusyReader".equals(entry.getAccessRole())) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  private boolean isWritable(com.google.api.services.calendar.model.Calendar cal) {
+    return true; // TODO
+  }
 
   private Date toDate(DateTime dt) {
     return new Date(dt.getValue());
