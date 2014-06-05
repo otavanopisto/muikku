@@ -58,6 +58,10 @@ public class CalendarController {
   public UserCalendar findUserCalendar(Long id) {
     return userCalendarDAO.findById(id);
   }
+
+  public UserCalendar findUserCalendarByUserAndProvider(UserEntity user, String provider) {
+    return userCalendarDAO.findByUserIdAndCalendarProvider(user.getId(), provider);
+  }
   
   public List<UserCalendar> listUserCalendars(UserEntity user) {
     return userCalendarDAO.listByUserId(user.getId());
