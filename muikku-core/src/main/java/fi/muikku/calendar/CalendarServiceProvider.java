@@ -86,11 +86,12 @@ public interface CalendarServiceProvider {
   /**
    * Returns single calendar event by id
    *
-   * @param id id of the calendar event
+   * @param calendar calendar which owns the event
+   * @param eventId id of the event
    * @return a single calendar event
    * @throws CalendarServiceException when service provider reports an error
    */
-  public CalendarEvent findEvent(String id) throws CalendarServiceException;
+  public CalendarEvent findEvent(Calendar calendar, String eventId) throws CalendarServiceException;
 
   /**
    * Returns a list of events from specified calendars
@@ -105,8 +106,8 @@ public interface CalendarServiceProvider {
    * Returns a list of events from specified calendars within a specified time span
    *
    * @param calendarId
-   * @param minTime
-   * @param maxTime
+   * @param minTime lower bound of time filter. If null is specified results are not limited this constraint
+   * @param maxTime upper bound of time filter. If null is specified results are not limited this constraint
    * @return a list of events from specified calendars within a specified time span
    * @throws CalendarServiceException when service provider reports an error
    */

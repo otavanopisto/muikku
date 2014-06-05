@@ -110,18 +110,22 @@ public class CalendarController {
       throw new CalendarServiceException("Could not find calendar for user calendar #" + userCalendar.getId());
     }
 
-    return provider.findEvent(eventId);
+    return provider.findEvent(calendar, eventId);
   }
 
-  public List<fi.muikku.calendar.CalendarEvent> listCalendarEvents(UserCalendar userCalendar) throws CalendarServiceException {
+  public List<fi.muikku.calendar.CalendarEvent> listCalendarEvents(UserCalendar userCalendar, Date timeMin, Date timeMax) throws CalendarServiceException {
     CalendarServiceProvider provider = getCalendarServiceProvider(userCalendar.getCalendarProvider());
     
     Calendar calendar = provider.findCalendar(userCalendar.getCalendarId());
     if (calendar == null) {
       throw new CalendarServiceException("Could not find calendar for user calendar #" + userCalendar.getId());
     }
-
-    return provider.listEvents(calendar.getId());
+    
+    if (timeMin != null || timeMax != null) {
+      return provider.listEvents(timeMin, timeMax, calendar.getId());
+    } else {
+      return provider.listEvents(calendar.getId());
+    }
   }
 
   public CalendarEvent updateCalendarEvent(UserCalendar userCalendar, CalendarEvent calendarEvent) throws CalendarServiceException {
