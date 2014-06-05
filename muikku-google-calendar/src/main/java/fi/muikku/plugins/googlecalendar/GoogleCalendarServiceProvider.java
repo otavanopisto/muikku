@@ -62,6 +62,7 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
       this.summary = summary;
       this.description = description;
       this.id = id;
+      this.writable = writable;
     }
 
     @Override
@@ -270,6 +271,11 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
     @Override
     public CalendarEventLocation getLocation() {
       return location;
+    }
+
+    @Override
+    public boolean isAllDay() {
+      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
   }
