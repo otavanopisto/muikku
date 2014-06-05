@@ -43,7 +43,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
@@ -92,8 +91,8 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
   }
 
   private static class GoogleCalendarEventTemporalField implements CalendarEventTemporalField {
-    private Date dateTime;
-    private TimeZone timeZone;
+    private final Date dateTime;
+    private final TimeZone timeZone;
 
     public GoogleCalendarEventTemporalField(Date dateTime, TimeZone timeZone) {
       this.dateTime = dateTime;
@@ -114,8 +113,8 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
 
   private static class GoogleCalendarEventUser implements CalendarEventUser {
 
-    private String displayName;
-    private String email;
+    private final String displayName;
+    private final String email;
 
     public GoogleCalendarEventUser(String displayName, String email) {
       this.displayName = displayName;
@@ -135,22 +134,23 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
 
   private static class GoogleCalendarEvent implements CalendarEvent {
 
-    private String id;
-    private String calendarId;
-    private String summary;
-    private String description;
-    private CalendarEventStatus status;
-    private List<CalendarEventAttendee> attendees;
-    private CalendarEventUser organizer;
-    private CalendarEventTemporalField start;
-    private CalendarEventTemporalField end;
-    private Date created;
-    private Date updated;
-    private Map<String, String> extendedProperties;
-    private List<CalendarEventReminder> reminders;
-    private CalendarEventRecurrence recurrence;
-    private String url;
-    private CalendarEventLocation location;
+    private final String id;
+    private final String calendarId;
+    private final String summary;
+    private final String description;
+    private final CalendarEventStatus status;
+    private final List<CalendarEventAttendee> attendees;
+    private final CalendarEventUser organizer;
+    private final CalendarEventTemporalField start;
+    private final CalendarEventTemporalField end;
+    private final Date created;
+    private final Date updated;
+    private final Map<String, String> extendedProperties;
+    private final List<CalendarEventReminder> reminders;
+    private final CalendarEventRecurrence recurrence;
+    private final String url;
+    private final CalendarEventLocation location;
+    private final boolean allDay;
 
     public GoogleCalendarEvent(
         String id,
@@ -168,7 +168,8 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
         List<CalendarEventReminder> reminders,
         CalendarEventRecurrence recurrence,
         String url,
-        CalendarEventLocation location) {
+        CalendarEventLocation location,
+        boolean allDay) {
       this.id = id;
       this.calendarId = calendarId;
       this.summary = summary;
@@ -185,6 +186,7 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
       this.recurrence = recurrence;
       this.url = url;
       this.location = location;
+      this.allDay = allDay;
     }
 
     @Override
@@ -274,7 +276,7 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
 
     @Override
     public boolean isAllDay() {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      return allDay;
     }
 
   }
@@ -310,10 +312,8 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
       }
 
       return result;
-    } catch (IOException ex) {
+    } catch (IOException | GeneralSecurityException ex) {
       throw new CalendarServiceException(ex);
-    } catch (GeneralSecurityException e) {
-      throw new CalendarServiceException(e);
     }
   }
 
@@ -429,7 +429,8 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
                       event.getLocation(),
                       event.getHangoutLink(),
                       null,
-                      null));
+                      null),
+              event.getStart().getDate() != null);
     } catch (IOException | GeneralSecurityException ex) {
       throw new CalendarServiceException(ex);
     }
@@ -469,7 +470,8 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
                                   event.getLocation(),
                                   event.getHangoutLink(),
                                   null,
-                                  null)
+                                  null),
+                          event.getStart().getDate() != null
                   ));
         }
       } catch (GeneralSecurityException | IOException ex) {
@@ -520,7 +522,8 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
                                   event.getLocation(),
                                   event.getHangoutLink(),
                                   null,
-                                  null)
+                                  null),
+                          event.getStart().getDate() != null
                   ));
         }
       } catch (GeneralSecurityException | IOException ex) {
@@ -577,7 +580,8 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
               calendarEvent.getEventReminders(),
               calendarEvent.getRecurrence(),
               calendarEvent.getUrl(),
-              calendarEvent.getLocation());
+              calendarEvent.getLocation(),
+              calendarEvent.isAllDay());
     } catch (IOException | GeneralSecurityException ex) {
       throw new CalendarServiceException(ex);
     }
