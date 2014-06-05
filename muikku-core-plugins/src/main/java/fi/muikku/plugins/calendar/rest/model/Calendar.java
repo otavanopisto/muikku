@@ -5,8 +5,9 @@ public class Calendar {
   public Calendar() {
   }
 
-  public Calendar(Long id, String summary, String description) {
+  public Calendar(Long id, boolean writable, String summary, String description) {
     this.id = id;
+    this.writable = writable;
     this.summary = summary;
     this.description = description;
   }
@@ -34,8 +35,13 @@ public class Calendar {
   public void setDescription(String description) {
     this.description = description;
   }
+  
+  public boolean isWritable() {
+    return writable;
+  }
 
   private Long id;
   private String summary;
   private String description;
+  private boolean writable;
 }

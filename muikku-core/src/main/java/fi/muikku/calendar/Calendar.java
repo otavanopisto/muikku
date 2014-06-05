@@ -12,6 +12,13 @@ public interface Calendar {
   public String getId();
   
   /**
+   * Returns whether calendar is writable or not 
+   * 
+   * @return whether calendar is writable or not
+   */
+  public boolean isWritable();
+  
+  /**
    * Returns name of calendar service provider
    * 
    * @return name of calendar service provider
