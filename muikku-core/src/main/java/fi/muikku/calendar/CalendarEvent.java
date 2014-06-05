@@ -44,6 +44,20 @@ public interface CalendarEvent {
   public String getDescription();
   
   /**
+   * Returns an URL associated with the event
+   * 
+   * @return an URL associated with the event
+   */
+  public String getUrl();
+  
+  /**
+   * Returns event location data
+   * 
+   * @return event location data
+   */
+  public CalendarEventLocation getLocation();
+  
+  /**
    * Returns a status of this event
    * 
    * @return a status of this event

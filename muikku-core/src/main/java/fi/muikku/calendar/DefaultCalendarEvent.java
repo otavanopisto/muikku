@@ -9,14 +9,16 @@ public class DefaultCalendarEvent implements CalendarEvent {
   public DefaultCalendarEvent() {
   }
 
-  public DefaultCalendarEvent(String id, String calendarId, String serviceProvider, String summary, String description, CalendarEventStatus status,
-      List<CalendarEventAttendee> attendees, CalendarEventUser organizer, CalendarEventTemporalField start, CalendarEventTemporalField end, Date created,
-      Date updated, Map<String, String> extendedProperties, List<CalendarEventReminder> reminders, CalendarEventRecurrence recurrence) {
+  public DefaultCalendarEvent(String id, String calendarId, String serviceProvider, String summary, String description, String url, CalendarEventLocation location, 
+      CalendarEventStatus status, List<CalendarEventAttendee> attendees, CalendarEventUser organizer, CalendarEventTemporalField start, CalendarEventTemporalField end, 
+      Date created, Date updated, Map<String, String> extendedProperties, List<CalendarEventReminder> reminders, CalendarEventRecurrence recurrence) {
     this.id = id;
     this.calendarId = calendarId;
     this.serviceProvider = serviceProvider;
     this.summary = summary;
     this.description = description;
+    this.url = url;
+    this.location = location;
     this.status = status;
     this.attendees = attendees;
     this.organizer = organizer;
@@ -53,7 +55,17 @@ public class DefaultCalendarEvent implements CalendarEvent {
   public String getDescription() {
     return description;
   }
-
+  
+  @Override
+  public String getUrl() {
+    return url;
+  }
+  
+  @Override
+  public CalendarEventLocation getLocation() {
+    return location;
+  }
+  
   @Override
   public CalendarEventStatus getStatus() {
     return status;
@@ -109,6 +121,8 @@ public class DefaultCalendarEvent implements CalendarEvent {
   private String serviceProvider;
   private String summary;
   private String description;
+  private CalendarEventLocation location;
+  private String url;
   private CalendarEventStatus status;
   private List<CalendarEventAttendee> attendees;
   private CalendarEventUser organizer;
