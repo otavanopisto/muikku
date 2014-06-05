@@ -9,6 +9,9 @@ import java.util.TimeZone;
 import fi.muikku.calendar.CalendarEventStatus;
 
 public class CalendarEvent {
+  
+  public CalendarEvent() {
+  }
 
   public CalendarEvent(Long calendarId, String summary, String description, String url, String location, 
       String videoCallLink, BigDecimal longitude, BigDecimal latitude, CalendarEventStatus status, Date start, TimeZone startTimeZone, Date end,

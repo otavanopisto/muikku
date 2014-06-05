@@ -3,6 +3,9 @@ package fi.muikku.plugins.calendar.rest.model;
 import fi.muikku.calendar.CalendarEventAttendeeStatus;
 
 public class CalendarEventAttendee {
+  
+  public CalendarEventAttendee() {
+  }
 
   public CalendarEventAttendee(String email, String displayName, CalendarEventAttendeeStatus status, String comment) {
     this.email = email;
