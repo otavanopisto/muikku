@@ -11,7 +11,7 @@ public class DefaultCalendarEvent implements CalendarEvent {
 
   public DefaultCalendarEvent(String id, String calendarId, String serviceProvider, String summary, String description, String url, CalendarEventLocation location, 
       CalendarEventStatus status, List<CalendarEventAttendee> attendees, CalendarEventUser organizer, CalendarEventTemporalField start, CalendarEventTemporalField end, 
-      Date created, Date updated, Map<String, String> extendedProperties, List<CalendarEventReminder> reminders, CalendarEventRecurrence recurrence) {
+      boolean allDay, Date created, Date updated, Map<String, String> extendedProperties, List<CalendarEventReminder> reminders, CalendarEventRecurrence recurrence) {
     this.id = id;
     this.calendarId = calendarId;
     this.serviceProvider = serviceProvider;
@@ -24,6 +24,7 @@ public class DefaultCalendarEvent implements CalendarEvent {
     this.organizer = organizer;
     this.start = start;
     this.end = end;
+    this.allDay = allDay;
     this.created = created;
     this.updated = updated;
     this.extendedProperties = extendedProperties;
@@ -90,6 +91,11 @@ public class DefaultCalendarEvent implements CalendarEvent {
   public CalendarEventTemporalField getEnd() {
     return end;
   }
+  
+  @Override
+  public boolean isAllDay() {
+    return allDay;
+  }
 
   @Override
   public Date getCreated() {
@@ -128,6 +134,7 @@ public class DefaultCalendarEvent implements CalendarEvent {
   private CalendarEventUser organizer;
   private CalendarEventTemporalField start;
   private CalendarEventTemporalField end;
+  private boolean allDay;
   private Date created;
   private Date updated;
   private Map<String, String> extendedProperties;

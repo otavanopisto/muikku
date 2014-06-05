@@ -335,7 +335,7 @@ public class CalendarRESTService extends PluginRESTService {
     return new CalendarEvent(userCalendar.getId(), calendarEvent.getSummary(), calendarEvent.getDescription(), 
         calendarEvent.getUrl(), location, videoCallLink, longitude, latitude, calendarEvent.getStatus(),
         calendarEvent.getStart().getDateTime(), calendarEvent.getStart().getTimeZone(), 
-        calendarEvent.getEnd().getDateTime(), calendarEvent.getEnd().getTimeZone(), 
+        calendarEvent.getEnd().getDateTime(), calendarEvent.getEnd().getTimeZone(), calendarEvent.isAllDay(),
         calendarEvent.getCreated(), calendarEvent.getUpdated(), calendarEvent.getExtendedProperties(), attendees, reminders);
   }
 

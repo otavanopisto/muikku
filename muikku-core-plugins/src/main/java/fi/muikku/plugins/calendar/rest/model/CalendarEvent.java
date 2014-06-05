@@ -12,7 +12,7 @@ public class CalendarEvent {
 
   public CalendarEvent(Long calendarId, String summary, String description, String url, String location, 
       String videoCallLink, BigDecimal longitude, BigDecimal latitude, CalendarEventStatus status, Date start, TimeZone startTimeZone, Date end,
-      TimeZone endTimeZone, Date created, Date updated, Map<String, String> extendedProperties, List<CalendarEventAttendee> attendees,
+      TimeZone endTimeZone, boolean allDay, Date created, Date updated, Map<String, String> extendedProperties, List<CalendarEventAttendee> attendees,
       List<CalendarEventReminder> reminders) {
     this.calendarId = calendarId;
     this.summary = summary;
@@ -27,6 +27,7 @@ public class CalendarEvent {
     this.startTimeZone = startTimeZone;
     this.end = end;
     this.endTimeZone = endTimeZone;
+    this.allDay = allDay;
     this.created = created;
     this.updated = updated;
     this.extendedProperties = extendedProperties;
@@ -137,6 +138,14 @@ public class CalendarEvent {
   public void setEndTimeZone(TimeZone endTimeZone) {
     this.endTimeZone = endTimeZone;
   }
+  
+  public boolean isAllDay() {
+    return allDay;
+  }
+  
+  public void setAllDay(boolean allDay) {
+    this.allDay = allDay;
+  }
 
   public Date getCreated() {
     return created;
@@ -191,6 +200,7 @@ public class CalendarEvent {
   private TimeZone startTimeZone;
   private Date end;
   private TimeZone endTimeZone;
+  private boolean allDay;
   private Date created;
   private Date updated;
   private Map<String, String> extendedProperties;

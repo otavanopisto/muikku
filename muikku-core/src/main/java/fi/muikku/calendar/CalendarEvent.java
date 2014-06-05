@@ -93,6 +93,13 @@ public interface CalendarEvent {
   public CalendarEventTemporalField getEnd();
   
   /**
+   * Returns whether event is a all day event or not
+   * 
+   * @return whether event is a all day event or not
+   */
+  public boolean isAllDay();
+  
+  /**
    * Returns event creation time
    * 
    * @return event creation time
