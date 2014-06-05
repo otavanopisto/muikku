@@ -3,6 +3,7 @@ package fi.muikku.auth;
 import java.util.List;
 import java.util.Map;
 
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import fi.muikku.auth.AuthenticationResult.ConflictReason;
@@ -39,6 +40,9 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
   
   @Inject
   private SchoolBridgeController schoolBridgeController;
+
+  @Inject
+  private Event<LoginEvent> loginEvent;
   
   protected String getFirstRequestParameter(Map<String, String[]> requestParameters, String key) {
     String[] value = requestParameters.get(key);
@@ -106,6 +110,7 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
     if ((loggedUser == null) || loggedUser.getId().equals(user.getId())) {
       sessionController.login(user.getId());
       userController.updateLastLogin(user);
+      loginEvent.fire(new LoginEvent(userIdentification.getAuthSource().getStrategy(), user.getId()));
       return new AuthenticationResult(newAccount ? Status.NEW_ACCOUNT : Status.LOGIN);
     } else {
       return new AuthenticationResult(Status.CONFLICT, ConflictReason.LOGGED_IN_AS_DIFFERENT_USER);
