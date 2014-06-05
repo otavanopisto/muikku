@@ -3,8 +3,9 @@ package fi.muikku.calendar;
 
 public class DefaultCalendar implements Calendar {
   
-  public DefaultCalendar(String id, String serviceProvider, String summary, String description) {
+  public DefaultCalendar(String id, boolean writable, String serviceProvider, String summary, String description) {
     this.id = id;
+    this.writable = writable;
     this.serviceProvider = serviceProvider;
     this.summary = summary;
     this.description = description;
@@ -13,6 +14,11 @@ public class DefaultCalendar implements Calendar {
   @Override
   public String getId() {
     return id;
+  }
+  
+  @Override
+  public boolean isWritable() {
+    return writable;
   }
 
   @Override
@@ -32,6 +38,7 @@ public class DefaultCalendar implements Calendar {
 
   private String id;
   private String serviceProvider;
+  private boolean writable;
   private String summary;
   private String description;
 }

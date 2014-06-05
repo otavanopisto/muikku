@@ -417,7 +417,6 @@
       
       this._initialMode = 'MONTH';
       this._modeHandler = null;
-      this._localEventTypes = null;
       this._calendarMetas = new Array();
       this._calendarsInitialized = false;
 
@@ -451,7 +450,9 @@
       this._widgetElement.on("editEvent", $.proxy(this._onEditEvent, this));
       this._widgetElement.on("updateEvent", $.proxy(this._onUpdateEvent, this));
       
-      this._loadBasicInfo();
+      $(window).load($.proxy(function () {
+        this._loadBasicInfo();
+      }, this));
     },
     
     getViewStartTime: function () {
@@ -487,41 +488,31 @@
     /* API -calls */ 
     
     _loadBasicInfo: function () {
-      var _this = this;
-      RESTful.doGet(CONTEXTPATH + "/rest/calendar/localEventTypes")
-        .success(function (data, textStatus, jqXHR) {
-          _this._localEventTypes = data;
-          _this._widgetElement.trigger($.Event("basicInfoLoad", {
-          }));
-        });
+      this._widgetElement.trigger("basicInfoLoad");
     },
     
     _loadCalendars: function () {
-      // TODO: Error handling
-
-      var _this = this;
-      RESTful.doGet(CONTEXTPATH + "/rest/calendar/calendars")
-        .success(function (data, textStatus, jqXHR) {
-          
-          var event = $.Event("calendarsLoad", {
-            calendars: data
+      mApi().calendar.calendars.read().callback($.proxy(function (err, result) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          this._widgetElement.trigger("calendarsLoad", {
+            calendars: result
           });
-          
-          _this._widgetElement.trigger(event);
-        });
+        }
+      }, this));
     },
     
     _loadCalendarEvents: function (calendarMeta, startTime, endTime, callback) {
-      RESTful.doGet(CONTEXTPATH + "/rest/calendar/calendars/{calendarId}/events", {
-        parameters: {
-          calendarId: calendarMeta.id,
-          start: startTime.getTime(),
-          end: endTime.getTime()
-        }
-      })
-      .success(function (data, textStatus, jqXHR) {
-        callback(calendarMeta, data);
-      });
+      mApi().calendar.calendars.events
+        .read(calendarMeta.id, { timeMin: startTime, timeMax: endTime })
+        .callback($.proxy(function (err, result) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            callback(calendarMeta, result);
+          }
+        }, this));
     },
     
     _loadEvents: function () {
@@ -659,10 +650,10 @@
       this._changeMode(this._initialMode);
     },
 
-    _onCalendarsLoad: function (event) {
-      var calendars = event.calendars;
+    _onCalendarsLoad: function (event, data) {
+      var calendars = data.calendars;
       
-      var calendarMetas = new Array();
+      var calendarMetas = [];
       for (var i = 0, l = calendars.length; i < l; i++) {
         var calendar = calendars[i];
         calendarMetas.push({
@@ -768,7 +759,6 @@
         });
       }
     }
-    
   });
   
   addWidgetController('fullCalendarWidget', FullCalendarWidgetController);
