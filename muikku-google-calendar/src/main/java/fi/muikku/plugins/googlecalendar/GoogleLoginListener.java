@@ -30,7 +30,8 @@ public class GoogleLoginListener {
         if (userEntity != null) {
           UserCalendar userCalendar = calendarController.findUserCalendarByUserAndProvider(userEntity, "google");
           if (userCalendar == null) {
-            calendarController.createCalendar(userEntity, "google", CALENDAR_SUMMARY, CALENDAR_DESCRIPTION, Boolean.TRUE);
+            userCalendar = calendarController.createCalendar(userEntity, "google", CALENDAR_SUMMARY, CALENDAR_DESCRIPTION, Boolean.TRUE);
+            // TODO: Share the calendar with logged user google identity
           }
         }
       }
