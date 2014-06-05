@@ -708,15 +708,17 @@
 
     _onUpdateEvent: function (event, data) {
       var calendarEvent = data.eventData;
+      
+      var calendarId = parseInt(calendarEvent.calendarId);
       var originalEventData = data.originalData;
-      var timeZone = new Date().getTimezoneOffset();
+      var timeZone = jstz.determine().name();
       // TODO: attendees, reminders
       var attendees = []; 
       var reminders = [];
 
       if (calendarEvent.id == null) {
-        mApi().calendar.calendars.create(calendarEvent.calendarId, {
-          calendarId: calendarEvent.calendarId,
+        mApi().calendar.calendars.events.create(calendarId, {
+          calendarId: calendarId,
           summary: calendarEvent.summary,
           description: calendarEvent.description,
           location: calendarEvent.location,
@@ -738,9 +740,9 @@
           });
         }, this));   
       } else {
-        mApi().calendar.calendars.update(calendarEvent.calendarId, calendarEvent.id, {
+        mApi().calendar.calendars.events.update(calendarId, calendarEvent.id, {
           id: calendarEvent.id,
-          calendarId: calendarEvent.calendarId,
+          calendarId: calendarId,
           summary: calendarEvent.summary,
           description: calendarEvent.description,
           location: calendarEvent.location,
