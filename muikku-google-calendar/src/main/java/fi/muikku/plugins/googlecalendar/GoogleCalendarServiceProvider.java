@@ -64,6 +64,15 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
       this.writable = writable;
     }
 
+    public GoogleCalendar(com.google.api.services.calendar.model.Calendar cal) {
+      this(
+              cal.getSummary(),
+              cal.getDescription(),
+              cal.getId(),
+              true // TODO: is it?
+      );
+    }
+
     @Override
     public String getSummary() {
       return summary;
@@ -91,6 +100,7 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
   }
 
   private static class GoogleCalendarEventTemporalField implements CalendarEventTemporalField {
+
     private final Date dateTime;
     private final TimeZone timeZone;
 
@@ -153,23 +163,23 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
     private final boolean allDay;
 
     public GoogleCalendarEvent(
-        String id,
-        String calendarId,
-        String summary,
-        String description,
-        CalendarEventStatus status,
-        List<CalendarEventAttendee> attendees,
-        CalendarEventUser organizer,
-        CalendarEventTemporalField start,
-        CalendarEventTemporalField end,
-        Date created,
-        Date updated,
-        Map<String, String> extendedProperties,
-        List<CalendarEventReminder> reminders,
-        CalendarEventRecurrence recurrence,
-        String url,
-        CalendarEventLocation location,
-        boolean allDay) {
+            String id,
+            String calendarId,
+            String summary,
+            String description,
+            CalendarEventStatus status,
+            List<CalendarEventAttendee> attendees,
+            CalendarEventUser organizer,
+            CalendarEventTemporalField start,
+            CalendarEventTemporalField end,
+            Date created,
+            Date updated,
+            Map<String, String> extendedProperties,
+            List<CalendarEventReminder> reminders,
+            CalendarEventRecurrence recurrence,
+            String url,
+            CalendarEventLocation location,
+            boolean allDay) {
       this.id = id;
       this.calendarId = calendarId;
       this.summary = summary;
@@ -187,6 +197,37 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
       this.url = url;
       this.location = location;
       this.allDay = allDay;
+    }
+
+    public GoogleCalendarEvent(Event event, String calendarId) {
+      this(
+              event.getId(),
+              calendarId,
+              event.getSummary(),
+              event.getDescription(),
+              CalendarEventStatus.valueOf(event.getStatus().toUpperCase(Locale.ROOT)),
+              null, // TODO: Attendees
+              new GoogleCalendarEventUser(
+                      event.getOrganizer().getDisplayName(),
+                      event.getOrganizer().getEmail()),
+              new GoogleCalendarEventTemporalField(
+                      new Date(event.getStart().getDateTime().getValue()),
+                      SimpleTimeZone.getTimeZone(event.getStart().getTimeZone())),
+              new GoogleCalendarEventTemporalField(
+                      new Date(event.getEnd().getDateTime().getValue()),
+                      SimpleTimeZone.getTimeZone(event.getEnd().getTimeZone())),
+              new Date(event.getCreated().getValue()),
+              new Date(event.getUpdated().getValue()),
+              new HashMap<String, String>(),
+              null, // TODO: Reminders
+              null, // TODO: Recurrence
+              event.getHtmlLink(),
+              new DefaultCalendarEventLocation(
+                      event.getLocation(),
+                      event.getHangoutLink(),
+                      null,
+                      null),
+              event.getStart().getDate() != null);
     }
 
     @Override
@@ -324,7 +365,7 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
 
   @Override
   public fi.muikku.calendar.Calendar createCalendar(String summary,
-                                                    String description)
+          String description)
           throws CalendarServiceException {
 
     com.google.api.services.calendar.model.Calendar calendar = new com.google.api.services.calendar.model.Calendar();
@@ -344,11 +385,10 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
   public fi.muikku.calendar.Calendar findCalendar(String id) throws CalendarServiceException {
     try {
       com.google.api.services.calendar.model.Calendar result = getClient().calendars().get(id).execute();
-      return new
-        GoogleCalendar(result.getSummary(),
-                       result.getDescription(),
-                       id,
-                       isWritable(result));
+      return new GoogleCalendar(result.getSummary(),
+              result.getDescription(),
+              id,
+              isWritable(result));
     } catch (GoogleJsonResponseException ex) {
       return null;
     } catch (IOException | GeneralSecurityException ex) {
@@ -358,19 +398,36 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
 
   @Override
   public CalendarEvent findEvent(fi.muikku.calendar.Calendar calendar, String eventId) throws CalendarServiceException {
-    throw new UnsupportedOperationException("Not supported yet.");
+    try {
+      Event event = getClient().events().get(calendar.getId(), eventId).execute();
+      return new GoogleCalendarEvent(event, calendar.getId());
+    } catch (GeneralSecurityException | IOException ex) {
+      throw new CalendarServiceException(ex);
+    }
   }
 
   @Override
   public fi.muikku.calendar.Calendar updateCalendar(fi.muikku.calendar.Calendar calendar) throws CalendarServiceException {
-    throw new UnsupportedOperationException("Not supported yet.");
+    try {
+      getClient().calendars().update(
+                calendar.getId(),
+                new com.google.api.services.calendar.model.Calendar()
+                        .setDescription(calendar.getDescription())
+                        .setSummary(calendar.getDescription()));
+      return calendar;
+    } catch (GeneralSecurityException | IOException ex) {
+      throw new CalendarServiceException(ex);
+    }
   }
 
   @Override
   public void deleteCalendar(fi.muikku.calendar.Calendar calendar) throws CalendarServiceException {
-    throw new UnsupportedOperationException("Not supported yet.");
+    try {
+      getClient().calendars().delete(calendar.getId());
+    } catch (GeneralSecurityException | IOException ex) {
+      throw new CalendarServiceException(ex);
+    }
   }
-
 
   @Override
   public CalendarEvent createEvent(String calendarId,
@@ -384,53 +441,31 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
           CalendarEventRecurrence recurrence) throws CalendarServiceException {
     ArrayList<EventAttendee> googleAttendees = new ArrayList<>();
     for (CalendarEventAttendee attendee : attendees) {
-     googleAttendees.add(
-             new EventAttendee()
-             .setDisplayName(attendee.getDisplayName())
-             .setComment(attendee.getDisplayName())
-             .setEmail(attendee.getEmail())
-             .setResponseStatus(attendee.getStatus().toString().toLowerCase(Locale.ROOT))
-     );
+      googleAttendees.add(
+              new EventAttendee()
+              .setDisplayName(attendee.getDisplayName())
+              .setComment(attendee.getDisplayName())
+              .setEmail(attendee.getEmail())
+              .setResponseStatus(attendee.getStatus().toString().toLowerCase(Locale.ROOT))
+      );
     }
 
     try {
       Event event = getClient().events().insert(calendarId,
               new Event()
-                      .setSummary(summary)
-                      .setDescription(description)
-                      .setStatus(status.toString().toLowerCase(Locale.ROOT))
-                      .setAttendees(googleAttendees)
-                      .setStart(new EventDateTime()
-                              .setDate(new DateTime(start.getDateTime()))
-                              .setTimeZone(start.getTimeZone().getDisplayName()))
-                      .setEnd(new EventDateTime()
-                              .setDate(new DateTime(end.getDateTime()))
-                              .setTimeZone(end.getTimeZone().getDisplayName())))
-      /* TODO: Reminders & Recurrence */
+              .setSummary(summary)
+              .setDescription(description)
+              .setStatus(status.toString().toLowerCase(Locale.ROOT))
+              .setAttendees(googleAttendees)
+              .setStart(new EventDateTime()
+                      .setDate(new DateTime(start.getDateTime()))
+                      .setTimeZone(start.getTimeZone().getDisplayName()))
+              .setEnd(new EventDateTime()
+                      .setDate(new DateTime(end.getDateTime()))
+                      .setTimeZone(end.getTimeZone().getDisplayName())))
+              /* TODO: Reminders & Recurrence */
               .execute();
-      return new GoogleCalendarEvent(
-              event.getId(),
-              calendarId,
-              summary,
-              description,
-              status,
-              attendees,
-              new GoogleCalendarEventUser(event.getOrganizer().getDisplayName(),
-                                          event.getOrganizer().getEmail()),
-              start,
-              end,
-              toDate(event.getCreated()),
-              toDate(event.getUpdated()),
-              new HashMap<String,String>(),
-              reminders,
-              recurrence,
-              event.getHtmlLink(),
-              new DefaultCalendarEventLocation(
-                      event.getLocation(),
-                      event.getHangoutLink(),
-                      null,
-                      null),
-              event.getStart().getDate() != null);
+      return new GoogleCalendarEvent(event, calendarId);
     } catch (IOException | GeneralSecurityException ex) {
       throw new CalendarServiceException(ex);
     }
@@ -443,36 +478,7 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
     for (String calId : calendarId) {
       try {
         for (Event event : getClient().events().list(calId).execute().getItems()) {
-          result.add(
-                  new GoogleCalendarEvent(
-                          event.getId(),
-                          calId,
-                          event.getSummary(),
-                          event.getDescription(),
-                          CalendarEventStatus.valueOf(event.getStatus().toUpperCase(Locale.ROOT)),
-                          null, // TODO: Attendees
-                          new GoogleCalendarEventUser(
-                                  event.getOrganizer().getDisplayName(),
-                                  event.getOrganizer().getEmail()),
-                          new GoogleCalendarEventTemporalField(
-                                  new Date(event.getStart().getDateTime().getValue()),
-                                  SimpleTimeZone.getTimeZone(event.getStart().getTimeZone())),
-                          new GoogleCalendarEventTemporalField(
-                                  new Date(event.getEnd().getDateTime().getValue()),
-                                  SimpleTimeZone.getTimeZone(event.getEnd().getTimeZone())),
-                          new Date(event.getCreated().getValue()),
-                          new Date(event.getUpdated().getValue()),
-                          new HashMap<String, String>(),
-                          null, // TODO: Reminders
-                          null, // TODO: Recurrence
-                          event.getHtmlLink(),
-                          new DefaultCalendarEventLocation(
-                                  event.getLocation(),
-                                  event.getHangoutLink(),
-                                  null,
-                                  null),
-                          event.getStart().getDate() != null
-                  ));
+          result.add(new GoogleCalendarEvent(event, calId));
         }
       } catch (GeneralSecurityException | IOException ex) {
         throw new CalendarServiceException(ex);
@@ -496,35 +502,7 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
                 .execute()
                 .getItems()) {
           result.add(
-                  new GoogleCalendarEvent(
-                          event.getId(),
-                          calId,
-                          event.getSummary(),
-                          event.getDescription(),
-                          CalendarEventStatus.valueOf(event.getStatus().toUpperCase(Locale.ROOT)),
-                          null, // TODO: Attendees
-                          new GoogleCalendarEventUser(
-                                  event.getOrganizer().getDisplayName(),
-                                  event.getOrganizer().getEmail()),
-                          new GoogleCalendarEventTemporalField(
-                                  new Date(event.getStart().getDateTime().getValue()),
-                                  SimpleTimeZone.getTimeZone(event.getStart().getTimeZone())),
-                          new GoogleCalendarEventTemporalField(
-                                  new Date(event.getEnd().getDateTime().getValue()),
-                                  SimpleTimeZone.getTimeZone(event.getEnd().getTimeZone())),
-                          new Date(event.getCreated().getValue()),
-                          new Date(event.getUpdated().getValue()),
-                          new HashMap<String, String>(),
-                          null, // TODO: Reminders
-                          null, // TODO: Recurrence
-                          event.getHtmlLink(),
-                          new DefaultCalendarEventLocation(
-                                  event.getLocation(),
-                                  event.getHangoutLink(),
-                                  null,
-                                  null),
-                          event.getStart().getDate() != null
-                  ));
+                  new GoogleCalendarEvent(event, calId));
         }
       } catch (GeneralSecurityException | IOException ex) {
         throw new CalendarServiceException(ex);
@@ -538,30 +516,30 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
   public CalendarEvent updateEvent(CalendarEvent calendarEvent) throws CalendarServiceException {
     ArrayList<EventAttendee> googleAttendees = new ArrayList<>();
     for (CalendarEventAttendee attendee : calendarEvent.getAttendees()) {
-     googleAttendees.add(
-             new EventAttendee()
-             .setDisplayName(attendee.getDisplayName())
-             .setComment(attendee.getDisplayName())
-             .setEmail(attendee.getEmail())
-             .setResponseStatus(attendee.getStatus().toString().toLowerCase(Locale.ROOT))
-     );
+      googleAttendees.add(
+              new EventAttendee()
+              .setDisplayName(attendee.getDisplayName())
+              .setComment(attendee.getDisplayName())
+              .setEmail(attendee.getEmail())
+              .setResponseStatus(attendee.getStatus().toString().toLowerCase(Locale.ROOT))
+      );
     }
 
     try {
       Event event = getClient().events().patch(calendarEvent.getCalendarId(),
               calendarEvent.getId(),
               new Event()
-                      .setSummary(calendarEvent.getSummary())
-                      .setDescription(calendarEvent.getDescription())
-                      .setStatus(calendarEvent.getStatus().toString().toLowerCase(Locale.ROOT))
-                      .setAttendees(googleAttendees)
-                      .setStart(new EventDateTime()
-                              .setDate(new DateTime(calendarEvent.getStart().getDateTime()))
-                              .setTimeZone(calendarEvent.getStart().getTimeZone().getDisplayName()))
-                      .setEnd(new EventDateTime()
-                              .setDate(new DateTime(calendarEvent.getEnd().getDateTime()))
-                              .setTimeZone(calendarEvent.getEnd().getTimeZone().getDisplayName())))
-      /* TODO: Reminders & Recurrence */
+              .setSummary(calendarEvent.getSummary())
+              .setDescription(calendarEvent.getDescription())
+              .setStatus(calendarEvent.getStatus().toString().toLowerCase(Locale.ROOT))
+              .setAttendees(googleAttendees)
+              .setStart(new EventDateTime()
+                      .setDate(new DateTime(calendarEvent.getStart().getDateTime()))
+                      .setTimeZone(calendarEvent.getStart().getTimeZone().getDisplayName()))
+              .setEnd(new EventDateTime()
+                      .setDate(new DateTime(calendarEvent.getEnd().getDateTime()))
+                      .setTimeZone(calendarEvent.getEnd().getTimeZone().getDisplayName())))
+              /* TODO: Reminders & Recurrence */
               .execute();
       return new GoogleCalendarEvent(
               event.getId(),
@@ -571,12 +549,12 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
               calendarEvent.getStatus(),
               calendarEvent.getAttendees(),
               new GoogleCalendarEventUser(event.getOrganizer().getDisplayName(),
-                                          event.getOrganizer().getEmail()),
+                      event.getOrganizer().getEmail()),
               calendarEvent.getStart(),
               calendarEvent.getEnd(),
               toDate(event.getCreated()),
               toDate(event.getUpdated()),
-              new HashMap<String,String>(),
+              new HashMap<String, String>(),
               calendarEvent.getEventReminders(),
               calendarEvent.getRecurrence(),
               calendarEvent.getUrl(),
@@ -609,7 +587,7 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
     return true; // TODO
   }
 
-  private Date toDate(DateTime dt) {
+  private static Date toDate(DateTime dt) {
     return new Date(dt.getValue());
   }
 
@@ -623,13 +601,13 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
     java.io.File keyFile = new java.io.File(System.getProperty("muikku.googleServiceAccount.keyFile"));
 
     return new GoogleCredential.Builder()
-      .setTransport(new NetHttpTransport())
-      .setJsonFactory(new JacksonFactory())
-      .setServiceAccountId(accountId)
-      .setServiceAccountScopes(Arrays.asList(CalendarScopes.CALENDAR))
-      .setServiceAccountPrivateKeyFromP12File(keyFile)
-      .setServiceAccountUser(accountUser)
-      .build();
+            .setTransport(new NetHttpTransport())
+            .setJsonFactory(new JacksonFactory())
+            .setServiceAccountId(accountId)
+            .setServiceAccountScopes(Arrays.asList(CalendarScopes.CALENDAR))
+            .setServiceAccountPrivateKeyFromP12File(keyFile)
+            .setServiceAccountUser(accountUser)
+            .build();
   }
 
   @SuppressWarnings("unused")
