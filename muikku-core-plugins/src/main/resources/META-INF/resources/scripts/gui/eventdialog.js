@@ -47,12 +47,12 @@
       this._event = event||{};
     },
     show: function () {
-      // TODO: Error handling
-      
-      RESTful.doGet(CONTEXTPATH + "/rest/calendar/calendars?calendarType=LOCAL").success($.proxy(function (calendars, textStatus, jqXHR) {
-        RESTful.doGet(CONTEXTPATH + "/rest/calendar/localEventTypes").success($.proxy(function (localEventTypes, textStatus, jqXHR) {
-          this._openDialog(calendars, localEventTypes);
-        }, this));
+      mApi().calendar.calendars.read({writableOnly: true}).callback($.proxy(function (err, result) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          this._openDialog(result);
+        }
       }, this));
       
       return this;
@@ -61,13 +61,12 @@
       this._saveFunction = saveFunction;
       return this;
     },
-    _openDialog: function (calendars, localEventTypes) {
+    _openDialog: function (calendars) {
   
       // TODO: Proper error handling
       var _this = this;
       renderDustTemplate('/calendar/eventdialog.dust', {
-        calendars: calendars,
-        types: localEventTypes
+        calendars: calendars
       }, function (text) {
         var buttons = {};
 
