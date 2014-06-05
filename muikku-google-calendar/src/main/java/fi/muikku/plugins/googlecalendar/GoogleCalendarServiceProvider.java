@@ -1,13 +1,8 @@
 package fi.muikku.plugins.googlecalendar;
 
-import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
@@ -47,16 +42,6 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
-
-  @Override
-  public fi.muikku.calendar.Calendar updateCalendar(fi.muikku.calendar.Calendar calendar) throws CalendarServiceException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
-  @Override
-  public CalendarEvent updateEvent(CalendarEvent calendarEvent) throws CalendarServiceException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
 
   private static class GoogleCalendar implements fi.muikku.calendar.Calendar {
 
@@ -316,6 +301,11 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
   }
 
   @Override
+  public fi.muikku.calendar.Calendar updateCalendar(fi.muikku.calendar.Calendar calendar) throws CalendarServiceException {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
   public CalendarEvent createEvent(String calendarId,
           String summary,
           String description,
@@ -370,7 +360,56 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
     } catch (IOException | GeneralSecurityException ex) {
       throw new CalendarServiceException(ex);
     }
+  }
 
+  @Override
+  public CalendarEvent updateEvent(CalendarEvent calendarEvent) throws CalendarServiceException {
+    ArrayList<EventAttendee> googleAttendees = new ArrayList<>();
+    for (CalendarEventAttendee attendee : calendarEvent.getAttendees()) {
+     googleAttendees.add(
+             new EventAttendee()
+             .setDisplayName(attendee.getDisplayName())
+             .setComment(attendee.getDisplayName())
+             .setEmail(attendee.getEmail())
+             .setResponseStatus(attendee.getStatus().toString().toLowerCase(Locale.ROOT))
+     );
+    }
+
+    try {
+      Event event = getClient().events().patch(calendarEvent.getCalendarId(),
+              calendarEvent.getId(),
+              new Event()
+                      .setSummary(calendarEvent.getSummary())
+                      .setDescription(calendarEvent.getDescription())
+                      .setStatus(calendarEvent.getStatus().toString().toLowerCase(Locale.ROOT))
+                      .setAttendees(googleAttendees)
+                      .setStart(new EventDateTime()
+                              .setDate(new DateTime(calendarEvent.getStart().getDateTime()))
+                              .setTimeZone(calendarEvent.getStart().getTimeZone().getDisplayName()))
+                      .setEnd(new EventDateTime()
+                              .setDate(new DateTime(calendarEvent.getEnd().getDateTime()))
+                              .setTimeZone(calendarEvent.getEnd().getTimeZone().getDisplayName())))
+      /* TODO: Reminders & Recurrence */
+              .execute();
+      return new GoogleCalendarEvent(
+              event.getId(),
+              calendarEvent.getCalendarId(),
+              calendarEvent.getSummary(),
+              calendarEvent.getDescription(),
+              calendarEvent.getStatus(),
+              calendarEvent.getAttendees(),
+              new GoogleCalendarEventUser(event.getOrganizer().getDisplayName(),
+                                          event.getOrganizer().getEmail()),
+              calendarEvent.getStart(),
+              calendarEvent.getEnd(),
+              toDate(event.getCreated()),
+              toDate(event.getUpdated()),
+              new HashMap<String,String>(),
+              calendarEvent.getEventReminders(),
+              calendarEvent.getRecurrence());
+    } catch (IOException | GeneralSecurityException ex) {
+      throw new CalendarServiceException(ex);
+    }
   }
 
   @Override
