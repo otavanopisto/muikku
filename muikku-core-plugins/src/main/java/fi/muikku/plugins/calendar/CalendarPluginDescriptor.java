@@ -14,23 +14,7 @@ import fi.muikku.plugin.LocalizedPluginDescriptor;
 import fi.muikku.plugin.PersistencePluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
 import fi.muikku.plugin.RESTPluginDescriptor;
-import fi.muikku.plugins.calendar.dao.CalendarDAO;
-import fi.muikku.plugins.calendar.dao.EventDAO;
-import fi.muikku.plugins.calendar.dao.LocalCalendarDAO;
-import fi.muikku.plugins.calendar.dao.LocalEventDAO;
-import fi.muikku.plugins.calendar.dao.LocalEventTypeDAO;
-import fi.muikku.plugins.calendar.dao.SubscribedCalendarDAO;
-import fi.muikku.plugins.calendar.dao.SubscribedEventDAO;
 import fi.muikku.plugins.calendar.dao.UserCalendarDAO;
-import fi.muikku.plugins.calendar.model.Calendar;
-import fi.muikku.plugins.calendar.model.Event;
-import fi.muikku.plugins.calendar.model.LocalAlert;
-import fi.muikku.plugins.calendar.model.LocalCalendar;
-import fi.muikku.plugins.calendar.model.LocalEvent;
-import fi.muikku.plugins.calendar.model.LocalEventParticipant;
-import fi.muikku.plugins.calendar.model.LocalEventType;
-import fi.muikku.plugins.calendar.model.SubscribedCalendar;
-import fi.muikku.plugins.calendar.model.SubscribedEvent;
 import fi.muikku.plugins.calendar.model.UserCalendar;
 import fi.muikku.plugins.calendar.rest.CalendarRESTService;
 
@@ -61,14 +45,6 @@ public class CalendarPluginDescriptor implements PluginDescriptor, LocalizedPlug
 	public List<Class<?>> getBeans() {
 		return new ArrayList<Class<?>>(Arrays.asList(
 			/* DAOs */	
-				
-			CalendarDAO.class,
-			EventDAO.class,
-			LocalCalendarDAO.class,
-			LocalEventDAO.class,
-			LocalEventTypeDAO.class,
-			SubscribedCalendarDAO.class,
-			SubscribedEventDAO.class,
 			UserCalendarDAO.class,
 		  
 		  /* Controllers */
@@ -88,19 +64,10 @@ public class CalendarPluginDescriptor implements PluginDescriptor, LocalizedPlug
 	@Override
 	public Class<?>[] getEntities() {
 		return new Class<?>[] {
-			Calendar.class,
-			Event.class,
-			LocalAlert.class,
-			LocalCalendar.class,
-			LocalEvent.class,
-			LocalEventParticipant.class,
-			LocalEventType.class,
-			SubscribedCalendar.class,
-			SubscribedEvent.class,
 			UserCalendar.class
 		};
 	}
-	
+
 	@Override
 	public Class<?>[] getRESTServices() {
 		return new Class<?>[] {
