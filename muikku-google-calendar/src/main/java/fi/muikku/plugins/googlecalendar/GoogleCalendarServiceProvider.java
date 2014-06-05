@@ -131,8 +131,6 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
     public String getEmail() {
       return email;
     }
-
-
   }
 
   private static class GoogleCalendarEvent implements CalendarEvent {
@@ -168,7 +166,9 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
         Date updated,
         Map<String, String> extendedProperties,
         List<CalendarEventReminder> reminders,
-        CalendarEventRecurrence recurrence) {
+        CalendarEventRecurrence recurrence,
+        String url,
+        CalendarEventLocation location) {
       this.id = id;
       this.calendarId = calendarId;
       this.summary = summary;
@@ -183,10 +183,9 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
       this.extendedProperties = extendedProperties;
       this.reminders = reminders;
       this.recurrence = recurrence;
-      this.url = null;
-      this.location = null;
+      this.url = url;
+      this.location = location;
     }
-
 
     @Override
     public String getId() {
@@ -424,7 +423,13 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
               toDate(event.getUpdated()),
               new HashMap<String,String>(),
               reminders,
-              recurrence);
+              recurrence,
+              event.getHtmlLink(),
+              new DefaultCalendarEventLocation(
+                      event.getLocation(),
+                      event.getHangoutLink(),
+                      null,
+                      null));
     } catch (IOException | GeneralSecurityException ex) {
       throw new CalendarServiceException(ex);
     }
@@ -458,7 +463,13 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
                           new Date(event.getUpdated().getValue()),
                           new HashMap<String, String>(),
                           null, // TODO: Reminders
-                          null  // TODO: Recurrence
+                          null, // TODO: Recurrence
+                          event.getHtmlLink(),
+                          new DefaultCalendarEventLocation(
+                                  event.getLocation(),
+                                  event.getHangoutLink(),
+                                  null,
+                                  null)
                   ));
         }
       } catch (GeneralSecurityException | IOException ex) {
@@ -503,7 +514,13 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
                           new Date(event.getUpdated().getValue()),
                           new HashMap<String, String>(),
                           null, // TODO: Reminders
-                          null  // TODO: Recurrence
+                          null, // TODO: Recurrence
+                          event.getHtmlLink(),
+                          new DefaultCalendarEventLocation(
+                                  event.getLocation(),
+                                  event.getHangoutLink(),
+                                  null,
+                                  null)
                   ));
         }
       } catch (GeneralSecurityException | IOException ex) {
@@ -558,7 +575,9 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
               toDate(event.getUpdated()),
               new HashMap<String,String>(),
               calendarEvent.getEventReminders(),
-              calendarEvent.getRecurrence());
+              calendarEvent.getRecurrence(),
+              calendarEvent.getUrl(),
+              calendarEvent.getLocation());
     } catch (IOException | GeneralSecurityException ex) {
       throw new CalendarServiceException(ex);
     }
