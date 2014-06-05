@@ -23,6 +23,14 @@
       <scope>provided</scope>
     </dependency>
     
+    <!-- Core plugins -->
+  
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>core-plugins</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    
     <!-- Google Calendar API -->
     
     <dependency>

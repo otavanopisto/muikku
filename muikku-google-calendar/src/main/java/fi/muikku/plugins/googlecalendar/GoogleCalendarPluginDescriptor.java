@@ -16,7 +16,7 @@ public class GoogleCalendarPluginDescriptor implements PluginDescriptor, Persist
 	
 	@Override
 	public String getName() {
-		return "google-oauth";
+		return "google-calendar";
 	}
 	
 	@Override
@@ -26,7 +26,8 @@ public class GoogleCalendarPluginDescriptor implements PluginDescriptor, Persist
 	@Override
 	public List<Class<?>> getBeans() {
 		return Collections.unmodifiableList(Arrays.asList(new Class<?>[] { 
-	    GoogleCalendarServiceProvider.class
+	    GoogleCalendarServiceProvider.class,
+	    GoogleLoginListener.class
 		}));
 	}
 	
