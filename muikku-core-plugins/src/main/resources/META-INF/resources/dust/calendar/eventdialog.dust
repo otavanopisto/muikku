@@ -1,21 +1,12 @@
 <div class="newEvent">
   <form>
-    <!-- TODO: Localize -->
     <div>
       <label>{#localize key="plugin.calendar.eventDialog.calendar"/}</label>
       <select name="calendarId">
         {#calendars}
-          <option value="{id}">{name}</option>
+          <option value="{id}">{summary}</option>
         {/calendars}
       </select>  
-    </div>
-    <div>
-      <label>{#localize key="plugin.calendar.eventDialog.type"/}</label>
-      <select name="typeId">
-        {#types}
-          <option value="{id}">{name}</option>
-        {/types}
-      </select>
     </div>
     <div>
       <label for="new-event-summary">{#localize key="plugin.calendar.eventDialog.summary"/}</label>

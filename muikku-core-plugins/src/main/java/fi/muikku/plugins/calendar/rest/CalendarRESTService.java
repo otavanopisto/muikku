@@ -1,6 +1,8 @@
 package fi.muikku.plugins.calendar.rest;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.enterprise.context.RequestScoped;
@@ -12,6 +14,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang3.StringUtils;
@@ -51,18 +54,21 @@ public class CalendarRESTService extends PluginRESTService {
   @GET
   @Path ("/calendars/")
   @LoggedIn
-  public Response listCalendars() {
+  public Response listCalendars(@QueryParam ("writableOnly") Boolean writableOnly) {
     List<Calendar> result = new ArrayList<>();
     
     try {
       List<UserCalendar> userCalendars = calendarController.listUserCalendars(sessionController.getUser());
       for (UserCalendar userCalendar : userCalendars) {
         fi.muikku.calendar.Calendar calendar = calendarController.loadCalendar(userCalendar);
-        result.add(new Calendar(
-          userCalendar.getId(), 
-          calendar.getSummary(), 
-          calendar.getDescription())
-        );
+        if (calendar.isWritable() || !Boolean.TRUE.equals(writableOnly)) {
+          result.add(new Calendar(
+            userCalendar.getId(), 
+            calendar.isWritable(),
+            calendar.getSummary(), 
+            calendar.getDescription())
+          );          
+        }
       }      
     } catch (CalendarServiceException e) {
       e.printStackTrace();
@@ -102,7 +108,7 @@ public class CalendarRESTService extends PluginRESTService {
     }
     
     try {
-      calendarController.updateCalendar(userCalendar, new DefaultCalendar(userCalendar.getCalendarId(), userCalendar.getCalendarProvider(), calendar.getSummary(), calendar.getDescription()));
+      calendarController.updateCalendar(userCalendar, new DefaultCalendar(userCalendar.getCalendarId(), calendar.isWritable(), userCalendar.getCalendarProvider(), calendar.getSummary(), calendar.getDescription()));
     } catch (CalendarServiceException e) {
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
@@ -189,7 +195,7 @@ public class CalendarRESTService extends PluginRESTService {
   @GET
   @Path ("/calendars/{CALID}/events/")
   @LoggedIn
-  public Response getEvents(@PathParam ("CALID") Long calendarId) {
+  public Response getEvents(@PathParam ("CALID") Long calendarId, @QueryParam ("timeMin") Date timeMin, @QueryParam ("timeMax") Date timeMax) {
     if (calendarId == null) {
       return Response.status(Response.Status.NOT_FOUND).build();
     }
@@ -206,11 +212,11 @@ public class CalendarRESTService extends PluginRESTService {
     try {
       List<CalendarEvent> result = new ArrayList<>();
       
-      List<fi.muikku.calendar.CalendarEvent> calendarEvents = calendarController.listCalendarEvents(userCalendar);
+      List<fi.muikku.calendar.CalendarEvent> calendarEvents = calendarController.listCalendarEvents(userCalendar, timeMin, timeMax);
       for (fi.muikku.calendar.CalendarEvent calendarEvent : calendarEvents) { 
         result.add(createEventRestModel(userCalendar, calendarEvent));
       }
-      
+
       return Response.ok(result).build();
     } catch (CalendarServiceException e) {
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
@@ -321,39 +327,18 @@ public class CalendarRESTService extends PluginRESTService {
     
     // TODO: Recurrence
 
-    return new CalendarEvent(userCalendar.getId(), calendarEvent.getSummary(), calendarEvent.getDescription(), calendarEvent.getStatus(), 
+    String location = calendarEvent.getLocation() != null ? calendarEvent.getLocation().getLocation() : null;
+    String videoCallLink = calendarEvent.getLocation() != null ? calendarEvent.getLocation().getVideoCallLink() : null;
+    BigDecimal longitude = calendarEvent.getLocation() != null ? calendarEvent.getLocation().getLongitude()  : null;
+    BigDecimal latitude = calendarEvent.getLocation() != null ? calendarEvent.getLocation().getLatitude() : null;
+    
+    return new CalendarEvent(userCalendar.getId(), calendarEvent.getSummary(), calendarEvent.getDescription(), 
+        calendarEvent.getUrl(), location, videoCallLink, longitude, latitude, calendarEvent.getStatus(),
         calendarEvent.getStart().getDateTime(), calendarEvent.getStart().getTimeZone(), 
-        calendarEvent.getEnd().getDateTime(), calendarEvent.getEnd().getTimeZone(), 
+        calendarEvent.getEnd().getDateTime(), calendarEvent.getEnd().getTimeZone(), calendarEvent.isAllDay(),
         calendarEvent.getCreated(), calendarEvent.getUpdated(), calendarEvent.getExtendedProperties(), attendees, reminders);
   }
-  
-//
-//  @POST
-//  @Path ("/localEventTypes")
-//  public Response createLocalEventType(@FormParam ("name") String name) throws SystemException {
-//  	LocalEventType eventType = calendarController.createLocalEventType(name);
-//
-//  	TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
-//    Tranquility tranquility = tranquilityBuilder.createTranquility();
-//
-//    return Response.ok(
-//    	tranquility.entity(eventType)
-//    ).build();
-//  }
-//
-//  @GET
-//  @Path ("/localEventTypes")
-//  public Response listLocalEventTypes() {
-//  	List<LocalEventType> eventTypes = calendarController.listLocalEventTypes();
-//
-//  	TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
-//    Tranquility tranquility = tranquilityBuilder.createTranquility();
-//
-//    return Response.ok(
-//    	tranquility.entities(eventTypes)
-//    ).build();
-//  }
-//
+
 //  @GET
 //  @Path ("/settings")
 //  public Response listSettings() {
