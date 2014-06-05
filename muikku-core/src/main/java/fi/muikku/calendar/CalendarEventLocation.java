@@ -1,5 +1,7 @@
 package fi.muikku.calendar;
 
+import java.math.BigDecimal;
+
 public interface CalendarEventLocation {
 
   /**
@@ -15,5 +17,19 @@ public interface CalendarEventLocation {
    * @return video call link for the event
    */
   public String getVideoCallLink();
+  
+  /**
+   * Returns event geolocation longitude
+   * 
+   * @return event geolocation longitude
+   */
+  public BigDecimal getLongitude();
+  
+  /**
+   * Returns event geolocation latitude
+   * 
+   * @return event geolocation latitude
+   */
+  public BigDecimal getLatitude();
   
 }
