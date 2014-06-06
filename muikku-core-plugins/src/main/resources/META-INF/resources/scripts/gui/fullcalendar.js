@@ -264,8 +264,8 @@
       });
     },
     
-    _onCalendarEventsLoad: function (event) {
-      var datas = event.datas;
+    _onCalendarEventsLoad: function (event, data) {
+      var datas = data.datas;
       this._reloadEvents(datas);
       this._loadedDatas = datas;
     },
@@ -522,20 +522,18 @@
       var datas = new Array();
       var i = this._calendarMetas.length - 1;
       while (i >= 0) {
-        var _this = this;
-        
-        this._loadCalendarEvents(this._calendarMetas[i], viewStartTime, viewEndTime, function (calendarMeta, events) {
+        this._loadCalendarEvents(this._calendarMetas[i], viewStartTime, viewEndTime, $.proxy(function (calendarMeta, events) {
           datas.push({
             calendarMeta: calendarMeta, 
             events: events
           }); 
 
           if (i == 0) {
-            _this._widgetElement.trigger($.Event("calendarEventsLoad", {
+            this._widgetElement.trigger("calendarEventsLoad", {
               datas: datas
-            }));
+            });
           }
-        });
+        }, this));
         
         i--;
       }
