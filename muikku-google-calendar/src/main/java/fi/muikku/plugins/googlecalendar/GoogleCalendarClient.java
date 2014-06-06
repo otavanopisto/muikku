@@ -23,6 +23,8 @@ import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
+import com.google.api.services.calendar.model.AclRule;
+import com.google.api.services.calendar.model.AclRule.Scope;
 import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventAttendee;
@@ -122,6 +124,26 @@ public class GoogleCalendarClient {
     } catch (GeneralSecurityException | IOException ex) {
       throw new CalendarServiceException(ex);
     }
+  }  
+  
+  public AclRule insertCalendarAclRule(String calendarId, AclRule aclRule) throws CalendarServiceException {
+    try {
+      return getClient().acl().insert(calendarId, aclRule).execute();
+    } catch (IOException | GeneralSecurityException ex) {
+      throw new CalendarServiceException(ex);
+    }
+  }
+  
+  public AclRule insertCalendarUserAclRule(String calendarId, String email, String role) throws CalendarServiceException {
+    Scope scope = new Scope();
+    scope.setType("user");
+    scope.setValue(email);
+    
+    AclRule aclRule = new AclRule();
+    aclRule.setRole(role);
+    aclRule.setScope(scope);
+    
+    return insertCalendarAclRule(calendarId, aclRule);
   }
 
   public CalendarEvent createEvent(String calendarId, String summary, String description, CalendarEventStatus status, List<CalendarEventAttendee> attendees,

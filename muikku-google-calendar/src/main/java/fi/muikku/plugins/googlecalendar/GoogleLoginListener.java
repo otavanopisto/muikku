@@ -5,6 +5,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import fi.muikku.auth.LoginEvent;
+import fi.muikku.calendar.Calendar;
 import fi.muikku.calendar.CalendarServiceException;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.calendar.CalendarController;
@@ -22,6 +23,9 @@ public class GoogleLoginListener {
 
   @Inject
   private CalendarController calendarController;
+
+  @Inject
+  private GoogleCalendarClient calendarClient;
   
   public void onLogin(@Observes LoginEvent event) throws CalendarServiceException {
     synchronized (this) {
@@ -31,7 +35,10 @@ public class GoogleLoginListener {
           UserCalendar userCalendar = calendarController.findUserCalendarByUserAndProvider(userEntity, "google");
           if (userCalendar == null) {
             userCalendar = calendarController.createCalendar(userEntity, "google", CALENDAR_SUMMARY, CALENDAR_DESCRIPTION, Boolean.TRUE);
-            // TODO: Share the calendar with logged user google identity
+            Calendar calendar = calendarController.loadCalendar(userCalendar);
+            // TODO: share calendar with the user. Before we can do this we need to resolve what email are attached to 
+            // user's google account.
+//            calendarClient.insertCalendarUserAclRule(calendar.getId(), email, "owner");
           }
         }
       }
