@@ -27,7 +27,8 @@ public class GoogleCalendarPluginDescriptor implements PluginDescriptor, Persist
 	public List<Class<?>> getBeans() {
 		return Collections.unmodifiableList(Arrays.asList(new Class<?>[] { 
 	    GoogleCalendarServiceProvider.class,
-	    GoogleLoginListener.class
+	    GoogleLoginListener.class,
+	    GoogleCalendarClient.class
 		}));
 	}
 	
