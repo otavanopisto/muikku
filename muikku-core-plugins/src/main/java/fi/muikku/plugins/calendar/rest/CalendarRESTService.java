@@ -68,6 +68,7 @@ public class CalendarRESTService extends PluginRESTService {
           result.add(new Calendar(
             userCalendar.getId(), 
             calendar.isWritable(),
+            userCalendar.getVisible(),
             calendar.getSummary(), 
             calendar.getDescription())
           );          
