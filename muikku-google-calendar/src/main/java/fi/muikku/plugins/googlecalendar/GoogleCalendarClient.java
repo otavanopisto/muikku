@@ -47,6 +47,8 @@ import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 @Dependent
 @Stateless
 public class GoogleCalendarClient {
@@ -513,10 +515,10 @@ public class GoogleCalendarClient {
                       event.getOrganizer().getEmail()),
               new GoogleCalendarEventTemporalField(
                       new Date(event.getStart().getDateTime().getValue()),
-                      SimpleTimeZone.getTimeZone(event.getStart().getTimeZone())),
+                      getJavaTimeZone(event.getStart().getTimeZone())),
               new GoogleCalendarEventTemporalField(
                       new Date(event.getEnd().getDateTime().getValue()),
-                      SimpleTimeZone.getTimeZone(event.getEnd().getTimeZone())),
+                      getJavaTimeZone(event.getEnd().getTimeZone())),
               new Date(event.getCreated().getValue()),
               new Date(event.getUpdated().getValue()),
               new HashMap<String, String>(),
@@ -529,6 +531,16 @@ public class GoogleCalendarClient {
                       null,
                       null),
               event.getStart().getDate() != null);
+    }
+    
+    private static TimeZone getJavaTimeZone(String timeZone) {
+      if (StringUtils.isNotBlank(timeZone)) {
+        return SimpleTimeZone.getTimeZone(timeZone);
+      }
+   
+      // TODO: this should fallback to calendar default timezone
+      
+      return null;
     }
 
     @Override
