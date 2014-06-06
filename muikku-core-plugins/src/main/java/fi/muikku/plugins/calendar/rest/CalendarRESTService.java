@@ -330,13 +330,17 @@ public class CalendarRESTService extends PluginRESTService {
     List<CalendarEventAttendee> attendees = new ArrayList<>();
     List<CalendarEventReminder> reminders = new ArrayList<>();
      
-    for (fi.muikku.calendar.CalendarEventAttendee calendarEventAttendee : calendarEvent.getAttendees()) {
-      attendees.add(new CalendarEventAttendee(calendarEventAttendee.getEmail(), calendarEventAttendee.getDisplayName(), 
-          calendarEventAttendee.getStatus(), calendarEventAttendee.getComment()));
+    if (calendarEvent.getAttendees() != null) {
+      for (fi.muikku.calendar.CalendarEventAttendee calendarEventAttendee : calendarEvent.getAttendees()) {
+        attendees.add(new CalendarEventAttendee(calendarEventAttendee.getEmail(), calendarEventAttendee.getDisplayName(), 
+            calendarEventAttendee.getStatus(), calendarEventAttendee.getComment()));
+      }
     }
     
-    for (fi.muikku.calendar.CalendarEventReminder calendarEventReminder : calendarEvent.getEventReminders()) {
-      reminders.add(new CalendarEventReminder(calendarEventReminder.getType(), calendarEventReminder.getMinutesBefore()));
+    if (calendarEvent.getEventReminders() != null) {
+      for (fi.muikku.calendar.CalendarEventReminder calendarEventReminder : calendarEvent.getEventReminders()) {
+        reminders.add(new CalendarEventReminder(calendarEventReminder.getType(), calendarEventReminder.getMinutesBefore()));
+      }
     }
     
     // TODO: Recurrence
