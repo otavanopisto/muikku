@@ -732,10 +732,14 @@
           attendees: attendees,
           reminders: reminders
         }).callback($.proxy(function (err, result) {
-          this._widgetElement.trigger("afterEventCreate", {
-            event: calendarEvent,
-            originalEventData: originalEventData
-          });
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            this._widgetElement.trigger("afterEventCreate", {
+              event: calendarEvent,
+              originalEventData: originalEventData
+            });
+          }
         }, this));   
       } else {
         mApi().calendar.calendars.events.update(calendarId, calendarEvent.id, {
@@ -756,10 +760,14 @@
           attendees: attendees,
           reminders: reminders
         }).callback($.proxy(function (err, result) {
-          this._widgetElement.trigger("afterEventUpdate", {
-            event: calendarEvent,
-            originalEventData: originalEventData
-          });
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            this._widgetElement.trigger("afterEventUpdate", {
+              event: calendarEvent,
+              originalEventData: originalEventData
+            });
+          }
         }, this)); 
       }
     }
