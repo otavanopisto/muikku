@@ -170,10 +170,10 @@ public class GoogleCalendarClient {
               .setAttendees(googleAttendees)
               .setStart(new EventDateTime()
                       .setDate(new DateTime(start.getDateTime()))
-                      .setTimeZone(start.getTimeZone().getDisplayName()))
+                      .setTimeZone(start.getTimeZone().getID()))
               .setEnd(new EventDateTime()
                       .setDate(new DateTime(end.getDateTime()))
-                      .setTimeZone(end.getTimeZone().getDisplayName())))
+                      .setTimeZone(end.getTimeZone().getID())))
               /* TODO: Reminders & Recurrence */
               .execute();
       return new GoogleCalendarEvent(event, calendarId);
