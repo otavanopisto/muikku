@@ -36,7 +36,6 @@ import fi.muikku.plugins.loggeduser.LoggedUserPluginDescriptor;
 import fi.muikku.plugins.logindetails.LoginDetailsPluginDescriptor;
 import fi.muikku.plugins.logout.LogoutPluginDescriptor;
 import fi.muikku.plugins.material.MaterialPluginDescriptor;
-import fi.muikku.plugins.mongolog.MongoLogPluginDescriptor;
 import fi.muikku.plugins.notifier.NotifierPluginDescriptor;
 import fi.muikku.plugins.notifier.email.NotifierEmailPluginDescriptor;
 import fi.muikku.plugins.notifier.sms.NotifierSMSPluginDescriptor;
@@ -94,7 +93,6 @@ public class CorePluginsDescriptor implements PluginLibraryDescriptor {
       NotifierSMSPluginDescriptor.class,
       SearchPluginDescriptor.class,
       CommonLogPluginDescriptor.class,
-      MongoLogPluginDescriptor.class,
       LoginDetailsPluginDescriptor.class
 		));
 	}
