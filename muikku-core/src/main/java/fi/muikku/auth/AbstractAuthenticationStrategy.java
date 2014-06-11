@@ -3,12 +3,16 @@ package fi.muikku.auth;
 import java.util.List;
 import java.util.Map;
 
+import javax.enterprise.event.Event;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 
 import fi.muikku.auth.AuthenticationResult.ConflictReason;
 import fi.muikku.auth.AuthenticationResult.Status;
 import fi.muikku.controller.SchoolBridgeController;
 import fi.muikku.controller.UserEntityController;
+import fi.muikku.events.LoginEvent;
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.security.AuthSource;
 import fi.muikku.model.security.AuthSourceSetting;
@@ -39,6 +43,9 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
   
   @Inject
   private SchoolBridgeController schoolBridgeController;
+  
+  @Inject
+  private Event<LoginEvent> userLoggedInEvent;
   
   protected String getFirstRequestParameter(Map<String, String[]> requestParameters, String key) {
     String[] value = requestParameters.get(key);
@@ -106,6 +113,8 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
     if ((loggedUser == null) || loggedUser.getId().equals(user.getId())) {
       sessionController.login(user.getId());
       userController.updateLastLogin(user);
+      HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+      userLoggedInEvent.fire(new LoginEvent(user.getId(), userIdentification.getAuthSource().getName(), req.getRemoteAddr()));
       return new AuthenticationResult(newAccount ? Status.NEW_ACCOUNT : Status.LOGIN);
     } else {
       return new AuthenticationResult(Status.CONFLICT, ConflictReason.LOGGED_IN_AS_DIFFERENT_USER);
