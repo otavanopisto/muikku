@@ -16,6 +16,7 @@ import fi.muikku.plugin.TranquilEntityLookups;
 import fi.muikku.plugin.TranquilEntityLookupsImpl;
 import fi.muikku.plugins.assessmentrequest.AssessmentRequestPluginDescriptor;
 import fi.muikku.plugins.calendar.CalendarPluginDescriptor;
+import fi.muikku.plugins.commonlog.CommonLogPluginDescriptor;
 import fi.muikku.plugins.communicator.CommunicatorPluginDescriptor;
 import fi.muikku.plugins.contentsearch.ContentSearchPluginDescriptor;
 import fi.muikku.plugins.courselist.CourseListPluginDescriptor;
@@ -32,8 +33,10 @@ import fi.muikku.plugins.guidancerequest.GuidanceRequestPluginDescriptor;
 import fi.muikku.plugins.internalauth.InternalAuthPluginDescriptor;
 import fi.muikku.plugins.language.LanguagePluginDescriptor;
 import fi.muikku.plugins.loggeduser.LoggedUserPluginDescriptor;
+import fi.muikku.plugins.logindetails.LoginDetailsPluginDescriptor;
 import fi.muikku.plugins.logout.LogoutPluginDescriptor;
 import fi.muikku.plugins.material.MaterialPluginDescriptor;
+import fi.muikku.plugins.mongolog.MongoLogPluginDescriptor;
 import fi.muikku.plugins.notifier.NotifierPluginDescriptor;
 import fi.muikku.plugins.notifier.email.NotifierEmailPluginDescriptor;
 import fi.muikku.plugins.notifier.sms.NotifierSMSPluginDescriptor;
@@ -89,7 +92,10 @@ public class CorePluginsDescriptor implements PluginLibraryDescriptor {
       NotifierPluginDescriptor.class,
       NotifierEmailPluginDescriptor.class,
       NotifierSMSPluginDescriptor.class,
-      SearchPluginDescriptor.class
+      SearchPluginDescriptor.class,
+      CommonLogPluginDescriptor.class,
+      MongoLogPluginDescriptor.class,
+      LoginDetailsPluginDescriptor.class
 		));
 	}
 	
