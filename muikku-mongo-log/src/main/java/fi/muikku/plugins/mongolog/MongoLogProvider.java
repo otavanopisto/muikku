@@ -3,6 +3,7 @@ package fi.muikku.plugins.mongolog;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -55,14 +56,18 @@ public class MongoLogProvider implements LogProvider {
     
   }
 
+  @SuppressWarnings("unchecked")
   @Override
-  public List<Object> getLogEntries(String collection, Map<String, Object> query, int count) {
+  public ArrayList<HashMap<String, Object>> getLogEntries(String collection, Map<String, Object> query, int count) {
     DBCollection c = db.getCollection(collection);
     BasicDBObject queryObject = new BasicDBObject();
     queryObject.putAll(query);
-    DBCursor cursor = c.find(queryObject).sort(new BasicDBObject("_id", 1)).limit(count);
-    ArrayList<Object> results = new ArrayList<Object>();
-    results.addAll(cursor.toArray());
+    DBCursor cursor = c.find(queryObject).sort(new BasicDBObject("time", -1)).limit(count);
+    ArrayList<HashMap<String, Object>> results = new ArrayList<HashMap<String, Object>>();
+    while(cursor.hasNext()){
+      results.add((HashMap<String, Object>) cursor.next().toMap());
+    }
+    
     return results;
   }
   
