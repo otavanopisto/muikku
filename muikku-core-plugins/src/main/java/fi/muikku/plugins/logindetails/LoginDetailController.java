@@ -1,5 +1,6 @@
 package fi.muikku.plugins.logindetails;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,6 +24,7 @@ import fi.muikku.utils.FacesUtils;
 public class LoginDetailController {
 
   public static final String COLLECTION_NAME = "loginDetails";
+  public static final String LOG_PROVIDER = "mongo-provider";
 
   @Inject
   private Logger logger;
@@ -38,22 +40,26 @@ public class LoginDetailController {
     data.put("authSource", loginEvent.getUserAuthSource());
     data.put("address", loginEvent.getUserIPAddr());
     data.put("time", System.currentTimeMillis());
-    LogProvider provider = getProvider("mongo-provider");
+    LogProvider provider = getProvider(LOG_PROVIDER);
     if (provider != null) {
-      provider.log(COLLECTION_NAME, data);
+      try {
+        provider.log(COLLECTION_NAME, data);
+        String detailMsg = getLastLogin(loginEvent.getUserEntityId());
+        if (detailMsg != null) {
+          FacesUtils.addMessage(FacesMessage.SEVERITY_INFO, detailMsg);
+        }
+      } catch (Exception e) {
+        logger.log(Level.WARNING, "Could not initialize connection to log provider because of an exception " + e.getMessage());
+      }
     } else {
-      logger.log(Level.WARNING, "mongo-log plugin not found, cannot log event.");
-    }
-    String detailMsg = getLastLogin(loginEvent.getUserEntityId());
-    if (detailMsg != null) {
-      FacesUtils.addMessage(FacesMessage.SEVERITY_INFO, detailMsg);
+      logger.log(Level.WARNING, "Log provider plugin not found, cannot log event.");
     }
   }
 
   public ArrayList<HashMap<String, Object>> getLastLogins(Long userid, int count) { // TODO create pojos
     HashMap<String, Object> query = new HashMap<String, Object>();
     query.put("userid", userid);
-    LogProvider provider = getProvider("mongo-provider");
+    LogProvider provider = getProvider(LOG_PROVIDER);
     if (provider != null) {
       return provider.getLogEntries(COLLECTION_NAME, query, count);
     }
@@ -69,7 +75,7 @@ public class LoginDetailController {
       String details = "Last login ";
       if (login.containsKey("time")) {
         Date date = new Date((long) login.get("time"));
-        details += " " + date.toString();
+        details += " " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
       }
       if (login.containsKey("address")) {
         details += " from: " + login.get("address");
@@ -79,7 +85,6 @@ public class LoginDetailController {
       }
       return details;
     }
-
   }
 
   private LogProvider getProvider(String name) {
@@ -92,5 +97,4 @@ public class LoginDetailController {
     }
     return null;
   }
-
 }
