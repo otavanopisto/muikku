@@ -67,4 +67,9 @@ public class InternalAuthenticationStrategy extends AbstractAuthenticationStrate
     return new AuthenticationResult(Status.INVALID_CREDENTIALS);
   }
 
+  @Override
+  public String getDescription() {
+    return "Muikku account";
+  }
+
 }

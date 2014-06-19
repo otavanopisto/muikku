@@ -64,6 +64,11 @@ public class GoogleAuthenticationStrategy extends OAuthAuthenticationStrategy {
   }
   
   @Override
+  public String getDescription() {
+    return "Google";
+  }
+  
+  @Override
   protected Class<? extends Api> getApiClass() {
     return GoogleApi20.class;
   }
@@ -188,4 +193,5 @@ public class GoogleAuthenticationStrategy extends OAuthAuthenticationStrategy {
     
     private Locale locale;
   }
+
 }

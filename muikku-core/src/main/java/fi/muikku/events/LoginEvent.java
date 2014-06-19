@@ -2,13 +2,16 @@ package fi.muikku.events;
 
 import java.io.Serializable;
 
+import fi.muikku.auth.AuthenticationProvider;
+import fi.muikku.model.security.AuthSource;
+
 public class LoginEvent implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  public LoginEvent(long userEntityId, String userAuthSource, String userIPAddr) {
+  public LoginEvent(long userEntityId, AuthenticationProvider authProvider, String userIPAddr) {
     this.setUserEntityId(userEntityId);
-    this.setUserAuthSource(userAuthSource);
+    this.setAuthProvider(authProvider);
     this.setUserIPAddr(userIPAddr);
   }
 
@@ -28,16 +31,16 @@ public class LoginEvent implements Serializable {
     this.userIPAddr = userIPAddr;
   }
 
-  public String getUserAuthSource() {
-    return userAuthSource;
+  public AuthenticationProvider getAuthProvider() {
+    return authProvider;
   }
 
-  public void setUserAuthSource(String userAuthSource) {
-    this.userAuthSource = userAuthSource;
+  public void setAuthProvider(AuthenticationProvider authProvider) {
+    this.authProvider = authProvider;
   }
 
   private long userEntityId;
-  private String userAuthSource;
+  private AuthenticationProvider authProvider;
   private String userIPAddr;
 
 }

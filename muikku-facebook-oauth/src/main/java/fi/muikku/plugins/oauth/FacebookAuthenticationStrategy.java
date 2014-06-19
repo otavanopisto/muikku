@@ -66,6 +66,11 @@ public class FacebookAuthenticationStrategy extends OAuthAuthenticationStrategy 
   }
   
   @Override
+  public String getDescription() {
+    return "Facebook";
+  } 
+  
+  @Override
   protected Class<? extends Api> getApiClass() {
     return FacebookApi.class;  
   }
@@ -218,6 +223,6 @@ public class FacebookAuthenticationStrategy extends OAuthAuthenticationStrategy 
     private Locale locale;
     
     private String email;
-  } 
+  }
   
 }

@@ -37,7 +37,7 @@ public class LoginDetailController {
     HashMap<String, Object> data = new HashMap<String, Object>();
     data.put("eventType", "login");
     data.put("userid", loginEvent.getUserEntityId());
-    data.put("authSource", loginEvent.getUserAuthSource());
+    data.put("authSource", loginEvent.getAuthProvider().getDescription());
     data.put("address", loginEvent.getUserIPAddr());
     data.put("time", System.currentTimeMillis());
     LogProvider provider = getProvider(LOG_PROVIDER);
