@@ -52,10 +52,10 @@ import org.apache.commons.lang3.StringUtils;
 @Dependent
 @Stateless
 public class GoogleCalendarClient {
-  
+
   private static final HttpTransport TRANSPORT = new NetHttpTransport();
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
-  
+
   @Inject
   private SessionController sessionController;
 
@@ -126,8 +126,8 @@ public class GoogleCalendarClient {
     } catch (GeneralSecurityException | IOException ex) {
       throw new CalendarServiceException(ex);
     }
-  }  
-  
+  }
+
   public AclRule insertCalendarAclRule(String calendarId, AclRule aclRule) throws CalendarServiceException {
     try {
       return getClient().acl().insert(calendarId, aclRule).execute();
@@ -135,16 +135,16 @@ public class GoogleCalendarClient {
       throw new CalendarServiceException(ex);
     }
   }
-  
+
   public AclRule insertCalendarUserAclRule(String calendarId, String email, String role) throws CalendarServiceException {
     Scope scope = new Scope();
     scope.setType("user");
     scope.setValue(email);
-    
+
     AclRule aclRule = new AclRule();
     aclRule.setRole(role);
     aclRule.setScope(scope);
-    
+
     return insertCalendarAclRule(calendarId, aclRule);
   }
 
@@ -302,13 +302,15 @@ public class GoogleCalendarClient {
   private boolean isWritable(com.google.api.services.calendar.model.Calendar cal) {
     return true; // TODO
   }
-  
+
   private static Date toDate(DateTime dt) {
     return new Date(dt.getValue());
   }
 
   private Calendar getClient() throws GeneralSecurityException, IOException {
-    return new Calendar.Builder(TRANSPORT, JSON_FACTORY, getServiceAccountCredential()).build();
+    return new Calendar.Builder(TRANSPORT, JSON_FACTORY, getServiceAccountCredential())
+                       .setApplicationName("Muikku")
+                       .build();
   }
 
   private GoogleCredential getServiceAccountCredential() throws GeneralSecurityException, IOException {
@@ -347,7 +349,7 @@ public class GoogleCalendarClient {
 
     return null;
   }
-  
+
 
   private static class GoogleCalendar implements fi.muikku.calendar.Calendar {
 
@@ -532,14 +534,14 @@ public class GoogleCalendarClient {
                       null),
               event.getStart().getDate() != null);
     }
-    
+
     private static TimeZone getJavaTimeZone(String timeZone) {
       if (StringUtils.isNotBlank(timeZone)) {
         return SimpleTimeZone.getTimeZone(timeZone);
       }
-   
+
       // TODO: this should fallback to calendar default timezone
-      
+
       return null;
     }
 
