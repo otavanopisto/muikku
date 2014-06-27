@@ -303,6 +303,14 @@ public class GoogleCalendarClient {
     return true; // TODO
   }
 
+  private static Date toDate(EventDateTime dt) {
+    if (dt.getDateTime() != null) {
+      return new Date(dt.getDateTime().getValue());
+    } else {
+      return new Date(dt.getDate().getValue());
+    }
+  }
+
   private static Date toDate(DateTime dt) {
     return new Date(dt.getValue());
   }
@@ -521,10 +529,10 @@ public class GoogleCalendarClient {
                       event.getOrganizer().getDisplayName(),
                       event.getOrganizer().getEmail()),
               new GoogleCalendarEventTemporalField(
-                      new Date(event.getStart().getDateTime().getValue()),
+                      toDate(event.getStart()),
                       getJavaTimeZone(event.getStart().getTimeZone())),
               new GoogleCalendarEventTemporalField(
-                      new Date(event.getEnd().getDateTime().getValue()),
+                      toDate(event.getEnd()),
                       getJavaTimeZone(event.getEnd().getTimeZone())),
               new Date(event.getCreated().getValue()),
               new Date(event.getUpdated().getValue()),
