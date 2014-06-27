@@ -169,10 +169,10 @@ public class GoogleCalendarClient {
               .setStatus(status.toString().toLowerCase(Locale.ROOT))
               .setAttendees(googleAttendees)
               .setStart(new EventDateTime()
-                      .setDate(new DateTime(start.getDateTime()))
+                      .setDate(toDateTime(true, start))
                       .setTimeZone(start.getTimeZone().getID()))
               .setEnd(new EventDateTime()
-                      .setDate(new DateTime(end.getDateTime()))
+                      .setDate(toDateTime(true, end))
                       .setTimeZone(end.getTimeZone().getID())))
               /* TODO: Reminders & Recurrence */
               .execute();
@@ -305,6 +305,11 @@ public class GoogleCalendarClient {
 
   private static Date toDate(DateTime dt) {
     return new Date(dt.getValue());
+  }
+
+  private static DateTime toDateTime(boolean dateOnly, CalendarEventTemporalField d) {
+    long timestamp = d.getDateTime().getTime();
+    return new DateTime(dateOnly, timestamp, d.getTimeZone().getOffset(timestamp));
   }
 
   private Calendar getClient() throws GeneralSecurityException, IOException {
