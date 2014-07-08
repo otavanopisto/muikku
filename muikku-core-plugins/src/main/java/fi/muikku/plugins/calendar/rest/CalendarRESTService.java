@@ -301,6 +301,7 @@ public class CalendarRESTService extends PluginRESTService {
 
       return Response.noContent().build();
     } catch (CalendarServiceException e) {
+      e.printStackTrace();
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
   }
@@ -353,8 +354,7 @@ public class CalendarRESTService extends PluginRESTService {
     String videoCallLink = calendarEvent.getLocation() != null ? calendarEvent.getLocation().getVideoCallLink() : null;
     BigDecimal longitude = calendarEvent.getLocation() != null ? calendarEvent.getLocation().getLongitude()  : null;
     BigDecimal latitude = calendarEvent.getLocation() != null ? calendarEvent.getLocation().getLatitude() : null;
-
-    return new CalendarEvent(userCalendar.getId(), calendarEvent.getSummary(), calendarEvent.getDescription(),
+    return new CalendarEvent(userCalendar.getId(), calendarEvent.getId(), calendarEvent.getSummary(), calendarEvent.getDescription(),
         calendarEvent.getUrl(), location, videoCallLink, longitude, latitude, calendarEvent.getStatus(),
         calendarEvent.getStart().getDateTime(), calendarEvent.getStart().getTimeZone(),
         calendarEvent.getEnd().getDateTime(), calendarEvent.getEnd().getTimeZone(), calendarEvent.isAllDay(),

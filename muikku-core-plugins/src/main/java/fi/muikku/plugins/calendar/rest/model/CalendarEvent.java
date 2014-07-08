@@ -13,11 +13,12 @@ public class CalendarEvent {
   public CalendarEvent() {
   }
 
-  public CalendarEvent(Long calendarId, String summary, String description, String url, String location, 
+  public CalendarEvent(Long calendarId, String id, String summary, String description, String url, String location, 
       String videoCallLink, BigDecimal longitude, BigDecimal latitude, CalendarEventStatus status, Date start, TimeZone startTimeZone, Date end,
       TimeZone endTimeZone, boolean allDay, Date created, Date updated, Map<String, String> extendedProperties, List<CalendarEventAttendee> attendees,
       List<CalendarEventReminder> reminders) {
     this.calendarId = calendarId;
+    this.id = id;
     this.summary = summary;
     this.description = description;
     this.url = url;
@@ -190,7 +191,16 @@ public class CalendarEvent {
     this.reminders = reminders;
   }
 
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
+
   private Long calendarId;
+  private String id;
   private String summary;
   private String description;
   private String url;
