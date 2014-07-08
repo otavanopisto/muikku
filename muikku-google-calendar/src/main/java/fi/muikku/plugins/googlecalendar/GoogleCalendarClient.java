@@ -42,6 +42,8 @@ import fi.muikku.calendar.CalendarServiceException;
 import fi.muikku.calendar.DefaultCalendarEventLocation;
 import fi.muikku.session.AccessToken;
 import fi.muikku.session.SessionController;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
@@ -55,6 +57,9 @@ public class GoogleCalendarClient {
 
   private static final HttpTransport TRANSPORT = new NetHttpTransport();
   private static final JsonFactory JSON_FACTORY = new JacksonFactory();
+
+  @Inject
+  private Logger logger;
 
   @Inject
   private SessionController sessionController;
@@ -162,6 +167,11 @@ public class GoogleCalendarClient {
     }
 
     try {
+      logger.log(Level.INFO, start.getDateTime().toString());
+      logger.log(Level.INFO, start.getTimeZone().toString());
+      logger.log(Level.INFO, end.getDateTime().toString());
+      logger.log(Level.INFO, end.getTimeZone().toString());
+
       Event event = getClient().events().insert(calendarId,
               new Event()
               .setSummary(summary)
@@ -169,10 +179,10 @@ public class GoogleCalendarClient {
               .setStatus(status.toString().toLowerCase(Locale.ROOT))
               .setAttendees(googleAttendees)
               .setStart(new EventDateTime()
-                      .setDate(toDateTime(true, start))
+                      .setDate(toDateTime(false, start))
                       .setTimeZone(start.getTimeZone().getID()))
               .setEnd(new EventDateTime()
-                      .setDate(toDateTime(true, end))
+                      .setDate(toDateTime(false, end))
                       .setTimeZone(end.getTimeZone().getID())))
               /* TODO: Reminders & Recurrence */
               .execute();
@@ -221,6 +231,7 @@ public class GoogleCalendarClient {
                 .getItems()) {
           result.add(
                   new GoogleCalendarEvent(event, calId));
+          logger.log(Level.INFO, event.toPrettyString());
         }
       } catch (GeneralSecurityException | IOException ex) {
         throw new CalendarServiceException(ex);
@@ -251,11 +262,11 @@ public class GoogleCalendarClient {
               .setStatus(calendarEvent.getStatus().toString().toLowerCase(Locale.ROOT))
               .setAttendees(googleAttendees)
               .setStart(new EventDateTime()
-                      .setDate(new DateTime(calendarEvent.getStart().getDateTime()))
-                      .setTimeZone(calendarEvent.getStart().getTimeZone().getDisplayName()))
+                      .setDate(toDateTime(calendarEvent.isAllDay(), calendarEvent.getStart()))
+                      .setTimeZone(calendarEvent.getStart().getTimeZone().getID()))
               .setEnd(new EventDateTime()
-                      .setDate(new DateTime(calendarEvent.getEnd().getDateTime()))
-                      .setTimeZone(calendarEvent.getEnd().getTimeZone().getDisplayName())))
+                      .setDate(toDateTime(calendarEvent.isAllDay(), calendarEvent.getEnd()))
+                      .setTimeZone(calendarEvent.getEnd().getTimeZone().getID())))
               /* TODO: Reminders & Recurrence */
               .execute();
       return new GoogleCalendarEvent(
