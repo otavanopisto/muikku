@@ -313,6 +313,10 @@ public class GoogleCalendarClient {
     return true; // TODO
   }
 
+  private static long msToMinutes(long ms) {
+    return ms / (60 * 60 * 1000);
+  }
+
   private static Date toDate(EventDateTime dt) {
     if (dt.getDateTime() != null) {
       return new Date(dt.getDateTime().getValue());
@@ -327,7 +331,7 @@ public class GoogleCalendarClient {
 
   private static DateTime toDateTime(CalendarEventTemporalField d) {
     long timestamp = d.getDateTime().getTime();
-    return new DateTime(timestamp, d.getTimeZone().getOffset(timestamp));
+    return new DateTime(timestamp, (int)msToMinutes(d.getTimeZone().getOffset(timestamp)));
   }
 
   private static EventDateTime toEventDateTime(boolean dateOnly,
