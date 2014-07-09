@@ -317,21 +317,26 @@ public class GoogleCalendarClient {
     return ms / (60 * 60 * 1000);
   }
 
+  private static long minutesToMs(long minutes) {
+    return minutes * (60 * 60 * 1000);
+  }
+
   private static Date toDate(EventDateTime dt) {
     if (dt.getDateTime() != null) {
-      return new Date(dt.getDateTime().getValue());
+      return toDate(dt.getDateTime());
     } else {
-      return new Date(dt.getDate().getValue());
+      return toDate(dt.getDate());
     }
   }
 
   private static Date toDate(DateTime dt) {
-    return new Date(dt.getValue());
+    return new Date(dt.getValue() - minutesToMs(dt.getTimeZoneShift()));
   }
 
   private static DateTime toDateTime(CalendarEventTemporalField d) {
     long timestamp = d.getDateTime().getTime();
-    return new DateTime(timestamp, (int)msToMinutes(d.getTimeZone().getOffset(timestamp)));
+    long offset = d.getTimeZone().getOffset(timestamp);
+    return new DateTime(timestamp + offset, (int)msToMinutes(offset));
   }
 
   private static EventDateTime toEventDateTime(boolean dateOnly,
