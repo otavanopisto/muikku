@@ -178,7 +178,7 @@ public class CalendarRESTService extends PluginRESTService {
       fi.muikku.calendar.CalendarEventRecurrence recurrence = null;
 
       fi.muikku.calendar.CalendarEvent calendarEvent = calendarController.createCalendarEvent(userCalendar, event.getSummary(), event.getDescription(), event.getStatus(),
-          event.getStart(), event.getStartTimeZone(), event.getEnd(), event.getEndTimeZone(), attendees, reminders, recurrence,
+          event.getStart(), event.getStartTimeZone(), event.getEnd(), event.getEndTimeZone(), attendees, reminders, recurrence, event.isAllDay(),
           event.getExtendedProperties());
 
       return Response.ok(createEventRestModel(userCalendar, calendarEvent)).build();

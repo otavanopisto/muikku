@@ -68,8 +68,9 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
           CalendarEventTemporalField start,
           CalendarEventTemporalField end,
           List<CalendarEventReminder> reminders,
-          CalendarEventRecurrence recurrence) throws CalendarServiceException {
-    return calendarClient.createEvent(calendarId, summary, description, status, attendees, start, end);
+          CalendarEventRecurrence recurrence,
+          boolean allDay) throws CalendarServiceException {
+    return calendarClient.createEvent(calendarId, summary, description, status, attendees, start, end, allDay);
   }
 
   @Override
