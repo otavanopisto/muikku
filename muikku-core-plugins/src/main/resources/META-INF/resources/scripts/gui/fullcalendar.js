@@ -115,13 +115,17 @@
     
     _renderEvent: function (event, element) {
 
-    	
-    	/*element.bind('contextmenu', function (e) {
+		/*var option = { width: 150, items: [
+		   { text: "Edit", icon: "sample-css/wi0126-16.gif", alias: "edit", action: function(){element.trigger($.Event("editEvent", {event: event}));}}
+		]};
+	   element.contextmenu(option);*/
+
+    	element.bind('contextmenu', function (e) {
         	element.trigger($.Event("editEvent", {
                 event: event
               }));
             return false;
-        });*/
+        });
     },
     
     _truncateString: function (string, maxLength) {
