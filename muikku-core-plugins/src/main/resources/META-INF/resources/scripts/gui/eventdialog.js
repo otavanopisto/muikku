@@ -69,7 +69,6 @@
         calendars: calendars
       }, function (text) {
         var buttons = {};
-
         if (_this._event.id) {
           buttons[getLocaleText('plugin.calendar.eventDialog.delete')] = function() {
             (new RemoveEventDialog(_this._event))
@@ -92,7 +91,6 @@
         buttons[getLocaleText('plugin.calendar.eventDialog.save')] = function() {
           var startDate = $(this).find('input[name="fromDate"]').datepicker("getDate");
           var endDate = $(this).find('input[name="toDate"]').datepicker("getDate");
-          
           if ((startDate == null) || (endDate == null)) {
             throw new Error("Date is required");
           } 
@@ -111,8 +109,8 @@
             endDate.setHours(endTime.getHours(), endTime.getMinutes(), 0, 0);
             allDay = false;
           } else {
-            startDate.setHours(0, 0, 0, 0);
-            endDate.setHours(23, 59, 59, 999);
+            startDate = new Date(startDate.getTime() + 1000 * 60 * 60 * 24);
+            endDate = new Date(endDate.getTime() + (1000 * 60 * 60 * 24));
             allDay = true;
           }
           
