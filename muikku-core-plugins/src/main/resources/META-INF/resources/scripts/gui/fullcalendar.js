@@ -108,8 +108,20 @@
         dayClick: $.proxy(this._onDayClick, this),
         eventClick: $.proxy(this._onEventClick, this),
         eventDrop: $.proxy(this._onEventDrop, this),
-        eventResize: $.proxy(this._onEventResize, this)
+        eventResize: $.proxy(this._onEventResize, this),
+        eventRender: $.proxy(this._renderEvent, this)
       }, this._options));
+    },
+    
+    _renderEvent: function (event, element) {
+
+    	
+    	/*element.bind('contextmenu', function (e) {
+        	element.trigger($.Event("editEvent", {
+                event: event
+              }));
+            return false;
+        });*/
     },
     
     _truncateString: function (string, maxLength) {
@@ -334,12 +346,13 @@
       this._reloadEvents(this._loadedDatas);
     },
     
-    _onEventClick: function (event) {
-      if (event.editable) {
+    _onEventClick: function (event, originalEvent) {
+      /*if (event.editable) {
         this.getWidgetElement().trigger($.Event("editEvent", {
           event: event
-        })); 
-      }
+        }));
+        return false;
+      }*/
     },
     
     _onDayClick: function (date, allDay, jsEvent, view) {
@@ -706,7 +719,6 @@
 
     _onUpdateEvent: function (event, data) {
       var calendarEvent = data.eventData;
-      
       var calendarId = parseInt(calendarEvent.calendarId);
       var originalEventData = data.originalData;
       var timeZone = jstz.determine().name();
