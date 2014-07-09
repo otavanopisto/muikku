@@ -33,11 +33,10 @@
       this.getWidgetElement().find('h3').remove();
     }
   });
-  
+	
   FullCalendarBasedModeHandler = $.klass(ModeHandler, {
     init: function (widgetElement, options) {
       this._super(arguments, widgetElement);
-      
       this._options = options;
       this._maxDayEvents = options.maxDayEvents||Number.POSITIVE_INFINITY;
       this._maxSummaryLength = options.maxSummaryLength;
@@ -114,18 +113,12 @@
     },
     
     _renderEvent: function (event, element) {
-
-		/*var option = { width: 150, items: [
-		   { text: "Edit", icon: "sample-css/wi0126-16.gif", alias: "edit", action: function(){element.trigger($.Event("editEvent", {event: event}));}}
-		]};
-	   element.contextmenu(option);*/
-
-    	element.bind('contextmenu', function (e) {
-        	element.trigger($.Event("editEvent", {
-                event: event
-              }));
-            return false;
-        });
+    	element.contextPopup({
+    		  title: event.title,
+    		  items: [
+    		    {label:'Edit', icon:'/icons/blueprint--pencil.png', action:function() {element.trigger($.Event("editEvent", {event: event})); } },
+    		  ]
+    	});
     },
     
     _truncateString: function (string, maxLength) {
