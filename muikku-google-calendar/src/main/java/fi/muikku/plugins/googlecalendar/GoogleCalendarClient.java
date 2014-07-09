@@ -153,8 +153,15 @@ public class GoogleCalendarClient {
     return insertCalendarAclRule(calendarId, aclRule);
   }
 
-  public CalendarEvent createEvent(String calendarId, String summary, String description, CalendarEventStatus status, List<CalendarEventAttendee> attendees,
-      CalendarEventTemporalField start, CalendarEventTemporalField end) throws CalendarServiceException {
+  public CalendarEvent createEvent(
+          String calendarId,
+          String summary,
+          String description,
+          CalendarEventStatus status,
+          List<CalendarEventAttendee> attendees,
+          CalendarEventTemporalField start,
+          CalendarEventTemporalField end,
+          boolean allDay) throws CalendarServiceException {
     ArrayList<EventAttendee> googleAttendees = new ArrayList<>();
     for (CalendarEventAttendee attendee : attendees) {
       googleAttendees.add(
@@ -179,10 +186,10 @@ public class GoogleCalendarClient {
               .setStatus(status.toString().toLowerCase(Locale.ROOT))
               .setAttendees(googleAttendees)
               .setStart(new EventDateTime()
-                      .setDate(toDateTime(false, start))
+                      .setDate(toDateTime(allDay, start))
                       .setTimeZone(start.getTimeZone().getID()))
               .setEnd(new EventDateTime()
-                      .setDate(toDateTime(false, end))
+                      .setDate(toDateTime(allDay, end))
                       .setTimeZone(end.getTimeZone().getID())))
               /* TODO: Reminders & Recurrence */
               .execute();

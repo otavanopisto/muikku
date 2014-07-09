@@ -45,10 +45,10 @@ public interface CalendarServiceProvider {
    * @throws CalendarServiceException when service provider reports an error
    */
   public List<Calendar> listPublicCalendars() throws CalendarServiceException;
-  
+
   /**
    * Updates a calendar
-   * 
+   *
    * @param calendar calendar to be updated
    * @return updated calendar
    * @throws CalendarServiceException when service provider reports an error
@@ -57,12 +57,12 @@ public interface CalendarServiceProvider {
 
   /**
    * Removes a calendar
-   * 
+   *
    * @param calendar calendar to be removed
    * @throws CalendarServiceException
    */
   public void deleteCalendar(Calendar calendar) throws CalendarServiceException;
-  
+
   /**
    * Creates new calendar event into the calendar.
    *
@@ -75,12 +75,20 @@ public interface CalendarServiceProvider {
    * @param end end time
    * @param reminders list of reminders
    * @param recurrence event recurrence data
+   * @param allDay true if event is all day
    * @return newly created event
    * @throws CalendarServiceException when service provider reports an error
    */
-  public CalendarEvent createEvent(String calendarId, String summary, String description, CalendarEventStatus status,
-      List<CalendarEventAttendee> attendees, CalendarEventTemporalField start, CalendarEventTemporalField end,
-      List<CalendarEventReminder> reminders, CalendarEventRecurrence recurrence)
+  public CalendarEvent createEvent(String calendarId,
+                                   String summary,
+                                   String description,
+                                   CalendarEventStatus status,
+                                   List<CalendarEventAttendee> attendees,
+                                   CalendarEventTemporalField start,
+                                   CalendarEventTemporalField end,
+                                   List<CalendarEventReminder> reminders,
+                                   CalendarEventRecurrence recurrence,
+                                   boolean allDay)
           throws CalendarServiceException;
 
   /**
@@ -115,16 +123,16 @@ public interface CalendarServiceProvider {
 
   /**
    * Updates existing calendar event
-   * 
+   *
    * @param calendarEvent event to be updated
    * @return updated calendar event
    * @throws CalendarServiceException when service provider reports an error
    */
   public CalendarEvent updateEvent(CalendarEvent calendarEvent) throws CalendarServiceException;
-  
+
   /**
    * Removes a calendar event
-   * 
+   *
    * @param calendar calendar which owns the event to be removed
    * @param eventId id of event to be removed
    * @throws CalendarServiceException when service provider reports an error
