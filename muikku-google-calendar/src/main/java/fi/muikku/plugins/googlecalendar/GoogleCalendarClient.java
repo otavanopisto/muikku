@@ -185,12 +185,8 @@ public class GoogleCalendarClient {
               .setDescription(description)
               .setStatus(status.toString().toLowerCase(Locale.ROOT))
               .setAttendees(googleAttendees)
-              .setStart(new EventDateTime()
-                      .setDate(toDateTime(allDay, start))
-                      .setTimeZone(start.getTimeZone().getID()))
-              .setEnd(new EventDateTime()
-                      .setDate(toDateTime(allDay, end))
-                      .setTimeZone(end.getTimeZone().getID())))
+              .setStart(toEventDateTime(allDay, start))
+              .setEnd(toEventDateTime(allDay, end)))
               /* TODO: Reminders & Recurrence */
               .execute();
       return new GoogleCalendarEvent(event, calendarId);
@@ -268,12 +264,8 @@ public class GoogleCalendarClient {
               .setDescription(calendarEvent.getDescription())
               .setStatus(calendarEvent.getStatus().toString().toLowerCase(Locale.ROOT))
               .setAttendees(googleAttendees)
-              .setStart(new EventDateTime()
-                      .setDate(toDateTime(calendarEvent.isAllDay(), calendarEvent.getStart()))
-                      .setTimeZone(calendarEvent.getStart().getTimeZone().getID()))
-              .setEnd(new EventDateTime()
-                      .setDate(toDateTime(calendarEvent.isAllDay(), calendarEvent.getEnd()))
-                      .setTimeZone(calendarEvent.getEnd().getTimeZone().getID())))
+              .setStart(toEventDateTime(calendarEvent.isAllDay(), calendarEvent.getStart()))
+              .setEnd(toEventDateTime(calendarEvent.isAllDay(), calendarEvent.getEnd())))
               /* TODO: Reminders & Recurrence */
               .execute();
       return new GoogleCalendarEvent(
@@ -336,6 +328,18 @@ public class GoogleCalendarClient {
   private static DateTime toDateTime(boolean dateOnly, CalendarEventTemporalField d) {
     long timestamp = d.getDateTime().getTime();
     return new DateTime(dateOnly, timestamp, d.getTimeZone().getOffset(timestamp));
+  }
+
+  private static EventDateTime toEventDateTime(boolean dateOnly,
+                                               CalendarEventTemporalField datetime) {
+    EventDateTime result = new EventDateTime();
+    result.setTimeZone(datetime.getTimeZone().getID());
+    if (dateOnly) {
+      result.setDate(new DateTime(datetime.getDateTime()));
+    } else {
+      result.setDateTime(new DateTime(datetime.getDateTime()));
+    }
+    return result;
   }
 
   private Calendar getClient() throws GeneralSecurityException, IOException {
