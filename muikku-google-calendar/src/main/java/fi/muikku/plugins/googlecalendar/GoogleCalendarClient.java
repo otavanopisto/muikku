@@ -325,9 +325,9 @@ public class GoogleCalendarClient {
     return new Date(dt.getValue());
   }
 
-  private static DateTime toDateTime(boolean dateOnly, CalendarEventTemporalField d) {
+  private static DateTime toDateTime(CalendarEventTemporalField d) {
     long timestamp = d.getDateTime().getTime();
-    return new DateTime(dateOnly, timestamp, d.getTimeZone().getOffset(timestamp));
+    return new DateTime(timestamp, d.getTimeZone().getOffset(timestamp));
   }
 
   private static EventDateTime toEventDateTime(boolean dateOnly,
@@ -335,9 +335,9 @@ public class GoogleCalendarClient {
     EventDateTime result = new EventDateTime();
     result.setTimeZone(datetime.getTimeZone().getID());
     if (dateOnly) {
-      result.setDate(new DateTime(datetime.getDateTime()));
+      result.setDate(toDateTime(datetime));
     } else {
-      result.setDateTime(new DateTime(datetime.getDateTime()));
+      result.setDateTime(toDateTime(datetime));
     }
     return result;
   }
