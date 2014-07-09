@@ -344,7 +344,9 @@ public class GoogleCalendarClient {
     EventDateTime result = new EventDateTime();
     result.setTimeZone(datetime.getTimeZone().getID());
     if (dateOnly) {
-      result.setDate(toDateTime(datetime));
+      long timestamp = datetime.getDateTime().getTime();
+      long offset = datetime.getTimeZone().getOffset(timestamp);
+      result.setDate(new DateTime(true, timestamp + offset, (int)msToMinutes(offset)));
     } else {
       result.setDateTime(toDateTime(datetime));
     }
