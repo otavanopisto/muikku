@@ -13,38 +13,42 @@
   <packaging>jar</packaging>
   <name>Muikku Google Calendar plugin</name>
   <description>Plugin that provides Google Calendar support for Muikku</description>
-  
+
   <dependencies>
     <!-- Core provided dependencies -->
-  
+
     <dependency>
       <groupId>fi.muikku</groupId>
       <artifactId>plugin</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <!-- Core plugins -->
-  
+
     <dependency>
       <groupId>fi.muikku</groupId>
       <artifactId>core-plugins</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <!-- Google Calendar API -->
-    
+
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-calendar</artifactId>
       <version>v3-rev84-1.18.0-rc</version>
     </dependency>
-    
+
     <dependency>
       <groupId>com.google.http-client</groupId>
       <artifactId>google-http-client-jackson</artifactId>
       <version>1.18.0-rc</version>
     </dependency>
-
+    <dependency>
+      <groupId>net.sf.biweekly</groupId>
+      <artifactId>biweekly</artifactId>
+      <version>0.3.3</version>
+    </dependency>
   </dependencies>
 
 </project>

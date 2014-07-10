@@ -1,5 +1,6 @@
 package fi.muikku.plugins.googlecalendar;
 
+import biweekly.Biweekly;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
@@ -53,6 +54,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.elasticsearch.search.suggest.term.TermSuggestion;
 
 @Dependent
 @Stateless
@@ -451,25 +453,23 @@ public class GoogleCalendarClient {
   }
 
   private static class GoogleCalendarEventRecurrence implements CalendarEventRecurrence {
+    private CalendarEventRecurrenceFrequency frequency;
+    private Integer count;
+    private Integer interval;
+    private CalendarEventTemporalField until;
 
-    @Override
-    public CalendarEventRecurrenceFrequency getFrequency() {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public GoogleCalendarEventRecurrence(CalendarEventRecurrenceFrequency frequency,
+                                         Integer count,
+                                         Integer interval,
+                                         CalendarEventTemporalField until) {
+      this.frequency = frequency;
+      this.count = count;
+      this.interval = interval;
+      this.until = until;
     }
 
-    @Override
-    public Integer getCount() {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public Integer getInterval() {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public CalendarEventTemporalField getUntil() {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public static GoogleCalendarEventRecurrence fromIcal(List<String> icalRecurrence) {
+      return null;
     }
 
     @Override
@@ -520,6 +520,26 @@ public class GoogleCalendarClient {
     @Override
     public CalendarEventRecurrenceWeekDay getWeekStart() {
       throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public CalendarEventRecurrenceFrequency getFrequency() {
+      return frequency;
+    }
+
+    @Override
+    public Integer getCount() {
+      return count;
+    }
+
+    @Override
+    public Integer getInterval() {
+      return interval;
+    }
+
+    @Override
+    public CalendarEventTemporalField getUntil() {
+      return until;
     }
 
   }
