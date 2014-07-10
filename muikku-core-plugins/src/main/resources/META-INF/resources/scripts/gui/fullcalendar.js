@@ -113,10 +113,13 @@
     },
     
     _renderEvent: function (event, element) {
+    	
+    	var contextMenuIcon = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAApdJREFUeNp8U11IFGEUPd/sqPmXhbLmipKosSKZuPZjKhYW9mgIYr1Ez0FPFUQPYg89RCgUob1YT0VKCEkRPYW0mrFbIZrLsqbmz6rbYuvuDjvu/HS/WWdIjC6cuffbe8/hzHdnWcvgOngwxp5QcuE/EXp7rUvX9YCmaaCMsM8HkSqjST+4mqvzXMmkhuP2NLiXVdCcFeFwGBu63rpzDPBHvtMJgauZEHQNpVkqCrM0nCgkHOJiGuoJsVgMM8PDAzR3jriVpjBrHFgya09LzUGXJG2joTgD7iUZDY4MjC3KhpPZWZ/lJrC05aVUz2tRU1WrwVgKPBpLUiKHD4hY+K2gqsqJptIMeDYEJLPXLY6gkoAJuglDoDjHhokVGUft6ViJKxAEGNjRtubb3vSRA0XZ42A1ruI0vcY4iXCi1d+pOedu/xXkByZ3OzDtO8jBp6BsnbmIzUaZpeojPzw5zsDkCHk+I6ikZsJ0EYyrlhtTpDRPNMjqVhBaeDa3rLu7PQT0iOo/XoH9deZRXZCO6dA2yjAJaXELTwfvONrKy/su6fq7PQKpIlXzb4yvlF9o834v2GIvHnXWoqZzLBhOJJ51AlO7BMwtmGKnioi8KqMp14tN3wNcbq1D/9A4iqouRuOJrqmPCbrk+LzHuoN0G0MF7d2RbcNJInMnHYVfwRZ6DfLQ6wkUuW5jmdVF99V14X3JMQirz68jSuuQJQlJTcdcRMHPqILPazK+zX2H78t9XGisxeOXbqgVNzAtNhmznMO5fLOZoVc37bFIBKIoIDNTxEYSRs5eGcHV9ocYGB6HVHkLkYKzSEsTwGc5h3NF/iDYpXmvv6cnuuvvmxy553KPjm7OCOdDyx/WqPki1fjl93MOQfkjwACfLUbTPr/kawAAAABJRU5ErkJggg==";
+    	
     	element.contextPopup({
     		  title: event.title,
     		  items: [
-    		    {label:'Edit', icon:'/icons/blueprint--pencil.png', action:function() {element.trigger($.Event("editEvent", {event: event})); } },
+    		    {label:'Edit', icon:contextMenuIcon, action:function() {element.trigger($.Event("editEvent", {event: event})); } },
     		  ]
     	});
     },
