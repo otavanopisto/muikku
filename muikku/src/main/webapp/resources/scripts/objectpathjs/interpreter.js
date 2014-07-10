@@ -25,7 +25,9 @@ objectPath.prototype={
 	},
 	setData:function(data){
 		if (["object","array"].indexOf(typeof data)<0){
-			log(data+" is not object nor array! Data not changed.")
+			if(typeof(log) == "function"){
+				log(data+" is not object nor array! Data not changed.")
+			}
 			return data
 		}
 		this.data=data
