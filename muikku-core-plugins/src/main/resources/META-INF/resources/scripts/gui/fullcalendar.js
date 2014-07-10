@@ -284,9 +284,8 @@
     
     _onAfterEventCreate: function (event, data) {
       var newEvent = data.event;
-      
       for (var i = 0, l = this._loadedDatas.length; i < l; i++) {
-        if (this._loadedDatas[i].calendarMeta.id == newEvent['calendar_id']) {
+        if (this._loadedDatas[i].calendarMeta.id == newEvent['calendarId']) {
           this._loadedDatas[i].events.push(newEvent);
           break;
         }
