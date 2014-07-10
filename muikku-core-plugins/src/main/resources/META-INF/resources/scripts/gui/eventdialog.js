@@ -114,6 +114,12 @@
 
           if ($(this).find('form').valid()) {
             if (_this._saveFunction) {
+            	
+              var remainders = [];
+              $(this).find('div[name="remainders"]').children('p').each(function () {
+            	  remainders.push({type: $(this).data('type'), minutes: $(this).data('minutes')});
+              });
+            	
               var dataEvent = {
                 id: _this._event.id,
                 calendarId: $(this).find('select[name="calendarId"]').val(),
@@ -125,6 +131,7 @@
                 longitude: $(this).find('input[name="longitude"]').val()||null,
                 start: startDate,
                 end: endDate,
+                remainders: remainders,
                 description: $(this).find('textarea[name="description"]').val(),
                 allDay: allDay
               };
@@ -155,8 +162,23 @@
         dialog.find('input[name="toDate"]').datepicker();
         dialog.find('input[name="fromTime"]').timepicker();
         dialog.find('input[name="toTime"]').timepicker();
+        
         dialog.find('form').validate();
 
+        dialog.find('a[name="addRemainder"]').click(function(e){
+        	e.preventDefault();
+        	var remainderType = dialog.find('select[name="remainderType"]').val();
+        	var remainderMinutes = dialog.find('input[name="remainderMinutes"]').val();
+        	if(remainderType && remainderMinutes){
+        		 dialog.find('div[name="remainders"]').append('<p data-type="'+remainderType+'" data-minutes="'+remainderMinutes+'">'+remainderType+', '+remainderMinutes+' '+getLocaleText('plugin.calendar.eventDialog.minBefore')+'. <a name="removeRemainder" href="#">'+getLocaleText('plugin.calendar.eventDialog.delete')+'</a></p>');
+        	}
+        });
+        
+        dialog.on( 'click', 'a[name="removeRemainder"]', function(e) {
+        	e.preventDefault();
+        	$(this).parent().remove();
+        });
+        
         dialog.find('input[name="allDay"]').change(function (events) {
           if ($(this).is(":checked")) {
             dialog.find('input[name="fromTime"]').hide();
