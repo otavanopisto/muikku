@@ -34,6 +34,8 @@ import fi.muikku.calendar.CalendarEvent;
 import fi.muikku.calendar.CalendarEventAttendee;
 import fi.muikku.calendar.CalendarEventLocation;
 import fi.muikku.calendar.CalendarEventRecurrence;
+import fi.muikku.calendar.CalendarEventRecurrenceFrequency;
+import fi.muikku.calendar.CalendarEventRecurrenceWeekDay;
 import fi.muikku.calendar.CalendarEventReminder;
 import fi.muikku.calendar.CalendarEventStatus;
 import fi.muikku.calendar.CalendarEventTemporalField;
@@ -42,6 +44,7 @@ import fi.muikku.calendar.CalendarServiceException;
 import fi.muikku.calendar.DefaultCalendarEventLocation;
 import fi.muikku.session.AccessToken;
 import fi.muikku.session.SessionController;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -187,7 +190,6 @@ public class GoogleCalendarClient {
               .setAttendees(googleAttendees)
               .setStart(toEventDateTime(allDay, start))
               .setEnd(toEventDateTime(allDay, end)))
-              /* TODO: Reminders & Recurrence */
               .execute();
       return new GoogleCalendarEvent(event, calendarId);
     } catch (IOException | GeneralSecurityException ex) {
@@ -266,7 +268,6 @@ public class GoogleCalendarClient {
               .setAttendees(googleAttendees)
               .setStart(toEventDateTime(calendarEvent.isAllDay(), calendarEvent.getStart()))
               .setEnd(toEventDateTime(calendarEvent.isAllDay(), calendarEvent.getEnd())))
-              /* TODO: Reminders & Recurrence */
               .execute();
       return new GoogleCalendarEvent(
               event.getId(),
@@ -396,7 +397,6 @@ public class GoogleCalendarClient {
     return null;
   }
 
-
   private static class GoogleCalendar implements fi.muikku.calendar.Calendar {
 
     private final String summary;
@@ -448,6 +448,80 @@ public class GoogleCalendarClient {
     public boolean isWritable() {
       return writable;
     }
+  }
+
+  private static class GoogleCalendarEventRecurrence implements CalendarEventRecurrence {
+
+    @Override
+    public CalendarEventRecurrenceFrequency getFrequency() {
+      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Integer getCount() {
+      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Integer getInterval() {
+      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public CalendarEventTemporalField getUntil() {
+      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public int[] getBySecond() {
+      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public int[] getByMinute() {
+      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public int[] getByHour() {
+      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Set<CalendarEventRecurrenceWeekDay> getByDay() {
+      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public int[] getByMonthDay() {
+      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public int[] getByYearDay() {
+      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public int[] getByWeekNo() {
+      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public int[] getByMonth() {
+      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public int[] getBySetPos() {
+      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public CalendarEventRecurrenceWeekDay getWeekStart() {
+      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
   }
 
   private static class GoogleCalendarEventTemporalField implements CalendarEventTemporalField {
