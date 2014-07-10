@@ -115,9 +115,9 @@
           if ($(this).find('form').valid()) {
             if (_this._saveFunction) {
             	
-              var remainders = [];
-              $(this).find('div[name="remainders"]').children('p').each(function () {
-            	  remainders.push({type: $(this).data('type'), minutes: $(this).data('minutes')});
+              var reminders = [];
+              $(this).find('div[name="reminders"]').children('p').each(function () {
+            	  reminders.push({type: $(this).data('type'), minutesBefore: $(this).data('minutes')});
               });
             	
               var dataEvent = {
@@ -131,7 +131,7 @@
                 longitude: $(this).find('input[name="longitude"]').val()||null,
                 start: startDate,
                 end: endDate,
-                remainders: remainders,
+                reminders: reminders,
                 description: $(this).find('textarea[name="description"]').val(),
                 allDay: allDay
               };
@@ -165,16 +165,16 @@
         
         dialog.find('form').validate();
 
-        dialog.find('a[name="addRemainder"]').click(function(e){
+        dialog.find('a[name="addReminder"]').click(function(e){
         	e.preventDefault();
-        	var remainderType = dialog.find('select[name="remainderType"]').val();
-        	var remainderMinutes = dialog.find('input[name="remainderMinutes"]').val();
-        	if(remainderType && remainderMinutes){
-        		 dialog.find('div[name="remainders"]').append('<p data-type="'+remainderType+'" data-minutes="'+remainderMinutes+'">'+remainderType+', '+remainderMinutes+' '+getLocaleText('plugin.calendar.eventDialog.minBefore')+'. <a name="removeRemainder" href="#">'+getLocaleText('plugin.calendar.eventDialog.delete')+'</a></p>');
+        	var reminderType = dialog.find('select[name="reminderType"]').val();
+        	var reminderMinutes = dialog.find('input[name="reminderMinutes"]').val();
+        	if(reminderType && reminderMinutes){
+        		 dialog.find('div[name="reminders"]').append('<p data-type="'+reminderType+'" data-minutes="'+reminderMinutes+'">'+reminderType+', '+reminderMinutes+' '+getLocaleText('plugin.calendar.eventDialog.minBefore')+'. <a name="removeReminder" href="#">'+getLocaleText('plugin.calendar.eventDialog.delete')+'</a></p>');
         	}
         });
         
-        dialog.on( 'click', 'a[name="removeRemainder"]', function(e) {
+        dialog.on( 'click', 'a[name="removeReminder"]', function(e) {
         	e.preventDefault();
         	$(this).parent().remove();
         });
@@ -202,6 +202,14 @@
         dialog.find('input[name="latitude"]').val(_this._event.latitude);
         dialog.find('input[name="longitude"]').val(_this._event.longitude);
         dialog.find('textarea[name="description"]').val(_this._event.description);
+        
+        if(_this._event.reminders) {
+          for(var i = 0; i < _this._event.reminders.length;i++){
+        	  var reminderType = _this._event.reminders[i].type;
+        	  var reminderMinutes =  _this._event.reminders[i].minutesBefore;
+       		  dialog.find('div[name="reminders"]').append('<p data-type="'+reminderType+'" data-minutes="'+reminderMinutes+'">'+reminderType+', '+reminderMinutes+' '+getLocaleText('plugin.calendar.eventDialog.minBefore')+'. <a name="removeReminder" href="#">'+getLocaleText('plugin.calendar.eventDialog.delete')+'</a></p>');
+          }
+        }
 
         if (_this._event.start) {
           dialog.find('input[name="fromDate"]').datepicker("setDate", _this._event.start);

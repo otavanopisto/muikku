@@ -738,10 +738,9 @@
           startTimeZone: timeZone,
           end: calendarEvent.end,
           endTimeZone: timeZone,
-          remainders: calendarEvent.remainders,
           allDay: calendarEvent.allDay,
           attendees: attendees,
-          reminders: reminders
+          reminders: calendarEvent.reminders
         }).callback($.proxy(function (err, result) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -767,10 +766,9 @@
           startTimeZone: timeZone,
           end: calendarEvent.end,
           endTimeZone: timeZone,
-          remainders: calendarEvent.remainders,
           allDay: calendarEvent.allDay,
           attendees: attendees,
-          reminders: reminders
+          reminders: calendarEvent.reminders
         }).callback($.proxy(function (err, result) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
