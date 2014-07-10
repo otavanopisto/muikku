@@ -738,6 +738,7 @@
           startTimeZone: timeZone,
           end: calendarEvent.end,
           endTimeZone: timeZone,
+          remainders: calendarEvent.remainders,
           allDay: calendarEvent.allDay,
           attendees: attendees,
           reminders: reminders
@@ -766,6 +767,7 @@
           startTimeZone: timeZone,
           end: calendarEvent.end,
           endTimeZone: timeZone,
+          remainders: calendarEvent.remainders,
           allDay: calendarEvent.allDay,
           attendees: attendees,
           reminders: reminders
