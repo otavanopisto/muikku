@@ -45,9 +45,9 @@
       <version>1.18.0-rc</version>
     </dependency>
     <dependency>
-      <groupId>net.sf.biweekly</groupId>
-      <artifactId>biweekly</artifactId>
-      <version>0.3.3</version>
+      <groupId>org.mnode.ical4j</groupId>
+      <artifactId>ical4j</artifactId>
+      <version>1.0.5.2</version>
     </dependency>
   </dependencies>
 

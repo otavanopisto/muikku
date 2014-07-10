@@ -1,6 +1,5 @@
 package fi.muikku.plugins.googlecalendar;
 
-import biweekly.Biweekly;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
@@ -45,6 +44,7 @@ import fi.muikku.calendar.CalendarServiceException;
 import fi.muikku.calendar.DefaultCalendarEventLocation;
 import fi.muikku.session.AccessToken;
 import fi.muikku.session.SessionController;
+import java.text.ParseException;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -52,6 +52,7 @@ import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import net.fortuna.ical4j.model.Recur;
 
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.search.suggest.term.TermSuggestion;
@@ -468,7 +469,18 @@ public class GoogleCalendarClient {
       this.until = until;
     }
 
-    public static GoogleCalendarEventRecurrence fromIcal(List<String> icalRecurrence) {
+    public static GoogleCalendarEventRecurrence fromIcal(String icalRecurrence, TimeZone tz) {
+      try {
+        Recur recur = new Recur(icalRecurrence);
+        return new GoogleCalendarEventRecurrence(
+                CalendarEventRecurrenceFrequency.valueOf(recur.getFrequency()),
+                recur.getCount(),
+                recur.getInterval(),
+                new GoogleCalendarEventTemporalField(recur.getUntil(), tz));
+      } catch (ParseException ex) {
+        Logger.getLogger(GoogleCalendarClient.class.getName()).log(Level.SEVERE, null, ex);
+      }
+
       return null;
     }
 
