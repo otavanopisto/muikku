@@ -170,7 +170,7 @@
         	var remainderType = dialog.find('select[name="remainderType"]').val();
         	var remainderMinutes = dialog.find('input[name="remainderMinutes"]').val();
         	if(remainderType && remainderMinutes){
-        		 dialog.find('div[name="remainders"]').append('<p data-type="'+remainderType+'" data-minutes="'+remainderMinutes+'">'+remainderType+', '+remainderMinutes+' minutes before event. <a name="removeRemainder" href="#">Remove</a></p>');
+        		 dialog.find('div[name="remainders"]').append('<p data-type="'+remainderType+'" data-minutes="'+remainderMinutes+'">'+remainderType+', '+remainderMinutes+' '+getLocaleText('plugin.calendar.eventDialog.minBefore')+'. <a name="removeRemainder" href="#">'+getLocaleText('plugin.calendar.eventDialog.delete')+'</a></p>');
         	}
         });
         

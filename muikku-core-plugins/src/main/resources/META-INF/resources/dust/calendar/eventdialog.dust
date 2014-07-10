@@ -42,9 +42,9 @@
             <option value="email">Email</option>
             <option value="sms">Sms</option>
             <option value="popup">Popup</option>
-        </select><span style="margin-left:2%;margin-right:2%;" >minutes before:</span>
+        </select><span style="margin-left:2%;margin-right:2%;" >{#localize key="plugin.calendar.eventDialog.minBefore"/}:</span>
         <input style="width:20%;" type="text" id="new-event-remainder-time" name="remainderMinutes" />
-        <a style="margin-left:2%;" href="#" name="addRemainder" >Add</a>
+        <a style="margin-left:2%;" href="#" name="addRemainder" >{#localize key="plugin.calendar.eventDialog.add"/}</a>
     </div>
     <div>
       <!-- TODO: Time is required when event is not a allday event -->
