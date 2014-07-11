@@ -45,6 +45,7 @@ import fi.muikku.calendar.DefaultCalendarEventLocation;
 import fi.muikku.session.AccessToken;
 import fi.muikku.session.SessionController;
 import java.text.ParseException;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -52,7 +53,10 @@ import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import net.fortuna.ical4j.model.NumberList;
 import net.fortuna.ical4j.model.Recur;
+import net.fortuna.ical4j.model.WeekDay;
+import net.fortuna.ical4j.model.WeekDayList;
 
 import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.search.suggest.term.TermSuggestion;
@@ -454,104 +458,202 @@ public class GoogleCalendarClient {
   }
 
   private static class GoogleCalendarEventRecurrence implements CalendarEventRecurrence {
-    private CalendarEventRecurrenceFrequency frequency;
-    private Integer count;
-    private Integer interval;
-    private CalendarEventTemporalField until;
+    private Recur internalRecur;
+    private TimeZone timeZone;
+    private Locale locale;
 
     public GoogleCalendarEventRecurrence(CalendarEventRecurrenceFrequency frequency,
-                                         Integer count,
                                          Integer interval,
-                                         CalendarEventTemporalField until) {
-      this.frequency = frequency;
-      this.count = count;
-      this.interval = interval;
-      this.until = until;
+                                         CalendarEventTemporalField until,
+                                         TimeZone timeZone,
+                                         Locale locale) {
+      internalRecur = new Recur();
+
+      internalRecur.setFrequency(frequency.toString());
+      internalRecur.setInterval(interval);
+      internalRecur.setUntil(new net.fortuna.ical4j.model.Date(until.getDateTime()));
+
+      this.timeZone = timeZone;
+      this.locale = locale;
     }
 
-    public static GoogleCalendarEventRecurrence fromIcal(String icalRecurrence, TimeZone tz) {
-      try {
-        Recur recur = new Recur(icalRecurrence);
-        return new GoogleCalendarEventRecurrence(
-                CalendarEventRecurrenceFrequency.valueOf(recur.getFrequency()),
-                recur.getCount(),
-                recur.getInterval(),
-                new GoogleCalendarEventTemporalField(recur.getUntil(), tz));
-      } catch (ParseException ex) {
-        Logger.getLogger(GoogleCalendarClient.class.getName()).log(Level.SEVERE, null, ex);
-      }
+    public GoogleCalendarEventRecurrence(CalendarEventRecurrenceFrequency frequency,
+                                         Integer interval,
+                                         Integer count,
+                                         TimeZone timeZone,
+                                         Locale locale) {
+      internalRecur = new Recur();
 
-      return null;
+      internalRecur.setFrequency(frequency.toString());
+      internalRecur.setInterval(interval);
+      internalRecur.setCount(count);
+
+      this.timeZone = timeZone;
+      this.locale = locale;
+    }
+
+    public GoogleCalendarEventRecurrence(String icalRecurrence,
+                                         TimeZone timeZone,
+                                         Locale locale) throws CalendarServiceException {
+      try {
+        internalRecur = new Recur(icalRecurrence);
+        this.timeZone = timeZone;
+        this.locale = locale;
+      } catch (ParseException ex) {
+        throw new CalendarServiceException(ex);
+      }
     }
 
     @Override
     public int[] getBySecond() {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      return toIntArray(internalRecur.getSecondList());
     }
+
+
 
     @Override
     public int[] getByMinute() {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      return toIntArray(internalRecur.getMinuteList());
     }
 
     @Override
     public int[] getByHour() {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      return toIntArray(internalRecur.getHourList());
     }
 
     @Override
     public Set<CalendarEventRecurrenceWeekDay> getByDay() {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      return toDaySet(internalRecur.getDayList());
     }
 
     @Override
     public int[] getByMonthDay() {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      return toIntArray(internalRecur.getMonthDayList());
     }
 
     @Override
     public int[] getByYearDay() {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      return toIntArray(internalRecur.getYearDayList());
     }
 
     @Override
     public int[] getByWeekNo() {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      return toIntArray(internalRecur.getWeekNoList());
     }
 
     @Override
     public int[] getByMonth() {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      return toIntArray(internalRecur.getMonthList());
     }
 
     @Override
     public int[] getBySetPos() {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      return toIntArray(internalRecur.getSetPosList());
     }
 
     @Override
     public CalendarEventRecurrenceWeekDay getWeekStart() {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      int day = java.util.Calendar.getInstance(locale).getFirstDayOfWeek();
+      switch (day) {
+        case java.util.Calendar.MONDAY:
+          return CalendarEventRecurrenceWeekDay.MONDAY;
+        case java.util.Calendar.TUESDAY:
+          return CalendarEventRecurrenceWeekDay.TUESDAY;
+        case java.util.Calendar.WEDNESDAY:
+          return CalendarEventRecurrenceWeekDay.WEDNESDAY;
+        case java.util.Calendar.THURSDAY:
+          return CalendarEventRecurrenceWeekDay.THURSDAY;
+        case java.util.Calendar.FRIDAY:
+          return CalendarEventRecurrenceWeekDay.FRIDAY;
+        case java.util.Calendar.SATURDAY:
+          return CalendarEventRecurrenceWeekDay.SATURDAY;
+        case java.util.Calendar.SUNDAY:
+          return CalendarEventRecurrenceWeekDay.SUNDAY;
+        default:
+          throw new RuntimeException("First day of week not a weekday");
+      }
     }
 
     @Override
     public CalendarEventRecurrenceFrequency getFrequency() {
-      return frequency;
+      return CalendarEventRecurrenceFrequency.valueOf(internalRecur.getFrequency());
     }
 
     @Override
     public Integer getCount() {
-      return count;
+      return internalRecur.getCount();
     }
 
     @Override
     public Integer getInterval() {
-      return interval;
+      return internalRecur.getInterval();
     }
 
     @Override
     public CalendarEventTemporalField getUntil() {
-      return until;
+      return new GoogleCalendarEventTemporalField(internalRecur.getUntil(),
+                                                  timeZone);
+    }
+
+    private static int[] toIntArray(NumberList numberList) {
+      int[] result = new int[numberList.size()];
+      for (int i=0; i < result.length; i++) {
+        result[i] = ((Integer)numberList.get(i));
+      }
+      return result;
+    }
+
+    private static Set<CalendarEventRecurrenceWeekDay> toDaySet(WeekDayList weekDayList) {
+      Set<CalendarEventRecurrenceWeekDay> result = new HashSet<>();
+      for (Object day : weekDayList) {
+        result.add(CalendarEventRecurrenceWeekDay.valueOf(((WeekDay)day).getDay()));
+      }
+      return result;
+    }
+
+    @Override
+    public void setBySecond(int[] bySecond) {
+      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setByMinute(int[] byMinute) {
+      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setByHour(int[] byHour) {
+      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setByDay(Set<CalendarEventRecurrenceWeekDay> byDay) {
+      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setByMonthDay(int[] byMonthDay) {
+      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setByYearDay(int[] byYearDay) {
+      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setByWeekNo(int[] byWeekNo) {
+      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setByMonth(int[] byMonth) {
+      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void setBySetPos(int[] setPos) {
+      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
   }
