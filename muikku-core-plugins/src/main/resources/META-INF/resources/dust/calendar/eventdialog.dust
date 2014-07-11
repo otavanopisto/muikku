@@ -61,6 +61,9 @@
       <input type="text" name="toTime"/>
     </div>
     <div>
+      <div name="eventRecurrence"></div>
+    </div>
+    <div>
       <label for="new-event-description">{#localize key="plugin.calendar.eventDialog.description"/}</label>
       <textarea id="new-event-description" name="description"></textarea>
     </div>

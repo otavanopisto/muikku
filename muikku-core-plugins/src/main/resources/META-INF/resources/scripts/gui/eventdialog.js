@@ -89,6 +89,9 @@
         }
 
         buttons[getLocaleText('plugin.calendar.eventDialog.save')] = function() {
+        	
+          //TODO: send save recurrenc information( dialog.find('div[name="eventRecurrence"]').recurrenceInput("getRecurrence"); )
+        	
           var startDate = $(this).find('input[name="fromDate"]').datepicker("getDate");
           var endDate = $(this).find('input[name="toDate"]').datepicker("getDate");
           if ((startDate == null) || (endDate == null)) {
@@ -157,14 +160,16 @@
           width: 500,
           buttons: buttons
         });
-
+     
         dialog.find('input[name="fromDate"]').datepicker();
         dialog.find('input[name="toDate"]').datepicker();
         dialog.find('input[name="fromTime"]').timepicker();
         dialog.find('input[name="toTime"]').timepicker();
         
+        dialog.find('div[name="eventRecurrence"]').recurrenceInput();
+        
         dialog.find('form').validate();
-
+        
         dialog.find('a[name="addReminder"]').click(function(e){
         	e.preventDefault();
         	var reminderType = dialog.find('select[name="reminderType"]').val();
