@@ -34,6 +34,8 @@ import fi.muikku.calendar.CalendarEvent;
 import fi.muikku.calendar.CalendarEventAttendee;
 import fi.muikku.calendar.CalendarEventLocation;
 import fi.muikku.calendar.CalendarEventRecurrence;
+import fi.muikku.calendar.CalendarEventRecurrenceFrequency;
+import fi.muikku.calendar.CalendarEventRecurrenceWeekDay;
 import fi.muikku.calendar.CalendarEventReminder;
 import fi.muikku.calendar.CalendarEventStatus;
 import fi.muikku.calendar.CalendarEventTemporalField;
@@ -42,14 +44,22 @@ import fi.muikku.calendar.CalendarServiceException;
 import fi.muikku.calendar.DefaultCalendarEventLocation;
 import fi.muikku.session.AccessToken;
 import fi.muikku.session.SessionController;
+import java.text.ParseException;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import net.fortuna.ical4j.model.NumberList;
+import net.fortuna.ical4j.model.Recur;
+import net.fortuna.ical4j.model.WeekDay;
+import net.fortuna.ical4j.model.WeekDayList;
 
 import org.apache.commons.lang3.StringUtils;
+import org.elasticsearch.search.suggest.term.TermSuggestion;
 
 @Dependent
 @Stateless
@@ -187,7 +197,6 @@ public class GoogleCalendarClient {
               .setAttendees(googleAttendees)
               .setStart(toEventDateTime(allDay, start))
               .setEnd(toEventDateTime(allDay, end)))
-              /* TODO: Reminders & Recurrence */
               .execute();
       return new GoogleCalendarEvent(event, calendarId);
     } catch (IOException | GeneralSecurityException ex) {
@@ -266,7 +275,6 @@ public class GoogleCalendarClient {
               .setAttendees(googleAttendees)
               .setStart(toEventDateTime(calendarEvent.isAllDay(), calendarEvent.getStart()))
               .setEnd(toEventDateTime(calendarEvent.isAllDay(), calendarEvent.getEnd())))
-              /* TODO: Reminders & Recurrence */
               .execute();
       return new GoogleCalendarEvent(
               event.getId(),
@@ -396,7 +404,6 @@ public class GoogleCalendarClient {
     return null;
   }
 
-
   private static class GoogleCalendar implements fi.muikku.calendar.Calendar {
 
     private final String summary;
@@ -448,6 +455,247 @@ public class GoogleCalendarClient {
     public boolean isWritable() {
       return writable;
     }
+  }
+
+  private static class GoogleCalendarEventRecurrence implements CalendarEventRecurrence {
+    private Recur internalRecur;
+    private TimeZone timeZone;
+    private Locale locale;
+
+    public GoogleCalendarEventRecurrence(CalendarEventRecurrenceFrequency frequency,
+                                         Integer interval,
+                                         CalendarEventTemporalField until,
+                                         TimeZone timeZone,
+                                         Locale locale) {
+      internalRecur = new Recur();
+
+      internalRecur.setFrequency(frequency.toString());
+      internalRecur.setInterval(interval);
+      internalRecur.setUntil(new net.fortuna.ical4j.model.Date(until.getDateTime()));
+
+      this.timeZone = timeZone;
+      this.locale = locale;
+    }
+
+    public GoogleCalendarEventRecurrence(CalendarEventRecurrenceFrequency frequency,
+                                         Integer interval,
+                                         Integer count,
+                                         TimeZone timeZone,
+                                         Locale locale) {
+      internalRecur = new Recur();
+
+      internalRecur.setFrequency(frequency.toString());
+      internalRecur.setInterval(interval);
+      internalRecur.setCount(count);
+
+      this.timeZone = timeZone;
+      this.locale = locale;
+    }
+
+    public GoogleCalendarEventRecurrence(String icalRecurrence,
+                                         TimeZone timeZone,
+                                         Locale locale) throws CalendarServiceException {
+      try {
+        internalRecur = new Recur(icalRecurrence);
+        this.timeZone = timeZone;
+        this.locale = locale;
+      } catch (ParseException ex) {
+        throw new CalendarServiceException(ex);
+      }
+    }
+
+    @Override
+    public int[] getBySecond() {
+      return toIntArray(internalRecur.getSecondList());
+    }
+
+    @Override
+    public int[] getByMinute() {
+      return toIntArray(internalRecur.getMinuteList());
+    }
+
+    @Override
+    public int[] getByHour() {
+      return toIntArray(internalRecur.getHourList());
+    }
+
+    @Override
+    public Set<CalendarEventRecurrenceWeekDay> getByDay() {
+      return toDaySet(internalRecur.getDayList());
+    }
+
+    @Override
+    public int[] getByMonthDay() {
+      return toIntArray(internalRecur.getMonthDayList());
+    }
+
+    @Override
+    public int[] getByYearDay() {
+      return toIntArray(internalRecur.getYearDayList());
+    }
+
+    @Override
+    public int[] getByWeekNo() {
+      return toIntArray(internalRecur.getWeekNoList());
+    }
+
+    @Override
+    public int[] getByMonth() {
+      return toIntArray(internalRecur.getMonthList());
+    }
+
+    @Override
+    public int[] getBySetPos() {
+      return toIntArray(internalRecur.getSetPosList());
+    }
+
+    @Override
+    public CalendarEventRecurrenceWeekDay getWeekStart() {
+      return toRecurrenceWeekDay(java.util.Calendar.getInstance(locale).getFirstDayOfWeek());
+    }
+
+    @Override
+    public CalendarEventRecurrenceFrequency getFrequency() {
+      return CalendarEventRecurrenceFrequency.valueOf(internalRecur.getFrequency());
+    }
+
+    @Override
+    public Integer getCount() {
+      return internalRecur.getCount();
+    }
+
+    @Override
+    public Integer getInterval() {
+      return internalRecur.getInterval();
+    }
+
+    @Override
+    public CalendarEventTemporalField getUntil() {
+      return new GoogleCalendarEventTemporalField(internalRecur.getUntil(),
+                                                  timeZone);
+    }
+
+    private static CalendarEventRecurrenceWeekDay toRecurrenceWeekDay(int calendarDay) {
+      switch (calendarDay) {
+        case java.util.Calendar.MONDAY:
+          return CalendarEventRecurrenceWeekDay.MONDAY;
+        case java.util.Calendar.TUESDAY:
+          return CalendarEventRecurrenceWeekDay.TUESDAY;
+        case java.util.Calendar.WEDNESDAY:
+          return CalendarEventRecurrenceWeekDay.WEDNESDAY;
+        case java.util.Calendar.THURSDAY:
+          return CalendarEventRecurrenceWeekDay.THURSDAY;
+        case java.util.Calendar.FRIDAY:
+          return CalendarEventRecurrenceWeekDay.FRIDAY;
+        case java.util.Calendar.SATURDAY:
+          return CalendarEventRecurrenceWeekDay.SATURDAY;
+        case java.util.Calendar.SUNDAY:
+          return CalendarEventRecurrenceWeekDay.SUNDAY;
+        default:
+          throw new RuntimeException("Day of week not a weekday");
+      }
+    }
+
+    private static int toCalendarDay(CalendarEventRecurrenceWeekDay recurrenceWeekDay) {
+      switch (recurrenceWeekDay) {
+        case MONDAY:
+          return java.util.Calendar.MONDAY;
+        case TUESDAY:
+          return java.util.Calendar.TUESDAY;
+        case WEDNESDAY:
+          return java.util.Calendar.WEDNESDAY;
+        case THURSDAY:
+          return java.util.Calendar.THURSDAY;
+        case FRIDAY:
+          return java.util.Calendar.FRIDAY;
+        case SATURDAY:
+          return java.util.Calendar.SATURDAY;
+        case SUNDAY:
+          return java.util.Calendar.SUNDAY;
+        default:
+          throw new RuntimeException("Day of week not a weekday");
+      }
+    }
+
+    private static int[] toIntArray(NumberList numberList) {
+      int[] result = new int[numberList.size()];
+      for (int i=0; i < result.length; i++) {
+        result[i] = ((Integer)numberList.get(i));
+      }
+      return result;
+    }
+
+    private static void fromIntArray(NumberList numberList, int[] ints) {
+      synchronized(numberList) {
+        numberList.clear();
+        for (int value : ints) {
+          numberList.add(value);
+        }
+      }
+    }
+
+    private static Set<CalendarEventRecurrenceWeekDay> toDaySet(WeekDayList weekDayList) {
+      Set<CalendarEventRecurrenceWeekDay> result = new HashSet<>();
+      for (Object day : weekDayList) {
+        result.add(toRecurrenceWeekDay(WeekDay.getCalendarDay((WeekDay)day)));
+      }
+      return result;
+    }
+
+    private static void fromDaySet(WeekDayList weekDayList, Set<CalendarEventRecurrenceWeekDay> days) {
+      synchronized(weekDayList) {
+        weekDayList.clear();
+        for (CalendarEventRecurrenceWeekDay day : days) {
+          weekDayList.add(WeekDay.getDay(toCalendarDay(day)));
+        }
+      }
+    }
+
+    @Override
+    public void setBySecond(int[] bySecond) {
+      fromIntArray(internalRecur.getSecondList(), bySecond);
+    }
+
+    @Override
+    public void setByMinute(int[] byMinute) {
+      fromIntArray(internalRecur.getMinuteList(), byMinute);
+    }
+
+    @Override
+    public void setByHour(int[] byHour) {
+      fromIntArray(internalRecur.getHourList(), byHour);
+    }
+
+    @Override
+    public void setByDay(Set<CalendarEventRecurrenceWeekDay> byDay) {
+      fromDaySet(internalRecur.getDayList(), byDay);
+    }
+
+    @Override
+    public void setByMonthDay(int[] byMonthDay) {
+      fromIntArray(internalRecur.getMonthDayList(), byMonthDay);
+    }
+
+    @Override
+    public void setByYearDay(int[] byYearDay) {
+      fromIntArray(internalRecur.getYearDayList(), byYearDay);
+    }
+
+    @Override
+    public void setByWeekNo(int[] byWeekNo) {
+      fromIntArray(internalRecur.getWeekNoList(), byWeekNo);
+    }
+
+    @Override
+    public void setByMonth(int[] byMonth) {
+      fromIntArray(internalRecur.getMonthList(), byMonth);
+    }
+
+    @Override
+    public void setBySetPos(int[] setPos) {
+      fromIntArray(internalRecur.getSetPosList(), setPos);
+    }
+
   }
 
   private static class GoogleCalendarEventTemporalField implements CalendarEventTemporalField {
