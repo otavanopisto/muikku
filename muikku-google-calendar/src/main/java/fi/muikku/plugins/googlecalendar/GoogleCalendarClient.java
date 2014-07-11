@@ -509,8 +509,6 @@ public class GoogleCalendarClient {
       return toIntArray(internalRecur.getSecondList());
     }
 
-
-
     @Override
     public int[] getByMinute() {
       return toIntArray(internalRecur.getMinuteList());
@@ -553,25 +551,7 @@ public class GoogleCalendarClient {
 
     @Override
     public CalendarEventRecurrenceWeekDay getWeekStart() {
-      int day = java.util.Calendar.getInstance(locale).getFirstDayOfWeek();
-      switch (day) {
-        case java.util.Calendar.MONDAY:
-          return CalendarEventRecurrenceWeekDay.MONDAY;
-        case java.util.Calendar.TUESDAY:
-          return CalendarEventRecurrenceWeekDay.TUESDAY;
-        case java.util.Calendar.WEDNESDAY:
-          return CalendarEventRecurrenceWeekDay.WEDNESDAY;
-        case java.util.Calendar.THURSDAY:
-          return CalendarEventRecurrenceWeekDay.THURSDAY;
-        case java.util.Calendar.FRIDAY:
-          return CalendarEventRecurrenceWeekDay.FRIDAY;
-        case java.util.Calendar.SATURDAY:
-          return CalendarEventRecurrenceWeekDay.SATURDAY;
-        case java.util.Calendar.SUNDAY:
-          return CalendarEventRecurrenceWeekDay.SUNDAY;
-        default:
-          throw new RuntimeException("First day of week not a weekday");
-      }
+      return toRecurrenceWeekDay(java.util.Calendar.getInstance(locale).getFirstDayOfWeek());
     }
 
     @Override
@@ -595,6 +575,48 @@ public class GoogleCalendarClient {
                                                   timeZone);
     }
 
+    private static CalendarEventRecurrenceWeekDay toRecurrenceWeekDay(int calendarDay) {
+      switch (calendarDay) {
+        case java.util.Calendar.MONDAY:
+          return CalendarEventRecurrenceWeekDay.MONDAY;
+        case java.util.Calendar.TUESDAY:
+          return CalendarEventRecurrenceWeekDay.TUESDAY;
+        case java.util.Calendar.WEDNESDAY:
+          return CalendarEventRecurrenceWeekDay.WEDNESDAY;
+        case java.util.Calendar.THURSDAY:
+          return CalendarEventRecurrenceWeekDay.THURSDAY;
+        case java.util.Calendar.FRIDAY:
+          return CalendarEventRecurrenceWeekDay.FRIDAY;
+        case java.util.Calendar.SATURDAY:
+          return CalendarEventRecurrenceWeekDay.SATURDAY;
+        case java.util.Calendar.SUNDAY:
+          return CalendarEventRecurrenceWeekDay.SUNDAY;
+        default:
+          throw new RuntimeException("Day of week not a weekday");
+      }
+    }
+
+    private static int toCalendarDay(CalendarEventRecurrenceWeekDay recurrenceWeekDay) {
+      switch (recurrenceWeekDay) {
+        case MONDAY:
+          return java.util.Calendar.MONDAY;
+        case TUESDAY:
+          return java.util.Calendar.TUESDAY;
+        case WEDNESDAY:
+          return java.util.Calendar.WEDNESDAY;
+        case THURSDAY:
+          return java.util.Calendar.THURSDAY;
+        case FRIDAY:
+          return java.util.Calendar.FRIDAY;
+        case SATURDAY:
+          return java.util.Calendar.SATURDAY;
+        case SUNDAY:
+          return java.util.Calendar.SUNDAY;
+        default:
+          throw new RuntimeException("Day of week not a weekday");
+      }
+    }
+
     private static int[] toIntArray(NumberList numberList) {
       int[] result = new int[numberList.size()];
       for (int i=0; i < result.length; i++) {
@@ -603,57 +625,75 @@ public class GoogleCalendarClient {
       return result;
     }
 
+    private static void fromIntArray(NumberList numberList, int[] ints) {
+      synchronized(numberList) {
+        numberList.clear();
+        for (int value : ints) {
+          numberList.add(value);
+        }
+      }
+    }
+
     private static Set<CalendarEventRecurrenceWeekDay> toDaySet(WeekDayList weekDayList) {
       Set<CalendarEventRecurrenceWeekDay> result = new HashSet<>();
       for (Object day : weekDayList) {
-        result.add(CalendarEventRecurrenceWeekDay.valueOf(((WeekDay)day).getDay()));
+        result.add(toRecurrenceWeekDay(WeekDay.getCalendarDay((WeekDay)day)));
       }
       return result;
     }
 
+    private static void fromDaySet(WeekDayList weekDayList, Set<CalendarEventRecurrenceWeekDay> days) {
+      synchronized(weekDayList) {
+        weekDayList.clear();
+        for (CalendarEventRecurrenceWeekDay day : days) {
+          weekDayList.add(WeekDay.getDay(toCalendarDay(day)));
+        }
+      }
+    }
+
     @Override
     public void setBySecond(int[] bySecond) {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      fromIntArray(internalRecur.getSecondList(), bySecond);
     }
 
     @Override
     public void setByMinute(int[] byMinute) {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      fromIntArray(internalRecur.getMinuteList(), byMinute);
     }
 
     @Override
     public void setByHour(int[] byHour) {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      fromIntArray(internalRecur.getHourList(), byHour);
     }
 
     @Override
     public void setByDay(Set<CalendarEventRecurrenceWeekDay> byDay) {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      fromDaySet(internalRecur.getDayList(), byDay);
     }
 
     @Override
     public void setByMonthDay(int[] byMonthDay) {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      fromIntArray(internalRecur.getMonthDayList(), byMonthDay);
     }
 
     @Override
     public void setByYearDay(int[] byYearDay) {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      fromIntArray(internalRecur.getYearDayList(), byYearDay);
     }
 
     @Override
     public void setByWeekNo(int[] byWeekNo) {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      fromIntArray(internalRecur.getWeekNoList(), byWeekNo);
     }
 
     @Override
     public void setByMonth(int[] byMonth) {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      fromIntArray(internalRecur.getMonthList(), byMonth);
     }
 
     @Override
     public void setBySetPos(int[] setPos) {
-      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      fromIntArray(internalRecur.getSetPosList(), setPos);
     }
 
   }
