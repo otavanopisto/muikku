@@ -59,7 +59,6 @@ import net.fortuna.ical4j.model.WeekDay;
 import net.fortuna.ical4j.model.WeekDayList;
 
 import org.apache.commons.lang3.StringUtils;
-import org.elasticsearch.search.suggest.term.TermSuggestion;
 
 @Dependent
 @Stateless
