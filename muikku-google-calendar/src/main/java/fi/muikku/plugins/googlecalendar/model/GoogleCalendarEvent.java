@@ -72,7 +72,36 @@ public class GoogleCalendarEvent implements CalendarEvent {
   }
 
   public GoogleCalendarEvent(Event event, String calendarId) {
-    this(event.getId(), calendarId, event.getSummary(), event.getDescription(), CalendarEventStatus.valueOf(event.getStatus().toUpperCase(Locale.ROOT)), null, new GoogleCalendarEventUser(event.getOrganizer().getDisplayName(), event.getOrganizer().getEmail()), new GoogleCalendarEventTemporalField(Convert.toDate(event.getStart()), getJavaTimeZone(event.getStart().getTimeZone())), new GoogleCalendarEventTemporalField(Convert.toDate(event.getEnd()), getJavaTimeZone(event.getEnd().getTimeZone())), new Date(event.getCreated().getValue()), new Date(event.getUpdated().getValue()), new HashMap<String, String>(), null, null, event.getHtmlLink(), new DefaultCalendarEventLocation(event.getLocation(), event.getHangoutLink(), null, null), event.getStart().getDate() != null);
+    this(event.getId(),
+            calendarId,
+            event.getSummary(),
+            event.getDescription(),
+            CalendarEventStatus.valueOf(event.getStatus().toUpperCase(Locale.ROOT)),
+            null,
+            new GoogleCalendarEventUser(event.getOrganizer().getDisplayName(),
+                    event.getOrganizer().getEmail()),
+            new GoogleCalendarEventTemporalField(Convert.toDate(event.getStart()),
+                    getJavaTimeZone(event.getStart().getTimeZone())),
+            new GoogleCalendarEventTemporalField(Convert.toDate(event.getEnd()),
+                    getJavaTimeZone(event.getEnd().getTimeZone())),
+            new Date(event.getCreated().getValue()),
+            new Date(event.getUpdated().getValue()),
+            new HashMap<String,
+                    String>(),
+            null,
+            null,
+            event.getHtmlLink(),
+            new DefaultCalendarEventLocation(event.getLocation(),
+                    event.getHangoutLink(),
+                    null,
+                    null),
+            event.getStart().getDate() != null);
+
+    if (event.getRecurrence() != null) {
+      for (String rec : event.getRecurrence()) {
+        System.err.println(rec);
+      }
+    }
   }
 
   private static TimeZone getJavaTimeZone(String timeZone) {
