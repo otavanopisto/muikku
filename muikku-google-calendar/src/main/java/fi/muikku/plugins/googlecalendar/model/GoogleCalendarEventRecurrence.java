@@ -17,6 +17,8 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.TimeZone;
 
+import static fi.muikku.plugins.googlecalendar.GoogleCalendarEventRecurrenceParser.*;
+
 /**
  *
  * @author Ilmo Euro <ilmo.euro@gmail.com>
@@ -70,7 +72,23 @@ public class GoogleCalendarEventRecurrence implements CalendarEventRecurrence {
   }
 
   public GoogleCalendarEventRecurrence(String icalRecurrence, TimeZone timeZone, Locale locale) throws CalendarServiceException {
-    throw new UnsupportedOperationException();
+    this.timeZone = timeZone;
+    this.locale = locale;
+
+    this.frequency = findFrequency(icalRecurrence);
+    this.until = new GoogleCalendarEventTemporalField(
+            findUntil(icalRecurrence), timeZone);
+    this.count = findNumberRule("COUNT", icalRecurrence);
+    this.interval = findNumberRule("INTERVAL", icalRecurrence);
+    this.bySecond = findNumberListRule("BYSECOND", icalRecurrence);
+    this.byMinute = findNumberListRule("BYMINUTE", icalRecurrence);
+    this.byHour = findNumberListRule("BYHOUR", icalRecurrence);
+    this.byDay = findByWeekDay(icalRecurrence);
+    this.byMonthDay = findNumberListRule("BYMONTHDAY", icalRecurrence);
+    this.byYearDay = findNumberListRule("BYYEARDAY", icalRecurrence);
+    this.byWeekNo = findNumberListRule("BYWEEKNO", icalRecurrence);
+    this.byMonth = findNumberListRule("BYMONTH", icalRecurrence);
+    this.bySetPos = findNumberListRule("BYSETPOS", icalRecurrence);
   }
 
   @Override
