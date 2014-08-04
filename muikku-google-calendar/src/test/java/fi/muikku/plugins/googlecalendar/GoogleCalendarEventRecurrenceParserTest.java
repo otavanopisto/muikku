@@ -6,8 +6,11 @@
 
 package fi.muikku.plugins.googlecalendar;
 
+import fi.muikku.calendar.CalendarEventRecurrenceFrequency;
+import fi.muikku.calendar.CalendarEventRecurrenceWeekDay;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -51,5 +54,36 @@ public class GoogleCalendarEventRecurrenceParserTest {
     assertNotNull("Parse failed", result.result);
     String actual = result.rest;
     assertEquals(expected, actual);
+  }
+
+  @Test
+  public void testParseFreqRule() {
+    String input = "FREQ=MINUTELY";
+    CalendarEventRecurrenceFrequency expected =
+            CalendarEventRecurrenceFrequency.MINUTELY;
+    CalendarEventRecurrenceFrequency actual =
+            GoogleCalendarEventRecurrenceParser.parseFreqRule(input).result;
+    assertEquals(expected, actual);
+  }
+
+  @Test
+  public void testParseByDayRule() {
+    String input = "BYDAY=TU";
+    CalendarEventRecurrenceWeekDay expected =
+            CalendarEventRecurrenceWeekDay.TUESDAY;
+    HashSet<CalendarEventRecurrenceWeekDay> actual =
+            GoogleCalendarEventRecurrenceParser.parseByDayRule(input).result;
+    assertEquals(expected, actual.iterator().next());
+  }
+
+  @Test
+  public void testParseByDayMultiRule() {
+    String input = "BYDAY=MO,TU,WE";
+    HashSet<CalendarEventRecurrenceWeekDay> actual =
+            GoogleCalendarEventRecurrenceParser.parseByDayRule(input).result;
+    assertTrue(actual.contains(CalendarEventRecurrenceWeekDay.MONDAY));
+    assertTrue(actual.contains(CalendarEventRecurrenceWeekDay.TUESDAY));
+    assertTrue(actual.contains(CalendarEventRecurrenceWeekDay.WEDNESDAY));
+    assertTrue(actual.size() == 3);
   }
 }

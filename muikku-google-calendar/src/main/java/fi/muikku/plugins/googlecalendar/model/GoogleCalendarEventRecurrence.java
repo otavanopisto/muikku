@@ -18,6 +18,9 @@ import java.util.Set;
 import java.util.TimeZone;
 
 import static fi.muikku.plugins.googlecalendar.GoogleCalendarEventRecurrenceParser.*;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  *
@@ -89,6 +92,57 @@ public class GoogleCalendarEventRecurrence implements CalendarEventRecurrence {
     this.byWeekNo = findNumberListRule("BYWEEKNO", icalRecurrence);
     this.byMonth = findNumberListRule("BYMONTH", icalRecurrence);
     this.bySetPos = findNumberListRule("BYSETPOS", icalRecurrence);
+  }
+
+  public String toIcalRRule() {
+    StringBuilder retval = new StringBuilder();
+    retval.append("RRULE:");
+    if (until != null) {
+      retval.append("UNTIL=");
+      retval.append(new SimpleDateFormat("yyyyMMdd").format(until));
+      retval.append(";");
+    } else {
+      retval.append("COUNT=");
+      retval.append(count);
+      retval.append(";");
+    }
+    retval.append("INTERVAL=");
+    retval.append(interval);
+
+    if (bySecond.length > 0) {
+      retval.append(";BYSECOND=");
+      retval.append(StringUtils.join(bySecond, ","));
+    }
+    if (byMinute.length > 0) {
+      retval.append(";BYMINUTE=");
+      retval.append(StringUtils.join(byMinute, ","));
+    }
+    if (byHour.length > 0) {
+      retval.append(";BYHOUR=");
+      retval.append(StringUtils.join(byHour, ","));
+    }
+    if (byMonthDay.length > 0) {
+      retval.append(";BYMONTHDAY=");
+      retval.append(StringUtils.join(byMonthDay, ","));
+    }
+    if (byYearDay.length > 0) {
+      retval.append(";BYYEARDAY=");
+      retval.append(StringUtils.join(byYearDay, ","));
+    }
+    if (byWeekNo.length > 0) {
+      retval.append(";BYWEEKNO=");
+      retval.append(StringUtils.join(byWeekNo, ","));
+    }
+    if (byMonth.length > 0) {
+      retval.append(";BYSECOND=");
+      retval.append(StringUtils.join(byMonth, ","));
+    }
+    if (bySetPos.length > 0) {
+      retval.append(";BYSECOND=");
+      retval.append(StringUtils.join(bySetPos, ","));
+    }
+    // TODO: BYDAY
+    return retval.toString();
   }
 
   @Override
@@ -180,18 +234,8 @@ public class GoogleCalendarEventRecurrence implements CalendarEventRecurrence {
   }
 
   @Override
-  public void setBySecond(int[] bySecond) {
-    this.bySecond = bySecond;
-  }
-
-  @Override
   public int[] getByMinute() {
     return byMinute;
-  }
-
-  @Override
-  public void setByMinute(int[] byMinute) {
-    this.byMinute = byMinute;
   }
 
   @Override
@@ -200,18 +244,8 @@ public class GoogleCalendarEventRecurrence implements CalendarEventRecurrence {
   }
 
   @Override
-  public void setByHour(int[] byHour) {
-    this.byHour = byHour;
-  }
-
-  @Override
   public Set<CalendarEventRecurrenceWeekDay> getByDay() {
     return Collections.unmodifiableSet(this.byDay);
-  }
-
-  @Override
-  public void setByDay(Set<CalendarEventRecurrenceWeekDay> byDay) {
-    this.byDay = new HashSet<>(byDay);
   }
 
   @Override
@@ -220,18 +254,8 @@ public class GoogleCalendarEventRecurrence implements CalendarEventRecurrence {
   }
 
   @Override
-  public void setByMonthDay(int[] byMonthDay) {
-    this.byMonthDay = byMonthDay;
-  }
-
-  @Override
   public int[] getByYearDay() {
     return byYearDay;
-  }
-
-  @Override
-  public void setByYearDay(int[] byYearDay) {
-    this.byYearDay = byYearDay;
   }
 
   @Override
@@ -240,28 +264,13 @@ public class GoogleCalendarEventRecurrence implements CalendarEventRecurrence {
   }
 
   @Override
-  public void setByWeekNo(int[] byWeekNo) {
-    this.byWeekNo = byWeekNo;
-  }
-
-  @Override
   public int[] getByMonth() {
     return byMonth;
   }
 
   @Override
-  public void setByMonth(int[] byMonth) {
-    this.byMonth = byMonth;
-  }
-
-  @Override
   public int[] getBySetPos() {
     return bySetPos;
-  }
-
-  @Override
-  public void setBySetPos(int[] bySetPos) {
-    this.bySetPos = bySetPos;
   }
 
 }

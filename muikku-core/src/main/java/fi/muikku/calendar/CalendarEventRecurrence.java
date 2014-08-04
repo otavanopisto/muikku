@@ -34,39 +34,21 @@ public interface CalendarEventRecurrence {
 
   public int[] getBySecond();
 
-  public void setBySecond(int[] bySecond);
-
   public int[] getByMinute();
-
-  public void setByMinute(int[] byMinute);
 
   public int[] getByHour();
 
-  public void setByHour(int[] byHour);
-
   public Set<CalendarEventRecurrenceWeekDay> getByDay();
-
-  public void setByDay(Set<CalendarEventRecurrenceWeekDay> byDay);
 
   public int[] getByMonthDay();
 
-  public void setByMonthDay(int[] byMonthDay);
-
   public int[] getByYearDay();
-
-  public void setByYearDay(int[] byYearDay);
 
   public int[] getByWeekNo();
 
-  public void setByWeekNo(int[] byWeekNo);
-
   public int[] getByMonth();
 
-  public void setByMonth(int[] byMonth);
-
   public int[] getBySetPos();
-
-  public void setBySetPos(int[] setPos);
 
   public CalendarEventRecurrenceWeekDay getWeekStart();
 
