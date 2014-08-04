@@ -17,6 +17,13 @@ public interface AuthenticationProvider {
   public String getName();
   
   /**
+   * Returns the human readable descriptions of this authentication provider
+   * 
+   * @return The human readable description of this authentication provider
+   */
+  public String getDescription();
+  
+  /**
    * Returns whether this provider requires credentials, i.e. username and password
    *
    * @return <code>true</code> if the provider requires credentials, otherwise <code>false</code>
