@@ -8,97 +8,18 @@
     template="/WEB-INF/templates/default.xhtml">
     
   <ui:define name="content.center.widget">
-    <h:outputScript name="scripts/gui/coursepicker.js" target="head" />
-
-    <div class="widget coursePicker">
-      <input type="hidden" name="userId" value="#{muikkuSession.user.id}"/>
-    
-      <!-- TODO localize -->
-      <div class="coursePickerTabs">
-        <ul>
-          <li>
-            <a href="#all">Kaikki kurssit</a>
-          </li>
-          <ui:fragment rendered="#{muikkuSession.loggedIn}">
-            <li>
-              <a href="#my">Omat kurssit</a>
-            </li>
-            <li>
-              <a href="#plp">HOPS</a>
-            </li>
-          </ui:fragment>
-        </ul>
-
-        <div id="all" class="tabContent">
-          <div class="mf-toolbar cp-allCourses-filterPane">
- 
-            <div style="float:left;"><input type="text" name="coursePickerSearch"/></div>
-            <a href="#" class="cp-allCourses-searchBtn">-o</a>
-            <div style="float:left;"><input type="button" name="cp-allCourses-filterBtn" value="Rajaa"/>
-            
-            <div class="cp-allCourses-filterSelector-popup" style="display: none;">
-              <div class="cp-filterSelector-subTitle">Linjat</div>
-              <div class="cp-filterSelector-selectionContainer">
-                <div class="cp-filterSelection">
-                  <div class="cp-filterSelection-name">Lukio</div>
-                </div>
-                <div class="cp-filterSelection">
-                  <div class="cp-filterSelection-name">Peruskoulu</div>
-                </div>
-                <div class="cp-filterSelection">
-                  <div class="cp-filterSelection-name">Ammatillinen</div>
-                </div>
-              </div>
-              <div class="cp-filterSelector-subTitle">Muut</div>
-              <div class="cp-filterSelector-selectionContainer">
-                <div class="cp-filterSelection">
-                  <div class="cp-filterSelection-name">Pajat</div>
-                </div>
-                <div class="cp-filterSelection">
-                  <div class="cp-filterSelection-name">Ilmiöt</div>
-                </div>
-                <div class="cp-filterSelection">
-                  <div class="cp-filterSelection-name">Ryhäkurssit</div>
-                </div>
-              </div>
-
-            </div>
-            </div>
-
-                          <div class="clear"></div>
-
-            <div class="cp-filterList">
-<!--               <div class="coursePickerFilter">Filtteri1 <div class="coursePickerFilterRemoveBtn">x</div></div> -->
-<!--               <div class="coursePickerFilter">Filtteri2 <div class="coursePickerFilterRemoveBtn">x</div></div> -->
-                
-                
-            </div>            
-                <div class="clear"></div>
-          </div>
-
-          <div id="allCoursesList">
-          </div>
-        </div>
-
-        <ui:fragment rendered="#{muikkuSession.loggedIn}">
-          <div id="my" class="tabContent">
-            <div class="cp-myCourses-filterPane">
-              <input type="text" name="coursePickerSearch"/> <a href="#" class="cp-myCourses-searchBtn">-o</a>
-<!--               <input type="button" name="cp-myCourses-filterBtn" value="Rajaa"/>  -->
-              <div class="cp-filterListPane">
-                <input type="checkbox" name="" /> Filtteri1
-                <input type="checkbox" name="" /> Filtteri2
-              </div>
-            </div>
-            <div id="myCoursesList">
-            </div>
-          </div>        
-          <div id="plp" class="tabContent">
-            <div id="plpCoursesList">
-            </div>
-          </div>        
-        </ui:fragment>
-      </div>
+   <!--  <h:outputScript name="scripts/gui/coursepicker.js" target="head" /> --> 
+    <div class="mf-coursePicker" style="border:1px solid #ededed;">
+      <div class="widget coursePicker" style="border:1px solid #ededed;">
+       <div class="mf-coursePicker-left" style="border:1px solid #ededed;">
+         <div class="mf-coursePicker-buttonArea" style="border:1px solid #ededed;"></div>
+         <div class="mf-coursePicker-sideBar" style="border:1px solid #ededed;"></div>
+       </div>           
+       <div class="mf-coursePicker-right" style="border:1px solid #ededed;">
+         <div class="mf-coursePicker-topBar"style="border:1px solid #ededed;"></div>
+         <div class="mf-coursePicker-contentArea"style="border:1px solid #ededed;"></div>       
+       </div>
+      </div>    
     </div>
   </ui:define>
 
