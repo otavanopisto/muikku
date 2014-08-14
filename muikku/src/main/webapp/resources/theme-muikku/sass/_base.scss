@@ -16,6 +16,13 @@ $sc: rgba(218,218,218,1);
 $brd:#dadada;
 $brd-top:#9bbee6;
 
+/* Paddings */
+
+$textContentPadding:15px;
+
+
+/* Margins */
+
 /* Generic background */
 
 $bgr: #fff;
@@ -66,17 +73,22 @@ $fourColorGr-2:#fcfcfc;
 $fourColorGr-3:#f4f4f4;
 $fourColorGr-4:#f7f7f7;
 
+/* MainFunction content */
+
+  $mainFuncContent: #f0f3f4;
+
+
 /* MainFunction sidebar */
 
-  $mainFuncSbar: #F1F8FB;
+  $mainFuncSide: #f1f8fb;
 
-/* MainFunction topbar */
+/* MainFunction content functions */
 
-  $mainFuncTbar: #F5FCFF;
+  $mainFuncCf: #f5fcff;
 
 /* MainFunction buttonArea */
 
-  $mainFuncBtnArea: #EBF6FB;
+  $mainFuncSb: #ebf6fb;
 
 /* MainFunction Button */
  
@@ -132,6 +144,15 @@ $text: 12px;
 @mixin border($bwidth:1px,$bcolor:$brd,$btype:solid) {
   border: $bwidth $btype $bcolor;
 }
+
+/* Paddings */
+
+@mixin padding($pdn:$textContentPadding){
+	padding:$pdn;
+}
+
+/* Margins */
+
 
 /* Corners */
 

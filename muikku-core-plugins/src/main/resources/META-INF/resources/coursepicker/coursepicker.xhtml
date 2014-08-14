@@ -9,18 +9,17 @@
     
   <ui:define name="content.center.widget">
    <!--  <h:outputScript name="scripts/gui/coursepicker.js" target="head" /> --> 
-    <div class="mf-coursePicker" style="border:1px solid #ededed;">
-      <div class="widget coursePicker" style="border:1px solid #ededed;">
-       <div class="mf-coursePicker-left" style="border:1px solid #ededed;">
-         <div class="mf-coursePicker-buttonArea" style="border:1px solid #ededed;"></div>
-         <div class="mf-coursePicker-sideBar" style="border:1px solid #ededed;"></div>
+      <div class="widget coursePicker container_24">
+       <div class="cp-side grid_8 nomargin">
+         <div class="cp-side-button" style="border:1px solid #ededed;"></div>
+         <div class="cp-side-tools" style="border:1px solid #ededed;"></div>
        </div>           
-       <div class="mf-coursePicker-right" style="border:1px solid #ededed;">
-         <div class="mf-coursePicker-topBar"style="border:1px solid #ededed;"></div>
-         <div class="mf-coursePicker-contentArea"style="border:1px solid #ededed;"></div>       
+       <div class="cp-content grid_16 nomargin" >
+         <div class="cp-content-functions" style="border:1px solid #ededed;"></div>
+         <div class="cp-content-main" style="border:1px solid #ededed;"></div>       
        </div>
+       <div class="clear"></div>
       </div>    
-    </div>
   </ui:define>
 
 </ui:composition>

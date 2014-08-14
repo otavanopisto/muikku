@@ -588,6 +588,42 @@ a.header {
 
 /* Coursepicker (.cp-*) */
 
+
+
+
+.coursePicker{
+	@extend .co-widget; 	
+}
+
+.cp-side{
+  @extend .co-mainFunction-side;	
+
+}
+.cp-side-button{
+	 @extend .co-mainFunction-side-button;
+  min-height:50px;
+
+}
+.cp-side-tools{
+  min-height:450px;
+	}
+
+.cp-content{
+
+}
+
+.cp-content-functions{
+	 @extend .co-mainFunction-content-functions;
+	 min-height:50px;	 
+}
+.cp-content-main{
+	 @extend .co-mainFunction-content-main;
+	min-height:450px;
+}
+
+
+/* Old stuff
+
 .cp-allCourses-filterPane {
 	
 }
@@ -725,7 +761,7 @@ a.header {
 .cp-course-details-fee {}
 
 .cp-course-details-assessmentFee {}
-
+*/
 /*
 .cp-lukio
 .cp-ammattillinen

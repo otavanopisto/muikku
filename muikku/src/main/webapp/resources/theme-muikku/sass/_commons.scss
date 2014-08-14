@@ -5,6 +5,22 @@ To be used through SASS's extend feature with CSS's selectors.
   */
 @import "_base.scss"; 
 
+.co-mainFunction-side{
+ background-color:$mainFuncSide;
+}
+
+.co-mainFunction-side-button{
+ background-color:$mainFuncSb; 
+}
+
+.co-mainFunction-content-main{
+ background-color:$mainFuncContent; 
+}
+
+.co-mainFunction-content-functions{
+ background-color:$mainFuncCf; 
+}
+
 .co-input-textfield,
 .co-textarea {
   @include border(1px,#ededed,solid);   
@@ -110,7 +126,6 @@ To be used through SASS's extend feature with CSS's selectors.
 }
 
 .co-widget {
-  padding:15px;
   box-shadow:$w-sc;
   background:$w-bgr;
   min-height:3em;

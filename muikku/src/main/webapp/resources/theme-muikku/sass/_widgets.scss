@@ -755,16 +755,20 @@ div[class*="wi-dock-static-navi"] {
 .wi-news-primary-item {
 	margin-top:10px;
   @extend .co-widget;
+  @include padding;
+  
 }
 
 .wi-news-primary-item-bottom {
   margin-top:10px;
   @extend .co-widget;
+  @include padding;
 }
 
 .wi-news-secondary-item {
   margin-top:10px;
   @extend .co-widget; 
+  @include padding;
 }
 
 .wi-news-item-picture {
@@ -807,6 +811,7 @@ div[class*="wi-dock-static-navi"] {
 
 .wi-frontpage-info {
   @extend .co-widget;
+  @include padding;
 }
 
 .wi-frontpage-dynamic-calendar {
