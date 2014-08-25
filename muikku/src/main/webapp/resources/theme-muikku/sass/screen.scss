@@ -601,9 +601,17 @@ a.header {
 }
 .cp-side-button{
 	 @extend .co-mainFunction-side-button;
-  min-height:50px;
+   height:70px;
 
 }
+
+.cp-side-button > div{
+	width:150px;
+  margin-left:31px;
+  margin-top:15px;
+}
+
+
 .cp-side-tools{
   min-height:450px;
 	}
@@ -614,7 +622,7 @@ a.header {
 
 .cp-content-functions{
 	 @extend .co-mainFunction-content-functions;
-	 min-height:50px;	 
+	 min-height:70px;	 
 }
 .cp-content-main{
 	 @extend .co-mainFunction-content-main;

@@ -27,7 +27,30 @@
     @include gradient-top-bottom(rgba(76,163,74,1),rgba(107,187,105,1),#52b050);
   }
 
+  &.bt-mainFunction {
+    background-color:#ed8e00;
+    border:1px solid #d9e4e8;
+    font-size:1.1em;
+    background: rgb(237,142,0);
+    @include gradient-top-bottom(rgba(253,167,38,1),rgba(237,142,0,1),#ed8e00);
+  }
+
+  &.bt-mainFunction-active {
+    background-color:#ed8e00; 
+    border:1px solid #d9e4e8;
+    font-size:1.1em;
+    background: rgb(237,142,0);
+    @include gradient-top-bottom(rgba(237,142,0,1),rgba(253,167,38,1),#ed8e00);
+  }
+
 }
+
+/* Button decorations */
+
+.bt-decoration-down{
+	
+}
+
 
 /* Real buttons */
 
