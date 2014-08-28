@@ -27,13 +27,22 @@
     @include gradient-top-bottom(rgba(76,163,74,1),rgba(107,187,105,1),#52b050);
   }
 
-  &.bt-mainFunction {
+}
+
+.bt-mainFunction {
+	  text-transform:uppercase;
+	  border-radius:3px;
+	  display:inline-block;
+	  line-height:1.5em;
+	  color:#ffffff;
+	  cursor:pointer;
+	  @include buttonFontShadow;
+	  @include buttonShadow;	
     background-color:#ed8e00;
     border:1px solid #d9e4e8;
-    font-size:1.1em;
+    font-size:0.8em;
     background: rgb(237,142,0);
     @include gradient-top-bottom(rgba(253,167,38,1),rgba(237,142,0,1),#ed8e00);
-  }
 
   &.bt-mainFunction-active {
     background-color:#ed8e00; 
@@ -43,13 +52,27 @@
     @include gradient-top-bottom(rgba(237,142,0,1),rgba(253,167,38,1),#ed8e00);
   }
 
+
+
 }
 
-/* Button decorations */
 
-.bt-decoration-down{
-	
+.bt-mainFunction-content{
+   display:inline-block;
+   padding:8px 12px;
 }
+
+.bt-mainFunction-decoration{
+    border-left:1px solid #fff;
+    display:inline-block;
+    float:right;
+    padding:3px 4px 3px 4px;
+    font-size:2.45em;
+  }
+
+/* Button text content styles and icons */
+
+
 
 
 /* Real buttons */

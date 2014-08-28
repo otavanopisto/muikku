@@ -593,11 +593,10 @@ a.header {
 
 .coursePicker{
 	@extend .co-widget; 	
+  background-color:$mainFuncSide;
 }
 
 .cp-side{
-  @extend .co-mainFunction-side;	
-
 }
 .cp-side-button{
 	 @extend .co-mainFunction-side-button;
@@ -605,19 +604,45 @@ a.header {
 
 }
 
+
 .cp-side-button > div{
-	width:150px;
+  width:170px;
   margin-left:31px;
   margin-top:15px;
 }
 
 
+.cp-side-header{
+  @extend .co-mainFunction-side-header;
+  padding:3px;
+}
+
+.cp-side-content{
+ padding:5px;
+}
+
+.cp-filter{
+  margin-top:5px;
+	padding:2px 10px;
+	font-size:0.7em;
+	display:inline-block;
+	border:1px solid $brd;
+  @include rounded(10px);  
+  &.ft-01{background-color:$mainFuncFilter1;}
+  &.ft-02{background-color:$mainFuncFilter2;}
+  &.ft-03{background-color:$mainFuncFilter3;}
+}
+
+.cp-side-header > span{
+  color:#fff;
+}
+
 .cp-side-tools{
-  min-height:450px;
+  height:inherit;
+  margin-bottom:0;
 	}
 
 .cp-content{
-
 }
 
 .cp-content-functions{
@@ -625,8 +650,35 @@ a.header {
 	 min-height:70px;	 
 }
 .cp-content-main{
-	 @extend .co-mainFunction-content-main;
+	@extend .co-mainFunction-content-main;
 	min-height:450px;
+  padding:10px;
+}
+
+
+.cp-course{
+ border : 1px solid $brd;
+ padding:5px 10px;
+ margin-bottom:10px;
+ background-color:#fff;
+ &.ln-01{border-left: 3px solid $mainFuncFilter1;} 
+ &.ln-02{border-left: 3px solid $mainFuncFilter2;}
+ &.ln-03{border-left: 3px solid $mainFuncFilter3;}
+
+}
+
+.cp-course-name{
+	display : inline-block;
+	
+}
+
+.cp-course-details{
+  display : inline-block;
+  float:right;  
+}
+
+.cp-course-short:after{
+   content : " -"  ;
 }
 
 

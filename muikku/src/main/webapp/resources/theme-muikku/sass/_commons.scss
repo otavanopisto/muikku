@@ -9,6 +9,11 @@ To be used through SASS's extend feature with CSS's selectors.
  background-color:$mainFuncSide;
 }
 
+.co-mainFunction-side-header{
+ background-color: $mainFuncSideHeader;
+ text-align:center;
+}
+
 .co-mainFunction-side-button{
  background-color:$mainFuncSb; 
 }
