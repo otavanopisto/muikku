@@ -217,6 +217,39 @@ $(document).ready(function() {
       var _this = $(this);
       hideTooltip(_this);
     });
+    
+   //* Coursepicker *//'
+    
+    $(".bt-mainFunction").click(function() {
+        $(".cp-side-button-dropdown").toggle();
+    });
+    
+    var cpCat = $("#cpCategories").find("a");
+    var btnVal = $("#btnValue").html();
+    
+    
+    
+    if(btnVal == ''){
+    var fCat = $(cpCat[0]);
+      
+      $("#btnValue").append(fCat.html());
+    }
+    
+    $("#cpCategories a").each(function(){
+     $(this).click(function(){
+       $("#btnValue").empty();
+       $("#btnValue").append($(this).html());
+       $(".cp-side-button-dropdown").hide();
+     }); 
+      
+    });
+    
+
+
+       
+
+     
+    
 });
 
 

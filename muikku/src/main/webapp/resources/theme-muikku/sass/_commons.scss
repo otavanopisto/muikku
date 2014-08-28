@@ -130,6 +130,12 @@ To be used through SASS's extend feature with CSS's selectors.
   background-color:$aBgr;
 }
 
+.co-listItem{
+  box-shadow:$w-sc;
+  border : 1px solid $brd;
+  background-color:#fff;
+}
+
 .co-widget {
   box-shadow:$w-sc;
   background:$w-bgr;

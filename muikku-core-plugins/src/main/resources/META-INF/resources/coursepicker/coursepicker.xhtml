@@ -13,10 +13,18 @@
        <div class="cp-side grid_6 nomargin noLid">
          <div class="cp-side-button">
            <div class="bt-mainFunction">
-             <div class="bt-mainFunction-content">Omat kurssit</div>
+             <div class="bt-mainFunction-content"><span id="btnValue"></span></div>
              <div class="bt-mainFunction-decoration icon-arrow-down"></div>             
            </div>
-           <div class="bt-dropdown"></div>
+           <div class="cp-side-button-dropdown">
+						<ul id="cpCategories">
+							<li id="cat-1" ><a href="#all">Kaikki kurssit</a></li>
+							<ui:fragment rendered="#{muikkuSession.loggedIn}">
+								<li id="cat-2"><a href="#my">Omat kurssit</a></li>
+								<li id="cat-3"><a href="#plp">HOPS</a></li>
+							</ui:fragment>
+						</ul>
+					</div>
          </div>
          <div class="cp-side-tools">   
            <div class="cp-side-header">
