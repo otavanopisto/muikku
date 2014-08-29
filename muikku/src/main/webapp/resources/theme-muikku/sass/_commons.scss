@@ -5,6 +5,14 @@ To be used through SASS's extend feature with CSS's selectors.
   */
 @import "_base.scss"; 
 
+
+/* Pseudo styles */
+
+div[class*='header']{
+	 color:$header;
+}
+
+
 .co-mainFunction-side{
  background-color:$mainFuncSide;
 }
@@ -143,7 +151,7 @@ To be used through SASS's extend feature with CSS's selectors.
   border:1px solid $w-brd;
 }
 
-/* Forms */
+/* Forms 
 
 .co-buttonContainer input {
   font-family: Verdana, sans-serif;
@@ -163,7 +171,7 @@ To be used through SASS's extend feature with CSS's selectors.
 .co-buttonContainer input:active, input[type="button"]:active, input[type="submit"]:active {
   @include iShadow; 
 }
-
+*/
 .co-formTitle {
   @include gradient-top-bottom;
   @include rounded(4px);

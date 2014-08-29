@@ -80,7 +80,19 @@
 input[type="button"],
 input[type="submit"],
 input[type="reset"] {
-
+	  text-transform:uppercase;
+    border-radius:3px;
+    display:inline-block;
+    padding:8px 12px;
+    line-height:0.5em;
+    font-size:0.7em;
+    color:#000;
+    cursor:pointer;
+  
+  &.bt-coursepicker{
+   margin-left:10px;
+  }
+	
   &.bt-generic {
     text-transform:uppercase;
     border-radius:3px;

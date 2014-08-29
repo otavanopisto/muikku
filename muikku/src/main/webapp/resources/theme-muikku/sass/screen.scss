@@ -705,12 +705,12 @@ a.header {
 
 }
 
-.cp-course-name{
+.cp-course-header-name{
 	display : inline-block;
-	
+  text-transform:uppercase;
 }
 
-.cp-course-details{
+.cp-course-header-details{
   display : inline-block;
   float:right;  
 }

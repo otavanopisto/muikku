@@ -12,8 +12,8 @@
       
       this._initializeAllCoursesList();
   
-      this._tabsContainer = widgetElement.find('.coursePickerTabs');
-      this._tabsContainer.tabs();
+   //   this._tabsContainer = widgetElement.find('.coursePickerTabs');
+   //   this._tabsContainer.tabs();
       
       var coursePickerAllCoursesSearchBtn = widgetElement.find(".cp-allCourses-searchBtn");
       coursePickerAllCoursesSearchBtn.click($.proxy(this._onSearchAllCoursesClick, this));
@@ -155,4 +155,6 @@
   
   addWidgetController('coursePicker', CoursePickerController);
 
+  
+  
 }).call(this);
