@@ -86,10 +86,9 @@ div[class*='header']{
   margin-top:5px; 
 }
 
-.co-textContent {
-  @include shadow;
-  @include rounded(4px);  
+.co-description {
   background-color:#fff;  
+  color:#9f9f9f;
 }
 
 .co-toolbar {

@@ -4,46 +4,34 @@
   <div div id="crsId-1" class="cp-course ln-01">
     <input type="hidden" name="workspaceId" value="{id}"/>
     <input type="hidden" name="workspaceUrl" value="{urlName}"/>
-    <div class="cp-course-header-name">
-     <span class="cp-course-short"></span>
-     <span class="cp-course-long">{name}</span>
-    </div>
-    
-    <div class="cp-course-header-details">
-     <span class="cp-course-rating">{rating} ({ratingCount})</span>
-     <span class="cp-course-len"></span>
-     <span class="cp-course-age"></span>
-    </div>     
+
     
     <div class="cp-course-details">
 
-      <div class="cp-course-detailsContainer">
-        <div class="mf-textContent cp-course-details-description">{description}</div>
-        
-        <div class="cp-course-details-additionalInfo">
-  	      <div class="cp-course-details-teachers">
-  	        {?teachers}
-  	          <div class="cp-course-details-teachers-caption">{#localize key="plugin.coursepicker.course.teachers" /}</div>
-  	          
-  	          {#teachers}
-  	            <div class="cp-course-details-teacher">
-  	              <div class="cp-course-details-teacher-picture-container">
-  	                {?hasPicture} 
-  	                  <img class="cp-course-details-teacher-picture" src="{@contextPath/}/picture?userId={id}" width="50" height="50" />
-  	                {:else}
-  	                  <img class="cp-course-details-teacher-picture" src="{@contextPath/}/themes/default/gfx/fish.jpg" width="50" height="50" />
-  	                {/hasPicture}
-  	              </div>
+      <div class="cp-course-details-container">       
+        <div class="cp-course-additionalInfo">
+          <div class="cp-course-details-teachers">
+            {?teachers}
+              <div style="display:none;" class="cp-course-details-teachers-caption">{#localize key="plugin.coursepicker.course.teachers" /}</div>             
+              {#teachers}
+                <div class="cp-course-details-teacher">
+                  <div class="cp-course-details-teacher-picture-container">
+                    {?hasPicture} 
+                      <img class="cp-course-details-teacher-picture" title="{fullName}" src="{@contextPath/}/picture?userId={id}" width="20" height="20" />
+                    {:else}
+                      <img class="cp-course-details-teacher-picture" src="{@contextPath/}/themes/default/gfx/fish.jpg" width="20" height="20" />
+                    {/hasPicture}
+                  </div>
   
-  	              <div class="cp-course-details-teacher-name">{fullName}</div>
-  	              <div class="clear"></div>
-  	            </div>
+
+                  <div class="clear"></div>
+                </div>
   
-  	          {/teachers}
-  	        {:else}
-  	          {#localize key="plugin.coursepicker.course.noteachers" /}
-  	        {/teachers}
-  	      </div>
+              {/teachers}
+            {:else}
+              {#localize key="plugin.coursepicker.course.noteachers" /}
+            {/teachers}
+          </div>
   
           {?hasCourseFee}      
             <div class="cp-course-details-fee">{#localize key="plugin.coursepicker.course.coursehasfee" /}</div>
@@ -53,17 +41,41 @@
             <div class="cp-course-details-assessmentFee">{#localize key="plugin.coursepicker.course.assessmenthasfee" /}</div>
           {/hasAssessmentFee}
         </div>
+        <div class="cp-course-description">
+			    <div class="cp-course-header-name">
+			     <span class="cp-course-short"></span>
+			     <span class="cp-course-long">{name}</span>
+			    </div>
+			    
+			    <div class="cp-course-header-details">
+			     <span class="cp-course-rating">{rating} ({ratingCount})</span>
+			     <span class="cp-course-len"></span>
+			     <span class="cp-course-age"></span>
+			    </div>        
+			    <div style="display:none;">     
+          <div class="cp-course-description-picture"></div>
+          <div class="cp-course-description-text">{description}</div>          
+	        <div class="cp-course-details-toolbar">
+	          {?isMember}
+	          <input class="bt-coursepicker" type="button"
+	            value='{#localize key="plugin.coursepicker.course.checkout" /}'
+	            class="cp-course-tour-button" />
+	          {:else}
+	          <input class="bt-coursepicker" type="button"
+	            value='{#localize key="plugin.coursepicker.course.checkout" /}'
+	            class="cp-course-tour-button" />
+	          <input class="bt-coursepicker" type="button"
+	            value='{#localize key="plugin.coursepicker.course.signup" /}' class="cp-course-attend-button" />
+	          {/isMember}
+	        </div>
+	        </div>
+        </div>       
+
         <div class="clear"></div>
-      </div>
+
     </div>
-    <div class="cp-toolbar cp-course-details-toolbar">
-     {?isMember}  
-       <input class="bt-coursepicker" type="button" value='{#localize key="plugin.coursepicker.course.checkout" /}' class="cp-course-tour-button"/>       
-     {:else}     
-       <input class="bt-coursepicker" type="button" value='{#localize key="plugin.coursepicker.course.checkout" /}' class="cp-course-tour-button"/>
-       <input class="bt-coursepicker" type="button" value='{#localize key="plugin.coursepicker.course.signup" /}' class="cp-course-attend-button"/>
-     {/isMember}
-    </div>
+
     
   </div>
+</div>
 {/.}

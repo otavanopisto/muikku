@@ -17,15 +17,15 @@
         <div class="cp-course-details-additionalInfo">
   	      <div class="cp-course-details-teachers">
   	        {?workspaceEntity.teachers}
-  	          <div class="cp-course-details-teachers-caption">{#localize key="plugin.coursepicker.course.teachers" /}</div>
+  	          <div class="cp-course-details-teachers-caption" style="display:none">{#localize key="plugin.coursepicker.course.teachers" /}</div>
   	          
   	          {#workspaceEntity.teachers}
   	            <div class="cp-course-details-teacher">
   	              <div class="cp-course-details-teacher-picture-container">
   	                {?hasPicture} 
-  	                  <img class="cp-course-details-teacher-picture" src="{@contextPath/}/picture?userId={id}" width="50" height="50" />
+  	                  <img class="cp-course-details-teacher-picture" src="{@contextPath/}/picture?userId={id}" width="20" height="20" />
   	                {:else}
-  	                  <img class="cp-course-details-teacher-picture" src="{@contextPath/}/themes/default/gfx/fish.jpg" width="50" height="50" />
+  	                  <img class="cp-course-details-teacher-picture" src="{@contextPath/}/themes/default/gfx/fish.jpg" width="20" height="20" />
   	                {/hasPicture}
   	              </div>
   

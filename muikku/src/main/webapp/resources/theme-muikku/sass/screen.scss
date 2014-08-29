@@ -599,7 +599,6 @@ a.header {
 .cp-side-button{
 	 @extend .co-mainFunction-side-button;
    height:70px;
-
 }
 
 
@@ -619,21 +618,16 @@ a.header {
 	position:relative;
 	top:0;
 	
-	ul{
-
-	}	
   li{
 	  font-size:0.9em;   
-    padding:5px;   
-    
-     
-   a{
-    text-decoration:none;
-    color:#000;
-   }
+    padding:5px;
+		a{
+		 text-decoration:none;
+		 color:#000;
+		}
 
 
-  }
+    }
   li:hover{
     background-color:#1a9bfc;  
     color:#fff;
@@ -641,11 +635,9 @@ a.header {
     a{
     text-decoration:none;
     color:#fff;
-   }
+     }
 
-}
-  
-
+    }
 }
 
 
@@ -697,13 +689,18 @@ a.header {
 
 .cp-course{
  @extend .co-listItem;
- padding:5px 10px;
+ padding:5px 5px 5px 5px;
  margin-bottom:10px;
  &.ln-01{border-left: 3px solid $mainFuncFilter1;} 
  &.ln-02{border-left: 3px solid $mainFuncFilter2;}
  &.ln-03{border-left: 3px solid $mainFuncFilter3;}
 
 }
+.cp-course-details-container{
+  background-color:#f0f3f4;
+}
+
+
 
 .cp-course-header-name{
 	display : inline-block;
@@ -713,12 +710,63 @@ a.header {
 .cp-course-header-details{
   display : inline-block;
   float:right;  
+
 }
+.cp-course-rating{
+	padding-right:5px;
+}
+
+
+.cp-course-description{
+  display:inline-block;
+    width:70%;
+    background-color:#fff;  
+}
+
+.cp-course-description-text{
+  @extend .co-description;
+  font-size: 0.9em; 
+  padding:5px;
+  min-height:100px;
+
+}
+
+
+.cp-course-additionalInfo{
+  display:inline-block;
+  width:30%;
+  float:right;
+  font-size: 0.7em;
+
+}
+
+.cp-course-details-teachers{
+	padding:0 5px;
+	height:20px;
+}
+
+.cp-course-details-toolbar{
+  border-top: 1px solid $brd; 
+	@include padding(5px);
+	
+}
+
 
 .cp-course-short:after{
    content : " -"  ;
 }
 
+.cp-course-details-teacher{
+  display:inline-block;	
+  height:20px;
+  width:20px;
+  margin-right:3px;
+
+}
+
+.cp-course-details-teacher-picture-container{
+
+}
 
 /* Old stuff
 
