@@ -51,23 +51,24 @@
 			     <span class="cp-course-rating">{rating} ({ratingCount})</span>
 			     <span class="cp-course-len"></span>
 			     <span class="cp-course-age"></span>
-			    </div>        
-			    <div style="display:none;">     
-          <div class="cp-course-description-picture"></div>
-          <div class="cp-course-description-text">{description}</div>          
-	        <div class="cp-course-details-toolbar">
-	          {?isMember}
-	          <input class="bt-coursepicker" type="button"
-	            value='{#localize key="plugin.coursepicker.course.checkout" /}'
-	            class="cp-course-tour-button" />
-	          {:else}
-	          <input class="bt-coursepicker" type="button"
-	            value='{#localize key="plugin.coursepicker.course.checkout" /}'
-	            class="cp-course-tour-button" />
-	          <input class="bt-coursepicker" type="button"
-	            value='{#localize key="plugin.coursepicker.course.signup" /}' class="cp-course-attend-button" />
-	          {/isMember}
-	        </div>
+			    </div>
+			            
+			    <div class="cp-course-content-details" style="display:none;">     
+	          <div class="cp-course-description-picture"></div>
+	          <div class="cp-course-description-text">{description}</div>          
+		        <div class="cp-course-details-toolbar">
+		          {?isMember}
+		          <input class="bt-coursepicker" type="button"
+		            value='{#localize key="plugin.coursepicker.course.checkout" /}'
+		            class="cp-course-tour-button" />
+		          {:else}
+		          <input class="bt-coursepicker" type="button"
+		            value='{#localize key="plugin.coursepicker.course.checkout" /}'
+		            class="cp-course-tour-button" />
+		          <input class="bt-coursepicker" type="button"
+		            value='{#localize key="plugin.coursepicker.course.signup" /}' class="cp-course-attend-button" />
+		          {/isMember}
+		        </div>
 	        </div>
         </div>       
 

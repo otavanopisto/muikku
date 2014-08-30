@@ -245,7 +245,14 @@ $(document).ready(function() {
     });
     
 
-
+    $(".cp-course-description").each(function(){
+      var dDiv = $(this).find($(".cp-course-content-details"));
+      
+      $(this).click(function(){
+         dDiv.toggle();
+      }); 
+       
+     });
        
 
      
