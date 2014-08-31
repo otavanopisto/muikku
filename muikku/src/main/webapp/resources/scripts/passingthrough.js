@@ -245,19 +245,16 @@ $(document).ready(function() {
     });
     
 
-    $(".cp-course-description").each(function(){
-      var dDiv = $(this).find($(".cp-course-content-details"));
-      
-      $(this).click(function(){
-         dDiv.toggle();
-      }); 
-       
-     });
+
        
 
      
     
 });
 
+    $(document).on('click', '.cp-course-details', function(){
+     var dDiv = $(this).find($(".cp-course-content-details"));
+     dDiv.toggle();
+    });
 
 

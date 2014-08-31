@@ -18,11 +18,11 @@
            </div>
            <div class="cp-side-button-dropdown">
 						<ul id="cpCategories">
-							<li id="cat-1" ><a href="#all">Kaikki kurssit</a></li>
+							<li id="cat-1" ><a class="cp-category-allCourses" href="#all">Kaikki kurssit</a></li>
 							<ui:fragment rendered="#{muikkuSession.loggedIn}">
-								<li id="cat-2"><a href="#my">Omat kurssit</a></li>
-								<li id="cat-3"><a href="#plp">HOPS</a></li>
-							</ui:fragment>
+								<li id="cat-2"><a class="cp-category-myCourses" href="#my">Omat kurssit</a></li>
+								<li id="cat-3"><a class="cp-category-hops" href="#plp">HOPS</a></li>
+							</ui:fragment>	
 						</ul>
 					</div>
          </div>
@@ -46,59 +46,10 @@
        </div>           
        <div class="cp-content grid_18 nomargin noLid" >
          <div class="cp-content-functions">
-           <div class=""></div>
+           <div class="cp-search icon-search"><input type="text" name="coursePickerSearch"/></div>
          </div>
 	       <div class="cp-content-main">
-	        <div id="allCoursesList">
-	        
-<!-- 	        
-	         <div id="crsId-1" class="cp-course ln-01">
-	            <div class="cp-course-name">
-	             <span class="cp-course-short">KUR</span>
-	             <span class="cp-content-dash"></span>
-	             <span class="cp-course-long">KurssiTyötila</span>
-	            </div>
-	            <div class="cp-course-details">
-	             <span class="cp-course-len">12 ov.</span>
-	             <span class="cp-course-age">Alkoi: Keskiviikko 1.1.1111</span>
-	            </div>     
-	         </div>       
-	         <div id="crsId-2" class="cp-course ln-02">
-	            <div class="cp-course-name">
-               <span class="cp-course-short">KUR</span>
-               <span class="cp-content-dash"></span>
-               <span class="cp-course-long">KurssiTyötila</span>
-              </div>
-              <div class="cp-course-details">
-               <span class="cp-course-len">12 ov.</span>
-               <span class="cp-course-age">Alkoi: Keskiviikko 1.1.1111</span>
-              </div>   
-	         </div>
-	         <div id="crsId-3" class="cp-course ln-03">
-	            <div class="cp-course-name">
-               <span class="cp-course-short">KUR</span>
-               <span class="cp-content-dash"></span>
-               <span class="cp-course-long">KurssiTyötila</span>
-              </div>
-              <div class="cp-course-details">
-               <span class="cp-course-len">12 ov.</span>
-               <span class="cp-course-age">Alkoi: Keskiviikko 1.1.1111</span>
-              </div>   
-	         </div>
-	         <div id="crsId-4" class="cp-course ln-01">
-	            <div class="cp-course-name">
-               <span class="cp-course-short">KUR</span>
-               <span class="cp-content-dash"></span>
-               <span class="cp-course-long">KurssiTyötila</span>
-              </div>
-              <div class="cp-course-details">
-               <span class="cp-course-len">12 ov.</span>
-               <span class="cp-course-age">Alkoi: Keskiviikko 1.1.1111</span>
-              </div>   
-              
-	         </div>
-	          -->
-	         </div>    
+	        <div id="coursesList"></div>            
 	       </div>
          <div class="clear"></div>
       </div>    

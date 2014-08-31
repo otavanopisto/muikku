@@ -1,7 +1,7 @@
 {#.}
  
  
-  <div div id="crsId-1" class="cp-course ln-01">
+  <div id="crsId-{id}" class="cp-course ln-01">
     <input type="hidden" name="workspaceId" value="{id}"/>
     <input type="hidden" name="workspaceUrl" value="{urlName}"/>
 
@@ -53,7 +53,7 @@
 			     <span class="cp-course-age"></span>
 			    </div>
 			            
-			    <div class="cp-course-content-details" style="display:none;">     
+			    <div id="detailsCrs-{id}" class="cp-course-content-details" style="display:none;">     
 	          <div class="cp-course-description-picture"></div>
 	          <div class="cp-course-description-text">{description}</div>          
 		        <div class="cp-course-details-toolbar">

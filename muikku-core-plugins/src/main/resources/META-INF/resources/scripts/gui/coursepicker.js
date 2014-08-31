@@ -7,73 +7,73 @@
       widgetElement = $(widgetElement);
       this._widgetElement = widgetElement;
       this._userId = widgetElement.find("input[name='userId']").val();
-      this._allCoursesContainer = $('#allCoursesList');
-      this._myCoursesContainer = $('#myCoursesList');
+      this._coursesContainer = $('#coursesList');
+  //    this._myCoursesContainer = $('#myCoursesList');
       
       this._initializeAllCoursesList();
-  
+ 
    //   this._tabsContainer = widgetElement.find('.coursePickerTabs');
    //   this._tabsContainer.tabs();
       
-      var coursePickerAllCoursesSearchBtn = widgetElement.find(".cp-allCourses-searchBtn");
+     var coursePickerAllCoursesSearchBtn = widgetElement.find(".cp-category-allCourses");
       coursePickerAllCoursesSearchBtn.click($.proxy(this._onSearchAllCoursesClick, this));
 
-      var filterAllCoursesButton = widgetElement.find('input[name="cp-allCourses-filterBtn"]');
-      filterAllCoursesButton.click($.proxy(this._onFilterAllCoursesClick, this));
+//      var filterAllCoursesButton = widgetElement.find('input[name="cp-allCourses-filterBtn"]');
+ //     filterAllCoursesButton.click($.proxy(this._onFilterAllCoursesClick, this));
       
-      var searchMyCoursesButton = widgetElement.find('.cp-myCourses-searchBtn');
+      var searchMyCoursesButton = widgetElement.find('.cp-category-myCourses');
       if (searchMyCoursesButton) {
         searchMyCoursesButton.click($.proxy(this._onSearchMyCoursesClick, this));
       }
       
-      var filterPopup = widgetElement.find(".cp-allCourses-filterSelector-popup");
-      filterPopup.find(".cp-filterSelection").click($.proxy(this._onSelectAllCoursesFilterClick, this));
+ //     var filterPopup = widgetElement.find(".cp-allCourses-filterSelector-popup");
+ //     filterPopup.find(".cp-filterSelection").click($.proxy(this._onSelectAllCoursesFilterClick, this));
       
-      var filterList = widgetElement.find(".cp-allCourses-filterList");
-      filterList.on("click", ".cp-filterRemoveBtn", $.proxy(this._onRemoveAllCoursesFilterClick, this));
+//      var filterList = widgetElement.find(".cp-allCourses-filterList");
+//      filterList.on("click", ".cp-filterRemoveBtn", $.proxy(this._onRemoveAllCoursesFilterClick, this));
 
-      this._allCoursesContainer.on("click", ".cp-course-attend-button", $.proxy(this._onJoinCourseClick, this));
-      this._allCoursesContainer.on("click", ".cp-course-tour-button", $.proxy(this._onCheckCourseClick, this));
-      this._allCoursesContainer.on("click", ".cp-course-name", $.proxy(this._onCourseNameClick, this));
+      this._coursesContainer.on("click", ".cp-course-attend-button", $.proxy(this._onJoinCourseClick, this));
+      this._coursesContainer.on("click", ".cp-course-tour-button", $.proxy(this._onCheckCourseClick, this));
+  //    this._allCoursesContainer.on("click", ".cp-course-name", $.proxy(this._onCourseNameClick, this));
 
-      this._myCoursesContainer.on("click", ".cp-course-attend-button", $.proxy(this._onJoinCourseClick, this));
-      this._myCoursesContainer.on("click", ".cp-course-tour-button", $.proxy(this._onCheckCourseClick, this));
-      this._myCoursesContainer.on("click", ".cp-course-name", $.proxy(this._onCourseNameClick, this));
+ //     this._myCoursesContainer.on("click", ".cp-course-attend-button", $.proxy(this._onJoinCourseClick, this));
+ //     this._myCoursesContainer.on("click", ".cp-course-tour-button", $.proxy(this._onCheckCourseClick, this));
+ //     this._myCoursesContainer.on("click", ".cp-course-name", $.proxy(this._onCourseNameClick, this));
     },
     deinitialize: function () {
     },
     _initializeAllCoursesList: function () {
       var _this = this;
       
-      _this._allCoursesContainer.children().remove();
+      _this._coursesContainer.children().remove();
       
       RESTful.doGet(CONTEXTPATH + "/rest/course/", {
         parameters: {
         }
       }).success(function (data, textStatus, jqXHR) {
         renderDustTemplate('coursepicker/coursepickercourse.dust', data, function (text) {
-          _this._allCoursesContainer.append($.parseHTML(text));
+          _this._coursesContainer.append($.parseHTML(text));
         });
       });
     },
     _onSearchAllCoursesClick: function (event) {
       var _this = this;
       
-      _this._allCoursesContainer.children().remove();
+      _this._coursesContainer.children().remove();
       
       RESTful.doGet(CONTEXTPATH + "/rest/course/", {
         parameters: {
         }
       }).success(function (data, textStatus, jqXHR) {
         renderDustTemplate('coursepicker/coursepickercourse.dust', data, function (text) {
-          _this._allCoursesContainer.append($.parseHTML(text));
+          _this._coursesContainer.append($.parseHTML(text));
         });
       });
     },
     _onSearchMyCoursesClick: function (event) {
       var _this = this;
       
-      _this._myCoursesContainer.children().remove();
+      _this._coursesContainer.children().remove();
       
       RESTful.doGet(CONTEXTPATH + "/rest/course/listUserCourses", {
         parameters: {
@@ -81,7 +81,7 @@
         }
       }).success(function (data, textStatus, jqXHR) {
         renderDustTemplate('coursepicker/coursepickermycourse.dust', data, function (text) {
-          _this._myCoursesContainer.append($.parseHTML(text));
+          _this._coursesContainer.append($.parseHTML(text));
         });
       });
     },
