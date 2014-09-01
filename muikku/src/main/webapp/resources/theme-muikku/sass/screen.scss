@@ -664,6 +664,12 @@ a.header {
   &.ft-03{background-color:$mainFuncFilter3;}
 }
 
+.cp-filter-disabled{
+ background-color:#cecece !important;
+ color:#fff !important;
+	
+}
+
 .cp-side-header > span{
   color:#fff;
 }
@@ -678,21 +684,33 @@ a.header {
 
 .cp-content-functions{
 	 @extend .co-mainFunction-content-functions;
-	 height:60px;	 
-   padding-top:10px;
+	 height:70px;	 
 }
 
 .cp-search{
 	margin-left:10px;
   width:300px;
+
+}
+.cp-search-icon{
+	display:inline-block;
   color:#c4cdd1;
   font-size:30pt;
+  padding-top:10px;
+  
+}
+.cp-search-field{
+	 width:200px;
+	 display:inline-block;
+	 margin-top:10px;
 }
 
-.cp-search > input{
+.cp-search-field > input{
  margin-left:10px;
- padding:0;
- width:200px !important;
+ padding:10px;
+ font-size:20px;
+ color:#c4cdd1;
+
 }
 
 
