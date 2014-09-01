@@ -1,7 +1,7 @@
 {#.}
  
  
-  <div id="crsId-{id}" class="cp-course ln-01">
+  <div id="crsId-{id}" class="cp-course ft-01">
     <input type="hidden" name="workspaceId" value="{id}"/>
     <input type="hidden" name="workspaceUrl" value="{urlName}"/>
 
