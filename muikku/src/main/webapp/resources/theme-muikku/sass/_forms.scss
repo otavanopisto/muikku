@@ -122,14 +122,15 @@ div[class*='ps-edit-container']{
 
 /* Seeker */
 
-#seeker{
+#seeker, .search{
   &:focus {
-    border:1px solid #fff;
+    border:1px solid #fff !important;
   }
   padding:11px;
   @include rounded(5px);
-  outline:none;
-  color:#4a4a4a;
+  outline:none !important;
+  color:#4a4a4a !important;
+
 }
 
 /* Calendar */
