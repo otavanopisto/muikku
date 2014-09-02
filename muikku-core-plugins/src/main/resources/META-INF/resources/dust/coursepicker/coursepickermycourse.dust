@@ -1,6 +1,6 @@
 {#.}
 
-  <div id="crsId-{id}" class="cp-course ft-01">
+  <div id="crsId-{workspaceEntity.id}" class="cp-course ft-01">
     <input type="hidden" name="workspaceId" value="{workspaceEntity.id}"/>
     <input type="hidden" name="workspaceUrl" value="{workspaceEntity.urlName}"/>
 
@@ -10,7 +10,7 @@
       <div class="cp-course-details-container">       
         <div class="cp-course-additionalInfo">
           <div class="cp-course-details-teachers">
-            {?workspaceEntity.teachers}
+           {?workspaceEntity.teachers}
               <div style="display:none;" class="cp-course-details-teachers-caption">{#localize key="plugin.coursepicker.course.teachers" /}</div>             
               {#workspaceEntity.teachers}
                 <div class="cp-course-details-teacher">
@@ -30,11 +30,12 @@
             {:else}
               {#localize key="plugin.coursepicker.course.noteachers" /}
             {/workspaceEntity.teachers}
-          </div>
   
+          </div>
+ 
           {?workspaceEntity.hasCourseFee}      
             <div class="cp-course-details-fee">{#localize key="plugin.coursepicker.course.coursehasfee" /}</div>
-          {workspaceEntity./hasCourseFee}
+          {/workspaceEntity.hasCourseFee}
   
           {?workspaceEntity.hasAssessmentFee}      
             <div class="cp-course-details-assessmentFee">{#localize key="plugin.coursepicker.course.assessmenthasfee" /}</div>
