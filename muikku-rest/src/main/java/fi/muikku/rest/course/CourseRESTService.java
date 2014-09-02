@@ -165,6 +165,74 @@ public class CourseRESTService extends AbstractRESTService {
       tranquility.entity(workspaceUserEntity)
     ).build();
   }
+
+  @GET
+  @Path ("/searchCourses")
+  public Response searchCourses(@QueryParam("searchString") String searchString) {
+    List<Workspace> listWorkspaceEntities = workspaceController.listWorkspaces();
+    List<WorkspaceEntity> courses = new ArrayList<WorkspaceEntity>();
+    
+    for (Workspace workspace : listWorkspaceEntities) {
+      WorkspaceEntity e = workspaceController.findWorkspaceEntity(workspace);
+      
+      // TODO remove
+      if ((workspace.getName().toLowerCase().contains(searchString)) || (workspace.getDescription().toLowerCase().contains(searchString)))
+        courses.add(e);
+    }
+
+    TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
+    Tranquility tranquility = tranquilityBuilder.createTranquility()
+      .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
+      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("name", new CourseNameInjector()))
+      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("description", new CourseDescriptionInjector()))
+      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("rating", new CourseRatingInjector()))
+      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("ratingCount", new CourseRatingCountInjector()))
+      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("isMember", new CourseIsMemberInjector()))
+      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("teachers", new CourseTeachersGetter()));
+//      .addInstruction(CourseEntity.class, tranquilityBuilder.createPropertyInjectInstruction("course", new CourseSchoolDataInjector()));
+      ;    
+    Collection<TranquilModelEntity> entities = tranquility.entities(courses);
+    
+    return Response.ok(
+      entities
+    ).build();
+  }
+
+  @GET
+  @Path ("/searchUserCourses")
+  public Response searchUserCourses(@QueryParam("userId") Long userId, @QueryParam("searchString") String searchString) {
+    UserEntity userEntity = userController.findUserEntityById(userId);
+    List<WorkspaceUserEntity> courses = workspaceController.listWorkspaceEntitiesByUser(userEntity);
+
+    List<WorkspaceUserEntity> filteredCourses = new ArrayList<WorkspaceUserEntity>();
+
+    for (WorkspaceUserEntity workspace : courses) {
+      WorkspaceEntity e = workspace.getWorkspaceEntity();
+      Workspace ws = workspaceController.findWorkspace(e);
+      
+      // TODO remove
+      if ((ws.getName().toLowerCase().contains(searchString)) || (ws.getDescription().toLowerCase().contains(searchString)))
+        filteredCourses.add(workspace);
+    }
+    
+    TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
+    Tranquility tranquility = tranquilityBuilder.createTranquility()
+      .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
+      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("name", new CourseNameInjector()))
+      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("description", new CourseDescriptionInjector()))
+      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("rating", new CourseRatingInjector()))
+      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("ratingCount", new CourseRatingCountInjector()))
+      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("isMember", new CourseIsMemberInjector()))
+      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("teachers", new CourseTeachersGetter()))
+//      .addInstruction(CourseEntity.class, tranquilityBuilder.createPropertyInjectInstruction("course", new CourseSchoolDataInjector()));
+    ;
+    Collection<TranquilModelEntity> entities = tranquility.entities(filteredCourses);
+    
+    return Response.ok(
+      entities
+    ).build();
+  }
+
   
   private class CourseNameInjector implements ValueGetter<String> {
     @Override
