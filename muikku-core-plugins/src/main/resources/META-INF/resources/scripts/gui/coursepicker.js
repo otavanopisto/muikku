@@ -40,6 +40,13 @@
  //     this._myCoursesContainer.on("click", ".cp-course-tour-button", $.proxy(this._onCheckCourseClick, this));
  //     this._myCoursesContainer.on("click", ".cp-course-name", $.proxy(this._onCourseNameClick, this));
  
+    //Toggle course details
+
+      $(document).on('click', '.cp-course-details', function(){
+       var dDiv = $(this).find($(".cp-course-content-details"));
+       dDiv.toggle();
+      });     
+      
       // Dropdown
       
       $(".bt-mainFunction").click(function() {
@@ -83,7 +90,8 @@
          $(this).addClass("cp-filter-disabled");               
        }
        
-     });      
+     });    
+     
       
     },
     deinitialize: function () {
@@ -211,7 +219,3 @@
 }).call(this);
 
 
-$(document).ready(function() {
-  
-
-});

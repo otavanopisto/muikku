@@ -229,59 +229,9 @@ $(document).ready(function() {
       $(this).val($(this).attr('value'));
     });    
     
-//   // Coursepicker 
-//    
-//    $(".bt-mainFunction").click(function() {
-//        $(".cp-side-button-dropdown").toggle();
-//    });
-//    
-//    
-//    
-//    var cpCat = $("#cpCategories").find("a");
-//    var btnVal = $("#btnValue").html();
-//    
-//    // Find category names, append the first one to button
-//    
-//    
-//    // TODO: Remember users's selection
-//    
-//    if(btnVal == ''){
-//      var fCat = $(cpCat[0]);  
-//      $("#btnValue").append(fCat.html());
-//    }
-//
-//    // Choose category
-//    
-//    $("#cpCategories a").each(function(){
-//     $(this).click(function(){
-//       $("#btnValue").empty();
-//       $("#btnValue").append($(this).html());
-//       $(".cp-side-button-dropdown").hide();
-//     }); 
-//      
-//    });
-//    
-//    // Filters 
-//    
-//   $(".cp-filter").click(function(){
-//     var isDsb = $(this).hasClass("cp-filter-disabled");  
-//
-//     if(isDsb == true){
-//       $(this).removeClass("cp-filter-disabled");
-//     }else{
-//       $(this).addClass("cp-filter-disabled");               
-//     }
-//     
-//   });
 
-    
 });
 
-// Toggle course details
 
-    $(document).on('click', '.cp-course-details', function(){
-     var dDiv = $(this).find($(".cp-course-content-details"));
-     dDiv.toggle();
-    });
 
 
