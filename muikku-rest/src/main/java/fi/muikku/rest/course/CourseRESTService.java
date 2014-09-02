@@ -172,6 +172,9 @@ public class CourseRESTService extends AbstractRESTService {
     List<Workspace> listWorkspaceEntities = workspaceController.listWorkspaces();
     List<WorkspaceEntity> courses = new ArrayList<WorkspaceEntity>();
     
+    if (searchString != null)
+      searchString = searchString.toLowerCase();
+
     for (Workspace workspace : listWorkspaceEntities) {
       WorkspaceEntity e = workspaceController.findWorkspaceEntity(workspace);
       
@@ -205,6 +208,9 @@ public class CourseRESTService extends AbstractRESTService {
     List<WorkspaceUserEntity> courses = workspaceController.listWorkspaceEntitiesByUser(userEntity);
 
     List<WorkspaceUserEntity> filteredCourses = new ArrayList<WorkspaceUserEntity>();
+    
+    if (searchString != null)
+      searchString = searchString.toLowerCase();
 
     for (WorkspaceUserEntity workspace : courses) {
       WorkspaceEntity e = workspace.getWorkspaceEntity();
