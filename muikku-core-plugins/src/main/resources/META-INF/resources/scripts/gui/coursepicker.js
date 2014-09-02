@@ -86,6 +86,7 @@
       });
     },
     _onCheckCourseClick: function (event) {
+      event.stopPropagation();
       var element = $(event.target);
       var coursePickerCourse = element.parents(".cp-course");
       var workspaceId = coursePickerCourse.find("input[name='workspaceId']").val();
@@ -94,6 +95,7 @@
       window.location = CONTEXTPATH + '/workspace/' + workspaceUrl;
     },
     _onJoinCourseClick: function (event) {
+      event.stopPropagation();
       var element = $(event.target);
       var coursePickerCourse = element.parents(".cp-course");
       
