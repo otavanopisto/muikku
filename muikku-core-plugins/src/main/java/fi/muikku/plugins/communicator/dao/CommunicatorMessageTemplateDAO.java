@@ -9,12 +9,12 @@ import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.DAO;
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.plugin.PluginDAO;
+import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageTemplate_;
 
 @DAO
-public class CommunicatorMessageTemplateDAO extends PluginDAO<CommunicatorMessageTemplate> {
+public class CommunicatorMessageTemplateDAO extends CorePluginsDAO<CommunicatorMessageTemplate> {
 	
   private static final long serialVersionUID = -7830619828801454118L;
 

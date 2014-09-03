@@ -1,11 +1,11 @@
 package fi.muikku.plugins.communicator.dao;
 
 import fi.muikku.dao.DAO;
-import fi.muikku.plugin.PluginDAO;
+import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.communicator.model.CommunicatorMessage;
 
 @DAO
-public class CommunicatorMessageDAO extends PluginDAO<CommunicatorMessage> {
+public class CommunicatorMessageDAO extends CorePluginsDAO<CommunicatorMessage> {
 	
   private static final long serialVersionUID = -8721990589622544635L;
 

@@ -6,13 +6,13 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.DAO;
-import fi.muikku.plugin.PluginDAO;
+import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.material.model.QueryConnectField;
 import fi.muikku.plugins.material.model.QueryConnectField_;
 
 @DAO
-public class QueryConnectFieldDAO extends PluginDAO<QueryConnectField> {
+public class QueryConnectFieldDAO extends CorePluginsDAO<QueryConnectField> {
 	
   private static final long serialVersionUID = 5188632608986411717L;
 

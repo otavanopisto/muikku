@@ -5,11 +5,11 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.muikku.plugin.PluginDAO;
+import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.material.model.Material_;
 
-public class MaterialDAO extends PluginDAO<Material> {
+public class MaterialDAO extends CorePluginsDAO<Material> {
 
 	private static final long serialVersionUID = 148925841493479490L;
 

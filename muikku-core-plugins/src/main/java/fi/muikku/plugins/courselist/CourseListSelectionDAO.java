@@ -7,11 +7,11 @@ import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.DAO;
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.plugin.PluginDAO;
+import fi.muikku.plugins.CorePluginsDAO;
 
 
 @DAO
-public class CourseListSelectionDAO extends PluginDAO<CourseListSelection> {
+public class CourseListSelectionDAO extends CorePluginsDAO<CourseListSelection> {
 
   private static final long serialVersionUID = 4895596425024979837L;
 

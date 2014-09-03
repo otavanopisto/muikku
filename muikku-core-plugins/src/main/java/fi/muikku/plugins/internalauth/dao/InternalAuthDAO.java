@@ -7,12 +7,12 @@ import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.DAO;
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.plugin.PluginDAO;
+import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.internalauth.model.InternalAuth;
 import fi.muikku.plugins.internalauth.model.InternalAuth_;
 
 @DAO
-public class InternalAuthDAO extends PluginDAO<InternalAuth> {
+public class InternalAuthDAO extends CorePluginsDAO<InternalAuth> {
 
   private static final long serialVersionUID = 5095222172173498678L;
 

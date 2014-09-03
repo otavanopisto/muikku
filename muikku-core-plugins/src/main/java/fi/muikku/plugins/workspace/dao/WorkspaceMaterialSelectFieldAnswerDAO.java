@@ -5,14 +5,14 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.muikku.plugin.PluginDAO;
+import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.material.model.QuerySelectFieldOption;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialSelectFieldAnswer;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialSelectFieldAnswer_;
 
-public class WorkspaceMaterialSelectFieldAnswerDAO extends PluginDAO<WorkspaceMaterialSelectFieldAnswer> {
+public class WorkspaceMaterialSelectFieldAnswerDAO extends CorePluginsDAO<WorkspaceMaterialSelectFieldAnswer> {
 	
   private static final long serialVersionUID = 3744204546402170002L;
 

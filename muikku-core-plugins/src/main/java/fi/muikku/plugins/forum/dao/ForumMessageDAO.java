@@ -10,7 +10,7 @@ import javax.persistence.criteria.Root;
 import fi.muikku.dao.DAO;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.plugin.PluginDAO;
+import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.forum.model.ForumMessage;
 import fi.muikku.plugins.forum.model.ForumMessage_;
 import fi.muikku.plugins.forum.model.WorkspaceForumArea;
@@ -18,7 +18,7 @@ import fi.muikku.plugins.forum.model.WorkspaceForumArea_;
 
 
 @DAO
-public class ForumMessageDAO extends PluginDAO<ForumMessage> {
+public class ForumMessageDAO extends CorePluginsDAO<ForumMessage> {
 
 	private static final long serialVersionUID = 9013247702204973018L;
   

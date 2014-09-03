@@ -8,13 +8,13 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.DAO;
-import fi.muikku.plugin.PluginDAO;
+import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.material.model.QueryConnectField;
 import fi.muikku.plugins.material.model.QueryConnectFieldCounterpart;
 import fi.muikku.plugins.material.model.QueryConnectFieldCounterpart_;
 
 @DAO
-public class QueryConnectFieldCounterpartDAO extends PluginDAO<QueryConnectFieldCounterpart> {
+public class QueryConnectFieldCounterpartDAO extends CorePluginsDAO<QueryConnectFieldCounterpart> {
 
   private static final long serialVersionUID = -5327160259588566934L;
 

@@ -4,14 +4,14 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import fi.muikku.dao.DAO;
-import fi.muikku.plugin.PluginDAO;
+import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.calendar.model.Calendar;
 import fi.muikku.plugins.calendar.model.LocalCalendar;
 import fi.muikku.plugins.calendar.model.LocalEvent;
 import fi.muikku.plugins.calendar.model.LocalEventType;
 
 @DAO
-public class LocalEventDAO extends PluginDAO<LocalEvent> {
+public class LocalEventDAO extends CorePluginsDAO<LocalEvent> {
 
 	private static final long serialVersionUID = -1572299088200049688L;
 

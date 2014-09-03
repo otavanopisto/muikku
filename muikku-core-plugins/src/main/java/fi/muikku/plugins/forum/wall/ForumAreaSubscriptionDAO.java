@@ -9,11 +9,11 @@ import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.DAO;
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.plugin.PluginDAO;
+import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.forum.model.ForumArea;
 
 @DAO
-public class ForumAreaSubscriptionDAO extends PluginDAO<ForumAreaSubscription> {
+public class ForumAreaSubscriptionDAO extends CorePluginsDAO<ForumAreaSubscription> {
 
 	private static final long serialVersionUID = 2496199219925814980L;
 

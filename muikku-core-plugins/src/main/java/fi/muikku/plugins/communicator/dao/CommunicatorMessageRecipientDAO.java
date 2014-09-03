@@ -10,7 +10,7 @@ import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.DAO;
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.plugin.PluginDAO;
+import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageId;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
@@ -18,7 +18,7 @@ import fi.muikku.plugins.communicator.model.CommunicatorMessageRecipient_;
 import fi.muikku.plugins.communicator.model.CommunicatorMessage_;
 
 @DAO
-public class CommunicatorMessageRecipientDAO extends PluginDAO<CommunicatorMessageRecipient> {
+public class CommunicatorMessageRecipientDAO extends CorePluginsDAO<CommunicatorMessageRecipient> {
 	
   private static final long serialVersionUID = -7830619828801454118L;
 

@@ -1,11 +1,11 @@
 package fi.muikku.plugins.schooldatalocal.dao;
 
 import fi.muikku.dao.DAO;
-import fi.muikku.plugin.PluginDAO;
+import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.schooldatalocal.model.LocalUser;
 
 @DAO
-public class LocalUserDAO extends PluginDAO<LocalUser> {
+public class LocalUserDAO extends CorePluginsDAO<LocalUser> {
 
 	private static final long serialVersionUID = 3392878990947754605L;
 

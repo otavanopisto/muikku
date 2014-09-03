@@ -10,14 +10,14 @@ import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.DAO;
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.plugin.PluginDAO;
+import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.forum.model.ForumArea;
 import fi.muikku.plugins.forum.model.ForumThread;
 import fi.muikku.plugins.forum.model.ForumThread_;
 
 
 @DAO
-public class ForumThreadDAO extends PluginDAO<ForumThread> {
+public class ForumThreadDAO extends CorePluginsDAO<ForumThread> {
   
 	private static final long serialVersionUID = 4967576871472917786L;
 

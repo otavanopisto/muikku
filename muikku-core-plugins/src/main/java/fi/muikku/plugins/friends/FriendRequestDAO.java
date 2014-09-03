@@ -10,10 +10,10 @@ import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.DAO;
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.plugin.PluginDAO;
+import fi.muikku.plugins.CorePluginsDAO;
 
 @DAO
-public class FriendRequestDAO extends PluginDAO<FriendRequest> {
+public class FriendRequestDAO extends CorePluginsDAO<FriendRequest> {
 
 	private static final long serialVersionUID = 9013247702204973018L;
 

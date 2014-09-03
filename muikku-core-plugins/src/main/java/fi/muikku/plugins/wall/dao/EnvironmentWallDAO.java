@@ -6,11 +6,11 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.DAO;
-import fi.muikku.plugin.PluginDAO;
+import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.wall.model.EnvironmentWall;
 
 @DAO
-public class EnvironmentWallDAO extends PluginDAO<EnvironmentWall> {
+public class EnvironmentWallDAO extends CorePluginsDAO<EnvironmentWall> {
 
 	private static final long serialVersionUID = 8146341830536682139L;
 

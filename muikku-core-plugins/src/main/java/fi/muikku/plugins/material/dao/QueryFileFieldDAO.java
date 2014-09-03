@@ -6,15 +6,13 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.DAO;
-import fi.muikku.plugin.PluginDAO;
+import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.material.model.QueryFileField;
 import fi.muikku.plugins.material.model.QueryFileField_;
-import fi.muikku.plugins.material.model.QueryTextField;
-import fi.muikku.plugins.material.model.QueryTextField_;
 
 @DAO
-public class QueryFileFieldDAO extends PluginDAO<QueryFileField> {
+public class QueryFileFieldDAO extends CorePluginsDAO<QueryFileField> {
 
   private static final long serialVersionUID = -5327160259588566934L;
 

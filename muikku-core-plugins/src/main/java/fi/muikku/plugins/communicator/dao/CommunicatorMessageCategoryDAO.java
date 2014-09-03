@@ -6,12 +6,12 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.DAO;
-import fi.muikku.plugin.PluginDAO;
+import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageCategory;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageCategory_;
 
 @DAO
-public class CommunicatorMessageCategoryDAO extends PluginDAO<CommunicatorMessageCategory> {
+public class CommunicatorMessageCategoryDAO extends CorePluginsDAO<CommunicatorMessageCategory> {
 	
   private static final long serialVersionUID = -4040291941730793204L;
 

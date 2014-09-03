@@ -8,14 +8,14 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.DAO;
-import fi.muikku.plugin.PluginDAO;
+import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.material.model.QueryField;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField_;
 
 @DAO
-public class WorkspaceMaterialFieldDAO extends PluginDAO<WorkspaceMaterialField> {
+public class WorkspaceMaterialFieldDAO extends CorePluginsDAO<WorkspaceMaterialField> {
 
   private static final long serialVersionUID = 6804548350145556078L;
 

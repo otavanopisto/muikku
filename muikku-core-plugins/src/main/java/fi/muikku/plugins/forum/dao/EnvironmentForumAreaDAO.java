@@ -3,11 +3,11 @@ package fi.muikku.plugins.forum.dao;
 import fi.muikku.dao.DAO;
 import fi.muikku.model.security.ResourceRights;
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.plugin.PluginDAO;
+import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.forum.model.EnvironmentForumArea;
 
 @DAO
-public class EnvironmentForumAreaDAO extends PluginDAO<EnvironmentForumArea> {
+public class EnvironmentForumAreaDAO extends CorePluginsDAO<EnvironmentForumArea> {
 
 	private static final long serialVersionUID = 2917574952932278029L;
 

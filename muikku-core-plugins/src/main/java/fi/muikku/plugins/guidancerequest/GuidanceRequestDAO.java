@@ -10,11 +10,11 @@ import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.DAO;
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.plugin.PluginDAO;
+import fi.muikku.plugins.CorePluginsDAO;
 
 
 @DAO
-public class GuidanceRequestDAO extends PluginDAO<GuidanceRequest> {
+public class GuidanceRequestDAO extends CorePluginsDAO<GuidanceRequest> {
 
   private static final long serialVersionUID = 5884840541037285345L;
 
