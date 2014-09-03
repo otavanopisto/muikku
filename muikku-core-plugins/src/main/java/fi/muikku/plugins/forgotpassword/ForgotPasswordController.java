@@ -1,19 +1,13 @@
 package fi.muikku.plugins.forgotpassword;
 
-import java.util.Map;
 import java.util.UUID;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import org.apache.commons.codec.digest.DigestUtils;
-
 import fi.muikku.auth.AuthSourceController;
-import fi.muikku.auth.AuthenticationProvider;
-import fi.muikku.auth.AuthenticationResult;
 import fi.muikku.controller.UserEntityController;
-import fi.muikku.model.security.AuthSource;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.forgotpassword.dao.PasswordResetRequestDAO;
 import fi.muikku.plugins.forgotpassword.model.PasswordResetRequest;
