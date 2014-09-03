@@ -9,12 +9,12 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.muikku.dao.DAO;
+
 import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.calendar.model.SubscribedCalendar;
 import fi.muikku.plugins.calendar.model.SubscribedCalendar_;
 
-@DAO
+
 public class SubscribedCalendarDAO extends CorePluginsDAO<SubscribedCalendar> {
 
 	private static final long serialVersionUID = -4015334453127961131L;

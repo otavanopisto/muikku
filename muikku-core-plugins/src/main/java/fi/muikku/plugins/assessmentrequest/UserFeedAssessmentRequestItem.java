@@ -1,9 +1,7 @@
 package fi.muikku.plugins.assessmentrequest;
 
 import fi.muikku.plugins.wall.WallFeedItem;
-import fi.tranquil.TranquilEntity;
 
-@TranquilEntity
 public class UserFeedAssessmentRequestItem extends WallFeedItem {
 
   private AssessmentRequest assessmentRequest;

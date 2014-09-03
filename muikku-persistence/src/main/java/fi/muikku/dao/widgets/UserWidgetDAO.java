@@ -3,7 +3,6 @@ package fi.muikku.dao.widgets;
 import java.util.List;
 
 import fi.muikku.dao.CoreDAO;
-import fi.muikku.dao.DAO;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.widgets.UserWidget;
 import fi.muikku.model.widgets.UserWidget_;
@@ -16,7 +15,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 
-@DAO
 public class UserWidgetDAO extends CoreDAO<UserWidget> {
 
 	private static final long serialVersionUID = -6906701705459034005L;

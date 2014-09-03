@@ -8,11 +8,11 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.muikku.dao.DAO;
+
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.CorePluginsDAO;
 
-@DAO
+
 public class FriendDAO extends CorePluginsDAO<Friend> {
 
 	private static final long serialVersionUID = 9013247702204973018L;

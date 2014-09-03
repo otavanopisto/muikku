@@ -1,7 +1,6 @@
 package fi.muikku.dao.security;
 
 import fi.muikku.dao.CoreDAO;
-import fi.muikku.dao.DAO;
 import fi.muikku.model.security.EnvironmentUserPermissionOverride;
 import fi.muikku.model.security.EnvironmentUserPermissionOverride_;
 import fi.muikku.model.security.Permission;
@@ -14,7 +13,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 
-@DAO
 public class EnvironmentUserPermissionOverrideDAO extends CoreDAO<EnvironmentUserPermissionOverride> {
 
 	private static final long serialVersionUID = -8147406055940995152L;

@@ -26,7 +26,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import fi.muikku.dao.DAO;
+
 import fi.muikku.plugins.data.dao.ProcessedScriptDAO;
 
 @Dependent
@@ -38,7 +38,7 @@ public class DataPluginController {
 	private Instance<DataPluginScriptHandler> scriptHandlers;  
 	
 	@Inject
-	@DAO
+	
 	private ProcessedScriptDAO processedScriptDAO;
 	
 	public void processScripts(File file) throws ParserConfigurationException, SAXException, IOException {

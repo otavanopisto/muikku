@@ -6,12 +6,10 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.CoreDAO;
-import fi.muikku.dao.DAO;
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.grading.GradingScaleEntity;
 import fi.muikku.model.grading.GradingScaleEntity_;
 
-@DAO
 public class GradingScaleEntityDAO extends CoreDAO<GradingScaleEntity> {
   
 	private static final long serialVersionUID = -5129003092406973620L;

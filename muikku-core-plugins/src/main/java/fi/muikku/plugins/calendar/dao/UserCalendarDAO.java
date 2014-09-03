@@ -7,13 +7,13 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.muikku.dao.DAO;
+
 import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.calendar.model.Calendar;
 import fi.muikku.plugins.calendar.model.UserCalendar;
 import fi.muikku.plugins.calendar.model.UserCalendar_;
 
-@DAO
+
 public class UserCalendarDAO extends CorePluginsDAO<UserCalendar> {
 	
 	private static final long serialVersionUID = -4015334453127961131L;

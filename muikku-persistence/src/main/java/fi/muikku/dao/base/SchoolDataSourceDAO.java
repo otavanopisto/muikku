@@ -1,7 +1,6 @@
 package fi.muikku.dao.base;
 
 import fi.muikku.dao.CoreDAO;
-import fi.muikku.dao.DAO;
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.base.SchoolDataSource_;
 
@@ -11,7 +10,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 
-@DAO
 public class SchoolDataSourceDAO extends CoreDAO<SchoolDataSource> {
 
  

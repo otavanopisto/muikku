@@ -5,12 +5,12 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.muikku.dao.DAO;
+
 import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.forgotpassword.model.PasswordResetRequest;
 import fi.muikku.plugins.forgotpassword.model.PasswordResetRequest_;
 
-@DAO
+
 public class PasswordResetRequestDAO extends CorePluginsDAO<PasswordResetRequest> {
 	
 	/**

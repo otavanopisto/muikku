@@ -8,13 +8,13 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.muikku.dao.DAO;
+
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.CorePluginsDAO;
 
 
-@DAO
+
 public class WorkspaceGuidanceRequestDAO extends CorePluginsDAO<WorkspaceGuidanceRequest> {
 
   private static final long serialVersionUID = -8561225819989957176L;

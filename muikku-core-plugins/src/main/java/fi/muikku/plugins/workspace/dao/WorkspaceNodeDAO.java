@@ -7,12 +7,12 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.muikku.dao.DAO;
+
 import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.model.WorkspaceNode_;
 
-@DAO
+
 public class WorkspaceNodeDAO extends CorePluginsDAO<WorkspaceNode> {
 
 	private static final long serialVersionUID = 6929866288759721384L;

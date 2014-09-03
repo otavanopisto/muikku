@@ -16,7 +16,6 @@ import java.util.logging.Logger;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.transaction.SystemException;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -75,10 +74,6 @@ public class CalendarRESTService extends PluginRESTService {
 	@Inject
 	private PluginSettingsController pluginSettingsController;
 	
-	@SuppressWarnings("cdi-ambiguous-dependency")
-	@Inject
-	private TranquilityBuilderFactory tranquilityBuilderFactory;
-
   @GET
   @Path ("/calendars")
   public Response listCalendars(@QueryParam ("calendarType") String calendarType) {

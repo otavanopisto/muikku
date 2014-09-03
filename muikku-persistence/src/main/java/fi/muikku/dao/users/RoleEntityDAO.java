@@ -6,11 +6,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.CoreDAO;
-import fi.muikku.dao.DAO;
 import fi.muikku.model.users.RoleEntity;
 import fi.muikku.model.users.RoleEntity_;
 
-@DAO
 public class RoleEntityDAO extends CoreDAO<RoleEntity> {
 
 	private static final long serialVersionUID = -4915561488370208448L;

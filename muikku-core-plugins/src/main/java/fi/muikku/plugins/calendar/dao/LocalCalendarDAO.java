@@ -1,10 +1,10 @@
 package fi.muikku.plugins.calendar.dao;
 
-import fi.muikku.dao.DAO;
+
 import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.calendar.model.LocalCalendar;
 
-@DAO
+
 public class LocalCalendarDAO extends CorePluginsDAO<LocalCalendar> {
 	
 	private static final long serialVersionUID = 4403330626269058560L;

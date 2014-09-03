@@ -7,13 +7,13 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.muikku.dao.DAO;
+
 import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.schooldatalocal.model.LocalUser;
 import fi.muikku.plugins.schooldatalocal.model.LocalUserImage;
 import fi.muikku.plugins.schooldatalocal.model.LocalUserImage_;
 
-@DAO
+
 public class LocalUserImageDAO extends CorePluginsDAO<LocalUserImage> {
 
 	private static final long serialVersionUID = 262047263268247770L;

@@ -7,13 +7,13 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.muikku.dao.DAO;
+
 import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.material.model.QuerySelectField;
 import fi.muikku.plugins.material.model.QuerySelectFieldOption;
 import fi.muikku.plugins.material.model.QuerySelectFieldOption_;
 
-@DAO
+
 public class QuerySelectFieldOptionDAO extends CorePluginsDAO<QuerySelectFieldOption> {
 
   private static final long serialVersionUID = -5327160259588566934L;

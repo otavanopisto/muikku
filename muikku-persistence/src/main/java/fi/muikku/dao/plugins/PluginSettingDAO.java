@@ -6,12 +6,10 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.CoreDAO;
-import fi.muikku.dao.DAO;
 import fi.muikku.model.plugins.PluginSetting;
 import fi.muikku.model.plugins.PluginSettingKey;
 import fi.muikku.model.plugins.PluginSetting_;
 
-@DAO
 public class PluginSettingDAO extends CoreDAO<PluginSetting> {
 
 	private static final long serialVersionUID = -8305629694721284063L;

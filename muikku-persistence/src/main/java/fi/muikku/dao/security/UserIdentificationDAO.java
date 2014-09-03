@@ -3,7 +3,6 @@ package fi.muikku.dao.security;
 import java.util.List;
 
 import fi.muikku.dao.CoreDAO;
-import fi.muikku.dao.DAO;
 import fi.muikku.model.security.AuthSource;
 import fi.muikku.model.security.UserIdentification;
 import fi.muikku.model.security.UserIdentification_;
@@ -14,7 +13,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-@DAO
 public class UserIdentificationDAO extends CoreDAO<UserIdentification> {
 
 	private static final long serialVersionUID = -3862910101039448995L;

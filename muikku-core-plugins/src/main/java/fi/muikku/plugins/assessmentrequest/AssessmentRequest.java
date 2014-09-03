@@ -11,10 +11,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
-import fi.muikku.tranquil.UserEntityResolver;
-import fi.muikku.tranquil.WorkspaceEntityResolver;
-import fi.tranquil.TranquilityEntityField;
-
 @Entity
 public class AssessmentRequest {
 
@@ -67,11 +63,9 @@ public class AssessmentRequest {
   private Long id;
   
   @Column (name = "workspace_id")
-  @TranquilityEntityField(WorkspaceEntityResolver.class)
   private Long workspace;
 
   @Column (name = "student_id")
-  @TranquilityEntityField(UserEntityResolver.class)
   private Long student;
 
   @NotNull

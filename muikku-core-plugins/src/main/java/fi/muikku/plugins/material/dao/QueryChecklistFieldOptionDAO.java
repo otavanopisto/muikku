@@ -7,13 +7,13 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.muikku.dao.DAO;
+
 import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.material.model.QueryChecklistField;
 import fi.muikku.plugins.material.model.QueryChecklistFieldOption;
 import fi.muikku.plugins.material.model.QueryChecklistFieldOption_;
 
-@DAO
+
 public class QueryChecklistFieldOptionDAO extends CorePluginsDAO<QueryChecklistFieldOption> {
 
   private static final long serialVersionUID = -5327160259588566934L;

@@ -3,7 +3,6 @@ package fi.muikku.dao.users;
 import java.util.Date;
 
 import fi.muikku.dao.CoreDAO;
-import fi.muikku.dao.DAO;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserPicture;
 import fi.muikku.model.users.UserPicture_;
@@ -14,7 +13,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 
-@DAO
 @Deprecated
 public class UserPictureDAO extends CoreDAO<UserPicture> {
 

@@ -5,13 +5,13 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.muikku.dao.DAO;
+
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder_;
 
-@DAO
+
 public class WorkspaceRootFolderDAO extends CorePluginsDAO<WorkspaceRootFolder> {
 	
 	private static final long serialVersionUID = 9095130166469638314L;

@@ -8,13 +8,13 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.muikku.dao.DAO;
+
 import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.calendar.model.Calendar;
 import fi.muikku.plugins.calendar.model.Event;
 import fi.muikku.plugins.calendar.model.Event_;
 
-@DAO
+
 public class EventDAO extends CorePluginsDAO<Event> {
 
 	private static final long serialVersionUID = -5666356972359027036L;

@@ -8,7 +8,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.CoreDAO;
-import fi.muikku.dao.DAO;
 import fi.muikku.model.security.Permission;
 import fi.muikku.model.security.WorkspaceRolePermission;
 import fi.muikku.model.security.WorkspaceRolePermission_;
@@ -16,7 +15,6 @@ import fi.muikku.model.users.RoleEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 
 
-@DAO
 public class WorkspaceRolePermissionDAO extends CoreDAO<WorkspaceRolePermission> {
 
 	private static final long serialVersionUID = 7065441642441234058L;

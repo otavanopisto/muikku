@@ -5,12 +5,12 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.muikku.dao.DAO;
+
 import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.calendar.model.LocalEventType;
 import fi.muikku.plugins.calendar.model.LocalEventType_;
 
-@DAO
+
 public class LocalEventTypeDAO extends CorePluginsDAO<LocalEventType> {
 
 	private static final long serialVersionUID = -947619202937557009L;

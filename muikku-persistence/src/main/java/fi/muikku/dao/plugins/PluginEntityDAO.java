@@ -6,11 +6,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.muikku.dao.DAO;
 import fi.muikku.model.plugins.Plugin;
 import fi.muikku.model.plugins.Plugin_;
 
-@DAO
 public class PluginEntityDAO extends fi.muikku.dao.CoreDAO<Plugin> {
 
   /**

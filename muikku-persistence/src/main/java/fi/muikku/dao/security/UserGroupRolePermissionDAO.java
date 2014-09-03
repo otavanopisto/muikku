@@ -6,7 +6,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.CoreDAO;
-import fi.muikku.dao.DAO;
 import fi.muikku.model.security.Permission;
 import fi.muikku.model.security.UserGroupRolePermission;
 import fi.muikku.model.security.UserGroupRolePermission_;
@@ -14,7 +13,6 @@ import fi.muikku.model.users.RoleEntity;
 import fi.muikku.model.users.UserGroup;
 
 
-@DAO
 public class UserGroupRolePermissionDAO extends CoreDAO<UserGroupRolePermission> {
 
   private static final long serialVersionUID = 1034213846498141630L;
