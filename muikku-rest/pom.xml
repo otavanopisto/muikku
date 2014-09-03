@@ -54,10 +54,6 @@
       <artifactId>core</artifactId>
     </dependency>
     <dependency>
-    	<groupId>fi.muikku</groupId>
-    	<artifactId>plugin-core</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-mapper-asl</artifactId>
     </dependency>
