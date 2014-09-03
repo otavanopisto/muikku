@@ -21,17 +21,12 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -333,24 +328,26 @@ public abstract class SeleniumTestBase {
   }
   
   private RestResponse executeRestRequest(HttpRequestBase httpRequest) throws IOException, ClientProtocolException {
-    HttpClient client = HttpClientBuilder.create().build();
-
-    httpRequest.setHeader("Content-Type", " application/json");
-    httpRequest.setHeader("Accept", " application/json");
-
-    HttpResponse response = client.execute(httpRequest);
-    HttpEntity entity = response.getEntity();
-    
-    try {
-      int status = response.getStatusLine().getStatusCode();
-      if (status == 204) {
-        return new RestResponse(httpRequest, status, null);
-      }
-      
-      return new RestResponse(httpRequest, status, IOUtils.toString(entity.getContent()));
-    } finally {
-      EntityUtils.consume(entity);
-    }
+    // FIXME: This
+//    HttpClient client = HttpClientBuilder.create().build();
+//
+//    httpRequest.setHeader("Content-Type", " application/json");
+//    httpRequest.setHeader("Accept", " application/json");
+//
+//    HttpResponse response = client.execute(httpRequest);
+//    HttpEntity entity = response.getEntity();
+//    
+//    try {
+//      int status = response.getStatusLine().getStatusCode();
+//      if (status == 204) {
+//        return new RestResponse(httpRequest, status, null);
+//      }
+//      
+//      return new RestResponse(httpRequest, status, IOUtils.toString(entity.getContent()));
+//    } finally {
+//      EntityUtils.consume(entity);
+//    }
+    return null;
   } 
   
   protected void setDriver(RemoteWebDriver driver) {
