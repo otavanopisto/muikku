@@ -18,16 +18,15 @@ public class PluginEntityDAO extends fi.muikku.dao.CoreDAO<Plugin> {
    */
   private static final long serialVersionUID = -19075691136L;
   
-  public Plugin create(String name, String library, Boolean isEnabled) {
+  public Plugin create(String name, Boolean isEnabled) {
     Plugin plugin = new Plugin();
     plugin.setName(name);
-    plugin.setLibrary(library);
     plugin.setEnabled(isEnabled);
     getEntityManager().persist(plugin);
     return plugin;
   }
   
-  public Plugin findByNameAndLibrary(String name, String library) {
+  public Plugin findByName(String name) {
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -35,10 +34,7 @@ public class PluginEntityDAO extends fi.muikku.dao.CoreDAO<Plugin> {
     Root<Plugin> root = criteria.from(Plugin.class);
     criteria.select(root);
     criteria.where(
-        criteriaBuilder.and(
-            criteriaBuilder.equal(root.get(Plugin_.name), name),
-            criteriaBuilder.equal(root.get(Plugin_.library), library)
-        )
+      criteriaBuilder.equal(root.get(Plugin_.name), name)
     );
     
     try {

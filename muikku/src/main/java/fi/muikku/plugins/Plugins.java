@@ -22,18 +22,15 @@ import fi.muikku.plugin.AfterPluginsInitEvent;
 import fi.muikku.plugin.BeforePluginInitEvent;
 import fi.muikku.plugin.BeforePluginsInitEvent;
 import fi.muikku.plugin.LocalizedPluginDescriptor;
-import fi.muikku.plugin.PluginContextClassLoader;
 import fi.muikku.plugin.PluginDescriptor;
 import fi.muikku.plugin.PluginEvent;
 import fi.muikku.plugin.PrioritizedPluginDescriptor;
-import fi.muikku.plugin.Transactional;
-import fi.muikku.plugin.manager.PluginManagerException;
-import fi.muikku.plugin.manager.SingletonPluginManager;
 
 @Dependent
 public class Plugins {
 
-	private Logger logger = Logger.getLogger(getClass().getName());
+  @Inject
+	private Logger logger;
 	
 	@Inject
 	private LocaleController localeController;
@@ -66,8 +63,6 @@ public class Plugins {
 	}
 
 	@Logged
-	@Transactional
-	@PluginContextClassLoader
 	public void initialize() {
 		logger.info("Initializing plugins");
 		
@@ -90,11 +85,10 @@ public class Plugins {
 		
 		firePluginsInitEvent(false);
   	for (PluginDescriptor pluginDescriptor : plugins) {
-  		logger.info("Initializing plugin: " + pluginDescriptor.getName());
-      
+  		
     	try {
     	  firePluginInitEvent(pluginDescriptor, false);
-    	  pluginDescriptor.init();
+    	  logger.info("Initializing plugin: " + pluginDescriptor.getName());
     	  firePluginInitEvent(pluginDescriptor, true);
     	  if (pluginDescriptor instanceof LocalizedPluginDescriptor) {
     	    List<LocaleBundle> localeBundles = ((LocalizedPluginDescriptor) pluginDescriptor).getLocaleBundles();
@@ -119,17 +113,7 @@ public class Plugins {
       eventData = new BeforePluginInitEvent();
     }
     
-    String pluginName = pluginDescriptor.getName();
-    String pluginLibrary = "";
-    try {
-      pluginLibrary = SingletonPluginManager.getInstance()
-          .getLibraryDescriptorOfPluginDescriptor(pluginDescriptor).getName();
-    } catch (PluginManagerException pluginManagerException) {
-      logger.severe("Failed to get descriptor of plugin: " + pluginName);
-    }
-    
-    eventData.setPluginName(pluginName);
-    eventData.setPluginLibrary(pluginLibrary);
+    eventData.setPluginName(pluginDescriptor.getName());
     
     if (isAfter) {
       afterPluginInitEvent.fire((AfterPluginInitEvent)eventData);
