@@ -1,12 +1,10 @@
 package fi.muikku.plugins.calendar;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.ApplicationScoped;
+import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -20,34 +18,13 @@ import fi.muikku.model.plugins.PluginUserSettingKey;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugin.AfterPluginsInitEvent;
 import fi.muikku.plugin.LocalizedPluginDescriptor;
-import fi.muikku.plugin.PersistencePluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
-import fi.muikku.plugin.RESTPluginDescriptor;
-import fi.muikku.plugins.calendar.dao.CalendarDAO;
-import fi.muikku.plugins.calendar.dao.EventDAO;
-import fi.muikku.plugins.calendar.dao.LocalCalendarDAO;
-import fi.muikku.plugins.calendar.dao.LocalEventDAO;
-import fi.muikku.plugins.calendar.dao.LocalEventTypeDAO;
-import fi.muikku.plugins.calendar.dao.SubscribedCalendarDAO;
-import fi.muikku.plugins.calendar.dao.SubscribedEventDAO;
-import fi.muikku.plugins.calendar.dao.UserCalendarDAO;
-import fi.muikku.plugins.calendar.model.Calendar;
-import fi.muikku.plugins.calendar.model.Event;
-import fi.muikku.plugins.calendar.model.LocalAlert;
-import fi.muikku.plugins.calendar.model.LocalCalendar;
-import fi.muikku.plugins.calendar.model.LocalEvent;
-import fi.muikku.plugins.calendar.model.LocalEventParticipant;
 import fi.muikku.plugins.calendar.model.LocalEventType;
-import fi.muikku.plugins.calendar.model.SubscribedCalendar;
-import fi.muikku.plugins.calendar.model.SubscribedEvent;
 import fi.muikku.plugins.calendar.model.UserCalendar;
-import fi.muikku.plugins.calendar.rest.CalendarRESTService;
 import fi.muikku.schooldata.UserController;
 import fi.muikku.schooldata.entity.User;
 
-@ApplicationScoped
-@Stateful
-public class CalendarPluginDescriptor implements PluginDescriptor, LocalizedPluginDescriptor, PersistencePluginDescriptor, RESTPluginDescriptor {
+public class CalendarPluginDescriptor implements PluginDescriptor, LocalizedPluginDescriptor {
 
 	public static final String DEFAULT_FIRSTDAY_SETTING = "defaultFirstDay";
 
@@ -72,7 +49,7 @@ public class CalendarPluginDescriptor implements PluginDescriptor, LocalizedPlug
 		return "calendar";
 	}
 	
-	@Override
+	@PostConstruct
 	public void init() {
   	// Make sure we have a default local event type
 		
@@ -87,61 +64,6 @@ public class CalendarPluginDescriptor implements PluginDescriptor, LocalizedPlug
 	}
 
 	@Override
-	public List<Class<?>> getBeans() {
-		return new ArrayList<Class<?>>(Arrays.asList(
-			/* DAOs */	
-				
-			CalendarDAO.class,
-			EventDAO.class,
-			LocalCalendarDAO.class,
-			LocalEventDAO.class,
-			LocalEventTypeDAO.class,
-			SubscribedCalendarDAO.class,
-			SubscribedEventDAO.class,
-			UserCalendarDAO.class,
-		  
-		  /* Controllers */
-
-		  CalendarController.class,
-		  
-		  /* Backing Beans */
-		  
-		  CalendarBackingBean.class,
-		  
-		  /* Schedulers */
-		  
-		  SubscribedCalendarUpdateScheduler.class,
-		  
-		  /* Seeker */
-		  
-      CalendarSeekerResultProvider.class
-		));
-	}
-	
-	@Override
-	public Class<?>[] getEntities() {
-		return new Class<?>[] {
-			Calendar.class,
-			Event.class,
-			LocalAlert.class,
-			LocalCalendar.class,
-			LocalEvent.class,
-			LocalEventParticipant.class,
-			LocalEventType.class,
-			SubscribedCalendar.class,
-			SubscribedEvent.class,
-			UserCalendar.class
-		};
-	}
-	
-	@Override
-	public Class<?>[] getRESTServices() {
-		return new Class<?>[] {
-			CalendarRESTService.class
-		};
-	}
-
-	@Override
 	public List<LocaleBundle> getLocaleBundles() {
 		return Arrays.asList(
 	      new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.calendar.Messages", LocaleUtils.toLocale("fi"))),
@@ -150,7 +72,7 @@ public class CalendarPluginDescriptor implements PluginDescriptor, LocalizedPlug
         new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.calendar.JsMessages", LocaleUtils.toLocale("en")))
 	  );
 	}
-	
+
 	public void onAfterPluginsInit(@Observes AfterPluginsInitEvent event) {
 		// Make sure every user has a default calendar
 
