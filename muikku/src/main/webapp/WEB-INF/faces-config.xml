@@ -10,7 +10,6 @@
       <default-locale>en</default-locale>
       <supported-locale>fi</supported-locale>
     </locale-config>
-    <resource-handler>fi.muikku.plugins.PluginResourceHandler</resource-handler>
   </application>
 
   <lifecycle>

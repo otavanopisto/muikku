@@ -30,11 +30,6 @@
         <param-name>javax.faces.FACELETS_SKIP_COMMENTS</param-name>
         <param-value>true</param-value>
     </context-param>
-    
-    <context-param>
-      <param-name>javax.faces.FACELETS_RESOURCE_RESOLVER</param-name>
-      <param-value>fi.muikku.plugins.PluginResourceResolver</param-value>
-    </context-param>
 
     <listener>
       <listener-class>fi.muikku.rest.OAuthInjectListener</listener-class>
