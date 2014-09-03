@@ -3,7 +3,6 @@ package fi.muikku.events;
 import java.io.Serializable;
 
 import fi.muikku.auth.AuthenticationProvider;
-import fi.muikku.model.security.AuthSource;
 
 public class LoginEvent implements Serializable {
 
