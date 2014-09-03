@@ -30,7 +30,8 @@ public class MetaRESTService extends AbstractRESTService {
     List<String> resources = new ArrayList<>();
 
     ResourceMethodRegistry registry = (ResourceMethodRegistry) dispatcher.getRegistry();
-    Set<Entry<String, java.util.List<org.jboss.resteasy.core.ResourceInvoker>>> entries = registry.getRoot().getBounded().entrySet();
+
+    Set<Entry<String, java.util.List<org.jboss.resteasy.core.ResourceInvoker>>> entries = registry.getBounded().entrySet();
     for (Entry<String, java.util.List<org.jboss.resteasy.core.ResourceInvoker>> entry : entries) {
       String path = entry.getKey();
       resources.add(path);
