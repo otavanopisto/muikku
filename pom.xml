@@ -18,7 +18,6 @@
     <module>muikku-h2db-plugin</module>
     <module>muikku-persistence</module>
     <module>muikku-plugin</module>
-    <module>muikku-plugin-core</module>
     <module>muikku-rest</module>
     <module>muikku-school-data-mock</module>
     <module>muikku-dummy-mail-bridge-plugin</module>
