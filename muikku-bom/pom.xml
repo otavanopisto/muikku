@@ -166,21 +166,9 @@
       
       <dependency>
         <groupId>fi.muikku</groupId>
-        <artifactId>plugin-core</artifactId>
-        <version>${muikku.version}</version>
-      </dependency> 
-      
-      <dependency>
-        <groupId>fi.muikku</groupId>
         <artifactId>rest</artifactId>
         <version>${muikku.version}</version>
       </dependency> 
-
-      <dependency>
-        <groupId>fi.muikku</groupId>
-        <artifactId>core-plugins</artifactId>
-        <version>${muikku.version}</version>
-      </dependency>
     
       <dependency>
         <groupId>fi.muikku</groupId>
@@ -197,6 +185,12 @@
       <dependency>
         <groupId>fi.muikku</groupId>
         <artifactId>core</artifactId>
+        <version>${muikku.version}</version>
+      </dependency>
+    
+      <dependency>
+        <groupId>fi.muikku</groupId>
+        <artifactId>core-plugins</artifactId>
         <version>${muikku.version}</version>
       </dependency>
     
