@@ -373,23 +373,17 @@
         <dependency>
             <groupId>fi.muikku</groupId>
             <artifactId>plugin</artifactId>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
-            <!-- <scope>provided</scope> -->
         </dependency>
 
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
-            <!-- <scope>provided</scope> -->
         </dependency>
-
-        <!-- <dependency> <groupId>net.java.dev.rome</groupId> <artifactId>rome</artifactId>
-        <version>1.0.0</version> </dependency> -->
 
         <!-- Calendar dependencies -->
 
@@ -411,42 +405,22 @@
             <version>2.4</version>
             <classifier>jdk15</classifier>
         </dependency>
+        
         <dependency>
             <groupId>fi.muikku</groupId>
             <artifactId>security</artifactId>
         </dependency>
+        
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
+        
         <dependency>
             <groupId>nekohtml</groupId>
             <artifactId>nekohtml</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>net.sf.json-lib</groupId>
-            <artifactId>json-lib</artifactId>
-            <version>2.4</version>
-            <classifier>jdk15</classifier>
-        </dependency>
-        <dependency>
-            <groupId>fi.muikku</groupId>
-            <artifactId>security</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>nekohtml</groupId>
-            <artifactId>nekohtml</artifactId>
-        </dependency>
+        
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-mapper-asl</artifactId>
@@ -472,26 +446,11 @@
         <!-- The compile-scoped dependencies are incompatible with newest Selenium -->
 
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore</artifactId>
-            <version>4.3</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.3</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>15.0</version>
             <scope>test</scope>
         </dependency>
-
 
         <!-- Sauce Labs -->
 
@@ -502,14 +461,6 @@
         </dependency>
 
         <!-- Required for server test deploy -->
-
-        <dependency>
-            <groupId>fi.muikku</groupId>
-            <artifactId>muikku</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-            <type>war</type>
-            <scope>test</scope>
-        </dependency>
 
         <dependency>
             <groupId>mysql</groupId>
