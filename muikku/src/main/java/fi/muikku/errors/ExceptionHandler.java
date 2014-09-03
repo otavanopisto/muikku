@@ -15,7 +15,7 @@ import javax.faces.event.ExceptionQueuedEvent;
 import javax.faces.event.ExceptionQueuedEventContext;
 import javax.servlet.http.HttpServletResponse;
 
-import com.ocpsoft.pretty.PrettyException;
+import org.ocpsoft.rewrite.exception.RewriteException;
 
 import fi.muikku.security.AuthorizationException;
 
@@ -40,7 +40,7 @@ public class ExceptionHandler extends ExceptionHandlerWrapper {
 
       Throwable exception = queuedEventContext.getException();
       while ((exception instanceof FacesException || exception instanceof EJBException || exception instanceof ELException
-          || exception instanceof PrettyException || exception instanceof CreationException || exception instanceof IllegalStateException)
+          || exception instanceof RewriteException || exception instanceof CreationException || exception instanceof IllegalStateException)
           && exception.getCause() != null) {
         exception = exception.getCause();
       }
