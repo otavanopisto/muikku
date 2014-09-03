@@ -33,11 +33,10 @@
       this.getWidgetElement().find('h3').remove();
     }
   });
-  
+	
   FullCalendarBasedModeHandler = $.klass(ModeHandler, {
     init: function (widgetElement, options) {
       this._super(arguments, widgetElement);
-      
       this._options = options;
       this._maxDayEvents = options.maxDayEvents||Number.POSITIVE_INFINITY;
       this._maxSummaryLength = options.maxSummaryLength;
@@ -108,8 +107,21 @@
         dayClick: $.proxy(this._onDayClick, this),
         eventClick: $.proxy(this._onEventClick, this),
         eventDrop: $.proxy(this._onEventDrop, this),
-        eventResize: $.proxy(this._onEventResize, this)
+        eventResize: $.proxy(this._onEventResize, this),
+        eventRender: $.proxy(this._renderEvent, this)
       }, this._options));
+    },
+    
+    _renderEvent: function (event, element) {
+    	
+    	var contextMenuIcon = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAApdJREFUeNp8U11IFGEUPd/sqPmXhbLmipKosSKZuPZjKhYW9mgIYr1Ez0FPFUQPYg89RCgUob1YT0VKCEkRPYW0mrFbIZrLsqbmz6rbYuvuDjvu/HS/WWdIjC6cuffbe8/hzHdnWcvgOngwxp5QcuE/EXp7rUvX9YCmaaCMsM8HkSqjST+4mqvzXMmkhuP2NLiXVdCcFeFwGBu63rpzDPBHvtMJgauZEHQNpVkqCrM0nCgkHOJiGuoJsVgMM8PDAzR3jriVpjBrHFgya09LzUGXJG2joTgD7iUZDY4MjC3KhpPZWZ/lJrC05aVUz2tRU1WrwVgKPBpLUiKHD4hY+K2gqsqJptIMeDYEJLPXLY6gkoAJuglDoDjHhokVGUft6ViJKxAEGNjRtubb3vSRA0XZ42A1ruI0vcY4iXCi1d+pOedu/xXkByZ3OzDtO8jBp6BsnbmIzUaZpeojPzw5zsDkCHk+I6ikZsJ0EYyrlhtTpDRPNMjqVhBaeDa3rLu7PQT0iOo/XoH9deZRXZCO6dA2yjAJaXELTwfvONrKy/su6fq7PQKpIlXzb4yvlF9o834v2GIvHnXWoqZzLBhOJJ51AlO7BMwtmGKnioi8KqMp14tN3wNcbq1D/9A4iqouRuOJrqmPCbrk+LzHuoN0G0MF7d2RbcNJInMnHYVfwRZ6DfLQ6wkUuW5jmdVF99V14X3JMQirz68jSuuQJQlJTcdcRMHPqILPazK+zX2H78t9XGisxeOXbqgVNzAtNhmznMO5fLOZoVc37bFIBKIoIDNTxEYSRs5eGcHV9ocYGB6HVHkLkYKzSEsTwGc5h3NF/iDYpXmvv6cnuuvvmxy553KPjm7OCOdDyx/WqPki1fjl93MOQfkjwACfLUbTPr/kawAAAABJRU5ErkJggg==";
+    	
+    	element.contextPopup({
+    		  title: event.title,
+    		  items: [
+    		    {label:'Edit', icon:contextMenuIcon, action:function() {element.trigger($.Event("editEvent", {event: event})); } },
+    		  ]
+    	});
     },
     
     _truncateString: function (string, maxLength) {
@@ -264,17 +276,16 @@
       });
     },
     
-    _onCalendarEventsLoad: function (event) {
-      var datas = event.datas;
+    _onCalendarEventsLoad: function (event, data) {
+      var datas = data.datas;
       this._reloadEvents(datas);
       this._loadedDatas = datas;
     },
     
-    _onAfterEventCreate: function (event) {
-      var newEvent = event.event;
-      
+    _onAfterEventCreate: function (event, data) {
+      var newEvent = data.event;
       for (var i = 0, l = this._loadedDatas.length; i < l; i++) {
-        if (this._loadedDatas[i].calendarMeta.id == newEvent['calendar_id']) {
+        if (this._loadedDatas[i].calendarMeta.id == newEvent['calendarId']) {
           this._loadedDatas[i].events.push(newEvent);
           break;
         }
@@ -302,10 +313,9 @@
       this._reloadEvents(this._loadedDatas);
     },
     
-    _onAfterEventUpdate: function (event) {
-      var newEvent = event.event;
-      var originalEventData = event.originalEventData;
-      
+    _onAfterEventUpdate: function (event, data) {
+      var newEvent = data.event;
+      var originalEventData = data.originalEventData;
       // Remove original event
       for (var i = 0, l = this._loadedDatas.length; i < l; i++) {
         if (this._loadedDatas[i].calendarMeta.id == originalEventData.calendarId) {
@@ -334,12 +344,13 @@
       this._reloadEvents(this._loadedDatas);
     },
     
-    _onEventClick: function (event) {
-      if (event.editable) {
+    _onEventClick: function (event, originalEvent) {
+      /*if (event.editable) {
         this.getWidgetElement().trigger($.Event("editEvent", {
           event: event
-        })); 
-      }
+        }));
+        return false;
+      }*/
     },
     
     _onDayClick: function (date, allDay, jsEvent, view) {
@@ -356,15 +367,15 @@
     },
     
     _onEventDrop: function(event, dayDelta, minuteDelta, allDay, revertFunc) {
-      this.getWidgetElement().trigger($.Event("updateEvent", {
+      this.getWidgetElement().trigger("updateEvent", {
         event: event
-      }));
+      });
     },
     
     _onEventResize: function(event, dayDelta, minuteDelta, revertFunc) {
-      this.getWidgetElement().trigger($.Event("updateEvent", {
+      this.getWidgetElement().trigger("updateEvent", {
         event: event
-      }));
+      });
     },
     _onCalendarSettingsChange: function (event) {
       if (this.getWidgetElement().find('input[name="firstDay"]').val() != this._fullCalendar.fullCalendar('firstDay')) {
@@ -417,7 +428,6 @@
       
       this._initialMode = 'MONTH';
       this._modeHandler = null;
-      this._localEventTypes = null;
       this._calendarMetas = new Array();
       this._calendarsInitialized = false;
 
@@ -451,7 +461,9 @@
       this._widgetElement.on("editEvent", $.proxy(this._onEditEvent, this));
       this._widgetElement.on("updateEvent", $.proxy(this._onUpdateEvent, this));
       
-      this._loadBasicInfo();
+      $(window).load($.proxy(function () {
+        this._loadBasicInfo();
+      }, this));
     },
     
     getViewStartTime: function () {
@@ -487,41 +499,31 @@
     /* API -calls */ 
     
     _loadBasicInfo: function () {
-      var _this = this;
-      RESTful.doGet(CONTEXTPATH + "/rest/calendar/localEventTypes")
-        .success(function (data, textStatus, jqXHR) {
-          _this._localEventTypes = data;
-          _this._widgetElement.trigger($.Event("basicInfoLoad", {
-          }));
-        });
+      this._widgetElement.trigger("basicInfoLoad");
     },
     
     _loadCalendars: function () {
-      // TODO: Error handling
-
-      var _this = this;
-      RESTful.doGet(CONTEXTPATH + "/rest/calendar/calendars")
-        .success(function (data, textStatus, jqXHR) {
-          
-          var event = $.Event("calendarsLoad", {
-            calendars: data
+      mApi().calendar.calendars.read().callback($.proxy(function (err, result) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          this._widgetElement.trigger("calendarsLoad", {
+            calendars: result
           });
-          
-          _this._widgetElement.trigger(event);
-        });
+        }
+      }, this));
     },
     
     _loadCalendarEvents: function (calendarMeta, startTime, endTime, callback) {
-      RESTful.doGet(CONTEXTPATH + "/rest/calendar/calendars/{calendarId}/events", {
-        parameters: {
-          calendarId: calendarMeta.id,
-          start: startTime.getTime(),
-          end: endTime.getTime()
-        }
-      })
-      .success(function (data, textStatus, jqXHR) {
-        callback(calendarMeta, data);
-      });
+      mApi().calendar.calendars.events
+        .read(calendarMeta.id, { timeMin: startTime, timeMax: endTime })
+        .callback($.proxy(function (err, result) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            callback(calendarMeta, result);
+          }
+        }, this));
     },
     
     _loadEvents: function () {
@@ -531,20 +533,18 @@
       var datas = new Array();
       var i = this._calendarMetas.length - 1;
       while (i >= 0) {
-        var _this = this;
-        
-        this._loadCalendarEvents(this._calendarMetas[i], viewStartTime, viewEndTime, function (calendarMeta, events) {
+        this._loadCalendarEvents(this._calendarMetas[i], viewStartTime, viewEndTime, $.proxy(function (calendarMeta, events) {
           datas.push({
             calendarMeta: calendarMeta, 
             events: events
           }); 
 
           if (i == 0) {
-            _this._widgetElement.trigger($.Event("calendarEventsLoad", {
+            this._widgetElement.trigger("calendarEventsLoad", {
               datas: datas
-            }));
+            });
           }
-        });
+        }, this));
         
         i--;
       }
@@ -588,10 +588,10 @@
       this._loadEvents();
     },  
     
-    _onNewEventWidgetEventCreate: function (event) {
-      this._widgetElement.trigger($.Event("afterEventCreate", {
+    _onNewEventWidgetEventCreate: function (event, data) {
+      this._widgetElement.trigger("afterEventCreate", {
         event: event.event
-      }));
+      });
     },
     
     _onCalendarEventDialogEventRemoved: function (event) {
@@ -659,10 +659,10 @@
       this._changeMode(this._initialMode);
     },
 
-    _onCalendarsLoad: function (event) {
-      var calendars = event.calendars;
+    _onCalendarsLoad: function (event, data) {
+      var calendars = data.calendars;
       
-      var calendarMetas = new Array();
+      var calendarMetas = [];
       for (var i = 0, l = calendars.length; i < l; i++) {
         var calendar = calendars[i];
         calendarMetas.push({
@@ -695,10 +695,10 @@
       var _this = this;
       (new EventDialog(event.event))
         .save(function (originalData, eventData) {
-          _this._widgetElement.trigger($.Event("updateEvent", {
+          _this._widgetElement.trigger("updateEvent", {
             originalData: originalData,
             eventData: eventData
-          }));
+          });
         })
         .show();
     },
@@ -707,68 +707,80 @@
       var _this = this;
       (new EventDialog(event.event))
         .save(function (originalData, eventData) {
-          _this._widgetElement.trigger($.Event("updateEvent", {
+          _this._widgetElement.trigger("updateEvent", {
             originalData: originalData,
             eventData: eventData
-          }));
+          });
         })
         .show();
     },
 
-    _onUpdateEvent: function (event) {
-      var calendarEvent = event.eventData;
-      var originalEventData = event.originalData;
+    _onUpdateEvent: function (event, data) {
+      var calendarEvent = data.eventData;
+      var calendarId = parseInt(calendarEvent.calendarId);
+      var originalEventData = data.originalData;
+      var timeZone = jstz.determine().name();
+      // TODO: attendees, reminders
+      var attendees = []; 
+      var reminders = [];
 
       if (calendarEvent.id == null) {
-        // Creating new event 
-        
-        var _this = this;
-        RESTful.doPost(CONTEXTPATH + '/rest/calendar/calendars/' + calendarEvent.calendarId + '/events', {
-          data: {
-            type_id: parseInt(calendarEvent.typeId),
-            summary: calendarEvent.summary,
-            description: calendarEvent.description,
-            location: calendarEvent.location,
-            url: calendarEvent.url,
-            start: calendarEvent.start.getTime(),
-            end: calendarEvent.end.getTime(),
-            allDay: calendarEvent.allDay,
-            latitude: calendarEvent.latitude,
-            longitude: calendarEvent.longitude
+        mApi().calendar.calendars.events.create(calendarId, {
+          calendarId: calendarId,
+          summary: calendarEvent.summary,
+          description: calendarEvent.description,
+          location: calendarEvent.location,
+          latitude:calendarEvent.latitude,
+          longitude: calendarEvent.longitude,
+          url: calendarEvent.url,
+          status: 'CONFIRMED',
+          start: calendarEvent.start,
+          startTimeZone: timeZone,
+          end: calendarEvent.end,
+          endTimeZone: timeZone,
+          allDay: calendarEvent.allDay,
+          attendees: attendees,
+          reminders: calendarEvent.reminders
+        }).callback($.proxy(function (err, result) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            this._widgetElement.trigger("afterEventCreate", {
+              event: calendarEvent,
+              originalEventData: originalEventData
+            });
           }
-        })
-        .success(function (data, textStatus, jqXHR) {
-          _this._widgetElement.trigger($.Event("afterEventCreate", {
-            event: data
-          }));
-        });
+        }, this));   
       } else {
-        // Updating existing event
-        var _this = this;
-        RESTful.doPut(CONTEXTPATH + '/rest/calendar/calendars/' + originalEventData.calendarId + '/events/' + calendarEvent.id, {
-          data: {
-            calendar_id: parseInt(calendarEvent.calendarId),
-            type_id: parseInt(calendarEvent.typeId),
-            summary: calendarEvent.summary,
-            description: calendarEvent.description,
-            location: calendarEvent.location,
-            url: calendarEvent.url,
-            start: calendarEvent.start.getTime(),
-            end: calendarEvent.end.getTime(),
-            allDay: calendarEvent.allDay,
-            latitude: calendarEvent.latitude,
-            longitude: calendarEvent.longitude
+        mApi().calendar.calendars.events.update(calendarId, calendarEvent.id, {
+          id: calendarEvent.id,
+          calendarId: calendarId,
+          summary: calendarEvent.summary,
+          description: calendarEvent.description,
+          location: calendarEvent.location,
+          latitude:calendarEvent.latitude,
+          longitude: calendarEvent.longitude,
+          url: calendarEvent.url,
+          status: 'CONFIRMED',
+          start: calendarEvent.start,
+          startTimeZone: timeZone,
+          end: calendarEvent.end,
+          endTimeZone: timeZone,
+          allDay: calendarEvent.allDay,
+          attendees: attendees,
+          reminders: calendarEvent.reminders
+        }).callback($.proxy(function (err, result) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            this._widgetElement.trigger("afterEventUpdate", {
+              event: calendarEvent,
+              originalEventData: originalEventData
+            });
           }
-        })
-        .success(function (data, textStatus, jqXHR) {
-          _this._widgetElement.trigger($.Event("afterEventUpdate", {
-            event: calendarEvent,
-            originalEventData: originalEventData
-          }));
-        });
+        }, this)); 
       }
     }
-    
   });
   
   addWidgetController('fullCalendarWidget', FullCalendarWidgetController);

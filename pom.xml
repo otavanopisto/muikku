@@ -14,6 +14,7 @@
     <module>muikku-core-plugins</module>
     <module>muikku-hsqldb-plugin</module>
     <module>muikku-google-oauth</module>
+    <module>muikku-google-calendar</module>
     <module>muikku-facebook-oauth</module>
     <module>muikku-h2db-plugin</module>
     <module>muikku-persistence</module>
@@ -42,7 +43,7 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      
+
       <dependency>
         <groupId>org.jboss.weld</groupId>
         <artifactId>weld-core-bom</artifactId>
@@ -50,7 +51,7 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      
+
     </dependencies>
   </dependencyManagement>
 
@@ -78,26 +79,26 @@
         <updatePolicy>daily</updatePolicy>
       </snapshots>
     </repository>
-    
+
     <repository>
       <id>otavanopisto-snapshots</id>
       <name>Otavan Opisto Snapshots</name>
       <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/snapshots</url>
     </repository>
-    
+
     <repository>
       <id>otavanopisto-releases</id>
       <name>Otavan Opisto Releases</name>
       <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases</url>
     </repository>
-    
+
     <repository>
       <id>saucelabs-repository</id>
       <url>http://repository-saucelabs.forge.cloudbees.com/release</url>
       <releases/>
       <snapshots/>
     </repository>
-    
+
   </repositories>
 
   <pluginRepositories>
@@ -118,15 +119,15 @@
       <name>Otavan Opisto Snapshots</name>
       <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/snapshots</url>
     </pluginRepository>
-  
+
     <pluginRepository>
       <id>otavanopisto-releases</id>
       <name>Otavan Opisto Releases</name>
       <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases</url>
     </pluginRepository>
-    
+
   </pluginRepositories>
-  
+
   <distributionManagement>
     <snapshotRepository>
       <uniqueVersion>false</uniqueVersion>

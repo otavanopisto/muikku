@@ -1,6 +1,7 @@
 package fi.muikku.plugins.notifier;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -11,7 +12,6 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import edu.emory.mathcs.backport.java.util.Collections;
 import fi.muikku.i18n.LocaleController;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.notifier.NotifierAction;

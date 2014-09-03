@@ -1,5 +1,6 @@
 package fi.muikku.session;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -68,11 +69,21 @@ public class SessionControllerDelegateImpl implements SessionControllerDelegate 
   public void setImplementation(SessionController implementation) {
     this.implementation = implementation;
   }
-  
-  private SessionController implementation;
 
   @Override
   public boolean hasPermission(String permission, ContextReference contextReference) {
     return implementation.hasPermission(permission, contextReference);
   }
+
+  @Override
+  public void addOAuthAccessToken(String strategy, Date expiresAt, String accessToken) {
+    implementation.addOAuthAccessToken(strategy, expiresAt, accessToken);
+  }
+
+  @Override
+  public AccessToken getOAuthAccessToken(String strategy) {
+    return implementation.getOAuthAccessToken(strategy);
+  }
+  
+  private SessionController implementation;
 }

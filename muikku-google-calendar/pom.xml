@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>fi.muikku</groupId>
+    <artifactId>parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <artifactId>google-calendar-plugin</artifactId>
+  <packaging>jar</packaging>
+  <name>Muikku Google Calendar plugin</name>
+  <description>Plugin that provides Google Calendar support for Muikku</description>
+
+  <dependencies>
+    <!-- Core provided dependencies -->
+
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>plugin</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Core plugins -->
+
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>core-plugins</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Google Calendar API -->
+
+    <dependency>
+      <groupId>com.google.apis</groupId>
+      <artifactId>google-api-services-calendar</artifactId>
+      <version>v3-rev84-1.18.0-rc</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.http-client</groupId>
+      <artifactId>google-http-client-jackson</artifactId>
+      <version>1.18.0-rc</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jparsec</groupId>
+      <artifactId>jparsec</artifactId>
+      <version>2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.10</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+</project>

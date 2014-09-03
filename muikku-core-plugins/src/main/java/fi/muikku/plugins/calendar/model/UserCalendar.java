@@ -5,7 +5,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 public class UserCalendar {
@@ -30,13 +32,21 @@ public class UserCalendar {
 		this.visible = visible;
 	}
 	
-	public Calendar getCalendar() {
-		return calendar;
-	}
+	public String getCalendarId() {
+    return calendarId;
+  }
 	
-	public void setCalendar(Calendar calendar) {
-		this.calendar = calendar;
-	}
+	public void setCalendarId(String calendarId) {
+    this.calendarId = calendarId;
+  }
+	
+	public String getCalendarProvider() {
+    return calendarProvider;
+  }
+	
+	public void setCalendarProvider(String calendarProvider) {
+    this.calendarProvider = calendarProvider;
+  }
 	
   @Id
 	@GeneratedValue (strategy = GenerationType.IDENTITY)
@@ -49,6 +59,13 @@ public class UserCalendar {
   @Column (nullable = false)
   private Boolean visible;
   
-  @ManyToOne
-  private Calendar calendar;
+  @Column (nullable = false)
+  @NotNull
+  @NotEmpty
+  private String calendarId;
+  
+  @Column (nullable = false)
+  @NotNull
+  @NotEmpty
+  private String calendarProvider;
 }

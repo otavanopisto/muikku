@@ -1,6 +1,10 @@
 package fi.muikku.session.local;
 
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
@@ -19,6 +23,7 @@ import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.security.PermissionResolver;
 import fi.muikku.security.Permit;
 import fi.muikku.session.AbstractSessionController;
+import fi.muikku.session.AccessToken;
 
 @Stateful
 @SessionScoped
@@ -27,7 +32,7 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
   
   @Inject
   private UserEntityDAO userEntityDAO;
-
+  
   @Override
   public void login(Long userId) {
   	this.loggedUserId = userId;
@@ -155,10 +160,22 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
   protected boolean hasResourcePermissionImpl(String permission, ResourceEntity resource) {
     return hasPermissionImpl(permission, resource);
   }
-  
+
+  @Override
+  public void addOAuthAccessToken(String strategy, Date expires, String accessToken) {
+    accessTokens.put(strategy, new AccessToken(accessToken, expires));
+  }
+
+  @Override
+  public AccessToken getOAuthAccessToken(String strategy) {
+    return accessTokens.get(strategy);
+  }
+    
   private Locale locale;
 
   private Long loggedUserId;
 
   private Long representedUserId;
+
+  private Map<String, AccessToken> accessTokens = Collections.synchronizedMap(new HashMap<String, AccessToken>());
 }

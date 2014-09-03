@@ -30,7 +30,7 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
   private LocalSessionController sessionController;
 
   @Inject
-  private AuthSourceController authSourceController; 
+  private AuthSourceController authSourceController;
 
   @Inject
   private UserIdentificationController userIdentificationController;
@@ -40,28 +40,31 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
 
   @Inject
   private UserController userController;
-  
+
   @Inject
   private SchoolBridgeController schoolBridgeController;
-  
+
+  @Inject
+  private Event<LoginEvent> loginEvent;
+
   @Inject
   private Event<LoginEvent> userLoggedInEvent;
-  
+
   protected String getFirstRequestParameter(Map<String, String[]> requestParameters, String key) {
     String[] value = requestParameters.get(key);
     if (value != null && value.length == 1) {
       return value[0];
     }
-    
+
     return null;
   }
-  
+
   protected String getAuthSourceSetting(AuthSource authSource, String key) {
     AuthSourceSetting authSourceSetting = authSourceController.findAuthSourceSettingsByKey(authSource, key);
     if (authSourceSetting != null) {
       return authSourceSetting.getValue();
     }
-    
+
     return null;
   }
 
@@ -70,7 +73,7 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
     if (emailUsers.size() > 1) {
       return new AuthenticationResult(Status.CONFLICT, ConflictReason.SEVERAL_USERS_BY_EMAILS);
     }
-    
+
     UserEntity emailUser = emailUsers.size() == 1 ? emailUsers.get(0) : null;
     boolean newAccount = false;
 
@@ -88,7 +91,7 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
       } else {
         // New user account
         // TODO: How to determine where this user should be created?
-        
+
         SchoolDataSource schoolDataSource = schoolBridgeController.findSchoolDataSourceByIdentifier("LOCAL");
         User user = userController.createUser(schoolDataSource, firstName, lastName);
         UserEntity userEntity = userController.findUserEntity(user);
@@ -96,14 +99,14 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
         newAccount = true;
       }
     }
-    
+
     List<String> existingAddresses = userEntityController.listUserEmailAddresses(userIdentification.getUser());
     for (String email : emails) {
       if (!existingAddresses.contains(email)) {
         userEntityController.addUserEmail(userIdentification.getUser(), email);
       }
     }
-    
+
     return login(userIdentification, newAccount);
   }
 

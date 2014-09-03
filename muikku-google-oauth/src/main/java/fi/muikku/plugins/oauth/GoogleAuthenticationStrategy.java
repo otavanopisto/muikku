@@ -31,6 +31,7 @@ import fi.muikku.auth.AuthenticationResult;
 import fi.muikku.auth.OAuthAuthenticationStrategy;
 import fi.muikku.model.security.AuthSource;
 import fi.muikku.plugins.oauth.scribe.GoogleApi20;
+import fi.muikku.session.SessionController;
 
 @Dependent
 @Stateless
@@ -38,6 +39,9 @@ public class GoogleAuthenticationStrategy extends OAuthAuthenticationStrategy {
   
   @Inject
   private Logger logger;
+  
+  @Inject
+  private SessionController sessionController;
   
   public GoogleAuthenticationStrategy() {
     super("https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile");
@@ -81,16 +85,15 @@ public class GoogleAuthenticationStrategy extends OAuthAuthenticationStrategy {
 
     Verifier v = new Verifier(verifier);
     Token accessToken = service.getAccessToken(null, v);
-    
+
     GoogleAccessToken googleAccessToken;
     try {
       googleAccessToken = objectMapper.readValue(accessToken.getRawResponse(), GoogleAccessToken.class);
       Calendar calendar = new GregorianCalendar();
       calendar.setTime(new Date());
       calendar.add(Calendar.SECOND, googleAccessToken.getExpiresIn());
-      @SuppressWarnings("unused")
-      Date expiresAt = calendar.getTime();
-      // TODO: Token should be added to session, e.g.: sessionController.addOAuthAccessToken(getName(), expiresAt, accessToken.getToken());
+      Date expires = calendar.getTime();
+      sessionController.addOAuthAccessToken("google", expires, accessToken.getToken());
     } catch (IOException e) {
       logger.log(Level.SEVERE, "Token extraction failed a JSON parsing error", e);
       throw new AuthenticationHandleException(e);

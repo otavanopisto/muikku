@@ -1,5 +1,6 @@
 package fi.muikku.session;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -79,4 +80,8 @@ public interface SessionController {
    * @return filtered list
    */
   public <T> List<T> filterResources(List<T> list, String permissions);
+
+  public void addOAuthAccessToken(String strategy, Date expiresAt, String accessToken);
+  
+  public AccessToken getOAuthAccessToken(String strategy);
 }
