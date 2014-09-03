@@ -11,7 +11,7 @@ import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 
 @Stateless
-public class HtmlMaterialDeleteListener {
+public class WorkspaceHtmlMaterialDeleteListener {
   
   @Inject
   private WorkspaceMaterialController workspaceMaterialController;
