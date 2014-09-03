@@ -2,16 +2,11 @@ package fi.muikku.rest;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
 
-import fi.muikku.plugin.TranquilEntityLookups;
 import fi.tranquil.TranquilityBuilderFactory;
 import fi.tranquil.processing.EntityLookup;
 import fi.tranquil.processing.PropertyAccessor;
@@ -19,10 +14,6 @@ import fi.tranquil.processing.TranquilityEntityFactory;
 
 public class TranquilityFactoryBuilderProvider {
 	
-	@Any
-	@Inject
-	private Instance<TranquilEntityLookups> tranquilEntityLookups;
-
   @Produces
   @ApplicationScoped
   public TranquilityBuilderFactory produceTranquilityFactory() throws IOException, InstantiationException, IllegalAccessException {
@@ -41,16 +32,6 @@ public class TranquilityFactoryBuilderProvider {
 		compactLookups.add(fi.muikku.persistence.tranquil.CompactLookup.class.newInstance());
 		completeLookups.add(fi.muikku.persistence.tranquil.CompleteLookup.class.newInstance());
   	
-		// Plugins
-  	Iterator<TranquilEntityLookups> lookupsIterator = tranquilEntityLookups.iterator();
-  	while (lookupsIterator.hasNext()) {
-  		TranquilEntityLookups entityLookups = lookupsIterator.next();
-  		
-    	baseLookups.add(entityLookups.getBaseLookup());
-  		compactLookups.add(entityLookups.getCompactLookup());
-  		completeLookups.add(entityLookups.getCompleteLookup());
-  	}
-
   	EntityLookupDelegate baseLookupDelegate = new EntityLookupDelegate(baseLookups);
   	EntityLookupDelegate compactLookupDelegate = new EntityLookupDelegate(compactLookups);
   	EntityLookupDelegate completeLookupDelegate = new EntityLookupDelegate(completeLookups);
