@@ -12,54 +12,24 @@
   <artifactId>h2db-plugin</artifactId>
   <packaging>jar</packaging>
   <name>Muikku plugin that provides H2 support</name>
+  <description>Plugin for Muikku that provides a H2 script handler. Plugin is mainly indented to be used for testing purposes.</description>
 
-  <build>
-    <finalName>${project.artifactId}</finalName>
-    <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.1</version>
-        <configuration>
-          <source>${maven.compiler.source}</source>
-          <target>${maven.compiler.target}</target>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+  <properties>
+    <h2.version>1.3.173</h2.version>
+  </properties>
 
   <dependencies>
-  
-    <!-- Core provided dependencies -->
-  
-    <dependency>
-      <groupId>fi.muikku</groupId>
-      <artifactId>plugin</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    
-    <dependency>
-      <groupId>fi.muikku</groupId>
-      <artifactId>core-plugins</artifactId>
-      <scope>provided</scope>
-    </dependency>
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
-      <version>1.3.173</version>
+      <version>${h2.version}</version>
+    </dependency>
+
+    <!-- Muikku -->
+
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>plugin</artifactId>
     </dependency>
   </dependencies>
-  
-  <repositories>
-    <repository>
-      <id>otavanopisto-snapshots</id>
-      <name>Otavan Opisto Snapshots</name>
-      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/snapshots</url>
-    </repository>
-    <repository>
-      <id>otavanopisto-releases</id>
-      <name>Otavan Opisto Releases</name>
-      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases</url>
-    </repository>
-  </repositories>
-  <description>Plugin for Muikku that provides a H2 script handler. Plugin is mainly indented to be used for testing purposes.</description>
 </project>

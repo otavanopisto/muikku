@@ -15,21 +15,14 @@
   <description>Plugin that provides Facebook OAuth login support </description>
   
   <dependencies>
-    <!-- Core provided dependencies -->
   
+    <!-- Muikku -->
+
     <dependency>
       <groupId>fi.muikku</groupId>
       <artifactId>plugin</artifactId>
-      <scope>provided</scope>
     </dependency>
     
-    <!-- Jackson -->
-    
-    <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-mapper-asl</artifactId>
-      <scope>provided</scope>
-    </dependency>
   </dependencies>
-
+  
 </project>

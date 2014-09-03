@@ -8,43 +8,20 @@
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
+  <artifactId>dummy-mail-bridge-plugin</artifactId>
   <packaging>jar</packaging>
   <name>Muikku plugin that provides dummy mail bridge</name>
-
-  <build>
-    <finalName>${project.artifactId}</finalName>
-    <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.1</version>
-        <configuration>
-          <source>${maven.compiler.source}</source>
-          <target>${maven.compiler.target}</target>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+  <description>Plugin for Muikku that provides a dummy mail bridge Plugin is mainly indented to be used for testing purposes.</description>
 
   <dependencies>
+  
+    <!-- Muikku -->
+
     <dependency>
       <groupId>fi.muikku</groupId>
       <artifactId>plugin</artifactId>
-      <scope>provided</scope>
     </dependency>
-  </dependencies>
   
-  <repositories>
-    <repository>
-      <id>otavanopisto-snapshots</id>
-      <name>Otavan Opisto Snapshots</name>
-      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/snapshots</url>
-    </repository>
-    <repository>
-      <id>otavanopisto-releases</id>
-      <name>Otavan Opisto Releases</name>
-      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases</url>
-    </repository>
-  </repositories>
-  <description>Plugin for Muikku that provides a dummy mail bridge Plugin is mainly indented to be used for testing purposes.</description>
-  <artifactId>dummy-mail-bridge-plugin</artifactId>
+  </dependencies>
+
 </project>

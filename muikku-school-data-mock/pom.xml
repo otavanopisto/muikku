@@ -9,62 +9,25 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
   
-  <properties>
-  </properties>
-
   <artifactId>school-data-mock</artifactId>
   <packaging>jar</packaging>
   <name>Muikku School Data Mock</name>
-  <description>School Data Bridge that can be used for testing puposes.  </description>
-
-  <build>
-    <finalName>${project.artifactId}</finalName>
-    <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.1</version>
-        <configuration>
-          <source>${maven.compiler.source}</source>
-          <target>${maven.compiler.target}</target>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
-
+  <description>School Data Bridge that can be used for testing puposes.</description>
+  
   <dependencies>
   
-    <!-- Core provided dependencies -->
-  
+    <!-- Muikku -->
+    
     <dependency>
       <groupId>fi.muikku</groupId>
       <artifactId>plugin</artifactId>
-      <scope>provided</scope>
     </dependency>
-
-    <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-    </dependency>
-    
-    <!-- Core plugins -->
   
     <dependency>
       <groupId>fi.muikku</groupId>
       <artifactId>core-plugins</artifactId>
-      <scope>provided</scope>
     </dependency>
-  </dependencies>
   
-  <repositories>
-    <repository>
-      <id>otavanopisto-snapshots</id>
-      <name>Otavan Opisto Snapshots</name>
-      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/snapshots</url>
-    </repository>
-    <repository>
-      <id>otavanopisto-releases</id>
-      <name>Otavan Opisto Releases</name>
-      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases</url>
-    </repository>
-  </repositories>
+  </dependencies>
+
 </project>
