@@ -30,9 +30,9 @@
       this._coursesContainer.on("click", ".cp-course-tour-button", $.proxy(this._onCheckCourseClick, this));
 
       var coursePickerSearchCoursesInput = widgetElement.find("input[name='coursePickerSearch']");
-      coursePickerSearchCoursesInput.change($.proxy(this._onSearchCoursesChange, this));
+      coursePickerSearchCoursesInput.keyup($.proxy(this._onSearchCoursesChange, this));
 
-    //Toggle course details
+    // Toggle course details
 
       $(document).on('click', '.cp-course-details', function(){
        var dDiv = $(this).find($(".cp-course-content-details"));
@@ -137,7 +137,7 @@
       var term = element.val();
       var hash = window.location.hash.substring(1);
       
-      if ((term != undefined) && (term != "")) {
+      if ((term != undefined) && (term != "") && (term.length > 2) ) {
         _this._coursesContainer.children().remove();
         
         if (hash == "my") {
