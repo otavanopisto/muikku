@@ -1,9 +1,7 @@
 	package fi.muikku.plugins.calendar;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigDecimal;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,7 +15,6 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import net.fortuna.ical4j.data.CalendarBuilder;
 import net.fortuna.ical4j.data.ParserException;
 import net.fortuna.ical4j.model.Component;
 import net.fortuna.ical4j.model.Property;
