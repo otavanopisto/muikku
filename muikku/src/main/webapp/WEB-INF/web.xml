@@ -37,7 +37,12 @@
         <param-name>javax.faces.FACELETS_SKIP_COMMENTS</param-name>
         <param-value>true</param-value>
     </context-param>
-
+    
+    <context-param>
+        <param-name>org.ocpsoft.rewrite.annotation.SCAN_LIB_DIRECTORY</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    
     <listener>
       <listener-class>fi.muikku.rest.OAuthInjectListener</listener-class>
     </listener>
