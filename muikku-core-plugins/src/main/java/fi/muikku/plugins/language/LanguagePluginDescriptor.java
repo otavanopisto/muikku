@@ -14,6 +14,10 @@ import fi.muikku.plugin.PluginDescriptor;
 public class LanguagePluginDescriptor implements PluginDescriptor, LocalizedPluginDescriptor {
 
   @Override
+  public void init() {
+  }
+
+  @Override
   public String getName() {
     return "language";
   }

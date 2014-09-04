@@ -13,6 +13,10 @@ import fi.muikku.plugin.PluginDescriptor;
 
 public class UserPluginDescriptor implements PluginDescriptor, LocalizedPluginDescriptor {
 
+  @Override
+  public void init() {
+  }
+
 	@Override
 	public String getName() {
 		return "user";

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -25,7 +24,7 @@ public class CommunicatorPluginDescriptor implements PluginDescriptor, Localized
   @Any
   private Instance<MessagingWidget> messagingWidgets;
 
-  @PostConstruct
+  @Override
   public void init() {
     for (MessagingWidget messagingWidget : messagingWidgets) {
       messagingWidget.persistCategory(MESSAGING_CATEGORY);

@@ -14,7 +14,11 @@ import fi.muikku.plugin.AfterPluginsInitEvent;
 import fi.muikku.plugin.PluginDescriptor;
 
 public class DataPluginDescriptor implements PluginDescriptor {
-	
+
+  @Override
+  public void init() {
+  }
+
 	@Inject
 	private DataPluginController dataPluginController;
 	

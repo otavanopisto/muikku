@@ -1,6 +1,5 @@
 package fi.muikku.plugins.schooldatalocal;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import fi.muikku.model.base.SchoolDataSource;
@@ -18,7 +17,7 @@ public class SchoolDataLocalPluginDescriptor implements PluginDescriptor, Priori
 		return "school-data-local";
 	}
 
-  @PostConstruct
+  @Override
   public void init() {
     /**
      * Ensure that SchoolDataSource is defined

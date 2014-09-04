@@ -20,6 +20,10 @@ public class SeekerPluginDescriptor implements PluginDescriptor, LocalizedPlugin
   private WidgetController widgetController;
 
   @Override
+  public void init() {
+  }
+
+  @Override
 	public String getName() {
 		return "seeker";
 	}

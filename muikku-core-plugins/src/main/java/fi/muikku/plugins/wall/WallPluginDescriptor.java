@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.LocaleUtils;
@@ -32,13 +31,8 @@ public class WallPluginDescriptor implements PluginDescriptor, LocalizedPluginDe
   @Inject
   private UserController userController;
   
-	@Override
-	public String getName() {
-		return "wall";
-	}
-	
-	@PostConstruct
-	public void init() {
+  @Override
+  public void init() {
 	  // Initialize workspace walls
 	  
 	  List<WorkspaceEntity> workspaceEntities = workspaceController.listWorkspaceEntities();
@@ -57,7 +51,12 @@ public class WallPluginDescriptor implements PluginDescriptor, LocalizedPluginDe
         wallController.createUserWall(userEntity);
     }
 	}
-
+  
+  @Override
+  public String getName() {
+    return "wall";
+  }
+  
 	@Override
   public List<LocaleBundle> getLocaleBundles() {
     List<LocaleBundle> bundles = new ArrayList<LocaleBundle>();

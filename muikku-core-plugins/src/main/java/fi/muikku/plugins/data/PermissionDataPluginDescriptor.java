@@ -11,7 +11,11 @@ public class PermissionDataPluginDescriptor implements PluginDescriptor, Priorit
   
   @Inject
   private PermissionsPluginController permissionsPluginController;
-	
+
+  @Override
+  public void init() {
+  }
+
 	@Override
 	public String getName() {
 		return "data-permissions";

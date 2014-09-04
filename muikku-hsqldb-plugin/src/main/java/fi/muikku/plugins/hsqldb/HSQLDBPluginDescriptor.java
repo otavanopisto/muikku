@@ -2,8 +2,6 @@ package fi.muikku.plugins.hsqldb;
 
 import java.io.IOException;
 
-import javax.annotation.PostConstruct;
-
 import org.hsqldb.Server;
 import org.hsqldb.persist.HsqlProperties;
 import org.hsqldb.server.ServerAcl.AclFormatException;
@@ -13,13 +11,8 @@ import fi.muikku.plugin.PluginDescriptor;
 
 public class HSQLDBPluginDescriptor implements PluginDescriptor {
 
-	@Override
-	public String getName() {
-		return "hsqldb";
-	}
-
-	@PostConstruct
-	public void init() {
+  @Override
+  public void init() {
 		HsqlProperties props = new HsqlProperties();
 	   
     ServerConfiguration.translateDefaultDatabaseProperty(props);
@@ -37,5 +30,10 @@ public class HSQLDBPluginDescriptor implements PluginDescriptor {
 			throw new RuntimeException(e);
 		}
 	}
+
+  @Override
+  public String getName() {
+    return "hsqldb";
+  }
 
 }

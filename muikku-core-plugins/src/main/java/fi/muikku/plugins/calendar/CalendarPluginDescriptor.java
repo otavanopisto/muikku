@@ -22,6 +22,10 @@ public class CalendarPluginDescriptor implements PluginDescriptor, LocalizedPlug
 //	private static final String DEFAULT_EVENT_TYPE_NAME = "default";
 //	private static final String DEFAULT_CALENDAR_ID_SETTING = "defaultCalendarId";
 //	
+  @Override
+  public void init() {
+  }
+
 	@Override
 	public String getName() {
 		return "calendar";

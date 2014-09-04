@@ -14,6 +14,10 @@ import fi.muikku.plugin.PluginDescriptor;
 
 public class NotifierPluginDescriptor implements PluginDescriptor, LocalizedPluginDescriptor {
 
+  @Override
+  public void init() {
+  }
+
   @Inject
   private NotifierController notifierController;
   

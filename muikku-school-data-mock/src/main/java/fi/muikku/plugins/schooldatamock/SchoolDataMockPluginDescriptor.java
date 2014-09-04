@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -23,7 +22,7 @@ public class SchoolDataMockPluginDescriptor implements PluginDescriptor {
   @Inject
 	private SchoolDataMockPluginController schoolDataMockPluginController;
 	
-  @PostConstruct
+  @Override
   public void init() {
     /**
      * Ensure that SchoolDataSource is defined

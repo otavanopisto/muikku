@@ -12,7 +12,11 @@ import fi.muikku.plugin.LocalizedPluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
 
 public class WorkspacePluginDescriptor implements PluginDescriptor, LocalizedPluginDescriptor {
-	
+
+  @Override
+  public void init() {
+  }
+
 	@Override
 	public String getName() {
 		return "workspace";

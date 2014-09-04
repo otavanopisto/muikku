@@ -12,7 +12,11 @@ import fi.muikku.plugin.LocalizedPluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
 
 public class SettingsPluginDescriptor implements PluginDescriptor, LocalizedPluginDescriptor {
-	
+
+  @Override
+  public void init() {
+  }
+
 	@Override
 	public String getName() {
 		return "settings";

@@ -89,6 +89,9 @@ public class Plugins {
     	try {
     	  firePluginInitEvent(pluginDescriptor, false);
     	  logger.info("Initializing plugin: " + pluginDescriptor.getName());
+    	  
+    	  pluginDescriptor.init();
+    	  
     	  firePluginInitEvent(pluginDescriptor, true);
     	  if (pluginDescriptor instanceof LocalizedPluginDescriptor) {
     	    List<LocaleBundle> localeBundles = ((LocalizedPluginDescriptor) pluginDescriptor).getLocaleBundles();

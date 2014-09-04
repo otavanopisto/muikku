@@ -14,6 +14,10 @@ import fi.muikku.plugin.PluginDescriptor;
 public class CredentialLoginPluginDescriptor implements PluginDescriptor, LocalizedPluginDescriptor {
 
   @Override
+  public void init() {
+  }
+
+  @Override
   public String getName() {
     return "credentiallogin";
   }
