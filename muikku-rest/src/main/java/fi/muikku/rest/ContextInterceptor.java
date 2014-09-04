@@ -27,7 +27,9 @@ public class ContextInterceptor implements PreProcessInterceptor {
   private SessionControllerDelegate sessionControllerDelegate;
 
   @Override
-  public ServerResponse preProcess(HttpRequest request, ResourceMethodInvoker method) throws Failure, WebApplicationException {
+  public ServerResponse preProcess(HttpRequest request, ResourceMethodInvoker methodInvoker) throws Failure, WebApplicationException {
+    Method method = methodInvoker.getMethod();
+    
     Annotation[][] methodParameterAnnotations = method.getParameterAnnotations();
     Class<?>[] methodParameterTypes = method.getParameterTypes();
     

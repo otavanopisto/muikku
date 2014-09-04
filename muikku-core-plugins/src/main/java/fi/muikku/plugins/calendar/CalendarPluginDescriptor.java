@@ -1,22 +1,15 @@
 package fi.muikku.plugins.calendar;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.ApplicationScoped;
 import org.apache.commons.lang3.LocaleUtils;
+
 import fi.muikku.i18n.LocaleBundle;
 import fi.muikku.i18n.LocaleLocation;
 import fi.muikku.plugin.LocalizedPluginDescriptor;
-import fi.muikku.plugin.PersistencePluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
-import fi.muikku.plugin.RESTPluginDescriptor;
-import fi.muikku.plugins.calendar.dao.UserCalendarDAO;
-import fi.muikku.plugins.calendar.model.UserCalendar;
-import fi.muikku.plugins.calendar.rest.CalendarRESTService;
 
 public class CalendarPluginDescriptor implements PluginDescriptor, LocalizedPluginDescriptor {
 

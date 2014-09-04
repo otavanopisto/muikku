@@ -10,7 +10,6 @@ import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.data.model.ProcessedScript;
 import fi.muikku.plugins.data.model.ProcessedScript_;
 
-
 public class ProcessedScriptDAO extends CorePluginsDAO<ProcessedScript> {
 
 	private static final long serialVersionUID = 7519257748266826253L;
