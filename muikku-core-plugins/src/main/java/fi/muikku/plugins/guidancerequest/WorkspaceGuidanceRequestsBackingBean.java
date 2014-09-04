@@ -10,10 +10,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.commons.lang3.StringUtils;
-
-import com.ocpsoft.pretty.faces.annotation.URLAction;
-import com.ocpsoft.pretty.faces.annotation.URLMapping;
-import com.ocpsoft.pretty.faces.annotation.URLMappings;
+import org.ocpsoft.rewrite.annotation.Join;
+import org.ocpsoft.rewrite.annotation.Parameter;
+import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.workspace.WorkspaceNavigationBackingBean;
@@ -23,13 +22,11 @@ import fi.muikku.session.SessionController;
 @Named
 @Stateful
 @RequestScoped
-@URLMappings(mappings = {
-  @URLMapping(
-      id = "workspaceGuidanceRequests", 
-      pattern = "/workspace/#{workspaceGuidanceRequestsBackingBean.workspaceUrlName}/guidancerequest/", 
-      viewId = "/guidancerequest/workspace_guidancerequest.jsf")
-})
+@Join (path = "/workspace/{workspaceUrlName}/guidancerequest/",  to = "/guidancerequest/workspace_guidancerequest.jsf")
 public class WorkspaceGuidanceRequestsBackingBean {
+
+  @Parameter
+  private String workspaceUrlName;
   
   @Inject
   private GuidanceRequestController guidanceRequestController;
@@ -43,7 +40,7 @@ public class WorkspaceGuidanceRequestsBackingBean {
   @Inject
   private WorkspaceNavigationBackingBean workspaceNavigationBackingBean;
 
-  @URLAction
+  @RequestAction
   public void init() throws FileNotFoundException {
     String urlName = getWorkspaceUrlName();
     if (StringUtils.isBlank(urlName)) {
@@ -98,6 +95,5 @@ public class WorkspaceGuidanceRequestsBackingBean {
   }
   
   private Long workspaceId;
-  private String workspaceUrlName;
   private String newGuidanceRequestMessage;
 }

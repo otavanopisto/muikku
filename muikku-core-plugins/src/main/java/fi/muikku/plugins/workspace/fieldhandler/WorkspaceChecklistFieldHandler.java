@@ -1,7 +1,9 @@
 package fi.muikku.plugins.workspace.fieldhandler;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +12,7 @@ import javax.inject.Inject;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.elasticsearch.common.mvel2.optimizers.impl.refl.nodes.ArrayLength;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -85,7 +88,7 @@ public class WorkspaceChecklistFieldHandler extends AbstractWorkspaceFieldHandle
       throws MaterialQueryIntegrityExeption {
 
     String parameterName = getHtmlFieldName(workspaceMaterialField.getName());
-    List<String> parameterValues = Arrays.asList(requestParameterMap.get(parameterName));
+    List<String> parameterValues = requestParameterMap.containsKey(parameterName) ? Arrays.asList(requestParameterMap.get(parameterName)) : new ArrayList<String>();
     QueryChecklistField queryField = (QueryChecklistField) workspaceMaterialField.getQueryField();
     List<QueryChecklistFieldOption> fieldOptions = queryChecklistFieldController.listQueryChecklistFieldOptionsByField(queryField);
     

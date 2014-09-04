@@ -11,10 +11,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.commons.lang3.StringUtils;
-
-import com.ocpsoft.pretty.faces.annotation.URLAction;
-import com.ocpsoft.pretty.faces.annotation.URLMappings;
-import com.ocpsoft.pretty.faces.annotation.URLMapping;
+import org.ocpsoft.rewrite.annotation.Join;
+import org.ocpsoft.rewrite.annotation.Parameter;
+import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
@@ -22,19 +21,15 @@ import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.muikku.schooldata.WorkspaceController;
 
-@SuppressWarnings("el-syntax")
 @Named
 @Stateful
 @RequestScoped
-@URLMappings(mappings = { 
-  @URLMapping(
-	  id = "workspace-materials", 
-  	pattern = "/workspace/#{workspaceMaterialsBackingBean.workspaceUrlName}/materials/", 
-  	viewId = "/workspaces/workspace-materials.jsf"
-  )}
-)
+@Join (path = "/workspace/{workspaceUrlName}/materials/", to = "/workspaces/workspace-materials.jsf")
 public class WorkspaceMaterialsBackingBean {
-	
+
+  @Parameter
+  private String workspaceUrlName;
+  
 	@Inject
 	private WorkspaceController workspaceController;
 	
@@ -45,7 +40,7 @@ public class WorkspaceMaterialsBackingBean {
   @Named
   private WorkspaceNavigationBackingBean workspaceNavigationBackingBean;
 
-	@URLAction
+	@RequestAction
 	public void init() throws FileNotFoundException {
 	  String urlName = getWorkspaceUrlName();
 	  
@@ -98,5 +93,4 @@ public class WorkspaceMaterialsBackingBean {
 	}
 
 	private WorkspaceRootFolder rootFolder;
-	private String workspaceUrlName;
 }
