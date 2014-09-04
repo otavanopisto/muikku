@@ -29,6 +29,10 @@
       <property name="hibernate.generate_statistics" value="true" />
       <property name="hibernate.session.events.log" value="false" />
       <property name="hibernate.hbm2ddl.auto" value="update" />
+
+      <!-- Byte code instrumentation -->
+      
+      <property name="hibernate.ejb.use_class_enhancer" value="true"/>
       
     </properties>
 
