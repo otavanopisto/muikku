@@ -9,35 +9,32 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-
 public class SchoolDataSourceDAO extends CoreDAO<SchoolDataSource> {
 
- 
-	private static final long serialVersionUID = 7953980911123413195L;
+  private static final long serialVersionUID = 7953980911123413195L;
 
-	public SchoolDataSource create(String identifier) {
+  public SchoolDataSource create(String identifier) {
     SchoolDataSource dataSource = new SchoolDataSource();
 
     dataSource.setIdentifier(identifier);
-    
+
     getEntityManager().persist(dataSource);
-    
+
     return dataSource;
   }
-  
+
   public SchoolDataSource findByIdentifier(String identifier) {
-    EntityManager entityManager = getEntityManager(); 
-    
+    EntityManager entityManager = getEntityManager();
+
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
     CriteriaQuery<SchoolDataSource> criteria = criteriaBuilder.createQuery(SchoolDataSource.class);
     Root<SchoolDataSource> root = criteria.from(SchoolDataSource.class);
     criteria.select(root);
     criteria.where(
-        criteriaBuilder.equal(root.get(SchoolDataSource_.identifier), identifier)
+      criteriaBuilder.equal(root.get(SchoolDataSource_.identifier), identifier)
     );
-    
+
     return getSingleResult(entityManager.createQuery(criteria));
   }
-  
 
 }
