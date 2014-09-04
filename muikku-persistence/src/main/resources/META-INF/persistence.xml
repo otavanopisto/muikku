@@ -8,10 +8,6 @@
     <jta-data-source>java:/jdbc/muikku</jta-data-source>
     
     <properties>
-      <property name="hibernate.hbm2ddl.auto" value="update" />
-      <property name="hibernate.show_sql" value="false" />
-      <property name="hibernate.format_sql" value="false" />
-
       <!-- Connection -->
       
       <property name="hibernate.connection.useUnicode" value="true" />
@@ -26,10 +22,13 @@
       <property name="hibernate.cache.use_second_level_cache" value="true" />
       <property name="hibernate.cache.use_query_cache" value="true" />
       
-      <!-- Statistics -->
-      
+      <!-- Statistics and Debugging -->
+
+      <property name="hibernate.format_sql" value="false" />
+      <property name="hibernate.show_sql" value="false" />
       <property name="hibernate.generate_statistics" value="true" />
-      <property name="hibernate.cache.infinispan.statistics" value="true"/>
+      <property name="hibernate.session.events.log" value="false" />
+      <property name="hibernate.hbm2ddl.auto" value="update" />
       
     </properties>
 
