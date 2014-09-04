@@ -5,6 +5,13 @@
     xsi:schemaLocation="
         http://java.sun.com/xml/ns/javaee
         http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+  
+  <session-config>
+    <cookie-config>
+      <path>/</path>
+    </cookie-config>
+    <tracking-mode>COOKIE</tracking-mode>
+  </session-config>
         
         <mime-mapping>
             <extension>eot</extension>
