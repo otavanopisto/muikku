@@ -3,7 +3,7 @@ package fi.muikku.plugins;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import fi.muikku.plugin.PluginDAO;
+import fi.muikku.dao.PluginDAO;
 
 public abstract class CorePluginsDAO<T> extends PluginDAO<T> {
   

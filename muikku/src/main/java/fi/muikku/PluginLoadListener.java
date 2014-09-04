@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
+import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.LocaleUtils;
 
@@ -14,6 +15,7 @@ import fi.muikku.i18n.LocaleLocation;
 import fi.muikku.plugins.Plugins;
 
 @WebListener
+@Transactional
 public class PluginLoadListener implements ServletContextListener {
 
   @Inject

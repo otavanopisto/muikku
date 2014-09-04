@@ -1,6 +1,5 @@
-package fi.muikku.plugin;
+package fi.muikku.dao;
 
-import fi.muikku.dao.AbstractDAO;
 
 public abstract class PluginDAO<T> extends AbstractDAO<T> {
 
