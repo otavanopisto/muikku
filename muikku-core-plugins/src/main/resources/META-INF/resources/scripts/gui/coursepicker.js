@@ -32,7 +32,7 @@
       var coursePickerSearchCoursesInput = widgetElement.find("input[name='coursePickerSearch']");
       coursePickerSearchCoursesInput.keyup($.proxy(this._onSearchCoursesChange, this));
 
-    // Toggle course details
+      // Toggle course details
 
       $(document).on('click', '.cp-course-details', function(){
        var dDiv = $(this).find($(".cp-course-content-details"));
@@ -47,7 +47,7 @@
       
       
       
-      var cpCat = $("#cpCategories").find("a");
+      var cpCat = $("#cpCategories").find("span");
       var btnVal = $("#btnValue").html();
       
       // Find category names, append the first one to button
@@ -57,14 +57,19 @@
       
       if(btnVal == ''){
         var fCat = $(cpCat[0]);  
+        var fCatId = fCat.attr('id');
         $("#btnValue").append(fCat.html());
+        $("#btnValue").attr('data-name', fCatId);      
       }
 
       // Choose category
       
-      $("#cpCategories a").each(function(){
+      $("#cpCategories span").each(function(){
+      
        $(this).click(function(){
+         var eId = $(this).attr('id');         
          $("#btnValue").empty();
+         $("#btnValue").attr('data-name', eId);
          $("#btnValue").append($(this).html());
          $(".cp-side-button-dropdown").hide();
        }); 
@@ -135,7 +140,8 @@
       var _this = this;
       var element = $(event.target);
       var term = element.val();
-      var hash = window.location.hash.substring(1);
+ //     var hash = window.location.hash.substring(1);
+      var hash = $("#btnValue").attr('data-name');
       
       if ((term != undefined) && (term != "") && (term.length > 2) ) {
         _this._coursesContainer.children().remove();
