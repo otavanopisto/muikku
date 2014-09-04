@@ -2,9 +2,6 @@ package fi.muikku.plugins.wall;
 
 import java.util.Date;
 
-import fi.tranquil.TranquilEntity;
-
-@TranquilEntity
 public class WallFeedItem {
 
   public WallFeedItem(Date date) {

@@ -5,9 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Transient;
 
-import fi.muikku.tranquil.WorkspaceEntityResolver;
-import fi.tranquil.TranquilityEntityField;
-
 @Entity
 @PrimaryKeyJoinColumn(name="id")
 public class WorkspaceWall extends Wall {
@@ -27,6 +24,5 @@ public class WorkspaceWall extends Wall {
   }
   
   @Column (name = "workspace_id")
-  @TranquilityEntityField(WorkspaceEntityResolver.class)
   private Long workspace;
 }

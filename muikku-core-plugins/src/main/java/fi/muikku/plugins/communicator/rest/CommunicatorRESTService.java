@@ -42,14 +42,6 @@ import fi.muikku.schooldata.UserController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.security.AuthorizationException;
 import fi.muikku.session.SessionController;
-import fi.tranquil.TranquilModelEntity;
-import fi.tranquil.TranquilModelType;
-import fi.tranquil.Tranquility;
-import fi.tranquil.TranquilityBuilder;
-import fi.tranquil.TranquilityBuilderFactory;
-import fi.tranquil.TranquilizingContext;
-import fi.tranquil.instructions.PropertyInjectInstruction.ValueGetter;
-import fi.tranquil.instructions.SuperClassInstructionSelector;
 
 @Path("/communicator")
 @RequestScoped

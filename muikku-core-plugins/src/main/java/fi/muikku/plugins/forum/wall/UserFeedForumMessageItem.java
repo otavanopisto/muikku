@@ -2,9 +2,7 @@ package fi.muikku.plugins.forum.wall;
 
 import fi.muikku.plugins.forum.model.ForumMessage;
 import fi.muikku.plugins.wall.WallFeedItem;
-import fi.tranquil.TranquilEntity;
 
-@TranquilEntity
 public class UserFeedForumMessageItem extends WallFeedItem {
 
   private ForumMessage forumMessage;

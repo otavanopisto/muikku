@@ -1,8 +1,5 @@
 package fi.muikku.plugins.seeker;
 
-import fi.tranquil.TranquilEntity;
-
-@TranquilEntity
 public class DefaultSeekerResultImpl implements SeekerResult {
 
   private String link;

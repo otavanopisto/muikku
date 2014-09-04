@@ -1,9 +1,7 @@
 package fi.muikku.plugins.coursepicker;
 
 import fi.muikku.plugins.seeker.SeekerResult;
-import fi.tranquil.TranquilEntity;
 
-@TranquilEntity
 public class CoursePickerSeekerResult implements SeekerResult {
 
   private String link;

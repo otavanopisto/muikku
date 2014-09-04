@@ -12,8 +12,6 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 import fi.muikku.model.util.ArchivableEntity;
-import fi.muikku.tranquil.UserEntityResolver;
-import fi.tranquil.TranquilityEntityField;
 
 @Entity
 public class FriendRequest implements ArchivableEntity {
@@ -74,11 +72,9 @@ public class FriendRequest implements ArchivableEntity {
   private Boolean archived = Boolean.FALSE;
 
   @Column (name = "recipient_id")
-  @TranquilityEntityField(UserEntityResolver.class)
   private Long recipient;
   
   @Column (name = "creator_id")
-  @TranquilityEntityField(UserEntityResolver.class)
   private Long creator;
   
   @NotNull

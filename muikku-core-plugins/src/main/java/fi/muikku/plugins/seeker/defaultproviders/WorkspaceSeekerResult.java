@@ -1,9 +1,7 @@
 package fi.muikku.plugins.seeker.defaultproviders;
 
 import fi.muikku.plugins.seeker.SeekerResult;
-import fi.tranquil.TranquilEntity;
 
-@TranquilEntity
 public class WorkspaceSeekerResult implements SeekerResult {
 
   private String link;
