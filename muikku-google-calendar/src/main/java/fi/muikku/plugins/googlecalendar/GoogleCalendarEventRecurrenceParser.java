@@ -8,7 +8,6 @@ package fi.muikku.plugins.googlecalendar;
 
 import fi.muikku.calendar.CalendarEventRecurrenceFrequency;
 import fi.muikku.calendar.CalendarEventRecurrenceWeekDay;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;

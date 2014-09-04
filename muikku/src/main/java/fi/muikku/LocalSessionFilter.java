@@ -12,8 +12,6 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 
-import org.ocpsoft.rewrite.servlet.impl.RewriteServletRequestListener;
-
 import fi.muikku.session.SessionController;
 import fi.muikku.session.SessionControllerDelegate;
 import fi.muikku.session.local.LocalSession;
