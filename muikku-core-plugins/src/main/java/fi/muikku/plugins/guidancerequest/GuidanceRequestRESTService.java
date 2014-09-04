@@ -1,22 +1,10 @@
 package fi.muikku.plugins.guidancerequest;
 
-import java.util.Date;
-
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Response;
-
-import fi.muikku.model.users.UserEntity;
-import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugin.PluginRESTService;
-import fi.muikku.schooldata.WorkspaceController;
-import fi.muikku.security.AuthorizationException;
-import fi.muikku.session.SessionController;
 
 @Path("/guidancerequest")
 @RequestScoped

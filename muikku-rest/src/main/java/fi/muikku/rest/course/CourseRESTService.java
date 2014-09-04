@@ -1,39 +1,9 @@
 package fi.muikku.rest.course;
 
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import javax.ejb.Stateless;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Response;
-
-import fi.muikku.controller.messaging.MessagingWidget;
-import fi.muikku.i18n.LocaleController;
-import fi.muikku.model.users.UserEntity;
-import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.model.workspace.WorkspaceRoleEntity;
-import fi.muikku.model.workspace.WorkspaceSettings;
-import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.rest.AbstractRESTService;
-import fi.muikku.schooldata.RoleController;
-import fi.muikku.schooldata.UserController;
-import fi.muikku.schooldata.WorkspaceController;
-import fi.muikku.schooldata.entity.User;
-import fi.muikku.schooldata.entity.Workspace;
-import fi.muikku.schooldata.entity.WorkspaceUser;
-import fi.muikku.security.AuthorizationException;
-import fi.muikku.security.LoggedIn;
-import fi.muikku.session.SessionController;
 
 @Path("/course")
 @Stateless

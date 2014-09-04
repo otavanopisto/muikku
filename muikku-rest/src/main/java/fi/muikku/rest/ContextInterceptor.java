@@ -15,8 +15,6 @@ import org.jboss.resteasy.core.ServerResponse;
 import org.jboss.resteasy.spi.Failure;
 import org.jboss.resteasy.spi.HttpRequest;
 import org.jboss.resteasy.spi.interception.PreProcessInterceptor;
-import org.jboss.resteasy.spi.metadata.ResourceMethod;
-
 import fi.muikku.session.SessionControllerDelegate;
 
 //@Provider

@@ -2,20 +2,9 @@ package fi.muikku.plugins.material.rest;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
-import org.apache.commons.lang3.StringUtils;
-
 import fi.muikku.plugin.PluginRESTService;
-import fi.muikku.plugins.material.HtmlMaterialController;
-import fi.muikku.plugins.material.model.HtmlMaterial;
 
 @RequestScoped
 @Path("/materials")

@@ -10,6 +10,7 @@ import javax.inject.Inject;
 @RequestScoped
 public class Mailer {
 
+  @SuppressWarnings("cdi-ambiguous-dependency")
   @Inject
   private MailBridge bridge;
 

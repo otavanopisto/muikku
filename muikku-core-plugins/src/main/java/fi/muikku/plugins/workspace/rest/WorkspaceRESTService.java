@@ -1,36 +1,10 @@
 package fi.muikku.plugins.workspace.rest;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
-import org.apache.commons.lang3.StringUtils;
-
-import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugin.PluginRESTService;
-import fi.muikku.plugins.material.MaterialController;
-import fi.muikku.plugins.material.model.Material;
-import fi.muikku.plugins.workspace.WorkspaceMaterialController;
-import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
-import fi.muikku.plugins.workspace.model.WorkspaceNode;
-import fi.muikku.schooldata.WorkspaceController;
-import fi.muikku.schooldata.entity.Workspace;
-import fi.muikku.schooldata.entity.WorkspaceType;
-import fi.muikku.schooldata.entity.WorkspaceUser;
 
 @RequestScoped
 @Path("/workspace")
