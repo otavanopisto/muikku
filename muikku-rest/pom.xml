@@ -14,10 +14,6 @@
   <name>Muikku REST</name>
   <description>Muikku REST services</description>
 
-  <properties>
-    <resteasy-oauth.version>3.0.8.Final</resteasy-oauth.version>
-  </properties>
-
   <dependencies>
 
     <!-- Servlet -->
@@ -38,18 +34,8 @@
     
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
-      <artifactId>resteasy-oauth</artifactId>
-      <version>${resteasy-oauth.version}</version>
-    </dependency>
-        
-    <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>async-http-servlet-3.0</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxrs</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Commons -->

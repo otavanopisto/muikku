@@ -43,10 +43,11 @@
         <param-value>true</param-value>
     </context-param>
     
-    <listener>
-      <listener-class>fi.muikku.rest.OAuthInjectListener</listener-class>
-    </listener>
-      
+    <context-param>
+        <param-name>resteasy.scan</param-name>
+        <param-value>true</param-value>
+    </context-param>
+
   <filter>
     <filter-name>EncodingFilter</filter-name>
     <filter-class>fi.muikku.EncodingFilter</filter-class>
@@ -76,17 +77,4 @@
         <!-- Add additional files here, if desired, for example: <welcome-file>index.html</welcome-file> -->
         <welcome-file>index.jsf</welcome-file>
     </welcome-file-list>
-    
-    <!-- The OAuth Servlet handles token exchange -->
-    <servlet>
-      <servlet-name>OAuth</servlet-name>
-      <servlet-class>org.jboss.resteasy.auth.oauth.OAuthServlet</servlet-class>
-    </servlet>
-    
-    <!-- This will be the base for the token exchange endpoint URL -->
-    <servlet-mapping>
-      <servlet-name>OAuth</servlet-name>
-      <url-pattern>/oauth/*</url-pattern>
-    </servlet-mapping>
-    
 </web-app>
