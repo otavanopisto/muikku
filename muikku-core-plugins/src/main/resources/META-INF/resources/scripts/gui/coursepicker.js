@@ -33,7 +33,7 @@
       this._coursesContainer.on("click", ".cp-course-tour-button", $.proxy(this._onCheckCourseClick, this));
 
       var coursePickerSearchCoursesInput = widgetElement.find("input[name='coursePickerSearch']");
-      coursePickerSearchCoursesInput.keyup($.proxy(this._onSearchCoursesChange, this));
+      coursePickerSearchCoursesInput.keyup($.proxy(this._onSearchCoursesChange, this));      
 
       // Toggle course details
 
@@ -99,16 +99,19 @@
       var _this = this;
       var term = this._searchInput.val();
       var hash = $("#btnValue").attr('data-name');
+
+      var subjects = new Array();
       
-      if ((term != undefined) && (term != "") && (term.length > 2) ) {
+      var list = _this._widgetElement.find(".cp-side-content > .cp-subjectfilter:not(.cp-filter-disabled)");
+      list.each(function (index) {
+        subjects.push($(this).find("input[name='subjectId']").val());
+      });
+      
+      if (((term != undefined) && (term != "")) || (subjects.length > 0)) {
+        if (term.length <= 2) 
+          term = "";
+        
         _this._coursesContainer.children().remove();
-        
-        var subjects = new Array();
-        
-        var list = _this._widgetElement.find(".cp-side-content > .cp-subjectfilter:not(.cp-filter-disabled)");
-        list.each(function (index) {
-          subjects.push($(this).find("input[name='subjectId']").val());
-        });
         
         if (hash == "my") {
           RESTful.doGet(CONTEXTPATH + "/rest/course/searchUserCourses", {
