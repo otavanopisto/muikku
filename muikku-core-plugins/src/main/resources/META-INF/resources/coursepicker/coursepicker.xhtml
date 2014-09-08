@@ -49,6 +49,13 @@
 	           <div class="cp-filter ft-03">
 	            Peruskoulu
 	           </div>
+
+            <c:forEach var="subject" items="${CoursePicker.listSubjects()}">
+              <div class="cp-filter cp-subjectfilter cp-filter-disabled ft-00">
+                <input type="hidden" name="subjectId" value="${subject.identifier}" />
+                ${subject.name}
+              </div>
+            </c:forEach>
            </div>         
          </div>
        </div>           

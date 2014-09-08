@@ -17,6 +17,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fi.muikku.controller.messaging.MessagingWidget;
 import fi.muikku.i18n.LocaleController;
 import fi.muikku.model.users.UserEntity;
@@ -25,9 +27,12 @@ import fi.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.muikku.model.workspace.WorkspaceSettings;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.rest.AbstractRESTService;
+import fi.muikku.schooldata.CourseMetaController;
 import fi.muikku.schooldata.RoleController;
 import fi.muikku.schooldata.UserController;
 import fi.muikku.schooldata.WorkspaceController;
+import fi.muikku.schooldata.entity.CourseIdentifier;
+import fi.muikku.schooldata.entity.Subject;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceUser;
@@ -66,6 +71,9 @@ public class CourseRESTService extends AbstractRESTService {
   @Inject
   private LocaleController localeController;
 
+  @Inject
+  private CourseMetaController courseMetaController;
+  
   @Inject
   @Any
   private Instance<MessagingWidget> messagingWidgets;
@@ -168,7 +176,7 @@ public class CourseRESTService extends AbstractRESTService {
 
   @GET
   @Path ("/searchCourses")
-  public Response searchCourses(@QueryParam("searchString") String searchString) {
+  public Response searchCourses(@QueryParam("searchString") String searchString, @QueryParam("subjects") List<String> subjects) {
     List<Workspace> listWorkspaceEntities = workspaceController.listWorkspaces();
     List<WorkspaceEntity> courses = new ArrayList<WorkspaceEntity>();
     
@@ -178,8 +186,23 @@ public class CourseRESTService extends AbstractRESTService {
     for (Workspace workspace : listWorkspaceEntities) {
       WorkspaceEntity e = workspaceController.findWorkspaceEntity(workspace);
       
+      boolean accepted = true;
+      
+      if (!StringUtils.isEmpty(searchString))
+        accepted = ((workspace.getName().toLowerCase().contains(searchString)) || (workspace.getDescription().toLowerCase().contains(searchString))); 
+
+      if (!subjects.isEmpty()) {
+        if (workspace.getCourseIdentifierIdentifier() != null) {
+          CourseIdentifier courseIdentifier = courseMetaController.findCourseIdentifier(workspace.getSchoolDataSource(), workspace.getCourseIdentifierIdentifier());
+          Subject subject = courseMetaController.findSubject(workspace.getSchoolDataSource(), courseIdentifier.getSubjectIdentifier());
+  
+          accepted = accepted && subjects.contains(subject.getIdentifier());
+        } else
+          accepted = false;
+      }
+      
       // TODO remove
-      if ((workspace.getName().toLowerCase().contains(searchString)) || (workspace.getDescription().toLowerCase().contains(searchString)))
+      if (accepted)
         courses.add(e);
     }
 
@@ -203,7 +226,7 @@ public class CourseRESTService extends AbstractRESTService {
 
   @GET
   @Path ("/searchUserCourses")
-  public Response searchUserCourses(@QueryParam("userId") Long userId, @QueryParam("searchString") String searchString) {
+  public Response searchUserCourses(@QueryParam("userId") Long userId, @QueryParam("searchString") String searchString, @QueryParam("subjects") List<String> subjects) {
     UserEntity userEntity = userController.findUserEntityById(userId);
     List<WorkspaceUserEntity> courses = workspaceController.listWorkspaceEntitiesByUser(userEntity);
 
@@ -212,13 +235,28 @@ public class CourseRESTService extends AbstractRESTService {
     if (searchString != null)
       searchString = searchString.toLowerCase();
 
-    for (WorkspaceUserEntity workspace : courses) {
-      WorkspaceEntity e = workspace.getWorkspaceEntity();
-      Workspace ws = workspaceController.findWorkspace(e);
+    for (WorkspaceUserEntity workspaceUserEntity : courses) {
+      WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
+      Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+      
+      boolean accepted = true;
+      
+      if (!StringUtils.isEmpty(searchString))
+        accepted = ((workspace.getName().toLowerCase().contains(searchString)) || (workspace.getDescription().toLowerCase().contains(searchString))); 
+
+      if (!subjects.isEmpty()) {
+        if (workspace.getCourseIdentifierIdentifier() != null) {
+          CourseIdentifier courseIdentifier = courseMetaController.findCourseIdentifier(workspace.getSchoolDataSource(), workspace.getCourseIdentifierIdentifier());
+          Subject subject = courseMetaController.findSubject(workspace.getSchoolDataSource(), courseIdentifier.getSubjectIdentifier());
+  
+          accepted = accepted && subjects.contains(subject.getIdentifier());
+        } else
+          accepted = false;
+      }
       
       // TODO remove
-      if ((ws.getName().toLowerCase().contains(searchString)) || (ws.getDescription().toLowerCase().contains(searchString)))
-        filteredCourses.add(workspace);
+      if (accepted)
+        filteredCourses.add(workspaceUserEntity);
     }
     
     TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
@@ -239,7 +277,6 @@ public class CourseRESTService extends AbstractRESTService {
     ).build();
   }
 
-  
   private class CourseNameInjector implements ValueGetter<String> {
     @Override
     public String getValue(TranquilizingContext context) {
