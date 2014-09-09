@@ -37,9 +37,9 @@
 
       // Toggle course details
 
-      $(document).on('click', '.cp-course-details', function(){
-       var dDiv = $(this).find($(".cp-course-content-details"));
-       dDiv.toggle();
+      this._coursesContainer.on('click', '.cp-course-details', function() {
+        var dDiv = $(this).find($(".cp-course-content-details"));
+        dDiv.toggle();
       });     
       
       // Dropdown
@@ -251,18 +251,6 @@
     },
     _onSearchAllCoursesClick: function (event) {
       this._refreshListTimer();
-//      var _this = this;
-//
-//      _this._coursesContainer.children().remove();
-//      
-//      RESTful.doGet(CONTEXTPATH + "/rest/course/", {
-//        parameters: {
-//        }
-//      }).success(function (data, textStatus, jqXHR) {
-//        renderDustTemplate('coursepicker/coursepickercourse.dust', data, function (text) {
-//          _this._coursesContainer.append($.parseHTML(text));
-//        });
-//      });
     },
     _onSearchMyCoursesClick: function (event) {
       this._refreshListTimer();
