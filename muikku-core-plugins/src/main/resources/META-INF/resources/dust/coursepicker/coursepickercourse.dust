@@ -63,8 +63,10 @@
 		          {:else}
 		          <input class="bt-coursepicker cp-course-tour-button" type="button"
 		            value='{#localize key="plugin.coursepicker.course.checkout" /}' />
+		  <!-- 
 		          <input class="bt-coursepicker cp-course-attend-button" type="button"
 		            value='{#localize key="plugin.coursepicker.course.signup" /}' />
+		    -->         
 		          {/isMember}
 		        </div>
 	        </div>
