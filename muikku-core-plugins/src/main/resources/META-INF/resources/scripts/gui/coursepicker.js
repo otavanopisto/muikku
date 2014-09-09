@@ -90,7 +90,7 @@
           $(this).addClass("cp-filter-disabled");               
         }
         
-        _this._refreshList();
+        _this._refreshListTimer();
       });
     },
     deinitialize: function () {
@@ -111,58 +111,92 @@
         if (term.length <= 2) 
           term = "";
         
-        _this._coursesContainer.children().remove();
-        
         if (hash == "my") {
-          RESTful.doGet(CONTEXTPATH + "/rest/course/searchUserCourses", {
-            parameters: {
+          $.ajax({
+            url : CONTEXTPATH + "/rest/course/searchUserCourses",
+            dataType : "json",
+            data : {
               userId: _this._userId,
               searchString: term,
               subjects: subjects
+            },
+            traditional: true,
+            headers: {
+              "Accept-Language": getLocale()
+            },
+            accepts: {
+              'json' : 'application/json'
+            },
+            success : function(data) {
+              _this._coursesContainer.children().remove();
+              renderDustTemplate('coursepicker/coursepickermycourse.dust', data, function (text) {
+                _this._coursesContainer.append($.parseHTML(text));
+              });
             }
-          }).success(function (data, textStatus, jqXHR) {
-            renderDustTemplate('coursepicker/coursepickermycourse.dust', data, function (text) {
-              _this._coursesContainer.append($.parseHTML(text));
-            });
           });
         } else {
-          RESTful.doGet(CONTEXTPATH + "/rest/course/searchCourses", {
-            parameters: {
+          $.ajax({
+            url : CONTEXTPATH + "/rest/course/searchCourses",
+            dataType : "json",
+            data : {
               searchString: term,
               subjects: subjects
+            },
+            traditional: true,
+            headers: {
+              "Accept-Language": getLocale()
+            },
+            accepts: {
+              'json' : 'application/json'
+            },
+            success : function(data) {
+              _this._coursesContainer.children().remove();
+              renderDustTemplate('coursepicker/coursepickercourse.dust', data, function (text) {
+                _this._coursesContainer.append($.parseHTML(text));
+              });
             }
-          }).success(function (data, textStatus, jqXHR) {
-            renderDustTemplate('coursepicker/coursepickercourse.dust', data, function (text) {
-              _this._coursesContainer.append($.parseHTML(text));
-            });
           });
         }
       } else {
         if (hash == "my") {
-//          _this._onSearchMyCoursesClick(event);
-          _this._coursesContainer.children().remove();
-          
-          RESTful.doGet(CONTEXTPATH + "/rest/course/listUserCourses", {
-            parameters: {
+          $.ajax({
+            url : CONTEXTPATH + "/rest/course/listUserCourses",
+            dataType : "json",
+            data : {
               'userId': _this._userId
+            },
+            headers: {
+              "Accept-Language": getLocale()
+            },
+            accepts: {
+              'json' : 'application/json'
+            },
+            success : function(data) {
+              _this._coursesContainer.children().remove();
+              renderDustTemplate('coursepicker/coursepickermycourse.dust', data, function (text) {
+                _this._coursesContainer.append($.parseHTML(text));
+              });
             }
-          }).success(function (data, textStatus, jqXHR) {
-            renderDustTemplate('coursepicker/coursepickermycourse.dust', data, function (text) {
-              _this._coursesContainer.append($.parseHTML(text));
-            });
           });
         }
         else {
-//          _this._onSearchAllCoursesClick(event);
-          _this._coursesContainer.children().remove();
-          
-          RESTful.doGet(CONTEXTPATH + "/rest/course/", {
-            parameters: {
+          $.ajax({
+            url : CONTEXTPATH + "/rest/course/",
+            dataType : "json",
+            data : {
+            },
+            headers: {
+              "Accept-Language": getLocale()
+            },
+            accepts: {
+              'json' : 'application/json'
+            },
+            success : function(data) {
+              _this._coursesContainer.children().remove();
+              renderDustTemplate('coursepicker/coursepickercourse.dust', data, function (text) {
+                _this._coursesContainer.append($.parseHTML(text));
+              });
             }
-          }).success(function (data, textStatus, jqXHR) {
-            renderDustTemplate('coursepicker/coursepickercourse.dust', data, function (text) {
-              _this._coursesContainer.append($.parseHTML(text));
-            });
           });
         }
       }
@@ -172,17 +206,35 @@
       
       _this._coursesContainer.children().remove();
       
-      RESTful.doGet(CONTEXTPATH + "/rest/course/", {
-        parameters: {
+      $.ajax({
+        url : CONTEXTPATH + "/rest/course/",
+        dataType : "json",
+        data : {
+        },
+        headers: {
+          "Accept-Language": getLocale()
+        },
+        accepts: {
+          'json' : 'application/json'
+        },
+        success : function(data) {
+          renderDustTemplate('coursepicker/coursepickercourse.dust', data, function (text) {
+            _this._coursesContainer.append($.parseHTML(text));
+          });
         }
-      }).success(function (data, textStatus, jqXHR) {
-        renderDustTemplate('coursepicker/coursepickercourse.dust', data, function (text) {
-          _this._coursesContainer.append($.parseHTML(text));
-        });
       });
     },
+    _refreshListTimer: function () {
+      var _this = this;
+      
+      clearTimeout(_this.listReloadTimer);
+      _this.listReloadTimer = setTimeout(
+          function () {
+            _this._refreshList();
+          }, 500);
+    },
     _onSearchAllCoursesClick: function (event) {
-      this._refreshList();
+      this._refreshListTimer();
 //      var _this = this;
 //
 //      _this._coursesContainer.children().remove();
@@ -197,10 +249,10 @@
 //      });
     },
     _onSearchMyCoursesClick: function (event) {
-      this._refreshList();
+      this._refreshListTimer();
     },
     _onSearchCoursesChange: function (event) {
-      this._refreshList();
+      this._refreshListTimer();
     },
     _onCheckCourseClick: function (event) {
       event.stopPropagation();
