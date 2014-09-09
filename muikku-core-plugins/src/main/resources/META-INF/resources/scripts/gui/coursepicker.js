@@ -44,8 +44,25 @@
       
       // Dropdown
       
-      $(".bt-mainFunction").click(function() {
-          $(".cp-side-button-dropdown").toggle();
+      $(".bt-mainFunction").click( function() {
+        var mfb = $(this) ;
+        var mfd = mfb.find(".bt-mainFunction-decoration");
+        
+         mfb.addClass("bt-mainFunction-active");
+         mfd.removeClass("icon-arrow-down");
+         mfd.addClass("icon-arrow-up");
+         $(".cp-side-button-dropdown").show(10, function(){
+           var dd = $(this);
+           $(document).bind("click", function(){
+             dd.hide(10, function(){
+               mfd.removeClass("icon-arrow-up");               
+               mfd.addClass("icon-arrow-down");
+               mfb.removeClass("bt-mainFunction-active");
+                $(document).unbind('click');
+              });
+           });
+           
+         });
       });
       
       
@@ -67,8 +84,7 @@
 
       // Choose category
       
-      $("#cpCategories span").each(function(){
-      
+      $("#cpCategories span").each(function(){    
        $(this).click(function(){
          var eId = $(this).attr('id');         
          $("#btnValue").empty();
