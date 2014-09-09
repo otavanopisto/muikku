@@ -46,12 +46,18 @@
       
       $(".bt-mainFunction").click( function() {
         var mfb = $(this) ;
+        var mfd = mfb.find(".bt-mainFunction-decoration");
+        
          mfb.addClass("bt-mainFunction-active");
-         $(".cp-side-button-dropdown").show(100, function(){
+         mfd.removeClass("icon-arrow-down");
+         mfd.addClass("icon-arrow-up");
+         $(".cp-side-button-dropdown").show(10, function(){
            var dd = $(this);
            $(document).bind("click", function(){
-             dd.hide(100, function(){
-                mfb.removeClass("bt-mainFunction-active");
+             dd.hide(10, function(){
+               mfd.removeClass("icon-arrow-up");               
+               mfd.addClass("icon-arrow-down");
+               mfb.removeClass("bt-mainFunction-active");
                 $(document).unbind('click');
               });
            });

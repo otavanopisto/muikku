@@ -45,20 +45,7 @@
     @include gradient-top-bottom(rgba(253,167,38,1),rgba(237,142,0,1),#ed8e00);
 
   &.bt-mainFunction-active {
-/*    background-color:#ed8e00; 
-    border:1px solid #d9e4e8;
-    font-size:1.1em;
-    background: rgb(237,142,0); */
     @include gradient-top-bottom(rgba(237,142,0,1),rgba(253,167,38,1),#ed8e00);
-    
-    .bt-mainFunction-decoration{
-      border-right:1px solid #f6c06d;
-		  filter:  progid:DXImageTransform.Microsoft.BasicImage(rotation=2);  /* IE6,IE7 */
-		  ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2)"; /* IE8 */
-		  -moz-transform: rotate(-180deg);  /* FF3.5+ */
-		  -o-transform: rotate(-180deg);  /* Opera 10.5 */
-		  -webkit-transform: rotate(-180deg);  /* Safari 3.1+, Chrome */
-    }
 }
 
 
@@ -75,7 +62,7 @@
     border-left:1px solid #f6c06d;
     display:inline-block;
     float:right;
-    padding:5px 4px 3px 4px;
+    padding:4px 4px 3px 4px;
     font-size:2.45em;
   }
 
