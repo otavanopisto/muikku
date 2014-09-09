@@ -86,11 +86,11 @@
       
       $("#cpCategories span").each(function(){    
        $(this).click(function(){
-         var eId = $(this).attr('id');         
+         var eId = $(this).attr('id');            
          $("#btnValue").empty();
          $("#btnValue").attr('data-name', eId);
          $("#btnValue").append($(this).html());
-         $(".cp-side-button-dropdown").hide();
+         $(".cp-side-button-dropdown").hide();      
        }); 
         
       });
