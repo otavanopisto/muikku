@@ -44,8 +44,19 @@
       
       // Dropdown
       
-      $(".bt-mainFunction").click(function() {
-          $(".cp-side-button-dropdown").toggle();
+      $(".bt-mainFunction").click( function() {
+        var mfb = $(this) ;
+         mfb.addClass("bt-mainFunction-active");
+         $(".cp-side-button-dropdown").show(100, function(){
+           var dd = $(this);
+           $(document).bind("click", function(){
+             dd.hide(100, function(){
+                mfb.removeClass("bt-mainFunction-active");
+                $(document).unbind('click');
+              });
+           });
+           
+         });
       });
       
       
@@ -67,8 +78,7 @@
 
       // Choose category
       
-      $("#cpCategories span").each(function(){
-      
+      $("#cpCategories span").each(function(){    
        $(this).click(function(){
          var eId = $(this).attr('id');         
          $("#btnValue").empty();
