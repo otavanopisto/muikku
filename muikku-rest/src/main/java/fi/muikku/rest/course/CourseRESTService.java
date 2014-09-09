@@ -17,6 +17,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fi.muikku.controller.messaging.MessagingWidget;
 import fi.muikku.i18n.LocaleController;
 import fi.muikku.model.users.UserEntity;
@@ -25,9 +27,12 @@ import fi.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.muikku.model.workspace.WorkspaceSettings;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.rest.AbstractRESTService;
+import fi.muikku.schooldata.CourseMetaController;
 import fi.muikku.schooldata.RoleController;
 import fi.muikku.schooldata.UserController;
 import fi.muikku.schooldata.WorkspaceController;
+import fi.muikku.schooldata.entity.CourseIdentifier;
+import fi.muikku.schooldata.entity.Subject;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceUser;
@@ -66,6 +71,9 @@ public class CourseRESTService extends AbstractRESTService {
   @Inject
   private LocaleController localeController;
 
+  @Inject
+  private CourseMetaController courseMetaController;
+  
   @Inject
   @Any
   private Instance<MessagingWidget> messagingWidgets;
@@ -165,7 +173,110 @@ public class CourseRESTService extends AbstractRESTService {
       tranquility.entity(workspaceUserEntity)
     ).build();
   }
+
+  @GET
+  @Path ("/searchCourses")
+  public Response searchCourses(@QueryParam("searchString") String searchString, @QueryParam("subjects") List<String> subjects) {
+    List<Workspace> listWorkspaceEntities = workspaceController.listWorkspaces();
+    List<WorkspaceEntity> courses = new ArrayList<WorkspaceEntity>();
+    
+    if (searchString != null)
+      searchString = searchString.toLowerCase();
+
+    for (Workspace workspace : listWorkspaceEntities) {
+      WorkspaceEntity e = workspaceController.findWorkspaceEntity(workspace);
+      
+      boolean accepted = true;
+      
+      if (!StringUtils.isEmpty(searchString))
+        accepted = ((workspace.getName().toLowerCase().contains(searchString)) || (workspace.getDescription().toLowerCase().contains(searchString))); 
+
+      if (!subjects.isEmpty()) {
+        if (workspace.getCourseIdentifierIdentifier() != null) {
+          CourseIdentifier courseIdentifier = courseMetaController.findCourseIdentifier(workspace.getSchoolDataSource(), workspace.getCourseIdentifierIdentifier());
+          Subject subject = courseMetaController.findSubject(workspace.getSchoolDataSource(), courseIdentifier.getSubjectIdentifier());
   
+          accepted = accepted && subjects.contains(subject.getIdentifier());
+        } else
+          accepted = false;
+      }
+      
+      // TODO remove
+      if (accepted)
+        courses.add(e);
+    }
+
+    TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
+    Tranquility tranquility = tranquilityBuilder.createTranquility()
+      .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
+      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("name", new CourseNameInjector()))
+      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("description", new CourseDescriptionInjector()))
+      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("rating", new CourseRatingInjector()))
+      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("ratingCount", new CourseRatingCountInjector()))
+      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("isMember", new CourseIsMemberInjector()))
+      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("teachers", new CourseTeachersGetter()));
+//      .addInstruction(CourseEntity.class, tranquilityBuilder.createPropertyInjectInstruction("course", new CourseSchoolDataInjector()));
+      ;    
+    Collection<TranquilModelEntity> entities = tranquility.entities(courses);
+    
+    return Response.ok(
+      entities
+    ).build();
+  }
+
+  @GET
+  @Path ("/searchUserCourses")
+  public Response searchUserCourses(@QueryParam("userId") Long userId, @QueryParam("searchString") String searchString, @QueryParam("subjects") List<String> subjects) {
+    UserEntity userEntity = userController.findUserEntityById(userId);
+    List<WorkspaceUserEntity> courses = workspaceController.listWorkspaceEntitiesByUser(userEntity);
+
+    List<WorkspaceUserEntity> filteredCourses = new ArrayList<WorkspaceUserEntity>();
+    
+    if (searchString != null)
+      searchString = searchString.toLowerCase();
+
+    for (WorkspaceUserEntity workspaceUserEntity : courses) {
+      WorkspaceEntity workspaceEntity = workspaceUserEntity.getWorkspaceEntity();
+      Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+      
+      boolean accepted = true;
+      
+      if (!StringUtils.isEmpty(searchString))
+        accepted = ((workspace.getName().toLowerCase().contains(searchString)) || (workspace.getDescription().toLowerCase().contains(searchString))); 
+
+      if (!subjects.isEmpty()) {
+        if (workspace.getCourseIdentifierIdentifier() != null) {
+          CourseIdentifier courseIdentifier = courseMetaController.findCourseIdentifier(workspace.getSchoolDataSource(), workspace.getCourseIdentifierIdentifier());
+          Subject subject = courseMetaController.findSubject(workspace.getSchoolDataSource(), courseIdentifier.getSubjectIdentifier());
+  
+          accepted = accepted && subjects.contains(subject.getIdentifier());
+        } else
+          accepted = false;
+      }
+      
+      // TODO remove
+      if (accepted)
+        filteredCourses.add(workspaceUserEntity);
+    }
+    
+    TranquilityBuilder tranquilityBuilder = tranquilityBuilderFactory.createBuilder();
+    Tranquility tranquility = tranquilityBuilder.createTranquility()
+      .addInstruction(tranquilityBuilder.createPropertyTypeInstruction(TranquilModelType.COMPLETE))
+      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("name", new CourseNameInjector()))
+      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("description", new CourseDescriptionInjector()))
+      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("rating", new CourseRatingInjector()))
+      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("ratingCount", new CourseRatingCountInjector()))
+      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("isMember", new CourseIsMemberInjector()))
+      .addInstruction(WorkspaceEntity.class, tranquilityBuilder.createPropertyInjectInstruction("teachers", new CourseTeachersGetter()))
+//      .addInstruction(CourseEntity.class, tranquilityBuilder.createPropertyInjectInstruction("course", new CourseSchoolDataInjector()));
+    ;
+    Collection<TranquilModelEntity> entities = tranquility.entities(filteredCourses);
+    
+    return Response.ok(
+      entities
+    ).build();
+  }
+
   private class CourseNameInjector implements ValueGetter<String> {
     @Override
     public String getValue(TranquilizingContext context) {

@@ -32,6 +32,7 @@ public class CoursePickerPluginDescriptor implements PluginDescriptor, Localized
     List<Class<?>> result = new ArrayList<Class<?>>();
     
     result.add(CoursePickerSeekerResultProvider.class);
+    result.add(CoursePickerController.class);
     
     return result;
   }

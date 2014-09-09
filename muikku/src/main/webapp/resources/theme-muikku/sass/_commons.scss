@@ -5,6 +5,35 @@ To be used through SASS's extend feature with CSS's selectors.
   */
 @import "_base.scss"; 
 
+
+/* Pseudo styles */
+
+div[class*='header']{
+	 color:$header;
+}
+
+
+.co-mainFunction-side{
+ background-color:$mainFuncSide;
+}
+
+.co-mainFunction-side-header{
+ background-color: $mainFuncSideHeader;
+ text-align:center;
+}
+
+.co-mainFunction-side-button{
+ background-color:$mainFuncSb; 
+}
+
+.co-mainFunction-content-main{
+ background-color:$mainFuncContent; 
+}
+
+.co-mainFunction-content-functions{
+ background-color:$mainFuncCf; 
+}
+
 .co-input-textfield,
 .co-textarea {
   @include border(1px,#ededed,solid);   
@@ -57,10 +86,9 @@ To be used through SASS's extend feature with CSS's selectors.
   margin-top:5px; 
 }
 
-.co-textContent {
-  @include shadow;
-  @include rounded(4px);  
+.co-description {
   background-color:#fff;  
+  color:#9f9f9f;
 }
 
 .co-toolbar {
@@ -109,15 +137,20 @@ To be used through SASS's extend feature with CSS's selectors.
   background-color:$aBgr;
 }
 
+.co-listItem{
+  box-shadow:$w-sc;
+  border : 1px solid $brd;
+  background-color:#fff;
+}
+
 .co-widget {
-  padding:15px;
   box-shadow:$w-sc;
   background:$w-bgr;
   min-height:3em;
   border:1px solid $w-brd;
 }
 
-/* Forms */
+/* Forms 
 
 .co-buttonContainer input {
   font-family: Verdana, sans-serif;
@@ -137,7 +170,7 @@ To be used through SASS's extend feature with CSS's selectors.
 .co-buttonContainer input:active, input[type="button"]:active, input[type="submit"]:active {
   @include iShadow; 
 }
-
+*/
 .co-formTitle {
   @include gradient-top-bottom;
   @include rounded(4px);
