@@ -174,14 +174,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- Xerces -->
-    
-    <dependency>
-      <groupId>xerces</groupId>
-      <artifactId>xercesImpl</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
     <!-- Muikku -->
 
     <dependency>
@@ -316,7 +308,7 @@
         <configuration>
           <archive>
             <manifestEntries>
-              <Dependencies>org.hibernate.search.orm services, org.apache.commons.io, org.apache.commons.collections, org.apache.commons.codec, org.codehaus.jackson.jackson-core-asl, org.codehaus.jackson.jackson-mapper-asl, org.apache.xerces, org.apache.httpcomponents, com.h2database.h2</Dependencies>
+              <Dependencies>org.hibernate.search.orm services, org.apache.commons.io, org.apache.commons.collections, org.apache.commons.codec, org.codehaus.jackson.jackson-core-asl, org.codehaus.jackson.jackson-mapper-asl, org.apache.httpcomponents, com.h2database.h2</Dependencies>
             </manifestEntries>
           </archive>
         </configuration>
