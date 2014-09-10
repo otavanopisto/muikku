@@ -64,6 +64,15 @@ function renderDustTemplate(templateName, json, callback) {
       
       var result = chunk.write(getLocaleText(params.key, args));
       return result;
+    },
+    isLoggedIn: function(chunk, context, bodies, params) {
+      if (MUIKKU_LOGGEDIN === true) {
+        return chunk.render(bodies.block, context);
+      } else {
+        if (bodies['else']) {
+          return chunk.render(bodies['else'], context);
+        }
+      }
     }
   });
   

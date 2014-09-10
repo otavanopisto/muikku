@@ -12,8 +12,10 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <script type="text/javascript">
-        var CONTEXTPATH = "#{request.contextPath}";
-      </script>
+      var CONTEXTPATH = "#{request.contextPath}";
+      var MUIKKU_LOGGEDIN = #{muikkuSession.loggedIn};
+    </script>
+    
     <script src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"></script>
     <h:outputScript name="scripts/gui/locales.js" target="head" />
 
