@@ -19,19 +19,18 @@ import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.wall.WallController;
 import fi.muikku.plugins.wall.WallFeedItem;
-import fi.muikku.plugins.wall.WallPermissions;
-import fi.muikku.plugins.wall.model.UserWall;
 import fi.muikku.plugins.wall.model.Wall;
 import fi.muikku.plugins.wall.model.WallEntry;
 import fi.muikku.plugins.wall.model.WallEntryReply;
 import fi.muikku.security.LoggedIn;
-import fi.muikku.security.Permit;
 import fi.muikku.session.SessionController;
 
 @Path("/wall")
 @Stateless
 @Produces ("application/json")
 public class WallRESTService extends PluginRESTService {
+
+  private static final long serialVersionUID = 1517911682419646845L;
 
   @Inject
   private SessionController sessionController;
