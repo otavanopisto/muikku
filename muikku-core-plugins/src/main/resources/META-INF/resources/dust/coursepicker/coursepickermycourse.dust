@@ -16,9 +16,9 @@
                 <div class="cp-course-details-teacher">
                   <div class="cp-course-details-teacher-picture-container">
                     {?workspaceEntity.hasPicture} 
-                      <img class="cp-course-details-teacher-picture" title="{fullName}" src="{@contextPath/}/picture?userId={id}" width="20" height="20" />
+                      <img class="cp-teacher-picture" title="{fullName}" src="{@contextPath/}/picture?userId={id}" width="20" height="20" />
                     {:else}
-                      <div class="co-user-picture"></div>
+                      <div class="cp-teacher-picture-default"></div>
                     {/workspaceEntity.hasPicture}
                   </div>
   
