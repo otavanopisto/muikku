@@ -1,5 +1,8 @@
 package fi.muikku.plugins.workspace.rest;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -7,11 +10,17 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.model.workspace.WorkspaceRoleEntity;
+import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.plugin.PluginRESTService;
+import fi.muikku.schooldata.RoleController;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.Workspace;
 
@@ -20,134 +29,32 @@ import fi.muikku.schooldata.entity.Workspace;
 @Stateful
 @Produces ("application/json")
 public class WorkspaceRESTService extends PluginRESTService {
-//  FIXME: Re-enable this service
-//
-//	@SuppressWarnings("cdi-ambiguous-dependency")
-//	@Inject
-//	private TranquilityBuilderFactory tranquilityBuilderFactory;
-//	
-//	@Inject
-//  private MaterialController materialController;
-//
-//  @Inject
-//	private WorkspaceMaterialController workspaceMaterialController;
-//	
-	@Inject
+
+  private static final long serialVersionUID = -5286350366083446537L;
+
+  @Inject
 	private WorkspaceController workspaceController;
-//	
-//	// 
-//	// WorkspaceEntity 
-//	// 
-//		
-//	@GET
-//	@Path ("/workspaceEntities/")
-//	public Response listWorkspaceEntities(
-//	    @QueryParam ("schoolDataSource") String schoolDataSource, 
-//	    @QueryParam ("identifier") String identifier) {
-//	  
-//	  List<WorkspaceEntity> workspaceEntities = null;
-//	  
-//	  if (StringUtils.isNotBlank(schoolDataSource)) {
-//	    
-//      if (StringUtils.isNotBlank(identifier)) {
-//        Workspace workspace = workspaceController.findWorkspace(schoolDataSource, identifier);
-//        if (workspace != null) {
-//          workspaceEntities = Arrays.asList(workspaceController.findWorkspaceEntity(workspace));
-//        } else {
-//          workspaceEntities = Collections.emptyList();
-//        }
-//      } else {
-//        workspaceEntities = workspaceController.listWorkspaceEntitiesBySchoolDataSource(schoolDataSource);
-//      }
-//	  } else {
-//	    if (StringUtils.isNotBlank(identifier)) {
-//	      return Response.status(Status.BAD_REQUEST).entity("Cannot define identifier without schoolDataSource").build();
-//	    }
-//	    
-//	    workspaceEntities = workspaceController.listWorkspaceEntities();
-//	  }
-//
-//		return Response.ok(
-//		  tranquilityBuilderFactory.createBuilder()
-//		    .createTranquility()
-//		    .entities(workspaceEntities)
-//		).build();
-//	}
-//	
-//	@GET
-//	@Path ("/workspaceEntities/{ID}")
-//	public Response getWorkspaceEntity(@PathParam ("ID") Long workspaceEntityId) {
-//		WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
-//
-//		return Response.ok(
-//		  tranquilityBuilderFactory.createBuilder()
-//		    .createTranquility()
-//		    .entity(workspaceEntity)
-//		).build();
-//	}
-//	
-//	// 
-//	// Workspace
-//	// 
-//	
-//	@POST
-//	@Path ("/workspaces/")
-//	public Response createWorkspace(WorkspaceCompact workspaceData) {
-//	  if (StringUtils.isNotBlank(workspaceData.getIdentifier())) {
-//      return Response.status(Status.BAD_REQUEST).entity("Identifier can not be specified when creating a workspace").build();
-//    }
-//	  
-//    if (StringUtils.isBlank(workspaceData.getSchoolDataSource())) {
-//      return Response.status(Status.BAD_REQUEST).entity("SchoolDataSource must be defined when creating a workspace").build();
-//    }
-//
-//    if (StringUtils.isBlank(workspaceData.getName())) {
-//      return Response.status(Status.BAD_REQUEST).entity("name must be defined when creating a workspace").build();
-//    }
-//
-//    if (StringUtils.isBlank(workspaceData.getWorkspaceTypeId())) {
-//      return Response.status(Status.BAD_REQUEST).entity("workspaceTypeId must be defined when creating a workspace").build();
-//    }
-//
-//    if (StringUtils.isBlank(workspaceData.getCourseIdentifierIdentifier())) {
-//      return Response.status(Status.BAD_REQUEST).entity("courseIdentifierIdentifier must be defined when creating a workspace").build();
-//    }
-//
-//    // TODO: Incorrect school data source
-//    WorkspaceType workspaceType = workspaceController.findWorkspaceTypeByDataSourceAndIdentifier(workspaceData.getSchoolDataSource(), workspaceData.getWorkspaceTypeId());
-//    if (workspaceType == null) {
-//      return Response.status(Status.BAD_REQUEST).entity("workspace type could not be found").build();
-//    }
-//    
-//    Workspace workspace = workspaceController.createWorkspace(
-//        workspaceData.getSchoolDataSource(),
-//        workspaceData.getName(),
-//        workspaceData.getDescription(),
-//        workspaceType,
-//        workspaceData.getCourseIdentifierIdentifier());
-//    
-//    return Response.ok(
-//        tranquilityBuilderFactory.createBuilder()
-//          .createTranquility()
-//          .entity(workspace)
-//    ).build();
-//	}
-//	
-//	@GET
-//	@Path ("/workspaces/")
-//	public Response listWorkspaces() {
-//		List<Workspace> workspaces = workspaceController.listWorkspaces();
-//
-//		return Response.ok(
-//		  tranquilityBuilderFactory.createBuilder()
-//		    .createTranquility()
-//		    .entities(workspaces)
-//		).build();
-//	}
-//	
+
+	@Inject
+	private RoleController roleController;
+	
+  @GET
+  @Path ("/workspaces/")
+  public Response listWorkspaces() {
+    List<Workspace> workspaces = workspaceController.listWorkspaces();
+    
+    List<fi.muikku.plugins.workspace.rest.model.Workspace> result = createRestModel(workspaces);
+    
+    if (result.isEmpty()) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    return Response.ok(result).build();
+  }
+
 	@GET
-	@Path ("/workspaces/{WORKSPACE_ENTITY_ID}")
-	public Response getWorkspace(@PathParam ("WORKSPACE_ENTITY_ID") Long workspaceEntityId) {
+	@Path ("/workspaces/{ID}")
+	public Response getWorkspace(@PathParam ("ID") Long workspaceEntityId) {
 		WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
 		if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
@@ -160,10 +67,117 @@ public class WorkspaceRESTService extends PluginRESTService {
     
 		return Response.ok(createRestModel(workspaceEntity, workspace)).build();
 	}
-	
+
+  @GET
+  @Path ("/workspaces/{ID}/users")
+  public Response getWorkspaceUsers(@PathParam ("ID") Long workspaceEntityId, @QueryParam ("role") String role) {
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    List<WorkspaceUserEntity> workspaceUsers = null;
+    
+    if (StringUtils.isNotBlank(role)) {
+      WorkspaceRoleEntity workspaceRole = roleController.findWorkspaceRoleEntityByName(role);
+      if (workspaceRole == null) {
+        return Response.status(Status.BAD_REQUEST).entity("Invalid workspace role '" + role + "'").build(); 
+      }
+      
+      workspaceUsers = workspaceController.listWorkspaceUserEntitiesByRole(workspaceEntity, workspaceRole);
+    } else {
+      workspaceUsers = workspaceController.listWorkspaceUserEntities(workspaceEntity);
+    }
+    
+    if (workspaceUsers.isEmpty()) {
+      return Response.noContent().build();
+    }
+    
+    return Response.ok(createRestModel(workspaceUsers.toArray(new WorkspaceUserEntity[0]))).build();
+  }
+
+  private List<fi.muikku.plugins.workspace.rest.model.Workspace> createRestModel(List<Workspace> workspaces) {
+    List<fi.muikku.plugins.workspace.rest.model.Workspace> result = new ArrayList<>();
+    
+    for (Workspace workspace : workspaces) {
+      WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntity(workspace);
+      if (workspaceEntity != null) {
+        result.add(createRestModel(workspaceEntity, workspace));
+      }
+    }
+    
+    return result;
+  }
+  
+  private List<fi.muikku.plugins.workspace.rest.model.WorkspaceUser> createRestModel(WorkspaceUserEntity... entries) {
+    List<fi.muikku.plugins.workspace.rest.model.WorkspaceUser> result = new ArrayList<>();
+    
+    for (WorkspaceUserEntity entry : entries) {
+      result.add(createRestModel(entry));
+    }
+    
+    return result;
+  }
+
+  private fi.muikku.plugins.workspace.rest.model.WorkspaceUser createRestModel(WorkspaceUserEntity entity) {
+    Long workspaceEntityId = entity.getWorkspaceEntity() != null ? entity.getWorkspaceEntity().getId() : null;
+    Long userId = entity.getUser() != null ? entity.getUser().getId() : null;
+    String role = entity.getWorkspaceUserRole() != null ? entity.getWorkspaceUserRole().getName() : null;
+    return new fi.muikku.plugins.workspace.rest.model.WorkspaceUser(entity.getId(), workspaceEntityId, userId, role, entity.getArchived());
+  }
+
   private fi.muikku.plugins.workspace.rest.model.Workspace createRestModel(WorkspaceEntity workspaceEntity, Workspace workspace) {
     return new fi.muikku.plugins.workspace.rest.model.Workspace(workspaceEntity.getId(), workspaceEntity.getUrlName(), workspaceEntity.getArchived(), workspace.getName(), workspace.getDescription());
   }
+
+//// 
+//// Workspace
+//// 
+//
+//@POST
+//@Path ("/workspaces/")
+//public Response createWorkspace(WorkspaceCompact workspaceData) {
+//  if (StringUtils.isNotBlank(workspaceData.getIdentifier())) {
+//    return Response.status(Status.BAD_REQUEST).entity("Identifier can not be specified when creating a workspace").build();
+//  }
+//  
+//  if (StringUtils.isBlank(workspaceData.getSchoolDataSource())) {
+//    return Response.status(Status.BAD_REQUEST).entity("SchoolDataSource must be defined when creating a workspace").build();
+//  }
+//
+//  if (StringUtils.isBlank(workspaceData.getName())) {
+//    return Response.status(Status.BAD_REQUEST).entity("name must be defined when creating a workspace").build();
+//  }
+//
+//  if (StringUtils.isBlank(workspaceData.getWorkspaceTypeId())) {
+//    return Response.status(Status.BAD_REQUEST).entity("workspaceTypeId must be defined when creating a workspace").build();
+//  }
+//
+//  if (StringUtils.isBlank(workspaceData.getCourseIdentifierIdentifier())) {
+//    return Response.status(Status.BAD_REQUEST).entity("courseIdentifierIdentifier must be defined when creating a workspace").build();
+//  }
+//
+//  // TODO: Incorrect school data source
+//  WorkspaceType workspaceType = workspaceController.findWorkspaceTypeByDataSourceAndIdentifier(workspaceData.getSchoolDataSource(), workspaceData.getWorkspaceTypeId());
+//  if (workspaceType == null) {
+//    return Response.status(Status.BAD_REQUEST).entity("workspace type could not be found").build();
+//  }
+//  
+//  Workspace workspace = workspaceController.createWorkspace(
+//      workspaceData.getSchoolDataSource(),
+//      workspaceData.getName(),
+//      workspaceData.getDescription(),
+//      workspaceType,
+//      workspaceData.getCourseIdentifierIdentifier());
+//  
+//  return Response.ok(
+//      tranquilityBuilderFactory.createBuilder()
+//        .createTranquility()
+//        .entity(workspace)
+//  ).build();
+//}
+//
+
 	
 //  
 //  @PUT
