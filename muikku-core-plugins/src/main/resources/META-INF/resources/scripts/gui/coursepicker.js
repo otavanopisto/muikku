@@ -218,27 +218,37 @@
       }
     },
     _initializeAllCoursesList: function () {
-      var _this = this;
+      this._coursesContainer.children().remove();
       
-      _this._coursesContainer.children().remove();
-      
-      $.ajax({
-        url : CONTEXTPATH + "/rest/course/",
-        dataType : "json",
-        data : {
-        },
-        headers: {
-          "Accept-Language": getLocale()
-        },
-        accepts: {
-          'json' : 'application/json'
-        },
-        success : function(data) {
-          renderDustTemplate('coursepicker/coursepickercourse.dust', data, function (text) {
-            _this._coursesContainer.append($.parseHTML(text));
+      mApi().workspace.workspaces.read()
+        .on('$', function (workspace, workspaceCallback) {
+          // TODO: Implement these
+          workspace.hasCourseFee = false;
+          workspace.hasAssessmentFee = false;
+          workspace.rating = 5;
+          workspace.ratingCount = 3;
+          workspace.isMember = false;
+          
+          mApi().workspace.workspaces.users.read(workspace.id, {
+            role: 'Workspace Teacher'
+          })
+          .on('$', function (workspaceUser, workspaceUserCallback) {
+            mApi().user.users.read(workspaceUser.userId).callback(function (userErr, user) {
+              workspaceUser.hasPicture = user.hasImage;
+              workspaceUser.fullName = (user.firstName ? user.firstName + ' ' : '') + user.lastName;
+              workspaceUserCallback();
+            });
+          })
+          .callback(function (workspaceUsersErr, workspaceUsers) {
+            workspace.teachers = workspaceUsers;
+            workspaceCallback();
           });
-        }
-      });
+        })
+        .callback($.proxy(function (err, workspaces) {
+          renderDustTemplate('coursepicker/coursepickercourse.dust', workspaces, $.proxy(function (text) {
+            this._coursesContainer.append(text);
+          }, this));
+        }, this));
     },
     _refreshListTimer: function () {
       var _this = this;
