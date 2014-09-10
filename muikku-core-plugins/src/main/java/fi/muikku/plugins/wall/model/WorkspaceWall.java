@@ -23,6 +23,13 @@ public class WorkspaceWall extends Wall {
     return WallType.WORKSPACE;
   }
   
+  @Override
+  @Transient
+  public String getTypeId() {
+    return getWorkspace().toString();
+  }
+  
+  
   @Column (name = "workspace_id")
   private Long workspace;
 }

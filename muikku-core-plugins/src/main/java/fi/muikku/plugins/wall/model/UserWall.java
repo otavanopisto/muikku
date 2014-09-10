@@ -23,6 +23,12 @@ public class UserWall extends Wall {
     return WallType.USER;
   }
   
+  @Override
+  @Transient
+  public String getTypeId() {
+    return getUser().toString();
+  }
+  
   @Column (name = "user_id")
   private Long user;
 }
