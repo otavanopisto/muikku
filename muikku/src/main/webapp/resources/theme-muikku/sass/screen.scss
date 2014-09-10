@@ -1059,6 +1059,13 @@ div[data-name="settings.content-sidebar.left"] {
   height: 25px;
 }
 
+.wallEntryUserPictureEmpty {
+  @include background-image('gfx/default-user-image.png');
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: contain;  
+}
+
 .wallEntryGuidanceRequest {
   color: red;
 }
