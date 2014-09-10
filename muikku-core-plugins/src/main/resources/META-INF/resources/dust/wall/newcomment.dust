@@ -1,7 +1,8 @@
 <div class="wallEntryCommentForm">
   <form class="wallEntryCommentFormForm" onsubmit="return false;">
+    <input type="hidden" name="wallId" value="{wallId}" />
     <input type="hidden" name="wallEntryId" value="{wallEntryId}" />
     <input type="text" name="wallEntryCommentText"/>
-    <input type="submit" name="wallEntryCommentBtn" value="Kommentoi, röh" />
+    <input type="submit" name="wallEntryCommentBtn" value="Kommentoi" />
   </form>
 </div>

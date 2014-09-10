@@ -1,47 +1,48 @@
 <div class="wallEntry">
-  <input type="hidden" name="wallEntryId" value="{id}"/>
-
-  {?creator.hasPicture} 
-    <img class="wallEntryUserPicture" src="{@contextPath/}/picture?userId={creator}" width="50" height="50" />
-  {:else}
-    <img class="wallEntryUserPicture" src="{@contextPath/}/themes/default/gfx/fish.jpg" width="50" height="50" />
-  {/creator.hasPicture}  
-  
-  <div class="wallEntryTitle">
-    <a class="wallEntryCreator" href="{@contextPath/}/user/{creator}">{creator_tq.fullName}</a>
-
-    {@if cond="'{wall.wallType}' == 'ENVIRONMENT'"}
-      &gt; <b>{wall.wallName}</b>
-    {/if}
-
-    {@if cond="'{wall.wallType}' == 'WORKSPACE'"}
-      kurssilla <a class="wallEntryCourseLink" href="{@contextPath/}/workspace/{wall.workspace_tq.urlName}">{wall.wallName}</a>
-    {/if}
-
-    {@if cond="'{wall.wallType}' == 'USER'"}
-      &gt; <a class="wallEntryCreator" href="{@contextPath/}/user/{wall.creator}">{wall.wallName}</a>
-    {/if}
+  <div class="wallEntryData">
+    <input type="hidden" name="wallId" value="{wallId}"/>
+    <input type="hidden" name="wallEntryId" value="{entryId}"/>
+    {?creatorHasPicture} 
+      <img class="wallEntryUserPicture" src="{@contextPath/}/picture?userId={creatorId}" width="50" height="50" />
+    {:else}
+      <div class="wallEntryUserPicture wallEntryUserPictureEmpty"/>
+    {/creatorHasPicture}  
     
-    <span class="wallEntryDate">{created|formatDate}</span>
-  </div>
+    <div class="wallEntryTitle">
+      <a class="wallEntryCreator" href="{@contextPath/}/user/{creatorId}">{creatorName}</a>
   
-  <div class="wallEntryContent">
-    <div class="wallEntryItem">{text}</div>
-  </div>
+      {@if cond="'{wallType}' == 'ENVIRONMENT'"}
+        &gt; <b>{wall.wallName}</b>
+      {/if}
   
-  <div class="wallEntryFooter">
-    {@if cond="'{visibility}' == 'PRIVATE'"}
-      yksityinen
-    {/if}
-
-	<a class="wallEntryReplyLink">{#localize key="plugin.wall.reply"/}</a>
-  </div>
+      {@if cond="'{wallType}' == 'WORKSPACE'"}
+        kurssilla <a class="wallEntryCourseLink" href="{@contextPath/}/workspace/{workspaceUrlName}">{workspaceName}</a>
+      {/if}
   
-  <div class="wallEntryComments">
-    {#replies}
-      {>"wall/wallentryreply.dust"/}
-    {/replies}
-  </div>
+      {@if cond="'{wallType}' == 'USER'"}
+        &gt; <a class="wallEntryCreator" href="{@contextPath/}/user/{wallUserId}">{wallUserName}</a>
+      {/if}
+      
+      <span class="wallEntryDate">{created|formatDate}</span>
+    </div>
+    
+    <div class="wallEntryContent">
+      <div class="wallEntryItem">{text}</div>
+    </div>
+    
+    <div class="wallEntryFooter">
+      {@if cond="'{visibility}' == 'PRIVATE'"}
+        yksityinen
+      {/if}
   
+  	<a class="wallEntryReplyLink">{#localize key="plugin.wall.reply"/}</a>
+    </div>
+    
+    <div class="wallEntryComments">
+      {#replies}
+        {>"wall/wallentryreply.dust"/}
+      {/replies}
+    </div>
+  </div>
   
 </div>
