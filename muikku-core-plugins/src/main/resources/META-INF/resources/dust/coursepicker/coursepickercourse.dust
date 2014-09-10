@@ -19,7 +19,7 @@
                     {?hasPicture} 
                       <img class="cp-course-details-teacher-picture" title="{fullName}" src="{@contextPath/}/picture?userId={id}" width="20" height="20" />
                     {:else}
-                      <img class="cp-course-details-teacher-picture" src="{@contextPath/}/javax.faces.resource/gfx/icons/32x32/actions/navigate-cal.png.jsf?ln=theme-muikku" width="20" height="20" />
+                      <div class="co-user-picture"></div>
                     {/hasPicture}
                   </div>
   
