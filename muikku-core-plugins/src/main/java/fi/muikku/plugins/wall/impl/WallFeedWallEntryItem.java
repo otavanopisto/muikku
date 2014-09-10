@@ -15,4 +15,15 @@ public class WallFeedWallEntryItem extends WallFeedItem {
   public WallEntry getWallEntry() {
     return wallEntry;
   }
+
+  @Override
+  public String getType() {
+    return "wallEntries";
+  }
+  
+  @Override
+  public String getIdentifier() {
+    return getWallEntry().getId().toString();
+  }
+  
 }

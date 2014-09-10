@@ -15,5 +15,14 @@ public class UserFeedForumMessageItem extends WallFeedItem {
   public ForumMessage getForumMessage() {
     return forumMessage;
   }
-
+  
+  @Override
+  public String getType() {
+    return "forumMessages";
+  }
+  
+  @Override
+  public String getIdentifier() {
+    return getForumMessage().getId().toString();
+  }
 }

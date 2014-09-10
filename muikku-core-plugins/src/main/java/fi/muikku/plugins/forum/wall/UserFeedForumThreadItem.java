@@ -18,5 +18,15 @@ public class UserFeedForumThreadItem extends WallFeedItem {
   public ForumThread getThread() {
     return thread;
   }
+  
+  @Override
+  public String getType() {
+    return "forumThreads";
+  }
+  
+  @Override
+  public String getIdentifier() {
+    return getThread().getId().toString();
+  }
 
 }

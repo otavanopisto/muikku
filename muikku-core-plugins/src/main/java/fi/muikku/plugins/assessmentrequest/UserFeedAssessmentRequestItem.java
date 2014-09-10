@@ -14,5 +14,15 @@ public class UserFeedAssessmentRequestItem extends WallFeedItem {
   public AssessmentRequest getAssessmentRequest() {
     return assessmentRequest;
   }
+  
+  @Override
+  public String getType() {
+    return "assessmentRequests";
+  }
+  
+  @Override
+  public String getIdentifier() {
+    return getAssessmentRequest().getId().toString();
+  }
 
 }

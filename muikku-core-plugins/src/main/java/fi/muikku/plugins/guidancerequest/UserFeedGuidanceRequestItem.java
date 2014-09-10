@@ -14,5 +14,15 @@ public class UserFeedGuidanceRequestItem extends WallFeedItem {
   public GuidanceRequest getGuidanceRequest() {
     return guidanceRequest;
   }
+  
+  @Override
+  public String getType() {
+    return "guidanceRequests";
+  }
+  
+  @Override
+  public String getIdentifier() {
+    return getGuidanceRequest().getId().toString();
+  }
 
 }

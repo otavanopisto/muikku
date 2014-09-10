@@ -2,7 +2,7 @@ package fi.muikku.plugins.wall;
 
 import java.util.Date;
 
-public class WallFeedItem {
+public abstract class WallFeedItem {
 
   public WallFeedItem(Date date) {
     this.date = date;
@@ -16,9 +16,8 @@ public class WallFeedItem {
     this.date = date;
   }
 
-  public String getWallFeedItemName() {
-    return getClass().getSimpleName();
-  }
+  public abstract String getType();
+  public abstract String getIdentifier();
   
   private Date date;
 }
