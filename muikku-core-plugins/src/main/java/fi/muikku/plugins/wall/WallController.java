@@ -221,7 +221,7 @@ public class WallController {
 
       // Users Workspaces
       
-      List<WorkspaceUserEntity> workspaceUsers = workspaceController.listWorkspaceEntitiesByUser(userEntity);
+      List<WorkspaceUserEntity> workspaceUsers = workspaceController.listWorkspaceUserEntitiesByUser(userEntity);
       
       for (WorkspaceUserEntity workspaceUser : workspaceUsers) {
         WorkspaceWall workspaceWall = getWorkspaceWall(workspaceUser.getWorkspaceEntity());
