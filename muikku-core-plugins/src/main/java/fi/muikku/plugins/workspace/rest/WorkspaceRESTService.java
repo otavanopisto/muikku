@@ -2,9 +2,18 @@ package fi.muikku.plugins.workspace.rest;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugin.PluginRESTService;
+import fi.muikku.schooldata.WorkspaceController;
+import fi.muikku.schooldata.entity.Workspace;
 
 @RequestScoped
 @Path("/workspace")
@@ -23,8 +32,8 @@ public class WorkspaceRESTService extends PluginRESTService {
 //  @Inject
 //	private WorkspaceMaterialController workspaceMaterialController;
 //	
-//	@Inject
-//	private WorkspaceController workspaceController;
+	@Inject
+	private WorkspaceController workspaceController;
 //	
 //	// 
 //	// WorkspaceEntity 
@@ -136,25 +145,26 @@ public class WorkspaceRESTService extends PluginRESTService {
 //		).build();
 //	}
 //	
-//	@GET
-//	@Path ("/workspaces/{WORKSPACE_ENTITY_ID}")
-//	public Response getWorkspace(@PathParam ("WORKSPACE_ENTITY_ID") Long workspaceEntityId) {
-//		WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
-//		if (workspaceEntity == null) {
-//      return Response.status(Status.NOT_FOUND).build();
-//    }
-//		
-//		Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-//    if (workspace == null) {
-//      return Response.status(Status.NOT_FOUND).build();
-//    }
-//    
-//		return Response.ok(
-//		  tranquilityBuilderFactory.createBuilder()
-//		    .createTranquility()
-//		    .entity(workspace)
-//		).build();
-//	}
+	@GET
+	@Path ("/workspaces/{WORKSPACE_ENTITY_ID}")
+	public Response getWorkspace(@PathParam ("WORKSPACE_ENTITY_ID") Long workspaceEntityId) {
+		WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+		if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+		
+		Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+    if (workspace == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+		return Response.ok(createRestModel(workspaceEntity, workspace)).build();
+	}
+	
+  private fi.muikku.plugins.workspace.rest.model.Workspace createRestModel(WorkspaceEntity workspaceEntity, Workspace workspace) {
+    return new fi.muikku.plugins.workspace.rest.model.Workspace(workspaceEntity.getId(), workspaceEntity.getUrlName(), workspaceEntity.getArchived(), workspace.getName(), workspace.getDescription());
+  }
+	
 //  
 //  @PUT
 //  @Path ("/workspaces/{WORKSPACE_ENTITY_ID}")
