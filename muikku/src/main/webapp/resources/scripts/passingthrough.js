@@ -217,7 +217,21 @@ $(document).ready(function() {
       var _this = $(this);
       hideTooltip(_this);
     });
+    
+    
+ // All the fields with a "search"-class  
+    
+    $(".search").focus(function(){
+      $(this).val('');
+    });
+
+    $(".search").blur(function(){
+      $(this).val($(this).attr('value'));
+    });    
+    
+
 });
+
 
 
 

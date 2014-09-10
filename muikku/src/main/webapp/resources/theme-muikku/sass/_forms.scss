@@ -17,7 +17,7 @@ input[type="password"] {
   box-sizing:border-box;
   -moz-box-sizing:border-box;
 }
-
+/*
 input[type="button"],
 input[type="submit"],
 input[type="reset"] {
@@ -30,7 +30,7 @@ input[type="reset"] {
   @include border(1px,$btnBrd,solid);
   margin-right:4px;
 }
-
+*/
 input[type="checkbox"], 
 input[type="radio"] {
   margin:0 2px 0 2px;
@@ -122,14 +122,15 @@ div[class*='ps-edit-container']{
 
 /* Seeker */
 
-#seeker{
+#seeker, .search{
   &:focus {
-    border:1px solid #fff;
+    border:1px solid #fff !important;
   }
   padding:11px;
   @include rounded(5px);
-  outline:none;
+  outline:none !important;
   color:#4a4a4a;
+
 }
 
 /* Calendar */

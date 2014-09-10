@@ -29,12 +29,66 @@
 
 }
 
+.bt-mainFunction {
+	  text-transform:uppercase;
+	  border-radius:3px;
+	  display:inline-block;
+	  line-height:1.5em;
+	  color:#ffffff;
+	  cursor:pointer;
+	  @include buttonFontShadow;
+	  @include buttonShadow;	
+    background-color:#ed8e00;
+    border:1px solid #d9e4e8;
+    font-size:0.8em;
+    background: rgb(237,142,0);
+    @include gradient-top-bottom(rgba(253,167,38,1),rgba(237,142,0,1),#ed8e00);
+
+  &.bt-mainFunction-active {
+    @include gradient-top-bottom(rgba(237,142,0,1),rgba(253,167,38,1),#ed8e00);
+}
+
+
+
+}
+
+
+.bt-mainFunction-content{
+   display:inline-block;
+   padding:8px 12px;
+}
+
+.bt-mainFunction-decoration{
+    border-left:1px solid #f6c06d;
+    display:inline-block;
+    float:right;
+    padding:4px 4px 3px 4px;
+    font-size:2.45em;
+  }
+
+/* Button text content styles and icons */
+
+
+
+
 /* Real buttons */
 
 input[type="button"],
 input[type="submit"],
 input[type="reset"] {
-
+	  text-transform:uppercase;
+    border-radius:3px;
+    display:inline-block;
+    padding:8px 12px;
+    line-height:0.5em;
+    font-size:0.7em;
+    color:#000;
+    cursor:pointer;
+  
+  &.bt-coursepicker{
+   margin-left:10px;
+  }
+	
   &.bt-generic {
     text-transform:uppercase;
     border-radius:3px;

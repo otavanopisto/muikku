@@ -588,6 +588,225 @@ a.header {
 
 /* Coursepicker (.cp-*) */
 
+.coursePicker{
+	@extend .co-widget; 	
+  background-color:$mainFuncSide;
+}
+
+.cp-side{
+}
+
+.cp-side-button{
+	 @extend .co-mainFunction-side-button;
+   height:70px;
+}
+
+
+.cp-side-button > div:first-child{
+  width:170px;
+  margin-left:31px;
+  margin-top:15px;
+}
+
+.cp-side-button-dropdown{
+	display:none;
+  width:170px;
+  margin-left:31px;
+	background-color:#fff;
+	border : 1px solid $brd;
+	z-index: 100;
+	position:relative;
+	top:0;
+	
+  li{
+	  font-size:0.9em;   
+    padding:5px;
+		a{
+		 text-decoration:none;
+		 color:#000;
+		}
+
+
+    }
+  li:hover{
+    background-color:#1a9bfc;  
+    color:#fff;
+
+    a{
+    text-decoration:none;
+    color:#fff;
+     }
+
+    }
+}
+
+
+.cp-side-header{
+  @extend .co-mainFunction-side-header;
+  padding:3px;
+}
+
+.cp-side-content{
+ padding:5px;
+}
+
+
+
+.cp-filter{
+  margin-top:5px;
+	padding:2px 10px;
+	font-size:0.7em;
+	display:inline-block;
+	border:1px solid $brd;
+  @include rounded(10px);  
+  &.ft-01{background-color:$mainFuncFilter1;}
+  &.ft-02{background-color:$mainFuncFilter2;}
+  &.ft-03{background-color:$mainFuncFilter3;}
+}
+
+.cp-filter-disabled{
+ background-color:#cecece !important;
+ color:#fff !important;
+	
+}
+
+.cp-side-header > span{
+  color:#fff;
+}
+
+.cp-side-tools{
+  height:inherit;
+  margin-bottom:0;
+	}
+
+.cp-content{
+}
+
+.cp-content-functions{
+	 @extend .co-mainFunction-content-functions;
+	 height:70px;	 
+}
+
+.cp-search{
+	margin-left:10px;
+  width:300px;
+
+}
+.cp-search-icon{
+	display:inline-block;
+  color:#c4cdd1;
+  font-size:30pt;
+  padding-top:10px;
+  
+}
+.cp-search-field{
+	 width:200px;
+	 display:inline-block;
+	 margin-top:10px;
+}
+
+.cp-search-field > input{
+ margin-left:10px;
+ padding:10px;
+ font-size:20px;
+ color:#c4cdd1;
+
+}
+
+
+
+.cp-content-main{
+	@extend .co-mainFunction-content-main;
+	min-height:450px;
+  padding:10px;
+}
+
+
+.cp-course{
+ @extend .co-listItem;
+ padding:5px 5px 5px 5px;
+ margin-bottom:10px;
+ &.ft-01{border-left: 3px solid $mainFuncFilter1;} 
+ &.ft-02{border-left: 3px solid $mainFuncFilter2;}
+ &.ft-03{border-left: 3px solid $mainFuncFilter3;}
+
+}
+.cp-course-details-container{
+  background-color:#f0f3f4;
+}
+
+
+
+
+.cp-course-header-name{
+	display : inline-block;
+  text-transform:uppercase;
+}
+
+.cp-course-header-details{
+  display : inline-block;
+  float:right;  
+
+}
+.cp-course-rating{
+	padding-right:5px;
+}
+
+
+.cp-course-description{
+  display:inline-block;
+  width:70%;
+  background-color:#fff;  
+  cursor:pointer;  
+}
+
+.cp-course-description-text{
+  @extend .co-description;
+  font-size: 0.9em; 
+  padding:5px;
+  min-height:100px;
+
+}
+
+
+.cp-course-additionalInfo{
+  display:inline-block;
+  width:30%;
+  float:right;
+  font-size: 0.7em;
+
+}
+
+.cp-course-details-teachers{
+	padding:0 5px;
+	height:20px;
+}
+
+.cp-course-details-toolbar{
+  border-top: 1px solid $brd; 
+	@include padding(5px);
+	
+}
+
+
+.cp-course-short:after{
+   content : " -"  ;
+}
+
+.cp-course-details-teacher{
+  display:inline-block;	
+  height:20px;
+  width:20px;
+  margin-right:3px;
+
+}
+
+.cp-course-details-teacher-picture-container{
+
+}
+
+/* Old stuff
+
 .cp-allCourses-filterPane {
 	
 }
@@ -725,7 +944,7 @@ a.header {
 .cp-course-details-fee {}
 
 .cp-course-details-assessmentFee {}
-
+*/
 /*
 .cp-lukio
 .cp-ammattillinen
