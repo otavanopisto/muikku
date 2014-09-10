@@ -28,21 +28,15 @@
     var wallId = $('.wallWidget>input[name="wallId"]').val();
     
     mApi().wall.walls.feed.read(wallId)
-      .on('$', function (items, callback) {
-        async.parallel($.map(items, function(item) {
-          return function (itemCallback) {
-            mApi().wall.walls[item.type].read(wallId, item.identifier).callback(function (entryErr, entry) {
-              if (entryErr) {
-                $('.notification-queue').notificationQueue('notification', 'error', entryErr);
-              } else {
-                item.entry = entry;
-                itemCallback();
-              }
-            });
+      .on('$', function (item, itemCallback) {
+        mApi().wall.walls[item.type].read(wallId, item.identifier).callback(function (entryErr, entry) {
+          if (entryErr) {
+            $('.notification-queue').notificationQueue('notification', 'error', entryErr);
+          } else {
+            item.entry = entry;
+            itemCallback();
           }
-        }), function () {
-          callback();
-        });
+        });   
       })
       .callback(function (err, result) {
         if (err) {
