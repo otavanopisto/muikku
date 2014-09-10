@@ -128,99 +128,37 @@
           term = "";
         
         if (hash == "my") {
-          $.ajax({
-            url : CONTEXTPATH + "/rest/course/searchUserCourses",
-            dataType : "json",
-            data : {
-              userId: _this._userId,
-              searchString: term,
-              subjects: subjects
-            },
-            traditional: true,
-            headers: {
-              "Accept-Language": getLocale()
-            },
-            accepts: {
-              'json' : 'application/json'
-            },
-            success : function(data) {
-              _this._coursesContainer.children().remove();
-              renderDustTemplate('coursepicker/coursepickermycourse.dust', data, function (text) {
-                _this._coursesContainer.append($.parseHTML(text));
-              });
-            }
+          this._loadCourses({
+            userId: this._userId,
+            subjects: subjects,
+            search: term
           });
         } else {
-          $.ajax({
-            url : CONTEXTPATH + "/rest/course/searchCourses",
-            dataType : "json",
-            data : {
-              searchString: term,
-              subjects: subjects
-            },
-            traditional: true,
-            headers: {
-              "Accept-Language": getLocale()
-            },
-            accepts: {
-              'json' : 'application/json'
-            },
-            success : function(data) {
-              _this._coursesContainer.children().remove();
-              renderDustTemplate('coursepicker/coursepickercourse.dust', data, function (text) {
-                _this._coursesContainer.append($.parseHTML(text));
-              });
-            }
+          this._loadCourses({
+            subjects: subjects,
+            search: term
           });
         }
       } else {
         if (hash == "my") {
-          $.ajax({
-            url : CONTEXTPATH + "/rest/course/listUserCourses",
-            dataType : "json",
-            data : {
-              'userId': _this._userId
-            },
-            headers: {
-              "Accept-Language": getLocale()
-            },
-            accepts: {
-              'json' : 'application/json'
-            },
-            success : function(data) {
-              _this._coursesContainer.children().remove();
-              renderDustTemplate('coursepicker/coursepickermycourse.dust', data, function (text) {
-                _this._coursesContainer.append($.parseHTML(text));
-              });
-            }
+          this._loadCourses({
+            userId: this._userId
           });
         }
         else {
-          $.ajax({
-            url : CONTEXTPATH + "/rest/course/",
-            dataType : "json",
-            data : {
-            },
-            headers: {
-              "Accept-Language": getLocale()
-            },
-            accepts: {
-              'json' : 'application/json'
-            },
-            success : function(data) {
-              _this._coursesContainer.children().remove();
-              renderDustTemplate('coursepicker/coursepickercourse.dust', data, function (text) {
-                _this._coursesContainer.append($.parseHTML(text));
-              });
-            }
-          });
+          this._loadCourses();
         }
       }
     },
+    
     _initializeAllCoursesList: function () {
+      this._loadCourses();
+    },
+    
+    _loadCourses: function (params) {
       this._coursesContainer.children().remove();
       
-      mApi().workspace.workspaces.read()
+      mApi().workspace.workspaces.read(params||{})
         .on('$', function (workspace, workspaceCallback) {
           // TODO: Implement these
           workspace.hasCourseFee = false;
@@ -250,6 +188,7 @@
           }, this));
         }, this));
     },
+    
     _refreshListTimer: function () {
       var _this = this;
       
@@ -285,11 +224,9 @@
       var workspaceId = coursePickerCourse.find("input[name='workspaceId']").val();
       var workspaceUrl = coursePickerCourse.find("input[name='workspaceUrl']").val();
       
-      RESTful.doPost(CONTEXTPATH + "/rest/course/{workspaceId}/joinWorkspace", {
-        parameters: {
-          'workspaceId': workspaceId
-        }
-      }).success(function (data, textStatus, jqXHR) {
+      mApi().workspace.workspaces.users.create(workspaceId, {
+      })
+      .callback(function (workspaceUsersErr, workspaceUsers) {
         window.location = CONTEXTPATH + '/workspace/' + workspaceUrl;
       });
     },
