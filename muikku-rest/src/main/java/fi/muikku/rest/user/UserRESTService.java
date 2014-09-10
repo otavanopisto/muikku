@@ -1,21 +1,52 @@
 package fi.muikku.rest.user;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
 
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.rest.AbstractRESTService;
+import fi.muikku.schooldata.UserController;
+import fi.muikku.schooldata.entity.User;
 
-@Path("/users")
+@Path("/user")
 @Stateless
 @Produces ("application/json")
 @Consumes ("application/json")
-public class UsersRESTService extends AbstractRESTService {
+public class UserRESTService extends AbstractRESTService {
+
+  @Inject
+  private UserController userController;
+  
+  @GET
+  @Path ("/users/{ID}")
+  public Response findUser(@PathParam ("ID") Long id) {
+    UserEntity userEntity = userController.findUserEntityById(id);
+    if (userEntity == null) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
+    User user = userController.findUser(userEntity);
+    if (user == null) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
+    return Response.ok(createRestModel(userEntity, user)).build();
+  }
+
+  private fi.muikku.rest.model.User createRestModel(UserEntity userEntity, User user) {
+    // TODO: User Image
+    boolean hasImage = false;
+    return new fi.muikku.rest.model.User(userEntity.getId(), user.getFirstName(), user.getLastName(), hasImage);
+  }
+  
 //
 // FIXME: Re-enable this service  
-//  @Inject
-//  private UserController userController;
 //  
 ////  @GET
 ////  @Path ("/listEnvironmentUsers")
