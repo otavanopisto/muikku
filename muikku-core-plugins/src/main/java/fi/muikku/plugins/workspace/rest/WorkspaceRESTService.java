@@ -147,23 +147,46 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @GET
   @Path ("/workspaces/{ID}/users")
-  public Response getWorkspaceUsers(@PathParam ("ID") Long workspaceEntityId, @QueryParam ("role") String role) {
+  public Response getWorkspaceUsers(@PathParam ("ID") Long workspaceEntityId, @QueryParam ("role") String role, @QueryParam ("userId") Long userId) {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
-    }
+    } 
     
     List<WorkspaceUserEntity> workspaceUsers = null;
+    WorkspaceRoleEntity workspaceRole = null;
     
     if (StringUtils.isNotBlank(role)) {
-      WorkspaceRoleEntity workspaceRole = roleController.findWorkspaceRoleEntityByName(role);
+      workspaceRole = roleController.findWorkspaceRoleEntityByName(role);
       if (workspaceRole == null) {
         return Response.status(Status.BAD_REQUEST).entity("Invalid workspace role '" + role + "'").build(); 
       }
+    }
+    
+    if (userId != null) {
+      workspaceUsers = new ArrayList<>();
       
-      workspaceUsers = workspaceController.listWorkspaceUserEntitiesByRole(workspaceEntity, workspaceRole);
+      UserEntity userEntity = userController.findUserEntityById(userId);
+      if (userEntity == null) {
+        return Response.status(Status.BAD_REQUEST).build();
+      }
+      
+      WorkspaceUserEntity workspaceUser = workspaceController.findWorkspaceUserEntityByWorkspaceAndUser(workspaceEntity, userEntity);
+      if (workspaceUser != null) {
+        if (workspaceRole != null) {
+          if (workspaceUser.getWorkspaceUserRole().getId().equals(workspaceRole.getId())) {
+            workspaceUsers.add(workspaceUser); 
+          }
+        } else {
+          workspaceUsers.add(workspaceUser);
+        }
+      }
     } else {
-      workspaceUsers = workspaceController.listWorkspaceUserEntities(workspaceEntity);
+      if (workspaceRole != null) {
+        workspaceUsers = workspaceController.listWorkspaceUserEntitiesByRole(workspaceEntity, workspaceRole);
+      } else {
+        workspaceUsers = workspaceController.listWorkspaceUserEntities(workspaceEntity);
+      }
     }
     
     if (workspaceUsers.isEmpty()) {
