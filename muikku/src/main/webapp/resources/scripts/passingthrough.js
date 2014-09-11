@@ -219,16 +219,7 @@ $(document).ready(function() {
     });
     
     
- // All the fields with a "search"-class  
-    
-    $(".search").focus(function(){
-      $(this).val('');
-    });
 
-    $(".search").blur(function(){
-      $(this).val($(this).attr('value'));
-    });    
-    
 
 });
 
