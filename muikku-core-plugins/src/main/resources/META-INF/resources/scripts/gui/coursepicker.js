@@ -165,11 +165,10 @@
           workspace.hasAssessmentFee = false;
           workspace.rating = 5;
           workspace.ratingCount = 3;
-          workspace.isMember = false;
           
           mApi().workspace.workspaces.users.read(workspace.id, {
             role: 'Workspace Teacher'
-          })
+          })  
           .on('$', function (workspaceUser, workspaceUserCallback) {
             mApi().user.users.read(workspaceUser.userId).callback(function (userErr, user) {
               workspaceUser.hasPicture = user.hasImage;
@@ -179,7 +178,18 @@
           })
           .callback(function (workspaceUsersErr, workspaceUsers) {
             workspace.teachers = workspaceUsers;
-            workspaceCallback();
+            
+            if (MUIKKU_LOGGED_USER_ID) {
+              mApi().workspace.workspaces.users.read(workspace.id, {
+                userId: MUIKKU_LOGGED_USER_ID
+              }).callback(function (memberErr, member) {
+                workspace.isMember = !!member;
+                workspaceCallback();
+              });
+            } else {
+              workspace.isMember = false;
+              workspaceCallback();
+            }       
           });
         })
         .callback($.proxy(function (err, workspaces) {
