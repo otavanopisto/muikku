@@ -13,6 +13,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <script type="text/javascript">
         var CONTEXTPATH = "#{request.contextPath}";
+        var MUIKKU_LOGGED_USER_ID = parseInt('#{sessionBackingBean.loggedUserId}')||null;
       </script>
     <script src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"></script>
     <h:outputScript name="scripts/gui/locales.js" target="head" />
