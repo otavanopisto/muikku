@@ -217,7 +217,12 @@ $(document).ready(function() {
       var _this = $(this);
       hideTooltip(_this);
     });
+    
+    
+
+
 });
+
 
 
 

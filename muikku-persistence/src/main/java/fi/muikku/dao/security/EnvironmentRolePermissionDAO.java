@@ -1,7 +1,6 @@
 package fi.muikku.dao.security;
 
 import fi.muikku.dao.CoreDAO;
-import fi.muikku.dao.DAO;
 import fi.muikku.model.security.EnvironmentRolePermission;
 import fi.muikku.model.security.EnvironmentRolePermission_;
 import fi.muikku.model.security.Permission;
@@ -12,7 +11,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-@DAO
 public class EnvironmentRolePermissionDAO extends CoreDAO<EnvironmentRolePermission> {
 
 	private static final long serialVersionUID = -6645642608906794331L;

@@ -3,7 +3,6 @@ package fi.muikku.dao.users;
 import java.util.List;
 
 import fi.muikku.dao.CoreDAO;
-import fi.muikku.dao.DAO;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserContact;
 import fi.muikku.model.users.UserContactType;
@@ -15,7 +14,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 
-@DAO
 public class UserContactDAO extends CoreDAO<UserContact> {
 
 	private static final long serialVersionUID = 1795503440946182827L;

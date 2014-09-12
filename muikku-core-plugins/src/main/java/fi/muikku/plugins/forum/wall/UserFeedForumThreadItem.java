@@ -5,9 +5,7 @@ import java.util.List;
 import fi.muikku.plugins.forum.model.ForumThread;
 import fi.muikku.plugins.forum.model.ForumThreadReply;
 import fi.muikku.plugins.wall.WallFeedItem;
-import fi.tranquil.TranquilEntity;
 
-@TranquilEntity
 public class UserFeedForumThreadItem extends WallFeedItem {
 
   private ForumThread thread;
@@ -19,6 +17,16 @@ public class UserFeedForumThreadItem extends WallFeedItem {
 
   public ForumThread getThread() {
     return thread;
+  }
+  
+  @Override
+  public String getType() {
+    return "forumThreads";
+  }
+  
+  @Override
+  public String getIdentifier() {
+    return getThread().getId().toString();
   }
 
 }

@@ -12,14 +12,12 @@ import fi.muikku.calendar.CalendarEventRecurrenceWeekDay;
 import fi.muikku.calendar.CalendarEventTemporalField;
 import fi.muikku.calendar.CalendarServiceException;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 import java.util.TimeZone;
 
 import static fi.muikku.plugins.googlecalendar.GoogleCalendarEventRecurrenceParser.*;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import org.apache.commons.lang3.StringUtils;
 
 /**

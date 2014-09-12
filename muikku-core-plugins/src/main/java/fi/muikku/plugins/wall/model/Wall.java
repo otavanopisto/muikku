@@ -21,6 +21,11 @@ public class Wall {
     return null;
   }
   
+  @Transient
+  public String getTypeId() {
+    return null;
+  }
+  
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;

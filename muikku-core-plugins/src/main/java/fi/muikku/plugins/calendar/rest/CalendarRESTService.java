@@ -41,18 +41,18 @@ import fi.muikku.session.SessionController;
 @Produces ("application/json")
 public class CalendarRESTService extends PluginRESTService {
 
-	@Inject
-	private CalendarController calendarController;
+  @Inject
+  private CalendarController calendarController;
 
   @Inject
-	private SessionController sessionController;
+  private SessionController sessionController;
 
-	@POST
+  @POST
   @Path ("/calendars/")
   @LoggedIn
-	public Response createCalendar(Calendar calendar) {
-	  return Response.status(501).build();
-	}
+  public Response createCalendar(Calendar calendar) {
+    return Response.status(501).build();
+  }
 
   @GET
   @Path ("/calendars/")
@@ -384,16 +384,16 @@ public class CalendarRESTService extends PluginRESTService {
 //  @GET
 //  @Path ("/settings")
 //  public Response listSettings() {
-//  	UserEntity user = sessionController.getUser();
+//    UserEntity user = sessionController.getUser();
 //
-//  	Map<String, Object> settings = new HashMap<>();
+//    Map<String, Object> settings = new HashMap<>();
 //
-//  	String firstDay = pluginSettingsController.getPluginUserSetting("calendar", CalendarPluginDescriptor.DEFAULT_FIRSTDAY_SETTING, user);
-//  	if (StringUtils.isBlank(firstDay)) {
-//  		firstDay = pluginSettingsController.getPluginSetting("calendar", CalendarPluginDescriptor.DEFAULT_FIRSTDAY_SETTING);
-//  	}
+//    String firstDay = pluginSettingsController.getPluginUserSetting("calendar", CalendarPluginDescriptor.DEFAULT_FIRSTDAY_SETTING, user);
+//    if (StringUtils.isBlank(firstDay)) {
+//      firstDay = pluginSettingsController.getPluginSetting("calendar", CalendarPluginDescriptor.DEFAULT_FIRSTDAY_SETTING);
+//    }
 //
-//  	settings.put("firstDay", firstDay);
+//    settings.put("firstDay", firstDay);
 //
 //    return Response.ok(
 //      settings
@@ -403,62 +403,62 @@ public class CalendarRESTService extends PluginRESTService {
 //  @PUT
 //  @Path ("/settings")
 //  public Response updateSetting(String data) {
-//  	UserEntity user = sessionController.getUser();
+//    UserEntity user = sessionController.getUser();
 //
-//  	JSONObject jsonData = JSONObject.fromObject(data);
-//  	@SuppressWarnings("unchecked") Set<String> keys = jsonData.keySet();
+//    JSONObject jsonData = JSONObject.fromObject(data);
+//    @SuppressWarnings("unchecked") Set<String> keys = jsonData.keySet();
 //
-//		for (String key : keys) {
-//			switch (key) {
-//				case "firstDay":
-//					pluginSettingsController.setPluginUserSetting("calendar", CalendarPluginDescriptor.DEFAULT_FIRSTDAY_SETTING, jsonData.getString(key), user);
-//			  break;
-//				default:
-//					// TODO: Proper error handling
-//					throw new RuntimeException("Calendar setting " + key + " can not be updated");
-//			}
-//		}
+//    for (String key : keys) {
+//      switch (key) {
+//        case "firstDay":
+//          pluginSettingsController.setPluginUserSetting("calendar", CalendarPluginDescriptor.DEFAULT_FIRSTDAY_SETTING, jsonData.getString(key), user);
+//        break;
+//        default:
+//          // TODO: Proper error handling
+//          throw new RuntimeException("Calendar setting " + key + " can not be updated");
+//      }
+//    }
 //
 //    return Response.ok(data).build();
 //  }
 //
-//	private BigDecimal getBigDecimal(JSONObject jsonData, String key) {
-//		Object object = jsonData.get(key);
-//		if (object == null) {
-//			return null;
-//		}
+//  private BigDecimal getBigDecimal(JSONObject jsonData, String key) {
+//    Object object = jsonData.get(key);
+//    if (object == null) {
+//      return null;
+//    }
 //
-//		String value = null;
+//    String value = null;
 //
-//		if (object instanceof JSONObject) {
-//			JSONObject jsonObject = (JSONObject) object;
+//    if (object instanceof JSONObject) {
+//      JSONObject jsonObject = (JSONObject) object;
 //
-//  		if (jsonObject.isNullObject()) {
-//  			return null;
-//  		}
+//      if (jsonObject.isNullObject()) {
+//        return null;
+//      }
 //
-//  		value = jsonObject.toString();
-//		} else if (object instanceof String) {
-//			value = (String) object;
-//		}
+//      value = jsonObject.toString();
+//    } else if (object instanceof String) {
+//      value = (String) object;
+//    }
 //
-//		return NumberUtils.createBigDecimal(value);
-//	}
+//    return NumberUtils.createBigDecimal(value);
+//  }
 //
 //  public static class CalendarVisiblityValueGetter implements ValueGetter<Boolean> {
 //
-//  	public CalendarVisiblityValueGetter(List<UserCalendar> userCalendars) {
-//			for (UserCalendar userCalendar : userCalendars) {
-//				visibilities.put(userCalendar.getCalendar().getId(), userCalendar.getVisible());
-//			}
-//		}
+//    public CalendarVisiblityValueGetter(List<UserCalendar> userCalendars) {
+//      for (UserCalendar userCalendar : userCalendars) {
+//        visibilities.put(userCalendar.getCalendar().getId(), userCalendar.getVisible());
+//      }
+//    }
 //
-//  	@Override
-//  	public Boolean getValue(TranquilizingContext context) {
-//  		Calendar calendar = (Calendar) context.getEntityValue();
-//  		return visibilities.get(calendar.getId());
-//  	}
+//    @Override
+//    public Boolean getValue(TranquilizingContext context) {
+//      Calendar calendar = (Calendar) context.getEntityValue();
+//      return visibilities.get(calendar.getId());
+//    }
 //
-//  	private Map<Long, Boolean> visibilities = new HashMap<>();
+//    private Map<Long, Boolean> visibilities = new HashMap<>();
 //  }
 }

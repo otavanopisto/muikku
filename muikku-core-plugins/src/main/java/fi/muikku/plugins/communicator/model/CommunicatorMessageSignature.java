@@ -13,8 +13,6 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import fi.muikku.security.ContextReference;
-import fi.muikku.tranquil.UserEntityResolver;
-import fi.tranquil.TranquilityEntityField;
 
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
@@ -53,7 +51,6 @@ public class CommunicatorMessageSignature implements ContextReference {
   private Long id;
 
   @Column (name = "user_id")
-  @TranquilityEntityField(UserEntityResolver.class)
   private Long user;
   
   @NotNull

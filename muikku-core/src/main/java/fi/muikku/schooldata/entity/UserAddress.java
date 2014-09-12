@@ -1,8 +1,5 @@
 package fi.muikku.schooldata.entity;
 
-import fi.tranquil.TranquilEntity;
-
-@TranquilEntity
 public interface UserAddress extends SchoolDataEntity {
 	
 	public String getUserIdentifier();

@@ -1,44 +1,38 @@
 {#.}
-  <div class="cp-course">
+
+  <div id="crsId-{workspaceEntity.id}" class="cp-course ft-01">
     <input type="hidden" name="workspaceId" value="{workspaceEntity.id}"/>
     <input type="hidden" name="workspaceUrl" value="{workspaceEntity.urlName}"/>
-    <div class="cp-course-header">
-      <span class="cp-course-name">{workspaceEntity.name}</span>
-	  <span class="cp-course-rating">{workspaceEntity.rating} ({workspaceEntity.ratingCount})</span>
-    </div>
-    <div class="cp-course-details" style="display: none;">
-      <div class="mf-toolbar cp-course-details-toolbar">
-        <input type="button" value='{#localize key="plugin.coursepicker.course.checkout" /}' class="cp-course-tour-button"/>       
-      </div>
 
-      <div class="cp-course-detailsContainer">
-        <div class="mf-textContent cp-course-details-description">{workspaceEntity.description}</div>
-        
-        <div class="cp-course-details-additionalInfo">
-  	      <div class="cp-course-details-teachers">
-  	        {?workspaceEntity.teachers}
-  	          <div class="cp-course-details-teachers-caption">{#localize key="plugin.coursepicker.course.teachers" /}</div>
-  	          
-  	          {#workspaceEntity.teachers}
-  	            <div class="cp-course-details-teacher">
-  	              <div class="cp-course-details-teacher-picture-container">
-  	                {?hasPicture} 
-  	                  <img class="cp-course-details-teacher-picture" src="{@contextPath/}/picture?userId={id}" width="50" height="50" />
-  	                {:else}
-  	                  <img class="cp-course-details-teacher-picture" src="{@contextPath/}/themes/default/gfx/fish.jpg" width="50" height="50" />
-  	                {/hasPicture}
-  	              </div>
+    
+    <div class="cp-course-details">
+
+      <div class="cp-course-details-container">       
+        <div class="cp-course-additionalInfo">
+          <div class="cp-course-details-teachers">
+           {?workspaceEntity.teachers}
+              <div style="display:none;" class="cp-course-details-teachers-caption">{#localize key="plugin.coursepicker.course.teachers" /}</div>             
+              {#workspaceEntity.teachers}
+                <div class="cp-course-details-teacher">
+                  <div class="cp-course-details-teacher-picture-container">
+                    {?workspaceEntity.hasPicture} 
+                      <img class="cp-teacher-picture" title="{fullName}" src="{@contextPath/}/picture?userId={id}" width="20" height="20" />
+                    {:else}
+                      <div class="cp-teacher-picture-default"></div>
+                    {/workspaceEntity.hasPicture}
+                  </div>
   
-  	              <div class="cp-course-details-teacher-name">{fullName}</div>
-  	              <div class="clear"></div>
-  	            </div>
+
+                  <div class="clear"></div>
+                </div>
   
-  	          {/workspaceEntity.teachers}
-  	        {:else}
-  	          {#localize key="plugin.coursepicker.course.noteachers" /}
-  	        {/workspaceEntity.teachers}
-  	      </div>
+              {/workspaceEntity.teachers}
+            {:else}
+              {#localize key="plugin.coursepicker.course.noteachers" /}
+            {/workspaceEntity.teachers}
   
+          </div>
+ 
           {?workspaceEntity.hasCourseFee}      
             <div class="cp-course-details-fee">{#localize key="plugin.coursepicker.course.coursehasfee" /}</div>
           {/workspaceEntity.hasCourseFee}
@@ -47,8 +41,31 @@
             <div class="cp-course-details-assessmentFee">{#localize key="plugin.coursepicker.course.assessmenthasfee" /}</div>
           {/workspaceEntity.hasAssessmentFee}
         </div>
+        <div class="cp-course-description">
+          <div class="cp-course-header-name">
+           <span class="cp-course-short"></span>
+           <span class="cp-course-long">{workspaceEntity.name}</span>
+          </div>
+          
+          <div class="cp-course-header-details">
+           <span class="cp-course-rating">{workspaceEntity.rating} ({workspaceEntity.ratingCount})</span>
+           <span class="cp-course-len"></span>
+           <span class="cp-course-age"></span>
+          </div>
+                  
+          <div id="detailsCrs-{workspaceEntity.id}" class="cp-course-content-details" style="display:none;">     
+            <div class="cp-course-description-picture"></div>
+            <div class="cp-course-description-text">{workspaceEntity.description}</div>          
+            <div class="cp-course-details-toolbar">
+              <input class="bt-coursepicker cp-course-tour-button" type="button" value='{#localize key="plugin.coursepicker.course.checkout" /}' />
+            </div>
+          </div>
+        </div>       
+
         <div class="clear"></div>
-      </div>
+      </div> 
     </div>
   </div>
+ 
+
 {/.}

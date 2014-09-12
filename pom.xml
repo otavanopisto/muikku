@@ -17,9 +17,9 @@
     <module>muikku-google-calendar</module>
     <module>muikku-facebook-oauth</module>
     <module>muikku-h2db-plugin</module>
+    <module>muikku-mongo-log</module>
     <module>muikku-persistence</module>
     <module>muikku-plugin</module>
-    <module>muikku-plugin-core</module>
     <module>muikku-rest</module>
     <module>muikku-school-data-mock</module>
     <module>muikku-dummy-mail-bridge-plugin</module>

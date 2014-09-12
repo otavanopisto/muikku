@@ -13,9 +13,15 @@ $subTitle:#4e4e4e;
 $sc: rgba(218,218,218,1);
 
 /* Border */
-
 $brd:#dadada;
 $brd-top:#9bbee6;
+
+/* Paddings */
+
+$textContentPadding:15px;
+
+
+/* Margins */
 
 /* Generic background */
 
@@ -36,6 +42,16 @@ $tBgr : #ffda8b;
 /* highlighted background */
 
 $hlBgr: #fff8c1;
+
+
+/* mainFunctions */
+
+
+$mainFuncSideHeader : #aed4e3;
+$mainFuncFilter1 : #32acf6;
+$mainFuncFilter2 : #f90ae3;
+$mainFuncFilter3 : #5dc005;
+
 
 /* Generic gradients (Grayscale) */
 
@@ -66,6 +82,23 @@ $fourColorGr-1:#f9f9f9;
 $fourColorGr-2:#fcfcfc;
 $fourColorGr-3:#f4f4f4;
 $fourColorGr-4:#f7f7f7;
+
+/* MainFunction content */
+
+  $mainFuncContent: #f0f3f4;
+
+
+/* MainFunction sidebar */
+
+  $mainFuncSide: #f1f8fb;
+
+/* MainFunction content functions */
+
+  $mainFuncCf: #f5fcff;
+
+/* MainFunction buttonArea */
+
+  $mainFuncSb: #ebf6fb;
 
 /* MainFunction Button */
  
@@ -121,6 +154,15 @@ $text: 12px;
 @mixin border($bwidth:1px,$bcolor:$brd,$btype:solid) {
   border: $bwidth $btype $bcolor;
 }
+
+/* Paddings */
+
+@mixin padding($pdn:$textContentPadding){
+	padding:$pdn;
+}
+
+/* Margins */
+
 
 /* Corners */
 

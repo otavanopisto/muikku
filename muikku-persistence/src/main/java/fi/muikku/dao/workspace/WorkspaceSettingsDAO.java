@@ -6,13 +6,11 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.CoreDAO;
-import fi.muikku.dao.DAO;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.muikku.model.workspace.WorkspaceSettings;
 import fi.muikku.model.workspace.WorkspaceSettings_;
 
-@DAO
 public class WorkspaceSettingsDAO extends CoreDAO<WorkspaceSettings> {
 
 	private static final long serialVersionUID = 7487711184683654401L;

@@ -7,9 +7,9 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.ocpsoft.pretty.faces.annotation.URLAction;
-import com.ocpsoft.pretty.faces.annotation.URLMapping;
-import com.ocpsoft.pretty.faces.annotation.URLMappings;
+import org.ocpsoft.rewrite.annotation.Join;
+import org.ocpsoft.rewrite.annotation.Parameter;
+import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.controller.UserEntityController;
 import fi.muikku.model.users.UserEntity;
@@ -24,13 +24,11 @@ import fi.muikku.session.SessionController;
 @Named
 @Stateful
 @RequestScoped
-@URLMappings(mappings = {
-  @URLMapping(
-      id = "user-confirmEmailChange", 
-      pattern = "/user-confirmEmailChange/h/#{confirmEmailChangeBackingBean.confirmationHash}", 
-      viewId = "/user/confirmemailchange.jsf")
-})
+@Join (path = "/user-confirmEmailChange/h/{confirmationHash}", to = "/user/confirmemailchange.jsf")
 public class ConfirmEmailChangeBackingBean {
+
+  @Parameter
+  private String confirmationHash;
   
   @Inject
   private UserEntityController userEntityController;
@@ -47,7 +45,7 @@ public class ConfirmEmailChangeBackingBean {
   @Inject
   private UserController userController;
   
-  @URLAction
+  @RequestAction
   public void init() throws FileNotFoundException {
   }
 
@@ -93,5 +91,4 @@ public class ConfirmEmailChangeBackingBean {
 
   private String userName;
   private String passwordHash;
-  private String confirmationHash;
 }

@@ -11,10 +11,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.commons.codec.digest.DigestUtils;
-
-import com.ocpsoft.pretty.faces.annotation.URLMappings;
-import com.ocpsoft.pretty.faces.annotation.URLMapping;
-import com.ocpsoft.pretty.faces.annotation.URLQueryParameter;
+import org.ocpsoft.rewrite.annotation.Join;
+import org.ocpsoft.rewrite.annotation.Parameter;
 
 import fi.muikku.controller.UserEntityController;
 import fi.muikku.i18n.LocaleController;
@@ -27,16 +25,10 @@ import fi.muikku.utils.FacesUtils;
 @Named
 @Stateful
 @RequestScoped  
-@URLMappings (
-  mappings = @URLMapping(
-    viewId = "/forgotpassword/reset.jsf",
-    pattern = "/forgotpassword/reset",
-    id = "forgotpassword-reset"
-  )     
-)
+@Join (path = "/forgotpassword/reset", to = "/forgotpassword/reset.jsf")
 public class ResetPasswordBackingBean {
 
-  @URLQueryParameter ("h")
+  @Parameter ("h")
   private String urlHash;
   
   @Inject

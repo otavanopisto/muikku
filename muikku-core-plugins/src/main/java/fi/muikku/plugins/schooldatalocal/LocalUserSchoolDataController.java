@@ -8,7 +8,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
-import fi.muikku.dao.DAO;
+
 import fi.muikku.dao.users.RoleEntityDAO;
 import fi.muikku.model.users.RoleEntity;
 import fi.muikku.plugins.schooldatalocal.dao.LocalUserDAO;
@@ -28,23 +28,23 @@ public class LocalUserSchoolDataController {
 	
 	public static final String SCHOOL_DATA_SOURCE = "LOCAL";
 	
-	@DAO
+	
 	@Inject
 	private LocalUserDAO localUserDAO;
 	
-	@DAO
+	
 	@Inject
 	private LocalUserEmailDAO localUserEmailDAO;
 
-	@DAO
+	
 	@Inject
 	private LocalUserImageDAO localUserImageDAO;
 
-	@DAO
+	
 	@Inject
 	private LocalUserPropertyKeyDAO localUserPropetyKeyDAO;
 
-	@DAO
+	
 	@Inject
 	private LocalUserPropertyDAO localUserPropertyDAO;
 

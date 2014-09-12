@@ -12,10 +12,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import fi.muikku.plugin.PluginContextClassLoader;
-import fi.muikku.plugin.manager.PluginManagerException;
-import fi.muikku.plugin.manager.SingletonPluginManager;
-
 @WebServlet (
     name = "DustTemplateServlet",
     urlPatterns = "/resources/dust/*"     
@@ -25,10 +21,8 @@ public class DustTemplateServlet extends HttpServlet {
   private static final long serialVersionUID = -891919145673255454L;
 
   @Override
-  @PluginContextClassLoader
   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    try {
-      ClassLoader contextClassLoader = SingletonPluginManager.getInstance().getPluginsClassLoader();
+      ClassLoader contextClassLoader = getClass().getClassLoader();
       URL resource = contextClassLoader.getResource("META-INF/resources/dust" + req.getPathInfo());
 
       if (resource != null) {
@@ -52,8 +46,5 @@ public class DustTemplateServlet extends HttpServlet {
       }
       else
         resp.setStatus(404);
-    } catch (PluginManagerException e) {
-      e.printStackTrace();
-    }
   }
 }

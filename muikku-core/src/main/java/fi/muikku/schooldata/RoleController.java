@@ -123,7 +123,11 @@ public class RoleController {
 	public List<WorkspaceRoleEntity> listWorkspaceRoleEntities() {
 		return workspaceRoleEntityDAO.listAll();
 	}
-  
+	
+	public WorkspaceRoleEntity findWorkspaceRoleEntityByName(String name) {
+	  return workspaceRoleEntityDAO.findByName(name);
+	}
+	
 	public WorkspaceRoleEntity findWorkspaceRoleEntity(Role role) {
 		RoleEntity roleEntity = findRoleEntity(role);
 		if (roleEntity instanceof WorkspaceRoleEntity) {

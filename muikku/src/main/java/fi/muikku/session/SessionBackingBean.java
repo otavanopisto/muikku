@@ -16,6 +16,10 @@ public class SessionBackingBean {
 	public boolean getLoggedIn() {
 		return sessionController.isLoggedIn();
 	}
+	
+	public Long getLoggedUserId() {
+	  return sessionController.isLoggedIn() ? sessionController.getUser().getId() : null;
+	}
 
 	public String getResourceLibrary() {
 		return "theme-muikku";

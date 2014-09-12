@@ -11,25 +11,25 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 public class ProcessedScript {
-  
+
   public Long getId() {
     return id;
   }
-  
+
   public String getUrl() {
-		return url;
-	}
-  
+    return url;
+  }
+
   public void setUrl(String url) {
-		this.url = url;
-	}
-  
+    this.url = url;
+  }
+
   @Id
-  @GeneratedValue (strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-  
+
   @NotNull
   @NotEmpty
-  @Column (nullable = false, unique = true)
+  @Column(nullable = false, unique = true)
   private String url;
 }

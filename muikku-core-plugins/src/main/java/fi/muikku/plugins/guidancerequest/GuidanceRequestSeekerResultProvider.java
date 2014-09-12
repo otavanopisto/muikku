@@ -30,4 +30,9 @@ public class GuidanceRequestSeekerResultProvider implements SeekerResultProvider
     
     return result; 
   }
+
+  @Override
+  public String getName() {
+    return "Guidance request";
+  }
 }

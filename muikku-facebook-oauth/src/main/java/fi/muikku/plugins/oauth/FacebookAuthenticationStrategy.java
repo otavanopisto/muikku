@@ -30,6 +30,7 @@ import org.scribe.model.Verifier;
 import org.scribe.oauth.OAuthService;
 
 import fi.muikku.auth.AuthenticationHandleException;
+import fi.muikku.auth.AuthenticationProvider;
 import fi.muikku.auth.AuthenticationResult;
 import fi.muikku.auth.OAuthAuthenticationStrategy;
 import fi.muikku.model.security.AuthSource;
@@ -37,7 +38,7 @@ import fi.muikku.session.SessionController;
 
 @Dependent
 @Stateless
-public class FacebookAuthenticationStrategy extends OAuthAuthenticationStrategy {
+public class FacebookAuthenticationStrategy extends OAuthAuthenticationStrategy implements AuthenticationProvider {
   
   @Inject
   private Logger logger;

@@ -11,10 +11,10 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 
-import fi.muikku.dao.DAO;
+
 import fi.muikku.model.base.Tag;
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.plugin.PluginDAO;
+import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageCategory;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageId;
@@ -24,8 +24,8 @@ import fi.muikku.plugins.communicator.model.CommunicatorMessage_;
 import fi.muikku.plugins.communicator.model.InboxCommunicatorMessage;
 import fi.muikku.plugins.communicator.model.InboxCommunicatorMessage_;
 
-@DAO
-public class InboxCommunicatorMessageDAO extends PluginDAO<InboxCommunicatorMessage> {
+
+public class InboxCommunicatorMessageDAO extends CorePluginsDAO<InboxCommunicatorMessage> {
 	
   private static final long serialVersionUID = -8721990589622544635L;
 

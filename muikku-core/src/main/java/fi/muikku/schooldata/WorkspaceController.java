@@ -1,5 +1,6 @@
 package fi.muikku.schooldata;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -210,6 +211,17 @@ public class WorkspaceController {
     return workspaceEntityDAO.listByDataSource(schoolDataSource);
   }
 
+  public List<WorkspaceEntity> listWorkspaceEntitiesByUser(UserEntity userEntity) {
+    List<WorkspaceEntity> result = new ArrayList<>();
+    
+    List<WorkspaceUserEntity> workspaceUserEntities = listWorkspaceUserEntitiesByUser(userEntity);
+    for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
+      result.add(workspaceUserEntity.getWorkspaceEntity());
+    }
+    
+    return result;
+  }
+
   public WorkspaceEntity archiveWorkspaceEntity(WorkspaceEntity workspaceEntity) {
     return workspaceEntityDAO.updateArchived(workspaceEntity, Boolean.TRUE);
   }
@@ -291,7 +303,7 @@ public class WorkspaceController {
     return workspaceUserEntityDAO.listByWorkspaceAndRole(workspaceEntity, role);
   }
 
-  public List<WorkspaceUserEntity> listWorkspaceEntitiesByUser(UserEntity userEntity) {
+  public List<WorkspaceUserEntity> listWorkspaceUserEntitiesByUser(UserEntity userEntity) {
     return workspaceUserEntityDAO.listByUser(userEntity);
   }
 

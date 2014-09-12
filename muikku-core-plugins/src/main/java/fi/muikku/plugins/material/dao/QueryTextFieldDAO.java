@@ -5,14 +5,14 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.muikku.dao.DAO;
-import fi.muikku.plugin.PluginDAO;
+
+import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.material.model.QueryTextField;
 import fi.muikku.plugins.material.model.QueryTextField_;
 
-@DAO
-public class QueryTextFieldDAO extends PluginDAO<QueryTextField> {
+
+public class QueryTextFieldDAO extends CorePluginsDAO<QueryTextField> {
 
   private static final long serialVersionUID = -5327160259588566934L;
 

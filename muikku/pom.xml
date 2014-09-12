@@ -13,59 +13,91 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <properties>
-    <jboss.home>${env.JBOSS_HOME}</jboss.home>
-    <jboss.domain>default</jboss.domain>
-    <arquillian.version>1.0.0.Alpha5</arquillian.version>
-  </properties>
-
   <dependencies>
+
+    <!-- Servlet -->
+
     <dependency>
-      <groupId>org.jboss.spec</groupId>
-      <artifactId>jboss-javaee-6.0</artifactId>
-      <type>pom</type>
+      <groupId>org.jboss.spec.javax.servlet</groupId>
+      <artifactId>jboss-servlet-api_3.1_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- CDI -->
+
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.jboss.spec.javax.faces</groupId>
-      <artifactId>jboss-jsf-api_2.1_spec</artifactId>
+      <groupId>org.jboss.spec.javax.interceptor</groupId>
+      <artifactId>jboss-interceptors-api_1.2_spec</artifactId>
       <scope>provided</scope>
-    </dependency> 
+    </dependency>
+
+    <!-- EJB -->
+
+    <dependency>
+      <groupId>org.jboss.spec.javax.ejb</groupId>
+      <artifactId>jboss-ejb-api_3.2_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Transactions -->
+
+    <dependency>
+      <groupId>org.jboss.spec.javax.transaction</groupId>
+      <artifactId>jboss-transaction-api_1.2_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- EL -->
+
+    <dependency>
+      <groupId>org.jboss.spec.javax.el</groupId>
+      <artifactId>jboss-el-api_3.0_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Faces -->
+
+    <dependency>
+      <groupId>org.jboss.spec.javax.faces</groupId>
+      <artifactId>jboss-jsf-api_2.2_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
     <dependency>
       <groupId>com.sun.faces</groupId>
       <artifactId>jsf-impl</artifactId>
       <scope>provided</scope>
     </dependency>
-        
+    
+    <!-- Rewrite -->
+    
     <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-jpamodelgen</artifactId>
-      <version>1.1.1.Final</version>
-      <scope>provided</scope>
+      <groupId>org.ocpsoft.rewrite</groupId>
+      <artifactId>rewrite-servlet</artifactId>
     </dependency>
+    
+    <dependency>
+      <groupId>org.ocpsoft.rewrite</groupId>
+      <artifactId>rewrite-integration-faces</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.ocpsoft.rewrite</groupId>
+      <artifactId>rewrite-integration-cdi</artifactId>
+    </dependency>
+
+    <!-- Hibernate -->
 
     <dependency>
       <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-validator</artifactId>
+      <artifactId>hibernate-core</artifactId>
       <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-lang3</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-entitymanager</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
     </dependency>
 
     <dependency>
@@ -75,20 +107,88 @@
     </dependency>
 
     <dependency>
-      <groupId>joda-time</groupId>
-      <artifactId>joda-time</artifactId>
-      <version>1.6</version>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.apache.santuario</groupId>
-      <artifactId>xmlsec</artifactId>
-      <version>1.4.4</version>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-validator</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Jackson -->
+
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-core-asl</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-mapper-asl</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Commons -->
+    
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    
+    <!-- H2 -->
+  
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    
+     <!-- RESTEasy -->
+     
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>jaxrs-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jaxrs</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Muikku -->
+
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>core</artifactId>
     </dependency>
 
     <dependency>
       <groupId>fi.muikku</groupId>
-      <artifactId>plugin-core</artifactId>
+      <artifactId>plugin</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>rest</artifactId>
     </dependency>
 
     <dependency>
@@ -97,40 +197,69 @@
     </dependency>
 
     <dependency>
-      <groupId>commons-io</groupId>
-      <artifactId>commons-io</artifactId>
-    </dependency>
-    <dependency>
       <groupId>fi.muikku</groupId>
       <artifactId>security</artifactId>
     </dependency>
-    
+
+    <!-- ENABLED PLUGINS START -->
+
     <dependency>
       <groupId>fi.muikku</groupId>
-      <artifactId>core</artifactId>
-    </dependency>
-    
-    <dependency>
-      <groupId>fi.muikku</groupId>
-      <artifactId>rest</artifactId>
-      <exclusions>
-        <exclusion>
-          <artifactId>javassist</artifactId>
-          <groupId>javassist</groupId>
-        </exclusion>
-      </exclusions>
+      <artifactId>core-plugins</artifactId>
     </dependency>
 
     <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-mapper-asl</artifactId>
+      <groupId>fi.muikku</groupId>
+      <artifactId>h2db-plugin</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
     </dependency>
-    
+
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>school-data-mock</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>deus-nex-machina</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>dummy-mail-bridge-plugin</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>google-oauth-plugin</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>facebook-oauth-plugin</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>mongo-log-plugin</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>google-calendar-plugin</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+
+    <!-- ENABLED PLUGINS END -->
   </dependencies>
-    
+
   <build>
-    <finalName>${project.artifactId}</finalName>
-    
     <pluginManagement>
       <plugins>
         <plugin>
@@ -161,55 +290,6 @@
     </pluginManagement>
     <plugins>
       <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.1</version>
-        <configuration>
-          <source>${maven.compiler.source}</source>
-          <target>${maven.compiler.target}</target>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-war-plugin</artifactId>
-        <version>2.3</version>
-        <executions>
-          <execution>
-            <id>default-war</id>
-            <phase>package</phase>
-            <goals>
-              <goal>war</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-	  <plugin>
-		<groupId>org.apache.maven.plugins</groupId>
-		<artifactId>maven-source-plugin</artifactId>
-		<version>2.2.1</version>
-		<executions>
-			<execution>
-				<id>attach-sources</id>
-				<phase>verify</phase>
-				<goals>
-					<goal>jar-no-fork</goal>
-				</goals>
-			</execution>
-		</executions>
-	  </plugin>
-	  <plugin>
-		<groupId>org.apache.maven.plugins</groupId>
-		<artifactId>maven-javadoc-plugin</artifactId>
-		<version>2.9</version>
-		<executions>
-			<execution>
-				<id>attach-javadocs</id>
-				<goals>
-					<goal>jar</goal>
-				</goals>
-			</execution>
-		</executions>
-	  </plugin>
-      
-      <plugin>
         <groupId>org.jasig.maven</groupId>
         <artifactId>sass-maven-plugin</artifactId>
         <executions>
@@ -226,208 +306,20 @@
             </configuration>
           </execution>
         </executions>
-        
+      </plugin>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifestEntries>
+              <Dependencies>org.hibernate.search.orm services, org.apache.commons.io, org.apache.commons.collections, org.apache.commons.codec, org.codehaus.jackson.jackson-core-asl, org.codehaus.jackson.jackson-mapper-asl, org.apache.httpcomponents, com.h2database.h2</Dependencies>
+            </manifestEntries>
+          </archive>
+        </configuration>
       </plugin>
     </plugins>
   </build>
 
-  <profiles>
-    <profile>
-      <!-- The default profile skips all tests, though you can tune it to run just unit tests based on a custom pattern -->
-      <!-- Seperate profiles are provided for running all tests, including Arquillian tests that execute in the specified container -->
-      <id>default</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <dependencies>
-        <!-- Java EE 6 API dependency -->
-        <!-- This one dependency imports all APIs available for a Java EE 6.0 application -->
-        
-      </dependencies>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <version>2.4.3</version>
-            <configuration>
-              <skip>true</skip>
-            </configuration>
-          </plugin>
-          <!-- Optional plugin deploys your war to a local JBoss AS container -->
-          <!-- To use, set the JBOSS_HOME environment variable (or jboss.home in $HOME/.m2/settings.xml) and run: mvn package jboss:hard-deploy -->
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>jboss-maven-plugin</artifactId>
-            <version>1.4.1</version>
-            <configuration>
-              <jbossHome>${jboss.home}</jbossHome>
-              <serverName>${jboss.domain}</serverName>
-              <fileNames>
-                <!-- JNDI DataSource that connects to in-memory HSQLDB to demonstrate JPA -->
-                <fileName>src/main/resources-jbossas/default-ds.xml</fileName>
-                <!-- DataSource needs to go before the application -->
-                <fileName>${project.build.directory}/${project.build.finalName}.war</fileName>
-              </fileNames>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <profile>
-      <!-- An optional Arquillian testing profile that executes tests in GlassFish Embedded -->
-      <!-- Tests are broken under Arquillian 1.0.0.Alpha5 since sun-resources.xml is not supported -->
-      <!-- Run with: mvn clean test -Parq-glassfish-embedded -->
-      <id>arq-glassfish-embedded</id>
-      <dependencies>
-        <dependency>
-          <groupId>org.jboss.arquillian.container</groupId>
-          <artifactId>arquillian-glassfish-embedded-3</artifactId>
-          <version>${arquillian.version}</version>
-          <scope>test</scope>
-        </dependency>
-        <!-- This imports the Java EE 6 runtime libraries provided by GlassFish Embedded -->
-        <dependency>
-          <groupId>org.glassfish.extras</groupId>
-          <artifactId>glassfish-embedded-all</artifactId>
-          <version>3.0.1</version>
-          <scope>provided</scope>
-        </dependency>
-      </dependencies>
-      <build>
-        <testResources>
-          <testResource>
-            <directory>src/test/resources</directory>
-          </testResource>
-          <!-- Overrides default configuration to use alternate persistence.xml with eclipselink settings and declare a Glassfish Datasource -->
-          <!-- Used by Arquillian -->
-          <testResource>
-            <directory>src/test/resources-glassfish-embedded</directory>
-          </testResource>
-        </testResources>
-        <plugins>
-          <plugin>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <!-- don't use version 2.5 as it creates seperate test suites per class -->
-            <version>2.4.3</version>
-            <configuration>
-              <systemProperties>
-                <!-- This optional property fixes an annoyance with Glassfish that puts derby.log in the project root -->
-                <property>
-                  <name>derby.stream.error.file</name>
-                  <!-- If you save the log in target it is less likely to get committed in your project -->
-                  <value>target/derby.log</value>
-                </property>
-              </systemProperties>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <profile>
-      <!-- An optional Arquillian testing profile that executes tests in a remote JBoss AS instance -->
-      <!-- Run with: mvn clean test -Parq-jbossas-remote -->
-      <id>arq-jbossas-remote</id>
-      <dependencies>
-        <dependency>
-          <groupId>org.jboss.arquillian.container</groupId>
-          <artifactId>arquillian-jbossas-remote-6</artifactId>
-          <version>${arquillian.version}</version>
-          <scope>test</scope>
-        </dependency>
-
-        <dependency>
-          <groupId>org.jboss.spec</groupId>
-          <artifactId>jboss-javaee-6.0</artifactId>
-          <type>pom</type>
-          <scope>provided</scope>
-        </dependency>
-
-        <!-- needed for org.jnp.interfaces.NamingContextFactory -->
-        <dependency>
-          <groupId>org.jboss.jbossas</groupId>
-          <artifactId>jboss-as-client</artifactId>
-          <version>6.0.0.Final</version>
-          <type>pom</type>
-          <scope>test</scope>
-        </dependency>
-      </dependencies>
-      <build>
-        <testResources>
-          <testResource>
-            <directory>src/test/resources</directory>
-          </testResource>
-          <!-- Overrides default configuration to use alternate persistence.xml with default JBoss AS data source -->
-          <!-- Used by Arquillian -->
-          <testResource>
-            <directory>src/test/resources-jbossas</directory>
-          </testResource>
-        </testResources>
-      </build>
-    </profile>
-
-    <profile>
-      <id>arq-weld-ee-embedded</id>
-      <dependencies>
-        <dependency>
-          <groupId>org.jboss.arquillian.container</groupId>
-          <artifactId>arquillian-weld-ee-embedded-1.1</artifactId>
-          <version>${arquillian.version}</version>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.jboss.spec</groupId>
-          <artifactId>jboss-javaee-6.0</artifactId>
-          <version>${jboss-javaee6-spec.version}</version>
-          <type>pom</type>
-          <scope>provided</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.jboss.weld</groupId>
-          <artifactId>weld-core</artifactId>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.jboss.weld</groupId>
-          <artifactId>weld-api</artifactId>
-          <scope>test</scope>
-        </dependency>
-        <dependency>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-simple</artifactId>
-          <scope>test</scope>
-        </dependency>
-      </dependencies>
-    </profile>
-    <profile>
-      <id>openshift</id>
-      <build>
-        <finalName>${project.artifactId}</finalName>
-        <plugins>
-          <plugin>
-            <artifactId>maven-war-plugin</artifactId>
-            <version>2.3</version>
-            <configuration>
-              <outputDirectory>deployments</outputDirectory>
-              <warName>ROOT</warName>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
-  
-  <repositories>
-    <repository>
-      <id>otavanopisto-snapshots</id>
-      <name>Otavan Opisto Snapshots</name>
-      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/snapshots</url>
-    </repository>
-    <repository>
-      <id>otavanopisto-releases</id>
-      <name>Otavan Opisto Releases</name>
-      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases</url>
-    </repository>
-  </repositories>
 </project>

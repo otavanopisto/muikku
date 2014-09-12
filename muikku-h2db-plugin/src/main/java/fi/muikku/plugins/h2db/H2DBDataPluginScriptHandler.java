@@ -7,7 +7,6 @@ import java.net.URLConnection;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
@@ -20,9 +19,6 @@ import fi.muikku.plugins.data.DataPluginScriptHandler;
 @Dependent
 @Stateful
 public class H2DBDataPluginScriptHandler implements DataPluginScriptHandler {
-	
-	@Inject
-	private Logger logger;
 	
 	@Inject
 	private H2DBPluginController h2DBPluginController;

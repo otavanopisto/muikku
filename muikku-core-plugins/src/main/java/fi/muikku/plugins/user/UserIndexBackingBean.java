@@ -7,9 +7,9 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.ocpsoft.pretty.faces.annotation.URLAction;
-import com.ocpsoft.pretty.faces.annotation.URLMapping;
-import com.ocpsoft.pretty.faces.annotation.URLMappings;
+import org.ocpsoft.rewrite.annotation.Join;
+import org.ocpsoft.rewrite.annotation.Parameter;
+import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.friends.FriendsController;
@@ -19,14 +19,11 @@ import fi.muikku.schooldata.entity.User;
 @Named
 @Stateful
 @RequestScoped
-@URLMappings(mappings = {
-  @URLMapping(
-    id = "user-index", 
-    pattern = "/user/#{userIndexBackingBean.userId}", 
-    viewId = "/user/user.jsf"
-  )    
-})
+@Join ( path = "/user/{userId}", to = "/user/user.jsf")
 public class UserIndexBackingBean {
+
+  @Parameter
+  private Long userId;
 
 	@Inject
 	private UserController userController;
@@ -34,7 +31,7 @@ public class UserIndexBackingBean {
   @Inject
   private FriendsController friendsController_TEMP;
 	
-	@URLAction
+	@RequestAction
 	public void init() throws FileNotFoundException {
 	}
 
@@ -57,6 +54,4 @@ public class UserIndexBackingBean {
   public void setUserId(Long userId) {
     this.userId = userId;
   }
-
-  private Long userId;
 }
