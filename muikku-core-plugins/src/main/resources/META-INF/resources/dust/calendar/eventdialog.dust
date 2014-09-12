@@ -38,7 +38,7 @@
         <label for="new-event-reminders">Reminders</label>
         <div name="reminders" id="new-event-reminders">
         </div>
-        <select style="width:20%;" id="new-event-reminder-type" name="reminderType">
+        <select style="width:20%;" id="new-event-reminder-type" name="reminderType" >
             <option value="EMAIL">Email</option>
             <option value="SMS">Sms</option>
             <option value="PUSH">Popup</option>
