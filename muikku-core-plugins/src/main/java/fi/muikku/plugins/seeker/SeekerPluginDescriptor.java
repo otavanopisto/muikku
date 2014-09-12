@@ -17,6 +17,7 @@ import fi.muikku.i18n.LocaleLocation;
 import fi.muikku.plugin.LocalizedPluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
 import fi.muikku.plugin.RESTPluginDescriptor;
+import fi.muikku.plugins.seeker.defaultproviders.TopResultProvider;
 import fi.muikku.plugins.seeker.defaultproviders.UserSeekerResultProvider;
 import fi.muikku.plugins.seeker.defaultproviders.WorkspaceSeekerResultProvider;
 
@@ -41,7 +42,8 @@ public class SeekerPluginDescriptor implements PluginDescriptor, RESTPluginDescr
 	public List<Class<?>> getBeans() {
 		return new ArrayList<Class<?>>(Arrays.asList(
 		  WorkspaceSeekerResultProvider.class,
-		  UserSeekerResultProvider.class
+		  UserSeekerResultProvider.class,
+		  TopResultProvider.class
 		));
 	}
 	
