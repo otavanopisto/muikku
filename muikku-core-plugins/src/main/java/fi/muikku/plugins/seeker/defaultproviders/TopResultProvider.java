@@ -16,8 +16,8 @@ import fi.muikku.plugins.seeker.SeekerResultProvider;
 
 public class TopResultProvider implements SeekerResultProvider {
 
-  @Inject
-  private ElasticSearchProvider elasticSearchProvider;
+  /*@Inject
+  private ElasticSearchProvider elasticSearchProvider;*/
 
   @Inject
   private LocalUserDAO localUserDAO;
@@ -33,7 +33,7 @@ public class TopResultProvider implements SeekerResultProvider {
      * List<LocalUser> users = localUserDAO.listAll(); for(LocalUser user : users){ System.out.println(user.getFirstName()); localUserDAO.updateFirstName(user,
      * user.getFirstName()); }
      */
-    SearchResult result = elasticSearchProvider.freeTextSearch(searchTerm, 0, 1);
+   /* SearchResult result = elasticSearchProvider.freeTextSearch(searchTerm, 0, 1);
     String label = "";
     if (result.getResults().size() > 0) {
       for (Map<String, Object> entry : result.getResults()) {
@@ -51,7 +51,8 @@ public class TopResultProvider implements SeekerResultProvider {
       return seekerResults;
     } else {
       return null;
-    }
+    }*/
+    return null;
   }
 
 }
