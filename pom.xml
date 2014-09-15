@@ -33,6 +33,7 @@
     <maven.build.timestamp.format>yyyyMMdd'T'HHmmss</maven.build.timestamp.format>
     <maven.compiler.source>1.7</maven.compiler.source>
     <maven.compiler.target>1.7</maven.compiler.target>
+    <hibernate-jpamodelgen.version>4.3.6.Final</hibernate-jpamodelgen.version>
   </properties>
 
   <dependencyManagement>
