@@ -1,7 +1,5 @@
 (function($){
 
-  
-
   $.fn.muikku_modal = function(prop){
     
     var options = $.extend({
