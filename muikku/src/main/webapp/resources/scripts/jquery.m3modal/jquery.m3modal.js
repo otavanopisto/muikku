@@ -15,15 +15,27 @@
       bgrElem();
       contElem();
       elemStyles();     
+      
+      $('md-box').fadeIn();
+      
     });
-            
+
+    function killMe(dis){
+  	   dis.fadeOut().remove();
+    }
+    
+    
     function bgrElem(){
-    	var bgE = $('<div class="md-background"></div>');   	
+    	var bgE = $('<div class="md-background"><span class="md-close"></span></div>');   	
     	$(bgE).appendTo('body');
+        $('md-background').click(killMe(this));
+    	$('md-close').click(killMe(this));     
     }
     
     function elemStyles(){
+    	
      // Content box 	
+    	
       $('md-box').css({
         'position' : 'absolute',
         'left' :options.left,
@@ -32,7 +44,9 @@
         'height' : options.height +'px',
         'width' : options.width + 'px',     
       });
+      
       //  Close button 
+      
       $('md-close').css({
           'position' : 'relative',
           'right' : '10px',
@@ -52,11 +66,14 @@
           'top' : '0',
           'height' : pageHeight,
           'width' : pageWidth,
-          'z-index' : '1+'
+          'z-index' : '10'
         });      
     }
     
-    function contElem(){}
+    function contElem(){
+    	var cE = $('<div class="md-box"></div>') ;
+    	cE.appendTo('.md-background');
+    }
         
     
     return this;
