@@ -25,15 +25,14 @@ import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.DeserializationConfig.Feature;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.ocpsoft.rewrite.annotation.Join;
+import org.ocpsoft.rewrite.annotation.Matches;
+import org.ocpsoft.rewrite.annotation.Parameter;
+import org.ocpsoft.rewrite.annotation.RequestAction;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
-import com.ocpsoft.pretty.faces.annotation.URLAction;
-import com.ocpsoft.pretty.faces.annotation.URLMapping;
-import com.ocpsoft.pretty.faces.annotation.URLMappings;
-import com.ocpsoft.pretty.faces.annotation.URLQueryParameter;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.material.HtmlMaterialController;
@@ -53,16 +52,20 @@ import fi.muikku.session.SessionController;
 @Named
 @Stateful
 @RequestScoped
-@URLMappings(mappings = { 
-  @URLMapping(
-	  id = "workspace-html-material", 
-  	pattern = "/workspace/#{workspaceHtmlMaterialBackingBean.workspaceUrlName}/materials.html/#{ /[a-zA-Z0-9_\\/\\.\\\\-][a-zA-Z0-9_\\/\\.\\\\-]*/ workspaceHtmlMaterialBackingBean.workspaceMaterialPath}", 
-  	viewId = "/workspaces/workspace-html-material.jsf"
-  )}
-)
+@Join (path = "/workspace/{workspaceUrlName}/materials.html/{workspaceMaterialPath}", to = "/workspaces/workspace-html-material.jsf")
 public class WorkspaceHtmlMaterialBackingBean {
   
   private static final String FORM_ID = "material-form"; 
+  
+  @Parameter ("embed")
+  private Boolean embed;
+
+  @Parameter
+  private String workspaceUrlName;
+  
+  @Parameter
+  @Matches ("[a-zA-Z0-9_\\/\\.\\\\-][a-zA-Z0-9_\\/\\.\\\\-]*")
+  private String workspaceMaterialPath;
   
 	@Inject
 	private WorkspaceController workspaceController;
@@ -90,7 +93,7 @@ public class WorkspaceHtmlMaterialBackingBean {
   @Inject
   private Instance<WorkspaceFieldHandler> fieldHandlers;
   
-	@URLAction 
+	@RequestAction
 	public void init() throws IOException, XPathExpressionException, SAXException, TransformerException, MaterialQueryIntegrityExeption {
 	  // TODO: Proper error handling
 	  
@@ -229,15 +232,9 @@ public class WorkspaceHtmlMaterialBackingBean {
     
     return null;
   }
-  
-	@URLQueryParameter ("embed")
-	private Boolean embed;
+
 	
 	private String html;
-	
-	private String workspaceMaterialPath;
-
-	private String workspaceUrlName;
 	
 	private WorkspaceMaterial workspaceMaterial;
 	

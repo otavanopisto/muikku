@@ -8,14 +8,12 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.CoreDAO;
-import fi.muikku.dao.DAO;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserGroup;
 import fi.muikku.model.users.UserGroupUser;
 import fi.muikku.model.users.UserGroupUser_;
 
 
-@DAO
 public class UserGroupDAO extends CoreDAO<UserGroup> {
 
   private static final long serialVersionUID = -2602347893195385174L;

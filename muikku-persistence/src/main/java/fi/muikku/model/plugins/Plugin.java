@@ -32,14 +32,6 @@ public class Plugin {
     this.enabled = enabled;
   }
 
-  public String getLibrary() {
-    return library;
-  }
-
-  public void setLibrary(String library) {
-    this.library = library;
-  }
-
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -48,11 +40,6 @@ public class Plugin {
   @NotNull
   @NotEmpty
   private String name;
-  
-  @Column (nullable = false)
-  @NotNull
-  @NotEmpty
-  private String library;
   
   @Column (nullable = false)
   @NotNull

@@ -1,12 +1,12 @@
 package fi.muikku.plugins.workspace.dao;
 
-import fi.muikku.dao.DAO;
-import fi.muikku.plugin.PluginDAO;
+
+import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
 
-@DAO
-public class WorkspaceFolderDAO extends PluginDAO<WorkspaceFolder> {
+
+public class WorkspaceFolderDAO extends CorePluginsDAO<WorkspaceFolder> {
 	
 	private static final long serialVersionUID = 9095130166469638314L;
 

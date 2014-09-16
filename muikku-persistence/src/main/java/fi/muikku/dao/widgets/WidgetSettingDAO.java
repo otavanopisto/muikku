@@ -1,7 +1,6 @@
 package fi.muikku.dao.widgets;
 
 import fi.muikku.dao.CoreDAO;
-import fi.muikku.dao.DAO;
 import fi.muikku.model.widgets.WidgetSetting;
 import fi.muikku.model.widgets.WidgetSetting_;
 
@@ -11,7 +10,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 
-@DAO
 public class WidgetSettingDAO extends CoreDAO<WidgetSetting> {
 
 	private static final long serialVersionUID = -4014980522728539961L;

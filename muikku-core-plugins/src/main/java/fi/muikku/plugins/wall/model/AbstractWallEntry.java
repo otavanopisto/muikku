@@ -17,8 +17,6 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import fi.muikku.model.util.ArchivableEntity;
-import fi.muikku.tranquil.UserEntityResolver;
-import fi.tranquil.TranquilityEntityField;
 
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
@@ -100,7 +98,6 @@ public abstract class AbstractWallEntry implements ArchivableEntity {
   private Boolean archived = Boolean.FALSE;
 
   @Column (name = "creator_id")
-  @TranquilityEntityField(UserEntityResolver.class)
   private Long creator;
   
   @NotNull
@@ -109,7 +106,6 @@ public abstract class AbstractWallEntry implements ArchivableEntity {
   private Date created;
   
   @Column (name = "lastModifier_id")
-  @TranquilityEntityField(UserEntityResolver.class)
   private Long lastModifier;
   
   @NotNull

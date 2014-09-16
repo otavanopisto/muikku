@@ -1,12 +1,12 @@
 <div class="wallEntryComment">
-  {?creator_tq.hasPicture} 
-    <img class="wallEntryUserPicture" src="{@contextPath/}/picture?userId={creator_tq.id}" width="50" height="50" />
+  {?creatorHasPicture} 
+    <img class="wallEntryUserPicture" src="{@contextPath/}/picture?userId={creatorId}" width="50" height="50" />
   {:else}
-    <img class="wallEntryUserPicture" src="{@contextPath/}/themes/default/gfx/fish.jpg" width="50" height="50" />
-  {/creator_tq.hasPicture}  
+    <div class="wallEntryUserPicture wallEntryUserPictureEmpty"/>
+  {/creatorHasPicture}  
 
   <div class="wallEntryCommentTitle">
-    <a class="wallEntryCommentCreator" href="{@contextPath/}/user/{creator_tq.id}">{creator_tq.fullName}</a>
+    <a class="wallEntryCommentCreator" href="{@contextPath/}/user/{creatorId}">{creatorFullName}</a>
     <span class="wallEntryCommentDate">{created|formatDate}</span>
   </div>
 

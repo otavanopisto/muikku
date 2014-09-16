@@ -11,9 +11,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
-import fi.muikku.tranquil.UserEntityResolver;
-import fi.tranquil.TranquilityEntityField;
-
 @Entity
 public class Friend {
 
@@ -50,11 +47,9 @@ public class Friend {
   private Long id;
   
   @Column (name = "usera_id")
-  @TranquilityEntityField(UserEntityResolver.class)
   private Long userA;
   
   @Column (name = "userb_id")
-  @TranquilityEntityField(UserEntityResolver.class)
   private Long userB;
   
   @NotNull

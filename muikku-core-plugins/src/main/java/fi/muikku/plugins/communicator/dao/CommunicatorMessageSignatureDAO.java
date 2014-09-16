@@ -7,14 +7,14 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.muikku.dao.DAO;
+
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.plugin.PluginDAO;
+import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageSignature_;
 
-@DAO
-public class CommunicatorMessageSignatureDAO extends PluginDAO<CommunicatorMessageSignature> {
+
+public class CommunicatorMessageSignatureDAO extends CorePluginsDAO<CommunicatorMessageSignature> {
 	
   private static final long serialVersionUID = -7830619828801454118L;
 

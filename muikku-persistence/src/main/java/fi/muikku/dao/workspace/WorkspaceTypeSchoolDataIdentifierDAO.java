@@ -8,13 +8,11 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.CoreDAO;
-import fi.muikku.dao.DAO;
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.workspace.WorkspaceTypeEntity;
 import fi.muikku.model.workspace.WorkspaceTypeSchoolDataIdentifier;
 import fi.muikku.model.workspace.WorkspaceTypeSchoolDataIdentifier_;
 
-@DAO
 public class WorkspaceTypeSchoolDataIdentifierDAO extends CoreDAO<WorkspaceTypeSchoolDataIdentifier> {
 
 	private static final long serialVersionUID = 689630016231701515L;

@@ -15,10 +15,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.commons.codec.digest.DigestUtils;
-
-import com.ocpsoft.pretty.faces.annotation.URLAction;
-import com.ocpsoft.pretty.faces.annotation.URLMapping;
-import com.ocpsoft.pretty.faces.annotation.URLMappings;
+import org.ocpsoft.rewrite.annotation.Join;
+import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.i18n.LocaleController;
 import fi.muikku.plugins.internalauth.InternalAuthController;
@@ -29,13 +27,7 @@ import fi.muikku.utils.FacesUtils;
 @Named
 @Stateful
 @RequestScoped
-@URLMappings(mappings = {
-  @URLMapping(
-    id = "user-changepassword", 
-    pattern = "/user-changepassword", 
-    viewId = "/user/user-changepassword.jsf"
-  )    
-})
+@Join (path = "/user-changepassword", to = "/user/user-changepassword.jsf")
 public class UserChangePasswordBackingBean {
 
 	@Inject
@@ -50,7 +42,7 @@ public class UserChangePasswordBackingBean {
 	@Inject
 	private LocaleController localeController;
 	
-	@URLAction
+	@RequestAction
 	public void init() throws FileNotFoundException {
 	}
 

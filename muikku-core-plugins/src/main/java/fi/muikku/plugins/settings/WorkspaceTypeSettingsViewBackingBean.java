@@ -7,9 +7,8 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.ocpsoft.pretty.faces.annotation.URLAction;
-import com.ocpsoft.pretty.faces.annotation.URLMapping;
-import com.ocpsoft.pretty.faces.annotation.URLMappings;
+import org.ocpsoft.rewrite.annotation.Join;
+import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.model.workspace.WorkspaceTypeEntity;
 import fi.muikku.schooldata.WorkspaceController;
@@ -17,13 +16,7 @@ import fi.muikku.schooldata.WorkspaceController;
 @Named
 @Stateful
 @RequestScoped
-@URLMappings (mappings = {
-  @URLMapping (
-    id = "workspace-type-settings",
-    pattern = "/settings/workspace/type/#{workspaceTypeSettingsViewBackingBean.id}",
-    viewId = "/settings/workspacetype.jsf"
-  )
-})
+@Join (path = "/settings/workspace/type/{id}", to = "/settings/workspacetype.jsf")
 public class WorkspaceTypeSettingsViewBackingBean implements Serializable {
 
 	private static final long serialVersionUID = 518712923786896569L;
@@ -31,7 +24,7 @@ public class WorkspaceTypeSettingsViewBackingBean implements Serializable {
 	@Inject
 	private WorkspaceController workspaceController;
 	
-	@URLAction
+	@RequestAction
 	public void load() {
 		WorkspaceTypeEntity workspaceTypeEntity = workspaceController.findWorkspaceTypeEntityById(id);
 		this.name = workspaceTypeEntity.getName();

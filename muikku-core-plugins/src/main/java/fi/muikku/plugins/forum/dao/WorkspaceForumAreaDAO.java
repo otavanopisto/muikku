@@ -7,15 +7,15 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.muikku.dao.DAO;
+
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.plugin.PluginDAO;
+import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.forum.model.WorkspaceForumArea;
 import fi.muikku.plugins.forum.model.WorkspaceForumArea_;
 
 
-@DAO
-public class WorkspaceForumAreaDAO extends PluginDAO<WorkspaceForumArea> {
+
+public class WorkspaceForumAreaDAO extends CorePluginsDAO<WorkspaceForumArea> {
   
 	private static final long serialVersionUID = 8627800028194294719L;
 

@@ -12,15 +12,13 @@ import javax.inject.Named;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-
-import com.ocpsoft.pretty.faces.annotation.URLMapping;
-import com.ocpsoft.pretty.faces.annotation.URLMappings;
+import org.ocpsoft.rewrite.annotation.Join;
 
 import fi.muikku.model.security.AuthSource;
 
 @RequestScoped
 @Named
-@URLMappings(mappings = { @URLMapping(id = "login", pattern = "/login", viewId = "/login.jsf") })
+@Join (path = "/login", to = "/login.jsf")
 public class LoginBackingBean {
 
   @Inject

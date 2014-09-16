@@ -8,12 +8,10 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.CoreDAO;
-import fi.muikku.dao.DAO;
 import fi.muikku.model.security.AuthSource;
 import fi.muikku.model.security.AuthSourceSetting;
 import fi.muikku.model.security.AuthSourceSetting_;
 
-@DAO
 public class AuthSourceSettingDAO extends CoreDAO<AuthSourceSetting> {
   
   private static final long serialVersionUID = 2828148489261014980L;

@@ -1,5 +1,6 @@
 package fi.muikku.plugins.guidancerequest;
 
+import java.io.Serializable;
 import java.text.MessageFormat;
 
 import javax.enterprise.inject.Default;
@@ -17,7 +18,9 @@ import fi.muikku.session.SessionController;
 
 @Default
 @NotifierEmailContent(GuidanceRequestNotification.NAME)
-public class GuidanceRequestNotification implements NotifierAction, NotifierEmailMessageComposer {
+public class GuidanceRequestNotification implements NotifierAction, NotifierEmailMessageComposer, Serializable {
+
+  private static final long serialVersionUID = 1445819086020273477L;
 
   public static final String NAME = "guidancerequest-new";
   

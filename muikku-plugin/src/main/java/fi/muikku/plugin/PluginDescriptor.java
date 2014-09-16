@@ -1,11 +1,8 @@
 package fi.muikku.plugin;
 
-import java.util.List;
-
 public interface PluginDescriptor {
 
+  public void init();
   String getName();
-  void init();
-  List<Class<?>> getBeans();
   
 }

@@ -2,9 +2,7 @@ package fi.muikku.plugins.wall.impl;
 
 import fi.muikku.plugins.wall.WallFeedItem;
 import fi.muikku.plugins.wall.model.WallEntry;
-import fi.tranquil.TranquilEntity;
 
-@TranquilEntity
 public class WallFeedWallEntryItem extends WallFeedItem {
 
   private WallEntry wallEntry;
@@ -17,4 +15,15 @@ public class WallFeedWallEntryItem extends WallFeedItem {
   public WallEntry getWallEntry() {
     return wallEntry;
   }
+
+  @Override
+  public String getType() {
+    return "wallEntries";
+  }
+  
+  @Override
+  public String getIdentifier() {
+    return getWallEntry().getId().toString();
+  }
+  
 }

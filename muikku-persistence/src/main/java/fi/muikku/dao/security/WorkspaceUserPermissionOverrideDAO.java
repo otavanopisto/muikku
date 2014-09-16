@@ -6,7 +6,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.CoreDAO;
-import fi.muikku.dao.DAO;
 import fi.muikku.model.security.Permission;
 import fi.muikku.model.security.PermissionOverrideState;
 import fi.muikku.model.security.WorkspaceUserPermissionOverride;
@@ -14,7 +13,6 @@ import fi.muikku.model.security.WorkspaceUserPermissionOverride_;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 
 
-@DAO
 public class WorkspaceUserPermissionOverrideDAO extends CoreDAO<WorkspaceUserPermissionOverride> {
 
 	private static final long serialVersionUID = 1051899144879514920L;

@@ -52,7 +52,10 @@ public class WorkspacePermissionResolver extends AbstractPermissionResolver impl
 
     WorkspaceEntity workspace = (WorkspaceEntity) contextReference;
     WorkspaceUserEntity workspaceUser = workspaceUserDAO.findByWorkspaceAndUser(workspace, userEntity);
-  
+    if (workspaceUser == null) {
+      return false;
+    }
+    
     WorkspaceUserPermissionOverride override = workspaceUserPermissionOverrideDAO.findByCourseUserAndPermission(workspaceUser, perm);
     if (override != null)
       return override.getState() == PermissionOverrideState.ALLOW;

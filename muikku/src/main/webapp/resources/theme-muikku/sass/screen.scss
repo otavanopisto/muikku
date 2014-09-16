@@ -731,6 +731,7 @@ a.header {
  &.ft-03{border-left: 3px solid $mainFuncFilter3;}
 
 }
+
 .cp-course-details-container{
   background-color:#f0f3f4;
 }
@@ -780,6 +781,13 @@ a.header {
 .cp-course-details-teachers{
 	padding:0 5px;
 	height:20px;
+  .cp-teacher-picture-default{
+    @extend .co-user-picture;
+    display:inline-block;
+    height:20px;
+    width:20px;
+  }
+
 }
 
 .cp-course-details-toolbar{
@@ -1276,6 +1284,13 @@ div[data-name="settings.content-sidebar.left"] {
   margin: 5px;
   width: 25px;
   height: 25px;
+}
+
+.wallEntryUserPictureEmpty {
+  @include background-image('gfx/default-user-image.png');
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: contain;  
 }
 
 .wallEntryGuidanceRequest {

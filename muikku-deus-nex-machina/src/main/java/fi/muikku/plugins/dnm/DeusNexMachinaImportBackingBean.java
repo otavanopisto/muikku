@@ -12,15 +12,12 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.commons.lang3.StringUtils;
+import org.ocpsoft.rewrite.annotation.Join;
+import org.ocpsoft.rewrite.annotation.Parameter;
+import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
-
-import com.ocpsoft.pretty.faces.annotation.URLAction;
-import com.ocpsoft.pretty.faces.annotation.URLMapping;
-import com.ocpsoft.pretty.faces.annotation.URLMappings;
-import com.ocpsoft.pretty.faces.annotation.URLQueryParameter;
-
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.muikku.plugins.workspace.model.WorkspaceFolder;
@@ -33,15 +30,15 @@ import fi.muikku.security.LoggedIn;
 @RequestScoped
 @Stateful
 @Named
-@URLMappings (mappings = {
-	  @URLMapping (
-	    id = "deus-nex-machina-import",
-	    pattern = "/deus-nex-machina/import",
-	    viewId = "/dnm/import.jsf"
-	  )
-	})
+@Join (path = "/deus-nex-machina/import", to = "/dnm/import.jsf")
 public class DeusNexMachinaImportBackingBean {
 
+  @Parameter (value = "file")
+  private String file;
+  
+  @Parameter (value = "targetFolder")
+  private String targetFolder;
+  
 	@Inject
 	private WorkspaceController workspaceController;
 	
@@ -51,7 +48,7 @@ public class DeusNexMachinaImportBackingBean {
   @Inject
 	private DeusNexMachinaController deusNexMachinaController;
 
-	@URLAction
+	@RequestAction
 	@LoggedIn
 	@Admin
 	public void load() throws IOException {
@@ -147,10 +144,4 @@ public class DeusNexMachinaImportBackingBean {
 	public void setTargetFolder(String targetFolder) {
     this.targetFolder = targetFolder;
   }
-	
-	@URLQueryParameter (value = "file")
-	private String file;
-	
-	@URLQueryParameter (value = "targetFolder")
-	private String targetFolder;
 }

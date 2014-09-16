@@ -1,578 +1,268 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>fi.muikku</groupId>
-        <artifactId>parent</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
-    <properties>
-        <skipTests>true</skipTests>
-        <tranquil-model-gen.version>1.0.3-SNAPSHOT</tranquil-model-gen.version>
-        <!-- <instrumentation-hibernate.version>4.0.1.Final</instrumentation-hibernate.version>
-        <instrumentation-javassist.version>3.18.0-GA</instrumentation-javassist.version> -->
-        <cargo.plugin.version>1.4.6</cargo.plugin.version>
-        <integrationtest.serverport>8080</integrationtest.serverport>
-        <integrationtest.serverhost>localhost</integrationtest.serverhost>
-        <integrationtest.contextpath>muikku</integrationtest.contextpath>
-        <integrationtest.datasource.jdbc.muikku.driver>org.h2.Driver</integrationtest.datasource.jdbc.muikku.driver>
-        <integrationtest.datasource.jdbc.muikku.url>jdbc:h2:file:${project.build.directory}/data;AUTO_SERVER=TRUE</integrationtest.datasource.jdbc.muikku.url>
-        <integrationtest.datasource.jdbc.muikku.jndi>java:/jdbc/muikku</integrationtest.datasource.jdbc.muikku.jndi>
-        <integrationtest.datasource.jdbc.muikku.username>sa</integrationtest.datasource.jdbc.muikku.username>
-        <integrationtest.datasource.jdbc.muikku.password>sa</integrationtest.datasource.jdbc.muikku.password>
-    </properties>
-    <artifactId>core-plugins</artifactId>
-    <packaging>jar</packaging>
-    <name>Muikku Core Plugins</name>
-    <description>Muikku Core Plugins</description>
+  <parent>
+    <groupId>fi.muikku</groupId>
+    <artifactId>parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
 
-    <build>
-        <finalName>${project.artifactId}</finalName>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.eclipse.m2e</groupId>
-                    <artifactId>lifecycle-mapping</artifactId>
-                    <version>1.0.0</version>
-                    <configuration>
-                        <lifecycleMappingMetadata>
-                            <pluginExecutions>
-                                <pluginExecution>
+  <artifactId>core-plugins</artifactId>
+  <packaging>jar</packaging>
+  <name>Muikku Core Plugins</name>
+  <description>Muikku Core Plugins</description>
 
-                                    <pluginExecutionFilter>
-                                        <groupId>org.jasig.maven</groupId>
-                                        <artifactId>sass-maven-plugin</artifactId>
-                                        <versionRange>[1.1.1,)</versionRange>
-                                        <goals>
-                                            <goal>update-stylesheets</goal>
-                                        </goals>
-                                    </pluginExecutionFilter>
+  <properties>
+    <elasicsearch.version>1.1.0</elasicsearch.version>
+  </properties>
 
-                                    <action>
-                                        <ignore />
-                                    </action>
-                                </pluginExecution>
+  <dependencies>
 
-                                <!-- <pluginExecution> <pluginExecutionFilter> <groupId>org.apache.maven.plugins</groupId>
-                                <artifactId>maven-antrun-plugin</artifactId> <versionRange>[1.7,)</versionRange>
-                                <goals> <goal>run</goal> </goals> </pluginExecutionFilter> <action> <ignore
-                                /> </action> </pluginExecution> -->
+    <!-- Servlet -->
 
-                            </pluginExecutions>
-                        </lifecycleMappingMetadata>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
+    <dependency>
+      <groupId>org.jboss.spec.javax.servlet</groupId>
+      <artifactId>jboss-servlet-api_3.1_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-        <plugins>
-            <plugin>
-                <groupId>org.jasig.maven</groupId>
-                <artifactId>sass-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>sassProcessSource</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>update-stylesheets</goal>
-                        </goals>
-                        <inherited>false</inherited>
-                        <configuration>
-                            <sassSourceDirectory>${basedir}/src/main/resources/META-INF/resources/sass</sassSourceDirectory>
-                            <destination>${project.build.directory}/classes/META-INF/resources/css</destination>
-                        </configuration>
-                    </execution>
-                </executions>
+    <!-- Faces -->
 
-            </plugin>
+    <dependency>
+      <groupId>org.jboss.spec.javax.faces</groupId>
+      <artifactId>jboss-jsf-api_2.2_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.1</version>
-                <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
-                    <compilerArgument>-proc:none</compilerArgument>
-                </configuration>
-            </plugin>
+    <!-- RESTEasy -->
 
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.7</version>
-                <executions>
-                    <execution>
-                        <id>add-source</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>${basedir}/src/main/.metamodel</source>
-                                <source>${basedir}/src/main/.tranquilmodel</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>jaxrs-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
+    <!-- Transactions -->
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>2.12</version>
-                <configuration>
-                    <skipTests>${skipTests}</skipTests>
-                    <systemPropertyVariables>
-                        <integrationtest.serverhost>${integrationtest.serverhost}</integrationtest.serverhost>
-                        <integrationtest.serverport>${integrationtest.serverport}</integrationtest.serverport>
-                        <integrationtest.contextpath>${integrationtest.contextpath}</integrationtest.contextpath>
-                        <integrationtest.datasource.jdbc.muikku.driver>${integrationtest.datasource.jdbc.muikku.driver}</integrationtest.datasource.jdbc.muikku.driver>
-                        <integrationtest.datasource.jdbc.muikku.url>${integrationtest.datasource.jdbc.muikku.url}</integrationtest.datasource.jdbc.muikku.url>
-                        <integrationtest.datasource.jdbc.muikku.jndi>${integrationtest.datasource.jdbc.muikku.jndi}</integrationtest.datasource.jdbc.muikku.jndi>
-                        <integrationtest.datasource.jdbc.muikku.username>${integrationtest.datasource.jdbc.muikku.username}</integrationtest.datasource.jdbc.muikku.username>
-                        <integrationtest.datasource.jdbc.muikku.password>${integrationtest.datasource.jdbc.muikku.password}</integrationtest.datasource.jdbc.muikku.password>
-                    </systemPropertyVariables>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>integration-test</goal>
-                            <goal>verify</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+    <dependency>
+      <groupId>org.jboss.spec.javax.transaction</groupId>
+      <artifactId>jboss-transaction-api_1.2_spec</artifactId>
+    </dependency>
 
-            <plugin>
-                <groupId>org.codehaus.cargo</groupId>
-                <artifactId>cargo-maven2-plugin</artifactId>
-                <version>${cargo.plugin.version}</version>
-                <configuration>
-                    <skip>${skipTests}</skip>
-                    <container>
-                        <containerId>jboss71x</containerId>
-                        <zipUrlInstaller>
-                            <url>http://download.jboss.org/jbossas/7.1/jboss-as-7.1.1.Final/jboss-as-7.1.1.Final.zip</url>
-                            <downloadDir>${project.build.directory}/downloads</downloadDir>
-                            <extractDir>${project.build.directory}/extracts</extractDir>
-                        </zipUrlInstaller>
-                        <dependencies>
-                            <dependency>
-                                <groupId>mysql</groupId>
-                                <artifactId>mysql-connector-java</artifactId>
-                            </dependency>
-                            <dependency>
-                                <groupId>com.h2database</groupId>
-                                <artifactId>h2</artifactId>
-                            </dependency>
-                        </dependencies>
-                        <systemProperties>
-                            <integrationtest.serverhost>${integrationtest.serverhost}</integrationtest.serverhost>
-                            <integrationtest.serverport>${integrationtest.serverport}</integrationtest.serverport>
-                            <integrationtest.contextpath>${integrationtest.contextpath}</integrationtest.contextpath>
-                            <integrationtest.datasource.jdbc.muikku.driver>${integrationtest.datasource.jdbc.muikku.driver}</integrationtest.datasource.jdbc.muikku.driver>
-                            <integrationtest.datasource.jdbc.muikku.url>${integrationtest.datasource.jdbc.muikku.url}</integrationtest.datasource.jdbc.muikku.url>
-                            <integrationtest.datasource.jdbc.muikku.jndi>${integrationtest.datasource.jdbc.muikku.jndi}</integrationtest.datasource.jdbc.muikku.jndi>
-                            <integrationtest.datasource.jdbc.muikku.username>${integrationtest.datasource.jdbc.muikku.username}</integrationtest.datasource.jdbc.muikku.username>
-                            <integrationtest.datasource.jdbc.muikku.password>${integrationtest.datasource.jdbc.muikku.password}</integrationtest.datasource.jdbc.muikku.password>
-                        </systemProperties>
-                    </container>
-                    <configuration>
-                        <type>standalone</type>
-                        <home>${project.build.directory}/jboss71x</home>
-                        <properties>
-                            <cargo.port>${integrationtest.serverport}</cargo.port>
-                            <cargo.hostname>${integrationtest.serverhost}</cargo.hostname>
-                            <cargo.jboss.management-native.port>19999</cargo.jboss.management-native.port>
-                            <cargo.jvmargs>
-                                -Declipse.workspace=../../../
-                                -Xms64m
-                                -Xmx4096m
-                                -XX:MaxPermSize=8192m
-                            </cargo.jvmargs>
-                            <cargo.runtime.args>
-                                -Dmuikku-plugin-libraries=../../../muikku-data/muikku-plugin-libraries.properties
-                                -Dmuikku-plugin-repositories=../../../muikku-data/muikku-plugin-repositories.properties
-                                -Dmuikku-data=../../../muikku-data/muikku-data.xml
-                                -Dcom.arjuna.ats.arjuna.allowMultipleLastResources=true
-                            </cargo.runtime.args>
-                            <cargo.datasource.datasource.muikku>
-                                cargo.datasource.driver=${integrationtest.datasource.jdbc.muikku.driver}|
-                                cargo.datasource.url=${integrationtest.datasource.jdbc.muikku.url}|
-                                cargo.datasource.jndi=${integrationtest.datasource.jdbc.muikku.jndi}|
-                                cargo.datasource.username=${integrationtest.datasource.jdbc.muikku.username}|
-                                cargo.datasource.password=${integrationtest.datasource.jdbc.muikku.password}|
-                                cargo.datasource.transactionsupport=LOCAL_TRANSACTION
-                            </cargo.datasource.datasource.muikku>
-                            <cargo.datasource.datasource.muikku-h2>
-                                cargo.datasource.driver=org.h2.Driver|
-                                cargo.datasource.url=jdbc:h2:mem:mock;DB_CLOSE_DELAY=-1|
-                                cargo.datasource.jndi=jdbc/muikku-h2|
-                                cargo.datasource.username=sa|
-                                cargo.datasource.password=sa|
-                                cargo.datasource.transactionsupport=LOCAL_TRANSACTION
-                            </cargo.datasource.datasource.muikku-h2>
-                        </properties>
-                        <xmlReplacements>
-                            <xmlReplacement>
-                                <file>configuration/standalone.xml</file>
-                                <xpathExpression>//deployment-scanner</xpathExpression>
-                                <attributeName>deployment-timeout</attributeName>
-                                <value>240000</value>
-                            </xmlReplacement>
-                        </xmlReplacements>
-                    </configuration>
-                    <deployables>
-                        <deployable>
-                            <groupId>fi.muikku</groupId>
-                            <artifactId>muikku</artifactId>
-                            <type>war</type>
-                            <properties>
-                                <context>${integrationtest.contextpath}</context>
-                            </properties>
-                            <pingURL>http://${integrationtest.serverhost}:${integrationtest.serverport}/${integrationtest.contextpath}/index.jsf</pingURL>
-                            <pingTimeout>600000</pingTimeout>
-                        </deployable>
-                    </deployables>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.jboss.as</groupId>
-                        <artifactId>jboss-as-controller-client</artifactId>
-                        <version>7.1.1.Final</version>
-                    </dependency>
-                </dependencies>
-                <executions>
-                    <execution>
-                        <id>start-jbossas</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>start</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>stop-jbossas</id>
-                        <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>stop</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+    <!-- CDI -->
 
-            <plugin>
-                <artifactId>maven-clean-plugin</artifactId>
-                <version>2.5</version>
-                <executions>
-                    <execution>
-                        <id>post-integration-clean</id>
-                        <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                        <configuration>
-                            <excludeDefaultDirectories>true</excludeDefaultDirectories>
-                            <failOnError>false</failOnError>
-                            <filesets>
-                                <fileset>
-                                    <directory>${project.build.directory}</directory>
-                                    <useDefaultExcludes>false</useDefaultExcludes>
-                                    <includes>
-                                        <include>*.h2.db</include>
-                                        <include>*.trace.db</include>
-                                    </includes>
-                                </fileset>
-                            </filesets>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-            <plugin>
-                <groupId>org.bsc.maven</groupId>
-                <artifactId>maven-processor-plugin</artifactId>
-                <version>2.2.1</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.hibernate</groupId>
-                        <artifactId>hibernate-jpamodelgen</artifactId>
-                        <version>1.2.0.Final</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>fi.tranquil-model</groupId>
-                        <artifactId>tranquil-model-gen</artifactId>
-                        <version>${tranquil-model-gen.version}</version>
-                    </dependency>
-                </dependencies>
-                <executions>
-                    <execution>
-                        <id>process-metamodel</id>
-                        <goals>
-                            <goal>process</goal>
-                        </goals>
-                        <phase>generate-sources</phase>
-                        <configuration>
-                            <includes>
-                                <include>**fi/muikku/plugins/**/*.java</include>
-                            </includes>
-                            <outputDirectory>${basedir}/src/main/.metamodel</outputDirectory>
-                            <processors>
-                                <processor>org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor</processor>
-                            </processors>
-                        </configuration>
-                    </execution>
+    <dependency>
+      <groupId>org.jboss.spec.javax.interceptor</groupId>
+      <artifactId>jboss-interceptors-api_1.2_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-                    <execution>
-                        <id>process-tranquilmodel</id>
-                        <goals>
-                            <goal>process</goal>
-                        </goals>
-                        <phase>generate-sources</phase>
-                        <configuration>
-                            <additionalSourceDirectories>
-                                <sourceDirectory>${basedir}/src/main/.metamodel</sourceDirectory>
-                            </additionalSourceDirectories>
-                            <includes>
-                                <include>**fi/muikku/plugins/**/*.java</include>
-                            </includes>
-                            <outputDirectory>${basedir}/src/main/.tranquilmodel</outputDirectory>
-                            <processors>
-                                <processor>fi.tranquil.TranquilModelAnnotationProcessor</processor>
-                            </processors>
-                            <optionMap>
-                                <lookupPackage>fi.muikku.plugins.coreplugins</lookupPackage>
-                            </optionMap>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-antrun-plugin</artifactId>
-            <version>1.7</version> <dependencies> <dependency> <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId> <version>${instrumentation-hibernate.version}</version>
-            </dependency> <dependency> <groupId>org.javassist</groupId> <artifactId>javassist</artifactId>
-            <version>${instrumentation-javassist.version}</version> </dependency> </dependencies>
-            <executions> <execution> <phase>process-classes</phase> <goals> <goal>run</goal>
-            </goals> </execution> </executions> <configuration> <target> <taskdef name="instrument"
-            classname="org.hibernate.tool.instrument.javassist.InstrumentTask"> <classpath>
-            <path refid="maven.runtime.classpath" /> <path refid="maven.plugin.classpath"
-            /> </classpath> </taskdef> <instrument verbose="true"> <fileset dir="${project.build.outputDirectory}">
-            <include name="**fi/muikku/plugins/**/*.class" /> </fileset> </instrument>
-            </target> </configuration> </plugin> -->
-        </plugins>
-    </build>
+    <!-- EJB -->
 
-    <dependencies>
+    <dependency>
+      <groupId>org.jboss.spec.javax.ejb</groupId>
+      <artifactId>jboss-ejb-api_3.2_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-        <!-- Core provided dependencies -->
+    <!-- Commons -->
 
-        <dependency>
-            <groupId>fi.muikku</groupId>
-            <artifactId>plugin</artifactId>
-            <scope>provided</scope>
-        </dependency>
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <!-- <scope>provided</scope> -->
-        </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore</artifactId>
-            <!-- <scope>provided</scope> -->
-        </dependency>
+    <!-- Hibernate -->
+    
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-infinispan</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-validator</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    
+    <!-- Elastic Search -->
+    
+     <dependency>
+      <groupId>org.elasticsearch</groupId>
+      <artifactId>elasticsearch</artifactId>
+      <version>${elasicsearch.version}</version>
+    </dependency>
 
-        <dependency>
-            <groupId>org.elasticsearch</groupId>
-            <artifactId>elasticsearch</artifactId>
-            <version>1.1.0</version>
-        </dependency>
-        
-        <dependency>
-            <groupId>net.sf.json-lib</groupId>
-            <artifactId>json-lib</artifactId>
-            <version>2.4</version>
-            <classifier>jdk15</classifier>
-        </dependency>
-        <dependency>
-            <groupId>fi.muikku</groupId>
-            <artifactId>security</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>nekohtml</groupId>
-            <artifactId>nekohtml</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-            <scope>provided</scope>
-        </dependency>
+    <!-- Jackson -->
 
-        <dependency>
-            <groupId>net.sf.json-lib</groupId>
-            <artifactId>json-lib</artifactId>
-            <version>2.4</version>
-            <classifier>jdk15</classifier>
-        </dependency>
-        <dependency>
-            <groupId>fi.muikku</groupId>
-            <artifactId>security</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>nekohtml</groupId>
-            <artifactId>nekohtml</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-            <scope>provided</scope>
-        </dependency>
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-core-asl</artifactId>
+      <scope>provided</scope>
+    </dependency>
 
-        <!-- JUnit -->
+    <dependency>
+      <groupId>org.codehaus.jackson</groupId>
+      <artifactId>jackson-mapper-asl</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    
+    <!-- Neko -->
+    
+    <dependency>
+      <groupId>nekohtml</groupId>
+      <artifactId>nekohtml</artifactId>
+    </dependency>
+    
+    <!-- Commons -->  
+      
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    
+    <!-- Rewrite -->
+    
+    <dependency>
+      <groupId>org.ocpsoft.rewrite</groupId>
+      <artifactId>rewrite-servlet</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.ocpsoft.rewrite</groupId>
+      <artifactId>rewrite-integration-faces</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.ocpsoft.rewrite</groupId>
+      <artifactId>rewrite-integration-cdi</artifactId>
+    </dependency>
+      
+    <!-- Muikku -->
+    
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>plugin</artifactId>
+    </dependency>
+    
+    <!-- Test -->
+    
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+    
+  </dependencies>
 
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
 
-        <!-- Selenium -->
+                  <pluginExecutionFilter>
+                    <groupId>org.jasig.maven</groupId>
+                    <artifactId>sass-maven-plugin</artifactId>
+                    <versionRange>[1.1.1,)</versionRange>
+                    <goals>
+                      <goal>update-stylesheets</goal>
+                    </goals>
+                  </pluginExecutionFilter>
 
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-java</artifactId>
-            <scope>test</scope>
-        </dependency>
+                  <action>
+                    <ignore />
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
 
-        <!-- The compile-scoped dependencies are incompatible with newest Selenium -->
+      <plugin>
+        <groupId>org.bsc.maven</groupId>
+        <artifactId>maven-processor-plugin</artifactId>
+        <version>2.2.4</version>
+        <executions>
+          <execution>
+            <id>process</id>
+            <goals>
+              <goal>process</goal>
+            </goals>
+            <phase>generate-sources</phase>
+            <configuration>
+              <processors>
+                <processor>org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor</processor>
+              </processors>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-jpamodelgen</artifactId>
+            <version>${hibernate-jpamodelgen.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      
+      <plugin>
+        <groupId>org.jasig.maven</groupId>
+        <artifactId>sass-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>sassProcessSource</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>update-stylesheets</goal>
+            </goals>
+            <inherited>false</inherited>
+            <configuration>
+              <sassSourceDirectory>${basedir}/src/main/resources/META-INF/resources/sass</sassSourceDirectory>
+              <destination>${project.build.directory}/classes/META-INF/resources/css</destination>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      
+    </plugins>
+  </build>
 
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore</artifactId>
-            <version>4.3</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.3</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>15.0</version>
-            <scope>test</scope>
-        </dependency>
-
-
-        <!-- Sauce Labs -->
-
-        <dependency>
-            <groupId>com.saucelabs</groupId>
-            <artifactId>sauce_junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Required for server test deploy -->
-
-        <dependency>
-            <groupId>fi.muikku</groupId>
-            <artifactId>muikku</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-            <type>war</type>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <scope>test</scope>
-            <version>5.1.28</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>1.3.175</version>
-            <scope>test</scope>
-        </dependency>
-
-    </dependencies>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>repository.jboss.org_thirdparty-releases</id>
-            <name>JBoss.org third party releases repository</name>
-            <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </pluginRepository>
-        <pluginRepository>
-            <id>repository.jboss.org_thirdparty-uploads</id>
-            <name>JBoss.org third party uploads repository</name>
-            <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-uploads</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
-
-    <repositories>
-        <repository>
-            <id>otavanopisto-snapshots</id>
-            <name>Otavan Opisto Snapshots</name>
-            <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/snapshots</url>
-        </repository>
-        <repository>
-            <id>otavanopisto-releases</id>
-            <name>Otavan Opisto Releases</name>
-            <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases</url>
-        </repository>
-        <repository>
-            <id>repository.jboss.org_thirdparty-releases</id>
-            <name>JBoss.org third party releases repository</name>
-            <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
-            <id>repository.jboss.org_thirdparty-uploads</id>
-            <name>JBoss.org third party uploads repository</name>
-            <url>https://repository.jboss.org/nexus/content/repositories/thirdparty-uploads</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
 </project>

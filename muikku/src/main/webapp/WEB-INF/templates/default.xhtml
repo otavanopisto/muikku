@@ -13,7 +13,10 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <script type="text/javascript">
         var CONTEXTPATH = "#{request.contextPath}";
-      </script>
+        var MUIKKU_LOGGED_USER_ID = parseInt('#{sessionBackingBean.loggedUserId}')||null;
+        var MUIKKU_LOGGEDIN = #{muikkuSession.loggedIn};
+    </script>
+
     <script src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"></script>
     <h:outputScript name="scripts/gui/locales.js" target="head" />
 
@@ -37,9 +40,6 @@
     <!-- Default Calendar CSS -->
     <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/fullcalendar.css" />
     
-    <!-- Event Queue CSS -->
-    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/eventqueue.css" />
-
     <!-- jQuery -->
 
     <h:outputScript name="scripts/jquery/jquery-1.9.1.js" />

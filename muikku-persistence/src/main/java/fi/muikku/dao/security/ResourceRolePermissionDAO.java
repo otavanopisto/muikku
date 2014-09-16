@@ -1,7 +1,6 @@
 package fi.muikku.dao.security;
 
 import fi.muikku.dao.CoreDAO;
-import fi.muikku.dao.DAO;
 import fi.muikku.model.security.Permission;
 import fi.muikku.model.security.ResourceRights;
 import fi.muikku.model.security.ResourceRolePermission;
@@ -14,7 +13,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 
-@DAO
 public class ResourceRolePermissionDAO extends CoreDAO<ResourceRolePermission> {
 
 	private static final long serialVersionUID = 4464296827090661759L;

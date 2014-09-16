@@ -1,9 +1,9 @@
 package fi.muikku.plugins.material.dao;
 
-import fi.muikku.plugin.PluginDAO;
+import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.material.model.HtmlMaterial;
 
-public class HtmlMaterialDAO extends PluginDAO<HtmlMaterial> {
+public class HtmlMaterialDAO extends CorePluginsDAO<HtmlMaterial> {
 	
 	private static final long serialVersionUID = 3344543661453014697L;
 

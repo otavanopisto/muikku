@@ -8,12 +8,10 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.CoreDAO;
-import fi.muikku.dao.DAO;
 import fi.muikku.model.users.UserEmailEntity;
 import fi.muikku.model.users.UserEmailEntity_;
 import fi.muikku.model.users.UserEntity;
 
-@DAO
 public class UserEmailEntityDAO extends CoreDAO<UserEmailEntity> {
 
   private static final long serialVersionUID = -6107936582505695829L;

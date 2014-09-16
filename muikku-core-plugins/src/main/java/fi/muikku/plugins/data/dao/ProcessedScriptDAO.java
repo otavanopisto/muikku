@@ -5,13 +5,12 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.muikku.dao.DAO;
-import fi.muikku.plugin.PluginDAO;
+
+import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.data.model.ProcessedScript;
 import fi.muikku.plugins.data.model.ProcessedScript_;
 
-@DAO
-public class ProcessedScriptDAO extends PluginDAO<ProcessedScript> {
+public class ProcessedScriptDAO extends CorePluginsDAO<ProcessedScript> {
 
 	private static final long serialVersionUID = 7519257748266826253L;
 

@@ -7,7 +7,7 @@
     <h:outputScript name="scripts/jquery.injectcss/jquery.injectCSS.js" target="head"/>
     <h:outputScript name="scripts/jquery.color/jquery.color-2.1.2.js" target="head"/>
 
-    <h:outputScript name="scripts/jquery-ui/i18n/jquery.ui.datepicker-#{muikkuSession.locale.language}.js" target="head"/>
+    <h:outputScript name="scripts/jquery/jquery-ui/i18n/jquery.ui.datepicker-#{muikkuSession.locale.language}.js" target="head" rendered="#{muikkuSession.locale.language ne 'en'}"/>
 
     <h:outputScript name="scripts/gui/genericminicalendar.js" target="head"/>
     <h:outputScript name="scripts/gui/dockcalendar.js" target="head"/>

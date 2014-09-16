@@ -148,10 +148,19 @@
         var path = this._events[i].getPath();
         var node = tree.execute(path);
         if (node) {
-          processEvents.push({
-            node: node,
-            event: this._events[i]
-          });
+          if ($.isArray(node)) {
+            for (var j = 0, jl = node.length; j < jl; j++) {
+              processEvents.push({
+                node: node[j],
+                event: this._events[i]
+              });
+            }
+          } else {
+            processEvents.push({
+              node: node,
+              event: this._events[i]
+            });
+          }
         }
       }
       
@@ -167,7 +176,7 @@
       var _this = this;
       processEvent.event.getCallback()(processEvent.node, function () {
         if (processEvents.length > 0) {
-          _this._handleEvents(processEvents);
+          _this._handleEvents(processEvents, callback);
         } else {
           callback();
         }

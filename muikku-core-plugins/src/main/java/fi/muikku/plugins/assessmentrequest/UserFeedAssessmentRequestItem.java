@@ -1,9 +1,7 @@
 package fi.muikku.plugins.assessmentrequest;
 
 import fi.muikku.plugins.wall.WallFeedItem;
-import fi.tranquil.TranquilEntity;
 
-@TranquilEntity
 public class UserFeedAssessmentRequestItem extends WallFeedItem {
 
   private AssessmentRequest assessmentRequest;
@@ -15,6 +13,16 @@ public class UserFeedAssessmentRequestItem extends WallFeedItem {
 
   public AssessmentRequest getAssessmentRequest() {
     return assessmentRequest;
+  }
+  
+  @Override
+  public String getType() {
+    return "assessmentRequests";
+  }
+  
+  @Override
+  public String getIdentifier() {
+    return getAssessmentRequest().getId().toString();
   }
 
 }

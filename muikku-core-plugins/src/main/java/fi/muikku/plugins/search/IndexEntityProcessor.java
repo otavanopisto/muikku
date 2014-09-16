@@ -38,14 +38,14 @@ public class IndexEntityProcessor {
               hasId = true;
               fieldName = "id";
             }
-            PropertyDescriptor fieldPropertyDescriptor = new PropertyDescriptor(field.getName(), currentEntityClass);
+            /*PropertyDescriptor fieldPropertyDescriptor = new PropertyDescriptor(field.getName(), currentEntityClass);*/
             Object fieldValue;
-            if (fieldPropertyDescriptor.getReadMethod() != null) {
+            /*if (fieldPropertyDescriptor.getReadMethod() != null) {
               fieldValue = fieldPropertyDescriptor.getReadMethod().invoke(entity);
-            } else {
+            } else {*/
               field.setAccessible(true);
               fieldValue = field.get(entity);
-            }
+            //}
             indexObject.put(fieldName, fieldValue);
           }
         }

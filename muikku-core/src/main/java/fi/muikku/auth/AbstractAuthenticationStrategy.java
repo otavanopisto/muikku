@@ -45,9 +45,6 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
   private SchoolBridgeController schoolBridgeController;
 
   @Inject
-  private Event<LoginEvent> loginEvent;
-
-  @Inject
   private Event<LoginEvent> userLoggedInEvent;
 
   protected String getFirstRequestParameter(Map<String, String[]> requestParameters, String key) {

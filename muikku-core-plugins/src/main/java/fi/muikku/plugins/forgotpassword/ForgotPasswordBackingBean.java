@@ -6,10 +6,8 @@ import javax.faces.application.FacesMessage;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.deltaspike.core.util.StringUtils;
-
-import com.ocpsoft.pretty.faces.annotation.URLMapping;
-import com.ocpsoft.pretty.faces.annotation.URLMappings;
+import org.apache.commons.lang3.StringUtils;
+import org.ocpsoft.rewrite.annotation.Join;
 
 import fi.muikku.controller.UserEntityController;
 import fi.muikku.i18n.LocaleController;
@@ -22,14 +20,8 @@ import fi.muikku.utils.FacesUtils;
 
 @Named
 @Stateful
-@RequestScoped  
-@URLMappings (
-    mappings = @URLMapping(
-      viewId = "/forgotpassword/index.jsf",
-      pattern = "/forgotpassword",
-      id = "forgotpassword"
-    )     
-  )
+@RequestScoped 
+@Join (path = "/forgotpassword", to = "/forgotpassword/index.jsf")
 public class ForgotPasswordBackingBean {
 
   @Inject

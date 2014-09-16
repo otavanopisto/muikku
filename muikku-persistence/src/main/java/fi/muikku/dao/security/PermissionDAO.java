@@ -3,7 +3,6 @@ package fi.muikku.dao.security;
 import java.util.List;
 
 import fi.muikku.dao.CoreDAO;
-import fi.muikku.dao.DAO;
 import fi.muikku.model.security.Permission;
 import fi.muikku.model.security.Permission_;
 
@@ -13,7 +12,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 
-@DAO
 public class PermissionDAO extends CoreDAO<Permission> {
 
 	private static final long serialVersionUID = 1865691516876354591L;

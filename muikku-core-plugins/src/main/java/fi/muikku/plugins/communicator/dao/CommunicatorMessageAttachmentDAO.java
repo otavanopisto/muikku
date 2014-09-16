@@ -3,8 +3,8 @@ package fi.muikku.plugins.communicator.dao;
 import java.util.Date;
 import java.util.List;
 
-import fi.muikku.dao.CoreDAO;
-import fi.muikku.dao.DAO;
+
+import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageAttachment;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageAttachment_;
@@ -14,8 +14,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-@DAO
-public class CommunicatorMessageAttachmentDAO extends CoreDAO<CommunicatorMessageAttachment> {
+
+public class CommunicatorMessageAttachmentDAO extends CorePluginsDAO<CommunicatorMessageAttachment> {
 
   private static final long serialVersionUID = -3086921796495147863L;
 

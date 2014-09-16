@@ -1,55 +1,25 @@
 package fi.muikku.plugins.seeker;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
 import org.apache.commons.lang3.LocaleUtils;
 
-import fi.muikku.controller.WidgetController;
 import fi.muikku.i18n.LocaleBundle;
 import fi.muikku.i18n.LocaleLocation;
 import fi.muikku.plugin.LocalizedPluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
-import fi.muikku.plugin.RESTPluginDescriptor;
-import fi.muikku.plugins.seeker.defaultproviders.UserSeekerResultProvider;
-import fi.muikku.plugins.seeker.defaultproviders.WorkspaceSeekerResultProvider;
 
-@ApplicationScoped
-@Stateful
-public class SeekerPluginDescriptor implements PluginDescriptor, RESTPluginDescriptor, LocalizedPluginDescriptor {
+public class SeekerPluginDescriptor implements PluginDescriptor, LocalizedPluginDescriptor {
 
-  @Inject
-  private WidgetController widgetController;
-
+  @Override
+  public void init() {
+  }
+	
   @Override
 	public String getName() {
 		return "seeker";
-	}
-	
-  @Override
-  public void init() {
-
-  }
-
-	@Override
-	public List<Class<?>> getBeans() {
-		return new ArrayList<Class<?>>(Arrays.asList(
-		  WorkspaceSeekerResultProvider.class,
-		  UserSeekerResultProvider.class
-		));
-	}
-	
-	@Override
-	public Class<?>[] getRESTServices() {
-		return new Class<?>[] {
-			SeekerRESTService.class
-		};
 	}
 
   @Override

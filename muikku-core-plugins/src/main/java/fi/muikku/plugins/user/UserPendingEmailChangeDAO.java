@@ -5,13 +5,13 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.muikku.dao.DAO;
+
 import fi.muikku.model.users.UserEmailEntity;
-import fi.muikku.plugin.PluginDAO;
+import fi.muikku.plugins.CorePluginsDAO;
 
 
-@DAO
-public class UserPendingEmailChangeDAO extends PluginDAO<UserPendingEmailChange> {
+
+public class UserPendingEmailChangeDAO extends CorePluginsDAO<UserPendingEmailChange> {
 
   private static final long serialVersionUID = 4107269645530561563L;
 

@@ -10,10 +10,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.commons.lang3.StringUtils;
-
-import com.ocpsoft.pretty.faces.annotation.URLAction;
-import com.ocpsoft.pretty.faces.annotation.URLMapping;
-import com.ocpsoft.pretty.faces.annotation.URLMappings;
+import org.ocpsoft.rewrite.annotation.Join;
+import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.schooldata.UserController;
@@ -25,12 +23,7 @@ import fi.muikku.schooldata.entity.WorkspaceUser;
 @Named
 @Stateful
 @RequestScoped
-@URLMappings(mappings = { 
-@URLMapping(
-    id = "workspace-members", 
-    pattern = "/workspace/#{workspaceMembersBackingBean.workspaceUrlName}/members", 
-    viewId = "/workspaces/workspace-members.jsf") 
-})
+@Join (path = "/workspace/{workspaceUrlName}/members", to = "/workspaces/workspace-members.jsf")
 public class WorkspaceMembersBackingBean {
 
   @Inject
@@ -43,7 +36,7 @@ public class WorkspaceMembersBackingBean {
   @Named
   private WorkspaceNavigationBackingBean workspaceNavigationBackingBean;
 
-  @URLAction
+  @RequestAction
   public void init() throws FileNotFoundException {
     String urlName = getWorkspaceUrlName();
     if (StringUtils.isBlank(urlName)) {

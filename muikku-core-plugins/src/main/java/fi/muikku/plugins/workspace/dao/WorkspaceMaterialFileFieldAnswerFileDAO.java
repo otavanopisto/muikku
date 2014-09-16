@@ -7,12 +7,12 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.muikku.plugin.PluginDAO;
+import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswer;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswerFile;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswerFile_;
 
-public class WorkspaceMaterialFileFieldAnswerFileDAO extends PluginDAO<WorkspaceMaterialFileFieldAnswerFile> {
+public class WorkspaceMaterialFileFieldAnswerFileDAO extends CorePluginsDAO<WorkspaceMaterialFileFieldAnswerFile> {
 	
   private static final long serialVersionUID = -5555402145066804591L;
 

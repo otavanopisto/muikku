@@ -8,8 +8,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.ocpsoft.pretty.faces.annotation.URLMapping;
-import com.ocpsoft.pretty.faces.annotation.URLMappings;
+import org.ocpsoft.rewrite.annotation.Join;
 
 import fi.muikku.session.SessionController;
 
@@ -17,13 +16,7 @@ import fi.muikku.session.SessionController;
 @Named
 @Stateful
 @RequestScoped
-@URLMappings(mappings = {
-  @URLMapping(
-      id = "guidanceRequests", 
-      pattern = "/guidanceRequests/", 
-      viewId = "/guidanceRequests/index.jsf")
-})
-
+@Join (path = "/guidanceRequests/", to = "/guidanceRequests/index.jsf")
 public class GuidanceRequestsBackingBean {
   
   @Inject

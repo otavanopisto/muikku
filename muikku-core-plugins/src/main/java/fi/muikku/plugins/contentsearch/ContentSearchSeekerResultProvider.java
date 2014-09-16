@@ -20,4 +20,9 @@ public class ContentSearchSeekerResultProvider implements SeekerResultProvider {
       
     return result; 
   }
+
+  @Override
+  public String getName() {
+    return "Content";
+  }
 }

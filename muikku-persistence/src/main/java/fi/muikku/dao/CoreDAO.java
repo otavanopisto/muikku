@@ -11,6 +11,6 @@ public abstract class CoreDAO<T> extends AbstractDAO<T> {
     return entityManager;
   }
 
-  @PersistenceContext
+  @PersistenceContext (unitName = "muikku")
   private EntityManager entityManager;
 }

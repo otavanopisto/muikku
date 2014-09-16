@@ -14,87 +14,83 @@
   <name>Muikku Core</name>
   <description>Muikku Core</description>
 
-  <properties>
-    <tranquil-model-gen.version>1.0.3-SNAPSHOT</tranquil-model-gen.version>
-  </properties>
-  
   <dependencies>
+
+    <!-- Servlet -->
+
     <dependency>
-      <groupId>org.jboss.spec</groupId>
-      <artifactId>jboss-javaee-6.0</artifactId>
-      <type>pom</type>
+      <groupId>org.jboss.spec.javax.servlet</groupId>
+      <artifactId>jboss-servlet-api_3.1_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Faces -->
+
+    <dependency>
+      <groupId>org.jboss.spec.javax.faces</groupId>
+      <artifactId>jboss-jsf-api_2.2_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- CDI -->
+
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
       <scope>provided</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-entitymanager</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-validator</artifactId>
+      <groupId>org.jboss.spec.javax.interceptor</groupId>
+      <artifactId>jboss-interceptors-api_1.2_spec</artifactId>
       <scope>provided</scope>
     </dependency>
 
+    <!-- EJB -->
+
     <dependency>
-      <groupId>fi.tranquil-model</groupId>
-      <artifactId>tranquil-model</artifactId>
-    </dependency>
-    
-    <dependency>
-      <groupId>fi.muikku</groupId>
-      <artifactId>persistence</artifactId>
-    </dependency>
-    
-    <dependency>
-      <groupId>fi.muikku</groupId>
-      <artifactId>security</artifactId>
-    </dependency> 
-    
-    <!-- Jackson -->
-    
-    <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-mapper-asl</artifactId>
+      <groupId>org.jboss.spec.javax.ejb</groupId>
+      <artifactId>jboss-ejb-api_3.2_spec</artifactId>
       <scope>provided</scope>
     </dependency>
-    
-    <!-- Pretty Faces -->
-    
+
+    <!-- Commons -->
+
     <dependency>
-      <groupId>com.ocpsoft</groupId>
-      <artifactId>prettyfaces-jsf2</artifactId>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
     </dependency>
-    
-    <!-- Commons IO -->
 
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
+      <scope>provided</scope>
     </dependency>
-    
+
+    <dependency>
+      <groupId>commons-codec</groupId>
+      <artifactId>commons-codec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- Scribe -->
 
     <dependency>
-	  <groupId>org.scribe</groupId>
-	  <artifactId>scribe</artifactId>
-	</dependency>
-	
+      <groupId>org.scribe</groupId>
+      <artifactId>scribe</artifactId>
+    </dependency>
+
+    <!-- Muikku -->
+
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>persistence</artifactId>
+    </dependency>
+
   </dependencies>
 
   <build>
-    <finalName>${project.artifactId}</finalName>
     <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.0</version>
-        <configuration>
-          <source>${maven.compiler.source}</source>
-          <target>${maven.compiler.target}</target>
-        </configuration>
-      </plugin>
-
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
@@ -109,60 +105,7 @@
             <configuration>
               <sources>
                 <source>${basedir}/src/main/.metamodel</source>
-                <source>${basedir}/src/main/.tranquilmodel</source>
               </sources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      
-      <plugin>
-        <groupId>org.bsc.maven</groupId>
-        <artifactId>maven-processor-plugin</artifactId>
-        <version>2.2.1</version>
-        <dependencies>
-          <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-jpamodelgen</artifactId>
-            <version>1.2.0.Final</version>
-          </dependency>
-          <dependency>
-            <groupId>fi.tranquil-model</groupId>
-            <artifactId>tranquil-model-gen</artifactId>
-            <version>${tranquil-model-gen.version}</version>
-          </dependency>
-        </dependencies>
-        <executions>
-          <execution>
-            <id>process-metamodel</id>
-            <goals>
-              <goal>process</goal>
-            </goals>
-            <phase>generate-sources</phase>
-            <configuration>
-              <outputDirectory>${basedir}/src/main/.metamodel</outputDirectory>
-              <processors>
-                <processor>org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor</processor>
-              </processors>
-            </configuration>
-          </execution>
-          <execution>
-            <id>process-tranquilmodel</id>
-            <goals>
-              <goal>process</goal>
-            </goals>
-            <phase>generate-sources</phase>
-            <configuration>
-              <includes>
-                <include>**fi/muikku/schooldata/**/*.java</include>
-              </includes>
-              <outputDirectory>${basedir}/src/main/.tranquilmodel</outputDirectory>
-              <processors>
-                <processor>fi.tranquil.TranquilModelAnnotationProcessor</processor>
-              </processors>
-              <optionMap>
-                <lookupPackage>fi.muikku.schooldata.local.tranquil</lookupPackage>
-              </optionMap>
             </configuration>
           </execution>
         </executions>
@@ -170,16 +113,4 @@
     </plugins>
   </build>
 
-  <repositories>
-    <repository>
-      <id>otavanopisto-snapshots</id>
-      <name>Otavan Opisto Snapshots</name>
-      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/snapshots</url>
-    </repository>
-    <repository>
-      <id>otavanopisto-releases</id>
-      <name>Otavan Opisto Releases</name>
-      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases</url>
-    </repository>
-  </repositories>
 </project>

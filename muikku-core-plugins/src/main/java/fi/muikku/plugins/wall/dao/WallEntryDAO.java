@@ -8,17 +8,17 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.muikku.dao.DAO;
+
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.plugin.PluginDAO;
+import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.wall.model.Wall;
 import fi.muikku.plugins.wall.model.WallEntry;
 import fi.muikku.plugins.wall.model.WallEntryVisibility;
 import fi.muikku.plugins.wall.model.WallEntry_;
 
 
-@DAO
-public class WallEntryDAO extends PluginDAO<WallEntry> {
+
+public class WallEntryDAO extends CorePluginsDAO<WallEntry> {
 
 	private static final long serialVersionUID = 5562545925007839415L;
 

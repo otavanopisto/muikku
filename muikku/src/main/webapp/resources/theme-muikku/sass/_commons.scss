@@ -34,6 +34,13 @@ div[class*='header']{
  background-color:$mainFuncCf; 
 }
 
+.co-user-picture{
+	@include background-image('gfx/default_pic.png');
+	background-size:100%;
+	border:2px solid #FFF;
+	@include shadow();
+ }
+
 .co-input-textfield,
 .co-textarea {
   @include border(1px,#ededed,solid);   

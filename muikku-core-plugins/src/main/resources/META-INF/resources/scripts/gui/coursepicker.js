@@ -37,9 +37,9 @@
 
       // Toggle course details
 
-      $(document).on('click', '.cp-course-details', function(){
-       var dDiv = $(this).find($(".cp-course-content-details"));
-       dDiv.toggle();
+      this._coursesContainer.on('click', '.cp-course-details', function() {
+        var dDiv = $(this).find($(".cp-course-content-details"));
+        dDiv.toggle();
       });     
       
       // Dropdown
@@ -86,11 +86,11 @@
       
       $("#cpCategories span").each(function(){    
        $(this).click(function(){
-         var eId = $(this).attr('id');         
+         var eId = $(this).attr('id');            
          $("#btnValue").empty();
          $("#btnValue").attr('data-name', eId);
          $("#btnValue").append($(this).html());
-         $(".cp-side-button-dropdown").hide();
+         $(".cp-side-button-dropdown").hide();      
        }); 
         
       });
@@ -106,7 +106,7 @@
           $(this).addClass("cp-filter-disabled");               
         }
         
-        _this._refreshList();
+        _this._refreshListTimer();
       });
     },
     deinitialize: function () {
@@ -124,99 +124,95 @@
       });
       
       if (((term != undefined) && (term != "")) || (subjects.length > 0)) {
-        if (term.length <= 2) 
-          term = "";
-        
-        _this._coursesContainer.children().remove();
-        
         if (hash == "my") {
-          RESTful.doGet(CONTEXTPATH + "/rest/course/searchUserCourses", {
-            parameters: {
-              userId: _this._userId,
-              searchString: term,
-              subjects: subjects
-            }
-          }).success(function (data, textStatus, jqXHR) {
-            renderDustTemplate('coursepicker/coursepickermycourse.dust', data, function (text) {
-              _this._coursesContainer.append($.parseHTML(text));
-            });
+          this._loadCourses({
+            userId: this._userId,
+            subjects: subjects,
+            search: term
           });
         } else {
-          RESTful.doGet(CONTEXTPATH + "/rest/course/searchCourses", {
-            parameters: {
-              searchString: term,
-              subjects: subjects
-            }
-          }).success(function (data, textStatus, jqXHR) {
-            renderDustTemplate('coursepicker/coursepickercourse.dust', data, function (text) {
-              _this._coursesContainer.append($.parseHTML(text));
-            });
+          this._loadCourses({
+            subjects: subjects,
+            search: term
           });
         }
       } else {
         if (hash == "my") {
-//          _this._onSearchMyCoursesClick(event);
-          _this._coursesContainer.children().remove();
-          
-          RESTful.doGet(CONTEXTPATH + "/rest/course/listUserCourses", {
-            parameters: {
-              'userId': _this._userId
-            }
-          }).success(function (data, textStatus, jqXHR) {
-            renderDustTemplate('coursepicker/coursepickermycourse.dust', data, function (text) {
-              _this._coursesContainer.append($.parseHTML(text));
-            });
+          this._loadCourses({
+            userId: this._userId
           });
         }
         else {
-//          _this._onSearchAllCoursesClick(event);
-          _this._coursesContainer.children().remove();
-          
-          RESTful.doGet(CONTEXTPATH + "/rest/course/", {
-            parameters: {
-            }
-          }).success(function (data, textStatus, jqXHR) {
-            renderDustTemplate('coursepicker/coursepickercourse.dust', data, function (text) {
-              _this._coursesContainer.append($.parseHTML(text));
-            });
-          });
+          this._loadCourses();
         }
       }
     },
+    
     _initializeAllCoursesList: function () {
+      this._loadCourses();
+    },
+    
+    _loadCourses: function (params) {
+      this._coursesContainer.children().remove();
+      
+      mApi().workspace.workspaces.read(params||{})
+        .on('$', function (workspace, workspaceCallback) {
+          // TODO: Implement these
+          workspace.hasCourseFee = false;
+          workspace.hasAssessmentFee = false;
+          workspace.rating = 5;
+          workspace.ratingCount = 3;
+          
+          mApi().workspace.workspaces.users.read(workspace.id, {
+            role: 'Workspace Teacher'
+          })  
+          .on('$', function (workspaceUser, workspaceUserCallback) {
+            mApi().user.users.read(workspaceUser.userId).callback(function (userErr, user) {
+              workspaceUser.hasPicture = user.hasImage;
+              workspaceUser.fullName = (user.firstName ? user.firstName + ' ' : '') + user.lastName;
+              workspaceUserCallback();
+            });
+          })
+          .callback(function (workspaceUsersErr, workspaceUsers) {
+            workspace.teachers = workspaceUsers;
+            
+            if (MUIKKU_LOGGED_USER_ID) {
+              mApi().workspace.workspaces.users.read(workspace.id, {
+                userId: MUIKKU_LOGGED_USER_ID
+              }).callback(function (memberErr, member) {
+                workspace.isMember = !!member;
+                workspaceCallback();
+              });
+            } else {
+              workspace.isMember = false;
+              workspaceCallback();
+            }       
+          });
+        })
+        .callback($.proxy(function (err, workspaces) {
+          renderDustTemplate('coursepicker/coursepickercourse.dust', workspaces, $.proxy(function (text) {
+            this._coursesContainer.append(text);
+          }, this));
+        }, this));
+    },
+    
+    _refreshListTimer: function () {
       var _this = this;
       
-      _this._coursesContainer.children().remove();
-      
-      RESTful.doGet(CONTEXTPATH + "/rest/course/", {
-        parameters: {
-        }
-      }).success(function (data, textStatus, jqXHR) {
-        renderDustTemplate('coursepicker/coursepickercourse.dust', data, function (text) {
-          _this._coursesContainer.append($.parseHTML(text));
-        });
-      });
+      clearTimeout(_this.listReloadTimer);
+      _this.listReloadTimer = setTimeout(
+          function () {
+            _this._refreshList();
+          }, 500);
     },
     _onSearchAllCoursesClick: function (event) {
-      this._refreshList();
-//      var _this = this;
-//
-//      _this._coursesContainer.children().remove();
-//      
-//      RESTful.doGet(CONTEXTPATH + "/rest/course/", {
-//        parameters: {
-//        }
-//      }).success(function (data, textStatus, jqXHR) {
-//        renderDustTemplate('coursepicker/coursepickercourse.dust', data, function (text) {
-//          _this._coursesContainer.append($.parseHTML(text));
-//        });
-//      });
+      this._refreshListTimer();
     },
     _onSearchMyCoursesClick: function (event) {
-      this._refreshList();
+      this._refreshListTimer();
     },
     _onSearchCoursesChange: function (event) {
-      this._refreshList();
+      this._refreshListTimer();
     },
     _onCheckCourseClick: function (event) {
       event.stopPropagation();
@@ -235,11 +231,9 @@
       var workspaceId = coursePickerCourse.find("input[name='workspaceId']").val();
       var workspaceUrl = coursePickerCourse.find("input[name='workspaceUrl']").val();
       
-      RESTful.doPost(CONTEXTPATH + "/rest/course/{workspaceId}/joinWorkspace", {
-        parameters: {
-          'workspaceId': workspaceId
-        }
-      }).success(function (data, textStatus, jqXHR) {
+      mApi().workspace.workspaces.users.create(workspaceId, {
+      })
+      .callback(function (workspaceUsersErr, workspaceUsers) {
         window.location = CONTEXTPATH + '/workspace/' + workspaceUrl;
       });
     },
