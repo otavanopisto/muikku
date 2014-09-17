@@ -20,7 +20,7 @@
       
     });
 
-    function killMe(dis){
+    function killMd(dis){
   	   dis.fadeOut().remove();
     }
     
@@ -28,8 +28,8 @@
     function bgrElem(){
     	var bgE = $('<div class="md-background"><span class="md-close"></span></div>');   	
     	$(bgE).appendTo('body');
-        $('md-background').click(killMe(this));
-    	$('md-close').click(killMe(this));     
+        $('md-background').click(killMd(this));
+    	$('md-close').click(killMd(this));     
     }
     
     function elemStyles(){

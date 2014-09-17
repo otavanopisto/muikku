@@ -16,7 +16,13 @@
         var MUIKKU_LOGGED_USER_ID = parseInt('#{sessionBackingBean.loggedUserId}')||null;
         var MUIKKU_LOGGEDIN = #{muikkuSession.loggedIn};
     </script>
-
+    
+		<script type="text/javascript">
+		  $(document).ready(function(){
+			  $('.modal').m3modal();
+		  });
+		</script> 
+    
     <script src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"></script>
     <h:outputScript name="scripts/gui/locales.js" target="head" />
 
@@ -62,6 +68,10 @@
     <!--  jQuery scroll  -->
 
     <h:outputScript name="scripts/scroll/jquery.scroll.js" />
+
+    <!--  jQuery M3- modal  -->
+
+    <h:outputScript name="scripts/jquery.m3modal/jquery.m3modal.js" />
 
     <!--  jQuery Touch Punch  -->
 
