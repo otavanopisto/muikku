@@ -20,23 +20,29 @@
       
     });
 
-    function killMd(dis){
-  	   dis.fadeOut().remove();
-    }
-    
+
     
     function bgrElem(){
     	var bgE = $('<div class="md-background"><span class="md-close"></span></div>');   	
     	$(bgE).appendTo('body');
-        $('md-background').click(killMd(this));
-    	$('md-close').click(killMd(this));     
+        $('.md-background').click(function(){
+ 
+             	 $(this).fadeOut().remove();
+
+        	
+        });
+    	$('.md-close').click(function(){
+        	 $(this).fadeOut().remove();
+
+    		
+    	});     
     }
     
     function elemStyles(){
     	
      // Content box 	
     	
-      $('md-box').css({
+      $('.md-box').css({
         'position' : 'absolute',
         'left' :options.left,
         'top' :options.top,
@@ -47,7 +53,7 @@
       
       //  Close button 
       
-      $('md-close').css({
+      $('.md-close').css({
           'position' : 'relative',
           'right' : '10px',
           'top' : '10px',
@@ -57,15 +63,15 @@
       
      // Background
       
-      var pH = $(document).height; 
-      var pW = $(window).width; 
+      var pH = $(document).height(); 
+      var pW = $(window).width(); 
       
-      $('md-background').css({
+      $('.md-background').css({
           'position' : 'absolute',
           'left' : '0',
           'top' : '0',
-          'height' : pageHeight,
-          'width' : pageWidth,
+          'height' : pH,
+          'width' : pW,
           'z-index' : '10'
         });      
     }

@@ -17,11 +17,7 @@
         var MUIKKU_LOGGEDIN = #{muikkuSession.loggedIn};
     </script>
     
-		<script type="text/javascript">
-		  $(document).ready(function(){
-			  $('.modal').m3modal();
-		  });
-		</script> 
+
     
     <script src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"></script>
     <h:outputScript name="scripts/gui/locales.js" target="head" />
@@ -114,6 +110,11 @@
     <!-- Notification Queue -->
     
     <h:outputScript name="scripts/notificationqueue/notificationqueue.js" />
+    <script type="text/javascript">
+      $(document).ready(function(){
+        $('.modal').m3modal();
+      });
+    </script>    
   </h:head>
 
   <h:body>
