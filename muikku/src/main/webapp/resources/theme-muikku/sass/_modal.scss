@@ -1,12 +1,24 @@
-
-
 .md-background{
-  background-color:#fff;  
+  background-color:rgba(130,197,201,0.99);  
 }
+
 .md-box{
-  background-color:brown;  
+  color:#fff;
+  
+  .md-description {
+   p{font-size:1.2em;font-weight:lighter;}
+   h2{font-weight:lighter;font-size:2.5em;color:#fff;}
+  }
+  
+  .md-content div {
+   background-color:rgba(0,0,0,0.17);
+   padding:15px;
+   @include rounded(15px);
+  }
+    
 }
 .md-close{
-  background-color:yellow;  
+ color: #fff;
+ font-size:3em;
 }
 

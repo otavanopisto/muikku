@@ -4,7 +4,6 @@
 @import "_commons.scss";
 @import "_forms.scss";
 @import "_modal.scss";
-
 @import "_buttons.scss";
 @import "_widgets.scss";
 @import "_notif-queue.scss";
@@ -1279,7 +1278,7 @@ div[data-name="settings.content-sidebar.left"] {
   font-weight: bold;
   cursor: pointer;
 }
-
+  
 .wallEntryUserPicture {
   position: absolute;
   left: 0;  
