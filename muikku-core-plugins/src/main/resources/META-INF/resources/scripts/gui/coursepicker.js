@@ -29,7 +29,23 @@
 //      var filterList = widgetElement.find(".cp-allCourses-filterList");
 //      filterList.on("click", ".cp-filterRemoveBtn", $.proxy(this._onRemoveAllCoursesFilterClick, this));
 
-      this._coursesContainer.on("click", ".cp-course-attend-button", $.proxy(this._onJoinCourseClick, this));
+      
+//       this._coursesContainer.on("click", ".cp-course-attend-button", $.proxy(this._onJoinCourseClick, this));
+
+      
+//      this._coursesContainer.on("click", ".cp-course-attend-button",function(e){
+//        e.stopPropagation();
+//         		  
+//      });      
+      
+      $(".cp-course-attend-button").each(function( index, element ){
+          var coursePickerCourse = element.parents(".cp-course");
+          var workspaceId = coursePickerCourse.find("input[name='workspaceId']").val();
+          var workspaceUrl = coursePickerCourse.find("input[name='workspaceUrl']").val();  
+    	  
+    	  $(element).m3modal();   
+      });
+      
       this._coursesContainer.on("click", ".cp-course-tour-button", $.proxy(this._onCheckCourseClick, this));
 
       var coursePickerSearchCoursesInput = widgetElement.find("input[name='coursePickerSearch']");
@@ -39,7 +55,21 @@
 
       this._coursesContainer.on('click', '.cp-course-details', function() {
         var dDiv = $(this).find($(".cp-course-content-details"));
-        dDiv.toggle();
+        var par = $(this);
+        var parW = par.width();
+        var closeDiv = $('<div class="cp-course-details-close"></div>');
+     
+
+      
+        dDiv.show( function(){
+        	var odDiv = $(this) ;
+        	par.prepend(closeDiv);
+        	closeDiv.width(parW);        	
+        	closeDiv.on('click', function(){
+        		odDiv.hide();
+        		$(this).remove();
+        	});
+        });
       });     
       
       // Dropdown
@@ -231,11 +261,11 @@
       var workspaceId = coursePickerCourse.find("input[name='workspaceId']").val();
       var workspaceUrl = coursePickerCourse.find("input[name='workspaceUrl']").val();
       
-      mApi().workspace.workspaces.users.create(workspaceId, {
-      })
-      .callback(function (workspaceUsersErr, workspaceUsers) {
-        window.location = CONTEXTPATH + '/workspace/' + workspaceUrl;
-      });
+//      mApi().workspace.workspaces.users.create(workspaceId, {
+//      })
+//      .callback(function (workspaceUsersErr, workspaceUsers) {
+//        window.location = CONTEXTPATH + '/workspace/' + workspaceUrl;
+//      });
     },
     _onCourseNameClick: function (event) {
       var element = $(event.target);

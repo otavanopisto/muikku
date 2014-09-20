@@ -3,22 +3,27 @@
   $.fn.m3modal = function(prop){
     
     var options = $.extend({
+    	
       height : "200",
       width : "960",
       title:"Muikku 3 Modal",
       description: "Lorem ipsum dolor sit amet.",
       top: "10px",
       content : $('<div> Default content. Nulla ut eleifend lacus, sed aliquam arcu. Cras condimentum id mi vitae porttitor. Curabitur efficitur aliquam ligula semper eleifend. Sed lacinia neque rhoncus ultrices varius. Donec bibendum in lorem quis ultrices. Nunc ultrices sem velit, vel congue dolor dignissim ut. Mauris in sapien mauris. Phasellus venenatis porta risus, a ullamcorper risus venenatis quis. Nunc sit amet venenatis ipsum. Suspendisse sit amet posuere magna, vitae bibendum magna. Donec ullamcorper mauris at velit consectetur consectetur. Praesent varius dolor egestas nibh posuere, non egestas purus ultricies. Ut facilisis arcu et eleifend placerat. Nullam quis semper dui. Suspendisse laoreet sit amet neque sit amet accumsan.</div>')
+
     },prop);
         
     return this.click( function(e){
+      e.stopPropagation();	
       bgrElement();
       boxElement();
       elemStyles();     
       $('.md-box').fadeIn();  
+      
     });
 
     function bgrElement(){
+    	
     	var bgE = $('<div class="md-background"><span class="md-close"></span></div>');   	
     	$(bgE).appendTo('body');
     //  Does not work as intended
@@ -40,7 +45,8 @@
        var box = $('.md-box');
        var closeB = $('.md-close');
        var content = $('.md-content');
-       var description = $('.md-description');
+       var descr = $('.md-description');
+       var bgr = $('.md-background');
        var pH = $(document).height(); 
        var pW = $(window).width();    
        var bw = box.outerWidth()
@@ -64,7 +70,7 @@
 	    'margin-top' : '15px'
       });
 
-      description.css({
+      descr.css({
   	    'padding' : '25px'	
         });      
       
@@ -72,7 +78,6 @@
       
        closeB.css({
           'position' : 'fixed',
-    //      'float' : 'right' ,
           'right' : '30px',
           'top' : '10px',	
           'display' : 'block',
@@ -86,21 +91,22 @@
       
 
       
-      $('.md-background').css({
+      bgr.css({
           'position' : 'absolute',
           'left' : '0',
           'top' : '0',
           'height' : pH,
-          'width' : pW,
           'z-index' : '15'
         });      
     }
     
     function boxElement(){
+    	
     	var bE = $('<div class="md-box"></div>') ;
     	var dE = $('<div class="md-description"><h2>' + options.title + '</h2><p>' + options.description + '</p></div>') ;
         var cE = $('<div class="md-content"></div>') ;
-    	cE.append(options.content);
+
+        cE.append(options.content);
         bE.append(dE,cE);
     	bE.appendTo('.md-background');
     }
