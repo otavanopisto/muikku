@@ -9,8 +9,7 @@
       this._widgetElement = widgetElement;
       this._userId = widgetElement.find("input[name='userId']").val();
       this._coursesContainer = $('#coursesList');
-  //    this._myCoursesContainer = $('#myCoursesList');
-      
+
       this._searchInput = widgetElement.find("input[name='coursePickerSearch']");
       
       this._initializeAllCoursesList();
@@ -23,29 +22,7 @@
         searchMyCoursesButton.click($.proxy(this._onSearchMyCoursesClick, this));
       }
       
- //     var filterPopup = widgetElement.find(".cp-allCourses-filterSelector-popup");
- //     filterPopup.find(".cp-filterSelection").click($.proxy(this._onSelectAllCoursesFilterClick, this));
-      
-//      var filterList = widgetElement.find(".cp-allCourses-filterList");
-//      filterList.on("click", ".cp-filterRemoveBtn", $.proxy(this._onRemoveAllCoursesFilterClick, this));
 
-      
-//       this._coursesContainer.on("click", ".cp-course-attend-button", $.proxy(this._onJoinCourseClick, this));
-
-      
-//      this._coursesContainer.on("click", ".cp-course-attend-button",function(e){
-//        e.stopPropagation();
-//         		  
-//      });      
-      
-      $(".cp-course-attend-button").each(function( index, element ){
-          var coursePickerCourse = element.parents(".cp-course");
-          var workspaceId = coursePickerCourse.find("input[name='workspaceId']").val();
-          var workspaceUrl = coursePickerCourse.find("input[name='workspaceUrl']").val();  
-    	  
-    	  $(element).m3modal();   
-      });
-      
       this._coursesContainer.on("click", ".cp-course-tour-button", $.proxy(this._onCheckCourseClick, this));
 
       var coursePickerSearchCoursesInput = widgetElement.find("input[name='coursePickerSearch']");
@@ -55,16 +32,23 @@
 
       this._coursesContainer.on('click', '.cp-course-details', function() {
         var dDiv = $(this).find($(".cp-course-content-details"));
+        var aBt = $(this).find($(".cp-course-attend-button"));
         var par = $(this);
         var parW = par.width();
         var closeDiv = $('<div class="cp-course-details-close"></div>');
      
 
       
-        dDiv.show( function(){
+        dDiv.show( function(){        	
         	var odDiv = $(this) ;
+        	var title = $(par).find($('.cp-course-long'));
+        	var descr = $(par).find($('.cp-course-description-text'));
         	par.prepend(closeDiv);
-        	closeDiv.width(parW);        	
+        	closeDiv.width(parW);
+        	$(aBt).m3modal({
+        		title : title.html(),
+        		description : descr.html()
+        	});
         	closeDiv.on('click', function(){
         		odDiv.hide();
         		$(this).remove();
@@ -101,7 +85,6 @@
       var btnVal = $("#btnValue").html();
       
       // Find category names, append the first one to button
-      
       
       // TODO: Remember users's selection
       
@@ -276,7 +259,7 @@
         courseDetails.slideUp();
       else
         courseDetails.slideDown();
-      
+// 
       return false;
     },
     _onFilterAllCoursesClick: function (event) {

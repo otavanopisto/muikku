@@ -3,6 +3,8 @@
   $.fn.m3modal = function(prop){
     
     var options = $.extend({
+
+     // Modal options
     	
       height : "200",
       width : "960",
@@ -13,7 +15,7 @@
 
     },prop);
         
-    return this.click( function(e){
+    return this.on("click", function(e){
       e.stopPropagation();	
       bgrElement();
       boxElement();
