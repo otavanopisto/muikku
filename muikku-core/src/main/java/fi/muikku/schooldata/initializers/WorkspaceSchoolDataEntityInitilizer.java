@@ -1,4 +1,4 @@
-package fi.muikku.schooldata;
+package fi.muikku.schooldata.initializers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,8 +6,6 @@ import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
@@ -26,8 +24,7 @@ import fi.muikku.schooldata.entity.Workspace;
 
 @Stateless
 @Dependent
-@SchoolDataBridgeEntityInitiator ( entity = Workspace.class )
-public class WorkspaceSchoolDataEntityInitiator implements SchoolDataEntityInitiator<Workspace> {
+public class WorkspaceSchoolDataEntityInitilizer implements SchoolDataWorkspaceInitializer {
 
 	private static final int MAX_URL_NAME_LENGTH = 30;
 	
@@ -52,16 +49,21 @@ public class WorkspaceSchoolDataEntityInitiator implements SchoolDataEntityIniti
   @Inject
   private WorkspaceSettingsTemplateRolePermissionDAO workspaceSettingsTemplateRolePermissionDAO;
   
-	@Inject
-	@Any
-	private Instance<SchoolDataEntityInitiator<Workspace>> workspaceInitiators;
-
-	@Override
-	public Workspace single(Workspace workspace) {
+	public Workspace init(Workspace workspace) {
 		SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(workspace.getSchoolDataSource());
 		WorkspaceEntity workspaceEntity = workspaceEntityDAO.findByDataSourceAndIdentifier(dataSource, workspace.getIdentifier());
 		if (workspaceEntity == null) {
-			String urlName = generateUrlName(workspace.getName());
+			String urlNameBase = generateUrlName(workspace.getName());
+			String urlName = urlNameBase;
+			int urlNameIterator = 1;
+			while (true) {
+			  if (workspaceEntityDAO.findByUrlName(urlName) == null) {
+			    break;
+			  }
+			  
+			  urlName = urlNameBase + "_" + (urlNameIterator++); 
+			}
+
 			workspaceEntity = workspaceEntityDAO.create(dataSource, workspace.getIdentifier(), urlName, Boolean.FALSE);
 			
 			// TODO Correct template here?
@@ -72,24 +74,26 @@ public class WorkspaceSchoolDataEntityInitiator implements SchoolDataEntityIniti
 			for (WorkspaceSettingsTemplateRolePermission permissionTemplate : permissionTemplates) {
 			  workspaceRolePermissionDAO.create(workspaceEntity, permissionTemplate.getRole(), permissionTemplate.getPermission());
 			}
+		} else {
+		  logger.warning("workspaceEntity #" + workspaceEntity.getId() + " is already initialized");
 		}
-
+		
 		return workspace;
 	}
 
-	@Override
-	public List<Workspace> list(List<Workspace> workspaces) {
-		List<Workspace> result = new ArrayList<>();
-		
-		for (Workspace workspace : workspaces) {
-			workspace = single(workspace);
-			if (workspace != null) {
-				result.add(workspace);
-			}
-		}
-		
-		return result;
-	}
+  @Override
+  public List<Workspace> init(List<Workspace> workspaces) {
+    List<Workspace> result = new ArrayList<>();
+    
+    for (Workspace workspace : workspaces) {
+      workspace = init(workspace);
+      if (workspace != null) {
+        result.add(workspace);
+      }
+    }
+    
+    return result;
+  }
 	
 	/**
 	 * Generates URL name from workspace name.

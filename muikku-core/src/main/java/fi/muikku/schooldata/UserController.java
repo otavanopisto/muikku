@@ -2,7 +2,6 @@ package fi.muikku.schooldata;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
@@ -34,9 +33,6 @@ import fi.muikku.schooldata.entity.UserEmail;
 @Dependent
 @Stateless
 public class UserController {
-
-	@Inject
-	private Logger logger;
 	
 	@Inject
 	private UserSchoolDataController userSchoolDataController;
