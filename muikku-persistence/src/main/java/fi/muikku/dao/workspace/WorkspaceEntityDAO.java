@@ -74,6 +74,20 @@ public class WorkspaceEntityDAO extends CoreDAO<WorkspaceEntity> {
     return entityManager.createQuery(criteria).getResultList();
   }
 
+  public List<String> listIdentifiersByDataSource(SchoolDataSource dataSource) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<String> criteria = criteriaBuilder.createQuery(String.class);
+    Root<WorkspaceEntity> root = criteria.from(WorkspaceEntity.class);
+    criteria.select(root.get(WorkspaceEntity_.identifier));
+    criteria.where(
+      criteriaBuilder.equal(root.get(WorkspaceEntity_.dataSource), dataSource)
+    );
+   
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
   public WorkspaceEntity updateArchived(WorkspaceEntity workspaceEntity, Boolean archived) {
     workspaceEntity.setArchived(archived);
     return persist(workspaceEntity);
