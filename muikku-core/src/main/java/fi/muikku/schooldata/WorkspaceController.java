@@ -157,6 +157,10 @@ public class WorkspaceController {
 		return workspaceSchoolDataController.listWorkspacesByCourseIdentifier(courseIdentifier);
 	}
 
+  public List<Workspace> listWorkspaces(String schoolDataSource) {
+    return workspaceSchoolDataController.listWorkspaces(schoolDataSource);
+  }
+  
 	public Workspace updateWorkspace(Workspace workspace) {
 	  return workspaceSchoolDataController.updateWorkspace(workspace);
   }
@@ -316,5 +320,5 @@ public class WorkspaceController {
   public WorkspaceSettings findWorkspaceSettings(WorkspaceEntity workspaceEntity) {
     return workspaceSettingsDAO.findByWorkspaceEntity(workspaceEntity);
   }
-  
+
 }
