@@ -47,7 +47,18 @@
         	closeDiv.width(parW);
         	$(aBt).m3modal({
         		title : title.html(),
-        		description : descr.html()
+        		description : descr.html(),
+        		content: $('<div><textarea name="signUpMessage"></textarea></div>'),
+        		buttons: [
+        		  {
+        		    caption: "Ilmoittaudu",
+        		    action: function (e) {
+        		      var msg = e.contentElement.find("textarea[name='signUpMessage']").val();
+        		      
+        		      _this._joinCourse(msg);
+        		    }
+        		  }
+        		]
         	});
         	closeDiv.on('click', function(){
         		odDiv.hide();
@@ -236,14 +247,9 @@
       
       window.location = CONTEXTPATH + '/workspace/' + workspaceUrl;
     },
-    _onJoinCourseClick: function (event) {
-      event.stopPropagation();
-      var element = $(event.target);
-      var coursePickerCourse = element.parents(".cp-course");
+    _joinCourse: function (joinMessage) {
       
-      var workspaceId = coursePickerCourse.find("input[name='workspaceId']").val();
-      var workspaceUrl = coursePickerCourse.find("input[name='workspaceUrl']").val();
-      
+      alert("Not implemented _joinCourse: msg = " + joinMessage);
 //      mApi().workspace.workspaces.users.create(workspaceId, {
 //      })
 //      .callback(function (workspaceUsersErr, workspaceUsers) {

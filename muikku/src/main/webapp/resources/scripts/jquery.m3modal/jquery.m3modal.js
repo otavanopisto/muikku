@@ -11,15 +11,20 @@
       title:"Muikku 3 Modal",
       description: "Lorem ipsum dolor sit amet.",
       top: "10px",
-      content : $('<div> Default content. Nulla ut eleifend lacus, sed aliquam arcu. Cras condimentum id mi vitae porttitor. Curabitur efficitur aliquam ligula semper eleifend. Sed lacinia neque rhoncus ultrices varius. Donec bibendum in lorem quis ultrices. Nunc ultrices sem velit, vel congue dolor dignissim ut. Mauris in sapien mauris. Phasellus venenatis porta risus, a ullamcorper risus venenatis quis. Nunc sit amet venenatis ipsum. Suspendisse sit amet posuere magna, vitae bibendum magna. Donec ullamcorper mauris at velit consectetur consectetur. Praesent varius dolor egestas nibh posuere, non egestas purus ultricies. Ut facilisis arcu et eleifend placerat. Nullam quis semper dui. Suspendisse laoreet sit amet neque sit amet accumsan.</div>')
+      content : $('<div> Default content. Nulla ut eleifend lacus, sed aliquam arcu. Cras condimentum id mi vitae porttitor. Curabitur efficitur aliquam ligula semper eleifend. Sed lacinia neque rhoncus ultrices varius. Donec bibendum in lorem quis ultrices. Nunc ultrices sem velit, vel congue dolor dignissim ut. Mauris in sapien mauris. Phasellus venenatis porta risus, a ullamcorper risus venenatis quis. Nunc sit amet venenatis ipsum. Suspendisse sit amet posuere magna, vitae bibendum magna. Donec ullamcorper mauris at velit consectetur consectetur. Praesent varius dolor egestas nibh posuere, non egestas purus ultricies. Ut facilisis arcu et eleifend placerat. Nullam quis semper dui. Suspendisse laoreet sit amet neque sit amet accumsan.</div>'),
+      onBeforeOpen: undefined
 
     },prop);
         
+    var _this = this;
+    
     return this.on("click", function(e){
       e.stopPropagation();	
       bgrElement();
       boxElement();
-      elemStyles();     
+      elemStyles();
+      if (options.onBeforeOpen)
+        options.onBeforeOpen(_this);
       $('.md-box').fadeIn();  
       
     });
@@ -35,11 +40,13 @@
 
         	
         // });
-    	$('.md-close').click(function(){
-        	 $(this).fadeOut().remove();
-           	 $('.md-background').fadeOut().remove();
-    		
-    	});     
+    	$('.md-close').click(function() {
+    	  closeModal();
+      });     
+    }
+
+    function closeModal() {
+      $('.md-background').fadeOut().remove();
     }
     
     function elemStyles(){
@@ -103,13 +110,41 @@
     }
     
     function boxElement(){
-    	
+      var _this = this;
+      
     	var bE = $('<div class="md-box"></div>') ;
     	var dE = $('<div class="md-description"><h2>' + options.title + '</h2><p>' + options.description + '</p></div>') ;
-        var cE = $('<div class="md-content"></div>') ;
+      var cE = $('<div class="md-content"></div>') ;
 
-        cE.append(options.content);
-        bE.append(dE,cE);
+      cE.append(options.content);
+      bE.append(dE,cE);
+    	
+    	if (options.buttons) {
+    	  var btnsE = $('<div class="md-buttons"></div>') ;
+    	  
+    	  bE.append(btnsE);
+    	  
+    	  for (var i = 0; i < options.buttons.length; i++) {
+    	    var iPuT = $('<input type="button" name="' + i + '" value="' + options.buttons[i].caption + '"/>');
+    	    
+    	    iPuT.on("click", function (e) {
+    	      var i = this.name;
+    	      
+    	      if (options.buttons[i].action) {
+    	        var opts = {
+    	          contentElement: $('.md-content') 
+    	        };
+    	        
+    	        options.buttons[i].action(opts);
+    	      }
+    	      
+            closeModal();
+    	    });
+    	    
+    	    btnsE.append(iPuT);
+    	  }
+    	}
+
     	bE.appendTo('.md-background');
     }
         
