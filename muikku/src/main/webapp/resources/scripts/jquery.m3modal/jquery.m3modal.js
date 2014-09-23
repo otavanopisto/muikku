@@ -30,10 +30,7 @@
     	$(bgE).appendTo('body');
     //  Does not work as intended
     //	$('.md-background').click(function(){
- 
-      //       	 $(this).fadeOut().remove();
-
-        	
+      //       	 $(this).fadeOut().remove();	
         // });
     	$('.md-close').click(function(){
         	 $(this).fadeOut().remove();
@@ -64,7 +61,7 @@
         'display' : 'none',
         'margin-left' :options.marginLeft,
         'min-height' : options.height +'px',
-        'width' : options.width + 'px',     
+        'max-width' : options.width + 'px',     
       });
  
       
