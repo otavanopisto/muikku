@@ -19,6 +19,11 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.ContextResolver;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.joda.JodaModule;;
 
 public class PyramusClient {
   
@@ -34,7 +39,7 @@ public class PyramusClient {
 
   public AccessToken createAccessToken() {
     Client client = createClient();
-
+    
     Form form = new Form()
       .param("grant_type", "authorization_code")
       .param("code", AUTH_CODE)
@@ -95,7 +100,7 @@ public class PyramusClient {
     // TODO: trust all only on development environment
 
     ClientBuilder clientBuilder = ClientBuilder.newBuilder();
-
+    
     TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
       public java.security.cert.X509Certificate[] getAcceptedIssuers() {
         return null;
@@ -123,8 +128,21 @@ public class PyramusClient {
       }
     };
 
-    ClientBuilder builder = clientBuilder.sslContext(sslContext).hostnameVerifier(fakeHostnameVerifier);
+    ClientBuilder builder = clientBuilder.sslContext(sslContext).hostnameVerifier(fakeHostnameVerifier).register(new JacksonConfigurator());
     return builder.build();
+  }
+
+  private class JacksonConfigurator implements ContextResolver<ObjectMapper> {
+
+    @Override
+    public ObjectMapper getContext(Class<?> type) {
+      ObjectMapper objectMapper = new ObjectMapper();
+      objectMapper.registerModule(new JodaModule());
+      objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+      
+      return objectMapper;
+    }
+
   }
 
 }
