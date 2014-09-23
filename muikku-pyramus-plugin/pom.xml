@@ -14,6 +14,10 @@
   <name>Muikku Pyramus plugin</name>
   <description>Plugin that provides support for using Pyramus as school data source for Muikku</description>
   
+  <properties>
+    <pyramus.version>0.7.0-SNAPSHOT</pyramus.version>
+  </properties>
+  
   <dependencies>
 
     <!-- CDI -->
@@ -71,19 +75,26 @@
       <artifactId>jackson-datatype-joda</artifactId>
     </dependency>
 
-    <!-- JodaTime -->
-
     <dependency>
-      <groupId>joda-time</groupId>
-      <artifactId>joda-time</artifactId>
+      <groupId>com.fasterxml.jackson.jaxrs</groupId>
+      <artifactId>jackson-jaxrs-json-provider</artifactId>
     </dependency>
     
+    <!-- Pyramus -->
+
+    <dependency>
+      <groupId>fi.pyramus</groupId>
+      <artifactId>rest-model</artifactId>
+      <version>${pyramus.version}</version>
+    </dependency>
+
     <!-- Muikku -->
 
     <dependency>
       <groupId>fi.muikku</groupId>
       <artifactId>plugin</artifactId>
     </dependency>
+    
   </dependencies>
   
 </project>
