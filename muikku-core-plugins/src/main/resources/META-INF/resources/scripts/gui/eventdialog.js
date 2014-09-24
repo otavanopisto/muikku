@@ -34,7 +34,8 @@
         var dialog = $(text).attr('title', getLocaleText('plugin.calendar.removeEventDialog.title')).dialog({
           modal : true,
           width : 500,
-          buttons : buttons
+          buttons : buttons,
+          close: function() {$(this).dialog("destroy").remove()}
         });
       });
     }
@@ -140,8 +141,6 @@
               };
 
               _this._saveFunction(_this._event, dataEvent);
-
-              $(this).dialog("close");
             }
           } else {
             $(this).find('.error').first().focus();
@@ -158,7 +157,8 @@
         dialog.dialog({
           modal: true,
           width: 500,
-          buttons: buttons
+          buttons: buttons,
+          close: function() {$(this).dialog("destroy").remove()}
         });
      
         dialog.find('input[name="fromDate"]').datepicker();
