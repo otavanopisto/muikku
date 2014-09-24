@@ -2,9 +2,12 @@ package fi.muikku.plugins.schooldatapyramus.rest;
 
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -21,10 +24,14 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ContextResolver;
 
+import org.joda.time.DateTime;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;;
 
+@SessionScoped
 public class PyramusClient {
   
   // TODO: replace with configured values
@@ -37,7 +44,67 @@ public class PyramusClient {
   @Inject
   private Logger logger;
 
-  public AccessToken createAccessToken() {
+  @PostConstruct
+  public void init() {
+    accessToken = null;
+  }
+  
+  public <T> T post(String path, Entity<?> entity, Class<T> type) {
+    Client client = createClient();
+    
+    WebTarget target = client.target(PYRAMUS_REST + path);
+    Builder request = target.request();
+    request.header("Authorization", "Bearer " + getAccessToken());
+    Response response = request.post(entity);
+    try {
+      return response.readEntity(type);
+    } finally {
+      response.close();
+    }
+  }
+  
+  public <T> T post(String path, Object entity, Class<T> type) {
+    Client client = createClient();
+    
+    WebTarget target = client.target(PYRAMUS_REST + path);
+    Builder request = target.request();
+    request.header("Authorization", "Bearer " + getAccessToken());
+    Response response = request.post(Entity.entity(entity, MediaType.APPLICATION_JSON));
+    try {
+      return response.readEntity(type);
+    } finally {
+      response.close();
+    }
+  }
+  
+  public <T> T get(String path, Class<T> type) {
+    Client client = createClient();
+    
+    WebTarget target = client.target(PYRAMUS_REST + path);
+    Builder request = target.request();
+    request.header("Authorization", "Bearer " + getAccessToken());
+    Response response = request.get();
+    try {
+      return response.readEntity(type);
+    } finally {
+      response.close();
+    }
+  }
+
+  private synchronized String getAccessToken() {
+    if ((accessToken == null) || (accessTokenExpires.isBefore(System.currentTimeMillis()))) {
+      AccessToken createdAccessToken = createAccessToken();
+      accessToken = createdAccessToken.getAccessToken();
+      accessTokenExpires = new DateTime();
+      accessTokenExpires.plusSeconds(createdAccessToken.getExpiresIn());
+    }
+    
+    // TODO: Change to refresh token when such is available in Pyramus
+    
+    return accessToken;
+  }
+
+  private AccessToken createAccessToken() {
     Client client = createClient();
     
     Form form = new Form()
@@ -52,48 +119,6 @@ public class PyramusClient {
     Builder request = target.request();
 
     return request.post(Entity.form(form), AccessToken.class);
-  }
-  
-  public <T> T post(AccessToken accessToken, String path, Entity<?> entity, Class<T> type) {
-    Client client = createClient();
-    
-    WebTarget target = client.target(PYRAMUS_REST + path);
-    Builder request = target.request();
-    request.header("Authorization", "Bearer " + accessToken.getAccessToken());
-    Response response = request.post(entity);
-    try {
-      return response.readEntity(type);
-    } finally {
-      response.close();
-    }
-  }
-  
-  public <T> T post(AccessToken accessToken, String path, Object entity, Class<T> type) {
-    Client client = createClient();
-    
-    WebTarget target = client.target(PYRAMUS_REST + path);
-    Builder request = target.request();
-    request.header("Authorization", "Bearer " + accessToken.getAccessToken());
-    Response response = request.post(Entity.entity(entity, MediaType.APPLICATION_JSON));
-    try {
-      return response.readEntity(type);
-    } finally {
-      response.close();
-    }
-  }
-  
-  public <T> T get(AccessToken accessToken, String path, Class<T> type) {
-    Client client = createClient();
-    
-    WebTarget target = client.target(PYRAMUS_REST + path);
-    Builder request = target.request();
-    request.header("Authorization", "Bearer " + accessToken.getAccessToken());
-    Response response = request.get();
-    try {
-      return response.readEntity(type);
-    } finally {
-      response.close();
-    }
   }
 
   private Client createClient() {
@@ -131,6 +156,9 @@ public class PyramusClient {
     ClientBuilder builder = clientBuilder.sslContext(sslContext).hostnameVerifier(fakeHostnameVerifier).register(new JacksonConfigurator());
     return builder.build();
   }
+  
+  private String accessToken;
+  private DateTime accessTokenExpires;
 
   private class JacksonConfigurator implements ContextResolver<ObjectMapper> {
 
@@ -145,4 +173,6 @@ public class PyramusClient {
 
   }
 
+  
+  
 }

@@ -52,12 +52,12 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
 			throw new SchoolDataBridgeRequestException("Identifier has to be numeric");
 		}
 
-    return createEntity(pyramusClient.get(getAccessToken(), "/courses/courses/" + identifier, Course.class));
+    return createEntity(pyramusClient.get("/courses/courses/" + identifier, Course.class));
 	}
 
   @Override
 	public List<Workspace> listWorkspaces() throws UnexpectedSchoolDataBridgeException {
-    Course[] courses = pyramusClient.get(getAccessToken(), "/courses/courses/", Course[].class);
+    Course[] courses = pyramusClient.get("/courses/courses/", Course[].class);
     if (courses == null) {
       throw new UnexpectedSchoolDataBridgeException("Null response");
     }
@@ -115,12 +115,6 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
 	@Override
 	public List<WorkspaceUser> listWorkspaceUsers(String workspaceIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
 	  throw new UnexpectedSchoolDataBridgeException("Not implemented");
-	}
-	
-	private AccessToken getAccessToken() {
-	  // TODO: AccessToken should not be created every time rest method is invoked
-	  AccessToken accessToken = pyramusClient.createAccessToken();
-	  return accessToken;
 	}
 
   private Workspace createEntity(Course course) {
