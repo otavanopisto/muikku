@@ -2,12 +2,9 @@ package fi.muikku.plugins.schooldatapyramus.rest;
 
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -24,15 +21,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ContextResolver;
 
-import org.joda.time.DateTime;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.joda.JodaModule;;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
 
-@SessionScoped
-public class PyramusClient {
+public abstract class AbstractPyramusClient {
   
   // TODO: replace with configured values
   private static final String PYRAMUS_REST = "https://localhost:8443/1";
@@ -44,11 +37,6 @@ public class PyramusClient {
   @Inject
   private Logger logger;
 
-  @PostConstruct
-  public void init() {
-    accessToken = null;
-  }
-  
   public <T> T post(String path, Entity<?> entity, Class<T> type) {
     Client client = createClient();
     
@@ -90,21 +78,10 @@ public class PyramusClient {
       response.close();
     }
   }
+  
+  protected abstract String getAccessToken();
 
-  private synchronized String getAccessToken() {
-    if ((accessToken == null) || (accessTokenExpires.isBefore(System.currentTimeMillis()))) {
-      AccessToken createdAccessToken = createAccessToken();
-      accessToken = createdAccessToken.getAccessToken();
-      accessTokenExpires = new DateTime();
-      accessTokenExpires.plusSeconds(createdAccessToken.getExpiresIn());
-    }
-    
-    // TODO: Change to refresh token when such is available in Pyramus
-    
-    return accessToken;
-  }
-
-  private AccessToken createAccessToken() {
+  protected AccessToken createAccessToken() {
     Client client = createClient();
     
     Form form = new Form()
@@ -156,9 +133,6 @@ public class PyramusClient {
     ClientBuilder builder = clientBuilder.sslContext(sslContext).hostnameVerifier(fakeHostnameVerifier).register(new JacksonConfigurator());
     return builder.build();
   }
-  
-  private String accessToken;
-  private DateTime accessTokenExpires;
 
   private class JacksonConfigurator implements ContextResolver<ObjectMapper> {
 

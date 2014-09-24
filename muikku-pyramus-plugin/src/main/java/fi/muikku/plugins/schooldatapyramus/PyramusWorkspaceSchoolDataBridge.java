@@ -11,7 +11,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import fi.muikku.plugins.schooldatapyramus.entities.PyramusWorkspace;
 import fi.muikku.plugins.schooldatapyramus.rest.AccessToken;
-import fi.muikku.plugins.schooldatapyramus.rest.PyramusClient;
+import fi.muikku.plugins.schooldatapyramus.rest.AbstractPyramusClient;
+import fi.muikku.plugins.schooldatapyramus.rest.UserPyramusClient;
 import fi.muikku.schooldata.SchoolDataBridgeRequestException;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 import fi.muikku.schooldata.WorkspaceSchoolDataBridge;
@@ -26,7 +27,7 @@ import fi.pyramus.rest.model.Course;
 public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBridge {
   
   @Inject
-  private PyramusClient pyramusClient;
+  private UserPyramusClient pyramusClient;
 
   @Override
   public String getSchoolDataSource() {
