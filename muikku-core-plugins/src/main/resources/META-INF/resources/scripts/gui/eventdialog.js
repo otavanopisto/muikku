@@ -141,6 +141,8 @@
               };
 
               _this._saveFunction(_this._event, dataEvent);
+              
+              $(this).dialog("close");
             }
           } else {
             $(this).find('.error').first().focus();
