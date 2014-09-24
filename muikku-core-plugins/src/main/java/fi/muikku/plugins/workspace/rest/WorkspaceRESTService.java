@@ -103,7 +103,9 @@ public class WorkspaceRESTService extends PluginRESTService {
         boolean accepted = true;
         
         if (doSearch) {
-          accepted = ((workspace.getName().toLowerCase().contains(searchString)) || (workspace.getDescription().toLowerCase().contains(searchString))); 
+          accepted = workspace.getName() != null ? workspace.getName().toLowerCase().contains(searchString) : false;
+          if (!accepted)
+            accepted = workspace.getDescription() != null ? workspace.getDescription().toLowerCase().contains(searchString) : false; 
         }      
         
         if (doSubjectFilter && accepted) {
