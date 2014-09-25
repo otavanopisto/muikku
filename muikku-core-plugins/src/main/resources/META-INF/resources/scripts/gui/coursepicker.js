@@ -13,8 +13,6 @@
       
       this._searchInput = widgetElement.find("input[name='coursePickerSearch']");
       
-      this._initializeAllCoursesList();
- 
       var coursePickerAllCoursesSearchBtn = widgetElement.find(".cp-category-allCourses");
       coursePickerAllCoursesSearchBtn.click($.proxy(this._onSearchAllCoursesClick, this));
 
@@ -108,6 +106,8 @@
         
         _this._refreshListTimer();
       });
+
+      this._initializeAllCoursesList();
     },
     deinitialize: function () {
     },
