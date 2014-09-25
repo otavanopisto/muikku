@@ -81,11 +81,11 @@ class GradingSchoolDataController {
 	
 	/* GradingScaleItems */
 	
-	public GradingScaleItem findGradingScaleItem(SchoolDataSource schoolDataSource, String identifier) {
+	public GradingScaleItem findGradingScaleItem(SchoolDataSource schoolDataSource, GradingScale gradingScale, String identifier) {
 		GradingSchoolDataBridge schoolDataBridge = getGradingBridge(schoolDataSource);
 		if (schoolDataBridge != null) {
 			try {
-				return schoolDataBridge.findGradingScaleItem(identifier);
+				return schoolDataBridge.findGradingScaleItem(gradingScale.getIdentifier(), identifier);
 			} catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
 				logger.log(Level.SEVERE, "School Data Bridge reported a problem while findin a grading scale item", e);
 			}
@@ -96,10 +96,10 @@ class GradingSchoolDataController {
 		return null;
   }
 
-	public GradingScaleItem findGradingScaleItem(String schoolDataSource, String identifier) {
+	public GradingScaleItem findGradingScaleItem(String schoolDataSource, GradingScale gradingScale, String identifier) {
 		SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(identifier);
 		if (dataSource != null) {
-			 return findGradingScaleItem(dataSource, identifier);
+			 return findGradingScaleItem(dataSource, gradingScale, identifier);
 		} else {
   		logger.log(Level.SEVERE, "School Data Source could not be found by identifier:  " + schoolDataSource);
 		}

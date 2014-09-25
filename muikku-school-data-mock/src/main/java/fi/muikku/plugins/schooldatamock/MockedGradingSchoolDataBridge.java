@@ -79,7 +79,7 @@ public class MockedGradingSchoolDataBridge implements GradingSchoolDataBridge {
 	}
 
 	@Override
-	public GradingScaleItem findGradingScaleItem(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+	public GradingScaleItem findGradingScaleItem(String gradingScaleIdentifier, String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
 		if (!NumberUtils.isNumber(identifier)) {
 			throw new SchoolDataBridgeRequestException("Identifier has to be numeric");
 		}

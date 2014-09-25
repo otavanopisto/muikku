@@ -5,10 +5,12 @@ import java.util.List;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
+import fi.muikku.plugins.schooldatapyramus.rest.UserPyramusClient;
 import fi.muikku.schooldata.SchoolDataBridgeRequestException;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 import fi.muikku.schooldata.UserSchoolDataBridge;
@@ -22,6 +24,9 @@ import fi.muikku.schooldata.entity.UserProperty;
 @Stateful
 public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
+  @Inject
+  private UserPyramusClient pyramusClient;
+  
   @Override
   public String getSchoolDataSource() {
     return SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
