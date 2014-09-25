@@ -337,9 +337,9 @@ public class WallController {
   public WorkspaceWall getWorkspaceWall(WorkspaceEntity workspace) {
     WorkspaceWall workspaceWall = workspaceWallDAO.findByWorkspace(workspace);
     
-//    // TODO
-//    if (workspaceWall == null)
-//      workspaceWall = workspaceWallDAO.create(workspace);
+// TODO: Workspace Wall should be created when workspace entity is created
+    if (workspaceWall == null)
+      workspaceWall = workspaceWallDAO.create(workspace);
     
     return workspaceWall;
   }
