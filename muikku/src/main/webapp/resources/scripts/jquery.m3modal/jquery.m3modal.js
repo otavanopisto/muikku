@@ -7,7 +7,8 @@
      // Modal options
     	
       height : "200",
-      width : "960",
+  //    width : "960",
+      modalgrid : 24,
       contentgrid : "24",
       title:"Muikku 3 Modal",
       description: "Lorem ipsum dolor sit amet.",
@@ -57,7 +58,7 @@
        var pH = $(document).height(); 
        var pW = $(window).width();    
        var bw = box.outerWidth()
-       var mLeft = ($(window).width() - options.width) / 2 + $(window).scrollLeft() + "px";
+       var mLeft = ($(window).width() - $(".md-box").width()) / 2 + $(window).scrollLeft() + "px";
       
        // Box 		
       
@@ -114,7 +115,7 @@
     	var dE = $('<div class="md-description grid_24"><h2>' + options.title + '</h2><p>' + options.description + '</p></div>') ;
     	var cE = $('<div class="md-content grid_24 nomargin nolid"></div>') ;
 
-      options.content.addClass('grid_' + options.contentgrid);
+      options.content.addClass(' md-content-primary grid_' + options.contentgrid );
       cE.append(options.content);
       bE.append(dE,cE);
 

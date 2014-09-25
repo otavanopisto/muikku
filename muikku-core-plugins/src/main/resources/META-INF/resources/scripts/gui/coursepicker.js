@@ -52,7 +52,7 @@
         		description : desc.html(),
         		content: $('<div><div><textarea name="signUpMessage"></textarea></div></div>'),
         		modalgrid : 24,
-        		contentgrid : 18,
+        		contentgrid : 24,
         		
         		options: [
             		  {
