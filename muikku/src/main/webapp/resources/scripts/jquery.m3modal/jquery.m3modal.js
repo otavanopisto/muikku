@@ -8,6 +8,7 @@
     	
       height : "200",
       width : "960",
+      contentgrid : "24",
       title:"Muikku 3 Modal",
       description: "Lorem ipsum dolor sit amet.",
       top: "10px",
@@ -57,7 +58,7 @@
        var pW = $(window).width();    
        var bw = box.outerWidth()
        var mLeft = ($(window).width() - options.width) / 2 + $(window).scrollLeft() + "px";
-       
+      
        // Box 		
       
        box.css({
@@ -68,7 +69,7 @@
         'display' : 'none',
         'margin-left' :options.marginLeft,
         'min-height' : options.height +'px',
-        'max-width' : options.width + 'px',     
+ //       'width' : options.width + 'px',     
       });
  
       
@@ -107,22 +108,29 @@
     }
     
     function boxElement(){
-      var _this = this;
-      
-    	var bE = $('<div class="md-box"></div>') ;
-    	var dE = $('<div class="md-description"><h2>' + options.title + '</h2><p>' + options.description + '</p></div>') ;
-      var cE = $('<div class="md-content"></div>') ;
+    	var _this = this;
+    	var invGridSize = options.modalgrid - options.contentgrid;
+    	var bE = $('<div class="md-box container_24"></div>') ;
+    	var dE = $('<div class="md-description grid_24"><h2>' + options.title + '</h2><p>' + options.description + '</p></div>') ;
+    	var cE = $('<div class="md-content grid_24 nomargin nolid"></div>') ;
 
+      options.content.addClass('grid_' + options.contentgrid);
       cE.append(options.content);
       bE.append(dE,cE);
-    	
+
+        if (invGridSize > 0){
+        	var scndCE = $('<div class="md-content-secondary ' + "grid_" + invGridSize + '"></div>') ;
+        	cE.append(scndCE);
+        }else{
+        	var scndCE = $('<div class="md-content-secondary ' + "grid_" + options.modalgrid + '"></div>') ;
+        	cE.append(scndCE);
+        }
+        
     	if (options.buttons) {
-    	  var btnsE = $('<div class="md-buttons"></div>') ;
-    	  
-    	  bE.append(btnsE);
-    	  
+    			
+    	  var btnsE = $('<div class="md-content-buttons"></div>') ; 
     	  for (var i = 0; i < options.buttons.length; i++) {
-    	    var iPuT = $('<input type="button" name="' + i + '" value="' + options.buttons[i].caption + '"/>');
+    	    var iPuT = $('<input class="bt-generic bt-modal" type="button" name="' + options.buttons[i].name + i + '" value="' + options.buttons[i].caption + '"/>');
     	    
     	    iPuT.on("click", function (e) {
     	      var i = this.name;
@@ -139,10 +147,22 @@
     	    });
     	    
     	    btnsE.append(iPuT);
+    	    btnsE.appendTo(scndCE);
     	  }
     	}
-
+    	
+    	if (options.options) {
+      	  var oSE = $('<div class="md-content-options"></div>') ;
+      	  
+      	  
+      	  for (var i = 0; i < options.options.length; i++) {
+      	    var oPuT = $('<input type="' + options.options[i].type + '" name="' + options.options[i].name + i + '" value="' + options.options[i].caption + '">' + options.options[i].caption + '</input>');
+      	    oSE.append(oPuT);
+    	    oSE.prependTo(scndCE)
+      	  }
+      	}
     	bE.appendTo('.md-background');
+    	
     }
         
     

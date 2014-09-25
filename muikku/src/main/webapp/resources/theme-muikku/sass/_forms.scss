@@ -45,7 +45,6 @@ div[class*="form-container"] input{
 }
 
 textarea {
-  padding: 5px;  
   @extend .co-input-textfield-blur;
   &:hover {@extend .co-textarea-blur-hover;}
   &:focus {

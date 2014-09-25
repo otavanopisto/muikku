@@ -42,16 +42,34 @@
         dDiv.show( function(){        	
         	var odDiv = $(this) ;
         	var title = $(par).find($('.cp-course-long'));
-        	var descr = $(par).find($('.cp-course-description-text'));
+        	var desc = $(par).find($('.cp-course-description-text'));
         	par.prepend(closeDiv);
         	closeDiv.width(parW);
+        	
+        	
         	$(aBt).m3modal({
         		title : title.html(),
-        		description : descr.html(),
-        		content: $('<div><textarea name="signUpMessage"></textarea></div>'),
-        		buttons: [
+        		description : desc.html(),
+        		content: $('<div><div><textarea name="signUpMessage"></textarea></div></div>'),
+        		modalgrid : 24,
+        		contentgrid : 18,
+        		
+        		options: [
+            		  {
+            		    caption: "Haluan herätteitä",
+            		    name : "excitation",
+            		    type : "checkbox",
+            		    action: function (e) {
+            		      var opt = e.contentElement.find("checkbox[name='signUpOptionExcitation']").val();
+            		      
+            		      _this._joinCourse(msg);
+            		    }
+            		  }
+            		],
+        	    buttons: [
         		  {
         		    caption: "Ilmoittaudu",
+        		    name : "signup",
         		    action: function (e) {
         		      var msg = e.contentElement.find("textarea[name='signUpMessage']").val();
         		      
