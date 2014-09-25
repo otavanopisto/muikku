@@ -7,6 +7,43 @@
   <version>1.0.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Muikku Parent</name>
+  
+  <organization>
+    <name>Otavan Opisto</name>
+    <url>http://www.otavanopisto.fi/</url>
+  </organization>
+  
+  <scm>
+    <developerConnection>scm:git:git@github.com:otavanopisto/muikku.git</developerConnection>
+    <url>git@github.com:otavanopisto/muikku.git</url>
+    <connection>scm:git:git@github.com:otavanopisto/muikku.git</connection>
+  </scm>
+  
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/otavanopisto/muikku/issues</url>
+  </issueManagement>
+  
+  <licenses>
+    <license>
+      <name>GNU General Public License, Version 3</name>
+      <url>http://www.gnu.org/copyleft/gpl.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  
+  <developers>
+    <developer>
+      <id>otavanopisto</id>
+      <email>ratkaisutiimi@otavanopisto.fi</email>
+      <name>Otavan Opisto</name>
+      <organization>Otavan Opisto</organization>
+      <organizationUrl>http://www.otavanopisto.fi/</organizationUrl>
+      <roles>
+        <role>Owner</role>
+      </roles>
+    </developer>
+  </developers>
 
   <modules>
     <module>muikku-bom</module>
@@ -65,6 +102,12 @@
           <artifactId>sass-maven-plugin</artifactId>
           <version>1.1.1</version>
         </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.5.1</version>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
@@ -97,8 +140,8 @@
     <repository>
       <id>saucelabs-repository</id>
       <url>http://repository-saucelabs.forge.cloudbees.com/release</url>
-      <releases/>
-      <snapshots/>
+      <releases />
+      <snapshots />
     </repository>
 
   </repositories>
