@@ -3,21 +3,19 @@ package fi.muikku.plugins.students;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
-import com.ocpsoft.pretty.faces.annotation.URLMappings;
-import com.ocpsoft.pretty.faces.annotation.URLMapping;
+
+import org.ocpsoft.rewrite.annotation.Join;
+import org.ocpsoft.rewrite.annotation.Parameter;
 
 
 @Named
 @Stateful
 @RequestScoped
-@URLMappings(mappings = {
-  @URLMapping(
-      id = "environment-students", 
-      pattern = "/students/#{environmentStudentsBackingBean.workspaceUrlName}/index", 
-      viewId = "/students/index.jsf")
-})
-
+@Join (path = "/students/{workspaceUrlName}/index", to = "/students/index.jsf")
 public class EnvironmentStudentsBackingBean {
+  
+  @Parameter
+  private String workspaceUrlName;
   
   public String getWorkspaceUrlName(){
     return workspaceUrlName;    
@@ -26,7 +24,5 @@ public class EnvironmentStudentsBackingBean {
   public void setWorkspaceUrlName(String workspaceUrlName){
     this.workspaceUrlName = workspaceUrlName;
   }
-  
-  private String workspaceUrlName;
   
 }

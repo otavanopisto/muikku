@@ -16,17 +16,13 @@ import fi.muikku.session.SessionController;
 import fi.muikku.session.SessionControllerDelegate;
 import fi.muikku.session.local.LocalSession;
 
-@WebFilter(dispatcherTypes = {
+@WebFilter(
+  dispatcherTypes = {
     DispatcherType.REQUEST,
   	DispatcherType.FORWARD
   },  
-  servletNames = {
-  "FacesServlet",
-  "jsp",
-  "OAuth",
-  "JavaScriptLocaleServlet",
-  "UserPictureUploadServlet"
-})
+  urlPatterns = "*"
+)
 public class LocalSessionFilter implements Filter {
 
   @Inject

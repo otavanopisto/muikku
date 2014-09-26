@@ -3,7 +3,6 @@ package fi.muikku.dao.oauth;
 import java.util.List;
 
 import fi.muikku.dao.CoreDAO;
-import fi.muikku.dao.DAO;
 import fi.muikku.model.oauth.Token;
 import fi.muikku.model.oauth.TokenPermission;
 import fi.muikku.model.oauth.TokenPermission_;
@@ -14,7 +13,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 
-@DAO
 public class TokenPermissionDAO extends CoreDAO<TokenPermission> {
 
 	private static final long serialVersionUID = 392728769394558665L;

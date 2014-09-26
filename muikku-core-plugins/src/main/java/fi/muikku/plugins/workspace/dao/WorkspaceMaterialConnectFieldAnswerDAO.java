@@ -5,7 +5,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.muikku.plugin.PluginDAO;
+import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.material.model.QueryConnectFieldCounterpart;
 import fi.muikku.plugins.material.model.QueryConnectFieldTerm;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
@@ -13,7 +13,7 @@ import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialConnectFieldAnswer;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialConnectFieldAnswer_;
 
-public class WorkspaceMaterialConnectFieldAnswerDAO extends PluginDAO<WorkspaceMaterialConnectFieldAnswer> {
+public class WorkspaceMaterialConnectFieldAnswerDAO extends CorePluginsDAO<WorkspaceMaterialConnectFieldAnswer> {
 	
   private static final long serialVersionUID = -3185631042207642800L;
 

@@ -3,7 +3,6 @@ package fi.muikku.dao.users;
 import java.util.List;
 
 import fi.muikku.dao.CoreDAO;
-import fi.muikku.dao.DAO;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.EnvironmentRoleEntity;
@@ -14,7 +13,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-@DAO
 public class EnvironmentUserDAO extends CoreDAO<EnvironmentUser> {
 
 	private static final long serialVersionUID = 8185071427513774677L;

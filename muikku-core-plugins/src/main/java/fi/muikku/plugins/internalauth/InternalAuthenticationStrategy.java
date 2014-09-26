@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import fi.muikku.auth.AbstractAuthenticationStrategy;
 import fi.muikku.auth.AuthenticationHandleException;
+import fi.muikku.auth.AuthenticationProvider;
 import fi.muikku.auth.AuthenticationResult;
 import fi.muikku.auth.AuthenticationResult.Status;
 import fi.muikku.model.security.AuthSource;
@@ -24,7 +25,7 @@ import fi.muikku.schooldata.entity.User;
 
 @Dependent
 @Stateless
-public class InternalAuthenticationStrategy extends AbstractAuthenticationStrategy {
+public class InternalAuthenticationStrategy extends AbstractAuthenticationStrategy implements AuthenticationProvider {
   
   @Inject
   private UserController userController;

@@ -1,7 +1,6 @@
 package fi.muikku.dao.oauth;
 
 import fi.muikku.dao.CoreDAO;
-import fi.muikku.dao.DAO;
 import fi.muikku.model.oauth.Consumer;
 import fi.muikku.model.oauth.Consumer_;
 
@@ -11,7 +10,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 
-@DAO
 public class ConsumerDAO extends CoreDAO<Consumer> {
 
 	private static final long serialVersionUID = -7397407913620562752L;

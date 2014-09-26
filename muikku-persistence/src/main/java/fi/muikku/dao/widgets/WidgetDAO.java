@@ -6,12 +6,10 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.CoreDAO;
-import fi.muikku.dao.DAO;
 import fi.muikku.model.widgets.Widget;
 import fi.muikku.model.widgets.WidgetVisibility;
 import fi.muikku.model.widgets.Widget_;
 
-@DAO
 public class WidgetDAO extends CoreDAO<Widget> {
 
 	private static final long serialVersionUID = 536153345356856021L;

@@ -4,7 +4,6 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import fi.muikku.dao.DAO;
 import fi.muikku.dao.base.SchoolDataSourceDAO;
 import fi.muikku.model.base.SchoolDataSource;
 
@@ -13,7 +12,6 @@ import fi.muikku.model.base.SchoolDataSource;
 public class SchoolDataController {
 
 	@Inject
-	@DAO
 	private SchoolDataSourceDAO schoolDataSourceDAO;
 
 	public SchoolDataSource createSchoolDataSource(String identifier) {

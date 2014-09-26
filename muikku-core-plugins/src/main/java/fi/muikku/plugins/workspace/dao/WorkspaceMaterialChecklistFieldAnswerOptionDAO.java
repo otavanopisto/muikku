@@ -7,13 +7,13 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.muikku.plugin.PluginDAO;
+import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.material.model.QueryChecklistFieldOption;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialChecklistFieldAnswer;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialChecklistFieldAnswerOption;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialChecklistFieldAnswerOption_;
 
-public class WorkspaceMaterialChecklistFieldAnswerOptionDAO extends PluginDAO<WorkspaceMaterialChecklistFieldAnswerOption> {
+public class WorkspaceMaterialChecklistFieldAnswerOptionDAO extends CorePluginsDAO<WorkspaceMaterialChecklistFieldAnswerOption> {
 	
   private static final long serialVersionUID = 8767283875784190142L;
 

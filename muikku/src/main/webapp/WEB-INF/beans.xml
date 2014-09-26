@@ -13,7 +13,6 @@
     <class>fi.muikku.security.LoggedInInterceptor</class>
     <class>fi.muikku.security.PermitInterceptor</class>
     <class>fi.muikku.LoggedInterceptor</class>
-    <class>fi.muikku.plugin.TransactionalInterceptor</class>
   </interceptors>
   
 </beans>

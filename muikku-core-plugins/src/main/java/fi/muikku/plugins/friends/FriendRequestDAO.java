@@ -8,12 +8,12 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.muikku.dao.DAO;
-import fi.muikku.model.users.UserEntity;
-import fi.muikku.plugin.PluginDAO;
 
-@DAO
-public class FriendRequestDAO extends PluginDAO<FriendRequest> {
+import fi.muikku.model.users.UserEntity;
+import fi.muikku.plugins.CorePluginsDAO;
+
+
+public class FriendRequestDAO extends CorePluginsDAO<FriendRequest> {
 
 	private static final long serialVersionUID = 9013247702204973018L;
 

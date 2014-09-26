@@ -8,9 +8,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.muikku.dao.DAO;
+
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.plugin.PluginDAO;
+import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.forum.model.ForumArea;
 import fi.muikku.plugins.forum.model.ForumThread;
 import fi.muikku.plugins.forum.model.ForumThreadReply;
@@ -18,8 +18,8 @@ import fi.muikku.plugins.forum.model.ForumThreadReply_;
 import fi.muikku.plugins.forum.model.ForumThread_;
 
 
-@DAO
-public class ForumThreadReplyDAO extends PluginDAO<ForumThreadReply> {
+
+public class ForumThreadReplyDAO extends CorePluginsDAO<ForumThreadReply> {
   
 	private static final long serialVersionUID = 6996591519523286352L;
 

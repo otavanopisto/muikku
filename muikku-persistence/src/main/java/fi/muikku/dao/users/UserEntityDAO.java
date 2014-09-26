@@ -9,10 +9,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.CoreDAO;
-import fi.muikku.dao.DAO;
 import fi.muikku.model.users.UserEntity;
 
-@DAO
 public class UserEntityDAO extends CoreDAO<UserEntity> {
 
 	private static final long serialVersionUID = 3790128454976388680L;

@@ -8,10 +8,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.commons.lang3.StringUtils;
-
-import com.ocpsoft.pretty.faces.annotation.URLAction;
-import com.ocpsoft.pretty.faces.annotation.URLMapping;
-import com.ocpsoft.pretty.faces.annotation.URLMappings;
+import org.ocpsoft.rewrite.annotation.Join;
+import org.ocpsoft.rewrite.annotation.Parameter;
+import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.schooldata.WorkspaceController;
@@ -19,14 +18,11 @@ import fi.muikku.schooldata.WorkspaceController;
 @Named
 @Stateful
 @RequestScoped
-@URLMappings(mappings = {
-  @URLMapping(
-    id = "workspace-index", 
-    pattern = "/workspace/#{workspaceIndexBackingBean.workspaceUrlName}", 
-    viewId = "/workspaces/workspace.jsf"
-  )    
-})
+@Join (path = "/workspace/{workspaceUrlName}", to = "/workspaces/workspace.jsf")
 public class WorkspaceIndexBackingBean {
+  
+  @Parameter
+  private String workspaceUrlName;
 
 	@Inject
 	private WorkspaceController workspaceController;
@@ -35,7 +31,7 @@ public class WorkspaceIndexBackingBean {
   @Named
 	private WorkspaceNavigationBackingBean workspaceNavigationBackingBean;
 
-	@URLAction
+	@RequestAction
 	public void init() throws FileNotFoundException {
 	  String urlName = getWorkspaceUrlName();
 	  if (StringUtils.isBlank(urlName)) {
@@ -68,5 +64,4 @@ public class WorkspaceIndexBackingBean {
   }
   
 	private Long workspaceId;
-  private String workspaceUrlName;
 }

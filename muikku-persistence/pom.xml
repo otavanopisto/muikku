@@ -5,7 +5,7 @@
   <parent>
     <groupId>fi.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -13,216 +13,34 @@
   <packaging>jar</packaging>
   <name>Muikku Persistence</name>
   <description>Muikku Persistence</description>
-  
-  <properties>
-    <tranquil-model-gen.version>1.0.3-SNAPSHOT</tranquil-model-gen.version>
-    <!-- 
-    <instrumentation-hibernate.version>4.0.1.Final</instrumentation-hibernate.version>
-    <instrumentation-javassist.version>3.18.0-GA</instrumentation-javassist.version>
-     -->
-  </properties>
-
-  <build>
-    <finalName>${project.artifactId}</finalName>
-  <!--   
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.eclipse.m2e</groupId>
-          <artifactId>lifecycle-mapping</artifactId>
-          <version>1.0.0</version>
-          <configuration>
-            <lifecycleMappingMetadata>
-              <pluginExecutions>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-antrun-plugin</artifactId>
-                    <versionRange>[1.7,)</versionRange>
-                    <goals>
-                      <goal>run</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore />
-                  </action>
-                </pluginExecution>
-              </pluginExecutions>
-            </lifecycleMappingMetadata>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-     -->
-    <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.0</version>
-        <configuration>
-          <source>${maven.compiler.source}</source>
-          <target>${maven.compiler.target}</target>
-        </configuration>
-      </plugin>
-      
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <version>2.2.1</version>
-        <executions>
-          <execution>
-            <id>attach-sources</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>jar-no-fork</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.9</version>
-        <executions>
-          <execution>
-            <id>attach-javadocs</id>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <version>1.7</version>
-        <executions>
-          <execution>
-            <id>add-source</id>
-            <phase>generate-sources</phase>
-            <goals>
-              <goal>add-source</goal>
-            </goals>
-            <configuration>
-              <sources>
-                <source>${basedir}/src/main/.metamodel</source>
-                <source>${basedir}/src/main/.tranquilmodel</source>
-              </sources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      
-      <plugin>
-        <groupId>org.bsc.maven</groupId>
-        <artifactId>maven-processor-plugin</artifactId>
-        <version>2.2.1</version>
-        <dependencies>
-          <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-jpamodelgen</artifactId>
-            <version>1.2.0.Final</version>
-          </dependency>
-          <dependency>
-            <groupId>fi.tranquil-model</groupId>
-            <artifactId>tranquil-model-gen</artifactId>
-            <version>${tranquil-model-gen.version}</version>
-          </dependency>
-        </dependencies>
-        <executions>
-          <execution>
-            <id>process-metamodel</id>
-            <goals>
-              <goal>process</goal>
-            </goals>
-            <phase>generate-sources</phase>
-            <configuration>
-              <includes>
-                <include>**fi/muikku/model/**/*.java</include>
-              </includes>
-          
-              <outputDirectory>${basedir}/src/main/.metamodel</outputDirectory>
-              <processors>
-                <processor>org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor</processor>
-              </processors>
-            </configuration>
-          </execution>
-
-          <execution>
-            <id>process-tranquilmodel</id>
-            <goals>
-              <goal>process</goal>
-            </goals>
-            <phase>generate-sources</phase>
-            <configuration>
-              <includes>
-                <include>**fi/muikku/model/**/*.java</include>
-              </includes>
-
-              <outputDirectory>${basedir}/src/main/.tranquilmodel</outputDirectory>
-              <processors>
-                <processor>fi.tranquil.TranquilModelAnnotationProcessor</processor>
-              </processors>
-              <optionMap>
-                <lookupPackage>fi.muikku.persistence.tranquil</lookupPackage>
-              </optionMap>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-<!-- 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.7</version>
-
-        <dependencies>
-          <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>${instrumentation-hibernate.version}</version>
-          </dependency>
-          <dependency>
-        	<groupId>org.javassist</groupId>
-        	<artifactId>javassist</artifactId>
-        	<version>${instrumentation-javassist.version}</version>
-          </dependency>
-        </dependencies>
-        
-        <executions>
-          <execution>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <target>
-            <taskdef name="instrument" classname="org.hibernate.tool.instrument.javassist.InstrumentTask">
-              <classpath>
-                <path refid="maven.runtime.classpath" />
-                <path refid="maven.plugin.classpath" />
-              </classpath>
-            </taskdef>
-            <instrument verbose="true">
-              <fileset dir="${project.build.outputDirectory}">
-                <include name="**fi/muikku/model/**/*.class" />
-              </fileset>
-            </instrument>
-          </target>
-        </configuration>
-      </plugin>
- -->      
-    </plugins>
-  </build>
 
   <dependencies>
+
+    <!-- CDI -->
+
     <dependency>
-      <groupId>org.jboss.spec</groupId>
-      <artifactId>jboss-javaee-6.0</artifactId>
-      <type>pom</type>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.spec.javax.interceptor</groupId>
+      <artifactId>jboss-interceptors-api_1.2_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Hibernate -->
+
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-infinispan</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -238,30 +56,45 @@
       <scope>provided</scope>
     </dependency>
 
-    <dependency>
-      <groupId>fi.tranquil-model</groupId>
-      <artifactId>tranquil-model</artifactId>
-    </dependency>
+    <!-- Muikku -->
+
     <dependency>
       <groupId>fi.muikku</groupId>
       <artifactId>security</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.apache.deltaspike.core</groupId>
-      <artifactId>deltaspike-core-api</artifactId>
-    </dependency>
+
   </dependencies>
-  
-  <repositories>
-    <repository>
-      <id>otavanopisto-snapshots</id>
-      <name>Otavan Opisto Snapshots</name>
-      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/snapshots</url>
-    </repository>
-    <repository>
-      <id>otavanopisto-releases</id>
-      <name>Otavan Opisto Releases</name>
-      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases</url>
-    </repository>
-  </repositories>
+
+  <build>
+    <plugins>
+
+      <plugin>
+        <groupId>org.bsc.maven</groupId>
+        <artifactId>maven-processor-plugin</artifactId>
+        <version>2.2.4</version>
+        <executions>
+          <execution>
+            <id>process</id>
+            <goals>
+              <goal>process</goal>
+            </goals>
+            <phase>generate-sources</phase>
+            <configuration>
+              <processors>
+                <processor>org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor</processor>
+              </processors>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-jpamodelgen</artifactId>
+            <version>${hibernate-jpamodelgen.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
+  </build>
+
 </project>

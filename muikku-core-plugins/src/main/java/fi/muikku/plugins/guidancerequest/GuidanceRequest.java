@@ -12,9 +12,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
-import fi.muikku.tranquil.UserEntityResolver;
-import fi.tranquil.TranquilityEntityField;
-
 @Entity
 @PrimaryKeyJoinColumn(name="id")
 public class GuidanceRequest {
@@ -60,7 +57,6 @@ public class GuidanceRequest {
   private Long id;
   
   @Column (name = "student_id")
-  @TranquilityEntityField(UserEntityResolver.class)
   private Long student;
 
   @NotNull

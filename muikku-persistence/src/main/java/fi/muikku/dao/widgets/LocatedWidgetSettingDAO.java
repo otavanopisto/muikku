@@ -3,7 +3,6 @@ package fi.muikku.dao.widgets;
 import java.util.List;
 
 import fi.muikku.dao.CoreDAO;
-import fi.muikku.dao.DAO;
 import fi.muikku.model.widgets.LocatedWidgetSetting;
 import fi.muikku.model.widgets.LocatedWidgetSetting_;
 import fi.muikku.model.widgets.UserWidget;
@@ -15,7 +14,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 
-@DAO
 public class LocatedWidgetSettingDAO extends CoreDAO<LocatedWidgetSetting> {
 
 	private static final long serialVersionUID = -3901166698540069245L;

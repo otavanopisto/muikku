@@ -6,7 +6,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.CoreDAO;
-import fi.muikku.dao.DAO;
 import fi.muikku.model.notifier.NotifierActionEntity;
 import fi.muikku.model.notifier.NotifierMethodEntity;
 import fi.muikku.model.notifier.NotifierUserAction;
@@ -14,7 +13,6 @@ import fi.muikku.model.notifier.NotifierUserActionAllowance;
 import fi.muikku.model.notifier.NotifierUserAction_;
 import fi.muikku.model.users.UserEntity;
 
-@DAO
 public class NotifierUserActionDAO extends CoreDAO<NotifierUserAction> {
 
   private static final long serialVersionUID = 3410789594996024766L;

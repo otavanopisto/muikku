@@ -5,10 +5,7 @@ dust.onLoad = function(name, callback) {
     },
     error: function (jqXHR, textStatus, errorThrown) {
       var message = 'Could not find Dust template: ' + name;
-      
-      getNotificationQueue().addItem(new fi.internetix.s2nq.NotificationQueueItem(message, {
-        className: "notificationQueueCriticalItem"
-      }));
+      $('.notification-queue').notificationQueue('notification', 'error', message);  
     }
   });
 };
@@ -24,10 +21,7 @@ dust.preload = function(name) {
       },
       error: function (jqXHR, textStatus, errorThrown) {
         var message = 'Could not find Dust template: ' + name;
-        
-        getNotificationQueue().addItem(new fi.internetix.s2nq.NotificationQueueItem(message, {
-          className: "notificationQueueCriticalItem"
-        }));
+        $('.notification-queue').notificationQueue('notification', 'error', message);  
       }
     });
   }
@@ -64,15 +58,22 @@ function renderDustTemplate(templateName, json, callback) {
       
       var result = chunk.write(getLocaleText(params.key, args));
       return result;
+    },
+    isLoggedIn: function(chunk, context, bodies, params) {
+      if (MUIKKU_LOGGEDIN === true) {
+        return chunk.render(bodies.block, context);
+      } else {
+        if (bodies['else']) {
+          return chunk.render(bodies['else'], context);
+        }
+      }
     }
   });
   
   dust.render(templateName, base.push(json), function (err, text) {
     if (err) {
       var message = "Error occured while rendering dust template " + templateName + ": " + err;
-      getNotificationQueue().addItem(new fi.internetix.s2nq.NotificationQueueItem(message, {
-        className: "notificationQueueCriticalItem"
-      }));
+      $('.notification-queue').notificationQueue('notification', 'error', message);  
     } else {
       callback(text);
     }

@@ -58,7 +58,8 @@ public class PluginSettingsController {
 		return null;
 	}
 	
-	public String getPluginSetting(String plugin, String name) {
+	// TODO: Does this cause performance problems?
+	public synchronized String getPluginSetting(String plugin, String name) {
 		PluginSettingKey key = findPluginSettingKey(plugin, name);
 		
 		if (key == null) {
@@ -103,7 +104,7 @@ public class PluginSettingsController {
 		return pluginUserSettingDAO.findByKeyAndUser(key, user);
 	}
 	
-	public String getPluginUserSetting(String plugin, String name, UserEntity user) {
+	public synchronized String getPluginUserSetting(String plugin, String name, UserEntity user) {
 		PluginUserSettingKey key = findPluginUserSettingKey(plugin, name);
 		if (key == null) {
 			key = pluginUserSettingKeyDAO.create(plugin, name);

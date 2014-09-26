@@ -8,9 +8,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
-import fi.muikku.tranquil.UserEntityResolver;
-import fi.tranquil.TranquilityEntityField;
-
 @Entity
 public class CommunicatorMessageRecipient {
 
@@ -50,7 +47,6 @@ public class CommunicatorMessageRecipient {
   private CommunicatorMessage communicatorMessage;
 
   @Column (name = "recipient_id")
-  @TranquilityEntityField(UserEntityResolver.class)
   private Long recipient;
 
   @NotNull

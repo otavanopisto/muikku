@@ -5,7 +5,7 @@
   <parent>
     <groupId>fi.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -13,14 +13,20 @@
   <packaging>jar</packaging>
   <name>Muikku Google Calendar plugin</name>
   <description>Plugin that provides Google Calendar support for Muikku</description>
+  
+  <properties>
 
+    <google-api-services-calendar.version>v3-rev84-1.18.0-rc</google-api-services-calendar.version>
+    <google-http-client-jackson.version>1.18.0-rc</google-http-client-jackson.version>
+    <jparsec.version>2.1</jparsec.version> 
+  </properties>
+ 
   <dependencies>
     <!-- Core provided dependencies -->
 
     <dependency>
       <groupId>fi.muikku</groupId>
       <artifactId>plugin</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <!-- Core plugins -->
@@ -28,6 +34,27 @@
     <dependency>
       <groupId>fi.muikku</groupId>
       <artifactId>core-plugins</artifactId>
+    </dependency>
+
+    <!-- CDI -->
+
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss.spec.javax.interceptor</groupId>
+      <artifactId>jboss-interceptors-api_1.2_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- EJB -->
+
+    <dependency>
+      <groupId>org.jboss.spec.javax.ejb</groupId>
+      <artifactId>jboss-ejb-api_3.2_spec</artifactId>
       <scope>provided</scope>
     </dependency>
 
@@ -36,24 +63,24 @@
     <dependency>
       <groupId>com.google.apis</groupId>
       <artifactId>google-api-services-calendar</artifactId>
-      <version>v3-rev84-1.18.0-rc</version>
+      <version>${google-api-services-calendar.version}</version>
     </dependency>
 
     <dependency>
       <groupId>com.google.http-client</groupId>
       <artifactId>google-http-client-jackson</artifactId>
-      <version>1.18.0-rc</version>
+      <version>${google-http-client-jackson.version}</version>
     </dependency>
+    
     <dependency>
       <groupId>org.jparsec</groupId>
       <artifactId>jparsec</artifactId>
-      <version>2.1</version>
+      <version>${jparsec.version}</version>
     </dependency>
+    
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.10</version>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 

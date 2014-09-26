@@ -8,13 +8,11 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.CoreDAO;
-import fi.muikku.dao.DAO;
 import fi.muikku.model.grading.GradingScaleEntity;
 import fi.muikku.model.workspace.WorkspaceTypeEntity;
 import fi.muikku.model.workspace.WorkspaceTypeGradingScale;
 import fi.muikku.model.workspace.WorkspaceTypeGradingScale_;
 
-@DAO
 public class WorkspaceTypeGradingScaleDAO extends CoreDAO<WorkspaceTypeGradingScale> {
 
 	private static final long serialVersionUID = 2289284306254194974L;

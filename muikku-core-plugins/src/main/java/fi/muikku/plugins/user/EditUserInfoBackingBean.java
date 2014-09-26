@@ -8,9 +8,8 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import com.ocpsoft.pretty.faces.annotation.URLAction;
-import com.ocpsoft.pretty.faces.annotation.URLMapping;
-import com.ocpsoft.pretty.faces.annotation.URLMappings;
+import org.ocpsoft.rewrite.annotation.Join;
+import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.controller.UserEntityController;
 import fi.muikku.model.users.UserEmailEntity;
@@ -21,12 +20,7 @@ import fi.muikku.session.SessionController;
 @Named
 @Stateful
 @RequestScoped
-@URLMappings(mappings = {
-  @URLMapping(
-      id = "user-edit", 
-      pattern = "/user-edit", 
-      viewId = "/user/edituserinfo.jsf")
-})
+@Join (path = "/user-edit", to = "/user/edituserinfo.jsf")
 public class EditUserInfoBackingBean {
   
   @Inject
@@ -38,7 +32,7 @@ public class EditUserInfoBackingBean {
   @Inject
   private UserEntityController userEntityController;
   
-  @URLAction
+  @RequestAction
   public void init() throws FileNotFoundException {
   }
 

@@ -1,7 +1,6 @@
 package fi.muikku.dao.base;
 
 import fi.muikku.dao.CoreDAO;
-import fi.muikku.dao.DAO;
 import fi.muikku.model.base.EnvironmentDefaults;
 
 import javax.persistence.EntityManager;
@@ -9,7 +8,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-@DAO
 public class EnvironmentDefaultsDAO extends CoreDAO<EnvironmentDefaults> {
 
 	private static final long serialVersionUID = -3385964084597820036L;

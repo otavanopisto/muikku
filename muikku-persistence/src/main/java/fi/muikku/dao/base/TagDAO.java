@@ -6,11 +6,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.CoreDAO;
-import fi.muikku.dao.DAO;
 import fi.muikku.model.base.Tag;
 import fi.muikku.model.base.Tag_;
 
-@DAO
 public class TagDAO extends CoreDAO<Tag> {
 
   private static final long serialVersionUID = -5007065411167102131L;

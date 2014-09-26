@@ -221,7 +221,7 @@ public class WallController {
 
       // Users Workspaces
       
-      List<WorkspaceUserEntity> workspaceUsers = workspaceController.listWorkspaceEntitiesByUser(userEntity);
+      List<WorkspaceUserEntity> workspaceUsers = workspaceController.listWorkspaceUserEntitiesByUser(userEntity);
       
       for (WorkspaceUserEntity workspaceUser : workspaceUsers) {
         WorkspaceWall workspaceWall = getWorkspaceWall(workspaceUser.getWorkspaceEntity());
@@ -336,11 +336,6 @@ public class WallController {
 
   public WorkspaceWall getWorkspaceWall(WorkspaceEntity workspace) {
     WorkspaceWall workspaceWall = workspaceWallDAO.findByWorkspace(workspace);
-    
-//    // TODO
-//    if (workspaceWall == null)
-//      workspaceWall = workspaceWallDAO.create(workspace);
-    
     return workspaceWall;
   }
 

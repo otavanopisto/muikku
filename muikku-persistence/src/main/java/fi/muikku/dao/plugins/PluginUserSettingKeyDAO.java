@@ -6,11 +6,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.CoreDAO;
-import fi.muikku.dao.DAO;
 import fi.muikku.model.plugins.PluginUserSettingKey;
 import fi.muikku.model.plugins.PluginUserSettingKey_;
 
-@DAO
 public class PluginUserSettingKeyDAO extends CoreDAO<PluginUserSettingKey> {
 
 	private static final long serialVersionUID = -1720725608859632056L;

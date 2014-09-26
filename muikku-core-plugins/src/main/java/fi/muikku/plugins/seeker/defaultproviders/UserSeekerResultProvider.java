@@ -54,5 +54,10 @@ public class UserSeekerResultProvider implements SeekerResultProvider {
     
     return result;
   }
+
+  @Override
+  public String getName() {
+    return "Users";
+  }
   
 }
