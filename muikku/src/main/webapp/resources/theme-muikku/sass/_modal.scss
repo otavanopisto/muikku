@@ -5,15 +5,19 @@
 
 .md-box{
   color:#fff;
+  font-weight: 300;
   
   .md-description {
    p{font-size:1.2em;font-weight:lighter;}
    h2{font-weight:lighter;font-size:2.5em;color:#fff;line-height:0.9;}
   }
   
+  .md-close{
+  font-weight:300;
+  }
+  
   .md-content  > div {
 
-  
    div{
      background-color:rgba(0,0,0,0.17);   
      @include rounded(15px);
@@ -54,6 +58,7 @@
 }
   
   .md-content-secondary{
+ 
     &.grid_24{
 
       margin-top:0;
@@ -70,6 +75,7 @@
       margin:0 !important;
       background-color: transparent !important; 
       }
+
      div:not(:first-child){
       float:right;
      }
