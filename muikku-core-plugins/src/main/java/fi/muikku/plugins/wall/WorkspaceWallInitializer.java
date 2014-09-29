@@ -12,12 +12,10 @@ import fi.muikku.dao.workspace.WorkspaceEntityDAO;
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.wall.dao.WorkspaceWallDAO;
-import fi.muikku.schooldata.SchoolDataBridgeEntityInitiator;
-import fi.muikku.schooldata.SchoolDataEntityInitiator;
 import fi.muikku.schooldata.entity.Workspace;
+import fi.muikku.schooldata.initializers.SchoolDataWorkspaceInitializer;
 
-@SchoolDataBridgeEntityInitiator(entity = Workspace.class)
-public class WorkspaceWallInitiator implements SchoolDataEntityInitiator<Workspace> {
+public class WorkspaceWallInitializer implements SchoolDataWorkspaceInitializer {
 
   @Inject
   private Logger logger;
@@ -30,9 +28,22 @@ public class WorkspaceWallInitiator implements SchoolDataEntityInitiator<Workspa
 
   @Inject
   private WorkspaceWallDAO workspaceWallDAO;
-
+  
   @Override
-  public Workspace single(Workspace workspace) {
+  public List<Workspace> init(List<Workspace> workspaces) {
+    List<Workspace> result = new ArrayList<>();
+
+    for (Workspace workspace : workspaces) {
+      workspace = init(workspace);
+      if (workspace != null) {
+        result.add(workspace);
+      }
+    }
+
+    return result;
+  }
+
+  private Workspace init(Workspace workspace) {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(workspace.getSchoolDataSource());
     WorkspaceEntity workspaceEntity = workspaceEntityDAO.findByDataSourceAndIdentifier(dataSource, workspace.getIdentifier());
     if (workspaceEntity != null) {
@@ -44,20 +55,6 @@ public class WorkspaceWallInitiator implements SchoolDataEntityInitiator<Workspa
     }
 
     return workspace;
-  }
-
-  @Override
-  public List<Workspace> list(List<Workspace> workspaces) {
-    List<Workspace> result = new ArrayList<>();
-
-    for (Workspace workspace : workspaces) {
-      workspace = single(workspace);
-      if (workspace != null) {
-        result.add(workspace);
-      }
-    }
-
-    return result;
   }
 
 }
