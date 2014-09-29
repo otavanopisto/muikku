@@ -11,6 +11,7 @@ import org.joda.time.DateTime;
 public class UserPyramusClient extends AbstractPyramusClient implements Serializable {
 
   private static final long serialVersionUID = -2643693371146903250L;
+  private static String AUTH_CODE = "0800fc577294c34e0b28ad2839435945";
 
   @PostConstruct
   public void init() {
@@ -21,7 +22,7 @@ public class UserPyramusClient extends AbstractPyramusClient implements Serializ
   @Override
   protected synchronized String getAccessToken() {
     if (((accessToken == null) || (accessTokenExpires == null)) || (accessTokenExpires.isBefore(System.currentTimeMillis()))) {
-      AccessToken createdAccessToken = createAccessToken();
+      AccessToken createdAccessToken = createAccessToken(AUTH_CODE);
       accessToken = createdAccessToken.getAccessToken();
       accessTokenExpires = new DateTime().plusSeconds(createdAccessToken.getExpiresIn());
     }
