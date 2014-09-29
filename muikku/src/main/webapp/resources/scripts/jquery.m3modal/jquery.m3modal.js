@@ -7,7 +7,6 @@
      // Modal options
     	
       height : "200",
-  //    width : "960",
       modalgrid : 24,
       contentgrid : "24",
       title:"Muikku 3 Modal",
@@ -35,10 +34,11 @@
     	
     	var bgE = $('<div class="md-background"><span class="md-close"></span></div>');   	
     	$(bgE).appendTo('body');
-    //  Does not work as intended
-    //	$('.md-background').click(function(){
-      //       	 $(this).fadeOut().remove();	
-        // });
+
+    	$('.md-background').click(function(e){
+    		e.stopPropagation();	   	
+             	 $(this).fadeOut().remove();	
+         });
     	$('.md-close').click(function() {
     	  closeModal();
       });     
@@ -110,7 +110,7 @@
     
     function boxElement(){
     	var _this = this;
-    	var invGridSize = options.modalgrid - options.contentgrid;
+    	var loGridSize = options.modalgrid - options.contentgrid;
     	var bE = $('<div class="md-box container_24"></div>') ;
     	var dE = $('<div class="md-description grid_24"><h2>' + options.title + '</h2><p>' + options.description + '</p></div>') ;
     	var cE = $('<div class="md-content grid_24 nomargin nolid"></div>') ;
@@ -120,7 +120,7 @@
       bE.append(dE,cE);
 
         if (invGridSize > 0){
-        	var scndCE = $('<div class="md-content-secondary ' + "grid_" + invGridSize + '"></div>') ;
+        	var scndCE = $('<div class="md-content-secondary ' + "grid_" + loGridSize + '"></div>') ;
         	cE.append(scndCE);
         }else{
         	var scndCE = $('<div class="md-content-secondary ' + "grid_" + options.modalgrid + '"></div>') ;
