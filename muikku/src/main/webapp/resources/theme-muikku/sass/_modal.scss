@@ -1,0 +1,33 @@
+.md-background{
+  background-color:rgba(130,197,201,0.99);  
+  width:100%;
+}
+
+.md-box{
+  color:#fff;
+  
+  .md-description {
+   p{font-size:1.2em;font-weight:lighter;line-height:0.9;}
+   h2{font-weight:lighter;font-size:2.5em;color:#fff;}
+  }
+  
+  .md-content div {
+   background-color:rgba(0,0,0,0.17);
+   padding:15px;
+   @include rounded(15px);
+  }
+    
+}
+
+
+
+
+
+.md-close{
+ color: #ffffff;
+ font-size:3em;
+}
+
+
+
+

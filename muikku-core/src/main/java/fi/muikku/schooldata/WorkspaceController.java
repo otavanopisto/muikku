@@ -1,6 +1,7 @@
 package fi.muikku.schooldata;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,6 +17,7 @@ import fi.muikku.dao.workspace.WorkspaceSettingsDAO;
 import fi.muikku.dao.workspace.WorkspaceTypeEntityDAO;
 import fi.muikku.dao.workspace.WorkspaceTypeSchoolDataIdentifierDAO;
 import fi.muikku.dao.workspace.WorkspaceUserEntityDAO;
+import fi.muikku.dao.workspace.WorkspaceUserSignupDAO;
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.security.WorkspaceRolePermission;
 import fi.muikku.model.users.UserEntity;
@@ -25,6 +27,7 @@ import fi.muikku.model.workspace.WorkspaceSettings;
 import fi.muikku.model.workspace.WorkspaceTypeEntity;
 import fi.muikku.model.workspace.WorkspaceTypeSchoolDataIdentifier;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
+import fi.muikku.model.workspace.WorkspaceUserSignup;
 import fi.muikku.schooldata.entity.CourseIdentifier;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
@@ -58,6 +61,9 @@ public class WorkspaceController {
 
 	@Inject
 	private WorkspaceUserEntityDAO workspaceUserEntityDAO;
+
+	@Inject
+	private WorkspaceUserSignupDAO workspaceUserSignupDAO;
 	
 	@Inject
 	private UserController userController;
@@ -321,4 +327,11 @@ public class WorkspaceController {
     return workspaceSettingsDAO.findByWorkspaceEntity(workspaceEntity);
   }
 
+  /* WorkspaceUserSignup */
+  
+  public WorkspaceUserSignup createWorkspaceUserSignup(WorkspaceEntity workspaceEntity, UserEntity userEntity,
+      Date date, String message) {
+    return workspaceUserSignupDAO.create(workspaceEntity, userEntity, date, message);
+  }
+  
 }
