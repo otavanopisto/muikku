@@ -10,8 +10,6 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.muikku.plugins.schooldatapyramus.entities.PyramusWorkspace;
-import fi.muikku.plugins.schooldatapyramus.rest.AccessToken;
-import fi.muikku.plugins.schooldatapyramus.rest.AbstractPyramusClient;
 import fi.muikku.plugins.schooldatapyramus.rest.UserPyramusClient;
 import fi.muikku.schooldata.SchoolDataBridgeRequestException;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
