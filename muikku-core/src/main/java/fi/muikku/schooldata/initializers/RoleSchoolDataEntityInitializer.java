@@ -67,4 +67,9 @@ public class RoleSchoolDataEntityInitializer implements SchoolDataRoleInitialize
     return entity;
   }
 
+  @Override
+  public int getPriority() {
+    return SchoolDataEntityInitializer.PRIORITY_HIGHEST;
+  }
+
 }

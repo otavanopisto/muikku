@@ -67,6 +67,7 @@ public class ElasticSearchProvider implements SearchProvider {
     SearchHit[] results = response.getHits().getHits();
     for (SearchHit hit : results) {
       Map<String, Object> hitSource = hit.getSource();
+      hitSource.put("indexType", hit.getType());
       searchResults.add(hitSource);
     }
     SearchResult result = new SearchResult(searchResults.size(), start, maxResults, searchResults);

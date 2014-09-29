@@ -23,8 +23,7 @@ public class UserPyramusClient extends AbstractPyramusClient implements Serializ
     if (((accessToken == null) || (accessTokenExpires == null)) || (accessTokenExpires.isBefore(System.currentTimeMillis()))) {
       AccessToken createdAccessToken = createAccessToken();
       accessToken = createdAccessToken.getAccessToken();
-      accessTokenExpires = new DateTime();
-      accessTokenExpires.plusSeconds(createdAccessToken.getExpiresIn());
+      accessTokenExpires = new DateTime().plusSeconds(createdAccessToken.getExpiresIn());
     }
     
     // TODO: Change to refresh token when such is available in Pyramus

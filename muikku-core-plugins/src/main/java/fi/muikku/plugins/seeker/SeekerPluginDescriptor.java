@@ -4,11 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import javax.inject.Inject;
-
 import org.apache.commons.lang3.LocaleUtils;
 
-import fi.muikku.controller.WidgetController;
 import fi.muikku.i18n.LocaleBundle;
 import fi.muikku.i18n.LocaleLocation;
 import fi.muikku.plugin.LocalizedPluginDescriptor;
@@ -16,13 +13,10 @@ import fi.muikku.plugin.PluginDescriptor;
 
 public class SeekerPluginDescriptor implements PluginDescriptor, LocalizedPluginDescriptor {
 
-  @Inject
-  private WidgetController widgetController;
-
   @Override
   public void init() {
   }
-
+	
   @Override
 	public String getName() {
 		return "seeker";

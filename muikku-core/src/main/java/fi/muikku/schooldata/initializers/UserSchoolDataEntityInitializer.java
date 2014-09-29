@@ -57,4 +57,9 @@ public class UserSchoolDataEntityInitializer implements SchoolDataUserInitialize
     return user;
   }
 
+  @Override
+  public int getPriority() {
+    return SchoolDataEntityInitializer.PRIORITY_HIGHEST;
+  }
+
 }

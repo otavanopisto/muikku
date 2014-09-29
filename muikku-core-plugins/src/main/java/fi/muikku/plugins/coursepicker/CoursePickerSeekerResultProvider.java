@@ -31,4 +31,9 @@ public class CoursePickerSeekerResultProvider implements SeekerResultProvider {
     
     return result; 
   }
+
+  @Override
+  public String getName() {
+    return "Courses";
+  }
 }

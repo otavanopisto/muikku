@@ -78,4 +78,9 @@ public class WorkspaceUserSchoolDataEntityInitializer implements SchoolDataWorks
     return workspaceUser;
   }
 
+  @Override
+  public int getPriority() {
+    return SchoolDataEntityInitializer.PRIORITY_HIGHEST;
+  }
+
 }

@@ -47,4 +47,9 @@ public class GradingScaleSchoolDataEntityInitializer implements SchoolDataGradin
     return gradingScale;
   }
 
+  @Override
+  public int getPriority() {
+    return SchoolDataEntityInitializer.PRIORITY_HIGHEST;
+  }
+
 }

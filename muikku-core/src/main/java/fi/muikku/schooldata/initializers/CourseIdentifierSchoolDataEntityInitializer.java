@@ -54,4 +54,9 @@ public class CourseIdentifierSchoolDataEntityInitializer implements SchoolDataCo
 
     return courseIdentifier;
   }
+
+  @Override
+  public int getPriority() {
+    return SchoolDataEntityInitializer.PRIORITY_HIGHEST;
+  }
 }

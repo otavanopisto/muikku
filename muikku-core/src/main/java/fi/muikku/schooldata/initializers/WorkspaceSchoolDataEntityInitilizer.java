@@ -104,4 +104,9 @@ public class WorkspaceSchoolDataEntityInitilizer implements SchoolDataWorkspaceI
 	private String generateUrlName(String name) {
 		return StringUtils.substring(StringUtils.replace(StringUtils.stripAccents(StringUtils.lowerCase(StringUtils.trim(StringUtils.normalizeSpace(name)))), " ", "-").replaceAll("-{2,}", "-"), 0, MAX_URL_NAME_LENGTH);
 	}
+
+  @Override
+  public int getPriority() {
+    return SchoolDataEntityInitializer.PRIORITY_HIGHEST;
+  }
 }

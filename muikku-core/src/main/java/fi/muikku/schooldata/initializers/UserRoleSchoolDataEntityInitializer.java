@@ -91,4 +91,9 @@ public class UserRoleSchoolDataEntityInitializer implements SchoolDataUserRoleIn
     return null;
   }
 
+  @Override
+  public int getPriority() {
+    return SchoolDataEntityInitializer.PRIORITY_HIGHEST;
+  }
+
 }

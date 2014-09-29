@@ -10,7 +10,7 @@
    
   <ui:define name="content.center.widget">
     <m:widgetSpaceSet>
-      <m:widgetSpace name="workspace.content-tools-top.center" keepEmpty="true" sizing="MAXIMIZE">
+      <m:widgetSpace name="workspace.content-tools-top.center" keepEmpty="true" sizing="MAXIMIZE" rendered="#{sessionBackingBean.loggedIn}">
         <m:widget name="workspace-wallfeed"/>
       </m:widgetSpace>
     </m:widgetSpaceSet>

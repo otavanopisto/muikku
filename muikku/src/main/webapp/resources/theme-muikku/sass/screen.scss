@@ -731,6 +731,7 @@ a.header {
  &.ft-03{border-left: 3px solid $mainFuncFilter3;}
 
 }
+
 .cp-course-details-container{
   background-color:#f0f3f4;
 }
@@ -780,6 +781,13 @@ a.header {
 .cp-course-details-teachers{
 	padding:0 5px;
 	height:20px;
+  .cp-teacher-picture-default{
+    @extend .co-user-picture;
+    display:inline-block;
+    height:20px;
+    width:20px;
+  }
+
 }
 
 .cp-course-details-toolbar{
