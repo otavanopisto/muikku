@@ -13,6 +13,7 @@ import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.muikku.schooldata.entity.Workspace;
+import fi.muikku.schooldata.initializers.SchoolDataEntityInitializer;
 import fi.muikku.schooldata.initializers.SchoolDataWorkspaceInitializer;
 
 public class WorkspaceRootFolderEntityInitiator implements SchoolDataWorkspaceInitializer {
@@ -58,4 +59,9 @@ public class WorkspaceRootFolderEntityInitiator implements SchoolDataWorkspaceIn
     return workspace;
   }
 
+
+  @Override
+  public int getPriority() {
+    return SchoolDataEntityInitializer.PRIORITY_NORMAL;
+  }
 }

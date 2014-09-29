@@ -4,7 +4,7 @@ import java.util.List;
 
 import fi.muikku.schooldata.entity.User;
 
-public interface SchoolDataUserInitializer {
+public interface SchoolDataUserInitializer extends SchoolDataEntityInitializer {
 
 	public List<User> init(List<User> users);
 	

@@ -4,7 +4,7 @@ import java.util.List;
 
 import fi.muikku.schooldata.entity.CourseIdentifier;
 
-public interface SchoolDataCourseIdentifierInitializer {
+public interface SchoolDataCourseIdentifierInitializer extends SchoolDataEntityInitializer {
 
 	public List<CourseIdentifier> init(List<CourseIdentifier> courseIdentifiers);
 	

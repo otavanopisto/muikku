@@ -4,7 +4,7 @@ import java.util.List;
 
 import fi.muikku.schooldata.entity.UserRole;
 
-public interface SchoolDataUserRoleInitializer {
+public interface SchoolDataUserRoleInitializer extends SchoolDataEntityInitializer {
 
 	public List<UserRole> init(List<UserRole> userRoles);
 	

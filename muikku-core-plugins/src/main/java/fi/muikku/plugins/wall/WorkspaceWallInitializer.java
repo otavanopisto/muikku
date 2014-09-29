@@ -13,6 +13,7 @@ import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.wall.dao.WorkspaceWallDAO;
 import fi.muikku.schooldata.entity.Workspace;
+import fi.muikku.schooldata.initializers.SchoolDataEntityInitializer;
 import fi.muikku.schooldata.initializers.SchoolDataWorkspaceInitializer;
 
 public class WorkspaceWallInitializer implements SchoolDataWorkspaceInitializer {
@@ -55,6 +56,11 @@ public class WorkspaceWallInitializer implements SchoolDataWorkspaceInitializer 
     }
 
     return workspace;
+  }
+
+  @Override
+  public int getPriority() {
+    return SchoolDataEntityInitializer.PRIORITY_NORMAL;
   }
 
 }
