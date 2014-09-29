@@ -32,7 +32,6 @@ public abstract class AbstractPyramusClient {
   private static String CLIENT_ID = "854885cf-2284-4b17-b63c-a8b189535f8d";
   private static String CLIENT_SECRET = "cqJ4J1if8ca5RMUqaYyFPYToxfFxt2YT8PXL3pNygPClnjJdt55lrFs6k1SZ6colJN24YEtZ7bhFW29S";
   private static String REDIRECT_URL = "https://localhost:8443/oauth2ClientTest/success";
-  private static String AUTH_CODE = "ff81d5b8500c773e7a1776a7963801e3";
   
   @Inject
   private Logger logger;
@@ -81,12 +80,12 @@ public abstract class AbstractPyramusClient {
   
   protected abstract String getAccessToken();
 
-  protected AccessToken createAccessToken() {
+  protected AccessToken createAccessToken(String code) {
     Client client = createClient();
     
     Form form = new Form()
       .param("grant_type", "authorization_code")
-      .param("code", AUTH_CODE)
+      .param("code", code)
       .param("redirect_uri", REDIRECT_URL)
       .param("client_id", CLIENT_ID)
       .param("client_secret", CLIENT_SECRET);
