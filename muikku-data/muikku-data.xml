@@ -27,6 +27,7 @@
     run="ONCE"
     handler="MySQL"
     url="school-data-mock/007_workspace_settings.sql" />
+    <!-- 
   <script
     run="ALWAYS"
     handler="H2/HSQLDB"
@@ -50,7 +51,7 @@
     handler="H2/HSQLDB"
     url="school-data-mock/004_mock_workspaces_hsqldb.sql">
     <parameter name="database">school-data-mock</parameter>
-  </script>
+  </script> 
   <script
     run="ALWAYS"
     handler="H2/HSQLDB"
@@ -62,7 +63,7 @@
     handler="H2/HSQLDB"
     url="school-data-mock/006_mock_gradingscales_hsqldb.sql">
     <parameter name="database">school-data-mock</parameter>
-  </script>
+  </script>-->
   <script
     run="ONCE"
     handler="MySQL"
