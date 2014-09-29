@@ -35,10 +35,10 @@
     	var bgE = $('<div class="md-background"><span class="md-close"></span></div>');   	
     	$(bgE).appendTo('body');
 
-    	$('.md-background').click(function(e){
-    		e.stopPropagation();	   	
-             	 $(this).fadeOut().remove();	
-         });
+//    	$('.md-background').click(function(e){
+//    		e.stopPropagation();	   	
+//             	 $(this).fadeOut().remove();	
+//         });
     	$('.md-close').click(function() {
     	  closeModal();
       });     
@@ -119,7 +119,7 @@
       cE.append(options.content);
       bE.append(dE,cE);
 
-        if (invGridSize > 0){
+        if (loGridSize > 0){
         	var scndCE = $('<div class="md-content-secondary ' + "grid_" + loGridSize + '"></div>') ;
         	cE.append(scndCE);
         }else{
