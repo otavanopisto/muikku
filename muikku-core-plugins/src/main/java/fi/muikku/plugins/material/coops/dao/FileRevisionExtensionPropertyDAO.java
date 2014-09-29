@@ -1,6 +1,5 @@
 package fi.muikku.plugins.material.coops.dao;
 
-import fi.muikku.plugin.PluginDAO;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -8,11 +7,12 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.material.coops.model.FileRevision;
 import fi.muikku.plugins.material.coops.model.FileRevisionExtensionProperty;
 import fi.muikku.plugins.material.coops.model.FileRevisionExtensionProperty_;
 
-public class FileRevisionExtensionPropertyDAO extends PluginDAO<FileRevisionExtensionProperty> {
+public class FileRevisionExtensionPropertyDAO extends CorePluginsDAO<FileRevisionExtensionProperty> {
 
   private static final long serialVersionUID = -8715223954604734705L;
 

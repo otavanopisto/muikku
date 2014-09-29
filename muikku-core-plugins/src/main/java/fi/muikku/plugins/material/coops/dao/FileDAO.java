@@ -1,9 +1,9 @@
 package fi.muikku.plugins.material.coops.dao;
 
-import fi.muikku.plugin.PluginDAO;
+import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.material.coops.model.File;
 
-public class FileDAO extends PluginDAO<File> {
+public class FileDAO extends CorePluginsDAO<File> {
 
   private static final long serialVersionUID = -8715223954604734705L;
 

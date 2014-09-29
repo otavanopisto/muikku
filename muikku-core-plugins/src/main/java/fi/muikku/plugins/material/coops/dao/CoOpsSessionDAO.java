@@ -8,13 +8,13 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.muikku.plugin.PluginDAO;
+import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.material.coops.model.CoOpsSession;
 import fi.muikku.plugins.material.coops.model.CoOpsSessionType;
 import fi.muikku.plugins.material.coops.model.CoOpsSession_;
 import fi.muikku.plugins.material.coops.model.File;
 
-public class CoOpsSessionDAO extends PluginDAO<CoOpsSession> {
+public class CoOpsSessionDAO extends CorePluginsDAO<CoOpsSession> {
 
   private static final long serialVersionUID = 6392770442072904041L;
 
