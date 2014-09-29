@@ -19,7 +19,7 @@
                     {?hasPicture} 
                       <img class="cp-course-details-teacher-picture" title="{fullName}" src="{@contextPath/}/picture?userId={id}" width="20" height="20" />
                     {:else}
-                      <img class="cp-course-details-teacher-picture" src="{@contextPath/}/javax.faces.resource/gfx/icons/32x32/actions/navigate-cal.png.jsf?ln=theme-muikku" width="20" height="20" />
+                      <div class="cp-teacher-picture-default"></div>
                     {/hasPicture}
                   </div>
   
@@ -42,41 +42,37 @@
           {/hasAssessmentFee}
         </div>
         <div class="cp-course-description">
-			    <div class="cp-course-header-name">
-			     <span class="cp-course-short"></span>
-			     <span class="cp-course-long">{name}</span>
-			    </div>
-			    
-			    <div class="cp-course-header-details">
-			     <span class="cp-course-rating">{rating} ({ratingCount})</span>
-			     <span class="cp-course-len"></span>
-			     <span class="cp-course-age"></span>
-			    </div>
-			            
-			    <div id="detailsCrs-{id}" class="cp-course-content-details" style="display:none;">     
-	          <div class="cp-course-description-picture"></div>
-	          <div class="cp-course-description-text">{description}</div>          
-		        <div class="cp-course-details-toolbar">
-		          {?isMember}
-		          <input class="bt-coursepicker cp-course-tour-button" type="button"
-		            value='{#localize key="plugin.coursepicker.course.checkout" /}' />
-		          {:else}
-		          <input class="bt-coursepicker cp-course-tour-button" type="button"
-		            value='{#localize key="plugin.coursepicker.course.checkout" /}' />
-		  <!-- 
-		          <input class="bt-coursepicker cp-course-attend-button" type="button"
-		            value='{#localize key="plugin.coursepicker.course.signup" /}' />
-		    -->         
-		          {/isMember}
-		        </div>
-	        </div>
+          <div class="cp-course-header-name">
+           <span class="cp-course-short"></span>
+           <span class="cp-course-long">{name}</span>
+          </div>
+          
+          <div class="cp-course-header-details">
+           <span class="cp-course-rating">{rating} ({ratingCount})</span>
+           <span class="cp-course-len"></span>
+           <span class="cp-course-age"></span>
+          </div>
+         
+          <div id="detailsCrs-{id}" class="cp-course-content-details" style="display:none;">     
+            <div class="cp-course-description-picture"></div>
+            <div class="cp-course-description-text">{description}</div>          
+            <div class="cp-course-details-toolbar">
+              <input class="bt-coursepicker cp-course-tour-button" type="button"
+                value='{#localize key="plugin.coursepicker.course.checkout" /}' />
+            
+              {#isLoggedIn}
+                {^isMember}
+                  <input class="bt-coursepicker cp-course-attend-button" type="button"
+                    value='{#localize key="plugin.coursepicker.course.signup" /}' />
+                {/isMember}
+              {/isLoggedIn}
+            </div>
+          </div>
+
         </div>       
 
         <div class="clear"></div>
-
     </div>
-
-    
   </div>
 </div>
 {/.}

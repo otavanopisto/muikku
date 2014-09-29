@@ -46,5 +46,10 @@ public class WorkspaceSeekerResultProvider implements SeekerResultProvider {
     
     return result;
   }
+
+  @Override
+  public String getName() {
+    return "Workspaces";
+  }
   
 }

@@ -30,4 +30,9 @@ public class CommunicatorSeekerResultProvider implements SeekerResultProvider {
     
     return result; 
   }
+
+  @Override
+  public String getName() {
+    return "Communicator";
+  }
 }

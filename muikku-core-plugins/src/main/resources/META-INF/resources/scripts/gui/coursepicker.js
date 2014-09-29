@@ -124,9 +124,6 @@
       });
       
       if (((term != undefined) && (term != "")) || (subjects.length > 0)) {
-        if (term.length <= 2) 
-          term = "";
-        
         if (hash == "my") {
           this._loadCourses({
             userId: this._userId,

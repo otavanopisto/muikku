@@ -39,6 +39,25 @@ ooServerNode.appendChild(ooServerPass)
 
 serversNode.appendChild(ooServerNode)
 
+ooServerNode = m2.createElement("server")
+ooServerId = m2.createElement("id")
+ooServerUser = m2.createElement("username")
+ooServerPass = m2.createElement("password")
+
+idNode = m2.createTextNode("otavanopisto-releases")
+userNode = m2.createTextNode(os.environ["OOREL_USERNAME"])
+passNode = m2.createTextNode(os.environ["OOREL_PASSWORD"])
+
+ooServerId.appendChild(idNode)
+ooServerUser.appendChild(userNode)
+ooServerPass.appendChild(passNode)
+
+ooServerNode.appendChild(ooServerId)
+ooServerNode.appendChild(ooServerUser)
+ooServerNode.appendChild(ooServerPass)
+
+serversNode.appendChild(ooServerNode)
+
 m2Str = m2.toxml()
 f = open(homedir + '/.m2/mySettings.xml', 'w')
 f.write(m2Str)
