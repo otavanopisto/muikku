@@ -12,8 +12,6 @@
 
       this._searchInput = widgetElement.find("input[name='coursePickerSearch']");
       
-      this._initializeAllCoursesList();
- 
       var coursePickerAllCoursesSearchBtn = widgetElement.find(".cp-category-allCourses");
       coursePickerAllCoursesSearchBtn.click($.proxy(this._onSearchAllCoursesClick, this));
 
@@ -21,7 +19,6 @@
       if (searchMyCoursesButton) {
         searchMyCoursesButton.click($.proxy(this._onSearchMyCoursesClick, this));
       }
-      
 
       this._coursesContainer.on("click", ".cp-course-tour-button", $.proxy(this._onCheckCourseClick, this));
 
@@ -36,9 +33,9 @@
         var par = $(this);
         var parW = par.width();
         var closeDiv = $('<div class="cp-course-details-close"></div>');
+        var workspaceId = $(this).parents('.cp-course').find("input[name='workspaceId']").val();
+        var workspaceUrl = $(this).parents('.cp-course').find("input[name='workspaceUrl']").val();
      
-
-      
         dDiv.show( function(){        	
         	var odDiv = $(this) ;
         	var title = $(par).find($('.cp-course-long'));
@@ -72,8 +69,10 @@
         		    name : "signup",
         		    action: function (e) {
         		      var msg = e.contentElement.find("textarea[name='signUpMessage']").val();
+        		      var workspaceId = e.contentElement.find("input[name='workspaceId']").val();
+                      var workspaceUrl = e.contentElement.find("input[name='workspaceUrl']").val();
         		      
-        		      _this._joinCourse(msg);
+        		      _this._joinCourse(workspaceId, workspaceUrl, msg);
         		    }
         		  }
         		]
@@ -107,8 +106,6 @@
            
          });
       });
-      
-      
       
       var cpCat = $("#cpCategories").find("span");
       var btnVal = $("#btnValue").html();
@@ -150,6 +147,8 @@
         
         _this._refreshListTimer();
       });
+
+      this._initializeAllCoursesList();
     },
     deinitialize: function () {
     },
@@ -265,14 +264,28 @@
       
       window.location = CONTEXTPATH + '/workspace/' + workspaceUrl;
     },
-    _joinCourse: function (joinMessage) {
+    _joinCourse: function (workspaceId, workspaceUrl, joinMessage) {
+      var userId = MUIKKU_LOGGED_USER_ID;
       
-      alert("Not implemented _joinCourse: msg = " + joinMessage);
-//      mApi().workspace.workspaces.users.create(workspaceId, {
-//      })
-//      .callback(function (workspaceUsersErr, workspaceUsers) {
-//        window.location = CONTEXTPATH + '/workspace/' + workspaceUrl;
-//      });
+      mApi().workspace.workspaces.users.create(workspaceId, {
+        workspaceId: undefined,
+        archived: undefined,
+        role: undefined, 
+        id: undefined,
+        userId: userId
+      })
+      .callback(function (workspaceUsersErr, workspaceUsers) {
+        mApi().workspace.workspaces.signups.create(workspaceId, {
+          workspaceId: undefined,
+          date: undefined,
+          message: joinMessage,
+          id: undefined,
+          userId: userId
+        })
+        .callback(function (workspaceUsersErr, workspaceUsers) {
+          window.location = CONTEXTPATH + '/workspace/' + workspaceUrl;
+        });
+      });
     },
     _onCourseNameClick: function (event) {
       var element = $(event.target);
