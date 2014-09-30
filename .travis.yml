@@ -5,10 +5,13 @@ jdk:
 branches:
   only:
   - devel
+  - master
 env:
   global:
   - secure: CB9V3CmnZRuNapNI8QYEO+tawsvqgEqLOM1FoIjHiPf2bMdmjud0dwcQWNuiMJzWR0FJaARvqQWmndP7SePNUaeIkkRoGJ0InmIrXwWtvGq/YKdxEWC8JpMxeONjKNZ6w1LhtRHpHKDxa9P1EgvyDMtg9pPIgDtoab86lXCK+2A=
   - secure: HCRUaOrwfMQQgtlFI5iKEa1CAKmf9R6GgifIpIjgLERgzxTzn3hJQkR9GvVpqB5Vo/50mCQM07LI6wB/Q9yI5b9d3M4Ey9RJebRRiHSvUyoOG8/tYHmZ8rphDVqInJSFDDcjHkGWI4KbPCe9cFvIuXhqWKensUEOl9WDFKDl4Uw=
+  - secure: adbMocvLB0LZo7WyS3BsMyYAhKIUHUEapkIbZ0PgfZmG1BLLKwNpMvhhlOT5e8g1HkC2CPSlFQyfR5wNv4nH5kR0BwbiScA/QZK/Z3dLUWvSp+GvaKhRfW3G6BDPmyfwlDbjyewlG0fchd3gDqrNgiw3nI5asWyyQADkFPaFWU8=
+  - secure: MHUFp5/FFXS8kW2iCl5G5Pr122QmN9FvbRGQX1GwDuNqOtTQHNMsYmcpEit0B5dhLnjl85nuF3IMhYyuw85MJaLlJrRCP1lcWWB5eNCyxsWgWdESmZ17erIifsK0i7QD8ai/yYGf8xtE5kys62T3URqzaK7P2Vyxhv6vgFSd7eI=
 before_install:
 - unset GEM_PATH
 after_success:
@@ -21,10 +24,10 @@ notifications:
     use_notice: true
     skip_join: true
     template:
-    - '%{repository} (%{commit}) : %{message} %{foo} '
-    - 'Build details: %{build_url}'
+    - ! '%{repository} (%{commit}) : %{message} %{foo} '
+    - ! 'Build details: %{build_url}'
   webhooks:
-    urls: 
+    urls:
     - http://build.staging.fi/travis.php
     on_success: always
     on_failure: never

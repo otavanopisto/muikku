@@ -9,12 +9,9 @@
       this._widgetElement = widgetElement;
       this._userId = widgetElement.find("input[name='userId']").val();
       this._coursesContainer = $('#coursesList');
-  //    this._myCoursesContainer = $('#myCoursesList');
-      
+
       this._searchInput = widgetElement.find("input[name='coursePickerSearch']");
       
-      this._initializeAllCoursesList();
- 
       var coursePickerAllCoursesSearchBtn = widgetElement.find(".cp-category-allCourses");
       coursePickerAllCoursesSearchBtn.click($.proxy(this._onSearchAllCoursesClick, this));
 
@@ -22,14 +19,7 @@
       if (searchMyCoursesButton) {
         searchMyCoursesButton.click($.proxy(this._onSearchMyCoursesClick, this));
       }
-      
- //     var filterPopup = widgetElement.find(".cp-allCourses-filterSelector-popup");
- //     filterPopup.find(".cp-filterSelection").click($.proxy(this._onSelectAllCoursesFilterClick, this));
-      
-//      var filterList = widgetElement.find(".cp-allCourses-filterList");
-//      filterList.on("click", ".cp-filterRemoveBtn", $.proxy(this._onRemoveAllCoursesFilterClick, this));
 
-      this._coursesContainer.on("click", ".cp-course-attend-button", $.proxy(this._onJoinCourseClick, this));
       this._coursesContainer.on("click", ".cp-course-tour-button", $.proxy(this._onCheckCourseClick, this));
 
       var coursePickerSearchCoursesInput = widgetElement.find("input[name='coursePickerSearch']");
@@ -39,7 +29,41 @@
 
       this._coursesContainer.on('click', '.cp-course-details', function() {
         var dDiv = $(this).find($(".cp-course-content-details"));
-        dDiv.toggle();
+        var aBt = $(this).find($(".cp-course-attend-button"));
+        var par = $(this);
+        var parW = par.width();
+        var closeDiv = $('<div class="cp-course-details-close"></div>');
+        var workspaceId = $(this).parents('.cp-course').find("input[name='workspaceId']").val();
+        var workspaceUrl = $(this).parents('.cp-course').find("input[name='workspaceUrl']").val();
+     
+        dDiv.show( function(){        	
+        	var odDiv = $(this) ;
+        	var title = $(par).find($('.cp-course-long'));
+        	var descr = $(par).find($('.cp-course-description-text'));
+        	par.prepend(closeDiv);
+        	closeDiv.width(parW);
+        	$(aBt).m3modal({
+        		title : title.html(),
+        		description : descr.html(),
+        		content: $('<div><textarea name="signUpMessage"></textarea><input type="hidden" name="workspaceId" value="' + workspaceId + '"/><input type="hidden" name="workspaceUrl" value="' + workspaceUrl + '"/></div>'),
+        		buttons: [
+        		  {
+        		    caption: "Ilmoittaudu",
+        		    action: function (e) {
+        		      var msg = e.contentElement.find("textarea[name='signUpMessage']").val();
+        		      var workspaceId = e.contentElement.find("input[name='workspaceId']").val();
+                  var workspaceUrl = e.contentElement.find("input[name='workspaceUrl']").val();
+        		      
+        		      _this._joinCourse(workspaceId, workspaceUrl, msg);
+        		    }
+        		  }
+        		]
+        	});
+        	closeDiv.on('click', function(){
+        		odDiv.hide();
+        		$(this).remove();
+        	});
+        });
       });     
       
       // Dropdown
@@ -65,13 +89,10 @@
          });
       });
       
-      
-      
       var cpCat = $("#cpCategories").find("span");
       var btnVal = $("#btnValue").html();
       
       // Find category names, append the first one to button
-      
       
       // TODO: Remember users's selection
       
@@ -108,6 +129,8 @@
         
         _this._refreshListTimer();
       });
+
+      this._initializeAllCoursesList();
     },
     deinitialize: function () {
     },
@@ -223,18 +246,27 @@
       
       window.location = CONTEXTPATH + '/workspace/' + workspaceUrl;
     },
-    _onJoinCourseClick: function (event) {
-      event.stopPropagation();
-      var element = $(event.target);
-      var coursePickerCourse = element.parents(".cp-course");
-      
-      var workspaceId = coursePickerCourse.find("input[name='workspaceId']").val();
-      var workspaceUrl = coursePickerCourse.find("input[name='workspaceUrl']").val();
+    _joinCourse: function (workspaceId, workspaceUrl, joinMessage) {
+      var userId = MUIKKU_LOGGED_USER_ID;
       
       mApi().workspace.workspaces.users.create(workspaceId, {
+        workspaceId: undefined,
+        archived: undefined,
+        role: undefined, 
+        id: undefined,
+        userId: userId
       })
       .callback(function (workspaceUsersErr, workspaceUsers) {
-        window.location = CONTEXTPATH + '/workspace/' + workspaceUrl;
+        mApi().workspace.workspaces.signups.create(workspaceId, {
+          workspaceId: undefined,
+          date: undefined,
+          message: joinMessage,
+          id: undefined,
+          userId: userId
+        })
+        .callback(function (workspaceUsersErr, workspaceUsers) {
+          window.location = CONTEXTPATH + '/workspace/' + workspaceUrl;
+        });
       });
     },
     _onCourseNameClick: function (event) {
@@ -246,7 +278,7 @@
         courseDetails.slideUp();
       else
         courseDetails.slideDown();
-      
+// 
       return false;
     },
     _onFilterAllCoursesClick: function (event) {

@@ -29,7 +29,6 @@ public class WorkspaceWall extends Wall {
     return getWorkspace().toString();
   }
   
-  
-  @Column (name = "workspace_id")
+  @Column (name = "workspace_id", unique = true)
   private Long workspace;
 }
