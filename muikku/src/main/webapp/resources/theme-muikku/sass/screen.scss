@@ -22,6 +22,10 @@ body {
   @include main-background('gfx/main-background.png','gfx/main-background-slice.png');
   background-repeat:no-repeat,repeat-x;
   background-position: top center, top left;
+  
+  &.workspace {
+    background:#ffffff;
+  }
 }
 
 .nopadding {
@@ -321,16 +325,23 @@ a.header {
 }
 
 #staticNavigationWrapper {
-  height:82px;
+  height:76px;
   z-index:12;
   position:relative;
-  background: -moz-linear-gradient(top,  rgba(36,108,162,0.15) 0%, rgba(255,255,255,0) 66%);
+  background: -moz-linear-gradient(top, rgba(36,108,162,0.15) 0%, rgba(255,255,255,0) 66%);
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(36,108,162,0.15)), color-stop(66%,rgba(255,255,255,0)));
-  background: -webkit-linear-gradient(top,  rgba(36,108,162,0.15) 0%,rgba(255,255,255,0) 66%);
-  background: -o-linear-gradient(top,  rgba(36,108,162,0.15) 0%,rgba(255,255,255,0) 66%);
-  background: -ms-linear-gradient(top,  rgba(36,108,162,0.15) 0%,rgba(255,255,255,0) 66%);
-  background: linear-gradient(to bottom,  rgba(36,108,162,0.15) 0%,rgba(255,255,255,0) 66%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#26246ca2', endColorstr='#00ffffff',GradientType=0 );
+  background: -webkit-linear-gradient(top, rgba(36,108,162,0.15) 0%,rgba(255,255,255,0) 66%);
+  background: -o-linear-gradient(top, rgba(36,108,162,0.15) 0%,rgba(255,255,255,0) 66%);
+  background: -ms-linear-gradient(top, rgba(36,108,162,0.15) 0%,rgba(255,255,255,0) 66%);
+  background: linear-gradient(to bottom, rgba(36,108,162,0.15) 0%,rgba(255,255,255,0) 66%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#26246ca2', endColorstr='#00ffffff',GradientType=0);
+}
+
+body.workspace {
+  #staticNavigationWrapper {
+    background:#32acf6;
+    border-bottom:1px solid #ffffff; 
+  }
 }
 
 #staticNavigationBG {
@@ -339,7 +350,7 @@ a.header {
   bottom:0;
   left:0;
   right:0;
-  height:80px;
+  height:76px;
   z-index:13;
   background:#216aa1;
   border-top:1px solid #71c3e1;
@@ -353,7 +364,7 @@ a.header {
   bottom:0;
   left:0;
   right:0;
-  height:60px;
+  height:56px;
   z-index:14;
   padding:10px;
 }

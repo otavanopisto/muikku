@@ -13,7 +13,7 @@ div[class*='dock-dynamic-navi-button'] > a {
     @include iconShadow(#ffffbe);
   }
   padding:10px 10px 0 10px;
-  height:61px;
+  height:56px;
   display:inline-block;
 }
 
@@ -44,12 +44,6 @@ div[class*='action-vertical'] {
 
 div[class*='action-vertical']:not(:first-child){
   margin-top:10px !important;
-}
-
-div[class*='actions'] {
-  @include gradient-top-bottom(#fff,#f8f8f8,#fff);	
-  float:none;
-  margin-left:0 !important;
 }
 
 div[class*='actions-vertical'] {

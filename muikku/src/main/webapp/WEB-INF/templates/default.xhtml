@@ -41,34 +41,27 @@
     <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/fullcalendar.css" />
     
     <!-- jQuery -->
-
     <h:outputScript name="scripts/jquery/jquery-1.9.1.js" />
     <h:outputScript name="scripts/jquery.klass/jquery.klass-0.1a.js" />
 
     <!-- jQuery UI -->
-
     <h:outputScript name="scripts/jquery/jquery-ui/js/jquery-ui-1.10.2.custom.js" />
     <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/jquery-ui.css" />
 
     <!-- jQuery Validation -->
-
     <h:outputScript name="scripts/jquery.validation/jquery.validate.js" />
 
     <!--  jQuery waypoints  -->
-
     <h:outputScript name="scripts/waypoints/waypoints.min.js" />
     <h:outputScript name="scripts/waypoints/shortcuts/waypoint-sticky.min.js" />
 
     <!--  jQuery scroll  -->
-
     <h:outputScript name="scripts/scroll/jquery.scroll.js" />
 
     <!--  jQuery Touch Punch  -->
-
     <h:outputScript name="scripts/jquery.ui.touch-punch/jquery.ui.touch-punch.min.js" />
 
     <!-- Functions that have no home yet. Find a home for them? -->
-    
     <h:outputScript name="scripts/passingthrough.js" target="head"/>   
     
     <!-- Dust -->
@@ -77,32 +70,26 @@
     <h:outputScript name="scripts/gui/dustloader.js" />
     
     <!-- Async -->
-    
     <h:outputScript name="scripts/async/async.js" />
     
     <!-- ObjectPath -->
-    
     <h:outputScript name="scripts/objectpathjs/interpreter.js" />
     <h:outputScript name="scripts/objectpathjs/parse.js" />
     <h:outputScript name="scripts/objectpathjs/tokens.js" />
     
     <!-- jQuery REST -->
-    
     <h:outputScript name="scripts/jquery.rest/jquery.rest.min.js"/>
     
     <!-- Api -->
-    
     <h:outputScript name="scripts/api/api.js"/>
     
     <!-- REST -->
     <h:outputScript name="scripts/gui/restful.js" />
 
     <!-- Widget Controller -->
-
     <h:outputScript name="scripts/gui/widgetcontroller.js" />
     
     <!-- Notification Queue -->
-    
     <h:outputScript name="scripts/notificationqueue/notificationqueue.js" />
   </h:head>
 
@@ -147,7 +134,7 @@
 	  <div id="staticNavigationWrapper"> 
 	 <!--  <m:widget name="navigation-dynamic" rendered="#{sessionBackingBean.loggedIn}"></m:widget> --> 
 	    <div id="staticNavigationBG"></div>
-	    <div id="staticNavigation" class="container_24 scrollblock">        
+	    <div id="staticNavigation" class="container_24">        
 	      <ui:insert name="dock.top">
 	       <m:widgetSpaceSet styleClass="noLid">      
 	         <ui:insert name="dock.top.left">

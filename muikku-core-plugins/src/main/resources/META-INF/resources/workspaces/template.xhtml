@@ -4,7 +4,7 @@
   xmlns:ui="http://java.sun.com/jsf/facelets" 
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html" 
-  template="/WEB-INF/templates/default.xhtml">
+  template="/WEB-INF/templates/workspace.xhtml">
   
   <ui:define name="dock.top.left">
     <m:widgetSpace name="generic.dock-top.left" keepEmpty="false" sizing="SUM">
@@ -14,18 +14,5 @@
       <m:widget name="dock-environment-search" size="2" />
     </m:widgetSpace>
   </ui:define>
-<!-- Removed while cleanin stuff up
-  <ui:define name="dock.top.center">    
-      <m:widgetSpace name="workspace.dock-top.center" keepEmpty="true" styleClass="alpha noLid" sizing="MAXIMIZE">
-       <div class="dock-workspace-container">
-        <m:widget name="dock-workspace-home" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
-        <m:widget name="dock-workspace-materials" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
-        <m:widget name="dock-workspace-members" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
-        <m:widget name="dock-workspace-guidancerequest" size="1" rendered="#{sessionBackingBean.loggedIn}"/>
-        <div class="clear"></div>
-        </div>
-      </m:widgetSpace>
-  </ui:define>
--->
 
 </ui:composition>
