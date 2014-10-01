@@ -9,7 +9,6 @@ $title:#000;
 $subTitle:#4e4e4e;
 
 /* Shadow */
-
 $sc: rgba(218,218,218,1);
 
 /* Border */
@@ -17,36 +16,28 @@ $brd:#dadada;
 $brd-top:#9bbee6;
 
 /* Paddings */
-
 $textContentPadding:15px;
 
 
 /* Margins */
 
 /* Generic background */
-
 $bgr: #fff;
 
 /* Action area background */
-
 $aBgr : #f8f8f8;
  
 /* sub-Action area background */
-
 $saBgr : #e3eaf2;
 
 /* toolbar background */
-
 $tBgr : #ffda8b;
 
 /* highlighted background */
-
 $hlBgr: #fff8c1;
 
 
 /* mainFunctions */
-
-
 $mainFuncSideHeader : #aed4e3;
 $mainFuncFilter1 : #32acf6;
 $mainFuncFilter2 : #f90ae3;
@@ -56,13 +47,11 @@ $mainFuncFilter3 : #5dc005;
 /* Generic gradients (Grayscale) */
 
 /* Widgets */
-
 $w-sc: 0 2px 15px rgba(216, 230, 235, 0.3);
 $w-bgr:#fff;
 $w-brd: #f0f0f0;
 
 /* Forms */
-
 $btnGr:#bfd255, #8eb92a, #72aa00 , #9ecb2d;
 $btnBrd: #72aa00;
 $btnBrdH: #fff;
@@ -72,68 +61,54 @@ $gradient-start:#fff;
 $gradient-end:#e5e5e5;
 
 /* Top-bottom 2 - color - light  (start-end-bgr) */
-
 $lightGr:#fff,#f8f8f8,#fff;
 
-
 /* Top-bottom 4 - color */
-
 $fourColorGr-1:#f9f9f9;
 $fourColorGr-2:#fcfcfc;
 $fourColorGr-3:#f4f4f4;
 $fourColorGr-4:#f7f7f7;
 
 /* MainFunction content */
-
-  $mainFuncContent: #f0f3f4;
+$mainFuncContent: #f0f3f4;
 
 
 /* MainFunction sidebar */
-
-  $mainFuncSide: #f1f8fb;
+$mainFuncSide: #f1f8fb;
 
 /* MainFunction content functions */
-
-  $mainFuncCf: #f5fcff;
+$mainFuncCf: #f5fcff;
 
 /* MainFunction buttonArea */
-
-  $mainFuncSb: #ebf6fb;
+$mainFuncSb: #ebf6fb;
 
 /* MainFunction Button */
- 
 $mainFuncBtnGr: #feccb1,#f17432,#ea5507,#fb955e;  
 $mainFuncBtnBrd: #ea5507;
   
 /* Header top-bottom */
-  
 $headerGradient-start:#deefff;
 $headerGradient-end:#98bede;
 		
 /* Content interaction top-bottom 4-color */
-	
 $contInteractGr:#e0f3fa,#d8f0fc,#b8e2f6,#b6dffd;
 	
 /* Communicator */
 
 /* Gradients */
-
 $newsGr: #ffffff , #c1cbff;
 $msgGr: #ffffff , #c1cbff;
 $reqGr: #ffffff , #c1cbff;
 
 /* Borders */
-
 $newsBrd:#ff7e16;
 $msgBrd:#495aff;
 $reqBrd:#d016ff;
-
 $naviDynamicColor:#FF6633;
 
 /* Coursepicker */
 
 /* LineColors */
-
 $lukio:#a4ebff;
 $peruskoulu:#4ad3a1;
 $ammatillinen:#d3c44a;
@@ -142,7 +117,6 @@ $ilmio:#d34a67;
 $ryhmakurssi:#744ad3;
 
 /* Font sizes */
-
 $text: 12px;
 
 /* Transition durations */
@@ -150,13 +124,11 @@ $text: 12px;
 /* Generic Mixins */
 
 /* Borders */
-
 @mixin border($bwidth:1px,$bcolor:$brd,$btype:solid) {
   border: $bwidth $btype $bcolor;
 }
 
 /* Paddings */
-
 @mixin padding($pdn:$textContentPadding){
 	padding:$pdn;
 }
@@ -165,7 +137,6 @@ $text: 12px;
 
 
 /* Corners */
-
 @mixin rounded($radius:5px) {
  border-radius: $radius; 
 }
@@ -272,7 +243,6 @@ $text: 12px;
 /* Content interaction*/
 
 /* Static navigation */
-
 @mixin iconShadow($col:#2f6481) {
  text-shadow: 0 0 10px $col; 
 }
@@ -296,7 +266,6 @@ $text: 12px;
 }
 
 /* Dynamic Navigation */
-
 @mixin dynNaviGr($gr1,$gr2) {
   box-shadow: 5px 10px 6px -2px #ededed;
   background-repeat: no-repeat;
@@ -326,7 +295,6 @@ $text: 12px;
 }
 
 /* Tooltip */
-
 @mixin tooltipTransition($trd1,$trd2,$trd3,$trd4,$pr1:opacity,$pr2:visibility,$pr3:margin-left,$pr4:margin-top,$tf1:ease-in-out,$tf2:ease-in-out,$tf3:ease-in-out,$tf4:ease-in-out) {
   $trd1:0.1s;
   $trd2:0.1s;
@@ -355,5 +323,3 @@ $text: 12px;
 @mixin transitionDirection($val1:0,$val2:0,$val3:0,$val4:0) {
   margin:$val1 $val2 $val3 $val4;
 }
-
- 
