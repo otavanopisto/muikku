@@ -12,8 +12,12 @@ import javax.inject.Inject;
 
 import fi.muikku.events.ContextInitializedEvent;
 import fi.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
+import fi.muikku.plugins.schooldatapyramus.entities.PyramusUserRole;
 import fi.muikku.plugins.schooldatapyramus.rest.SystemPyramusClient;
 import fi.muikku.schooldata.UserEntityController;
+import fi.muikku.schooldata.entity.Role;
+import fi.muikku.schooldata.entity.User;
+import fi.muikku.schooldata.entity.UserRole;
 import fi.muikku.schooldata.initializers.SchoolDataEntityInitializerProvider;
 import fi.pyramus.rest.model.Student;
 
@@ -69,6 +73,16 @@ public class PyramusSchoolDataStudentsUpdateScheduler {
       }
       
       schoolDataEntityInitializerProvider.initUsers(newUsers);
+
+      List<UserRole> userRoles = new ArrayList<>(); 
+
+      Role studentRole = entityFactory.createEntity(fi.pyramus.rest.model.UserRole.STUDENT);
+      
+      for (User newUser : newUsers) {
+        userRoles.add(new PyramusUserRole("PYRAMUS-" + newUser.getIdentifier(), newUser.getIdentifier(), studentRole.getIdentifier()));
+      }
+      
+      schoolDataEntityInitializerProvider.initUserRoles(userRoles);
       
       logger.info("Synchronized " + newUsers.size() + " new students from Pyramus");
     }
