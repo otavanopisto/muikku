@@ -18,7 +18,6 @@ $brd-top:#9bbee6;
 /* Paddings */
 $textContentPadding:15px;
 
-
 /* Margins */
 
 /* Generic background */
@@ -36,13 +35,11 @@ $tBgr : #ffda8b;
 /* highlighted background */
 $hlBgr: #fff8c1;
 
-
 /* mainFunctions */
 $mainFuncSideHeader : #aed4e3;
 $mainFuncFilter1 : #32acf6;
 $mainFuncFilter2 : #f90ae3;
 $mainFuncFilter3 : #5dc005;
-
 
 /* Generic gradients (Grayscale) */
 
@@ -71,7 +68,6 @@ $fourColorGr-4:#f7f7f7;
 
 /* MainFunction content */
 $mainFuncContent: #f0f3f4;
-
 
 /* MainFunction sidebar */
 $mainFuncSide: #f1f8fb;
@@ -243,8 +239,8 @@ $text: 12px;
 /* Content interaction*/
 
 /* Static navigation */
-@mixin iconShadow($col:#2f6481) {
- text-shadow: 0 0 10px $col; 
+@mixin iconShadow($col:rgba(47,100,129,0.7)) {
+ text-shadow: 0 0 15px $col; 
 }
 
 @mixin naviIcon() {

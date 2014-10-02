@@ -10,7 +10,7 @@ div[class*='dock-dynamic-navi-button'] > a {
   text-decoration:none;
   @include iconShadow;
   &:hover {
-    @include iconShadow(#ffffbe);
+    @include iconShadow(rgba(255,255,190,0.8));
   }
   padding:10px 10px 0 10px;
   height:56px;

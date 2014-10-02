@@ -342,7 +342,7 @@ body.workspace { /* Rule to be applied only under workspace views */
   #staticNavigationWrapper {
     background:none; /* We need to remove all background rules first */
     @include background-image('gfx/workspace-navigation-background.png'); /* Workspace's navigation's background */
-    background-position:130px 0px;
+    background-position:250px 0px;
     background-repeat:no-repeat;
     background-color:#32acf6;
     border-bottom:1px solid #ffffff; 
