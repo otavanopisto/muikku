@@ -4,19 +4,20 @@
     run="ONCE"
     handler="MySQL"
     url="test/001_user_groups_mysql.sql" />
+    <!-- 
   <script
     run="ONCE"
     handler="MySQL"
-    url="test/002_user_roles_mysql.sql" />
+    url="test/002_user_roles_mysql.sql" /> -->
   <script
     run="ONCE"
     handler="MySQL"
     url="test/003_workspace_types_mysql.sql" />
+    <!-- 
   <script
     run="ONCE"
     handler="MySQL"
     url="school-data-local/001_create_users_mysql.sql" />
-    <!-- 
   <script
     run="ONCE"
     handler="MySQL"
