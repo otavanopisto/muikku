@@ -203,6 +203,20 @@ public class WorkspaceController {
 		return workspaceEntityDAO.findByUrlName(urlName);
 	}
 
+  public WorkspaceEntity findWorkspaceEntityByDataSourceAndIdentifier(SchoolDataSource dataSource, String identifier) {
+    return workspaceEntityDAO.findByDataSourceAndIdentifier(dataSource, identifier);
+  }
+
+  public WorkspaceEntity findWorkspaceEntityByDataSourceAndIdentifier(String schoolDataSource, String identifier) {
+    SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
+    if (dataSource != null) {
+      return findWorkspaceEntityByDataSourceAndIdentifier(dataSource, identifier);
+    } else {
+      logger.log(Level.SEVERE, "Could not find school data source '" + schoolDataSource + "'");
+      return null;
+    }
+  }
+
   public List<WorkspaceEntity> listWorkspaceEntities() {
     return workspaceEntityDAO.listAll();
   }
@@ -319,6 +333,10 @@ public class WorkspaceController {
 
   public WorkspaceUserEntity findWorkspaceUserEntityByWorkspaceAndUser(WorkspaceEntity workspaceEntity, UserEntity user) {
     return workspaceUserEntityDAO.findByWorkspaceAndUser(workspaceEntity, user);
+  }
+
+  public WorkspaceUserEntity findWorkspaceUserEntityByWorkspaceAndIdentifier(WorkspaceEntity workspaceEntity, String identifier) {
+    return workspaceUserEntityDAO.findByWorkspaceAndIdentifier(workspaceEntity, identifier);
   }
   
   /* WorkspaceSettings */

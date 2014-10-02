@@ -1,6 +1,5 @@
 package fi.muikku.plugins.schooldatapyramus;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateful;
@@ -9,7 +8,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
-import fi.muikku.plugins.schooldatapyramus.entities.PyramusWorkspace;
+import fi.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
 import fi.muikku.plugins.schooldatapyramus.rest.UserPyramusClient;
 import fi.muikku.schooldata.SchoolDataBridgeRequestException;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
@@ -19,6 +18,8 @@ import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceType;
 import fi.muikku.schooldata.entity.WorkspaceUser;
 import fi.pyramus.rest.model.Course;
+import fi.pyramus.rest.model.CourseStaffMember;
+import fi.pyramus.rest.model.CourseStudent;
 
 @Dependent
 @Stateful
@@ -26,6 +27,9 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   
   @Inject
   private UserPyramusClient pyramusClient;
+
+  @Inject
+  private PyramusSchoolDataEntityFactory entityFactory;
 
   @Override
   public String getSchoolDataSource() {
@@ -51,7 +55,7 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
 			throw new SchoolDataBridgeRequestException("Identifier has to be numeric");
 		}
 
-    return createEntity(pyramusClient.get("/courses/courses/" + identifier, Course.class));
+    return entityFactory.createEntity(pyramusClient.get("/courses/courses/" + identifier, Course.class));
 	}
 
   @Override
@@ -61,7 +65,7 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
       throw new UnexpectedSchoolDataBridgeException("Null response");
     }
     
-    return createEntity(courses);
+    return entityFactory.createEntity(courses);
 	}
 
 	@Override
@@ -113,24 +117,19 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
 	
 	@Override
 	public List<WorkspaceUser> listWorkspaceUsers(String workspaceIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-	  throw new UnexpectedSchoolDataBridgeException("Not implemented");
-	}
-
-  private Workspace createEntity(Course course) {
-    if (course == null) {
-      return null;
+	  CourseStaffMember[] staffMembers = pyramusClient.get("/courses/courses/" + workspaceIdentifier + "/staffMembers", CourseStaffMember[].class);
+    if (staffMembers == null) {
+      throw new UnexpectedSchoolDataBridgeException("Null response");
     }
     
-    return new PyramusWorkspace(course.getId().toString(), course.getName(), course.getDescription(), "TODO", "TODO");
-  }
-  
-  private List<Workspace> createEntity(Course... courses) {
-    List<Workspace> result = new ArrayList<>();
-    
-    for (Course course : courses) {
-      result.add(createEntity(course));
+    CourseStudent[] courseStudents = pyramusClient.get("/courses/courses/" + workspaceIdentifier + "/students", CourseStudent[].class);
+    if (courseStudents == null) {
+      throw new UnexpectedSchoolDataBridgeException("Null response");
     }
+    
+    List<WorkspaceUser> result = entityFactory.createEntity(staffMembers);
+    result.addAll(entityFactory.createEntity(courseStudents));
     
     return result;
-  }
+	}
 }
