@@ -94,10 +94,15 @@
       
       <!-- Notification Queue -->
       <h:outputScript name="scripts/notificationqueue/notificationqueue.js" />
+      
+      <ui:insert name="pluginScripts">
+      
+      </ui:insert> 
   
     </h:head>
   
     <h:body styleClass="#{bodyClass}">
+    
       <ui:include src="/facelets/generic/notification-queue.xhtml"/>
   
   	  <ui:insert name="sitebody">
