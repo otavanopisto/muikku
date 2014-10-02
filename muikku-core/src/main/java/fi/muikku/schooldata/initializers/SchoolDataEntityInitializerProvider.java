@@ -9,7 +9,9 @@ import java.util.List;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import fi.muikku.schooldata.entity.Role;
 import fi.muikku.schooldata.entity.User;
+import fi.muikku.schooldata.entity.UserRole;
 import fi.muikku.schooldata.entity.Workspace;
 
 public class SchoolDataEntityInitializerProvider {
@@ -19,27 +21,17 @@ public class SchoolDataEntityInitializerProvider {
   
   @Inject
   private Instance<SchoolDataUserInitializer> userInitializers;
+
+  @Inject
+  private Instance<SchoolDataRoleInitializer> roleInitializers;
+
+  @Inject
+  private Instance<SchoolDataUserRoleInitializer> userRoleInitializers;
   
   public List<Workspace> initWorkspaces(List<Workspace> workspaces) {
     if (!workspaces.isEmpty()) {
-      List<SchoolDataWorkspaceInitializer> initializers = new ArrayList<>();
-      
-      Iterator<SchoolDataWorkspaceInitializer> initializerIterator = workspaceInitializers.iterator();
-      while (initializerIterator.hasNext()) {
-        initializers.add(initializerIterator.next());
-      }
-      
-      Collections.sort(initializers, new Comparator<SchoolDataWorkspaceInitializer>() {
-        
-        @Override
-        public int compare(SchoolDataWorkspaceInitializer o1, SchoolDataWorkspaceInitializer o2) {
-          return o1.getPriority() - o2.getPriority();
-        }
-        
-      }); 
-      
-      for (SchoolDataWorkspaceInitializer initializer : initializers) {
-        initializer.init(workspaces);
+      for (SchoolDataEntityInitializer initializer : getSortedInitializers(workspaceInitializers.iterator())) {
+        ((SchoolDataWorkspaceInitializer) initializer).init(workspaces);
       }
     }
     
@@ -48,28 +40,54 @@ public class SchoolDataEntityInitializerProvider {
 
   public List<User> initUsers(List<User> users) {
     if (!users.isEmpty()) {
-      List<SchoolDataUserInitializer> initializers = new ArrayList<>();
-      
-      Iterator<SchoolDataUserInitializer> initializerIterator = userInitializers.iterator();
-      while (initializerIterator.hasNext()) {
-        initializers.add(initializerIterator.next());
-      }
-      
-      Collections.sort(initializers, new Comparator<SchoolDataUserInitializer>() {
-        
-        @Override
-        public int compare(SchoolDataUserInitializer o1, SchoolDataUserInitializer o2) {
-          return o1.getPriority() - o2.getPriority();
-        }
-        
-      }); 
-      
-      for (SchoolDataUserInitializer initializer : initializers) {
-        initializer.init(users);
+      for (SchoolDataEntityInitializer initializer : getSortedInitializers(userInitializers.iterator())) {
+        ((SchoolDataUserInitializer) initializer).init(users);
       }
     }
     
     return users;
   }
+
+  public List<Role> initRoles(List<Role> roles) {
+    if (!roles.isEmpty()) {
+      for (SchoolDataEntityInitializer initializer : getSortedInitializers(roleInitializers.iterator())) {
+        ((SchoolDataRoleInitializer) initializer).init(roles);
+      }
+    }
+    
+    return roles;
+  }
+
+  public List<UserRole> initUserRoles(List<UserRole> userRoles) {
+    if (!userRoles.isEmpty()) {
+      for (SchoolDataEntityInitializer initializer : getSortedInitializers(userRoleInitializers.iterator())) {
+        ((SchoolDataUserRoleInitializer) initializer).init(userRoles);
+      }
+    }
+    
+    return userRoles;
+  }
+  
+  private List<? extends SchoolDataEntityInitializer> getSortedInitializers(Iterator<? extends SchoolDataEntityInitializer> iterator) {
+    List<SchoolDataEntityInitializer> initializers = new ArrayList<>();
+    
+    while (iterator.hasNext()) {
+      initializers.add(iterator.next());
+    }
+    
+    return sortInitializers(initializers);
+  }
+
+  private List<SchoolDataEntityInitializer> sortInitializers(List<SchoolDataEntityInitializer> initializers) {
+    Collections.sort(initializers, new Comparator<SchoolDataEntityInitializer>() {
+      
+      @Override
+      public int compare(SchoolDataEntityInitializer o1, SchoolDataEntityInitializer o2) {
+        return o1.getPriority() - o2.getPriority();
+      }
+    });
+    
+    return initializers;
+  } 
   
 }

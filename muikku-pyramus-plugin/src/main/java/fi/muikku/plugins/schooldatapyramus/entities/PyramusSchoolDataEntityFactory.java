@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fi.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
+import fi.muikku.schooldata.entity.Role;
+import fi.muikku.schooldata.entity.RoleType;
 import fi.muikku.schooldata.entity.User;
+import fi.muikku.schooldata.entity.UserRole;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceUser;
 import fi.pyramus.rest.model.Course;
@@ -36,6 +39,24 @@ public class PyramusSchoolDataEntityFactory {
     
     for (fi.pyramus.rest.model.Student student : students) {
       result.add(createEntity(student));
+    }
+    
+    return result;
+  }
+  
+  public Role createEntity(fi.pyramus.rest.model.UserRole role) {
+    if (role == null) {
+      return null;
+    }
+    
+    return new PyramusRole("ENV-" + role.name(), role.name(), RoleType.ENVIRONMENT);
+  }
+  
+  public List<Role> createEntity(fi.pyramus.rest.model.UserRole... roles) {
+    List<Role> result = new ArrayList<>();
+    
+    for (fi.pyramus.rest.model.UserRole role : roles) {
+      result.add(createEntity(role));
     }
     
     return result;

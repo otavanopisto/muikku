@@ -4,7 +4,10 @@ import javax.inject.Inject;
 
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.plugin.PluginDescriptor;
+import fi.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
 import fi.muikku.schooldata.SchoolDataController;
+import fi.muikku.schooldata.initializers.SchoolDataEntityInitializerProvider;
+import fi.pyramus.rest.model.UserRole;
 
 public class SchoolDataPyramusPluginDescriptor implements PluginDescriptor {
 
@@ -12,6 +15,12 @@ public class SchoolDataPyramusPluginDescriptor implements PluginDescriptor {
   
   @Inject
   private SchoolDataController schoolDataController;
+
+  @Inject
+  private SchoolDataEntityInitializerProvider schoolDataEntityInitializerProvider;
+
+  @Inject
+  private PyramusSchoolDataEntityFactory entityFactory;
   
   @Override
   public void init() {
@@ -23,6 +32,8 @@ public class SchoolDataPyramusPluginDescriptor implements PluginDescriptor {
     if (schoolDataSource == null) {
       schoolDataController.createSchoolDataSource(SCHOOL_DATA_SOURCE);
     }
+    
+    schoolDataEntityInitializerProvider.initRoles(entityFactory.createEntity(UserRole.values()));
   }
   
   @Override
