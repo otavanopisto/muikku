@@ -79,4 +79,20 @@ public class UserSchoolDataIdentifierDAO extends CoreDAO<UserSchoolDataIdentifie
 		return entityManager.createQuery(criteria).getResultList();
 	}
 
+  public List<UserSchoolDataIdentifier> listByDataSource(SchoolDataSource dataSource) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<UserSchoolDataIdentifier> criteria = criteriaBuilder.createQuery(UserSchoolDataIdentifier.class);
+    Root<UserSchoolDataIdentifier> root = criteria.from(UserSchoolDataIdentifier.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(UserSchoolDataIdentifier_.dataSource), dataSource)
+      )
+    );
+
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
 }
