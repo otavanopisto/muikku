@@ -5,18 +5,83 @@
 
 .md-box{
   color:#fff;
+  font-weight: 300;
   
   .md-description {
-   p{font-size:1.2em;font-weight:lighter;line-height:0.9;}
-   h2{font-weight:lighter;font-size:2.5em;color:#fff;}
+   p{font-size:1.2em;font-weight:lighter;}
+   h2{font-weight:lighter;font-size:2.5em;color:#fff;line-height:0.9;}
   }
   
-  .md-content div {
-   background-color:rgba(0,0,0,0.17);
-   padding:15px;
-   @include rounded(15px);
+  .md-close{
+  font-weight:300;
   }
-    
+  
+  .md-content  > div {
+
+   div{
+     background-color:rgba(0,0,0,0.17);   
+     @include rounded(15px);
+     padding:15px;
+
+   }
+
+  
+   div:not(:first-child){
+    margin-top: 10px;
+   }
+   
+   textarea{
+    width:100%;  
+   }
+  }
+  
+  .md-content-buttons{
+   padding:10px;
+   text-align:center;
+  }  
+
+.md-content-primary{
+  
+     &.grid_24{
+      -webkit-border-top-left-radius: 15px;
+      -webkit-border-top-right-radius: 15px;
+      -moz-border-radius-topleft: 15px;
+      -moz-border-radius-topright: 15px;
+      border-top-left-radius: 15px;
+      border-top-right-radius: 15px;
+      background-color:rgba(0,0,0,0.17);     
+      
+       div {
+        background-color: transparent !important; 
+      }
+    } 
+}
+  
+  .md-content-secondary{
+ 
+    &.grid_24{
+
+      margin-top:0;
+      background-color:rgba(0,0,0,0.17);     
+      -webkit-border-bottom-right-radius: 15px;
+      -webkit-border-bottom-left-radius: 15px;
+      -moz-border-radius-bottomright: 15px;
+      -moz-border-radius-bottomleft: 15px;
+      border-bottom-right-radius: 15px;
+      border-bottom-left-radius: 15px;
+
+     div{
+      display:inline-block;
+      margin:0 !important;
+      background-color: transparent !important; 
+      }
+
+     div:not(:first-child){
+      float:right;
+     }
+    }
+  }  
+
 }
 
 

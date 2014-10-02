@@ -39,20 +39,38 @@
         dDiv.show( function(){        	
         	var odDiv = $(this) ;
         	var title = $(par).find($('.cp-course-long'));
-        	var descr = $(par).find($('.cp-course-description-text'));
+        	var desc = $(par).find($('.cp-course-description-text'));
         	par.prepend(closeDiv);
         	closeDiv.width(parW);
+        	
+        	
         	$(aBt).m3modal({
         		title : title.html(),
-        		description : descr.html(),
-        		content: $('<div><textarea name="signUpMessage"></textarea><input type="hidden" name="workspaceId" value="' + workspaceId + '"/><input type="hidden" name="workspaceUrl" value="' + workspaceUrl + '"/></div>'),
-        		buttons: [
+        		description : desc.html(),
+        		content: $('<div><div><textarea name="signUpMessage"></textarea></div></div>'),
+        		modalgrid : 24,
+        		contentgrid : 16,
+        		
+        		options: [
+            		  {
+            		    caption: "Haluan herätteitä",
+            		    name : "excitation",
+            		    type : "checkbox",
+            		    action: function (e) {
+            		      var opt = e.contentElement.find("checkbox[name='signUpOptionExcitation']").val();
+            		      
+            		      _this._joinCourse(msg);
+            		    }
+            		  }
+            		],
+        	    buttons: [
         		  {
         		    caption: "Ilmoittaudu",
+        		    name : "signup",
         		    action: function (e) {
         		      var msg = e.contentElement.find("textarea[name='signUpMessage']").val();
         		      var workspaceId = e.contentElement.find("input[name='workspaceId']").val();
-                  var workspaceUrl = e.contentElement.find("input[name='workspaceUrl']").val();
+                      var workspaceUrl = e.contentElement.find("input[name='workspaceUrl']").val();
         		      
         		      _this._joinCourse(workspaceId, workspaceUrl, msg);
         		    }
