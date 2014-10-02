@@ -27,7 +27,7 @@ import fi.pyramus.rest.model.CourseStudent;
 @Singleton
 public class PyramusSchoolDataWorkspaceUpdateScheduler {
   
-  private static final int BATCH_LIMIT = 100;
+  private static final int BATCH_LIMIT = 10;
   
   @Inject
   private Logger logger;
@@ -75,8 +75,6 @@ public class PyramusSchoolDataWorkspaceUpdateScheduler {
           if (!existingIds.contains(workspace.getIdentifier())) {
             newWorkspaces.add(workspace);
           } 
-          
-          workspaces.add(workspace);
     
           existingIds.remove(workspace.getIdentifier());
           if (newWorkspaces.size() >= BATCH_LIMIT) {
@@ -84,6 +82,7 @@ public class PyramusSchoolDataWorkspaceUpdateScheduler {
             break; 
           }
           
+          workspaces.add(workspace);
           courseMap.put(workspace.getIdentifier(), course);
         }
         
@@ -95,10 +94,14 @@ public class PyramusSchoolDataWorkspaceUpdateScheduler {
           Course course = courseMap.get(workspace.getIdentifier());
           
           CourseStaffMember[] staffMembers = pyramusClient.get("/courses/courses/" + course.getId() + "/staffMembers", CourseStaffMember[].class);
-          schoolDataEntityInitializerProvider.initWorkspaceUsers(entityFactory.createEntity(staffMembers));
-
+          if (staffMembers != null) {
+            schoolDataEntityInitializerProvider.initWorkspaceUsers(entityFactory.createEntity(staffMembers));
+          }
+          
           CourseStudent[] courseStudents = pyramusClient.get("/courses/courses/" + course.getId() + "/students", CourseStudent[].class);
-          schoolDataEntityInitializerProvider.initWorkspaceUsers(entityFactory.createEntity(courseStudents));
+          if (courseStudents != null) {
+            schoolDataEntityInitializerProvider.initWorkspaceUsers(entityFactory.createEntity(courseStudents));
+          }
         }
         
         logger.info("Synchronized " + newWorkspaces.size() + " workspaces from Pyramus");
