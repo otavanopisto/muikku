@@ -20,6 +20,7 @@ import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.UserEmail;
 import fi.muikku.schooldata.entity.UserImage;
 import fi.muikku.schooldata.entity.UserProperty;
+import fi.pyramus.rest.model.CourseStaffMemberRole;
 import fi.pyramus.rest.model.Student;
 import fi.pyramus.rest.model.UserRole;
 
@@ -46,10 +47,10 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 	@Override
 	public User findUser(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
 		if (StringUtils.startsWith(identifier, "STUDENT-")) {
-      String studentId = StringUtils.stripStart(identifier, "USER-");
+      String studentId = StringUtils.substring(identifier, "STUDENT-".length());
       return entityFactory.createEntity(pyramusClient.get("/students/students/" + studentId, Student.class));
 		} else if (StringUtils.startsWith(identifier, "USER-")) {
-		  String userId = StringUtils.stripStart(identifier, "USER-");
+		  String userId = StringUtils.substring(identifier, "USER-".length());
 	    return entityFactory.createEntity(pyramusClient.get("/users/users/" + userId, fi.pyramus.rest.model.User.class));
 		} else {
       throw new SchoolDataBridgeRequestException("Malformed user identifier");
@@ -159,30 +160,45 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 	@Override
 	public Role findRole(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
 	  if (StringUtils.startsWith(identifier, "ENV-")) {
-	    String id = StringUtils.stripStart(identifier, "ENV-");
+	    String id = StringUtils.substring(identifier, "ENV-".length());
 	    if (StringUtils.isBlank(id)) {
 	      throw new SchoolDataBridgeRequestException("Malformed role identifier");
 	    }
 	    
 	    return entityFactory.createEntity(UserRole.valueOf(id));
-	  } 
-	  
-	  throw new UnexpectedSchoolDataBridgeException("Not implemented");
+	  } else {
+	    String id = StringUtils.substring(identifier, "WS-".length());
+      if (StringUtils.isBlank(id)) {
+        throw new SchoolDataBridgeRequestException("Malformed role identifier");
+      }
+      
+      if ("STUDENT".equals(id)) {
+        return entityFactory.createCourseStudentRoleEntity();
+      }
+      
+      return entityFactory.createEntity(pyramusClient.get("/courses/staffMemberRoles/" +  id, CourseStaffMemberRole.class));
+	  }
 	}
 	
 	@Override
 	public List<Role> listRoles() throws UnexpectedSchoolDataBridgeException {
-	  return entityFactory.createEntity(UserRole.values());
+	  List<Role> result = new ArrayList<>();
+	  
+	  result.addAll(entityFactory.createEntity(UserRole.values()));
+	  result.addAll(entityFactory.createEntity(pyramusClient.get("/courses/staffMemberRoles", CourseStaffMemberRole[].class)));
+	  result.add(entityFactory.createCourseStudentRoleEntity());
+	  
+	  return result;
 	}
 
 	@Override
 	public Role findUserEnvironmentRole(String userIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
 	  if (StringUtils.startsWith(userIdentifier, "STUDENT-")) {
-      String studentId = StringUtils.stripStart(userIdentifier, "USER-");
+      String studentId = StringUtils.substring(userIdentifier, "STUDENT-".length());
       Student student = pyramusClient.get("/students/students/" + studentId, Student.class);
       return student != null ? entityFactory.createEntity(UserRole.STUDENT) : null;
 	  } else if (StringUtils.startsWith(userIdentifier, "USER-")) {
-      String userId = StringUtils.stripStart(userIdentifier, "USER-");
+      String userId = StringUtils.substring(userIdentifier, "USER-".length());
       fi.pyramus.rest.model.User user = pyramusClient.get("/users/users/" + userId, fi.pyramus.rest.model.User.class);
       return user != null ? entityFactory.createEntity(user.getRole()) : null;
     } else {
