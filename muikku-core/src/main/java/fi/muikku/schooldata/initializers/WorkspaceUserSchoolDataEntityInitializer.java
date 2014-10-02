@@ -2,6 +2,7 @@ package fi.muikku.schooldata.initializers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
@@ -20,14 +21,15 @@ import fi.muikku.schooldata.RoleController;
 import fi.muikku.schooldata.UserController;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.Role;
-import fi.muikku.schooldata.entity.User;
-import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceUser;
 
 @Stateless
 @Dependent
 public class WorkspaceUserSchoolDataEntityInitializer implements SchoolDataWorkspaceUserInitializer {
 
+  @Inject
+  private Logger logger;
+  
   @Inject
   private UserController userController;
 
@@ -58,23 +60,28 @@ public class WorkspaceUserSchoolDataEntityInitializer implements SchoolDataWorks
   }
 
   private WorkspaceUser init(WorkspaceUser workspaceUser) {
-    User user = userController.findUser(workspaceUser.getUserSchoolDataSource(), workspaceUser.getUserIdentifier());
-    UserEntity userEntity = userController.findUserEntity(user);
-    Workspace workspace = workspaceController.findWorkspace(workspaceUser.getWorkspaceSchoolDataSource(), workspaceUser.getWorkspaceIdentifier());
-    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntity(workspace);
-
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityDAO.findByWorkspaceAndUser(workspaceEntity, userEntity);
-    if (workspaceUserEntity == null) {
-      WorkspaceRoleEntity roleEntity = null;
-      if (StringUtils.isNotBlank(workspaceUser.getRoleIdentifier()) && StringUtils.isNotBlank(workspaceUser.getRoleSchoolDataSource())) {
-        SchoolDataSource roleDataSource = schoolDataSourceDAO.findByIdentifier(workspaceUser.getRoleSchoolDataSource());
-        Role role = roleController.findRole(roleDataSource, workspaceUser.getRoleIdentifier());
-        roleEntity = roleController.findWorkspaceRoleEntity(role);
+    UserEntity userEntity = userController.findUserEntityByDataSourceAndIdentifier(workspaceUser.getSchoolDataSource(), workspaceUser.getUserIdentifier());
+    if (userEntity != null) {
+      WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByDataSourceAndIdentifier(workspaceUser.getWorkspaceSchoolDataSource(), workspaceUser.getIdentifier());
+      if (workspaceEntity != null) {
+        WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityDAO.findByWorkspaceAndUser(workspaceEntity, userEntity);
+        if (workspaceUserEntity == null) {
+          WorkspaceRoleEntity roleEntity = null;
+          if (StringUtils.isNotBlank(workspaceUser.getRoleIdentifier()) && StringUtils.isNotBlank(workspaceUser.getRoleSchoolDataSource())) {
+            SchoolDataSource roleDataSource = schoolDataSourceDAO.findByIdentifier(workspaceUser.getRoleSchoolDataSource());
+            Role role = roleController.findRole(roleDataSource, workspaceUser.getRoleIdentifier());
+            roleEntity = roleController.findWorkspaceRoleEntity(role);
+          }
+    
+          workspaceUserEntityDAO.create(userEntity, workspaceEntity, workspaceUser.getIdentifier(), roleEntity);
+        }
+      } else {
+        logger.warning("could not init workspace user #" + workspaceUser.getIdentifier() + "/" + workspaceUser.getSchoolDataSource() + " because workspace entity could not be found");
       }
-
-      workspaceUserEntityDAO.create(userEntity, workspaceEntity, workspaceUser.getIdentifier(), roleEntity);
+    } else {
+      logger.warning("could not init workspace user #" + workspaceUser.getIdentifier() + "/" + workspaceUser.getSchoolDataSource() + " because user entity could not be found");
     }
-
+     
     return workspaceUser;
   }
 

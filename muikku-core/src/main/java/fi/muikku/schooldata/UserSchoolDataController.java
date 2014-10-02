@@ -155,6 +155,15 @@ class UserSchoolDataController {
 		
 		return null;
 	}
+  
+  public UserEntity findUserEntityByDataSourceAndIdentifier(SchoolDataSource dataSource, String identifier) {
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(dataSource, identifier);
+    if (userSchoolDataIdentifier != null) {
+      return userSchoolDataIdentifier.getUserEntity();
+    }
+    
+    return null;
+  }
 	
 	/* User Emails */
 
