@@ -1,7 +1,9 @@
 package fi.muikku.plugins.schooldatapyramus;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -12,6 +14,7 @@ import javax.inject.Inject;
 
 import fi.muikku.events.ContextInitializedEvent;
 import fi.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
+import fi.muikku.plugins.schooldatapyramus.entities.PyramusUserRole;
 import fi.muikku.plugins.schooldatapyramus.rest.SystemPyramusClient;
 import fi.muikku.schooldata.UserEntityController;
 import fi.muikku.schooldata.initializers.SchoolDataEntityInitializerProvider;
@@ -53,22 +56,45 @@ public class PyramusSchoolDataUsersUpdateScheduler {
       logger.info("Synchronizing Users from Pyramus");
       
       List<fi.muikku.schooldata.entity.User> newUsers = new ArrayList<>();
+      List<fi.muikku.schooldata.entity.User> updateUsers = new ArrayList<>();
+      Map<String, User> userMap = new HashMap<>();
+
       List<String> existingIdentifiers = userEntityController.listUserEntityIdentifiersByDataSource(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
-      User[] users = pyramusClient.get("/users/users?firstResult=" + offset + "&maxResults=" + BATCH_SIZE, User[].class);
-      if (users.length == 0) {
+      User[] pyramusUsers = pyramusClient.get("/users/users?firstResult=" + offset + "&maxResults=" + BATCH_SIZE, User[].class);
+      if (pyramusUsers.length == 0) {
         offset = 0;
       } else {
-        for (User user : users) {
-          fi.muikku.schooldata.entity.User newUser = entityFactory.createEntity(user);
-          if (!existingIdentifiers.contains(newUser.getIdentifier())) {
-            newUsers.add(newUser);
+        for (User pyramusUser : pyramusUsers) {
+          fi.muikku.schooldata.entity.User user = entityFactory.createEntity(pyramusUser);
+          if (!existingIdentifiers.contains(user.getIdentifier())) {
+            newUsers.add(user);
+          } else {
+            updateUsers.add(user);
           }
+          
+          userMap.put(user.getIdentifier(), pyramusUser);
         }
         
-        offset += users.length;
+        offset += pyramusUsers.length;
       }
       
       schoolDataEntityInitializerProvider.initUsers(newUsers);
+
+      List<fi.muikku.schooldata.entity.UserRole> userRoles = new ArrayList<>(); 
+
+      for (fi.muikku.schooldata.entity.User user : newUsers) {
+        User pyramusUser = userMap.get(user.getIdentifier());
+        String roleIdentifier = entityFactory.createEntity(pyramusUser.getRole()).getIdentifier();
+        userRoles.add(new PyramusUserRole("PYRAMUS-" + user.getIdentifier(), user.getIdentifier(), roleIdentifier));
+      }
+
+      for (fi.muikku.schooldata.entity.User user : updateUsers) {
+        User pyramusUser = userMap.get(user.getIdentifier());
+        String roleIdentifier = entityFactory.createEntity(pyramusUser.getRole()).getIdentifier();
+        userRoles.add(new PyramusUserRole("PYRAMUS-" + user.getIdentifier(), user.getIdentifier(), roleIdentifier));
+      }
+      
+      schoolDataEntityInitializerProvider.initUserRoles(userRoles);
       
       logger.info("Synchronized " + newUsers.size() + " new users from Pyramus");
     }
