@@ -20,7 +20,7 @@ import fi.muikku.schooldata.initializers.SchoolDataEntityInitializerProvider;
 import fi.pyramus.rest.model.Course;
 
 @Singleton
-public class PyramusSchoolDataUpdateScheduler {
+public class PyramusSchoolDataWorkspaceUpdateScheduler {
   
   private static final int BATCH_LIMIT = 100;
   
