@@ -22,7 +22,7 @@ import fi.pyramus.rest.model.Course;
 @Singleton
 public class PyramusSchoolDataUpdateScheduler {
   
-  private static final int BATCH_LIMIT = 500;
+  private static final int BATCH_LIMIT = 100;
   
   @Inject
   private Logger logger;
