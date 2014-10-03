@@ -1,5 +1,6 @@
 package fi.muikku.plugins.schooldatapyramus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateful;
@@ -70,7 +71,25 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
 
 	@Override
 	public List<Workspace> listWorkspacesByCourseIdentifier(String courseIdentifierIdentifier) throws UnexpectedSchoolDataBridgeException {
-	  throw new UnexpectedSchoolDataBridgeException("Not implemented");
+    if (courseIdentifierIdentifier.indexOf("/") == -1)
+      throw new UnexpectedSchoolDataBridgeException("Invalid CourseIdentifierId");
+    
+    String subjectId = courseIdentifierIdentifier.substring(0, courseIdentifierIdentifier.indexOf("/"));
+    String courseNumber = courseIdentifierIdentifier.substring(courseIdentifierIdentifier.indexOf("/") + 1);
+    
+//    fi.pyramus.rest.model.Subject subject = pyramusClient.get("/common/subjects/" + subjectId, fi.pyramus.rest.model.Subject.class);
+
+    Course[] courses = pyramusClient.get("/common/subjects/" + subjectId + "/courses", fi.pyramus.rest.model.Course[].class);
+    List<Workspace> result = new ArrayList<Workspace>();
+    
+    for (Course course : courses) {
+      String courseNumber2 = course.getCourseNumber() != null ? course.getCourseNumber().toString() : "null";
+
+      if (courseNumber.equals(courseNumber2))
+        result.add(entityFactory.createEntity(course));
+    }
+    
+    return result;
 	}
 
 	@Override

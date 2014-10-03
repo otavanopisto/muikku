@@ -55,7 +55,7 @@ public class PyramusCourseMetaSchoolDataBridge implements CourseMetaSchoolDataBr
     if (identifier.indexOf("/") == -1)
       throw new SchoolDataBridgeRequestException("Invalid CourseIdentifierId");
     
-		String subjectId = identifier.substring(0, identifier.indexOf("/") - 1);
+		String subjectId = identifier.substring(0, identifier.indexOf("/"));
 		
     fi.pyramus.rest.model.Subject subject = pyramusClient.get("/common/subjects/" + subjectId, fi.pyramus.rest.model.Subject.class);
 		
