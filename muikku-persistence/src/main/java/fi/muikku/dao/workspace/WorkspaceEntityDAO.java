@@ -3,6 +3,7 @@ package fi.muikku.dao.workspace;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -61,6 +62,10 @@ public class WorkspaceEntityDAO extends CoreDAO<WorkspaceEntity> {
 	}
 
   public List<WorkspaceEntity> listByDataSource(SchoolDataSource dataSource) {
+    return listByDataSource(dataSource, null, null);
+  }
+
+  public List<WorkspaceEntity> listByDataSource(SchoolDataSource dataSource, Integer firstResult, Integer maxResults) {
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -70,11 +75,26 @@ public class WorkspaceEntityDAO extends CoreDAO<WorkspaceEntity> {
     criteria.where(
       criteriaBuilder.equal(root.get(WorkspaceEntity_.dataSource), dataSource)
     );
+    
+    TypedQuery<WorkspaceEntity> query = entityManager.createQuery(criteria);
    
-    return entityManager.createQuery(criteria).getResultList();
+    if (firstResult != null) {
+      query.setFirstResult(firstResult);
+    }
+    
+    if (maxResults != null) {
+      query.setMaxResults(maxResults);
+    }
+    
+    return query.getResultList();
   }
 
+
   public List<String> listIdentifiersByDataSource(SchoolDataSource dataSource) {
+    return listIdentifiersByDataSource(dataSource, null, null);
+  }
+  
+  public List<String> listIdentifiersByDataSource(SchoolDataSource dataSource, Integer firstResult, Integer maxResults) {
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -85,7 +105,17 @@ public class WorkspaceEntityDAO extends CoreDAO<WorkspaceEntity> {
       criteriaBuilder.equal(root.get(WorkspaceEntity_.dataSource), dataSource)
     );
    
-    return entityManager.createQuery(criteria).getResultList();
+    TypedQuery<String> query = entityManager.createQuery(criteria);
+    
+    if (firstResult != null) {
+      query.setFirstResult(firstResult);
+    }
+    
+    if (maxResults != null) {
+      query.setMaxResults(maxResults);
+    }
+    
+    return query.getResultList();
   }
 
   public WorkspaceEntity updateArchived(WorkspaceEntity workspaceEntity, Boolean archived) {

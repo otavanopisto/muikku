@@ -87,17 +87,28 @@ public class RoleController {
 		return roleEntityDAO.findById(id);
 	}
 
-	public RoleEntity findRoleEntity(Role role) {
-		SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(role.getSchoolDataSource());
-		if (schoolDataSource != null) {
-		  RoleSchoolDataIdentifier schoolDataIdentifier = roleSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(schoolDataSource, role.getIdentifier());
-		  if (schoolDataIdentifier != null) {
-		  	return schoolDataIdentifier.getRoleEntity();
-		  }
-		}
+	public RoleEntity findRoleEntityByDataSourceAndIdentifier(SchoolDataSource schoolDataSource, String identifier) {
+	  RoleSchoolDataIdentifier schoolDataIdentifier = roleSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(schoolDataSource, identifier);
+	  if (schoolDataIdentifier != null) {
+	  	return schoolDataIdentifier.getRoleEntity();
+	  }
 		
 		return null;
 	}
+
+  public RoleEntity findRoleEntityByDataSourceAndIdentifier(String dataSource, String identifier) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
+    if (schoolDataSource != null) {
+      return findRoleEntityByDataSourceAndIdentifier(schoolDataSource, identifier);
+    } else {
+      logger.severe("Could not find school data source: " + dataSource);
+      return null;
+    }
+  }
+
+  public RoleEntity findRoleEntity(Role role) {
+    return findRoleEntityByDataSourceAndIdentifier(role.getSchoolDataSource(), role.getIdentifier());
+  }
 	
 	public List<RoleEntity> listRoleEntities() {
 		return roleEntityDAO.listAll();

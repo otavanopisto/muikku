@@ -29,6 +29,9 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   private UserPyramusClient pyramusClient;
 
   @Inject
+  private PyramusIdentifierMapper identifierMapper;
+
+  @Inject
   private PyramusSchoolDataEntityFactory entityFactory;
 
   @Override
@@ -117,12 +120,14 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
 	
 	@Override
 	public List<WorkspaceUser> listWorkspaceUsers(String workspaceIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-	  CourseStaffMember[] staffMembers = pyramusClient.get("/courses/courses/" + workspaceIdentifier + "/staffMembers", CourseStaffMember[].class);
+	  Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
+	  
+	  CourseStaffMember[] staffMembers = pyramusClient.get("/courses/courses/" + courseId + "/staffMembers", CourseStaffMember[].class);
     if (staffMembers == null) {
       throw new UnexpectedSchoolDataBridgeException("Null response");
     }
     
-    CourseStudent[] courseStudents = pyramusClient.get("/courses/courses/" + workspaceIdentifier + "/students", CourseStudent[].class);
+    CourseStudent[] courseStudents = pyramusClient.get("/courses/courses/" + courseId + "/students", CourseStudent[].class);
     if (courseStudents == null) {
       throw new UnexpectedSchoolDataBridgeException("Null response");
     }

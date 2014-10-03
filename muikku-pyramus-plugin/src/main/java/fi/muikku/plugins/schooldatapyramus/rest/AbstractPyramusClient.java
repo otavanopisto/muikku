@@ -73,6 +73,8 @@ public abstract class AbstractPyramusClient {
     Response response = request.get();
     try {
       return response.readEntity(type);
+    } catch (Throwable t) {
+      throw t;
     } finally {
       response.close();
     }
