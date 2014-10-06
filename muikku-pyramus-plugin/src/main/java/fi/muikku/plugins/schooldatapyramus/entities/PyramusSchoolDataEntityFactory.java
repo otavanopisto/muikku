@@ -5,6 +5,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+
+import fi.muikku.controller.PluginSettingsController;
 import fi.muikku.plugins.schooldatapyramus.PyramusIdentifierMapper;
 import fi.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
 import fi.muikku.schooldata.entity.EnvironmentRole;
@@ -22,6 +26,9 @@ public class PyramusSchoolDataEntityFactory {
   
   @Inject
   private PyramusIdentifierMapper identifierMapper;
+  
+  @Inject
+  private PluginSettingsController pluginSettingsController;
   
   public WorkspaceRole createCourseStudentRoleEntity() {
     // TODO: Localize
@@ -79,9 +86,7 @@ public class PyramusSchoolDataEntityFactory {
       return null;
     }
     
-    // TODO: Mapper for archetype
-    WorkspaceRoleArchetype archetype = WorkspaceRoleArchetype.TEACHER;
-    
+    WorkspaceRoleArchetype archetype = getWorkspaceRoleArchetype(staffMemberRole.getId());
     return new PyramusWorkspaceRole(identifierMapper.getWorkspaceStaffRoleIdentifier(staffMemberRole.getId()), staffMemberRole.getName(), archetype);
   }
 
@@ -160,6 +165,17 @@ public class PyramusSchoolDataEntityFactory {
     }
     
     return result;
+  }
+  
+  private WorkspaceRoleArchetype getWorkspaceRoleArchetype(Long staffMemberRoleId) {
+    String teacherRoleSetting = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "roles.workspace.TEACHER");
+    if (StringUtils.isNumeric(teacherRoleSetting)) {
+      if (staffMemberRoleId.equals(NumberUtils.createLong(teacherRoleSetting))) {
+        return WorkspaceRoleArchetype.TEACHER;
+      }
+    }
+    
+    return WorkspaceRoleArchetype.CUSTOM;
   }
 
 }

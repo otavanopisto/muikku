@@ -4,6 +4,10 @@
     run="ONCE"
     handler="MySQL"
     url="test/001_user_groups_mysql.sql" />
+  <script
+    run="ONCE"
+    handler="MySQL"
+    url="pyramus/001_role_mapping_mysql.sql" />
     <!-- 
   <script
     run="ONCE"
