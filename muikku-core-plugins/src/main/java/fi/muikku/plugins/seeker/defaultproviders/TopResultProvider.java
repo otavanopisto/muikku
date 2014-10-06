@@ -1,26 +1,13 @@
 package fi.muikku.plugins.seeker.defaultproviders;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-
-import fi.muikku.plugins.schooldatalocal.dao.LocalUserDAO;
-import fi.muikku.plugins.schooldatalocal.model.LocalUser;
-import fi.muikku.plugins.search.ElasticSearchProvider;
-import fi.muikku.plugins.search.SearchResult;
 import fi.muikku.plugins.seeker.SeekerResult;
-import fi.muikku.plugins.seeker.SeekerResultImpl;
 import fi.muikku.plugins.seeker.SeekerResultProvider;
 
 public class TopResultProvider implements SeekerResultProvider {
 
   /*@Inject
   private ElasticSearchProvider elasticSearchProvider;*/
-
-  @Inject
-  private LocalUserDAO localUserDAO;
 
   @Override
   public String getName() {
