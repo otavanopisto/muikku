@@ -16,6 +16,7 @@ import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.users.EnvironmentRoleEntity;
 import fi.muikku.model.users.RoleEntity;
 import fi.muikku.model.users.RoleSchoolDataIdentifier;
+import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.muikku.schooldata.entity.Role;
 import fi.muikku.schooldata.entity.User;
@@ -147,4 +148,8 @@ public class RoleController {
 		
 		return null;
 	}
+  
+  public List<WorkspaceRoleEntity> listWorkspaceRoleEntitiesByArchetype(WorkspaceRoleArchetype archetype) {
+    return workspaceRoleEntityDAO.listByArchetype(archetype);
+  }
 }

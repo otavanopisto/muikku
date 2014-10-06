@@ -9,10 +9,11 @@ import java.util.List;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import fi.muikku.schooldata.entity.Role;
+import fi.muikku.schooldata.entity.EnvironmentRole;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.UserRole;
 import fi.muikku.schooldata.entity.Workspace;
+import fi.muikku.schooldata.entity.WorkspaceRole;
 import fi.muikku.schooldata.entity.WorkspaceUser;
 
 public class SchoolDataEntityInitializerProvider {
@@ -24,7 +25,10 @@ public class SchoolDataEntityInitializerProvider {
   private Instance<SchoolDataUserInitializer> userInitializers;
 
   @Inject
-  private Instance<SchoolDataRoleInitializer> roleInitializers;
+  private Instance<SchoolDataEnvironmentRoleInitializer> environmentRoleInitializers;
+  
+  @Inject
+  private Instance<SchoolDataWorkspaceRoleInitializer> workspaceRoleInitializers;
 
   @Inject
   private Instance<SchoolDataUserRoleInitializer> userRoleInitializers;
@@ -52,14 +56,24 @@ public class SchoolDataEntityInitializerProvider {
     return users;
   }
 
-  public List<Role> initRoles(List<Role> roles) {
-    if (!roles.isEmpty()) {
-      for (SchoolDataEntityInitializer initializer : getSortedInitializers(roleInitializers.iterator())) {
-        ((SchoolDataRoleInitializer) initializer).init(roles);
+  public List<WorkspaceRole> initWorkspaceRoles(List<WorkspaceRole> workspaceRoles) {
+    if (!workspaceRoles.isEmpty()) {
+      for (SchoolDataEntityInitializer initializer : getSortedInitializers(workspaceRoleInitializers.iterator())) {
+        ((SchoolDataWorkspaceRoleInitializer) initializer).init(workspaceRoles);
       }
     }
     
-    return roles;
+    return workspaceRoles;
+  }
+
+  public List<EnvironmentRole> initEnvironmentRoles(List<EnvironmentRole> environmentRoles) {
+    if (!environmentRoles.isEmpty()) {
+      for (SchoolDataEntityInitializer initializer : getSortedInitializers(environmentRoleInitializers.iterator())) {
+        ((SchoolDataEnvironmentRoleInitializer) initializer).init(environmentRoles);
+      }
+    }
+    
+    return environmentRoles;
   }
 
   public List<UserRole> initUserRoles(List<UserRole> userRoles) {

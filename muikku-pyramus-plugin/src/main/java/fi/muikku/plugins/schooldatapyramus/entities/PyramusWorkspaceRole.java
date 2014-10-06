@@ -1,15 +1,15 @@
 package fi.muikku.plugins.schooldatapyramus.entities;
 
 import fi.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
-import fi.muikku.schooldata.entity.Role;
-import fi.muikku.schooldata.entity.RoleType;
+import fi.muikku.schooldata.entity.WorkspaceRole;
+import fi.muikku.schooldata.entity.WorkspaceRoleArchetype;
 
-public class PyramusRole implements Role {
+public class PyramusWorkspaceRole implements WorkspaceRole {
 
-	public PyramusRole(String identifier, String name, RoleType type) {
+	public PyramusWorkspaceRole(String identifier, String name, WorkspaceRoleArchetype archetype) {
 		this.identifier = identifier;
 		this.name = name;
-		this.type = type;
+		this.archetype = archetype;
 	}
 
 	@Override
@@ -21,20 +21,20 @@ public class PyramusRole implements Role {
 	public String getIdentifier() {
 		return identifier;
 	}
-
-	@Override
-	public RoleType getType() {
-		return type;
-	}
 	
 	@Override
 	public String getName() {
 		return name;
 	}
 
+  @Override
+  public WorkspaceRoleArchetype getArchetype() {
+    return archetype;
+  }
+
 	private String identifier;
-	
-	private RoleType type;
 
 	private String name;
+	
+	private WorkspaceRoleArchetype archetype;
 }

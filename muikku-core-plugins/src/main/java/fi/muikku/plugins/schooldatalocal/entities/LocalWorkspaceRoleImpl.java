@@ -1,15 +1,15 @@
 package fi.muikku.plugins.schooldatalocal.entities;
 
 import fi.muikku.plugins.schooldatalocal.LocalUserSchoolDataController;
-import fi.muikku.schooldata.entity.Role;
-import fi.muikku.schooldata.entity.RoleType;
+import fi.muikku.schooldata.entity.WorkspaceRole;
+import fi.muikku.schooldata.entity.WorkspaceRoleArchetype;
 
-public class LocalRoleImpl implements Role {
+public class LocalWorkspaceRoleImpl implements WorkspaceRole {
 
-	public LocalRoleImpl(String identifier, String name, RoleType type) {
+	public LocalWorkspaceRoleImpl(String identifier, String name, WorkspaceRoleArchetype archetype) {
 		this.identifier = identifier;
 		this.name = name;
-		this.type = type;
+		this.archetype = archetype;
 	}
 	
 	@Override
@@ -28,11 +28,11 @@ public class LocalRoleImpl implements Role {
 	}
 
 	@Override
-	public RoleType getType() {
-		return type;
+	public WorkspaceRoleArchetype getArchetype() {
+		return archetype;
 	}
 	
 	private String identifier;
 	private String name;
-	private RoleType type;
+	private WorkspaceRoleArchetype archetype;
 }

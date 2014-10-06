@@ -1,6 +1,7 @@
 package fi.muikku.plugins.schooldatalocal;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.ejb.Stateful;
@@ -9,12 +10,15 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fi.muikku.model.users.EnvironmentRoleEntity;
 import fi.muikku.model.users.RoleEntity;
-import fi.muikku.plugins.schooldatalocal.entities.LocalRoleImpl;
+import fi.muikku.model.workspace.WorkspaceRoleEntity;
+import fi.muikku.plugins.schooldatalocal.entities.LocalEnvironmentRoleImpl;
 import fi.muikku.plugins.schooldatalocal.entities.LocalUserEmailImpl;
 import fi.muikku.plugins.schooldatalocal.entities.LocalUserImageImpl;
 import fi.muikku.plugins.schooldatalocal.entities.LocalUserImpl;
 import fi.muikku.plugins.schooldatalocal.entities.LocalUserPropertyImpl;
+import fi.muikku.plugins.schooldatalocal.entities.LocalWorkspaceRoleImpl;
 import fi.muikku.plugins.schooldatalocal.model.LocalUser;
 import fi.muikku.plugins.schooldatalocal.model.LocalUserEmail;
 import fi.muikku.plugins.schooldatalocal.model.LocalUserImage;
@@ -22,12 +26,15 @@ import fi.muikku.plugins.schooldatalocal.model.LocalUserProperty;
 import fi.muikku.schooldata.SchoolDataBridgeRequestException;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 import fi.muikku.schooldata.UserSchoolDataBridge;
+import fi.muikku.schooldata.entity.EnvironmentRole;
 import fi.muikku.schooldata.entity.Role;
-import fi.muikku.schooldata.entity.RoleType;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.UserEmail;
 import fi.muikku.schooldata.entity.UserImage;
 import fi.muikku.schooldata.entity.UserProperty;
+import fi.muikku.schooldata.entity.WorkspaceRole;
+import fi.muikku.schooldata.entity.WorkspaceRoleArchetype;
+import fi.muikku.schooldata.initializers.SchoolDataEntityInitializerProvider;
 
 @Dependent
 @Stateful
@@ -35,6 +42,9 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 	
 	@Inject
 	private LocalUserSchoolDataController localUserSchoolDataController;
+
+  @Inject
+  private SchoolDataEntityInitializerProvider schoolDataEntityInitializerProvider;
 	
 	@Override
 	public String getSchoolDataSource() {
@@ -59,7 +69,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 			throw new UnexpectedSchoolDataBridgeException("Failed to create local user");
 		}
 		
-		return userImpl;
+		return schoolDataEntityInitializerProvider.initUsers(Arrays.asList(userImpl)).get(0);
 	}
 	
 	/**
@@ -360,7 +370,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 		
 		List<RoleEntity> roleEntities = localUserSchoolDataController.listCoreRoleEntities();
 		for (RoleEntity roleEntity : roleEntities) {
-			result.add(new LocalRoleImpl(roleEntity.getId().toString(), roleEntity.getName(), RoleType.valueOf(roleEntity.getType().toString())));
+		  result.add(toLocalRoleEntity(roleEntity));
 		}
 		
 		return result;
@@ -376,11 +386,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 		}
 
 		RoleEntity roleEntity = localUserSchoolDataController.findCoreRoleEntityByIdentifier(identifier);
-		if (roleEntity != null) {
-		  return new LocalRoleImpl(roleEntity.getId().toString(), roleEntity.getName(), RoleType.valueOf(roleEntity.getType().toString()));
-		} else {
-			throw new SchoolDataBridgeRequestException("Role not found");
-		}
+    return toLocalRoleEntity(roleEntity);
 	}
 
 	/**
@@ -399,7 +405,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 				throw new UnexpectedSchoolDataBridgeException("User role could not be found");
 			}
 			
-		  return new LocalRoleImpl(roleEntity.getId().toString(), roleEntity.getName(), RoleType.valueOf(roleEntity.getType().toString()));
+		  return toLocalRoleEntity(roleEntity);
 		}
 		
 		return null;
@@ -436,4 +442,20 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 		
 		return null;
 	}
+  
+  private Role toLocalRoleEntity(RoleEntity roleEntity) {
+    if (roleEntity instanceof EnvironmentRoleEntity) {
+      return toLocalEnvironmentRoleEntity((EnvironmentRoleEntity) roleEntity);
+    } else {
+      return toLocalWorkspaceRoleEntity((WorkspaceRoleEntity) roleEntity);
+    }
+  }
+
+  private WorkspaceRole toLocalWorkspaceRoleEntity(WorkspaceRoleEntity workspaceRoleEntity) {
+    return new LocalWorkspaceRoleImpl(workspaceRoleEntity.getId().toString(), workspaceRoleEntity.getName(), WorkspaceRoleArchetype.valueOf(workspaceRoleEntity.getArchetype().toString()));
+  }
+
+  private EnvironmentRole toLocalEnvironmentRoleEntity(EnvironmentRoleEntity environmentRoleEntity) {
+    return new LocalEnvironmentRoleImpl(environmentRoleEntity.getId().toString(), environmentRoleEntity.getName());
+  }
 }

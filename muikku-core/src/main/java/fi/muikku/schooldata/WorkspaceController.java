@@ -327,6 +327,10 @@ public class WorkspaceController {
     return workspaceUserEntityDAO.listByWorkspaceAndRole(workspaceEntity, role);
   }
 
+  public List<WorkspaceUserEntity> listWorkspaceUserEntitiesByRoles(WorkspaceEntity workspaceEntity, List<WorkspaceRoleEntity> roles) {
+    return workspaceUserEntityDAO.listByWorkspaceAndRoles(workspaceEntity, roles);
+  }
+
   public List<WorkspaceUserEntity> listWorkspaceUserEntitiesByUser(UserEntity userEntity) {
     return workspaceUserEntityDAO.listByUser(userEntity);
   }

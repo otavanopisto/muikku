@@ -79,9 +79,9 @@ public class PyramusUpdater {
   public int updateUserRoles() {
     int count = 0;
     
-    count += schoolDataEntityInitializerProvider.initRoles(entityFactory.createEntity(fi.pyramus.rest.model.UserRole.values())).size();
-    count += schoolDataEntityInitializerProvider.initRoles(entityFactory.createEntity(pyramusClient.get("/courses/staffMemberRoles", CourseStaffMemberRole[].class))).size();
-    count += schoolDataEntityInitializerProvider.initRoles(Arrays.asList(entityFactory.createCourseStudentRoleEntity())).size();
+    count += schoolDataEntityInitializerProvider.initEnvironmentRoles(entityFactory.createEntity(fi.pyramus.rest.model.UserRole.values())).size();
+    count += schoolDataEntityInitializerProvider.initWorkspaceRoles(entityFactory.createEntity(pyramusClient.get("/courses/staffMemberRoles", CourseStaffMemberRole[].class))).size();
+    count += schoolDataEntityInitializerProvider.initWorkspaceRoles(Arrays.asList(entityFactory.createCourseStudentRoleEntity())).size();
     
     return count;
   }
