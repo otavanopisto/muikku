@@ -11,11 +11,11 @@
   <!-- Lets set the base body class per view -->
   <ui:param name="bodyClass" value="workspace" />
   
-  <ui:define name="pluginScripts">
-    <h:outputScript name="scripts/gui/workspace.js"/>  
+  <ui:define name="viewScripts">
+    <h:outputScript name="scripts/gui/workspace.js" target="head"/>  
   </ui:define>
   
-  <ui:define name="pluginCss">
+  <ui:define name="viewCss">
     <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/workspaces.css" />  
   </ui:define>
 
@@ -58,73 +58,15 @@
     </div>
 
     <div id="content" class="container_24">
-      <ui:insert name="content.tools.top">
-        <m:widgetSpaceSet styleClass="nomargin">
-          <ui:insert name="content.tools.top.left">
-            <ui:include src="/facelets/generic/content-tools-top-left.xhtml">
-              <ui:param name="sizing" value="SUM" />
-              <ui:param name="keepEmpty" value="false" />
-              <ui:param name="name" value="generic.content-tools-top.left" />
-            </ui:include>
-          </ui:insert>
-          <ui:insert name="content.tools.top.center">
-            <ui:include src="/facelets/generic/content-tools-top-center.xhtml">
-              <ui:param name="sizing" value="MAXIMIZE" />
-              <ui:param name="keepEmpty" value="true" />
-              <ui:param name="name" value="generic.content-tools-top.center" />
-            </ui:include>
-          </ui:insert>
-          <ui:insert name="content.tools.top.right">
-            <ui:include src="/facelets/generic/content-tools-top-right.xhtml">
-              <ui:param name="sizing" value="MINIMIZE" />
-              <ui:param name="keepEmpty" value="false" />
-              <ui:param name="name" value="generic.content-tools-top.right" />
-            </ui:include>
-          </ui:insert>
-        </m:widgetSpaceSet>
-      </ui:insert>
-      <div class="clear"></div>
-      <ui:insert name="contentArea">
+    
+      <ui:insert name="workspace.content.top.static"></ui:insert>
+    
+      <ui:insert name="workspace.contentArea">
         <m:widgetSpaceSet>
-          <ui:insert name="content.left.widgetspace">
-            <m:widgetSpace name="generic.content.left" keepEmpty="true" sizing="SUM" styleClass="nomargin">
-              <ui:insert name="content.left.widget"></ui:insert>
+          <ui:insert name="workspace.content.widgetspace">
+            <m:widgetSpace name="workspace.generic.content" keepEmpty="true" sizing="MAXIMIZE" styleClass="nomargin">
+              <ui:insert name="workspace.content.widget"></ui:insert>
             </m:widgetSpace>
-          </ui:insert>
-          <ui:insert name="content.center.widgetspace">
-            <m:widgetSpace name="generic.content.center" keepEmpty="true" sizing="MAXIMIZE" styleClass="nomargin">
-              <ui:insert name="content.center.widget"></ui:insert>
-            </m:widgetSpace>
-          </ui:insert>
-          <ui:insert name="content.right.widgetspace">
-            <m:widgetSpace name="generic.content.right" keepEmpty="false" sizing="MINIMIZE" styleClass="nomargin">
-              <ui:insert name="content.right.widget"></ui:insert>
-            </m:widgetSpace>
-          </ui:insert>
-        </m:widgetSpaceSet>
-      </ui:insert>
-      <ui:insert name="contentToolsBottom">
-        <m:widgetSpaceSet styleClass="nomargin">
-          <ui:insert name="content.tools.bottom.left">
-            <ui:include src="/facelets/generic/content-tools-bottom-left.xhtml">
-              <ui:param name="sizing" value="SUM" />
-              <ui:param name="keepEmpty" value="false" />
-              <ui:param name="name" value="generic.tools-bottom.left" />
-            </ui:include>
-          </ui:insert>
-          <ui:insert name="content.tools.bottom.center">
-            <ui:include src="/facelets/generic/content-tools-bottom-center.xhtml">
-              <ui:param name="sizing" value="MAXIMIZE" />
-              <ui:param name="keepEmpty" value="true" />
-              <ui:param name="name" value="generic.tools-bottom.center" />
-            </ui:include>
-          </ui:insert>
-          <ui:insert name="content.tools.bottom.right">
-            <ui:include src="/facelets/generic/content-tools-bottom-right.xhtml">
-              <ui:param name="sizing" value="MINIMIZE" />
-              <ui:param name="keepEmpty" value="false" />
-              <ui:param name="name" value="generic.tools-bottom.right" />
-            </ui:include>
           </ui:insert>
         </m:widgetSpaceSet>
       </ui:insert>
