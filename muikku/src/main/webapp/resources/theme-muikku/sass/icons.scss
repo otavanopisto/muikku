@@ -1,6 +1,5 @@
 @import "_jsf.scss";
 
-
 @font-face {
   font-family: 'muikku';
   @include font-src('fonts/muikku.eot'); /* IE9 */
@@ -27,17 +26,13 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Lets reset the font when text used inside the same element as icon 
-
-- Removed this from working, it interfered with search result
-
+/* Lets reset the font when text used inside the same element as icon */
 [class^="icon-"] span, [class*=" icon-"] span {
   font-family: 'Open Sans';
   padding-left:4px;
   display:inline-block;
 }
 
-*/
 .icon-week:before {
   content: "\e600";
 }
