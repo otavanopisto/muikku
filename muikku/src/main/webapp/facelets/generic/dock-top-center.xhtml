@@ -6,10 +6,10 @@ xmlns:ui="http://java.sun.com/jsf/facelets"
 xmlns:f="http://java.sun.com/jsf/core"
 xmlns:h="http://java.sun.com/jsf/html">
 
- <m:widgetSpace name="generic.dock-top.center" keepEmpty="true" sizing="MAXIMIZE">
-<!-- This is not my design. 
-  <m:widget name="home-textlinks" size="4" rendered="#{!sessionBackingBean.loggedIn}" />
- -->
-</m:widgetSpace>
+   <m:widgetSpace name=“#{name}“ keepEmpty=“#{keepEmpty}” sizing=“#{sizing}” styleClass="#{class}">
+  <!-- This is not my design. 
+    <m:widget name="home-textlinks" size="4" rendered="#{!sessionBackingBean.loggedIn}" />
+  -->
+  </m:widgetSpace>
   
 </ui:composition>

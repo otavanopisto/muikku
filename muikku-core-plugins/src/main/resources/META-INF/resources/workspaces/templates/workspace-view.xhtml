@@ -12,7 +12,7 @@
   <ui:param name="bodyClass" value="workspace" />
   
   <ui:define name="viewScripts">
-    <h:outputScript name="scripts/gui/workspace.js" target="head"/>  
+    <h:outputScript name="scripts/gui/workspace.js"/>  
   </ui:define>
   
   <ui:define name="viewCss">
@@ -22,7 +22,15 @@
   <ui:define name="sitebody">
 
     <div id="workspaceNavigationWrapper">
-      <div id="workspaceNavigation"></div>
+      <div id="workspaceNavigation">
+        <ui:insert name="dock.top.left">
+          <ui:include src="/facelets/generic/workspaces-dock.xhtml">
+            <ui:param name="sizing" value="MAXIMIZE" />
+            <ui:param name="keepEmpty" value="false" />
+            <ui:param name="name" value="generic.workspaces.dock" />
+          </ui:include>
+        </ui:insert>
+      </div>
     </div>
 
     <div id="staticNavigationWrapper">
