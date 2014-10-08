@@ -183,7 +183,20 @@ class UserSchoolDataController {
 		return null;
 	}
 	
-	/* Roles*/
+  public UserEmail findUserEmail(SchoolDataSource schoolDataSource, String identifier) {
+    UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
+    if (schoolDataBridge != null) {
+      try {
+        return schoolDataBridge.findUserEmail(identifier);
+      } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
+        logger.log(Level.SEVERE, "SchoolDataBridge reported an error while listing user emails", e);
+      }
+    }
+    
+    return null;
+  }
+  
+  /* Roles*/
 
 	public Role findRole(SchoolDataSource schoolDataSource, String identifier) {
 		UserSchoolDataBridge userBridge = getUserBridge(schoolDataSource);

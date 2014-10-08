@@ -11,6 +11,7 @@ import javax.inject.Inject;
 
 import fi.muikku.schooldata.entity.Role;
 import fi.muikku.schooldata.entity.User;
+import fi.muikku.schooldata.entity.UserEmail;
 import fi.muikku.schooldata.entity.UserRole;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceUser;
@@ -22,6 +23,9 @@ public class SchoolDataEntityInitializerProvider {
   
   @Inject
   private Instance<SchoolDataUserInitializer> userInitializers;
+
+  @Inject
+  private Instance<SchoolDataUserEmailInitializer> userEmailInitializers;
 
   @Inject
   private Instance<SchoolDataRoleInitializer> roleInitializers;
@@ -52,6 +56,16 @@ public class SchoolDataEntityInitializerProvider {
     return users;
   }
 
+  public List<UserEmail> initUserEmails(List<UserEmail> userEmails) {
+    if (!userEmails.isEmpty()) {
+      for (SchoolDataEntityInitializer initializer : getSortedInitializers(userEmailInitializers.iterator())) {
+        ((SchoolDataUserEmailInitializer) initializer).init(userEmails);
+      }
+    }
+    
+    return userEmails;
+  }
+  
   public List<Role> initRoles(List<Role> roles) {
     if (!roles.isEmpty()) {
       for (SchoolDataEntityInitializer initializer : getSortedInitializers(roleInitializers.iterator())) {

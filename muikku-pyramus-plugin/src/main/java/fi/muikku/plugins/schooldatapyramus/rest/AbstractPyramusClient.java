@@ -1,5 +1,7 @@
 package fi.muikku.plugins.schooldatapyramus.rest;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.ParameterizedType;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
@@ -44,7 +46,7 @@ public abstract class AbstractPyramusClient {
     request.header("Authorization", "Bearer " + getAccessToken());
     Response response = request.post(entity);
     try {
-      return response.readEntity(type);
+      return createResponse(response, type);
     } finally {
       response.close();
     }
@@ -58,7 +60,7 @@ public abstract class AbstractPyramusClient {
     request.header("Authorization", "Bearer " + getAccessToken());
     Response response = request.post(Entity.entity(entity, MediaType.APPLICATION_JSON));
     try {
-      return response.readEntity(type);
+      return createResponse(response, type);
     } finally {
       response.close();
     }
@@ -72,7 +74,7 @@ public abstract class AbstractPyramusClient {
     request.header("Authorization", "Bearer " + getAccessToken());
     Response response = request.get();
     try {
-      return response.readEntity(type);
+      return createResponse(response, type);
     } catch (Throwable t) {
       throw t;
     } finally {
@@ -99,6 +101,21 @@ public abstract class AbstractPyramusClient {
     return request.post(Entity.form(form), AccessToken.class);
   }
 
+  private <T> T createResponse(Response response, Class<T> type) {
+    switch (response.getStatus()) {
+      case 200:
+      case 204:
+        return response.readEntity(type);
+//      case 204:
+//        return (T) Array.newInstance(
+//            (Class<?>) ((ParameterizedType) type.getGenericSuperclass()).getActualTypeArguments()[0], 0);
+      case 404:
+        return null;
+      default:
+        throw new RuntimeException("" + response.getStatus() + " - " + response.getEntity());
+    }
+  }
+  
   private Client createClient() {
     // TODO: trust all only on development environment
 
