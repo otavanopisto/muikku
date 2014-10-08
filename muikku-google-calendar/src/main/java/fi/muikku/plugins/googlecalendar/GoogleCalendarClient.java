@@ -3,6 +3,7 @@ package fi.muikku.plugins.googlecalendar;
 import fi.muikku.plugins.googlecalendar.model.GoogleCalendarEvent;
 import fi.muikku.plugins.googlecalendar.model.GoogleCalendarEventUser;
 import fi.muikku.plugins.googlecalendar.model.GoogleCalendar;
+
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
@@ -36,12 +37,15 @@ import fi.muikku.calendar.CalendarEventTemporalField;
 import fi.muikku.calendar.CalendarServiceException;
 import fi.muikku.session.AccessToken;
 import fi.muikku.session.SessionController;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+
+import org.apache.commons.lang3.StringUtils;
 
 
 @Dependent
@@ -313,9 +317,25 @@ public class GoogleCalendarClient {
 
   private GoogleCredential getServiceAccountCredential() throws GeneralSecurityException, IOException {
     String accountId = System.getProperty("muikku.googleServiceAccount.accountId");
+    if (StringUtils.isBlank(accountId)) {
+      throw new GeneralSecurityException("muikku.googleServiceAccount.accountId environment property is missing");
+    }
+    
     String accountUser = System.getProperty("muikku.googleServiceAccount.accountUser");
-    java.io.File keyFile = new java.io.File(System.getProperty("muikku.googleServiceAccount.keyFile"));
+    if (StringUtils.isBlank(accountUser)) {
+      throw new GeneralSecurityException("muikku.googleServiceAccount.accountUser environment property is missing");
+    }
 
+    String keyFilePath = System.getProperty("muikku.googleServiceAccount.keyFile");
+    if (StringUtils.isBlank(keyFilePath)) {
+      throw new GeneralSecurityException("muikku.googleServiceAccount.keyFile environment property is missing");
+    }
+
+    java.io.File keyFile = new java.io.File(keyFilePath);
+    if (!keyFile.exists()) {
+      throw new GeneralSecurityException("muikku.googleServiceAccount.keyFile environment property is pointing into non-existing file");
+    }
+    
     return new GoogleCredential.Builder()
             .setTransport(new NetHttpTransport())
             .setJsonFactory(new JacksonFactory())

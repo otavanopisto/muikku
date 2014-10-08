@@ -9,11 +9,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.CoreDAO;
-import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.model.users.UserEntity_;
-import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.model.workspace.WorkspaceEntity_;
 
 public class UserEntityDAO extends CoreDAO<UserEntity> {
 

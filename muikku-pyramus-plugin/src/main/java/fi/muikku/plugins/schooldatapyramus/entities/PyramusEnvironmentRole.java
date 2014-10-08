@@ -1,0 +1,31 @@
+package fi.muikku.plugins.schooldatapyramus.entities;
+
+import fi.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
+import fi.muikku.schooldata.entity.EnvironmentRole;
+
+public class PyramusEnvironmentRole implements EnvironmentRole {
+
+	public PyramusEnvironmentRole(String identifier, String name) {
+		this.identifier = identifier;
+		this.name = name;
+	}
+
+	@Override
+	public String getSchoolDataSource() {
+		return SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
+	}
+
+	@Override
+	public String getIdentifier() {
+		return identifier;
+	}
+
+	@Override
+	public String getName() {
+		return name;
+	}
+
+	private String identifier;
+	
+	private String name;
+}

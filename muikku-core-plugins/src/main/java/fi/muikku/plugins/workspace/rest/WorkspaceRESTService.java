@@ -20,15 +20,13 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Predicate;
-import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.muikku.controller.messaging.MessagingWidget;
 import fi.muikku.i18n.LocaleController;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.muikku.model.workspace.WorkspaceSettings;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
@@ -159,19 +157,21 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @GET
   @Path ("/workspaces/{ID}/users")
-  public Response getWorkspaceUsers(@PathParam ("ID") Long workspaceEntityId, @QueryParam ("role") String role, @QueryParam ("userId") Long userId) {
+  public Response getWorkspaceUsers(@PathParam ("ID") Long workspaceEntityId, @QueryParam ("roleArchtype") String roleArchetype, @QueryParam ("userId") Long userId) {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     } 
     
     List<WorkspaceUserEntity> workspaceUsers = null;
-    WorkspaceRoleEntity workspaceRole = null;
+    List<WorkspaceRoleEntity> workspaceRoles = null;
     
-    if (StringUtils.isNotBlank(role)) {
-      workspaceRole = roleController.findWorkspaceRoleEntityByName(role);
-      if (workspaceRole == null) {
-        return Response.status(Status.BAD_REQUEST).entity("Invalid workspace role '" + role + "'").build(); 
+    if (StringUtils.isNotBlank(roleArchetype)) {
+      WorkspaceRoleArchetype type = WorkspaceRoleArchetype.valueOf(roleArchetype);
+      if (type == null) {
+        return Response.status(Status.BAD_REQUEST).build();
+      } else {
+        workspaceRoles = roleController.listWorkspaceRoleEntitiesByArchetype(type);
       }
     }
     
@@ -185,17 +185,18 @@ public class WorkspaceRESTService extends PluginRESTService {
       
       WorkspaceUserEntity workspaceUser = workspaceController.findWorkspaceUserEntityByWorkspaceAndUser(workspaceEntity, userEntity);
       if (workspaceUser != null) {
-        if (workspaceRole != null) {
-          if (workspaceUser.getWorkspaceUserRole().getId().equals(workspaceRole.getId())) {
-            workspaceUsers.add(workspaceUser); 
-          }
-        } else {
+        List<Long> workspaceRoleIds = new ArrayList<>();
+        for (WorkspaceRoleEntity workspaceRole : workspaceRoles) {
+          workspaceRoleIds.add(workspaceRole.getId());
+        }
+
+        if ((workspaceRoleIds == null)||(workspaceRoleIds.contains(workspaceUser.getWorkspaceUserRole().getId()))) {
           workspaceUsers.add(workspaceUser);
         }
       }
     } else {
-      if (workspaceRole != null) {
-        workspaceUsers = workspaceController.listWorkspaceUserEntitiesByRole(workspaceEntity, workspaceRole);
+      if (workspaceRoles != null) {
+        workspaceUsers = workspaceController.listWorkspaceUserEntitiesByRoles(workspaceEntity, workspaceRoles);
       } else {
         workspaceUsers = workspaceController.listWorkspaceUserEntities(workspaceEntity);
       }

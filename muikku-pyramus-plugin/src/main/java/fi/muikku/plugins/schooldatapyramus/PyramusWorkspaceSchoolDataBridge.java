@@ -49,7 +49,7 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
 		if (name.length() > 255) {
 			throw new SchoolDataBridgeRequestException("Name maximum length is 255 characters");
 		}
-
+		
 		throw new UnexpectedSchoolDataBridgeException("Not implemented");
 	}
 
@@ -80,8 +80,6 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
     String subjectId = courseIdentifierIdentifier.substring(0, courseIdentifierIdentifier.indexOf("/"));
     String courseNumber = courseIdentifierIdentifier.substring(courseIdentifierIdentifier.indexOf("/") + 1);
     
-//    fi.pyramus.rest.model.Subject subject = pyramusClient.get("/common/subjects/" + subjectId, fi.pyramus.rest.model.Subject.class);
-
     Course[] courses = pyramusClient.get("/common/subjects/" + subjectId + "/courses", fi.pyramus.rest.model.Course[].class);
     List<Workspace> result = new ArrayList<Workspace>();
     

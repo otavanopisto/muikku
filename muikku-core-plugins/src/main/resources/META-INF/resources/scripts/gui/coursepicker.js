@@ -187,7 +187,7 @@
           workspace.ratingCount = 3;
           
           mApi().workspace.workspaces.users.read(workspace.id, {
-            role: 'Workspace Teacher'
+            roleArchtype: 'TEACHER'
           })  
           .on('$', function (workspaceUser, workspaceUserCallback) {
             mApi().user.users.read(workspaceUser.userId).callback(function (userErr, user) {

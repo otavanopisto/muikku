@@ -5,12 +5,17 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+
+import fi.muikku.controller.PluginSettingsController;
 import fi.muikku.plugins.schooldatapyramus.PyramusIdentifierMapper;
 import fi.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
-import fi.muikku.schooldata.entity.Role;
-import fi.muikku.schooldata.entity.RoleType;
+import fi.muikku.schooldata.entity.EnvironmentRole;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
+import fi.muikku.schooldata.entity.WorkspaceRole;
+import fi.muikku.schooldata.entity.WorkspaceRoleArchetype;
 import fi.muikku.schooldata.entity.WorkspaceUser;
 import fi.pyramus.rest.model.Course;
 import fi.pyramus.rest.model.CourseStaffMember;
@@ -22,9 +27,12 @@ public class PyramusSchoolDataEntityFactory {
   @Inject
   private PyramusIdentifierMapper identifierMapper;
   
-  public Role createCourseStudentRoleEntity() {
+  @Inject
+  private PluginSettingsController pluginSettingsController;
+  
+  public WorkspaceRole createCourseStudentRoleEntity() {
     // TODO: Localize
-    return new PyramusRole(identifierMapper.getWorkspaceStudentRoleIdentifier(), "Course Student", RoleType.WORKSPACE);
+    return new PyramusWorkspaceRole(identifierMapper.getWorkspaceStudentRoleIdentifier(), "Course Student", WorkspaceRoleArchetype.STUDENT);
   }
   
   public User createEntity(fi.pyramus.rest.model.User user) {
@@ -55,16 +63,16 @@ public class PyramusSchoolDataEntityFactory {
     return result;
   }
   
-  public Role createEntity(fi.pyramus.rest.model.UserRole role) {
+  public EnvironmentRole createEntity(fi.pyramus.rest.model.UserRole role) {
     if (role == null) {
       return null;
     }
     
-    return new PyramusRole("ENV-" + role.name(), role.name(), RoleType.ENVIRONMENT);
+    return new PyramusEnvironmentRole("ENV-" + role.name(), role.name());
   }
   
-  public List<Role> createEntity(fi.pyramus.rest.model.UserRole... roles) {
-    List<Role> result = new ArrayList<>();
+  public List<EnvironmentRole> createEntity(fi.pyramus.rest.model.UserRole... roles) {
+    List<EnvironmentRole> result = new ArrayList<>();
     
     for (fi.pyramus.rest.model.UserRole role : roles) {
       result.add(createEntity(role));
@@ -73,16 +81,17 @@ public class PyramusSchoolDataEntityFactory {
     return result;
   }
 
-  public Role createEntity(CourseStaffMemberRole staffMemberRole) {
+  public WorkspaceRole createEntity(CourseStaffMemberRole staffMemberRole) {
     if (staffMemberRole == null) {
       return null;
     }
     
-    return new PyramusRole(identifierMapper.getWorkspaceStaffRoleIdentifier(staffMemberRole.getId()), staffMemberRole.getName(), RoleType.WORKSPACE);
+    WorkspaceRoleArchetype archetype = getWorkspaceRoleArchetype(staffMemberRole.getId());
+    return new PyramusWorkspaceRole(identifierMapper.getWorkspaceStaffRoleIdentifier(staffMemberRole.getId()), staffMemberRole.getName(), archetype);
   }
 
-  public List<Role> createEntity(CourseStaffMemberRole[] staffMemberRoles) {
-    List<Role> result = new ArrayList<>();
+  public List<WorkspaceRole> createEntity(CourseStaffMemberRole[] staffMemberRoles) {
+    List<WorkspaceRole> result = new ArrayList<>();
     
     for (fi.pyramus.rest.model.CourseStaffMemberRole staffMemberRole : staffMemberRoles) {
       result.add(createEntity(staffMemberRole));
@@ -156,6 +165,17 @@ public class PyramusSchoolDataEntityFactory {
     }
     
     return result;
+  }
+  
+  private WorkspaceRoleArchetype getWorkspaceRoleArchetype(Long staffMemberRoleId) {
+    String teacherRoleSetting = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "roles.workspace.TEACHER");
+    if (StringUtils.isNumeric(teacherRoleSetting)) {
+      if (staffMemberRoleId.equals(NumberUtils.createLong(teacherRoleSetting))) {
+        return WorkspaceRoleArchetype.TEACHER;
+      }
+    }
+    
+    return WorkspaceRoleArchetype.CUSTOM;
   }
 
 }

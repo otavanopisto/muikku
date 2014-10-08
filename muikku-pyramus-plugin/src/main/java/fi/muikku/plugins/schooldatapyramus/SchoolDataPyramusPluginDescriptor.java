@@ -9,10 +9,11 @@ import fi.muikku.schooldata.SchoolDataController;
 public class SchoolDataPyramusPluginDescriptor implements PluginDescriptor {
 
   public static final String SCHOOL_DATA_SOURCE = "PYRAMUS";
+  public static final String PLUGIN_NAME = "school-data-pyramus";
   
   @Inject
   private SchoolDataController schoolDataController;
-  
+
   @Override
   public void init() {
     /**
@@ -27,6 +28,6 @@ public class SchoolDataPyramusPluginDescriptor implements PluginDescriptor {
   
   @Override
   public String getName() {
-    return "school-data-pyramus";
+    return PLUGIN_NAME;
   }
 }

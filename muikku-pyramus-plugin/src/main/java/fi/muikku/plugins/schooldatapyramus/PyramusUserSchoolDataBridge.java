@@ -30,6 +30,9 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
   @Inject
   private UserPyramusClient pyramusClient;
+
+  @Inject
+  private PyramusIdentifierMapper identifierMapper;
   
   @Inject
   private PyramusSchoolDataEntityFactory entityFactory;
@@ -46,15 +49,17 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
 	@Override
 	public User findUser(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-		if (StringUtils.startsWith(identifier, "STUDENT-")) {
-      String studentId = StringUtils.substring(identifier, "STUDENT-".length());
+	  Long studentId = identifierMapper.getPyramusStudentId(identifier);
+	  if (studentId != null) {
       return entityFactory.createEntity(pyramusClient.get("/students/students/" + studentId, Student.class));
-		} else if (StringUtils.startsWith(identifier, "USER-")) {
-		  String userId = StringUtils.substring(identifier, "USER-".length());
-	    return entityFactory.createEntity(pyramusClient.get("/users/users/" + userId, fi.pyramus.rest.model.User.class));
-		} else {
-      throw new SchoolDataBridgeRequestException("Malformed user identifier");
-		}
+	  }
+	  
+	  Long staffId = identifierMapper.getPyramusStaffId(identifier);
+	  if (staffId != null) {
+      return entityFactory.createEntity(pyramusClient.get("/users/users/" + staffId, fi.pyramus.rest.model.User.class));
+	  }
+
+	  throw new SchoolDataBridgeRequestException("Malformed user identifier");
 	}
 
 	@Override
@@ -193,17 +198,19 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
 	@Override
 	public Role findUserEnvironmentRole(String userIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-	  if (StringUtils.startsWith(userIdentifier, "STUDENT-")) {
-      String studentId = StringUtils.substring(userIdentifier, "STUDENT-".length());
+	  Long studentId = identifierMapper.getPyramusStudentId(userIdentifier);
+	  if (studentId != null) {
       Student student = pyramusClient.get("/students/students/" + studentId, Student.class);
       return student != null ? entityFactory.createEntity(UserRole.STUDENT) : null;
-	  } else if (StringUtils.startsWith(userIdentifier, "USER-")) {
-      String userId = StringUtils.substring(userIdentifier, "USER-".length());
-      fi.pyramus.rest.model.User user = pyramusClient.get("/users/users/" + userId, fi.pyramus.rest.model.User.class);
+	  }
+	  
+    Long staffId = identifierMapper.getPyramusStaffId(userIdentifier);
+    if (staffId != null) {
+      fi.pyramus.rest.model.User user = pyramusClient.get("/users/users/" + staffId, fi.pyramus.rest.model.User.class);
       return user != null ? entityFactory.createEntity(user.getRole()) : null;
-    } else {
-      throw new SchoolDataBridgeRequestException("Malformed user identifier");
     }
+	  
+    throw new SchoolDataBridgeRequestException("Malformed user identifier");
 	}
 	
 }
