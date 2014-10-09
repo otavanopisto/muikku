@@ -25,7 +25,7 @@ public class IndexEntityProcessor {
       boolean hasId = false;
       while (currentEntityClass != null && currentEntityClass != Object.class) {
         for (Field field : currentEntityClass.getDeclaredFields()) {
-          if (!field.isAnnotationPresent(IndexIgnore.class)) {
+          if (!field.isAnnotationPresent(IndexIgnore.class) && !field.getName().equals("$JAVASSIST_READ_WRITE_HANDLER")) { //TODO: create better system
             String fieldName = field.getName();
             if (field.isAnnotationPresent(IndexField.class)) {
               IndexField indexName = field.getAnnotation(IndexField.class);
@@ -38,14 +38,8 @@ public class IndexEntityProcessor {
               hasId = true;
               fieldName = "id";
             }
-            /*PropertyDescriptor fieldPropertyDescriptor = new PropertyDescriptor(field.getName(), currentEntityClass);*/
-            Object fieldValue;
-            /*if (fieldPropertyDescriptor.getReadMethod() != null) {
-              fieldValue = fieldPropertyDescriptor.getReadMethod().invoke(entity);
-            } else {*/
-              field.setAccessible(true);
-              fieldValue = field.get(entity);
-            //}
+            field.setAccessible(true);
+            Object fieldValue = field.get(entity);
             indexObject.put(fieldName, fieldValue);
           }
         }
