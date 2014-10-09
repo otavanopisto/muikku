@@ -20,55 +20,34 @@
   </ui:define>
 
   <ui:define name="sitebody">
-
-    <div id="workspaceNavigationWrapper">
-      <div id="workspaceNavigation">
-        <ui:insert name="dock.top.left">
-          <ui:include src="/facelets/generic/workspaces-dock.xhtml">
-            <ui:param name="sizing" value="MAXIMIZE" />
-            <ui:param name="keepEmpty" value="false" />
-            <ui:param name="name" value="generic.workspaces.dock" />
-          </ui:include>
-        </ui:insert>
-      </div>
-    </div>
-
     <div id="staticNavigationWrapper">
       <m:widget name="navigation-dynamic" rendered="#{sessionBackingBean.loggedIn}"></m:widget>
       <div id="staticNavigation" class="container_24">
         <ui:insert name="dock.top">
           <m:widgetSpaceSet styleClass="noLid">
             <ui:insert name="dock.top.left">
-              <ui:include src="/facelets/generic/dock-top-left.xhtml">
-                <ui:param name="sizing" value="SUM" />
-                <ui:param name="keepEmpty" value="false" />
-                <ui:param name="name" value="generic.dock-top.left" />
-              </ui:include>
+              <ui:include src="/facelets/generic/dock-top-left.xhtml"></ui:include>
             </ui:insert>
             <ui:insert name="dock.top.center">
-              <ui:include src="/facelets/generic/dock-top-center.xhtml">
-                <ui:param name="sizing" value="MAXIMIZE" />
-                <ui:param name="keepEmpty" value="true" />
-                <ui:param name="name" value="generic.dock-top.center" />
-              </ui:include>
+              <ui:include src="/facelets/generic/dock-top-center.xhtml"></ui:include>
             </ui:insert>
             <ui:insert name="dock.top.right">
-              <ui:include src="/facelets/generic/dock-top-right.xhtml">
-                <ui:param name="sizing" value="MINIMIZE" />
-                <ui:param name="keepEmpty" value="false" />
-                <ui:param name="name" value="generic.dock-top.right" />
-              </ui:include>
+              <ui:include src="/facelets/generic/dock-top-right.xhtml"></ui:include>
             </ui:insert>
           </m:widgetSpaceSet>
         </ui:insert>
-        <div class="clear"></div>
+        <div class="clear"></div> 
+      </div>
+    </div>  
+    <div id="workspaceNavigationWrapper">
+      <div id="workspaceNavigation">
+        <ui:insert name="workspaces.dock">
+          <ui:include src="/facelets/generic/workspaces-dock.xhtml"></ui:include>
+        </ui:insert>
       </div>
     </div>
-
     <div id="content" class="container_24">
-    
       <ui:insert name="workspace.content.top.static"></ui:insert>
-    
       <ui:insert name="workspace.contentArea">
         <m:widgetSpaceSet>
           <ui:insert name="workspace.content.widgetspace">
@@ -83,25 +62,13 @@
       <ui:insert name="dock.bottom">
         <m:widgetSpaceSet styleClass="nomargin">
           <ui:insert name="dock.bottom.left">
-            <ui:include src="/facelets/generic/dock-bottom-left.xhtml">
-              <ui:param name="sizing" value="SUM" />
-              <ui:param name="keepEmpty" value="false" />
-              <ui:param name="name" value="generic.dock-bottom.left" />
-            </ui:include>
+            <ui:include src="/facelets/generic/dock-bottom-left.xhtml"></ui:include>
           </ui:insert>
           <ui:insert name="dock.bottom.center">
-            <ui:include src="/facelets/generic/dock-bottom-center.xhtml">
-              <ui:param name="sizing" value="MAXIMIZE" />
-              <ui:param name="keepEmpty" value="true" />
-              <ui:param name="name" value="generic.dock-bottom.center" />
-            </ui:include>
+            <ui:include src="/facelets/generic/dock-bottom-center.xhtml"></ui:include>
           </ui:insert>
           <ui:insert name="dock.bottom.right">
-            <ui:include src="/facelets/generic/dock-bottom-right.xhtml">
-              <ui:param name="sizing" value="MINIMIZE" />
-              <ui:param name="keepEmpty" value="false" />
-              <ui:param name="name" value="generic.dock-bottom.right" />
-            </ui:include>
+            <ui:include src="/facelets/generic/dock-bottom-right.xhtml"></ui:include>
           </ui:insert>
         </m:widgetSpaceSet>
       </ui:insert>
@@ -111,25 +78,13 @@
         <ui:insert name="footer">
           <m:widgetSpaceSet styleClass="nomargin">
             <ui:insert name="footer.left">
-              <ui:include src="/facelets/generic/footer-left.xhtml">
-                <ui:param name="sizing" value="SUM" />
-                <ui:param name="keepEmpty" value="false" />
-                <ui:param name="name" value="generic.dock-bottom.left" />
-              </ui:include>
+              <ui:include src="/facelets/generic/footer-left.xhtml"></ui:include>
             </ui:insert>
             <ui:insert name="footer.center">
-              <ui:include src="/facelets/generic/footer-center.xhtml">
-                <ui:param name="sizing" value="MAXIMIZE" />
-                <ui:param name="keepEmpty" value="true" />
-                <ui:param name="name" value="generic.dock-bottom.center" />
-              </ui:include>
+              <ui:include src="/facelets/generic/footer-center.xhtml"></ui:include>
             </ui:insert>
             <ui:insert name="footer.right">
-              <ui:include src="/facelets/generic/footer-right.xhtml">
-                <ui:param name="sizing" value="MINIMIZE" />
-                <ui:param name="keepEmpty" value="false" />
-                <ui:param name="name" value="generic.dock-bottom.right" />
-              </ui:include>
+              <ui:include src="/facelets/generic/footer-right.xhtml"></ui:include>
             </ui:insert>
           </m:widgetSpaceSet>
         </ui:insert>

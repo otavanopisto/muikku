@@ -17,6 +17,18 @@ div[class*='dock-dynamic-navi-button'] > a {
   display:inline-block;
 }
 
+div[class*='dock-workspace-navi-button'] > a {
+  font-size:24pt;
+  color:#fff;
+  text-decoration:none;
+  @include iconShadow;
+  &:hover {
+    @include iconShadow(rgba(255,255,190,0.8));
+  }
+  padding:10px;
+  display:inline-block;
+}
+
 div[data-name="generic.dock-top.left"] div:last-child > a{
 	margin-right:0;
 }

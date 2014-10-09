@@ -23,12 +23,18 @@ body.workspace { /* We need to remove background image under workspace views */
   #workspaceNavigationWrapper {
     background:#596e7d;
     @include rounded;
-    width:75px;
+    width:60px;
     min-height:200px;
     position:fixed;
-    top:120px;
+    top:100px;
     opacity:0;
     box-shadow:0 0 5px rgba(0,0,0,0.25);
+    padding:5px 0;
+    
+    #workspaceNavigation {
+      text-align:center;
+    }
+    
   }
   
   .workspaceMetaWrapper {
