@@ -67,8 +67,8 @@ public abstract class AbstractDAO<T> implements Serializable {
   }
 
   protected T persist(T object) {
-    entityAddEvent.fire(new EntityAddEvent(object));
     getEntityManager().persist(object);
+    entityAddEvent.fire(new EntityAddEvent(object));
     return object;
   }
 

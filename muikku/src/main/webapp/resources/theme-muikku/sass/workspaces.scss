@@ -1,0 +1,82 @@
+@import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
+
+body.workspace { /* We need to remove background image under workspace views */
+  background:#ffffff;
+  
+  h1,h2,h3,h4,h5 {
+    color:$title;
+    text-transform:uppercase;
+    margin:1em 0 1em 0;
+    font-weight:300;
+  }
+  
+  #staticNavigationWrapper {
+    background:none; /* We need to remove all background rules first */
+    @include background-image('gfx/workspace-navigation-background.png'); /* Workspace's navigation's background */
+    background-position:250px 0px;
+    background-repeat:no-repeat;
+    background-color:#32acf6;
+    border-bottom:1px solid #ffffff; 
+    box-shadow:0 3px 10px rgba(0,0,0,0.1);
+  }
+  
+  #workspaceNavigationWrapper {
+    background:#596e7d;
+    @include rounded;
+    width:60px;
+    min-height:200px;
+    position:fixed;
+    top:100px;
+    opacity:0;
+    box-shadow:0 0 5px rgba(0,0,0,0.25);
+    padding:5px 0;
+    
+    #workspaceNavigation {
+      text-align:center;
+    }
+    
+  }
+  
+  .workspaceMetaWrapper {
+    font-size:0.9em;
+    text-transform:uppercase;
+    
+    .workspaceStudyLevelIndicator {
+      color:#fff;
+      display:inline-block;
+      margin:0 10px 0 0;
+    
+      &.indicator1 {
+        background:#0099ff;
+        border-radius:2px;
+        padding:0px 6px;
+      }
+    
+    }
+    
+    .workspaceMetaTitle {
+      color:#7e7e7e;
+      display:inline-block;
+      margin:0 5px 0 0;
+    }
+    
+    .workspaceMetaDesc {
+      color:#000;
+      display:inline-block;
+      margin:0 10px 0 0;
+    }
+  }
+  
+  .workspaceDescriptionWrapper {
+    margin:1em 0 1em 0;
+    font-size:1.2em;
+    font-weight:300;
+    
+    p {
+      margin:1em 0 1em 0;
+    }
+    
+  }
+  
+}
+
