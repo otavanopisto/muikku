@@ -290,7 +290,7 @@ $text: 12px;
   transition-timing-function: $tf1,$tf2,$tf3; ;  
 }
 
-/* Tooltip */
+/* Main Navigation Tooltip Transitions */
 @mixin tooltipTransition($trd1,$trd2,$trd3,$trd4,$pr1:opacity,$pr2:visibility,$pr3:margin-left,$pr4:margin-top,$tf1:ease-in-out,$tf2:ease-in-out,$tf3:ease-in-out,$tf4:ease-in-out) {
   $trd1:0.1s;
   $trd2:0.1s;
@@ -307,7 +307,23 @@ $text: 12px;
   -o-transition-timing-function:$tf1,$tf2,$tf3,$tf4; 
   transition-property:$pr1,$pr2,$pr3,$pr4;
   transition-duration:$trd1,$trd2,$trd3,$trd4; 
-  transition-timing-function: $tf1,$tf2,$tf3,$tf4; ;  
+  transition-timing-function: $tf1,$tf2,$tf3,$tf4; 
+}
+
+/* Workspace Navigation Tooltip Transitions */
+@mixin workspaceTooltipTransition($pr1,$trd1,$tf1) {
+  -webkit-transition-property:$pr1;
+  -webkit-transition-duration:$trd1;
+  -webkit-transition-timing-function:$tf1;
+  -moz-transition-property:$pr1;
+  -moz-transition-duration:$trd1;
+  -moz-transition-timing-function:$tf1;
+  -o-transition-property:$pr1;
+  -o-transition-duration:$trd1;
+  -o-transition-timing-function:$tf1; 
+  transition-property:$pr1;
+  transition-duration:$trd1;
+  transition-timing-function: $tf1;
 }
 
 @mixin tooltipBackGround( $bgColorStart, $bgColorEnd) {

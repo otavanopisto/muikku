@@ -3,7 +3,11 @@
   xmlns:h="http://java.sun.com/jsf/html">
 
   <div class="widget wi-dock-workspace-navi-button-discussions">
-    <h:outputLink styleClass="icon-discussion w-tooltip" value="#{request.contextPath}/workspace/#{workspaceNavigationBackingBean.workspaceUrlName}/discussions"/>
+    <h:link styleClass="icon-discussion w-tooltip"  outcome="/workspaces/comingsoon.jsf?workspaceUrlName=#{workspaceNavigationBackingBean.workspaceUrlName}">
+      <div class="workspace-navi-tt-container-discussion">
+        <div class="w-tt-discussion">Keskustelu</div>
+      </div>
+    </h:link>
   </div>
 
 </ui:composition>
