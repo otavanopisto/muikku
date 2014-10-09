@@ -32,7 +32,7 @@ div[class*='dock-workspace-navi-button'] > a {
   width:35px;
   @include rounded(3px);
   
-  div[class*='workspace-navi-tt-container-'] {
+  span[class*='workspace-navi-tt-container-'] {
       opacity:0;
       font-family:"Open Sans";
       font-size:16px;
@@ -53,7 +53,7 @@ div[class*='dock-workspace-navi-button'] > a {
   &:hover {
     background:#465b6c;
 
-    div[class*='workspace-navi-tt-container-'] {
+    span[class*='workspace-navi-tt-container-'] {
       display:block;
       background:#465b6c;
       opacity:1;
