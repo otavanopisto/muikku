@@ -107,6 +107,15 @@ input[type="reset"] {
       background: rgb(107,187,105);
       @include gradient-top-bottom(rgba(107,187,105,1),rgba(76,163,74,1),#52b050);
     }
+    
+    &.bt-modal {
+      background-color:#52b050;
+      border:1px solid #73c071;
+      font-size:1.1em;
+      background: rgb(107,187,105);
+      @include gradient-top-bottom(rgba(107,187,105,1),rgba(76,163,74,1),#52b050);
+    }
+
   }
 
 }
