@@ -9,9 +9,6 @@ $(document).ready(function() {
     $('#workspaceNavigationWrapper').css({
       left:naviLeftPos + 'px'
     })
-    .animate({
-      opacity : 1
-    }, 500, "easeOutSine");
     
     $(window).resize(function(){
       cOffset = contentContainer.offset();
