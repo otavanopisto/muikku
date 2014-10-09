@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+<ui:composition 
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
   xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:h="http://java.sun.com/jsf/html"
-    template="/WEB-INF/templates/default.xhtml">
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  template="/WEB-INF/templates/main-view.xhtml">
+
+  <ui:define name="viewCss">
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/fullcalendar.css" />  
+  </ui:define>
 
   <ui:define name="contentToolsTop">
     <m:widgetSpaceSet>
@@ -31,13 +36,10 @@
 
     <!-- Full Calendar -->
     <h:outputScript name="scripts/fullcalendar/fullcalendar.js" target="head"/>
-    <h:outputStylesheet name="scripts/fullcalendar/fullcalendar.css"/>
 
     <h:outputScript name="scripts/jquery.recurrenceInput/recurrenceinput.js" target="head"/>
     <h:outputScript name="scripts/gui/eventdialog.js" target="head"/>
     <h:outputScript name="scripts/gui/fullcalendar.js" target="head"/>
-
-    <h:outputStylesheet name="css/fullcalendar.css"/>
     
     <!-- Context menu -->
     
