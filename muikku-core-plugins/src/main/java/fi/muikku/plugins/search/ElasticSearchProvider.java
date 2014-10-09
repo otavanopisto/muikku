@@ -2,6 +2,7 @@ package fi.muikku.plugins.search;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -14,6 +15,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.SerializationConfig.Feature;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
@@ -31,7 +33,7 @@ public class ElasticSearchProvider implements SearchProvider {
   @Inject
   private Logger logger;
 
-  @PostConstruct
+  @Override
   public void init() {
     Node node = nodeBuilder().node();
     elasticClient = node.client();
@@ -98,7 +100,7 @@ public class ElasticSearchProvider implements SearchProvider {
       @SuppressWarnings("unused")
       IndexResponse response = elasticClient.prepareIndex("muikku", typeName, id.toString()).setSource(json).execute().actionGet();
     } catch (IOException e) {
-      logger.log(Level.SEVERE, "Adding to index failed because of exception", e);
+      logger.log(Level.WARNING, "Adding to index failed because of exception", e);
     }
 
   }
@@ -111,4 +113,8 @@ public class ElasticSearchProvider implements SearchProvider {
 
   private Client elasticClient;
 
+  @Override
+  public String getName() {
+    return "elastic-search";
+  }
 }
