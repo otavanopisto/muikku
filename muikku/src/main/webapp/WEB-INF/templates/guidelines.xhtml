@@ -94,20 +94,56 @@
 
   <h:body styleClass="ui-guidelines">
   
-    <div id="header">
-      <div id="headerContainer" class="container_24">
+    <div>
+      <div class="container_24">
        <h1>UI Guidelines</h1>
       </div>
     </div>
 
-    <div id="content" class="container_24">   
-      <div>
-         <h1>Base</h1>
-          <ui:insert name="gu-base">
-             <ui:include src="/ui-guidelines/base.xhtml"></ui:include>
-          </ui:insert>
+    <div id="ui-content" class="container_24">
+       <h2>Päätoiminnot - Main functions</h2>
+      <div style="margin-bottom:20px;">
+        <h3>Pohja</h3>
+        <ui:include src="/ui-guidelines/mainfunctions/base.xhtml">
+        </ui:include>
+      </div>
+      <div style="margin-bottom:20px;">
+        <h3>Painike</h3>
+        <ui:include src="/ui-guidelines/mainfunctions/parts/side-button.xhtml">
+        </ui:include>
+      </div>
+      <div style="margin-bottom:20px;">
+        <h3>Navigaatio - Filtterit</h3>
+        <ui:include src="/ui-guidelines/mainfunctions/parts/side-tool-filters.xhtml">
+        </ui:include>
+      </div>
+      <div style="margin-bottom:20px;">
+        <h3>Navigaatio - Linkit</h3>
+        <ui:include src="/ui-guidelines/mainfunctions/parts/side-tool-links.xhtml">
+        </ui:include>
+      </div>
+      <div style="margin-bottom:20px;">
+        <h3>Sisällön toiminnot - Haku</h3>
+        <ui:include src="/ui-guidelines/mainfunctions/parts/content-function-search.xhtml">
+        </ui:include>
+      </div>   
+      <div style="margin-bottom:20px;">
+        <h3>Sisältöelementti - listautuva</h3>
+        <ui:include src="/ui-guidelines/mainfunctions/parts/content-element-list.xhtml">
+        </ui:include>
       </div>
 
+      <!--       <h1>Communicator</h1>
+             <ui:include src="/ui-guidelines/mainfunctions/communicator/full.xhtml"></ui:include>
+        <br/><br/>
+        </div>
+        <div>
+        <h1>Coursepicker</h1>
+             <ui:include src="/ui-guidelines/mainfunctions/coursepicker/full.xhtml"></ui:include>
+        <br/><br/>
+       </div>      
+      </div>
+ -->
       <div class="clear"></div> 
     </div>
    
