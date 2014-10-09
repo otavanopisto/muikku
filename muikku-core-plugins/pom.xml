@@ -15,7 +15,7 @@
   <description>Muikku Core Plugins</description>
 
   <properties>
-    <elasicsearch.version>1.1.0</elasicsearch.version>
+    <elasicsearch.version>1.3.2</elasicsearch.version>
   </properties>
 
   <dependencies>
