@@ -1,10 +1,12 @@
 /* Mainfunctions (mf-*) */
 
 
-.coursePicker{
+.mainfunction{
   @extend .co-widget;   
   background-color:$mainFuncSide;
 }
+
+
 .mf-side{
  min-height:450px;
 }
@@ -94,15 +96,20 @@
 
 .mf-side-links{
  background-color:#fff;
-}
-
-.mf-side-link{
+ 
+  li {
   display:block;
   @include padding(5px);
   border-bottom:1px solid #f3f3f3;
-  text-decoration:none;
-  color:#3c3c3c;
+  a{
+    text-decoration:none;
+    color:#3c3c3c;
+  }
+
+ }
+ 
 }
+
 
 
 .mf-content{
