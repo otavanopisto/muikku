@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:c="http://java.sun.com/jsp/jstl/core" 
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core" 
+  xmlns:h="http://java.sun.com/jsf/html" 
+  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+  xmlns:composite="http://java.sun.com/jsf/composite/composite" 
+  template="/WEB-INF/templates/default.xhtml">
+
+  <!-- Lets set the base body class per view -->
+  <ui:param name="bodyClass" value="workspace" />
+  
+  <ui:define name="viewScripts">
+    <h:outputScript name="scripts/gui/workspace.js"/>  
+  </ui:define>
+  
+  <ui:define name="viewCss">
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/workspaces.css" />  
+  </ui:define>
+
+  <ui:define name="sitebody">
+    <div id="staticNavigationWrapper">
+      <m:widget name="navigation-dynamic" rendered="#{sessionBackingBean.loggedIn}"></m:widget>
+      <div id="staticNavigation" class="container_24">
+        <ui:insert name="dock.top">
+          <m:widgetSpaceSet styleClass="noLid">
+            <ui:insert name="dock.top.left">
+              <ui:include src="/facelets/generic/dock-top-left.xhtml"></ui:include>
+            </ui:insert>
+            <ui:insert name="dock.top.center">
+              <ui:include src="/facelets/generic/dock-top-center.xhtml"></ui:include>
+            </ui:insert>
+            <ui:insert name="dock.top.right">
+              <ui:include src="/facelets/generic/dock-top-right.xhtml"></ui:include>
+            </ui:insert>
+          </m:widgetSpaceSet>
+        </ui:insert>
+        <div class="clear"></div> 
+      </div>
+    </div>  
+    <div id="workspaceNavigationWrapper">
+      <div id="workspaceNavigation">
+        <ui:insert name="workspaces.dock">
+          <ui:include src="/facelets/generic/workspaces-dock.xhtml"></ui:include>
+        </ui:insert>
+      </div>
+    </div>
+    <div id="content" class="container_24">
+      <ui:insert name="workspace.content.top.static"></ui:insert>
+      <ui:insert name="workspace.contentArea">
+        <m:widgetSpaceSet>
+          <ui:insert name="workspace.content.widgetspace">
+            <m:widgetSpace name="workspace.generic.content" keepEmpty="true" sizing="MAXIMIZE" styleClass="nomargin">
+              <ui:insert name="workspace.content.widget"></ui:insert>
+            </m:widgetSpace>
+          </ui:insert>
+        </m:widgetSpaceSet>
+      </ui:insert>
+    </div>
+    <div id="socialNavigation">
+      <ui:insert name="dock.bottom">
+        <m:widgetSpaceSet styleClass="nomargin">
+          <ui:insert name="dock.bottom.left">
+            <ui:include src="/facelets/generic/dock-bottom-left.xhtml"></ui:include>
+          </ui:insert>
+          <ui:insert name="dock.bottom.center">
+            <ui:include src="/facelets/generic/dock-bottom-center.xhtml"></ui:include>
+          </ui:insert>
+          <ui:insert name="dock.bottom.right">
+            <ui:include src="/facelets/generic/dock-bottom-right.xhtml"></ui:include>
+          </ui:insert>
+        </m:widgetSpaceSet>
+      </ui:insert>
+    </div>
+    <div id="footer">
+      <div id="footerContainer" class="container_24">
+        <ui:insert name="footer">
+          <m:widgetSpaceSet styleClass="nomargin">
+            <ui:insert name="footer.left">
+              <ui:include src="/facelets/generic/footer-left.xhtml"></ui:include>
+            </ui:insert>
+            <ui:insert name="footer.center">
+              <ui:include src="/facelets/generic/footer-center.xhtml"></ui:include>
+            </ui:insert>
+            <ui:insert name="footer.right">
+              <ui:include src="/facelets/generic/footer-right.xhtml"></ui:include>
+            </ui:insert>
+          </m:widgetSpaceSet>
+        </ui:insert>
+        <div class="clear"></div>
+      </div>
+    </div>
+  </ui:define>
+
+</ui:composition>
