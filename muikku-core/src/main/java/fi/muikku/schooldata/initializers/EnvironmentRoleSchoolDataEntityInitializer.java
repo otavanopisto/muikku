@@ -11,6 +11,7 @@ import fi.muikku.dao.base.SchoolDataSourceDAO;
 import fi.muikku.dao.users.EnvironmentRoleEntityDAO;
 import fi.muikku.dao.users.RoleSchoolDataIdentifierDAO;
 import fi.muikku.model.base.SchoolDataSource;
+import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.model.users.RoleEntity;
 import fi.muikku.model.users.RoleSchoolDataIdentifier;
 import fi.muikku.schooldata.entity.EnvironmentRole;
@@ -46,7 +47,8 @@ public class EnvironmentRoleSchoolDataEntityInitializer implements SchoolDataEnv
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(entity.getSchoolDataSource());
     RoleSchoolDataIdentifier roleSchoolDataIdentifier = roleSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(dataSource, entity.getIdentifier());
     if (roleSchoolDataIdentifier == null) {
-      RoleEntity roleEntity = environmentRoleEntityDAO.create(entity.getName());
+      EnvironmentRoleArchetype archetype = EnvironmentRoleArchetype.valueOf(entity.getArchetype().name());
+      RoleEntity roleEntity = environmentRoleEntityDAO.create(archetype, entity.getName());
       roleSchoolDataIdentifierDAO.create(dataSource, entity.getIdentifier(), roleEntity);
     }
 

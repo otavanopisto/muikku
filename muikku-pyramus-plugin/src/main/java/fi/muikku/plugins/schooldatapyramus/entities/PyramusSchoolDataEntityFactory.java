@@ -12,6 +12,7 @@ import fi.muikku.controller.PluginSettingsController;
 import fi.muikku.plugins.schooldatapyramus.PyramusIdentifierMapper;
 import fi.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
 import fi.muikku.schooldata.entity.EnvironmentRole;
+import fi.muikku.schooldata.entity.EnvironmentRoleArchetype;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceRole;
@@ -21,6 +22,7 @@ import fi.pyramus.rest.model.Course;
 import fi.pyramus.rest.model.CourseStaffMember;
 import fi.pyramus.rest.model.CourseStaffMemberRole;
 import fi.pyramus.rest.model.CourseStudent;
+import fi.pyramus.rest.model.UserRole;
 
 public class PyramusSchoolDataEntityFactory {
   
@@ -68,9 +70,11 @@ public class PyramusSchoolDataEntityFactory {
       return null;
     }
     
-    return new PyramusEnvironmentRole("ENV-" + role.name(), role.name());
+    EnvironmentRoleArchetype archetype = getEnvironmentRoleArchetype(role);
+
+    return new PyramusEnvironmentRole("ENV-" + role.name(), archetype, role.name());
   }
-  
+
   public List<EnvironmentRole> createEntity(fi.pyramus.rest.model.UserRole... roles) {
     List<EnvironmentRole> result = new ArrayList<>();
     
@@ -165,6 +169,19 @@ public class PyramusSchoolDataEntityFactory {
     }
     
     return result;
+  }
+  
+  private EnvironmentRoleArchetype getEnvironmentRoleArchetype(UserRole role) {
+    switch (role) {
+      case ADMINISTRATOR:
+        return EnvironmentRoleArchetype.ADMINISTRATOR;
+      case MANAGER:
+        return EnvironmentRoleArchetype.MANAGER;
+      case STUDENT:
+        return EnvironmentRoleArchetype.STUDENT;
+      default:
+        return EnvironmentRoleArchetype.CUSTOM;
+    }
   }
   
   private WorkspaceRoleArchetype getWorkspaceRoleArchetype(Long staffMemberRoleId) {
