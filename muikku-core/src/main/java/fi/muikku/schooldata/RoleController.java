@@ -135,6 +135,10 @@ public class RoleController {
 	public List<WorkspaceRoleEntity> listWorkspaceRoleEntities() {
 		return workspaceRoleEntityDAO.listAll();
 	}
+
+  public WorkspaceRoleEntity findWorkspaceRoleEntityById(Long id) {
+    return workspaceRoleEntityDAO.findById(id);
+  }
 	
 	public WorkspaceRoleEntity findWorkspaceRoleEntityByName(String name) {
 	  return workspaceRoleEntityDAO.findByName(name);

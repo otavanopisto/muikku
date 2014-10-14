@@ -28,7 +28,6 @@ import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.model.workspace.WorkspaceRoleEntity;
-import fi.muikku.model.workspace.WorkspaceSettings;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.model.workspace.WorkspaceUserSignup;
 import fi.muikku.plugin.PluginRESTService;
@@ -185,9 +184,13 @@ public class WorkspaceRESTService extends PluginRESTService {
       
       WorkspaceUserEntity workspaceUser = workspaceController.findWorkspaceUserEntityByWorkspaceAndUser(workspaceEntity, userEntity);
       if (workspaceUser != null) {
-        List<Long> workspaceRoleIds = new ArrayList<>();
-        for (WorkspaceRoleEntity workspaceRole : workspaceRoles) {
-          workspaceRoleIds.add(workspaceRole.getId());
+        List<Long> workspaceRoleIds = null;
+        
+        if (workspaceRoles != null) {
+          workspaceRoleIds = new ArrayList<>();
+          for (WorkspaceRoleEntity workspaceRole : workspaceRoles) {
+            workspaceRoleIds.add(workspaceRole.getId());
+          }
         }
 
         if ((workspaceRoleIds == null)||(workspaceRoleIds.contains(workspaceUser.getWorkspaceUserRole().getId()))) {
@@ -230,20 +233,13 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (userEntity == null) {
       return Response.status(Status.BAD_REQUEST).build(); 
     }
-    
-    WorkspaceRoleEntity workspaceRole;
-    
-    if (StringUtils.isNotBlank(entity.getRole())) {
-      workspaceRole = roleController.findWorkspaceRoleEntityByName(entity.getRole());
-      if (workspaceRole == null) {
-        return Response.status(Status.BAD_REQUEST).entity("Invalid workspace role '" + entity.getRole() + "'").build(); 
-      }
-    } else {
-      WorkspaceSettings workspaceSettings = workspaceController.findWorkspaceSettings(workspaceEntity);
-      workspaceRole = workspaceSettings.getDefaultWorkspaceUserRole();
+
+    if (entity.getRoleId() == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid workspace role '" + entity.getRoleId() + "'").build(); 
     }
     
-    
+    WorkspaceRoleEntity workspaceRole = roleController.findWorkspaceRoleEntityById(entity.getRoleId());
+
     WorkspaceUserEntity workspaceUserEntity = workspaceController.findWorkspaceUserEntityByWorkspaceAndUser(workspaceEntity, userEntity);
     if (workspaceUserEntity != null) {
       return Response.status(Status.BAD_REQUEST).build(); 
@@ -335,8 +331,8 @@ public class WorkspaceRESTService extends PluginRESTService {
   private fi.muikku.plugins.workspace.rest.model.WorkspaceUser createRestModel(WorkspaceUserEntity entity) {
     Long workspaceEntityId = entity.getWorkspaceEntity() != null ? entity.getWorkspaceEntity().getId() : null;
     Long userId = entity.getUser() != null ? entity.getUser().getId() : null;
-    String role = entity.getWorkspaceUserRole() != null ? entity.getWorkspaceUserRole().getName() : null;
-    return new fi.muikku.plugins.workspace.rest.model.WorkspaceUser(entity.getId(), workspaceEntityId, userId, role, entity.getArchived());
+    Long roleId = entity.getWorkspaceUserRole() != null ? entity.getWorkspaceUserRole().getId() : null;
+    return new fi.muikku.plugins.workspace.rest.model.WorkspaceUser(entity.getId(), workspaceEntityId, userId, roleId, entity.getArchived());
   }
 
   private fi.muikku.plugins.workspace.rest.model.Workspace createRestModel(WorkspaceEntity workspaceEntity, Workspace workspace) {
