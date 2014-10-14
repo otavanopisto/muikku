@@ -1,6 +1,8 @@
 @import "_jsf.scss";
 
 /* COLORS */
+$contextualLink:#0099ff;
+$contextualLinkHover:#006ab1;
 
 /* Fonts */
 
@@ -44,9 +46,10 @@ $mainFuncFilter3 : #5dc005;
 /* Generic gradients (Grayscale) */
 
 /* Widgets */
-$w-sc: 0 2px 15px rgba(216, 230, 235, 0.3);
+$w-sc: 0 2px 15px rgba(216, 230, 235, 0.5);
 $w-bgr:#fff;
 $w-brd: #f0f0f0;
+$w-tbgr:#596e7d;
 
 /* Forms */
 $btnGr:#bfd255, #8eb92a, #72aa00 , #9ecb2d;
@@ -118,6 +121,10 @@ $text: 12px;
 /* Transition durations */
 
 /* Generic Mixins */
+@mixin contentMeta($fStyle:normal,$fColor:#4c4c4c) {
+  font-style:$fStyle;
+  color:$fColor;
+}
 
 /* Borders */
 @mixin border($bwidth:1px,$bcolor:$brd,$btype:solid) {
@@ -324,6 +331,38 @@ $text: 12px;
   transition-property:$pr1;
   transition-duration:$trd1;
   transition-timing-function: $tf1;
+}
+
+/* Widget Action Menu Transitions */
+@mixin widgetActionMenuTransition($pr1,$trd1,$tf1) {
+  -webkit-transition-property:$pr1;
+  -webkit-transition-duration:$trd1;
+  -webkit-transition-timing-function:$tf1;
+  -moz-transition-property:$pr1;
+  -moz-transition-duration:$trd1;
+  -moz-transition-timing-function:$tf1;
+  -o-transition-property:$pr1;
+  -o-transition-duration:$trd1;
+  -o-transition-timing-function:$tf1; 
+  transition-property:$pr1;
+  transition-duration:$trd1;
+  transition-timing-function: $tf1;
+}
+
+/* Widget Action Menu Transitions */
+@mixin widgetActionMenuItemTransition() {
+  -webkit-transition-property:background,color;
+  -webkit-transition-duration:0.15s;
+  -webkit-transition-timing-function:ease-in;
+  -moz-transition-property:background,color;
+  -moz-transition-duration:0.15s;
+  -moz-transition-timing-function:ease-in;
+  -o-transition-property:background,color;
+  -o-transition-duration:0.15s;
+  -o-transition-timing-function:ease-in;
+  transition-property:background,color;
+  transition-duration:0.15s;
+  transition-timing-function:ease-in;
 }
 
 @mixin tooltipBackGround( $bgColorStart, $bgColorEnd) {
