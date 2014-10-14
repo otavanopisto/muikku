@@ -7,7 +7,10 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.plugins.material.MaterialController;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.workspace.dao.WorkspaceFolderDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialDAO;
@@ -64,6 +67,9 @@ public class WorkspaceMaterialController {
 
 	@Inject
   private Event<WorkspaceMaterialDeleteEvent> workspaceMaterialDeleteEvent;
+
+  @Inject
+	private MaterialController materialController;
   
 	/* Node */
 
@@ -90,11 +96,44 @@ public class WorkspaceMaterialController {
 	public List<WorkspaceNode> listWorkspaceNodesByParent(WorkspaceNode parent) {
 		return workspaceNodeDAO.listByParent(parent);
 	}
+	
+	public WorkspaceNode cloneWorkspaceNode(WorkspaceNode workspaceNode, WorkspaceNode parent) {
+	  if (workspaceNode instanceof WorkspaceMaterial) {
+	    WorkspaceMaterial workspaceMaterial = (WorkspaceMaterial) workspaceNode;
+	    Material material = workspaceMaterial.getMaterial();
+	    Material cloneMaterial = materialController.cloneMaterial(material);
+	    return workspaceMaterialDAO.create(parent, cloneMaterial, generateUrlName(parent, cloneMaterial.getTitle()));
+	  }
+	  else if (workspaceNode instanceof WorkspaceFolder) {
+	    return workspaceFolderDAO.create(parent, ((WorkspaceFolder) workspaceNode).getTitle(), generateUrlName(parent, ((WorkspaceFolder) workspaceNode).getTitle()));
+    }
+    else {
+      throw new IllegalArgumentException("Uncloneable workspace node " + workspaceNode.getClass());
+    }
+	}
+	
+  public WorkspaceMaterial revertToOriginMaterial(WorkspaceMaterial workspaceMaterial) {
+    return revertToOriginMaterial(workspaceMaterial, true);
+  }
 
+  public WorkspaceMaterial revertToOriginMaterial(WorkspaceMaterial workspaceMaterial, boolean updateUrlName) {
+	  Material originMaterial = workspaceMaterial.getMaterial().getOriginMaterial();
+	  if (originMaterial == null) {
+	    throw new IllegalArgumentException("WorkSpaceMaterial has no origin material");
+	  }
+	  workspaceMaterialDAO.updateMaterial(workspaceMaterial, originMaterial);
+	  if (updateUrlName) {
+	    String urlName = generateUrlName(workspaceMaterial.getParent(), originMaterial.getTitle());
+	    workspaceMaterialDAO.updateUrlName(workspaceMaterial, urlName);
+	  }
+	  return workspaceMaterial;
+	}
+	
 	/* Material */
 	
-	public WorkspaceMaterial createWorkspaceMaterial(WorkspaceNode parent, Material material, String urlName) {
-		WorkspaceMaterial workspaceMaterial = workspaceMaterialDAO.create(parent, material, urlName);
+	public WorkspaceMaterial createWorkspaceMaterial(WorkspaceNode parent, Material material) {
+		String urlName = generateUrlName(parent,  material.getTitle());
+	  WorkspaceMaterial workspaceMaterial = workspaceMaterialDAO.create(parent, material, urlName);
 		workspaceMaterialCreateEvent.fire(new WorkspaceMaterialCreateEvent(workspaceMaterial));
 		return workspaceMaterial;
 	}
@@ -133,7 +172,7 @@ public class WorkspaceMaterialController {
 	  
 	  workspaceMaterialDAO.delete(workspaceMaterial);
   }
-  
+	
   /* Root Folder */
 
   public WorkspaceRootFolder createWorkspaceRootFolder(WorkspaceEntity workspaceEntity) {
@@ -169,6 +208,25 @@ public class WorkspaceMaterialController {
   
   public void deleteWorkspaceFolder(WorkspaceFolder workspaceFolder) {
     workspaceFolderDAO.delete(workspaceFolder);
+  }
+  
+  /* Utility methods */
+  
+  public synchronized String generateUrlName(WorkspaceNode parent, String title) {
+    if (StringUtils.isBlank(title)) {
+      throw new IllegalArgumentException("Material has no title.");
+    }
+    String urlName = StringUtils.lowerCase(title.replaceAll(" ", "-").replaceAll("/", "-")); 
+    while (urlName.indexOf("--") >= 0) {
+      urlName = urlName.replace("--", "-");
+    }
+    urlName = StringUtils.stripAccents(urlName).replaceAll("[^a-z0-9\\-\\.\\_]", "");
+    int i = 1;
+    String uniqueName = urlName;
+    while (workspaceNodeDAO.findByParentAndUrlName(parent,  uniqueName) != null) {
+      uniqueName = urlName + "-" + ++i;  
+    }
+    return uniqueName;
   }
 
 }
