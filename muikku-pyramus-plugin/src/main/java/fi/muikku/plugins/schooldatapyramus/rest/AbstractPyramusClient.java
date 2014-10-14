@@ -1,7 +1,6 @@
 package fi.muikku.plugins.schooldatapyramus.rest;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.ParameterizedType;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
@@ -101,14 +100,17 @@ public abstract class AbstractPyramusClient {
     return request.post(Entity.form(form), AccessToken.class);
   }
 
+  @SuppressWarnings("unchecked")
   private <T> T createResponse(Response response, Class<T> type) {
     switch (response.getStatus()) {
       case 200:
-      case 204:
         return response.readEntity(type);
-//      case 204:
-//        return (T) Array.newInstance(
-//            (Class<?>) ((ParameterizedType) type.getGenericSuperclass()).getActualTypeArguments()[0], 0);
+      case 204:
+        if (type.isArray()) {
+          return (T) Array.newInstance(type.getComponentType(), 0);
+        } else {
+          return null;
+        }
       case 404:
         return null;
       default:
