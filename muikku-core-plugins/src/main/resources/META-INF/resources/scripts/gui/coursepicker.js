@@ -7,7 +7,7 @@
       var _this = this;
       widgetElement = $(widgetElement);
       this._widgetElement = widgetElement;
-      this._userId = widgetElement.find("input[name='userId']").val();
+      this._workspaceStudentRoleId = widgetElement.find("input[name='workspaceStudentRoleId']").val();
       this._coursesContainer = $('#coursesList');
 
       this._searchInput = widgetElement.find("input[name='coursePickerSearch']");
@@ -69,9 +69,6 @@
         		    name : "signup",
         		    action: function (e) {
         		      var msg = e.contentElement.find("textarea[name='signUpMessage']").val();
-        		      var workspaceId = e.contentElement.find("input[name='workspaceId']").val();
-                      var workspaceUrl = e.contentElement.find("input[name='workspaceUrl']").val();
-        		      
         		      _this._joinCourse(workspaceId, workspaceUrl, msg);
         		    }
         		  }
@@ -167,7 +164,7 @@
       if (((term != undefined) && (term != "")) || (subjects.length > 0)) {
         if (hash == "my") {
           this._loadCourses({
-            userId: this._userId,
+            userId: MUIKKU_LOGGED_USER_ID,
             subjects: subjects,
             search: term
           });
@@ -180,7 +177,7 @@
       } else {
         if (hash == "my") {
           this._loadCourses({
-            userId: this._userId
+            userId: MUIKKU_LOGGED_USER_ID
           });
         }
         else {
@@ -259,6 +256,7 @@
       event.stopPropagation();
       var element = $(event.target);
       var coursePickerCourse = element.parents(".cp-course");
+      var workspaceRoleId = coursePickerCourse.find("input[name='workspaceRoleId']").val();
       var workspaceId = coursePickerCourse.find("input[name='workspaceId']").val();
       var workspaceUrl = coursePickerCourse.find("input[name='workspaceUrl']").val();
       
@@ -268,18 +266,12 @@
       var userId = MUIKKU_LOGGED_USER_ID;
       
       mApi().workspace.workspaces.users.create(workspaceId, {
-        workspaceId: undefined,
-        archived: undefined,
-        role: undefined, 
-        id: undefined,
+        roleId: this._workspaceStudentRoleId,
         userId: userId
       })
       .callback(function (workspaceUsersErr, workspaceUsers) {
         mApi().workspace.workspaces.signups.create(workspaceId, {
-          workspaceId: undefined,
-          date: undefined,
           message: joinMessage,
-          id: undefined,
           userId: userId
         })
         .callback(function (workspaceUsersErr, workspaceUsers) {
