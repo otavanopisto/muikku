@@ -1,6 +1,7 @@
 package fi.muikku.plugins.workspace;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
@@ -113,7 +114,7 @@ public class WorkspaceMaterialController {
 	}
 	
   public WorkspaceMaterial revertToOriginMaterial(WorkspaceMaterial workspaceMaterial) {
-    return revertToOriginMaterial(workspaceMaterial, true);
+    return revertToOriginMaterial(workspaceMaterial, false);
   }
 
   public WorkspaceMaterial revertToOriginMaterial(WorkspaceMaterial workspaceMaterial, boolean updateUrlName) {
@@ -123,8 +124,10 @@ public class WorkspaceMaterialController {
 	  }
 	  workspaceMaterialDAO.updateMaterial(workspaceMaterial, originMaterial);
 	  if (updateUrlName) {
-	    String urlName = generateUrlName(workspaceMaterial.getParent(), originMaterial.getTitle());
-	    workspaceMaterialDAO.updateUrlName(workspaceMaterial, urlName);
+	    String urlName = generateUrlName(workspaceMaterial.getParent(), workspaceMaterial, originMaterial.getTitle());
+	    if (!workspaceMaterial.getUrlName().equals(urlName)) {
+	      workspaceMaterialDAO.updateUrlName(workspaceMaterial, urlName);
+	    }
 	  }
 	  return workspaceMaterial;
 	}
@@ -211,20 +214,49 @@ public class WorkspaceMaterialController {
   }
   
   /* Utility methods */
-  
+
+  public synchronized String generateUrlName(String title) {
+    return generateUrlName(null, null, title);
+  }
+
   public synchronized String generateUrlName(WorkspaceNode parent, String title) {
+    return generateUrlName(parent, null, title);
+  }
+  
+  public synchronized String generateUrlName(WorkspaceNode parent, WorkspaceNode targetNode, String title) {
     if (StringUtils.isBlank(title)) {
-      throw new IllegalArgumentException("Material has no title.");
+      // no title to work with, so settle for a random UUID
+      title = UUID.randomUUID().toString();
     }
+    // convert to lower-case and replace spaces and slashes with a minus sign  
     String urlName = StringUtils.lowerCase(title.replaceAll(" ", "-").replaceAll("/", "-")); 
+    // truncate consecutive minus signs into just one
     while (urlName.indexOf("--") >= 0) {
       urlName = urlName.replace("--", "-");
     }
+    // get rid of accented characters and all special characters other than minus, period, and underscore
     urlName = StringUtils.stripAccents(urlName).replaceAll("[^a-z0-9\\-\\.\\_]", "");
-    int i = 1;
+    // use urlName as base and uniqueName as final result
     String uniqueName = urlName;
-    while (workspaceNodeDAO.findByParentAndUrlName(parent,  uniqueName) != null) {
-      uniqueName = urlName + "-" + ++i;  
+    if (parent != null) {
+      // if parent node is given, ensure that the generated url name is unique amongst its child nodes
+      int i = 1;
+      while (true) {
+        // find child node with uniqueName
+        WorkspaceNode workspaceNode = workspaceNodeDAO.findByParentAndUrlName(parent,  uniqueName);
+        if (workspaceNode != null) {
+          if (targetNode != null && workspaceNode.getId().equals(targetNode.getId())) {
+            // uniqueName is in use but by the target node itself, so it's okay
+            break;
+          }
+          // uniqueName in use, try again with the next candidate (name, name-2, name-3, etc.)
+          uniqueName = urlName + "-" + ++i;
+        }
+        else {
+          // Current uniqueName is available
+          break;
+        }
+      }
     }
     return uniqueName;
   }
