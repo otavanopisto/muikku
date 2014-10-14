@@ -3,6 +3,7 @@
 
 /* General styles with selectors */
 
+/* Main navigation */
 div[class*='dock-static-navi-button'] > a, 
 div[class*='dock-dynamic-navi-button'] > a {
   font-size:30pt;
@@ -10,11 +11,56 @@ div[class*='dock-dynamic-navi-button'] > a {
   text-decoration:none;
   @include iconShadow;
   &:hover {
-    @include iconShadow(#ffffbe);
+    @include iconShadow(rgba(255,255,190,0.8));
   }
   padding:10px 10px 0 10px;
-  height:61px;
+  height:56px;
   display:inline-block;
+}
+
+/* Workspace navigation */
+div[class*='dock-workspace-navi-button'] > a {
+  font-size:24pt;
+  color:#fff;
+  text-decoration:none;
+  @include iconShadow;
+  background:transparent;
+  padding:6px;
+  margin:4px;
+  display:inline-block;
+  position:relative;
+  width:35px;
+  @include rounded(3px);
+  
+  span[class*='workspace-navi-tt-container-'] {
+      opacity:0;
+      font-family:"Open Sans";
+      font-size:16px;
+      height:16px;
+      font-weight:300;
+      position:absolute;
+      top:0px;
+      left:-4500px;
+      width:0px;
+      color:#fff;
+      text-transform:uppercase;
+      padding:13px 15px 15px 14px;
+      @include rounded-top-right(3px);
+      @include rounded-bottom-right(3px);
+      @include workspaceTooltipTransition(opacity,0.25s,ease-in-out);
+  }
+    
+  &:hover {
+    background:#465b6c;
+
+    span[class*='workspace-navi-tt-container-'] {
+      display:block;
+      background:#465b6c;
+      opacity:1;
+      width:auto;
+      left:45px;
+    }
+  }
 }
 
 div[data-name="generic.dock-top.left"] div:last-child > a{
@@ -44,12 +90,6 @@ div[class*='action-vertical'] {
 
 div[class*='action-vertical']:not(:first-child){
   margin-top:10px !important;
-}
-
-div[class*='actions'] {
-  @include gradient-top-bottom(#fff,#f8f8f8,#fff);	
-  float:none;
-  margin-left:0 !important;
 }
 
 div[class*='actions-vertical'] {
@@ -125,155 +165,6 @@ div[class*="wi-dock-static-navi"] {
   @include naviIcon();
   @include background-image('gfx/icons/32x32/actions/calendar-visible.png');
 }
-
-
-/*  Deprecating 27.3.2014
-
-.naviIconHome {
-  @include naviIcon();
-  @include background-image('gfx/icons/32x32/actions/navigate-home.png');
-}
-
-.naviIconHome.disabled {
-  @include naviIcon();
-  @include background-image('gfx/icons/32x32/actions/navigate-home.png');
-}
-
-.naviIconHome:hover {
-  @include naviIcon();
-  @include background-image('gfx/icons/32x32/actions/navigate-home.png');
-}
-
-.naviIconStudents {
-  @include naviIcon();
-  @include background-image('gfx/icons/32x32/actions/navigate-students.png');
-}
-
-.naviIconStudents.disabled {
-  opacity:0.5;
-  @include naviIcon();
-  @include background-image('gfx/icons/32x32/actions/navigate-students.png');
-}
-
-.naviIconStudents:hover {
-  @include naviIcon();
-  @include background-image('gfx/icons/32x32/actions/navigate-students.png');
-}
-
-.naviIconCoursePicker {
-  @include naviIcon();
-  @include background-image('gfx/icons/32x32/actions/navigate-coursepicker.png');
-}
-
-.naviIconCoursePicker.disabled {
-  @include naviIcon();
-  @include background-image('gfx/icons/32x32/actions/navigate-coursepicker.png');
-}
-
-.naviIconCoursePicker:hover {
-  @include naviIcon();
-  @include background-image('gfx/icons/32x32/actions/navigate-coursepicker.png');
-}
-
-.naviIconForum {
-  @include naviIcon();
-  @include background-image('gfx/icons/32x32/actions/navigate-forum.png');
-}
-
-.naviIconForum.disabled {
-  @include naviIcon();
-  @include background-image('gfx/icons/32x32/actions/navigate-forum.png');
-}
-
-.naviIconForum:hover {
-  @include naviIcon();
-  @include background-image('gfx/icons/32x32/actions/navigate-forum.png');
-}
-
-.naviIconDiary {
-  @include naviIcon();
-  @include background-image('gfx/icons/32x32/actions/navigate-diary.png');	
-}
-
-.naviIconDiary.disabled {
-  @include naviIcon();
-  @include background-image('gfx/icons/32x32/actions/navigate-diary.png'); 
-}
-
-.naviIconDiary:hover {
-  @include naviIcon();
-  @include background-image('gfx/icons/32x32/actions/navigate-diary.png'); 
-}
-    
-.naviIconCommunicator {
-  @include naviIcon(); 	
-  @include background-image('gfx/icons/32x32/actions/navigate-communicator.png');     
-}
-
-.naviIconCommunicator.disabled {
-  @include naviIcon();  
-  @include background-image('gfx/icons/32x32/actions/navigate-communicator.png'); 
-}
-
-.naviIconCommunicator:hover {
-  @include naviIcon();  
-  @include background-image('gfx/icons/32x32/actions/navigate-communicator.png');  
-}
-
-.naviIconStudyTracker {
-  @include naviIcon(); 	
-  @include background-image('gfx/icons/32x32/actions/navigate-studytracker.png');   
-}
-
-.naviIconStudyTracker.disabled {
-  @include naviIcon();  
-  @include background-image('gfx/icons/32x32/actions/navigate-studytracker.png');    
-}
-
-.naviIconStudyTracker:hover {
-  @include naviIcon();  
-  @include background-image('gfx/icons/32x32/actions/navigate-studytracker.png');   
-}
-
-.naviIconCalendar {
-  @include naviIcon();
-  @include background-image('gfx/icons/32x32/actions/navigate-cal.png');   
-}
-
-.naviIconCalendar.disabled {
-  @include naviIcon();
-  @include background-image('gfx/icons/32x32/actions/navigate-cal.png');    
-}
-
-.naviIconCalendar:hover {
-  @include naviIcon();
-  @include background-image('gfx/icons/32x32/actions/navigate-cal.png');     
-}
-
-
-.naviIconLogout {
-  @include customIcon(25px,20px);	
-  @include background-image('gfx/icons/32x32/actions/navigate-logout.png');  
-  float:right;
-}
-
-.naviIconSettings {
-  @include naviIcon();  
-  @include background-image('gfx/icons/32x32/actions/navigate-settings.png');    
-  float:right;      
-}
-
-.naviIconStudentGrading {
-  @include naviIcon(); 
-  @include background-image('gfx/icons/32x32/actions/navigate-student-grading.png'); 	    
-}
-
-.naviIconStudentGrading:hover {
-  @include naviIcon(); 
-  @include background-image('gfx/icons/32x32/actions/navigate-student-grading.png');  
-}
-
-*/
 
 /* Settings navigation */
 

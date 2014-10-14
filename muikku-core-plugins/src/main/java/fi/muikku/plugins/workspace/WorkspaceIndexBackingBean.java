@@ -14,6 +14,7 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.schooldata.WorkspaceController;
+import fi.muikku.schooldata.entity.Workspace;
 
 @Named
 @Stateful
@@ -55,12 +56,23 @@ public class WorkspaceIndexBackingBean {
 	public void setWorkspaceId(Long workspaceId) {
 		this.workspaceId = workspaceId;
 	}
+	
 	public String getWorkspaceUrlName() {
     return workspaceUrlName;
   }
 
   public void setWorkspaceUrlName(String workspaceUrlName) {
     this.workspaceUrlName = workspaceUrlName;
+  }
+  
+  public String getWorkspaceName() {
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceId);
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+    if (workspace != null) {
+      return workspace.getName();
+    } else {
+      return null;
+    }
   }
   
 	private Long workspaceId;
