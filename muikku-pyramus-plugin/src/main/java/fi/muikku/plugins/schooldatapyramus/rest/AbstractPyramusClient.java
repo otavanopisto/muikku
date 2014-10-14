@@ -51,7 +51,8 @@ public abstract class AbstractPyramusClient {
     }
   }
   
-  public <T> T post(String path, Object entity, Class<T> type) {
+  @SuppressWarnings("unchecked")
+  public <T> T post(String path, T entity) {
     Client client = createClient();
     
     WebTarget target = client.target(PYRAMUS_REST + path);
@@ -59,7 +60,7 @@ public abstract class AbstractPyramusClient {
     request.header("Authorization", "Bearer " + getAccessToken());
     Response response = request.post(Entity.entity(entity, MediaType.APPLICATION_JSON));
     try {
-      return createResponse(response, type);
+      return (T) createResponse(response, entity.getClass());
     } finally {
       response.close();
     }

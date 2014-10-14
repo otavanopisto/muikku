@@ -1,6 +1,7 @@
 package fi.muikku.plugins.schooldatapyramus;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.ejb.Stateful;
@@ -8,6 +9,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 
 import fi.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
 import fi.muikku.plugins.schooldatapyramus.rest.UserPyramusClient;
@@ -18,7 +20,9 @@ import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceType;
 import fi.muikku.schooldata.entity.WorkspaceUser;
+import fi.muikku.schooldata.initializers.SchoolDataEntityInitializerProvider;
 import fi.pyramus.rest.model.Course;
+import fi.pyramus.rest.model.CourseOptionality;
 import fi.pyramus.rest.model.CourseStaffMember;
 import fi.pyramus.rest.model.CourseStudent;
 
@@ -34,6 +38,9 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
 
   @Inject
   private PyramusSchoolDataEntityFactory entityFactory;
+
+  @Inject
+  private SchoolDataEntityInitializerProvider entityInitializer;
 
   @Override
   public String getSchoolDataSource() {
@@ -127,7 +134,12 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
 
   @Override
   public WorkspaceUser createWorkspaceUser(Workspace workspace, User user, String roleSchoolDataSource, String roleIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-    throw new UnexpectedSchoolDataBridgeException("Not implemented");
+    Long courseId = identifierMapper.getPyramusCourseId(workspace.getIdentifier());
+    Long studentId = identifierMapper.getPyramusStudentId(user.getIdentifier());
+    
+    CourseStudent courseStudent = new CourseStudent(null, courseId, studentId, new DateTime(), Boolean.FALSE, null, null, Boolean.FALSE, CourseOptionality.OPTIONAL, null);
+    
+    return entityInitializer.initWorkspaceUsers(Arrays.asList(entityFactory.createEntity(pyramusClient.post("/courses/courses/" + courseId + "/students", courseStudent)))).get(0);
   }
   
 	@Override
