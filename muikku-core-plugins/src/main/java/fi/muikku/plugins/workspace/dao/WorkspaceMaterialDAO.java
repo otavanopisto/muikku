@@ -7,7 +7,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-
 import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
@@ -72,7 +71,17 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
    
     return entityManager.createQuery(criteria).getResultList();
   }
-	
+  
+  public WorkspaceMaterial updateMaterial(WorkspaceMaterial workspaceMaterial, Material material) {
+    workspaceMaterial.setMaterial(material);
+    return persist(workspaceMaterial);
+  }
+
+  public WorkspaceMaterial updateUrlName(WorkspaceMaterial workspaceMaterial, String urlName) {
+    workspaceMaterial.setUrlName(urlName);
+    return persist(workspaceMaterial);
+  }
+
 	public void delete(WorkspaceMaterial workspaceMaterial) {
 	  super.delete(workspaceMaterial);
 	}

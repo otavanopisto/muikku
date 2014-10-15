@@ -58,36 +58,38 @@ public class WorkspaceMaterialCreateListener {
     if (workspaceMaterial.getMaterial() instanceof HtmlMaterial) {
       HtmlMaterial htmlMaterial = (HtmlMaterial) workspaceMaterial.getMaterial();
       try {
-        Document document = htmlMaterialController.getProcessedHtmlDocument(htmlMaterial);
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-  
-        NodeList objectNodeList = document.getElementsByTagName("object");
-        for (int i = 0, l = objectNodeList.getLength(); i < l; i++) {
-          Element objectElement = (Element) objectNodeList.item(i);
-          if (objectElement.hasAttribute("type")) {
-            String content = (String) XPathFactory.newInstance().newXPath().evaluate("PARAM[@name=\"content\"]/@value", objectElement, XPathConstants.STRING);
-            String embedId = objectElement.getAttribute("data-embed-id");
-            Material fieldMaterial = null;
-            FieldMeta fieldMeta = objectMapper.readValue(content, FieldMeta.class);
-            
-            if (StringUtils.isNotBlank(embedId)) {
-              String[] embedIds = embedId.split(":");
-              fieldMaterial = materialController.findMaterialById(NumberUtils.createLong(embedIds[embedIds.length - 1]));
-            } else {
-              fieldMaterial = htmlMaterial; 
+        if (!StringUtils.isBlank(htmlMaterial.getHtml())) {
+          Document document = htmlMaterialController.getProcessedHtmlDocument(htmlMaterial);
+          ObjectMapper objectMapper = new ObjectMapper();
+          objectMapper.configure(Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+          NodeList objectNodeList = document.getElementsByTagName("object");
+          for (int i = 0, l = objectNodeList.getLength(); i < l; i++) {
+            Element objectElement = (Element) objectNodeList.item(i);
+            if (objectElement.hasAttribute("type")) {
+              String content = (String) XPathFactory.newInstance().newXPath().evaluate("PARAM[@name=\"content\"]/@value", objectElement, XPathConstants.STRING);
+              String embedId = objectElement.getAttribute("data-embed-id");
+              Material fieldMaterial = null;
+              FieldMeta fieldMeta = objectMapper.readValue(content, FieldMeta.class);
+
+              if (StringUtils.isNotBlank(embedId)) {
+                String[] embedIds = embedId.split(":");
+                fieldMaterial = materialController.findMaterialById(NumberUtils.createLong(embedIds[embedIds.length - 1]));
+              } else {
+                fieldMaterial = htmlMaterial; 
+              }
+
+              if (fieldMaterial == null) {
+                throw new MaterialQueryIntegrityExeption("EmbedId " + embedId + " points to non-existing material");
+              }
+
+              QueryField queryField = queryFieldController.findQueryFieldByMaterialAndName(fieldMaterial, fieldMeta.getName());
+              String assignedName = workspaceMaterialFieldController.getAssignedFieldName(workspaceMaterial.getId().toString(), embedId, fieldMeta.getName(), assignedNames);
+              assignedNames.add(assignedName);
+              String fieldName = DigestUtils.md5Hex(assignedName);
+
+              workspaceMaterialFieldController.createWorkspaceMaterialField(fieldName, queryField, workspaceMaterial);
             }
-            
-            if (fieldMaterial == null) {
-              throw new MaterialQueryIntegrityExeption("EmbedId " + embedId + " points to non-existing material");
-            }
-            
-            QueryField queryField = queryFieldController.findQueryFieldByMaterialAndName(fieldMaterial, fieldMeta.getName());
-            String assignedName = workspaceMaterialFieldController.getAssignedFieldName(workspaceMaterial.getId().toString(), embedId, fieldMeta.getName(), assignedNames);
-            assignedNames.add(assignedName);
-            String fieldName = DigestUtils.md5Hex(assignedName);
-            
-            workspaceMaterialFieldController.createWorkspaceMaterialField(fieldName, queryField, workspaceMaterial);
           }
         }
         

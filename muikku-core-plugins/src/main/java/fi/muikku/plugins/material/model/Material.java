@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.ManyToOne;
 import javax.persistence.PersistenceException;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -38,12 +39,12 @@ public class Material {
     this.title = title;
   }
 
-  public String getUrlName() {
-    return urlName;
+  public Material getOriginMaterial() {
+    return originMaterial;
   }
 
-  public void setUrlName(String urlName) {
-    this.urlName = urlName;
+  public void setOriginMaterial(Material originMaterial) {
+    this.originMaterial = originMaterial;
   }
 
   @Id
@@ -54,9 +55,7 @@ public class Material {
   @NotNull
   @Column (nullable = false)
   private String title;
-  
-  @NotEmpty
-  @NotNull
-  @Column (nullable = false)
-  private String urlName;
+
+  @ManyToOne
+  private Material originMaterial;
 }
