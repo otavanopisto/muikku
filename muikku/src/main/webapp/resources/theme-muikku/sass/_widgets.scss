@@ -404,53 +404,60 @@ div[class*="wi-dock-static-navi"] {
   
   &:hover { /* Need to increase action menu icons container for easier use */
     padding-left:100px; 
-    padding-bottom:20px; 
-  } 
+    padding-bottom:20px;  
+  }
 
-  .wi-generic-widget-action-menu-container {
+  .wi-generic-widget-action-menu-container { /* Hiding the menu with visibility and height rules for css transitions, use display:none/block if no transitions are needed */
     visibility:hidden;
     height:0px;
     opacity:0;
     @include widgetActionMenuTransition(opacity,0.3s,ease-in-out);
-    background:#fff;
     position:absolute;
     right:-5px;
-    border:1px solid #d6d6d6;
+    top:20px;
     color:#000;
     font-family:"Open Sans";
-    min-width:120px;
-    @include rounded(3px);
-    box-shadow:0 0 10px rgba(0,0,0,0.2);
+    min-width:125px;
     
     .wi-generic-widget-action-menu-arrow {
-    
-    }
-    
-    .wi-generic-widget-action-item {
-      padding:10px 15px;
-      font-size:12pt;
-      position:relative;
-      margin:0;
-      display:block;
+      @include background-image('gfx/contextual-menu-arrow.png');
+      background-repeat:no-repeat;
+      height:10px;
+      background-position:bottom right;
       float:none;
-      @include widgetActionMenuItemTransition;
-      
-      .wi-generic-widget-action-item-label {
-        padding:0 0 0 10px;
-        display:inline-block;
-        font-family:"Open Sans";
-        font-size:10pt;
-        position:relative;
-        top:-2px; /* Adjusting text in relation to icon as they are different sizes */
-      }
-      
-      &:hover {
-        color:#fff;
-        background:#0099ff;
-      }
-      
+      background-color:transparent;
     }
     
+    .wi-generic-widget-action-menu-item-container {
+      border:1px solid #d6d6d6;
+      @include rounded(3px);
+      box-shadow:0 0 10px rgba(0,0,0,0.2);
+      background:#fff;
+    
+      .wi-generic-widget-action-item {
+        padding:10px 15px;
+        font-size:12pt;
+        position:relative;
+        margin:0;
+        display:block;
+        float:none;
+        @include widgetActionMenuItemTransition;
+        
+        .wi-generic-widget-action-item-label {
+          padding:0 0 0 10px;
+          display:inline-block;
+          font-family:"Open Sans";
+          font-size:10pt;
+          position:relative;
+          top:-2px; /* Adjusting text in relation to icon as they are different sizes */
+        }
+      
+        &:hover {
+          color:#fff;
+          background:#0099ff;
+        }
+      }
+    }
   
   }
   
@@ -1052,8 +1059,8 @@ div[class*="sk-autocomplete-item"]:before {
  with:0;
  height:0;
  opacity:0;
-}
 
+}
 
 #filterSelectList {
 	width:100%;
