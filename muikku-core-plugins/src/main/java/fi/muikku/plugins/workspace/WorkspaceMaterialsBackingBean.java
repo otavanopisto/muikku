@@ -24,7 +24,7 @@ import fi.muikku.schooldata.WorkspaceController;
 @Named
 @Stateful
 @RequestScoped
-@Join (path = "/workspace/{workspaceUrlName}/materials/", to = "/workspaces/workspace-materials.jsf")
+@Join (path = "/workspace/{workspaceUrlName}/materials", to = "/workspaces/workspace-materials.jsf")
 public class WorkspaceMaterialsBackingBean {
 
   @Parameter
