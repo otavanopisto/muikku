@@ -20,11 +20,12 @@ import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.muikku.schooldata.WorkspaceController;
+import fi.muikku.schooldata.entity.Workspace;
 
 @Named
 @Stateful
 @RequestScoped
-@Join (path = "/workspace/{workspaceUrlName}/materials", to = "/workspaces/workspace-materials.jsf")
+@Join (path = "/workspace/{workspaceUrlName}/materials", to = "/workspaces/materials.jsf")
 public class WorkspaceMaterialsBackingBean {
 
   @Parameter
@@ -56,6 +57,8 @@ public class WorkspaceMaterialsBackingBean {
 		rootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
     
     workspaceNavigationBackingBean.setWorkspaceUrlName(urlName);
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+    workspaceName = workspace.getName();
 	}
 	
 	public List<WorkspaceNode> listWorkspaceNodes(WorkspaceNode workspaceNode) {
@@ -92,5 +95,11 @@ public class WorkspaceMaterialsBackingBean {
 		this.workspaceUrlName = workspaceUrlName;
 	}
 
+  
+  public String getWorkspaceName() {
+    return workspaceName;
+  }
+  
 	private WorkspaceRootFolder rootFolder;
+  private String workspaceName;
 }

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:c="http://java.sun.com/jsp/jstl/core" 
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core" 
+  xmlns:h="http://java.sun.com/jsf/html" 
+  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+  xmlns:composite="http://java.sun.com/jsf/composite/composite" 
+  template="/workspaces/templates/workspace-view.xhtml">
+
+  <!-- Workspace title -->
+  <ui:define name="workspace.content.top.static">
+    <h1 class="">#{workspaceMaterialsBackingBean.workspaceName}</h1>
+    <div class="workspaceMetaWrapper">
+      <span class="workspaceStudyLevelIndicator indicator1">Lukio</span>
+      <span class="workspaceMetaTitle">Aine</span><span class="workspaceMetaDesc">Englanti</span>
+      <span class="workspaceMetaTitle">Tyyppi</span><span class="workspaceMetaDesc">Ryhmäkurssi</span>
+      <span class="workspaceMetaTitle">Laajuus</span><span class="workspaceMetaDesc">30 ov</span>
+      <span class="workspaceMetaTitle">Soveltuvuus</span><span class="workspaceMetaDesc">Lukio, Peruskoulu</span>
+    </div>    
+  </ui:define>
+  
+  <ui:define name="workspace.contentArea">
+  
+    <m:widgetSpaceSet>
+      <ui:insert name="workspace.content.widgetspace">
+        <m:widgetSpace name="workspace.generic.content" keepEmpty="true" sizing="SUM" styleClass="nomargin">
+          <div class="grid_12">
+            <m:widget name="workspace-default-listing" size="12" />
+          </div>
+          <div class="grid_12">
+            <m:widget name="workspace-default-recent" size="12" />
+          </div>
+        </m:widgetSpace>
+      </ui:insert>
+    </m:widgetSpaceSet>
+  
+  </ui:define>
+
+</ui:composition>
