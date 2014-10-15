@@ -6,7 +6,7 @@
   xmlns:h="http://java.sun.com/jsf/html" 
   xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
   xmlns:composite="http://java.sun.com/jsf/composite/composite" 
-  template="/workspaces/templates/workspace-view.xhtml">
+  template="/workspaces/templates/workspace-materials-view.xhtml">
 
   <!-- Workspace title -->
   <ui:define name="workspace.content.top.static">
@@ -22,18 +22,6 @@
   
   <ui:define name="workspace.contentArea">
   
-    <m:widgetSpaceSet>
-      <ui:insert name="workspace.content.widgetspace">
-        <m:widgetSpace name="workspace.generic.content" keepEmpty="true" sizing="SUM" styleClass="nomargin">
-          <div class="grid_12">
-            <m:widget name="workspace-default-listing" size="12" />
-          </div>
-          <div class="grid_12">
-            <m:widget name="workspace-default-recent" size="12" />
-          </div>
-        </m:widgetSpace>
-      </ui:insert>
-    </m:widgetSpaceSet>
   
   </ui:define>
 

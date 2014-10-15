@@ -21,20 +21,38 @@ body.workspace { /* We need to remove background image under workspace views */
   }
   
   #workspaceNavigationWrapper {
-    background:#596e7d;
-    @include rounded;
-    width:60px;
-    min-height:200px;
     position:fixed;
     top:100px;
-    box-shadow:0 0 5px rgba(0,0,0,0.25);
-    padding:5px 0;
     
-    #workspaceNavigation {
-      text-align:center;
+    #workspaceDockWrapper {
+      background:#596e7d;
+      @include rounded;
+      width:60px;
+      box-shadow:0 0 5px rgba(0,0,0,0.25);
+      padding:5px 0;
+      
+      #workspaceDock {
+        text-align:center;
+      }
+      
     }
     
+    #workspaceMaterialsDockWrapper {
+      background:#3d4c56;
+      @include rounded;
+      width:60px;
+      margin-bottom:10px;
+      box-shadow:0 0 5px rgba(0,0,0,0.25);
+      padding:5px 0;
+      
+      #workspaceMaterialsDock {
+        text-align:center;
+      }
+      
+    }
+  
   }
+
   
   .workspaceMetaWrapper {
     font-size:0.9em;
