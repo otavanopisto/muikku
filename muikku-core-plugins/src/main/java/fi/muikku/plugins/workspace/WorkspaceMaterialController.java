@@ -99,18 +99,24 @@ public class WorkspaceMaterialController {
 	}
 	
 	public WorkspaceNode cloneWorkspaceNode(WorkspaceNode workspaceNode, WorkspaceNode parent) {
+	  WorkspaceNode newNode;
 	  if (workspaceNode instanceof WorkspaceMaterial) {
 	    WorkspaceMaterial workspaceMaterial = (WorkspaceMaterial) workspaceNode;
 	    Material material = workspaceMaterial.getMaterial();
-	    Material cloneMaterial = materialController.cloneMaterial(material);
-	    return workspaceMaterialDAO.create(parent, cloneMaterial, generateUrlName(parent, cloneMaterial.getTitle()));
+	    Material clonedMaterial = materialController.cloneMaterial(material);
+	    newNode = workspaceMaterialDAO.create(parent, clonedMaterial, generateUrlName(parent, clonedMaterial.getTitle()));
 	  }
 	  else if (workspaceNode instanceof WorkspaceFolder) {
-	    return workspaceFolderDAO.create(parent, ((WorkspaceFolder) workspaceNode).getTitle(), generateUrlName(parent, ((WorkspaceFolder) workspaceNode).getTitle()));
+	    newNode = workspaceFolderDAO.create(parent, ((WorkspaceFolder) workspaceNode).getTitle(), generateUrlName(parent, ((WorkspaceFolder) workspaceNode).getTitle()));
     }
     else {
       throw new IllegalArgumentException("Uncloneable workspace node " + workspaceNode.getClass());
     }
+	  List<WorkspaceNode> childNodes = workspaceNodeDAO.listByParent(workspaceNode);
+	  for (WorkspaceNode childNode : childNodes) {
+	    cloneWorkspaceNode(childNode, newNode);
+	  }
+	  return newNode;
 	}
 	
   public WorkspaceMaterial revertToOriginMaterial(WorkspaceMaterial workspaceMaterial) {
