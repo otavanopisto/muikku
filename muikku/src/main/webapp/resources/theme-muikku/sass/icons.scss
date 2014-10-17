@@ -1,6 +1,5 @@
 @import "_jsf.scss";
 
-
 @font-face {
   font-family: 'muikku';
   @include font-src('fonts/muikku.eot'); /* IE9 */
@@ -10,10 +9,9 @@
   'fonts/muikku.svg#muikku','svg'); /* old IOS - NOT WORKING!!! JSF libraries do not work with webparams DEM BASTARDS! */ 
   font-weight: normal;  
   font-style: normal;
-  
 }
 
-[class^="icon-"], [class*=" icon-"] {
+[class^="icon-"], [class*=" icon-"] { 
   font-family: 'muikku';
   speak: none;
   font-style: normal;
@@ -28,18 +26,13 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Lets reset the font when text used inside the same element as icon 
-
-- Removed this from working, it interfered with search result
-
+/* Lets reset the font when text used inside the same element as icon */
 [class^="icon-"] span, [class*=" icon-"] span {
   font-family: 'Open Sans';
   padding-left:4px;
   display:inline-block;
-
 }
 
-*/
 .icon-week:before {
   content: "\e600";
 }
@@ -49,128 +42,156 @@
 .icon-day:before {
   content: "\e602";
 }
-.icon-calendaricons:before {
+.icon-numbered-list:before {
   content: "\e603";
 }
-.icon-compass:before {
+.icon-close:before {
   content: "\e604";
 }
-.icon-numbered-list:before {
+.icon-arrow-left2:before {
   content: "\e605";
 }
-.icon-move:before {
+.icon-arrow-down:before {
   content: "\e606";
 }
-.icon-dynamic-navi:before {
+.icon-arrow-up:before {
   content: "\e607";
 }
-.icon-calendar:before {
+.icon-arrow-right2:before {
   content: "\e608";
 }
-.icon-bell:before {
+.icon-guides:before {
+  content: "\e635";
+}
+.icon-navicon:before {
   content: "\e609";
 }
-.icon-books:before {
+.icon-collaborate:before {
   content: "\e60a";
 }
-.icon-search:before {
+.icon-activity-feed:before {
   content: "\e60b";
 }
-.icon-cogs:before {
+.icon-compass:before {
   content: "\e60c";
 }
-.icon-envelope-alt:before {
+.icon-members:before {
   content: "\e60d";
 }
-.icon-google-plus:before {
+.icon-attachment:before {
   content: "\e60e";
 }
-.icon-facebook:before {
+.icon-checkmark:before {
   content: "\e60f";
 }
-.icon-twitter:before {
+.icon-discussion:before {
   content: "\e610";
 }
-.icon-envelope:before {
+.icon-files:before {
   content: "\e611";
 }
-.icon-cog:before {
+.icon-home-workspace:before {
   content: "\e612";
 }
-.icon-trash:before {
+.icon-pin:before {
   content: "\e613";
 }
-.icon-home:before {
+.icon-fullscreen:before {
   content: "\e614";
 }
-.icon-signout:before {
+.icon-diary:before {
   content: "\e615";
 }
-.icon-signin:before {
+.icon-materials:before {
   content: "\e616";
 }
-.icon-thumb-up:before {
+.icon-move:before {
   content: "\e617";
 }
-.icon-thumb-down:before {
+.icon-dynamic-navi:before {
   content: "\e618";
 }
-.icon-reorder:before {
+.icon-calendar:before {
   content: "\e619";
 }
-.icon-pencil:before {
+.icon-bell:before {
   content: "\e61a";
 }
-.icon-star:before {
+.icon-books:before {
   content: "\e61b";
 }
-.icon-star-empty:before {
+.icon-search:before {
   content: "\e61c";
 }
-.icon-clock:before {
+.icon-cogs:before {
   content: "\e61d";
 }
-.icon-arrow-left:before {
+.icon-envelope-alt:before {
   content: "\e61e";
 }
-.icon-arrow-right:before {
+.icon-google-plus:before {
   content: "\e61f";
 }
-.icon-book:before {
+.icon-facebook:before {
   content: "\e620";
 }
-.icon-file:before {
+.icon-twitter:before {
   content: "\e621";
 }
-.icon-profile:before {
+.icon-envelope:before {
   content: "\e622";
 }
-.icon-user:before {
+.icon-cog:before {
   content: "\e623";
 }
-.icon-spinner:before {
+.icon-trash:before {
   content: "\e624";
 }
-.icon-attachment:before {
+.icon-home:before {
   content: "\e625";
 }
-.icon-close:before {
+.icon-signout:before {
   content: "\e626";
 }
-.icon-checkmark:before {
+.icon-signin:before {
   content: "\e627";
 }
-.icon-arrow-down:before {
+.icon-thumb-up:before {
   content: "\e628";
 }
-.icon-arrow-left2:before {
+.icon-thumb-down:before {
   content: "\e629";
 }
-.icon-arrow-up:before {
+.icon-pencil:before {
   content: "\e62a";
 }
-.icon-arrow-right2:before {
+.icon-star:before {
   content: "\e62b";
 }
-
-
+.icon-star-empty:before {
+  content: "\e62c";
+}
+.icon-clock:before {
+  content: "\e62d";
+}
+.icon-arrow-left:before {
+  content: "\e62e";
+}
+.icon-arrow-right:before {
+  content: "\e62f";
+}
+.icon-book:before {
+  content: "\e630";
+}
+.icon-file:before {
+  content: "\e631";
+}
+.icon-profile:before {
+  content: "\e632";
+}
+.icon-user:before {
+  content: "\e633";
+}
+.icon-spinner:before {
+  content: "\e634";
+}

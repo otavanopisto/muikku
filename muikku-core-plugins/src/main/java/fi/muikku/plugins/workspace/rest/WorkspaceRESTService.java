@@ -2,6 +2,7 @@ package fi.muikku.plugins.workspace.rest;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateful;
@@ -27,6 +28,7 @@ import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.muikku.model.workspace.WorkspaceSettings;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
+import fi.muikku.model.workspace.WorkspaceUserSignup;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.schooldata.CourseMetaController;
 import fi.muikku.schooldata.RoleController;
@@ -268,6 +270,34 @@ public class WorkspaceRESTService extends PluginRESTService {
     return Response.ok(createRestModel(workspaceUserEntity)).build();
   }
 
+  @POST
+  @Path ("/workspaces/{ID}/signups")
+  public Response createWorkspaceUserSignup(@PathParam ("ID") Long workspaceEntityId, fi.muikku.plugins.workspace.rest.model.WorkspaceUserSignup entity) {
+    // TODO: Security
+    
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.BAD_REQUEST).build(); 
+    }
+    
+    UserEntity userEntity = null;
+    
+    if (entity.getUserId() != null) {
+      userEntity = userController.findUserEntityById(entity.getUserId());
+    } else {
+      userEntity = sessionController.getUser();
+    }
+    
+    if (userEntity == null) {
+      return Response.status(Status.BAD_REQUEST).build(); 
+    }
+
+    WorkspaceUserSignup signup = workspaceController.createWorkspaceUserSignup(workspaceEntity, userEntity, new Date(), entity.getMessage());
+    
+    return Response.ok(createRestModel(signup)).build();
+  }
+  
+  
   private List<fi.muikku.plugins.workspace.rest.model.Workspace> createRestModel(WorkspaceEntity... workspaceEntities) {
     List<fi.muikku.plugins.workspace.rest.model.Workspace> result = new ArrayList<>();
     
@@ -302,6 +332,11 @@ public class WorkspaceRESTService extends PluginRESTService {
     return new fi.muikku.plugins.workspace.rest.model.Workspace(workspaceEntity.getId(), workspaceEntity.getUrlName(), workspaceEntity.getArchived(), workspace.getName(), workspace.getDescription());
   }
 
+  private fi.muikku.plugins.workspace.rest.model.WorkspaceUserSignup createRestModel(WorkspaceUserSignup signup) {
+    return new fi.muikku.plugins.workspace.rest.model.WorkspaceUserSignup(signup.getId(), signup.getWorkspaceEntity().getId(), signup.getUserEntity().getId(), signup.getDate(), signup.getMessage());
+  }
+
+  
 //// 
 //// Workspace
 //// 

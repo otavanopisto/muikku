@@ -6,9 +6,9 @@ xmlns:ui="http://java.sun.com/jsf/facelets"
 xmlns:f="http://java.sun.com/jsf/core"
 xmlns:h="http://java.sun.com/jsf/html">
 
-   <m:widgetSpace name="generic.header.right" keepEmpty="false" styleClass="omega" sizing="SUM">
-<!--      <m:widget name="language" size="1"/>  --> 
-<!--      <m:widget name="logout" size="1" rendered="#{sessionBackingBean.loggedIn}"/>  -->
+   <m:widgetSpace name="generic.header.right" keepEmpty="true" sizing="MINIMIZE" styleClass="omega">
+     <!-- <m:widget name="language" size="1"/>  --> 
+     <!-- <m:widget name="logout" size="1" rendered="#{sessionBackingBean.loggedIn}"/>  -->
      <m:widget name="loggeduser" size="9" rendered="#{sessionBackingBean.loggedIn}"/>
      <m:widget name="login" size="7" rendered="#{!sessionBackingBean.loggedIn}"/>
    </m:widgetSpace>
