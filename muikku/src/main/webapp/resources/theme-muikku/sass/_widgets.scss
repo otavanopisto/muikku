@@ -19,7 +19,9 @@ div[class*='dock-dynamic-navi-button'] > a {
 }
 
 /* Workspace navigation */
-div[class*='dock-workspace-navi-button'] > a {
+div[class*='dock-workspace-navi-button'] > a,
+div[class*='dock-workspace-navi-button'] > span {
+  cursor:pointer;
   font-size:24pt;
   color:#fff;
   text-decoration:none;
@@ -33,21 +35,21 @@ div[class*='dock-workspace-navi-button'] > a {
   @include rounded(3px);
   
   span[class*='workspace-navi-tt-container-'] {
-      opacity:0;
-      font-family:"Open Sans";
-      font-size:16px;
-      height:16px;
-      font-weight:300;
-      position:absolute;
-      top:0px;
-      left:-4500px;
-      width:0px;
-      color:#fff;
-      text-transform:uppercase;
-      padding:13px 15px 15px 14px;
-      @include rounded-top-right(3px);
-      @include rounded-bottom-right(3px);
-      @include workspaceTooltipTransition(opacity,0.25s,ease-in-out);
+    opacity:0;
+    font-family:"Open Sans";
+    font-size:16px;
+    height:16px;
+    font-weight:300;
+    position:absolute;
+    top:0px;
+    left:-4500px;
+    width:0px;
+    color:#fff;
+    text-transform:uppercase;
+    padding:13px 15px 15px 14px;
+    @include rounded-top-right(3px);
+    @include rounded-bottom-right(3px);
+    @include workspaceTooltipTransition(opacity,0.25s,ease-in-out);
   }
     
   &:hover {
@@ -61,6 +63,22 @@ div[class*='dock-workspace-navi-button'] > a {
       left:45px;
     }
   }
+}
+
+/* Rule for workspace's dock's selected icon */
+div[class*='dock-workspace-navi-button-selected'] > span {
+  background:#465b6c;
+  cursor:pointer;
+  font-size:24pt;
+  color:#fff;
+  text-decoration:none;
+  @include iconShadow;
+  padding:6px;
+  margin:4px;
+  display:inline-block;
+  position:relative;
+  width:35px;
+  @include rounded(3px);
 }
 
 div[data-name="generic.dock-top.left"] div:last-child > a{
