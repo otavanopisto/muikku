@@ -43,16 +43,17 @@ $(document).ready(function(){
 	        		]
 	        	});
 
-	    var uId = 
+
         var msgC = $('mf-content-main');
+	    var uId = $(document).find("input[name='userId']").val();
         
         RESTful.doGet(CONTEXTPATH + "/rest/communicator/{userId}/items", {
           parameters: {
-            'userId': this._userId
+            'userId': uId
           }
         }).success(function (data, textStatus, jqXHR) {
           renderDustTemplate('communicator/communicator_items.dust', data, function (text) {
-            _this._communicatorContent.append($.parseHTML(text));
+        	  msgC.append($.parseHTML(text));
           });
         });
       

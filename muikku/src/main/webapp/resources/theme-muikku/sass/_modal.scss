@@ -15,6 +15,8 @@
     .md-close{
     font-weight:300;
     }
+
+    
   }
 
 
@@ -48,6 +50,11 @@
          div {
           background-color: transparent !important; 
          }
+
+         div:not(:first-child){
+          margin-top: 10px;
+         }
+
        } 
 
       }
@@ -84,9 +91,7 @@
    }
 
   
-   div:not(:first-child){
-    margin-top: 10px;
-   }
+
    
    textarea{
     width:100%;  

@@ -7,6 +7,9 @@
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     template="/WEB-INF/templates/mainfunction.xhtml">
 
+    <ui:define name="hiddenFields">
+        <input type="hidden" name="userId" value="#{muikkuSession.user.id}"/>
+    </ui:define>
     
     <ui:define name="viewScripts">
           <h:outputScript name="scripts/gui/communicator.js" />

@@ -10,7 +10,10 @@ template="./main-view.xhtml">
 
  <ui:define name="content.center.widget">
   <div class="widget mainfunction container_24">
-    <input type="hidden" name="userId" value="#{muikkuSession.user.id}"/>
+
+    <ui:insert name="hiddenFields">
+    
+    </ui:insert>
     
      <ui:insert name="mainfunction-side"> 
        <div class="mf-side grid_6 nomargin noLid">
