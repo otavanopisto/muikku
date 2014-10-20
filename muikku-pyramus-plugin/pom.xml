@@ -15,7 +15,7 @@
   <description>Plugin that provides support for using Pyramus as school data source for Muikku</description>
   
   <properties>
-    <pyramus.version>0.7.0-SNAPSHOT</pyramus.version>
+    <pyramus.version>0.7.1-SNAPSHOT</pyramus.version>
   </properties>
   
   <dependencies>

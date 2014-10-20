@@ -123,7 +123,7 @@ public class PyramusUpdater {
     Map<String, fi.pyramus.rest.model.User> userMap = new HashMap<>();
 
     List<String> existingIdentifiers = userEntityController.listUserEntityIdentifiersByDataSource(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
-    fi.pyramus.rest.model.User[] pyramusUsers = pyramusClient.get("/users/users?firstResult=" + offset + "&maxResults=" + maxStudents, fi.pyramus.rest.model.User[].class);
+    fi.pyramus.rest.model.User[] pyramusUsers = pyramusClient.get("/staff/members?firstResult=" + offset + "&maxResults=" + maxStudents, fi.pyramus.rest.model.User[].class);
     if (pyramusUsers.length == 0) {
       return -1;
     } else {
@@ -161,7 +161,7 @@ public class PyramusUpdater {
     
     for (fi.muikku.schooldata.entity.User user : newUsers) {
       Long pyramusStaffId = identifierMapper.getPyramusStaffId(user.getIdentifier());
-      Email[] emails = pyramusClient.get("/users/users/" + pyramusStaffId.toString() + "/emails", Email[].class);
+      Email[] emails = pyramusClient.get("/staff/members/" + pyramusStaffId.toString() + "/emails", Email[].class);
       
       if (emails != null) {
         for (Email email : emails) {
@@ -172,7 +172,7 @@ public class PyramusUpdater {
 
     for (fi.muikku.schooldata.entity.User user : updateUsers) {
       Long pyramusStaffId = identifierMapper.getPyramusStaffId(user.getIdentifier());
-      Email[] emails = pyramusClient.get("/users/users/" + pyramusStaffId.toString() + "/emails", Email[].class);
+      Email[] emails = pyramusClient.get("/staff/members/" + pyramusStaffId.toString() + "/emails", Email[].class);
       
       if (emails != null) {
         for (Email email : emails) {

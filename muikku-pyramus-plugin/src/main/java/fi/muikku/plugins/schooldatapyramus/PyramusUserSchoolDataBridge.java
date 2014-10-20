@@ -56,7 +56,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 	  
 	  Long staffId = identifierMapper.getPyramusStaffId(identifier);
 	  if (staffId != null) {
-      return entityFactory.createEntity(pyramusClient.get("/users/users/" + staffId, fi.pyramus.rest.model.User.class));
+      return entityFactory.createEntity(pyramusClient.get("/staff/members/" + staffId, fi.pyramus.rest.model.User.class));
 	  }
 
 	  throw new SchoolDataBridgeRequestException("Malformed user identifier");
@@ -72,7 +72,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 		List<User> result = new ArrayList<User>();
 
     result.addAll(entityFactory.createEntity(pyramusClient.get("/students/students", Student[].class)));
-    result.addAll(entityFactory.createEntity(pyramusClient.get("/users/users", fi.pyramus.rest.model.User[].class)));
+    result.addAll(entityFactory.createEntity(pyramusClient.get("/staff/members", fi.pyramus.rest.model.User[].class)));
 
 		return result;
 	}
@@ -206,7 +206,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 	  
     Long staffId = identifierMapper.getPyramusStaffId(userIdentifier);
     if (staffId != null) {
-      fi.pyramus.rest.model.User user = pyramusClient.get("/users/users/" + staffId, fi.pyramus.rest.model.User.class);
+      fi.pyramus.rest.model.User user = pyramusClient.get("/staff/members/" + staffId, fi.pyramus.rest.model.User.class);
       return user != null ? entityFactory.createEntity(user.getRole()) : null;
     }
 	  
