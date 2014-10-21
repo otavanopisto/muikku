@@ -7,7 +7,7 @@
 @import "_buttons.scss";
 @import "_widgets.scss";
 @import "_notif-queue.scss";
-
+@import "_mainfunctions.scss";
 /* Note: All in-development- unfinished-temp-styles are in temp.css */
 
 html {
@@ -23,6 +23,11 @@ body {
   @include main-background('gfx/main-background.png','gfx/main-background-slice.png');
   background-repeat:no-repeat,repeat-x;
   background-position: top center, top left;
+  
+  &.ui-guidelines{
+   background-color:#fff;
+   background-image:none;
+  }
 }
 
 .nopadding {
