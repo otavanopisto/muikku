@@ -49,10 +49,10 @@ div[class*='dock-workspace-navi-button'] > a {
       @include rounded-bottom-right(3px);
       @include workspaceTooltipTransition(opacity,0.25s,ease-in-out);
   }
+  
     
   &:hover {
     background:#465b6c;
-
     span[class*='workspace-navi-tt-container-'] {
       display:block;
       background:#465b6c;

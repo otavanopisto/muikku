@@ -974,68 +974,6 @@ a.header {
 .cp-ryhmakurssi
 */
 
-/* Settings */
-
-.se-users, 
-.se-roles, 
-.se-workspaces, 
-.se-workspacetypes, 
-.se-plugins, 
-.se-gradingscales, 
-.se-courseidentifiers {
-  @extend .co-content;  
-}
-
-se-container {
-}
-
-.se-container ul {
-  margin-left:20px;
-}
-
-.se-container th[scope="col"] {
-  @extend .co-content-th;
-}
-
-.se-container th[scope="colgroup"] {
-  color:$header;
-  @include fontShadow;
-  font-size:1.3em;
-  padding:5px;
-  font-weight:bold;  
-}
-
-.se-container tbody {
-  @extend .co-content-tbody;
-}
-
-.se-container td {
-  @extend .co-content-td;
-}
-
-.se-container tfoot {
-  @extend .co-content-tfoot;
-}
-
-.se-index {
-}
-
-.se-widget-userAdd {
-  @extend .co-buttonContainer;	
-  margin-top:5px;
-  padding:0;
-  width:40px;
-  height:40px;
-}
-
-.se-widget-userAdd a {
-  @include customIcon($mainFuncBtnGr...);    
-  @include background-image('gfx/icons/32x32/actions/settings-users-add.png');      
-  @include rounded(2px);
-  @include shadow;
-  @include border($mainFuncBtnBrd);	
-}
-
 div[data-name="settings.content-sidebar.left"] {
   padding:0;	
 }
