@@ -49,7 +49,7 @@ div[class*='dock-workspace-navi-button'] > span {
     padding:13px 15px 15px 14px;
     @include rounded-top-right(3px);
     @include rounded-bottom-right(3px);
-    @include workspaceTooltipTransition(opacity,0.25s,ease-in-out);
+    @include workspaceTooltipTransition(opacity,0.15s,ease-in-out);
   }
     
   &:hover {
@@ -429,7 +429,7 @@ div[class*="wi-dock-static-navi"] {
     visibility:hidden;
     height:0px;
     opacity:0;
-    @include widgetActionMenuTransition(opacity,0.3s,ease-in-out);
+    @include widgetActionMenuTransition(opacity,0.15s,ease-in-out);
     position:absolute;
     right:-5px;
     top:20px;

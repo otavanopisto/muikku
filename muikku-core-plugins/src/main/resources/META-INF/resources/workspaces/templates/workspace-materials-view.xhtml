@@ -39,21 +39,29 @@
         <div class="clear"></div> 
       </div>
     </div>  
+    <!-- 
+    TAKE NOTICE: This widgetSpaceSet does not follow the rules of teh Mighty Grid, 
+    it gets grid_1 class from widgets size but its css rules are overridden as they are not wanted 
+    -->
     <div id="workspaceNavigationWrapper">
-      <div id="workspaceMaterialsDockWrapper">
-        <div id="workspaceMaterialsDock">
-          <ui:insert name="workspaces.materials.dock">
-            <ui:include src="/facelets/generic/workspaces-materials-dock.xhtml"></ui:include>
-          </ui:insert>
-        </div>
-      </div>
-      <div id="workspaceDockWrapper">
-        <div id="workspaceDock">
-          <ui:insert name="workspaces.dock">
-            <ui:include src="/facelets/generic/workspaces-dock.xhtml"></ui:include>
-          </ui:insert>
-        </div>
-      </div>
+      <ui:insert name="workspace.dock">
+        <m:widgetSpaceSet>
+          <div id="workspaceMaterialsDockWrapper">
+            <div id="workspaceMaterialsDock">
+              <ui:insert name="workspaces.materials.dock">
+                <ui:include src="/facelets/generic/workspaces-materials-dock.xhtml"></ui:include>
+              </ui:insert>
+            </div>
+          </div>
+          <div id="workspaceDockWrapper">
+            <div id="workspaceDock">
+              <ui:insert name="workspaces.main.dock">
+                <ui:include src="/facelets/generic/workspaces-main-dock.xhtml"></ui:include>
+              </ui:insert>
+            </div>
+          </div>
+        </m:widgetSpaceSet>
+      </ui:insert>
     </div>
     <div id="content" class="container_24">
       <ui:insert name="workspace.content.top.static"></ui:insert>

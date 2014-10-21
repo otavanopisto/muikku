@@ -1,5 +1,6 @@
 @import "_jsf.scss";
 
+
 /* COLORS */
 $contextualLink:#0099ff;
 $contextualLinkHover:#006ab1;
@@ -352,16 +353,16 @@ $text: 12px;
 /* Widget Action Menu Transitions */
 @mixin widgetActionMenuItemTransition() {
   -webkit-transition-property:background,color;
-  -webkit-transition-duration:0.15s;
+  -webkit-transition-duration:0.1s;
   -webkit-transition-timing-function:ease-in;
   -moz-transition-property:background,color;
-  -moz-transition-duration:0.15s;
+  -moz-transition-duration:0.1s;
   -moz-transition-timing-function:ease-in;
   -o-transition-property:background,color;
-  -o-transition-duration:0.15s;
+  -o-transition-duration:0.1s;
   -o-transition-timing-function:ease-in;
   transition-property:background,color;
-  transition-duration:0.15s;
+  transition-duration:0.1s;
   transition-timing-function:ease-in;
 }
 

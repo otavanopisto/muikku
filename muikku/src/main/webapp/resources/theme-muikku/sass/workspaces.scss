@@ -20,16 +20,21 @@ body.workspace { /* We need to remove background image under workspace views */
     box-shadow:0 3px 10px rgba(0,0,0,0.1);
   }
   
-  #workspaceNavigationWrapper {
+  #workspaceNavigationWrapper { 
     position:fixed;
     top:100px;
+    
+    .grid_1 {
+      float:none;
+      width:auto;
+      margin:0;
+    }
     
     #workspaceDockWrapper {
       background:#596e7d;
       @include rounded(3px);
       width:60px;
       box-shadow:0 0 5px rgba(0,0,0,0.25);
-      
       #workspaceDock {
         text-align:center;
       }
@@ -90,9 +95,17 @@ body.workspace { /* We need to remove background image under workspace views */
     p {
       margin:1em 0 1em 0;
     }
-    
+   
+   
   }
-  
+
+}
+
+body.workspace-reading {
+  background:#6b899e;
+  margin:0;
+  pading:0;
+  height:100%;
 }
 
 .wi-dock-workspace-navi-button-materials-toc > .workspace-materials-toc-wrapper {

@@ -24,12 +24,13 @@ $(document).ready(function() {
       })
     });
     
+    // Functionality for workspace's TOC
     if ($('.wi-dock-workspace-navi-button-materials-toc').length > 0) {
       var tocButton = $('.wi-dock-workspace-navi-button-materials-toc');
       var tocWrapper = tocButton.children('.workspace-materials-toc-wrapper');
       var tocButtonLabel = $('.wi-dock-workspace-navi-button-materials-toc .workspace-navi-tt-container-materials-toc'); 
 
-      
+      // Some hiding and showing for TOC by click event
       $(tocButton).click(function(e) {
         
         if ($('.workspace-materials-toc-wrapper:hidden').length !== 0) {
