@@ -45,16 +45,18 @@ public class ElasticSearchProvider implements SearchProvider {
   }
 
   @Override
-  public SearchResult search(Map<String, String> Query, int start, int maxResults, Class<?>... types) {
+  public SearchResult search(String query, String[] fields, int start, int maxResults, Class<?>... types) {
     String[] typenames = new String[types.length];
     for (int i = 0; i < types.length; i++) {
       typenames[i] = types[i].getSimpleName();
     }
-    SearchResponse response = elasticClient.prepareSearch("muikku").setTypes(typenames).setQuery(Query).execute().actionGet();
+    SearchResponse response = elasticClient.prepareSearch("muikku").setTypes(typenames).setQuery(QueryBuilders.multiMatchQuery(query, fields)).setFrom(start).setSize(maxResults).execute()
+        .actionGet();
     List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
     SearchHit[] results = response.getHits().getHits();
     for (SearchHit hit : results) {
       Map<String, Object> hitSource = hit.getSource();
+      hitSource.put("indexType", hit.getType());
       searchResults.add(hitSource);
     }
     SearchResult result = new SearchResult(searchResults.size(), start, maxResults, searchResults);

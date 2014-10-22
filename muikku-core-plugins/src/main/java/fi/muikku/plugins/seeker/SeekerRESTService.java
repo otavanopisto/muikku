@@ -1,6 +1,7 @@
 package fi.muikku.plugins.seeker;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.ejb.Stateful;
@@ -20,32 +21,28 @@ import fi.muikku.session.SessionController;
 @Path("/seeker")
 @RequestScoped
 @Stateful
-@Produces ("application/json")
+@Produces("application/json")
 public class SeekerRESTService extends PluginRESTService {
 
-  @Inject
-  private SessionController sessionController;
+  private static final long serialVersionUID = 1L;
 
   @Inject
   @Any
   private Instance<SeekerResultProvider> seekerResultProviders;
-  
+
   @GET
-  @Path ("/search")
-  public Response search(
-      @QueryParam("searchString") String searchString
-      ) {
+  @Path("/search")
+  public Response search(@QueryParam("searchString") String searchString) {
     List<SeekerResult> results = new ArrayList<SeekerResult>();
-    
-    for (SeekerResultProvider provider : seekerResultProviders) {
+    Iterator<SeekerResultProvider> i = seekerResultProviders.iterator();
+    while (i.hasNext()) {
+      SeekerResultProvider provider = i.next();
       List<SeekerResult> result = provider.search(searchString);
       if (result != null) {
         results.addAll(result);
       }
     }
-    
     return Response.ok(results).build();
   }
-
 
 }

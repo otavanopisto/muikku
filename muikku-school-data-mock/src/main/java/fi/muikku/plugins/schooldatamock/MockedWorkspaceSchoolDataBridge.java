@@ -39,7 +39,10 @@ public class MockedWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBridg
 
 	@Override
 	public Workspace createWorkspace(String name, String description, WorkspaceType type, String courseIdentifierIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-		if (StringUtils.isBlank(name)) {
+		
+	 System.out.println("creating worksspace with name: "+name);
+	  
+	  if (StringUtils.isBlank(name)) {
 			throw new SchoolDataBridgeRequestException("Name is required");
 		}
 		
