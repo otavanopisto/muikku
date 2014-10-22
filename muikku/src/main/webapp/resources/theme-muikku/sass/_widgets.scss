@@ -54,6 +54,7 @@ div[class*='dock-workspace-navi-button'] > span {
     
   &:hover {
     background:#465b6c;
+    @include iconShadow(rgba(255,255,190,0.5));
 
     span[class*='workspace-navi-tt-container-'] {
       display:block;
