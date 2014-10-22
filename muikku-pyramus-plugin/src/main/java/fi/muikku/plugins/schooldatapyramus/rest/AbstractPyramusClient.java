@@ -6,6 +6,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -26,21 +27,29 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 
+import fi.muikku.controller.PluginSettingsController;
+import fi.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
+
 public abstract class AbstractPyramusClient {
-  
-  // TODO: replace with configured values
-  private static final String PYRAMUS_REST = "https://localhost:8443/1";
-  private static String CLIENT_ID = "854885cf-2284-4b17-b63c-a8b189535f8d";
-  private static String CLIENT_SECRET = "cqJ4J1if8ca5RMUqaYyFPYToxfFxt2YT8PXL3pNygPClnjJdt55lrFs6k1SZ6colJN24YEtZ7bhFW29S";
-  private static String REDIRECT_URL = "https://localhost:8443/oauth2ClientTest/success";
   
   @Inject
   private Logger logger;
 
+  @Inject
+  private PluginSettingsController pluginSettingsController;
+  
+  @PostConstruct
+  public void clientInit() {
+    url = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "rest.url");
+    clientId = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "rest.clientId");
+    clientSecret = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "rest.clientSecret");
+    redirectUrl = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "rest.redirectUrl");
+  }
+
   public <T> T post(String path, Entity<?> entity, Class<T> type) {
     Client client = createClient();
     
-    WebTarget target = client.target(PYRAMUS_REST + path);
+    WebTarget target = client.target(url + path);
     Builder request = target.request();
     request.header("Authorization", "Bearer " + getAccessToken());
     Response response = request.post(entity);
@@ -55,7 +64,7 @@ public abstract class AbstractPyramusClient {
   public <T> T post(String path, T entity) {
     Client client = createClient();
     
-    WebTarget target = client.target(PYRAMUS_REST + path);
+    WebTarget target = client.target(url + path);
     Builder request = target.request();
     request.header("Authorization", "Bearer " + getAccessToken());
     Response response = request.post(Entity.entity(entity, MediaType.APPLICATION_JSON));
@@ -69,7 +78,7 @@ public abstract class AbstractPyramusClient {
   public <T> T get(String path, Class<T> type) {
     Client client = createClient();
     
-    WebTarget target = client.target(PYRAMUS_REST + path);
+    WebTarget target = client.target(url + path);
     Builder request = target.request();
     request.header("Authorization", "Bearer " + getAccessToken());
     Response response = request.get();
@@ -90,11 +99,11 @@ public abstract class AbstractPyramusClient {
     Form form = new Form()
       .param("grant_type", "authorization_code")
       .param("code", code)
-      .param("redirect_uri", REDIRECT_URL)
-      .param("client_id", CLIENT_ID)
-      .param("client_secret", CLIENT_SECRET);
+      .param("redirect_uri", redirectUrl)
+      .param("client_id", clientId)
+      .param("client_secret", clientSecret);
 
-    WebTarget target = client.target(PYRAMUS_REST + "/oauth/token");
+    WebTarget target = client.target(url + "/oauth/token");
 
     Builder request = target.request();
 
@@ -168,6 +177,9 @@ public abstract class AbstractPyramusClient {
 
   }
 
-  
+  private String url;
+  private String clientId;
+  private String clientSecret;
+  private String redirectUrl;
   
 }
