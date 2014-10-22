@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
@@ -32,6 +34,9 @@ import fi.pyramus.rest.model.Student;
 public class PyramusUpdater {
 
   @Inject
+  private Logger logger;
+  
+  @Inject
   private WorkspaceEntityController workspaceEntityController;
   
   @Inject
@@ -49,6 +54,37 @@ public class PyramusUpdater {
   @Inject
   private PyramusIdentifierMapper identifierMapper;
   
+  public void updateStudent(Long pyramusId) {
+    String studentIdentifier = identifierMapper.getStudentIdentifier(pyramusId);
+    Student student = pyramusClient.get("/students/students/" + pyramusId, Student.class);
+    if (student != null) {
+      boolean studentExists = userEntityController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, studentIdentifier) != null;
+      if (!studentExists) {
+        synchronizeStudents(Arrays.asList(entityFactory.createEntity(student)), null);
+      } else {
+        synchronizeStudents(null, Arrays.asList(entityFactory.createEntity(student)));
+      }
+    } else {
+      logger.log(Level.WARNING, "Could not find student #" + pyramusId + " from Pyramus");
+    }
+  }
+
+  public void updateCourse(Long courseId) {
+    String workspaceIdentifier = identifierMapper.getWorkspaceIdentifier(courseId);
+    Course course = pyramusClient.get("/courses/courses/" + courseId, Course.class);
+    
+    if (course != null) {
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, workspaceIdentifier);
+      if (workspaceEntity == null) {
+        synchronizeWorkspaces(Arrays.asList(entityFactory.createEntity(course)), null);
+      } else {
+        synchronizeWorkspaces(null, Arrays.asList(entityFactory.createEntity(course)));
+      }
+    } else {
+      logger.log(Level.WARNING, "Could not find course #" + courseId + " from Pyramus");
+    }
+  } 
+
   public int updateStudents(int offset, int maxStudents) {
     List<fi.muikku.schooldata.entity.User> newUsers = new ArrayList<>();
     List<fi.muikku.schooldata.entity.User> updateUsers = new ArrayList<>();
@@ -67,44 +103,9 @@ public class PyramusUpdater {
       }
     }
     
-    List<User> users = schoolDataEntityInitializerProvider.initUsers(newUsers);
+    synchronizeStudents(newUsers, updateUsers);
     
-    List<UserRole> userRoles = new ArrayList<>(); 
-    Role studentRole = entityFactory.createEntity(fi.pyramus.rest.model.UserRole.STUDENT);
-    
-    for (User newUser : newUsers) {
-      userRoles.add(new PyramusUserRole("PYRAMUS-" + newUser.getIdentifier(), newUser.getIdentifier(), studentRole.getIdentifier()));
-    }
-    
-    schoolDataEntityInitializerProvider.initUserRoles(userRoles);
-    
-    List<UserEmail> userEmails = new ArrayList<>();
-    
-    for (fi.muikku.schooldata.entity.User user : newUsers) {
-      Long pyramusStudentId = identifierMapper.getPyramusStudentId(user.getIdentifier());
-      Email[] studentEmails = pyramusClient.get("/students/students/" + pyramusStudentId.toString() + "/emails", Email[].class);
-      
-      if (studentEmails != null) {
-        for (Email studentEmail : studentEmails) {
-          userEmails.add(new PyramusUserEmail("PYRAMUS-" + studentEmail.getId().toString(), user.getIdentifier(), studentEmail.getAddress()));
-        }
-      }
-    }
-
-    for (fi.muikku.schooldata.entity.User user : updateUsers) {
-      Long pyramusStudentId = identifierMapper.getPyramusStudentId(user.getIdentifier());
-      Email[] studentEmails = pyramusClient.get("/students/students/" + pyramusStudentId.toString() + "/emails", Email[].class);
-
-      if (studentEmails != null) {
-        for (Email studentEmail : studentEmails) {
-          userEmails.add(new PyramusUserEmail("PYRAMUS-" + studentEmail.getId().toString(), user.getIdentifier(), studentEmail.getAddress()));
-        }
-      }
-    }
-    
-    schoolDataEntityInitializerProvider.initUserEmails(userEmails);
-    
-    return users.size();
+    return newUsers.size();
   }
   
   public int updateUserRoles() {
@@ -202,7 +203,7 @@ public class PyramusUpdater {
         } 
       }
       
-      schoolDataEntityInitializerProvider.initWorkspaces(newWorkspaces);
+      synchronizeWorkspaces(newWorkspaces, null);
       
       return newWorkspaces.size();
     }
@@ -230,5 +231,54 @@ public class PyramusUpdater {
     
     return 0;
   }
+
+  private void synchronizeStudents(List<fi.muikku.schooldata.entity.User> newUsers, List<fi.muikku.schooldata.entity.User> updateUsers) {
+    List<UserEmail> userEmails = new ArrayList<>();
+    
+    if (newUsers != null) {
+      schoolDataEntityInitializerProvider.initUsers(newUsers);
+      
+      List<UserRole> userRoles = new ArrayList<>(); 
+      Role studentRole = entityFactory.createEntity(fi.pyramus.rest.model.UserRole.STUDENT);
+      
+      for (User newUser : newUsers) {
+        userRoles.add(new PyramusUserRole("PYRAMUS-" + newUser.getIdentifier(), newUser.getIdentifier(), studentRole.getIdentifier()));
+      }
+      
+      schoolDataEntityInitializerProvider.initUserRoles(userRoles);
+      
+      for (fi.muikku.schooldata.entity.User user : newUsers) {
+        Long pyramusStudentId = identifierMapper.getPyramusStudentId(user.getIdentifier());
+        Email[] studentEmails = pyramusClient.get("/students/students/" + pyramusStudentId.toString() + "/emails", Email[].class);
+        
+        if (studentEmails != null) {
+          for (Email studentEmail : studentEmails) {
+            userEmails.add(new PyramusUserEmail("PYRAMUS-" + studentEmail.getId().toString(), user.getIdentifier(), studentEmail.getAddress()));
+          }
+        }
+      }
+    }
+
+    if (updateUsers != null) {
+      for (fi.muikku.schooldata.entity.User user : updateUsers) {
+        Long pyramusStudentId = identifierMapper.getPyramusStudentId(user.getIdentifier());
+        Email[] studentEmails = pyramusClient.get("/students/students/" + pyramusStudentId.toString() + "/emails", Email[].class);
   
+        if (studentEmails != null) {
+          for (Email studentEmail : studentEmails) {
+            userEmails.add(new PyramusUserEmail("PYRAMUS-" + studentEmail.getId().toString(), user.getIdentifier(), studentEmail.getAddress()));
+          }
+        }
+      }
+    }
+    
+    schoolDataEntityInitializerProvider.initUserEmails(userEmails);
+  }
+  
+  private void synchronizeWorkspaces(List<Workspace> newWorkspaces, List<Workspace> updateWorkspaces) {
+    if (newWorkspaces != null) {
+      schoolDataEntityInitializerProvider.initWorkspaces(newWorkspaces);
+    }
+  }
+
 }

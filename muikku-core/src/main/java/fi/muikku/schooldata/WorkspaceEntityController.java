@@ -21,6 +21,16 @@ public class WorkspaceEntityController {
   @Inject
   private SchoolDataSourceDAO schoolDataSourceDAO;
   
+  public WorkspaceEntity findWorkspaceByDataSourceAndIdentifier(String dataSource, String identifier) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
+    if (schoolDataSource == null) {
+      logger.severe("Could not find school data source: " + dataSource);
+      return null;
+    }
+    
+    return workspaceEntityDAO.findByDataSourceAndIdentifier(schoolDataSource, identifier);
+  }
+  
   public List<String> listWorkspaceEntityIdentifiersByDataSource(String dataSource) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
     if (schoolDataSource == null) {

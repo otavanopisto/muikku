@@ -47,4 +47,14 @@ public class UserEntityController {
     return result;
   }
 
+  public UserSchoolDataIdentifier findUserSchoolDataIdentifierByDataSourceAndIdentifier(String dataSource, String identifier) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
+    if (schoolDataSource == null) {
+      logger.severe("Could not find school data source: " + dataSource);
+      return null;
+    } else {
+      return userSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(schoolDataSource, identifier);
+    }
+  }
+
 }
