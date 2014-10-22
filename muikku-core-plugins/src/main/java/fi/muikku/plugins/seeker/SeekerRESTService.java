@@ -1,8 +1,12 @@
 package fi.muikku.plugins.seeker;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -33,16 +37,31 @@ public class SeekerRESTService extends PluginRESTService {
   @GET
   @Path("/search")
   public Response search(@QueryParam("searchString") String searchString) {
-    List<SeekerResult> results = new ArrayList<SeekerResult>();
+    TreeMap<Integer, List<SeekerResult>> sortedResults = new TreeMap<Integer, List<SeekerResult>>();
     Iterator<SeekerResultProvider> i = seekerResultProviders.iterator();
     while (i.hasNext()) {
       SeekerResultProvider provider = i.next();
       List<SeekerResult> result = provider.search(searchString);
       if (result != null) {
-        results.addAll(result);
+        for(SeekerResult item : result){
+          item.setCategory(provider.getName()); //TODO: add localization
+        }
+        if(sortedResults.containsKey(provider.getWeight())){
+          sortedResults.get(provider.getWeight()).addAll(result);
+        }else{
+          sortedResults.put(provider.getWeight(), result);
+        }
       }
     }
-    return Response.ok(results).build();
+    return Response.ok(toResultArray(sortedResults)).build();
+  }
+  
+  private List<SeekerResult> toResultArray(TreeMap<Integer, List<SeekerResult>> resultMap){
+    List<SeekerResult> results = new ArrayList<SeekerResult>();
+    for(Entry<Integer, List<SeekerResult>> result : resultMap.entrySet()){
+      results.addAll(result.getValue());
+    }
+    return results;
   }
 
 }

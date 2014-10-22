@@ -49,5 +49,10 @@ public class UserSeekerResultProvider extends AbstractSeekerResultProvider {
   public String getName() {
     return "Users";
   }
+
+  @Override
+  public int getWeight() {
+    return 1;
+  }
   
 }

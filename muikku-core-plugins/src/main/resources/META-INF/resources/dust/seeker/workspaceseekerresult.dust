@@ -11,6 +11,6 @@
     </div>
  -->
 
-    <div class="sk-autocomplete-item-label icon-book"><span>{item.label}</span></div>
+    <div class="sk-autocomplete-item-label icon-book"><span>{item.category}:</span><span>{item.label}</span></div>
   </div>
 </a>

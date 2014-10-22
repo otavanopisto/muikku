@@ -29,4 +29,9 @@ public class TopResultProvider extends AbstractSeekerResultProvider {
     return null;
   }
 
+  @Override
+  public int getWeight() {
+    return 0;
+  }
+
 }

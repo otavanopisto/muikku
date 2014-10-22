@@ -35,4 +35,9 @@ public class CommunicatorSeekerResultProvider implements SeekerResultProvider {
   public String getName() {
     return "Communicator";
   }
+
+  @Override
+  public int getWeight() {
+    return 1;
+  }
 }
