@@ -1,9 +1,9 @@
 package fi.muikku.plugins.dnm;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+import fi.muikku.controller.PluginSettingsController;
 import fi.muikku.plugins.dnm.parser.DeusNexException;
 import fi.muikku.plugins.dnm.parser.DeusNexInternalException;
 import fi.muikku.plugins.dnm.parser.content.DeusNexContentParser;
@@ -51,6 +52,9 @@ public class DeusNexMachinaController {
 
   @Inject 
   private Logger logger;
+
+  @Inject 
+  private PluginSettingsController pluginSettingsController; 
   
   @Inject
   @ContextPath
@@ -236,7 +240,7 @@ public class DeusNexMachinaController {
   }
 
 	
-	private final static String LOOKUP_MATERIAL_URLNAME = "[_DEUS_NEX_MACHINA_LOOKUP_]";
+	private final static String LOOKUP_SETTING_NAME = "[_DEUS_NEX_MACHINA_LOOKUP_]";
 	
 	@Inject
 	private HtmlMaterialController htmlMaterialController; 
@@ -290,11 +294,11 @@ public class DeusNexMachinaController {
 			}
 		} else {
 			if (node == null) {
-			  logger.fine("importting " + resource.getPath());
+			  logger.fine("importing " + resource.getPath());
 			  
     		Material material = createMaterial(rootFolder, resource, deusNexDocument);
     		if (material != null) {
-    			WorkspaceNode workspaceNode = workspaceMaterialController.createWorkspaceMaterial(parent, material, material.getUrlName());
+    			WorkspaceNode workspaceNode = workspaceMaterialController.createWorkspaceMaterial(parent, material);
     			
     			try {
   					setResourceWorkspaceNodeId(resource.getNo(), workspaceNode.getId());
@@ -334,29 +338,26 @@ public class DeusNexMachinaController {
 
 	private Material createDocumentMaterial(WorkspaceRootFolder rootFolder, Document resource, DeusNexDocument deusNexDocument) throws DeusNexException {
 		String title = resource.getTitle();
-		String urlName = resource.getName();
 		String html = parseDocumentContent(rootFolder, resource.getDocument(), deusNexDocument);
 		
-		return htmlMaterialController.createHtmlMaterial(urlName, title, html);
+		return htmlMaterialController.createHtmlMaterial(title, html);
 	}
 
 	private Material createQueryMaterial(WorkspaceRootFolder rootFolder, Query resource, DeusNexDocument deusNexDocument) throws DeusNexException {
 		// TODO: Replace with query implementation when the implementation itself is ready for it
 		
 		String title = resource.getTitle();
-		String urlName = resource.getName();
 		String html = parseQueryContent(rootFolder, resource.getDocument(), deusNexDocument);
 		
-		return htmlMaterialController.createHtmlMaterial(urlName, title, html);
+		return htmlMaterialController.createHtmlMaterial(title, html);
 	}
 
 	private BinaryMaterial createBinaryMaterial(Binary resource) {
 		String title = resource.getTitle();
-		String urlName = resource.getName();
 		String contentType = resource.getContentType();
 		byte[] content = resource.getContent();
 
-		return binaryMaterialController.createBinaryMaterial(title, urlName, contentType, content);
+		return binaryMaterialController.createBinaryMaterial(title, contentType, content);
 	}
 	
 	private String parseDocumentContent(WorkspaceRootFolder rootFolder, Element document, DeusNexDocument deusNexDocument) throws DeusNexException {
@@ -395,26 +396,23 @@ public class DeusNexMachinaController {
 	
 	private void loadLookup() throws IOException {
 		lookupProperties = new Properties();
-
-		BinaryMaterial lookupMaterial = binaryMaterialController.findBinaryMaterialdByUrlName(LOOKUP_MATERIAL_URLNAME);
-		if (lookupMaterial != null) {
-			InputStream lookupStream = new ByteArrayInputStream(lookupMaterial.getContent());
-			lookupProperties.load(lookupStream);
-			lookupStream.close();
+		
+		String lookupSetting = pluginSettingsController.getPluginSetting(DeusNexMachinaPluginDescriptor.PLUGIN_NAME, LOOKUP_SETTING_NAME);
+		if (StringUtils.isNotBlank(lookupSetting)) {
+		  StringReader lookupSettingReader = new StringReader(lookupSetting);
+		  try {
+	      lookupProperties.load(lookupSettingReader);
+		  } finally {
+	      lookupSettingReader.close();
+		  }
 		}
 	}
 	
 	private void storeLookup() throws IOException {
-		ByteArrayOutputStream lookupStream = new ByteArrayOutputStream();
-		lookupProperties.store(lookupStream, null);
-		lookupStream.close();
-		
-		BinaryMaterial lookupMaterial = binaryMaterialController.findBinaryMaterialdByUrlName(LOOKUP_MATERIAL_URLNAME);
-		if (lookupMaterial == null) {
-			binaryMaterialController.createBinaryMaterial(LOOKUP_MATERIAL_URLNAME, LOOKUP_MATERIAL_URLNAME, "text/x-java-properties", lookupStream.toByteArray());
-		} else {
-			binaryMaterialController.updateBinaryMaterialContent(lookupMaterial, lookupStream.toByteArray());
-		}
+	  StringWriter lookupSettingWriter = new StringWriter();
+		lookupProperties.store(lookupSettingWriter, null);
+		String lookupSetting = lookupSettingWriter.toString();
+		pluginSettingsController.setPluginSetting(DeusNexMachinaPluginDescriptor.PLUGIN_NAME, LOOKUP_SETTING_NAME, lookupSetting);
 	}
 
 	private DeusNexStructureParser deusNexStructureParser;

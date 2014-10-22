@@ -1,5 +1,7 @@
 package fi.muikku.plugins.material.dao;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -13,16 +15,18 @@ public class MaterialDAO extends CorePluginsDAO<Material> {
 
 	private static final long serialVersionUID = 148925841493479490L;
 
-	public Material findByUrlName(String urlName) {
-		EntityManager entityManager = getEntityManager();
+	public List<Material> listByOriginMaterial(Material material) {
+    EntityManager entityManager = getEntityManager();
 
-		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-		CriteriaQuery<Material> criteria = criteriaBuilder.createQuery(Material.class);
-		Root<Material> root = criteria.from(Material.class);
-		criteria.select(root);
-		criteria.where(criteriaBuilder.equal(root.get(Material_.urlName), urlName));
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Material> criteria = criteriaBuilder.createQuery(Material.class);
+    Root<Material> root = criteria.from(Material.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.equal(root.get(Material_.originMaterial), material)
+    );
 
-		return getSingleResult(entityManager.createQuery(criteria));
+    return entityManager.createQuery(criteria).getResultList();
 	}
 	
 }

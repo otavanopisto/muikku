@@ -23,18 +23,14 @@ public class BinaryMaterialController {
   @Inject
   private Event<BinaryMaterialUpdateEvent> materialUpdateEvent;
   
-	public BinaryMaterial createBinaryMaterial(String title, String urlName, String contentType, byte[] content) {
-	  BinaryMaterial material = binaryMaterialDAO.create(title, urlName, contentType, content);
+	public BinaryMaterial createBinaryMaterial(String title, String contentType, byte[] content) {
+	  BinaryMaterial material = binaryMaterialDAO.create(title, contentType, content);
     materialCreateEvent.fire(new BinaryMaterialCreateEvent(material));
     return material;
 	}
 	
 	public BinaryMaterial finBinaryMaterialById(Long id) {
 		return binaryMaterialDAO.findById(id);
-	}
-
-	public BinaryMaterial findBinaryMaterialdByUrlName(String urlName) {
-		return binaryMaterialDAO.findByUrlName(urlName);
 	}
 
 	public BinaryMaterial updateBinaryMaterialContent(BinaryMaterial binaryMaterial, byte[] content) {
