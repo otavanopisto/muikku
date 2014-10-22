@@ -3,6 +3,7 @@
 @import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
 @import "_commons.scss";
 @import "_forms.scss";
+@import "_modal.scss";
 @import "_buttons.scss";
 @import "_widgets.scss";
 @import "_notif-queue.scss";
@@ -27,7 +28,6 @@ body {
 .nopadding {
   padding:0;
 }
-
 
 .hidden {
 	display:none;
@@ -159,7 +159,7 @@ div[class*="dock-navi-tt-container"] {
   opacity:0;
   margin-left:1px;
   z-index:100;
-  background: -moz-linear-gradient(top,  rgba(207,238,250,1) 0%, rgba(207,238,250,1) 30%, rgba(207,238,250,1) 33%, rgba(207,238,250,0) 100%);
+  background: -moz-linear-gradient(top, rgba(207,238,250,1) 30%, rgba(207,238,250,1) 33%, rgba(207,238,250,0) 100%);
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(207,238,250,1)), color-stop(30%,rgba(207,238,250,1)), color-stop(33%,rgba(207,238,250,1)), color-stop(100%,rgba(207,238,250,0)));
   background: -webkit-linear-gradient(top,  rgba(207,238,250,1) 0%,rgba(207,238,250,1) 30%,rgba(207,238,250,1) 33%,rgba(207,238,250,0) 100%);
   background: -o-linear-gradient(top,  rgba(207,238,250,1) 0%,rgba(207,238,250,1) 30%,rgba(207,238,250,1) 33%,rgba(207,238,250,0) 100%);
@@ -294,11 +294,11 @@ a.header {
 
 .wi-dock-dynami-navi-contentBgr {
  position:absolute;
- top:72px;
+ top:66px;
  left:0;
  width:300px;
  opacity:.95;
- background-color:#7ccdeb;
+ background-color:#b7d8eb;
  z-index:-1;
   
 }
@@ -321,16 +321,16 @@ a.header {
 }
 
 #staticNavigationWrapper {
-  height:82px;
+  height:76px;
   z-index:12;
   position:relative;
-  background: -moz-linear-gradient(top,  rgba(36,108,162,0.15) 0%, rgba(255,255,255,0) 66%);
+  background: -moz-linear-gradient(top, rgba(36,108,162,0.15) 0%, rgba(255,255,255,0) 66%);
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(36,108,162,0.15)), color-stop(66%,rgba(255,255,255,0)));
-  background: -webkit-linear-gradient(top,  rgba(36,108,162,0.15) 0%,rgba(255,255,255,0) 66%);
-  background: -o-linear-gradient(top,  rgba(36,108,162,0.15) 0%,rgba(255,255,255,0) 66%);
-  background: -ms-linear-gradient(top,  rgba(36,108,162,0.15) 0%,rgba(255,255,255,0) 66%);
-  background: linear-gradient(to bottom,  rgba(36,108,162,0.15) 0%,rgba(255,255,255,0) 66%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#26246ca2', endColorstr='#00ffffff',GradientType=0 );
+  background: -webkit-linear-gradient(top, rgba(36,108,162,0.15) 0%,rgba(255,255,255,0) 66%);
+  background: -o-linear-gradient(top, rgba(36,108,162,0.15) 0%,rgba(255,255,255,0) 66%);
+  background: -ms-linear-gradient(top, rgba(36,108,162,0.15) 0%,rgba(255,255,255,0) 66%);
+  background: linear-gradient(to bottom, rgba(36,108,162,0.15) 0%,rgba(255,255,255,0) 66%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#26246ca2', endColorstr='#00ffffff',GradientType=0);
 }
 
 #staticNavigationBG {
@@ -339,7 +339,7 @@ a.header {
   bottom:0;
   left:0;
   right:0;
-  height:80px;
+  height:74px;
   z-index:13;
   background:#216aa1;
   border-top:1px solid #71c3e1;
@@ -353,7 +353,7 @@ a.header {
   bottom:0;
   left:0;
   right:0;
-  height:60px;
+  height:56px;
   z-index:14;
   padding:10px;
 }
@@ -736,6 +736,18 @@ a.header {
   background-color:#f0f3f4;
 }
 
+.cp-course-details-close{
+ position:absolute;
+ margin-top:0;
+ margin-left:0;
+ background-color:none;
+ height:30px;
+ width:200px;
+ &:hover{
+   background-color:rgba(0,0,0,0.1); 
+ }
+
+}
 
 
 
@@ -1277,7 +1289,7 @@ div[data-name="settings.content-sidebar.left"] {
   font-weight: bold;
   cursor: pointer;
 }
-
+  
 .wallEntryUserPicture {
   position: absolute;
   left: 0;  

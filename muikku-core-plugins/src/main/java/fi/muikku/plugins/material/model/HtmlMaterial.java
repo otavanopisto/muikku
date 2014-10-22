@@ -1,13 +1,9 @@
 package fi.muikku.plugins.material.model;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
-
-import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @PrimaryKeyJoinColumn(name="id")
@@ -27,9 +23,6 @@ public class HtmlMaterial extends Material {
     return "html";
   }
 
-  @NotEmpty
-  @NotNull
-  @Column (nullable = false)
   @Lob
   private String html;
 }

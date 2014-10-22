@@ -1,7 +1,6 @@
 $(document).ready(function() {
-
+ 
 	// Dynamic navigation
-	
   if ($('.wi-dock-dynami-navi-contentBgr').length > 0) {
     // ToDo: Calculate naviContainer height based on scroll event's scrollTop value
     var height = $(window).height();

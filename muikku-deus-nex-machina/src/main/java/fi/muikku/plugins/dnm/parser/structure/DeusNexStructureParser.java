@@ -9,6 +9,7 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.codec.binary.Base64;
@@ -140,11 +141,18 @@ public class DeusNexStructureParser {
 		byte[] translatedBytes = translatedString.getBytes("ISO-8859-1");
 		// And voilà we have a working binary 
 		return translatedBytes;
-  }
+	}
 	
 	private Query parseFCKQuery(Element resourceElement) throws DeusNexSyntaxException, XPathExpressionException, DeusNexInternalException {
 		Element documentElement = (Element) DeusNexXmlUtils.findNodeByXPath(resourceElement, "document");
 		if (documentElement == null) {
+      try {
+        System.out.println( DeusNexXmlUtils.serializeElement(resourceElement, false, true, "html", "5") );
+      } catch (TransformerException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+
 			throw new DeusNexSyntaxException("Missing data/document node");
 		}
 		
@@ -169,6 +177,13 @@ public class DeusNexStructureParser {
 	private Document parseFCKDocument(Element resourceElement) throws DeusNexSyntaxException, XPathExpressionException, DeusNexInternalException {
 		Element documentElement = (Element) DeusNexXmlUtils.findNodeByXPath(resourceElement, "document");
 		if (documentElement == null) {
+		  try {
+        System.out.println( DeusNexXmlUtils.serializeElement(resourceElement, false, true, "html", "5") );
+      } catch (TransformerException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+		  
 			throw new DeusNexSyntaxException("Missing data/document node");
 		}
 		

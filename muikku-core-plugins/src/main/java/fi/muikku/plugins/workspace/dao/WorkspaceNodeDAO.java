@@ -7,11 +7,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-
 import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.model.WorkspaceNode_;
-
 
 public class WorkspaceNodeDAO extends CorePluginsDAO<WorkspaceNode> {
 
