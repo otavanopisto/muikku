@@ -39,7 +39,7 @@ public class IndexListener {
           provider.addOrUpdateIndex(entityAddEvent.getEntity().getClass().getSimpleName(), indexEntity);
         }
       } catch (IllegalArgumentException | IllegalAccessException | SecurityException | InvocationTargetException | IntrospectionException | IndexIdMissingException e) {
-        logger.log(Level.SEVERE, "Entity processing exception", e);
+        logger.log(Level.WARNING, "Entity processing exception", e);
       }
     }
   }
@@ -54,7 +54,7 @@ public class IndexListener {
           provider.deleteFromIndex(entityRemoveEvent.getEntity().getClass().getSimpleName(), (Long) indexEntity.get("id"));
         }
       } catch (IllegalArgumentException | IllegalAccessException | SecurityException | InvocationTargetException | IntrospectionException | IndexIdMissingException e) {
-        logger.log(Level.SEVERE, "Entity processing exception", e);
+        logger.log(Level.WARNING, "Entity processing exception", e);
       }
     }
   }

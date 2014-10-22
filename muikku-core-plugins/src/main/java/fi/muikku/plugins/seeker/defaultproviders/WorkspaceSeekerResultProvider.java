@@ -51,5 +51,10 @@ public class WorkspaceSeekerResultProvider implements SeekerResultProvider {
   public String getName() {
     return "Workspaces";
   }
+
+  @Override
+  public int getWeight() {
+    return 1;
+  }
   
 }
