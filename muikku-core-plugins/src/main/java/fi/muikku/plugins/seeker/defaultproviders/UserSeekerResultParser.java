@@ -1,13 +1,10 @@
 package fi.muikku.plugins.seeker.defaultproviders;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
 
 import fi.muikku.i18n.LocaleController;
-import fi.muikku.plugins.search.SearchResult;
 import fi.muikku.plugins.seeker.SeekerResult;
 import fi.muikku.plugins.seeker.SeekerResultParser;
 import fi.muikku.session.SessionController;
@@ -37,7 +34,7 @@ public class UserSeekerResultParser implements SeekerResultParser{
           }
         }
       }
-    return new UserSeekerResult(label, caption,"/user/", "/tmp/userprofile.png");
+    return new UserSeekerResult(label, caption,"/user/"+entry.get("id"), "/tmp/userprofile.png");
   }
 
 }
