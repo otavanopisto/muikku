@@ -11,7 +11,19 @@
   <script
     run="ONCE"
     handler="MySQL"
+    url="pyramus/002_webhook_mysql.sql" />
+  <script
+    run="ONCE"
+    handler="MySQL"
+    url="pyramus/003_rest_mysql.sql" />
+  <script
+    run="ONCE"
+    handler="MySQL"
     url="test/003_workspace_types_mysql.sql" />
+  <script
+    run="ONCE"
+    handler="MySQL"
+    url="test/004_workspace_settings_mysql.sql" />
   <script
     run="ONCE"
     handler="MySQL"
