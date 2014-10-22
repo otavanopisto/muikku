@@ -3,11 +3,11 @@ package fi.muikku.plugins.schooldatapyramus.rest;
 import java.io.Serializable;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
+import javax.enterprise.context.ApplicationScoped;
 
 import org.joda.time.DateTime;
 
-@SessionScoped
+@ApplicationScoped
 public class UserPyramusClient extends AbstractPyramusClient implements Serializable {
 
   private static final long serialVersionUID = -2643693371146903250L;
