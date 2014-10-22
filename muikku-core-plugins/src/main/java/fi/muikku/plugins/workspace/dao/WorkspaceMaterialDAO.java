@@ -21,7 +21,7 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
 	public WorkspaceMaterial create(WorkspaceNode parent, Material material, String urlName) {
 		WorkspaceMaterial workspaceMaterial = new WorkspaceMaterial();
 		workspaceMaterial.setParent(parent);
-		workspaceMaterial.setMaterial(material);
+		workspaceMaterial.setMaterialId(material.getId());
 		workspaceMaterial.setUrlName(urlName);
 		
 		return persist(workspaceMaterial);
@@ -66,14 +66,14 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
     Root<WorkspaceMaterial> root = criteria.from(WorkspaceMaterial.class);
     criteria.select(root);
     criteria.where(
-      criteriaBuilder.equal(root.get(WorkspaceMaterial_.material), material)
+      criteriaBuilder.equal(root.get(WorkspaceMaterial_.materialId), material.getId())
     );
    
     return entityManager.createQuery(criteria).getResultList();
   }
   
   public WorkspaceMaterial updateMaterial(WorkspaceMaterial workspaceMaterial, Material material) {
-    workspaceMaterial.setMaterial(material);
+    workspaceMaterial.setMaterialId(material.getId());
     return persist(workspaceMaterial);
   }
 

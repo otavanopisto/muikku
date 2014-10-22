@@ -11,12 +11,12 @@ import fi.muikku.plugins.material.model.Material;
 @PrimaryKeyJoinColumn(name="id")
 public class WorkspaceMaterial extends WorkspaceNode {
 
-  public Material getMaterial() {
-		return material;
+  public Long getMaterialId() {
+		return materialId;
 	}
   
-  public void setMaterial(Material material) {
-		this.material = material;
+  public void setMaterialId(Long materialId) {
+		this.materialId = materialId;
 	}
 
   @Transient
@@ -24,6 +24,5 @@ public class WorkspaceMaterial extends WorkspaceNode {
     return WorkspaceNodeType.MATERIAL;
   }
 
-  @ManyToOne
-  private Material material;
+  private Long materialId;
 }
