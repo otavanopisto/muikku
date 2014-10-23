@@ -92,56 +92,56 @@ $(document).ready(function() {
   // Workspace's materials's reading view
   if ($('#workspaceMaterialReadingTOCWrapper').length > 0) {
     var height = $(window).height();
-    var closedTocWrapper = $('#workspaceMaterialReadingTOCClosed');
-    var openTocWrapper = $('#workspaceMaterialReadingTOCOpen');
+    var thinTocWrapper = $('#workspaceMaterialReadingTOCClosed');
+    var wideTocWrapper = $('#workspaceMaterialReadingTOCOpen');
     var tocOpeningButton = $('.workspace-material-reading-toc-opening-button');
     var tocClosingButton = $('.workspace-material-reading-toc-closing-button');
 
-    if (closedTocWrapper.length > 0) {
-      closedTocWrapper
+    if (thinTocWrapper.length > 0) {
+      thinTocWrapper
       .show()
       .css({
         height: height
       });
     }
     
-    if (openTocWrapper.length > 0) {
-      openTocWrapper
+    if (wideTocWrapper.length > 0) {
+      wideTocWrapper
       .hide()
       .css({
         height: height,
-        "margin-left" : "-350px"
+        "margin-left" : "-370px"
       });
     }
     
     $(window).resize(function(){
       height = $(window).height();
-      openTocWrapper.height(height);
-      closedTocWrapper.height(height);
+      wideTocWrapper.height(height);
+      thinTocWrapper.height(height);
     });
     
     $(tocOpeningButton).click(function() {
-      closedTocWrapper
+      thinTocWrapper
       .clearQueue()
       .stop()
       .animate({
         "margin-left" : "-55px"
       }, {
-        duration : 150,
-        easing : "easeInOutQuad",
+        duration : 200,
+        easing : "easeInOutQuint",
         complete : function(){
           $(this).hide();
           
-          openTocWrapper
+          wideTocWrapper
           .show()
           .clearQueue()
           .stop()
           .animate({
-            opacity:0.95,
+            opacity:0.97,
             "margin-left" : "0"
           }, {
-            duration:300,
-            easing: "easeInOutQuad"
+            duration:500,
+            easing: "easeInOutQuint"
           });
           
         }
@@ -149,27 +149,27 @@ $(document).ready(function() {
     });
     
     $(tocClosingButton).click(function() {
-      openTocWrapper
+      wideTocWrapper
       .clearQueue()
       .stop()
       .animate({
-        "margin-left" : "-350px",
+        "margin-left" : "-370px",
         opacity: 1
       }, {
-        duration : 150,
-        easing : "easeInOutQuad",
+        duration : 600,
+        easing : "easeInOutQuint",
         complete : function(){
           $(this).hide();
           
-          closedTocWrapper
+          thinTocWrapper
           .show()
           .clearQueue()
           .stop()
           .animate({
             "margin-left" : "0"
           }, {
-            duration:300,
-            easing: "easeInOutQuad"
+            duration:500,
+            easing: "easeInOutQuint"
           });
           
         }
