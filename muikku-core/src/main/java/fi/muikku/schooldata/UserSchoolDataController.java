@@ -24,7 +24,7 @@ import fi.muikku.schooldata.entity.UserEmail;
 
 @Dependent
 @Stateful
-class UserSchoolDataController { 
+public class UserSchoolDataController { 
 	
 	// TODO: Caching 
 	// TODO: Events
@@ -58,18 +58,6 @@ class UserSchoolDataController {
     
     return null;
   }
-
-	public User findUser(SchoolDataSource schoolDataSource, UserEntity userEntity) {
-		UserSchoolDataBridge userBridge = getUserBridge(schoolDataSource);
-		if (userBridge != null) {
-  		UserSchoolDataIdentifier schoolDataIdentifier = userSchoolDataIdentifierDAO.findByDataSourceAndUserEntity(schoolDataSource, userEntity);
-	  	if (schoolDataIdentifier != null) {
-	  		return findUserByIdentifier(userBridge, schoolDataIdentifier.getIdentifier());
-		  }
-		}
-		
-		return null;
-	}
 	
 	public User findUser(SchoolDataSource schoolDataSource, String userIdentifier) {
 		UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
@@ -116,7 +104,8 @@ class UserSchoolDataController {
 		
 		List<UserSchoolDataIdentifier> identifiers = userSchoolDataIdentifierDAO.listByUserEntity(userEntity);
 		for (UserSchoolDataIdentifier identifier : identifiers) {
-			User user = findUser(identifier.getDataSource(), userEntity);
+		  UserSchoolDataBridge userBridge = getUserBridge(identifier.getDataSource());
+		  User user = findUserByIdentifier(userBridge, identifier.getIdentifier());
 			if (user != null) {
 				result.add(user);
 			}
@@ -130,10 +119,7 @@ class UserSchoolDataController {
 		
 		for (UserSchoolDataBridge userBridge : getUserBridges()) {
 			try {
-				User user = userBridge.findUserByEmail(email);
-				if (user != null) {
-				  result.add(user);
-				}
+			  result.addAll(userBridge.listUsersByEmail(email));
 			} catch (SchoolDataBridgeRequestException e) {
 				logger.log(Level.SEVERE, "SchoolDataBridge reported an error while listing users by email", e);
 			} catch (UnexpectedSchoolDataBridgeException e) {
@@ -143,6 +129,31 @@ class UserSchoolDataController {
 		
 		return result;
 	}
+
+  public List<User> listUsersByEmails(List<String> emails) {
+    List<User> result = new ArrayList<>();
+    
+    for (String email : emails) {
+      List<User> users = listUsersByEmail(email);
+      for (User user : users) {
+        if (!userListContains(result, user)) {
+          result.add(user);
+        }
+      }
+    }
+    
+    return result;
+  }
+  
+  private boolean userListContains(List<User> listUsers, User user) {
+    for (User listUser : listUsers) {
+      if (listUser.getSchoolDataSource().equals(user.getSchoolDataSource()) && listUser.getIdentifier().equals(user.getIdentifier())) {
+        return true;
+      }
+    }
+    
+    return false;
+  }
 	
 	/* User Entity */
 	

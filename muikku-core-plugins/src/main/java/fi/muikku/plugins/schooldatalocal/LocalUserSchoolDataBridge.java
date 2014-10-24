@@ -2,6 +2,7 @@ package fi.muikku.plugins.schooldatalocal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import javax.ejb.Stateful;
@@ -35,7 +36,6 @@ import fi.muikku.schooldata.entity.UserImage;
 import fi.muikku.schooldata.entity.UserProperty;
 import fi.muikku.schooldata.entity.WorkspaceRole;
 import fi.muikku.schooldata.entity.WorkspaceRoleArchetype;
-import fi.muikku.schooldata.initializers.SchoolDataEntityInitializerProvider;
 
 @Dependent
 @Stateful
@@ -43,9 +43,6 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 	
 	@Inject
 	private LocalUserSchoolDataController localUserSchoolDataController;
-
-  @Inject
-  private SchoolDataEntityInitializerProvider schoolDataEntityInitializerProvider;
 	
 	@Override
 	public String getSchoolDataSource() {
@@ -70,7 +67,7 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 			throw new UnexpectedSchoolDataBridgeException("Failed to create local user");
 		}
 		
-		return schoolDataEntityInitializerProvider.initUsers(Arrays.asList(userImpl)).get(0);
+		return userImpl;
 	}
 	
 	/**
@@ -89,8 +86,13 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public User findUserByEmail(String email) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-		return toLocalUserImpl(localUserSchoolDataController.findUserByEmail(email));
+	public List<User> listUsersByEmail(String email) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+	  LocalUser user = localUserSchoolDataController.findUserByEmail(email);
+	  if (user == null) {
+	    return Collections.emptyList();
+	  }
+	  
+		return Arrays.asList(toLocalUserImpl(user));
 	}
 	
 	/**

@@ -44,7 +44,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
 	@Override
 	public User createUser(String firstName, String lastName) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-    throw new UnexpectedSchoolDataBridgeException("Not implemented");
+    return null;
 	}
 
 	@Override
@@ -63,8 +63,13 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 	}
 
 	@Override
-	public User findUserByEmail(String email) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-    throw new UnexpectedSchoolDataBridgeException("Not implemented");
+	public List<User> listUsersByEmail(String email) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+	  List<User> result = new ArrayList<User>();
+
+    result.addAll(entityFactory.createEntity(pyramusClient.get("/students/students?email=" + email, Student[].class)));
+    result.addAll(entityFactory.createEntity(pyramusClient.get("/staff/members?email=" + email, fi.pyramus.rest.model.User[].class)));
+
+    return result;
 	}
 
 	@Override
