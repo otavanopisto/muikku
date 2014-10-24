@@ -11,17 +11,19 @@
  min-height:450px;
 }
 
-.mf-side-button{
+.mf-button-container{
    @extend .co-mainFunction-side-button;
    height:70px;
+
+    > div:first-child{
+      width:170px;
+      margin-left:31px;
+      margin-top:15px;
+    }
 }
 
 
-.mf-side-button > div:first-child{
-  width:170px;
-  margin-left:31px;
-  margin-top:15px;
-}
+
 
 .mf-side-button-dropdown{
   display:none;
@@ -55,7 +57,6 @@
     }
 }
 
-
 .mf-side-header{
   @extend .co-mainFunction-side-header;
   padding:3px;
@@ -63,6 +64,20 @@
 
 .mf-side-content{
  padding:5px;
+ background-color:#fff;
+}
+
+
+.mf-calendar-weekDays{
+  width:13.28%;
+  display:inline-block;
+  box-sizing:border-box;
+  padding:5px;
+  text-align:center;
+  &:hover{
+   background-color:#ededed;
+   @include shadow();
+  }
 }
 
 
@@ -92,6 +107,7 @@
 .mf-side-tools{
   height:inherit;
   margin-bottom:0;
+
 }
 
 .mf-side-links{
@@ -110,9 +126,8 @@
  
 }
 
-
-
-.mf-content{
+.mf-content-area{
+  background-color:$mainFuncSide;
 }
 
 .mf-content-functions{
@@ -146,12 +161,20 @@
 
 }
 
+.mf-content-toolbar{
+  padding:20px 0 0 0;
+}
+
+.mf-content-tool{
+  display:inline-block;
+  color:orange;
+  font-size:2em;   
+}
 
 
 .mf-content-main{
   @extend .co-mainFunction-content-main;
   min-height:450px;
-  padding:10px;
 }
 
 
@@ -160,6 +183,16 @@
  padding:5px 5px 5px 5px;
  margin-bottom:10px;
 }
+
+.mf-event{
+ @extend .co-eventItem;
+ padding:15px 15px 15px 15px;
+ margin-bottom:10px;
+ border-radius:25px;
+ font-weight:300;
+ font-size:2em;
+}
+
 
 .mf-item-details-container{
   background-color:#f0f3f4;

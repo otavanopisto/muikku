@@ -4,29 +4,14 @@
   xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
   xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:f="http://java.sun.com/jsf/core"
+   xmlns:c="http://java.sun.com/jsp/jstl/core" 
   xmlns:h="http://java.sun.com/jsf/html"
-  template="/WEB-INF/templates/main-view.xhtml">
+  template="/WEB-INF/templates/mainfunction.xhtml">
 
   <ui:define name="viewCss">
     <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/fullcalendar.css" />  
-  </ui:define>
-
-  <ui:define name="contentToolsTop">
-    <m:widgetSpaceSet>
-      <m:widgetSpace name="calendar.content-tools-top.left" keepEmpty="false" sizing="SUM">
-        <m:widget name="newcalendar" size="2" rendered="#{sessionBackingBean.loggedIn}"/>
-        <m:widget name="newevent" size="2" rendered="#{sessionBackingBean.loggedIn}"/>
-      </m:widgetSpace>
-      <m:widgetSpace name="calendar.content-tools-top.center" keepEmpty="true" sizing="MAXIMIZE"></m:widgetSpace>
-      <m:widgetSpace name="calendar.content-tools-top.right" keepEmpty="false" sizing="SUM">
-        <m:widget name="calendarsvisible" size="2" rendered="#{sessionBackingBean.loggedIn}"/>
-        <m:widget name="calendarsettings" size="2" rendered="#{sessionBackingBean.loggedIn}"/>
-      </m:widgetSpace>
-    </m:widgetSpaceSet>
-  </ui:define>
-
-  <ui:define name="content.center.widget">
-    <!-- Time Picker -->
+    
+     <!-- Time Picker -->
     <h:outputScript name="scripts/jquery.timepicker/jquery.timepicker.js" target="head"/>
     <h:outputStylesheet name="scripts/jquery.timepicker/jquery.timepicker.css"/>
     
@@ -44,28 +29,81 @@
     <!-- Context menu -->
     
     <h:outputScript name="scripts/jquery.contextmenu/jquery.contextmenu.js" target="head"/>
-    <h:outputStylesheet name="scripts/jquery.contextmenu/jquery.contextmenu.css"/>
-
-    
-    <div class="widget fullCalendarWidget">
-      <div class="fullCalendarWidgetSettings">
-        <!-- TODO: Localize -->
-        <div class="fullCalendarWidgetNavigationContainer">     
-          <button class="fullCalendarWidgetNavigationButton fullCalendarWidgetNavigationLeft">#{i18n.text['plugin.calendar.previous']}</button>
-          <button class="fullCalendarWidgetNavigationButton fullCalendarWidgetNavigationToday">#{i18n.text['plugin.calendar.today']}</button>
-          <button class="fullCalendarWidgetNavigationButton fullCalendarWidgetNavigationRight">#{i18n.text['plugin.calendar.next']}</button>
-        </div>
-      
-        <div class="fullCalendarWidgetViewSelectionContainer">
-          <button class="fullCalendarWidgetModeButton" data-mode="EVENT_LIST">#{i18n.text['plugin.calendar.eventList']}</button>
-          <button class="fullCalendarWidgetModeButton" data-mode="DAY">#{i18n.text['plugin.calendar.day']}</button>
-          <button class="fullCalendarWidgetModeButton" data-mode="WEEK">#{i18n.text['plugin.calendar.week']}</button>
-          <button class="fullCalendarWidgetModeButton" data-mode="MONTH">#{i18n.text['plugin.calendar.month']}</button>
-        </div>
-      </div>      
-      <input type="hidden" name="firstDay" value="#{calendarBackingBean.firstDay}"/>
-    </div>
-    
+    <h:outputStylesheet name="scripts/jquery.contextmenu/jquery.contextmenu.css"/>   
   </ui:define>
+
+
+    <ui:define name="content.tools.left"> 
+      <m:widget name="newevent" size="6" rendered="#{sessionBackingBean.loggedIn}"/>
+    </ui:define>
+
+
+    <ui:define name="content.tools.center">
+    
+      <!--   TODO : Widget --> 
+          
+      <div class="mf-content-toolbar grid_18 omega noLid">  
+        <div class="mf-content-tool icon-home"></div>
+        <div class="fullCalendarWidgetModeButton mf-content-tool icon-day" data-mode="DAY"></div>
+        <div class="fullCalendarWidgetModeButton mf-content-tool icon-week" data-mode="WEEK"></div>
+        <div class="fullCalendarWidgetModeButton mf-content-tool icon-month" data-mode="MONTH"></div>  
+        <div class="fullCalendarWidgetModeButton mf-content-tool icon-numbered-list" data-mode="EVENT_LIST"></div>  
+      </div>
+    </ui:define>
+
+    <ui:define name="content.left.widget"> 
+    
+     <!--  TODO : Widget -->
+     
+      <div class="mf-side-header">
+       <span>Pummikuu</span>
+      </div> 
+      <div class="mf-side-content">
+      <c:forEach var="i" begin="1" end="31">
+        <div class="mf-calendar-weekDays">#{i}</div>
+      </c:forEach>      
+
+    </div>
+    </ui:define>
+
+    <ui:define name="content.center.widget">
+       <div class="ca-home">
+       
+      <!--  TODO : Widget -->      
+      
+         <div class="ca-home-today">
+           <div class="ca-today-date">
+             <div class="ca-date-primary">
+               <span>12</span>
+             </div>
+             <div class="ca-date-secondary">
+                <div class="ca-date-day-name"><span>Keskiviikko</span></div>
+                <div class="ca-date-day-time"><span>Klo. 15</span></div>
+             </div>
+             <div class="clear"></div>
+           </div>
+           <div class="ca-today-events">
+              <c:forEach var="i" begin="1" end="7">
+                <div class="mf-event ca-today-event fc00">
+                  <span class="event-time">Klo. #{i + 1}</span>
+                  <span class="event-topic">Tapahtuma #{i}</span>  
+                </div>
+              </c:forEach>         
+                           <div class="clear"></div>        
+           </div>
+           
+         </div>
+         <div class="ca-home-week">
+         
+      <!--  TODO : Widget -->        
+         
+           <c:forEach var="i" begin="1" end="7">
+            <div class="mf-calendar-weekDays ca-week-grid">#{i}</div>
+          </c:forEach>              
+         </div>
+        <div class="clear"></div>
+       </div>
+       <div class="clear"></div>
+    </ui:define>
 
 </ui:composition>

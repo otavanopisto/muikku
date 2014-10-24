@@ -8,6 +8,7 @@
 @import "_widgets.scss";
 @import "_notif-queue.scss";
 @import "_mainfunctions.scss";
+@import "_calendar.scss";
 /* Note: All in-development- unfinished-temp-styles are in temp.css */
 
 html {
@@ -29,6 +30,15 @@ body {
    background-image:none;
   }
 }
+
+.ca-weekDay{
+  width:14.28%;
+  display:inline-block;
+  box-sizing:border-box;
+  padding:5px;
+  text-align:center;
+}
+
 
 .nopadding {
   padding:0;

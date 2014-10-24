@@ -19,6 +19,11 @@
 
 
   .md-content{
+
+    
+   div:not(:first-child){
+    margin-top: 10px;
+   }
   
    div.md-content-primary{
      background-color:rgba(0,0,0,0.17);   
@@ -83,10 +88,7 @@
     }   
    }
 
-  
-   div:not(:first-child){
-    margin-top: 10px;
-   }
+
    
    textarea{
     width:100%;  

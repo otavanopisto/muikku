@@ -1,0 +1,81 @@
+/* Calendar (ca-*) */
+
+
+/* TODO - move to core-plugins after mock data is gone... */
+
+
+.ca-home{
+  
+  background-color:#fff;
+}
+
+.ca-home-today{
+  float:left;
+  box-sizing: border-box;
+  width:50%;
+  background-color:#fff;
+  min-height:500px;  
+}
+
+.ca-today-date{ 
+  color:#747474;
+  text-shadow: 3px 3px 4px rgba(150, 150, 150, 0.73);
+  font-weight:400;
+  .ca-date-primary{
+    margin-top:60px;
+    float:left;
+    box-sizing:border-box;
+     span {
+      font-size:10em;
+     }
+  }
+  
+  .ca-date-secondary{
+    margin-top:20px;
+    float:left;
+    box-sizing:border-box;    
+    margin-top: 25px;
+    padding-left: 15px;
+    text-align: center;
+        
+      span{
+        font-size:1.6em;     
+      }
+     
+      
+    .ca-date-day-name{
+      margin-bottom:15px;
+    }
+    .ca-date-day-time{}
+  }
+
+
+}
+
+.ca-today-events{
+  @include padding();  
+  margin-top:25px;
+  color:#fff;  
+  .fc00{
+    background-color:#479c3e;
+   
+  }
+  
+}
+
+
+.ca-home-week{
+  float:left;
+  box-sizing: border-box;
+  width:50%;  
+  background-color:#fff;
+  min-height:500px;
+}
+
+.ca-grid-day{}
+
+.ca-grid-week{
+  min-height:500px;
+}
+
+.ca-grid-month{}

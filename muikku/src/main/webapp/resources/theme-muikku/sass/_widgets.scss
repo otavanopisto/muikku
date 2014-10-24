@@ -136,15 +136,9 @@ div[class*="wi-dock-static-navi"] {
   display: inline-block;
 }
 
-.newEventButton {
-  @include naviIcon();
-  @include background-image('gfx/icons/32x32/actions/calendar-settings.png');
-}
 
-.newEventButton:hover {
-  @include naviIcon();
-  @include background-image('gfx/icons/32x32/actions/calendar-settings.png');
-}
+
+
 
 .calendarSettingsButton {
   @include naviIcon();
