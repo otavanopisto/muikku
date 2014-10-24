@@ -12,9 +12,10 @@ import fi.muikku.notifier.NotifierAction;
 import fi.muikku.notifier.NotifierContext;
 import fi.muikku.plugins.notifier.email.NotifierEmailContent;
 import fi.muikku.plugins.notifier.email.NotifierEmailMessageComposer;
-import fi.muikku.schooldata.UserController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.session.SessionController;
+import fi.muikku.users.UserController;
+import fi.muikku.users.UserEntityController;
 
 @Default
 @NotifierEmailContent(GuidanceRequestNotification.NAME)
@@ -33,11 +34,14 @@ public class GuidanceRequestNotification implements NotifierAction, NotifierEmai
   @Inject
   private UserController userController;
   
+  @Inject
+  private UserEntityController userEntityController;
+  
   @Override
   public String getEmailSubject(NotifierContext context) {
     GuidanceRequest guidanceRequest = getGuidanceRequest(context);
-    UserEntity student = userController.findUserEntityById(guidanceRequest.getStudent());
-    User user = userController.findUser(student);
+    UserEntity student = userEntityController.findUserEntityById(guidanceRequest.getStudent());
+    User user = userController.findUserByUserEntity(student);
     String userName = user.getFirstName() + " " + user.getLastName();
     
     String caption = localeController.getText(sessionController.getLocale(), "plugin.guidancerequest.newGuidanceRequest.mail.subject");
@@ -48,8 +52,8 @@ public class GuidanceRequestNotification implements NotifierAction, NotifierEmai
   @Override
   public String getEmailContent(NotifierContext context) {
     GuidanceRequest guidanceRequest = getGuidanceRequest(context);
-    UserEntity student = userController.findUserEntityById(guidanceRequest.getStudent());
-    User user = userController.findUser(student);
+    UserEntity student = userEntityController.findUserEntityById(guidanceRequest.getStudent());
+    User user = userController.findUserByUserEntity(student);
     String userName = user.getFirstName() + " " + user.getLastName();
     
     String content = localeController.getText(sessionController.getLocale(), "plugin.guidancerequest.newGuidanceRequest.mail.content");

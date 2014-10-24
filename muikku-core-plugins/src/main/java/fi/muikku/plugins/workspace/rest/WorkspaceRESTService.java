@@ -33,9 +33,11 @@ import fi.muikku.model.workspace.WorkspaceUserSignup;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.schooldata.CourseMetaController;
 import fi.muikku.schooldata.RoleController;
-import fi.muikku.schooldata.UserController;
+import fi.muikku.users.UserController;
+import fi.muikku.users.UserEntityController;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.CourseIdentifier;
+import fi.muikku.schooldata.entity.Role;
 import fi.muikku.schooldata.entity.Subject;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
@@ -58,6 +60,9 @@ public class WorkspaceRESTService extends PluginRESTService {
   @Inject
   private UserController userController;
 
+  @Inject
+  private UserEntityController userEntityController;
+
 	@Inject
 	private RoleController roleController;
 
@@ -77,7 +82,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     List<WorkspaceEntity> unfiltered = null;
     
     if (userId != null) {
-      UserEntity userEntity = userController.findUserEntityById(userId);
+      UserEntity userEntity = userEntityController.findUserEntityById(userId);
       if (userEntity == null) {
         return Response.status(Status.BAD_REQUEST).build();
       }
@@ -177,7 +182,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (userId != null) {
       workspaceUsers = new ArrayList<>();
       
-      UserEntity userEntity = userController.findUserEntityById(userId);
+      UserEntity userEntity = userEntityController.findUserEntityById(userId);
       if (userEntity == null) {
         return Response.status(Status.BAD_REQUEST).build();
       }
@@ -225,7 +230,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     UserEntity userEntity = null;
     
     if (entity.getUserId() != null) {
-      userEntity = userController.findUserEntityById(entity.getUserId());
+      userEntity = userEntityController.findUserEntityById(entity.getUserId());
     } else {
       userEntity = sessionController.getUser();
     }
@@ -245,20 +250,22 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build(); 
     }
     
-    fi.muikku.schooldata.entity.WorkspaceUser workspaceUser = workspaceController.createWorkspaceUser(workspaceEntity, userEntity, workspaceRole);
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+    User user = userController.findUserByUserEntity(userEntity);
+
+    Role role = roleController.findRoleByDataSourceAndRoleEntity(user.getSchoolDataSource(), workspaceRole);
+    fi.muikku.schooldata.entity.WorkspaceUser workspaceUser = workspaceController.createWorkspaceUser(workspace, user, role);
     workspaceUserEntity = workspaceController.findWorkspaceUserEntity(workspaceUser);
     
     // TODO: should this work based on permission? Permission -> Roles -> Recipients
     // TODO: Messaging should be moved into a CDI event listener
     
-    WorkspaceRoleEntity role = roleController.ROLE_WORKSPACE_TEACHER();
-    List<WorkspaceUserEntity> workspaceTeachers = workspaceController.listWorkspaceUserEntitiesByRole(workspaceEntity, role);
+    WorkspaceRoleEntity teacherRole = roleController.ROLE_WORKSPACE_TEACHER();
+    List<WorkspaceUserEntity> workspaceTeachers = workspaceController.listWorkspaceUserEntitiesByRole(workspaceEntity, teacherRole);
     List<UserEntity> teachers = new ArrayList<UserEntity>();
     
-    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
     String workspaceName = workspace.getName();
     
-    User user = userController.findUser(userEntity);
     String userName = user.getFirstName() + " " + user.getLastName();
     
     for (WorkspaceUserEntity cu : workspaceTeachers) {
@@ -290,7 +297,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     UserEntity userEntity = null;
     
     if (entity.getUserId() != null) {
-      userEntity = userController.findUserEntityById(entity.getUserId());
+      userEntity = userEntityController.findUserEntityById(entity.getUserId());
     } else {
       userEntity = sessionController.getUser();
     }

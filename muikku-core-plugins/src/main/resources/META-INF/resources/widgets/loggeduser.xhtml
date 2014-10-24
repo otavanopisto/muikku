@@ -9,7 +9,7 @@
     <div class="lu-badgeContainer">
       <div class="lu-user-picture" id="loggedUserPicture"></div>
       <div class="lu-infoContainer">
-        <div class="lu-user-name">#{User.findUser(muikkuSession.user).firstName} #{User.findUser(muikkuSession.user).lastName}</div>
+        <div class="lu-user-name">#{sessionBackingBean.loggedUserName}</div>
         <div class="lu-actions">
 	        <h:form>
             <h:outputLink styleClass="lu-action-edit icon-pencil"  value="#{request.contextPath}/user-edit"/> 

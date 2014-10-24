@@ -29,6 +29,7 @@ import fi.muikku.model.workspace.WorkspaceTypeSchoolDataIdentifier;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.model.workspace.WorkspaceUserSignup;
 import fi.muikku.schooldata.entity.CourseIdentifier;
+import fi.muikku.schooldata.entity.Role;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceType;
@@ -65,9 +66,6 @@ public class WorkspaceController {
 	@Inject
 	private WorkspaceUserSignupDAO workspaceUserSignupDAO;
 	
-	@Inject
-	private UserController userController;
-
   @Inject
   private WorkspaceRolePermissionDAO workspaceRolePermissionDAO;
 	
@@ -276,15 +274,9 @@ public class WorkspaceController {
   }
 
 	/* WorkspaceUsers */
-
-  public WorkspaceUser createWorkspaceUser(WorkspaceEntity workspaceEntity, UserEntity userEntity, WorkspaceRoleEntity role) {
-    Workspace workspace = findWorkspace(workspaceEntity);
-    User user = userController.findUser(userEntity);
-    return createWorkspaceUser(workspace, user, "LOCAL", role.getId().toString());
-  }
   
-  public WorkspaceUser createWorkspaceUser(Workspace workspace, User user, String roleSchoolDataSource, String roleIdentifier) {
-    return workspaceSchoolDataController.createWorkspaceUser(workspace, user, roleSchoolDataSource, roleIdentifier);
+  public WorkspaceUser createWorkspaceUser(Workspace workspace, User user, Role role) {
+    return workspaceSchoolDataController.createWorkspaceUser(workspace, user, role.getSchoolDataSource(), role.getIdentifier());
   }
 
   public WorkspaceUserEntity findWorkspaceUserEntity(WorkspaceUser workspaceUser) {

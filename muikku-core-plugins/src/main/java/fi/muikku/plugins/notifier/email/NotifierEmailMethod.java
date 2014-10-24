@@ -6,11 +6,11 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import fi.muikku.controller.EnvironmentSettingsController;
-import fi.muikku.controller.UserEntityController;
 import fi.muikku.mail.Mailer;
 import fi.muikku.notifier.NotifierAction;
 import fi.muikku.notifier.NotifierContext;
 import fi.muikku.notifier.NotifierMethod;
+import fi.muikku.users.UserEmailEntityController;
 
 public class NotifierEmailMethod implements NotifierMethod {
 
@@ -21,7 +21,7 @@ public class NotifierEmailMethod implements NotifierMethod {
   private EnvironmentSettingsController environmentSettingsController;
   
   @Inject
-  private UserEntityController userEntityController;
+  private UserEmailEntityController userEmailEntityController;
   
   @Inject
   private Instance<NotifierEmailMessageComposer> emailMessageComposer;
@@ -42,7 +42,7 @@ public class NotifierEmailMethod implements NotifierMethod {
     NotifierEmailMessageComposer message = emailMessageComposer.select(new NotifierEmailContentAnnotationLiteral(action.getName())).get();
 
     if (message != null) {
-      List<String> addresses = userEntityController.listUserEmailAddresses(context.getRecipient());
+      List<String> addresses = userEmailEntityController.listAddressesByUserEntity(context.getRecipient());
       
       mailer.sendMail(environmentSettingsController.getSystemEmailSenderAddress(), addresses, message.getEmailSubject(context), message.getEmailContent(context));
     }

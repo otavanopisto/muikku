@@ -21,9 +21,9 @@ import fi.muikku.plugins.wall.WallFeedItem;
 import fi.muikku.plugins.wall.model.UserWall;
 import fi.muikku.plugins.wall.model.Wall;
 import fi.muikku.plugins.wall.model.WorkspaceWall;
-import fi.muikku.schooldata.UserController;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.session.SessionController;
+import fi.muikku.users.UserEntityController;
 
 public class ForumWallEntryProvider implements WallEntryProvider {
 
@@ -31,7 +31,7 @@ public class ForumWallEntryProvider implements WallEntryProvider {
   private SessionController sessionController;
 
   @Inject
-  private UserController userController;
+  private UserEntityController userEntityController;
 
   @Inject
   private WorkspaceController workspaceController;
@@ -97,7 +97,7 @@ public class ForumWallEntryProvider implements WallEntryProvider {
             }
           }
 
-          UserEntity wallUser = userController.findUserEntityById(userWall.getUser());
+          UserEntity wallUser = userEntityController.findUserEntityById(userWall.getUser());
           
           // TODO Rights to view the forum area
           // Posts

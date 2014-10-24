@@ -19,7 +19,8 @@ import fi.muikku.model.users.UserGroup;
 import fi.muikku.model.users.UserGroupUser;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.notifier.NotifierController;
-import fi.muikku.schooldata.UserController;
+import fi.muikku.users.UserController;
+import fi.muikku.users.UserGroupController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.security.PermissionResolver;
 import fi.muikku.security.Permit;
@@ -37,6 +38,9 @@ public class GuidanceRequestController {
 
   @Inject
   private UserController userController;
+
+  @Inject
+  private UserGroupController userGroupController;
   
   @Inject
   private SessionController sessionController;
@@ -81,10 +85,10 @@ public class GuidanceRequestController {
     
     PermissionResolver per = getPermissionResolver(GuidanceRequestPermissions.RECEIVE_USERGROUP_GUIDANCEREQUESTS);
     
-    List<UserGroup> studentsGroups = userController.listUserGroupsByUser(student);
+    List<UserGroup> studentsGroups = userGroupController.listUserGroupsByUser(student);
     
     for (UserGroup group : studentsGroups) {
-      List<UserGroupUser> groupUsers = userController.listUserGroupUsers(group);
+      List<UserGroupUser> groupUsers = userGroupController.listUserGroupUsers(group);
       
       for (UserGroupUser groupUser : groupUsers) {
         if (per.hasPermission(GuidanceRequestPermissions.RECEIVE_USERGROUP_GUIDANCEREQUESTS, group, groupUser.getUser()))
@@ -93,7 +97,7 @@ public class GuidanceRequestController {
     }
 
     if (!recipients.isEmpty()) {
-      User user = userController.findUser(student);
+      User user = userController.findUserByUserEntity(student);
       String userName = user.getFirstName() + " " + user.getLastName();
 
       String caption = localeController.getText(sessionController.getLocale(), "plugin.guidancerequest.newGuidanceRequest.mail.subject");
@@ -135,7 +139,7 @@ public class GuidanceRequestController {
 
   @Permit (GuidanceRequestPermissions.RECEIVE_USERGROUP_GUIDANCEREQUESTS)
   public List<GuidanceRequest> listGuidanceRequestsByGroup(@PermitContext UserGroup group) {
-    List<UserGroupUser> users = userController.listUserGroupUsers(group);
+    List<UserGroupUser> users = userGroupController.listUserGroupUsers(group);
     List<GuidanceRequest> list = new ArrayList<GuidanceRequest>();
     
     for (UserGroupUser user : users) {
@@ -148,7 +152,7 @@ public class GuidanceRequestController {
   public List<GuidanceRequest> listGuidanceRequestsByManager(UserEntity manager) {
     PermissionResolver per = getPermissionResolver(GuidanceRequestPermissions.RECEIVE_USERGROUP_GUIDANCEREQUESTS);
     
-    List<UserGroup> managedGroups = userController.listUserGroupsByUser(manager);
+    List<UserGroup> managedGroups = userGroupController.listUserGroupsByUser(manager);
     List<GuidanceRequest> list = new ArrayList<GuidanceRequest>();
     
     for (UserGroup group : managedGroups) {

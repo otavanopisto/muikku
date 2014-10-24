@@ -11,7 +11,6 @@ import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.wall.WallController;
 import fi.muikku.plugins.wall.WallEntryProvider;
 import fi.muikku.plugins.wall.WallFeedItem;
-
 import fi.muikku.plugins.wall.WallPermissions;
 import fi.muikku.plugins.wall.dao.UserWallDAO;
 import fi.muikku.plugins.wall.dao.WallEntryDAO;
@@ -20,9 +19,9 @@ import fi.muikku.plugins.wall.model.UserWall;
 import fi.muikku.plugins.wall.model.Wall;
 import fi.muikku.plugins.wall.model.WallEntry;
 import fi.muikku.plugins.wall.model.WorkspaceWall;
-import fi.muikku.schooldata.UserController;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.session.SessionController;
+import fi.muikku.users.UserEntityController;
 
 public class DefaultWallEntryProvider implements WallEntryProvider {
 
@@ -30,7 +29,7 @@ public class DefaultWallEntryProvider implements WallEntryProvider {
   private SessionController sessionController;
 
   @Inject
-  private UserController userController;
+  private UserEntityController userEntityController;
 
   @Inject
   private WorkspaceController workspaceController;
@@ -58,7 +57,7 @@ public class DefaultWallEntryProvider implements WallEntryProvider {
       case USER:
         UserWall userWall = userWallDAO.findById(wall.getId());
   
-        UserEntity wallOwner = userController.findUserEntityById(userWall.getUser());
+        UserEntity wallOwner = userEntityController.findUserEntityById(userWall.getUser());
         UserEntity loggedUser = sessionController.isLoggedIn() ? sessionController.getUser() : null;
   
         boolean ownsWall = loggedUser != null ? loggedUser.getId().equals(wallOwner.getId()) : false;

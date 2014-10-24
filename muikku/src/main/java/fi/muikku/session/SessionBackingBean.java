@@ -9,7 +9,9 @@ import javax.inject.Named;
 import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.schooldata.UserController;
+import fi.muikku.schooldata.entity.User;
+import fi.muikku.users.EnvironmentUserController;
+import fi.muikku.users.UserController;
 
 @RequestScoped
 @Named
@@ -17,22 +19,31 @@ import fi.muikku.schooldata.UserController;
 public class SessionBackingBean {
 
   @Inject
-  private UserController userController;
-  
-	@Inject
+  private EnvironmentUserController environmentUserController;
+
+  @Inject
 	private SessionController sessionController;
+
+  @Inject
+	private UserController userController;
 	
 	@PostConstruct
 	public void init() {
 	  loggedUserRoleArchetype = null;
+	  loggedUserName = null;
 
     if (sessionController.isLoggedIn()) {
 	    UserEntity loggedUser = sessionController.getUser();
 	    if (loggedUser != null) {
-	      EnvironmentUser environmentUser = userController.findEnvironmentUserByUserEntity(loggedUser);
+	      EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(loggedUser);
 	      if (environmentUser != null) {
 	        loggedUserRoleArchetype = environmentUser.getRole().getArchetype();
 	      }
+	    }
+	    
+	    User user = userController.findUserByUserEntity(loggedUser);
+	    if (user != null) {
+	      loggedUserName = user.getFirstName() + ' ' + user.getLastName();
 	    }
 	  }
 	}
@@ -65,5 +76,10 @@ public class SessionBackingBean {
 	  return loggedUserRoleArchetype == EnvironmentRoleArchetype.STUDENT;
 	}
 	
+	public String getLoggedUserName() {
+	  return loggedUserName;
+	}
+	
 	private EnvironmentRoleArchetype loggedUserRoleArchetype;
+	private String loggedUserName;
 }

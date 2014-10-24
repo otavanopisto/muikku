@@ -42,7 +42,7 @@ public class RoleSchoolDataIdentifierDAO extends CoreDAO<RoleSchoolDataIdentifie
 		return getSingleResult(entityManager.createQuery(criteria));
 	}
 
-	public RoleSchoolDataIdentifier findByDataSourceAndUserEntity(SchoolDataSource dataSource, RoleEntity roleEntity) {
+	public RoleSchoolDataIdentifier findByDataSourceAndRoleEntity(SchoolDataSource dataSource, RoleEntity roleEntity) {
 		EntityManager entityManager = getEntityManager();
 
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();

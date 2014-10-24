@@ -42,11 +42,13 @@ import fi.muikku.plugins.wall.model.WallEntry;
 import fi.muikku.plugins.wall.model.WallEntryReply;
 import fi.muikku.plugins.wall.model.WallEntryVisibility;
 import fi.muikku.plugins.wall.model.WorkspaceWall;
-import fi.muikku.schooldata.UserController;
+import fi.muikku.users.UserController;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.session.SessionController;
+import fi.muikku.users.EnvironmentUserController;
+import fi.muikku.users.UserEntityController;
 
 @Dependent
 @Named("Wall")
@@ -77,7 +79,13 @@ public class WallController {
   private EnvironmentWallDAO environmentWallDAO;
 
   @Inject
+  private UserEntityController userEntityController;
+
+  @Inject
   private UserController userController;
+
+  @Inject
+  private EnvironmentUserController environmentUserController; 
 
   @Inject
   private WallEntryReplyDAO wallEntryReplyDAO;
@@ -89,8 +97,6 @@ public class WallController {
   @Any
   private Instance<WallEntryProvider> wallEntryProviders;
 
-  
-  
   @Inject
   private EnvironmentForumAreaDAO forumAreaDAO_TEMP;
   
@@ -113,7 +119,7 @@ public class WallController {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntity(workspace);
     WorkspaceWall wall = workspaceWallDAO.findByWorkspace(workspaceEntity);
     
-    List<EnvironmentUser> users = userController.listEnvironmentUsers();
+    List<EnvironmentUser> users = environmentUserController.listEnvironmentUsers();
     
     EnvironmentUser environmentUser = users.get(R.nextInt(users.size()));
     UserEntity userEntity = environmentUser.getUser();
@@ -213,7 +219,7 @@ public class WallController {
 
     if (wall instanceof UserWall) {
       UserWall userWall = findUserWallById(wall.getId());
-      UserEntity userEntity = userController.findUserEntityById(userWall.getUser());
+      UserEntity userEntity = userEntityController.findUserEntityById(userWall.getUser());
 
       // Friends
       
@@ -358,7 +364,7 @@ public class WallController {
     case USER:
       UserWall userWall = userWallDAO.findById(wall.getId());
 
-      User user = userController.findUser(userController.findUserEntityById(userWall.getUser()));
+      User user = userController.findUserByUserEntity(userEntityController.findUserEntityById(userWall.getUser()));
 
       return user.getFirstName() + " " + user.getLastName();
     }
@@ -465,7 +471,7 @@ public class WallController {
     /**
      * Create User Wall
      */
-    UserEntity userEntity = userController.findUserEntityById(event.getUserEntityId());
+    UserEntity userEntity = userEntityController.findUserEntityById(event.getUserEntityId());
     
     UserWall userWall = userWallDAO.create(userEntity);
 

@@ -13,8 +13,9 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.friends.FriendsController;
-import fi.muikku.schooldata.UserController;
 import fi.muikku.schooldata.entity.User;
+import fi.muikku.users.UserController;
+import fi.muikku.users.UserEntityController;
 
 @Named
 @Stateful
@@ -25,8 +26,11 @@ public class UserIndexBackingBean {
   @Parameter
   private Long userId;
 
-	@Inject
-	private UserController userController;
+  @Inject
+  private UserController userController;
+  
+  @Inject
+  private UserEntityController userEntityController;
 
   @Inject
   private FriendsController friendsController_TEMP;
@@ -36,11 +40,11 @@ public class UserIndexBackingBean {
 	}
 
 	public User getUser() {
-	  return userController.findUser(getUserEntity());
+	  return userController.findUserByUserEntity(getUserEntity());
 	}
 	
 	public UserEntity getUserEntity() {
-	  return userController.findUserEntityById(userId);
+	  return userEntityController.findUserEntityById(userId);
 	}
 	
 	public void addFriend(String message) {
