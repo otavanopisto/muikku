@@ -111,7 +111,7 @@
     </ui:fragment>
     
     <ui:fragment rendered="#{sessionBackingBean.loggedIn}">
-      <ui:fragment rendered="#{Role.hasEnvironmentRole('Teacher') || Role.hasEnvironmentRole('Manager')}">
+      <ui:fragment rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn}">
         <m:widgetSpaceSet>
           <m:widgetSpace name="index.content.headlines" keepEmpty="false" sizing="MAXIMIZE" styleClass="nomargin">
             <!--  Not logged in -->
@@ -158,7 +158,7 @@
         <div class="clear"></div>
       </ui:fragment>
 
-      <ui:fragment rendered="#{Role.hasEnvironmentRole('Student')}">
+      <ui:fragment rendered="#{sessionBackingBean.studentLoggedIn}">
         <m:widgetSpaceSet>
           <m:widgetSpace name="index.content.headlines" keepEmpty="false" sizing="MAXIMIZE" styleClass="nomargin">
             <!--  Not logged in -->

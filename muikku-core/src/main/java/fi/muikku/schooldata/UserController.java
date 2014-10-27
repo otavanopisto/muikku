@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import fi.muikku.dao.base.SchoolDataSourceDAO;
 import fi.muikku.dao.users.EnvironmentUserDAO;
 import fi.muikku.dao.users.UserContactDAO;
+import fi.muikku.dao.users.UserEmailSchoolDataIdentifierDAO;
 import fi.muikku.dao.users.UserEntityDAO;
 import fi.muikku.dao.users.UserGroupDAO;
 import fi.muikku.dao.users.UserGroupUserDAO;
@@ -25,6 +26,8 @@ import fi.muikku.events.UserEntityEvent;
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.UserContact;
+import fi.muikku.model.users.UserEmailEntity;
+import fi.muikku.model.users.UserEmailSchoolDataIdentifier;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserGroup;
 import fi.muikku.model.users.UserGroupUser;
@@ -34,9 +37,9 @@ import fi.muikku.schooldata.entity.UserEmail;
 @Dependent
 @Stateless
 public class UserController {
-
-	@Inject
-	private Logger logger;
+  
+  @Inject
+  private Logger logger;
 	
 	@Inject
 	private UserSchoolDataController userSchoolDataController;
@@ -63,6 +66,9 @@ public class UserController {
   private UserContactDAO userContactDAO;
   
   @Inject
+  private UserEmailSchoolDataIdentifierDAO userEmailSchoolDataIdentifierDAO;
+  
+  @Inject
   @Created
   private Event<UserEntityEvent> userCreatedEvent;
   
@@ -83,7 +89,21 @@ public class UserController {
 	public UserEntity findUserEntity(User user) {
 		return userSchoolDataController.findUserEntity(user);
 	}
+	
+	public UserEntity findUserEntityByDataSourceAndIdentifier(SchoolDataSource dataSource, String identifier) {
+    return userSchoolDataController.findUserEntityByDataSourceAndIdentifier(dataSource, identifier);
+  }
 
+  public UserEntity findUserEntityByDataSourceAndIdentifier(String dataSource, String identifier) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
+    if (dataSource == null) {
+      logger.severe("Could not find datasource" + dataSource);
+      return null;
+    }
+    
+    return userSchoolDataController.findUserEntityByDataSourceAndIdentifier(schoolDataSource, identifier);
+  }
+	
 	public Boolean hasPicture(UserEntity user) {
     return userPictureDAO.findUserHasPicture(user);
 	}
@@ -139,6 +159,28 @@ public class UserController {
 	  return userContactDAO.listAllByUser(userEntity);
 	}
 	
+	public UserEmail findUserEmail(SchoolDataSource dataSource, String identifier) {
+	  return userSchoolDataController.findUserEmail(dataSource, identifier);
+	}
+	
+  public UserEmailEntity findUserEmailEntity(String dataSource, String identifier) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
+    return findUserEmailEntity(schoolDataSource, identifier);
+  }
+  
+	public UserEmailEntity findUserEmailEntity(SchoolDataSource dataSource, String identifier) {
+    UserEmailSchoolDataIdentifier schoolDataIdentifier = userEmailSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(dataSource, identifier);
+    if (schoolDataIdentifier != null) {
+      return schoolDataIdentifier.getUserEmailEntity();
+    }
+    
+    return null;
+	}
+	
+  public UserEmailEntity findUserEmailEntity(UserEmail userEmail) {
+    return findUserEmailEntity(userEmail.getSchoolDataSource(), userEmail.getIdentifier());
+  }
+
 	/* UserGroup */
 	
   public Long getUserGroupMemberCount(UserGroup userGroup) {

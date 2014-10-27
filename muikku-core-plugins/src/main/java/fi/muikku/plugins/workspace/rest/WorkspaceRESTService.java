@@ -10,6 +10,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -25,8 +26,8 @@ import fi.muikku.controller.messaging.MessagingWidget;
 import fi.muikku.i18n.LocaleController;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.model.workspace.WorkspaceRoleEntity;
-import fi.muikku.model.workspace.WorkspaceSettings;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.model.workspace.WorkspaceUserSignup;
 import fi.muikku.plugin.PluginRESTService;
@@ -72,7 +73,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 	
   @GET
   @Path ("/workspaces/")
-  public Response listWorkspaces(@QueryParam ("userId") Long userId, @QueryParam ("search") String searchString, @QueryParam("subjects") List<String> subjects) {
+  public Response listWorkspaces(@QueryParam ("userId") Long userId, @QueryParam ("search") String searchString, @QueryParam("subjects") List<String> subjects, @QueryParam ("limit") @DefaultValue ("50") Integer limit) {
     List<WorkspaceEntity> unfiltered = null;
     
     if (userId != null) {
@@ -105,7 +106,9 @@ public class WorkspaceRESTService extends PluginRESTService {
         boolean accepted = true;
         
         if (doSearch) {
-          accepted = ((workspace.getName().toLowerCase().contains(searchString)) || (workspace.getDescription().toLowerCase().contains(searchString))); 
+          accepted = workspace.getName() != null ? workspace.getName().toLowerCase().contains(searchString) : false;
+          if (!accepted)
+            accepted = workspace.getDescription() != null ? workspace.getDescription().toLowerCase().contains(searchString) : false; 
         }      
         
         if (doSubjectFilter && accepted) {
@@ -120,6 +123,10 @@ public class WorkspaceRESTService extends PluginRESTService {
       }
     } else {
       filtered = unfiltered;
+    }
+    
+    while (unfiltered.size() > limit) {
+      unfiltered.remove(unfiltered.size() - 1);
     }
     
     List<fi.muikku.plugins.workspace.rest.model.Workspace> result = createRestModel(filtered.toArray(new WorkspaceEntity[0]));
@@ -149,19 +156,21 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @GET
   @Path ("/workspaces/{ID}/users")
-  public Response getWorkspaceUsers(@PathParam ("ID") Long workspaceEntityId, @QueryParam ("role") String role, @QueryParam ("userId") Long userId) {
+  public Response getWorkspaceUsers(@PathParam ("ID") Long workspaceEntityId, @QueryParam ("roleArchtype") String roleArchetype, @QueryParam ("userId") Long userId) {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     } 
     
     List<WorkspaceUserEntity> workspaceUsers = null;
-    WorkspaceRoleEntity workspaceRole = null;
+    List<WorkspaceRoleEntity> workspaceRoles = null;
     
-    if (StringUtils.isNotBlank(role)) {
-      workspaceRole = roleController.findWorkspaceRoleEntityByName(role);
-      if (workspaceRole == null) {
-        return Response.status(Status.BAD_REQUEST).entity("Invalid workspace role '" + role + "'").build(); 
+    if (StringUtils.isNotBlank(roleArchetype)) {
+      WorkspaceRoleArchetype type = WorkspaceRoleArchetype.valueOf(roleArchetype);
+      if (type == null) {
+        return Response.status(Status.BAD_REQUEST).build();
+      } else {
+        workspaceRoles = roleController.listWorkspaceRoleEntitiesByArchetype(type);
       }
     }
     
@@ -175,17 +184,22 @@ public class WorkspaceRESTService extends PluginRESTService {
       
       WorkspaceUserEntity workspaceUser = workspaceController.findWorkspaceUserEntityByWorkspaceAndUser(workspaceEntity, userEntity);
       if (workspaceUser != null) {
-        if (workspaceRole != null) {
-          if (workspaceUser.getWorkspaceUserRole().getId().equals(workspaceRole.getId())) {
-            workspaceUsers.add(workspaceUser); 
+        List<Long> workspaceRoleIds = null;
+        
+        if (workspaceRoles != null) {
+          workspaceRoleIds = new ArrayList<>();
+          for (WorkspaceRoleEntity workspaceRole : workspaceRoles) {
+            workspaceRoleIds.add(workspaceRole.getId());
           }
-        } else {
+        }
+
+        if ((workspaceRoleIds == null)||(workspaceRoleIds.contains(workspaceUser.getWorkspaceUserRole().getId()))) {
           workspaceUsers.add(workspaceUser);
         }
       }
     } else {
-      if (workspaceRole != null) {
-        workspaceUsers = workspaceController.listWorkspaceUserEntitiesByRole(workspaceEntity, workspaceRole);
+      if (workspaceRoles != null) {
+        workspaceUsers = workspaceController.listWorkspaceUserEntitiesByRoles(workspaceEntity, workspaceRoles);
       } else {
         workspaceUsers = workspaceController.listWorkspaceUserEntities(workspaceEntity);
       }
@@ -219,20 +233,13 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (userEntity == null) {
       return Response.status(Status.BAD_REQUEST).build(); 
     }
-    
-    WorkspaceRoleEntity workspaceRole;
-    
-    if (StringUtils.isNotBlank(entity.getRole())) {
-      workspaceRole = roleController.findWorkspaceRoleEntityByName(entity.getRole());
-      if (workspaceRole == null) {
-        return Response.status(Status.BAD_REQUEST).entity("Invalid workspace role '" + entity.getRole() + "'").build(); 
-      }
-    } else {
-      WorkspaceSettings workspaceSettings = workspaceController.findWorkspaceSettings(workspaceEntity);
-      workspaceRole = workspaceSettings.getDefaultWorkspaceUserRole();
+
+    if (entity.getRoleId() == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid workspace role '" + entity.getRoleId() + "'").build(); 
     }
     
-    
+    WorkspaceRoleEntity workspaceRole = roleController.findWorkspaceRoleEntityById(entity.getRoleId());
+
     WorkspaceUserEntity workspaceUserEntity = workspaceController.findWorkspaceUserEntityByWorkspaceAndUser(workspaceEntity, userEntity);
     if (workspaceUserEntity != null) {
       return Response.status(Status.BAD_REQUEST).build(); 
@@ -324,8 +331,8 @@ public class WorkspaceRESTService extends PluginRESTService {
   private fi.muikku.plugins.workspace.rest.model.WorkspaceUser createRestModel(WorkspaceUserEntity entity) {
     Long workspaceEntityId = entity.getWorkspaceEntity() != null ? entity.getWorkspaceEntity().getId() : null;
     Long userId = entity.getUser() != null ? entity.getUser().getId() : null;
-    String role = entity.getWorkspaceUserRole() != null ? entity.getWorkspaceUserRole().getName() : null;
-    return new fi.muikku.plugins.workspace.rest.model.WorkspaceUser(entity.getId(), workspaceEntityId, userId, role, entity.getArchived());
+    Long roleId = entity.getWorkspaceUserRole() != null ? entity.getWorkspaceUserRole().getId() : null;
+    return new fi.muikku.plugins.workspace.rest.model.WorkspaceUser(entity.getId(), workspaceEntityId, userId, roleId, entity.getArchived());
   }
 
   private fi.muikku.plugins.workspace.rest.model.Workspace createRestModel(WorkspaceEntity workspaceEntity, Workspace workspace) {

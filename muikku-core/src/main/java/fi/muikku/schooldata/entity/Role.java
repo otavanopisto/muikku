@@ -6,6 +6,4 @@ public interface Role extends SchoolDataEntity {
 	
 	public String getName();
 	
-	public RoleType getType();
-	
 }

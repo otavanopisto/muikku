@@ -108,6 +108,20 @@
         });      
     }
     
+    function createButton(buttonOptions, contentElement) {
+      return $('<input>')
+        .addClass('bt-generic bt-modal')
+        .attr({
+          type: 'button',
+          name: buttonOptions.name,
+          value: buttonOptions.caption
+        }).click(function (e) {
+          buttonOptions.action({
+            contentElement: contentElement
+          });
+        });
+    }
+    
     function boxElement(){
     	var _this = this;
     	var loGridSize = options.modalgrid - options.contentgrid;
@@ -128,28 +142,13 @@
         }
         
     	if (options.buttons) {
-    			
-    	  var btnsE = $('<div class="md-content-buttons"></div>') ; 
-    	  for (var i = 0; i < options.buttons.length; i++) {
-    	    var iPuT = $('<input class="bt-generic bt-modal" type="button" name="' + options.buttons[i].name + i + '" value="' + options.buttons[i].caption + '"/>');
-    	    
-    	    iPuT.on("click", function (e) {
-    	      var i = this.name;
-    	      
-    	      if (options.buttons[i].action) {
-    	        var opts = {
-    	          contentElement: $('.md-content') 
-    	        };
-    	        
-    	        options.buttons[i].action(opts);
-    	      }
-    	      
-            closeModal();
-    	    });
-    	    
-    	    btnsE.append(iPuT);
-    	    btnsE.appendTo(scndCE);
+    	  var contentButtons = $('<div>').addClass('md-content-buttons');
+    	  
+    	  for (var i = 0, l = options.buttons.length; i < l; i++) {
+    	    contentButtons.append(createButton(options.buttons[i], cE));
     	  }
+    	  
+    	  contentButtons.appendTo(scndCE);
     	}
     	
     	if (options.options) {

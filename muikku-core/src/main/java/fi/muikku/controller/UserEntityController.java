@@ -10,8 +10,10 @@ import javax.inject.Inject;
 
 import fi.muikku.dao.users.UserEmailEntityDAO;
 import fi.muikku.dao.users.UserEntityDAO;
+import fi.muikku.dao.users.UserEntityPropertyDAO;
 import fi.muikku.model.users.UserEmailEntity;
 import fi.muikku.model.users.UserEntity;
+import fi.muikku.model.users.UserEntityProperty;
 
 @Dependent
 @Stateless
@@ -23,6 +25,9 @@ public class UserEntityController {
   
   @Inject
   private UserEmailEntityDAO userEmailEntityDAO;
+
+  @Inject
+  private UserEntityPropertyDAO userEntityPropertyDAO;
 
   /**
    * Adds a new email address to the given user.
@@ -151,4 +156,21 @@ public class UserEntityController {
     return userEmailEntityDAO.findById(id);
   }
 
+  // UserEntityProperty
+
+  public UserEntityProperty createUserEntityProperty(UserEntity userEntity, String key, String value) {
+    return userEntityPropertyDAO.create(userEntity, key, value);
+  }
+  
+  public UserEntityProperty findUserEntityPropertyByUserEntityAndKey(UserEntity userEntity, String key) {
+    return userEntityPropertyDAO.findByUserEntityAndKey(userEntity, key);
+  }
+  
+  public UserEntityProperty updateUserEntityPropertyValue(UserEntityProperty userEntityProperty, String value) {
+    return userEntityPropertyDAO.updateValue(userEntityProperty, value);
+  }
+  
+  public void deleteUserEntityPropertyValue(UserEntityProperty userEntityProperty) {
+    userEntityPropertyDAO.delete(userEntityProperty);
+  }
 }

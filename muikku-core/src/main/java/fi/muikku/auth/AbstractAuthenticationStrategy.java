@@ -65,7 +65,7 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
     return null;
   }
 
-  protected AuthenticationResult processLogin(AuthSource authSource, Map<String, String[]> requestParameters, String externalId, List<String> emails, String firstName, String lastName) {
+  protected AuthenticationResult processLogin(AuthSource authSource, Map<String, String[]> requestParameters, String externalId, List<String> emails, String firstName, String lastName) throws AuthenticationHandleException {
     List<UserEntity> emailUsers = userEntityController.listUsersByEmails(emails);
     if (emailUsers.size() > 1) {
       return new AuthenticationResult(Status.CONFLICT, ConflictReason.SEVERAL_USERS_BY_EMAILS);
@@ -91,7 +91,15 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
 
         SchoolDataSource schoolDataSource = schoolBridgeController.findSchoolDataSourceByIdentifier("LOCAL");
         User user = userController.createUser(schoolDataSource, firstName, lastName);
+        if (user == null) {
+          throw new AuthenticationHandleException("SchoolDataSource '" + schoolDataSource.getIdentifier() + " returned null user from createUser method");
+        }
+        
         UserEntity userEntity = userController.findUserEntity(user);
+        if (userEntity == null) {
+          throw new AuthenticationHandleException("Could not find UserEntity for user " + user.getIdentifier() + "/" + user.getSchoolDataSource());
+        }
+        
         userIdentification = userIdentificationController.createUserIdentification(userEntity, authSource, externalId);
         newAccount = true;
       }
