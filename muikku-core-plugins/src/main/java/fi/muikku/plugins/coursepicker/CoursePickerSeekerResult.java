@@ -28,6 +28,11 @@ public class CoursePickerSeekerResult implements SeekerResult {
   public String getCategory() {
     return category;
   }
+  
+  @Override
+  public void setCategory(String category) {
+    this.category = category;
+  }
 
   public String getImage() {
     return image;

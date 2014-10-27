@@ -23,6 +23,11 @@ public class UserSeekerResult implements SeekerResult {
   public String getLabel() {
     return label;
   }
+  
+  @Override
+  public void setCategory(String category) {
+    this.category = category;
+  }
 
   @Override
   public String getCategory() {

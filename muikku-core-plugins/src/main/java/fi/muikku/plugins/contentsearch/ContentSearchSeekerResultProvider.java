@@ -25,4 +25,9 @@ public class ContentSearchSeekerResultProvider implements SeekerResultProvider {
   public String getName() {
     return "Content";
   }
+
+  @Override
+  public int getWeight() {
+    return 1;
+  }
 }

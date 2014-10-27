@@ -36,4 +36,9 @@ public class CalendarSeekerResultProvider implements SeekerResultProvider {
   public String getName() {
     return "Calendar";
   }
+
+  @Override
+  public int getWeight() {
+    return 1;
+  }
 }

@@ -5,12 +5,12 @@ public class WorkspaceUser {
   public WorkspaceUser() {
   }
 
-  public WorkspaceUser(Long id, Long workspaceId, Long userId, String role, Boolean archived) {
+  public WorkspaceUser(Long id, Long workspaceId, Long userId, Long roleId, Boolean archived) {
     super();
     this.id = id;
     this.workspaceId = workspaceId;
     this.userId = userId;
-    this.role = role;
+    this.roleId = roleId;
     this.archived = archived;
   }
 
@@ -37,13 +37,13 @@ public class WorkspaceUser {
   public void setUserId(Long userId) {
     this.userId = userId;
   }
-
-  public String getRole() {
-    return role;
+  
+  public Long getRoleId() {
+    return roleId;
   }
-
-  public void setRole(String role) {
-    this.role = role;
+  
+  public void setRoleId(Long roleId) {
+    this.roleId = roleId;
   }
 
   public Boolean getArchived() {
@@ -57,6 +57,6 @@ public class WorkspaceUser {
   private Long id;
   private Long workspaceId;
   private Long userId;
-  private String role;
+  private Long roleId;
   private Boolean archived;
 }
