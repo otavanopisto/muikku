@@ -7,6 +7,7 @@
 .ca-home{
   
   background-color:#fff;
+
 }
 
 .ca-home-today{
@@ -15,6 +16,8 @@
   width:50%;
   background-color:#fff;
   min-height:500px;  
+  border-left:1px solid #f1f1f1;
+  border-right:1px solid #f1f1f1;  
 }
 
 .ca-today-date{ 
@@ -57,7 +60,7 @@
   margin-top:25px;
   color:#fff;  
   .fc00{
-    background-color:#479c3e;
+  @extend .co-mainFunction-side-header;
    
   }
   

@@ -52,7 +52,9 @@
         </div>
       </div>
 
-      <div id="content" class="container_24">
+
+      <h:panelGroup id="content" layout="block" styleClass="container_24 #{contentClass}">
+     
         <ui:insert name="content.tools.top">
           <m:widgetSpaceSet styleClass="nomargin">
             <ui:insert name="content.tools.top.left">
@@ -86,7 +88,7 @@
             </ui:insert>
           </m:widgetSpaceSet>
         </ui:insert>
-        <ui:insert name="contentToolsBottom">
+        <ui:insert name="content.tools.bottom">
           <m:widgetSpaceSet styleClass="nomargin">
             <ui:insert name="content.tools.bottom.left">
               <ui:include src="/facelets/generic/content-tools-bottom-left.xhtml"></ui:include>
@@ -99,7 +101,7 @@
             </ui:insert>
           </m:widgetSpaceSet>
         </ui:insert>
-      </div>
+      </h:panelGroup>    
       <div id="socialNavigation">
         <ui:insert name="dock.bottom">
           <m:widgetSpaceSet styleClass="nomargin">

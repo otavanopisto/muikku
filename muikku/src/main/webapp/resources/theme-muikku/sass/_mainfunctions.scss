@@ -68,7 +68,7 @@
 }
 
 
-.mf-calendar-weekDays{
+.mf-calendar-weekDays-numbers{
   width:13.28%;
   display:inline-block;
   box-sizing:border-box;
@@ -80,6 +80,13 @@
   }
 }
 
+.mf-calendar-weekDays-names{
+  width:13.28%;
+  display:inline-block;
+  box-sizing:border-box;
+  text-align:center;
+  color:#fff;
+}
 
 
 .mf-filter{
@@ -162,13 +169,24 @@
 }
 
 .mf-content-toolbar{
-  padding:20px 0 0 0;
+  /* padding:20px 0 0 0px; */
+}
+
+.mf-content-tool-container{
+  margin-left:20px;
+  margin-top:20px;
+  
 }
 
 .mf-content-tool{
   display:inline-block;
-  color:orange;
+  color:#c6d7de;
   font-size:2em;   
+  
+  &.selected{
+   color:#fba31e;
+  }
+  
 }
 
 
