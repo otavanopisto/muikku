@@ -20,6 +20,11 @@ public class TopSeekerResult implements SeekerResult {
     return category;
   }
   
+  @Override
+  public void setCategory(String category) {
+    this.category = category;
+  }
+  
   public String getLabel() {
     return label;
   }

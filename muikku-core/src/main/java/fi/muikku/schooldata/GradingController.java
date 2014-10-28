@@ -75,8 +75,8 @@ public class GradingController {
 	
 	/* GradingScaleItem */
 
-	public GradingScaleItem findGradingScaleItem(GradingScaleItemEntity entity) {
-		return gradingSchoolDataController.findGradingScaleItem(entity.getDataSource(), entity.getIdentifier());
+	public GradingScaleItem findGradingScaleItem(GradingScale gradingScale, GradingScaleItemEntity entity) {
+		return gradingSchoolDataController.findGradingScaleItem(entity.getDataSource(), gradingScale, entity.getIdentifier());
 	}
 
 	public List<GradingScaleItem> listGradingScaleItems(GradingScale gradingScale) {

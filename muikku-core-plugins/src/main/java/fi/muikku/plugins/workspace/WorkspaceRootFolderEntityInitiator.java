@@ -12,13 +12,11 @@ import fi.muikku.dao.workspace.WorkspaceEntityDAO;
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
-import fi.muikku.schooldata.SchoolDataBridgeEntityInitiator;
-import fi.muikku.schooldata.SchoolDataEntityInitiator;
 import fi.muikku.schooldata.entity.Workspace;
+import fi.muikku.schooldata.initializers.SchoolDataEntityInitializer;
+import fi.muikku.schooldata.initializers.SchoolDataWorkspaceInitializer;
 
-@SchoolDataBridgeEntityInitiator (entity = Workspace.class)
-public class WorkspaceRootFolderEntityInitiator implements SchoolDataEntityInitiator<Workspace> {
-
+public class WorkspaceRootFolderEntityInitiator implements SchoolDataWorkspaceInitializer {
   
   @Inject
   private Logger logger;
@@ -33,7 +31,20 @@ public class WorkspaceRootFolderEntityInitiator implements SchoolDataEntityIniti
   private WorkspaceMaterialController workspaceMaterialController;
   
   @Override
-  public Workspace single(Workspace workspace) {
+  public List<Workspace> init(List<Workspace> workspaces) {
+    List<Workspace> result = new ArrayList<>();
+    
+    for (Workspace workspace : workspaces) {
+      workspace = init(workspace);
+      if (workspace != null) {
+        result.add(workspace);
+      }
+    }
+    
+    return result;
+  }
+
+  private Workspace init(Workspace workspace) {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(workspace.getSchoolDataSource());
     WorkspaceEntity workspaceEntity = workspaceEntityDAO.findByDataSourceAndIdentifier(dataSource, workspace.getIdentifier());
     if (workspaceEntity != null) {
@@ -48,18 +59,9 @@ public class WorkspaceRootFolderEntityInitiator implements SchoolDataEntityIniti
     return workspace;
   }
 
-  @Override
-  public List<Workspace> list(List<Workspace> workspaces) {
-    List<Workspace> result = new ArrayList<>();
-    
-    for (Workspace workspace : workspaces) {
-      workspace = single(workspace);
-      if (workspace != null) {
-        result.add(workspace);
-      }
-    }
-    
-    return result;
-  }
 
+  @Override
+  public int getPriority() {
+    return SchoolDataEntityInitializer.PRIORITY_NORMAL;
+  }
 }

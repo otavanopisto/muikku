@@ -33,14 +33,6 @@ public class CourseMetaController {
 	private Instance<CourseMetaSchoolDataBridge> courseMetaBridges;
 
 	@Inject
-	@SchoolDataBridgeEntityInitiator ( entity = Subject.class )
-	private Instance<SchoolDataEntityInitiator<Subject>> subjectInitiators;
-	
-	@Inject
-	@SchoolDataBridgeEntityInitiator ( entity = CourseIdentifier.class )
-	private Instance<SchoolDataEntityInitiator<CourseIdentifier>> courseIdentifierInitiators;
-	
-	@Inject
 	private SchoolDataSourceDAO schoolDataSourceDAO;
 	
 	/* Subjects */
@@ -60,7 +52,7 @@ public class CourseMetaController {
 		CourseMetaSchoolDataBridge schoolDataBridge = getCourseMetaBridge(schoolDataSource);
 		if (schoolDataBridge != null) {
 			try {
-				return initSubject(schoolDataBridge.findSubject(identifier));
+				return schoolDataBridge.findSubject(identifier);
 			} catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
 				logger.log(Level.SEVERE, "School Data Bridge reported a problem while findin a subject", e);
 			}
@@ -82,7 +74,7 @@ public class CourseMetaController {
 			}
 		}
 		
-		return initSubjects(result);
+		return result;
 	}
 	
 	/* CourseIdentifier */
@@ -91,7 +83,7 @@ public class CourseMetaController {
 		CourseMetaSchoolDataBridge schoolDataBridge = getCourseMetaBridge(schoolDataSource);
 		if (schoolDataBridge != null) {
 			try {
-				return initCourseIdentifier(schoolDataBridge.findCourseIdentifier(identifier));
+				return schoolDataBridge.findCourseIdentifier(identifier);
 			} catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
 				logger.log(Level.SEVERE, "School Data Bridge reported a problem while finding a course identifier", e);
 			}
@@ -105,7 +97,7 @@ public class CourseMetaController {
 	public CourseIdentifier findCourseIdentifier(String schoolDataSource, String identifier) {
 		SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
 		if (dataSource != null) {
-			 return initCourseIdentifier(findCourseIdentifier(dataSource, identifier));
+			 return findCourseIdentifier(dataSource, identifier);
 		} else {
   		logger.log(Level.SEVERE, "School Data Source could not be found by identifier:  " + schoolDataSource);
 		}
@@ -124,7 +116,7 @@ public class CourseMetaController {
 			} 
 		}
 
-		return initCourseIdentifiers(result);
+		return result;
 	}
 	
 	public List<CourseIdentifier> listCourseIdentifiersBySubject(Subject subject) {
@@ -133,7 +125,7 @@ public class CourseMetaController {
 			CourseMetaSchoolDataBridge schoolDataBridge = getCourseMetaBridge(schoolDataSource);
 			if (schoolDataBridge != null) {
 				try {
-					return initCourseIdentifiers(schoolDataBridge.listCourseIdentifiersBySubject(subject.getIdentifier()));
+					return schoolDataBridge.listCourseIdentifiersBySubject(subject.getIdentifier());
 				} catch (UnexpectedSchoolDataBridgeException e) {
 					logger.log(Level.SEVERE, "School Data Bridge reported a problem while listing course identifiers", e);
 				} catch (SchoolDataBridgeRequestException e) {
@@ -170,65 +162,4 @@ public class CourseMetaController {
 		return null;
 	}
 
-	/* Initiators */
-
-	private Subject initSubject(Subject subject) {
-		if (subject == null) {
-			return null;
-		}
-		
-		Iterator<SchoolDataEntityInitiator<Subject>> initiatorIterator = subjectInitiators.iterator();
-		while (initiatorIterator.hasNext()) {
-			subject = initiatorIterator.next().single(subject);
-		}
-		
-		return subject;
-	};
-	
-	private List<Subject> initSubjects(List<Subject> subjects) {
-		if (subjects == null) {
-			return null;
-		}
-		
-		if (subjects.size() == 0) {
-			return subjects;
-		}
-		
-		Iterator<SchoolDataEntityInitiator<Subject>> initiatorIterator = subjectInitiators.iterator();
-		while (initiatorIterator.hasNext()) {
-			subjects = initiatorIterator.next().list(subjects);
-		}
-		
-		return subjects;
-	};
-
-	private CourseIdentifier initCourseIdentifier(CourseIdentifier courseIdentifier) {
-		if (courseIdentifier == null) {
-			return null;
-		}
-		
-		Iterator<SchoolDataEntityInitiator<CourseIdentifier>> initiatorIterator = courseIdentifierInitiators.iterator();
-		while (initiatorIterator.hasNext()) {
-			courseIdentifier = initiatorIterator.next().single(courseIdentifier);
-		}
-		
-		return courseIdentifier;
-	};
-	
-	private List<CourseIdentifier> initCourseIdentifiers(List<CourseIdentifier> courseIdentifiers) {
-		if (courseIdentifiers == null) {
-			return null;
-		}
-		
-		if (courseIdentifiers.size() == 0) {
-			return courseIdentifiers;
-		}
-		
-		Iterator<SchoolDataEntityInitiator<CourseIdentifier>> initiatorIterator = courseIdentifierInitiators.iterator();
-		while (initiatorIterator.hasNext()) {
-			courseIdentifiers = initiatorIterator.next().list(courseIdentifiers);
-		}
-		
-		return courseIdentifiers;
-	};
 }

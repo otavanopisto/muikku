@@ -33,14 +33,6 @@ class GradingSchoolDataController {
 	private Instance<GradingSchoolDataBridge> gradingBridges;
 
 	@Inject
-	@SchoolDataBridgeEntityInitiator ( entity = GradingScale.class )
-	private Instance<SchoolDataEntityInitiator<GradingScale>> gradingScaleInitiators;
-
-	@Inject
-	@SchoolDataBridgeEntityInitiator ( entity = GradingScaleItem.class )
-	private Instance<SchoolDataEntityInitiator<GradingScaleItem>> gradingScaleItemInitiators;
-	
-	@Inject
 	private SchoolDataSourceDAO schoolDataSourceDAO;
 	
 	/* GradingScales */
@@ -49,7 +41,7 @@ class GradingSchoolDataController {
 		GradingSchoolDataBridge schoolDataBridge = getGradingBridge(schoolDataSource);
 		if (schoolDataBridge != null) {
 			try {
-				return initGradingScale(schoolDataBridge.findGradingScale(identifier));
+				return schoolDataBridge.findGradingScale(identifier);
 			} catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
 				logger.log(Level.SEVERE, "School Data Bridge reported a problem while findin a grading scale", e);
 			}
@@ -63,7 +55,7 @@ class GradingSchoolDataController {
 	public GradingScale findGradingScale(String schoolDataSource, String identifier) {
 		SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(identifier);
 		if (dataSource != null) {
-			 return initGradingScale(findGradingScale(dataSource, identifier));
+			 return findGradingScale(dataSource, identifier);
 		} else {
   		logger.log(Level.SEVERE, "School Data Source could not be found by identifier:  " + schoolDataSource);
 		}
@@ -84,16 +76,16 @@ class GradingSchoolDataController {
 			}
 		}
 		
-		return initGradingScales(result);
+		return result;
 	}
 	
 	/* GradingScaleItems */
 	
-	public GradingScaleItem findGradingScaleItem(SchoolDataSource schoolDataSource, String identifier) {
+	public GradingScaleItem findGradingScaleItem(SchoolDataSource schoolDataSource, GradingScale gradingScale, String identifier) {
 		GradingSchoolDataBridge schoolDataBridge = getGradingBridge(schoolDataSource);
 		if (schoolDataBridge != null) {
 			try {
-				return initGradingScaleItem(schoolDataBridge.findGradingScaleItem(identifier));
+				return schoolDataBridge.findGradingScaleItem(gradingScale.getIdentifier(), identifier);
 			} catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
 				logger.log(Level.SEVERE, "School Data Bridge reported a problem while findin a grading scale item", e);
 			}
@@ -104,10 +96,10 @@ class GradingSchoolDataController {
 		return null;
   }
 
-	public GradingScaleItem findGradingScaleItem(String schoolDataSource, String identifier) {
+	public GradingScaleItem findGradingScaleItem(String schoolDataSource, GradingScale gradingScale, String identifier) {
 		SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(identifier);
 		if (dataSource != null) {
-			 return initGradingScaleItem(findGradingScaleItem(dataSource, identifier));
+			 return findGradingScaleItem(dataSource, gradingScale, identifier);
 		} else {
   		logger.log(Level.SEVERE, "School Data Source could not be found by identifier:  " + schoolDataSource);
 		}
@@ -121,7 +113,7 @@ class GradingSchoolDataController {
 			GradingSchoolDataBridge schoolDataBridge = getGradingBridge(schoolDataSource);
 			if (schoolDataBridge != null) {
 				try {
-					return initGradingScaleItems(schoolDataBridge.listGradingScaleItems(gradingScale.getIdentifier()));
+					return schoolDataBridge.listGradingScaleItems(gradingScale.getIdentifier());
 				} catch (UnexpectedSchoolDataBridgeException e) {
 					logger.log(Level.SEVERE, "School Data Bridge reported a problem while listing grading scale items", e);
 				} catch (SchoolDataBridgeRequestException e) {
@@ -157,66 +149,5 @@ class GradingSchoolDataController {
 		
 		return Collections.unmodifiableList(result);
 	}
-	
-	/* Initiators */
 
-	private GradingScale initGradingScale(GradingScale gradingScale) {
-		if (gradingScale == null) {
-			return null;
-		}
-		
-		Iterator<SchoolDataEntityInitiator<GradingScale>> initiatorIterator = gradingScaleInitiators.iterator();
-		while (initiatorIterator.hasNext()) {
-			gradingScale = initiatorIterator.next().single(gradingScale);
-		}
-		
-		return gradingScale;
-	};
-	
-	private List<GradingScale> initGradingScales(List<GradingScale> gradingScales) {
-		if (gradingScales == null) {
-			return null;
-		}
-		
-		if (gradingScales.size() == 0) {
-			return gradingScales;
-		}
-		
-		Iterator<SchoolDataEntityInitiator<GradingScale>> initiatorIterator = gradingScaleInitiators.iterator();
-		while (initiatorIterator.hasNext()) {
-			gradingScales = initiatorIterator.next().list(gradingScales);
-		}
-		
-		return gradingScales;
-	};
-
-	private GradingScaleItem initGradingScaleItem(GradingScaleItem gradingScaleItem) {
-		if (gradingScaleItem == null) {
-			return null;
-		}
-		
-		Iterator<SchoolDataEntityInitiator<GradingScaleItem>> initiatorIterator = gradingScaleItemInitiators.iterator();
-		while (initiatorIterator.hasNext()) {
-			gradingScaleItem = initiatorIterator.next().single(gradingScaleItem);
-		}
-		
-		return gradingScaleItem;
-	};
-	
-	private List<GradingScaleItem> initGradingScaleItems(List<GradingScaleItem> gradingScaleItems) {
-		if (gradingScaleItems == null) {
-			return null;
-		}
-		
-		if (gradingScaleItems.size() == 0) {
-			return gradingScaleItems;
-		}
-		
-		Iterator<SchoolDataEntityInitiator<GradingScaleItem>> initiatorIterator = gradingScaleItemInitiators.iterator();
-		while (initiatorIterator.hasNext()) {
-			gradingScaleItems = initiatorIterator.next().list(gradingScaleItems);
-		}
-		
-		return gradingScaleItems;
-	};
 }
