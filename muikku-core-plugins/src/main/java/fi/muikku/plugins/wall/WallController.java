@@ -44,7 +44,6 @@ import fi.muikku.plugins.wall.model.WallEntryVisibility;
 import fi.muikku.plugins.wall.model.WorkspaceWall;
 import fi.muikku.users.UserController;
 import fi.muikku.schooldata.WorkspaceController;
-import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.EnvironmentUserController;
@@ -347,29 +346,6 @@ public class WallController {
 
   public String getWallType(Wall wall) {
     return wall.getClass().getSimpleName();
-  }
-
-  @Deprecated
-  public String getWallName(Wall wall) {
-    switch (wall.getWallType()) {
-    case WORKSPACE:
-      WorkspaceWall workspaceWall = workspaceWallDAO.findById(wall.getId());
-
-      WorkspaceEntity workspace = workspaceController.findWorkspaceEntityById(workspaceWall.getWorkspace());
-
-      return workspace.getUrlName();
-    case ENVIRONMENT:
-      return "the Muikerosuikero";
-
-    case USER:
-      UserWall userWall = userWallDAO.findById(wall.getId());
-
-      User user = userController.findUserByUserEntity(userEntityController.findUserEntityById(userWall.getUser()));
-
-      return user.getFirstName() + " " + user.getLastName();
-    }
-
-    throw new RuntimeException("getWallName - undefined wall type");
   }
 
   public boolean showContext(Wall wall, WallEntry wallEntry) {

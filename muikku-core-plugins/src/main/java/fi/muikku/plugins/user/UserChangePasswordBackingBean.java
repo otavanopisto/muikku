@@ -20,7 +20,6 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.i18n.LocaleController;
 import fi.muikku.plugins.internalauth.InternalAuthController;
-import fi.muikku.schooldata.UserController;
 import fi.muikku.session.SessionController;
 import fi.muikku.utils.FacesUtils;
 
@@ -29,9 +28,6 @@ import fi.muikku.utils.FacesUtils;
 @RequestScoped
 @Join (path = "/user-changepassword", to = "/user/user-changepassword.jsf")
 public class UserChangePasswordBackingBean {
-
-	@Inject
-	private UserController userController;
 	
 	@Inject
 	private InternalAuthController internalAuthController;

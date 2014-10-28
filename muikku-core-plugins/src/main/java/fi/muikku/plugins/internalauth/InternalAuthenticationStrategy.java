@@ -18,16 +18,11 @@ import fi.muikku.auth.AuthenticationResult.Status;
 import fi.muikku.model.security.AuthSource;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.internalauth.model.InternalAuth;
-import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
-import fi.muikku.schooldata.entity.User;
 
 @Dependent
 @Stateless
 public class InternalAuthenticationStrategy extends AbstractAuthenticationStrategy implements AuthenticationProvider {
-  
-  @Inject
-  private UserController userController;
 
   @Inject
   private UserEntityController userEntityController;
@@ -55,10 +50,7 @@ public class InternalAuthenticationStrategy extends AbstractAuthenticationStrate
     if (internalAuth != null) {
       UserEntity userEntity = userEntityController.findUserEntityById(internalAuth.getUserEntityId());
       if (userEntity != null) {
-        User user = userController.findUserByUserEntity(userEntity);
-        if (user != null) {
-          return processLogin(authSource, requestParameters, DigestUtils.md5Hex("INTERNAL-" + internalAuth.getId()), Arrays.asList(email), user.getFirstName(), user.getLastName());
-        }
+        return processLogin(authSource, requestParameters, DigestUtils.md5Hex("INTERNAL-" + internalAuth.getId()), Arrays.asList(email), null, null);
       }
     }
     

@@ -35,7 +35,7 @@ public class UserRESTService extends AbstractRESTService {
       return Response.status(Response.Status.NOT_FOUND).build();
     }
     
-    User user = userController.findUserByUserEntity(userEntity);
+    User user = userController.findUserByDataSourceAndIdentifier(userEntity.getDefaultSchoolDataSource(), userEntity.getDefaultIdentifier());
     if (user == null) {
       return Response.status(Response.Status.NOT_FOUND).build();
     }

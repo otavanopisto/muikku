@@ -36,7 +36,7 @@ public class StudentViewBackingBean {
   }
   
   public User getUser() {
-    return userController.findUserByUserEntity(getUserEntity());
+    return userController.findUserByDataSourceAndIdentifier(getUserEntity().getDefaultSchoolDataSource(), getUserEntity().getDefaultIdentifier());
   }
   
   public UserEntity getUserEntity() {

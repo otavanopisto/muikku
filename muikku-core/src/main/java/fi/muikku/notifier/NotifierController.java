@@ -19,6 +19,7 @@ import fi.muikku.model.notifier.NotifierUserAction;
 import fi.muikku.model.notifier.NotifierUserActionAllowance;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.session.SessionController;
+import fi.muikku.users.UserController;
 
 @Dependent
 @Stateful
@@ -30,7 +31,7 @@ public class NotifierController {
   private SessionController sessionController;
 
   @Inject
-  private fi.muikku.schooldata.UserController userController;
+  private UserController userController;
   
   @Inject
   private NotifierUserActionDAO notifierUserActionDAO;

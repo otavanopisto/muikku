@@ -40,7 +40,7 @@ public class UserIndexBackingBean {
 	}
 
 	public User getUser() {
-	  return userController.findUserByUserEntity(getUserEntity());
+	  return userController.findUserByDataSourceAndIdentifier(getUserEntity().getDefaultSchoolDataSource(), getUserEntity().getDefaultIdentifier());
 	}
 	
 	public UserEntity getUserEntity() {

@@ -41,7 +41,7 @@ public class GuidanceRequestNotification implements NotifierAction, NotifierEmai
   public String getEmailSubject(NotifierContext context) {
     GuidanceRequest guidanceRequest = getGuidanceRequest(context);
     UserEntity student = userEntityController.findUserEntityById(guidanceRequest.getStudent());
-    User user = userController.findUserByUserEntity(student);
+    User user = userController.findUserByDataSourceAndIdentifier(student.getDefaultSchoolDataSource(), student.getDefaultIdentifier());
     String userName = user.getFirstName() + " " + user.getLastName();
     
     String caption = localeController.getText(sessionController.getLocale(), "plugin.guidancerequest.newGuidanceRequest.mail.subject");
@@ -53,7 +53,7 @@ public class GuidanceRequestNotification implements NotifierAction, NotifierEmai
   public String getEmailContent(NotifierContext context) {
     GuidanceRequest guidanceRequest = getGuidanceRequest(context);
     UserEntity student = userEntityController.findUserEntityById(guidanceRequest.getStudent());
-    User user = userController.findUserByUserEntity(student);
+    User user = userController.findUserByDataSourceAndIdentifier(student.getDefaultSchoolDataSource(), student.getDefaultIdentifier());
     String userName = user.getFirstName() + " " + user.getLastName();
     
     String content = localeController.getText(sessionController.getLocale(), "plugin.guidancerequest.newGuidanceRequest.mail.content");

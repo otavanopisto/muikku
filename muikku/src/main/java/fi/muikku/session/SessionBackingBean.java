@@ -41,7 +41,7 @@ public class SessionBackingBean {
 	      }
 	    }
 	    
-	    User user = userController.findUserByUserEntity(loggedUser);
+	    User user = userController.findUserByDataSourceAndIdentifier(sessionController.getActiveUserSchoolDataSource(), sessionController.getActiveUserIdentifier());
 	    if (user != null) {
 	      loggedUserName = user.getFirstName() + ' ' + user.getLastName();
 	    }

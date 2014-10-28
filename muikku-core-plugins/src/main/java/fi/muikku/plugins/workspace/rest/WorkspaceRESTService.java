@@ -251,7 +251,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-    User user = userController.findUserByUserEntity(userEntity);
+    User user = userController.findUserByDataSourceAndIdentifier(userEntity.getDefaultSchoolDataSource(), userEntity.getDefaultIdentifier());
 
     Role role = roleController.findRoleByDataSourceAndRoleEntity(user.getSchoolDataSource(), workspaceRole);
     fi.muikku.schooldata.entity.WorkspaceUser workspaceUser = workspaceController.createWorkspaceUser(workspace, user, role);

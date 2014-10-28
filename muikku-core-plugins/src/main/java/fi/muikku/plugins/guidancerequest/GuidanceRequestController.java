@@ -97,7 +97,7 @@ public class GuidanceRequestController {
     }
 
     if (!recipients.isEmpty()) {
-      User user = userController.findUserByUserEntity(student);
+      User user = userController.findUserByDataSourceAndIdentifier(sessionController.getActiveUserIdentifier(), sessionController.getActiveUserIdentifier());
       String userName = user.getFirstName() + " " + user.getLastName();
 
       String caption = localeController.getText(sessionController.getLocale(), "plugin.guidancerequest.newGuidanceRequest.mail.subject");
