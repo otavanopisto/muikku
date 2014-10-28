@@ -34,7 +34,7 @@ import fi.muikku.plugins.commonlog.LogProvider;
 public class MongoLogProvider implements LogProvider {
 
   private static final String DB_NAME = "muikku"; // TODO: Make configurable
-  private static final String DB_HOST = "asdadssda.asdasd.com";//"kahana.mongohq.com";
+  private static final String DB_HOST = "kahana.mongohq.com";
   private static final String DB_USER = "muikku";
   private static final String DB_PASSWORD = "muikku";
   private static final int DB_PORT = 10066;
