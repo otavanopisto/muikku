@@ -10,15 +10,17 @@ import javax.servlet.http.HttpServletRequest;
 
 import fi.muikku.auth.AuthenticationResult.ConflictReason;
 import fi.muikku.auth.AuthenticationResult.Status;
-import fi.muikku.controller.SchoolBridgeController;
-import fi.muikku.controller.UserEntityController;
 import fi.muikku.events.LoginEvent;
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.security.AuthSource;
 import fi.muikku.model.security.AuthSourceSetting;
 import fi.muikku.model.security.UserIdentification;
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.schooldata.UserController;
+import fi.muikku.users.UserSchoolDataIdentifierController;
+import fi.muikku.users.UserEmailEntityController;
+import fi.muikku.users.UserEntityController;
+import fi.muikku.schooldata.SchoolDataController;
+import fi.muikku.schooldata.UserSchoolDataController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.session.local.LocalSession;
 import fi.muikku.session.local.LocalSessionController;
@@ -39,10 +41,16 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
   private UserEntityController userEntityController;
 
   @Inject
-  private UserController userController;
+  private UserEmailEntityController userEmailEntityController;
 
   @Inject
-  private SchoolBridgeController schoolBridgeController;
+  private SchoolDataController schoolDataController;
+
+  @Inject
+  private UserSchoolDataController userSchoolDataController;
+  
+  @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
 
   @Inject
   private Event<LoginEvent> userLoggedInEvent;
@@ -66,7 +74,7 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
   }
 
   protected AuthenticationResult processLogin(AuthSource authSource, Map<String, String[]> requestParameters, String externalId, List<String> emails, String firstName, String lastName) throws AuthenticationHandleException {
-    List<UserEntity> emailUsers = userEntityController.listUsersByEmails(emails);
+    List<UserEntity> emailUsers = userEntityController.listUserEntitiesByEmails(emails);
     if (emailUsers.size() > 1) {
       return new AuthenticationResult(Status.CONFLICT, ConflictReason.SEVERAL_USERS_BY_EMAILS);
     }
@@ -86,18 +94,42 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
         // But has existing user in the system, so we attach the identification into the same user
         userIdentification = userIdentificationController.createUserIdentification(emailUser, authSource, externalId);
       } else {
-        // New user account
-        // TODO: How to determine where this user should be created?
+        // New user account        
+        UserEntity userEntity = userEntityController.createUserEntity(null, null);
 
-        SchoolDataSource schoolDataSource = schoolBridgeController.findSchoolDataSourceByIdentifier("LOCAL");
-        User user = userController.createUser(schoolDataSource, firstName, lastName);
-        if (user == null) {
-          throw new AuthenticationHandleException("SchoolDataSource '" + schoolDataSource.getIdentifier() + " returned null user from createUser method");
-        }
-        
-        UserEntity userEntity = userController.findUserEntity(user);
-        if (userEntity == null) {
-          throw new AuthenticationHandleException("Could not find UserEntity for user " + user.getIdentifier() + "/" + user.getSchoolDataSource());
+        // If user can be found from datasources by emails, we just attach those users to new entity
+        List<User> users = userSchoolDataController.listUsersByEmails(emails);
+        if (!users.isEmpty()) {
+          for (User user : users) {
+            userSchoolDataIdentifierController.createUserSchoolDataIdentifier(user.getSchoolDataSource(), user.getIdentifier(), userEntity);
+          }
+          
+          // Your guess for default identity is the first of returned users.
+          User user = users.get(0);
+          
+          SchoolDataSource schoolDataSource = schoolDataController.findSchoolDataSource(user.getSchoolDataSource());
+          userEntityController.updateDefaultSchoolDataSource(userEntity, schoolDataSource);
+          userEntityController.updateDefaultIdentifier(userEntity, user.getIdentifier());
+        } else {
+          String defaultIdentifier = null;
+          SchoolDataSource defaultSchoolDataSource = null;
+          
+          // If user could not be found from any of the sources we create new and attach those 
+          for (SchoolDataSource schoolDataSource : schoolDataController.listSchoolDataSources()) {
+            User user = userSchoolDataController.createUser(schoolDataSource, firstName, lastName);
+            if (user != null) {
+              userSchoolDataIdentifierController.createUserSchoolDataIdentifier(user.getSchoolDataSource(), user.getIdentifier(), userEntity);
+              if ((defaultIdentifier == null) && (defaultSchoolDataSource == null)) {
+                defaultIdentifier = user.getIdentifier();
+                defaultSchoolDataSource = schoolDataSource;
+              }
+            }
+          }
+          
+          if ((defaultIdentifier != null) && (defaultSchoolDataSource != null)) {
+            userEntityController.updateDefaultSchoolDataSource(userEntity, defaultSchoolDataSource);
+            userEntityController.updateDefaultIdentifier(userEntity, defaultIdentifier);
+          }
         }
         
         userIdentification = userIdentificationController.createUserIdentification(userEntity, authSource, externalId);
@@ -105,10 +137,10 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
       }
     }
 
-    List<String> existingAddresses = userEntityController.listUserEmailAddresses(userIdentification.getUser());
+    List<String> existingAddresses = userEmailEntityController.listAddressesByUserEntity(userIdentification.getUser());
     for (String email : emails) {
       if (!existingAddresses.contains(email)) {
-        userEntityController.addUserEmail(userIdentification.getUser(), email);
+        userEmailEntityController.addUserEmail(userIdentification.getUser(), email);
       }
     }
 
@@ -120,7 +152,7 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
     UserEntity loggedUser = sessionController.getLoggedUser();
     if ((loggedUser == null) || loggedUser.getId().equals(user.getId())) {
       sessionController.login(user.getId());
-      userController.updateLastLogin(user);
+      userEntityController.updateLastLogin(user);
       HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
       userLoggedInEvent.fire(new LoginEvent(user.getId(), this, req.getRemoteAddr()));
       return new AuthenticationResult(newAccount ? Status.NEW_ACCOUNT : Status.LOGIN);
