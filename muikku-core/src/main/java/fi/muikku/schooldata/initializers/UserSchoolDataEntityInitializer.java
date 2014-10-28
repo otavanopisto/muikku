@@ -50,7 +50,7 @@ public class UserSchoolDataEntityInitializer implements SchoolDataUserInitialize
     UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(dataSource, user.getIdentifier());
     if (userSchoolDataIdentifier == null) {
       // If school data identifier does not exist, we need to create new UserEntity and bind it to identifier
-      UserEntity userEntity = userEntityDAO.create(Boolean.FALSE);
+      UserEntity userEntity = userEntityDAO.create(Boolean.FALSE, dataSource, user.getIdentifier());
       userSchoolDataIdentifier = userSchoolDataIdentifierDAO.create(dataSource, user.getIdentifier(), userEntity);
     }
     

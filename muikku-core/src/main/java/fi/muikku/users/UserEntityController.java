@@ -33,8 +33,8 @@ public class UserEntityController {
   @Inject
   private UserEmailEntityDAO userEmailEntityDAO;
   
-  public UserEntity createUserEntity() {
-    return userEntityDAO.create(Boolean.FALSE);
+  public UserEntity createUserEntity(SchoolDataSource defaultSchoolDataSource, String defaultIdentifier) {
+    return userEntityDAO.create(Boolean.FALSE, defaultSchoolDataSource, defaultIdentifier);
   }
   
   public UserEntity findUserEntityById(Long id) {
@@ -114,5 +114,13 @@ public class UserEntityController {
    */
   public UserEntity updateLastLogin(UserEntity userEntity) {
     return userEntityDAO.updateLastLogin(userEntity);
+  }
+
+  public UserEntity updateDefaultSchoolDataSource(UserEntity userEntity, SchoolDataSource defaultSchoolDataSource) {
+    return userEntityDAO.updateDefaultSchoolDataSource(userEntity, defaultSchoolDataSource);
+  }
+
+  public UserEntity updateDefaultIdentifier(UserEntity userEntity, String defaultIdentifier) {
+    return userEntityDAO.updateDefaultIdentifier(userEntity, defaultIdentifier);
   }
 }

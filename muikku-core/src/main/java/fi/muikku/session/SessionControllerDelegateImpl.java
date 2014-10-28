@@ -85,5 +85,15 @@ public class SessionControllerDelegateImpl implements SessionControllerDelegate 
     return implementation.getOAuthAccessToken(strategy);
   }
   
+  @Override
+  public String getActiveUserIdentifier() {
+    return implementation.getActiveUserIdentifier();
+  }
+  
+  @Override
+  public String getActiveUserSchoolDataSource() {
+    return implementation.getActiveUserSchoolDataSource();
+  }
+  
   private SessionController implementation;
 }

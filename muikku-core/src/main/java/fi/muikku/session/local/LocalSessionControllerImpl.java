@@ -1,5 +1,6 @@
 package fi.muikku.session.local;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -28,14 +29,22 @@ import fi.muikku.session.AccessToken;
 @Stateful
 @SessionScoped
 @LocalSession
-public class LocalSessionControllerImpl extends AbstractSessionController implements LocalSessionController {
+public class LocalSessionControllerImpl extends AbstractSessionController implements Serializable, LocalSessionController {
   
+  private static final long serialVersionUID = 4947154641883149837L;
+
   @Inject
   private UserEntityDAO userEntityDAO;
-  
+
   @Override
   public void login(Long userId) {
   	this.loggedUserId = userId;
+  	
+  	UserEntity userEntity = userEntityDAO.findById(userId);
+  	if (userEntity != null) {
+      this.activeUserIdentifier = userEntity.getDefaultIdentifier();
+      this.activeUserSchoolDataSource = userEntity.getDefaultSchoolDataSource().getIdentifier();
+  	}
   }
 
   @Override
@@ -170,12 +179,26 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
   public AccessToken getOAuthAccessToken(String strategy) {
     return accessTokens.get(strategy);
   }
-    
+  
+  @Override
+  public String getActiveUserIdentifier() {
+    return activeUserIdentifier;
+  }
+  
+  @Override
+  public String getActiveUserSchoolDataSource() {
+    return activeUserSchoolDataSource;
+  }
+
   private Locale locale;
 
   private Long loggedUserId;
 
   private Long representedUserId;
-
+  
+  private String activeUserIdentifier;
+  
+  private String activeUserSchoolDataSource;
+  
   private Map<String, AccessToken> accessTokens = Collections.synchronizedMap(new HashMap<String, AccessToken>());
 }

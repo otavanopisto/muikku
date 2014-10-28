@@ -20,12 +20,11 @@ import fi.muikku.security.PermissionResolver;
 @RestSesssion
 public class RestSessionControllerImpl extends AbstractSessionController implements RestSessionController {
   
-//  @Inject
-//  private CourseEntityDAO courseDAO;
-  
   @Override
   public void setAuthentication(RestAuthentication authentication) {
     this.authentication = authentication;
+    this.activeUserIdentifier = authentication.getUser().getDefaultIdentifier();
+    this.activeUserSchoolDataSource = authentication.getUser().getDefaultSchoolDataSource().getIdentifier();
   }
 
   @Override
@@ -95,8 +94,20 @@ public class RestSessionControllerImpl extends AbstractSessionController impleme
     return accessTokens.get(strategy);
   }
 
+  @Override
+  public String getActiveUserIdentifier() {
+    return activeUserIdentifier;
+  }
+
+  @Override
+  public String getActiveUserSchoolDataSource() {
+    return activeUserSchoolDataSource;
+  }
+  
   private RestAuthentication authentication;
   private Locale locale;
-
+  private String activeUserIdentifier;
+  private String activeUserSchoolDataSource;
   private Map<String, AccessToken> accessTokens = Collections.synchronizedMap(new HashMap<String, AccessToken>());
+
 }

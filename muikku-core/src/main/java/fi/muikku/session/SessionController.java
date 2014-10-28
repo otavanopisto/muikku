@@ -84,4 +84,8 @@ public interface SessionController {
   public void addOAuthAccessToken(String strategy, Date expiresAt, String accessToken);
   
   public AccessToken getOAuthAccessToken(String strategy);
+  
+  public String getActiveUserIdentifier();
+  
+  public String getActiveUserSchoolDataSource();
 }
