@@ -23,6 +23,7 @@ import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
+import com.mongodb.MongoTimeoutException;
 import com.mongodb.ServerAddress;
 import com.mongodb.util.JSON;
 
@@ -33,26 +34,36 @@ import fi.muikku.plugins.commonlog.LogProvider;
 public class MongoLogProvider implements LogProvider {
 
   private static final String DB_NAME = "muikku"; // TODO: Make configurable
-  private static final String DB_HOST = "kahana.mongohq.com";
+  private static final String DB_HOST = "asdadssda.asdasd.com";//"kahana.mongohq.com";
   private static final String DB_USER = "muikku";
   private static final String DB_PASSWORD = "muikku";
   private static final int DB_PORT = 10066;
-
+  private boolean enabled = true;
+  
   @Inject
   private Logger logger;
 
   @PostConstruct
-  public void init() throws UnknownHostException {
-    if (DB_USER != "" && DB_PASSWORD != "") {
-      MongoCredential credential = MongoCredential.createMongoCRCredential(DB_USER, DB_NAME, DB_PASSWORD.toCharArray());
-      ServerAddress addr = new ServerAddress(DB_HOST, DB_PORT);
-      mongo = new MongoClient(addr, Arrays.asList(credential));
-      db = mongo.getDB(DB_NAME);
-    }
+  public void init() {
+    try {
+      if (DB_USER != "" && DB_PASSWORD != "") {
+          MongoCredential credential = MongoCredential.createMongoCRCredential(DB_USER, DB_NAME, DB_PASSWORD.toCharArray());
+          ServerAddress addr;
+          addr = new ServerAddress(DB_HOST, DB_PORT);
+          mongo = new MongoClient(addr, Arrays.asList(credential));
+          db = mongo.getDB(DB_NAME);
+      }
+     } catch (Exception e) {
+       logger.warning("Cannot initialize connection to mongoDB");
+       enabled = false;
+     }
   }
 
   @Override
   public void log(String collection, Object data) {
+    if(!enabled){
+      return;
+    }
     DBCollection c = db.getCollection(collection);
     try {
       String json = new ObjectMapper().writeValueAsString(data);
@@ -60,6 +71,9 @@ public class MongoLogProvider implements LogProvider {
       c.insert(o);
     } catch (IOException e) {
       logger.log(Level.WARNING, "Error while converting data to json");
+    } catch (MongoTimeoutException e) {
+      logger.warning("Connection to mongoDB timed out!, disabling logging to mongoDB");
+      enabled = false;
     }
 
   }
@@ -67,16 +81,24 @@ public class MongoLogProvider implements LogProvider {
   @SuppressWarnings("unchecked")
   @Override
   public ArrayList<HashMap<String, Object>> getLogEntries(String collection, Map<String, Object> query, int count) {
-    DBCollection c = db.getCollection(collection);
-    BasicDBObject queryObject = new BasicDBObject();
-    queryObject.putAll(query);
-    DBCursor cursor = c.find(queryObject).sort(new BasicDBObject("time", -1)).limit(count);
-    ArrayList<HashMap<String, Object>> results = new ArrayList<HashMap<String, Object>>();
-    while (cursor.hasNext()) {
-      results.add((HashMap<String, Object>) cursor.next().toMap());
+    if(!enabled){
+      return null;
     }
-
-    return results;
+    try {
+      DBCollection c = db.getCollection(collection);
+      BasicDBObject queryObject = new BasicDBObject();
+      queryObject.putAll(query);
+      DBCursor cursor = c.find(queryObject).sort(new BasicDBObject("time", -1)).limit(count);
+      ArrayList<HashMap<String, Object>> results = new ArrayList<HashMap<String, Object>>();
+      while (cursor.hasNext()) {
+        results.add((HashMap<String, Object>) cursor.next().toMap());
+      }
+      return results;
+    } catch (MongoTimeoutException e) {
+      logger.warning("Connection to mongoDB timed out!, disabling logging to mongoDB");
+      enabled = false;
+      return null;
+    }
   }
 
   @Override
