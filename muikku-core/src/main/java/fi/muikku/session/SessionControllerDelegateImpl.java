@@ -95,5 +95,10 @@ public class SessionControllerDelegateImpl implements SessionControllerDelegate 
     return implementation.getActiveUserSchoolDataSource();
   }
   
+  @Override
+  public void setActiveUserIdentifier(String dataSource, String identifier) {
+    implementation.setActiveUserIdentifier(dataSource, identifier);
+  }
+  
   private SessionController implementation;
 }

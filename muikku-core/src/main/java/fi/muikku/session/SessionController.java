@@ -88,4 +88,6 @@ public interface SessionController {
   public String getActiveUserIdentifier();
   
   public String getActiveUserSchoolDataSource();
+
+  public void setActiveUserIdentifier( String dataSource, String identifier );
 }

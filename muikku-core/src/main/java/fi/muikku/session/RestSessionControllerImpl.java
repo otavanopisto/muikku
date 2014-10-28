@@ -104,6 +104,12 @@ public class RestSessionControllerImpl extends AbstractSessionController impleme
     return activeUserSchoolDataSource;
   }
   
+  @Override
+  public void setActiveUserIdentifier(String dataSource, String identifier) {
+    this.activeUserIdentifier = identifier;
+    this.activeUserSchoolDataSource = dataSource;
+  }
+  
   private RestAuthentication authentication;
   private Locale locale;
   private String activeUserIdentifier;

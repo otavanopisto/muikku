@@ -190,6 +190,12 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
     return activeUserSchoolDataSource;
   }
 
+  @Override
+  public void setActiveUserIdentifier(String dataSource, String identifier) {
+    this.activeUserIdentifier = identifier;
+    this.activeUserSchoolDataSource = dataSource;
+  }
+  
   private Locale locale;
 
   private Long loggedUserId;

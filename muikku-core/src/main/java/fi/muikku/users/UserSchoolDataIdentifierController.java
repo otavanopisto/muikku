@@ -1,5 +1,6 @@
 package fi.muikku.users;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.inject.Inject;
@@ -33,6 +34,10 @@ public class UserSchoolDataIdentifierController {
     }
     
     return createUserSchoolDataIdentifier(dataSource, identifier, userEntity);
+  }
+  
+  public List<UserSchoolDataIdentifier> listUserSchoolDataIdentifiersByUserEntity(UserEntity userEntity) {
+    return userSchoolDataIdentifierDAO.listByUserEntity(userEntity);
   }
   
   
