@@ -16,9 +16,9 @@ import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.schooldata.RoleController;
-import fi.muikku.schooldata.UserController;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.WorkspaceUser;
+import fi.muikku.users.UserEntityController;
 
 @Stateless
 @Dependent
@@ -28,7 +28,7 @@ public class WorkspaceUserSchoolDataEntityInitializer implements SchoolDataWorks
   private Logger logger;
   
   @Inject
-  private UserController userController;
+  private UserEntityController userEntityController;
 
   @Inject
   private RoleController roleController;
@@ -54,7 +54,7 @@ public class WorkspaceUserSchoolDataEntityInitializer implements SchoolDataWorks
   }
 
   private WorkspaceUser init(WorkspaceUser workspaceUser) {
-    UserEntity userEntity = userController.findUserEntityByDataSourceAndIdentifier(workspaceUser.getUserSchoolDataSource(), workspaceUser.getUserIdentifier());
+    UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(workspaceUser.getUserSchoolDataSource(), workspaceUser.getUserIdentifier());
     if (userEntity != null) {
       WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByDataSourceAndIdentifier(workspaceUser.getWorkspaceSchoolDataSource(), workspaceUser.getWorkspaceIdentifier());
       if (workspaceEntity != null) {

@@ -37,6 +37,16 @@ public class UserEntityController {
     return userEntityDAO.create(Boolean.FALSE, defaultSchoolDataSource, defaultIdentifier);
   }
   
+  public UserEntity createUserEntity(String dataSource, String identifier) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
+    if (dataSource == null) {
+      logger.severe("Could not find datasource " + dataSource);
+      return null;
+    }
+    
+    return createUserEntity(schoolDataSource, identifier);
+  }
+  
   public UserEntity findUserEntityById(Long id) {
     return userEntityDAO.findById(id);
   }

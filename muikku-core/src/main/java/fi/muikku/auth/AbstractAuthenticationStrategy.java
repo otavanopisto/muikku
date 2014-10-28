@@ -95,7 +95,7 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
         userIdentification = userIdentificationController.createUserIdentification(emailUser, authSource, externalId);
       } else {
         // New user account        
-        UserEntity userEntity = userEntityController.createUserEntity(null, null);
+        UserEntity userEntity = userEntityController.createUserEntity((SchoolDataSource) null, null);
 
         // If user can be found from datasources by emails, we just attach those users to new entity
         List<User> users = userSchoolDataController.listUsersByEmails(emails);

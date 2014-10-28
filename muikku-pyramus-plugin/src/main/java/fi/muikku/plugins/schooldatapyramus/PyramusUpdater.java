@@ -8,14 +8,19 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
 import fi.muikku.plugins.schooldatapyramus.entities.PyramusUserEmail;
 import fi.muikku.plugins.schooldatapyramus.entities.PyramusUserRole;
 import fi.muikku.plugins.schooldatapyramus.rest.SystemPyramusClient;
-import fi.muikku.schooldata.UserEntityController;
+import fi.muikku.users.UserController;
+import fi.muikku.users.UserEmailEntityController;
+import fi.muikku.users.UserEntityController;
+import fi.muikku.users.UserSchoolDataIdentifierController;
 import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.schooldata.entity.Role;
 import fi.muikku.schooldata.entity.User;
@@ -23,6 +28,8 @@ import fi.muikku.schooldata.entity.UserEmail;
 import fi.muikku.schooldata.entity.UserRole;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceUser;
+import fi.muikku.schooldata.events.SchoolDataUserDiscoveredEvent;
+import fi.muikku.schooldata.events.SchoolDataUserRemovedEvent;
 import fi.muikku.schooldata.initializers.SchoolDataEntityInitializerProvider;
 import fi.pyramus.rest.model.Course;
 import fi.pyramus.rest.model.CourseStaffMember;
@@ -38,10 +45,19 @@ public class PyramusUpdater {
   
   @Inject
   private WorkspaceEntityController workspaceEntityController;
+
+  @Inject
+  private UserController userController;
   
   @Inject
   private UserEntityController userEntityController;
+  
+  @Inject
+  private UserEmailEntityController userEmailEntityController;
 
+  @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+  
   @Inject
   private PyramusSchoolDataEntityFactory entityFactory;
   
@@ -53,22 +69,44 @@ public class PyramusUpdater {
 
   @Inject
   private PyramusIdentifierMapper identifierMapper;
+
+  @Inject
+  private Event<SchoolDataUserDiscoveredEvent> schoolDataUserDiscoveredEvent;
+
+  @Inject
+  private Event<SchoolDataUserRemovedEvent> schoolDataUserRemovedEvent;
   
   public void updateStudent(Long pyramusId) {
-    String studentIdentifier = identifierMapper.getStudentIdentifier(pyramusId);
+    
     Student student = pyramusClient.get("/students/students/" + pyramusId, Student.class);
     if (student != null) {
-      boolean studentExists = userEntityController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, studentIdentifier) != null;
-      if (!studentExists) {
-        synchronizeStudents(Arrays.asList(entityFactory.createEntity(student)), null);
-      } else {
-        synchronizeStudents(null, Arrays.asList(entityFactory.createEntity(student)));
+      String studentIdentifier = identifierMapper.getStudentIdentifier(pyramusId);
+      List<String> emails = new ArrayList<>();
+      
+      Email[] studentEmails = pyramusClient.get("/students/students/" + pyramusId + "/emails", Email[].class);
+      for (Email studentEmail : studentEmails) {
+        emails.add(studentEmail.getAddress());
       }
-    } else {
-      logger.log(Level.WARNING, "Could not find student #" + pyramusId + " from Pyramus");
+      
+      schoolDataUserDiscoveredEvent.fire(new SchoolDataUserDiscoveredEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, studentIdentifier, emails));
     }
   }
 
+  public void updateStaffMember(Long pyramusId) {
+    fi.pyramus.rest.model.User staffMember = pyramusClient.get("/staff/members/" + pyramusId, fi.pyramus.rest.model.User.class);
+    if (staffMember != null) {
+      String studentIdentifier = identifierMapper.getStaffIdentifier(pyramusId);
+      List<String> emails = new ArrayList<>();
+      
+      Email[] studentEmails = pyramusClient.get("/staff/members/" + pyramusId + "/emails", Email[].class);
+      for (Email studentEmail : studentEmails) {
+        emails.add(studentEmail.getAddress());
+      }
+      
+      schoolDataUserDiscoveredEvent.fire(new SchoolDataUserDiscoveredEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, studentIdentifier, emails));
+    }
+  }
+  
   public void updateCourse(Long courseId) {
     String workspaceIdentifier = identifierMapper.getWorkspaceIdentifier(courseId);
     Course course = pyramusClient.get("/courses/courses/" + courseId, Course.class);
@@ -86,26 +124,27 @@ public class PyramusUpdater {
   } 
 
   public int updateStudents(int offset, int maxStudents) {
-    List<fi.muikku.schooldata.entity.User> newUsers = new ArrayList<>();
-    List<fi.muikku.schooldata.entity.User> updateUsers = new ArrayList<>();
-    List<String> existingIdentifiers = userEntityController.listUserEntityIdentifiersByDataSource(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
-    Student[] students = pyramusClient.get("/students/students?firstResult=" + offset + "&maxResults=" + maxStudents, Student[].class);
-    
-    if (students.length == 0) {
-      return -1;
-    } else {
-      for (Student student : students) {
-        fi.muikku.schooldata.entity.User user = entityFactory.createEntity(student);
-        if (!existingIdentifiers.contains(user.getIdentifier())) {
-          newUsers.add(user);
-        } else
-          updateUsers.add(user);
-      }
-    }
-    
-    synchronizeStudents(newUsers, updateUsers);
-    
-    return newUsers.size();
+//    List<fi.muikku.schooldata.entity.User> newUsers = new ArrayList<>();
+//    List<fi.muikku.schooldata.entity.User> updateUsers = new ArrayList<>();
+//    List<String> existingIdentifiers = userEntityController.listUserEntityIdentifiersByDataSource(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
+//    Student[] students = pyramusClient.get("/students/students?firstResult=" + offset + "&maxResults=" + maxStudents, Student[].class);
+//    
+//    if (students.length == 0) {
+//      return -1;
+//    } else {
+//      for (Student student : students) {
+//        fi.muikku.schooldata.entity.User user = entityFactory.createEntity(student);
+//        if (!existingIdentifiers.contains(user.getIdentifier())) {
+//          newUsers.add(user);
+//        } else
+//          updateUsers.add(user);
+//      }
+//    }
+//    
+//    synchronizeStudents(newUsers, updateUsers);
+//    
+//    return newUsers.size();
+    return 0;
   }
   
   public int updateUserRoles() {
@@ -119,72 +158,74 @@ public class PyramusUpdater {
   }
   
   public int updateUsers(int offset, int maxStudents) {
-    List<fi.muikku.schooldata.entity.User> newUsers = new ArrayList<>();
-    List<fi.muikku.schooldata.entity.User> updateUsers = new ArrayList<>();
-    Map<String, fi.pyramus.rest.model.User> userMap = new HashMap<>();
-
-    List<String> existingIdentifiers = userEntityController.listUserEntityIdentifiersByDataSource(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
-    fi.pyramus.rest.model.User[] pyramusUsers = pyramusClient.get("/staff/members?firstResult=" + offset + "&maxResults=" + maxStudents, fi.pyramus.rest.model.User[].class);
-    if (pyramusUsers.length == 0) {
-      return -1;
-    } else {
-      for (fi.pyramus.rest.model.User pyramusUser : pyramusUsers) {
-        fi.muikku.schooldata.entity.User user = entityFactory.createEntity(pyramusUser);
-        if (!existingIdentifiers.contains(user.getIdentifier())) {
-          newUsers.add(user);
-        } else {
-          updateUsers.add(user);
-        }
-        
-        userMap.put(user.getIdentifier(), pyramusUser);
-      }
-    }
+//    List<fi.muikku.schooldata.entity.User> newUsers = new ArrayList<>();
+//    List<fi.muikku.schooldata.entity.User> updateUsers = new ArrayList<>();
+//    Map<String, fi.pyramus.rest.model.User> userMap = new HashMap<>();
+//
+//    List<String> existingIdentifiers = userEntityController.listUserEntityIdentifiersByDataSource(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
+//    fi.pyramus.rest.model.User[] pyramusUsers = pyramusClient.get("/staff/members?firstResult=" + offset + "&maxResults=" + maxStudents, fi.pyramus.rest.model.User[].class);
+//    if (pyramusUsers.length == 0) {
+//      return -1;
+//    } else {
+//      for (fi.pyramus.rest.model.User pyramusUser : pyramusUsers) {
+//        fi.muikku.schooldata.entity.User user = entityFactory.createEntity(pyramusUser);
+//        if (!existingIdentifiers.contains(user.getIdentifier())) {
+//          newUsers.add(user);
+//        } else {
+//          updateUsers.add(user);
+//        }
+//        
+//        userMap.put(user.getIdentifier(), pyramusUser);
+//      }
+//    }
+//    
+//    schoolDataEntityInitializerProvider.initUsers(newUsers);
+//
+//    List<fi.muikku.schooldata.entity.UserRole> userRoles = new ArrayList<>(); 
+//
+//    for (fi.muikku.schooldata.entity.User user : newUsers) {
+//      fi.pyramus.rest.model.User pyramusUser = userMap.get(user.getIdentifier());
+//      String roleIdentifier = entityFactory.createEntity(pyramusUser.getRole()).getIdentifier();
+//      userRoles.add(new PyramusUserRole("PYRAMUS-" + user.getIdentifier(), user.getIdentifier(), roleIdentifier));
+//    }
+//
+//    for (fi.muikku.schooldata.entity.User user : updateUsers) {
+//      fi.pyramus.rest.model.User pyramusUser = userMap.get(user.getIdentifier());
+//      String roleIdentifier = entityFactory.createEntity(pyramusUser.getRole()).getIdentifier();
+//      userRoles.add(new PyramusUserRole("PYRAMUS-" + user.getIdentifier(), user.getIdentifier(), roleIdentifier));
+//    }
+//    
+//    schoolDataEntityInitializerProvider.initUserRoles(userRoles);
+//    
+//    List<UserEmail> userEmails = new ArrayList<>();
+//    
+//    for (fi.muikku.schooldata.entity.User user : newUsers) {
+//      Long pyramusStaffId = identifierMapper.getPyramusStaffId(user.getIdentifier());
+//      Email[] emails = pyramusClient.get("/staff/members/" + pyramusStaffId.toString() + "/emails", Email[].class);
+//      
+//      if (emails != null) {
+//        for (Email email : emails) {
+//          userEmails.add(new PyramusUserEmail("PYRAMUS-" + email.getId().toString(), user.getIdentifier(), email.getAddress()));
+//        }
+//      }
+//    }
+//
+//    for (fi.muikku.schooldata.entity.User user : updateUsers) {
+//      Long pyramusStaffId = identifierMapper.getPyramusStaffId(user.getIdentifier());
+//      Email[] emails = pyramusClient.get("/staff/members/" + pyramusStaffId.toString() + "/emails", Email[].class);
+//      
+//      if (emails != null) {
+//        for (Email email : emails) {
+//          userEmails.add(new PyramusUserEmail("PYRAMUS-" + email.getId().toString(), user.getIdentifier(), email.getAddress()));
+//        }
+//      }
+//    }
+//    
+//    schoolDataEntityInitializerProvider.initUserEmails(userEmails);
+//    
+//    return userRoles.size();
     
-    schoolDataEntityInitializerProvider.initUsers(newUsers);
-
-    List<fi.muikku.schooldata.entity.UserRole> userRoles = new ArrayList<>(); 
-
-    for (fi.muikku.schooldata.entity.User user : newUsers) {
-      fi.pyramus.rest.model.User pyramusUser = userMap.get(user.getIdentifier());
-      String roleIdentifier = entityFactory.createEntity(pyramusUser.getRole()).getIdentifier();
-      userRoles.add(new PyramusUserRole("PYRAMUS-" + user.getIdentifier(), user.getIdentifier(), roleIdentifier));
-    }
-
-    for (fi.muikku.schooldata.entity.User user : updateUsers) {
-      fi.pyramus.rest.model.User pyramusUser = userMap.get(user.getIdentifier());
-      String roleIdentifier = entityFactory.createEntity(pyramusUser.getRole()).getIdentifier();
-      userRoles.add(new PyramusUserRole("PYRAMUS-" + user.getIdentifier(), user.getIdentifier(), roleIdentifier));
-    }
-    
-    schoolDataEntityInitializerProvider.initUserRoles(userRoles);
-    
-    List<UserEmail> userEmails = new ArrayList<>();
-    
-    for (fi.muikku.schooldata.entity.User user : newUsers) {
-      Long pyramusStaffId = identifierMapper.getPyramusStaffId(user.getIdentifier());
-      Email[] emails = pyramusClient.get("/staff/members/" + pyramusStaffId.toString() + "/emails", Email[].class);
-      
-      if (emails != null) {
-        for (Email email : emails) {
-          userEmails.add(new PyramusUserEmail("PYRAMUS-" + email.getId().toString(), user.getIdentifier(), email.getAddress()));
-        }
-      }
-    }
-
-    for (fi.muikku.schooldata.entity.User user : updateUsers) {
-      Long pyramusStaffId = identifierMapper.getPyramusStaffId(user.getIdentifier());
-      Email[] emails = pyramusClient.get("/staff/members/" + pyramusStaffId.toString() + "/emails", Email[].class);
-      
-      if (emails != null) {
-        for (Email email : emails) {
-          userEmails.add(new PyramusUserEmail("PYRAMUS-" + email.getId().toString(), user.getIdentifier(), email.getAddress()));
-        }
-      }
-    }
-    
-    schoolDataEntityInitializerProvider.initUserEmails(userEmails);
-    
-    return userRoles.size();
+    return 0;
   }
   
   public int updateWorkspaces(int offset, int maxStudents) {
@@ -233,46 +274,44 @@ public class PyramusUpdater {
   }
 
   private void synchronizeStudents(List<fi.muikku.schooldata.entity.User> newUsers, List<fi.muikku.schooldata.entity.User> updateUsers) {
-    List<UserEmail> userEmails = new ArrayList<>();
-    
-    if (newUsers != null) {
-      schoolDataEntityInitializerProvider.initUsers(newUsers);
-      
-      List<UserRole> userRoles = new ArrayList<>(); 
-      Role studentRole = entityFactory.createEntity(fi.pyramus.rest.model.UserRole.STUDENT);
-      
-      for (User newUser : newUsers) {
-        userRoles.add(new PyramusUserRole("PYRAMUS-" + newUser.getIdentifier(), newUser.getIdentifier(), studentRole.getIdentifier()));
-      }
-      
-      schoolDataEntityInitializerProvider.initUserRoles(userRoles);
-      
-      for (fi.muikku.schooldata.entity.User user : newUsers) {
-        Long pyramusStudentId = identifierMapper.getPyramusStudentId(user.getIdentifier());
-        Email[] studentEmails = pyramusClient.get("/students/students/" + pyramusStudentId.toString() + "/emails", Email[].class);
-        
-        if (studentEmails != null) {
-          for (Email studentEmail : studentEmails) {
-            userEmails.add(new PyramusUserEmail("PYRAMUS-" + studentEmail.getId().toString(), user.getIdentifier(), studentEmail.getAddress()));
-          }
-        }
-      }
-    }
-
-    if (updateUsers != null) {
-      for (fi.muikku.schooldata.entity.User user : updateUsers) {
-        Long pyramusStudentId = identifierMapper.getPyramusStudentId(user.getIdentifier());
-        Email[] studentEmails = pyramusClient.get("/students/students/" + pyramusStudentId.toString() + "/emails", Email[].class);
-  
-        if (studentEmails != null) {
-          for (Email studentEmail : studentEmails) {
-            userEmails.add(new PyramusUserEmail("PYRAMUS-" + studentEmail.getId().toString(), user.getIdentifier(), studentEmail.getAddress()));
-          }
-        }
-      }
-    }
-    
-    schoolDataEntityInitializerProvider.initUserEmails(userEmails);
+//    List<UserEmail> userEmails = new ArrayList<>();
+//    
+//    if (newUsers != null) {
+//      schoolDataEntityInitializerProvider.initUsers(newUsers);
+//      
+//      List<UserRole> userRoles = new ArrayList<>(); 
+//      Role studentRole = entityFactory.createEntity(fi.pyramus.rest.model.UserRole.STUDENT);
+//      
+//      for (User newUser : newUsers) {
+//        userRoles.add(new PyramusUserRole("PYRAMUS-" + newUser.getIdentifier(), newUser.getIdentifier(), studentRole.getIdentifier()));
+//      }
+//      
+//      schoolDataEntityInitializerProvider.initUserRoles(userRoles);
+//      
+//      for (fi.muikku.schooldata.entity.User user : newUsers) {
+//        Long pyramusStudentId = identifierMapper.getPyramusStudentId(user.getIdentifier());
+//        Email[] studentEmails = pyramusClient.get("/students/students/" + pyramusStudentId.toString() + "/emails", Email[].class);
+//        
+//        for (Email studentEmail : studentEmails) {
+//          userEmails.add(new PyramusUserEmail("PYRAMUS-" + studentEmail.getId().toString(), user.getIdentifier(), studentEmail.getAddress()));
+//        }
+//      }
+//    }
+//
+//    if (updateUsers != null) {
+//      for (fi.muikku.schooldata.entity.User user : updateUsers) {
+//        Long pyramusStudentId = identifierMapper.getPyramusStudentId(user.getIdentifier());
+//        Email[] studentEmails = pyramusClient.get("/students/students/" + pyramusStudentId.toString() + "/emails", Email[].class);
+//  
+//        if (studentEmails != null) {
+//          for (Email studentEmail : studentEmails) {
+//            userEmails.add(new PyramusUserEmail("PYRAMUS-" + studentEmail.getId().toString(), user.getIdentifier(), studentEmail.getAddress()));
+//          }
+//        }
+//      }
+//    }
+//    
+//    schoolDataEntityInitializerProvider.initUserEmails(userEmails);
   }
   
   private void synchronizeWorkspaces(List<Workspace> newWorkspaces, List<Workspace> updateWorkspaces) {

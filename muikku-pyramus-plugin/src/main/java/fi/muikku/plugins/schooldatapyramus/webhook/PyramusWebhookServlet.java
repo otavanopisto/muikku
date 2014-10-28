@@ -184,7 +184,7 @@ public class PyramusWebhookServlet extends HttpServlet {
   }
 
   private void handleStaffMemberCreate(WebhookStaffMemberData staffMemberCreateData) {
- // TODO Implement
+    pyramusUpdater.updateStaffMember(staffMemberCreateData.getStaffMemberId());
   }
 
   private void handleCourseStaffMemberDelete(WebhookCourseStaffMemberData courseStaffMemberDeleteData) {
