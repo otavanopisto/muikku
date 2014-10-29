@@ -62,6 +62,24 @@ public class EnvironmentRoleEntityController {
     return null;
   }
   
+  public List<RoleSchoolDataIdentifier> listRoleSchoolDataIdentifiersByEnvironmentRoleEntity(EnvironmentRoleEntity roleEntity) {
+    return roleSchoolDataIdentifierDAO.listByRoleEntity(roleEntity);
+  }
+  
+  public RoleSchoolDataIdentifier findRoleSchoolDataIdentifierByDataSourceAndRoleEntity(String dataSource, RoleEntity roleEntity) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
+    if (schoolDataSource == null) {
+      logger.severe("Could not find datasource " + dataSource);
+      return null;
+    }
+    
+    return findRoleSchoolDataIdentifierByDataSourceAndRoleEntity(schoolDataSource, roleEntity);
+  }
+  
+  public RoleSchoolDataIdentifier findRoleSchoolDataIdentifierByDataSourceAndRoleEntity(SchoolDataSource dataSource, RoleEntity roleEntity) {
+    return roleSchoolDataIdentifierDAO.findByDataSourceAndRoleEntity(dataSource, roleEntity);
+  }
+  
   public List<EnvironmentRoleEntity> listEnvironmentRoleEntities() {
     return environmentRoleEntityDAO.listAll();
   }

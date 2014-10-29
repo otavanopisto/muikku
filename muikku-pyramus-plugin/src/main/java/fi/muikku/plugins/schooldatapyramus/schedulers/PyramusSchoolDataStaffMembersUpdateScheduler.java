@@ -15,7 +15,7 @@ import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 
 @Singleton
 @Asynchronous
-public class PyramusSchoolDataUsersUpdateScheduler {
+public class PyramusSchoolDataStaffMembersUpdateScheduler {
   
   private static final int BATCH_SIZE = 100;
   
@@ -46,7 +46,7 @@ public class PyramusSchoolDataUsersUpdateScheduler {
       int count = 0;
       try {
         logger.info("Synchronizing Pyramus users");
-        int result = pyramusUpdater.updateUsers(offset, BATCH_SIZE);
+        int result = pyramusUpdater.updateStaffMembers(offset, BATCH_SIZE);
         if (result == -1) {
           offset = 0;
           count = 0;

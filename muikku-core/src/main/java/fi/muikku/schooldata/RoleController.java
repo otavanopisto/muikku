@@ -55,25 +55,6 @@ public class RoleController {
 	public Role findRole(SchoolDataSource dataSource, String identifier) {
 		return userSchoolDataController.findRole(dataSource,identifier);
 	}
-	
-	public Role findRoleByDataSourceAndRoleEntity(SchoolDataSource dataSource, RoleEntity roleEntity) {
-	  RoleSchoolDataIdentifier roleSchoolDataIdentifier = roleSchoolDataIdentifierDAO.findByDataSourceAndRoleEntity(dataSource, roleEntity);
-	  if (roleSchoolDataIdentifier != null) {
-	    return findRole(dataSource, roleSchoolDataIdentifier.getIdentifier());
-	  }
-	  
-	  return null;
-	}
-
-  public Role findRoleByDataSourceAndRoleEntity(String schoolDataSource, WorkspaceRoleEntity workspaceRole) {
-    SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
-    if (dataSource == null) {
-      logger.severe("Could not find data source '" + schoolDataSource + "'");
-      return null;
-    }
-    
-    return findRoleByDataSourceAndRoleEntity(dataSource, workspaceRole);
-  }
 
 	public Role findUserEnvironmentRole(User user) {
 		return userSchoolDataController.findUserEnvironmentRole(user);
