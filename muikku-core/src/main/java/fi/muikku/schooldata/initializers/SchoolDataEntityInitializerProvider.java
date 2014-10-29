@@ -13,7 +13,6 @@ import fi.muikku.schooldata.entity.EnvironmentRole;
 import fi.muikku.schooldata.entity.UserRole;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceRole;
-import fi.muikku.schooldata.entity.WorkspaceUser;
 
 public class SchoolDataEntityInitializerProvider {
 
@@ -28,9 +27,6 @@ public class SchoolDataEntityInitializerProvider {
 
   @Inject
   private Instance<SchoolDataUserRoleInitializer> userRoleInitializers;
-
-  @Inject
-  private Instance<SchoolDataWorkspaceUserInitializer> workspaceUserInitializers;
   
   public List<Workspace> initWorkspaces(List<Workspace> workspaces) {
     if (!workspaces.isEmpty()) {
@@ -72,16 +68,6 @@ public class SchoolDataEntityInitializerProvider {
     return userRoles;
   }
 
-  public List<WorkspaceUser> initWorkspaceUsers(List<WorkspaceUser> workspaceUsers) {
-    if (!workspaceUsers.isEmpty()) {
-      for (SchoolDataEntityInitializer initializer : getSortedInitializers(workspaceUserInitializers.iterator())) {
-        ((SchoolDataWorkspaceUserInitializer) initializer).init(workspaceUsers);
-      }
-    }
-    
-    return workspaceUsers;
-  }
-  
   private List<? extends SchoolDataEntityInitializer> getSortedInitializers(Iterator<? extends SchoolDataEntityInitializer> iterator) {
     List<SchoolDataEntityInitializer> initializers = new ArrayList<>();
     
