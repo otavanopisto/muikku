@@ -10,26 +10,12 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import fi.muikku.schooldata.entity.UserRole;
-import fi.muikku.schooldata.entity.WorkspaceRole;
 
 public class SchoolDataEntityInitializerProvider {
   
   @Inject
-  private Instance<SchoolDataWorkspaceRoleInitializer> workspaceRoleInitializers;
-
-  @Inject
   private Instance<SchoolDataUserRoleInitializer> userRoleInitializers;
   
-  public List<WorkspaceRole> initWorkspaceRoles(List<WorkspaceRole> workspaceRoles) {
-    if (!workspaceRoles.isEmpty()) {
-      for (SchoolDataEntityInitializer initializer : getSortedInitializers(workspaceRoleInitializers.iterator())) {
-        ((SchoolDataWorkspaceRoleInitializer) initializer).init(workspaceRoles);
-      }
-    }
-    
-    return workspaceRoles;
-  }
-
   public List<UserRole> initUserRoles(List<UserRole> userRoles) {
     if (!userRoles.isEmpty()) {
       for (SchoolDataEntityInitializer initializer : getSortedInitializers(userRoleInitializers.iterator())) {

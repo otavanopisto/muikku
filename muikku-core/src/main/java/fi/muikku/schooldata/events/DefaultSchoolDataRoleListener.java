@@ -7,7 +7,10 @@ import javax.inject.Inject;
 
 import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.model.users.EnvironmentRoleEntity;
+import fi.muikku.model.workspace.WorkspaceRoleArchetype;
+import fi.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.muikku.users.EnvironmentRoleEntityController;
+import fi.muikku.users.WorkspaceRoleEntityController;
 
 public class DefaultSchoolDataRoleListener {
   
@@ -16,6 +19,9 @@ public class DefaultSchoolDataRoleListener {
   
   @Inject
   private EnvironmentRoleEntityController environmentRoleEntityController;
+  
+  @Inject
+  private WorkspaceRoleEntityController workspaceRoleEntityController;
   
   public void onSchoolDataEnvironmentRoleDiscoveredEvent(@Observes SchoolDataEnvironmentRoleDiscoveredEvent event) {
     EnvironmentRoleEntity environmentRoleEntity = environmentRoleEntityController.findEnvironmentRoleEntity(event.getDataSource(), event.getIdentifier());
@@ -26,5 +32,16 @@ public class DefaultSchoolDataRoleListener {
       logger.warning("EnvironmentRoleEntity for " + event.getIdentifier() + "/" + event.getDataSource() + " already exists");
     }
   }
+
+  public void onSchoolDataWorkspaceRoleDiscoveredEvent(@Observes SchoolDataWorkspaceRoleDiscoveredEvent event) {
+    WorkspaceRoleEntity workspaceRoleEntity = workspaceRoleEntityController.findWorkspaceRoleEntityByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
+    if (workspaceRoleEntity == null) {
+      WorkspaceRoleArchetype roleArchetype = WorkspaceRoleArchetype.valueOf(event.getArchetype().name());
+      workspaceRoleEntityController.createWorkspaceRoleEntity(event.getDataSource(), event.getIdentifier(), roleArchetype, event.getName());
+    } else {
+      logger.warning("WorkspaceRoleEntity for " + event.getIdentifier() + "/" + event.getDataSource() + " already exists");
+    }
+  }
+  
   
 }
