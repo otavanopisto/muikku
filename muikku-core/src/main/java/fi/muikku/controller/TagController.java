@@ -10,15 +10,11 @@ import javax.inject.Named;
 
 import fi.muikku.dao.base.TagDAO;
 import fi.muikku.model.base.Tag;
-import fi.muikku.session.SessionController;
 
 @RequestScoped
 @Stateful
 @Named("Tags")
 public class TagController {
-
-  @Inject
-  private SessionController sessionController;
 
   @Inject
   private TagDAO tagDAO;
@@ -42,5 +38,9 @@ public class TagController {
 
   public Tag findTag(String t) {
     return tagDAO.findByText(t);
+  }
+  
+  public Tag findTagById(Long id) {
+    return tagDAO.findById(id);
   }
 }

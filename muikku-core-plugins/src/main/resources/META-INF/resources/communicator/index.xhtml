@@ -7,37 +7,39 @@
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     template="/WEB-INF/templates/mainfunction.xhtml">
 
-    
-    <ui:define name="viewScripts">
-          <h:outputScript name="scripts/gui/communicator.js" />
-    </ui:define>
-    
-    <ui:define name="mainfunction-side-tools">
-      <div class="mf-side-header">
-       <span>Linkit</span>
-      </div> 
-      <ul class="mf-side-links">
-          <li>
-            <a href="#in">#{i18n.text['plugin.communicator.inbox']}</a>
-          </li>
-          <li>
-             <a href="#sent">#{i18n.text['plugin.communicator.sent']}</a>
-          </li>
-      </ul> 
-    </ui:define>      
-              
-    <ui:define name="mainfunction-side-button">
-      <div class="bt-mainFunction">
-       <div class="bt-mainFunction-content"><span>#{i18n.text['plugin.communicator.newMessage']}</span></div>
+  <ui:define name="viewScripts">
+    <h:outputScript name="scripts/gui/communicator.js" />
+  </ui:define>
+
+  <ui:define name="mainfunction-side-tools">
+    <div class="mf-side-header">
+      <span>Linkit</span>
+    </div>
+    <ul class="mf-side-links">
+      <li><a href="#in">#{i18n.text['plugin.communicator.inbox']}</a></li>
+      <li><a href="#sent">#{i18n.text['plugin.communicator.sent']}</a></li>
+    </ul>
+  </ui:define>
+
+  <ui:define name="mainfunction-side-button">
+    <div class="bt-mainFunction">
+      <div class="bt-mainFunction-content">
+        <span>#{i18n.text['plugin.communicator.newMessage']}</span>
       </div>
-    </ui:define>
-    
-    <ui:define name="mainfunction-content-function-search">
-      <div class="mf-search">
-         <div class="mf-search-field">
-           <span id="testResult"></span><input type="text" class="search"  />
-         </div>
-       </div>
-    </ui:define>  
+    </div>
+  </ui:define>
+
+  <ui:define name="mainfunction-content-function-search">
+    <div class="mf-search">
+      <div class="mf-search-field">
+        <span id="testResult"></span><input type="text" class="search" />
+      </div>
+    </div>
+  </ui:define>
+  
+  <ui:define name="mainfunction-content-main">
+    <div id="communicatorContent">
+    </div>
+  </ui:define>
 
 </ui:composition>
