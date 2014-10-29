@@ -131,7 +131,7 @@
     			
     	  var btnsE = $('<div class="md-content-buttons"></div>') ; 
     	  for (var i = 0; i < options.buttons.length; i++) {
-    	    var iPuT = $('<input class="bt-generic bt-modal" type="button" name="' + options.buttons[i].name + i + '" value="' + options.buttons[i].caption + '"/>');
+    	    var iPuT = $('<input class="bt-generic bt-modal" type="button" name="' + i + '" value="' + options.buttons[i].caption + '"/>');
     	    
     	    iPuT.on("click", function (e) {
     	      var i = this.name;

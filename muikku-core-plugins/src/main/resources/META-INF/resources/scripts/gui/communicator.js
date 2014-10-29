@@ -29,14 +29,18 @@ $(document).ready(function(){
           caption : "Lähetä",
           name : "sendMail",
           action : function(e) {
+            var subject = e.contentElement.find("input[name='msgSubject']").val();
+            var content = e.contentElement.find("textarea[name='msgContent']").val();
+            var tagStr = "tagi viesti"; // TODO: Tag content
+            var tags = tagStr != undefined ? tagStr.split(' ') : [];
             var recipientIds = [1];
             var groupIds = [];
             
             mApi().communicator.messages.create({
               categoryName: "message",
-              caption : "captio",
-              content : "contentti",
-              tags : ["tagi", "viesti"],
+              caption : subject,
+              content : content,
+              tags : tags,
               recipientIds : recipientIds,
               recipientGroupIds : groupIds
             })
