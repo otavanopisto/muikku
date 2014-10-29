@@ -107,20 +107,53 @@ public class PyramusUpdater {
   @Inject
   private Event<SchoolDataWorkspaceRoleRemovedEvent> schoolDataWorkspaceRoleRemovedEvent;
 
-  public void updateStudent(Long pyramusId) {
-    
+  /**
+   * Updates a student from Pyramus
+   * 
+   * @param pyramusId id if student in Pyramus
+   * @return whether new student was created
+   */
+  public boolean updateStudent(Long pyramusId) {
     Student student = pyramusClient.get("/students/students/" + pyramusId, Student.class);
     if (student != null) {
       String studentIdentifier = identifierMapper.getStudentIdentifier(pyramusId);
-      List<String> emails = new ArrayList<>();
-      
-      Email[] studentEmails = pyramusClient.get("/students/students/" + pyramusId + "/emails", Email[].class);
-      for (Email studentEmail : studentEmails) {
-        emails.add(studentEmail.getAddress());
+      if (userEntityController.findUserEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, studentIdentifier) == null) {
+        fireStudentDiscoverted(student);
+        return true;
       }
-      
-      schoolDataUserDiscoveredEvent.fire(new SchoolDataUserDiscoveredEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, studentIdentifier, emails));
     }
+    
+    return false;
+  }
+
+  /**
+   * Updates students from Pyramus.
+   * 
+   * @param offset first student to be updated
+   * @param maxStudents maximum batch size
+   * @return count of updated students or -1 when no students were found with given offset
+   */
+  public int updateStudents(int offset, int maxStudents) {
+    Student[] students = pyramusClient.get("/students/students?firstResult=" + offset + "&maxResults=" + maxStudents, Student[].class);
+    List<String> existingIdentifiers = userEntityController.listUserEntityIdentifiersByDataSource(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
+    if (students.length == 0) {
+      return -1;
+    }
+    
+    List<Student> discoveredStudents = new ArrayList<>();
+    
+    for (Student student : students) {
+      String indentifier = identifierMapper.getStudentIdentifier(student.getId());
+      if (!existingIdentifiers.contains(indentifier)) {
+        discoveredStudents.add(student);
+      }
+    }
+    
+    for (Student discoveredStudent : discoveredStudents) {
+      fireStudentDiscoverted(discoveredStudent);
+    }
+    
+    return discoveredStudents.size();
   }
 
   public void updateStaffMember(Long pyramusId) {
@@ -170,30 +203,6 @@ public class PyramusUpdater {
         logger.log(Level.WARNING, "Could not find course #" + courseId + " from Pyramus");
       }
     }
-  }
-
-  public int updateStudents(int offset, int maxStudents) {
-//    List<fi.muikku.schooldata.entity.User> newUsers = new ArrayList<>();
-//    List<fi.muikku.schooldata.entity.User> updateUsers = new ArrayList<>();
-//    List<String> existingIdentifiers = userEntityController.listUserEntityIdentifiersByDataSource(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
-//    Student[] students = pyramusClient.get("/students/students?firstResult=" + offset + "&maxResults=" + maxStudents, Student[].class);
-//    
-//    if (students.length == 0) {
-//      return -1;
-//    } else {
-//      for (Student student : students) {
-//        fi.muikku.schooldata.entity.User user = entityFactory.createEntity(student);
-//        if (!existingIdentifiers.contains(user.getIdentifier())) {
-//          newUsers.add(user);
-//        } else
-//          updateUsers.add(user);
-//      }
-//    }
-//    
-//    synchronizeStudents(newUsers, updateUsers);
-//    
-//    return newUsers.size();
-    return 0;
   }
   
   public int updateUserRoles() {
@@ -387,6 +396,19 @@ public class PyramusUpdater {
 //    }
 //    
 //    schoolDataEntityInitializerProvider.initUserEmails(userEmails);
+  }
+
+  private void fireStudentDiscoverted(Student student) {
+    String studentIdentifier = identifierMapper.getStudentIdentifier(student.getId());
+ 
+   List<String> emails = new ArrayList<>();
+    
+    Email[] studentEmails = pyramusClient.get("/students/students/" + student.getId() + "/emails", Email[].class);
+    for (Email studentEmail : studentEmails) {
+      emails.add(studentEmail.getAddress());
+    }
+    
+    schoolDataUserDiscoveredEvent.fire(new SchoolDataUserDiscoveredEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, studentIdentifier, emails));
   }
 
 }
