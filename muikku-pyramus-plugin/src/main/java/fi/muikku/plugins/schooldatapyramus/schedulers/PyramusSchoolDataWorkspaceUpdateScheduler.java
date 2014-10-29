@@ -46,7 +46,7 @@ public class PyramusSchoolDataWorkspaceUpdateScheduler {
       int count = 0;
       try {
         logger.info("Synchronizing Pyramus workspaces");
-        int result = pyramusUpdater.updateWorkspaces(offset, BATCH_SIZE);
+        int result = pyramusUpdater.updateCourses(offset, BATCH_SIZE);
         if (result == -1) {
           offset = 0;
           count = 0;
