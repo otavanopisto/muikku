@@ -180,7 +180,11 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>
-    
+
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>rest</artifactId>
+    </dependency>
   </dependencies>
 
   <build>

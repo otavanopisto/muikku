@@ -29,6 +29,19 @@ $(document).ready(function(){
           caption : "Lähetä",
           name : "sendMail",
           action : function(e) {
+            var recipientIds = [1];
+            var groupIds = [];
+            
+            mApi().communicator.messages.create({
+              categoryName: "message",
+              caption : "captio",
+              content : "contentti",
+              tags : ["tagi", "viesti"],
+              recipientIds : recipientIds,
+              recipientGroupIds : groupIds
+            })
+            .callback(function (err, result) {
+            });
           }
         }, {
           caption : "Tallenna luonnos",
@@ -42,9 +55,22 @@ $(document).ready(function(){
     var msgC = $('mf-content-main');
     
     mApi().communicator.items.read()
+      .on('$', function (item, itemCallback) {
+        mApi().communicator.communicatormessages.sender.read(item.id)
+          .callback(function (err, user) {
+            item.senderFullName = user.firstName + ' ' + user.lastName;
+            item.senderHasPicture = user.hasImage;
+          });
+        mApi().communicator.messages.messagecount.read(item.communicatorMessageId)
+          .callback(function (err, count) {
+            item.messageCount = count;
+          });
+
+        itemCallback();
+      })
       .callback(function (err, result) {
         renderDustTemplate('communicator/communicator_items.dust', result, function (text) {
-          $('communicatorContent').append($.parseHTML(text));
+          $('#communicatorContent').append($.parseHTML(text));
         });
       });
 
