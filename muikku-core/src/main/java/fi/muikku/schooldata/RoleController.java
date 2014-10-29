@@ -8,12 +8,10 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import fi.muikku.dao.base.SchoolDataSourceDAO;
-import fi.muikku.dao.users.EnvironmentRoleEntityDAO;
 import fi.muikku.dao.users.RoleEntityDAO;
 import fi.muikku.dao.users.RoleSchoolDataIdentifierDAO;
 import fi.muikku.dao.workspace.WorkspaceRoleEntityDAO;
 import fi.muikku.model.base.SchoolDataSource;
-import fi.muikku.model.users.EnvironmentRoleEntity;
 import fi.muikku.model.users.RoleEntity;
 import fi.muikku.model.users.RoleSchoolDataIdentifier;
 import fi.muikku.model.workspace.WorkspaceRoleArchetype;
@@ -38,9 +36,6 @@ public class RoleController {
   private RoleEntityDAO roleEntityDAO;
   
   @Inject
-  private EnvironmentRoleEntityDAO environmentRoleEntityDAO;
-
-  @Inject
   private WorkspaceRoleEntityDAO workspaceRoleEntityDAO;
 
   @Inject
@@ -56,6 +51,21 @@ public class RoleController {
 		return userSchoolDataController.findRole(dataSource,identifier);
 	}
 
+  public Role findRoleByDataSourceAndRoleEntity(String schoolDataSource, RoleEntity roleEntity) {
+    SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
+    if (dataSource == null) {
+      logger.severe("Could not find school data source " + schoolDataSource);
+      return null;
+    }
+      
+    RoleSchoolDataIdentifier schoolDataIdentifier = roleSchoolDataIdentifierDAO.findByDataSourceAndRoleEntity(dataSource, roleEntity);
+    if (schoolDataIdentifier != null) {
+      return findRole(dataSource, schoolDataIdentifier.getIdentifier());
+    }
+
+    return null;
+  }
+  
 	public Role findUserEnvironmentRole(User user) {
 		return userSchoolDataController.findUserEnvironmentRole(user);
 	}
