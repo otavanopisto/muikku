@@ -5,6 +5,8 @@ import java.util.logging.Logger;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleEntity;
@@ -13,6 +15,8 @@ import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.users.UserEntityController;
 
 public class DefaultSchoolDataWorkspaceListener {
+  
+  private static final int MAX_URL_NAME_LENGTH = 30;
   
   @Inject
   private Logger logger;
@@ -25,6 +29,26 @@ public class DefaultSchoolDataWorkspaceListener {
 
   @Inject
   private WorkspaceController workspaceController;
+  
+  public void onSchoolDataWorkspaceDiscoveredEvent(@Observes SchoolDataWorkspaceDiscoveredEvent event) {
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
+    if (workspaceEntity == null) {
+      String urlNameBase = generateWorkspaceUrlName(event.getName());
+      String urlName = urlNameBase;
+      int urlNameIterator = 1;
+      while (true) {
+        if (workspaceEntityController.findWorkspaceByUrlName(urlName) == null) {
+          break;
+        }
+        
+        urlName = urlNameBase + "_" + (urlNameIterator++); 
+      }
+
+      workspaceEntity = workspaceEntityController.createWorkspaceEntity(event.getDataSource(), event.getIdentifier(), urlName);
+    } else {
+      logger.warning("workspaceEntity #" + event.getDataSource() + '/' + event.getIdentifier() + " already exists");
+    }
+  }
   
   public void onSchoolDataWorkspaceUserDiscoveredEvent(@Observes SchoolDataWorkspaceUserDiscoveredEvent event) {
     UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(event.getUserDataSource(), event.getUserIdentifier());
@@ -45,6 +69,13 @@ public class DefaultSchoolDataWorkspaceListener {
     }
   }
   
-  
-  
+  /**
+   * Generates URL name from workspace name.
+   * 
+   * @param name original workspace name
+   * @return URL name
+   */
+  private String generateWorkspaceUrlName(String name) {
+    return StringUtils.substring(StringUtils.replace(StringUtils.stripAccents(StringUtils.lowerCase(StringUtils.trim(StringUtils.normalizeSpace(name)))), " ", "-").replaceAll("-{2,}", "-"), 0, MAX_URL_NAME_LENGTH);
+  }
 }

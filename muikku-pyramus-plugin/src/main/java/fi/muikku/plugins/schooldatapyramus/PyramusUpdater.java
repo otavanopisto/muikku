@@ -33,6 +33,8 @@ import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceUser;
 import fi.muikku.schooldata.events.SchoolDataUserDiscoveredEvent;
 import fi.muikku.schooldata.events.SchoolDataUserRemovedEvent;
+import fi.muikku.schooldata.events.SchoolDataWorkspaceDiscoveredEvent;
+import fi.muikku.schooldata.events.SchoolDataWorkspaceRemovedEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceUserDiscoveredEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceUserRemovedEvent;
 import fi.muikku.schooldata.initializers.SchoolDataEntityInitializerProvider;
@@ -89,7 +91,13 @@ public class PyramusUpdater {
 
   @Inject
   private Event<SchoolDataWorkspaceUserRemovedEvent> schoolDataWorkspaceUserRemovedEvent;
-  
+
+  @Inject
+  private Event<SchoolDataWorkspaceDiscoveredEvent> schoolDataWorkspaceDiscoveredEvent;
+
+  @Inject
+  private Event<SchoolDataWorkspaceRemovedEvent> schoolDataWorkspaceRemovedEvent;
+
   public void updateStudent(Long pyramusId) {
     
     Student student = pyramusClient.get("/students/students/" + pyramusId, Student.class);
@@ -144,19 +152,16 @@ public class PyramusUpdater {
   
   public void updateCourse(Long courseId) {
     String workspaceIdentifier = identifierMapper.getWorkspaceIdentifier(courseId);
-    Course course = pyramusClient.get("/courses/courses/" + courseId, Course.class);
-    
-    if (course != null) {
-      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, workspaceIdentifier);
-      if (workspaceEntity == null) {
-        synchronizeWorkspaces(Arrays.asList(entityFactory.createEntity(course)), null);
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, workspaceIdentifier);
+    if (workspaceEntity == null) {
+      Course course = pyramusClient.get("/courses/courses/" + courseId, Course.class);
+      if (course != null) {
+        schoolDataWorkspaceDiscoveredEvent.fire(new SchoolDataWorkspaceDiscoveredEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, workspaceIdentifier, course.getName()));
       } else {
-        synchronizeWorkspaces(null, Arrays.asList(entityFactory.createEntity(course)));
+        logger.log(Level.WARNING, "Could not find course #" + courseId + " from Pyramus");
       }
-    } else {
-      logger.log(Level.WARNING, "Could not find course #" + courseId + " from Pyramus");
     }
-  } 
+  }
 
   public int updateStudents(int offset, int maxStudents) {
 //    List<fi.muikku.schooldata.entity.User> newUsers = new ArrayList<>();
@@ -264,25 +269,26 @@ public class PyramusUpdater {
   }
   
   public int updateWorkspaces(int offset, int maxStudents) {
-    List<String> existingIds = workspaceEntityController.listWorkspaceEntityIdentifiersByDataSource(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
-    Course[] courses = pyramusClient.get("/courses/courses?firstResult=" + offset + "&maxResults=" + maxStudents, Course[].class);
-    if ((courses == null) || (courses.length == 0)) {
-      return -1;
-    } else {
-      List<Workspace> newWorkspaces = new ArrayList<>();
-      
-      for (Course course : courses) {
-        Workspace workspace = entityFactory.createEntity(course);
-        
-        if (!existingIds.contains(workspace.getIdentifier())) {
-          newWorkspaces.add(workspace);
-        } 
-      }
-      
-      synchronizeWorkspaces(newWorkspaces, null);
-      
-      return newWorkspaces.size();
-    }
+//    List<String> existingIds = workspaceEntityController.listWorkspaceEntityIdentifiersByDataSource(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
+//    Course[] courses = pyramusClient.get("/courses/courses?firstResult=" + offset + "&maxResults=" + maxStudents, Course[].class);
+//    if ((courses == null) || (courses.length == 0)) {
+//      return -1;
+//    } else {
+//      List<Workspace> newWorkspaces = new ArrayList<>();
+//      
+//      for (Course course : courses) {
+//        Workspace workspace = entityFactory.createEntity(course);
+//        
+//        if (!existingIds.contains(workspace.getIdentifier())) {
+//          newWorkspaces.add(workspace);
+//        } 
+//      }
+//      
+//      synchronizeWorkspaces(newWorkspaces, null);
+//      
+//      return newWorkspaces.size();
+//    }
+    return 0;
   }
   
   public int updateWorkspaceStaffMembers(WorkspaceEntity workspaceEntity) {
@@ -349,12 +355,6 @@ public class PyramusUpdater {
 //    }
 //    
 //    schoolDataEntityInitializerProvider.initUserEmails(userEmails);
-  }
-  
-  private void synchronizeWorkspaces(List<Workspace> newWorkspaces, List<Workspace> updateWorkspaces) {
-    if (newWorkspaces != null) {
-      schoolDataEntityInitializerProvider.initWorkspaces(newWorkspaces);
-    }
   }
 
 }

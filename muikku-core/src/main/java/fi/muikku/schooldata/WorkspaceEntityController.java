@@ -20,6 +20,27 @@ public class WorkspaceEntityController {
 
   @Inject
   private SchoolDataSourceDAO schoolDataSourceDAO;
+
+  public WorkspaceEntity createWorkspaceEntity(String dataSource, String identifier, String urlName) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
+    if (schoolDataSource == null) {
+      logger.severe("Could not find school data source: " + dataSource);
+      return null;
+    }
+    
+    WorkspaceEntity workspaceEntity = workspaceEntityDAO.create(schoolDataSource, identifier, urlName, Boolean.FALSE);
+
+//  TODO: Re-enable workspace settings template
+//    WorkspaceSettingsTemplate workspaceSettingsTemplate = workspaceSettingsTemplateDAO.findById(1l);
+//    workspaceSettingsDAO.create(workspaceEntity, workspaceSettingsTemplate.getDefaultWorkspaceUserRole());
+//    
+//    List<WorkspaceSettingsTemplateRolePermission> permissionTemplates = workspaceSettingsTemplateRolePermissionDAO.listByTemplate(workspaceSettingsTemplate);
+//    for (WorkspaceSettingsTemplateRolePermission permissionTemplate : permissionTemplates) {
+//      workspaceRolePermissionDAO.create(workspaceEntity, permissionTemplate.getRole(), permissionTemplate.getPermission());
+//    }
+    
+    return workspaceEntity;
+  }
   
   public WorkspaceEntity findWorkspaceByDataSourceAndIdentifier(String dataSource, String identifier) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
@@ -29,6 +50,10 @@ public class WorkspaceEntityController {
     }
     
     return workspaceEntityDAO.findByDataSourceAndIdentifier(schoolDataSource, identifier);
+  }
+
+  public WorkspaceEntity findWorkspaceByUrlName(String urlName) {
+    return workspaceEntityDAO.findByUrlName(urlName);
   }
   
   public List<String> listWorkspaceEntityIdentifiersByDataSource(String dataSource) {
