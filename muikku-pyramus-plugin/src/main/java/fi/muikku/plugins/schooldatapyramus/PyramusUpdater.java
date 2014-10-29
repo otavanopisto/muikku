@@ -197,14 +197,6 @@ public class PyramusUpdater {
   }
   
   /**
-   * Updates students from Pyramus.
-   * 
-   * @param offset first student to be updated
-   * @param maxStudents maximum batch size
-   * @return count of updated students or -1 when no students were found with given offset
-   */
-  
-  /**
    * Updates staff members from Pyramus
    * 
    * @param offset first staff member to be updated
