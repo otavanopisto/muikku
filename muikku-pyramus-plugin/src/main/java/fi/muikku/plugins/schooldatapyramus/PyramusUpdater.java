@@ -1,7 +1,6 @@
 package fi.muikku.plugins.schooldatapyramus;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,7 +27,6 @@ import fi.muikku.schooldata.events.SchoolDataWorkspaceRoleDiscoveredEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceRoleRemovedEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceUserDiscoveredEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceUserRemovedEvent;
-import fi.muikku.schooldata.initializers.SchoolDataEntityInitializerProvider;
 import fi.muikku.users.EnvironmentRoleEntityController;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserEmailEntityController;
@@ -66,9 +64,6 @@ public class PyramusUpdater {
   
   @Inject
   private PyramusSchoolDataEntityFactory entityFactory;
-  
-  @Inject
-  private SchoolDataEntityInitializerProvider schoolDataEntityInitializerProvider;
   
   @Inject
   private SystemPyramusClient pyramusClient;
