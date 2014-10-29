@@ -9,14 +9,10 @@ import java.util.List;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import fi.muikku.schooldata.entity.EnvironmentRole;
 import fi.muikku.schooldata.entity.UserRole;
 import fi.muikku.schooldata.entity.WorkspaceRole;
 
 public class SchoolDataEntityInitializerProvider {
-
-  @Inject
-  private Instance<SchoolDataEnvironmentRoleInitializer> environmentRoleInitializers;
   
   @Inject
   private Instance<SchoolDataWorkspaceRoleInitializer> workspaceRoleInitializers;
@@ -32,16 +28,6 @@ public class SchoolDataEntityInitializerProvider {
     }
     
     return workspaceRoles;
-  }
-
-  public List<EnvironmentRole> initEnvironmentRoles(List<EnvironmentRole> environmentRoles) {
-    if (!environmentRoles.isEmpty()) {
-      for (SchoolDataEntityInitializer initializer : getSortedInitializers(environmentRoleInitializers.iterator())) {
-        ((SchoolDataEnvironmentRoleInitializer) initializer).init(environmentRoles);
-      }
-    }
-    
-    return environmentRoles;
   }
 
   public List<UserRole> initUserRoles(List<UserRole> userRoles) {

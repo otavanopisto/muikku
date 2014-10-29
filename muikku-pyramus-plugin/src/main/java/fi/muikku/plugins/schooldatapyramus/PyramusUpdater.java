@@ -2,35 +2,22 @@ package fi.muikku.plugins.schooldatapyramus;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
-import fi.muikku.plugins.schooldatapyramus.entities.PyramusUserEmail;
-import fi.muikku.plugins.schooldatapyramus.entities.PyramusUserRole;
 import fi.muikku.plugins.schooldatapyramus.rest.SystemPyramusClient;
-import fi.muikku.users.UserController;
-import fi.muikku.users.UserEmailEntityController;
-import fi.muikku.users.UserEntityController;
-import fi.muikku.users.UserSchoolDataIdentifierController;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.WorkspaceEntityController;
-import fi.muikku.schooldata.entity.Role;
-import fi.muikku.schooldata.entity.User;
-import fi.muikku.schooldata.entity.UserEmail;
-import fi.muikku.schooldata.entity.UserRole;
-import fi.muikku.schooldata.entity.Workspace;
-import fi.muikku.schooldata.entity.WorkspaceUser;
+import fi.muikku.schooldata.entity.EnvironmentRole;
+import fi.muikku.schooldata.events.SchoolDataEnvironmentRoleDiscoveredEvent;
+import fi.muikku.schooldata.events.SchoolDataEnvironmentRoleRemovedEvent;
 import fi.muikku.schooldata.events.SchoolDataUserDiscoveredEvent;
 import fi.muikku.schooldata.events.SchoolDataUserRemovedEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceDiscoveredEvent;
@@ -38,10 +25,14 @@ import fi.muikku.schooldata.events.SchoolDataWorkspaceRemovedEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceUserDiscoveredEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceUserRemovedEvent;
 import fi.muikku.schooldata.initializers.SchoolDataEntityInitializerProvider;
+import fi.muikku.users.EnvironmentRoleEntityController;
+import fi.muikku.users.UserController;
+import fi.muikku.users.UserEmailEntityController;
+import fi.muikku.users.UserEntityController;
+import fi.muikku.users.UserSchoolDataIdentifierController;
 import fi.pyramus.rest.model.Course;
 import fi.pyramus.rest.model.CourseStaffMember;
 import fi.pyramus.rest.model.CourseStaffMemberRole;
-import fi.pyramus.rest.model.CourseStudent;
 import fi.pyramus.rest.model.Email;
 import fi.pyramus.rest.model.Student;
 
@@ -79,7 +70,10 @@ public class PyramusUpdater {
 
   @Inject
   private PyramusIdentifierMapper identifierMapper;
-
+  
+  @Inject
+  private EnvironmentRoleEntityController environmentRoleEntityController;
+  
   @Inject
   private Event<SchoolDataUserDiscoveredEvent> schoolDataUserDiscoveredEvent;
 
@@ -98,6 +92,12 @@ public class PyramusUpdater {
   @Inject
   private Event<SchoolDataWorkspaceRemovedEvent> schoolDataWorkspaceRemovedEvent;
 
+  @Inject
+  private Event<SchoolDataEnvironmentRoleDiscoveredEvent> schoolDataEnvironmentRoleDiscoveredEvent;
+
+  @Inject
+  private Event<SchoolDataEnvironmentRoleRemovedEvent> schoolDataEnvironmentRoleRemovedEvent;
+  
   public void updateStudent(Long pyramusId) {
     
     Student student = pyramusClient.get("/students/students/" + pyramusId, Student.class);
@@ -190,7 +190,15 @@ public class PyramusUpdater {
   public int updateUserRoles() {
     int count = 0;
     
-    count += schoolDataEntityInitializerProvider.initEnvironmentRoles(entityFactory.createEntity(fi.pyramus.rest.model.UserRole.values())).size();
+    for (fi.pyramus.rest.model.UserRole userRole : fi.pyramus.rest.model.UserRole.values()) {
+      String roleIdentifier = identifierMapper.getEnvironmentRoleIdentifier(userRole);
+      if (environmentRoleEntityController.findEnvironmentRoleEntity(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, roleIdentifier) == null) {
+        EnvironmentRole environmentRole = entityFactory.createEntity(userRole);
+        schoolDataEnvironmentRoleDiscoveredEvent.fire(new SchoolDataEnvironmentRoleDiscoveredEvent(environmentRole.getSchoolDataSource(), environmentRole.getIdentifier(), environmentRole.getArchetype(), environmentRole.getName())); 
+        count++;
+      }
+    }
+    
     count += schoolDataEntityInitializerProvider.initWorkspaceRoles(entityFactory.createEntity(pyramusClient.get("/courses/staffMemberRoles", CourseStaffMemberRole[].class))).size();
     count += schoolDataEntityInitializerProvider.initWorkspaceRoles(Arrays.asList(entityFactory.createCourseStudentRoleEntity())).size();
     

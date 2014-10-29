@@ -3,6 +3,8 @@ package fi.muikku.plugins.schooldatapyramus;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
+import fi.pyramus.rest.model.UserRole;
+
 public class PyramusIdentifierMapper {
   
   private static final String STUDENT_PREFIX = "STUDENT-";
@@ -10,6 +12,7 @@ public class PyramusIdentifierMapper {
   private static final String WORKSPACE_STUDENT_PREFIX = "STUDENT-";
   private static final String WORKSPACE_STAFF_PREFIX = "STAFF-";
   private static final String WORKSPACE_STAFF_ROLE_PREFIX = "WS-";
+  private static final String ENVIRONMENT_ROLE_PREFIX = "ENV-";
   
   public String getWorkspaceIdentifier(Long courseId) {
     return courseId.toString();
@@ -71,9 +74,21 @@ public class PyramusIdentifierMapper {
     return WORKSPACE_STAFF_ROLE_PREFIX + id;
   }
   
-  public Long getPyramusCourseRoleId(String identifier) {
+  public String getPyramusCourseRoleId(String identifier) {
     if (StringUtils.startsWith(identifier, WORKSPACE_STAFF_ROLE_PREFIX)) {
-      return NumberUtils.createLong(StringUtils.substring(identifier, WORKSPACE_STAFF_ROLE_PREFIX.length()));
+      return StringUtils.substring(identifier, WORKSPACE_STAFF_ROLE_PREFIX.length());
+    }
+    
+    return null;
+  }
+  
+  public String getEnvironmentRoleIdentifier(UserRole id) {
+    return ENVIRONMENT_ROLE_PREFIX + id.name();
+  }
+  
+  public UserRole getPyramusUserRole(String identifier) {
+    if (StringUtils.startsWith(identifier, ENVIRONMENT_ROLE_PREFIX)) {
+      return UserRole.valueOf(StringUtils.substring(identifier, ENVIRONMENT_ROLE_PREFIX.length()));
     }
     
     return null;

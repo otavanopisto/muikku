@@ -166,28 +166,24 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 	public List<UserProperty> listUserPropertiesByUser(String userIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
     throw new UnexpectedSchoolDataBridgeException("Not implemented");
   }
-
+	
 	@Override
 	public Role findRole(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-	  if (StringUtils.startsWith(identifier, "ENV-")) {
-	    String id = StringUtils.substring(identifier, "ENV-".length());
-	    if (StringUtils.isBlank(id)) {
-	      throw new SchoolDataBridgeRequestException("Malformed role identifier");
-	    }
-	    
-	    return entityFactory.createEntity(UserRole.valueOf(id));
-	  } else {
-	    String id = StringUtils.substring(identifier, "WS-".length());
-      if (StringUtils.isBlank(id)) {
-        throw new SchoolDataBridgeRequestException("Malformed role identifier");
-      }
-      
-      if ("STUDENT".equals(id)) {
-        return entityFactory.createCourseStudentRoleEntity();
-      }
-      
-      return entityFactory.createEntity(pyramusClient.get("/courses/staffMemberRoles/" +  id, CourseStaffMemberRole.class));
+	  UserRole pyramusUserRole = identifierMapper.getPyramusUserRole(identifier);
+	  if (pyramusUserRole != null) {
+      return entityFactory.createEntity(pyramusUserRole);
 	  }
+	  
+	  String id = identifierMapper.getPyramusCourseRoleId(identifier);
+    if (StringUtils.isBlank(id)) {
+      throw new SchoolDataBridgeRequestException("Malformed role identifier");
+    }
+    
+    if ("STUDENT".equals(id)) {
+      return entityFactory.createCourseStudentRoleEntity();
+    }
+    
+    return entityFactory.createEntity(pyramusClient.get("/courses/staffMemberRoles/" + id, CourseStaffMemberRole.class));
 	}
 	
 	@Override

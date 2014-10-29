@@ -134,21 +134,6 @@ public class RoleController {
 		return roleEntityDAO.listAll();
 	}
 
-	/* Environment Role Entities */
-
-	public List<EnvironmentRoleEntity> listEnvironmentRoleEntities() {
-		return environmentRoleEntityDAO.listAll();
-	}
-
-	public EnvironmentRoleEntity findEnvironmentRoleEntity(Role role) {
-		RoleEntity roleEntity = findRoleEntity(role);
-		if (roleEntity instanceof EnvironmentRoleEntity) {
-			return (EnvironmentRoleEntity) roleEntity;
-		}
-		
-		return null;
-	}
-
 	/* Workspace Role Entities */
 	
 	public List<WorkspaceRoleEntity> listWorkspaceRoleEntities() {
