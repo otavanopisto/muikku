@@ -199,9 +199,15 @@ body.workspace-reading {
           position:absolute;
           right:50px;
           top:3px;
+          opacity:0.6;
           
           &:hover {
             @include iconShadow(rgba(255,255,190,0.5));
+            opacity:1;
+          }
+          
+          &.selected {
+            opacity:1;
           }
           
         }

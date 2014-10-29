@@ -96,7 +96,9 @@ $(document).ready(function() {
     var wideTocWrapper = $('#workspaceMaterialReadingTOCOpen');
     var tocOpeningButton = $('.workspace-material-reading-toc-opening-button');
     var tocClosingButton = $('.workspace-material-reading-toc-closing-button');
-
+    var tocPinButton = $('#workspaceMaterialReadingTOCPinicon');
+    
+    
     if (thinTocWrapper.length > 0) {
       thinTocWrapper
       .show()
@@ -120,6 +122,19 @@ $(document).ready(function() {
       thinTocWrapper.height(height);
     });
     
+    var tocPinned = 0;
+    
+    $(tocPinButton).click(function() {
+      if (tocPinned == 0) {
+        tocPinButton.addClass('selected');
+        tocPinned = 1;  
+      } else {
+        tocPinButton.removeClass('selected');
+        tocPinned = 0;
+      }
+      
+    });
+
     $(tocOpeningButton).click(function() {
       thinTocWrapper
       .clearQueue()
@@ -141,7 +156,47 @@ $(document).ready(function() {
             "margin-left" : "0"
           }, {
             duration:500,
-            easing: "easeInOutQuint"
+            easing: "easeInOutQuint",
+            complete: function () {
+
+              // Lets hide wrapper when user clicks anywhere in the document
+              $(document).bind('click', function(){
+                // Need to check if toc is pinned or not
+                if (tocPinned == 0) {
+                  wideTocWrapper
+                  .clearQueue()
+                  .stop()
+                  .animate({
+                    "margin-left" : "-370px",
+                    opacity: 1
+                  }, {
+                    duration : 600,
+                    easing : "easeInOutQuint",
+                    complete: function() {
+                      $(document).unbind('click');
+                      
+                      thinTocWrapper
+                      .show()
+                      .clearQueue()
+                      .stop()
+                      .animate({
+                        "margin-left" : "0"
+                      }, {
+                        duration:500,
+                        easing: "easeInOutQuint"
+                      });
+                      
+                    }
+                  });
+                }
+              });
+
+              // Preventing TOC wrapper to disappear if user clicks inside wrapper
+              $("#workspaceMaterialReadingTOCWrapper").bind('click', function(e) {
+                e.stopPropagation();
+              });
+              
+            }
           });
           
         }
