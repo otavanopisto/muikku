@@ -126,7 +126,7 @@ public class PyramusWebhookServlet extends HttpServlet {
           return;  
         }
         
-        handleStaffMemberCreate(staffMemberDeleteData);
+        handleStaffMemberDelete(staffMemberDeleteData);
       break;
       case STUDENT_CREATE:
         WebhookStudentData studentCreateData = unmarshalData(resp, payload, WebhookStudentData.class);
@@ -187,8 +187,12 @@ public class PyramusWebhookServlet extends HttpServlet {
     pyramusUpdater.updateStaffMember(staffMemberCreateData.getStaffMemberId());
   }
 
+  private void handleStaffMemberDelete(WebhookStaffMemberData staffMemberDeleteData) {
+    pyramusUpdater.updateStaffMember(staffMemberDeleteData.getStaffMemberId());
+  }
+
   private void handleCourseStaffMemberDelete(WebhookCourseStaffMemberData courseStaffMemberDeleteData) {
-    pyramusUpdater.updateStaffMember(courseStaffMemberDeleteData.getStaffMemberId());
+    pyramusUpdater.updateCourseStaffMember(courseStaffMemberDeleteData.getCourseStaffMemberId(), courseStaffMemberDeleteData.getCourseId(), courseStaffMemberDeleteData.getStaffMemberId());
   }
 
   private void handleCourseStaffMemberCreate(WebhookCourseStaffMemberData courseStaffMemberCreateData) {
