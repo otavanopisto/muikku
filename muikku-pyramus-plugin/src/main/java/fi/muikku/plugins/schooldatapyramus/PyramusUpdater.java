@@ -203,13 +203,18 @@ public class PyramusUpdater {
    */
   public boolean updateStaffMember(Long pyramusId) {
     fi.pyramus.rest.model.User staffMember = pyramusClient.get("/staff/members/" + pyramusId, fi.pyramus.rest.model.User.class);
+    String staffMemberIdentifier = identifierMapper.getStaffIdentifier(pyramusId);
+    UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, staffMemberIdentifier);
+    
     if (staffMember != null) {
-      String staffMemberIdentifier = identifierMapper.getStaffIdentifier(pyramusId);
-      if (userEntityController.findUserEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, staffMemberIdentifier) == null) {
+      if (userEntity == null) {
         fireStaffMemberDiscovered(staffMember);
+        return true;
       }
-      
-      return true;
+    } else {
+      if (userEntity != null) {
+        fireStaffMemberRemoved(pyramusId);
+      }
     }
     
     return false;
@@ -227,6 +232,9 @@ public class PyramusUpdater {
     if (staffMembers.length == 0) {
       return -1;
     }
+    
+    // TODO: staff member removals can be left unnoticed if webhooks fails
+    //  because they do not have archived flag
 
     List<String> existingIdentifiers = userEntityController.listUserEntityIdentifiersByDataSource(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
     List<fi.pyramus.rest.model.User> discoveredStaffMembers = new ArrayList<>();
@@ -484,6 +492,11 @@ public class PyramusUpdater {
     }
     
     schoolDataUserDiscoveredEvent.fire(new SchoolDataUserDiscoveredEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, staffMemberIdentifier, emails));
+  }
+ 
+  private void fireStaffMemberRemoved(Long staffMemberId) {
+    String staffMemberIdentifier = identifierMapper.getStaffIdentifier(staffMemberId);
+    schoolDataUserRemovedEvent.fire(new SchoolDataUserRemovedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, staffMemberIdentifier));
   }
 
   private void fireStudentDiscoverted(Student student) {
