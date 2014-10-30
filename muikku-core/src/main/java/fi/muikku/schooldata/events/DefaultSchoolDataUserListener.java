@@ -64,6 +64,13 @@ public class DefaultSchoolDataUserListener {
     }
   }
   
+  public void onSchoolDataUserRemoved(@Observes SchoolDataUserRemovedEvent event) {
+    UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
+    if (userEntity != null) {
+      userEntityController.archiveUserEntity(userEntity);
+    }    
+  }
+  
   public void onSchoolDataUserEnvironmentRoleDiscoveredEvent(@Observes SchoolDataUserEnvironmentRoleDiscoveredEvent event) {
     UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(event.getUserDataSource(), event.getUserIdentifier());
     if (userEntity != null) {

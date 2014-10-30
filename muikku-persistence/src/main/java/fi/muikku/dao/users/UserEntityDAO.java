@@ -58,4 +58,9 @@ public class UserEntityDAO extends CoreDAO<UserEntity> {
     userEntity.setDefaultSchoolDataSource(defaultSchoolDataSource);
     return persist(userEntity);
   }
+
+  public UserEntity updateArchived(UserEntity userEntity, Boolean archived) {
+    userEntity.setArchived(archived);
+    return persist(userEntity);
+  }
 }

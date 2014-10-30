@@ -134,12 +134,18 @@ public class PyramusUpdater {
    * @return whether new student was created
    */
   public boolean updateStudent(Long pyramusId) {
+    String studentIdentifier = identifierMapper.getStudentIdentifier(pyramusId);
+    UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, studentIdentifier);
+
     Student student = pyramusClient.get("/students/students/" + pyramusId, Student.class);
     if (student != null) {
-      String studentIdentifier = identifierMapper.getStudentIdentifier(pyramusId);
-      if (userEntityController.findUserEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, studentIdentifier) == null) {
+      if (userEntity == null) {
         fireStudentDiscoverted(student);
         return true;
+      }
+    } else {
+      if (userEntity != null) {
+        fireStudentRemoved(pyramusId);
       }
     }
     
@@ -154,7 +160,7 @@ public class PyramusUpdater {
    * @return count of updated students or -1 when no students were found with given offset
    */
   public int updateStudents(int offset, int maxStudents) {
-    Student[] students = pyramusClient.get("/students/students?firstResult=" + offset + "&maxResults=" + maxStudents, Student[].class);
+    Student[] students = pyramusClient.get("/students/students?filterArchived=false&firstResult=" + offset + "&maxResults=" + maxStudents, Student[].class);
     if (students.length == 0) {
       return -1;
     }
@@ -162,12 +168,24 @@ public class PyramusUpdater {
     List<String> existingIdentifiers = userEntityController.listUserEntityIdentifiersByDataSource(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
     
     List<Student> discoveredStudents = new ArrayList<>();
+    List<Student> removedStudents = new ArrayList<>();
     
     for (Student student : students) {
       String indentifier = identifierMapper.getStudentIdentifier(student.getId());
-      if (!existingIdentifiers.contains(indentifier)) {
-        discoveredStudents.add(student);
+      
+      if (student.getArchived()) {
+        if (existingIdentifiers.contains(indentifier)) {
+          removedStudents.add(student);
+        }
+      } else {
+        if (!existingIdentifiers.contains(indentifier)) {
+          discoveredStudents.add(student);
+        }
       }
+    }
+    
+    for (Student removedStudent : removedStudents) {
+      fireStudentRemoved(removedStudent.getId());
     }
     
     for (Student discoveredStudent : discoveredStudents) {
@@ -479,6 +497,11 @@ public class PyramusUpdater {
     }
     
     schoolDataUserDiscoveredEvent.fire(new SchoolDataUserDiscoveredEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, studentIdentifier, emails));
+  }
+  
+  private void fireStudentRemoved(Long studentId) {
+    String studentIdentifier = identifierMapper.getStudentIdentifier(studentId);
+    schoolDataUserRemovedEvent.fire(new SchoolDataUserRemovedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, studentIdentifier));
   }
 
   private void fireWorkspaceDiscovered(Course course) {

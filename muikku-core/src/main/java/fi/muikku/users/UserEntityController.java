@@ -133,4 +133,8 @@ public class UserEntityController {
   public UserEntity updateDefaultIdentifier(UserEntity userEntity, String defaultIdentifier) {
     return userEntityDAO.updateDefaultIdentifier(userEntity, defaultIdentifier);
   }
+
+  public UserEntity archiveUserEntity(UserEntity userEntity) {
+    return userEntityDAO.updateArchived(userEntity, Boolean.TRUE);
+  }
 }
