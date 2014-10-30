@@ -67,7 +67,7 @@ public class WorkspaceEntityController {
   }
 
   public List<String> listWorkspaceEntityIdentifiersByDataSource(SchoolDataSource dataSource) {
-    return workspaceEntityDAO.listIdentifiersByDataSource(dataSource);
+    return workspaceEntityDAO.listIdentifiersByDataSourceAndArchived(dataSource, Boolean.FALSE);
   }
   
   public List<WorkspaceEntity> listWorkspaceEntitiesByDataSource(SchoolDataSource dataSource, Integer firstResult, Integer maxResults) {
@@ -82,6 +82,10 @@ public class WorkspaceEntityController {
     }
     
     return listWorkspaceEntitiesByDataSource(schoolDataSource, firstResult, maxResults); 
+  }
+
+  public WorkspaceEntity archiveWorkspaceEntity(WorkspaceEntity workspaceEntity) {
+    return workspaceEntityDAO.updateArchived(workspaceEntity, Boolean.TRUE);
   }
 
 }

@@ -51,6 +51,13 @@ public class DefaultSchoolDataWorkspaceListener {
     }
   }
   
+  public void onSchoolDataWorkspaceRemoved(@Observes SchoolDataWorkspaceRemovedEvent event) {
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
+    if (workspaceEntity != null) {
+      workspaceEntity = workspaceEntityController.archiveWorkspaceEntity(workspaceEntity);
+    } 
+  }
+  
   public void onSchoolDataWorkspaceUserDiscoveredEvent(@Observes SchoolDataWorkspaceUserDiscoveredEvent event) {
     UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(event.getUserDataSource(), event.getUserIdentifier());
     if (userEntity != null) {
