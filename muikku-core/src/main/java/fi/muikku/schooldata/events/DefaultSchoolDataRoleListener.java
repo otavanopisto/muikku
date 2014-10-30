@@ -7,9 +7,11 @@ import javax.inject.Inject;
 
 import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.model.users.EnvironmentRoleEntity;
+import fi.muikku.model.users.RoleSchoolDataIdentifier;
 import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.muikku.users.EnvironmentRoleEntityController;
+import fi.muikku.users.RoleSchoolDataIdentifierController;
 import fi.muikku.users.WorkspaceRoleEntityController;
 
 public class DefaultSchoolDataRoleListener {
@@ -22,6 +24,9 @@ public class DefaultSchoolDataRoleListener {
   
   @Inject
   private WorkspaceRoleEntityController workspaceRoleEntityController;
+
+  @Inject
+  private RoleSchoolDataIdentifierController roleSchoolDataIdentifierController;
   
   public void onSchoolDataEnvironmentRoleDiscoveredEvent(@Observes SchoolDataEnvironmentRoleDiscoveredEvent event) {
     EnvironmentRoleEntity environmentRoleEntity = environmentRoleEntityController.findEnvironmentRoleEntity(event.getDataSource(), event.getIdentifier());
@@ -30,6 +35,13 @@ public class DefaultSchoolDataRoleListener {
       environmentRoleEntityController.createEnvironmentRoleEntity(event.getDataSource(), event.getIdentifier(), roleArchetype, event.getName());
     } else {
       logger.warning("EnvironmentRoleEntity for " + event.getIdentifier() + "/" + event.getDataSource() + " already exists");
+    }
+  }
+  
+  public void onSchoolDataEnvironmentRoleRemoved(@Observes SchoolDataEnvironmentRoleRemovedEvent event) {
+    RoleSchoolDataIdentifier roleSchoolDataIdentifier = roleSchoolDataIdentifierController.findRoleSchoolDataIdentifierByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
+    if (roleSchoolDataIdentifier != null) {
+      roleSchoolDataIdentifierController.deleteRoleSchoolDataIdentifier(roleSchoolDataIdentifier);
     }
   }
 
@@ -43,5 +55,11 @@ public class DefaultSchoolDataRoleListener {
     }
   }
   
+  public void onSchoolDataWorkspaceRoleRemoved(@Observes SchoolDataWorkspaceRoleRemovedEvent event) {
+    RoleSchoolDataIdentifier roleSchoolDataIdentifier = roleSchoolDataIdentifierController.findRoleSchoolDataIdentifierByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
+    if (roleSchoolDataIdentifier != null) {
+      roleSchoolDataIdentifierController.deleteRoleSchoolDataIdentifier(roleSchoolDataIdentifier);
+    }
+  }
   
 }

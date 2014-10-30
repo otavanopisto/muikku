@@ -22,12 +22,12 @@ public class EnvironmentRoleEntityController {
   
   @Inject
   private EnvironmentRoleEntityDAO environmentRoleEntityDAO;
-
-  @Inject
-  private RoleSchoolDataIdentifierDAO roleSchoolDataIdentifierDAO;
   
   @Inject
   private SchoolDataSourceDAO schoolDataSourceDAO;
+
+  @Inject
+  private RoleSchoolDataIdentifierDAO roleSchoolDataIdentifierDAO;
   
   /* Environment Role Entities */
 
@@ -64,20 +64,6 @@ public class EnvironmentRoleEntityController {
   
   public List<RoleSchoolDataIdentifier> listRoleSchoolDataIdentifiersByEnvironmentRoleEntity(EnvironmentRoleEntity roleEntity) {
     return roleSchoolDataIdentifierDAO.listByRoleEntity(roleEntity);
-  }
-  
-  public RoleSchoolDataIdentifier findRoleSchoolDataIdentifierByDataSourceAndRoleEntity(String dataSource, RoleEntity roleEntity) {
-    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
-    if (schoolDataSource == null) {
-      logger.severe("Could not find datasource " + dataSource);
-      return null;
-    }
-    
-    return findRoleSchoolDataIdentifierByDataSourceAndRoleEntity(schoolDataSource, roleEntity);
-  }
-  
-  public RoleSchoolDataIdentifier findRoleSchoolDataIdentifierByDataSourceAndRoleEntity(SchoolDataSource dataSource, RoleEntity roleEntity) {
-    return roleSchoolDataIdentifierDAO.findByDataSourceAndRoleEntity(dataSource, roleEntity);
   }
   
   public List<EnvironmentRoleEntity> listEnvironmentRoleEntities() {

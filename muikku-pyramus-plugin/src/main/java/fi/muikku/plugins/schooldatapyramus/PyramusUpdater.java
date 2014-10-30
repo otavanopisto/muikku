@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Set;
 
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -14,6 +13,7 @@ import fi.muikku.model.users.EnvironmentRoleEntity;
 import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.RoleSchoolDataIdentifier;
 import fi.muikku.model.users.UserEntity;
+import fi.muikku.model.users.UserRoleType;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
@@ -37,7 +37,7 @@ import fi.muikku.schooldata.events.SchoolDataWorkspaceUserDiscoveredEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceUserRemovedEvent;
 import fi.muikku.users.EnvironmentRoleEntityController;
 import fi.muikku.users.EnvironmentUserController;
-import fi.muikku.users.UserController;
+import fi.muikku.users.RoleSchoolDataIdentifierController;
 import fi.muikku.users.UserEmailEntityController;
 import fi.muikku.users.UserEntityController;
 import fi.muikku.users.UserSchoolDataIdentifierController;
@@ -51,9 +51,6 @@ import fi.pyramus.rest.model.Student;
 import fi.pyramus.rest.model.UserRole;
 
 public class PyramusUpdater {
-
-  @Inject
-  private Logger logger;
   
   @Inject
   private WorkspaceController workspaceController;
@@ -61,9 +58,6 @@ public class PyramusUpdater {
   @Inject
   private WorkspaceEntityController workspaceEntityController;
 
-  @Inject
-  private UserController userController;
-  
   @Inject
   private UserEntityController userEntityController;
   
@@ -85,6 +79,9 @@ public class PyramusUpdater {
   @Inject
   private EnvironmentRoleEntityController environmentRoleEntityController;
 
+  @Inject
+  private RoleSchoolDataIdentifierController roleSchoolDataIdentifierController;
+  
   @Inject
   private EnvironmentUserController environmentUserController;
   
@@ -259,7 +256,7 @@ public class PyramusUpdater {
             removedUserRoles.put(staffMember.getId(), roleIdentifier);
           } else {
             if (!environmentUser.getRole().getId().equals(environmentRoleEntity.getId())) {
-              RoleSchoolDataIdentifier removedRoleIdentifier = environmentRoleEntityController.findRoleSchoolDataIdentifierByDataSourceAndRoleEntity(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, environmentRoleEntity);
+              RoleSchoolDataIdentifier removedRoleIdentifier = roleSchoolDataIdentifierController.findRoleSchoolDataIdentifierByDataSourceAndRoleEntity(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, environmentRoleEntity);
               removedUserRoles.put(staffMember.getId(), removedRoleIdentifier.getIdentifier());
               discoveredUserRoles.put(staffMember.getId(), role);
             }
@@ -423,9 +420,17 @@ public class PyramusUpdater {
    */
   public int updateUserRoles() {
     int count = 0;
+
+    List<RoleSchoolDataIdentifier> existingRoleIdentifiers = roleSchoolDataIdentifierController.listRoleSchoolDataIdentifiersByDataSource(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
+    Map<String, RoleSchoolDataIdentifier> removedIdentifiers = new HashMap<>();
+    for (RoleSchoolDataIdentifier existingRoleIdentifier : existingRoleIdentifiers) {
+      removedIdentifiers.put(existingRoleIdentifier.getIdentifier(), existingRoleIdentifier);
+    }
     
     for (fi.pyramus.rest.model.UserRole userRole : fi.pyramus.rest.model.UserRole.values()) {
       String roleIdentifier = identifierMapper.getEnvironmentRoleIdentifier(userRole);
+      removedIdentifiers.remove(roleIdentifier);
+      
       if (environmentRoleEntityController.findEnvironmentRoleEntity(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, roleIdentifier) == null) {
         EnvironmentRole environmentRole = entityFactory.createEntity(userRole);
         schoolDataEnvironmentRoleDiscoveredEvent.fire(new SchoolDataEnvironmentRoleDiscoveredEvent(environmentRole.getSchoolDataSource(), environmentRole.getIdentifier(), environmentRole.getArchetype(), environmentRole.getName())); 
@@ -436,6 +441,8 @@ public class PyramusUpdater {
     CourseStaffMemberRole[] staffMemberRoles = pyramusClient.get("/courses/staffMemberRoles", CourseStaffMemberRole[].class);
     for (CourseStaffMemberRole staffMemberRole : staffMemberRoles) {
       String identifier = identifierMapper.getWorkspaceStaffRoleIdentifier(staffMemberRole.getId());
+      removedIdentifiers.remove(identifier);
+
       WorkspaceRoleEntity workspaceRoleEntity = workspaceRoleEntityController.findWorkspaceRoleEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifier);
       if (workspaceRoleEntity == null) {
         WorkspaceRole workspaceRole = entityFactory.createEntity(staffMemberRole);
@@ -445,10 +452,23 @@ public class PyramusUpdater {
     }
     
     WorkspaceRole studentRole = entityFactory.createCourseStudentRoleEntity();
+    removedIdentifiers.remove(studentRole.getIdentifier());
+
     WorkspaceRoleEntity studentWorkspaceRoleEntity = workspaceRoleEntityController.findWorkspaceRoleEntityByDataSourceAndIdentifier(studentRole.getSchoolDataSource(), studentRole.getIdentifier());
     if (studentWorkspaceRoleEntity == null) {
       schoolDataWorkspaceRoleDiscoveredEvent.fire(new SchoolDataWorkspaceRoleDiscoveredEvent(studentRole.getSchoolDataSource(), studentRole.getIdentifier(), studentRole.getArchetype(), studentRole.getName()));
       count++;
+    }
+    
+    Set<String> removedIdentifierIds = removedIdentifiers.keySet();
+    
+    for (String removedIdentifierId : removedIdentifierIds) {
+      RoleSchoolDataIdentifier removedIdentifier = removedIdentifiers.get(removedIdentifierId);
+      if (removedIdentifier.getRoleEntity().getType() == UserRoleType.ENVIRONMENT) {
+        schoolDataEnvironmentRoleRemovedEvent.fire(new SchoolDataEnvironmentRoleRemovedEvent(removedIdentifier.getDataSource().getIdentifier(), removedIdentifier.getIdentifier()));
+      } else if (removedIdentifier.getRoleEntity().getType() == UserRoleType.WORKSPACE) {
+        schoolDataWorkspaceRoleRemovedEvent.fire(new SchoolDataWorkspaceRoleRemovedEvent(removedIdentifier.getDataSource().getIdentifier(), removedIdentifier.getIdentifier()));
+      }
     }
     
     return count;
