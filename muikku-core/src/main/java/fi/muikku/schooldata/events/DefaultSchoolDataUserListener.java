@@ -89,5 +89,20 @@ public class DefaultSchoolDataUserListener {
       logger.warning("Could not add new role to user " + event.getUserIdentifier() + '/' + event.getUserDataSource() + " because it does not exist");
     }
   }
+  
+  public void onSchoolDataUserEnvironmentRoleRemovedEvent(@Observes SchoolDataUserEnvironmentRoleRemovedEvent event) {
+    UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(event.getUserDataSource(), event.getUserIdentifier());
+    if (userEntity != null) {
+      EnvironmentRoleEntity environmentRoleEntity = environmentRoleEntityController.findEnvironmentRoleEntity(event.getRoleDataSource(), event.getRoleIdentifier());
+      if (environmentRoleEntity != null) {
+        EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
+        if (environmentUser != null) {
+          if (environmentRoleEntity.getId().equals(environmentUser.getRole().getId())) {
+            environmentUserController.updateEnvironmentUserRole(environmentUser, null);          
+          }
+        }
+      }
+    }
+  }
 
 }

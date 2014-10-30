@@ -38,9 +38,7 @@ import fi.muikku.schooldata.events.SchoolDataWorkspaceUserRemovedEvent;
 import fi.muikku.users.EnvironmentRoleEntityController;
 import fi.muikku.users.EnvironmentUserController;
 import fi.muikku.users.RoleSchoolDataIdentifierController;
-import fi.muikku.users.UserEmailEntityController;
 import fi.muikku.users.UserEntityController;
-import fi.muikku.users.UserSchoolDataIdentifierController;
 import fi.muikku.users.WorkspaceRoleEntityController;
 import fi.pyramus.rest.model.Course;
 import fi.pyramus.rest.model.CourseStaffMember;
@@ -60,12 +58,6 @@ public class PyramusUpdater {
 
   @Inject
   private UserEntityController userEntityController;
-  
-  @Inject
-  private UserEmailEntityController userEmailEntityController;
-
-  @Inject
-  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
   
   @Inject
   private PyramusSchoolDataEntityFactory entityFactory;
@@ -256,7 +248,7 @@ public class PyramusUpdater {
             removedUserRoles.put(staffMember.getId(), roleIdentifier);
           } else {
             if (!environmentUser.getRole().getId().equals(environmentRoleEntity.getId())) {
-              RoleSchoolDataIdentifier removedRoleIdentifier = roleSchoolDataIdentifierController.findRoleSchoolDataIdentifierByDataSourceAndRoleEntity(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, environmentRoleEntity);
+              RoleSchoolDataIdentifier removedRoleIdentifier = roleSchoolDataIdentifierController.findRoleSchoolDataIdentifierByDataSourceAndRoleEntity(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, environmentUser.getRole());
               removedUserRoles.put(staffMember.getId(), removedRoleIdentifier.getIdentifier());
               discoveredUserRoles.put(staffMember.getId(), role);
             }
@@ -596,7 +588,7 @@ public class PyramusUpdater {
 
   private void fireStaffMemberRoleRemoved(Long pyramusId, String roleIdentifier) {
     String userIdentifier = identifierMapper.getStaffIdentifier(pyramusId);
-    schoolDataUserEnvironmentRoleDiscoveredEvent.fire(new SchoolDataUserEnvironmentRoleDiscoveredEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, roleIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userIdentifier));
+    schoolDataUserEnvironmentRoleRemovedEvent.fire(new SchoolDataUserEnvironmentRoleRemovedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, roleIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userIdentifier));
   }
   
   private void fireCourseStaffMemberDiscovered(CourseStaffMember courseStaffMember) {
