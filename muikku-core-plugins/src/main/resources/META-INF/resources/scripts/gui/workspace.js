@@ -97,7 +97,11 @@ $(document).ready(function() {
     var tocOpeningButton = $('.workspace-material-reading-toc-opening-button');
     var tocClosingButton = $('.workspace-material-reading-toc-closing-button');
     var tocPinButton = $('#workspaceMaterialReadingTOCPinicon');
+    var contentPageContainer = $('#content-workspace-reading');
     
+    var contentMinOffset;
+    var contentOffset;
+    var windowMinWidth;
     
     if (thinTocWrapper.length > 0) {
       thinTocWrapper
@@ -120,6 +124,27 @@ $(document).ready(function() {
       height = $(window).height();
       wideTocWrapper.height(height);
       thinTocWrapper.height(height);
+      
+      contentMinOffset = wideTocWrapper.width() + 10; 
+      contentOffset = contentPageContainer.offset();
+      windowMinWidth = contentPageContainer.width() + contentMinOffset*2;
+      
+      // Lets prevent page content to slide under TOC when browser window is been resized
+      if ($('#workspaceMaterialReadingTOCOpen:visible').length !== 0) {
+        
+        if (contentOffset.left < contentMinOffset) {
+          contentPageContainer.css({
+            paddingLeft: contentMinOffset,
+            paddingRight: "10px"
+          });
+        } 
+      } else {
+        contentPageContainer.css({
+          paddingLeft: "60px",
+          paddingRight: "10px"
+        });
+      }
+      
     });
     
     var tocPinned = 0;
@@ -147,6 +172,17 @@ $(document).ready(function() {
         complete : function(){
           $(this).hide();
           
+          contentMinOffset = wideTocWrapper.width() + 10; 
+          
+          contentPageContainer
+          .animate({
+            paddingLeft: contentMinOffset,
+            paddingRight: "10px"
+          },{
+            duration:500,
+            easing: "easeInOutQuint"
+          });
+          
           wideTocWrapper
           .show()
           .clearQueue()
@@ -163,6 +199,16 @@ $(document).ready(function() {
               $(document).bind('click', function(){
                 // Need to check if toc is pinned or not
                 if (tocPinned == 0) {
+                  
+                  contentPageContainer
+                  .animate({
+                    paddingLeft: "60px",
+                    paddingRight: "10px"
+                  },{
+                    duration:600,
+                    easing: "easeInOutQuint"
+                  });
+                  
                   wideTocWrapper
                   .clearQueue()
                   .stop()
@@ -173,6 +219,7 @@ $(document).ready(function() {
                     duration : 600,
                     easing : "easeInOutQuint",
                     complete: function() {
+                      $(this).hide();
                       $(document).unbind('click');
                       
                       thinTocWrapper
@@ -204,6 +251,16 @@ $(document).ready(function() {
     });
     
     $(tocClosingButton).click(function() {
+            
+      contentPageContainer
+      .animate({
+        paddingLeft: "60px",
+        paddingRight: "10px"
+      },{
+        duration:600,
+        easing: "easeInOutQuint"
+      });
+      
       wideTocWrapper
       .clearQueue()
       .stop()
