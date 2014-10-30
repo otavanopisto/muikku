@@ -168,7 +168,7 @@ public class PyramusWebhookServlet extends HttpServlet {
   }
 
   private void handleCourseStudentArchive(WebhookCourseStudentData courseStudentArchiveData) {
-    // TODO Implement
+    pyramusUpdater.updateCourseStudent(courseStudentArchiveData.getCourseStudentId(), courseStudentArchiveData.getCourseId(), courseStudentArchiveData.getStudentId());
   }
 
   private void handleCourseStudentCreate(WebhookCourseStudentData courseStudentCreateData) {

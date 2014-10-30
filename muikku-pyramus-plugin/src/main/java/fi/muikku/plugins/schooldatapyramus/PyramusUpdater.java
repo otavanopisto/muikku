@@ -434,22 +434,27 @@ public class PyramusUpdater {
    * @return returns whether new course student was created or not
    */
   public boolean updateCourseStudent(Long courseStudentId, Long courseId, Long studentId) {
-    CourseStudent courseStudent = pyramusClient.get("/courses/courses/" + courseId + "/students/" + courseStudentId, CourseStudent.class);
-    if (courseStudent != null) {
-      String workspaceIdentifier = identifierMapper.getWorkspaceIdentifier(courseId);
-      String identifier = identifierMapper.getWorkspaceStudentIdentifier(courseStudentId);
-      
-      WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, workspaceIdentifier);
-      if (workspaceEntity == null) {
-        updateCourse(courseId);
-        workspaceEntity = workspaceController.findWorkspaceEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, workspaceIdentifier);
-      }
-      
-      if (workspaceEntity != null) {
-        WorkspaceUserEntity workspaceUserEntity = workspaceController.findWorkspaceUserEntityByWorkspaceAndIdentifier(workspaceEntity, identifier);
+    String workspaceIdentifier = identifierMapper.getWorkspaceIdentifier(courseId);
+    String identifier = identifierMapper.getWorkspaceStudentIdentifier(courseStudentId);
+    
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, workspaceIdentifier);
+    if (workspaceEntity == null) {
+      updateCourse(courseId);
+      workspaceEntity = workspaceController.findWorkspaceEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, workspaceIdentifier);
+    }
+    
+    if (workspaceEntity != null) {
+      WorkspaceUserEntity workspaceUserEntity = workspaceController.findWorkspaceUserEntityByWorkspaceAndIdentifier(workspaceEntity, identifier);
+
+      CourseStudent courseStudent = pyramusClient.get("/courses/courses/" + courseId + "/students/" + courseStudentId, CourseStudent.class);
+      if (courseStudent != null) {
         if (workspaceUserEntity == null) {
           fireCourseStudentDiscovered(courseStudent);
           return true;
+        }
+      } else {
+        if (workspaceUserEntity != null) {
+          fireCourseStudentRemoved(courseStudentId, studentId, courseId);
         }
       }
     }
@@ -467,14 +472,21 @@ public class PyramusUpdater {
     int count = 0;
     Long courseId = identifierMapper.getPyramusCourseId(workspaceEntity.getIdentifier());
 
-    CourseStudent[] courseStudents = pyramusClient.get("/courses/courses/" + courseId + "/students", CourseStudent[].class);
+    CourseStudent[] courseStudents = pyramusClient.get("/courses/courses/" + courseId + "/students?filterArchived=false", CourseStudent[].class);
     if (courseStudents != null) {
       for (CourseStudent courseStudent : courseStudents) {
         String identifier = identifierMapper.getWorkspaceStudentIdentifier(courseStudent.getId());
         WorkspaceUserEntity workspaceUserEntity = workspaceController.findWorkspaceUserEntityByWorkspaceAndIdentifier(workspaceEntity, identifier);
-        if (workspaceUserEntity == null) {
-          fireCourseStudentDiscovered(courseStudent);
-          count++;
+        if (courseStudent.getArchived()) {
+          if (workspaceUserEntity != null) {
+            fireCourseStudentRemoved(courseStudent.getId(), courseStudent.getStudentId(), courseStudent.getCourseId());
+            count++;
+          }
+        } else {
+          if (workspaceUserEntity == null) {
+            fireCourseStudentDiscovered(courseStudent);
+            count++;
+          }
         }
       }
     }
@@ -553,5 +565,15 @@ public class PyramusUpdater {
     schoolDataWorkspaceUserDiscoveredEvent.fire(new SchoolDataWorkspaceUserDiscoveredEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
         identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, workspaceIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
         userIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, roleIdentifier));
+  }
+
+  private void fireCourseStudentRemoved(Long courseStudentId, Long studentId, Long courseId) {
+    String identifier = identifierMapper.getWorkspaceStudentIdentifier(courseStudentId);
+    String userIdentifier = identifierMapper.getStudentIdentifier(studentId);
+    String workspaceIdentifier = identifierMapper.getWorkspaceIdentifier(courseId);
+
+    schoolDataWorkspaceUserRemovedEvent.fire(new SchoolDataWorkspaceUserRemovedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
+        identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, workspaceIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
+        userIdentifier));
   }
 }

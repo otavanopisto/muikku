@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleEntity;
+import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.users.UserEntityController;
@@ -66,6 +67,23 @@ public class DefaultSchoolDataWorkspaceListener {
       }
     } else {
       logger.warning("could not init workspace user because user entity #" + event.getUserIdentifier() + '/' + event.getUserDataSource() +  " could not be found");
+    }
+  }
+  
+  public void onSchoolDataWorkspaceUserRemovedEvent(@Observes SchoolDataWorkspaceUserRemovedEvent event) {
+    UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(event.getUserDataSource(), event.getUserIdentifier());
+    if (userEntity != null) {
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(event.getWorkspaceDataSource(), event.getWorkspaceIdentifier());
+      if (workspaceEntity != null) {
+        WorkspaceUserEntity workspaceUserEntity = workspaceController.findWorkspaceUserEntityByWorkspaceAndUser(workspaceEntity, userEntity);
+        if (workspaceUserEntity != null) {
+          workspaceController.archiveWorkspaceUserEntity(workspaceUserEntity);
+        }
+      } else {
+        logger.warning("could not remove workspace user because workspace entity #" + event.getWorkspaceIdentifier() + '/' + event.getWorkspaceDataSource() +  " could not be found");
+      }
+    } else {
+      logger.warning("could not remove workspace user because user entity #" + event.getUserIdentifier() + '/' + event.getUserDataSource() +  " could not be found");
     }
   }
   

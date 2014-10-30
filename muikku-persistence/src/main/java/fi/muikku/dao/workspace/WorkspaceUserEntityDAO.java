@@ -144,6 +144,11 @@ public class WorkspaceUserEntityDAO extends CoreDAO<WorkspaceUserEntity> {
     
     return entityManager.createQuery(criteria).getResultList();
   }
+
+  public WorkspaceUserEntity updateArchived(WorkspaceUserEntity workspaceUserEntity, Boolean archived) {
+    workspaceUserEntity.setArchived(archived);
+    return persist(workspaceUserEntity);
+  }
   
   public void delete(WorkspaceUserEntity workspaceUserEntity) {
     super.delete(workspaceUserEntity);

@@ -302,7 +302,11 @@ public class WorkspaceController {
 
 		return null;
 	}
-  
+
+  public void archiveWorkspaceUserEntity(WorkspaceUserEntity workspaceUserEntity) {
+    workspaceUserEntityDAO.updateArchived(workspaceUserEntity, Boolean.TRUE);
+  }
+
   private void deleteWorkspaceUser(WorkspaceUser workspaceUser) {
     // TODO: Remove users via bridge also
     WorkspaceUserEntity workspaceUserEntity = findWorkspaceUserEntity(workspaceUser);
