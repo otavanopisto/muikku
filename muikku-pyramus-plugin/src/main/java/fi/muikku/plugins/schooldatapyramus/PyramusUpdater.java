@@ -45,6 +45,7 @@ import fi.muikku.users.WorkspaceRoleEntityController;
 import fi.pyramus.rest.model.Course;
 import fi.pyramus.rest.model.CourseStaffMember;
 import fi.pyramus.rest.model.CourseStaffMemberRole;
+import fi.pyramus.rest.model.CourseStudent;
 import fi.pyramus.rest.model.Email;
 import fi.pyramus.rest.model.Student;
 import fi.pyramus.rest.model.UserRole;
@@ -360,6 +361,11 @@ public class PyramusUpdater {
     return 0;
   }
   
+  /**
+   * Updates user roles from Pyramus
+   * 
+   * @return count of updates roles
+   */
   public int updateUserRoles() {
     int count = 0;
     
@@ -393,59 +399,63 @@ public class PyramusUpdater {
     return count;
   }
 
-  public int updateWorkspaceStudents(WorkspaceEntity workspaceEntity) {
-//    Long courseId = identifierMapper.getPyramusCourseId(workspaceEntity.getIdentifier());
-//    
-//    CourseStudent[] courseStudents = pyramusClient.get("/courses/courses/" + courseId + "/students", CourseStudent[].class);
-//    if (courseStudents != null) {
-//      schoolDataEntityInitializerProvider.initWorkspaceUsers(entityFactory.createEntity(courseStudents));
-//    }
-//    
-//    return 0;
-    return 0;
+  /**
+   * Updates course student from Pyramus
+   * 
+   * @param courseStudentId id of course student in Pyramus
+   * @param courseId id of course in Pyramus
+   * @param studentId id of student in Pyramus
+   * @return returns whether new course student was created or not
+   */
+  public boolean updateCourseStudent(Long courseStudentId, Long courseId, Long studentId) {
+    CourseStudent courseStudent = pyramusClient.get("/courses/courses/" + courseId + "/students/" + courseStudentId, CourseStudent.class);
+    if (courseStudent != null) {
+      String workspaceIdentifier = identifierMapper.getWorkspaceIdentifier(courseId);
+      String identifier = identifierMapper.getWorkspaceStudentIdentifier(courseStudentId);
+      
+      WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, workspaceIdentifier);
+      if (workspaceEntity == null) {
+        updateCourse(courseId);
+        workspaceEntity = workspaceController.findWorkspaceEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, workspaceIdentifier);
+      }
+      
+      if (workspaceEntity != null) {
+        WorkspaceUserEntity workspaceUserEntity = workspaceController.findWorkspaceUserEntityByWorkspaceAndIdentifier(workspaceEntity, identifier);
+        if (workspaceUserEntity == null) {
+          fireCourseStudentDiscovered(courseStudent);
+          return true;
+        }
+      }
+    }
+    
+    return false;
   }
 
-  private void synchronizeStudents(List<fi.muikku.schooldata.entity.User> newUsers, List<fi.muikku.schooldata.entity.User> updateUsers) {
-//    List<UserEmail> userEmails = new ArrayList<>();
-//    
-//    if (newUsers != null) {
-//      schoolDataEntityInitializerProvider.initUsers(newUsers);
-//      
-//      List<UserRole> userRoles = new ArrayList<>(); 
-//      Role studentRole = entityFactory.createEntity(fi.pyramus.rest.model.UserRole.STUDENT);
-//      
-//      for (User newUser : newUsers) {
-//        userRoles.add(new PyramusUserRole("PYRAMUS-" + newUser.getIdentifier(), newUser.getIdentifier(), studentRole.getIdentifier()));
-//      }
-//      
-//      schoolDataEntityInitializerProvider.initUserRoles(userRoles);
-//      
-//      for (fi.muikku.schooldata.entity.User user : newUsers) {
-//        Long pyramusStudentId = identifierMapper.getPyramusStudentId(user.getIdentifier());
-//        Email[] studentEmails = pyramusClient.get("/students/students/" + pyramusStudentId.toString() + "/emails", Email[].class);
-//        
-//        for (Email studentEmail : studentEmails) {
-//          userEmails.add(new PyramusUserEmail("PYRAMUS-" + studentEmail.getId().toString(), user.getIdentifier(), studentEmail.getAddress()));
-//        }
-//      }
-//    }
-//
-//    if (updateUsers != null) {
-//      for (fi.muikku.schooldata.entity.User user : updateUsers) {
-//        Long pyramusStudentId = identifierMapper.getPyramusStudentId(user.getIdentifier());
-//        Email[] studentEmails = pyramusClient.get("/students/students/" + pyramusStudentId.toString() + "/emails", Email[].class);
-//  
-//        if (studentEmails != null) {
-//          for (Email studentEmail : studentEmails) {
-//            userEmails.add(new PyramusUserEmail("PYRAMUS-" + studentEmail.getId().toString(), user.getIdentifier(), studentEmail.getAddress()));
-//          }
-//        }
-//      }
-//    }
-//    
-//    schoolDataEntityInitializerProvider.initUserEmails(userEmails);
+  /**
+   * Updates course students from Pyramus
+   * 
+   * @param courseId id of course in Pyramus
+   * @return count of updated course students
+   */
+  public int updateWorkspaceStudents(WorkspaceEntity workspaceEntity) {
+    int count = 0;
+    Long courseId = identifierMapper.getPyramusCourseId(workspaceEntity.getIdentifier());
+
+    CourseStudent[] courseStudents = pyramusClient.get("/courses/courses/" + courseId + "/students", CourseStudent[].class);
+    if (courseStudents != null) {
+      for (CourseStudent courseStudent : courseStudents) {
+        String identifier = identifierMapper.getWorkspaceStudentIdentifier(courseStudent.getId());
+        WorkspaceUserEntity workspaceUserEntity = workspaceController.findWorkspaceUserEntityByWorkspaceAndIdentifier(workspaceEntity, identifier);
+        if (workspaceUserEntity == null) {
+          fireCourseStudentDiscovered(courseStudent);
+          count++;
+        }
+      }
+    }
+    
+    return count;
   }
-  
+ 
   private void fireStaffMemberDiscovered(fi.pyramus.rest.model.User staffMember) {
     String staffMemberIdentifier = identifierMapper.getStaffIdentifier(staffMember.getId());
     List<String> emails = new ArrayList<>();
@@ -492,6 +502,17 @@ public class PyramusUpdater {
     String userIdentifier = identifierMapper.getStaffIdentifier(courseStaffMember.getUserId());
     String roleIdentifier = identifierMapper.getWorkspaceStaffRoleIdentifier(courseStaffMember.getRoleId());
     String workspaceIdentifier = identifierMapper.getWorkspaceIdentifier(courseStaffMember.getCourseId());
+
+    schoolDataWorkspaceUserDiscoveredEvent.fire(new SchoolDataWorkspaceUserDiscoveredEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
+        identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, workspaceIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
+        userIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, roleIdentifier));
+  }
+
+  private void fireCourseStudentDiscovered(CourseStudent courseStudent) {
+    String identifier = identifierMapper.getWorkspaceStudentIdentifier(courseStudent.getId());
+    String userIdentifier = identifierMapper.getStudentIdentifier(courseStudent.getStudentId());
+    String roleIdentifier = identifierMapper.getWorkspaceStudentRoleIdentifier();
+    String workspaceIdentifier = identifierMapper.getWorkspaceIdentifier(courseStudent.getCourseId());
 
     schoolDataWorkspaceUserDiscoveredEvent.fire(new SchoolDataWorkspaceUserDiscoveredEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
         identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, workspaceIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
