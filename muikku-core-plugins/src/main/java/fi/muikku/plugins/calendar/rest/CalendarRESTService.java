@@ -61,7 +61,7 @@ public class CalendarRESTService extends PluginRESTService {
     List<Calendar> result = new ArrayList<>();
 
     try {
-      List<UserCalendar> userCalendars = calendarController.listUserCalendars(sessionController.getUser());
+      List<UserCalendar> userCalendars = calendarController.listUserCalendars(sessionController.getLoggedUserEntity());
       for (UserCalendar userCalendar : userCalendars) {
         fi.muikku.calendar.Calendar calendar = calendarController.loadCalendar(userCalendar);
         if (calendar.isWritable() || !Boolean.TRUE.equals(writableOnly)) {
@@ -107,7 +107,7 @@ public class CalendarRESTService extends PluginRESTService {
       return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-    if (!userCalendar.getUserId().equals(sessionController.getUser().getId())) {
+    if (!userCalendar.getUserId().equals(sessionController.getLoggedUserEntity().getId())) {
       return Response.status(Response.Status.FORBIDDEN).build();
     }
 
@@ -133,7 +133,7 @@ public class CalendarRESTService extends PluginRESTService {
       return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-    if (!userCalendar.getUserId().equals(sessionController.getUser().getId())) {
+    if (!userCalendar.getUserId().equals(sessionController.getLoggedUserEntity().getId())) {
       return Response.status(Response.Status.FORBIDDEN).build();
     }
 
@@ -167,7 +167,7 @@ public class CalendarRESTService extends PluginRESTService {
       return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-    if (!userCalendar.getUserId().equals(sessionController.getUser().getId())) {
+    if (!userCalendar.getUserId().equals(sessionController.getLoggedUserEntity().getId())) {
       return Response.status(Response.Status.FORBIDDEN).build();
     }
 
@@ -203,7 +203,7 @@ public class CalendarRESTService extends PluginRESTService {
       return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-    if (!userCalendar.getUserId().equals(sessionController.getUser().getId())) {
+    if (!userCalendar.getUserId().equals(sessionController.getLoggedUserEntity().getId())) {
       return Response.status(Response.Status.FORBIDDEN).build();
     }
 
@@ -235,7 +235,7 @@ public class CalendarRESTService extends PluginRESTService {
       return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-    if (!userCalendar.getUserId().equals(sessionController.getUser().getId())) {
+    if (!userCalendar.getUserId().equals(sessionController.getLoggedUserEntity().getId())) {
       return Response.status(Response.Status.FORBIDDEN).build();
     }
 
@@ -273,7 +273,7 @@ public class CalendarRESTService extends PluginRESTService {
       return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-    if (!userCalendar.getUserId().equals(sessionController.getUser().getId())) {
+    if (!userCalendar.getUserId().equals(sessionController.getLoggedUserEntity().getId())) {
       return Response.status(Response.Status.FORBIDDEN).build();
     }
 
@@ -319,7 +319,7 @@ public class CalendarRESTService extends PluginRESTService {
       return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-    if (!userCalendar.getUserId().equals(sessionController.getUser().getId())) {
+    if (!userCalendar.getUserId().equals(sessionController.getLoggedUserEntity().getId())) {
       return Response.status(Response.Status.FORBIDDEN).build();
     }
 

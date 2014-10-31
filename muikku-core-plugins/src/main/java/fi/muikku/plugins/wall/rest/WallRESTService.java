@@ -75,7 +75,7 @@ public class WallRESTService extends PluginRESTService {
   @Path ("/walls/{WALLID}/wallEntries/") 
   @LoggedIn
   public Response craeteWallEntry(@PathParam ("WALLID") Long wallId, fi.muikku.plugins.wall.rest.model.WallEntry entity){
-    UserEntity user = sessionController.getUser();
+    UserEntity user = sessionController.getLoggedUserEntity();
 
     if (entity.getVisibility() == null) {
       return Response.status(Status.BAD_REQUEST).build();
@@ -140,7 +140,7 @@ public class WallRESTService extends PluginRESTService {
 //      return Response.status(Status.NOT_FOUND).build();
 //    }
     
-    WallEntryReply entryReply = wallController.createWallEntryReply(wall, entry, reply.getText(), sessionController.getUser());
+    WallEntryReply entryReply = wallController.createWallEntryReply(wall, entry, reply.getText(), sessionController.getLoggedUserEntity());
     
     return Response.ok(createRestModel(entryReply)).build();
   }

@@ -48,10 +48,14 @@ import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.EnvironmentUserController;
 import fi.muikku.users.UserEntityController;
+import fi.muikku.users.WorkspaceUserEntityController;
 
 @Dependent
 @Named("Wall")
 public class WallController {
+  
+  @Inject
+  private WorkspaceUserEntityController workspaceUserEntityController;
 
   @Inject
   private WallDAO wallDAO;
@@ -135,7 +139,7 @@ public class WallController {
         ForumArea forumArea = forumAreaDAO_TEMP.findById(1l);
         if (forumArea == null) {
           ResourceRights rights = resourceRightsController_TEMP.create();
-          forumArea = forumAreaDAO_TEMP.create("Foorumi.", false, sessionController.getUser(), rights);
+          forumArea = forumAreaDAO_TEMP.create("Foorumi.", false, sessionController.getLoggedUserEntity(), rights);
         }
           
         forumThreadDAO_TEMP.create(forumArea, "Foorumikirjoitus #" + r, "Testidatakirjoitus numero " + r, userEntity);
@@ -226,7 +230,7 @@ public class WallController {
 
       // Users Workspaces
       
-      List<WorkspaceUserEntity> workspaceUsers = workspaceController.listWorkspaceUserEntitiesByUser(userEntity);
+      List<WorkspaceUserEntity> workspaceUsers = workspaceUserEntityController.listWorkspaceUserEntitiesByUserEntity(userEntity);
       
       for (WorkspaceUserEntity workspaceUser : workspaceUsers) {
         WorkspaceWall workspaceWall = getWorkspaceWall(workspaceUser.getWorkspaceEntity());

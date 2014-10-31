@@ -37,7 +37,7 @@ public class EditUserInfoBackingBean {
   }
 
   public List<UserEmailEntity> listUserEmails() {
-    UserEntity user = sessionController.getUser();
+    UserEntity user = sessionController.getLoggedUserEntity();
     return userEmailEntityController.listUserEmailEntitiessByUserEntity(user);
   }
   

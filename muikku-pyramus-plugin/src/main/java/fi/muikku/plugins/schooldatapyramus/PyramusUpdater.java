@@ -40,6 +40,7 @@ import fi.muikku.users.EnvironmentUserController;
 import fi.muikku.users.RoleSchoolDataIdentifierController;
 import fi.muikku.users.UserEntityController;
 import fi.muikku.users.WorkspaceRoleEntityController;
+import fi.muikku.users.WorkspaceUserEntityController;
 import fi.pyramus.rest.model.Course;
 import fi.pyramus.rest.model.CourseStaffMember;
 import fi.pyramus.rest.model.CourseStaffMemberRole;
@@ -56,6 +57,9 @@ public class PyramusUpdater {
   @Inject
   private WorkspaceEntityController workspaceEntityController;
 
+  @Inject
+  private WorkspaceUserEntityController workspaceUserEntityController;
+  
   @Inject
   private UserEntityController userEntityController;
   
@@ -360,7 +364,7 @@ public class PyramusUpdater {
     }
     
     if (workspaceEntity != null) {
-      WorkspaceUserEntity workspaceUserEntity = workspaceController.findWorkspaceUserEntityByWorkspaceAndIdentifier(workspaceEntity, identifier);
+      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndIdentifier(workspaceEntity, identifier);
       
       CourseStaffMember staffMember = pyramusClient.get("/courses/courses/" + courseId + "/staffMembers/" + courseStaffMemberId, CourseStaffMember.class);
       if (staffMember != null) {
@@ -394,7 +398,7 @@ public class PyramusUpdater {
       
       for (CourseStaffMember staffMember : staffMembers) {
         String staffIdentifier = identifierMapper.getWorkspaceStaffIdentifier(staffMember.getId());
-        WorkspaceUserEntity workspaceUserEntity = workspaceController.findWorkspaceUserEntityByWorkspaceAndIdentifier(workspaceEntity, staffIdentifier);
+        WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndIdentifier(workspaceEntity, staffIdentifier);
         if (workspaceUserEntity == null) {
           fireCourseStaffMemberDiscovered(staffMember);
         }
@@ -485,7 +489,7 @@ public class PyramusUpdater {
     }
     
     if (workspaceEntity != null) {
-      WorkspaceUserEntity workspaceUserEntity = workspaceController.findWorkspaceUserEntityByWorkspaceAndIdentifier(workspaceEntity, identifier);
+      WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndIdentifier(workspaceEntity, identifier);
 
       CourseStudent courseStudent = pyramusClient.get("/courses/courses/" + courseId + "/students/" + courseStudentId, CourseStudent.class);
       if (courseStudent != null) {
@@ -517,7 +521,7 @@ public class PyramusUpdater {
     if (courseStudents != null) {
       for (CourseStudent courseStudent : courseStudents) {
         String identifier = identifierMapper.getWorkspaceStudentIdentifier(courseStudent.getId());
-        WorkspaceUserEntity workspaceUserEntity = workspaceController.findWorkspaceUserEntityByWorkspaceAndIdentifier(workspaceEntity, identifier);
+        WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndIdentifier(workspaceEntity, identifier);
         if (courseStudent.getArchived()) {
           if (workspaceUserEntity != null) {
             fireCourseStudentRemoved(courseStudent.getId(), courseStudent.getStudentId(), courseStudent.getCourseId());

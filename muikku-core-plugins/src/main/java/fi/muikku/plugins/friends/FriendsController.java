@@ -32,14 +32,14 @@ public class FriendsController {
   
   @LoggedIn
   public FriendRequest createFriendRequest(UserEntity recipient, String message) {
-    UserEntity creator = sessionController.getUser();
+    UserEntity creator = sessionController.getLoggedUserEntity();
 
     return friendRequestDAO.create(creator, recipient, message);
   }
   
   @LoggedIn
   public List<UserEntity> listFriends() {
-    UserEntity user = sessionController.getUser();
+    UserEntity user = sessionController.getLoggedUserEntity();
     
     List<UserEntity> friends = new ArrayList<UserEntity>();
     List<Friend> listByUser = friendDAO.listByUser(user);
@@ -55,7 +55,7 @@ public class FriendsController {
   
   @LoggedIn
   public boolean isFriend(UserEntity user) {
-    UserEntity loggedUser = sessionController.getUser();
+    UserEntity loggedUser = sessionController.getLoggedUserEntity();
     
     Friend f = friendDAO.findByUsers(loggedUser, user);
     return f != null;

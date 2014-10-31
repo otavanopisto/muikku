@@ -60,7 +60,7 @@ public class ForumWallEntryProvider implements WallEntryProvider {
     
     List<WallFeedItem> feedItems = new ArrayList<WallFeedItem>();
 
-    UserEntity loggedUser = sessionController.isLoggedIn() ? sessionController.getUser() : null;
+    UserEntity loggedUser = sessionController.isLoggedIn() ? sessionController.getLoggedUserEntity() : null;
 
     switch (wall.getWallType()) {
       case USER:

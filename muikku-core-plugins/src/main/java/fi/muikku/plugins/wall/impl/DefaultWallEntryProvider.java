@@ -58,7 +58,7 @@ public class DefaultWallEntryProvider implements WallEntryProvider {
         UserWall userWall = userWallDAO.findById(wall.getId());
   
         UserEntity wallOwner = userEntityController.findUserEntityById(userWall.getUser());
-        UserEntity loggedUser = sessionController.isLoggedIn() ? sessionController.getUser() : null;
+        UserEntity loggedUser = sessionController.isLoggedIn() ? sessionController.getLoggedUserEntity() : null;
   
         boolean ownsWall = loggedUser != null ? loggedUser.getId().equals(wallOwner.getId()) : false;
         boolean hasAccess = sessionController.hasEnvironmentPermission(WallPermissions.READ_ALL_WALLS);
@@ -106,7 +106,7 @@ public class DefaultWallEntryProvider implements WallEntryProvider {
     if (sessionController.hasCoursePermission(WallPermissions.WALL_READALLCOURSEMESSAGES, workspaceEntity)) {
       entries.addAll(wallEntryDAO.listEntriesByWall(workspaceWall));
     } else {
-      entries.addAll(wallEntryDAO.listPublicOrOwnedEntriesByWall(workspaceWall, sessionController.getUser()));
+      entries.addAll(wallEntryDAO.listPublicOrOwnedEntriesByWall(workspaceWall, sessionController.getLoggedUserEntity()));
     }
     
     return entries;

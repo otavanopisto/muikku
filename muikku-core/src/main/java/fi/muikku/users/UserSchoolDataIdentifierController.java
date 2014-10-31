@@ -36,6 +36,20 @@ public class UserSchoolDataIdentifierController {
     return createUserSchoolDataIdentifier(dataSource, identifier, userEntity);
   }
   
+  public UserSchoolDataIdentifier findUserSchoolDataIdentifierByDataSourceAndIdentifier(String schoolDataSource, String identifier) {
+    SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
+    if (dataSource == null) {
+      logger.severe("Could not find dataSource '" + schoolDataSource + "'");
+      return null;
+    }
+    
+    return findUserSchoolDataIdentifierByDataSourceAndIdentifier(dataSource, identifier);
+  }
+  
+  public UserSchoolDataIdentifier findUserSchoolDataIdentifierByDataSourceAndIdentifier(SchoolDataSource dataSource, String identifier) {
+    return userSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(dataSource, identifier);
+  }
+
   public List<UserSchoolDataIdentifier> listUserSchoolDataIdentifiersByUserEntity(UserEntity userEntity) {
     return userSchoolDataIdentifierDAO.listByUserEntity(userEntity);
   }

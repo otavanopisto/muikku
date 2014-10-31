@@ -54,7 +54,7 @@ public class ConfirmEmailChangeBackingBean {
       
       userInfoController.confirmEmailChange(userEntity, passwordHash, change);
     } else
-      userInfoController.confirmEmailChange(sessionController.getUser(), passwordHash, change);
+      userInfoController.confirmEmailChange(sessionController.getLoggedUserEntity(), passwordHash, change);
   }
   
   public UserPendingEmailChange getPendingEmailChange() {

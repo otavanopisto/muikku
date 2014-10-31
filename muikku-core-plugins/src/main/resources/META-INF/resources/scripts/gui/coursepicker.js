@@ -263,16 +263,12 @@
       window.location = CONTEXTPATH + '/workspace/' + workspaceUrl;
     },
     _joinCourse: function (workspaceId, workspaceUrl, joinMessage) {
-      var userId = MUIKKU_LOGGED_USER_ID;
-      
       mApi().workspace.workspaces.users.create(workspaceId, {
-        roleId: this._workspaceStudentRoleId,
-        userId: userId
+        roleId: this._workspaceStudentRoleId
       })
       .callback(function (workspaceUsersErr, workspaceUsers) {
         mApi().workspace.workspaces.signups.create(workspaceId, {
-          message: joinMessage,
-          userId: userId
+          message: joinMessage
         })
         .callback(function (workspaceUsersErr, workspaceUsers) {
           window.location = CONTEXTPATH + '/workspace/' + workspaceUrl;
