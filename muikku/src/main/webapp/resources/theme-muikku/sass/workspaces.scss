@@ -145,6 +145,7 @@ body.workspace-reading {
       background:#e8f0f5;
       z-index:26;
       box-shadow : 0 0 25px rgba(0,0,0,0.3);
+      position:relative; /* This sets parent relation to .workspaceMaterialReadingTOCContentCropper element */
       
       .workspaceMaterialReadingTOCTitle {
         background:#7794a8;
@@ -214,12 +215,34 @@ body.workspace-reading {
         
       }
     
-      .workspaceMaterialReadingTOCContent {
-        overflow-y:auto;
+      .workspaceMaterialReadingTOCContentCropper {
         padding:12px;
+        width:326px;
+        overflow:hidden;
+        position:absolute;
+        top:45px;
+        bottom:0;
+        left:0;
+        
+        .workspaceMaterialReadingTOCContent {
+          overflow-y:scroll;
+          width:350px;
+          position:absolute;
+          height:100%;
+        }
         
         .workspace-materials-toc-section {
-          margin:0 0 15px 0;
+          margin:0 0 0 0;
+          width:326px; /* Prevents text from overlapping container */
+          padding-bottom:15px;
+          
+          &:last-child {
+            /* 
+            Needs to add 12px bottom padding because .workspaceMaterialReadingTOCContentCropper 
+            has 12px padding and we are using 100% height in the scrolling container 
+            */
+            padding-bottom:27px; 
+          }
         
           .workspace-materials-toc-subtitle {
             font-weight:bold;
@@ -231,6 +254,8 @@ body.workspace-reading {
           .workspace-materials-toc-item {
             font-weight:300;
             margin:0 0 5px 0;
+
+            
           }
         
         }
@@ -254,7 +279,7 @@ body.workspace-reading {
     font-weight:300;
     
     h1 {
-      margin:40px 0 20px 0;
+      margin:40px 0 0 0;
       color:#38393a;
       font-size:1.9em;
       font-weight:300;
@@ -262,12 +287,12 @@ body.workspace-reading {
       line-height:1em;
       
       &:first-child {
-        margin:20px 0 20px 0;
+        margin:20px 0 0 0;
       }
     }
     
     p {
-      margin:20px 0;
+      margin:20px 0 0 0;
       line-height:1.7em;
     }
   }
