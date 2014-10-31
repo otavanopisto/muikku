@@ -16,6 +16,7 @@ import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.users.EnvironmentRoleEntity;
 import fi.muikku.model.users.RoleEntity;
 import fi.muikku.model.users.RoleSchoolDataIdentifier;
+import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.muikku.schooldata.entity.Role;
 import fi.muikku.schooldata.entity.User;
@@ -87,17 +88,28 @@ public class RoleController {
 		return roleEntityDAO.findById(id);
 	}
 
-	public RoleEntity findRoleEntity(Role role) {
-		SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(role.getSchoolDataSource());
-		if (schoolDataSource != null) {
-		  RoleSchoolDataIdentifier schoolDataIdentifier = roleSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(schoolDataSource, role.getIdentifier());
-		  if (schoolDataIdentifier != null) {
-		  	return schoolDataIdentifier.getRoleEntity();
-		  }
-		}
+	public RoleEntity findRoleEntityByDataSourceAndIdentifier(SchoolDataSource schoolDataSource, String identifier) {
+	  RoleSchoolDataIdentifier schoolDataIdentifier = roleSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(schoolDataSource, identifier);
+	  if (schoolDataIdentifier != null) {
+	  	return schoolDataIdentifier.getRoleEntity();
+	  }
 		
 		return null;
 	}
+
+  public RoleEntity findRoleEntityByDataSourceAndIdentifier(String dataSource, String identifier) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
+    if (schoolDataSource != null) {
+      return findRoleEntityByDataSourceAndIdentifier(schoolDataSource, identifier);
+    } else {
+      logger.severe("Could not find school data source: " + dataSource);
+      return null;
+    }
+  }
+
+  public RoleEntity findRoleEntity(Role role) {
+    return findRoleEntityByDataSourceAndIdentifier(role.getSchoolDataSource(), role.getIdentifier());
+  }
 	
 	public List<RoleEntity> listRoleEntities() {
 		return roleEntityDAO.listAll();
@@ -123,6 +135,10 @@ public class RoleController {
 	public List<WorkspaceRoleEntity> listWorkspaceRoleEntities() {
 		return workspaceRoleEntityDAO.listAll();
 	}
+
+  public WorkspaceRoleEntity findWorkspaceRoleEntityById(Long id) {
+    return workspaceRoleEntityDAO.findById(id);
+  }
 	
 	public WorkspaceRoleEntity findWorkspaceRoleEntityByName(String name) {
 	  return workspaceRoleEntityDAO.findByName(name);
@@ -136,4 +152,8 @@ public class RoleController {
 		
 		return null;
 	}
+  
+  public List<WorkspaceRoleEntity> listWorkspaceRoleEntitiesByArchetype(WorkspaceRoleArchetype archetype) {
+    return workspaceRoleEntityDAO.listByArchetype(archetype);
+  }
 }

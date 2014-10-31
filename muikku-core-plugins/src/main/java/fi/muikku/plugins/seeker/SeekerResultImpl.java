@@ -13,7 +13,7 @@ public class SeekerResultImpl implements SeekerResult {
     this.category = category;
     this.template = template;
   }
-  
+
   @Override
   public String getCategory() {
     return category;
@@ -22,5 +22,10 @@ public class SeekerResultImpl implements SeekerResult {
   @Override
   public String getTemplate() {
     return template;
+  }
+
+  @Override
+  public void setCategory(String category) {
+    this.category = category;
   }
 }
