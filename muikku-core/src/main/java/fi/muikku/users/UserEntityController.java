@@ -1,5 +1,6 @@
 package fi.muikku.users;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -16,8 +17,10 @@ import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserSchoolDataIdentifier;
 import fi.muikku.schooldata.entity.User;
 
-public class UserEntityController {
+public class UserEntityController implements Serializable {
   
+  private static final long serialVersionUID = 4092377410747350817L;
+
   @Inject
   private Logger logger;
 

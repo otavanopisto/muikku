@@ -27,8 +27,8 @@ public class SessionControllerDelegateImpl implements SessionControllerDelegate 
   }
 
   @Override
-  public UserEntity getUser() {
-    return implementation.getUser();
+  public UserEntity getLoggedUserEntity() {
+    return implementation.getLoggedUserEntity();
   }
 
   @Override

@@ -26,13 +26,6 @@ public interface SessionController {
   public void setLocale(Locale locale);
   
   /**
-   * Returns logged user or null if user is not logged in
-   * 
-   * @return logged user or null if user is not logged in
-   */
-  public UserEntity getUser();
-  
-  /**
    * Returns whether user is logged in
    * 
    * @return whether user is logged in
@@ -89,5 +82,7 @@ public interface SessionController {
   
   public String getActiveUserSchoolDataSource();
 
-  public void setActiveUserIdentifier( String dataSource, String identifier );
+  public void setActiveUserIdentifier(String dataSource, String identifier);
+  
+  public UserEntity getLoggedUserEntity();
 }

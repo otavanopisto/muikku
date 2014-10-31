@@ -9,7 +9,6 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import fi.muikku.auth.UserIdentificationController;
 import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.UserEntity;
@@ -46,7 +45,7 @@ public class SessionBackingBean {
     if (sessionController.isLoggedIn()) {
       alternativeIdentities = new ArrayList<>();
 
-      UserEntity loggedUser = sessionController.getUser();
+      UserEntity loggedUser = sessionController.getLoggedUserEntity();
       if (loggedUser != null) {
         String activeSchoolDataSource = sessionController.getActiveUserSchoolDataSource();
         String activeUserIdentifier = sessionController.getActiveUserIdentifier();
@@ -84,7 +83,7 @@ public class SessionBackingBean {
   }
 
   public Long getLoggedUserId() {
-    return sessionController.isLoggedIn() ? sessionController.getUser().getId() : null;
+    return sessionController.isLoggedIn() ? sessionController.getLoggedUserEntity().getId() : null;
   }
 
   public String getResourceLibrary() {

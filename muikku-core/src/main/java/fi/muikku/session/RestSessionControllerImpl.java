@@ -8,8 +8,6 @@ import java.util.Map;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
-
-import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.util.ResourceEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.security.ContextReference;
@@ -23,8 +21,8 @@ public class RestSessionControllerImpl extends AbstractSessionController impleme
   @Override
   public void setAuthentication(RestAuthentication authentication) {
     this.authentication = authentication;
-    this.activeUserIdentifier = authentication.getUser().getDefaultIdentifier();
-    this.activeUserSchoolDataSource = authentication.getUser().getDefaultSchoolDataSource().getIdentifier();
+    this.activeUserIdentifier = authentication.getActiveUserIdentifier();
+    this.activeUserSchoolDataSource = authentication.getActiveUserSchoolDataSource();
   }
 
   @Override
@@ -35,14 +33,6 @@ public class RestSessionControllerImpl extends AbstractSessionController impleme
   @Override
   public void setLocale(Locale locale) {
     this.locale = locale;
-  }
-  
-  @Override
-  public UserEntity getUser() {
-    if (authentication != null)
-      return authentication.getUser();
-    
-    return null;
   }
 
   @Override
@@ -78,7 +68,7 @@ public class RestSessionControllerImpl extends AbstractSessionController impleme
     PermissionResolver permissionResolver = getPermissionResolver(permission);
 
     if (isLoggedIn()) {
-      return isSuperuser() || permissionResolver.hasPermission(permission, contextReference, getUser());
+      return isSuperuser() || permissionResolver.hasPermission(permission, contextReference, getLoggedUserEntity());
     } else {
       return permissionResolver.hasEveryonePermission(permission, contextReference);
     }
@@ -115,5 +105,4 @@ public class RestSessionControllerImpl extends AbstractSessionController impleme
   private String activeUserIdentifier;
   private String activeUserSchoolDataSource;
   private Map<String, AccessToken> accessTokens = Collections.synchronizedMap(new HashMap<String, AccessToken>());
-
 }
