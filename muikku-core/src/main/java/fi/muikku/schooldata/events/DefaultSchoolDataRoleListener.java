@@ -1,7 +1,11 @@
 package fi.muikku.schooldata.events;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -14,6 +18,7 @@ import fi.muikku.users.EnvironmentRoleEntityController;
 import fi.muikku.users.RoleSchoolDataIdentifierController;
 import fi.muikku.users.WorkspaceRoleEntityController;
 
+@ApplicationScoped
 public class DefaultSchoolDataRoleListener {
   
   @Inject
@@ -28,11 +33,25 @@ public class DefaultSchoolDataRoleListener {
   @Inject
   private RoleSchoolDataIdentifierController roleSchoolDataIdentifierController;
   
-  public void onSchoolDataEnvironmentRoleDiscoveredEvent(@Observes SchoolDataEnvironmentRoleDiscoveredEvent event) {
+  @PostConstruct
+  public void init() {
+    discoveredWorkspaceRoles = new HashMap<>();
+    discoveredEnvironmentRoles = new HashMap<>();
+  }
+  
+  public synchronized void onSchoolDataEnvironmentRoleDiscoveredEvent(@Observes SchoolDataEnvironmentRoleDiscoveredEvent event) {
+    String discoverId = "ER-" + event.getDataSource() + "/" + event.getIdentifier();
+    if (discoveredEnvironmentRoles.containsKey(discoverId)) {
+      event.setDiscoveredEnvironmentRoleEntityId(discoveredEnvironmentRoles.get(discoverId));
+      return;
+    }
+    
     EnvironmentRoleEntity environmentRoleEntity = environmentRoleEntityController.findEnvironmentRoleEntity(event.getDataSource(), event.getIdentifier());
     if (environmentRoleEntity == null) {
       EnvironmentRoleArchetype roleArchetype = EnvironmentRoleArchetype.valueOf(event.getArchetype().name());
-      environmentRoleEntityController.createEnvironmentRoleEntity(event.getDataSource(), event.getIdentifier(), roleArchetype, event.getName());
+      environmentRoleEntity = environmentRoleEntityController.createEnvironmentRoleEntity(event.getDataSource(), event.getIdentifier(), roleArchetype, event.getName());
+      discoveredEnvironmentRoles.put(discoverId, environmentRoleEntity.getId());
+      event.setDiscoveredEnvironmentRoleEntityId(environmentRoleEntity.getId());
     } else {
       logger.warning("EnvironmentRoleEntity for " + event.getIdentifier() + "/" + event.getDataSource() + " already exists");
     }
@@ -45,11 +64,19 @@ public class DefaultSchoolDataRoleListener {
     }
   }
 
-  public void onSchoolDataWorkspaceRoleDiscoveredEvent(@Observes SchoolDataWorkspaceRoleDiscoveredEvent event) {
+  public synchronized void onSchoolDataWorkspaceRoleDiscoveredEvent(@Observes SchoolDataWorkspaceRoleDiscoveredEvent event) {
+    String discoverId = "WSR-" + event.getDataSource() + "/" + event.getIdentifier();
+    if (discoveredWorkspaceRoles.containsKey(discoverId)) {
+      event.setDiscoveredWorkspaceRoleEntityId(discoveredWorkspaceRoles.get(discoverId));
+      return;
+    }
+    
     WorkspaceRoleEntity workspaceRoleEntity = workspaceRoleEntityController.findWorkspaceRoleEntityByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
     if (workspaceRoleEntity == null) {
       WorkspaceRoleArchetype roleArchetype = WorkspaceRoleArchetype.valueOf(event.getArchetype().name());
-      workspaceRoleEntityController.createWorkspaceRoleEntity(event.getDataSource(), event.getIdentifier(), roleArchetype, event.getName());
+      workspaceRoleEntity = workspaceRoleEntityController.createWorkspaceRoleEntity(event.getDataSource(), event.getIdentifier(), roleArchetype, event.getName());
+      discoveredWorkspaceRoles.put(discoverId, workspaceRoleEntity.getId());
+      event.setDiscoveredWorkspaceRoleEntityId(workspaceRoleEntity.getId());
     } else {
       logger.warning("WorkspaceRoleEntity for " + event.getIdentifier() + "/" + event.getDataSource() + " already exists");
     }
@@ -61,5 +88,7 @@ public class DefaultSchoolDataRoleListener {
       roleSchoolDataIdentifierController.deleteRoleSchoolDataIdentifier(roleSchoolDataIdentifier);
     }
   }
-  
+
+  private Map<String, Long> discoveredEnvironmentRoles;
+  private Map<String, Long> discoveredWorkspaceRoles;
 }

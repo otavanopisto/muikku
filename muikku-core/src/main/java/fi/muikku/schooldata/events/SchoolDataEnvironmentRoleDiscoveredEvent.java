@@ -27,9 +27,18 @@ public class SchoolDataEnvironmentRoleDiscoveredEvent {
   public String getName() {
     return name;
   }
+ 
+  public Long getDiscoveredEnvironmentRoleEntityId() {
+    return discoveredEnvironmentRoleEntityId;
+  }
+  
+  public void setDiscoveredEnvironmentRoleEntityId(Long discoveredEnvironmentRoleEntityId) {
+    this.discoveredEnvironmentRoleEntityId = discoveredEnvironmentRoleEntityId;
+  }
   
   private String dataSource;
   private String identifier;
   private EnvironmentRoleArchetype archetype;
   private String name;
+  private Long discoveredEnvironmentRoleEntityId;
 }

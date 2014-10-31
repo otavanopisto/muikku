@@ -47,6 +47,14 @@ public class SchoolDataWorkspaceUserDiscoveredEvent {
     return roleIdentifier;
   }
   
+  public void setDiscoveredWorkspaceUserEntityId(Long discoveredWorkspaceUserEntityId) {
+    this.discoveredWorkspaceUserEntityId = discoveredWorkspaceUserEntityId;
+  }
+  
+  public Long getDiscoveredWorkspaceUserEntityId() {
+    return discoveredWorkspaceUserEntityId;
+  }
+  
   private String dataSource;
   private String identifier;
   private String workspaceDataSource;
@@ -55,4 +63,5 @@ public class SchoolDataWorkspaceUserDiscoveredEvent {
   private String userIdentifier;
   private String roleDataSource;
   private String roleIdentifier;
+  private Long discoveredWorkspaceUserEntityId;
 }

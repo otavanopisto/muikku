@@ -16,6 +16,15 @@ public class SchoolDataCourseIdentifierDiscoveredEvent {
     return identifier;
   }
   
+  public void setDiscoveredCourseIdentifierEntityId(Long discoveredCourseIdentifierEntityId) {
+    this.discoveredCourseIdentifierEntityId = discoveredCourseIdentifierEntityId;
+  }
+  
+  public Long getDiscoveredCourseIdentifierEntityId() {
+    return discoveredCourseIdentifierEntityId;
+  }
+  
   private String dataSource;
   private String identifier;
+  private Long discoveredCourseIdentifierEntityId;
 }

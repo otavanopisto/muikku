@@ -28,8 +28,17 @@ public class SchoolDataWorkspaceRoleDiscoveredEvent {
     return name;
   }
   
+  public Long getDiscoveredWorkspaceRoleEntityId() {
+    return discoveredWorkspaceRoleEntityId;
+  }
+  
+  public void setDiscoveredWorkspaceRoleEntityId(Long discoveredWorkspaceRoleEntityId) {
+    this.discoveredWorkspaceRoleEntityId = discoveredWorkspaceRoleEntityId;
+  }
+  
   private String dataSource;
   private String identifier;
   private WorkspaceRoleArchetype archetype;
   private String name;
+  private Long discoveredWorkspaceRoleEntityId;
 }

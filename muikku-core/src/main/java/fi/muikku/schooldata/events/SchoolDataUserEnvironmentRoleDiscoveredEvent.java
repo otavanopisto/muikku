@@ -25,9 +25,18 @@ public class SchoolDataUserEnvironmentRoleDiscoveredEvent {
   public String getUserIdentifier() {
     return userIdentifier;
   }
-
+  
+  public Long getDiscoveredEnvironmentUserRoleEntityId() {
+    return discoveredEnvironmentUserRoleEntityId;
+  }
+  
+  public void setDiscoveredEnvironmentUserRoleEntityId(Long discoveredEnvironmentUserRoleEntityId) {
+    this.discoveredEnvironmentUserRoleEntityId = discoveredEnvironmentUserRoleEntityId;
+  }
+  
   private String roleDataSource;
   private String roleIdentifier;
   private String userDataSource;
   private String userIdentifier;
+  private Long discoveredEnvironmentUserRoleEntityId;
 }

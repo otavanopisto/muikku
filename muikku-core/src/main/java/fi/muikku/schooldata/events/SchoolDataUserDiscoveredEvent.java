@@ -23,7 +23,16 @@ public class SchoolDataUserDiscoveredEvent {
     return emails;
   }
 
+  public void setDiscoveredUserEntityId(Long discoveredUserEntityId) {
+    this.discoveredUserEntityId = discoveredUserEntityId;
+  }
+  
+  public Long getDiscoveredUserEntityId() {
+    return discoveredUserEntityId;
+  }
+
   private String dataSource;
   private String identifier;
   private List<String> emails;
+  private Long discoveredUserEntityId;
 }

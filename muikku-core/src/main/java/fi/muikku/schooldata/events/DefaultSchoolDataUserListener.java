@@ -1,8 +1,12 @@
 package fi.muikku.schooldata.events;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -15,6 +19,7 @@ import fi.muikku.users.UserEmailEntityController;
 import fi.muikku.users.UserEntityController;
 import fi.muikku.users.UserSchoolDataIdentifierController;
 
+@ApplicationScoped
 public class DefaultSchoolDataUserListener {
   
   @Inject
@@ -35,7 +40,19 @@ public class DefaultSchoolDataUserListener {
   @Inject
   private EnvironmentUserController environmentUserController;
   
-  public void onSchoolDataUserDiscoveredEvent(@Observes SchoolDataUserDiscoveredEvent event) {
+  @PostConstruct
+  public void init() {
+    discoveredUsers = new HashMap<>();
+    discoveredEnvironmentUserRoles = new HashMap<>();
+  }
+  
+  public synchronized void onSchoolDataUserDiscoveredEvent(@Observes SchoolDataUserDiscoveredEvent event) {
+    String discoverId = "U-" + event.getDataSource() + "/" + event.getIdentifier();
+    if (discoveredUsers.containsKey(discoverId)) {
+      event.setDiscoveredUserEntityId(discoveredUsers.get(discoverId));
+      return;
+    }
+    
     if (userEntityController.findUserEntityByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier()) == null) {
       // User does not yet exist on the database
       
@@ -61,6 +78,9 @@ public class DefaultSchoolDataUserListener {
           userEmailEntityController.addUserEmail(userEntity, email);
         }
       }
+      
+      discoveredUsers.put(discoverId, userEntity.getId());
+      event.setDiscoveredUserEntityId(userEntity.getId());
     }
   }
   
@@ -71,7 +91,13 @@ public class DefaultSchoolDataUserListener {
     }    
   }
   
-  public void onSchoolDataUserEnvironmentRoleDiscoveredEvent(@Observes SchoolDataUserEnvironmentRoleDiscoveredEvent event) {
+  public synchronized void onSchoolDataUserEnvironmentRoleDiscoveredEvent(@Observes SchoolDataUserEnvironmentRoleDiscoveredEvent event) {
+    String discoverId = "UER-" + event.getUserDataSource() + "/" + event.getUserIdentifier() + '-' + event.getRoleDataSource() + "/" + event.getRoleIdentifier();
+    if (discoveredEnvironmentUserRoles.containsKey(discoverId)) {
+      event.setDiscoveredEnvironmentUserRoleEntityId(discoveredEnvironmentUserRoles.get(discoverId));
+      return;
+    }
+    
     UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(event.getUserDataSource(), event.getUserIdentifier());
     if (userEntity != null) {
       EnvironmentRoleEntity environmentRoleEntity = environmentRoleEntityController.findEnvironmentRoleEntity(event.getRoleDataSource(), event.getRoleIdentifier());
@@ -82,6 +108,9 @@ public class DefaultSchoolDataUserListener {
         } else {
           environmentUserController.updateEnvironmentUserRole(environmentUser, environmentRoleEntity);
         }
+        
+        discoveredEnvironmentUserRoles.put(discoverId, environmentRoleEntity.getId());
+        event.setDiscoveredEnvironmentUserRoleEntityId(environmentRoleEntity.getId());
       } else {
         logger.warning("Could not add environment role " + event.getRoleIdentifier() + '/' + event.getRoleDataSource() + " to user because it does not exist");
       }
@@ -90,7 +119,7 @@ public class DefaultSchoolDataUserListener {
     }
   }
   
-  public void onSchoolDataUserEnvironmentRoleRemovedEvent(@Observes SchoolDataUserEnvironmentRoleRemovedEvent event) {
+  public synchronized void onSchoolDataUserEnvironmentRoleRemovedEvent(@Observes SchoolDataUserEnvironmentRoleRemovedEvent event) {
     UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(event.getUserDataSource(), event.getUserIdentifier());
     if (userEntity != null) {
       EnvironmentRoleEntity environmentRoleEntity = environmentRoleEntityController.findEnvironmentRoleEntity(event.getRoleDataSource(), event.getRoleIdentifier());
@@ -105,4 +134,6 @@ public class DefaultSchoolDataUserListener {
     }
   }
 
+  private Map<String, Long> discoveredUsers;
+  private Map<String, Long> discoveredEnvironmentUserRoles;
 }

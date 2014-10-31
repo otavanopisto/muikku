@@ -21,7 +21,16 @@ public class SchoolDataWorkspaceDiscoveredEvent {
     return name;
   }
 
+  public void setDiscoveredWorkspaceEntityId(Long discoveredWorkspaceEntityId) {
+    this.discoveredWorkspaceEntityId = discoveredWorkspaceEntityId;
+  }
+  
+  public Long getDiscoveredWorkspaceEntityId() {
+    return discoveredWorkspaceEntityId;
+  }
+
   private String dataSource;
   private String identifier;
   private String name;
+  private Long discoveredWorkspaceEntityId;
 }

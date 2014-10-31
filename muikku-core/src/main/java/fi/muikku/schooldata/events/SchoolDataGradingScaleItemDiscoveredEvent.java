@@ -26,8 +26,17 @@ public class SchoolDataGradingScaleItemDiscoveredEvent {
     return gradingScaleIdentifier;
   }
   
+  public Long getDiscoveredGradingScaleItemEntityId() {
+    return discoveredGradingScaleItemEntityId;
+  }
+  
+  public void setDiscoveredGradingScaleItemEntityId(Long discoveredGradingScaleItemEntityId) {
+    this.discoveredGradingScaleItemEntityId = discoveredGradingScaleItemEntityId;
+  }
+  
   private String dataSource;
   private String identifier;
   private String gradingScaleDataSource;
   private String gradingScaleIdentifier;
+  private Long discoveredGradingScaleItemEntityId;
 }
