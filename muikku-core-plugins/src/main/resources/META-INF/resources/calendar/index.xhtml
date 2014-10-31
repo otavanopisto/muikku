@@ -62,7 +62,7 @@
       </div> 
       <div class="mf-side-content">
       <c:forEach var="i" begin="1" end="31">
-        <div class="mf-calendar-weekDays-numbers">#{i}</div>
+        <div class="ca-weekDays numbers">#{i}</div>
       </c:forEach>      
 
     </div>
@@ -97,14 +97,37 @@
          </div>
          <div class="ca-home-week">
          
-      <!--  TODO : Widget -->        
+          <!--  TODO : Widget -->
+              
             <div class="mf-side-header">
               <c:forEach var="i" begin="1" end="7">
-                <div class="mf-calendar-weekDays-names">Day #{i}</div>
+                <c:if test="#{i eq 4}">
+                  <div class="ca-weekDays names today">Day #{i}</div>
+                </c:if>
+                <c:if test="#{i != 4}"> 
+                  <div class="ca-weekDays names">Day #{i}</div>
+                </c:if>
               </c:forEach>                  
             </div>        
            <c:forEach var="i" begin="1" end="7">
-            <div class="mf-calendar-weekDays-numbers ca-week-grid">#{i}</div>
+            <div class="ca-weekDays grids ca-week-grid">
+                <c:if test="#{i eq 4}">
+                  <div class="ca-time-grid-day today">
+                     <c:forEach var="a" begin="1" end="24">
+                       <div class="ca-time-grid-hour">#{a}:00</div>
+                     </c:forEach>           
+                  </div>
+                </c:if>
+                <c:if test="#{i != 4}"> 
+                  <div class="ca-time-grid-day">
+                     <c:forEach var="a" begin="1" end="24">
+                       <div class="ca-time-grid-hour">#{a}:00</div>
+                     </c:forEach>           
+                  </div>
+                </c:if> 
+ 
+   
+            </div>
           </c:forEach>              
          </div>
         <div class="clear"></div>

@@ -67,6 +67,80 @@
 }
 
 
+.ca-weekDays{
+  width:13.28%;
+  display:inline-block;
+  box-sizing:border-box;
+  text-align:center;
+ 
+  &.numbers{
+    padding:5px;
+  }
+
+  &.grids{
+  
+  }
+
+  &.names{
+    color:#fff;  
+    &.today{
+      border:2px solid #fff;
+      font-weight:700;
+    }              
+  }
+}
+
+.ca-weekDays-grids{
+  width:13.28%;
+  display:inline-block;
+  box-sizing:border-box;
+  text-align:center;
+}
+
+.ca-weekDays-names{
+  width:13.28%;
+  display:inline-block;
+  box-sizing:border-box;
+  text-align:center;
+
+  
+   
+}
+
+.ca-time-grid-day{
+  background-color:#fff;  
+  
+ 
+  &.today{
+    background-color:#f0f5f8;
+    
+    > div{
+     color:#f0f5f8;
+    }
+  }
+
+  &:hover{
+    background-color:#fafcfd;
+    
+    
+    > div{
+      color:#e5e7e8;
+    }
+    
+  }
+  
+}
+
+.ca-time-grid-hour{
+   color:#fff;
+   padding:5px 0 5px 0;
+   &:hover{
+    background-color:#cce4ed;
+    color:#fff !important;
+   }
+  
+}
+
 .ca-home-week{
   float:left;
   box-sizing: border-box;
