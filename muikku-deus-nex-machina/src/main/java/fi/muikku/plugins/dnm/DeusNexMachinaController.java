@@ -225,8 +225,9 @@ public class DeusNexMachinaController {
   		  // TODO: This reference is a bit strange
   			WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceNodeId);
   			if (workspaceMaterial != null) {
-  				if (workspaceMaterial.getMaterial() instanceof BinaryMaterial) {
-  					return ((BinaryMaterial) workspaceMaterial.getMaterial()).getContentType();
+  			  Material material = workspaceMaterialController.getMaterialForWorkspaceMaterial(workspaceMaterial);
+  				if (material instanceof BinaryMaterial) {
+  					return ((BinaryMaterial) material).getContentType();
   				}
   			}
   		}

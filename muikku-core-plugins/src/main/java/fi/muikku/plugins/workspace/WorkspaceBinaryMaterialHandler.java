@@ -15,6 +15,7 @@ import fi.muikku.RequestHandler;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.material.model.BinaryMaterial;
 import fi.muikku.plugins.material.model.HtmlMaterial;
+import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.schooldata.WorkspaceController;
 
@@ -59,8 +60,10 @@ public class WorkspaceBinaryMaterialHandler implements RequestHandler {
   				return true;
   			}
   			
-  			if (workspaceMaterial.getMaterial() instanceof BinaryMaterial) {
-    			BinaryMaterial binaryMaterial = (BinaryMaterial) workspaceMaterial.getMaterial();
+  			Material material = workspaceMaterialController.getMaterialForWorkspaceMaterial(workspaceMaterial);
+  			
+  			if (material instanceof BinaryMaterial) {
+    			BinaryMaterial binaryMaterial = (BinaryMaterial) material;
     			
     			response.setContentType(binaryMaterial.getContentType());
     			ServletOutputStream outputStream = response.getOutputStream();
@@ -69,8 +72,8 @@ public class WorkspaceBinaryMaterialHandler implements RequestHandler {
     			} finally {
     				outputStream.flush();
     			}
-  			} else if (workspaceMaterial.getMaterial() instanceof HtmlMaterial) {
-  				HtmlMaterial htmlMaterial = (HtmlMaterial) workspaceMaterial.getMaterial();
+  			} else if (material instanceof HtmlMaterial) {
+  				HtmlMaterial htmlMaterial = (HtmlMaterial) material;
     			
     			response.setContentType("text/html; charset=UTF-8");
     			ServletOutputStream outputStream = response.getOutputStream();

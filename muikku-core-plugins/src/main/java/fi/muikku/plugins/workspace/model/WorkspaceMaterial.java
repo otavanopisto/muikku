@@ -1,11 +1,10 @@
 package fi.muikku.plugins.workspace.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Transient;
-
-import fi.muikku.plugins.material.model.Material;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @PrimaryKeyJoinColumn(name="id")
@@ -24,5 +23,7 @@ public class WorkspaceMaterial extends WorkspaceNode {
     return WorkspaceNodeType.MATERIAL;
   }
 
+  @NotNull
+  @Column(nullable = false)
   private Long materialId;
 }

@@ -14,6 +14,7 @@ import fi.muikku.RequestHandler;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.material.model.BinaryMaterial;
 import fi.muikku.plugins.material.model.HtmlMaterial;
+import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.schooldata.WorkspaceController;
 
@@ -66,10 +67,12 @@ public class WorkspaceMaterialHandler implements RequestHandler {
   				return true;
   			}
   			
-  			if (workspaceMaterial.getMaterial() instanceof BinaryMaterial) {
+  			Material material = workspaceMaterialController.getMaterialForWorkspaceMaterial(workspaceMaterial);
+  			
+  			if (material instanceof BinaryMaterial) {
   			  response.sendRedirect(request.getContextPath() + "/workspace/" + workspaceUrl + "/materials.binary/" + materialPath);
           return true;
-  			} else if (workspaceMaterial.getMaterial() instanceof HtmlMaterial) {
+  			} else if (material instanceof HtmlMaterial) {
           response.sendRedirect(request.getContextPath() + "/workspace/" + workspaceUrl + "/materials.html/" + materialPath);
           return true;
   			} else {
