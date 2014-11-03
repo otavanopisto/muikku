@@ -79,6 +79,10 @@ public class WorkspaceMaterialsReadingBackingBean {
 		return workspaceMaterialController.listWorkspaceMaterialsByParent(workspaceNode);
 	}
 	
+	public List<WorkspaceNode> getAllNodes() {
+	  return listWorkspaceNodes(getRootFolder());
+	}
+	
 	public WorkspaceRootFolder getRootFolder() {
 		return rootFolder;
 	}
@@ -95,7 +99,6 @@ public class WorkspaceMaterialsReadingBackingBean {
 		this.workspaceUrlName = workspaceUrlName;
 	}
 
-  
   public String getWorkspaceName() {
     return workspaceName;
   }

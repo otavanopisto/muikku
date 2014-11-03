@@ -215,46 +215,64 @@ body.workspace-reading {
         
       }
     
-      .workspaceMaterialReadingTOCContentCropper {
-        padding:12px;
-        width:326px;
+      .workspace-materials-toc-content-outer {
         overflow:hidden;
-        position:absolute;
-        top:45px;
-        bottom:0;
-        left:0;
-        
-        .workspaceMaterialReadingTOCContent {
-          overflow-y:scroll;
-          width:350px;
+        height:100%;
+        width:350px;
+        position:relative;
+      
+        .workspace-materials-toc-content-inner {  
           position:absolute;
+          overflow-x: hidden;
+          overflow-y: scroll;
           height:100%;
-        }
         
-        .workspace-materials-toc-section {
-          margin:0 0 0 0;
-          width:326px; /* Prevents text from overlapping container */
-          padding-bottom:15px;
-          
-          &:last-child {
-            /* 
-            Needs to add 12px bottom padding because .workspaceMaterialReadingTOCContentCropper 
-            has 12px padding and we are using 100% height in the scrolling container 
-            */
-            padding-bottom:27px; 
-          }
+          .workspace-materials-toc-content-scrolling {
+            width:338px;
+            padding:0 6px;
+            height:100%;
         
-          .workspace-materials-toc-subtitle {
-            font-weight:bold;
-            margin:0 0 5px 0;
-            font-size:1.2em;
-            color:#344263;
-          }
-          
-          .workspace-materials-toc-item {
-            font-weight:300;
-            margin:0 0 5px 0;
- 
+            .workspace-materials-toc-section {
+              margin:0 0 0 0;
+              padding-top:5px;
+              padding-bottom:15px;
+              
+              &:last-child {
+                /* 
+                Needs to add 12px bottom padding because .workspaceMaterialReadingTOCContentCropper 
+                has 12px padding and we are using 100% height in the scrolling container 
+                */
+                padding-bottom:27px; 
+              }
+            
+              .workspace-materials-toc-subtitle {
+                font-weight:bold;
+                margin:0 0 5px 0;
+                font-size:1.2em;
+                color:#344263;
+                padding:2px 8px;
+              }
+              
+              .workspace-materials-toc-item {
+                font-weight:300;
+                
+                a {
+                  text-decoration:none;
+                  color:#000;
+                  display:block;
+                  @include genericMenuLinkHoverTransition(background,color,0.15s,ease-in-out);
+                  @include rounded(2px);
+                  padding:2px 8px;
+                  margin:0 0 2px 0;
+                  
+                  &:hover {
+                    background:#596e7d;
+                    color:#fff;
+                  }
+                }
+    
+              }
+            }
           }
         
         }
@@ -311,7 +329,7 @@ body.workspace-reading {
   font-family:"Open Sans";
   text-shadow:none;
   color:#000;
-  font-size:12pt;
+  font-size:11pt;
   line-height:1.5em;
   display:none;
   opacity:0;
@@ -340,22 +358,22 @@ body.workspace-reading {
       width:300px;
       
       .workspace-materials-toc-content-inner {  
-          position:absolute;
-          overflow-x: hidden;
-          overflow-y: scroll;
-          height:100%;
+        position:absolute;
+        overflow-x: hidden;
+        overflow-y: scroll;
+        height:100%;
       
         .workspace-materials-toc-content-scrolling {
-            padding:4px;
-            width:292px;
-            height: 100%;
+          padding:4px;
+          width:292px;
+          height: 100%;
     
           .workspace-materials-toc-section {
             margin:5px 0 10px 0;
           
             .workspace-materials-toc-subtitle {
               font-weight:bold;
-               padding:2px 8px;
+              padding:2px 8px;
             }
             
             .workspace-materials-toc-item {
@@ -365,7 +383,7 @@ body.workspace-reading {
                 text-decoration:none;
                 color:#41505b;
                 display:block;
-                @include genericMenuLinkHoverTransition(background,color,0.3s,ease-in-out);
+                @include genericMenuLinkHoverTransition(background,color,0.15s,ease-in-out);
                 @include rounded(2px);
                 padding:2px 8px;
                 

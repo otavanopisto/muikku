@@ -99,7 +99,6 @@ public class WorkspaceMaterialsBackingBean {
 		this.workspaceUrlName = workspaceUrlName;
 	}
 
-  
   public String getWorkspaceName() {
     return workspaceName;
   }
