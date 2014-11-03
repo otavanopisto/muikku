@@ -27,8 +27,8 @@ public class SessionControllerDelegateImpl implements SessionControllerDelegate 
   }
 
   @Override
-  public UserEntity getUser() {
-    return implementation.getUser();
+  public UserEntity getLoggedUserEntity() {
+    return implementation.getLoggedUserEntity();
   }
 
   @Override
@@ -83,6 +83,21 @@ public class SessionControllerDelegateImpl implements SessionControllerDelegate 
   @Override
   public AccessToken getOAuthAccessToken(String strategy) {
     return implementation.getOAuthAccessToken(strategy);
+  }
+  
+  @Override
+  public String getActiveUserIdentifier() {
+    return implementation.getActiveUserIdentifier();
+  }
+  
+  @Override
+  public String getActiveUserSchoolDataSource() {
+    return implementation.getActiveUserSchoolDataSource();
+  }
+  
+  @Override
+  public void setActiveUserIdentifier(String dataSource, String identifier) {
+    implementation.setActiveUserIdentifier(dataSource, identifier);
   }
   
   private SessionController implementation;

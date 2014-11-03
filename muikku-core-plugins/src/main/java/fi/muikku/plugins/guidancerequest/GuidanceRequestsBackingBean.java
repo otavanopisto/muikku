@@ -26,11 +26,11 @@ public class GuidanceRequestsBackingBean {
   private SessionController sessionController;
   
   public List<GuidanceRequest> listOwnedGuidanceRequests() {
-    return guidanceRequestController.listGuidanceRequestsByStudent(sessionController.getUser());
+    return guidanceRequestController.listGuidanceRequestsByStudent(sessionController.getLoggedUserEntity());
   }
   
   public GuidanceRequest createGuidanceRequest() {
-    return guidanceRequestController.createGuidanceRequest(sessionController.getUser(), new Date(), getNewGuidanceRequestMessage());
+    return guidanceRequestController.createGuidanceRequest(sessionController.getLoggedUserEntity(), new Date(), getNewGuidanceRequestMessage());
   }
 
   public String getNewGuidanceRequestMessage() {

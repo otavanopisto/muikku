@@ -37,8 +37,26 @@ public class PyramusSchoolDataEntityFactory {
     return new PyramusWorkspaceRole(identifierMapper.getWorkspaceStudentRoleIdentifier(), "Course Student", WorkspaceRoleArchetype.STUDENT);
   }
   
+  @SuppressWarnings("incomplete-switch")
   public User createEntity(fi.pyramus.rest.model.User user) {
-    return new PyramusUser(identifierMapper.getStaffIdentifier(user.getId()), user.getFirstName(), user.getLastName());
+    String displayName = user.getFirstName() + " " + user.getLastName();
+    switch (user.getRole()) {
+      case ADMINISTRATOR:
+        displayName += " (Administrator)";
+      break;
+      case GUEST:
+        displayName += " (Guest)";
+      break;
+      case MANAGER:
+        displayName += " (Manager)";
+      break;
+      case USER:
+        displayName += " (User)";
+      break;
+    }
+    
+    
+    return new PyramusUser(identifierMapper.getStaffIdentifier(user.getId()), user.getFirstName(), user.getLastName(), displayName);
   }
   
   public List<User> createEntity(fi.pyramus.rest.model.User ... users) {
@@ -51,15 +69,32 @@ public class PyramusSchoolDataEntityFactory {
     return result;
   }
   
-  public User createEntity(fi.pyramus.rest.model.Student student) {
-    return new PyramusUser(identifierMapper.getStudentIdentifier(student.getId()), student.getFirstName(), student.getLastName());
+  public User createEntity(fi.pyramus.rest.model.Student student, fi.pyramus.rest.model.StudyProgramme studyProgramme) {
+    StringBuilder displayName = new StringBuilder();
+    
+    displayName
+      .append(student.getFirstName())
+      .append(' ')
+      .append(student.getLastName());
+    
+    if (studyProgramme != null) {
+      displayName.append(" (")
+        .append(studyProgramme.getName())
+        .append(')');
+    }
+    
+    return new PyramusUser(identifierMapper.getStudentIdentifier(student.getId()), student.getFirstName(), student.getLastName(), displayName.toString());
   }
   
-  public List<User> createEntity(fi.pyramus.rest.model.Student ... students) {
+  public List<User> createEntity(fi.pyramus.rest.model.Student[] students, fi.pyramus.rest.model.StudyProgramme[] studyProgrammes) {
+    if (studyProgrammes.length != students.length) {
+      throw new RuntimeException("StudyProgramme count does not match student count");
+    }
+    
     List<User> result = new ArrayList<>();
     
-    for (fi.pyramus.rest.model.Student student : students) {
-      result.add(createEntity(student));
+    for (int i = 0, l = students. length; i < l; i++) {
+      result.add(createEntity(students[i], studyProgrammes[i])); 
     }
     
     return result;

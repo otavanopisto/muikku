@@ -19,8 +19,6 @@ import fi.muikku.dao.workspace.WorkspaceEntityDAO;
 import fi.muikku.dao.workspace.WorkspaceTypeSchoolDataIdentifierDAO;
 import fi.muikku.dao.workspace.WorkspaceUserEntityDAO;
 import fi.muikku.model.base.SchoolDataSource;
-import fi.muikku.model.users.UserEntity;
-import fi.muikku.model.users.UserSchoolDataIdentifier;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceTypeEntity;
 import fi.muikku.model.workspace.WorkspaceTypeSchoolDataIdentifier;
@@ -321,19 +319,6 @@ class WorkspaceSchoolDataController {
 		return null;
 	}
 	
-	/* Workspace User Entities */
-	  
-  public WorkspaceUserEntity findWorkspaceUserEntity(WorkspaceUser workspaceUser) {
-    SchoolDataSource workspaceSchoolDataSource = schoolDataSourceDAO.findByIdentifier(workspaceUser.getWorkspaceSchoolDataSource());
-    SchoolDataSource userSchoolDataSource = schoolDataSourceDAO.findByIdentifier(workspaceUser.getUserSchoolDataSource());
-
-    WorkspaceEntity workspaceEntity = workspaceEntityDAO.findByDataSourceAndIdentifier(workspaceSchoolDataSource, workspaceUser.getWorkspaceIdentifier());
-    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(userSchoolDataSource, workspaceUser.getUserIdentifier());
-    UserEntity userEntity = userSchoolDataIdentifier.getUserEntity();
-    
-    return workspaceUserEntityDAO.findByWorkspaceAndUser(workspaceEntity, userEntity);
-  }
-  
 	private WorkspaceSchoolDataBridge getWorkspaceBridge(SchoolDataSource schoolDataSource) {
 		Iterator<WorkspaceSchoolDataBridge> iterator = workspaceBridges.iterator();
 		while (iterator.hasNext()) {

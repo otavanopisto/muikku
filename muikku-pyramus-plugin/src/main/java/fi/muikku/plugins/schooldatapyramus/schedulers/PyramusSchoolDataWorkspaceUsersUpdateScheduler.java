@@ -12,6 +12,7 @@ import javax.inject.Inject;
 
 import fi.muikku.events.ContextInitializedEvent;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.plugins.schooldatapyramus.PyramusIdentifierMapper;
 import fi.muikku.plugins.schooldatapyramus.PyramusUpdater;
 import fi.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
@@ -28,6 +29,9 @@ public class PyramusSchoolDataWorkspaceUsersUpdateScheduler {
   
   @Inject
   private WorkspaceEntityController workspaceEntityController;
+
+  @Inject
+  private PyramusIdentifierMapper identityMapper;
   
   @Inject
   private PyramusUpdater pyramusUpdater;
@@ -59,7 +63,8 @@ public class PyramusSchoolDataWorkspaceUsersUpdateScheduler {
           offset = 0;
         } else {
           for (WorkspaceEntity workspaceEntity : workspaceEntities) {
-            count += pyramusUpdater.updateWorkspaceStaffMembers(workspaceEntity); 
+            Long courseId = identityMapper.getPyramusCourseId(workspaceEntity.getIdentifier());
+            count += pyramusUpdater.updateCourseStaffMembers(courseId); 
           }
           
           offset += workspaceEntities.size();

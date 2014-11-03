@@ -6,12 +6,12 @@ import javax.inject.Inject;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import fi.muikku.controller.EnvironmentSettingsController;
-import fi.muikku.controller.UserEntityController;
+import fi.muikku.users.UserEmailEntityController;
+import fi.muikku.users.UserEntityController;
 import fi.muikku.mail.Mailer;
 import fi.muikku.model.users.UserEmailEntity;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.internalauth.InternalAuthController;
-import fi.muikku.schooldata.UserController;
 
 @Dependent
 public class UserInfoController {
@@ -20,7 +20,7 @@ public class UserInfoController {
   private UserPendingEmailChangeDAO userPendingEmailChangeDAO;
   
   @Inject
-  private UserController userController;
+  private UserEmailEntityController userEmailEntityController;
   
   @Inject
   private UserEntityController userEntityController;
@@ -49,13 +49,13 @@ public class UserInfoController {
   }
 
   public void confirmEmailChange(UserEntity user, String passwordHash, UserPendingEmailChange pendingEmailChange) {
-    UserEmailEntity userEmail = userEntityController.findUserEmailEntityById(pendingEmailChange.getUserEmailEntity());
+    UserEmailEntity userEmail = userEmailEntityController.findUserEmailEntityById(pendingEmailChange.getUserEmailEntity());
     
     if (user.getId().equals(userEmail.getUser().getId())) {
       // Confirm password
       if (internalLoginController.confirmUserPassword(userEmail.getUser(), passwordHash)) {
         // Change Email
-        userEntityController.updateUserEmail(userEmail, pendingEmailChange.getNewEmail());
+        userEmailEntityController.updateUserEmailEntity(userEmail, pendingEmailChange.getNewEmail());
         
         // Delete Pender
         userPendingEmailChangeDAO.delete(pendingEmailChange);

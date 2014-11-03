@@ -11,10 +11,10 @@ import javax.inject.Named;
 import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
-import fi.muikku.controller.UserEntityController;
 import fi.muikku.model.users.UserEmailEntity;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.session.SessionController;
+import fi.muikku.users.UserEmailEntityController;
 
 
 @Named
@@ -30,15 +30,15 @@ public class EditUserInfoBackingBean {
   private SessionController sessionController;
   
   @Inject
-  private UserEntityController userEntityController;
+  private UserEmailEntityController userEmailEntityController;
   
   @RequestAction
   public void init() throws FileNotFoundException {
   }
 
   public List<UserEmailEntity> listUserEmails() {
-    UserEntity user = sessionController.getUser();
-    return userEntityController.listEmailsByUser(user);
+    UserEntity user = sessionController.getLoggedUserEntity();
+    return userEmailEntityController.listUserEmailEntitiessByUserEntity(user);
   }
   
   public void changeEmail(UserEmailEntity changedEmail) {

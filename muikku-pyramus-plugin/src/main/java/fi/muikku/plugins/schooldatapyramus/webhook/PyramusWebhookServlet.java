@@ -126,7 +126,7 @@ public class PyramusWebhookServlet extends HttpServlet {
           return;  
         }
         
-        handleStaffMemberCreate(staffMemberDeleteData);
+        handleStaffMemberDelete(staffMemberDeleteData);
       break;
       case STUDENT_CREATE:
         WebhookStudentData studentCreateData = unmarshalData(resp, payload, WebhookStudentData.class);
@@ -168,15 +168,15 @@ public class PyramusWebhookServlet extends HttpServlet {
   }
 
   private void handleCourseStudentArchive(WebhookCourseStudentData courseStudentArchiveData) {
-    // TODO Implement
+    pyramusUpdater.updateCourseStudent(courseStudentArchiveData.getCourseStudentId(), courseStudentArchiveData.getCourseId(), courseStudentArchiveData.getStudentId());
   }
 
   private void handleCourseStudentCreate(WebhookCourseStudentData courseStudentCreateData) {
-    // TODO Implement
+    pyramusUpdater.updateCourseStudent(courseStudentCreateData.getCourseStudentId(), courseStudentCreateData.getCourseId(), courseStudentCreateData.getStudentId());
   }
 
   private void handleStudentArchive(WebhookStudentData studentArchiveData) {
-    // TODO Implement
+    pyramusUpdater.updateStudent(studentArchiveData.getStudentId());
   }
 
   private void handleStudentCreate(WebhookStudentData studentCreateData) {
@@ -184,19 +184,23 @@ public class PyramusWebhookServlet extends HttpServlet {
   }
 
   private void handleStaffMemberCreate(WebhookStaffMemberData staffMemberCreateData) {
- // TODO Implement
+    pyramusUpdater.updateStaffMember(staffMemberCreateData.getStaffMemberId());
+  }
+
+  private void handleStaffMemberDelete(WebhookStaffMemberData staffMemberDeleteData) {
+    pyramusUpdater.updateStaffMember(staffMemberDeleteData.getStaffMemberId());
   }
 
   private void handleCourseStaffMemberDelete(WebhookCourseStaffMemberData courseStaffMemberDeleteData) {
- // TODO Implement
+    pyramusUpdater.updateCourseStaffMember(courseStaffMemberDeleteData.getCourseStaffMemberId(), courseStaffMemberDeleteData.getCourseId(), courseStaffMemberDeleteData.getStaffMemberId());
   }
 
   private void handleCourseStaffMemberCreate(WebhookCourseStaffMemberData courseStaffMemberCreateData) {
-    // TODO Implement
+    pyramusUpdater.updateCourseStaffMember(courseStaffMemberCreateData.getCourseStaffMemberId(), courseStaffMemberCreateData.getCourseId(), courseStaffMemberCreateData.getStaffMemberId());
   }
 
   private void handleCourseArchive(WebhookCourseData courseArchiveData) {
-    // TODO Implement
+    pyramusUpdater.updateCourse(courseArchiveData.getCourseId());
   }
 
   private void handleCourseCreate(WebhookCourseData courseCreateData) {
