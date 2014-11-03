@@ -231,20 +231,16 @@ body.workspace-reading {
             width:338px;
             padding:0 6px;
             height:100%;
+            
+            .spacer {
+              height:50px; /* Needs to be at least the same or higher as title element's height  */
+            }
         
             .workspace-materials-toc-section {
-              margin:0 0 0 0;
+              margin:0;
               padding-top:5px;
-              padding-bottom:15px;
+              padding-bottom:10px;
               
-              &:last-child {
-                /* 
-                Needs to add 12px bottom padding because .workspaceMaterialReadingTOCContentCropper 
-                has 12px padding and we are using 100% height in the scrolling container 
-                */
-                padding-bottom:27px; 
-              }
-            
               .workspace-materials-toc-subtitle {
                 font-weight:bold;
                 margin:0 0 5px 0;
@@ -369,7 +365,9 @@ body.workspace-reading {
           height: 100%;
     
           .workspace-materials-toc-section {
-            margin:5px 0 10px 0;
+            margin:0;
+            padding-top:5px;
+            padding-bottom:10px;
           
             .workspace-materials-toc-subtitle {
               font-weight:bold;
