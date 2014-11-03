@@ -1,7 +1,9 @@
 package fi.muikku.plugins.schooldatapyramus;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
@@ -22,6 +24,7 @@ import fi.muikku.schooldata.entity.UserImage;
 import fi.muikku.schooldata.entity.UserProperty;
 import fi.pyramus.rest.model.CourseStaffMemberRole;
 import fi.pyramus.rest.model.Student;
+import fi.pyramus.rest.model.StudyProgramme;
 import fi.pyramus.rest.model.UserRole;
 
 @Dependent
@@ -46,12 +49,33 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 	public User createUser(String firstName, String lastName) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
     return null;
 	}
-
+	
+	private List<User> createStudentEntities(Student... students) {
+	  List<StudyProgramme> studyProgrammes = new ArrayList<>(students.length);
+    Map<Long, StudyProgramme> studyProgrammeMap = new HashMap<Long, StudyProgramme>();
+	  
+	  for (Student student : students) {
+	    if (student.getStudyProgrammeId() != null) {
+  	    if (!studyProgrammeMap.containsKey(student.getStudyProgrammeId())) {
+  	      StudyProgramme studyProgramme = pyramusClient.get("/students/studyProgrammes/" + student.getStudyProgrammeId(), StudyProgramme.class);
+  	      studyProgrammeMap.put(student.getStudyProgrammeId(), studyProgramme);
+  	    }
+  	    
+  	    studyProgrammes.add(studyProgrammeMap.get(student.getStudyProgrammeId()));
+	    } else {
+        studyProgrammes.add(null);
+	    }
+	  }
+	  
+	  
+	  return entityFactory.createEntity(students, studyProgrammes.toArray(new StudyProgramme[0]));
+	}
+	
 	@Override
 	public User findUser(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
 	  Long studentId = identifierMapper.getPyramusStudentId(identifier);
 	  if (studentId != null) {
-      return entityFactory.createEntity(pyramusClient.get("/students/students/" + studentId, Student.class));
+      return createStudentEntities(new Student[] { pyramusClient.get("/students/students/" + studentId, Student.class) }).get(0);
 	  }
 	  
 	  Long staffId = identifierMapper.getPyramusStaffId(identifier);
@@ -66,7 +90,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 	public List<User> listUsersByEmail(String email) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
 	  List<User> result = new ArrayList<User>();
 
-    result.addAll(entityFactory.createEntity(pyramusClient.get("/students/students?email=" + email, Student[].class)));
+    result.addAll(createStudentEntities(pyramusClient.get("/students/students?email=" + email, Student[].class)));
     result.addAll(entityFactory.createEntity(pyramusClient.get("/staff/members?email=" + email, fi.pyramus.rest.model.User[].class)));
 
     return result;
@@ -76,7 +100,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 	public List<User> listUsers() throws UnexpectedSchoolDataBridgeException {
 		List<User> result = new ArrayList<User>();
 
-    result.addAll(entityFactory.createEntity(pyramusClient.get("/students/students", Student[].class)));
+    result.addAll(createStudentEntities(pyramusClient.get("/students/students", Student[].class)));
     result.addAll(entityFactory.createEntity(pyramusClient.get("/staff/members", fi.pyramus.rest.model.User[].class)));
 
 		return result;

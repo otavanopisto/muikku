@@ -5,10 +5,11 @@ import fi.muikku.schooldata.entity.User;
 
 public class LocalUserImpl implements User {
 
-	public LocalUserImpl(String identifier, String firstName, String lastName) {
+	public LocalUserImpl(String identifier, String firstName, String lastName, String displayName) {
 		this.identifier = identifier;
 		this.firstName = firstName;
 		this.lastName = lastName;
+		this.displayName = displayName;
 	}
 	
 	@Override
@@ -40,9 +41,15 @@ public class LocalUserImpl implements User {
 	public String getLastName() {
 		return lastName;
 	}
+	
+  @Override
+  public String getDisplayName() {
+    return displayName;
+  }
 
 	private String identifier;
 	private String firstName;
 	private String lastName;
+	private String displayName;
 
 }

@@ -59,14 +59,14 @@ public class SessionBackingBean {
           if (!(activeSchoolDataSource.equals(identifier.getDataSource().getIdentifier()) && activeUserIdentifier.equals(identifier.getIdentifier()))) {
             User user = userController.findUserByDataSourceAndIdentifier(identifier.getDataSource(), identifier.getIdentifier());
             if (user != null) {
-              String displayName = user.getFirstName() + ' ' + user.getLastName()+ ' ' + user.getSchoolDataSource() + " / " + user.getIdentifier();
+              String displayName = user.getDisplayName();
               alternativeIdentities.add(new AlternativeIdentity(displayName, identifier.getIdentifier(), identifier.getDataSource().getIdentifier()));
             }
           }
         }
         User user = userController.findUserByDataSourceAndIdentifier(activeSchoolDataSource, activeUserIdentifier);
         if (user != null) {
-          loggedUserName = user.getFirstName() + ' ' + user.getLastName();
+          loggedUserName = user.getDisplayName();
         }
       }
 
