@@ -85,6 +85,7 @@ public abstract class AbstractPyramusClient {
     try {
       return createResponse(response, type);
     } catch (Throwable t) {
+      logger.log(Level.SEVERE, "Pyramus GET-request into " + path + " failed", t);
       throw t;
     } finally {
       response.close();

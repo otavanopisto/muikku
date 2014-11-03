@@ -218,7 +218,14 @@ $(document).ready(function() {
     });
     
     
+/* Alternative identity dropdown */    
+    
+	$(".lu-user-name-button").click(function(){
 
+		  
+	      $(".lu-alternateIdentities-form").toggle();
+
+	});
 
 });
 
