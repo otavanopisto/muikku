@@ -254,8 +254,7 @@ body.workspace-reading {
           .workspace-materials-toc-item {
             font-weight:300;
             margin:0 0 5px 0;
-
-            
+ 
           }
         
         }
@@ -306,14 +305,14 @@ body.workspace-reading {
   position:absolute;
   left:65px;
   top:0px;
-  min-width:300px;
+  width:300px;
+  max-height:526px;
   text-align:left;
   font-family:"Open Sans";
   text-shadow:none;
   color:#000;
   font-size:12pt;
   line-height:1.5em;
-  width:auto;
   display:none;
   opacity:0;
   
@@ -322,6 +321,9 @@ body.workspace-reading {
   }
   
   .workspace-materials-toc-container {
+    overflow:hidden;
+    position:relative;
+    height:526px;
   
     .workspace-materials-toc-title {
       background:#42525c;
@@ -332,23 +334,50 @@ body.workspace-reading {
       font-size:13pt;
     }
   
-    .workspace-materials-toc-content {
-      background:#fff;
-      padding:4px 12px;
-      max-height:500px;
-      overflow-y:auto;
-      overflow-x:hidden;
-      width:auto;
-    
-      .workspace-materials-toc-section {
-        margin:5px 0 10px 0;
+    .workspace-materials-toc-content-outer {
+      overflow:hidden;
+      height:100%;
+      width:300px;
       
-        .workspace-materials-toc-subtitle {
-          font-weight:bold;
-        }
-        
-        .workspace-materials-toc-item {
-          font-weight:300;
+      .workspace-materials-toc-content-inner {  
+          position:absolute;
+          overflow-x: hidden;
+          overflow-y: scroll;
+          height:100%;
+      
+        .workspace-materials-toc-content-scrolling {
+            padding:4px;
+            width:292px;
+            height: 100%;
+    
+          .workspace-materials-toc-section {
+            margin:5px 0 10px 0;
+          
+            .workspace-materials-toc-subtitle {
+              font-weight:bold;
+               padding:2px 8px;
+            }
+            
+            .workspace-materials-toc-item {
+              font-weight:300;
+              
+              a {
+                text-decoration:none;
+                color:#41505b;
+                display:block;
+                @include genericMenuLinkHoverTransition(background,color,0.3s,ease-in-out);
+                @include rounded(2px);
+                padding:2px 8px;
+                
+                &:hover {
+                  background:#596e7d;
+                  color:#fff;
+                }
+              }
+            }
+          
+          }
+          
         }
       
       }

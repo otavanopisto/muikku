@@ -79,6 +79,10 @@ public class WorkspaceMaterialsBackingBean {
 		return workspaceMaterialController.listWorkspaceMaterialsByParent(workspaceNode);
 	}
 	
+	public List<WorkspaceNode> getAllNodes() {
+	  return listWorkspaceNodes(getRootFolder());
+	}
+	
 	public WorkspaceRootFolder getRootFolder() {
 		return rootFolder;
 	}

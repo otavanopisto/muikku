@@ -11,34 +11,14 @@
     <div class="workspace-materials-toc-wrapper">
       <div class="workspace-materials-toc-container">
         <div class="workspace-materials-toc-title">Sisällysluettelo</div>
-        <div class="workspace-materials-toc-content">
-        
-          <!-- This starts dynamic content -->
-          <div class="workspace-materials-toc-section">
-            <div class="workspace-materials-toc-subtitle">1. Ekologinen tutkimus</div>
-            <div class="workspace-materials-toc-item">1.1 Ekologia tieteenä</div>
-            <div class="workspace-materials-toc-item">1.2 Ekologian peruskäsitteet</div>
-            <div class="workspace-materials-toc-item">1.3 Ympäristöekologinen tutkimus</div>
-            <div class="workspace-materials-toc-item">1.4 Kurssin tehtävät</div>
+        <div class="workspace-materials-toc-content-outer">
+          <div class="workspace-materials-toc-content-inner">
+            <div class="workspace-materials-toc-content-scrolling">
+              <ui:include src="/workspaces/templates/workspace-material-list.xhtml">
+                <ui:param name="nodes" value="#{workspaceMaterialsBackingBean.allNodes}"/>
+              </ui:include>
+            </div>
           </div>
-          
-          <div class="workspace-materials-toc-section">
-            <div class="workspace-materials-toc-subtitle">2. Monimuotoisuus</div>
-            <div class="workspace-materials-toc-item">2.1 Johdanto monimuotoisuuteen</div>
-            <div class="workspace-materials-toc-item">2.2 Biodiversiteetti luonnonvarana</div>
-            <div class="workspace-materials-toc-item">2.3 Eliölajien ja elinympäristöjen uhanalaisuus</div>
-            <div class="workspace-materials-toc-item">2.4 Biodiversiteetin väheneminen</div>
-          </div>
-          
-          <div class="workspace-materials-toc-section">
-            <div class="workspace-materials-toc-subtitle">3. Ekologiset ympäristöongelmat</div>
-            <div class="workspace-materials-toc-item">3.1.1 Veden kierto</div>
-            <div class="workspace-materials-toc-item">3.1.2 Hiilen kierto</div>
-            <div class="workspace-materials-toc-item">3.1.3 Typen kierto</div>
-            <div class="workspace-materials-toc-item">3.1.4 Fosforin kierto</div>
-          </div>
-          <!-- This ends dynamic content -->
-        
         </div>
       </div>
     </div>
