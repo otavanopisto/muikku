@@ -5,10 +5,11 @@ import fi.muikku.schooldata.entity.User;
 
 public class PyramusUser implements User {
 
-	public PyramusUser(String identifier, String firstName, String lastName) {
+	public PyramusUser(String identifier, String firstName, String lastName, String displayName) {
 		this.identifier = identifier;
 		this.firstName = firstName;
 		this.lastName = lastName;
+		this.displayName = displayName;
 	}
 	
 	@Override
@@ -41,8 +42,13 @@ public class PyramusUser implements User {
 		return lastName;
 	}
 
+	@Override
+	public String getDisplayName() {
+	  return displayName;
+	}
+	
 	private String identifier;
 	private String firstName;
 	private String lastName;
-
+	private String displayName;
 }
