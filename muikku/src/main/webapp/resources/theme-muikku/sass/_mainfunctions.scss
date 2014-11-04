@@ -7,6 +7,8 @@
 }
 
 
+/*TODO: all the "side" to "sub" */
+
 .mf-side{
  min-height:450px;
 }
@@ -57,7 +59,7 @@
     }
 }
 
-.mf-side-header{
+.mf-sub-header{
   @extend .co-mainFunction-side-header;
   padding:3px;
 }
@@ -87,7 +89,7 @@
  color:#fff !important;
 }
 
-.mf-side-header > span{
+.mf-sub-header > span{
   color:#fff;
 }
 
