@@ -193,45 +193,55 @@
     _loadCourses: function (params) {
       this._coursesContainer.children().remove();
       
-      mApi().workspace.workspaces.read(params||{})
-        .on('$', function (workspace, workspaceCallback) {
-          // TODO: Implement these
-          workspace.hasCourseFee = false;
-          workspace.hasAssessmentFee = false;
-          workspace.rating = 5;
-          workspace.ratingCount = 3;
-          
-          mApi().workspace.workspaces.users.read(workspace.id, {
-            roleArchtype: 'TEACHER'
-          })  
-          .on('$', function (workspaceUser, workspaceUserCallback) {
-            mApi().user.users.read(workspaceUser.userId).callback(function (userErr, user) {
-              workspaceUser.hasPicture = user.hasImage;
-              workspaceUser.fullName = (user.firstName ? user.firstName + ' ' : '') + user.lastName;
-              workspaceUserCallback();
-            });
-          })
-          .callback(function (workspaceUsersErr, workspaceUsers) {
-            workspace.teachers = workspaceUsers;
+      this._loadUserCourses($.proxy(function (userWorkspaceIds) {
+        mApi().workspace.workspaces.read(params||{})
+          .on('$', function (workspace, workspaceCallback) {
+
+  //        mApi().workspace.workspaces.users.read(workspace.id, {
+  //          roleArchtype: 'TEACHER'
+  //        })  
+  //        .on('$', function (workspaceUser, workspaceUserCallback) {
+  //          mApi().user.users.read(workspaceUser.userId).callback(function (userErr, user) {
+  //            workspaceUser.hasPicture = user.hasImage;
+  //            workspaceUser.fullName = (user.firstName ? user.firstName + ' ' : '') + user.lastName;
+  //            workspaceUserCallback();
+  //          });
+  //        })
+  //        .callback(function (workspaceUsersErr, workspaceUsers) {
+  //          workspace.teachers = workspaceUsers;
+  //        });
             
-            if (MUIKKU_LOGGED_USER_ID) {
-              mApi().workspace.workspaces.users.read(workspace.id, {
-                userId: MUIKKU_LOGGED_USER_ID
-              }).callback(function (memberErr, member) {
-                workspace.isMember = !!member;
-                workspaceCallback();
-              });
-            } else {
-              workspace.isMember = false;
-              workspaceCallback();
-            }       
-          });
+            // TODO: Implement these
+            workspace.hasCourseFee = false;
+            workspace.hasAssessmentFee = false;
+            workspace.rating = 5;
+            workspace.ratingCount = 3;
+            workspace.teachers = [];
+            workspace.isMember = userWorkspaceIds.indexOf(workspace.id) > -1;
+            workspaceCallback();
         })
         .callback($.proxy(function (err, workspaces) {
           renderDustTemplate('coursepicker/coursepickercourse.dust', workspaces, $.proxy(function (text) {
             this._coursesContainer.append(text);
           }, this));
-        }, this));
+        }, this));        
+      }, this));
+    },
+    
+    _loadUserCourses: function (callback) {
+      if (MUIKKU_LOGGED_USER_ID) {
+        mApi().workspace.workspaces
+          .read({ userId: MUIKKU_LOGGED_USER_ID })
+          .callback($.proxy(function (err, workspaces) {
+            var ids = $.map(workspaces, function (workspace) {
+              return workspace.id;
+            });
+            
+            callback(ids); 
+          }));
+      } else {
+        callback([]);
+      }
     },
     
     _refreshListTimer: function () {
