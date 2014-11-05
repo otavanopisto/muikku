@@ -7,6 +7,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.joda.time.DateTime;
 
 import fi.muikku.controller.PluginSettingsController;
 import fi.muikku.plugins.schooldatapyramus.PyramusIdentifierMapper;
@@ -193,7 +194,12 @@ public class PyramusSchoolDataEntityFactory {
       return null;
     }
     
-    return new PyramusWorkspace(identifierMapper.getWorkspaceIdentifier(course.getId()), course.getName(), course.getDescription(), "TODO", "TODO");
+    DateTime modified = course.getLastModified();
+    if (modified == null) {
+      modified = course.getCreated();
+    }
+    
+    return new PyramusWorkspace(identifierMapper.getWorkspaceIdentifier(course.getId()), course.getName(), course.getDescription(), "TODO", "TODO", modified.toDate());
   }
   
   public List<Workspace> createEntity(Course... courses) {

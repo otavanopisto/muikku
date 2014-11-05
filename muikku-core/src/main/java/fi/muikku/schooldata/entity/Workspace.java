@@ -1,5 +1,7 @@
 package fi.muikku.schooldata.entity;
 
+import java.util.Date;
+
 public interface Workspace extends SchoolDataEntity {
 	
 	public String getIdentifier();
@@ -19,5 +21,7 @@ public interface Workspace extends SchoolDataEntity {
   // TODO: public String getCourseIdentifierDataSource();
 	
 	public String getCourseIdentifierIdentifier();
-
+	
+	public Date getLastModified();
+	
 }
