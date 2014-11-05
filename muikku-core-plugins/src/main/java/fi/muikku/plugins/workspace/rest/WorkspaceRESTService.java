@@ -18,7 +18,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.CacheControl;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.EntityTag;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
@@ -97,7 +102,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 	
   @GET
   @Path ("/workspaces/")
-  public Response listWorkspaces(@QueryParam ("userId") Long userId, @QueryParam ("search") String searchString, @QueryParam("subjects") List<String> subjects, @QueryParam ("limit") @DefaultValue ("50") Integer limit) {
+  public Response listWorkspaces(@QueryParam ("userId") Long userId, @QueryParam ("search") String searchString, @QueryParam("subjects") List<String> subjects, @QueryParam ("limit") @DefaultValue ("50") Integer limit, @Context Request request) {
     List<WorkspaceEntity> unfiltered = null;
     
     if (userId != null) {
@@ -153,13 +158,48 @@ public class WorkspaceRESTService extends PluginRESTService {
       unfiltered.remove(unfiltered.size() - 1);
     }
     
-    List<fi.muikku.plugins.workspace.rest.model.Workspace> result = createRestModel(filtered.toArray(new WorkspaceEntity[0]));
-    
-    if (result.isEmpty()) {
-      return Response.noContent().build();
+    if (filtered.isEmpty()) {
+      return Response
+        .noContent()
+        .build();
     }
     
-    return Response.ok(result).build();
+    List<fi.muikku.plugins.workspace.rest.model.Workspace> result = new ArrayList<>();
+
+    Date lastModification = null;
+    WorkspaceEntity[] workspaceEntities = filtered.toArray(new WorkspaceEntity[0]);
+    for (WorkspaceEntity workspaceEntity : workspaceEntities) {
+      Workspace workspace = workspaceController.findWorkspace(workspaceEntity); 
+      if (workspace != null) {
+        result.add(createRestModel(workspaceEntity, workspace));
+        if ((lastModification == null) || (lastModification.before(workspace.getLastModified()))) {
+          lastModification = workspace.getLastModified();
+        }
+      }
+    }
+    
+    if (filtered.isEmpty()) {
+      return Response
+        .noContent()
+        .build();
+    }
+
+    EntityTag tag = new EntityTag(String.valueOf(lastModification.getTime()));
+    
+    ResponseBuilder builder = request.evaluatePreconditions(tag);
+    if (builder != null) {
+      return builder.build();
+    }
+    
+    CacheControl cacheControl = new CacheControl();
+    cacheControl.setMustRevalidate(true);
+    cacheControl.setPrivate(true);
+    
+    return Response
+      .ok(result)
+      .cacheControl(cacheControl)
+      .tag(tag)
+      .build();
   }
 
 	@GET
@@ -185,7 +225,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     } 
-    
+
     List<WorkspaceUserEntity> workspaceUsers = null;
     List<WorkspaceRoleEntity> workspaceRoles = null;
     
@@ -323,20 +363,6 @@ public class WorkspaceRESTService extends PluginRESTService {
     WorkspaceUserSignup signup = workspaceController.createWorkspaceUserSignup(workspaceEntity, userEntity, new Date(), entity.getMessage());
     
     return Response.ok(createRestModel(signup)).build();
-  }
-  
-  
-  private List<fi.muikku.plugins.workspace.rest.model.Workspace> createRestModel(WorkspaceEntity... workspaceEntities) {
-    List<fi.muikku.plugins.workspace.rest.model.Workspace> result = new ArrayList<>();
-    
-    for (WorkspaceEntity workspaceEntity : workspaceEntities) {
-      Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-      if (workspace != null) {
-        result.add(createRestModel(workspaceEntity, workspace));
-      }
-    }
-    
-    return result;
   }
   
   private List<fi.muikku.plugins.workspace.rest.model.WorkspaceUser> createRestModel(WorkspaceUserEntity... entries) {
