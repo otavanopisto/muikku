@@ -11,7 +11,6 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -41,12 +40,8 @@ import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceUser;
 import fi.muikku.schooldata.CourseMetaController;
 import fi.muikku.schooldata.RoleController;
-import fi.muikku.schooldata.WorkspaceEntityController;
-import fi.muikku.users.UserController;
-import fi.muikku.users.UserEntityController;
-import fi.muikku.users.UserSchoolDataIdentifierController;
-import fi.muikku.users.WorkspaceUserEntityController;
 import fi.muikku.schooldata.WorkspaceController;
+import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.schooldata.entity.CourseIdentifier;
 import fi.muikku.schooldata.entity.Role;
 import fi.muikku.schooldata.entity.Subject;
@@ -54,6 +49,10 @@ import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceUserDiscoveredEvent;
 import fi.muikku.session.SessionController;
+import fi.muikku.users.UserController;
+import fi.muikku.users.UserEntityController;
+import fi.muikku.users.UserSchoolDataIdentifierController;
+import fi.muikku.users.WorkspaceUserEntityController;
 
 @RequestScoped
 @Path("/workspace")
@@ -102,7 +101,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 	
   @GET
   @Path ("/workspaces/")
-  public Response listWorkspaces(@QueryParam ("userId") Long userId, @QueryParam ("search") String searchString, @QueryParam("subjects") List<String> subjects, @QueryParam ("limit") @DefaultValue ("50") Integer limit, @Context Request request) {
+  public Response listWorkspaces(@QueryParam ("userId") Long userId, @QueryParam ("search") String searchString, @QueryParam("subjects") List<String> subjects, @Context Request request) {
     List<WorkspaceEntity> unfiltered = null;
     
     if (userId != null) {
@@ -153,11 +152,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     } else {
       filtered = unfiltered;
     }
-    
-    while (unfiltered.size() > limit) {
-      unfiltered.remove(unfiltered.size() - 1);
-    }
-    
+
     if (filtered.isEmpty()) {
       return Response
         .noContent()
