@@ -106,6 +106,32 @@ public class ElasticSearchProvider implements SearchProvider {
     return result;
     
   }
+  
+  @Override
+  public SearchResult matchAllSearch(int start, int maxResults, Class<?>... types) {
+    String[] typenames = new String[types.length];
+    for (int i = 0; i < types.length; i++) {
+      typenames[i] = types[i].getSimpleName();
+    }
+    
+    SearchRequestBuilder requestBuilder = elasticClient
+        .prepareSearch("muikku")
+        .setQuery(QueryBuilders.matchAllQuery())
+        .setTypes(typenames)
+        .setFrom(start)
+        .setSize(maxResults);
+    
+    SearchResponse response = requestBuilder.execute().actionGet();
+    List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
+    SearchHit[] results = response.getHits().getHits();
+    for (SearchHit hit : results) {
+      Map<String, Object> hitSource = hit.getSource();
+      hitSource.put("indexType", hit.getType());
+      searchResults.add(hitSource);
+    }
+    SearchResult result = new SearchResult(searchResults.size(), start, maxResults, searchResults);
+    return result;
+  }
 
   @Override
   public synchronized void addOrUpdateIndex(String typeName, Map<String, Object> entity) {
@@ -133,4 +159,5 @@ public class ElasticSearchProvider implements SearchProvider {
   public String getName() {
     return "elastic-search";
   }
+
 }
