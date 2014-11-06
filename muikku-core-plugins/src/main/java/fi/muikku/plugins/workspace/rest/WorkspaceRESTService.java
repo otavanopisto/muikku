@@ -3,7 +3,9 @@ package fi.muikku.plugins.workspace.rest;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -17,12 +19,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
@@ -48,6 +47,8 @@ import fi.muikku.schooldata.entity.Subject;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceUserDiscoveredEvent;
+import fi.muikku.search.SearchProvider;
+import fi.muikku.search.SearchResult;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
@@ -91,112 +92,86 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private LocaleController localeController;
-	
+
+  @Inject
+  @Any
+  private Instance<SearchProvider> searchProviders;
+
   @Inject
   @Any
   private Instance<MessagingWidget> messagingWidgets;
 
   @Inject
   private Event<SchoolDataWorkspaceUserDiscoveredEvent> schoolDataWorkspaceUserDiscoveredEvent;
-	
+
   @GET
   @Path ("/workspaces/")
   public Response listWorkspaces(@QueryParam ("userId") Long userId, @QueryParam ("search") String searchString, @QueryParam("subjects") List<String> subjects, @Context Request request) {
-    List<WorkspaceEntity> unfiltered = null;
-    
-    if (userId != null) {
-      UserEntity userEntity = userEntityController.findUserEntityById(userId);
-      if (userEntity == null) {
-        return Response.status(Status.BAD_REQUEST).build();
-      }
-      
-      unfiltered = workspaceEntityController.listWorkspaceEntitiesByWorkspaceUser(userEntity);
-    } else {
-      unfiltered = workspaceController.listWorkspaceEntities();
-    }
-    
-    List<WorkspaceEntity> filtered = null;
+    List<fi.muikku.plugins.workspace.rest.model.Workspace> workspaces = new ArrayList<>();
 
-    boolean doSearch = StringUtils.isNotEmpty(searchString);
     boolean doSubjectFilter = !subjects.isEmpty();
-
-    if (doSearch || doSubjectFilter) {
-      filtered = new ArrayList<>();
+    boolean doUserFilter = userId != null;
+    UserEntity userEntity = userId != null ? userEntityController.findUserEntityById(userId) : null;
+    
+    Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
+    if (searchProviderIterator.hasNext()) {
+      SearchProvider searchProvider = searchProviderIterator.next();
+      SearchResult searchResult = null;
       
-      if (doSearch) {
-        searchString = StringUtils.lowerCase(searchString);
+      if (StringUtils.isNotBlank(searchString)) {
+        searchResult = searchProvider.search(searchString, new String[] { "name", "description", "courseIdentifierIdentifier" }, 0, Integer.MAX_VALUE, Workspace.class);
+      } else {
+        searchResult = searchProvider.matchAllSearch(0, Integer.MAX_VALUE, Workspace.class);
       }
       
-      // TODO: Performance could be improved greatly by doing this with search engine
-      for (WorkspaceEntity unfilteredEntity : unfiltered) {
-        Workspace workspace = workspaceController.findWorkspace(unfilteredEntity);
-        
-        boolean accepted = true;
-        
-        if (doSearch) {
-          accepted = workspace.getName() != null ? workspace.getName().toLowerCase().contains(searchString) : false;
-          if (!accepted)
-            accepted = workspace.getDescription() != null ? workspace.getDescription().toLowerCase().contains(searchString) : false; 
-        }      
-        
-        if (doSubjectFilter && accepted) {
-          CourseIdentifier courseIdentifier = courseMetaController.findCourseIdentifier(workspace.getSchoolDataSource(), workspace.getCourseIdentifierIdentifier());
-          Subject subject = courseMetaController.findSubject(workspace.getSchoolDataSource(), courseIdentifier.getSubjectIdentifier());
-          accepted = accepted && subjects.contains(subject.getIdentifier());
-        }
-          
-        if (accepted) {
-          filtered.add(unfilteredEntity);
+      List<Map<String,Object>> results = searchResult.getResults();
+      for (Map<String,Object> result : results) {
+        String[] id = ((String) result.get("id")).split("/", 2);
+        if (id.length == 2) {
+          String dataSource = id[1];
+          String identifier = id[0];
+          WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(dataSource, identifier);
+          if (workspaceEntity != null) {
+            boolean accept = true;
+            
+            if (doSubjectFilter) {
+              Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+              if (workspace != null) {
+                CourseIdentifier courseIdentifier = courseMetaController.findCourseIdentifier(workspace.getSchoolDataSource(), workspace.getCourseIdentifierIdentifier());
+                Subject subject = courseMetaController.findSubject(workspace.getSchoolDataSource(), courseIdentifier.getSubjectIdentifier());
+                if (!subjects.contains(subject.getIdentifier())) {
+                  accept = false;
+                }
+              }
+            }
+            
+            if (doUserFilter) {
+              if (workspaceUserEntityController.listWorkspaceUserEntitiesByWorkspaceAndUser(workspaceEntity, userEntity).isEmpty()) {
+                accept = false;
+              }
+            }
+            
+            if (accept) {
+              String name = result.get("name").toString();
+              String description = result.get("description").toString();
+              workspaces.add(new fi.muikku.plugins.workspace.rest.model.Workspace(workspaceEntity.getId(), workspaceEntity.getUrlName(), workspaceEntity.getArchived(), name, description));
+            }
+          }
         }
       }
     } else {
-      filtered = unfiltered;
-    }
-
-    if (filtered.isEmpty()) {
-      return Response
-        .noContent()
-        .build();
+      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
     }
     
-    List<fi.muikku.plugins.workspace.rest.model.Workspace> result = new ArrayList<>();
-
-    Date lastModification = null;
-    WorkspaceEntity[] workspaceEntities = filtered.toArray(new WorkspaceEntity[0]);
-    for (WorkspaceEntity workspaceEntity : workspaceEntities) {
-      Workspace workspace = workspaceController.findWorkspace(workspaceEntity); 
-      if (workspace != null) {
-        result.add(createRestModel(workspaceEntity, workspace));
-        if ((lastModification == null) || (lastModification.before(workspace.getLastModified()))) {
-          lastModification = workspace.getLastModified();
-        }
-      }
+    if (workspaces.isEmpty()) {
+      return Response.noContent().build();
     }
-    
-    if (filtered.isEmpty()) {
-      return Response
-        .noContent()
-        .build();
-    }
-
-    EntityTag tag = new EntityTag(String.valueOf(lastModification.getTime()));
-    
-    ResponseBuilder builder = request.evaluatePreconditions(tag);
-    if (builder != null) {
-      return builder.build();
-    }
-    
-    CacheControl cacheControl = new CacheControl();
-    cacheControl.setMustRevalidate(true);
-    cacheControl.setPrivate(true);
     
     return Response
-      .ok(result)
-      .cacheControl(cacheControl)
-      .tag(tag)
+      .ok(workspaces)
       .build();
   }
-
+  
 	@GET
 	@Path ("/workspaces/{ID}")
 	public Response getWorkspace(@PathParam ("ID") Long workspaceEntityId) {
