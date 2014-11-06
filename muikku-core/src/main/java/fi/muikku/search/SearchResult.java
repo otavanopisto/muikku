@@ -1,4 +1,4 @@
-package fi.muikku.plugins.search;
+package fi.muikku.search;
 
 import java.util.List;
 import java.util.Map;

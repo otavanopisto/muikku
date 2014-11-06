@@ -1,4 +1,4 @@
-package fi.muikku.plugins.search.annotations;
+package fi.muikku.search.annotations;
 
 import java.lang.annotation.Target;
 import java.lang.annotation.Retention;
