@@ -233,7 +233,7 @@ body.workspace-reading {
             height:100%;
             
             .spacer {
-              height:50px; /* Needs to be at least the same or higher as title element's height  */
+              height:30px; /* Creating some bottom margin because use of 100% height  */
             }
         
             .workspace-materials-toc-section {
@@ -343,7 +343,7 @@ body.workspace-reading {
       background:#42525c;
       color:#fff;
       text-transform:uppercase;
-      font-size:1em;
+      margin:0;
       padding:10px 12px;
       font-size:13pt;
     }
@@ -363,6 +363,10 @@ body.workspace-reading {
           padding:4px;
           width:292px;
           height: 100%;
+          
+          .spacer {
+            height:30px; /* Creating some bottom margin because use of 100% height  */
+          }
     
           .workspace-materials-toc-section {
             margin:0;
