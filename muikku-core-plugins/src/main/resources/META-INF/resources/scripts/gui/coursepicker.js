@@ -233,7 +233,7 @@
         mApi().workspace.workspaces
           .read({ userId: MUIKKU_LOGGED_USER_ID })
           .callback($.proxy(function (err, workspaces) {
-            var ids = $.map(workspaces, function (workspace) {
+            var ids = $.map(workspaces||[], function (workspace) {
               return workspace.id;
             });
             
