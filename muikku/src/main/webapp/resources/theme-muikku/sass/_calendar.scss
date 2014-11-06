@@ -2,12 +2,13 @@
 
 
 /* TODO - move to core-plugins after mock data is gone... */
-
+/* TODO - "basify" the colors */
+/* TODO - "basify" mixins */
 
 .ca-home{
   
   background-color:#fff;
-
+   border-left:1px solid #f1f1f1;
 }
 
 .ca-home-today{
@@ -16,8 +17,7 @@
   width:50%;
   background-color:#fff;
   min-height:500px;  
-  border-left:1px solid #f1f1f1;
-  border-right:1px solid #f1f1f1;  
+
 }
 
 .ca-today-date{ 
@@ -55,21 +55,70 @@
 
 }
 
+.ca-home-week{
+  float:left;
+  box-sizing: border-box;
+  width:50%;  
+  background-color:#fff;
+  min-height:500px;
+}
+
+
 .ca-today-events{
   @include padding();  
   margin-top:25px;
   color:#fff;  
   .fc00{
-  @extend .co-mainFunction-side-header;
-   
+  @extend .co-mainFunction-sub-header; 
   }
   
 }
 
+.ca-weekDays-container{
+   border-left:1px solid #f1f1f1;
+}
+
+.ca-grid-month-topic{
+  border-bottom:1px solid #f1f1f1;
+  
+}
+.ca-monthDays-container{
+   border-left:1px solid #f1f1f1;
+   background-color:#fff;
+   
+   .ca-weekDays{
+    
+    &.numbers{
+     height:93px;
+     font-size:3em;
+     line-height:1.5em;
+     color:#c4c4c4;
+     border-bottom:1px solid #f1f1f1;
+     border-right:1px solid #f1f1f1;
+ 
+     span{
+        vertical-align:middle;
+        line-height:normal;   
+     }
+     
+    &:hover{
+    background-color:#cce4ed;
+    color:#fff !important;
+   }
+    }
+   &.today{
+    color:#aed4e3;
+    border:5px solid #aed4e3;
+    font-size:3.5em;
+    line-height:1em;
+   }
+   }
+}
+
 
 .ca-weekDays{
-  width:13.28%;
-  display:inline-block;
+  width:14.28%;
+  float:left;
   box-sizing:border-box;
   text-align:center;
  
@@ -90,22 +139,6 @@
   }
 }
 
-.ca-weekDays-grids{
-  width:13.28%;
-  display:inline-block;
-  box-sizing:border-box;
-  text-align:center;
-}
-
-.ca-weekDays-names{
-  width:13.28%;
-  display:inline-block;
-  box-sizing:border-box;
-  text-align:center;
-
-  
-   
-}
 
 .ca-time-grid-day{
   background-color:#fff;  
@@ -141,18 +174,95 @@
   
 }
 
-.ca-home-week{
-  float:left;
-  box-sizing: border-box;
-  width:50%;  
-  background-color:#fff;
-  min-height:500px;
+
+
+
+.ca-grid-day{
+
 }
 
-.ca-grid-day{}
+.ca-grid-day-events{
+  .ca-hour-unit{
+    border-top:1px solid #f1f1f1;  
+    background-color:#fff; 
+    > div{
+     box-sizing: border-box;
+      span{
+        vertical-align:middle;
+        line-height:normal;   
+      }
+    }
+    .ca-hour-list-number{
+      float:left;
+      @extend .co-mainFunction-sub-header;
+      width:40px;
+      height:40px;
+      line-height:1em;      
+      color:#fff;
+      font-size:2em;
+
+    }
+    .ca-hour-list-events{
+     height:40px;
+     line-height:40px;
+     span{
+       margin-left:15px;
+       display:inline-block;
+     }
+    }
+  }
+  
+}
 
 .ca-grid-week{
   min-height:500px;
+
 }
 
 .ca-grid-month{}
+.ca-grid-events{
+   border-left:1px solid #f1f1f1;  
+  
+}
+.ca-grid-events-list{
+  div:nth-child(even){
+   background-color:#f7f9fa;
+  }  
+}
+
+.ca-grid-events-content{
+ margin:5px; 
+ padding:10px; 
+}
+
+.ca-grid-events-subTopic{
+ background-color: #d5e1e6;  
+ text-align:center;
+ padding:5px; 
+}
+
+.ca-list-event{
+  background-color:#fff;
+  height:30px;
+  line-height:30px;
+ 
+  span{
+    margin-left:10px;
+    display:inline-block;
+    vertical-align:middle;
+    line-height:normal;      
+  }
+  
+  .event-tag{
+    background-color: #fba31e;
+    border-radius: 20px;
+    color: #fff;
+    height: 20px;
+    margin-left: 5px;
+    text-align: center;
+    width: 20px;
+  }
+  
+}
+
+

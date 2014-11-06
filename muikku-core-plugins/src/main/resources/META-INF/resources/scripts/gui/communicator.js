@@ -43,7 +43,7 @@ $(document).ready(function(){
 	        		]
 	        	});
 
-	    var uId = 
+	    var uId = ;
         var msgC = $('mf-content-main');
         
         RESTful.doGet(CONTEXTPATH + "/rest/communicator/{userId}/items", {

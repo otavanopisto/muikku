@@ -23,8 +23,13 @@
     <h:outputScript name="scripts/fullcalendar/fullcalendar.js" target="head"/>
 
     <h:outputScript name="scripts/jquery.recurrenceInput/recurrenceinput.js" target="head"/>
-    <h:outputScript name="scripts/gui/eventdialog.js" target="head"/>
+  <!--    <h:outputScript name="scripts/gui/eventdialog.js" target="head"/>
     <h:outputScript name="scripts/gui/fullcalendar.js" target="head"/>
+    -->
+    
+    <!--  Not so full calendar  -->
+    <h:outputScript name="scripts/gui/calendar.js" target="head"/>
+    
     
     <!-- Context menu -->
     
@@ -44,11 +49,11 @@
           
       <div class="mf-content-toolbar grid_18 omega noLid">  
         <div class="mf-content-tool-container">
-          <div class="mf-content-tool icon-home selected"></div>
-          <div class="fullCalendarWidgetModeButton mf-content-tool icon-day" data-mode="DAY"></div>
-          <div class="fullCalendarWidgetModeButton mf-content-tool icon-week" data-mode="WEEK"></div>
-          <div class="fullCalendarWidgetModeButton mf-content-tool icon-month" data-mode="MONTH"></div>  
-          <div class="fullCalendarWidgetModeButton mf-content-tool icon-numbered-list" data-mode="EVENT_LIST"></div>  
+          <a class="mf-content-tool icon-home selected" href="./index.jsf"></a>
+          <a class="mf-content-tool icon-day"  href="./view_day.jsf" data-mode="DAY"></a>
+          <a class="mf-content-tool icon-week" href="./view_week.jsf" data-mode="WEEK"></a>
+          <a class="mf-content-tool icon-month" href="./view_month.jsf" data-mode="MONTH"></a>  
+          <a class="mf-content-tool icon-numbered-list" href="./view_event.jsf" data-mode="EVENT_LIST"></a>  
         </div>
       </div>
     </ui:define>
@@ -64,7 +69,7 @@
       <c:forEach var="i" begin="1" end="31">
         <div class="ca-weekDays numbers">#{i}</div>
       </c:forEach>      
-
+      <div class="clear"></div>   
     </div>
     </ui:define>
 
@@ -99,36 +104,37 @@
          
           <!--  TODO : Widget -->
               
-            <div class="mf-sub-header">
-              <c:forEach var="i" begin="1" end="7">
+          <div class="mf-sub-header">
+            <c:forEach var="i" begin="1" end="7">
+              <c:if test="#{i eq 4}">
+                <div class="ca-weekDays names today">Day #{i}</div>
+              </c:if>
+              <c:if test="#{i != 4}"> 
+                <div class="ca-weekDays names">Day #{i}</div>
+              </c:if>
+            </c:forEach>                  
+            <div class="clear"></div>   
+          </div>        
+          <div class="ca-weekDays-container">
+            <c:forEach var="i" begin="1" end="7">
+              <div class="ca-weekDays grids ca-grid-week">
                 <c:if test="#{i eq 4}">
-                  <div class="ca-weekDays names today">Day #{i}</div>
+                  <div class="ca-time-grid-day today">
+                    <c:forEach var="a" begin="1" end="24">
+                      <div class="ca-time-grid-hour">#{a}:00</div>
+                    </c:forEach>
+                  </div>
                 </c:if>
-                <c:if test="#{i != 4}"> 
-                  <div class="ca-weekDays names">Day #{i}</div>
+                <c:if test="#{i != 4}">
+                  <div class="ca-time-grid-day">
+                    <c:forEach var="a" begin="1" end="24">
+                      <div class="ca-time-grid-hour">#{a}:00</div>
+                    </c:forEach>
+                  </div>
                 </c:if>
-              </c:forEach>                  
-            </div>        
-            <div class="ca-weekdays-container">
-              <c:forEach var="i" begin="1" end="7">
-                <div class="ca-weekDays grids ca-week-grid">
-                  <c:if test="#{i eq 4}">
-                    <div class="ca-time-grid-day today">
-                      <c:forEach var="a" begin="1" end="24">
-                        <div class="ca-time-grid-hour">#{a}:00</div>
-                      </c:forEach>
-                    </div>
-                  </c:if>
-                  <c:if test="#{i != 4}">
-                    <div class="ca-time-grid-day">
-                      <c:forEach var="a" begin="1" end="24">
-                        <div class="ca-time-grid-hour">#{a}:00</div>
-                      </c:forEach>
-                    </div>
-                  </c:if>
-                </div>
-              </c:forEach>   
-                     
+              </div>
+            </c:forEach>  
+            <div class="clear"></div>         
           </div>
         </div>
         <div class="clear"></div>
