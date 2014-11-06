@@ -31,7 +31,7 @@ public class IndexEntityProcessor {
   public Map<String, Object> process(Object entity) throws IllegalArgumentException, IllegalAccessException, IntrospectionException, InvocationTargetException,
       IndexIdMissingException {
 
-    if (entity.getClass().isAnnotationPresent(Indexable.class)) {
+    if (isIndexable(entity)) {
       String id = getEnitityId(entity);
       if (StringUtils.isBlank(id)) {
         throw new IndexIdMissingException("Indexable object is missing an id.");
@@ -61,6 +61,20 @@ public class IndexEntityProcessor {
     return null;
   }
   
+  private boolean isIndexable(Object entity) {
+    if (entity.getClass().isAnnotationPresent(Indexable.class))  {
+      return true;
+    }      
+    
+    for (Class<?> entityInterface : entity.getClass().getInterfaces()) {
+      if (entityInterface.isAnnotationPresent(Indexable.class))  {
+        return true;
+      }     
+    }
+    
+    return false;
+  }
+
   private String getEnitityId(Object entity) {
     Method method = getEntityIdMethod(entity);
     if (method != null) {
