@@ -17,8 +17,10 @@ import javax.inject.Inject;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.search.SearchHit;
@@ -50,8 +52,20 @@ public class ElasticSearchProvider implements SearchProvider {
     for (int i = 0; i < types.length; i++) {
       typenames[i] = types[i].getSimpleName();
     }
-    SearchResponse response = elasticClient.prepareSearch("muikku").setTypes(typenames).setQuery(QueryBuilders.multiMatchQuery(query, fields)).setFrom(start).setSize(maxResults).execute()
-        .actionGet();
+    
+    SearchRequestBuilder requestBuilder = elasticClient
+        .prepareSearch("muikku")
+        .setTypes(typenames)
+        .setFrom(start)
+        .setSize(maxResults);
+    
+    BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
+    for (String field : fields) {
+      boolQuery.should(QueryBuilders.prefixQuery(field, query));
+    }
+
+    SearchResponse response = requestBuilder.setQuery(boolQuery).execute().actionGet();
+    
     List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
     SearchHit[] results = response.getHits().getHits();
     for (SearchHit hit : results) {
