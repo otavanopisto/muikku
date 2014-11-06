@@ -6,36 +6,8 @@
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:c="http://java.sun.com/jsp/jstl/core" 
   xmlns:h="http://java.sun.com/jsf/html"
-  template="/WEB-INF/templates/mainfunction.xhtml">
+  template="./templates/calendar_base.xhtml">
 
-  <ui:define name="viewCss">
-    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/fullcalendar.css" />  
-    
-     <!-- Time Picker -->
-    <h:outputScript name="scripts/jquery.timepicker/jquery.timepicker.js" target="head"/>
-    <h:outputStylesheet name="scripts/jquery.timepicker/jquery.timepicker.css"/>
-    
-    <!-- jstimezonedetect -->
-    
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"/>
-
-    <!-- Full Calendar -->
-    <h:outputScript name="scripts/fullcalendar/fullcalendar.js" target="head"/>
-
-    <h:outputScript name="scripts/jquery.recurrenceInput/recurrenceinput.js" target="head"/>
-    <h:outputScript name="scripts/gui/eventdialog.js" target="head"/>
-    <h:outputScript name="scripts/gui/fullcalendar.js" target="head"/>
-    
-    <!-- Context menu -->
-    
-    <h:outputScript name="scripts/jquery.contextmenu/jquery.contextmenu.js" target="head"/>
-    <h:outputStylesheet name="scripts/jquery.contextmenu/jquery.contextmenu.css"/>   
-  </ui:define>
-
-
-    <ui:define name="content.tools.left"> 
-      <m:widget name="newevent" size="6" rendered="#{sessionBackingBean.loggedIn}"/>
-    </ui:define>
 
 
     <ui:define name="content.tools.center">

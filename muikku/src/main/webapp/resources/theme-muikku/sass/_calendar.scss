@@ -75,7 +75,6 @@
 }
 
 .ca-weekDays-container{
-   border-left:1px solid #f1f1f1;
 }
 
 .ca-grid-month-topic{
@@ -83,7 +82,6 @@
   
 }
 .ca-monthDays-container{
-   border-left:1px solid #f1f1f1;
    background-color:#fff;
    
    .ca-weekDays{
@@ -216,10 +214,12 @@
 
 .ca-grid-week{
   min-height:500px;
-
+   border-left:1px solid #f1f1f1;  
 }
 
-.ca-grid-month{}
+.ca-grid-month{
+     border-left:1px solid #f1f1f1;  
+}
 .ca-grid-events{
    border-left:1px solid #f1f1f1;  
   
