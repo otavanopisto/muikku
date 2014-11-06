@@ -15,6 +15,12 @@
   
   <ui:define name="workspace.content">
   
+    <c:forEach var="node" items="#{workspaceMaterialsBackingBean.materialNodes}">
+      <div style="margin-top:20px;">WorkspaceNode #<h:outputText value="#{node.workspaceMaterialId}" escape="false"/></div>
+      <div>Type: <h:outputText value="#{node.materialType}" escape="false"/></div>
+      <div>Path: <h:outputText value="#{node.materialPath}" escape="false"/></div>
+      <div>MaterialId: <h:outputText value="#{node.materialId}" escape="false"/></div>
+    </c:forEach>
   
   </ui:define>
 
