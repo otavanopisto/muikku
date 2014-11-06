@@ -60,11 +60,21 @@ public class PyramusWorkspace implements Workspace {
   public Date getLastModified() {
     return modified;
   }
-
+  
+  @Override
+  public String getSearchId() {
+    return getIdentifier() + '/' + getSchoolDataSource();
+  }
+  
   private String identifier;
-	private String name;
+	
+  private String name;
+	
 	private String workspaceTypeId;
+	
 	private String courseIdentifierIdentifier;
-  private String description;
+  
+	private String description;
+  
   private Date modified;
 }

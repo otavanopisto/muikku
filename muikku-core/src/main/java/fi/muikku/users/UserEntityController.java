@@ -117,6 +117,10 @@ public class UserEntityController implements Serializable {
   public List<UserSchoolDataIdentifier> listUserSchoolDataIdentifiersByDataSource(SchoolDataSource dataSource) {
     return userSchoolDataIdentifierDAO.listByDataSource(dataSource);
   }
+
+  public List<UserEntity> listUserEntities() {
+    return userEntityDAO.listAll();
+  }
   
   /**
    * Updates the last login time of the given user entity to the current time.

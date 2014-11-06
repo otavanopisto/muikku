@@ -2,6 +2,10 @@ package fi.muikku.schooldata.entity;
 
 import java.util.Date;
 
+import fi.muikku.search.annotations.IndexId;
+import fi.muikku.search.annotations.Indexable;
+
+@Indexable
 public interface Workspace extends SchoolDataEntity {
 	
 	public String getIdentifier();
@@ -23,5 +27,8 @@ public interface Workspace extends SchoolDataEntity {
 	public String getCourseIdentifierIdentifier();
 	
 	public Date getLastModified();
+	
+	@IndexId
+	public String getSearchId();
 	
 }

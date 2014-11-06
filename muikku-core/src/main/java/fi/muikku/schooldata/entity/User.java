@@ -1,5 +1,9 @@
 package fi.muikku.schooldata.entity;
 
+import fi.muikku.search.annotations.IndexId;
+import fi.muikku.search.annotations.Indexable;
+
+@Indexable
 public interface User extends SchoolDataEntity {
 	
 	public String getIdentifier();
@@ -13,5 +17,8 @@ public interface User extends SchoolDataEntity {
 	public void setLastName(String lastName);
 	
 	public String getDisplayName();
+
+  @IndexId
+	public String getSearchId();
 
 }

@@ -46,6 +46,11 @@ public class LocalUserImpl implements User {
   public String getDisplayName() {
     return displayName;
   }
+  
+  @Override
+  public String getSearchId() {
+    return getIdentifier() + "/" + getSchoolDataSource();
+  }
 
 	private String identifier;
 	private String firstName;

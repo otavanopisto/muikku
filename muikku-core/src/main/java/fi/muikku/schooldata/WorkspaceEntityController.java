@@ -62,6 +62,10 @@ public class WorkspaceEntityController {
   public WorkspaceEntity findWorkspaceByUrlName(String urlName) {
     return workspaceEntityDAO.findByUrlName(urlName);
   }
+
+  public List<WorkspaceEntity> listWorkspaceEntities() {
+    return workspaceEntityDAO.listAll();
+  }
   
   public List<String> listWorkspaceEntityIdentifiersByDataSource(String dataSource) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
