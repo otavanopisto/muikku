@@ -1,5 +1,7 @@
 package fi.muikku.plugins.search;
 
+import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +23,8 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.search.SearchHit;
 
-import static org.elasticsearch.node.NodeBuilder.*;
+import fi.muikku.search.SearchProvider;
+import fi.muikku.search.SearchResult;
 
 @ApplicationScoped
 @Stateful
@@ -35,12 +38,12 @@ public class ElasticSearchProvider implements SearchProvider {
     Node node = nodeBuilder().node();
     elasticClient = node.client();
   }
-
+  
   @PreDestroy
   public void shutdown() {
     elasticClient.close();
   }
-
+  
   @Override
   public SearchResult search(String query, String[] fields, int start, int maxResults, Class<?>... types) {
     String[] typenames = new String[types.length];
@@ -82,32 +85,32 @@ public class ElasticSearchProvider implements SearchProvider {
     SearchHit[] results = response.getHits().getHits();
     for (SearchHit hit : results) {
       Map<String, Object> hitSource = hit.getSource();
+      hitSource.put("indexType", hit.getType());
       searchResults.add(hitSource);
     }
     SearchResult result = new SearchResult(searchResults.size(), start, maxResults, searchResults);
     return result;
-
+    
   }
 
   @Override
-  public void addOrUpdateIndex(String typeName, Map<String, Object> entity) {
+  public synchronized void addOrUpdateIndex(String typeName, Map<String, Object> entity) {
     ObjectMapper mapper = new ObjectMapper();
     String json;
     try {
       json = mapper.writeValueAsString(entity);
-      Long id = (Long) entity.get("id");
+      String id = entity.get("id").toString();
       @SuppressWarnings("unused")
-      IndexResponse response = elasticClient.prepareIndex("muikku", typeName, id.toString()).setSource(json).execute().actionGet();
+      IndexResponse response = elasticClient.prepareIndex("muikku", typeName, id).setSource(json).execute().actionGet();
     } catch (IOException e) {
       logger.log(Level.WARNING, "Adding to index failed because of exception", e);
     }
-
   }
 
   @Override
-  public void deleteFromIndex(String typeName, Long id) {
+  public synchronized void deleteFromIndex(String typeName, String id) {
     @SuppressWarnings("unused")
-    DeleteResponse response = elasticClient.prepareDelete("muikku", typeName, id.toString()).execute().actionGet();
+    DeleteResponse response = elasticClient.prepareDelete("muikku", typeName, id).execute().actionGet();
   }
 
   private Client elasticClient;
