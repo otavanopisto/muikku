@@ -201,14 +201,27 @@ body.workspace-reading {
           right:50px;
           top:3px;
           opacity:0.6;
+          -ms-transition: transform 0.3s;
+          -moz-transition: transform 0.3s;
+          -webkit-transition: transform 0.3s;
+          -o-transition: transform 0.3s;
+          transition: transform 0.3s;
           
           &:hover {
             @include iconShadow(rgba(255,255,190,0.5));
-            opacity:1;
+            opacity:0.8;
+            -ms-transform: rotate(15deg); /* IE 9 */
+            -webkit-transform: rotate(15deg); /* Chrome, Safari, Opera */
+            -moz-transform: rotate(15deg);
+            transform: rotate(15deg);
           }
           
           &.selected {
             opacity:1;
+            -ms-transform: rotate(25deg); /* IE 9 */
+            -webkit-transform: rotate(25deg); /* Chrome, Safari, Opera */
+            -moz-transform: rotate(25deg);
+            transform: rotate(25deg);
           }
           
         }
@@ -244,7 +257,7 @@ body.workspace-reading {
               .workspace-materials-toc-subtitle {
                 font-weight:bold;
                 margin:0 0 5px 0;
-                font-size:1.2em;
+                font-size:1.1em;
                 color:#344263;
                 padding:2px 8px;
               }
@@ -259,7 +272,6 @@ body.workspace-reading {
                   @include genericMenuLinkHoverTransition(background,color,0.15s,ease-in-out);
                   @include rounded(2px);
                   padding:2px 8px;
-                  margin:0 0 2px 0;
                   
                   &:hover {
                     background:#596e7d;
