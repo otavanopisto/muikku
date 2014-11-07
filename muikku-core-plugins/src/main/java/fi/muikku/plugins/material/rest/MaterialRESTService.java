@@ -9,6 +9,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.material.HtmlMaterialController;
@@ -28,12 +30,13 @@ public class MaterialRESTService extends PluginRESTService {
 	
 	@GET
 	@Path ("/html/{id}")
-	@Produces(MediaType.TEXT_HTML)
-	public String findMaterial(@PathParam("id") long id) {
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response findMaterial(@PathParam("id") long id) {
 	  HtmlMaterial material = htmlMaterialController.findHtmlMaterialById(id);
 	  if (material == null) {
-	    throw new NotFoundException();
+	    return Response.status(Status.NOT_FOUND).build();
+	  } else {
+      return Response.ok().entity(material).build();
 	  }
-	  return material.getHtml();
 	}
 }

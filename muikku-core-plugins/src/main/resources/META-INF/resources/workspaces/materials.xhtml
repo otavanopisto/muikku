@@ -13,12 +13,10 @@
   </ui:define>
   
   <ui:define name="workspace.content">
-  
     <h:outputScript name="scripts/gui/workspace-materials.js" target="head"/>
     <ui:repeat var="node" value="#{workspaceMaterialsBackingBean.materialNodes}">
       <div data-material-id="#{node.materialId}" data-material-type="#{node.materialType}" data-material-title="#{node.materialTitle}" class="workspace-material-node"/>
     </ui:repeat>
-  
   </ui:define>
 
 </ui:composition>

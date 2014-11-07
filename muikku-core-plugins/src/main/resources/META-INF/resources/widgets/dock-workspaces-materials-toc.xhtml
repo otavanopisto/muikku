@@ -8,20 +8,21 @@
     </span>
     
     <!-- TOC Starts here -->
-    <div class="workspace-materials-toc-wrapper">
+    <nav class="workspace-materials-toc-wrapper">
       <div class="workspace-materials-toc-container">
-        <div class="workspace-materials-toc-title">Sisällysluettelo</div>
+        <h1 class="workspace-materials-toc-title">Sisällysluettelo</h1>
         <div class="workspace-materials-toc-content-outer">
           <div class="workspace-materials-toc-content-inner">
             <div class="workspace-materials-toc-content-scrolling">
               <ui:include src="/workspaces/templates/workspace-material-list.xhtml">
                 <ui:param name="nodes" value="#{workspaceMaterialsBackingBean.allNodes}"/>
               </ui:include>
+              <div class="spacer"></div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </nav>
     
   </div>
 
