@@ -17,26 +17,21 @@ import fi.muikku.plugins.material.HtmlMaterialController;
 import fi.muikku.plugins.material.model.HtmlMaterial;
 
 @RequestScoped
-@Path("/materials")
+@Path("/materials/html")
 @Stateful
 @Produces ("application/json")
-public class MaterialRESTService extends PluginRESTService {
+public class HtmlMaterialRESTService extends PluginRESTService {
 	@Inject
 	private HtmlMaterialController htmlMaterialController;
 	
-	// 
-	// HtmlMaterial 
-	// 
-	
 	@GET
-	@Path ("/html/{id}")
-	@Produces(MediaType.APPLICATION_JSON)
+	@Path ("/{id}")
 	public Response findMaterial(@PathParam("id") long id) {
 	  HtmlMaterial material = htmlMaterialController.findHtmlMaterialById(id);
 	  if (material == null) {
 	    return Response.status(Status.NOT_FOUND).build();
 	  } else {
-      return Response.ok().entity(material).build();
+      return Response.ok().entity(new HtmlRestMaterial(id, material.getHtml())).build();
 	  }
 	}
 }
