@@ -128,7 +128,7 @@ body.workspace-reading {
         margin:2px;
         display:inline-block;
         position:relative;
-        width:35px;
+        width:34px;
         @include rounded(3px);
         text-align:center;
         
@@ -201,19 +201,19 @@ body.workspace-reading {
           right:50px;
           top:3px;
           opacity:0.6;
-          -ms-transition: transform 0.3s;
-          -moz-transition: transform 0.3s;
-          -webkit-transition: transform 0.3s;
-          -o-transition: transform 0.3s;
-          transition: transform 0.3s;
+          -ms-transition: transform 0.2s;
+          -moz-transition: transform 0.2s;
+          -webkit-transition: transform 0.2s;
+          -o-transition: transform 0.2s;
+          transition: transform 0.2s;
           
           &:hover {
             @include iconShadow(rgba(255,255,190,0.5));
             opacity:0.8;
-            -ms-transform: rotate(15deg); /* IE 9 */
-            -webkit-transform: rotate(15deg); /* Chrome, Safari, Opera */
-            -moz-transform: rotate(15deg);
-            transform: rotate(15deg);
+            -ms-transform: rotate(10deg); /* IE 9 */
+            -webkit-transform: rotate(10deg); /* Chrome, Safari, Opera */
+            -moz-transform: rotate(10deg);
+            transform: rotate(10deg);
           }
           
           &.selected {
@@ -322,9 +322,24 @@ body.workspace-reading {
     }
   }
   
+  #workspaceMaterialReadingAdditionalNavWrapper {
+    position:absolute;
+    top:0;
+    right:0;
+    width:50px;
+    height:100%;
+    bottom:0;
+    
+    .grid_1 {
+      float:none;
+      width:auto;
+      margin:0;
+    }
+  }
+  
 }
 
-.wi-dock-workspace-navi-button-materials-toc > .workspace-materials-toc-wrapper {
+.wi-workspace-dock-navi-button-materials-toc > .workspace-materials-toc-wrapper {
   border:2px solid #3d4c56;
   @include rounded(3px);
   background:#fff;
