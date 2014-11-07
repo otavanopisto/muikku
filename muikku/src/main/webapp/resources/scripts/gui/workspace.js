@@ -84,6 +84,35 @@ $(document).ready(function() {
         }
         
       });
+      
+      $('.workspace-materials-toc-content-inner').on('DOMMouseScroll mousewheel', function(ev) {
+        var $this = $(this),
+          scrollTop = this.scrollTop,
+          scrollHeight = this.scrollHeight,
+          height = $this.height(),
+          delta = (ev.type == 'DOMMouseScroll' ?
+            ev.originalEvent.detail * -40 :
+            ev.originalEvent.wheelDelta),
+          up = delta > 0;
+
+        var prevent = function() {
+          ev.stopPropagation();
+          ev.preventDefault();
+          ev.returnValue = false;
+          return false;
+        }
+
+        if (!up && -delta > scrollHeight - height - scrollTop) {
+          // Scrolling down, but this will take us past the bottom.
+          $this.scrollTop(scrollHeight);
+
+          return prevent();
+        } else if (up && delta > scrollTop) {
+          // Scrolling up, but this will take us past the top.
+          $this.scrollTop(0);
+          return prevent();
+        }
+      });
 
     }
 
@@ -91,6 +120,7 @@ $(document).ready(function() {
   
   // Workspace's materials's reading view
   if ($('#workspaceMaterialReadingTOCWrapper').length > 0) {
+    
     var height = $(window).height();
     var thinTocWrapper = $('#workspaceMaterialReadingTOCClosed');
     var wideTocWrapper = $('#workspaceMaterialReadingTOCOpen');
@@ -288,7 +318,36 @@ $(document).ready(function() {
       });
     });
     
+    $('.workspace-materials-toc-content-inner').on('DOMMouseScroll mousewheel', function(ev) {
+      var $this = $(this),
+        scrollTop = this.scrollTop,
+        scrollHeight = this.scrollHeight,
+        height = $this.height(),
+        delta = (ev.type == 'DOMMouseScroll' ?
+          ev.originalEvent.detail * -40 :
+          ev.originalEvent.wheelDelta),
+        up = delta > 0;
 
+      var prevent = function() {
+        ev.stopPropagation();
+        ev.preventDefault();
+        ev.returnValue = false;
+        return false;
+      }
+
+      if (!up && -delta > scrollHeight - height - scrollTop) {
+        // Scrolling down, but this will take us past the bottom.
+        $this.scrollTop(scrollHeight);
+
+        return prevent();
+      } else if (up && delta > scrollTop) {
+        // Scrolling up, but this will take us past the top.
+        $this.scrollTop(0);
+        return prevent();
+      }
+    });
+      
+      
     
   }
 

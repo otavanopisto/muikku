@@ -20,9 +20,9 @@
   </ui:define>
 
   <ui:define name="sitebody">
-    <div id="staticNavigationWrapper">
+    <header id="staticNavigationWrapper">
       <m:widget name="navigation-dynamic" rendered="#{sessionBackingBean.loggedIn}"></m:widget>
-      <div id="staticNavigation" class="container_24">
+      <nav id="staticNavigation" class="container_24">
         <ui:insert name="dock.top">
           <m:widgetSpaceSet styleClass="noLid">
             <ui:insert name="dock.top.left">
@@ -37,22 +37,26 @@
           </m:widgetSpaceSet>
         </ui:insert>
         <div class="clear"></div> 
-      </div>
-    </div>  
+      </nav>
+    </header>  
     <div id="workspaceNavigationWrapper">
-      <div id="workspaceDockWrapper">
-        <div id="workspaceDock">
-          <ui:insert name="workspaces.dock">
-            <ui:include src="/facelets/generic/workspaces-main-dock.xhtml"></ui:include>
-          </ui:insert>
-        </div>
-      </div>
+      <ui:insert name="workspace.dock">
+        <m:widgetSpaceSet>
+          <nav id="workspaceDockWrapper">
+            <div id="workspaceDock">
+              <ui:insert name="workspaces.dock">
+                <ui:include src="/facelets/generic/workspaces-main-dock.xhtml"></ui:include>
+              </ui:insert>
+            </div>
+          </nav>
+        </m:widgetSpaceSet>
+      </ui:insert>
     </div>
-    <div id="content" class="container_24">
+    <main id="content" class="container_24">
       <ui:insert name="workspace.content.top.static"></ui:insert>
       <ui:insert name="workspace.content">
       </ui:insert>
-    </div>
+    </main>
     <div id="socialNavigation">
       <ui:insert name="dock.bottom">
         <m:widgetSpaceSet styleClass="nomargin">
@@ -68,7 +72,7 @@
         </m:widgetSpaceSet>
       </ui:insert>
     </div>
-    <div id="footer">
+    <footer id="footer">
       <div id="footerContainer" class="container_24">
         <ui:insert name="footer">
           <m:widgetSpaceSet styleClass="nomargin">
@@ -85,7 +89,7 @@
         </ui:insert>
         <div class="clear"></div>
       </div>
-    </div>
+    </footer>
   </ui:define>
 
 </ui:composition>

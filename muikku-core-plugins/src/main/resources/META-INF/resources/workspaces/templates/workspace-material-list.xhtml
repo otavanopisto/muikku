@@ -10,17 +10,17 @@
   <c:forEach var="node" items="#{nodes}">
     <c:choose>
       <c:when test="#{node.type eq 'FOLDER'}">
-        <h:panelGroup layout="block" styleClass="workspace-materials-toc-section">
-          <div class="workspace-materials-toc-subtitle">#{node.title}</div>
+        <ul class="workspace-materials-toc-section">
+          <li class="workspace-materials-toc-subtitle">#{node.title}</li>
           <ui:include src="/workspaces/templates/workspace-material-list.xhtml">
             <ui:param name="nodes" value="#{workspaceMaterialsBackingBean.listWorkspaceNodes(node)}" />
           </ui:include>
-        </h:panelGroup>
+        </ul>
       </c:when>
       <c:when test="#{node.type eq 'MATERIAL'}">
-        <div class="workspace-materials-toc-item">
+        <li class="workspace-materials-toc-item">
           <h:outputLink value="#{request.contextPath}/workspace/#{workspaceMaterialsBackingBean.workspaceUrlName}/materials/#{node.path}">#{node.material.title}</h:outputLink>
-        </div>
+        </li>
       </c:when>
     </c:choose>
   </c:forEach>
