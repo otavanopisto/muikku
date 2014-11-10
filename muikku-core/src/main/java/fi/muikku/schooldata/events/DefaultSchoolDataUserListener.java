@@ -12,6 +12,7 @@ import javax.inject.Inject;
 
 import fi.muikku.model.users.EnvironmentRoleEntity;
 import fi.muikku.model.users.EnvironmentUser;
+import fi.muikku.model.users.UserEmailEntity;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.users.EnvironmentRoleEntityController;
 import fi.muikku.users.EnvironmentUserController;
@@ -81,6 +82,40 @@ public class DefaultSchoolDataUserListener {
       
       discoveredUsers.put(discoverId, userEntity.getId());
       event.setDiscoveredUserEntityId(userEntity.getId());
+    }
+  }
+  
+  public synchronized void onSchoolDataUserUpdatedEvent(@Observes SchoolDataUserUpdatedEvent event) {
+    UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
+    if (userEntity != null) {
+      List<UserEntity> emailUsers = userEntityController.listUserEntitiesByEmails(event.getEmails());
+      if (emailUsers.size() > 1) {
+        // TODO: Better exception handling
+        throw new RuntimeException("Multiple users found by emails");
+      }
+      
+      if (emailUsers.size() == 1) {
+        if (!emailUsers.get(0).getId().equals(userEntity.getId())) {
+          throw new RuntimeException(String.format("Another user found with email (%d, %d)", emailUsers.get(0).getId(), userEntity.getId()));
+        }
+      }
+      
+      List<String> existingAddresses = userEmailEntityController.listAddressesByUserEntity(userEntity);
+      
+      for (String email : event.getEmails()) {
+        if (!existingAddresses.contains(email)) {
+          userEmailEntityController.addUserEmail(userEntity, email);
+        }
+        
+        existingAddresses.remove(email);
+      }
+      
+      // TODO: We should remove only emails originating from current school data source
+      
+      for (String removedAddress : existingAddresses) {
+        UserEmailEntity emailEntity = userEmailEntityController.findUserEmailEntityByAddress(removedAddress);
+        userEmailEntityController.removeUserEmailEntity(emailEntity);
+      }
     }
   }
   
