@@ -25,10 +25,10 @@ $(document).ready(function() {
     });
     
     // Functionality for workspace's material's TOC
-    if ($('.wi-dock-workspace-navi-button-materials-toc').length > 0) {
-      var tocButton = $('.wi-dock-workspace-navi-button-materials-toc');
+    if ($('.wi-workspace-dock-navi-button-materials-toc').length > 0) {
+      var tocButton = $('.wi-workspace-dock-navi-button-materials-toc');
       var tocWrapper = tocButton.children('.workspace-materials-toc-wrapper');
-      var tocButtonLabel = $('.wi-dock-workspace-navi-button-materials-toc .workspace-navi-tt-container-materials-toc'); 
+      var tocButtonLabel = $('.wi-workspace-dock-navi-button-materials-toc .workspace-navi-tt-container-materials-toc'); 
 
       // Some hiding and showing for TOC by click event
       $(tocButton).click(function() {
@@ -39,7 +39,7 @@ $(document).ready(function() {
             opacity:0
           });
           
-          tocButton.addClass('wi-dock-workspace-navi-button-selected');
+          tocButton.addClass('wi-workspace-dock-navi-button-selected');
           
           tocWrapper
           .show()
@@ -77,7 +77,7 @@ $(document).ready(function() {
             easing : "easeInOutQuad",
             complete : function(){
               $(this).hide();
-              tocButton.removeClass('wi-dock-workspace-navi-button-selected');
+              tocButton.removeClass('wi-workspace-dock-navi-button-selected');
             }
           });
           
@@ -165,13 +165,13 @@ $(document).ready(function() {
         if (contentOffset.left < contentMinOffset) {
           contentPageContainer.css({
             paddingLeft: contentMinOffset,
-            paddingRight: "10px"
+            paddingRight: "60px"
           });
         } 
       } else {
         contentPageContainer.css({
           paddingLeft: "60px",
-          paddingRight: "10px"
+          paddingRight: "60px"
         });
       }
       
@@ -207,7 +207,7 @@ $(document).ready(function() {
           contentPageContainer
           .animate({
             paddingLeft: contentMinOffset,
-            paddingRight: "10px"
+            paddingRight: "60px"
           },{
             duration:500,
             easing: "easeInOutQuint"
@@ -233,7 +233,7 @@ $(document).ready(function() {
                   contentPageContainer
                   .animate({
                     paddingLeft: "60px",
-                    paddingRight: "10px"
+                    paddingRight: "60px"
                   },{
                     duration:600,
                     easing: "easeInOutQuint"
@@ -285,7 +285,7 @@ $(document).ready(function() {
       contentPageContainer
       .animate({
         paddingLeft: "60px",
-        paddingRight: "10px"
+        paddingRight: "60px"
       },{
         duration:600,
         easing: "easeInOutQuint"
