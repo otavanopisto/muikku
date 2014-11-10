@@ -1,5 +1,7 @@
 package fi.muikku.plugins.search;
 
+import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,13 +17,16 @@ import javax.inject.Inject;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.search.SearchHit;
 
-import static org.elasticsearch.node.NodeBuilder.*;
+import fi.muikku.search.SearchProvider;
+import fi.muikku.search.SearchResult;
 
 @ApplicationScoped
 @Stateful
@@ -35,20 +40,32 @@ public class ElasticSearchProvider implements SearchProvider {
     Node node = nodeBuilder().node();
     elasticClient = node.client();
   }
-
+  
   @PreDestroy
   public void shutdown() {
     elasticClient.close();
   }
-
+  
   @Override
   public SearchResult search(String query, String[] fields, int start, int maxResults, Class<?>... types) {
     String[] typenames = new String[types.length];
     for (int i = 0; i < types.length; i++) {
       typenames[i] = types[i].getSimpleName();
     }
-    SearchResponse response = elasticClient.prepareSearch("muikku").setTypes(typenames).setQuery(QueryBuilders.multiMatchQuery(query, fields)).setFrom(start).setSize(maxResults).execute()
-        .actionGet();
+    
+    SearchRequestBuilder requestBuilder = elasticClient
+        .prepareSearch("muikku")
+        .setTypes(typenames)
+        .setFrom(start)
+        .setSize(maxResults);
+    
+    BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
+    for (String field : fields) {
+      boolQuery.should(QueryBuilders.prefixQuery(field, query));
+    }
+
+    SearchResponse response = requestBuilder.setQuery(boolQuery).execute().actionGet();
+    
     List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
     SearchHit[] results = response.getHits().getHits();
     for (SearchHit hit : results) {
@@ -82,32 +99,58 @@ public class ElasticSearchProvider implements SearchProvider {
     SearchHit[] results = response.getHits().getHits();
     for (SearchHit hit : results) {
       Map<String, Object> hitSource = hit.getSource();
+      hitSource.put("indexType", hit.getType());
       searchResults.add(hitSource);
     }
     SearchResult result = new SearchResult(searchResults.size(), start, maxResults, searchResults);
     return result;
-
+    
+  }
+  
+  @Override
+  public SearchResult matchAllSearch(int start, int maxResults, Class<?>... types) {
+    String[] typenames = new String[types.length];
+    for (int i = 0; i < types.length; i++) {
+      typenames[i] = types[i].getSimpleName();
+    }
+    
+    SearchRequestBuilder requestBuilder = elasticClient
+        .prepareSearch("muikku")
+        .setQuery(QueryBuilders.matchAllQuery())
+        .setTypes(typenames)
+        .setFrom(start)
+        .setSize(maxResults);
+    
+    SearchResponse response = requestBuilder.execute().actionGet();
+    List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
+    SearchHit[] results = response.getHits().getHits();
+    for (SearchHit hit : results) {
+      Map<String, Object> hitSource = hit.getSource();
+      hitSource.put("indexType", hit.getType());
+      searchResults.add(hitSource);
+    }
+    SearchResult result = new SearchResult(searchResults.size(), start, maxResults, searchResults);
+    return result;
   }
 
   @Override
-  public void addOrUpdateIndex(String typeName, Map<String, Object> entity) {
+  public synchronized void addOrUpdateIndex(String typeName, Map<String, Object> entity) {
     ObjectMapper mapper = new ObjectMapper();
     String json;
     try {
       json = mapper.writeValueAsString(entity);
-      Long id = (Long) entity.get("id");
+      String id = entity.get("id").toString();
       @SuppressWarnings("unused")
-      IndexResponse response = elasticClient.prepareIndex("muikku", typeName, id.toString()).setSource(json).execute().actionGet();
+      IndexResponse response = elasticClient.prepareIndex("muikku", typeName, id).setSource(json).execute().actionGet();
     } catch (IOException e) {
       logger.log(Level.WARNING, "Adding to index failed because of exception", e);
     }
-
   }
 
   @Override
-  public void deleteFromIndex(String typeName, Long id) {
+  public synchronized void deleteFromIndex(String typeName, String id) {
     @SuppressWarnings("unused")
-    DeleteResponse response = elasticClient.prepareDelete("muikku", typeName, id.toString()).execute().actionGet();
+    DeleteResponse response = elasticClient.prepareDelete("muikku", typeName, id).execute().actionGet();
   }
 
   private Client elasticClient;
@@ -116,4 +159,5 @@ public class ElasticSearchProvider implements SearchProvider {
   public String getName() {
     return "elastic-search";
   }
+
 }

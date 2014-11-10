@@ -1,4 +1,4 @@
-package fi.muikku.plugins.search.annotations;
+package fi.muikku.search.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,8 +7,5 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
-public @interface IndexField {
-
-  String Name() default "";
-
+public @interface IndexIgnore {
 }

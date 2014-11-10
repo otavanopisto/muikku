@@ -8,6 +8,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import fi.muikku.plugin.PluginDescriptor;
+import fi.muikku.search.SearchProvider;
 
 public class SearchPluginDescriptor implements PluginDescriptor {
 

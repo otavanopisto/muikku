@@ -1,4 +1,4 @@
-package fi.muikku.plugins.search;
+package fi.muikku.search;
 
 public class IndexIdMissingException extends Exception {
 
