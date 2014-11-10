@@ -6,9 +6,13 @@
       switch (materialType) {
       case 'html':
         var materialId = $(node).data('material-id');
+        mApi().materials.html.read(materialId).callback(
+          function (err, html) {
+            $(node).html(html.html);
+          });
         break;
       case 'folder':
-        $(node).html('<p>' + $(node).data('material-title') + '</p>');
+        $(node).append($('<p>').html($(node).data('material-title')));
         break;
       default:
         break;
