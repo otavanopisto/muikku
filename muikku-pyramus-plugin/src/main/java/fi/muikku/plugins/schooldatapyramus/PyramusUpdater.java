@@ -518,6 +518,8 @@ public class PyramusUpdater {
         if (workspaceUserEntity == null) {
           fireCourseStudentDiscovered(courseStudent);
           return true;
+        } else {
+          fireCourseStudentUpdated(courseStudent);
         }
       } else {
         if (workspaceUserEntity != null) {
@@ -686,6 +688,17 @@ public class PyramusUpdater {
     String workspaceIdentifier = identifierMapper.getWorkspaceIdentifier(courseStudent.getCourseId());
 
     schoolDataWorkspaceUserDiscoveredEvent.fire(new SchoolDataWorkspaceUserDiscoveredEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
+        identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, workspaceIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
+        userIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, roleIdentifier));
+  }
+
+  private void fireCourseStudentUpdated(CourseStudent courseStudent) {
+    String identifier = identifierMapper.getWorkspaceStudentIdentifier(courseStudent.getId());
+    String userIdentifier = identifierMapper.getStudentIdentifier(courseStudent.getStudentId());
+    String roleIdentifier = identifierMapper.getWorkspaceStudentRoleIdentifier();
+    String workspaceIdentifier = identifierMapper.getWorkspaceIdentifier(courseStudent.getCourseId());
+
+    schoolDataWorkspaceUserUpdatedEvent.fire(new SchoolDataWorkspaceUserUpdatedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
         identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, workspaceIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
         userIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, roleIdentifier));
   }
