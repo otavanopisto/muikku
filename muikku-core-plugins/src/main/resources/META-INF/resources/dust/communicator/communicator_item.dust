@@ -1,10 +1,10 @@
 <div class="cm-item cm-message">
   <div class="cm-item-senderPictureContainer">
-    {?sender_tq.hasPicture} 
+    {?senderHasPicture} 
       <img class="cm-item-senderPicture" src="{@contextPath/}/picture?userId={sender}" width="50" height="50" />
     {:else}
       <img class="cm-item-senderPicture" src="{@contextPath/}/themes/default/gfx/fish.jpg" width="50" height="50" />
-    {/sender_tq.hasPicture}
+    {/senderHasPicture}
   </div>
   
 
@@ -16,19 +16,19 @@
       </span>
       <span class="mf-person cm-item-senderName">
         <input type="hidden" name="mf-person-id" value="{sender}"/>
-        <a class="wallEntryCreator" href="{@contextPath/}/user/{sender}">{sender_tq.fullName}</a>
+        <a class="wallEntryCreator" href="{@contextPath/}/user/{sender}">{senderFullName}</a>
       </span>
     </div>
    </div>     
       
   <div class="clear"></div>
   <div class="cm-item-tags">
-    {#tags_tq}
-      {text}{@sep}, {/sep}
-    {/tags_tq}
+    {#tags}
+      {.}{@sep}, {/sep}
+    {/tags}
   </div>
 
   <input type="hidden" name="communicatorMessageId" value="{id}"/>
-  <input type="hidden" name="communicatorMessageIdId" value="{communicatorMessageId.id}"/>
+  <input type="hidden" name="communicatorMessageIdId" value="{communicatorMessageId}"/>
   
 </div>

@@ -113,6 +113,10 @@ public class CommunicatorController {
     return communicatorMessageDAO.findById(communicatorMessageId);
   }
   
+  public CommunicatorMessageRecipient findCommunicatorMessageRecipient(Long id) {
+    return communicatorMessageRecipientDAO.findById(id);
+  }
+
   public List<CommunicatorMessageRecipient> listCommunicatorMessageRecipients(CommunicatorMessage communicatorMessage) {
     return communicatorMessageRecipientDAO.listByMessage(communicatorMessage);
   }
