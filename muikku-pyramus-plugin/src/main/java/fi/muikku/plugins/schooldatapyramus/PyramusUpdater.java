@@ -195,7 +195,7 @@ public class PyramusUpdater {
    * @return returns whether new staff member was created or not
    */
   public boolean updateStaffMember(Long pyramusId) {
-    fi.pyramus.rest.model.User staffMember = pyramusClient.get("/staff/members/" + pyramusId, fi.pyramus.rest.model.User.class);
+    fi.pyramus.rest.model.StaffMember staffMember = pyramusClient.get("/staff/members/" + pyramusId, fi.pyramus.rest.model.StaffMember.class);
     String staffMemberIdentifier = identifierMapper.getStaffIdentifier(pyramusId);
     UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, staffMemberIdentifier);
     
@@ -221,7 +221,7 @@ public class PyramusUpdater {
    * @return count of updates staff membres or -1 when no staff members were found with given offset
    */
   public int updateStaffMembers(int offset, int maxStaffMembers) {
-    fi.pyramus.rest.model.User[] staffMembers = pyramusClient.get("/staff/members?firstResult=" + offset + "&maxResults=" + maxStaffMembers, fi.pyramus.rest.model.User[].class);
+    fi.pyramus.rest.model.StaffMember[] staffMembers = pyramusClient.get("/staff/members?firstResult=" + offset + "&maxResults=" + maxStaffMembers, fi.pyramus.rest.model.StaffMember[].class);
     if (staffMembers.length == 0) {
       return -1;
     }
@@ -230,11 +230,11 @@ public class PyramusUpdater {
     //  because they do not have archived flag
 
     List<String> existingIdentifiers = userEntityController.listUserEntityIdentifiersByDataSource(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
-    List<fi.pyramus.rest.model.User> discoveredStaffMembers = new ArrayList<>();
+    List<fi.pyramus.rest.model.StaffMember> discoveredStaffMembers = new ArrayList<>();
     Map<Long, UserRole> discoveredUserRoles = new HashMap<>();
     Map<Long, String> removedUserRoles = new HashMap<>();
     
-    for (fi.pyramus.rest.model.User staffMember : staffMembers) {
+    for (fi.pyramus.rest.model.StaffMember staffMember : staffMembers) {
       String indentifier = identifierMapper.getStaffIdentifier(staffMember.getId());
       if (!existingIdentifiers.contains(indentifier)) {
         discoveredStaffMembers.add(staffMember);
@@ -261,7 +261,7 @@ public class PyramusUpdater {
       }
     }
     
-    for (fi.pyramus.rest.model.User discoveredStaffMember : discoveredStaffMembers) {
+    for (fi.pyramus.rest.model.StaffMember discoveredStaffMember : discoveredStaffMembers) {
       fireStaffMemberDiscovered(discoveredStaffMember);
     }
     
@@ -539,7 +539,7 @@ public class PyramusUpdater {
     return count;
   }
  
-  private void fireStaffMemberDiscovered(fi.pyramus.rest.model.User staffMember) {
+  private void fireStaffMemberDiscovered(fi.pyramus.rest.model.StaffMember staffMember) {
     String staffMemberIdentifier = identifierMapper.getStaffIdentifier(staffMember.getId());
     List<String> emails = new ArrayList<>();
     
@@ -597,7 +597,7 @@ public class PyramusUpdater {
   
   private void fireCourseStaffMemberDiscovered(CourseStaffMember courseStaffMember) {
     String identifier = identifierMapper.getWorkspaceStaffIdentifier(courseStaffMember.getId());
-    String userIdentifier = identifierMapper.getStaffIdentifier(courseStaffMember.getUserId());
+    String userIdentifier = identifierMapper.getStaffIdentifier(courseStaffMember.getStaffMemberId());
     String roleIdentifier = identifierMapper.getWorkspaceStaffRoleIdentifier(courseStaffMember.getRoleId());
     String workspaceIdentifier = identifierMapper.getWorkspaceIdentifier(courseStaffMember.getCourseId());
 
