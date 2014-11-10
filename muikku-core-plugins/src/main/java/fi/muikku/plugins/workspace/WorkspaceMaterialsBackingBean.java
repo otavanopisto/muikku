@@ -64,12 +64,6 @@ public class WorkspaceMaterialsBackingBean {
     workspaceName = workspace.getName();
 	}
 	
-	@Deprecated
-	public List<WorkspaceNode> listWorkspaceNodes(WorkspaceNode workspaceNode) {
-		// TODO TOC method; entries have to be sorted in a meaningful order
-	  return workspaceMaterialController.listWorkspaceNodesByParent(workspaceNode);
-	}
-	
 	/**
 	 * Returns a flat list of all the materials in the workspace.
 	 *  
@@ -84,6 +78,41 @@ public class WorkspaceMaterialsBackingBean {
 	  }
 	  return materialNodes;
 	}
+
+	/**
+	 * Returns the children of the given workspace node as MaterialNode instances.
+	 * 
+	 * @param workspaceNode The workspace node
+	 * 
+	 * @return The children of the given workspace node as MaterialNode instances
+	 */
+	public List<MaterialNode> getMaterialNodes(WorkspaceNode workspaceNode) {
+	  List<WorkspaceNode> nodes = workspaceMaterialController.listWorkspaceNodesByParent(workspaceNode);
+	  sortWorkspaceNodes(nodes);
+	  List<MaterialNode> materialNodes = new ArrayList<MaterialNode>();
+	  for (WorkspaceNode node : nodes) {
+	    materialNodes.add(convertWorkspaceNode(node));
+	  }
+	  return materialNodes;
+  }
+
+	/**
+   * Returns the children of the given workspace node as MaterialNode instances.
+   * 
+   * @param workspaceNode The workspace node
+   * 
+   * @return The children of the given workspace node as MaterialNode instances
+   */
+  public List<MaterialNode> getMaterialNodes(MaterialNode parent) {
+    WorkspaceNode workspaceNode = workspaceMaterialController.findWorkspaceNodeById(parent.getWorkspaceMaterialId());
+    List<WorkspaceNode> nodes = workspaceMaterialController.listWorkspaceNodesByParent(workspaceNode);
+    sortWorkspaceNodes(nodes);
+    List<MaterialNode> materialNodes = new ArrayList<MaterialNode>();
+    for (WorkspaceNode node : nodes) {
+      materialNodes.add(convertWorkspaceNode(node));
+    }
+    return materialNodes;
+  }
 	
 	/**
 	 * Appends the given workspace node and all of its descendants as MaterialNode instances to the given list of material nodes.
@@ -93,7 +122,19 @@ public class WorkspaceMaterialsBackingBean {
 	 */
 	private void appendMaterialNode(WorkspaceNode workspaceNode, List<MaterialNode> materialNodes) {
     // Create the MaterialNode to represent the given WorkspaceNode 
-	  MaterialNode materialNode = new MaterialNode();
+	  MaterialNode materialNode = convertWorkspaceNode(workspaceNode);
+    materialNodes.add(materialNode);
+    // Recursively convert the children of the given WorkspaceNode to MaterialNode instances   
+    List<WorkspaceNode> nodes = workspaceMaterialController.listWorkspaceNodesByParent(workspaceNode);
+    sortWorkspaceNodes(nodes);
+	  for (WorkspaceNode node : nodes) {
+	    appendMaterialNode(node, materialNodes);
+	  }
+	}
+	
+	private MaterialNode convertWorkspaceNode(WorkspaceNode workspaceNode) {
+    // Create the MaterialNode to represent the given WorkspaceNode 
+    MaterialNode materialNode = new MaterialNode();
     materialNode.setWorkspaceMaterialId(workspaceNode.getId());
     if (workspaceNode instanceof WorkspaceMaterial) {
       Material material = ((WorkspaceMaterial) workspaceNode).getMaterial();
@@ -110,13 +151,7 @@ public class WorkspaceMaterialsBackingBean {
       throw new IllegalArgumentException("Unsupported workspace node: " + workspaceNode.getClass());
     }
     materialNode.setMaterialPath(workspaceNode.getPath());
-    materialNodes.add(materialNode);
-    // Recursively convert the children of the given WorkspaceNode to MaterialNode instances   
-    List<WorkspaceNode> nodes = workspaceMaterialController.listWorkspaceNodesByParent(workspaceNode);
-    sortWorkspaceNodes(nodes);
-	  for (WorkspaceNode node : nodes) {
-	    appendMaterialNode(node, materialNodes);
-	  }
+    return materialNode;
 	}
 	
 	/**
@@ -126,16 +161,6 @@ public class WorkspaceMaterialsBackingBean {
 	 */
 	private void sortWorkspaceNodes(List<WorkspaceNode> workspaceNodes) {
 	  // TODO implement meaningful sorting
-	}
-	
-	@Deprecated
-	public List<WorkspaceMaterial> listWorkspaceMaterials(WorkspaceNode workspaceNode) {
-		return workspaceMaterialController.listWorkspaceMaterialsByParent(workspaceNode);
-	}
-	
-  @Deprecated
-	public List<WorkspaceNode> getAllNodes() {
-	  return listWorkspaceNodes(getRootFolder());
 	}
 	
 	public WorkspaceRootFolder getRootFolder() {

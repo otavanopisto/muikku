@@ -9,19 +9,19 @@
   
   <c:forEach var="node" items="#{nodes}">
     <c:choose>
-      <c:when test="#{node.type eq 'FOLDER'}">
+      <c:when test="#{node.materialType eq 'folder'}">
         <ul class="workspace-materials-toc-section">
-          <li class="workspace-materials-toc-subtitle">#{node.title}</li>
+          <li class="workspace-materials-toc-subtitle">#{node.materialTitle}</li>
           <ui:include src="/workspaces/templates/workspace-material-list.xhtml">
-            <ui:param name="nodes" value="#{workspaceMaterialsBackingBean.listWorkspaceNodes(node)}" />
+            <ui:param name="nodes" value="#{workspaceMaterialsBackingBean.getMaterialNodes(node)}" />
           </ui:include>
         </ul>
       </c:when>
-      <c:when test="#{node.type eq 'MATERIAL'}">
+      <c:otherwise>
         <li class="workspace-materials-toc-item">
-          <h:outputLink value="#{request.contextPath}/workspace/#{workspaceMaterialsBackingBean.workspaceUrlName}/materials/#{node.path}">#{node.material.title}</h:outputLink>
+          <h:outputLink value="#{request.contextPath}/workspace/#{workspaceMaterialsBackingBean.workspaceUrlName}/materials/#{node.materialPath}">#{node.materialTitle}</h:outputLink>
         </li>
-      </c:when>
+      </c:otherwise>
     </c:choose>
   </c:forEach>
 
