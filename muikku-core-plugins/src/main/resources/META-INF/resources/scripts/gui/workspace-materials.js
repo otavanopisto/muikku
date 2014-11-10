@@ -12,7 +12,7 @@
           });
         break;
       case 'folder':
-        $(node).append($('<p>').html($(node).data('material-title')));
+        $(node).append($('<h1>').html($(node).data('material-title')));
         break;
       default:
         break;

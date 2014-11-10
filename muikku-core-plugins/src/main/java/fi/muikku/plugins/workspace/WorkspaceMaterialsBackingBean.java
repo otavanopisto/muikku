@@ -66,17 +66,8 @@ public class WorkspaceMaterialsBackingBean {
 	
 	@Deprecated
 	public List<WorkspaceNode> listWorkspaceNodes(WorkspaceNode workspaceNode) {
-	  List<WorkspaceNode> nodes = workspaceMaterialController.listWorkspaceNodesByParent(workspaceNode);
-	  
-		Collections.sort(nodes, new Comparator<WorkspaceNode>() {
-		  @Override
-		  public int compare(WorkspaceNode o1, WorkspaceNode o2) {
-		    return o1.getUrlName().compareTo(o2.getUrlName());
-		  }
-		  
-    });
-		
-		return nodes;
+		// TODO TOC method; entries have to be sorted in a meaningful order
+	  return workspaceMaterialController.listWorkspaceNodesByParent(workspaceNode);
 	}
 	
 	/**
