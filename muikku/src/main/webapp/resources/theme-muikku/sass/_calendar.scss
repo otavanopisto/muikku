@@ -2,8 +2,7 @@
 
 
 /* TODO - move to core-plugins after mock data is gone... */
-/* TODO - "basify" the colors */
-/* TODO - "basify" mixins */
+
 
 .ca-home{
   
@@ -51,8 +50,6 @@
     }
     .ca-date-day-time{}
   }
-
-
 }
 
 .ca-home-week{
@@ -131,7 +128,6 @@
   &.names{
     color:#fff;  
     &.today{
-      border:2px solid #fff;
       font-weight:700;
     }              
   }
@@ -140,43 +136,36 @@
 
 .ca-time-grid-day{
   background-color:#fff;  
-  
- 
+      border-bottom:1px solid #fff; 
   &.today{
-    background-color:#f0f5f8;
-    
+    background-color:#f0f5f8;    
     > div{
      color:#f0f5f8;
+     border-bottom:1px solid #f0f5f8;      
     }
   }
 
   &:hover{
-    background-color:#fafcfd;
-    
-    
+    background-color:#fafcfd;        
     > div{
       color:#e5e7e8;
-    }
-    
-  }
-  
+      border-bottom:1px solid #fafcfd; 
+    }    
+  } 
 }
 
 .ca-time-grid-hour{
    color:#fff;
    padding:5px 0 5px 0;
+
    &:hover{
     background-color:#cce4ed;
+    border-bottom:1px solid #cce4ed;      
     color:#fff !important;
-   }
-  
+   }  
 }
 
-
-
-
 .ca-grid-day{
-
 }
 
 .ca-grid-day-events{
@@ -208,21 +197,57 @@
        display:inline-block;
      }
     }
-  }
-  
+  } 
 }
 
 .ca-grid-week{
   min-height:500px;
-   border-left:1px solid #f1f1f1;  
+  border-left:1px solid #f1f1f1;  
+}
+
+.ca-grid-header-scaleSpace{
+  width:10%;
+  float:left;
+  bacground-color:#fff;
+  box-sizing: border-box;
+  span{
+   color:#fff;
+  }
+}
+
+.ca-time-grid-scale-hour{
+  text-align:center;
+  padding:5px 0;
+  border-bottom:1px solid #f1f1f1;  
+  border-left:1px solid #f1f1f1;  
+  span{
+   color:#dadada;
+ }   
+}
+
+.ca-grid-header-content{
+  width:90%;
+  float:left;
+  box-sizing: border-box;   
+}
+
+.ca-grid-week-scale{
+  width:10%;
+  float:left;
+  box-sizing: border-box;
+}
+
+.ca-grid-week-events{
+  width:90%;
+  float:left;
+  box-sizing: border-box;
 }
 
 .ca-grid-month{
-     border-left:1px solid #f1f1f1;  
+   border-left:1px solid #f1f1f1;  
 }
 .ca-grid-events{
    border-left:1px solid #f1f1f1;  
-  
 }
 .ca-grid-events-list{
   div:nth-child(even){
@@ -232,13 +257,17 @@
 
 .ca-grid-events-content{
  margin:5px; 
- padding:10px; 
+
 }
 
 .ca-grid-events-subTopic{
  background-color: #d5e1e6;  
  text-align:center;
  padding:5px; 
+ span{
+  color:#fff;
+  font-weight:700;
+ }
 }
 
 .ca-list-event{
