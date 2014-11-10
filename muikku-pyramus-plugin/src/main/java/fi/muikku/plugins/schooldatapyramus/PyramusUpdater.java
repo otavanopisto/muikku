@@ -36,6 +36,7 @@ import fi.muikku.schooldata.events.SchoolDataWorkspaceRoleRemovedEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceUpdatedEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceUserDiscoveredEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceUserRemovedEvent;
+import fi.muikku.schooldata.events.SchoolDataWorkspaceUserUpdatedEvent;
 import fi.muikku.users.EnvironmentRoleEntityController;
 import fi.muikku.users.EnvironmentUserController;
 import fi.muikku.users.RoleSchoolDataIdentifierController;
@@ -93,6 +94,9 @@ public class PyramusUpdater {
 
   @Inject
   private Event<SchoolDataWorkspaceUserDiscoveredEvent> schoolDataWorkspaceUserDiscoveredEvent;
+
+  @Inject
+  private Event<SchoolDataWorkspaceUserUpdatedEvent> schoolDataWorkspaceUserUpdatedEvent;
 
   @Inject
   private Event<SchoolDataWorkspaceUserRemovedEvent> schoolDataWorkspaceUserRemovedEvent;
@@ -377,6 +381,8 @@ public class PyramusUpdater {
         if (workspaceUserEntity == null) {
           fireCourseStaffMemberDiscovered(staffMember);
           return true;
+        } else {
+          fireCourseStaffMemberUpdated(staffMember);
         }
       } else {
         if (workspaceUserEntity != null) {
@@ -613,6 +619,17 @@ public class PyramusUpdater {
     String workspaceIdentifier = identifierMapper.getWorkspaceIdentifier(courseStaffMember.getCourseId());
 
     schoolDataWorkspaceUserDiscoveredEvent.fire(new SchoolDataWorkspaceUserDiscoveredEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
+        identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, workspaceIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
+        userIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, roleIdentifier));
+  }
+  
+  private void fireCourseStaffMemberUpdated(CourseStaffMember courseStaffMember) {
+    String identifier = identifierMapper.getWorkspaceStaffIdentifier(courseStaffMember.getId());
+    String userIdentifier = identifierMapper.getStaffIdentifier(courseStaffMember.getStaffMemberId());
+    String roleIdentifier = identifierMapper.getWorkspaceStaffRoleIdentifier(courseStaffMember.getRoleId());
+    String workspaceIdentifier = identifierMapper.getWorkspaceIdentifier(courseStaffMember.getCourseId());
+
+    schoolDataWorkspaceUserUpdatedEvent.fire(new SchoolDataWorkspaceUserUpdatedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
         identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, workspaceIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
         userIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, roleIdentifier));
   }
