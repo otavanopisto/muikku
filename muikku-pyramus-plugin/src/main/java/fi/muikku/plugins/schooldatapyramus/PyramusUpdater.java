@@ -29,6 +29,7 @@ import fi.muikku.schooldata.events.SchoolDataUserDiscoveredEvent;
 import fi.muikku.schooldata.events.SchoolDataUserEnvironmentRoleDiscoveredEvent;
 import fi.muikku.schooldata.events.SchoolDataUserEnvironmentRoleRemovedEvent;
 import fi.muikku.schooldata.events.SchoolDataUserRemovedEvent;
+import fi.muikku.schooldata.events.SchoolDataUserUpdatedEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceDiscoveredEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceRemovedEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceRoleDiscoveredEvent;
@@ -88,6 +89,9 @@ public class PyramusUpdater {
   
   @Inject
   private Event<SchoolDataUserDiscoveredEvent> schoolDataUserDiscoveredEvent;
+
+  @Inject
+  private Event<SchoolDataUserUpdatedEvent> schoolDataUserUpdatedEvent;
 
   @Inject
   private Event<SchoolDataUserRemovedEvent> schoolDataUserRemovedEvent;
@@ -211,6 +215,9 @@ public class PyramusUpdater {
       if (userEntity == null) {
         fireStaffMemberDiscovered(staffMember);
         return true;
+      } else {
+        fireStaffMemberUpdated(staffMember);
+        return false;
       }
     } else {
       if (userEntity != null) {
@@ -561,6 +568,18 @@ public class PyramusUpdater {
     }
     
     schoolDataUserDiscoveredEvent.fire(new SchoolDataUserDiscoveredEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, staffMemberIdentifier, emails));
+  }
+ 
+  private void fireStaffMemberUpdated(fi.pyramus.rest.model.StaffMember staffMember) {
+    String staffMemberIdentifier = identifierMapper.getStaffIdentifier(staffMember.getId());
+    List<String> emails = new ArrayList<>();
+    
+    Email[] studentEmails = pyramusClient.get("/staff/members/" + staffMember.getId() + "/emails", Email[].class);
+    for (Email studentEmail : studentEmails) {
+      emails.add(studentEmail.getAddress());
+    }
+    
+    schoolDataUserUpdatedEvent.fire(new SchoolDataUserUpdatedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, staffMemberIdentifier, emails));
   }
  
   private void fireStaffMemberRemoved(Long staffMemberId) {
