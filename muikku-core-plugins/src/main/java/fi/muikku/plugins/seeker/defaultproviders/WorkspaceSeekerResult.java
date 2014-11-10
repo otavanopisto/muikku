@@ -25,6 +25,11 @@ public class WorkspaceSeekerResult implements SeekerResult {
   }
 
   @Override
+  public void setCategory(String category) {
+    this.category = category;
+  }
+  
+  @Override
   public String getCategory() {
     return category;
   }

@@ -19,8 +19,6 @@ import fi.muikku.dao.workspace.WorkspaceEntityDAO;
 import fi.muikku.dao.workspace.WorkspaceTypeSchoolDataIdentifierDAO;
 import fi.muikku.dao.workspace.WorkspaceUserEntityDAO;
 import fi.muikku.model.base.SchoolDataSource;
-import fi.muikku.model.users.UserEntity;
-import fi.muikku.model.users.UserSchoolDataIdentifier;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceTypeEntity;
 import fi.muikku.model.workspace.WorkspaceTypeSchoolDataIdentifier;
@@ -60,18 +58,6 @@ class WorkspaceSchoolDataController {
 	@Inject
 	private WorkspaceUserEntityDAO workspaceUserEntityDAO;
 	
-	@Inject
-	@SchoolDataBridgeEntityInitiator ( entity = Workspace.class )
-	private Instance<SchoolDataEntityInitiator<Workspace>> workspaceInitiators;
-
-	@Inject
-	@SchoolDataBridgeEntityInitiator ( entity = WorkspaceType.class )
-	private Instance<SchoolDataEntityInitiator<WorkspaceType>> workspaceTypeInitiators;
-
-	@Inject
-	@SchoolDataBridgeEntityInitiator ( entity = WorkspaceUser.class )
-	private Instance<SchoolDataEntityInitiator<WorkspaceUser>> workspaceUserInitiators;
-	
 	/* Workspaces */
 
   public Workspace createWorkspace(String schoolDataSourceIdentifier, String name, String description, WorkspaceType type, String courseIdentifierIdentifier) {
@@ -80,7 +66,7 @@ class WorkspaceSchoolDataController {
     WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(schoolDataSource);
     if (workspaceBridge != null) {
       try {
-        return initWorkspace(workspaceBridge.createWorkspace(name, description, type, courseIdentifierIdentifier));
+        return workspaceBridge.createWorkspace(name, description, type, courseIdentifierIdentifier);
       } catch (UnexpectedSchoolDataBridgeException e) {
         logger.log(Level.SEVERE, "School Data Bridge reported a problem while finding workspace", e);
       } catch (SchoolDataBridgeRequestException e) {
@@ -101,7 +87,7 @@ class WorkspaceSchoolDataController {
     WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(schoolDataSource);
     if (workspaceBridge != null) {
       try {
-        return initWorkspace(workspaceBridge.findWorkspace(identifier));
+        return workspaceBridge.findWorkspace(identifier);
       } catch (UnexpectedSchoolDataBridgeException e) {
         logger.log(Level.SEVERE, "School Data Bridge reported a problem while finding workspace", e);
       } catch (SchoolDataBridgeRequestException e) {
@@ -111,6 +97,21 @@ class WorkspaceSchoolDataController {
       logger.log(Level.SEVERE, "School Data Bridge not found: " + schoolDataSource);
     }
     
+    return null;
+  }
+
+  public List<Workspace> listWorkspaces(String schoolDataSource) {
+    WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(schoolDataSource);
+    if (workspaceBridge != null) {
+      try {
+        return workspaceBridge.listWorkspaces();
+      } catch (UnexpectedSchoolDataBridgeException e) {
+        logger.log(Level.SEVERE, "School Data Bridge reported a problem while finding workspace", e);
+      }
+    } else {
+      logger.log(Level.SEVERE, "School Data Bridge not found: " + schoolDataSource);
+    }
+   
     return null;
   }
   
@@ -127,14 +128,14 @@ class WorkspaceSchoolDataController {
 			}
 		}
 		
-		return initWorkspaces(result);
+		return result;
 	}
 
   public Workspace updateWorkspace(Workspace workspace) {
     WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(workspace.getSchoolDataSource());
     if (workspaceBridge != null) {
       try {
-        return initWorkspace(workspaceBridge.updateWorkspace(workspace));
+        return workspaceBridge.updateWorkspace(workspace);
       } catch (UnexpectedSchoolDataBridgeException e) {
         logger.log(Level.SEVERE, "School Data Bridge reported a problem while updating workspace", e);
       } catch (SchoolDataBridgeRequestException e) {
@@ -168,7 +169,7 @@ class WorkspaceSchoolDataController {
   		WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(schoolDataSource);
   		if (workspaceBridge != null) {
     		try {
-  				return initWorkspaces(workspaceBridge.listWorkspacesByCourseIdentifier(courseIdentifier.getIdentifier()));
+  				return workspaceBridge.listWorkspacesByCourseIdentifier(courseIdentifier.getIdentifier());
     		} catch (UnexpectedSchoolDataBridgeException e) {
   				logger.log(Level.SEVERE, "School Data Bridge reported a problem while listing workspaces by course identifier", e);
   			}
@@ -217,7 +218,7 @@ class WorkspaceSchoolDataController {
 	public WorkspaceType findWorkspaceTypeByDataSourceAndIdentifier(SchoolDataSource schoolDataSource, String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
 		WorkspaceSchoolDataBridge schoolDataBridge = getWorkspaceBridge(schoolDataSource);
 		if (schoolDataBridge != null) {
-			return initWorkspaceType(schoolDataBridge.findWorkspaceType(identifier));
+			return schoolDataBridge.findWorkspaceType(identifier);
 		} else {
 			logger.log(Level.SEVERE, "School Data Bridge not found: " + schoolDataSource.getIdentifier());
 		}
@@ -240,7 +241,7 @@ class WorkspaceSchoolDataController {
 			}
 		}
 		
-		return initWorkspaceTypes(result);
+		return result;
 	}
 	
 	public List<WorkspaceType> listWorkspaceTypes(WorkspaceTypeEntity workspaceTypeEntity) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
@@ -257,7 +258,7 @@ class WorkspaceSchoolDataController {
 		}
 		
 		
-		return initWorkspaceTypes(workspaceTypes);
+		return workspaceTypes;
 	}
 	
 	/* Workspace Users */
@@ -268,7 +269,7 @@ class WorkspaceSchoolDataController {
     WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(workspaceEntity.getDataSource());
     if (workspaceBridge != null) {
       try {
-        return initWorkspaceUser(workspaceBridge.createWorkspaceUser(workspace, user, roleSchoolDataSource, roleIdentifier));
+        return workspaceBridge.createWorkspaceUser(workspace, user, roleSchoolDataSource, roleIdentifier);
       } catch (UnexpectedSchoolDataBridgeException e) {
         logger.log(Level.SEVERE, "School Data Bridge reported a problem while creating workspace user", e);
       } catch (SchoolDataBridgeRequestException e) {
@@ -287,7 +288,7 @@ class WorkspaceSchoolDataController {
     WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(workspaceEntity.getDataSource());
     if (workspaceBridge != null) {
       try {
-        return initWorkspaceUser(workspaceBridge.findWorkspaceUser(workspaceUserEntity.getIdentifier()));
+        return workspaceBridge.findWorkspaceUser(workspaceUserEntity.getIdentifier());
       } catch (UnexpectedSchoolDataBridgeException e) {
         logger.log(Level.SEVERE, "School Data Bridge reported a problem while finding workspace", e);
       }
@@ -304,7 +305,7 @@ class WorkspaceSchoolDataController {
 			WorkspaceSchoolDataBridge schoolDataBridge = getWorkspaceBridge(schoolDataSource);
 			if (schoolDataBridge != null) {
 				try {
-					return initWorkspaceUsers(schoolDataBridge.listWorkspaceUsers(workspace.getIdentifier()));
+					return schoolDataBridge.listWorkspaceUsers(workspace.getIdentifier());
 				} catch (UnexpectedSchoolDataBridgeException e) {
 					logger.log(Level.SEVERE, "School Data Bridge reported a problem while listing workspace users", e);
 				} catch (SchoolDataBridgeRequestException e) {
@@ -318,19 +319,6 @@ class WorkspaceSchoolDataController {
 		return null;
 	}
 	
-	/* Workspace User Entities */
-	  
-  public WorkspaceUserEntity findWorkspaceUserEntity(WorkspaceUser workspaceUser) {
-    SchoolDataSource workspaceSchoolDataSource = schoolDataSourceDAO.findByIdentifier(workspaceUser.getWorkspaceSchoolDataSource());
-    SchoolDataSource userSchoolDataSource = schoolDataSourceDAO.findByIdentifier(workspaceUser.getUserSchoolDataSource());
-
-    WorkspaceEntity workspaceEntity = workspaceEntityDAO.findByDataSourceAndIdentifier(workspaceSchoolDataSource, workspaceUser.getWorkspaceIdentifier());
-    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(userSchoolDataSource, workspaceUser.getUserIdentifier());
-    UserEntity userEntity = userSchoolDataIdentifier.getUserEntity();
-    
-    return workspaceUserEntityDAO.findByWorkspaceAndUser(workspaceEntity, userEntity);
-  }
-  
 	private WorkspaceSchoolDataBridge getWorkspaceBridge(SchoolDataSource schoolDataSource) {
 		Iterator<WorkspaceSchoolDataBridge> iterator = workspaceBridges.iterator();
 		while (iterator.hasNext()) {
@@ -363,96 +351,4 @@ class WorkspaceSchoolDataController {
 		return Collections.unmodifiableList(result);
 	}
 	
-	/* Initiators */
-
-	private Workspace initWorkspace(Workspace workspace) {
-		if (workspace == null) {
-			return null;
-		}
-		
-		Iterator<SchoolDataEntityInitiator<Workspace>> initiatorIterator = workspaceInitiators.iterator();
-		while (initiatorIterator.hasNext()) {
-			workspace = initiatorIterator.next().single(workspace);
-		}
-		
-		return workspace;
-	};
-	
-	private List<Workspace> initWorkspaces(List<Workspace> workspaces) {
-		if (workspaces == null) {
-			return null;
-		}
-		
-		if (workspaces.size() == 0) {
-			return workspaces;
-		}
-		
-		Iterator<SchoolDataEntityInitiator<Workspace>> initiatorIterator = workspaceInitiators.iterator();
-		while (initiatorIterator.hasNext()) {
-			workspaces = initiatorIterator.next().list(workspaces);
-		}
-		
-		return workspaces;
-	};
-
-	private WorkspaceType initWorkspaceType(WorkspaceType workspaceType) {
-		if (workspaceType == null) {
-			return null;
-		}
-		
-		Iterator<SchoolDataEntityInitiator<WorkspaceType>> initiatorIterator = workspaceTypeInitiators.iterator();
-		while (initiatorIterator.hasNext()) {
-			workspaceType = initiatorIterator.next().single(workspaceType);
-		}
-		
-		return workspaceType;
-	};
-	
-	private List<WorkspaceType> initWorkspaceTypes(List<WorkspaceType> workspaceTypes) {
-		if (workspaceTypes == null) {
-			return null;
-		}
-		
-		if (workspaceTypes.size() == 0) {
-			return workspaceTypes;
-		}
-		
-		Iterator<SchoolDataEntityInitiator<WorkspaceType>> initiatorIterator = workspaceTypeInitiators.iterator();
-		while (initiatorIterator.hasNext()) {
-			workspaceTypes = initiatorIterator.next().list(workspaceTypes);
-		}
-		
-		return workspaceTypes;
-	};
-
-	private WorkspaceUser initWorkspaceUser(WorkspaceUser workspaceUser) {
-		if (workspaceUser == null) {
-			return null;
-		}
-		
-		Iterator<SchoolDataEntityInitiator<WorkspaceUser>> initiatorIterator = workspaceUserInitiators.iterator();
-		while (initiatorIterator.hasNext()) {
-			workspaceUser = initiatorIterator.next().single(workspaceUser);
-		}
-		
-		return workspaceUser;
-	};
-	
-	private List<WorkspaceUser> initWorkspaceUsers(List<WorkspaceUser> workspaceUsers) {
-		if (workspaceUsers == null) {
-			return null;
-		}
-		
-		if (workspaceUsers.size() == 0) {
-			return workspaceUsers;
-		}
-		
-		Iterator<SchoolDataEntityInitiator<WorkspaceUser>> initiatorIterator = workspaceUserInitiators.iterator();
-		while (initiatorIterator.hasNext()) {
-			workspaceUsers = initiatorIterator.next().list(workspaceUsers);
-		}
-		
-		return workspaceUsers;
-	}
-
 }

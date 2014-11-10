@@ -9,10 +9,8 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import fi.muikku.dao.users.UserEntityDAO;
 import fi.muikku.model.base.Tag;
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.notifier.NotifierController;
 import fi.muikku.plugins.communicator.dao.CommunicatorMessageCategoryDAO;
 import fi.muikku.plugins.communicator.dao.CommunicatorMessageIdDAO;
 import fi.muikku.plugins.communicator.dao.CommunicatorMessageRecipientDAO;
@@ -28,21 +26,12 @@ import fi.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
 import fi.muikku.plugins.communicator.model.InboxCommunicatorMessage;
 import fi.muikku.security.Permit;
 import fi.muikku.security.PermitContext;
-import fi.muikku.session.SessionController;
 
 @Dependent
 @Stateful
 @Named("Communicator")
 public class CommunicatorController {
-  @Inject
-  private UserEntityDAO userDAO;
-
-  @Inject
-  private SessionController sessionController;
-
-  @Inject
-  private fi.muikku.schooldata.UserController userController;
-  
+   
   @Inject
   private InboxCommunicatorMessageDAO communicatorMessageDAO;
 
@@ -60,9 +49,6 @@ public class CommunicatorController {
   
   @Inject
   private CommunicatorMessageSignatureDAO communicatorMessageSignatureDAO;
-  
-  @Inject
-  private NotifierController notifierController;
   
   /**
    * 

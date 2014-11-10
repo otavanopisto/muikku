@@ -11,13 +11,13 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import fi.muikku.dao.workspace.WorkspaceUserEntityDAO;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.session.SessionController;
+import fi.muikku.users.WorkspaceUserEntityController;
 
 @RequestScoped
 @Named ("CourseList")
@@ -33,7 +33,7 @@ public class CourseListBackingBean {
   private CourseListSelectionDAO courseListSelectionDAO;
   
   @Inject
-  private WorkspaceUserEntityDAO workspaceUserEntityDAO;
+  private WorkspaceUserEntityController workspaceUserEntityController;
   
   @Inject
   private UserFavouriteWorkspaceDAO userFavouriteWorkspaceDAO;
@@ -44,13 +44,13 @@ public class CourseListBackingBean {
    * @return
    */
   public List<Workspace> listWorkspacesByContext() {
-    UserEntity userEntity = sessionController.getUser();
+    UserEntity userEntity = sessionController.getLoggedUserEntity();
     
     CourseListSelectionEnum selection = getContextSelection();
     
     switch (selection) {
       case MY_COURSES: {
-        List<WorkspaceUserEntity> workspaceUsers = workspaceUserEntityDAO.listByUser(userEntity);
+        List<WorkspaceUserEntity> workspaceUsers = workspaceUserEntityController.listWorkspaceUserEntitiesByUserEntity(userEntity);
         List<Workspace> workspaces = new ArrayList<Workspace>();
         
         for (WorkspaceUserEntity workspaceUser : workspaceUsers) {
@@ -84,7 +84,7 @@ public class CourseListBackingBean {
    * Saves list selection for current logged user and context. 
    */
   public void saveSettings() {
-    UserEntity user = sessionController.getUser();
+    UserEntity user = sessionController.getLoggedUserEntity();
     CourseListSelection selection = courseListSelectionDAO.findByUserAndContext(user, context);
     
     if (selection == null)
@@ -102,7 +102,7 @@ public class CourseListBackingBean {
    * @return
    */
   private CourseListSelectionEnum getContextSelection() {
-    UserEntity userEntity = sessionController.getUser();
+    UserEntity userEntity = sessionController.getLoggedUserEntity();
     
     CourseListSelection listSelection = courseListSelectionDAO.findByUserAndContext(userEntity, context);
     CourseListSelectionEnum selection;

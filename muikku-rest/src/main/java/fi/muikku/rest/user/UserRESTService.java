@@ -11,8 +11,9 @@ import javax.ws.rs.core.Response;
 
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.rest.AbstractRESTService;
-import fi.muikku.schooldata.UserController;
 import fi.muikku.schooldata.entity.User;
+import fi.muikku.users.UserController;
+import fi.muikku.users.UserEntityController;
 
 @Path("/user")
 @Stateless
@@ -23,15 +24,18 @@ public class UserRESTService extends AbstractRESTService {
   @Inject
   private UserController userController;
   
+  @Inject
+  private UserEntityController userEntityController;
+  
   @GET
   @Path ("/users/{ID}")
   public Response findUser(@PathParam ("ID") Long id) {
-    UserEntity userEntity = userController.findUserEntityById(id);
+    UserEntity userEntity = userEntityController.findUserEntityById(id);
     if (userEntity == null) {
       return Response.status(Response.Status.NOT_FOUND).build();
     }
     
-    User user = userController.findUser(userEntity);
+    User user = userController.findUserByDataSourceAndIdentifier(userEntity.getDefaultSchoolDataSource(), userEntity.getDefaultIdentifier());
     if (user == null) {
       return Response.status(Response.Status.NOT_FOUND).build();
     }

@@ -61,8 +61,8 @@ public class HtmlMaterialController {
   @Inject
   private Event<HtmlMaterialUpdateEvent> materialUpdateEvent;
   
-	public HtmlMaterial createHtmlMaterial(String urlName, String title, String html) {
-		HtmlMaterial material = htmlMaterialDAO.create(urlName, title, html);
+	public HtmlMaterial createHtmlMaterial(String title, String html) {
+		HtmlMaterial material = htmlMaterialDAO.create(title, html);
 		materialCreateEvent.fire(new HtmlMaterialCreateEvent(material));
 		return material;
 	}

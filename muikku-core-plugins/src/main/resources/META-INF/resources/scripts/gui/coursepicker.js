@@ -7,7 +7,7 @@
       var _this = this;
       widgetElement = $(widgetElement);
       this._widgetElement = widgetElement;
-      this._userId = widgetElement.find("input[name='userId']").val();
+      this._workspaceStudentRoleId = widgetElement.find("input[name='workspaceStudentRoleId']").val();
       this._coursesContainer = $('#coursesList');
 
       this._searchInput = widgetElement.find("input[name='coursePickerSearch']");
@@ -69,9 +69,6 @@
         		    name : "signup",
         		    action: function (e) {
         		      var msg = e.contentElement.find("textarea[name='signUpMessage']").val();
-        		      var workspaceId = e.contentElement.find("input[name='workspaceId']").val();
-                      var workspaceUrl = e.contentElement.find("input[name='workspaceUrl']").val();
-        		      
         		      _this._joinCourse(workspaceId, workspaceUrl, msg);
         		    }
         		  }
@@ -167,7 +164,7 @@
       if (((term != undefined) && (term != "")) || (subjects.length > 0)) {
         if (hash == "my") {
           this._loadCourses({
-            userId: this._userId,
+            userId: MUIKKU_LOGGED_USER_ID,
             subjects: subjects,
             search: term
           });
@@ -180,7 +177,7 @@
       } else {
         if (hash == "my") {
           this._loadCourses({
-            userId: this._userId
+            userId: MUIKKU_LOGGED_USER_ID
           });
         }
         else {
@@ -196,45 +193,55 @@
     _loadCourses: function (params) {
       this._coursesContainer.children().remove();
       
-      mApi().workspace.workspaces.read(params||{})
-        .on('$', function (workspace, workspaceCallback) {
-          // TODO: Implement these
-          workspace.hasCourseFee = false;
-          workspace.hasAssessmentFee = false;
-          workspace.rating = 5;
-          workspace.ratingCount = 3;
-          
-          mApi().workspace.workspaces.users.read(workspace.id, {
-            role: 'Workspace Teacher'
-          })  
-          .on('$', function (workspaceUser, workspaceUserCallback) {
-            mApi().user.users.read(workspaceUser.userId).callback(function (userErr, user) {
-              workspaceUser.hasPicture = user.hasImage;
-              workspaceUser.fullName = (user.firstName ? user.firstName + ' ' : '') + user.lastName;
-              workspaceUserCallback();
-            });
-          })
-          .callback(function (workspaceUsersErr, workspaceUsers) {
-            workspace.teachers = workspaceUsers;
+      this._loadUserCourses($.proxy(function (userWorkspaceIds) {
+        mApi().workspace.workspaces.read(params||{})
+          .on('$', function (workspace, workspaceCallback) {
+
+  //        mApi().workspace.workspaces.users.read(workspace.id, {
+  //          roleArchtype: 'TEACHER'
+  //        })  
+  //        .on('$', function (workspaceUser, workspaceUserCallback) {
+  //          mApi().user.users.read(workspaceUser.userId).callback(function (userErr, user) {
+  //            workspaceUser.hasPicture = user.hasImage;
+  //            workspaceUser.fullName = (user.firstName ? user.firstName + ' ' : '') + user.lastName;
+  //            workspaceUserCallback();
+  //          });
+  //        })
+  //        .callback(function (workspaceUsersErr, workspaceUsers) {
+  //          workspace.teachers = workspaceUsers;
+  //        });
             
-            if (MUIKKU_LOGGED_USER_ID) {
-              mApi().workspace.workspaces.users.read(workspace.id, {
-                userId: MUIKKU_LOGGED_USER_ID
-              }).callback(function (memberErr, member) {
-                workspace.isMember = !!member;
-                workspaceCallback();
-              });
-            } else {
-              workspace.isMember = false;
-              workspaceCallback();
-            }       
-          });
+            // TODO: Implement these
+            workspace.hasCourseFee = false;
+            workspace.hasAssessmentFee = false;
+            workspace.rating = 5;
+            workspace.ratingCount = 3;
+            workspace.teachers = [];
+            workspace.isMember = userWorkspaceIds.indexOf(workspace.id) > -1;
+            workspaceCallback();
         })
         .callback($.proxy(function (err, workspaces) {
           renderDustTemplate('coursepicker/coursepickercourse.dust', workspaces, $.proxy(function (text) {
             this._coursesContainer.append(text);
           }, this));
-        }, this));
+        }, this));        
+      }, this));
+    },
+    
+    _loadUserCourses: function (callback) {
+      if (MUIKKU_LOGGED_USER_ID) {
+        mApi().workspace.workspaces
+          .read({ userId: MUIKKU_LOGGED_USER_ID })
+          .callback($.proxy(function (err, workspaces) {
+            var ids = $.map(workspaces||[], function (workspace) {
+              return workspace.id;
+            });
+            
+            callback(ids); 
+          }));
+      } else {
+        callback([]);
+      }
     },
     
     _refreshListTimer: function () {
@@ -259,28 +266,19 @@
       event.stopPropagation();
       var element = $(event.target);
       var coursePickerCourse = element.parents(".cp-course");
+      var workspaceRoleId = coursePickerCourse.find("input[name='workspaceRoleId']").val();
       var workspaceId = coursePickerCourse.find("input[name='workspaceId']").val();
       var workspaceUrl = coursePickerCourse.find("input[name='workspaceUrl']").val();
       
       window.location = CONTEXTPATH + '/workspace/' + workspaceUrl;
     },
     _joinCourse: function (workspaceId, workspaceUrl, joinMessage) {
-      var userId = MUIKKU_LOGGED_USER_ID;
-      
       mApi().workspace.workspaces.users.create(workspaceId, {
-        workspaceId: undefined,
-        archived: undefined,
-        role: undefined, 
-        id: undefined,
-        userId: userId
+        roleId: this._workspaceStudentRoleId
       })
       .callback(function (workspaceUsersErr, workspaceUsers) {
         mApi().workspace.workspaces.signups.create(workspaceId, {
-          workspaceId: undefined,
-          date: undefined,
-          message: joinMessage,
-          id: undefined,
-          userId: userId
+          message: joinMessage
         })
         .callback(function (workspaceUsersErr, workspaceUsers) {
           window.location = CONTEXTPATH + '/workspace/' + workspaceUrl;

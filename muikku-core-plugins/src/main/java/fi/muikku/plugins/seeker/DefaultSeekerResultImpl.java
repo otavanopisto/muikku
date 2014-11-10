@@ -35,4 +35,9 @@ public class DefaultSeekerResultImpl implements SeekerResult {
   public String getTemplate() {
     return "seeker/defaultseekerresult.dust";
   }
+
+  @Override
+  public void setCategory(String category) {
+    this.category = category;
+  }
 }

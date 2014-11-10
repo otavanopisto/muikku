@@ -10,14 +10,10 @@ import org.apache.commons.lang3.LocaleUtils;
 
 import fi.muikku.i18n.LocaleBundle;
 import fi.muikku.i18n.LocaleLocation;
-import fi.muikku.model.users.UserEntity;
-import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugin.LocalizedPluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
 import fi.muikku.plugin.PrioritizedPluginDescriptor;
-import fi.muikku.plugins.wall.model.UserWall;
-import fi.muikku.plugins.wall.model.WorkspaceWall;
-import fi.muikku.schooldata.UserController;
+import fi.muikku.users.UserController;
 import fi.muikku.schooldata.WorkspaceController;
 
 public class WallPluginDescriptor implements PluginDescriptor, LocalizedPluginDescriptor, PrioritizedPluginDescriptor {
@@ -34,22 +30,22 @@ public class WallPluginDescriptor implements PluginDescriptor, LocalizedPluginDe
   @Override
   public void init() {
 	  // Initialize workspace walls
-	  
-	  List<WorkspaceEntity> workspaceEntities = workspaceController.listWorkspaceEntities();
-	  for (WorkspaceEntity workspaceEntity : workspaceEntities) {
-	    WorkspaceWall workspaceWall = wallController.findWorkspaceWall(workspaceEntity);
-	    if (workspaceWall == null)
-	      wallController.createWorkspaceWall(workspaceEntity);
-	  }
-
-	  // Init user walls
-	  
-    List<UserEntity> userEntities = userController.listUserEntities();
-    for (UserEntity userEntity : userEntities) {
-      UserWall userWall = wallController.findUserWall(userEntity);
-      if (userWall == null)
-        wallController.createUserWall(userEntity);
-    }
+//	  
+//	  List<WorkspaceEntity> workspaceEntities = workspaceController.listWorkspaceEntities();
+//	  for (WorkspaceEntity workspaceEntity : workspaceEntities) {
+//	    WorkspaceWall workspaceWall = wallController.findWorkspaceWall(workspaceEntity);
+//	    if (workspaceWall == null)
+//	      wallController.createWorkspaceWall(workspaceEntity);
+//	  }
+//
+//	  // Init user walls
+//	  
+//    List<UserEntity> userEntities = userController.listUserEntities();
+//    for (UserEntity userEntity : userEntities) {
+//      UserWall userWall = wallController.findUserWall(userEntity);
+//      if (userWall == null)
+//        wallController.createUserWall(userEntity);
+//    }
 	}
   
   @Override

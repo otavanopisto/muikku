@@ -14,7 +14,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.Parameter;
 
-import fi.muikku.controller.UserEntityController;
+import fi.muikku.users.UserEntityController;
 import fi.muikku.i18n.LocaleController;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.forgotpassword.model.PasswordResetRequest;
@@ -50,7 +50,7 @@ public class ResetPasswordBackingBean {
     long userEntityId;
     PasswordResetRequest passwordResetRequest = forgotPasswordController.findPasswordResetRequestByResetHash(urlHash);
     if (passwordResetRequest != null) {
-      UserEntity userEntity = userEntityController.findUserById(passwordResetRequest.getUserEntityId());
+      UserEntity userEntity = userEntityController.findUserEntityById(passwordResetRequest.getUserEntityId());
       if (userEntity != null) {
         userEntityId = userEntity.getId();
         if (getPassword1().equals(getPassword2())) {

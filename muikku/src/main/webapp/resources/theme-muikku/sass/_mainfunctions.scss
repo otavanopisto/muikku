@@ -7,21 +7,25 @@
 }
 
 
+/* TODO: all the "side" to "sub" - there shouldn't be any references to location */
+
 .mf-side{
  min-height:450px;
 }
 
-.mf-side-button{
+.mf-button-container{
    @extend .co-mainFunction-side-button;
    height:70px;
+
+    > div:first-child{
+      width:170px;
+      margin-left:31px;
+      margin-top:15px;
+    }
 }
 
 
-.mf-side-button > div:first-child{
-  width:170px;
-  margin-left:31px;
-  margin-top:15px;
-}
+
 
 .mf-side-button-dropdown{
   display:none;
@@ -55,15 +59,16 @@
     }
 }
 
-
-.mf-side-header{
-  @extend .co-mainFunction-side-header;
+.mf-sub-header{
+  @extend .co-mainFunction-sub-header;
   padding:3px;
 }
 
 .mf-side-content{
  padding:5px;
+ background-color:#fff;
 }
+
 
 
 
@@ -82,10 +87,9 @@
 .mf-filter-disabled{
  background-color:#cecece !important;
  color:#fff !important;
-  
 }
 
-.mf-side-header > span{
+.mf-sub-header > span{
   color:#fff;
 }
 
@@ -95,24 +99,22 @@
 }
 
 .mf-side-links{
- background-color:#fff;
- 
+  background-color:#fff;
   li {
-  display:block;
-  @include padding(5px);
-  border-bottom:1px solid #f3f3f3;
-  a{
-    text-decoration:none;
-    color:#3c3c3c;
-  }
+    display:block;
+    @include padding(5px);
+    border-bottom:1px solid #f3f3f3;
+    a{
+      text-decoration:none;
+      color:#3c3c3c;
+    }
 
  }
  
 }
 
-
-
-.mf-content{
+.mf-content-area{
+  background-color:$mainFuncSide;
 }
 
 .mf-content-functions{
@@ -146,12 +148,31 @@
 
 }
 
+.mf-content-toolbar{
+  /* padding:20px 0 0 0px; */
+}
+
+.mf-content-tool-container{
+  margin-left:20px;
+  margin-top:20px;
+  
+}
+
+.mf-content-tool{
+  display:inline-block;
+  color:#c6d7de;
+  font-size:2em;   
+  
+  &.selected{
+   color:#fba31e;
+  }
+  
+}
 
 
 .mf-content-main{
   @extend .co-mainFunction-content-main;
   min-height:450px;
-  padding:10px;
 }
 
 
@@ -160,6 +181,16 @@
  padding:5px 5px 5px 5px;
  margin-bottom:10px;
 }
+
+.mf-event{
+ @extend .co-eventItem;
+ padding:15px 15px 15px 15px;
+ margin-bottom:10px;
+ border-radius:25px;
+ font-weight:300;
+ font-size:2em;
+}
+
 
 .mf-item-details-container{
   background-color:#f0f3f4;

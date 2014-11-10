@@ -27,7 +27,7 @@ public class WidgetsBackingBean {
 		boolean loggedIn = sessionController.isLoggedIn();
 		
 		if (loggedIn) {
-      result.addAll(widgetController.listWidgetSpaceUserWidgets(location, sessionController.getUser()));
+      result.addAll(widgetController.listWidgetSpaceUserWidgets(location, sessionController.getLoggedUserEntity()));
     }
 		
     if (result.isEmpty()) {

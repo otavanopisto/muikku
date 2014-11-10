@@ -1,0 +1,297 @@
+/* Calendar (ca-*) */
+
+
+/* TODO - move to core-plugins after mock data is gone... */
+
+
+.ca-home{
+  
+  background-color:#fff;
+   border-left:1px solid #f1f1f1;
+}
+
+.ca-home-today{
+  float:left;
+  box-sizing: border-box;
+  width:50%;
+  background-color:#fff;
+  min-height:500px;  
+
+}
+
+.ca-today-date{ 
+  color:#747474;
+  text-shadow: 3px 3px 4px rgba(150, 150, 150, 0.73);
+  font-weight:400;
+  .ca-date-primary{
+    margin-top:60px;
+    float:left;
+    box-sizing:border-box;
+     span {
+      font-size:10em;
+     }
+  }
+  
+  .ca-date-secondary{
+    margin-top:20px;
+    float:left;
+    box-sizing:border-box;    
+    margin-top: 25px;
+    padding-left: 15px;
+    text-align: center;
+        
+      span{
+        font-size:1.6em;     
+      }
+     
+      
+    .ca-date-day-name{
+      margin-bottom:15px;
+    }
+    .ca-date-day-time{}
+  }
+}
+
+.ca-home-week{
+  float:left;
+  box-sizing: border-box;
+  width:50%;  
+  background-color:#fff;
+  min-height:500px;
+}
+
+
+.ca-today-events{
+  @include padding();  
+  margin-top:25px;
+  color:#fff;  
+  .fc00{
+  @extend .co-mainFunction-sub-header; 
+  }
+  
+}
+
+.ca-weekDays-container{
+}
+
+.ca-grid-month-topic{
+  border-bottom:1px solid #f1f1f1;
+  
+}
+.ca-monthDays-container{
+   background-color:#fff;
+   
+   .ca-weekDays{
+    
+    &.numbers{
+     height:93px;
+     font-size:3em;
+     line-height:1.5em;
+     color:#c4c4c4;
+     border-bottom:1px solid #f1f1f1;
+     border-right:1px solid #f1f1f1;
+ 
+     span{
+        vertical-align:middle;
+        line-height:normal;   
+     }
+     
+    &:hover{
+    background-color:#cce4ed;
+    color:#fff !important;
+   }
+    }
+   &.today{
+    color:#aed4e3;
+    border:5px solid #aed4e3;
+    font-size:3.5em;
+    line-height:1em;
+   }
+   }
+}
+
+
+.ca-weekDays{
+  width:14.28%;
+  float:left;
+  box-sizing:border-box;
+  text-align:center;
+ 
+  &.numbers{
+    padding:5px;
+  }
+
+  &.grids{
+  
+  }
+
+  &.names{
+    color:#fff;  
+    &.today{
+      font-weight:700;
+    }              
+  }
+}
+
+
+.ca-time-grid-day{
+  background-color:#fff;  
+      border-bottom:1px solid #fff; 
+  &.today{
+    background-color:#f0f5f8;    
+    > div{
+     color:#f0f5f8;
+     border-bottom:1px solid #f0f5f8;      
+    }
+  }
+
+  &:hover{
+    background-color:#fafcfd;        
+    > div{
+      color:#e5e7e8;
+      border-bottom:1px solid #fafcfd; 
+    }    
+  } 
+}
+
+.ca-time-grid-hour{
+   color:#fff;
+   padding:5px 0 5px 0;
+
+   &:hover{
+    background-color:#cce4ed;
+    border-bottom:1px solid #cce4ed;      
+    color:#fff !important;
+   }  
+}
+
+.ca-grid-day{
+}
+
+.ca-grid-day-events{
+  .ca-hour-unit{
+    border-top:1px solid #f1f1f1;  
+    background-color:#fff; 
+    > div{
+     box-sizing: border-box;
+      span{
+        vertical-align:middle;
+        line-height:normal;   
+      }
+    }
+    .ca-hour-list-number{
+      float:left;
+      @extend .co-mainFunction-sub-header;
+      width:40px;
+      height:40px;
+      line-height:1em;      
+      color:#fff;
+      font-size:2em;
+
+    }
+    .ca-hour-list-events{
+     height:40px;
+     line-height:40px;
+     span{
+       margin-left:15px;
+       display:inline-block;
+     }
+    }
+  } 
+}
+
+.ca-grid-week{
+  min-height:500px;
+  border-left:1px solid #f1f1f1;  
+}
+
+.ca-grid-header-scaleSpace{
+  width:10%;
+  float:left;
+  bacground-color:#fff;
+  box-sizing: border-box;
+  span{
+   color:#fff;
+  }
+}
+
+.ca-time-grid-scale-hour{
+  text-align:center;
+  padding:5px 0;
+  border-bottom:1px solid #f1f1f1;  
+  border-left:1px solid #f1f1f1;  
+  span{
+   color:#dadada;
+ }   
+}
+
+.ca-grid-header-content{
+  width:90%;
+  float:left;
+  box-sizing: border-box;   
+}
+
+.ca-grid-week-scale{
+  width:10%;
+  float:left;
+  box-sizing: border-box;
+}
+
+.ca-grid-week-events{
+  width:90%;
+  float:left;
+  box-sizing: border-box;
+}
+
+.ca-grid-month{
+   border-left:1px solid #f1f1f1;  
+}
+.ca-grid-events{
+   border-left:1px solid #f1f1f1;  
+}
+.ca-grid-events-list{
+  div:nth-child(even){
+   background-color:#f7f9fa;
+  }  
+}
+
+.ca-grid-events-content{
+ margin:5px; 
+
+}
+
+.ca-grid-events-subTopic{
+ background-color: #d5e1e6;  
+ text-align:center;
+ padding:5px; 
+ span{
+  color:#fff;
+  font-weight:700;
+ }
+}
+
+.ca-list-event{
+  background-color:#fff;
+  height:30px;
+  line-height:30px;
+ 
+  span{
+    margin-left:10px;
+    display:inline-block;
+    vertical-align:middle;
+    line-height:normal;      
+  }
+  
+  .event-tag{
+    background-color: #fba31e;
+    border-radius: 20px;
+    color: #fff;
+    height: 20px;
+    margin-left: 5px;
+    text-align: center;
+    width: 20px;
+  }
+  
+}
+
+

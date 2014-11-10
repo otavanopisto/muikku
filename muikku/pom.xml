@@ -9,7 +9,7 @@
   <parent>
     <groupId>fi.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.3-SNAPSHOT</version>
+    <version>1.0.5-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -174,6 +174,12 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>resteasy-jackson2-provider</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- Muikku -->
 
     <dependency>
@@ -211,49 +217,49 @@
     <dependency>
       <groupId>fi.muikku</groupId>
       <artifactId>h2db-plugin</artifactId>
-      <version>1.0.3-SNAPSHOT</version>
+      <version>1.0.5-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>fi.muikku</groupId>
-      <artifactId>school-data-mock</artifactId>
-      <version>1.0.3-SNAPSHOT</version>
+      <artifactId>school-data-pyramus</artifactId>
+      <version>1.0.5-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>fi.muikku</groupId>
       <artifactId>deus-nex-machina</artifactId>
-      <version>1.0.3-SNAPSHOT</version>
+      <version>1.0.5-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>fi.muikku</groupId>
       <artifactId>dummy-mail-bridge-plugin</artifactId>
-      <version>1.0.3-SNAPSHOT</version>
+      <version>1.0.5-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>fi.muikku</groupId>
       <artifactId>google-oauth-plugin</artifactId>
-      <version>1.0.3-SNAPSHOT</version>
+      <version>1.0.5-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>fi.muikku</groupId>
       <artifactId>facebook-oauth-plugin</artifactId>
-      <version>1.0.3-SNAPSHOT</version>
+      <version>1.0.5-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>fi.muikku</groupId>
       <artifactId>mongo-log-plugin</artifactId>
-      <version>1.0.3-SNAPSHOT</version>
+      <version>1.0.5-SNAPSHOT</version>
     </dependency>
 
     <dependency>
       <groupId>fi.muikku</groupId>
       <artifactId>google-calendar-plugin</artifactId>
-      <version>1.0.3-SNAPSHOT</version>
+      <version>1.0.5-SNAPSHOT</version>
     </dependency>
 
     <!-- ENABLED PLUGINS END -->
@@ -315,7 +321,7 @@
         <configuration>
           <archive>
             <manifestEntries>
-              <Dependencies>org.apache.commons.io, org.apache.commons.collections, org.apache.commons.codec, org.codehaus.jackson.jackson-core-asl, org.codehaus.jackson.jackson-mapper-asl, org.apache.httpcomponents, com.h2database.h2</Dependencies>
+              <Dependencies>org.apache.commons.io, org.apache.commons.collections, org.apache.commons.codec, org.codehaus.jackson.jackson-core-asl, org.codehaus.jackson.jackson-mapper-asl, org.apache.httpcomponents, com.h2database.h2, org.jboss.resteasy.resteasy-jackson2-provider</Dependencies>
             </manifestEntries>
           </archive>
         </configuration>

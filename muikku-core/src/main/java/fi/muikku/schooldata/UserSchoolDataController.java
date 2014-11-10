@@ -24,7 +24,7 @@ import fi.muikku.schooldata.entity.UserEmail;
 
 @Dependent
 @Stateful
-class UserSchoolDataController { 
+public class UserSchoolDataController { 
 	
 	// TODO: Caching 
 	// TODO: Events
@@ -35,20 +35,6 @@ class UserSchoolDataController {
 	@Inject
 	@Any
 	private Instance<UserSchoolDataBridge> userBridges;
-	
-	@Inject
-  @SchoolDataBridgeEntityInitiator ( entity = User.class )
-	private Instance<SchoolDataEntityInitiator<User>> userInitiators;
-
-	@Inject
-	@Any
-	@SchoolDataBridgeEntityInitiator ( entity = UserEmail.class )
-	private Instance<SchoolDataEntityInitiator<UserEmail>> userEmailInitiators;
-
-	@Inject
-	@Any
-	@SchoolDataBridgeEntityInitiator ( entity = Role.class )
-	private Instance<SchoolDataEntityInitiator<Role>> roleInitiators;
 	
 	@Inject
 	private UserSchoolDataIdentifierDAO userSchoolDataIdentifierDAO;
@@ -62,7 +48,7 @@ class UserSchoolDataController {
     UserSchoolDataBridge userBridge = getUserBridge(schoolDataSource);
     if (userBridge != null) {
       try {
-        return initUser(userBridge.createUser(firstName, lastName));
+        return userBridge.createUser(firstName, lastName);
       } catch (SchoolDataBridgeRequestException e) {
         logger.log(Level.SEVERE, "School Data Bridge reported a problem while creating an user", e);
       } catch (UnexpectedSchoolDataBridgeException e) {
@@ -72,24 +58,12 @@ class UserSchoolDataController {
     
     return null;
   }
-
-	public User findUser(SchoolDataSource schoolDataSource, UserEntity userEntity) {
-		UserSchoolDataBridge userBridge = getUserBridge(schoolDataSource);
-		if (userBridge != null) {
-  		UserSchoolDataIdentifier schoolDataIdentifier = userSchoolDataIdentifierDAO.findByDataSourceAndUserEntity(schoolDataSource, userEntity);
-	  	if (schoolDataIdentifier != null) {
-	  		return initUser(findUserByIdentifier(userBridge, schoolDataIdentifier.getIdentifier()));
-		  }
-		}
-		
-		return null;
-	}
 	
 	public User findUser(SchoolDataSource schoolDataSource, String userIdentifier) {
 		UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
 		if (schoolDataBridge != null) {
 			try {
-				return initUser(schoolDataBridge.findUser(userIdentifier));
+				return schoolDataBridge.findUser(userIdentifier);
 			} catch (SchoolDataBridgeRequestException e) {
 				logger.log(Level.SEVERE, "School Data Bridge reported a problem while find a user", e);
 			} catch (UnexpectedSchoolDataBridgeException e) {
@@ -122,7 +96,7 @@ class UserSchoolDataController {
 			}
 		}
 		
-		return initUsers(result);
+		return result;
 	}
 	
 	public List<User> listUsersByEntity(UserEntity userEntity) {
@@ -130,7 +104,8 @@ class UserSchoolDataController {
 		
 		List<UserSchoolDataIdentifier> identifiers = userSchoolDataIdentifierDAO.listByUserEntity(userEntity);
 		for (UserSchoolDataIdentifier identifier : identifiers) {
-			User user = findUser(identifier.getDataSource(), userEntity);
+		  UserSchoolDataBridge userBridge = getUserBridge(identifier.getDataSource());
+		  User user = findUserByIdentifier(userBridge, identifier.getIdentifier());
 			if (user != null) {
 				result.add(user);
 			}
@@ -144,10 +119,7 @@ class UserSchoolDataController {
 		
 		for (UserSchoolDataBridge userBridge : getUserBridges()) {
 			try {
-				User user = userBridge.findUserByEmail(email);
-				if (user != null) {
-				  result.add(user);
-				}
+			  result.addAll(userBridge.listUsersByEmail(email));
 			} catch (SchoolDataBridgeRequestException e) {
 				logger.log(Level.SEVERE, "SchoolDataBridge reported an error while listing users by email", e);
 			} catch (UnexpectedSchoolDataBridgeException e) {
@@ -155,8 +127,33 @@ class UserSchoolDataController {
 			}
 		}
 		
-		return initUsers(result);
+		return result;
 	}
+
+  public List<User> listUsersByEmails(List<String> emails) {
+    List<User> result = new ArrayList<>();
+    
+    for (String email : emails) {
+      List<User> users = listUsersByEmail(email);
+      for (User user : users) {
+        if (!userListContains(result, user)) {
+          result.add(user);
+        }
+      }
+    }
+    
+    return result;
+  }
+  
+  private boolean userListContains(List<User> listUsers, User user) {
+    for (User listUser : listUsers) {
+      if (listUser.getSchoolDataSource().equals(user.getSchoolDataSource()) && listUser.getIdentifier().equals(user.getIdentifier())) {
+        return true;
+      }
+    }
+    
+    return false;
+  }
 	
 	/* User Entity */
 	
@@ -169,6 +166,15 @@ class UserSchoolDataController {
 		
 		return null;
 	}
+  
+  public UserEntity findUserEntityByDataSourceAndIdentifier(SchoolDataSource dataSource, String identifier) {
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(dataSource, identifier);
+    if (userSchoolDataIdentifier != null) {
+      return userSchoolDataIdentifier.getUserEntity();
+    }
+    
+    return null;
+  }
 	
 	/* User Emails */
 
@@ -178,7 +184,7 @@ class UserSchoolDataController {
 			UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
 			if (schoolDataBridge != null) {
 				try {
-					return initUserEmails(schoolDataBridge.listUserEmailsByUserIdentifier(user.getIdentifier()));
+					return schoolDataBridge.listUserEmailsByUserIdentifier(user.getIdentifier());
 				} catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
 					logger.log(Level.SEVERE, "SchoolDataBridge reported an error while listing user emails", e);
 				}
@@ -188,13 +194,26 @@ class UserSchoolDataController {
 		return null;
 	}
 	
-	/* Roles*/
+  public UserEmail findUserEmail(SchoolDataSource schoolDataSource, String identifier) {
+    UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
+    if (schoolDataBridge != null) {
+      try {
+        return schoolDataBridge.findUserEmail(identifier);
+      } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
+        logger.log(Level.SEVERE, "SchoolDataBridge reported an error while listing user emails", e);
+      }
+    }
+    
+    return null;
+  }
+  
+  /* Roles*/
 
 	public Role findRole(SchoolDataSource schoolDataSource, String identifier) {
 		UserSchoolDataBridge userBridge = getUserBridge(schoolDataSource);
 		if (userBridge != null) {
 			try {
-				return initRole(userBridge.findRole(identifier));
+				return userBridge.findRole(identifier);
 			} catch (SchoolDataBridgeRequestException e) {
 				logger.log(Level.SEVERE, "School Data Bridge reported a problem while finding a role", e);
 			} catch (UnexpectedSchoolDataBridgeException e) {
@@ -218,7 +237,7 @@ class UserSchoolDataController {
 			}
 		}
 		
-		return initRoles(result);
+		return result;
 	}
 
 	public Role findUserEnvironmentRole(User user) {
@@ -227,7 +246,7 @@ class UserSchoolDataController {
 			UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
 			if (schoolDataBridge != null) {
 				try {
-					return initRole(schoolDataBridge.findUserEnvironmentRole(user.getIdentifier()));
+					return schoolDataBridge.findUserEnvironmentRole(user.getIdentifier());
 				} catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
 					logger.log(Level.SEVERE, "SchoolDataBridge reported an error while listing user emails", e);
 				}
@@ -271,83 +290,5 @@ class UserSchoolDataController {
 		
 		return Collections.unmodifiableList(result);
 	}
-	
-	/* Initiators */
 
-	private User initUser(User user) {
-		if (user == null) {
-			return null;
-		}
-		
-		Iterator<SchoolDataEntityInitiator<User>> initiatorIterator = userInitiators.iterator();
-		while (initiatorIterator.hasNext()) {
-			user = initiatorIterator.next().single(user);
-		}
-		
-		return user;
-	};
-	
-	private List<User> initUsers(List<User> users) {
-		if (users == null) {
-			return null;
-		}
-		
-		if (users.size() == 0) {
-			return users;
-		}
-		
-		Iterator<SchoolDataEntityInitiator<User>> initiatorIterator = userInitiators.iterator();
-		while (initiatorIterator.hasNext()) {
-			users = initiatorIterator.next().list(users);
-		}
-		
-		return users;
-	};
-	
-	private List<UserEmail> initUserEmails(List<UserEmail> userEmails) {
-		if (userEmails == null) {
-			return null;
-		}
-		
-		if (userEmails.size() == 0) {
-			return userEmails;
-		}
-		
-		Iterator<SchoolDataEntityInitiator<UserEmail>> initiatorIterator = userEmailInitiators.iterator();
-		while (initiatorIterator.hasNext()) {
-			userEmails = initiatorIterator.next().list(userEmails);
-		}
-		
-		return userEmails;
-	}
-
-	private Role initRole(Role role) {
-		if (role == null) {
-			return null;
-		}
-		
-		Iterator<SchoolDataEntityInitiator<Role>> initiatorIterator = roleInitiators.iterator();
-		while (initiatorIterator.hasNext()) {
-			role = initiatorIterator.next().single(role);
-		}
-		
-		return role;
-	}
-
-	private List<Role> initRoles(List<Role> roles) {
-		if (roles == null) {
-			return null;
-		}
-		
-		if (roles.size() == 0) {
-			return roles;
-		}
-		
-		Iterator<SchoolDataEntityInitiator<Role>> initiatorIterator = roleInitiators.iterator();
-		while (initiatorIterator.hasNext()) {
-			roles = initiatorIterator.next().list(roles);
-		}
-		
-		return roles;
-	}
 }

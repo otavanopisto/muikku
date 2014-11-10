@@ -15,12 +15,15 @@
     .md-close{
     font-weight:300;
     }
-
-    
   }
 
 
   .md-content{
+
+    
+   div:not(:first-child){
+    margin-top: 10px;
+   }
   
    div.md-content-primary{
      background-color:rgba(0,0,0,0.17);   
@@ -50,11 +53,6 @@
          div {
           background-color: transparent !important; 
          }
-
-         div:not(:first-child){
-          margin-top: 10px;
-         }
-
        } 
 
       }
@@ -90,7 +88,6 @@
     }   
    }
 
-  
 
    
    textarea{
