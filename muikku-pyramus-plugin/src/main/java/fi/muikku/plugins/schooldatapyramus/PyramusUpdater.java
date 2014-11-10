@@ -33,6 +33,7 @@ import fi.muikku.schooldata.events.SchoolDataWorkspaceDiscoveredEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceRemovedEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceRoleDiscoveredEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceRoleRemovedEvent;
+import fi.muikku.schooldata.events.SchoolDataWorkspaceUpdatedEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceUserDiscoveredEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceUserRemovedEvent;
 import fi.muikku.users.EnvironmentRoleEntityController;
@@ -98,6 +99,9 @@ public class PyramusUpdater {
 
   @Inject
   private Event<SchoolDataWorkspaceDiscoveredEvent> schoolDataWorkspaceDiscoveredEvent;
+
+  @Inject
+  private Event<SchoolDataWorkspaceUpdatedEvent> schoolDataWorkspaceUpdatedEvent;
 
   @Inject
   private Event<SchoolDataWorkspaceRemovedEvent> schoolDataWorkspaceRemovedEvent;
@@ -292,6 +296,8 @@ public class PyramusUpdater {
     if (course != null) {
       if (workspaceEntity == null) {
         fireWorkspaceDiscovered(course);
+      } else {
+        fireWorkspaceUpdated(course);
       }
     } else {
       if (workspaceEntity != null) {
@@ -577,6 +583,11 @@ public class PyramusUpdater {
   private void fireWorkspaceDiscovered(Course course) {
     String identifier = identifierMapper.getWorkspaceIdentifier(course.getId());
     schoolDataWorkspaceDiscoveredEvent.fire(new SchoolDataWorkspaceDiscoveredEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifier, course.getName()));
+  }
+
+  private void fireWorkspaceUpdated(Course course) {
+    String identifier = identifierMapper.getWorkspaceIdentifier(course.getId());
+    schoolDataWorkspaceUpdatedEvent.fire(new SchoolDataWorkspaceUpdatedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifier, course.getName()));
   }
 
   private void fireWorkspaceRemoved(Long courseId) {
