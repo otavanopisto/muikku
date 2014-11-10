@@ -147,6 +147,9 @@ public class PyramusUpdater {
       if (userEntity == null) {
         fireStudentDiscoverted(student);
         return true;
+      } else {
+        fireStudentUpdated(student);
+        return false;
       }
     } else {
       if (userEntity != null) {
@@ -598,6 +601,19 @@ public class PyramusUpdater {
     }
     
     schoolDataUserDiscoveredEvent.fire(new SchoolDataUserDiscoveredEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, studentIdentifier, emails));
+  }
+
+  private void fireStudentUpdated(Student student) {
+    String studentIdentifier = identifierMapper.getStudentIdentifier(student.getId());
+ 
+   List<String> emails = new ArrayList<>();
+    
+    Email[] studentEmails = pyramusClient.get("/students/students/" + student.getId() + "/emails", Email[].class);
+    for (Email studentEmail : studentEmails) {
+      emails.add(studentEmail.getAddress());
+    }
+    
+    schoolDataUserUpdatedEvent.fire(new SchoolDataUserUpdatedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, studentIdentifier, emails));
   }
   
   private void fireStudentRemoved(Long studentId) {
