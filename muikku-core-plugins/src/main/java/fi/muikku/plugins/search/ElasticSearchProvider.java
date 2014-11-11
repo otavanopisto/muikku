@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.annotation.PreDestroy;
 import javax.ejb.Stateful;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -41,10 +40,11 @@ public class ElasticSearchProvider implements SearchProvider {
     elasticClient = node.client();
   }
   
-  @PreDestroy
-  public void shutdown() {
+  @Override
+  public void deinit() {
     elasticClient.close();
   }
+  
   
   @Override
   public SearchResult search(String query, String[] fields, int start, int maxResults, Class<?>... types) {
