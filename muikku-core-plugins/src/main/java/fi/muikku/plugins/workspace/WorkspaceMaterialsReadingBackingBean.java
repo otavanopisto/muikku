@@ -1,9 +1,6 @@
 package fi.muikku.plugins.workspace;
 
 import java.io.FileNotFoundException;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -16,8 +13,6 @@ import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
-import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.Workspace;
@@ -59,28 +54,6 @@ public class WorkspaceMaterialsReadingBackingBean {
     workspaceNavigationBackingBean.setWorkspaceUrlName(urlName);
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
     workspaceName = workspace.getName();
-	}
-	
-	public List<WorkspaceNode> listWorkspaceNodes(WorkspaceNode workspaceNode) {
-	  List<WorkspaceNode> nodes = workspaceMaterialController.listWorkspaceNodesByParent(workspaceNode);
-	  
-		Collections.sort(nodes, new Comparator<WorkspaceNode>() {
-		  @Override
-		  public int compare(WorkspaceNode o1, WorkspaceNode o2) {
-		    return o1.getUrlName().compareTo(o2.getUrlName());
-		  }
-		  
-    });
-		
-		return nodes;
-	}
-	
-	public List<WorkspaceMaterial> listWorkspaceMaterials(WorkspaceNode workspaceNode) {
-		return workspaceMaterialController.listWorkspaceMaterialsByParent(workspaceNode);
-	}
-	
-	public List<WorkspaceNode> getAllNodes() {
-	  return listWorkspaceNodes(getRootFolder());
 	}
 	
 	public WorkspaceRootFolder getRootFolder() {
