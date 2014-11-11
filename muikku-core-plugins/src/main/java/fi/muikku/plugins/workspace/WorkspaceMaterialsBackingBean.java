@@ -17,6 +17,7 @@ import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.plugins.material.MaterialController;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
@@ -39,6 +40,9 @@ public class WorkspaceMaterialsBackingBean {
 	
 	@Inject
 	private WorkspaceMaterialController workspaceMaterialController;
+
+  @Inject
+  private MaterialController materialController;
 
 	@Inject
   @Named
@@ -137,7 +141,7 @@ public class WorkspaceMaterialsBackingBean {
     MaterialNode materialNode = new MaterialNode();
     materialNode.setWorkspaceMaterialId(workspaceNode.getId());
     if (workspaceNode instanceof WorkspaceMaterial) {
-      Material material = ((WorkspaceMaterial) workspaceNode).getMaterial();
+      Material material = materialController.findMaterialById(((WorkspaceMaterial) workspaceNode).getMaterialId());
       materialNode.setMaterialId(material.getId());
       materialNode.setMaterialType(material.getType());
       materialNode.setMaterialTitle(material.getTitle());
