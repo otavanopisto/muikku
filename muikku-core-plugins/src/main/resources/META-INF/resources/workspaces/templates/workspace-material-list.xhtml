@@ -13,7 +13,7 @@
         <ul class="workspace-materials-toc-section">
           <li class="workspace-materials-toc-subtitle">#{node.materialTitle}</li>
           <ui:include src="/workspaces/templates/workspace-material-list.xhtml">
-            <ui:param name="nodes" value="#{workspaceMaterialsBackingBean.getMaterialNodes(node)}" />
+            <ui:param name="nodes" value="#{workspaceMaterialsTOCBackingBean.getMaterialNodes(node)}" />
           </ui:include>
         </ul>
       </c:when>

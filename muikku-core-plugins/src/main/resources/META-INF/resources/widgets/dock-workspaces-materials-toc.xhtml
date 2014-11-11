@@ -15,7 +15,7 @@
           <div class="workspace-materials-toc-content-inner">
             <div class="workspace-materials-toc-content-scrolling">
               <ui:include src="/workspaces/templates/workspace-material-list.xhtml">
-                <ui:param name="nodes" value="#{workspaceMaterialsBackingBean.getMaterialNodes(workspaceMaterialsBackingBean.getRootFolder())}"/>
+                <ui:param name="nodes" value="#{workspaceMaterialsTOCBackingBean.getMaterialNodes(workspaceMaterialsBackingBean.getRootFolder())}"/>
               </ui:include>
               <div class="spacer"></div>
             </div>
