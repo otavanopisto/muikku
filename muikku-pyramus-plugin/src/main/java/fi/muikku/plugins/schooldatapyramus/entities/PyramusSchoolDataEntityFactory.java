@@ -39,9 +39,9 @@ public class PyramusSchoolDataEntityFactory {
   }
   
   @SuppressWarnings("incomplete-switch")
-  public User createEntity(fi.pyramus.rest.model.User user) {
-    String displayName = user.getFirstName() + " " + user.getLastName();
-    switch (user.getRole()) {
+  public User createEntity(fi.pyramus.rest.model.StaffMember staffMember) {
+    String displayName = staffMember.getFirstName() + " " + staffMember.getLastName();
+    switch (staffMember.getRole()) {
       case ADMINISTRATOR:
         displayName += " (Administrator)";
       break;
@@ -57,14 +57,14 @@ public class PyramusSchoolDataEntityFactory {
     }
     
     
-    return new PyramusUser(identifierMapper.getStaffIdentifier(user.getId()), user.getFirstName(), user.getLastName(), displayName);
+    return new PyramusUser(identifierMapper.getStaffIdentifier(staffMember.getId()), staffMember.getFirstName(), staffMember.getLastName(), displayName);
   }
   
-  public List<User> createEntity(fi.pyramus.rest.model.User ... users) {
+  public List<User> createEntity(fi.pyramus.rest.model.StaffMember ... staffMembers) {
     List<User> result = new ArrayList<>();
     
-    for (fi.pyramus.rest.model.User user : users) {
-      result.add(createEntity(user));
+    for (fi.pyramus.rest.model.StaffMember staffMember : staffMembers) {
+      result.add(createEntity(staffMember));
     }
     
     return result;
@@ -110,6 +110,12 @@ public class PyramusSchoolDataEntityFactory {
 
     return new PyramusEnvironmentRole("ENV-" + role.name(), archetype, role.name());
   }
+  
+  public EnvironmentRole createStudentEnvironmentRoleEntity() {
+    // TODO: Localize
+    EnvironmentRoleArchetype archetype = EnvironmentRoleArchetype.STUDENT;
+    return new PyramusEnvironmentRole("ENV-STUDENT", archetype, "Student");
+  }
 
   public List<EnvironmentRole> createEntity(fi.pyramus.rest.model.UserRole... roles) {
     List<EnvironmentRole> result = new ArrayList<>();
@@ -149,7 +155,7 @@ public class PyramusSchoolDataEntityFactory {
       SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, 
       identifierMapper.getWorkspaceIdentifier(staffMember.getCourseId()),
       SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, 
-      identifierMapper.getStaffIdentifier(staffMember.getUserId()), 
+      identifierMapper.getStaffIdentifier(staffMember.getStaffMemberId()), 
       SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, 
       identifierMapper.getWorkspaceStaffRoleIdentifier(staffMember.getRoleId())
     );
@@ -218,8 +224,6 @@ public class PyramusSchoolDataEntityFactory {
         return EnvironmentRoleArchetype.ADMINISTRATOR;
       case MANAGER:
         return EnvironmentRoleArchetype.MANAGER;
-      case STUDENT:
-        return EnvironmentRoleArchetype.STUDENT;
       default:
         return EnvironmentRoleArchetype.CUSTOM;
     }

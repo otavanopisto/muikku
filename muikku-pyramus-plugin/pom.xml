@@ -14,10 +14,6 @@
   <name>Muikku Pyramus plugin</name>
   <description>Plugin that provides support for using Pyramus as school data source for Muikku</description>
   
-  <properties>
-    <pyramus.version>0.7.1-SNAPSHOT</pyramus.version>
-  </properties>
-  
   <dependencies>
     <!-- Servlet -->
 
@@ -108,13 +104,13 @@
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>rest-model</artifactId>
-      <version>0.7.1</version>
+      <version>0.7.3-SNAPSHOT</version>
     </dependency>
     
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>pyramus-webhooks</artifactId>
-      <version>0.7.1</version>
+      <version>0.7.3-SNAPSHOT</version>
     </dependency>
 
     <!-- Muikku -->

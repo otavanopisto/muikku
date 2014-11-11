@@ -29,12 +29,15 @@ import fi.muikku.schooldata.events.SchoolDataUserDiscoveredEvent;
 import fi.muikku.schooldata.events.SchoolDataUserEnvironmentRoleDiscoveredEvent;
 import fi.muikku.schooldata.events.SchoolDataUserEnvironmentRoleRemovedEvent;
 import fi.muikku.schooldata.events.SchoolDataUserRemovedEvent;
+import fi.muikku.schooldata.events.SchoolDataUserUpdatedEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceDiscoveredEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceRemovedEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceRoleDiscoveredEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceRoleRemovedEvent;
+import fi.muikku.schooldata.events.SchoolDataWorkspaceUpdatedEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceUserDiscoveredEvent;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceUserRemovedEvent;
+import fi.muikku.schooldata.events.SchoolDataWorkspaceUserUpdatedEvent;
 import fi.muikku.users.EnvironmentRoleEntityController;
 import fi.muikku.users.EnvironmentUserController;
 import fi.muikku.users.RoleSchoolDataIdentifierController;
@@ -88,16 +91,25 @@ public class PyramusUpdater {
   private Event<SchoolDataUserDiscoveredEvent> schoolDataUserDiscoveredEvent;
 
   @Inject
+  private Event<SchoolDataUserUpdatedEvent> schoolDataUserUpdatedEvent;
+
+  @Inject
   private Event<SchoolDataUserRemovedEvent> schoolDataUserRemovedEvent;
 
   @Inject
   private Event<SchoolDataWorkspaceUserDiscoveredEvent> schoolDataWorkspaceUserDiscoveredEvent;
 
   @Inject
+  private Event<SchoolDataWorkspaceUserUpdatedEvent> schoolDataWorkspaceUserUpdatedEvent;
+
+  @Inject
   private Event<SchoolDataWorkspaceUserRemovedEvent> schoolDataWorkspaceUserRemovedEvent;
 
   @Inject
   private Event<SchoolDataWorkspaceDiscoveredEvent> schoolDataWorkspaceDiscoveredEvent;
+
+  @Inject
+  private Event<SchoolDataWorkspaceUpdatedEvent> schoolDataWorkspaceUpdatedEvent;
 
   @Inject
   private Event<SchoolDataWorkspaceRemovedEvent> schoolDataWorkspaceRemovedEvent;
@@ -135,6 +147,9 @@ public class PyramusUpdater {
       if (userEntity == null) {
         fireStudentDiscoverted(student);
         return true;
+      } else {
+        fireStudentUpdated(student);
+        return false;
       }
     } else {
       if (userEntity != null) {
@@ -195,7 +210,7 @@ public class PyramusUpdater {
    * @return returns whether new staff member was created or not
    */
   public boolean updateStaffMember(Long pyramusId) {
-    fi.pyramus.rest.model.User staffMember = pyramusClient.get("/staff/members/" + pyramusId, fi.pyramus.rest.model.User.class);
+    fi.pyramus.rest.model.StaffMember staffMember = pyramusClient.get("/staff/members/" + pyramusId, fi.pyramus.rest.model.StaffMember.class);
     String staffMemberIdentifier = identifierMapper.getStaffIdentifier(pyramusId);
     UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, staffMemberIdentifier);
     
@@ -203,6 +218,9 @@ public class PyramusUpdater {
       if (userEntity == null) {
         fireStaffMemberDiscovered(staffMember);
         return true;
+      } else {
+        fireStaffMemberUpdated(staffMember);
+        return false;
       }
     } else {
       if (userEntity != null) {
@@ -221,7 +239,7 @@ public class PyramusUpdater {
    * @return count of updates staff membres or -1 when no staff members were found with given offset
    */
   public int updateStaffMembers(int offset, int maxStaffMembers) {
-    fi.pyramus.rest.model.User[] staffMembers = pyramusClient.get("/staff/members?firstResult=" + offset + "&maxResults=" + maxStaffMembers, fi.pyramus.rest.model.User[].class);
+    fi.pyramus.rest.model.StaffMember[] staffMembers = pyramusClient.get("/staff/members?firstResult=" + offset + "&maxResults=" + maxStaffMembers, fi.pyramus.rest.model.StaffMember[].class);
     if (staffMembers.length == 0) {
       return -1;
     }
@@ -230,11 +248,11 @@ public class PyramusUpdater {
     //  because they do not have archived flag
 
     List<String> existingIdentifiers = userEntityController.listUserEntityIdentifiersByDataSource(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE);
-    List<fi.pyramus.rest.model.User> discoveredStaffMembers = new ArrayList<>();
+    List<fi.pyramus.rest.model.StaffMember> discoveredStaffMembers = new ArrayList<>();
     Map<Long, UserRole> discoveredUserRoles = new HashMap<>();
     Map<Long, String> removedUserRoles = new HashMap<>();
     
-    for (fi.pyramus.rest.model.User staffMember : staffMembers) {
+    for (fi.pyramus.rest.model.StaffMember staffMember : staffMembers) {
       String indentifier = identifierMapper.getStaffIdentifier(staffMember.getId());
       if (!existingIdentifiers.contains(indentifier)) {
         discoveredStaffMembers.add(staffMember);
@@ -261,7 +279,7 @@ public class PyramusUpdater {
       }
     }
     
-    for (fi.pyramus.rest.model.User discoveredStaffMember : discoveredStaffMembers) {
+    for (fi.pyramus.rest.model.StaffMember discoveredStaffMember : discoveredStaffMembers) {
       fireStaffMemberDiscovered(discoveredStaffMember);
     }
     
@@ -292,6 +310,8 @@ public class PyramusUpdater {
     if (course != null) {
       if (workspaceEntity == null) {
         fireWorkspaceDiscovered(course);
+      } else {
+        fireWorkspaceUpdated(course);
       }
     } else {
       if (workspaceEntity != null) {
@@ -371,6 +391,8 @@ public class PyramusUpdater {
         if (workspaceUserEntity == null) {
           fireCourseStaffMemberDiscovered(staffMember);
           return true;
+        } else {
+          fireCourseStaffMemberUpdated(staffMember);
         }
       } else {
         if (workspaceUserEntity != null) {
@@ -496,6 +518,8 @@ public class PyramusUpdater {
         if (workspaceUserEntity == null) {
           fireCourseStudentDiscovered(courseStudent);
           return true;
+        } else {
+          fireCourseStudentUpdated(courseStudent);
         }
       } else {
         if (workspaceUserEntity != null) {
@@ -539,7 +563,7 @@ public class PyramusUpdater {
     return count;
   }
  
-  private void fireStaffMemberDiscovered(fi.pyramus.rest.model.User staffMember) {
+  private void fireStaffMemberDiscovered(fi.pyramus.rest.model.StaffMember staffMember) {
     String staffMemberIdentifier = identifierMapper.getStaffIdentifier(staffMember.getId());
     List<String> emails = new ArrayList<>();
     
@@ -549,6 +573,18 @@ public class PyramusUpdater {
     }
     
     schoolDataUserDiscoveredEvent.fire(new SchoolDataUserDiscoveredEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, staffMemberIdentifier, emails));
+  }
+ 
+  private void fireStaffMemberUpdated(fi.pyramus.rest.model.StaffMember staffMember) {
+    String staffMemberIdentifier = identifierMapper.getStaffIdentifier(staffMember.getId());
+    List<String> emails = new ArrayList<>();
+    
+    Email[] studentEmails = pyramusClient.get("/staff/members/" + staffMember.getId() + "/emails", Email[].class);
+    for (Email studentEmail : studentEmails) {
+      emails.add(studentEmail.getAddress());
+    }
+    
+    schoolDataUserUpdatedEvent.fire(new SchoolDataUserUpdatedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, staffMemberIdentifier, emails));
   }
  
   private void fireStaffMemberRemoved(Long staffMemberId) {
@@ -568,6 +604,19 @@ public class PyramusUpdater {
     
     schoolDataUserDiscoveredEvent.fire(new SchoolDataUserDiscoveredEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, studentIdentifier, emails));
   }
+
+  private void fireStudentUpdated(Student student) {
+    String studentIdentifier = identifierMapper.getStudentIdentifier(student.getId());
+ 
+   List<String> emails = new ArrayList<>();
+    
+    Email[] studentEmails = pyramusClient.get("/students/students/" + student.getId() + "/emails", Email[].class);
+    for (Email studentEmail : studentEmails) {
+      emails.add(studentEmail.getAddress());
+    }
+    
+    schoolDataUserUpdatedEvent.fire(new SchoolDataUserUpdatedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, studentIdentifier, emails));
+  }
   
   private void fireStudentRemoved(Long studentId) {
     String studentIdentifier = identifierMapper.getStudentIdentifier(studentId);
@@ -577,6 +626,11 @@ public class PyramusUpdater {
   private void fireWorkspaceDiscovered(Course course) {
     String identifier = identifierMapper.getWorkspaceIdentifier(course.getId());
     schoolDataWorkspaceDiscoveredEvent.fire(new SchoolDataWorkspaceDiscoveredEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifier, course.getName()));
+  }
+
+  private void fireWorkspaceUpdated(Course course) {
+    String identifier = identifierMapper.getWorkspaceIdentifier(course.getId());
+    schoolDataWorkspaceUpdatedEvent.fire(new SchoolDataWorkspaceUpdatedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifier, course.getName()));
   }
 
   private void fireWorkspaceRemoved(Long courseId) {
@@ -597,11 +651,22 @@ public class PyramusUpdater {
   
   private void fireCourseStaffMemberDiscovered(CourseStaffMember courseStaffMember) {
     String identifier = identifierMapper.getWorkspaceStaffIdentifier(courseStaffMember.getId());
-    String userIdentifier = identifierMapper.getStaffIdentifier(courseStaffMember.getUserId());
+    String userIdentifier = identifierMapper.getStaffIdentifier(courseStaffMember.getStaffMemberId());
     String roleIdentifier = identifierMapper.getWorkspaceStaffRoleIdentifier(courseStaffMember.getRoleId());
     String workspaceIdentifier = identifierMapper.getWorkspaceIdentifier(courseStaffMember.getCourseId());
 
     schoolDataWorkspaceUserDiscoveredEvent.fire(new SchoolDataWorkspaceUserDiscoveredEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
+        identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, workspaceIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
+        userIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, roleIdentifier));
+  }
+  
+  private void fireCourseStaffMemberUpdated(CourseStaffMember courseStaffMember) {
+    String identifier = identifierMapper.getWorkspaceStaffIdentifier(courseStaffMember.getId());
+    String userIdentifier = identifierMapper.getStaffIdentifier(courseStaffMember.getStaffMemberId());
+    String roleIdentifier = identifierMapper.getWorkspaceStaffRoleIdentifier(courseStaffMember.getRoleId());
+    String workspaceIdentifier = identifierMapper.getWorkspaceIdentifier(courseStaffMember.getCourseId());
+
+    schoolDataWorkspaceUserUpdatedEvent.fire(new SchoolDataWorkspaceUserUpdatedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
         identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, workspaceIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
         userIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, roleIdentifier));
   }
@@ -623,6 +688,17 @@ public class PyramusUpdater {
     String workspaceIdentifier = identifierMapper.getWorkspaceIdentifier(courseStudent.getCourseId());
 
     schoolDataWorkspaceUserDiscoveredEvent.fire(new SchoolDataWorkspaceUserDiscoveredEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
+        identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, workspaceIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
+        userIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, roleIdentifier));
+  }
+
+  private void fireCourseStudentUpdated(CourseStudent courseStudent) {
+    String identifier = identifierMapper.getWorkspaceStudentIdentifier(courseStudent.getId());
+    String userIdentifier = identifierMapper.getStudentIdentifier(courseStudent.getStudentId());
+    String roleIdentifier = identifierMapper.getWorkspaceStudentRoleIdentifier();
+    String workspaceIdentifier = identifierMapper.getWorkspaceIdentifier(courseStudent.getCourseId());
+
+    schoolDataWorkspaceUserUpdatedEvent.fire(new SchoolDataWorkspaceUserUpdatedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
         identifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, workspaceIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE,
         userIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, roleIdentifier));
   }
