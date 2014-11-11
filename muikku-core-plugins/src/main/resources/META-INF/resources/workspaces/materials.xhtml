@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core" 
+  xmlns:h="http://java.sun.com/jsf/html" 
+  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+  xmlns:composite="http://java.sun.com/jsf/composite/composite" 
+  template="/workspaces/templates/workspace-materials-view.xhtml">
+
+  <!-- Material's title -->
+  <ui:define name="workspace.content.top.static">
+    <h1 class="">#{workspaceMaterialsBackingBean.workspaceName}</h1> 
+  </ui:define>
+  
+  
+  <ui:define name="workspace.content">
+    <h:outputScript name="scripts/gui/workspace-materials.js" target="head"/>
+    <ui:repeat var="node" value="#{workspaceMaterialsBackingBean.materialNodes}">
+      <section id="page-#{node.materialId}" data-material-id="#{node.materialId}" data-material-type="#{node.materialType}" data-material-title="#{node.materialTitle}" class="workspace-material-page"/>
+    </ui:repeat>
+  </ui:define>
+
+</ui:composition>

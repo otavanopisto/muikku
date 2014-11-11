@@ -22,7 +22,7 @@ public class CreateGuidanceRequestBackingBean {
   private SessionController sessionController;
   
   public GuidanceRequest createGuidanceRequest() {
-    return guidanceRequestController.createGuidanceRequest(sessionController.getUser(), new Date(), getNewGuidanceRequestMessage());
+    return guidanceRequestController.createGuidanceRequest(sessionController.getLoggedUserEntity(), new Date(), getNewGuidanceRequestMessage());
   }
 
   public String getNewGuidanceRequestMessage() {

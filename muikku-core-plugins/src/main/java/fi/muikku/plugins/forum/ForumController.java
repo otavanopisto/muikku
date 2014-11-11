@@ -64,19 +64,19 @@ public class ForumController {
   
   @Permit (ForumResourcePermissionCollection.FORUM_CREATEENVIRONMENTFORUM)
   public EnvironmentForumArea createEnvironmentForumArea(String name) {
-    UserEntity owner = sessionController.getUser();
+    UserEntity owner = sessionController.getLoggedUserEntity();
     ResourceRights rights = resourceRightsController.create();
     return environmentForumAreaDAO.create(name, false, owner, rights);
   }
   
   @Permit (ForumResourcePermissionCollection.FORUM_WRITEAREA)
   public ForumThread createForumThread(@PermitContext ForumArea forumArea, String title, String message) {
-    return forumThreadDAO.create(forumArea, title, message, sessionController.getUser());
+    return forumThreadDAO.create(forumArea, title, message, sessionController.getLoggedUserEntity());
   }
 
   @Permit (ForumResourcePermissionCollection.FORUM_WRITEAREA)
   public ForumThreadReply createForumThreadReply(@PermitContext ForumThread thread, String message) {
-    return forumThreadReplyDAO.create(thread.getForumArea(), thread, message, sessionController.getUser());
+    return forumThreadReplyDAO.create(thread.getForumArea(), thread, message, sessionController.getLoggedUserEntity());
   }
 
   public List<EnvironmentForumArea> listEnvironmentForums() {

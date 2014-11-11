@@ -80,7 +80,7 @@ public class UserNotifierSettingsBackingBean {
   
   @LoggedIn
   public boolean isSelected(NotifierAction action, NotifierMethod method) {
-    UserEntity user = sessionController.getUser();
+    UserEntity user = sessionController.getLoggedUserEntity();
     
     return notifierController.allowsMessages(user, action, method);
   }

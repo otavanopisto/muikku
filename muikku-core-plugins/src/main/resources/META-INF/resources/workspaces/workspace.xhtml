@@ -20,13 +20,23 @@
     </div>    
   </ui:define>
   
-  <ui:define name="workspace.content.widget">
+  <ui:define name="workspace.content">
     <div class="workspaceDescriptionWrapper">
       <p>Lorem ipsum dolor sit amet, et meis docendi expetenda quo, mucius docendi reprehendunt cu vel, stet complectitur eam ad. Ex quo dicam voluptatum. Eam impetus vituperata ne. Omnium partiendo te vel. Id adipisci erroribus pri, quis virtute prodesset eu sed. Est ex case consetetur, fugit invenire referrentur pri cu, repudiare reprimique cu duo.</p>
       <p>No ipsum aliquip voluptatum sea, te sea percipit adversarium. An fastidii menandri disputationi has. Sale rebum scaevola no est, ei saepe antiopam similique est. Sint graecis sapientem no ius. Cum denique hendrerit mediocritatem no, eu mel dicit labores nominavi. Mei minim primis deleniti ex, ei has tamquam delenit adipisci. Mea et bonorum posidonium disputationi, labore utroque probatus cu sit.</p>
       <p>Quot aliquip detracto usu id, per at alterum concludaturque. Has porro audire mediocritatem no, ius ad mollis voluptua constituam. Ne vim vocent iriure option, novum forensibus appellantur an est, at tation graeco convenire qui. Te vituperata adversarium vim, ea utinam laboramus vel. Ad vel percipit voluptatum comprehensam, ei nec nihil probatus qualisque.</p>
       <p>Alienum appareat est id, inimicus hendrerit mei at, fabulas facilisis scribentur vel te. Dolor legimus vix in. Ei his viris choro fuisset, ut mea malis feugait. Ne solum vidisse mel, an usu aeque voluptua inciderint. Vel eu equidem intellegam, nec regione periculis et. An alienum democritum qui.</p>
     </div>
+  
+    <m:widgetSpaceSet>
+      <ui:insert name="workspace.content.widgetspace">
+        <m:widgetSpace name="workspace.index.content" keepEmpty="true" sizing="MAXIMIZE" styleClass="nomargin">
+          <m:widget name="workspace-default-listing" size="12" />
+          <m:widget name="workspace-default-recent" size="12" />
+        </m:widgetSpace>
+      </ui:insert>
+    </m:widgetSpaceSet>
+  
   </ui:define>
 
 </ui:composition>

@@ -58,12 +58,12 @@ public class WorkspaceGuidanceRequestsBackingBean {
   }
 
   public List<WorkspaceGuidanceRequest> listOwnedGuidanceRequests() {
-    return guidanceRequestController.listWorkspaceGuidanceRequestsByWorkspaceAndUser(getWorkspaceEntity(), sessionController.getUser());
+    return guidanceRequestController.listWorkspaceGuidanceRequestsByWorkspaceAndUser(getWorkspaceEntity(), sessionController.getLoggedUserEntity());
   }
   
   public GuidanceRequest createGuidanceRequest() {
     return guidanceRequestController.createWorkspaceGuidanceRequest(getWorkspaceEntity(), 
-        sessionController.getUser(), new Date(), getNewGuidanceRequestMessage());
+        sessionController.getLoggedUserEntity(), new Date(), getNewGuidanceRequestMessage());
   }
 
   public String getNewGuidanceRequestMessage() {

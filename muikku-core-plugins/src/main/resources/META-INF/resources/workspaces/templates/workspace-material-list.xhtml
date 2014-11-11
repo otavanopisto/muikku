@@ -5,26 +5,24 @@
   xmlns:f="http://java.sun.com/jsf/core" 
   xmlns:h="http://java.sun.com/jsf/html" 
   xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
-  xmlns:composite="http://java.sun.com/jsf/composite/composite" 
-  template="/workspaces/templates/workspace-view.xhtml">
-  
-  <!--  OBSOLETE ?! -->
+  xmlns:composite="http://java.sun.com/jsf/composite/composite">
   
   <c:forEach var="node" items="#{nodes}">
     <c:choose>
-      <c:when test="#{node.type eq 'FOLDER'}">
-        <h4>#{node.title}</h4>
-        <ui:include src="/workspaces/workspace-material-list.xhtml">
-          <ui:param name="nodes" value="#{workspaceMaterialsBackingBean.listWorkspaceNodes(node)}" />
-        </ui:include>
+      <c:when test="#{node.materialType eq 'folder'}">
+        <ul class="workspace-materials-toc-section">
+          <li class="workspace-materials-toc-subtitle">#{node.materialTitle}</li>
+          <ui:include src="/workspaces/templates/workspace-material-list.xhtml">
+            <ui:param name="nodes" value="#{workspaceMaterialsBackingBean.getMaterialNodes(node)}" />
+          </ui:include>
+        </ul>
       </c:when>
-      <c:when test="#{node.type eq 'MATERIAL'}">
-        <h:panelGroup layout="block" styleClass="workspace-material">
-          <h:outputLink value="#{request.contextPath}/workspace/#{workspaceMaterialsBackingBean.workspaceUrlName}/materials/#{node.path}">#{node.material.title}</h:outputLink>
-        </h:panelGroup>
-      </c:when>
+      <c:otherwise>
+        <li class="workspace-materials-toc-item">
+          <h:outputLink value="#page-#{node.materialId}">#{node.materialTitle}</h:outputLink>
+        </li>
+      </c:otherwise>
     </c:choose>
-   </c:forEach>
-
+  </c:forEach>
 
 </ui:composition>

@@ -15,8 +15,8 @@ import fi.muikku.plugins.wall.model.UserWall;
 import fi.muikku.plugins.wall.model.Wall;
 import fi.muikku.plugins.wall.model.WallType;
 import fi.muikku.plugins.wall.model.WorkspaceWall;
-import fi.muikku.schooldata.UserController;
 import fi.muikku.schooldata.WorkspaceController;
+import fi.muikku.users.UserEntityController;
 
 public class GuidanceRequestWallEntryProvider implements WallEntryProvider {
 
@@ -24,7 +24,7 @@ public class GuidanceRequestWallEntryProvider implements WallEntryProvider {
   private WorkspaceController workspaceController;
 
   @Inject
-  private UserController userController;
+  private UserEntityController userEntityController;
 
   @Inject
   private WallController wallController;
@@ -54,7 +54,7 @@ public class GuidanceRequestWallEntryProvider implements WallEntryProvider {
     if (wall.getWallType() == WallType.USER) {
       UserWall userWall = wallController.findUserWallById(wall.getId());
       
-      UserEntity user = userController.findUserEntityById(userWall.getUser());
+      UserEntity user = userEntityController.findUserEntityById(userWall.getUser());
       
       List<GuidanceRequest> requests = guidanceRequestController.listGuidanceRequestsByStudent(user);
       

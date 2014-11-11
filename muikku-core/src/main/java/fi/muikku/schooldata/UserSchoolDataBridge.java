@@ -41,14 +41,14 @@ public interface UserSchoolDataBridge {
 	public User findUser(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 
 	/**
-	 * Finds user by email. If user cannot be found null is returned.
+	 * Lists users by email.
 	 * 
 	 * @param email email address
 	 * @return user or null if user with given email cannot be found
 	 * @throws SchoolDataBridgeRequestException when given email is not valid
 	 * @throws UnexpectedSchoolDataBridgeException when unexpected error occurs
 	 */
-	public User findUserByEmail(String email) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+  public List<User> listUsersByEmail(String email) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 
 	// TODO: Search / findUsers
 

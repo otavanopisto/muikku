@@ -6,16 +6,21 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
-import fi.muikku.model.users.UserEntity;
+import fi.muikku.model.users.UserSchoolDataIdentifier;
 import fi.muikku.model.util.ArchivableEntity;
-import fi.muikku.model.workspace.WorkspaceRoleEntity;
-import fi.muikku.model.workspace.WorkspaceEntity;
 
 @Entity
+@Table (
+  uniqueConstraints = {
+    @UniqueConstraint (columnNames = {"userSchoolDataIdentifier_id", "workspaceEntity_id"})
+  }    
+)
 public class WorkspaceUserEntity implements ArchivableEntity {
 
   public Long getId() {
@@ -37,13 +42,13 @@ public class WorkspaceUserEntity implements ArchivableEntity {
   public void setWorkspaceEntity(WorkspaceEntity workspaceEntity) {
     this.workspaceEntity = workspaceEntity;
   }
-
-  public UserEntity getUser() {
-    return user;
+  
+  public UserSchoolDataIdentifier getUserSchoolDataIdentifier() {
+    return userSchoolDataIdentifier;
   }
-
-  public void setUser(UserEntity user) {
-    this.user = user;
+  
+  public void setUserSchoolDataIdentifier(UserSchoolDataIdentifier userSchoolDataIdentifier) {
+    this.userSchoolDataIdentifier = userSchoolDataIdentifier;
   }
 
   public WorkspaceRoleEntity getWorkspaceUserRole() {
@@ -75,7 +80,7 @@ public class WorkspaceUserEntity implements ArchivableEntity {
   private WorkspaceEntity workspaceEntity;
   
   @ManyToOne
-  private UserEntity user;
+  private UserSchoolDataIdentifier userSchoolDataIdentifier;
   
   @ManyToOne
   private WorkspaceRoleEntity workspaceUserRole;

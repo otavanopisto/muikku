@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html">
+
+  <div class="widget wi-workspace-dock-navi-button-materials-toc">
+    <span class="icon-navicon w-tooltip">
+      <span class="workspace-navi-tt-container-materials-toc">Sisällysluettelo</span>
+    </span>
+    
+    <!-- TOC Starts here -->
+    <nav class="workspace-materials-toc-wrapper">
+      <div class="workspace-materials-toc-container">
+        <h1 class="workspace-materials-toc-title">Sisällysluettelo</h1>
+        <div class="workspace-materials-toc-content-outer">
+          <div class="workspace-materials-toc-content-inner">
+            <div class="workspace-materials-toc-content-scrolling">
+              <ui:include src="/workspaces/templates/workspace-material-list.xhtml">
+                <ui:param name="nodes" value="#{workspaceMaterialsBackingBean.getMaterialNodes(workspaceMaterialsBackingBean.getRootFolder())}"/>
+              </ui:include>
+              <div class="spacer"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+    
+  </div>
+
+</ui:composition>
