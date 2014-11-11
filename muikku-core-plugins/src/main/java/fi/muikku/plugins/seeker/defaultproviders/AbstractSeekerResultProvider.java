@@ -7,9 +7,9 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import fi.muikku.plugins.search.SearchProvider;
 import fi.muikku.plugins.seeker.SeekerResult;
 import fi.muikku.plugins.seeker.SeekerResultProvider;
+import fi.muikku.search.SearchProvider;
 
 public abstract class AbstractSeekerResultProvider implements SeekerResultProvider {
 

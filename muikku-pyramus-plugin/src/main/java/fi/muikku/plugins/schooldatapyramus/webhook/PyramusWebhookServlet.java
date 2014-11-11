@@ -82,125 +82,59 @@ public class PyramusWebhookServlet extends HttpServlet {
     
     switch (payload.getType()) {
       case COURSE_CREATE:
-        WebhookCourseData courseCreateData = unmarshalData(resp, payload, WebhookCourseData.class);
-        if (courseCreateData == null) {
-          return;  
-        }
-        
-        handleCourseCreate(courseCreateData);
-      break;
+      case COURSE_UPDATE:
       case COURSE_ARCHIVE:
-        WebhookCourseData courseArchiveData = unmarshalData(resp, payload, WebhookCourseData.class);
-        if (courseArchiveData == null) {
+        WebhookCourseData courseData = unmarshalData(resp, payload, WebhookCourseData.class);
+        if (courseData == null) {
           return;  
         }
         
-        handleCourseArchive(courseArchiveData);
+        pyramusUpdater.updateCourse(courseData.getCourseId());
       break;
       case COURSE_STAFF_MEMBER_CREATE:
-        WebhookCourseStaffMemberData courseStaffMemberCreateData = unmarshalData(resp, payload, WebhookCourseStaffMemberData.class);
-        if (courseStaffMemberCreateData == null) {
-          return;  
-        }
-        
-        handleCourseStaffMemberCreate(courseStaffMemberCreateData);
-      break;
+      case COURSE_STAFF_MEMBER_UPDATE:
       case COURSE_STAFF_MEMBER_DELETE:
-        WebhookCourseStaffMemberData courseStaffMemberDeleteData = unmarshalData(resp, payload, WebhookCourseStaffMemberData.class);
-        if (courseStaffMemberDeleteData == null) {
+        WebhookCourseStaffMemberData courseStaffMemberData = unmarshalData(resp, payload, WebhookCourseStaffMemberData.class);
+        if (courseStaffMemberData == null) {
           return;  
         }
         
-        handleCourseStaffMemberDelete(courseStaffMemberDeleteData);
+        pyramusUpdater.updateCourseStaffMember(courseStaffMemberData.getCourseStaffMemberId(), courseStaffMemberData.getCourseId(), courseStaffMemberData.getStaffMemberId());
       case STAFF_MEMBER_CREATE:
-        WebhookStaffMemberData staffMemberCreateData = unmarshalData(resp, payload, WebhookStaffMemberData.class);
-        if (staffMemberCreateData == null) {
-          return;  
-        }
-        
-        handleStaffMemberCreate(staffMemberCreateData);
-      break;
+      case STAFF_MEMBER_UPDATE:
       case STAFF_MEMBER_DELETE:
-        WebhookStaffMemberData staffMemberDeleteData = unmarshalData(resp, payload, WebhookStaffMemberData.class);
-        if (staffMemberDeleteData == null) {
+        WebhookStaffMemberData staffMemberData = unmarshalData(resp, payload, WebhookStaffMemberData.class);
+        if (staffMemberData == null) {
           return;  
         }
         
-        handleStaffMemberCreate(staffMemberDeleteData);
+        pyramusUpdater.updateStaffMember(staffMemberData.getStaffMemberId());
       break;
       case STUDENT_CREATE:
-        WebhookStudentData studentCreateData = unmarshalData(resp, payload, WebhookStudentData.class);
-        if (studentCreateData == null) {
-          return;  
-        }
-        
-        handleStudentCreate(studentCreateData);
-      break;      
+      case STUDENT_UPDATE:
       case STUDENT_ARCHIVE:
-        WebhookStudentData studentArchiveData = unmarshalData(resp, payload, WebhookStudentData.class);
-        if (studentArchiveData == null) {
+        WebhookStudentData studentData = unmarshalData(resp, payload, WebhookStudentData.class);
+        if (studentData == null) {
           return;  
         }
         
-        handleStudentArchive(studentArchiveData);
+        pyramusUpdater.updateStudent(studentData.getStudentId());
       break;      
       case COURSE_STUDENT_CREATE:
-        WebhookCourseStudentData courseStudentCreateData = unmarshalData(resp, payload, WebhookCourseStudentData.class);
-        if (courseStudentCreateData == null) {
-          return;  
-        }
-        
-        handleCourseStudentCreate(courseStudentCreateData);
-      break;      
+      case COURSE_STUDENT_UPDATE:
       case COURSE_STUDENT_ARCHIVE:
-        WebhookCourseStudentData courseStudentArchiveData = unmarshalData(resp, payload, WebhookCourseStudentData.class);
-        if (courseStudentArchiveData == null) {
+        WebhookCourseStudentData courseStudentData = unmarshalData(resp, payload, WebhookCourseStudentData.class);
+        if (courseStudentData == null) {
           return;  
         }
         
-        handleCourseStudentArchive(courseStudentArchiveData);
+        pyramusUpdater.updateCourseStudent(courseStudentData.getCourseStudentId(), courseStudentData.getCourseId(), courseStudentData.getStudentId());
       break;      
       default:
         logger.log(Level.WARNING, "Unknown webhook type " + payload.getType());
         resp.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED);
         return;
     }
-  }
-
-  private void handleCourseStudentArchive(WebhookCourseStudentData courseStudentArchiveData) {
-    // TODO Implement
-  }
-
-  private void handleCourseStudentCreate(WebhookCourseStudentData courseStudentCreateData) {
-    // TODO Implement
-  }
-
-  private void handleStudentArchive(WebhookStudentData studentArchiveData) {
-    // TODO Implement
-  }
-
-  private void handleStudentCreate(WebhookStudentData studentCreateData) {
-    pyramusUpdater.updateStudent(studentCreateData.getStudentId());
-  }
-
-  private void handleStaffMemberCreate(WebhookStaffMemberData staffMemberCreateData) {
- // TODO Implement
-  }
-
-  private void handleCourseStaffMemberDelete(WebhookCourseStaffMemberData courseStaffMemberDeleteData) {
- // TODO Implement
-  }
-
-  private void handleCourseStaffMemberCreate(WebhookCourseStaffMemberData courseStaffMemberCreateData) {
-    // TODO Implement
-  }
-
-  private void handleCourseArchive(WebhookCourseData courseArchiveData) {
-    // TODO Implement
-  }
-
-  private void handleCourseCreate(WebhookCourseData courseCreateData) {
-    pyramusUpdater.updateCourse(courseCreateData.getCourseId());
   }
 
   private <T> T unmarshalData(HttpServletResponse resp, PyramusWebhookPayload payload, Class<? extends T> type) throws IOException, JsonParseException, JsonMappingException {

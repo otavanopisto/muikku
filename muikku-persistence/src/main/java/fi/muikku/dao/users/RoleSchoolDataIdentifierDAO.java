@@ -42,7 +42,7 @@ public class RoleSchoolDataIdentifierDAO extends CoreDAO<RoleSchoolDataIdentifie
 		return getSingleResult(entityManager.createQuery(criteria));
 	}
 
-	public RoleSchoolDataIdentifier findByDataSourceAndUserEntity(SchoolDataSource dataSource, RoleEntity roleEntity) {
+	public RoleSchoolDataIdentifier findByDataSourceAndRoleEntity(SchoolDataSource dataSource, RoleEntity roleEntity) {
 		EntityManager entityManager = getEntityManager();
 
 		CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -72,6 +72,20 @@ public class RoleSchoolDataIdentifierDAO extends CoreDAO<RoleSchoolDataIdentifie
 
 		return entityManager.createQuery(criteria).getResultList();
 	}
+
+  public List<RoleSchoolDataIdentifier> listByDataSource(SchoolDataSource schoolDataSource) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<RoleSchoolDataIdentifier> criteria = criteriaBuilder.createQuery(RoleSchoolDataIdentifier.class);
+    Root<RoleSchoolDataIdentifier> root = criteria.from(RoleSchoolDataIdentifier.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.equal(root.get(RoleSchoolDataIdentifier_.dataSource), schoolDataSource)
+    );
+
+    return entityManager.createQuery(criteria).getResultList();
+  }
 
 	public RoleSchoolDataIdentifier updateRoleEntity(RoleSchoolDataIdentifier roleSchoolDataIdentifier, RoleEntity roleEntity) {
 		roleSchoolDataIdentifier.setRoleEntity(roleEntity);

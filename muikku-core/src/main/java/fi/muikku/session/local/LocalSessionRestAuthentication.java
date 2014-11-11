@@ -1,40 +1,41 @@
 package fi.muikku.session.local;
 
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
 
-import fi.muikku.dao.users.UserEntityDAO;
-import fi.muikku.model.users.UserEntity;
+import org.apache.commons.lang3.StringUtils;
+
 import fi.muikku.session.RestAuthentication;
 
 @RequestScoped
 @LocalSessionAuthentication
 public class LocalSessionRestAuthentication implements RestAuthentication {
   
-  @Inject
-  private UserEntityDAO userDAO;
+  @Override
+  public String getActiveUserIdentifier() {
+    return activeUserIdentifier;
+  }
+  
+  public String getActiveUserSchoolDataSource() {
+    return activeUserSchoolDataSource;
+  }
   
   @Override
-  public UserEntity getUser() {
-    return userDAO.findById(userId);
+  public void setActiveUser(String dataSource, String identifier) {
+    activeUserSchoolDataSource = dataSource;
+    activeUserIdentifier = identifier;
   }
-
-  public void setUser(UserEntity user) {
-    if (user != null) {
-      this.userId = user.getId();
-    } else
-      logout();
-  }
-
+  
   @Override
   public boolean isLoggedIn() {
-    return userId != null;
-  }
-
-  @Override
-  public void logout() {
-    userId = null;
+    return !StringUtils.isBlank(activeUserIdentifier) && !StringUtils.isBlank(activeUserSchoolDataSource);
   }
   
-  private Long userId = null;
+  @Override
+  public void logout() {
+    activeUserSchoolDataSource = null;
+    activeUserIdentifier = null;
+  }
+
+  private String activeUserIdentifier;
+  private String activeUserSchoolDataSource; 
 }

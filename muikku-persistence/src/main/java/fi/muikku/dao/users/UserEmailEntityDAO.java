@@ -1,5 +1,6 @@
 package fi.muikku.dao.users;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -90,6 +91,10 @@ public class UserEmailEntityDAO extends CoreDAO<UserEmailEntity> {
   }
 
   public List<UserEntity> listUsersByAddresses(List<String> addresses) {
+    if (addresses.isEmpty()) {
+      return Collections.emptyList();
+    }
+    
     EntityManager entityManager = getEntityManager();
 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();

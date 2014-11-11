@@ -14,7 +14,7 @@ import javax.inject.Named;
 
 import fi.muikku.model.users.RoleEntity;
 import fi.muikku.schooldata.RoleController;
-import fi.muikku.schooldata.UserController;
+import fi.muikku.users.UserController;
 import fi.muikku.schooldata.entity.Role;
 import fi.muikku.schooldata.entity.User;
 

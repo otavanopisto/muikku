@@ -1,5 +1,7 @@
 package fi.muikku.plugins.forum;
 
+import java.util.List;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
@@ -7,7 +9,6 @@ import fi.muikku.controller.ResourceRightsController;
 import fi.muikku.dao.security.PermissionDAO;
 import fi.muikku.dao.security.ResourceRolePermissionDAO;
 import fi.muikku.dao.users.EnvironmentUserDAO;
-import fi.muikku.dao.workspace.WorkspaceUserEntityDAO;
 import fi.muikku.model.security.Permission;
 import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.RoleEntity;
@@ -22,6 +23,7 @@ import fi.muikku.security.AbstractPermissionResolver;
 import fi.muikku.security.ContextReference;
 import fi.muikku.security.PermissionResolver;
 import fi.muikku.security.User;
+import fi.muikku.users.WorkspaceUserEntityController;
 
 @RequestScoped
 public class ForumPermissionResolver extends AbstractPermissionResolver implements PermissionResolver {
@@ -30,7 +32,7 @@ public class ForumPermissionResolver extends AbstractPermissionResolver implemen
   private ResourceRolePermissionDAO resourceUserRolePermissionDAO;
   
   @Inject
-  private WorkspaceUserEntityDAO workspaceUserEntityDAO;
+  private WorkspaceUserEntityController workspaceUserEntityController;
   
   @Inject
   private EnvironmentUserDAO environmentUserDAO;
@@ -66,7 +68,10 @@ public class ForumPermissionResolver extends AbstractPermissionResolver implemen
       
       WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceForum.getWorkspace());
       
-      WorkspaceUserEntity workspaceUser = workspaceUserEntityDAO.findByWorkspaceAndUser(workspaceEntity, userEntity);
+      List<WorkspaceUserEntity> workspaceUsers = workspaceUserEntityController.listWorkspaceUserEntitiesByWorkspaceAndUser(workspaceEntity, userEntity);
+      // TODO: This is definitely not the way to do this 
+      WorkspaceUserEntity workspaceUser = workspaceUsers.get(0);
+      
       userRole = workspaceUser.getWorkspaceUserRole();
     } else {
       EnvironmentUser environmentUser = environmentUserDAO.findByUserAndArchived(userEntity, Boolean.FALSE);

@@ -20,7 +20,6 @@ import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceType;
 import fi.muikku.schooldata.entity.WorkspaceUser;
-import fi.muikku.schooldata.initializers.SchoolDataEntityInitializerProvider;
 import fi.pyramus.rest.model.Course;
 import fi.pyramus.rest.model.CourseOptionality;
 import fi.pyramus.rest.model.CourseStaffMember;
@@ -38,9 +37,6 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
 
   @Inject
   private PyramusSchoolDataEntityFactory entityFactory;
-
-  @Inject
-  private SchoolDataEntityInitializerProvider entityInitializer;
 
   @Override
   public String getSchoolDataSource() {
@@ -139,7 +135,7 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
     
     CourseStudent courseStudent = new CourseStudent(null, courseId, studentId, new DateTime(), Boolean.FALSE, null, null, Boolean.FALSE, CourseOptionality.OPTIONAL, null);
     
-    return entityInitializer.initWorkspaceUsers(Arrays.asList(entityFactory.createEntity(pyramusClient.post("/courses/courses/" + courseId + "/students", courseStudent)))).get(0);
+    return Arrays.asList(entityFactory.createEntity(pyramusClient.post("/courses/courses/" + courseId + "/students", courseStudent))).get(0);
   }
   
 	@Override

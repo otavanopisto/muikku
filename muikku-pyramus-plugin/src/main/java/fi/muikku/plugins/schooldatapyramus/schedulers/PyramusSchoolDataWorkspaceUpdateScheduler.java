@@ -9,6 +9,7 @@ import javax.ejb.Singleton;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import fi.muikku.events.ContextDestroyedEvent;
 import fi.muikku.events.ContextInitializedEvent;
 import fi.muikku.plugins.schooldatapyramus.PyramusUpdater;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
@@ -34,6 +35,10 @@ public class PyramusSchoolDataWorkspaceUpdateScheduler {
   public void onContextInitialized(@Observes ContextInitializedEvent event) {
     contextInitialized = true;
   }
+
+  public void onContextDestroyed(@Observes ContextDestroyedEvent event) {
+    contextInitialized = false;
+  }
   
   @Schedule(minute = "*/1", hour = "*", persistent = false)
   public void synchronizeStudents() throws UnexpectedSchoolDataBridgeException {
@@ -46,7 +51,7 @@ public class PyramusSchoolDataWorkspaceUpdateScheduler {
       int count = 0;
       try {
         logger.info("Synchronizing Pyramus workspaces");
-        int result = pyramusUpdater.updateWorkspaces(offset, BATCH_SIZE);
+        int result = pyramusUpdater.updateCourses(offset, BATCH_SIZE);
         if (result == -1) {
           offset = 0;
           count = 0;

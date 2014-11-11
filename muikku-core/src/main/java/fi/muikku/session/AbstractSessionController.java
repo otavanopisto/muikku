@@ -13,16 +13,20 @@ import fi.muikku.model.util.ResourceEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.security.ContextReference;
 import fi.muikku.security.PermissionResolver;
+import fi.muikku.users.UserEntityController;
 
 public abstract class AbstractSessionController implements SessionController {
 
   @Inject
   private SuperUserDAO superUserDAO;
 
+  @Inject
+  private UserEntityController userEntityController;
+
   @Override
   public boolean isSuperuser() {
     if (isLoggedIn())
-      return isSuperuser(getUser());
+      return isSuperuser(getLoggedUserEntity());
     else
       return false;
   }
@@ -49,6 +53,15 @@ public abstract class AbstractSessionController implements SessionController {
   @Override
   public boolean hasResourcePermission(String permission, ResourceEntity resource) {
     return hasResourcePermissionImpl(permission, resource);
+  }
+  
+  @Override
+  public UserEntity getLoggedUserEntity() {
+    if (!isLoggedIn()) {
+      return null;
+    }
+    
+    return userEntityController.findUserEntityByDataSourceAndIdentifier(getActiveUserSchoolDataSource(), getActiveUserIdentifier());
   }
   
   @Inject
