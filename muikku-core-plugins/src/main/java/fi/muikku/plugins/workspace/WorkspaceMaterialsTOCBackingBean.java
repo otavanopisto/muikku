@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import fi.muikku.plugins.material.MaterialController;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.workspace.MaterialNode;
 import fi.muikku.plugins.workspace.model.WorkspaceFolder;
@@ -19,6 +20,9 @@ public class WorkspaceMaterialsTOCBackingBean {
 
   @Inject
   private WorkspaceMaterialController workspaceMaterialController;
+
+  @Inject
+  private MaterialController materialController;
   
   public List<MaterialNode> getAllMaterialNodes(WorkspaceNode rootFolder) {
     List<MaterialNode> materialNodes = new ArrayList<MaterialNode>();
@@ -94,7 +98,7 @@ public class WorkspaceMaterialsTOCBackingBean {
     MaterialNode materialNode = new MaterialNode();
     materialNode.setWorkspaceMaterialId(workspaceNode.getId());
     if (workspaceNode instanceof WorkspaceMaterial) {
-      Material material = ((WorkspaceMaterial) workspaceNode).getMaterial();
+      Material material = materialController.findMaterialById(((WorkspaceMaterial) workspaceNode).getMaterialId());
       materialNode.setMaterialId(material.getId());
       materialNode.setMaterialType(material.getType());
       materialNode.setMaterialTitle(material.getTitle());

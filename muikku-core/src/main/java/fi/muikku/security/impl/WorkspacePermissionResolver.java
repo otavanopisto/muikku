@@ -1,12 +1,13 @@
 package fi.muikku.security.impl;
 
+import java.util.List;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import fi.muikku.dao.security.PermissionDAO;
 import fi.muikku.dao.security.WorkspaceRolePermissionDAO;
 import fi.muikku.dao.security.WorkspaceUserPermissionOverrideDAO;
-import fi.muikku.dao.workspace.WorkspaceUserEntityDAO;
 import fi.muikku.model.security.Permission;
 import fi.muikku.model.security.PermissionOverrideState;
 import fi.muikku.model.security.WorkspaceUserPermissionOverride;
@@ -19,6 +20,7 @@ import fi.muikku.security.ContextReference;
 import fi.muikku.security.PermissionResolver;
 import fi.muikku.security.PermissionScope;
 import fi.muikku.security.User;
+import fi.muikku.users.WorkspaceUserEntityController;
 
 @RequestScoped
 public class WorkspacePermissionResolver extends AbstractPermissionResolver implements PermissionResolver {
@@ -30,7 +32,7 @@ public class WorkspacePermissionResolver extends AbstractPermissionResolver impl
   private WorkspaceUserPermissionOverrideDAO workspaceUserPermissionOverrideDAO;
   
   @Inject
-  private WorkspaceUserEntityDAO workspaceUserDAO;
+  private WorkspaceUserEntityController workspaceUserEntityController;
 
   @Inject
   private WorkspaceRolePermissionDAO workspaceUserRolePermissionDAO;
@@ -50,17 +52,20 @@ public class WorkspacePermissionResolver extends AbstractPermissionResolver impl
     Permission perm = permissionDAO.findByName(permission);
     UserEntity userEntity = getUserEntity(user);
 
-    WorkspaceEntity workspace = (WorkspaceEntity) contextReference;
-    WorkspaceUserEntity workspaceUser = workspaceUserDAO.findByWorkspaceAndUser(workspace, userEntity);
-    if (workspaceUser == null) {
+    WorkspaceEntity workspaceEntity = (WorkspaceEntity) contextReference;
+    List<WorkspaceUserEntity> workspaceUsers = workspaceUserEntityController.listWorkspaceUserEntitiesByWorkspaceAndUser(workspaceEntity, userEntity);
+    if (workspaceUsers.isEmpty()) {
       return false;
     }
+    
+    // TODO: This is definitely not the way to do this 
+    WorkspaceUserEntity workspaceUser = workspaceUsers.get(0);
     
     WorkspaceUserPermissionOverride override = workspaceUserPermissionOverrideDAO.findByCourseUserAndPermission(workspaceUser, perm);
     if (override != null)
       return override.getState() == PermissionOverrideState.ALLOW;
     else
-      return workspaceUserRolePermissionDAO.hasWorkspacePermissionAccess(workspace, workspaceUser.getWorkspaceUserRole(), perm);
+      return workspaceUserRolePermissionDAO.hasWorkspacePermissionAccess(workspaceEntity, workspaceUser.getWorkspaceUserRole(), perm);
   }
 
   @Override

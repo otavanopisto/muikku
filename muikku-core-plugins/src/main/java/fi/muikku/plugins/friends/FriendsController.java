@@ -9,9 +9,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.schooldata.UserController;
 import fi.muikku.security.LoggedIn;
 import fi.muikku.session.SessionController;
+import fi.muikku.users.UserEntityController;
 
 @Dependent
 @Stateful
@@ -22,7 +22,7 @@ public class FriendsController {
   private SessionController sessionController;
 
   @Inject
-  private UserController userController;
+  private UserEntityController userEntityController;
   
   @Inject
   private FriendDAO friendDAO;
@@ -32,22 +32,22 @@ public class FriendsController {
   
   @LoggedIn
   public FriendRequest createFriendRequest(UserEntity recipient, String message) {
-    UserEntity creator = sessionController.getUser();
+    UserEntity creator = sessionController.getLoggedUserEntity();
 
     return friendRequestDAO.create(creator, recipient, message);
   }
   
   @LoggedIn
   public List<UserEntity> listFriends() {
-    UserEntity user = sessionController.getUser();
+    UserEntity user = sessionController.getLoggedUserEntity();
     
     List<UserEntity> friends = new ArrayList<UserEntity>();
     List<Friend> listByUser = friendDAO.listByUser(user);
     for (Friend f : listByUser) {
       if (!f.getUserA().equals(user.getId()))
-        friends.add(userController.findUserEntityById(f.getUserA()));
+        friends.add(userEntityController.findUserEntityById(f.getUserA()));
       if (f.getUserB().equals(user.getId()))
-        friends.add(userController.findUserEntityById(f.getUserB()));
+        friends.add(userEntityController.findUserEntityById(f.getUserB()));
     }
     
     return friends;
@@ -55,7 +55,7 @@ public class FriendsController {
   
   @LoggedIn
   public boolean isFriend(UserEntity user) {
-    UserEntity loggedUser = sessionController.getUser();
+    UserEntity loggedUser = sessionController.getLoggedUserEntity();
     
     Friend f = friendDAO.findByUsers(loggedUser, user);
     return f != null;

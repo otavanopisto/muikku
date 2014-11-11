@@ -40,6 +40,7 @@ import fi.muikku.plugins.material.MaterialQueryIntegrityExeption;
 import fi.muikku.plugins.material.MaterialQueryPersistanceExeption;
 import fi.muikku.plugins.material.fieldmeta.FieldMeta;
 import fi.muikku.plugins.material.model.HtmlMaterial;
+import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.workspace.fieldhandler.WorkspaceFieldHandler;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
@@ -111,8 +112,10 @@ public class WorkspaceHtmlMaterialBackingBean {
 		if (workspaceMaterial == null) {
 			throw new FileNotFoundException();
 		}
+		
+		Material material = workspaceMaterialController.getMaterialForWorkspaceMaterial(workspaceMaterial);
 
-	  if (!(workspaceMaterial.getMaterial() instanceof HtmlMaterial)) {
+	  if (material instanceof HtmlMaterial) {
 	  	throw new FileNotFoundException();
 	  }
 	  
@@ -128,13 +131,13 @@ public class WorkspaceHtmlMaterialBackingBean {
         .toString());
 	  } else {
       if (sessionController.isLoggedIn()) {
-        workspaceMaterialReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, sessionController.getUser());
+        workspaceMaterialReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, sessionController.getLoggedUserEntity());
         if (workspaceMaterialReply == null) {
-          workspaceMaterialReply = workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, sessionController.getUser());
+          workspaceMaterialReply = workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, sessionController.getLoggedUserEntity());
         }
       }
 	    
-	    HtmlMaterial htmlMaterial = (HtmlMaterial) workspaceMaterial.getMaterial();
+	    HtmlMaterial htmlMaterial = (HtmlMaterial)material;
 	    Document processedHtmlDocument = htmlMaterialController.getProcessedHtmlDocument(htmlMaterial);
 	    renderDocumentFields(processedHtmlDocument);
       

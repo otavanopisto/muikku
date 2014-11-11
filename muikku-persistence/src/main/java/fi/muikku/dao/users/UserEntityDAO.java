@@ -9,20 +9,21 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.CoreDAO;
+import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.users.UserEntity;
 
 public class UserEntityDAO extends CoreDAO<UserEntity> {
 
 	private static final long serialVersionUID = 3790128454976388680L;
 
-	public UserEntity create(Boolean archived) {
+	public UserEntity create(Boolean archived, SchoolDataSource defaultSchoolDataSource, String defaultIdentifier) {
 		UserEntity user = new UserEntity();
 
 		user.setArchived(archived);
+		user.setDefaultIdentifier(defaultIdentifier);
+		user.setDefaultSchoolDataSource(defaultSchoolDataSource);
 
-		getEntityManager().persist(user);
-
-		return user;
+		return persist(user);
 	}
 
 	public List<UserEntity> listByUserNotIn(List<UserEntity> users) {
@@ -47,4 +48,19 @@ public class UserEntityDAO extends CoreDAO<UserEntity> {
 	  
 	  return userEntity; 
 	}
+
+  public UserEntity updateDefaultIdentifier(UserEntity userEntity, String defaultIdentifier) {
+    userEntity.setDefaultIdentifier(defaultIdentifier);
+    return persist(userEntity);
+  }
+
+  public UserEntity updateDefaultSchoolDataSource(UserEntity userEntity, SchoolDataSource defaultSchoolDataSource) {
+    userEntity.setDefaultSchoolDataSource(defaultSchoolDataSource);
+    return persist(userEntity);
+  }
+
+  public UserEntity updateArchived(UserEntity userEntity, Boolean archived) {
+    userEntity.setArchived(archived);
+    return persist(userEntity);
+  }
 }

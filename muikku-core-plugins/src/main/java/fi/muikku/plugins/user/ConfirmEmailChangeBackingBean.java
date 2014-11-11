@@ -11,14 +11,13 @@ import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
-import fi.muikku.controller.UserEntityController;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.internalauth.InternalAuthController;
 import fi.muikku.plugins.internalauth.model.InternalAuth;
 import fi.muikku.schooldata.SchoolDataBridgeRequestException;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
-import fi.muikku.schooldata.UserController;
 import fi.muikku.session.SessionController;
+import fi.muikku.users.UserEntityController;
 
 
 @Named
@@ -31,9 +30,6 @@ public class ConfirmEmailChangeBackingBean {
   private String confirmationHash;
   
   @Inject
-  private UserEntityController userEntityController;
-  
-  @Inject
   private UserInfoController userInfoController;
   
   @Inject
@@ -43,7 +39,7 @@ public class ConfirmEmailChangeBackingBean {
   private InternalAuthController internalLoginController;
   
   @Inject
-  private UserController userController;
+  private UserEntityController userEntityController;
   
   @RequestAction
   public void init() throws FileNotFoundException {
@@ -54,11 +50,11 @@ public class ConfirmEmailChangeBackingBean {
     
     if (!sessionController.isLoggedIn()) {
       InternalAuth auth = internalLoginController.findInternalAuthByEmailAndPassword(userName, passwordHash);
-      UserEntity userEntity = userController.findUserEntityById(auth.getUserEntityId());
+      UserEntity userEntity = userEntityController.findUserEntityById(auth.getUserEntityId());
       
       userInfoController.confirmEmailChange(userEntity, passwordHash, change);
     } else
-      userInfoController.confirmEmailChange(sessionController.getUser(), passwordHash, change);
+      userInfoController.confirmEmailChange(sessionController.getLoggedUserEntity(), passwordHash, change);
   }
   
   public UserPendingEmailChange getPendingEmailChange() {

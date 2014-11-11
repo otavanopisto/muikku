@@ -1,9 +1,13 @@
 package fi.muikku.plugins.schooldatapyramus.rest;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
+import javax.ws.rs.client.Client;
 
 import org.joda.time.DateTime;
 
@@ -17,6 +21,14 @@ public class UserPyramusClient extends AbstractPyramusClient implements Serializ
   public void init() {
     accessToken = null;
     accessTokenExpires = null;
+    pooledClients = new ArrayList<>();
+  }
+
+  @PreDestroy
+  public void deinit() {
+    for (Client pooledClient : pooledClients) {
+      pooledClient.close();
+    }
   }
   
   @Override
@@ -32,6 +44,22 @@ public class UserPyramusClient extends AbstractPyramusClient implements Serializ
     return accessToken;
   }
 
+  @Override
+  protected synchronized Client obtainClient() {
+    if (pooledClients.isEmpty()) {
+      return buildClient();
+    }
+    
+    return pooledClients.remove(pooledClients.size() - 1);
+  }
+
+  @Override
+  protected synchronized void releaseClient(Client client) {
+    pooledClients.add(client);
+  }
+
+  private List<Client> pooledClients;
   private String accessToken;
   private DateTime accessTokenExpires;
+  
 }

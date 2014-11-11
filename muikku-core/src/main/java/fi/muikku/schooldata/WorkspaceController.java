@@ -1,6 +1,5 @@
 package fi.muikku.schooldata;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -12,6 +11,7 @@ import javax.inject.Inject;
 
 import fi.muikku.dao.base.SchoolDataSourceDAO;
 import fi.muikku.dao.security.WorkspaceRolePermissionDAO;
+import fi.muikku.dao.users.RoleSchoolDataIdentifierDAO;
 import fi.muikku.dao.workspace.WorkspaceEntityDAO;
 import fi.muikku.dao.workspace.WorkspaceSettingsDAO;
 import fi.muikku.dao.workspace.WorkspaceTypeEntityDAO;
@@ -20,7 +20,10 @@ import fi.muikku.dao.workspace.WorkspaceUserEntityDAO;
 import fi.muikku.dao.workspace.WorkspaceUserSignupDAO;
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.security.WorkspaceRolePermission;
+import fi.muikku.model.users.RoleEntity;
+import fi.muikku.model.users.RoleSchoolDataIdentifier;
 import fi.muikku.model.users.UserEntity;
+import fi.muikku.model.users.UserRoleType;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.muikku.model.workspace.WorkspaceSettings;
@@ -29,10 +32,12 @@ import fi.muikku.model.workspace.WorkspaceTypeSchoolDataIdentifier;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.model.workspace.WorkspaceUserSignup;
 import fi.muikku.schooldata.entity.CourseIdentifier;
+import fi.muikku.schooldata.entity.Role;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceType;
 import fi.muikku.schooldata.entity.WorkspaceUser;
+import fi.muikku.users.WorkspaceUserEntityController;
 
 @Dependent
 @Stateless
@@ -40,12 +45,20 @@ public class WorkspaceController {
 	
 	@Inject
 	private Logger logger;
+
+  @Inject
+  private WorkspaceEntityController workspaceEntityController;
+
+  @Inject
+	private WorkspaceUserEntityController workspaceUserEntityController;
 	
 	@Inject
 	private WorkspaceSchoolDataController workspaceSchoolDataController;
 
 	@Inject
 	private WorkspaceEntityDAO workspaceEntityDAO;
+	
+	private WorkspaceUserEntityDAO workspaceUserEntityDAO;
 	
 	@Inject
 	private WorkspaceTypeEntityDAO workspaceTypeEntityDAO; 
@@ -60,18 +73,15 @@ public class WorkspaceController {
 	private WorkspaceSettingsDAO workspaceSettingsDAO;
 
 	@Inject
-	private WorkspaceUserEntityDAO workspaceUserEntityDAO;
-
-	@Inject
 	private WorkspaceUserSignupDAO workspaceUserSignupDAO;
 	
-	@Inject
-	private UserController userController;
-
   @Inject
   private WorkspaceRolePermissionDAO workspaceRolePermissionDAO;
-	
-	/* WorkspaceTypeEntity */
+
+  @Inject
+  private RoleSchoolDataIdentifierDAO roleSchoolDataIdentifierDAO;
+  
+  /* WorkspaceTypeEntity */
 	
 	public List<WorkspaceTypeEntity> listWorkspaceTypeEntities() {
 		return workspaceTypeEntityDAO.listAll();
@@ -235,17 +245,6 @@ public class WorkspaceController {
     return workspaceEntityDAO.listByDataSource(schoolDataSource);
   }
 
-  public List<WorkspaceEntity> listWorkspaceEntitiesByUser(UserEntity userEntity) {
-    List<WorkspaceEntity> result = new ArrayList<>();
-    
-    List<WorkspaceUserEntity> workspaceUserEntities = listWorkspaceUserEntitiesByUser(userEntity);
-    for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
-      result.add(workspaceUserEntity.getWorkspaceEntity());
-    }
-    
-    return result;
-  }
-
   public WorkspaceEntity archiveWorkspaceEntity(WorkspaceEntity workspaceEntity) {
     return workspaceEntityDAO.updateArchived(workspaceEntity, Boolean.TRUE);
   }
@@ -276,22 +275,17 @@ public class WorkspaceController {
   }
 
 	/* WorkspaceUsers */
-
-  public WorkspaceUser createWorkspaceUser(WorkspaceEntity workspaceEntity, UserEntity userEntity, WorkspaceRoleEntity role) {
-    Workspace workspace = findWorkspace(workspaceEntity);
-    User user = userController.findUser(userEntity);
-    return createWorkspaceUser(workspace, user, "LOCAL", role.getId().toString());
-  }
   
-  public WorkspaceUser createWorkspaceUser(Workspace workspace, User user, String roleSchoolDataSource, String roleIdentifier) {
-    return workspaceSchoolDataController.createWorkspaceUser(workspace, user, roleSchoolDataSource, roleIdentifier);
+  public WorkspaceUser createWorkspaceUser(Workspace workspace, User user, Role role) {
+    return workspaceSchoolDataController.createWorkspaceUser(workspace, user, role.getSchoolDataSource(), role.getIdentifier());
   }
 
   public WorkspaceUserEntity findWorkspaceUserEntity(WorkspaceUser workspaceUser) {
-    return workspaceSchoolDataController.findWorkspaceUserEntity(workspaceUser);
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(workspaceUser.getWorkspaceSchoolDataSource(), workspaceUser.getWorkspaceIdentifier());
+    return workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndIdentifier(workspaceEntity, workspaceUser.getIdentifier());
   }
-	
-	public List<WorkspaceUser> listWorkspaceUsers(Workspace workspace) {
+  
+  public List<WorkspaceUser> listWorkspaceUsers(Workspace workspace) {
 		return workspaceSchoolDataController.listWorkspaceUsers(workspace);
 	}
 
@@ -303,7 +297,7 @@ public class WorkspaceController {
 
 		return null;
 	}
-  
+
   private void deleteWorkspaceUser(WorkspaceUser workspaceUser) {
     // TODO: Remove users via bridge also
     WorkspaceUserEntity workspaceUserEntity = findWorkspaceUserEntity(workspaceUser);
@@ -316,31 +310,26 @@ public class WorkspaceController {
 		// TODO Optimize
 		return listWorkspaceUsers(workspaceEntity).size();
 	}
-
-	/* WorkspaceUserEntity */
 	
-  public List<WorkspaceUserEntity> listWorkspaceUserEntities(WorkspaceEntity workspaceEntity) {
-    return workspaceUserEntityDAO.listByWorkspace(workspaceEntity);
-  }
+  
+  /* WorkspaceRoleEntity */
 
-  public List<WorkspaceUserEntity> listWorkspaceUserEntitiesByRole(WorkspaceEntity workspaceEntity, WorkspaceRoleEntity role) {
-    return workspaceUserEntityDAO.listByWorkspaceAndRole(workspaceEntity, role);
-  }
-
-  public List<WorkspaceUserEntity> listWorkspaceUserEntitiesByRoles(WorkspaceEntity workspaceEntity, List<WorkspaceRoleEntity> roles) {
-    return workspaceUserEntityDAO.listByWorkspaceAndRoles(workspaceEntity, roles);
-  }
-
-  public List<WorkspaceUserEntity> listWorkspaceUserEntitiesByUser(UserEntity userEntity) {
-    return workspaceUserEntityDAO.listByUser(userEntity);
-  }
-
-  public WorkspaceUserEntity findWorkspaceUserEntityByWorkspaceAndUser(WorkspaceEntity workspaceEntity, UserEntity user) {
-    return workspaceUserEntityDAO.findByWorkspaceAndUser(workspaceEntity, user);
-  }
-
-  public WorkspaceUserEntity findWorkspaceUserEntityByWorkspaceAndIdentifier(WorkspaceEntity workspaceEntity, String identifier) {
-    return workspaceUserEntityDAO.findByWorkspaceAndIdentifier(workspaceEntity, identifier);
+  public WorkspaceRoleEntity findWorkspaceRoleEntityByDataSourceAndIdentifier(String schoolDataSource, String roleIdentifier) {
+    SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
+    if (dataSource == null) {
+      logger.log(Level.SEVERE, "Could not find school data source '" + schoolDataSource + "'");
+      return null;
+    }
+    
+    RoleSchoolDataIdentifier roleSchoolDataIdentifier = roleSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(dataSource, roleIdentifier);
+    if (roleSchoolDataIdentifier != null) {
+      RoleEntity roleEntity = roleSchoolDataIdentifier.getRoleEntity();
+      if (roleEntity.getType() == UserRoleType.WORKSPACE) {
+        return (WorkspaceRoleEntity) roleEntity;
+      } 
+    }
+    
+    return null;
   }
   
   /* WorkspaceSettings */
@@ -355,5 +344,4 @@ public class WorkspaceController {
       Date date, String message) {
     return workspaceUserSignupDAO.create(workspaceEntity, userEntity, date, message);
   }
-  
 }

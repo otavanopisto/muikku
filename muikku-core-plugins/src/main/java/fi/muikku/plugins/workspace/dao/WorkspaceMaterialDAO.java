@@ -18,10 +18,10 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
 	
 	private static final long serialVersionUID = -1777382212388116832L;
 
-	public WorkspaceMaterial create(WorkspaceNode parent, Material material, String urlName) {
+	public WorkspaceMaterial create(WorkspaceNode parent, long materialId, String urlName) {
 		WorkspaceMaterial workspaceMaterial = new WorkspaceMaterial();
 		workspaceMaterial.setParent(parent);
-		workspaceMaterial.setMaterial(material);
+		workspaceMaterial.setMaterialId(materialId);
 		workspaceMaterial.setUrlName(urlName);
 		
 		return persist(workspaceMaterial);
@@ -58,7 +58,7 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
     return getSingleResult(entityManager.createQuery(criteria));
 	}
 
-  public List<WorkspaceMaterial> listByMaterial(Material material) {
+  public List<WorkspaceMaterial> listByMaterialId(long materialId) {
     EntityManager entityManager = getEntityManager();
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -66,14 +66,14 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
     Root<WorkspaceMaterial> root = criteria.from(WorkspaceMaterial.class);
     criteria.select(root);
     criteria.where(
-      criteriaBuilder.equal(root.get(WorkspaceMaterial_.material), material)
+      criteriaBuilder.equal(root.get(WorkspaceMaterial_.materialId), materialId)
     );
    
     return entityManager.createQuery(criteria).getResultList();
   }
   
-  public WorkspaceMaterial updateMaterial(WorkspaceMaterial workspaceMaterial, Material material) {
-    workspaceMaterial.setMaterial(material);
+  public WorkspaceMaterial updateMaterialId(WorkspaceMaterial workspaceMaterial, long materialId) {
+    workspaceMaterial.setMaterialId(materialId);
     return persist(workspaceMaterial);
   }
 

@@ -13,7 +13,7 @@ import fi.muikku.events.LoginEvent;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.calendar.CalendarController;
 import fi.muikku.plugins.calendar.model.UserCalendar;
-import fi.muikku.schooldata.UserController;
+import fi.muikku.users.UserEntityController;
 
 @Stateless
 public class GoogleLoginListener {
@@ -25,7 +25,7 @@ public class GoogleLoginListener {
   private Logger logger;
   
   @Inject
-  private UserController userController;
+  private UserEntityController userEntityController;
 
   @Inject
   private CalendarController calendarController;
@@ -33,7 +33,7 @@ public class GoogleLoginListener {
   public void onLogin(@Observes LoginEvent event) {
     synchronized (this) {
       if ("googleoauth".equals(event.getAuthProvider().getName())) {
-        UserEntity userEntity = userController.findUserEntityById(event.getUserEntityId());
+        UserEntity userEntity = userEntityController.findUserEntityById(event.getUserEntityId());
         if (userEntity != null) {
           UserCalendar userCalendar = calendarController.findUserCalendarByUserAndProvider(userEntity, "google");
           if (userCalendar == null) {

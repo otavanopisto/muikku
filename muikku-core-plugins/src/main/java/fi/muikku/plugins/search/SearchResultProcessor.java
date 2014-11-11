@@ -13,6 +13,7 @@ import javax.inject.Inject;
 
 import fi.muikku.plugins.seeker.SeekerResult;
 import fi.muikku.plugins.seeker.SeekerResultParser;
+import fi.muikku.search.SearchResult;
 
 @Stateless
 public class SearchResultProcessor {

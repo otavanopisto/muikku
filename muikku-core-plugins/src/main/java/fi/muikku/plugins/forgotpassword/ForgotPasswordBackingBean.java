@@ -9,7 +9,7 @@ import javax.inject.Named;
 import org.apache.commons.lang3.StringUtils;
 import org.ocpsoft.rewrite.annotation.Join;
 
-import fi.muikku.controller.UserEntityController;
+import fi.muikku.users.UserEntityController;
 import fi.muikku.i18n.LocaleController;
 import fi.muikku.mail.Mailer;
 import fi.muikku.model.users.UserEntity;
@@ -53,7 +53,7 @@ public class ForgotPasswordBackingBean {
     else {
       // TODO Is the email given a valid address?
     }
-    UserEntity userEntity = userEntityController.findUserByEmailAddress(email);
+    UserEntity userEntity = userEntityController.findUserEntityByEmailAddress(email);
     if (userEntity == null) {
       FacesUtils.addMessage(FacesMessage.SEVERITY_WARN, localeController.getText(sessionController.getLocale(), "plugin.forgotpassword.forgotPassword.noUserFound", new String[] { email }));
     }

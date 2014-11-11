@@ -23,6 +23,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ContextResolver;
 
+import org.jboss.resteasy.client.jaxrs.cache.BrowserCacheFeature;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
@@ -45,69 +47,86 @@ public abstract class AbstractPyramusClient {
     clientSecret = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "rest.clientSecret");
     redirectUrl = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "rest.redirectUrl");
   }
+  
+  protected abstract Client obtainClient();
+  protected abstract void releaseClient(Client client);
+  protected abstract String getAccessToken();
 
   public <T> T post(String path, Entity<?> entity, Class<T> type) {
-    Client client = createClient();
-    
-    WebTarget target = client.target(url + path);
-    Builder request = target.request();
-    request.header("Authorization", "Bearer " + getAccessToken());
-    Response response = request.post(entity);
+    Client client = obtainClient();
     try {
-      return createResponse(response, type);
+      WebTarget target = client.target(url + path);
+      Builder request = target.request();
+      request.header("Authorization", "Bearer " + getAccessToken());
+      Response response = request.post(entity);
+      try {
+        return createResponse(response, type);
+      } finally {
+        response.close();
+      }
     } finally {
-      response.close();
+      releaseClient(client);
     }
   }
-  
+
   @SuppressWarnings("unchecked")
   public <T> T post(String path, T entity) {
-    Client client = createClient();
-    
-    WebTarget target = client.target(url + path);
-    Builder request = target.request();
-    request.header("Authorization", "Bearer " + getAccessToken());
-    Response response = request.post(Entity.entity(entity, MediaType.APPLICATION_JSON));
+    Client client = obtainClient();
     try {
-      return (T) createResponse(response, entity.getClass());
+      WebTarget target = client.target(url + path);
+      Builder request = target.request();
+      request.header("Authorization", "Bearer " + getAccessToken());
+      Response response = request.post(Entity.entity(entity, MediaType.APPLICATION_JSON));
+      try {
+        return (T) createResponse(response, entity.getClass());
+      } finally {
+        response.close();
+      }
     } finally {
-      response.close();
+      releaseClient(client);
     }
   }
   
   public <T> T get(String path, Class<T> type) {
-    Client client = createClient();
-    
-    WebTarget target = client.target(url + path);
-    Builder request = target.request();
-    request.header("Authorization", "Bearer " + getAccessToken());
-    Response response = request.get();
+    Client client = obtainClient();
     try {
-      return createResponse(response, type);
-    } catch (Throwable t) {
-      throw t;
+      WebTarget target = client.target(url + path);
+      Builder request = target.request();
+      
+      request.accept(MediaType.APPLICATION_JSON_TYPE);
+      request.header("Authorization", "Bearer " + getAccessToken());
+      Response response = request.get();
+      try {
+        return createResponse(response, type);
+      } catch (Throwable t) {
+        logger.log(Level.SEVERE, "Pyramus GET-request into " + path + " failed", t);
+        throw t;
+      } finally {
+        response.close();
+      }
     } finally {
-      response.close();
+      releaseClient(client);
     }
   }
   
-  protected abstract String getAccessToken();
-
   protected AccessToken createAccessToken(String code) {
-    Client client = createClient();
-    
-    Form form = new Form()
-      .param("grant_type", "authorization_code")
-      .param("code", code)
-      .param("redirect_uri", redirectUrl)
-      .param("client_id", clientId)
-      .param("client_secret", clientSecret);
-
-    WebTarget target = client.target(url + "/oauth/token");
-
-    Builder request = target.request();
-
-    return request.post(Entity.form(form), AccessToken.class);
+    Client client = obtainClient();
+    try {
+      Form form = new Form()
+        .param("grant_type", "authorization_code")
+        .param("code", code)
+        .param("redirect_uri", redirectUrl)
+        .param("client_id", clientId)
+        .param("client_secret", clientSecret);
+  
+      WebTarget target = client.target(url + "/oauth/token");
+  
+      Builder request = target.request();
+  
+      return request.post(Entity.form(form), AccessToken.class);
+    } finally {
+      releaseClient(client);
+    }
   }
 
   @SuppressWarnings("unchecked")
@@ -128,7 +147,7 @@ public abstract class AbstractPyramusClient {
     }
   }
   
-  private Client createClient() {
+  protected Client buildClient() {
     // TODO: trust all only on development environment
 
     ClientBuilder clientBuilder = ClientBuilder.newBuilder();
@@ -159,10 +178,16 @@ public abstract class AbstractPyramusClient {
         return true;
       }
     };
-
-    ClientBuilder builder = clientBuilder.sslContext(sslContext).hostnameVerifier(fakeHostnameVerifier).register(new JacksonConfigurator());
+    
+    ClientBuilder builder = clientBuilder
+        .sslContext(sslContext)
+        .hostnameVerifier(fakeHostnameVerifier)
+        .register(new JacksonConfigurator())
+        .register(new BrowserCacheFeature());
+    
     return builder.build();
   }
+
 
   private class JacksonConfigurator implements ContextResolver<ObjectMapper> {
 
@@ -176,10 +201,9 @@ public abstract class AbstractPyramusClient {
     }
 
   }
-
+  
   private String url;
   private String clientId;
   private String clientSecret;
   private String redirectUrl;
-  
 }

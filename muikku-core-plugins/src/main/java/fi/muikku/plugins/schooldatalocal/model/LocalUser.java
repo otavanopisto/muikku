@@ -8,11 +8,8 @@ import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 
 import fi.muikku.model.util.ArchivableEntity;
-import fi.muikku.plugins.search.annotations.IndexId;
-import fi.muikku.plugins.search.annotations.Indexable;
 
 @Entity
-@Indexable
 public class LocalUser implements ArchivableEntity {
   
   public Long getId() {
@@ -53,7 +50,6 @@ public class LocalUser implements ArchivableEntity {
 
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
-  @IndexId
   private Long id;
   
   @NotNull

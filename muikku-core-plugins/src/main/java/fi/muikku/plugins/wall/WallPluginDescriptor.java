@@ -13,7 +13,7 @@ import fi.muikku.i18n.LocaleLocation;
 import fi.muikku.plugin.LocalizedPluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
 import fi.muikku.plugin.PrioritizedPluginDescriptor;
-import fi.muikku.schooldata.UserController;
+import fi.muikku.users.UserController;
 import fi.muikku.schooldata.WorkspaceController;
 
 public class WallPluginDescriptor implements PluginDescriptor, LocalizedPluginDescriptor, PrioritizedPluginDescriptor {

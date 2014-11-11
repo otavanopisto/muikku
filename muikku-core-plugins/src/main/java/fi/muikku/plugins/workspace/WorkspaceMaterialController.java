@@ -98,13 +98,17 @@ public class WorkspaceMaterialController {
 		return workspaceNodeDAO.listByParent(parent);
 	}
 	
+	public Material getMaterialForWorkspaceMaterial(WorkspaceMaterial workspaceMaterial) {
+	  return materialController.findMaterialById(workspaceMaterial.getMaterialId());
+	}
+	
 	public WorkspaceNode cloneWorkspaceNode(WorkspaceNode workspaceNode, WorkspaceNode parent) {
 	  WorkspaceNode newNode;
 	  if (workspaceNode instanceof WorkspaceMaterial) {
 	    WorkspaceMaterial workspaceMaterial = (WorkspaceMaterial) workspaceNode;
-	    Material material = workspaceMaterial.getMaterial();
+	    Material material = getMaterialForWorkspaceMaterial(workspaceMaterial);
 	    Material clonedMaterial = materialController.cloneMaterial(material);
-	    newNode = workspaceMaterialDAO.create(parent, clonedMaterial, generateUrlName(parent, clonedMaterial.getTitle()));
+	    newNode = workspaceMaterialDAO.create(parent, clonedMaterial.getId(), generateUrlName(parent, clonedMaterial.getTitle()));
 	  }
 	  else if (workspaceNode instanceof WorkspaceFolder) {
 	    newNode = workspaceFolderDAO.create(parent, ((WorkspaceFolder) workspaceNode).getTitle(), generateUrlName(parent, ((WorkspaceFolder) workspaceNode).getTitle()));
@@ -124,11 +128,11 @@ public class WorkspaceMaterialController {
   }
 
   public WorkspaceMaterial revertToOriginMaterial(WorkspaceMaterial workspaceMaterial, boolean updateUrlName) {
-	  Material originMaterial = workspaceMaterial.getMaterial().getOriginMaterial();
+	  Material originMaterial = getMaterialForWorkspaceMaterial(workspaceMaterial).getOriginMaterial();
 	  if (originMaterial == null) {
 	    throw new IllegalArgumentException("WorkSpaceMaterial has no origin material");
 	  }
-	  workspaceMaterialDAO.updateMaterial(workspaceMaterial, originMaterial);
+	  workspaceMaterialDAO.updateMaterialId(workspaceMaterial, originMaterial.getId());
 	  if (updateUrlName) {
 	    String urlName = generateUrlName(workspaceMaterial.getParent(), workspaceMaterial, originMaterial.getTitle());
 	    if (!workspaceMaterial.getUrlName().equals(urlName)) {
@@ -142,7 +146,7 @@ public class WorkspaceMaterialController {
 	
 	public WorkspaceMaterial createWorkspaceMaterial(WorkspaceNode parent, Material material) {
 		String urlName = generateUrlName(parent,  material.getTitle());
-	  WorkspaceMaterial workspaceMaterial = workspaceMaterialDAO.create(parent, material, urlName);
+	  WorkspaceMaterial workspaceMaterial = workspaceMaterialDAO.create(parent, material.getId(), urlName);
 		workspaceMaterialCreateEvent.fire(new WorkspaceMaterialCreateEvent(workspaceMaterial));
 		return workspaceMaterial;
 	}
@@ -164,7 +168,7 @@ public class WorkspaceMaterialController {
 	}
 
   public List<WorkspaceMaterial> listWorkspaceMaterialsByMaterial(Material material) {
-    return workspaceMaterialDAO.listByMaterial(material);
+    return workspaceMaterialDAO.listByMaterialId(material.getId());
   }
   
 	public void deleteWorkspaceMaterial(WorkspaceMaterial workspaceMaterial) {

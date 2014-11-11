@@ -7,39 +7,19 @@ import java.util.List;
 import javax.inject.Inject;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.plugins.forum.dao.ForumThreadDAO;
-import fi.muikku.plugins.forum.dao.ForumThreadReplyDAO;
 import fi.muikku.plugins.wall.WallController;
 import fi.muikku.plugins.wall.WallEntryProvider;
 import fi.muikku.plugins.wall.WallFeedItem;
-import fi.muikku.plugins.wall.dao.UserWallDAO;
 import fi.muikku.plugins.wall.model.Wall;
 import fi.muikku.plugins.wall.model.WallType;
 import fi.muikku.plugins.wall.model.WorkspaceWall;
-import fi.muikku.schooldata.UserController;
 import fi.muikku.schooldata.WorkspaceController;
-import fi.muikku.session.SessionController;
 
 public class AssessmentRequestWallEntryProvider implements WallEntryProvider {
 
   @Inject
-  private SessionController sessionController;
-
-  @Inject
-  private UserController userController;
-
-  @Inject
   private WorkspaceController workspaceController;
 
-  @Inject
-  private UserWallDAO userWallDAO;
-
-  @Inject
-  private ForumThreadDAO forumThreadDAO;
-
-  @Inject
-  private ForumThreadReplyDAO forumThreadReplyDAO;
-  
   @Inject
   private WallController wallController;
 

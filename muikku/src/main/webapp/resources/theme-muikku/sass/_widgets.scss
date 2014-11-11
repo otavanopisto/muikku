@@ -718,7 +718,8 @@ div[class*="wi-dock-static-navi"] {
       background:#fff;
       height:48px;
       width:48px;      
-      float:left;
+      box-sizing:border-box; 
+      display:inline-block;
       border-radius:24px;
       margin:0 4px 0 0;
       z-index:15;
@@ -727,11 +728,14 @@ div[class*="wi-dock-static-navi"] {
        @incude border(2px,#fff,solid);
        background:#fff;
        height:48px;
-       float:left;
+       display:inline-block;
+       box-sizing:border-box;
        border-top-left-radius:24px;
        border-bottom-left-radius:24px;
     
       .lu-user-name {
+        @include no-select;
+
         color:#3c77a0;
         text-transform:uppercase;
         min-width:100px;
@@ -739,6 +743,12 @@ div[class*="wi-dock-static-navi"] {
         float:left;
         height:1.5em;
       }
+      .lu-user-name-button  div {
+         box-sizing:border-box;
+         cursor:pointer;
+         display:inline-block ;
+      }
+            
       
       .lu-actions {
         min-width:60px;
@@ -749,7 +759,41 @@ div[class*="wi-dock-static-navi"] {
          margin-left:15px;
         }
       }
+      
+      .lu-alternateIdentities-form{
+          background-color: #fff;
+          border: 1px solid #dadada;
+          display: none;
+          position: absolute;
+          z-index: 100;
+          
+        
+          li {
+          @include padding(5px);
 
+             a{
+               &.icon-user:before{
+                margin-right:6px;
+               }
+             text-decoration: none; 
+             font-size:0.9em;
+             white-space: nowrap;
+             color:#000;
+             text-transform:uppercase;
+            }
+
+            &:hover{
+              background-color:#1a9bfc;  
+              color:#fff;
+          
+              a{
+              text-decoration:none;
+              color:#fff;
+              }
+            }            
+          }
+        
+      }
 
       a[class*="lu-action"] {
        color:#3C77A0;

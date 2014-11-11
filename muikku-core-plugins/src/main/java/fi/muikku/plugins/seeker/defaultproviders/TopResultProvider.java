@@ -1,11 +1,13 @@
 package fi.muikku.plugins.seeker.defaultproviders;
 
 import java.util.List;
+
 import javax.inject.Inject;
-import fi.muikku.plugins.search.SearchProvider;
-import fi.muikku.plugins.search.SearchResult;
+
 import fi.muikku.plugins.search.SearchResultProcessor;
 import fi.muikku.plugins.seeker.SeekerResult;
+import fi.muikku.search.SearchProvider;
+import fi.muikku.search.SearchResult;
 
 public class TopResultProvider extends AbstractSeekerResultProvider {
   
