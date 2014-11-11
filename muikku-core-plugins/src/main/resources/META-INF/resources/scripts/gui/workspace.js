@@ -30,6 +30,10 @@ $(document).ready(function() {
       var tocWrapper = tocButton.children('.workspace-materials-toc-wrapper');
       var tocButtonLabel = $('.wi-workspace-dock-navi-button-materials-toc .workspace-navi-tt-container-materials-toc'); 
 
+      $(".workspace-materials-toc-wrapper").bind('click', function(e) {
+        e.stopPropagation();
+      });
+      
       // Some hiding and showing for TOC by click event
       $(tocButton).click(function() {
         
@@ -53,10 +57,6 @@ $(document).ready(function() {
           });
           
         } else { 
-          
-          $(".workspace-materials-toc-wrapper").bind('click', function(e) {
-            e.stopPropagation();
-          });
           
           tocButtonLabel
           .show()
@@ -85,6 +85,7 @@ $(document).ready(function() {
         
       });
       
+      // Prevent page scroll happening if TOC scroll reaches bottom
       $('.workspace-materials-toc-content-inner').on('DOMMouseScroll mousewheel', function(ev) {
         var $this = $(this),
           scrollTop = this.scrollTop,
