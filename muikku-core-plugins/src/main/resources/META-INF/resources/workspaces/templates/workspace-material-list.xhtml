@@ -19,7 +19,7 @@
       </c:when>
       <c:otherwise>
         <li class="workspace-materials-toc-item">
-          <h:outputLink value="#{request.contextPath}/workspace/#{workspaceMaterialsBackingBean.workspaceUrlName}/materials/#{node.materialPath}">#{node.materialTitle}</h:outputLink>
+          <h:outputLink value="#page-#{node.materialId}">#{node.materialTitle}</h:outputLink>
         </li>
       </c:otherwise>
     </c:choose>

@@ -416,7 +416,8 @@ body.workspace-reading {
                 @include rounded(2px);
                 padding:2px 8px;
                 
-                &:hover {
+                &:hover,
+                &.active {
                   background:#596e7d;
                   color:#fff;
                 }
