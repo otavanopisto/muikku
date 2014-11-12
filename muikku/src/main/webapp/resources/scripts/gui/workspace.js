@@ -1,5 +1,9 @@
 $(document).ready(function() {
   
+  $('#staticNavigationWrapperWorkspace').waypoint('sticky', {
+    stuckClass : 'stuckStNav'
+  });
+  
   // Workspace navigation
   if ($('#workspaceNavigationWrapper').length > 0) {
     var contentContainer = $('#content');
