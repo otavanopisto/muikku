@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:c="http://java.sun.com/jsp/jstl/core" 
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core" 
+  xmlns:h="http://java.sun.com/jsf/html" 
+  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+  xmlns:composite="http://java.sun.com/jsf/composite/composite" 
+  template="/workspaces/templates/workspace-materials-reading-view.xhtml">
+
+  <ui:define name="workspaces.reading.toc">
+    <div id="workspaceMaterialReadingTOCWrapper">
+      <nav id="workspaceMaterialReadingTOCClosed">
+        <div class="workspaceMaterialReadingTOCTitle">
+          <div id="workspaceMaterialReadingTOCNavicon" class="icon-navicon workspace-material-reading-toc-opening-button"></div>
+        </div>
+      </nav>
+    
+      <nav id="workspaceMaterialReadingTOCOpen">
+        <div class="workspaceMaterialReadingTOCTitle">
+          <h1>Sisällysluettelo</h1>
+          <div id="workspaceMaterialReadingTOCPinicon" class="icon-pin"></div>
+          <div id="workspaceMaterialReadingTOCNavicon" class="icon-navicon workspace-material-reading-toc-closing-button"></div>
+        </div>
+        <div class="workspace-materials-toc-content-outer">
+          <div class="workspace-materials-toc-content-inner">
+            <div class="workspace-materials-toc-content-scrolling">
+              <ui:include src="/workspaces/templates/workspace-material-list.xhtml">
+                <ui:param name="nodes" value="#{workspaceMaterialsTOCBackingBean.getMaterialNodes(workspaceMaterialsReadingBackingBean.getRootFolder())}"/>
+              </ui:include>
+              <div class="spacer"></div>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </ui:define>
+
+  <ui:define name="workspace.reading.content">
+    <section class="workspaceMaterialReadingViewPage">  
+      <h1>Lorem Ipsum</h1>  
+      <p>Lorem ipsum dolor sit amet, ei vix wisi adhuc liberavisse, ne his lucilius inimicus. Usu meliore accommodare ut, eum civibus persequeris referrentur in. In rebum eligendi principes usu. Idque inani soluta mel cu.</p>
+      <p>Euismod commune fabellas ei usu. In iisque vocibus duo, platonem concludaturque id qui. Dicta homero aliquando et vel, brute mollis pro ad. Ad pri quem epicuri, ut inimicus imperdiet cum. Soleat quaeque euripidis vis ei, est ne homero facilis pertinacia. Fabellas molestiae splendide ius an, nulla scripta mediocritatem no duo, usu esse propriae ei.</p>
+      <p>Et choro soluta eos, pri alterum ullamcorper cu, ne his dolorem voluptatum. Eu nec atqui aliquip vivendo, no quo sint malis vulputate, ea sit meliore sapientem. Munere molestie intellegebat sit ea. Mei ullum nostro consetetur cu.</p>
+      <p>No tritani ocurreret sed, te has omnis solum. Eum patrioque scribentur ex, mei ex nostro ancillae. Ignota commune ut sea, dico blandit eu sed. Nam comprehensam conclusionemque ei, cu viderer eligendi mei. Duo in stet modus dicit, duis insolens vim eu.</p>
+      <p>Lucilius accusata concludaturque vis an, te vis case partiendo efficiantur. Nostro corrumpit assentior sed eu, impetus numquam definiebas eu quo, percipit menandri molestiae ea vis. Ad brute aperiam pro, ex probo delenit vis, id lobortis incorrupte usu. Ei nec placerat eleifend appellantur, autem labitur menandri te cum. Te cum alii voluptatibus. Sed ad mucius quidam platonem.</p>
+      
+      <h1>Lorem Ipsum</h1>  
+      <p>Lorem ipsum dolor sit amet, ei vix wisi adhuc liberavisse, ne his lucilius inimicus. Usu meliore accommodare ut, eum civibus persequeris referrentur in. In rebum eligendi principes usu. Idque inani soluta mel cu.</p>
+      <p>Euismod commune fabellas ei usu. In iisque vocibus duo, platonem concludaturque id qui. Dicta homero aliquando et vel, brute mollis pro ad. Ad pri quem epicuri, ut inimicus imperdiet cum. Soleat quaeque euripidis vis ei, est ne homero facilis pertinacia. Fabellas molestiae splendide ius an, nulla scripta mediocritatem no duo, usu esse propriae ei.</p>
+      <p>Et choro soluta eos, pri alterum ullamcorper cu, ne his dolorem voluptatum. Eu nec atqui aliquip vivendo, no quo sint malis vulputate, ea sit meliore sapientem. Munere molestie intellegebat sit ea. Mei ullum nostro consetetur cu.</p>
+      <p>No tritani ocurreret sed, te has omnis solum. Eum patrioque scribentur ex, mei ex nostro ancillae. Ignota commune ut sea, dico blandit eu sed. Nam comprehensam conclusionemque ei, cu viderer eligendi mei. Duo in stet modus dicit, duis insolens vim eu.</p>
+      <p>Lucilius accusata concludaturque vis an, te vis case partiendo efficiantur. Nostro corrumpit assentior sed eu, impetus numquam definiebas eu quo, percipit menandri molestiae ea vis. Ad brute aperiam pro, ex probo delenit vis, id lobortis incorrupte usu. Ei nec placerat eleifend appellantur, autem labitur menandri te cum. Te cum alii voluptatibus. Sed ad mucius quidam platonem.</p>
+    </section>
+    
+    <section class="workspaceMaterialReadingViewPage">
+      <p>Lorem ipsum dolor sit amet, ei vix wisi adhuc liberavisse, ne his lucilius inimicus. Usu meliore accommodare ut, eum civibus persequeris referrentur in. In rebum eligendi principes usu. Idque inani soluta mel cu.</p>
+      <p>Euismod commune fabellas ei usu. In iisque vocibus duo, platonem concludaturque id qui. Dicta homero aliquando et vel, brute mollis pro ad. Ad pri quem epicuri, ut inimicus imperdiet cum. Soleat quaeque euripidis vis ei, est ne homero facilis pertinacia. Fabellas molestiae splendide ius an, nulla scripta mediocritatem no duo, usu esse propriae ei.</p>
+      <p>Et choro soluta eos, pri alterum ullamcorper cu, ne his dolorem voluptatum. Eu nec atqui aliquip vivendo, no quo sint malis vulputate, ea sit meliore sapientem. Munere molestie intellegebat sit ea. Mei ullum nostro consetetur cu.</p>
+      <p>No tritani ocurreret sed, te has omnis solum. Eum patrioque scribentur ex, mei ex nostro ancillae. Ignota commune ut sea, dico blandit eu sed. Nam comprehensam conclusionemque ei, cu viderer eligendi mei. Duo in stet modus dicit, duis insolens vim eu.</p>
+      <p>Lucilius accusata concludaturque vis an, te vis case partiendo efficiantur. Nostro corrumpit assentior sed eu, impetus numquam definiebas eu quo, percipit menandri molestiae ea vis. Ad brute aperiam pro, ex probo delenit vis, id lobortis incorrupte usu. Ei nec placerat eleifend appellantur, autem labitur menandri te cum. Te cum alii voluptatibus. Sed ad mucius quidam platonem.</p>
+    </section>
+    
+    <section class="workspaceMaterialReadingViewPage">
+      <h1>Lorem Ipsum</h1>
+      <p>Lorem ipsum dolor sit amet, ei vix wisi adhuc liberavisse, ne his lucilius inimicus. Usu meliore accommodare ut, eum civibus persequeris referrentur in. In rebum eligendi principes usu. Idque inani soluta mel cu.</p>
+      <p>Euismod commune fabellas ei usu. In iisque vocibus duo, platonem concludaturque id qui. Dicta homero aliquando et vel, brute mollis pro ad. Ad pri quem epicuri, ut inimicus imperdiet cum. Soleat quaeque euripidis vis ei, est ne homero facilis pertinacia. Fabellas molestiae splendide ius an, nulla scripta mediocritatem no duo, usu esse propriae ei.</p>
+      <p>Et choro soluta eos, pri alterum ullamcorper cu, ne his dolorem voluptatum. Eu nec atqui aliquip vivendo, no quo sint malis vulputate, ea sit meliore sapientem. Munere molestie intellegebat sit ea. Mei ullum nostro consetetur cu.</p>
+      <p>No tritani ocurreret sed, te has omnis solum. Eum patrioque scribentur ex, mei ex nostro ancillae. Ignota commune ut sea, dico blandit eu sed. Nam comprehensam conclusionemque ei, cu viderer eligendi mei. Duo in stet modus dicit, duis insolens vim eu.</p>
+      <p>Lucilius accusata concludaturque vis an, te vis case partiendo efficiantur. Nostro corrumpit assentior sed eu, impetus numquam definiebas eu quo, percipit menandri molestiae ea vis. Ad brute aperiam pro, ex probo delenit vis, id lobortis incorrupte usu. Ei nec placerat eleifend appellantur, autem labitur menandri te cum. Te cum alii voluptatibus. Sed ad mucius quidam platonem.</p>
+    </section>
+  </ui:define>
+  
+  <ui:define name="workspaces.reading.goback">
+    <div id="workspaceMaterialReadingAdditionalNavWrapper">
+      <nav class="workspaceMaterialReadingAdditionalNav">
+        <m:widgetSpaceSet>
+          <m:widgetSpace name="workspaces.materials.reading.dock" keepEmpty="true" sizing="MINIMIZE" styleClass="">
+            <m:widget name="workspaces-materials-reading-goback" size="1" />
+          </m:widgetSpace>
+        </m:widgetSpaceSet>
+      </nav>
+    </div>
+  </ui:define>
+
+</ui:composition>
