@@ -46,7 +46,7 @@ public class FileRevisionExtensionProperty {
   @ManyToOne
   private FileRevision fileRevision;
 
-  @Column (nullable = false)
+  @Column (nullable = false, name = "propertyKey")
   private String key;
   
   @Lob
