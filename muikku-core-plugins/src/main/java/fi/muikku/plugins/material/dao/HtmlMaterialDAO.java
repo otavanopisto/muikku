@@ -24,5 +24,15 @@ public class HtmlMaterialDAO extends CorePluginsDAO<HtmlMaterial> {
 	public void delete(HtmlMaterial htmlMaterial) {
 	  super.delete(htmlMaterial);
 	}
+
+  public HtmlMaterial updateData(HtmlMaterial htmlMaterial, String html) {
+    htmlMaterial.setHtml(html);
+    return persist(htmlMaterial);
+  }
+
+  public HtmlMaterial updateRevisionNumber(HtmlMaterial htmlMaterial, Long revisionNumber) {
+    htmlMaterial.setRevisionNumber(revisionNumber);
+    return persist(htmlMaterial);
+  }
 	
 }

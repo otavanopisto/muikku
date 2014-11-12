@@ -16,6 +16,7 @@
 
   <properties>
     <elasticsearch.version>1.4.0</elasticsearch.version>
+    <google-diff-match-patch.version>1.1.11</google-diff-match-patch.version>
   </properties>
 
   <dependencies>
@@ -179,6 +180,20 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+    </dependency>
+    
+    <!-- Coops -->
+    <dependency>
+      <groupId>fi.foyt.coops</groupId>
+      <artifactId>coops-spec</artifactId>
+    </dependency>
+
+    <!-- Google Diff Match Patch -->
+    
+    <dependency>
+      <groupId>com.sksamuel.diff</groupId>
+      <artifactId>diff</artifactId>
+      <version>${google-diff-match-patch.version}</version>
     </dependency>
     
   </dependencies>
