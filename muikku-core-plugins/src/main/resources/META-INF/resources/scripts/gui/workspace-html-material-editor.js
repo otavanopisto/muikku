@@ -59,106 +59,85 @@
   $(document).ready(function() {
     var fileId = $('.html-editor-html-material-id').val();
     if (!fileId) {
-      // TODO: Error handling!
+      $('.notification-queue').notificationQueue('notification', 'error', "Could not find fileId");
+      return;
     }
-    
-    var serverUrl = CONTEXTPATH + '/rest/coops/' + fileId + '';
-  
-    CKEDITOR.plugins.addExternal('change', CONTEXTPATH + '/scripts/ckplugins/change/');
-    CKEDITOR.plugins.addExternal('coops', CONTEXTPATH + '/scripts/ckplugins/coops/');
-    CKEDITOR.plugins.addExternal('coops-connector', CONTEXTPATH + '/scripts/ckplugins/coops-connector/');
-    CKEDITOR.plugins.addExternal('coops-dmp', CONTEXTPATH + '/scripts/ckplugins/coops-dmp/');
-    CKEDITOR.plugins.addExternal('coops-cursors', CONTEXTPATH + '/scripts/ckplugins/coops-cursors/');
-    CKEDITOR.plugins.addExternal('coops-sessionevents', CONTEXTPATH + '/scripts/ckplugins/coops-sessionevents/');
-    
-    var editor = CKEDITOR.appendTo($('.html-editor-ckcontainer')[0], {
-      skin: 'moono',
-      extraPlugins: 'coops,coops-connector,coops-dmp,coops-cursors,coops-sessionevents',
-      readOnly: true,
-      height: 500,
-      coops: {
-        serverUrl: serverUrl
+
+    // TODO: Editor Locale
+    // TODO: Localization
+      
+    var editor = $('.html-editor-ckcontainer').append('<div>').coOpsCK({
+      externalPlugins : {
+        'change' : CONTEXTPATH + '/scripts/ckplugins/change/',
+        'coops' : CONTEXTPATH + '/scripts/ckplugins/coops/',
+        'coops-connector' : CONTEXTPATH + '/scripts/ckplugins/coops-connector/',
+        'coops-dmp' : CONTEXTPATH + '/scripts/ckplugins/coops-dmp/',
+        'coops-cursors' : CONTEXTPATH + '/scripts/ckplugins/coops-cursors/',
+        'coops-sessionevents' : CONTEXTPATH + '/scripts/ckplugins/coops-sessionevents/'
+      },
+      extraPlugins : 'coops,coops-connector,coops-dmp,coops-cursors,coops-sessionevents',
+      serverUrl : CONTEXTPATH + '/rest/coops/' + fileId + '',
+      editorOptions : {
+        autoGrowOnStartup : true,
+        skin : 'moono',
+        height : 500
       }
     });
-//    
-//    /* CoOps status messages */
-//    
-//    editor.on("CoOPS:SessionStart", function (event) {
-//      $('.editor-status').html('Loaded');
-//    });
-//    
-//    editor.on("CoOPS:ContentDirty", function (event) {
-//      $('.editor-status').html('Unsaved');
-//    });
-//    
-//    editor.on("CoOPS:PatchSent", function (event) {
-//      $('.editor-status').html('Saving...');
-//    });
-//    
-//    editor.on("CoOPS:PatchAccepted", function (event) {
-//      $('.editor-status').html('Saved');
-//    });
-//
-//    editor.on("CoOPS:ConnectionLost", function (event) {
-//      $('.notifications').notifications('notification', 'load', event.data.message).addClass('connection-lost-notification');
-//    });
-//
-//    editor.on("CoOPS:Reconnect", function (event) {
-//      $('.notifications').find('.connection-lost-notification').notification("hide");
-//    });
-//
-    editor.on("CoOPS:CollaboratorJoined", function (event) {
-      $('.collaborators').collaborators("addCollaborator", event.data.sessionId, event.data.displayName||'Anonymous', event.data.email||(event.data.sessionId + '@no.invalid'));
+    
+    editor.on('statusChange', function (event, data) {
+      $('.html-editor-status').html($('.html-editor-status').data(data.status));
+    });
+    
+    editor.on("error", function(event, data) {
+      $('.connection-lost-notification').hide();
+      
+      switch (data.severity) {
+        case 'CRITICAL':
+        case 'SEVERE':
+          $('.notification-queue').notificationQueue('notification', 'error', data.message);
+        break;
+        case 'WARNING':
+          $('.notification-queue').notificationQueue('notification', 'warn', data.message);
+        break;
+        default:
+          $('.notification-queue').notificationQueue('notification', 'info', data.message);
+        break;
+      }
+    });
+    
+    editor.on("connectionLost", function (event, data) {
+      $('.notification-queue').notificationQueue('notification', 'loading', 'Connection lost, reconnecting...').addClass('connection-lost-notification');
+    });
+    
+    editor.on("reconnect", function (event, data) {
+      $('.connection-lost-notification').hide();
+    });
+    
+    editor.on("collaboratorJoined", function(event, data) {
+      $('.collaborators').collaborators("addCollaborator", data.sessionId, data.displayName, data.email);
+    });
+    
+    editor.on("collaboratorLeft", function(event, data) {
+      $('.collaborators').collaborators("removeCollaborator", data.sessionId);
     });
 
-    editor.on("CoOPS:CollaboratorLeft", function (event) {
-      $('.collaborators').collaborators("removeCollaborator", event.data.sessionId);
-    });
-//    
-//    // CoOPS Errors
-//    
-//    editor.on("CoOPS:Error", function (event) {
-//      $('.notifications').find('.connection-lost-notification').notification("hide");
-//      
-//      switch (event.data.severity) {
-//        case 'CRITICAL':
-//        case 'SEVERE':
-//          $('.notifications').notifications('notification', 'error', event.data.message);
-//        break;
-//        case 'WARNING':
-//          $('.notifications').notifications('notification', 'warning', event.data.message);
-//        break;
-//        default:
-//          $('.notifications').notifications('notification', 'info', event.data.message);
-//        break;
-//      }
-//    });
-//    
-//    $('input[name="name"]').change(function (event) {
-//      var oldValue = $(this).parent().data('old-value');
-//      var value = $(this).val();
-//      $(this).parent().data('old-value', value);
-//      
-//      editor.fire("propertiesChange", {
-//        properties : [{
-//          property: 'title',
-//          oldValue: oldValue,
-//          currentValue: value
-//        }]
+//    editor.on("patchReceived", function(event, data) {
+//      $.each(data.properties, function(key, value) {
+//        if (key === 'title') {
+//          $('.illusion-edit-page-title').val(value);
+//        }
 //      });
 //    });
 //    
-//    editor.on("CoOPS:PatchReceived", function (event) {
-//      var properties = event.data.properties;
-//      if (properties) {
-//        $.each(properties, function (key, value) {
-//          if (key === 'title') {
-//            $('input[name="name"]').val(value);
-//          }
-//        });
+//    $('.illusion-edit-page-title').change(function(event) {
+//      var oldValue = $(this).parent().data('old-value');
+//      var value = $(this).val();
+//      if (value) {
+//        $(this).parent().data('old-value', value);
+//        $('.illusion-page-editor').coOpsCK("changeProperty", 'title', oldValue, value);
 //      }
 //    });
-//    
+    
     $('.collaborators').collaborators();
   });
   
