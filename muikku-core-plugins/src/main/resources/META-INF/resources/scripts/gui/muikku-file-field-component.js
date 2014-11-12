@@ -55,6 +55,19 @@
         .hide();
     },
     
+    files: function () {
+      return $.map(this.element.parent().find('.muikku-file-input-field-file'), $.proxy(function (fileElement) {
+        var fileIndex = $(fileElement).data('file-index');
+        var fieldPrefix = this._fieldName + '.' + fileIndex;
+        
+        return {
+          contentType: $(fileElement).find('input[name="' + fieldPrefix + '-content-type"]').val(),
+          name: $(fileElement).find('input[name="' + fieldPrefix + '-filename"]').val(),
+          id: $(fileElement).find('input[name="' + fieldPrefix + '-file-id"]').val()
+        };
+      }, this));
+    },
+    
     _findFileElementByIndex: function (index) {
       return this.element.parent().find('.muikku-file-input-field-file[data-file-index="' + index + '"]');
     },
