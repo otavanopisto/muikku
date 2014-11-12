@@ -1,6 +1,60 @@
 (function() {
   
-  /* global CKEDITOR,CONTEXTPATH */
+  /* global CKEDITOR,CONTEXTPATH,hex_md5 */
+  
+  $.widget("custom.collaborators", {
+    
+    _create: function () {
+    },
+    
+    addCollaborator: function (sessionId, name, email) {
+      $(this.element).append(
+        $('<div>').collaborator({
+          sessionId: sessionId,
+          name: name,
+          email: email
+        })
+      );
+    },
+    
+    removeCollaborator: function (sessionId) {
+      $(this.element).find('#collaborator-' + sessionId).hide("blind", function () {
+        $(this).remove();
+      });
+    },
+    
+    _destroy : function() {
+      
+    }
+  });
+  
+  $.widget("custom.collaborator", {
+    options: {
+      gravatarDefault: 'retro',
+      gravatarRating: 'g',
+      gravatarSize: 32
+    },
+    _create: function () {
+      $(this.element)
+        .addClass('collaborator')
+        .attr({
+          id: 'collaborator-' + this.options.sessionId,
+        })
+        .append($('<img>')
+          .attr({
+            title: this.options.name,
+            src: '//www.gravatar.com/avatar/' + hex_md5(this.options.email) +
+              '?d=' + this.options.gravatarDefault +
+              '&r=' + this.options.gravatarRating +
+              "&s=" + this.options.gravatarSize
+          })
+        );
+    },
+    
+    _destroy : function() {
+      
+    }
+  });
   
   $(document).ready(function() {
     var fileId = $('.html-editor-html-material-id').val();
@@ -53,13 +107,13 @@
 //      $('.notifications').find('.connection-lost-notification').notification("hide");
 //    });
 //
-//    editor.on("CoOPS:CollaboratorJoined", function (event) {
-//      $('.collaborators').collaborators("addCollaborator", event.data.sessionId, event.data.displayName||'Anonymous', event.data.email||(event.data.sessionId + '@no.invalid'));
-//    });
-//
-//    editor.on("CoOPS:CollaboratorLeft", function (event) {
-//      $('.collaborators').collaborators("removeCollaborator", event.data.sessionId);
-//    });
+    editor.on("CoOPS:CollaboratorJoined", function (event) {
+      $('.collaborators').collaborators("addCollaborator", event.data.sessionId, event.data.displayName||'Anonymous', event.data.email||(event.data.sessionId + '@no.invalid'));
+    });
+
+    editor.on("CoOPS:CollaboratorLeft", function (event) {
+      $('.collaborators').collaborators("removeCollaborator", event.data.sessionId);
+    });
 //    
 //    // CoOPS Errors
 //    
@@ -105,7 +159,7 @@
 //      }
 //    });
 //    
-//    $('.collaborators').collaborators();
+    $('.collaborators').collaborators();
   });
   
 }).call(this);
