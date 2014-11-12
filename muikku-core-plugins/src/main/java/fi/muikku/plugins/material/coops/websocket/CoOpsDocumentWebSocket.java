@@ -39,7 +39,7 @@ import fi.muikku.plugins.material.coops.model.CoOpsSession;
 import fi.muikku.plugins.material.coops.model.CoOpsSessionType;
 import fi.muikku.plugins.material.model.HtmlMaterial;
 
-@ServerEndpoint ("/ws/{HTMLMATERIALID}/{SESSIONID}")
+@ServerEndpoint ("/ws/coops/{HTMLMATERIALID}/{SESSIONID}")
 @Transactional
 public class CoOpsDocumentWebSocket {
   
