@@ -341,7 +341,7 @@ public class DeusNexMachinaController {
 		String title = resource.getTitle();
 		String html = parseDocumentContent(rootFolder, resource.getDocument(), deusNexDocument);
 		
-		return htmlMaterialController.createHtmlMaterial(title, html);
+		return htmlMaterialController.createHtmlMaterial(title, html, "text/html;editor=CKEditor", 0l);
 	}
 
 	private Material createQueryMaterial(WorkspaceRootFolder rootFolder, Query resource, DeusNexDocument deusNexDocument) throws DeusNexException {
@@ -350,7 +350,7 @@ public class DeusNexMachinaController {
 		String title = resource.getTitle();
 		String html = parseQueryContent(rootFolder, resource.getDocument(), deusNexDocument);
 		
-		return htmlMaterialController.createHtmlMaterial(title, html);
+		return htmlMaterialController.createHtmlMaterial(title, html, "text/html;editor=CKEditor", 0l);
 	}
 
 	private BinaryMaterial createBinaryMaterial(Binary resource) {
