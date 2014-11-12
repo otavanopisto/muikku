@@ -11,7 +11,7 @@ import javax.persistence.criteria.Root;
 import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.material.coops.model.HtmlMaterialRevision;
-import fi.muikku.plugins.material.coops.model.FileRevision_;
+import fi.muikku.plugins.material.coops.model.HtmlMaterialRevision_;
 
 public class HtmlMaterialRevisionDAO extends CorePluginsDAO<HtmlMaterialRevision> {
 
@@ -39,8 +39,8 @@ public class HtmlMaterialRevisionDAO extends CorePluginsDAO<HtmlMaterialRevision
     criteria.select(root);
     criteria.where(
       criteriaBuilder.and(
-        criteriaBuilder.equal(root.get(FileRevision_.htmlMaterial), htmlMaterial),
-        criteriaBuilder.greaterThan(root.get(FileRevision_.revision), revision)
+        criteriaBuilder.equal(root.get(HtmlMaterialRevision_.htmlMaterial), htmlMaterial),
+        criteriaBuilder.greaterThan(root.get(HtmlMaterialRevision_.revision), revision)
       )
     );
 

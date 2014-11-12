@@ -8,9 +8,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.plugins.CorePluginsDAO;
-import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.material.coops.model.HtmlMaterialExtensionProperty;
-import fi.muikku.plugins.material.coops.model.FileExtensionProperty_;
+import fi.muikku.plugins.material.coops.model.HtmlMaterialExtensionProperty_;
+import fi.muikku.plugins.material.model.HtmlMaterial;
 
 public class HtmlMaterialExtensionPropertyDAO extends CorePluginsDAO<HtmlMaterialExtensionProperty> {
 
@@ -35,8 +35,8 @@ public class HtmlMaterialExtensionPropertyDAO extends CorePluginsDAO<HtmlMateria
     criteria.select(root);
     criteria.where(
       criteriaBuilder.and(
-        criteriaBuilder.equal(root.get(FileExtensionProperty_.htmlMaterial), htmlMaterial),
-        criteriaBuilder.equal(root.get(FileExtensionProperty_.key), key)
+        criteriaBuilder.equal(root.get(HtmlMaterialExtensionProperty_.htmlMaterial), htmlMaterial),
+        criteriaBuilder.equal(root.get(HtmlMaterialExtensionProperty_.key), key)
       )
     );
 
@@ -51,7 +51,7 @@ public class HtmlMaterialExtensionPropertyDAO extends CorePluginsDAO<HtmlMateria
     Root<HtmlMaterialExtensionProperty> root = criteria.from(HtmlMaterialExtensionProperty.class);
     criteria.select(root);
     criteria.where(
-      criteriaBuilder.equal(root.get(FileExtensionProperty_.htmlMaterial), htmlMaterial)
+      criteriaBuilder.equal(root.get(HtmlMaterialExtensionProperty_.htmlMaterial), htmlMaterial)
     );
 
     return entityManager.createQuery(criteria).getResultList();
