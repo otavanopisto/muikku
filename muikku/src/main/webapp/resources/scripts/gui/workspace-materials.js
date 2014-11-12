@@ -69,7 +69,7 @@
 
       $('a[href="' + hash + '"]').click(function(event) {
         $('html, body').stop().animate({
-          scrollTop: $section.offset().top - 100
+          scrollTop: $section.offset().top - 29
         },{
           duration: 500,
           easing : "easeInOutQuad",
