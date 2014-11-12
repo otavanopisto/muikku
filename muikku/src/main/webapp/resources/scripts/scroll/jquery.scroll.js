@@ -5,7 +5,6 @@
 $(document).ready(function() {
   
   /* Sticky shortcut */ 
-
 	$('#staticNavigationWrapper').waypoint('sticky', {
 	  stuckClass : 'stuckStNav',
     handler : function(direction){
@@ -55,7 +54,6 @@ $(document).ready(function() {
 	});
 	
 	/* Style functions */
-	
 	$('#staticNavigationWrapper').waypoint(function(direction) {
 	  if(direction == 'down') {
 	    $('#staticNavigationBG').addClass("stNavScrollStyles").stop().animate({

@@ -11,20 +11,21 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import fi.muikku.plugins.material.model.HtmlMaterial;
 
 @Entity
-public class FileRevision {
+public class HtmlMaterialRevision {
 
   public Long getId() {
     return id;
   }
   
-  public File getFile() {
-    return file;
+  public HtmlMaterial getFile() {
+    return htmlMaterial;
   }
   
-  public void setFile(File file) {
-    this.file = file;
+  public void setFile(HtmlMaterial htmlMaterial) {
+    this.htmlMaterial = htmlMaterial;
   }
   
   public String getChecksum() {
@@ -72,7 +73,7 @@ public class FileRevision {
   private Long id;
   
   @ManyToOne
-  private File file;
+  private HtmlMaterial htmlMaterial;
   
   @Column
   @Lob

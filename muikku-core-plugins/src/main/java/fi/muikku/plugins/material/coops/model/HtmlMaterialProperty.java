@@ -7,20 +7,21 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import fi.muikku.plugins.material.model.HtmlMaterial;
 
 @Entity
-public class FileProperty {
+public class HtmlMaterialProperty {
 
   public Long getId() {
     return id;
   }
   
-  public File getFile() {
-    return file;
+  public HtmlMaterial getHtmlMaterial() {
+    return htmlMaterial;
   }
   
-  public void setFile(File file) {
-    this.file = file;
+  public void setHtmlMaterial(HtmlMaterial htmlMaterial) {
+    this.htmlMaterial = htmlMaterial;
   }
   
   public String getKey() {
@@ -44,7 +45,7 @@ public class FileProperty {
   private Long id;
   
   @ManyToOne
-  private File file;
+  private HtmlMaterial htmlMaterial;
 
   @Column (nullable = false, name = "propertyKey")
   private String key;

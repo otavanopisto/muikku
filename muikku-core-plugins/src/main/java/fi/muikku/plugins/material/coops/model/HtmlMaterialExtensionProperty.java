@@ -7,20 +7,21 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import fi.muikku.plugins.material.model.HtmlMaterial;
 
 @Entity
-public class FileRevisionProperty {
+public class HtmlMaterialExtensionProperty {
 
   public Long getId() {
     return id;
   }
   
-  public FileRevision getFileRevision() {
-    return fileRevision;
+  public HtmlMaterial getFile() {
+    return htmlMaterial;
   }
   
-  public void setFileRevision(FileRevision fileRevision) {
-    this.fileRevision = fileRevision;
+  public void setFile(HtmlMaterial htmlMaterial) {
+    this.htmlMaterial = htmlMaterial;
   }
   
   public String getKey() {
@@ -44,7 +45,7 @@ public class FileRevisionProperty {
   private Long id;
   
   @ManyToOne
-  private FileRevision fileRevision;
+  private HtmlMaterial htmlMaterial;
 
   @Column (nullable = false, name = "propertyKey")
   private String key;
