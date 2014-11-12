@@ -1,7 +1,7 @@
 (function() {
 
   $(document).ready(function() {
-    // Workspace material's page loading
+    // Workspace Material's page loading
     $('.workspace-material-page').each(function(index, node) {
       var materialType = $(node).data('material-type');
       switch (materialType) {
@@ -20,7 +20,7 @@
       }
     });
 
-    // Workspace material's page loading in reading view    
+    // Workspace material's Reading View page loading
     $('.workspace-material-reading-view-page').each(function(index, node) {
       var materialType = $(node).data('material-type');
       switch (materialType) {
@@ -39,7 +39,7 @@
       }
     });
 
-    /* Rather fancy and smooth scrolling of links between sections */
+    /* Smooth scrolling in workspace Material's View */
     var $sections = $('.workspace-material-page');
 
     $sections.each(function() {
@@ -56,7 +56,27 @@
             window.location.hash = hash;
           }
         });
+        event.preventDefault();
+      });
+    });
+    
+    /* Smooth scrolling in workspace Material's Reading View */
+    var $sections = $('.workspace-material-reading-view-page');
 
+    $sections.each(function() {
+      var $section = $(this);
+      var hash = '#' + this.id;
+
+      $('a[href="' + hash + '"]').click(function(event) {
+        $('html, body').stop().animate({
+          scrollTop: $section.offset().top - 100
+        },{
+          duration: 500,
+          easing : "easeInOutQuad",
+          complete: function() {
+            window.location.hash = hash;
+          }
+        });
         event.preventDefault();
       });
     });
@@ -77,6 +97,24 @@
           return -$(this).height() + 250;
         }
       });
+    
+    /* Highlighting toc item at appropriate time when we scroll to the corresponding section - Reading View */
+    $('.workspace-material-reading-view-page')
+      .waypoint(function(direction) {
+        var $links = $('a[href="#' + this.id + '"]');
+        $links.toggleClass('active', direction === 'down');
+      }, {
+        offset: '60%'
+      })
+      .waypoint(function(direction) {
+        var $links = $('a[href="#' + this.id + '"]');
+        $links.toggleClass('active', direction === 'up');
+      }, {
+        offset: function() {
+          return -$(this).height() + 250;
+        }
+      });
+    
   });
 
 // TODO enable?
