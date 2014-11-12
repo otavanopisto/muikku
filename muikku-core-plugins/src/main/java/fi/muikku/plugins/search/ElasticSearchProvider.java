@@ -134,7 +134,7 @@ public class ElasticSearchProvider implements SearchProvider {
   }
 
   @Override
-  public synchronized void addOrUpdateIndex(String typeName, Map<String, Object> entity) {
+  public void addOrUpdateIndex(String typeName, Map<String, Object> entity) {
     ObjectMapper mapper = new ObjectMapper();
     String json;
     try {
@@ -148,7 +148,7 @@ public class ElasticSearchProvider implements SearchProvider {
   }
 
   @Override
-  public synchronized void deleteFromIndex(String typeName, String id) {
+  public void deleteFromIndex(String typeName, String id) {
     @SuppressWarnings("unused")
     DeleteResponse response = elasticClient.prepareDelete("muikku", typeName, id).execute().actionGet();
   }
