@@ -67,7 +67,7 @@ public class UserEmailEntity {
   private UserEntity user;
 
   @NotNull
-  @Column(nullable = false)
+  @Column(nullable = false, unique = true)
   @NotEmpty
   @Email
   private String address;

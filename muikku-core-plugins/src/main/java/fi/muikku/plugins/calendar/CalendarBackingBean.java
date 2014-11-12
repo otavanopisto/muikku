@@ -23,7 +23,7 @@ public class CalendarBackingBean {
 	private PluginSettingsController pluginSettingsController;
 	
 	public String getFirstDay() {
-		String firstDay = pluginSettingsController.getPluginUserSetting("calendar", CalendarPluginDescriptor.DEFAULT_FIRSTDAY_SETTING, sessionController.getUser());
+		String firstDay = pluginSettingsController.getPluginUserSetting("calendar", CalendarPluginDescriptor.DEFAULT_FIRSTDAY_SETTING, sessionController.getLoggedUserEntity());
 		if (StringUtils.isBlank(firstDay)) {
 			firstDay = pluginSettingsController.getPluginSetting("calendar", CalendarPluginDescriptor.DEFAULT_FIRSTDAY_SETTING);
 		}

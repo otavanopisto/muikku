@@ -7,7 +7,7 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import fi.muikku.auth.AuthSourceController;
-import fi.muikku.controller.UserEntityController;
+import fi.muikku.users.UserEntityController;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.forgotpassword.dao.PasswordResetRequestDAO;
 import fi.muikku.plugins.forgotpassword.model.PasswordResetRequest;

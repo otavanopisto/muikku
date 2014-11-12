@@ -1,12 +1,14 @@
 package fi.muikku.session;
 
-import fi.muikku.model.users.UserEntity;
-
 public interface RestAuthentication {
 
   public boolean isLoggedIn();
 
-  public UserEntity getUser();
+  public String getActiveUserIdentifier();
+  
+  public String getActiveUserSchoolDataSource();
+  
+  public void setActiveUser(String dataSource, String identifier); 
 
   public void logout();
 

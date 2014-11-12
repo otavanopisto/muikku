@@ -20,7 +20,6 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.i18n.LocaleController;
 import fi.muikku.plugins.internalauth.InternalAuthController;
-import fi.muikku.schooldata.UserController;
 import fi.muikku.session.SessionController;
 import fi.muikku.utils.FacesUtils;
 
@@ -29,9 +28,6 @@ import fi.muikku.utils.FacesUtils;
 @RequestScoped
 @Join (path = "/user-changepassword", to = "/user/user-changepassword.jsf")
 public class UserChangePasswordBackingBean {
-
-	@Inject
-	private UserController userController;
 	
 	@Inject
 	private InternalAuthController internalAuthController;
@@ -49,8 +45,8 @@ public class UserChangePasswordBackingBean {
 	public void changePassword() {
 	  if (newPasswordHash != null) {
 	    if (newPasswordHash.equals(newPasswordHashAgain)) {
-	      if (internalAuthController.confirmUserPassword(sessionController.getUser(), passwordHash)) {
-	        internalAuthController.updateUserPassword(sessionController.getUser(), passwordHash, newPasswordHash);
+	      if (internalAuthController.confirmUserPassword(sessionController.getLoggedUserEntity(), passwordHash)) {
+	        internalAuthController.updateUserPassword(sessionController.getLoggedUserEntity(), passwordHash, newPasswordHash);
 
           FacesUtils.addPostRedirectMessage(FacesMessage.SEVERITY_INFO, localeController.getText(sessionController.getLocale(), "plugin.userinfo.changePassword.passwordChanged"));
           ExternalContext context = FacesContext.getCurrentInstance().getExternalContext();
@@ -69,7 +65,7 @@ public class UserChangePasswordBackingBean {
 	public void validateOldPassword(FacesContext context, UIComponent component, Object value) {
     String passwordHash = (String) value;
     
-    if(!internalAuthController.confirmUserPassword(sessionController.getUser(), passwordHash)) {
+    if(!internalAuthController.confirmUserPassword(sessionController.getLoggedUserEntity(), passwordHash)) {
       FacesMessage message = new FacesMessage();
       message.setSeverity(FacesMessage.SEVERITY_ERROR);
       message.setSummary(localeController.getText(sessionController.getLocale(), "plugin.userinfo.changePassword.invalidOldPasswordSummary"));

@@ -10,10 +10,10 @@ import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.schooldata.UserController;
+import fi.muikku.users.UserController;
+import fi.muikku.users.UserEntityController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.security.Permit;
-
 
 @Named
 @Stateful
@@ -27,17 +27,20 @@ public class StudentViewBackingBean {
   @Inject
   private UserController userController;
   
+  @Inject
+  private UserEntityController userEntityController;
+  
   @RequestAction
   @Permit (StudentsViewPermissions.MANAGE_STUDENTS_VIEW_STUDENT)
   public void load() {
   }
   
   public User getUser() {
-    return userController.findUser(getUserEntity());
+    return userController.findUserByDataSourceAndIdentifier(getUserEntity().getDefaultSchoolDataSource(), getUserEntity().getDefaultIdentifier());
   }
   
   public UserEntity getUserEntity() {
-    return userController.findUserEntityById(studentId);
+    return userEntityController.findUserEntityById(studentId);
   }
   
   public Long getStudentId() {

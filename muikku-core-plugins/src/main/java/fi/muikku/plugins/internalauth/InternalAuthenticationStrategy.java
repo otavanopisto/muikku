@@ -18,17 +18,14 @@ import fi.muikku.auth.AuthenticationResult.Status;
 import fi.muikku.model.security.AuthSource;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.internalauth.model.InternalAuth;
-import fi.muikku.schooldata.SchoolDataBridgeRequestException;
-import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
-import fi.muikku.schooldata.UserController;
-import fi.muikku.schooldata.entity.User;
+import fi.muikku.users.UserEntityController;
 
 @Dependent
 @Stateless
 public class InternalAuthenticationStrategy extends AbstractAuthenticationStrategy implements AuthenticationProvider {
-  
+
   @Inject
-  private UserController userController;
+  private UserEntityController userEntityController;
   
   @Inject
   private InternalAuthController internalLoginController;
@@ -48,20 +45,12 @@ public class InternalAuthenticationStrategy extends AbstractAuthenticationStrate
     String email = StringUtils.lowerCase(getFirstRequestParameter(requestParameters, "email"));
     String password = getFirstRequestParameter(requestParameters, "password");
     
-    InternalAuth internalAuth;
-    try {
-      internalAuth = internalLoginController.findInternalAuthByEmailAndPassword(email, password);
-    } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
-      throw new AuthenticationHandleException(e);
-    }
+    InternalAuth internalAuth = internalLoginController.findInternalAuthByEmailAndPassword(email, password);
     
     if (internalAuth != null) {
-      UserEntity userEntity = userController.findUserEntityById(internalAuth.getUserEntityId());
+      UserEntity userEntity = userEntityController.findUserEntityById(internalAuth.getUserEntityId());
       if (userEntity != null) {
-        User user = userController.findUser(userEntity);
-        if (user != null) {
-          return processLogin(authSource, requestParameters, DigestUtils.md5Hex("INTERNAL-" + internalAuth.getId()), Arrays.asList(email), user.getFirstName(), user.getLastName());
-        }
+        return processLogin(authSource, requestParameters, DigestUtils.md5Hex("INTERNAL-" + internalAuth.getId()), Arrays.asList(email), null, null);
       }
     }
     
