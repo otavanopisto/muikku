@@ -2,6 +2,7 @@
 
 body.workspace { /* We need to remove background image under workspace views */
   background:#ffffff;
+  min-height:100%;
   
   h1,h2,h3,h4,h5 {
     color:$title;
@@ -212,6 +213,7 @@ body.workspace-reading {
   background:#6b899e;
   /* All this because of the god damn margin collapsing  */
   padding:0.01em;
+  min-height:100%;
   
   #workspaceMaterialReadingTOCWrapper {
     position:fixed;
