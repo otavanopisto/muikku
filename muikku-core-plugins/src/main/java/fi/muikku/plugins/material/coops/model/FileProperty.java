@@ -46,7 +46,7 @@ public class FileProperty {
   @ManyToOne
   private File file;
 
-  @Column (nullable = false)
+  @Column (nullable = false, name = "propertyKey")
   private String key;
   
   @Lob
