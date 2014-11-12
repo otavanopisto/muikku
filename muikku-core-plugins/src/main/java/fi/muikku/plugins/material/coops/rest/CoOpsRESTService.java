@@ -23,7 +23,6 @@ import fi.foyt.coops.CoOpsNotImplementedException;
 import fi.foyt.coops.CoOpsUsageException;
 import fi.foyt.coops.model.File;
 import fi.foyt.coops.model.Patch;
-import fi.muikku.plugins.material.coops.PATCH;
 
 @Path ("/coops/{FILEID}")
 @RequestScoped

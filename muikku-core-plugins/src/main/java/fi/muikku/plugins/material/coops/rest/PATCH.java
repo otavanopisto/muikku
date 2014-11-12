@@ -1,4 +1,4 @@
-package fi.muikku.plugins.material.coops;
+package fi.muikku.plugins.material.coops.rest;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
