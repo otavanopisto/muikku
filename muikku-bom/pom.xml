@@ -40,7 +40,7 @@
     <muikku.version>1.0.5-SNAPSHOT</muikku.version>
     
     <!-- Lucene -->
-    <lucene.version>4.9.0</lucene.version>
+    <lucene.version>4.10.2</lucene.version>
     
   </properties>
 
