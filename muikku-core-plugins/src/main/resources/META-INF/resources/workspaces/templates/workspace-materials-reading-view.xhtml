@@ -12,7 +12,8 @@
   <ui:param name="bodyClass" value="workspace-reading" />
   
   <ui:define name="viewScripts">
-    <h:outputScript name="scripts/gui/workspace.js"/>  
+    <h:outputScript name="scripts/gui/workspace.js"/> 
+    <h:outputScript name="scripts/gui/workspace-materials.js"/> 
   </ui:define>
   
   <ui:define name="viewCss">
@@ -23,12 +24,12 @@
     
     <ui:insert name="workspaces.reading.toc"></ui:insert>
     
-    <main id="content-workspace-reading"> <!-- class attribute removed as we are not using grid here -->
+    <main id="contentWorkspaceReading"> <!-- class attribute removed as we are not using grid here -->
       <ui:insert name="workspace.reading.content">
       </ui:insert>
     </main>
     
-    <ui:insert name="workspaces.reading.goback"></ui:insert>
+    <ui:insert name="workspaces.reading.additional.dock"></ui:insert>
     
   </ui:define>
 

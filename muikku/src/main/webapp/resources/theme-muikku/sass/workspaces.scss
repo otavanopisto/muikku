@@ -57,11 +57,11 @@ body.workspace { /* We need to remove background image under workspace views */
   }
 
   
-  .workspaceMetaWrapper {
+  .workspace-meta-wrapper {
     font-size:0.9em;
     text-transform:uppercase;
     
-    .workspaceStudyLevelIndicator {
+    .workspace-study-level-indicator {
       color:#fff;
       display:inline-block;
       margin:0 10px 0 0;
@@ -74,20 +74,20 @@ body.workspace { /* We need to remove background image under workspace views */
     
     }
     
-    .workspaceMetaTitle {
+    .workspace-meta-title {
       color:#7e7e7e;
       display:inline-block;
       margin:0 5px 0 0;
     }
     
-    .workspaceMetaDesc {
+    .workspace-meta-desc {
       color:#000;
       display:inline-block;
       margin:0 10px 0 0;
     }
   }
   
-  .workspaceDescriptionWrapper {
+  .workspace-description-wrapper {
     margin:1em 0 1em 0;
     font-size:1.2em;
     font-weight:300;
@@ -147,7 +147,7 @@ body.workspace-reading {
       box-shadow : 0 0 25px rgba(0,0,0,0.3);
       position:relative; /* This sets parent relation to .workspaceMaterialReadingTOCContentCropper element */
       
-      .workspaceMaterialReadingTOCTitle {
+      .workspace-material-reading-TOC-title {
         background:#7794a8;
         padding:12px;
         position:relative;
@@ -292,7 +292,7 @@ body.workspace-reading {
 
   } 
   
-  .workspaceMaterialReadingViewPage {
+  .workspace-material-page {
     max-width:700px;
     width:auto;
     min-height:700px;
@@ -438,7 +438,7 @@ body.workspace-reading {
 
 body.workspace-reading {
   
-  #content-workspace-reading {
+  #contentWorkspaceReading {
     padding-left:60px;
     max-width:700px;
     width:auto;

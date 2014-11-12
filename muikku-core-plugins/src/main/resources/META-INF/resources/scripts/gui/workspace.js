@@ -128,7 +128,7 @@ $(document).ready(function() {
     var tocOpeningButton = $('.workspace-material-reading-toc-opening-button');
     var tocClosingButton = $('.workspace-material-reading-toc-closing-button');
     var tocPinButton = $('#workspaceMaterialReadingTOCPinicon');
-    var contentPageContainer = $('#content-workspace-reading');
+    var contentPageContainer = $('#contentWorkspaceReading');
     
     var contentMinOffset;
     var contentOffset;
@@ -347,11 +347,7 @@ $(document).ready(function() {
         return prevent();
       }
     });
-      
-      
-    
+
   }
 
-  
-  
 });

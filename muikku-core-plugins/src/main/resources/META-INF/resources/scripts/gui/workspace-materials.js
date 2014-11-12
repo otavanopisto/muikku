@@ -1,7 +1,27 @@
 (function() {
 
   $(document).ready(function() {
+    // Workspace material's page loading
     $('.workspace-material-page').each(function(index, node) {
+      var materialType = $(node).data('material-type');
+      switch (materialType) {
+      case 'html':
+        var materialId = $(node).data('material-id');
+        mApi().materials.html.read(materialId).callback(
+          function (err, html) {
+            $(node).html(html.html);
+          });
+        break;
+      case 'folder':
+        $(node).append($('<p>').html($(node).data('material-title')));
+        break;
+      default:
+        break;
+      }
+    });
+
+    // Workspace material's page loading in reading view    
+    $('.workspace-material-reading-view-page').each(function(index, node) {
       var materialType = $(node).data('material-type');
       switch (materialType) {
       case 'html':
