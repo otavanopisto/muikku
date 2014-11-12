@@ -9,18 +9,18 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class FileRevisionExtensionProperty {
+public class HtmlMaterialRevisionProperty {
 
   public Long getId() {
     return id;
   }
   
-  public FileRevision getFileRevision() {
-    return fileRevision;
+  public HtmlMaterialRevision getFileRevision() {
+    return htmlMaterialRevision;
   }
   
-  public void setFileRevision(FileRevision fileRevision) {
-    this.fileRevision = fileRevision;
+  public void setFileRevision(HtmlMaterialRevision htmlMaterialRevision) {
+    this.htmlMaterialRevision = htmlMaterialRevision;
   }
   
   public String getKey() {
@@ -44,7 +44,7 @@ public class FileRevisionExtensionProperty {
   private Long id;
   
   @ManyToOne
-  private FileRevision fileRevision;
+  private HtmlMaterialRevision htmlMaterialRevision;
 
   @Column (nullable = false, name = "propertyKey")
   private String key;

@@ -184,6 +184,14 @@
         <artifactId>lucene-memory</artifactId>
         <version>${lucene.version}</version>
       </dependency>
+      
+      <!-- Coops -->
+      <dependency>
+        <groupId>fi.foyt.coops</groupId>
+        <artifactId>coops-spec</artifactId>
+        <version>1.0.0</version>
+      </dependency>
+      
     </dependencies>
 
   </dependencyManagement>
