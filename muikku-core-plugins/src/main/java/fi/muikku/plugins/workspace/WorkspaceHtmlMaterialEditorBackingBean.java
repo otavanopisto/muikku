@@ -38,6 +38,9 @@ public class WorkspaceHtmlMaterialEditorBackingBean {
   @Parameter
   private Long folderId;
   
+  @Parameter
+  private Long htmlMaterialId;
+  
   @Inject
   private Logger logger;
 
@@ -96,6 +99,14 @@ public class WorkspaceHtmlMaterialEditorBackingBean {
   
   public void setFolderId(Long folderId) {
     this.folderId = folderId;
+  }
+  
+  public Long getHtmlMaterialId() {
+    return htmlMaterialId;
+  }
+  
+  public void setHtmlMaterialId(Long htmlMaterialId) {
+    this.htmlMaterialId = htmlMaterialId;
   }
   
   private Long workspaceEntityId;

@@ -9,16 +9,15 @@
     }
     
     var serverUrl = CONTEXTPATH + '/rest/coops/' + fileId + '';
-    var scriptPrefix = CONTEXTPATH + '/javax.faces.resource';
   
-    CKEDITOR.plugins.addExternal('change', scriptPrefix + '/scripts/ckplugins/change/');
-    CKEDITOR.plugins.addExternal('coops', scriptPrefix + '/scripts/ckplugins/coops/');
-    CKEDITOR.plugins.addExternal('coops-connector', scriptPrefix + '/scripts/ckplugins/coops-connector/');
-    CKEDITOR.plugins.addExternal('coops-dmp', scriptPrefix + '/scripts/ckplugins/coops-dmp/');
-    CKEDITOR.plugins.addExternal('coops-cursors', scriptPrefix + '/scripts/ckplugins/coops-cursors/');
-    CKEDITOR.plugins.addExternal('coops-sessionevents', scriptPrefix + '/scripts/ckplugins/coops-sessionevents/');
+    CKEDITOR.plugins.addExternal('change', CONTEXTPATH + '/scripts/ckplugins/change/');
+    CKEDITOR.plugins.addExternal('coops', CONTEXTPATH + '/scripts/ckplugins/coops/');
+    CKEDITOR.plugins.addExternal('coops-connector', CONTEXTPATH + '/scripts/ckplugins/coops-connector/');
+    CKEDITOR.plugins.addExternal('coops-dmp', CONTEXTPATH + '/scripts/ckplugins/coops-dmp/');
+    CKEDITOR.plugins.addExternal('coops-cursors', CONTEXTPATH + '/scripts/ckplugins/coops-cursors/');
+    CKEDITOR.plugins.addExternal('coops-sessionevents', CONTEXTPATH + '/scripts/ckplugins/coops-sessionevents/');
     
-    var editor = CKEDITOR.appendTo( 'ckcontainer', {
+    var editor = CKEDITOR.appendTo($('.html-editor-ckcontainer')[0], {
       skin: 'moono',
       extraPlugins: 'coops,coops-connector,coops-dmp,coops-cursors,coops-sessionevents',
       readOnly: true,
