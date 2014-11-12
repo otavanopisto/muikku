@@ -36,5 +36,10 @@ public class HtmlMaterialDAO extends CorePluginsDAO<HtmlMaterial> {
     htmlMaterial.setRevisionNumber(revisionNumber);
     return persist(htmlMaterial);
   }
+
+  public HtmlMaterial updateTitle(HtmlMaterial htmlMaterial, String title) {
+    htmlMaterial.setTitle(title);
+    return persist(htmlMaterial);
+  }
 	
 }

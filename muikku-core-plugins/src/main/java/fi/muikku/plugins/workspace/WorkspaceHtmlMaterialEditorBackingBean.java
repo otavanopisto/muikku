@@ -18,7 +18,9 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 import fi.muikku.files.TempFileUtils;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.material.BinaryMaterialController;
+import fi.muikku.plugins.material.HtmlMaterialController;
 import fi.muikku.plugins.material.model.BinaryMaterial;
+import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
@@ -52,9 +54,12 @@ public class WorkspaceHtmlMaterialEditorBackingBean {
 
   @Inject
   private WorkspaceEntityController workspaceEntityController;
-  
+
   @Inject
   private WorkspaceMaterialController workspaceMaterialController;
+
+  @Inject
+  private HtmlMaterialController htmlMaterialController;
   
 	@Inject
   @Named
@@ -73,10 +78,16 @@ public class WorkspaceHtmlMaterialEditorBackingBean {
       return "/error/not-found.jsf";
 		}
 		
+		HtmlMaterial htmlMaterial = htmlMaterialController.findHtmlMaterialById(getHtmlMaterialId());
+		if (htmlMaterial == null) {
+      return "/error/not-found.jsf";
+    }
+		
 		workspaceNavigationBackingBean.setWorkspaceUrlName(urlName);
 		workspaceEntityId = workspaceEntity.getId();
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
     workspaceName = workspace.getName();
+    htmlMaterialTitle = htmlMaterial.getTitle();
     
     return null;
 	}
@@ -109,6 +120,19 @@ public class WorkspaceHtmlMaterialEditorBackingBean {
     this.htmlMaterialId = htmlMaterialId;
   }
   
+  public String getHtmlMaterialTitle() {
+    return htmlMaterialTitle;
+  }
+  
+  public void setHtmlMaterialTitle(String htmlMaterialTitle) {
+    this.htmlMaterialTitle = htmlMaterialTitle;
+  }
+  
+  public Long getWorkspaceEntityId() {
+    return workspaceEntityId;
+  }
+  
   private Long workspaceEntityId;
+  private String htmlMaterialTitle;
   private String workspaceName;
 }

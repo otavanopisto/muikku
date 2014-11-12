@@ -121,22 +121,22 @@
       $('.collaborators').collaborators("removeCollaborator", data.sessionId);
     });
 
-//    editor.on("patchReceived", function(event, data) {
-//      $.each(data.properties, function(key, value) {
-//        if (key === 'title') {
-//          $('.illusion-edit-page-title').val(value);
-//        }
-//      });
-//    });
-//    
-//    $('.illusion-edit-page-title').change(function(event) {
-//      var oldValue = $(this).parent().data('old-value');
-//      var value = $(this).val();
-//      if (value) {
-//        $(this).parent().data('old-value', value);
-//        $('.illusion-page-editor').coOpsCK("changeProperty", 'title', oldValue, value);
-//      }
-//    });
+    editor.on("patchReceived", function(event, data) {
+      $.each(data.properties, function(key, value) {
+        if (key === 'title') {
+          $('.html-editor-title-container input').val(value);
+        }
+      });
+    });
+    
+    $('.html-editor-title-container input').change(function(event) {
+      var oldValue = $(this).parent().data('old-value');
+      var value = $(this).val();
+      if (value) {
+        $(this).parent().data('old-value', value);
+        $(editor).coOpsCK("changeProperty", 'title', oldValue, value);
+      }
+    });
     
     $('.collaborators').collaborators();
   });
