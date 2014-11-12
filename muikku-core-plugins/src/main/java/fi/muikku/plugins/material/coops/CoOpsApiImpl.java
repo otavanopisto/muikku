@@ -296,15 +296,24 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
   }
   
   private void addWebSocketExtension(HtmlMaterial htmlMaterial, Map<String, Object> extensions, CoOpsSession coOpsSession) {
-    String wsUrl = String.format("ws://%s:%s%s/ws/%d/%s", 
+    String wsUrl = String.format("ws://%s:%s%s/ws/coops/%d/%s", 
       httpRequest.getServerName(), 
       httpRequest.getServerPort(), 
       httpRequest.getContextPath(), 
       htmlMaterial.getId(), 
       coOpsSession.getSessionId());
     
+    String wssUrl = String.format("wss://%s:%s%s/ws/coops/%d/%s", 
+        httpRequest.getServerName(), 
+        httpRequest.getServerPort(), 
+        httpRequest.getContextPath(), 
+        htmlMaterial.getId(), 
+        coOpsSession.getSessionId());
+    
     Map<String, Object> webSocketExtension = new HashMap<>();
     webSocketExtension.put("ws", wsUrl);
+    webSocketExtension.put("wss", wssUrl);
+    
     extensions.put("webSocket", webSocketExtension);
   }
 

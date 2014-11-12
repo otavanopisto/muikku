@@ -35,7 +35,6 @@ import fi.foyt.coops.extensions.websocket.UpdateMessage;
 import fi.foyt.coops.model.Patch;
 import fi.muikku.plugins.material.coops.CoOpsSessionController;
 import fi.muikku.plugins.material.coops.event.CoOpsPatchEvent;
-import fi.muikku.plugins.material.coops.dao.CoOpsSessionDAO;
 import fi.muikku.plugins.material.coops.model.CoOpsSession;
 import fi.muikku.plugins.material.coops.model.CoOpsSessionType;
 import fi.muikku.plugins.material.model.HtmlMaterial;
@@ -99,7 +98,7 @@ public class CoOpsDocumentWebSocket {
   }
   
   @OnClose
-  public void onClose(final Session session, CloseReason closeReason, @PathParam("FILEID") String fileId, @PathParam("SESSIONID") String sessionId) {
+  public void onClose(final Session session, CloseReason closeReason, @PathParam("HTMLMATERIALID") String fileId, @PathParam("SESSIONID") String sessionId) {
     synchronized (this) {
       fileClients.get(fileId).remove(session.getId());
       
@@ -111,7 +110,7 @@ public class CoOpsDocumentWebSocket {
   }
 
   @OnMessage
-  public void onMessage(Reader messageReader, Session client, @PathParam("FILEID") String fileId, @PathParam("SESSIONID") String sessionId) throws IOException {
+  public void onMessage(Reader messageReader, Session client, @PathParam("HTMLMATERIALID") String fileId, @PathParam("SESSIONID") String sessionId) throws IOException {
     CoOpsSession session = coOpsSessionController.findSessionBySessionId(sessionId);
     if (session == null) {
       client.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, "Not Found"));
