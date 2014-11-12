@@ -26,19 +26,21 @@
     <h2>Edit HTML material</h2>
     
     <div class="html-editor-container">
-      <div class="html-editor-status"
-	      data-loading="Loading..."
-				data-loaded="Loaded"
-				data-unsaved="Unsaved"
-				data-saving="Saving..."
-				data-saved="Saved"/>
-				
-      <div class="html-editor-title-container">
-        <input type="text" name="name" jsf:value="#{workspaceHtmlMaterialEditorBackingBean.htmlMaterialTitle}"/>
-      </div>
-      <div class="html-editor-ckcontainer"></div>
-      <div class="collaborators"></div>
-      <input type="hidden" value="#{workspaceHtmlMaterialEditorBackingBean.htmlMaterialId}" class="html-editor-html-material-id"/>
+      <h:form>
+	      <div class="html-editor-status"
+		      data-loading="Loading..."
+					data-loaded="Loaded"
+					data-unsaved="Unsaved"
+					data-saving="Saving..."
+					data-saved="Saved"/>
+					
+	      <div class="html-editor-title-container">
+	        <input type="text" name="name" jsf:value="#{workspaceHtmlMaterialEditorBackingBean.htmlMaterialTitle}"/>
+	      </div>
+	      <div class="html-editor-ckcontainer"></div>
+	      <div class="collaborators"></div>
+	      <input type="hidden" value="#{workspaceHtmlMaterialEditorBackingBean.htmlMaterialId}" class="html-editor-html-material-id"/>
+	    </h:form>
     </div>
     
   </ui:define>

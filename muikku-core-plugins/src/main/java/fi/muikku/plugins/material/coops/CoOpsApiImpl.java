@@ -178,9 +178,9 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
       throw new CoOpsUsageException("Algorithm is not supported by this server");
     }
  
-    HtmlMaterial file = findFile(fileId);
+    HtmlMaterial htmlMaterial = findFile(fileId);
     
-    Long currentRevision = file.getRevisionNumber();
+    Long currentRevision = htmlMaterial.getRevisionNumber();
     if (!currentRevision.equals(revisionNumber)) {
       throw new CoOpsConflictException();
     }
@@ -191,32 +191,36 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
     String patched = null;
     
     if (StringUtils.isNotBlank(patch)) {
-      String data = file.getHtml();
+      String data = htmlMaterial.getHtml();
       if (data == null) {
         data = "";
       }
       
       patched = algorithm.patch(data, patch);
       checksum = DigestUtils.md5Hex(patched);
-      htmlMaterialDAO.updateData(file, patched);
+      htmlMaterialDAO.updateData(htmlMaterial, patched);
     } 
     
     Long patchRevisionNumber = currentRevision + 1;
-    HtmlMaterialRevision htmlMaterialRevision = htmlMaterialRevisionDAO.create(file, sessionId, patchRevisionNumber, new Date(), patch, checksum);
-    htmlMaterialDAO.updateRevisionNumber(file, patchRevisionNumber);
+    HtmlMaterialRevision htmlMaterialRevision = htmlMaterialRevisionDAO.create(htmlMaterial, sessionId, patchRevisionNumber, new Date(), patch, checksum);
+    htmlMaterialDAO.updateRevisionNumber(htmlMaterial, patchRevisionNumber);
 
     if (properties != null) {
       for (String key : properties.keySet()) {
         String value = properties.get(key);
         
-        HtmlMaterialProperty fileProperty = htmlMaterialPropertyDAO.findByHtmlMaterialAndKey(file, key);
+        HtmlMaterialProperty fileProperty = htmlMaterialPropertyDAO.findByHtmlMaterialAndKey(htmlMaterial, key);
         if (fileProperty == null) {
-          htmlMaterialPropertyDAO.create(file, key, value);
+          htmlMaterialPropertyDAO.create(htmlMaterial, key, value);
         } else {
           htmlMaterialPropertyDAO.updateValue(fileProperty, value);
         }
         
         htmlMaterialRevisionPropertyDAO.create(htmlMaterialRevision, key, value);
+        
+        if ("title".equals(key)) {
+          htmlMaterialDAO.updateTitle(htmlMaterial, value);
+        }
       }
     }
     
@@ -230,9 +234,9 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
           throw new CoOpsInternalErrorException(e);
         }
         
-        HtmlMaterialExtensionProperty htmlMaterialExtensionProperty = htmlMaterialExtensionPropertyDAO.findByFileAndKey(file, key);
+        HtmlMaterialExtensionProperty htmlMaterialExtensionProperty = htmlMaterialExtensionPropertyDAO.findByFileAndKey(htmlMaterial, key);
         if (htmlMaterialExtensionProperty == null) {
-          htmlMaterialExtensionPropertyDAO.create(file, key, value);
+          htmlMaterialExtensionPropertyDAO.create(htmlMaterial, key, value);
         } else {
           htmlMaterialExtensionPropertyDAO.updateValue(htmlMaterialExtensionProperty, value);
         }
