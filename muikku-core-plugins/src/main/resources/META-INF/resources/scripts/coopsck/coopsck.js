@@ -107,6 +107,10 @@
       $(this.element).trigger('patchReceived', {
         properties: event.data.properties||{}
       });
+    },
+    
+    _destroy: function () {
+      this._editor.destroy();
     }
   });
   

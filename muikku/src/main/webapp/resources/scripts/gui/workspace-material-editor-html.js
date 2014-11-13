@@ -170,7 +170,11 @@
     },
     
     _destroy : function() {
-      
+      this._editor.coOpsCK('destroy').remove();
+      this._titleInput.off().remove();
+      this._status.off().remove();
+      this._collaborators.off().remove();
+      this._editorContainer.off().remove();
     }
   });
   

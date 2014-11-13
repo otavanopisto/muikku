@@ -1,27 +1,31 @@
 (function() {
   
+  function loadPageNode(node) {
+    var materialId = $(node).data('material-id');
+    var materialType = $(node).data('material-type');
+    
+    if (materialType !== 'folder') {
+      var typeEndpoint = mApi().materials[materialType];
+      if (typeEndpoint != null) {
+        typeEndpoint.read(materialId).callback($.proxy(function (err, result) {
+          renderDustTemplate('workspace/materials-management-page.dust', { id: materialId, type: materialType, data: result }, $.proxy(function (text) {
+            $(this).html(text);
+          }, node));
+        }, node));
+      } else {
+        $('.notification-queue').notificationQueue('notification', 'error', "Could not find rest service for " + materialType);
+      }
+    } else {
+      renderDustTemplate('workspace/materials-management-page.dust', { id: materialId, type: materialType }, $.proxy(function (text) {
+        $(this).html(text);
+      }, node));
+    }
+  }
+  
   $(document).ready(function() {
     // Workspace Material's page loading
     $('.workspace-material-reading-view-page').each(function(index, node) {
-      var materialId = $(node).data('material-id');
-      var materialType = $(node).data('material-type');
-      
-      if (materialType !== 'folder') {
-        var typeEndpoint = mApi().materials[materialType];
-        if (typeEndpoint != null) {
-          typeEndpoint.read(materialId).callback($.proxy(function (err, result) {
-            renderDustTemplate('workspace/materials-management-page.dust', { id: materialId, type: materialType, data: result }, $.proxy(function (text) {
-              $(this).html(text);
-            }, node));
-          }, node));
-        } else {
-          $('.notification-queue').notificationQueue('notification', 'error', "Could not find rest service for " + materialType);
-        }
-      } else {
-        renderDustTemplate('workspace/materials-management-page.dust', { id: materialId, type: materialType }, $.proxy(function (text) {
-          $(this).html(text);
-        }, node));
-      }
+      loadPageNode(node);
     });
 
     /* Smooth scrolling in workspace Material's Reading View */
@@ -77,6 +81,11 @@
       editor.call(pageElement, {
         materialId: materialId
       });
+      
+      $(document).one("click",$.proxy(function () {
+        editor.call(pageElement, 'destroy');
+        loadPageNode($(this).closest('section'));
+      }, this));
     } else {
       $('.notification-queue').notificationQueue('notification', 'error', "Could not find editor for " + materialType);
     }
