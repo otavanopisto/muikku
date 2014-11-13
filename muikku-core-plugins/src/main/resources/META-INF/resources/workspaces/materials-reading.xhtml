@@ -13,24 +13,24 @@
     <h:outputScript name="scripts/gui/workspace-materials.js"/> 
   </ui:define>
 
-  <ui:define name="workspaces.reading.toc">
-    <div id="workspaceMaterialReadingTOCWrapper">
-      <nav id="workspaceMaterialReadingTOCClosed">
-        <div class="workspaceMaterialReadingTOCTitle">
-          <div id="workspaceMaterialReadingTOCNavicon" class="icon-navicon workspace-material-reading-toc-opening-button"></div>
+  <ui:define name="workspaces.materials.reading.toc">
+    <div id="workspaceMaterialsReadingTOCWrapper">
+      <nav id="workspaceMaterialsReadingTOCClosed">
+        <div class="workspaceMaterialsReadingTOCTitle">
+          <div id="workspaceMaterialsReadingTOCNavicon" class="icon-navicon workspace-materials-reading-toc-opening-button"></div>
         </div>
       </nav>
     
-      <nav id="workspaceMaterialReadingTOCOpen">
-        <div class="workspace-material-reading-TOC-title">
+      <nav id="workspaceMaterialsReadingTOCOpen">
+        <div class="workspace-materials-reading-TOC-title">
           <h1>Sisällysluettelo</h1>
-          <div id="workspaceMaterialReadingTOCPinicon" class="icon-pin"></div>
-          <div id="workspaceMaterialReadingTOCNavicon" class="icon-navicon workspace-material-reading-toc-closing-button"></div>
+          <div id="workspaceMaterialsReadingTOCPinicon" class="icon-pin"></div>
+          <div id="workspaceMaterialsReadingTOCNavicon" class="icon-navicon workspace-materials-reading-toc-closing-button"></div>
         </div>
         <div class="workspace-materials-toc-content-outer">
           <div class="workspace-materials-toc-content-inner">
             <div class="workspace-materials-toc-content-scrolling">
-              <ui:include src="/workspaces/templates/workspace-material-list.xhtml">
+              <ui:include src="/workspaces/templates/workspace-materials-list.xhtml">
                 <ui:param name="nodes" value="#{workspaceMaterialsTOCBackingBean.getMaterialNodes(workspaceMaterialsReadingBackingBean.getRootFolder())}"/>
               </ui:include>
               <div class="spacer"></div>
@@ -41,15 +41,15 @@
     </div>
   </ui:define>
 
-  <ui:define name="workspace.reading.content">
+  <ui:define name="workspace.materials.reading.content">
     <ui:repeat var="node" value="#{workspaceMaterialsTOCBackingBean.getAllMaterialNodes(workspaceMaterialsReadingBackingBean.getRootFolder())}">
-      <section id="page-#{node.materialId}" data-material-id="#{node.materialId}" data-material-type="#{node.materialType}" data-material-title="#{node.materialTitle}" class="workspace-material-reading-view-page"/>
+      <section id="page-#{node.materialId}" data-material-id="#{node.materialId}" data-material-type="#{node.materialType}" data-material-title="#{node.materialTitle}" class="workspace-materials-reading-view-page"/>
     </ui:repeat>
   </ui:define>
   
-  <ui:define name="workspaces.reading.additional.dock">
-    <div id="workspaceMaterialReadingAdditionalNavWrapper">
-      <nav class="workspace-waterial-reading-additional-nav">
+  <ui:define name="workspaces.materials.reading.additional.dock">
+    <div id="workspaceMaterialsReadingAdditionalNavWrapper">
+      <nav class="workspace-waterials-reading-additional-nav">
         <m:widgetSpaceSet>
           <m:widgetSpace name="workspaces.materials.reading.dock" keepEmpty="true" sizing="MINIMIZE" styleClass="">
             <m:widget name="workspaces-materials-reading-goback" size="1" />

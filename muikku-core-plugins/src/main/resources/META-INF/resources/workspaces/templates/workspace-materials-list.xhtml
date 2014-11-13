@@ -12,7 +12,7 @@
       <c:when test="#{node.materialType eq 'folder'}">
         <ul class="workspace-materials-toc-section">
           <li class="workspace-materials-toc-subtitle">#{node.materialTitle}</li>
-          <ui:include src="/workspaces/templates/workspace-material-list.xhtml">
+          <ui:include src="/workspaces/templates/workspace-materials-list.xhtml">
             <ui:param name="nodes" value="#{workspaceMaterialsTOCBackingBean.getMaterialNodes(node)}" />
           </ui:include>
         </ul>

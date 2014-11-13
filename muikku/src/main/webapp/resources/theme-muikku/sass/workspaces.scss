@@ -4,11 +4,36 @@ body.workspace { /* We need to remove background image under workspace views */
   background:#ffffff;
   min-height:100%;
   
-  h1,h2,h3,h4,h5 {
-    color:$title;
-    text-transform:uppercase;
-    margin:1em 0 1em 0;
+  h1,
+  h2,
+  h3 {
+    margin:40px 0 20px 0;
+    color:#38393a;
     font-weight:300;
+    text-transform:none;
+    line-height:1.3em;
+    
+    &:first-child {
+      margin:20px 0 20px 0;
+    }
+  }
+  
+  h1 {
+    font-size:1.7em;
+  }
+    
+  h2 {
+    font-size:1.5em;
+  }
+  
+  h3 {
+    margin:20px 0 20px 0;
+    font-size:1.3em;
+  }
+  
+  p {
+    margin:20px 0 20px 0;
+    line-height:1.7em;
   }
   
   #staticNavigationWrapperWorkspace {
@@ -209,24 +234,24 @@ body.workspace { /* We need to remove background image under workspace views */
 
 }
 
-body.workspace-reading {
+body.workspace-materials-reading {
   background:#6b899e;
   /* All this because of the god damn margin collapsing  */
   padding:0.01em;
   min-height:100%;
   
-  #workspaceMaterialReadingTOCWrapper {
+  #workspaceMaterialsReadingTOCWrapper {
     position:fixed;
     left:0;
     top:0;
     bottom:0;
 
-    #workspaceMaterialReadingTOCClosed {
+    #workspaceMaterialsReadingTOCClosed {
       width:50px;
       height:100%;
       background:#7794a8;
       
-      #workspaceMaterialReadingTOCNavicon {
+      #workspaceMaterialsReadingTOCNavicon {
         cursor:pointer;
         font-size:22pt;
         color:#fff;
@@ -249,14 +274,14 @@ body.workspace-reading {
       
     }
     
-    #workspaceMaterialReadingTOCOpen {
+    #workspaceMaterialsReadingTOCOpen {
       width:350px;
       background:#e8f0f5;
       z-index:26;
       box-shadow : 0 0 25px rgba(0,0,0,0.3);
       position:relative; /* This sets parent relation to .workspaceMaterialReadingTOCContentCropper element */
       
-      .workspace-material-reading-TOC-title {
+      .workspace-materials-reading-TOC-title {
         background:#7794a8;
         padding:12px;
         position:relative;
@@ -268,7 +293,7 @@ body.workspace-reading {
           padding:0;
         }
         
-        #workspaceMaterialReadingTOCNavicon {
+        #workspaceMaterialsReadingTOCNavicon {
           cursor:pointer;
           font-size:22pt;
           color:#fff;
@@ -292,7 +317,7 @@ body.workspace-reading {
           
         }
         
-        #workspaceMaterialReadingTOCPinicon {
+        #workspaceMaterialsReadingTOCPinicon {
           cursor:pointer;
           font-size:18pt;
           color:#fff;
@@ -401,13 +426,13 @@ body.workspace-reading {
 
   } 
   
-  #contentWorkspaceReading {
+  #contentWorkspaceMaterialsReading {
     padding-left:60px;
     max-width:700px;
     width:auto;
     margin:0 auto;
   
-    .workspace-material-reading-view-page {
+    .workspace-materials-reading-view-page {
       max-width:700px;
       width:auto;
       min-height:700px;
@@ -419,22 +444,35 @@ body.workspace-reading {
       font-weight:300;
       word-wrap: break-word;
       
-      h1 {
-        margin:40px 0 0 0;
+      h1,
+      h2,
+      h3 {
+        margin:40px 0 20px 0;
         color:#38393a;
-        font-size:1.9em;
         font-weight:300;
         text-transform:none;
-        line-height:1em;
-  
+        line-height:1.3em;
         
         &:first-child {
-          margin:20px 0 0 0;
+          margin:20px 0 20px 0;
         }
       }
       
+      h1 {
+        font-size:1.7em;
+      }
+        
+      h2 {
+        font-size:1.5em;
+      }
+      
+      h3 {
+        margin:20px 0 20px 0;
+        font-size:1.3em;
+      }
+      
       p {
-        margin:20px 0 0 0;
+        margin:20px 0 20px 0;
         line-height:1.7em;
       }
       
@@ -442,7 +480,7 @@ body.workspace-reading {
     
   }
   
-  #workspaceMaterialReadingAdditionalNavWrapper {
+  #workspaceMaterialsReadingAdditionalNavWrapper {
     position:fixed;
     top:0;
     right:0;

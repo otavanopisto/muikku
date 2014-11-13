@@ -6,7 +6,7 @@
   xmlns:h="http://java.sun.com/jsf/html" 
   xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
   xmlns:composite="http://java.sun.com/jsf/composite/composite" 
-  template="/workspaces/templates/workspace-materials-reading-view.xhtml">
+  template="/workspaces/templates/workspace-materials-management-view.xhtml">
 
   <ui:define name="viewScripts">
     <!-- TODO: plugins should be able to introduce new material editors -->
@@ -17,28 +17,28 @@
     <h:outputScript name="scripts/diffxml-js/diffxml-js.js" />
     <h:outputScript name="scripts/gui/workspace-material-editor-html.js"/>
 
-    <h:outputScript name="scripts/gui/workspace.js"/> 
+<!--     <h:outputScript name="scripts/gui/workspace.js"/>  -->
     <h:outputScript name="scripts/gui/workspace-materials-management.js" />
   </ui:define>
   
-  <ui:define name="workspaces.reading.toc">
-    <div id="workspaceMaterialReadingTOCWrapper">
-      <nav id="workspaceMaterialReadingTOCClosed">
-        <div class="workspace-material-reading-TOC-title">
-          <div id="workspaceMaterialReadingTOCNavicon" class="icon-navicon workspace-material-reading-toc-opening-button"></div>
+  <ui:define name="workspaces.materials.management.toc">
+    <div id="workspaceMaterialsManagementTOCWrapper">
+      <nav id="workspaceMaterialsManagementTOCClosed">
+        <div class="workspace-materials-management-TOC-title">
+          <div id="workspaceMaterialsManagementTOCNavicon" class="icon-navicon workspace-materials-management-toc-opening-button"></div>
         </div>
       </nav>
     
-      <nav id="workspaceMaterialReadingTOCOpen">
-        <div class="workspace-material-reading-TOC-title">
+      <nav id="workspaceMaterialsManagementTOCOpen">
+        <div class="workspace-materials-management-TOC-title">
           <h1>Sisällysluettelo</h1>
-          <div id="workspaceMaterialReadingTOCPinicon" class="icon-pin"></div>
-          <div id="workspaceMaterialReadingTOCNavicon" class="icon-navicon workspace-material-reading-toc-closing-button"></div>
+          <div id="workspaceMaterialsManagementTOCPinicon" class="icon-pin"></div>
+          <div id="workspaceMaterialsManagementTOCNavicon" class="icon-navicon workspace-materials-management-toc-closing-button"></div>
         </div>
         <div class="workspace-materials-toc-content-outer">
           <div class="workspace-materials-toc-content-inner">
             <div class="workspace-materials-toc-content-scrolling">
-              <ui:include src="/workspaces/templates/workspace-material-list.xhtml">
+              <ui:include src="/workspaces/templates/workspace-materials-list.xhtml">
                 <ui:param name="nodes" value="#{workspaceMaterialsTOCBackingBean.getMaterialNodes(workspaceMaterialsManagementBackingBean.getRootFolder())}"/>
               </ui:include>
               <div class="spacer"></div>
@@ -49,24 +49,22 @@
     </div>
   </ui:define>
 
-  <ui:define name="workspace.reading.content">
+  <ui:define name="workspace.materials.management.content">
     <ui:repeat var="node" value="#{workspaceMaterialsTOCBackingBean.getAllMaterialNodes(workspaceMaterialsManagementBackingBean.getRootFolder())}" varStatus="vs">
       <a href="javascript:void(null)" data-index="#{vs.index}">ADD MATERIAL</a>      
-
-      <section id="page-#{node.materialId}" data-material-id="#{node.materialId}" data-material-type="#{node.materialType}" data-material-title="#{node.materialTitle}" class="workspace-material-reading-view-page"/>
-
+      <section id="page-#{node.materialId}" data-material-id="#{node.materialId}" data-material-type="#{node.materialType}" data-material-title="#{node.materialTitle}" class="workspace-materials-management-view-page"/>
       <ui:fragment rendered="#{vs.last}">
         <a href="javascript:void(null)" data-index="#{vs.index + 1}">ADD MATERIAL</a>      
       </ui:fragment>
     </ui:repeat>
   </ui:define>
   
-  <ui:define name="workspaces.reading.goback">
-    <div id="workspaceMaterialReadingAdditionalNavWrapper">
-      <nav class="workspaceMaterialReadingAdditionalNav">
+  <ui:define name="workspaces.materials.management.additional.dock">
+    <div id="workspaceMaterialsManagementAdditionalNavWrapper">
+      <nav class="workspaceMaterialsManagementAdditionalNav">
         <m:widgetSpaceSet>
-          <m:widgetSpace name="workspaces.materials.reading.dock" keepEmpty="true" sizing="MINIMIZE" styleClass="">
-            <m:widget name="workspaces-materials-reading-goback" size="1" />
+          <m:widgetSpace name="workspaces.materials.management.dock" keepEmpty="true" sizing="MINIMIZE" styleClass="">
+            <m:widget name="workspaces-materials-management-goback" size="1" />
           </m:widgetSpace>
         </m:widgetSpaceSet>
       </nav>
