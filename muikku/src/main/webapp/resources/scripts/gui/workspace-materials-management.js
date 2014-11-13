@@ -24,7 +24,7 @@
   
   $(document).ready(function() {
     // Workspace Material's page loading
-    $('.workspace-materials-reading-view-page').each(function(index, node) {
+    $('.workspace-materials-management-view-page').each(function(index, node) {
       loadPageNode(node);
     });
 
