@@ -9,6 +9,14 @@ public class MaterialNode {
   public void setWorkspaceMaterialId(Long workspaceMaterialId) {
     this.workspaceMaterialId = workspaceMaterialId;
   }
+  
+  public Long getParentId() {
+    return parentId;
+  }
+  
+  public void setParentId(Long parentId) {
+    this.parentId = parentId;
+  }
 
   public Long getMaterialId() {
     return materialId;
@@ -41,9 +49,12 @@ public class MaterialNode {
   public void setMaterialTitle(String materialTitle) {
     this.materialTitle = materialTitle;
   }
-
+  
   // The id of the WorkspaceNode this material represents
   private Long workspaceMaterialId;
+
+  // The id of this node's parent
+  private Long parentId;
 
   // The id of the Material referenced by WorkspaceNode; null for folders
   private Long materialId;

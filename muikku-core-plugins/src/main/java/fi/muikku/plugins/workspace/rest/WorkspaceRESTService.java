@@ -36,6 +36,11 @@ import fi.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.model.workspace.WorkspaceUserSignup;
 import fi.muikku.plugin.PluginRESTService;
+import fi.muikku.plugins.material.MaterialController;
+import fi.muikku.plugins.material.model.Material;
+import fi.muikku.plugins.workspace.WorkspaceMaterialController;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
+import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceUser;
 import fi.muikku.schooldata.CourseMetaController;
 import fi.muikku.schooldata.RoleController;
@@ -92,6 +97,12 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private LocaleController localeController;
+
+  @Inject
+  private WorkspaceMaterialController workspaceMaterialController;
+  
+  @Inject
+  private MaterialController materialController;
 
   @Inject
   @Any
@@ -335,6 +346,79 @@ public class WorkspaceRESTService extends PluginRESTService {
     return Response.ok(createRestModel(signup)).build();
   }
   
+  @POST
+  @Path ("/workspaces/{ID}/materials/")
+  public Response createWorkspaceMaterial(@PathParam ("ID") Long workspaceEntityId, fi.muikku.plugins.workspace.rest.model.WorkspaceMaterial entity) {
+    // TODO: Security
+    
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.BAD_REQUEST).build(); 
+    }
+    
+    if (entity.getMaterialId() == null) {
+      return Response.status(Status.BAD_REQUEST).entity("material_id is required when creating new WorkspaceMaterial").build();
+    }
+
+    WorkspaceNode parent = null;
+    if (entity.getParentId() != null) {
+      parent = workspaceMaterialController.findWorkspaceNodeById(entity.getParentId());
+      if (parent == null) {
+        return Response.status(Status.NOT_FOUND).entity("parent not found").build();
+      }
+    }
+
+    Material material = materialController.findMaterialById(entity.getMaterialId());
+    if (material == null) {
+      return Response.status(Status.NOT_FOUND).entity("material not found").build();
+    };
+    
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.createWorkspaceMaterial(parent, material);
+    if (entity.getNextSiblingId() != null) {
+      WorkspaceNode nextSibling = workspaceMaterialController.findWorkspaceNodeById(entity.getNextSiblingId());
+      if (nextSibling == null) {
+        return Response.status(Status.BAD_REQUEST).entity("Specified next sibling does not exist").build(); 
+      }
+       
+      if ((parent != null) && (!nextSibling.getParent().getId().equals(parent.getId()))) {
+        return Response.status(Status.BAD_REQUEST).entity("Specified next sibling does not share parent with created workspace material").build(); 
+      }
+      
+      if ((parent == null) && (nextSibling.getParent() != null)) {
+        return Response.status(Status.BAD_REQUEST).entity("Specified next sibling does not share parent with created workspace material").build(); 
+      }
+      
+      workspaceMaterialController.moveBelow(workspaceMaterial, nextSibling);
+    }
+    
+    return Response.ok(createRestModel(workspaceMaterial)).build();
+  }
+
+//  @DELETE
+//  @Path("/materials/{ID}")
+//  public Response deleteWorkspaceMaterial(@PathParam("ID") Long workspaceMaterialId) {
+//    // TODO: Security
+//
+//    if (workspaceMaterialId == null) {
+//      return Response.status(Status.NOT_FOUND).entity("workspace material not found").build();
+//    }
+//
+//    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
+//    if (workspaceMaterial == null) {
+//      return Response.status(Status.NOT_FOUND).entity("workspace material not found").build();
+//    }
+//
+//    workspaceMaterialController.deleteWorkspaceMaterial(workspaceMaterial);
+//
+//    return Response.noContent().build();
+//  }
+  
+  private fi.muikku.plugins.workspace.rest.model.WorkspaceMaterial createRestModel(WorkspaceMaterial workspaceMaterial) {
+    WorkspaceNode workspaceNode = workspaceMaterialController.findWorkspaceNodeNextSibling(workspaceMaterial);
+    Long nextSiblingId = workspaceNode != null ? workspaceNode.getId() : null;
+    return new fi.muikku.plugins.workspace.rest.model.WorkspaceMaterial(workspaceMaterial.getId(), workspaceMaterial.getMaterialId(), workspaceMaterial.getParent() != null ? workspaceMaterial.getParent().getId() : null, nextSiblingId);
+  }
+
   private List<fi.muikku.plugins.workspace.rest.model.WorkspaceUser> createRestModel(WorkspaceUserEntity... entries) {
     List<fi.muikku.plugins.workspace.rest.model.WorkspaceUser> result = new ArrayList<>();
     
@@ -481,60 +565,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 //  //  Materials
 //  //
 //  
-//  @POST
-//  @Path ("/materials/")
-//  public Response createWorkspaceMaterial(WorkspaceMaterialCompact workspaceMaterial) {
-//    if (workspaceMaterial.getId() != null) {
-//      return Response.status(Status.BAD_REQUEST).entity("id can not be specified when creating new WorkspaceMaterial").build();
-//    }
-//    
-//    if (workspaceMaterial.getMaterial_id() == null) {
-//      return Response.status(Status.BAD_REQUEST).entity("material_id is required when creating new WorkspaceMaterial").build();
-//    }
-//    
-//    if (StringUtils.isBlank(workspaceMaterial.getUrlName())) {
-//      return Response.status(Status.BAD_REQUEST).entity("urlName is required when creating new WorkspaceMaterial").build();
-//    }
-//    
-//    WorkspaceNode parent = null;
-//    if (workspaceMaterial.getParent_id() != null) {
-//      parent = workspaceMaterialController.findWorkspaceNodeById(workspaceMaterial.getParent_id());
-//      if (parent == null) {
-//        return Response.status(Status.NOT_FOUND).entity("parent not found").build();
-//      }
-//    }
-//    
-//    Material material = materialController.findMaterialById(workspaceMaterial.getMaterial_id());
-//    if (material == null) {
-//      return Response.status(Status.NOT_FOUND).entity("material not found").build();
-//    };
-//    
-//    return Response.ok(
-//        tranquilityBuilderFactory.createBuilder()
-//          .createTranquility()
-//          .entity(workspaceMaterialController.createWorkspaceMaterial(parent, material, workspaceMaterial.getUrlName()))
-//    ).build();
-//  }
-//  
-//  @DELETE
-//  @Path ("/materials/{ID}")
-//  public Response deleteWorkspaceMaterial(@PathParam("ID") Long workspaceMaterialId) {
-//    // TODO: Security
-//    
-//    if (workspaceMaterialId == null) {
-//      return Response.status(Status.NOT_FOUND).entity("workspace material not found").build();
-//    }
-//    
-//    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
-//    if (workspaceMaterial == null) {
-//      return Response.status(Status.NOT_FOUND).entity("workspace material not found").build();
-//    }
-//    
-//    workspaceMaterialController.deleteWorkspaceMaterial(workspaceMaterial);
-//    
-//    return Response.noContent().build();
-//  }
-//  
+
 //  //
 //  // Nodes
 //  // 

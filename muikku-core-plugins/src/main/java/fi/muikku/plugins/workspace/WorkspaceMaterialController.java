@@ -115,6 +115,19 @@ public class WorkspaceMaterialController {
     // Node identifiers to WorkspaceNode instances
     WorkspaceNode node = workspaceNodeDAO.findById(nodeId);
     WorkspaceNode referenceNode = workspaceNodeDAO.findById(referenceNodeId);
+    moveBelow(node, referenceNode);
+  }
+
+  /**
+   * Updates the order numbers of workspace nodes so that node appears below node with referenceNode</code>
+   * .
+   * 
+   * @param node
+   *          The node to move
+   * @param referenceNode
+   *          The node under which the node is moved
+   */
+  public void moveBelow(WorkspaceNode node, WorkspaceNode referenceNode) {
     // Order number of the reference node
     Integer referenceOrderNumber = referenceNode.getOrderNumber() == null ? 0 : referenceNode.getOrderNumber();
     // Workspace nodes with order number > reference order number
@@ -126,6 +139,15 @@ public class WorkspaceMaterialController {
     for (WorkspaceNode subsequentNode : subsequentNodes) {
       workspaceNodeDAO.updateOrderNumber(subsequentNode, ++referenceOrderNumber);
     }
+  }
+
+  public WorkspaceNode findWorkspaceNodeNextSibling(WorkspaceNode referenceNode) {
+    List<WorkspaceNode> nextSiblings = workspaceNodeDAO.listParentByOrderNumberGreaterSortByGreater(referenceNode.getParent(), referenceNode.getOrderNumber(), 0, 1);
+    if (nextSiblings.isEmpty()) {
+      return null;
+    }
+    
+    return nextSiblings.get(0);
   }
 
   /**

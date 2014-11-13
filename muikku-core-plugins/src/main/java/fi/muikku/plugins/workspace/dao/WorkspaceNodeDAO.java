@@ -3,6 +3,7 @@ package fi.muikku.plugins.workspace.dao;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -78,6 +79,35 @@ public class WorkspaceNodeDAO extends CorePluginsDAO<WorkspaceNode> {
     );
    
     return entityManager.createQuery(criteria).getResultList();
+  }
+
+  public List<WorkspaceNode> listParentByOrderNumberGreaterSortByGreater(WorkspaceNode parent, Integer orderNumber, Integer firstResult, Integer maxResults) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceNode> criteria = criteriaBuilder.createQuery(WorkspaceNode.class);
+    Root<WorkspaceNode> root = criteria.from(WorkspaceNode.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(WorkspaceNode_.parent), parent),
+        criteriaBuilder.greaterThan(root.get(WorkspaceNode_.orderNumber), orderNumber)
+      )
+    );
+    
+    criteria.orderBy(criteriaBuilder.desc(root.get(WorkspaceNode_.orderNumber)));
+    
+    TypedQuery<WorkspaceNode> query = entityManager.createQuery(criteria);
+
+    if (firstResult != null) {
+      query.setFirstResult(firstResult);
+    }
+
+    if (maxResults != null) {
+      query.setMaxResults(maxResults);
+    }
+   
+    return query.getResultList();
   }
 
 	public List<WorkspaceNode> listByParent(WorkspaceNode parent) {

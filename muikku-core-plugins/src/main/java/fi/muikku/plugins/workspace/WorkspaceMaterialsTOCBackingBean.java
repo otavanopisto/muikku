@@ -112,6 +112,7 @@ public class WorkspaceMaterialsTOCBackingBean {
       throw new IllegalArgumentException("Unsupported workspace node: " + workspaceNode.getClass());
     }
     materialNode.setMaterialPath(workspaceNode.getPath());
+    materialNode.setParentId(workspaceNode.getParent().getId());
     return materialNode;
   }
 
