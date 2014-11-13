@@ -7,6 +7,10 @@
     },
     
     _create : function() {
+      $(this.element).trigger('statusChange', {
+        status: 'loading'
+      });
+      
       if (this.options.externalPlugins) {
         $.each(this.options.externalPlugins, function (name, path) {
           CKEDITOR.plugins.addExternal(name, path);
@@ -63,7 +67,7 @@
         status: 'saving'
       });
     },
-
+    
     _onEditorPatchAccepted: function (event) {
       $(this.element).trigger('statusChange', {
         status: 'saved'
@@ -103,6 +107,10 @@
       $(this.element).trigger('patchReceived', {
         properties: event.data.properties||{}
       });
+    },
+    
+    _destroy: function () {
+      this._editor.destroy();
     }
   });
   

@@ -8,21 +8,20 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.plugins.CorePluginsDAO;
-import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial_;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
-
 
 public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
 	
 	private static final long serialVersionUID = -1777382212388116832L;
 
-	public WorkspaceMaterial create(WorkspaceNode parent, long materialId, String urlName) {
+	public WorkspaceMaterial create(WorkspaceNode parent, long materialId, String urlName, Integer orderNumber) {
 		WorkspaceMaterial workspaceMaterial = new WorkspaceMaterial();
 		workspaceMaterial.setParent(parent);
 		workspaceMaterial.setMaterialId(materialId);
 		workspaceMaterial.setUrlName(urlName);
+		workspaceMaterial.setOrderNumber(orderNumber);
 		
 		return persist(workspaceMaterial);
 	}

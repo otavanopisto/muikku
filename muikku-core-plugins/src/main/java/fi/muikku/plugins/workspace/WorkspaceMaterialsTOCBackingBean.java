@@ -28,7 +28,7 @@ public class WorkspaceMaterialsTOCBackingBean {
     List<MaterialNode> materialNodes = new ArrayList<MaterialNode>();
     List<WorkspaceNode> nodes = workspaceMaterialController.listWorkspaceNodesByParent(rootFolder);
     for (WorkspaceNode node : nodes) {
-      appendMaterialNode(node,  materialNodes);
+      appendMaterialNode(node, materialNodes);
     }
     return materialNodes;
   }
@@ -42,7 +42,7 @@ public class WorkspaceMaterialsTOCBackingBean {
    */
   public List<MaterialNode> getMaterialNodes(WorkspaceNode workspaceNode) {
     List<WorkspaceNode> nodes = workspaceMaterialController.listWorkspaceNodesByParent(workspaceNode);
-    sortWorkspaceNodes(nodes);
+    workspaceMaterialController.sortWorkspaceNodes(nodes);
     List<MaterialNode> materialNodes = new ArrayList<MaterialNode>();
     for (WorkspaceNode node : nodes) {
       materialNodes.add(convertWorkspaceNode(node));
@@ -60,7 +60,7 @@ public class WorkspaceMaterialsTOCBackingBean {
   public List<MaterialNode> getMaterialNodes(MaterialNode parent) {
     WorkspaceNode workspaceNode = workspaceMaterialController.findWorkspaceNodeById(parent.getWorkspaceMaterialId());
     List<WorkspaceNode> nodes = workspaceMaterialController.listWorkspaceNodesByParent(workspaceNode);
-    sortWorkspaceNodes(nodes);
+    workspaceMaterialController.sortWorkspaceNodes(nodes);
     List<MaterialNode> materialNodes = new ArrayList<MaterialNode>();
     for (WorkspaceNode node : nodes) {
       materialNodes.add(convertWorkspaceNode(node));
@@ -80,7 +80,7 @@ public class WorkspaceMaterialsTOCBackingBean {
     materialNodes.add(materialNode);
     // Recursively convert the children of the given WorkspaceNode to MaterialNode instances   
     List<WorkspaceNode> nodes = workspaceMaterialController.listWorkspaceNodesByParent(workspaceNode);
-    sortWorkspaceNodes(nodes);
+    workspaceMaterialController.sortWorkspaceNodes(nodes);
     for (WorkspaceNode node : nodes) {
       appendMaterialNode(node, materialNodes);
     }
@@ -113,15 +113,6 @@ public class WorkspaceMaterialsTOCBackingBean {
     }
     materialNode.setMaterialPath(workspaceNode.getPath());
     return materialNode;
-  }
-  
-  /**
-   * Sorts the given list of workspace nodes.
-   * 
-   * @param workspaceNodes The list of workspace nodes to sort
-   */
-  private void sortWorkspaceNodes(List<WorkspaceNode> workspaceNodes) {
-    // TODO implement meaningful sorting
   }
 
 }

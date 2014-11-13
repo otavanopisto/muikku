@@ -59,6 +59,14 @@ public class WorkspaceNode {
   	}
   }
 
+  public Integer getOrderNumber() {
+    return orderNumber;
+  }
+
+  public void setOrderNumber(Integer orderNumber) {
+    this.orderNumber = orderNumber;
+  }
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -70,4 +78,6 @@ public class WorkspaceNode {
   
   @ManyToOne
   private WorkspaceNode parent;
+  
+  private Integer orderNumber;
 }
