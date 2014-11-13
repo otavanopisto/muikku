@@ -50,7 +50,7 @@ public class WorkspaceMaterialsManagementBackingBean {
 		}
 		
 		rootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
-    
+    workspaceEntityId = workspaceEntity.getId();
     workspaceNavigationBackingBean.setWorkspaceUrlName(urlName);
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
     workspaceName = workspace.getName();
@@ -76,6 +76,11 @@ public class WorkspaceMaterialsManagementBackingBean {
     return workspaceName;
   }
   
+  public Long getWorkspaceEntityId() {
+    return workspaceEntityId;
+  }
+  
 	private WorkspaceRootFolder rootFolder;
   private String workspaceName;
+  private Long workspaceEntityId;
 }

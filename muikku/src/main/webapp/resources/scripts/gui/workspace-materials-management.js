@@ -22,6 +22,32 @@
     }
   }
   
+  function editPage(node) {
+    var materialId = $(node).data('material-id');
+    var materialType = $(node).data('material-type');
+    var editorName = 'workspaceMaterialEditor' + (materialType.substring(0, 1).toUpperCase() + materialType.substring(1));
+    var pageElement = $('#page-' + materialId);
+    
+    var editor = pageElement[editorName];
+    if (editor) {
+      $(pageElement).find('.page-content').hide();
+      
+      editor.call(pageElement, {
+        materialId: materialId
+      });
+      
+      $(document).on("click",$.proxy(function (event) {
+        var target = $(event.target);
+        if (target.closest('.workspace-materials-management-view-page').length == 0) {
+          editor.call(pageElement, 'destroy');
+          loadPageNode($(this).closest('section'));
+        }
+      }, node));
+    } else {
+      $('.notification-queue').notificationQueue('notification', 'error', "Could not find editor for " + materialType);
+    }
+  }
+  
   $(document).ready(function() {
     // Workspace Material's page loading
     $('.workspace-materials-management-view-page').each(function(index, node) {
@@ -304,37 +330,71 @@
   });
   
   $(document).on('click', '.edit-page', function (event, data) {
-    var materialId = $(this).data('material-id');
-    var materialType = $(this).data('material-type');
-    var editorName = 'workspaceMaterialEditor' + (materialType.substring(0, 1).toUpperCase() + materialType.substring(1));
-    var pageElement = $('#page-' + materialId);
-    
-    var editor = pageElement[editorName];
-    if (editor) {
-      $(pageElement).find('.page-content').hide();
-      
-      editor.call(pageElement, {
-        materialId: materialId
-      });
-      
-      $(document).one("click",$.proxy(function () {
-        editor.call(pageElement, 'destroy');
-        loadPageNode($(this).closest('section'));
-      }, this));
-    } else {
-      $('.notification-queue').notificationQueue('notification', 'error', "Could not find editor for " + materialType);
-    }
+    editPage(this);
   });
   
   $(document).on('click', '.workspaces-materials-management-add-page', function (event, data) {
-    renderDustTemplate('workspace/materials-management-new-page.dust', { index: $(this).data('index') }, $.proxy(function (text) {
+    var nextMaterial = $(this).next('.workspace-materials-management-view-page');
+    
+    renderDustTemplate('workspace/materials-management-new-page.dust', { }, $.proxy(function (text) {
       var newPage = $(text);
       $(this).after(newPage);
       $(newPage).after($('<a>').attr({
         'class': 'workspaces-materials-management-add-page',
-        'href': 'javascript:void(null)',
-        'index': parseInt($(this).data('index')) + 1
+        'href': 'javascript:void(null)'
       }).html('ADD A PAGE'));
+      
+      $(newPage).find('.workspace-materials-management-new-page-link').one('click', function (event) {
+        event.preventDefault();
+        
+        var materialType = $(this).data('material-type');
+        var parentId = $(nextMaterial).data('parent-id');
+        var nextSiblingId = $(nextMaterial).data('workspace-material-id');
+        
+        var typeEndpoint = mApi().materials[materialType];
+        if (typeEndpoint != null) {
+          // TODO: Localize
+          typeEndpoint.create({
+            title: 'Untitled',
+            contentType: 'text/html;editor=CKEditor'
+          })
+          .callback($.proxy(function (materialErr, materialResult) {
+            if (materialErr) {
+              $('.notification-queue').notificationQueue('notification', 'error', materialErr);
+              return;
+            }
+            
+            var workspaceEntityId = $('.workspaceEntityId').val();
+            
+            mApi().workspace.workspaces.materials.create(workspaceEntityId, {
+              materialId: materialResult.id,
+              parentId: parentId,
+              nextSiblingId: nextSiblingId
+            })
+            .callback($.proxy(function (workspaceMaterialErr, workspaceMaterialResult) {
+              if (workspaceMaterialErr) {
+                $('.notification-queue').notificationQueue('notification', 'error', workspaceMaterialErr);
+                return;
+              } else {
+                newPage.removeClass('workspace-materials-management-new-page');
+                newPage.attr({
+                  'id': 'page-' + materialResult.id,
+                  'data-material-title': materialResult.title,
+                  'data-parent-id': workspaceMaterialResult.parentId,
+                  'data-material-id': materialResult.id,
+                  'data-material-type': materialType,
+                  'data-workspace-material-id': workspaceMaterialResult.id
+                });
+
+                editPage(newPage);
+              } 
+            }, this));
+          }, newPage));
+        } else {
+          $('.notification-queue').notificationQueue('notification', 'error', "Could not find rest service for " + materialType);
+        }
+        
+      });
     }, this));
   });
   

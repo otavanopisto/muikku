@@ -51,12 +51,14 @@
 
   <ui:define name="workspace.materials.management.content">
     <ui:repeat var="node" value="#{workspaceMaterialsTOCBackingBean.getAllMaterialNodes(workspaceMaterialsManagementBackingBean.getRootFolder())}" varStatus="vs">
-      <a class="workspaces-materials-management-add-page" href="javascript:void(null)" data-index="#{vs.index}">ADD A PAGE</a>      
-      <section id="page-#{node.materialId}" data-material-id="#{node.materialId}" data-material-type="#{node.materialType}" data-material-title="#{node.materialTitle}" class="workspace-materials-management-view-page"/>
+      <a class="workspaces-materials-management-add-page" href="javascript:void(null)">ADD A PAGE</a>      
+      <section id="page-#{node.materialId}" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-parent-id="#{node.parentId}" data-material-type="#{node.materialType}" data-material-title="#{node.materialTitle}" class="workspace-materials-management-view-page"/>
       <ui:fragment rendered="#{vs.last}">
-        <a class="workspaces-materials-management-add-page" href="javascript:void(null)" data-index="#{vs.index + 1}">ADD A PAGE</a>      
+        <a class="workspaces-materials-management-add-page" href="javascript:void(null)">ADD A PAGE</a>      
       </ui:fragment>
     </ui:repeat>
+    
+    <input class="workspaceEntityId" type="hidden" value="#{workspaceMaterialsManagementBackingBean.workspaceEntityId}"/>
   </ui:define>
   
   <ui:define name="workspaces.materials.management.additional.dock">
