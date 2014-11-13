@@ -30,8 +30,18 @@ public @interface Permit {
    */
   Style style() default Style.OR;
   
+  /**
+   * How to handle permission exception
+   */
+  Handle handle() default Handle.SILENT;
+  
   enum Style {
     OR,
     AND
+  }
+  
+  enum Handle {
+    SILENT,
+    EXCEPTION
   }
 }
