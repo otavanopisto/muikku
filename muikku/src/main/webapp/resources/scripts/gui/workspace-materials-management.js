@@ -22,9 +22,7 @@
     }
   }
   
-  function editPage(node) {
-    var materialId = $(node).data('material-id');
-    var materialType = $(node).data('material-type');
+  function editPage(materialType, materialId) {
     var editorName = 'workspaceMaterialEditor' + (materialType.substring(0, 1).toUpperCase() + materialType.substring(1));
     var pageElement = $('#page-' + materialId);
     
@@ -330,7 +328,13 @@
   });
   
   $(document).on('click', '.edit-page', function (event, data) {
-    editPage(this);
+    var materialId = $(node).data('material-id');
+    var materialType = $(node).data('material-type');
+    editPage(materialType, materialId);
+  });
+  
+  $(document).on('click', '.delete-page', function (event, data) {
+    alert('TODO: Actually delete page!');
   });
   
   $(document).on('click', '.workspaces-materials-management-add-page', function (event, data) {
@@ -386,7 +390,7 @@
                   'data-workspace-material-id': workspaceMaterialResult.id
                 });
 
-                editPage(newPage);
+                editPage(materialType, materialResult.id);
               } 
             }, this));
           }, newPage));
