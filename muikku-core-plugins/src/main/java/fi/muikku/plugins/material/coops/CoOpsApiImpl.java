@@ -32,7 +32,6 @@ import fi.foyt.coops.CoOpsUsageException;
 import fi.foyt.coops.model.File;
 import fi.foyt.coops.model.Join;
 import fi.foyt.coops.model.Patch;
-import fi.muikku.plugins.material.coops.dao.CoOpsSessionDAO;
 import fi.muikku.plugins.material.coops.dao.HtmlMaterialExtensionPropertyDAO;
 import fi.muikku.plugins.material.coops.dao.HtmlMaterialPropertyDAO;
 import fi.muikku.plugins.material.coops.dao.HtmlMaterialRevisionDAO;
@@ -40,14 +39,13 @@ import fi.muikku.plugins.material.coops.dao.HtmlMaterialRevisionExtensionPropert
 import fi.muikku.plugins.material.coops.dao.HtmlMaterialRevisionPropertyDAO;
 import fi.muikku.plugins.material.coops.event.CoOpsPatchEvent;
 import fi.muikku.plugins.material.coops.model.CoOpsSession;
-import fi.muikku.plugins.material.coops.model.CoOpsSessionType;
-import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.material.coops.model.HtmlMaterialExtensionProperty;
 import fi.muikku.plugins.material.coops.model.HtmlMaterialProperty;
 import fi.muikku.plugins.material.coops.model.HtmlMaterialRevision;
 import fi.muikku.plugins.material.coops.model.HtmlMaterialRevisionExtensionProperty;
 import fi.muikku.plugins.material.coops.model.HtmlMaterialRevisionProperty;
 import fi.muikku.plugins.material.dao.HtmlMaterialDAO;
+import fi.muikku.plugins.material.model.HtmlMaterial;
 
 @Dependent
 @Stateless
@@ -276,7 +274,6 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
       data = "";
     }
 
-    List<CoOpsSession> openSessions = coOpsSessionController.listSessionsByHtmlMaterialAndClosed(file, Boolean.FALSE);
     Map<String, String> properties = new HashMap<>();
     
     List<HtmlMaterialProperty> fileProperties = htmlMaterialPropertyDAO.listByHtmlMaterial(file);
