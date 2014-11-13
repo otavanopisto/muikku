@@ -1,4 +1,4 @@
+<a href="javascript:void(null)" class="edit-page" data-material-id="{id}" data-material-type="{type}">Edit</a>
 <div class="page-content">
-  <a href="javascript:void(null)" class="edit-page" data-material-id="#{id}" data-material-type="#{type}">Edit</a>
   {>"workspace/materials-management-page-{type}.dust"/}
 </div>

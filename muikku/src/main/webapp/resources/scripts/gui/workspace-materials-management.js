@@ -64,4 +64,22 @@
     
   });
   
+  $(document).on('click', '.edit-page', function (event, data) {
+    var materialId = $(this).data('material-id');
+    var materialType = $(this).data('material-type');
+    var editorName = 'workspaceMaterialEditor' + (materialType.substring(0, 1).toUpperCase() + materialType.substring(1));
+    var pageElement = $('#page-' + materialId);
+    
+    var editor = pageElement[editorName];
+    if (editor) {
+      $(pageElement).find('.page-content').hide();
+      
+      editor.call(pageElement, {
+        materialId: materialId
+      });
+    } else {
+      $('.notification-queue').notificationQueue('notification', 'error', "Could not find editor for " + materialType);
+    }
+  });
+  
 }).call(this);
