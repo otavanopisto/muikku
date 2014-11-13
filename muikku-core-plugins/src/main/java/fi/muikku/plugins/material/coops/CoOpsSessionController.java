@@ -8,6 +8,7 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.material.coops.dao.CoOpsSessionDAO;
 import fi.muikku.plugins.material.coops.event.CoOpsSessionCloseEvent;
 import fi.muikku.plugins.material.coops.event.CoOpsSessionOpenEvent;
@@ -30,8 +31,8 @@ public class CoOpsSessionController {
   @Inject
   private CoOpsSessionDAO coOpsSessionDAO;
   
-  public CoOpsSession createSession(HtmlMaterial htmlMaterial, String sessionId, Long joinRevision, String algorithm) {
-    CoOpsSession session = coOpsSessionDAO.create(htmlMaterial, sessionId, CoOpsSessionType.REST, joinRevision, algorithm, Boolean.FALSE, new Date());
+  public CoOpsSession createSession(HtmlMaterial htmlMaterial, UserEntity userEntity, String sessionId, Long joinRevision, String algorithm) {
+    CoOpsSession session = coOpsSessionDAO.create(htmlMaterial, userEntity != null ? userEntity.getId() : null, sessionId, CoOpsSessionType.REST, joinRevision, algorithm, Boolean.FALSE, new Date());
     sessionOpenEvent.fire(new CoOpsSessionOpenEvent(session.getSessionId()));
     return session;
   }

@@ -18,13 +18,14 @@ public class CoOpsSessionDAO extends CorePluginsDAO<CoOpsSession> {
 
   private static final long serialVersionUID = 6392770442072904041L;
 
-  public CoOpsSession create(HtmlMaterial htmlMaterial, String sessionId, CoOpsSessionType type, Long joinRevision, String algorithm, Boolean closed, Date accessed) {
+  public CoOpsSession create(HtmlMaterial htmlMaterial, Long userEntityId, String sessionId, CoOpsSessionType type, Long joinRevision, String algorithm, Boolean closed, Date accessed) {
     CoOpsSession coOpsSession = new CoOpsSession();
 
     coOpsSession.setAccessed(accessed);
     coOpsSession.setAlgorithm(algorithm);
     coOpsSession.setClosed(closed);
-    coOpsSession.setFile(htmlMaterial);
+    coOpsSession.setHtmlMaterial(htmlMaterial);
+    coOpsSession.setUserEntityId(userEntityId);
     coOpsSession.setJoinRevision(joinRevision);
     coOpsSession.setSessionId(sessionId);
     coOpsSession.setType(type);

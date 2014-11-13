@@ -46,6 +46,7 @@ import fi.muikku.plugins.material.coops.model.HtmlMaterialRevisionExtensionPrope
 import fi.muikku.plugins.material.coops.model.HtmlMaterialRevisionProperty;
 import fi.muikku.plugins.material.dao.HtmlMaterialDAO;
 import fi.muikku.plugins.material.model.HtmlMaterial;
+import fi.muikku.session.SessionController;
 
 @Dependent
 @Stateless
@@ -86,6 +87,9 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
 
   @Inject
   private HttpServletRequest httpRequest;
+
+  @Inject
+  private SessionController sessionController;
   
   public File fileGet(String fileId, Long revisionNumber) throws CoOpsNotImplementedException, CoOpsNotFoundException, CoOpsUsageException, CoOpsInternalErrorException, CoOpsForbiddenException {
     HtmlMaterial htmlMaterial = findFile(fileId);
@@ -284,7 +288,7 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
     Map<String, Object> extensions = new HashMap<>();
     String sessionId = UUID.randomUUID().toString();
     
-    CoOpsSession coOpsSession = coOpsSessionController.createSession(file, sessionId, currentRevision, algorithm.getName());
+    CoOpsSession coOpsSession = coOpsSessionController.createSession(file, sessionController.getLoggedUserEntity(), sessionId, currentRevision, algorithm.getName());
     
     addSessionEventsExtension(file, extensions);
     addWebSocketExtension(file, extensions, coOpsSession);

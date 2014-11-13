@@ -11,9 +11,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
-import fi.muikku.plugins.material.model.HtmlMaterial;
 
 import org.hibernate.validator.constraints.NotEmpty;
+
+import fi.muikku.plugins.material.model.HtmlMaterial;
 
 @Entity
 public class CoOpsSession {
@@ -46,12 +47,20 @@ public class CoOpsSession {
     this.closed = closed;
   }
   
-  public HtmlMaterial getFile() {
+  public HtmlMaterial getHtmlMaterial() {
     return htmlMaterial;
   }
   
-  public void setFile(HtmlMaterial htmlMaterial) {
+  public void setHtmlMaterial(HtmlMaterial htmlMaterial) {
     this.htmlMaterial = htmlMaterial;
+  }
+  
+  public Long getUserEntityId() {
+    return userEntityId;
+  }
+  
+  public void setUserEntityId(Long userEntityId) {
+    this.userEntityId = userEntityId;
   }
   
   public String getAlgorithm() {
@@ -98,6 +107,8 @@ public class CoOpsSession {
 
   @ManyToOne
   private HtmlMaterial htmlMaterial;
+
+  private Long userEntityId;
   
   @Column (updatable = false, nullable = false)
   @NotNull

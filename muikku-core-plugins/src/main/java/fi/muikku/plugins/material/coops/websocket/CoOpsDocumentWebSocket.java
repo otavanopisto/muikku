@@ -60,7 +60,7 @@ public class CoOpsDocumentWebSocket {
         return;
       }
       
-      if (!session.getFile().getId().equals(NumberUtils.createLong(htmlMaterialId))) {
+      if (!session.getHtmlMaterial().getId().equals(NumberUtils.createLong(htmlMaterialId))) {
         client.close(new CloseReason(CloseReason.CloseCodes.VIOLATED_POLICY, "Session is associated with another fileId"));
         return;
       }
@@ -73,14 +73,14 @@ public class CoOpsDocumentWebSocket {
       fileClients.get(htmlMaterialId).put(client.getId(), client);
       
       coOpsSessionController.updateSessionType(session, CoOpsSessionType.WS);
-      HtmlMaterial htmlMaterial = session.getFile();
+      HtmlMaterial htmlMaterial = session.getHtmlMaterial();
       Long currentRevisionNumber = htmlMaterial.getRevisionNumber();
       
       if (session.getJoinRevision() < currentRevisionNumber) {
         ObjectMapper objectMapper = new ObjectMapper();
         List<Patch> patches;
         try {
-          patches = coOpsApi.fileUpdate(session.getFile().getId().toString(), session.getSessionId(), session.getJoinRevision());
+          patches = coOpsApi.fileUpdate(session.getHtmlMaterial().getId().toString(), session.getSessionId(), session.getJoinRevision());
           for (Patch patch : patches) {
             sendPatch(client, patch);
           }
@@ -117,7 +117,7 @@ public class CoOpsDocumentWebSocket {
       return;
     }
     
-    if (!session.getFile().getId().equals(NumberUtils.createLong(fileId))) {
+    if (!session.getHtmlMaterial().getId().equals(NumberUtils.createLong(fileId))) {
       client.close(new CloseReason(CloseReason.CloseCodes.VIOLATED_POLICY, "Session is associated with another fileId"));
       return;
     }
