@@ -1,0 +1,4 @@
+<section class="workspace-materials-management-view-page workspace-materials-management-new-page">
+  <a href="javascript:void(null)" data-index="{index}" data-material-type="html">New document</a>
+  <a href="javascript:void(null)" data-index="{index}" data-material-type="binary">Upload files</a> 
+</section>

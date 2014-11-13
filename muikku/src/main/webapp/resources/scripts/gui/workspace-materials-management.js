@@ -326,4 +326,17 @@
     }
   });
   
+  $(document).on('click', '.workspaces-materials-management-add-page', function (event, data) {
+    renderDustTemplate('workspace/materials-management-new-page.dust', { index: $(this).data('index') }, $.proxy(function (text) {
+      var newPage = $(text);
+      $(this).after(newPage);
+      $(newPage).after($('<a>').attr({
+        'class': 'workspaces-materials-management-add-page',
+        'href': 'javascript:void(null)',
+        'index': parseInt($(this).data('index')) + 1
+      }).html('ADD A PAGE'));
+    }, this));
+  });
+  
+  
 }).call(this);
