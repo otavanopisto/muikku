@@ -7,6 +7,11 @@
   xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
   xmlns:composite="http://java.sun.com/jsf/composite/composite" 
   template="/workspaces/templates/workspace-materials-reading-view.xhtml">
+  
+  <ui:define name="viewScripts">
+    <h:outputScript name="scripts/gui/workspace.js"/> 
+    <h:outputScript name="scripts/gui/workspace-materials.js"/> 
+  </ui:define>
 
   <ui:define name="workspaces.reading.toc">
     <div id="workspaceMaterialReadingTOCWrapper">
