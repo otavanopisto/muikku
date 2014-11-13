@@ -67,11 +67,14 @@
       }
       
       this._titleInput = $('<input>')
+        .addClass('workspace-material-html-editor-title')
         .attr({
           'type': 'text'
         }).appendTo(this.element);
       
       this._status = $('<div>')
+        .addClass('workspace-material-html-editor-status')
+        .append('<span>')
         .appendTo(this.element);
       
       this._collaborators = $('<div>')
@@ -79,6 +82,7 @@
         .collaborators();
 
       this._editorContainer = $('<div>')
+        .addClass('workspace-material-html-editor')
         .appendTo(this.element);
       
       // TODO: Editor Locale
@@ -135,7 +139,9 @@
     
     _onStatusChange: function (event, data) {
       // TODO: Localize
-      $(this._status).html(data.status);
+      $(this._status).removeClass('icon-saved icon-saving icon-unsaved icon-loaded icon-loading');
+      $(this._status).addClass('icon-' + data.status);
+      $(this._status).find('span').html(data.status);
     },
     
     _onCollaboratorJoined: function (event, data) {
