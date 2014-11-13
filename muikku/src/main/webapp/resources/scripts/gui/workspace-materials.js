@@ -2,7 +2,7 @@
 
   $(document).ready(function() {
     // Workspace Material's page loading
-    $('.workspace-material-page').each(function(index, node) {
+    $('.workspace-materials-view-page').each(function(index, node) {
       var materialType = $(node).data('material-type');
       switch (materialType) {
       case 'html':
@@ -21,7 +21,7 @@
     });
 
     // Workspace material's Reading View page loading
-    $('.workspace-material-reading-view-page').each(function(index, node) {
+    $('.workspace-materials-reading-view-page').each(function(index, node) {
       var materialType = $(node).data('material-type');
       switch (materialType) {
       case 'html':
@@ -40,7 +40,7 @@
     });
 
     /* Smooth scrolling in workspace Material's View */
-    var $sections = $('.workspace-material-page');
+    var $sections = $('.workspace-materials-view-page');
 
     $sections.each(function() {
       var $section = $(this);
@@ -61,7 +61,7 @@
     });
     
     /* Smooth scrolling in workspace Material's Reading View */
-    var $sections = $('.workspace-material-reading-view-page');
+    var $sections = $('.workspace-materials-reading-view-page');
 
     $sections.each(function() {
       var $section = $(this);
@@ -82,7 +82,7 @@
     });
 
     /* Highlighting toc item at appropriate time when we scroll to the corresponding section */
-    $('.workspace-material-page')
+    $('.workspace-materials-view-page')
       .waypoint(function(direction) {
         var $links = $('a[href="#' + this.id + '"]');
         $links.toggleClass('active', direction === 'down');
@@ -99,7 +99,7 @@
       });
     
     /* Highlighting toc item at appropriate time when we scroll to the corresponding section - Reading View */
-    $('.workspace-material-reading-view-page')
+    $('.workspace-materials-reading-view-page')
       .waypoint(function(direction) {
         var $links = $('a[href="#' + this.id + '"]');
         $links.toggleClass('active', direction === 'down');

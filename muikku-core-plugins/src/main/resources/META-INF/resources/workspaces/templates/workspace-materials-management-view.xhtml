@@ -9,22 +9,22 @@
   template="/WEB-INF/templates/default.xhtml">
 
   <!-- Lets set the base body class per view -->
-  <ui:param name="bodyClass" value="workspace-materials-reading" />
+  <ui:param name="bodyClass" value="workspace-materials-management" />
   
   <ui:define name="viewCss">
-    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/workspaces.css" />  
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/workspaces-materials-management.css" />  
   </ui:define>
 
   <ui:define name="sitebody">
     
-    <ui:insert name="workspaces.materials.reading.toc"></ui:insert>
+    <ui:insert name="workspaces.materials.management.toc"></ui:insert>
     
-    <main id="contentWorkspaceMaterialsReading"> <!-- class attribute removed as we are not using grid here -->
-      <ui:insert name="workspace.materials.reading.content">
+    <main id="contentWorkspaceMaterialsManagement"> <!-- class attribute removed as we are not using grid here -->
+      <ui:insert name="workspace.materials.management.content">
       </ui:insert>
     </main>
     
-    <ui:insert name="workspaces.materials.reading.additional.dock"></ui:insert>
+    <ui:insert name="workspaces.materials.management.additional.dock"></ui:insert>
     
   </ui:define>
 

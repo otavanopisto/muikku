@@ -124,15 +124,15 @@ $(document).ready(function() {
   }
   
   // Workspace's materials's reading view
-  if ($('#workspaceMaterialReadingTOCWrapper').length > 0) {
+  if ($('#workspaceMaterialsReadingTOCWrapper').length > 0) {
     
     var height = $(window).height();
-    var thinTocWrapper = $('#workspaceMaterialReadingTOCClosed');
-    var wideTocWrapper = $('#workspaceMaterialReadingTOCOpen');
-    var tocOpeningButton = $('.workspace-material-reading-toc-opening-button');
-    var tocClosingButton = $('.workspace-material-reading-toc-closing-button');
-    var tocPinButton = $('#workspaceMaterialReadingTOCPinicon');
-    var contentPageContainer = $('#contentWorkspaceReading');
+    var thinTocWrapper = $('#workspaceMaterialsReadingTOCClosed');
+    var wideTocWrapper = $('#workspaceMaterialsReadingTOCOpen');
+    var tocOpeningButton = $('.workspace-materials-reading-toc-opening-button');
+    var tocClosingButton = $('.workspace-materials-reading-toc-closing-button');
+    var tocPinButton = $('#workspaceMaterialsReadingTOCPinicon');
+    var contentPageContainer = $('#contentWorkspaceMaterialsReading');
     
     var contentMinOffset;
     var contentOffset;
@@ -165,7 +165,7 @@ $(document).ready(function() {
       windowMinWidth = contentPageContainer.width() + contentMinOffset*2;
       
       // Lets prevent page content to slide under TOC when browser window is been resized
-      if ($('#workspaceMaterialReadingTOCOpen:visible').length !== 0) {
+      if ($('#workspaceMaterialsReadingTOCOpen:visible').length !== 0) {
         
         if (contentOffset.left < contentMinOffset) {
           contentPageContainer.css({
@@ -274,7 +274,7 @@ $(document).ready(function() {
               });
 
               // Preventing TOC wrapper to disappear if user clicks inside wrapper
-              $("#workspaceMaterialReadingTOCWrapper").bind('click', function(e) {
+              $("#workspaceMaterialsReadingTOCWrapper").bind('click', function(e) {
                 e.stopPropagation();
               });
               
