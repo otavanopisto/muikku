@@ -308,6 +308,9 @@
     var materialType = $(this).data('material-type');
     var editorName = 'workspaceMaterialEditor' + (materialType.substring(0, 1).toUpperCase() + materialType.substring(1));
     var pageElement = $('#page-' + materialId);
+    var pageSection = $(this).parent(".workspace-materials-management-view-page");
+    
+    pageSection.addClass("page-edit-mode");
     
     var editor = pageElement[editorName];
     if (editor) {

@@ -209,6 +209,17 @@ body.workspace-materials-management {
       font-size:1.3em;
       font-weight:300;
       word-wrap: break-word;
+      -moz-box-shadow: 0px 0px 5px #1e1e1e; 
+      -webkit-box-shadow: 0px 0px 5px #1e1e1e; 
+      -webkit-transition: box-shadow 0.3s ease-in-out 0s;
+      -moz-transition: box-shadow 0.3s ease-in-out 0s;
+      -o-transition: box-shadow 0.3s ease-in-out 0s;
+      -ms-transition: box-shadow 0.3s ease-in-out 0s;
+      transition: box-shadow 0.3s ease-in-out 0s;
+      
+      &.page-edit-mode {
+        box-shadow:0 0 0px 5px rgba(0,255,48,0.4);
+      }
       
       h1,
       h2,
