@@ -76,7 +76,6 @@
       var wideTocWrapper = $('#workspaceMaterialsManagementTOCOpen');
       var tocOpeningButton = $('.workspace-materials-management-toc-opening-button');
       var tocClosingButton = $('.workspace-materials-management-toc-closing-button');
-      var tocPinButton = $('#workspaceMaterialsManagementTOCPinicon');
       var contentPageContainer = $('#contentWorkspaceMaterialsManagement');
       
       var contentMinOffset;
@@ -85,18 +84,19 @@
       
       if (thinTocWrapper.length > 0) {
         thinTocWrapper
-        .show()
+        .hide()
         .css({
-          height: height
+          height: height,
+          "margin-left" : "-55px"
         });
       }
       
       if (wideTocWrapper.length > 0) {
         wideTocWrapper
-        .hide()
+        .show()
         .css({
           height: height,
-          "margin-left" : "-370px"
+          "margin-left" : "0px"
         });
       }
       
@@ -123,19 +123,6 @@
             paddingLeft: "60px",
             paddingRight: "60px"
           });
-        }
-        
-      });
-      
-      var tocPinned = 0;
-      
-      $(tocPinButton).click(function() {
-        if (tocPinned == 0) {
-          tocPinButton.addClass('selected');
-          tocPinned = 1;  
-        } else {
-          tocPinButton.removeClass('selected');
-          tocPinned = 0;
         }
         
       });
