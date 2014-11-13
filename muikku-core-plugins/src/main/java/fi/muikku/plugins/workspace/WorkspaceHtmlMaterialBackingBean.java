@@ -49,7 +49,6 @@ import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.security.LoggedIn;
 import fi.muikku.session.SessionController;
 
-@SuppressWarnings("el-syntax")
 @Named
 @Stateful
 @RequestScoped

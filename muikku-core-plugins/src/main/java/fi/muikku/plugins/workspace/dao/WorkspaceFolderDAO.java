@@ -10,11 +10,12 @@ public class WorkspaceFolderDAO extends CorePluginsDAO<WorkspaceFolder> {
 	
 	private static final long serialVersionUID = 9095130166469638314L;
 
-	public WorkspaceFolder create(WorkspaceNode parent, String title, String urlName) {
+	public WorkspaceFolder create(WorkspaceNode parent, String title, String urlName, Integer orderNumber) {
 		WorkspaceFolder workspaceFolder = new WorkspaceFolder();
 		workspaceFolder.setParent(parent);
 		workspaceFolder.setUrlName(urlName);
 		workspaceFolder.setTitle(title);
+		workspaceFolder.setOrderNumber(orderNumber);
 		return persist(workspaceFolder);
 	}
 
