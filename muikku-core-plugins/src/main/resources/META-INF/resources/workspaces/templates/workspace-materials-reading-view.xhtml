@@ -11,11 +11,6 @@
   <!-- Lets set the base body class per view -->
   <ui:param name="bodyClass" value="workspace-reading" />
   
-  <ui:define name="viewScripts">
-    <h:outputScript name="scripts/gui/workspace.js"/> 
-    <h:outputScript name="scripts/gui/workspace-materials.js"/> 
-  </ui:define>
-  
   <ui:define name="viewCss">
     <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/workspaces.css" />  
   </ui:define>

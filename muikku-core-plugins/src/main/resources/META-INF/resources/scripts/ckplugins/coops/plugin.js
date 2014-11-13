@@ -88,7 +88,7 @@
       },
       
       _onSessionStart: function (event) {
-        this.setSavedContent(this.getUnsavedContent());
+        this.setSavedContent(event.data.content);
       },
       
       _onContentPatch: function (event) {
@@ -159,7 +159,9 @@
               this.setReadOnly(false);
             }
               
-            this.fire("CoOPS:SessionStart");
+            this.fire("CoOPS:SessionStart", {
+              content: content
+            });
           });
         } else {
           this._editor.fire("CoOPS:Error", {

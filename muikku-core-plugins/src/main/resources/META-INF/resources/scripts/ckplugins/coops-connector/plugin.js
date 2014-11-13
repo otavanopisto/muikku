@@ -307,8 +307,10 @@
       
       _onWindowBeforeUnload: function (event) {
         this._leavingPage = true;
-        this._webSocket.onclose = function () {};
-        this._webSocket.close();
+        if (this._webSocket) {
+          this._webSocket.onclose = function () {};
+          this._webSocket.close();
+        }
       },
       
       _tryReconnect: function (attemptsLeft) {

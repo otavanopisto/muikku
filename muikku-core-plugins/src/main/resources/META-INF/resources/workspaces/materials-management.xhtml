@@ -8,6 +8,19 @@
   xmlns:composite="http://java.sun.com/jsf/composite/composite" 
   template="/workspaces/templates/workspace-materials-reading-view.xhtml">
 
+  <ui:define name="viewScripts">
+    <!-- TODO: plugins should be able to introduce new material editors -->
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/ckeditor/4.3.2/ckeditor.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/diff_match_patch/20121119/diff_match_patch.js"></script>
+    <script type="text/javascript" src="//cdn.jsdelivr.net/jshash/2.2/md5-min.js"></script> 
+    <h:outputScript name="scripts/coopsck/coopsck.js" />
+    <h:outputScript name="scripts/diffxml-js/diffxml-js.js" />
+    <h:outputScript name="scripts/gui/workspace-material-editor-html.js"/>
+
+    <h:outputScript name="scripts/gui/workspace.js"/> 
+    <h:outputScript name="scripts/gui/workspace-materials-management.js" />
+  </ui:define>
+  
   <ui:define name="workspaces.reading.toc">
     <div id="workspaceMaterialReadingTOCWrapper">
       <nav id="workspaceMaterialReadingTOCClosed">
@@ -37,7 +50,9 @@
   </ui:define>
 
   <ui:define name="workspace.reading.content">
-    <section class="workspace-material-reading-view-page"/>
+    <ui:repeat var="node" value="#{workspaceMaterialsTOCBackingBean.getAllMaterialNodes(workspaceMaterialsManagementBackingBean.getRootFolder())}">
+      <section id="page-#{node.materialId}" data-material-id="#{node.materialId}" data-material-type="#{node.materialType}" data-material-title="#{node.materialTitle}" class="workspace-material-reading-view-page"/>
+    </ui:repeat>
   </ui:define>
   
   <ui:define name="workspaces.reading.goback">

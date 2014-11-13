@@ -12,9 +12,11 @@ import java.util.UUID;
 
 import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -36,6 +38,7 @@ import fi.muikku.plugins.material.coops.dao.HtmlMaterialPropertyDAO;
 import fi.muikku.plugins.material.coops.dao.HtmlMaterialRevisionDAO;
 import fi.muikku.plugins.material.coops.dao.HtmlMaterialRevisionExtensionPropertyDAO;
 import fi.muikku.plugins.material.coops.dao.HtmlMaterialRevisionPropertyDAO;
+import fi.muikku.plugins.material.coops.event.CoOpsPatchEvent;
 import fi.muikku.plugins.material.coops.model.CoOpsSession;
 import fi.muikku.plugins.material.coops.model.CoOpsSessionType;
 import fi.muikku.plugins.material.model.HtmlMaterial;
@@ -75,7 +78,16 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
   private HtmlMaterialRevisionExtensionPropertyDAO htmlMaterialRevisionExtensionPropertyDAO;
 
   @Inject
-  private CoOpsSessionDAO coOpsSessionDAO;
+  private CoOpsSessionController coOpsSessionController;
+  
+  @Inject
+  private CoOpsSessionEventsController coOpsSessionEventsController;
+  
+  @Inject
+  private Event<CoOpsPatchEvent> patchEvent;
+
+  @Inject
+  private HttpServletRequest httpRequest;
   
   public File fileGet(String fileId, Long revisionNumber) throws CoOpsNotImplementedException, CoOpsNotFoundException, CoOpsUsageException, CoOpsInternalErrorException, CoOpsForbiddenException {
     HtmlMaterial htmlMaterial = findFile(fileId);
@@ -102,7 +114,7 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
   }
 
   public List<Patch> fileUpdate(String fileId, String sessionId, Long revisionNumber) throws CoOpsNotFoundException, CoOpsInternalErrorException, CoOpsUsageException, CoOpsForbiddenException {
-    CoOpsSession session = coOpsSessionDAO.findBySessionId(sessionId);
+    CoOpsSession session = coOpsSessionController.findSessionBySessionId(sessionId);
     if (session == null) {
       throw new CoOpsUsageException("Invalid session id"); 
     }
@@ -156,7 +168,7 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
   }
 
   public void filePatch(String fileId, String sessionId, Long revisionNumber, String patch, Map<String, String> properties, Map<String, Object> extensions) throws CoOpsInternalErrorException, CoOpsUsageException, CoOpsNotFoundException, CoOpsConflictException, CoOpsForbiddenException {
-    CoOpsSession session = coOpsSessionDAO.findBySessionId(sessionId);
+    CoOpsSession session = coOpsSessionController.findSessionBySessionId(sessionId);
     if (session == null) {
       throw new CoOpsUsageException("Invalid session id"); 
     }
@@ -166,9 +178,9 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
       throw new CoOpsUsageException("Algorithm is not supported by this server");
     }
  
-    HtmlMaterial file = findFile(fileId);
+    HtmlMaterial htmlMaterial = findFile(fileId);
     
-    Long currentRevision = file.getRevisionNumber();
+    Long currentRevision = htmlMaterial.getRevisionNumber();
     if (!currentRevision.equals(revisionNumber)) {
       throw new CoOpsConflictException();
     }
@@ -179,32 +191,36 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
     String patched = null;
     
     if (StringUtils.isNotBlank(patch)) {
-      String data = file.getHtml();
+      String data = htmlMaterial.getHtml();
       if (data == null) {
         data = "";
       }
       
       patched = algorithm.patch(data, patch);
       checksum = DigestUtils.md5Hex(patched);
-      htmlMaterialDAO.updateData(file, patched);
+      htmlMaterialDAO.updateData(htmlMaterial, patched);
     } 
     
     Long patchRevisionNumber = currentRevision + 1;
-    HtmlMaterialRevision htmlMaterialRevision = htmlMaterialRevisionDAO.create(file, sessionId, patchRevisionNumber, new Date(), patch, checksum);
-    htmlMaterialDAO.updateRevisionNumber(file, patchRevisionNumber);
+    HtmlMaterialRevision htmlMaterialRevision = htmlMaterialRevisionDAO.create(htmlMaterial, sessionId, patchRevisionNumber, new Date(), patch, checksum);
+    htmlMaterialDAO.updateRevisionNumber(htmlMaterial, patchRevisionNumber);
 
     if (properties != null) {
       for (String key : properties.keySet()) {
         String value = properties.get(key);
         
-        HtmlMaterialProperty fileProperty = htmlMaterialPropertyDAO.findByHtmlMaterialAndKey(file, key);
+        HtmlMaterialProperty fileProperty = htmlMaterialPropertyDAO.findByHtmlMaterialAndKey(htmlMaterial, key);
         if (fileProperty == null) {
-          htmlMaterialPropertyDAO.create(file, key, value);
+          htmlMaterialPropertyDAO.create(htmlMaterial, key, value);
         } else {
           htmlMaterialPropertyDAO.updateValue(fileProperty, value);
         }
         
         htmlMaterialRevisionPropertyDAO.create(htmlMaterialRevision, key, value);
+        
+        if ("title".equals(key)) {
+          htmlMaterialDAO.updateTitle(htmlMaterial, value);
+        }
       }
     }
     
@@ -218,9 +234,9 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
           throw new CoOpsInternalErrorException(e);
         }
         
-        HtmlMaterialExtensionProperty htmlMaterialExtensionProperty = htmlMaterialExtensionPropertyDAO.findByFileAndKey(file, key);
+        HtmlMaterialExtensionProperty htmlMaterialExtensionProperty = htmlMaterialExtensionPropertyDAO.findByFileAndKey(htmlMaterial, key);
         if (htmlMaterialExtensionProperty == null) {
-          htmlMaterialExtensionPropertyDAO.create(file, key, value);
+          htmlMaterialExtensionPropertyDAO.create(htmlMaterial, key, value);
         } else {
           htmlMaterialExtensionPropertyDAO.updateValue(htmlMaterialExtensionProperty, value);
         }
@@ -228,6 +244,14 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
         htmlMaterialRevisionExtensionPropertyDAO.create(htmlMaterialRevision, key, value);
       }
     }
+    
+    patchEvent.fire(new CoOpsPatchEvent(fileId,
+                                        new Patch(sessionId,
+                                                  patchRevisionNumber,
+                                                  checksum,
+                                                  patch,
+                                                  properties,
+                                                  extensions)));
   }
 
   public Join fileJoin(String fileId, List<String> algorithms, String protocolVersion) throws CoOpsNotFoundException, CoOpsNotImplementedException, CoOpsInternalErrorException, CoOpsForbiddenException, CoOpsUsageException {
@@ -252,7 +276,7 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
       data = "";
     }
 
-    List<CoOpsSession> openSessions = coOpsSessionDAO.listByFileAndClosed(file, Boolean.FALSE);
+    List<CoOpsSession> openSessions = coOpsSessionController.listSessionsByHtmlMaterialAndClosed(file, Boolean.FALSE);
     Map<String, String> properties = new HashMap<>();
     
     List<HtmlMaterialProperty> fileProperties = htmlMaterialPropertyDAO.listByHtmlMaterial(file);
@@ -263,9 +287,39 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
     Map<String, Object> extensions = new HashMap<>();
     String sessionId = UUID.randomUUID().toString();
     
-    CoOpsSession coOpsSession = coOpsSessionDAO.create(file, sessionId, CoOpsSessionType.REST, currentRevision, algorithm.getName(), Boolean.FALSE, new Date());
+    CoOpsSession coOpsSession = coOpsSessionController.createSession(file, sessionId, currentRevision, algorithm.getName());
+    
+    addSessionEventsExtension(file, extensions);
+    addWebSocketExtension(file, extensions, coOpsSession);
 
     return new Join(coOpsSession.getSessionId(), coOpsSession.getAlgorithm(), coOpsSession.getJoinRevision(), data, file.getContentType(), properties, extensions);
+  }
+  
+  private void addWebSocketExtension(HtmlMaterial htmlMaterial, Map<String, Object> extensions, CoOpsSession coOpsSession) {
+    String wsUrl = String.format("ws://%s:%s%s/ws/coops/%d/%s", 
+      httpRequest.getServerName(), 
+      httpRequest.getServerPort(), 
+      httpRequest.getContextPath(), 
+      htmlMaterial.getId(), 
+      coOpsSession.getSessionId());
+    
+    String wssUrl = String.format("wss://%s:%s%s/ws/coops/%d/%s", 
+        httpRequest.getServerName(), 
+        httpRequest.getServerPort(), 
+        httpRequest.getContextPath(), 
+        htmlMaterial.getId(), 
+        coOpsSession.getSessionId());
+    
+    Map<String, Object> webSocketExtension = new HashMap<>();
+    webSocketExtension.put("ws", wsUrl);
+    webSocketExtension.put("wss", wssUrl);
+    
+    extensions.put("webSocket", webSocketExtension);
+  }
+
+  private void addSessionEventsExtension(HtmlMaterial htmlMaterial, Map<String, Object> extensions) {
+    List<CoOpsSession> openSessions = coOpsSessionController.listSessionsByHtmlMaterialAndClosed(htmlMaterial, Boolean.FALSE);
+    extensions.put("sessionEvents", coOpsSessionEventsController.createSessionEvents(openSessions, "OPEN"));
   }
   
   private CoOpsDiffAlgorithm findAlgorithm(String algorithmName) {
