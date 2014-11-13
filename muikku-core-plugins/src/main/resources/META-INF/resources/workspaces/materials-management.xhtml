@@ -50,8 +50,14 @@
   </ui:define>
 
   <ui:define name="workspace.reading.content">
-    <ui:repeat var="node" value="#{workspaceMaterialsTOCBackingBean.getAllMaterialNodes(workspaceMaterialsManagementBackingBean.getRootFolder())}">
+    <ui:repeat var="node" value="#{workspaceMaterialsTOCBackingBean.getAllMaterialNodes(workspaceMaterialsManagementBackingBean.getRootFolder())}" varStatus="vs">
+      <a href="javascript:void(null)" data-index="#{vs.index}">ADD MATERIAL</a>      
+
       <section id="page-#{node.materialId}" data-material-id="#{node.materialId}" data-material-type="#{node.materialType}" data-material-title="#{node.materialTitle}" class="workspace-material-reading-view-page"/>
+
+      <ui:fragment rendered="#{vs.last}">
+        <a href="javascript:void(null)" data-index="#{vs.index + 1}">ADD MATERIAL</a>      
+      </ui:fragment>
     </ui:repeat>
   </ui:define>
   
