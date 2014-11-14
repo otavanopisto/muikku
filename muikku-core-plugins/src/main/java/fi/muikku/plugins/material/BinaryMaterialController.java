@@ -29,7 +29,7 @@ public class BinaryMaterialController {
     return material;
 	}
 	
-	public BinaryMaterial finBinaryMaterialById(Long id) {
+	public BinaryMaterial findBinaryMaterialById(Long id) {
 		return binaryMaterialDAO.findById(id);
 	}
 
