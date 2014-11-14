@@ -27,6 +27,11 @@ public class WorkspaceMaterialsTOCBackingBean {
   public List<MaterialNode> getAllMaterialNodes(WorkspaceNode rootFolder) {
     List<MaterialNode> materialNodes = new ArrayList<MaterialNode>();
     List<WorkspaceNode> nodes = workspaceMaterialController.listWorkspaceNodesByParent(rootFolder);
+    while (nodes.size() > 3) {
+      nodes.remove(nodes.size() - 1);
+    }
+    
+    
     for (WorkspaceNode node : nodes) {
       appendMaterialNode(node, materialNodes);
     }
