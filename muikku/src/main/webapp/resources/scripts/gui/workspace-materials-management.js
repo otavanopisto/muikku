@@ -25,8 +25,7 @@
   function editPage(materialType, materialId) {
     var editorName = 'workspaceMaterialEditor' + (materialType.substring(0, 1).toUpperCase() + materialType.substring(1));
     var pageElement = $('#page-' + materialId);
-    
-    var pageSection = $(pageElement).parent(".workspace-materials-management-view-page");
+    var pageSection = $(pageElement).closest(".workspace-materials-management-view-page");
     
     pageSection.addClass("page-edit-mode");
     
@@ -319,8 +318,8 @@
   });
   
   $(document).on('click', '.edit-page', function (event, data) {
-    var materialId = $(node).data('material-id');
-    var materialType = $(node).data('material-type');
+    var materialId = $(this).data('material-id');
+    var materialType = $(this).data('material-type');
     editPage(materialType, materialId);
   });
   
