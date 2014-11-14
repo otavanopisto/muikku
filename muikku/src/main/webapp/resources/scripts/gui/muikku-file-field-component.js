@@ -7,14 +7,14 @@
       this._multiple = this.element.attr("multiple") == 'multiple';
       this._fileIndex = 0;
       
-      var uploaderContainer = $('<div>')
+      this._uploaderContainer = $('<div>')
         .addClass('muikku-file-input-field-file-uploader-container')
         .insertAfter(this.element);
       
       this._uploader = $('<input>').attr({
         'type' : 'file',
         'name' : 'file'
-      }).appendTo(uploaderContainer).fileupload({
+      }).appendTo(this._uploaderContainer).fileupload({
         url : CONTEXTPATH + '/tempFileUploadServlet',
         autoUpload : true,
         add : $.proxy(this._onFileUploadAdd, this),
@@ -23,7 +23,9 @@
         progress : $.proxy(this._onFileUploadProgress, this)
       });
       
-      $('<span>').html(getLocaleText('plugin.workspace.fileField.fieldHint')).appendTo(uploaderContainer);
+      $('<span>')
+        .html(getLocaleText('plugin.workspace.fileField.fieldHint'))
+        .appendTo(this._uploaderContainer);
       
       this._fileCount = $('<input>').attr({
         'type' : 'hidden',
@@ -56,7 +58,7 @@
     },
     
     files: function () {
-      return $.map(this.element.parent().find('.muikku-file-input-field-file'), $.proxy(function (fileElement) {
+      return $.map(this._uploaderContainer.find('.muikku-file-input-field-file'), $.proxy(function (fileElement) {
         var fileIndex = $(fileElement).data('file-index');
         var fieldPrefix = this._fieldName + '.' + fileIndex;
         
@@ -69,7 +71,7 @@
     },
     
     _findFileElementByIndex: function (index) {
-      return this.element.parent().find('.muikku-file-input-field-file[data-file-index="' + index + '"]');
+      return this._uploaderContainer.find('.muikku-file-input-field-file[data-file-index="' + index + '"]');
     },
     
     _createFileElement: function (index) {
@@ -102,14 +104,14 @@
           .click($.proxy(this._onFileRestoreClick, this))
           .addClass('muikku-file-input-field-file-restore')
         )
-        .appendTo(this.element.parent());
+        .appendTo(this._uploaderContainer);
     },
     
     _updateFileMeta: function (fileIndex, fileId, fileName, contentType) {
       var fileElement = this._findFileElementByIndex(fileIndex);
       var fieldPrefix = this._fieldName + '.' + fileIndex;
       
-      var fileIdElement = this.element.parent().find('input[name="' + fieldPrefix + '-file-id"]');
+      var fileIdElement = this._uploaderContainer.find('input[name="' + fieldPrefix + '-file-id"]');
       if (fileIdElement.length == 0) {
         $('<input>').attr({
           type : 'hidden',
