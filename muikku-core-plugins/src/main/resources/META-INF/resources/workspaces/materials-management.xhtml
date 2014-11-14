@@ -67,13 +67,13 @@
 
   <ui:define name="workspace.materials.management.content">
     <ui:repeat var="node" value="#{workspaceMaterialsTOCBackingBean.getDescendants(workspaceMaterialsManagementBackingBean.getRootFolder())}" varStatus="vs">
-      <div class="workspace-materials-management-addpage"><span class="workspace-materials-management-line-separator"></span><a class="workspaces-materials-management-add-page icon-add" href="javascript:void(null)" data-index="#{vs.index}"><span>Add new page</span></a></div>      
+      <div class="workspace-materials-management-addpage"><span class="workspace-materials-management-line-separator"></span><a class="workspaces-materials-management-add-page icon-add" href="javascript:void(null)"><span>Add new page</span></a></div>      
       <div class="workspaces-materials-management-insert-file">
         <input type="file"/>  
       </div>
       <section id="page-#{node.materialId}" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-parent-id="#{node.parentId}" data-material-type="#{node.materialType}" data-material-title="#{node.materialTitle}" class="workspace-materials-management-view-page"/>
       <ui:fragment rendered="#{vs.last}">
-        <div class="workspace-materials-management-addpage"><span class="workspace-materials-management-line-separator"></span><a class="workspaces-materials-management-add-page icon-add" href="javascript:void(null)" data-index="#{vs.index + 1}"><span>Add new page</span></a></div>
+        <div class="workspace-materials-management-addpage"><span class="workspace-materials-management-line-separator"></span><a class="workspaces-materials-management-add-page icon-add" href="javascript:void(null)"><span>Add new page</span></a></div>
         <div class="workspaces-materials-management-insert-file">
           <input type="file"/>  
         </div>
