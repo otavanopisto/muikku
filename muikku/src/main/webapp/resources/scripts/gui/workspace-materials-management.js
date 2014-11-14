@@ -313,30 +313,31 @@
 
     }
     
-    $(".muikku-file-input-field").muikkuFileField() 
-      .on("uploadDone", function (event, data) {
-        $(this).muikkuFileField('hide');
-        
-        renderDustTemplate('workspace/materials-management-upload-select.dust', { fileName: data.name }, $.proxy(function (text) {
-          var selectPane = $(text);
-          $(this).after(selectPane);
+    $('.workspaces-materials-management-insert-file').each(function(index, element) {
+      // TODO: Fix parentId and nextSiblingId
+      $(element)
+        .workspaceMaterialUpload({
+          workspaceEntityId: $('.workspaceEntityId').val(),
+          parentId: 233,
+          nextSiblingId: 1671
+        })
+        .on('fileUploaded', function (event, data) {
+          var newPage = $('<section>')
+            .addClass('workspace-materials-management-view-page')
+            .attr({
+              'id': 'page-' + data.materialId,
+              'data-material-title': data.title,
+              'data-parent-id': data.parentId,
+              'data-material-id': data.materialId,
+              'data-material-type': 'binary',
+              'data-workspace-material-id': data.workspaceMaterialId
+            });
+          $(element).after(newPage);
+          $(element).workspaceMaterialUpload('reset');
           
-          selectPane.find('.materials-management-upload-select-upload').click(function () {
-            alert("Sorry, this functionality is not implemented yey");  
-          });
-          
-          selectPane.find('.materials-management-upload-select-convert').click(function () {
-            alert("Sure, when someone tells me how to do that");  
-          });
-          
-          selectPane.find('.materials-management-upload-select-discard').click(function () {
-            alert("I'm sorry, Dave. I'm afraid I can't do that.");  
-          });
-          
-          
-        }, this));
-      });
-    
+          loadPageNode(newPage);
+        });
+    });
   });
   
   $(document).on('click', '.edit-page', function (event, data) {
