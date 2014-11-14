@@ -160,10 +160,19 @@ body.workspace-materials-management {
                 font-size:1.1em;
                 color:#344263;
                 padding:2px 8px;
+                
+                &.subtitle-hidden {
+                  opacity:0.4;
+                }
+                
               }
               
               .workspace-materials-toc-item {
                 font-weight:300;
+                
+                &.item-hidden {
+                  opacity:0.4;
+                }
                 
                 a {
                   text-decoration:none;
@@ -274,6 +283,10 @@ body.workspace-materials-management {
       -o-transition: box-shadow 0.5s ease-in-out;
       -ms-transition: box-shadow 0.5s ease-in-out;
       transition: box-shadow 0.5s ease-in-out;
+      
+      &.page-hidden {
+        opacity:0.4;
+      }
       
       &:hover {
         box-shadow:0 0 0 1px rgba(148,183,208,0.95);
