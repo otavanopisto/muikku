@@ -319,12 +319,15 @@
     }
     
     $('.workspaces-materials-management-insert-file').each(function(index, element) {
-      // TODO: Fix parentId and nextSiblingId
+      var nextMaterial = $(this).next('.workspace-materials-management-view-page');
+      var parentId = $(nextMaterial).data('parent-id');
+      var nextSiblingId = $(nextMaterial).data('workspace-material-id');
+      
       $(element)
         .workspaceMaterialUpload({
           workspaceEntityId: $('.workspaceEntityId').val(),
-          parentId: 233,
-          nextSiblingId: 1671
+          parentId: parentId,
+          nextSiblingId: nextSiblingId
         })
         .on('fileUploaded', function (event, data) {
           var newPage = $('<section>')
