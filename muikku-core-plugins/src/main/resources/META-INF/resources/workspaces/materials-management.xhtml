@@ -16,8 +16,6 @@
     <h:outputScript name="scripts/coopsck/coopsck.js" />
     <h:outputScript name="scripts/diffxml-js/diffxml-js.js" />
     <h:outputScript name="scripts/gui/workspace-material-editor-html.js"/>
-
-<!--     <h:outputScript name="scripts/gui/workspace.js"/>  -->
     <h:outputScript name="scripts/gui/workspace-materials-management.js" />
   </ui:define>
   
@@ -51,11 +49,14 @@
   <ui:define name="workspace.materials.management.content">
     <ui:repeat var="node" value="#{workspaceMaterialsTOCBackingBean.getAllMaterialNodes(workspaceMaterialsManagementBackingBean.getRootFolder())}" varStatus="vs">
       <div class="workspace-materials-management-addpage"><span class="workspace-materials-management-line-separator"></span><a class="workspaces-materials-management-add-page icon-add" href="javascript:void(null)" data-index="#{vs.index}"><span>Add new page</span></a></div>      
-      <section id="page-#{node.materialId}" data-material-id="#{node.materialId}" data-material-type="#{node.materialType}" data-material-title="#{node.materialTitle}" class="workspace-materials-management-view-page"/>
+      <section id="page-#{node.materialId}" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-parent-id="#{node.parentId}" data-material-type="#{node.materialType}" data-material-title="#{node.materialTitle}" class="workspace-materials-management-view-page"/>
       <ui:fragment rendered="#{vs.last}">
+        <div class="workspace-materials-management-addpage"><span class="workspace-materials-management-line-separator"></span><a class="workspaces-materials-management-add-page icon-add" href="javascript:void(null)" data-index="#{vs.index + 1}"><span>Add new page</span></a></div>      
         <div class="workspace-materials-management-addpage"><span class="workspace-materials-management-line-separator"></span><a class="workspaces-materials-management-add-page icon-add" href="javascript:void(null)" data-index="#{vs.index + 1}"><span>Add new page</span></a></div>      
       </ui:fragment>
     </ui:repeat>
+    
+    <input class="workspaceEntityId" type="hidden" value="#{workspaceMaterialsManagementBackingBean.workspaceEntityId}"/>
   </ui:define>
   
   <ui:define name="workspaces.materials.management.additional.dock">

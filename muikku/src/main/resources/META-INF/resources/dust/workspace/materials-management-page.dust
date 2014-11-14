@@ -1,5 +1,5 @@
-<a href="javascript:void(null)" class="edit-page icon-edit" data-material-id="{id}" data-material-type="{type}"><span>Edit</span></a>
-<a href="javascript:void(null)" class="delete-page icon-delete" data-material-id="{id}" data-material-type="{type}"><span>Delete</span></a>
+<a href="javascript:void(null)" class="edit-page icon-edit" data-material-id="{id}" data-material-type="{type}">Edit</a>
+<a href="javascript:void(null)" class="delete-page icon-delete" data-material-id="{id}" data-material-type="{type}">Delete</a>
 <div class="page-content">
   {>"workspace/materials-management-page-{type}.dust"/}
 </div>
