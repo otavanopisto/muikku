@@ -235,6 +235,35 @@ public class WorkspaceMaterialController {
     }
     return workspaceMaterial;
   }
+  
+  /**
+   * Hides the workspace node with the given identifier.
+   * 
+   * @param workspaceNodeId Workspace node identifier
+   */
+  public void hide(Long workspaceNodeId) {
+    setHidden(workspaceNodeId, Boolean.TRUE);
+  }
+
+  /**
+   * Shows the workspace node with the given identifier.
+   * 
+   * @param workspaceNodeId Workspace node identifier
+   */
+  public void show(Long workspaceNodeId) {
+    setHidden(workspaceNodeId, Boolean.FALSE);
+  }
+  
+  /**
+   * Hides or shows the workspace node with the given identifier.
+   * 
+   * @param workspaceNodeId Workspace node identifier
+   * @param hidden <code>Boolean.TRUE</code> to hide the workspace node, <code>Boolean.FALSE</code> to show it
+   */
+  public void setHidden(Long workspaceNodeId, Boolean hidden) {
+    WorkspaceNode workspaceNode = workspaceNodeDAO.findById(workspaceNodeId);
+    workspaceNodeDAO.updateHidden(workspaceNode, hidden);
+  }
 
   /* Material */
 
