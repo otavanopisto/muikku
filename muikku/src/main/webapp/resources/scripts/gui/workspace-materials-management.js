@@ -108,7 +108,7 @@
       var contentMinOffset;
       var contentOffset;
       var windowMinWidth;
-      
+
       if (thinTocWrapper.length > 0) {
         thinTocWrapper
         .hide()
@@ -119,6 +119,11 @@
       }
       
       if (wideTocWrapper.length > 0) {
+        contentPageContainer.css({
+          paddingLeft: wideTocWrapper.width() + 10,
+          paddingRight: "60px"
+        });
+        
         wideTocWrapper
         .show()
         .css({
