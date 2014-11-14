@@ -32,10 +32,6 @@ public class WorkspaceMaterialsTOCBackingBean {
       appendMaterialNode(node, materialNodes);
     }
 
-    while (materialNodes.size() > 3) {
-      materialNodes.remove(materialNodes.size() - 1);
-    }
-
     return materialNodes;
   }
 
@@ -52,10 +48,6 @@ public class WorkspaceMaterialsTOCBackingBean {
     List<MaterialNode> materialNodes = new ArrayList<MaterialNode>();
     for (WorkspaceNode node : nodes) {
       materialNodes.add(convertWorkspaceNode(node));
-    }
-
-    while (materialNodes.size() > 3) {
-      materialNodes.remove(materialNodes.size() - 1);
     }
 
     return materialNodes;
