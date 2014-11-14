@@ -199,46 +199,64 @@ body.workspace-materials-management {
     margin:0 auto;
     
     .workspace-materials-management-addpage {
-        text-align:center;
+      text-align:center;
+      position:relative;
+      margin:0 0 10px 0;
+      
+      span.workspace-materials-management-line-separator {
+        display:block;
+        position:absolute;
+        height:1px;
+        top:13px;
+        left:0;
+        right:0;
+        background:#7391a7;
+      }
+      
+      a.workspaces-materials-management-add-page {
+        color:#a8c2d4;
+        text-transform:uppercase;
+        display:inline-block;
+        background:#6b899e;
+        padding:5px 10px;
         position:relative;
+        transition: color 0.3s ease-in-out; 
         
-        span.workspace-materials-management-line-separator {
-          display:block;
-          position:absolute;
-          height:1px;
-          top:13px;
-          left:0;
-          right:0;
-          background:#7a99af;
-          opacity:0.5;
+        &.icon-add:before {
+          font-size:1.25em;
+          float:left;
         }
         
-        a.workspaces-materials-management-add-page {
-          color:#a8c2d4;
-          text-transform:uppercase;
-          display:inline-block;
-          background:#6b899e;
-          padding:5px 10px;
-          position:relative;
-          @include rounded(2px);
-          
-          &.icon-add:before {
-            font-size:1.25em;
-            float:left;
-          }
-          
-          &:hover {
-            color:#fff;
-          }
-          
-          span {
-            float:left;
-            padding:2px 4px;
-          }
-          
+        &:hover {
+          color:#fff;
+        }
+        
+        span {
+          float:left;
+          padding:2px 4px;
         }
         
       }
+      
+    }
+  
+    .muikku-file-input-field-file-uploader-container {
+      border: 1px solid #7391a7;
+      position: relative;
+      padding: 10px;
+      color:#a8c2d4;
+      transition:color,border 0.3s,0.6s ease-in-out,ease-in-out;
+      
+      span {
+        text-transform:uppercase;
+      }
+      
+      &:hover {
+        color:#fff;
+        border: 1px solid #94b7d0;
+      }
+      
+    }
   
     .workspace-materials-management-view-page {
       position:relative;
@@ -251,18 +269,18 @@ body.workspace-materials-management {
       font-size:1.3em;
       font-weight:300;
       word-wrap: break-word;
-      -webkit-transition: box-shadow 0.8s ease-in-out;
-      -moz-transition: box-shadow 0.8s ease-in-out;
-      -o-transition: box-shadow 0.8s ease-in-out;
-      -ms-transition: box-shadow 0.8s ease-in-out;
-      transition: box-shadow 0.8s ease-in-out;
+      -webkit-transition: box-shadow 0.5s ease-in-out;
+      -moz-transition: box-shadow 0.5s ease-in-out;
+      -o-transition: box-shadow 0.5s ease-in-out;
+      -ms-transition: box-shadow 0.5s ease-in-out;
+      transition: box-shadow 0.5s ease-in-out;
       
       &:hover {
-        box-shadow:0 0 0px 10px rgba(255,255,255,0.3);
+        box-shadow:0 0 0 1px rgba(148,183,208,0.95);
       }
       
       &.page-edit-mode {
-        box-shadow:0 0 0px 15px rgba(118,212,140,0.9);
+        box-shadow:0 0 0 15px rgba(148,183,208,0.95);
       }
       
       .workspace-materials-management-view-page-controls {
@@ -272,31 +290,32 @@ body.workspace-materials-management {
         right:0;
         height:41px;
         background:#7996aa;
-      }
       
-      a.edit-page, 
-      a.delete-page, 
-      a.hide-page {
-        color:#fff;
-        font-size:16pt;
-        display:inline-block;
-        margin:5px 10px;
-        position:relative;
-        
-        &:hover {
-          @include iconShadow(rgba(255,255,190,0.8));
-        }
-        
-        &:before {
-          padding:5px;
+        a.edit-page, 
+        a.delete-page, 
+        a.hide-page {
+          color:#fff;
+          font-size:16pt;
           display:inline-block;
+          margin:5px 10px;
+          position:relative;
+          
+          &:hover {
+            @include iconShadow(rgba(255,255,190,0.8));
+          }
+          
+          &:before {
+            padding:5px;
+            display:inline-block;
+          }
+          
+          span {
+            display:none;
+          }
         }
         
-        span {
-          display:none;
-        }
       }
-      
+
       h1,
       h2,
       h3 {

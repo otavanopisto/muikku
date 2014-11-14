@@ -54,7 +54,8 @@
           <div class="workspace-materials-toc-content-inner">
             <div class="workspace-materials-toc-content-scrolling">
               <ui:include src="/workspaces/templates/workspace-materials-list.xhtml">
-                <ui:param name="nodes" value="#{workspaceMaterialsTOCBackingBean.getMaterialNodes(workspaceMaterialsManagementBackingBean.getRootFolder())}"/>
+                <ui:param name="nodes" value="#{workspaceMaterialsTOCBackingBean.getChildren(workspaceMaterialsManagementBackingBean.getRootFolder())}"/>
+                <ui:param name="includeHidden" value="true"/>
               </ui:include>
               <div class="spacer"></div>
             </div>
@@ -65,7 +66,7 @@
   </ui:define>
 
   <ui:define name="workspace.materials.management.content">
-    <ui:repeat var="node" value="#{workspaceMaterialsTOCBackingBean.getAllMaterialNodes(workspaceMaterialsManagementBackingBean.getRootFolder())}" varStatus="vs">
+    <ui:repeat var="node" value="#{workspaceMaterialsTOCBackingBean.getDescendants(workspaceMaterialsManagementBackingBean.getRootFolder())}" varStatus="vs">
       <div class="workspace-materials-management-addpage"><span class="workspace-materials-management-line-separator"></span><a class="workspaces-materials-management-add-page icon-add" href="javascript:void(null)" data-index="#{vs.index}"><span>Add new page</span></a></div>      
       <div class="workspaces-materials-management-insert-file">
         <input type="file"/>  

@@ -11,14 +11,14 @@
     <c:choose>
       <c:when test="#{node.materialType eq 'folder'}">
         <ul class="workspace-materials-toc-section">
-          <li class="workspace-materials-toc-subtitle">#{node.materialTitle}</li>
+          <li class="#{node.materialHidden ? 'workspace-materials-toc-subtitle-hidden' : 'workspace-materials-toc-subtitle'}">#{node.materialTitle}</li>
           <ui:include src="/workspaces/templates/workspace-materials-list.xhtml">
-            <ui:param name="nodes" value="#{workspaceMaterialsTOCBackingBean.getMaterialNodes(node)}" />
+            <ui:param name="nodes" value="#{workspaceMaterialsTOCBackingBean.getChildren(node, includeHidden)}" />
           </ui:include>
         </ul>
       </c:when>
       <c:otherwise>
-        <li class="workspace-materials-toc-item">
+        <li class="#{node.materialHidden ? 'workspace-materials-toc-item-hidden' : 'workspace-materials-toc-item'}">
           <h:outputLink value="#page-#{node.materialId}">#{node.materialTitle}</h:outputLink>
         </li>
       </c:otherwise>
