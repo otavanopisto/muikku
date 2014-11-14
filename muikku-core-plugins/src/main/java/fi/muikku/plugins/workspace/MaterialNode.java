@@ -50,6 +50,14 @@ public class MaterialNode {
     this.materialTitle = materialTitle;
   }
   
+  public Boolean getMaterialHidden() {
+    return materialHidden;
+  }
+
+  public void setMaterialHidden(Boolean materialHidden) {
+    this.materialHidden = materialHidden;
+  }
+
   // The id of the WorkspaceNode this material represents
   private Long workspaceMaterialId;
 
@@ -67,5 +75,8 @@ public class MaterialNode {
   
   // Relative path of the WorkspaceNode
   private String materialPath;
+  
+  // Is the material hidden or not?
+  private Boolean materialHidden;
 
 }

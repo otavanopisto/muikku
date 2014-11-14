@@ -69,6 +69,14 @@
         };
       }, this));
     },
+
+    hide: function () {
+      this._uploaderContainer.hide();
+    },
+    
+    show: function () {
+      this._uploaderContainer.show();
+    },
     
     _findFileElementByIndex: function (index) {
       return this._uploaderContainer.find('.muikku-file-input-field-file[data-file-index="' + index + '"]');
@@ -156,6 +164,8 @@
         data.context = this._createFileElement(this._fileIndex);
       }
       
+      $(this.element).trigger('uploadStart');
+      
       data.submit();
     },
     
@@ -183,6 +193,12 @@
       if (this._multiple) {
         this._fileIndex++;
       }
+      
+      $(this.element).trigger('uploadDone', {
+        id: fileId,
+        name: fileName,
+        contentType: contentType
+      });
     },
     
     _onFileUploadAlways: function () {
@@ -208,7 +224,4 @@
     }
   });
 
-  $(document).ready(function() {
-    $(".muikku-file-input-field").muikkuFileField();
-  });
 }).call(this);

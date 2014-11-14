@@ -67,6 +67,14 @@ public class WorkspaceNode {
     this.orderNumber = orderNumber;
   }
 
+  public Boolean getHidden() {
+    return hidden;
+  }
+
+  public void setHidden(Boolean hidden) {
+    this.hidden = hidden;
+  }
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -79,5 +87,14 @@ public class WorkspaceNode {
   @ManyToOne
   private WorkspaceNode parent;
   
+  @NotEmpty
+  @NotNull
+  @Column (nullable = false)
   private Integer orderNumber;
+  
+  @NotEmpty
+  @NotNull
+  @Column (nullable = false)
+  private Boolean hidden;
+
 }
