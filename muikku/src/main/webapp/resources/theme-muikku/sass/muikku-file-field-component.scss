@@ -1,0 +1,54 @@
+.muikku-file-input-field-file {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  position: relative;
+}
+
+.muikku-file-input-field-file-label {
+  font-weight: bold;
+  position: absolute;
+  margin-top: -20px;
+  margin-left: 10px;
+}
+
+.muikku-file-input-field-file-remove, .muikku-file-input-field-file-restore {
+  display: block;
+  text-decoration: none;
+  position: absolute; 
+  margin-top: -20px;
+  right: 10px;
+}
+
+.muikku-file-input-field-file-remove {
+  color: #f00;
+}
+
+.muikku-file-input-field-file-restore {
+  color: #00f;
+}
+
+.muikku-file-input-field-file-uploader-container {
+  border: 1px dotted #000;
+  position: relative;
+  padding: 20px;
+}
+
+.muikku-file-input-field-file-uploader-container input[type="file"] {
+  width: 100%;
+  opacity: 0;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  cursor: pointer;
+}
+
+.muikku-file-input-field-file-uploader-container span {
+  text-align: center;  
+  display: block;
+}
+
+.muikku-file-input-field-file-removed .muikku-file-input-field-file-label {
+  text-decoration:line-through;
+}
