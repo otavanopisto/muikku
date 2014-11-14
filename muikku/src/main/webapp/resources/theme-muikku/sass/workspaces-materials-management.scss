@@ -241,12 +241,13 @@ body.workspace-materials-management {
       }
   
     .workspace-materials-management-view-page {
+      position:relative;
       max-width:700px;
       width:auto;
       background:#fff;
       margin:30px auto;
       box-shadow:$w-page-sc;
-      padding:10px 30px;
+      padding:50px 30px 10px 30px;
       font-size:1.3em;
       font-weight:300;
       word-wrap: break-word;
@@ -256,8 +257,44 @@ body.workspace-materials-management {
       -ms-transition: box-shadow 0.8s ease-in-out;
       transition: box-shadow 0.8s ease-in-out;
       
+      &:hover {
+        box-shadow:0 0 0px 10px rgba(255,255,255,0.3);
+      }
+      
       &.page-edit-mode {
-        box-shadow:0 0 0px 15px rgba(112,164,210,0.9);
+        box-shadow:0 0 0px 15px rgba(118,212,140,0.9);
+      }
+      
+      .workspace-materials-management-view-page-controls {
+        position:absolute;
+        top:0;
+        left:0;
+        right:0;
+        height:41px;
+        background:#7996aa;
+      }
+      
+      a.edit-page, 
+      a.delete-page, 
+      a.hide-page {
+        color:#fff;
+        font-size:16pt;
+        display:inline-block;
+        margin:5px 10px;
+        position:relative;
+        
+        &:hover {
+          @include iconShadow(rgba(255,255,190,0.8));
+        }
+        
+        &:before {
+          padding:5px;
+          display:inline-block;
+        }
+        
+        span {
+          display:none;
+        }
       }
       
       h1,
