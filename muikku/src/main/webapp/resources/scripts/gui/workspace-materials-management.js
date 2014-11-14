@@ -313,7 +313,29 @@
 
     }
     
-    //
+    $(".muikku-file-input-field").muikkuFileField() 
+      .on("uploadDone", function (event, data) {
+        $(this).muikkuFileField('hide');
+        
+        renderDustTemplate('workspace/materials-management-upload-select.dust', { fileName: data.name }, $.proxy(function (text) {
+          var selectPane = $(text);
+          $(this).after(selectPane);
+          
+          selectPane.find('.materials-management-upload-select-upload').click(function () {
+            alert("Sorry, this functionality is not implemented yey");  
+          });
+          
+          selectPane.find('.materials-management-upload-select-convert').click(function () {
+            alert("Sure, when someone tells me how to do that");  
+          });
+          
+          selectPane.find('.materials-management-upload-select-discard').click(function () {
+            alert("I'm sorry, Dave. I'm afraid I can't do that.");  
+          });
+          
+          
+        }, this));
+      });
     
   });
   

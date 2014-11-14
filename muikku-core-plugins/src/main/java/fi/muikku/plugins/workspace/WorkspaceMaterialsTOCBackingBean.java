@@ -62,11 +62,13 @@ public class WorkspaceMaterialsTOCBackingBean {
   public List<MaterialNode> getDescendants(WorkspaceNode rootFolder, Boolean includeHidden) {
     List<MaterialNode> materialNodes = new ArrayList<MaterialNode>();
     List<WorkspaceNode> nodes = workspaceMaterialController.listWorkspaceNodesByParent(rootFolder);
+    
     for (WorkspaceNode node : nodes) {
       if (includeHidden || !node.getHidden()) {
         appendMaterialNode(node, materialNodes, includeHidden);
       }
     }
+
     return materialNodes;
   }
 
@@ -113,6 +115,7 @@ public class WorkspaceMaterialsTOCBackingBean {
         materialNodes.add(convertWorkspaceNode(node));
       }
     }
+
     return materialNodes;
   }
 
