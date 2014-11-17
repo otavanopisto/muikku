@@ -9,16 +9,19 @@
   template="/WEB-INF/templates/mainfunction.xhtml">
 
 
-<!--  TODO: templating sucks , repeats itself -->
 
   <ui:define name="viewCss">
    
    </ui:define> 
-   
-    <ui:define name="hiddenFields">
+ 
+
+    <ui:define name="hiddenField">
+  
+    <!--  Cannot get it to w0rk -->
+    
       <input type="hidden" name="userId" value="#{muikkuSession.user.id}"/>
     </ui:define>
-    
+        
     <ui:define name="viewScripts">
       <h:outputScript name="scripts/gui/communicator.js" />
     </ui:define>
@@ -31,6 +34,14 @@
 
 
 
+  <ui:define name="content.tools.center">
+    <div class="mf-search">
+
+      <div class="mf-search-field">
+        <span id="testResult"></span><input type="text" class="search" />
+      </div>
+    </div>  
+  </ui:define>
 
 
 </ui:composition>

@@ -44,7 +44,17 @@ $(document).ready(function(){
 	        	});
 
 
-
+        var msgC = $('mf-content-main');
+        
+        RESTful.doGet(CONTEXTPATH + "/rest/communicator/{userId}/items", {
+          parameters: {
+            'userId': this._userId
+          }
+        }).success(function (data, textStatus, jqXHR) {
+          renderDustTemplate('communicator/communicator_items.dust', data, function (text) {
+        	  msgC.append($.parseHTML(text));
+          });
+        });
       
 
 
