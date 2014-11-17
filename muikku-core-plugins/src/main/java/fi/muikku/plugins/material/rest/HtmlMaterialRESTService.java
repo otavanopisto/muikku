@@ -75,16 +75,4 @@ public class HtmlMaterialRESTService extends PluginRESTService {
       }
     }
   }
-  
-  @DELETE
-  @Path("/{id}")
-  public Response deleteMaterial(@PathParam("id") Long id) {
-    HtmlMaterial htmlMaterial = htmlMaterialController.findHtmlMaterialById(id);
-    if (htmlMaterial != null) {
-      htmlMaterialController.deleteHtmlMaterial(htmlMaterial);
-      return Response.noContent().build();
-    } else {
-      return Response.status(Status.NOT_FOUND).build();
-    }
-  }
 }
