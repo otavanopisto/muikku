@@ -39,4 +39,8 @@ public class BinaryMaterialController {
 		return material;
 	}
 	
+	public void deleteBinaryMaterial(BinaryMaterial binaryMaterial) {
+	  binaryMaterialDAO.delete(binaryMaterial);
+	}
+	
 }
