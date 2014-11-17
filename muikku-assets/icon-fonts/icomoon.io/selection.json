@@ -326,7 +326,7 @@
 				"order": 66,
 				"prevSize": 32,
 				"code": 58891,
-				"name": "visible"
+				"name": "show"
 			},
 			"setIdx": 4,
 			"iconIdx": 198
@@ -353,7 +353,7 @@
 				"order": 65,
 				"prevSize": 32,
 				"code": 58938,
-				"name": "hidden"
+				"name": "hide"
 			},
 			"setIdx": 4,
 			"iconIdx": 199

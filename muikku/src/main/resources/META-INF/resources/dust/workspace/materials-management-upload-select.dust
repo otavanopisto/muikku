@@ -1,5 +1,5 @@
-<div>
-  <p>File '{fileName}' has been uploaded, how do you wish to apply the file into the workspace?</p>
+<div class="materials-management-file-upload-selection-container">
+  <p class="materials-management-generic-question-container">File '{fileName}' has been uploaded, how do you wish to apply the file into the workspace?</p>
   <div> 
     <a href="javascript:void(null)" class="materials-management-upload-select-upload">Insert the file "as is"</a>
   </div>

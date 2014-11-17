@@ -94,6 +94,14 @@
     }
   }
   
+  function deletePage(materialType, materialId) {
+    alert('TODO: Actually delete the page!');
+  }
+  
+  function hidePage(materialType, materialId) {
+    alert('TODO: Actually hide/show the page!');
+  }
+  
   $(document).ready(function() {
     // Workspace Material's page loading
     $('.workspace-materials-management-view-page').each(function(index, node) {
@@ -376,11 +384,37 @@
   $(document).on('click', '.edit-page', function (event, data) {
     var materialId = $(this).data('material-id');
     var materialType = $(this).data('material-type');
+    // TODO: Better way to toggle classes and observe hidden/visible states?
+    var page = $(this).closest('.workspace-materials-management-view-page');
+    if (page.hasClass('page-hidden')) {
+      page.removeClass('page-hidden');
+      page.find('.hide-page').removeClass('icon-show').addClass('icon-hide');
+    } 
+    
     editPage(materialType, materialId);
   });
   
   $(document).on('click', '.delete-page', function (event, data) {
-    alert('TODO: Actually delete page!');
+    var materialId = $(this).data('material-id');
+    var materialType = $(this).data('material-type');
+    
+    deletePage(materialType, materialId);
+  });
+  
+  $(document).on('click', '.hide-page', function (event, data) {
+    var materialId = $(this).data('material-id');
+    var materialType = $(this).data('material-type');
+    // TODO: Better way to toggle classes and observe hidden/visible states?
+    var page = $(this).closest('.workspace-materials-management-view-page');
+    if (page.hasClass('page-hidden')) {
+      page.removeClass('page-hidden');
+      $(this).removeClass('icon-show').addClass('icon-hide');
+    } else {
+      page.addClass('page-hidden');
+      $(this).removeClass('icon-hide').addClass('icon-show');
+    }
+    hidePage(materialType, materialId);
+    
   });
   
   $(document).on('click', '.workspaces-materials-management-add-page', function (event, data) {
