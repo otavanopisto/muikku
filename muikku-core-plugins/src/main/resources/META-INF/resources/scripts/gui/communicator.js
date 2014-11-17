@@ -43,9 +43,11 @@ $(document).ready(function(){
 	        		]
 	        	});
 
+	
+	/* Can't get the userId, so commented
 
         var msgC = $('mf-content-main');
-        
+        var uId = ;
         RESTful.doGet(CONTEXTPATH + "/rest/communicator/{userId}/items", {
           parameters: {
             'userId': this._userId
@@ -57,5 +59,5 @@ $(document).ready(function(){
         });
       
 
-
+*/
 });
