@@ -46,6 +46,7 @@
   }
   
   function loadPageNode(node) {
+    var workspaceMaterialId = $(node).data('workspace-material-id');
     var materialId = $(node).data('material-id');
     var materialType = $(node).data('material-type');
     
@@ -53,7 +54,12 @@
       var typeEndpoint = mApi().materials[materialType];
       if (typeEndpoint != null) {
         typeEndpoint.read(materialId).callback($.proxy(function (err, result) {
-          renderDustTemplate('workspace/materials-management-page.dust', { id: materialId, type: materialType, data: result }, $.proxy(function (text) {
+          renderDustTemplate('workspace/materials-management-page.dust',
+        		  { workspaceMaterialId: workspaceMaterialId,
+        	  		id: materialId,
+        	        type: materialType,
+        	        data: result },
+        	      $.proxy(function (text) {
             $(this).html(text);
           }, node));
         }, node));
@@ -94,8 +100,9 @@
     }
   }
   
-  function deletePage(materialType, materialId) {
-    alert('TODO: Actually delete the page!');
+  function deletePage(workspaceMaterialId) {
+    mApi().workspace.materials.del(workspaceMaterialId);
+    /* TODO: display outcome */
   }
   
   function hidePage(materialType, materialId) {
@@ -395,10 +402,9 @@
   });
   
   $(document).on('click', '.delete-page', function (event, data) {
-    var materialId = $(this).data('material-id');
-    var materialType = $(this).data('material-type');
+    var workspaceMaterialId = $(this).data('workspace-material-id');
     
-    deletePage(materialType, materialId);
+    deletePage(workspaceMaterialId);
   });
   
   $(document).on('click', '.hide-page', function (event, data) {
