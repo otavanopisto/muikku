@@ -211,7 +211,30 @@ body.workspace-materials-management {
     .workspace-materials-management-addpage {
       text-align:center;
       position:relative;
-      margin:0 0 10px 0;
+      margin:10px auto;
+      
+      /* Just added page that creates new section */
+      .workspace-materials-management-new-page {
+        padding:20px 30px 20px 30px;
+        margin:25px auto 30px auto;
+        box-shadow:0 0 0 5px rgba(137,212,142,0.95);
+        
+        a.workspace-materials-management-new-page-link {
+          color:#0099ff;
+          text-decoration:none;
+          text-transform:uppercase;
+          font-size:12pt;
+          transition: color 0.3s ease-in-out;
+          
+          &:hover {
+            color:#0e1d27;
+          }
+        }
+        
+        &:hover {
+          box-shadow:0 0 0 5px rgba(137,212,142,0.95);
+        }
+      }
       
       span.workspace-materials-management-line-separator {
         display:block;
@@ -250,24 +273,69 @@ body.workspace-materials-management {
       
     }
   
-    .muikku-file-input-field-file-uploader-container {
-      border: 1px solid #7391a7;
-      position: relative;
-      padding: 10px;
-      color:#a8c2d4;
-      transition:color,border 0.3s,0.6s ease-in-out,ease-in-out;
-      
-      span {
-        text-transform:uppercase;
+    /* File-upload field wrapper */
+    .workspaces-materials-management-insert-file {
+      margin:20px 0;
+    
+      /* Area where user inserts file by clicking it or dragging into it */
+      .muikku-file-input-field-file-uploader-container {
+        border: 1px solid #7391a7;
+        position:relative;
+        padding:10px;
+        color:#a8c2d4;
+        transition:color,border 0.3s,0.6s ease-in-out,ease-in-out;
+        
+        span {
+          text-transform:uppercase;
+        }
+        
+        &:hover {
+          color:#fff;
+          border: 1px solid #94b7d0;
+        }
+        
       }
       
-      &:hover {
-        color:#fff;
-        border: 1px solid #94b7d0;
+      /* File-upload selection container where user selects what to do with the file */
+      .materials-management-file-upload-selection-container {
+        position:relative;
+        max-width:700px;
+        width:auto;
+        background:#fff;
+        margin:25px auto 40px auto;
+        box-shadow:0 0 0 5px rgba(137,212,142,0.95);
+        padding:20px 30px;
+        font-weight:300;
+        word-wrap: break-word;
+        -webkit-transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
+        -moz-transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
+        -o-transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
+        -ms-transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
+        transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
+        
+        p.materials-management-generic-question-container {
+          margin:0 0 20px 0;
+        }
+        
+        /* Links inside file-upload selection container */
+        a[class*='materials-management-upload-select'] {
+          color:#0099ff;
+          text-decoration:none;
+          text-transform:uppercase;
+          transition: color 0.3s ease-in-out;
+          font-size:12pt;
+          display:inline-block;
+          margin:4px auto;
+          
+          &:hover {
+            color:#0e1d27;
+          }
+        }
+        
       }
-      
+    
     }
-  
+    
     .workspace-materials-management-view-page {
       position:relative;
       max-width:700px;
@@ -290,7 +358,7 @@ body.workspace-materials-management {
       }
       
       &:hover {
-        box-shadow:0 0 0 1px rgba(148,183,208,0.95);
+        box-shadow:0 0 0 5px rgba(148,183,208,0.95);
       }
       
       &.page-edit-mode {
