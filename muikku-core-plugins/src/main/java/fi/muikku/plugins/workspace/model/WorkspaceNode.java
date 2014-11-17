@@ -87,12 +87,10 @@ public class WorkspaceNode {
   @ManyToOne
   private WorkspaceNode parent;
   
-  @NotEmpty
   @NotNull
   @Column (nullable = false)
   private Integer orderNumber;
   
-  @NotEmpty
   @NotNull
   @Column (nullable = false)
   private Boolean hidden;

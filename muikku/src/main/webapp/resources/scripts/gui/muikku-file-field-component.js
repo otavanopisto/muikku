@@ -78,6 +78,10 @@
       this._uploaderContainer.show();
     },
     
+    reset: function () {
+      this._uploaderContainer.find('.muikku-file-input-field-file').remove();
+    },
+    
     _findFileElementByIndex: function (index) {
       return this._uploaderContainer.find('.muikku-file-input-field-file[data-file-index="' + index + '"]');
     },

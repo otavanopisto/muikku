@@ -1,4 +1,49 @@
 (function() {
+
+  function createAddPageLink() {
+    return $('<div>')
+      .addClass('workspace-materials-management-addpage')
+      .append($('<span>').addClass('workspace-materials-management-line-separator'))
+      .append($('<a>').addClass('workspaces-materials-management-add-page icon-add').attr('href', 'javascript:void(null)').append($('<span>').html('Add new page')));
+  }
+  
+  function createFileUploader() {
+    return $('<div>')
+      .addClass('workspaces-materials-management-insert-file')
+      .append($('<input>').attr('type', 'file'));
+  }
+  
+  function enableFileUploader(element, parentId, nextSiblingId) {
+    $(element)
+      .workspaceMaterialUpload({
+        workspaceEntityId: $('.workspaceEntityId').val(),
+        parentId: parentId,
+        nextSiblingId: nextSiblingId
+      })
+      .on('fileUploaded', function (event, data) {
+        var newPage = $('<section>')
+          .addClass('workspace-materials-management-view-page')
+          .attr({
+            'id': 'page-' + data.materialId,
+            'data-material-title': data.title,
+            'data-parent-id': data.parentId,
+            'data-material-id': data.materialId,
+            'data-material-type': 'binary',
+            'data-workspace-material-id': data.workspaceMaterialId
+          });
+        $(element).after(newPage);
+        $(element).workspaceMaterialUpload('reset');
+        
+        loadPageNode(newPage);
+        
+        var nextPage = $(newPage).next('.workspace-materials-management-view-page');
+        
+        var uploader = createFileUploader();
+        nextPage.before(createAddPageLink());
+        nextPage.before(uploader);
+        enableFileUploader(uploader, nextPage.data('parent-id'), nextPage.data('workspace-material-id'));
+      });
+  }
   
   function loadPageNode(node) {
     var materialId = $(node).data('material-id');
@@ -318,30 +363,14 @@
 
     }
     
-    $(".muikku-file-input-field").muikkuFileField() 
-      .on("uploadDone", function (event, data) {
-        $(this).muikkuFileField('hide');
-        
-        renderDustTemplate('workspace/materials-management-upload-select.dust', { fileName: data.name }, $.proxy(function (text) {
-          var selectPane = $(text);
-          $(this).after(selectPane);
-          
-          selectPane.find('.materials-management-upload-select-upload').click(function () {
-            alert("Sorry, this functionality is not implemented yey");  
-          });
-          
-          selectPane.find('.materials-management-upload-select-convert').click(function () {
-            alert("Sure, when someone tells me how to do that");  
-          });
-          
-          selectPane.find('.materials-management-upload-select-discard').click(function () {
-            alert("I'm sorry, Dave. I'm afraid I can't do that.");  
-          });
-          
-          
-        }, this));
-      });
     
+    
+    $('.workspaces-materials-management-insert-file').each(function(index, element) {
+      var nextMaterial = $(element).next('.workspace-materials-management-view-page');
+      var parentId = $(nextMaterial).data('parent-id');
+      var nextSiblingId = $(nextMaterial).data('workspace-material-id');
+      enableFileUploader(element, parentId, nextSiblingId);
+    });
   });
   
   $(document).on('click', '.edit-page', function (event, data) {
@@ -352,7 +381,6 @@
   
   $(document).on('click', '.delete-page', function (event, data) {
     alert('TODO: Actually delete page!');
-
   });
   
   $(document).on('click', '.workspaces-materials-management-add-page', function (event, data) {
@@ -361,10 +389,7 @@
     renderDustTemplate('workspace/materials-management-new-page.dust', { }, $.proxy(function (text) {
       var newPage = $(text);
       $(this).after(newPage);
-      $(newPage).after($('<a>').attr({
-        'class': 'workspaces-materials-management-add-page',
-        'href': 'javascript:void(null)'
-      }).html('ADD A PAGE'));
+      $(newPage).after(createAddPageLink());
       
       $(newPage).find('.workspace-materials-management-new-page-link').one('click', function (event) {
         event.preventDefault();
