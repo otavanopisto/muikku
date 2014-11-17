@@ -203,6 +203,7 @@ body.workspace-materials-management {
   
   #contentWorkspaceMaterialsManagement {
     padding-left:60px;
+    padding-top:30px;
     max-width:700px;
     width:auto;
     margin:0 auto;
@@ -278,11 +279,11 @@ body.workspace-materials-management {
       font-size:1.3em;
       font-weight:300;
       word-wrap: break-word;
-      -webkit-transition: box-shadow 0.5s ease-in-out;
-      -moz-transition: box-shadow 0.5s ease-in-out;
-      -o-transition: box-shadow 0.5s ease-in-out;
-      -ms-transition: box-shadow 0.5s ease-in-out;
-      transition: box-shadow 0.5s ease-in-out;
+      -webkit-transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
+      -moz-transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
+      -o-transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
+      -ms-transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
+      transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
       
       &.page-hidden {
         opacity:0.4;
@@ -293,7 +294,7 @@ body.workspace-materials-management {
       }
       
       &.page-edit-mode {
-        box-shadow:0 0 0 15px rgba(148,183,208,0.95);
+        box-shadow:0 0 0 10px rgba(148,183,208,0.95);
       }
       
       .workspace-materials-management-view-page-controls {
