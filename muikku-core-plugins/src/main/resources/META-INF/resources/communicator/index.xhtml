@@ -7,13 +7,16 @@
   xmlns:fn="http://java.sun.com/jsp/jstl/functions"
   template="./templates/communicator_base.xhtml">
 
-  <ui:define name="hiddenFields"></ui:define>
+  <ui:define name="hiddenFields">  
+    <input type="hidden" name="userId" value="#{muikkuSession.loggedUserEntity.id}"/>
+  </ui:define>
     
   <ui:define name="viewScripts">
     <h:outputScript name="scripts/gui/communicator.js" />
   </ui:define>
 
-  <ui:define name="content.left.widget">  
+  <ui:define name="content.left.widget">
+  
     <div class="mf-sub-header">
      <span>Linkit</span>
     </div> 
