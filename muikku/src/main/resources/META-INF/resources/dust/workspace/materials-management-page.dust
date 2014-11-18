@@ -1,7 +1,7 @@
 <div class="workspace-materials-management-view-page-controls">
-  <a href="javascript:void(null)" class="edit-page icon-edit" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}"><span>Edit</span></a>
-  <a href="javascript:void(null)" class="delete-page icon-delete" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}"><span>Delete</span></a>
-  <a href="javascript:void(null)" class="hide-page icon-hide" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}"><span>Hide</span></a>
+  <a href="javascript:void(null)" class="edit-page icon-edit" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}"><span>Edit</span></a>
+  <a href="javascript:void(null)" class="delete-page icon-delete" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}"><span>Delete</span></a>
+  <a href="javascript:void(null)" class="hide-page icon-hide" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}"><span>Hide</span></a>
 </div>
 <div class="page-content">
   {>"workspace/materials-management-page-{type}.dust"/}

@@ -24,7 +24,7 @@
         var newPage = $('<section>')
           .addClass('workspace-materials-management-view-page')
           .attr({
-            'id': 'page-' + data.materialId,
+            'id': 'page-' + data.workspaceMaterialId,
             'data-material-title': data.title,
             'data-parent-id': data.parentId,
             'data-material-id': data.materialId,
@@ -56,9 +56,11 @@
         typeEndpoint.read(materialId).callback($.proxy(function (err, result) {
           renderDustTemplate('workspace/materials-management-page.dust',
         		  { workspaceMaterialId: workspaceMaterialId,
+                materialId: materialId,
         	  		id: materialId,
-        	        type: materialType,
-        	        data: result },
+        	      type: materialType,
+        	      data: result 
+        	    },
         	      $.proxy(function (text) {
             $(this).html(text);
           }, node));
@@ -73,9 +75,12 @@
     }
   }
   
-  function editPage(materialType, materialId) {
+  function editPage(node) {
+    var materialType = node.data('material-type');
+    var materialId = node.data('material-id');
+    var workspaceMaterialId = node.data('workspace-material-id');
     var editorName = 'workspaceMaterialEditor' + (materialType.substring(0, 1).toUpperCase() + materialType.substring(1));
-    var pageElement = $('#page-' + materialId);
+    var pageElement = $('#page-' + workspaceMaterialId);
     var pageSection = $(pageElement).closest(".workspace-materials-management-view-page");
     
     pageSection.addClass("page-edit-mode");
@@ -92,7 +97,7 @@
         var target = $(event.target);
         if (target.closest('.workspace-materials-management-view-page').length == 0) {
           editor.call(pageElement, 'destroy');
-          loadPageNode($(this).closest('section'));
+          loadPageNode(node);
         }
       }, node));
     } else {
@@ -251,58 +256,7 @@
               "margin-left" : "0"
             }, {
               duration:500,
-              easing: "easeInOutQuint",
-              complete: function () {
-
-                // Lets hide wrapper when user clicks anywhere in the document
-                $(document).bind('click', function(){
-                  // Need to check if toc is pinned or not
-                  if (tocPinned == 0) {
-                    
-                    contentPageContainer
-                    .animate({
-                      paddingLeft: "60px",
-                      paddingRight: "60px"
-                    },{
-                      duration:600,
-                      easing: "easeInOutQuint"
-                    });
-                    
-                    wideTocWrapper
-                    .clearQueue()
-                    .stop()
-                    .animate({
-                      "margin-left" : "-370px",
-                      opacity: 1
-                    }, {
-                      duration : 600,
-                      easing : "easeInOutQuint",
-                      complete: function() {
-                        $(this).hide();
-                        $(document).unbind('click');
-                        
-                        thinTocWrapper
-                        .show()
-                        .clearQueue()
-                        .stop()
-                        .animate({
-                          "margin-left" : "0"
-                        }, {
-                          duration:500,
-                          easing: "easeInOutQuint"
-                        });
-                        
-                      }
-                    });
-                  }
-                });
-
-                // Preventing TOC wrapper to disappear if user clicks inside wrapper
-                $("#workspaceMaterialsManagementTOCWrapper").bind('click', function(e) {
-                  e.stopPropagation();
-                });
-                
-              }
+              easing: "easeInOutQuint"
             });
             
           }
@@ -378,8 +332,6 @@
 
     }
     
-    
-    
     $('.workspaces-materials-management-insert-file').each(function(index, element) {
       var nextMaterial = $(element).next('.workspace-materials-management-view-page');
       var parentId = $(nextMaterial).data('parent-id');
@@ -390,6 +342,7 @@
   
   $(document).on('click', '.edit-page', function (event, data) {
     var materialId = $(this).data('material-id');
+    var workspaceMaterialId = $(this).data('workspace-material-id');
     var materialType = $(this).data('material-type');
     // TODO: Better way to toggle classes and observe hidden/visible states?
     var page = $(this).closest('.workspace-materials-management-view-page');
@@ -397,8 +350,7 @@
       page.removeClass('page-hidden');
       page.find('.hide-page').removeClass('icon-show').addClass('icon-hide');
     } 
-    
-    editPage(materialType, materialId);
+    editPage($(this).closest('section'));
   });
   
   $(document).on('click', '.delete-page', function (event, data) {
