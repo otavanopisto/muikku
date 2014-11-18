@@ -35,6 +35,8 @@ public @interface Permit {
    */
   Handle handle() default Handle.SILENT;
   
+  Class<? extends Exception> exceptionClass() default AuthorizationException.class;
+  
   enum Style {
     OR,
     AND
