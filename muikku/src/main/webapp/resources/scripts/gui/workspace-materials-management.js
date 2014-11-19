@@ -106,7 +106,29 @@
   }
   
   function deletePage(workspaceMaterialId) {
-    mApi().workspace.materials.del(workspaceMaterialId);
+    renderDustTemplate('workspace/materials-management-page-delete-corfirm.dust', { }, $.proxy(function (text) {
+      var dialog = $(text);
+      $(text).dialog({
+        modal: true, 
+        resizable: false,
+        effect: "blind", 
+        duration: 300,
+        dialogClass: "workspace-materials-management-dialog",
+        buttons: [{
+          'text': dialog.data('button-delete-text'),
+          'click': function(event) {
+            alert('delete you can now');
+            //mApi().workspace.materials.del(workspaceMaterialId);
+          }
+        }, {
+          'text': dialog.data('button-cancel-text'),
+          'click': function(event) {
+            $(this).dialog( "close" )
+          }
+        }]
+      });
+    }, this));
+   
     /* TODO: display outcome */
   }
   
@@ -381,7 +403,12 @@
     renderDustTemplate('workspace/materials-management-new-page.dust', { }, $.proxy(function (text) {
       var newPage = $(text);
       $(this).after(newPage);
+      
+      var uploader = createFileUploader();
+      $(newPage).before(uploader);
+      enableFileUploader(uploader, nextMaterial.data('parent-id'), nextMaterial.data('workspace-material-id'));
       $(newPage).after(createAddPageLink());
+      
       
       $(newPage).find('.workspace-materials-management-new-page-link').one('click', function (event) {
         event.preventDefault();

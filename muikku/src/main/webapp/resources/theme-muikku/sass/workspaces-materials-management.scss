@@ -449,4 +449,33 @@ body.workspace-materials-management {
     }
   }
   
+  .ui-widget-overlay {
+    background:#000;
+    opacity:0.5;
+  }
+  
+  .workspace-materials-management-dialog {
+    box-shadow:0 0 40px rgba(0,0,0,0.4);
+    border:3px solid #596e7d;
+    transition: border 0.3s ease-in-out;
+    background:#fff;
+    
+    &:hover {
+      border:3px solid #7391a7;
+    }
+    
+    &.ui-corner-all {
+      border-radius:0px;
+    }
+    
+    .ui-dialog-buttonpane {
+      border:0;
+      background:transparent;
+      
+      .ui-dialog-buttonset {
+      
+      }
+    }
+  }
+  
 }
