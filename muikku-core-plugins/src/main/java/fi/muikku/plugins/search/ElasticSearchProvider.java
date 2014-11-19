@@ -36,7 +36,7 @@ public class ElasticSearchProvider implements SearchProvider {
 
   @Override
   public void init() {
-    Node node = nodeBuilder().node();
+    Node node = nodeBuilder().local(true).node();
     elasticClient = node.client();
   }
   
