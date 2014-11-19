@@ -13,8 +13,10 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -445,6 +447,30 @@ public class WorkspaceRESTService extends PluginRESTService {
     return new fi.muikku.plugins.workspace.rest.model.WorkspaceUserSignup(signup.getId(), signup.getWorkspaceEntity().getId(), signup.getUserEntity().getId(), signup.getDate(), signup.getMessage());
   }
 
+  @DELETE
+  @Path ("/workspaces/{WORKSPACEID}/materials/{MATERIALID}")
+  public Response deleteNode(@PathParam ("WORKSPACEID") Long workspaceEntityId, @PathParam ("MATERIALID") Long materialId) {
+    // TODO Our workspace?
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(materialId);
+    if (workspaceMaterial == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    } else {
+      workspaceMaterialController.deleteWorkspaceMaterial(workspaceMaterial);
+      return Response.noContent().build();
+    }
+  }
+  
+  @PUT
+  @Path("/workspaces/{WORKSPACEID}/materials/{WORKSPACEMATERIALID}")
+  public Response updateVisibility(@PathParam ("WORKSPACEID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @QueryParam("visible") Boolean visible) {
+    WorkspaceNode workspaceNode = workspaceMaterialController.findWorkspaceNodeById(workspaceMaterialId);
+    if (workspaceNode == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    } else {
+      workspaceMaterialController.setHidden(workspaceNode, !visible);
+      return Response.noContent().build();
+    }
+  }
   
 //// 
 //// Workspace
