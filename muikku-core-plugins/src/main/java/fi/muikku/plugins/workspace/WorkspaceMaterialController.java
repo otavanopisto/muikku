@@ -81,8 +81,10 @@ public class WorkspaceMaterialController {
    * 
    * @param workspaceNode The workspace node to be moved
    * @param referenceNode The workspace node above which <code>workspaceNode</code> is moved
+   * 
+   * @return The updated workspace node
    */
-  public void moveAbove(WorkspaceNode workspaceNode, WorkspaceNode referenceNode) {
+  public WorkspaceNode moveAbove(WorkspaceNode workspaceNode, WorkspaceNode referenceNode) {
     // Order number of the reference node
     Integer referenceOrderNumber = referenceNode.getOrderNumber() == null ? 0 : referenceNode.getOrderNumber();
     // Workspace nodes with order number >= reference order number
@@ -90,10 +92,11 @@ public class WorkspaceMaterialController {
     // Sort workspace nodes according to order number
     sortWorkspaceNodes(subsequentNodes);
     // node order number = referenceOrderNumber, subsequent nodes = ++referenceOrderNumber
-    workspaceNodeDAO.updateOrderNumber(workspaceNode, referenceOrderNumber);
+    workspaceNode = workspaceNodeDAO.updateOrderNumber(workspaceNode, referenceOrderNumber);
     for (WorkspaceNode subsequentNode : subsequentNodes) {
       workspaceNodeDAO.updateOrderNumber(subsequentNode, ++referenceOrderNumber);
     }
+    return workspaceNode;
   }
 
   /**
@@ -101,8 +104,10 @@ public class WorkspaceMaterialController {
    * 
    * @param workspaceNode The workspace node to be moved
    * @param referenceNode The workspace node below which <code>workspaceNode</code> is moved
+   * 
+   * @return The updated workspace node
    */
-  public void moveBelow(WorkspaceNode workspaceNode, WorkspaceNode referenceNode) {
+  public WorkspaceNode moveBelow(WorkspaceNode workspaceNode, WorkspaceNode referenceNode) {
     // Order number of the reference node
     Integer referenceOrderNumber = referenceNode.getOrderNumber() == null ? 0 : referenceNode.getOrderNumber();
     // Workspace nodes with order number > reference order number
@@ -110,10 +115,11 @@ public class WorkspaceMaterialController {
     // Sort workspace nodes according to order number
     sortWorkspaceNodes(subsequentNodes);
     // node order number = referenceOrderNumber + 1, subsequent nodes = ++referenceOrderNumber
-    workspaceNodeDAO.updateOrderNumber(workspaceNode, ++referenceOrderNumber);
+    workspaceNode = workspaceNodeDAO.updateOrderNumber(workspaceNode, ++referenceOrderNumber);
     for (WorkspaceNode subsequentNode : subsequentNodes) {
       workspaceNodeDAO.updateOrderNumber(subsequentNode, ++referenceOrderNumber);
     }
+    return workspaceNode;
   }
   
   public WorkspaceNode findWorkspaceNodeNextSibling(WorkspaceNode referenceNode) {
@@ -244,10 +250,29 @@ public class WorkspaceMaterialController {
   }
 
   public WorkspaceNode updateWorkspaceNode(WorkspaceNode workspaceNode, Long materialId, WorkspaceNode parentNode, WorkspaceNode nextSibling, Boolean hidden) {
-    // TODO Update materialId
-    // TODO Update parentNode
-    // TODO Update nextSibiling
-    workspaceNodeDAO.updateHidden(workspaceNode, hidden);
+    // Material id
+    if (workspaceNode instanceof WorkspaceMaterial) {
+      workspaceNode = workspaceMaterialDAO.updateMaterialId((WorkspaceMaterial) workspaceNode, materialId);
+    }
+    // Parent node
+    if (!workspaceNode.getParent().getId().equals(parentNode.getId())) {
+      // TODO Circular reference check
+      workspaceNode = workspaceNodeDAO.updateParent(workspaceNode,  parentNode);
+    }
+    // Next sibling
+    if (nextSibling == null) {
+      Integer orderNumber = workspaceNodeDAO.getMaximumOrderNumber(parentNode);
+      orderNumber = orderNumber == null ? 0 : orderNumber;
+      if (workspaceNode.getOrderNumber() < orderNumber) {
+        workspaceNode = workspaceNodeDAO.updateOrderNumber(workspaceNode, ++orderNumber);
+      }
+    }
+    else {
+      workspaceNode = moveAbove(workspaceNode, nextSibling);
+    }
+    // Next sibling
+    workspaceNode = workspaceNodeDAO.updateHidden(workspaceNode, hidden);
+    // Updated node
     return workspaceNode;
   }
 

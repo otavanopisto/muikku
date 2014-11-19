@@ -104,6 +104,11 @@ public class WorkspaceNodeDAO extends CorePluginsDAO<WorkspaceNode> {
 
     return entityManager.createQuery(criteria).getResultList();
   }
+  
+  public WorkspaceNode updateParent(WorkspaceNode node, WorkspaceNode parent) {
+    node.setParent(parent);
+    return persist(node);
+  }
 
   public WorkspaceNode updateOrderNumber(WorkspaceNode node, Integer orderNumber) {
     node.setOrderNumber(orderNumber);
