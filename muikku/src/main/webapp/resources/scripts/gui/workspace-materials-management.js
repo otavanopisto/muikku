@@ -110,17 +110,32 @@
     /* TODO: display outcome */
   }
   
-  function toggleVisibility(workspaceMaterialId, hidden) {
-    if (hidden) {
-      mApi().workspace.workspaces.materials.updateVisibility(workspaceMaterialId).callback(
-        function (err, html) {
-        });
-    }
-    else {
-      mApi().workspace.materials.show.read(workspaceMaterialId).callback(
-          function (err, html) {
-          });
-    }
+  function toggleVisibility(node, hidden) {
+    var _node = node;
+    var _hidden = hidden;
+    var workspaceId = $('.workspaceEntityId').val();
+    var nextSibling = node.nextAll('.workspace-materials-management-view-page:first');
+    var nextSiblingId = nextSibling ? nextSibling.data('workspace-material-id') : null;
+    mApi().workspace.workspaces.materials.update(workspaceId, node.data('workspace-material-id'), {
+      id: node.data('workspace-material-id'),
+      materialId: node.data('material-id'),
+      parentId: node.data('parent-id'),
+      nextSiblingId: nextSiblingId,
+      hidden: hidden
+    }).callback(
+      function (err, html) {
+        // TODO error handling
+        if (!hidden) {
+          node.removeClass('page-hidden');
+          node.find('.hide-page').removeClass('icon-show').addClass('icon-hide');
+          // TODO Table of contents modifications
+        }
+        else {
+          node.addClass('page-hidden');
+          node.find('.hide-page').removeClass('icon-hide').addClass('icon-show');
+          // TODO Table of contents modifications
+        }
+    });
   }
   
   $(document).ready(function() {
@@ -369,15 +384,7 @@
     // TODO: Better way to toggle classes and observe hidden/visible states?
     var page = $(this).closest('.workspace-materials-management-view-page');
     var hidden = page.hasClass('page-hidden');
-    var workspaceMaterialId = page.data('workspace-material-id');
-    toggleVisibility(workspaceMaterialId, !hidden);
-    if (page.hasClass('page-hidden')) {
-      page.removeClass('page-hidden');
-      $(this).removeClass('icon-show').addClass('icon-hide');
-    } else {
-      page.addClass('page-hidden');
-      $(this).removeClass('icon-hide').addClass('icon-show');
-    }
+    toggleVisibility(page, !hidden);
   });
   
   $(document).on('click', '.workspaces-materials-management-add-page', function (event, data) {
