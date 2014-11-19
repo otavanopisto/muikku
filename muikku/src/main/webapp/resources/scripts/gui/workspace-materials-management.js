@@ -45,7 +45,11 @@
       });
   }
   
-  function loadPageNode(node) {
+  function loadPageNode(node, callback) {
+    if (typeof callback === 'undefined' || callback === null) {
+      callback = function() {};
+    }
+    
     var workspaceMaterialId = $(node).data('workspace-material-id');
     var materialId = $(node).data('material-id');
     var materialType = $(node).data('material-type');
@@ -55,14 +59,16 @@
       if (typeEndpoint != null) {
         typeEndpoint.read(materialId).callback($.proxy(function (err, result) {
           renderDustTemplate('workspace/materials-management-page.dust',
-        		  { workspaceMaterialId: workspaceMaterialId,
+              { workspaceMaterialId: workspaceMaterialId,
                 materialId: materialId,
-        	  		id: materialId,
-        	      type: materialType,
-        	      data: result 
-        	    },
-        	      $.proxy(function (text) {
+                id: materialId,
+                type: materialType,
+                data: result 
+              },
+                $.proxy(function (text) {
             $(this).html(text);
+            
+            callback();
           }, node));
         }, node));
       } else {
@@ -71,6 +77,8 @@
     } else {
       renderDustTemplate('workspace/materials-management-page.dust', { id: materialId, type: materialType }, $.proxy(function (text) {
         $(this).html(text);
+        
+        callback();
       }, node));
     }
   }
@@ -140,9 +148,14 @@
   
   $(document).ready(function() {
     // Workspace Material's page loading
-    $('.workspace-materials-management-view-page').each(function(index, node) {
-      loadPageNode(node);
-    });
+    
+    function loadPageNodes(selector, node) {
+      loadPageNode(node, function() {
+        loadPageNodes(selector, $(node).next(selector));
+      });
+    }
+    
+    loadPageNodes('.workspace-materials-management-view-page', $('.workspace-materials-management-view-page').first());
 
     /* Smooth scrolling in workspace Material's Management View */
     var $sections = $('.workspace-materials-management-view-page');
