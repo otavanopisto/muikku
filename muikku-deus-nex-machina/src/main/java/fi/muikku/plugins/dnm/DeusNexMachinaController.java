@@ -250,7 +250,7 @@ public class DeusNexMachinaController {
 	private BinaryMaterialController binaryMaterialController;
 
 	@Inject 
-	WorkspaceMaterialController workspaceMaterialController;
+	private WorkspaceMaterialController workspaceMaterialController;
 	
 	@PostConstruct
 	public void init() throws IOException {
@@ -299,7 +299,7 @@ public class DeusNexMachinaController {
 			  
     		Material material = createMaterial(rootFolder, resource, deusNexDocument);
     		if (material != null) {
-    			WorkspaceNode workspaceNode = workspaceMaterialController.createWorkspaceMaterial(parent, material);
+    			WorkspaceNode workspaceNode = workspaceMaterialController.createWorkspaceMaterial(parent, material, resource.getName());
     			
     			try {
   					setResourceWorkspaceNodeId(resource.getNo(), workspaceNode.getId());
@@ -354,10 +354,10 @@ public class DeusNexMachinaController {
 	}
 
 	private BinaryMaterial createBinaryMaterial(Binary resource) {
-		String title = resource.getTitle();
+		String title = resource.getName(); // Nexus title is usually something like "tiedosto"
 		String contentType = resource.getContentType();
 		byte[] content = resource.getContent();
-
+		
 		return binaryMaterialController.createBinaryMaterial(title, contentType, content);
 	}
 	

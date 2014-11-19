@@ -203,10 +203,10 @@ public class WorkspaceMaterialController {
       WorkspaceMaterial workspaceMaterial = (WorkspaceMaterial) workspaceNode;
       Material material = getMaterialForWorkspaceMaterial(workspaceMaterial);
       Material clonedMaterial = materialController.cloneMaterial(material);
-      newNode = workspaceMaterialDAO.create(parent, clonedMaterial.getId(), generateUrlName(parent, clonedMaterial.getTitle()), index);
+      newNode = workspaceMaterialDAO.create(parent, clonedMaterial.getId(), generateUniqueUrlName(parent, clonedMaterial.getTitle()), index);
     } else if (workspaceNode instanceof WorkspaceFolder) {
       newNode = workspaceFolderDAO.create(parent, ((WorkspaceFolder) workspaceNode).getTitle(),
-          generateUrlName(parent, ((WorkspaceFolder) workspaceNode).getTitle()), index);
+          generateUniqueUrlName(parent, ((WorkspaceFolder) workspaceNode).getTitle()), index);
     } else {
       throw new IllegalArgumentException("Uncloneable workspace node " + workspaceNode.getClass());
     }
@@ -228,7 +228,7 @@ public class WorkspaceMaterialController {
     }
     workspaceMaterialDAO.updateMaterialId(workspaceMaterial, originMaterial.getId());
     if (updateUrlName) {
-      String urlName = generateUrlName(workspaceMaterial.getParent(), workspaceMaterial, originMaterial.getTitle());
+      String urlName = generateUniqueUrlName(workspaceMaterial.getParent(), workspaceMaterial, originMaterial.getTitle());
       if (!workspaceMaterial.getUrlName().equals(urlName)) {
         workspaceMaterialDAO.updateUrlName(workspaceMaterial, urlName);
       }
@@ -267,9 +267,13 @@ public class WorkspaceMaterialController {
   /* Material */
 
   public WorkspaceMaterial createWorkspaceMaterial(WorkspaceNode parent, Material material) {
+    String urlName = generateUniqueUrlName(parent, material.getTitle());
+    return createWorkspaceMaterial(parent, material, urlName);
+  }
+  
+  public WorkspaceMaterial createWorkspaceMaterial(WorkspaceNode parent, Material material, String urlName) {
     Integer index = workspaceNodeDAO.getMaximumOrderNumber(parent);
     index = index == null ? 0 : ++index;
-    String urlName = generateUrlName(parent, material.getTitle());
     WorkspaceMaterial workspaceMaterial = workspaceMaterialDAO.create(parent, material.getId(), urlName, index);
     workspaceMaterialCreateEvent.fire(new WorkspaceMaterialCreateEvent(workspaceMaterial));
     return workspaceMaterial;
@@ -351,27 +355,20 @@ public class WorkspaceMaterialController {
 
   /* Utility methods */
 
-  public synchronized String generateUrlName(String title) {
-    return generateUrlName(null, null, title);
+  public synchronized String generateUniqueUrlName(String title) {
+    return generateUniqueUrlName(null, null, title);
   }
 
-  public synchronized String generateUrlName(WorkspaceNode parent, String title) {
-    return generateUrlName(parent, null, title);
+  public synchronized String generateUniqueUrlName(WorkspaceNode parent, String title) {
+    return generateUniqueUrlName(parent, null, title);
   }
 
-  public synchronized String generateUrlName(WorkspaceNode parent, WorkspaceNode targetNode, String title) {
+  public synchronized String generateUniqueUrlName(WorkspaceNode parent, WorkspaceNode targetNode, String title) {
     if (StringUtils.isBlank(title)) {
       // no title to work with, so settle for a random UUID
       title = UUID.randomUUID().toString();
     }
-    // convert to lower-case and replace spaces and slashes with a minus sign
-    String urlName = StringUtils.lowerCase(title.replaceAll(" ", "-").replaceAll("/", "-"));
-    // truncate consecutive minus signs into just one
-    while (urlName.indexOf("--") >= 0) {
-      urlName = urlName.replace("--", "-");
-    }
-    // get rid of accented characters and all special characters other than minus, period, and underscore
-    urlName = StringUtils.stripAccents(urlName).replaceAll("[^a-z0-9\\-\\.\\_]", "");
+    String urlName = generateUrlName(title);
     // use urlName as base and uniqueName as final result
     String uniqueName = urlName;
     if (parent != null) {
@@ -394,6 +391,18 @@ public class WorkspaceMaterialController {
       }
     }
     return uniqueName;
+  }
+
+  public static String generateUrlName(String title) {
+    // convert to lower-case and replace spaces and slashes with a minus sign
+    String urlName = StringUtils.lowerCase(title.replaceAll(" ", "-").replaceAll("/", "-"));
+    // truncate consecutive minus signs into just one
+    while (urlName.indexOf("--") >= 0) {
+      urlName = urlName.replace("--", "-");
+    }
+    // get rid of accented characters and all special characters other than minus, period, and underscore
+    urlName = StringUtils.stripAccents(urlName).replaceAll("[^a-z0-9\\-\\.\\_]", "");
+    return urlName;
   }
 
 }
