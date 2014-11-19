@@ -73,6 +73,8 @@
         }, node));
       } else {
         $('.notification-queue').notificationQueue('notification', 'error', "Could not find rest service for " + materialType);
+        
+        callback();
       }
     } else {
       renderDustTemplate('workspace/materials-management-page.dust', { id: materialId, type: materialType }, $.proxy(function (text) {
@@ -151,7 +153,10 @@
     
     function loadPageNodes(selector, node) {
       loadPageNode(node, function() {
-        loadPageNodes(selector, $(node).next(selector));
+        var next = $(node).nextAll(selector).first();
+        if (next.length > 0) {
+          loadPageNodes(selector, next);
+        }
       });
     }
     
