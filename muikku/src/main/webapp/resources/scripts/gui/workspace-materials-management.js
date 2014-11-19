@@ -107,29 +107,47 @@
   
   function deletePage(workspaceMaterialId) {
     renderDustTemplate('workspace/materials-management-page-delete-corfirm.dust', { }, $.proxy(function (text) {
+      var workspaceId = $('.workspaceEntityId').val();
       var dialog = $(text);
+      var page = $('#page-' + workspaceMaterialId);
       $(text).dialog({
         modal: true, 
         resizable: false,
-        effect: "blind", 
-        duration: 300,
+        width: 360,
         dialogClass: "workspace-materials-management-dialog",
         buttons: [{
           'text': dialog.data('button-delete-text'),
+          'class': 'delete-button',
           'click': function(event) {
-            alert('delete you can now');
-            //mApi().workspace.materials.del(workspaceMaterialId);
+            mApi().workspace.workspaces.materials.del(workspaceId,workspaceMaterialId).callback($.proxy(function (err){
+              if (err) {
+                $('.notification-queue').notificationQueue('notification', 'error', err);
+              } else {
+                $(this).dialog("close");
+                // TODO: animation won't work
+                $(page)
+                .animate({
+                  height:0,
+                  opacity: 0
+                }, {
+                  duration : 500,
+                  easing : "easeInOutQuint",
+                  complete: function() {
+                    $(page).remove();
+                  }
+                });
+              }
+            }, this));
           }
         }, {
           'text': dialog.data('button-cancel-text'),
+          'class': 'cancel-button',
           'click': function(event) {
-            $(this).dialog( "close" )
+            $(this).dialog("close");
           }
         }]
       });
     }, this));
-   
-    /* TODO: display outcome */
   }
   
   function toggleVisibility(node, hidden) {
