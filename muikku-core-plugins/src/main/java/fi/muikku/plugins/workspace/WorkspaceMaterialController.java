@@ -12,6 +12,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fi.muikku.dao.workspace.WorkspaceEntityDAO;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.material.MaterialController;
 import fi.muikku.plugins.material.model.Material;
@@ -330,6 +331,24 @@ public class WorkspaceMaterialController {
     }
 
     workspaceMaterialDAO.delete(workspaceMaterial);
+  }
+  
+  /**
+   * Returns the identifier of the workspace entity the given workspace node belongs to.
+   * 
+   * @param workspaceNode The workspace node
+   * 
+   * @return The identifier of the workspace entity the given workspace node belongs to
+   */
+  public Long getWorkspaceEntityId(WorkspaceNode workspaceNode) {
+    WorkspaceNode rootFolder = workspaceNode;
+    while (rootFolder.getParent() != null) {
+      rootFolder = rootFolder.getParent();
+    }
+    if (!(rootFolder instanceof WorkspaceRootFolder)) {
+      throw new IllegalArgumentException("WorkspaceNode " + workspaceNode.getId() + " has not root folder");
+    }
+    return ((WorkspaceRootFolder) rootFolder).getWorkspaceEntityId();
   }
 
   /* Root Folder */
