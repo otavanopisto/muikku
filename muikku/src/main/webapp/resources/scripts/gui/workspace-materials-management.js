@@ -124,8 +124,8 @@
     var _node = node;
     var _hidden = hidden;
     var workspaceId = $('.workspaceEntityId').val();
-    var nextSibling = node.nextAll('.workspace-materials-management-view-page:first');
-    var nextSiblingId = nextSibling ? nextSibling.data('workspace-material-id') : null;
+    var nextSibling = node.nextAll('.workspace-materials-management-view-page').first();
+    var nextSiblingId = nextSibling.length > 0 ? nextSibling.data('workspace-material-id') : null;
     mApi().workspace.workspaces.materials.update(workspaceId, node.data('workspace-material-id'), {
       id: node.data('workspace-material-id'),
       materialId: node.data('material-id'),
