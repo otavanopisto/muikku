@@ -50,7 +50,7 @@
           });
         }
         
-        loadPageNodes('.workspace-materials-view-page', $('.workspace-materials-view-page').first());
+        loadPageNodes('.workspace-materials-reading-view-page', $('.workspace-materials-reading-view-page').first());
 
         // Workspace material's Reading View page loading
         $('.workspace-materials-reading-view-page').each(
