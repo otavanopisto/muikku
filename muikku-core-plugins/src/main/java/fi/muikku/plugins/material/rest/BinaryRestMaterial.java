@@ -5,13 +5,12 @@ public class BinaryRestMaterial {
   public BinaryRestMaterial() {
   }
   
-  public BinaryRestMaterial(Long id, String fileId, String title, String contentType, String binaryUrl) {
+  public BinaryRestMaterial(Long id, String fileId, String title, String contentType) {
     super();
     this.id = id;
     this.fileId = fileId;
     this.title = title;
     this.contentType = contentType;
-    this.binaryUrl = binaryUrl;
   }
 
   public Long getId() {
@@ -46,17 +45,8 @@ public class BinaryRestMaterial {
     this.contentType = contentType;
   }
 
-  public String getBinaryUrl() {
-    return binaryUrl;
-  }
-
-  public void setBinaryUrl(String binaryUrl) {
-    this.binaryUrl = binaryUrl;
-  }
-
   private Long id;
   private String fileId;
   private String title;
   private String contentType;
-  private String binaryUrl;
 }

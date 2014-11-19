@@ -21,7 +21,6 @@ import fi.muikku.files.TempFileUtils;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.material.BinaryMaterialController;
 import fi.muikku.plugins.material.model.BinaryMaterial;
-import fi.muikku.plugins.material.model.HtmlMaterial;
 
 @RequestScoped
 @Path("/materials/binary")
@@ -101,10 +100,25 @@ public class BinaryMaterialRESTService extends PluginRESTService {
     }
   }
 
+  @GET
+  @Path("/{id}/download")
+  public Response downloadMaterialContent(@PathParam("id") Long id) {
+    BinaryMaterial material = binaryMaterialController.findBinaryMaterialById(id);
+    
+    if (material == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    } else {
+      // TODO: Better file name
+      return Response.ok(material.getContent())
+        .header("Content-Length", material.getContent().length)
+        .header("Content-Disposition", "attachment; filename=\""+ material.getId() + "\"")
+        .type(material.getContentType())
+        .build();
+    }
+  }
+  
   private BinaryRestMaterial createRestModel(BinaryMaterial material) {
-    // TODO: URL
-    return new BinaryRestMaterial(material.getId(), null, material.getTitle(),
-        material.getContentType(), "content");
+    return new BinaryRestMaterial(material.getId(), null, material.getTitle(), material.getContentType());
   }
 
   @DELETE
