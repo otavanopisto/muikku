@@ -74,21 +74,15 @@ public class WorkspaceMaterialController {
   @Inject
   private MaterialController materialController;
 
-  /* Node */
+  /* WorkspaceNode */
 
   /**
-   * Updates the order numbers of workspace nodes so that node with <code>nodeId</code> appears above node with <code>referenceNodeId</code>
-   * .
+   * Updates the order numbers of workspace nodes so that <code>workspaceNode</code> appears above <code>referenceNode</code>.
    * 
-   * @param nodeId
-   *          The node to move
-   * @param referenceNodeId
-   *          The node above which the node with <code>nodeId</code> is moved
+   * @param workspaceNode The workspace node to be moved
+   * @param referenceNode The workspace node above which <code>workspaceNode</code> is moved
    */
-  public void moveAbove(Long nodeId, Long referenceNodeId) {
-    // Node identifiers to WorkspaceNode instances
-    WorkspaceNode node = workspaceNodeDAO.findById(nodeId);
-    WorkspaceNode referenceNode = workspaceNodeDAO.findById(referenceNodeId);
+  public void moveAbove(WorkspaceNode workspaceNode, WorkspaceNode referenceNode) {
     // Order number of the reference node
     Integer referenceOrderNumber = referenceNode.getOrderNumber() == null ? 0 : referenceNode.getOrderNumber();
     // Workspace nodes with order number >= reference order number
@@ -96,38 +90,19 @@ public class WorkspaceMaterialController {
     // Sort workspace nodes according to order number
     sortWorkspaceNodes(subsequentNodes);
     // node order number = referenceOrderNumber, subsequent nodes = ++referenceOrderNumber
-    workspaceNodeDAO.updateOrderNumber(node, referenceOrderNumber);
+    workspaceNodeDAO.updateOrderNumber(workspaceNode, referenceOrderNumber);
     for (WorkspaceNode subsequentNode : subsequentNodes) {
       workspaceNodeDAO.updateOrderNumber(subsequentNode, ++referenceOrderNumber);
     }
   }
 
   /**
-   * Updates the order numbers of workspace nodes so that node with <code>nodeId</code> appears below node with <code>referenceNodeId</code>
-   * .
+   * Updates the order numbers of workspace nodes so that <code>workspaceNode</code> appears below <code>referenceNode</code>.
    * 
-   * @param nodeId
-   *          The node to move
-   * @param referenceNodeId
-   *          The node under which the node with <code>nodeId</code> is moved
+   * @param workspaceNode The workspace node to be moved
+   * @param referenceNode The workspace node below which <code>workspaceNode</code> is moved
    */
-  public void moveBelow(Long nodeId, Long referenceNodeId) {
-    // Node identifiers to WorkspaceNode instances
-    WorkspaceNode node = workspaceNodeDAO.findById(nodeId);
-    WorkspaceNode referenceNode = workspaceNodeDAO.findById(referenceNodeId);
-    moveBelow(node, referenceNode);
-  }
-
-  /**
-   * Updates the order numbers of workspace nodes so that node appears below node with referenceNode</code>
-   * .
-   * 
-   * @param node
-   *          The node to move
-   * @param referenceNode
-   *          The node under which the node is moved
-   */
-  public void moveBelow(WorkspaceNode node, WorkspaceNode referenceNode) {
+  public void moveBelow(WorkspaceNode workspaceNode, WorkspaceNode referenceNode) {
     // Order number of the reference node
     Integer referenceOrderNumber = referenceNode.getOrderNumber() == null ? 0 : referenceNode.getOrderNumber();
     // Workspace nodes with order number > reference order number
@@ -135,18 +110,19 @@ public class WorkspaceMaterialController {
     // Sort workspace nodes according to order number
     sortWorkspaceNodes(subsequentNodes);
     // node order number = referenceOrderNumber + 1, subsequent nodes = ++referenceOrderNumber
-    workspaceNodeDAO.updateOrderNumber(node, ++referenceOrderNumber);
+    workspaceNodeDAO.updateOrderNumber(workspaceNode, ++referenceOrderNumber);
     for (WorkspaceNode subsequentNode : subsequentNodes) {
       workspaceNodeDAO.updateOrderNumber(subsequentNode, ++referenceOrderNumber);
     }
   }
-
+  
   public WorkspaceNode findWorkspaceNodeNextSibling(WorkspaceNode referenceNode) {
-    List<WorkspaceNode> nextSiblings = workspaceNodeDAO.listParentByOrderNumberGreaterSortByGreater(referenceNode.getParent(), referenceNode.getOrderNumber(), 0, 1);
+    List<WorkspaceNode> nextSiblings = workspaceNodeDAO.listParentByOrderNumberGreaterSortByGreater(referenceNode.getParent(),
+        referenceNode.getOrderNumber(), 0, 1);
     if (nextSiblings.isEmpty()) {
       return null;
     }
-    
+
     return nextSiblings.get(0);
   }
 
@@ -235,36 +211,8 @@ public class WorkspaceMaterialController {
     }
     return workspaceMaterial;
   }
-  
-  /**
-   * Hides the given workspace node.
-   * 
-   * @param workspaceNode Workspace node
-   */
-  public void hide(WorkspaceNode workspaceNode) {
-    setHidden(workspaceNode, Boolean.TRUE);
-  }
 
-  /**
-   * Shows the given workspace node.
-   * 
-   * @param workspaceNode Workspace node
-   */
-  public void show(WorkspaceNode workspaceNode) {
-    setHidden(workspaceNode, Boolean.FALSE);
-  }
-  
-  /**
-   * Hides or shows the given workspace node.
-   * 
-   * @param workspaceNode Workspace node
-   * @param hidden <code>Boolean.TRUE</code> to hide the workspace node, <code>Boolean.FALSE</code> to show it
-   */
-  public void setHidden(WorkspaceNode workspaceNode, Boolean hidden) {
-    workspaceNodeDAO.updateHidden(workspaceNode, hidden);
-  }
-
-  /* Material */
+  /* Workspace material */
 
   public WorkspaceMaterial createWorkspaceMaterial(WorkspaceNode parent, Material material) {
     Integer index = workspaceNodeDAO.getMaximumOrderNumber(parent);
@@ -293,6 +241,46 @@ public class WorkspaceMaterialController {
 
   public List<WorkspaceMaterial> listWorkspaceMaterialsByMaterial(Material material) {
     return workspaceMaterialDAO.listByMaterialId(material.getId());
+  }
+
+  public WorkspaceNode updateWorkspaceNode(WorkspaceNode workspaceNode, Long materialId, WorkspaceNode parentNode, WorkspaceNode nextSibling, Boolean hidden) {
+    // TODO Update materialId
+    // TODO Update parentNode
+    // TODO Update nextSibiling
+    workspaceNodeDAO.updateHidden(workspaceNode, hidden);
+    return workspaceNode;
+  }
+
+  /**
+   * Hides the given workspace node.
+   * 
+   * @param workspaceNode
+   *          Workspace node
+   */
+  private void hide(WorkspaceNode workspaceNode) {
+    setHidden(workspaceNode, Boolean.TRUE);
+  }
+
+  /**
+   * Shows the given workspace node.
+   * 
+   * @param workspaceNode
+   *          Workspace node
+   */
+  private void show(WorkspaceNode workspaceNode) {
+    setHidden(workspaceNode, Boolean.FALSE);
+  }
+
+  /**
+   * Hides or shows the given workspace node.
+   * 
+   * @param workspaceNode
+   *          Workspace node
+   * @param hidden
+   *          <code>Boolean.TRUE</code> to hide the workspace node, <code>Boolean.FALSE</code> to show it
+   */
+  private void setHidden(WorkspaceNode workspaceNode, Boolean hidden) {
+    workspaceNodeDAO.updateHidden(workspaceNode, hidden);
   }
 
   public void deleteWorkspaceMaterial(WorkspaceMaterial workspaceMaterial) {
