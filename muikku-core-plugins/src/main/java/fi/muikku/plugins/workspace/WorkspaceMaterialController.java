@@ -260,7 +260,12 @@ public class WorkspaceMaterialController {
     }
     // Parent node
     if (!workspaceNode.getParent().getId().equals(parentNode.getId())) {
-      // TODO Circular reference check
+      while (parentNode != null) {
+        if (parentNode.getId().equals(workspaceNode.getId())) {
+          throw new IllegalArgumentException("Circular reference " + workspaceNode.getId() + " with parent " + parentNode.getId());
+        }
+        parentNode = parentNode.getParent();
+      }
       workspaceNode = workspaceNodeDAO.updateParent(workspaceNode,  parentNode);
     }
     // Next sibling
