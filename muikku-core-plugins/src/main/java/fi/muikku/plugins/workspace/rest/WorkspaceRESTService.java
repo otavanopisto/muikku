@@ -501,7 +501,14 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
-    // TODO workspaceEntity root folder vs. root of workspaceNode
+    // Workspace material belongs to workspace check
+    
+    Long materialWorkspaceEntityId = workspaceMaterialController.getWorkspaceEntityId(workspaceNode);
+    if (!materialWorkspaceEntityId.equals(workspaceEntityId)) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    // Actual update
     
     Long materialId = workspaceMaterial.getMaterialId(); 
     WorkspaceNode parentNode = workspaceMaterialController.findWorkspaceNodeById(workspaceMaterial.getParentId());
