@@ -74,21 +74,17 @@ public class WorkspaceMaterialController {
   @Inject
   private MaterialController materialController;
 
-  /* Node */
+  /* WorkspaceNode */
 
   /**
-   * Updates the order numbers of workspace nodes so that node with <code>nodeId</code> appears above node with <code>referenceNodeId</code>
-   * .
+   * Updates the order numbers of workspace nodes so that <code>workspaceNode</code> appears above <code>referenceNode</code>.
    * 
-   * @param nodeId
-   *          The node to move
-   * @param referenceNodeId
-   *          The node above which the node with <code>nodeId</code> is moved
+   * @param workspaceNode The workspace node to be moved
+   * @param referenceNode The workspace node above which <code>workspaceNode</code> is moved
+   * 
+   * @return The updated workspace node
    */
-  public void moveAbove(Long nodeId, Long referenceNodeId) {
-    // Node identifiers to WorkspaceNode instances
-    WorkspaceNode node = workspaceNodeDAO.findById(nodeId);
-    WorkspaceNode referenceNode = workspaceNodeDAO.findById(referenceNodeId);
+  public WorkspaceNode moveAbove(WorkspaceNode workspaceNode, WorkspaceNode referenceNode) {
     // Order number of the reference node
     Integer referenceOrderNumber = referenceNode.getOrderNumber() == null ? 0 : referenceNode.getOrderNumber();
     // Workspace nodes with order number >= reference order number
@@ -96,38 +92,22 @@ public class WorkspaceMaterialController {
     // Sort workspace nodes according to order number
     sortWorkspaceNodes(subsequentNodes);
     // node order number = referenceOrderNumber, subsequent nodes = ++referenceOrderNumber
-    workspaceNodeDAO.updateOrderNumber(node, referenceOrderNumber);
+    workspaceNode = workspaceNodeDAO.updateOrderNumber(workspaceNode, referenceOrderNumber);
     for (WorkspaceNode subsequentNode : subsequentNodes) {
       workspaceNodeDAO.updateOrderNumber(subsequentNode, ++referenceOrderNumber);
     }
+    return workspaceNode;
   }
 
   /**
-   * Updates the order numbers of workspace nodes so that node with <code>nodeId</code> appears below node with <code>referenceNodeId</code>
-   * .
+   * Updates the order numbers of workspace nodes so that <code>workspaceNode</code> appears below <code>referenceNode</code>.
    * 
-   * @param nodeId
-   *          The node to move
-   * @param referenceNodeId
-   *          The node under which the node with <code>nodeId</code> is moved
-   */
-  public void moveBelow(Long nodeId, Long referenceNodeId) {
-    // Node identifiers to WorkspaceNode instances
-    WorkspaceNode node = workspaceNodeDAO.findById(nodeId);
-    WorkspaceNode referenceNode = workspaceNodeDAO.findById(referenceNodeId);
-    moveBelow(node, referenceNode);
-  }
-
-  /**
-   * Updates the order numbers of workspace nodes so that node appears below node with referenceNode</code>
-   * .
+   * @param workspaceNode The workspace node to be moved
+   * @param referenceNode The workspace node below which <code>workspaceNode</code> is moved
    * 
-   * @param node
-   *          The node to move
-   * @param referenceNode
-   *          The node under which the node is moved
+   * @return The updated workspace node
    */
-  public void moveBelow(WorkspaceNode node, WorkspaceNode referenceNode) {
+  public WorkspaceNode moveBelow(WorkspaceNode workspaceNode, WorkspaceNode referenceNode) {
     // Order number of the reference node
     Integer referenceOrderNumber = referenceNode.getOrderNumber() == null ? 0 : referenceNode.getOrderNumber();
     // Workspace nodes with order number > reference order number
@@ -135,18 +115,20 @@ public class WorkspaceMaterialController {
     // Sort workspace nodes according to order number
     sortWorkspaceNodes(subsequentNodes);
     // node order number = referenceOrderNumber + 1, subsequent nodes = ++referenceOrderNumber
-    workspaceNodeDAO.updateOrderNumber(node, ++referenceOrderNumber);
+    workspaceNode = workspaceNodeDAO.updateOrderNumber(workspaceNode, ++referenceOrderNumber);
     for (WorkspaceNode subsequentNode : subsequentNodes) {
       workspaceNodeDAO.updateOrderNumber(subsequentNode, ++referenceOrderNumber);
     }
+    return workspaceNode;
   }
-
+  
   public WorkspaceNode findWorkspaceNodeNextSibling(WorkspaceNode referenceNode) {
-    List<WorkspaceNode> nextSiblings = workspaceNodeDAO.listParentByOrderNumberGreaterSortByGreater(referenceNode.getParent(), referenceNode.getOrderNumber(), 0, 1);
+    List<WorkspaceNode> nextSiblings = workspaceNodeDAO.listParentByOrderNumberGreaterSortByGreater(referenceNode.getParent(),
+        referenceNode.getOrderNumber(), 0, 1);
     if (nextSiblings.isEmpty()) {
       return null;
     }
-    
+
     return nextSiblings.get(0);
   }
 
@@ -203,10 +185,10 @@ public class WorkspaceMaterialController {
       WorkspaceMaterial workspaceMaterial = (WorkspaceMaterial) workspaceNode;
       Material material = getMaterialForWorkspaceMaterial(workspaceMaterial);
       Material clonedMaterial = materialController.cloneMaterial(material);
-      newNode = workspaceMaterialDAO.create(parent, clonedMaterial.getId(), generateUrlName(parent, clonedMaterial.getTitle()), index);
+      newNode = workspaceMaterialDAO.create(parent, clonedMaterial.getId(), generateUniqueUrlName(parent, clonedMaterial.getTitle()), index);
     } else if (workspaceNode instanceof WorkspaceFolder) {
       newNode = workspaceFolderDAO.create(parent, ((WorkspaceFolder) workspaceNode).getTitle(),
-          generateUrlName(parent, ((WorkspaceFolder) workspaceNode).getTitle()), index);
+          generateUniqueUrlName(parent, ((WorkspaceFolder) workspaceNode).getTitle()), index);
     } else {
       throw new IllegalArgumentException("Uncloneable workspace node " + workspaceNode.getClass());
     }
@@ -228,49 +210,24 @@ public class WorkspaceMaterialController {
     }
     workspaceMaterialDAO.updateMaterialId(workspaceMaterial, originMaterial.getId());
     if (updateUrlName) {
-      String urlName = generateUrlName(workspaceMaterial.getParent(), workspaceMaterial, originMaterial.getTitle());
+      String urlName = generateUniqueUrlName(workspaceMaterial.getParent(), workspaceMaterial, originMaterial.getTitle());
       if (!workspaceMaterial.getUrlName().equals(urlName)) {
         workspaceMaterialDAO.updateUrlName(workspaceMaterial, urlName);
       }
     }
     return workspaceMaterial;
   }
-  
-  /**
-   * Hides the workspace node with the given identifier.
-   * 
-   * @param workspaceNodeId Workspace node identifier
-   */
-  public void hide(Long workspaceNodeId) {
-    setHidden(workspaceNodeId, Boolean.TRUE);
-  }
 
-  /**
-   * Shows the workspace node with the given identifier.
-   * 
-   * @param workspaceNodeId Workspace node identifier
-   */
-  public void show(Long workspaceNodeId) {
-    setHidden(workspaceNodeId, Boolean.FALSE);
-  }
-  
-  /**
-   * Hides or shows the workspace node with the given identifier.
-   * 
-   * @param workspaceNodeId Workspace node identifier
-   * @param hidden <code>Boolean.TRUE</code> to hide the workspace node, <code>Boolean.FALSE</code> to show it
-   */
-  public void setHidden(Long workspaceNodeId, Boolean hidden) {
-    WorkspaceNode workspaceNode = workspaceNodeDAO.findById(workspaceNodeId);
-    workspaceNodeDAO.updateHidden(workspaceNode, hidden);
-  }
-
-  /* Material */
+  /* Workspace material */
 
   public WorkspaceMaterial createWorkspaceMaterial(WorkspaceNode parent, Material material) {
+    String urlName = generateUniqueUrlName(parent, material.getTitle());
+    return createWorkspaceMaterial(parent, material, urlName);
+  }
+  
+  public WorkspaceMaterial createWorkspaceMaterial(WorkspaceNode parent, Material material, String urlName) {
     Integer index = workspaceNodeDAO.getMaximumOrderNumber(parent);
     index = index == null ? 0 : ++index;
-    String urlName = generateUrlName(parent, material.getTitle());
     WorkspaceMaterial workspaceMaterial = workspaceMaterialDAO.create(parent, material.getId(), urlName, index);
     workspaceMaterialCreateEvent.fire(new WorkspaceMaterialCreateEvent(workspaceMaterial));
     return workspaceMaterial;
@@ -294,6 +251,65 @@ public class WorkspaceMaterialController {
 
   public List<WorkspaceMaterial> listWorkspaceMaterialsByMaterial(Material material) {
     return workspaceMaterialDAO.listByMaterialId(material.getId());
+  }
+
+  public WorkspaceNode updateWorkspaceNode(WorkspaceNode workspaceNode, Long materialId, WorkspaceNode parentNode, WorkspaceNode nextSibling, Boolean hidden) {
+    // Material id
+    if (workspaceNode instanceof WorkspaceMaterial) {
+      workspaceNode = workspaceMaterialDAO.updateMaterialId((WorkspaceMaterial) workspaceNode, materialId);
+    }
+    // Parent node
+    if (!workspaceNode.getParent().getId().equals(parentNode.getId())) {
+      // TODO Circular reference check
+      workspaceNode = workspaceNodeDAO.updateParent(workspaceNode,  parentNode);
+    }
+    // Next sibling
+    if (nextSibling == null) {
+      Integer orderNumber = workspaceNodeDAO.getMaximumOrderNumber(parentNode);
+      orderNumber = orderNumber == null ? 0 : orderNumber;
+      if (workspaceNode.getOrderNumber() < orderNumber) {
+        workspaceNode = workspaceNodeDAO.updateOrderNumber(workspaceNode, ++orderNumber);
+      }
+    }
+    else {
+      workspaceNode = moveAbove(workspaceNode, nextSibling);
+    }
+    // Next sibling
+    workspaceNode = workspaceNodeDAO.updateHidden(workspaceNode, hidden);
+    // Updated node
+    return workspaceNode;
+  }
+
+  /**
+   * Hides the given workspace node.
+   * 
+   * @param workspaceNode
+   *          Workspace node
+   */
+  private void hide(WorkspaceNode workspaceNode) {
+    setHidden(workspaceNode, Boolean.TRUE);
+  }
+
+  /**
+   * Shows the given workspace node.
+   * 
+   * @param workspaceNode
+   *          Workspace node
+   */
+  private void show(WorkspaceNode workspaceNode) {
+    setHidden(workspaceNode, Boolean.FALSE);
+  }
+
+  /**
+   * Hides or shows the given workspace node.
+   * 
+   * @param workspaceNode
+   *          Workspace node
+   * @param hidden
+   *          <code>Boolean.TRUE</code> to hide the workspace node, <code>Boolean.FALSE</code> to show it
+   */
+  private void setHidden(WorkspaceNode workspaceNode, Boolean hidden) {
+    workspaceNodeDAO.updateHidden(workspaceNode, hidden);
   }
 
   public void deleteWorkspaceMaterial(WorkspaceMaterial workspaceMaterial) {
@@ -352,27 +368,20 @@ public class WorkspaceMaterialController {
 
   /* Utility methods */
 
-  public synchronized String generateUrlName(String title) {
-    return generateUrlName(null, null, title);
+  public synchronized String generateUniqueUrlName(String title) {
+    return generateUniqueUrlName(null, null, title);
   }
 
-  public synchronized String generateUrlName(WorkspaceNode parent, String title) {
-    return generateUrlName(parent, null, title);
+  public synchronized String generateUniqueUrlName(WorkspaceNode parent, String title) {
+    return generateUniqueUrlName(parent, null, title);
   }
 
-  public synchronized String generateUrlName(WorkspaceNode parent, WorkspaceNode targetNode, String title) {
+  public synchronized String generateUniqueUrlName(WorkspaceNode parent, WorkspaceNode targetNode, String title) {
     if (StringUtils.isBlank(title)) {
       // no title to work with, so settle for a random UUID
       title = UUID.randomUUID().toString();
     }
-    // convert to lower-case and replace spaces and slashes with a minus sign
-    String urlName = StringUtils.lowerCase(title.replaceAll(" ", "-").replaceAll("/", "-"));
-    // truncate consecutive minus signs into just one
-    while (urlName.indexOf("--") >= 0) {
-      urlName = urlName.replace("--", "-");
-    }
-    // get rid of accented characters and all special characters other than minus, period, and underscore
-    urlName = StringUtils.stripAccents(urlName).replaceAll("[^a-z0-9\\-\\.\\_]", "");
+    String urlName = generateUrlName(title);
     // use urlName as base and uniqueName as final result
     String uniqueName = urlName;
     if (parent != null) {
@@ -395,6 +404,18 @@ public class WorkspaceMaterialController {
       }
     }
     return uniqueName;
+  }
+
+  public static String generateUrlName(String title) {
+    // convert to lower-case and replace spaces and slashes with a minus sign
+    String urlName = StringUtils.lowerCase(title.replaceAll(" ", "-").replaceAll("/", "-"));
+    // truncate consecutive minus signs into just one
+    while (urlName.indexOf("--") >= 0) {
+      urlName = urlName.replace("--", "-");
+    }
+    // get rid of accented characters and all special characters other than minus, period, and underscore
+    urlName = StringUtils.stripAccents(urlName).replaceAll("[^a-z0-9\\-\\.\\_]", "");
+    return urlName;
   }
 
 }

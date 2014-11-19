@@ -45,8 +45,17 @@ public class WorkspaceMaterial {
     this.nextSiblingId = nextSiblingId;
   }
   
+  public Boolean getHidden() {
+    return hidden;
+  }
+
+  public void setHidden(Boolean hidden) {
+    this.hidden = hidden;
+  }
+
   private Long id;
   private Long materialId;
   private Long parentId;
   private Long nextSiblingId;
+  private Boolean hidden;
 }
