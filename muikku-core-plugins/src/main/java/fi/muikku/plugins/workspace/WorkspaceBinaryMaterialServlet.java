@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.material.model.BinaryMaterial;
 import fi.muikku.plugins.material.model.HtmlMaterial;
@@ -32,7 +35,7 @@ public class WorkspaceBinaryMaterialServlet extends HttpServlet {
   public void init() throws ServletException {
     super.init();
   }
-
+  
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     // TODO: Security
@@ -55,27 +58,43 @@ public class WorkspaceBinaryMaterialServlet extends HttpServlet {
 
     Material material = workspaceMaterialController.getMaterialForWorkspaceMaterial(workspaceMaterial);
 
-    if (material instanceof BinaryMaterial) {
-      BinaryMaterial binaryMaterial = (BinaryMaterial) material;
+    String eTag = DigestUtils.md5Hex(String.valueOf(material.getVersion()));
+    String ifNoneMatch = request.getHeader("If-None-Match");
+    
+    if (!StringUtils.equals(ifNoneMatch, eTag)) {    
 
-      response.setContentType(binaryMaterial.getContentType());
-      ServletOutputStream outputStream = response.getOutputStream();
-      try {
-        outputStream.write(binaryMaterial.getContent());
-      } finally {
-        outputStream.flush();
-      }
-    } else if (material instanceof HtmlMaterial) {
-      HtmlMaterial htmlMaterial = (HtmlMaterial) material;
-
-      response.setContentType("text/html; charset=UTF-8");
-      ServletOutputStream outputStream = response.getOutputStream();
-      try {
-        outputStream.write(htmlMaterial.getHtml().getBytes("UTF-8"));
-      } finally {
-        outputStream.flush();
-      }
+      response.setHeader("ETag", eTag);
+      response.setHeader("Cache-Control", "must-revalidate");
+      
+      if (material instanceof BinaryMaterial) {
+        BinaryMaterial binaryMaterial = (BinaryMaterial) material;
+  
+        response.setContentType(binaryMaterial.getContentType());
+        ServletOutputStream outputStream = response.getOutputStream();
+        try {
+          outputStream.write(binaryMaterial.getContent());
+        } finally {
+          outputStream.flush();
+        }
+      } else if (material instanceof HtmlMaterial) {
+        HtmlMaterial htmlMaterial = (HtmlMaterial) material;
+  
+        response.setContentType("text/html; charset=UTF-8");
+        ServletOutputStream outputStream = response.getOutputStream();
+        try {
+          outputStream.write(htmlMaterial.getHtml().getBytes("UTF-8"));
+        } finally {
+          outputStream.flush();
+        }
+      }  
+      
+      response.setStatus(HttpServletResponse.SC_OK);
+    } else {
+      response.setHeader("ETag", eTag);
+      response.setHeader("Cache-Control", "must-revalidate");
+      response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
     }
+    
   }
 
 }

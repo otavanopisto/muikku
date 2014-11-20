@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.ocpsoft.rewrite.annotation.RewriteConfiguration;
 import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
+import org.ocpsoft.rewrite.config.Direction;
 import org.ocpsoft.rewrite.context.EvaluationContext;
 import org.ocpsoft.rewrite.param.ParameterStore;
 import org.ocpsoft.rewrite.param.ParameterValueStore;
@@ -40,7 +41,8 @@ public class WorkspaceMaterialRewriteRules extends HttpConfigurationProvider {
     ConfigurationBuilder configuration = ConfigurationBuilder.begin();
     
     configuration.addRule()
-      .when(Path.matches("/workspace/{workspaceUrlName}/materials/{materialPath}")
+      .when(Direction.isInbound()
+          .and(Path.matches("/workspace/{workspaceUrlName}/materials/{materialPath}"))
           .and(new WorkspaceMaterialTypeRule("workspaceUrlName", "materialPath", "materialType")))
       .perform(Substitute.with("/workspace/{workspaceUrlName}/materials.{materialType}/{materialPath}"))
       .where("materialPath").matches("[a-zA-Z0-9/_.\\-]*");
