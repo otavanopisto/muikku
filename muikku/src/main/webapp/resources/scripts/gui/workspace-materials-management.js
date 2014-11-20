@@ -119,8 +119,50 @@
   }
   
   function deletePage(workspaceMaterialId) {
-    mApi().workspace.materials.del(workspaceMaterialId);
-    /* TODO: display outcome */
+    renderDustTemplate('workspace/materials-management-page-delete-corfirm.dust', { }, $.proxy(function (text) {
+      var workspaceId = $('.workspaceEntityId').val();
+      var dialog = $(text);
+      var page = $('#page-' + workspaceMaterialId);
+      $(text).dialog({
+        modal: true, 
+        resizable: false,
+        width: 360,
+        dialogClass: "workspace-materials-management-dialog",
+        buttons: [{
+          'text': dialog.data('button-delete-text'),
+          'class': 'delete-button',
+          'click': function(event) {
+            mApi().workspace.workspaces.materials.del(workspaceId,workspaceMaterialId).callback($.proxy(function (err){
+              if (err) {
+                $('.notification-queue').notificationQueue('notification', 'error', err);
+              } else {
+                $(this).dialog("close");
+                // TODO: animation won't work
+                $(page)
+                .animate({
+                  height:0,
+                  opacity: 0
+                }, {
+                  duration : 500,
+                  easing : "easeInOutQuint",
+                  complete: function() {
+                    $(page).next(".workspace-materials-management-addpage").remove();
+                    $(page).next(".workspaces-materials-management-insert-file").remove();
+                    $(page).remove();
+                  }
+                });
+              }
+            }, this));
+          }
+        }, {
+          'text': dialog.data('button-cancel-text'),
+          'class': 'cancel-button',
+          'click': function(event) {
+            $(this).dialog("close");
+          }
+        }]
+      });
+    }, this));
   }
   
   function toggleVisibility(node, hidden) {
@@ -414,7 +456,12 @@
     renderDustTemplate('workspace/materials-management-new-page.dust', { }, $.proxy(function (text) {
       var newPage = $(text);
       $(this).after(newPage);
+      
+      var uploader = createFileUploader();
+      $(newPage).before(uploader);
+      enableFileUploader(uploader, nextMaterial.data('parent-id'), nextMaterial.data('workspace-material-id'));
       $(newPage).after(createAddPageLink());
+      
       
       $(newPage).find('.workspace-materials-management-new-page-link').one('click', function (event) {
         event.preventDefault();
