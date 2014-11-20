@@ -33,6 +33,9 @@
   display:inline-block;
 }
 
+.icon-close-small:before {
+  content: "\e63b";
+}
 .icon-add:before {
   content: "\e114";
 }

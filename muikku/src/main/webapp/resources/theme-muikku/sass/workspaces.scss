@@ -4,38 +4,45 @@ body.workspace { /* We need to remove background image under workspace views */
   background:#ffffff;
   min-height:100%;
   
-  h1,
-  h2,
-  h3 {
-    margin:40px 0 20px 0;
-    color:#38393a;
-    font-weight:300;
-    text-transform:none;
-    line-height:1.3em;
+  .workspace-materials-view-page {
+  
+    img {
+      max-width:100%;
+    }
     
-    &:first-child {
+    h1,
+    h2,
+    h3 {
+      margin:40px 0 20px 0;
+      color:#38393a;
+      font-weight:300;
+      text-transform:none;
+      line-height:1.3em;
+      
+      &:first-child {
+        margin:20px 0 20px 0;
+      }
+    }
+    
+    h1 {
+      font-size:1.7em;
+    }
+      
+    h2 {
+      font-size:1.5em;
+    }
+    
+    h3 {
       margin:20px 0 20px 0;
+      font-size:1.3em;
+    }
+    
+    p {
+      margin:20px 0 20px 0;
+      line-height:1.7em;
     }
   }
-  
-  h1 {
-    font-size:1.7em;
-  }
-    
-  h2 {
-    font-size:1.5em;
-  }
-  
-  h3 {
-    margin:20px 0 20px 0;
-    font-size:1.3em;
-  }
-  
-  p {
-    margin:20px 0 20px 0;
-    line-height:1.7em;
-  }
-  
+
   #staticNavigationWrapperWorkspace {
     background:none; /* We need to remove all background rules first */
     @include background-image('gfx/workspace-navigation-background.png'); /* Workspace's navigation's background */
@@ -442,6 +449,10 @@ body.workspace-materials-reading {
       font-size:1.3em;
       font-weight:300;
       word-wrap: break-word;
+      
+      img {
+        max-width:100%;
+      }
       
       h1,
       h2,
