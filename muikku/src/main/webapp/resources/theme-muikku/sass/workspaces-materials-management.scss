@@ -335,7 +335,7 @@ body.workspace-materials-management {
       }
     
     }
-    
+
     .workspace-materials-management-view-page {
       position:relative;
       max-width:700px;
@@ -352,6 +352,25 @@ body.workspace-materials-management {
       -o-transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
       -ms-transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
       transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
+      
+      &.folder {
+        position:relative;
+        max-width:700px;
+        width:auto;
+        background:#fff;
+        box-shadow:$w-page-sc;
+        padding:30px 30px 30px 30px;
+        font-weight:300;
+        word-wrap: break-word;
+        line-height:1.3em;
+        font-size:1.3em;
+        color:#38393a;
+        text-transform:none;
+        
+        .page-content {
+          font-size:1.5em;
+        }
+      }
       
       img {
         max-width:100%;

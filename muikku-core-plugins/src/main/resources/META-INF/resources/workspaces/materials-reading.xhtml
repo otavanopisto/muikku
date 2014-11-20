@@ -44,7 +44,12 @@
 
   <ui:define name="workspace.materials.reading.content">
     <ui:repeat var="node" value="#{workspaceMaterialsTOCBackingBean.getVisibleDescendants(workspaceMaterialsReadingBackingBean.getRootFolder())}">
-      <section id="page-#{node.workspaceMaterialId}" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-material-type="#{node.materialType}" data-material-title="#{node.materialTitle}" class="workspace-materials-reading-view-page"/>
+      <ui:fragment rendered="#{node.materialType eq 'folder'}">
+       <h2 id="page-#{node.workspaceMaterialId}" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-material-type="#{node.materialType}" data-material-title="#{node.materialTitle}" class="workspace-materials-reading-view-page folder"></h2>
+      </ui:fragment>
+      <ui:fragment rendered="#{node.materialType ne 'folder'}">
+        <section id="page-#{node.workspaceMaterialId}" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-material-type="#{node.materialType}" data-material-title="#{node.materialTitle}" class="workspace-materials-reading-view-page"/>
+      </ui:fragment>
     </ui:repeat>
   </ui:define>
   
