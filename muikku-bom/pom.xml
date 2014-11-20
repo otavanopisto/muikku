@@ -46,7 +46,7 @@
     <!-- Coops -->
     <coops-spec.version>1.0.0</coops-spec.version>
     <coops-ws-spec.version>1.0.0</coops-ws-spec.version>
-
+    
   </properties>
 
   <dependencyManagement>
