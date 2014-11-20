@@ -1,7 +1,7 @@
 @import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
 
 body.workspace-materials-management {
-  background:#6b899e;
+  background:#4f6677;
   /* All this because of the god damn margin collapsing  */
   padding:0.01em;
   min-height:100%;
@@ -250,7 +250,7 @@ body.workspace-materials-management {
         color:#a8c2d4;
         text-transform:uppercase;
         display:inline-block;
-        background:#6b899e;
+        background:#4f6677;
         padding:5px 10px;
         position:relative;
         transition: color 0.3s ease-in-out; 

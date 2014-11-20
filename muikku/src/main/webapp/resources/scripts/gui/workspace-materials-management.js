@@ -111,6 +111,7 @@
           $(this).data('material-title', editor.call(pageElement, 'title'));
           editor.call(pageElement, 'destroy');
           loadPageNode(node);
+          pageSection.removeClass("page-edit-mode");
         }
       }, node));
     } else {
