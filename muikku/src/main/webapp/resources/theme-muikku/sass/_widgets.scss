@@ -28,10 +28,11 @@ div[class*='workspace-materials-reading-navi-button'] > span {
   @include iconShadow;
   background:transparent;
   padding:6px;
-  margin:2px;
+  margin:0px;
   display:inline-block;
   position:relative;
   width:34px;
+  text-align:center;
 
   span[class*='workspace-materials-reading-tt-container-'] {
     opacity:0;
