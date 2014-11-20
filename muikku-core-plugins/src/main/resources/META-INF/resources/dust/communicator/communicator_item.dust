@@ -1,34 +1,33 @@
-<div class="cm-item cm-message">
-  <div class="cm-item-senderPictureContainer">
-    {?senderHasPicture} 
-      <img class="cm-item-senderPicture" src="{@contextPath/}/picture?userId={sender}" width="50" height="50" />
-    {:else}
-      <img class="cm-item-senderPicture" src="{@contextPath/}/themes/default/gfx/fish.jpg" width="50" height="50" />
-    {/senderHasPicture}
-  </div>
+    <div class="mf-item" id="{id}">
+      <div class="mf-item-details">
+        <div class="mf-item-details-container">       
+          <div class="mf-item-additionalInfo">
+            {created|formatDate} {created|formatTime} 
+          </div>
+          <div class="mf-item-description">
+            <div class="mf-item-header-name">
+              {?senderHasPicture} 
+                <img class="cm-user-picture-custom" src="{@contextPath/}/picture?userId={sender}" width="50" height="50" />
+              {:else}
+                <div class="cm-user-picture-default"></div>
+              {/senderHasPicture}            
+              <input type="hidden" name="mf-person-id" value="{sender}"/>
+              <span class="mf-item-header-content-primary">{senderFullName}</span>        
+              <span class="mf-item-header-content-secondary">{caption}</span>    
+            </div>
+            <div class="mf-item-header-details">
+              {@if cond="{messageCount} > 1"} ({messageCount}){/if}
+            </div>
+            <div class="mf-item-content-details" style="display:none;">     
+              <div class="mf-item-content-text">Kuvaus</div>          
+              <div class="mf-item-details-toolbar">Toiminnot (painikkeet, linkit, muut)</div>
+            </div>
+          </div>       
+          <div class="clear"></div>
+        </div>
+      </div>
+    
+      <input type="hidden" name="communicatorMessageId" value="{id}"/>
+      <input type="hidden" name="communicatorMessageIdId" value="{communicatorMessageId}"/>
   
-
-  <div class="cm-item-header">
-    <div class="cm-item-title">{caption} {@if cond="{messageCount} > 1"} ({messageCount}){/if}</div>
-    <div>
-      <span class="cm-item-date">
-        {created|formatDate} {created|formatTime}
-      </span>
-      <span class="mf-person cm-item-senderName">
-        <input type="hidden" name="mf-person-id" value="{sender}"/>
-        <a class="wallEntryCreator" href="{@contextPath/}/user/{sender}">{senderFullName}</a>
-      </span>
-    </div>
-   </div>     
-      
-  <div class="clear"></div>
-  <div class="cm-item-tags">
-    {#tags}
-      {.}{@sep}, {/sep}
-    {/tags}
-  </div>
-
-  <input type="hidden" name="communicatorMessageId" value="{id}"/>
-  <input type="hidden" name="communicatorMessageIdId" value="{communicatorMessageId}"/>
-  
-</div>
+    </div >

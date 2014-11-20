@@ -10,31 +10,19 @@
 
 
 
-  <ui:define name="viewCss">
-   
-   </ui:define> 
+  <ui:define name="viewCss"></ui:define> 
  
-
-    <ui:define name="hiddenField">
-  
-
-    
-      <input type="hidden" name="userId" value="#{muikkuSession.loggedUserEntity.id}"/>
-      
-
-    </ui:define>
+  <ui:define name="hiddenFields">
+    <input type="hidden" name="userId" value="#{muikkuSession.loggedUserEntity.id}"/>
+  </ui:define>
         
-    <ui:define name="viewScripts">
-      <h:outputScript name="scripts/gui/communicator.js" />
-    </ui:define>
-
-
+  <ui:define name="viewScripts">
+    <h:outputScript name="scripts/gui/communicator.js" />
+  </ui:define>
 
   <ui:define name="content.tools.left"> 
     <m:widget name="communicator-new-message" size="6" rendered="#{sessionBackingBean.loggedIn}"/>
   </ui:define>
-
-
 
   <ui:define name="content.tools.center">
     <div class="mf-search">

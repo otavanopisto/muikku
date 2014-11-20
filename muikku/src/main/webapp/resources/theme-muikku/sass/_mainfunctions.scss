@@ -25,8 +25,6 @@
 }
 
 
-
-
 .mf-side-button-dropdown{
   display:none;
   width:170px;
@@ -169,17 +167,9 @@
   
 }
 
-
 .mf-content-main{
   @extend .co-mainFunction-content-main;
   min-height:450px;
-}
-
-
-.mf-item{
- @extend .co-listItem;
- padding:5px 5px 5px 5px;
- margin-bottom:10px;
 }
 
 .mf-event{
@@ -191,9 +181,14 @@
  font-size:2em;
 }
 
+.mf-item-container{
+  line-heigth:0.5em;
+}
+
 
 .mf-item-details-container{
   background-color:#f0f3f4;
+  min-height:35px;
 }
 
 .mf-item-details-close{
@@ -209,16 +204,47 @@
 
 }
 
+.mf-item{
+ @extend .co-listItem;
+ padding:5px 5px 5px 5px;
+ margin-bottom:10px;
+}
+.mf-item-description{
+    overflow:hidden;
+  
+}
 
 .mf-item-header-name{
   display : inline-block;
   text-transform:uppercase;
+  vertical-align:center;
+  line-height:2.5em;
+  white-space:nowrap;
+  width:80%;
+  
+  span{
+    line-height:normal;  
+    display:inline-block;
+    margin-left:10px;
+  }
+  
+  span[class*="primary"]{
+    
+  }
+  
+  span[class*="secondary"]{
+    color:#000;
+  }
+  
 }
 
 .mf-item-header-details{
-  display : inline-block;
-  float:right;  
-
+    display: inline-block;
+    min-height: 35px;
+    float: right;
+    width: 20%;
+    position: relative;
+    @include fadeRight()
 }
 .mf-item-rating{
   padding-right:5px;
@@ -227,7 +253,7 @@
 
 .mf-item-description{
   display:inline-block;
-  width:70%;
+  width:80%;
   background-color:#fff;  
   cursor:pointer;  
 }
@@ -242,10 +268,11 @@
 
 
 .mf-item-additionalInfo{
-  display:inline-block;
-  width:30%;
-  float:right;
-  font-size: 0.7em;
+  font-size: 1em;
+  float: right;
+  width: 20%;
+  line-height: 2.5em;
+  text-align: center;
 
 }
 
@@ -272,8 +299,10 @@
    content : " -"  ;
 }
 
-
-
+.mf-item-content-name{
+  padding:15px;
+  
+}
 
 .mf-header-name{
   display : inline-block;
@@ -285,8 +314,6 @@
   float:right;  
 
 }
-
-
 
 .mf-description{
   display:inline-block;

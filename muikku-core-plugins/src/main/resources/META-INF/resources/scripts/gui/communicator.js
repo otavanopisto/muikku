@@ -1,6 +1,8 @@
 
 $(document).ready(function(){
 
+
+	
 	$(".bt-mainFunction").m3modal({
 		title : "Veistin! ",
 		description : "Voit lähettää veistejä kaikille kavereillesi tai muuten vaan jos ei sellaisia ole!",
@@ -60,7 +62,7 @@ $(document).ready(function(){
     mApi().communicator.items.read()
       .on('$', function (item, itemCallback) {
         mApi().communicator.communicatormessages.sender.read(item.id)
-          .callback(function (err, user) {
+          .callback(function (err, user) {  
             item.senderFullName = user.firstName + ' ' + user.lastName;
             item.senderHasPicture = user.hasImage;
           });
@@ -73,9 +75,21 @@ $(document).ready(function(){
       })
       .callback(function (err, result) {
         renderDustTemplate('communicator/communicator_items.dust', result, function (text) {
-          $('.mf-content-main').append($.parseHTML(text));
+          $('.cm-messages-container').append($.parseHTML(text));
         });
       });
+
+ 
+    $(".cm-messages-container").on('click','.mf-item', function(){
+    	var mId = $(this).attr('id');
+    	var mCont = $('.cm-messages-container');
+        mApi().communicator.messages.read(mId).callback(function (err, result){
+            renderDustTemplate('communicator/communicator_item_open.dust', result, function (text) {
+               mCont.empty();
+               mCont.append($.parseHTML(text));
+              });
+        });
+    });
 
     
 });
