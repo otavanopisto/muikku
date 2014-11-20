@@ -56,7 +56,6 @@ import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceUserDiscoveredEvent;
 import fi.muikku.search.SearchProvider;
 import fi.muikku.search.SearchResult;
-import fi.muikku.security.LoggedIn;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
@@ -170,8 +169,8 @@ public class WorkspaceRESTService extends PluginRESTService {
             }
 
             if (accept) {
-              String name = result.get("name").toString();
-              String description = result.get("description").toString();
+              String name = getSearchResultValue(result, "name");
+              String description = getSearchResultValue(result, "description");
               workspaces.add(new fi.muikku.plugins.workspace.rest.model.Workspace(workspaceEntity.getId(), workspaceEntity.getUrlName(),
                   workspaceEntity.getArchived(), name, description));
             }
@@ -187,6 +186,15 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     return Response.ok(workspaces).build();
+  }
+  
+  private String getSearchResultValue(Map<String, Object> result, String key) {
+    Object value = result.get(key);
+    if (value != null) {
+      return value.toString();
+    }
+    
+    return null;
   }
 
   @GET
