@@ -143,6 +143,8 @@
                   duration : 500,
                   easing : "easeInOutQuint",
                   complete: function() {
+                    $(page).next(".workspace-materials-management-addpage").remove();
+                    $(page).next(".workspaces-materials-management-insert-file").remove();
                     $(page).remove();
                   }
                 });
