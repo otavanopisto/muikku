@@ -68,9 +68,9 @@
       
       this._titleInput = $('<input>')
         .addClass('workspace-material-html-editor-title')
-        .attr({
-          'type': 'text'
-        }).appendTo(this.element);
+        .attr('type', 'text')
+        .val(this.options.materialTitle)
+        .appendTo(this.element);
       
       this._status = $('<div>')
         .addClass('workspace-material-html-editor-status')
@@ -135,6 +135,10 @@
       this._editor.on("collaboratorLeft", $.proxy(this._onCollaboratorLeft, this));
       this._editor.on("patchReceived", $.proxy(this._onPatchReceived, this));
       this._titleInput.change($.proxy(this._onTitleChange, this));
+    },
+    
+    title: function () {
+      return $(this._titleInput).val();
     },
     
     _onStatusChange: function (event, data) {

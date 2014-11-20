@@ -11,10 +11,16 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.CacheControl;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.muikku.files.TempFileUtils;
@@ -78,8 +84,7 @@ public class BinaryMaterialRESTService extends PluginRESTService {
   @Path("/{id}")
   @Produces(MediaType.APPLICATION_JSON)
   public Response findMaterial(@PathParam("id") Long id) {
-    BinaryMaterial material = binaryMaterialController
-        .findBinaryMaterialById(id);
+    BinaryMaterial material = binaryMaterialController.findBinaryMaterialById(id);
     if (material == null) {
       return Response.status(Status.NOT_FOUND).build();
     } else {
@@ -89,14 +94,25 @@ public class BinaryMaterialRESTService extends PluginRESTService {
 
   @GET
   @Path("/{id}/content")
-  public Response getMaterialContent(@PathParam("id") Long id) {
-    BinaryMaterial material = binaryMaterialController
-        .findBinaryMaterialById(id);
+  public Response getMaterialContent(@PathParam("id") Long id, @Context Request request) {
+    BinaryMaterial material = binaryMaterialController.findBinaryMaterialById(id);
     if (material == null) {
       return Response.status(Status.NOT_FOUND).build();
     } else {
-      return Response.ok().type(material.getContentType())
-          .entity(material.getContent()).build();
+      EntityTag tag = new EntityTag(DigestUtils.md5Hex(String.valueOf(material.getVersion())));
+      ResponseBuilder builder = request.evaluatePreconditions(tag);
+      if (builder != null) {
+        return builder.build();
+      }
+
+      CacheControl cacheControl = new CacheControl();
+      cacheControl.setMustRevalidate(true);
+      
+      return Response.ok(material.getContent())
+          .cacheControl(cacheControl)
+          .tag(tag)
+          .type(material.getContentType())
+          .build();
     }
   }
 

@@ -88,6 +88,7 @@
   function editPage(node) {
     var materialType = node.data('material-type');
     var materialId = node.data('material-id');
+    var materialTitle = node.data('material-title');
     var workspaceMaterialId = node.data('workspace-material-id');
     var editorName = 'workspaceMaterialEditor' + (materialType.substring(0, 1).toUpperCase() + materialType.substring(1));
     var pageElement = $('#page-' + workspaceMaterialId);
@@ -100,12 +101,14 @@
       $(pageElement).find('.page-content').hide();
       
       editor.call(pageElement, {
-        materialId: materialId
+        materialId: materialId,
+        materialTitle: materialTitle
       });
       
       $(document).on("click",$.proxy(function (event) {
         var target = $(event.target);
         if (target.closest('.workspace-materials-management-view-page').length == 0) {
+          $(this).data('material-title', editor.call(pageElement, 'title'));
           editor.call(pageElement, 'destroy');
           loadPageNode(node);
         }
