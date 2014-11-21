@@ -111,6 +111,7 @@
           $(this).data('material-title', editor.call(pageElement, 'title'));
           editor.call(pageElement, 'destroy');
           loadPageNode(node);
+          pageSection.removeClass("page-edit-mode");
         }
       }, node));
     } else {
@@ -207,7 +208,7 @@
     
     loadPageNodes('.workspace-materials-management-view-page', $('.workspace-materials-management-view-page').first());
 
-    /* Smooth scrolling in workspace Material's Management View */
+    /* Smooth scrolling */
     var $sections = $('.workspace-materials-management-view-page');
 
     $sections.each(function() {
@@ -228,7 +229,7 @@
       });
     });
 
-    /* Highlighting toc item at appropriate time when we scroll to the corresponding section - Management View */
+    /* Highlighting toc item at appropriate time when we scroll to the corresponding section */
     $('.workspace-materials-management-view-page')
       .waypoint(function(direction) {
         var $links = $('a[href="#' + this.id + '"]');
@@ -247,7 +248,7 @@
     
     //
     
-   // Workspace's Materials's Management view
+    // Workspace's Materials's TOC
     if ($('#workspaceMaterialsManagementTOCWrapper').length > 0) {
       
       var height = $(window).height();
@@ -293,7 +294,7 @@
         contentOffset = contentPageContainer.offset();
         windowMinWidth = contentPageContainer.width() + contentMinOffset*2;
         
-        // Lets prevent page content to slide under TOC when browser window is been resized
+        // Lets prevent page content to slide under TOC when browser window is resized
         if ($('#workspaceMaterialsManagementTOCOpen:visible').length !== 0) {
           
           if (contentOffset.left < contentMinOffset) {
