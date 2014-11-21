@@ -1,7 +1,7 @@
 @import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
 
 body.workspace-materials-management {
-  background:#6b899e;
+  background:#4f6677;
   /* All this because of the god damn margin collapsing  */
   padding:0.01em;
   min-height:100%;
@@ -250,7 +250,7 @@ body.workspace-materials-management {
         color:#a8c2d4;
         text-transform:uppercase;
         display:inline-block;
-        background:#6b899e;
+        background:#4f6677;
         padding:5px 10px;
         position:relative;
         transition: color 0.3s ease-in-out; 
@@ -335,7 +335,7 @@ body.workspace-materials-management {
       }
     
     }
-    
+
     .workspace-materials-management-view-page {
       position:relative;
       max-width:700px;
@@ -352,6 +352,25 @@ body.workspace-materials-management {
       -o-transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
       -ms-transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
       transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
+      
+      &.folder {
+        position:relative;
+        max-width:700px;
+        width:auto;
+        background:#fff;
+        box-shadow:$w-page-sc;
+        padding:30px 30px 30px 30px;
+        font-weight:300;
+        word-wrap: break-word;
+        line-height:1.3em;
+        font-size:1.3em;
+        color:#38393a;
+        text-transform:none;
+        
+        .page-content {
+          font-size:1.5em;
+        }
+      }
       
       img {
         max-width:100%;

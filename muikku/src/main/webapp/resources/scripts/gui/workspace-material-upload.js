@@ -31,13 +31,13 @@
           $.proxy(this._uploadFile, this)(data);
         }, this));
 
-        $(this.element).find('.materials-management-upload-select-convert').click(function () {
+        $(this.element).find('.materials-management-upload-select-convert').click($.proxy(function () {
           $.proxy(this._convertFile, this)(data);
-        });
+        }, this));
         
-        $(this.element).find('.materials-management-upload-select-discard').click(function () {
+        $(this.element).find('.materials-management-upload-select-discard').click($.proxy(function () {
           $.proxy(this._discardFile, this)(data);
-        });
+        }, this));
         
       }, this));
     },
@@ -81,7 +81,9 @@
     },
     
     _discardFile: function (file) {
-      
+      $(this.element).trigger('fileDiscarded', {
+        fileId: file.id
+      });
     },
     
     _destroy : function() {
