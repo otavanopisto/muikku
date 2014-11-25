@@ -80,6 +80,10 @@ public class HtmlMaterialController {
     return processHtml(htmlMaterial.getId(), htmlMaterial.getHtml());
 	}
 	
+	public HtmlMaterial updateHtmlMaterialHtml(HtmlMaterial htmlMaterial, String html){
+	  return htmlMaterialDAO.updateData(htmlMaterial, html);
+	}
+	
 	private Document processHtml(Long materialId, String html) throws SAXException, IOException {
     if (StringUtils.isNotBlank(html)) {
       StringReader htmlReader = new StringReader(html);
