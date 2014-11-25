@@ -7,7 +7,7 @@
     return 'uid-' + uniqueIdCounter;
   }
   
-  function loadHtmlMaterial(materialId, placeholderId) {
+  function loadHtmlMaterial(workspaceMaterialId, materialId, placeholderId, parentIds) {
     $('#' + placeholderId).html('Loading:' + materialId);
     
     var worker = new Worker("/scripts/gui/workspace-material-loader.js");
@@ -17,28 +17,37 @@
       var parsed = $('<div>').html(material.html);
       
       parsed.find('iframe[data-type="embedded-document"]').each(function (index, iframe) {
-        var materialId = $(iframe).data('material-id');
-        var materialType = $(iframe).data('material-type');
+        var embededWorkspaceMaterialId = $(iframe).data('workspace-material-id');
+        var embededMaterialId = $(iframe).data('material-id');
+        var embededMaterialType = $(iframe).data('material-type');
         
-        if (materialType == 'html') {
+        if (embededMaterialType == 'html') {
           var placeholder = $('<div>')
             .attr('id', createUniqueId())
             .text('Embedded document loading');
           
           $(iframe).replaceWith(placeholder);
-          loadHtmlMaterial(materialId, placeholder.attr('id'));
+          loadHtmlMaterial(embededWorkspaceMaterialId, embededMaterialId, placeholder.attr('id'), parentIds.concat(materialId));
         } else {
           $('.notification-queue').notificationQueue('notification', 'error', "Incorrect material type '" + materialType + "' for embedded document");
         }
       });
       
       $(document).trigger('beforeHtmlMaterialRender', {
+        parentIds: parentIds,
+        workspaceMaterialId: workspaceMaterialId,
+        materialId: materialId,
         element: parsed
       });
       
       $('#' + placeholderId).replaceWith(parsed);
       
-      $(document).trigger('afterHtmlMaterialRender');
+      $(document).trigger('afterHtmlMaterialRender', {
+        parentIds: parentIds,
+        workspaceMaterialId: workspaceMaterialId,
+        materialId: materialId,
+        element: parsed
+      });
     };
     
     worker.postMessage({materialId: materialId});
@@ -91,7 +100,7 @@
     
     $('div[data-page-type="queued-html"]').waypoint(function(){
       $(this).attr('id', createUniqueId());
-      loadHtmlMaterial($(this).data('material-id'), $(this).attr('id'));
+      loadHtmlMaterial($(this).data('workspace-material-id'),$(this).data('material-id'), $(this).attr('id'), []);
     }, {
       offset: function() {
         return $(window).height() + 200;
@@ -138,25 +147,38 @@
 
   });
   
+  function createFieldName(workspaceMaterialId, parentIds, materialId, name) {
+    return 'WM' + workspaceMaterialId + ':' + (parentIds.length ? parentIds.join(':') + ':' : '') + materialId + ':' + name;
+  }
+  
   $(document).on('beforeHtmlMaterialRender', function (event, data) {
     $(data.element).find('object[type="application/vnd.muikku.field.text"]').each(function (index, object) {
       var meta = $.parseJSON($(object).find('param[name="content"]').attr('value'));      
+      ;
+
       var input = $('<input>')
         .addClass('muikku-text-field')
         .attr({
           type: "text",
           size: meta.columns,
           placeholder: meta.help,
-          title: meta.hint
+          title: meta.hint,
+          name: createFieldName(data.workspaceMaterialId, data.parentIds, data.materialId, meta.name)
         });
       $(object).replaceWith(input);
     });
+    
     $(data.element).find('object[type="application/vnd.muikku.field.select"]').each(function (index, object) {
         var meta = $.parseJSON($(object).find('param[name="content"]').attr('value'));      
         switch (meta.listType) {
         	case 'list':
         	case 'dropdown':
-        		var input = $('<select>');
+        		var input = $('<select>')
+          		.addClass('muikku-select-field')
+              .attr({
+                name: createFieldName(data.workspaceMaterialId, data.parentIds, data.materialId, meta.name)
+              });
+        		
         		if(meta.size != 'null') input.attr('size', meta.size);
         		for(var i = 0, l = meta.options.length; i < l; i++){
         			var option = $('<option>')

@@ -336,6 +336,7 @@ public class DeusNexMachinaController {
           HtmlMaterial htmlMaterial = htmlMaterialController.findHtmlMaterialById(workspaceMaterial.getMaterialId());
           element.setAttribute("data-material-id", String.valueOf(htmlMaterial.getId()));
           element.setAttribute("data-material-type", htmlMaterial.getType());
+          element.setAttribute("data-workspace-material-id", String.valueOf(workspaceMaterial.getId()));
         }
       }
       StringWriter writer = new StringWriter();
