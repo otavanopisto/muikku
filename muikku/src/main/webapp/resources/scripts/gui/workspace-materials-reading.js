@@ -140,8 +140,7 @@
   
   $(document).on('beforeHtmlMaterialRender', function (event, data) {
     $(data.element).find('object[type="application/vnd.muikku.field.text"]').each(function (index, object) {
-      var meta = $.parseJSON($(object).find('param[name="content"]').attr('value'));
-      
+      var meta = $.parseJSON($(object).find('param[name="content"]').attr('value'));      
       var input = $('<input>')
         .addClass('muikku-text-field')
         .attr({
@@ -150,9 +149,33 @@
           placeholder: meta.help,
           title: meta.hint
         });
-      
       $(object).replaceWith(input);
     });
+    $(data.element).find('object[type="application/vnd.muikku.field.select"]').each(function (index, object) {
+        var meta = $.parseJSON($(object).find('param[name="content"]').attr('value'));      
+        switch (meta.listType) {
+        	case 'list':
+        	case 'dropdown':
+        		var input = $('<select>');
+        		if(meta.size != 'null') input.attr('size', meta.size);
+        		for(var i = 0, l = meta.options.length; i < l; i++){
+        			var option = $('<option>')
+        			.attr({
+        				'value': meta.options[i].name
+        			});
+        			option.text(meta.options[i].text);
+        			input.append(option);
+        		}
+        		$(object).replaceWith(input);
+        	break;
+        	case 'radio':
+        		//TODO add support for radio inputs
+        	break;
+        	case 'radio_horz':
+        		//TODO add support for horizontal radio inputs
+        	break;
+        }
+      });
   });
 
 }).call(this);
