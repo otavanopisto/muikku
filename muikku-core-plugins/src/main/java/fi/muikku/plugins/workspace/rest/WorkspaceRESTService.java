@@ -468,6 +468,25 @@ public class WorkspaceRESTService extends PluginRESTService {
   // return Response.noContent().build();
   // }
 
+//  @POST
+//  @Path("/workspaces/{WORKSPACEENTITYID}/materials/{MATERIALID}/replies")
+//  public Response createWorkspaceMaterialAnswer(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("MATERIALID") Long workspaceMaterialId, WorkspaceMaterialReply reply) {
+//    // TODO: Persist answer  
+////    {
+////      answers: [{
+////        field: 'fieldname',
+////        value: 'text'
+////      }]
+////    }
+////    
+//  }
+//
+//  @PUT
+//  @Path("/workspaces/{WORKSPACEENTITYID}/materials/{MATERIALID}/answers/{ID}")
+//  public Response updateWorkspaceMaterialAnswer(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("MATERIALID") Long workspaceMaterialId, @PathParam("ID") Long workspaceMaterialAnswerId, WorkspaceMaterialAnswer answer) {
+//    // TODO: Persist answer  
+//  }
+  
   private fi.muikku.plugins.workspace.rest.model.WorkspaceMaterial createRestModel(WorkspaceMaterial workspaceMaterial) {
     WorkspaceNode workspaceNode = workspaceMaterialController.findWorkspaceNodeNextSibling(workspaceMaterial);
     Long nextSiblingId = workspaceNode != null ? workspaceNode.getId() : null;
