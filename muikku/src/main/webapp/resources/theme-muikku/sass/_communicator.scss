@@ -4,13 +4,7 @@
 }
 
 .cm-item {
-  @include rounded(4px);  
-  @include gradient-top-bottom;
-  @include shadow;
-  margin-bottom:5px;
   min-height:50px;
-  padding:5px; 
-  background-color:$aBgr; 
 }
 
 .cm-messages-container{
@@ -19,8 +13,7 @@
 }
 
 .cm-message {
-  @include border($msgBrd,1px);
-  @include gradient-top-bottom($msgGr...);
+
 }
 
 .cm-user-picture-default{
@@ -39,24 +32,14 @@
   padding:5px;   
 }
 
+ .cm-message-details-container{
+  background-color:#fff;
+ }
+
+
 .cm-message-toolbar, .cm-viewmessagethread-toolbar {
   padding:0;
   height:40px;
-}
-
-.cm-message-replyLink {
-  @include naviIcon();  
-  @include background-image('gfx/icons/32x32/actions/communicator-reply.png'); 
-}
-
-.cm-message-replyAllLink {
-  @include naviIcon();  
-  @include background-image('gfx/icons/32x32/actions/communicator-replyall.png'); 
-}
-
-.cm-message-trashMessageLink {
-  @include naviIcon();  
-  @include background-image('gfx/icons/32x32/actions/communicator-trash.png');
 }
 
 .cm-message-senderName {
@@ -66,9 +49,7 @@
 }
 
 .cm-message-content {
-  padding:15px;
-  font-size:1.3em;
-  white-space: pre-line;
+ 
 }
  
 .cm-news {

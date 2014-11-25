@@ -83,13 +83,11 @@ $(document).ready(function(){
     $(".cm-messages-container").on('click','.mf-item', function(){
     	var mId = $(this).attr('id');
     	var mCont = $('.cm-messages-container');
-        mApi().communicator.messages.read(mId).callback(function (err, result){
-            renderDustTemplate('communicator/communicator_item_open.dust', result, function (text) {
+        mApi().communicator.messages.read(mId).callback(function (err, mofo){
+        	renderDustTemplate('communicator/communicator_items_open.dust', mofo, function (text) {
                mCont.empty();
-               mCont.append($.parseHTML(text));
+	           mCont.append($.parseHTML(text));
               });
         });
     });
-
-    
 });
