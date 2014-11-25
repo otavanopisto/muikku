@@ -7,8 +7,9 @@
     return 'uid-' + uniqueIdCounter;
   }
   
-  function loadHtmlMaterial(workspaceMaterialId, materialId, placeholderId, parentIds) {
-    $('#' + placeholderId).html('Loading:' + materialId);
+  function loadHtmlMaterial(pageElement, workspaceMaterialId, materialId, placeholderId, parentIds) {
+    var placeHolder = $('#' + placeholderId);
+    placeHolder.html('Loading:' + materialId);
     
     var worker = new Worker("/scripts/gui/workspace-material-loader.js");
     
@@ -27,13 +28,14 @@
             .text('Embedded document loading');
           
           $(iframe).replaceWith(placeholder);
-          loadHtmlMaterial(embededWorkspaceMaterialId, embededMaterialId, placeholder.attr('id'), parentIds.concat(materialId));
+          loadHtmlMaterial(pageElement, embededWorkspaceMaterialId, embededMaterialId, placeholder.attr('id'), parentIds.concat(materialId));
         } else {
           $('.notification-queue').notificationQueue('notification', 'error', "Incorrect material type '" + materialType + "' for embedded document");
         }
       });
       
       $(document).trigger('beforeHtmlMaterialRender', {
+        pageElement: pageElement,
         parentIds: parentIds,
         workspaceMaterialId: workspaceMaterialId,
         materialId: materialId,
@@ -43,6 +45,7 @@
       $('#' + placeholderId).replaceWith(parsed);
       
       $(document).trigger('afterHtmlMaterialRender', {
+        pageElement: pageElement,
         parentIds: parentIds,
         workspaceMaterialId: workspaceMaterialId,
         materialId: materialId,
@@ -100,7 +103,7 @@
     
     $('div[data-page-type="queued-html"]').waypoint(function(){
       $(this).attr('id', createUniqueId());
-      loadHtmlMaterial($(this).data('workspace-material-id'),$(this).data('material-id'), $(this).attr('id'), []);
+      loadHtmlMaterial($(this).closest('.workspace-materials-reading-view-page'), $(this).data('workspace-material-id'),$(this).data('material-id'), $(this).attr('id'), []);
     }, {
       offset: function() {
         return $(window).height() + 200;
@@ -151,53 +154,85 @@
     return 'WM' + workspaceMaterialId + ':' + (parentIds.length ? parentIds.join(':') + ':' : '') + materialId + ':' + name;
   }
   
-  $(document).on('beforeHtmlMaterialRender', function (event, data) {
-    $(data.element).find('object[type="application/vnd.muikku.field.text"]').each(function (index, object) {
-      var meta = $.parseJSON($(object).find('param[name="content"]').attr('value'));      
-      ;
-
+  $(document).on('taskFieldDiscovered', function (event, data) {
+    var object = data.object;
+    if ($(object).attr('type') == 'application/vnd.muikku.field.text') {
       var input = $('<input>')
         .addClass('muikku-text-field')
         .attr({
           type: "text",
-          size: meta.columns,
-          placeholder: meta.help,
-          title: meta.hint,
-          name: createFieldName(data.workspaceMaterialId, data.parentIds, data.materialId, meta.name)
+          size: data.meta.columns,
+          placeholder: data.meta.help,
+          title: data.meta.hint,
+          name: data.name
         });
       $(object).replaceWith(input);
-    });
-    
-    $(data.element).find('object[type="application/vnd.muikku.field.select"]').each(function (index, object) {
-        var meta = $.parseJSON($(object).find('param[name="content"]').attr('value'));      
-        switch (meta.listType) {
-        	case 'list':
-        	case 'dropdown':
-        		var input = $('<select>')
-          		.addClass('muikku-select-field')
-              .attr({
-                name: createFieldName(data.workspaceMaterialId, data.parentIds, data.materialId, meta.name)
-              });
-        		
-        		if(meta.size != 'null') input.attr('size', meta.size);
-        		for(var i = 0, l = meta.options.length; i < l; i++){
-        			var option = $('<option>')
-        			.attr({
-        				'value': meta.options[i].name
-        			});
-        			option.text(meta.options[i].text);
-        			input.append(option);
-        		}
-        		$(object).replaceWith(input);
-        	break;
-        	case 'radio':
-        		//TODO add support for radio inputs
-        	break;
-        	case 'radio_horz':
-        		//TODO add support for horizontal radio inputs
-        	break;
-        }
+    }
+  });
+  
+  $(document).on('taskFieldDiscovered', function (event, data) {
+    var object = data.object;
+    if ($(object).attr('type') == 'application/vnd.muikku.field.select') {
+      var meta = data.meta;
+      switch (meta.listType) {
+        case 'list':
+        case 'dropdown':
+          var input = $('<select>')
+            .addClass('muikku-select-field')
+            .attr({
+              name: data.name
+            });
+          
+          if(meta.size != 'null') input.attr('size', meta.size);
+          
+          for(var i = 0, l = meta.options.length; i < l; i++){
+            var option = $('<option>')
+            .attr({
+              'value': meta.options[i].name
+            });
+            option.text(meta.options[i].text);
+            input.append(option);
+          }
+          
+          $(object).replaceWith(input);
+        break;
+        case 'radio':
+          //TODO add support for radio inputs
+        break;
+        case 'radio_horz':
+          //TODO add support for horizontal radio inputs
+        break;
+      }
+    }
+  });
+  
+  $(document).on('taskFieldDiscovered', function (event, data) {
+    var page = $(data.pageElement);
+    if (!$(page).data('answer-button')) {
+      $(page)
+        .append($('<button>').addClass('muikku-save-page').text('Save'))
+        .data('answer-button', 'true');
+    }
+  });
+  
+  $(document).on('beforeHtmlMaterialRender', function (event, data) {
+    $(data.element).find('object[type*="vnd.muikku.field"]').each(function (index, object) {
+      var meta = $.parseJSON($(object).find('param[name="content"]').attr('value'));
+      
+      $(document).trigger('taskFieldDiscovered', {
+        pageElement: data.pageElement,
+        object: object,
+        meta: meta,
+        name: createFieldName(data.workspaceMaterialId, data.parentIds, data.materialId, meta.name)
       });
+    });
+  });
+  
+  $(document).on('click', '.muikku-save-page', function (event, data) {
+    var page = $(this).closest('.workspace-materials-reading-view-page');
+    alert($(page).data('workspace-material-id'));
   });
 
+  
+  
 }).call(this);
