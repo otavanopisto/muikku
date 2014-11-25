@@ -32,7 +32,13 @@
         }
       });
       
+      $(document).trigger('beforeHtmlMaterialRender', {
+        element: parsed
+      });
+      
       $('#' + placeholderId).replaceWith(parsed);
+      
+      $(document).trigger('afterHtmlMaterialRender');
     };
     
     worker.postMessage({materialId: materialId});
@@ -130,6 +136,23 @@
       }
     });
 
+  });
+  
+  $(document).on('beforeHtmlMaterialRender', function (event, data) {
+    $(data.element).find('object[type="application/vnd.muikku.field.text"]').each(function (index, object) {
+      var meta = $.parseJSON($(object).find('param[name="content"]').attr('value'));
+      
+      var input = $('<input>')
+        .addClass('muikku-text-field')
+        .attr({
+          type: "text",
+          size: meta.columns,
+          placeholder: meta.help,
+          title: meta.hint
+        });
+      
+      $(object).replaceWith(input);
+    });
   });
 
 }).call(this);
