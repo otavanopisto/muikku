@@ -194,10 +194,8 @@
             });
             option.text(meta.options[i].text);
             input.append(option);
-          }
-          
-          input.muikkuField();   
-          
+          }      
+          input.muikkuField();
           $(object).replaceWith(input);
         break;
         case 'radio':
@@ -249,12 +247,26 @@
   
   $(document).on('click', '.muikku-save-page', function (event, data) {
     var page = $(this).closest('.workspace-materials-reading-view-page');
-    
+    var workspaceMaterialId = $(page).data('workspace-material-id');
+    var materialId;
+    var reply = [];
     page.find('.muikku-field').each(function (index, field) {
-      console.log($(field).muikkuField('answer'));
+      var name = $(field).attr('name');
+      var value = $(field).muikkuField('answer');
+      materialId = name.split(':')[2];
+      reply.push({field: name, value: value});
     });
     
-    var workspaceMaterialId = $(page).data('workspace-material-id');
+    //TODO: Is workspaceMaterialId the same as workspaceEntityId ???
+    
+    var url = '/rest/workspace/workspaces/'+workspaceMaterialId+'/materials/'+materialId+'/replies';
+    $.ajax({
+        type: 'POST',
+        url: url,
+        data: JSON.stringify({answers: reply}),
+        contentType: "application/json",
+        dataType: 'json'
+    });
   });
 
   

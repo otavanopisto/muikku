@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -44,6 +45,8 @@ import fi.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
+import fi.muikku.plugins.workspace.rest.model.WorkspaceMaterialFieldAnswer;
+import fi.muikku.plugins.workspace.rest.model.WorkspaceMaterialReply;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceUser;
 import fi.muikku.schooldata.CourseMetaController;
 import fi.muikku.schooldata.RoleController;
@@ -118,6 +121,9 @@ public class WorkspaceRESTService extends PluginRESTService {
   @Inject
   private Event<SchoolDataWorkspaceUserDiscoveredEvent> schoolDataWorkspaceUserDiscoveredEvent;
 
+  @Inject
+  private Logger logger;
+  
   @GET
   @Path("/workspaces/")
   public Response listWorkspaces(@QueryParam("userId") Long userId, @QueryParam("search") String searchString,
@@ -468,18 +474,14 @@ public class WorkspaceRESTService extends PluginRESTService {
   // return Response.noContent().build();
   // }
 
-//  @POST
-//  @Path("/workspaces/{WORKSPACEENTITYID}/materials/{MATERIALID}/replies")
-//  public Response createWorkspaceMaterialAnswer(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("MATERIALID") Long workspaceMaterialId, WorkspaceMaterialReply reply) {
-//    // TODO: Persist answer  
-////    {
-////      answers: [{
-////        field: 'fieldname',
-////        value: 'text'
-////      }]
-////    }
-////    
-//  }
+  @POST
+  @Path("/workspaces/{WORKSPACEENTITYID}/materials/{MATERIALID}/replies")
+  public Response createWorkspaceMaterialAnswer(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("MATERIALID") Long workspaceMaterialId, WorkspaceMaterialReply reply) {
+    for(WorkspaceMaterialFieldAnswer answer : reply.getAnswers()){
+      logger.info("Got answer: "+answer.getValue());  //TODO: Actually save the answer and dont just print it...
+    }
+    return Response.noContent().build();
+  }
 //
 //  @PUT
 //  @Path("/workspaces/{WORKSPACEENTITYID}/materials/{MATERIALID}/answers/{ID}")
