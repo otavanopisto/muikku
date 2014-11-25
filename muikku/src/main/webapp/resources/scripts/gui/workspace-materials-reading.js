@@ -161,11 +161,13 @@
         .addClass('muikku-text-field')
         .attr({
           type: "text",
-          size: data.meta.columns,
+          size:data.meta.columns,
           placeholder: data.meta.help,
           title: data.meta.hint,
           name: data.name
-        });
+        })
+        .muikkuField();   
+      
       $(object).replaceWith(input);
     }
   });
@@ -194,6 +196,8 @@
             input.append(option);
           }
           
+          input.muikkuField();   
+          
           $(object).replaceWith(input);
         break;
         case 'radio':
@@ -203,6 +207,21 @@
           //TODO add support for horizontal radio inputs
         break;
       }
+    }
+  });
+  
+  $.widget("custom.muikkuField", {
+    options : {
+      answer: function () {
+        return $(this.element).val();
+      }
+    },
+    _create : function() {
+      $(this.element).addClass('muikku-field');
+    },
+    
+    answer: function () {
+      return this.options.answer.call(this);
     }
   });
   
@@ -230,7 +249,12 @@
   
   $(document).on('click', '.muikku-save-page', function (event, data) {
     var page = $(this).closest('.workspace-materials-reading-view-page');
-    alert($(page).data('workspace-material-id'));
+    
+    page.find('.muikku-field').each(function (index, field) {
+      console.log($(field).muikkuField('answer'));
+    });
+    
+    var workspaceMaterialId = $(page).data('workspace-material-id');
   });
 
   
