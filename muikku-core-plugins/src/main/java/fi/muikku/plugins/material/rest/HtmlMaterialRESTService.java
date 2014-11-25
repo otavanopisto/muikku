@@ -3,17 +3,21 @@ package fi.muikku.plugins.material.rest;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.CacheControl;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.EntityTag;
+import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.w3c.dom.Document;
 
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.material.HtmlMaterialController;
@@ -42,37 +46,31 @@ public class HtmlMaterialRESTService extends PluginRESTService {
     }
     
     HtmlMaterial htmlMaterial = htmlMaterialController.createHtmlMaterial(entity.getTitle(), entity.getHtml(), entity.getContentType(), 0l);
-    try {
-      String html = null;
-      if (StringUtils.isNoneBlank(htmlMaterial.getHtml())) {
-        Document processedHtmlDocument = htmlMaterialController.getProcessedHtmlDocument(htmlMaterial);
-        html = htmlMaterialController.getSerializedHtmlDocument(processedHtmlDocument, htmlMaterial);
-      }
-      
-      return Response.ok(new HtmlRestMaterial(htmlMaterial.getId(), htmlMaterial.getTitle(), htmlMaterial.getContentType(), html)).build();
-    } catch (Exception e) {
-      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
-    }
+    return Response.ok(createRestModel(htmlMaterial)).build();
   }
-  
+
   @GET
   @Path("/{id}")
-  public Response findMaterial(@PathParam("id") Long id) {
+  public Response findMaterial(@PathParam("id") Long id, @Context Request request) {
     HtmlMaterial htmlMaterial = htmlMaterialController.findHtmlMaterialById(id);
     if (htmlMaterial == null) {
       return Response.status(Status.NOT_FOUND).build();
     } else {
-      try {
-        String html = null;
-        if (StringUtils.isNoneBlank(htmlMaterial.getHtml())) {
-          Document processedHtmlDocument = htmlMaterialController.getProcessedHtmlDocument(htmlMaterial);
-          html = htmlMaterialController.getSerializedHtmlDocument(processedHtmlDocument, htmlMaterial);
-        }
-        
-        return Response.ok(new HtmlRestMaterial(htmlMaterial.getId(), htmlMaterial.getTitle(), htmlMaterial.getContentType(), html)).build();
-      } catch (Exception e) {
-        return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+      EntityTag tag = new EntityTag(DigestUtils.md5Hex(String.valueOf(htmlMaterial.getVersion())));
+      ResponseBuilder builder = request.evaluatePreconditions(tag);
+      if (builder != null) {
+        return builder.build();
       }
+      
+      CacheControl cacheControl = new CacheControl();
+      cacheControl.setMustRevalidate(true);
+      
+      return Response.ok(createRestModel(htmlMaterial)).build();
     }
   }
+  
+  private HtmlRestMaterial createRestModel(HtmlMaterial htmlMaterial) {
+    return new HtmlRestMaterial(htmlMaterial.getId(), htmlMaterial.getTitle(), htmlMaterial.getContentType(), htmlMaterial.getHtml());
+  }
+  
 }
