@@ -1,11 +1,9 @@
 package fi.muikku.plugins.dnm;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -27,8 +25,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPathExpressionException;
 
-import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.cyberneko.html.parsers.DOMParser;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -335,12 +333,9 @@ public class DeusNexMachinaController {
           path = matcher.group(3);
           WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByUrlName(workspaceUrlName);
           WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialByWorkspaceEntityAndPath(workspaceEntity, path);
-          HtmlMaterial htmlMaterial = htmlMaterialController.findHtmlMaterialById(workspaceMaterial.getId());
-          //TODO: Why sometimes htmlMaterial is null?
-          if(htmlMaterial != null){
-            element.setAttribute("data-material-id", String.valueOf(htmlMaterial.getId()));
-            element.setAttribute("data-material-type", htmlMaterial.getType());
-          }
+          HtmlMaterial htmlMaterial = htmlMaterialController.findHtmlMaterialById(workspaceMaterial.getMaterialId());
+          element.setAttribute("data-material-id", String.valueOf(htmlMaterial.getId()));
+          element.setAttribute("data-material-type", htmlMaterial.getType());
         }
       }
       StringWriter writer = new StringWriter();
