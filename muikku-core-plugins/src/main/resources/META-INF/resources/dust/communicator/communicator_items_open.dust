@@ -1,3 +1,3 @@
 {#.}
-    {>"communicator/communicator_item_open.dust"/}
+    {>"communicator/communicator_item.dust"/}  
 {/.}

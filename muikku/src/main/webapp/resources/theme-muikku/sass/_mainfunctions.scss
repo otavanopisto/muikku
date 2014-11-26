@@ -185,6 +185,14 @@
   line-heigth:0.5em;
 }
 
+.mf-item-tools{
+   @extend .co-mainFunction-sub-header;
+ 
+  .mf-item-tool{
+  
+  }
+  
+}
 
 .mf-item-details-container{
   background-color:#f0f3f4;

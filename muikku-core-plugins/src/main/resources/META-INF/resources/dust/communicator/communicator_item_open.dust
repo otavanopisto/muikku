@@ -1,5 +1,6 @@
 
     <div class="mf-item cm-message" id="{id}">
+      <div class="cm-messages-tools mf-item-tools"><a class="cm-message-tool mf-item-tool " href="">Takaisin</a></div>
       <div class="mf-item-details cm-message-details">
         <div class="mf-item-details-container cm-message-details-container">       
           <div class="mf-item-additionalInfo cm-message-additionalInfo">
