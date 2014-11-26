@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -40,9 +39,14 @@ import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.model.workspace.WorkspaceUserSignup;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.material.MaterialController;
+import fi.muikku.plugins.material.QueryFieldController;
 import fi.muikku.plugins.material.model.Material;
+import fi.muikku.plugins.material.model.QueryField;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
+import fi.muikku.plugins.workspace.WorkspaceMaterialFieldController;
+import fi.muikku.plugins.workspace.WorkspaceMaterialReplyController;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceMaterialFieldAnswer;
@@ -108,7 +112,16 @@ public class WorkspaceRESTService extends PluginRESTService {
   private WorkspaceMaterialController workspaceMaterialController;
 
   @Inject
+  private WorkspaceMaterialReplyController workspaceMaterialReplyController;
+  
+  @Inject
   private MaterialController materialController;
+
+  @Inject
+  private QueryFieldController queryFieldController;
+  
+  @Inject
+  private WorkspaceMaterialFieldController workspaceMaterialFieldController;
 
   @Inject
   @Any
@@ -120,9 +133,6 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private Event<SchoolDataWorkspaceUserDiscoveredEvent> schoolDataWorkspaceUserDiscoveredEvent;
-
-  @Inject
-  private Logger logger;
   
   @GET
   @Path("/workspaces/")
@@ -477,9 +487,44 @@ public class WorkspaceRESTService extends PluginRESTService {
   @POST
   @Path("/workspaces/{WORKSPACEENTITYID}/materials/{MATERIALID}/replies")
   public Response createWorkspaceMaterialAnswer(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("MATERIALID") Long workspaceMaterialId, WorkspaceMaterialReply reply) {
-    for(WorkspaceMaterialFieldAnswer answer : reply.getAnswers()){
-      logger.info("Got answer: "+answer.getValue());  //TODO: Actually save the answer and dont just print it...
+    // TODO: Correct workspace entity?
+    // TODO: Security
+    
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).entity("Not logged in").build();
     }
+    
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
+    if (workspaceMaterial == null) {
+      return Response.status(Status.NOT_FOUND).entity("Workspace material could not be found").build();
+    }
+    
+    fi.muikku.plugins.workspace.model.WorkspaceMaterialReply workspaceMaterialReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, sessionController.getLoggedUserEntity());
+    if (workspaceMaterialReply == null) {
+      workspaceMaterialReply = workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, sessionController.getLoggedUserEntity());
+    }
+    
+    for (WorkspaceMaterialFieldAnswer answer : reply.getAnswers()) {
+      String fieldName = answer.getFieldName();
+      if (StringUtils.isBlank(fieldName)) {
+        return Response.status(Status.BAD_REQUEST).entity("fieldName is empty").build();
+      }
+      
+      Material material = materialController.findMaterialById(answer.getMaterialId());
+      if (material == null) {
+        return Response.status(Status.BAD_REQUEST).entity("material id is invalid").build();
+      }
+      
+      QueryField queryField = queryFieldController.findQueryFieldByMaterialAndName(material, fieldName);
+      
+      WorkspaceMaterialField materialField = workspaceMaterialFieldController.findWorkspaceMaterialFieldByWorkspaceMaterialAndQueryFieldAndEmbedId(workspaceMaterial, queryField, answer.getEmbedId());
+      if (materialField == null) {
+        materialField = workspaceMaterialFieldController.createWorkspaceMaterialField(workspaceMaterial, queryField, answer.getEmbedId());
+      }
+      
+      workspaceMaterialFieldController.storeFieldValue(materialField, workspaceMaterialReply, answer.getValue());
+    }
+    
     return Response.noContent().build();
   }
 //
