@@ -51,6 +51,8 @@
         <section id="page-#{node.workspaceMaterialId}" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-material-type="#{node.materialType}" data-material-title="#{node.materialTitle}" class="workspace-materials-reading-view-page"/>
       </ui:fragment>
     </ui:repeat>
+    
+    <input class="workspaceEntityId" type="hidden" value="#{workspaceMaterialsReadingBackingBean.workspaceEntityId}"/>
   </ui:define>
   
   <ui:define name="workspaces.materials.reading.additional.dock">

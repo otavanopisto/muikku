@@ -150,8 +150,8 @@
 
   });
   
-  function createFieldName(workspaceMaterialId, parentIds, materialId, name) {
-    return 'WM' + workspaceMaterialId + ':' + (parentIds.length ? parentIds.join(':') + ':' : '') + materialId + ':' + name;
+  function createEmbedId(parentIds) {
+    return (parentIds.length ? parentIds.join(':') : null);
   }
   
   $(document).on('taskFieldDiscovered', function (event, data) {
@@ -160,11 +160,15 @@
       var input = $('<input>')
         .addClass('muikku-text-field')
         .attr({
-          type: "text",
-          size:data.meta.columns,
-          placeholder: data.meta.help,
-          title: data.meta.hint,
-          name: data.name
+          'type': "text",
+          'size':data.meta.columns,
+          'placeholder': data.meta.help,
+          'title': data.meta.hint,
+          'name': data.name
+        })
+        .data({
+          'material-id': data.materialId,
+          'embed-id': data.embedId
         })
         .muikkuField();   
       
@@ -183,6 +187,10 @@
             .addClass('muikku-select-field')
             .attr({
               name: data.name
+            })
+            .data({
+              'material-id': data.materialId,
+              'embed-id': data.embedId
             });
           
           if(meta.size != 'null') input.attr('size', meta.size);
@@ -240,35 +248,38 @@
         pageElement: data.pageElement,
         object: object,
         meta: meta,
-        name: createFieldName(data.workspaceMaterialId, data.parentIds, data.materialId, meta.name)
+        name: meta.name,
+        embedId: createEmbedId(data.parentIds),
+        materialId: data.materialId
       });
     });
   });
   
   $(document).on('click', '.muikku-save-page', function (event, data) {
     var page = $(this).closest('.workspace-materials-reading-view-page');
+    var workspaceEntityId = $('.workspaceEntityId').val();
     var workspaceMaterialId = $(page).data('workspace-material-id');
-    var materialId;
     var reply = [];
+    
     page.find('.muikku-field').each(function (index, field) {
-      var name = $(field).attr('name');
+      var fieldName = $(field).attr('name');
       var value = $(field).muikkuField('answer');
-      materialId = name.split(':')[2];
-      reply.push({field: name, value: value});
+      reply.push({
+        value: value,
+        embedId: $(field).data('embed-id'),
+        materialId: $(field).data('material-id'),
+        fieldName: fieldName
+      });
     });
     
-    //TODO: Is workspaceMaterialId the same as workspaceEntityId ???
-    
-    var url = '/rest/workspace/workspaces/'+workspaceMaterialId+'/materials/'+materialId+'/replies';
-    $.ajax({
-        type: 'POST',
-        url: url,
-        data: JSON.stringify({answers: reply}),
-        contentType: "application/json",
-        dataType: 'json'
+    mApi().workspace.workspaces.materials.replies.create(workspaceEntityId, workspaceMaterialId, {
+      answers: reply
+    })
+    .callback(function (err) {
+      if (err) {
+        $('.notification-queue').notificationQueue('notification', 'error', "Error occurred while saving field replies " + err);
+      }
     });
   });
 
-  
-  
 }).call(this);
