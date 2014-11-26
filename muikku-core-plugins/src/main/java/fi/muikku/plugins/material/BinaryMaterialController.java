@@ -29,7 +29,7 @@ public class BinaryMaterialController {
     return material;
 	}
 	
-	public BinaryMaterial finBinaryMaterialById(Long id) {
+	public BinaryMaterial findBinaryMaterialById(Long id) {
 		return binaryMaterialDAO.findById(id);
 	}
 
@@ -37,6 +37,10 @@ public class BinaryMaterialController {
 		BinaryMaterial material = binaryMaterialDAO.updateContent(binaryMaterial, content);
 		materialUpdateEvent.fire(new BinaryMaterialUpdateEvent(material));
 		return material;
+	}
+	
+	public void deleteBinaryMaterial(BinaryMaterial binaryMaterial) {
+	  binaryMaterialDAO.delete(binaryMaterial);
 	}
 	
 }

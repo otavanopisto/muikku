@@ -58,7 +58,8 @@ public class WorkspaceController {
 	@Inject
 	private WorkspaceEntityDAO workspaceEntityDAO;
 	
-	private WorkspaceUserEntityDAO workspaceUserEntityDAO;
+  @Inject
+  private WorkspaceUserEntityDAO workspaceUserEntityDAO;
 	
 	@Inject
 	private WorkspaceTypeEntityDAO workspaceTypeEntityDAO; 

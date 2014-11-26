@@ -16,6 +16,7 @@ import org.xml.sax.SAXException;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.material.model.HtmlMaterial;
+import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.material.processing.HtmlMaterialProcessingContext;
 import fi.muikku.plugins.material.processing.MaterialProcessorAdapter;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
@@ -59,15 +60,14 @@ private static final boolean ADD_DEBUG_MARKERS = false;
           if (pathEntries.length > 2) {
             String workspaceUrlName = pathEntries[0];
             String materialPath = pathEntries[2];
-            
             WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByUrlName(workspaceUrlName);
             if (workspaceEntity != null) {
               WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialByWorkspaceEntityAndPath(workspaceEntity, materialPath);
-              if ((workspaceMaterial != null) && (workspaceMaterial.getMaterial() instanceof HtmlMaterial)) {
-                HtmlMaterial htmlMaterial = (HtmlMaterial) workspaceMaterial.getMaterial();
+              if ((workspaceMaterial != null) && (workspaceMaterialController.getMaterialForWorkspaceMaterial(workspaceMaterial) instanceof HtmlMaterial)) {
+                HtmlMaterial htmlMaterial = (HtmlMaterial)workspaceMaterialController.getMaterialForWorkspaceMaterial(workspaceMaterial);
                 
                 try {
-                  Document embeddedDocument = htmlMaterialController.getProcessedHtmlDocument((HtmlMaterial) workspaceMaterial.getMaterial());
+                  Document embeddedDocument = htmlMaterialController.getProcessedHtmlDocument(htmlMaterial);
                   NodeList objectNodeList = embeddedDocument.getElementsByTagName("object");
 
                   for (int objectIndex = 0, objectsLength = objectNodeList.getLength(); objectIndex < objectsLength; objectIndex++) {
@@ -81,16 +81,18 @@ private static final boolean ADD_DEBUG_MARKERS = false;
                   
                   Node parent = iframeElement.getParentNode();
                   Node nextSibling = iframeElement.getNextSibling();
+                  
+                  Material material = workspaceMaterialController.getMaterialForWorkspaceMaterial(workspaceMaterial);
 
                   if (ADD_DEBUG_MARKERS) {
-                    Element iframeStartMarker = createIframeMarker(iframeElement.getOwnerDocument(), "#" + workspaceMaterial.getMaterial().getId() + " / " + workspaceMaterial.getMaterial().getTitle() + " >>>>>>>>>>", "background: green; color: #fff; border: 1px dotted #000; text-align: center;");
+                    Element iframeStartMarker = createIframeMarker(iframeElement.getOwnerDocument(), "#" + material.getId() + " / " + material.getTitle() + " >>>>>>>>>>", "background: green; color: #fff; border: 1px dotted #000; text-align: center;");
                     parent.insertBefore(iframeStartMarker, iframeElement);
                   }
                   
                   event.replaceWithForeignDocumentBody(iframeElement, embeddedDocument);
                   
                   if (ADD_DEBUG_MARKERS) {
-                    Element iframeEndMarker = createIframeMarker(iframeElement.getOwnerDocument(), "<<<<<<<<<< #" + workspaceMaterial.getMaterial().getId() + " / " + workspaceMaterial.getMaterial().getTitle(), "background: red; color: #fff; border: 1px dotted #000; text-align: center;");
+                    Element iframeEndMarker = createIframeMarker(iframeElement.getOwnerDocument(), "<<<<<<<<<< #" + material.getId() + " / " + material.getTitle(), "background: red; color: #fff; border: 1px dotted #000; text-align: center;");
                     if (nextSibling != null) {
                       parent.insertBefore(iframeEndMarker, nextSibling);
                     } else {

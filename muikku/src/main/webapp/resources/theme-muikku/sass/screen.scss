@@ -623,7 +623,7 @@ a.header {
 }
 
 
-.cp-course{
+.cp-course {
  @extend .co-listItem;
  padding:5px 5px 5px 5px;
  margin-bottom:10px;
@@ -633,11 +633,11 @@ a.header {
 
 }
 
-.cp-course-details-container{
+.cp-course-details-container {
   background-color:#f0f3f4;
 }
 
-.cp-course-details-close{
+.cp-course-details-close {
  position:absolute;
  margin-top:0;
  margin-left:0;
@@ -647,31 +647,28 @@ a.header {
  cursor: pointer;
 }
 
-
-
-.cp-course-header-name{
+.cp-course-header-name {
 	display : inline-block;
   text-transform:uppercase;
 }
 
-.cp-course-header-details{
+.cp-course-header-details {
   display : inline-block;
   float:right;  
 
 }
-.cp-course-rating{
+.cp-course-rating {
 	padding-right:5px;
 }
 
-
-.cp-course-description{
+.cp-course-description {
   display:inline-block;
   width:70%;
   background-color:#fff;  
   cursor:pointer;  
 }
 
-.cp-course-description-text{
+.cp-course-description-text {
   @extend .co-description;
   font-size: 0.9em; 
   padding:5px;
@@ -679,8 +676,7 @@ a.header {
 
 }
 
-
-.cp-course-additionalInfo{
+.cp-course-additionalInfo {
   display:inline-block;
   width:30%;
   float:right;
@@ -688,10 +684,11 @@ a.header {
 
 }
 
-.cp-course-details-teachers{
+.cp-course-details-teachers {
 	padding:0 5px;
 	height:20px;
-  .cp-teacher-picture-default{
+	
+  .cp-teacher-picture-default {
     @extend .co-user-picture;
     display:inline-block;
     height:20px;
@@ -700,26 +697,24 @@ a.header {
 
 }
 
-.cp-course-details-toolbar{
+.cp-course-details-toolbar {
   border-top: 1px solid $brd; 
 	@include padding(5px);
 	
 }
 
-
-.cp-course-short:after{
+.cp-course-short:after {
    content : " -"  ;
 }
 
-.cp-course-details-teacher{
+.cp-course-details-teacher {
   display:inline-block;	
   height:20px;
   width:20px;
   margin-right:3px;
-
 }
 
-.cp-course-details-teacher-picture-container{
+.cp-course-details-teacher-picture-container {
 
 }
 
