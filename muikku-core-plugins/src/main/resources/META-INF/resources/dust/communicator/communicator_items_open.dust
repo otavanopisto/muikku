@@ -1,9 +1,3 @@
 {#.}
-  <div class="mf-content-items-tools mf-sub-header cm-messages-tools">
-    <span class="mf-content-items-tool cm-messages-tool icon-back"><a href="#in">Takaisin</a></span>
-  </div>
-  <div>
     {>"communicator/communicator_item_open.dust"/}
-  </div>   
-    
 {/.}
