@@ -524,5 +524,10 @@ body.workspace-materials-reading {
       margin:0;
     }
   }
-  
+ 
+  .workspace-material-loading {
+    @include background-image('gfx/workspace-material-loading.gif'); 
+    background-repeat: no-repeat;
+    background-position: center;
+  }
 }

@@ -9,7 +9,8 @@
   
   function loadHtmlMaterial(pageElement, workspaceEntityId, workspaceMaterialId, materialId, placeholderId, parentIds) {
     var placeHolder = $('#' + placeholderId);
-    placeHolder.html('Loading:' + materialId);
+    placeHolder
+      .addClass('workspace-material-loading');
     
     var worker = new Worker("/scripts/gui/workspace-material-loader.js");
     
@@ -28,7 +29,7 @@
           if (embededMaterialType == 'html') {
             var placeholder = $('<div>')
               .attr('id', createUniqueId())
-              .text('Embedded document loading');
+              .addClass('workspace-material-loading')
             
             $(iframe).replaceWith(placeholder);
             loadHtmlMaterial(pageElement, workspaceEntityId, embededWorkspaceMaterialId, embededMaterialId, placeholder.attr('id'), parentIds.concat(materialId));
