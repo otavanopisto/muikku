@@ -206,12 +206,11 @@
           'title': data.meta.hint,
           'name': data.name
         })
-        .data({
-          'embed-id': data.embedId,
-          'material-id': data.materialId
-        })
         .val(data.value)
-        .muikkuField();   
+        .muikkuField({
+          materialId: data.materialId,
+          embedId: data.embedId
+        });   
       
       $(object).replaceWith(input);
     }
@@ -230,12 +229,11 @@
             'title': data.meta.hint,
             'name': data.name
           })
-          .data({
-            'material-id': data.materialId,
-            'embed-id': data.embedId
-          })
           .val(data.value)
-          .muikkuField());
+          .muikkuField({
+            materialId: data.materialId,
+            embedId: data.embedId
+          }));
     }
   });
   
@@ -250,10 +248,6 @@
             .addClass('muikku-select-field')
             .attr({
               name: data.name
-            })
-            .data({
-              'material-id': data.materialId,
-              'embed-id': data.embedId
             });
           
           if(meta.size != 'null') input.attr('size', meta.size);
@@ -269,7 +263,10 @@
           
           input
             .val(data.value)
-            .muikkuField();
+            .muikkuField({
+              materialId: data.materialId,
+              embedId: data.embedId
+            });
           
           $(object).replaceWith(input);
         break;
@@ -277,12 +274,7 @@
         case 'radio_horz':
           var radioInputId = [data.materialId, data.embedId, data.name].join(':');
           // TODO proper css for container (?) to display radio buttons vertically or horizontally
-          var radioContainer = $('<div>')
-            .addClass('muikku-select-field')
-            .data({
-              'material-id': data.materialId,
-              'embed-id': data.embedId
-            });
+          var radioContainer = $('<div>').addClass('muikku-select-field');
           for (var i = 0, l = meta.options.length; i < l; i++){
             var radioLabel = $('<label>')
               .attr({
@@ -299,7 +291,10 @@
             radioContainer.append(radioLabel);
             radioContainer.append(radioInput);
           }      
-          radioContainer.muikkuField();
+          radioContainer.muikkuField({
+            materialId: data.materialId,
+            embedId: data.embedId
+          });
           $(object).replaceWith(radioContainer);
         break;
       }
@@ -314,6 +309,10 @@
     },
     _create : function() {
       $(this.element).addClass('muikku-field');
+      $(this.element).data({
+        'material-id': this.options.materialId,
+        'embed-id': this.options.embedId
+      });
     },
     
     answer: function () {
