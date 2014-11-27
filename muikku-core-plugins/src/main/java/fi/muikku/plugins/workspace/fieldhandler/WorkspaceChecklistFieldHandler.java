@@ -43,72 +43,72 @@ public class WorkspaceChecklistFieldHandler extends AbstractWorkspaceFieldHandle
   @Override
   public void renderField(Document ownerDocument, Element objectElement, String content, WorkspaceMaterialField workspaceMaterialField,
       WorkspaceMaterialReply workspaceMaterialReply) throws JsonParseException, JsonMappingException, IOException {
-
-    ChecklistFieldMeta fieldMeta = (new ObjectMapper()).readValue(content, ChecklistFieldMeta.class);
-    String parameterName = getHtmlFieldName(workspaceMaterialField.getName());
-    
-    Node objectParent = objectElement.getParentNode();
-    objectParent.insertBefore(objectElement, objectElement);
-    
-    WorkspaceMaterialChecklistFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialChecklistFieldAnswerByFieldAndReply(workspaceMaterialField, workspaceMaterialReply);
-    
-    
-    for (ChecklistFieldOptionMeta option : fieldMeta.getOptions()) {
-      QueryChecklistFieldOption fieldOption = queryChecklistFieldController.findQueryChecklistFieldOptionByFieldAndName((QueryChecklistField) workspaceMaterialField.getQueryField(), option.getName());
-      boolean checked = false;
-      if (fieldAnswer != null) {
-        checked = workspaceMaterialFieldAnswerController.findWorkspaceMaterialChecklistFieldAnswerOptionByFieldAnswerAndOption(fieldAnswer, fieldOption) != null;
-      }
-      
-      Element inputElement = ownerDocument.createElement("input");
-      inputElement.setAttribute("type", "checkbox");
-      inputElement.setAttribute("value", option.getName());
-      inputElement.setAttribute("name", parameterName);
-      
-      if (checked) {
-        inputElement.setAttribute("checked", "checked");
-      }
-      
-      // TODO: Label For ...
-      Element labelElement = ownerDocument.createElement("label");
-      labelElement.setTextContent(option.getText());
-
-      objectParent.insertBefore(inputElement, objectElement);  
-      objectParent.insertBefore(labelElement, objectElement);
-      objectParent.insertBefore(ownerDocument.createElement("br"), objectElement);      
-    }
-    
-    objectParent.removeChild(objectElement);
+//
+//    ChecklistFieldMeta fieldMeta = (new ObjectMapper()).readValue(content, ChecklistFieldMeta.class);
+//    String parameterName = getHtmlFieldName(workspaceMaterialField.getName());
+//    
+//    Node objectParent = objectElement.getParentNode();
+//    objectParent.insertBefore(objectElement, objectElement);
+//    
+//    WorkspaceMaterialChecklistFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialChecklistFieldAnswerByFieldAndReply(workspaceMaterialField, workspaceMaterialReply);
+//    
+//    
+//    for (ChecklistFieldOptionMeta option : fieldMeta.getOptions()) {
+//      QueryChecklistFieldOption fieldOption = queryChecklistFieldController.findQueryChecklistFieldOptionByFieldAndName((QueryChecklistField) workspaceMaterialField.getQueryField(), option.getName());
+//      boolean checked = false;
+//      if (fieldAnswer != null) {
+//        checked = workspaceMaterialFieldAnswerController.findWorkspaceMaterialChecklistFieldAnswerOptionByFieldAnswerAndOption(fieldAnswer, fieldOption) != null;
+//      }
+//      
+//      Element inputElement = ownerDocument.createElement("input");
+//      inputElement.setAttribute("type", "checkbox");
+//      inputElement.setAttribute("value", option.getName());
+//      inputElement.setAttribute("name", parameterName);
+//      
+//      if (checked) {
+//        inputElement.setAttribute("checked", "checked");
+//      }
+//      
+//      // TODO: Label For ...
+//      Element labelElement = ownerDocument.createElement("label");
+//      labelElement.setTextContent(option.getText());
+//
+//      objectParent.insertBefore(inputElement, objectElement);  
+//      objectParent.insertBefore(labelElement, objectElement);
+//      objectParent.insertBefore(ownerDocument.createElement("br"), objectElement);      
+//    }
+//    
+//    objectParent.removeChild(objectElement);
   }
 
   @Override
   public void persistField(WorkspaceMaterialReply reply, WorkspaceMaterialField workspaceMaterialField, Map<String, String[]> requestParameterMap)
       throws MaterialQueryIntegrityExeption {
-
-    String parameterName = getHtmlFieldName(workspaceMaterialField.getName());
-    List<String> parameterValues = requestParameterMap.containsKey(parameterName) ? Arrays.asList(requestParameterMap.get(parameterName)) : new ArrayList<String>();
-    QueryChecklistField queryField = (QueryChecklistField) workspaceMaterialField.getQueryField();
-    List<QueryChecklistFieldOption> fieldOptions = queryChecklistFieldController.listQueryChecklistFieldOptionsByField(queryField);
-    
-    WorkspaceMaterialChecklistFieldAnswer workspaceMaterialChecklistFieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialChecklistFieldAnswerByFieldAndReply(workspaceMaterialField, reply);
-    if (workspaceMaterialChecklistFieldAnswer == null) {
-      workspaceMaterialChecklistFieldAnswer = workspaceMaterialFieldAnswerController.createWorkspaceMaterialChecklistFieldAnswer(workspaceMaterialField, reply);
-    }
-    
-    for (QueryChecklistFieldOption fieldOption : fieldOptions) {
-      boolean checked = parameterValues.contains(fieldOption.getName());
-      WorkspaceMaterialChecklistFieldAnswerOption answerOption = workspaceMaterialFieldAnswerController.findWorkspaceMaterialChecklistFieldAnswerOptionByFieldAnswerAndOption(workspaceMaterialChecklistFieldAnswer, fieldOption);
-      
-      if (checked) {
-        if (answerOption == null) {
-          answerOption = workspaceMaterialFieldAnswerController.createWorkspaceMaterialChecklistFieldAnswerOption(workspaceMaterialChecklistFieldAnswer, fieldOption);
-        }
-      } else {
-        if (answerOption != null) {
-          workspaceMaterialFieldAnswerController.deleteWorkspaceMaterialChecklistFieldAnswerOption(answerOption);
-        }
-      }
-    }
+//
+//    String parameterName = getHtmlFieldName(workspaceMaterialField.getName());
+//    List<String> parameterValues = requestParameterMap.containsKey(parameterName) ? Arrays.asList(requestParameterMap.get(parameterName)) : new ArrayList<String>();
+//    QueryChecklistField queryField = (QueryChecklistField) workspaceMaterialField.getQueryField();
+//    List<QueryChecklistFieldOption> fieldOptions = queryChecklistFieldController.listQueryChecklistFieldOptionsByField(queryField);
+//    
+//    WorkspaceMaterialChecklistFieldAnswer workspaceMaterialChecklistFieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialChecklistFieldAnswerByFieldAndReply(workspaceMaterialField, reply);
+//    if (workspaceMaterialChecklistFieldAnswer == null) {
+//      workspaceMaterialChecklistFieldAnswer = workspaceMaterialFieldAnswerController.createWorkspaceMaterialChecklistFieldAnswer(workspaceMaterialField, reply);
+//    }
+//    
+//    for (QueryChecklistFieldOption fieldOption : fieldOptions) {
+//      boolean checked = parameterValues.contains(fieldOption.getName());
+//      WorkspaceMaterialChecklistFieldAnswerOption answerOption = workspaceMaterialFieldAnswerController.findWorkspaceMaterialChecklistFieldAnswerOptionByFieldAnswerAndOption(workspaceMaterialChecklistFieldAnswer, fieldOption);
+//      
+//      if (checked) {
+//        if (answerOption == null) {
+//          answerOption = workspaceMaterialFieldAnswerController.createWorkspaceMaterialChecklistFieldAnswerOption(workspaceMaterialChecklistFieldAnswer, fieldOption);
+//        }
+//      } else {
+//        if (answerOption != null) {
+//          workspaceMaterialFieldAnswerController.deleteWorkspaceMaterialChecklistFieldAnswerOption(answerOption);
+//        }
+//      }
+//    }
     
   }
 

@@ -41,23 +41,23 @@ public class WorkspaceSelectFieldHandler extends AbstractWorkspaceFieldHandler {
   public void renderField(Document ownerDocument, Element objectElement, String content, WorkspaceMaterialField workspaceMaterialField,
       WorkspaceMaterialReply workspaceMaterialReply) throws JsonParseException, JsonMappingException, IOException {
 
-    SelectFieldMeta selectFieldMeta = (new ObjectMapper()).readValue(content, SelectFieldMeta.class);
-    
-    String parameterName = getHtmlFieldName(workspaceMaterialField.getName());
-    WorkspaceMaterialSelectFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialSelectFieldAnswerByFieldAndReply(workspaceMaterialField, workspaceMaterialReply);
-    
-    switch (selectFieldMeta.getListType()) {
-      case "list":
-      case "dropdown":
-        renderSelectField(ownerDocument, objectElement, selectFieldMeta, parameterName, fieldAnswer);
-      break;
-      case "radio":
-        renderRadioField(ownerDocument, objectElement, selectFieldMeta, parameterName, fieldAnswer, true);
-      break;
-      case "radio_horz":
-        renderRadioField(ownerDocument, objectElement, selectFieldMeta, parameterName, fieldAnswer, false);
-      break;
-    }
+//    SelectFieldMeta selectFieldMeta = (new ObjectMapper()).readValue(content, SelectFieldMeta.class);
+//    
+//    String parameterName = getHtmlFieldName(workspaceMaterialField.getName());
+//    WorkspaceMaterialSelectFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialSelectFieldAnswerByFieldAndReply(workspaceMaterialField, workspaceMaterialReply);
+//    
+//    switch (selectFieldMeta.getListType()) {
+//      case "list":
+//      case "dropdown":
+//        renderSelectField(ownerDocument, objectElement, selectFieldMeta, parameterName, fieldAnswer);
+//      break;
+//      case "radio":
+//        renderRadioField(ownerDocument, objectElement, selectFieldMeta, parameterName, fieldAnswer, true);
+//      break;
+//      case "radio_horz":
+//        renderRadioField(ownerDocument, objectElement, selectFieldMeta, parameterName, fieldAnswer, false);
+//      break;
+//    }
   }
 
   private void renderSelectField(Document ownerDocument, Element objectElement, SelectFieldMeta selectFieldMeta, String parameterName, WorkspaceMaterialSelectFieldAnswer fieldAnswer) {
@@ -118,31 +118,31 @@ public class WorkspaceSelectFieldHandler extends AbstractWorkspaceFieldHandler {
   @Override
   public void persistField(WorkspaceMaterialReply reply, WorkspaceMaterialField workspaceMaterialField, Map<String, String[]> requestParameterMap)
       throws MaterialQueryIntegrityExeption {
-    
-    String parameterName = getHtmlFieldName(workspaceMaterialField.getName());
-    String parameterValue = getRequestParameterMapFirstValue(requestParameterMap, parameterName);
-    
-    QuerySelectField queryField = (QuerySelectField) workspaceMaterialField.getQueryField();
-    QuerySelectFieldOption option = null;
-    if (StringUtils.isNotBlank(parameterValue)) {
-      option = querySelectFieldController.findQuerySelectFieldOptionBySelectFieldAndName(queryField, parameterValue);
-      if (option == null) {
-        throw new MaterialQueryIntegrityExeption("SelectFieldOption #" + queryField.getId() + " does not contain option '" + parameterValue + "'");
-      }
-    }
-    
-    WorkspaceMaterialSelectFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialSelectFieldAnswerByFieldAndReply(workspaceMaterialField, reply);
-    if (option != null) {
-      if (fieldAnswer != null) {
-        fieldAnswer = workspaceMaterialFieldAnswerController.updateWorkspaceMaterialSelectFieldAnswerValue(fieldAnswer, option);
-      } else {
-        fieldAnswer = workspaceMaterialFieldAnswerController.createWorkspaceMaterialSelectFieldAnswer(workspaceMaterialField, reply, option);
-      }
-    } else {
-      if (fieldAnswer != null) {
-        workspaceMaterialFieldAnswerController.updateWorkspaceMaterialSelectFieldAnswerValue(fieldAnswer, null);
-      }
-    }
+//    
+//    String parameterName = getHtmlFieldName(workspaceMaterialField.getName());
+//    String parameterValue = getRequestParameterMapFirstValue(requestParameterMap, parameterName);
+//    
+//    QuerySelectField queryField = (QuerySelectField) workspaceMaterialField.getQueryField();
+//    QuerySelectFieldOption option = null;
+//    if (StringUtils.isNotBlank(parameterValue)) {
+//      option = querySelectFieldController.findQuerySelectFieldOptionBySelectFieldAndName(queryField, parameterValue);
+//      if (option == null) {
+//        throw new MaterialQueryIntegrityExeption("SelectFieldOption #" + queryField.getId() + " does not contain option '" + parameterValue + "'");
+//      }
+//    }
+//    
+//    WorkspaceMaterialSelectFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialSelectFieldAnswerByFieldAndReply(workspaceMaterialField, reply);
+//    if (option != null) {
+//      if (fieldAnswer != null) {
+//        fieldAnswer = workspaceMaterialFieldAnswerController.updateWorkspaceMaterialSelectFieldAnswerValue(fieldAnswer, option);
+//      } else {
+//        fieldAnswer = workspaceMaterialFieldAnswerController.createWorkspaceMaterialSelectFieldAnswer(workspaceMaterialField, reply, option);
+//      }
+//    } else {
+//      if (fieldAnswer != null) {
+//        workspaceMaterialFieldAnswerController.updateWorkspaceMaterialSelectFieldAnswerValue(fieldAnswer, null);
+//      }
+//    }
   }
 
 }
