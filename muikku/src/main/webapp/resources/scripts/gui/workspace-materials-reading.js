@@ -178,6 +178,26 @@
   
   $(document).on('taskFieldDiscovered', function (event, data) {
     var object = data.object;
+    if ($(object).attr('type') == 'application/vnd.muikku.field.memo') {
+      $(object).replaceWith($('<textarea>')
+          .addClass('muikku-memo-field')
+          .attr({
+            'cols':data.meta.columns,
+            'rows':data.meta.rows,
+            'placeholder': data.meta.help,
+            'title': data.meta.hint,
+            'name': data.name
+          })
+          .data({
+            'material-id': data.materialId,
+            'embed-id': data.embedId
+          })
+          .muikkuField());
+    }
+  });
+  
+  $(document).on('taskFieldDiscovered', function (event, data) {
+    var object = data.object;
     if ($(object).attr('type') == 'application/vnd.muikku.field.select') {
       var meta = data.meta;
       switch (meta.listType) {
