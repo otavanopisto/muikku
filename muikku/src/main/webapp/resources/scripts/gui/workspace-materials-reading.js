@@ -274,10 +274,33 @@
           $(object).replaceWith(input);
         break;
         case 'radio':
-          //TODO add support for radio inputs
-        break;
         case 'radio_horz':
-          //TODO add support for horizontal radio inputs
+          var radioInputId = [data.materialId, data.embedId, data.name].join(':');
+          // TODO proper css for container (?) to display radio buttons vertically or horizontally
+          var radioContainer = $('<div>')
+            .addClass('muikku-select-field')
+            .data({
+              'material-id': data.materialId,
+              'embed-id': data.embedId
+            });
+          for (var i = 0, l = meta.options.length; i < l; i++){
+            var radioLabel = $('<label>')
+              .attr({
+                'for': [radioInputId, meta.options[i].name].join(':')
+              });
+            radioLabel.text(meta.options[i].text);
+            var radioInput = $('<input>')
+              .attr({
+                id: [radioInputId, meta.options[i].name].join(':'),
+                name: data.name,
+                type: 'radio',
+                value: meta.options[i].name
+            });
+            radioContainer.append(radioLabel);
+            radioContainer.append(radioInput);
+          }      
+          radioContainer.muikkuField();
+          $(object).replaceWith(radioContainer);
         break;
       }
     }
