@@ -66,11 +66,15 @@
         return;
       }
       
+      this._titleInputWrapper = $('<div>')
+        .addClass('workspace-material-html-editor-title-wrapper')
+        .appendTo(this.element);
+      
       this._titleInput = $('<input>')
         .addClass('workspace-material-html-editor-title')
         .attr('type', 'text')
         .val(this.options.materialTitle)
-        .appendTo(this.element);
+        .appendTo(this._titleInputWrapper);
       
       this._status = $('<div>')
         .addClass('workspace-material-html-editor-status')
@@ -98,7 +102,7 @@
         },
         extraPlugins : 'coops,coops-connector,coops-dmp,coops-cursors,coops-sessionevents',
         serverUrl : CONTEXTPATH + '/rest/coops/' + this.options.materialId + '',
-        contentCss : '/theme-muikku/css/custom-ckeditor-contentcss.css', /* DOES NOT COMPUTE */
+        contentCss : '/css/custom-ckeditor-contentcss.css',
         editorOptions : {
           autoGrowOnStartup : true,
           skin : 'moono',

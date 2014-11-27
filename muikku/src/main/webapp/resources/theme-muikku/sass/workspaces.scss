@@ -1,9 +1,19 @@
 @import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
 @import "_workspaces-materials.scss"; 
 
-body.workspace { /* We need to remove background image under workspace views */
+body.workspace,
+body.workspace-materials { /* We need to remove background image under workspace views */
   background:#ffffff;
   min-height:100%;
+  font-size:14px;
+  
+  h1.workspace-title {
+    margin:20px 0 20px 0;
+    color:#38393a;
+    font-weight:300;
+    text-transform:uppercase;
+    line-height:1.3em;
+  }
   
   .workspace-materials-view-page {
   
@@ -26,22 +36,52 @@ body.workspace { /* We need to remove background image under workspace views */
     }
     
     h1 {
-      font-size:1.7em;
+      font-size:31px;
     }
       
     h2 {
-      font-size:1.5em;
+      font-size:27px;
     }
     
     h3 {
       margin:20px 0 20px 0;
-      font-size:1.3em;
+      font-size:24px;
     }
     
     p {
       margin:20px 0 20px 0;
       line-height:1.5em;
     }
+    
+    blockquote {
+      font-family: 'Open Sans',Verdana, sans-serif;
+      font-style:italic;
+      padding:2px 0;
+      border-style:solid;
+      border-color:#eee;
+      border-width:0;
+      color:#777;
+      font-size:20px;
+      margin:0 40px 0 40px;
+    
+      p {
+        margin:10px 0 10px 0;
+      }
+    
+    }
+    
+    .cke_contents_ltr blockquote {
+      padding-left:20px;
+      padding-right:8px;
+      border-left-width:8px;
+    }
+    
+    .cke_contents_rtl blockquote {
+      padding-left:8px;
+      padding-right:20px;
+      border-right-width:8px;
+    }
+    
   }
 
   #staticNavigationWrapperWorkspace {
@@ -108,7 +148,7 @@ body.workspace { /* We need to remove background image under workspace views */
           font-family:"Open Sans";
           text-shadow:none;
           color:#000;
-          font-size:11pt;
+          font-size:15px;
           line-height:1.5em;
           display:none;
           opacity:0;
@@ -128,7 +168,7 @@ body.workspace { /* We need to remove background image under workspace views */
               text-transform:uppercase;
               margin:0;
               padding:10px 12px;
-              font-size:13pt;
+              font-size:17px;
             }
           
             .workspace-materials-toc-content-outer {
@@ -199,7 +239,7 @@ body.workspace { /* We need to remove background image under workspace views */
   }
 
   .workspace-meta-wrapper {
-    font-size:0.9em;
+    font-size:13px;
     text-transform:uppercase;
     
     .workspace-study-level-indicator {
@@ -230,7 +270,7 @@ body.workspace { /* We need to remove background image under workspace views */
   
   .workspace-description-wrapper {
     margin:1em 0 1em 0;
-    font-size:1.2em;
+    font-size:17px;
     font-weight:300;
     
     p {
@@ -240,290 +280,4 @@ body.workspace { /* We need to remove background image under workspace views */
    
   }
 
-}
-
-body.workspace-materials-reading {
-  background:#6b899e;
-  /* All this because of the god damn margin collapsing  */
-  padding:0.01em;
-  min-height:100%;
-  
-  #workspaceMaterialsReadingTOCWrapper {
-    position:fixed;
-    left:0;
-    top:0;
-    bottom:0;
-
-    #workspaceMaterialsReadingTOCClosed {
-      width:50px;
-      height:100%;
-      background:#7794a8;
-      
-      #workspaceMaterialsReadingTOCNavicon {
-        cursor:pointer;
-        font-size:22pt;
-        color:#fff;
-        text-decoration:none;
-        @include iconShadow;
-        background:transparent;
-        padding:6px;
-        margin:2px;
-        display:inline-block;
-        position:relative;
-        width:34px;
-        @include rounded(3px);
-        text-align:center;
-        
-        &:hover {
-          @include iconShadow(rgba(255,255,190,0.5));
-        }
-        
-      }
-      
-    }
-    
-    #workspaceMaterialsReadingTOCOpen {
-      width:350px;
-      background:#e8f0f5;
-      z-index:26;
-      box-shadow : 0 0 25px rgba(0,0,0,0.3);
-      position:relative; /* This sets parent relation to .workspaceMaterialReadingTOCContentCropper element */
-      
-      .workspace-materials-reading-TOC-title {
-        background:#7794a8;
-        padding:12px;
-        position:relative;
-        
-        h1 {
-          color:#fff;
-          font-size:1.4em;
-          margin:0;
-          padding:0;
-        }
-        
-        #workspaceMaterialsReadingTOCNavicon {
-          cursor:pointer;
-          font-size:22pt;
-          color:#fff;
-          text-decoration:none;
-          @include iconShadow;
-          background:transparent;
-          padding:6px;
-          margin:2px;
-          display:inline-block;
-          position:relative;
-          width:30px;
-          @include rounded(3px);
-          text-align:center;
-          position:absolute;
-          right:0;
-          top:0;
-          
-          &:hover {
-            @include iconShadow(rgba(255,255,190,0.5));
-          }
-          
-        }
-        
-        #workspaceMaterialsReadingTOCPinicon {
-          cursor:pointer;
-          font-size:18pt;
-          color:#fff;
-          text-decoration:none;
-          @include iconShadow;
-          background:transparent;
-          padding:6px;
-          margin:2px;
-          display:inline-block;
-          position:relative;
-          width:20px;
-          @include rounded(3px);
-          text-align:center;
-          position:absolute;
-          right:50px;
-          top:3px;
-          opacity:0.6;
-          -ms-transition: transform 0.2s;
-          -moz-transition: transform 0.2s;
-          -webkit-transition: transform 0.2s;
-          -o-transition: transform 0.2s;
-          transition: transform 0.2s;
-          
-          &:hover {
-            @include iconShadow(rgba(255,255,190,0.5));
-            opacity:0.8;
-            -ms-transform: rotate(10deg); /* IE 9 */
-            -webkit-transform: rotate(10deg); /* Chrome, Safari, Opera */
-            -moz-transform: rotate(10deg);
-            transform: rotate(10deg);
-          }
-          
-          &.selected {
-            opacity:1;
-            -ms-transform: rotate(25deg); /* IE 9 */
-            -webkit-transform: rotate(25deg); /* Chrome, Safari, Opera */
-            -moz-transform: rotate(25deg);
-            transform: rotate(25deg);
-          }
-          
-        }
-        
-      }
-    
-      .workspace-materials-toc-content-outer {
-        overflow:hidden;
-        height:100%;
-        width:350px;
-        position:relative;
-      
-        .workspace-materials-toc-content-inner {  
-          position:absolute;
-          overflow-x: hidden;
-          overflow-y: scroll;
-          height:100%;
-        
-          .workspace-materials-toc-content-scrolling {
-            width:338px;
-            padding:0 6px;
-            height:100%;
-            
-            .spacer {
-              height:30px; /* Creating some bottom margin because use of 100% height  */
-            }
-        
-            .workspace-materials-toc-section {
-              margin:0;
-              padding-top:5px;
-              padding-bottom:10px;
-              
-              .workspace-materials-toc-subtitle {
-                font-weight:bold;
-                margin:0 0 5px 0;
-                font-size:1.1em;
-                color:#344263;
-                padding:2px 8px;
-              }
-              
-              .workspace-materials-toc-item {
-                font-weight:300;
-                
-                a {
-                  text-decoration:none;
-                  color:#000;
-                  display:block;
-                  @include genericMenuLinkHoverTransition(background,color,0.15s,ease-in-out);
-                  @include rounded(2px);
-                  padding:2px 8px;
-                  
-                  &:hover,
-                  &.active {
-                    background:#596e7d;
-                    color:#fff;
-                  }
-                }
-    
-              }
-            }
-          }
-        
-        }
-      
-      }
-    
-    }
-
-  } 
-  
-  #contentWorkspaceMaterialsReading {
-    padding-left:60px;
-    max-width:700px;
-    width:auto;
-    margin:0 auto;
-  
-    .workspace-materials-reading-view-page {
-      max-width:700px;
-      width:auto;
-      background:#fff;
-      margin:30px auto;
-      box-shadow:$w-page-sc;
-      padding:10px 30px;
-      font-size:1.3em;
-      font-weight:300;
-      word-wrap: break-word;
-      
-      &.folder {
-        position:relative;
-        max-width:700px;
-        width:auto;
-        background:#fff;
-        box-shadow:$w-page-sc;
-        padding:30px 30px 30px 30px;
-        font-weight:300;
-        word-wrap: break-word;
-        line-height:1.3em;
-        font-size:1.3em;
-        color:#38393a;
-        text-transform:none;
-        
-        .page-content {
-          font-size:1.5em;
-        }
-        
-      }
-      
-      img {
-        max-width:100%;
-      }
-      
-      h1,
-      h2,
-      h3 {
-        margin:40px 0 20px 0;
-        color:#38393a;
-        font-weight:300;
-        text-transform:none;
-        line-height:1.3em;
-        
-        &:first-child {
-          margin:20px 0 20px 0;
-        }
-      }
-      
-      h1 {
-        font-size:1.7em;
-      }
-        
-      h2 {
-        font-size:1.5em;
-      }
-      
-      h3 {
-        margin:20px 0 20px 0;
-        font-size:1.3em;
-      }
-      
-      p {
-        margin:20px 0 20px 0;
-        line-height:1.5em;
-      }
-      
-    }
-    
-  }
-  
-  #workspaceMaterialsReadingAdditionalNavWrapper {
-    position:fixed;
-    top:0;
-    right:0;
-    width:50px;
-    height:100%;
-    bottom:0;
-    
-    .grid_1 {
-      float:none;
-      width:auto;
-      margin:0;
-    }
-  }
-  
 }

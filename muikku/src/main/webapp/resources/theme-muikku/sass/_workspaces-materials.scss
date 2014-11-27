@@ -1,6 +1,8 @@
+body.workspace-materials,
 body.workspace-materials-reading,
 body.workspace-materials-management {
   
+  #content,
   #contentWorkspaceMaterialsReading,
   #contentWorkspaceMaterialsManagement {
 
@@ -77,6 +79,36 @@ body.workspace-materials-management {
         border:1px solid #97bfed;
         box-shadow:0 0 0px 3px rgba(202,225,252,0.85);
       }
+    }
+    
+    
+    blockquote {
+      font-family: 'Open Sans',Verdana, sans-serif;
+      font-style:italic;
+      padding:2px 0;
+      border-style:solid;
+      border-color:#eee;
+      border-width:0;
+      color:#777;
+      font-size:22px;
+      margin:0 40px 0 40px;
+    
+      p {
+        margin:10px 0 10px 0;
+      }
+    
+    }
+    
+    .cke_contents_ltr blockquote {
+      padding-left:20px;
+      padding-right:8px;
+      border-left-width:8px;
+    }
+    
+    .cke_contents_rtl blockquote {
+      padding-left:8px;
+      padding-right:20px;
+      border-right-width:8px;
     }
     
     div {
