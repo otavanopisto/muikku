@@ -98,6 +98,7 @@
         },
         extraPlugins : 'coops,coops-connector,coops-dmp,coops-cursors,coops-sessionevents',
         serverUrl : CONTEXTPATH + '/rest/coops/' + this.options.materialId + '',
+        contentCss : '/theme-muikku/css/custom-ckeditor-contentcss.css', /* DOES NOT COMPUTE */
         editorOptions : {
           autoGrowOnStartup : true,
           skin : 'moono',

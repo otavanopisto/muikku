@@ -23,6 +23,7 @@ body {
   @include main-background('gfx/main-background.png','gfx/main-background-slice.png');
   background-repeat:no-repeat,repeat-x;
   background-position: top center, top left;
+  color:#2c2c2c;
 }
 
 .nopadding {
