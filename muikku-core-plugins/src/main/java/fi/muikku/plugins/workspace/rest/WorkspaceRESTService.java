@@ -483,10 +483,43 @@ public class WorkspaceRESTService extends PluginRESTService {
   //
   // return Response.noContent().build();
   // }
-
+  
+  @GET
+  @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/replies")
+  public Response getWorkspaceMaterialAnswers(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId) {
+    // TODO: Correct workspace entity?
+    // TODO: Security
+    
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).entity("Not logged in").build();
+    }
+    
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
+    if (workspaceMaterial == null) {
+      return Response.status(Status.NOT_FOUND).entity("Workspace material could not be found").build();
+    }
+    
+    List<WorkspaceMaterialFieldAnswer> answers = new ArrayList<>();
+    
+    fi.muikku.plugins.workspace.model.WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, sessionController.getLoggedUserEntity());
+    if (reply != null) {
+      List<WorkspaceMaterialField> fields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByWorkspaceMaterial(workspaceMaterial);
+      for (WorkspaceMaterialField field : fields) {
+        String value = workspaceMaterialFieldController.retrieveFieldValue(field, reply);
+        Material material = field.getQueryField().getMaterial();
+        WorkspaceMaterialFieldAnswer answer = new WorkspaceMaterialFieldAnswer(material.getId(), field.getEmbedId(), field.getQueryField().getName(), value);
+        answers.add(answer);
+      }
+    }
+    
+    WorkspaceMaterialReply result = new WorkspaceMaterialReply(answers);
+    
+    return Response.ok(result).build();
+  }
+  
   @POST
-  @Path("/workspaces/{WORKSPACEENTITYID}/materials/{MATERIALID}/replies")
-  public Response createWorkspaceMaterialAnswer(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("MATERIALID") Long workspaceMaterialId, WorkspaceMaterialReply reply) {
+  @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/replies")
+  public Response createWorkspaceMaterialAnswers(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, WorkspaceMaterialReply reply) {
     // TODO: Correct workspace entity?
     // TODO: Security
     
