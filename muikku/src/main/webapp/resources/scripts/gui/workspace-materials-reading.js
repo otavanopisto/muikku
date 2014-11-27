@@ -272,32 +272,64 @@
         break;
         case 'radio':
         case 'radio_horz':
-          var radioInputId = [data.materialId, data.embedId, data.name].join(':');
+          var idPrefix = [data.materialId, data.embedId, data.name].join(':');
           // TODO proper css for container (?) to display radio buttons vertically or horizontally
-          var radioContainer = $('<div>').addClass('muikku-select-field');
+          var container = $('<div>').addClass('muikku-select-field');
           for (var i = 0, l = meta.options.length; i < l; i++){
-            var radioLabel = $('<label>')
+            var label = $('<label>')
               .attr({
-                'for': [radioInputId, meta.options[i].name].join(':')
+                'for': [idPrefix, meta.options[i].name].join(':')
               });
-            radioLabel.text(meta.options[i].text);
-            var radioInput = $('<input>')
+            label.text(meta.options[i].text);
+            var radio = $('<input>')
               .attr({
-                id: [radioInputId, meta.options[i].name].join(':'),
+                id: [idPrefix, meta.options[i].name].join(':'),
                 name: data.name,
                 type: 'radio',
                 value: meta.options[i].name
             });
-            radioContainer.append(radioLabel);
-            radioContainer.append(radioInput);
+            container.append(label);
+            container.append(radio);
           }      
-          radioContainer.muikkuField({
+          container.muikkuField({
             materialId: data.materialId,
             embedId: data.embedId
           });
-          $(object).replaceWith(radioContainer);
+          $(object).replaceWith(container);
         break;
       }
+    }
+  });
+
+  $(document).on('taskFieldDiscovered', function (event, data) {
+    var object = data.object;
+    if ($(object).attr('type') == 'application/vnd.muikku.field.checklist') {
+
+      var meta = data.meta;
+      var idPrefix = [data.materialId, data.embedId, data.name].join(':');
+      // TODO proper css for checkbox container
+      var container = $('<div>').addClass('muikku-checkbox-field');
+      for (var i = 0, l = meta.options.length; i < l; i++){
+        var label = $('<label>')
+          .attr({
+            'for': [idPrefix, meta.options[i].name].join(':')
+          });
+        label.text(meta.options[i].text);
+        var checkbox = $('<input>')
+          .attr({
+            id: [idPrefix, meta.options[i].name].join(':'),
+            name: data.name,
+            type: 'checkbox',
+            value: meta.options[i].name
+        });
+        container.append(label);
+        container.append(checkbox);
+      }      
+      container.muikkuField({
+        materialId: data.materialId,
+        embedId: data.embedId
+      });
+      $(object).replaceWith(container);
     }
   });
   
