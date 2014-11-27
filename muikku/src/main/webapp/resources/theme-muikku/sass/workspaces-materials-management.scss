@@ -385,8 +385,83 @@ body.workspace-materials-management {
         box-shadow:0 0 0 5px rgba(148,183,208,0.95);
       }
       
+      /* Section in edit mode */
       &.page-edit-mode {
         box-shadow:0 0 0 10px rgba(148,183,208,0.95);
+        position:relative;
+        
+        /* Editor input override */
+        input[type="text"] {
+          width:100%;
+          box-sizing:border-box;
+          text-align:left;
+          color:#38393a;
+          font-size:1.5em;
+          font-weight:300;
+          border:0;
+          padding:0 0 2px 0;
+          margin:19px 0;
+          border-radius:0;
+          background:#f3faff;
+          box-shadow: 0 0 0 10px rgba(243,250,255,0.8);
+          
+        }
+        
+        /* Editor collaborators */
+        .material-editor-collaborator-wrapper {
+          position:absolute;
+          top:41px;
+          right:-35px;
+          width:35px;
+          @include rounded-top-right(3px);
+          @include rounded-bottom-right(3px);
+          background:#fff;
+          padding:0 5px;
+          text-align:right;
+          box-shadow:8px 0px 10px rgba(0,0,0,0.1);
+          min-height:35px;
+
+          .collaborator {
+            position:relative;
+            @include rounded-top-right(3px);
+            @include rounded-bottom-right(3px);
+            background:#fff;
+            right:0;
+            width:30px;
+            height:30px;
+            margin:0 0 0 auto;
+            transition:right 0.3s,0.3s ease-in-out;
+            padding:5px;
+            z-index:9;
+            
+            &:hover {
+              padding:5px 5px 5px 10px;
+              right:-5px;
+              position:relative;
+              box-shadow:5px 0 8px rgba(0,0,0,0.1);
+              z-index:10;
+            }
+            
+            img {
+              width:100%;
+              height:100%;
+            }
+          }
+        }
+        
+        /* Editor save status */
+        .workspace-material-html-editor-status {
+          
+          span {
+          
+          }
+        
+          &.icon-saved {
+          
+          }
+        
+        }
+        
       }
       
       .workspace-materials-management-view-page-controls {

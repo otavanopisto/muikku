@@ -64,23 +64,18 @@
         $table.attr("style", "width:" + width + "border:" + border + "px solid #000;" + "border-spacing:" + margin + "px; " + "background-color:" + bgcolor);  
       }
       
-      $table.removeAttr("border");
-      $table.removeAttr("width");
-      $table.removeAttr("cellpadding");
-      $table.removeAttr("cellspacing");
-      $table.removeAttr("bgcolor");
+      $table.removeAttr("border width cellpadding cellspacing bgcolor");
        
       var $tds = $table.find("td");
       $tds.each(function(){
         var $td = $(this);
         var bgcolor = $td.attr("bgcolor") !== undefined ? $td.attr("bgcolor") : "transparent;";
         var width = $td.attr("width") !== undefined ? $td.attr("width") + "px; " : "auto;";
-        $td.attr("style", "width:" + width + "padding:" + padding + "px;" + "border:" + border + "px solid #000;" + "background-color:" + bgcolor);
+        var valign = $td.attr("valign") !== undefined ? $td.attr("valign") : "middle;";
+        $td.attr("style", "vertical-align:" + valign + "width:" + width + "padding:" + padding + "px;" + "border:" + border + "px solid #000;" + "background-color:" + bgcolor);
         
-        $td.removeAttr("border");
-        $td.removeAttr("width");
-        $td.removeAttr("bgcolor");
-        
+        $td.removeAttr("border width bgcolor valign");
+
       });
       
     });

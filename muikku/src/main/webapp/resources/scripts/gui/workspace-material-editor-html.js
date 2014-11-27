@@ -78,6 +78,7 @@
         .appendTo(this.element);
       
       this._collaborators = $('<div>')
+        .addClass("material-editor-collaborator-wrapper")
         .appendTo(this.element)
         .collaborators();
 
