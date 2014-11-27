@@ -7,60 +7,73 @@
     return 'uid-' + uniqueIdCounter;
   }
   
-  function loadHtmlMaterial(pageElement, workspaceMaterialId, materialId, placeholderId, parentIds) {
+  function loadHtmlMaterial(pageElement, workspaceEntityId, workspaceMaterialId, materialId, placeholderId, parentIds) {
     var placeHolder = $('#' + placeholderId);
     placeHolder.html('Loading:' + materialId);
     
     var worker = new Worker("/scripts/gui/workspace-material-loader.js");
     
     worker.onmessage = function (response) {
-      var material = $.parseJSON(response.data);
-      var parsed = $('<div>').html(material.html);
-      
-      parsed.find('iframe[data-type="embedded-document"]').each(function (index, iframe) {
-        var embededWorkspaceMaterialId = $(iframe).data('workspace-material-id');
-        var embededMaterialId = $(iframe).data('material-id');
-        var embededMaterialType = $(iframe).data('material-type');
+      if ((response.data.statusCode != 200) && (response.data.statusCode != 304)) {
+        $('.notification-queue').notificationQueue('notification', 'error', "Error occurred while loading html page: " + response.data.err + ' (' + response.data.statusCode + ')');
+      } else {
+        var material = $.parseJSON(response.data.html);
+        var parsed = $('<div>').html(material.html);
         
-        if (embededMaterialType == 'html') {
-          var placeholder = $('<div>')
-            .attr('id', createUniqueId())
-            .text('Embedded document loading');
+        parsed.find('iframe[data-type="embedded-document"]').each(function (index, iframe) {
+          var embededWorkspaceMaterialId = $(iframe).data('workspace-material-id');
+          var embededMaterialId = $(iframe).data('material-id');
+          var embededMaterialType = $(iframe).data('material-type');
           
-          $(iframe).replaceWith(placeholder);
-          loadHtmlMaterial(pageElement, embededWorkspaceMaterialId, embededMaterialId, placeholder.attr('id'), parentIds.concat(materialId));
-        } else {
-          $('.notification-queue').notificationQueue('notification', 'error', "Incorrect material type '" + materialType + "' for embedded document");
-        }
-      });
-      
-      $(document).trigger('beforeHtmlMaterialRender', {
-        pageElement: pageElement,
-        parentIds: parentIds,
-        workspaceMaterialId: workspaceMaterialId,
-        materialId: materialId,
-        element: parsed
-      });
-      
-      $('#' + placeholderId).replaceWith(parsed);
-      
-      $(document).trigger('afterHtmlMaterialRender', {
-        pageElement: pageElement,
-        parentIds: parentIds,
-        workspaceMaterialId: workspaceMaterialId,
-        materialId: materialId,
-        element: parsed
-      });
+          if (embededMaterialType == 'html') {
+            var placeholder = $('<div>')
+              .attr('id', createUniqueId())
+              .text('Embedded document loading');
+            
+            $(iframe).replaceWith(placeholder);
+            loadHtmlMaterial(pageElement, workspaceEntityId, embededWorkspaceMaterialId, embededMaterialId, placeholder.attr('id'), parentIds.concat(materialId));
+          } else {
+            $('.notification-queue').notificationQueue('notification', 'error', "Incorrect material type '" + materialType + "' for embedded document");
+          }
+        });
+        
+        var reply = $.parseJSON(response.data.reply);
+        
+        $(document).trigger('beforeHtmlMaterialRender', {
+          pageElement: pageElement,
+          parentIds: parentIds,
+          workspaceMaterialId: workspaceMaterialId,
+          materialId: materialId,
+          element: parsed,
+          reply: reply
+        });
+        
+        $('#' + placeholderId).replaceWith(parsed);
+        
+        $(document).trigger('afterHtmlMaterialRender', {
+          pageElement: pageElement,
+          parentIds: parentIds,
+          workspaceMaterialId: workspaceMaterialId,
+          materialId: materialId,
+          element: parsed,
+          reply: reply
+        });
+      }
     };
     
-    worker.postMessage({materialId: materialId});
+    worker.postMessage({
+      materialId: materialId, 
+      workspaceEntityId: workspaceEntityId, 
+      workspaceMaterialId: workspaceMaterialId 
+    });
   }
   
-  function queueHtmlMaterial(materialId, page) {
+  function queueHtmlMaterial(materialId, workspaceMaterialId, page) {
     $(page).append($('<div>')
       .attr({
         'data-page-type': 'queued-html',
-        'data-material-id': materialId
+        'data-material-id': materialId,
+        'data-workspace-material-id': workspaceMaterialId
       })
       .css({
         height: '500px'
@@ -75,7 +88,7 @@
       
       switch (materialType) {
         case 'html':
-          queueHtmlMaterial(materialId, page);
+          queueHtmlMaterial(materialId, workspaceMaterialId, page);
         break;
         case 'folder':
           renderDustTemplate('workspace/materials-page.dust', { id: materialId, type: materialType }, $.proxy(function (text) {
@@ -103,7 +116,8 @@
     
     $('div[data-page-type="queued-html"]').waypoint(function(){
       $(this).attr('id', createUniqueId());
-      loadHtmlMaterial($(this).closest('.workspace-materials-reading-view-page'), $(this).data('workspace-material-id'),$(this).data('material-id'), $(this).attr('id'), []);
+      var workspaceEntityId = $('.workspaceEntityId').val();
+      loadHtmlMaterial($(this).closest('.workspace-materials-reading-view-page'), workspaceEntityId, $(this).data('workspace-material-id'),$(this).data('material-id'), $(this).attr('id'), []);
     }, {
       offset: function() {
         return $(window).height() + 200;
@@ -170,6 +184,7 @@
           'material-id': data.materialId,
           'embed-id': data.embedId
         })
+        .val(data.value)
         .muikkuField();   
       
       $(object).replaceWith(input);
@@ -179,6 +194,7 @@
   $(document).on('taskFieldDiscovered', function (event, data) {
     var object = data.object;
     if ($(object).attr('type') == 'application/vnd.muikku.field.memo') {
+      
       $(object).replaceWith($('<textarea>')
           .addClass('muikku-memo-field')
           .attr({
@@ -192,6 +208,7 @@
             'material-id': data.materialId,
             'embed-id': data.embedId
           })
+          .val(data.value)
           .muikkuField());
     }
   });
@@ -223,7 +240,11 @@
             option.text(meta.options[i].text);
             input.append(option);
           }      
-          input.muikkuField();
+          
+          input
+            .val(data.value)
+            .muikkuField();
+          
           $(object).replaceWith(input);
         break;
         case 'radio':
@@ -261,23 +282,43 @@
   });
   
   $(document).on('beforeHtmlMaterialRender', function (event, data) {
+    var reply = data.reply;
+    var fieldAnswers = {};
+    
+    if (reply && reply.answers.length) {
+      for (var i = 0, l = reply.answers.length; i < l; i++) {
+        var answer = reply.answers[i];
+        var answerKey = answer.materialId + '.' + answer.embedId + '.' + answer.fieldName;
+        console.log("Akey:" + answerKey);
+        fieldAnswers[answerKey] = answer.value;
+      }
+    }
+    
     $(data.element).find('object[type*="vnd.muikku.field"]').each(function (index, object) {
       var meta = $.parseJSON($(object).find('param[name="content"]').attr('value'));
+      var embedId = createEmbedId(data.parentIds);
+      
+      if (reply && reply.answers.length) {
+        console.log("Wtf...");
+        var fieldKey = data.materialId + '.' + embedId + '.' + meta.name;
+        console.log("Fkey:" + fieldKey);
+      }
       
       $(document).trigger('taskFieldDiscovered', {
         pageElement: data.pageElement,
         object: object,
         meta: meta,
         name: meta.name,
-        embedId: createEmbedId(data.parentIds),
-        materialId: data.materialId
+        embedId: embedId,
+        materialId: data.materialId,
+        value: fieldAnswers[data.materialId + '.' + embedId + '.' + meta.name]
       });
     });
   });
   
   $(document).on('click', '.muikku-save-page', function (event, data) {
     var page = $(this).closest('.workspace-materials-reading-view-page');
-    var workspaceEntityId = $('.workspaceEntityId').val();
+    var workspaceEntityId = $('.workspaceEntityId').val(); //  TODO: data?
     var workspaceMaterialId = $(page).data('workspace-material-id');
     var reply = [];
     
