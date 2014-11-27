@@ -51,6 +51,8 @@
         
         $('#' + placeholderId).replaceWith(parsed);
         
+        $.waypoints('refresh');
+        
         $(document).trigger('afterHtmlMaterialRender', {
           pageElement: pageElement,
           parentIds: parentIds,
@@ -76,6 +78,7 @@
         'data-material-id': materialId,
         'data-workspace-material-id': workspaceMaterialId
       })
+      .addClass('workspace-material-queued-html')
       .css({
         height: '500px'
       }));
@@ -117,6 +120,7 @@
     
     $('div[data-page-type="queued-html"]').waypoint(function(){
       $(this).attr('id', createUniqueId());
+      $(this).removeClass('workspace-material-queued-html')
       var workspaceEntityId = $('.workspaceEntityId').val();
       loadHtmlMaterial($(this).closest('.workspace-materials-reading-view-page'), workspaceEntityId, $(this).data('workspace-material-id'),$(this).data('material-id'), $(this).attr('id'), []);
     }, {
@@ -300,7 +304,6 @@
       var embedId = createEmbedId(data.parentIds);
       
       if (reply && reply.answers.length) {
-        console.log("Wtf...");
         var fieldKey = data.materialId + '.' + embedId + '.' + meta.name;
         console.log("Fkey:" + fieldKey);
       }
