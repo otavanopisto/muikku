@@ -7,7 +7,7 @@
     return 'uid-' + uniqueIdCounter;
   }
   
-  function loadHtmlMaterial(pageElement, workspaceEntityId, workspaceMaterialId, materialId, placeholderId, parentIds) {
+  function loadHtmlMaterial(pageElement, workspaceEntityId, workspaceMaterialId, materialId, placeholderId, parentIds, fieldAnswers) {
     var placeHolder = $('#' + placeholderId);
     placeHolder
       .addClass('workspace-material-loading');
@@ -18,49 +18,51 @@
       if ((response.data.statusCode != 200) && (response.data.statusCode != 304)) {
         $('.notification-queue').notificationQueue('notification', 'error', "Error occurred while loading html page: " + response.data.err + ' (' + response.data.statusCode + ')');
       } else {
-        var material = $.parseJSON(response.data.html);
-        var parsed = $('<div>').html(material.html);
-        
-        parsed.find('iframe[data-type="embedded-document"]').each(function (index, iframe) {
-          var embededWorkspaceMaterialId = $(iframe).data('workspace-material-id');
-          var embededMaterialId = $(iframe).data('material-id');
-          var embededMaterialType = $(iframe).data('material-type');
+        try {
+          var material = $.parseJSON(response.data.html);
+          var parsed = $('<div>').html(material.html);
           
-          if (embededMaterialType == 'html') {
-            var placeholder = $('<div>')
-              .attr('id', createUniqueId())
-              .addClass('workspace-material-loading')
+          parsed.find('iframe[data-type="embedded-document"]').each(function (index, iframe) {
+            var embededWorkspaceMaterialId = $(iframe).data('workspace-material-id');
+            var embededMaterialId = $(iframe).data('material-id');
+            var embededMaterialType = $(iframe).data('material-type');
             
-            $(iframe).replaceWith(placeholder);
-            loadHtmlMaterial(pageElement, workspaceEntityId, embededWorkspaceMaterialId, embededMaterialId, placeholder.attr('id'), parentIds.concat(materialId));
-          } else {
-            $('.notification-queue').notificationQueue('notification', 'error', "Incorrect material type '" + materialType + "' for embedded document");
-          }
-        });
-        
-        var reply = $.parseJSON(response.data.reply);
-        
-        $(document).trigger('beforeHtmlMaterialRender', {
-          pageElement: pageElement,
-          parentIds: parentIds,
-          workspaceMaterialId: workspaceMaterialId,
-          materialId: materialId,
-          element: parsed,
-          reply: reply
-        });
-        
-        $('#' + placeholderId).replaceWith(parsed);
-        
-        $.waypoints('refresh');
-        
-        $(document).trigger('afterHtmlMaterialRender', {
-          pageElement: pageElement,
-          parentIds: parentIds,
-          workspaceMaterialId: workspaceMaterialId,
-          materialId: materialId,
-          element: parsed,
-          reply: reply
-        });
+            if (embededMaterialType == 'html') {
+              var placeholder = $('<div>')
+                .attr('id', createUniqueId())
+                .addClass('workspace-material-loading')
+              
+              $(iframe).replaceWith(placeholder);
+              loadHtmlMaterial(pageElement, workspaceEntityId, embededWorkspaceMaterialId, embededMaterialId, placeholder.attr('id'), parentIds.concat(materialId), fieldAnswers);
+            } else {
+              $('.notification-queue').notificationQueue('notification', 'error', "Incorrect material type '" + materialType + "' for embedded document");
+            }
+          });
+          
+          $(document).trigger('beforeHtmlMaterialRender', {
+            pageElement: pageElement,
+            parentIds: parentIds,
+            workspaceMaterialId: workspaceMaterialId,
+            materialId: materialId,
+            element: parsed,
+            fieldAnswers: fieldAnswers
+          });
+          
+          $('#' + placeholderId).replaceWith(parsed);
+          
+          $.waypoints('refresh');
+          
+          $(document).trigger('afterHtmlMaterialRender', {
+            pageElement: pageElement,
+            parentIds: parentIds,
+            workspaceMaterialId: workspaceMaterialId,
+            materialId: materialId,
+            element: parsed,
+            fieldAnswers: fieldAnswers
+          });
+        } catch (e) {
+          $('.notification-queue').notificationQueue('notification', 'error', "Error occurred while reading html page: " + e);
+        }
       }
     };
     
@@ -122,7 +124,26 @@
       $(this).attr('id', createUniqueId());
       $(this).removeClass('workspace-material-queued-html')
       var workspaceEntityId = $('.workspaceEntityId').val();
-      loadHtmlMaterial($(this).closest('.workspace-materials-reading-view-page'), workspaceEntityId, $(this).data('workspace-material-id'),$(this).data('material-id'), $(this).attr('id'), []);
+      var workspaceMaterialId = $(this).data('workspace-material-id');
+            
+      mApi().workspace.workspaces.materials.replies.read(workspaceEntityId, workspaceMaterialId)
+        .callback($.proxy(function (err, reply) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', "Error occurred while loading answers " + err);
+          } else {
+            var fieldAnswers = {};
+            
+            if (reply && reply.answers.length) {
+              for (var i = 0, l = reply.answers.length; i < l; i++) {
+                var answer = reply.answers[i];
+                var answerKey = [answer.materialId, answer.embedId, answer.fieldName].join('.');
+                fieldAnswers[answerKey] = answer.value;
+              }
+            }
+            
+            loadHtmlMaterial($(this).closest('.workspace-materials-reading-view-page'), workspaceEntityId, workspaceMaterialId ,$(this).data('material-id'), $(this).attr('id'), [], fieldAnswers);
+          }
+        }, this));
     }, {
       offset: function() {
         return $(window).height() + 200;
@@ -186,8 +207,8 @@
           'name': data.name
         })
         .data({
-          'material-id': data.materialId,
-          'embed-id': data.embedId
+          'embed-id': data.embedId,
+          'material-id': data.materialId
         })
         .val(data.value)
         .muikkuField();   
@@ -288,25 +309,13 @@
   
   $(document).on('beforeHtmlMaterialRender', function (event, data) {
     var reply = data.reply;
-    var fieldAnswers = {};
-    
-    if (reply && reply.answers.length) {
-      for (var i = 0, l = reply.answers.length; i < l; i++) {
-        var answer = reply.answers[i];
-        var answerKey = answer.materialId + '.' + answer.embedId + '.' + answer.fieldName;
-        console.log("Akey:" + answerKey);
-        fieldAnswers[answerKey] = answer.value;
-      }
-    }
-    
+   
     $(data.element).find('object[type*="vnd.muikku.field"]').each(function (index, object) {
       var meta = $.parseJSON($(object).find('param[name="content"]').attr('value'));
       var embedId = createEmbedId(data.parentIds);
-      
-      if (reply && reply.answers.length) {
-        var fieldKey = data.materialId + '.' + embedId + '.' + meta.name;
-        console.log("Fkey:" + fieldKey);
-      }
+      var materialId = data.materialId;
+      var valueKey = [materialId, embedId, meta.name].join('.');
+      var value = data.fieldAnswers[valueKey];
       
       $(document).trigger('taskFieldDiscovered', {
         pageElement: data.pageElement,
@@ -314,8 +323,8 @@
         meta: meta,
         name: meta.name,
         embedId: embedId,
-        materialId: data.materialId,
-        value: fieldAnswers[data.materialId + '.' + embedId + '.' + meta.name]
+        materialId: materialId,
+        value: value
       });
     });
   });

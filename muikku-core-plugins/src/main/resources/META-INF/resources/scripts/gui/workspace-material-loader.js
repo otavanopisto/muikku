@@ -10,31 +10,18 @@ onmessage = function (oEvent) {
   var workspaceEntityId = oEvent.data.workspaceEntityId;
   var workspaceMaterialId = oEvent.data.workspaceMaterialId;
   
-  xhrRequest('/rest/materials/html/' + materialId, function (materialStatus, materialStatusText, materialResponseText) {
-    if (materialStatus == 200 || materialStatus == 304) {
-      xhrRequest('/rest/workspace/workspaces/' + workspaceEntityId + '/materials/' + workspaceMaterialId + '/replies', function (repliesStatus, repliesStatusText, repliesResponseText) {
-        if (repliesStatus == 200 || repliesStatus == 304) {
-          postMessage({
-            err: null,
-            statusCode: repliesStatus,
-            html: materialResponseText,
-            reply: repliesResponseText
-          });
-        } else {
-          postMessage({
-            err: repliesStatusText,
-            statusCode: repliesStatus,
-            html: materialResponseText,
-            reply: null
-          });
-        }
+  xhrRequest('/rest/materials/html/' + materialId, function (status, statusText, responseText) {
+    if (status == 200 || status == 304) {
+      postMessage({
+        err: null,
+        statusCode: status,
+        html: responseText
       });
     } else {
       postMessage({
-        err: materialStatusText,
-        statusCode: materialStatus,
-        html: null,
-        reply: null
+        err: statusText,
+        statusCode: status,
+        html: null
       });
     }
   });
