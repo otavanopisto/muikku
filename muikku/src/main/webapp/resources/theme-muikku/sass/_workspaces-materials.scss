@@ -1,0 +1,148 @@
+body.workspace-materials-reading,
+body.workspace-materials-management {
+  
+  #contentWorkspaceMaterialsReading,
+  #contentWorkspaceMaterialsManagement {
+
+    /* Input field overrides */
+    input[type="text"], textarea {
+      width:auto;
+      border:1px solid #eee;
+      @include rounded(3px);
+      display:inline-block;
+      margin:4px;
+      padding:2px 4px;
+      transition:border,box-shadow 0.3s,0.5s ease-in-out;
+      outline:none; /* Thanks Chrome! */
+      font-size:1.2em;
+      text-align:center;
+      color:#0077c7;
+      max-width:100%;
+      box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
+      
+      &:focus,
+      &:hover {
+        border:1px solid #97bfed;
+        box-shadow:0 0 0px 3px rgba(202,225,252,0.75);
+      }
+      
+    }
+    
+    textarea {
+      font-size:1em;
+      text-align:left;
+      color:#000;
+    }
+
+    /* Select and Option field overrides */
+    select {
+      background:#fff;
+      border:1px solid #eee;
+      transition:border,box-shadow 0.3s,0.5s ease-in-out;
+      outline:none; /* Thanks Chrome! */
+      font-size:1.2em;
+      text-align:center;
+      color:#0077c7;
+      display:inline-block;
+      margin:4px;
+      box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
+      
+      &:focus,
+      &:hover {
+        border:1px solid #97bfed;
+        box-shadow:0 0 0px 3px rgba(202,225,252,0.85);
+      }
+    
+      option {
+        background:#fff;
+        color:#0077c7;
+      }
+      
+    }
+    
+    input[type="radio"],
+    input[type="checkbox"] {
+      margin:0 10px;
+      background:#fff;
+      border:1px solid #eee;
+      transition:border,box-shadow 0.3s,0.5s ease-in-out;
+      outline:none; /* Thanks Chrome! */
+      display:inline-block;
+      box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
+      @include rounded(3px);
+      display:inline-block;
+      
+      &:focus,
+      &:hover {
+        border:1px solid #97bfed;
+        box-shadow:0 0 0px 3px rgba(202,225,252,0.85);
+      }
+    }
+    
+    div {
+      line-height:1.5em;
+    }
+    em {
+      font-style:italic;
+      font-weight:300;
+    }
+    
+    strong {
+      font-weight:600;
+    }
+
+    table {
+      border-collapse:separate;
+      border-spacing:initial;
+      margin:initial;
+      padding:initial;
+    }
+    
+    td {
+      padding:initial;
+      margin:initial;
+      width:auto;
+      max-width:100%;
+    }
+    
+    label {
+      display:inline;
+      font-weight:300;
+    }
+    
+    /* Content link overrides */
+    a {
+      color:#2d69af;
+    }
+    
+    /* UL, LI overrides */
+    ul {
+      list-style-type:disc;
+    }
+    
+    ol {
+       list-style-type:decimal;
+    }
+    
+    ul,
+    ol {
+      margin:0 20px;
+    
+      li {
+        margin:5px;
+        line-height:1.5em;
+      }
+      
+      ol {
+        list-style-type:decimal;
+      }
+      
+      ul {
+        list-style-type:circle;
+      }
+    
+    }
+  
+  }
+ 
+}
