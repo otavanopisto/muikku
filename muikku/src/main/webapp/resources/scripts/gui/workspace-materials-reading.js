@@ -455,11 +455,23 @@
           'title': data.meta.hint,
           'name': data.name
         })
-        .muikkuField({
-          fieldName: data.name,
-          materialId: data.materialId,
-          embedId: data.embedId
+        .data({
+          'field-name': data.name,
+          'material-id': data.materialId,
+          'embed-id': data.embedId
         });   
+      
+      var files = data.value ? $.parseJSON(data.value) : [];
+      for (var i = 0, l = files.length; i < l; i++) {
+        var file = files[i];
+        $(input).data('file-' + i + '.file-id', file.originalId);
+        $(input).data('file-' + i + '.filename', file.name);
+        $(input).data('file-' + i + '.content-type', file.contentType);
+      }
+      
+      $(input).data({
+        'file-count': files.length
+      });
       
       $(object).replaceWith(input);
     }
@@ -521,6 +533,8 @@
   });
   
   $(document).on('afterHtmlMaterialRender', function (event, data) {
+    // TODO: Window resize & new material loading can mess up jsplumb handle positions
+    
     jsPlumb.ready(function() {
       $(data.element).find('.muikku-connect-field-table').each(function (index, field) {
         $(field).muikkuConnectField({
@@ -531,7 +545,19 @@
       });
     }); 
     
-    // TODO: Window resize & new material loading can mess up jsplumb handle positions
+    $(data.element).find('.muikku-file-field').each(function (index, field) {
+      $(field)
+        .muikkuFileField()
+        .muikkuField({
+          fieldName: $(field).data('field-name'),
+          embedId: $(field).data('embed-id'),
+          materialId: $(field).data('material-id'),
+          answer: function () {
+            return JSON.stringify($(this.element).muikkuFileField('files'));
+          }
+        });
+    });
+    
   });
   
   $(document).on('click', '.muikku-save-page', function (event, data) {
