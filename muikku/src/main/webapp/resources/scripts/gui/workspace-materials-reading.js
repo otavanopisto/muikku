@@ -257,12 +257,18 @@
         return result;
       };
       
+      var meta = data.meta;
+
       var tBody = $('<tbody>');
       
       var field = $('<table>')
-        .addClass('muikku-connect-field-table');
+        .addClass('muikku-connect-field-table')
+        .data({
+          'field-name': meta.name,
+          'material-id': data.materialId,
+          'embed-id': data.embedId
+        });
       
-      var meta = data.meta;
       var fieldsSize = meta.fields.length;
       var counterpartsSize = meta.counterparts.length;
       var rowCount = Math.max(fieldsSize, counterpartsSize);
@@ -304,13 +310,7 @@
       
       field.append(tBody);
       
-      $(object).replaceWith(
-        field.data({
-          'material-id': data.materialId,
-          'embed-id': data.embedId
-        })
-        .muikkuField()
-      );
+      $(object).replaceWith(field);
       
       // TODO: data.meta.help, data.meta.hint
     }
@@ -432,15 +432,19 @@
     },
     _create : function() {
       $(this.element).addClass('muikku-field');
-      $(this.element).data({
-        'field-name': this.options.fieldName,
-        'material-id': this.options.materialId,
-        'embed-id': this.options.embedId
-      });
     },
     
     answer: function () {
-      return this.options.answer.call(this);
+      return this.options.answer.call(this)||'';
+    },
+    fieldName: function () {
+      return this.options.fieldName;
+    },
+    materialId: function () {
+      return this.options.materialId;
+    },
+    embedId: function () {
+      return this.options.embedId||'';
     }
   });
   
@@ -477,7 +481,13 @@
   
   $(document).on('afterHtmlMaterialRender', function (event, data) {
     jsPlumb.ready(function() {
-      $(data.element).find('.muikku-connect-field-table').muikkuConnectField();
+      $(data.element).find('.muikku-connect-field-table').each(function (index, field) {
+        $(field).muikkuConnectField({
+          fieldName: $(field).data('field-name'),
+          embedId: $(field).data('embed-id'),
+          materialId: $(field).data('material-id')
+        });
+      });
     }); 
     
     // TODO: Window resize & new material loading can mess up jsplumb handle positions
@@ -490,13 +500,11 @@
     var reply = [];
     
     page.find('.muikku-field').each(function (index, field) {
-      var fieldName = $(field).data('field-name');
-      var value = $(field).muikkuField('answer');
       reply.push({
-        value: value,
-        embedId: $(field).data('embed-id'),
-        materialId: $(field).data('material-id'),
-        fieldName: fieldName
+        value: $(field).muikkuField('answer'),
+        embedId: $(field).muikkuField('embedId'),
+        materialId: $(field).muikkuField('materialId'),
+        fieldName: $(field).muikkuField('fieldName')
       });
     });
     
