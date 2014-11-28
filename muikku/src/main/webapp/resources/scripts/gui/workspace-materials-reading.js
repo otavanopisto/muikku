@@ -371,9 +371,13 @@
                 id: [idPrefix, meta.options[i].name].join(':'),
                 name: data.name,
                 type: 'radio',
-                value: meta.options[i].name,
-                checked: data.value == meta.options[i].name
+                value: meta.options[i].name
             });
+            if (data.value == meta.options[i].name) {
+              radio.attr({
+                checked: 'checked'
+              });
+            }
             container.append(label);
             container.append(radio);
           }      
@@ -405,6 +409,7 @@
             'for': [idPrefix, meta.options[i].name].join(':')
           });
         label.text(meta.options[i].text);
+        var values = $.parseJSON(data.value);
         var checkbox = $('<input>')
           .attr({
             id: [idPrefix, meta.options[i].name].join(':'),
@@ -412,13 +417,25 @@
             type: 'checkbox',
             value: meta.options[i].name
         });
+        if ($.inArray(meta.options[i].name, values) > -1) {
+          checkbox.attr({
+            checked: 'checked'
+          });
+        }
         container.append(label);
         container.append(checkbox);
       }      
       container.muikkuField({
         fieldName: data.name,
         materialId: data.materialId,
-        embedId: data.embedId
+        embedId: data.embedId,
+        answer: function() {
+          var values = [];
+          $(this.element).find('input:checked').each(function() {
+            values.push($(this).val());
+          });
+          return JSON.stringify(values); 
+        }
       });
       $(object).replaceWith(container);
     }
