@@ -17,7 +17,7 @@ public class WorkspaceSelectFieldIOHandler implements WorkspaceFieldIOHandler {
   private WorkspaceMaterialFieldAnswerController workspaceMaterialFieldAnswerController;
 
   @Override
-  public void store(WorkspaceMaterialField field, WorkspaceMaterialReply reply, String value) {
+  public void store(WorkspaceMaterialField field, WorkspaceMaterialReply reply, String value) throws WorkspaceFieldIOException {
     WorkspaceMaterialSelectFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialSelectFieldAnswerByFieldAndReply(field, reply);
     if (StringUtils.isNotBlank(value)) {
       QuerySelectFieldOption option = workspaceMaterialFieldAnswerController.findSelectFieldOptionByName((QuerySelectField) field.getQueryField(), value);
@@ -34,7 +34,7 @@ public class WorkspaceSelectFieldIOHandler implements WorkspaceFieldIOHandler {
   }
 
   @Override
-  public String retrieve(WorkspaceMaterialField field, WorkspaceMaterialReply reply) {
+  public String retrieve(WorkspaceMaterialField field, WorkspaceMaterialReply reply) throws WorkspaceFieldIOException{
     WorkspaceMaterialSelectFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialSelectFieldAnswerByFieldAndReply(field, reply);
     if (fieldAnswer != null) {
       return fieldAnswer.getValue().getName();

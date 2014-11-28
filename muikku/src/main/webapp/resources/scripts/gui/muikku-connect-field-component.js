@@ -12,7 +12,15 @@
           .addClass('muikku-connect-field')
           .append($('<div>').addClass('muikku-connect-field-terms'))
           .append($('<div>').addClass('muikku-connect-field-gap'))
-          .append($('<div>').addClass('muikku-connect-field-counterparts'));
+          .append($('<div>').addClass('muikku-connect-field-counterparts'))
+          .muikkuField({
+            materialId: this.options.materialId,
+            embedId: this.options.embedId,
+            fieldName: this.options.fieldName,
+            answer: $.proxy(function () {
+              return JSON.stringify(this.pairs());
+            }, this)
+          });
         
         this._taskInstance = jsPlumb.getInstance();
         
@@ -73,6 +81,7 @@
           this._element.append($('<input>')
             .attr('type', 'hidden')
             .attr('name', name)
+            .addClass('muikku-connect-field-input')
             .val(val)  
           );
           
@@ -96,6 +105,16 @@
 
         this._taskInstance.bind("connection", $.proxy(this._onConnection, this));
         this._taskInstance.bind("connectionDetached", $.proxy(this._onConnectionDetached, this));
+      },
+      
+      pairs: function() {
+        var pairs = {};
+        
+        $(this._element).find('.muikku-connect-field-input').each(function (index, input) {
+          pairs[$(input).attr('name')] = $(input).val();
+        });
+        
+        return pairs;
       },
       
       _onConnection: function (info) {

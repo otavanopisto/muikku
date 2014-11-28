@@ -45,6 +45,7 @@ import fi.muikku.plugins.material.model.QueryField;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.muikku.plugins.workspace.WorkspaceMaterialFieldController;
 import fi.muikku.plugins.workspace.WorkspaceMaterialReplyController;
+import fi.muikku.plugins.workspace.fieldio.WorkspaceFieldIOException;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
@@ -501,15 +502,19 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     List<WorkspaceMaterialFieldAnswer> answers = new ArrayList<>();
     
-    fi.muikku.plugins.workspace.model.WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, sessionController.getLoggedUserEntity());
-    if (reply != null) {
-      List<WorkspaceMaterialField> fields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByWorkspaceMaterial(workspaceMaterial);
-      for (WorkspaceMaterialField field : fields) {
-        String value = workspaceMaterialFieldController.retrieveFieldValue(field, reply);
-        Material material = field.getQueryField().getMaterial();
-        WorkspaceMaterialFieldAnswer answer = new WorkspaceMaterialFieldAnswer(material.getId(), field.getEmbedId(), field.getQueryField().getName(), value);
-        answers.add(answer);
+    try {
+      fi.muikku.plugins.workspace.model.WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, sessionController.getLoggedUserEntity());
+      if (reply != null) {
+        List<WorkspaceMaterialField> fields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByWorkspaceMaterial(workspaceMaterial);
+        for (WorkspaceMaterialField field : fields) {
+          String value = workspaceMaterialFieldController.retrieveFieldValue(field, reply);
+          Material material = field.getQueryField().getMaterial();
+          WorkspaceMaterialFieldAnswer answer = new WorkspaceMaterialFieldAnswer(material.getId(), field.getEmbedId(), field.getQueryField().getName(), value);
+          answers.add(answer);
+        }
       }
+    } catch (WorkspaceFieldIOException e) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Internal error occurred while retrieving field answers: " + e.getMessage()).build();
     }
     
     WorkspaceMaterialReply result = new WorkspaceMaterialReply(answers);
@@ -537,25 +542,29 @@ public class WorkspaceRESTService extends PluginRESTService {
       workspaceMaterialReply = workspaceMaterialReplyController.createWorkspaceMaterialReply(workspaceMaterial, sessionController.getLoggedUserEntity());
     }
     
-    for (WorkspaceMaterialFieldAnswer answer : reply.getAnswers()) {
-      String fieldName = answer.getFieldName();
-      if (StringUtils.isBlank(fieldName)) {
-        return Response.status(Status.BAD_REQUEST).entity("fieldName is empty").build();
+    try {
+      for (WorkspaceMaterialFieldAnswer answer : reply.getAnswers()) {
+        String fieldName = answer.getFieldName();
+        if (StringUtils.isBlank(fieldName)) {
+          return Response.status(Status.BAD_REQUEST).entity("fieldName is empty").build();
+        }
+        
+        Material material = materialController.findMaterialById(answer.getMaterialId());
+        if (material == null) {
+          return Response.status(Status.BAD_REQUEST).entity("material id is invalid").build();
+        }
+        
+        QueryField queryField = queryFieldController.findQueryFieldByMaterialAndName(material, fieldName);
+        
+        WorkspaceMaterialField materialField = workspaceMaterialFieldController.findWorkspaceMaterialFieldByWorkspaceMaterialAndQueryFieldAndEmbedId(workspaceMaterial, queryField, answer.getEmbedId());
+        if (materialField == null) {
+          materialField = workspaceMaterialFieldController.createWorkspaceMaterialField(workspaceMaterial, queryField, answer.getEmbedId());
+        }
+        
+        workspaceMaterialFieldController.storeFieldValue(materialField, workspaceMaterialReply, answer.getValue());
       }
-      
-      Material material = materialController.findMaterialById(answer.getMaterialId());
-      if (material == null) {
-        return Response.status(Status.BAD_REQUEST).entity("material id is invalid").build();
-      }
-      
-      QueryField queryField = queryFieldController.findQueryFieldByMaterialAndName(material, fieldName);
-      
-      WorkspaceMaterialField materialField = workspaceMaterialFieldController.findWorkspaceMaterialFieldByWorkspaceMaterialAndQueryFieldAndEmbedId(workspaceMaterial, queryField, answer.getEmbedId());
-      if (materialField == null) {
-        materialField = workspaceMaterialFieldController.createWorkspaceMaterialField(workspaceMaterial, queryField, answer.getEmbedId());
-      }
-      
-      workspaceMaterialFieldController.storeFieldValue(materialField, workspaceMaterialReply, answer.getValue());
+    } catch (WorkspaceFieldIOException e) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Internal error occurred while storing field answers: " + e.getMessage()).build();
     }
     
     return Response.noContent().build();
