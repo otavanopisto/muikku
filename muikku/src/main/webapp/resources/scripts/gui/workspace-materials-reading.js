@@ -371,7 +371,8 @@
                 id: [idPrefix, meta.options[i].name].join(':'),
                 name: data.name,
                 type: 'radio',
-                value: meta.options[i].name
+                value: meta.options[i].name,
+                checked: data.value == meta.options[i].name
             });
             container.append(label);
             container.append(radio);
@@ -379,7 +380,10 @@
           container.muikkuField({
             fieldName: data.name,
             materialId: data.materialId,
-            embedId: data.embedId
+            embedId: data.embedId,
+            answer: function() {
+              return $(this.element).find('input:checked').val();
+            }
           });
           $(object).replaceWith(container);
         break;
@@ -488,7 +492,6 @@
     page.find('.muikku-field').each(function (index, field) {
       var fieldName = $(field).data('field-name');
       var value = $(field).muikkuField('answer');
-      alert(fieldName + '=' + value);
       reply.push({
         value: value,
         embedId: $(field).data('embed-id'),
