@@ -301,13 +301,13 @@
       }
       
       field.append(tBody);
-
+      
       $(object).replaceWith(
-          field.data({
-            'material-id': data.materialId,
-            'embed-id': data.embedId
-          })
-          .muikkuField()
+        field.data({
+          'material-id': data.materialId,
+          'embed-id': data.embedId
+        })
+        .muikkuField()
       );
       
       // TODO: data.meta.help, data.meta.hint
@@ -458,6 +458,14 @@
         value: value
       });
     });
+  });
+  
+  $(document).on('afterHtmlMaterialRender', function (event, data) {
+    jsPlumb.ready(function() {
+      $(data.element).find('.muikku-connect-field-table').muikkuConnectField();
+    }); 
+    
+    // TODO: Window resize & new material loading can mess up jsplumb handle positions
   });
   
   $(document).on('click', '.muikku-save-page', function (event, data) {
