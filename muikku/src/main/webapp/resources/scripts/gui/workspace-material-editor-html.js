@@ -48,7 +48,7 @@
               '&r=' + this.options.gravatarRating +
               "&s=" + this.options.gravatarSize
           })
-        );
+        ).append($("<span>").append(this.options.name));
     },
     
     _destroy : function() {
@@ -103,6 +103,19 @@
         extraPlugins : 'coops,coops-connector,coops-dmp,coops-cursors,coops-sessionevents',
         serverUrl : CONTEXTPATH + '/rest/coops/' + this.options.materialId + '',
         contentCss : '/css/custom-ckeditor-contentcss.css',
+        toolbar: [
+          { name: 'document', items : [ 'Source' ] },
+          { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
+          { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
+          { name: 'links', items : [ 'Link','Unlink','Anchor' ] },
+          { name: 'colors', items : [ 'TextColor','BGColor' ] },
+          '/',
+          { name: 'styles', items : [ 'Format' ] },
+          { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote',
+          '-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl' ] },
+          { name: 'insert', items : [ 'Image','Flash','Table','SpecialChar' ] },          
+          { name: 'tools', items : [ 'Maximize', 'ShowBlocks','-','About' ] }
+        ],
         editorOptions : {
           autoGrowOnStartup : true,
           skin : 'moono',

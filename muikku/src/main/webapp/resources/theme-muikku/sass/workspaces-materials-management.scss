@@ -390,6 +390,7 @@ body.workspace-materials-management {
         box-shadow:0 0 0 10px rgba(148,183,208,0.95);
         position:relative;
         padding:50px 0px 0px 0px;
+        min-width:700px;
         
         /* Editor input override */
         input[type="text"].workspace-material-html-editor-title {
@@ -409,7 +410,7 @@ body.workspace-materials-management {
         
         /* Editor title override */
         .workspace-material-html-editor-title-wrapper {
-          margin:19px 30px 0px 30px;
+          margin:19px 30px 26px 30px;
         
           input.workspace-material-html-editor-title {
             padding:0 0 2px 0;
@@ -430,7 +431,7 @@ body.workspace-materials-management {
           padding:0 5px 0 0;
           text-align:right;
           box-shadow:8px 0px 10px rgba(0,0,0,0.1);
-          min-height:35px;
+          min-height:40px;
 
           .collaborator {
             position:relative;
@@ -445,13 +446,40 @@ body.workspace-materials-management {
             padding:5px;
             z-index:9;
             
+            span {
+              display:block;
+              background:#fff;
+              color:#000;
+              width:0px;
+              padding:6px 10px;
+              position:absolute;
+              transition:opacity 0.5s ease-in-out;
+              opacity:0;
+              visibility:hidden;
+              min-height:28px;
+              max-height:28px;
+              font-size:14px;
+              box-shadow:-4px 0px 10px rgba(0,0,0,0.05);
+            }
+            
             &:hover {
               padding:5px;
               right:-5px;
               position:relative;
               box-shadow:5px 0 8px rgba(0,0,0,0.1);
               z-index:10;
+              
+              span {
+                width:auto;
+                top:0;
+                right:40px;
+                opacity:1;
+                visibility:visible;
+              }
+              
             }
+            
+            
             
             img {
               width:100%;
@@ -462,6 +490,12 @@ body.workspace-materials-management {
         
         /* Editor save status */
         .workspace-material-html-editor-status {
+          position:absolute;
+          top:8px;
+          right:12px;
+          z-index:11;
+          font-size:14px;
+          color:#fff;
           
           span {
           
@@ -471,6 +505,93 @@ body.workspace-materials-management {
           
           }
         
+        }
+        
+        .cke { /* CKE Wrapper */
+          border:1px solid #fff;
+          box-shadow:none;
+          
+          .cke_inner { /* CKE top, content and bottom wrapper */
+          
+            .cke_top {
+              border:0;
+              box-shadow:none;
+              background:#c0dcee;
+              background-image:none;
+              padding:8px 8px 4px 8px;
+              border-bottom:1px solid #b1deff;
+              
+              .cke_toolbar {
+                display:block;
+                margin:2px 0;
+              
+                .cke_toolgroup {
+                  border:1px solid #fff;
+                  background:#fff;
+                  background-image:none;
+                  
+                  a:hover {
+                    border-radius:3px;
+                    background:#9ed7ff;
+                    box-shadow:none;
+                    border:0;
+                  }
+                  
+                  a.cke_button_on {
+                      background:#9ed7ff;
+                      background-image:none;
+                      box-shadow:none;
+                      border:0;
+                    }
+                  
+                  
+                  
+                }
+                
+                .cke_combo {
+                
+                  &.cke_combo_off {
+                  
+                    a.cke_combo_button {
+                      background:#fff;
+                      background-image:none;
+                      box-shadow:none;
+                      border:1px solid #fff;
+                      
+                      &:hover {
+                        background:#9ed7ff;
+                      }
+                      
+                    }
+                  }
+                  
+                  &.cke_combo_on {
+                  
+                    a.cke_combo_button {
+                      background:#9ed7ff;
+                      background-image:none;
+                      box-shadow:none;
+                      border:1px solid #fff
+                    }
+                  }
+                }
+                
+              }
+              
+              
+              
+            }
+            
+            .cke_bottom {
+              border:0;
+              box-shadow:none;
+              background:#c0dcee;
+              background-image:none;
+              border-top:1px solid #b1deff;
+            }
+          
+          }
+          
         }
         
       }

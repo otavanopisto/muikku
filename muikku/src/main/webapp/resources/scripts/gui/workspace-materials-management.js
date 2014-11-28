@@ -142,15 +142,15 @@
         materialTitle: materialTitle
       });
       
-//      $(document).on("click",$.proxy(function (event) {
-//        var target = $(event.target);
-//        if (target.closest('.workspace-materials-management-view-page').length == 0) {
-//          $(this).data('material-title', editor.call(pageElement, 'title'));
-//          editor.call(pageElement, 'destroy');
-//          loadPageNode(node);
-//          pageSection.removeClass("page-edit-mode");
-//        }
-//      }, node));
+      $(document).on("click",$.proxy(function (event) {
+        var target = $(event.target);
+        if (target.closest('.workspace-materials-management-view-page').length == 0) {
+          $(this).data('material-title', editor.call(pageElement, 'title'));
+          editor.call(pageElement, 'destroy');
+          loadPageNode(node);
+          pageSection.removeClass("page-edit-mode");
+        }
+      }, node));
     } else {
       $('.notification-queue').notificationQueue('notification', 'error', "Could not find editor for " + materialType);
     }
