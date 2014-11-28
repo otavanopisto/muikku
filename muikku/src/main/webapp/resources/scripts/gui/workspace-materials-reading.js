@@ -208,6 +208,7 @@
         })
         .val(data.value)
         .muikkuField({
+          fieldName: data.name,
           materialId: data.materialId,
           embedId: data.embedId
         });   
@@ -231,6 +232,7 @@
           })
           .val(data.value)
           .muikkuField({
+            fieldName: data.name,
             materialId: data.materialId,
             embedId: data.embedId
           }));
@@ -252,6 +254,11 @@
           
           if(meta.size != 'null') input.attr('size', meta.size);
           
+          // Empty option to be able to clear an answer  
+          if (meta.listType == 'dropdown') {
+            input.append($('<option>'));
+          }
+          
           for(var i = 0, l = meta.options.length; i < l; i++){
             var option = $('<option>')
             .attr({
@@ -264,6 +271,7 @@
           input
             .val(data.value)
             .muikkuField({
+              fieldName: data.name,
               materialId: data.materialId,
               embedId: data.embedId
             });
@@ -292,6 +300,7 @@
             container.append(radio);
           }      
           container.muikkuField({
+            fieldName: data.name,
             materialId: data.materialId,
             embedId: data.embedId
           });
@@ -326,6 +335,7 @@
         container.append(checkbox);
       }      
       container.muikkuField({
+        fieldName: data.name,
         materialId: data.materialId,
         embedId: data.embedId
       });
@@ -342,6 +352,7 @@
     _create : function() {
       $(this.element).addClass('muikku-field');
       $(this.element).data({
+        'field-name': this.options.fieldName,
         'material-id': this.options.materialId,
         'embed-id': this.options.embedId
       });
@@ -390,8 +401,9 @@
     var reply = [];
     
     page.find('.muikku-field').each(function (index, field) {
-      var fieldName = $(field).attr('name');
+      var fieldName = $(field).data('field-name');
       var value = $(field).muikkuField('answer');
+      alert(fieldName + '=' + value);
       reply.push({
         value: value,
         embedId: $(field).data('embed-id'),
