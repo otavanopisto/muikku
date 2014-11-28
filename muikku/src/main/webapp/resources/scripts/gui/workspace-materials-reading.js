@@ -258,7 +258,7 @@
       };
       
       var meta = data.meta;
-      var values = $.parseJSON(data.value);
+      var values = data.value ? $.parseJSON(data.value) : {};
       var tBody = $('<tbody>');
       
       var field = $('<table>')
@@ -411,7 +411,7 @@
             'for': [idPrefix, meta.options[i].name].join(':')
           });
         label.text(meta.options[i].text);
-        var values = $.parseJSON(data.value);
+        var values = data.value ? $.parseJSON(data.value) : [];
         var checkbox = $('<input>')
           .attr({
             id: [idPrefix, meta.options[i].name].join(':'),
@@ -440,6 +440,28 @@
         }
       });
       $(object).replaceWith(container);
+    }
+  });
+  
+  $(document).on('taskFieldDiscovered', function (event, data) {
+    var object = data.object;
+    if ($(object).attr('type') == 'application/vnd.muikku.field.file') {
+      
+      var input = $('<input>')
+        .addClass('muikku-file-field')
+        .attr({
+          'type': "file",
+          'placeholder': data.meta.help,
+          'title': data.meta.hint,
+          'name': data.name
+        })
+        .muikkuField({
+          fieldName: data.name,
+          materialId: data.materialId,
+          embedId: data.embedId
+        });   
+      
+      $(object).replaceWith(input);
     }
   });
   
