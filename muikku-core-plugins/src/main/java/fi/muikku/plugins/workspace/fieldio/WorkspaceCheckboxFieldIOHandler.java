@@ -21,7 +21,7 @@ public class WorkspaceCheckboxFieldIOHandler implements WorkspaceFieldIOHandler 
   private WorkspaceMaterialFieldAnswerController workspaceMaterialFieldAnswerController;
 
   @Override
-  public void store(WorkspaceMaterialField field, WorkspaceMaterialReply reply, String value) {
+  public void store(WorkspaceMaterialField field, WorkspaceMaterialReply reply, String value) throws WorkspaceFieldIOException {
     String[] postedValues = new String[0];
     WorkspaceMaterialChecklistFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialChecklistFieldAnswerByFieldAndReply(field, reply);
     if (fieldAnswer == null && StringUtils.isNotBlank(value)) {
@@ -33,6 +33,7 @@ public class WorkspaceCheckboxFieldIOHandler implements WorkspaceFieldIOHandler 
         postedValues = objectMapper.readValue(value, String[].class);
       }
       catch (Exception e) {
+        throw new WorkspaceFieldIOException("Could not marshal field response", e);
       }
     }
     List<QueryChecklistFieldOption> options = workspaceMaterialFieldAnswerController.listChecklistFieldOptions((QueryChecklistField) field.getQueryField());
@@ -42,6 +43,9 @@ public class WorkspaceCheckboxFieldIOHandler implements WorkspaceFieldIOHandler 
       if (answerOption == null) {
         // From unchecked to checked
         QueryChecklistFieldOption fieldOption = getFieldOption(options, postedValue);
+        if (fieldOption == null) {
+          throw new WorkspaceFieldIOException("Checklist lacks posted option " + postedValue);
+        }
         workspaceMaterialFieldAnswerController.createWorkspaceMaterialChecklistFieldAnswerOption(fieldAnswer, fieldOption);
       }
       else {
@@ -74,7 +78,7 @@ public class WorkspaceCheckboxFieldIOHandler implements WorkspaceFieldIOHandler 
   }
 
   @Override
-  public String retrieve(WorkspaceMaterialField field, WorkspaceMaterialReply reply) {
+  public String retrieve(WorkspaceMaterialField field, WorkspaceMaterialReply reply) throws WorkspaceFieldIOException {
     String answer = "[]";
     WorkspaceMaterialChecklistFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialChecklistFieldAnswerByFieldAndReply(field, reply);
     if (fieldAnswer != null) {
@@ -89,6 +93,7 @@ public class WorkspaceCheckboxFieldIOHandler implements WorkspaceFieldIOHandler 
         answer = objectMapper.writeValueAsString(values);
       }
       catch (Exception e) {
+        throw new WorkspaceFieldIOException("Could not marshal field response", e);
       }
     }
     return answer;
