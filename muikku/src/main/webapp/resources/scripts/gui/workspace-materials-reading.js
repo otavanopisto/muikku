@@ -258,7 +258,7 @@
       };
       
       var meta = data.meta;
-
+      var values = $.parseJSON(data.value);
       var tBody = $('<tbody>');
       
       var field = $('<table>')
@@ -287,9 +287,11 @@
         var connectFieldCounterpartMeta = rowIndex < counterpartsSize ? meta.counterparts[rowIndex] : null;
         
         if (connectFieldTermMeta != null) {
-          inputElement.attr({
-            'name': meta.name + '.' + connectFieldTermMeta.name
-          });
+          inputElement
+            .attr({
+              'name': connectFieldTermMeta.name
+            })
+            .val(values[connectFieldTermMeta.name]);
           
           tdTermElement.text((rowIndex + 1) + " - " + connectFieldTermMeta.text);
           tdTermElement.data('muikku-connect-field-option-name', connectFieldTermMeta.name);
