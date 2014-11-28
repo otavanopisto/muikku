@@ -15,7 +15,7 @@ public class WorkspaceMemoFieldIOHandler implements WorkspaceFieldIOHandler {
   private WorkspaceMaterialFieldAnswerController workspaceMaterialFieldAnswerController;
 
   @Override
-  public void store(WorkspaceMaterialField field, WorkspaceMaterialReply reply, String value) {
+  public void store(WorkspaceMaterialField field, WorkspaceMaterialReply reply, String value) throws WorkspaceFieldIOException {
     WorkspaceMaterialTextFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialTextFieldAnswerByFieldAndReply(field, reply);
     if (StringUtils.isNotBlank(value)) {
       if (fieldAnswer == null) {
@@ -31,7 +31,7 @@ public class WorkspaceMemoFieldIOHandler implements WorkspaceFieldIOHandler {
   }
 
   @Override
-  public String retrieve(WorkspaceMaterialField field, WorkspaceMaterialReply reply) {
+  public String retrieve(WorkspaceMaterialField field, WorkspaceMaterialReply reply) throws WorkspaceFieldIOException {
     WorkspaceMaterialTextFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialTextFieldAnswerByFieldAndReply(field, reply);
     if (fieldAnswer != null) {
       return fieldAnswer.getValue();

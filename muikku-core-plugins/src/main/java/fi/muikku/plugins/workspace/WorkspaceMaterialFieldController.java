@@ -15,6 +15,7 @@ import fi.muikku.plugins.workspace.dao.WorkspaceMaterialFieldDAO;
 import fi.muikku.plugins.workspace.events.WorkspaceMaterialFieldCreateEvent;
 import fi.muikku.plugins.workspace.events.WorkspaceMaterialFieldDeleteEvent;
 import fi.muikku.plugins.workspace.events.WorkspaceMaterialFieldUpdateEvent;
+import fi.muikku.plugins.workspace.fieldio.WorkspaceFieldIOException;
 import fi.muikku.plugins.workspace.fieldio.WorkspaceFieldIOHandler;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
@@ -67,7 +68,7 @@ public class WorkspaceMaterialFieldController {
     workspaceMaterialFieldDAO.delete(workspaceMaterialField);
   }
   
-  public String retrieveFieldValue(WorkspaceMaterialField field, WorkspaceMaterialReply reply) {
+  public String retrieveFieldValue(WorkspaceMaterialField field, WorkspaceMaterialReply reply) throws WorkspaceFieldIOException {
     WorkspaceFieldIOHandler handler = getIOHandler(field.getQueryField().getType());
     if (handler != null) {
       return handler.retrieve(field, reply);
@@ -78,7 +79,7 @@ public class WorkspaceMaterialFieldController {
     return null;
   }
   
-  public void storeFieldValue(WorkspaceMaterialField field, WorkspaceMaterialReply reply, String value) {
+  public void storeFieldValue(WorkspaceMaterialField field, WorkspaceMaterialReply reply, String value) throws WorkspaceFieldIOException {
     WorkspaceFieldIOHandler handler = getIOHandler(field.getQueryField().getType());
     if (handler != null) {
       handler.store(field, reply, value);
