@@ -241,6 +241,83 @@
   
   $(document).on('taskFieldDiscovered', function (event, data) {
     var object = data.object;
+    if ($(object).attr('type') == 'application/vnd.muikku.field.connect') {
+      
+      function getExcelStyleLetterIndex(numericIndex) {   
+        var ALPHABET_SIZE = 26;
+        
+        var result = "";
+        do {
+          var charIndex = Math.floor(numericIndex % ALPHABET_SIZE);
+          numericIndex = Math.floor(numericIndex / ALPHABET_SIZE);
+          numericIndex -= 1;
+          result = String.fromCharCode(charIndex + 65) + result;
+        } while (numericIndex > -1);
+          
+        return result;
+      };
+      
+      var tBody = $('<tbody>');
+      
+      var field = $('<table>')
+        .addClass('muikku-connect-field-table');
+      
+      var meta = data.meta;
+      var fieldsSize = meta.fields.length;
+      var counterpartsSize = meta.counterparts.length;
+      var rowCount = Math.max(fieldsSize, counterpartsSize);
+      
+      for (var rowIndex = 0; rowIndex < rowCount; rowIndex++) {
+        var tdTermElement = $("<td>").addClass('muikku-connect-field-term-cell');
+        var tdValueElement = $("<td>").addClass('muikku-connect-field-value-cell');
+        var tdCounterpartElement = $("<td>").addClass("muikku-connect-field-counterpart-cell");
+        var inputElement = $("<input>") 
+          .addClass('muikku-connect-field-value') 
+          .attr({
+            'type': 'text'
+          });
+        
+        var connectFieldTermMeta = rowIndex < fieldsSize ? meta.fields[rowIndex] : null;
+        var connectFieldCounterpartMeta = rowIndex < counterpartsSize ? meta.counterparts[rowIndex] : null;
+        
+        if (connectFieldTermMeta != null) {
+          inputElement.attr({
+            'name': meta.name + '.' + connectFieldTermMeta.name
+          });
+          
+          tdTermElement.text((rowIndex + 1) + " - " + connectFieldTermMeta.text);
+          tdTermElement.data('muikku-connect-field-option-name', connectFieldTermMeta.name);
+          tdValueElement.append(inputElement);
+        }
+        
+        if (connectFieldCounterpartMeta != null) {
+          tdCounterpartElement.text(getExcelStyleLetterIndex(rowIndex) + " - " + connectFieldCounterpartMeta.text);
+          tdCounterpartElement.attr('data-muikku-connect-field-option-name', connectFieldCounterpartMeta.name);
+        }
+      
+        tBody
+          .append($('<tr>')
+            .append(tdTermElement)
+            .append(tdValueElement)
+            .append(tdCounterpartElement));
+      }
+      
+      field.append(tBody);
+      
+      $(object).replaceWith(
+        field.data({
+          'material-id': data.materialId,
+          'embed-id': data.embedId
+        })
+        .muikkuField()
+      );
+      
+      // TODO: data.meta.help, data.meta.hint
+    }
+  });
+  
+  $(document).on('taskFieldDiscovered', function (event, data) {
+    var object = data.object;
     if ($(object).attr('type') == 'application/vnd.muikku.field.select') {
       var meta = data.meta;
       switch (meta.listType) {
@@ -392,6 +469,14 @@
         value: value
       });
     });
+  });
+  
+  $(document).on('afterHtmlMaterialRender', function (event, data) {
+    jsPlumb.ready(function() {
+      $(data.element).find('.muikku-connect-field-table').muikkuConnectField();
+    }); 
+    
+    // TODO: Window resize & new material loading can mess up jsplumb handle positions
   });
   
   $(document).on('click', '.muikku-save-page', function (event, data) {

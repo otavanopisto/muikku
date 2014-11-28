@@ -38,16 +38,6 @@
           .after(this._element)
           .hide();
         
-        var width = Math.max(this._element.find('.muikku-connect-field-terms').width(), this._element.find('.muikku-connect-field-counterparts').width());
-        
-        this._element.find('.muikku-connect-field-terms').css({
-          width: width + 'px'
-        });
-        
-        this._element.find('.muikku-connect-field-counterparts').css({
-          width: width + 'px'
-        });
-        
         this._element.find('.muikku-connect-field-term').each($.proxy(function (index, element) {
           this._taskInstance.addEndpoint(
             $(element), {

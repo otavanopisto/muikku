@@ -1,4 +1,5 @@
 @import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
+@import "connect-field";
 
 body.workspace { /* We need to remove background image under workspace views */
   background:#ffffff;
