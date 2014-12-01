@@ -284,23 +284,23 @@
   });
   
   $(document).on('taskFieldDiscovered', function (event, data) {
+    
+    function getExcelStyleLetterIndex(numericIndex) {   
+      var ALPHABET_SIZE = 26;
+      
+      var result = "";
+      do {
+        var charIndex = Math.floor(numericIndex % ALPHABET_SIZE);
+        numericIndex = Math.floor(numericIndex / ALPHABET_SIZE);
+        numericIndex -= 1;
+        result = String.fromCharCode(charIndex + 65) + result;
+      } while (numericIndex > -1);
+        
+      return result;
+    };
+
     var object = data.object;
     if ($(object).attr('type') == 'application/vnd.muikku.field.connect') {
-      
-      function getExcelStyleLetterIndex(numericIndex) {   
-        var ALPHABET_SIZE = 26;
-        
-        var result = "";
-        do {
-          var charIndex = Math.floor(numericIndex % ALPHABET_SIZE);
-          numericIndex = Math.floor(numericIndex / ALPHABET_SIZE);
-          numericIndex -= 1;
-          result = String.fromCharCode(charIndex + 65) + result;
-        } while (numericIndex > -1);
-          
-        return result;
-      };
-      
       var meta = data.meta;
       var values = data.value ? $.parseJSON(data.value) : {};
       var tBody = $('<tbody>');
