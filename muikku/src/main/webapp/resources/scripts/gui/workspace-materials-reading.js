@@ -1,5 +1,7 @@
 (function() {
   
+  'use strict';
+  
   var uniqueIdCounter = 1;
   
   function createUniqueId() {
@@ -46,7 +48,6 @@
       });
       
     });
-    
   }
   
   function loadHtmlMaterial(pageElement, workspaceEntityId, workspaceMaterialId, materialId, placeholderId, parentIds, fieldAnswers) {
