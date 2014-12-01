@@ -576,8 +576,6 @@
   });
   
   $(document).on('afterHtmlMaterialRender', function (event, data) {
-    // TODO: Window resize & new material loading can mess up jsplumb handle positions
-    
     jsPlumb.ready(function() {
       $(data.element).find('.muikku-connect-field-table').each(function (index, field) {
         $(field).muikkuConnectField({
