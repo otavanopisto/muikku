@@ -1,18 +1,21 @@
 package fi.muikku.plugins.workspace.model;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotNull;
-
-import org.hibernate.validator.constraints.NotEmpty;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import fi.muikku.plugins.material.model.QueryField;
 
 @Entity
+@Table (
+  uniqueConstraints = {
+    @UniqueConstraint (columnNames = { "embedId", "queryField_id", "workspaceMaterial_id" })
+  }    
+)
 public class WorkspaceMaterialField {
 
   public Long getId() {
@@ -23,12 +26,12 @@ public class WorkspaceMaterialField {
     this.id = id;
   }
 
-  public String getName() {
-    return name;
+  public String getEmbedId() {
+    return embedId;
   }
-
-  public void setName(String name) {
-    this.name = name;
+  
+  public void setEmbedId(String embedId) {
+    this.embedId = embedId;
   }
 
   public QueryField getQueryField() {
@@ -51,10 +54,7 @@ public class WorkspaceMaterialField {
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
   
-  @NotEmpty
-  @NotNull
-  @Column (nullable = false)
-  private String name;
+  private String embedId;
   
   @ManyToOne
   private QueryField queryField;

@@ -65,7 +65,8 @@
         return {
           contentType: $(fileElement).find('input[name="' + fieldPrefix + '-content-type"]').val(),
           name: $(fileElement).find('input[name="' + fieldPrefix + '-filename"]').val(),
-          id: $(fileElement).find('input[name="' + fieldPrefix + '-file-id"]').val()
+          id: $(fileElement).hasClass('muikku-file-input-field-file-removed') ? null : $(fileElement).find('input[name="' + fieldPrefix + '-file-id"]').val(),
+          originalId: $(fileElement).find('input[name="' + fieldPrefix + '-original-file-id"]').val()
         };
       }, this));
     },

@@ -1,5 +1,6 @@
 @import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
 @import "_workspaces-materials.scss"; 
+@import "connect-field";
 
 body.workspace-materials-reading {
   background:#6b899e;
