@@ -9,7 +9,6 @@
       },
       _create : function() {
         this._element = $('<div>')
-          .addClass('muikku-connect-field')
           .append($('<div>').addClass('muikku-connect-field-terms'))
           .append($('<div>').addClass('muikku-connect-field-gap'))
           .append($('<div>').addClass('muikku-connect-field-counterparts'))
@@ -101,10 +100,20 @@
 
         }, this));
         
-        this.element.remove();
+        this.element
+          .addClass('muikku-connect-field')
+          .hide();
 
         this._taskInstance.bind("connection", $.proxy(this._onConnection, this));
         this._taskInstance.bind("connectionDetached", $.proxy(this._onConnectionDetached, this));
+        
+        $(window).resize($.proxy(function () {
+          this.refresh();
+        }, this));
+      },
+      
+      refresh: function () {
+        this._taskInstance.repaintEverything();
       },
       
       pairs: function() {

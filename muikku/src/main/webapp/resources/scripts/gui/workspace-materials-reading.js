@@ -543,6 +543,8 @@
           materialId: $(field).data('material-id')
         });
       });
+      
+      $('.muikku-connect-field').muikkuConnectField('refresh');
     }); 
     
     $(data.element).find('.muikku-file-field').each(function (index, field) {
