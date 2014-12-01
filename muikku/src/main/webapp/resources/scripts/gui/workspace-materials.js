@@ -3,8 +3,45 @@
   $(document).ready(
       function() {
 
-        // TODO: Re-use in other material scripts
+     // TODO: Re-use in other material scripts
+        function fixTables(node) {
+          var $tables = node.find("table");
+          
+          $tables.each(function() {
+            var $table = $(this);
+            
+            var padding = ($table.attr("cellpadding") !== undefined ? $table.attr("cellpadding") : 0);
+            var margin = ($table.attr("cellspacing") !== undefined ? $table.attr("cellspacing") : 0);
+            var border = ($table.attr("border") !== undefined ? $table.attr("border") : 0);
+            var width = $table.attr("width") !== undefined ? $table.attr("width") + "px;" : "auto;";
+            var bgcolor = $table.attr("bgcolor") !== undefined ? $table.attr("bgcolor") : "transparent;";
+            
+            if ($table.attr("style") !== undefined) {
+              var origStyle = $table.attr("style");
+              $table.attr("style", "width:" + width + "border:" + border + "px solid #000;" + "border-spacing:" + margin + "px; " + origStyle + "background-color:" + bgcolor);  
+            } else {
+              $table.attr("style", "width:" + width + "border:" + border + "px solid #000;" + "border-spacing:" + margin + "px; " + "background-color:" + bgcolor);  
+            }
+            
+            $table.removeAttr("border width cellpadding cellspacing bgcolor");
+             
+            var $tds = $table.find("td");
+            $tds.each(function(){
+              var $td = $(this);
+              var bgcolor = $td.attr("bgcolor") !== undefined ? $td.attr("bgcolor") : "transparent;";
+              var width = $td.attr("width") !== undefined ? $td.attr("width") + "px; " : "auto;";
+              var valign = $td.attr("valign") !== undefined ? $td.attr("valign") : "middle;";
+              $td.attr("style", "vertical-align:" + valign + "width:" + width + "padding:" + padding + "px;" + "border:" + border + "px solid #000;" + "background-color:" + bgcolor);
+              
+              $td.removeAttr("border width bgcolor valign");
+
+            });
+            
+          });
+          
+        }
         
+        // TODO: Re-use in other material scripts
         function loadPageNode(node, callback) {
           var workspaceMaterialId = $(node).data('workspace-material-id');
           var materialId = $(node).data('material-id');
@@ -23,7 +60,7 @@
                     },
                       $.proxy(function (text) {
                   $(this).html(text);
-                  
+                  fixTables($(this));
                   callback();
                 }, node));
               }, node));
