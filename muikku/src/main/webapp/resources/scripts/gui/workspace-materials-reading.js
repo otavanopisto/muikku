@@ -92,7 +92,6 @@
           });
           
           $('#' + placeholderId).replaceWith(parsed);
-          fixTables(parsed);
           
           $.waypoints('refresh');
           
@@ -574,6 +573,7 @@
         value: value
       });
     });
+    fixTables(data.element);
   });
   
   $(document).on('afterHtmlMaterialRender', function (event, data) {
