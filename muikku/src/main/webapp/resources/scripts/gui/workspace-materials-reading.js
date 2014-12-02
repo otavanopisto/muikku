@@ -3,8 +3,8 @@
   'use strict';
 
   $(document).ready(function() {
-    $(document).muikkuMaterialLoader();
-    $(document).muikkuMaterialLoader('loadMaterials', $('.workspace-materials-reading-view-page'));
+    $(document).muikkuMaterialLoader()
+      .muikkuMaterialLoader('loadMaterials', $('.workspace-materials-reading-view-page'));
   });
 
   $(document).on('click', '.muikku-save-page', function (event, data) {
