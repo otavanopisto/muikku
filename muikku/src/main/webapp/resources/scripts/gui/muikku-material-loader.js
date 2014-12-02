@@ -389,8 +389,13 @@
                 checked: 'checked'
               });
             }
-            container.append(label);
-            container.append(radio);
+            var target = container;
+            if (meta.listType == 'radio') {
+              target = $('<div>');
+              container.append(target);
+            }
+            target.append(radio);
+            target.append(label);
           }      
           container.muikkuField({
             fieldName: data.name,
@@ -433,8 +438,10 @@
             checked: 'checked'
           });
         }
-        container.append(label);
-        container.append(checkbox);
+        var optionContainer = $('<div>');
+        optionContainer.append(checkbox);
+        optionContainer.append(label);
+        container.append(optionContainer);
       }      
       container.muikkuField({
         fieldName: data.name,
