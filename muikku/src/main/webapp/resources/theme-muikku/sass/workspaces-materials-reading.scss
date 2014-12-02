@@ -1,6 +1,6 @@
 @import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
 @import "_workspaces-materials.scss"; 
-@import "connect-field";
+@import "_connect-field.scss";
 
 body.workspace-materials-reading {
   background:#6b899e;
@@ -56,7 +56,7 @@ body.workspace-materials-reading {
         
         h1 {
           color:#fff;
-          font-size:1.4em;
+          font-size:20px;
           margin:0;
           padding:0;
         }
@@ -284,6 +284,14 @@ body.workspace-materials-reading {
       width:auto;
       margin:0;
     }
+  }
+  
+  .workspace-material-queued-html,
+  .workspace-material-loading {
+    @include background-image('gfx/workspace-material-loading.gif'); 
+    background-repeat: no-repeat;
+    background-position: center;
+    min-height: 500px;
   }
   
 }

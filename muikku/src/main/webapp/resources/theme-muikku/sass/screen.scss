@@ -18,7 +18,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Open Sans',Verdana, sans-serif;
-  font-size:0.875em; /* Base font size equals 14px */
+  font-size:14px;
   line-height:1.5em;
   @include main-background('gfx/main-background.png','gfx/main-background-slice.png');
   background-repeat:no-repeat,repeat-x;
