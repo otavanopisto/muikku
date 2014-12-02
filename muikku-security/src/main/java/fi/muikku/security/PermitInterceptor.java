@@ -81,7 +81,6 @@ public class PermitInterceptor implements Serializable {
           throw new AuthorizationException("Access denied");
       }
     }
-    
     return null;
   }
   

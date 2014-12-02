@@ -17,7 +17,7 @@ template="./main-view.xhtml">
             <ui:insert name="content.tools.left"></ui:insert>  
           </m:widgetSpace>
           <m:widgetSpace name="mainfunction.content-tools-top.center" keepEmpty="false" sizing="SUM" styleClass="mf-view-container grid_18 alpha noLid">
-            <ui:insert name="content.tools.center" />
+            <div class="mf-view-container grid_18 alpha noLid"><ui:insert name="content.tools.center" /></div>
           </m:widgetSpace>
           <m:widgetSpace name="mainfunction.content-tools-top.right" keepEmpty="false" sizing="SUM" styleClass="razi">
             <ui:insert name="content.tools.right" />
@@ -28,6 +28,7 @@ template="./main-view.xhtml">
     
      <ui:define name="content.area">
       <div class="widgetSpaceSet mf-content-area grid_24 nomargin noLid">
+
         <m:widgetSpaceSet>
           <ui:insert name="content.left.widgetspace">
             <m:widgetSpace name="generic.content.left" keepEmpty="true" styleClass="nomargin mf-side-tools grid_6 nomargin noLid">
@@ -39,6 +40,7 @@ template="./main-view.xhtml">
           <ui:insert name="content.center.widgetspace">
             <m:widgetSpace name="generic.content.center" keepEmpty="true"  styleClass="mf-content grid_18 nomargin noLid">
                 <div class="mf-content-main">
+                  <ui:insert name="hiddenFields"></ui:insert>
                   <ui:insert name="content.center.widget"></ui:insert>
                 </div>
                <div class="clear"></div>
@@ -52,8 +54,5 @@ template="./main-view.xhtml">
         </m:widgetSpaceSet>
       </div>      
     </ui:define>   
-    
-
-    
     
 </ui:composition>

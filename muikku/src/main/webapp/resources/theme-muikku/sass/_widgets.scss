@@ -18,8 +18,50 @@ div[class*='dock-dynamic-navi-button'] > a {
   display:inline-block;
 }
 
+/* Workspace material's reading view's navigation */
+div[class*='workspace-materials-reading-navi-button'] > a,
+div[class*='workspace-materials-reading-navi-button'] > span {
+  cursor:pointer;
+  font-size:24pt;
+  color:#fff;
+  text-decoration:none;
+  @include iconShadow;
+  background:transparent;
+  padding:6px;
+  margin:0px;
+  display:inline-block;
+  position:relative;
+  width:34px;
+  text-align:center;
+
+  span[class*='workspace-materials-reading-tt-container-'] {
+    opacity:0;
+    font-family:"Open Sans";
+    font-size:16px;
+    height:16px;
+    font-weight:300;
+    position:absolute;
+    top:0px;
+    left:-4500px;
+    width:0px;
+    color:#fff;
+    text-transform:uppercase;
+    padding:13px 15px 15px 14px;
+    @include rounded-top-left(3px);
+    @include rounded-bottom-left(3px);
+    @include workspaceTooltipTransition(opacity,0.15s,ease-in-out);
+  }
+    
+  &:hover {
+    @include iconShadow(rgba(255,255,190,0.5));
+    background:transparent;
+  }
+}
+
 /* Workspace navigation */
-div[class*='dock-workspace-navi-button'] > a {
+div[class*='workspace-dock-navi-button'] > a,
+div[class*='workspace-dock-navi-button'] > span {
+  cursor:pointer;
   font-size:24pt;
   color:#fff;
   text-decoration:none;
@@ -29,25 +71,25 @@ div[class*='dock-workspace-navi-button'] > a {
   margin:4px;
   display:inline-block;
   position:relative;
-  width:35px;
+  width:34px;
   @include rounded(3px);
   
   span[class*='workspace-navi-tt-container-'] {
-      opacity:0;
-      font-family:"Open Sans";
-      font-size:16px;
-      height:16px;
-      font-weight:300;
-      position:absolute;
-      top:0px;
-      left:-4500px;
-      width:0px;
-      color:#fff;
-      text-transform:uppercase;
-      padding:13px 15px 15px 14px;
-      @include rounded-top-right(3px);
-      @include rounded-bottom-right(3px);
-      @include workspaceTooltipTransition(opacity,0.25s,ease-in-out);
+    opacity:0;
+    font-family:"Open Sans";
+    font-size:16px;
+    height:16px;
+    font-weight:300;
+    position:absolute;
+    top:0px;
+    left:-4500px;
+    width:0px;
+    color:#fff;
+    text-transform:uppercase;
+    padding:13px 15px 15px 14px;
+    @include rounded-top-right(3px);
+    @include rounded-bottom-right(3px);
+    @include workspaceTooltipTransition(opacity,0.15s,ease-in-out);
   }
   
     
@@ -61,6 +103,22 @@ div[class*='dock-workspace-navi-button'] > a {
       left:45px;
     }
   }
+}
+
+/* Rule for workspace's dock's selected icon */
+div[class*='workspace-dock-navi-button-selected'] > span {
+  background:#465b6c;
+  cursor:pointer;
+  font-size:24pt;
+  color:#fff;
+  text-decoration:none;
+  @include iconShadow;
+  padding:6px;
+  margin:4px;
+  display:inline-block;
+  position:relative;
+  width:35px;
+  @include rounded(3px);
 }
 
 div[data-name="generic.dock-top.left"] div:last-child > a{
@@ -252,26 +310,225 @@ div[class*="wi-dock-static-navi"] {
   @include background-image('gfx/icons/32x32/actions/settings-course-identifiers.png'); 
 }
 
-/* Workspace */
+/* Generic Widget Box Rules */
 
-.naviIconWorkspaceNavigationMembers.disabled {
-  @include naviIcon();  
-  @include background-image('gfx/icons/32x32/actions/workspace-navigation-members.png'); 
+.wi-generic-listing,
+.wi-generic-recent { /* Default workspace widget for listing content */
+  
+  .wi-generic-widget-container {
+    border:1px solid $w-brd;
+    padding:1px;
+    background:$w-bgr;
+    box-shadow:$w-sc;
+    
+    .wi-generic-widget-title {
+      text-transform:uppercase;
+      font-size:1.3em;
+      font-weight:300;
+      color:#fff;
+      background:$w-tbgr;
+      padding:10px 12px;
+      position:relative; /* For the widget settings icon and menu */
+    }
+    
+    .wi-generic-widget-content {
+      min-height:100px;
+    
+      /* Generic styles for recent widget */
+      .wi-generic-widget-recent-row {
+        border-bottom:1px solid #f2f2f2;
+        padding:10px;
+
+        
+        &:last-child {
+          border:0;
+        }
+
+        .wi-generic-widget-recent-row-content {
+          margin:0 0 5px 0;
+          
+          a {
+            color:$contextualLink;
+            text-decoration:none;
+            
+            &:hover {
+              color:$contextualLinkHover;
+            }
+          }
+          
+        }
+        
+        .wi-generic-widget-recent-row-content-meta-wrapper {
+
+          .wi-generic-widget-recent-row-content-meta-author {
+            display:inline-block;
+            @include contentMeta($fColor:#5f5f5f);
+            margin:0 10px 0 0;
+          }
+          
+          .wi-generic-widget-recent-row-content-meta-datetime {
+            display:inline-block;
+            @include contentMeta($fStyle:italic);
+          }
+        
+        }
+    
+      }
+    
+      /* Generic styles for listing widget */
+      .wi-generic-widget-list-row {
+        border-bottom:1px solid #f2f2f2;
+        padding:10px;
+        
+        
+        &:last-child {
+          border:0;
+        }
+      
+        .wi-generic-widget-list-row-content { /* 2 column layout for listing type widget */
+          margin:0 0 5px 0;
+          
+          a {
+            color:$contextualLink;
+            text-decoration:none;
+            
+            &:hover {
+              color:$contextualLinkHover;
+            }
+          }
+        
+          .wi-generic-list-row-content-leftcol-wider {
+            display:inline-block;
+            width:75%;
+            float:left;
+          }
+          
+          .wi-generic-list-row-content-rightcol-wider {
+            display:inline-block;
+            width:75%;
+          }
+          
+          .wi-generic-list-row-content-leftcol {
+            display:inline-block;
+            width:25%;
+            float:left;
+          }
+          
+          .wi-generic-list-row-content-rightcol {
+            display:inline-block;
+            width:25%;
+          }
+          
+          .wi-generic-list-row-content-leftcol-half {
+            display:inline-block;
+            width:50%;
+            float:left;
+          }
+          
+          .wi-generic-list-row-content-rightcol-half {
+            display:inline-block;
+            width:50%;
+          }
+          
+          .wi-generic-list-row-content-full {
+            width:auto;
+          }
+        
+        }
+      
+      }
+      
+    
+    }
+    
+    
+  }
 }
 
-.naviIconWorkspaceNavigationMembers {
-  @include naviIcon();  
-  @include background-image('gfx/icons/32x32/actions/workspace-navigation-members.png'); 
-}
+/* Generic Widget's Action Menu */
+      
+.wi-generic-widget-action-menu-launcher {
+  position:absolute;
+  right:8px;
+  top:8px;
+  font-size:1.4em;
+  cursor:pointer;
+  
+  &:hover { /* Need to increase action menu icons container for easier use */
+    padding-left:100px; 
+    padding-bottom:20px;  
+  }
 
-.naviIconWorkspaceNavigationMaterials.disabled {
-  @include naviIcon();  
-  @include background-image('gfx/icons/32x32/actions/workspace-navigation-materials.png'); 
-}
+  .wi-generic-widget-action-menu-container { /* Hiding the menu with visibility and height rules for css transitions, use display:none/block if no transitions are needed */
+    visibility:hidden;
+    height:0px;
+    opacity:0;
+    @include widgetActionMenuTransition(opacity,0.15s,ease-in-out);
+    position:absolute;
+    right:-5px;
+    top:20px;
+    color:#000;
+    font-family:"Open Sans";
+    min-width:125px;
+    
+    .wi-generic-widget-action-menu-arrow {
+      @include background-image('gfx/contextual-menu-arrow.png');
+      background-repeat:no-repeat;
+      height:10px;
+      background-position:bottom right;
+      float:none;
+      background-color:transparent;
+    }
+    
+    .wi-generic-widget-action-menu-item-container {
+      border:1px solid #d6d6d6;
+      @include rounded(3px);
+      box-shadow:0 0 10px rgba(0,0,0,0.2);
+      background:#fff;
+    
+      .wi-generic-widget-action-item {
+        padding:10px 15px;
+        font-size:12pt;
+        position:relative;
+        margin:0;
+        display:block;
+        float:none;
+        @include widgetActionMenuItemTransition;
+        
+        .wi-generic-widget-action-item-label {
+          padding:0 0 0 10px;
+          display:inline-block;
+          font-family:"Open Sans";
+          font-size:10pt;
+          position:relative;
+          top:-2px; /* Adjusting text in relation to icon as they are different sizes */
+        }
+      
+        &:hover {
+          color:#fff;
+          background:#0099ff;
+        }
+      }
+    }
+  
+  }
+  
+  &:hover {
+  
+    .wi-generic-widget-action-menu-container {
+      visibility:visible;
+      height:auto;
+      opacity:1;
+  
+      .wi-generic-widget-action-menu-arrow {
+    
+      }
+    
+  
+    }
+  
+  }
 
-.naviIconWorkspaceNavigationMaterials {
-  @include naviIcon();  
-  @include background-image('gfx/icons/32x32/actions/workspace-navigation-materials.png'); 
 }
 
 /* Student browser */
@@ -898,8 +1155,8 @@ div[class*="sk-autocomplete-item"]:before {
  with:0;
  height:0;
  opacity:0;
-}
 
+}
 
 #filterSelectList {
 	width:100%;

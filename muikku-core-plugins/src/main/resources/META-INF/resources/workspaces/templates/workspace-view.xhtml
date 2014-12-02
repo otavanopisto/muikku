@@ -20,9 +20,9 @@
   </ui:define>
 
   <ui:define name="sitebody">
-    <div id="staticNavigationWrapper">
+    <header id="staticNavigationWrapperWorkspace">
       <m:widget name="navigation-dynamic" rendered="#{sessionBackingBean.loggedIn}"></m:widget>
-      <div id="staticNavigation" class="container_24">
+      <nav id="staticNavigation" class="container_24">
         <ui:insert name="dock.top">
           <m:widgetSpaceSet styleClass="noLid">
             <ui:insert name="dock.top.left">
@@ -37,27 +37,26 @@
           </m:widgetSpaceSet>
         </ui:insert>
         <div class="clear"></div> 
-      </div>
-    </div>  
+      </nav>
+    </header>  
     <div id="workspaceNavigationWrapper">
-      <div id="workspaceNavigation">
-        <ui:insert name="workspaces.dock">
-          <ui:include src="/facelets/generic/workspaces-dock.xhtml"></ui:include>
-        </ui:insert>
-      </div>
-    </div>
-    <div id="content" class="container_24">
-      <ui:insert name="workspace.content.top.static"></ui:insert>
-      <ui:insert name="workspace.contentArea">
+      <ui:insert name="workspace.dock">
         <m:widgetSpaceSet>
-          <ui:insert name="workspace.content.widgetspace">
-            <m:widgetSpace name="workspace.generic.content" keepEmpty="true" sizing="MAXIMIZE" styleClass="nomargin">
-              <ui:insert name="workspace.content.widget"></ui:insert>
-            </m:widgetSpace>
-          </ui:insert>
+          <nav id="workspaceDockWrapper">
+            <div id="workspaceDock">
+              <ui:insert name="workspaces.dock">
+                <ui:include src="/facelets/generic/workspaces-main-dock.xhtml"></ui:include>
+              </ui:insert>
+            </div>
+          </nav>
         </m:widgetSpaceSet>
       </ui:insert>
     </div>
+    <main id="content" class="container_24">
+      <ui:insert name="workspace.content.top.static"></ui:insert>
+      <ui:insert name="workspace.content">
+      </ui:insert>
+    </main>
     <div id="socialNavigation">
       <ui:insert name="dock.bottom">
         <m:widgetSpaceSet styleClass="nomargin">
@@ -73,7 +72,7 @@
         </m:widgetSpaceSet>
       </ui:insert>
     </div>
-    <div id="footer">
+    <footer id="footer">
       <div id="footerContainer" class="container_24">
         <ui:insert name="footer">
           <m:widgetSpaceSet styleClass="nomargin">
@@ -90,7 +89,7 @@
         </ui:insert>
         <div class="clear"></div>
       </div>
-    </div>
+    </footer>
   </ui:define>
 
 </ui:composition>

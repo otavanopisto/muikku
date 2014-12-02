@@ -10,7 +10,7 @@
 	<ui:define name="header">
 		<c:choose>
 			<c:when test="#{sessionBackingBean.loggedIn}">
-				<div id="header">
+				<header id="header">
 					<div id="headerContainer" class="container_24">
 						<div id="headerFishContainer"></div>
 						<m:widgetSpaceSet styleClass="noLid">
@@ -40,10 +40,10 @@
 							</ui:insert>
 						</m:widgetSpaceSet>
 					</div>
-				</div>
+				</header>
 			</c:when>
 			<c:otherwise>
-				<div id="headerBig">
+				<header id="headerBig">
 					<div id="headerContainerBig" class="container_24">
 						<div id="headerLogoTextContainerBig"></div>
 						<div id="headerFishContainerBig"></div>
@@ -74,7 +74,7 @@
 							</ui:insert>
 						</m:widgetSpaceSet>
 					</div>
-				</div>
+				</header>
 			</c:otherwise>
 		</c:choose>
 	</ui:define>

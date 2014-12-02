@@ -1,6 +1,9 @@
 @import "_jsf.scss";
 
+
 /* COLORS */
+$contextualLink:#0099ff;
+$contextualLinkHover:#006ab1;
 
 /* Fonts */
 
@@ -44,9 +47,13 @@ $mainFuncFilter3 : #5dc005;
 /* Generic gradients (Grayscale) */
 
 /* Widgets */
-$w-sc: 0 2px 15px rgba(216, 230, 235, 0.3);
+$w-sc: 0 2px 15px rgba(216, 230, 235, 0.5);
 $w-bgr:#fff;
 $w-brd: #f0f0f0;
+$w-tbgr:#596e7d;
+
+/* Workspace REading View Page */
+$w-page-sc: 0 2px 15px rgba(105, 108, 128, 0.3);
 
 /* Forms */
 $btnGr:#bfd255, #8eb92a, #72aa00 , #9ecb2d;
@@ -118,6 +125,10 @@ $text: 12px;
 /* Transition durations */
 
 /* Generic Mixins */
+@mixin contentMeta($fStyle:normal,$fColor:#4c4c4c) {
+  font-style:$fStyle;
+  color:$fColor;
+}
 
 @mixin no-select {
 -webkit-touch-callout: none;
@@ -164,6 +175,16 @@ user-select: none;
 
 @mixin border-all() { 
 	
+}
+
+@mixin fadeRight(){
+background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 99%, rgba(255,255,255,1) 100%);
+background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(99%,rgba(255,255,255,1)), color-stop(100%,rgba(255,255,255,1))); 
+background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 99%,rgba(255,255,255,1) 100%); 
+background: -o-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 99%,rgba(255,255,255,1) 100%); 
+background: -ms-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 99%,rgba(255,255,255,1) 100%); 
+background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 99%,rgba(255,255,255,1) 100%);
+  
 }
 
 @mixin buttonLedGr($col1,$col2,$col3,$col4,$prcCol2,$prcCol3) {
@@ -333,6 +354,54 @@ user-select: none;
   transition-property:$pr1;
   transition-duration:$trd1;
   transition-timing-function: $tf1;
+}
+
+/* Widget Action Menu Transitions */
+@mixin widgetActionMenuTransition($pr1,$trd1,$tf1) {
+  -webkit-transition-property:$pr1;
+  -webkit-transition-duration:$trd1;
+  -webkit-transition-timing-function:$tf1;
+  -moz-transition-property:$pr1;
+  -moz-transition-duration:$trd1;
+  -moz-transition-timing-function:$tf1;
+  -o-transition-property:$pr1;
+  -o-transition-duration:$trd1;
+  -o-transition-timing-function:$tf1; 
+  transition-property:$pr1;
+  transition-duration:$trd1;
+  transition-timing-function: $tf1;
+}
+
+/* Widget Action Menu Transitions */
+@mixin genericMenuLinkHoverTransition($pr1,$pr2,$trd1,$tf1) {
+  -webkit-transition-property:$pr1,$pr2;
+  -webkit-transition-duration:$trd1;
+  -webkit-transition-timing-function:$tf1;
+  -moz-transition-property:$pr1,$pr2;
+  -moz-transition-duration:$trd1;
+  -moz-transition-timing-function:$tf1;
+  -o-transition-property:$pr1,$pr2;
+  -o-transition-duration:$trd1;
+  -o-transition-timing-function:$tf1; 
+  transition-property:$pr1,$pr2; 
+  transition-duration:$trd1;
+  transition-timing-function: $tf1;
+}
+
+/* Widget Action Menu Transitions */
+@mixin widgetActionMenuItemTransition() {
+  -webkit-transition-property:background,color;
+  -webkit-transition-duration:0.1s;
+  -webkit-transition-timing-function:ease-in;
+  -moz-transition-property:background,color;
+  -moz-transition-duration:0.1s;
+  -moz-transition-timing-function:ease-in;
+  -o-transition-property:background,color;
+  -o-transition-duration:0.1s;
+  -o-transition-timing-function:ease-in;
+  transition-property:background,color;
+  transition-duration:0.1s;
+  transition-timing-function:ease-in;
 }
 
 @mixin tooltipBackGround( $bgColorStart, $bgColorEnd) {

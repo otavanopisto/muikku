@@ -1,0 +1,121 @@
+/* communicator (.co-*) */
+
+.cm-content { 
+}
+
+
+.cm-messages-container{
+  padding:5px;
+}
+
+.cm-message {
+
+   .cm-message-header-content-primary{
+    font-weight:700;  
+   }
+  
+  
+   .cm-message-header-content-secondary{
+
+   }
+  
+   
+  
+  .cm-user-picture{
+     float:left;
+     height:30px;
+     width:30px; 
+     &.default{
+     @extend .co-user-picture;     
+
+     }
+     
+  }
+  .cm-message-view {
+    @include rounded(4px);  
+    @include gradient-top-bottom;
+    @include shadow;
+    margin-bottom:10px;
+    min-height:50px;
+    padding:5px;   
+  }
+  
+   .cm-message-details-container{
+    background-color:#fff;
+   }
+   
+  .cm-message-content{
+   margin-left:70px;
+   margin-right:70px; 
+  }
+  
+  .cm-message-content-tools{
+    padding:10px 0;  
+    
+  }
+  
+  
+  .cm-message-tools, .cm-viewmessagethread-tools {
+    padding:0;
+    height:40px;
+    
+  }
+  
+  
+  
+  .cm-message-tool{
+    padding:0 10px 0 10px;
+    border:1px solid #dadada;
+    background-color:#ededed; 
+    font-size:1.5em;
+    float:left;
+    color:#000;
+    
+    &:not(:first-child){
+     margin-left:10px;
+    }
+    
+    span{
+     font-size:0.75em;
+     
+    }
+  }
+  
+  
+  
+  
+  .cm-replyMessage {
+    padding:5px 5px 5px 10px;
+    background-color:#fff;
+    @include rounded(4px);
+  }
+
+/* When the message is open */  
+  
+  &.open{
+  
+    .cm-user-picture{
+     float:left;
+     height:60px;
+     width:60px;
+     
+     
+     &.default{
+      @extend .co-user-picture;
+     }
+    }   
+      
+    .cm-message-header-content-secondary{
+      float:right;
+      margin-right:60px;
+    }
+    
+    .cm-message-header-content-primary{
+      font-weight:700;
+      margin-left:10px;
+    }   
+
+   
+  }
+
+}

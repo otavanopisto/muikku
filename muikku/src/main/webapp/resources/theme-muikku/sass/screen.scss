@@ -9,6 +9,7 @@
 @import "_notif-queue.scss";
 @import "_mainfunctions.scss";
 @import "_calendar.scss";
+@import "_communicator.scss";
 /* Note: All in-development- unfinished-temp-styles are in temp.css */
 
 html {
@@ -484,122 +485,7 @@ a.header {
   margin: 4px 0px 4px 0px;
 }
 
-/* communicator (.co-*) */
 
-.cm-content {	
-}
-
-.cm-item {
-  @include rounded(4px);  
-  @include gradient-top-bottom;
-  @include shadow;
-  margin-bottom:5px;
-  min-height:50px;
-  padding:5px; 
-  background-color:$aBgr;	
-}
-
-.cm-message {
-  @include border($msgBrd,1px);
-  @include gradient-top-bottom($msgGr...);
-}
-
-.cm-message-view {
-  @include rounded(4px);  
-  @include gradient-top-bottom;
-  @include shadow;
-  margin-bottom:10px;
-  min-height:50px;
-  padding:5px;   
-}
-
-.cm-message-toolbar, .cm-viewmessagethread-toolbar {
-	padding:0;
-	height:40px;
-}
-
-.cm-message-replyLink {
-  @include naviIcon();  
-  @include background-image('gfx/icons/32x32/actions/communicator-reply.png'); 
-}
-
-.cm-message-replyAllLink {
-  @include naviIcon();  
-  @include background-image('gfx/icons/32x32/actions/communicator-replyall.png'); 
-}
-
-.cm-message-trashMessageLink {
-  @include naviIcon();  
-  @include background-image('gfx/icons/32x32/actions/communicator-trash.png');
-}
-
-.cm-message-senderName {
-}
-
-.cm-message-recipients {
-}
-
-.cm-message-content {
-  padding:15px;
-  font-size:1.3em;
-  white-space: pre-line;
-}
- 
-.cm-news {
-}
-
-.cm-request {
-}
-
-.cm-item-header {
-  float:left;	
-}
-
-.cm-item-senderPictureContainer, 
-.cm-senderPictureContainer {
-  float:left;
-  @include border($brd);
-  @include shadow;
-  height:50px;
-  width:50px
-}
-
-.cm-item-senderName, 
-.cm-message-senderName {
-  float:left;
-  margin-left: 0.5em;
-}
-
-.cm-item-title, 
-.cm-message-title, 
-.cm-message-date {
-  font-size: 2em;
-  margin-left: 0.5em;
-}
-
-.cm-item-date, 
-.cm-message-date {
-  margin-left: 0.5em;
-  float:left;
-}
-	
-.cm-item-tags, 
-.cm-message-tags {
-  margin-top:5px;
-  font-size:1.3em;
-  @include border(#ededed);
-  @include rounded(4px);
-  @include gradient-top-bottom(#707070, #666);
-  @include shadow;
-  color:#fff;
-  padding:5px;
-}
-
-.cm-replyMessage {
-  padding:5px 5px 5px 10px;
-  background-color:#fff;
-  @include rounded(4px);
-}
 
 /* Coursepicker (.cp-*) */
 
@@ -737,7 +623,7 @@ a.header {
 }
 
 
-.cp-course{
+.cp-course {
  @extend .co-listItem;
  padding:5px 5px 5px 5px;
  margin-bottom:10px;
@@ -747,48 +633,42 @@ a.header {
 
 }
 
-.cp-course-details-container{
+.cp-course-details-container {
   background-color:#f0f3f4;
 }
 
-.cp-course-details-close{
+.cp-course-details-close {
  position:absolute;
  margin-top:0;
  margin-left:0;
  background-color:none;
  height:30px;
  width:200px;
- &:hover{
-   background-color:rgba(0,0,0,0.1); 
- }
-
+ cursor: pointer;
 }
 
-
-
-.cp-course-header-name{
+.cp-course-header-name {
 	display : inline-block;
   text-transform:uppercase;
 }
 
-.cp-course-header-details{
+.cp-course-header-details {
   display : inline-block;
   float:right;  
 
 }
-.cp-course-rating{
+.cp-course-rating {
 	padding-right:5px;
 }
 
-
-.cp-course-description{
+.cp-course-description {
   display:inline-block;
   width:70%;
   background-color:#fff;  
   cursor:pointer;  
 }
 
-.cp-course-description-text{
+.cp-course-description-text {
   @extend .co-description;
   font-size: 0.9em; 
   padding:5px;
@@ -796,8 +676,7 @@ a.header {
 
 }
 
-
-.cp-course-additionalInfo{
+.cp-course-additionalInfo {
   display:inline-block;
   width:30%;
   float:right;
@@ -805,10 +684,11 @@ a.header {
 
 }
 
-.cp-course-details-teachers{
+.cp-course-details-teachers {
 	padding:0 5px;
 	height:20px;
-  .cp-teacher-picture-default{
+	
+  .cp-teacher-picture-default {
     @extend .co-user-picture;
     display:inline-block;
     height:20px;
@@ -817,26 +697,24 @@ a.header {
 
 }
 
-.cp-course-details-toolbar{
+.cp-course-details-toolbar {
   border-top: 1px solid $brd; 
 	@include padding(5px);
 	
 }
 
-
-.cp-course-short:after{
+.cp-course-short:after {
    content : " -"  ;
 }
 
-.cp-course-details-teacher{
+.cp-course-details-teacher {
   display:inline-block;	
   height:20px;
   width:20px;
   margin-right:3px;
-
 }
 
-.cp-course-details-teacher-picture-container{
+.cp-course-details-teacher-picture-container {
 
 }
 
