@@ -1,7 +1,5 @@
 
 $(document).ready(function(){
-
-
 	
 	$(".bt-mainFunction").m3modal({
 		title : "Veistin! ",
@@ -80,14 +78,34 @@ $(document).ready(function(){
       });
 
  
-    $(".cm-messages-container").on('click','.mf-item', function(){
+    $(".cm-messages-container")
+    
+    .on('click','.mf-item', function(){
     	var mId = $(this).attr('id');
     	var mCont = $('.cm-messages-container');
-        mApi().communicator.messages.read(mId).callback(function (err, mofo){
-        	renderDustTemplate('communicator/communicator_items_open.dust', mofo, function (text) {
+        mApi().communicator.messages.read(mId).callback(function (err, result){
+        	renderDustTemplate('communicator/communicator_items_open.dust', result, function (text) {
                mCont.empty();
 	           mCont.append($.parseHTML(text));
               });
         });
-    });
+    })
+    .on('click','.cm-message-reply-link', function(){
+        var pMsg = {
+                communicatorMessageId: $(this).attr('id'),
+                subject: "Aihe",
+                content: "Sisalto",
+                recipients: "vast1",
+              };
+        
+        var fCont = $('.mf-item-content-tools');
+
+        	renderDustTemplate('communicator/communicator_replymessage.dust', pMsg, function (text) {
+               fCont.empty();
+	           fCont.append($.parseHTML(text));
+            });
+        });
+    
+  
+
 });

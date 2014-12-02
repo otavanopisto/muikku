@@ -1,63 +1,32 @@
-<div class="cm-replyMessage">
+<div class="cm-message-reply">
   <form>
     <input type="hidden" name="communicatorMessageId" value="{communicatorMessageId}" />
-  
-    <div class="mf-toolbar cm-reply-toolbar">
-      <input type="button" name="send" value='{#localize key="plugin.communicator.newmessage.send"/}'/>
-      <input type="button" name="save" value='{#localize key="plugin.communicator.newmessage.save"/}'/>
-      <select name="templateSelector">
-        <option value="">{#localize key="plugin.communicator.newmessage.templates"/}</option>
-        {#templates}
-          <option value="{id}">{name}</option>
-        {/templates}
-      </select>
-      <select name="signatureSelector">
-        <option value="">{#localize key="plugin.communicator.newmessage.signatures"/}</option>
-        {#signatures}
-          <option value="{id}">{name}</option>
-        {/signatures}
-      </select>
-      <input type="button" name="cancel" value='{#localize key="plugin.communicator.newmessage.cancel"/}'/>
-    </div>
-    <div class="cm-newMessage-recipients">
-      {#localize key="plugin.communicator.newmessage.recipients"/}
+
+    <div class="cm-message-recipients">
       <div class="mf-selectedObjects cm-newMessage-recipientsList">
-        {#recipients}
-          {>"communicator/communicator_messagerecipient.dust"/}
-        {/recipients}
+         Vastaanottaja
       </div>
      <div class="clear"></div>
     </div>
-
-    <div>
-      <div class="cm-newMessage-message">
-        <div class="mf-fieldRow cm-newMessage-subject">
-          <div class="mf-labelfield">{#localize key="plugin.communicator.subject"/}</div>
-          <div class="mf-textfield">
-            <input type="text" name="subject" value='{#localize key="plugin.communicator.subjectreplyprefix"/}{subject}' />
-          </div>
+    <div class="cm-reply">
+      <div class="mf-form-row cm-reply-subject">
+        <div class="mf-textfield">
+          <input type="text" name="subject" value='aihe' />
         </div>
-        <div class="clear"></div>
-        <div class="cm-newMessage-content">
-          <div class="mf-labelfield">{#localize key="plugin.communicator.content"/}</div>
-          <div class="clear"></div>
-
-          <div class="">
-           <textarea name="content">
-             {content}
-           </textarea>
-          </div>
-        </div>  
-        <div class="cm-newMessage-tags">
-          <div class="mf-labelfield">{#localize key="plugin.communicator.messagetags"/}</div>
-          <div class="clear"></div>
-
-          <div class="">
-            <input type="text" name="tags" value="{tags}" />
-          </div>
-        </div>    
-      </div>		
-    </div>
+      </div>
+      <div class="cm-reply-content">  
+        <div class="mf-form-row cm-reply-content">
+         <textarea name="content">
+           Sisalto
+         </textarea>
+        </div>
+      </div>  
+  
+      <div class="mf-toolbar cm-reply-toolbar">
+        <input type="button" name="send" value='{#localize key="plugin.communicator.newmessage.send"/}'/>
+        <input type="button" name="save" value='{#localize key="plugin.communicator.newmessage.save"/}'/>
+        <input type="button" name="cancel" value='{#localize key="plugin.communicator.newmessage.cancel"/}'/>
+      </div>        
+    </div>		
   </form>
-
 </div>

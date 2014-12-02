@@ -1,15 +1,15 @@
-    <div class="mf-item" id="{id}">
+    <div class="mf-item cm-message" id="{id}">
       <div class="mf-item-details">
         <div class="mf-item-details-container">       
           <div class="mf-item-additionalInfo">
-            {created|formatDate} {created|formatTime} 
+            <span>{created|formatDate} {created|formatTime} </span>
           </div>
           <div class="mf-item-description">
-            <div class="mf-item-header-name">
+            <div class="mf-item-header-name cm-message-header-name">
               {?senderHasPicture} 
-                <img class="cm-user-picture-custom" src="{@contextPath/}/picture?userId={sender}" width="50" height="50" />
+                <img class="cm-user-picture custom" src="{@contextPath/}/picture?userId={sender}" width="50" height="50" />
               {:else}
-                <div class="cm-user-picture-default"></div>
+                <div class="cm-user-picture default"></div>
               {/senderHasPicture}            
               <input type="hidden" name="mf-person-id" value="{sender}"/>
               <span class="mf-item-header-content-primary">{senderFullName}</span>        
@@ -17,10 +17,6 @@
             </div>
             <div class="mf-item-header-details">
               {@if cond="{messageCount} > 1"} ({messageCount}){/if}
-            </div>
-            <div class="mf-item-content-details" style="display:none;">     
-              <div class="mf-item-content-text">Kuvaus</div>          
-              <div class="mf-item-details-toolbar">Toiminnot (painikkeet, linkit, muut)</div>
             </div>
           </div>       
           <div class="clear"></div>
