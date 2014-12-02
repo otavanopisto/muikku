@@ -75,7 +75,8 @@ body.workspace-materials-management {
       display:inline-block;
       
       &:focus,
-      &:hover {
+      &:hover,
+      &:checked {
         border:1px solid #97bfed;
         box-shadow:0 0 0px 3px rgba(202,225,252,0.85);
       }
