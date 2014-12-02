@@ -2,7 +2,8 @@
 @import "_workspaces-materials.scss"; 
 @import "_connect-field.scss";
 
-body.workspace { /* We need to remove background image under workspace views */
+body.workspace,
+body.workspace-materials { 
   background:#ffffff;
   min-height:100%;
   font-size:14px;

@@ -42,12 +42,11 @@ body.workspace-materials-management {
       border:1px solid #eee;
       transition:border,box-shadow 0.3s,0.5s ease-in-out;
       outline:none; /* Thanks Chrome! */
-      font-size:1.2em;
-      text-align:center;
       color:#0077c7;
       display:inline-block;
       margin:4px;
       box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
+      @include rounded(3px);
       
       &:focus,
       &:hover {
@@ -57,7 +56,8 @@ body.workspace-materials-management {
     
       option {
         background:#fff;
-
+        font-weight:300;
+        padding:2px 6px;
       }
       
     }
@@ -173,6 +173,23 @@ body.workspace-materials-management {
         list-style-type:circle;
       }
     
+    }
+    
+    button.muikku-save-page {
+      color:#fff;
+      background:#6b899e;
+      box-shadow:none;
+      border:0;
+      @include rounded(2px);
+      font-weight:300;
+      font-size:16px;
+      text-transform:uppercase;
+      padding:6px 12px;
+      transition:background 0.3s ease-in-out;
+      
+      &:hover {
+        background:#0077c7;
+      }
     }
   
   }
