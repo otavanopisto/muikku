@@ -95,7 +95,6 @@
     _queueHtmlMaterial: function(materialId, workspaceMaterialId, page) {
       $(page).append($('<div>')
         .attr({
-          'data-page-type': 'queued-html',
           'data-material-id': materialId,
           'data-workspace-material-id': workspaceMaterialId
         })
@@ -140,7 +139,7 @@
         }
       }, this));
       
-      $('div[data-page-type="queued-html"]').waypoint(function() {
+      $('.workspace-material-queued-html').waypoint(function() {
         if ($(this).hasClass('workspace-material-queued-html')) {
           $(this).removeClass('workspace-material-queued-html');
           $(this).removeAttr('data-page-type');
