@@ -181,39 +181,64 @@ body.workspace-materials {
       
       h1,
       h2,
-      h3 {
+      h3,
+      h4,
+      h5,
+      h6
+       {
         margin:40px 0 20px 0;
         color:#38393a;
         font-weight:300;
         text-transform:none;
         line-height:1.3em;
-        
-        &:first-child {
-          margin:20px 0 20px 0;
-        }
       }
       
       h1 {
-        font-size:31px;
+        font-size:29px;
       }
         
       h2 {
-        font-size:27px;
+        font-size:26px;
       }
       
       h3 {
-        margin:20px 0 20px 0;
-        font-size:24px;
+        font-size:19px;
+        font-weight:normal;
+      }
+      
+      h4 {
+        font-size:17px;
+        font-weight:normal;
+      }
+      
+      h5 {
+        font-size:15px;
+        font-weight:normal;
+      }
+      
+      h6 {
+        font-size:13px;
+        font-weight:normal;
       }
       
       p {
-        margin:20px 0 20px 0;
+        margin:15px 0 15px 0;
         line-height:1.5em;
       }
       
       label,select,option,input,textarea { /* Overrides the values used in reading/management */
         font-weight:normal;
         font-size:14px; /* Reset font-size  */
+      }
+      
+      strong,
+      b {
+        font-weight:600; /* Override values used in reading/management */
+      }
+      
+      em,
+      i {
+        font-weight:400;
       }
 
       blockquote {
