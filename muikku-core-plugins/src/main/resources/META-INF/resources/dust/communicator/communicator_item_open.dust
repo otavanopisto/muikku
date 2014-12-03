@@ -23,7 +23,10 @@
             <div class="mf-item-content cm-message-content ">     
               <div class="mf-item-content-text cm-message-content-text">{content}</div>          
               <div class="mf-item-content-tools cm-message-content-tools">
-                <div  id="{id}" class="cm-message-tool cm-message-reply-link mf-item-tool"><span>Vastaa viestiin</span></div>           
+                <div class="cm-message-content-tools-container">
+                  <div  id="{id}" class="cm-message-tool cm-message-reply-link mf-item-tool"><span>Vastaa viestiin</span></div>   
+                </div>
+                <div class="cm-message-content-tools-reply-container"></div>
                 <div class="clear"></div>
               </div>
             </div>

@@ -281,7 +281,9 @@ $(document).ready(function(){
 	           
 	           
 	           $(".cm-message-reply-link").click(function(event){
-	               var fCont = $('.mf-item-content-tools');
+	               var fCont = $('.cm-message-content-tools-reply-container');
+	               var tCont = $('.cm-message-content-tools-container');
+	               
 	               mApi().communicator.communicatormessages.read(mId).on('$', function(reply, replyCallback){
 	            	   
 	       	        mApi().communicator.communicatormessages.sender.read(mId)
@@ -297,11 +299,21 @@ $(document).ready(function(){
 	               
 	               .callback(function (err, result){
 	               	renderDustTemplate('communicator/communicator_replymessage.dust', result, function (text) {
-	                   fCont.empty();
+
+	               	   
+	                   tCont.hide();
 	       	           fCont.append($.parseHTML(text));
+	
 	       	           
-	       	          
-                         
+	                   var cBtn = $(fCont).find("input[name='cancel']") ;
+	                   var sBtn = $(fCont).find("input[name='send']");
+	                   
+	                   $(cBtn).click(function(){
+	                	   tCont.show();
+	                	   fCont.empty();
+	                	   
+	                   });
+                        
 	       	           
 	       	           
 	       	         //  $('.cm-message-reply').addClass('mf-item-load');
@@ -314,8 +326,7 @@ $(document).ready(function(){
         });
     });
 
-//    $('.cm-reply-toolbar').on('click', 'input[name=]')
-	    
+
     
   
 
