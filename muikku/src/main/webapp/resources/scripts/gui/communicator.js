@@ -60,7 +60,7 @@ $(document).ready(function(){
 	$(".bt-mainFunction").m3modal({
 		title : "Uusi viesti ",
 		description : "Voit lähettää uuden viestin opettajillesi tai opiskelutovereillesi.",
-    content: $('<div><div><div class="cm-message-new-recipients" id="msgRecipientsContainer"></div><div><input type="textfield" value="vastaanottajat" name="msgRecipients" id="msgRecipients"></input></div><div><input type="textfield" value="aihe" name="msgSubject"></input></div></div><div><textarea value="" name="msgContent"></textarea></div></div>'),
+		content: $('<div class="cm-message-new"><div><div class="cm-message-new-recipients" id="msgRecipientsContainer"></div><div><input type="textfield" value="Vastaanottajat" name="msgRecipients" id="msgRecipients"></input></div><div><input type="textfield" value="aihe" name="msgSubject"></input></div></div><div><textarea value="" name="msgContent"></textarea></div></div>'),
 		modalgrid : 24,
 		contentgrid : 24,
 
@@ -78,8 +78,33 @@ $(document).ready(function(){
           return false;
         }
       });
+ 
       
-      $("#msgRecipientsContainer").on("click", ".cm-message-recipient-remove", $.proxy(_this._onRemoveRecipientClick, _this));
+	 $('.cm-message-new').on('focus', 'input', function(){
+         var dval = this.defaultValue;
+         var cval = $(this).val();
+         
+         if (dval == cval){
+        	 $(this).val('');
+         } 
+         
+
+	 });
+      
+	 $('.cm-message-new').on('blur', 'input', function(){
+         var dval = this.defaultValue;
+         var cval = $(this).val();
+    	 
+         if (!cval ){ 
+             $(this).val(dval);	 
+      	 }        	
+
+	 });	 
+
+     
+
+      
+      $("#msgRecipientsContainer").on("click", ".cm-message-recipient-name", $.proxy(_this._onRemoveRecipientClick, _this));
     },
 
     _searchUsers: function (searchTerm) {

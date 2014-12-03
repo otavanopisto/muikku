@@ -2,7 +2,6 @@
   <input type="hidden" name="userId" value="{id}" />
   <input type="hidden" name="mf-person-id" value="{id}" />
   <div class="cm-message-recipient-name">{name}</div>
-  <div class="cm-message-recipient-remove">X</div>
   <div class="clear"></div>
 </div>
 
