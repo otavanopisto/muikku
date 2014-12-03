@@ -5,12 +5,13 @@ public class WorkspaceMaterial {
   public WorkspaceMaterial() {
   }
 
-  public WorkspaceMaterial(Long id, Long materialId, Long parentId, Long nextSiblingId) {
+  public WorkspaceMaterial(Long id, Long materialId, Long parentId, Long nextSiblingId, Boolean hidden) {
     super();
     this.id = id;
     this.materialId = materialId;
     this.parentId = parentId;
     this.nextSiblingId = nextSiblingId;
+    this.hidden = hidden;
   }
   
   public Long getId() {
