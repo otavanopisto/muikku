@@ -302,7 +302,7 @@ $(document).ready(function(){
 	                   tCont.hide();
 	       	           fCont.append($.parseHTML(text));
 	       	           
-	                   var cBtn = $(fCont).find("input[name='cancel']") ;
+	                   var cBtn = $(fCont).find("input[name='cancel']");
 	                   var sBtn = $(fCont).find("input[name='send']");
 	                   
 	                   $(sBtn).click(function(){
@@ -326,6 +326,8 @@ $(document).ready(function(){
 	                     .callback(function (err, result) {
 	                     });
 	                     
+	                     // Go to inbox
+	                     window.location.reload();
                      });
 	                   
 	                   $(cBtn).click(function(){
