@@ -1,6 +1,7 @@
 <div class="cm-message-reply">
   <form>
     <input type="hidden" name="communicatorMessageId" value="{communicatorMessageId}" />
+    <input type="hidden" name="recipientIds" value="{recipientIds}" />
 
     <div class="mf-form-paragraph cm-message-recipients">
       <div class="mf-form-row mf-selected-items cm-message-selected-recipients">

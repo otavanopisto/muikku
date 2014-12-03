@@ -308,6 +308,29 @@ $(document).ready(function(){
 	                   var cBtn = $(fCont).find("input[name='cancel']") ;
 	                   var sBtn = $(fCont).find("input[name='send']");
 	                   
+	                   $(sBtn).click(function(){
+	                     var mId = $(fCont).find("input[name='communicatorMessageId']").val();
+	                     var subject = $(fCont).find("input[name='subject']").val();
+	                     var content = $(fCont).find("textarea[name='content']").val();
+	                     var tagStr = "tagi viesti"; // TODO: Tag content
+	                     var tags = tagStr != undefined ? tagStr.split(' ') : [];
+	                     var recipientIdStr = $(fCont).find("input[name='recipientIds']").val();
+	                     var recipientIds = recipientIdStr != undefined ? recipientIdStr.split(',') : [];
+	                     var groupIds = [];
+	                     
+	                     mApi().communicator.messages.create(mId, {
+	                       categoryName: "message",
+	                       caption : subject,
+	                       content : content,
+	                       tags : tags,
+	                       recipientIds : recipientIds,
+	                       recipientGroupIds : groupIds
+	                     })
+	                     .callback(function (err, result) {
+	                     });
+	                     
+                     });
+	                   
 	                   $(cBtn).click(function(){
 	                	   tCont.show();
 	                	   fCont.empty();
