@@ -58,6 +58,7 @@ $(document).ready(function(){
     });
 
     
+	
     mApi().communicator.items.read()
       .on('$', function (item, itemCallback) {
         mApi().communicator.communicatormessages.sender.read(item.id)
@@ -79,7 +80,7 @@ $(document).ready(function(){
       });
 
  
-    $(".cm-messages-container").on('click','.cm-message:not(.open)', function(){
+    $('.cm-messages-container').on('click','.cm-message:not(.open)', function(){
  
     	var mId = $(this).attr('id');
     	var mCont = $('.cm-messages-container');
@@ -95,22 +96,43 @@ $(document).ready(function(){
 	          msg.senderHasPicture = user.hasImage;
 	        });
        	
+	        
         	msgCallback();
         }) 
         .callback(function (err, result){
         	renderDustTemplate('communicator/communicator_items_open.dust', result, function (text) {
-
+               
                mCont.empty();
-	           mCont.append($.parseHTML(text));           
+	           mCont.append($.parseHTML(text));
                
 	           
 	           
 	           $(".cm-message-reply-link").click(function(event){
 	               var fCont = $('.mf-item-content-tools');
-	               mApi().communicator.messages.read(mId).callback(function (err, pMsg){
-	               	renderDustTemplate('communicator/communicator_replymessage.dust', pMsg, function (text) {
+	               mApi().communicator.communicatormessages.read(mId).on('$', function(reply, replyCallback){
+	            	   
+	       	        mApi().communicator.communicatormessages.sender.read(mId)
+	    	        .callback(function (err, user) {  
+	    	          reply.senderFullName = user.firstName + ' ' + user.lastName;
+	    	          reply.senderHasPicture = user.hasImage;
+	    	        });            	   
+	            	   
+	               
+	                replyCallback(); 
+	               })
+	               
+	               
+	               .callback(function (err, result){
+	               	renderDustTemplate('communicator/communicator_replymessage.dust', result, function (text) {
 	                   fCont.empty();
 	       	           fCont.append($.parseHTML(text));
+	       	           
+	       	          
+                         
+	       	           
+	       	           
+	       	         //  $('.cm-message-reply').addClass('mf-item-load');
+	       	           
 	                   });	               	
 	               	});
 	               });	           
@@ -119,6 +141,8 @@ $(document).ready(function(){
         });
     });
 
+//    $('.cm-reply-toolbar').on('click', 'input[name=]')
+	    
     
   
 

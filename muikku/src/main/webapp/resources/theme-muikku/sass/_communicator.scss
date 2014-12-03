@@ -27,7 +27,6 @@
      width:30px; 
      &.default{
      @extend .co-user-picture;     
-
      }
      
   }
@@ -80,15 +79,31 @@
      
     }
   }
-  
-  
-  
-  
-  .cm-replyMessage {
+
+  .cm-message-reply {
     padding:5px 5px 5px 10px;
     background-color:#fff;
-    @include rounded(4px);
+      
   }
+  
+  .cm-message-recipient{
+   div{
+    float:left;
+   }
+  
+  }
+
+ .cm-message-selected-recipients{
+   padding:5px;
+   background-color:#fff;
+   
+   span{
+    display:inline-block;
+    &:not(:first-child){
+     margin-left:10px;
+    }
+   }
+ }
 
 /* When the message is open */  
   
@@ -102,6 +117,13 @@
      
      &.default{
       @extend .co-user-picture;
+     }
+     
+     &.reply-recipient{
+      display:inline-block;
+      float:none;
+      height:20px;
+      width:20px;
      }
     }   
       
