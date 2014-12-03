@@ -79,22 +79,25 @@ public class UserRESTService extends AbstractRESTService {
 
     boolean hasImage = false;
     
-//    List<User> listUsers = userController.listUsers();
     List<UserEntity> listUserEntities = userEntityController.listUserEntities();
     
     List<fi.muikku.rest.model.User> ret = new ArrayList<fi.muikku.rest.model.User>();
     
     searchString = searchString != null ? searchString.toLowerCase() : null;
     
-//    for (User user : listUsers) {
     for (UserEntity userEntity : listUserEntities) {
-      User user = userController.findUserByUserEntityDefaults(userEntity);
+      User user;
+      
+      try {
+        user = userController.findUserByUserEntityDefaults(userEntity);
+      } catch (Exception ex) {
+        ex.printStackTrace();
+        continue;
+      }
       
       if ((user.getFirstName() != null) && (user.getFirstName().toLowerCase().contains(searchString))) {
-//        UserEntity userEntity = userEntityController.findUserEntityByUser(user);
         ret.add(new fi.muikku.rest.model.User(userEntity.getId(), user.getFirstName(), user.getLastName(), hasImage));
       } else if ((user.getLastName() != null) && (user.getLastName().toLowerCase().contains(searchString))) {
-//        UserEntity userEntity = userEntityController.findUserEntityByUser(user);
         ret.add(new fi.muikku.rest.model.User(userEntity.getId(), user.getFirstName(), user.getLastName(), hasImage));
       }
     }
