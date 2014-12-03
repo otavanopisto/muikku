@@ -86,8 +86,6 @@ $(document).ready(function(){
       var _this = this;
       var users = new Array();
 
-      console.log("searchUsers");
-      
       RESTful.doGet(CONTEXTPATH + "/rest/user/searchUsers", {
         parameters: {
           'searchString': searchTerm
