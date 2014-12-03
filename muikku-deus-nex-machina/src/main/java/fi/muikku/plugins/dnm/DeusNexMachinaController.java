@@ -225,8 +225,9 @@ public class DeusNexMachinaController {
   		  // TODO: This reference is a bit strange
   			WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceNodeId);
   			if (workspaceMaterial != null) {
-  				if (workspaceMaterial.getMaterial() instanceof BinaryMaterial) {
-  					return ((BinaryMaterial) workspaceMaterial.getMaterial()).getContentType();
+  			  Material material = workspaceMaterialController.getMaterialForWorkspaceMaterial(workspaceMaterial);
+  				if (material instanceof BinaryMaterial) {
+  					return ((BinaryMaterial) material).getContentType();
   				}
   			}
   		}
@@ -249,7 +250,7 @@ public class DeusNexMachinaController {
 	private BinaryMaterialController binaryMaterialController;
 
 	@Inject 
-	WorkspaceMaterialController workspaceMaterialController;
+	private WorkspaceMaterialController workspaceMaterialController;
 	
 	@PostConstruct
 	public void init() throws IOException {
@@ -298,7 +299,7 @@ public class DeusNexMachinaController {
 			  
     		Material material = createMaterial(rootFolder, resource, deusNexDocument);
     		if (material != null) {
-    			WorkspaceNode workspaceNode = workspaceMaterialController.createWorkspaceMaterial(parent, material);
+    			WorkspaceNode workspaceNode = workspaceMaterialController.createWorkspaceMaterial(parent, material, resource.getName());
     			
     			try {
   					setResourceWorkspaceNodeId(resource.getNo(), workspaceNode.getId());
@@ -340,7 +341,7 @@ public class DeusNexMachinaController {
 		String title = resource.getTitle();
 		String html = parseDocumentContent(rootFolder, resource.getDocument(), deusNexDocument);
 		
-		return htmlMaterialController.createHtmlMaterial(title, html);
+		return htmlMaterialController.createHtmlMaterial(title, html, "text/html;editor=CKEditor", 0l);
 	}
 
 	private Material createQueryMaterial(WorkspaceRootFolder rootFolder, Query resource, DeusNexDocument deusNexDocument) throws DeusNexException {
@@ -349,14 +350,14 @@ public class DeusNexMachinaController {
 		String title = resource.getTitle();
 		String html = parseQueryContent(rootFolder, resource.getDocument(), deusNexDocument);
 		
-		return htmlMaterialController.createHtmlMaterial(title, html);
+		return htmlMaterialController.createHtmlMaterial(title, html, "text/html;editor=CKEditor", 0l);
 	}
 
 	private BinaryMaterial createBinaryMaterial(Binary resource) {
-		String title = resource.getTitle();
+		String title = resource.getName(); // Nexus title is usually something like "tiedosto"
 		String contentType = resource.getContentType();
 		byte[] content = resource.getContent();
-
+		
 		return binaryMaterialController.createBinaryMaterial(title, contentType, content);
 	}
 	

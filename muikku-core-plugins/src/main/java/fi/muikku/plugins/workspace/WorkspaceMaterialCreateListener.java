@@ -42,6 +42,9 @@ public class WorkspaceMaterialCreateListener {
   
   @Inject
   private MaterialController materialController;
+  
+  @Inject
+  private WorkspaceMaterialController workspaceMaterialController;
 
   @Inject
   private WorkspaceMaterialFieldController workspaceMaterialFieldController;
@@ -55,8 +58,9 @@ public class WorkspaceMaterialCreateListener {
   public void onWorkspaceMaterialCreated(@Observes WorkspaceMaterialCreateEvent event) {
     List<String> assignedNames = new ArrayList<String>();
     WorkspaceMaterial workspaceMaterial = event.getWorkspaceNode();
-    if (workspaceMaterial.getMaterial() instanceof HtmlMaterial) {
-      HtmlMaterial htmlMaterial = (HtmlMaterial) workspaceMaterial.getMaterial();
+    Material material = workspaceMaterialController.getMaterialForWorkspaceMaterial(workspaceMaterial);
+    if (material instanceof HtmlMaterial) {
+      HtmlMaterial htmlMaterial = (HtmlMaterial) material;
       try {
         if (!StringUtils.isBlank(htmlMaterial.getHtml())) {
           Document document = htmlMaterialController.getProcessedHtmlDocument(htmlMaterial);

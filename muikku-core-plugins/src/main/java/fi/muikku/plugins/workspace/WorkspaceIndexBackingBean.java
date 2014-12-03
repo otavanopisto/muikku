@@ -45,8 +45,10 @@ public class WorkspaceIndexBackingBean {
     }
     
     workspaceNavigationBackingBean.setWorkspaceUrlName(urlName);
-
+    
     workspaceId = workspaceEntity.getId();
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+    workspaceName = workspace.getName();
 	}
 
 	public Long getWorkspaceId() {
@@ -66,14 +68,9 @@ public class WorkspaceIndexBackingBean {
   }
   
   public String getWorkspaceName() {
-    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceId);
-    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-    if (workspace != null) {
-      return workspace.getName();
-    } else {
-      return null;
-    }
+    return workspaceName;
   }
   
 	private Long workspaceId;
+	private String workspaceName;
 }

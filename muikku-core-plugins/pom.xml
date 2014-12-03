@@ -5,7 +5,7 @@
   <parent>
     <groupId>fi.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.5-SNAPSHOT</version>
+    <version>1.0.7-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -16,6 +16,7 @@
 
   <properties>
     <elasticsearch.version>1.4.0</elasticsearch.version>
+    <google-diff-match-patch.version>1.1.11</google-diff-match-patch.version>
   </properties>
 
   <dependencies>
@@ -49,6 +50,14 @@
     <dependency>
       <groupId>org.jboss.spec.javax.transaction</groupId>
       <artifactId>jboss-transaction-api_1.2_spec</artifactId>
+    </dependency>
+    
+    <!-- WebSockets -->
+    
+    <dependency>
+      <groupId>org.jboss.spec.javax.websocket</groupId>
+      <artifactId>jboss-websocket-api_1.0_spec</artifactId>
+      <scope>provided</scope>
     </dependency>
 
     <!-- CDI -->
@@ -179,6 +188,26 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+    </dependency>
+    
+    <!-- Coops -->
+
+    <dependency>
+      <groupId>fi.foyt.coops</groupId>
+      <artifactId>coops-spec</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>fi.foyt.coops</groupId>
+      <artifactId>coops-ws-spec</artifactId>
+    </dependency>
+
+    <!-- Google Diff Match Patch -->
+    
+    <dependency>
+      <groupId>com.sksamuel.diff</groupId>
+      <artifactId>diff</artifactId>
+      <version>${google-diff-match-patch.version}</version>
     </dependency>
     
   </dependencies>

@@ -40,7 +40,7 @@
     notification: function (severity, message) {
       var severityOption = this.options['severity-' + severity];
       if (severityOption) {
-        this._setupItem($('<div>')
+        return this._setupItem($('<div>')
           .data('severity', severity)
           .addClass('notification-queue-item')
           .addClass(severityOption['class'])
@@ -61,6 +61,8 @@
       } 
       
       $(item).find('a').click($.proxy(this._onRemoveClick, this));
+      
+      return $(item);
     },
     
     _onRemoveClick: function (event, data) {

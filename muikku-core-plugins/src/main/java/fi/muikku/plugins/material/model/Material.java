@@ -10,6 +10,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.PersistenceException;
 import javax.persistence.Transient;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -46,6 +47,14 @@ public class Material {
   public void setOriginMaterial(Material originMaterial) {
     this.originMaterial = originMaterial;
   }
+  
+  public Long getVersion() {
+    return version;
+  }
+  
+  public void setVersion(Long version) {
+    this.version = version;
+  }
 
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
@@ -58,4 +67,7 @@ public class Material {
 
   @ManyToOne
   private Material originMaterial;
+  
+  @Version
+  private Long version;
 }
