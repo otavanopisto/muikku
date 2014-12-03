@@ -79,7 +79,7 @@ $(document).ready(function(){
         }
       });
       
-      $("#msgRecipientsContainer").on("click", ".cm-newMessage-removeRecipient", $.proxy(_this._onRemoveRecipientClick, _this));
+      $("#msgRecipientsContainer").on("click", ".cm-message-recipient-remove", $.proxy(_this._onRemoveRecipientClick, _this));
     },
 
     _searchUsers: function (searchTerm) {
@@ -168,8 +168,8 @@ $(document).ready(function(){
     },
     _onRemoveRecipientClick : function (event) {
       var element = $(event.target);
-      if (!element.hasClass("cm-newMessage-recipient"))
-        element = element.parents(".cm-newMessage-recipient");
+      if (!element.hasClass("cm-message-recipient"))
+        element = element.parents(".cm-message-recipient");
       element.remove();
     },
     
@@ -202,7 +202,7 @@ $(document).ready(function(){
             var groupIds = [];
 
             var recipientListElement = $("#msgRecipientsContainer");
-            $(recipientListElement.children(".cm-newMessage-recipientuser")).each(function (index) {
+            $(recipientListElement.children(".cm-message-recipient")).each(function (index) {
               recipientIds.push($(this).find("input[name='userId']").val());
             });
 
