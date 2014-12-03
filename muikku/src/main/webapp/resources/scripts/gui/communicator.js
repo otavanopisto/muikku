@@ -64,7 +64,7 @@ $(document).ready(function(){
 	$(".bt-mainFunction").m3modal({
 		title : "Uusi viesti ",
 		description : "Voit lähettää uuden viestin opettajillesi tai opiskelutovereillesi.",
-    content: $('<div><div><select name="msgTemplates"><option>Ei pohjia</option></select></div><div><div><input type="textfield" value="vastaanottajat" name="msgRecipients" id="msgRecipients"></input></div><div><input type="textfield" value="aihe" name="msgSubject"></input></div></div><div><textarea value="" name="msgContent"></textarea></div></div>'),
+    content: $('<div><div><select name="msgTemplates"><option>Ei pohjia</option></select></div><div><div id="msgRecipientsContainer"></div><div><input type="textfield" value="vastaanottajat" name="msgRecipients" id="msgRecipients"></input></div><div><input type="textfield" value="aihe" name="msgSubject"></input></div></div><div><textarea value="" name="msgContent"></textarea></div></div>'),
 		modalgrid : 24,
 		contentgrid : 24,
 
@@ -77,12 +77,13 @@ $(document).ready(function(){
           response(_this._doSearch(request.term));
         },
         select: function (event, ui) {
-//          _this._selectRecipient(event, ui.item);
-//          $(this).val("");
+          _this._selectRecipient(event, ui.item);
+          $(this).val("");
           return false;
         }
       });
       
+      $("#msgRecipientsContainer").on("click", ".cm-newMessage-removeRecipient", $.proxy(_this._onRemoveRecipientClick, _this));
     },
 
     _searchUsers: function (searchTerm) {
@@ -147,26 +148,26 @@ $(document).ready(function(){
     _selectRecipient: function (event, item) {
       var _this = this;
       var element = $(event.target);
-      var recipientListElement = element.parents(".cm-newMessage").find(".cm-newMessage-recipientsList"); 
+      var recipientListElement = $("#msgRecipientsContainer"); 
       
-//      var prms = {
-//        id: item.id,
-//        name: item.label
-//      };
-//  
-//      if (item.type == "USER") {
-//        renderDustTemplate('communicator/communicator_messagerecipient.dust', prms, function (text) {
-//          recipientListElement.append($.parseHTML(text));
-//        });
-//      } else {
-//        if (item.type == "GROUP") {
+      var prms = {
+        id: item.id,
+        name: item.label
+      };
+  
+      if (item.type == "USER") {
+        renderDustTemplate('communicator/communicator_messagerecipient.dust', prms, function (text) {
+          recipientListElement.append($.parseHTML(text));
+        });
+      } else {
+        if (item.type == "GROUP") {
 //          prms.memberCount = item.memberCount;
 //          
 //          renderDustTemplate('communicator/communicator_messagerecipientgroup.dust', prms, function (text) {
 //            recipientListElement.append($.parseHTML(text));
 //          });
-//        }
-//      }
+        }
+      }
         
     },
     _onRemoveRecipientClick : function (event) {
@@ -201,9 +202,14 @@ $(document).ready(function(){
             var content = e.contentElement.find("textarea[name='msgContent']").val();
             var tagStr = "tagi viesti"; // TODO: Tag content
             var tags = tagStr != undefined ? tagStr.split(' ') : [];
-            var recipientIds = [10];
+            var recipientIds = [];
             var groupIds = [];
-            
+
+            var recipientListElement = $("#msgRecipientsContainer");
+            $(recipientListElement.children(".cm-newMessage-recipientuser")).each(function (index) {
+              recipientIds.push($(this).find("input[name='userId']").val());
+            });
+
             mApi().communicator.messages.create({
               categoryName: "message",
               caption : subject,
