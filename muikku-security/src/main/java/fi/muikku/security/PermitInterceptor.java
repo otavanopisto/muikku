@@ -78,7 +78,8 @@ public class PermitInterceptor implements Serializable {
         case SILENT:
           return null;
         case EXCEPTION:
-          throw new AuthorizationException("Access denied");
+          Class<? extends Exception> exceptionClass = permit.exceptionClass();
+          throw exceptionClass.newInstance();
       }
     }
     return null;

@@ -43,6 +43,7 @@ import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
+import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceUser;
 import fi.muikku.schooldata.CourseMetaController;
 import fi.muikku.schooldata.RoleController;
@@ -56,7 +57,6 @@ import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceUserDiscoveredEvent;
 import fi.muikku.search.SearchProvider;
 import fi.muikku.search.SearchResult;
-import fi.muikku.security.LoggedIn;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
@@ -170,8 +170,8 @@ public class WorkspaceRESTService extends PluginRESTService {
             }
 
             if (accept) {
-              String name = result.get("name").toString();
-              String description = result.get("description").toString();
+              String name = getSearchResultValue(result, "name");
+              String description = getSearchResultValue(result, "description");
               workspaces.add(new fi.muikku.plugins.workspace.rest.model.Workspace(workspaceEntity.getId(), workspaceEntity.getUrlName(),
                   workspaceEntity.getArchived(), name, description));
             }
@@ -187,6 +187,15 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
 
     return Response.ok(workspaces).build();
+  }
+  
+  private String getSearchResultValue(Map<String, Object> result, String key) {
+    Object value = result.get(key);
+    if (value != null) {
+      return value.toString();
+    }
+    
+    return null;
   }
 
   @GET
@@ -363,7 +372,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     return Response.ok(createRestModel(signup)).build();
   }
-
+  
   @POST
   @Path("/workspaces/{ID}/materials/")
   public Response createWorkspaceMaterial(@PathParam("ID") Long workspaceEntityId,
@@ -385,6 +394,8 @@ public class WorkspaceRESTService extends PluginRESTService {
       if (parent == null) {
         return Response.status(Status.NOT_FOUND).entity("parent not found").build();
       }
+    } else {
+      parent = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
     }
 
     Material material = materialController.findMaterialById(entity.getMaterialId());
@@ -400,12 +411,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         return Response.status(Status.BAD_REQUEST).entity("Specified next sibling does not exist").build();
       }
 
-      if ((parent != null) && (!nextSibling.getParent().getId().equals(parent.getId()))) {
-        return Response.status(Status.BAD_REQUEST).entity("Specified next sibling does not share parent with created workspace material")
-            .build();
-      }
-
-      if ((parent == null) && (nextSibling.getParent() != null)) {
+      if (!nextSibling.getParent().getId().equals(parent.getId())) {
         return Response.status(Status.BAD_REQUEST).entity("Specified next sibling does not share parent with created workspace material")
             .build();
       }
@@ -416,6 +422,33 @@ public class WorkspaceRESTService extends PluginRESTService {
     return Response.ok(createRestModel(workspaceMaterial)).build();
   }
 
+  @GET
+  @Path("/workspaces/{WORKSPACEENTITYID}/materials/{ID}")
+  public Response getWorkspaceMaterial(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("ID") Long workspaceMaterialId) {
+    // TODO: Security
+
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
+    if (workspaceMaterial == null) {
+      return Response.status(Status.NOT_FOUND).entity("workspaceMaterial not found").build();
+    }
+
+    WorkspaceRootFolder rootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(workspaceMaterial);
+    if (rootFolder == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+    }
+    
+    if (!workspaceEntity.getId().equals(rootFolder.getWorkspaceEntityId())) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+     
+    return Response.ok(createRestModel(workspaceMaterial)).build();
+  }
+  
   // @DELETE
   // @Path("/materials/{ID}")
   // public Response deleteWorkspaceMaterial(@PathParam("ID") Long workspaceMaterialId) {
@@ -439,7 +472,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     WorkspaceNode workspaceNode = workspaceMaterialController.findWorkspaceNodeNextSibling(workspaceMaterial);
     Long nextSiblingId = workspaceNode != null ? workspaceNode.getId() : null;
     return new fi.muikku.plugins.workspace.rest.model.WorkspaceMaterial(workspaceMaterial.getId(), workspaceMaterial.getMaterialId(),
-        workspaceMaterial.getParent() != null ? workspaceMaterial.getParent().getId() : null, nextSiblingId);
+        workspaceMaterial.getParent() != null ? workspaceMaterial.getParent().getId() : null, nextSiblingId, workspaceMaterial.getHidden());
   }
 
   private List<fi.muikku.plugins.workspace.rest.model.WorkspaceUser> createRestModel(WorkspaceUserEntity... entries) {
