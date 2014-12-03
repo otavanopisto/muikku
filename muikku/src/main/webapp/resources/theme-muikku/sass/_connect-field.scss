@@ -11,10 +11,9 @@
   padding:8px 21px;
 	background:#e1f3ff;
 	margin: 4px;
-	white-space: nowrap;
 	@include rounded(3px);
 	width: 250px;
-	white-space:nowrap;
+/* 	white-space:nowrap; */ /* By removing this connect field looks like a potato */
 	transition:background 0.3s ease-in-out;
 	text-shadow: 0 0 1px #ffffff;
 	

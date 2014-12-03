@@ -42,6 +42,8 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     margin:4px;
     box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
     @include rounded(3px);
+    max-width:100%;
+    word-wrap:break-word;
     
     &:focus,
     &:hover {
@@ -115,8 +117,9 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     font-weight:300;
   }
   
-  strong {
-    font-weight:600;
+  strong,
+  b {
+    font-weight:400; /* This is set to 'normal' because we use thinner font with text rendering */
   }
 
   table {
