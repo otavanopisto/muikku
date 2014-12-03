@@ -216,6 +216,8 @@ $(document).ready(function(){
             })
             .callback(function (err, result) {
             });
+            
+            $('.md-background').fadeOut().remove();
           }
         }, {
           caption : "Tallenna luonnos",
@@ -272,14 +274,14 @@ $(document).ready(function(){
         .callback(function (err, result){
         	renderDustTemplate('communicator/communicator_items_open.dust', result, function (text) {
                
-               mCont.empty();
+             mCont.empty();
 	           mCont.append($.parseHTML(text));
-               
 	           
-	           
-	           $(".cm-message-reply-link").click(function(event){
-	               var fCont = $('.cm-message-content-tools-reply-container');
-	               var tCont = $('.cm-message-content-tools-container');
+	           $(".cm-message-reply-link").click(function(event) {
+	               var element = $(event.target);
+	               element = element.parents(".cm-message");
+	               var fCont = element.find('.cm-message-content-tools-reply-container');
+	               var tCont = element.find('.cm-message-content-tools-container');
 	               
 	               mApi().communicator.communicatormessages.read(messageId).on('$', function(reply, replyCallback){
 	            	   
@@ -297,12 +299,10 @@ $(document).ready(function(){
 	               .callback(function (err, result){
 	               	renderDustTemplate('communicator/communicator_replymessage.dust', result, function (text) {
 
-	               	   
 	                   tCont.hide();
 	       	           fCont.append($.parseHTML(text));
-	
 	       	           
-	                   var cBtn = $(fCont).find("input[name='cancel']") ;
+	                   var cBtn = $(fCont).find("input[name='cancel']");
 	                   var sBtn = $(fCont).find("input[name='send']");
 	                   
 	                   $(sBtn).click(function(){
@@ -326,6 +326,8 @@ $(document).ready(function(){
 	                     .callback(function (err, result) {
 	                     });
 	                     
+	                     // Go to inbox
+	                     window.location.reload();
                      });
 	                   
 	                   $(cBtn).click(function(){
