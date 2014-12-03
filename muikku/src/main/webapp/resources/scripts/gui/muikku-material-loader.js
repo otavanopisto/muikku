@@ -3,8 +3,19 @@
   'use strict';
   
   $.widget("custom.muikkuMaterialLoader", {
+    options : {
+      dustTemplate: 'workspace/materials-page.dust'
+    },
+
     _create : function() {
       this._uniqueIdCounter = 1;
+    },
+    
+    dustTemplate: function(value) {
+      if (value == undefined) {
+        return this.options.dustTemplate;
+      }
+      this.options.dustTemplate = value;
     },
 
     _createUniqueId: function() {
@@ -13,13 +24,12 @@
     },
 
     _loadHtmlMaterial: function(pageElement, workspaceEntityId, workspaceMaterialId, materialId, placeholderId, parentIds, fieldAnswers) {
-      var _this = this;
       var placeHolder = $('#' + placeholderId);
       placeHolder.addClass('workspace-material-loading');
       
       var worker = new Worker("/scripts/gui/workspace-material-loader.js");
       
-      worker.onmessage = function (response) {
+      worker.onmessage = $.proxy(function (response) {
         if ((response.data.statusCode != 200) && (response.data.statusCode != 304)) {
           $('.notification-queue').notificationQueue('notification', 'error', "Error occurred while loading html page: " + response.data.err + ' (' + response.data.statusCode + ')');
         } else {
@@ -27,22 +37,22 @@
             var material = $.parseJSON(response.data.html);
             var parsed = $('<div>').html(material.html);
             
-            parsed.find('iframe[data-type="embedded-document"]').each(function (index, iframe) {
+            parsed.find('iframe[data-type="embedded-document"]').each($.proxy(function (index, iframe) {
               var embededWorkspaceMaterialId = $(iframe).data('workspace-material-id');
               var embededMaterialId = $(iframe).data('material-id');
               var embededMaterialType = $(iframe).data('material-type');
               
               if (embededMaterialType == 'html') {
                 var placeholder = $('<div>')
-                  .attr('id', _this._createUniqueId())
+                  .attr('id', this._createUniqueId())
                   .addClass('workspace-material-loading')
                 
                 $(iframe).replaceWith(placeholder);
-                _this._loadHtmlMaterial(pageElement, workspaceEntityId, embededWorkspaceMaterialId, embededMaterialId, placeholder.attr('id'), parentIds.concat(materialId), fieldAnswers);
+                this._loadHtmlMaterial(pageElement, workspaceEntityId, embededWorkspaceMaterialId, embededMaterialId, placeholder.attr('id'), parentIds.concat(materialId), fieldAnswers);
               } else {
                 $('.notification-queue').notificationQueue('notification', 'error', "Incorrect material type '" + materialType + "' for embedded document");
               }
-            });
+            }, this));
             
             $(document).trigger('beforeHtmlMaterialRender', {
               pageElement: pageElement,
@@ -70,7 +80,7 @@
             $('.notification-queue').notificationQueue('notification', 'error', "Error occurred while reading html page: " + e);
           }
         }
-      };
+      }, this);
       
       worker.postMessage({
         materialId: materialId, 
@@ -95,22 +105,19 @@
         }));
     },
     
-    /**
-     * 
-     */
     loadMaterials: function(pageElements) {
       var _this = this;
-      $(pageElements).each(function (index, page) {
+      $(pageElements).each($.proxy(function (index, page) {
         var workspaceMaterialId = $(page).data('workspace-material-id');
         var materialId = $(page).data('material-id');
         var materialType = $(page).data('material-type');
         
         switch (materialType) {
           case 'html':
-            _this._queueHtmlMaterial(materialId, workspaceMaterialId, page);
+            this._queueHtmlMaterial(materialId, workspaceMaterialId, page);
           break;
           case 'folder':
-            renderDustTemplate('workspace/materials-page.dust', { id: materialId, type: materialType }, $.proxy(function (text) {
+            renderDustTemplate(this.options.dustTemplate, { id: materialId, type: materialType }, $.proxy(function (text) {
               $(this).html(text);
             }, page));
           break;
@@ -118,7 +125,7 @@
             var typeEndpoint = mApi().materials[materialType];
             if (typeEndpoint != null) {
               typeEndpoint.read(materialId).callback($.proxy(function (err, result) {
-                renderDustTemplate('workspace/materials-page.dust', { 
+                renderDustTemplate(this.options.dustTemplate, { 
                   workspaceMaterialId: workspaceMaterialId,
                   materialId: materialId,
                   id: materialId,
@@ -127,15 +134,16 @@
                 }, $.proxy(function (text) {
                   $(this).html(text);
                 }, page));
-              }));
+              }, this));
             }
           break;
         }
-      });
+      }, this));
       
-      $('div[data-page-type="queued-html"]').waypoint(function(){
+      $('div[data-page-type="queued-html"]').waypoint(function() {
         $(this).attr('id', _this._createUniqueId());
-        $(this).removeClass('workspace-material-queued-html')
+        $(this).removeClass('workspace-material-queued-html');
+        $(this).removeAttr('data-page-type');
         var workspaceEntityId = $('.workspaceEntityId').val();
         var workspaceMaterialId = $(this).data('workspace-material-id');
         
@@ -154,50 +162,12 @@
                 }
               }
               
-              _this._loadHtmlMaterial($(this).parentNode, workspaceEntityId, workspaceMaterialId ,$(this).data('material-id'), $(this).attr('id'), [], fieldAnswers);
+              _this._loadHtmlMaterial(this.parentNode, workspaceEntityId, workspaceMaterialId ,$(this).data('material-id'), $(this).attr('id'), [], fieldAnswers);
             }
           }, this));
       }, {
         offset: function() {
           return $(window).height() + 200;
-        }
-      });
-
-      // Smooth scrolling in workspace Material's View 
-      var $sections = $(pageElements);
-
-      $sections.each(function() {
-        var $section = $(this);
-        var hash = '#' + this.id;
-
-        $('a[href="' + hash + '"]').click(function(event) {
-          $('html, body').stop().animate({
-            scrollTop : $section.offset().top - 100
-          }, {
-            duration : 500,
-            easing : "easeInOutQuad",
-            complete : function() {
-              window.location.hash = hash;
-            }
-          });
-          event.preventDefault();
-        });
-      });
-
-      // Highlighting toc item at appropriate time when we scroll to the
-      // corresponding section
-
-      $(pageElements).waypoint(function(direction) {
-        var $links = $('a[href="#' + this.id + '"]');
-        $links.toggleClass('active', direction === 'down');
-      }, {
-        offset : '60%'
-      }).waypoint(function(direction) {
-        var $links = $('a[href="#' + this.id + '"]');
-        $links.toggleClass('active', direction === 'up');
-      }, {
-        offset : function() {
-          return -$(this).height() + 250;
         }
       });
     }
@@ -369,7 +339,6 @@
         case 'radio':
         case 'radio_horz':
           var idPrefix = [data.materialId, data.embedId, data.name].join(':');
-          // TODO proper css for container (?) to display radio buttons vertically or horizontally
           var container = $('<div>').addClass('muikku-select-field');
           for (var i = 0, l = meta.options.length; i < l; i++){
             var label = $('<label>')

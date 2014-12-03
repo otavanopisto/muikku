@@ -232,18 +232,23 @@
   }
   
   $(document).ready(function() {
-    // Workspace Material's page loading
+
+    $(document).muikkuMaterialLoader()
+      .muikkuMaterialLoader('dustTemplate', 'workspace/materials-management-page.dust')
+      .muikkuMaterialLoader('loadMaterials', $('.workspace-materials-management-view-page'));
     
-    function loadPageNodes(selector, node) {
-      loadPageNode(node, function() {
-        var next = $(node).nextAll(selector).first();
-        if (next.length > 0) {
-          loadPageNodes(selector, next);
-        }
-      });
-    }
-    
-    loadPageNodes('.workspace-materials-management-view-page', $('.workspace-materials-management-view-page').first());
+//    // Workspace Material's page loading
+//    
+//    function loadPageNodes(selector, node) {
+//      loadPageNode(node, function() {
+//        var next = $(node).nextAll(selector).first();
+//        if (next.length > 0) {
+//          loadPageNodes(selector, next);
+//        }
+//      });
+//    }
+//    
+//    loadPageNodes('.workspace-materials-management-view-page', $('.workspace-materials-management-view-page').first());
 
     /* Smooth scrolling */
     var $sections = $('.workspace-materials-management-view-page');
