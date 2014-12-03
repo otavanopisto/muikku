@@ -250,16 +250,17 @@ $(document).ready(function(){
 
  
     $('.cm-messages-container').on('click','.cm-message:not(.open)', function(){
- 
-    	var mId = $(this).attr('id');
+      var cmId = $(this).find("input[name='communicatorMessageIdId']").val();
+      var messageId = $(this).find("input[name='communicatorMessageId']").val();
+      
     	var mCont = $('.cm-messages-container');
         var _this = $(this); 
 
         
         
-        mApi().communicator.messages.read(mId).on('$', function(msg, msgCallback){
+        mApi().communicator.messages.read(cmId).on('$', function(msg, msgCallback){
         	 
-	        mApi().communicator.communicatormessages.sender.read(mId)
+	        mApi().communicator.communicatormessages.sender.read(messageId)
 	        .callback(function (err, user) {  
 	          msg.senderFullName = user.firstName + ' ' + user.lastName;
 	          msg.senderHasPicture = user.hasImage;
@@ -280,9 +281,9 @@ $(document).ready(function(){
 	               var fCont = $('.cm-message-content-tools-reply-container');
 	               var tCont = $('.cm-message-content-tools-container');
 	               
-	               mApi().communicator.communicatormessages.read(mId).on('$', function(reply, replyCallback){
+	               mApi().communicator.communicatormessages.read(messageId).on('$', function(reply, replyCallback){
 	            	   
-	       	        mApi().communicator.communicatormessages.sender.read(mId)
+	       	        mApi().communicator.communicatormessages.sender.read(messageId)
 	    	        .callback(function (err, user) {  
 	    	          reply.senderFullName = user.firstName + ' ' + user.lastName;
 	    	          reply.senderHasPicture = user.hasImage;
@@ -303,6 +304,29 @@ $(document).ready(function(){
 	       	           
 	                   var cBtn = $(fCont).find("input[name='cancel']") ;
 	                   var sBtn = $(fCont).find("input[name='send']");
+	                   
+	                   $(sBtn).click(function(){
+	                     var cmId = $(fCont).find("input[name='communicatorMessageId']").val();
+	                     var subject = $(fCont).find("input[name='subject']").val();
+	                     var content = $(fCont).find("textarea[name='content']").val();
+	                     var tagStr = "tagi viesti"; // TODO: Tag content
+	                     var tags = tagStr != undefined ? tagStr.split(' ') : [];
+	                     var recipientIdStr = $(fCont).find("input[name='recipientIds']").val();
+	                     var recipientIds = recipientIdStr != undefined ? recipientIdStr.split(',') : [];
+	                     var groupIds = [];
+	                     
+	                     mApi().communicator.messages.create(cmId, {
+	                       categoryName: "message",
+	                       caption : subject,
+	                       content : content,
+	                       tags : tags,
+	                       recipientIds : recipientIds,
+	                       recipientGroupIds : groupIds
+	                     })
+	                     .callback(function (err, result) {
+	                     });
+	                     
+                     });
 	                   
 	                   $(cBtn).click(function(){
 	                	   tCont.show();
