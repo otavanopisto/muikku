@@ -13,13 +13,9 @@ $.widget("custom.communicatorautocomplete", $.ui.autocomplete, {
     });
   },
   _renderItem: function(ul, item) {
-    var imageUrl = CONTEXTPATH + "/themes/default/gfx/fish.jpg";
-    if (item.image)
-      imageUrl = item.image;
-    
+
     var inner_html = 
       '<a><div class="communicator_autocomplete_item_container">' + 
-      '<span class="communicator_autocomplete_item_image"><img width="25" height="25" src="' + imageUrl + '"></span>' +
       '<span class="communicator_autocomplete_item_label">' + item.label + '</span></div></a>';
     return $( "<li></li>" ).data( "item.autocomplete", item ).append(inner_html).appendTo( ul );
   }
@@ -64,7 +60,7 @@ $(document).ready(function(){
 	$(".bt-mainFunction").m3modal({
 		title : "Uusi viesti ",
 		description : "Voit lähettää uuden viestin opettajillesi tai opiskelutovereillesi.",
-    content: $('<div><div><select name="msgTemplates"><option>Ei pohjia</option></select></div><div><div id="msgRecipientsContainer"></div><div><input type="textfield" value="vastaanottajat" name="msgRecipients" id="msgRecipients"></input></div><div><input type="textfield" value="aihe" name="msgSubject"></input></div></div><div><textarea value="" name="msgContent"></textarea></div></div>'),
+    content: $('<div><div><div id="msgRecipientsContainer"></div><div><input type="textfield" value="vastaanottajat" name="msgRecipients" id="msgRecipients"></input></div><div><input type="textfield" value="aihe" name="msgSubject"></input></div></div><div><textarea value="" name="msgContent"></textarea></div></div>'),
 		modalgrid : 24,
 		contentgrid : 24,
 

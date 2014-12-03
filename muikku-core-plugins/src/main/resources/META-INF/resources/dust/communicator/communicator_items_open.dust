@@ -1,3 +1,9 @@
 {#.}
+    <div class="cm-messages-toolbar"> 
+       <a class="cm-messages-tool mf-item-tool icon-goback" href=""></a>
+       <div class="clear"></div>
+    </div>
+
+  
     {>"communicator/communicator_item_open.dust"/}  
 {/.}

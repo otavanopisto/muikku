@@ -1,7 +1,6 @@
 
     <div class="mf-item cm-message open" id="{id}">
       <div class="cm-message-topic mf-item-topic">
-        <a class="cm-message-tool mf-item-tool icon-goback" href=""></a>
         <span class="mf-item-header-name cm-message-header"><h3>{caption}</h3></span>
         <div class="clear"></div>
       </div>

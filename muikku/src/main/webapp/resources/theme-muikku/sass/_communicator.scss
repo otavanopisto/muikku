@@ -8,6 +8,32 @@
   padding:5px;
 }
 
+.cm-messages-toolbar{
+  border:1px solid #dadada;
+  background-color: #fff;
+  padding:5px;
+  margin-bottom:5px;
+  .cm-messages-tool{
+    padding:0 10px 0 10px;
+    border:1px solid #dadada;
+    background-color:#ededed; 
+    font-size:1.5em;
+    float:left;
+    color:#000;
+    
+    &:not(:first-child){
+     margin-left:10px;
+    }
+    
+    span{
+     font-size:0.75em;
+     
+    }
+  }
+  
+
+  }
+
 .cm-message {
 
    .cm-message-header-content-primary{
