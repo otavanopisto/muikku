@@ -141,19 +141,20 @@
       }, this));
       
       $('div[data-page-type="queued-html"]').waypoint(function() {
-        $(this).attr('id', _this._createUniqueId());
-        $(this).removeClass('workspace-material-queued-html');
-        $(this).removeAttr('data-page-type');
-        var workspaceEntityId = $('.workspaceEntityId').val();
-        var workspaceMaterialId = $(this).data('workspace-material-id');
-        
-        mApi().workspace.workspaces.materials.replies.read(workspaceEntityId, workspaceMaterialId)
+        if ($(this).hasClass('workspace-material-queued-html')) {
+          $(this).removeClass('workspace-material-queued-html');
+          $(this).removeAttr('data-page-type');
+          $(this).attr('id', _this._createUniqueId());
+          var workspaceEntityId = $('.workspaceEntityId').val();
+          var workspaceMaterialId = $(this).data('workspace-material-id');
+    
+          mApi().workspace.workspaces.materials.replies.read(workspaceEntityId, workspaceMaterialId)
           .callback($.proxy(function (err, reply) {
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', "Error occurred while loading answers " + err);
             } else {
               var fieldAnswers = {};
-              
+    
               if (reply && reply.answers.length) {
                 for (var i = 0, l = reply.answers.length; i < l; i++) {
                   var answer = reply.answers[i];
@@ -161,11 +162,13 @@
                   fieldAnswers[answerKey] = answer.value;
                 }
               }
-              
+    
               _this._loadHtmlMaterial(this.parentNode, workspaceEntityId, workspaceMaterialId ,$(this).data('material-id'), $(this).attr('id'), [], fieldAnswers);
             }
           }, this));
+        }
       }, {
+        triggerOnce: true,
         offset: function() {
           return $(window).height() + 200;
         }
@@ -312,7 +315,7 @@
           
           if(meta.size != 'null') input.attr('size', meta.size);
           
-          // Empty option to be able to clear an answer  
+          // Empty option to be able to clear an answer
           if (meta.listType == 'dropdown') {
             input.append($('<option>'));
           }
