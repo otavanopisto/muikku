@@ -124,7 +124,9 @@ $(document).ready(function(){
 	               
 	               .callback(function (err, result){
 	               	renderDustTemplate('communicator/communicator_replymessage.dust', result, function (text) {
-	                   fCont.empty();
+	   //                var cBtn = ;
+	               		
+	               	   fCont.empty();
 	       	           fCont.append($.parseHTML(text));
 	       	           
 	       	          
@@ -141,8 +143,7 @@ $(document).ready(function(){
         });
     });
 
-//    $('.cm-reply-toolbar').on('click', 'input[name=]')
-	    
+
     
   
 
