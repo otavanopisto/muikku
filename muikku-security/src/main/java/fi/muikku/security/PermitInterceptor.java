@@ -77,7 +77,6 @@ public class PermitInterceptor implements Serializable {
       switch (permit.handle()) {
         case SILENT:
           return null;
-          
         case EXCEPTION:
           throw new AuthorizationException("Access denied");
       }
