@@ -60,7 +60,7 @@ $(document).ready(function(){
 	$(".bt-mainFunction").m3modal({
 		title : "Uusi viesti ",
 		description : "Voit lähettää uuden viestin opettajillesi tai opiskelutovereillesi.",
-    content: $('<div><div><div id="msgRecipientsContainer"></div><div><input type="textfield" value="vastaanottajat" name="msgRecipients" id="msgRecipients"></input></div><div><input type="textfield" value="aihe" name="msgSubject"></input></div></div><div><textarea value="" name="msgContent"></textarea></div></div>'),
+    content: $('<div><div><div class="cm-message-new-recipients" id="msgRecipientsContainer"></div><div><input type="textfield" value="vastaanottajat" name="msgRecipients" id="msgRecipients"></input></div><div><input type="textfield" value="aihe" name="msgSubject"></input></div></div><div><textarea value="" name="msgContent"></textarea></div></div>'),
 		modalgrid : 24,
 		contentgrid : 24,
 
