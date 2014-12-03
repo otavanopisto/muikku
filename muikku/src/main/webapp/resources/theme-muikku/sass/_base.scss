@@ -270,7 +270,7 @@ background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1)
 
 /* Mainfunctions */
 
-@mixin mf-transition($attr:color,$time:1s,$trans:ease-in){
+@mixin mf-transition($attr:background-color,$time:1s,$trans:ease-in){
   
     -webkit-transition: $attr $time $trans;
        -moz-transition: $attr $time $trans;

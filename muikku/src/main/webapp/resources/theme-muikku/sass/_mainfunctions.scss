@@ -180,6 +180,8 @@
    font-weight:300;
    font-size:2em;
   }
+ 
+  
   
   .mf-item{
    @extend .co-listItem;
@@ -190,7 +192,12 @@
   .mf-item-container{
     line-heigth:0.5em;
   }
-  
+ 
+  .mf-item-load{
+    background-color:#ededed !important;
+      
+  }
+ 
   .mf-item-topic{
   
     
@@ -355,9 +362,20 @@
   
   }
   
-  .mf-form-row:not(:first-child){
-    margin-top:10px;
-  }  
+.mf-form-paragraph{  
+     padding:5px;
+     background-color:#ededed;x
+     
+     &:not(:first-child){
+      margin-top:5px;    
+    } 
+  
+  .mf-form-row{
+    &:not(:first-child){
+      margin-top:10px;    
+    }
+  }   
+}  
   
 /* When the item is open (element with "mf-item" has also class "open" ) */    
   
