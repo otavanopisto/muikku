@@ -268,6 +268,18 @@ background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1)
 
 /* Content interaction*/
 
+/* Mainfunctions */
+
+@mixin mf-transition($attr:color,$time:1s,$trans:ease-in){
+  
+    -webkit-transition: $attr $time $trans;
+       -moz-transition: $attr $time $trans;
+        -ms-transition: $attr $time $trans;
+         -o-transition: $attr $time $trans;
+            transition: $attr $time $trans;
+  
+}
+
 /* Static navigation */
 @mixin iconShadow($col:rgba(47,100,129,0.7)) {
  text-shadow: 0 0 15px $col; 
@@ -290,6 +302,11 @@ background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1)
   background-position:center;
   background-size:100%;
 }
+
+
+
+
+
 
 /* Dynamic Navigation */
 @mixin dynNaviGr($gr1,$gr2) {

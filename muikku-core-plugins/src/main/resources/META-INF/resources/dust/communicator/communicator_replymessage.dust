@@ -3,8 +3,8 @@
     <input type="hidden" name="communicatorMessageId" value="{communicatorMessageId}" />
 
     <div class="cm-message-recipients">
-      <div class="mf-selectedObjects cm-newMessage-recipientsList">
-         Vastaanottaja
+      <div class="mf-selected-items cm-message-selected-recipients">
+         <span>Vastaanottaja</span><span> Myötäänantaja</span>
       </div>
      <div class="clear"></div>
     </div>
@@ -14,15 +14,13 @@
           <input type="text" name="subject" value='aihe' />
         </div>
       </div>
-      <div class="cm-reply-content">  
-        <div class="mf-form-row cm-reply-content">
+      <div class="mf-form-row cm-reply-content">
          <textarea name="content">
            Sisalto
          </textarea>
-        </div>
       </div>  
   
-      <div class="mf-toolbar cm-reply-toolbar">
+      <div class="mf-form-row mf-toolbar cm-reply-toolbar">
         <input type="button" name="send" value='{#localize key="plugin.communicator.newmessage.send"/}'/>
         <input type="button" name="save" value='{#localize key="plugin.communicator.newmessage.save"/}'/>
         <input type="button" name="cancel" value='{#localize key="plugin.communicator.newmessage.cancel"/}'/>
