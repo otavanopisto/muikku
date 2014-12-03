@@ -86,6 +86,12 @@ input[type="reset"] {
     font-size:0.7em;
     color:#000;
     cursor:pointer;
+    
+    
+    
+  &:not(:first-child){
+   margin-left:5px;    
+  }  
   
   &.bt-coursepicker{
    margin-left:10px;

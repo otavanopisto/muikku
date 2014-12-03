@@ -184,7 +184,7 @@
   .mf-item{
    @extend .co-listItem;
    padding:5px 5px 5px 5px;
-   margin-bottom:10px;
+   margin-bottom:5px;
  
 
   .mf-item-container{
@@ -355,6 +355,9 @@
   
   }
   
+  .mf-form-row:not(:first-child){
+    margin-top:10px;
+  }  
   
 /* When the item is open (element with "mf-item" has also class "open" ) */    
   
