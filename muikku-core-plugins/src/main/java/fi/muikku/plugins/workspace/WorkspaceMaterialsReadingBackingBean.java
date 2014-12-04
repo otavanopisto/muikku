@@ -54,6 +54,7 @@ public class WorkspaceMaterialsReadingBackingBean {
     workspaceNavigationBackingBean.setWorkspaceUrlName(urlName);
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
     workspaceName = workspace.getName();
+    workspaceEntityId = workspaceEntity.getId();
 	}
 	
 	public WorkspaceRootFolder getRootFolder() {
@@ -76,6 +77,11 @@ public class WorkspaceMaterialsReadingBackingBean {
     return workspaceName;
   }
   
+  public Long getWorkspaceEntityId() {
+    return workspaceEntityId;
+  }
+  
 	private WorkspaceRootFolder rootFolder;
   private String workspaceName;
+  private Long workspaceEntityId;
 }
