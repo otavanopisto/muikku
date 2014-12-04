@@ -21,7 +21,7 @@
     
     &:not(:first-child){
      margin-left:10px;
- 
+     margin-top:0 !important;
     }
     
    .cm-message-tool{
