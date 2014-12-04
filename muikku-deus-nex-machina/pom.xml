@@ -20,6 +20,14 @@
 
   <dependencies>
   
+    <!-- JAX-RS -->
+    
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>jaxrs-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+  
     <!-- Zip4j -->
   
     <dependency>
