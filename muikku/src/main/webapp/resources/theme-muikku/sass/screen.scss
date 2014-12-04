@@ -7,7 +7,9 @@
 @import "_buttons.scss";
 @import "_widgets.scss";
 @import "_notif-queue.scss";
-
+@import "_mainfunctions.scss";
+@import "_calendar.scss";
+@import "_communicator.scss";
 /* Note: All in-development- unfinished-temp-styles are in temp.css */
 
 html {
@@ -24,6 +26,18 @@ body {
   background-repeat:no-repeat,repeat-x;
   background-position: top center, top left;
   color:#2c2c2c;
+  &.ui-guidelines {
+   background-color:#fff;
+   background-image:none;
+  }
+}
+
+.ca-weekDay {
+  width:14.28%;
+  display:inline-block;
+  box-sizing:border-box;
+  padding:5px;
+  text-align:center;
 }
 
 .nopadding {
@@ -470,122 +484,7 @@ a.header {
   margin: 4px 0px 4px 0px;
 }
 
-/* communicator (.co-*) */
 
-.cm-content {	
-}
-
-.cm-item {
-  @include rounded(4px);  
-  @include gradient-top-bottom;
-  @include shadow;
-  margin-bottom:5px;
-  min-height:50px;
-  padding:5px; 
-  background-color:$aBgr;	
-}
-
-.cm-message {
-  @include border($msgBrd,1px);
-  @include gradient-top-bottom($msgGr...);
-}
-
-.cm-message-view {
-  @include rounded(4px);  
-  @include gradient-top-bottom;
-  @include shadow;
-  margin-bottom:10px;
-  min-height:50px;
-  padding:5px;   
-}
-
-.cm-message-toolbar, .cm-viewmessagethread-toolbar {
-	padding:0;
-	height:40px;
-}
-
-.cm-message-replyLink {
-  @include naviIcon();  
-  @include background-image('gfx/icons/32x32/actions/communicator-reply.png'); 
-}
-
-.cm-message-replyAllLink {
-  @include naviIcon();  
-  @include background-image('gfx/icons/32x32/actions/communicator-replyall.png'); 
-}
-
-.cm-message-trashMessageLink {
-  @include naviIcon();  
-  @include background-image('gfx/icons/32x32/actions/communicator-trash.png');
-}
-
-.cm-message-senderName {
-}
-
-.cm-message-recipients {
-}
-
-.cm-message-content {
-  padding:15px;
-  font-size:1.3em;
-  white-space: pre-line;
-}
- 
-.cm-news {
-}
-
-.cm-request {
-}
-
-.cm-item-header {
-  float:left;	
-}
-
-.cm-item-senderPictureContainer, 
-.cm-senderPictureContainer {
-  float:left;
-  @include border($brd);
-  @include shadow;
-  height:50px;
-  width:50px
-}
-
-.cm-item-senderName, 
-.cm-message-senderName {
-  float:left;
-  margin-left: 0.5em;
-}
-
-.cm-item-title, 
-.cm-message-title, 
-.cm-message-date {
-  font-size: 2em;
-  margin-left: 0.5em;
-}
-
-.cm-item-date, 
-.cm-message-date {
-  margin-left: 0.5em;
-  float:left;
-}
-	
-.cm-item-tags, 
-.cm-message-tags {
-  margin-top:5px;
-  font-size:1.3em;
-  @include border(#ededed);
-  @include rounded(4px);
-  @include gradient-top-bottom(#707070, #666);
-  @include shadow;
-  color:#fff;
-  padding:5px;
-}
-
-.cm-replyMessage {
-  padding:5px 5px 5px 10px;
-  background-color:#fff;
-  @include rounded(4px);
-}
 
 /* Coursepicker (.cp-*) */
 
@@ -643,7 +542,7 @@ a.header {
 
 
 .cp-side-header{
-  @extend .co-mainFunction-side-header;
+  @extend .co-mainFunction-sub-header;
   padding:3px;
 }
 
@@ -744,10 +643,7 @@ a.header {
  background-color:none;
  height:30px;
  width:200px;
- &:hover{
-   background-color:rgba(0,0,0,0.1); 
- }
-
+ cursor: pointer;
 }
 
 .cp-course-header-name {

@@ -189,6 +189,11 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
     </dependency>
+
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>rest</artifactId>
+    </dependency>
     
     <!-- Coops -->
 
@@ -210,6 +215,7 @@
       <version>${google-diff-match-patch.version}</version>
     </dependency>
     
+
   </dependencies>
 
   <build>
