@@ -176,7 +176,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
   
   button.muikku-save-page {
     color:#fff;
-    background:#6b899e;
+    background:#0099ff;
     box-shadow:none;
     border:0;
     @include rounded(2px);
@@ -185,10 +185,6 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     text-transform:uppercase;
     padding:6px 12px;
     transition:background 0.3s ease-in-out;
-    
-    &:hover {
-      background:#0077c7;
-    }
   }
   
  

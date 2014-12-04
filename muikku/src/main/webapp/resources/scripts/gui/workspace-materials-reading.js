@@ -4,7 +4,7 @@
 
   $(document).ready(function() {
     $(document).muikkuMaterialLoader()
-      .muikkuMaterialLoader('loadMaterials', $('.workspace-materials-reading-view-page'));
+      .muikkuMaterialLoader('loadMaterials', $('.workspace-materials-view-page'));
 
     // Smooth scrolling in workspace Material's View 
     var $sections =$('.workspace-materials-view-page');
@@ -15,7 +15,7 @@
 
       $('a[href="' + hash + '"]').click(function(event) {
         $('html, body').stop().animate({
-          scrollTop : $section.offset().top - 100
+          scrollTop : $section.offset().top - 25
         }, {
           duration : 500,
           easing : "easeInOutQuad",

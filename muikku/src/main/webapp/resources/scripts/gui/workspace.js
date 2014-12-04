@@ -6,7 +6,11 @@ $(document).ready(function() {
   
   // Workspace navigation
   if ($('#workspaceNavigationWrapper').length > 0) {
-    var contentContainer = $('#content');
+    if ($('#contentWorkspaceMaterials').length > 0) {
+      var contentContainer = $('#contentWorkspaceMaterials');
+    } else {
+      var contentContainer = $('#content');
+    }
     var cOffset = contentContainer.offset();
     var naviLeftPos = cOffset.left - 100;
     
@@ -18,7 +22,7 @@ $(document).ready(function() {
       cOffset = contentContainer.offset();
       naviLeftPos = cOffset.left - 100;
       
-      // Lets prevent workspace navigation not to escape browser's viewport when resizing 
+      // Lets prevent workspace navigation from escaping browser's viewport when resizing 
       if (naviLeftPos < 10) {
         naviLeftPos = 10;
       }

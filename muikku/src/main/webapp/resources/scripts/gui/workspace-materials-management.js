@@ -22,7 +22,7 @@
       })
       .on('fileUploaded', function (event, data) {
         var newPage = $('<section>')
-          .addClass('workspace-materials-management-view-page')
+          .addClass('workspace-materials-view-page material-management-view')
           .attr({
             'id': 'page-' + data.workspaceMaterialId,
             'data-material-title': data.title,
@@ -36,7 +36,7 @@
         
         loadPageNode(newPage);
         
-        var nextPage = $(newPage).next('.workspace-materials-management-view-page');
+        var nextPage = $(newPage).next('.workspace-materials-view-page');
         
         var uploader = createFileUploader();
         nextPage.before(createAddPageLink());
@@ -129,7 +129,7 @@
     var workspaceMaterialId = node.data('workspace-material-id');
     var editorName = 'workspaceMaterialEditor' + (materialType.substring(0, 1).toUpperCase() + materialType.substring(1));
     var pageElement = $('#page-' + workspaceMaterialId);
-    var pageSection = $(pageElement).closest(".workspace-materials-management-view-page");
+    var pageSection = $(pageElement).closest(".workspace-materials-view-page");
     
     pageSection.addClass("page-edit-mode");
     
@@ -144,7 +144,7 @@
       
       $(document).on("click",$.proxy(function (event) {
         var target = $(event.target);
-        if (target.closest('.workspace-materials-management-view-page').length == 0) {
+        if (target.closest('.workspace-materials-view-page').length == 0) {
           $(this).data('material-title', editor.call(pageElement, 'title'));
           editor.call(pageElement, 'destroy');
           loadPageNode(node);
@@ -207,7 +207,7 @@
     var _node = node;
     var _hidden = hidden;
     var workspaceId = $('.workspaceEntityId').val();
-    var nextSibling = node.nextAll('.workspace-materials-management-view-page').first();
+    var nextSibling = node.nextAll('.workspace-materials-view-page').first();
     var nextSiblingId = nextSibling.length > 0 ? nextSibling.data('workspace-material-id') : null;
     mApi().workspace.workspaces.materials.update(workspaceId, node.data('workspace-material-id'), {
       id: node.data('workspace-material-id'),
@@ -235,7 +235,7 @@
 
     $(document).muikkuMaterialLoader()
       .muikkuMaterialLoader('dustTemplate', 'workspace/materials-management-page.dust')
-      .muikkuMaterialLoader('loadMaterials', $('.workspace-materials-management-view-page'));
+      .muikkuMaterialLoader('loadMaterials', $('.workspace-materials-view-page'));
     
 //    // Workspace Material's page loading
 //    
@@ -251,7 +251,7 @@
 //    loadPageNodes('.workspace-materials-management-view-page', $('.workspace-materials-management-view-page').first());
 
     /* Smooth scrolling */
-    var $sections = $('.workspace-materials-management-view-page');
+    var $sections = $('.workspace-materials-view-page');
 
     $sections.each(function() {
       var $section = $(this);
@@ -259,7 +259,7 @@
 
       $('a[href="' + hash + '"]').click(function(event) {
         $('html, body').stop().animate({
-          scrollTop: $section.offset().top - 29
+          scrollTop: $section.offset().top - 25
         },{
           duration: 500,
           easing : "easeInOutQuad",
@@ -272,7 +272,7 @@
     });
 
     /* Highlighting toc item at appropriate time when we scroll to the corresponding section */
-    $('.workspace-materials-management-view-page')
+    $('.workspace-materials-view-page')
       .waypoint(function(direction) {
         var $links = $('a[href="#' + this.id + '"]');
         $links.toggleClass('active', direction === 'down');
@@ -463,7 +463,7 @@
     }
     
     $('.workspaces-materials-management-insert-file').each(function(index, element) {
-      var nextMaterial = $(element).next('.workspace-materials-management-view-page');
+      var nextMaterial = $(element).next('.workspace-materials-view-page');
       var parentId = $(nextMaterial).data('parent-id');
       var nextSiblingId = $(nextMaterial).data('workspace-material-id');
       enableFileUploader(element, parentId, nextSiblingId);
@@ -472,7 +472,7 @@
   
   $(document).on('click', '.edit-page', function (event, data) {
     // TODO: Better way to toggle classes and observe hidden/visible states?
-    var page = $(this).closest('.workspace-materials-management-view-page');
+    var page = $(this).closest('.workspace-materials-view-page');
     if (page.hasClass('page-hidden')) {
       page.removeClass('page-hidden');
       page.find('.hide-page').removeClass('icon-show').addClass('icon-hide');
@@ -488,13 +488,13 @@
   
   $(document).on('click', '.hide-page', function (event, data) {
     // TODO: Better way to toggle classes and observe hidden/visible states?
-    var page = $(this).closest('.workspace-materials-management-view-page');
+    var page = $(this).closest('.workspace-materials-view-page');
     var hidden = page.hasClass('page-hidden');
     toggleVisibility(page, !hidden);
   });
   
   $(document).on('click', '.workspaces-materials-management-add-page', function (event, data) {
-    var nextMaterial = $(this).next('.workspace-materials-management-view-page');
+    var nextMaterial = $(this).next('.workspace-materials-view-page');
     
     renderDustTemplate('workspace/materials-management-new-page.dust', { }, $.proxy(function (text) {
       var newPage = $(text);
