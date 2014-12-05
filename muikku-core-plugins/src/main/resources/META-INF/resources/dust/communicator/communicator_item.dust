@@ -15,8 +15,8 @@
               <span class="mf-item-header-content-primary">{senderFullName}</span>        
               <span class="mf-item-header-content-secondary">{caption}</span>    
             </div>
-            <div class="mf-item-header-details">
-              {@if cond="{messageCount} > 1"} ({messageCount}){/if}
+            <div class="mf-item-header-details cm-message-header-count">
+              <span>{@if cond="{messageCount} > 1"} ({messageCount}){/if}</span>
             </div>
           </div>       
           <div class="clear"></div>

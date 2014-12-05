@@ -197,7 +197,7 @@ $(document).ready(function(){
     },
     
 		options: [
- 				{
+ /*				{
           caption : "Lähetä myös itselle",
           name : "mailSelf",
           type : "checkbox",
@@ -209,7 +209,7 @@ $(document).ready(function(){
           type : "checkbox",
           action : function(e) {
           }
-        }, 
+        }, */
       ],
 
       buttons : [ 
@@ -242,12 +242,12 @@ $(document).ready(function(){
             
             $('.md-background').fadeOut().remove();
           }
-        }, {
+        } /* , {
           caption : "Tallenna luonnos",
           name : "saveMail",
           action : function(e) {
           }
-        } 
+        } */
       ]
     });
 
