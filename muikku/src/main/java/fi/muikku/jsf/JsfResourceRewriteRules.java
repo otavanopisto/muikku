@@ -9,12 +9,20 @@ import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.config.rule.Join;
 
 @RewriteConfiguration
-public class JavaScriptRewriteRules extends HttpConfigurationProvider {
+public class JsfResourceRewriteRules extends HttpConfigurationProvider {
 
   @Override
   public Configuration getConfiguration(ServletContext context) {
+    // TODO: Parameterize theme
+    
     ConfigurationBuilder configuration = ConfigurationBuilder.begin();
     configuration.addRule(Join.path("/scripts/{file}").to("/faces/javax.faces.resource/scripts/{file}"));
+    configuration.addRule(Join.path("/ckplugins/{plugin}/{file}").to("/javax.faces.resource/scripts/ckplugins/{plugin}/{file}.jsf"));
+    configuration.addRule(Join.path("/ckplugins/{plugin}/icons/{file}").to("/javax.faces.resource/scripts/ckplugins/{plugin}/icons/{file}.jsf"));
+    configuration.addRule(Join.path("/css/{file}").to("/javax.faces.resource/css/{file}.jsf?ln=theme-muikku"));
+          
+    
+    
     return configuration;
   }
 

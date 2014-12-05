@@ -13,7 +13,6 @@ import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
-
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.Workspace;
@@ -55,6 +54,7 @@ public class WorkspaceMaterialsBackingBean {
     workspaceNavigationBackingBean.setWorkspaceUrlName(urlName);
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
     workspaceName = workspace.getName();
+    workspaceEntityId = workspaceEntity.getId();
 	}
 	
 	public WorkspaceRootFolder getRootFolder() {
@@ -77,7 +77,16 @@ public class WorkspaceMaterialsBackingBean {
     return workspaceName;
   }
   
-	private WorkspaceRootFolder rootFolder;
+	public Long getWorkspaceEntityId() {
+    return workspaceEntityId;
+  }
+
+  public void setWorkspaceEntityId(Long workspaceEntityId) {
+    this.workspaceEntityId = workspaceEntityId;
+  }
+
+  private WorkspaceRootFolder rootFolder;
   private String workspaceName;
+  private Long workspaceEntityId;
 
 }

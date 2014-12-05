@@ -1,32 +1,42 @@
 package fi.muikku.plugins.workspace;
 
-import java.util.Collection;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-
-import org.apache.commons.lang3.StringUtils;
 
 import fi.muikku.plugins.material.model.QueryField;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialFieldDAO;
 import fi.muikku.plugins.workspace.events.WorkspaceMaterialFieldCreateEvent;
 import fi.muikku.plugins.workspace.events.WorkspaceMaterialFieldDeleteEvent;
 import fi.muikku.plugins.workspace.events.WorkspaceMaterialFieldUpdateEvent;
+import fi.muikku.plugins.workspace.fieldio.WorkspaceFieldIOException;
+import fi.muikku.plugins.workspace.fieldio.WorkspaceFieldIOHandler;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 
 @Stateless
 @Dependent
 public class WorkspaceMaterialFieldController {
   
   @Inject
+  private Logger logger;
+  
+  @Inject
   private WorkspaceMaterialFieldDAO workspaceMaterialFieldDAO;
 
   @Inject
   private Event<WorkspaceMaterialFieldCreateEvent> workspaceMaterialFieldCreateEvent;
+  
+  @Inject
+  @Any
+  private Instance<WorkspaceFieldIOHandler> fieldIOHandlers;
 
   @SuppressWarnings("unused")
   @Inject
@@ -35,14 +45,14 @@ public class WorkspaceMaterialFieldController {
   @Inject
   private Event<WorkspaceMaterialFieldDeleteEvent> workspaceMaterialFieldDeleteEvent;
 
-  public WorkspaceMaterialField createWorkspaceMaterialField(String name, QueryField queryField, WorkspaceMaterial workspaceMaterial) {
-    WorkspaceMaterialField workspaceMaterialField = workspaceMaterialFieldDAO.create(name, queryField, workspaceMaterial);
+  public WorkspaceMaterialField createWorkspaceMaterialField(WorkspaceMaterial workspaceMaterial, QueryField queryField, String embedId) {
+    WorkspaceMaterialField workspaceMaterialField = workspaceMaterialFieldDAO.create(queryField, workspaceMaterial, embedId);
     workspaceMaterialFieldCreateEvent.fire(new WorkspaceMaterialFieldCreateEvent(workspaceMaterialField));
     return workspaceMaterialField;
   }
   
-  public WorkspaceMaterialField findWorkspaceMaterialFieldByWorkspaceMaterialAndName(WorkspaceMaterial workspaceMaterial, String name) {
-    return workspaceMaterialFieldDAO.findByWorkspaceMaterialAndName(workspaceMaterial, name); 
+  public WorkspaceMaterialField findWorkspaceMaterialFieldByWorkspaceMaterialAndQueryFieldAndEmbedId(WorkspaceMaterial workspaceMaterial, QueryField queryField, String embedId) {
+    return workspaceMaterialFieldDAO.findByWorkspaceMaterialAndQueryFieldAndEmbedId(workspaceMaterial, queryField, embedId); 
   }
   
   public List<WorkspaceMaterialField> listWorkspaceMaterialFieldsByWorkspaceMaterial(WorkspaceMaterial workspaceMaterial){
@@ -58,29 +68,34 @@ public class WorkspaceMaterialFieldController {
     workspaceMaterialFieldDAO.delete(workspaceMaterialField);
   }
   
-  public String getAssignedFieldName(String workspaceMaterialId, String embedId, String fieldName, Collection<String> assignedNames) {
-    StringBuilder fieldNameBuilder = new StringBuilder()
-      .append(workspaceMaterialId)
-      .append(':');
-    
-    if (StringUtils.isNotBlank(embedId)) {
-      fieldNameBuilder
-        .append(embedId)
-        .append(':');
+  public String retrieveFieldValue(WorkspaceMaterialField field, WorkspaceMaterialReply reply) throws WorkspaceFieldIOException {
+    WorkspaceFieldIOHandler handler = getIOHandler(field.getQueryField().getType());
+    if (handler != null) {
+      return handler.retrieve(field, reply);
+    } else {
+      logger.severe(String.format("Could not find io handler for queryfield type: %s", field.getQueryField().getType()));
     }
     
-    fieldNameBuilder
-      .append(fieldName)
-      .append(':');
+    return null;
+  }
+  
+  public void storeFieldValue(WorkspaceMaterialField field, WorkspaceMaterialReply reply, String value) throws WorkspaceFieldIOException {
+    WorkspaceFieldIOHandler handler = getIOHandler(field.getQueryField().getType());
+    if (handler != null) {
+      handler.store(field, reply, value);
+    } else {
+      logger.severe(String.format("Could not find io handler for queryfield type: %s", field.getQueryField().getType()));
+    }
+  }
+  
+  private WorkspaceFieldIOHandler getIOHandler(String type) {
+    for (WorkspaceFieldIOHandler handler : fieldIOHandlers) {
+      if (handler.getType().equals(type)) {
+        return handler;
+      }
+    }
     
-    int index = 0;
-    String assignedFieldName = null;
-    do {
-      assignedFieldName = fieldNameBuilder.toString() + index;
-      index++;
-    } while (assignedNames.contains(assignedFieldName));
-    
-    return assignedFieldName;
+    return null;
   }
   
 }

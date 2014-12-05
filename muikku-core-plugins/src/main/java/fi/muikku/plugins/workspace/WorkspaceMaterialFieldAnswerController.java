@@ -4,9 +4,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import fi.muikku.plugins.material.dao.QueryChecklistFieldOptionDAO;
+import fi.muikku.plugins.material.dao.QuerySelectFieldOptionDAO;
+import fi.muikku.plugins.material.model.QueryChecklistField;
 import fi.muikku.plugins.material.model.QueryChecklistFieldOption;
 import fi.muikku.plugins.material.model.QueryConnectFieldCounterpart;
 import fi.muikku.plugins.material.model.QueryConnectFieldTerm;
+import fi.muikku.plugins.material.model.QuerySelectField;
 import fi.muikku.plugins.material.model.QuerySelectFieldOption;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialChecklistFieldAnswerDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialChecklistFieldAnswerOptionDAO;
@@ -53,6 +57,12 @@ public class WorkspaceMaterialFieldAnswerController {
   @Inject
   private WorkspaceMaterialFileFieldAnswerFileDAO workspaceMaterialFileFieldAnswerFileDAO;
   
+  @Inject
+  private QuerySelectFieldOptionDAO querySelectFieldOptionDAO;
+  
+  @Inject
+  private QueryChecklistFieldOptionDAO queryChecklistFieldOptionDAO;
+  
   /* Generic */
 
   public List<WorkspaceMaterialFieldAnswer> listWorkspaceMaterialFieldAnswersByField(WorkspaceMaterialField field) {
@@ -92,6 +102,14 @@ public class WorkspaceMaterialFieldAnswerController {
   public WorkspaceMaterialSelectFieldAnswer updateWorkspaceMaterialSelectFieldAnswerValue(
       WorkspaceMaterialSelectFieldAnswer workspaceMaterialSelectFieldAnswer, QuerySelectFieldOption value) {
     return workspaceMaterialSelectFieldAnswerDAO.updateValue(workspaceMaterialSelectFieldAnswer, value);
+  }
+  
+  public QuerySelectFieldOption findSelectFieldOptionByName(QuerySelectField selectField, String name) {
+    return querySelectFieldOptionDAO.findBySelectFieldAndName(selectField, name);
+  }
+  
+  public List<QueryChecklistFieldOption> listChecklistFieldOptions(QueryChecklistField checklistField) {
+    return queryChecklistFieldOptionDAO.listByField(checklistField);
   }
 
   /* ConnectField */
