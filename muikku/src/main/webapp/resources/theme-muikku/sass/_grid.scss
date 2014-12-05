@@ -8,6 +8,11 @@
   @return ($grid-value / 2);
 }
 
+@function weekDay($grid-value) {
+  @return ($grid-value / 7);
+}
+
+
 /* Variables */
 
 $grid-margin-pixel: 5px;

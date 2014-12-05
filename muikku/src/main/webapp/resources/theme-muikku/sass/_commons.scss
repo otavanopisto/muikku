@@ -6,6 +6,7 @@ To be used through SASS's extend feature with CSS's selectors.
 @import "_base.scss"; 
 
 
+
 /* Pseudo styles */
 
 div[class*='header']{
@@ -17,7 +18,7 @@ div[class*='header']{
  background-color:$mainFuncSide;
 }
 
-.co-mainFunction-side-header{
+.co-mainFunction-sub-header{
  background-color: $mainFuncSideHeader;
  text-align:center;
 }
@@ -148,6 +149,10 @@ div[class*='header']{
   box-shadow:$w-sc;
   border : 1px solid $brd;
   background-color:#fff;
+}
+
+.co-eventItem{
+  background-color:#ededed;
 }
 
 .co-widget {

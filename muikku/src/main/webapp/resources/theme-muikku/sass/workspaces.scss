@@ -8,83 +8,6 @@ body.workspace-materials {
   min-height:100%;
   font-size:14px;
   
-  h1.workspace-title {
-    margin:20px 0 20px 0;
-    color:#38393a;
-    font-weight:300;
-    text-transform:uppercase;
-    line-height:1.3em;
-  }
-  
-  .workspace-materials-view-page {
-  
-    img {
-      max-width:100%;
-    }
-    
-    h1,
-    h2,
-    h3 {
-      margin:40px 0 20px 0;
-      color:#38393a;
-      font-weight:300;
-      text-transform:none;
-      line-height:1.3em;
-      
-      &:first-child {
-        margin:20px 0 20px 0;
-      }
-    }
-    
-    h1 {
-      font-size:31px;
-    }
-      
-    h2 {
-      font-size:27px;
-    }
-    
-    h3 {
-      margin:20px 0 20px 0;
-      font-size:24px;
-    }
-    
-    p {
-      margin:20px 0 20px 0;
-      line-height:1.5em;
-    }
-    
-    blockquote {
-      font-family: 'Open Sans',Verdana, sans-serif;
-      font-style:italic;
-      padding:2px 0;
-      border-style:solid;
-      border-color:#eee;
-      border-width:0;
-      color:#777;
-      font-size:20px;
-      margin:0 40px 0 40px;
-    
-      p {
-        margin:10px 0 10px 0;
-      }
-    
-    }
-    
-    .cke_contents_ltr blockquote {
-      padding-left:20px;
-      padding-right:8px;
-      border-left-width:8px;
-    }
-    
-    .cke_contents_rtl blockquote {
-      padding-left:8px;
-      padding-right:20px;
-      border-right-width:8px;
-    }
-    
-  }
-
   #staticNavigationWrapperWorkspace {
     background:none; /* We need to remove all background rules first */
     @include background-image('gfx/workspace-navigation-background.png'); /* Workspace's navigation's background */
@@ -101,6 +24,7 @@ body.workspace-materials {
       top:0;
       left:0;
       right:0;
+      z-index:99;
     }
     
   }
@@ -238,47 +162,159 @@ body.workspace-materials {
     }
   
   }
-
-  .workspace-meta-wrapper {
-    font-size:13px;
-    text-transform:uppercase;
-    
-    .workspace-study-level-indicator {
-      color:#fff;
-      display:inline-block;
-      margin:0 10px 0 0;
-    
-      &.indicator1 {
-        background:#0099ff;
-        border-radius:2px;
-        padding:0px 6px;
-      }
-    
-    }
-    
-    .workspace-meta-title {
-      color:#7e7e7e;
-      display:inline-block;
-      margin:0 5px 0 0;
-    }
-    
-    .workspace-meta-desc {
-      color:#000;
-      display:inline-block;
-      margin:0 10px 0 0;
-    }
-  }
   
-  .workspace-description-wrapper {
-    margin:1em 0 1em 0;
-    font-size:17px;
-    font-weight:300;
-    
-    p {
-      margin:1em 0 1em 0;
+  #contentWorkspaceMaterials {
+  
+    h1.workspace-title {
+      margin:20px 0 20px 0;
+      color:#38393a;
+      font-weight:300;
+      text-transform:uppercase;
+      line-height:1.3em;
     }
-   
-   
+    
+    .workspace-materials-view-page.material-view {
+    
+      img {
+        max-width:100%;
+      }
+      
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6
+       {
+        margin:40px 0 20px 0;
+        color:#38393a;
+        font-weight:300;
+        text-transform:none;
+        line-height:1.3em;
+      }
+      
+      h1 {
+        font-size:29px;
+      }
+        
+      h2 {
+        font-size:26px;
+      }
+      
+      h3 {
+        font-size:19px;
+        font-weight:normal;
+      }
+      
+      h4 {
+        font-size:17px;
+        font-weight:normal;
+      }
+      
+      h5 {
+        font-size:15px;
+        font-weight:normal;
+      }
+      
+      h6 {
+        font-size:13px;
+        font-weight:normal;
+      }
+      
+      p {
+        margin:15px 0 15px 0;
+        line-height:1.5em;
+      }
+      
+      label,select,option,input,textarea { /* Overrides the values used in reading/management */
+        font-weight:normal;
+        font-size:14px; /* Reset font-size  */
+      }
+      
+      strong,
+      b {
+        font-weight:600; /* Override values used in reading/management */
+      }
+      
+      em,
+      i {
+        font-weight:400;
+      }
+
+      blockquote {
+        font-family: 'Open Sans',Verdana, sans-serif;
+        font-style:italic;
+        padding:2px 0;
+        border-style:solid;
+        border-color:#eee;
+        border-width:0;
+        color:#777;
+        font-size:20px;
+        margin:0 40px 0 40px;
+      
+        p {
+          margin:10px 0 10px 0;
+        }
+      
+      }
+      
+      .cke_contents_ltr blockquote {
+        padding-left:20px;
+        padding-right:8px;
+        border-left-width:8px;
+      }
+      
+      .cke_contents_rtl blockquote {
+        padding-left:8px;
+        padding-right:20px;
+        border-right-width:8px;
+      }
+      
+    }
+
+    .workspace-meta-wrapper {
+      font-size:13px;
+      text-transform:uppercase;
+      
+      .workspace-study-level-indicator {
+        color:#fff;
+        display:inline-block;
+        margin:0 10px 0 0;
+      
+        &.indicator1 {
+          background:#0099ff;
+          border-radius:2px;
+          padding:0px 6px;
+        }
+      
+      }
+      
+      .workspace-meta-title {
+        color:#7e7e7e;
+        display:inline-block;
+        margin:0 5px 0 0;
+      }
+      
+      .workspace-meta-desc {
+        color:#000;
+        display:inline-block;
+        margin:0 10px 0 0;
+      }
+    }
+    
+    .workspace-description-wrapper {
+      margin:1em 0 1em 0;
+      font-size:17px;
+      font-weight:300;
+      
+      p {
+        margin:1em 0 1em 0;
+      }
+     
+     
+    }
+  
+  
   }
 
 }

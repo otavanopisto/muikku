@@ -8,21 +8,6 @@
   xmlns:composite="http://java.sun.com/jsf/composite/composite" 
   template="/workspaces/templates/workspace-materials-reading-view.xhtml">
   
-  <ui:define name="viewScripts">
-    <h:outputScript name="scripts/jquery.jsplumb/jquery.jsPlumb-1.7.2-min.js"/>
-    <h:outputScript name="scripts/gui/muikku-connect-field-component.js"/>
-    <h:outputScript name="scripts/jquery.fileupload/load-image.min.js"/>
-    <h:outputScript name="scripts/jquery.fileupload/canvas-to-blob.min.js"/>
-    <h:outputScript name="scripts/jquery.fileupload/jquery.iframe-transport.js"/>
-    <h:outputScript name="scripts/jquery.fileupload/jquery.fileupload.js"/>
-    <h:outputScript name="scripts/jquery.fileupload/jquery.fileupload-process.js"/>
-    <h:outputScript name="scripts/jquery.fileupload/jquery.fileupload-image.js"/>
-    <h:outputScript name="scripts/gui/muikku-file-field-component.js"/>
-    <h:outputScript name="scripts/gui/workspace.js"/> 
-    <h:outputScript name="scripts/gui/muikku-material-loader.js"/> 
-    <h:outputScript name="scripts/gui/workspace-materials-reading.js"/> 
-  </ui:define>
-
   <ui:define name="workspaces.materials.reading.toc">
     <div id="workspaceMaterialsReadingTOCWrapper">
       <nav id="workspaceMaterialsReadingTOCClosed">
@@ -55,10 +40,10 @@
   <ui:define name="workspace.materials.reading.content">
     <ui:repeat var="node" value="#{workspaceMaterialsTOCBackingBean.getVisibleDescendants(workspaceMaterialsReadingBackingBean.getRootFolder())}">
       <ui:fragment rendered="#{node.materialType eq 'folder'}">
-       <h2 id="page-#{node.workspaceMaterialId}" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-material-type="#{node.materialType}" data-material-title="#{node.materialTitle}" class="workspace-materials-reading-view-page folder"></h2>
+       <h2 id="page-#{node.workspaceMaterialId}" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-material-type="#{node.materialType}" data-material-title="#{node.materialTitle}" class="workspace-materials-view-page material-reading-view folder"></h2>
       </ui:fragment>
       <ui:fragment rendered="#{node.materialType ne 'folder'}">
-        <section id="page-#{node.workspaceMaterialId}" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-material-type="#{node.materialType}" data-material-title="#{node.materialTitle}" class="workspace-materials-reading-view-page"/>
+        <section id="page-#{node.workspaceMaterialId}" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-material-type="#{node.materialType}" data-material-title="#{node.materialTitle}" class="workspace-materials-view-page material-reading-view"/>
       </ui:fragment>
     </ui:repeat>
     

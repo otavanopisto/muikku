@@ -1,9 +1,8 @@
-<div class="mf-person cm-newMessage-recipient cm-newMessage-recipientuser">
+<div class="mf-item-user cm-message-recipient">
   <input type="hidden" name="userId" value="{id}" />
   <input type="hidden" name="mf-person-id" value="{id}" />
-  <div class="cm-newMessage-recipientName">{name}</div>
-  
-  <div class="cm-newMessage-removeRecipient"></div>
+  <div class="cm-message-recipient-name">{name}</div>
+  <div class="clear"></div>
 </div>
 
 

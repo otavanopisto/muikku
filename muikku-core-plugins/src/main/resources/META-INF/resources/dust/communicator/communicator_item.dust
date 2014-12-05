@@ -1,34 +1,29 @@
-<div class="cm-item cm-message">
-  <div class="cm-item-senderPictureContainer">
-    {?sender_tq.hasPicture} 
-      <img class="cm-item-senderPicture" src="{@contextPath/}/picture?userId={sender}" width="50" height="50" />
-    {:else}
-      <img class="cm-item-senderPicture" src="{@contextPath/}/themes/default/gfx/fish.jpg" width="50" height="50" />
-    {/sender_tq.hasPicture}
-  </div>
+    <div class="mf-item cm-message" id="{id}">
+      <div class="mf-item-details">
+        <div class="mf-item-details-container">       
+          <div class="mf-item-additionalInfo">
+            <span>{created|formatDate} {created|formatTime} </span>
+          </div>
+          <div class="mf-item-description">
+            <div class="mf-item-header-name cm-message-header-name">
+              {?senderHasPicture} 
+                <img class="cm-user-picture custom" src="{@contextPath/}/picture?userId={sender}" width="50" height="50" />
+              {:else}
+                <div class="cm-user-picture default"></div>
+              {/senderHasPicture}            
+              <input type="hidden" name="mf-person-id" value="{sender}"/>
+              <span class="mf-item-header-content-primary">{senderFullName}</span>        
+              <span class="mf-item-header-content-secondary">{caption}</span>    
+            </div>
+            <div class="mf-item-header-details cm-message-header-count">
+              <span>{@if cond="{messageCount} > 1"} ({messageCount}){/if}</span>
+            </div>
+          </div>       
+          <div class="clear"></div>
+        </div>
+      </div>
+    
+      <input type="hidden" name="communicatorMessageId" value="{id}"/>
+      <input type="hidden" name="communicatorMessageIdId" value="{communicatorMessageId}"/>
   
-
-  <div class="cm-item-header">
-    <div class="cm-item-title">{caption} {@if cond="{messageCount} > 1"} ({messageCount}){/if}</div>
-    <div>
-      <span class="cm-item-date">
-        {created|formatDate} {created|formatTime}
-      </span>
-      <span class="mf-person cm-item-senderName">
-        <input type="hidden" name="mf-person-id" value="{sender}"/>
-        <a class="wallEntryCreator" href="{@contextPath/}/user/{sender}">{sender_tq.fullName}</a>
-      </span>
-    </div>
-   </div>     
-      
-  <div class="clear"></div>
-  <div class="cm-item-tags">
-    {#tags_tq}
-      {text}{@sep}, {/sep}
-    {/tags_tq}
-  </div>
-
-  <input type="hidden" name="communicatorMessageId" value="{id}"/>
-  <input type="hidden" name="communicatorMessageIdId" value="{communicatorMessageId.id}"/>
-  
-</div>
+    </div >

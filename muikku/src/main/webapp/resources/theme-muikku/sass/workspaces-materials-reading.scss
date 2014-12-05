@@ -200,7 +200,7 @@ body.workspace-materials-reading {
     width:auto;
     margin:0 auto;
   
-    .workspace-materials-reading-view-page {
+    .workspace-materials-view-page.material-reading-view {
       max-width:700px;
       width:auto;
       background:#fff;
@@ -236,6 +236,16 @@ body.workspace-materials-reading {
       }
       
       h1,
+      h2 {
+        
+        
+        &:first-child {
+          margin:20px 0 20px 0;
+        }
+        
+      }
+      
+      h1,
       h2,
       h3 {
         margin:40px 0 20px 0;
@@ -243,10 +253,16 @@ body.workspace-materials-reading {
         font-weight:300;
         text-transform:none;
         line-height:1.3em;
-        
-        &:first-child {
-          margin:20px 0 20px 0;
-        }
+      }
+      
+      h4,
+      h5,
+      h6 {
+        margin:20px 0 20px 0;
+        color:#38393a;
+        font-weight:300;
+        text-transform:none;
+        line-height:1.3em;
       }
       
       h1 {
@@ -258,8 +274,20 @@ body.workspace-materials-reading {
       }
       
       h3 {
-        margin:20px 0 20px 0;
         font-size:24px;
+      }
+      
+      h4 {
+        font-size:20px;
+      }
+      
+      h5 {
+        font-size:18px;
+      }
+      
+      h6 {
+        font-size:16px;
+        font-weight:normal;
       }
       
       p {

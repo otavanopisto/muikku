@@ -91,11 +91,10 @@ div[class*='workspace-dock-navi-button'] > span {
     @include rounded-bottom-right(3px);
     @include workspaceTooltipTransition(opacity,0.15s,ease-in-out);
   }
+  
     
   &:hover {
     background:#465b6c;
-    @include iconShadow(rgba(255,255,190,0.5));
-
     span[class*='workspace-navi-tt-container-'] {
       display:block;
       background:#465b6c;
@@ -194,15 +193,9 @@ div[class*="wi-dock-static-navi"] {
   display: inline-block;
 }
 
-.newEventButton {
-  @include naviIcon();
-  @include background-image('gfx/icons/32x32/actions/calendar-settings.png');
-}
 
-.newEventButton:hover {
-  @include naviIcon();
-  @include background-image('gfx/icons/32x32/actions/calendar-settings.png');
-}
+
+
 
 .calendarSettingsButton {
   @include naviIcon();
