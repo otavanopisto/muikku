@@ -11,14 +11,16 @@
 		 				{
 		 					element: 'object',
 		 					left: function(element) {
+		 					  console.log("object type: %o", element.attributes['type']);
                 return (element.attributes['type'] == 'application/vnd.muikku.field.text');
 		 					},
 		 					right: function(element,tools) {
                 var metaType;
                 var metaContent;
-                for (var i=0, l=element.children; i<l; i++) {
+                for (var i=0, l=element.children.length; i<l; i++) {
                   var child = element.children[i];
-                  if (child.name == 'param') {
+		 					    console.log("child: %o", child);
+                  if (child.name == 'cke:param') {
                     switch(child.attributes['name']) {
                       case 'type':
                         metaType = child.attributes['value'];
@@ -37,6 +39,7 @@
                       'data-muikku-meta-content': metaContent
                     }
                 );
+                element.replaceWith(result);
 		 					}
 		 				}
 		 			]
