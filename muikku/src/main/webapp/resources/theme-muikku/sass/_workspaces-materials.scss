@@ -10,14 +10,14 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     @include rounded(3px);
     display:inline-block;
     padding:2px 4px;
-    transition:border,box-shadow 0.3s,0.5s ease-in-out;
+    transition:border,box-shadow 0.1s,0.2s ease-in-out;
     outline:none; /* Thanks Chrome! */
     font-size:17px;
     color:#0077c7;
     max-width:100%;
     box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
     box-sizing:border-box;
-    margin:3px;
+    margin:4px 3px;
     
     &:focus,
     &:hover {
@@ -37,7 +37,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
   select {
     background:#fff;
     border:1px solid #eee;
-    transition:border,box-shadow 0.3s,0.5s ease-in-out;
+    transition:border,box-shadow 0.1s,0.2s ease-in-out;
     outline:none; /* Thanks Chrome! */
     color:#0077c7;
     display:inline-block;
@@ -66,7 +66,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     margin:0 10px;
     background:#fff;
     border:1px solid #eee;
-    transition:border,box-shadow 0.3s,0.5s ease-in-out;
+    transition:border,box-shadow 0.1s,0.2s ease-in-out;
     outline:none; /* Thanks Chrome! */
     display:inline-block;
     box-shadow:0 0 0px 3px rgba(215,215,215,0.15);

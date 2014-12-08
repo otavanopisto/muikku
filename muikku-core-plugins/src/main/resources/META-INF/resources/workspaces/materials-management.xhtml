@@ -10,16 +10,19 @@
 
   <ui:define name="workspaces.materials.management.toc">
     <div id="workspaceMaterialsManagementTOCWrapper">
-      <nav id="workspaceMaterialsManagementTOCClosed">
-        <div class="workspace-materials-management-TOC-title">
-          <div id="workspaceMaterialsManagementTOCNavicon" class="icon-navicon workspace-materials-management-toc-opening-button"></div>
-        </div>
+      <nav class="workspace-waterials-management-nav" id="workspaceMaterialsManagementNav">
+        <m:widgetSpaceSet>
+          <m:widgetSpace name="workspaces.materials.management.dock" keepEmpty="true" sizing="MINIMIZE" styleClass="">
+            <m:widget name="workspaces-materials-full-screen-toc" size="1" />
+            <m:widget name="workspaces-materials-full-screen-goback" size="1" />
+            <m:widget name="workspaces-materials-full-screen-reading-materials" size="1" />
+          </m:widgetSpace>
+        </m:widgetSpaceSet>
       </nav>
     
-      <nav id="workspaceMaterialsManagementTOCOpen">
+      <div id="workspaceMaterialsManagementTOCContainer">
         <div class="workspace-materials-management-TOC-title">
           <h1>Sisällysluettelo</h1>
-          <div id="workspaceMaterialsManagementTOCNavicon" class="icon-navicon workspace-materials-management-toc-closing-button"></div>
         </div>
         <div class="workspace-materials-toc-content-outer">
           <div class="workspace-materials-toc-content-inner">
@@ -32,7 +35,7 @@
             </div>
           </div>
         </div>
-      </nav>
+      </div>
     </div>
   </ui:define>
 
@@ -69,17 +72,4 @@
     <input class="workspaceEntityId" type="hidden" value="#{workspaceMaterialsManagementBackingBean.workspaceEntityId}"/>
   </ui:define>
   
-  <ui:define name="workspaces.materials.management.additional.dock">
-    <div id="workspaceMaterialsManagementAdditionalNavWrapper">
-      <nav class="workspaceMaterialsManagementAdditionalNav">
-        <m:widgetSpaceSet>
-          <m:widgetSpace name="workspaces.materials.management.dock" keepEmpty="true" sizing="MINIMIZE" styleClass="">
-            <m:widget name="workspaces-materials-management-goback" size="1" />
-            <m:widget name="workspaces-materials-management-to-reading" size="1" />
-          </m:widgetSpace>
-        </m:widgetSpaceSet>
-      </nav>
-    </div>
-  </ui:define>
-
 </ui:composition>

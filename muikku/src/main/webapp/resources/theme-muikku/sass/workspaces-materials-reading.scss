@@ -28,27 +28,6 @@ body.workspace-materials-reading {
         margin:0;
       }
       
-      #workspaceMaterialsReadingTOCNavicon {
-        cursor:pointer;
-        font-size:30px;
-        color:#fff;
-        text-decoration:none;
-        @include iconShadow;
-        background:transparent;
-        padding:6px;
-        margin:2px;
-        display:inline-block;
-        position:relative;
-        width:34px;
-        @include rounded(3px);
-        text-align:center;
-        
-        &:hover {
-          @include iconShadow(rgba(255,255,190,0.5));
-        }
-        
-      }
-      
     }
     
     #workspaceMaterialsReadingTOCContainer {
@@ -56,7 +35,7 @@ body.workspace-materials-reading {
       background:#e8f0f5;
       z-index:26;
       box-shadow : 0 0 25px rgba(0,0,0,0.15);
-      position:relative; /* This sets parent relation to .workspaceMaterialReadingTOCContentCropper element */
+      position:relative;
       top:0;
       
       .workspace-materials-reading-TOC-title {

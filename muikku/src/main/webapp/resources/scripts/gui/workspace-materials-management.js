@@ -208,141 +208,112 @@
     if ($('#workspaceMaterialsManagementTOCWrapper').length > 0) {
       
       var height = $(window).height();
-      var thinTocWrapper = $('#workspaceMaterialsManagementTOCClosed');
-      var wideTocWrapper = $('#workspaceMaterialsManagementTOCOpen');
-      var tocOpeningButton = $('.workspace-materials-management-toc-opening-button');
-      var tocClosingButton = $('.workspace-materials-management-toc-closing-button');
+      var tocWrapper = $('#workspaceMaterialsManagementTOCContainer');
+      var navWrapper = $('#workspaceMaterialsManagementNav');
+      var tocOpenCloseButton = $('.wi-workspace-materials-full-screen-navi-button-toc > .icon-navicon');
       var contentPageContainer = $('#contentWorkspaceMaterialsManagement');
       
-      var contentMinOffset;
       var contentOffset;
       var windowMinWidth;
+      var tocWrapperWidth = tocWrapper.width();
+      var navWrapperWidth = navWrapper.width();
+      var tocWrapperLeftMargin = "-" + (tocWrapperWidth - navWrapperWidth) + "px";
+      var contentMinLeftOffset = tocWrapperWidth + navWrapperWidth + 20;
+      var contentPageContainerRightPadding = 10;
 
-      if (thinTocWrapper.length > 0) {
-        thinTocWrapper
-        .hide()
+      if (tocWrapper.length > 0) {
+        tocWrapper
         .css({
           height: height,
-          "margin-left" : "-55px"
-        });
-      }
-      
-      if (wideTocWrapper.length > 0) {
-        contentPageContainer.css({
-          paddingLeft: wideTocWrapper.width() + 10,
-          paddingRight: "60px"
+          "margin-left" : navWrapperWidth
         });
         
-        wideTocWrapper
-        .show()
-        .css({
-          height: height,
-          "margin-left" : "0px"
+        contentPageContainer.css({
+          paddingLeft: contentMinLeftOffset,
+          paddingRight: contentPageContainerRightPadding
         });
       }
       
       $(window).resize(function(){
         height = $(window).height();
-        wideTocWrapper.height(height);
-        thinTocWrapper.height(height);
-        
-        contentMinOffset = wideTocWrapper.width() + 10; 
+        tocWrapper.height(height);
         contentOffset = contentPageContainer.offset();
-        windowMinWidth = contentPageContainer.width() + contentMinOffset*2;
+        windowMinWidth = contentPageContainer.width() + contentMinLeftOffset*2;
         
-        // Lets prevent page content to slide under TOC when browser window is resized
-        if ($('#workspaceMaterialsManagementTOCOpen:visible').length !== 0) {
+        // Lets prevent page content to slide under TOC when browser window is been resized
+        if ($('#workspaceMaterialsManagementTOCContainer:visible').length !== 0) {
           
-          if (contentOffset.left < contentMinOffset) {
+          if (contentOffset.left < contentMinLeftOffset) {
             contentPageContainer.css({
-              paddingLeft: contentMinOffset,
-              paddingRight: "60px"
+              paddingLeft: contentMinLeftOffset,
+              paddingRight: contentPageContainerRightPadding
             });
           } 
         } else {
           contentPageContainer.css({
-            paddingLeft: "60px",
-            paddingRight: "60px"
+            paddingLeft: navWrapperWidth + 10,
+            paddingRight: contentPageContainerRightPadding
           });
         }
         
       });
 
-      $(tocOpeningButton).click(function() {
-        thinTocWrapper
-        .clearQueue()
-        .stop()
-        .animate({
-          "margin-left" : "-55px"
-        }, {
-          duration : 200,
-          easing : "easeInOutQuint",
-          complete : function(){
-            $(this).hide();
-            
-            contentMinOffset = wideTocWrapper.width() + 10; 
-            
-            contentPageContainer
-            .animate({
-              paddingLeft: contentMinOffset,
-              paddingRight: "60px"
-            },{
-              duration:500,
-              easing: "easeInOutQuint"
-            });
-            
-            wideTocWrapper
-            .show()
-            .clearQueue()
-            .stop()
-            .animate({
-              opacity:0.97,
-              "margin-left" : "0"
-            }, {
-              duration:500,
-              easing: "easeInOutQuint"
-            });
-            
-          }
-        });
+   // Prevent icon-navicon link from working normally
+      $(tocOpenCloseButton).bind('click', function(e) {
+        e.stopPropagation();
       });
-      
-      $(tocClosingButton).click(function() {
-              
-        contentPageContainer
-        .animate({
-          paddingLeft: "60px",
-          paddingRight: "60px"
-        },{
-          duration:600,
-          easing: "easeInOutQuint"
-        });
+
+      $(tocOpenCloseButton).click(function() {
         
-        wideTocWrapper
-        .clearQueue()
-        .stop()
-        .animate({
-          "margin-left" : "-370px",
-          opacity: 1
-        }, {
-          duration : 600,
-          easing : "easeInOutQuint",
-          complete : function(){
-            $(this).hide();
-            
-            thinTocWrapper
-            .show()
-            .clearQueue()
-            .stop()
-            .animate({
-              "margin-left" : "0"
-            }, {
-              duration:500,
-              easing: "easeInOutQuint"
-            });
-            
-          }
-        });
+        // If tocWrapper is visible
+        if ($('#workspaceMaterialsManagementTOCContainer:visible').length !== 0) {
+          contentPageContainer
+          .animate({
+            paddingLeft: navWrapperWidth,
+            paddingRight: contentPageContainerRightPadding
+          },{
+            duration:500,
+            easing: "easeInOutQuint"
+          });
+          
+          tocWrapper
+          .clearQueue()
+          .stop()
+          .animate({
+            "margin-left" : tocWrapperLeftMargin,
+          }, {
+            duration:500,
+            easing: "easeInOutQuint",
+            complete: function () {
+              $(this).hide();
+            }
+          });
+        // If tocWrapper is not visible  
+        } else {
+          contentPageContainer
+          .animate({
+            paddingLeft: contentMinLeftOffset,
+            paddingRight: contentPageContainerRightPadding
+          },{
+            duration:500,
+            easing: "easeInOutQuint"
+          });
+          tocWrapper
+          .show()
+          .clearQueue()
+          .stop()
+          .animate({
+            "margin-left" : navWrapperWidth,
+          }, {
+            duration:500,
+            easing: "easeInOutQuint",
+            complete: function () {
+
+              
+            }
+          });
+        }
+        
       });
       
       $('.workspace-materials-toc-content-inner').on('DOMMouseScroll mousewheel', function(ev) {

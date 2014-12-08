@@ -50,7 +50,7 @@
       var height = $(window).height();
       var tocWrapper = $('#workspaceMaterialsReadingTOCContainer');
       var navWrapper = $('#workspaceMaterialsReadingNav');
-      var tocOpenCloseButton = $('.wi-workspace-materials-reading-navi-button-toc > .icon-navicon');
+      var tocOpenCloseButton = $('.wi-workspace-materials-full-screen-navi-button-toc > .icon-navicon');
       var tocPinButton = $('#workspaceMaterialsReadingTOCPinicon');
       var contentPageContainer = $('#contentWorkspaceMaterialsReading');
       
@@ -59,7 +59,8 @@
       var tocWrapperWidth = tocWrapper.width();
       var navWrapperWidth = navWrapper.width();
       var tocWrapperLeftMargin = "-" + (tocWrapperWidth - navWrapperWidth) + "px";
-      var contentMinLeftOffset = tocWrapperWidth + navWrapperWidth + 10;
+      var contentMinLeftOffset = tocWrapperWidth + navWrapperWidth + 20;
+      var contentPageContainerRightPadding = 10;
       
       if (tocWrapper.length > 0) {
         // If we have tocWrapper lets hide it first and set negative margin for later animation
@@ -68,6 +69,11 @@
         .css({
           height: height,
           "margin-left" : tocWrapperLeftMargin
+        });
+        
+        contentPageContainer.css({
+          paddingLeft: navWrapperWidth + 10,
+          paddingRight: contentPageContainerRightPadding
         });
       }
       
@@ -83,13 +89,13 @@
           if (contentOffset.left < contentMinLeftOffset) {
             contentPageContainer.css({
               paddingLeft: contentMinLeftOffset,
-              paddingRight: "10px"
+              paddingRight: contentPageContainerRightPadding
             });
           } 
         } else {
           contentPageContainer.css({
-            paddingLeft: navWrapperWidth,
-            paddingRight: "10px"
+            paddingLeft: navWrapperWidth + 10,
+            paddingRight: contentPageContainerRightPadding
           });
         }
         
@@ -120,7 +126,7 @@
           contentPageContainer
           .animate({
             paddingLeft: navWrapperWidth,
-            paddingRight: "10px"
+            paddingRight: contentPageContainerRightPadding
           },{
             duration:500,
             easing: "easeInOutQuint"
@@ -130,7 +136,7 @@
           .clearQueue()
           .stop()
           .animate({
-            "margin-left" : tocWrapperLeftMargin,
+            "margin-left" : tocWrapperLeftMargin
           }, {
             duration:500,
             easing: "easeInOutQuint",
@@ -153,7 +159,7 @@
           .clearQueue()
           .stop()
           .animate({
-            "margin-left" : navWrapperWidth,
+            "margin-left" : navWrapperWidth
           }, {
             duration:500,
             easing: "easeInOutQuint",

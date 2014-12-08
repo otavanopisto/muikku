@@ -18,9 +18,9 @@ div[class*='dock-dynamic-navi-button'] > a {
   display:inline-block;
 }
 
-/* Workspace material's reading view's navigation */
-div[class*='workspace-materials-reading-navi-button'] > a,
-div[class*='workspace-materials-reading-navi-button'] > span {
+/* Workspace material's reading/management view's navigation */
+div[class*='workspace-materials-full-screen-navi-button'] > a,
+div[class*='workspace-materials-full-screen-navi-button'] > span {
   cursor:pointer;
   font-size:30px;
   color:#fff;
@@ -34,7 +34,7 @@ div[class*='workspace-materials-reading-navi-button'] > span {
   width:34px;
   text-align:center;
 
-  span[class*='workspace-materials-reading-tt-container-'] {
+  span[class*='workspace-materials-full-screen-tt-container-'] {
     opacity:0;
     font-family:"Open Sans";
     font-size:16px;
