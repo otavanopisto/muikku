@@ -5,18 +5,19 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
   /* Input field overrides */
   input[type="text"], textarea {
     width:auto;
+    height:auto;
     border:1px solid #eee;
     @include rounded(3px);
     display:inline-block;
-    margin:4px;
     padding:2px 4px;
     transition:border,box-shadow 0.3s,0.5s ease-in-out;
     outline:none; /* Thanks Chrome! */
     font-size:17px;
-    text-align:center;
     color:#0077c7;
     max-width:100%;
     box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
+    box-sizing:border-box;
+    margin:3px;
     
     &:focus,
     &:hover {
@@ -28,6 +29,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
   
   textarea {
     text-align:left;
+    margin:0;
 /*     color:#000; */
   }
 
