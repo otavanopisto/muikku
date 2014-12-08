@@ -197,7 +197,7 @@ $(document).ready(function(){
     },
     
 		options: [
- 				{
+ /*				{
           caption : "Lähetä myös itselle",
           name : "mailSelf",
           type : "checkbox",
@@ -209,7 +209,7 @@ $(document).ready(function(){
           type : "checkbox",
           action : function(e) {
           }
-        }, 
+        }, */
       ],
 
       buttons : [ 
@@ -242,12 +242,12 @@ $(document).ready(function(){
             
             $('.md-background').fadeOut().remove();
           }
-        }, {
+        } /* , {
           caption : "Tallenna luonnos",
           name : "saveMail",
           action : function(e) {
           }
-        } 
+        } */
       ]
     });
 
@@ -283,20 +283,33 @@ $(document).ready(function(){
 
         
         
-        mApi().communicator.messages.read(cmId).on('$', function(msg, msgCallback){
-        	 
-	        mApi().communicator.communicatormessages.sender.read(messageId)
-	        .callback(function (err, user) {  
-	          msg.senderFullName = user.firstName + ' ' + user.lastName;
-	          msg.senderHasPicture = user.hasImage;
-	        });
-       	
-	        
-        	msgCallback();
-        }) 
-        .callback(function (err, result){
+        mApi().communicator.messages.read(cmId).callback(function (err, result){
+        	
+        	for (var i = 0; i < result.length; i++){
+        		var sId = result[i].id;
+
+               	 
+        	        mApi().communicator.communicatormessages.sender.read(sId)
+        	        .callback(function (err, user) {  
+	    	        	result[i].senderFullName = user.firstName + ' ' + user.lastName;
+	    	        	result[i].senderHasPicture = user.hasImage;
+        	        });
+               	
+        	        
+                         
+
+        		
+        		
+        	}	
+        	
+        	
         	renderDustTemplate('communicator/communicator_items_open.dust', result, function (text) {
                
+
+        		
+             var niib = result[0].senderId;		
+        		
+        		
              mCont.empty();
 	           mCont.append($.parseHTML(text));
 	           
