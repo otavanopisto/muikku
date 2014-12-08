@@ -10,37 +10,10 @@
 		 			[
 		 				{
 		 					element: 'object',
-		 					left: function( el ) {
-		 					  console.log("left: %o", el);
-		 					  console.log("left: %o", el.attributes);
-		 					  console.log("left: %o", el.attributes.type);
-		 						return true;
+		 					left: function(element) {
+                return (element.attributes['type'] == 'application/vnd.muikku.field.text');
 		 					},
-		 					right: function( el, tools ) {
-		 					  console.log("right: %o", el);
-		 					}
-		 				}
-		 			]
-		 		]
-      );
-
-      console.log(editor.config.protectedSource);
-      var dataFilter = editor.dataProcessor
-                     && editor.dataProcessor.dataFilter;
-      
-      if (dataFilter) {
-        console.log("dataFilter löytyy");
-        dataFilter.addRules({
-          text: function(value) {
-            console.log("dataFilter text");
-            console.log(value);
-          },
-          elements: {
-            'cke:object': function(element) {
-              console.log("dataFilter");
-              console.log(element);
-              // TODO: move to addTransformations
-              if (element.attributes['type'] == 'application/vnd.muikku.field.text') {
+		 					right: function(element,tools) {
                 var metaType;
                 var metaContent;
                 for (var i=0, l=element.children; i<l; i++) {
@@ -64,26 +37,11 @@
                       'data-muikku-meta-content': metaContent
                     }
                 );
-              }
-            }
-          }
-          
-        }, {priority: 1, applyToAll: true});
-      }
-      
-      var htmlFilter = editor.dataProcessor
-                     && editor.dataProcessor.htmlFilter;
-      if (htmlFilter) {
-        htmlFilter.addRules({
-          elements: {
-            'object': function(element) {
-              console.log("htmlFilter");
-              console.log(element);
-            }
-          }
-          
-        }, {priority: 1000000});
-      }
+		 					}
+		 				}
+		 			]
+		 		]
+      );
     }
   });
 }).call(this);

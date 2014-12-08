@@ -99,7 +99,7 @@
           'coops-dmp' : CONTEXTPATH + '/scripts/ckplugins/coops-dmp/',
           'coops-cursors' : CONTEXTPATH + '/scripts/ckplugins/coops-cursors/',
           'coops-sessionevents' : CONTEXTPATH + '/scripts/ckplugins/coops-sessionevents/',
-          'muikku-textfield': CONTEXTPATH + '/ckplugins/muikku-textfield/'
+          'muikku-textfield': CONTEXTPATH + '/scripts/ckplugins/muikku-textfield/'
         },
         extraPlugins : 'coops,coops-connector,coops-dmp,coops-cursors,coops-sessionevents,muikku-textfield',
         serverUrl : CONTEXTPATH + '/rest/coops/' + this.options.materialId + '',
@@ -107,6 +107,7 @@
         toolbar: [
           { name: 'document', items : [ 'Source' ] },
           { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
+          { name: 'forms', items : ['MuikkuTextField']},
           { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
           { name: 'links', items : [ 'Link','Unlink','Anchor' ] },
           { name: 'colors', items : [ 'TextColor','BGColor' ] },
@@ -120,6 +121,7 @@
         editorOptions : {
           autoGrowOnStartup : true,
           skin : 'moono',
+          extraAllowedContent: 'object[type] param[name, value]',
           height : 500
         }
       });
