@@ -14,7 +14,7 @@ import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.schooldata.WorkspaceEntityController;
 
 @Singleton
-public class DeusNextServiceUpdater {
+public class DeusNexServiceUpdater {
   
   @Inject
   private Logger logger;
