@@ -10,11 +10,7 @@ import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.inject.Inject;
 
-import fi.muikku.controller.PluginSettingsController;
-import fi.muikku.model.plugins.PluginSettingKey;
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.plugins.dnm.DeusNexMachinaPluginDescriptor;
-import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.WorkspaceEntityController;
 
 @Singleton
@@ -28,11 +24,11 @@ public class DeusNextServiceUpdater {
   
   @Inject
   private RestClient client;
-
-  @Inject
-  private PluginSettingsController pluginSettingsController;
   
-  @Schedule(hour = "*", minute = "*", second = "*/20")
+  @Inject
+  private DeusNexImportQueueController deusNexImportQueueController;
+
+  @Schedule(hour = "*", minute = "*", second = "0", persistent = false)
   public void findDocuments() {
     Document[] documents = null;
     Date since = getSince();
@@ -44,20 +40,29 @@ public class DeusNextServiceUpdater {
     }
     
     List<Long> newImports = new ArrayList<>();
-    
     for (Document document : documents) {
-      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByUrlName(document.getName());
+      String path = document.getPath();
+      int slashIndex = path.indexOf('/');
+      String workspaceName = slashIndex > -1 ? path.substring(0, slashIndex) : path;
+      
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByUrlName(workspaceName);
       if (workspaceEntity != null) {
         newImports.add(document.getId());
       } else {
-        logger.log(Level.WARNING, String.format("Ignoring import for document %s because maching workspace could not be found", document.getName()));
+        logger.log(Level.WARNING, String.format("Ignoring import for document %s because maching workspace could not be found", document.getPath()));
       }
     }
     
-    
+    deusNexImportQueueController.addPendingDownloads(newImports);
+    deusNexImportQueueController.setLastUpdate(System.currentTimeMillis());
   }
   
   private Date getSince() {
+    Long lastUpdate = deusNexImportQueueController.getLastUpdate();
+    if (lastUpdate != null) {
+      return new Date(lastUpdate);
+    }
+    
     return null;
   }
   
