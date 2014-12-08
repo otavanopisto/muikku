@@ -9,8 +9,8 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.client.Invocation.Builder;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -30,6 +30,10 @@ public class RestClient {
     secret = pluginSettingsController.getPluginSetting("deus-nex-machina", "service.secret");
   }
   
+  public Document getDocument(Long id) {
+    return get("/documents/" + id, Document.class);
+  }
+  
   public Document[] listDocuments() {
     return get("/documents", Document[].class);
   }
@@ -39,7 +43,35 @@ public class RestClient {
   }
   
   public String getDocumentData(Long id) {
-    return get("/documents/" + id + "/data", String.class);
+    String path = "/documents/" + id + "/data";
+    
+    Client client = getClient();
+    try {
+      WebTarget target = client.target(url + path);
+      Builder request = target.request();
+      
+      request.header("Authorization", secret);
+      Response response = request.get();
+      try {
+        switch (response.getStatus()) {
+          case 200:
+            return response.readEntity(String.class);
+          default:
+            logger.log(Level.WARNING, String.format("GET-request into %s failed with status code %d", path, response.getStatus()));
+          break;
+        }
+        
+        return null;
+      } catch (Throwable t) {
+        logger.log(Level.SEVERE, "GET-request into " + path + " failed", t);
+      } finally {
+        response.close();
+      }
+    } finally {
+      client.close();
+    }
+    
+    return null;
   }
   
   private <T> T get(String path, Class<T> type) {
@@ -54,7 +86,7 @@ public class RestClient {
       try {
         return createResponse(response, type);
       } catch (Throwable t) {
-        logger.log(Level.SEVERE, "Pyramus GET-request into " + path + " failed", t);
+        logger.log(Level.SEVERE, "GET-request into " + path + " failed", t);
         throw t;
       } finally {
         response.close();
@@ -78,7 +110,8 @@ public class RestClient {
       case 404:
         return null;
       default:
-        throw new RuntimeException("" + response.getStatus() + " - " + response.getEntity());
+        logger.log(Level.SEVERE, String.format("Could not process responce (status: %d, entity: %s)", response.getStatus(), response.getEntity()));
+        return null;
     }
   }
   
