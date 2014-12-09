@@ -99,9 +99,10 @@
           'coops-dmp' : CONTEXTPATH + '/scripts/ckplugins/coops-dmp/',
           'coops-cursors' : CONTEXTPATH + '/scripts/ckplugins/coops-cursors/',
           'coops-sessionevents' : CONTEXTPATH + '/scripts/ckplugins/coops-sessionevents/',
+          'fakeobjects' : CONTEXTPATH + '/scripts/ckplugins/fakeobjects/',
           'muikku-textfield': CONTEXTPATH + '/scripts/ckplugins/muikku-textfield/'
         },
-        extraPlugins : 'coops,coops-connector,coops-dmp,coops-cursors,coops-sessionevents,muikku-textfield',
+        extraPlugins : 'coops,coops-connector,coops-dmp,coops-cursors,coops-sessionevents,fakeobjects,muikku-textfield',
         serverUrl : CONTEXTPATH + '/rest/coops/' + this.options.materialId + '',
         contentCss : '/css/custom-ckeditor-contentcss.css',
         toolbar: [
