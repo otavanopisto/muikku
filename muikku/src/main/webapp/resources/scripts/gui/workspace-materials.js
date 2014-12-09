@@ -63,11 +63,13 @@
     mApi().workspace.workspaces.materials.replies.create(workspaceEntityId, workspaceMaterialId, {
       answers: reply
     })
-    .callback(function (err) {
+    .callback($.proxy(function (err) {
       if (err) {
         $('.notification-queue').notificationQueue('notification', 'error', "Error occurred while saving field replies " + err);
-      }
-    });
+      } else {
+        $(this).addClass("icon-success save-successful").text('Saved');
+      } 
+    }, this));
   });
 
 }).call(this);
