@@ -125,7 +125,7 @@
         editorOptions : {
           autoGrowOnStartup : true,
           skin : 'moono',
-          extraAllowedContent: 'object[type] param[name, value]',
+          extraAllowedContent: 'object[type, data-type] cke:object[*] param[name, value]',
           height : 500
         }
       });
