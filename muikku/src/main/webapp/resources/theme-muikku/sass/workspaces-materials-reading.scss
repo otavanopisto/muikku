@@ -275,12 +275,4 @@ body.workspace-materials-reading {
     
   }
   
-  .workspace-material-queued-html,
-  .workspace-material-loading {
-    @include background-image('gfx/workspace-material-loading.gif'); 
-    background-repeat: no-repeat;
-    background-position: center;
-    min-height: 500px;
-  }
-  
 }
