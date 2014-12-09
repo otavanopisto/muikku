@@ -27,7 +27,7 @@
         requiredContent: 'object'
       } ) );
       editor.ui.addButton && editor.ui.addButton( 'MuikkuTextField', {
-        label: editor.lang.common.flash,
+        label: "Muikku text field properties",
         command: 'muikkutextfield',
         toolbar: 'insert,20'
       } );
@@ -36,7 +36,7 @@
       // If the "menu" plugin is loaded, register the menu items.
       if ( editor.addMenuItems ) {
         editor.addMenuItems( {
-          flash: {
+          muikku: {
             label: editor.lang.flash.properties,
             command: 'muikkutextfield',
             group: 'muikku'
