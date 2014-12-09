@@ -307,6 +307,11 @@ body.workspace-materials-management {
         box-shadow:0 0 0 5px rgba(148,183,208,0.95);
       }
       
+      /* It's necessary to hide save button inside matrial's management view  */
+      button.muikku-save-page {
+        display:none;
+      }
+      
       /* Section in edit mode */
       &.page-edit-mode {
         box-shadow:0 0 0 10px rgba(148,183,208,0.95);
@@ -401,13 +406,12 @@ body.workspace-materials-management {
               
             }
             
-            
-            
             img {
               width:100%;
               height:100%;
             }
           }
+
         }
         
         /* Editor save status */

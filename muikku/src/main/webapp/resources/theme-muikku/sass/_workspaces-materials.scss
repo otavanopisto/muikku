@@ -1,4 +1,4 @@
-body.workspace-materials #content,
+body.workspace-materials #contentWorkspaceMaterials,
 body.workspace-materials-reading #contentWorkspaceMaterialsReading,
 body.workspace-materials-management #contentWorkspaceMaterialsManagement {
 
@@ -178,15 +178,22 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
   
   button.muikku-save-page {
     color:#fff;
-    background:#0099ff;
+    background:#85cdff;
     box-shadow:none;
     border:0;
-    @include rounded(2px);
+    border-radius:2px;
     font-weight:300;
     font-size:16px;
     text-transform:uppercase;
-    padding:6px 12px;
+    padding:12px;
     transition:background 0.3s ease-in-out;
+    min-width:200px;
+    margin:20px auto;
+    display:block;
+    
+    &:hover {
+      background:#32abff;
+    }
   }
   
  
