@@ -219,7 +219,7 @@
       var navWrapperWidth = navWrapper.width();
       var tocWrapperLeftMargin = "-" + (tocWrapperWidth - navWrapperWidth) + "px";
       var contentMinLeftOffset = tocWrapperWidth + navWrapperWidth + 20;
-      var contentPageContainerRightPadding = 10;
+      var contentPageContainerRightPadding = 20;
 
       if (tocWrapper.length > 0) {
         tocWrapper
@@ -251,7 +251,7 @@
           } 
         } else {
           contentPageContainer.css({
-            paddingLeft: navWrapperWidth + 10,
+            paddingLeft: navWrapperWidth + 20,
             paddingRight: contentPageContainerRightPadding
           });
         }

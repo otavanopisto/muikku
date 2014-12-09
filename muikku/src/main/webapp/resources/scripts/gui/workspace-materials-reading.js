@@ -59,7 +59,7 @@
       var tocWrapperWidth = tocWrapper.width();
       var navWrapperWidth = navWrapper.width();
       var tocWrapperLeftMargin = "-" + (tocWrapperWidth - navWrapperWidth) + "px";
-      var contentMinLeftOffset = tocWrapperWidth + navWrapperWidth + 20;
+      var contentMinLeftOffset = tocWrapperWidth + navWrapperWidth + 10;
       var contentPageContainerRightPadding = 10;
       
       if (tocWrapper.length > 0) {
