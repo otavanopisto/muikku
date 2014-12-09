@@ -71,7 +71,9 @@
         dataFilter.addRules( {
           elements: {
             'cke:object': function( element ) {
-              return createFakeElement( editor, element );
+              if (isMuikkuTextField(element)) {
+                return createFakeElement( editor, element );
+              }
             }
           }
         }, 5);

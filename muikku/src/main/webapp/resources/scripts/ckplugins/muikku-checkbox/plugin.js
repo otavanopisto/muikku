@@ -4,9 +4,9 @@
   /* global CKEDITOR */
 
   CKEDITOR.plugins.add('muikku-checkbox', {
+    requires: 'fakeobjects',
     icons: 'muikku-checkbox',
     init: function(editor) {
-      var path = this.path;
       editor.addCommand('insertCheckbox', {
         exec: function(editor) {
           editor.insertHtml('<div style="border:1px solid rgb(0,0,0);background-color:yellow;">Olen ruma ruksiboksirepresentaatio</div>');
@@ -17,18 +17,31 @@
         command: 'insertCheckbox',
         toolbar: 'muikku-fields'
       });
-      editor.filter.addTransformations([[{
-        element: 'object',
-        left: function(element) {
-          return (element.attributes['type'] == 'application/vnd.muikku.field.checklist');
-        },
-        right: function(element,tools) {
-          var fakeElement = editor.createFakeParserElement(element, 'muikku-checkbox-field', 'object');
-          fakeElement.attributes['src'] = path + 'icons/muikku-checkbox-editor.jpg'; 
-          fakeElement.attributes['title'] = 'Ruksiboksisysteemijuttula';
-          element.replaceWith(fakeElement);
-        }
-      }]]);
+      editor.addFeature({
+        name: 'muikku-checkbox',
+        allowedContent: 'object[type];param[name,value]',
+        requiredContent: 'object'
+      });
+    },
+    afterInit: function(editor) {
+      var path = this.path;
+      var dataProcessor = editor.dataProcessor;
+      var dataFilter = dataProcessor && dataProcessor.dataFilter;
+      if (dataFilter) {
+        dataFilter.addRules({
+          elements: {
+            'cke:object': function(element) {
+              if (element.attributes.type == 'application/vnd.muikku.field.checklist') {
+                var fakeElement = editor.createFakeParserElement(element, 'muikku-checkbox-field', 'object');
+                fakeElement.attributes['src'] = path + 'icons/muikku-checkbox-editor.jpg'; 
+                fakeElement.attributes['title'] = 'Ruksiboksisysteemijuttula';
+                return fakeElement;
+              }
+            }
+          }
+        }, 5);
+      }
     }
+
   });
 }).call(this);
