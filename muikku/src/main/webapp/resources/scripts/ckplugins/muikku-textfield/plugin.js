@@ -20,8 +20,7 @@
     onLoad: function() {
     },
     init: function( editor ) {
-      var allowed = 'object[type];' +
-        'param[name,value];';
+      var allowed = 'object[type];param[name,value];';
 
       editor.addCommand( 'muikkutextfield', new CKEDITOR.dialogCommand( 'muikkutextfield', {
         allowedContent: allowed,
