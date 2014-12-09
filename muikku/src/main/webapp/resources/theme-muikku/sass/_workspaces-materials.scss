@@ -203,10 +203,11 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     
     &.icon-success:before {
       position: absolute;
-      top: -12px;
+      top: -50%;
       left: 5px;
       font-size: 65px;
       text-shadow: 2px 0 0 #38d32c, -2px 0 0 #38d32c, 0 2px 0 #38d32c, 0 -2px 0 #38d32c, 1px 1px #38d32c, -1px -1px 0 #38d32c, 1px -1px 0 #38d32c, -1px 1px 0 #38d32c;
+      height: 60px;
     }
   }
   
