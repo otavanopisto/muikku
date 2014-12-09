@@ -99,9 +99,11 @@
           'coops-dmp' : CONTEXTPATH + '/scripts/ckplugins/coops-dmp/',
           'coops-cursors' : CONTEXTPATH + '/scripts/ckplugins/coops-cursors/',
           'coops-sessionevents' : CONTEXTPATH + '/scripts/ckplugins/coops-sessionevents/',
-          'muikku-textfield': CONTEXTPATH + '/scripts/ckplugins/muikku-textfield/'
+          'fakeobjects' : CONTEXTPATH + '/scripts/ckplugins/fakeobjects/',
+          'muikku-textfield': CONTEXTPATH + '/scripts/ckplugins/muikku-textfield/',
+          'muikku-checkbox': CONTEXTPATH + '/scripts/ckplugins/muikku-checkbox/'
         },
-        extraPlugins : 'coops,coops-connector,coops-dmp,coops-cursors,coops-sessionevents,muikku-textfield',
+        extraPlugins : 'coops,coops-connector,coops-dmp,coops-cursors,coops-sessionevents,fakeobjects,muikku-textfield,muikku-checkbox',
         serverUrl : CONTEXTPATH + '/rest/coops/' + this.options.materialId + '',
         contentCss : '/css/custom-ckeditor-contentcss.css',
         toolbar: [
@@ -116,7 +118,9 @@
           { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote',
           '-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl' ] },
           { name: 'insert', items : [ 'Image','Flash','Table','SpecialChar' ] },          
-          { name: 'tools', items : [ 'Maximize', 'ShowBlocks','-','About' ] }
+          { name: 'tools', items : [ 'Maximize', 'ShowBlocks','-','About' ] },
+          '/',
+          { name: 'muikku-fields', items : [ 'muikku-checkbox' ] }
         ],
         editorOptions : {
           autoGrowOnStartup : true,
