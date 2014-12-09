@@ -99,6 +99,7 @@
           'coops-dmp' : CONTEXTPATH + '/scripts/ckplugins/coops-dmp/',
           'coops-cursors' : CONTEXTPATH + '/scripts/ckplugins/coops-cursors/',
           'coops-sessionevents' : CONTEXTPATH + '/scripts/ckplugins/coops-sessionevents/',
+          'muikku-fields': CONTEXTPATH + '/scripts/ckplugins/muikku-fields/',
           'muikku-textfield': CONTEXTPATH + '/scripts/ckplugins/muikku-textfield/',
           'muikku-checkbox': CONTEXTPATH + '/scripts/ckplugins/muikku-checkbox/'
         },

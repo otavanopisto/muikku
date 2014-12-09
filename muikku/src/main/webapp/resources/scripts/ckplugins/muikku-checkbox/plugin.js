@@ -4,7 +4,7 @@
   /* global CKEDITOR */
 
   CKEDITOR.plugins.add('muikku-checkbox', {
-    requires: 'fakeobjects',
+    requires: 'muikku-fields',
     icons: 'muikku-checkbox',
     init: function(editor) {
       editor.addCommand('insertCheckbox', {
