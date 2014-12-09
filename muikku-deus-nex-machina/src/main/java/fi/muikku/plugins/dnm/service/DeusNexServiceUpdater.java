@@ -28,7 +28,7 @@ public class DeusNexServiceUpdater {
   @Inject
   private DeusNexImportQueueController deusNexImportQueueController;
 
-  @Schedule(hour = "*", minute = "*", second = "0", persistent = false)
+  @Schedule(hour = "*", minute = "*/5", second = "0", persistent = false)
   public void findDocuments() {
     Document[] documents = null;
     Date since = getSince();

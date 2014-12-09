@@ -38,7 +38,7 @@ public class DeusNexServiceDownloadUpdater {
   @Inject
   private DeusNexImportQueueController deusNexImportQueueController;
 
-  @Schedule(hour = "*", minute = "*", second = "0", persistent = false)
+  @Schedule(hour = "*", minute = "*/2", second = "0", persistent = false)
   public void downloadNext() {
     Long pendingDownload = deusNexImportQueueController.popPendingDownload();
     if (pendingDownload != null) {
