@@ -36,38 +36,28 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     }
 
     &::-webkit-input-placeholder {
-      font-size:17px;
       color:#b4b4b4;
       font-style:italic;
-      text-align:center;
     }
     
     &:-moz-placeholder { /* older Firefox*/
-      font-size:17px;
       color:#b4b4b4;
       font-style:italic;
-      text-align:center;
     }
     
     &::-moz-placeholder { /* Firefox 19+ */ 
-      font-size:17px;
       color:#b4b4b4;
       font-style:italic;
-      text-align:center;
     }
      
     &:-ms-input-placeholder { 
-      font-size:17px;
       color:#b4b4b4;
       font-style:italic;
-      text-align:center;
     }
     
     &::input-placeholder {
-      font-size:17px;
       color:#b4b4b4;
       font-style:italic;
-      text-align:center;
     }
     
   }
