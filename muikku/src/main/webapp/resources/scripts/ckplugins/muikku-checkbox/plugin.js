@@ -1,27 +1,57 @@
 (function() {
   'use strict'
   
+  
+  
   /* global CKEDITOR */
 
   CKEDITOR.plugins.add('muikku-checkbox', {
-    requires: 'muikku-fields',
+    requires: 'dialog,muikku-fields',
     icons: 'muikku-checkbox',
     init: function(editor) {
-      editor.addCommand('insertCheckbox', {
-        exec: function(editor) {
-          editor.insertHtml('<div style="border:1px solid rgb(0,0,0);background-color:yellow;">Olen ruma ruksiboksirepresentaatio</div>');
-        }
-      });
+      editor.addCommand('muikku-checkbox-properties', new CKEDITOR.dialogCommand('muikkuCheckboxDialog'));
       editor.ui.addButton('muikku-checkbox', {
-        label: 'Tuuppaa ruksiboksi',
-        command: 'insertCheckbox',
+        label: 'Checkbox [localize]',
+        command: 'muikku-checkbox-properties',
         toolbar: 'muikku-fields'
       });
-      editor.addFeature({
-        name: 'muikku-checkbox',
-        allowedContent: 'object[type];param[name,value]',
-        requiredContent: 'object'
+
+      // Context menu support
+      
+      if (editor.contextMenu) {
+        editor.addMenuGroup('muikkuCheckboxGroup');
+        editor.addMenuItem('muikkuCheckboxItem', {
+          label: 'Checkbox properties [localize]',
+          //icon: this.path + 'icons/abbr.png',
+          command: 'muikku-checkbox-properties',
+          group: 'muikkuCheckboxGroup'
+        });
+        editor.contextMenu.addListener(function(element) {
+          var checkboxField = editor.restoreRealElement(element);
+          if (checkboxField.getAttribute('type') == 'application/vnd.muikku.field.checklist') {
+            return {muikkuCheckboxItem: CKEDITOR.TRISTATE_OFF};
+          }
+        });
+      }
+      
+      // Checkbox fields
+
+      var optionsElement = function(dialog, elementDefinition, htmlList) {
+        htmlList.push('<div>Mursunaaras <input type="text" name="joulukuusi" size="20"></div>');
+        CKEDITOR.ui.dialog.uiElement.call(this, dialog, elementDefinition, htmlList);
+      };
+      optionsElement.prototype = new CKEDITOR.ui.dialog.uiElement;
+      CKEDITOR.tools.extend(optionsElement.prototype, {
+        mursu: function() {
+          alert('mursu!');
+        }
       });
+      CKEDITOR.dialog.addUIElement('muikkuCheckboxOptions', {
+        build : function(dialog, elementDefinition, output) {
+          return new optionsElement(dialog, elementDefinition, output);
+        },
+      });
+
     },
     afterInit: function(editor) {
       var path = this.path;
@@ -42,6 +72,52 @@
         }, 5);
       }
     }
-
   });
+  
+  // Properties
+  
+  CKEDITOR.dialog.add('muikkuCheckboxDialog', function(editor) {
+    return {
+      title: 'Checkbox Properties [localize]',
+      minWidth: 400,
+      minHeight: 200,
+      contents: [
+        {
+          id: 'tab-basic',
+          elements: [
+            {
+              id: 'options',
+              type: 'muikkuCheckboxOptions',
+              label: 'blah'
+            }
+          ]
+        }
+      ],
+      onShow: function() {
+        var contentJson = editor.getMuikkuFieldDefinition(editor.getSelection().getStartElement());
+        var optionsElement = this.getContentElement('tab-basic', 'options');
+        // TODO json -> option elements
+      },
+      onOk: function() {
+        var object = new CKEDITOR.dom.element('object');
+        object.setAttribute('type', 'application/vnd.muikku.field.checklist');
+        var paramType = new CKEDITOR.dom.element('param');
+        paramType.setAttribute('name', 'type');
+        paramType.setAttribute('value', 'application/json');
+        var paramContent = new CKEDITOR.dom.element('param');
+        paramContent.setAttribute('name', 'content');
+        // TODO dialog contents to object
+        paramContent.setAttribute('value', '{"name":"param4","options":[{"name":"1","points":null,"text":"Vauhkoehto 1"},{"name":"2","points":null,"text":"Vauhkoehto 2"},{"name":"3","points":null,"text":"Vauhkoehto 3"}]}');
+        object.append(paramType);
+        object.append(paramContent);
+        
+        // TODO new element, replace element, etc.
+        var fakeElement = editor.createFakeElement(object, 'muikku-checkbox-field', 'object');
+        fakeElement.setAttribute('src', this.path + 'icons/muikku-checkbox-editor.jpg'); 
+        fakeElement.setAttribute('title', 'Ruksiboksisysteemijuttula');
+        editor.insertElement(fakeElement);
+      }
+    };
+  });
+  
 }).call(this);
