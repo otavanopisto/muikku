@@ -37,13 +37,27 @@
       // Checkbox fields
 
       var optionsElement = function(dialog, elementDefinition, htmlList) {
-        htmlList.push('<div>Mursunaaras <input type="text" name="joulukuusi" size="20"></div>');
-        CKEDITOR.ui.dialog.uiElement.call(this, dialog, elementDefinition, htmlList);
+        CKEDITOR.ui.dialog.uiElement.call(this, dialog, elementDefinition, htmlList, 'div');
       };
       optionsElement.prototype = new CKEDITOR.ui.dialog.uiElement;
       CKEDITOR.tools.extend(optionsElement.prototype, {
-        mursu: function() {
-          alert('mursu!');
+        clear: function() {
+          var optionsContainer = this.getElement();
+          while (optionsContainer.getFirst()) {
+            optionsContainer.remove(optionsContainer.getFirst());
+          }
+        },
+        addOption: function() {
+          var optionsContainer = this.getElement();
+          var optionContainer = new CKEDITOR.dom.element('div');
+          optionContainer.addClass('checkbox-option-container');
+          var optionTextField = new CKEDITOR.dom.element('input');
+          optionTextField.setAttribute('type', 'text');
+          var optionsCorrect = new CKEDITOR.dom.element('input');
+          optionsCorrect.setAttribute('type', 'checkbox');
+          optionsContainer.append(optionContainer);
+          optionContainer.append(optionTextField);
+          optionContainer.append(optionsCorrect);
         }
       });
       CKEDITOR.dialog.addUIElement('muikkuCheckboxOptions', {
@@ -96,6 +110,10 @@
       onShow: function() {
         var contentJson = editor.getMuikkuFieldDefinition(editor.getSelection().getStartElement());
         var optionsElement = this.getContentElement('tab-basic', 'options');
+        optionsElement.clear();
+        optionsElement.addOption();
+        optionsElement.addOption();
+        optionsElement.addOption();
         // TODO json -> option elements
       },
       onOk: function() {
