@@ -217,3 +217,19 @@
   }
 
 }
+
+
+.cm-navi-button-unread-messages-counter-flap {
+  position: relative;
+  bottom: 15px;
+  right: -25px;
+  width: 20px;
+  height: 20px;
+
+  background-color: #FF0000;
+  color: #FFFFFF;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  vertical-align: middle;
+}

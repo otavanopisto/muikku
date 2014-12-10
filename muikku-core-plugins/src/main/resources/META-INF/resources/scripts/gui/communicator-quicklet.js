@@ -7,7 +7,7 @@
       var _this = this;
       widgetElement = $(widgetElement);
       this._widgetElement = widgetElement;
-
+      
       $(".tt-menu-link-communicator-msg").click(function (event) {
         $(".ui-dialog-content").dialog("close");
 
@@ -60,6 +60,15 @@
           });
         });      
       });
+      
+      mApi().communicator.receiveditemscount.read()
+        .callback(function (err, result) {
+          if (result > 0) {
+            var newMessagesCounterFlap = widgetElement.find(".cm-navi-button-unread-messages-counter-flap");
+            newMessagesCounterFlap.text(result);
+            newMessagesCounterFlap.show();
+          }
+        });
     },
     deinitialize: function () {
     },

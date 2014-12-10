@@ -39,6 +39,14 @@ public class CommunicatorMessageRecipient {
     this.recipient = recipient;
   }
 
+  public Boolean getReadByReceiver() {
+    return readByReceiver;
+  }
+
+  public void setReadByReceiver(Boolean readByReceiver) {
+    this.readByReceiver = readByReceiver;
+  }
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -48,6 +56,10 @@ public class CommunicatorMessageRecipient {
 
   @Column (name = "recipient_id")
   private Long recipient;
+
+  @NotNull
+  @Column(nullable = false)
+  private Boolean readByReceiver = Boolean.FALSE;
 
   @NotNull
   @Column(nullable = false)

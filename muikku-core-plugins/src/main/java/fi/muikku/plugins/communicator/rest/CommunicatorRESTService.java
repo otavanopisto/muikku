@@ -127,7 +127,32 @@ public class CommunicatorRESTService extends PluginRESTService {
       result
     ).build();
   }
+  
+  @GET
+  @Path ("/receiveditemscount")
+  public Response getReceivedItemsCount() {
+    UserEntity user = sessionController.getLoggedUserEntity(); 
+    List<CommunicatorMessageRecipient> receivedItems = communicatorController.listReceivedItemsByUserAndRead(user, false);
 
+    // TODO could be more elegant, i presume
+    
+    long count = 0;
+    Set<Long> ids = new HashSet<Long>();
+    
+    for (CommunicatorMessageRecipient r : receivedItems) {
+      Long id = r.getCommunicatorMessage().getCommunicatorMessageId().getId();
+      
+      if (!ids.contains(id)) {
+        ids.add(id);
+        count++;
+      }
+    }
+    
+    return Response.ok(
+      count
+    ).build();
+  }
+  
   @GET
   @Path ("/messages/{COMMUNICATORMESSAGEID}")
   public Response listUserCommunicatorMessagesByMessageId( 
