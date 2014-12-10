@@ -27,7 +27,6 @@
         command: 'muikkutextfield',
         toolbar: 'insert,20'
       });
-      CKEDITOR.dialog.add('muikkutextfield', this.path + 'dialogs/muikkutextfield.js');
       if (editor.addMenuItems) {
         editor.addMenuItems( {
           muikku: {
@@ -38,6 +37,7 @@
         } );
       }
       editor.on('doubleclick', function(evt) {
+        alert(editor.createRandomMuikkuFieldName());
         var element = evt.data.element;
 
         if (element.is( 'img' ) && element.data( 'cke-real-element-type' ) == 'muikkutextfield')
@@ -68,4 +68,30 @@
       }
     }
   } );
+
+  CKEDITOR.dialog.add('muikkutextfield', function (editor) {
+    return {
+      title : "Muikku Text Field",
+      minWidth : 420,
+      minHeight : 310,
+      onShow : function() {
+        var fakeImage = this.getSelectedElement();
+        if (fakeImage
+            && fakeImage.data('cke-real-element-type')
+            && fakeImage.data('cke-real-element-type') == 'muikkutextfield') {
+        }
+      },
+      onOk : function() {
+      },
+      onHide : function() {
+      },
+      contents : [ {
+        id : 'info',
+        label : editor.lang.common.generalTab,
+        accessKey : 'I',
+        elements : []
+      } ]
+    };
+  });
+
 } )();

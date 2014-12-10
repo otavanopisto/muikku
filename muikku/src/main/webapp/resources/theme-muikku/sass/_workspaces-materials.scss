@@ -34,6 +34,31 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       border:1px solid #97bfed;
       box-shadow:0 0 0px 3px rgba(202,225,252,0.75);
     }
+
+    &::-webkit-input-placeholder {
+      color:#b4b4b4;
+      font-style:italic;
+    }
+    
+    &:-moz-placeholder { /* older Firefox*/
+      color:#b4b4b4;
+      font-style:italic;
+    }
+    
+    &::-moz-placeholder { /* Firefox 19+ */ 
+      color:#b4b4b4;
+      font-style:italic;
+    }
+     
+    &:-ms-input-placeholder { 
+      color:#b4b4b4;
+      font-style:italic;
+    }
+    
+    &::input-placeholder {
+      color:#b4b4b4;
+      font-style:italic;
+    }
     
   }
   
@@ -76,7 +101,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     background:#fff;
     border:1px solid #eee;
     transition:border,box-shadow 0.1s,0.2s ease-in-out;
-    outline:none; /* Thanks Chrome! */
+    outline:none;
     display:inline-block;
     box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
     @include rounded(3px);
