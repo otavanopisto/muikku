@@ -13,6 +13,25 @@
         allowedContent: 'object[type];param[name,value];',
         requiredContent: 'object'
       });
+      CKEDITOR.tools.extend(CKEDITOR.editor.prototype, {
+        getMuikkuFieldDefinition: function(editorElement) {
+          var content = '{}';
+          if (editorElement) {
+            var realElement = editor.restoreRealElement(editorElement);
+            if (realElement) {
+              var children = realElement.getElementsByTag('cke:param');
+              for (var i = 0; i < children.count(); i++) {
+                var child = children.getItem(i);
+                if (child.getAttribute('name') == 'content') {
+                  content = child.getAttribute('value');
+                  break;
+                }
+              }
+            }
+          }
+          return JSON.parse(content);
+        }
+      });
     }
-  } );
-} )();
+  });
+})();
