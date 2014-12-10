@@ -59,27 +59,27 @@ h1,h2,h3,h4,h5 {
 }
 
 h1 {
-  font-size:1.9em;
+  font-size:29px;
 }
-
+  
 h2 {
-  font-size:1.7em;
+  font-size:26px;
 }
 
 h3 {
-  font-size:1.5em;
+  font-size:19px;
 }
 
 h4 {
-  font-size:1.3em;
+  font-size:17px;
 }
 
 h5 {
-  font-size:1.2em;
+  font-size:15px;
 }
 
 h6 {
-  font-size:1em;
+  font-size:13px;
 }
 
 /* TODO: P, a ... */
@@ -225,14 +225,25 @@ div[class*="dock-navi-tt-container"] {
   min-height:1px;
 }
 
-#header {
-  height:100px;
+#headerSmall {
+  height:90px;
   color: #fff;
   position:relative;
-  #headerContainer {
-    position:relative; 
   
-    #headerFishContainer {
+  #headerContainerSmall {
+    position:relative; 
+    
+    #headerLogoTextContainerSmall {
+      position:absolute;
+      left:0;
+      top:0;
+      @include background-image('gfx/muikku-header-text-small.png');
+      background-repeat:no-repeat; 
+      height:90px;
+      width:245px;
+    }
+  
+    #headerFishContainerSmall {
       position:absolute;
       left:430px;
       top:10px;
@@ -249,6 +260,7 @@ div[class*="dock-navi-tt-container"] {
   height:150px;
   color: #fff;
   position:relative;  
+  
   #headerContainerBig {
     position:relative; 
   

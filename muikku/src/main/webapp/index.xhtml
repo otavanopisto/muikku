@@ -10,9 +10,10 @@
 	<ui:define name="header">
 		<c:choose>
 			<c:when test="#{sessionBackingBean.loggedIn}">
-				<header id="header">
-					<div id="headerContainer" class="container_24">
-						<div id="headerFishContainer"></div>
+				<header id="headerSmall">
+					<div id="headerContainerSmall" class="container_24">
+            <div id="headerLogoTextContainerSmall"></div>
+						<div id="headerFishContainerSmall"></div>
 						<m:widgetSpaceSet styleClass="noLid">
 							<ui:insert name="header.left">
 								<ui:include src="/facelets/generic/header-left.xhtml">
