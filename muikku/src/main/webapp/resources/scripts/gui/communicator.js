@@ -78,7 +78,7 @@ $(document).ready(function(){
           return false;
         }
       });
- 
+      
       
 	 $('.cm-message-new').on('focus', 'input', function(){
          var dval = this.defaultValue;
@@ -100,9 +100,6 @@ $(document).ready(function(){
       	 }        	
 
 	 });	 
-
-     
-
       
       $("#msgRecipientsContainer").on("click", ".cm-message-recipient-name", $.proxy(_this._onRemoveRecipientClick, _this));
     },
@@ -272,16 +269,13 @@ $(document).ready(function(){
           $('.cm-messages-container').append($.parseHTML(text));
         });
       });
-
- 
     $('.cm-messages-container').on('click','.cm-message:not(.open)', function(){
       var cmId = $(this).find("input[name='communicatorMessageIdId']").val();
       var messageId = $(this).find("input[name='communicatorMessageId']").val();
       
     	var mCont = $('.cm-messages-container');
         var _this = $(this); 
-
-        
+  
         
         mApi().communicator.messages.read(cmId).callback(function (err, result){
         	
@@ -291,38 +285,40 @@ $(document).ready(function(){
                	 
         	        mApi().communicator.communicatormessages.sender.read(sId)
         	        .callback(function (err, user) {  
+
+						if (MUIKKU_LOGGED_USER_ID == user.id){
+						    result[i].isOwner = true;	    	  
+						 }	else{
+							result[i].isOwner = false;	  
+						 }        	      
+
+						
 	    	        	result[i].senderFullName = user.firstName + ' ' + user.lastName;
 	    	        	result[i].senderHasPicture = user.hasImage;
         	        });
-               	
-        	        
-                         
 
-        		
         		
         	}	
         	
-        	
         	renderDustTemplate('communicator/communicator_items_open.dust', result, function (text) {
-               
-
-        		
-             var niib = result[0].senderId;		
-        		
-        		
+               	
              mCont.empty();
-	           mCont.append($.parseHTML(text));
+	         mCont.append($.parseHTML(text));
 	           
 	           $(".cm-message-reply-link").click(function(event) {
+	        	   
 	               var element = $(event.target);
 	               element = element.parents(".cm-message");
+	               var eId = element.attr('id'); 
 	               var fCont = element.find('.cm-message-content-tools-reply-container');
 	               var tCont = element.find('.cm-message-content-tools-container');
 	               
-	               mApi().communicator.communicatormessages.read(messageId).on('$', function(reply, replyCallback){
+	               mApi().communicator.communicatormessages.read(eId).on('$', function(reply, replyCallback){
 	            	   
 	       	        mApi().communicator.communicatormessages.sender.read(messageId)
-	    	        .callback(function (err, user) {  
+	    	        .callback(function (err, user) {
+	    	        	
+     	        	  
 	    	          reply.senderFullName = user.firstName + ' ' + user.lastName;
 	    	          reply.senderHasPicture = user.hasImage;
 	    	        });            	   
@@ -374,7 +370,6 @@ $(document).ready(function(){
                         
 	       	           
 	       	           
-	       	         //  $('.cm-message-reply').addClass('mf-item-load');
 	       	           
 	                   });	               	
 	               	});
@@ -383,8 +378,6 @@ $(document).ready(function(){
               });
         });
     });
-
-
     
   
 

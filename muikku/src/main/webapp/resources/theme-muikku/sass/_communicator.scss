@@ -12,13 +12,17 @@
    color:#000;
   
   }
-  
   }  
+
+  .cm-message-new-recipients{
+   min-height:35px;
+  }
+  
   .cm-message-recipient{
     float:left;
     padding:5px;
     cursor:pointer;
-    
+    margin-top:0 !important;    
     &:not(:first-child){
      margin-left:10px;
  
@@ -34,10 +38,23 @@
   
   .cm-message-recipient-name{
     float:left;
+    padding:5px;
     margin-top:0 !important;
+    
+    
        &:hover{   
           color:red;
-         }     
+          &:before{
+           color:#fff;
+           @extend .icon-delete;
+          }
+         }   
+        &:before{
+         margin-right:5px;
+         font-family: 'muikku';
+         color:orange;
+         @extend .icon-user;
+        }           
    }  
   .cm-message-recipient-remove{
     float:right;    
@@ -79,6 +96,7 @@
 
 .cm-message {
 
+   
    .cm-message-header-content-primary{
       font-weight:700;  
      }
@@ -184,7 +202,14 @@
 /* When the message is open */  
   
   &.open{
-  
+     border-left:5px solid orange;     
+     &.owner{
+       border-left:5px solid #dadada; 
+       h3{
+        color:#dadada;
+       }
+       
+      }       
     .cm-user-picture{
      float:left;
      height:60px;
