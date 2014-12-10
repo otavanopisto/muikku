@@ -9,10 +9,17 @@
       },
       _create : function() {
         this._element = $('<div>')
-          .addClass('muikku-connect-field')
           .append($('<div>').addClass('muikku-connect-field-terms'))
           .append($('<div>').addClass('muikku-connect-field-gap'))
-          .append($('<div>').addClass('muikku-connect-field-counterparts'));
+          .append($('<div>').addClass('muikku-connect-field-counterparts'))
+          .muikkuField({
+            materialId: this.options.materialId,
+            embedId: this.options.embedId,
+            fieldName: this.options.fieldName,
+            answer: $.proxy(function () {
+              return JSON.stringify(this.pairs());
+            }, this)
+          });
         
         this._taskInstance = jsPlumb.getInstance();
         
@@ -37,16 +44,6 @@
         this.element
           .after(this._element)
           .hide();
-        
-        var width = Math.max(this._element.find('.muikku-connect-field-terms').width(), this._element.find('.muikku-connect-field-counterparts').width());
-        
-        this._element.find('.muikku-connect-field-terms').css({
-          width: width + 'px'
-        });
-        
-        this._element.find('.muikku-connect-field-counterparts').css({
-          width: width + 'px'
-        });
         
         this._element.find('.muikku-connect-field-term').each($.proxy(function (index, element) {
           this._taskInstance.addEndpoint(
@@ -83,6 +80,7 @@
           this._element.append($('<input>')
             .attr('type', 'hidden')
             .attr('name', name)
+            .addClass('muikku-connect-field-input')
             .val(val)  
           );
           
@@ -102,10 +100,30 @@
 
         }, this));
         
-        this.element.remove();
+        this.element
+          .addClass('muikku-connect-field')
+          .hide();
 
         this._taskInstance.bind("connection", $.proxy(this._onConnection, this));
         this._taskInstance.bind("connectionDetached", $.proxy(this._onConnectionDetached, this));
+        
+        $(window).resize($.proxy(function () {
+          this.refresh();
+        }, this));
+      },
+      
+      refresh: function () {
+        this._taskInstance.repaintEverything();
+      },
+      
+      pairs: function() {
+        var pairs = {};
+        
+        $(this._element).find('.muikku-connect-field-input').each(function (index, input) {
+          pairs[$(input).attr('name')] = $(input).val();
+        });
+        
+        return pairs;
       },
       
       _onConnection: function (info) {

@@ -48,7 +48,7 @@
               '&r=' + this.options.gravatarRating +
               "&s=" + this.options.gravatarSize
           })
-        );
+        ).append($("<span>").append(this.options.name));
     },
     
     _destroy : function() {
@@ -66,11 +66,15 @@
         return;
       }
       
+      this._titleInputWrapper = $('<div>')
+        .addClass('workspace-material-html-editor-title-wrapper')
+        .appendTo(this.element);
+      
       this._titleInput = $('<input>')
         .addClass('workspace-material-html-editor-title')
         .attr('type', 'text')
         .val(this.options.materialTitle)
-        .appendTo(this.element);
+        .appendTo(this._titleInputWrapper);
       
       this._status = $('<div>')
         .addClass('workspace-material-html-editor-status')
@@ -78,6 +82,7 @@
         .appendTo(this.element);
       
       this._collaborators = $('<div>')
+        .addClass("material-editor-collaborator-wrapper")
         .appendTo(this.element)
         .collaborators();
 
@@ -93,10 +98,25 @@
           'coops-connector' : CONTEXTPATH + '/scripts/ckplugins/coops-connector/',
           'coops-dmp' : CONTEXTPATH + '/scripts/ckplugins/coops-dmp/',
           'coops-cursors' : CONTEXTPATH + '/scripts/ckplugins/coops-cursors/',
-          'coops-sessionevents' : CONTEXTPATH + '/scripts/ckplugins/coops-sessionevents/'
+          'coops-sessionevents' : CONTEXTPATH + '/scripts/ckplugins/coops-sessionevents/',
+          'muikku-textfield': CONTEXTPATH + '/ckplugins/muikku-textfield/'
         },
-        extraPlugins : 'coops,coops-connector,coops-dmp,coops-cursors,coops-sessionevents',
+        extraPlugins : 'coops,coops-connector,coops-dmp,coops-cursors,coops-sessionevents,muikku-textfield',
         serverUrl : CONTEXTPATH + '/rest/coops/' + this.options.materialId + '',
+        contentCss : '/css/custom-ckeditor-contentcss.css',
+        toolbar: [
+          { name: 'document', items : [ 'Source' ] },
+          { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
+          { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
+          { name: 'links', items : [ 'Link','Unlink','Anchor' ] },
+          { name: 'colors', items : [ 'TextColor','BGColor' ] },
+          '/',
+          { name: 'styles', items : [ 'Format' ] },
+          { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote',
+          '-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl' ] },
+          { name: 'insert', items : [ 'Image','Flash','Table','SpecialChar' ] },          
+          { name: 'tools', items : [ 'Maximize', 'ShowBlocks','-','About' ] }
+        ],
         editorOptions : {
           autoGrowOnStartup : true,
           skin : 'moono',

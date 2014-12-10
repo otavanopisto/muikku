@@ -8,11 +8,6 @@
   xmlns:composite="http://java.sun.com/jsf/composite/composite" 
   template="/workspaces/templates/workspace-materials-reading-view.xhtml">
   
-  <ui:define name="viewScripts">
-    <h:outputScript name="scripts/gui/workspace.js"/> 
-    <h:outputScript name="scripts/gui/workspace-materials-reading.js"/> 
-  </ui:define>
-
   <ui:define name="workspaces.materials.reading.toc">
     <div id="workspaceMaterialsReadingTOCWrapper">
       <nav id="workspaceMaterialsReadingTOCClosed">
@@ -51,6 +46,8 @@
         <section id="page-#{node.workspaceMaterialId}" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-material-type="#{node.materialType}" data-material-title="#{node.materialTitle}" class="workspace-materials-reading-view-page"/>
       </ui:fragment>
     </ui:repeat>
+    
+    <input class="workspaceEntityId" type="hidden" value="#{workspaceMaterialsReadingBackingBean.workspaceEntityId}"/>
   </ui:define>
   
   <ui:define name="workspaces.materials.reading.additional.dock">

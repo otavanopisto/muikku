@@ -1,149 +1,195 @@
-body.workspace-materials-reading,
-body.workspace-materials-management {
+body.workspace-materials #content,
+body.workspace-materials-reading #contentWorkspaceMaterialsReading,
+body.workspace-materials-management #contentWorkspaceMaterialsManagement {
+
+  /* Input field overrides */
+  input[type="text"], textarea {
+    width:auto;
+    border:1px solid #eee;
+    @include rounded(3px);
+    display:inline-block;
+    margin:4px;
+    padding:2px 4px;
+    transition:border,box-shadow 0.3s,0.5s ease-in-out;
+    outline:none; /* Thanks Chrome! */
+    font-size:17px;
+    text-align:center;
+    color:#0077c7;
+    max-width:100%;
+    box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
+    
+    &:focus,
+    &:hover {
+      border:1px solid #97bfed;
+      box-shadow:0 0 0px 3px rgba(202,225,252,0.75);
+    }
+    
+  }
   
-  #contentWorkspaceMaterialsReading,
-  #contentWorkspaceMaterialsManagement {
+  textarea {
+    text-align:left;
+/*     color:#000; */
+  }
 
+  /* Select and Option field overrides */
+  select {
+    background:#fff;
+    border:1px solid #eee;
+    transition:border,box-shadow 0.3s,0.5s ease-in-out;
+    outline:none; /* Thanks Chrome! */
+    color:#0077c7;
+    display:inline-block;
+    margin:4px;
+    box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
+    @include rounded(3px);
+    max-width:100%;
+    word-wrap:break-word;
+    
+    &:focus,
+    &:hover {
+      border:1px solid #97bfed;
+      box-shadow:0 0 0px 3px rgba(202,225,252,0.85);
+    }
   
-    /* Input field overrides */
-    input[type="text"], textarea {
-      width:auto;
-      border:1px solid #eee;
-      @include rounded(3px);
-      display:inline-block;
-      margin:4px;
-      padding:2px 4px;
-      transition:border,box-shadow 0.3s,0.5s ease-in-out;
-      outline:none; /* Thanks Chrome! */
-      font-size:1.2em;
-      text-align:center;
-      color:#0077c7;
-      max-width:100%;
-      box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
-      
-      &:focus,
-      &:hover {
-        border:1px solid #97bfed;
-        box-shadow:0 0 0px 3px rgba(202,225,252,0.75);
-      }
-      
-    }
-    
-    textarea {
-      font-size:1em;
-      text-align:left;
-      color:#000;
-    }
-
-    /* Select and Option field overrides */
-    select {
+    option {
       background:#fff;
-      border:1px solid #eee;
-      transition:border,box-shadow 0.3s,0.5s ease-in-out;
-      outline:none; /* Thanks Chrome! */
-      font-size:1.2em;
-      text-align:center;
-      color:#0077c7;
-      display:inline-block;
-      margin:4px;
-      box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
-      
-      &:focus,
-      &:hover {
-        border:1px solid #97bfed;
-        box-shadow:0 0 0px 3px rgba(202,225,252,0.85);
-      }
-    
-      option {
-        background:#fff;
-        color:#0077c7;
-      }
-      
-    }
-    
-    input[type="radio"],
-    input[type="checkbox"] {
-      margin:0 10px;
-      background:#fff;
-      border:1px solid #eee;
-      transition:border,box-shadow 0.3s,0.5s ease-in-out;
-      outline:none; /* Thanks Chrome! */
-      display:inline-block;
-      box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
-      @include rounded(3px);
-      display:inline-block;
-      
-      &:focus,
-      &:hover {
-        border:1px solid #97bfed;
-        box-shadow:0 0 0px 3px rgba(202,225,252,0.85);
-      }
-    }
-    
-    div {
-      line-height:1.5em;
-    }
-    em {
-      font-style:italic;
       font-weight:300;
+      padding:2px 6px;
     }
     
-    strong {
-      font-weight:600;
+  }
+  
+  input[type="radio"],
+  input[type="checkbox"] {
+    margin:0 10px;
+    background:#fff;
+    border:1px solid #eee;
+    transition:border,box-shadow 0.3s,0.5s ease-in-out;
+    outline:none; /* Thanks Chrome! */
+    display:inline-block;
+    box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
+    @include rounded(3px);
+    display:inline-block;
+    
+    &:focus,
+    &:hover,
+    &:checked {
+      border:1px solid #97bfed;
+      box-shadow:0 0 0px 3px rgba(202,225,252,0.85);
     }
-
-    table {
-      border-collapse:separate;
-      border-spacing:initial;
-      margin:initial;
-      padding:initial;
-    }
-    
-    td {
-      padding:initial;
-      margin:initial;
-      width:auto;
-      max-width:100%;
-    }
-    
-    label {
-      display:inline;
-      font-weight:300;
-    }
-    
-    /* Content link overrides */
-    a {
-      color:#2d69af;
-    }
-    
-    /* UL, LI overrides */
-    ul {
-      list-style-type:disc;
-    }
-    
-    ol {
-       list-style-type:decimal;
-    }
-    
-    ul,
-    ol {
-      margin:0 20px;
-    
-      li {
-        margin:5px;
-        line-height:1.5em;
-      }
-      
-      ol {
-        list-style-type:decimal;
-      }
-      
-      ul {
-        list-style-type:circle;
-      }
-    
+  }
+  
+  
+  blockquote {
+    font-family: 'Open Sans',Verdana, sans-serif;
+    font-style:italic;
+    padding:2px 0;
+    border-style:solid;
+    border-color:#eee;
+    border-width:0;
+    color:#777;
+    font-size:22px;
+    margin:0 40px 0 40px;
+  
+    p {
+      margin:10px 0 10px 0;
     }
   
   }
+  
+  .cke_contents_ltr blockquote {
+    padding-left:20px;
+    padding-right:8px;
+    border-left-width:8px;
+  }
+  
+  .cke_contents_rtl blockquote {
+    padding-left:8px;
+    padding-right:20px;
+    border-right-width:8px;
+  }
+  
+  div {
+    line-height:1.5em;
+  }
+  em {
+    font-style:italic;
+    font-weight:300;
+  }
+  
+  strong,
+  b {
+    font-weight:400; /* This is set to 'normal' because we use thinner font with text rendering */
+  }
+
+  table {
+    border-collapse:separate;
+    border-spacing:initial;
+    margin:initial;
+    padding:initial;
+  }
+  
+  td {
+    padding:initial;
+    margin:initial;
+    width:auto;
+    max-width:100%;
+  }
+  
+  label {
+    display:inline;
+    font-weight:300;
+  }
+  
+  /* Content link overrides */
+  a {
+    color:#2d69af;
+  }
+  
+  /* UL, LI overrides */
+  ul {
+    list-style-type:disc;
+  }
+  
+  ol {
+     list-style-type:decimal;
+  }
+  
+  ul,
+  ol {
+    margin:0 20px;
+  
+    li {
+      margin:5px;
+      line-height:1.5em;
+    }
+    
+    ol {
+      list-style-type:decimal;
+    }
+    
+    ul {
+      list-style-type:circle;
+    }
+  
+  }
+  
+  button.muikku-save-page {
+    color:#fff;
+    background:#6b899e;
+    box-shadow:none;
+    border:0;
+    @include rounded(2px);
+    font-weight:300;
+    font-size:16px;
+    text-transform:uppercase;
+    padding:6px 12px;
+    transition:background 0.3s ease-in-out;
+    
+    &:hover {
+      background:#0077c7;
+    }
+  }
+  
  
 }
