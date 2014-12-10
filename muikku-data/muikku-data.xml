@@ -19,6 +19,10 @@
   <script
     run="ONCE"
     handler="MySQL"
+    url="pyramus/004_oauth_mysql.sql" />
+  <script
+    run="ONCE"
+    handler="MySQL"
     url="test/003_workspace_types_mysql.sql" />
   <script
     run="ONCE"

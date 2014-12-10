@@ -246,6 +246,12 @@
 
     <dependency>
       <groupId>fi.muikku</groupId>
+      <artifactId>pyramus-oauth-plugin</artifactId>
+      <version>1.0.8-SNAPSHOT</version>
+    </dependency>
+
+    <dependency>
+      <groupId>fi.muikku</groupId>
       <artifactId>facebook-oauth-plugin</artifactId>
       <version>1.0.8-SNAPSHOT</version>
     </dependency>
