@@ -34,6 +34,41 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       border:1px solid #97bfed;
       box-shadow:0 0 0px 3px rgba(202,225,252,0.75);
     }
+
+    &::-webkit-input-placeholder {
+      font-size:17px;
+      color:#b4b4b4;
+      font-style:italic;
+      text-align:center;
+    }
+    
+    &:-moz-placeholder { /* older Firefox*/
+      font-size:17px;
+      color:#b4b4b4;
+      font-style:italic;
+      text-align:center;
+    }
+    
+    &::-moz-placeholder { /* Firefox 19+ */ 
+      font-size:17px;
+      color:#b4b4b4;
+      font-style:italic;
+      text-align:center;
+    }
+     
+    &:-ms-input-placeholder { 
+      font-size:17px;
+      color:#b4b4b4;
+      font-style:italic;
+      text-align:center;
+    }
+    
+    &::input-placeholder {
+      font-size:17px;
+      color:#b4b4b4;
+      font-style:italic;
+      text-align:center;
+    }
     
   }
   
@@ -76,7 +111,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     background:#fff;
     border:1px solid #eee;
     transition:border,box-shadow 0.1s,0.2s ease-in-out;
-    outline:none; /* Thanks Chrome! */
+    outline:none;
     display:inline-block;
     box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
     @include rounded(3px);
