@@ -11,43 +11,36 @@ $(document).ready(function() {
     var lp = $('#loggedUserPicture');
     var lw = $('#loggedUserWidget');
     var lpPosRight = ( $(window).width() - $("#content").width() ) / 2;
-    var lpPosInit = lpPosRight + lw.width() ;
+    var lpPosInit = lpPosRight + lw.width();
     
     lp.css({
-  	  "position" : "fixed",
-  	  "right" : lpPosInit + 'px'
-     });
+  	  position : "fixed",
+  	  right : lpPosRight,
+  	  opacity : 0,
+  	  top : 13
+    });
 
-    if (direction == 'down') {
-      lp.animate({
-        right : lpPosRight,
-        top : 15
-        
+    if (direction == "down") {
+      lp
+      .stop()
+      .clearQueue()
+      .animate({
+        opacity : 1
       }, {
-        duration : 200,
+        duration : 500,
         easing : "easeOutSine"
-        	
       });
     } else {
-        lp.animate({
-          right : lpPosInit,
-          top : 10
-        }, {
-          duration : 200,
-          easing : "easeOutSine",
-          complete : function() {
-            lp.css({
-              "position" : "static",
-              "right" : "",
-              "top" : ""
-            });
-          }
-        });
+      lp.css({
+        "position" : "static",
+        "right" : "",
+        "top" : "",
+        opacity : 1
+      });
       }
     }   
 	});
 
-	
 	$('#dynamicNavigation').waypoint('sticky', {
 	  wrapper:'<div id="dynNaviWrapper" />',
 	  stuckClass : 'stuckDNav'
