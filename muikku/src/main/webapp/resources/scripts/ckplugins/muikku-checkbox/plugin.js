@@ -1,17 +1,16 @@
 (function() {
   'use strict'
   
-  
-  
   /* global CKEDITOR */
 
   CKEDITOR.plugins.add('muikku-checkbox', {
     requires: 'dialog,muikku-fields',
     icons: 'muikku-checkbox',
+    lang: 'fi,en',
     init: function(editor) {
       editor.addCommand('muikku-checkbox-properties', new CKEDITOR.dialogCommand('muikkuCheckboxDialog'));
       editor.ui.addButton('muikku-checkbox', {
-        label: 'Checkbox [localize]',
+        label: editor.lang['muikku-checkbox'].toolbarMenu,
         command: 'muikku-checkbox-properties',
         toolbar: 'muikku-fields'
       });
@@ -21,7 +20,7 @@
       if (editor.contextMenu) {
         editor.addMenuGroup('muikkuCheckboxGroup');
         editor.addMenuItem('muikkuCheckboxItem', {
-          label: 'Checkbox properties [localize]',
+          label: editor.lang['muikku-checkbox'].propertiesMenu,
           //icon: this.path + 'icons/abbr.png',
           command: 'muikku-checkbox-properties',
           group: 'muikkuCheckboxGroup'
@@ -84,7 +83,7 @@
               if (element.attributes.type == 'application/vnd.muikku.field.checklist') {
                 var fakeElement = editor.createFakeParserElement(element, 'muikku-checkbox-field', 'object');
                 fakeElement.attributes['src'] = path + 'icons/muikku-checkbox-editor.jpg'; 
-                fakeElement.attributes['title'] = 'Ruksiboksisysteemijuttula';
+                fakeElement.attributes['title'] = editor.lang['muikku-checkbox'].uiElement;
                 return fakeElement;
               }
             }
@@ -98,7 +97,7 @@
   
   CKEDITOR.dialog.add('muikkuCheckboxDialog', function(editor) {
     return {
-      title: 'Checkbox Properties [localize]',
+      title: editor.lang['muikku-checkbox'].propertiesDialogTitle,
       minWidth: 400,
       minHeight: 200,
       contents: [
@@ -108,10 +107,10 @@
             {
               id: 'orientation',
               type: 'select',
-              label: 'Orientation [localize]',
+              label: editor.lang['muikku-checkbox'].propertiesDialogOrientation,
               items: [
-                ['Vertical [localize]', 'vertical'],
-                ['Horizontal [localize]', 'horizontal']
+                [editor.lang['muikku-checkbox'].propertiesDialogOrientationVer, 'vertical'],
+                [editor.lang['muikku-checkbox'].propertiesDialogOrientationHor, 'horizontal']
               ],
               setup: function(json) {
                 this.setValue(json.orientation == 'horizontal' ? 'horizontal' : 'vertical');
@@ -181,7 +180,7 @@
         
         var fakeElement = editor.createFakeElement(object, 'muikku-checkbox-field', 'object');
         fakeElement.setAttribute('src', CKEDITOR.plugins.getPath('muikku-checkbox') + 'icons/muikku-checkbox-editor.jpg'); 
-        fakeElement.setAttribute('title', 'Ruksiboksisysteemijuttula');
+        fakeElement.setAttribute('title', editor.lang['muikku-checkbox'].uiElement);
         editor.insertElement(fakeElement);
       }
     };
