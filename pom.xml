@@ -54,6 +54,7 @@
     <module>muikku-google-oauth</module>
     <module>muikku-google-calendar</module>
     <module>muikku-facebook-oauth</module>
+    <module>muikku-pyramus-oauth</module>
     <module>muikku-h2db-plugin</module>
     <module>muikku-mongo-log</module>
     <module>muikku-persistence</module>
