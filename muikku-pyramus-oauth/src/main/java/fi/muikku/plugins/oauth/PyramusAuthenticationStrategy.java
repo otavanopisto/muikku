@@ -104,7 +104,7 @@ public class PyramusAuthenticationStrategy extends OAuthAuthenticationStrategy i
     
     WhoAmI whoAmI = null;
 
-    OAuthRequest request = new OAuthRequest(Verb.GET, "https://dev.pyrmus.fi:8443/1/system/whoami");
+    OAuthRequest request = new OAuthRequest(Verb.GET, "https://dev.pyramus.fi:8443/1/system/whoami");
     service.signRequest(accessToken, request);
     Response response = request.send();
     try {
