@@ -3,96 +3,53 @@ $(document).ready(function() {
   $('#staticNavigationWrapperWorkspace').waypoint('sticky', {
     stuckClass : 'stuckStNav'
   });
+
+  var contentContainer = ($('#contentWorkspaceMaterials').length > 0 ? contentContainer = $('#contentWorkspaceMaterials') : contentContainer = $('#content'));
   
   // Workspace navigation
   if ($('#workspaceNavigationWrapper').length > 0) {
-    if ($('#contentWorkspaceMaterials').length > 0) {
-      var contentContainer = $('#contentWorkspaceMaterials');
-    } else {
-      var contentContainer = $('#content');
-    }
+
+    var naviWrapper = $('#workspaceNavigationWrapper');
     var cOffset = contentContainer.offset();
-    var naviLeftPos = cOffset.left - 100;
+    var naviLeftPos = cOffset.left - naviWrapper.width() - 20;
     
-    $('#workspaceNavigationWrapper').css({
+    $(naviWrapper).css({
       left:naviLeftPos + 'px'
     })
     
     $(window).resize(function(){
       cOffset = contentContainer.offset();
-      naviLeftPos = cOffset.left - 100;
+      naviLeftPos = cOffset.left - naviWrapper.width() - 20;
+      naviLeftPos = naviLeftPos < 10 ? naviLeftPos = 10 : naviLeftPos = naviLeftPos;
       
-      // Lets prevent workspace navigation from escaping browser's viewport when resizing 
-      if (naviLeftPos < 10) {
-        naviLeftPos = 10;
-      }
-      
-      $('#workspaceNavigationWrapper').css({
+      $(naviWrapper).css({
         left:naviLeftPos + 'px'
       })
+
     });
     
-    // Functionality for workspace's material's TOC
-    if ($('.wi-workspace-dock-navi-button-materials-toc').length > 0) {
-      var tocButton = $('.wi-workspace-dock-navi-button-materials-toc');
-      var tocWrapper = tocButton.children('.workspace-materials-toc-wrapper');
-      var tocButtonLabel = $('.wi-workspace-dock-navi-button-materials-toc .workspace-navi-tt-container-materials-toc'); 
+    // Workspace's material's TOC
+    if ($('#workspaceMaterialsTOCWrapper').length > 0) {
+      
+      var tocWrapper = $('#workspaceMaterialsTOCWrapper');
+      var cOffset = contentContainer.offset();
+      var tocLeftPos = cOffset.left + contentContainer.width() - tocWrapper.width();
+      
+      $(tocWrapper).css({
+        left:tocLeftPos + 'px'
+      })
+      
+      $(window).resize(function(){
+        cOffset = contentContainer.offset();
+        tocLeftPos = cOffset.left + contentContainer.width() - tocWrapper.width();
+        
+        $(tocWrapper).css({
+          left:tocLeftPos + 'px'
+        })
+        
+      });
+      
 
-      $(".workspace-materials-toc-wrapper").bind('click', function(e) {
-        e.stopPropagation();
-      });
-      
-      // Some hiding and showing for TOC by click event
-      $(tocButton).click(function() {
-        
-        if ($('.workspace-materials-toc-wrapper:hidden').length !== 0) {
-         
-          tocButtonLabel.hide().css({
-            opacity:0
-          });
-          
-          tocButton.addClass('wi-workspace-dock-navi-button-selected');
-          
-          tocWrapper
-          .show()
-          .clearQueue()
-          .stop()
-          .animate({
-            opacity: 1
-          }, {
-            duration : 400,
-            easing : "easeInOutQuad"
-          });
-          
-        } else { 
-          
-          tocButtonLabel
-          .show()
-          .animate({
-            opacity: 1
-          }, {
-            duration : 100,
-            easing : "easeInOutQuad"
-          });
-          
-          tocWrapper
-          .clearQueue()
-          .stop()
-          .animate({
-            opacity: 0
-          }, {
-            duration : 200,
-            easing : "easeInOutQuad",
-            complete : function(){
-              $(this).hide();
-              tocButton.removeClass('wi-workspace-dock-navi-button-selected');
-            }
-          });
-          
-        }
-        
-      });
-      
       // Prevent page scroll happening if TOC scroll reaches bottom
       $('.workspace-materials-toc-content-inner').on('DOMMouseScroll mousewheel', function(ev) {
         var $this = $(this),
