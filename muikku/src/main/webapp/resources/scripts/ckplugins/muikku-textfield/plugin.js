@@ -43,7 +43,6 @@
         } );
       }
       editor.on('doubleclick', function(evt) {
-        alert(editor.createRandomMuikkuFieldName());
         var element = evt.data.element;
 
         if (element.is( 'img' ) && element.data( 'cke-real-element-type' ) == 'muikkutextfield')
@@ -81,12 +80,8 @@
       minWidth : 420,
       minHeight : 310,
       onShow : function() {
-        var fakeImage = this.getSelectedElement();
-        if (fakeImage
-            && fakeImage.data('cke-real-element-type')
-            && fakeImage.data('cke-real-element-type') == 'muikkutextfield') {
-          // TODO: Open on current view
-        }
+        var contentJson = editor.getMuikkuFieldDefinition(editor.getSelection().getStartElement());
+        this.setupContent(contentJson);
       },
       onOk : function(event) {
         var object = new CKEDITOR.dom.element('object');
@@ -130,17 +125,26 @@
           {
             id: 'width',
             type: 'text',
-            label: 'Width'
+            label: 'Width',
+            setup: function(json) {
+              this.setValue(json.columns);
+            }
           },
           {
             id: 'hint',
             type: 'text',
-            label: 'Hint'
+            label: 'Hint',
+            setup: function(json) {
+              this.setValue(json.hint);
+            }
           },
           {
             id: 'help',
             type: 'text',
-            label: 'Help'
+            label: 'Help',
+            setup: function(json) {
+              this.setValue(json.help);
+            }
           },
           {
             id: 'answers',
