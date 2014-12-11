@@ -1,6 +1,9 @@
 package fi.muikku.plugins.dnm.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -28,19 +31,33 @@ public class DeusNexServiceUpdater {
   @Inject
   private DeusNexImportQueueController deusNexImportQueueController;
 
-  @Schedule(hour = "*", minute = "*/5", second = "0", persistent = false)
+  @Schedule(hour = "*", minute = "*/1", second = "0", persistent = false)
   public void findDocuments() {
-    Document[] documents = null;
+    List<Document> documents = null;
     Date since = getSince();
     
     if (since == null) {
-      documents = client.listDocuments();
+      documents = Arrays.asList(client.listDocuments());
     } else {
-      documents = client.listDocuments(since);
+      documents = Arrays.asList(client.listDocuments(since));
     }
     
+    Collections.sort(documents, new Comparator<Document>() {
+      
+      @Override
+      public int compare(Document o1, Document o2) {
+        return o1.getPriority() - o2.getPriority();
+      }
+      
+    });
+    
+    List<Long> importNos = deusNexImportQueueController.getImportNos();
     List<Long> newImports = new ArrayList<>();
     for (Document document : documents) {
+      if (importNos != null && !importNos.contains(document.getId())) {
+        continue;
+      }
+      
       String path = document.getPath();
       int slashIndex = path.indexOf('/');
       String workspaceName = slashIndex > -1 ? path.substring(0, slashIndex) : path;
@@ -49,11 +66,16 @@ public class DeusNexServiceUpdater {
       if (workspaceEntity != null) {
         newImports.add(document.getId());
       } else {
-        logger.log(Level.WARNING, String.format("Ignoring import for document %s because maching workspace could not be found", document.getPath()));
+        logger.log(Level.WARNING, String.format("Postponing import because workspace for document %s could not be found", document.getPath()));
+        return;
       }
     }
     
-    deusNexImportQueueController.addPendingDownloads(newImports);
+    if (!newImports.isEmpty()) {
+      logger.info(String.format("Queued %d dnm imports", newImports.size()));
+      deusNexImportQueueController.addPendingDownloads(newImports);
+    }
+    
     deusNexImportQueueController.setLastUpdate(System.currentTimeMillis());
   }
   
