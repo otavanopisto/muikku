@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -24,12 +23,6 @@ public class RestClient {
   @Inject
   private PluginSettingsController pluginSettingsController;
 
-  @PostConstruct
-  public void init() {
-    url = pluginSettingsController.getPluginSetting("deus-nex-machina", "service.url");
-    secret = pluginSettingsController.getPluginSetting("deus-nex-machina", "service.secret");
-  }
-  
   public Document getDocument(Long id) {
     return get("/documents/" + id, Document.class);
   }
@@ -43,6 +36,8 @@ public class RestClient {
   }
   
   public String getDocumentData(Long id) {
+    String url = pluginSettingsController.getPluginSetting("deus-nex-machina", "service.url");
+    String secret = pluginSettingsController.getPluginSetting("deus-nex-machina", "service.secret");
     String path = "/documents/" + id + "/data";
     
     Client client = getClient();
@@ -75,6 +70,8 @@ public class RestClient {
   }
   
   private <T> T get(String path, Class<T> type) {
+    String url = pluginSettingsController.getPluginSetting("deus-nex-machina", "service.url");
+    String secret = pluginSettingsController.getPluginSetting("deus-nex-machina", "service.secret");
     Client client = getClient();
     try {
       WebTarget target = client.target(url + path);
@@ -118,7 +115,4 @@ public class RestClient {
   private Client getClient() {
     return ClientBuilder.newClient();
   }
-  
-  private String url;
-  private String secret;
 }
