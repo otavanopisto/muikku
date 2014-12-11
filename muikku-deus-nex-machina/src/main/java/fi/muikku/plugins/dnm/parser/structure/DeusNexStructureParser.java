@@ -17,6 +17,8 @@ import org.apache.commons.lang3.text.translate.NumericEntityUnescaper;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
 import fi.muikku.plugins.dnm.parser.DeusNexException;
@@ -33,7 +35,6 @@ public class DeusNexStructureParser {
 
 	public DeusNexDocument parseDocument(InputStream inputStream) throws DeusNexException {
 		DeusNexDocumentImpl deusNexDocument = new DeusNexDocumentImpl();
-		
 		DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
 	  builderFactory.setNamespaceAware(false);
     builderFactory.setValidating(false);
@@ -120,10 +121,17 @@ public class DeusNexStructureParser {
 		parseBasicResourceProperties(resourceElement, binary);
 		
 		Element contentElement = (Element) DeusNexXmlUtils.findNodeByXPath(resourceElement, "content");
-		CDATASection cdataSection = (CDATASection) contentElement.getFirstChild();
+		Node contentChild = contentElement.getFirstChild();
+		String textContent = null;
+		
+		if (contentChild instanceof CDATASection) {
+		  textContent = ((CDATASection) contentChild).getTextContent();
+		} else if (contentChild instanceof Text) {
+		  textContent = ((Text) contentChild).getTextContent();
+		}
 		byte[] content;
 		try {
-			content = decodeDeusNexBinary(cdataSection.getTextContent());
+			content = decodeDeusNexBinary(textContent);
 		} catch (UnsupportedEncodingException | DOMException e) {
 			throw new DeusNexInternalException("Could not retrieve binary content", e);
 		}
