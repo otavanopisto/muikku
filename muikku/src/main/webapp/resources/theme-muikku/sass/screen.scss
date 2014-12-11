@@ -1,6 +1,7 @@
 /* Lets import all the necessary support files */
 
 @import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
+@import "_icons.scss"; /* Has to be loaded here, so it can be used with @extend in others */
 @import "_commons.scss";
 @import "_forms.scss";
 @import "_modal.scss";
@@ -10,6 +11,7 @@
 @import "_mainfunctions.scss";
 @import "_calendar.scss";
 @import "_communicator.scss";
+@import "_coursepicker.scss";
 /* Note: All in-development- unfinished-temp-styles are in temp.css */
 
 html {
