@@ -9,9 +9,15 @@
     return (attributes.type == 'application/vnd.muikku.field.text');
   }
 
-  function createFakeElement( editor, realElement ) {
+  function createFakeParserElement( editor, realElement ) {
     var fake = editor.createFakeParserElement( realElement, 'muikku-text-field', 'muikkutextfield', true );
     fake.attributes.src = "//placehold.it/150x20";
+    return fake;
+  }
+
+  function createFakeElement( editor, realElement ) {
+    var fake = editor.createFakeElement( realElement, 'muikku-text-field', 'muikkutextfield', true );
+    fake.setAttribute('src', '//placehold.it/150x20');
     return fake;
   }
 
@@ -60,7 +66,7 @@
           elements: {
             'cke:object': function( element ) {
               if (isMuikkuTextField(element)) {
-                return createFakeElement( editor, element );
+                return createFakeParserElement( editor, element );
               }
             }
           }
@@ -79,17 +85,69 @@
         if (fakeImage
             && fakeImage.data('cke-real-element-type')
             && fakeImage.data('cke-real-element-type') == 'muikkutextfield') {
+          // TODO: Open on current view
         }
       },
-      onOk : function() {
+      onOk : function(event) {
+        var object = new CKEDITOR.dom.element('object');
+        object.setAttribute('type', 'application/vnd.muikku.field.text');
+        var paramType = new CKEDITOR.dom.element('param');
+        paramType.setAttribute('name', 'type');
+        paramType.setAttribute('value', 'application/json');
+        var paramContent = new CKEDITOR.dom.element('param');
+        paramContent.setAttribute('name', 'content');
+        var rightAnswers = [];
+        var formAnswers = this.getContentElement('info', 'answers').getValue().split('\n');
+        for (var i=0, l=rightAnswersSource.length; i<l; i++) {
+          var formAnswer = formAnswers[i];
+          rightAnswers.push({
+            // TODO
+            'points': 1.0,
+            'text': formAnswer,
+            'caseSensitive': false,
+            'normalizeWhitespace': true
+          });
+        }
+        paramContent.setAttribute('value', JSON.stringify({
+          'name': editor.createRandomMuikkuFieldName(),
+          'rightAnswers': rightAnswers,
+          'columns': this.getContentElement('info', 'width').getValue(),
+          'hint': this.getContentElement('info', 'hint').getValue(),
+          'help': this.getContentElement('info', 'help').getValue()
+        }));
+        object.append(paramType);
+        object.append(paramContent);
+        
+        var fakeElement = createFakeElement(editor, object);
+        editor.insertElement(fakeElement);
       },
       onHide : function() {
       },
       contents : [ {
         id : 'info',
         label : editor.lang.common.generalTab,
-        accessKey : 'I',
-        elements : []
+        elements : [
+          {
+            id: 'width',
+            type: 'text',
+            label: 'Width'
+          },
+          {
+            id: 'hint',
+            type: 'text',
+            label: 'Hint'
+          },
+          {
+            id: 'help',
+            type: 'text',
+            label: 'Help'
+          },
+          {
+            id: 'answers',
+            type: 'textarea',
+            label: 'Answers'
+          }
+        ]
       } ]
     };
   });
