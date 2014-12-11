@@ -16,11 +16,12 @@
       CKEDITOR.tools.extend(CKEDITOR.editor.prototype, {
         createRandomMuikkuFieldName: function(editorElement) {
           var nameLength = 24;
+          var idCharacters = 'abcdefghijklmnopqrstuvwxyz' + 
+                             'ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
+                             '0123456789';
           var result = 'muikku-field-';
           for (var i=0; i<nameLength; i++) {
-            result = result + Math.floor((1 + Math.random()) * 0x10)
-                                  .toString(16) // "1x"
-                                  .substring(1) // "x";
+            result = result + idCharacters[Math.round(Math.random() * idCharacters.length)]
           }
           return result;
         },
