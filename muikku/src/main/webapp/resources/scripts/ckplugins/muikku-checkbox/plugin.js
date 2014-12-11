@@ -42,22 +42,29 @@
       optionsElement.prototype = new CKEDITOR.ui.dialog.uiElement;
       CKEDITOR.tools.extend(optionsElement.prototype, {
         clear: function() {
-          var optionsContainer = this.getElement();
-          while (optionsContainer.getFirst()) {
-            optionsContainer.remove(optionsContainer.getFirst());
+          var element = this.getElement();
+          while (element.getFirst()) {
+            element.getFirst().remove();
           }
         },
         addOption: function() {
           var optionsContainer = this.getElement();
           var optionContainer = new CKEDITOR.dom.element('div');
           optionContainer.addClass('checkbox-option-container');
+          var optionNameField = new CKEDITOR.dom.element('input');
+          optionNameField.setAttribute('name', 'optionName');
+          optionNameField.setAttribute('type', 'hidden');
           var optionTextField = new CKEDITOR.dom.element('input');
+          optionTextField.setAttribute('name', 'optionText');
           optionTextField.setAttribute('type', 'text');
-          var optionsCorrect = new CKEDITOR.dom.element('input');
-          optionsCorrect.setAttribute('type', 'checkbox');
+          var optionCorrectField = new CKEDITOR.dom.element('input');
+          optionCorrectField.setAttribute('name', 'optionCorrect');
+          optionCorrectField.setAttribute('type', 'checkbox');
           optionsContainer.append(optionContainer);
+          optionContainer.append(optionNameField);
           optionContainer.append(optionTextField);
-          optionContainer.append(optionsCorrect);
+          optionContainer.append(optionCorrectField);
+          return optionContainer;
         }
       });
       CKEDITOR.dialog.addUIElement('muikkuCheckboxOptions', {
@@ -65,7 +72,6 @@
           return new optionsElement(dialog, elementDefinition, output);
         },
       });
-
     },
     afterInit: function(editor) {
       var path = this.path;
@@ -100,21 +106,40 @@
           id: 'tab-basic',
           elements: [
             {
+              id: 'orientation',
+              type: 'select',
+              label: 'Orientation [localize]',
+              items: [
+                ['Vertical [localize]', 'vertical'],
+                ['Horizontal [localize]', 'horizontal']
+              ],
+              setup: function(json) {
+                this.setValue(json.orientation == 'horizontal' ? 'horizontal' : 'vertical');
+              }
+            },
+            {
               id: 'options',
               type: 'muikkuCheckboxOptions',
-              label: 'blah'
+              setup: function(json) {
+                this.clear();
+                if (json.options) {
+                  for (var i = 0; i < json.options.length; i++) {
+                    var optionContainer = this.addOption();
+                    optionContainer.findOne('input[name="optionName"]').setValue(json.options[i].name);
+                    optionContainer.findOne('input[name="optionText"]').setValue(json.options[i].text);
+                    if (json.options[i].correct == '1') {
+                      optionContainer.findOne('input[name="optionCorrect"]').setAttribute('checked', 'checked');
+                    }
+                  }
+                }
+              }
             }
           ]
         }
       ],
       onShow: function() {
         var contentJson = editor.getMuikkuFieldDefinition(editor.getSelection().getStartElement());
-        var optionsElement = this.getContentElement('tab-basic', 'options');
-        optionsElement.clear();
-        optionsElement.addOption();
-        optionsElement.addOption();
-        optionsElement.addOption();
-        // TODO json -> option elements
+        this.setupContent(contentJson);
       },
       onOk: function() {
         var object = new CKEDITOR.dom.element('object');
