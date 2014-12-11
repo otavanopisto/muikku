@@ -14,6 +14,14 @@
         command: 'muikku-checkbox-properties',
         toolbar: 'muikku-fields'
       });
+      
+      // Double-click support
+
+      editor.on('doubleclick', function(evt) {
+        var element = evt.data.element;
+        if (element.is('img') && element.hasClass('muikku-checkbox-field'))
+          evt.data.dialog = 'muikkuCheckboxDialog';
+      });
 
       // Context menu support
       
@@ -21,7 +29,6 @@
         editor.addMenuGroup('muikkuCheckboxGroup');
         editor.addMenuItem('muikkuCheckboxItem', {
           label: editor.lang['muikku-checkbox'].propertiesMenu,
-          //icon: this.path + 'icons/abbr.png',
           command: 'muikku-checkbox-properties',
           group: 'muikkuCheckboxGroup'
         });
@@ -175,6 +182,8 @@
         paramContent.setAttribute('value', JSON.stringify(contentJson));
         object.append(paramType);
         object.append(paramContent);
+        
+        // TODO Default representation
 
         // CKEditor UI representation
         

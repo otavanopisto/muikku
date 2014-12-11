@@ -43,7 +43,6 @@
         } );
       }
       editor.on('doubleclick', function(evt) {
-        alert(editor.createRandomMuikkuFieldName());
         var element = evt.data.element;
 
         if (element.is( 'img' ) && element.data( 'cke-real-element-type' ) == 'muikkutextfield')
