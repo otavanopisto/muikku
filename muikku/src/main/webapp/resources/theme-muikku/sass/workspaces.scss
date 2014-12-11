@@ -8,6 +8,14 @@ body.workspace-materials {
   min-height:100%;
   font-size:14px;
   
+  h1.workspace-title {
+    margin:20px 0 20px 0;
+    color:#38393a;
+    font-weight:300;
+    text-transform:uppercase;
+    line-height:1.3em;
+  }
+  
   #staticNavigationWrapperWorkspace {
     background:none; /* We need to remove all background rules first */
     @include background-image('gfx/workspace-navigation-background.png'); /* Workspace's navigation's background */
@@ -44,6 +52,7 @@ body.workspace-materials {
       @include rounded(3px);
       width:60px;
       box-shadow:0 0 5px rgba(0,0,0,0.25);
+      
       #workspaceDock {
         text-align:center;
       }
@@ -59,104 +68,6 @@ body.workspace-materials {
       
       #workspaceMaterialsDock {
         text-align:center;
-        
-        .wi-workspace-dock-navi-button-materials-toc > .workspace-materials-toc-wrapper {
-          border:2px solid #3d4c56;
-          @include rounded(3px);
-          background:#fff;
-          position:absolute;
-          left:65px;
-          top:0px;
-          width:300px;
-          max-height:526px;
-          text-align:left;
-          font-family:"Open Sans";
-          text-shadow:none;
-          color:#000;
-          font-size:15px;
-          line-height:1.5em;
-          display:none;
-          opacity:0;
-          
-          &:hover > span {
-            display:none;
-          }
-          
-          .workspace-materials-toc-container {
-            overflow:hidden;
-            position:relative;
-            height:526px;
-          
-            .workspace-materials-toc-title {
-              background:#42525c;
-              color:#fff;
-              text-transform:uppercase;
-              margin:0;
-              padding:10px 12px;
-              font-size:17px;
-            }
-          
-            .workspace-materials-toc-content-outer {
-              overflow:hidden;
-              height:100%;
-              width:300px;
-              
-              .workspace-materials-toc-content-inner {  
-                position:absolute;
-                overflow-x: hidden;
-                overflow-y: scroll;
-                height:100%;
-              
-                .workspace-materials-toc-content-scrolling {
-                  padding:4px;
-                  width:292px;
-                  height: 100%;
-                  
-                  .spacer {
-                    height:30px; /* Creating some bottom margin because use of 100% height  */
-                  }
-            
-                  .workspace-materials-toc-section {
-                    margin:0;
-                    padding-top:5px;
-                    padding-bottom:10px;
-                  
-                    .workspace-materials-toc-subtitle {
-                      font-weight:bold;
-                      padding:2px 8px;
-                    }
-                    
-                    .workspace-materials-toc-item {
-                      font-weight:300;
-                      
-                      a {
-                        text-decoration:none;
-                        color:#41505b;
-                        display:block;
-                        @include genericMenuLinkHoverTransition(background,color,0.15s,ease-in-out);
-                        @include rounded(2px);
-                        padding:2px 8px;
-                        
-                        &:hover,
-                        &.active {
-                          background:#596e7d;
-                          color:#fff;
-                        }
-                      }
-                    }
-                  
-                  }
-                  
-                }
-              
-              }
-            
-            }
-          
-          }
-        
-        }
-        
       }
       
     }
@@ -164,19 +75,108 @@ body.workspace-materials {
   }
   
   #contentWorkspaceMaterials {
+    position:relative;
+    padding-top:0.01em;
   
-    h1.workspace-title {
-      margin:20px 0 20px 0;
-      color:#38393a;
-      font-weight:300;
-      text-transform:uppercase;
-      line-height:1.3em;
-    }
+    .workspace-materials-toc-wrapper {
+      background:#fff;
+      position:fixed;
+      top:100px;
+      width:280px;
+      max-height:520px;
+      text-align:left;
+      font-family:"Open Sans";
+      text-shadow:none;
+      color:#000;
+      font-size:14px;
+      line-height:1.5em;
+      box-shadow:0 0 40px rgba(107,137,158,0.1);
+      border-bottom:10px solid #fff;
+      
+      &:hover > span {
+        display:none;
+      }
+      
+      .workspace-materials-toc-container {
+        overflow:hidden;
+        position:relative;
+        height:530px;
+      
+        .workspace-materials-toc-title {
+          text-transform:uppercase;
+          margin:0;
+          padding:10px 12px;
+          font-size:19px;
+          color:#2c2c2c;
+          height:20px;
+        }
+      
+        .workspace-materials-toc-content-outer {
+          overflow:hidden;
+          height:480px;
+          width:280px;
+          
+          .workspace-materials-toc-content-inner {  
+            position:absolute;
+            overflow-x: hidden;
+            overflow-y: scroll;
+            height:480px;
+          
+            .workspace-materials-toc-content-scrolling {
+              padding:4px;
+              width:272px;
+              height:480px;
+              
+              .spacer {
+                height:30px; /* Creating some bottom margin because use of 100% height  */
+              }
+        
+              .workspace-materials-toc-section {
+                margin:0;
+                padding-top:5px;
+                padding-bottom:10px;
+              
+                .workspace-materials-toc-subtitle {
+                  text-transform:uppercase;
+                  font-size:15px;
+                  padding:2px 0;
+                }
+                
+                .workspace-materials-toc-item {
+                  font-weight:300;
+                  
+                  a {
+                    text-decoration:none;
+                    color:#41505b;
+                    display:block;
+                    @include genericMenuLinkHoverTransition(background,color,0.15s,ease-in-out);
+                    @include rounded(2px);
+                    padding:2px 8px;
+                    
+                    &:hover,
+                    &.active {
+                      background:#596e7d;
+                      color:#fff;
+                    }
+                  }
+                }
+              
+              }
+              
+            }
+          
+          }
+        
+        }
+      
+      }
     
+    }  
+
     .workspace-materials-view-page.material-view {
       padding:10px 30px;
-      margin:30px auto;
-      max-width:750px;
+      margin:23px 300px 37px auto;
+      max-width:640px;
       box-shadow:0 0 40px rgba(107,137,158,0.1);
 
       img {

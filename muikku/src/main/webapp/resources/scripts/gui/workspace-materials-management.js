@@ -316,6 +316,7 @@
         
       });
       
+      // Prevent page scroll happening if TOC scroll reaches bottom
       $('.workspace-materials-toc-content-inner').on('DOMMouseScroll mousewheel', function(ev) {
         var $this = $(this),
           scrollTop = this.scrollTop,
