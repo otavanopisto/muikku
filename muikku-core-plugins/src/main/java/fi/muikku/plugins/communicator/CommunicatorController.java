@@ -111,6 +111,10 @@ public class CommunicatorController {
     return communicatorMessageRecipientDAO.listByMessage(communicatorMessage);
   }
 
+  public List<CommunicatorMessageRecipient> listCommunicatorMessageRecipientsByUserAndMessage(UserEntity user, CommunicatorMessageId messageId) {
+    return communicatorMessageRecipientDAO.listByUserAndMessageId(user, messageId);
+  }
+
   public Long countMessagesByRecipientAndMessageId(UserEntity recipient, CommunicatorMessageId communicatorMessageId) {
     return communicatorMessageDAO.countMessagesByRecipientAndMessageId(recipient, communicatorMessageId);
   }
@@ -189,4 +193,9 @@ public class CommunicatorController {
   public List<InboxCommunicatorMessage> listMessagesByMessageId(UserEntity user, CommunicatorMessageId messageId) {
     return communicatorMessageDAO.listByMessageId(user, messageId);
   }
+
+  public CommunicatorMessageRecipient updateRead(CommunicatorMessageRecipient recipient, boolean value) {
+    return communicatorMessageRecipientDAO.updateRecipientRead(recipient, value);
+  }
+
 }

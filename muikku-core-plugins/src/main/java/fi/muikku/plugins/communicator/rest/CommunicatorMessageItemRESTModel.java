@@ -1,0 +1,24 @@
+package fi.muikku.plugins.communicator.rest;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
+
+public class CommunicatorMessageItemRESTModel extends CommunicatorMessageRESTModel {
+
+  public CommunicatorMessageItemRESTModel(Long id, Long communicatorMessageId, Long senderId, String categoryName, String caption, 
+      String content, Date created, Set<String> tags, List<Long> recipientIds, List<Long> recipientGroupIds, boolean unreadMessagesInThread) {
+    super(id, communicatorMessageId, senderId, categoryName, caption, content, created, tags, recipientIds, recipientGroupIds);
+    this.unreadMessagesInThread = unreadMessagesInThread;
+  }
+  
+  public boolean isUnreadMessagesInThread() {
+    return unreadMessagesInThread;
+  }
+
+  public void setUnreadMessagesInThread(boolean unreadMessagesInThread) {
+    this.unreadMessagesInThread = unreadMessagesInThread;
+  }
+
+  private boolean unreadMessagesInThread;
+}

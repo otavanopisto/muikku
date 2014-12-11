@@ -90,14 +90,27 @@ public class CommunicatorRESTService extends PluginRESTService {
     for (InboxCommunicatorMessage msg : receivedItems) {
       String categoryName = msg.getCategory() != null ? msg.getCategory().getName() : null;
 
-      result.add(new CommunicatorMessageRESTModel(
+      result.add(new CommunicatorMessageItemRESTModel(
           msg.getId(), msg.getCommunicatorMessageId().getId(), msg.getSender(), categoryName, 
-          msg.getCaption(), msg.getContent(), msg.getCreated(), tagIdsToStr(msg.getTags()), getMessageRecipientIdList(msg), new ArrayList<Long>()));
+          msg.getCaption(), msg.getContent(), msg.getCreated(), tagIdsToStr(msg.getTags()), 
+          getMessageRecipientIdList(msg), new ArrayList<Long>(), hasUnreadMsgs(user, msg)));
     }
     
     return Response.ok(
       result
     ).build();
+  }
+
+  private boolean hasUnreadMsgs(UserEntity user, InboxCommunicatorMessage msg) {
+    List<CommunicatorMessageRecipient> recipients = communicatorController.listCommunicatorMessageRecipientsByUserAndMessage(
+        user, msg.getCommunicatorMessageId());
+    
+    for (CommunicatorMessageRecipient r : recipients) {
+      if (Boolean.FALSE.equals(r.getReadByReceiver()))
+        return true;
+    }
+    
+    return false;
   }
 
   @GET
@@ -249,6 +262,25 @@ public class CommunicatorRESTService extends PluginRESTService {
     
     return Response.ok(
       result
+    ).build();
+  }
+
+  @POST
+  @Path ("/messages/{COMMUNICATORMESSAGEID}/markasread")
+  public Response markAsRead( 
+      @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId) {
+    UserEntity user = sessionController.getLoggedUserEntity(); 
+    
+    CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
+
+    List<CommunicatorMessageRecipient> list = communicatorController.listCommunicatorMessageRecipientsByUserAndMessage(user, messageId);
+    
+    for (CommunicatorMessageRecipient r : list) {
+      communicatorController.updateRead(r, true);
+    }
+    
+    return Response.ok(
+      
     ).build();
   }
 
