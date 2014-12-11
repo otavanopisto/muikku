@@ -12,10 +12,10 @@
   <ui:define name="sitebody">
     <div class="index">
       <ui:insert name="header">
-        <div id="header">
-          <div id="headerContainer" class="container_24">
-            <div id="headerLogoTextContainer"></div>
-            <div id="headerFishContainer"></div>
+        <div id="headerSmall">
+          <div id="headerContainerSmall" class="container_24">
+            <div id="headerLogoTextContainerSmall"></div>
+            <div id="headerFishContainerSmall"></div>
             <m:widgetSpaceSet styleClass="noLid">
               <ui:insert name="header.left">
                 <ui:include src="/facelets/generic/header-left.xhtml"></ui:include>
@@ -52,7 +52,9 @@
         </div>
       </div>
 
-      <div id="content" class="container_24">
+
+      <h:panelGroup id="content" layout="block" styleClass="container_24 #{contentClass}">
+     
         <ui:insert name="content.tools.top">
           <m:widgetSpaceSet styleClass="nomargin">
             <ui:insert name="content.tools.top.left">
@@ -67,7 +69,7 @@
           </m:widgetSpaceSet>
         </ui:insert>
         <div class="clear"></div>
-        <ui:insert name="contentArea">
+        <ui:insert name="content.area">
           <m:widgetSpaceSet>
             <ui:insert name="content.left.widgetspace">
               <m:widgetSpace name="generic.content.left" keepEmpty="true" sizing="SUM" styleClass="nomargin">
@@ -86,7 +88,7 @@
             </ui:insert>
           </m:widgetSpaceSet>
         </ui:insert>
-        <ui:insert name="contentToolsBottom">
+        <ui:insert name="content.tools.bottom">
           <m:widgetSpaceSet styleClass="nomargin">
             <ui:insert name="content.tools.bottom.left">
               <ui:include src="/facelets/generic/content-tools-bottom-left.xhtml"></ui:include>
@@ -99,7 +101,7 @@
             </ui:insert>
           </m:widgetSpaceSet>
         </ui:insert>
-      </div>
+      </h:panelGroup>    
       <div id="socialNavigation">
         <ui:insert name="dock.bottom">
           <m:widgetSpaceSet styleClass="nomargin">

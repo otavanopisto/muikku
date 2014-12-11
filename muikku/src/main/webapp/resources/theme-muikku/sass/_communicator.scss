@@ -1,0 +1,219 @@
+  /* communicator (.co-*) */
+
+/* Communicator modal new message */
+
+
+
+.cm-message-new{
+  input{
+   color:#333;
+  
+  &:focus{
+   color:#000;
+  
+  }
+  
+  }  
+  .cm-message-recipient{
+    float:left;
+    padding:5px;
+    cursor:pointer;
+    
+    &:not(:first-child){
+     margin-left:10px;
+ 
+    }
+    
+   .cm-message-tool{
+    padding:0 10px 0 10px;
+    border:1px solid #dadada;
+    color:#000;
+
+    }   
+  }
+  
+  .cm-message-recipient-name{
+    float:left;
+    margin-top:0 !important;
+       &:hover{   
+          color:red;
+         }     
+   }  
+  .cm-message-recipient-remove{
+    float:right;    
+    background-color:#dadada;
+    margin-top:0 !important;
+   }
+
+}
+
+
+
+.cm-content { 
+}
+
+
+.cm-messages-container{
+  padding:5px;
+}
+
+.cm-messages-toolbar{
+  border:1px solid #dadada;
+  background-color: #fff;
+  padding:5px;
+  margin-bottom:5px;
+  
+  
+  .cm-messages-tool{
+    padding:0 10px 0 10px;
+    border:1px solid #dadada;
+    background-color:#ededed; 
+    font-size:1.5em;
+    float:left;
+    color:#000;
+  }
+  
+
+}
+
+
+.cm-message {
+
+   .cm-message-header-content-primary{
+      font-weight:700;  
+     }
+  
+  
+   .cm-message-header-content-secondary{
+
+   }
+  
+  .cm-message-header-count{
+   line-height:2.5em;
+   
+   span{
+    float:right;
+    margin-right:10px;
+   }
+  }   
+  
+  .cm-user-picture{
+     float:left;
+     height:30px;
+     width:30px; 
+     &.default{
+     @extend .co-user-picture;     
+     }
+     
+  }
+  .cm-message-view {
+    @include rounded(4px);  
+    @include gradient-top-bottom;
+    @include shadow;
+    margin-bottom:10px;
+    min-height:50px;
+    padding:5px;   
+  }
+  
+   .cm-message-details-container{
+    background-color:#fff;
+   }
+   
+  .cm-message-content{
+   margin-left:70px;
+   margin-right:70px; 
+  }
+  
+  .cm-message-content-tools{
+    padding:10px 0;  
+    
+  }
+  
+  
+  .cm-message-tools, .cm-viewmessagethread-tools {
+    padding:0;
+    height:40px;
+    
+  }
+  
+  
+  
+  .cm-message-tool{
+    padding:0 10px 0 10px;
+    border:1px solid #dadada;
+    background-color:#ededed; 
+    font-size:1.5em;
+    float:left;
+    color:#000;
+    
+    &:not(:first-child){
+     margin-left:10px;
+    }
+    
+    span{
+     font-size:0.75em;
+     
+    }
+  }
+
+  .cm-message-reply {
+    padding:5px 5px 5px 10px;
+    background-color:#fff;
+      
+  }
+  
+  .cm-message-recipient{
+   div{
+    float:left;
+   }
+  
+  }
+
+ .cm-message-selected-recipients{
+   padding:5px;
+   background-color:#fff;
+   
+   span{
+    display:inline-block;
+    &:not(:first-child){
+     margin-left:10px;
+    }
+   }
+ }
+
+/* When the message is open */  
+  
+  &.open{
+  
+    .cm-user-picture{
+     float:left;
+     height:60px;
+     width:60px;
+     
+     
+     &.default{
+      @extend .co-user-picture;
+     }
+     
+     &.reply-recipient{
+      display:inline-block;
+      float:none;
+      height:20px;
+      width:20px;
+     }
+    }   
+      
+    .cm-message-header-content-secondary{
+      float:right;
+      margin-right:60px;
+    }
+    
+    .cm-message-header-content-primary{
+      font-weight:700;
+      margin-left:10px;
+    }   
+
+   
+  }
+
+}

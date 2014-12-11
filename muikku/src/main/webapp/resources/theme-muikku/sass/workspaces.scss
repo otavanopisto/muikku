@@ -163,7 +163,7 @@ body.workspace-materials {
   
   }
   
-  #content {
+  #contentWorkspaceMaterials {
   
     h1.workspace-title {
       margin:20px 0 20px 0;
@@ -173,20 +173,40 @@ body.workspace-materials {
       line-height:1.3em;
     }
     
-    .workspace-materials-view-page {
-    
+    .workspace-materials-view-page.material-view {
+      padding:10px 30px;
+      margin:30px auto;
+      max-width:750px;
+      box-shadow:0 0 40px rgba(107,137,158,0.1);
+
       img {
         max-width:100%;
       }
       
       h1,
+      h2 {
+        
+        
+        &:first-child {
+          margin:20px 0 20px 0;
+        }
+        
+      }
+      
+      h1,
       h2,
-      h3,
+      h3 {
+        margin:40px 0 20px 0;
+        color:#38393a;
+        font-weight:300;
+        text-transform:none;
+        line-height:1.3em;
+      }
+      
       h4,
       h5,
-      h6
-       {
-        margin:40px 0 20px 0;
+      h6 {
+        margin:20px 0 20px 0;
         color:#38393a;
         font-weight:300;
         text-transform:none;
@@ -231,13 +251,11 @@ body.workspace-materials {
         font-size:14px; /* Reset font-size  */
       }
       
-      strong,
-      b {
+      strong,b {
         font-weight:600; /* Override values used in reading/management */
       }
       
-      em,
-      i {
+      em,i {
         font-weight:400;
       }
 

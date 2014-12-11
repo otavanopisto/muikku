@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition 
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  template="/WEB-INF/templates/main-view.xhtml">
+
+  <ui:define name="viewCss">
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/fullcalendar.css" />  
+    <h:outputStylesheet name="scripts/jquery.timepicker/jquery.timepicker.css"/>
+    <h:outputStylesheet name="scripts/jquery.contextmenu/jquery.contextmenu.css"/>
+  </ui:define>
+
+  <ui:define name="viewJs">
+    <!-- Time Picker -->
+    <h:outputScript name="scripts/jquery.timepicker/jquery.timepicker.js" />
+
+    <!-- jstimezonedetect -->
+    
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"/>
+
+    <!-- Full Calendar -->
+    <h:outputScript name="scripts/fullcalendar/fullcalendar.js"/>
+
+    <h:outputScript name="scripts/jquery.recurrenceInput/recurrenceinput.js"/>
+    <h:outputScript name="scripts/gui/eventdialog.js" target="head"/>
+    <h:outputScript name="scripts/gui/fullcalendar.js" target="head"/>
+    
+    <!-- Context menu -->
+    
+    <h:outputScript name="scripts/jquery.contextmenu/jquery.contextmenu.js" target="head"/>    
+    
+  </ui:define>
+
+
+  <ui:define name="contentToolsTop">
+    <m:widgetSpaceSet>
+      <m:widgetSpace name="calendar.content-tools-top.left" keepEmpty="false" sizing="SUM">
+        <m:widget name="newcalendar" size="2" rendered="#{sessionBackingBean.loggedIn}"/>
+        <m:widget name="newevent" size="2" rendered="#{sessionBackingBean.loggedIn}"/>
+      </m:widgetSpace>
+      <m:widgetSpace name="calendar.content-tools-top.center" keepEmpty="true" sizing="MAXIMIZE"></m:widgetSpace>
+      <m:widgetSpace name="calendar.content-tools-top.right" keepEmpty="false" sizing="SUM">
+ <!--      
+        <m:widget name="calendarsvisible" size="2" rendered="#{sessionBackingBean.loggedIn}"/>
+        <m:widget name="calendarsettings" size="2" rendered="#{sessionBackingBean.loggedIn}"/>
+ -->
+
+      </m:widgetSpace>
+    </m:widgetSpaceSet>
+  </ui:define>
+
+  <ui:define name="content.center.widget">
+    <div class="widget fullCalendarWidget">
+      <div class="fullCalendarWidgetSettings">
+        <!-- TODO: Localize -->
+        <div class="fullCalendarWidgetNavigationContainer">     
+          <button class="fullCalendarWidgetNavigationButton fullCalendarWidgetNavigationLeft">#{i18n.text['plugin.calendar.previous']}</button>
+          <button class="fullCalendarWidgetNavigationButton fullCalendarWidgetNavigationToday">#{i18n.text['plugin.calendar.today']}</button>
+          <button class="fullCalendarWidgetNavigationButton fullCalendarWidgetNavigationRight">#{i18n.text['plugin.calendar.next']}</button>
+        </div>
+        <div class="fullCalendarWidgetViewSelectionContainer">
+          <button class="fullCalendarWidgetModeButton" data-mode="EVENT_LIST">#{i18n.text['plugin.calendar.eventList']}</button>
+          <button class="fullCalendarWidgetModeButton" data-mode="DAY">#{i18n.text['plugin.calendar.day']}</button>
+          <button class="fullCalendarWidgetModeButton" data-mode="WEEK">#{i18n.text['plugin.calendar.week']}</button>
+          <button class="fullCalendarWidgetModeButton" data-mode="MONTH">#{i18n.text['plugin.calendar.month']}</button>
+        </div>
+      </div>      
+      <input type="hidden" name="firstDay" value="#{calendarBackingBean.firstDay}"/>
+    </div>
+  </ui:define>
+
+</ui:composition>

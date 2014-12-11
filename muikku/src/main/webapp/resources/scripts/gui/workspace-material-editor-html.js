@@ -99,14 +99,17 @@
           'coops-dmp' : CONTEXTPATH + '/scripts/ckplugins/coops-dmp/',
           'coops-cursors' : CONTEXTPATH + '/scripts/ckplugins/coops-cursors/',
           'coops-sessionevents' : CONTEXTPATH + '/scripts/ckplugins/coops-sessionevents/',
-          'muikku-textfield': CONTEXTPATH + '/ckplugins/muikku-textfield/'
+          'muikku-fields': CONTEXTPATH + '/scripts/ckplugins/muikku-fields/',
+          'muikku-textfield': CONTEXTPATH + '/scripts/ckplugins/muikku-textfield/',
+          'muikku-checkbox': CONTEXTPATH + '/scripts/ckplugins/muikku-checkbox/'
         },
-        extraPlugins : 'coops,coops-connector,coops-dmp,coops-cursors,coops-sessionevents,muikku-textfield',
+        extraPlugins : 'coops,coops-connector,coops-dmp,coops-cursors,coops-sessionevents,muikku-textfield,muikku-checkbox',
         serverUrl : CONTEXTPATH + '/rest/coops/' + this.options.materialId + '',
         contentCss : '/css/custom-ckeditor-contentcss.css',
         toolbar: [
           { name: 'document', items : [ 'Source' ] },
           { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
+          { name: 'forms', items : ['MuikkuTextField']},
           { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
           { name: 'links', items : [ 'Link','Unlink','Anchor' ] },
           { name: 'colors', items : [ 'TextColor','BGColor' ] },
@@ -115,13 +118,13 @@
           { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote',
           '-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl' ] },
           { name: 'insert', items : [ 'Image','Flash','Table','SpecialChar' ] },          
-          { name: 'tools', items : [ 'Maximize', 'ShowBlocks','-','About' ] }
+          { name: 'tools', items : [ 'Maximize', 'ShowBlocks','-','About' ] },
+          '/',
+          { name: 'muikku-fields', items : [ 'muikku-checkbox' ] }
         ],
-        editorOptions : {
-          autoGrowOnStartup : true,
-          skin : 'moono',
-          height : 500
-        }
+        autoGrowOnStartup : true,
+        skin : 'moono',
+        height : 500
       });
       
       this._editor.on('statusChange', $.proxy(this._onStatusChange, this));

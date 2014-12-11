@@ -177,6 +177,16 @@ user-select: none;
 	
 }
 
+@mixin fadeRight(){
+background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 99%, rgba(255,255,255,1) 100%);
+background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(99%,rgba(255,255,255,1)), color-stop(100%,rgba(255,255,255,1))); 
+background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 99%,rgba(255,255,255,1) 100%); 
+background: -o-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 99%,rgba(255,255,255,1) 100%); 
+background: -ms-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 99%,rgba(255,255,255,1) 100%); 
+background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1) 99%,rgba(255,255,255,1) 100%);
+  
+}
+
 @mixin buttonLedGr($col1,$col2,$col3,$col4,$prcCol2,$prcCol3) {
   background: $col1;
   background: -moz-radial-gradient(center, ellipse cover, $col1 0%, $col2 $prcCol2, $col3 $prcCol3, $col4 100%);
@@ -258,6 +268,18 @@ user-select: none;
 
 /* Content interaction*/
 
+/* Mainfunctions */
+
+@mixin mf-transition($attr:background-color,$time:1s,$trans:ease-in){
+  
+    -webkit-transition: $attr $time $trans;
+       -moz-transition: $attr $time $trans;
+        -ms-transition: $attr $time $trans;
+         -o-transition: $attr $time $trans;
+            transition: $attr $time $trans;
+  
+}
+
 /* Static navigation */
 @mixin iconShadow($col:rgba(47,100,129,0.7)) {
  text-shadow: 0 0 15px $col; 
@@ -280,6 +302,11 @@ user-select: none;
   background-position:center;
   background-size:100%;
 }
+
+
+
+
+
 
 /* Dynamic Navigation */
 @mixin dynNaviGr($gr1,$gr2) {
