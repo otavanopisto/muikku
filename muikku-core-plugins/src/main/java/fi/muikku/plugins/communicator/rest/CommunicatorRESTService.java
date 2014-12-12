@@ -3,6 +3,7 @@ package fi.muikku.plugins.communicator.rest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -78,39 +79,44 @@ public class CommunicatorRESTService extends PluginRESTService {
     UserEntity user = sessionController.getLoggedUserEntity(); 
     List<InboxCommunicatorMessage> receivedItems = communicatorController.listReceivedItems(user);
 
-    Collections.sort(receivedItems, new Comparator<CommunicatorMessage>() {
-      @Override
-      public int compare(CommunicatorMessage o1, CommunicatorMessage o2) {
-        return o2.getCreated().compareTo(o1.getCreated());
-      }
-    });
-    
-    List<CommunicatorMessageRESTModel> result = new ArrayList<CommunicatorMessageRESTModel>();
+    List<CommunicatorMessageItemRESTModel> result = new ArrayList<CommunicatorMessageItemRESTModel>();
     
     for (InboxCommunicatorMessage msg : receivedItems) {
       String categoryName = msg.getCategory() != null ? msg.getCategory().getName() : null;
-
+      boolean hasUnreadMsgs = false;
+      Date latestMessageDate = msg.getCreated();
+      
+      List<CommunicatorMessageRecipient> recipients = communicatorController.listCommunicatorMessageRecipientsByUserAndMessage(
+          user, msg.getCommunicatorMessageId());
+      
+      for (CommunicatorMessageRecipient r : recipients) {
+        if (Boolean.FALSE.equals(r.getReadByReceiver())) {
+          hasUnreadMsgs = true;
+          break;
+        }
+        
+        Date created = r.getCommunicatorMessage().getCreated();
+        
+        if ((latestMessageDate == null) || (latestMessageDate.before(created)))
+          latestMessageDate = created;
+      }
+      
       result.add(new CommunicatorMessageItemRESTModel(
           msg.getId(), msg.getCommunicatorMessageId().getId(), msg.getSender(), categoryName, 
           msg.getCaption(), msg.getContent(), msg.getCreated(), tagIdsToStr(msg.getTags()), 
-          getMessageRecipientIdList(msg), new ArrayList<Long>(), hasUnreadMsgs(user, msg)));
+          getMessageRecipientIdList(msg), new ArrayList<Long>(), hasUnreadMsgs, latestMessageDate));
     }
+    
+    Collections.sort(result, new Comparator<CommunicatorMessageItemRESTModel>() {
+      @Override
+      public int compare(CommunicatorMessageItemRESTModel o1, CommunicatorMessageItemRESTModel o2) {
+        return o2.getThreadLatestMessageDate().compareTo(o1.getThreadLatestMessageDate());
+      }
+    });
     
     return Response.ok(
       result
     ).build();
-  }
-
-  private boolean hasUnreadMsgs(UserEntity user, InboxCommunicatorMessage msg) {
-    List<CommunicatorMessageRecipient> recipients = communicatorController.listCommunicatorMessageRecipientsByUserAndMessage(
-        user, msg.getCommunicatorMessageId());
-    
-    for (CommunicatorMessageRecipient r : recipients) {
-      if (Boolean.FALSE.equals(r.getReadByReceiver()))
-        return true;
-    }
-    
-    return false;
   }
 
   @GET

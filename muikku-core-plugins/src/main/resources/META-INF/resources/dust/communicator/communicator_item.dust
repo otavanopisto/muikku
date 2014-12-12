@@ -2,7 +2,7 @@
       <div class="mf-item-details">
         <div class="mf-item-details-container">       
           <div class="mf-item-additionalInfo">
-            <span>{created|formatDate} {created|formatTime}</span>
+            <span>{threadLatestMessageDate|formatDate} {threadLatestMessageDate|formatTime}</span>
           </div>
           <div class="mf-item-description">
             <div class="mf-item-header-name cm-message-header-name">

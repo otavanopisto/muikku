@@ -7,9 +7,11 @@ import java.util.Set;
 public class CommunicatorMessageItemRESTModel extends CommunicatorMessageRESTModel {
 
   public CommunicatorMessageItemRESTModel(Long id, Long communicatorMessageId, Long senderId, String categoryName, String caption, 
-      String content, Date created, Set<String> tags, List<Long> recipientIds, List<Long> recipientGroupIds, boolean unreadMessagesInThread) {
+      String content, Date created, Set<String> tags, List<Long> recipientIds, List<Long> recipientGroupIds, boolean unreadMessagesInThread,
+      Date threadLatestMessageDate) {
     super(id, communicatorMessageId, senderId, categoryName, caption, content, created, tags, recipientIds, recipientGroupIds);
     this.unreadMessagesInThread = unreadMessagesInThread;
+    this.threadLatestMessageDate = threadLatestMessageDate;
   }
   
   public boolean isUnreadMessagesInThread() {
@@ -20,5 +22,14 @@ public class CommunicatorMessageItemRESTModel extends CommunicatorMessageRESTMod
     this.unreadMessagesInThread = unreadMessagesInThread;
   }
 
+  public Date getThreadLatestMessageDate() {
+    return threadLatestMessageDate;
+  }
+
+  public void setThreadLatestMessageDate(Date threadLatestMessageDate) {
+    this.threadLatestMessageDate = threadLatestMessageDate;
+  }
+
+  private Date threadLatestMessageDate;
   private boolean unreadMessagesInThread;
 }
