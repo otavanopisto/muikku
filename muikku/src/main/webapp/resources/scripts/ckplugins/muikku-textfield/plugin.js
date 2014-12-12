@@ -128,6 +128,21 @@
     removeAnswer: function(answerIndex) {
       var nodes = this.getElement().find('.answers-element-container');
       nodes.getItem(answerIndex).remove();
+    },
+    getAnswers: function() {
+      var rightAnswers = [];
+      var answersUiElement = this.getElement();
+      var answers = answersUiElement.find('.answers-element-container');
+      for (var i = 0; i < answers.count(); i++) {
+        var answer = answers.getItem(i);
+        var text = answer.findOne('input[name="text"]').getValue();
+        var correct = answer.findOne('input[name="correct"]').$.checked;
+        rightAnswers.push({
+          'text' : text,
+          'correct' : correct
+        });
+      }
+      return rightAnswers;
     }
   });
 
@@ -154,21 +169,14 @@
         } else {
           name = editor.createRandomMuikkuFieldName();
         }
-
-        var rightAnswers = [];
+        
         var answersElement = this.getContentElement('info', 'answers');
-        var answersUiElement = answersElement.getElement();
-        var answers = answersUiElement.find('.answers-element-container');
-        for (var i = 0; i < answers.count(); i++) {
-          var answer = answers.getItem(i);
-          var text = answer.findOne('input[name="text"]').getValue();
-          var correct = answer.findOne('input[name="correct"]').$.checked;
-          rightAnswers.push({
-            'text' : text,
-            'points' : correct ? 1.0 : 0.0,
-            'caseSensitive': false,
-            'normalizeWhitespace': true
-          });
+        rightAnswers = answersElement.getAnswers();
+        for (var i=0, l=rightAnswers.length; i<l; i++) {
+          rightAnswers[i].points = rightAnswers[i].correct ? 1.0 : 0.0;
+          rightAnswers[i].caseSensitive = false;
+          rightAnswers[i].normalizeWhitespace = true;
+          delete rightAnswers[i].correct;
         }
 
         var newJson = {
