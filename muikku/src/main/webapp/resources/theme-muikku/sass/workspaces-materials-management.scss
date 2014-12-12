@@ -614,13 +614,13 @@ body.workspace-materials-management {
   }
   
   .workspace-materials-management-dialog {
-    box-shadow:0 0 40px rgba(0,0,0,0.5);
+    box-shadow:0 0 80px rgba(0,0,0,0.4);
     background:#fff;
     font-family: 'Open Sans',Verdana, sans-serif;
     font-weight:300;
     padding:0;
     text-transform:uppercase;
-    border:2px solid #fff;
+    border:none;
     
     &.ui-corner-all {
       border-radius:0px;
@@ -694,13 +694,16 @@ body.workspace-materials-management {
           border-radius:0px;
           border:0;
           color:#fff;
-          font-weight:300;
+          font-weight:400;
           text-transform:uppercase;
           margin:5px;
+          outline:none;
+          font-family:"Open Sans";
+          min-width:90px;
         }
         
         button.delete-button {
-          float:left;
+          float:right;
           background:#de3211;
         }
         
