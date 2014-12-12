@@ -10,6 +10,11 @@
 @import "_mainfunctions.scss";
 @import "_calendar.scss";
 @import "_communicator.scss";
+
+/* CKEditor css rules for modals and form element plugins */
+@import "_custom-ckeditor-modal.scss";
+@import "_custom-ckeditor-selection-checkbox.scss";
+
 /* Note: All in-development- unfinished-temp-styles are in temp.css */
 
 html {
