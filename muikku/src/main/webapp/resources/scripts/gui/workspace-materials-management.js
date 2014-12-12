@@ -65,15 +65,15 @@
         materialTitle: materialTitle
       });
       
-      $(document).on("click",$.proxy(function (event) {
-        var target = $(event.target);
-        if (target.closest('.workspace-materials-view-page').length == 0) {
-          $(this).data('material-title', editor.call(pageElement, 'title'));
-          editor.call(pageElement, 'destroy');
-          $(document).muikkuMaterialLoader('loadMaterial', node, true);
-          pageSection.removeClass("page-edit-mode");
-        }
-      }, node));
+//      $(document).on("click",$.proxy(function (event) {
+//        var target = $(event.target);
+//        if (target.closest('.workspace-materials-view-page').length == 0) {
+//          $(this).data('material-title', editor.call(pageElement, 'title'));
+//          editor.call(pageElement, 'destroy');
+//          $(document).muikkuMaterialLoader('loadMaterial', node, true);
+//          pageSection.removeClass("page-edit-mode");
+//        }
+//      }, node));
     } else {
       $('.notification-queue').notificationQueue('notification', 'error', "Could not find editor for " + materialType);
     }
@@ -316,6 +316,7 @@
         
       });
       
+      // Prevent page scroll happening if TOC scroll reaches bottom
       $('.workspace-materials-toc-content-inner').on('DOMMouseScroll mousewheel', function(ev) {
         var $this = $(this),
           scrollTop = this.scrollTop,

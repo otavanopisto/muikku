@@ -70,7 +70,7 @@ body.workspace-materials-management {
             height:100%;
             
             .spacer {
-              height:30px; /* Creating some bottom margin because use of 100% height  */
+              height:50px; /* Creating some bottom margin because use of 100% height  */
             }
         
             .workspace-materials-toc-section {
@@ -79,10 +79,9 @@ body.workspace-materials-management {
               padding-bottom:10px;
               
               .workspace-materials-toc-subtitle {
-                font-weight:bold;
                 margin:0 0 5px 0;
+                text-transform:uppercase;
                 font-size:15px;
-                color:#344263;
                 padding:2px 8px;
                 
                 &.subtitle-hidden {
@@ -100,7 +99,7 @@ body.workspace-materials-management {
                 
                 a {
                   text-decoration:none;
-                  color:#000;
+                  color:#2c2c2c;
                   display:block;
                   @include genericMenuLinkHoverTransition(background,color,0.15s,ease-in-out);
                   @include rounded(2px);
@@ -388,6 +387,7 @@ body.workspace-materials-management {
               max-height:28px;
               font-size:14px;
               box-shadow:-4px 0px 10px rgba(0,0,0,0.05);
+              white-space:nowrap;
             }
             
             &:hover {
@@ -614,13 +614,13 @@ body.workspace-materials-management {
   }
   
   .workspace-materials-management-dialog {
-    box-shadow:0 0 40px rgba(0,0,0,0.5);
+    box-shadow:0 0 80px rgba(0,0,0,0.4);
     background:#fff;
     font-family: 'Open Sans',Verdana, sans-serif;
     font-weight:300;
     padding:0;
     text-transform:uppercase;
-    border:2px solid #fff;
+    border:none;
     
     &.ui-corner-all {
       border-radius:0px;
@@ -694,13 +694,16 @@ body.workspace-materials-management {
           border-radius:0px;
           border:0;
           color:#fff;
-          font-weight:300;
+          font-weight:400;
           text-transform:uppercase;
           margin:5px;
+          outline:none;
+          font-family:"Open Sans";
+          min-width:90px;
         }
         
         button.delete-button {
-          float:left;
+          float:right;
           background:#de3211;
         }
         

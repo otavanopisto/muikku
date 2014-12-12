@@ -90,6 +90,7 @@ div[class*='workspace-dock-navi-button'] > span {
     @include rounded-top-right(3px);
     @include rounded-bottom-right(3px);
     @include workspaceTooltipTransition(opacity,0.15s,ease-in-out);
+    z-index:99;
   }
   
     
@@ -101,6 +102,7 @@ div[class*='workspace-dock-navi-button'] > span {
       opacity:1;
       width:auto;
       left:45px;
+      
     }
   }
 }

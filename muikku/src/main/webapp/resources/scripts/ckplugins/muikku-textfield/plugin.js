@@ -12,17 +12,20 @@
   function createFakeParserElement( editor, realElement ) {
     var fake = editor.createFakeParserElement( realElement, 'muikku-text-field', 'muikkutextfield', true );
     fake.attributes.src = "//placehold.it/150x20";
+    fake.attributes.title = editor.lang['muikku-textfield'].uiElement;
     return fake;
   }
 
   function createFakeElement( editor, realElement ) {
     var fake = editor.createFakeElement( realElement, 'muikku-text-field', 'muikkutextfield', true );
     fake.setAttribute('src', '//placehold.it/150x20');
+    fake.setAttribute('title', editor.lang['muikku-textfield'].uiElement);
     return fake;
   }
 
   CKEDITOR.plugins.add( 'muikku-textfield', {
     requires: 'dialog,muikku-fields',
+    lang: 'fi,en',
     onLoad: function() {
     },
     init: function( editor ) {
@@ -43,16 +46,21 @@
         } );
       }
       editor.on('doubleclick', function(evt) {
-        alert(editor.createRandomMuikkuFieldName());
         var element = evt.data.element;
 
         if (element.is( 'img' ) && element.data( 'cke-real-element-type' ) == 'muikkutextfield')
           evt.data.dialog = 'muikkutextfield';
       } );
       if (editor.contextMenu) {
+        editor.addMenuGroup('muikkuTextFieldGroup');
+        editor.addMenuItem('muikkuTextFieldItem', {
+          label: editor.lang['muikku-textfield'].propertiesMenu,
+          command: 'muikkutextfield',
+          group: 'muikkuTextFieldGroup'
+        });
         editor.contextMenu.addListener( function( element, selection ) {
           if ( element && element.is( 'img' ) && !element.isReadOnly() && element.data( 'cke-real-element-type' ) == 'muikkutextfield' )
-            return { flash: CKEDITOR.TRISTATE_OFF };
+            return { muikkuTextFieldItem: CKEDITOR.TRISTATE_OFF };
         } );
       }
     },
@@ -75,20 +83,110 @@
     }
   } );
 
+  var answersElement = function(dialog, elementDefinition, htmlList) {
+    CKEDITOR.ui.dialog.uiElement.call(this, dialog, elementDefinition, htmlList, 'div');
+  };
+
+  answersElement.prototype = new CKEDITOR.ui.dialog.uiElement;
+  CKEDITOR.tools.extend(answersElement.prototype, {
+    clear: function() {
+      var element = this.getElement();
+      while (element.getFirst()) {
+        element.getFirst().remove();
+      }
+    },
+    onLoad: function() {
+      this.setLabel(this.label);
+    },
+    setLabel: function(label) {
+      var optionsContainer = this.getElement();
+      var labelElement = optionsContainer.findOne('answers-element-label');
+      if (labelElement === null) {
+        labelElement = new CKEDITOR.dom.element('label');
+        optionsContainer.append(labelElement, true);
+      }
+
+      labelElement.setText(label);
+    },
+    addAnswer: function(text, correct) {
+      var optionsContainer = this.getElement();
+      var optionContainer = new CKEDITOR.dom.element('div');
+      optionContainer.addClass('answers-element-container');
+      var optionTextField = new CKEDITOR.dom.element('input');
+      optionTextField.setAttribute('name', 'text');
+      optionTextField.setAttribute('type', 'text');
+      optionTextField.setAttribute('value', text);
+      var optionCorrectField = new CKEDITOR.dom.element('input');
+      optionCorrectField.setAttribute('name', 'correct');
+      optionCorrectField.setAttribute('type', 'checkbox');
+      optionCorrectField.setAttribute('checked', correct);
+      optionsContainer.append(optionContainer);
+      optionContainer.append(optionTextField);
+      optionContainer.append(optionCorrectField);
+      return optionContainer;
+    },
+    removeAnswer: function(answerIndex) {
+      var nodes = this.getElement().find('.answers-element-container');
+      nodes.getItem(answerIndex).remove();
+    },
+    getAnswers: function() {
+      var rightAnswers = [];
+      var answersUiElement = this.getElement();
+      var answers = answersUiElement.find('.answers-element-container');
+      for (var i = 0; i < answers.count(); i++) {
+        var answer = answers.getItem(i);
+        var text = answer.findOne('input[name="text"]').getValue();
+        var correct = answer.findOne('input[name="correct"]').$.checked;
+        rightAnswers.push({
+          'text' : text,
+          'correct' : correct
+        });
+      }
+      return rightAnswers;
+    }
+  });
+
+  CKEDITOR.dialog.addUIElement('muikkuTextFieldRightAnswers', {
+    build : function(dialog, elementDefinition, output) {
+      return new answersElement(dialog, elementDefinition, output);
+    },
+  });
+
   CKEDITOR.dialog.add('muikkutextfield', function (editor) {
     return {
-      title : "Muikku Text Field",
+      title : editor.lang['muikku-textfield'].propertiesDialogTitle,
       minWidth : 420,
       minHeight : 310,
       onShow : function() {
-        var fakeImage = this.getSelectedElement();
-        if (fakeImage
-            && fakeImage.data('cke-real-element-type')
-            && fakeImage.data('cke-real-element-type') == 'muikkutextfield') {
-          // TODO: Open on current view
-        }
+        var contentJson = editor.getMuikkuFieldDefinition(editor.getSelection().getStartElement());
+        this.setupContent(contentJson);
       },
       onOk : function(event) {
+        var oldJson = editor.getMuikkuFieldDefinition(editor.getSelection().getStartElement());
+        var name;
+        if (oldJson.name) {
+          name = oldJson.name;
+        } else {
+          name = editor.createRandomMuikkuFieldName();
+        }
+        
+        var answersElement = this.getContentElement('info', 'answers');
+        rightAnswers = answersElement.getAnswers();
+        for (var i=0, l=rightAnswers.length; i<l; i++) {
+          rightAnswers[i].points = rightAnswers[i].correct ? 1.0 : 0.0;
+          rightAnswers[i].caseSensitive = false;
+          rightAnswers[i].normalizeWhitespace = true;
+          delete rightAnswers[i].correct;
+        }
+
+        var newJson = {
+          'name': name,
+          'rightAnswers': rightAnswers,
+          'columns': this.getContentElement('info', 'width').getValue(),
+          'hint': this.getContentElement('info', 'hint').getValue(),
+          'help': this.getContentElement('info', 'help').getValue()
+        };
+        
         var object = new CKEDITOR.dom.element('object');
         object.setAttribute('type', 'application/vnd.muikku.field.text');
         var paramType = new CKEDITOR.dom.element('param');
@@ -96,28 +194,9 @@
         paramType.setAttribute('value', 'application/json');
         var paramContent = new CKEDITOR.dom.element('param');
         paramContent.setAttribute('name', 'content');
-        var rightAnswers = [];
-        var formAnswers = this.getContentElement('info', 'answers').getValue().split('\n');
-        for (var i=0, l=rightAnswersSource.length; i<l; i++) {
-          var formAnswer = formAnswers[i];
-          rightAnswers.push({
-            // TODO
-            'points': 1.0,
-            'text': formAnswer,
-            'caseSensitive': false,
-            'normalizeWhitespace': true
-          });
-        }
-        paramContent.setAttribute('value', JSON.stringify({
-          'name': editor.createRandomMuikkuFieldName(),
-          'rightAnswers': rightAnswers,
-          'columns': this.getContentElement('info', 'width').getValue(),
-          'hint': this.getContentElement('info', 'hint').getValue(),
-          'help': this.getContentElement('info', 'help').getValue()
-        }));
+        paramContent.setAttribute('value', JSON.stringify(newJson));
         object.append(paramType);
         object.append(paramContent);
-        
         var fakeElement = createFakeElement(editor, object);
         editor.insertElement(fakeElement);
       },
@@ -130,22 +209,39 @@
           {
             id: 'width',
             type: 'text',
-            label: 'Width'
+            label: editor.lang['muikku-textfield'].propertiesDialogWidth,
+            setup: function(json) {
+              this.setValue(json.columns);
+            }
           },
           {
             id: 'hint',
             type: 'text',
-            label: 'Hint'
+            label: editor.lang['muikku-textfield'].propertiesDialogHint,
+            setup: function(json) {
+              this.setValue(json.hint);
+            }
           },
           {
             id: 'help',
             type: 'text',
-            label: 'Help'
+            label: editor.lang['muikku-textfield'].propertiesDialogHelp,
+            setup: function(json) {
+              this.setValue(json.help);
+            }
           },
           {
             id: 'answers',
-            type: 'textarea',
-            label: 'Answers'
+            type: 'muikkuTextFieldRightAnswers',
+            label: editor.lang['muikku-textfield'].propertiesDialogRightAnswers,
+            setup: function(json) {
+              this.clear();
+              for (var i = 0; i < json.rightAnswers.length; i++) {
+                var text = json.rightAnswers[i].text;
+                var correct = json.rightAnswers[i].points > 0;
+                this.addAnswer(text, correct);
+              }
+            }
           }
         ]
       } ]

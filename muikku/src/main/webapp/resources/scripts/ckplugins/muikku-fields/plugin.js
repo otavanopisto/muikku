@@ -21,7 +21,7 @@
                              '0123456789';
           var result = 'muikku-field-';
           for (var i=0; i<nameLength; i++) {
-            result = result + idCharacters[Math.round(Math.random() * idCharacters.length)]
+            result = result + idCharacters[Math.floor(Math.random() * idCharacters.length)];
           }
           return result;
         },

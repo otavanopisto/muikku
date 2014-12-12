@@ -114,7 +114,7 @@ body.workspace-materials-reading {
             height:100%;
             
             .spacer {
-              height:30px; /* Creating some bottom margin because use of 100% height  */
+              height:50px; /* Creating some bottom margin because use of 100% height  */
             }
         
             .workspace-materials-toc-section {
@@ -123,10 +123,9 @@ body.workspace-materials-reading {
               padding-bottom:10px;
               
               .workspace-materials-toc-subtitle {
-                font-weight:bold;
                 margin:0 0 5px 0;
+                text-transform:uppercase;
                 font-size:15px;
-                color:#344263;
                 padding:2px 8px;
               }
               
@@ -135,7 +134,7 @@ body.workspace-materials-reading {
                 
                 a {
                   text-decoration:none;
-                  color:#000;
+                  color:#2c2c2c;
                   display:block;
                   @include genericMenuLinkHoverTransition(background,color,0.15s,ease-in-out);
                   @include rounded(2px);
