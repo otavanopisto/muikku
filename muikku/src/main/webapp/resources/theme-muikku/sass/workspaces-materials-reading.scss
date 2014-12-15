@@ -14,43 +14,33 @@ body.workspace-materials-reading {
     top:0;
     bottom:0;
 
-    #workspaceMaterialsReadingTOCClosed {
-      width:50px;
+    nav.workspace-waterials-reading-nav {
+      width:46px;
       height:100%;
       background:#7794a8;
+      position:absolute;
+      top:0;
+      z-index:36;
       
-      #workspaceMaterialsReadingTOCNavicon {
-        cursor:pointer;
-        font-size:30px;
-        color:#fff;
-        text-decoration:none;
-        @include iconShadow;
-        background:transparent;
-        padding:6px;
-        margin:2px;
-        display:inline-block;
-        position:relative;
-        width:34px;
-        @include rounded(3px);
-        text-align:center;
-        
-        &:hover {
-          @include iconShadow(rgba(255,255,190,0.5));
-        }
-        
+      .grid_1 {
+        float:none;
+        width:auto;
+        margin:0;
       }
       
     }
     
-    #workspaceMaterialsReadingTOCOpen {
+    #workspaceMaterialsReadingTOCContainer {
       width:350px;
       background:#e8f0f5;
       z-index:26;
-      box-shadow : 0 0 25px rgba(0,0,0,0.3);
-      position:relative; /* This sets parent relation to .workspaceMaterialReadingTOCContentCropper element */
+      box-shadow : 0 0 25px rgba(0,0,0,0.15);
+      position:relative;
+      top:0;
+      border-left:1px solid #fff;
       
       .workspace-materials-reading-TOC-title {
-        background:#7794a8;
+        background:#87a1b2;
         padding:12px;
         position:relative;
         
@@ -59,30 +49,6 @@ body.workspace-materials-reading {
           font-size:20px;
           margin:0;
           padding:0;
-        }
-        
-        #workspaceMaterialsReadingTOCNavicon {
-          cursor:pointer;
-          font-size:30px;
-          color:#fff;
-          text-decoration:none;
-          @include iconShadow;
-          background:transparent;
-          padding:6px;
-          margin:2px;
-          display:inline-block;
-          position:relative;
-          width:30px;
-          @include rounded(3px);
-          text-align:center;
-          position:absolute;
-          right:0;
-          top:0;
-          
-          &:hover {
-            @include iconShadow(rgba(255,255,190,0.5));
-          }
-          
         }
         
         #workspaceMaterialsReadingTOCPinicon {
@@ -100,7 +66,7 @@ body.workspace-materials-reading {
           @include rounded(3px);
           text-align:center;
           position:absolute;
-          right:50px;
+          right:3px;
           top:3px;
           opacity:0.6;
           -ms-transition: transform 0.2s;
@@ -148,7 +114,7 @@ body.workspace-materials-reading {
             height:100%;
             
             .spacer {
-              height:30px; /* Creating some bottom margin because use of 100% height  */
+              height:50px; /* Creating some bottom margin because use of 100% height  */
             }
         
             .workspace-materials-toc-section {
@@ -157,10 +123,9 @@ body.workspace-materials-reading {
               padding-bottom:10px;
               
               .workspace-materials-toc-subtitle {
-                font-weight:bold;
                 margin:0 0 5px 0;
+                text-transform:uppercase;
                 font-size:15px;
-                color:#344263;
                 padding:2px 8px;
               }
               
@@ -169,7 +134,7 @@ body.workspace-materials-reading {
                 
                 a {
                   text-decoration:none;
-                  color:#000;
+                  color:#2c2c2c;
                   display:block;
                   @include genericMenuLinkHoverTransition(background,color,0.15s,ease-in-out);
                   @include rounded(2px);
@@ -200,7 +165,7 @@ body.workspace-materials-reading {
     width:auto;
     margin:0 auto;
   
-    .workspace-materials-reading-view-page {
+    .workspace-materials-view-page.material-reading-view {
       max-width:700px;
       width:auto;
       background:#fff;
@@ -307,19 +272,7 @@ body.workspace-materials-reading {
     height:100%;
     bottom:0;
     
-    .grid_1 {
-      float:none;
-      width:auto;
-      margin:0;
-    }
-  }
-  
-  .workspace-material-queued-html,
-  .workspace-material-loading {
-    @include background-image('gfx/workspace-material-loading.gif'); 
-    background-repeat: no-repeat;
-    background-position: center;
-    min-height: 500px;
+    
   }
   
 }

@@ -20,6 +20,14 @@
 
   <dependencies>
   
+    <!-- JAX-RS -->
+    
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>jaxrs-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+  
     <!-- Zip4j -->
   
     <dependency>
@@ -84,6 +92,12 @@
     <dependency>
       <groupId>commons-codec</groupId>
       <artifactId>commons-codec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
       <scope>provided</scope>
     </dependency>
     

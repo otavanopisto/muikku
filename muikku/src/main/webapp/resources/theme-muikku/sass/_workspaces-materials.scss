@@ -1,41 +1,77 @@
-body.workspace-materials #content,
+body.workspace-materials #contentWorkspaceMaterials,
 body.workspace-materials-reading #contentWorkspaceMaterialsReading,
 body.workspace-materials-management #contentWorkspaceMaterialsManagement {
-
+  
+  /* Material loading */
+  .workspace-material-queued-html,
+  .workspace-material-loading {
+    @include background-image('gfx/workspace-material-loading.gif'); 
+    background-repeat: no-repeat;
+    background-position: center;
+    min-height: 500px;
+  }
+  
+  
   /* Input field overrides */
   input[type="text"], textarea {
     width:auto;
+    height:auto;
     border:1px solid #eee;
     @include rounded(3px);
     display:inline-block;
-    margin:4px;
     padding:2px 4px;
-    transition:border,box-shadow 0.3s,0.5s ease-in-out;
+    transition:border,box-shadow 0.1s,0.2s ease-in-out;
     outline:none; /* Thanks Chrome! */
     font-size:17px;
-    text-align:center;
     color:#0077c7;
     max-width:100%;
     box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
+    box-sizing:border-box;
+    margin:4px 3px;
     
     &:focus,
     &:hover {
       border:1px solid #97bfed;
       box-shadow:0 0 0px 3px rgba(202,225,252,0.75);
     }
+
+    &::-webkit-input-placeholder {
+      color:#b4b4b4;
+      font-style:italic;
+    }
+    
+    &:-moz-placeholder { /* older Firefox*/
+      color:#b4b4b4;
+      font-style:italic;
+    }
+    
+    &::-moz-placeholder { /* Firefox 19+ */ 
+      color:#b4b4b4;
+      font-style:italic;
+    }
+     
+    &:-ms-input-placeholder { 
+      color:#b4b4b4;
+      font-style:italic;
+    }
+    
+    &::input-placeholder {
+      color:#b4b4b4;
+      font-style:italic;
+    }
     
   }
   
   textarea {
     text-align:left;
-/*     color:#000; */
+    margin:0;
   }
 
   /* Select and Option field overrides */
   select {
     background:#fff;
     border:1px solid #eee;
-    transition:border,box-shadow 0.3s,0.5s ease-in-out;
+    transition:border,box-shadow 0.1s,0.2s ease-in-out;
     outline:none; /* Thanks Chrome! */
     color:#0077c7;
     display:inline-block;
@@ -64,8 +100,8 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     margin:0 10px;
     background:#fff;
     border:1px solid #eee;
-    transition:border,box-shadow 0.3s,0.5s ease-in-out;
-    outline:none; /* Thanks Chrome! */
+    transition:border,box-shadow 0.1s,0.2s ease-in-out;
+    outline:none;
     display:inline-block;
     box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
     @include rounded(3px);
@@ -176,18 +212,37 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
   
   button.muikku-save-page {
     color:#fff;
-    background:#6b899e;
+    background:#85cdff;
     box-shadow:none;
     border:0;
-    @include rounded(2px);
+    border-radius:2px;
     font-weight:300;
     font-size:16px;
     text-transform:uppercase;
-    padding:6px 12px;
+    padding:12px;
     transition:background 0.3s ease-in-out;
+    min-width:200px;
+    margin:20px auto;
+    display:block;
+    outline:none;
+    position:relative;
+    line-height:1;
     
     &:hover {
-      background:#0077c7;
+      background:#32abff;
+    }
+    
+    &.save-successful {
+      background:#51db46;
+    }
+    
+    &.icon-success:before {
+      position: absolute;
+      top: -50%;
+      left: 5px;
+      font-size: 65px;
+      text-shadow: 2px 0 0 #38d32c, -2px 0 0 #38d32c, 0 2px 0 #38d32c, 0 -2px 0 #38d32c, 1px 1px #38d32c, -1px -1px 0 #38d32c, 1px -1px 0 #38d32c, -1px 1px 0 #38d32c;
+      height: 60px;
     }
   }
   
