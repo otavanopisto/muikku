@@ -103,7 +103,7 @@
 
         var newJson = {
           'name': name,
-          'cols': this.getContentElement('info', 'cols').getValue(),
+          'columns': this.getContentElement('info', 'cols').getValue(),
           'rows': this.getContentElement('info', 'rows').getValue(),
         };
         
@@ -129,7 +129,7 @@
           {
             id: 'cols',
             type: 'text',
-            label: editor.lang['muikku-memofield'].propertiesDialogColumns,
+            label: editor.lang['muikku-memofield'].propertiesDialogCols,
             setup: function(json) {
               this.setValue(json.columns);
             }
@@ -139,7 +139,7 @@
             type: 'text',
             label: editor.lang['muikku-memofield'].propertiesDialogRows,
             setup: function(json) {
-              this.setValue(json.hint);
+              this.setValue(json.rows);
             }
           }
         ]
