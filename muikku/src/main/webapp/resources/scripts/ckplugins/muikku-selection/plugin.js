@@ -3,15 +3,15 @@
   
   /* global CKEDITOR */
 
-  CKEDITOR.plugins.add('muikku-checkbox', {
+  CKEDITOR.plugins.add('muikku-selection', {
     requires: 'dialog,muikku-fields',
-    icons: 'muikku-checkbox',
+    icons: 'muikku-selection',
     lang: 'fi,en',
     init: function(editor) {
-      editor.addCommand('muikku-checkbox-properties', new CKEDITOR.dialogCommand('muikkuCheckboxDialog'));
-      editor.ui.addButton('muikku-checkbox', {
-        label: editor.lang['muikku-checkbox'].toolbarMenu,
-        command: 'muikku-checkbox-properties',
+      editor.addCommand('muikku-selection-properties', new CKEDITOR.dialogCommand('muikkuSelectionDialog'));
+      editor.ui.addButton('muikku-selection', {
+        label: editor.lang['muikku-selection'].toolbarMenu,
+        command: 'muikku-selection-properties',
         toolbar: 'muikku-fields'
       });
       
@@ -19,44 +19,58 @@
 
       editor.on('doubleclick', function(evt) {
         var element = evt.data.element;
-        if (element.is('img') && element.hasClass('muikku-checkbox-field'))
-          evt.data.dialog = 'muikkuCheckboxDialog';
+        if (element.is('img') && element.hasClass('muikku-selection-field'))
+          evt.data.dialog = 'muikkuSelectionDialog';
       });
 
       // Context menu support
       
       if (editor.contextMenu) {
-        editor.addMenuGroup('muikkuCheckboxGroup');
-        editor.addMenuItem('muikkuCheckboxItem', {
-          label: editor.lang['muikku-checkbox'].propertiesMenu,
-          command: 'muikku-checkbox-properties',
-          group: 'muikkuCheckboxGroup'
+        editor.addMenuGroup('muikkuSelectionGroup');
+        editor.addMenuItem('muikkuSelectionItem', {
+          label: editor.lang['muikku-selection'].propertiesMenu,
+          command: 'muikku-selection-properties',
+          group: 'muikkuSelectionGroup'
         });
         editor.contextMenu.addListener(function(element) {
-          var checkboxField = editor.restoreRealElement(element);
-          if (checkboxField.getAttribute('type') == 'application/vnd.muikku.field.checklist') {
-            return {muikkuCheckboxItem: CKEDITOR.TRISTATE_OFF};
+          var selectionField = editor.restoreRealElement(element);
+          var selectionType = selectionField.getAttribute('type');
+          if (selectionType == 'application/vnd.muikku.field.select' || selectionType == 'application/vnd.muikku.field.checklist') {
+            return {muikkuSelectionItem: CKEDITOR.TRISTATE_OFF};
           }
         });
       }
       
-      // Checkbox fields
+      // Option fields
 
       var optionsElement = function(dialog, elementDefinition, htmlList) {
         CKEDITOR.ui.dialog.uiElement.call(this, dialog, elementDefinition, htmlList, 'div');
       };
       optionsElement.prototype = new CKEDITOR.ui.dialog.uiElement;
       CKEDITOR.tools.extend(optionsElement.prototype, {
+        setup: function() {
+          if (this.label) {
+            var optionsContainer = this.getElement();
+            var labelElement = optionsContainer.findOne('.options-element-label');
+            if (labelElement === null) {
+              labelElement = new CKEDITOR.dom.element('label');
+              labelElement.addClass('options-element-label');
+              optionsContainer.append(labelElement, true);
+            }
+            labelElement.setText(this.label);
+          }
+        },
         clear: function() {
           var element = this.getElement();
-          while (element.getFirst()) {
-            element.getFirst().remove();
+          var options = element.find('.selection-option-container');
+          for (var i = 0; i < options.count(); i++) {
+            options.getItem(i).remove();
           }
         },
         addOption: function() {
           var optionsContainer = this.getElement();
           var optionContainer = new CKEDITOR.dom.element('div');
-          optionContainer.addClass('checkbox-option-container');
+          optionContainer.addClass('selection-option-container');
           var optionNameField = new CKEDITOR.dom.element('input');
           optionNameField.setAttribute('name', 'optionName');
           optionNameField.setAttribute('type', 'hidden');
@@ -73,7 +87,7 @@
           return optionContainer;
         }
       });
-      CKEDITOR.dialog.addUIElement('muikkuCheckboxOptions', {
+      CKEDITOR.dialog.addUIElement('muikkuSelectionOptions', {
         build : function(dialog, elementDefinition, output) {
           return new optionsElement(dialog, elementDefinition, output);
         },
@@ -87,10 +101,11 @@
         dataFilter.addRules({
           elements: {
             'cke:object': function(element) {
-              if (element.attributes.type == 'application/vnd.muikku.field.checklist') {
-                var fakeElement = editor.createFakeParserElement(element, 'muikku-checkbox-field', 'object');
-                fakeElement.attributes['src'] = path + 'icons/muikku-checkbox-editor.jpg'; 
-                fakeElement.attributes['title'] = editor.lang['muikku-checkbox'].uiElement;
+              var type = element.attributes.type; 
+              if (type == 'application/vnd.muikku.field.select' || type == 'application/vnd.muikku.field.checklist') {
+                var fakeElement = editor.createFakeParserElement(element, 'muikku-selection-field', 'object');
+                fakeElement.attributes['src'] = path + 'icons/muikku-selection-editor.jpg'; 
+                fakeElement.attributes['title'] = editor.lang['muikku-selection'].uiElement;
                 return fakeElement;
               }
             }
@@ -102,9 +117,9 @@
   
   // Properties
   
-  CKEDITOR.dialog.add('muikkuCheckboxDialog', function(editor) {
+  CKEDITOR.dialog.add('muikkuSelectionDialog', function(editor) {
     return {
-      title: editor.lang['muikku-checkbox'].propertiesDialogTitle,
+      title: editor.lang['muikku-selection'].propertiesDialogTitle,
       minWidth: 400,
       minHeight: 200,
       contents: [
@@ -112,20 +127,39 @@
           id: 'tab-basic',
           elements: [
             {
-              id: 'orientation',
+              id: 'fieldType',
               type: 'select',
-              label: editor.lang['muikku-checkbox'].propertiesDialogOrientation,
+              label: editor.lang['muikku-selection'].propertiesDialogType,
               items: [
-                [editor.lang['muikku-checkbox'].propertiesDialogOrientationVer, 'vertical'],
-                [editor.lang['muikku-checkbox'].propertiesDialogOrientationHor, 'horizontal']
+                [editor.lang['muikku-selection'].propertiesDialogTypeDropdown, 'dropdown'],
+                [editor.lang['muikku-selection'].propertiesDialogTypeList, 'list'],
+                [editor.lang['muikku-selection'].propertiesDialogTypeRadioHor, 'radio-horizontal'],
+                [editor.lang['muikku-selection'].propertiesDialogTypeRadioVer, 'radio-vertical'],
+                [editor.lang['muikku-selection'].propertiesDialogTypeCheckboxHor, 'checkbox-horizontal'],
+                [editor.lang['muikku-selection'].propertiesDialogTypeCheckboxVer, 'checkbox-vertical']
               ],
               setup: function(json) {
-                this.setValue(json.orientation == 'horizontal' ? 'horizontal' : 'vertical');
+                var type = json.listType;
+                // TODO refactor DNM to produce proper data
+                if (!type && json.name) {
+                  type = 'checkbox-vertical';
+                }
+                else if (!type) {
+                  type = 'dropdown';
+                }
+                else if (type == 'radio') {
+                  type = 'radio-vertical';
+                }
+                else if (type == 'radio_horz') {
+                  type = 'radio-horizontal';
+                }
+                this.setValue(type);
               }
             },
             {
               id: 'options',
-              type: 'muikkuCheckboxOptions',
+              type: 'muikkuSelectionOptions',
+              label: editor.lang['muikku-selection'].propertiesDialogOptions,
               setup: function(json) {
                 this.clear();
                 if (json.options) {
@@ -147,17 +181,20 @@
       },
       onOk: function() {
         
+        var fieldType = this.getContentElement('tab-basic', 'fieldType').getValue();
+        var isMultiselectField = fieldType == 'checkbox-horizontal' || fieldType == 'checkbox-vertical';
+
         // JSON representation
         
         var contentJson = editor.getMuikkuFieldDefinition(editor.getSelection().getStartElement());
         if (!contentJson.name) {
           contentJson.name = editor.createRandomMuikkuFieldName();
         }
-        contentJson.orientation = this.getContentElement('tab-basic', 'orientation').getValue();
+        contentJson.listType = fieldType;
         contentJson.options = [];
         var optionsElement = this.getContentElement('tab-basic', 'options');
         var optionsUiElement = optionsElement.getElement();
-        var options = optionsUiElement.find('.checkbox-option-container');
+        var options = optionsUiElement.find('.selection-option-container');
         for (var i = 0; i < options.count(); i++) {
           var option = options.getItem(i);
           var name = option.findOne('input[name="optionName"]').getValue();
@@ -173,7 +210,8 @@
         // Object representation
         
         var object = new CKEDITOR.dom.element('cke:object');
-        object.setAttribute('type', 'application/vnd.muikku.field.checklist');
+        // TODO checklist -> multiselect refactoring
+        object.setAttribute('type', isMultiselectField ? 'application/vnd.muikku.field.checklist' : 'application/vnd.muikku.field.select');
         var paramType = new CKEDITOR.dom.element('cke:param');
         paramType.setAttribute('name', 'type');
         paramType.setAttribute('value', 'application/json');
@@ -187,9 +225,9 @@
 
         // CKEditor UI representation
         
-        var fakeElement = editor.createFakeElement(object, 'muikku-checkbox-field', 'object');
-        fakeElement.setAttribute('src', CKEDITOR.plugins.getPath('muikku-checkbox') + 'icons/muikku-checkbox-editor.jpg'); 
-        fakeElement.setAttribute('title', editor.lang['muikku-checkbox'].uiElement);
+        var fakeElement = editor.createFakeElement(object, 'muikku-selection-field', 'object');
+        fakeElement.setAttribute('src', CKEDITOR.plugins.getPath('muikku-selection') + 'icons/muikku-selection-editor.jpg'); 
+        fakeElement.setAttribute('title', editor.lang['muikku-selection'].uiElement);
         editor.insertElement(fakeElement);
       }
     };
