@@ -48,7 +48,7 @@
       };
       optionsElement.prototype = new CKEDITOR.ui.dialog.uiElement;
       CKEDITOR.tools.extend(optionsElement.prototype, {
-        setup: function() {
+        setupLabel: function() {
           if (this.label) {
             var optionsContainer = this.getElement();
             var labelElement = optionsContainer.findOne('.options-element-label');
@@ -87,6 +87,7 @@
           return optionContainer;
         }
       });
+
       CKEDITOR.dialog.addUIElement('muikkuSelectionOptions', {
         build : function(dialog, elementDefinition, output) {
           return new optionsElement(dialog, elementDefinition, output);
@@ -161,6 +162,7 @@
               type: 'muikkuSelectionOptions',
               label: editor.lang['muikku-selection'].propertiesDialogOptions,
               setup: function(json) {
+                this.setupLabel();
                 this.clear();
                 if (json.options) {
                   for (var i = 0; i < json.options.length; i++) {
