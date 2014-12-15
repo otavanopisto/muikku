@@ -7,8 +7,13 @@
   xmlns:ui="http://java.sun.com/jsf/facelets"
   template="/WEB-INF/templates/main-view.xhtml">
 
-  <ui:define name="content.center.widget">
-    <f:event type="preRenderView" listener="#{loginBackingBean.preRenderViewListener}"/>
+  <ui:define name="content.center.widgetspace">
+    <h1>Login</h1>
+  
+    <m:widgetSpace name="generic.header.right" keepEmpty="true" sizing="MAXIMIZE" styleClass="omega">
+      <m:widget name="credentiallogin" size="24" rendered="#{!sessionBackingBean.loggedIn}"/>
+      <m:widget name="externallogin" size="24" rendered="#{!sessionBackingBean.loggedIn}"/>
+	  </m:widgetSpace>
   </ui:define>
 
 </ui:composition>
