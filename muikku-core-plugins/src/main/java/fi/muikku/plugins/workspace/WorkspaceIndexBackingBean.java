@@ -1,7 +1,5 @@
 package fi.muikku.plugins.workspace;
 
-import java.io.FileNotFoundException;
-
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -12,6 +10,7 @@ import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
+import fi.muikku.jsf.NavigationRules;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.Workspace;
@@ -33,15 +32,15 @@ public class WorkspaceIndexBackingBean {
 	private WorkspaceNavigationBackingBean workspaceNavigationBackingBean;
 
 	@RequestAction
-	public void init() throws FileNotFoundException {
+	public String init() {
 	  String urlName = getWorkspaceUrlName();
 	  if (StringUtils.isBlank(urlName)) {
-	    throw new FileNotFoundException();
+	   return NavigationRules.NOT_FOUND;
 	  }
 	  
 	  WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByUrlName(urlName);
     if (workspaceEntity == null) {
-      throw new FileNotFoundException();
+      return NavigationRules.NOT_FOUND;
     }
     
     workspaceNavigationBackingBean.setWorkspaceUrlName(urlName);
@@ -49,6 +48,8 @@ public class WorkspaceIndexBackingBean {
     workspaceId = workspaceEntity.getId();
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
     workspaceName = workspace.getName();
+    
+    return null;
 	}
 
 	public Long getWorkspaceId() {
