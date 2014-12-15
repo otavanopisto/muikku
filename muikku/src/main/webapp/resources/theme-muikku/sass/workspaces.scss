@@ -40,6 +40,7 @@ body.workspace-materials {
   #workspaceNavigationWrapper { 
     position:fixed;
     top:100px;
+    z-index:99;
     
     .grid_1 {
       float:none;
