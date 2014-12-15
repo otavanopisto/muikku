@@ -1,10 +1,10 @@
 @font-face {
 	font-family: 'muikku';
-	src:url('fonts/muikku.eot?-9a8rz4');
-	src:url('fonts/muikku.eot?#iefix-9a8rz4') format('embedded-opentype'),
-		url('fonts/muikku.woff?-9a8rz4') format('woff'),
-		url('fonts/muikku.ttf?-9a8rz4') format('truetype'),
-		url('fonts/muikku.svg?-9a8rz4#muikku') format('svg');
+	src:url('fonts/muikku.eot?4933et');
+	src:url('fonts/muikku.eot?#iefix4933et') format('embedded-opentype'),
+		url('fonts/muikku.woff?4933et') format('woff'),
+		url('fonts/muikku.ttf?4933et') format('truetype'),
+		url('fonts/muikku.svg?4933et#muikku') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -155,9 +155,6 @@
 .icon-attachment:before {
 	content: "\e60e";
 }
-.icon-checkmark:before {
-	content: "\e60f";
-}
 .icon-discussion:before {
 	content: "\e610";
 }
@@ -188,6 +185,9 @@
 .icon-close-small:before {
 	content: "\e63b";
 }
+.icon-close-small:before {
+	content: "\e63b";
+}
 .icon-add:before {
 	content: "\e114";
 }
@@ -203,7 +203,7 @@
 .icon-arrow-right2:before {
 	content: "\e608";
 }
-.icon-success:before {
+.icon-checkmark:before {
 	content: "\e639";
 }
 .icon-guides:before {

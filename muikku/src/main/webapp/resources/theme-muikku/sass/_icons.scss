@@ -33,7 +33,7 @@
   display:inline-block;
 }
 
-.icon-materials-management:before {
+.icon-manage-materials:before {
   content: "\e63c";
 }
 .icon-week:before {
@@ -165,9 +165,6 @@
 .icon-attachment:before {
   content: "\e60e";
 }
-.icon-checkmark:before {
-  content: "\e60f";
-}
 .icon-discussion:before {
   content: "\e610";
 }
@@ -198,6 +195,9 @@
 .icon-close-small:before {
   content: "\e63b";
 }
+.icon-close-small:before {
+  content: "\e63b";
+}
 .icon-add:before {
   content: "\e114";
 }
@@ -213,7 +213,7 @@
 .icon-arrow-right2:before {
   content: "\e608";
 }
-.icon-success:before {
+.icon-checkmark:before {
   content: "\e639";
 }
 .icon-guides:before {
