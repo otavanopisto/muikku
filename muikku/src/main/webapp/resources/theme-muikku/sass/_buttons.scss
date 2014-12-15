@@ -44,7 +44,7 @@
     background: rgb(237,142,0);
     @include gradient-top-bottom(rgba(253,167,38,1),rgba(237,142,0,1),#ed8e00);
 
-    span{
+    span:first-child{
       display:inline-block;
       padding:8px 12px;
     }

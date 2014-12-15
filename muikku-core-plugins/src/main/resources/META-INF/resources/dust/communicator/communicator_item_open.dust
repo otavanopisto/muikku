@@ -1,5 +1,5 @@
 
-    <div class="mf-item cm-message open" id="{id}">
+    <div class="mf-item cm-message open {?isOwner}owner{/isOwner}" id="{id}">
       <div class="cm-message-topic mf-item-topic">
         <span class="mf-item-header-name cm-message-header"><h3>{caption}</h3></span>
         <div class="clear"></div>
@@ -23,7 +23,9 @@
               <div class="mf-item-content-text cm-message-content-text">{content}</div>          
               <div class="mf-item-content-tools cm-message-content-tools">
                 <div class="cm-message-content-tools-container">
-                  <div  id="{id}" class="cm-message-tool cm-message-reply-link mf-item-tool"><span>Vastaa viestiin</span></div>   
+                   {^isOwner}
+                    <div  id="{id}" class="cm-message-tool cm-message-reply-link mf-item-tool"><span>Vastaa viestiin</span></div>
+                  {/isOwner}
                 </div>
                 <div class="cm-message-content-tools-reply-container"></div>
                 <div class="clear"></div>

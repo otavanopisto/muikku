@@ -17,6 +17,8 @@ import org.apache.commons.lang3.text.translate.NumericEntityUnescaper;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
 import fi.muikku.plugins.dnm.parser.DeusNexException;
@@ -33,7 +35,6 @@ public class DeusNexStructureParser {
 
 	public DeusNexDocument parseDocument(InputStream inputStream) throws DeusNexException {
 		DeusNexDocumentImpl deusNexDocument = new DeusNexDocumentImpl();
-		
 		DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
 	  builderFactory.setNamespaceAware(false);
     builderFactory.setValidating(false);
@@ -77,7 +78,11 @@ public class DeusNexStructureParser {
 				return parseBinary(resourceElement);
 			case 4:
 				return parseFolder(resourceElement);
-			case 37: 
+			case 7:
+			  return parseStyleDocument(resourceElement);
+			case 34:
+        return parseQueryDocument(resourceElement);
+      case 37: 
 				return parseFCKDocument(resourceElement);
 			case 38:
 				return parseFCKQuery(resourceElement);
@@ -116,10 +121,17 @@ public class DeusNexStructureParser {
 		parseBasicResourceProperties(resourceElement, binary);
 		
 		Element contentElement = (Element) DeusNexXmlUtils.findNodeByXPath(resourceElement, "content");
-		CDATASection cdataSection = (CDATASection) contentElement.getFirstChild();
+		Node contentChild = contentElement.getFirstChild();
+		String textContent = null;
+		
+		if (contentChild instanceof CDATASection) {
+		  textContent = ((CDATASection) contentChild).getTextContent();
+		} else if (contentChild instanceof Text) {
+		  textContent = ((Text) contentChild).getTextContent();
+		}
 		byte[] content;
 		try {
-			content = decodeDeusNexBinary(cdataSection.getTextContent());
+			content = decodeDeusNexBinary(textContent);
 		} catch (UnsupportedEncodingException | DOMException e) {
 			throw new DeusNexInternalException("Could not retrieve binary content", e);
 		}
@@ -173,6 +185,64 @@ public class DeusNexStructureParser {
 	  
 		return query;
 	}
+  
+  private Document parseStyleDocument(Element resourceElement) throws DeusNexSyntaxException, XPathExpressionException, DeusNexInternalException {
+    Element documentElement = (Element) DeusNexXmlUtils.findNodeByXPath(resourceElement, "document/styledocument");
+    if (documentElement == null) {
+      try {
+        System.out.println( DeusNexXmlUtils.serializeElement(resourceElement, false, true, "html", "5") );
+      } catch (TransformerException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+      
+      throw new DeusNexSyntaxException("Missing data/document node");
+    }
+    
+    List<Resource> embeddedElements = new ArrayList<>();
+    List<Element> embeddedResourceElements = DeusNexXmlUtils.getElementsByXPath(resourceElement, "embedded/res");
+    for (Element embeddedResourceElement : embeddedResourceElements) {
+      embeddedElements.add( parseResource(embeddedResourceElement) );
+    }
+
+    Document document = new Document();
+    parseBasicResourceProperties(resourceElement, document);
+    document.setDocument(documentElement);
+    document.setResources(embeddedElements);
+    
+    return document;
+  }
+  
+  private Query parseQueryDocument(Element resourceElement) throws DeusNexSyntaxException, XPathExpressionException, DeusNexInternalException {
+    Element documentElement = (Element) DeusNexXmlUtils.findNodeByXPath(resourceElement, "styledocument");
+    if (documentElement == null) {
+      try {
+        System.out.println( DeusNexXmlUtils.serializeElement(resourceElement, false, true, "html", "5") );
+      } catch (TransformerException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+
+      throw new DeusNexSyntaxException("Missing data/document node");
+    }
+    
+    List<Resource> embeddedElements = new ArrayList<>();
+    List<Element> embeddedResourceElements = DeusNexXmlUtils.getElementsByXPath(resourceElement, "embedded/res");
+    for (Element embeddedResourceElement : embeddedResourceElements) {
+      embeddedElements.add( parseResource(embeddedResourceElement) );
+    }
+
+    Query query = new Query();
+    parseBasicResourceProperties(resourceElement, query);
+    query.setDocument(documentElement);
+    query.setResources(embeddedElements);
+    query.setQueryIdType(DeusNexXmlUtils.getChildValue(resourceElement, "queryIdType"));
+    query.setQueryStorageType(DeusNexXmlUtils.getChildValue(resourceElement, "queryStorageType"));
+    query.setQueryState(DeusNexXmlUtils.getChildValue(resourceElement, "queryState"));
+    query.setQueryType(DeusNexXmlUtils.getChildValue(resourceElement, "queryType"));
+    
+    return query;
+  }
 	
 	private Document parseFCKDocument(Element resourceElement) throws DeusNexSyntaxException, XPathExpressionException, DeusNexInternalException {
 		Element documentElement = (Element) DeusNexXmlUtils.findNodeByXPath(resourceElement, "document");

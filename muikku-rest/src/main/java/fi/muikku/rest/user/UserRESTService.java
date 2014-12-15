@@ -1,9 +1,13 @@
 package fi.muikku.rest.user;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.Stateless;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -16,6 +20,8 @@ import javax.ws.rs.core.Response;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.rest.AbstractRESTService;
 import fi.muikku.schooldata.entity.User;
+import fi.muikku.search.SearchProvider;
+import fi.muikku.search.SearchResult;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
 
@@ -31,6 +37,10 @@ public class UserRESTService extends AbstractRESTService {
   @Inject
   private UserEntityController userEntityController;
   
+  @Inject
+  @Any
+  private Instance<SearchProvider> searchProviders;
+
   @GET
   @Path ("/users/{ID}")
   public Response findUser(@PathParam ("ID") Long id) {
@@ -77,32 +87,38 @@ public class UserRESTService extends AbstractRESTService {
       @QueryParam("searchString") String searchString
       ) {
 
-    boolean hasImage = false;
-    
-    List<UserEntity> listUserEntities = userEntityController.listUserEntities();
-    
-    List<fi.muikku.rest.model.User> ret = new ArrayList<fi.muikku.rest.model.User>();
-    
-    searchString = searchString != null ? searchString.toLowerCase() : null;
-    
-    for (UserEntity userEntity : listUserEntities) {
-      User user;
+    SearchProvider elasticSearchProvider = getProvider("elastic-search");
+    if (elasticSearchProvider != null) {
+      String[] fields = new String[] { "firstName", "lastName" };
+      SearchResult result = elasticSearchProvider.search(searchString, fields, 0, 10, User.class);
       
-      try {
-        user = userController.findUserByUserEntityDefaults(userEntity);
-      } catch (Exception ex) {
-        ex.printStackTrace();
-        continue;
+      List<Map<String, Object>> results = result.getResults();
+      boolean hasImage = false;
+      
+      List<fi.muikku.rest.model.User> ret = new ArrayList<fi.muikku.rest.model.User>();
+
+      for (Map<String, Object> o : results) {
+        String[] id = ((String) o.get("id")).split("/", 2);
+        UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(id[1], id[0]);
+
+        ret.add(new fi.muikku.rest.model.User(userEntity.getId(), (String) o.get("firstName"), (String) o.get("lastName"), hasImage));
       }
       
-      if ((user.getFirstName() != null) && (user.getFirstName().toLowerCase().contains(searchString))) {
-        ret.add(new fi.muikku.rest.model.User(userEntity.getId(), user.getFirstName(), user.getLastName(), hasImage));
-      } else if ((user.getLastName() != null) && (user.getLastName().toLowerCase().contains(searchString))) {
-        ret.add(new fi.muikku.rest.model.User(userEntity.getId(), user.getFirstName(), user.getLastName(), hasImage));
-      }
+      return Response.ok(ret).build();
     }
     
-    return Response.ok(ret).build();
+    return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
   }
   
+  private SearchProvider getProvider(String name) {
+    Iterator<SearchProvider> i = searchProviders.iterator();
+    while (i.hasNext()) {
+      SearchProvider provider = i.next();
+      if (name.equals(provider.getName())) {
+        return provider;
+      }
+    }
+    return null;
+  }
+
 }

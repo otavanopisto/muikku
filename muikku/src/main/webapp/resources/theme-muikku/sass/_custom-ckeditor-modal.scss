@@ -1,0 +1,258 @@
+div.cke_reset_all * {
+  font-family:"Open Sans";
+  font-size:16px;
+  color:#2c2c2c;
+  font-weight:300;
+  border-radius:0px;
+  border:none;
+  box-shadow:none;
+  text-shadow:none;
+}
+
+div.cke_reset_all {
+
+  table.cke_dialog {
+ 
+    div.cke_dialog_body {
+      background:#fff;
+      box-shadow:0 0 80px rgba(0,0,0,0.4);
+      border:none;
+
+      div.cke_dialog_title {
+        color:#fff;
+        background:#7391a7;
+        padding:8px 12px;
+        text-transform:uppercase;
+      }
+      
+      .cke_dialog_close_button {
+        background:transparent;
+        top:8px;
+        right:10px;
+      
+        &:before {
+          font-size:22px;
+          content: "\e63b";
+          color:#fff;
+          font-family: 'muikku';
+          speak: none;
+          font-style: normal;
+          text-decoration:none;
+          font-weight: normal;
+          font-variant: normal;
+          text-transform: none;
+          line-height: 1;
+          
+          /* Better Font Rendering =========== */
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+      
+      }
+      
+      .cke_dialog_contents {
+        padding:0;
+        margin:0;
+      
+        .cke_dialog_contents_body {
+          height:auto;
+          max-height:600px;
+          overflow:auto;
+          padding:5px 10px;
+          
+          .cke_dialog_ui_vbox_child {
+            padding:0 0 10px;
+            
+            .sortable-wrapper {
+              /* Wrapper for sortable fields */
+            
+              input[type="text"] {
+                margin:4px 0px 4px 20px;
+              }
+        
+              .sortable-container {
+              /* Container for individual sortable field */
+              
+                .sortable-handle {
+                /* Handle to activate drag 'n drop sorting  */
+                
+                }
+              
+              }
+            
+            }
+            
+            
+          }
+
+        }
+        
+        .cke_dialog_footer {
+          outline:none;
+          background:transparent;
+          
+          a.cke_dialog_ui_button {
+            text-transform:uppercase;
+            margin:5px;
+            display:block;
+            font-size:16px;
+            min-width:90px;
+            border:none;
+            outline:none;
+            display:block;
+            padding:6px 0px 5px 0px;
+            background-image:none;
+            box-shadow:none;
+            border-radius:0px;
+            color:#fff;
+            
+            &.cke_dialog_ui_button_cancel,
+            &.cke_dialog_ui_button_cancel:focus,
+            &.cke_dialog_ui_button_cancel:active {
+              background:#7391a7;
+
+              span {
+                font-size:inherit;
+                font-weight:400;
+                line-height:1;
+                text-shadow:none;
+                padding:0;
+              }
+            }
+          
+            &.cke_dialog_ui_button_ok,
+            &.cke_dialog_ui_button_ok:focus,
+            &.cke_dialog_ui_button_ok:active {
+              background:#27b91c;
+              
+              span {
+                font-size:inherit;
+                font-weight:400;
+                line-height:1;
+                text-shadow:none;
+                padding:0;
+              }
+            }
+          
+          }
+          
+        }
+      
+      }
+      
+      label {
+        text-transform:uppercase;
+        font-size:14px;
+      }
+      
+      /* Input field overrides */
+      input[type="text"], textarea {
+        width: auto;
+        min-width: 250px;
+        height:auto;
+        border:1px solid #eee;
+        @include rounded(3px);
+        display:inline-block;
+        padding:3px 5px;
+        transition:border,box-shadow 0.1s,0.2s ease-in-out;
+        outline:none;
+        font-size:15px;
+        max-width:100%;
+        box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
+        box-sizing:border-box;
+        margin:4px 0px;
+
+        &.max-size {
+          width:100%;
+        }
+        
+        &:focus,
+        &:hover {
+          border:1px solid #97bfed;
+          box-shadow:0 0 0px 3px rgba(202,225,252,0.75);
+        }
+    
+        &::-webkit-input-placeholder {
+          color:#b4b4b4;
+          font-style:italic;
+        }
+        
+        &:-moz-placeholder { /* older Firefox*/
+          color:#b4b4b4;
+          font-style:italic;
+        }
+        
+        &::-moz-placeholder { /* Firefox 19+ */ 
+          color:#b4b4b4;
+          font-style:italic;
+        }
+         
+        &:-ms-input-placeholder { 
+          color:#b4b4b4;
+          font-style:italic;
+        }
+        
+        &::input-placeholder {
+          color:#b4b4b4;
+          font-style:italic;
+        }
+        
+      }
+      
+      input[type="radio"],
+      input[type="checkbox"] {
+        margin:0 10px;
+        background:#fff;
+        border:1px solid #eee;
+        transition:border,box-shadow 0.1s,0.2s ease-in-out;
+        outline:none;
+        display:inline-block;
+        box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
+        @include rounded(3px);
+        display:inline-block;
+        
+        &:focus,
+        &:hover,
+        &:checked {
+          border:1px solid #97bfed;
+          box-shadow:0 0 0px 3px rgba(202,225,252,0.85);
+        }
+      }
+      
+      /* Select and Option field overrides */
+      select.cke_dialog_ui_input_select {
+        height:auto;
+        line-height:inherit;
+        background:#fff;
+        font-size:15px;
+        border:1px solid #eee;
+        transition:border,box-shadow 0.1s,0.2s ease-in-out;
+        outline:none; /* Thanks Chrome! */
+        display:inline-block;
+        margin:4px 0px;
+        box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
+        @include rounded(3px);
+        max-width:100%;
+        word-wrap:break-word;
+        
+        &:focus,
+        &:hover {
+          border:1px solid #97bfed;
+          box-shadow:0 0 0px 3px rgba(202,225,252,0.85);
+        }
+      
+        option {
+          background:#fff;
+          font-weight:300;
+          padding:0px 3px;
+        }
+      
+      }
+    }
+   
+   
+    
+  }
+  
+}
+

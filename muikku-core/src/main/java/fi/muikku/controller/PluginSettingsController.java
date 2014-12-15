@@ -2,7 +2,7 @@ package fi.muikku.controller;
 
 import java.util.List;
 
-import javax.ejb.Stateful;
+import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -18,7 +18,7 @@ import fi.muikku.model.plugins.PluginUserSettingKey;
 import fi.muikku.model.users.UserEntity;
 
 @Dependent
-@Stateful
+@Stateless
 public class PluginSettingsController {
 
 	@Inject
@@ -58,8 +58,7 @@ public class PluginSettingsController {
 		return null;
 	}
 	
-	// TODO: Does this cause performance problems?
-	public synchronized String getPluginSetting(String plugin, String name) {
+	public String getPluginSetting(String plugin, String name) {
 		PluginSettingKey key = findPluginSettingKey(plugin, name);
 		
 		if (key == null) {
@@ -104,7 +103,7 @@ public class PluginSettingsController {
 		return pluginUserSettingDAO.findByKeyAndUser(key, user);
 	}
 	
-	public synchronized String getPluginUserSetting(String plugin, String name, UserEntity user) {
+	public String getPluginUserSetting(String plugin, String name, UserEntity user) {
 		PluginUserSettingKey key = findPluginUserSettingKey(plugin, name);
 		if (key == null) {
 			key = pluginUserSettingKeyDAO.create(plugin, name);

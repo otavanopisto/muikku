@@ -52,7 +52,7 @@
                 $(iframe).replaceWith(placeholder);
                 this._loadHtmlMaterial(pageElement, workspaceEntityId, embededWorkspaceMaterialId, embededMaterialId, placeholder.attr('id'), parentIds.concat(materialId), fieldAnswers);
               } else {
-                $('.notification-queue').notificationQueue('notification', 'error', "Incorrect material type '" + materialType + "' for embedded document");
+                $('.notification-queue').notificationQueue('notification', 'error', "Incorrect material type '" + embededMaterialType + "' for embedded document");
               }
             }, this));
             
