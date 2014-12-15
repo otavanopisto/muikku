@@ -25,6 +25,7 @@
 
   CKEDITOR.plugins.add( 'muikku-textfield', {
     requires: 'dialog,muikku-fields',
+    icons: 'muikkutextfield',
     lang: 'fi,en',
     onLoad: function() {
     },
