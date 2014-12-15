@@ -48,32 +48,65 @@
       };
       optionsElement.prototype = new CKEDITOR.ui.dialog.uiElement;
       CKEDITOR.tools.extend(optionsElement.prototype, {
+        optionNames: [],
         setupLabel: function() {
           if (this.label) {
             var optionsContainer = this.getElement();
-            var labelElement = optionsContainer.findOne('.options-element-label');
-            if (labelElement === null) {
-              labelElement = new CKEDITOR.dom.element('label');
-              labelElement.addClass('options-element-label');
-              optionsContainer.append(labelElement, true);
+            var titleContainer = optionsContainer.findOne('.options-title-container');
+            if (titleContainer === null) {
+              titleContainer = new CKEDITOR.dom.element('div');
+              titleContainer.addClass('options-title-container');
+              optionsContainer.append(titleContainer);
+              
+              var optionLabel = new CKEDITOR.dom.element('label');
+              optionLabel.setText(this.label);
+              titleContainer.append(optionLabel);
+              
+              var _this = this;
+              var addLink = new CKEDITOR.dom.element('a');
+              addLink.addClass('icon-add');
+              addLink.on('click', function() {
+                _this.addOption(true);
+              });
+              titleContainer.append(addLink);
+              var addLinkTooltip = new CKEDITOR.dom.element('span');
+              addLinkTooltip.setText(editor.lang['muikku-selection'].propertiesDialogAddOptionLink);
+              addLink.append(addLinkTooltip);
+              
+              var correctLabel = new CKEDITOR.dom.element('label');
+              correctLabel.addClass('icon-checkmark');
+              titleContainer.append(correctLabel);
+              var correctTooltip = new CKEDITOR.dom.element('span');
+              correctTooltip.setText(editor.lang['muikku-selection'].propertiesDialogCorrectTooltip);
+              correctLabel.append(correctTooltip);
             }
-            labelElement.setText(this.label);
           }
         },
+        getUniqueOptionName: function() {
+          var i = 1;
+          while (this.optionNames.indexOf(i.toString()) > -1)
+            i++;
+          this.optionNames.push(i.toString());
+          return i.toString();
+        },
         clear: function() {
+          this.optionNames = [];
           var element = this.getElement();
           var options = element.find('.selection-option-container');
           for (var i = 0; i < options.count(); i++) {
             options.getItem(i).remove();
           }
         },
-        addOption: function() {
+        addOption: function(allowDelete, optionName) {
           var optionsContainer = this.getElement();
           var optionContainer = new CKEDITOR.dom.element('div');
           optionContainer.addClass('selection-option-container');
           var optionNameField = new CKEDITOR.dom.element('input');
           optionNameField.setAttribute('name', 'optionName');
           optionNameField.setAttribute('type', 'hidden');
+          if (optionName)
+            this.optionNames.push(optionName);
+          optionNameField.setValue(optionName ? optionName : this.getUniqueOptionName());
           var optionTextField = new CKEDITOR.dom.element('input');
           optionTextField.setAttribute('name', 'optionText');
           optionTextField.setAttribute('type', 'text');
@@ -84,6 +117,23 @@
           optionContainer.append(optionNameField);
           optionContainer.append(optionTextField);
           optionContainer.append(optionCorrectField);
+          if (allowDelete === true) {
+            var deleteLink = new CKEDITOR.dom.element('a');
+            var _this = this;
+            deleteLink.addClass('icon-delete');
+            deleteLink.on('click', function() {
+              // TODO how do you find a parent with class name in CKEditor?!
+              var option = this.getParent(); 
+              var name = option.findOne('input[name="optionName"]').getValue();
+              var index = _this.optionNames.indexOf(name);
+              _this.optionNames.splice(index, 1); 
+              optionContainer.remove();
+            });
+            var deleteTooltip = new CKEDITOR.dom.element('span');
+            deleteTooltip.setText(editor.lang['muikku-selection'].propertiesDialogDeleteOptionLink);
+            deleteLink.append(deleteTooltip);
+            optionContainer.append(deleteLink);
+          }
           return optionContainer;
         }
       });
@@ -164,13 +214,16 @@
               setup: function(json) {
                 this.setupLabel();
                 this.clear();
-                if (json.options) {
+                if (json.options && json.options.length > 0) {
                   for (var i = 0; i < json.options.length; i++) {
-                    var optionContainer = this.addOption();
-                    optionContainer.findOne('input[name="optionName"]').setValue(json.options[i].name);
+                    var optionIndex = json.options[i].name;
+                    var optionContainer = this.addOption(i > 0, json.options[i].name);
                     optionContainer.findOne('input[name="optionText"]').setValue(json.options[i].text);
                     optionContainer.findOne('input[name="optionCorrect"]').$.checked = json.options[i].correct == true;
                   }
+                }
+                else { // always one option by default
+                  var optionContainer = this.addOption(false);
                 }
               }
             }

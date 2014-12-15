@@ -11,4 +11,7 @@ CKEDITOR.plugins.setLang('muikku-selection', 'en', {
   propertiesDialogTypeCheckboxHor: 'Checkboxes (Horizontal)',
   propertiesDialogTypeCheckboxVer: 'Checkboxes (Vertical)',
   propertiesDialogOptions: 'Options',
+  propertiesDialogAddOptionLink: 'Add New Option',
+  propertiesDialogCorrectTooltip: 'Correct Answer',
+  propertiesDialogDeleteOptionLink: 'Remove Option',
 });

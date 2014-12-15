@@ -11,4 +11,7 @@ CKEDITOR.plugins.setLang('muikku-selection', 'fi', {
   propertiesDialogTypeCheckboxHor: 'Valintaruudut (vaakasuora)',
   propertiesDialogTypeCheckboxVer: 'Valintaruudut (pystysuora)',
   propertiesDialogOptions: 'Valinnat',
+  propertiesDialogAddOptionLink: 'Lisää uusi valinta',
+  propertiesDialogCorrectTooltip: 'Oikea vastaus',
+  propertiesDialogDeleteOptionLink: 'Poista valinta',
 });
