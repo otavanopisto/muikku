@@ -1,4 +1,4 @@
-CKEDITOR.plugins.setLang('muikku-textfield', 'en', {
+CKEDITOR.plugins.setLang('muikku-textfield', 'fi', {
   uiElement: 'Muistiokenttä',
   toolbarMenu: 'Muistiokenttä',
   propertiesMenu: 'Muistiokentän asetukset',
