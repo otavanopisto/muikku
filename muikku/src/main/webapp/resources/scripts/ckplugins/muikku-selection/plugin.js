@@ -114,6 +114,7 @@
           optionContainer.addClass('selection-option-container');
           var sortHandle = new CKEDITOR.dom.element('span');
           sortHandle.addClass('sort-handle');
+          sortHandle.addClass('ícon-move');
           var optionNameField = new CKEDITOR.dom.element('input');
           optionNameField.setAttribute('name', 'optionName');
           optionNameField.setAttribute('type', 'hidden');
