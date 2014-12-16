@@ -102,10 +102,7 @@ div.cke_reset_all {
                   display:block;
                   position:absolute;
                   top:-25px;
-                  left:10px;
                   box-shadow: 0 0 4px rgba(255,255,255,0.9);
-                  max-width:100px;
-                  word-wrap:break-word;
                 }
               
               }
@@ -116,6 +113,14 @@ div.cke_reset_all {
               
               label {
                 margin-right:10px;
+              }
+              
+              .icon-add {
+              
+                span {
+                  left:5px;
+                }
+                
               }
 
               /* Add position styles for this icon */
@@ -129,7 +134,7 @@ div.cke_reset_all {
                 &:hover {
               
                   span {
-                    left:-100px;
+                    right:5px;
                   }
                 
                 }
@@ -172,7 +177,7 @@ div.cke_reset_all {
                   &:hover {
               
                     span {
-                      left:-100px;
+                      right:5px;
                     }
                   
                   }
