@@ -23,6 +23,8 @@ import fi.muikku.schooldata.entity.UserEmail;
 import fi.muikku.schooldata.entity.UserImage;
 import fi.muikku.schooldata.entity.UserProperty;
 import fi.pyramus.rest.model.CourseStaffMemberRole;
+import fi.pyramus.rest.model.Person;
+import fi.pyramus.rest.model.StaffMember;
 import fi.pyramus.rest.model.Student;
 import fi.pyramus.rest.model.StudyProgramme;
 import fi.pyramus.rest.model.UserRole;
@@ -70,7 +72,16 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 	  
 	  return entityFactory.createEntity(students, studyProgrammes.toArray(new StudyProgramme[0]));
 	}
-	
+
+  private User createStudentEntity(Student student) {
+    List<User> users = createStudentEntities(new Student[] { student } );
+    if (users.isEmpty()) {
+      return null;
+    }
+    
+    return users.get(0);
+  }
+  
 	@Override
 	public User findUser(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
 	  Long studentId = identifierMapper.getPyramusStudentId(identifier);
@@ -88,12 +99,31 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
 	@Override
 	public List<User> listUsersByEmail(String email) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+	  Map<Long, User> userMap = new HashMap<Long, User>();
+	  Long personId = null;
+	  
+	  for (Student student : pyramusClient.get("/students/students?email=" + email, Student[].class)) {
+	    userMap.put(student.getId(), createStudentEntity(student));
+	    personId = student.getPersonId();
+	  }
+	  
+	  for (StaffMember staffMember : pyramusClient.get("/staff/members?email=" + email, fi.pyramus.rest.model.StaffMember[].class)) {
+	    userMap.put(staffMember.getId(), entityFactory.createEntity(staffMember));
+      personId = staffMember.getPersonId();
+	  }
+	  
 	  List<User> result = new ArrayList<User>();
-
-    result.addAll(createStudentEntities(pyramusClient.get("/students/students?email=" + email, Student[].class)));
-    result.addAll(entityFactory.createEntity(pyramusClient.get("/staff/members?email=" + email, fi.pyramus.rest.model.StaffMember[].class)));
-
-    return result;
+	  
+	  if (personId != null) {
+	    Person person = pyramusClient.get("/persons/persons/" + personId, fi.pyramus.rest.model.Person.class);
+	    if (userMap.containsKey(person.getDefaultUserId())) {
+	      result.add(userMap.remove(person.getDefaultUserId()));
+	    }
+    }
+	  
+	  result.addAll(userMap.values());
+	  
+	  return result;
 	}
 
 	@Override
