@@ -3,6 +3,8 @@ package fi.muikku.auth;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
 import javax.faces.context.ExternalContext;
@@ -29,6 +31,9 @@ public class LoginBackingBean {
 
   @Parameter
   private String redirectUrl;
+
+  @Inject
+  private Logger logger;
   
   @Inject
   private AuthSourceController authSourceController;
@@ -124,6 +129,7 @@ public class LoginBackingBean {
         }
       }
     } catch (AuthenticationHandleException | IOException e) {
+      logger.log(Level.SEVERE, "Login failed because of an internal error", e);
       return NavigationRules.INTERNAL_ERROR;
     }
     
