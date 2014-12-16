@@ -113,7 +113,7 @@
           var optionContainer = new CKEDITOR.dom.element('div');
           optionContainer.addClass('selection-option-container');
           var sortHandle = new CKEDITOR.dom.element('span');
-          sortHandle.addClass('sortHandle');
+          sortHandle.addClass('sort-handle');
           var optionNameField = new CKEDITOR.dom.element('input');
           optionNameField.setAttribute('name', 'optionName');
           optionNameField.setAttribute('type', 'hidden');
@@ -152,7 +152,7 @@
           }
           // Sorting
           $(optionsContainer.$).sortable({
-            handle: '.sortHandle',
+            handle: '.sort-handle',
             axis: 'y',
             stop: function(event, ui) {
               $(optionsContainer.$).children('.selection-option-container').each(function(index, element) {
