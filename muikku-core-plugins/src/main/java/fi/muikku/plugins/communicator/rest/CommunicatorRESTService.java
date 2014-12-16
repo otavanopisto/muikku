@@ -1,5 +1,6 @@
 package fi.muikku.plugins.communicator.rest;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -11,6 +12,7 @@ import java.util.Set;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.websocket.EncodeException;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -35,6 +37,7 @@ import fi.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
 import fi.muikku.plugins.communicator.model.InboxCommunicatorMessage;
+import fi.muikku.plugins.websocket.WebSocketMessenger;
 import fi.muikku.security.AuthorizationException;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.UserController;
@@ -72,6 +75,9 @@ public class CommunicatorRESTService extends PluginRESTService {
   
   @Inject
   private NotifierController notifierController;
+  
+  @Inject
+  private WebSocketMessenger webSocketMessenger;
 
   @GET
   @Path ("/items")
@@ -262,6 +268,16 @@ public class CommunicatorRESTService extends PluginRESTService {
       
     notifierController.sendNotification(communicatorNewInboxMessageNotification, user, recipients);
     
+    try {
+      webSocketMessenger.sendMessage2("Communicator:newmessagereceived", null, recipients);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (EncodeException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    
     CommunicatorMessageRESTModel result = new CommunicatorMessageRESTModel(message.getId(), message.getCommunicatorMessageId().getId(), 
         message.getSender(), message.getCategory().getName(), message.getCaption(), message.getContent(), message.getCreated(), 
         tagIdsToStr(message.getTags()), getMessageRecipientIdList(message), new ArrayList<Long>());
@@ -378,6 +394,16 @@ public class CommunicatorRESTService extends PluginRESTService {
         recipients, categoryEntity, newMessage.getCaption(), newMessage.getContent(), tagList);
 
     notifierController.sendNotification(communicatorNewInboxMessageNotification, user, recipients);
+    
+    try {
+      webSocketMessenger.sendMessage2("Communicator:newmessagereceived", null, recipients);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (EncodeException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     
     CommunicatorMessageRESTModel result = new CommunicatorMessageRESTModel(message.getId(), message.getCommunicatorMessageId().getId(), 
         message.getSender(), message.getCategory().getName(), message.getCaption(), message.getContent(), message.getCreated(), 
