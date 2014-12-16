@@ -49,14 +49,15 @@
       optionsElement.prototype = new CKEDITOR.ui.dialog.uiElement;
       CKEDITOR.tools.extend(optionsElement.prototype, {
         optionNames: [],
-        setupLabel: function() {
+        setupContainers: function() {
+          // Title label container
+          var uiElement = this.getElement();
           if (this.label) {
-            var optionsContainer = this.getElement();
-            var titleContainer = optionsContainer.findOne('.options-title-container');
+            var titleContainer = uiElement.findOne('.selection-title-container');
             if (titleContainer === null) {
               titleContainer = new CKEDITOR.dom.element('div');
-              titleContainer.addClass('options-title-container');
-              optionsContainer.append(titleContainer);
+              titleContainer.addClass('selection-title-container');
+              uiElement.append(titleContainer);
               
               var optionLabel = new CKEDITOR.dom.element('label');
               optionLabel.setText(this.label);
@@ -66,7 +67,7 @@
               var addLink = new CKEDITOR.dom.element('a');
               addLink.addClass('icon-add');
               addLink.on('click', function() {
-                _this.addOption(true);
+                _this.addOption();
               });
               titleContainer.append(addLink);
               var addLinkTooltip = new CKEDITOR.dom.element('span');
@@ -80,6 +81,13 @@
               correctTooltip.setText(editor.lang['muikku-selection'].propertiesDialogCorrectTooltip);
               correctLabel.append(correctTooltip);
             }
+          }
+          // Options container
+          var optionsContainer = uiElement.findOne('.selection-options-container');
+          if (optionsContainer == null) {
+            optionsContainer = new CKEDITOR.dom.element('div');
+            optionsContainer.addClass('selection-options-container');
+            uiElement.append(optionsContainer);
           }
         },
         getUniqueOptionName: function() {
@@ -97,10 +105,16 @@
             options.getItem(i).remove();
           }
         },
-        addOption: function(allowDelete, optionName) {
-          var optionsContainer = this.getElement();
+        getOptionCount: function() {
+          return this.getElement().find('.selection-option-container').count();
+        },
+        addOption: function(optionName) {
+          var optionsContainer = this.getElement().findOne('.selection-options-container');
           var optionContainer = new CKEDITOR.dom.element('div');
           optionContainer.addClass('selection-option-container');
+          var sortHandle = new CKEDITOR.dom.element('span');
+          sortHandle.addClass('sort-handle');
+          sortHandle.addClass('icon-move');
           var optionNameField = new CKEDITOR.dom.element('input');
           optionNameField.setAttribute('name', 'optionName');
           optionNameField.setAttribute('type', 'hidden');
@@ -114,26 +128,44 @@
           optionCorrectField.setAttribute('name', 'optionCorrect');
           optionCorrectField.setAttribute('type', 'checkbox');
           optionsContainer.append(optionContainer);
+          optionContainer.append(sortHandle);
           optionContainer.append(optionNameField);
           optionContainer.append(optionTextField);
           optionContainer.append(optionCorrectField);
-          if (allowDelete === true) {
-            var deleteLink = new CKEDITOR.dom.element('a');
-            var _this = this;
-            deleteLink.addClass('icon-delete');
-            deleteLink.on('click', function() {
-              // TODO how do you find a parent with class name in CKEditor?!
-              var option = this.getParent(); 
-              var name = option.findOne('input[name="optionName"]').getValue();
-              var index = _this.optionNames.indexOf(name);
-              _this.optionNames.splice(index, 1); 
-              optionContainer.remove();
-            });
-            var deleteTooltip = new CKEDITOR.dom.element('span');
-            deleteTooltip.setText(editor.lang['muikku-selection'].propertiesDialogDeleteOptionLink);
-            deleteLink.append(deleteTooltip);
-            optionContainer.append(deleteLink);
+          // Deletion
+          var deleteLink = new CKEDITOR.dom.element('a');
+          var _this = this;
+          deleteLink.addClass('icon-delete');
+          deleteLink.on('click', function() {
+            // TODO how do you find a parent with class name in CKEditor?!
+            var option = this.getParent(); 
+            var name = option.findOne('input[name="optionName"]').getValue();
+            var index = _this.optionNames.indexOf(name);
+            _this.optionNames.splice(index, 1); 
+            optionContainer.remove();
+          });
+          var deleteTooltip = new CKEDITOR.dom.element('span');
+          deleteTooltip.setText(editor.lang['muikku-selection'].propertiesDialogDeleteOptionLink);
+          deleteLink.append(deleteTooltip);
+          optionContainer.append(deleteLink);
+          if (this.getOptionCount() == 1) {
+            $(deleteLink.$).hide();
           }
+          // Sorting
+          $(optionsContainer.$).sortable({
+            handle: '.sort-handle',
+            axis: 'y',
+            stop: function(event, ui) {
+              $(optionsContainer.$).children('.selection-option-container').each(function(index, element) {
+                if (index == 0) {
+                  $(element).find('.icon-delete').hide();
+                }
+                else {
+                  $(element).find('.icon-delete').show();
+                }
+              });
+            }
+          });
           return optionContainer;
         }
       });
@@ -212,18 +244,18 @@
               type: 'muikkuSelectionOptions',
               label: editor.lang['muikku-selection'].propertiesDialogOptions,
               setup: function(json) {
-                this.setupLabel();
+                this.setupContainers();
                 this.clear();
                 if (json.options && json.options.length > 0) {
                   for (var i = 0; i < json.options.length; i++) {
                     var optionIndex = json.options[i].name;
-                    var optionContainer = this.addOption(i > 0, json.options[i].name);
+                    var optionContainer = this.addOption(json.options[i].name);
                     optionContainer.findOne('input[name="optionText"]').setValue(json.options[i].text);
                     optionContainer.findOne('input[name="optionCorrect"]').$.checked = json.options[i].correct == true;
                   }
                 }
                 else { // always one option by default
-                  var optionContainer = this.addOption(false);
+                  var optionContainer = this.addOption();
                 }
               }
             }

@@ -79,26 +79,115 @@ div.cke_reset_all {
           .cke_dialog_ui_vbox_child {
             padding:0 0 10px;
             
-            .sortable-wrapper {
-              /* Wrapper for sortable fields */
-            
-              input[type="text"] {
-                margin:4px 0px 4px 20px;
-              }
-        
-              .sortable-container {
-              /* Container for individual sortable field */
+            .icon-add,
+            .icon-checkmark,
+            .icon-delete {
+              font-size: 13px;
+              display: inline-block;
+              position:relative;
+              cursor:pointer;
               
-                .sortable-handle {
-                /* Handle to activate drag 'n drop sorting  */
-                
+              span {
+                display:none;
+                background:#7996aa;
+                padding:2px 4px;
+                color:#fff;
+                text-transform:uppercase;
+                font-size:12px;
+              }
+              
+              &:hover {
+              
+                span {
+                  display:block;
+                  position:absolute;
+                  top:-25px;
+                  box-shadow: 0 0 4px rgba(255,255,255,0.9);
                 }
               
+              }
+            }
+            
+            .selection-title-container {
+              position:relative;
+              
+              label {
+                margin-right:10px;
+              }
+              
+              .icon-add {
+              
+                span {
+                  left:5px;
+                }
+                
+              }
+
+              /* Add position styles for this icon */
+              .icon-checkmark {
+                position:absolute;
+                left:362px;
+                top:5px;
+                margin:0;
+                font-size:15px;
+                
+                &:hover {
+              
+                  span {
+                    right:5px;
+                  }
+                
+                }
               }
             
             }
             
+            .selection-options-container {
             
+              .selection-option-container {
+              
+                input[type="text"] {
+                  width:330px;
+                }
+              
+                .sort-handle {
+                  @include rounded-top-left(4px);
+                  @include rounded-bottom-left(4px);
+                  color: #7996aa;
+                  background: #f3faff;
+                  padding: 6px 4px 6px 6px;
+                  font-size: 12px;
+                  position: relative;
+                  top: -1px;
+                  cursor:move;
+                  transition:background 0.3s ease-in-out;
+                  
+                  &:hover {
+                    color: #fff;
+                    background: #7996aa;
+                  }
+                  
+                }
+                
+                .icon-delete {
+                  font-size:16px;
+                  position:relative;
+                  top:2px;
+                  
+                  &:hover {
+              
+                    span {
+                      right:5px;
+                    }
+                  
+                  }
+                }
+
+              
+              }
+            
+            }
+
           }
 
         }
