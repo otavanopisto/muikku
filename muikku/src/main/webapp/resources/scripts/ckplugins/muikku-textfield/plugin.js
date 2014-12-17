@@ -11,14 +11,14 @@
 
   function createFakeParserElement( editor, realElement ) {
     var fake = editor.createFakeParserElement( realElement, 'muikku-text-field', 'muikkutextfield', true );
-    fake.attributes.src = "//placehold.it/150x20";
+    fake.attributes.src = CKEDITOR.plugins.getPath('muikku-textfield') + 'gfx/textfield-eval.gif';
     fake.attributes.title = editor.lang['muikku-textfield'].uiElement;
     return fake;
   }
 
   function createFakeElement( editor, realElement ) {
     var fake = editor.createFakeElement( realElement, 'muikku-text-field', 'muikkutextfield', true );
-    fake.setAttribute('src', '//placehold.it/150x20');
+    fake.setAttribute('src', CKEDITOR.plugins.getPath('muikku-textfield') + 'gfx/textfield-eval.gif');
     fake.setAttribute('title', editor.lang['muikku-textfield'].uiElement);
     return fake;
   }
