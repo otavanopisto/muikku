@@ -26,6 +26,7 @@
   CKEDITOR.plugins.add( 'muikku-memofield', {
     requires: 'dialog,muikku-fields',
     lang: 'fi,en',
+    icons: 'muikkumemofield',
     hidpi: true,
     onLoad: function() {
     },
