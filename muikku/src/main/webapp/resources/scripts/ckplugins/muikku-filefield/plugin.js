@@ -44,7 +44,7 @@
           // CKEditor UI representation
           
           var fakeElement = editor.createFakeElement(object, 'muikku-file-field', 'object');
-          fakeElement.setAttribute('src', CKEDITOR.plugins.getPath('muikku-filefield') + 'icons/muikku-placeholder-file.gif'); 
+          fakeElement.setAttribute('src', CKEDITOR.plugins.getPath('muikku-filefield') + 'gfx/muikku-placeholder-file.gif'); 
           fakeElement.setAttribute('title', editor.lang['muikku-filefield'].uiElement);
           editor.insertElement(fakeElement);
         }
@@ -61,7 +61,7 @@
               var type = element.attributes.type; 
               if (type == 'application/vnd.muikku.field.file') {
                 var fakeElement = editor.createFakeParserElement(element, 'muikku-file-field', 'object');
-                fakeElement.attributes['src'] = path + 'icons/muikku-placeholder-file.gif'; 
+                fakeElement.attributes['src'] = path + 'gfx/muikku-placeholder-file.gif'; 
                 fakeElement.attributes['title'] = editor.lang['muikku-filefield'].uiElement;
                 return fakeElement;
               }
