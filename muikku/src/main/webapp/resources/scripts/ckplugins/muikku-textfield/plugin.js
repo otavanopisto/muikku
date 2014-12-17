@@ -96,9 +96,6 @@
         element.getFirst().remove();
       }
     },
-    onLoad: function() {
-      this.setLabel(this.label);
-    },
     setLabel: function(label) {
       var optionsContainer = this.getElement();
       var labelElement = optionsContainer.findOne('answers-element-label');
@@ -237,6 +234,7 @@
             label: editor.lang['muikku-textfield'].propertiesDialogRightAnswers,
             setup: function(json) {
               this.clear();
+              this.setLabel(this.label); 
               for (var i = 0; i < json.rightAnswers.length; i++) {
                 var text = json.rightAnswers[i].text;
                 var correct = json.rightAnswers[i].points > 0;
