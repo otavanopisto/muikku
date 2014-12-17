@@ -217,7 +217,7 @@
                 }
                 // Fake element
                 var fakeElement = editor.createFakeParserElement(element, 'muikku-selection-field', 'object');
-                fakeElement.attributes['src'] = path + 'icons/' + fakeElementImage; 
+                fakeElement.attributes['src'] = path + 'gfx/' + fakeElementImage; 
                 fakeElement.attributes['title'] = editor.lang['muikku-selection'].uiElement;
                 return fakeElement;
               }
@@ -381,7 +381,7 @@
         // CKEditor UI representation
         
         var fakeElement = editor.createFakeElement(object, 'muikku-selection-field', 'object');
-        fakeElement.setAttribute('src', CKEDITOR.plugins.getPath('muikku-selection') + 'icons/' + fakeElementImage); 
+        fakeElement.setAttribute('src', CKEDITOR.plugins.getPath('muikku-selection') + 'gfx/' + fakeElementImage); 
         fakeElement.setAttribute('title', editor.lang['muikku-selection'].uiElement);
         editor.insertElement(fakeElement);
       }
