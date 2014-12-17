@@ -200,7 +200,7 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
       
       patched = algorithm.patch(data, patch);
       checksum = DigestUtils.md5Hex(patched);
-      htmlMaterialDAO.updateData(htmlMaterial, patched);
+//      htmlMaterialDAO.updateData(htmlMaterial, patched);
     } 
     
     Long patchRevisionNumber = currentRevision + 1;

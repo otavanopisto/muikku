@@ -35,7 +35,7 @@
         editor.contextMenu.addListener(function(element) {
           var selectionField = editor.restoreRealElement(element);
           var selectionType = selectionField.getAttribute('type');
-          if (selectionType == 'application/vnd.muikku.field.select' || selectionType == 'application/vnd.muikku.field.checklist') {
+          if (selectionType == 'application/vnd.muikku.field.select' || selectionType == 'application/vnd.muikku.field.multiselect') {
             return {muikkuSelectionItem: CKEDITOR.TRISTATE_OFF};
           }
         });
@@ -185,7 +185,7 @@
           elements: {
             'cke:object': function(element) {
               var type = element.attributes.type; 
-              if (type == 'application/vnd.muikku.field.select' || type == 'application/vnd.muikku.field.checklist') {
+              if (type == 'application/vnd.muikku.field.select' || type == 'application/vnd.muikku.field.multiselect') {
                 var fakeElement = editor.createFakeParserElement(element, 'muikku-selection-field', 'object');
                 fakeElement.attributes['src'] = path + 'icons/muikku-selection-editor.jpg'; 
                 fakeElement.attributes['title'] = editor.lang['muikku-selection'].uiElement;
@@ -222,21 +222,7 @@
                 [editor.lang['muikku-selection'].propertiesDialogTypeCheckboxVer, 'checkbox-vertical']
               ],
               setup: function(json) {
-                var type = json.listType;
-                // TODO refactor DNM to produce proper data
-                if (!type && json.name) {
-                  type = 'checkbox-vertical';
-                }
-                else if (!type) {
-                  type = 'dropdown';
-                }
-                else if (type == 'radio') {
-                  type = 'radio-vertical';
-                }
-                else if (type == 'radio_horz') {
-                  type = 'radio-horizontal';
-                }
-                this.setValue(type);
+                this.setValue(json.listType);
               }
             },
             {
@@ -297,8 +283,7 @@
         // Object representation
         
         var object = new CKEDITOR.dom.element('cke:object');
-        // TODO checklist -> multiselect refactoring
-        object.setAttribute('type', isMultiselectField ? 'application/vnd.muikku.field.checklist' : 'application/vnd.muikku.field.select');
+        object.setAttribute('type', isMultiselectField ? 'application/vnd.muikku.field.multiselect' : 'application/vnd.muikku.field.select');
         var paramType = new CKEDITOR.dom.element('cke:param');
         paramType.setAttribute('name', 'type');
         paramType.setAttribute('value', 'application/json');
@@ -309,6 +294,20 @@
         object.append(paramContent);
         
         // TODO Default representation
+        
+        var fakeElementImage = '';
+        switch (fieldType) {
+        case 'dropdown':
+          break;
+        case 'list':
+          break;
+        case 'radio-horizontal':
+        case 'radio-vertical':
+          break;
+        case 'checkbox-horizontal':
+        case 'checkbox-vertical':
+          break;
+        }
 
         // CKEditor UI representation
         

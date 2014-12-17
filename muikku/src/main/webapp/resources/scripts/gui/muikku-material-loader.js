@@ -368,8 +368,8 @@
           
           $(object).replaceWith(input);
         break;
-        case 'radio':
-        case 'radio_horz':
+        case 'radio-horizontal':
+        case 'radio_vertical':
           var idPrefix = [data.materialId, data.embedId, data.name].join(':');
           var container = $('<div>').addClass('muikku-select-field');
           for (var i = 0, l = meta.options.length; i < l; i++){
@@ -391,7 +391,7 @@
               });
             }
             var target = container;
-            if (meta.listType == 'radio') {
+            if (meta.listType == 'radio-vertical') {
               target = $('<div>');
               container.append(target);
             }
@@ -414,7 +414,7 @@
 
   $(document).on('taskFieldDiscovered', function (event, data) {
     var object = data.object;
-    if ($(object).attr('type') == 'application/vnd.muikku.field.checklist') {
+    if ($(object).attr('type') == 'application/vnd.muikku.field.multiselect') {
 
       var meta = data.meta;
       var idPrefix = [data.materialId, data.embedId, data.name].join(':');
@@ -439,10 +439,13 @@
             checked: 'checked'
           });
         }
-        var optionContainer = $('<div>');
-        optionContainer.append(checkbox);
-        optionContainer.append(label);
-        container.append(optionContainer);
+        var target = container;
+        if (meta.listType == 'checkbox-vertical') {
+          target = $('<div>');
+          container.append(target);
+        }
+        target.append(checkbox);
+        target.append(label);
       }      
       container.muikkuField({
         fieldName: data.name,
