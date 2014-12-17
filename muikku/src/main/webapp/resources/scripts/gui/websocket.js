@@ -2,8 +2,20 @@
 
   MuikkuWebSocketImpl = $.klass({
     init: function () {
-      this._webSocket = this._openWebSocket('wss://dev.muikku.fi:8443/ws/socket');
+      var _this = this;
+      mApi().websocket.ticket.read().callback(function (err, ticket) {
+        _this._ticket = ticket.ticket;
+      });
+
+      this._webSocket = this._openWebSocket('wss://dev.muikku.fi:8443/ws/socket/' + _this._ticket);
       this._webSocket.onmessage = this._onWebSocketMessage;
+      
+      $(window).on('unload', function() {
+        if (_this._webSocket) {
+          _this._webSocket.onclose = function () {};
+          _this._webSocket.close();
+        }
+      });
     },
     _openWebSocket: function (url) {
       if ((typeof window.WebSocket) !== 'undefined') {

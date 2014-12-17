@@ -9,6 +9,7 @@ import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+import javax.websocket.CloseReason;
 import javax.websocket.EncodeException;
 import javax.websocket.Session;
 
@@ -17,7 +18,6 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.session.SessionController;
 
 @ApplicationScoped
 public class WebSocketMessenger {
@@ -26,7 +26,7 @@ public class WebSocketMessenger {
   private Event<WebSocketMessage> webSocketMessageEvent;
 
   @Inject
-  private SessionController sessionController;
+  private WebSocketTicketController webSocketTicketController;
   
   private Set<Session> sessions = new HashSet<Session>();
   
@@ -50,36 +50,44 @@ public class WebSocketMessenger {
 
     synchronized (this) {
       for (Session session : sessions) {
-//        Long userId = (Long) session.getUserProperties().get("UserId");
-//
-//        if ((userId != null) && (recipients.contains(userId))) {
-          session.getBasicRemote().sendText(strMessage);
-//        }
+        if (session.isOpen()) {
+          Long userId = (Long) session.getUserProperties().get("UserId");
+  
+          if ((userId != null) && (recipients.contains(userId))) {
+            session.getBasicRemote().sendText(strMessage);
+          }
+        }
       }
     }    
   }
   
-  protected void openSession(Session session) {
-    synchronized (this) {
-//      if (sessionController.getLoggedUserEntity() != null)
-//        session.getUserProperties().put("UserId", sessionController.getLoggedUserEntity());
+  private boolean verifyTicket(WebSocketTicket ticket) {
+    return ticket != null;
+  }
+  
+  protected void openSession(Session session, String ticket) throws IOException {
+    WebSocketTicket ticket1 = webSocketTicketController.findTicket(ticket);
 
-      sessions.add(session);
-    }
+    if (verifyTicket(ticket1)) {
+      synchronized (this) {
+        session.getUserProperties().put("UserId", ticket1.getUser());
+        sessions.add(session);
+      }
+    } else
+      session.close(new CloseReason(CloseReason.CloseCodes.VIOLATED_POLICY, "Ticket could not be validated."));
   }
 
-  protected void closeSession(Session session) {
+  protected void closeSession(Session session, String ticket) {
     synchronized (this) {
       sessions.remove(session);
     }
+    
+    webSocketTicketController.removeTicket(ticket);
   }
 
-  protected void handleMessage(String message, Session session) {
+  protected void handleMessage(String message, Session session, String ticket) {
     synchronized (this) {
       ObjectMapper mapper = new ObjectMapper();
-
-//      if (sessionController.getLoggedUserEntity() != null)
-//        session.getUserProperties().put("UserId", sessionController.getLoggedUserEntity());
 
       try {
         WebSocketMessage message2 = mapper.readValue(message, WebSocketMessage.class);

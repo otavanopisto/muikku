@@ -14,7 +14,7 @@ import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
 
-@ServerEndpoint ("/ws/socket")
+@ServerEndpoint ("/ws/socket/{TICKET}")
 @Transactional
 public class WebSocket {
   
@@ -22,18 +22,18 @@ public class WebSocket {
   private WebSocketMessenger webSocketMessenger;
   
   @OnOpen
-  public void onOpen(final Session client, EndpointConfig endpointConfig) throws IOException {
-    webSocketMessenger.openSession(client);
+  public void onOpen(final Session client, EndpointConfig endpointConfig, @PathParam("TICKET") String ticket) throws IOException {
+    webSocketMessenger.openSession(client, ticket);
   }
   
   @OnClose
-  public void onClose(final Session session, CloseReason closeReason, @PathParam("HTMLMATERIALID") String fileId, @PathParam("SESSIONID") String sessionId) {
-    webSocketMessenger.closeSession(session);
+  public void onClose(final Session session, CloseReason closeReason, @PathParam("TICKET") String ticket) {
+    webSocketMessenger.closeSession(session, ticket);
   }
 
   @OnMessage
-  public void onMessage(String message, Session session) throws IOException {
-    webSocketMessenger.handleMessage(message, session);
+  public void onMessage(String message, Session session, @PathParam("TICKET") String ticket) throws IOException {
+    webSocketMessenger.handleMessage(message, session, ticket);
   }
   
 }
