@@ -5,14 +5,13 @@
 
   CKEDITOR.plugins.add('muikku-filefield', {
     requires: 'muikku-fields',
-    icons: 'muikku-file-field',
+    icons: 'muikku-filefield',
     hidpi: true,
     lang: 'fi,en',
     init: function(editor) {
       editor.ui.addButton('muikku-filefield', {
         label: editor.lang['muikku-filefield'].toolbarMenu,
-        command: 'createMuikkuFileField',
-        toolbar: 'muikku-fields'
+        command: 'createMuikkuFileField'
       });
       editor.addCommand('createMuikkuFileField', {
         exec: function (editor) {
