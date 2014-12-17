@@ -108,7 +108,9 @@ div.cke_reset_all {
               }
             }
             
-            .selection-title-container {
+            .selection-title-container,
+            .textfield-title-container,
+            .memofield-title-container {
               position:relative;
               
               label {
@@ -142,9 +144,13 @@ div.cke_reset_all {
             
             }
             
-            .selection-options-container {
+            .selection-options-container,
+            .textfield-elements-container,
+            .memofield-elements-container {
             
-              .selection-option-container {
+              .selection-option-container,
+              .textfield-element-container,
+              .memofield-element-container {
               
                 input[type="text"] {
                   width:330px;

@@ -186,8 +186,38 @@
             'cke:object': function(element) {
               var type = element.attributes.type; 
               if (type == 'application/vnd.muikku.field.select' || type == 'application/vnd.muikku.field.multiselect') {
+                // Content JSON
+                var content = {};
+                for (var i = 0; i < element.children.length; i++) {
+                  if (element.children[i].name == 'cke:param') {
+                    if (element.children[i].attributes.name == 'content') {
+                      content = element.children[i].attributes.value; 
+                      break;
+                    }
+                  }
+                }
+                var contentJson = JSON.parse(content);
+                // Placeholder image based on content JSON
+                var fakeElementImage = '';
+                switch (contentJson.listType) {
+                case 'dropdown':
+                  fakeElementImage = 'muikku-placeholder-dropdown.gif';
+                  break;
+                case 'list':
+                  fakeElementImage = 'muikku-placeholder-list.gif';
+                  break;
+                case 'radio-horizontal':
+                case 'radio-vertical':
+                  fakeElementImage = 'muikku-placeholder-radio.gif';
+                  break;
+                case 'checkbox-horizontal':
+                case 'checkbox-vertical':
+                  fakeElementImage = 'muikku-placeholder-checkbox.gif';
+                  break;
+                }
+                // Fake element
                 var fakeElement = editor.createFakeParserElement(element, 'muikku-selection-field', 'object');
-                fakeElement.attributes['src'] = path + 'icons/muikku-selection-editor.jpg'; 
+                fakeElement.attributes['src'] = path + 'icons/' + fakeElementImage; 
                 fakeElement.attributes['title'] = editor.lang['muikku-selection'].uiElement;
                 return fakeElement;
               }
@@ -293,26 +323,65 @@
         object.append(paramType);
         object.append(paramContent);
         
-        // TODO Default representation
+        // Default UI representation
         
         var fakeElementImage = '';
         switch (fieldType) {
         case 'dropdown':
-          break;
         case 'list':
+          var select = new CKEDITOR.dom.element('select');
+          select.setAttribute('name', contentJson.name);
+          if (fieldType == 'list') {
+            select.setAttribute('size', contentJson.options.length);
+          }
+          for (var i = 0; i < contentJson.options.length; i++) {
+            var option = new CKEDITOR.dom.element('option');
+            option.setAttribute('value', contentJson.options[i].name);
+            option.setText(contentJson.options[i].text);
+          }
+          object.append(select);
+          fakeElementImage = 'muikku-placeholder-' + fieldType + '.gif';
           break;
         case 'radio-horizontal':
         case 'radio-vertical':
+          for (var i = 0; i < contentJson.options.length; i++) {
+            var input = new CKEDITOR.dom.element('input');
+            input.setAttribute('name', contentJson.name);
+            input.setAttribute('type', 'radio');
+            input.setAttribute('value', contentJson.options[i].name);
+            var label = new CKEDITOR.dom.element('label');
+            label.setText(contentJson.options[i].text);
+            object.append(input);
+            object.append(label);
+            if (fieldType == 'radio-vertical') {
+              object.append(new CKEDITOR.dom.element('br'));
+            }
+          }
+          fakeElementImage = 'muikku-placeholder-radio.gif';
           break;
         case 'checkbox-horizontal':
         case 'checkbox-vertical':
+          for (var i = 0; i < contentJson.options.length; i++) {
+            var input = new CKEDITOR.dom.element('input');
+            input.setAttribute('name', contentJson.name);
+            input.setAttribute('type', 'checkbox');
+            input.setAttribute('value', contentJson.options[i].name);
+            var label = new CKEDITOR.dom.element('label');
+            label.setText(contentJson.options[i].text);
+            object.append(input);
+            object.append(label);
+            if (fieldType == 'checkbox-vertical') {
+              object.append(new CKEDITOR.dom.element('br'));
+            }
+          }
+          fakeElementImage = 'muikku-placeholder-checkbox.gif';
           break;
         }
 
         // CKEditor UI representation
         
         var fakeElement = editor.createFakeElement(object, 'muikku-selection-field', 'object');
-        fakeElement.setAttribute('src', CKEDITOR.plugins.getPath('muikku-selection') + 'icons/muikku-selection-editor.jpg'); 
+        fakeElement.setAttribute('src', CKEDITOR.plugins.getPath('muikku-selection') + 'icons/' + fakeElementImage); 
         fakeElement.setAttribute('title', editor.lang['muikku-selection'].uiElement);
         editor.insertElement(fakeElement);
       }
