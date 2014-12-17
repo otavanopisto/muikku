@@ -119,7 +119,6 @@
         toolbar: [
           { name: 'document', items : [ 'Source' ] },
           { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
-          { name: 'forms', items : ['MuikkuTextField', 'muikku-selection', 'MuikkuMemoField', 'muikku-filefield']},
           { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
           { name: 'links', items : [ 'Link','Unlink','Anchor' ] },
           { name: 'colors', items : [ 'TextColor','BGColor' ] },
@@ -129,6 +128,8 @@
           '-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl' ] },
           { name: 'insert', items : [ 'Image','Flash','Table','SpecialChar' ] },          
           { name: 'tools', items : [ 'Maximize', 'ShowBlocks','-','About' ] },
+          '/',
+          { name: 'forms', items : ['MuikkuTextField', 'muikku-selection', 'MuikkuMemoField', 'muikku-filefield']}
         ],
         autoGrowOnStartup : true,
         skin : 'moono',
