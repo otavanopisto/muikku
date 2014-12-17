@@ -166,15 +166,31 @@
                   '.textfield-elements-container');
               var optionContainer = new CKEDITOR.dom.element('div');
               optionContainer.addClass('textfield-element-container');
+
+              var sortHandle = new CKEDITOR.dom.element('span');
+              sortHandle.addClass('sort-handle');
+              sortHandle.addClass('icon-move');
+              $(optionsContainer.$).sortable({
+                handle: '.sort-handle',
+                axis: 'y',
+                stop: function(event, ui) {
+                }
+              });
+              optionContainer.append(sortHandle);
+
               var optionTextField = new CKEDITOR.dom.element('input');
               optionTextField.setAttribute('name', 'text');
               optionTextField.setAttribute('type', 'text');
               optionTextField.setAttribute('value', text);
+              optionContainer.append(optionTextField);
+
               var optionCorrectField = new CKEDITOR.dom.element('input');
               optionCorrectField.setAttribute('name', 'correct');
               optionCorrectField.setAttribute('type', 'checkbox');
               optionCorrectField.setAttribute('checked', correct);
-              // Deletion
+              optionContainer.append(optionCorrectField);
+              optionsContainer.append(optionContainer);
+
               var deleteLink = new CKEDITOR.dom.element('a');
               var _this = this;
               deleteLink.addClass('icon-delete');
@@ -189,9 +205,6 @@
               deleteTooltip.setText(this.deleteOptionLink);
               deleteLink.append(deleteTooltip);
               optionContainer.append(deleteLink);
-              optionsContainer.append(optionContainer);
-              optionContainer.append(optionTextField);
-              optionContainer.append(optionCorrectField);
             },
             removeAnswer : function(answerIndex) {
               var nodes = this.getElement()
