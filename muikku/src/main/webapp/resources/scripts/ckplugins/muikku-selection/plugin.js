@@ -253,7 +253,7 @@
                 [editor.lang['muikku-selection'].propertiesDialogTypeCheckboxVer, 'checkbox-vertical']
               ],
               setup: function(json) {
-                this.setValue(json.listType);
+                this.setValue(json.listType ? json.listType : 'dropdown');
               }
             },
             {
