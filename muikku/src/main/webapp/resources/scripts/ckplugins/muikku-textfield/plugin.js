@@ -96,20 +96,50 @@
         element.getFirst().remove();
       }
     },
-    setLabel: function(label) {
-      var optionsContainer = this.getElement();
-      var labelElement = optionsContainer.findOne('answers-element-label');
-      if (labelElement === null) {
-        labelElement = new CKEDITOR.dom.element('label');
-        optionsContainer.append(labelElement, true);
+    setupContainers: function(label) {
+      var uiElement = this.getElement();
+      if (this.label) {
+        var titleContainer = uiElement.findOne('.textfield-title-container');
+        if (titleContainer === null) {
+          titleContainer = new CKEDITOR.dom.element('div');
+          titleContainer.addClass('textfield-title-container');
+          uiElement.append(titleContainer);
+          
+          var optionLabel = new CKEDITOR.dom.element('label');
+          optionLabel.setText(this.label);
+          titleContainer.append(optionLabel);
+          
+          var _this = this;
+          var addLink = new CKEDITOR.dom.element('a');
+          addLink.addClass('icon-add');
+          addLink.on('click', function() {
+            _this.addAnswer('', false);
+          });
+          titleContainer.append(addLink);
+          var addLinkTooltip = new CKEDITOR.dom.element('span');
+          addLinkTooltip.setText(this.addOptionLink);
+          addLink.append(addLinkTooltip);
+          
+          var correctLabel = new CKEDITOR.dom.element('label');
+          correctLabel.addClass('icon-checkmark');
+          titleContainer.append(correctLabel);
+          var correctTooltip = new CKEDITOR.dom.element('span');
+          correctTooltip.setText(this.correctTooltip);
+          correctLabel.append(correctTooltip);
+        }
       }
-
-      labelElement.setText(label);
+      // Options container
+      var optionsContainer = uiElement.findOne('.textfield-elements-container');
+      if (optionsContainer == null) {
+        optionsContainer = new CKEDITOR.dom.element('div');
+        optionsContainer.addClass('textfield-elements-container');
+        uiElement.append(optionsContainer);
+      }
     },
     addAnswer: function(text, correct) {
-      var optionsContainer = this.getElement();
+      var optionsContainer = this.getElement().findOne('.textfield-elements-container');
       var optionContainer = new CKEDITOR.dom.element('div');
-      optionContainer.addClass('answers-element-container');
+      optionContainer.addClass('textfield-element-container');
       var optionTextField = new CKEDITOR.dom.element('input');
       optionTextField.setAttribute('name', 'text');
       optionTextField.setAttribute('type', 'text');
@@ -118,19 +148,33 @@
       optionCorrectField.setAttribute('name', 'correct');
       optionCorrectField.setAttribute('type', 'checkbox');
       optionCorrectField.setAttribute('checked', correct);
+      // Deletion
+      var deleteLink = new CKEDITOR.dom.element('a');
+      var _this = this;
+      deleteLink.addClass('icon-delete');
+      deleteLink.on('click', (function() {
+        var _optionContainer = optionContainer;
+        
+        return (function() {
+            _optionContainer.remove();
+        });
+      }()));
+      var deleteTooltip = new CKEDITOR.dom.element('span');
+      deleteTooltip.setText(this.deleteOptionLink);
+      deleteLink.append(deleteTooltip);
+      optionContainer.append(deleteLink);
       optionsContainer.append(optionContainer);
       optionContainer.append(optionTextField);
       optionContainer.append(optionCorrectField);
-      return optionContainer;
     },
     removeAnswer: function(answerIndex) {
-      var nodes = this.getElement().find('.answers-element-container');
+      var nodes = this.getElement().find('.textfield-element-container');
       nodes.getItem(answerIndex).remove();
     },
     getAnswers: function() {
       var rightAnswers = [];
       var answersUiElement = this.getElement();
-      var answers = answersUiElement.find('.answers-element-container');
+      var answers = answersUiElement.find('.textfield-element-container');
       for (var i = 0; i < answers.count(); i++) {
         var answer = answers.getItem(i);
         var text = answer.findOne('input[name="text"]').getValue();
@@ -141,7 +185,11 @@
         });
       }
       return rightAnswers;
+    },
+    getAnswersCount: function() {
+      return this.getElement().find('.textfield-element-container').count();
     }
+    
   });
 
   CKEDITOR.dialog.addUIElement('muikkuTextFieldRightAnswers', {
@@ -171,18 +219,16 @@
         var answersElement = this.getContentElement('info', 'answers');
         rightAnswers = answersElement.getAnswers();
         for (var i=0, l=rightAnswers.length; i<l; i++) {
-          rightAnswers[i].points = rightAnswers[i].correct ? 1.0 : 0.0;
+          // TODO: controls for case sensitive / normalize whitespace
           rightAnswers[i].caseSensitive = false;
           rightAnswers[i].normalizeWhitespace = true;
-          delete rightAnswers[i].correct;
         }
 
         var newJson = {
           'name': name,
           'rightAnswers': rightAnswers,
           'columns': this.getContentElement('info', 'width').getValue(),
-          'hint': this.getContentElement('info', 'hint').getValue(),
-          'help': this.getContentElement('info', 'help').getValue()
+          'hint': this.getContentElement('info', 'hint').getValue()
         };
         
         var object = new CKEDITOR.dom.element('object');
@@ -221,23 +267,18 @@
             }
           },
           {
-            id: 'help',
-            type: 'text',
-            label: editor.lang['muikku-textfield'].propertiesDialogHelp,
-            setup: function(json) {
-              this.setValue(json.help);
-            }
-          },
-          {
             id: 'answers',
             type: 'muikkuTextFieldRightAnswers',
             label: editor.lang['muikku-textfield'].propertiesDialogRightAnswers,
+            addOptionLink: editor.lang['muikku-textfield'].propertiesDialogAddOptionLink,
+            deleteOptionLink: editor.lang['muikku-textfield'].propertiesDialogDeleteOptionLink,
+            correctTooltip: editor.lang['muikku-textfield'].propertiesDialogCorrectTooltip,
             setup: function(json) {
               this.clear();
-              this.setLabel(this.label); 
+              this.setupContainers();
               for (var i = 0; i < json.rightAnswers.length; i++) {
                 var text = json.rightAnswers[i].text;
-                var correct = json.rightAnswers[i].points > 0;
+                var correct = json.rightAnswers[i].correct;
                 this.addAnswer(text, correct);
               }
             }
