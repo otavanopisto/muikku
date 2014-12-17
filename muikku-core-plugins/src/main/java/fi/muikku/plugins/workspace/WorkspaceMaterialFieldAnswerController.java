@@ -4,24 +4,24 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import fi.muikku.plugins.material.dao.QueryChecklistFieldOptionDAO;
+import fi.muikku.plugins.material.dao.QueryMultiSelectFieldOptionDAO;
 import fi.muikku.plugins.material.dao.QuerySelectFieldOptionDAO;
-import fi.muikku.plugins.material.model.QueryChecklistField;
-import fi.muikku.plugins.material.model.QueryChecklistFieldOption;
+import fi.muikku.plugins.material.model.QueryMultiSelectField;
+import fi.muikku.plugins.material.model.QueryMultiSelectFieldOption;
 import fi.muikku.plugins.material.model.QueryConnectFieldCounterpart;
 import fi.muikku.plugins.material.model.QueryConnectFieldTerm;
 import fi.muikku.plugins.material.model.QuerySelectField;
 import fi.muikku.plugins.material.model.QuerySelectFieldOption;
-import fi.muikku.plugins.workspace.dao.WorkspaceMaterialChecklistFieldAnswerDAO;
-import fi.muikku.plugins.workspace.dao.WorkspaceMaterialChecklistFieldAnswerOptionDAO;
+import fi.muikku.plugins.workspace.dao.WorkspaceMaterialMultiSelectFieldAnswerDAO;
+import fi.muikku.plugins.workspace.dao.WorkspaceMaterialMultiSelectFieldAnswerOptionDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialConnectFieldAnswerDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialFieldAnswerDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialFileFieldAnswerDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialFileFieldAnswerFileDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialSelectFieldAnswerDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialTextFieldAnswerDAO;
-import fi.muikku.plugins.workspace.model.WorkspaceMaterialChecklistFieldAnswer;
-import fi.muikku.plugins.workspace.model.WorkspaceMaterialChecklistFieldAnswerOption;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialMultiSelectFieldAnswer;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialMultiSelectFieldAnswerOption;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialConnectFieldAnswer;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialFieldAnswer;
@@ -46,10 +46,10 @@ public class WorkspaceMaterialFieldAnswerController {
   private WorkspaceMaterialConnectFieldAnswerDAO workspaceMaterialConnectFieldAnswerDAO;
 
   @Inject
-  private WorkspaceMaterialChecklistFieldAnswerDAO workspaceMaterialChecklistFieldAnswerDAO;
+  private WorkspaceMaterialMultiSelectFieldAnswerDAO workspaceMaterialMultiSelectFieldAnswerDAO;
 
   @Inject
-  private WorkspaceMaterialChecklistFieldAnswerOptionDAO workspaceMaterialChecklistFieldAnswerOptionDAO;
+  private WorkspaceMaterialMultiSelectFieldAnswerOptionDAO workspaceMaterialMultiSelectFieldAnswerOptionDAO;
 
   @Inject
   private WorkspaceMaterialFileFieldAnswerDAO workspaceMaterialFileFieldAnswerDAO;
@@ -61,7 +61,7 @@ public class WorkspaceMaterialFieldAnswerController {
   private QuerySelectFieldOptionDAO querySelectFieldOptionDAO;
   
   @Inject
-  private QueryChecklistFieldOptionDAO queryChecklistFieldOptionDAO;
+  private QueryMultiSelectFieldOptionDAO queryMultiSelectFieldOptionDAO;
   
   /* Generic */
 
@@ -108,8 +108,8 @@ public class WorkspaceMaterialFieldAnswerController {
     return querySelectFieldOptionDAO.findBySelectFieldAndName(selectField, name);
   }
   
-  public List<QueryChecklistFieldOption> listChecklistFieldOptions(QueryChecklistField checklistField) {
-    return queryChecklistFieldOptionDAO.listByField(checklistField);
+  public List<QueryMultiSelectFieldOption> listMultiSelectFieldOptions(QueryMultiSelectField multiSelectField) {
+    return queryMultiSelectFieldOptionDAO.listByField(multiSelectField);
   }
 
   /* ConnectField */
@@ -126,34 +126,34 @@ public class WorkspaceMaterialFieldAnswerController {
     return workspaceMaterialConnectFieldAnswerDAO.updateCounterpart(workspaceMaterialConnectFieldAnswer, counterpart);
   }
   
-  /* ChecklistField */
+  /* MultiSelectField */
   
-  public WorkspaceMaterialChecklistFieldAnswer createWorkspaceMaterialChecklistFieldAnswer(WorkspaceMaterialField field, WorkspaceMaterialReply reply) {
-    return workspaceMaterialChecklistFieldAnswerDAO.create(field, reply);
+  public WorkspaceMaterialMultiSelectFieldAnswer createWorkspaceMaterialMultiSelectFieldAnswer(WorkspaceMaterialField field, WorkspaceMaterialReply reply) {
+    return workspaceMaterialMultiSelectFieldAnswerDAO.create(field, reply);
   }
 
-  public WorkspaceMaterialChecklistFieldAnswer findWorkspaceMaterialChecklistFieldAnswerByFieldAndReply(WorkspaceMaterialField field, WorkspaceMaterialReply reply) {
-    return workspaceMaterialChecklistFieldAnswerDAO.findByQueryFieldAndReply(field, reply);
-  }
-  
-  /* ChecklistFieldOption */
-
-  public WorkspaceMaterialChecklistFieldAnswerOption createWorkspaceMaterialChecklistFieldAnswerOption(WorkspaceMaterialChecklistFieldAnswer fieldAnswer,
-      QueryChecklistFieldOption option) {
-    return workspaceMaterialChecklistFieldAnswerOptionDAO.create(fieldAnswer, option);
+  public WorkspaceMaterialMultiSelectFieldAnswer findWorkspaceMaterialMultiSelectFieldAnswerByFieldAndReply(WorkspaceMaterialField field, WorkspaceMaterialReply reply) {
+    return workspaceMaterialMultiSelectFieldAnswerDAO.findByQueryFieldAndReply(field, reply);
   }
   
-  public WorkspaceMaterialChecklistFieldAnswerOption findWorkspaceMaterialChecklistFieldAnswerOptionByFieldAnswerAndOption(
-      WorkspaceMaterialChecklistFieldAnswer fieldAnswer, QueryChecklistFieldOption option) {
-    return workspaceMaterialChecklistFieldAnswerOptionDAO.findByFieldAnswerAndOption(fieldAnswer, option);
+  /* MultiSelectFieldOption */
+
+  public WorkspaceMaterialMultiSelectFieldAnswerOption createWorkspaceMaterialMultiSelectFieldAnswerOption(WorkspaceMaterialMultiSelectFieldAnswer fieldAnswer,
+      QueryMultiSelectFieldOption option) {
+    return workspaceMaterialMultiSelectFieldAnswerOptionDAO.create(fieldAnswer, option);
+  }
+  
+  public WorkspaceMaterialMultiSelectFieldAnswerOption findWorkspaceMaterialMultiSelectFieldAnswerOptionByFieldAnswerAndOption(
+      WorkspaceMaterialMultiSelectFieldAnswer fieldAnswer, QueryMultiSelectFieldOption option) {
+    return workspaceMaterialMultiSelectFieldAnswerOptionDAO.findByFieldAnswerAndOption(fieldAnswer, option);
   }
 
-  public List<WorkspaceMaterialChecklistFieldAnswerOption> listWorkspaceMaterialChecklistFieldAnswerOptions(WorkspaceMaterialChecklistFieldAnswer fieldAnsewr) {
-    return workspaceMaterialChecklistFieldAnswerOptionDAO.listByFieldAnswer(fieldAnsewr);
+  public List<WorkspaceMaterialMultiSelectFieldAnswerOption> listWorkspaceMaterialMultiSelectFieldAnswerOptions(WorkspaceMaterialMultiSelectFieldAnswer fieldAnsewr) {
+    return workspaceMaterialMultiSelectFieldAnswerOptionDAO.listByFieldAnswer(fieldAnsewr);
   }
 
-  public void deleteWorkspaceMaterialChecklistFieldAnswerOption(WorkspaceMaterialChecklistFieldAnswerOption answerOption) {
-    workspaceMaterialChecklistFieldAnswerOptionDAO.delete(answerOption);
+  public void deleteWorkspaceMaterialMultiSelectFieldAnswerOption(WorkspaceMaterialMultiSelectFieldAnswerOption answerOption) {
+    workspaceMaterialMultiSelectFieldAnswerOptionDAO.delete(answerOption);
   }
   
   /* FileField */

@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
-public class QueryChecklistFieldOption {
+public class QueryMultiSelectFieldOption {
 
   public Long getId() {
     return id;
@@ -33,11 +33,11 @@ public class QueryChecklistFieldOption {
     this.name = name;
   }
 
-  public QueryChecklistField getField() {
+  public QueryMultiSelectField getField() {
     return field;
   }
   
-  public void setField(QueryChecklistField field) {
+  public void setField(QueryMultiSelectField field) {
     this.field = field;
   }
 
@@ -56,5 +56,5 @@ public class QueryChecklistFieldOption {
   private String name;
 
   @ManyToOne
-  private QueryChecklistField field; 
+  private QueryMultiSelectField field; 
 }

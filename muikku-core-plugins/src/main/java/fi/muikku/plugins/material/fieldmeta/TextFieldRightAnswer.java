@@ -6,19 +6,11 @@ public class TextFieldRightAnswer {
 
   }
 
-  public TextFieldRightAnswer(Double points, String text, boolean caseSensitive, boolean normalizeWhitespace) {
-    this.points = points;
+  public TextFieldRightAnswer(String text, boolean caseSensitive, boolean normalizeWhitespace, boolean correct) {
     this.text = text;
     this.caseSensitive = caseSensitive;
     this.normalizeWhitespace = normalizeWhitespace;
-  }
-
-  public Double getPoints() {
-    return points;
-  }
-
-  public void setPoints(Double points) {
-    this.points = points;
+    this.setCorrect(correct);
   }
 
   public String getText() {
@@ -45,8 +37,16 @@ public class TextFieldRightAnswer {
     this.normalizeWhitespace = normalizeWhitespace;
   }
 
-  private Double points;
+  public Boolean getCorrect() {
+    return correct;
+  }
+
+  public void setCorrect(Boolean correct) {
+    this.correct = correct;
+  }
+
   private String text;
   private Boolean caseSensitive;
   private Boolean normalizeWhitespace;
+  private Boolean correct;
 }

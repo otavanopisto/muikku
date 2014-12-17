@@ -6,8 +6,8 @@ import java.util.List;
 import fi.muikku.plugins.dnm.parser.content.ConnectFieldOption;
 import fi.muikku.plugins.dnm.parser.content.OptionListOption;
 import fi.muikku.plugins.dnm.parser.content.RightAnswer;
-import fi.muikku.plugins.material.fieldmeta.ChecklistFieldMeta;
-import fi.muikku.plugins.material.fieldmeta.ChecklistFieldOptionMeta;
+import fi.muikku.plugins.material.fieldmeta.MultiSelectFieldMeta;
+import fi.muikku.plugins.material.fieldmeta.MultiSelectFieldOptionMeta;
 import fi.muikku.plugins.material.fieldmeta.ConnectFieldMeta;
 import fi.muikku.plugins.material.fieldmeta.ConnectFieldOptionMeta;
 import fi.muikku.plugins.material.fieldmeta.ConnectFieldConnectionMeta;
@@ -39,36 +39,39 @@ public class FieldTranslator {
   public TextFieldMeta translateTextField(String name, Integer columns, List<RightAnswer> rightAnswers, String help, String hint) {
     List<TextFieldRightAnswer> translatedAnswers = new ArrayList<>();
     for (fi.muikku.plugins.dnm.parser.content.RightAnswer rightAnswer : rightAnswers) {
-      Double points;
-      if (rightAnswer.getPoints() == null) {
-        points = 0.0;
-      } else {
-        points = rightAnswer.getPoints();
-      }
-      translatedAnswers.add(new TextFieldRightAnswer(points, rightAnswer.getText(), true, false));
+      Boolean correct = rightAnswer.getPoints() != null && rightAnswer.getPoints() > 0; 
+      translatedAnswers.add(new TextFieldRightAnswer(rightAnswer.getText(), true, false, correct));
     }
-    
-    return new TextFieldMeta(name, columns, translatedAnswers, help, hint);
+    return new TextFieldMeta(name, columns, translatedAnswers, hint);
   }
 
   public MemoFieldMeta translateMemoField(String name, Integer columns, Integer rows, String help, String hint) {
     return new MemoFieldMeta(name, columns, rows, help, hint);
   }
   
-  public SelectFieldMeta translateOptionList(String name, String listType, Integer size, List<OptionListOption> options) {
+  public SelectFieldMeta translateOptionList(String name, String listType, List<OptionListOption> options) {
     List<SelectFieldOptionMeta> translatedOptions = new ArrayList<>();
     for (OptionListOption option : options) {
       translatedOptions.add(new SelectFieldOptionMeta(option.getName(), option.getPoints(), option.getText()));
     }
-    return new SelectFieldMeta(name, listType, size, translatedOptions);
+    // Nexus:  dropdown | list | radio | radio_horz
+    // Muikku: dropdown | list | radio-vertical | radio-horizontal
+    String newListType = listType;
+    if ("radio".equals(listType)) {
+      newListType = "radio-vertical";
+    }
+    else if ("radio_horz".equals(listType)) {
+      newListType = "radio-horizontal";
+    }
+    return new SelectFieldMeta(name, newListType, translatedOptions);
   }
 
-  public ChecklistFieldMeta translateChecklistField(String paramName, List<ChecklistFieldOptionMeta> options) {
-    List<ChecklistFieldOptionMeta> translatedOptions = new ArrayList<>();
-    for (ChecklistFieldOptionMeta option : options) {
-      translatedOptions.add(new ChecklistFieldOptionMeta(option.getName(), option.getPoints(), option.getText()));
+  public MultiSelectFieldMeta translateChecklistField(String paramName, List<MultiSelectFieldOptionMeta> options) {
+    List<MultiSelectFieldOptionMeta> translatedOptions = new ArrayList<>();
+    for (MultiSelectFieldOptionMeta option : options) {
+      translatedOptions.add(new MultiSelectFieldOptionMeta(option.getName(), option.getText(), option.getCorrect()));
     }
-    return new ChecklistFieldMeta(paramName, translatedOptions);
+    return new MultiSelectFieldMeta(paramName, "checkbox-vertical", translatedOptions);
   }
   
   public ConnectFieldMeta translateConnectField(String name, List<ConnectFieldOption> options) {

@@ -6,12 +6,12 @@ import javax.persistence.Transient;
 
 @Entity
 @PrimaryKeyJoinColumn(name="id")
-public class QueryChecklistField extends QueryField {
+public class QueryMultiSelectField extends QueryField {
   
   @Transient
   @Override
   public String getType() {
-    return "application/vnd.muikku.field.checklist";
+    return "application/vnd.muikku.field.multiselect";
   }
   
 }

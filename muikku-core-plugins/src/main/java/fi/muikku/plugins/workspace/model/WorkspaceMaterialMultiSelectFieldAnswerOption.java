@@ -6,28 +6,28 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
-import fi.muikku.plugins.material.model.QueryChecklistFieldOption;
+import fi.muikku.plugins.material.model.QueryMultiSelectFieldOption;
 
 @Entity
-public class WorkspaceMaterialChecklistFieldAnswerOption {
+public class WorkspaceMaterialMultiSelectFieldAnswerOption {
   
   public Long getId() {
     return id;
   }
   
-  public WorkspaceMaterialChecklistFieldAnswer getFieldAnswer() {
+  public WorkspaceMaterialMultiSelectFieldAnswer getFieldAnswer() {
     return fieldAnswer;
   }
   
-  public void setFieldAnswer(WorkspaceMaterialChecklistFieldAnswer fieldAnswer) {
+  public void setFieldAnswer(WorkspaceMaterialMultiSelectFieldAnswer fieldAnswer) {
     this.fieldAnswer = fieldAnswer;
   }
   
-  public QueryChecklistFieldOption getOption() {
+  public QueryMultiSelectFieldOption getOption() {
     return option;
   }
   
-  public void setOption(QueryChecklistFieldOption option) {
+  public void setOption(QueryMultiSelectFieldOption option) {
     this.option = option;
   }
  
@@ -36,8 +36,8 @@ public class WorkspaceMaterialChecklistFieldAnswerOption {
   private Long id;
   
   @ManyToOne
-  private WorkspaceMaterialChecklistFieldAnswer fieldAnswer;
+  private WorkspaceMaterialMultiSelectFieldAnswer fieldAnswer;
   
   @ManyToOne
-  private QueryChecklistFieldOption option;  
+  private QueryMultiSelectFieldOption option;  
 }

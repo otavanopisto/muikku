@@ -10,11 +10,10 @@ public class TextFieldMeta extends FieldMeta {
     
   }
 
-  public TextFieldMeta(String name, Integer columns, List<TextFieldRightAnswer> rightAnswers, String help, String hint) {
+  public TextFieldMeta(String name, Integer columns, List<TextFieldRightAnswer> rightAnswers, String hint) {
     super(name);
     this.setRightAnswers(rightAnswers);
     this.setColumns(columns);
-    this.setHelp(help);
     this.setHint(hint);
   }
   
@@ -49,17 +48,8 @@ public class TextFieldMeta extends FieldMeta {
     this.hint = hint;
   }
 
-  public String getHelp() {
-    return help;
-  }
-
-  public void setHelp(String help) {
-    this.help = help;
-  }
-
   private List<TextFieldRightAnswer> rightAnswers;
   private Integer columns;
   private String hint;
-  private String help;
   
 }

@@ -6,8 +6,8 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import fi.muikku.plugins.workspace.events.WorkspaceMaterialFieldDeleteEvent;
-import fi.muikku.plugins.workspace.model.WorkspaceMaterialChecklistFieldAnswer;
-import fi.muikku.plugins.workspace.model.WorkspaceMaterialChecklistFieldAnswerOption;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialMultiSelectFieldAnswer;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialMultiSelectFieldAnswerOption;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialFieldAnswer;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswer;
@@ -33,10 +33,10 @@ public class WorkspaceMaterialFieldDeleteListener {
       for (WorkspaceMaterialFileFieldAnswerFile fieldAnswerFile : fileAnswerFiles) {
         workspaceMaterialFieldAnswerController.deleteWorkspaceMaterialFileFieldAnswerFile(fieldAnswerFile);
       }
-    } else if (answer instanceof WorkspaceMaterialChecklistFieldAnswer) {
-      List<WorkspaceMaterialChecklistFieldAnswerOption> options = workspaceMaterialFieldAnswerController.listWorkspaceMaterialChecklistFieldAnswerOptions((WorkspaceMaterialChecklistFieldAnswer) answer); 
-      for (WorkspaceMaterialChecklistFieldAnswerOption option : options) {
-        workspaceMaterialFieldAnswerController.deleteWorkspaceMaterialChecklistFieldAnswerOption(option);
+    } else if (answer instanceof WorkspaceMaterialMultiSelectFieldAnswer) {
+      List<WorkspaceMaterialMultiSelectFieldAnswerOption> options = workspaceMaterialFieldAnswerController.listWorkspaceMaterialMultiSelectFieldAnswerOptions((WorkspaceMaterialMultiSelectFieldAnswer) answer); 
+      for (WorkspaceMaterialMultiSelectFieldAnswerOption option : options) {
+        workspaceMaterialFieldAnswerController.deleteWorkspaceMaterialMultiSelectFieldAnswerOption(option);
       }
     }
     
