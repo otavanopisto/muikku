@@ -103,6 +103,7 @@
           'muikku-textfield': CONTEXTPATH + '/scripts/ckplugins/muikku-textfield/',
           'muikku-memofield': CONTEXTPATH + '/scripts/ckplugins/muikku-memofield/',
           'muikku-filefield': CONTEXTPATH + '/scripts/ckplugins/muikku-filefield/'
+        },
         extraPlugins : 'coops,' +
                        'coops-connector,' + 
                        'coops-dmp,' + 
