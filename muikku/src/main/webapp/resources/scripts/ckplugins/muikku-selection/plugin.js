@@ -6,6 +6,7 @@
   CKEDITOR.plugins.add('muikku-selection', {
     requires: 'dialog,muikku-fields',
     icons: 'muikku-selection',
+    hidpi: true,
     lang: 'fi,en',
     init: function(editor) {
       editor.addCommand('muikku-selection-properties', new CKEDITOR.dialogCommand('muikkuSelectionDialog'));

@@ -6,6 +6,7 @@
   CKEDITOR.plugins.add('muikku-filefield', {
     requires: 'muikku-fields',
     icons: 'muikku-file-field',
+    hidpi: true,
     lang: 'fi,en',
     init: function(editor) {
       editor.ui.addButton('muikku-filefield', {
