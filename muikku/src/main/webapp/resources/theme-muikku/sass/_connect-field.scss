@@ -12,7 +12,6 @@
 	background:#e1f3ff;
 	margin: 4px;
 	@include rounded(3px);
-	width: 250px;
 /* 	white-space:nowrap; */ /* By removing this connect field looks like a potato */
 	transition:background 0.3s ease-in-out;
 	text-shadow: 0 0 1px #ffffff;
@@ -20,6 +19,23 @@
 	&:hover {
 	  background: #ceebff;
 	}
+}
+
+.workspace-materials-reading,
+.workspace-materials-management {
+  
+  .muikku-connect-field-counterpart,.muikku-connect-field-term {
+    width:250px;
+  }
+
+}
+
+.workspace-materials {
+  
+  .muikku-connect-field-counterpart,.muikku-connect-field-term {
+    width:230px;
+  }
+
 }
 
 .muikku-connect-field-term {
