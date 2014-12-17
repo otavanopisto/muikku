@@ -12,8 +12,7 @@
       editor.addCommand('muikku-selection-properties', new CKEDITOR.dialogCommand('muikkuSelectionDialog'));
       editor.ui.addButton('muikku-selection', {
         label: editor.lang['muikku-selection'].toolbarMenu,
-        command: 'muikku-selection-properties',
-        toolbar: 'muikku-fields'
+        command: 'muikku-selection-properties'
       });
       
       // Double-click support
@@ -253,7 +252,7 @@
                 [editor.lang['muikku-selection'].propertiesDialogTypeCheckboxVer, 'checkbox-vertical']
               ],
               setup: function(json) {
-                this.setValue(json.listType);
+                this.setValue(json.listType ? json.listType : 'dropdown');
               }
             },
             {
