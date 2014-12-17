@@ -269,10 +269,14 @@ public class PyramusUpdater {
           if (environmentRoleEntity == null) {
             removedUserRoles.put(staffMember.getId(), roleIdentifier);
           } else {
-            if (!environmentUser.getRole().getId().equals(environmentRoleEntity.getId())) {
-              RoleSchoolDataIdentifier removedRoleIdentifier = roleSchoolDataIdentifierController.findRoleSchoolDataIdentifierByDataSourceAndRoleEntity(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, environmentUser.getRole());
-              removedUserRoles.put(staffMember.getId(), removedRoleIdentifier.getIdentifier());
+            if (environmentUser.getRole() == null) {
               discoveredUserRoles.put(staffMember.getId(), role);
+            } else {
+              if (!environmentUser.getRole().getId().equals(environmentRoleEntity.getId())) {
+                RoleSchoolDataIdentifier removedRoleIdentifier = roleSchoolDataIdentifierController.findRoleSchoolDataIdentifierByDataSourceAndRoleEntity(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, environmentUser.getRole());
+                removedUserRoles.put(staffMember.getId(), removedRoleIdentifier.getIdentifier());
+                discoveredUserRoles.put(staffMember.getId(), role);
+              }
             }
           }
         }
