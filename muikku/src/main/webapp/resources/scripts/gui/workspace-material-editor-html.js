@@ -100,6 +100,7 @@
           'coops-cursors' : CONTEXTPATH + '/scripts/ckplugins/coops-cursors/',
           'coops-sessionevents' : CONTEXTPATH + '/scripts/ckplugins/coops-sessionevents/',
           'muikku-fields': CONTEXTPATH + '/scripts/ckplugins/muikku-fields/',
+          'muikku-selection': CONTEXTPATH + '/scripts/ckplugins/muikku-selection/',
           'muikku-textfield': CONTEXTPATH + '/scripts/ckplugins/muikku-textfield/',
           'muikku-memofield': CONTEXTPATH + '/scripts/ckplugins/muikku-memofield/',
           'muikku-filefield': CONTEXTPATH + '/scripts/ckplugins/muikku-filefield/'
