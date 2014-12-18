@@ -17,7 +17,7 @@ import fi.muikku.events.LogoutEvent;
 
 @ApplicationScoped
 public class PyramusOAuthLogoutListener {
-
+  
   @Inject
   private Logger logger;
   
@@ -32,16 +32,7 @@ public class PyramusOAuthLogoutListener {
         try {
           String logoutUrl = pluginSettingsController.getPluginSetting(PyramusOAuthPluginDescriptor.PLUGIN_NAME, "oauth.logoutUrl");
           if (StringUtils.isNotBlank(logoutUrl)) {
-            String indexUrl = new StringBuilder()
-              .append(externalContext.getRequestScheme())
-              .append("://")
-              .append(externalContext.getRequestServerName())
-              .append(':')
-              .append(externalContext.getRequestServerPort())
-              .append(externalContext.getRequestContextPath())
-              .toString();
-            
-            externalContext.redirect(logoutUrl + "?redirectUrl=" + indexUrl);
+            externalContext.redirect(logoutUrl);
           }
         } catch (IOException e) {
           logger.log(Level.SEVERE, "Could not redirect browser into Pyramus logout URL", e);
