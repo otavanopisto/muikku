@@ -38,7 +38,7 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
 
   @Override
   public void logout() {
-  	representedUserId = null;
+  	this.representedUserId = null;
   	this.activeUserIdentifier = null;
     this.activeUserSchoolDataSource = null;
   }
