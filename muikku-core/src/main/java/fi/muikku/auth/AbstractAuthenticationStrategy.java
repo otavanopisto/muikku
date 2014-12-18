@@ -89,9 +89,6 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
       if (emailUser != null && emailUser.getId() != userIdentification.getUser().getId()) {
         return new AuthenticationResult(Status.CONFLICT, ConflictReason.EMAIL_BELONGS_TO_ANOTHER_USER);
       }
-      
-      // TODO: This is probably not the best way to resolve active user....
-      activeUser = userSchoolDataController.listUsersByEmails(emails).get(0);
     } else {
       // User has not used this auth source before
       if (emailUser != null) {
@@ -125,6 +122,13 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
       }
     }
     
+    if (activeUser == null) {    
+      activeUser = userSchoolDataController.findActiveUser(userIdentification.getUser().getDefaultSchoolDataSource(), userIdentification.getUser().getDefaultIdentifier());
+      if (activeUser == null) {
+        activeUser = userSchoolDataController.listUsersByEmails(emails).get(0);
+      }
+    }
+    
     if (activeUser == null) {
       throw new AuthenticationHandleException("Active user could not be found");
     }
@@ -141,15 +145,14 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
 
   private AuthenticationResult login(UserIdentification userIdentification, User user, boolean newAccount) {
     UserEntity userEntity = userIdentification.getUser();
-    UserEntity loggedUser = sessionController.getLoggedUser();
-    
-    SchoolDataSource schoolDataSource = schoolDataController.findSchoolDataSource(user.getSchoolDataSource());
-    userEntityController.updateDefaultSchoolDataSource(userEntity, schoolDataSource);
-    userEntityController.updateDefaultIdentifier(userEntity, user.getIdentifier());
-    sessionController.setActiveUserIdentifier(schoolDataSource.getIdentifier(), user.getIdentifier());;
+    UserEntity loggedUser = sessionController.getLoggedUserEntity();
     
     if ((loggedUser == null) || loggedUser.getId().equals(userEntity.getId())) {
-      sessionController.login(userEntity.getId());
+      
+      SchoolDataSource schoolDataSource = schoolDataController.findSchoolDataSource(user.getSchoolDataSource());
+      userEntityController.updateDefaultSchoolDataSource(userEntity, schoolDataSource);
+      userEntityController.updateDefaultIdentifier(userEntity, user.getIdentifier());
+      sessionController.setActiveUserIdentifier(schoolDataSource.getIdentifier(), user.getIdentifier());
       userEntityController.updateLastLogin(userEntity);
       HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
       userLoggedInEvent.fire(new LoginEvent(userEntity.getId(), this, req.getRemoteAddr()));
