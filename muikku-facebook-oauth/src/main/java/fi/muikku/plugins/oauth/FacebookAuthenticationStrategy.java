@@ -76,8 +76,8 @@ public class FacebookAuthenticationStrategy extends OAuthAuthenticationStrategy 
   } 
   
   @Override
-  protected Class<? extends Api> getApiClass() {
-    return FacebookApi.class;  
+  protected Api getApi() {
+    return new FacebookApi();  
   }
   
   @Override

@@ -31,7 +31,7 @@ public abstract class OAuthAuthenticationStrategy extends AbstractAuthentication
   @Override
   public abstract String getName();
 
-  protected abstract Class<? extends Api> getApiClass();
+  protected abstract Api getApi();
 
   protected abstract String getApiKey(AuthSource authSource);
 
@@ -83,9 +83,9 @@ public abstract class OAuthAuthenticationStrategy extends AbstractAuthentication
     String apiKey = getApiKey(authSource);
     String apiSecret = getApiSecret(authSource);
     String callback = getOAuthCallbackURL(authSource);
-    Class<? extends Api> apiClass = getApiClass();
+    Api api = getApi();
 
-    ServiceBuilder serviceBuilder = new ServiceBuilder().provider(apiClass).apiKey(apiKey).apiSecret(apiSecret).callback(callback);
+    ServiceBuilder serviceBuilder = new ServiceBuilder().provider(api).apiKey(apiKey).apiSecret(apiSecret).callback(callback);
 
     if (scopes != null && scopes.length > 0) {
       StringBuilder scopeBuilder = new StringBuilder();
@@ -104,7 +104,7 @@ public abstract class OAuthAuthenticationStrategy extends AbstractAuthentication
     OAuthService service = getOAuthService(authSource, requestParameters, scopes);
 
     Token requestToken = null;
-    boolean isV1 = DefaultApi10a.class.isAssignableFrom(getApiClass());
+    boolean isV1 = getApi() instanceof DefaultApi10a;
 
     // For OAuth version 1 the request token is fetched, for v2 it's not
     if (isV1)
