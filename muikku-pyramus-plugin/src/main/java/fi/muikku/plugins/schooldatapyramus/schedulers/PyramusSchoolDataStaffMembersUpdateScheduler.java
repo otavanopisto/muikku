@@ -3,7 +3,8 @@ package fi.muikku.plugins.schooldatapyramus.schedulers;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.Asynchronous;
+import javax.ejb.Lock;
+import javax.ejb.LockType;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.enterprise.event.Observes;
@@ -15,7 +16,7 @@ import fi.muikku.plugins.schooldatapyramus.PyramusUpdater;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 
 @Singleton
-@Asynchronous
+@Lock (LockType.READ)
 public class PyramusSchoolDataStaffMembersUpdateScheduler {
   
   private static final int BATCH_SIZE = 100;
