@@ -369,7 +369,7 @@
           $(object).replaceWith(input);
         break;
         case 'radio-horizontal':
-        case 'radio_vertical':
+        case 'radio-vertical':
           var idPrefix = [data.materialId, data.embedId, data.name].join(':');
           var container = $('<div>').addClass('muikku-select-field');
           for (var i = 0, l = meta.options.length; i < l; i++){
