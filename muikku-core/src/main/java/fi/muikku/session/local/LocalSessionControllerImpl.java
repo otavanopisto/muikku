@@ -37,20 +37,10 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
   private UserEntityDAO userEntityDAO;
 
   @Override
-  public void login(Long userId) {
-  	this.loggedUserId = userId;
-  	
-  	UserEntity userEntity = userEntityDAO.findById(userId);
-  	if (userEntity != null) {
-      this.activeUserIdentifier = userEntity.getDefaultIdentifier();
-      this.activeUserSchoolDataSource = userEntity.getDefaultSchoolDataSource().getIdentifier();
-  	}
-  }
-
-  @Override
   public void logout() {
   	representedUserId = null;
-    loggedUserId = null;
+  	this.activeUserIdentifier = null;
+    this.activeUserSchoolDataSource = null;
   }
 
   @Override
@@ -81,7 +71,7 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
   }
 
   public boolean isLoggedIn() {
-    return loggedUserId != null;
+    return activeUserIdentifier != null && this.activeUserSchoolDataSource != null;
   }
   
   public boolean isRepresenting() {
@@ -105,7 +95,7 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
    */
   public UserEntity getUser() {
     if (!isRepresenting())
-      return getLoggedUser();
+      return getLoggedUserEntity();
     else
       return getRepresentedUser();
   }
@@ -119,21 +109,8 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
     return userEntityDAO.findById(representedUserId);
   }
 
-  /**
-   * Returns original logged in user.
-   * 
-   * @return
-   */
-  public UserEntity getLoggedUser() {
-    if (loggedUserId != null)
-      return userEntityDAO.findById(loggedUserId);
-    
-    return null;
-  }
-
   @PostConstruct
   private void init() {
-    loggedUserId = null;
     representedUserId = null;
   }
 
@@ -146,7 +123,7 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
         return isSuperuser() || permissionResolver.hasPermission(permission, contextReference, getUser());
       } else {
         boolean repHasPermission = permissionResolver.hasPermission(permission, contextReference, getRepresentedUser());
-        boolean loggedInHasPermission = isSuperuser(getLoggedUser()) || permissionResolver.hasPermission(permission, contextReference, getLoggedUser());
+        boolean loggedInHasPermission = isSuperuser(getLoggedUserEntity()) || permissionResolver.hasPermission(permission, contextReference, getLoggedUserEntity());
 
         return repHasPermission && loggedInHasPermission;
       }
@@ -197,8 +174,6 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
   }
   
   private Locale locale;
-
-  private Long loggedUserId;
 
   private Long representedUserId;
   
