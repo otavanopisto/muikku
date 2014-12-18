@@ -7,4 +7,7 @@ CKEDITOR.plugins.setLang('muikku-textfield', 'fi', {
   propertiesDialogHint: 'Vihjeteksti',
   propertiesDialogHelp: 'Ohjeteksti',
   propertiesDialogRightAnswers: 'Oikeat vastaukset',
+  propertiesDialogAddOptionLink: 'Lisää vastaus',
+  propertiesDialogDeleteOptionLink: 'Poista vastaus',
+  propertiesDialogCorrectTooltip: 'Vastaus oikein'
 });
