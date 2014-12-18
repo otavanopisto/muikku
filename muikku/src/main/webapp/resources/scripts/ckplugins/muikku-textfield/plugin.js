@@ -187,7 +187,7 @@
               var optionCorrectField = new CKEDITOR.dom.element('input');
               optionCorrectField.setAttribute('name', 'correct');
               optionCorrectField.setAttribute('type', 'checkbox');
-              optionCorrectField.setAttribute('checked', correct);
+              optionCorrectField.$.checked = correct;
               optionContainer.append(optionCorrectField);
               optionsContainer.append(optionContainer);
 
