@@ -49,7 +49,7 @@ public class CredentialLoginWidgetBackingBean {
       
       authSourceId = authSources.get(0).getId();
     } else {
-      // TODO: Proper error handling
+      hasSources = false;
     }
   }
 
@@ -83,6 +83,10 @@ public class CredentialLoginWidgetBackingBean {
   
   public boolean isSingleSource() {
     return singleSource;
+  }
+  
+  public boolean getHasSources() {
+    return hasSources;
   }
   
   public void login() throws AuthenticationHandleException {
@@ -121,4 +125,5 @@ public class CredentialLoginWidgetBackingBean {
   private Long authSourceId;
   private boolean singleSource;
   private List<SelectItem> sourceSelectItems;
+  private boolean hasSources;
 }
