@@ -13,5 +13,5 @@ CKEDITOR.plugins.setLang('muikku-selection', 'en', {
   propertiesDialogOptions: 'Options',
   propertiesDialogAddOptionLink: 'Add New Option',
   propertiesDialogCorrectTooltip: 'Correct Answer',
-  propertiesDialogDeleteOptionLink: 'Remove Option',
+  propertiesDialogDeleteOptionLink: 'Remove Option'
 });
