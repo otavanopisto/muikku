@@ -64,7 +64,7 @@ public class LoginBackingBean {
         // going to use, unless only one source is defined and it's credentialess one, in which case we use that one.
   
         List<AuthSource> credentialAuthSources = authSourceController.listCredentialAuthSources();
-        List<AuthSource> credentialessAuthSources = authSourceController.listCredentialAuthSources();
+        List<AuthSource> credentialessAuthSources = authSourceController.listCredentialessAuthSources();
         
         if (credentialAuthSources.isEmpty() && credentialessAuthSources.size() == 1) {
           authSourceId = credentialessAuthSources.get(0).getId();
