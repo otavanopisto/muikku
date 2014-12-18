@@ -31,7 +31,7 @@ public interface UserSchoolDataBridge {
 	public User createUser(String firstName, String lastName) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
 	/**
-	 * Finds a user by it's identifier. If user cannot be found null is returned.
+	 * Finds an user by it's identifier. If user cannot be found null is returned.
 	 * 
 	 * @param identifier user's identifier
 	 * @return user or null if user does not exist
@@ -39,6 +39,16 @@ public interface UserSchoolDataBridge {
 	 * @throws UnexpectedSchoolDataBridgeException when unexpected error occurs
 	 */
 	public User findUser(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+
+	/**
+   * Finds an active user by it's identifier. If user cannot be found null is returned.
+   * 
+   * @param identifier user's identifier
+   * @return user or null if user does not exist
+   * @throws SchoolDataBridgeRequestException when given identifier is not valid
+   * @throws UnexpectedSchoolDataBridgeException when unexpected error occurs
+   */
+  public User findActiveUser(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 
 	/**
 	 * Lists users by email.
