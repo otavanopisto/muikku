@@ -7,7 +7,7 @@
       var _this = this;
       widgetElement = $(widgetElement);
       this._widgetElement = widgetElement;
-
+      
       $(".tt-menu-link-communicator-msg").click(function (event) {
         $(".ui-dialog-content").dialog("close");
 
@@ -60,8 +60,27 @@
           });
         });      
       });
+      
+      this._refreshUnreadMessagesFlappidiFlap();
+      
+      $(document).on("Communicator:newmessagereceived", function (event, data) {
+        _this._refreshUnreadMessagesFlappidiFlap();
+      });
     },
     deinitialize: function () {
+    },
+    _refreshUnreadMessagesFlappidiFlap: function () {
+      var _this = this;
+      mApi().communicator.receiveditemscount.read()
+        .callback(function (err, result) {
+          var newMessagesCounterFlap = _this._widgetElement.find(".cm-navi-button-unread-messages-counter-flap");
+          if (result > 0) {
+            newMessagesCounterFlap.text(result);
+            newMessagesCounterFlap.show();
+          } else {
+            newMessagesCounterFlap.hide();
+          }
+        });
     },
     _onCreateNewGuidanceRequestClick: function (event) {
       var _this = this;

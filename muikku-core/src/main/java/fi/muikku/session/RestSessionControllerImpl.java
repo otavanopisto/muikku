@@ -85,17 +85,17 @@ public class RestSessionControllerImpl extends AbstractSessionController impleme
   }
 
   @Override
-  public String getActiveUserIdentifier() {
+  public String getLoggedUserIdentifier() {
     return activeUserIdentifier;
   }
 
   @Override
-  public String getActiveUserSchoolDataSource() {
+  public String getLoggedUserSchoolDataSource() {
     return activeUserSchoolDataSource;
   }
   
   @Override
-  public void setActiveUserIdentifier(String dataSource, String identifier) {
+  public void login(String dataSource, String identifier) {
     this.activeUserIdentifier = identifier;
     this.activeUserSchoolDataSource = dataSource;
   }

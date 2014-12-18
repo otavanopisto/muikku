@@ -3,6 +3,8 @@ package fi.muikku.auth;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
 import javax.faces.context.ExternalContext;
@@ -29,6 +31,9 @@ public class LoginBackingBean {
 
   @Parameter
   private String redirectUrl;
+
+  @Inject
+  private Logger logger;
   
   @Inject
   private AuthSourceController authSourceController;
@@ -59,7 +64,7 @@ public class LoginBackingBean {
         // going to use, unless only one source is defined and it's credentialess one, in which case we use that one.
   
         List<AuthSource> credentialAuthSources = authSourceController.listCredentialAuthSources();
-        List<AuthSource> credentialessAuthSources = authSourceController.listCredentialAuthSources();
+        List<AuthSource> credentialessAuthSources = authSourceController.listCredentialessAuthSources();
         
         if (credentialAuthSources.isEmpty() && credentialessAuthSources.size() == 1) {
           authSourceId = credentialessAuthSources.get(0).getId();
@@ -124,6 +129,7 @@ public class LoginBackingBean {
         }
       }
     } catch (AuthenticationHandleException | IOException e) {
+      logger.log(Level.SEVERE, "Login failed because of an internal error", e);
       return NavigationRules.INTERNAL_ERROR;
     }
     

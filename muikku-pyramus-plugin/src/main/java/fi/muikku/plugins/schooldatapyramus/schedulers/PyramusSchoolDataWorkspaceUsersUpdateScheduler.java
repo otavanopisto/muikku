@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.Asynchronous;
+import javax.ejb.Lock;
+import javax.ejb.LockType;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.enterprise.event.Observes;
@@ -20,7 +21,7 @@ import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 import fi.muikku.schooldata.WorkspaceEntityController;
 
 @Singleton
-@Asynchronous
+@Lock (LockType.READ)
 public class PyramusSchoolDataWorkspaceUsersUpdateScheduler {
   
   private static final int BATCH_SIZE = 10;
@@ -53,6 +54,10 @@ public class PyramusSchoolDataWorkspaceUsersUpdateScheduler {
   
   @Schedule(minute = "*/1", hour = "*", persistent = false)
   public void synchronizeWorkspaceUsers() throws UnexpectedSchoolDataBridgeException {
+    if (!SchoolDataPyramusPluginDescriptor.SCHEDULERS_ACTIVE) {
+      return;
+    }
+    
     if (contextInitialized) {
       if (running) {
         return;  

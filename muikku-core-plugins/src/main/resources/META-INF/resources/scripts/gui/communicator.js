@@ -13,7 +13,6 @@ $.widget("custom.communicatorautocomplete", $.ui.autocomplete, {
     });
   },
   _renderItem: function(ul, item) {
-
     var inner_html = 
       '<a><div class="communicator_autocomplete_item_container">' + 
       '<span class="communicator_autocomplete_item_label">' + item.label + '</span></div></a>';
@@ -79,27 +78,23 @@ $(document).ready(function(){
         }
       });
       
-      
-	 $('.cm-message-new').on('focus', 'input', function(){
-         var dval = this.defaultValue;
-         var cval = $(this).val();
+      $('.cm-message-new').on('focus', 'input', function(){
+        var dval = this.defaultValue;
+        var cval = $(this).val();
          
-         if (dval == cval){
-        	 $(this).val('');
-         } 
-         
-
-	 });
+        if (dval == cval){
+          $(this).val('');
+        } 
+      });
       
-	 $('.cm-message-new').on('blur', 'input', function(){
-         var dval = this.defaultValue;
-         var cval = $(this).val();
-    	 
-         if (!cval ){ 
-             $(this).val(dval);	 
-      	 }        	
-
-	 });	 
+   	  $('.cm-message-new').on('blur', 'input', function(){
+        var dval = this.defaultValue;
+        var cval = $(this).val();
+  	 
+        if (!cval ){ 
+          $(this).val(dval);	 
+        }        	
+      });	 
       
       $("#msgRecipientsContainer").on("click", ".cm-message-recipient-name", $.proxy(_this._onRemoveRecipientClick, _this));
     },
@@ -269,115 +264,98 @@ $(document).ready(function(){
           $('.cm-messages-container').append($.parseHTML(text));
         });
       });
+    
     $('.cm-messages-container').on('click','.cm-message:not(.open)', function(){
       var cmId = $(this).find("input[name='communicatorMessageIdId']").val();
       var messageId = $(this).find("input[name='communicatorMessageId']").val();
       
     	var mCont = $('.cm-messages-container');
         var _this = $(this); 
-  
-        
-        mApi().communicator.messages.read(cmId).callback(function (err, result){
-        	
+
+        mApi().communicator.messages.read(cmId).callback(function (err, result) {
         	for (var i = 0; i < result.length; i++){
         		var sId = result[i].id;
+  	        mApi().communicator.communicatormessages.sender.read(sId)
+  	          .callback(function (err, user) {  
 
-               	 
-        	        mApi().communicator.communicatormessages.sender.read(sId)
-        	        .callback(function (err, user) {  
-
-						if (MUIKKU_LOGGED_USER_ID == user.id){
-						    result[i].isOwner = true;	    	  
-						 }	else{
-							result[i].isOwner = false;	  
-						 }        	      
-
-						
-	    	        	result[i].senderFullName = user.firstName + ' ' + user.lastName;
-	    	        	result[i].senderHasPicture = user.hasImage;
-        	        });
-
-        		
+  						if (MUIKKU_LOGGED_USER_ID == user.id){
+  					    result[i].isOwner = true;	    	  
+  						} else {
+  							result[i].isOwner = false;	  
+  						}        	      
+  
+  	        	result[i].senderFullName = user.firstName + ' ' + user.lastName;
+  	        	result[i].senderHasPicture = user.hasImage;
+  	        });
         	}	
         	
-        	renderDustTemplate('communicator/communicator_items_open.dust', result, function (text) {
-               	
-             mCont.empty();
-	         mCont.append($.parseHTML(text));
-	           
-	           $(".cm-message-reply-link").click(function(event) {
-	        	   
-	               var element = $(event.target);
-	               element = element.parents(".cm-message");
-	               var eId = element.attr('id'); 
-	               var fCont = element.find('.cm-message-content-tools-reply-container');
-	               var tCont = element.find('.cm-message-content-tools-container');
-	               
-	               mApi().communicator.communicatormessages.read(eId).on('$', function(reply, replyCallback){
-	            	   
-	       	        mApi().communicator.communicatormessages.sender.read(messageId)
-	    	        .callback(function (err, user) {
-	    	        	
-     	        	  
-	    	          reply.senderFullName = user.firstName + ' ' + user.lastName;
-	    	          reply.senderHasPicture = user.hasImage;
-	    	        });            	   
-	            	   
-	               
-	                replyCallback(); 
-	               })
-	               
-	               
-	               .callback(function (err, result){
-	               	renderDustTemplate('communicator/communicator_replymessage.dust', result, function (text) {
+      renderDustTemplate('communicator/communicator_items_open.dust', result, function(text) {
+        mCont.empty();
+        mCont.append($.parseHTML(text));
 
-	                   tCont.hide();
-	       	           fCont.append($.parseHTML(text));
-	       	           
-	                   var cBtn = $(fCont).find("input[name='cancel']");
-	                   var sBtn = $(fCont).find("input[name='send']");
-	                   
-	                   $(sBtn).click(function(){
-	                     var cmId = $(fCont).find("input[name='communicatorMessageId']").val();
-	                     var subject = $(fCont).find("input[name='subject']").val();
-	                     var content = $(fCont).find("textarea[name='content']").val();
-	                     var tagStr = "tagi viesti"; // TODO: Tag content
-	                     var tags = tagStr != undefined ? tagStr.split(' ') : [];
-	                     var recipientIdStr = $(fCont).find("input[name='recipientIds']").val();
-	                     var recipientIds = recipientIdStr != undefined ? recipientIdStr.split(',') : [];
-	                     var groupIds = [];
-	                     
-	                     mApi().communicator.messages.create(cmId, {
-	                       categoryName: "message",
-	                       caption : subject,
-	                       content : content,
-	                       tags : tags,
-	                       recipientIds : recipientIds,
-	                       recipientGroupIds : groupIds
-	                     })
-	                     .callback(function (err, result) {
-	                     });
-	                     
-	                     // Go to inbox
-	                     window.location.reload();
-                     });
-	                   
-	                   $(cBtn).click(function(){
-	                	   tCont.show();
-	                	   fCont.empty();
-	                	   
-	                   });
-                        
-	       	           
-	       	           
-	       	           
-	                   });	               	
-	               	});
-	               });	           
-	           
+        $(".cm-message-reply-link").click(function(event) {
+          var element = $(event.target);
+          element = element.parents(".cm-message");
+          var eId = element.attr('id');
+          var fCont = element.find('.cm-message-content-tools-reply-container');
+          var tCont = element.find('.cm-message-content-tools-container');
+
+          mApi().communicator.communicatormessages.read(eId).on('$', function(reply, replyCallback) {
+            mApi().communicator.communicatormessages.sender.read(messageId).callback(function(err, user) {
+              reply.senderFullName = user.firstName + ' ' + user.lastName;
+              reply.senderHasPicture = user.hasImage;
+            });
+
+            replyCallback();
+          })
+
+          .callback(function(err, result) {
+            renderDustTemplate('communicator/communicator_replymessage.dust', result, function(text) {
+
+              tCont.hide();
+              fCont.append($.parseHTML(text));
+
+              var cBtn = $(fCont).find("input[name='cancel']");
+              var sBtn = $(fCont).find("input[name='send']");
+
+              $(sBtn).click(function() {
+                var cmId = $(fCont).find("input[name='communicatorMessageId']").val();
+                var subject = $(fCont).find("input[name='subject']").val();
+                var content = $(fCont).find("textarea[name='content']").val();
+                var tagStr = "tagi viesti"; // TODO: Tag content
+                var tags = tagStr != undefined ? tagStr.split(' ') : [];
+                var recipientIdStr = $(fCont).find("input[name='recipientIds']").val();
+                var recipientIds = recipientIdStr != undefined ? recipientIdStr.split(',') : [];
+                var groupIds = [];
+
+                mApi().communicator.messages.create(cmId, {
+                  categoryName : "message",
+                  caption : subject,
+                  content : content,
+                  tags : tags,
+                  recipientIds : recipientIds,
+                  recipientGroupIds : groupIds
+                }).callback(function(err, result) {
+                });
+
+                // Go to inbox
+                window.location.reload();
               });
+
+              $(cBtn).click(function() {
+                tCont.show();
+                fCont.empty();
+
+              });
+
+            });
+          });
         });
+      });
+
+      mApi().communicator.messages.markasread.create(cmId).callback(function (err, result) {});
     });
+  });
     
   
 

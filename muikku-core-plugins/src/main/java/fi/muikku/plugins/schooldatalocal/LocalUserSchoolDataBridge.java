@@ -83,6 +83,14 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 	}
 
 	/**
+   * {@inheritDoc}
+   */
+  @Override
+  public User findActiveUser(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+    return findUser(identifier);
+  }
+
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -462,4 +470,5 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     EnvironmentRoleArchetype archetype = EnvironmentRoleArchetype.valueOf(environmentRoleEntity.getArchetype().name());
     return new LocalEnvironmentRoleImpl(environmentRoleEntity.getId().toString(), archetype, environmentRoleEntity.getName());
   }
+
 }

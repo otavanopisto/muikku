@@ -82,6 +82,21 @@ public class UserSchoolDataController {
 		
 		return null;
 	}
+
+	public User findActiveUser(SchoolDataSource schoolDataSource, String identifier) {
+	  UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
+    if (schoolDataBridge != null) {
+      try {
+        return schoolDataBridge.findActiveUser(identifier);
+      } catch (SchoolDataBridgeRequestException e) {
+        logger.log(Level.SEVERE, "School Data Bridge reported a problem while find an active user", e);
+      } catch (UnexpectedSchoolDataBridgeException e) {
+        logger.log(Level.SEVERE, "School Data Bridge reported a problem while find an active user", e);
+      }
+    }
+    
+    return null;
+  }
 	
 	public List<User> listUsers() {
 	  // TODO: This method WILL cause performance problems, replace with something more sensible 

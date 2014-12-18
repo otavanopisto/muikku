@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+  template="/WEB-INF/templates/main-view.xhtml">
+
+  <ui:define name="viewScripts">
+    <h:outputScript name="scripts/gui/chat.js" />
+  </ui:define>
+
+  <ui:define name="content.center.widget">
+    <div class="chatBox">
+      <div>
+        <input type="text" name="chatBoxText"/>
+        <input type="button" onclick="javascript:_sendChatBoxMessage();" value="msg"/>
+      </div>
+      chatbox
+    </div>
+  </ui:define>
+
+</ui:composition>

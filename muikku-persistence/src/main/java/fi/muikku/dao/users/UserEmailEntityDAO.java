@@ -103,7 +103,7 @@ public class UserEmailEntityDAO extends CoreDAO<UserEmailEntity> {
     criteria.select(root.get(UserEmailEntity_.user));
     criteria.where(
       root.get(UserEmailEntity_.address).in(addresses)
-    );
+    ).distinct(true);
     
     return entityManager.createQuery(criteria).getResultList();
   }

@@ -3,7 +3,8 @@ package fi.muikku.plugins.schooldatapyramus.schedulers;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.Asynchronous;
+import javax.ejb.Lock;
+import javax.ejb.LockType;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.enterprise.event.Observes;
@@ -12,10 +13,11 @@ import javax.inject.Inject;
 import fi.muikku.events.ContextDestroyedEvent;
 import fi.muikku.events.ContextInitializedEvent;
 import fi.muikku.plugins.schooldatapyramus.PyramusUpdater;
+import fi.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 
 @Singleton
-@Asynchronous
+@Lock (LockType.READ)
 public class PyramusSchoolDataRolesUpdateScheduler {
   
   @Inject
@@ -40,6 +42,10 @@ public class PyramusSchoolDataRolesUpdateScheduler {
   
   @Schedule(minute = "*/1", hour = "*", persistent = false)
   public void synchronizeWorkspaceUsers() throws UnexpectedSchoolDataBridgeException {
+    if (!SchoolDataPyramusPluginDescriptor.SCHEDULERS_ACTIVE) {
+      return;
+    }
+    
     if (contextInitialized) {
       if (running) {
         return;  

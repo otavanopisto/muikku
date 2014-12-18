@@ -81,6 +81,7 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
 
     UserEntity emailUser = emailUsers.size() == 1 ? emailUsers.get(0) : null;
     boolean newAccount = false;
+    User activeUser = null;
 
     UserIdentification userIdentification = userIdentificationController.findUserIdentificationByAuthSourceAndExternalId(authSource, externalId);
     if (userIdentification != null) {
@@ -105,36 +106,31 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
           }
           
           // Your guess for default identity is the first of returned users.
-          User user = users.get(0);
-          
-          SchoolDataSource schoolDataSource = schoolDataController.findSchoolDataSource(user.getSchoolDataSource());
-          userEntityController.updateDefaultSchoolDataSource(userEntity, schoolDataSource);
-          userEntityController.updateDefaultIdentifier(userEntity, user.getIdentifier());
+          activeUser = users.get(0);
         } else {
-          String defaultIdentifier = null;
-          SchoolDataSource defaultSchoolDataSource = null;
-          
           // If user could not be found from any of the sources we create new and attach those 
           for (SchoolDataSource schoolDataSource : schoolDataController.listSchoolDataSources()) {
             User user = userSchoolDataController.createUser(schoolDataSource, firstName, lastName);
-            if (user != null) {
-              userSchoolDataIdentifierController.createUserSchoolDataIdentifier(user.getSchoolDataSource(), user.getIdentifier(), userEntity);
-              if ((defaultIdentifier == null) && (defaultSchoolDataSource == null)) {
-                defaultIdentifier = user.getIdentifier();
-                defaultSchoolDataSource = schoolDataSource;
-              }
+            if (user != null && activeUser == null) {
+              activeUser = user;
             }
-          }
-          
-          if ((defaultIdentifier != null) && (defaultSchoolDataSource != null)) {
-            userEntityController.updateDefaultSchoolDataSource(userEntity, defaultSchoolDataSource);
-            userEntityController.updateDefaultIdentifier(userEntity, defaultIdentifier);
           }
         }
         
         userIdentification = userIdentificationController.createUserIdentification(userEntity, authSource, externalId);
         newAccount = true;
       }
+    }
+    
+    if (activeUser == null) {    
+      activeUser = userSchoolDataController.findActiveUser(userIdentification.getUser().getDefaultSchoolDataSource(), userIdentification.getUser().getDefaultIdentifier());
+      if (activeUser == null) {
+        activeUser = userSchoolDataController.listUsersByEmails(emails).get(0);
+      }
+    }
+    
+    if (activeUser == null) {
+      throw new AuthenticationHandleException("Active user could not be found");
     }
 
     List<String> existingAddresses = userEmailEntityController.listAddressesByUserEntity(userIdentification.getUser());
@@ -144,17 +140,22 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
       }
     }
 
-    return login(userIdentification, newAccount);
+    return login(userIdentification, activeUser, newAccount);
   }
 
-  private AuthenticationResult login(UserIdentification userIdentification, boolean newAccount) {
-    UserEntity user = userIdentification.getUser();
-    UserEntity loggedUser = sessionController.getLoggedUser();
-    if ((loggedUser == null) || loggedUser.getId().equals(user.getId())) {
-      sessionController.login(user.getId());
-      userEntityController.updateLastLogin(user);
+  private AuthenticationResult login(UserIdentification userIdentification, User user, boolean newAccount) {
+    UserEntity userEntity = userIdentification.getUser();
+    UserEntity loggedUser = sessionController.getLoggedUserEntity();
+    
+    if ((loggedUser == null) || loggedUser.getId().equals(userEntity.getId())) {
+      
+      SchoolDataSource schoolDataSource = schoolDataController.findSchoolDataSource(user.getSchoolDataSource());
+      userEntityController.updateDefaultSchoolDataSource(userEntity, schoolDataSource);
+      userEntityController.updateDefaultIdentifier(userEntity, user.getIdentifier());
+      sessionController.login(schoolDataSource.getIdentifier(), user.getIdentifier());
+      userEntityController.updateLastLogin(userEntity);
       HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-      userLoggedInEvent.fire(new LoginEvent(user.getId(), this, req.getRemoteAddr()));
+      userLoggedInEvent.fire(new LoginEvent(userEntity.getId(), this, req.getRemoteAddr()));
       return new AuthenticationResult(newAccount ? Status.NEW_ACCOUNT : Status.LOGIN);
     } else {
       return new AuthenticationResult(Status.CONFLICT, ConflictReason.LOGGED_IN_AS_DIFFERENT_USER);
