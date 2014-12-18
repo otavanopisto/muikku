@@ -329,11 +329,11 @@
                       deleteOptionLink : editor.lang['muikku-textfield'].propertiesDialogDeleteOptionLink,
                       correctTooltip : editor.lang['muikku-textfield'].propertiesDialogCorrectTooltip,
                       setup : function(json) {
+                        this.clear();
+                        this.setupContainers();
                         if (isEmpty(json)) {
                           return;
                         }
-                        this.clear();
-                        this.setupContainers();
                         for (var i = 0; i < json.rightAnswers.length; i++) {
                           var text = json.rightAnswers[i].text;
                           var correct = json.rightAnswers[i].correct;
