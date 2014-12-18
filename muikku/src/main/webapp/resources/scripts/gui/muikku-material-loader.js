@@ -344,9 +344,16 @@
           
           if(meta.size != 'null') input.attr('size', meta.size);
           
-          // Empty option to be able to clear an answer
+          // Empty option to be able to clear an answer (unless such exists in options already)
           if (meta.listType == 'dropdown') {
-            input.append($('<option>'));
+            var hasEmpty = false;
+            for (var i = 0, l = meta.options.length; i < l; i++) {
+              hasEmpty = meta.options[i].text == '';
+              if (hasEmpty)
+                break;
+            }
+            if (!hasEmpty)
+              input.append($('<option>'));
           }
           
           for(var i = 0, l = meta.options.length; i < l; i++){
