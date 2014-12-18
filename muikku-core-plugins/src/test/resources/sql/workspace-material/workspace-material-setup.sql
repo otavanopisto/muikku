@@ -31,7 +31,7 @@ INSERT INTO htmlmaterial VALUES ('<html><body>\n                    <p>Testi k&a
     ,10015),
     ('<html><body>\n                            <p>Kysely on suljettu</p>\n                        </body></html>'
     ,10016),
-    ('<html><body>\n                    <p>&nbsp;Testi k&auml;ytt&auml;j&auml;tarinalle #100024: Opiskelijana haluan voida vastata moninvalinta tyyppisiin teht&auml;viin</p>\n                    <p>\n                        <object type=''application/vnd.muikku.field.checklist''><param name=''type'' value=''application/json''><param name=''content'' value=''{&quot;name&quot;:&quot;param1&quot;,&quot;options&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;points&quot;:null,&quot;text&quot;:&quot;Vaihtoehto 1&quot;},{&quot;name&quot;:&quot;2&quot;,&quot;points&quot;:null,&quot;text&quot;:&quot;Vaihtoehto 2&quot;},{&quot;name&quot;:&quot;3&quot;,&quot;points&quot;:null,&quot;text&quot;:&quot;Vaihtoehto 3&quot;}]}''><input name=''param1'' type=''checkbox'' value=''1''><label>Vaihtoehto 1</label><input name=''param1'' type=''checkbox'' value=''2''><label>Vaihtoehto 2</label><input name=''param1'' type=''checkbox'' value=''3''><label>Vaihtoehto 3</label></object>\n                    </p>\n                </body></html>'
+    ('<html><body>\n                    <p>&nbsp;Testi k&auml;ytt&auml;j&auml;tarinalle #100024: Opiskelijana haluan voida vastata moninvalinta tyyppisiin teht&auml;viin</p>\n                    <p>\n                        <object type=''application/vnd.muikku.field.multiselect''><param name=''type'' value=''application/json''><param name=''content'' value=''{&quot;name&quot;:&quot;param1&quot;,&quot;options&quot;:[{&quot;name&quot;:&quot;1&quot;,&quot;points&quot;:null,&quot;text&quot;:&quot;Vaihtoehto 1&quot;},{&quot;name&quot;:&quot;2&quot;,&quot;points&quot;:null,&quot;text&quot;:&quot;Vaihtoehto 2&quot;},{&quot;name&quot;:&quot;3&quot;,&quot;points&quot;:null,&quot;text&quot;:&quot;Vaihtoehto 3&quot;}]}''><input name=''param1'' type=''checkbox'' value=''1''><label>Vaihtoehto 1</label><input name=''param1'' type=''checkbox'' value=''2''><label>Vaihtoehto 2</label><input name=''param1'' type=''checkbox'' value=''3''><label>Vaihtoehto 3</label></object>\n                    </p>\n                </body></html>'
     ,10017),
     ('<html><body>\n                            <p>Kiitos vastauksestasi</p>\n                        </body></html>'
     ,10018),
@@ -80,8 +80,8 @@ INSERT INTO material VALUES (10001,'[_DEUS_NEX_MACHINA_LOOKUP_]','[_DEUS_NEX_MAC
     (10025,'FCK-dokumentti','_fckalreadyreplied'),
     (10026,'FCK-dokumentti','_fckclosed'),
     (10027,'doc','doc');
-INSERT INTO querychecklistfield VALUES (10009);
-INSERT INTO querychecklistfieldoption VALUES (10001,'1','Vaihtoehto 1',10009),
+INSERT INTO querymultiselectfield VALUES (10009);
+INSERT INTO querymultiselectfieldoption VALUES (10001,'1','Vaihtoehto 1',10009),
     (10002,'2','Vaihtoehto 2',10009),
     (10003,'3','Vaihtoehto 3',10009);
 INSERT INTO queryconnectfield VALUES (10007),

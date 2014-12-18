@@ -91,6 +91,7 @@ div[class*='workspace-dock-navi-button'] > span {
     @include rounded-bottom-right(3px);
     @include workspaceTooltipTransition(opacity,0.15s,ease-in-out);
     z-index:99;
+    white-space:nowrap;
   }
   
     

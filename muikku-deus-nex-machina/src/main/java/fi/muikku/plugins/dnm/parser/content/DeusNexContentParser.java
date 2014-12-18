@@ -19,7 +19,7 @@ import fi.muikku.plugins.dnm.parser.DeusNexException;
 import fi.muikku.plugins.dnm.parser.DeusNexInternalException;
 import fi.muikku.plugins.dnm.parser.DeusNexSyntaxException;
 import fi.muikku.plugins.dnm.parser.DeusNexXmlUtils;
-import fi.muikku.plugins.material.fieldmeta.ChecklistFieldOptionMeta;
+import fi.muikku.plugins.material.fieldmeta.MultiSelectFieldOptionMeta;
 
 public class DeusNexContentParser {
 	
@@ -219,16 +219,17 @@ public class DeusNexContentParser {
 	}
 
   private Node handleCheckListField(Document ownerDocument, Element fieldElement, String paramName) throws XPathExpressionException {
-    List<ChecklistFieldOptionMeta> options = new ArrayList<>();
+    List<MultiSelectFieldOptionMeta> options = new ArrayList<>();
     
     List<Element> optionElements = DeusNexXmlUtils.getElementsByXPath(fieldElement, "option");
     for (Element optionElement : optionElements) {
       String optionName = optionElement.getAttribute("name");
-      String pointsStr = optionElement.getAttribute("points");
-      Double optionPoints = StringUtils.isNotBlank(pointsStr) ? NumberUtils.createDouble(pointsStr) : null;
       String optionText = optionElement.getTextContent();
+      // Points to correct conversion
+      String pointsStr = optionElement.getAttribute("points");
+      Boolean correct = StringUtils.isNotBlank(pointsStr) ? NumberUtils.createDouble(pointsStr) > 0 : Boolean.FALSE;
       
-      options.add(new ChecklistFieldOptionMeta(optionName, optionPoints, optionText));
+      options.add(new MultiSelectFieldOptionMeta(optionName, optionText, correct));
     }
     
     if (fieldElementHandler != null) {

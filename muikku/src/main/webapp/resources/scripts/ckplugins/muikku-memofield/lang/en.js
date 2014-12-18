@@ -1,4 +1,4 @@
-CKEDITOR.plugins.setLang('muikku-textfield', 'en', {
+CKEDITOR.plugins.setLang('muikku-memofield', 'en', {
   uiElement: 'Memo Field',
   toolbarMenu: 'Memo Field',
   propertiesMenu: 'Memo Field Properties',

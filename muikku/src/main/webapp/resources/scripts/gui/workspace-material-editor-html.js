@@ -100,16 +100,25 @@
           'coops-cursors' : CONTEXTPATH + '/scripts/ckplugins/coops-cursors/',
           'coops-sessionevents' : CONTEXTPATH + '/scripts/ckplugins/coops-sessionevents/',
           'muikku-fields': CONTEXTPATH + '/scripts/ckplugins/muikku-fields/',
+          'muikku-selection': CONTEXTPATH + '/scripts/ckplugins/muikku-selection/',
           'muikku-textfield': CONTEXTPATH + '/scripts/ckplugins/muikku-textfield/',
-          'muikku-checkbox': CONTEXTPATH + '/scripts/ckplugins/muikku-checkbox/'
+          'muikku-memofield': CONTEXTPATH + '/scripts/ckplugins/muikku-memofield/',
+          'muikku-filefield': CONTEXTPATH + '/scripts/ckplugins/muikku-filefield/'
         },
-        extraPlugins : 'coops,coops-connector,coops-dmp,coops-cursors,coops-sessionevents,muikku-textfield,muikku-checkbox',
+        extraPlugins : 'coops,' +
+                       'coops-connector,' + 
+                       'coops-dmp,' + 
+                       'coops-cursors,' + 
+                       'coops-sessionevents,' + 
+                       'muikku-textfield,' + 
+                       'muikku-memofield,' + 
+                       'muikku-filefield,' + 
+                       'muikku-selection',
         serverUrl : CONTEXTPATH + '/rest/coops/' + this.options.materialId + '',
         contentCss : '/css/custom-ckeditor-contentcss.css',
         toolbar: [
           { name: 'document', items : [ 'Source' ] },
           { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
-          { name: 'forms', items : ['MuikkuTextField']},
           { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
           { name: 'links', items : [ 'Link','Unlink','Anchor' ] },
           { name: 'colors', items : [ 'TextColor','BGColor' ] },
@@ -120,7 +129,7 @@
           { name: 'insert', items : [ 'Image','Flash','Table','SpecialChar' ] },          
           { name: 'tools', items : [ 'Maximize', 'ShowBlocks','-','About' ] },
           '/',
-          { name: 'muikku-fields', items : [ 'muikku-checkbox' ] }
+          { name: 'forms', items : ['MuikkuTextField', 'muikku-selection', 'MuikkuMemoField', 'muikku-filefield']}
         ],
         autoGrowOnStartup : true,
         skin : 'moono',

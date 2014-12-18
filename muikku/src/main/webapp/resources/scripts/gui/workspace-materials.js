@@ -67,7 +67,7 @@
       if (err) {
         $('.notification-queue').notificationQueue('notification', 'error', "Error occurred while saving field replies " + err);
       } else {
-        $(this).addClass("icon-success save-successful").text('Saved');
+        $(this).addClass("icon-checkmark save-successful").text('Saved');
       } 
     }, this));
   });

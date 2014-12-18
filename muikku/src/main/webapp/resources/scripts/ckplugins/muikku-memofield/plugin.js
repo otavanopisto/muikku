@@ -11,14 +11,14 @@
 
   function createFakeParserElement( editor, realElement ) {
     var fake = editor.createFakeParserElement( realElement, 'muikku-memo-field', 'muikkumemofield', true );
-    fake.attributes.src = "//placehold.it/300x300";
+    fake.attributes.src = CKEDITOR.plugins.getPath('muikku-memofield') + 'gfx/muikku-placeholder-memofield.gif';
     fake.attributes.title = editor.lang['muikku-memofield'].uiElement;
     return fake;
   }
 
   function createFakeElement( editor, realElement ) {
     var fake = editor.createFakeElement( realElement, 'muikku-memo-field', 'muikkumemofield', true );
-    fake.setAttribute('src', '//placehold.it/300x300');
+    fake.setAttribute('src', CKEDITOR.plugins.getPath('muikku-memofield') + 'gfx/muikku-placeholder-memofield.gif');
     fake.setAttribute('title', editor.lang['muikku-memofield'].uiElement);
     return fake;
   }
@@ -26,6 +26,8 @@
   CKEDITOR.plugins.add( 'muikku-memofield', {
     requires: 'dialog,muikku-fields',
     lang: 'fi,en',
+    icons: 'muikkumemofield',
+    hidpi: true,
     onLoad: function() {
     },
     init: function( editor ) {
@@ -103,7 +105,7 @@
 
         var newJson = {
           'name': name,
-          'cols': this.getContentElement('info', 'cols').getValue(),
+          'columns': this.getContentElement('info', 'cols').getValue(),
           'rows': this.getContentElement('info', 'rows').getValue(),
         };
         
@@ -129,7 +131,7 @@
           {
             id: 'cols',
             type: 'text',
-            label: editor.lang['muikku-memofield'].propertiesDialogColumns,
+            label: editor.lang['muikku-memofield'].propertiesDialogCols,
             setup: function(json) {
               this.setValue(json.columns);
             }
@@ -139,7 +141,7 @@
             type: 'text',
             label: editor.lang['muikku-memofield'].propertiesDialogRows,
             setup: function(json) {
-              this.setValue(json.hint);
+              this.setValue(json.rows);
             }
           }
         ]
