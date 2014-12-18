@@ -305,8 +305,8 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
 
-    User user = userController.findUserByDataSourceAndIdentifier(sessionController.getActiveUserSchoolDataSource(),
-        sessionController.getActiveUserIdentifier());
+    User user = userController.findUserByDataSourceAndIdentifier(sessionController.getLoggedUserSchoolDataSource(),
+        sessionController.getLoggedUserIdentifier());
 
     if (entity.getRoleId() == null) {
       return Response.status(Status.BAD_REQUEST).entity("Invalid workspace role '" + entity.getRoleId() + "'").build();

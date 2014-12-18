@@ -43,7 +43,7 @@ public class RestSessionFilter implements Filter {
 
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-    localSessionRestAuthentication.setActiveUser(localSessionController.getActiveUserSchoolDataSource(), localSessionController.getActiveUserIdentifier());
+    localSessionRestAuthentication.setActiveUser(localSessionController.getLoggedUserSchoolDataSource(), localSessionController.getLoggedUserIdentifier());
     restSessionController.setAuthentication(localSessionRestAuthentication);
     restSessionController.setLocale(request.getLocale());
     sessionControllerDelegate.setImplementation(restSessionController);

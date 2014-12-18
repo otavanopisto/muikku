@@ -61,7 +61,7 @@ public abstract class AbstractSessionController implements SessionController {
       return null;
     }
     
-    return userEntityController.findUserEntityByDataSourceAndIdentifier(getActiveUserSchoolDataSource(), getActiveUserIdentifier());
+    return userEntityController.findUserEntityByDataSourceAndIdentifier(getLoggedUserSchoolDataSource(), getLoggedUserIdentifier());
   }
   
   @Inject

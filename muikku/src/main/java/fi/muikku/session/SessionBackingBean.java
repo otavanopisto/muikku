@@ -35,8 +35,8 @@ public class SessionBackingBean {
     if (sessionController.isLoggedIn()) {
       UserEntity loggedUser = sessionController.getLoggedUserEntity();
       if (loggedUser != null) {
-        String activeSchoolDataSource = sessionController.getActiveUserSchoolDataSource();
-        String activeUserIdentifier = sessionController.getActiveUserIdentifier();
+        String activeSchoolDataSource = sessionController.getLoggedUserSchoolDataSource();
+        String activeUserIdentifier = sessionController.getLoggedUserIdentifier();
         EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(loggedUser);
         if (environmentUser != null) {
           loggedUserRoleArchetype = environmentUser.getRole().getArchetype();
