@@ -1,8 +1,10 @@
 package fi.muikku.plugins.communicator.rest;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -10,6 +12,7 @@ import java.util.Set;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.websocket.EncodeException;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -34,6 +37,7 @@ import fi.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
 import fi.muikku.plugins.communicator.model.InboxCommunicatorMessage;
+import fi.muikku.plugins.websocket.WebSocketMessenger;
 import fi.muikku.security.AuthorizationException;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.UserController;
@@ -71,6 +75,9 @@ public class CommunicatorRESTService extends PluginRESTService {
   
   @Inject
   private NotifierController notifierController;
+  
+  @Inject
+  private WebSocketMessenger webSocketMessenger;
 
   @GET
   @Path ("/items")
@@ -78,22 +85,40 @@ public class CommunicatorRESTService extends PluginRESTService {
     UserEntity user = sessionController.getLoggedUserEntity(); 
     List<InboxCommunicatorMessage> receivedItems = communicatorController.listReceivedItems(user);
 
-    Collections.sort(receivedItems, new Comparator<CommunicatorMessage>() {
-      @Override
-      public int compare(CommunicatorMessage o1, CommunicatorMessage o2) {
-        return o2.getCreated().compareTo(o1.getCreated());
-      }
-    });
-    
-    List<CommunicatorMessageRESTModel> result = new ArrayList<CommunicatorMessageRESTModel>();
+    List<CommunicatorMessageItemRESTModel> result = new ArrayList<CommunicatorMessageItemRESTModel>();
     
     for (InboxCommunicatorMessage msg : receivedItems) {
       String categoryName = msg.getCategory() != null ? msg.getCategory().getName() : null;
-
-      result.add(new CommunicatorMessageRESTModel(
+      boolean hasUnreadMsgs = false;
+      Date latestMessageDate = msg.getCreated();
+      
+      List<CommunicatorMessageRecipient> recipients = communicatorController.listCommunicatorMessageRecipientsByUserAndMessage(
+          user, msg.getCommunicatorMessageId());
+      
+      for (CommunicatorMessageRecipient r : recipients) {
+        if (Boolean.FALSE.equals(r.getReadByReceiver())) {
+          hasUnreadMsgs = true;
+          break;
+        }
+        
+        Date created = r.getCommunicatorMessage().getCreated();
+        
+        if ((latestMessageDate == null) || (latestMessageDate.before(created)))
+          latestMessageDate = created;
+      }
+      
+      result.add(new CommunicatorMessageItemRESTModel(
           msg.getId(), msg.getCommunicatorMessageId().getId(), msg.getSender(), categoryName, 
-          msg.getCaption(), msg.getContent(), msg.getCreated(), tagIdsToStr(msg.getTags()), getMessageRecipientIdList(msg), new ArrayList<Long>()));
+          msg.getCaption(), msg.getContent(), msg.getCreated(), tagIdsToStr(msg.getTags()), 
+          getMessageRecipientIdList(msg), new ArrayList<Long>(), hasUnreadMsgs, latestMessageDate));
     }
+    
+    Collections.sort(result, new Comparator<CommunicatorMessageItemRESTModel>() {
+      @Override
+      public int compare(CommunicatorMessageItemRESTModel o1, CommunicatorMessageItemRESTModel o2) {
+        return o2.getThreadLatestMessageDate().compareTo(o1.getThreadLatestMessageDate());
+      }
+    });
     
     return Response.ok(
       result
@@ -127,7 +152,32 @@ public class CommunicatorRESTService extends PluginRESTService {
       result
     ).build();
   }
+  
+  @GET
+  @Path ("/receiveditemscount")
+  public Response getReceivedItemsCount() {
+    UserEntity user = sessionController.getLoggedUserEntity(); 
+    List<CommunicatorMessageRecipient> receivedItems = communicatorController.listReceivedItemsByUserAndRead(user, false);
 
+    // TODO could be more elegant, i presume
+    
+    long count = 0;
+    Set<Long> ids = new HashSet<Long>();
+    
+    for (CommunicatorMessageRecipient r : receivedItems) {
+      Long id = r.getCommunicatorMessage().getCommunicatorMessageId().getId();
+      
+      if (!ids.contains(id)) {
+        ids.add(id);
+        count++;
+      }
+    }
+    
+    return Response.ok(
+      count
+    ).build();
+  }
+  
   @GET
   @Path ("/messages/{COMMUNICATORMESSAGEID}")
   public Response listUserCommunicatorMessagesByMessageId( 
@@ -218,12 +268,41 @@ public class CommunicatorRESTService extends PluginRESTService {
       
     notifierController.sendNotification(communicatorNewInboxMessageNotification, user, recipients);
     
+    try {
+      webSocketMessenger.sendMessage2("Communicator:newmessagereceived", null, recipients);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (EncodeException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    
     CommunicatorMessageRESTModel result = new CommunicatorMessageRESTModel(message.getId(), message.getCommunicatorMessageId().getId(), 
         message.getSender(), message.getCategory().getName(), message.getCaption(), message.getContent(), message.getCreated(), 
         tagIdsToStr(message.getTags()), getMessageRecipientIdList(message), new ArrayList<Long>());
     
     return Response.ok(
       result
+    ).build();
+  }
+
+  @POST
+  @Path ("/messages/{COMMUNICATORMESSAGEID}/markasread")
+  public Response markAsRead( 
+      @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId) {
+    UserEntity user = sessionController.getLoggedUserEntity(); 
+    
+    CommunicatorMessageId messageId = communicatorController.findCommunicatorMessageId(communicatorMessageId);
+
+    List<CommunicatorMessageRecipient> list = communicatorController.listCommunicatorMessageRecipientsByUserAndMessage(user, messageId);
+    
+    for (CommunicatorMessageRecipient r : list) {
+      communicatorController.updateRead(r, true);
+    }
+    
+    return Response.ok(
+      
     ).build();
   }
 
@@ -315,6 +394,16 @@ public class CommunicatorRESTService extends PluginRESTService {
         recipients, categoryEntity, newMessage.getCaption(), newMessage.getContent(), tagList);
 
     notifierController.sendNotification(communicatorNewInboxMessageNotification, user, recipients);
+    
+    try {
+      webSocketMessenger.sendMessage2("Communicator:newmessagereceived", null, recipients);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } catch (EncodeException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     
     CommunicatorMessageRESTModel result = new CommunicatorMessageRESTModel(message.getId(), message.getCommunicatorMessageId().getId(), 
         message.getSender(), message.getCategory().getName(), message.getCaption(), message.getContent(), message.getCreated(), 
