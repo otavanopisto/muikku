@@ -13,28 +13,13 @@
         <div class="lu-user-name">
           <div class="lu-user-name-button">
             <div class="lu-user-name-button-value">#{sessionBackingBean.loggedUserName}</div>
-            <div class="lu-user-name-button-icon icon-arrow-down"></div> 
-          </div>
-          <h:form styleClass="lu-alternateIdentities-form">
-            <ul>
-              <ui:repeat var="alternativeIdentity" value="#{sessionBackingBean.alternativeIdentities}">
-                <li>
-                  <h:commandLink styleClass="icon-user" action="#{sessionBackingBean.changeUserIdentity(alternativeIdentity)}" value="#{alternativeIdentity.displayName}" />
-                </li>
-              </ui:repeat>
-            </ul>
-          </h:form>            
+            <div class="lu-user-name-button-icon"></div> 
+          </div>     
         </div>
         <div class="lu-actions">
 	        <h:form>
             <h:outputLink styleClass="lu-action-edit icon-pencil"  value="#{request.contextPath}/user-edit"/> 
             <h:commandLink styleClass="lu-action-signout icon-signout"  action="#{logoutWidgetBackingBean.logout}"/>
-      <!--      <div style="position:relative; z-index:99999;" jsf:rendered="#{not empty sessionBackingBean.alternativeIdentities}">
-               <ui:repeat var="alternativeIdentity" value="#{sessionBackingBean.alternativeIdentities}">
-                 <h:commandLink action="#{sessionBackingBean.changeUserIdentity(alternativeIdentity)}" value="#{alternativeIdentity.displayName}" />
-               </ui:repeat>
-            </div>
-             --> 
 	        </h:form>
         </div>
       </div>
