@@ -50,6 +50,10 @@ public class PyramusSchoolDataWorkspaceStudentsUpdateScheduler {
   
   @Schedule(minute = "*/1", hour = "*", persistent = false)
   public void synchronizeWorkspaceStudents() throws UnexpectedSchoolDataBridgeException {
+    if (!SchoolDataPyramusPluginDescriptor.SCHEDULERS_ACTIVE) {
+      return;
+    }
+    
     if (contextInitialized) {
       if (running) {
         return;  

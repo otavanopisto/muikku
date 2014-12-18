@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import fi.muikku.events.ContextDestroyedEvent;
 import fi.muikku.events.ContextInitializedEvent;
 import fi.muikku.plugins.schooldatapyramus.PyramusUpdater;
+import fi.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 
 @Singleton
@@ -43,6 +44,10 @@ public class PyramusSchoolDataStudentsUpdateScheduler {
   
   @Schedule(minute = "*/1", hour = "*", persistent = false)
   public void synchronizeStudents() throws UnexpectedSchoolDataBridgeException {
+    if (!SchoolDataPyramusPluginDescriptor.SCHEDULERS_ACTIVE) {
+      return;
+    }
+    
     if (contextInitialized) {
       if (running) {
         return;  
