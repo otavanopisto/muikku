@@ -34,9 +34,11 @@
         });
         editor.contextMenu.addListener(function(element) {
           var selectionField = editor.restoreRealElement(element);
-          var selectionType = selectionField.getAttribute('type');
-          if (selectionType == 'application/vnd.muikku.field.select' || selectionType == 'application/vnd.muikku.field.multiselect') {
-            return {muikkuSelectionItem: CKEDITOR.TRISTATE_OFF};
+          if (selectionField !== null) {
+              var selectionType = selectionField.getAttribute('type');
+              if (selectionType === 'application/vnd.muikku.field.select' || selectionType === 'application/vnd.muikku.field.multiselect') {
+                return {muikkuSelectionItem: CKEDITOR.TRISTATE_OFF};
+              }
           }
         });
       }
