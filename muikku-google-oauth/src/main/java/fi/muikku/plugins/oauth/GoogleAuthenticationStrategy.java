@@ -74,8 +74,8 @@ public class GoogleAuthenticationStrategy extends OAuthAuthenticationStrategy im
   }
   
   @Override
-  protected Class<? extends Api> getApiClass() {
-    return GoogleApi20.class;
+  protected Api getApi() {
+    return new GoogleApi20();
   }
   
   @Override

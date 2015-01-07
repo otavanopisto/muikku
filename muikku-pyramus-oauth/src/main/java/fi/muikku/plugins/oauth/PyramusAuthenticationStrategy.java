@@ -46,9 +46,18 @@ public class PyramusAuthenticationStrategy extends OAuthAuthenticationStrategy i
   @Inject
   private SessionController sessionController;
 
-  public PyramusAuthenticationStrategy() {
+  private String getAuthUrl() {
+    return pluginSettingsController.getPluginSetting(PyramusOAuthPluginDescriptor.PLUGIN_NAME, "oauth.authUrl");
   }
 
+  private String getTokenUri() {
+    return pluginSettingsController.getPluginSetting(PyramusOAuthPluginDescriptor.PLUGIN_NAME, "oauth.tokenUri");
+  }
+  
+  private String getWhoAmIUrl() {
+    return pluginSettingsController.getPluginSetting(PyramusOAuthPluginDescriptor.PLUGIN_NAME, "oauth.whoamiUrl");
+  }
+  
   @Override
   protected String getApiKey(AuthSource authSource) {
     return pluginSettingsController.getPluginSetting(PyramusOAuthPluginDescriptor.PLUGIN_NAME, "oauth.clientId");
@@ -73,10 +82,10 @@ public class PyramusAuthenticationStrategy extends OAuthAuthenticationStrategy i
   public String getDescription() {
     return "Pyramus";
   }
-
+  
   @Override
-  protected Class<? extends Api> getApiClass() {
-    return PyramusApi20.class;
+  protected Api getApi() {
+    return new PyramusApi20(getAuthUrl(), getTokenUri());
   }
 
   @Override
@@ -104,7 +113,7 @@ public class PyramusAuthenticationStrategy extends OAuthAuthenticationStrategy i
     
     WhoAmI whoAmI = null;
 
-    OAuthRequest request = new OAuthRequest(Verb.GET, "https://dev.pyramus.fi:8443/1/system/whoami");
+    OAuthRequest request = new OAuthRequest(Verb.GET, getWhoAmIUrl());
     service.signRequest(accessToken, request);
     Response response = request.send();
     try {
@@ -132,4 +141,5 @@ public class PyramusAuthenticationStrategy extends OAuthAuthenticationStrategy i
     @JsonProperty("expires_in")
     private Integer expiresIn;
   }
+  
 }
