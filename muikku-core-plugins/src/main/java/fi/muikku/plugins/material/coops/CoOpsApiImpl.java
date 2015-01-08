@@ -131,8 +131,9 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
     }
 
     if (revisionNumber != null) {
-      // TODO: Implement
-      throw new CoOpsNotImplementedException();
+      // TODO: Implement revision properties
+      String data = getRevisionHtml(htmlMaterial, revisionNumber);
+      return new File(revisionNumber, data, htmlMaterial.getContentType(), null);
     } else {
       Long maxRevisionNumber = htmlMaterialRevisionDAO.maxRevisionByHtmlMaterial(htmlMaterial);
       String data = getRevisionHtml(htmlMaterial, maxRevisionNumber);
