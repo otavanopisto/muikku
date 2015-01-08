@@ -101,6 +101,28 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
   @HttpsPort
   private Integer httpsPort;
   
+  private String getRevisionHtml(HtmlMaterial htmlMaterial, long revision) throws CoOpsInternalErrorException {
+    String result = htmlMaterial.getHtml();
+    long baselineRevision = htmlMaterial.getRevisionNumber();
+    CoOpsDiffAlgorithm algorithm = findAlgorithm("dmp");
+    List<HtmlMaterialRevision> revisions = htmlMaterialRevisionDAO.listByFileAndRevisionGreaterThanOrderedByRevision(htmlMaterial, baselineRevision);
+
+    if (revision < baselineRevision) {
+      throw new CoOpsInternalErrorException("Trying to travel to the past: revision is less than baseline revision");
+    }
+    for (HtmlMaterialRevision patchingRevision : revisions) {
+      try {
+        if (patchingRevision.getData() != null) {
+          result = algorithm.patch(result, patchingRevision.getData());
+        }
+      } catch (CoOpsConflictException e) {
+        throw new CoOpsInternalErrorException("Patch failed when building material revision number " + revision);
+      }
+    }
+    
+    return result;
+  }
+  
   public File fileGet(String fileId, Long revisionNumber) throws CoOpsNotImplementedException, CoOpsNotFoundException, CoOpsUsageException, CoOpsInternalErrorException, CoOpsForbiddenException {
     HtmlMaterial htmlMaterial = findFile(fileId);
     
@@ -112,8 +134,9 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
       // TODO: Implement
       throw new CoOpsNotImplementedException();
     } else {
-      Long currentRevisionNumber = htmlMaterial.getRevisionNumber();
-      String data = htmlMaterial.getHtml();
+      Long maxRevisionNumber = htmlMaterialRevisionDAO.maxRevisionByHtmlMaterial(htmlMaterial);
+      String data = getRevisionHtml(htmlMaterial, maxRevisionNumber);
+      
       List<HtmlMaterialProperty> fileProperties = htmlMaterialPropertyDAO.listByHtmlMaterial(htmlMaterial);
       Map<String, String> properties = new HashMap<String, String>();
       
@@ -121,7 +144,7 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
         properties.put(fileProperty.getKey(),fileProperty.getValue());
       }
       
-      return new File(currentRevisionNumber, data, htmlMaterial.getContentType(), properties);
+      return new File(maxRevisionNumber, data, htmlMaterial.getContentType(), properties);
     }
   }
 
@@ -143,7 +166,7 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
 
     List<Patch> updateResults = new ArrayList<>();
 
-    List<HtmlMaterialRevision> htmlMaterialRevisions = htmlMaterialRevisionDAO.listByFileAndRevisionGreaterThan(file, revisionNumber);
+    List<HtmlMaterialRevision> htmlMaterialRevisions = htmlMaterialRevisionDAO.listByFileAndRevisionGreaterThanOrderedByRevision(file, revisionNumber);
 
     if (!htmlMaterialRevisions.isEmpty()) {
       for (HtmlMaterialRevision htmlMaterialRevision : htmlMaterialRevisions) {
@@ -192,30 +215,27 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
  
     HtmlMaterial htmlMaterial = findFile(fileId);
     
-    Long currentRevision = htmlMaterial.getRevisionNumber();
-    if (!currentRevision.equals(revisionNumber)) {
+    Long maxRevision = htmlMaterialRevisionDAO.maxRevisionByHtmlMaterial(htmlMaterial);
+
+    if (!maxRevision.equals(revisionNumber)) {
       throw new CoOpsConflictException();
     }
     
     ObjectMapper objectMapper = new ObjectMapper();
     
     String checksum = null;
-    String patched = null;
     
     if (StringUtils.isNotBlank(patch)) {
-      String data = htmlMaterial.getHtml();
+      String data = getRevisionHtml(htmlMaterial, maxRevision);
+      String patched = null;
       if (data == null) {
         data = "";
       }
-      
-      patched = algorithm.patch(data, patch);
       checksum = DigestUtils.md5Hex(patched);
-      htmlMaterialDAO.updateData(htmlMaterial, patched);
     } 
     
-    Long patchRevisionNumber = currentRevision + 1;
+    Long patchRevisionNumber = maxRevision + 1;
     HtmlMaterialRevision htmlMaterialRevision = htmlMaterialRevisionDAO.create(htmlMaterial, sessionId, patchRevisionNumber, new Date(), patch, checksum);
-    htmlMaterialDAO.updateRevisionNumber(htmlMaterial, patchRevisionNumber);
 
     if (properties != null) {
       for (String key : properties.keySet()) {
