@@ -49,6 +49,10 @@ public class CoOpsSessionController {
   public List<CoOpsSession> listSessionsByHtmlMaterialAndClosed(HtmlMaterial htmlMaterial, Boolean closed) {
     return coOpsSessionDAO.listByFileAndClosed(htmlMaterial, closed);
   }
+
+  public List<CoOpsSession> listOpenSessions() {
+    return coOpsSessionDAO.listByClosed(Boolean.FALSE);
+  }
   
   public CoOpsSession updateSessionType(CoOpsSession coOpsSession, CoOpsSessionType type) {
     return coOpsSessionDAO.updateType(coOpsSession, type);
