@@ -27,7 +27,7 @@ public class WorkspaceMaterialFieldDeleteListener {
     }
   }
 
-  public void deleteFieldAnswer(WorkspaceMaterialFieldAnswer answer) {
+  private void deleteFieldAnswer(WorkspaceMaterialFieldAnswer answer) {
     if (answer instanceof WorkspaceMaterialFileFieldAnswer) {
       List<WorkspaceMaterialFileFieldAnswerFile> fileAnswerFiles = workspaceMaterialFieldAnswerController.listWorkspaceMaterialFileFieldAnswerFilesByFieldAnswer((WorkspaceMaterialFileFieldAnswer) answer);
       for (WorkspaceMaterialFileFieldAnswerFile fieldAnswerFile : fileAnswerFiles) {

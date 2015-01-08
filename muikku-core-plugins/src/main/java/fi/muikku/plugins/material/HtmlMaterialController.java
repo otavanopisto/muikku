@@ -64,8 +64,12 @@ public class HtmlMaterialController {
     return htmlMaterialDAO.updateRevisionNumber(htmlMaterial, revisionNumber);
   }
   
-  public Long lastHtmlMaterialRevision(HtmlMaterial htmlMaterial) {
-    return htmlMaterialRevisionDAO.maxRevisionByHtmlMaterial(htmlMaterial);
+  public long lastHtmlMaterialRevision(HtmlMaterial htmlMaterial) {
+    Long maxRevision = htmlMaterialRevisionDAO.maxRevisionByHtmlMaterial(htmlMaterial);
+    if (maxRevision == null) {
+      maxRevision = 0l;
+    }
+    return maxRevision;
   }
 
 }

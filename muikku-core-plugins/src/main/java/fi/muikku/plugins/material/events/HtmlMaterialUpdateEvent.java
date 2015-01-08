@@ -4,8 +4,18 @@ import fi.muikku.plugins.material.model.HtmlMaterial;
 
 public class HtmlMaterialUpdateEvent extends MaterialUpdateEvent<HtmlMaterial> {
 
-  public HtmlMaterialUpdateEvent(HtmlMaterial material) {
+  public HtmlMaterialUpdateEvent(HtmlMaterial material, String oldHtml, String newHtml) {
     super(material);
   }
   
+  public String getOldHtml() {
+    return oldHtml;
+  }
+  
+  public String getNewHtml() {
+    return newHtml;
+  }
+  
+  private String oldHtml;
+  private String newHtml;
 }

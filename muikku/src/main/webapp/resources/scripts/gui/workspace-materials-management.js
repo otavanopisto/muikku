@@ -457,7 +457,14 @@
     var currentRevision = $(this).data('current-revision');
     var publishedRevision = $(this).data('published-revision');
     if (currentRevision !== publishedRevision) {
-      alert('Publish from ' + publishedRevision + " to " + currentRevision );
+      
+      mApi().materials.html.publish.create(materialId, {
+        fromRevision: publishedRevision,
+        toRevision: currentRevision
+      }).callback(
+        function (err, html) {
+          alert('Everything went better than expected');
+      });
     }
   });
   
