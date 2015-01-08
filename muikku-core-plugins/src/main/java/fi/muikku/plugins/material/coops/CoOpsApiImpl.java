@@ -216,6 +216,9 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
     HtmlMaterial htmlMaterial = findFile(fileId);
     
     Long maxRevision = htmlMaterialRevisionDAO.maxRevisionByHtmlMaterial(htmlMaterial);
+    if (maxRevision == null) {
+      maxRevision = 0l;
+    }
 
     if (!maxRevision.equals(revisionNumber)) {
       throw new CoOpsConflictException();
@@ -227,10 +230,10 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
     
     if (StringUtils.isNotBlank(patch)) {
       String data = getRevisionHtml(htmlMaterial, maxRevision);
-      String patched = null;
       if (data == null) {
         data = "";
       }
+      String patched = algorithm.patch(data, patch);
       checksum = DigestUtils.md5Hex(patched);
     } 
     
