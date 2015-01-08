@@ -178,6 +178,13 @@
       $(this._status).removeClass('icon-saved icon-saving icon-unsaved icon-loaded icon-loading');
       $(this._status).addClass('icon-' + data.status);
       $(this._status).find('span').html(data.status);
+      
+      if (data.status == 'saved') {
+        $(document).trigger("htmlMaterialRevisionChanged", {
+          materialId: this.options.materialId,
+          revisionNumber: data.revisionNumber
+        });
+      }
     },
     
     _onCollaboratorJoined: function (event, data) {

@@ -7,7 +7,9 @@
         _this._ticket = ticket.ticket;
       });
 
-      this._webSocket = this._openWebSocket('wss://dev.muikku.fi:8443/ws/socket/' + _this._ticket);
+      var host = window.location.host;
+      
+      this._webSocket = this._openWebSocket('wss://' + host + '/ws/socket/' + _this._ticket);
       this._webSocket.onmessage = this._onWebSocketMessage;
       
       $(window).on('unload', function() {

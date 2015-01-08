@@ -8,6 +8,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import org.hibernate.criterion.Order;
+
 import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.material.coops.model.HtmlMaterialRevision;
@@ -30,7 +32,7 @@ public class HtmlMaterialRevisionDAO extends CorePluginsDAO<HtmlMaterialRevision
     return persist(htmlMaterialRevision);
   }
 
-  public List<HtmlMaterialRevision> listByFileAndRevisionGreaterThan(HtmlMaterial htmlMaterial, Long revision) {
+  public List<HtmlMaterialRevision> listByFileAndRevisionGreaterThanOrderedByRevision(HtmlMaterial htmlMaterial, Long revision) {
     EntityManager entityManager = getEntityManager();
 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -43,8 +45,21 @@ public class HtmlMaterialRevisionDAO extends CorePluginsDAO<HtmlMaterialRevision
         criteriaBuilder.greaterThan(root.get(HtmlMaterialRevision_.revision), revision)
       )
     );
+    criteria.orderBy(criteriaBuilder.asc(root.get(HtmlMaterialRevision_.revision)));
 
     return entityManager.createQuery(criteria).getResultList();
+  }
+  
+  public Long maxRevisionByHtmlMaterial(HtmlMaterial htmlMaterial) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Long> criteria = criteriaBuilder.createQuery(Long.class);
+    Root<HtmlMaterialRevision> root = criteria.from(HtmlMaterialRevision.class);
+    criteria.select(criteriaBuilder.max(root.get(HtmlMaterialRevision_.revision)));
+    criteria.where(criteriaBuilder.equal(root.get(HtmlMaterialRevision_.htmlMaterial), htmlMaterial));
+    
+    return entityManager.createQuery(criteria).getSingleResult();
   }
 
 }

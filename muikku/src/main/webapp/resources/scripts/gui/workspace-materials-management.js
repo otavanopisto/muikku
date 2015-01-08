@@ -445,5 +445,20 @@
     }, this));
   });
   
+  $(document).on('htmlMaterialRevisionChanged', function (event, data) {
+    $('a.publish-page[data-material-id="' + data.materialId + '"]')
+      .data('current-revision', data.revisionNumber)
+      .removeClass('disabled');
+  });
+  
+  $(document).on('click', '.publish-page', function (event, data) {
+    var workspaceMaterialId = $(this).data('workspace-material-id');
+    var materialId = $(this).data('material-id');
+    var currentRevision = $(this).data('current-revision');
+    var publishedRevision = $(this).data('published-revision');
+    if (currentRevision !== publishedRevision) {
+      alert('Publish from ' + publishedRevision + " to " + currentRevision );
+    }
+  });
   
 }).call(this);

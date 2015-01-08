@@ -70,7 +70,12 @@ public class HtmlMaterialRESTService extends PluginRESTService {
   }
   
   private HtmlRestMaterial createRestModel(HtmlMaterial htmlMaterial) {
-    return new HtmlRestMaterial(htmlMaterial.getId(), htmlMaterial.getTitle(), htmlMaterial.getContentType(), htmlMaterial.getHtml());
+    return new HtmlRestMaterial(htmlMaterial.getId(),
+                                htmlMaterial.getTitle(),
+                                htmlMaterial.getContentType(),
+                                htmlMaterial.getHtml(),
+                                htmlMaterialController.lastHtmlMaterialRevision(htmlMaterial),
+                                htmlMaterial.getRevisionNumber());
   }
   
 }

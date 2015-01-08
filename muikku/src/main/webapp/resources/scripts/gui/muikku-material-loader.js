@@ -65,8 +65,10 @@
               fieldAnswers: fieldAnswers
             });
             
+            material.html = parsed.html();
+            
             if (this._getRenderMode('html') == 'dust') {
-              renderDustTemplate(this.options.dustTemplate, { id: materialId, type: 'html', data: { html: parsed.html() } }, function (text) {
+              renderDustTemplate(this.options.dustTemplate, { id: materialId, materialId: materialId, workspaceMaterialId: workspaceMaterialId, type: 'html', data: material }, function (text) {
                 $('#' + placeholderId).replaceWith(text);
                 
                 $.waypoints('refresh');
