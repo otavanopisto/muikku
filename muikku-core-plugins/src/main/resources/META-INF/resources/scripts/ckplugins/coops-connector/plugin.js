@@ -172,8 +172,7 @@
           
           if (this._editor.config.coops.webSocket !== false) {
             if (joinData.extensions.webSocket) {
-              var secure = window.location.protocol.indexOf('https') === 0;
-              var webSocketUrl = secure ? joinData.extensions.webSocket.wss : joinData.extensions.webSocket.ws;
+              var webSocketUrl = CKEDITOR.env.secure && !CKEDITOR.env.webkit ? joinData.extensions.webSocket.wss : joinData.extensions.webSocket.ws;
               if (webSocketUrl) {
                 this._webSocket = this._openWebSocket(webSocketUrl);
                 if (this._webSocket) {
