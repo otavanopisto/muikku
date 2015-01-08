@@ -32,6 +32,8 @@ import fi.foyt.coops.CoOpsUsageException;
 import fi.foyt.coops.model.File;
 import fi.foyt.coops.model.Join;
 import fi.foyt.coops.model.Patch;
+import fi.muikku.environment.HttpPort;
+import fi.muikku.environment.HttpsPort;
 import fi.muikku.plugins.material.coops.dao.HtmlMaterialExtensionPropertyDAO;
 import fi.muikku.plugins.material.coops.dao.HtmlMaterialPropertyDAO;
 import fi.muikku.plugins.material.coops.dao.HtmlMaterialRevisionDAO;
@@ -90,6 +92,14 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
 
   @Inject
   private SessionController sessionController;
+
+  @Inject
+  @HttpPort
+  private Integer httpPort;
+  
+  @Inject
+  @HttpsPort
+  private Integer httpsPort;
   
   public File fileGet(String fileId, Long revisionNumber) throws CoOpsNotImplementedException, CoOpsNotFoundException, CoOpsUsageException, CoOpsInternalErrorException, CoOpsForbiddenException {
     HtmlMaterial htmlMaterial = findFile(fileId);
@@ -299,14 +309,14 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
   private void addWebSocketExtension(HtmlMaterial htmlMaterial, Map<String, Object> extensions, CoOpsSession coOpsSession) {
     String wsUrl = String.format("ws://%s:%s%s/ws/coops/%d/%s", 
       httpRequest.getServerName(), 
-      httpRequest.getServerPort(), 
+      httpPort, 
       httpRequest.getContextPath(), 
       htmlMaterial.getId(), 
       coOpsSession.getSessionId());
     
     String wssUrl = String.format("wss://%s:%s%s/ws/coops/%d/%s", 
         httpRequest.getServerName(), 
-        httpRequest.getServerPort(), 
+        httpsPort, 
         httpRequest.getContextPath(), 
         htmlMaterial.getId(), 
         coOpsSession.getSessionId());
