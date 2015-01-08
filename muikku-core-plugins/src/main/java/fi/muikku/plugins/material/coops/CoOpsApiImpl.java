@@ -34,6 +34,7 @@ import fi.foyt.coops.model.Join;
 import fi.foyt.coops.model.Patch;
 import fi.muikku.environment.HttpPort;
 import fi.muikku.environment.HttpsPort;
+import fi.muikku.plugins.material.HtmlMaterialController;
 import fi.muikku.plugins.material.coops.dao.HtmlMaterialExtensionPropertyDAO;
 import fi.muikku.plugins.material.coops.dao.HtmlMaterialPropertyDAO;
 import fi.muikku.plugins.material.coops.dao.HtmlMaterialRevisionDAO;
@@ -77,6 +78,9 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
 
   @Inject
   private HtmlMaterialRevisionExtensionPropertyDAO htmlMaterialRevisionExtensionPropertyDAO;
+  
+  @Inject
+  private HtmlMaterialController htmlMaterialController;
 
   @Inject
   private CoOpsSessionController coOpsSessionController;
@@ -291,7 +295,7 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
   }
 
   public Join fileJoin(String fileId, List<String> algorithms, String protocolVersion) throws CoOpsNotFoundException, CoOpsNotImplementedException, CoOpsInternalErrorException, CoOpsForbiddenException, CoOpsUsageException {
-    HtmlMaterial file = findFile(fileId);
+    HtmlMaterial htmlMaterial = findFile(fileId);
     
     if (!COOPS_PROTOCOL_VERSION.equals(protocolVersion)) {
       throw new CoOpsNotImplementedException("Protocol version mismatch. Client is using " + protocolVersion + " and server " + COOPS_PROTOCOL_VERSION);
@@ -306,15 +310,15 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
       throw new CoOpsNotImplementedException("Server and client do not have a commonly supported algorithm.");
     }
 
-    Long currentRevision = file.getRevisionNumber();
-    String data = file.getHtml();
+    Long currentRevision = htmlMaterialController.lastHtmlMaterialRevision(htmlMaterial);
+    String data = getRevisionHtml(htmlMaterial, currentRevision);
     if (data == null) {
       data = "";
     }
 
     Map<String, String> properties = new HashMap<>();
     
-    List<HtmlMaterialProperty> fileProperties = htmlMaterialPropertyDAO.listByHtmlMaterial(file);
+    List<HtmlMaterialProperty> fileProperties = htmlMaterialPropertyDAO.listByHtmlMaterial(htmlMaterial);
     for (HtmlMaterialProperty fileProperty : fileProperties) {
       properties.put(fileProperty.getKey(), fileProperty.getValue());
     }
@@ -322,12 +326,12 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
     Map<String, Object> extensions = new HashMap<>();
     String sessionId = UUID.randomUUID().toString();
     
-    CoOpsSession coOpsSession = coOpsSessionController.createSession(file, sessionController.getLoggedUserEntity(), sessionId, currentRevision, algorithm.getName());
+    CoOpsSession coOpsSession = coOpsSessionController.createSession(htmlMaterial, sessionController.getLoggedUserEntity(), sessionId, currentRevision, algorithm.getName());
     
-    addSessionEventsExtension(file, extensions);
-    addWebSocketExtension(file, extensions, coOpsSession);
+    addSessionEventsExtension(htmlMaterial, extensions);
+    addWebSocketExtension(htmlMaterial, extensions, coOpsSession);
 
-    return new Join(coOpsSession.getSessionId(), coOpsSession.getAlgorithm(), coOpsSession.getJoinRevision(), data, file.getContentType(), properties, extensions);
+    return new Join(coOpsSession.getSessionId(), coOpsSession.getAlgorithm(), coOpsSession.getJoinRevision(), data, htmlMaterial.getContentType(), properties, extensions);
   }
   
   private void addWebSocketExtension(HtmlMaterial htmlMaterial, Map<String, Object> extensions, CoOpsSession coOpsSession) {
