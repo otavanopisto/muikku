@@ -7,5 +7,7 @@ public interface CoOpsDiffAlgorithm {
   public String getName();
 
   public String patch(String data, String patch) throws CoOpsConflictException;
+
+  public String unpatch(String data, String patch) throws CoOpsConflictException;
   
 }

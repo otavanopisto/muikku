@@ -109,18 +109,31 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
     String result = htmlMaterial.getHtml();
     long baselineRevision = htmlMaterial.getRevisionNumber();
     CoOpsDiffAlgorithm algorithm = findAlgorithm("dmp");
-    List<HtmlMaterialRevision> revisions = htmlMaterialRevisionDAO.listByFileAndRevisionGreaterThanOrderedByRevision(htmlMaterial, baselineRevision);
 
     if (revision < baselineRevision) {
-      throw new CoOpsInternalErrorException("Trying to travel to the past: revision is less than baseline revision");
-    }
-    for (HtmlMaterialRevision patchingRevision : revisions) {
-      try {
-        if (patchingRevision.getData() != null) {
-          result = algorithm.patch(result, patchingRevision.getData());
+      List<HtmlMaterialRevision> revisions = htmlMaterialRevisionDAO.listByFileAndRevisionGtAndRevisonLeOrderedByRevision(htmlMaterial, revision, baselineRevision);
+      for (int i = revisions.size() - 1; i >= 0; i--) {
+        HtmlMaterialRevision patchingRevision = revisions.get(i);
+        try {
+          if (patchingRevision.getData() != null) {
+            result = algorithm.unpatch(result, patchingRevision.getData());
+          }
+        } catch (CoOpsConflictException e) {
+          throw new CoOpsInternalErrorException("Patch failed when building material revision number " + revision);
         }
-      } catch (CoOpsConflictException e) {
-        throw new CoOpsInternalErrorException("Patch failed when building material revision number " + revision);
+      }
+          
+    } else {
+      List<HtmlMaterialRevision> revisions = htmlMaterialRevisionDAO.listByFileAndRevisionGtAndRevisonLeOrderedByRevision(htmlMaterial, baselineRevision, revision);
+
+      for (HtmlMaterialRevision patchingRevision : revisions) {
+        try {
+          if (patchingRevision.getData() != null) {
+            result = algorithm.patch(result, patchingRevision.getData());
+          }
+        } catch (CoOpsConflictException e) {
+          throw new CoOpsInternalErrorException("Patch failed when building material revision number " + revision);
+        }
       }
     }
     
