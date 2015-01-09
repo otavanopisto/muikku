@@ -9,9 +9,11 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import fi.muikku.plugins.material.events.HtmlMaterialFieldCreated;
 import fi.muikku.plugins.material.events.HtmlMaterialFieldDeleted;
+import fi.muikku.plugins.material.fieldmeta.MemoFieldMeta;
 import fi.muikku.plugins.material.fieldmeta.TextFieldMeta;
 import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.material.model.QueryField;
+import fi.muikku.plugins.material.model.QueryMemoField;
 
 public class HtmlMaterialFieldChangeListener {
   
@@ -20,6 +22,9 @@ public class HtmlMaterialFieldChangeListener {
 
   @Inject
   private QueryTextFieldController queryTextFieldController;
+  
+  @Inject
+  private QueryMemoFieldController queryMemoFieldController;
   
   public void onHtmlMaterialTextFieldCreated(@Observes HtmlMaterialFieldCreated event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
     if (event.getField().getType().equals("application/vnd.muikku.field.text")) {
@@ -34,6 +39,25 @@ public class HtmlMaterialFieldChangeListener {
       QueryField queryField = queryFieldController.findQueryFieldByMaterialAndName(event.getMaterial(), textFieldMeta.getName());
       if (queryField == null) {
         queryTextFieldController.createQueryTextField(event.getMaterial(), textFieldMeta.getName());
+      } else {
+        throw new MaterialQueryIntegrityExeption("Field with same name already exists in the database");
+      }
+    }
+  }
+  
+  public void onHtmlMaterialMemoFieldCreated(@Observes HtmlMaterialFieldCreated event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
+    if (event.getField().getType().equals("application/vnd.muikku.field.memo")) {
+      ObjectMapper objectMapper = new ObjectMapper();
+      MemoFieldMeta memoFieldMeta;
+      try {
+        memoFieldMeta = objectMapper.readValue(event.getField().getContent(), MemoFieldMeta.class);
+      } catch (IOException e) {
+        throw new MaterialFieldMetaParsingExeption("Could not parse memo field meta", e);
+      }
+      
+      QueryMemoField queryMemoField = queryMemoFieldController.findQueryMemoFieldByMaterialAndName(event.getMaterial(), memoFieldMeta.getName());
+      if (queryMemoField == null) {
+        queryMemoFieldController.createQueryMemoField(event.getMaterial(), memoFieldMeta.getName());
       } else {
         throw new MaterialQueryIntegrityExeption("Field with same name already exists in the database");
       }
