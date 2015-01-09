@@ -2,6 +2,7 @@ package fi.muikku.plugins.material;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -88,6 +89,10 @@ public class MaterialFieldCollection {
   public Set<String> getFieldNames() {
     return materialFields.keySet();
   }
+
+  public List<MaterialField> getFields() {
+    return Collections.unmodifiableList(new ArrayList<>(materialFields.values()));
+  }
   
   public List<MaterialField> getNewFields(MaterialFieldCollection collection) {
     List<MaterialField> fields = new ArrayList<MaterialField>();
@@ -97,7 +102,8 @@ public class MaterialFieldCollection {
         fields.add(getField(name));
       }
     }
-    return fields;
+    
+    return Collections.unmodifiableList(fields);
   }
 
   public List<MaterialField> getUpdatedFields(MaterialFieldCollection collection) {
@@ -112,7 +118,8 @@ public class MaterialFieldCollection {
         }
       }
     }
-    return fields;
+    
+    return Collections.unmodifiableList(fields);
   }
   
   public List<MaterialField> getRemovedFields(MaterialFieldCollection collection) {
@@ -123,7 +130,8 @@ public class MaterialFieldCollection {
         fields.add(collection.getField(name));
       }
     }
-    return fields;
+    
+    return Collections.unmodifiableList(fields);
   }
   
   private boolean isMuikkuField(Element element) {
