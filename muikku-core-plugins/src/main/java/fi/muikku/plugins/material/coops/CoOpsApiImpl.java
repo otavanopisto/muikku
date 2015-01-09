@@ -2,10 +2,8 @@ package fi.muikku.plugins.material.coops;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -13,8 +11,6 @@ import java.util.UUID;
 import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
@@ -35,19 +31,12 @@ import fi.foyt.coops.model.Patch;
 import fi.muikku.environment.HttpPort;
 import fi.muikku.environment.HttpsPort;
 import fi.muikku.plugins.material.HtmlMaterialController;
-import fi.muikku.plugins.material.coops.dao.HtmlMaterialExtensionPropertyDAO;
-import fi.muikku.plugins.material.coops.dao.HtmlMaterialPropertyDAO;
-import fi.muikku.plugins.material.coops.dao.HtmlMaterialRevisionDAO;
-import fi.muikku.plugins.material.coops.dao.HtmlMaterialRevisionExtensionPropertyDAO;
-import fi.muikku.plugins.material.coops.dao.HtmlMaterialRevisionPropertyDAO;
 import fi.muikku.plugins.material.coops.event.CoOpsPatchEvent;
 import fi.muikku.plugins.material.coops.model.CoOpsSession;
-import fi.muikku.plugins.material.coops.model.HtmlMaterialExtensionProperty;
 import fi.muikku.plugins.material.coops.model.HtmlMaterialProperty;
 import fi.muikku.plugins.material.coops.model.HtmlMaterialRevision;
 import fi.muikku.plugins.material.coops.model.HtmlMaterialRevisionExtensionProperty;
 import fi.muikku.plugins.material.coops.model.HtmlMaterialRevisionProperty;
-import fi.muikku.plugins.material.dao.HtmlMaterialDAO;
 import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.session.SessionController;
 
@@ -56,28 +45,6 @@ import fi.muikku.session.SessionController;
 public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
 
   private final static String COOPS_PROTOCOL_VERSION = "1.0.0";
-  
-  @Inject
-  @Any
-  private Instance<CoOpsDiffAlgorithm> algorithms;
-
-  @Inject
-  private HtmlMaterialDAO htmlMaterialDAO;
-
-  @Inject
-  private HtmlMaterialPropertyDAO htmlMaterialPropertyDAO;
-
-  @Inject
-  private HtmlMaterialExtensionPropertyDAO htmlMaterialExtensionPropertyDAO;
-
-  @Inject
-  private HtmlMaterialRevisionDAO htmlMaterialRevisionDAO;
-
-  @Inject
-  private HtmlMaterialRevisionPropertyDAO htmlMaterialRevisionPropertyDAO;
-
-  @Inject
-  private HtmlMaterialRevisionExtensionPropertyDAO htmlMaterialRevisionExtensionPropertyDAO;
   
   @Inject
   private HtmlMaterialController htmlMaterialController;
@@ -105,41 +72,6 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
   @HttpsPort
   private Integer httpsPort;
   
-  private String getRevisionHtml(HtmlMaterial htmlMaterial, long revision) throws CoOpsInternalErrorException {
-    String result = htmlMaterial.getHtml();
-    long baselineRevision = htmlMaterial.getRevisionNumber();
-    CoOpsDiffAlgorithm algorithm = findAlgorithm("dmp");
-
-    if (revision < baselineRevision) {
-      List<HtmlMaterialRevision> revisions = htmlMaterialRevisionDAO.listByFileAndRevisionGtAndRevisonLeOrderedByRevision(htmlMaterial, revision, baselineRevision);
-      for (int i = revisions.size() - 1; i >= 0; i--) {
-        HtmlMaterialRevision patchingRevision = revisions.get(i);
-        try {
-          if (patchingRevision.getData() != null) {
-            result = algorithm.unpatch(result, patchingRevision.getData());
-          }
-        } catch (CoOpsConflictException e) {
-          throw new CoOpsInternalErrorException("Patch failed when building material revision number " + revision);
-        }
-      }
-          
-    } else {
-      List<HtmlMaterialRevision> revisions = htmlMaterialRevisionDAO.listByFileAndRevisionGtAndRevisonLeOrderedByRevision(htmlMaterial, baselineRevision, revision);
-
-      for (HtmlMaterialRevision patchingRevision : revisions) {
-        try {
-          if (patchingRevision.getData() != null) {
-            result = algorithm.patch(result, patchingRevision.getData());
-          }
-        } catch (CoOpsConflictException e) {
-          throw new CoOpsInternalErrorException("Patch failed when building material revision number " + revision);
-        }
-      }
-    }
-    
-    return result;
-  }
-  
   public File fileGet(String fileId, Long revisionNumber) throws CoOpsNotImplementedException, CoOpsNotFoundException, CoOpsUsageException, CoOpsInternalErrorException, CoOpsForbiddenException {
     HtmlMaterial htmlMaterial = findFile(fileId);
     
@@ -149,13 +81,13 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
 
     if (revisionNumber != null) {
       // TODO: Implement revision properties
-      String data = getRevisionHtml(htmlMaterial, revisionNumber);
+      String data = htmlMaterialController.getRevisionHtml(htmlMaterial, revisionNumber);
       return new File(revisionNumber, data, htmlMaterial.getContentType(), null);
     } else {
-      Long maxRevisionNumber = htmlMaterialRevisionDAO.maxRevisionByHtmlMaterial(htmlMaterial);
-      String data = getRevisionHtml(htmlMaterial, maxRevisionNumber);
+      Long maxRevisionNumber = htmlMaterialController.lastHtmlMaterialRevision(htmlMaterial);
+      String data = htmlMaterialController.getRevisionHtml(htmlMaterial, maxRevisionNumber);
       
-      List<HtmlMaterialProperty> fileProperties = htmlMaterialPropertyDAO.listByHtmlMaterial(htmlMaterial);
+      List<HtmlMaterialProperty> fileProperties = htmlMaterialController.listPropertiesByMaterial(htmlMaterial);
       Map<String, String> properties = new HashMap<String, String>();
       
       for (HtmlMaterialProperty fileProperty : fileProperties) {
@@ -176,15 +108,15 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
       throw new CoOpsUsageException("revisionNumber parameter is missing");
     }
     
-    HtmlMaterial file = findFile(fileId);
+    HtmlMaterial htmlMaterial = findFile(fileId);
     
-    if (file == null) {
+    if (htmlMaterial == null) {
       throw new CoOpsNotFoundException();
     }
 
     List<Patch> updateResults = new ArrayList<>();
 
-    List<HtmlMaterialRevision> htmlMaterialRevisions = htmlMaterialRevisionDAO.listByFileAndRevisionGreaterThanOrderedByRevision(file, revisionNumber);
+    List<HtmlMaterialRevision> htmlMaterialRevisions = htmlMaterialController.listRevisionsAfter(htmlMaterial, revisionNumber);
 
     if (!htmlMaterialRevisions.isEmpty()) {
       for (HtmlMaterialRevision htmlMaterialRevision : htmlMaterialRevisions) {
@@ -193,7 +125,7 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
         Map<String, String> properties = null;
         Map<String, Object> extensions = null;
         
-        List<HtmlMaterialRevisionProperty> revisionProperties = htmlMaterialRevisionPropertyDAO.listByHtmlMaterialRevision(htmlMaterialRevision);
+        List<HtmlMaterialRevisionProperty> revisionProperties = htmlMaterialController.listRevisionProperties(htmlMaterialRevision);
         if (revisionProperties.size() > 0) {
           properties = new HashMap<>();
           for (HtmlMaterialRevisionProperty revisionProperty : revisionProperties) {
@@ -201,7 +133,7 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
           }
         }
         
-        List<HtmlMaterialRevisionExtensionProperty> revisionExtensionProperties = htmlMaterialRevisionExtensionPropertyDAO.listByHtmlMaterialRevision(htmlMaterialRevision);
+        List<HtmlMaterialRevisionExtensionProperty> revisionExtensionProperties = htmlMaterialController.listRevisionExtensionProperties(htmlMaterialRevision);
         if (revisionExtensionProperties.size() > 0) {
           extensions = new HashMap<>();
           for (HtmlMaterialRevisionExtensionProperty revisionExtensionProperty : revisionExtensionProperties) {
@@ -226,14 +158,14 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
       throw new CoOpsUsageException("Invalid session id"); 
     }
     
-    CoOpsDiffAlgorithm algorithm = findAlgorithm(session.getAlgorithm());
+    CoOpsDiffAlgorithm algorithm = htmlMaterialController.findAlgorithm(session.getAlgorithm());
     if (algorithm == null) {
       throw new CoOpsUsageException("Algorithm is not supported by this server");
     }
  
     HtmlMaterial htmlMaterial = findFile(fileId);
     
-    Long maxRevision = htmlMaterialRevisionDAO.maxRevisionByHtmlMaterial(htmlMaterial);
+    Long maxRevision = htmlMaterialController.lastHtmlMaterialRevision(htmlMaterial);
     if (maxRevision == null) {
       maxRevision = 0l;
     }
@@ -247,7 +179,7 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
     String checksum = null;
     
     if (StringUtils.isNotBlank(patch)) {
-      String data = getRevisionHtml(htmlMaterial, maxRevision);
+      String data = htmlMaterialController.getRevisionHtml(htmlMaterial, maxRevision);
       if (data == null) {
         data = "";
       }
@@ -256,23 +188,17 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
     } 
     
     Long patchRevisionNumber = maxRevision + 1;
-    HtmlMaterialRevision htmlMaterialRevision = htmlMaterialRevisionDAO.create(htmlMaterial, sessionId, patchRevisionNumber, new Date(), patch, checksum);
-
+    HtmlMaterialRevision htmlMaterialRevision = htmlMaterialController.createRevision(htmlMaterial, sessionId, patchRevisionNumber, new Date(), patch, checksum);
+    
     if (properties != null) {
       for (String key : properties.keySet()) {
         String value = properties.get(key);
         
-        HtmlMaterialProperty fileProperty = htmlMaterialPropertyDAO.findByHtmlMaterialAndKey(htmlMaterial, key);
-        if (fileProperty == null) {
-          htmlMaterialPropertyDAO.create(htmlMaterial, key, value);
-        } else {
-          htmlMaterialPropertyDAO.updateValue(fileProperty, value);
-        }
-        
-        htmlMaterialRevisionPropertyDAO.create(htmlMaterialRevision, key, value);
+        htmlMaterialController.setProperty(htmlMaterial, key, value);
+        htmlMaterialController.createRevisionProperty(htmlMaterialRevision, key, value);
         
         if ("title".equals(key)) {
-          htmlMaterialDAO.updateTitle(htmlMaterial, value);
+          htmlMaterialController.updateHtmlMaterialTitle(htmlMaterial, value);
         }
       }
     }
@@ -287,14 +213,8 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
           throw new CoOpsInternalErrorException(e);
         }
         
-        HtmlMaterialExtensionProperty htmlMaterialExtensionProperty = htmlMaterialExtensionPropertyDAO.findByFileAndKey(htmlMaterial, key);
-        if (htmlMaterialExtensionProperty == null) {
-          htmlMaterialExtensionPropertyDAO.create(htmlMaterial, key, value);
-        } else {
-          htmlMaterialExtensionPropertyDAO.updateValue(htmlMaterialExtensionProperty, value);
-        }
-        
-        htmlMaterialRevisionExtensionPropertyDAO.create(htmlMaterialRevision, key, value);
+        htmlMaterialController.setExtensionProperty(htmlMaterial, key, value);
+        htmlMaterialController.createRevisionExtensionProperty(htmlMaterialRevision, key, value);
       }
     }
     
@@ -318,20 +238,20 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
       throw new CoOpsInternalErrorException("Invalid request");
     }
     
-    CoOpsDiffAlgorithm algorithm = findAlgorithm(algorithms);
+    CoOpsDiffAlgorithm algorithm = htmlMaterialController.findAlgorithm(algorithms);
     if (algorithm == null) {
       throw new CoOpsNotImplementedException("Server and client do not have a commonly supported algorithm.");
     }
 
     Long currentRevision = htmlMaterialController.lastHtmlMaterialRevision(htmlMaterial);
-    String data = getRevisionHtml(htmlMaterial, currentRevision);
+    String data = htmlMaterialController.getRevisionHtml(htmlMaterial, currentRevision);
     if (data == null) {
       data = "";
     }
 
     Map<String, String> properties = new HashMap<>();
     
-    List<HtmlMaterialProperty> fileProperties = htmlMaterialPropertyDAO.listByHtmlMaterial(htmlMaterial);
+    List<HtmlMaterialProperty> fileProperties = htmlMaterialController.listPropertiesByMaterial(htmlMaterial);
     for (HtmlMaterialProperty fileProperty : fileProperties) {
       properties.put(fileProperty.getKey(), fileProperty.getValue());
     }
@@ -373,33 +293,6 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
     List<CoOpsSession> openSessions = coOpsSessionController.listSessionsByHtmlMaterialAndClosed(htmlMaterial, Boolean.FALSE);
     extensions.put("sessionEvents", coOpsSessionEventsController.createSessionEvents(openSessions, "OPEN"));
   }
-  
-  private CoOpsDiffAlgorithm findAlgorithm(String algorithmName) {
-    return findAlgorithm(Arrays.asList(algorithmName)); 
-  }
-  
-  private CoOpsDiffAlgorithm findAlgorithm(List<String> algorithmNames) {
-    Map<String, CoOpsDiffAlgorithm> algorithmMap = getAlgorithmMap();
-    for (String algorithmName : algorithmNames) {
-      if (algorithmMap.containsKey(algorithmName)) {
-        return algorithmMap.get(algorithmName);
-      }
-    }
-    
-    return null;
-  }
-  
-  private Map<String, CoOpsDiffAlgorithm> getAlgorithmMap() {
-    Map<String, CoOpsDiffAlgorithm> result = new HashMap<>();
-    
-    Iterator<CoOpsDiffAlgorithm> iterator = this.algorithms.iterator();
-    while (iterator.hasNext()) {
-      CoOpsDiffAlgorithm algorithm = iterator.next();
-      result.put(algorithm.getName(), algorithm);
-    }
-    
-    return result;
-  }
 
   private HtmlMaterial findFile(String fileId) throws CoOpsUsageException, CoOpsNotFoundException {
     if (!StringUtils.isNumeric(fileId)) {
@@ -411,7 +304,7 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
       throw new CoOpsUsageException("fileId must be a number");
     }
     
-    HtmlMaterial file = htmlMaterialDAO.findById(id);
+    HtmlMaterial file = htmlMaterialController.findHtmlMaterialById(id);
     if (file == null) {
       throw new CoOpsNotFoundException();
     }
