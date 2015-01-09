@@ -1,8 +1,6 @@
 package fi.muikku.plugins.material;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -18,33 +16,26 @@ import fi.muikku.plugins.material.model.QueryField;
 public class HtmlMaterialFieldChangeListener {
   
   @Inject
-  private Logger logger;
-
-  @Inject
   private QueryFieldController queryFieldController;
 
   @Inject
   private QueryTextFieldController queryTextFieldController;
   
-  public void onHtmlMaterialTextFieldCreated(@Observes HtmlMaterialFieldCreated event) {
+  public void onHtmlMaterialTextFieldCreated(@Observes HtmlMaterialFieldCreated event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
     if (event.getField().getType().equals("application/vnd.muikku.field.text")) {
       ObjectMapper objectMapper = new ObjectMapper();
       TextFieldMeta textFieldMeta;
       try {
         textFieldMeta = objectMapper.readValue(event.getField().getContent(), TextFieldMeta.class);
       } catch (IOException e) {
-        // TODO: Abort publishing
-        logger.log(Level.SEVERE, "Could not parse text field meta", e);
-        return;
+        throw new MaterialFieldMetaParsingExeption("Could not parse text field meta", e);
       }
       
       QueryField queryField = queryFieldController.findQueryFieldByMaterialAndName(event.getMaterial(), textFieldMeta.getName());
       if (queryField == null) {
         queryTextFieldController.createQueryTextField(event.getMaterial(), textFieldMeta.getName());
       } else {
-        // TODO: Abort publishing
-        logger.log(Level.SEVERE, "An field with same name already exists");
-        return;
+        throw new MaterialQueryIntegrityExeption("Field with same name already exists in the database");
       }
     }
   }
