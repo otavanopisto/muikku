@@ -1,17 +1,11 @@
 package fi.muikku.plugins.material;
 
-import java.util.List;
-
 import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import fi.foyt.coops.CoOpsConflictException;
-import fi.foyt.coops.CoOpsInternalErrorException;
-import fi.muikku.plugins.material.coops.CoOpsDiffAlgorithm;
 import fi.muikku.plugins.material.coops.dao.HtmlMaterialRevisionDAO;
-import fi.muikku.plugins.material.coops.model.HtmlMaterialRevision;
 import fi.muikku.plugins.material.dao.HtmlMaterialDAO;
 import fi.muikku.plugins.material.events.HtmlMaterialCreateEvent;
 import fi.muikku.plugins.material.events.HtmlMaterialDeleteEvent;
