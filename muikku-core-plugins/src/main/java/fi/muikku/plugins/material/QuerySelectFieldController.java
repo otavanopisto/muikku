@@ -6,8 +6,12 @@ import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fi.muikku.plugins.material.dao.QuerySelectFieldDAO;
 import fi.muikku.plugins.material.dao.QuerySelectFieldOptionDAO;
+import fi.muikku.plugins.material.fieldmeta.SelectFieldMeta;
+import fi.muikku.plugins.material.fieldmeta.SelectFieldOptionMeta;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.material.model.QuerySelectField;
 import fi.muikku.plugins.material.model.QuerySelectFieldOption;
@@ -34,6 +38,41 @@ public class QuerySelectFieldController {
 
   public QuerySelectField findQuerySelectFieldByMaterialAndName(Material material, String name) {
     return querySelectFieldDAO.findByMaterialAndName(material, name);
+  }
+  
+  public QuerySelectField updateQuerySelectField(Material material, SelectFieldMeta fieldMeta) {
+    QuerySelectField field = querySelectFieldDAO.findByMaterialAndName(material,  fieldMeta.getName());
+    List<QuerySelectFieldOption> oldOptions = querySelectFieldOptionDAO.listByField(field);
+    List<SelectFieldOptionMeta> newOptions = fieldMeta.getOptions();
+    for (SelectFieldOptionMeta newOption : newOptions) {
+      QuerySelectFieldOption correspondingOption = findOptionByName(oldOptions, newOption.getName());
+      if (correspondingOption == null) {
+        // New options
+        createQuerySelectFieldOption(field, newOption.getName(), newOption.getText());
+      }
+      else {
+        // Modified options
+        if (!StringUtils.equals(correspondingOption.getText(), newOption.getText())) {
+          updateQuerySelectFieldOptionText(correspondingOption, newOption.getText());
+        }
+        oldOptions.remove(correspondingOption);
+      }
+    }
+    // Removed options
+    for (QuerySelectFieldOption removedOption : oldOptions) {
+      // TODO Exception if has been answered
+      deleteQuerySelectFieldOption(removedOption);
+    }
+    return field;
+  }
+  
+  private QuerySelectFieldOption findOptionByName(List<QuerySelectFieldOption> options, String name) {
+    for (QuerySelectFieldOption option : options) {
+      if (StringUtils.equals(option.getName(), name)) {
+        return option;
+      }
+    }
+    return null;
   }
   
   /* QuerySelectFieldOption */
