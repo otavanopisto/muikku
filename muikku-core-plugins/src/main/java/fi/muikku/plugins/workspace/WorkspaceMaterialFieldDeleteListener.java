@@ -6,24 +6,30 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import fi.muikku.plugins.workspace.events.WorkspaceMaterialFieldDeleteEvent;
-import fi.muikku.plugins.workspace.model.WorkspaceMaterialMultiSelectFieldAnswer;
-import fi.muikku.plugins.workspace.model.WorkspaceMaterialMultiSelectFieldAnswerOption;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialFieldAnswer;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswer;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswerFile;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialMultiSelectFieldAnswer;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialMultiSelectFieldAnswerOption;
 
 public class WorkspaceMaterialFieldDeleteListener {
   
   @Inject
   private WorkspaceMaterialFieldAnswerController workspaceMaterialFieldAnswerController;
 
-  public void onWorkspaceMaterialFieldDeleted(@Observes WorkspaceMaterialFieldDeleteEvent event) {
+  public void onWorkspaceMaterialFieldDeleted(@Observes WorkspaceMaterialFieldDeleteEvent event) throws WorkspaceMaterialContainsAnswersExeption {
     WorkspaceMaterialField materialField = event.getWorkspaceMaterialField();
     
     List<WorkspaceMaterialFieldAnswer> answers = workspaceMaterialFieldAnswerController.listWorkspaceMaterialFieldAnswersByField(materialField);
-    for (WorkspaceMaterialFieldAnswer answer : answers) {
-      deleteFieldAnswer(answer); 
+    if (event.getRemoveAnswers()) {
+      for (WorkspaceMaterialFieldAnswer answer : answers) {
+        deleteFieldAnswer(answer); 
+      }
+    } else {
+      if (!answers.isEmpty()) {
+        throw new WorkspaceMaterialContainsAnswersExeption("Could not remove workspace material field because it contains answers");
+      }
     }
   }
 
