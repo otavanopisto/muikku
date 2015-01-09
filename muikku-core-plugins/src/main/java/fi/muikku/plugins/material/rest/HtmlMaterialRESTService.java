@@ -81,7 +81,7 @@ public class HtmlMaterialRESTService extends PluginRESTService {
   }
   
   @POST
-  @Path("/{id}/publish")
+  @Path("/{id}/publish/")
   public Response publishMaterial(@PathParam("id") Long id, HtmlRestMaterialPublish entity) {
     HtmlMaterial htmlMaterial = htmlMaterialController.findHtmlMaterialById(id);
     if (htmlMaterial == null) {
@@ -101,28 +101,6 @@ public class HtmlMaterialRESTService extends PluginRESTService {
     }
     
     return Response.noContent().build();
-  }
-  
-  public class HtmlRestMaterialPublish {
-  
-    public Long getFromRevision() {
-      return fromRevision;
-    }
-    
-    public void setFromRevision(Long fromRevision) {
-      this.fromRevision = fromRevision;
-    }
-    
-    public Long getToRevision() {
-      return toRevision;
-    }
-    
-    public void setToRevision(Long toRevision) {
-      this.toRevision = toRevision;
-    }
-    
-    private Long fromRevision;
-    private Long toRevision;
   }
   
   private HtmlRestMaterial createRestModel(HtmlMaterial htmlMaterial) {
