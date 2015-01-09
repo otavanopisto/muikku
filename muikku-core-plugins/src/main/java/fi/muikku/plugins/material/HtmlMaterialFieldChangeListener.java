@@ -7,8 +7,9 @@ import javax.inject.Inject;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
-import fi.muikku.plugins.material.events.HtmlMaterialFieldCreated;
-import fi.muikku.plugins.material.events.HtmlMaterialFieldDeleted;
+import fi.muikku.plugins.material.events.HtmlMaterialFieldCreateEvent;
+import fi.muikku.plugins.material.events.HtmlMaterialFieldDeleteEvent;
+import fi.muikku.plugins.material.events.HtmlMaterialFieldUpdateEvent;
 import fi.muikku.plugins.material.fieldmeta.FileFieldMeta;
 import fi.muikku.plugins.material.fieldmeta.MemoFieldMeta;
 import fi.muikku.plugins.material.fieldmeta.SelectFieldMeta;
@@ -37,7 +38,7 @@ public class HtmlMaterialFieldChangeListener {
   @Inject
   private QueryFileFieldController queryFileFieldController;
 
-  public void onHtmlMaterialTextFieldCreated(@Observes HtmlMaterialFieldCreated event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
+  public void onHtmlMaterialTextFieldCreated(@Observes HtmlMaterialFieldCreateEvent event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
     if (event.getField().getType().equals("application/vnd.muikku.field.text")) {
       ObjectMapper objectMapper = new ObjectMapper();
       TextFieldMeta textFieldMeta;
@@ -56,7 +57,7 @@ public class HtmlMaterialFieldChangeListener {
     }
   }
   
-  public void onHtmlMaterialMemoFieldCreated(@Observes HtmlMaterialFieldCreated event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
+  public void onHtmlMaterialMemoFieldCreated(@Observes HtmlMaterialFieldCreateEvent event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
     if (event.getField().getType().equals("application/vnd.muikku.field.memo")) {
       ObjectMapper objectMapper = new ObjectMapper();
       MemoFieldMeta memoFieldMeta;
@@ -75,7 +76,7 @@ public class HtmlMaterialFieldChangeListener {
     }
   }
   
-  public void onHtmlMaterialSelectFieldCreated(@Observes HtmlMaterialFieldCreated event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
+  public void onHtmlMaterialSelectFieldCreated(@Observes HtmlMaterialFieldCreateEvent event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
     if (event.getField().getType().equals("application/vnd.muikku.field.select")) {
       ObjectMapper objectMapper = new ObjectMapper();
       
@@ -104,7 +105,7 @@ public class HtmlMaterialFieldChangeListener {
     }
   }
   
-  public void onHtmlMaterialFileFieldCreated(@Observes HtmlMaterialFieldCreated event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
+  public void onHtmlMaterialFileFieldCreated(@Observes HtmlMaterialFieldCreateEvent event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
     if (event.getField().getType().equals("application/vnd.muikku.field.file")) {
       ObjectMapper objectMapper = new ObjectMapper();
       FileFieldMeta fileFieldMeta;
@@ -122,8 +123,21 @@ public class HtmlMaterialFieldChangeListener {
       queryFileFieldController.createQueryFileField(event.getMaterial(), fileFieldMeta.getName());
     }
   }
-
-  public void onHtmlMaterialFieldDeleted(@Observes HtmlMaterialFieldDeleted event) {
+  
+  public void onHtmlMaterialSelectFieldUpdated(@Observes HtmlMaterialFieldUpdateEvent event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
+    if (event.getField().getType().equals("application/vnd.muikku.field.select")) {
+      ObjectMapper objectMapper = new ObjectMapper();
+      SelectFieldMeta selectFieldMeta;
+      try {
+        selectFieldMeta = objectMapper.readValue(event.getField().getContent(), SelectFieldMeta.class);
+      } catch (IOException e) {
+        throw new MaterialFieldMetaParsingExeption("Could not parse file field meta", e);
+      }
+      querySelectFieldController.updateQuerySelectField(event.getMaterial(), selectFieldMeta);
+    }
+  }
+  
+  public void onHtmlMaterialFieldDeleted(@Observes HtmlMaterialFieldDeleteEvent event) {
     HtmlMaterial material = event.getMaterial();
     QueryField queryField = queryFieldController.findQueryFieldByMaterialAndName(material, event.getField().getName());
     if (queryField != null) {

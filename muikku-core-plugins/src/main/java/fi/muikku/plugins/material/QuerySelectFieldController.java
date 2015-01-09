@@ -41,6 +41,7 @@ public class QuerySelectFieldController {
   }
   
   public QuerySelectField updateQuerySelectField(Material material, SelectFieldMeta fieldMeta) {
+    // TODO Event to let WorkspaceMaterialField clear answers?
     QuerySelectField field = querySelectFieldDAO.findByMaterialAndName(material,  fieldMeta.getName());
     List<QuerySelectFieldOption> oldOptions = querySelectFieldOptionDAO.listByField(field);
     List<SelectFieldOptionMeta> newOptions = fieldMeta.getOptions();
@@ -60,7 +61,6 @@ public class QuerySelectFieldController {
     }
     // Removed options
     for (QuerySelectFieldOption removedOption : oldOptions) {
-      // TODO Exception if has been answered
       deleteQuerySelectFieldOption(removedOption);
     }
     return field;

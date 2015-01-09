@@ -3,9 +3,9 @@ package fi.muikku.plugins.material.events;
 import fi.muikku.plugins.material.MaterialField;
 import fi.muikku.plugins.material.model.HtmlMaterial;
 
-public class HtmlMaterialFieldUpdated {
+public class HtmlMaterialFieldUpdateEvent {
 
-  public HtmlMaterialFieldUpdated(HtmlMaterial material, MaterialField field) {
+  public HtmlMaterialFieldUpdateEvent(HtmlMaterial material, MaterialField field) {
     super();
     this.material = material;
     this.field = field;

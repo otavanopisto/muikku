@@ -4,8 +4,15 @@ import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
 
 public class WorkspaceMaterialFieldUpdateEvent extends WorkspaceMaterialFieldEvent {
 
-  public WorkspaceMaterialFieldUpdateEvent(WorkspaceMaterialField workspaceMaterialField) {
+  public WorkspaceMaterialFieldUpdateEvent(WorkspaceMaterialField workspaceMaterialField, boolean removeAnswers) {
     super(workspaceMaterialField);
+    this.removeAnswers = removeAnswers;
   }
+  
+  public boolean getRemoveAnswers() {
+    return removeAnswers;
+  }
+  
+  private boolean removeAnswers;
 
 }
