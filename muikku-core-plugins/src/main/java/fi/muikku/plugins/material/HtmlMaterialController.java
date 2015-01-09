@@ -53,9 +53,16 @@ public class HtmlMaterialController {
     materialUpdateEvent.fire(event);
     return htmlMaterialDAO.updateData(htmlMaterial, html);
   }
-
-  public HtmlMaterial updateHtmlMaterialRevisionNumber(HtmlMaterial htmlMaterial, Long revisionNumber) {
-    return htmlMaterialDAO.updateRevisionNumber(htmlMaterial, revisionNumber);
+  
+  public HtmlMaterial updateHtmlMaterialToRevision(HtmlMaterial htmlMaterial, String html, Long revisionNumber, boolean removeNewerRevisions) {
+    updateHtmlMaterialHtml(htmlMaterial, html);
+    htmlMaterialDAO.updateRevisionNumber(htmlMaterial, revisionNumber);
+    
+    if (removeNewerRevisions) {
+      // TODO: remove revisions gt revisionNumber
+    }
+    
+    return htmlMaterial;
   }
   
   public long lastHtmlMaterialRevision(HtmlMaterial htmlMaterial) {
