@@ -9,6 +9,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import fi.muikku.plugins.material.events.HtmlMaterialFieldCreated;
 import fi.muikku.plugins.material.events.HtmlMaterialFieldDeleted;
+import fi.muikku.plugins.material.fieldmeta.FileFieldMeta;
 import fi.muikku.plugins.material.fieldmeta.MemoFieldMeta;
 import fi.muikku.plugins.material.fieldmeta.SelectFieldMeta;
 import fi.muikku.plugins.material.fieldmeta.SelectFieldOptionMeta;
@@ -32,6 +33,9 @@ public class HtmlMaterialFieldChangeListener {
   
   @Inject
   private QuerySelectFieldController querySelectFieldController;
+
+  @Inject
+  private QueryFileFieldController queryFileFieldController;
 
   public void onHtmlMaterialTextFieldCreated(@Observes HtmlMaterialFieldCreated event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
     if (event.getField().getType().equals("application/vnd.muikku.field.text")) {
@@ -100,6 +104,25 @@ public class HtmlMaterialFieldChangeListener {
     }
   }
   
+  public void onHtmlMaterialFileFieldCreated(@Observes HtmlMaterialFieldCreated event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
+    if (event.getField().getType().equals("application/vnd.muikku.field.file")) {
+      ObjectMapper objectMapper = new ObjectMapper();
+      FileFieldMeta fileFieldMeta;
+      try {
+        fileFieldMeta = objectMapper.readValue(event.getField().getContent(), FileFieldMeta.class);
+      } catch (IOException e) {
+        throw new MaterialFieldMetaParsingExeption("Could not parse file field meta", e);
+      }
+      
+      QueryField queryField = queryFieldController.findQueryFieldByMaterialAndName(event.getMaterial(), fileFieldMeta.getName());
+      if (queryField != null) {
+        throw new MaterialQueryIntegrityExeption("Field with same name already exists in the database");
+      }
+      
+      queryFileFieldController.createQueryFileField(event.getMaterial(), fileFieldMeta.getName());
+    }
+  }
+
   public void onHtmlMaterialFieldDeleted(@Observes HtmlMaterialFieldDeleted event) {
     HtmlMaterial material = event.getMaterial();
     QueryField queryField = queryFieldController.findQueryFieldByMaterialAndName(material, event.getField().getName());
