@@ -5,6 +5,9 @@
 ( function() {
   CKEDITOR.plugins.add( 'muikku-connectfield', {
     requires: 'muikku-fields',
+    icons: 'muikku-connectfield',
+    hidpi: true,
+    lang: 'fi,en',
     onLoad: function() {
     },
     init: function( editor ) {

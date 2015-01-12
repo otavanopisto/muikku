@@ -103,7 +103,8 @@
           'muikku-selection': CONTEXTPATH + '/scripts/ckplugins/muikku-selection/',
           'muikku-textfield': CONTEXTPATH + '/scripts/ckplugins/muikku-textfield/',
           'muikku-memofield': CONTEXTPATH + '/scripts/ckplugins/muikku-memofield/',
-          'muikku-filefield': CONTEXTPATH + '/scripts/ckplugins/muikku-filefield/'
+          'muikku-filefield': CONTEXTPATH + '/scripts/ckplugins/muikku-filefield/',
+          'muikku-connectfield': CONTEXTPATH + '/scripts/ckplugins/muikku-connectfield/'
         },
         extraPlugins : 'coops,' +
                        'coops-connector,' + 
@@ -113,7 +114,8 @@
                        'muikku-textfield,' + 
                        'muikku-memofield,' + 
                        'muikku-filefield,' + 
-                       'muikku-selection',
+                       'muikku-selection,' +
+                       'muikku-connectfield',
         serverUrl : CONTEXTPATH + '/rest/coops/' + this.options.materialId + '',
         contentCss : '/css/custom-ckeditor-contentcss.css',
         toolbar: [
@@ -129,7 +131,7 @@
           { name: 'insert', items : [ 'Image','Flash','Table','SpecialChar' ] },          
           { name: 'tools', items : [ 'Maximize', 'ShowBlocks','-','About' ] },
           '/',
-          { name: 'forms', items : ['MuikkuTextField', 'muikku-selection', 'MuikkuMemoField', 'muikku-filefield']}
+          { name: 'forms', items : ['MuikkuTextField', 'muikku-selection', 'MuikkuMemoField', 'muikku-filefield', 'muikku-connectfield']}
         ],
         autoGrowOnStartup : true,
         skin : 'moono',
