@@ -39,5 +39,9 @@ public class HtmlMaterialRevisionPropertyDAO extends CorePluginsDAO<HtmlMaterial
 
     return entityManager.createQuery(criteria).getResultList();
   }
+  
+  public void delete(HtmlMaterialRevisionProperty e) {
+    super.delete(e);
+  }
 
 }

@@ -3,9 +3,9 @@ package fi.muikku.plugins.material.events;
 import fi.muikku.plugins.material.MaterialField;
 import fi.muikku.plugins.material.model.HtmlMaterial;
 
-public class HtmlMaterialFieldDeleted {
+public class HtmlMaterialFieldDeleteEvent {
 
-  public HtmlMaterialFieldDeleted(HtmlMaterial material, MaterialField field) {
+  public HtmlMaterialFieldDeleteEvent(HtmlMaterial material, MaterialField field) {
     super();
     this.material = material;
     this.field = field;

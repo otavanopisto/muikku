@@ -449,6 +449,10 @@
     $('a.publish-page[data-material-id="' + data.materialId + '"]')
       .data('current-revision', data.revisionNumber)
       .removeClass('disabled');
+    
+    $('a.revert-page[data-material-id="' + data.materialId + '"]')
+      .data('current-revision', data.revisionNumber)
+      .removeClass('disabled');
   });
   
   $(document).on('click', '.publish-page', function (event, data) {
@@ -460,11 +464,30 @@
       mApi().materials.html.publish.create(materialId, {
         fromRevision: publishedRevision,
         toRevision: currentRevision
-      }).callback($.proxy(function (err, html) {
+      }).callback($.proxy(function (err) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
           $(this).data('published-revision', currentRevision);
+        }
+      }, this));
+    }
+  });
+  
+  $(document).on('click', '.revert-page', function (event, data) {
+    var workspaceMaterialId = $(this).data('workspace-material-id');
+    var materialId = $(this).data('material-id');
+    var currentRevision = $(this).data('current-revision');
+    var publishedRevision = $(this).data('published-revision');
+    if (currentRevision !== publishedRevision) {
+      mApi().materials.html.revert.update(materialId, {
+        fromRevision: currentRevision,
+        toRevision: publishedRevision
+      }).callback($.proxy(function (err) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          $(this).data('published-revision', publishedRevision);
         }
       }, this));
     }

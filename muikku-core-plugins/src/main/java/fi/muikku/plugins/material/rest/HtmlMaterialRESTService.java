@@ -9,6 +9,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.EntityTag;
@@ -62,12 +63,12 @@ public class HtmlMaterialRESTService extends PluginRESTService {
 
   @GET
   @Path("/{id}")
-  public Response findMaterial(@PathParam("id") Long id, @Context Request request) {
+  public Response findMaterial(@PathParam("id") Long id, @QueryParam ("revision") Long revision, @Context Request request) {
     HtmlMaterial htmlMaterial = htmlMaterialController.findHtmlMaterialById(id);
     if (htmlMaterial == null) {
       return Response.status(Status.NOT_FOUND).build();
     } else {
-      EntityTag tag = new EntityTag(DigestUtils.md5Hex(String.valueOf(htmlMaterial.getVersion())));
+      EntityTag tag = new EntityTag(DigestUtils.md5Hex(String.valueOf(revision == null ? htmlMaterial.getRevisionNumber() : revision)));
       ResponseBuilder builder = request.evaluatePreconditions(tag);
       if (builder != null) {
         return builder.build();
@@ -76,7 +77,22 @@ public class HtmlMaterialRESTService extends PluginRESTService {
       CacheControl cacheControl = new CacheControl();
       cacheControl.setMustRevalidate(true);
       
-      return Response.ok(createRestModel(htmlMaterial)).build();
+      if (revision == null) {
+        return Response.ok(createRestModel(htmlMaterial)).build();
+      } else {
+        File fileRevision;
+        try {
+          fileRevision = coOpsApi.fileGet(id.toString(), revision);
+        } catch (CoOpsNotImplementedException | CoOpsNotFoundException | CoOpsUsageException | CoOpsInternalErrorException | CoOpsForbiddenException e) {
+          return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
+        }
+
+        if (fileRevision == null) {
+          return Response.status(Status.NOT_FOUND).build();
+        }
+        
+        return Response.ok(new HtmlRestMaterial(htmlMaterial.getId(), htmlMaterial.getTitle(), htmlMaterial.getContentType(), fileRevision.getContent(), fileRevision.getRevisionNumber(), htmlMaterial.getRevisionNumber())).build();
+      }
     }
   }
   
@@ -86,16 +102,46 @@ public class HtmlMaterialRESTService extends PluginRESTService {
     HtmlMaterial htmlMaterial = htmlMaterialController.findHtmlMaterialById(id);
     if (htmlMaterial == null) {
       return Response.status(Status.NOT_FOUND).build();
-    } 
+    }
 
     if (!htmlMaterial.getRevisionNumber().equals(entity.getFromRevision())) {
       return Response.status(Status.CONFLICT).entity("Invalid from revision number").build();
     }
-    
+
     try {
       File fileRevision = coOpsApi.fileGet(id.toString(), entity.getToRevision());
-      htmlMaterialController.updateHtmlMaterialRevisionNumber(htmlMaterial, entity.getToRevision());
-      htmlMaterialController.updateHtmlMaterialHtml(htmlMaterial, fileRevision.getContent());
+      if (fileRevision == null) {
+        return Response.status(Status.NOT_FOUND).build();
+      }
+      
+      htmlMaterialController.updateHtmlMaterialToRevision(htmlMaterial, fileRevision.getContent(), entity.getToRevision(), false);
+    } catch (CoOpsNotImplementedException | CoOpsNotFoundException | CoOpsUsageException | CoOpsInternalErrorException | CoOpsForbiddenException e) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+    }
+    
+    return Response.noContent().build();
+  }
+  
+  @PUT
+  @Path("/{id}/revert/")
+  public Response revertMaterial(@PathParam("id") Long id, HtmlRestMaterialRevert entity) {
+    HtmlMaterial htmlMaterial = htmlMaterialController.findHtmlMaterialById(id);
+    if (htmlMaterial == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    Long currentRevision = htmlMaterialController.lastHtmlMaterialRevision(htmlMaterial);
+    if (!currentRevision.equals(entity.getFromRevision())) {
+      return Response.status(Status.CONFLICT).entity("Invalid from revision number").build();
+    }
+
+    try {
+      File fileRevision = coOpsApi.fileGet(id.toString(), entity.getToRevision());
+      if (fileRevision == null) {
+        return Response.status(Status.NOT_FOUND).entity("Specified revision could not be found").build(); 
+      }
+      
+      htmlMaterialController.updateHtmlMaterialToRevision(htmlMaterial, fileRevision.getContent(), entity.getToRevision(), true);
     } catch (CoOpsNotImplementedException | CoOpsNotFoundException | CoOpsUsageException | CoOpsInternalErrorException | CoOpsForbiddenException e) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();
     }

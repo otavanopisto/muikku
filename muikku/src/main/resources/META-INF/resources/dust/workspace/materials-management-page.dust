@@ -9,6 +9,12 @@
     {:else}
       <a href="javascript:void(null)" class="publish-page icon-publish" data-published-revision="{data.publishedRevision}" data-current-revision="{data.currentRevision}" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}"><span>Publish</span></a>
     {/if}
+    
+    {@if cond="{data.publishedRevision}=={data.currentRevision}"}
+      <a href="javascript:void(null)" class="revert-page icon-revert disabled" data-published-revision="{data.publishedRevision}" data-current-revision="{data.currentRevision}" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}"><span>Revert to published</span></a>
+    {:else}
+      <a href="javascript:void(null)" class="revert-page icon-revert" data-published-revision="{data.publishedRevision}" data-current-revision="{data.currentRevision}" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}"><span>Revert to published</span></a>
+    {/if}
   {/if}
 </div>
 {/if}

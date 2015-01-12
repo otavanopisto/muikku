@@ -136,7 +136,6 @@
       this._useWebSocket = false;
       this._patchData = {};
       this._ioHandler = editor.config.coops.restIOHandler||new DefaultIOHandler(editor);
-      
       editor.on('CoOPS:Join', this._onCoOpsJoin, this);
       editor.on("CoOPS:BeforeSessionStart", this._onBeforeSessionStart, this, null, 9999);
     },
@@ -172,7 +171,7 @@
           
           if (this._editor.config.coops.webSocket !== false) {
             if (joinData.extensions.webSocket) {
-              var webSocketUrl = CKEDITOR.env.secure && !CKEDITOR.env.webkit ? joinData.extensions.webSocket.wss : joinData.extensions.webSocket.ws;
+              var webSocketUrl = CKEDITOR.env.secure && !CKEDITOR.env.safari ? joinData.extensions.webSocket.wss : joinData.extensions.webSocket.ws;
               if (webSocketUrl) {
                 this._webSocket = this._openWebSocket(webSocketUrl);
                 if (this._webSocket) {
