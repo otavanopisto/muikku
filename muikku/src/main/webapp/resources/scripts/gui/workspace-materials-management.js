@@ -204,6 +204,16 @@
     
     //
     
+    $('.workspaces-materials-management-insert-file').each(function(index, element) {
+      var nextMaterial = $(element).next('.workspace-materials-view-page');
+      var parentId = $(nextMaterial).data('parent-id');
+      var nextSiblingId = $(nextMaterial).data('workspace-material-id');
+      enableFileUploader(element, parentId, nextSiblingId);
+    });
+  });
+  
+  $(window).load(function() {
+    
     // Workspace's Materials's TOC
     if ($('#workspaceMaterialsManagementTOCWrapper').length > 0) {
       
@@ -258,7 +268,7 @@
         
       });
 
-   // Prevent icon-navicon link from working normally
+      // Prevent icon-navicon link from working normally
       $(tocOpenCloseButton).bind('click', function(e) {
         e.stopPropagation();
       });
@@ -348,12 +358,6 @@
 
     }
     
-    $('.workspaces-materials-management-insert-file').each(function(index, element) {
-      var nextMaterial = $(element).next('.workspace-materials-view-page');
-      var parentId = $(nextMaterial).data('parent-id');
-      var nextSiblingId = $(nextMaterial).data('workspace-material-id');
-      enableFileUploader(element, parentId, nextSiblingId);
-    });
   });
   
   $(document).on('click', '.edit-page', function (event, data) {
