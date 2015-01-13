@@ -109,12 +109,32 @@ public abstract class AbstractPyramusClient {
     }
   }
   
-  protected AccessToken createAccessToken(String code) {
+  protected synchronized AccessToken createAccessToken(String code) {
     Client client = obtainClient();
     try {
       Form form = new Form()
         .param("grant_type", "authorization_code")
         .param("code", code)
+        .param("redirect_uri", redirectUrl)
+        .param("client_id", clientId)
+        .param("client_secret", clientSecret);
+  
+      WebTarget target = client.target(url + "/oauth/token");
+  
+      Builder request = target.request();
+  
+      return request.post(Entity.form(form), AccessToken.class);
+    } finally {
+      releaseClient(client);
+    }
+  }
+  
+  protected synchronized AccessToken refreshAccessToken(String refreshToken){
+    Client client = obtainClient();
+    try {
+      Form form = new Form()
+        .param("grant_type", "refresh_token")
+        .param("refresh_token", refreshToken)
         .param("redirect_uri", redirectUrl)
         .param("client_id", clientId)
         .param("client_secret", clientSecret);
