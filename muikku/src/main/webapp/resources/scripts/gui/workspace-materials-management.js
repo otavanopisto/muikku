@@ -455,25 +455,55 @@
       .removeClass('disabled');
   });
   
+  function confirmPagePublication(confirmCallback) {
+    renderDustTemplate('workspace/materials-management-page-publish-confirm.dust', { }, $.proxy(function (text) {
+      var dialog = $(text);
+      $(text).dialog({
+        modal: true, 
+        resizable: false,
+        width: 360,
+        dialogClass: "workspace-materials-management-dialog",
+        buttons: [{
+          'text': dialog.data('button-publish-text'),
+          'class': 'publish-button',
+          'click': function(event) {
+            $(this).dialog("close");
+            confirmCallback();
+          }
+        }, {
+          'text': dialog.data('button-cancel-text'),
+          'class': 'cancel-button',
+          'click': function(event) {
+            $(this).dialog("close");
+          }
+        }]
+      });
+    }, this));
+  }
+  
   $(document).on('click', '.publish-page', function (event, data) {
     var workspaceMaterialId = $(this).data('workspace-material-id');
     var materialId = $(this).data('material-id');
     var currentRevision = $(this).data('current-revision');
     var publishedRevision = $(this).data('published-revision');
     if (currentRevision !== publishedRevision) {
-      var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', "Publishing...");
-      mApi().materials.html.publish.create(materialId, {
-        fromRevision: publishedRevision,
-        toRevision: currentRevision
-      }).callback($.proxy(function (err) {
-        loadNotification.remove();
-        if (err) {
-          $('.notification-queue').notificationQueue('notification', 'error', err);
-        } else {
-          $(this).data('published-revision', currentRevision);
-          $('.notification-queue').notificationQueue('notification', 'info', "Published successfully");
-        }
-      }, this));
+      confirmPagePublication(function () {
+        var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', "Publishing...");
+        
+        mApi().materials.html.publish.create(materialId, {
+          fromRevision: publishedRevision,
+          toRevision: currentRevision
+        }).callback($.proxy(function (err) {
+          loadNotification.remove();
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            $(this).data('published-revision', currentRevision);
+            $('.notification-queue').notificationQueue('notification', 'info', "Published successfully");
+          }
+        }, this));        
+      });
+      
     }
   });
   
