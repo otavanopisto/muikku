@@ -38,6 +38,11 @@ body.workspace-materials-management {
       position:relative; 
       border-left:1px solid #fff;
       
+      ul,
+      li {
+        list-style:none;
+      }
+      
       .workspace-materials-management-TOC-title {
         background:#87a1b2;
         padding:12px;
@@ -92,6 +97,7 @@ body.workspace-materials-management {
               
               .workspace-materials-toc-item {
                 font-weight:300;
+                list-style:none;
                 
                 &.item-hidden {
                   opacity:0.4;
