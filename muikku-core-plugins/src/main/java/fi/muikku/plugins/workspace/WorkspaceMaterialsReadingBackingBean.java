@@ -1,5 +1,8 @@
 package fi.muikku.plugins.workspace;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -12,6 +15,11 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.jsf.NavigationRules;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.plugins.material.MaterialController;
+import fi.muikku.plugins.material.model.Material;
+import fi.muikku.plugins.workspace.model.WorkspaceFolder;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
+import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.Workspace;
@@ -32,6 +40,9 @@ public class WorkspaceMaterialsReadingBackingBean {
 	
 	@Inject
 	private WorkspaceMaterialController workspaceMaterialController;
+  
+  @Inject
+  private MaterialController materialController;
 
 	@Inject
   @Named
@@ -56,11 +67,39 @@ public class WorkspaceMaterialsReadingBackingBean {
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
     workspaceName = workspace.getName();
     workspaceEntityId = workspaceEntity.getId();
+    contentNodes = new ArrayList<>();
+
+    List<WorkspaceNode> rootMaterialNodes = workspaceMaterialController.listWorkspaceNodesByParent(rootFolder);
+    for (WorkspaceNode rootMaterialNode : rootMaterialNodes) {
+      ContentNode node = createContentNode(rootMaterialNode);
+      contentNodes.add(node);
+    }
     
     return null;
 	}
-	
-	public WorkspaceRootFolder getRootFolder() {
+
+  private ContentNode createContentNode(WorkspaceNode rootMaterialNode) {
+    switch (rootMaterialNode.getType()) {
+      case FOLDER:
+        WorkspaceFolder workspaceFolder = (WorkspaceFolder) rootMaterialNode;
+        ContentNode folderContentNode = new ContentNode(workspaceFolder.getTitle(), "folder", rootMaterialNode.getId(), null);
+        
+        List<WorkspaceMaterial> children = workspaceMaterialController.listWorkspaceMaterialsByParent(workspaceFolder);
+        for (WorkspaceMaterial child : children) {
+          folderContentNode.addChild(createContentNode(child));
+        }
+        
+        return folderContentNode;
+      case MATERIAL:
+        WorkspaceMaterial workspaceMaterial = (WorkspaceMaterial) rootMaterialNode;
+        Material material = materialController.findMaterialById(workspaceMaterial.getMaterialId());
+        return new ContentNode(material.getTitle(), material.getType(), rootMaterialNode.getId(), material.getId());
+      default:
+        return null;
+    }
+  }
+ 
+  public WorkspaceRootFolder getRootFolder() {
 		return rootFolder;
 	}
 	
@@ -84,7 +123,54 @@ public class WorkspaceMaterialsReadingBackingBean {
     return workspaceEntityId;
   }
   
+  public List<ContentNode> getContentNodes() {
+    return contentNodes;
+  }
+  
 	private WorkspaceRootFolder rootFolder;
   private String workspaceName;
   private Long workspaceEntityId;
+  private List<ContentNode> contentNodes;
+  
+  public class ContentNode {
+    
+    public ContentNode(String title, String type, Long workspaceMaterialId, Long materialId) {
+      super();
+      this.children = new ArrayList<>();
+      this.title = title;
+      this.type = type;
+      this.workspaceMaterialId = workspaceMaterialId;
+      this.materialId = materialId;
+    }
+
+    public void addChild(ContentNode child) {
+      this.children.add(child);
+    }
+
+    public String getTitle() {
+      return title;
+    }
+    
+    public String getType() {
+      return type;
+    }
+    
+    public List<ContentNode> getChildren() {
+      return children;
+    }
+    
+    public Long getMaterialId() {
+      return materialId;
+    }
+    
+    public Long getWorkspaceMaterialId() {
+      return workspaceMaterialId;
+    }
+    
+    private String title;
+    private String type;
+    private List<ContentNode> children;
+    private Long workspaceMaterialId;
+    private Long materialId;
+  }
 }

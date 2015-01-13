@@ -41,14 +41,25 @@
   </ui:define>
 
   <ui:define name="workspace.materials.reading.content">
-    <ui:repeat var="node" value="#{workspaceMaterialsTOCBackingBean.getVisibleDescendants(workspaceMaterialsReadingBackingBean.getRootFolder())}">
-      <ui:fragment rendered="#{node.materialType eq 'folder'}">
-       <h2 id="page-#{node.workspaceMaterialId}" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-material-type="#{node.materialType}" data-material-title="#{node.materialTitle}" class="workspace-materials-view-page material-reading-view folder"></h2>
-      </ui:fragment>
-      <ui:fragment rendered="#{node.materialType ne 'folder'}">
-        <section id="page-#{node.workspaceMaterialId}" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-material-type="#{node.materialType}" data-material-title="#{node.materialTitle}" class="workspace-materials-view-page material-reading-view"/>
-      </ui:fragment>
-    </ui:repeat>
+    <article>
+      <h1>#{workspaceMaterialsReadingBackingBean.workspaceName}</h1>
+      <ui:repeat var="node" value="#{workspaceMaterialsReadingBackingBean.contentNodes}">
+        <ui:fragment rendered="#{node.type eq 'folder'}">
+          <section id="page-#{node.workspaceMaterialId}" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-material-type="#{node.type}" data-material-title="#{node.title}">
+            <h2>#{node.title}</h2>
+            
+            <ui:repeat var="articleNode" value="#{node.children}">
+              <article id="page-#{articleNode.workspaceMaterialId}" data-workspace-material-id="#{articleNode.workspaceMaterialId}" data-material-id="#{articleNode.materialId}" data-material-type="#{articleNode.type}" data-material-title="#{articleNode.title}" class="workspace-materials-view-page material-view"/>
+            </ui:repeat>
+            <article/>
+          </section>
+        </ui:fragment>  
+        
+        <ui:fragment rendered="#{node.type ne 'folder'}">
+          <article id="page-#{node.workspaceMaterialId}" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-material-type="#{node.type}" data-material-title="#{node.title}" class="workspace-materials-view-page material-view"/>
+        </ui:fragment>  
+      </ui:repeat>
+    </article>
     
     <input class="workspaceEntityId" type="hidden" value="#{workspaceMaterialsReadingBackingBean.workspaceEntityId}"/>
   </ui:define>
