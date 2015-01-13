@@ -461,14 +461,17 @@
     var currentRevision = $(this).data('current-revision');
     var publishedRevision = $(this).data('published-revision');
     if (currentRevision !== publishedRevision) {
+      var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', "Publishing...");
       mApi().materials.html.publish.create(materialId, {
         fromRevision: publishedRevision,
         toRevision: currentRevision
       }).callback($.proxy(function (err) {
+        loadNotification.remove();
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
           $(this).data('published-revision', currentRevision);
+          $('.notification-queue').notificationQueue('notification', 'info', "Published successfully");
         }
       }, this));
     }
@@ -480,14 +483,17 @@
     var currentRevision = $(this).data('current-revision');
     var publishedRevision = $(this).data('published-revision');
     if (currentRevision !== publishedRevision) {
+      var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', "Reverting back to published revision...");
       mApi().materials.html.revert.update(materialId, {
         fromRevision: currentRevision,
         toRevision: publishedRevision
       }).callback($.proxy(function (err) {
+        loadNotification.remove();
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
           $(this).data('published-revision', publishedRevision);
+          $('.notification-queue').notificationQueue('notification', 'info', "Reverted successfully");
         }
       }, this));
     }
