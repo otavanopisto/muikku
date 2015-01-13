@@ -39,6 +39,11 @@ body.workspace-materials-reading {
       top:0;
       border-left:1px solid #fff;
       
+      ul,
+      li {
+        list-style:none;
+      }
+      
       .workspace-materials-reading-TOC-title {
         background:#87a1b2;
         padding:12px;
