@@ -10,6 +10,7 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import fi.muikku.plugins.material.MaterialField;
 import fi.muikku.plugins.material.model.QueryField;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialFieldDAO;
 import fi.muikku.plugins.workspace.events.WorkspaceMaterialFieldCreateEvent;
@@ -62,6 +63,14 @@ public class WorkspaceMaterialFieldController {
   public List<WorkspaceMaterialField> listWorkspaceMaterialFieldsByQueryField(QueryField queryField) {
     return workspaceMaterialFieldDAO.listByQueryField(queryField);
   }
+  
+  public void updateWorkspaceMaterialField(WorkspaceMaterialField workspaceMaterialField, MaterialField materialField, boolean removeAnswers) {
+    // In theory, fields' workspace instances remain the same even when updated (apart
+    // from answers that might get removed based on WorkspaceMaterialFieldUpdateEvent)
+    //
+    // -> fi.muikku.plugins.workspace.WorkspaceMaterialFieldChangeListener
+    workspaceMaterialFieldUpdateEvent.fire(new WorkspaceMaterialFieldUpdateEvent(workspaceMaterialField, materialField, removeAnswers));
+  }
 
   public void deleteWorkspaceMaterialField(WorkspaceMaterialField workspaceMaterialField) {
     deleteWorkspaceMaterialField(workspaceMaterialField, false);
@@ -101,5 +110,5 @@ public class WorkspaceMaterialFieldController {
     
     return null;
   }
-  
+
 }

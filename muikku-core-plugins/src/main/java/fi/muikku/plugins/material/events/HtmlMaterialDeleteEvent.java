@@ -4,8 +4,19 @@ import fi.muikku.plugins.material.model.HtmlMaterial;
 
 public class HtmlMaterialDeleteEvent extends MaterialDeleteEvent<HtmlMaterial> {
 
-  public HtmlMaterialDeleteEvent(HtmlMaterial material) {
+  public HtmlMaterialDeleteEvent(HtmlMaterial material, boolean removeAnswers) {
     super(material);
+    this.removeAnswers = removeAnswers;
   }
+  
+  public boolean getRemoveAnswers() {
+    return removeAnswers;
+  }
+
+  public void setRemoveAnswers(boolean removeAnswers) {
+    this.removeAnswers = removeAnswers;
+  }
+
+  private boolean removeAnswers;
   
 }

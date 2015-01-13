@@ -1,15 +1,20 @@
 package fi.muikku.plugins.material;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import fi.muikku.plugins.material.dao.QuerySelectFieldDAO;
 import fi.muikku.plugins.material.dao.QuerySelectFieldOptionDAO;
+import fi.muikku.plugins.material.events.QueryFieldDeleteEvent;
+import fi.muikku.plugins.material.events.QueryFieldUpdateEvent;
 import fi.muikku.plugins.material.fieldmeta.SelectFieldMeta;
 import fi.muikku.plugins.material.fieldmeta.SelectFieldOptionMeta;
 import fi.muikku.plugins.material.model.Material;
@@ -25,6 +30,9 @@ public class QuerySelectFieldController {
 
   @Inject
   private QuerySelectFieldOptionDAO querySelectFieldOptionDAO;
+
+  @Inject
+  private Event<QueryFieldUpdateEvent> queryFieldUpdateEvent;
   
   /* QuerySelectField */
 
@@ -40,16 +48,29 @@ public class QuerySelectFieldController {
     return querySelectFieldDAO.findByMaterialAndName(material, name);
   }
   
-  public QuerySelectField updateQuerySelectField(Material material, SelectFieldMeta fieldMeta) {
-    // TODO Event to let WorkspaceMaterialField clear answers?
-    QuerySelectField field = querySelectFieldDAO.findByMaterialAndName(material,  fieldMeta.getName());
-    List<QuerySelectFieldOption> oldOptions = querySelectFieldOptionDAO.listByField(field);
-    List<SelectFieldOptionMeta> newOptions = fieldMeta.getOptions();
+  public QuerySelectField updateQuerySelectField(Material material, MaterialField field, boolean removeAnswers) throws MaterialFieldMetaParsingExeption {
+    
+    // Field JSON to metadata object
+    
+    ObjectMapper objectMapper = new ObjectMapper();
+    SelectFieldMeta selectFieldMeta;
+    try {
+      selectFieldMeta = objectMapper.readValue(field.getContent(), SelectFieldMeta.class);
+    } catch (IOException e) {
+      throw new MaterialFieldMetaParsingExeption("Could not parse file field meta", e);
+    }
+    QuerySelectField queryField = querySelectFieldDAO.findByMaterialAndName(material,  selectFieldMeta.getName());
+    
+    // -> fi.muikku.plugins.workspace.QueryFieldChangeListener
+    queryFieldUpdateEvent.fire(new QueryFieldUpdateEvent(queryField, field, removeAnswers));
+    
+    List<QuerySelectFieldOption> oldOptions = querySelectFieldOptionDAO.listByField(queryField);
+    List<SelectFieldOptionMeta> newOptions = selectFieldMeta.getOptions();
     for (SelectFieldOptionMeta newOption : newOptions) {
       QuerySelectFieldOption correspondingOption = findOptionByName(oldOptions, newOption.getName());
       if (correspondingOption == null) {
         // New options
-        createQuerySelectFieldOption(field, newOption.getName(), newOption.getText());
+        createQuerySelectFieldOption(queryField, newOption.getName(), newOption.getText());
       }
       else {
         // Modified options
@@ -63,7 +84,7 @@ public class QuerySelectFieldController {
     for (QuerySelectFieldOption removedOption : oldOptions) {
       deleteQuerySelectFieldOption(removedOption);
     }
-    return field;
+    return queryField;
   }
   
   private QuerySelectFieldOption findOptionByName(List<QuerySelectFieldOption> options, String name) {

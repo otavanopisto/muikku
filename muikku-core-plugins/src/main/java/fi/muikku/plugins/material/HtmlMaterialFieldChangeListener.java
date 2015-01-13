@@ -37,6 +37,8 @@ public class HtmlMaterialFieldChangeListener {
 
   @Inject
   private QueryFileFieldController queryFileFieldController;
+  
+  // Create
 
   public void onHtmlMaterialTextFieldCreated(@Observes HtmlMaterialFieldCreateEvent event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
     if (event.getField().getType().equals("application/vnd.muikku.field.text")) {
@@ -105,6 +107,8 @@ public class HtmlMaterialFieldChangeListener {
     }
   }
   
+  // TODO multiselect created
+  
   public void onHtmlMaterialFileFieldCreated(@Observes HtmlMaterialFieldCreateEvent event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
     if (event.getField().getType().equals("application/vnd.muikku.field.file")) {
       ObjectMapper objectMapper = new ObjectMapper();
@@ -124,24 +128,21 @@ public class HtmlMaterialFieldChangeListener {
     }
   }
   
+  // Update
+  
   public void onHtmlMaterialSelectFieldUpdated(@Observes HtmlMaterialFieldUpdateEvent event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
     if (event.getField().getType().equals("application/vnd.muikku.field.select")) {
-      ObjectMapper objectMapper = new ObjectMapper();
-      SelectFieldMeta selectFieldMeta;
-      try {
-        selectFieldMeta = objectMapper.readValue(event.getField().getContent(), SelectFieldMeta.class);
-      } catch (IOException e) {
-        throw new MaterialFieldMetaParsingExeption("Could not parse file field meta", e);
-      }
-      querySelectFieldController.updateQuerySelectField(event.getMaterial(), selectFieldMeta);
+      querySelectFieldController.updateQuerySelectField(event.getMaterial(), event.getField(), event.getRemoveAnswers());
     }
   }
+  
+  // Delete
   
   public void onHtmlMaterialFieldDeleted(@Observes HtmlMaterialFieldDeleteEvent event) {
     HtmlMaterial material = event.getMaterial();
     QueryField queryField = queryFieldController.findQueryFieldByMaterialAndName(material, event.getField().getName());
     if (queryField != null) {
-      queryFieldController.deleteQueryField(queryField);
+      queryFieldController.deleteQueryField(queryField, event.getRemoveAnswers());
     }
   }
   
