@@ -58,22 +58,32 @@
     
     var editor = pageElement[editorName];
     if (editor) {
-      $(pageElement).find('.page-content').hide();
+      $(pageElement).find('.page-content').remove();
       
       editor.call(pageElement, {
         materialId: materialId,
         materialTitle: materialTitle
       });
       
-//      $(document).on("click",$.proxy(function (event) {
-//        var target = $(event.target);
-//        if (target.closest('.workspace-materials-view-page').length == 0) {
-//          $(this).data('material-title', editor.call(pageElement, 'title'));
-//          editor.call(pageElement, 'destroy');
-//          $(document).muikkuMaterialLoader('loadMaterial', node, true);
-//          pageSection.removeClass("page-edit-mode");
-//        }
-//      }, node));
+    } else {
+      $('.notification-queue').notificationQueue('notification', 'error', "Could not find editor for " + materialType);
+    }
+  }
+  
+  function isPageInEditMode(node) {
+    return $(node).hasClass('page-edit-mode');
+  }
+  
+  function closeEditor(node, loadContent) {
+    var materialType = $(node).data('material-type');
+    var editorName = 'workspaceMaterialEditor' + (materialType.substring(0, 1).toUpperCase() + materialType.substring(1));
+    var editor = node[editorName];
+    if (editor) {
+      editor.call(node, 'destroy');
+      if (loadContent !== false) {
+        $(document).muikkuMaterialLoader('loadMaterial', node, true);
+      }
+      node.removeClass("page-edit-mode");
     } else {
       $('.notification-queue').notificationQueue('notification', 'error', "Could not find editor for " + materialType);
     }
@@ -204,6 +214,16 @@
     
     //
     
+    $('.workspaces-materials-management-insert-file').each(function(index, element) {
+      var nextMaterial = $(element).next('.workspace-materials-view-page');
+      var parentId = $(nextMaterial).data('parent-id');
+      var nextSiblingId = $(nextMaterial).data('workspace-material-id');
+      enableFileUploader(element, parentId, nextSiblingId);
+    });
+  });
+  
+  $(window).load(function() {
+    
     // Workspace's Materials's TOC
     if ($('#workspaceMaterialsManagementTOCWrapper').length > 0) {
       
@@ -258,7 +278,7 @@
         
       });
 
-   // Prevent icon-navicon link from working normally
+      // Prevent icon-navicon link from working normally
       $(tocOpenCloseButton).bind('click', function(e) {
         e.stopPropagation();
       });
@@ -348,12 +368,6 @@
 
     }
     
-    $('.workspaces-materials-management-insert-file').each(function(index, element) {
-      var nextMaterial = $(element).next('.workspace-materials-view-page');
-      var parentId = $(nextMaterial).data('parent-id');
-      var nextSiblingId = $(nextMaterial).data('workspace-material-id');
-      enableFileUploader(element, parentId, nextSiblingId);
-    });
   });
   
   $(document).on('click', '.edit-page', function (event, data) {
@@ -455,21 +469,62 @@
       .removeClass('disabled');
   });
   
+  function confirmPagePublication(confirmCallback) {
+    renderDustTemplate('workspace/materials-management-page-publish-confirm.dust', { }, $.proxy(function (text) {
+      var dialog = $(text);
+      $(text).dialog({
+        modal: true, 
+        resizable: false,
+        width: 360,
+        dialogClass: "workspace-materials-management-dialog",
+        buttons: [{
+          'text': dialog.data('button-publish-text'),
+          'class': 'publish-button',
+          'click': function(event) {
+            $(this).dialog("close");
+            confirmCallback();
+          }
+        }, {
+          'text': dialog.data('button-cancel-text'),
+          'class': 'cancel-button',
+          'click': function(event) {
+            $(this).dialog("close");
+          }
+        }]
+      });
+    }, this));
+  }
+  
   $(document).on('click', '.publish-page', function (event, data) {
     var workspaceMaterialId = $(this).data('workspace-material-id');
     var materialId = $(this).data('material-id');
     var currentRevision = $(this).data('current-revision');
     var publishedRevision = $(this).data('published-revision');
     if (currentRevision !== publishedRevision) {
-      mApi().materials.html.publish.create(materialId, {
-        fromRevision: publishedRevision,
-        toRevision: currentRevision
-      }).callback($.proxy(function (err) {
-        if (err) {
-          $('.notification-queue').notificationQueue('notification', 'error', err);
-        } else {
-          $(this).data('published-revision', currentRevision);
+      confirmPagePublication($.proxy(function () {
+        var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', "Publishing...");
+        var editing = isPageInEditMode($('#page-' + workspaceMaterialId));
+        
+        if (editing) {
+          closeEditor($('#page-' + workspaceMaterialId), false);
         }
+        
+        mApi().materials.html.publish.create(materialId, {
+          fromRevision: publishedRevision,
+          toRevision: currentRevision
+        }).callback($.proxy(function (err) {
+          loadNotification.remove();
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            $(this).data('published-revision', currentRevision);
+            if (editing) {
+              editPage($('#page-' + workspaceMaterialId));
+            }
+            
+            $('.notification-queue').notificationQueue('notification', 'info', "Published successfully");
+          }
+        }, this));        
       }, this));
     }
   });
@@ -480,14 +535,17 @@
     var currentRevision = $(this).data('current-revision');
     var publishedRevision = $(this).data('published-revision');
     if (currentRevision !== publishedRevision) {
+      var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', "Reverting back to published revision...");
       mApi().materials.html.revert.update(materialId, {
         fromRevision: currentRevision,
         toRevision: publishedRevision
       }).callback($.proxy(function (err) {
+        loadNotification.remove();
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         } else {
           $(this).data('published-revision', publishedRevision);
+          $('.notification-queue').notificationQueue('notification', 'info', "Reverted successfully");
         }
       }, this));
     }

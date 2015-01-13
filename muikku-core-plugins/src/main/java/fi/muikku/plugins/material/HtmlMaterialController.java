@@ -85,12 +85,14 @@ public class HtmlMaterialController {
   }
 
   public void deleteHtmlMaterial(HtmlMaterial htmlMaterial) {
-    materialDeleteEvent.fire(new HtmlMaterialDeleteEvent(htmlMaterial));
+    // TODO Logic for remove answers flag
+    materialDeleteEvent.fire(new HtmlMaterialDeleteEvent(htmlMaterial, false));
     htmlMaterialDAO.delete(htmlMaterial);
   }
   
   public HtmlMaterial updateHtmlMaterialHtml(HtmlMaterial htmlMaterial, String html) {
-    HtmlMaterialUpdateEvent event = new HtmlMaterialUpdateEvent(htmlMaterial, htmlMaterial.getHtml(), html);
+    // TODO Logic for remove answers flag
+    HtmlMaterialUpdateEvent event = new HtmlMaterialUpdateEvent(htmlMaterial, htmlMaterial.getHtml(), html, false);
     materialUpdateEvent.fire(event);
     return htmlMaterialDAO.updateData(htmlMaterial, html);
   }

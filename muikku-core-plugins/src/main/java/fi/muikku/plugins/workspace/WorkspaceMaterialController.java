@@ -12,7 +12,6 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
-import fi.muikku.dao.workspace.WorkspaceEntityDAO;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.material.MaterialController;
 import fi.muikku.plugins.material.model.Material;

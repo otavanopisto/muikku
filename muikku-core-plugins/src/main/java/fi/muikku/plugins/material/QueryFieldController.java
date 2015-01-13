@@ -11,6 +11,7 @@ import fi.muikku.plugins.material.dao.QueryFieldDAO;
 import fi.muikku.plugins.material.events.QueryFieldDeleteEvent;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.material.model.QueryField;
+import fi.muikku.plugins.workspace.events.WorkspaceMaterialFieldDeleteEvent;
 
 @Stateless
 @Dependent
@@ -32,8 +33,8 @@ public class QueryFieldController {
     return queryFieldDAO.listByMaterial(material);
   }
 
-  public void deleteQueryField(QueryField queryField) {
-    queryFieldDeleteEvent.fire(new QueryFieldDeleteEvent(queryField));
+  public void deleteQueryField(QueryField queryField, boolean removeAnswers) {
+    queryFieldDeleteEvent.fire(new QueryFieldDeleteEvent(queryField, removeAnswers));
     queryFieldDAO.delete(queryField);
   }
 

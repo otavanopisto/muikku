@@ -7,15 +7,12 @@
       .muikkuMaterialLoader('loadMaterials', $('.workspace-materials-view-page'));
 
     // Smooth scrolling in workspace Material's View 
-    var $sections =$('.workspace-materials-view-page');
-
-    $sections.each(function() {
-      var $section = $(this);
+    $('.workspace-materials-view-page').each(function() {
       var hash = '#' + this.id;
 
       $('a[href="' + hash + '"]').click(function(event) {
         $('html, body').stop().animate({
-          scrollTop : $section.offset().top - 100
+          scrollTop : $(this).offset().top - 100
         }, {
           duration : 500,
           easing : "easeInOutQuad",

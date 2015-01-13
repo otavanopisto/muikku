@@ -5,10 +5,11 @@ import fi.muikku.plugins.material.model.HtmlMaterial;
 
 public class HtmlMaterialFieldDeleteEvent {
 
-  public HtmlMaterialFieldDeleteEvent(HtmlMaterial material, MaterialField field) {
+  public HtmlMaterialFieldDeleteEvent(HtmlMaterial material, MaterialField field, boolean removeAnswers) {
     super();
     this.material = material;
     this.field = field;
+    this.removeAnswers = removeAnswers;
   }
   
   public HtmlMaterial getMaterial() {
@@ -19,6 +20,15 @@ public class HtmlMaterialFieldDeleteEvent {
     return field;
   }
   
+  public boolean getRemoveAnswers() {
+    return removeAnswers;
+  }
+
+  public void setRemoveAnswers(boolean removeAnswers) {
+    this.removeAnswers = removeAnswers;
+  }
+
   private HtmlMaterial material;
   private MaterialField field;
+  private boolean removeAnswers;
 }

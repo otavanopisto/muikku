@@ -138,6 +138,7 @@
       this._ioHandler = editor.config.coops.restIOHandler||new DefaultIOHandler(editor);
       editor.on('CoOPS:Join', this._onCoOpsJoin, this);
       editor.on("CoOPS:BeforeSessionStart", this._onBeforeSessionStart, this, null, 9999);
+      editor.on("destroy", this._onEditorDestroy, this);
     },
     proto : {
       getName: function () {
@@ -301,6 +302,13 @@
           }
           
         }, this));
+      },
+      
+      _onEditorDestroy: function (event) {
+        if (this._webSocket) {
+          this._webSocket.onclose = function () {};
+          this._webSocket.close();
+        }
       },
       
       _onWindowBeforeUnload: function (event) {

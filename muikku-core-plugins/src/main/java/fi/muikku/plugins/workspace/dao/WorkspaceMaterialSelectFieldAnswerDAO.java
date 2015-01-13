@@ -1,5 +1,7 @@
 package fi.muikku.plugins.workspace.dao;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -11,6 +13,8 @@ import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialSelectFieldAnswer;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialSelectFieldAnswer_;
+import fi.muikku.plugins.workspace.model.WorkspaceNode;
+import fi.muikku.plugins.workspace.model.WorkspaceNode_;
 
 public class WorkspaceMaterialSelectFieldAnswerDAO extends CorePluginsDAO<WorkspaceMaterialSelectFieldAnswer> {
 	
@@ -41,6 +45,18 @@ public class WorkspaceMaterialSelectFieldAnswerDAO extends CorePluginsDAO<Worksp
     );
 
     return getSingleResult(entityManager.createQuery(criteria));
+  }
+  
+  public List<WorkspaceMaterialSelectFieldAnswer> listByQuerySelectFieldOption(QuerySelectFieldOption option) {
+    EntityManager entityManager = getEntityManager();
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceMaterialSelectFieldAnswer> criteria = criteriaBuilder.createQuery(WorkspaceMaterialSelectFieldAnswer.class);
+    Root<WorkspaceMaterialSelectFieldAnswer> root = criteria.from(WorkspaceMaterialSelectFieldAnswer.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.equal(root.get(WorkspaceMaterialSelectFieldAnswer_.value), option)
+    );
+    return entityManager.createQuery(criteria).getResultList();
   }
   
   public WorkspaceMaterialSelectFieldAnswer updateValue(WorkspaceMaterialSelectFieldAnswer workspaceMaterialSelectFieldAnswer, QuerySelectFieldOption value) {

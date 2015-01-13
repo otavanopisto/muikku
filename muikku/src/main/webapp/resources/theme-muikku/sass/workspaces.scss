@@ -2,8 +2,68 @@
 @import "_workspaces-materials.scss"; 
 @import "_connect-field.scss";
 
-body.workspace,
-body.workspace-materials { 
+body.workspace { 
+  background:#ffffff;
+  min-height:100%;
+  font-size:14px;
+  
+  h1.workspace-title {
+    margin:20px 0 20px 0;
+    color:#38393a;
+    font-weight:300;
+    text-transform:uppercase;
+    line-height:1.3em;
+  }
+  
+  #staticNavigationWrapperWorkspace {
+    background:none; /* We need to remove all background rules first */
+    @include background-image('gfx/workspace-navigation-background.png'); /* Workspace's navigation's background */
+    background-position:250px 0px;
+    background-repeat:no-repeat;
+    background-color:#32acf6;
+    border-bottom:1px solid #ffffff; 
+    box-shadow:0 3px 10px rgba(0,0,0,0.1);
+    height:76px;
+    
+    &.stuckStNav {
+      content:" ";
+      position:fixed;
+      top:0;
+      left:0;
+      right:0;
+      z-index:99;
+    }
+    
+  }
+  
+  #workspaceNavigationWrapper { 
+    position:fixed;
+    top:100px;
+    z-index:99;
+    
+    .grid_1 {
+      float:none;
+      width:auto;
+      margin:0;
+    }
+    
+    #workspaceDockWrapper {
+      background:#596e7d;
+      @include rounded(3px);
+      width:60px;
+      box-shadow:0 0 5px rgba(0,0,0,0.25);
+      
+      #workspaceDock {
+        text-align:center;
+      }
+      
+    }
+
+  }
+
+}  
+  
+body.workspace-materials {
   background:#ffffff;
   min-height:100%;
   font-size:14px;
@@ -98,6 +158,11 @@ body.workspace-materials {
         display:none;
       }
       
+      ul, 
+      li {
+        list-style:none;
+      }
+      
       .workspace-materials-toc-container {
         overflow:hidden;
         position:relative;
@@ -140,7 +205,7 @@ body.workspace-materials {
                 .workspace-materials-toc-subtitle {
                   text-transform:uppercase;
                   font-size:15px;
-                  padding:2px 0;
+                  padding:2px 8px;
                 }
                 
                 .workspace-materials-toc-item {

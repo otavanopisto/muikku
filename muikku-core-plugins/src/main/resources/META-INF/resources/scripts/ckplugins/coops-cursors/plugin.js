@@ -109,32 +109,33 @@
       
       _createDispatchableSelection: function (selection) {
         var result = null;
-        
-        var ranges = selection.getRanges();
-        if (ranges.length > 0) {
-          result = [];
-          
-          for ( var i = 0, l = ranges.length; i < l; i++) {
-            var range = ranges[i];
+        if (selection) {
+          var ranges = selection.getRanges();
+          if (ranges.length > 0) {
+            result = [];
             
-            var startContainer = this._createXPath(range.startContainer);
-            
-            if (range.collapsed) {
-              result.push({
-                collapsed: range.collapsed,
-                startContainer: startContainer,
-                startOffset: range.startOffset,
-                endOffset: range.endOffset
-              });
-            } else {
-              var endContainer = this._createXPath(range.endContainer);
-              result.push({
-                collapsed: range.collapsed,
-                startContainer: startContainer,
-                startOffset: range.startOffset,
-                endContainer: endContainer,
-                endOffset: range.endOffset
-              });
+            for ( var i = 0, l = ranges.length; i < l; i++) {
+              var range = ranges[i];
+              
+              var startContainer = this._createXPath(range.startContainer);
+              
+              if (range.collapsed) {
+                result.push({
+                  collapsed: range.collapsed,
+                  startContainer: startContainer,
+                  startOffset: range.startOffset,
+                  endOffset: range.endOffset
+                });
+              } else {
+                var endContainer = this._createXPath(range.endContainer);
+                result.push({
+                  collapsed: range.collapsed,
+                  startContainer: startContainer,
+                  startOffset: range.startOffset,
+                  endContainer: endContainer,
+                  endOffset: range.endOffset
+                });
+              }
             }
           }
         }
