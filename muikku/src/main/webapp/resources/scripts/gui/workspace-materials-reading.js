@@ -44,7 +44,38 @@
       }
     });
     
-    // Workspace's materials's reading view
+  });
+
+  $(document).on('click', '.muikku-save-page', function (event, data) {
+    var page = $(this).closest('.workspace-materials-view-page');
+    var workspaceEntityId = $('.workspaceEntityId').val(); //  TODO: data?
+    var workspaceMaterialId = $(page).data('workspace-material-id');
+    var reply = [];
+    
+    page.find('.muikku-field').each(function (index, field) {
+      reply.push({
+        value: $(field).muikkuField('answer'),
+        embedId: $(field).muikkuField('embedId'),
+        materialId: $(field).muikkuField('materialId'),
+        fieldName: $(field).muikkuField('fieldName')
+      });
+    });
+    
+    mApi().workspace.workspaces.materials.replies.create(workspaceEntityId, workspaceMaterialId, {
+      answers: reply
+    })
+    .callback($.proxy(function (err) {
+      if (err) {
+        $('.notification-queue').notificationQueue('notification', 'error', "Error occurred while saving field replies " + err);
+      } else {
+        $(this).addClass("icon-checkmark save-successful").text('Saved');;
+      } 
+    }, this));
+  });
+  
+  // Workspace's materials's reading view
+  $(window).load(function() {
+
     if ($('#workspaceMaterialsReadingTOCWrapper').length > 0) {
       
       var height = $(window).height();
@@ -118,7 +149,7 @@
       $(tocOpenCloseButton).bind('click', function(e) {
         e.stopPropagation();
       });
-
+  
       $(tocOpenCloseButton).click(function() {
         
         // If tocWrapper is visible
@@ -164,7 +195,7 @@
             duration:500,
             easing: "easeInOutQuint",
             complete: function () {
-
+  
               // Lets hide wrapper when user clicks anywhere in the document
               $(document).bind('click', function(){
                 // Need to check if toc is pinned or not
@@ -194,7 +225,7 @@
                   });
                 }
               });
-
+  
               // Preventing TOC wrapper to disappear if user clicks inside wrapper
               $(tocWrapper).bind('click', function(e) {
                 e.stopPropagation();
@@ -216,18 +247,18 @@
             ev.originalEvent.detail * -40 :
             ev.originalEvent.wheelDelta),
           up = delta > 0;
-
+  
         var prevent = function() {
           ev.stopPropagation();
           ev.preventDefault();
           ev.returnValue = false;
           return false;
         }
-
+  
         if (!up && -delta > scrollHeight - height - scrollTop) {
           // Scrolling down, but this will take us past the bottom.
           $this.scrollTop(scrollHeight);
-
+  
           return prevent();
         } else if (up && delta > scrollTop) {
           // Scrolling up, but this will take us past the top.
@@ -235,36 +266,9 @@
           return prevent();
         }
       });
-
+  
     }
     
-  });
-
-  $(document).on('click', '.muikku-save-page', function (event, data) {
-    var page = $(this).closest('.workspace-materials-view-page');
-    var workspaceEntityId = $('.workspaceEntityId').val(); //  TODO: data?
-    var workspaceMaterialId = $(page).data('workspace-material-id');
-    var reply = [];
-    
-    page.find('.muikku-field').each(function (index, field) {
-      reply.push({
-        value: $(field).muikkuField('answer'),
-        embedId: $(field).muikkuField('embedId'),
-        materialId: $(field).muikkuField('materialId'),
-        fieldName: $(field).muikkuField('fieldName')
-      });
-    });
-    
-    mApi().workspace.workspaces.materials.replies.create(workspaceEntityId, workspaceMaterialId, {
-      answers: reply
-    })
-    .callback($.proxy(function (err) {
-      if (err) {
-        $('.notification-queue').notificationQueue('notification', 'error', "Error occurred while saving field replies " + err);
-      } else {
-        $(this).addClass("icon-checkmark save-successful").text('Saved');;
-      } 
-    }, this));
   });
 
 }).call(this);

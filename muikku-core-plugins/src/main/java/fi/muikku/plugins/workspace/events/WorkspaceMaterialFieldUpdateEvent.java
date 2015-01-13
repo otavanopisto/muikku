@@ -1,11 +1,13 @@
 package fi.muikku.plugins.workspace.events;
 
+import fi.muikku.plugins.material.MaterialField;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
 
 public class WorkspaceMaterialFieldUpdateEvent extends WorkspaceMaterialFieldEvent {
 
-  public WorkspaceMaterialFieldUpdateEvent(WorkspaceMaterialField workspaceMaterialField, boolean removeAnswers) {
+  public WorkspaceMaterialFieldUpdateEvent(WorkspaceMaterialField workspaceMaterialField, MaterialField materialField, boolean removeAnswers) {
     super(workspaceMaterialField);
+    this.materialField = materialField;
     this.removeAnswers = removeAnswers;
   }
   
@@ -13,6 +15,15 @@ public class WorkspaceMaterialFieldUpdateEvent extends WorkspaceMaterialFieldEve
     return removeAnswers;
   }
   
+  public MaterialField getMaterialField() {
+    return materialField;
+  }
+
+  public void setMaterialField(MaterialField materialField) {
+    this.materialField = materialField;
+  }
+
+  private MaterialField materialField;
   private boolean removeAnswers;
 
 }

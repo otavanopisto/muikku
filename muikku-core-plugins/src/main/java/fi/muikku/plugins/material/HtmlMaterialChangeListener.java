@@ -18,51 +18,60 @@ import fi.muikku.plugins.material.events.HtmlMaterialUpdateEvent;
 public class HtmlMaterialChangeListener {
   
   @Inject
-  private Event<HtmlMaterialFieldCreateEvent> htmlMaterialFieldCreatedEvent;
+  private Event<HtmlMaterialFieldCreateEvent> htmlMaterialFieldCreateEvent;
 
   @Inject
-  private Event<HtmlMaterialFieldUpdateEvent> htmlMaterialFieldUpdatedEvent;
+  private Event<HtmlMaterialFieldUpdateEvent> htmlMaterialFieldUpdateEvent;
 
   @Inject
-  private Event<HtmlMaterialFieldDeleteEvent> htmlMaterialFieldDeletedEvent;
+  private Event<HtmlMaterialFieldDeleteEvent> htmlMaterialFieldDeleteEvent;
 
   public void onHtmlMaterialCreated(@Observes HtmlMaterialCreateEvent event) {
     MaterialFieldCollection fieldCollection = new MaterialFieldCollection(event.getMaterial().getHtml());
     for (MaterialField newField : fieldCollection.getFields()) {
       HtmlMaterialFieldCreateEvent createEvent = new HtmlMaterialFieldCreateEvent(event.getMaterial(), newField);
-      htmlMaterialFieldCreatedEvent.fire(createEvent);
+      htmlMaterialFieldCreateEvent.fire(createEvent);
     }
   }
 
+  // HtmlMaterialUpdate
+  // HtmlMaterialFieldXXXEvent -> HtmlMaterialFieldChangeListener
+  // QueryFieldXXXEvent -> QueryFieldChangeListener
+  // WorkspaceMaterialFieldXXXEvent -> WorkspaceMaterialFieldChangeListener
+  
   public void onHtmlMaterialUpdate(@Observes HtmlMaterialUpdateEvent event) {
     MaterialFieldCollection oldFieldCollection = new MaterialFieldCollection(event.getOldHtml());
     MaterialFieldCollection newFieldCollection = new MaterialFieldCollection(event.getNewHtml());
 
+    // TODO Logic for determining whether answers may be removed for deleted and (heavily) modified fields
+    
     List<MaterialField> removedFields = newFieldCollection.getRemovedFields(oldFieldCollection);
     for (MaterialField removedField : removedFields) {
-      HtmlMaterialFieldDeleteEvent deleteEvent = new HtmlMaterialFieldDeleteEvent(event.getMaterial(), removedField);
-      htmlMaterialFieldDeletedEvent.fire(deleteEvent);
+      HtmlMaterialFieldDeleteEvent deleteEvent = new HtmlMaterialFieldDeleteEvent(event.getMaterial(), removedField, event.getRemoveAnswers());
+      htmlMaterialFieldDeleteEvent.fire(deleteEvent);
     }
     
     List<MaterialField> updatedFields = newFieldCollection.getUpdatedFields(oldFieldCollection);
     for (MaterialField updatedField : updatedFields) {
-      HtmlMaterialFieldUpdateEvent updatedEvent = new HtmlMaterialFieldUpdateEvent(event.getMaterial(), updatedField);
-      htmlMaterialFieldUpdatedEvent.fire(updatedEvent);
+      HtmlMaterialFieldUpdateEvent updatedEvent = new HtmlMaterialFieldUpdateEvent(event.getMaterial(), updatedField, event.getRemoveAnswers());
+      htmlMaterialFieldUpdateEvent.fire(updatedEvent);
     }
     
     List<MaterialField> newFields = newFieldCollection.getNewFields(oldFieldCollection);
     for (MaterialField newField : newFields) {
       HtmlMaterialFieldCreateEvent createEvent = new HtmlMaterialFieldCreateEvent(event.getMaterial(), newField);
-      htmlMaterialFieldCreatedEvent.fire(createEvent);
+      htmlMaterialFieldCreateEvent.fire(createEvent);
     }
     
   }
 
   public void onHtmlMaterialDelete(@Observes HtmlMaterialDeleteEvent event) {
+    // TODO removeAnswers flag
     MaterialFieldCollection fieldCollection = new MaterialFieldCollection(event.getMaterial().getHtml());
     for (MaterialField deletedField : fieldCollection.getFields()) {
-      HtmlMaterialFieldDeleteEvent deletedEvent = new HtmlMaterialFieldDeleteEvent(event.getMaterial(), deletedField);
-      htmlMaterialFieldDeletedEvent.fire(deletedEvent);
+      HtmlMaterialFieldDeleteEvent deletedEvent = new HtmlMaterialFieldDeleteEvent(event.getMaterial(), deletedField, event.getRemoveAnswers());
+      htmlMaterialFieldDeleteEvent.fire(deletedEvent);
     }
   }
+
 }
