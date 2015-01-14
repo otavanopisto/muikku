@@ -3,4 +3,7 @@ CKEDITOR.plugins.setLang('muikku-connectfield', 'en', {
   toolbarMenu: 'Connect field',
   propertiesMenu: 'Connect field properties',
   propertiesDialogTitle: 'Connect field properties', 
+  propertiesDialogPairsLabel: 'Pairs', 
+  propertiesDialogAddPairsLink: 'Add pair', 
+  propertiesDialogDeletePairsLink: 'Remove pair'
 });

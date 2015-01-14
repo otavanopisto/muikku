@@ -104,7 +104,7 @@
                   });
                   titleContainer.append(addLink);
                   var addLinkTooltip = new CKEDITOR.dom.element('span');
-                  addLinkTooltip.setText(this.addPairLink);
+                  addLinkTooltip.setText(this.addPairsLink);
                   addLink.append(addLinkTooltip);
                 }
               }
@@ -146,7 +146,7 @@
                 });
               }()));
               var deleteTooltip = new CKEDITOR.dom.element('span');
-              deleteTooltip.setText(this.deletePairLink);
+              deleteTooltip.setText(this.deletePairsLink);
               deleteLink.append(deleteTooltip);
               optionContainer.append(deleteLink);
               optionsContainer.append(optionContainer);
@@ -249,9 +249,9 @@
         elements : [ {
           id : 'pairs',
           type : 'muikkuConnectFieldPairs',
-          label : "LOCALIZE",
-          addPairsLink : "LOCALIZE",
-          deletePairsLink : "LOCALIZE",
+          label : editor.lang['muikku-connectfield'].propertiesDialogPairsLabel,
+          addPairsLink : editor.lang['muikku-connectfield'].propertiesDialogAddPairsLink,
+          deletePairsLink : editor.lang['muikku-connectfield'].propertiesDialogDeletePairsLink,
           setup : function(json) {
             this.clear();
             this.setupContainers();
@@ -302,7 +302,7 @@
           if (element && element.is('img') && !element.isReadOnly()
               && element.data('cke-real-element-type') == 'muikkuconnectfield')
             return {
-              muikkuTextFieldItem : CKEDITOR.TRISTATE_OFF
+              muikkuConnectFieldItem : CKEDITOR.TRISTATE_OFF
             };
         });
       }

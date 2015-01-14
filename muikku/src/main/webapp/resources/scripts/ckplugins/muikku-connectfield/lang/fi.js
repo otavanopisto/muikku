@@ -3,4 +3,7 @@ CKEDITOR.plugins.setLang('muikku-connectfield', 'fi', {
   toolbarMenu: 'Yhdistelykenttä',
   propertiesMenu: 'Yhdistelykentän ominaisuudet',
   propertiesDialogTitle: 'Yhdistelykentän ominaisuudet', 
+  propertiesDialogPairsLabel: 'Vastinparit', 
+  propertiesDialogAddPairsLink: 'Lisää vastinpari', 
+  propertiesDialogDeletePairsLink: 'Poista vastinpari'
 });
