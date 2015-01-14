@@ -12,14 +12,16 @@ import fi.muikku.plugins.material.events.HtmlMaterialFieldDeleteEvent;
 import fi.muikku.plugins.material.events.HtmlMaterialFieldUpdateEvent;
 import fi.muikku.plugins.material.fieldmeta.FileFieldMeta;
 import fi.muikku.plugins.material.fieldmeta.MemoFieldMeta;
+import fi.muikku.plugins.material.fieldmeta.MultiSelectFieldMeta;
+import fi.muikku.plugins.material.fieldmeta.MultiSelectFieldOptionMeta;
 import fi.muikku.plugins.material.fieldmeta.SelectFieldMeta;
 import fi.muikku.plugins.material.fieldmeta.SelectFieldOptionMeta;
 import fi.muikku.plugins.material.fieldmeta.TextFieldMeta;
 import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.material.model.QueryField;
 import fi.muikku.plugins.material.model.QueryMemoField;
+import fi.muikku.plugins.material.model.QueryMultiSelectField;
 import fi.muikku.plugins.material.model.QuerySelectField;
-import fi.muikku.plugins.material.model.QuerySelectFieldOption;
 
 public class HtmlMaterialFieldChangeListener {
   
@@ -36,10 +38,14 @@ public class HtmlMaterialFieldChangeListener {
   private QuerySelectFieldController querySelectFieldController;
 
   @Inject
+  private QueryMultiSelectFieldController queryMultiSelectFieldController;
+
+  @Inject
   private QueryFileFieldController queryFileFieldController;
   
   // Create
 
+  // Text field
   public void onHtmlMaterialTextFieldCreated(@Observes HtmlMaterialFieldCreateEvent event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
     if (event.getField().getType().equals("application/vnd.muikku.field.text")) {
       ObjectMapper objectMapper = new ObjectMapper();
@@ -59,6 +65,7 @@ public class HtmlMaterialFieldChangeListener {
     }
   }
   
+  // Memo field
   public void onHtmlMaterialMemoFieldCreated(@Observes HtmlMaterialFieldCreateEvent event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
     if (event.getField().getType().equals("application/vnd.muikku.field.memo")) {
       ObjectMapper objectMapper = new ObjectMapper();
@@ -78,6 +85,7 @@ public class HtmlMaterialFieldChangeListener {
     }
   }
   
+  // Select field
   public void onHtmlMaterialSelectFieldCreated(@Observes HtmlMaterialFieldCreateEvent event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
     if (event.getField().getType().equals("application/vnd.muikku.field.select")) {
       ObjectMapper objectMapper = new ObjectMapper();
@@ -95,20 +103,37 @@ public class HtmlMaterialFieldChangeListener {
       }
 
       QuerySelectField querySelectField = querySelectFieldController.createQuerySelectField(event.getMaterial(), selectFieldMeta.getName());
-
       for (SelectFieldOptionMeta selectFieldOptionMeta : selectFieldMeta.getOptions()) {
-        QuerySelectFieldOption querySelectFieldOption = querySelectFieldController.findQuerySelectFieldOptionBySelectFieldAndName(querySelectField, selectFieldOptionMeta.getName());
-        if (querySelectFieldOption == null) {
-          querySelectFieldController.createQuerySelectFieldOption(querySelectField, selectFieldOptionMeta.getName(), selectFieldOptionMeta.getText());
-        } else {
-          querySelectFieldController.updateQuerySelectFieldOptionText(querySelectFieldOption, selectFieldOptionMeta.getText());
-        }
+        querySelectFieldController.createQuerySelectFieldOption(querySelectField, selectFieldOptionMeta.getName(), selectFieldOptionMeta.getText());
+      }
+    }
+  }
+
+  // Multi-select field
+  public void onHtmlMaterialMultiSelectFieldCreated(@Observes HtmlMaterialFieldCreateEvent event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
+    if (event.getField().getType().equals("application/vnd.muikku.field.multiselect")) {
+      ObjectMapper objectMapper = new ObjectMapper();
+      
+      MultiSelectFieldMeta multiSelectFieldMeta;
+      try {
+        multiSelectFieldMeta = objectMapper.readValue(event.getField().getContent(), MultiSelectFieldMeta.class);
+      } catch (IOException e) {
+        throw new MaterialFieldMetaParsingExeption("Could not parse select field meta", e);
+      }
+      
+      QueryField queryField = queryFieldController.findQueryFieldByMaterialAndName(event.getMaterial(), multiSelectFieldMeta.getName());
+      if (queryField != null) {
+        throw new MaterialQueryIntegrityExeption("Field with same name already exists in the database");
+      }
+
+      QueryMultiSelectField queryMultiSelectField = queryMultiSelectFieldController.createQueryMultiSelectField(event.getMaterial(), multiSelectFieldMeta.getName());
+      for (MultiSelectFieldOptionMeta multiSelectFieldOptionMeta : multiSelectFieldMeta.getOptions()) {
+        queryMultiSelectFieldController.createQueryMultiSelectFieldOption(queryMultiSelectField, multiSelectFieldOptionMeta.getName(), multiSelectFieldOptionMeta.getText());
       }
     }
   }
   
-  // TODO multiselect created
-  
+  // File field
   public void onHtmlMaterialFileFieldCreated(@Observes HtmlMaterialFieldCreateEvent event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
     if (event.getField().getType().equals("application/vnd.muikku.field.file")) {
       ObjectMapper objectMapper = new ObjectMapper();
@@ -128,11 +153,22 @@ public class HtmlMaterialFieldChangeListener {
     }
   }
   
+  // Connect field
+  // TODO Connect field creation
+  
   // Update
   
+  // Select field
   public void onHtmlMaterialSelectFieldUpdated(@Observes HtmlMaterialFieldUpdateEvent event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
     if (event.getField().getType().equals("application/vnd.muikku.field.select")) {
       querySelectFieldController.updateQuerySelectField(event.getMaterial(), event.getField(), event.getRemoveAnswers());
+    }
+  }
+
+  // Multi-select field
+  public void onHtmlMaterialMultiSelectFieldUpdated(@Observes HtmlMaterialFieldUpdateEvent event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
+    if (event.getField().getType().equals("application/vnd.muikku.field.multiselect")) {
+      queryMultiSelectFieldController.updateQueryMultiSelectField(event.getMaterial(), event.getField(), event.getRemoveAnswers());
     }
   }
   
