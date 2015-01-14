@@ -13,7 +13,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import fi.muikku.plugins.material.dao.QuerySelectFieldDAO;
 import fi.muikku.plugins.material.dao.QuerySelectFieldOptionDAO;
-import fi.muikku.plugins.material.events.QueryFieldDeleteEvent;
 import fi.muikku.plugins.material.events.QueryFieldUpdateEvent;
 import fi.muikku.plugins.material.fieldmeta.SelectFieldMeta;
 import fi.muikku.plugins.material.fieldmeta.SelectFieldOptionMeta;
@@ -57,7 +56,7 @@ public class QuerySelectFieldController {
     try {
       selectFieldMeta = objectMapper.readValue(field.getContent(), SelectFieldMeta.class);
     } catch (IOException e) {
-      throw new MaterialFieldMetaParsingExeption("Could not parse file field meta", e);
+      throw new MaterialFieldMetaParsingExeption("Could not parse select field meta", e);
     }
     QuerySelectField queryField = querySelectFieldDAO.findByMaterialAndName(material,  selectFieldMeta.getName());
     

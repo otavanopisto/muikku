@@ -91,6 +91,7 @@ public class HtmlMaterialController {
   }
   
   public HtmlMaterial updateHtmlMaterialHtml(HtmlMaterial htmlMaterial, String html) {
+    System.out.println(html);
     // TODO Logic for remove answers flag
     HtmlMaterialUpdateEvent event = new HtmlMaterialUpdateEvent(htmlMaterial, htmlMaterial.getHtml(), html, false);
     materialUpdateEvent.fire(event);
@@ -116,7 +117,7 @@ public class HtmlMaterialController {
     CoOpsDiffAlgorithm algorithm = findAlgorithm("dmp");
 
     if (revision < baselineRevision) {
-      List<HtmlMaterialRevision> revisions = htmlMaterialRevisionDAO.listByFileAndRevisionGtAndRevisonLeOrderedByRevision(htmlMaterial, revision, baselineRevision);
+      List<HtmlMaterialRevision> revisions = htmlMaterialRevisionDAO.listByFileAndRevisionGeAndRevisonLtOrderedByRevision(htmlMaterial, revision, baselineRevision);
       for (int i = revisions.size() - 1; i >= 0; i--) {
         HtmlMaterialRevision patchingRevision = revisions.get(i);
         try {
@@ -170,6 +171,8 @@ public class HtmlMaterialController {
     for (HtmlMaterialRevisionProperty property : properties) {
       htmlMaterialRevisionPropertyDAO.delete(property);
     }
+    
+    htmlMaterialRevisionDAO.delete(revision);
   }
 
   /* HtmlMaterialProperty */
