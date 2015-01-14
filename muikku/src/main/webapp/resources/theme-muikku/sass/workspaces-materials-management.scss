@@ -577,6 +577,7 @@ body.workspace-materials-management {
         a.publish-page.disabled,
         a.revert-page.disabled {
           opacity:0.35;
+          cursor:default;
         }
         
       }
