@@ -58,6 +58,25 @@ public class HtmlMaterialRevisionDAO extends CorePluginsDAO<HtmlMaterialRevision
     criteria.where(
       criteriaBuilder.and(
         criteriaBuilder.equal(root.get(HtmlMaterialRevision_.htmlMaterial), htmlMaterial),
+        criteriaBuilder.greaterThan(root.get(HtmlMaterialRevision_.revision), revisionGe),
+        criteriaBuilder.lessThanOrEqualTo(root.get(HtmlMaterialRevision_.revision), revisionLt)
+      )
+    );
+    criteria.orderBy(criteriaBuilder.asc(root.get(HtmlMaterialRevision_.revision)));
+
+    return entityManager.createQuery(criteria).getResultList();
+  }
+  
+  public List<HtmlMaterialRevision> listByFileAndRevisionGeAndRevisonLtOrderedByRevision(HtmlMaterial htmlMaterial, Long revisionGe, Long revisionLt) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<HtmlMaterialRevision> criteria = criteriaBuilder.createQuery(HtmlMaterialRevision.class);
+    Root<HtmlMaterialRevision> root = criteria.from(HtmlMaterialRevision.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(HtmlMaterialRevision_.htmlMaterial), htmlMaterial),
         criteriaBuilder.greaterThanOrEqualTo(root.get(HtmlMaterialRevision_.revision), revisionGe),
         criteriaBuilder.lessThan(root.get(HtmlMaterialRevision_.revision), revisionLt)
       )

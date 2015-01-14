@@ -117,7 +117,7 @@ public class HtmlMaterialController {
     CoOpsDiffAlgorithm algorithm = findAlgorithm("dmp");
 
     if (revision < baselineRevision) {
-      List<HtmlMaterialRevision> revisions = htmlMaterialRevisionDAO.listByFileAndRevisionGtAndRevisonLeOrderedByRevision(htmlMaterial, revision, baselineRevision);
+      List<HtmlMaterialRevision> revisions = htmlMaterialRevisionDAO.listByFileAndRevisionGeAndRevisonLtOrderedByRevision(htmlMaterial, revision, baselineRevision);
       for (int i = revisions.size() - 1; i >= 0; i--) {
         HtmlMaterialRevision patchingRevision = revisions.get(i);
         try {
