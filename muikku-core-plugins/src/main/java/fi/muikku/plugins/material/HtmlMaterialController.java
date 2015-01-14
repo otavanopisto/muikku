@@ -170,6 +170,8 @@ public class HtmlMaterialController {
     for (HtmlMaterialRevisionProperty property : properties) {
       htmlMaterialRevisionPropertyDAO.delete(property);
     }
+    
+    htmlMaterialRevisionDAO.delete(revision);
   }
 
   /* HtmlMaterialProperty */
