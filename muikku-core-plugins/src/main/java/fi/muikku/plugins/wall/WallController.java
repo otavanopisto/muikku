@@ -42,7 +42,6 @@ import fi.muikku.plugins.wall.model.WallEntry;
 import fi.muikku.plugins.wall.model.WallEntryReply;
 import fi.muikku.plugins.wall.model.WallEntryVisibility;
 import fi.muikku.plugins.wall.model.WorkspaceWall;
-import fi.muikku.users.UserController;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.session.SessionController;
@@ -83,9 +82,6 @@ public class WallController {
 
   @Inject
   private UserEntityController userEntityController;
-
-  @Inject
-  private UserController userController;
 
   @Inject
   private EnvironmentUserController environmentUserController; 
@@ -142,7 +138,7 @@ public class WallController {
           forumArea = forumAreaDAO_TEMP.create("Foorumi.", false, sessionController.getLoggedUserEntity(), rights);
         }
           
-        forumThreadDAO_TEMP.create(forumArea, "Foorumikirjoitus #" + r, "Testidatakirjoitus numero " + r, userEntity);
+        forumThreadDAO_TEMP.create(forumArea, "Foorumikirjoitus #" + r, "Testidatakirjoitus numero " + r, userEntity, false);
       break;
       
       case 3:

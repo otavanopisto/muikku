@@ -82,7 +82,7 @@ public class ForumRESTService extends PluginRESTService {
     List<ForumThreadRESTModel> result = new ArrayList<ForumThreadRESTModel>();
     
     for (ForumThread thread : threads) {
-      result.add(new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated()));
+      result.add(new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getSticky()));
     }
     
     return Response.ok(
@@ -95,7 +95,7 @@ public class ForumRESTService extends PluginRESTService {
   public Response findThread(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId) throws AuthorizationException {
     ForumThread thread = forumController.getForumThread(threadId);
 
-    ForumThreadRESTModel result = new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated());
+    ForumThreadRESTModel result = new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getSticky());
     
     return Response.ok(
       result
@@ -106,9 +106,9 @@ public class ForumRESTService extends PluginRESTService {
   @Path ("/areas/{AREAID}/threads")
   public Response createThread(@PathParam ("AREAID") Long areaId, ForumThreadRESTModel newThread) throws AuthorizationException {
     ForumArea forumArea = forumController.getForumArea(areaId);
-    ForumThread thread = forumController.createForumThread(forumArea, newThread.getTitle(), newThread.getMessage());
+    ForumThread thread = forumController.createForumThread(forumArea, newThread.getTitle(), newThread.getMessage(), newThread.getSticky());
 
-    ForumThreadRESTModel result = new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated());
+    ForumThreadRESTModel result = new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getSticky());
     
     return Response.ok(
       result
