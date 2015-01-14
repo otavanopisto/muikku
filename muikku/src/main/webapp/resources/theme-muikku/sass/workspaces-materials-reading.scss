@@ -169,6 +169,36 @@ body.workspace-materials-reading {
     max-width:700px;
     width:auto;
     margin:0 auto;
+    
+    & > article > h1 {
+      max-width:700px;
+      width:auto;
+      background:#fff;
+      margin:30px auto -30px auto; 
+      font-weight:300;
+      color:#000;
+      font-size:30px;
+      padding:30px;
+      text-transform:none;
+      line-height:1.3em;
+    }
+    
+    .workspace-materials-view-page-section.material-reading-view {
+    
+     & > h2 {
+       max-width:700px;
+       width:auto;
+       background:#fff;
+       margin:30px auto -30px auto; 
+       font-weight:300;
+       color:#000;
+       font-size:30px;
+       padding:30px 30px 0px 30px;
+       text-transform:none;
+       line-height:1.3em;
+     }
+    
+    }
   
     .workspace-materials-view-page.material-reading-view {
       max-width:700px;
