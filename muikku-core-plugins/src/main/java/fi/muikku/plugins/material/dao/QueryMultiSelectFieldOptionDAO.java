@@ -12,7 +12,6 @@ import fi.muikku.plugins.material.model.QueryMultiSelectField;
 import fi.muikku.plugins.material.model.QueryMultiSelectFieldOption;
 import fi.muikku.plugins.material.model.QueryMultiSelectFieldOption_;
 
-
 public class QueryMultiSelectFieldOptionDAO extends CorePluginsDAO<QueryMultiSelectFieldOption> {
 
   private static final long serialVersionUID = -5327160259588566934L;
@@ -60,4 +59,9 @@ public class QueryMultiSelectFieldOptionDAO extends CorePluginsDAO<QueryMultiSel
     querySelectFieldOption.setText(text);
     return persist(querySelectFieldOption);
   }
+
+  public void delete(QueryMultiSelectFieldOption queryMultiSelectFieldOption) {
+    super.delete(queryMultiSelectFieldOption);
+  }
+
 }

@@ -91,6 +91,7 @@ public class HtmlMaterialController {
   }
   
   public HtmlMaterial updateHtmlMaterialHtml(HtmlMaterial htmlMaterial, String html) {
+    System.out.println(html);
     // TODO Logic for remove answers flag
     HtmlMaterialUpdateEvent event = new HtmlMaterialUpdateEvent(htmlMaterial, htmlMaterial.getHtml(), html, false);
     materialUpdateEvent.fire(event);
