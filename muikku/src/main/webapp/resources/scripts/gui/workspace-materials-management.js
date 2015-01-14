@@ -54,6 +54,9 @@
     var pageElement = $('#page-' + workspaceMaterialId);
     var pageSection = $(pageElement).closest(".workspace-materials-view-page");
     
+    $(node).find('.edit-page').hide();
+    $(node).find('.close-page-editor').show();
+    
     pageSection.addClass("page-edit-mode");
     
     var editor = pageElement[editorName];
@@ -83,6 +86,9 @@
       if (loadContent !== false) {
         $(document).muikkuMaterialLoader('loadMaterial', node, true);
       }
+
+      $(node).find('.edit-page').show();
+      $(node).find('.close-page-editor').hide();
       node.removeClass("page-edit-mode");
     } else {
       $('.notification-queue').notificationQueue('notification', 'error', "Could not find editor for " + materialType);
@@ -587,6 +593,11 @@
         }, this));
       }, this));
     }
+  });
+  
+  $(document).on('click', '.close-page-editor', function (event, data) {
+    var workspaceMaterialId = $(this).data('workspace-material-id');
+    closeEditor($('#page-' + workspaceMaterialId), true);
   });
   
 }).call(this);
