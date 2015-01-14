@@ -554,7 +554,7 @@ body.workspace-materials-management {
           &:hover {
             @include iconShadow(rgba(255,255,190,0.8));
           }
-          
+
           &:before {
             padding:5px;
             display:inline-block;
@@ -572,6 +572,11 @@ body.workspace-materials-management {
         a.edit-page,
         a.close-page-editor {
           width:29px;
+        }
+        
+        a.publish-page.disabled,
+        a.revert-page.disabled {
+          opacity:0.35;
         }
         
       }
@@ -730,6 +735,11 @@ body.workspace-materials-management {
         button.publish-button {
           float:right;
           background:#27b91c;
+        }
+        
+        button.revert-button {
+          float:right;
+          background:#f6a930;
         }
         
         button.cancel-button {

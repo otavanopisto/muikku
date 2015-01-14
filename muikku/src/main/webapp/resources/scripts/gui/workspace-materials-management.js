@@ -567,7 +567,7 @@
     var currentRevision = $(this).data('current-revision');
     var publishedRevision = $(this).data('published-revision');
     if (currentRevision !== publishedRevision) {
-      confirmPagePublication($.proxy(function () {
+      confirmPageRevert($.proxy(function () {
         var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', "Reverting back to published revision...");
         var editing = isPageInEditMode($('#page-' + workspaceMaterialId));
         
