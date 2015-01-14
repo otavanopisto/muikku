@@ -529,24 +529,62 @@
     }
   });
   
+  function confirmPageRevert(revertCallback) {
+    renderDustTemplate('workspace/materials-management-page-revert-confirm.dust', { }, $.proxy(function (text) {
+      var dialog = $(text);
+      $(text).dialog({
+        modal: true, 
+        resizable: false,
+        width: 360,
+        dialogClass: "workspace-materials-management-dialog",
+        buttons: [{
+          'text': dialog.data('button-revert-text'),
+          'class': 'revert-button',
+          'click': function(event) {
+            $(this).dialog("close");
+            revertCallback();
+          }
+        }, {
+          'text': dialog.data('button-cancel-text'),
+          'class': 'cancel-button',
+          'click': function(event) {
+            $(this).dialog("close");
+          }
+        }]
+      });
+    }, this));
+  }
+  
   $(document).on('click', '.revert-page', function (event, data) {
     var workspaceMaterialId = $(this).data('workspace-material-id');
     var materialId = $(this).data('material-id');
     var currentRevision = $(this).data('current-revision');
     var publishedRevision = $(this).data('published-revision');
     if (currentRevision !== publishedRevision) {
-      var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', "Reverting back to published revision...");
-      mApi().materials.html.revert.update(materialId, {
-        fromRevision: currentRevision,
-        toRevision: publishedRevision
-      }).callback($.proxy(function (err) {
-        loadNotification.remove();
-        if (err) {
-          $('.notification-queue').notificationQueue('notification', 'error', err);
-        } else {
-          $(this).data('published-revision', publishedRevision);
-          $('.notification-queue').notificationQueue('notification', 'info', "Reverted successfully");
+      confirmPagePublication($.proxy(function () {
+        var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', "Reverting back to published revision...");
+        var editing = isPageInEditMode($('#page-' + workspaceMaterialId));
+        
+        if (editing) {
+          closeEditor($('#page-' + workspaceMaterialId), false);
         }
+        
+        mApi().materials.html.revert.update(materialId, {
+          fromRevision: currentRevision,
+          toRevision: publishedRevision
+        }).callback($.proxy(function (err) {
+          loadNotification.remove();
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            $(this).data('published-revision', publishedRevision);
+            if (editing) {
+              editPage($('#page-' + workspaceMaterialId));
+            }
+            
+            $('.notification-queue').notificationQueue('notification', 'info', "Reverted successfully");
+          }
+        }, this));
       }, this));
     }
   });
