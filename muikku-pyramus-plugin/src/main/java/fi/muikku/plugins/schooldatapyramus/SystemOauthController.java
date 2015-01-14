@@ -2,6 +2,8 @@ package fi.muikku.plugins.schooldatapyramus;
 
 import java.util.List;
 
+import javax.ejb.Lock;
+import javax.ejb.LockType;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -18,7 +20,7 @@ public class SystemOauthController {
     return systemAccessTokenDAO.create(accessToken, expires, refreshToken);
   }
   
-  public synchronized SystemAccessToken getSystemAccessToken(){
+  public SystemAccessToken getSystemAccessToken(){
     List<SystemAccessToken> systemAccessTokens = systemAccessTokenDAO.listAll();
     if(systemAccessTokens.isEmpty()){
       return null;

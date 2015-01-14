@@ -7,6 +7,8 @@ import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.ejb.Lock;
+import javax.ejb.LockType;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.client.Client;
@@ -22,6 +24,8 @@ import fi.muikku.plugins.schooldatapyramus.model.SystemAccessToken;
 @ApplicationScoped
 public class SystemPyramusClient extends AbstractPyramusClient {
 
+  private static final int EXPIRE_SLACK = 3;
+  
   @Inject
   private PluginSettingsController pluginSettingsController;
 
@@ -30,7 +34,7 @@ public class SystemPyramusClient extends AbstractPyramusClient {
 
   @Inject
   private SystemOauthController systemOauthController;
-
+  
   @PostConstruct
   public void init() {
     accessToken = null;
@@ -50,7 +54,7 @@ public class SystemPyramusClient extends AbstractPyramusClient {
   }
 
   @Override
-  protected synchronized String getAccessToken() {
+  protected String getAccessToken() {
 
     SystemAccessToken systemAccessToken = systemOauthController.getSystemAccessToken();
     if (systemAccessToken == null) {
@@ -62,7 +66,7 @@ public class SystemPyramusClient extends AbstractPyramusClient {
       if (System.currentTimeMillis() > systemAccessToken.getExpires()) {
         AccessToken refreshedAccessToken = refreshAccessToken(systemAccessToken.getRefreshToken());
         accessToken = refreshedAccessToken.getAccessToken();
-        accessTokenExpires = new DateTime().plusSeconds(refreshedAccessToken.getExpiresIn());
+        accessTokenExpires = new DateTime().plusSeconds(refreshedAccessToken.getExpiresIn() - EXPIRE_SLACK);
         systemOauthController.refreshSystemAccessToken(systemAccessToken, accessToken, accessTokenExpires.getMillis());
       } else {
         accessToken = systemAccessToken.getAccessToken();
@@ -74,7 +78,7 @@ public class SystemPyramusClient extends AbstractPyramusClient {
   }
 
   @Override
-  protected synchronized Client obtainClient() {
+  protected Client obtainClient() {
     if (pooledClients.isEmpty()) {
       return buildClient();
     }
@@ -83,7 +87,7 @@ public class SystemPyramusClient extends AbstractPyramusClient {
   }
 
   @Override
-  protected synchronized void releaseClient(Client client) {
+  protected void releaseClient(Client client) {
     pooledClients.add(client);
   }
 

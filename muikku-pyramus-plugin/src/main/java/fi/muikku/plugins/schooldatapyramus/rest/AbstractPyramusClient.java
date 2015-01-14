@@ -109,7 +109,7 @@ public abstract class AbstractPyramusClient {
     }
   }
   
-  protected synchronized AccessToken createAccessToken(String code) {
+  protected AccessToken createAccessToken(String code) {
     Client client = obtainClient();
     try {
       Form form = new Form()
@@ -129,7 +129,7 @@ public abstract class AbstractPyramusClient {
     }
   }
   
-  protected synchronized AccessToken refreshAccessToken(String refreshToken){
+  protected AccessToken refreshAccessToken(String refreshToken){
     Client client = obtainClient();
     try {
       Form form = new Form()
