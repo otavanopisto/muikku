@@ -539,12 +539,17 @@ body.workspace-materials-management {
       
         a.edit-page, 
         a.delete-page, 
-        a.hide-page {
+        a.hide-page,
+        a.publish-page,
+        a.revert-page,
+        a.close-page-editor {
           color:#fff;
           font-size:21px;
           display:inline-block;
           margin:5px 10px;
           position:relative;
+          height:31px;
+          text-align:center;
           
           &:hover {
             @include iconShadow(rgba(255,255,190,0.8));
@@ -558,6 +563,15 @@ body.workspace-materials-management {
           span {
             display:none;
           }
+        }
+        
+        a.delete-page {
+          font-size:22px;
+        }
+        
+        a.edit-page,
+        a.close-page-editor {
+          width:29px;
         }
         
       }
@@ -711,6 +725,11 @@ body.workspace-materials-management {
         button.delete-button {
           float:right;
           background:#de3211;
+        }
+        
+        button.publish-button {
+          float:right;
+          background:#27b91c;
         }
         
         button.cancel-button {
