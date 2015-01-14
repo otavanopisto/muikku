@@ -2,26 +2,34 @@ package fi.muikku.plugins.schooldatapyramus.rest;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
 import javax.ws.rs.client.Client;
 
 import org.joda.time.DateTime;
 
-@ApplicationScoped
+import fi.muikku.session.SessionController;
+
+@SessionScoped
 public class UserPyramusClient extends AbstractPyramusClient implements Serializable {
 
   private static final long serialVersionUID = -2643693371146903250L;
-  private static String AUTH_CODE = "0800fc577294c34e0b28ad2839435945";
-
+  
+  @Inject
+  private SessionController sessionController;
+  
   @PostConstruct
   public void init() {
-    accessToken = null;
-    accessTokenExpires = null;
     pooledClients = new ArrayList<>();
+    initToken();
   }
 
   @PreDestroy
@@ -33,15 +41,22 @@ public class UserPyramusClient extends AbstractPyramusClient implements Serializ
   
   @Override
   protected synchronized String getAccessToken() {
-    if (((accessToken == null) || (accessTokenExpires == null)) || (accessTokenExpires.isBefore(System.currentTimeMillis()))) {
-      AccessToken createdAccessToken = createAccessToken(AUTH_CODE);
-      accessToken = createdAccessToken.getAccessToken();
-      accessTokenExpires = new DateTime().plusSeconds(createdAccessToken.getExpiresIn());
+    
+    if(accessToken == null){
+      initToken();
+    }
+
+    if(accessTokenExpires.before(new Date())){
+      AccessToken refreshedAccessToken = refreshAccessToken(refreshToken);
+      Calendar calendar = new GregorianCalendar();
+      calendar.setTime(new Date());
+      calendar.add(Calendar.SECOND, refreshedAccessToken.getExpiresIn());
+      accessTokenExpires = calendar.getTime();
+      accessToken = refreshedAccessToken.getAccessToken();
     }
     
-    // TODO: Change to refresh token when such is available in Pyramus
-    
     return accessToken;
+    
   }
 
   @Override
@@ -58,8 +73,16 @@ public class UserPyramusClient extends AbstractPyramusClient implements Serializ
     pooledClients.add(client);
   }
 
+  private void initToken(){
+    fi.muikku.session.AccessToken accessToken = sessionController.getOAuthAccessToken("pyramus");
+    this.accessToken = accessToken.getToken();
+    this.refreshToken = accessToken.getRefreshToken();
+    this.accessTokenExpires = accessToken.getExpires();
+  }
+  
   private List<Client> pooledClients;
   private String accessToken;
-  private DateTime accessTokenExpires;
+  private String refreshToken;
+  private Date accessTokenExpires;
   
 }

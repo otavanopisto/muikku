@@ -105,7 +105,7 @@ public class PyramusAuthenticationStrategy extends OAuthAuthenticationStrategy i
       calendar.setTime(new Date());
       calendar.add(Calendar.SECOND, pyramusAccessToken.getExpiresIn());
       Date expires = calendar.getTime();
-      sessionController.addOAuthAccessToken("pyramus", expires, accessToken.getToken());
+      sessionController.addOAuthAccessToken("pyramus", expires, accessToken.getToken(), pyramusAccessToken.getRefreshToken());
     } catch (IOException e) {
       logger.log(Level.SEVERE, "Token extraction failed a JSON parsing error", e);
       throw new AuthenticationHandleException(e);
@@ -138,8 +138,19 @@ public class PyramusAuthenticationStrategy extends OAuthAuthenticationStrategy i
       this.expiresIn = expiresIn;
     }
 
+    public String getRefreshToken() {
+      return refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+      this.refreshToken = refreshToken;
+    }
+
     @JsonProperty("expires_in")
     private Integer expiresIn;
+    
+    @JsonProperty("refresh_token")
+    private String refreshToken;
   }
   
 }
