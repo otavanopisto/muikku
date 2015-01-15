@@ -240,6 +240,23 @@ body.workspace-materials-reading {
        text-transform:none;
        line-height:1.3em;
      }
+     
+     & > h3,h4,h5,h6 {
+       max-width:700px;
+       width:auto;
+       background:#fff;
+       margin:30px auto -30px auto; 
+       font-weight:300;
+       color:#000;
+       font-size:26px;
+       padding:30px 30px 0px 30px;
+       text-transform:none;
+       line-height:1.3em;
+     }
+     
+     .muikku-file-input-field-file-uploader-container {
+       font-size:16px;
+     }
     
     }
   

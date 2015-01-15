@@ -297,7 +297,7 @@ body.workspace-materials {
       }
     }
 
-    .workspace-materials-view-page-section.material-view {
+    .workspace-materials-view-page-section.material-view { /* <section> */
       position:relative;
       z-index:10;
       
@@ -317,9 +317,29 @@ body.workspace-materials {
         box-shadow:0 -20px 20px rgba(107,137,158,0.05);
       }
       
+      & > h3,h4,h5,h6 {
+        position:relative;
+        z-index:13;
+        max-width:700px;
+        width:auto;
+        background:#fff;
+        margin:30px 300px -30px auto; 
+        font-weight:300;
+        color:#000;
+        font-size:26px;
+        padding:10px 30px 10px 30px;
+        text-transform:none;
+        line-height:1.3em;
+      }
+      
+      .muikku-file-input-field-file-uploader-container {
+       font-size:14px;
+      }
+
+      
     }
 
-    .workspace-materials-view-page.material-view {
+    .workspace-materials-view-page.material-view { /* <article> */
       padding:10px 30px;
       margin:23px 300px 37px auto;
       max-width:640px;
