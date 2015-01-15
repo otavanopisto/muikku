@@ -128,6 +128,26 @@ public abstract class AbstractPyramusClient {
       releaseClient(client);
     }
   }
+  
+  protected AccessToken refreshAccessToken(String refreshToken){
+    Client client = obtainClient();
+    try {
+      Form form = new Form()
+        .param("grant_type", "refresh_token")
+        .param("refresh_token", refreshToken)
+        .param("redirect_uri", redirectUrl)
+        .param("client_id", clientId)
+        .param("client_secret", clientSecret);
+  
+      WebTarget target = client.target(url + "/oauth/token");
+  
+      Builder request = target.request();
+  
+      return request.post(Entity.form(form), AccessToken.class);
+    } finally {
+      releaseClient(client);
+    }
+  }
 
   @SuppressWarnings("unchecked")
   private <T> T createResponse(Response response, Class<T> type) {
