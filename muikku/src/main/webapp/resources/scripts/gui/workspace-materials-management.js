@@ -399,12 +399,11 @@
   
   $(document).on('click', '.workspaces-materials-management-add-page', function (event, data) {
 	  
-    var nextMaterial = $(this).next('.workspace-materials-view-page');
+    var nextMaterial = $(this).parent().nextAll('.workspace-materials-view-page').first();
     
     renderDustTemplate('workspace/materials-management-new-page.dust', { }, $.proxy(function (text) {
       var newPage = $(text);
       $(this).parent().after(newPage);
-      console.log($(this));
       var uploader = createFileUploader();
       $(newPage).before(uploader);
       enableFileUploader(uploader, nextMaterial.data('parent-id'), nextMaterial.data('workspace-material-id'));
@@ -416,7 +415,6 @@
         var materialType = $(this).data('material-type');
         var parentId = $(nextMaterial).data('parent-id');
         var nextSiblingId = $(nextMaterial).data('workspace-material-id');
-        
         var typeEndpoint = mApi().materials[materialType];
         if (typeEndpoint != null) {
           // TODO: Localize
