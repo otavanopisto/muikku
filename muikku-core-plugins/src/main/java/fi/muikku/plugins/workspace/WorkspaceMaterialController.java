@@ -1,5 +1,6 @@
 package fi.muikku.plugins.workspace;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -29,6 +30,7 @@ import fi.muikku.plugins.workspace.events.WorkspaceRootFolderUpdateEvent;
 import fi.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
+import fi.muikku.plugins.workspace.model.WorkspaceNodeType;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 
 @Dependent
@@ -391,6 +393,52 @@ public class WorkspaceMaterialController {
 
   /* Utility methods */
 
+  public List<FlattenedWorkspaceNode> flattenWorkspaceNodes(List<WorkspaceNode> workspaceNodes, int level) {
+    List<FlattenedWorkspaceNode> result = new ArrayList<>();
+    
+    for (WorkspaceNode workspaceNode : workspaceNodes) {
+      if (workspaceNode.getType() == WorkspaceNodeType.FOLDER) {
+        List<WorkspaceNode> children = listWorkspaceNodesByParent((WorkspaceFolder)workspaceNode);
+        for (WorkspaceNode child : children) {
+            result.add(new FlattenedWorkspaceNode(child, level+1));
+        }
+      } else {
+        result.add(new FlattenedWorkspaceNode(workspaceNode, level));
+      }
+    }
+    
+    return result;
+  }
+  
+  public ContentNode createContentNode(WorkspaceNode rootMaterialNode) {
+    return createContentNode(rootMaterialNode, 1);
+  }
+
+  public ContentNode createContentNode(WorkspaceNode rootMaterialNode, int level) {
+    switch (rootMaterialNode.getType()) {
+    case FOLDER:
+      WorkspaceFolder workspaceFolder = (WorkspaceFolder) rootMaterialNode;
+      ContentNode folderContentNode = new ContentNode(
+          workspaceFolder.getTitle(), "folder", rootMaterialNode.getId(), null, level);
+
+      List<WorkspaceNode> children = listWorkspaceNodesByParent(workspaceFolder);
+      for (FlattenedWorkspaceNode child : flattenWorkspaceNodes(children, level)) {
+        folderContentNode.addChild(createContentNode(child.node, child.level));
+      }
+
+      return folderContentNode;
+    case MATERIAL:
+      WorkspaceMaterial workspaceMaterial = (WorkspaceMaterial) rootMaterialNode;
+      Material material = materialController.findMaterialById(workspaceMaterial
+          .getMaterialId());
+      return new ContentNode(material.getTitle(), material.getType(),
+          rootMaterialNode.getId(), material.getId(), level);
+    default:
+      return null;
+    }
+  }
+
+
   public synchronized String generateUniqueUrlName(String title) {
     return generateUniqueUrlName(null, null, title);
   }
@@ -439,6 +487,17 @@ public class WorkspaceMaterialController {
     // get rid of accented characters and all special characters other than minus, period, and underscore
     urlName = StringUtils.stripAccents(urlName).replaceAll("[^a-z0-9\\-\\.\\_]", "");
     return urlName;
+  }
+  
+  private static class FlattenedWorkspaceNode {
+    
+    public FlattenedWorkspaceNode(WorkspaceNode node, int level) {
+      this.node = node;
+      this.level = level;
+    }
+    
+    public final WorkspaceNode node;
+    public final int level;
   }
 
 }
