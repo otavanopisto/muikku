@@ -1,5 +1,6 @@
 package fi.muikku.plugins.workspace;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -29,6 +30,7 @@ import fi.muikku.plugins.workspace.events.WorkspaceRootFolderUpdateEvent;
 import fi.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
+import fi.muikku.plugins.workspace.model.WorkspaceNodeType;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 
 @Dependent
@@ -390,6 +392,46 @@ public class WorkspaceMaterialController {
   }
 
   /* Utility methods */
+
+  public List<WorkspaceNode> flattenWorkspaceNodes(List<WorkspaceNode> workspaceNodes) {
+    List<WorkspaceNode> result = new ArrayList<>();
+    
+    for (WorkspaceNode workspaceNode : workspaceNodes) {
+      if (workspaceNode.getType() == WorkspaceNodeType.FOLDER) {
+        List<WorkspaceNode> children = listWorkspaceNodesByParent((WorkspaceFolder)workspaceNode);
+        result.addAll(flattenWorkspaceNodes(children));
+      } else {
+        result.add(workspaceNode);
+      }
+    }
+    
+    return result;
+  }
+
+  public ContentNode createContentNode(WorkspaceNode rootMaterialNode) {
+    switch (rootMaterialNode.getType()) {
+    case FOLDER:
+      WorkspaceFolder workspaceFolder = (WorkspaceFolder) rootMaterialNode;
+      ContentNode folderContentNode = new ContentNode(
+          workspaceFolder.getTitle(), "folder", rootMaterialNode.getId(), null);
+
+      List<WorkspaceNode> children = listWorkspaceNodesByParent(workspaceFolder);
+      for (WorkspaceNode child : flattenWorkspaceNodes(children)) {
+        folderContentNode.addChild(createContentNode(child));
+      }
+
+      return folderContentNode;
+    case MATERIAL:
+      WorkspaceMaterial workspaceMaterial = (WorkspaceMaterial) rootMaterialNode;
+      Material material = materialController.findMaterialById(workspaceMaterial
+          .getMaterialId());
+      return new ContentNode(material.getTitle(), material.getType(),
+          rootMaterialNode.getId(), material.getId());
+    default:
+      return null;
+    }
+  }
+
 
   public synchronized String generateUniqueUrlName(String title) {
     return generateUniqueUrlName(null, null, title);
