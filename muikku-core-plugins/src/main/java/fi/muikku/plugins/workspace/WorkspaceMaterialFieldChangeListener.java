@@ -134,8 +134,7 @@ public class WorkspaceMaterialFieldChangeListener {
         }
       }
       for (QueryMultiSelectFieldOption removedOption : oldOptions) {
-        // TODO List all answers that contain removed option...
-        List<WorkspaceMaterialMultiSelectFieldAnswer> answers = null;//workspaceMaterialMultiSelectFieldAnswerDAO.listByQueryMultiSelectFieldOption(removedOption);
+        List<WorkspaceMaterialMultiSelectFieldAnswer> answers = workspaceMaterialMultiSelectFieldAnswerDAO.listByQueryMultiSelectFieldOption(removedOption);
         deprecatedAnswers.addAll(answers);
       }
 
