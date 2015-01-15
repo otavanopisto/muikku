@@ -20,9 +20,20 @@ public class AccessToken {
     this.expiresIn = expiresIn;
   }
   
+  public String getRefreshToken() {
+    return refreshToken;
+  }
+
+  public void setRefreshToken(String refreshToken) {
+    this.refreshToken = refreshToken;
+  }
+
   @JsonProperty ("access_token")
   private String accessToken;
   
   @JsonProperty ("expires_in")
   private Integer expiresIn;
+  
+  @JsonProperty("refresh_token")
+  private String refreshToken;
 }

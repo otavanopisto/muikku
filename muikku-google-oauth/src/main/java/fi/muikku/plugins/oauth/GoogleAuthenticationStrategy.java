@@ -94,7 +94,7 @@ public class GoogleAuthenticationStrategy extends OAuthAuthenticationStrategy im
       calendar.setTime(new Date());
       calendar.add(Calendar.SECOND, googleAccessToken.getExpiresIn());
       Date expires = calendar.getTime();
-      sessionController.addOAuthAccessToken("google", expires, accessToken.getToken());
+      sessionController.addOAuthAccessToken("google", expires, accessToken.getToken(), null);
     } catch (IOException e) {
       logger.log(Level.SEVERE, "Token extraction failed a JSON parsing error", e);
       throw new AuthenticationHandleException(e);
