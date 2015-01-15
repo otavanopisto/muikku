@@ -132,71 +132,104 @@ body.workspace-materials {
       }
       
     }
-  
+
   }
   
-  #contentWorkspaceMaterials {
-    position:relative;
-    padding-top:0.01em;
-  
-    .workspace-materials-toc-wrapper {
-      background:#fff;
-      position:fixed;
-      top:100px;
-      width:280px;
-      max-height:520px;
-      text-align:left;
-      font-family:"Open Sans";
-      text-shadow:none;
-      color:#000;
-      font-size:14px;
-      line-height:1.5em;
-      box-shadow:0 0 40px rgba(107,137,158,0.1);
-      border-bottom:10px solid #fff;
-      
-      &:hover > span {
-        display:none;
+
+
+  nav.workspace-materials-toc-wrapper#workspaceMaterialsTOCWrapper {
+    background:#fff;
+    position:fixed;
+    top:100px;
+    width:280px;
+    max-height:520px;
+    text-align:left;
+    font-family:"Open Sans";
+    text-shadow:none;
+    color:#000;
+    font-size:14px;
+    line-height:1.5em;
+    box-shadow:0 0 40px rgba(107,137,158,0.1);
+    border-bottom:10px solid #fff;
+    z-index:99;
+    
+    &:hover > span {
+      display:none;
+    }
+    
+    ul, 
+    li {
+      list-style:none;
+      margin:0;
+      padding:0;
+    }
+    
+    .workspace-materials-toc-container {
+      overflow:hidden;
+      position:relative;
+      height:530px;
+    
+      .workspace-materials-toc-title {
+        text-transform:uppercase;
+        margin:0;
+        padding:10px 12px;
+        font-size:19px;
+        color:#2c2c2c;
+        height:20px;
       }
-      
-      ul, 
-      li {
-        list-style:none;
-      }
-      
-      .workspace-materials-toc-container {
+    
+      .workspace-materials-toc-content-outer {
         overflow:hidden;
-        position:relative;
-        height:530px;
-      
-        .workspace-materials-toc-title {
-          text-transform:uppercase;
-          margin:0;
-          padding:10px 12px;
-          font-size:19px;
-          color:#2c2c2c;
-          height:20px;
-        }
-      
-        .workspace-materials-toc-content-outer {
-          overflow:hidden;
-          height:480px;
-          width:280px;
-          
-          .workspace-materials-toc-content-inner {  
-            position:absolute;
-            overflow-x: hidden;
-            overflow-y: scroll;
-            height:480px;
-          
-            .workspace-materials-toc-content-scrolling {
-              padding:4px;
-              width:272px;
-              height:480px;
-              
-              .spacer {
-                height:30px; /* Creating some bottom margin because use of 100% height  */
-              }
+        height:480px;
+        width:280px;
         
+        .workspace-materials-toc-content-inner {  
+          position:absolute;
+          overflow-x: hidden;
+          overflow-y: scroll;
+          height:480px;
+        
+          .workspace-materials-toc-content-scrolling {
+            padding:4px;
+            width:272px;
+            height:480px;
+            
+            .spacer {
+              height:30px; /* Creating some bottom margin because use of 100% height  */
+            }
+            
+            .workspace-materials-toc-root {
+
+              .workspace-materials-toc-item {
+                font-weight:300;
+                list-style:none;
+                
+                &:first-child {
+                  margin-top:5px;
+                  padding-top:2px;
+                }
+                
+                &.item-hidden {
+                  opacity:0.4;
+                }
+                
+                a {
+                  text-decoration:none;
+                  color:#2c2c2c;
+                  display:block;
+                  @include genericMenuLinkHoverTransition(background,color,0.15s,ease-in-out);
+                  @include rounded(2px);
+                  padding:2px 8px;
+                  
+                  &:hover,
+                  &.active {
+                    background:#596e7d;
+                    color:#fff;
+                  }
+                }
+    
+              }
+
               .workspace-materials-toc-section {
                 margin:0;
                 padding-top:5px;
@@ -228,43 +261,60 @@ body.workspace-materials {
                 }
               
               }
-              
             }
-          
           }
         
         }
       
       }
     
-    }  
-    
-    & > article > h1 {
-      max-width:700px;
-      width:auto;
-      background:#fff;
-      margin:30px 300px -30px auto; 
-      font-weight:300;
-      color:#000;
-      font-size:30px;
-      padding:30px;
-      text-transform:none;
-      line-height:1.3em;
     }
-
-    .workspace-materials-view-page-section.material-view {
-      
-      & > h2 {
+  
+  }
+  
+  #contentWorkspaceMaterials {
+    position:relative;
+    padding-top:0.01em;
+  
+    & > article {
+      position:relative;
+      z-index:10;
+    
+        & > h1 {
+        position:relative;
+        z-index:12;
         max-width:700px;
         width:auto;
         background:#fff;
-        margin:30px 300px 30px auto; 
+        margin:23px 300px -30px auto; 
         font-weight:300;
         color:#000;
         font-size:30px;
-        padding:30px 30px 0px 30px;
+        padding:30px;
         text-transform:none;
         line-height:1.3em;
+        box-shadow:0 -20px 20px rgba(107,137,158,0.05);
+      }
+    }
+
+    .workspace-materials-view-page-section.material-view {
+      position:relative;
+      z-index:10;
+      
+      & > h2 {
+        position:relative;
+        z-index:12;
+        max-width:700px;
+        width:auto;
+        background:#fff;
+        margin:30px 300px -30px auto; 
+        font-weight:300;
+        color:#000;
+        font-size:30px;
+        padding:30px 30px 10px 30px;
+        text-transform:none;
+        line-height:1.3em;
+        box-shadow:0 -20px 20px rgba(107,137,158,0.05);
       }
       
     }
@@ -274,8 +324,6 @@ body.workspace-materials {
       margin:23px 300px 37px auto;
       max-width:640px;
       box-shadow:0 0 40px rgba(107,137,158,0.1);
-
-      
 
       img {
         max-width:100%;

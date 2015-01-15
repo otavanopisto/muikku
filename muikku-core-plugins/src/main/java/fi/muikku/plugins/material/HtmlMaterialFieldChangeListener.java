@@ -1,6 +1,8 @@
 package fi.muikku.plugins.material;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -10,6 +12,9 @@ import org.codehaus.jackson.map.ObjectMapper;
 import fi.muikku.plugins.material.events.HtmlMaterialFieldCreateEvent;
 import fi.muikku.plugins.material.events.HtmlMaterialFieldDeleteEvent;
 import fi.muikku.plugins.material.events.HtmlMaterialFieldUpdateEvent;
+import fi.muikku.plugins.material.fieldmeta.ConnectFieldConnectionMeta;
+import fi.muikku.plugins.material.fieldmeta.ConnectFieldMeta;
+import fi.muikku.plugins.material.fieldmeta.ConnectFieldOptionMeta;
 import fi.muikku.plugins.material.fieldmeta.FileFieldMeta;
 import fi.muikku.plugins.material.fieldmeta.MemoFieldMeta;
 import fi.muikku.plugins.material.fieldmeta.MultiSelectFieldMeta;
@@ -18,6 +23,9 @@ import fi.muikku.plugins.material.fieldmeta.SelectFieldMeta;
 import fi.muikku.plugins.material.fieldmeta.SelectFieldOptionMeta;
 import fi.muikku.plugins.material.fieldmeta.TextFieldMeta;
 import fi.muikku.plugins.material.model.HtmlMaterial;
+import fi.muikku.plugins.material.model.QueryConnectField;
+import fi.muikku.plugins.material.model.QueryConnectFieldCounterpart;
+import fi.muikku.plugins.material.model.QueryConnectFieldTerm;
 import fi.muikku.plugins.material.model.QueryField;
 import fi.muikku.plugins.material.model.QueryMemoField;
 import fi.muikku.plugins.material.model.QueryMultiSelectField;
@@ -42,6 +50,9 @@ public class HtmlMaterialFieldChangeListener {
 
   @Inject
   private QueryFileFieldController queryFileFieldController;
+  
+  @Inject
+  private QueryConnectFieldController queryConnectFieldController;
   
   // Create
 
@@ -154,7 +165,35 @@ public class HtmlMaterialFieldChangeListener {
   }
   
   // Connect field
-  // TODO Connect field creation
+  public void onHtmlMaterialConnectFieldCreated(@Observes HtmlMaterialFieldCreateEvent event) throws MaterialQueryIntegrityExeption, MaterialFieldMetaParsingExeption {
+    if (event.getField().getType().equals("application/vnd.muikku.field.connect")) {
+      ObjectMapper objectMapper = new ObjectMapper();
+      ConnectFieldMeta connectFieldMeta;
+      try {
+        connectFieldMeta = objectMapper.readValue(event.getField().getContent(), ConnectFieldMeta.class);
+      } catch (IOException e) {
+        throw new MaterialFieldMetaParsingExeption("Could not parse connect field meta", e);
+      }
+      
+      QueryField queryField = queryFieldController.findQueryFieldByMaterialAndName(event.getMaterial(), connectFieldMeta.getName());
+      if (queryField != null) {
+        throw new MaterialQueryIntegrityExeption("Field with same name already exists in the database");
+      }
+      
+      QueryConnectField field = queryConnectFieldController.createQueryConnectField(event.getMaterial(), connectFieldMeta.getName());
+      Map<String, QueryConnectFieldTerm> terms = new HashMap<String, QueryConnectFieldTerm>();
+      Map<String, QueryConnectFieldCounterpart> counterparts = new HashMap<String, QueryConnectFieldCounterpart>();
+      for (ConnectFieldOptionMeta option : connectFieldMeta.getFields()) {
+        terms.put(option.getName(), queryConnectFieldController.createConnectFieldTerm(field, option.getName(), option.getText(), null));
+      }
+      for (ConnectFieldOptionMeta option : connectFieldMeta.getCounterparts()) {
+        counterparts.put(option.getName(), queryConnectFieldController.createConnectFieldCounterpart(field, option.getName(), option.getText()));
+      }
+      for (ConnectFieldConnectionMeta connection : connectFieldMeta.getConnections()) {
+        terms.get(connection.getField()).setCounterpart(counterparts.get(connection.getCounterpart()));
+      }
+    }
+  }
   
   // Update
   

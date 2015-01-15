@@ -19,10 +19,12 @@
         <div class="workspace-materials-toc-content-outer">
           <div class="workspace-materials-toc-content-inner">
             <div class="workspace-materials-toc-content-scrolling">
-              <ui:include src="/workspaces/templates/workspace-materials-list.xhtml">
-                <ui:param name="nodes" value="#{workspaceMaterialsTOCBackingBean.getVisibleChildren(workspaceMaterialsBackingBean.getRootFolder())}"/>
-                <ui:param name="includeHidden" value="false"/>
-              </ui:include>
+              <ul class="workspace-materials-toc-root">
+                <ui:include src="/workspaces/templates/workspace-materials-list.xhtml">
+                  <ui:param name="nodes" value="#{workspaceMaterialsTOCBackingBean.getVisibleChildren(workspaceMaterialsBackingBean.getRootFolder())}"/>
+                  <ui:param name="includeHidden" value="false"/>
+                </ui:include>
+              </ul>
             </div>
           </div>
         </div>
@@ -35,11 +37,26 @@
         <ui:fragment rendered="#{node.type eq 'folder'}">
           <section id="page-#{node.workspaceMaterialId}" class="workspace-materials-view-page-section material-view" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-material-type="#{node.type}" data-material-title="#{node.title}">
             <h2>#{node.title}</h2>
-            
+            <p>mustamakkara</p>
             <ui:repeat var="articleNode" value="#{node.children}">
-              <article id="page-#{articleNode.workspaceMaterialId}" data-workspace-material-id="#{articleNode.workspaceMaterialId}" data-material-id="#{articleNode.materialId}" data-material-type="#{articleNode.type}" data-material-title="#{articleNode.title}" class="workspace-materials-view-page material-view"/>
+              <ui:fragment rendered="#{articleNode.type eq 'folder'}">
+                <ui:fragment rendered="#{articleNode.level eq 1}">
+                  <h3>#{articleNode.title}</h3>
+                </ui:fragment>
+                <ui:fragment rendered="#{articleNode.level eq 2}">
+                  <h4>#{articleNode.title}</h4>
+                </ui:fragment>
+                <ui:fragment rendered="#{articleNode.level eq 3}">
+                  <h5>#{articleNode.title}</h5>
+                </ui:fragment>
+                <ui:fragment rendered="#{(articleNode.level eq 4) or (articleNode.level gt 4)}">
+                  <h6>#{articleNode.title}</h6>
+                </ui:fragment>
+              </ui:fragment>
+              <ui:fragment rendered="#{articleNode.type ne 'folder'}">
+                <article id="page-#{articleNode.workspaceMaterialId}" data-workspace-material-id="#{articleNode.workspaceMaterialId}" data-material-id="#{articleNode.materialId}" data-material-type="#{articleNode.type}" data-material-title="#{articleNode.title}" class="workspace-materials-view-page material-view"/>
+              </ui:fragment>
             </ui:repeat>
-            <article/>
           </section>
         </ui:fragment>  
         
