@@ -76,8 +76,8 @@ public class SessionControllerDelegateImpl implements SessionControllerDelegate 
   }
 
   @Override
-  public void addOAuthAccessToken(String strategy, Date expiresAt, String accessToken) {
-    implementation.addOAuthAccessToken(strategy, expiresAt, accessToken);
+  public void addOAuthAccessToken(String strategy, Date expiresAt, String accessToken, String refreshToken) {
+    implementation.addOAuthAccessToken(strategy, expiresAt, accessToken, refreshToken);
   }
 
   @Override
