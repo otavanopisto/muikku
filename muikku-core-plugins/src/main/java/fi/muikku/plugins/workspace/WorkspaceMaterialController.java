@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
@@ -75,6 +76,9 @@ public class WorkspaceMaterialController {
 
   @Inject
   private MaterialController materialController;
+  
+  @Inject
+  private Logger logger;
   
   private static final int FLATTENING_LEVEL = 3;
 
@@ -397,23 +401,16 @@ public class WorkspaceMaterialController {
 
   public List<FlattenedWorkspaceNode> flattenWorkspaceNodes(List<WorkspaceNode> workspaceNodes, int level) {
     List<FlattenedWorkspaceNode> result = new ArrayList<>();
+    logger.warning("Level: " + level);
     
     for (WorkspaceNode workspaceNode : workspaceNodes) {
       if (workspaceNode.getType() == WorkspaceNodeType.FOLDER) {
         WorkspaceFolder workspaceFolder = (WorkspaceFolder)workspaceNode;
         List<WorkspaceNode> children = listWorkspaceNodesByParent(workspaceFolder);
-        WorkspaceFolder emptyFolder = new WorkspaceFolder();
-        emptyFolder.setHidden(workspaceFolder.getHidden());
-        emptyFolder.setParent(workspaceFolder.getParent());
-        emptyFolder.setOrderNumber(workspaceFolder.getOrderNumber());
-        emptyFolder.setTitle(workspaceFolder.getTitle());
-        emptyFolder.setUrlName(workspaceFolder.getUrlName());
-        result.add(new FlattenedWorkspaceNode(emptyFolder, level));
-        for (WorkspaceNode child : children) {
-            result.add(new FlattenedWorkspaceNode(child, level+1));
-        }
+        result.add(new FlattenedWorkspaceNode(true, workspaceFolder.getTitle(), null, level));
+        result.addAll(flattenWorkspaceNodes(children, level+1));
       } else {
-        result.add(new FlattenedWorkspaceNode(workspaceNode, level));
+        result.add(new FlattenedWorkspaceNode(false, null, workspaceNode, level));
       }
     }
     
@@ -433,16 +430,22 @@ public class WorkspaceMaterialController {
 
       List<WorkspaceNode> children = listWorkspaceNodesByParent(workspaceFolder);
       List<FlattenedWorkspaceNode> flattenedChildren;
-      if (level >= FLATTENING_LEVEL) {
+      // if (level >= FLATTENING_LEVEL) {
         flattenedChildren = flattenWorkspaceNodes(children, level);
-      } else {
-        flattenedChildren = new ArrayList<>();
-        for (WorkspaceNode node : children) {
-          flattenedChildren.add(new FlattenedWorkspaceNode(node, level));
-        }
-      }
+      // } else {
+        // flattenedChildren = new ArrayList<>();
+        // for (WorkspaceNode node : children) {
+          // flattenedChildren.add(new FlattenedWorkspaceNode(false, null, node, level));
+        // }
+      // }
       for (FlattenedWorkspaceNode child : flattenedChildren) {
-        folderContentNode.addChild(createContentNode(child.node, child.level));
+        ContentNode contentNode;
+        if (child.isEmptyFolder) {
+          contentNode = new ContentNode(child.emptyFolderTitle, "folder", rootMaterialNode.getId(), null, child.level);
+        } else {
+          contentNode = createContentNode(child.node, child.level);
+        }
+        folderContentNode.addChild(contentNode);
       }
 
       return folderContentNode;
@@ -510,11 +513,15 @@ public class WorkspaceMaterialController {
   
   private static class FlattenedWorkspaceNode {
     
-    public FlattenedWorkspaceNode(WorkspaceNode node, int level) {
+    public FlattenedWorkspaceNode(boolean isEmptyFolder, String emptyFolderTitle, WorkspaceNode node, int level) {
+      this.isEmptyFolder = isEmptyFolder;
+      this.emptyFolderTitle = emptyFolderTitle;
       this.node = node;
       this.level = level;
     }
     
+    public final boolean isEmptyFolder;
+    public final String emptyFolderTitle;
     public final WorkspaceNode node;
     public final int level;
   }
