@@ -46,6 +46,7 @@
   }
   
   function editPage(node) {
+
     var materialType = $(node).data('material-type');
     var materialId = $(node).data('material-id');
     var materialTitle = $(node).data('material-title');
@@ -53,7 +54,6 @@
     var editorName = 'workspaceMaterialEditor' + (materialType.substring(0, 1).toUpperCase() + materialType.substring(1));
     var pageElement = $('#page-' + workspaceMaterialId);
     var pageSection = $(pageElement).closest(".workspace-materials-view-page");
-    
     $(node).find('.edit-page').hide();
     $(node).find('.close-page-editor').show();
     
@@ -398,12 +398,13 @@
   });
   
   $(document).on('click', '.workspaces-materials-management-add-page', function (event, data) {
+	  
     var nextMaterial = $(this).next('.workspace-materials-view-page');
     
     renderDustTemplate('workspace/materials-management-new-page.dust', { }, $.proxy(function (text) {
       var newPage = $(text);
-      $(this).after(newPage);
-      
+      $(this).parent().after(newPage);
+      console.log($(this));
       var uploader = createFileUploader();
       $(newPage).before(uploader);
       enableFileUploader(uploader, nextMaterial.data('parent-id'), nextMaterial.data('workspace-material-id'));
@@ -412,7 +413,6 @@
       
       $(newPage).find('.workspace-materials-management-new-page-link').one('click', function (event) {
         event.preventDefault();
-        
         var materialType = $(this).data('material-type');
         var parentId = $(nextMaterial).data('parent-id');
         var nextSiblingId = $(nextMaterial).data('workspace-material-id');
@@ -442,15 +442,18 @@
                 $('.notification-queue').notificationQueue('notification', 'error', workspaceMaterialErr);
                 return;
               } else {
+            	  
                 newPage.removeClass('workspace-materials-management-new-page');
                 newPage.attr({
-                  'id': 'page-' + materialResult.id,
+                  'id': 'page-' + workspaceMaterialResult.id,
                   'data-material-title': materialResult.title,
                   'data-parent-id': workspaceMaterialResult.parentId,
                   'data-material-id': materialResult.id,
                   'data-material-type': materialType,
                   'data-workspace-material-id': workspaceMaterialResult.id
                 });
+                newPage.empty();
+                $(document).muikkuMaterialLoader('loadMaterial', newPage, true);
                 editPage(newPage);
               } 
             }, this));
