@@ -9,21 +9,17 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.ejb.Lock;
-import javax.ejb.LockType;
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
-import javax.inject.Qualifier;
 import javax.ws.rs.client.Client;
 
-import org.joda.time.DateTime;
-
+import fi.muikku.plugins.schooldatapyramus.rest.qualifier.PyramusUser;
 import fi.muikku.session.SessionController;
 import fi.muikku.session.local.LocalSession;
 
 @SessionScoped
-public class UserPyramusClient extends AbstractPyramusClient implements Serializable {
+@PyramusUser
+class UserPyramusClient extends AbstractPyramusClient implements PyramusClient, Serializable {
 
   private static final long serialVersionUID = -2643693371146903250L;
   
