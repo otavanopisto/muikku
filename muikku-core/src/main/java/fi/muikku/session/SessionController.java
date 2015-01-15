@@ -82,7 +82,7 @@ public interface SessionController {
    */
   public <T> List<T> filterResources(List<T> list, String permissions);
 
-  public void addOAuthAccessToken(String strategy, Date expiresAt, String accessToken);
+  public void addOAuthAccessToken(String strategy, Date expiresAt, String accessToken, String refreshToken);
   
   public AccessToken getOAuthAccessToken(String strategy);
   
