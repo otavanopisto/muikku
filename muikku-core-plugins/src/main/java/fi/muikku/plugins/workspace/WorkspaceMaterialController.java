@@ -1,5 +1,6 @@
 package fi.muikku.plugins.workspace;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -29,6 +30,7 @@ import fi.muikku.plugins.workspace.events.WorkspaceRootFolderUpdateEvent;
 import fi.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
+import fi.muikku.plugins.workspace.model.WorkspaceNodeType;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 
 @Dependent
@@ -73,6 +75,8 @@ public class WorkspaceMaterialController {
 
   @Inject
   private MaterialController materialController;
+  
+  private static final int FLATTENING_LEVEL = 3;
 
   /* WorkspaceNode */
 
@@ -391,6 +395,69 @@ public class WorkspaceMaterialController {
 
   /* Utility methods */
 
+  public List<FlattenedWorkspaceNode> flattenWorkspaceNodes(List<WorkspaceNode> workspaceNodes, int level) {
+    List<FlattenedWorkspaceNode> result = new ArrayList<>();
+    
+    for (WorkspaceNode workspaceNode : workspaceNodes) {
+      if (workspaceNode.getType() == WorkspaceNodeType.FOLDER) {
+        WorkspaceFolder workspaceFolder = (WorkspaceFolder)workspaceNode;
+        List<WorkspaceNode> children = listWorkspaceNodesByParent(workspaceFolder);
+        WorkspaceFolder emptyFolder = new WorkspaceFolder();
+        emptyFolder.setHidden(workspaceFolder.getHidden());
+        emptyFolder.setParent(workspaceFolder.getParent());
+        emptyFolder.setOrderNumber(workspaceFolder.getOrderNumber());
+        emptyFolder.setTitle(workspaceFolder.getTitle());
+        emptyFolder.setUrlName(workspaceFolder.getUrlName());
+        result.add(new FlattenedWorkspaceNode(emptyFolder, level));
+        for (WorkspaceNode child : children) {
+            result.add(new FlattenedWorkspaceNode(child, level+1));
+        }
+      } else {
+        result.add(new FlattenedWorkspaceNode(workspaceNode, level));
+      }
+    }
+    
+    return result;
+  }
+  
+  public ContentNode createContentNode(WorkspaceNode rootMaterialNode) {
+    return createContentNode(rootMaterialNode, 1);
+  }
+
+  public ContentNode createContentNode(WorkspaceNode rootMaterialNode, int level) {
+    switch (rootMaterialNode.getType()) {
+    case FOLDER:
+      WorkspaceFolder workspaceFolder = (WorkspaceFolder) rootMaterialNode;
+      ContentNode folderContentNode = new ContentNode(
+          workspaceFolder.getTitle(), "folder", rootMaterialNode.getId(), null, level);
+
+      List<WorkspaceNode> children = listWorkspaceNodesByParent(workspaceFolder);
+      List<FlattenedWorkspaceNode> flattenedChildren;
+      if (level >= FLATTENING_LEVEL) {
+        flattenedChildren = flattenWorkspaceNodes(children, level);
+      } else {
+        flattenedChildren = new ArrayList<>();
+        for (WorkspaceNode node : children) {
+          flattenedChildren.add(new FlattenedWorkspaceNode(node, level));
+        }
+      }
+      for (FlattenedWorkspaceNode child : flattenedChildren) {
+        folderContentNode.addChild(createContentNode(child.node, child.level));
+      }
+
+      return folderContentNode;
+    case MATERIAL:
+      WorkspaceMaterial workspaceMaterial = (WorkspaceMaterial) rootMaterialNode;
+      Material material = materialController.findMaterialById(workspaceMaterial
+          .getMaterialId());
+      return new ContentNode(material.getTitle(), material.getType(),
+          rootMaterialNode.getId(), material.getId(), level);
+    default:
+      return null;
+    }
+  }
+
+
   public synchronized String generateUniqueUrlName(String title) {
     return generateUniqueUrlName(null, null, title);
   }
@@ -439,6 +506,17 @@ public class WorkspaceMaterialController {
     // get rid of accented characters and all special characters other than minus, period, and underscore
     urlName = StringUtils.stripAccents(urlName).replaceAll("[^a-z0-9\\-\\.\\_]", "");
     return urlName;
+  }
+  
+  private static class FlattenedWorkspaceNode {
+    
+    public FlattenedWorkspaceNode(WorkspaceNode node, int level) {
+      this.node = node;
+      this.level = level;
+    }
+    
+    public final WorkspaceNode node;
+    public final int level;
   }
 
 }

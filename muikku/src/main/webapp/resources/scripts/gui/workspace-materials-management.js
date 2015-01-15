@@ -216,9 +216,7 @@
         offset: function() {
           return -$(this).height() + 250;
         }
-      });
-    
-    //
+    });
     
     $('.workspaces-materials-management-insert-file').each(function(index, element) {
       var nextMaterial = $(element).next('.workspace-materials-view-page');
