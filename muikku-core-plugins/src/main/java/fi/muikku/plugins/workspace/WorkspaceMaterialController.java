@@ -75,6 +75,8 @@ public class WorkspaceMaterialController {
 
   @Inject
   private MaterialController materialController;
+  
+  private static final int FLATTENING_LEVEL = 3;
 
   /* WorkspaceNode */
 
@@ -398,7 +400,15 @@ public class WorkspaceMaterialController {
     
     for (WorkspaceNode workspaceNode : workspaceNodes) {
       if (workspaceNode.getType() == WorkspaceNodeType.FOLDER) {
-        List<WorkspaceNode> children = listWorkspaceNodesByParent((WorkspaceFolder)workspaceNode);
+        WorkspaceFolder workspaceFolder = (WorkspaceFolder)workspaceNode;
+        List<WorkspaceNode> children = listWorkspaceNodesByParent(workspaceFolder);
+        WorkspaceFolder emptyFolder = new WorkspaceFolder();
+        emptyFolder.setHidden(workspaceFolder.getHidden());
+        emptyFolder.setParent(workspaceFolder.getParent());
+        emptyFolder.setOrderNumber(workspaceFolder.getOrderNumber());
+        emptyFolder.setTitle(workspaceFolder.getTitle());
+        emptyFolder.setUrlName(workspaceFolder.getUrlName());
+        result.add(new FlattenedWorkspaceNode(emptyFolder, level));
         for (WorkspaceNode child : children) {
             result.add(new FlattenedWorkspaceNode(child, level+1));
         }
@@ -422,7 +432,16 @@ public class WorkspaceMaterialController {
           workspaceFolder.getTitle(), "folder", rootMaterialNode.getId(), null, level);
 
       List<WorkspaceNode> children = listWorkspaceNodesByParent(workspaceFolder);
-      for (FlattenedWorkspaceNode child : flattenWorkspaceNodes(children, level)) {
+      List<FlattenedWorkspaceNode> flattenedChildren;
+      if (level >= FLATTENING_LEVEL) {
+        flattenedChildren = flattenWorkspaceNodes(children, level);
+      } else {
+        flattenedChildren = new ArrayList<>();
+        for (WorkspaceNode node : children) {
+          flattenedChildren.add(new FlattenedWorkspaceNode(node, level));
+        }
+      }
+      for (FlattenedWorkspaceNode child : flattenedChildren) {
         folderContentNode.addChild(createContentNode(child.node, child.level));
       }
 
