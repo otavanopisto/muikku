@@ -151,6 +151,7 @@ body.workspace-materials {
     line-height:1.5em;
     box-shadow:0 0 40px rgba(107,137,158,0.1);
     border-bottom:10px solid #fff;
+    z-index:99;
     
     &:hover > span {
       display:none;
