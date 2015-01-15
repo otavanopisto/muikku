@@ -1,13 +1,21 @@
 package fi.muikku.plugins.material;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
+
+import org.apache.commons.lang3.StringUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import fi.muikku.plugins.material.dao.QuerySelectFieldDAO;
 import fi.muikku.plugins.material.dao.QuerySelectFieldOptionDAO;
+import fi.muikku.plugins.material.events.QueryFieldUpdateEvent;
+import fi.muikku.plugins.material.fieldmeta.SelectFieldMeta;
+import fi.muikku.plugins.material.fieldmeta.SelectFieldOptionMeta;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.material.model.QuerySelectField;
 import fi.muikku.plugins.material.model.QuerySelectFieldOption;
@@ -21,6 +29,9 @@ public class QuerySelectFieldController {
 
   @Inject
   private QuerySelectFieldOptionDAO querySelectFieldOptionDAO;
+
+  @Inject
+  private Event<QueryFieldUpdateEvent> queryFieldUpdateEvent;
   
   /* QuerySelectField */
 
@@ -34,6 +45,54 @@ public class QuerySelectFieldController {
 
   public QuerySelectField findQuerySelectFieldByMaterialAndName(Material material, String name) {
     return querySelectFieldDAO.findByMaterialAndName(material, name);
+  }
+  
+  public QuerySelectField updateQuerySelectField(Material material, MaterialField field, boolean removeAnswers) throws MaterialFieldMetaParsingExeption {
+    
+    // Field JSON to metadata object
+    
+    ObjectMapper objectMapper = new ObjectMapper();
+    SelectFieldMeta selectFieldMeta;
+    try {
+      selectFieldMeta = objectMapper.readValue(field.getContent(), SelectFieldMeta.class);
+    } catch (IOException e) {
+      throw new MaterialFieldMetaParsingExeption("Could not parse select field meta", e);
+    }
+    QuerySelectField queryField = querySelectFieldDAO.findByMaterialAndName(material,  selectFieldMeta.getName());
+    
+    // -> fi.muikku.plugins.workspace.QueryFieldChangeListener
+    queryFieldUpdateEvent.fire(new QueryFieldUpdateEvent(queryField, field, removeAnswers));
+    
+    List<QuerySelectFieldOption> oldOptions = querySelectFieldOptionDAO.listByField(queryField);
+    List<SelectFieldOptionMeta> newOptions = selectFieldMeta.getOptions();
+    for (SelectFieldOptionMeta newOption : newOptions) {
+      QuerySelectFieldOption correspondingOption = findOptionByName(oldOptions, newOption.getName());
+      if (correspondingOption == null) {
+        // New options
+        createQuerySelectFieldOption(queryField, newOption.getName(), newOption.getText());
+      }
+      else {
+        // Modified options
+        if (!StringUtils.equals(correspondingOption.getText(), newOption.getText())) {
+          updateQuerySelectFieldOptionText(correspondingOption, newOption.getText());
+        }
+        oldOptions.remove(correspondingOption);
+      }
+    }
+    // Removed options
+    for (QuerySelectFieldOption removedOption : oldOptions) {
+      deleteQuerySelectFieldOption(removedOption);
+    }
+    return queryField;
+  }
+  
+  private QuerySelectFieldOption findOptionByName(List<QuerySelectFieldOption> options, String name) {
+    for (QuerySelectFieldOption option : options) {
+      if (StringUtils.equals(option.getName(), name)) {
+        return option;
+      }
+    }
+    return null;
   }
   
   /* QuerySelectFieldOption */

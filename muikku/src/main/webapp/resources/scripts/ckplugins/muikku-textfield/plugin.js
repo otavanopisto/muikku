@@ -282,10 +282,10 @@
                 var object = new CKEDITOR.dom.element('object');
                 object
                     .setAttribute('type', 'application/vnd.muikku.field.text');
-                var paramType = new CKEDITOR.dom.element('param');
+                var paramType = new CKEDITOR.dom.element('cke:param');
                 paramType.setAttribute('name', 'type');
                 paramType.setAttribute('value', 'application/json');
-                var paramContent = new CKEDITOR.dom.element('param');
+                var paramContent = new CKEDITOR.dom.element('cke:param');
                 paramContent.setAttribute('name', 'content');
                 paramContent.setAttribute('value', JSON.stringify(newJson));
                 object.append(paramType);

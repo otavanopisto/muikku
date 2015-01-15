@@ -12,7 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 
 import fi.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
-import fi.muikku.plugins.schooldatapyramus.rest.UserPyramusClient;
+import fi.muikku.plugins.schooldatapyramus.rest.PyramusClient;
 import fi.muikku.schooldata.SchoolDataBridgeRequestException;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 import fi.muikku.schooldata.WorkspaceSchoolDataBridge;
@@ -30,7 +30,7 @@ import fi.pyramus.rest.model.CourseStudent;
 public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBridge {
   
   @Inject
-  private UserPyramusClient pyramusClient;
+  private PyramusClient pyramusClient;
 
   @Inject
   private PyramusIdentifierMapper identifierMapper;

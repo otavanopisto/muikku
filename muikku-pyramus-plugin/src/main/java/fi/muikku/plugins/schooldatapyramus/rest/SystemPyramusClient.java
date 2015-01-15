@@ -7,8 +7,6 @@ import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.ejb.Lock;
-import javax.ejb.LockType;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.client.Client;
@@ -20,9 +18,11 @@ import fi.muikku.controller.PluginSettingsController;
 import fi.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
 import fi.muikku.plugins.schooldatapyramus.SystemOauthController;
 import fi.muikku.plugins.schooldatapyramus.model.SystemAccessToken;
+import fi.muikku.plugins.schooldatapyramus.rest.qualifier.PyramusSystem;
 
 @ApplicationScoped
-public class SystemPyramusClient extends AbstractPyramusClient {
+@PyramusSystem
+class SystemPyramusClient extends AbstractPyramusClient implements PyramusClient {
 
   private static final int EXPIRE_SLACK = 3;
   

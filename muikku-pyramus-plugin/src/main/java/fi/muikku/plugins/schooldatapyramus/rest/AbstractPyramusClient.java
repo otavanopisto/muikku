@@ -32,7 +32,7 @@ import com.fasterxml.jackson.datatype.joda.JodaModule;
 import fi.muikku.controller.PluginSettingsController;
 import fi.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
 
-public abstract class AbstractPyramusClient {
+abstract class AbstractPyramusClient {
   
   @Inject
   private Logger logger;

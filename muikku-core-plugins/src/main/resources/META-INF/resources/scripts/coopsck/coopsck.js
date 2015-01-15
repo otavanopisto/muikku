@@ -70,7 +70,11 @@
     
     _onEditorPatchAccepted: function (event) {
       $(this.element).trigger('statusChange', {
-        status: 'saved'
+        status: 'saved',
+        revisionNumber: event.data.revisionNumber,
+        content: event.data.content,
+        properties: event.data.properties,
+        extensions: event.data.extensions
       });
     },
 

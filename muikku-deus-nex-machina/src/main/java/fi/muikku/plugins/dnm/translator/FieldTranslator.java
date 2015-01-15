@@ -52,7 +52,7 @@ public class FieldTranslator {
   public SelectFieldMeta translateOptionList(String name, String listType, List<OptionListOption> options) {
     List<SelectFieldOptionMeta> translatedOptions = new ArrayList<>();
     for (OptionListOption option : options) {
-      translatedOptions.add(new SelectFieldOptionMeta(option.getName(), option.getPoints(), option.getText()));
+      translatedOptions.add(new SelectFieldOptionMeta(option.getName(), option.getPoints() != null && option.getPoints() > 0, option.getText()));
     }
     // Nexus:  dropdown | list | radio | radio_horz
     // Muikku: dropdown | list | radio-vertical | radio-horizontal
