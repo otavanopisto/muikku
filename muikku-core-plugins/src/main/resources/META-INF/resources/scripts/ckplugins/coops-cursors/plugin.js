@@ -144,7 +144,7 @@
       },
 
       _dispatchSelectionChanges: function (dispatchable) {
-        if (this._editor.readOnly) {
+        if (this._editor.readOnly || !dispatchable) {
           return;
         }
         
