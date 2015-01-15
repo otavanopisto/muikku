@@ -122,20 +122,20 @@ body.workspace-materials-reading {
               height:50px; /* Creating some bottom margin because use of 100% height  */
             }
         
-            .workspace-materials-toc-section {
-              margin:0;
-              padding-top:5px;
-              padding-bottom:10px;
-              
-              .workspace-materials-toc-subtitle {
-                margin:0 0 5px 0;
-                text-transform:uppercase;
-                font-size:15px;
-                padding:2px 8px;
-              }
-              
+            .workspace-materials-toc-root {
+
               .workspace-materials-toc-item {
                 font-weight:300;
+                list-style:none;
+                
+                &:first-child {
+                  margin-top:5px;
+                  padding-top:2px;
+                }
+                
+                &.item-hidden {
+                  opacity:0.4;
+                }
                 
                 a {
                   text-decoration:none;
@@ -152,6 +152,49 @@ body.workspace-materials-reading {
                   }
                 }
     
+              }
+        
+              .workspace-materials-toc-section {
+                margin:0;
+                padding-top:5px;
+                padding-bottom:10px;
+                
+                .workspace-materials-toc-subtitle {
+                  margin:0 0 5px 0;
+                  text-transform:uppercase;
+                  font-size:15px;
+                  padding:2px 8px;
+                  
+                  &.subtitle-hidden {
+                    opacity:0.4;
+                  }
+                  
+                }
+                
+                .workspace-materials-toc-item {
+                  font-weight:300;
+                  list-style:none;
+                  
+                  &.item-hidden {
+                    opacity:0.4;
+                  }
+                  
+                  a {
+                    text-decoration:none;
+                    color:#2c2c2c;
+                    display:block;
+                    @include genericMenuLinkHoverTransition(background,color,0.15s,ease-in-out);
+                    @include rounded(2px);
+                    padding:2px 8px;
+                    
+                    &:hover,
+                    &.active {
+                      background:#596e7d;
+                      color:#fff;
+                    }
+                  }
+      
+                }
               }
             }
           }
