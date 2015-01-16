@@ -54,7 +54,7 @@ $(document).ready(function() {
   
     // Widget dragging --> 
     
-    $( "div[class*='wi-frontpage-dynamic']" ).draggable({ snapMode: "inner" });
+    // $( "div[class*='wi-frontpage-dynamic']" ).draggable({ snapMode: "inner" });
         
     // Seeker functionalities -->
       
