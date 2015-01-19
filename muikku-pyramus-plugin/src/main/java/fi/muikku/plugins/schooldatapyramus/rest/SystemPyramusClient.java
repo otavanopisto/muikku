@@ -42,7 +42,7 @@ import fi.muikku.plugins.schooldatapyramus.rest.qualifier.PyramusSystem;
 @PyramusSystem
 @Singleton
 @Lock (LockType.WRITE)
-class SystemPyramusClient extends PyramusRestClient implements PyramusClient {
+class SystemPyramusClient implements PyramusClient {
 
   private static final int EXPIRE_SLACK = 3;
   
