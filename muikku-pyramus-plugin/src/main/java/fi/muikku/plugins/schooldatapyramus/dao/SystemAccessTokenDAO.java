@@ -1,13 +1,5 @@
 package fi.muikku.plugins.schooldatapyramus.dao;
 
-import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-
 import fi.muikku.plugins.schooldatapyramus.SchoolDataPyramusDAO;
 import fi.muikku.plugins.schooldatapyramus.model.SystemAccessToken;
 
@@ -31,7 +23,10 @@ public class SystemAccessTokenDAO extends SchoolDataPyramusDAO<SystemAccessToken
   public SystemAccessToken updateAccessToken(SystemAccessToken systemAccessToken, String accessToken){
     systemAccessToken.setAccessToken(accessToken);
     return persist(systemAccessToken);
-    
+  }
+  
+  public void delete(SystemAccessToken e) {
+    super.delete(e);
   }
   
 }

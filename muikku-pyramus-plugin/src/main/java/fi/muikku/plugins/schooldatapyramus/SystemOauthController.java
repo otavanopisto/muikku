@@ -2,8 +2,6 @@ package fi.muikku.plugins.schooldatapyramus;
 
 import java.util.List;
 
-import javax.ejb.Lock;
-import javax.ejb.LockType;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -31,6 +29,13 @@ public class SystemOauthController {
   public SystemAccessToken refreshSystemAccessToken(SystemAccessToken systemAccessToken, String accessToken, Long expires){
     systemAccessToken = systemAccessTokenDAO.updateAccessToken(systemAccessToken, accessToken);
     return systemAccessTokenDAO.updateExpires(systemAccessToken, expires);
+  }
+  
+  public void deleteSystemAccessTokens() {
+    List<SystemAccessToken> systemAccessTokens = systemAccessTokenDAO.listAll();
+    for (SystemAccessToken systemAccessToken : systemAccessTokens) {
+      systemAccessTokenDAO.delete(systemAccessToken);
+    }
   }
   
 }

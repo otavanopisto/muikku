@@ -11,10 +11,13 @@ public class SchoolDataPyramusPluginDescriptor implements PluginDescriptor {
   public static final String SCHOOL_DATA_SOURCE = "PYRAMUS";
   public static final String PLUGIN_NAME = "school-data-pyramus";
   public static final boolean SCHEDULERS_ACTIVE = true;
-  
+
   @Inject
   private SchoolDataController schoolDataController;
 
+  @Inject
+  private SystemOauthController systemOauthController;
+  
   @Override
   public void init() {
     /**
@@ -25,6 +28,8 @@ public class SchoolDataPyramusPluginDescriptor implements PluginDescriptor {
     if (schoolDataSource == null) {
       schoolDataController.createSchoolDataSource(SCHOOL_DATA_SOURCE);
     }
+    
+    systemOauthController.deleteSystemAccessTokens();
   }
   
   @Override
