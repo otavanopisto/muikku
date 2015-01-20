@@ -57,10 +57,6 @@ public class HtmlMaterialRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("title is missing").build();
     }
     
-    if (entity.getHtml() == null) {
-      entity.setHtml("");
-    }
-    
     HtmlMaterial htmlMaterial = htmlMaterialController.createHtmlMaterial(entity.getTitle(), entity.getHtml(), entity.getContentType(), 0l);
     return Response.ok(createRestModel(htmlMaterial)).build();
   }
