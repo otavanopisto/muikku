@@ -112,6 +112,9 @@ public class HtmlMaterialController {
 
   public String getRevisionHtml(HtmlMaterial htmlMaterial, long revision) throws CoOpsInternalErrorException {
     String result = htmlMaterial.getHtml();
+    if (result == null) {
+      result = "";
+    }
     long baselineRevision = htmlMaterial.getRevisionNumber();
     CoOpsDiffAlgorithm algorithm = findAlgorithm("dmp");
 
