@@ -619,7 +619,7 @@
     }); 
     
     $(data.element).find('.muikku-file-field').each(function (index, field) {
-      $(field)
+      $(field).remove()
         .muikkuFileField()
         .muikkuField({
           fieldName: $(field).data('field-name'),
