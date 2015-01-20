@@ -114,7 +114,8 @@ public class HtmlMaterialRESTService extends PluginRESTService {
         return Response.status(Status.NOT_FOUND).build();
       }
       
-      htmlMaterialController.updateHtmlMaterialToRevision(htmlMaterial, fileRevision.getContent(), entity.getToRevision(), false);
+      String title = htmlMaterialController.getRevisionTitle(htmlMaterial, entity.getToRevision());
+      htmlMaterialController.updateHtmlMaterialToRevision(htmlMaterial, title, fileRevision.getContent(), entity.getToRevision(), false);
     } catch (CoOpsNotImplementedException | CoOpsNotFoundException | CoOpsUsageException | CoOpsInternalErrorException | CoOpsForbiddenException e) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();
     }
@@ -141,7 +142,9 @@ public class HtmlMaterialRESTService extends PluginRESTService {
         return Response.status(Status.NOT_FOUND).entity("Specified revision could not be found").build(); 
       }
       
-      htmlMaterialController.updateHtmlMaterialToRevision(htmlMaterial, fileRevision.getContent(), entity.getToRevision(), true);
+      String title = htmlMaterialController.getRevisionTitle(htmlMaterial, entity.getToRevision());
+      
+      htmlMaterialController.updateHtmlMaterialToRevision(htmlMaterial, title, fileRevision.getContent(), entity.getToRevision(), true);
     } catch (CoOpsNotImplementedException | CoOpsNotFoundException | CoOpsUsageException | CoOpsInternalErrorException | CoOpsForbiddenException e) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();
     }
