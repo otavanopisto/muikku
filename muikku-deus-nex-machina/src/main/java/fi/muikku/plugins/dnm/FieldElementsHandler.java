@@ -217,32 +217,34 @@ class FieldElementsHandler implements DeusNexFieldElementHandler {
   public Node handleConnectField(org.w3c.dom.Document ownerDocument, String paramName, List<ConnectFieldOption> options, String help, String hint) {
     ConnectFieldMeta connectFieldData = fieldTranslator.translateConnectField(paramName, options);
 
-    Element table = ownerDocument.createElement("table");
-    Element tbody = ownerDocument.createElement("tbody");
+    Element outerSpan = ownerDocument.createElement("span");
+    outerSpan.setAttribute("style", "display: table;");
     int fieldCount = 0;
     for (ConnectFieldOption connectFieldOption : options) {
-      Element tr = ownerDocument.createElement("tr");
-      Element tdLeft = ownerDocument.createElement("td");
-      Element tdCenter = ownerDocument.createElement("td");
-      Element tdRight = ownerDocument.createElement("td");
+      Element rowSpan = ownerDocument.createElement("span");
+      rowSpan.setAttribute("style", "display: table-row;");
+      Element leftSpan = ownerDocument.createElement("span");
+      leftSpan.setAttribute("style", "display: table-cell;");
+      Element centerSpan = ownerDocument.createElement("span");
+      centerSpan.setAttribute("style", "display: table-cell;");
+      Element rightSpan = ownerDocument.createElement("span");
+      rightSpan.setAttribute("style", "display: table-cell;");
       Element input = ownerDocument.createElement("input");
       input.setAttribute("type", "text");
       input.setAttribute("name", paramName);
       input.setAttribute("data-fieldcount", String.valueOf(fieldCount));
 
-      tdLeft.setTextContent(connectFieldOption.getTerm());
-      tdCenter.appendChild(input);
-      tdRight.setTextContent(connectFieldOption.getEquivalent());
-      tr.appendChild(tdLeft);
-      tr.appendChild(tdCenter);
-      tr.appendChild(tdRight);
-      tbody.appendChild(tr);
+      leftSpan.setTextContent(connectFieldOption.getTerm());
+      centerSpan.appendChild(input);
+      rightSpan.setTextContent(connectFieldOption.getEquivalent());
+      rowSpan.appendChild(leftSpan);
+      rowSpan.appendChild(centerSpan);
+      rowSpan.appendChild(rightSpan);
+      outerSpan.appendChild(rowSpan);
       fieldCount++;
     }
 
-    table.appendChild(tbody);
-
-    return wrapWithObjectElement(ownerDocument, table, connectFieldData);
+    return wrapWithObjectElement(ownerDocument, outerSpan, connectFieldData);
   }
   
   @Override

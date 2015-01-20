@@ -92,4 +92,18 @@ public class CoOpsSessionDAO extends CorePluginsDAO<CoOpsSession> {
     return entityManager.createQuery(criteria).getResultList();
   }
 
+  public List<CoOpsSession> listByClosed(Boolean closed) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<CoOpsSession> criteria = criteriaBuilder.createQuery(CoOpsSession.class);
+    Root<CoOpsSession> root = criteria.from(CoOpsSession.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.equal(root.get(CoOpsSession_.closed), closed)
+    );
+    
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
 }

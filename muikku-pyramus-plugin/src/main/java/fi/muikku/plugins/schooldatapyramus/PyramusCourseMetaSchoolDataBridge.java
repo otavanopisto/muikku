@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import fi.muikku.plugins.schooldatapyramus.entities.PyramusCourseIdentifier;
 import fi.muikku.plugins.schooldatapyramus.entities.PyramusSubject;
-import fi.muikku.plugins.schooldatapyramus.rest.UserPyramusClient;
+import fi.muikku.plugins.schooldatapyramus.rest.PyramusClient;
 import fi.muikku.schooldata.CourseMetaSchoolDataBridge;
 import fi.muikku.schooldata.SchoolDataBridgeRequestException;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
@@ -20,7 +20,7 @@ import fi.pyramus.rest.model.Course;
 public class PyramusCourseMetaSchoolDataBridge implements CourseMetaSchoolDataBridge {
 
   @Inject
-  private UserPyramusClient pyramusClient;
+  private PyramusClient pyramusClient;
   
   @Override
 	public String getSchoolDataSource() {

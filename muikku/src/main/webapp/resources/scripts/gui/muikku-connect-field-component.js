@@ -22,10 +22,10 @@
           });
         
         this._taskInstance = jsPlumb.getInstance();
-        
+
         this.element.find('.muikku-connect-field-term-cell').each($.proxy(function (index, term) {
           var fieldName = $(term).closest('tr').find('.muikku-connect-field-value').attr('name');
-          
+           
           var termElement = $('<div>')
             .addClass('muikku-connect-field-term')
             .attr('data-field-name', fieldName)
@@ -54,7 +54,8 @@
               isSource: true,
               isTarget: false,
               maxConnections: 1,    
-              anchor:"Right"
+              anchor:"Right",
+              scope: [this.options.materialId, this.options.embedId, this.options.fieldName].join('-')
             }
           );
         }, this));
@@ -68,7 +69,8 @@
               isSource: false,
               isTarget: true,
               maxConnections: 1,    
-              anchor:"Left"
+              anchor:"Left",
+              scope: [this.options.materialId, this.options.embedId, this.options.fieldName].join('-')
             }
           );
         }, this));

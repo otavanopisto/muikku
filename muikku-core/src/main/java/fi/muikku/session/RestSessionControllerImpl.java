@@ -75,8 +75,8 @@ public class RestSessionControllerImpl extends AbstractSessionController impleme
   }
 
   @Override
-  public void addOAuthAccessToken(String strategy, Date expires, String accessToken) {
-    accessTokens.put(strategy, new AccessToken(accessToken, expires));
+  public void addOAuthAccessToken(String strategy, Date expires, String accessToken, String refreshToken) {
+    accessTokens.put(strategy, new AccessToken(accessToken, expires, refreshToken));
   }
 
   @Override

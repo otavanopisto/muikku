@@ -46,6 +46,7 @@
   }
   
   function editPage(node) {
+
     var materialType = $(node).data('material-type');
     var materialId = $(node).data('material-id');
     var materialTitle = $(node).data('material-title');
@@ -53,27 +54,42 @@
     var editorName = 'workspaceMaterialEditor' + (materialType.substring(0, 1).toUpperCase() + materialType.substring(1));
     var pageElement = $('#page-' + workspaceMaterialId);
     var pageSection = $(pageElement).closest(".workspace-materials-view-page");
+    $(node).find('.edit-page').hide();
+    $(node).find('.close-page-editor').show();
     
     pageSection.addClass("page-edit-mode");
     
     var editor = pageElement[editorName];
     if (editor) {
-      $(pageElement).find('.page-content').hide();
+      $(pageElement).find('.page-content').remove();
       
       editor.call(pageElement, {
         materialId: materialId,
         materialTitle: materialTitle
       });
       
-//      $(document).on("click",$.proxy(function (event) {
-//        var target = $(event.target);
-//        if (target.closest('.workspace-materials-view-page').length == 0) {
-//          $(this).data('material-title', editor.call(pageElement, 'title'));
-//          editor.call(pageElement, 'destroy');
-//          $(document).muikkuMaterialLoader('loadMaterial', node, true);
-//          pageSection.removeClass("page-edit-mode");
-//        }
-//      }, node));
+    } else {
+      $('.notification-queue').notificationQueue('notification', 'error', "Could not find editor for " + materialType);
+    }
+  }
+  
+  function isPageInEditMode(node) {
+    return $(node).hasClass('page-edit-mode');
+  }
+  
+  function closeEditor(node, loadContent) {
+    var materialType = $(node).data('material-type');
+    var editorName = 'workspaceMaterialEditor' + (materialType.substring(0, 1).toUpperCase() + materialType.substring(1));
+    var editor = node[editorName];
+    if (editor) {
+      editor.call(node, 'destroy');
+      if (loadContent !== false) {
+        $(document).muikkuMaterialLoader('loadMaterial', node, true);
+      }
+
+      $(node).find('.edit-page').show();
+      $(node).find('.close-page-editor').hide();
+      node.removeClass("page-edit-mode");
     } else {
       $('.notification-queue').notificationQueue('notification', 'error', "Could not find editor for " + materialType);
     }
@@ -200,9 +216,17 @@
         offset: function() {
           return -$(this).height() + 250;
         }
-      });
+    });
     
-    //
+    $('.workspaces-materials-management-insert-file').each(function(index, element) {
+      var nextMaterial = $(element).next('.workspace-materials-view-page');
+      var parentId = $(nextMaterial).data('parent-id');
+      var nextSiblingId = $(nextMaterial).data('workspace-material-id');
+      enableFileUploader(element, parentId, nextSiblingId);
+    });
+  });
+  
+  $(window).load(function() {
     
     // Workspace's Materials's TOC
     if ($('#workspaceMaterialsManagementTOCWrapper').length > 0) {
@@ -258,7 +282,7 @@
         
       });
 
-   // Prevent icon-navicon link from working normally
+      // Prevent icon-navicon link from working normally
       $(tocOpenCloseButton).bind('click', function(e) {
         e.stopPropagation();
       });
@@ -348,12 +372,6 @@
 
     }
     
-    $('.workspaces-materials-management-insert-file').each(function(index, element) {
-      var nextMaterial = $(element).next('.workspace-materials-view-page');
-      var parentId = $(nextMaterial).data('parent-id');
-      var nextSiblingId = $(nextMaterial).data('workspace-material-id');
-      enableFileUploader(element, parentId, nextSiblingId);
-    });
   });
   
   $(document).on('click', '.edit-page', function (event, data) {
@@ -380,12 +398,12 @@
   });
   
   $(document).on('click', '.workspaces-materials-management-add-page', function (event, data) {
-    var nextMaterial = $(this).next('.workspace-materials-view-page');
+	  
+    var nextMaterial = $(this).parent().nextAll('.workspace-materials-view-page').first();
     
     renderDustTemplate('workspace/materials-management-new-page.dust', { }, $.proxy(function (text) {
       var newPage = $(text);
-      $(this).after(newPage);
-      
+      $(this).parent().after(newPage);
       var uploader = createFileUploader();
       $(newPage).before(uploader);
       enableFileUploader(uploader, nextMaterial.data('parent-id'), nextMaterial.data('workspace-material-id'));
@@ -394,11 +412,9 @@
       
       $(newPage).find('.workspace-materials-management-new-page-link').one('click', function (event) {
         event.preventDefault();
-        
         var materialType = $(this).data('material-type');
         var parentId = $(nextMaterial).data('parent-id');
         var nextSiblingId = $(nextMaterial).data('workspace-material-id');
-        
         var typeEndpoint = mApi().materials[materialType];
         if (typeEndpoint != null) {
           // TODO: Localize
@@ -424,15 +440,18 @@
                 $('.notification-queue').notificationQueue('notification', 'error', workspaceMaterialErr);
                 return;
               } else {
+            	  
                 newPage.removeClass('workspace-materials-management-new-page');
                 newPage.attr({
-                  'id': 'page-' + materialResult.id,
+                  'id': 'page-' + workspaceMaterialResult.id,
                   'data-material-title': materialResult.title,
                   'data-parent-id': workspaceMaterialResult.parentId,
                   'data-material-id': materialResult.id,
                   'data-material-type': materialType,
                   'data-workspace-material-id': workspaceMaterialResult.id
                 });
+                newPage.empty();
+                $(document).muikkuMaterialLoader('loadMaterial', newPage, true);
                 editPage(newPage);
               } 
             }, this));
@@ -445,5 +464,139 @@
     }, this));
   });
   
+  $(document).on('htmlMaterialRevisionChanged', function (event, data) {
+    $('a.publish-page[data-material-id="' + data.materialId + '"]')
+      .data('current-revision', data.revisionNumber)
+      .removeClass('disabled');
+    
+    $('a.revert-page[data-material-id="' + data.materialId + '"]')
+      .data('current-revision', data.revisionNumber)
+      .removeClass('disabled');
+  });
+  
+  function confirmPagePublication(confirmCallback) {
+    renderDustTemplate('workspace/materials-management-page-publish-confirm.dust', { }, $.proxy(function (text) {
+      var dialog = $(text);
+      $(text).dialog({
+        modal: true, 
+        resizable: false,
+        width: 360,
+        dialogClass: "workspace-materials-management-dialog",
+        buttons: [{
+          'text': dialog.data('button-publish-text'),
+          'class': 'publish-button',
+          'click': function(event) {
+            $(this).dialog("close");
+            confirmCallback();
+          }
+        }, {
+          'text': dialog.data('button-cancel-text'),
+          'class': 'cancel-button',
+          'click': function(event) {
+            $(this).dialog("close");
+          }
+        }]
+      });
+    }, this));
+  }
+  
+  $(document).on('click', '.publish-page', function (event, data) {
+    var workspaceMaterialId = $(this).data('workspace-material-id');
+    var materialId = $(this).data('material-id');
+    var currentRevision = $(this).data('current-revision');
+    var publishedRevision = $(this).data('published-revision');
+    if (currentRevision !== publishedRevision) {
+      confirmPagePublication($.proxy(function () {
+        var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', "Publishing...");
+        var editing = isPageInEditMode($('#page-' + workspaceMaterialId));
+        
+        if (editing) {
+          closeEditor($('#page-' + workspaceMaterialId), false);
+        }
+        
+        mApi().materials.html.publish.create(materialId, {
+          fromRevision: publishedRevision,
+          toRevision: currentRevision
+        }).callback($.proxy(function (err) {
+          loadNotification.remove();
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            $(this).data('published-revision', currentRevision);
+            if (editing) {
+              editPage($('#page-' + workspaceMaterialId));
+            }
+            
+            $('.notification-queue').notificationQueue('notification', 'info', "Published successfully");
+          }
+        }, this));        
+      }, this));
+    }
+  });
+  
+  function confirmPageRevert(revertCallback) {
+    renderDustTemplate('workspace/materials-management-page-revert-confirm.dust', { }, $.proxy(function (text) {
+      var dialog = $(text);
+      $(text).dialog({
+        modal: true, 
+        resizable: false,
+        width: 360,
+        dialogClass: "workspace-materials-management-dialog",
+        buttons: [{
+          'text': dialog.data('button-revert-text'),
+          'class': 'revert-button',
+          'click': function(event) {
+            $(this).dialog("close");
+            revertCallback();
+          }
+        }, {
+          'text': dialog.data('button-cancel-text'),
+          'class': 'cancel-button',
+          'click': function(event) {
+            $(this).dialog("close");
+          }
+        }]
+      });
+    }, this));
+  }
+  
+  $(document).on('click', '.revert-page', function (event, data) {
+    var workspaceMaterialId = $(this).data('workspace-material-id');
+    var materialId = $(this).data('material-id');
+    var currentRevision = $(this).data('current-revision');
+    var publishedRevision = $(this).data('published-revision');
+    if (currentRevision !== publishedRevision) {
+      confirmPageRevert($.proxy(function () {
+        var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', "Reverting back to published revision...");
+        var editing = isPageInEditMode($('#page-' + workspaceMaterialId));
+        
+        if (editing) {
+          closeEditor($('#page-' + workspaceMaterialId), false);
+        }
+        
+        mApi().materials.html.revert.update(materialId, {
+          fromRevision: currentRevision,
+          toRevision: publishedRevision
+        }).callback($.proxy(function (err) {
+          loadNotification.remove();
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            $(this).data('published-revision', publishedRevision);
+            if (editing) {
+              editPage($('#page-' + workspaceMaterialId));
+            }
+            
+            $('.notification-queue').notificationQueue('notification', 'info', "Reverted successfully");
+          }
+        }, this));
+      }, this));
+    }
+  });
+  
+  $(document).on('click', '.close-page-editor', function (event, data) {
+    var workspaceMaterialId = $(this).data('workspace-material-id');
+    closeEditor($('#page-' + workspaceMaterialId), true);
+  });
   
 }).call(this);

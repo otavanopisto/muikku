@@ -18,7 +18,7 @@ import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
-import fi.muikku.plugins.schooldatapyramus.rest.SystemPyramusClient;
+import fi.muikku.plugins.schooldatapyramus.rest.PyramusClient;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.schooldata.entity.EnvironmentRole;
@@ -70,7 +70,7 @@ public class PyramusUpdater {
   private PyramusSchoolDataEntityFactory entityFactory;
   
   @Inject
-  private SystemPyramusClient pyramusClient;
+  private PyramusClient pyramusClient;
 
   @Inject
   private PyramusIdentifierMapper identifierMapper;
