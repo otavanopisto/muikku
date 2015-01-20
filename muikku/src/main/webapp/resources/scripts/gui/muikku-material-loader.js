@@ -61,7 +61,6 @@
               parentIds: parentIds,
               workspaceMaterialId: workspaceMaterialId,
               materialId: materialId,
-              element: parsed,
               fieldAnswers: fieldAnswers
             });
             
@@ -78,7 +77,6 @@
                   parentIds: parentIds,
                   workspaceMaterialId: workspaceMaterialId,
                   materialId: materialId,
-                  element: text,
                   fieldAnswers: fieldAnswers
                 });
               });
@@ -93,7 +91,6 @@
                 parentIds: parentIds,
                 workspaceMaterialId: workspaceMaterialId,
                 materialId: materialId,
-                element: parsed,
                 fieldAnswers: fieldAnswers
               });
             }
@@ -585,7 +582,7 @@
   $(document).on('beforeHtmlMaterialRender', function (event, data) {
     var reply = data.reply;
    
-    $(data.element).find('object[type*="vnd.muikku.field"]').each(function (index, object) {
+    $(data.pageElement).find('object[type*="vnd.muikku.field"]').each(function (index, object) {
       var meta = $.parseJSON($(object).find('param[name="content"]').attr('value'));
       var embedId = createEmbedId(data.parentIds);
       var materialId = data.materialId;
@@ -602,7 +599,7 @@
         value: value
       });
     });
-    fixTables(data.element);
+    fixTables(data.pageElement);
   });
   
   $(document).on('afterHtmlMaterialRender', function (event, data) {
