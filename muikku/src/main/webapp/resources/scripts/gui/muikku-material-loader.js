@@ -78,7 +78,7 @@
                   parentIds: parentIds,
                   workspaceMaterialId: workspaceMaterialId,
                   materialId: materialId,
-                  element: parsed,
+                  element: text,
                   fieldAnswers: fieldAnswers
                 });
               });
@@ -607,7 +607,7 @@
   
   $(document).on('afterHtmlMaterialRender', function (event, data) {
     jsPlumb.ready(function() {
-      $(data.element).find('.muikku-connect-field-table').each(function (index, field) {
+      $(data.pageElement).find('.muikku-connect-field-table').each(function (index, field) {
         $(field).muikkuConnectField({
           fieldName: $(field).data('field-name'),
           embedId: $(field).data('embed-id'),
@@ -618,7 +618,7 @@
       $('.muikku-connect-field').muikkuConnectField('refresh');
     }); 
     
-    $(data.element).find('.muikku-file-field').each(function (index, field) {
+    $(data.pageElement).find('.muikku-file-field').each(function (index, field) {
       $(field)
         .muikkuFileField()
         .muikkuField({
