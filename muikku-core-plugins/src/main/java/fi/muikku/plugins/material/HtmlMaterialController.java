@@ -17,13 +17,9 @@ import javax.inject.Inject;
 import fi.foyt.coops.CoOpsConflictException;
 import fi.foyt.coops.CoOpsInternalErrorException;
 import fi.muikku.plugins.material.coops.CoOpsDiffAlgorithm;
-import fi.muikku.plugins.material.coops.dao.HtmlMaterialExtensionPropertyDAO;
-import fi.muikku.plugins.material.coops.dao.HtmlMaterialPropertyDAO;
 import fi.muikku.plugins.material.coops.dao.HtmlMaterialRevisionDAO;
 import fi.muikku.plugins.material.coops.dao.HtmlMaterialRevisionExtensionPropertyDAO;
 import fi.muikku.plugins.material.coops.dao.HtmlMaterialRevisionPropertyDAO;
-import fi.muikku.plugins.material.coops.model.HtmlMaterialExtensionProperty;
-import fi.muikku.plugins.material.coops.model.HtmlMaterialProperty;
 import fi.muikku.plugins.material.coops.model.HtmlMaterialRevision;
 import fi.muikku.plugins.material.coops.model.HtmlMaterialRevisionExtensionProperty;
 import fi.muikku.plugins.material.coops.model.HtmlMaterialRevisionProperty;
@@ -40,12 +36,6 @@ public class HtmlMaterialController {
   @Inject
   private HtmlMaterialDAO htmlMaterialDAO;
   
-  @Inject
-  private HtmlMaterialPropertyDAO htmlMaterialPropertyDAO;
-
-  @Inject
-  private HtmlMaterialExtensionPropertyDAO htmlMaterialExtensionPropertyDAO;
-
   @Inject
   private HtmlMaterialRevisionDAO htmlMaterialRevisionDAO;
 
@@ -97,8 +87,10 @@ public class HtmlMaterialController {
     return htmlMaterialDAO.updateData(htmlMaterial, html);
   }
   
-  public HtmlMaterial updateHtmlMaterialToRevision(HtmlMaterial htmlMaterial, String html, Long revisionNumber, boolean removeNewerRevisions) {
+  public HtmlMaterial updateHtmlMaterialToRevision(HtmlMaterial htmlMaterial, String title, String html, Long revisionNumber, boolean removeNewerRevisions) {
     updateHtmlMaterialHtml(htmlMaterial, html);
+    
+    htmlMaterialDAO.updateTitle(htmlMaterial, title);
     htmlMaterialDAO.updateRevisionNumber(htmlMaterial, revisionNumber);
     
     if (removeNewerRevisions) {
@@ -144,6 +136,39 @@ public class HtmlMaterialController {
     
     return result;
   }
+
+  public String getRevisionTitle(HtmlMaterial htmlMaterial, Long revisionNumber) {
+    if (revisionNumber.equals(htmlMaterial.getRevisionNumber())) {
+      return htmlMaterial.getTitle();
+    }
+    
+    return getRevisionProperty(htmlMaterial, revisionNumber, "title");
+  }
+  
+  public String getRevisionProperty(HtmlMaterial htmlMaterial, Long revisionNumber, String property) {
+    HtmlMaterialRevisionProperty revisionProperty = null;
+    
+    if (revisionNumber > htmlMaterial.getRevisionNumber()) {
+      revisionProperty = htmlMaterialRevisionPropertyDAO.findByHtmlMaterialAndKeyMaxRevision(htmlMaterial, property);
+    } else {
+      revisionProperty = htmlMaterialRevisionPropertyDAO.findByHtmlMaterialAndKeyRevisionLeAndMaxRevision(htmlMaterial, property, htmlMaterial.getRevisionNumber());  
+    }
+    
+    return revisionProperty.getValue();
+  }
+
+  public Map<String, String> getRevisionProperties(HtmlMaterial htmlMaterial, Long revisionNumber) {
+    Map<String, String> result = new HashMap<>();
+    
+    for (String key : htmlMaterialRevisionPropertyDAO.listKeysByHtmlMaterial(htmlMaterial)) {
+      String value = getRevisionProperty(htmlMaterial, revisionNumber, key);
+      if (value != null) {
+        result.put(key, value);
+      }
+    }
+    
+    return result;
+  }
   
   public long lastHtmlMaterialRevision(HtmlMaterial htmlMaterial) {
     Long maxRevision = htmlMaterialRevisionDAO.maxRevisionByHtmlMaterial(htmlMaterial);
@@ -157,6 +182,10 @@ public class HtmlMaterialController {
   
   public HtmlMaterialRevision createRevision(HtmlMaterial htmlMaterial, String sessionId, Long patchRevisionNumber, Date date, String patch, String checksum) {
     return htmlMaterialRevisionDAO.create(htmlMaterial, sessionId, patchRevisionNumber, new Date(), patch, checksum);
+  }
+
+  public List<HtmlMaterialRevision> listRevisionsAfter(HtmlMaterial htmlMaterial, Long revisionNumber) {
+    return htmlMaterialRevisionDAO.listByFileAndRevisionGreaterThanOrderedByRevision(htmlMaterial, revisionNumber);
   }
   
   private void deleteRevision(HtmlMaterialRevision revision) {
@@ -172,25 +201,6 @@ public class HtmlMaterialController {
     }
     
     htmlMaterialRevisionDAO.delete(revision);
-  }
-
-  /* HtmlMaterialProperty */
-  
-  public List<HtmlMaterialProperty> listPropertiesByMaterial(HtmlMaterial htmlMaterial) {
-    return htmlMaterialPropertyDAO.listByHtmlMaterial(htmlMaterial);
-  }
-
-  public List<HtmlMaterialRevision> listRevisionsAfter(HtmlMaterial htmlMaterial, Long revisionNumber) {
-    return htmlMaterialRevisionDAO.listByFileAndRevisionGreaterThanOrderedByRevision(htmlMaterial, revisionNumber);
-  }
-
-  public HtmlMaterialProperty setProperty(HtmlMaterial htmlMaterial, String key, String value) {
-    HtmlMaterialProperty fileProperty = htmlMaterialPropertyDAO.findByHtmlMaterialAndKey(htmlMaterial, key);
-    if (fileProperty == null) {
-      return htmlMaterialPropertyDAO.create(htmlMaterial, key, value);
-    } else {
-      return htmlMaterialPropertyDAO.updateValue(fileProperty, value);
-    }
   }
 
   /* HtmlMaterialRevisionProperty */
@@ -213,17 +223,7 @@ public class HtmlMaterialController {
     return htmlMaterialRevisionExtensionPropertyDAO.listByHtmlMaterialRevision(htmlMaterialRevision);
   }
   
-  /* HtmlMaterialExtensionProperty */
-
-  public void setExtensionProperty(HtmlMaterial htmlMaterial, String key, String value) {
-    HtmlMaterialExtensionProperty htmlMaterialExtensionProperty = htmlMaterialExtensionPropertyDAO.findByFileAndKey(htmlMaterial, key);
-    if (htmlMaterialExtensionProperty == null) {
-      htmlMaterialExtensionPropertyDAO.create(htmlMaterial, key, value);
-    } else {
-      htmlMaterialExtensionPropertyDAO.updateValue(htmlMaterialExtensionProperty, value);
-    }
-  }
-
+  /* CoOpsDiffAlgorithm */
   
   public CoOpsDiffAlgorithm findAlgorithm(String algorithmName) {
     return findAlgorithm(Arrays.asList(algorithmName)); 
