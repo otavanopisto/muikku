@@ -100,6 +100,12 @@ public class ForumMessageDAO extends CorePluginsDAO<ForumMessage> {
     
     return entityManager.createQuery(criteria).getSingleResult();
   }
+
+  public void archive(ForumMessage message) {
+    message.setArchived(Boolean.TRUE);
+    
+    getEntityManager().persist(message);
+  }
   
   
 }

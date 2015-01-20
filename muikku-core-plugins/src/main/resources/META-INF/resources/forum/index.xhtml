@@ -19,8 +19,11 @@
         <h:outputLabel for="text" value="New Forum Name:"/>
         <h:inputText id="name" />
         <h:message for="name" errorClass="invalid"/>
+
+        <h:outputLabel for="text" value="Forum group:"/>
+        <h:inputText id="group" />
         
-        <h:commandButton action="#{Forum.createEnvironmentForumArea(param['newForum:name'])}" value="Create Course"/>
+        <h:commandButton action="#{Forum.createEnvironmentForumArea(param['newForum:name'], param['newForum:group'])}" value="Create Course"/>
       </h:form>
     </div>
 

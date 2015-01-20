@@ -125,5 +125,15 @@ public class ForumThreadReplyDAO extends CorePluginsDAO<ForumThreadReply> {
     
     return getSingleResult(query);
   }
+
+  public ForumThreadReply update(ForumThreadReply reply, String message, Date lastModified, UserEntity lastModifier) {
+    reply.setMessage(message);
+    reply.setLastModified(lastModified);
+    reply.setLastModifier(lastModifier.getId());
+    
+    getEntityManager().persist(reply);
+    
+    return reply;
+  }
   
 }

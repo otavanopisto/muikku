@@ -27,9 +27,21 @@ public class ForumThread extends ForumMessage implements ResourceEntity {
     this.sticky = sticky;
   }
 
+  public Boolean getLocked() {
+    return locked;
+  }
+
+  public void setLocked(Boolean locked) {
+    this.locked = locked;
+  }
+
   private String title;
   
   @NotNull
   @Column(nullable = false)
   private Boolean sticky = Boolean.FALSE;
+
+  @NotNull
+  @Column(nullable = false)
+  private Boolean locked = Boolean.FALSE;
 }

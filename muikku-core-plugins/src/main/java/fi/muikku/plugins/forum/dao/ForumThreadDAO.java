@@ -20,13 +20,13 @@ public class ForumThreadDAO extends CorePluginsDAO<ForumThread> {
   
 	private static final long serialVersionUID = 4967576871472917786L;
 
-	public ForumThread create(ForumArea forumArea, String title, String message, UserEntity creator, Boolean sticky) {
+	public ForumThread create(ForumArea forumArea, String title, String message, UserEntity creator, Boolean sticky, Boolean locked) {
     Date now = new Date();
 
-    return create(forumArea, title, message, now, creator, now, creator, false, sticky);
+    return create(forumArea, title, message, now, creator, now, creator, false, sticky, locked);
   }
   
-  public ForumThread create(ForumArea forumArea, String title, String message, Date created, UserEntity creator, Date lastModified, UserEntity lastModifier, Boolean archived, Boolean sticky) {
+  public ForumThread create(ForumArea forumArea, String title, String message, Date created, UserEntity creator, Date lastModified, UserEntity lastModifier, Boolean archived, Boolean sticky, Boolean locked) {
     ForumThread thread = new ForumThread();
 
     thread.setForumArea(forumArea);
@@ -38,6 +38,7 @@ public class ForumThreadDAO extends CorePluginsDAO<ForumThread> {
     thread.setLastModifier(lastModifier.getId());
     thread.setArchived(archived);
     thread.setSticky(sticky);
+    thread.setLocked(locked);
     
     getEntityManager().persist(thread);
     
@@ -76,6 +77,19 @@ public class ForumThreadDAO extends CorePluginsDAO<ForumThread> {
     );
     
     return entityManager.createQuery(criteria).getSingleResult();
+  }
+
+  public ForumThread update(ForumThread thread, String title, String message, Boolean sticky, Boolean locked, Date lastModified, UserEntity lastModifier) {
+    thread.setTitle(title);
+    thread.setMessage(message);
+    thread.setSticky(sticky);
+    thread.setLocked(locked);
+    thread.setLastModified(lastModified);
+    thread.setLastModifier(lastModifier.getId());
+    
+    getEntityManager().persist(thread);
+    
+    return thread;
   }
   
 }

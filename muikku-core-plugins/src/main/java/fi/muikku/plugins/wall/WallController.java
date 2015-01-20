@@ -135,10 +135,10 @@ public class WallController {
         ForumArea forumArea = forumAreaDAO_TEMP.findById(1l);
         if (forumArea == null) {
           ResourceRights rights = resourceRightsController_TEMP.create();
-          forumArea = forumAreaDAO_TEMP.create("Foorumi.", false, sessionController.getLoggedUserEntity(), rights);
+          forumArea = forumAreaDAO_TEMP.create("Foorumi.", null, false, sessionController.getLoggedUserEntity(), rights);
         }
           
-        forumThreadDAO_TEMP.create(forumArea, "Foorumikirjoitus #" + r, "Testidatakirjoitus numero " + r, userEntity, false);
+        forumThreadDAO_TEMP.create(forumArea, "Foorumikirjoitus #" + r, "Testidatakirjoitus numero " + r, userEntity, false, false);
       break;
       
       case 3:

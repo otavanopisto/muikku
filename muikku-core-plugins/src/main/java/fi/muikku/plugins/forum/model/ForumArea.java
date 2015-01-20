@@ -54,12 +54,22 @@ public class ForumArea implements ResourceEntity, OwnedEntity {
     this.owner = owner;
   }
 
+  public String getGroup() {
+    return group;
+  }
+
+  public void setGroup(String group) {
+    this.group = group;
+  }
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
   
   @NotEmpty
   private String name;
+
+  private String group;
 
   @Column (name = "rights_id")
   private Long rights;

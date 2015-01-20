@@ -11,10 +11,11 @@ public class EnvironmentForumAreaDAO extends CorePluginsDAO<EnvironmentForumArea
 
 	private static final long serialVersionUID = 2917574952932278029L;
 
-	public EnvironmentForumArea create(String name, Boolean archived, UserEntity owner, ResourceRights rights) {
+	public EnvironmentForumArea create(String name, String group, Boolean archived, UserEntity owner, ResourceRights rights) {
 		EnvironmentForumArea environmentForumArea = new EnvironmentForumArea();
 
 		environmentForumArea.setName(name);
+		environmentForumArea.setGroup(group);
 		environmentForumArea.setArchived(archived);
 		environmentForumArea.setOwner(owner.getId());
 		environmentForumArea.setRights(rights.getId());

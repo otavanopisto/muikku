@@ -80,15 +80,15 @@ public class ForumController {
   }
   
   @Permit (ForumResourcePermissionCollection.FORUM_CREATEENVIRONMENTFORUM)
-  public EnvironmentForumArea createEnvironmentForumArea(String name) {
+  public EnvironmentForumArea createEnvironmentForumArea(String name, String group) {
     UserEntity owner = sessionController.getLoggedUserEntity();
     ResourceRights rights = resourceRightsController.create();
-    return environmentForumAreaDAO.create(name, false, owner, rights);
+    return environmentForumAreaDAO.create(name, group, false, owner, rights);
   }
   
   @Permit (ForumResourcePermissionCollection.FORUM_WRITEAREA)
-  public ForumThread createForumThread(@PermitContext ForumArea forumArea, String title, String message, Boolean sticky) {
-    return forumThreadDAO.create(forumArea, title, message, sessionController.getLoggedUserEntity(), sticky);
+  public ForumThread createForumThread(@PermitContext ForumArea forumArea, String title, String message, Boolean sticky, Boolean locked) {
+    return forumThreadDAO.create(forumArea, title, message, sessionController.getLoggedUserEntity(), sticky, locked);
   }
 
   @Permit (ForumResourcePermissionCollection.FORUM_WRITEAREA)
@@ -166,5 +166,19 @@ public class ForumController {
 
   public Long getMessageCount(ForumArea area) {
     return forumMessageDAO.countByArea(area);
+  }
+  
+  public void archiveMessage(ForumMessage message) {
+    forumMessageDAO.archive(message);
+  }
+  
+  public void updateForumThread(ForumThread thread, String title, String message, Boolean sticky, Boolean locked) {
+    UserEntity user = sessionController.getLoggedUserEntity();
+    forumThreadDAO.update(thread, title, message, sticky, locked, new Date(), user);
+  }
+
+  public void updateForumThreadReply(ForumThreadReply reply, String title, String message, Boolean sticky, Boolean locked) {
+    UserEntity user = sessionController.getLoggedUserEntity();
+    forumThreadReplyDAO.update(reply, message, new Date(), user);
   }
 }

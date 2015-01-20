@@ -7,7 +7,7 @@ public class ForumAreaRESTModel {
     
   }
   
-  public ForumAreaRESTModel(Long id, String name) {
+  public ForumAreaRESTModel(Long id, String name, String group) {
     this.id = id;
     this.name = name;
   }
@@ -28,8 +28,16 @@ public class ForumAreaRESTModel {
     this.name = name;
   }
 
+  public String getGroup() {
+    return group;
+  }
+
+  public void setGroup(String group) {
+    this.group = group;
+  }
+
   private Long id;
 
   private String name;
-
+  private String group;
 }
