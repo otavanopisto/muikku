@@ -599,7 +599,7 @@
         value: value
       });
     });
-    fixTables(data.pageElement);
+    fixTables($(data.pageElement));
   });
   
   $(document).on('afterHtmlMaterialRender', function (event, data) {
