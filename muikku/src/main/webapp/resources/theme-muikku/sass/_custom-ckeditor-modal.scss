@@ -71,7 +71,6 @@ div.cke_reset_all {
         margin:0;
       
         .cke_dialog_contents_body {
-          height:auto;
           max-height:600px;
           overflow:auto;
           padding:5px 10px;
@@ -103,6 +102,7 @@ div.cke_reset_all {
                   top:-25px;
                   left:5px;
                   box-shadow: 0 0 4px rgba(255,255,255,0.9);
+                  z-index:99;
                 }
               
               }
@@ -174,12 +174,23 @@ div.cke_reset_all {
             
             .selection-title-container,
             .textfield-title-container,
-            .memofield-title-container {
+            .memofield-title-container,
+            .connectfield-title-container {
               position:relative;
               
               label {
                 margin-right:10px;
               }
+            }
+            
+            .connectfield-elements-container .connectfield-element-container {
+            
+              input[type="text"] {
+                width:190px;
+                min-width:190px;
+                margin-right:10px;
+              }
+            
             }
             
             .selection-options-container .selection-option-container,
