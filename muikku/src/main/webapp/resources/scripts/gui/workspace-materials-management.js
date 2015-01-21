@@ -526,6 +526,7 @@
             if (editing) {
               editPage($('#page-' + workspaceMaterialId));
             }
+
            
             $(this).closest('.workspace-materials-view-page').find('a.publish-page')
               .attr('data-published-revision', currentRevision)
@@ -535,6 +536,11 @@
               .attr('data-published-revision', currentRevision)
               .addClass('disabled');
           
+
+
+            $('#page-' + workspaceMaterialId).html('');
+            $(document).muikkuMaterialLoader('loadMaterial', $('#page-' + workspaceMaterialId), true);
+
             $('.notification-queue').notificationQueue('notification', 'info', "Published successfully");
           }
         }, this));        
@@ -602,6 +608,7 @@
               .attr('data-current-revision', publishedRevision)
               .addClass('disabled');
             
+
             $('.notification-queue').notificationQueue('notification', 'info', "Reverted successfully");
           }
         }, this));
