@@ -268,7 +268,7 @@
       }, this));
       
       this._clientRequest.fail(function (jqXHR, textStatus, errorThrown) {
-        callback(textStatus, null);
+        callback(textStatus, jqXHR);
       });
       
       return this;
