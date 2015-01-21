@@ -500,6 +500,34 @@
     }, this));
   }
   
+
+  
+  function confirmAnswerRemoval(confirmCallback) {
+    renderDustTemplate('workspace/materials-management-page-confirm-answer-removal.dust', { }, $.proxy(function (text) {
+      var dialog = $(text);
+      $(text).dialog({
+        modal: true, 
+        resizable: false,
+        width: 360,
+        dialogClass: "workspace-materials-management-dialog",
+        buttons: [{
+          'text': dialog.data('button-confirm-text'),
+          'class': 'confirm-button',
+          'click': function(event) {
+            $(this).dialog("close");
+            confirmCallback();
+          }
+        }, {
+          'text': dialog.data('button-cancel-text'),
+          'class': 'cancel-button',
+          'click': function(event) {
+            $(this).dialog("close");
+          }
+        }]
+      });
+    }, this));
+  }
+  
   $(document).on('click', '.publish-page', function (event, data) {
     var workspaceMaterialId = $(this).data('workspace-material-id');
     var materialId = $(this).data('material-id');
@@ -517,7 +545,7 @@
         mApi().materials.html.publish.create(materialId, {
           fromRevision: publishedRevision,
           toRevision: currentRevision
-        }).callback($.proxy(function (err) {
+        }).callback($.proxy(function (err, jqXHR) {
           loadNotification.remove();
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
