@@ -145,7 +145,12 @@ public class HtmlMaterialController {
       return htmlMaterial.getTitle();
     }
     
-    return getRevisionProperty(htmlMaterial, revisionNumber, "title");
+    String title = getRevisionProperty(htmlMaterial, revisionNumber, "title");
+    if (title == null) {
+      title = htmlMaterial.getTitle();
+    }
+    
+    return title;
   }
   
   public String getRevisionProperty(HtmlMaterial htmlMaterial, Long revisionNumber, String property) {
@@ -157,7 +162,11 @@ public class HtmlMaterialController {
       revisionProperty = htmlMaterialRevisionPropertyDAO.findByHtmlMaterialAndKeyRevisionLeAndMaxRevision(htmlMaterial, property, htmlMaterial.getRevisionNumber());  
     }
     
-    return revisionProperty.getValue();
+    if (revisionProperty == null) {
+      return null;
+    } else {
+      return revisionProperty.getValue();
+    }
   }
 
   public Map<String, String> getRevisionProperties(HtmlMaterial htmlMaterial, Long revisionNumber) {
