@@ -528,6 +528,44 @@
     }, this));
   }
   
+  function publishPage(workspaceMaterialId, materialId, publishedRevision, currentRevision, removeAnswers, errorCallback) {
+    var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', "Publishing...");
+    var editing = isPageInEditMode($('#page-' + workspaceMaterialId));
+    
+    if (editing) {
+      closeEditor($('#page-' + workspaceMaterialId), false);
+    }
+    
+    mApi().materials.html.publish.create(materialId, {
+      fromRevision: publishedRevision,
+      toRevision: currentRevision,
+      removeAnswers: removeAnswers
+    }).callback($.proxy(function (err, jqXHR) {
+      loadNotification.remove();
+      if (err) {
+        errorCallback(err, jqXHR);
+      } else {
+        $(this).attr('data-published-revision', currentRevision);
+        if (editing) {
+          editPage($('#page-' + workspaceMaterialId));
+        } else {
+          $('#page-' + workspaceMaterialId).html('');
+          $(document).muikkuMaterialLoader('loadMaterial', $('#page-' + workspaceMaterialId), true);
+        }
+        
+        $(this).closest('.workspace-materials-view-page').find('a.publish-page')
+          .attr('data-published-revision', currentRevision)
+          .addClass('disabled');
+        
+        $(this).closest('.workspace-materials-view-page').find('a.revert-page')
+          .attr('data-published-revision', currentRevision)
+          .addClass('disabled');
+      
+        $('.notification-queue').notificationQueue('notification', 'info', "Published successfully");
+      }
+    }, this));   
+  }
+  
   $(document).on('click', '.publish-page', function (event, data) {
     var workspaceMaterialId = $(this).data('workspace-material-id');
     var materialId = $(this).data('material-id');
@@ -535,40 +573,22 @@
     var publishedRevision = parseInt($(this).attr('data-published-revision'));
     if (currentRevision !== publishedRevision) {
       confirmPagePublication($.proxy(function () {
-        var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', "Publishing...");
-        var editing = isPageInEditMode($('#page-' + workspaceMaterialId));
-        
-        if (editing) {
-          closeEditor($('#page-' + workspaceMaterialId), false);
-        }
-        
-        mApi().materials.html.publish.create(materialId, {
-          fromRevision: publishedRevision,
-          toRevision: currentRevision
-        }).callback($.proxy(function (err, jqXHR) {
-          loadNotification.remove();
-          if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', err);
-          } else {
-            $(this).attr('data-published-revision', currentRevision);
-            if (editing) {
-              editPage($('#page-' + workspaceMaterialId));
+        publishPage(workspaceMaterialId, materialId, publishedRevision, currentRevision, false, function (err, jqXHR) {
+          if (jqXHR.status == 409) {
+            var response = $.parseJSON(jqXHR.responseText);
+            if (response && response.reason == 'CONTAINS_ANSWERS') {
+              confirmAnswerRemoval(function () {
+                publishPage(workspaceMaterialId, materialId, publishedRevision, currentRevision, true, function (err, jqXHR) {
+                  $('.notification-queue').notificationQueue('notification', 'error', err);
+                });
+              });
             } else {
-              $('#page-' + workspaceMaterialId).html('');
-              $(document).muikkuMaterialLoader('loadMaterial', $('#page-' + workspaceMaterialId), true);
+              $('.notification-queue').notificationQueue('notification', 'error', err);
             }
-            
-            $(this).closest('.workspace-materials-view-page').find('a.publish-page')
-              .attr('data-published-revision', currentRevision)
-              .addClass('disabled');
-            
-            $(this).closest('.workspace-materials-view-page').find('a.revert-page')
-              .attr('data-published-revision', currentRevision)
-              .addClass('disabled');
-          
-            $('.notification-queue').notificationQueue('notification', 'info', "Published successfully");
-          }
-        }, this));        
+          } else {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          }    
+        });
       }, this));
     }
   });
