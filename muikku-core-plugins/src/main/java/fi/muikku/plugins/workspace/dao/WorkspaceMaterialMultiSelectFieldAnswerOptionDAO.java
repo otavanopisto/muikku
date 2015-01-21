@@ -56,7 +56,7 @@ public class WorkspaceMaterialMultiSelectFieldAnswerOptionDAO extends CorePlugin
 
     return entityManager.createQuery(criteria).getResultList();
   }
-  
+
   @Override
   public void delete(WorkspaceMaterialMultiSelectFieldAnswerOption workspaceMaterialMultiSelectFieldAnswerOption) {
     super.delete(workspaceMaterialMultiSelectFieldAnswerOption);

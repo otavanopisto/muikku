@@ -9,7 +9,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.muikku.plugins.schooldatapyramus.entities.PyramusGradingScale;
 import fi.muikku.plugins.schooldatapyramus.entities.PyramusGradingScaleItem;
-import fi.muikku.plugins.schooldatapyramus.rest.UserPyramusClient;
+import fi.muikku.plugins.schooldatapyramus.rest.PyramusClient;
 import fi.muikku.schooldata.GradingSchoolDataBridge;
 import fi.muikku.schooldata.SchoolDataBridgeRequestException;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
@@ -20,7 +20,7 @@ import fi.pyramus.rest.model.Grade;
 public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
 
   @Inject
-  private UserPyramusClient pyramusClient;
+  private PyramusClient pyramusClient;
   
   @Override
   public String getSchoolDataSource() {

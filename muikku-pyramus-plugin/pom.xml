@@ -5,7 +5,7 @@
   <parent>
     <groupId>fi.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.9-SNAPSHOT</version>
+    <version>1.0.11-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -42,6 +42,32 @@
     <dependency>
       <groupId>org.jboss.spec.javax.interceptor</groupId>
       <artifactId>jboss-interceptors-api_1.2_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    
+   <!-- Hibernate -->
+    
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-infinispan</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-validator</artifactId>
       <scope>provided</scope>
     </dependency>
     
@@ -104,13 +130,13 @@
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>rest-model</artifactId>
-      <version>0.7.5-SNAPSHOT</version>
+      <version>0.7.8-SNAPSHOT</version>
     </dependency>
     
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>pyramus-webhooks</artifactId>
-      <version>0.7.5-SNAPSHOT</version>
+      <version>0.7.8-SNAPSHOT</version>
     </dependency>
 
     <!-- Muikku -->
@@ -121,5 +147,36 @@
     </dependency>
     
   </dependencies>
+  
+    <build>
+        <plugins>
+          <plugin>
+            <groupId>org.bsc.maven</groupId>
+            <artifactId>maven-processor-plugin</artifactId>
+            <version>2.2.4</version>
+            <executions>
+              <execution>
+                <id>process</id>
+                <goals>
+                  <goal>process</goal>
+                </goals>
+                <phase>generate-sources</phase>
+                <configuration>
+                  <processors>
+                    <processor>org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor</processor>
+                  </processors>
+                </configuration>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-jpamodelgen</artifactId>
+                <version>${hibernate-jpamodelgen.version}</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+    </build>
   
 </project>

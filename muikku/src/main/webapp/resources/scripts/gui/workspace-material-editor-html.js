@@ -73,7 +73,6 @@
       this._titleInput = $('<input>')
         .addClass('workspace-material-html-editor-title')
         .attr('type', 'text')
-        .val(this.options.materialTitle)
         .appendTo(this._titleInputWrapper);
       
       this._status = $('<div>')
@@ -103,7 +102,8 @@
           'muikku-selection': CONTEXTPATH + '/scripts/ckplugins/muikku-selection/',
           'muikku-textfield': CONTEXTPATH + '/scripts/ckplugins/muikku-textfield/',
           'muikku-memofield': CONTEXTPATH + '/scripts/ckplugins/muikku-memofield/',
-          'muikku-filefield': CONTEXTPATH + '/scripts/ckplugins/muikku-filefield/'
+          'muikku-filefield': CONTEXTPATH + '/scripts/ckplugins/muikku-filefield/',
+          'muikku-connectfield': CONTEXTPATH + '/scripts/ckplugins/muikku-connectfield/'
         },
         extraPlugins : 'coops,' +
                        'coops-connector,' + 
@@ -113,7 +113,8 @@
                        'muikku-textfield,' + 
                        'muikku-memofield,' + 
                        'muikku-filefield,' + 
-                       'muikku-selection',
+                       'muikku-selection,' +
+                       'muikku-connectfield',
         serverUrl : CONTEXTPATH + '/rest/coops/' + this.options.materialId + '',
         contentCss : '/css/custom-ckeditor-contentcss.css',
         toolbar: [
@@ -129,7 +130,7 @@
           { name: 'insert', items : [ 'Image','Flash','Table','SpecialChar' ] },          
           { name: 'tools', items : [ 'Maximize', 'ShowBlocks','-','About' ] },
           '/',
-          { name: 'forms', items : ['MuikkuTextField', 'muikku-selection', 'MuikkuMemoField', 'muikku-filefield']}
+          { name: 'forms', items : ['MuikkuTextField', 'muikku-selection', 'MuikkuMemoField', 'muikku-filefield', 'muikku-connectfield']}
         ],
         autoGrowOnStartup : true,
         skin : 'moono',
@@ -166,6 +167,7 @@
       this._editor.on("collaboratorJoined", $.proxy(this._onCollaboratorJoined, this));
       this._editor.on("collaboratorLeft", $.proxy(this._onCollaboratorLeft, this));
       this._editor.on("patchReceived", $.proxy(this._onPatchReceived, this));
+      this._editor.on("beforeSessionStart", $.proxy(this._onBeforeSessionStart, this));
       this._titleInput.change($.proxy(this._onTitleChange, this));
     },
     
@@ -178,6 +180,13 @@
       $(this._status).removeClass('icon-saved icon-saving icon-unsaved icon-loaded icon-loading');
       $(this._status).addClass('icon-' + data.status);
       $(this._status).find('span').html(data.status);
+      
+      if (data.status == 'saved') {
+        $(document).trigger("htmlMaterialRevisionChanged", {
+          materialId: this.options.materialId,
+          revisionNumber: data.revisionNumber
+        });
+      }
     },
     
     _onCollaboratorJoined: function (event, data) {
@@ -189,18 +198,30 @@
     },
     
     _onTitleChange: function (event, data) {
-      var oldValue = $(this).parent().data('old-value');
+      var oldValue = $(this._titleInput).data('old-value');
       var value = $(this._titleInput).val();
       if (value) {
-        $(this).parent().data('old-value', value);
-        $(editor).coOpsCK("changeProperty", 'title', oldValue, value);
+        $(this._titleInput).data('old-value', value);
+        $(this._editorContainer).coOpsCK("changeProperty", 'title', oldValue, value);
       }
     },
     
     _onPatchReceived: function (event, data) {
       $.each(data.properties, $.proxy(function(key, value) {
         if (key === 'title') {
-          $(this._titleInput).val(value);
+          $(this._titleInput)
+            .data('old-value', value)
+            .val(value);
+        }
+      }, this));
+    },
+    
+    _onBeforeSessionStart: function (event, data) {
+      $.each(data.joinData.properties||{}, $.proxy(function(key, value) {
+        if (key === 'title') {
+          $(this._titleInput)
+            .data('old-value', value)
+            .val(value);
         }
       }, this));
     },

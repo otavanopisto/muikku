@@ -10,12 +10,14 @@
   <c:forEach var="node" items="#{nodes}">
     <c:choose>
       <c:when test="#{node.materialType eq 'folder'}">
-        <ul class="workspace-materials-toc-section">
-          <li class="workspace-materials-toc-subtitle  #{node.materialHidden ? 'subtitle-hidden' : ''}">#{node.materialTitle}</li>
-          <ui:include src="/workspaces/templates/workspace-materials-list.xhtml">
-            <ui:param name="nodes" value="#{workspaceMaterialsTOCBackingBean.getChildren(node, includeHidden)}" />
-          </ui:include>
-        </ul>
+        <li>
+          <ul class="workspace-materials-toc-section">
+            <li class="workspace-materials-toc-subtitle  #{node.materialHidden ? 'subtitle-hidden' : ''}">#{node.materialTitle}</li>
+            <ui:include src="/workspaces/templates/workspace-materials-list.xhtml">
+              <ui:param name="nodes" value="#{workspaceMaterialsTOCBackingBean.getChildren(node, includeHidden)}" />
+            </ui:include>
+          </ul>
+        </li>
       </c:when>
       <c:otherwise>
         <li class="workspace-materials-toc-item  #{node.materialHidden ? 'item-hidden' : ''}">

@@ -1,16 +1,22 @@
 package fi.muikku.model.base;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 
 import fi.muikku.model.users.EnvironmentRoleEntity;
 import fi.muikku.model.workspace.WorkspaceRoleEntity;
 
 @Entity
 public class EnvironmentDefaults {
+
+  public Long getId() {
+    return id;
+  }
 
   public EnvironmentRoleEntity getDefaultUserRole() {
     return defaultUserRole;
@@ -27,9 +33,21 @@ public class EnvironmentDefaults {
   public void setDefaultCourseCreatorRole(WorkspaceRoleEntity defaultCourseCreatorRole) {
     this.defaultCourseCreatorRole = defaultCourseCreatorRole;
   }
-
-  public Long getId() {
-    return id;
+  
+  public Integer getHttpPort() {
+    return httpPort;
+  }
+  
+  public void setHttpPort(Integer httpPort) {
+    this.httpPort = httpPort;
+  }
+  
+  public Integer getHttpsPort() {
+    return httpsPort;
+  }
+  
+  public void setHttpsPort(Integer httpsPort) {
+    this.httpsPort = httpsPort;
   }
 
   @Id
@@ -41,4 +59,12 @@ public class EnvironmentDefaults {
 
   @ManyToOne
   private WorkspaceRoleEntity defaultCourseCreatorRole;
+
+  @Column (nullable = false)
+  @NotNull
+  private Integer httpPort;
+
+  @Column (nullable = false)
+  @NotNull
+  private Integer httpsPort;
 }

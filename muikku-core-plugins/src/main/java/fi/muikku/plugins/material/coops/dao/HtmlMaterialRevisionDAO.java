@@ -9,9 +9,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.plugins.CorePluginsDAO;
-import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.material.coops.model.HtmlMaterialRevision;
 import fi.muikku.plugins.material.coops.model.HtmlMaterialRevision_;
+import fi.muikku.plugins.material.model.HtmlMaterial;
 
 public class HtmlMaterialRevisionDAO extends CorePluginsDAO<HtmlMaterialRevision> {
 
@@ -30,7 +30,7 @@ public class HtmlMaterialRevisionDAO extends CorePluginsDAO<HtmlMaterialRevision
     return persist(htmlMaterialRevision);
   }
 
-  public List<HtmlMaterialRevision> listByFileAndRevisionGreaterThan(HtmlMaterial htmlMaterial, Long revision) {
+  public List<HtmlMaterialRevision> listByFileAndRevisionGreaterThanOrderedByRevision(HtmlMaterial htmlMaterial, Long revision) {
     EntityManager entityManager = getEntityManager();
 
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -43,8 +43,63 @@ public class HtmlMaterialRevisionDAO extends CorePluginsDAO<HtmlMaterialRevision
         criteriaBuilder.greaterThan(root.get(HtmlMaterialRevision_.revision), revision)
       )
     );
+    criteria.orderBy(criteriaBuilder.asc(root.get(HtmlMaterialRevision_.revision)));
 
     return entityManager.createQuery(criteria).getResultList();
+  }
+  
+  public List<HtmlMaterialRevision> listByFileAndRevisionGtAndRevisonLeOrderedByRevision(HtmlMaterial htmlMaterial, Long revisionGe, Long revisionLt) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<HtmlMaterialRevision> criteria = criteriaBuilder.createQuery(HtmlMaterialRevision.class);
+    Root<HtmlMaterialRevision> root = criteria.from(HtmlMaterialRevision.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(HtmlMaterialRevision_.htmlMaterial), htmlMaterial),
+        criteriaBuilder.greaterThan(root.get(HtmlMaterialRevision_.revision), revisionGe),
+        criteriaBuilder.lessThanOrEqualTo(root.get(HtmlMaterialRevision_.revision), revisionLt)
+      )
+    );
+    criteria.orderBy(criteriaBuilder.asc(root.get(HtmlMaterialRevision_.revision)));
+
+    return entityManager.createQuery(criteria).getResultList();
+  }
+  
+  public List<HtmlMaterialRevision> listByFileAndRevisionGeAndRevisonLtOrderedByRevision(HtmlMaterial htmlMaterial, Long revisionGe, Long revisionLt) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<HtmlMaterialRevision> criteria = criteriaBuilder.createQuery(HtmlMaterialRevision.class);
+    Root<HtmlMaterialRevision> root = criteria.from(HtmlMaterialRevision.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(HtmlMaterialRevision_.htmlMaterial), htmlMaterial),
+        criteriaBuilder.greaterThanOrEqualTo(root.get(HtmlMaterialRevision_.revision), revisionGe),
+        criteriaBuilder.lessThan(root.get(HtmlMaterialRevision_.revision), revisionLt)
+      )
+    );
+    criteria.orderBy(criteriaBuilder.asc(root.get(HtmlMaterialRevision_.revision)));
+
+    return entityManager.createQuery(criteria).getResultList();
+  }
+  
+  public Long maxRevisionByHtmlMaterial(HtmlMaterial htmlMaterial) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Long> criteria = criteriaBuilder.createQuery(Long.class);
+    Root<HtmlMaterialRevision> root = criteria.from(HtmlMaterialRevision.class);
+    criteria.select(criteriaBuilder.max(root.get(HtmlMaterialRevision_.revision)));
+    criteria.where(criteriaBuilder.equal(root.get(HtmlMaterialRevision_.htmlMaterial), htmlMaterial));
+    
+    return entityManager.createQuery(criteria).getSingleResult();
+  }
+  
+  public void delete(HtmlMaterialRevision e) {
+    super.delete(e);
   }
 
 }

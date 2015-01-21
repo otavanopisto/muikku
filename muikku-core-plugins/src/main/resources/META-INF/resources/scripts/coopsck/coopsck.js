@@ -28,6 +28,7 @@
         toolbar: this.options.toolbar
       }, this.options.editorOptions||{}));
 
+      this._editor.on("CoOPS:BeforeSessionStart", $.proxy(this._onEditorBeforeSessionStart, this));
       this._editor.on("CoOPS:SessionStart", $.proxy(this._onEditorSessionStart, this));
       this._editor.on("CoOPS:ContentDirty", $.proxy(this._onEditorContentDirty, this));
       this._editor.on("CoOPS:PatchSent", $.proxy(this._onEditorPatchSent, this));
@@ -47,6 +48,12 @@
           oldValue: oldValue,
           currentValue: value
         }]
+      });
+    },
+    
+    _onEditorBeforeSessionStart: function (event) {
+      $(this.element).trigger('beforeSessionStart', {
+        joinData: event.data.joinData
       });
     },
     
@@ -70,7 +77,11 @@
     
     _onEditorPatchAccepted: function (event) {
       $(this.element).trigger('statusChange', {
-        status: 'saved'
+        status: 'saved',
+        revisionNumber: event.data.revisionNumber,
+        content: event.data.content,
+        properties: event.data.properties,
+        extensions: event.data.extensions
       });
     },
 

@@ -1,13 +1,14 @@
 package fi.muikku.plugins.material.fieldmeta;
 
 public class SelectFieldOptionMeta {
+  
   public SelectFieldOptionMeta() {
     
   }
   
-  public SelectFieldOptionMeta(String name, Double points, String text) {
+  public SelectFieldOptionMeta(String name, Boolean correct, String text) {
     this.name = name;
-    this.points = points;
+    this.correct = correct;
     this.text = text;
   }
 
@@ -15,8 +16,12 @@ public class SelectFieldOptionMeta {
     return name;
   }
 
-  public Double getPoints() {
-    return points;
+  public Boolean getCorrect() {
+    return correct;
+  }
+  
+  public void setCorrect(Boolean correct) {
+    this.correct = correct;
   }
 
   public String getText() {
@@ -24,6 +29,6 @@ public class SelectFieldOptionMeta {
   }
 
   private String name;
-  private Double points;
+  private Boolean correct;
   private String text;
 }

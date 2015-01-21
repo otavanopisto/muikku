@@ -8,7 +8,7 @@ import fi.muikku.plugins.material.model.HtmlMaterial;
 public class HtmlMaterialCloneOperation implements MaterialCloneOperation<HtmlMaterial> {
   
   @Inject
-  HtmlMaterialDAO htmlMaterialDAO;
+  private HtmlMaterialDAO htmlMaterialDAO;
 
   @Override
   public HtmlMaterial clone(HtmlMaterial material) {

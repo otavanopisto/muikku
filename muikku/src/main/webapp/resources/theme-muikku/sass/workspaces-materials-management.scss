@@ -38,6 +38,11 @@ body.workspace-materials-management {
       position:relative; 
       border-left:1px solid #fff;
       
+      ul,
+      li {
+        list-style:none;
+      }
+      
       .workspace-materials-management-TOC-title {
         background:#87a1b2;
         padding:12px;
@@ -72,26 +77,17 @@ body.workspace-materials-management {
             .spacer {
               height:50px; /* Creating some bottom margin because use of 100% height  */
             }
-        
-            .workspace-materials-toc-section {
-              margin:0;
-              padding-top:5px;
-              padding-bottom:10px;
-              
-              .workspace-materials-toc-subtitle {
-                margin:0 0 5px 0;
-                text-transform:uppercase;
-                font-size:15px;
-                padding:2px 8px;
-                
-                &.subtitle-hidden {
-                  opacity:0.4;
-                }
-                
-              }
-              
+            
+            .workspace-materials-toc-root {
+
               .workspace-materials-toc-item {
                 font-weight:300;
+                list-style:none;
+                
+                &:first-child {
+                  margin-top:5px;
+                  padding-top:2px;
+                }
                 
                 &.item-hidden {
                   opacity:0.4;
@@ -112,6 +108,49 @@ body.workspace-materials-management {
                   }
                 }
     
+              }
+        
+              .workspace-materials-toc-section {
+                margin:0;
+                padding-top:5px;
+                padding-bottom:10px;
+                
+                .workspace-materials-toc-subtitle {
+                  margin:0 0 5px 0;
+                  text-transform:uppercase;
+                  font-size:15px;
+                  padding:2px 8px;
+                  
+                  &.subtitle-hidden {
+                    opacity:0.4;
+                  }
+                  
+                }
+                
+                .workspace-materials-toc-item {
+                  font-weight:300;
+                  list-style:none;
+                  
+                  &.item-hidden {
+                    opacity:0.4;
+                  }
+                  
+                  a {
+                    text-decoration:none;
+                    color:#2c2c2c;
+                    display:block;
+                    @include genericMenuLinkHoverTransition(background,color,0.15s,ease-in-out);
+                    @include rounded(2px);
+                    padding:2px 8px;
+                    
+                    &:hover,
+                    &.active {
+                      background:#596e7d;
+                      color:#fff;
+                    }
+                  }
+      
+                }
               }
             }
           }
@@ -533,17 +572,22 @@ body.workspace-materials-management {
       
         a.edit-page, 
         a.delete-page, 
-        a.hide-page {
+        a.hide-page,
+        a.publish-page,
+        a.revert-page,
+        a.close-page-editor {
           color:#fff;
           font-size:21px;
           display:inline-block;
           margin:5px 10px;
           position:relative;
+          height:31px;
+          text-align:center;
           
           &:hover {
             @include iconShadow(rgba(255,255,190,0.8));
           }
-          
+
           &:before {
             padding:5px;
             display:inline-block;
@@ -552,6 +596,21 @@ body.workspace-materials-management {
           span {
             display:none;
           }
+        }
+        
+        a.delete-page {
+          font-size:22px;
+        }
+        
+        a.edit-page,
+        a.close-page-editor {
+          width:29px;
+        }
+        
+        a.publish-page.disabled,
+        a.revert-page.disabled {
+          opacity:0.35;
+          cursor:default;
         }
         
       }
@@ -705,6 +764,16 @@ body.workspace-materials-management {
         button.delete-button {
           float:right;
           background:#de3211;
+        }
+        
+        button.publish-button {
+          float:right;
+          background:#27b91c;
+        }
+        
+        button.revert-button {
+          float:right;
+          background:#f6a930;
         }
         
         button.cancel-button {

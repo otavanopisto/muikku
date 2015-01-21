@@ -134,7 +134,7 @@ public class DataPluginController {
 			scriptHandler.executeScript(scriptInfo.getUrl(), scriptInfo.getParameters());
 		} catch (IOException | SQLException e) {
 			// TODO: Proper error handling
-			throw new RuntimeException("Failed to execute script '" + scriptInfo.getUrl() + "'");
+			throw new RuntimeException("Failed to execute script '" + scriptInfo.getUrl() + "': " + e.getMessage());
 		}
 	}
 

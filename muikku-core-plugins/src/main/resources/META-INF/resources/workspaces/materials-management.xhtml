@@ -27,10 +27,12 @@
         <div class="workspace-materials-toc-content-outer">
           <div class="workspace-materials-toc-content-inner">
             <div class="workspace-materials-toc-content-scrolling">
-              <ui:include src="/workspaces/templates/workspace-materials-list.xhtml">
-                <ui:param name="nodes" value="#{workspaceMaterialsTOCBackingBean.getChildren(workspaceMaterialsManagementBackingBean.getRootFolder())}"/>
-                <ui:param name="includeHidden" value="true"/>
-              </ui:include>
+              <ul class="workspace-materials-toc-root">
+                <ui:include src="/workspaces/templates/workspace-materials-list.xhtml">
+                  <ui:param name="nodes" value="#{workspaceMaterialsTOCBackingBean.getChildren(workspaceMaterialsManagementBackingBean.getRootFolder())}"/>
+                  <ui:param name="includeHidden" value="true"/>
+                </ui:include>
+              </ul>  
               <div class="spacer"></div>
             </div>
           </div>

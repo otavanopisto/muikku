@@ -28,9 +28,23 @@
 }
 
 .muikku-file-input-field-file-uploader-container {
-  border: 1px dotted #000;
   position: relative;
   padding: 20px;
+  margin: 0 10px;
+  background: #fff;
+  border: 1px solid #eee;
+  transition: border,box-shadow 0.1s,0.2s ease-in-out;
+  outline: none;
+  box-shadow: 0 0 0px 3px rgba(215,215,215,0.15);
+  border-radius: 3px;
+  text-transform: uppercase;
+  color: #186089;
+  
+  &:hover {
+    border:1px solid #97bfed;
+    box-shadow:0 0 0px 3px rgba(202,225,252,0.75);
+  }
+  
 }
 
 .muikku-file-input-field-file-uploader-container input[type="file"] {
