@@ -526,7 +526,9 @@
             if (editing) {
               editPage($('#page-' + workspaceMaterialId));
             }
-            
+
+            $('#page-' + workspaceMaterialId).html('');
+            $(document).muikkuMaterialLoader('loadMaterial', $('#page-' + workspaceMaterialId), true);
             $('.notification-queue').notificationQueue('notification', 'info', "Published successfully");
           }
         }, this));        
@@ -586,7 +588,7 @@
             if (editing) {
               editPage($('#page-' + workspaceMaterialId));
             }
-            
+
             $('.notification-queue').notificationQueue('notification', 'info', "Reverted successfully");
           }
         }, this));
