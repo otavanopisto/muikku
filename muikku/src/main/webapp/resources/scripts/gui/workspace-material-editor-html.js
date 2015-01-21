@@ -73,7 +73,6 @@
       this._titleInput = $('<input>')
         .addClass('workspace-material-html-editor-title')
         .attr('type', 'text')
-        .val(this.options.materialTitle)
         .appendTo(this._titleInputWrapper);
       
       this._status = $('<div>')
@@ -168,6 +167,7 @@
       this._editor.on("collaboratorJoined", $.proxy(this._onCollaboratorJoined, this));
       this._editor.on("collaboratorLeft", $.proxy(this._onCollaboratorLeft, this));
       this._editor.on("patchReceived", $.proxy(this._onPatchReceived, this));
+      this._editor.on("beforeSessionStart", $.proxy(this._onBeforeSessionStart, this));
       this._titleInput.change($.proxy(this._onTitleChange, this));
     },
     
@@ -198,18 +198,30 @@
     },
     
     _onTitleChange: function (event, data) {
-      var oldValue = $(this).parent().data('old-value');
+      var oldValue = $(this._titleInput).data('old-value');
       var value = $(this._titleInput).val();
       if (value) {
-        $(this).parent().data('old-value', value);
-        $(editor).coOpsCK("changeProperty", 'title', oldValue, value);
+        $(this._titleInput).data('old-value', value);
+        $(this._editorContainer).coOpsCK("changeProperty", 'title', oldValue, value);
       }
     },
     
     _onPatchReceived: function (event, data) {
       $.each(data.properties, $.proxy(function(key, value) {
         if (key === 'title') {
-          $(this._titleInput).val(value);
+          $(this._titleInput)
+            .data('old-value', value)
+            .val(value);
+        }
+      }, this));
+    },
+    
+    _onBeforeSessionStart: function (event, data) {
+      $.each(data.joinData.properties||{}, $.proxy(function(key, value) {
+        if (key === 'title') {
+          $(this._titleInput)
+            .data('old-value', value)
+            .val(value);
         }
       }, this));
     },

@@ -33,7 +33,6 @@ import fi.muikku.environment.HttpsPort;
 import fi.muikku.plugins.material.HtmlMaterialController;
 import fi.muikku.plugins.material.coops.event.CoOpsPatchEvent;
 import fi.muikku.plugins.material.coops.model.CoOpsSession;
-import fi.muikku.plugins.material.coops.model.HtmlMaterialProperty;
 import fi.muikku.plugins.material.coops.model.HtmlMaterialRevision;
 import fi.muikku.plugins.material.coops.model.HtmlMaterialRevisionExtensionProperty;
 import fi.muikku.plugins.material.coops.model.HtmlMaterialRevisionProperty;
@@ -80,20 +79,13 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
     }
 
     if (revisionNumber != null) {
-      // TODO: Implement revision properties
       String data = htmlMaterialController.getRevisionHtml(htmlMaterial, revisionNumber);
-      return new File(revisionNumber, data, htmlMaterial.getContentType(), null);
+      Map<String, String> properties = htmlMaterialController.getRevisionProperties(htmlMaterial, revisionNumber);
+      return new File(revisionNumber, data, htmlMaterial.getContentType(), properties);
     } else {
       Long maxRevisionNumber = htmlMaterialController.lastHtmlMaterialRevision(htmlMaterial);
       String data = htmlMaterialController.getRevisionHtml(htmlMaterial, maxRevisionNumber);
-      
-      List<HtmlMaterialProperty> fileProperties = htmlMaterialController.listPropertiesByMaterial(htmlMaterial);
-      Map<String, String> properties = new HashMap<String, String>();
-      
-      for (HtmlMaterialProperty fileProperty : fileProperties) {
-        properties.put(fileProperty.getKey(),fileProperty.getValue());
-      }
-      
+      Map<String, String> properties = htmlMaterialController.getRevisionProperties(htmlMaterial, maxRevisionNumber);
       return new File(maxRevisionNumber, data, htmlMaterial.getContentType(), properties);
     }
   }
@@ -193,13 +185,7 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
     if (properties != null) {
       for (String key : properties.keySet()) {
         String value = properties.get(key);
-        
-        htmlMaterialController.setProperty(htmlMaterial, key, value);
         htmlMaterialController.createRevisionProperty(htmlMaterialRevision, key, value);
-        
-        if ("title".equals(key)) {
-          htmlMaterialController.updateHtmlMaterialTitle(htmlMaterial, value);
-        }
       }
     }
     
@@ -213,7 +199,6 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
           throw new CoOpsInternalErrorException(e);
         }
         
-        htmlMaterialController.setExtensionProperty(htmlMaterial, key, value);
         htmlMaterialController.createRevisionExtensionProperty(htmlMaterialRevision, key, value);
       }
     }
@@ -249,13 +234,8 @@ public class CoOpsApiImpl implements fi.foyt.coops.CoOpsApi {
       data = "";
     }
 
-    Map<String, String> properties = new HashMap<>();
-    
-    List<HtmlMaterialProperty> fileProperties = htmlMaterialController.listPropertiesByMaterial(htmlMaterial);
-    for (HtmlMaterialProperty fileProperty : fileProperties) {
-      properties.put(fileProperty.getKey(), fileProperty.getValue());
-    }
-    
+    Map<String, String> properties = htmlMaterialController.getRevisionProperties(htmlMaterial, currentRevision);
+    // TODO: Extension properties...
     Map<String, Object> extensions = new HashMap<>();
     String sessionId = UUID.randomUUID().toString();
     

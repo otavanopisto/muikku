@@ -169,7 +169,7 @@
           this._queueHtmlMaterial(materialId, workspaceMaterialId, page);
         break;
         case 'folder':
-          renderDustTemplate(this.options.dustTemplate, { id: materialId, type: materialType }, $.proxy(function (text) {
+          renderDustTemplate(this.options.dustTemplate, { id: materialId, type: materialType, data: { title: $(page).data('material-title') } }, $.proxy(function (text) {
             $(this).html(text);
           }, page));
         break;
@@ -599,7 +599,7 @@
         value: value
       });
     });
-    fixTables(data.pageElement);
+    fixTables($(data.pageElement));
   });
   
   $(document).on('afterHtmlMaterialRender', function (event, data) {
