@@ -117,7 +117,7 @@ public class HtmlMaterialRESTService extends PluginRESTService {
       }
       
       String title = htmlMaterialController.getRevisionTitle(htmlMaterial, entity.getToRevision());
-      htmlMaterialController.updateHtmlMaterialToRevision(htmlMaterial, title, fileRevision.getContent(), entity.getToRevision(), false);
+      htmlMaterialController.updateHtmlMaterialToRevision(htmlMaterial, title, fileRevision.getContent(), entity.getToRevision(), false, entity.getRemoveAnswers() != null ? entity.getRemoveAnswers() : false);
     } catch (WorkspaceMaterialContainsAnswersExeption e) {
       return Response.status(Status.CONFLICT)
           .entity(new HtmlRestMaterialPublishError(HtmlRestMaterialPublishError.Reason.CONTAINS_ANSWERS)).build();
@@ -150,7 +150,7 @@ public class HtmlMaterialRESTService extends PluginRESTService {
       
       String title = htmlMaterialController.getRevisionTitle(htmlMaterial, entity.getToRevision());
       
-      htmlMaterialController.updateHtmlMaterialToRevision(htmlMaterial, title, fileRevision.getContent(), entity.getToRevision(), true);
+      htmlMaterialController.updateHtmlMaterialToRevision(htmlMaterial, title, fileRevision.getContent(), entity.getToRevision(), true, entity.getRemoveAnswers() != null ? entity.getRemoveAnswers() : false);
     } catch (WorkspaceMaterialContainsAnswersExeption e) {
       return Response.status(Status.CONFLICT)
           .entity(new HtmlRestMaterialPublishError(HtmlRestMaterialPublishError.Reason.CONTAINS_ANSWERS)).build();

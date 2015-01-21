@@ -80,18 +80,21 @@ public class HtmlMaterialController {
     materialDeleteEvent.fire(new HtmlMaterialDeleteEvent(htmlMaterial, false));
     htmlMaterialDAO.delete(htmlMaterial);
   }
-  
+
   public HtmlMaterial updateHtmlMaterialHtml(HtmlMaterial htmlMaterial, String html) {
-    // TODO Logic for remove answers flag
-    HtmlMaterialUpdateEvent event = new HtmlMaterialUpdateEvent(htmlMaterial, htmlMaterial.getHtml(), html, false);
+    return updateHtmlMaterialHtml(htmlMaterial, html, false);
+  }
+  
+  public HtmlMaterial updateHtmlMaterialHtml(HtmlMaterial htmlMaterial, String html, boolean removeAnswers) {
+    HtmlMaterialUpdateEvent event = new HtmlMaterialUpdateEvent(htmlMaterial, htmlMaterial.getHtml(), html, removeAnswers);
     materialUpdateEvent.fire(event);
     return htmlMaterialDAO.updateData(htmlMaterial, html);
   }
   
-  public HtmlMaterial updateHtmlMaterialToRevision(HtmlMaterial htmlMaterial, String title, String html, Long revisionNumber, boolean removeNewerRevisions) throws WorkspaceMaterialContainsAnswersExeption {
+  public HtmlMaterial updateHtmlMaterialToRevision(HtmlMaterial htmlMaterial, String title, String html, Long revisionNumber, boolean removeNewerRevisions, boolean removeAnswers) throws WorkspaceMaterialContainsAnswersExeption {
     // TODO: WorkspaceMaterialContainsAnswersExeption quick fix should be removed
     try {
-      updateHtmlMaterialHtml(htmlMaterial, html);
+      updateHtmlMaterialHtml(htmlMaterial, html, removeAnswers);
     } catch (Exception e) {
       Throwable cause = e;
       while (e.getCause() != null) {
