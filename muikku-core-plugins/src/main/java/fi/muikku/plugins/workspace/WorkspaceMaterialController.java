@@ -327,13 +327,13 @@ public class WorkspaceMaterialController {
     workspaceNodeDAO.updateHidden(workspaceNode, hidden);
   }
 
-  public void deleteWorkspaceMaterial(WorkspaceMaterial workspaceMaterial) {
-    workspaceMaterialDeleteEvent.fire(new WorkspaceMaterialDeleteEvent(workspaceMaterial));
+  public void deleteWorkspaceMaterial(WorkspaceMaterial workspaceMaterial, boolean removeAnswers) {
+    workspaceMaterialDeleteEvent.fire(new WorkspaceMaterialDeleteEvent(workspaceMaterial, removeAnswers));
 
     List<WorkspaceNode> childNodes = workspaceNodeDAO.listByParentSortByOrderNumber(workspaceMaterial);
     for (WorkspaceNode childNode : childNodes) {
       if (childNode instanceof WorkspaceMaterial) {
-        deleteWorkspaceMaterial((WorkspaceMaterial) childNode);
+        deleteWorkspaceMaterial((WorkspaceMaterial) childNode, removeAnswers);
       } else if (childNode instanceof WorkspaceFolder) {
         deleteWorkspaceFolder((WorkspaceFolder) childNode);
       }

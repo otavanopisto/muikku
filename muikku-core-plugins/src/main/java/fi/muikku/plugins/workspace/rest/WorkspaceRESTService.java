@@ -619,7 +619,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (workspaceMaterial == null) {
       return Response.status(Status.NOT_FOUND).build();
     } else {
-      workspaceMaterialController.deleteWorkspaceMaterial(workspaceMaterial);
+      workspaceMaterialController.deleteWorkspaceMaterial(workspaceMaterial, false);
       return Response.noContent().build();
     }
   }

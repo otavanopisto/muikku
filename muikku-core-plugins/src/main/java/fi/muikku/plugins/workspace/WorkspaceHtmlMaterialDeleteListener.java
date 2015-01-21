@@ -22,7 +22,7 @@ public class WorkspaceHtmlMaterialDeleteListener {
     
     List<WorkspaceMaterial> workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsByMaterial(material);
     for (WorkspaceMaterial workspaceMaterial : workspaceMaterials) {
-      workspaceMaterialController.deleteWorkspaceMaterial(workspaceMaterial);
+      workspaceMaterialController.deleteWorkspaceMaterial(workspaceMaterial, htmlMaterialDeleteEvent.getRemoveAnswers());
     }
   }
 
