@@ -31,6 +31,7 @@ import fi.foyt.coops.model.File;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.material.HtmlMaterialController;
 import fi.muikku.plugins.material.model.HtmlMaterial;
+import fi.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
 
 @RequestScoped
 @Path("/materials/html")
@@ -105,7 +106,8 @@ public class HtmlMaterialRESTService extends PluginRESTService {
     }
 
     if (!htmlMaterial.getRevisionNumber().equals(entity.getFromRevision())) {
-      return Response.status(Status.CONFLICT).entity("Invalid from revision number").build();
+      return Response.status(Status.CONFLICT)
+          .entity(new HtmlRestMaterialPublishError(HtmlRestMaterialPublishError.Reason.CONCURRENT_MODIFICATIONS)).build();
     }
 
     try {
@@ -116,6 +118,9 @@ public class HtmlMaterialRESTService extends PluginRESTService {
       
       String title = htmlMaterialController.getRevisionTitle(htmlMaterial, entity.getToRevision());
       htmlMaterialController.updateHtmlMaterialToRevision(htmlMaterial, title, fileRevision.getContent(), entity.getToRevision(), false);
+    } catch (WorkspaceMaterialContainsAnswersExeption e) {
+      return Response.status(Status.CONFLICT)
+          .entity(new HtmlRestMaterialPublishError(HtmlRestMaterialPublishError.Reason.CONTAINS_ANSWERS)).build();
     } catch (CoOpsNotImplementedException | CoOpsNotFoundException | CoOpsUsageException | CoOpsInternalErrorException | CoOpsForbiddenException e) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();
     }
@@ -133,7 +138,8 @@ public class HtmlMaterialRESTService extends PluginRESTService {
     
     Long currentRevision = htmlMaterialController.lastHtmlMaterialRevision(htmlMaterial);
     if (!currentRevision.equals(entity.getFromRevision())) {
-      return Response.status(Status.CONFLICT).entity("Invalid from revision number").build();
+      return Response.status(Status.CONFLICT)
+          .entity(new HtmlRestMaterialPublishError(HtmlRestMaterialPublishError.Reason.CONCURRENT_MODIFICATIONS)).build();
     }
 
     try {
@@ -145,6 +151,9 @@ public class HtmlMaterialRESTService extends PluginRESTService {
       String title = htmlMaterialController.getRevisionTitle(htmlMaterial, entity.getToRevision());
       
       htmlMaterialController.updateHtmlMaterialToRevision(htmlMaterial, title, fileRevision.getContent(), entity.getToRevision(), true);
+    } catch (WorkspaceMaterialContainsAnswersExeption e) {
+      return Response.status(Status.CONFLICT)
+          .entity(new HtmlRestMaterialPublishError(HtmlRestMaterialPublishError.Reason.CONTAINS_ANSWERS)).build();
     } catch (CoOpsNotImplementedException | CoOpsNotFoundException | CoOpsUsageException | CoOpsInternalErrorException | CoOpsForbiddenException e) {
       return Response.status(Status.INTERNAL_SERVER_ERROR).build();
     }

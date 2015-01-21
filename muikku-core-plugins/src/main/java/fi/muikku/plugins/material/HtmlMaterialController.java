@@ -28,6 +28,7 @@ import fi.muikku.plugins.material.events.HtmlMaterialCreateEvent;
 import fi.muikku.plugins.material.events.HtmlMaterialDeleteEvent;
 import fi.muikku.plugins.material.events.HtmlMaterialUpdateEvent;
 import fi.muikku.plugins.material.model.HtmlMaterial;
+import fi.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
 
 @Dependent
 @Stateless
@@ -87,8 +88,20 @@ public class HtmlMaterialController {
     return htmlMaterialDAO.updateData(htmlMaterial, html);
   }
   
-  public HtmlMaterial updateHtmlMaterialToRevision(HtmlMaterial htmlMaterial, String title, String html, Long revisionNumber, boolean removeNewerRevisions) {
-    updateHtmlMaterialHtml(htmlMaterial, html);
+  public HtmlMaterial updateHtmlMaterialToRevision(HtmlMaterial htmlMaterial, String title, String html, Long revisionNumber, boolean removeNewerRevisions) throws WorkspaceMaterialContainsAnswersExeption {
+    // TODO: WorkspaceMaterialContainsAnswersExeption quick fix should be removed
+    try {
+      updateHtmlMaterialHtml(htmlMaterial, html);
+    } catch (Exception e) {
+      Throwable cause = e;
+      while (e.getCause() != null) {
+        cause = cause.getCause();
+        if (cause instanceof WorkspaceMaterialContainsAnswersExeption) {
+          throw (WorkspaceMaterialContainsAnswersExeption) cause;
+        }
+      }
+      throw e;
+    }
     
     htmlMaterialDAO.updateTitle(htmlMaterial, title);
     htmlMaterialDAO.updateRevisionNumber(htmlMaterial, revisionNumber);
