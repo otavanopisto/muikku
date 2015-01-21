@@ -541,7 +541,7 @@
   }
 
   function fixTables(node) {
-    var $tables = node.find("table");
+    var $tables = $(node).find("table");
     
     $tables.each(function() {
       var $table = $(this);
