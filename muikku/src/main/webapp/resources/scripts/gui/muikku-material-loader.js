@@ -61,6 +61,7 @@
               parentIds: parentIds,
               workspaceMaterialId: workspaceMaterialId,
               materialId: materialId,
+              element: parsed,
               fieldAnswers: fieldAnswers
             });
             
@@ -541,7 +542,7 @@
   }
 
   function fixTables(node) {
-    var $tables = node.find("table");
+    var $tables = $(node).find("table");
     
     $tables.each(function() {
       var $table = $(this);
@@ -580,9 +581,7 @@
   }
   
   $(document).on('beforeHtmlMaterialRender', function (event, data) {
-    var reply = data.reply;
-   
-    $(data.pageElement).find('object[type*="vnd.muikku.field"]').each(function (index, object) {
+    $(data.element).find('object[type*="vnd.muikku.field"]').each(function (index, object) {
       var meta = $.parseJSON($(object).find('param[name="content"]').attr('value'));
       var embedId = createEmbedId(data.parentIds);
       var materialId = data.materialId;
@@ -599,7 +598,7 @@
         value: value
       });
     });
-    fixTables(data.pageElement);
+    fixTables(data.element);
   });
   
   $(document).on('afterHtmlMaterialRender', function (event, data) {

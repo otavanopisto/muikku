@@ -538,8 +538,7 @@
     
     mApi().materials.html.publish.create(materialId, {
       fromRevision: publishedRevision,
-      toRevision: currentRevision,
-      removeAnswers: removeAnswers
+      toRevision: currentRevision
     }).callback($.proxy(function (err, jqXHR) {
       loadNotification.remove();
       if (err) {
