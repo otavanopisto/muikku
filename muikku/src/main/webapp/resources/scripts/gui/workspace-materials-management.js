@@ -466,11 +466,11 @@
   
   $(document).on('htmlMaterialRevisionChanged', function (event, data) {
     $('a.publish-page[data-material-id="' + data.materialId + '"]')
-      .data('current-revision', data.revisionNumber)
+      .attr('data-current-revision', data.revisionNumber)
       .removeClass('disabled');
     
     $('a.revert-page[data-material-id="' + data.materialId + '"]')
-      .data('current-revision', data.revisionNumber)
+      .attr('data-current-revision', data.revisionNumber)
       .removeClass('disabled');
   });
   
@@ -531,8 +531,8 @@
   $(document).on('click', '.publish-page', function (event, data) {
     var workspaceMaterialId = $(this).data('workspace-material-id');
     var materialId = $(this).data('material-id');
-    var currentRevision = $(this).data('current-revision');
-    var publishedRevision = $(this).data('published-revision');
+    var currentRevision = parseInt($(this).attr('data-current-revision'));
+    var publishedRevision = parseInt($(this).attr('data-published-revision'));
     if (currentRevision !== publishedRevision) {
       confirmPagePublication($.proxy(function () {
         var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', "Publishing...");
@@ -550,13 +550,22 @@
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
           } else {
-            $(this).data('published-revision', currentRevision);
+            $(this).attr('data-published-revision', currentRevision);
             if (editing) {
               editPage($('#page-' + workspaceMaterialId));
+            } else {
+              $('#page-' + workspaceMaterialId).html('');
+              $(document).muikkuMaterialLoader('loadMaterial', $('#page-' + workspaceMaterialId), true);
             }
-
-            $('#page-' + workspaceMaterialId).html('');
-            $(document).muikkuMaterialLoader('loadMaterial', $('#page-' + workspaceMaterialId), true);
+            
+            $(this).closest('.workspace-materials-view-page').find('a.publish-page')
+              .attr('data-published-revision', currentRevision)
+              .addClass('disabled');
+            
+            $(this).closest('.workspace-materials-view-page').find('a.revert-page')
+              .attr('data-published-revision', currentRevision)
+              .addClass('disabled');
+          
             $('.notification-queue').notificationQueue('notification', 'info', "Published successfully");
           }
         }, this));        
@@ -593,8 +602,8 @@
   $(document).on('click', '.revert-page', function (event, data) {
     var workspaceMaterialId = $(this).data('workspace-material-id');
     var materialId = $(this).data('material-id');
-    var currentRevision = $(this).data('current-revision');
-    var publishedRevision = $(this).data('published-revision');
+    var currentRevision = parseInt($(this).attr('data-current-revision'));
+    var publishedRevision = parseInt($(this).attr('data-published-revision'));
     if (currentRevision !== publishedRevision) {
       confirmPageRevert($.proxy(function () {
         var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', "Reverting back to published revision...");
@@ -612,11 +621,18 @@
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
           } else {
-            $(this).data('published-revision', publishedRevision);
             if (editing) {
               editPage($('#page-' + workspaceMaterialId));
             }
 
+            $(this).closest('.workspace-materials-view-page').find('a.publish-page')
+              .attr('data-current-revision', publishedRevision)
+              .addClass('disabled');
+            
+            $(this).closest('.workspace-materials-view-page').find('a.revert-page')
+              .attr('data-current-revision', publishedRevision)
+              .addClass('disabled');
+            
             $('.notification-queue').notificationQueue('notification', 'info', "Reverted successfully");
           }
         }, this));

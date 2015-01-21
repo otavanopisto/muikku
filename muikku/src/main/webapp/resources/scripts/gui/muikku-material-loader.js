@@ -61,7 +61,6 @@
               parentIds: parentIds,
               workspaceMaterialId: workspaceMaterialId,
               materialId: materialId,
-              element: parsed,
               fieldAnswers: fieldAnswers
             });
             
@@ -78,7 +77,6 @@
                   parentIds: parentIds,
                   workspaceMaterialId: workspaceMaterialId,
                   materialId: materialId,
-                  element: parsed,
                   fieldAnswers: fieldAnswers
                 });
               });
@@ -93,7 +91,6 @@
                 parentIds: parentIds,
                 workspaceMaterialId: workspaceMaterialId,
                 materialId: materialId,
-                element: parsed,
                 fieldAnswers: fieldAnswers
               });
             }
@@ -172,7 +169,7 @@
           this._queueHtmlMaterial(materialId, workspaceMaterialId, page);
         break;
         case 'folder':
-          renderDustTemplate(this.options.dustTemplate, { id: materialId, type: materialType }, $.proxy(function (text) {
+          renderDustTemplate(this.options.dustTemplate, { id: materialId, type: materialType, data: { title: $(page).data('material-title') } }, $.proxy(function (text) {
             $(this).html(text);
           }, page));
         break;
@@ -585,7 +582,7 @@
   $(document).on('beforeHtmlMaterialRender', function (event, data) {
     var reply = data.reply;
    
-    $(data.element).find('object[type*="vnd.muikku.field"]').each(function (index, object) {
+    $(data.pageElement).find('object[type*="vnd.muikku.field"]').each(function (index, object) {
       var meta = $.parseJSON($(object).find('param[name="content"]').attr('value'));
       var embedId = createEmbedId(data.parentIds);
       var materialId = data.materialId;
@@ -602,12 +599,12 @@
         value: value
       });
     });
-    fixTables(data.element);
+    fixTables(data.pageElement);
   });
   
   $(document).on('afterHtmlMaterialRender', function (event, data) {
     jsPlumb.ready(function() {
-      $(data.element).find('.muikku-connect-field-table').each(function (index, field) {
+      $(data.pageElement).find('.muikku-connect-field-table').each(function (index, field) {
         $(field).muikkuConnectField({
           fieldName: $(field).data('field-name'),
           embedId: $(field).data('embed-id'),
@@ -618,7 +615,7 @@
       $('.muikku-connect-field').muikkuConnectField('refresh');
     }); 
     
-    $(data.element).find('.muikku-file-field').each(function (index, field) {
+    $(data.pageElement).find('.muikku-file-field').each(function (index, field) {
       $(field)
         .muikkuFileField()
         .muikkuField({

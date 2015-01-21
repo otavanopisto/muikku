@@ -80,7 +80,7 @@ public class WorkspaceMaterialController {
   @Inject
   private Logger logger;
   
-  private static final int FLATTENING_LEVEL = 2;
+  private static final int FLATTENING_LEVEL = 1;
 
   /* WorkspaceNode */
 
