@@ -5,18 +5,38 @@
 }
 
 .muikku-file-input-field-file-label {
-  font-weight: bold;
-  position: absolute;
-  margin-top: -20px;
-  margin-left: 10px;
+  font-weight:400 !important;
+  position:absolute;
+  margin-top:-30px;
+  margin-left:10px;
+  color:#fff;
+  font-size:14px;
 }
 
 .muikku-file-input-field-file-remove, .muikku-file-input-field-file-restore {
-  display: block;
-  text-decoration: none;
-  position: absolute; 
-  margin-top: -20px;
+  display:block;
+  text-decoration:none;
+  position:absolute; 
+  margin-top:-25px;
   right: 10px;
+  font-weight:400 !important;
+  position: absolute;
+  color:#fff !important;
+  font-size:14px;
+}
+
+.muikku-file-input-field-file-progress {
+  border:1px solid #f8f8f8;
+  box-shadow:0 0 5px rgba(0,0,0,0.05);
+  height:25px;
+  border-radius:0 !important;
+  
+  .ui-progressbar-value {
+    background:#0099ff;
+    height:25px;
+    border-radius:0 !important;
+  }
+
 }
 
 .muikku-file-input-field-file-remove {
