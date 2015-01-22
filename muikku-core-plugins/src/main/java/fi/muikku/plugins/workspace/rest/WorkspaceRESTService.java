@@ -42,7 +42,9 @@ import fi.muikku.plugins.material.MaterialController;
 import fi.muikku.plugins.material.QueryFieldController;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.material.model.QueryField;
+import fi.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
+import fi.muikku.plugins.workspace.WorkspaceMaterialDeleteError;
 import fi.muikku.plugins.workspace.WorkspaceMaterialFieldController;
 import fi.muikku.plugins.workspace.WorkspaceMaterialReplyController;
 import fi.muikku.plugins.workspace.fieldio.WorkspaceFieldIOException;
@@ -613,14 +615,20 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @DELETE
   @Path("/workspaces/{WORKSPACEID}/materials/{MATERIALID}")
-  public Response deleteNode(@PathParam("WORKSPACEID") Long workspaceEntityId, @PathParam("MATERIALID") Long materialId) {
+  public Response deleteNode(@PathParam("WORKSPACEID") Long workspaceEntityId, @PathParam("MATERIALID") Long materialId, @QueryParam ("removeAnswers") Boolean removeAnswers) {
     // TODO Our workspace?
     WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(materialId);
     if (workspaceMaterial == null) {
       return Response.status(Status.NOT_FOUND).build();
     } else {
-      workspaceMaterialController.deleteWorkspaceMaterial(workspaceMaterial, false);
-      return Response.noContent().build();
+      try {
+        workspaceMaterialController.deleteWorkspaceMaterial(workspaceMaterial, removeAnswers != null ? removeAnswers : false);
+        return Response.noContent().build();
+      } catch (WorkspaceMaterialContainsAnswersExeption e) {
+        return Response.ok(new WorkspaceMaterialDeleteError(WorkspaceMaterialDeleteError.Reason.CONTAINS_ANSWERS)).build();
+      } catch (Exception e) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+      }
     }
   }
 

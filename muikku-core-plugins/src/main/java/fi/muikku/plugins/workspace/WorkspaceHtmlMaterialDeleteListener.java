@@ -16,7 +16,7 @@ public class WorkspaceHtmlMaterialDeleteListener {
   @Inject
   private WorkspaceMaterialController workspaceMaterialController;
   
-  public void onHtmlMaterialDelete(@Observes HtmlMaterialDeleteEvent htmlMaterialDeleteEvent) {
+  public void onHtmlMaterialDelete(@Observes HtmlMaterialDeleteEvent htmlMaterialDeleteEvent) throws WorkspaceMaterialContainsAnswersExeption {
     // TODO: This should not be limited to html materials
     Material material = htmlMaterialDeleteEvent.getMaterial();
     
@@ -24,6 +24,7 @@ public class WorkspaceHtmlMaterialDeleteListener {
     for (WorkspaceMaterial workspaceMaterial : workspaceMaterials) {
       workspaceMaterialController.deleteWorkspaceMaterial(workspaceMaterial, htmlMaterialDeleteEvent.getRemoveAnswers());
     }
+    
   }
 
 }
