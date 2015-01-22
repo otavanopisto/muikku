@@ -767,7 +767,8 @@ body.workspace-materials-management {
           min-width:90px;
         }
         
-        button.delete-button {
+        button.delete-button,
+        button.confirm-button {
           float:right;
           background:#de3211;
         }
