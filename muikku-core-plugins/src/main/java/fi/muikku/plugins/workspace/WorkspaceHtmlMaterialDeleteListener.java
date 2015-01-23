@@ -16,14 +16,15 @@ public class WorkspaceHtmlMaterialDeleteListener {
   @Inject
   private WorkspaceMaterialController workspaceMaterialController;
   
-  public void onHtmlMaterialDelete(@Observes HtmlMaterialDeleteEvent htmlMaterialDeleteEvent) {
+  public void onHtmlMaterialDelete(@Observes HtmlMaterialDeleteEvent htmlMaterialDeleteEvent) throws WorkspaceMaterialContainsAnswersExeption {
     // TODO: This should not be limited to html materials
     Material material = htmlMaterialDeleteEvent.getMaterial();
     
     List<WorkspaceMaterial> workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsByMaterial(material);
     for (WorkspaceMaterial workspaceMaterial : workspaceMaterials) {
-      workspaceMaterialController.deleteWorkspaceMaterial(workspaceMaterial);
+      workspaceMaterialController.deleteWorkspaceMaterial(workspaceMaterial, htmlMaterialDeleteEvent.getRemoveAnswers());
     }
+    
   }
 
 }

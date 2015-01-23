@@ -80,7 +80,7 @@ public class WorkspaceMaterialController {
   @Inject
   private Logger logger;
   
-  private static final int FLATTENING_LEVEL = 2;
+  private static final int FLATTENING_LEVEL = 1;
 
   /* WorkspaceNode */
 
@@ -327,16 +327,27 @@ public class WorkspaceMaterialController {
     workspaceNodeDAO.updateHidden(workspaceNode, hidden);
   }
 
-  public void deleteWorkspaceMaterial(WorkspaceMaterial workspaceMaterial) {
-    workspaceMaterialDeleteEvent.fire(new WorkspaceMaterialDeleteEvent(workspaceMaterial));
+  public void deleteWorkspaceMaterial(WorkspaceMaterial workspaceMaterial, boolean removeAnswers) throws WorkspaceMaterialContainsAnswersExeption {
+    try {
+      workspaceMaterialDeleteEvent.fire(new WorkspaceMaterialDeleteEvent(workspaceMaterial, removeAnswers));
 
-    List<WorkspaceNode> childNodes = workspaceNodeDAO.listByParentSortByOrderNumber(workspaceMaterial);
-    for (WorkspaceNode childNode : childNodes) {
-      if (childNode instanceof WorkspaceMaterial) {
-        deleteWorkspaceMaterial((WorkspaceMaterial) childNode);
-      } else if (childNode instanceof WorkspaceFolder) {
-        deleteWorkspaceFolder((WorkspaceFolder) childNode);
+      List<WorkspaceNode> childNodes = workspaceNodeDAO.listByParentSortByOrderNumber(workspaceMaterial);
+      for (WorkspaceNode childNode : childNodes) {
+        if (childNode instanceof WorkspaceMaterial) {
+          deleteWorkspaceMaterial((WorkspaceMaterial) childNode, removeAnswers);
+        } else if (childNode instanceof WorkspaceFolder) {
+          deleteWorkspaceFolder((WorkspaceFolder) childNode);
+        }
       }
+    } catch (Exception e) {
+      Throwable cause = e;
+      while (e.getCause() != null) {
+        cause = cause.getCause();
+        if (cause instanceof WorkspaceMaterialContainsAnswersExeption) {
+          throw (WorkspaceMaterialContainsAnswersExeption) cause;
+        }
+      }
+      throw e;
     }
 
     workspaceMaterialDAO.delete(workspaceMaterial);

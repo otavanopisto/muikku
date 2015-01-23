@@ -2,15 +2,13 @@ package fi.muikku.plugins.schooldatapyramus.schedulers;
 
 import java.util.logging.Logger;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.Dependent;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import fi.muikku.plugins.schooldatapyramus.PyramusUpdater;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 
-@Dependent
-@Stateful
+@ApplicationScoped
 public class PyramusSchoolDataStudentsUpdateScheduler implements PyramusUpdateScheduler {
 
   private static final int BATCH_SIZE = 100;
@@ -25,7 +23,7 @@ public class PyramusSchoolDataStudentsUpdateScheduler implements PyramusUpdateSc
   public void synchronize() throws UnexpectedSchoolDataBridgeException {
     int count = 0;
     try {
-      logger.info("Synchronizing Pyramus students");
+      logger.info("Synchronizing Pyramus students (" + offset + ")");
       int result = pyramusUpdater.updateStudents(offset, BATCH_SIZE);
       if (result == -1) {
         offset = 0;

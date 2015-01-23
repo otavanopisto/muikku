@@ -14,7 +14,7 @@ public class EnvironmentUserController {
   @Inject
   private EnvironmentUserDAO environmentUserDAO;  
 
-  public EnvironmentUser createEnvironmentUserRole(UserEntity userEntity, EnvironmentRoleEntity role) {
+  public EnvironmentUser createEnvironmentUser(UserEntity userEntity, EnvironmentRoleEntity role) {
     return environmentUserDAO.create(userEntity, role);
   }
   
