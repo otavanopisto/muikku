@@ -126,21 +126,21 @@
       if (err) {
         errorCallback(err, jqXHR);
       } else {
-        $(this).dialog("close");
         // TODO: animation won't work
+        var page = $('#page-' + workspaceMaterialId);
         $(page)
-        .animate({
-          height:0,
-          opacity: 0
-        }, {
-          duration : 500,
-          easing : "easeInOutQuint",
-          complete: function() {
-            $(page).next(".workspace-materials-management-addpage").remove();
-            $(page).next(".workspaces-materials-management-insert-file").remove();
-            $(page).remove();
-          }
-        });
+          .animate({
+            height:0,
+            opacity: 0
+          }, {
+            duration : 500,
+            easing : "easeInOutQuint",
+            complete: function() {
+              page.nextAll('.workspace-materials-management-addpage').first().remove();
+              page.nextAll('.workspaces-materials-management-insert-file').first().remove();
+              page.remove();
+            }
+          });
       }
     }, this));
   }
