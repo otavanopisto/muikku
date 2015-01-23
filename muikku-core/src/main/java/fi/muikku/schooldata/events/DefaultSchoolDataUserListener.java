@@ -3,6 +3,7 @@ package fi.muikku.schooldata.events;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -54,34 +55,38 @@ public class DefaultSchoolDataUserListener {
       return;
     }
     
-    if (userEntityController.findUserEntityByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier()) == null) {
-      // User does not yet exist on the database
-      
-      List<UserEntity> emailUsers = userEntityController.listUserEntitiesByEmails(event.getEmails());
-      if (emailUsers.size() > 1) {
-        // TODO: Better exception handling
-        throw new RuntimeException("Multiple users found by emails");
-      }
-      
-      UserEntity userEntity = null;
-      if (emailUsers.size() == 1) {
-        // Matching user found, attach identity
-        userEntity = emailUsers.get(0);
-        userSchoolDataIdentifierController.createUserSchoolDataIdentifier(event.getDataSource(), event.getIdentifier(), userEntity);
-      } else {
-        userEntity = userEntityController.createUserEntity(event.getDataSource(), event.getIdentifier());
-        userSchoolDataIdentifierController.createUserSchoolDataIdentifier(event.getDataSource(), event.getIdentifier(), userEntity);
-      }
-      
-      List<String> existingAddresses = userEmailEntityController.listAddressesByUserEntity(userEntity);
-      for (String email : event.getEmails()) {
-        if (!existingAddresses.contains(email)) {
-          userEmailEntityController.addUserEmail(userEntity, email);
+    try {
+      if (userEntityController.findUserEntityByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier()) == null) {
+        // User does not yet exist on the database
+        
+        List<UserEntity> emailUsers = userEntityController.listUserEntitiesByEmails(event.getEmails());
+        if (emailUsers.size() > 1) {
+          // TODO: Better exception handling
+          throw new RuntimeException("Multiple users found by emails");
         }
+        
+        UserEntity userEntity = null;
+        if (emailUsers.size() == 1) {
+          // Matching user found, attach identity
+          userEntity = emailUsers.get(0);
+          userSchoolDataIdentifierController.createUserSchoolDataIdentifier(event.getDataSource(), event.getIdentifier(), userEntity);
+        } else {
+          userEntity = userEntityController.createUserEntity(event.getDataSource(), event.getIdentifier());
+          userSchoolDataIdentifierController.createUserSchoolDataIdentifier(event.getDataSource(), event.getIdentifier(), userEntity);
+        }
+        
+        List<String> existingAddresses = userEmailEntityController.listAddressesByUserEntity(userEntity);
+        for (String email : event.getEmails()) {
+          if (!existingAddresses.contains(email)) {
+            userEmailEntityController.addUserEmail(userEntity, email);
+          }
+        }
+        
+        discoveredUsers.put(discoverId, userEntity.getId());
+        event.setDiscoveredUserEntityId(userEntity.getId());
       }
-      
-      discoveredUsers.put(discoverId, userEntity.getId());
-      event.setDiscoveredUserEntityId(userEntity.getId());
+    } catch (Exception ex) {
+      logger.log(Level.SEVERE, "User creation on discovery failed.", ex);
     }
   }
   
@@ -139,7 +144,7 @@ public class DefaultSchoolDataUserListener {
       if (environmentRoleEntity != null) {
         EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
         if (environmentUser == null) {
-          environmentUserController.createEnvironmentUserRole(userEntity, environmentRoleEntity);
+          environmentUserController.createEnvironmentUser(userEntity, environmentRoleEntity);
         } else {
           environmentUserController.updateEnvironmentUserRole(environmentUser, environmentRoleEntity);
         }
