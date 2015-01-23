@@ -207,6 +207,7 @@ public class WorkspaceMaterialsTOCBackingBean {
       materialNode.setMaterialId(material.getId());
       materialNode.setMaterialType(material.getType());
       materialNode.setMaterialTitle(material.getTitle());
+      materialNode.setAssignmentType(((WorkspaceMaterial) workspaceNode).getAssignmentType());
     } else if (workspaceNode instanceof WorkspaceFolder) {
       // TODO questionable hard-coding
       materialNode.setMaterialType("folder");
