@@ -122,9 +122,9 @@
   }
   
   function deletePage(workspaceMaterialId, materialId, workspaceId, removeAnswers, errorCallback) {
-    mApi().workspace.workspaces.materials.del(workspaceId,workspaceMaterialId, {}, {removeAnswers: removeAnswers}).callback($.proxy(function (err){
+    mApi().workspace.workspaces.materials.del(workspaceId,workspaceMaterialId, {}, {removeAnswers: removeAnswers}).callback($.proxy(function (err, jqXHR){
       if (err) {
-        $('.notification-queue').notificationQueue('notification', 'error', err);
+        errorCallback(err, jqXHR);
       } else {
         $(this).dialog("close");
         // TODO: animation won't work
