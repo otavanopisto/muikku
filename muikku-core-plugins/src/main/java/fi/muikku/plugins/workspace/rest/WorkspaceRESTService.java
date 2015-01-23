@@ -625,7 +625,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspaceMaterialController.deleteWorkspaceMaterial(workspaceMaterial, removeAnswers != null ? removeAnswers : false);
         return Response.noContent().build();
       } catch (WorkspaceMaterialContainsAnswersExeption e) {
-        return Response.ok(new WorkspaceMaterialDeleteError(WorkspaceMaterialDeleteError.Reason.CONTAINS_ANSWERS)).build();
+        return Response.status(Status.CONFLICT).entity(new WorkspaceMaterialDeleteError(WorkspaceMaterialDeleteError.Reason.CONTAINS_ANSWERS)).build();
       } catch (Exception e) {
         return Response.status(Status.INTERNAL_SERVER_ERROR).build();
       }
