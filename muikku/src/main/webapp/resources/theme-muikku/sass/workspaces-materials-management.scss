@@ -246,6 +246,11 @@ body.workspace-materials-management {
         padding:10px;
         color:#a8c2d4;
         transition:color,border 0.3s,0.6s ease-in-out,ease-in-out;
+        margin:0;
+        background:transparent;
+        box-shadow:none;
+        border-radius:0;
+        text-transform:uppercase;
         
         span {
           text-transform:uppercase;
@@ -253,7 +258,8 @@ body.workspace-materials-management {
         
         &:hover {
           color:#fff;
-          border: 1px solid #94b7d0;
+          border:1px solid #94b7d0;
+          box-shadow:none;
         }
         
       }
@@ -761,7 +767,8 @@ body.workspace-materials-management {
           min-width:90px;
         }
         
-        button.delete-button {
+        button.delete-button,
+        button.confirm-button {
           float:right;
           background:#de3211;
         }

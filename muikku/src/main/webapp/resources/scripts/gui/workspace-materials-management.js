@@ -95,11 +95,9 @@
     }
   }
   
-  function deletePage(workspaceMaterialId) {
+  function confirmPageDeletion(confirmCallback) {
     renderDustTemplate('workspace/materials-management-page-delete-corfirm.dust', { }, $.proxy(function (text) {
-      var workspaceId = $('.workspaceEntityId').val();
       var dialog = $(text);
-      var page = $('#page-' + workspaceMaterialId);
       $(text).dialog({
         modal: true, 
         resizable: false,
@@ -109,27 +107,8 @@
           'text': dialog.data('button-delete-text'),
           'class': 'delete-button',
           'click': function(event) {
-            mApi().workspace.workspaces.materials.del(workspaceId,workspaceMaterialId).callback($.proxy(function (err){
-              if (err) {
-                $('.notification-queue').notificationQueue('notification', 'error', err);
-              } else {
-                $(this).dialog("close");
-                // TODO: animation won't work
-                $(page)
-                .animate({
-                  height:0,
-                  opacity: 0
-                }, {
-                  duration : 500,
-                  easing : "easeInOutQuint",
-                  complete: function() {
-                    $(page).next(".workspace-materials-management-addpage").remove();
-                    $(page).next(".workspaces-materials-management-insert-file").remove();
-                    $(page).remove();
-                  }
-                });
-              }
-            }, this));
+            $(this).dialog("close");
+            confirmCallback();
           }
         }, {
           'text': dialog.data('button-cancel-text'),
@@ -141,6 +120,54 @@
       });
     }, this));
   }
+  
+  function deletePage(workspaceMaterialId, materialId, workspaceId, removeAnswers, errorCallback) {
+    mApi().workspace.workspaces.materials.del(workspaceId,workspaceMaterialId, {}, {removeAnswers: removeAnswers}).callback($.proxy(function (err, jqXHR){
+      if (err) {
+        errorCallback(err, jqXHR);
+      } else {
+        // TODO: animation won't work
+        var page = $('#page-' + workspaceMaterialId);
+        $(page)
+          .animate({
+            height:0,
+            opacity: 0
+          }, {
+            duration : 500,
+            easing : "easeInOutQuint",
+            complete: function() {
+              page.nextAll('.workspace-materials-management-addpage').first().remove();
+              page.nextAll('.workspaces-materials-management-insert-file').first().remove();
+              page.remove();
+            }
+          });
+      }
+    }, this));
+  }
+  
+  $(document).on('click', '.delete-page', function (event, data) {
+    var workspaceMaterialId = $(this).data('workspace-material-id');
+    var materialId = $(this).data('material-id');
+    var workspaceId = $('.workspaceEntityId').val();
+    confirmPageDeletion($.proxy(function () {
+      deletePage(workspaceMaterialId, materialId, workspaceId, false, function (err, jqXHR) {
+        if (jqXHR.status == 409) {
+          var response = $.parseJSON(jqXHR.responseText);
+          if (response && response.reason == 'CONTAINS_ANSWERS') {
+            confirmAnswerRemovalDelete(function () {
+              deletePage(workspaceMaterialId, materialId, workspaceId, true, function (err, jqXHR) {
+                $('.notification-queue').notificationQueue('notification', 'error', err);
+              });
+            });
+          } else {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          }
+        } else {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        }    
+      });
+    }, this));
+  });
   
   function toggleVisibility(node, hidden) {
     var _node = node;
@@ -383,13 +410,7 @@
     } 
     editPage($(this).closest('section'));
   });
-  
-  $(document).on('click', '.delete-page', function (event, data) {
-    var workspaceMaterialId = $(this).data('workspace-material-id');
-    
-    deletePage(workspaceMaterialId);
-  });
-  
+
   $(document).on('click', '.hide-page', function (event, data) {
     // TODO: Better way to toggle classes and observe hidden/visible states?
     var page = $(this).closest('.workspace-materials-view-page');
@@ -466,11 +487,11 @@
   
   $(document).on('htmlMaterialRevisionChanged', function (event, data) {
     $('a.publish-page[data-material-id="' + data.materialId + '"]')
-      .data('current-revision', data.revisionNumber)
+      .attr('data-current-revision', data.revisionNumber)
       .removeClass('disabled');
     
     $('a.revert-page[data-material-id="' + data.materialId + '"]')
-      .data('current-revision', data.revisionNumber)
+      .attr('data-current-revision', data.revisionNumber)
       .removeClass('disabled');
   });
   
@@ -499,39 +520,120 @@
       });
     }, this));
   }
+
+  function confirmAnswerRemovalPublish(confirmCallback) {
+    renderDustTemplate('workspace/materials-management-page-confirm-answer-removal-publish.dust', { }, $.proxy(function (text) {
+      var dialog = $(text);
+      $(text).dialog({
+        modal: true, 
+        resizable: false,
+        width: 500,
+        dialogClass: "workspace-materials-management-dialog",
+        buttons: [{
+          'text': dialog.data('button-confirm-text'),
+          'class': 'confirm-button',
+          'click': function(event) {
+            $(this).dialog("close");
+            confirmCallback();
+          }
+        }, {
+          'text': dialog.data('button-cancel-text'),
+          'class': 'cancel-button',
+          'click': function(event) {
+            $(this).dialog("close");
+          }
+        }]
+      });
+    }, this));
+  }
+  
+  function confirmAnswerRemovalDelete(confirmCallback) {
+    renderDustTemplate('workspace/materials-management-page-confirm-answer-removal-delete.dust', { }, $.proxy(function (text) {
+      var dialog = $(text);
+      $(text).dialog({
+        modal: true, 
+        resizable: false,
+        width: 500,
+        dialogClass: "workspace-materials-management-dialog",
+        buttons: [{
+          'text': dialog.data('button-confirm-text'),
+          'class': 'confirm-button',
+          'click': function(event) {
+            $(this).dialog("close");
+            confirmCallback();
+          }
+        }, {
+          'text': dialog.data('button-cancel-text'),
+          'class': 'cancel-button',
+          'click': function(event) {
+            $(this).dialog("close");
+          }
+        }]
+      });
+    }, this));
+  }
+  
+  function publishPage(workspaceMaterialId, materialId, publishedRevision, currentRevision, removeAnswers, errorCallback) {
+    var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', "Publishing...");
+    var editing = isPageInEditMode($('#page-' + workspaceMaterialId));
+    
+    if (editing) {
+      closeEditor($('#page-' + workspaceMaterialId), false);
+    }
+    
+    mApi().materials.html.publish.create(materialId, {
+      fromRevision: publishedRevision,
+      toRevision: currentRevision,
+      removeAnswers: removeAnswers
+    }).callback($.proxy(function (err, jqXHR) {
+      loadNotification.remove();
+      if (err) {
+        errorCallback(err, jqXHR);
+      } else {
+        $(this).attr('data-published-revision', currentRevision);
+        if (editing) {
+          editPage($('#page-' + workspaceMaterialId));
+        } else {
+          $('#page-' + workspaceMaterialId).html('');
+          $(document).muikkuMaterialLoader('loadMaterial', $('#page-' + workspaceMaterialId), true);
+        }
+        
+        $(this).closest('.workspace-materials-view-page').find('a.publish-page')
+          .attr('data-published-revision', currentRevision)
+          .addClass('disabled');
+        
+        $(this).closest('.workspace-materials-view-page').find('a.revert-page')
+          .attr('data-published-revision', currentRevision)
+          .addClass('disabled');
+      
+        $('.notification-queue').notificationQueue('notification', 'info', "Published successfully");
+      }
+    }, this));   
+  }
   
   $(document).on('click', '.publish-page', function (event, data) {
     var workspaceMaterialId = $(this).data('workspace-material-id');
     var materialId = $(this).data('material-id');
-    var currentRevision = $(this).data('current-revision');
-    var publishedRevision = $(this).data('published-revision');
+    var currentRevision = parseInt($(this).attr('data-current-revision'));
+    var publishedRevision = parseInt($(this).attr('data-published-revision'));
     if (currentRevision !== publishedRevision) {
       confirmPagePublication($.proxy(function () {
-        var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', "Publishing...");
-        var editing = isPageInEditMode($('#page-' + workspaceMaterialId));
-        
-        if (editing) {
-          closeEditor($('#page-' + workspaceMaterialId), false);
-        }
-        
-        mApi().materials.html.publish.create(materialId, {
-          fromRevision: publishedRevision,
-          toRevision: currentRevision
-        }).callback($.proxy(function (err) {
-          loadNotification.remove();
-          if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', err);
-          } else {
-            $(this).data('published-revision', currentRevision);
-            if (editing) {
-              editPage($('#page-' + workspaceMaterialId));
+        publishPage(workspaceMaterialId, materialId, publishedRevision, currentRevision, false, function (err, jqXHR) {
+          if (jqXHR.status == 409) {
+            var response = $.parseJSON(jqXHR.responseText);
+            if (response && response.reason == 'CONTAINS_ANSWERS') {
+              confirmAnswerRemovalPublish(function () {
+                publishPage(workspaceMaterialId, materialId, publishedRevision, currentRevision, true, function (err, jqXHR) {
+                  $('.notification-queue').notificationQueue('notification', 'error', err);
+                });
+              });
+            } else {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
             }
-
-            $('#page-' + workspaceMaterialId).html('');
-            $(document).muikkuMaterialLoader('loadMaterial', $('#page-' + workspaceMaterialId), true);
-            $('.notification-queue').notificationQueue('notification', 'info', "Published successfully");
-          }
-        }, this));        
+          } else {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          }    
+        });
       }, this));
     }
   });
@@ -565,8 +667,8 @@
   $(document).on('click', '.revert-page', function (event, data) {
     var workspaceMaterialId = $(this).data('workspace-material-id');
     var materialId = $(this).data('material-id');
-    var currentRevision = $(this).data('current-revision');
-    var publishedRevision = $(this).data('published-revision');
+    var currentRevision = parseInt($(this).attr('data-current-revision'));
+    var publishedRevision = parseInt($(this).attr('data-published-revision'));
     if (currentRevision !== publishedRevision) {
       confirmPageRevert($.proxy(function () {
         var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', "Reverting back to published revision...");
@@ -584,11 +686,18 @@
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
           } else {
-            $(this).data('published-revision', publishedRevision);
             if (editing) {
               editPage($('#page-' + workspaceMaterialId));
             }
 
+            $(this).closest('.workspace-materials-view-page').find('a.publish-page')
+              .attr('data-current-revision', publishedRevision)
+              .addClass('disabled');
+            
+            $(this).closest('.workspace-materials-view-page').find('a.revert-page')
+              .attr('data-current-revision', publishedRevision)
+              .addClass('disabled');
+            
             $('.notification-queue').notificationQueue('notification', 'info', "Reverted successfully");
           }
         }, this));
