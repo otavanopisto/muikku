@@ -224,6 +224,8 @@ public class PyramusSchoolDataEntityFactory {
         return EnvironmentRoleArchetype.ADMINISTRATOR;
       case MANAGER:
         return EnvironmentRoleArchetype.MANAGER;
+      case STUDENT:
+        return EnvironmentRoleArchetype.STUDENT;
       default:
         return EnvironmentRoleArchetype.CUSTOM;
     }

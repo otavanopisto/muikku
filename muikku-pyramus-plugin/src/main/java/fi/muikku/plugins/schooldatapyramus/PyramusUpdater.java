@@ -53,7 +53,7 @@ import fi.pyramus.rest.model.Student;
 import fi.pyramus.rest.model.UserRole;
 
 public class PyramusUpdater {
-  
+
   @Inject
   private WorkspaceController workspaceController;
   
@@ -145,7 +145,7 @@ public class PyramusUpdater {
     Student student = pyramusClient.get("/students/students/" + pyramusId, Student.class);
     if (student != null) {
       if (userEntity == null) {
-        fireStudentDiscoverted(student);
+        fireStudentDiscovered(student);
         return true;
       } else {
         fireStudentUpdated(student);
@@ -177,6 +177,8 @@ public class PyramusUpdater {
     
     List<Student> discoveredStudents = new ArrayList<>();
     List<Student> removedStudents = new ArrayList<>();
+    Map<Long, UserRole> discoveredUserRoles = new HashMap<>();
+    Map<Long, String> removedUserRoles = new HashMap<>();
     
     for (Student student : students) {
       String indentifier = identifierMapper.getStudentIdentifier(student.getId());
@@ -184,10 +186,14 @@ public class PyramusUpdater {
       if (student.getArchived()) {
         if (existingIdentifiers.contains(indentifier)) {
           removedStudents.add(student);
+          
+          String roleIdentifier = identifierMapper.getEnvironmentRoleIdentifier(UserRole.STUDENT);
+          removedUserRoles.put(student.getId(), roleIdentifier);
         }
       } else {
         if (!existingIdentifiers.contains(indentifier)) {
           discoveredStudents.add(student);
+          discoveredUserRoles.put(student.getId(), UserRole.STUDENT);
         }
       }
     }
@@ -197,7 +203,17 @@ public class PyramusUpdater {
     }
     
     for (Student discoveredStudent : discoveredStudents) {
-      fireStudentDiscoverted(discoveredStudent);
+      fireStudentDiscovered(discoveredStudent);
+    }
+    
+    for (Long pyramusId : removedUserRoles.keySet()) {
+      String removedRoleIdentifier = removedUserRoles.get(pyramusId);
+      fireStudentRoleRemoved(pyramusId, removedRoleIdentifier);
+    }
+    
+    for (Long pyramusId : discoveredUserRoles.keySet()) {
+      UserRole userRole = discoveredUserRoles.get(pyramusId);
+      fireStudentRoleDiscovered(pyramusId, userRole);
     }
     
     return discoveredStudents.size();
@@ -596,10 +612,10 @@ public class PyramusUpdater {
     schoolDataUserRemovedEvent.fire(new SchoolDataUserRemovedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, staffMemberIdentifier));
   }
 
-  private void fireStudentDiscoverted(Student student) {
+  private void fireStudentDiscovered(Student student) {
     String studentIdentifier = identifierMapper.getStudentIdentifier(student.getId());
  
-   List<String> emails = new ArrayList<>();
+    List<String> emails = new ArrayList<>();
     
     Email[] studentEmails = pyramusClient.get("/students/students/" + student.getId() + "/emails", Email[].class);
     for (Email studentEmail : studentEmails) {
@@ -650,6 +666,17 @@ public class PyramusUpdater {
 
   private void fireStaffMemberRoleRemoved(Long pyramusId, String roleIdentifier) {
     String userIdentifier = identifierMapper.getStaffIdentifier(pyramusId);
+    schoolDataUserEnvironmentRoleRemovedEvent.fire(new SchoolDataUserEnvironmentRoleRemovedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, roleIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userIdentifier));
+  }
+  
+  private void fireStudentRoleDiscovered(Long pyramusId, UserRole userRole) {
+    String roleIdentifier = identifierMapper.getEnvironmentRoleIdentifier(userRole);
+    String userIdentifier = identifierMapper.getStudentIdentifier(pyramusId);
+    schoolDataUserEnvironmentRoleDiscoveredEvent.fire(new SchoolDataUserEnvironmentRoleDiscoveredEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, roleIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userIdentifier));
+  }
+
+  private void fireStudentRoleRemoved(Long pyramusId, String roleIdentifier) {
+    String userIdentifier = identifierMapper.getStudentIdentifier(pyramusId);
     schoolDataUserEnvironmentRoleRemovedEvent.fire(new SchoolDataUserEnvironmentRoleRemovedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, roleIdentifier, SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userIdentifier));
   }
   
