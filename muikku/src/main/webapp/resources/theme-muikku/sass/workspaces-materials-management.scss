@@ -321,7 +321,7 @@ body.workspace-materials-management {
       -ms-transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
       transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
       
-      &.folder { /* Temporary for folder's, not needed in the near future */
+      &.folder { 
         position:relative;
         max-width:700px;
         width:auto;
@@ -335,7 +335,7 @@ body.workspace-materials-management {
         color:#38393a;
         text-transform:none;
         
-        .page-content { /* Temporary for folder's, not needed in the near future */
+        .page-content {
           font-size:27px;
         }
       }
@@ -516,8 +516,6 @@ body.workspace-materials-management {
                       border:0;
                     }
                   
-                  
-                  
                 }
                 
                 .cke_combo {
@@ -568,6 +566,58 @@ body.workspace-materials-management {
         
       }
       
+      .workspace-materials-management-view-page-controls span.assignment-type { /* Special case for assignment type setting link */
+        height:25px;
+        width:25px;
+        padding:2px;
+        margin:0 10px;
+        border-radius:25px;
+        border:1px solid #fff;
+        position:relative;
+        left:0;
+        top:-1px;
+        color:#fff;
+        text-align:center;
+        display:inline-block;
+        background:#bdc7cf;
+      
+        a.change-assignment {
+          margin:0;
+          position:relative;
+          top:-2px;
+          left:-1px;
+          font-size:18px;
+        }
+      }
+    
+      &[data-assignment-type="EVALUATED"] .workspace-materials-management-view-page-controls span.assignment-type { /* Special case for assignment type setting link */
+        background: #0099ff;
+        
+        a.change-assignment {
+          margin:0;
+          position:relative;
+          top:-3px;
+          left:-1px;
+          transform:rotate(330deg);
+          font-size:18px;
+        }
+        
+      }
+      
+      &[data-assignment-type="EXERCISE"] .workspace-materials-management-view-page-controls span.assignment-type { /* Special case for assignment type setting link */
+        background: #2ed91c;
+        
+        a.change-assignment {
+          margin:0;
+          position:relative;
+          top:-3px;
+          left:-1px;
+          transform:rotate(30deg);
+          font-size:18px;
+        }
+      
+      }
+      
       .workspace-materials-management-view-page-controls {
         position:absolute;
         top:0;
@@ -583,21 +633,6 @@ body.workspace-materials-management {
         
         .management-page-controls-secondary-subsection {
           float:right;
-          display:inline-block;
-        }
-        
-        span.assignment-type {
-          height:25px;
-          width:25px;
-          padding:2px;
-          margin:0 10px;
-          border-radius:25px;
-          border:1px solid #fff;
-          position:relative;
-          left:0;
-          top:-1px;
-          color:#fff;
-          text-align:center;
           display:inline-block;
         }
       
@@ -637,10 +672,6 @@ body.workspace-materials-management {
         a.edit-page,
         a.close-page-editor {
           width:29px;
-        }
-        
-        a.change-assignment {
-          font-size:18px;
         }
         
         a.publish-page.disabled,
@@ -820,42 +851,5 @@ body.workspace-materials-management {
       
       }
     }
-  }
-
-  .workspace-materials-view-page .workspace-materials-management-view-page-controls span.assignment-type {
-    background:#bdc7cf;
-    
-    a.change-assignment {
-      margin:0;
-      position:relative;
-      top:-2px;
-      left:-1px;
-    }
-  }
-
-  .workspace-materials-view-page[data-assignment-type="EVALUATED"] .workspace-materials-management-view-page-controls span.assignment-type {
-    background: #0099ff;
-    
-    a.change-assignment {
-      margin:0;
-      position:relative;
-      top:-3px;
-      left:-1px;
-      transform:rotate(330deg);
-    }
-    
-  }
-  
-  .workspace-materials-view-page[data-assignment-type="EXERCISE"] .workspace-materials-management-view-page-controls span.assignment-type {
-    background: #2ed91c;
-    
-    a.change-assignment {
-      margin:0;
-      position:relative;
-      top:-3px;
-      left:-1px;
-      transform:rotate(30deg);
-    }
-  
   }
 }
