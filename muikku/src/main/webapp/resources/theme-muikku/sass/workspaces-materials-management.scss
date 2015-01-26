@@ -175,29 +175,6 @@ body.workspace-materials-management {
       position:relative;
       margin:10px auto;
       
-      /* Just added page that creates new section */
-      .workspace-materials-management-new-page {
-        padding:20px 30px 20px 30px;
-        margin:25px auto 30px auto;
-        box-shadow:0 0 0 5px rgba(137,212,142,0.95);
-        
-        a.workspace-materials-management-new-page-link {
-          color:#0099ff;
-          text-decoration:none;
-          text-transform:uppercase;
-          font-size:16px;
-          transition: color 0.3s ease-in-out;
-          
-          &:hover {
-            color:#0e1d27;
-          }
-        }
-        
-        &:hover {
-          box-shadow:0 0 0 5px rgba(137,212,142,0.95);
-        }
-      }
-      
       span.workspace-materials-management-line-separator {
         display:block;
         position:absolute;
@@ -218,7 +195,7 @@ body.workspace-materials-management {
         transition: color 0.3s ease-in-out; 
         
         &.icon-add:before {
-          font-size:18px;
+          font-size:17px;
           float:left;
         }
         
@@ -233,6 +210,29 @@ body.workspace-materials-management {
         
       }
       
+    }
+    
+    /* Just added page that creates new article */
+    .workspace-materials-view-page.material-management-view.workspace-materials-management-new-page {
+      padding:20px 30px 20px 30px;
+      margin:30px auto 30px auto;
+      box-shadow:0 0 0 5px rgba(137,212,142,0.95);
+      
+      a.workspace-materials-management-new-page-link {
+        color:#0099ff;
+        text-decoration:none;
+        text-transform:uppercase;
+        font-size:16px;
+        transition: color 0.3s ease-in-out;
+        
+        &:hover {
+          color:#0e1d27;
+        }
+      }
+      
+      &:hover {
+        box-shadow:0 0 0 5px rgba(137,212,142,0.95);
+      }
     }
   
     /* File-upload field wrapper */
@@ -595,7 +595,7 @@ body.workspace-materials-management {
           border:1px solid #fff;
           position:relative;
           left:0;
-          top:0;
+          top:-1px;
           color:#fff;
           text-align:center;
           display:inline-block;

@@ -73,7 +73,18 @@
         </ui:fragment>  
         
         <ui:fragment rendered="#{node.type ne 'folder'}">
-          <article id="page-#{node.workspaceMaterialId}" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-material-type="#{node.type}" data-material-title="#{node.title}" class="workspace-materials-view-page material-reading-view"/>
+          <article id="page-#{node.workspaceMaterialId}" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-material-type="#{node.type}" data-material-title="#{node.title}" class="workspace-materials-view-page material-reading-view">
+            <ui:fragment rendered="#{articleNode.assignmentType eq 'EXERCISE'}">
+              <div class="muikku-page-task-type exercise">
+                <span class="icon-exercise"></span>
+              </div>
+            </ui:fragment>
+            <ui:fragment rendered="#{articleNode.assignmentType eq 'EVALUATED'}">
+              <div class="muikku-page-task-type evaluate">
+                <span class="icon-exercise"></span>
+              </div>
+            </ui:fragment>
+          </article>
         </ui:fragment>  
       </ui:repeat>
     </article>
