@@ -418,20 +418,51 @@
     toggleVisibility(page, !hidden);
   });
   
+  function changeAssignmentType(workspaceId, workspaceMaterialId, assignmentType, callback) {
+    mApi().workspace.workspaces.materials.read(workspaceId, workspaceMaterialId).callback(function (err, workspaceMaterial) {
+      mApi().workspace.workspaces.materials
+        .update(workspaceId, workspaceMaterialId, $.extend(workspaceMaterial, { assignmentType: assignmentType }))
+        .callback(function (err) {
+          callback(err);
+        });
+    });
+  }
+  
   $(document).on('click', '.change-assignment', function (event, data) {
     // TODO: Actually do something AND DO IT BETTER!
     var page = $(this).closest('.workspace-materials-view-page');
-    var assignmentType = $(this).attr('data-material-assignment-type');
+    var assignmentType = $(page).attr('data-assignment-type');
+    var workspaceId = $('.workspaceEntityId').val();
+    var workspaceMaterialId = $(this).attr('data-workspace-material-id');
     
-    if (assignmentType == 'null' || assignmentType == undefined || assignmentType == '') {
-      $(this).attr('data-material-assignment-type', 'exercise');
-      $(this).closest('.assignment-type').removeClass('null').addClass('exercise');
-    } else if (assignmentType == 'exercise') {
-      $(this).attr('data-material-assignment-type', 'evaluate');
-      $(this).closest('.assignment-type').removeClass('exercise').addClass('evaluate');
-    } else {
-      $(this).attr('data-material-assignment-type', 'null');
-      $(this).closest('.assignment-type').removeClass('evaluate').addClass('null');
+    switch (assignmentType) {
+      case "EXERCISE":
+        changeAssignmentType(workspaceId, workspaceMaterialId, "EVALUATED", $.proxy(function (err) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            $(page).attr('data-assignment-type', 'EVALUATED');
+          }
+        }, this));
+      break;
+      case "EVALUATED":
+        changeAssignmentType(workspaceId, workspaceMaterialId, null, $.proxy(function (err) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            $(page).removeAttr('data-assignment-type');
+          }
+        }, this));
+      break;
+      default:
+        changeAssignmentType(workspaceId, workspaceMaterialId, "EXERCISE", $.proxy(function (err) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            $(page).attr('data-assignment-type', 'EXERCISE');
+          }
+        }, this));
+      break;
     }
   });
   
