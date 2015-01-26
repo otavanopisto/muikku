@@ -418,6 +418,23 @@
     toggleVisibility(page, !hidden);
   });
   
+  $(document).on('click', '.change-assessment', function (event, data) {
+    // TODO: Actually do something AND DO IT BETTER!
+    var page = $(this).closest('.workspace-materials-view-page');
+    var assessmentType = $(this).attr('data-material-assessment-type');
+    
+    if (assessmentType == 'null' || assessmentType == undefined || assessmentType == '') {
+      $(this).attr('data-material-assessment-type', 'exercise');
+      $(this).closest('.assessment-type').removeClass('null').addClass('exercise');
+    } else if (assessmentType == 'exercise') {
+      $(this).attr('data-material-assessment-type', 'evaluate');
+      $(this).closest('.assessment-type').removeClass('exercise').addClass('evaluate');
+    } else {
+      $(this).attr('data-material-assessment-type', 'null');
+      $(this).closest('.assessment-type').removeClass('evaluate').addClass('null');
+    }
+  });
+  
   $(document).on('click', '.workspaces-materials-management-add-page', function (event, data) {
 	  
     var nextMaterial = $(this).parent().nextAll('.workspace-materials-view-page').first();

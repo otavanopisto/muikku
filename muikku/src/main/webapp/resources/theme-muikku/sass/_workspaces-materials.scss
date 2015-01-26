@@ -245,5 +245,42 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     }
   }
   
+  .muikku-page-task-type {
+    height: 30px;
+    width: 30px;
+    padding: 5px;
+    border-radius: 25px;
+    border: 2px solid #fff;
+    position: absolute;
+    left: -20px;
+    top: 25px;
+    color: #fff;
+    font-size: 22px;
+    text-align: center;
+    
+    &.evaluate {
+      background: #0099ff;
+      transform:rotate(330deg);
+      
+      span.icon-exercise { /* Small re-adjust because of rotate */
+        position:relative;
+        top:-1px;
+        left:0px;
+      }
+    }
+    
+    &.exercise {
+      background: #2ed91c;
+      transform:rotate(30deg);
+      
+      span.icon-exercise { /* Small re-adjust because of rotate */
+        position:relative;
+        top:-1px;
+        right:-1px;
+      }
+      
+    }
+  }
+  
  
 }

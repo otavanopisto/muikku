@@ -1,22 +1,29 @@
 {@if cond="{'{type}' !== 'folder'}"}
 <div class="workspace-materials-management-view-page-controls">
-  <a href="javascript:void(null)" class="edit-page icon-edit" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}"><span>Edit</span></a>
-  <a href="javascript:void(null)" class="close-page-editor icon-exit-editing" style="display: none" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}"><span>Close editor</span></a>
-  <a href="javascript:void(null)" class="delete-page icon-delete" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}"><span>Delete</span></a>
-  <a href="javascript:void(null)" class="hide-page icon-hide" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}"><span>Hide</span></a>
-  {@if cond="'{data.publishedRevision}'&&'{data.currentRevision}'"}
-    {@if cond="{data.publishedRevision}=={data.currentRevision}"}
-      <a href="javascript:void(null)" class="publish-page icon-publish disabled" data-published-revision="{data.publishedRevision}" data-current-revision="{data.currentRevision}" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}"><span>Publish</span></a>
-    {:else}
-      <a href="javascript:void(null)" class="publish-page icon-publish" data-published-revision="{data.publishedRevision}" data-current-revision="{data.currentRevision}" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}"><span>Publish</span></a>
+  <div class="management-page-controls-primary-subsection">
+    <a href="javascript:void(null)" class="edit-page icon-edit" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}"><span>Edit</span></a>
+    <a href="javascript:void(null)" class="close-page-editor icon-exit-editing" style="display: none" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}"><span>Close editor</span></a>
+    <a href="javascript:void(null)" class="delete-page icon-delete" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}"><span>Delete</span></a>
+    <a href="javascript:void(null)" class="hide-page icon-hide" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}"><span>Hide</span></a>
+    <span class="assessment-type null">
+      <a href="javascript:void(null)" class="change-assessment icon-exercise" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}" data-material-assessment-type=""><span>Change assessment type</span></a>
+    </span>
+  </div>
+  <div class="management-page-controls-secondary-subsection">
+    {@if cond="'{data.publishedRevision}'&&'{data.currentRevision}'"}
+      {@if cond="{data.publishedRevision}=={data.currentRevision}"}
+        <a href="javascript:void(null)" class="publish-page icon-publish disabled" data-published-revision="{data.publishedRevision}" data-current-revision="{data.currentRevision}" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}"><span>Publish</span></a>
+      {:else}
+        <a href="javascript:void(null)" class="publish-page icon-publish" data-published-revision="{data.publishedRevision}" data-current-revision="{data.currentRevision}" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}"><span>Publish</span></a>
+      {/if}
+      
+      {@if cond="{data.publishedRevision}=={data.currentRevision}"}
+        <a href="javascript:void(null)" class="revert-page icon-revert disabled" data-published-revision="{data.publishedRevision}" data-current-revision="{data.currentRevision}" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}"><span>Revert to published</span></a>
+      {:else}
+        <a href="javascript:void(null)" class="revert-page icon-revert" data-published-revision="{data.publishedRevision}" data-current-revision="{data.currentRevision}" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}"><span>Revert to published</span></a>
+      {/if}
     {/if}
-    
-    {@if cond="{data.publishedRevision}=={data.currentRevision}"}
-      <a href="javascript:void(null)" class="revert-page icon-revert disabled" data-published-revision="{data.publishedRevision}" data-current-revision="{data.currentRevision}" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}"><span>Revert to published</span></a>
-    {:else}
-      <a href="javascript:void(null)" class="revert-page icon-revert" data-published-revision="{data.publishedRevision}" data-current-revision="{data.currentRevision}" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}"><span>Revert to published</span></a>
-    {/if}
-  {/if}
+  </div>
 </div>
 {/if}
 <div class="page-content">

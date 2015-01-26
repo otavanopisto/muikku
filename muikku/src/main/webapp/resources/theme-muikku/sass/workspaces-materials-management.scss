@@ -463,8 +463,8 @@ body.workspace-materials-management {
         /* Editor save status */
         .workspace-material-html-editor-status {
           position:absolute;
-          top:8px;
-          right:12px;
+          top:9px;
+          right:120px;
           z-index:11;
           font-size:14px;
           color:#fff;
@@ -575,10 +575,74 @@ body.workspace-materials-management {
         right:0;
         height:41px;
         background:#7996aa;
+        
+        .management-page-controls-primary-subsection {
+          float:left;
+          display:inline-block;
+        }
+        
+        .management-page-controls-secondary-subsection {
+          float:right;
+          display:inline-block;
+        }
+        
+        span.assessment-type {
+          height:25px;
+          width:25px;
+          padding:2px;
+          margin:0 10px;
+          border-radius:25px;
+          border:1px solid #fff;
+          position:relative;
+          left:0;
+          top:0;
+          color:#fff;
+          text-align:center;
+          display:inline-block;
+        
+          &.null {
+            background:#bdc7cf;
+            
+            a.change-assessment {
+              margin:0;
+              position:relative;
+              top:-2px;
+              left:-1px;
+            }
+          }
+          
+          &.evaluate {
+            background: #0099ff;
+            
+            a.change-assessment {
+              margin:0;
+              position:relative;
+              top:-2px;
+              left:-1px;
+              transform:rotate(330deg);
+            }
+            
+          }
+          
+          &.exercise {
+            background: #2ed91c;
+            
+            a.change-assessment {
+              margin:0;
+              position:relative;
+              top:-3px;
+              left:-1px;
+              transform:rotate(30deg);
+            }
+          
+          }
+        
+        }
       
         a.edit-page, 
         a.delete-page, 
         a.hide-page,
+        a.change-assessment,
         a.publish-page,
         a.revert-page,
         a.close-page-editor {
@@ -611,6 +675,10 @@ body.workspace-materials-management {
         a.edit-page,
         a.close-page-editor {
           width:29px;
+        }
+        
+        a.change-assessment {
+          font-size:18px;
         }
         
         a.publish-page.disabled,

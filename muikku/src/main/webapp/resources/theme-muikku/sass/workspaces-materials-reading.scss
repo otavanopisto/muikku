@@ -226,7 +226,7 @@ body.workspace-materials-reading {
       line-height:1.3em;
     }
     
-    .workspace-materials-view-page-section.material-reading-view {
+    .workspace-materials-view-page-section.material-reading-view { /* <section> */
     
      & > h2 {
        max-width:700px;
@@ -270,6 +270,7 @@ body.workspace-materials-reading {
       font-size:18px;
       font-weight:300;
       word-wrap: break-word;
+      position:relative;
       
       &.folder {
         position:relative;
