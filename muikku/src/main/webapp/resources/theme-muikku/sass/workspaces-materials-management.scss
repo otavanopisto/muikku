@@ -586,7 +586,7 @@ body.workspace-materials-management {
           display:inline-block;
         }
         
-        span.assessment-type {
+        span.assignment-type {
           height:25px;
           width:25px;
           padding:2px;
@@ -603,7 +603,7 @@ body.workspace-materials-management {
           &.null {
             background:#bdc7cf;
             
-            a.change-assessment {
+            a.change-assignment {
               margin:0;
               position:relative;
               top:-2px;
@@ -614,10 +614,10 @@ body.workspace-materials-management {
           &.evaluate {
             background: #0099ff;
             
-            a.change-assessment {
+            a.change-assignment {
               margin:0;
               position:relative;
-              top:-2px;
+              top:-3px;
               left:-1px;
               transform:rotate(330deg);
             }
@@ -627,7 +627,7 @@ body.workspace-materials-management {
           &.exercise {
             background: #2ed91c;
             
-            a.change-assessment {
+            a.change-assignment {
               margin:0;
               position:relative;
               top:-3px;
@@ -642,7 +642,7 @@ body.workspace-materials-management {
         a.edit-page, 
         a.delete-page, 
         a.hide-page,
-        a.change-assessment,
+        a.change-assignment,
         a.publish-page,
         a.revert-page,
         a.close-page-editor {
@@ -677,7 +677,7 @@ body.workspace-materials-management {
           width:29px;
         }
         
-        a.change-assessment {
+        a.change-assignment {
           font-size:18px;
         }
         

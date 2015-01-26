@@ -418,20 +418,20 @@
     toggleVisibility(page, !hidden);
   });
   
-  $(document).on('click', '.change-assessment', function (event, data) {
+  $(document).on('click', '.change-assignment', function (event, data) {
     // TODO: Actually do something AND DO IT BETTER!
     var page = $(this).closest('.workspace-materials-view-page');
-    var assessmentType = $(this).attr('data-material-assessment-type');
+    var assignmentType = $(this).attr('data-material-assignment-type');
     
-    if (assessmentType == 'null' || assessmentType == undefined || assessmentType == '') {
-      $(this).attr('data-material-assessment-type', 'exercise');
-      $(this).closest('.assessment-type').removeClass('null').addClass('exercise');
-    } else if (assessmentType == 'exercise') {
-      $(this).attr('data-material-assessment-type', 'evaluate');
-      $(this).closest('.assessment-type').removeClass('exercise').addClass('evaluate');
+    if (assignmentType == 'null' || assignmentType == undefined || assignmentType == '') {
+      $(this).attr('data-material-assignment-type', 'exercise');
+      $(this).closest('.assignment-type').removeClass('null').addClass('exercise');
+    } else if (assignmentType == 'exercise') {
+      $(this).attr('data-material-assignment-type', 'evaluate');
+      $(this).closest('.assignment-type').removeClass('exercise').addClass('evaluate');
     } else {
-      $(this).attr('data-material-assessment-type', 'null');
-      $(this).closest('.assessment-type').removeClass('evaluate').addClass('null');
+      $(this).attr('data-material-assignment-type', 'null');
+      $(this).closest('.assignment-type').removeClass('evaluate').addClass('null');
     }
   });
   
