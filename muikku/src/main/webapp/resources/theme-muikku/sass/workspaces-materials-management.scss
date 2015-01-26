@@ -566,7 +566,7 @@ body.workspace-materials-management {
         
       }
       
-      .workspace-materials-management-view-page-controls span.assignment-type { /* Special case for assignment type setting link */
+      .workspace-materials-management-view-page-controls span.assignment-type { /* Special case for assignment type link */
         height:25px;
         width:25px;
         padding:2px;
@@ -590,7 +590,7 @@ body.workspace-materials-management {
         }
       }
     
-      &[data-assignment-type="EVALUATED"] .workspace-materials-management-view-page-controls span.assignment-type { /* Special case for assignment type setting link */
+      &[data-assignment-type="EVALUATED"] .workspace-materials-management-view-page-controls span.assignment-type { /* Special case for assignment type link */
         background: #0099ff;
         
         a.change-assignment {
@@ -604,7 +604,7 @@ body.workspace-materials-management {
         
       }
       
-      &[data-assignment-type="EXERCISE"] .workspace-materials-management-view-page-controls span.assignment-type { /* Special case for assignment type setting link */
+      &[data-assignment-type="EXERCISE"] .workspace-materials-management-view-page-controls span.assignment-type { /* Special case for assignment type link */
         background: #2ed91c;
         
         a.change-assignment {
