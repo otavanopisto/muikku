@@ -1,20 +1,22 @@
-function getLocaleText(key, args) {
+function getLocaleText(key) {
   var val = window._MUIKKU_LOCALEMAP[key];
   if (val) {
-    if (args) {
-      for (var i = 0; i < args.length; i++) {
-        val = val.replace('{' + i + '}', args[i]);
-      }
-      if (val.indexOf('{date}') !== -1) {
-        val = val.replace('{date}', getCurrentDate());
-      }
-      if (val.indexOf('{time}') !== -1) {
-        val = val.replace('{time}', getCurrentTime());
-      }
+    for (var i = 1; i < arguments.length; i++) {
+      val = val.replace('{' + (i - 1) + '}', arguments[i]);
     }
+    
+    if (val.indexOf('{date}') !== -1) {
+      val = val.replace('{date}', getCurrentDate());
+    }
+    
+    if (val.indexOf('{time}') !== -1) {
+      val = val.replace('{time}', getCurrentTime());
+    }
+    
     return val;
-  } else
+  } else {
     return "!" + key + "!";
+  }
 }
 
 function getLocale() {
