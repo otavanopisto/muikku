@@ -58,6 +58,7 @@ import fi.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.muikku.plugins.workspace.WorkspaceMaterialUtils;
 import fi.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.model.WorkspaceNodeType;
 import fi.muikku.schooldata.WorkspaceEntityController;
@@ -91,7 +92,12 @@ public class DeusNexMachinaController {
         iframeElement.setAttribute("seamless", "seamless");
         iframeElement.setAttribute("border", "0");
         iframeElement.setAttribute("frameborder", "0");
-
+        if (queryType == 1) {
+          iframeElement.setAttribute("data-assessment-type", "exercise");
+        }
+        if (queryType == 2) {
+          iframeElement.setAttribute("data-assessment-type", "evaluable");
+        }
         iframeElement.setAttribute("data-type", "embedded-document");
 
         iframeElement.setAttribute("width", "100%");
@@ -260,7 +266,6 @@ public class DeusNexMachinaController {
 
       return null;
     }
-
     private WorkspaceNode importRoot;
     private DeusNexDocument deusNexDocument;
   }
@@ -385,7 +390,19 @@ public class DeusNexMachinaController {
         Material material = createMaterial(importRoot, resource, deusNexDocument);
 
         if (material != null) {
-          WorkspaceNode workspaceNode = workspaceMaterialController.createWorkspaceMaterial(parent, material, resource.getName());
+          WorkspaceMaterialAssignmentType assignmentType = null;
+
+          if (resource instanceof Query) {
+            switch (((Query)resource).getQueryType()) {
+            case "1":
+              assignmentType = WorkspaceMaterialAssignmentType.EXERCISE;
+              break;
+            case "2":
+              assignmentType = WorkspaceMaterialAssignmentType.EVALUATED;
+              break;
+            }
+          }
+          WorkspaceNode workspaceNode = workspaceMaterialController.createWorkspaceMaterial(parent, material, resource.getName(), assignmentType);
 
           try {
             setResourceWorkspaceNodeId(resource.getNo(), workspaceNode.getId());
