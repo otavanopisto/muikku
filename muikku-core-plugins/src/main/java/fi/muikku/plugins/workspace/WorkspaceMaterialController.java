@@ -442,7 +442,7 @@ public class WorkspaceMaterialController {
     case FOLDER:
       WorkspaceFolder workspaceFolder = (WorkspaceFolder) rootMaterialNode;
       ContentNode folderContentNode = new ContentNode(
-          workspaceFolder.getTitle(), "folder", rootMaterialNode.getId(), null, level);
+          workspaceFolder.getTitle(), "folder", rootMaterialNode.getId(), null, level, null);
 
       List<WorkspaceNode> children = listWorkspaceNodesByParentSortByOrderNumber(workspaceFolder);
       List<FlattenedWorkspaceNode> flattenedChildren;
@@ -457,7 +457,7 @@ public class WorkspaceMaterialController {
       for (FlattenedWorkspaceNode child : flattenedChildren) {
         ContentNode contentNode;
         if (child.isEmptyFolder) {
-          contentNode = new ContentNode(child.emptyFolderTitle, "folder", rootMaterialNode.getId(), null, child.level);
+          contentNode = new ContentNode(child.emptyFolderTitle, "folder", rootMaterialNode.getId(), null, child.level, null);
         } else {
           contentNode = createContentNode(child.node, child.level);
         }
@@ -470,7 +470,7 @@ public class WorkspaceMaterialController {
       Material material = materialController.findMaterialById(workspaceMaterial
           .getMaterialId());
       return new ContentNode(material.getTitle(), material.getType(),
-          rootMaterialNode.getId(), material.getId(), level);
+          rootMaterialNode.getId(), material.getId(), level, workspaceMaterial.getAssignmentType());
     default:
       return null;
     }
