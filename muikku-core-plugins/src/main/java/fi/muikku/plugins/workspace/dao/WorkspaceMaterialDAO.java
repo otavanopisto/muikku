@@ -17,17 +17,18 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
 	
 	private static final long serialVersionUID = -1777382212388116832L;
 
-  public WorkspaceMaterial create(WorkspaceNode parent, long materialId, String urlName, Integer orderNumber) {
-    return create(parent, materialId, urlName, orderNumber, Boolean.FALSE);
+  public WorkspaceMaterial create(WorkspaceNode parent, long materialId, String urlName, Integer orderNumber, WorkspaceMaterialAssignmentType assignmentType) {
+    return create(parent, materialId, urlName, orderNumber, Boolean.FALSE, assignmentType);
   }
 
-  public WorkspaceMaterial create(WorkspaceNode parent, long materialId, String urlName, Integer orderNumber, Boolean hidden) {
+  public WorkspaceMaterial create(WorkspaceNode parent, long materialId, String urlName, Integer orderNumber, Boolean hidden, WorkspaceMaterialAssignmentType assignmentType) {
 		WorkspaceMaterial workspaceMaterial = new WorkspaceMaterial();
 		workspaceMaterial.setParent(parent);
 		workspaceMaterial.setMaterialId(materialId);
 		workspaceMaterial.setUrlName(urlName);
 		workspaceMaterial.setOrderNumber(orderNumber);
 		workspaceMaterial.setHidden(hidden);
+		workspaceMaterial.setAssignmentType(assignmentType);
 		
 		return persist(workspaceMaterial);
 	}
