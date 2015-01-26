@@ -420,11 +420,15 @@
   
   function changeAssignmentType(workspaceId, workspaceMaterialId, assignmentType, callback) {
     mApi().workspace.workspaces.materials.read(workspaceId, workspaceMaterialId).callback(function (err, workspaceMaterial) {
-      mApi().workspace.workspaces.materials
-        .update(workspaceId, workspaceMaterialId, $.extend(workspaceMaterial, { assignmentType: assignmentType }))
-        .callback(function (err) {
-          callback(err);
-        });
+      if (err) {
+        callback(err);
+      } else {
+        mApi().workspace.workspaces.materials
+          .update(workspaceId, workspaceMaterialId, $.extend(workspaceMaterial, { assignmentType: assignmentType }))
+          .callback(function (err) {
+            callback(err);
+          });
+      }
     });
   }
   
@@ -433,7 +437,7 @@
     var page = $(this).closest('.workspace-materials-view-page');
     var assignmentType = $(page).attr('data-assignment-type');
     var workspaceId = $('.workspaceEntityId').val();
-    var workspaceMaterialId = $(this).attr('data-workspace-material-id');
+    var workspaceMaterialId = $(page).attr('data-workspace-material-id');
     
     switch (assignmentType) {
       case "EXERCISE":
