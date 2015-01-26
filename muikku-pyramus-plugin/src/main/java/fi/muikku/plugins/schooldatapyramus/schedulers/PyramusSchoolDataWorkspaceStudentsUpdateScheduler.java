@@ -3,8 +3,7 @@ package fi.muikku.plugins.schooldatapyramus.schedulers;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.Dependent;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
@@ -13,8 +12,7 @@ import fi.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 import fi.muikku.schooldata.WorkspaceEntityController;
 
-@Dependent
-@Stateful
+@ApplicationScoped
 public class PyramusSchoolDataWorkspaceStudentsUpdateScheduler implements PyramusUpdateScheduler {
 
   private static final int BATCH_SIZE = 10;

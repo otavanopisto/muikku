@@ -7,8 +7,6 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.commons.lang3.LocaleUtils;
-
 import fi.muikku.session.SessionController;
 
 @Named("i18n")
@@ -21,14 +19,6 @@ public class LocaleBackingBean {
   
   @Inject
   private LocaleController localeController;
-
-  public Long getJsLastModified(String language) {
-    return localeController.getJsLastModified(LocaleUtils.toLocale(language));
-  }
-
-  public String getJsLocales(String language) {
-    return localeController.getJsLocales(LocaleUtils.toLocale(language));
-  }
 
   public Map<String, String> getText() {
     return localeController.getText(sessionController.getLocale());

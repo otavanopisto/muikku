@@ -1,5 +1,8 @@
 package fi.muikku.plugins.schooldatapyramus.schedulers;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
@@ -12,7 +15,6 @@ import javax.inject.Inject;
 import fi.muikku.events.ContextDestroyedEvent;
 import fi.muikku.events.ContextInitializedEvent;
 import fi.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
-import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 
 @Singleton
 @ApplicationScoped
@@ -21,6 +23,9 @@ public class PyramusScheduler {
   @Any
   @Inject
   private Instance<PyramusUpdateScheduler> updateSchedulers;
+  
+  @Inject
+  private Logger logger;
   
   @PostConstruct
   public void init() {
@@ -37,7 +42,7 @@ public class PyramusScheduler {
   }
   
   @Schedule(minute = "*/1", hour = "*", persistent = false)
-  public void synchronizePyramusData() throws UnexpectedSchoolDataBridgeException {
+  public void synchronizePyramusData() {
     if (!SchoolDataPyramusPluginDescriptor.SCHEDULERS_ACTIVE) {
       return;
     }
@@ -49,6 +54,8 @@ public class PyramusScheduler {
         try {
           running = true;
           updateScheduler.synchronize();
+        } catch (Exception ex) {
+          logger.log(Level.SEVERE, "synchronization failed.", ex);
         } finally {
           running = false;
         }

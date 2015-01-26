@@ -73,6 +73,8 @@
       this._titleInput = $('<input>')
         .addClass('workspace-material-html-editor-title')
         .attr('type', 'text')
+        .data('old-value', this.options.materialTitle||'')
+        .val(this.options.materialTitle||'')
         .appendTo(this._titleInputWrapper);
       
       this._status = $('<div>')
