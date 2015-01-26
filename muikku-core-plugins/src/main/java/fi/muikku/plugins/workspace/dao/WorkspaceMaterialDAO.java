@@ -9,6 +9,7 @@ import javax.persistence.criteria.Root;
 
 import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial_;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
 
@@ -83,6 +84,11 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
 
   public WorkspaceMaterial updateUrlName(WorkspaceMaterial workspaceMaterial, String urlName) {
     workspaceMaterial.setUrlName(urlName);
+    return persist(workspaceMaterial);
+  }
+  
+  public WorkspaceMaterial updateAssignmentType(WorkspaceMaterial workspaceMaterial, WorkspaceMaterialAssignmentType assignmentType) {
+    workspaceMaterial.setAssignmentType(assignmentType);
     return persist(workspaceMaterial);
   }
 
