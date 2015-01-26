@@ -54,8 +54,8 @@
     var editorName = 'workspaceMaterialEditor' + (materialType.substring(0, 1).toUpperCase() + materialType.substring(1));
     var pageElement = $('#page-' + workspaceMaterialId);
     var pageSection = $(pageElement).closest(".workspace-materials-view-page");
-    $(node).find('.edit-page').hide();
-    $(node).find('.close-page-editor').show();
+//    $(node).find('.edit-page').hide();
+//    $(node).find('.close-page-editor').show();
     
     pageSection.addClass("page-edit-mode");
     
@@ -87,8 +87,8 @@
         $(document).muikkuMaterialLoader('loadMaterial', node, true);
       }
 
-      $(node).find('.edit-page').show();
-      $(node).find('.close-page-editor').hide();
+//      $(node).find('.edit-page').show();
+//      $(node).find('.close-page-editor').hide();
       node.removeClass("page-edit-mode");
     } else {
       $('.notification-queue').notificationQueue('notification', 'error', "Could not find editor for " + materialType);
