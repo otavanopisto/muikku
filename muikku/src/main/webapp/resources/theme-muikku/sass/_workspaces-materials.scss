@@ -245,6 +245,54 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     }
   }
   
+}
+
+/* Assigment type indicators under basic view */
+body.workspace-materials #contentWorkspaceMaterials {
+
+  .muikku-page-assignment-type {
+    height: 25px;
+    width: 25px;
+    padding: 5px;
+    border-radius: 25px;
+    border: 2px solid #fff;
+    position: absolute;
+    left: -20px;
+    top: 27px;
+    color: #fff;
+    font-size: 20px;
+    text-align: center;
+    
+    &.evaluated {
+      background: #0099ff;
+      transform:rotate(330deg);
+      
+      span.icon-exercise { /* Small re-adjust because of rotate */
+        position:relative;
+        top:-2px;
+        left:0px;
+      }
+    }
+    
+    &.exercise {
+      background: #2ed91c;
+      transform:rotate(30deg);
+      
+      span.icon-exercise { /* Small re-adjust because of rotate */
+        position:relative;
+        top:-2px;
+        right:-1px;
+      }
+      
+    }
+  }
+  
+}
+
+
+/* Assigment type indicators under reading view */
+body.workspace-materials-reading #contentWorkspaceMaterialsReading {
+
   .muikku-page-assignment-type {
     height: 30px;
     width: 30px;
@@ -282,5 +330,4 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     }
   }
   
- 
 }
