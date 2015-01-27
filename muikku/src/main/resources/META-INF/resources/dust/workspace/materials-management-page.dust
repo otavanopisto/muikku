@@ -23,8 +23,9 @@
       <a href="javascript:void(null)" class="revert-page icon-revert" data-published-revision="{data.publishedRevision}" data-current-revision="{data.currentRevision}" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}" title="{#localize key="plugin.workspace.materialsManagement.materialRevertToPublishedTooltip"/}"><span>{#localize key="plugin.workspace.materialsManagement.materialRevertToPublishedTooltip"/}</span></a>
     {/if}
   {/if}
-</div>
+  </div>
 {/if}
+</div>
 <div class="page-content">
   {>"workspace/materials-management-page-{type}.dust"/}
 </div>
