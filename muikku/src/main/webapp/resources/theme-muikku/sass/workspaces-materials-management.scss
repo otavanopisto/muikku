@@ -68,6 +68,7 @@ body.workspace-materials-management {
           overflow-x: hidden;
           overflow-y: scroll;
           height:100%;
+          width:370px;
         
           .workspace-materials-toc-content-scrolling {
             width:338px;
@@ -99,12 +100,22 @@ body.workspace-materials-management {
                   display:block;
                   @include genericMenuLinkHoverTransition(background,color,0.15s,ease-in-out);
                   @include rounded(2px);
-                  padding:2px 8px;
+                  padding:2px 8px 2px 6px;
+                  border-left:2px solid #e8f0f5;
+                  margin:1px 0;
                   
                   &:hover,
                   &.active {
                     background:#596e7d;
                     color:#fff;
+                  }
+                  
+                  &.evaluated {
+                    border-left:2px solid #0099ff;
+                  }
+                  
+                  &.exercise {
+                    border-left:2px solid #2ed91c;
                   }
                 }
     

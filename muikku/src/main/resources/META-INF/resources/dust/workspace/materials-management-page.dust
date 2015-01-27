@@ -6,7 +6,7 @@
     <a href="javascript:void(null)" class="delete-page icon-delete" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}"><span>Delete</span></a>
     <a href="javascript:void(null)" class="hide-page icon-hide" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}"><span>Hide</span></a>
     <span class="assignment-type">
-      <a href="javascript:void(null)" class="change-assignment icon-exercise"><span>Change assignment type</span></a>
+      <a href="javascript:void(null)" class="change-assignment icon-assignment"><span>Change assignment type</span></a>
     </span>
   </div>
   <div class="management-page-controls-secondary-subsection">

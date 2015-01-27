@@ -71,7 +71,7 @@
       $(page).prepend($('<div>')
           .attr('title','Harjoitustehtävä')
           .addClass('muikku-page-assignment-type exercise')
-          .append($('<span>').addClass('icon-assigment'))
+          .append($('<span>').addClass('icon-assignment'))
       );
     });
     
