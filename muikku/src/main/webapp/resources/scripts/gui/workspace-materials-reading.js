@@ -60,7 +60,7 @@
       $(page).prepend($('<div>')
           .attr('title','Harjoitustehtävä')
           .addClass('muikku-page-assignment-type exercise')
-          .append($('<span>').addClass('icon-exercise'))
+          .append($('<span>').addClass('icon-assignment'))
       );
     });
     
@@ -68,7 +68,7 @@
       $(page).prepend($('<div>')
           .attr('title','Arvioitavatehtävä')
           .addClass('muikku-page-assignment-type evaluated')
-          .append($('<span>').addClass('icon-exercise'))
+          .append($('<span>').addClass('icon-assignment'))
       );
     });
   });
