@@ -132,10 +132,12 @@
           '/',
           { name: 'forms', items : ['MuikkuTextField', 'muikku-selection', 'MuikkuMemoField', 'muikku-filefield', 'muikku-connectfield']}
         ],
-        autoGrowOnStartup : true,
-        skin : 'moono',
-        height : 500,
-        language: getLocale()
+        editorOptions: {
+          autoGrowOnStartup : true,
+          skin : 'moono',
+          height : 500,
+          language: getLocale()
+        }
       });
       
       this._editor.on('statusChange', $.proxy(this._onStatusChange, this));
