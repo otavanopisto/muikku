@@ -52,8 +52,8 @@ public class ForumRESTService extends PluginRESTService {
   }
   
   @GET
-  @Path ("/areagroups/{AREAID}")
-  public Response findAreaGroup(@PathParam ("AREAGroupID") Long areaGroupId) throws AuthorizationException {
+  @Path ("/areagroups/{AREAGROUPID}")
+  public Response findAreaGroup(@PathParam ("AREAGROUPID") Long areaGroupId) throws AuthorizationException {
     ForumAreaGroup forumArea = forumController.findForumAreaGroup(areaGroupId);
     
     ForumAreaGroupRESTModel result = new ForumAreaGroupRESTModel(forumArea.getId(), forumArea.getName()); 
