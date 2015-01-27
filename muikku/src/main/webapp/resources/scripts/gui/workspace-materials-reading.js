@@ -55,6 +55,22 @@
     }, {
       offset: '60%'
     });
+    
+    $('.workspace-materials-view-page[data-workspace-material-assigment-type="EXERCISE"]').each(function (index, page) {
+      $(page).prepend($('<div>')
+          .attr('title','Harjoitustehtävä')
+          .addClass('muikku-page-assignment-type exercise')
+          .append($('<span>').addClass('icon-assignment'))
+      );
+    });
+    
+    $('.workspace-materials-view-page[data-workspace-material-assigment-type="EVALUATED"]').each(function (index, page) {
+      $(page).prepend($('<div>')
+          .attr('title','Arvioitavatehtävä')
+          .addClass('muikku-page-assignment-type evaluated')
+          .append($('<span>').addClass('icon-assignment'))
+      );
+    });
   });
   
   $(document).on('click', '.workspace-materials-toc-item a', function (event) {
