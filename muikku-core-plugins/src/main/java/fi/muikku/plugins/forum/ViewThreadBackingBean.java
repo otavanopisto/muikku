@@ -30,7 +30,7 @@ public class ViewThreadBackingBean {
   }
 
   public List<ForumThreadReply> listForumThreadReplies() {
-    return forumController.listForumThreadReplies(getForumThread());
+    return forumController.listForumThreadReplies(getForumThread(), 0, 25);
   }
 
   public Long getThreadId() {

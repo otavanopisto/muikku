@@ -1,16 +1,15 @@
 package fi.muikku.plugins.forum.rest;
 
 
-public class ForumAreaRESTModel {
+public class ForumAreaGroupRESTModel {
 
-  public ForumAreaRESTModel() {
+  public ForumAreaGroupRESTModel() {
     
   }
   
-  public ForumAreaRESTModel(Long id, String name, Long groupId) {
+  public ForumAreaGroupRESTModel(Long id, String name) {
     this.id = id;
     this.name = name;
-    this.groupId = groupId;
   }
 
   public Long getId() {
@@ -29,15 +28,6 @@ public class ForumAreaRESTModel {
     this.name = name;
   }
 
-  public Long getGroupId() {
-    return groupId;
-  }
-
-  public void setGroupId(Long groupId) {
-    this.groupId = groupId;
-  }
-
   private Long id;
   private String name;
-  private Long groupId;
 }

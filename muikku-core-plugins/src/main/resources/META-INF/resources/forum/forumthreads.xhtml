@@ -8,7 +8,7 @@
 
     <div class="widget forumThreadsWidget">
       <div class="forumThreadList">
-        <c:forEach var="thread" items="#{Forum.listForumThreads(forumArea)}">
+        <c:forEach var="thread" items="#{Forum.listForumThreads(forumArea, 0, 10)}">
           <c:set var="threadUserEntity" value="#{Forum.findUserEntity(thread.creator)}" />
           <c:set var="threadUser" value="#{Forum.findUser(threadUserEntity)}" />
         

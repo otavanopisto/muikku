@@ -47,7 +47,7 @@ public class ForumThreadReplyDAO extends CorePluginsDAO<ForumThreadReply> {
     return reply;
   }
   
-  public List<ForumThreadReply> listByForumThread(ForumThread forumThread) {
+  public List<ForumThreadReply> listByForumThread(ForumThread forumThread, Integer firstResult, Integer maxResults) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -61,7 +61,12 @@ public class ForumThreadReplyDAO extends CorePluginsDAO<ForumThreadReply> {
         )
     );
     
-    return entityManager.createQuery(criteria).getResultList();
+    TypedQuery<ForumThreadReply> query = entityManager.createQuery(criteria);
+    
+    query.setFirstResult(firstResult);
+    query.setMaxResults(maxResults);
+    
+    return query.getResultList();
   }
 
   public ForumThreadReply findLatestReplyByThread(ForumThread thread) {

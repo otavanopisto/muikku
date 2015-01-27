@@ -1,8 +1,12 @@
 package fi.muikku.plugins.forum.model;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 import fi.muikku.model.util.ResourceEntity;
@@ -35,6 +39,14 @@ public class ForumThread extends ForumMessage implements ResourceEntity {
     this.locked = locked;
   }
 
+  public Date getUpdated() {
+    return updated;
+  }
+
+  public void setUpdated(Date updated) {
+    this.updated = updated;
+  }
+
   private String title;
   
   @NotNull
@@ -44,4 +56,9 @@ public class ForumThread extends ForumMessage implements ResourceEntity {
   @NotNull
   @Column(nullable = false)
   private Boolean locked = Boolean.FALSE;
+  
+  @NotNull
+  @Column (nullable=false)
+  @Temporal (value=TemporalType.TIMESTAMP)
+  private Date updated;
 }

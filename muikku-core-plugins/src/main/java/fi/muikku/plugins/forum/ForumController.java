@@ -1,7 +1,5 @@
 package fi.muikku.plugins.forum;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -14,18 +12,20 @@ import fi.muikku.controller.ResourceRightsController;
 import fi.muikku.model.security.ResourceRights;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.plugins.forum.dao.ForumMessageDAO;
-import fi.muikku.plugins.forum.dao.WorkspaceForumAreaDAO;
 import fi.muikku.plugins.forum.dao.EnvironmentForumAreaDAO;
 import fi.muikku.plugins.forum.dao.ForumAreaDAO;
+import fi.muikku.plugins.forum.dao.ForumAreaGroupDAO;
+import fi.muikku.plugins.forum.dao.ForumMessageDAO;
 import fi.muikku.plugins.forum.dao.ForumThreadDAO;
 import fi.muikku.plugins.forum.dao.ForumThreadReplyDAO;
-import fi.muikku.plugins.forum.model.ForumMessage;
-import fi.muikku.plugins.forum.model.WorkspaceForumArea;
+import fi.muikku.plugins.forum.dao.WorkspaceForumAreaDAO;
 import fi.muikku.plugins.forum.model.EnvironmentForumArea;
 import fi.muikku.plugins.forum.model.ForumArea;
+import fi.muikku.plugins.forum.model.ForumAreaGroup;
+import fi.muikku.plugins.forum.model.ForumMessage;
 import fi.muikku.plugins.forum.model.ForumThread;
 import fi.muikku.plugins.forum.model.ForumThreadReply;
+import fi.muikku.plugins.forum.model.WorkspaceForumArea;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.security.Permit;
 import fi.muikku.security.PermitContext;
@@ -56,6 +56,9 @@ public class ForumController {
   private ForumMessageDAO forumMessageDAO;
   
   @Inject
+  private ForumAreaGroupDAO forumAreaGroupDAO;
+  
+  @Inject
   private ForumThreadReplyDAO forumThreadReplyDAO;
   
   @Inject
@@ -80,12 +83,17 @@ public class ForumController {
   }
   
   @Permit (ForumResourcePermissionCollection.FORUM_CREATEENVIRONMENTFORUM)
-  public EnvironmentForumArea createEnvironmentForumArea(String name, String group) {
+  public EnvironmentForumArea createEnvironmentForumArea(String name, Long groupId) {
     UserEntity owner = sessionController.getLoggedUserEntity();
     ResourceRights rights = resourceRightsController.create();
+    ForumAreaGroup group = findForumAreaGroup(groupId);
     return environmentForumAreaDAO.create(name, group, false, owner, rights);
   }
   
+  public ForumAreaGroup findForumAreaGroup(Long groupId) {
+    return forumAreaGroupDAO.findById(groupId);
+  }
+
   @Permit (ForumResourcePermissionCollection.FORUM_WRITEAREA)
   public ForumThread createForumThread(@PermitContext ForumArea forumArea, String title, String message, Boolean sticky, Boolean locked) {
     return forumThreadDAO.create(forumArea, title, message, sessionController.getLoggedUserEntity(), sticky, locked);
@@ -93,7 +101,11 @@ public class ForumController {
 
   @Permit (ForumResourcePermissionCollection.FORUM_WRITEAREA)
   public ForumThreadReply createForumThreadReply(@PermitContext ForumThread thread, String message) {
-    return forumThreadReplyDAO.create(thread.getForumArea(), thread, message, sessionController.getLoggedUserEntity());
+    ForumThreadReply reply = forumThreadReplyDAO.create(thread.getForumArea(), thread, message, sessionController.getLoggedUserEntity());
+    
+    forumThreadDAO.updateThreadUpdated(thread, reply.getCreated());
+    
+    return reply;
   }
 
   public List<EnvironmentForumArea> listEnvironmentForums() {
@@ -107,33 +119,15 @@ public class ForumController {
   }
 
   @Permit (ForumResourcePermissionCollection.FORUM_LISTTHREADS)
-  public List<ForumThread> listForumThreads(@PermitContext ForumArea forumArea) {
-    List<ForumThread> threads = forumThreadDAO.listByForumArea(forumArea);
-    
-    Collections.sort(threads, new Comparator<ForumThread>() {
-      @Override
-      public int compare(ForumThread o1, ForumThread o2) {
-        if (o1.getSticky() && !o2.getSticky())
-          return -1;
-        if (o2.getSticky() && !o1.getSticky())
-          return 1;
-        
-        ForumThreadReply r1 = getLatestReply(o1);
-        ForumThreadReply r2 = getLatestReply(o2);
-        
-        Date d1 = r1 != null ? r1.getCreated() : o1.getCreated();
-        Date d2 = r2 != null ? r2.getCreated() : o2.getCreated();
-        
-        return d1.compareTo(d2);
-      }
-    });
+  public List<ForumThread> listForumThreads(@PermitContext ForumArea forumArea, int firstResult, int maxResults) {
+    List<ForumThread> threads = forumThreadDAO.listByForumAreaOrdered(forumArea, firstResult, maxResults);
     
     return threads;
   }
   
   @Permit (ForumResourcePermissionCollection.FORUM_LISTTHREADS)
-  public List<ForumThreadReply> listForumThreadReplies(@PermitContext ForumThread forumThread) {
-    return forumThreadReplyDAO.listByForumThread(forumThread);
+  public List<ForumThreadReply> listForumThreadReplies(@PermitContext ForumThread forumThread, Integer firstResult, Integer maxResults) {
+    return forumThreadReplyDAO.listByForumThread(forumThread, firstResult, maxResults);
   }
   
   public UserEntity findUserEntity(Long userEntityId) {
@@ -170,6 +164,17 @@ public class ForumController {
   
   public void archiveMessage(ForumMessage message) {
     forumMessageDAO.archive(message);
+    
+    if (message instanceof ForumThreadReply) {
+      ForumThreadReply reply = (ForumThreadReply) message;
+      
+      ForumThreadReply latestReply = getLatestReply(reply.getThread());
+      
+      if (latestReply != null)
+        forumThreadDAO.updateThreadUpdated(reply.getThread(), latestReply.getCreated());
+      else
+        forumThreadDAO.updateThreadUpdated(reply.getThread(), reply.getThread().getCreated());
+    }
   }
   
   public void updateForumThread(ForumThread thread, String title, String message, Boolean sticky, Boolean locked) {
@@ -180,5 +185,21 @@ public class ForumController {
   public void updateForumThreadReply(ForumThreadReply reply, String title, String message, Boolean sticky, Boolean locked) {
     UserEntity user = sessionController.getLoggedUserEntity();
     forumThreadReplyDAO.update(reply, message, new Date(), user);
+  }
+
+  public List<ForumAreaGroup> listForumAreaGroups() {
+    return forumAreaGroupDAO.listAll();
+  }
+
+  public ForumAreaGroup createForumAreaGroup(String name) {
+    return forumAreaGroupDAO.create(name, Boolean.FALSE);
+  }
+
+  public List<ForumMessage> listMessagesByWorkspace(WorkspaceEntity workspace) {
+    return forumMessageDAO.listByWorkspace(workspace);
+  }
+
+  public List<ForumMessage> listByContributingUser(UserEntity userEntity) {
+    return forumMessageDAO.listByContributingUser(userEntity);
   }
 }

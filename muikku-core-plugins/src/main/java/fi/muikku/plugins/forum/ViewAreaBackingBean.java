@@ -34,7 +34,7 @@ public class ViewAreaBackingBean {
   }
   
   public List<ForumThread> listForumThreads() {
-    return forumController.listForumThreads(getForumArea());
+    return forumController.listForumThreads(getForumArea(), 0, 25);
   }
 
   public String getForumIdStr() {

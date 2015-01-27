@@ -25,7 +25,7 @@
         <h:inputText id="message" />
         <h:message for="message" errorClass="invalid"/>
         
-        <h:commandButton action="#{Forum.createForumThread(Forum.getForumArea(param['newForumThread:area']), param['newForumThread:title'], param['newForumThread:message'], false)}" value="New thread"/>
+        <h:commandButton action="#{Forum.createForumThread(Forum.getForumArea(param['newForumThread:area']), param['newForumThread:title'], param['newForumThread:message'], false, false)}" value="New thread"/>
       </h:form>
     </div>
 
