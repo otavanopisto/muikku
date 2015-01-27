@@ -566,6 +566,18 @@ body.workspace-materials-management {
           
         }
         
+        .workspace-materials-management-view-page-controls { /* Hide and show edit/close icons when page is in editing mode */
+        
+          a.edit-page {
+            display:none;
+          }
+          
+          a.close-page-editor {
+            display:inline-block;
+          }
+        
+        }
+        
       }
       
       .workspace-materials-management-view-page-controls {
@@ -611,6 +623,10 @@ body.workspace-materials-management {
         a.edit-page,
         a.close-page-editor {
           width:29px;
+        }
+        
+        a.close-page-editor {
+          display:none;
         }
         
         a.publish-page.disabled,
