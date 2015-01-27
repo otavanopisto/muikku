@@ -58,6 +58,7 @@
     
     $('.workspace-materials-view-page[data-workspace-material-assigment-type="EXERCISE"]').each(function (index, page) {
       $(page).prepend($('<div>')
+          .attr('title','Harjoitustehtävä')
           .addClass('muikku-page-assignment-type exercise')
           .append($('<span>').addClass('icon-exercise'))
       );
@@ -65,6 +66,7 @@
     
     $('.workspace-materials-view-page[data-workspace-material-assigment-type="EVALUATED"]').each(function (index, page) {
       $(page).prepend($('<div>')
+          .attr('title','Arvioitavatehtävä')
           .addClass('muikku-page-assignment-type evaluated')
           .append($('<span>').addClass('icon-exercise'))
       );
