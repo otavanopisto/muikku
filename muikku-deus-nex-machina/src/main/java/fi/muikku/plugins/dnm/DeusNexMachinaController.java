@@ -92,10 +92,10 @@ public class DeusNexMachinaController {
         iframeElement.setAttribute("seamless", "seamless");
         iframeElement.setAttribute("border", "0");
         iframeElement.setAttribute("frameborder", "0");
-        if (queryType == 1) {
+        if (queryType != null && queryType.intValue() == 1) {
           iframeElement.setAttribute("data-assessment-type", "exercise");
         }
-        if (queryType == 2) {
+        if (queryType != null && queryType.intValue() == 2) {
           iframeElement.setAttribute("data-assessment-type", "evaluable");
         }
         iframeElement.setAttribute("data-type", "embedded-document");
