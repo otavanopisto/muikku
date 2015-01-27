@@ -42,6 +42,9 @@
         nextPage.before(createAddPageLink());
         nextPage.before(uploader);
         enableFileUploader(uploader, nextPage.data('parent-id'), nextPage.data('workspace-material-id'));
+      })
+      .on('fileDiscarded', function (event, data) {
+        $(this).workspaceMaterialUpload('reset');
       });
   }
   

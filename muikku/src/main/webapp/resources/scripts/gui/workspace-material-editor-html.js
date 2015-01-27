@@ -61,8 +61,7 @@
     },
     _create: function () {
       if (!this.options.materialId) {
-        // TODO: Localization
-        $('.notification-queue').notificationQueue('notification', 'error', "Could not find materialId");
+        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.htmlMaterialEditor.couldNotFindMaterialId"));
         return;
       }
       
@@ -91,7 +90,6 @@
         .addClass('workspace-material-html-editor')
         .appendTo(this.element);
       
-      // TODO: Editor Locale
       this._editor = $(this._editorContainer).coOpsCK({
         externalPlugins : {
           'change' : CONTEXTPATH + '/scripts/ckplugins/change/',
@@ -134,9 +132,12 @@
           '/',
           { name: 'forms', items : ['MuikkuTextField', 'muikku-selection', 'MuikkuMemoField', 'muikku-filefield', 'muikku-connectfield']}
         ],
-        autoGrowOnStartup : true,
-        skin : 'moono',
-        height : 500
+        editorOptions: {
+          autoGrowOnStartup : true,
+          skin : 'moono',
+          height : 500,
+          language: getLocale()
+        }
       });
       
       this._editor.on('statusChange', $.proxy(this._onStatusChange, this));
@@ -159,7 +160,7 @@
       });
       
       this._editor.on("connectionLost", function (event, data) {
-        $('.notification-queue').notificationQueue('notification', 'loading', 'Connection lost, reconnecting...').addClass('connection-lost-notification');
+        $('.notification-queue').notificationQueue('notification', 'loading', getLocaleText("plugin.workspace.htmlMaterialEditor.connectionLost")).addClass('connection-lost-notification');
       });
       
       this._editor.on("reconnect", function (event, data) {
