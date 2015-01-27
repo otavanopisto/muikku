@@ -370,7 +370,25 @@
             .muikkuField({
               fieldName: data.name,
               materialId: data.materialId,
-              embedId: data.embedId
+              embedId: data.embedId,
+              meta: meta,
+              canCheckAnswer: function() {
+                for (var i = 0, l = meta.options.length; i < l; i++) {
+                  if (meta.options[i].correct == true) {
+                    return true;
+                  }
+                }
+                return false;
+              },
+              isCorrectAnswer: function() {
+                var answer = this.answer();
+                for (var i = 0, l = meta.options.length; i < l; i++) {
+                  if (meta.options[i].correct == true && meta.options[i].name == answer) {
+                    return true;
+                  }
+                }
+                return false; 
+              }
             });
           
           $(object).replaceWith(input);
@@ -409,8 +427,26 @@
             fieldName: data.name,
             materialId: data.materialId,
             embedId: data.embedId,
+            meta: meta,
             answer: function() {
               return $(this.element).find('input:checked').val();
+            },
+            canCheckAnswer: function() {
+              for (var i = 0, l = meta.options.length; i < l; i++) {
+                if (meta.options[i].correct == true) {
+                  return true;
+                }
+              }
+              return false;
+            },
+            isCorrectAnswer: function() {
+              var answer = this.answer();
+              for (var i = 0, l = meta.options.length; i < l; i++) {
+                if (meta.options[i].correct == true && meta.options[i].name == answer) {
+                  return true;
+                }
+              }
+              return false; 
             }
           });
           $(object).replaceWith(container);
@@ -508,14 +544,25 @@
     options : {
       answer: function () {
         return $(this.element).val();
+      },
+      canCheckAnswer: function () {
+        return false;
+      },
+      isCorrectAnswer: function () {
+        return false;
       }
     },
     _create : function() {
       $(this.element).addClass('muikku-field');
     },
-    
     answer: function () {
       return this.options.answer.call(this)||'';
+    },
+    canCheckAnswer: function() {
+      return this.options.canCheckAnswer.call(this)||'';
+    },
+    isCorrectAnswer: function() {
+      return this.options.isCorrectAnswer.call(this)||'';
     },
     fieldName: function () {
       return this.options.fieldName;
@@ -525,6 +572,9 @@
     },
     embedId: function () {
       return this.options.embedId||'';
+    },
+    meta: function () {
+      return this.options.meta;
     }
   });
   

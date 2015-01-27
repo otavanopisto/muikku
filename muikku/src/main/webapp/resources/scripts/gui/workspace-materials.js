@@ -75,6 +75,7 @@
     var reply = [];
     
     page.find('.muikku-field').each(function (index, field) {
+      $(field).removeClass('muikku-field-correct-answer muikku-field-incorrect-answer');
       reply.push({
         value: $(field).muikkuField('answer'),
         embedId: $(field).muikkuField('embedId'),
@@ -90,6 +91,16 @@
       if (err) {
         $('.notification-queue').notificationQueue('notification', 'error',getLocaleText('plugin.workspace.materials.answerSavingFailed', err));
       } else {
+        // Correct answer checking
+        page.find('.muikku-field').each(function (index, field) {
+          if ($(field).muikkuField('canCheckAnswer')) {
+            $(field).addClass($(field).muikkuField('isCorrectAnswer') ? 'muikku-field-correct-answer' : 'muikku-field-incorrect-answer');
+          }
+          else {
+            // TODO Field cannot evaluate answers
+          }
+        });
+        // Save button
         $(this)
           .addClass("icon-checkmark save-successful")
           .text(getLocaleText('plugin.workspace.materials.answerSaved'));
