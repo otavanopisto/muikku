@@ -1,12 +1,12 @@
 <div class="materials-management-file-upload-selection-container">
-  <p class="materials-management-generic-question-container">File '{fileName}' has been uploaded, how do you wish to apply the file into the workspace?</p>
+  <p class="materials-management-generic-question-container">{#localize key="plugin.workspace.materialsManagement.uploadSelectQuestion" arg0=fileName/}</p>
   <div> 
-    <a href="javascript:void(null)" class="materials-management-upload-select-upload">Insert the file "as is"</a>
+    <a href="javascript:void(null)" class="materials-management-upload-select-upload">{#localize key="plugin.workspace.materialsManagement.uploadSelectAsIs"/}</a>
+  </div>
+  <div style="display: none"> 
+    <a href="javascript:void(null)" class="materials-management-upload-select-convert">{#localize key="plugin.workspace.materialsManagement.uploadSelectConvert"/}</a>
   </div>
   <div> 
-    <a href="javascript:void(null)" class="materials-management-upload-select-convert">Convert to appropriate Muikku format</a>
-  </div>
-  <div> 
-    <a href="javascript:void(null)" class="materials-management-upload-select-discard">Discard the file</a>
+    <a href="javascript:void(null)" class="materials-management-upload-select-discard">{#localize key="plugin.workspace.materialsManagement.uploadSelectDiscard"/}</a>
   </div>
 </div>

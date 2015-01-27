@@ -27,6 +27,8 @@ public class WorkspacePluginDescriptor implements PluginDescriptor, LocalizedPlu
     List<LocaleBundle> bundles = new ArrayList<LocaleBundle>();
     bundles.add(new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.workspace.WorkspaceJsPluginMessages", LocaleUtils.toLocale("en"))));
     bundles.add(new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.workspace.WorkspaceJsPluginMessages", LocaleUtils.toLocale("fi"))));
+    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.workspace.WorkspacePluginMessages", LocaleUtils.toLocale("en"))));
+    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.workspace.WorkspacePluginMessages", LocaleUtils.toLocale("fi"))));
     return bundles;
   }
 

@@ -32,7 +32,7 @@
       
       worker.onmessage = $.proxy(function (response) {
         if ((response.data.statusCode != 200) && (response.data.statusCode != 304)) {
-          $('.notification-queue').notificationQueue('notification', 'error', "Error occurred while loading html page: " + response.data.err + ' (' + response.data.statusCode + ')');
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsLoader.htmlMaterialLoadingFailed", response.data.err, response.data.statusCode));
         }
         else {
           try {
@@ -52,7 +52,7 @@
                 $(iframe).replaceWith(placeholder);
                 this._loadHtmlMaterial(pageElement, workspaceEntityId, embededWorkspaceMaterialId, embededMaterialId, placeholder.attr('id'), parentIds.concat(materialId), fieldAnswers);
               } else {
-                $('.notification-queue').notificationQueue('notification', 'error', "Incorrect material type '" + embededMaterialType + "' for embedded document");
+                $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.materialsLoader.incorrectMaterialType', embededMaterialType));
               }
             }, this));
             
@@ -97,7 +97,7 @@
             }
 
           } catch (e) {
-            $('.notification-queue').notificationQueue('notification', 'error', "Error occurred while reading html page: " + e);
+            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsLoader.htmlMaterialReadingFailed", e));
           }
         }
       }, this);
@@ -137,7 +137,7 @@
           mApi().workspace.workspaces.materials.replies.read(workspaceEntityId, workspaceMaterialId)
           .callback($.proxy(function (err, reply) {
             if (err) {
-              $('.notification-queue').notificationQueue('notification', 'error', "Error occurred while loading answers " + err);
+              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsLoader.answerLoadingFailed", err));
             } else {
               var fieldAnswers = {};
     
@@ -532,7 +532,9 @@
     var page = $(data.pageElement);
     if (!$(page).data('answer-button')) {
       $(page)
-        .append($('<button>').addClass('muikku-save-page').text('Save'))
+        .append($('<button>')
+           .addClass('muikku-save-page')
+           .text(getLocaleText("plugin.workspace.materialsLoader.saveButton")))
         .data('answer-button', 'true');
     }
   });

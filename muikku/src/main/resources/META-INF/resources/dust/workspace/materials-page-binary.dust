@@ -1,5 +1,5 @@
 {@if cond="{'{data.contentType}'.indexOf('image/') >= 0}"}
   <img src="{@contextPath/}/rest/materials/binary/{data.id}/content"/>
 {:else}
-  <a href="{@contextPath/}/rest/materials/binary/{data.id}/download" target="_blank">Download</a>
+  <a href="{@contextPath/}/rest/materials/binary/{data.id}/download" target="_blank">{#localize key="plugin.workspace.materials.binaryDownload"/}</a>
 {/if}

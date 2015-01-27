@@ -4,7 +4,7 @@
     return $('<div>')
       .addClass('workspace-materials-management-addpage')
       .append($('<span>').addClass('workspace-materials-management-line-separator'))
-      .append($('<a>').addClass('workspaces-materials-management-add-page icon-add').attr('href', 'javascript:void(null)').append($('<span>').html('Add new page')));
+      .append($('<a>').addClass('workspaces-materials-management-add-page icon-add').attr('href', 'javascript:void(null)').append($('<span>').html(getLocaleText("plugin.workspace.materialsManagement.addPage"))));
   }
   
   function createFileUploader() {
@@ -42,6 +42,9 @@
         nextPage.before(createAddPageLink());
         nextPage.before(uploader);
         enableFileUploader(uploader, nextPage.data('parent-id'), nextPage.data('workspace-material-id'));
+      })
+      .on('fileDiscarded', function (event, data) {
+        $(this).workspaceMaterialUpload('reset');
       });
   }
   
@@ -54,8 +57,8 @@
     var editorName = 'workspaceMaterialEditor' + (materialType.substring(0, 1).toUpperCase() + materialType.substring(1));
     var pageElement = $('#page-' + workspaceMaterialId);
     var pageSection = $(pageElement).closest(".workspace-materials-view-page");
-    $(node).find('.edit-page').hide();
-    $(node).find('.close-page-editor').show();
+//    $(node).find('.edit-page').hide();
+//    $(node).find('.close-page-editor').show();
     
     pageSection.addClass("page-edit-mode");
     
@@ -69,7 +72,7 @@
       });
       
     } else {
-      $('.notification-queue').notificationQueue('notification', 'error', "Could not find editor for " + materialType);
+      $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsManagement.missingEditor", materialType));
     }
   }
   
@@ -87,11 +90,11 @@
         $(document).muikkuMaterialLoader('loadMaterial', node, true);
       }
 
-      $(node).find('.edit-page').show();
-      $(node).find('.close-page-editor').hide();
+//      $(node).find('.edit-page').show();
+//      $(node).find('.close-page-editor').hide();
       node.removeClass("page-edit-mode");
     } else {
-      $('.notification-queue').notificationQueue('notification', 'error', "Could not find editor for " + materialType);
+      $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsManagement.missingEditor", materialType));
     }
   }
   
@@ -438,9 +441,8 @@
         var nextSiblingId = $(nextMaterial).data('workspace-material-id');
         var typeEndpoint = mApi().materials[materialType];
         if (typeEndpoint != null) {
-          // TODO: Localize
           typeEndpoint.create({
-            title: 'Untitled',
+            title: getLocaleText("plugin.workspace.materialsManagement.newPageTitle"),
             contentType: 'text/html;editor=CKEditor'
           })
           .callback($.proxy(function (materialErr, materialResult) {
@@ -478,7 +480,7 @@
             }, this));
           }, newPage));
         } else {
-          $('.notification-queue').notificationQueue('notification', 'error', "Could not find rest service for " + materialType);
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsManagement.missingRestService", materialType));
         }
         
       });
@@ -574,7 +576,7 @@
   }
   
   function publishPage(workspaceMaterialId, materialId, publishedRevision, currentRevision, removeAnswers, errorCallback) {
-    var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', "Publishing...");
+    var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', getLocaleText("plugin.workspace.materialsManagement.publishingMessage"));
     var editing = isPageInEditMode($('#page-' + workspaceMaterialId));
     
     if (editing) {
@@ -606,7 +608,7 @@
           .attr('data-published-revision', currentRevision)
           .addClass('disabled');
       
-        $('.notification-queue').notificationQueue('notification', 'info', "Published successfully");
+        $('.notification-queue').notificationQueue('notification', 'info', getLocaleText("plugin.workspace.materialsManagement.publishedMessage"));
       }
     }, this));   
   }
@@ -671,7 +673,7 @@
     var publishedRevision = parseInt($(this).attr('data-published-revision'));
     if (currentRevision !== publishedRevision) {
       confirmPageRevert($.proxy(function () {
-        var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', "Reverting back to published revision...");
+        var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', getLocaleText("plugin.workspace.materialsManagement.revertingToPublishedMessage"));
         var editing = isPageInEditMode($('#page-' + workspaceMaterialId));
         
         if (editing) {
@@ -698,7 +700,7 @@
               .attr('data-current-revision', publishedRevision)
               .addClass('disabled');
             
-            $('.notification-queue').notificationQueue('notification', 'info', "Reverted successfully");
+            $('.notification-queue').notificationQueue('notification', 'info', getLocaleText("plugin.workspace.materialsManagement.revertedToPublishedMessage"));
           }
         }, this));
       }, this));
