@@ -47,7 +47,11 @@ public class UserSeekerResultParser implements SeekerResultParser {
     // TODO: Validate
     String[] id = ((String) entry.get("id")).split("/", 2);
     UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(id[1], id[0]);
-    return new UserSeekerResult(labelBuilder.toString(), caption, "/user/" + userEntity.getId(), "/tmp/userprofile.png"); //TODO: remove image url
+    
+    if (userEntity != null)
+      return new UserSeekerResult(labelBuilder.toString(), caption, "/user/" + userEntity.getId(), "/tmp/userprofile.png"); //TODO: remove image url
+    else
+      return null;
   }
 
 }

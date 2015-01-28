@@ -28,6 +28,7 @@ import fi.muikku.plugins.material.events.HtmlMaterialCreateEvent;
 import fi.muikku.plugins.material.events.HtmlMaterialDeleteEvent;
 import fi.muikku.plugins.material.events.HtmlMaterialUpdateEvent;
 import fi.muikku.plugins.material.model.HtmlMaterial;
+import fi.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
 
 @Dependent
 @Stateless
@@ -79,16 +80,31 @@ public class HtmlMaterialController {
     materialDeleteEvent.fire(new HtmlMaterialDeleteEvent(htmlMaterial, false));
     htmlMaterialDAO.delete(htmlMaterial);
   }
-  
+
   public HtmlMaterial updateHtmlMaterialHtml(HtmlMaterial htmlMaterial, String html) {
-    // TODO Logic for remove answers flag
-    HtmlMaterialUpdateEvent event = new HtmlMaterialUpdateEvent(htmlMaterial, htmlMaterial.getHtml(), html, false);
+    return updateHtmlMaterialHtml(htmlMaterial, html, false);
+  }
+  
+  public HtmlMaterial updateHtmlMaterialHtml(HtmlMaterial htmlMaterial, String html, boolean removeAnswers) {
+    HtmlMaterialUpdateEvent event = new HtmlMaterialUpdateEvent(htmlMaterial, htmlMaterial.getHtml(), html, removeAnswers);
     materialUpdateEvent.fire(event);
     return htmlMaterialDAO.updateData(htmlMaterial, html);
   }
   
-  public HtmlMaterial updateHtmlMaterialToRevision(HtmlMaterial htmlMaterial, String title, String html, Long revisionNumber, boolean removeNewerRevisions) {
-    updateHtmlMaterialHtml(htmlMaterial, html);
+  public HtmlMaterial updateHtmlMaterialToRevision(HtmlMaterial htmlMaterial, String title, String html, Long revisionNumber, boolean removeNewerRevisions, boolean removeAnswers) throws WorkspaceMaterialContainsAnswersExeption {
+    // TODO: WorkspaceMaterialContainsAnswersExeption quick fix should be removed
+    try {
+      updateHtmlMaterialHtml(htmlMaterial, html, removeAnswers);
+    } catch (Exception e) {
+      Throwable cause = e;
+      while (e.getCause() != null) {
+        cause = cause.getCause();
+        if (cause instanceof WorkspaceMaterialContainsAnswersExeption) {
+          throw (WorkspaceMaterialContainsAnswersExeption) cause;
+        }
+      }
+      throw e;
+    }
     
     htmlMaterialDAO.updateTitle(htmlMaterial, title);
     htmlMaterialDAO.updateRevisionNumber(htmlMaterial, revisionNumber);
@@ -145,7 +161,12 @@ public class HtmlMaterialController {
       return htmlMaterial.getTitle();
     }
     
-    return getRevisionProperty(htmlMaterial, revisionNumber, "title");
+    String title = getRevisionProperty(htmlMaterial, revisionNumber, "title");
+    if (title == null) {
+      title = htmlMaterial.getTitle();
+    }
+    
+    return title;
   }
   
   public String getRevisionProperty(HtmlMaterial htmlMaterial, Long revisionNumber, String property) {
@@ -157,7 +178,11 @@ public class HtmlMaterialController {
       revisionProperty = htmlMaterialRevisionPropertyDAO.findByHtmlMaterialAndKeyRevisionLeAndMaxRevision(htmlMaterial, property, htmlMaterial.getRevisionNumber());  
     }
     
-    return revisionProperty.getValue();
+    if (revisionProperty == null) {
+      return null;
+    } else {
+      return revisionProperty.getValue();
+    }
   }
 
   public Map<String, String> getRevisionProperties(HtmlMaterial htmlMaterial, Long revisionNumber) {

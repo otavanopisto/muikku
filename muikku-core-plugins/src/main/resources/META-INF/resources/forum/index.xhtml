@@ -11,7 +11,7 @@
     <p>Ympäristön foorumit</p>
 
     <ui:include src="/forum/forumareas.xhtml">
-      <ui:param name="forumAreas" value="#{Forum.listEnvironmentForums(muikkuSession.environment)}" />
+      <ui:param name="forumAreas" value="#{Forum.listEnvironmentForums()}" />
     </ui:include>
     
     <div>
@@ -19,8 +19,11 @@
         <h:outputLabel for="text" value="New Forum Name:"/>
         <h:inputText id="name" />
         <h:message for="name" errorClass="invalid"/>
+
+        <h:outputLabel for="text" value="Forum group:"/>
+        <h:inputText id="group" />
         
-        <h:commandButton action="#{Forum.createEnvironmentForumArea(muikkuSession.environment, param['newForum:name'])}" value="Create Course"/>
+        <h:commandButton action="#{Forum.createEnvironmentForumArea(param['newForum:name'], param['newForum:group'])}" value="Create Course"/>
       </h:form>
     </div>
 

@@ -25,7 +25,7 @@ public class WorkspaceMaterialDeleteListener {
     
     List<WorkspaceMaterialField> workspaceMaterialFields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByWorkspaceMaterial(workspaceMaterial);
     for (WorkspaceMaterialField workspaceMaterialField : workspaceMaterialFields) {
-      workspaceMaterialFieldController.deleteWorkspaceMaterialField(workspaceMaterialField);
+      workspaceMaterialFieldController.deleteWorkspaceMaterialField(workspaceMaterialField, event.getRemoveAnswers());
     }
     
     List<WorkspaceMaterialReply> workspaceMaterialReplies = workspaceMaterialReplyController.listWorkspaceMaterialRepliesByWorkspaceMaterial(workspaceMaterial);

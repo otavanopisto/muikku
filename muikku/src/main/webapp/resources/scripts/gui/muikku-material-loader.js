@@ -32,7 +32,7 @@
       
       worker.onmessage = $.proxy(function (response) {
         if ((response.data.statusCode != 200) && (response.data.statusCode != 304)) {
-          $('.notification-queue').notificationQueue('notification', 'error', "Error occurred while loading html page: " + response.data.err + ' (' + response.data.statusCode + ')');
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsLoader.htmlMaterialLoadingFailed", response.data.err, response.data.statusCode));
         }
         else {
           try {
@@ -52,7 +52,7 @@
                 $(iframe).replaceWith(placeholder);
                 this._loadHtmlMaterial(pageElement, workspaceEntityId, embededWorkspaceMaterialId, embededMaterialId, placeholder.attr('id'), parentIds.concat(materialId), fieldAnswers);
               } else {
-                $('.notification-queue').notificationQueue('notification', 'error', "Incorrect material type '" + embededMaterialType + "' for embedded document");
+                $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.materialsLoader.incorrectMaterialType', embededMaterialType));
               }
             }, this));
             
@@ -78,7 +78,6 @@
                   parentIds: parentIds,
                   workspaceMaterialId: workspaceMaterialId,
                   materialId: materialId,
-                  element: parsed,
                   fieldAnswers: fieldAnswers
                 });
               });
@@ -93,13 +92,12 @@
                 parentIds: parentIds,
                 workspaceMaterialId: workspaceMaterialId,
                 materialId: materialId,
-                element: parsed,
                 fieldAnswers: fieldAnswers
               });
             }
 
           } catch (e) {
-            $('.notification-queue').notificationQueue('notification', 'error', "Error occurred while reading html page: " + e);
+            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsLoader.htmlMaterialReadingFailed", e));
           }
         }
       }, this);
@@ -139,7 +137,7 @@
           mApi().workspace.workspaces.materials.replies.read(workspaceEntityId, workspaceMaterialId)
           .callback($.proxy(function (err, reply) {
             if (err) {
-              $('.notification-queue').notificationQueue('notification', 'error', "Error occurred while loading answers " + err);
+              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsLoader.answerLoadingFailed", err));
             } else {
               var fieldAnswers = {};
     
@@ -172,7 +170,7 @@
           this._queueHtmlMaterial(materialId, workspaceMaterialId, page);
         break;
         case 'folder':
-          renderDustTemplate(this.options.dustTemplate, { id: materialId, type: materialType }, $.proxy(function (text) {
+          renderDustTemplate(this.options.dustTemplate, { id: materialId, type: materialType, data: { title: $(page).data('material-title') } }, $.proxy(function (text) {
             $(this).html(text);
           }, page));
         break;
@@ -534,7 +532,9 @@
     var page = $(data.pageElement);
     if (!$(page).data('answer-button')) {
       $(page)
-        .append($('<button>').addClass('muikku-save-page').text('Save'))
+        .append($('<button>')
+           .addClass('muikku-save-page')
+           .text(getLocaleText("plugin.workspace.materialsLoader.saveButton")))
         .data('answer-button', 'true');
     }
   });
@@ -544,7 +544,7 @@
   }
 
   function fixTables(node) {
-    var $tables = node.find("table");
+    var $tables = $(node).find("table");
     
     $tables.each(function() {
       var $table = $(this);
@@ -583,8 +583,6 @@
   }
   
   $(document).on('beforeHtmlMaterialRender', function (event, data) {
-    var reply = data.reply;
-   
     $(data.element).find('object[type*="vnd.muikku.field"]').each(function (index, object) {
       var meta = $.parseJSON($(object).find('param[name="content"]').attr('value'));
       var embedId = createEmbedId(data.parentIds);
@@ -607,7 +605,7 @@
   
   $(document).on('afterHtmlMaterialRender', function (event, data) {
     jsPlumb.ready(function() {
-      $(data.element).find('.muikku-connect-field-table').each(function (index, field) {
+      $(data.pageElement).find('.muikku-connect-field-table').each(function (index, field) {
         $(field).muikkuConnectField({
           fieldName: $(field).data('field-name'),
           embedId: $(field).data('embed-id'),
@@ -618,7 +616,7 @@
       $('.muikku-connect-field').muikkuConnectField('refresh');
     }); 
     
-    $(data.element).find('.muikku-file-field').each(function (index, field) {
+    $(data.pageElement).find('.muikku-file-field').each(function (index, field) {
       $(field)
         .muikkuFileField()
         .muikkuField({

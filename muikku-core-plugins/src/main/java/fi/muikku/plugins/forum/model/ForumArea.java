@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
@@ -54,6 +55,14 @@ public class ForumArea implements ResourceEntity, OwnedEntity {
     this.owner = owner;
   }
 
+  public ForumAreaGroup getGroup() {
+    return group;
+  }
+
+  public void setGroup(ForumAreaGroup group) {
+    this.group = group;
+  }
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -61,6 +70,9 @@ public class ForumArea implements ResourceEntity, OwnedEntity {
   @NotEmpty
   private String name;
 
+  @ManyToOne
+  private ForumAreaGroup group;
+  
   @Column (name = "rights_id")
   private Long rights;
   

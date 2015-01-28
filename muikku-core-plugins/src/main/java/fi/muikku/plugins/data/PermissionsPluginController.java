@@ -83,7 +83,8 @@ public class PermissionsPluginController {
                       String roleName = defaultRoles[i];
                       RoleEntity roleEntity = roleEntityDAO.findByName(roleName);
                       
-                      environmentRolePermissionDAO.create(roleEntity, permission);
+                      if (roleEntity != null)
+                        environmentRolePermissionDAO.create(roleEntity, permission);
                     }
                   break;
                   

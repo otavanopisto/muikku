@@ -123,6 +123,8 @@ div[class*='workspace-dock-navi-button-selected'] > span {
   @include rounded(3px);
 }
 
+
+
 div[data-name="generic.dock-top.left"] div:last-child > a{
 	margin-right:0;
 }
@@ -161,8 +163,25 @@ div[class*='actions-vertical'] {
 /* staticNaviDock  */
 
 div[class*="wi-dock-static-navi"] {
+  position:relative;
   float:left;
   margin-right:15px;
+}
+
+.wi-dock-notification {
+  background-color: #ff0000;
+  border-radius: 10px;
+  border:1px solid #fff;
+  top: 11px;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: bold;
+  height: 16px;
+  min-width: 10px;
+  padding: 0 3px 0 0;
+  position: absolute;
+  text-align: center;
+  right: 4px;
 }
 
 /* Containers */

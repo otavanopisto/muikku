@@ -11,7 +11,7 @@ $(document).ready(function() {
 
     var naviWrapper = $('#workspaceNavigationWrapper');
     var cOffset = contentContainer.offset();
-    var naviLeftPos = cOffset.left - naviWrapper.width() - 20;
+    var naviLeftPos = cOffset.left - naviWrapper.width() - 30;
     
     $(naviWrapper).css({
       left:naviLeftPos + 'px'
@@ -19,7 +19,7 @@ $(document).ready(function() {
     
     $(window).resize(function(){
       cOffset = contentContainer.offset();
-      naviLeftPos = cOffset.left - naviWrapper.width() - 20;
+      naviLeftPos = cOffset.left - naviWrapper.width() - 30;
       naviLeftPos = naviLeftPos < 10 ? naviLeftPos = 10 : naviLeftPos = naviLeftPos;
       
       $(naviWrapper).css({

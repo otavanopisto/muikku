@@ -39,7 +39,7 @@ public class QueryFieldChangeListener {
     QueryField queryField = event.getQueryField();
     List<WorkspaceMaterialField> workspaceMaterialFields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByQueryField(queryField);
     for (WorkspaceMaterialField workspaceMaterialField : workspaceMaterialFields) {
-      workspaceMaterialFieldController.deleteWorkspaceMaterialField(workspaceMaterialField);
+      workspaceMaterialFieldController.deleteWorkspaceMaterialField(workspaceMaterialField, event.getRemoveAnswers());
     }
   }
   

@@ -8,9 +8,7 @@ import javax.inject.Inject;
 
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.plugins.forum.dao.ForumMessageDAO;
-import fi.muikku.plugins.forum.dao.ForumThreadDAO;
-import fi.muikku.plugins.forum.dao.ForumThreadReplyDAO;
+import fi.muikku.plugins.forum.ForumController;
 import fi.muikku.plugins.forum.model.ForumArea;
 import fi.muikku.plugins.forum.model.ForumMessage;
 import fi.muikku.plugins.forum.model.ForumThread;
@@ -38,22 +36,16 @@ public class ForumWallEntryProvider implements WallEntryProvider {
   
   @Inject
   private WallController wallController;
+
+  @Inject
+  private ForumController forumController;
   
-  @Inject
-  private ForumThreadDAO forumThreadDAO;
-
-  @Inject
-  private ForumThreadReplyDAO forumThreadReplyDAO;
-
   @Inject
   private ForumAreaSubscriptionDAO forumAreaSubscriptionDAO;
 
   @Inject
   private ForumThreadSubscriptionDAO forumThreadSubscriptionDAO;
 
-  @Inject
-  private ForumMessageDAO forumMessageDAO;
-  
   @Override
   public List<WallFeedItem> listWallEntryItems(Wall wall) {
     // TODO ForumArea Rights, ForumController??, Duplicates when both types of subs
@@ -81,10 +73,10 @@ public class ForumWallEntryProvider implements WallEntryProvider {
             for (ForumAreaSubscription forumAreaSubscription : areaSubscriptions) {
               ForumArea forumArea = forumAreaSubscription.getForumArea();
           
-              List<ForumThread> forumThreads = forumThreadDAO.listByForumArea(forumArea);
+              List<ForumThread> forumThreads = forumController.listForumThreads(forumArea, 0, 25);
           
               for (ForumThread thread : forumThreads) {
-                List<ForumThreadReply> replies = forumThreadReplyDAO.listByForumThread(thread);
+                List<ForumThreadReply> replies = forumController.listForumThreadReplies(thread, 0, 25);
                 feedItems.add(new UserFeedForumThreadItem(thread, replies));
               }
             }
@@ -92,7 +84,7 @@ public class ForumWallEntryProvider implements WallEntryProvider {
             for (ForumThreadSubscription forumThreadSubscription : threadSubscriptions) {
               ForumThread forumThread = forumThreadSubscription.getForumThread();
           
-              List<ForumThreadReply> replies = forumThreadReplyDAO.listByForumThread(forumThread);
+              List<ForumThreadReply> replies = forumController.listForumThreadReplies(forumThread, 0, 25);
               feedItems.add(new UserFeedForumThreadItem(forumThread, replies));
             }
           }
@@ -101,7 +93,7 @@ public class ForumWallEntryProvider implements WallEntryProvider {
           
           // TODO Rights to view the forum area
           // Posts
-          List<ForumMessage> contributedThreads = forumMessageDAO.listByContributingUser(wallUser);
+          List<ForumMessage> contributedThreads = forumController.listByContributingUser(wallUser);
 
           for (ForumMessage contributedThread : contributedThreads) {
             feedItems.add(new UserFeedForumMessageItem(contributedThread));
@@ -122,7 +114,7 @@ public class ForumWallEntryProvider implements WallEntryProvider {
         WorkspaceWall workspaceWall = wallController.findWorkspaceWallById(wall.getId());
         WorkspaceEntity workspace = workspaceController.findWorkspaceEntityById(workspaceWall.getWorkspace());
         
-        List<ForumMessage> workspaceMessages = forumMessageDAO.listByWorkspace(workspace);
+        List<ForumMessage> workspaceMessages = forumController.listMessagesByWorkspace(workspace);
         for (ForumMessage workspaceMessage : workspaceMessages) {
           feedItems.add(new UserFeedForumMessageItem(workspaceMessage));
         }

@@ -1,45 +1,88 @@
 (function() {
-
   'use strict';
+  
+  function scrollToPage(workspaceMaterialId, animate) {
+    var topOffset = $('#contentWorkspaceMaterials').offset().top;
+    var scrollTop = $('#page-' + workspaceMaterialId).offset().top - topOffset;
+    if (animate) {
+      $(window).data('scrolling', true);
+      
+      $('html, body').stop().animate({
+        scrollTop : scrollTop
+      }, {
+        duration : 500,
+        easing : "easeInOutQuad",
+        complete : function() {
+          $('a.active').removeClass('active');
+          $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
+          window.location.hash = 'p-' + workspaceMaterialId;
+          $(window).data('scrolling', false);
+        }
+      });
+    } else {
+      $('html, body').stop().scrollTop(scrollTop);
+      window.location.hash = 'p-' + workspaceMaterialId;
+      $('a.active').removeClass('active');
+      $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
+    }
+  }
+  
+  $(document).on('click', '.workspace-materials-toc-item a', function (event) {
+    event.preventDefault();
+    scrollToPage($($(this).attr('href')).data('workspaceMaterialId'), true);
+  });
+  
+  $(window).load(function () {
+    if (window.location.hash && (window.location.hash.indexOf('p-') > 0)) {
+      scrollToPage(window.location.hash.substring(3), false);
+    }
+  });
 
   $(document).ready(function() {
     $(document).muikkuMaterialLoader()
       .muikkuMaterialLoader('loadMaterials', $('.workspace-materials-view-page'));
-
-    // Smooth scrolling in workspace Material's View 
-    $('.workspace-materials-view-page').each(function() {
-      var hash = '#' + this.id;
-
-      $('a[href="' + hash + '"]').click(function(event) {
-        $('html, body').stop().animate({
-          scrollTop : $(this).offset().top - 100
-        }, {
-          duration : 500,
-          easing : "easeInOutQuad",
-          complete : function() {
-            window.location.hash = hash;
-          }
-        });
-        event.preventDefault();
-      });
+    
+    $(document).on('beforeHtmlMaterialRender', function (event, data) {
+      $(window).data('loading', true);
     });
-
-    // Highlighting toc item at appropriate time when we scroll to the
-    // corresponding section
-
-    $('.workspace-materials-view-page').waypoint(function(direction) {
-      var $links = $('a[href="#' + this.id + '"]');
-      $links.toggleClass('active', direction === 'down');
-    }, {
-      offset : '60%'
-    }).waypoint(function(direction) {
-      var $links = $('a[href="#' + this.id + '"]');
-      $links.toggleClass('active', direction === 'up');
-    }, {
-      offset : function() {
-        return -$(this).height() + 250;
+    
+    $(document).on('afterHtmlMaterialRender', function (event, data) {
+      if (window.location.hash && (window.location.hash.indexOf('p-') > 0)) {
+        scrollToPage(window.location.hash.substring(3).split('/'), false);
+      }
+      
+      if ($('.workspace-material-loading').length == 0) {
+        $(window).data('loading', false);
       }
     });
+
+    $('.workspace-materials-view-page').waypoint(function(direction) {
+      if (($(window).data('scrolling') !== true) && ($(window).data('loading') === false)) {
+        var workspaceMaterialId = parseInt($(this).attr('data-workspace-material-id'));
+        $('a.active').removeClass('active');
+        $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
+        window.location.hash = '#p-' + workspaceMaterialId;
+      }
+    }, {
+      offset: '60%'
+    });
+    
+    $('.workspace-materials-view-page[data-workspace-material-assigment-type="EXERCISE"]').each(function (index, page) {
+      $(page).prepend($('<div>')
+          .attr('title','Harjoitustehtävä')
+          .addClass('muikku-page-assignment-type exercise')
+          .append($('<span>').addClass('icon-assignment'))
+      );
+    });
+    
+    $('.workspace-materials-view-page[data-workspace-material-assigment-type="EVALUATED"]').each(function (index, page) {
+      $(page).prepend($('<div>')
+          .attr('title','Arvioitavatehtävä')
+          .addClass('muikku-page-assignment-type evaluated')
+          .append($('<span>').addClass('icon-assignment'))
+      );
+    });
+    
   });
 
   $(document).on('click', '.muikku-save-page', function (event, data) {
@@ -62,9 +105,11 @@
     })
     .callback($.proxy(function (err) {
       if (err) {
-        $('.notification-queue').notificationQueue('notification', 'error', "Error occurred while saving field replies " + err);
+        $('.notification-queue').notificationQueue('notification', 'error',getLocaleText('plugin.workspace.materials.answerSavingFailed', err));
       } else {
-        $(this).addClass("icon-checkmark save-successful").text('Saved');
+        $(this)
+          .addClass("icon-checkmark save-successful")
+          .text(getLocaleText('plugin.workspace.materials.answerSaved'));
       } 
     }, this));
   });

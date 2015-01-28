@@ -18,6 +18,15 @@ public class HtmlRestMaterialRevert {
     this.toRevision = toRevision;
   }
   
+  public Boolean getRemoveAnswers() {
+    return removeAnswers;
+  }
+  
+  public void setRemoveAnswers(Boolean removeAnswers) {
+    this.removeAnswers = removeAnswers;
+  }
+  
   private Long fromRevision;
   private Long toRevision;
+  private Boolean removeAnswers;
 }

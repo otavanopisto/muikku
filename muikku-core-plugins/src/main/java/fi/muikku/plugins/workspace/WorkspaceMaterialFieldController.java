@@ -72,10 +72,6 @@ public class WorkspaceMaterialFieldController {
     workspaceMaterialFieldUpdateEvent.fire(new WorkspaceMaterialFieldUpdateEvent(workspaceMaterialField, materialField, removeAnswers));
   }
 
-  public void deleteWorkspaceMaterialField(WorkspaceMaterialField workspaceMaterialField) {
-    deleteWorkspaceMaterialField(workspaceMaterialField, false);
-  }
-  
   public void deleteWorkspaceMaterialField(WorkspaceMaterialField workspaceMaterialField, boolean removeAnswers) {
     workspaceMaterialFieldDeleteEvent.fire(new WorkspaceMaterialFieldDeleteEvent(workspaceMaterialField, removeAnswers));
     workspaceMaterialFieldDAO.delete(workspaceMaterialField);
