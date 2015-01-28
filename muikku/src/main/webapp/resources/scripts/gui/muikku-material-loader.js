@@ -536,12 +536,41 @@
         fieldName: data.name,
         materialId: data.materialId,
         embedId: data.embedId,
+        meta: meta,
         answer: function() {
           var values = [];
           $(this.element).find('input:checked').each(function() {
             values.push($(this).val());
           });
           return JSON.stringify(values); 
+        },
+        canCheckAnswer: function() {
+          for (var i = 0, l = meta.options.length; i < l; i++) {
+            if (meta.options[i].correct == true) {
+              return true;
+            }
+          }
+          return false;
+        },
+        isCorrectAnswer: function() {
+          var selectedValues = [];
+          $(this.element).find('input:checked').each(function() {
+            selectedValues.push($(this).val());
+          });
+          var correctValues = [];
+          for (var i = 0, l = meta.options.length; i < l; i++) {
+            if (meta.options[i].correct == true) {
+              correctValues.push(meta.options[i].name);
+            }
+          }
+          if (selectedValues.length != correctValues.length) {
+            return false;
+          }
+          for (var i = 0; i < selectedValues.length; i++) {
+            if (correctValues.indexOf(selectedValues[i]) == -1)
+              return false;
+          }
+          return true;
         }
       });
       $(object).replaceWith(container);
