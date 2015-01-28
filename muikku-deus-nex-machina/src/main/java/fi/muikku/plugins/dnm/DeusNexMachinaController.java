@@ -434,15 +434,12 @@ public class DeusNexMachinaController {
               assignmentType = WorkspaceMaterialAssignmentType.EVALUATED;
               break;
             }
+          } else if (material instanceof HtmlMaterial) {
+            assignmentType = determineEmbeddedAssignmentType((HtmlMaterial) material);
           }
           
           WorkspaceMaterial workspaceMaterial = workspaceMaterialController.createWorkspaceMaterial(parent, material, resource.getName(), assignmentType);
           
-          if (material instanceof HtmlMaterial) {
-            assignmentType = determineEmbeddedAssignmentType((HtmlMaterial) material);
-            workspaceMaterialController.updateWorkspaceMaterialAssignmentType(workspaceMaterial, assignmentType);
-          }
-
           try {
             setResourceWorkspaceNodeId(resource.getNo(), workspaceMaterial.getId());
           } catch (IOException e) {
