@@ -660,7 +660,8 @@
       $(page)
         .append($('<button>')
            .addClass('muikku-save-page')
-           .text(buttonText))
+           .text(buttonText)
+           .data('unsaved-text', buttonText))
         .data('answer-button', 'true');
     }
   });

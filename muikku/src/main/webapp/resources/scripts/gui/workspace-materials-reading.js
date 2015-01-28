@@ -83,6 +83,17 @@
       scrollToPage(window.location.hash.substring(3), false);
     }
   });
+  
+  $(document).on('change', '.muikku-field', function (event, data) {
+    $(this).removeClass('muikku-field-correct-answer muikku-field-incorrect-answer');
+    var page = $(this).closest('.workspace-materials-view-page');
+    var saveButton = $(page).find('.muikku-save-page');
+    if (saveButton.length) {
+      saveButton
+        .removeClass('icon-checkmark save-successful')          
+        .text(saveButton.data('unsaved-text'));
+    }
+  });
 
   $(document).on('click', '.muikku-save-page', function (event, data) {
     var page = $(this).closest('.workspace-materials-view-page');
@@ -92,6 +103,7 @@
     var exercise = $(page).data('workspace-material-assigment-type') == "EXERCISE" ;
  
     page.find('.muikku-field').each(function (index, field) {
+      $(field).removeClass('muikku-field-correct-answer muikku-field-incorrect-answer');
       reply.push({
         value: $(field).muikkuField('answer'),
         embedId: $(field).muikkuField('embedId'),

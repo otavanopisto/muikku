@@ -85,6 +85,17 @@
     
   });
 
+  $(document).on('change', '.muikku-field', function (event, data) {
+    $(this).removeClass('muikku-field-correct-answer muikku-field-incorrect-answer');
+    var page = $(this).closest('.workspace-materials-view-page');
+    var saveButton = $(page).find('.muikku-save-page');
+    if (saveButton.length) {
+      saveButton
+        .removeClass('icon-checkmark save-successful')          
+        .text(saveButton.data('unsaved-text'));
+    }
+  });
+
   $(document).on('click', '.muikku-save-page', function (event, data) {
     var page = $(this).closest('.workspace-materials-view-page');
     var workspaceEntityId = $('.workspaceEntityId').val(); //  TODO: data?

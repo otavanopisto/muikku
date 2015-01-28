@@ -151,10 +151,12 @@
       
       _onConnection: function (info) {
         this._element.find('input[name="' + $(info.source).data('field-name') + '"]').val($(info.target).data('field-value'));
+        this._element.trigger("change");
       },
       
       _onConnectionDetached: function (info) {
         this._element.find('input[name="' + $(info.source).data('field-name') + '"]').val('');
+        this._element.trigger("change");
       },
       
       _destroy : function() {
