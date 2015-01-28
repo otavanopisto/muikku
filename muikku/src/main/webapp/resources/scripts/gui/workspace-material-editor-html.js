@@ -103,18 +103,20 @@
           'muikku-textfield': CONTEXTPATH + '/scripts/ckplugins/muikku-textfield/',
           'muikku-memofield': CONTEXTPATH + '/scripts/ckplugins/muikku-memofield/',
           'muikku-filefield': CONTEXTPATH + '/scripts/ckplugins/muikku-filefield/',
-          'muikku-connectfield': CONTEXTPATH + '/scripts/ckplugins/muikku-connectfield/'
+          'muikku-connectfield': CONTEXTPATH + '/scripts/ckplugins/muikku-connectfield/',
+          'muikku-embedded': CONTEXTPATH + '/scripts/ckplugins/muikku-embedded/'
         },
-        extraPlugins : 'coops,' +
-                       'coops-connector,' + 
-                       'coops-dmp,' + 
-                       'coops-cursors,' + 
-                       'coops-sessionevents,' + 
-                       'muikku-textfield,' + 
-                       'muikku-memofield,' + 
-                       'muikku-filefield,' + 
-                       'muikku-selection,' +
+        extraPlugins : ['coops',
+                       'coops-connector', 
+                       'coops-dmp',
+                       'coops-cursors', 
+                       'coops-sessionevents', 
+                       'muikku-textfield', 
+                       'muikku-memofield', 
+                       'muikku-filefield', 
+                       'muikku-selection',
                        'muikku-connectfield',
+                       'muikku-embedded'],
         serverUrl : CONTEXTPATH + '/rest/coops/' + this.options.materialId + '',
         contentCss : '/css/custom-ckeditor-contentcss.css',
         toolbar: [
