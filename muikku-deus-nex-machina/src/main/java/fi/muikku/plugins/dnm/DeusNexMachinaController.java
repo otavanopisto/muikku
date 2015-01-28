@@ -93,10 +93,10 @@ public class DeusNexMachinaController {
         iframeElement.setAttribute("border", "0");
         iframeElement.setAttribute("frameborder", "0");
         if (queryType != null && queryType.intValue() == 1) {
-          iframeElement.setAttribute("data-assignment-type", "exercise");
+          iframeElement.setAttribute("data-assignment-type", "EXERCISE");
         }
         if (queryType != null && queryType.intValue() == 2) {
-          iframeElement.setAttribute("data-assignment-type", "evaluated");
+          iframeElement.setAttribute("data-assignment-type", "EVALUATED");
         }
         iframeElement.setAttribute("data-type", "embedded-document");
 
@@ -373,10 +373,10 @@ public class DeusNexMachinaController {
       List<WorkspaceMaterialAssignmentType> assignmentTypes = new ArrayList<>();
       if (!elements.isEmpty()) {
         for (Element element : elements) {
-          if ("exercise".equals(element.getAttribute("data-assignment-type"))) {
+          if ("EXERCISE".equals(element.getAttribute("data-assignment-type"))) {
             assignmentTypes.add(WorkspaceMaterialAssignmentType.EXERCISE);
           }
-          if ("evaluated".equals(element.getAttribute("data-assignment-type"))) {
+          if ("EVALUATED".equals(element.getAttribute("data-assignment-type"))) {
             assignmentTypes.add(WorkspaceMaterialAssignmentType.EVALUATED);
           }
         }
