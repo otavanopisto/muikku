@@ -2,6 +2,7 @@ package fi.muikku.i18n;
 
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -112,6 +113,10 @@ public class LocaleController {
   
   public String getText(Locale locale, String key, Object[] params) {
     return MessageFormat.format(getText(locale, key), params);
+  }
+  
+  public List<String> getLanguages() {
+    return new ArrayList<String>(localeMaps.keySet());
   }
 
   private Map<String, Map<String, String>> localeMaps = new HashMap<String, Map<String, String>>();
