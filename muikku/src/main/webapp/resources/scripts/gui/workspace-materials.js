@@ -90,7 +90,8 @@
     var workspaceEntityId = $('.workspaceEntityId').val(); //  TODO: data?
     var workspaceMaterialId = $(page).data('workspace-material-id');
     var reply = [];
-    
+    var exercise = $(page).data('workspace-material-assigment-type') == "EXERCISE" ;
+      
     page.find('.muikku-field').each(function (index, field) {
       $(field).removeClass('muikku-field-correct-answer muikku-field-incorrect-answer');
       reply.push({
@@ -108,19 +109,22 @@
       if (err) {
         $('.notification-queue').notificationQueue('notification', 'error',getLocaleText('plugin.workspace.materials.answerSavingFailed', err));
       } else {
-        // Correct answer checking
-        page.find('.muikku-field').each(function (index, field) {
-          if ($(field).muikkuField('canCheckAnswer')) {
-            $(field).addClass($(field).muikkuField('isCorrectAnswer') ? 'muikku-field-correct-answer' : 'muikku-field-incorrect-answer');
-          }
-          else {
-            // TODO Field cannot evaluate answers
-          }
-        });
+        if (exercise) {
+          // Correct answer checking
+          page.find('.muikku-field').each(function (index, field) {
+            if ($(field).muikkuField('canCheckAnswer')) {
+              $(field).addClass($(field).muikkuField('isCorrectAnswer') ? 'muikku-field-correct-answer' : 'muikku-field-incorrect-answer');
+            }
+            else {
+              // TODO Field cannot evaluate answers
+            }
+          });
+        } 
+        
         // Save button
         $(this)
           .addClass("icon-checkmark save-successful")
-          .text(getLocaleText('plugin.workspace.materials.answerSaved'));
+          .text(exercise ? getLocaleText('plugin.workspace.materials.answerChecked') : getLocaleText('plugin.workspace.materials.answerSaved'));
       } 
     }, this));
   });

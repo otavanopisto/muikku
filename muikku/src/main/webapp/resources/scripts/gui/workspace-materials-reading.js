@@ -89,7 +89,8 @@
     var workspaceEntityId = $('.workspaceEntityId').val(); //  TODO: data?
     var workspaceMaterialId = $(page).data('workspace-material-id');
     var reply = [];
-    
+    var exercise = $(page).data('workspace-material-assigment-type') == "EXERCISE" ;
+ 
     page.find('.muikku-field').each(function (index, field) {
       reply.push({
         value: $(field).muikkuField('answer'),
@@ -106,9 +107,21 @@
       if (err) {
         $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.materialsReading.answerSavingFailed', err));
       } else {
+        if (exercise) {
+          // Correct answer checking
+          page.find('.muikku-field').each(function (index, field) {
+            if ($(field).muikkuField('canCheckAnswer')) {
+              $(field).addClass($(field).muikkuField('isCorrectAnswer') ? 'muikku-field-correct-answer' : 'muikku-field-incorrect-answer');
+            }
+            else {
+              // TODO Field cannot evaluate answers
+            }
+          });
+        } 
+        
         $(this)
           .addClass("icon-checkmark save-successful")
-          .text(getLocaleText('plugin.workspace.materialsReading.answerSaved'));
+          .text(exercise ? getLocaleText('plugin.workspace.materialsReading.answerChecked') : getLocaleText('plugin.workspace.materialsReading.answerSaved'));
       } 
     }, this));
   });

@@ -653,10 +653,14 @@
   $(document).on('taskFieldDiscovered', function (event, data) {
     var page = $(data.pageElement);
     if (!$(page).data('answer-button')) {
+      var buttonText = $(page).data('workspace-material-assigment-type') == "EXERCISE" 
+          ? getLocaleText("plugin.workspace.materialsLoader.checkButton")
+          : getLocaleText("plugin.workspace.materialsLoader.saveButton");
+      
       $(page)
         .append($('<button>')
            .addClass('muikku-save-page')
-           .text(getLocaleText("plugin.workspace.materialsLoader.saveButton")))
+           .text(buttonText))
         .data('answer-button', 'true');
     }
   });
