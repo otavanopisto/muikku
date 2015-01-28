@@ -31,7 +31,7 @@ public class LocaleBackingBean {
     String currentLanguage = sessionController.getLocale().getLanguage();
     Collections.sort(result);
     result.remove(currentLanguage);
-    result.add(0, sessionController.getLocale().getLanguage());
+    result.add(0, currentLanguage);
     return result;
   }
 
