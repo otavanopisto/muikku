@@ -39,7 +39,9 @@ public class SearchResultProcessor {
           continue;
         }
         SeekerResult parsedResult = parser.parse(entry);
-        seekerResults.add(parsedResult);
+        
+        if (parsedResult != null)
+          seekerResults.add(parsedResult);
       }
       
       return seekerResults;

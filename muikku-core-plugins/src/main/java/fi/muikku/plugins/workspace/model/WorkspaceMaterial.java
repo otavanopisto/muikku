@@ -23,7 +23,18 @@ public class WorkspaceMaterial extends WorkspaceNode {
     return WorkspaceNodeType.MATERIAL;
   }
 
+  public WorkspaceMaterialAssignmentType getAssignmentType() {
+    return assignmentType;
+  }
+
+  public void setAssignmentType(WorkspaceMaterialAssignmentType assignmentType) {
+    this.assignmentType = assignmentType;
+  }
+
   @NotNull
   @Column(nullable = false)
   private Long materialId;
+  
+  private WorkspaceMaterialAssignmentType assignmentType;
+  
 }

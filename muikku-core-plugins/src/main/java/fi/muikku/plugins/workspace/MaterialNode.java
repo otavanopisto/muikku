@@ -1,5 +1,7 @@
 package fi.muikku.plugins.workspace;
 
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
+
 public class MaterialNode {
 
   public Long getWorkspaceMaterialId() {
@@ -58,6 +60,14 @@ public class MaterialNode {
     this.materialHidden = materialHidden;
   }
 
+  public WorkspaceMaterialAssignmentType getAssignmentType() {
+    return assignmentType;
+  }
+
+  public void setAssignmentType(WorkspaceMaterialAssignmentType assignmentType) {
+    this.assignmentType = assignmentType;
+  }
+
   // The id of the WorkspaceNode this material represents
   private Long workspaceMaterialId;
 
@@ -78,5 +88,8 @@ public class MaterialNode {
   
   // Is the material hidden or not?
   private Boolean materialHidden;
+  
+  // Assignment type of this material
+  private WorkspaceMaterialAssignmentType assignmentType;
 
 }

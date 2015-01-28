@@ -21,7 +21,7 @@
       </c:when>
       <c:otherwise>
         <li class="workspace-materials-toc-item  #{node.materialHidden ? 'item-hidden' : ''}">
-          <h:outputLink value="#page-#{node.workspaceMaterialId}">#{node.materialTitle}</h:outputLink>
+          <h:outputLink value="#page-#{node.workspaceMaterialId}" class="#{node.assignmentType eq 'EVALUATED' ? 'evaluated' : node.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{node.materialTitle}</h:outputLink>
         </li>
       </c:otherwise>
     </c:choose>

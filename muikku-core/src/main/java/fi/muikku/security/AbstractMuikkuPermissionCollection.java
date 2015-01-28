@@ -4,6 +4,7 @@ public class AbstractMuikkuPermissionCollection extends AbstractPermissionCollec
   
   public static final String EVERYONE = "Everyone";
 
+  public static final String ADMINISTRATOR = "Administrator";
   public static final String MANAGER = "Manager";
   public static final String TEACHER = "Teacher";
   public static final String STUDENT = "Student";

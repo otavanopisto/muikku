@@ -4,10 +4,10 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-
 
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.CorePluginsDAO;
@@ -21,13 +21,13 @@ public class ForumThreadDAO extends CorePluginsDAO<ForumThread> {
   
 	private static final long serialVersionUID = 4967576871472917786L;
 
-	public ForumThread create(ForumArea forumArea, String title, String message, UserEntity creator) {
+	public ForumThread create(ForumArea forumArea, String title, String message, UserEntity creator, Boolean sticky, Boolean locked) {
     Date now = new Date();
 
-    return create(forumArea, title, message, now, creator, now, creator, false);
+    return create(forumArea, title, message, now, creator, now, creator, false, sticky, locked, now);
   }
   
-  public ForumThread create(ForumArea forumArea, String title, String message, Date created, UserEntity creator, Date lastModified, UserEntity lastModifier, Boolean archived) {
+  public ForumThread create(ForumArea forumArea, String title, String message, Date created, UserEntity creator, Date lastModified, UserEntity lastModifier, Boolean archived, Boolean sticky, Boolean locked, Date updated) {
     ForumThread thread = new ForumThread();
 
     thread.setForumArea(forumArea);
@@ -38,6 +38,9 @@ public class ForumThreadDAO extends CorePluginsDAO<ForumThread> {
     thread.setLastModified(lastModified);
     thread.setLastModifier(lastModifier.getId());
     thread.setArchived(archived);
+    thread.setSticky(sticky);
+    thread.setLocked(locked);
+    thread.setUpdated(updated);
     
     getEntityManager().persist(thread);
     
@@ -59,6 +62,68 @@ public class ForumThreadDAO extends CorePluginsDAO<ForumThread> {
     );
     
     return entityManager.createQuery(criteria).getResultList();
+  }
+
+  public List<ForumThread> listByForumAreaOrdered(ForumArea forumArea, int firstResult, int maxResults) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<ForumThread> criteria = criteriaBuilder.createQuery(ForumThread.class);
+    Root<ForumThread> root = criteria.from(ForumThread.class);
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(ForumThread_.forumArea), forumArea),
+            criteriaBuilder.equal(root.get(ForumThread_.archived), Boolean.FALSE)
+        )
+    );
+
+    criteria.orderBy(criteriaBuilder.desc(root.get(ForumThread_.sticky)), criteriaBuilder.desc(root.get(ForumThread_.updated)));
+    
+    TypedQuery<ForumThread> query = entityManager.createQuery(criteria);
+    
+    query.setFirstResult(firstResult);
+    query.setMaxResults(maxResults);
+    
+    return query.getResultList();
+  }
+
+  public Long countByArea(ForumArea area) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Long> criteria = criteriaBuilder.createQuery(Long.class);
+    Root<ForumThread> root = criteria.from(ForumThread.class);
+    criteria.select(criteriaBuilder.count(root));
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(ForumThread_.forumArea), area),
+            criteriaBuilder.equal(root.get(ForumThread_.archived), Boolean.FALSE)
+        )
+    );
+    
+    return entityManager.createQuery(criteria).getSingleResult();
+  }
+
+  public ForumThread update(ForumThread thread, String title, String message, Boolean sticky, Boolean locked, Date lastModified, UserEntity lastModifier) {
+    thread.setTitle(title);
+    thread.setMessage(message);
+    thread.setSticky(sticky);
+    thread.setLocked(locked);
+    thread.setLastModified(lastModified);
+    thread.setLastModifier(lastModifier.getId());
+    
+    getEntityManager().persist(thread);
+    
+    return thread;
+  }
+
+  public ForumThread updateThreadUpdated(ForumThread thread, Date updated) {
+    thread.setUpdated(updated);
+    
+    getEntityManager().persist(thread);
+
+    return thread;
   }
   
 }

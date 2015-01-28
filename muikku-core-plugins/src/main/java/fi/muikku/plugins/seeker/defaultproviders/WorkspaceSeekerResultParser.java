@@ -34,7 +34,11 @@ public class WorkspaceSeekerResultParser implements SeekerResultParser {
     // TODO: Validate
     String[] id = ((String) entry.get("id")).split("/", 2);
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(id[1], id[0]);
-    return new WorkspaceSeekerResult(label, caption, "/workspace/" + workspaceEntity.getUrlName(), "");
+    
+    if (workspaceEntity != null)
+      return new WorkspaceSeekerResult(label, caption, "/workspace/" + workspaceEntity.getUrlName(), "");
+    else
+      return null;
   }
 
 }

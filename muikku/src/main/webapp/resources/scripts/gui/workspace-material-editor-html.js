@@ -61,8 +61,7 @@
     },
     _create: function () {
       if (!this.options.materialId) {
-        // TODO: Localization
-        $('.notification-queue').notificationQueue('notification', 'error', "Could not find materialId");
+        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.htmlMaterialEditor.couldNotFindMaterialId"));
         return;
       }
       
@@ -91,7 +90,6 @@
         .addClass('workspace-material-html-editor')
         .appendTo(this.element);
       
-      // TODO: Editor Locale
       this._editor = $(this._editorContainer).coOpsCK({
         externalPlugins : {
           'change' : CONTEXTPATH + '/scripts/ckplugins/change/',
@@ -105,18 +103,20 @@
           'muikku-textfield': CONTEXTPATH + '/scripts/ckplugins/muikku-textfield/',
           'muikku-memofield': CONTEXTPATH + '/scripts/ckplugins/muikku-memofield/',
           'muikku-filefield': CONTEXTPATH + '/scripts/ckplugins/muikku-filefield/',
-          'muikku-connectfield': CONTEXTPATH + '/scripts/ckplugins/muikku-connectfield/'
+          'muikku-connectfield': CONTEXTPATH + '/scripts/ckplugins/muikku-connectfield/',
+          'muikku-embedded': CONTEXTPATH + '/scripts/ckplugins/muikku-embedded/'
         },
-        extraPlugins : 'coops,' +
-                       'coops-connector,' + 
-                       'coops-dmp,' + 
-                       'coops-cursors,' + 
-                       'coops-sessionevents,' + 
-                       'muikku-textfield,' + 
-                       'muikku-memofield,' + 
-                       'muikku-filefield,' + 
-                       'muikku-selection,' +
+        extraPlugins : ['coops',
+                       'coops-connector', 
+                       'coops-dmp',
+                       'coops-cursors', 
+                       'coops-sessionevents', 
+                       'muikku-textfield', 
+                       'muikku-memofield', 
+                       'muikku-filefield', 
+                       'muikku-selection',
                        'muikku-connectfield',
+                       'muikku-embedded'],
         serverUrl : CONTEXTPATH + '/rest/coops/' + this.options.materialId + '',
         contentCss : '/css/custom-ckeditor-contentcss.css',
         toolbar: [
@@ -134,9 +134,12 @@
           '/',
           { name: 'forms', items : ['MuikkuTextField', 'muikku-selection', 'MuikkuMemoField', 'muikku-filefield', 'muikku-connectfield']}
         ],
-        autoGrowOnStartup : true,
-        skin : 'moono',
-        height : 500
+        editorOptions: {
+          autoGrowOnStartup : true,
+          skin : 'moono',
+          height : 500,
+          language: getLocale()
+        }
       });
       
       this._editor.on('statusChange', $.proxy(this._onStatusChange, this));
@@ -159,7 +162,7 @@
       });
       
       this._editor.on("connectionLost", function (event, data) {
-        $('.notification-queue').notificationQueue('notification', 'loading', 'Connection lost, reconnecting...').addClass('connection-lost-notification');
+        $('.notification-queue').notificationQueue('notification', 'loading', getLocaleText("plugin.workspace.htmlMaterialEditor.connectionLost")).addClass('connection-lost-notification');
       });
       
       this._editor.on("reconnect", function (event, data) {

@@ -62,14 +62,18 @@ public class UserRESTService extends AbstractRESTService {
         
         List<fi.muikku.rest.model.User> ret = new ArrayList<fi.muikku.rest.model.User>();
   
-        for (Map<String, Object> o : results) {
-          String[] id = ((String) o.get("id")).split("/", 2);
-          UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(id[1], id[0]);
-  
-          ret.add(new fi.muikku.rest.model.User(userEntity.getId(), (String) o.get("firstName"), (String) o.get("lastName"), hasImage));
-        }
-        
-        return Response.ok(ret).build();
+        if (!results.isEmpty()) {
+          for (Map<String, Object> o : results) {
+            String[] id = ((String) o.get("id")).split("/", 2);
+            UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(id[1], id[0]);
+    
+            if (userEntity != null)
+              ret.add(new fi.muikku.rest.model.User(userEntity.getId(), (String) o.get("firstName"), (String) o.get("lastName"), hasImage));
+          }
+          
+          return Response.ok(ret).build();
+        } else
+          return Response.noContent().build();
       }
     } catch (Exception e) {
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();

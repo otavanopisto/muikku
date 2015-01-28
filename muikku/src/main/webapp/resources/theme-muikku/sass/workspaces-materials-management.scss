@@ -68,6 +68,7 @@ body.workspace-materials-management {
           overflow-x: hidden;
           overflow-y: scroll;
           height:100%;
+          width:370px;
         
           .workspace-materials-toc-content-scrolling {
             width:338px;
@@ -99,12 +100,22 @@ body.workspace-materials-management {
                   display:block;
                   @include genericMenuLinkHoverTransition(background,color,0.15s,ease-in-out);
                   @include rounded(2px);
-                  padding:2px 8px;
+                  padding:2px 8px 2px 6px;
+                  border-left:2px solid #e8f0f5;
+                  margin:1px 0;
                   
                   &:hover,
                   &.active {
                     background:#596e7d;
                     color:#fff;
+                  }
+                  
+                  &.evaluated {
+                    border-left:2px solid #0099ff;
+                  }
+                  
+                  &.exercise {
+                    border-left:2px solid #2ed91c;
                   }
                 }
     
@@ -175,29 +186,6 @@ body.workspace-materials-management {
       position:relative;
       margin:10px auto;
       
-      /* Just added page that creates new section */
-      .workspace-materials-management-new-page {
-        padding:20px 30px 20px 30px;
-        margin:25px auto 30px auto;
-        box-shadow:0 0 0 5px rgba(137,212,142,0.95);
-        
-        a.workspace-materials-management-new-page-link {
-          color:#0099ff;
-          text-decoration:none;
-          text-transform:uppercase;
-          font-size:16px;
-          transition: color 0.3s ease-in-out;
-          
-          &:hover {
-            color:#0e1d27;
-          }
-        }
-        
-        &:hover {
-          box-shadow:0 0 0 5px rgba(137,212,142,0.95);
-        }
-      }
-      
       span.workspace-materials-management-line-separator {
         display:block;
         position:absolute;
@@ -218,7 +206,7 @@ body.workspace-materials-management {
         transition: color 0.3s ease-in-out; 
         
         &.icon-add:before {
-          font-size:18px;
+          font-size:17px;
           float:left;
         }
         
@@ -233,6 +221,29 @@ body.workspace-materials-management {
         
       }
       
+    }
+    
+    /* Just added page that creates new article */
+    .workspace-materials-view-page.material-management-view.workspace-materials-management-new-page {
+      padding:20px 30px 20px 30px;
+      margin:30px auto 30px auto;
+      box-shadow:0 0 0 5px rgba(137,212,142,0.95);
+      
+      a.workspace-materials-management-new-page-link {
+        color:#0099ff;
+        text-decoration:none;
+        text-transform:uppercase;
+        font-size:16px;
+        transition: color 0.3s ease-in-out;
+        
+        &:hover {
+          color:#0e1d27;
+        }
+      }
+      
+      &:hover {
+        box-shadow:0 0 0 5px rgba(137,212,142,0.95);
+      }
     }
   
     /* File-upload field wrapper */
@@ -321,7 +332,7 @@ body.workspace-materials-management {
       -ms-transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
       transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
       
-      &.folder { /* Temporary for folder's, not needed in the near future */
+      &.folder { 
         position:relative;
         max-width:700px;
         width:auto;
@@ -335,7 +346,7 @@ body.workspace-materials-management {
         color:#38393a;
         text-transform:none;
         
-        .page-content { /* Temporary for folder's, not needed in the near future */
+        .page-content {
           font-size:27px;
         }
       }
@@ -463,8 +474,8 @@ body.workspace-materials-management {
         /* Editor save status */
         .workspace-material-html-editor-status {
           position:absolute;
-          top:8px;
-          right:12px;
+          top:9px;
+          right:120px;
           z-index:11;
           font-size:14px;
           color:#fff;
@@ -516,8 +527,6 @@ body.workspace-materials-management {
                       border:0;
                     }
                   
-                  
-                  
                 }
                 
                 .cke_combo {
@@ -566,6 +575,70 @@ body.workspace-materials-management {
           
         }
         
+        .workspace-materials-management-view-page-controls { /* Hide and show edit/close icons when page is in editing mode */
+        
+          a.edit-page {
+            display:none;
+          }
+          
+          a.close-page-editor {
+            display:inline-block;
+          }
+        
+        }
+        
+      }
+      
+      .workspace-materials-management-view-page-controls span.assignment-type { /* Special case for assignment type link */
+        height:25px;
+        width:25px;
+        padding:2px;
+        margin:0 10px;
+        border-radius:25px;
+        border:1px solid #fff;
+        position:relative;
+        left:0;
+        top:-1px;
+        color:#fff;
+        text-align:center;
+        display:inline-block;
+        background:#bdc7cf;
+      
+        a.change-assignment {
+          margin:0;
+          position:relative;
+          top:-2px;
+          left:-1px;
+          font-size:17px;
+        }
+      }
+    
+      &[data-assignment-type="EVALUATED"] .workspace-materials-management-view-page-controls span.assignment-type { /* Special case for assignment type link */
+        background: #0099ff;
+        
+        a.change-assignment {
+          margin:0;
+          position:relative;
+          top:-2px;
+          left:-1px;
+          transform:rotate(330deg);
+          font-size:17px;
+        }
+        
+      }
+      
+      &[data-assignment-type="EXERCISE"] .workspace-materials-management-view-page-controls span.assignment-type { /* Special case for assignment type link */
+        background: #2ed91c;
+        
+        a.change-assignment {
+          margin:0;
+          position:relative;
+          top:-2px;
+          left:-1px;
+          transform:rotate(30deg);
+          font-size:17px;
+        }
+      
       }
       
       .workspace-materials-management-view-page-controls {
@@ -575,10 +648,21 @@ body.workspace-materials-management {
         right:0;
         height:41px;
         background:#7996aa;
+        
+        .management-page-controls-primary-subsection {
+          float:left;
+          display:inline-block;
+        }
+        
+        .management-page-controls-secondary-subsection {
+          float:right;
+          display:inline-block;
+        }
       
         a.edit-page, 
         a.delete-page, 
         a.hide-page,
+        a.change-assignment,
         a.publish-page,
         a.revert-page,
         a.close-page-editor {
@@ -611,6 +695,10 @@ body.workspace-materials-management {
         a.edit-page,
         a.close-page-editor {
           width:29px;
+        }
+        
+        a.close-page-editor {
+          display:none;
         }
         
         a.publish-page.disabled,
@@ -791,5 +879,4 @@ body.workspace-materials-management {
       }
     }
   }
-  
 }

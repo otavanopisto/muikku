@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -40,6 +41,8 @@ public class WebSocketRESTService extends PluginRESTService {
   public Response ticket() {
     UserEntity user = sessionController.getLoggedUserEntity(); 
 
+    // TODO: synchronization - same client may end up with same ticket
+    
     Long userId = user != null ? user.getId() : null;
     Date timestamp = new Date();
     // TODO: Proxy?
@@ -52,4 +55,27 @@ public class WebSocketRESTService extends PluginRESTService {
     return Response.ok(new WebSocketTicketRESTModel(ticket)).build();
   }
 
+  @GET
+  @Path ("/ticket/{TICKET}/check")
+  public Response check(@PathParam("TICKET") String ticketStr) {
+    WebSocketTicket ticket = webSocketTicketController.findTicket(ticketStr);
+
+    if (ticket != null) {
+      UserEntity user = sessionController.getLoggedUserEntity(); 
+  
+      Long userId = user != null ? user.getId() : null;
+      String ip = request.getRemoteAddr();
+      
+      boolean valid = ip != null ? ip.equals(ticket.getIp()) : false;
+      valid = valid && (userId != null ? userId.equals(ticket.getUser()) : ticket.getUser() == null);
+
+      if (valid)
+        return Response.noContent().build();
+      else
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    else
+      return Response.status(Response.Status.NOT_FOUND).build();
+  }
+  
 }

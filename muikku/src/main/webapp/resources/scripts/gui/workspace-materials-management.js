@@ -42,6 +42,9 @@
         nextPage.before(createAddPageLink());
         nextPage.before(uploader);
         enableFileUploader(uploader, nextPage.data('parent-id'), nextPage.data('workspace-material-id'));
+      })
+      .on('fileDiscarded', function (event, data) {
+        $(this).workspaceMaterialUpload('reset');
       });
   }
   
@@ -54,8 +57,6 @@
     var editorName = 'workspaceMaterialEditor' + (materialType.substring(0, 1).toUpperCase() + materialType.substring(1));
     var pageElement = $('#page-' + workspaceMaterialId);
     var pageSection = $(pageElement).closest(".workspace-materials-view-page");
-    $(node).find('.edit-page').hide();
-    $(node).find('.close-page-editor').show();
     
     pageSection.addClass("page-edit-mode");
     
@@ -87,8 +88,6 @@
         $(document).muikkuMaterialLoader('loadMaterial', node, true);
       }
 
-      $(node).find('.edit-page').show();
-      $(node).find('.close-page-editor').hide();
       node.removeClass("page-edit-mode");
     } else {
       $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsManagement.missingEditor", materialType));
@@ -416,6 +415,58 @@
     var page = $(this).closest('.workspace-materials-view-page');
     var hidden = page.hasClass('page-hidden');
     toggleVisibility(page, !hidden);
+  });
+  
+  function changeAssignmentType(workspaceId, workspaceMaterialId, assignmentType, callback) {
+    mApi().workspace.workspaces.materials.read(workspaceId, workspaceMaterialId).callback(function (err, workspaceMaterial) {
+      if (err) {
+        callback(err);
+      } else {
+        mApi().workspace.workspaces.materials
+          .update(workspaceId, workspaceMaterialId, $.extend(workspaceMaterial, { assignmentType: assignmentType }))
+          .callback(function (err) {
+            callback(err);
+          });
+      }
+    });
+  }
+  
+  $(document).on('click', '.change-assignment', function (event, data) {
+    // TODO: Actually do something AND DO IT BETTER!
+    var page = $(this).closest('.workspace-materials-view-page');
+    var assignmentType = $(page).attr('data-assignment-type');
+    var workspaceId = $('.workspaceEntityId').val();
+    var workspaceMaterialId = $(page).attr('data-workspace-material-id');
+    
+    switch (assignmentType) {
+      case "EXERCISE":
+        changeAssignmentType(workspaceId, workspaceMaterialId, "EVALUATED", $.proxy(function (err) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            $(page).attr('data-assignment-type', 'EVALUATED');
+          }
+        }, this));
+      break;
+      case "EVALUATED":
+        changeAssignmentType(workspaceId, workspaceMaterialId, null, $.proxy(function (err) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            $(page).removeAttr('data-assignment-type');
+          }
+        }, this));
+      break;
+      default:
+        changeAssignmentType(workspaceId, workspaceMaterialId, "EXERCISE", $.proxy(function (err) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            $(page).attr('data-assignment-type', 'EXERCISE');
+          }
+        }, this));
+      break;
+    }
   });
   
   $(document).on('click', '.workspaces-materials-management-add-page', function (event, data) {

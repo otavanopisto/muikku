@@ -151,7 +151,7 @@ body.workspace-materials {
     line-height:1.5em;
     box-shadow:0 0 40px rgba(107,137,158,0.1);
     border-bottom:10px solid #fff;
-    z-index:99;
+    z-index:11;
     
     &:hover > span {
       display:none;
@@ -165,7 +165,7 @@ body.workspace-materials {
     }
     
     .workspace-materials-toc-container {
-      overflow:hidden;
+/*       overflow:hidden; */
       position:relative;
       height:530px;
     
@@ -180,6 +180,7 @@ body.workspace-materials {
     
       .workspace-materials-toc-content-outer {
         overflow:hidden;
+        position:absolute;
         height:480px;
         width:280px;
         
@@ -188,6 +189,7 @@ body.workspace-materials {
           overflow-x: hidden;
           overflow-y: scroll;
           height:480px;
+          width:302px;
         
           .workspace-materials-toc-content-scrolling {
             padding:4px;
@@ -219,13 +221,24 @@ body.workspace-materials {
                   display:block;
                   @include genericMenuLinkHoverTransition(background,color,0.15s,ease-in-out);
                   @include rounded(2px);
-                  padding:2px 8px;
+                  padding:2px 8px 2px 6px;
+                  border-left:2px solid #fff;
+                  margin:1px 0;
                   
                   &:hover,
                   &.active {
                     background:#596e7d;
                     color:#fff;
                   }
+                  
+                  &.evaluated {
+                    border-left:2px solid #0099ff;
+                  }
+                  
+                  &.exercise {
+                    border-left:2px solid #2ed91c;
+                  }
+                  
                 }
     
               }
@@ -344,6 +357,7 @@ body.workspace-materials {
       margin:23px 300px 37px auto;
       max-width:640px;
       box-shadow:0 0 40px rgba(107,137,158,0.1);
+      position:relative;
 
       img {
         max-width:100%;
