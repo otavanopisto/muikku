@@ -385,7 +385,7 @@ public class DeusNexMachinaController {
         Material material = createMaterial(importRoot, resource, deusNexDocument);
 
         if (material != null) {
-          WorkspaceNode workspaceNode = workspaceMaterialController.createWorkspaceMaterial(parent, material, resource.getName());
+          WorkspaceNode workspaceNode = workspaceMaterialController.createWorkspaceMaterial(parent, material, resource.getName(), null);
 
           try {
             setResourceWorkspaceNodeId(resource.getNo(), workspaceNode.getId());

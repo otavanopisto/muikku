@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fi.muikku.plugins.workspace.ContentNode;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 
 public class ContentNode {
 
   public ContentNode(String title, String type, Long workspaceMaterialId,
-      Long materialId, int level) {
+      Long materialId, int level, WorkspaceMaterialAssignmentType assignmentType) {
     super();
     this.children = new ArrayList<>();
     this.title = title;
@@ -16,6 +17,7 @@ public class ContentNode {
     this.workspaceMaterialId = workspaceMaterialId;
     this.materialId = materialId;
     this.level = level;
+    this.assignmentType = assignmentType;
   }
 
   public void addChild(ContentNode child) {
@@ -49,6 +51,14 @@ public class ContentNode {
   public void setLevel(int level) {
     this.level = level;
   }
+  
+  public WorkspaceMaterialAssignmentType getAssignmentType() {
+    return assignmentType;
+  }
+  
+  public void setAssignmentType(WorkspaceMaterialAssignmentType assignmentType) {
+    this.assignmentType = assignmentType;
+  }
 
   private String title;
   private String type;
@@ -56,4 +66,5 @@ public class ContentNode {
   private Long workspaceMaterialId;
   private Long materialId;
   private int level;
+  private WorkspaceMaterialAssignmentType assignmentType;
 }
