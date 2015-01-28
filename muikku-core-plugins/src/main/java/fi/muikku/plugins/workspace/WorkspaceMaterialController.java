@@ -236,10 +236,14 @@ public class WorkspaceMaterialController {
     return createWorkspaceMaterial(parent, material, urlName, assignmentType);
   }
   
+  public WorkspaceMaterial createWorkspaceMaterial(WorkspaceNode parent, Material material, String urlName) {
+    return createWorkspaceMaterial(parent, material, urlName, null);
+  }
+
   public WorkspaceMaterial createWorkspaceMaterial(WorkspaceNode parent, Material material, String urlName, WorkspaceMaterialAssignmentType assignmentType) {
     Integer index = workspaceNodeDAO.getMaximumOrderNumber(parent);
     index = index == null ? 0 : ++index;
-    WorkspaceMaterial workspaceMaterial = workspaceMaterialDAO.create(parent, material.getId(), urlName, index, assignmentType);
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialDAO.create(parent, material.getId(), urlName, index, false, assignmentType);
     workspaceMaterialCreateEvent.fire(new WorkspaceMaterialCreateEvent(workspaceMaterial));
     return workspaceMaterial;
   }
@@ -262,6 +266,10 @@ public class WorkspaceMaterialController {
 
   public List<WorkspaceMaterial> listWorkspaceMaterialsByMaterial(Material material) {
     return workspaceMaterialDAO.listByMaterialId(material.getId());
+  }
+  
+  public WorkspaceMaterial updateWorkspaceMaterialAssignmentType(WorkspaceMaterial workspaceMaterial, WorkspaceMaterialAssignmentType assignmentType) {
+    return workspaceMaterialDAO.updateAssignmentType(workspaceMaterial, assignmentType);
   }
 
   public WorkspaceNode updateWorkspaceNode(WorkspaceNode workspaceNode, Long materialId, WorkspaceNode parentNode, WorkspaceNode nextSibling, Boolean hidden, WorkspaceMaterialAssignmentType assignmentType) {
