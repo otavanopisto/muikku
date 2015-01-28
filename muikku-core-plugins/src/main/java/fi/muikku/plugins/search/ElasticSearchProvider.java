@@ -48,6 +48,11 @@ public class ElasticSearchProvider implements SearchProvider {
   
   @Override
   public SearchResult search(String query, String[] fields, int start, int maxResults, Class<?>... types) {
+    
+    // TODO: query_string search for case insensitive searches??
+    // http://stackoverflow.com/questions/17266830/case-insensitivity-does-not-work
+    query = query != null ? query.toLowerCase() : null;
+    
     String[] typenames = new String[types.length];
     for (int i = 0; i < types.length; i++) {
       typenames[i] = types[i].getSimpleName();

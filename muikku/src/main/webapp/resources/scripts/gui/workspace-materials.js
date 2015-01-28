@@ -66,6 +66,23 @@
     }, {
       offset: '60%'
     });
+    
+    $('.workspace-materials-view-page[data-workspace-material-assigment-type="EXERCISE"]').each(function (index, page) {
+      $(page).prepend($('<div>')
+          .attr('title','Harjoitustehtävä')
+          .addClass('muikku-page-assignment-type exercise')
+          .append($('<span>').addClass('icon-assignment'))
+      );
+    });
+    
+    $('.workspace-materials-view-page[data-workspace-material-assigment-type="EVALUATED"]').each(function (index, page) {
+      $(page).prepend($('<div>')
+          .attr('title','Arvioitavatehtävä')
+          .addClass('muikku-page-assignment-type evaluated')
+          .append($('<span>').addClass('icon-assignment'))
+      );
+    });
+    
   });
 
   $(document).on('click', '.muikku-save-page', function (event, data) {
@@ -88,9 +105,11 @@
     })
     .callback($.proxy(function (err) {
       if (err) {
-        $('.notification-queue').notificationQueue('notification', 'error', "Error occurred while saving field replies " + err);
+        $('.notification-queue').notificationQueue('notification', 'error',getLocaleText('plugin.workspace.materials.answerSavingFailed', err));
       } else {
-        $(this).addClass("icon-checkmark save-successful").text('Saved');
+        $(this)
+          .addClass("icon-checkmark save-successful")
+          .text(getLocaleText('plugin.workspace.materials.answerSaved'));
       } 
     }, this));
   });

@@ -3,21 +3,17 @@
   MuikkuWebSocketImpl = $.klass({
     init: function () {
       var _this = this;
-      mApi().websocket.ticket.read().callback(function (err, ticket) {
-        _this._ticket = ticket.ticket;
-      });
+      this._retryTimeout = undefined;
+      this._retryTimeoutInterval = 5000;
 
-      var host = window.location.host;
-      
-      this._webSocket = this._openWebSocket('wss://' + host + '/ws/socket/' + _this._ticket);
-      this._webSocket.onmessage = this._onWebSocketMessage;
-      
-      $(window).on('unload', function() {
+      $(window).on('beforeunload', function() {
         if (_this._webSocket) {
           _this._webSocket.onclose = function () {};
           _this._webSocket.close();
         }
       });
+
+      this._connect();
     },
     _openWebSocket: function (url) {
       if ((typeof window.WebSocket) !== 'undefined') {
@@ -28,11 +24,71 @@
       
       return null;
     },
+    _connect: function () {
+      var _this = this;
+      
+      clearTimeout(this._retryTimeout);
+      this._retryTimeout = undefined;
+
+      if (this._ticket) {
+        // Validate existing ticket and if it fails, reset it
+        mApi().websocket.ticket.check.read(this._ticket).callback(function (err, response) {
+          if (err) {
+            _this._ticket = undefined;
+          }
+        });
+      }
+      
+      if (!this._ticket) {
+        // Fetch new ticket if none exists
+        mApi().websocket.ticket.read().callback(function (err, ticket) {
+          if (!err)
+            _this._ticket = ticket.ticket;
+          else 
+            _this._ticket = undefined;
+        });
+      }
+
+      if (this._ticket) {
+        var host = window.location.host;
+        this._webSocket = this._openWebSocket('wss://' + host + '/ws/socket/' + this._ticket);
+        this._webSocket.onopen = this._onWebSocketOpen;
+        this._webSocket.onmessage = this._onWebSocketMessage;
+        this._webSocket.onclose = this._onWebSocketClose;
+        this._webSocket.onerror = this._onWebSocketError;
+      } else {
+        this._tryReconnect();
+      }
+    },
+    _onWebSocketOpen: function (event) {
+      $(document).trigger("mSocket:connected");
+    },
+    _onWebSocketClose: function (event) {
+      $(document).trigger("mSocket:disconnected");
+
+      mSocket()._tryReconnect();
+    },
+    _onWebSocketError: function () {
+      if (this._webSocket) {
+        if (this._webSocket.readyState == 3) {
+          mSocket()._tryReconnect();
+        }
+      }
+    },
     _onWebSocketMessage: function (event) {
       var message = JSON.parse(event.data);
       var eventType = message.eventType;
       
       $(document).trigger(eventType, message.data);
+    },
+    _tryReconnect: function () {
+      var _this = this;
+
+      clearTimeout(this._retryTimeout);
+      
+      this._retryTimeout = setTimeout(function () {
+        _this._connect();
+      }, this._retryTimeoutInterval);
     },
     sendMessage: function (eventType, data) {
       var message = {
@@ -40,7 +96,12 @@
         data: data
       };
       
-      this._webSocket.send(JSON.stringify(message));
+      if (this._webSocket.readyState == 1) {
+        this._webSocket.send(JSON.stringify(message));
+        return true;
+      }
+      
+      return false;
     }
   });
       

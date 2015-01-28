@@ -23,7 +23,7 @@
       <div id="workspaceMaterialsReadingTOCContainer">
         <div class="workspace-materials-reading-TOC-title">
           <h1>Sisällysluettelo</h1>
-          <div id="workspaceMaterialsReadingTOCPinicon" class="icon-pin"></div>
+          <div id="workspaceMaterialsReadingTOCPinicon" class="icon-pin" title="Kiinnitä sisällysluettelo"></div>
         </div>
         <div class="workspace-materials-toc-content-outer">
           <div class="workspace-materials-toc-content-inner">
@@ -66,14 +66,14 @@
                 </ui:fragment>
               </ui:fragment>
               <ui:fragment rendered="#{articleNode.type ne 'folder'}">
-                <article id="page-#{articleNode.workspaceMaterialId}" data-workspace-material-id="#{articleNode.workspaceMaterialId}" data-material-id="#{articleNode.materialId}" data-material-type="#{articleNode.type}" data-material-title="#{articleNode.title}" class="workspace-materials-view-page material-reading-view"/>
+                <article id="page-#{articleNode.workspaceMaterialId}" data-workspace-material-assigment-type="#{articleNode.assignmentType}" data-workspace-material-id="#{articleNode.workspaceMaterialId}" data-material-id="#{articleNode.materialId}" data-material-type="#{articleNode.type}" data-material-title="#{articleNode.title}" class="workspace-materials-view-page material-reading-view"/>
               </ui:fragment>
             </ui:repeat>
           </section>
         </ui:fragment>  
         
         <ui:fragment rendered="#{node.type ne 'folder'}">
-          <article id="page-#{node.workspaceMaterialId}" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-material-type="#{node.type}" data-material-title="#{node.title}" class="workspace-materials-view-page material-reading-view"/>
+          <article id="page-#{node.workspaceMaterialId}" data-workspace-material-assigment-type="#{articleNode.assignmentType}" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-material-type="#{node.type}" data-material-title="#{node.title}" class="workspace-materials-view-page material-reading-view"/>
         </ui:fragment>  
       </ui:repeat>
     </article>

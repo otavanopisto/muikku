@@ -22,7 +22,7 @@
     
       <div id="workspaceMaterialsManagementTOCContainer">
         <div class="workspace-materials-management-TOC-title">
-          <h1>Sisällysluettelo</h1>
+          <h1>#{i18n.text['plugin.workspace.materialsManagement.tocTitle']}</h1>
         </div>
         <div class="workspace-materials-toc-content-outer">
           <div class="workspace-materials-toc-content-inner">
@@ -44,26 +44,26 @@
   <ui:define name="workspace.materials.management.content">
     <ui:repeat var="node" value="#{workspaceMaterialsTOCBackingBean.getDescendants(workspaceMaterialsManagementBackingBean.getRootFolder())}" varStatus="vs">
       <ui:fragment rendered="#{node.materialType eq 'folder'}">
-        <div class="workspace-materials-management-addpage"><span class="workspace-materials-management-line-separator"></span><a class="workspaces-materials-management-add-page icon-add" href="javascript:void(null)"><span>Add new page</span></a></div>      
+        <div class="workspace-materials-management-addpage"><span class="workspace-materials-management-line-separator"></span><a class="workspaces-materials-management-add-page icon-add" href="javascript:void(null)"><span>#{i18n.text['plugin.workspace.materialsManagement.addNewPage']}</span></a></div>      
         <div class="workspaces-materials-management-insert-file">
           <input type="file"/>  
         </div>
-        <h2 id="page-#{node.workspaceMaterialId}" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-parent-id="#{node.parentId}" data-material-type="#{node.materialType}" data-material-title="#{node.materialTitle}" class="workspace-materials-view-page material-management-view folder"></h2>
+        <h2 id="page-#{node.workspaceMaterialId}" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-parent-id="#{node.parentId}" data-material-type="#{node.materialType}" data-material-title="#{node.materialTitle}" class="workspace-materials-view-page material-management-view folder" data-assignment-type="#{node.assignmentType}"></h2>
         <ui:fragment rendered="#{vs.last}">
-          <div class="workspace-materials-management-addpage"><span class="workspace-materials-management-line-separator"></span><a class="workspaces-materials-management-add-page icon-add" href="javascript:void(null)"><span>Add new page</span></a></div>
+          <div class="workspace-materials-management-addpage"><span class="workspace-materials-management-line-separator"></span><a class="workspaces-materials-management-add-page icon-add" href="javascript:void(null)"><span>#{i18n.text['plugin.workspace.materialsManagement.addNewPage']}</span></a></div>
           <div class="workspaces-materials-management-insert-file">
             <input type="file"/>  
           </div>
         </ui:fragment>
       </ui:fragment>
       <ui:fragment rendered="#{node.materialType ne 'folder'}">
-        <div class="workspace-materials-management-addpage"><span class="workspace-materials-management-line-separator"></span><a class="workspaces-materials-management-add-page icon-add" href="javascript:void(null)"><span>Add new page</span></a></div>      
+        <div class="workspace-materials-management-addpage"><span class="workspace-materials-management-line-separator"></span><a class="workspaces-materials-management-add-page icon-add" href="javascript:void(null)"><span>#{i18n.text['plugin.workspace.materialsManagement.addNewPage']}</span></a></div>      
         <div class="workspaces-materials-management-insert-file">
           <input type="file"/>  
         </div>
-        <section id="page-#{node.workspaceMaterialId}" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-parent-id="#{node.parentId}" data-material-type="#{node.materialType}" data-material-title="#{node.materialTitle}" class="workspace-materials-view-page material-management-view #{node.materialHidden ? 'page-hidden' : ''}"/>
+        <section id="page-#{node.workspaceMaterialId}" data-workspace-material-id="#{node.workspaceMaterialId}" data-material-id="#{node.materialId}" data-parent-id="#{node.parentId}" data-material-type="#{node.materialType}" data-material-title="#{node.materialTitle}" class="workspace-materials-view-page material-management-view #{node.materialHidden ? 'page-hidden' : ''}" data-assignment-type="#{node.assignmentType}"/>
         <ui:fragment rendered="#{vs.last}">
-          <div class="workspace-materials-management-addpage"><span class="workspace-materials-management-line-separator"></span><a class="workspaces-materials-management-add-page icon-add" href="javascript:void(null)"><span>Add new page</span></a></div>
+          <div class="workspace-materials-management-addpage"><span class="workspace-materials-management-line-separator"></span><a class="workspaces-materials-management-add-page icon-add" href="javascript:void(null)"><span>#{i18n.text['plugin.workspace.materialsManagement.addNewPage']}</span></a></div>
           <div class="workspaces-materials-management-insert-file">
             <input type="file"/>  
           </div>

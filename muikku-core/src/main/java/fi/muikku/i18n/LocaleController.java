@@ -1,10 +1,10 @@
 package fi.muikku.i18n;
 
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -16,6 +16,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 
 @ApplicationScoped
 @Stateful
@@ -83,7 +86,7 @@ public class LocaleController {
     return date.getTime();
   }
 
-  public String getJsLocales(Locale locale) {
+  public String getJsLocales(Locale locale) throws JsonGenerationException, JsonMappingException, IOException {
     Map<String, String> entries = jsLocaleMaps.get(locale.getLanguage());
     StringBuffer sb = new StringBuffer();
     if (entries != null) {
@@ -91,21 +94,9 @@ public class LocaleController {
         .append("window._MUIKKU_LOCALE='")
         .append(locale.getLanguage())
         .append("';")
-        .append("window._MUIKKU_LOCALEMAP = {");
-      String key;
-      Iterator<String> keyIterator = entries.keySet().iterator();
-      while (keyIterator.hasNext()) {
-        key = keyIterator.next();
-        sb.append("'");
-        sb.append(key.replace("'", "\'"));
-        sb.append("':'");
-        sb.append(entries.get(key).replace("'", "\'"));
-        sb.append("'");
-        if (keyIterator.hasNext()) {
-          sb.append(",");
-        }
-      }
-      sb.append("};}).call(this);");
+        .append("window._MUIKKU_LOCALEMAP = ")
+        .append((new ObjectMapper()).writeValueAsString(entries))
+        .append("}).call(this);");
     }
     return sb.toString();
   }

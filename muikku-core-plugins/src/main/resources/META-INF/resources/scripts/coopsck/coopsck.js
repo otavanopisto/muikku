@@ -17,8 +17,18 @@
         });
       }
       
+      var extraPlugins;
+      
+      if (this.options.extraPlugins) {
+        if ($.isArray(this.options.extraPlugins)) {
+          extraPlugins = this.options.extraPlugins.join(',');
+        } else {
+          extraPlugins = this.options.extraPlugins;
+        }
+      }
+      
       this._editor = CKEDITOR.replace(this.element[0],$.extend({ 
-        extraPlugins: this.options.extraPlugins,
+        extraPlugins: extraPlugins,
         readOnly: true,
         contentsCss: ['//cdnjs.cloudflare.com/ajax/libs/ckeditor/4.3.2/contents.css', this.options.contentCss ],
         coops: {

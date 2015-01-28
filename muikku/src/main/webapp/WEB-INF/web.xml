@@ -45,6 +45,12 @@
     <param-name>resteasy.scan</param-name>
     <param-value>true</param-value>
   </context-param>
+  
+  <context-param>
+    <!-- http://stackoverflow.com/questions/2689245/fconvertdatetime-displays-wrong-date -->
+    <param-name>javax.faces.DATETIMECONVERTER_DEFAULT_TIMEZONE_IS_SYSTEM_TIMEZONE</param-name>
+    <param-value>true</param-value>
+  </context-param>
 
   <filter>
     <filter-name>EncodingFilter</filter-name>
