@@ -381,8 +381,10 @@ public class DeusNexMachinaController {
           }
         }
       }
-      if ((assignmentTypes.contains(WorkspaceMaterialAssignmentType.EXERCISE) && assignmentTypes.contains(WorkspaceMaterialAssignmentType.EVALUATED))
-          || assignmentTypes.isEmpty()) {
+      if ((assignmentTypes.contains(WorkspaceMaterialAssignmentType.EXERCISE)
+          && assignmentTypes.contains(WorkspaceMaterialAssignmentType.EVALUATED))) {
+        return WorkspaceMaterialAssignmentType.MIXED;
+      } else if (assignmentTypes.isEmpty()) {
         return null;
       } else {
         return assignmentTypes.get(0);
