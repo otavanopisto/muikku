@@ -1,0 +1,23 @@
+package fi.muikku.plugins.forum.dao;
+
+
+import fi.muikku.plugins.CorePluginsDAO;
+import fi.muikku.plugins.forum.model.ForumAreaGroup;
+
+
+public class ForumAreaGroupDAO extends CorePluginsDAO<ForumAreaGroup> {
+
+	private static final long serialVersionUID = -8797157252142681349L;
+
+  public ForumAreaGroup create(String name, Boolean archived) {
+	  ForumAreaGroup forumAreaGroup = new ForumAreaGroup();
+
+	  forumAreaGroup.setName(name);
+		forumAreaGroup.setArchived(archived);
+
+		getEntityManager().persist(forumAreaGroup);
+
+		return forumAreaGroup;
+	}
+  
+}

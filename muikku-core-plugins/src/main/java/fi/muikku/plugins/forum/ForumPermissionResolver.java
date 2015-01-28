@@ -51,7 +51,11 @@ public class ForumPermissionResolver extends AbstractPermissionResolver implemen
   
   @Override
   public boolean handlesPermission(String permission) {
-    return permissionCollection.containsPermission(permission);
+    try {
+      return permissionCollection.containsPermission(permission) && ("FORUM".equals(permissionCollection.getPermissionScope(permission)));
+    } catch (NoSuchFieldException e) {
+      return false;
+    }
   }
   
   @Override
