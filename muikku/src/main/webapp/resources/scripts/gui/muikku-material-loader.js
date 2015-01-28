@@ -42,9 +42,9 @@
             parsed.find('iframe[data-type="embedded-document"]').each($.proxy(function (index, iframe) {
               var embededWorkspaceMaterialId = $(iframe).data('workspace-material-id');
               var embededMaterialId = $(iframe).data('material-id');
-              var embededMaterialType = $(iframe).data('material-type');
+              var embeddedMaterialType = $(iframe).data('material-type');
               
-              if (embededMaterialType == 'html') {
+              if (embeddedMaterialType == 'html') {
                 var placeholder = $('<div>')
                   .attr('id', this._createUniqueId())
                   .addClass('workspace-material-loading')
@@ -52,7 +52,7 @@
                 $(iframe).replaceWith(placeholder);
                 this._loadHtmlMaterial(pageElement, workspaceEntityId, embededWorkspaceMaterialId, embededMaterialId, placeholder.attr('id'), parentIds.concat(materialId), fieldAnswers);
               } else {
-                $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.materialsLoader.incorrectMaterialType', embededMaterialType));
+                $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.materialsLoader.incorrectMaterialType', embeddedMaterialType));
               }
             }, this));
             
