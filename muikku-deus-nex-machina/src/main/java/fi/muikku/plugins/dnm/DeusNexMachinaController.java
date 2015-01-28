@@ -93,10 +93,10 @@ public class DeusNexMachinaController {
         iframeElement.setAttribute("border", "0");
         iframeElement.setAttribute("frameborder", "0");
         if (queryType != null && queryType.intValue() == 1) {
-          iframeElement.setAttribute("data-assessment-type", "exercise");
+          iframeElement.setAttribute("data-assignment-type", "exercise");
         }
         if (queryType != null && queryType.intValue() == 2) {
-          iframeElement.setAttribute("data-assessment-type", "evaluable");
+          iframeElement.setAttribute("data-assignment-type", "evaluated");
         }
         iframeElement.setAttribute("data-type", "embedded-document");
 
@@ -358,6 +358,39 @@ public class DeusNexMachinaController {
     }
 
   }
+  
+  private WorkspaceMaterialAssignmentType determineEmbeddedAssignmentType(HtmlMaterial material) {
+    try {
+      if (material.getHtml() == null) {
+        return null;
+      }
+      StringReader htmlReader = new StringReader(material.getHtml());
+      DOMParser parser = new DOMParser();
+      InputSource inputSource = new InputSource(htmlReader);
+      parser.parse(inputSource);
+      org.w3c.dom.Document domDocument = parser.getDocument();
+      List<Element> elements = DeusNexXmlUtils.getElementsByXPath(domDocument.getDocumentElement(), "//IFRAME[@data-type=\"embedded-document\"]");
+      List<WorkspaceMaterialAssignmentType> assignmentTypes = new ArrayList<>();
+      if (!elements.isEmpty()) {
+        for (Element element : elements) {
+          if ("exercise".equals(element.getAttribute("data-assignment-type"))) {
+            assignmentTypes.add(WorkspaceMaterialAssignmentType.EXERCISE);
+          }
+          if ("evaluated".equals(element.getAttribute("data-assignment-type"))) {
+            assignmentTypes.add(WorkspaceMaterialAssignmentType.EVALUATED);
+          }
+        }
+      }
+      if ((assignmentTypes.contains(WorkspaceMaterialAssignmentType.EXERCISE) && assignmentTypes.contains(WorkspaceMaterialAssignmentType.EVALUATED))
+          || assignmentTypes.isEmpty()) {
+        return null;
+      } else {
+        return assignmentTypes.get(0);
+      }
+    } catch (SAXException | IOException | XPathExpressionException e) {
+      return null;
+    }
+  }
 
   private void importResource(WorkspaceNode importRoot, WorkspaceNode parent, Resource resource, DeusNexDocument deusNexDocument,
       List<WorkspaceNode> createdNodes) throws DeusNexException {
@@ -402,10 +435,16 @@ public class DeusNexMachinaController {
               break;
             }
           }
-          WorkspaceNode workspaceNode = workspaceMaterialController.createWorkspaceMaterial(parent, material, resource.getName(), assignmentType);
+          
+          WorkspaceMaterial workspaceMaterial = workspaceMaterialController.createWorkspaceMaterial(parent, material, resource.getName(), assignmentType);
+          
+          if (material instanceof HtmlMaterial) {
+            assignmentType = determineEmbeddedAssignmentType((HtmlMaterial) material);
+            workspaceMaterialController.updateWorkspaceMaterialAssignmentType(workspaceMaterial, assignmentType);
+          }
 
           try {
-            setResourceWorkspaceNodeId(resource.getNo(), workspaceNode.getId());
+            setResourceWorkspaceNodeId(resource.getNo(), workspaceMaterial.getId());
           } catch (IOException e) {
             throw new DeusNexInternalException("Failed to store resourceNo lookup file", e);
           }
@@ -414,11 +453,12 @@ public class DeusNexMachinaController {
             List<Resource> childResources = ((ResourceContainer) resource).getResources();
             if (childResources != null) {
               for (Resource childResource : childResources) {
-                importResource(importRoot, workspaceNode, childResource, deusNexDocument, createdNodes);
+                importResource(importRoot, workspaceMaterial, childResource, deusNexDocument, createdNodes);
               }
             }
           }
-          createdNodes.add(workspaceNode);
+          
+          createdNodes.add(workspaceMaterial);
         }
       } else {
         logger.info(node.getPath() + " already exists, skipping");
