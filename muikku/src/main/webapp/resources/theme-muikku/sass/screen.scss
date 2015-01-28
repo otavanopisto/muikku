@@ -435,22 +435,6 @@ a.header {
   @include background-image('gfx/icons/32x32/actions/navigate-search.png');
 }
 
-.languageSelection {
-  float:left;
-  padding:1px 4px 3px 4px;
-  margin-left:2px;    
-}
-
-.languageWidget a {  
-  text-decoration:none; 
-  padding: 3px;      
-}
-
-.languageSelection a:hover {    
-  text-decoration:none;
-  color:#fff;    
-}
-
 #content {
   min-height: 800px; 
   margin: 0 auto;
