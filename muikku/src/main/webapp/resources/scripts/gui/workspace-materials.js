@@ -103,8 +103,10 @@
     var reply = [];
     var exercise = $(page).data('workspace-material-assigment-type') == "EXERCISE" ;
       
+    page.find('.muikku-field-examples').remove();
     page.find('.muikku-field').each(function (index, field) {
       $(field).removeClass('muikku-field-correct-answer muikku-field-incorrect-answer');
+      
       reply.push({
         value: $(field).muikkuField('answer'),
         embedId: $(field).muikkuField('embedId'),
@@ -127,7 +129,21 @@
               $(field).addClass($(field).muikkuField('isCorrectAnswer') ? 'muikku-field-correct-answer' : 'muikku-field-incorrect-answer');
             }
             else {
-              // TODO Field cannot evaluate answers
+              if ($(field).muikkuField('hasExamples')) {
+                var exampleDetails = $('<details>')
+                  .addClass('muikku-field-examples')
+                  .attr('data-for-field', $(field).attr('name'));
+                
+                $.each($(field).muikkuField('getExamples'), function (index, example) {
+                  exampleDetails.append(
+                    $('<span>') 
+                      .addClass('muikku-field-example')
+                      .text(example)    
+                  );
+                });
+
+                $(field).after(exampleDetails);
+              }
             }
           });
         } 

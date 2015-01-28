@@ -223,6 +223,32 @@
           materialId: data.materialId,
           embedId: data.embedId,
           meta: data.meta,
+          hasExamples: function () {
+            var meta = this.options.meta;
+            if (meta.rightAnswers && meta.rightAnswers.length > 0) {
+              for (var i = 0, l = meta.rightAnswers.length; i < l; i++) {
+                if (meta.rightAnswers[i].correct === true) {
+                  return false;
+                }
+              }
+              
+              return true;
+            }
+            
+            return false;
+          },
+          getExamples: function () {
+            var result = [];
+            
+            var meta = this.options.meta;
+            if (meta.rightAnswers && meta.rightAnswers.length > 0) {
+              for (var i = 0, l = meta.rightAnswers.length; i < l; i++) {
+                result.push(meta.rightAnswers[i].text);
+              }
+            }
+            
+            return result;
+          },
           canCheckAnswer: function() {
             var meta = this.options.meta;
             if (meta.rightAnswers) {
@@ -622,6 +648,12 @@
       },
       isCorrectAnswer: function () {
         return false;
+      },
+      hasExamples: function () {
+        return false;
+      },
+      getExamples: function () {
+        return [];
       }
     },
     _create : function() {
@@ -629,6 +661,12 @@
     },
     answer: function () {
       return this.options.answer.call(this)||'';
+    },
+    hasExamples: function () {
+      return this.options.hasExamples.call(this);
+    },
+    getExamples: function () {
+      return this.options.getExamples.call(this);
     },
     canCheckAnswer: function() {
       return this.options.canCheckAnswer.call(this)||false;
