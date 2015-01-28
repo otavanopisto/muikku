@@ -1,4 +1,4 @@
-    <div class="mf-item cm-message" id="{id}">
+    <div class="mf-item cm-message {?unreadMessagesInThread}unread{/unreadMessagesInThread}" id="{id}">
       <div class="mf-item-details">
         <div class="mf-item-details-container">       
           <div class="mf-item-additionalInfo">
@@ -13,7 +13,7 @@
               {/senderHasPicture}            
               <input type="hidden" name="mf-person-id" value="{sender}"/>
               <span class="mf-item-header-content-primary">{senderFullName}</span>        
-              <span class="mf-item-header-content-secondary {?unreadMessagesInThread} cm-unreadmessagesthread{/unreadMessagesInThread}">{caption}</span>    
+              <span class="mf-item-header-content-secondary {?unreadMessagesInThread}cm-message-unread{/unreadMessagesInThread}">{caption}</span>    
             </div>
             <div class="mf-item-header-details cm-message-header-count">
               <span>{@if cond="{messageCount} > 1"} ({messageCount}){/if}</span>

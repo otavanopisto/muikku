@@ -73,7 +73,7 @@
       var _this = this;
       mApi().communicator.receiveditemscount.read()
         .callback(function (err, result) {
-          var newMessagesCounterFlap = _this._widgetElement.find(".cm-navi-button-unread-messages-counter-flap");
+          var newMessagesCounterFlap = _this._widgetElement.find(".wi-dock-notification");
           if (result > 0) {
             newMessagesCounterFlap.text(result);
             newMessagesCounterFlap.show();

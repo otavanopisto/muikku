@@ -1,5 +1,7 @@
 package fi.muikku.i18n;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import javax.ejb.Stateful;
@@ -22,6 +24,15 @@ public class LocaleBackingBean {
 
   public Map<String, String> getText() {
     return localeController.getText(sessionController.getLocale());
+  }
+  
+  public List<String> getLanguages() {
+    List<String> result = localeController.getLanguages();
+    String currentLanguage = sessionController.getLocale().getLanguage();
+    Collections.sort(result);
+    result.remove(currentLanguage);
+    result.add(0, currentLanguage);
+    return result;
   }
 
 }

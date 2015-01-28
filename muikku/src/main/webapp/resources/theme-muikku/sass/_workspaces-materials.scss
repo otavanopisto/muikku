@@ -227,12 +227,13 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     text-transform:uppercase;
     padding:12px;
     transition:background 0.3s ease-in-out;
-    min-width:200px;
     margin:20px auto;
+    min-width:120px;
     display:block;
     outline:none;
     position:relative;
     line-height:1;
+    cursor:pointer;
     
     &:hover {
       background:#32abff;
@@ -240,15 +241,16 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     
     &.save-successful {
       background:#51db46;
+      cursor:default;
+      padding:12px 12px 12px 46px
     }
     
     &.icon-checkmark:before {
-      position: absolute;
-      top: -50%;
-      left: 5px;
-      font-size: 65px;
-      text-shadow: 2px 0 0 #38d32c, -2px 0 0 #38d32c, 0 2px 0 #38d32c, 0 -2px 0 #38d32c, 1px 1px #38d32c, -1px -1px 0 #38d32c, 1px -1px 0 #38d32c, -1px 1px 0 #38d32c;
-      height: 60px;
+      position:absolute;
+      top:-0;
+      left:5px;
+      font-size:40px;
+      text-shadow:2px 0 0 #38d32c, -2px 0 0 #38d32c, 0 2px 0 #38d32c, 0 -2px 0 #38d32c, 1px 1px #38d32c, -1px -1px 0 #38d32c, 1px -1px 0 #38d32c, -1px 1px 0 #38d32c;
     }
   }
   

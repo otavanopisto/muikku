@@ -1,10 +1,10 @@
 @font-face {
 	font-family: 'muikku';
-	src:url('fonts/muikku.eot?-vrk4u0');
-	src:url('fonts/muikku.eot?#iefix-vrk4u0') format('embedded-opentype'),
-		url('fonts/muikku.woff?-vrk4u0') format('woff'),
-		url('fonts/muikku.ttf?-vrk4u0') format('truetype'),
-		url('fonts/muikku.svg?-vrk4u0#muikku') format('svg');
+	src:url('fonts/muikku.eot?-y19i3j');
+	src:url('fonts/muikku.eot?#iefix-y19i3j') format('embedded-opentype'),
+		url('fonts/muikku.woff?-y19i3j') format('woff'),
+		url('fonts/muikku.ttf?-y19i3j') format('truetype'),
+		url('fonts/muikku.svg?-y19i3j#muikku') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -23,8 +23,24 @@
 	-moz-osx-font-smoothing: grayscale;
 }
 
-.icon-assigment:before {
+.icon-assignment:before {
 	content: "\e634";
+}
+
+.icon-new-page:before {
+	content: "\e637";
+}
+
+.icon-close-small:before {
+	content: "\e63b";
+}
+
+.icon-add:before {
+	content: "\e114";
+}
+
+.icon-diary:before {
+	content: "\e615";
 }
 
 .icon-compare:before {
@@ -125,10 +141,6 @@
 
 .icon-close:before {
 	content: "\e604";
-}
-
-.icon-diary:before {
-	content: "\e615";
 }
 
 .icon-materials:before {
@@ -257,14 +269,6 @@
 
 .icon-guides:before {
 	content: "\e635";
-}
-
-.icon-close-small:before {
-	content: "\e63b";
-}
-
-.icon-add:before {
-	content: "\e114";
 }
 
 .icon-arrow-left2:before {
