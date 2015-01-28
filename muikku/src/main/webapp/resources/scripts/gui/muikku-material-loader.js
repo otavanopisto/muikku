@@ -319,7 +319,8 @@
         .data({
           'field-name': meta.name,
           'material-id': data.materialId,
-          'embed-id': data.embedId
+          'embed-id': data.embedId,
+          'meta': JSON.stringify(data.meta)
         });
       
       var fieldsSize = meta.fields.length;
@@ -698,10 +699,14 @@
   $(document).on('afterHtmlMaterialRender', function (event, data) {
     jsPlumb.ready(function() {
       $(data.pageElement).find('.muikku-connect-field-table').each(function (index, field) {
+        var meta = $.parseJSON($(field).data('meta'));
+        $(field).data('meta', null);
+        
         $(field).muikkuConnectField({
           fieldName: $(field).data('field-name'),
           embedId: $(field).data('embed-id'),
-          materialId: $(field).data('material-id')
+          materialId: $(field).data('material-id'),
+          meta: meta
         });
       });
       
