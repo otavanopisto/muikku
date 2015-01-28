@@ -113,7 +113,14 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       box-shadow:0 0 0px 3px rgba(202,225,252,0.85);
     }
   }
+
+  .muikku-field-correct-answer {
+    outline: 3px solid green !important;
+  }
   
+  .muikku-field-incorrect-answer {
+    outline: 3px solid red !important;
+  }
   
   blockquote {
     font-family: 'Open Sans',Verdana, sans-serif;
