@@ -359,7 +359,7 @@ public class DeusNexMachinaController {
 
   }
   
-  private WorkspaceMaterialAssignmentType determineEmbeddedAssignmentType(HtmlMaterial material) {
+  private WorkspaceMaterialAssignmentType determineEmbeddedAssignmentType(HtmlMaterial material) throws DeusNexException {
     try {
       if (material.getHtml() == null) {
         return null;
@@ -388,7 +388,7 @@ public class DeusNexMachinaController {
         return assignmentTypes.get(0);
       }
     } catch (SAXException | IOException | XPathExpressionException e) {
-      return null;
+      throw new DeusNexInternalException("Embedded assignment type handling failed. ", e);
     }
   }
 
