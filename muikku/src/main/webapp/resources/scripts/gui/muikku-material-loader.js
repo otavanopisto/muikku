@@ -221,7 +221,49 @@
         .muikkuField({
           fieldName: data.name,
           materialId: data.materialId,
-          embedId: data.embedId
+          embedId: data.embedId,
+          meta: data.meta,
+          canCheckAnswer: function() {
+            var meta = this.options.meta;
+            if (meta.rightAnswers) {
+              for (var i = 0, l = meta.rightAnswers.length; i < l; i++) {
+                if (meta.rightAnswers[i].correct === true) {
+                  return true;
+                }
+              }
+            }
+            
+            return false;
+          },
+          isCorrectAnswer: function() {
+            var meta = this.options.meta;
+            
+            var meta = this.options.meta;
+            if (meta.rightAnswers) {
+              for (var i = 0, l = meta.rightAnswers.length; i < l; i++) {
+                if (meta.rightAnswers[i].correct === true) {
+                  var answer = this.answer()||'';
+                  var text = meta.rightAnswers[i].text||'';
+                  
+                  if (!meta.rightAnswers[i].caseSensitive) {
+                    answer = answer.toLowerCase();
+                    text = text.toLowerCase();
+                  }
+                  
+                  if (meta.rightAnswers[i].normalizeWhitespace) {
+                    answer = answer.trim();
+                    text = text.trim();
+                  }
+                  
+                  if (text == answer) {
+                    return true;
+                  }
+                }
+              }
+            }
+            
+            return false; 
+          }
         });   
       
       $(object).replaceWith(input);
@@ -559,10 +601,10 @@
       return this.options.answer.call(this)||'';
     },
     canCheckAnswer: function() {
-      return this.options.canCheckAnswer.call(this)||'';
+      return this.options.canCheckAnswer.call(this)||false;
     },
     isCorrectAnswer: function() {
-      return this.options.isCorrectAnswer.call(this)||'';
+      return this.options.isCorrectAnswer.call(this)||false;
     },
     fieldName: function () {
       return this.options.fieldName;
