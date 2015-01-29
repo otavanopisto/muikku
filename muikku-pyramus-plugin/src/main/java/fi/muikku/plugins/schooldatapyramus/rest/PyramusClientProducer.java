@@ -1,6 +1,7 @@
 package fi.muikku.plugins.schooldatapyramus.rest;
 
 import javax.enterprise.context.ContextNotActiveException;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.Produces;
@@ -9,6 +10,7 @@ import javax.inject.Inject;
 
 import fi.muikku.plugins.schooldatapyramus.rest.qualifier.PyramusSystem;
 import fi.muikku.plugins.schooldatapyramus.rest.qualifier.PyramusUser;
+import fi.muikku.schooldata.SchoolSessionDataController;
 
 public class PyramusClientProducer {
 
@@ -19,9 +21,25 @@ public class PyramusClientProducer {
   @Inject
   @PyramusSystem
   private Instance<SystemPyramusClient> systemPyramusClient;
+  
+  @Inject
+  private Instance<SchoolSessionDataController> schoolSessionDataController;
  
   @Inject
   private BeanManager beanManager;
+  
+  @Produces
+  public PyramusClient producePyramusClient() {
+    if (isSessionActive()) {
+      if (isRequestActive() && schoolSessionDataController.get().isSystemSessionActive()) {
+        return systemPyramusClient.get();
+      } else {
+        return userPyramusClient.get();
+      }
+    } else {
+      return systemPyramusClient.get();
+    }
+  }
   
   private boolean isSessionActive() {
     try {
@@ -31,12 +49,12 @@ public class PyramusClientProducer {
     }
   }
   
-  @Produces
-  public PyramusClient producePyramusClient() {
-    if (isSessionActive()) {
-      return userPyramusClient.get();
-    } else {
-      return systemPyramusClient.get();
+  private boolean isRequestActive() {
+    try {
+      return beanManager.getContext(RequestScoped.class).isActive();
+    } catch (ContextNotActiveException ex) {
+      return false;
     }
   }
+  
 }
