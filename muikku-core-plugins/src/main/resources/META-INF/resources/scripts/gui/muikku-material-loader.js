@@ -417,7 +417,7 @@
           if (meta.listType == 'dropdown') {
             var hasEmpty = false;
             for (var i = 0, l = meta.options.length; i < l; i++) {
-              hasEmpty = meta.options[i].text == '';
+              hasEmpty = (meta.options[i].text == '' || meta.options[i].text == '-');
               if (hasEmpty)
                 break;
             }
