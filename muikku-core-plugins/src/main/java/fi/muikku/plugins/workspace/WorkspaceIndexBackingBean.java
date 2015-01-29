@@ -12,7 +12,7 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.jsf.NavigationRules;
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.schooldata.SchoolSessionDataController;
+import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.Workspace;
 
@@ -29,7 +29,7 @@ public class WorkspaceIndexBackingBean {
 	private WorkspaceController workspaceController;
 
   @Inject
-  private SchoolSessionDataController schoolSessionDataController;
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
   
   @Inject
   @Named
@@ -51,12 +51,12 @@ public class WorkspaceIndexBackingBean {
     
     workspaceId = workspaceEntity.getId();
 
-    schoolSessionDataController.startSystemSession(); 
+    schoolDataBridgeSessionController.startSystemSession(); 
     try { 
       Workspace workspace = workspaceController.findWorkspace(workspaceEntity); 
       workspaceName = workspace.getName();
     } finally { 
-      schoolSessionDataController.endSystemSession(); 
+      schoolDataBridgeSessionController.endSystemSession(); 
     }
     
     return null;

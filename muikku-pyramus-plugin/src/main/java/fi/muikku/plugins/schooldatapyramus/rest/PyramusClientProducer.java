@@ -10,7 +10,7 @@ import javax.inject.Inject;
 
 import fi.muikku.plugins.schooldatapyramus.rest.qualifier.PyramusSystem;
 import fi.muikku.plugins.schooldatapyramus.rest.qualifier.PyramusUser;
-import fi.muikku.schooldata.SchoolSessionDataController;
+import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 
 public class PyramusClientProducer {
 
@@ -23,7 +23,7 @@ public class PyramusClientProducer {
   private Instance<SystemPyramusClient> systemPyramusClient;
   
   @Inject
-  private Instance<SchoolSessionDataController> schoolSessionDataController;
+  private Instance<SchoolDataBridgeSessionController> schoolDataBridgeSessionController;
  
   @Inject
   private BeanManager beanManager;
@@ -31,7 +31,7 @@ public class PyramusClientProducer {
   @Produces
   public PyramusClient producePyramusClient() {
     if (isSessionActive()) {
-      if (isRequestActive() && schoolSessionDataController.get().isSystemSessionActive()) {
+      if (isRequestActive() && schoolDataBridgeSessionController.get().isSystemSessionActive()) {
         return systemPyramusClient.get();
       } else {
         return userPyramusClient.get();
