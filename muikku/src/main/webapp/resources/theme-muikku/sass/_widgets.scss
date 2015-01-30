@@ -941,6 +941,47 @@ div[class*="wi-dock-static-navi"] {
 
 /* frontpage widgets */
 
+
+
+.wi-messages{
+  
+
+ .wi-message{
+  &:not(:last-child){border-bottom: 1px solid #f0f3f4;}
+  &.unread{
+     .wi-message-caption{
+       font-weight:bold;
+    }  
+      
+  }
+ }
+
+ .wi-message-content{
+   color:#3a3a3a;
+   font-size:11px; 
+   overflow:hidden !important;
+   text-overflow: ellipsis;   
+   max-height:70px;
+ }
+}
+
+.wi-courses{
+
+   li{
+     overflow:hidden !important;
+     text-overflow: ellipsis;   
+     
+     a{
+      color: #3c77a0;
+      text-transform: uppercase;  
+      text-decoration:none; 
+     }
+     
+   }
+   
+}
+
+
 /* .wi-frontpage-static-personalTopics {  */
 /*   @extend .co-widget;  */
 /*   @include gradient-top-bottom(#fff,$hlBgr); */

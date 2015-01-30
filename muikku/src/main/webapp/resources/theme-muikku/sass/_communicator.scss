@@ -3,15 +3,16 @@
 /* Communicator modal new message */
 
 
+/* TODO : new --> create */ 
 
 .cm-message-new{
   input{
    color:#333;
   
-  &:focus{
-   color:#000;
-  
-  }
+    &:focus{
+     color:#000;
+    
+    }
   }  
 
   .cm-message-new-recipients{
@@ -95,8 +96,6 @@
 
 
 .cm-message {
-
-
    
    .cm-message-header-content-primary{
       font-weight:700;  

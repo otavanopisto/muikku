@@ -1,0 +1,9 @@
+<h3>Kurssit</h3>
+
+<ul class="wi-courses">
+
+  {#.}
+  {>"widgets/widget_course.dust"/}  
+  {/.}
+
+</ul>
