@@ -18,6 +18,27 @@
             fieldName: this.options.fieldName,
             answer: $.proxy(function () {
               return JSON.stringify(this.pairs());
+            }, this),
+            canCheckAnswer: $.proxy(function() {
+              var meta = this.options.meta;
+              return meta.connections.length > 0;
+            }, this),
+            isCorrectAnswer: $.proxy(function() {
+              var meta = this.options.meta;
+              var pairs = this.pairs();
+              var corrects = {};
+              
+              for (var i = 0, l = meta.connections.length; i < l; i++) {
+                corrects[meta.connections[i].field] = meta.connections[i].counterpart;
+              }
+              
+              for (var term in pairs) {
+                if (corrects[term] != pairs[term]) {
+                  return false;
+                }
+              }
+
+              return true; 
             }, this)
           });
         
@@ -130,10 +151,12 @@
       
       _onConnection: function (info) {
         this._element.find('input[name="' + $(info.source).data('field-name') + '"]').val($(info.target).data('field-value'));
+        this._element.trigger("change");
       },
       
       _onConnectionDetached: function (info) {
         this._element.find('input[name="' + $(info.source).data('field-name') + '"]').val('');
+        this._element.trigger("change");
       },
       
       _destroy : function() {

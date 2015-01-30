@@ -1,7 +1,5 @@
 package fi.muikku.plugins.settings;
 
-import java.io.Serializable;
-
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -17,10 +15,8 @@ import fi.muikku.schooldata.WorkspaceController;
 @Stateful
 @RequestScoped
 @Join (path = "/settings/workspace/type/{id}", to = "/settings/workspacetype.jsf")
-public class WorkspaceTypeSettingsViewBackingBean implements Serializable {
+public class WorkspaceTypeSettingsViewBackingBean {
 
-	private static final long serialVersionUID = 518712923786896569L;
-	
 	@Inject
 	private WorkspaceController workspaceController;
 	

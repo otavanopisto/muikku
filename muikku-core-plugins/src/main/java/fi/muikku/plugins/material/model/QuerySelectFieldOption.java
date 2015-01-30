@@ -45,9 +45,6 @@ public class QuerySelectFieldOption {
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
   
-  @NotEmpty
-  @NotNull
-  @Column(nullable = false)
   private String text;
 
   @NotEmpty

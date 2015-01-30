@@ -42,9 +42,9 @@
             parsed.find('iframe[data-type="embedded-document"]').each($.proxy(function (index, iframe) {
               var embededWorkspaceMaterialId = $(iframe).data('workspace-material-id');
               var embededMaterialId = $(iframe).data('material-id');
-              var embededMaterialType = $(iframe).data('material-type');
+              var embeddedMaterialType = $(iframe).data('material-type');
               
-              if (embededMaterialType == 'html') {
+              if (embeddedMaterialType == 'html') {
                 var placeholder = $('<div>')
                   .attr('id', this._createUniqueId())
                   .addClass('workspace-material-loading')
@@ -52,7 +52,7 @@
                 $(iframe).replaceWith(placeholder);
                 this._loadHtmlMaterial(pageElement, workspaceEntityId, embededWorkspaceMaterialId, embededMaterialId, placeholder.attr('id'), parentIds.concat(materialId), fieldAnswers);
               } else {
-                $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.materialsLoader.incorrectMaterialType', embededMaterialType));
+                $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.materialsLoader.incorrectMaterialType', embeddedMaterialType));
               }
             }, this));
             
@@ -221,7 +221,75 @@
         .muikkuField({
           fieldName: data.name,
           materialId: data.materialId,
-          embedId: data.embedId
+          embedId: data.embedId,
+          meta: data.meta,
+          hasExamples: function () {
+            var meta = this.options.meta;
+            if (meta.rightAnswers && meta.rightAnswers.length > 0) {
+              for (var i = 0, l = meta.rightAnswers.length; i < l; i++) {
+                if (meta.rightAnswers[i].correct === true) {
+                  return false;
+                }
+              }
+              
+              return true;
+            }
+            
+            return false;
+          },
+          getExamples: function () {
+            var result = [];
+            
+            var meta = this.options.meta;
+            if (meta.rightAnswers && meta.rightAnswers.length > 0) {
+              for (var i = 0, l = meta.rightAnswers.length; i < l; i++) {
+                result.push(meta.rightAnswers[i].text);
+              }
+            }
+            
+            return result;
+          },
+          canCheckAnswer: function() {
+            var meta = this.options.meta;
+            if (meta.rightAnswers) {
+              for (var i = 0, l = meta.rightAnswers.length; i < l; i++) {
+                if (meta.rightAnswers[i].correct === true) {
+                  return true;
+                }
+              }
+            }
+            
+            return false;
+          },
+          isCorrectAnswer: function() {
+            var meta = this.options.meta;
+            
+            var meta = this.options.meta;
+            if (meta.rightAnswers) {
+              for (var i = 0, l = meta.rightAnswers.length; i < l; i++) {
+                if (meta.rightAnswers[i].correct === true) {
+                  var answer = this.answer()||'';
+                  var text = meta.rightAnswers[i].text||'';
+                  
+                  if (!meta.rightAnswers[i].caseSensitive) {
+                    answer = answer.toLowerCase();
+                    text = text.toLowerCase();
+                  }
+                  
+                  if (meta.rightAnswers[i].normalizeWhitespace) {
+                    answer = answer.trim();
+                    text = text.trim();
+                  }
+                  
+                  if (text == answer) {
+                    return true;
+                  }
+                }
+              }
+            }
+            
+            return false; 
+          }
         });   
       
       $(object).replaceWith(input);
@@ -277,7 +345,8 @@
         .data({
           'field-name': meta.name,
           'material-id': data.materialId,
-          'embed-id': data.embedId
+          'embed-id': data.embedId,
+          'meta': JSON.stringify(data.meta)
         });
       
       var fieldsSize = meta.fields.length;
@@ -370,7 +439,25 @@
             .muikkuField({
               fieldName: data.name,
               materialId: data.materialId,
-              embedId: data.embedId
+              embedId: data.embedId,
+              meta: meta,
+              canCheckAnswer: function() {
+                for (var i = 0, l = meta.options.length; i < l; i++) {
+                  if (meta.options[i].correct == true) {
+                    return true;
+                  }
+                }
+                return false;
+              },
+              isCorrectAnswer: function() {
+                var answer = this.answer();
+                for (var i = 0, l = meta.options.length; i < l; i++) {
+                  if (meta.options[i].correct == true && meta.options[i].name == answer) {
+                    return true;
+                  }
+                }
+                return false; 
+              }
             });
           
           $(object).replaceWith(input);
@@ -409,8 +496,26 @@
             fieldName: data.name,
             materialId: data.materialId,
             embedId: data.embedId,
+            meta: meta,
             answer: function() {
               return $(this.element).find('input:checked').val();
+            },
+            canCheckAnswer: function() {
+              for (var i = 0, l = meta.options.length; i < l; i++) {
+                if (meta.options[i].correct == true) {
+                  return true;
+                }
+              }
+              return false;
+            },
+            isCorrectAnswer: function() {
+              var answer = this.answer();
+              for (var i = 0, l = meta.options.length; i < l; i++) {
+                if (meta.options[i].correct == true && meta.options[i].name == answer) {
+                  return true;
+                }
+              }
+              return false; 
             }
           });
           $(object).replaceWith(container);
@@ -458,12 +563,41 @@
         fieldName: data.name,
         materialId: data.materialId,
         embedId: data.embedId,
+        meta: meta,
         answer: function() {
           var values = [];
           $(this.element).find('input:checked').each(function() {
             values.push($(this).val());
           });
           return JSON.stringify(values); 
+        },
+        canCheckAnswer: function() {
+          for (var i = 0, l = meta.options.length; i < l; i++) {
+            if (meta.options[i].correct == true) {
+              return true;
+            }
+          }
+          return false;
+        },
+        isCorrectAnswer: function() {
+          var selectedValues = [];
+          $(this.element).find('input:checked').each(function() {
+            selectedValues.push($(this).val());
+          });
+          var correctValues = [];
+          for (var i = 0, l = meta.options.length; i < l; i++) {
+            if (meta.options[i].correct == true) {
+              correctValues.push(meta.options[i].name);
+            }
+          }
+          if (selectedValues.length != correctValues.length) {
+            return false;
+          }
+          for (var i = 0; i < selectedValues.length; i++) {
+            if (correctValues.indexOf(selectedValues[i]) == -1)
+              return false;
+          }
+          return true;
         }
       });
       $(object).replaceWith(container);
@@ -508,14 +642,37 @@
     options : {
       answer: function () {
         return $(this.element).val();
+      },
+      canCheckAnswer: function () {
+        return false;
+      },
+      isCorrectAnswer: function () {
+        return false;
+      },
+      hasExamples: function () {
+        return false;
+      },
+      getExamples: function () {
+        return [];
       }
     },
     _create : function() {
       $(this.element).addClass('muikku-field');
     },
-    
     answer: function () {
       return this.options.answer.call(this)||'';
+    },
+    hasExamples: function () {
+      return this.options.hasExamples.call(this);
+    },
+    getExamples: function () {
+      return this.options.getExamples.call(this);
+    },
+    canCheckAnswer: function() {
+      return this.options.canCheckAnswer.call(this)||false;
+    },
+    isCorrectAnswer: function() {
+      return this.options.isCorrectAnswer.call(this)||false;
     },
     fieldName: function () {
       return this.options.fieldName;
@@ -525,16 +682,24 @@
     },
     embedId: function () {
       return this.options.embedId||'';
+    },
+    meta: function () {
+      return this.options.meta;
     }
   });
   
   $(document).on('taskFieldDiscovered', function (event, data) {
     var page = $(data.pageElement);
     if (!$(page).data('answer-button')) {
+      var buttonText = $(page).data('workspace-material-assigment-type') == "EXERCISE" 
+          ? getLocaleText("plugin.workspace.materialsLoader.checkButton")
+          : getLocaleText("plugin.workspace.materialsLoader.saveButton");
+      
       $(page)
         .append($('<button>')
            .addClass('muikku-save-page')
-           .text(getLocaleText("plugin.workspace.materialsLoader.saveButton")))
+           .text(buttonText)
+           .data('unsaved-text', buttonText))
         .data('answer-button', 'true');
     }
   });
@@ -606,10 +771,14 @@
   $(document).on('afterHtmlMaterialRender', function (event, data) {
     jsPlumb.ready(function() {
       $(data.pageElement).find('.muikku-connect-field-table').each(function (index, field) {
+        var meta = $.parseJSON($(field).data('meta'));
+        $(field).data('meta', null);
+        
         $(field).muikkuConnectField({
           fieldName: $(field).data('field-name'),
           embedId: $(field).data('embed-id'),
-          materialId: $(field).data('material-id')
+          materialId: $(field).data('material-id'),
+          meta: meta
         });
       });
       

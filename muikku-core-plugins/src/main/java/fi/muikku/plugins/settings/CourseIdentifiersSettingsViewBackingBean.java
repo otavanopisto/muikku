@@ -1,6 +1,5 @@
 package fi.muikku.plugins.settings;
 
-import java.io.Serializable;
 import java.util.List;
 
 import javax.ejb.Stateful;
@@ -15,9 +14,7 @@ import fi.muikku.schooldata.entity.Subject;
 @Named
 @Stateful
 @RequestScoped
-public class CourseIdentifiersSettingsViewBackingBean implements Serializable {
-
-	private static final long serialVersionUID = -1122654090227017117L;
+public class CourseIdentifiersSettingsViewBackingBean {
 
 	@Inject
 	private CourseMetaController courseMetaController; 

@@ -98,7 +98,7 @@ public class QuerySelectFieldController {
   /* QuerySelectFieldOption */
   
   public QuerySelectFieldOption createQuerySelectFieldOption(QuerySelectField querySelectField, String name, String text) {
-    return querySelectFieldOptionDAO.create(name, text, querySelectField);
+    return querySelectFieldOptionDAO.create(name, text == null ? "" : text, querySelectField);
   }
 
   public QuerySelectFieldOption findQuerySelectFieldOptionBySelectFieldAndName(QuerySelectField selectField, String name) {
@@ -110,7 +110,7 @@ public class QuerySelectFieldController {
   }
 
   public QuerySelectFieldOption updateQuerySelectFieldOptionText(QuerySelectFieldOption querySelectFieldOption, String text) {
-    return querySelectFieldOptionDAO.updateText(querySelectFieldOption, text);
+    return querySelectFieldOptionDAO.updateText(querySelectFieldOption, text == null ? "" : text);
   }
   
   public void deleteQuerySelectFieldOption(QuerySelectFieldOption querySelectFieldOption) {
