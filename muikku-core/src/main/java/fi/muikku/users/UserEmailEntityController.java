@@ -124,7 +124,7 @@ public class UserEmailEntityController {
     // TODO is address a valid email?
     UserEmailEntity userEmail = userEmailEntityDAO.findByAddress(address);
     if (userEmail != null) {
-      if (userEmail.getUser().getId() == user.getId()) {
+      if (userEmail.getUser().getId().equals(user.getId())) {
         return userEmail;
       }
       else {

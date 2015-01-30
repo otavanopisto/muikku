@@ -12,15 +12,15 @@
   <div class="management-page-controls-secondary-subsection">
   {@if cond="'{data.publishedRevision}'&&'{data.currentRevision}'"}
     {@if cond="{data.publishedRevision}=={data.currentRevision}"}
-      <a href="javascript:void(null)" class="publish-page icon-publish disabled" data-published-revision="{data.publishedRevision}" data-current-revision="{data.currentRevision}" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}" title="{#localize key="plugin.workspace.materialsManagement.materialPublishTooltip"/}"><span>{#localize key="plugin.workspace.materialsManagement.materialPublishTooltip"/}</span></a>
+      <a href="javascript:void(null)" class="publish-page icon-publish disabled" title="{#localize key="plugin.workspace.materialsManagement.materialPublishTooltip"/}"><span>{#localize key="plugin.workspace.materialsManagement.materialPublishTooltip"/}</span></a>
     {:else}
-      <a href="javascript:void(null)" class="publish-page icon-publish" data-published-revision="{data.publishedRevision}" data-current-revision="{data.currentRevision}" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}" title="{#localize key="plugin.workspace.materialsManagement.materialPublishTooltip"/}"><span>{#localize key="plugin.workspace.materialsManagement.materialPublishTooltip"/}</span></a>
+      <a href="javascript:void(null)" class="publish-page icon-publish" title="{#localize key="plugin.workspace.materialsManagement.materialPublishTooltip"/}"><span>{#localize key="plugin.workspace.materialsManagement.materialPublishTooltip"/}</span></a>
     {/if}
 
     {@if cond="{data.publishedRevision}=={data.currentRevision}"}
-      <a href="javascript:void(null)" class="revert-page icon-revert disabled" data-published-revision="{data.publishedRevision}" data-current-revision="{data.currentRevision}" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}" title="{#localize key="plugin.workspace.materialsManagement.materialRevertToPublishedTooltip"/}"><span>{#localize key="plugin.workspace.materialsManagement.materialRevertToPublishedTooltip"/}</span></a>
+      <a href="javascript:void(null)" class="revert-page icon-revert disabled" title="{#localize key="plugin.workspace.materialsManagement.materialRevertToPublishedTooltip"/}"><span>{#localize key="plugin.workspace.materialsManagement.materialRevertToPublishedTooltip"/}</span></a>
     {:else}
-      <a href="javascript:void(null)" class="revert-page icon-revert" data-published-revision="{data.publishedRevision}" data-current-revision="{data.currentRevision}" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}" data-material-type="{type}" title="{#localize key="plugin.workspace.materialsManagement.materialRevertToPublishedTooltip"/}"><span>{#localize key="plugin.workspace.materialsManagement.materialRevertToPublishedTooltip"/}</span></a>
+      <a href="javascript:void(null)" class="revert-page icon-revert" title="{#localize key="plugin.workspace.materialsManagement.materialRevertToPublishedTooltip"/}"><span>{#localize key="plugin.workspace.materialsManagement.materialRevertToPublishedTooltip"/}</span></a>
     {/if}
   {/if}
   </div>
@@ -29,3 +29,5 @@
 <div class="page-content">
   {>"workspace/materials-management-page-{type}.dust"/}
 </div>
+<input type="hidden" value="{data.publishedRevision}" name="published-revision"/>
+<input type="hidden" value="{data.currentRevision}" name="current-revision"/>
