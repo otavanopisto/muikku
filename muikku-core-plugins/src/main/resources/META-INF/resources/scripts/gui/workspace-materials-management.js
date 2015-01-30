@@ -1,5 +1,5 @@
 (function() {
-
+  
   function createAddPageLink() {
     return $('<div>')
       .addClass('workspace-materials-management-addpage')
@@ -142,6 +142,40 @@
           });
       }
     }, this));
+  }
+  
+  function getPagePublishedRevision(workspaceMaterialId) {
+    return parseInt($('.workspace-materials-view-page[data-workspace-material-id="' + workspaceMaterialId + '"] input[name="published-revision"]').val()||'0');
+  }
+  
+  function setPagePublishedRevision(workspaceMaterialId, revision) {
+    var page = $('.workspace-materials-view-page[data-workspace-material-id="' + workspaceMaterialId + '"]');
+    page.find('input[name="published-revision"]').val(revision);
+    
+    if (getPageCurrentRevision(workspaceMaterialId) != getPagePublishedRevision(workspaceMaterialId)) {
+      page.find('a.publish-page').removeClass('disabled');
+      page.find('a.revert-page').removeClass('disabled');
+    } else {
+      page.find('a.publish-page').addClass('disabled');
+      page.find('a.revert-page').addClass('disabled');
+    }
+  }
+  
+  function getPageCurrentRevision(workspaceMaterialId) {
+    return parseInt($('.workspace-materials-view-page[data-workspace-material-id="' + workspaceMaterialId + '"] input[name="current-revision"]').val()||'0');
+  }
+  
+  function setPageCurrentRevision(workspaceMaterialId, revision) {
+    var page = $('.workspace-materials-view-page[data-workspace-material-id="' + workspaceMaterialId + '"]');
+    page.find('input[name="current-revision"]').val(revision);
+
+    if (getPageCurrentRevision(workspaceMaterialId) != getPagePublishedRevision(workspaceMaterialId)) {
+      page.find('a.publish-page').removeClass('disabled');
+      page.find('a.revert-page').removeClass('disabled');
+    } else {
+      page.find('a.publish-page').addClass('disabled');
+      page.find('a.revert-page').addClass('disabled');
+    }
   }
   
   $(document).on('click', '.delete-page', function (event, data) {
@@ -536,13 +570,10 @@
   });
   
   $(document).on('htmlMaterialRevisionChanged', function (event, data) {
-    $('a.publish-page[data-material-id="' + data.materialId + '"]')
-      .attr('data-current-revision', data.revisionNumber)
-      .removeClass('disabled');
-    
-    $('a.revert-page[data-material-id="' + data.materialId + '"]')
-      .attr('data-current-revision', data.revisionNumber)
-      .removeClass('disabled');
+    $('.workspace-materials-view-page[data-material-id="' + data.materialId + '"]').each(function (index, page) {
+      var workspaceMaterialId = $(page).data('workspace-material-id');
+      setPageCurrentRevision(workspaceMaterialId, data.revisionNumber);
+    });
   });
   
   function confirmPagePublication(confirmCallback) {
@@ -640,32 +671,27 @@
       if (err) {
         errorCallback(err, jqXHR);
       } else {
-        $(this).attr('data-published-revision', currentRevision);
+        setPagePublishedRevision(workspaceMaterialId, currentRevision);
+        
         if (editing) {
           editPage($('#page-' + workspaceMaterialId));
         } else {
           $('#page-' + workspaceMaterialId).html('');
           $(document).muikkuMaterialLoader('loadMaterial', $('#page-' + workspaceMaterialId), true);
         }
-        
-        $(this).closest('.workspace-materials-view-page').find('a.publish-page')
-          .attr('data-published-revision', currentRevision)
-          .addClass('disabled');
-        
-        $(this).closest('.workspace-materials-view-page').find('a.revert-page')
-          .attr('data-published-revision', currentRevision)
-          .addClass('disabled');
-      
+
         $('.notification-queue').notificationQueue('notification', 'info', getLocaleText("plugin.workspace.materialsManagement.publishedMessage"));
       }
     }, this));   
   }
   
   $(document).on('click', '.publish-page', function (event, data) {
-    var workspaceMaterialId = $(this).data('workspace-material-id');
-    var materialId = $(this).data('material-id');
-    var currentRevision = parseInt($(this).attr('data-current-revision'));
-    var publishedRevision = parseInt($(this).attr('data-published-revision'));
+    var page = $(this).closest('.workspace-materials-view-page');
+    var workspaceMaterialId = $(page).data('workspace-material-id');
+    var materialId = $(page).data('material-id');
+    var currentRevision = getPageCurrentRevision(workspaceMaterialId);
+    var publishedRevision = getPagePublishedRevision(workspaceMaterialId);
+    
     if (currentRevision !== publishedRevision) {
       confirmPagePublication($.proxy(function () {
         publishPage(workspaceMaterialId, materialId, publishedRevision, currentRevision, false, function (err, jqXHR) {
@@ -715,10 +741,12 @@
   }
   
   $(document).on('click', '.revert-page', function (event, data) {
-    var workspaceMaterialId = $(this).data('workspace-material-id');
-    var materialId = $(this).data('material-id');
-    var currentRevision = parseInt($(this).attr('data-current-revision'));
-    var publishedRevision = parseInt($(this).attr('data-published-revision'));
+    var page = $(this).closest('.workspace-materials-view-page');
+    var workspaceMaterialId = $(page).data('workspace-material-id');
+    var materialId = $(page).data('material-id');
+    var currentRevision = getPageCurrentRevision(workspaceMaterialId);
+    var publishedRevision = getPagePublishedRevision(workspaceMaterialId);
+    
     if (currentRevision !== publishedRevision) {
       confirmPageRevert($.proxy(function () {
         var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', getLocaleText("plugin.workspace.materialsManagement.revertingToPublishedMessage"));
@@ -736,18 +764,12 @@
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
           } else {
+            setPageCurrentRevision(workspaceMaterialId, publishedRevision);
+            
             if (editing) {
               editPage($('#page-' + workspaceMaterialId));
             }
 
-            $(this).closest('.workspace-materials-view-page').find('a.publish-page')
-              .attr('data-current-revision', publishedRevision)
-              .addClass('disabled');
-            
-            $(this).closest('.workspace-materials-view-page').find('a.revert-page')
-              .attr('data-current-revision', publishedRevision)
-              .addClass('disabled');
-            
             $('.notification-queue').notificationQueue('notification', 'info', getLocaleText("plugin.workspace.materialsManagement.revertedToPublishedMessage"));
           }
         }, this));
