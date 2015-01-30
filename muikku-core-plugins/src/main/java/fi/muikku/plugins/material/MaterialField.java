@@ -1,6 +1,7 @@
 package fi.muikku.plugins.material;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public class MaterialField {
   
@@ -40,6 +41,15 @@ public class MaterialField {
       return StringUtils.equals(name, field.getName()) && StringUtils.equals(type, field.getType()) && StringUtils.equals(content, field.getContent()); 
     }
     return super.equals(obj);
+  }
+  
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder()
+      .append(name)
+      .append(type)
+      .append(content)
+      .toHashCode();
   }
 
   private String name;
