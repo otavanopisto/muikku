@@ -51,9 +51,9 @@
       <groupId>org.jboss.spec.javax.transaction</groupId>
       <artifactId>jboss-transaction-api_1.2_spec</artifactId>
     </dependency>
-    
+
     <!-- WebSockets -->
-    
+
     <dependency>
       <groupId>org.jboss.spec.javax.websocket</groupId>
       <artifactId>jboss-websocket-api_1.0_spec</artifactId>
@@ -97,34 +97,34 @@
     </dependency>
 
     <!-- Hibernate -->
-    
+
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-infinispan</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-entitymanager</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-validator</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <!-- Elastic Search -->
-    
-     <dependency>
+
+    <dependency>
       <groupId>org.elasticsearch</groupId>
       <artifactId>elasticsearch</artifactId>
       <version>${elasticsearch.version}</version>
@@ -143,48 +143,48 @@
       <artifactId>jackson-mapper-asl</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <!-- Neko -->
-    
+
     <dependency>
       <groupId>nekohtml</groupId>
       <artifactId>nekohtml</artifactId>
     </dependency>
-    
-    <!-- Commons -->  
-      
+
+    <!-- Commons -->
+
     <dependency>
       <groupId>commons-collections</groupId>
       <artifactId>commons-collections</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+
     <!-- Rewrite -->
-    
+
     <dependency>
       <groupId>org.ocpsoft.rewrite</groupId>
       <artifactId>rewrite-servlet</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.ocpsoft.rewrite</groupId>
       <artifactId>rewrite-integration-faces</artifactId>
     </dependency>
-    
+
     <dependency>
       <groupId>org.ocpsoft.rewrite</groupId>
       <artifactId>rewrite-integration-cdi</artifactId>
     </dependency>
-      
+
     <!-- Muikku -->
-    
+
     <dependency>
       <groupId>fi.muikku</groupId>
       <artifactId>plugin</artifactId>
     </dependency>
-    
+
     <!-- Test -->
-    
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -194,7 +194,17 @@
       <groupId>fi.muikku</groupId>
       <artifactId>rest</artifactId>
     </dependency>
-    
+
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.seleniumhq.selenium</groupId>
+      <artifactId>selenium-java</artifactId>
+    </dependency>
+
     <!-- Coops -->
 
     <dependency>
@@ -208,13 +218,13 @@
     </dependency>
 
     <!-- Google Diff Match Patch -->
-    
+
     <dependency>
       <groupId>com.sksamuel.diff</groupId>
       <artifactId>diff</artifactId>
       <version>${google-diff-match-patch.version}</version>
     </dependency>
-    
+
 
   </dependencies>
 
@@ -277,7 +287,7 @@
           </dependency>
         </dependencies>
       </plugin>
-      
+
       <plugin>
         <groupId>org.jasig.maven</groupId>
         <artifactId>sass-maven-plugin</artifactId>
@@ -296,8 +306,354 @@
           </execution>
         </executions>
       </plugin>
-      
+
     </plugins>
   </build>
+  <profiles>
+    <profile>
+      <id>ui-it</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <properties>
+        <h2.version>1.4.177</h2.version>
+        <it.port.http>8080</it.port.http>
+        <it.port.https>8443</it.port.https>
+        <it.host>dev.muikku.fi</it.host>
+        <it.jdbc.driver>org.h2.Driver</it.jdbc.driver>
+        <it.jdbc.url>jdbc:h2:file:${project.build.directory}${file.separator}h2;AUTO_SERVER=TRUE</it.jdbc.url>
+        <it.jdbc.jndi>java:/jdbc/muikku</it.jdbc.jndi>
+        <it.jdbc.username>sa</it.jdbc.username>
+        <it.jdbc.password>sa</it.jdbc.password>
+        <it.hibernate.dialect>org.hibernate.dialect.H2Dialect</it.hibernate.dialect>
+        <it.keystore.alias>pyrit</it.keystore.alias>
+        <it.keystore.pass>storepass</it.keystore.pass>
+        <it.keystore.file>${project.build.directory}${file.separator}pyrit.keystore</it.keystore.file>
+      </properties>
 
+      <dependencies>
+        <dependency>
+          <groupId>com.h2database</groupId>
+          <artifactId>h2</artifactId>
+          <version>${h2.version}</version>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+      <build>
+
+        <plugins>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>2.14.1</version>
+          </plugin>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <version>2.16</version>
+            <configuration>
+              <includes>
+                <include>fi/muikku/ui/**/*IT.java</include>
+              </includes>
+              <systemPropertyVariables>
+                <it.project.version>${project.version}</it.project.version>
+                <it.host>${it.host}</it.host>
+                <it.port.http>${it.port.http}</it.port.http>
+                <it.port.https>${it.port.https}</it.port.https>
+                <it.jdbc.driver>${it.jdbc.driver}</it.jdbc.driver>
+                <it.jdbc.url>${it.jdbc.url}</it.jdbc.url>
+                <it.jdbc.jndi>${it.jdbc.jndi}</it.jdbc.jndi>
+                <it.jdbc.username>${it.jdbc.username}</it.jdbc.username>
+                <it.jdbc.password>${it.jdbc.password}</it.jdbc.password>
+                <it.keystore.file>${it.keystore.file}</it.keystore.file>
+                <it.keystore.alias>${it.keystore.alias}</it.keystore.alias>
+                <it.keystore.storepass>${it.keystore.pass}</it.keystore.storepass>
+              </systemPropertyVariables>
+            </configuration>
+            <executions>
+              <execution>
+                <id>integration-test</id>
+                <goals>
+                  <goal>integration-test</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>verify</id>
+                <goals>
+                  <goal>verify</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>de.juplo</groupId>
+            <artifactId>hibernate4-maven-plugin</artifactId>
+            <version>1.0.5</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${h2.version}</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <driverClassName>${it.jdbc.driver}</driverClassName>
+              <hibernateDialect>${it.hibernate.dialect}</hibernateDialect>
+              <url><![CDATA[${it.jdbc.url}]]></url>
+              <username>${it.jdbc.username}</username>
+              <password>${it.jdbc.password}</password>
+            </configuration>
+            <executions>
+              <execution>
+                <id>create-schema</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>export</goal>
+                </goals>
+                <configuration>
+                  <type>CREATE</type>
+                </configuration>
+              </execution>
+              <execution>
+                <id>drop-db-after-test</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>export</goal>
+                </goals>
+                <configuration>
+                  <type>DROP</type>
+                  <force>true</force>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>sql-maven-plugin</artifactId>
+            <version>1.5</version>
+            <dependencies>
+              <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${h2.version}</version>
+              </dependency>
+            </dependencies>
+
+            <configuration>
+              <driver>${it.jdbc.driver}</driver>
+              <url>${it.jdbc.url}</url>
+              <username>${it.jdbc.username}</username>
+              <password>${it.jdbc.password}</password>
+            </configuration>
+            <executions>
+              <execution>
+                <id>create-schema</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>execute</goal>
+                </goals>
+                <configuration>
+                  <autocommit>true</autocommit>
+                  <srcFiles>
+                    <srcFile>src/test/resources/ui-data.sql</srcFile>
+                  </srcFiles>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>keytool-maven-plugin</artifactId>
+            <version>1.4</version>
+            <executions>
+              <execution>
+                <phase>generate-resources</phase>
+                <id>keyclean</id>
+                <goals>
+                  <goal>clean</goal>
+                </goals>
+                <configuration>
+                  <keystore>${it.keystore.file}</keystore>
+                </configuration>
+              </execution>
+              <execution>
+                <phase>generate-resources</phase>
+                <id>genkey</id>
+                <goals>
+                  <goal>generateKeyPair</goal>
+                </goals>
+                <configuration>
+                  <keystore>${it.keystore.file}</keystore>
+                  <dname>cn=${it.host}, ou=None, L=Test, ST=Test, o=Test, c=TE</dname>
+                  <storepass>${it.keystore.pass}</storepass>
+                  <alias>${it.keystore.alias}</alias>
+                  <keyalg>RSA</keyalg>
+                  <keysize>2048</keysize>
+                </configuration>
+              </execution>
+              <execution>
+                <phase>generate-resources</phase>
+                <id>exportkey</id>
+                <goals>
+                  <goal>exportCertificate</goal>
+                </goals>
+                <configuration>
+                  <keystore>${it.keystore.file}</keystore>
+                  <alias>${it.keystore.alias}</alias>
+                  <file>${project.build.directory}/pyrit.crt</file>
+                  <storepass>${it.keystore.pass}</storepass>
+                </configuration>
+              </execution>
+              <execution>
+                <phase>generate-resources</phase>
+                <id>importkey</id>
+                <goals>
+                  <goal>importCertificate</goal>
+                </goals>
+                <configuration>
+                  <keystore>${it.keystore.file}</keystore>
+                  <alias>root</alias>
+                  <file>${project.build.directory}/pyrit.crt</file>
+                  <storepass>${it.keystore.pass}</storepass>
+                  <noprompt>true</noprompt>
+                  <trustcacerts>true</trustcacerts>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.codehaus.cargo</groupId>
+            <artifactId>cargo-maven2-plugin</artifactId>
+            <version>1.4.9</version>
+            <configuration>
+              <container>
+                <containerId>wildfly8x</containerId>
+                <log>${project.basedir}/target/cargo.log</log>
+                <output>${project.basedir}/target/jboss.log</output>
+                <zipUrlInstaller>
+                  <url>http://download.jboss.org/wildfly/8.1.0.Final/wildfly-8.1.0.Final.zip</url>
+                  <downloadDir>${project.basedir}/.cargo/downloads</downloadDir>
+                  <extractDir>${project.basedir}/.cargo/extracts</extractDir>
+                </zipUrlInstaller>
+                <dependencies>
+                  <dependency>
+                    <groupId>com.h2database</groupId>
+                    <artifactId>h2</artifactId>
+                  </dependency>
+                </dependencies>
+              </container>
+              <configuration>
+                <properties>
+                  <cargo.servlet.port>${it.port.http}</cargo.servlet.port>
+                  <cargo.jboss.configuration>standalone</cargo.jboss.configuration>
+                  <cargo.jvmargs>-Xms64m -Xmx1152m -XX:MaxPermSize=512m -XX:-UseSplitVerifier</cargo.jvmargs>
+                  <cargo.datasource.datasource.pyrit>
+                    cargo.datasource.driver=${it.jdbc.driver}|
+                    cargo.datasource.url=${it.jdbc.url}|
+                    cargo.datasource.jndi=${it.jdbc.jndi}|
+                    cargo.datasource.username=${it.jdbc.username}|
+                    cargo.datasource.password=${it.jdbc.password}|
+                    cargo.datasource.transactionsupport=LOCAL_TRANSACTION
+                  </cargo.datasource.datasource.pyrit>
+                </properties>
+              </configuration>
+
+              <deployables>
+                <dependency />
+              </deployables>
+
+            </configuration>
+            <executions>
+              <execution>
+                <id>start-cargo</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>start</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>stop-cargo</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>stop</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.wildfly.plugins</groupId>
+            <artifactId>wildfly-maven-plugin</artifactId>
+            <version>1.0.1.Final</version>
+            <executions>
+              <execution>
+                <id>configure-wildfly</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>execute-commands</goal>
+                </goals>
+                <configuration>
+                  <execute-commands>
+                    <batch>true</batch>
+                    <commands>
+                      <command>/core-service=management/security-realm=ssl-realm:add()</command>
+                      <command>/core-service=management/security-realm=ssl-realm/server-identity=ssl:add(keystore-path="${it.keystore.file}",keystore-password="${it.keystore.pass}",alias="${it.keystore.alias}")</command>
+                      <command>/subsystem=undertow/server=default-server/https-listener=https:add(socket-binding="https",security-realm="ssl-realm")</command>
+                      <command>/subsystem=security/security-domain=WebServices:add(cache-type=default)</command>
+                      <command>/subsystem=security/security-domain=WebServices/authentication=classic:add(login-modules=[{"code"=&gt;"RealmUsersRoles","flag"=&gt;"required","module-options"=&gt;[("realm"=&gt;"WebServices"),("password-stacking"=&gt;"useFirstPass"),("rolesProperties"=&gt;"\${jboss.server.config.dir}/application-roles.properties"),("usersProperties"=&gt;"\${jboss.server.config.dir}/application-users.properties")]}])</command>
+                    </commands>
+                  </execute-commands>
+                </configuration>
+              </execution>
+
+              <execution>
+                <id>reload-wildfly</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>execute-commands</goal>
+                </goals>
+                <configuration>
+                  <execute-commands>
+                    <commands>
+                      <command>:reload</command>
+                    </commands>
+                  </execute-commands>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.sonatype.plugins</groupId>
+            <artifactId>wait-maven-plugin</artifactId>
+            <version>1.0</version>
+            <executions>
+              <execution>
+                <id>wait-webapp</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>wait</goal>
+                </goals>
+                <configuration>
+                  <protocol>http</protocol>
+                  <host>${it.host}</host>
+                  <port>${it.port.http}</port>
+                  <file>/</file>
+                  <maxcount>10</maxcount>
+                  <timeout>10000</timeout>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

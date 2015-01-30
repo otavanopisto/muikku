@@ -46,6 +46,9 @@
     <coops-spec.version>1.0.0</coops-spec.version>
     <coops-ws-spec.version>1.0.0</coops-ws-spec.version>
     
+    <!--  Selenium -->
+    <selenium-java.version>2.35.0</selenium-java.version>
+    
   </properties>
 
   <dependencyManagement>
@@ -200,6 +203,12 @@
         <groupId>fi.foyt.coops</groupId>
         <artifactId>coops-ws-spec</artifactId>
         <version>${coops-ws-spec.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.seleniumhq.selenium</groupId>
+        <artifactId>selenium-java</artifactId>
+        <version>${selenium-java.version}</version>
       </dependency>
 
     </dependencies>
