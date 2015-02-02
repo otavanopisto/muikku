@@ -2,6 +2,8 @@ package fi.muikku.plugins.workspace.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
@@ -35,6 +37,7 @@ public class WorkspaceMaterial extends WorkspaceNode {
   @Column(nullable = false)
   private Long materialId;
   
+  @Enumerated (EnumType.STRING)
   private WorkspaceMaterialAssignmentType assignmentType;
   
 }
