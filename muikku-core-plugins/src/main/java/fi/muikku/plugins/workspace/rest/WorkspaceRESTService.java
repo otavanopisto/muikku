@@ -207,10 +207,8 @@ public class WorkspaceRESTService extends PluginRESTService {
             }
 
             if (accept) {
-              String name = getSearchResultValue(result, "name");
-              String description = getSearchResultValue(result, "description");
-              workspaces.add(new fi.muikku.plugins.workspace.rest.model.Workspace(workspaceEntity.getId(), workspaceEntity.getUrlName(),
-                  workspaceEntity.getArchived(), name, description));
+              Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+              workspaces.add(createRestModel(workspaceEntity, workspace));
             }
           }
         }
@@ -233,11 +231,11 @@ public class WorkspaceRESTService extends PluginRESTService {
           }
           
           if (workspace1.getLastVisit().before(workspace2.getLastVisit())) {
-            return -1;
+            return 1;
           }
           
           if (workspace1.getLastVisit().after(workspace2.getLastVisit())) {
-            return 1;
+            return -1;
           }
           
           return 0;

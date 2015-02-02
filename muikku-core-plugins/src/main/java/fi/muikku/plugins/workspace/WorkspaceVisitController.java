@@ -26,11 +26,10 @@ public class WorkspaceVisitController {
     } else {
       WorkspaceVisit workspaceVisit = workspaceVisitDAO.findByUserEntityAndWorkspaceEntity(userEntity, workspaceEntity);
       if (workspaceVisit == null) {
-        workspaceVisit = workspaceVisitDAO.create(userEntity, workspaceEntity);
+        workspaceVisit = workspaceVisitDAO.create(userEntity, workspaceEntity, new Date());
       }
       
-      workspaceVisitDAO.updateNumVisits(workspaceVisit, workspaceVisit.getNumVisits() + 1);
-      workspaceVisitDAO.updateLastVisit(workspaceVisit, new Date());
+      workspaceVisitDAO.updateNumVisitsAndLastVisit(workspaceVisit, workspaceVisit.getNumVisits() + 1, new Date());
     }
   }
   
