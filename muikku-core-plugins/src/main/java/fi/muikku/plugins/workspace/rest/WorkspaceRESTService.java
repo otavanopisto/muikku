@@ -47,6 +47,7 @@ import fi.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.muikku.plugins.workspace.WorkspaceMaterialDeleteError;
 import fi.muikku.plugins.workspace.WorkspaceMaterialFieldController;
 import fi.muikku.plugins.workspace.WorkspaceMaterialReplyController;
+import fi.muikku.plugins.workspace.WorkspaceVisitController;
 import fi.muikku.plugins.workspace.fieldio.WorkspaceFieldIOException;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
@@ -136,6 +137,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private Event<SchoolDataWorkspaceUserDiscoveredEvent> schoolDataWorkspaceUserDiscoveredEvent;
+  
+  @Inject
+  private WorkspaceVisitController workspaceVisitController;
   
   @GET
   @Path("/workspaces/")
@@ -604,8 +608,9 @@ public class WorkspaceRESTService extends PluginRESTService {
   }
 
   private fi.muikku.plugins.workspace.rest.model.Workspace createRestModel(WorkspaceEntity workspaceEntity, Workspace workspace) {
+    Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     return new fi.muikku.plugins.workspace.rest.model.Workspace(workspaceEntity.getId(), workspaceEntity.getUrlName(),
-        workspaceEntity.getArchived(), workspace.getName(), workspace.getDescription());
+        workspaceEntity.getArchived(), workspace.getName(), workspace.getDescription(), numVisits);
   }
 
   private fi.muikku.plugins.workspace.rest.model.WorkspaceUserSignup createRestModel(WorkspaceUserSignup signup) {

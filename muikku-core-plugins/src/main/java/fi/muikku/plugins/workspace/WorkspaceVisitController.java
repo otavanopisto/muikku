@@ -8,14 +8,10 @@ import fi.muikku.plugins.workspace.dao.WorkspaceVisitDAO;
 import fi.muikku.plugins.workspace.model.WorkspaceVisit;
 import fi.muikku.session.SessionController;
 import fi.muikku.session.local.LocalSession;
-import fi.muikku.users.UserController;
 
 public class WorkspaceVisitController {
   @Inject
   private WorkspaceVisitDAO workspaceVisitDAO;
-  
-  @Inject
-  private UserController userController;
   
   @Inject
   @LocalSession
