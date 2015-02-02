@@ -86,7 +86,7 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
     UserIdentification userIdentification = userIdentificationController.findUserIdentificationByAuthSourceAndExternalId(authSource, externalId);
     if (userIdentification != null) {
       // User has identified by this auth source before
-      if (emailUser != null && emailUser.getId() != userIdentification.getUser().getId()) {
+      if (emailUser != null && !emailUser.getId().equals(userIdentification.getUser().getId())) {
         return new AuthenticationResult(Status.CONFLICT, ConflictReason.EMAIL_BELONGS_TO_ANOTHER_USER);
       }
     } else {

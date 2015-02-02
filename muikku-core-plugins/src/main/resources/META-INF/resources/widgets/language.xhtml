@@ -4,11 +4,12 @@
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html">
 
-  <div class="widget languageWidget">
+  <div class="widget language-widget">
     <h:form>
       <div class="formElementRow">
-        <h:commandLink value="#{i18n.text['plugin.language.fi']}" action="#{languageWidgetBackingBean.setLanguage('fi')}" />
-        <h:commandLink value="#{i18n.text['plugin.language.en']}" action="#{languageWidgetBackingBean.setLanguage('en')}" />
+        <ui:repeat value="#{i18n.languages}" var="locale">
+          <h:commandLink value="#{i18n.text['plugin.language.' .concat(locale)]}" action="#{languageWidgetBackingBean.setLanguage(locale)}" />
+        </ui:repeat>
       </div>
     </h:form>
   </div>

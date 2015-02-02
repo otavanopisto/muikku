@@ -1,6 +1,5 @@
 package fi.muikku.plugins.settings;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -20,9 +19,7 @@ import fi.muikku.schooldata.entity.WorkspaceType;
 @Named
 @Stateful
 @RequestScoped
-public class WorkspaceTypesSettingsViewBackingBean implements Serializable {
-	
-	private static final long serialVersionUID = -5900116972524666513L;
+public class WorkspaceTypesSettingsViewBackingBean {
 	
 	@Inject
 	private WorkspaceController workspaceController;

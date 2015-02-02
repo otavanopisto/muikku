@@ -7,7 +7,7 @@
     init : function(editor) {
       editor.addFeature({
         name : 'muikkuembeddedfeature',
-        allowedContent : 'iframe[src,title,seamless,border,frameborder,width,data-type,data-workspace-material-id,data-material-id,data-material-type];',
+        allowedContent : 'iframe[src,title,seamless,border,frameborder,width,data-type,data-workspace-material-id,data-material-id,data-material-type,data-assignment-type];',
         requiredContent : 'iframe[src,data-type,data-workspace-material-id,data-material-id,data-material-type];'
       });
     }
