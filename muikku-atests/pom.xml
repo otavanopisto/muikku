@@ -9,7 +9,7 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>muikku-atests</artifactId>
+  <artifactId>atests</artifactId>
   <packaging>jar</packaging>
   <name>Muikku atests</name>
   <description>Muikku acceptance tests</description>
