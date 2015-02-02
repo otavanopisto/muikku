@@ -342,11 +342,11 @@
       
       var field = $('<table>')
         .addClass('muikku-connect-field-table')
-        .data({
-          'field-name': meta.name,
-          'material-id': data.materialId,
-          'embed-id': data.embedId,
-          'meta': JSON.stringify(data.meta)
+        .attr({
+          'data-field-name': meta.name,
+          'data-material-id': data.materialId,
+          'data-embed-id': data.embedId,
+          'data-meta': JSON.stringify(data.meta)
         });
       
       var fieldsSize = meta.fields.length;
@@ -417,7 +417,7 @@
           if (meta.listType == 'dropdown') {
             var hasEmpty = false;
             for (var i = 0, l = meta.options.length; i < l; i++) {
-              hasEmpty = meta.options[i].text == '';
+              hasEmpty = (meta.options[i].text == '' || meta.options[i].text == '-');
               if (hasEmpty)
                 break;
             }
@@ -771,9 +771,7 @@
   $(document).on('afterHtmlMaterialRender', function (event, data) {
     jsPlumb.ready(function() {
       $(data.pageElement).find('.muikku-connect-field-table').each(function (index, field) {
-        var meta = $.parseJSON($(field).data('meta'));
-        $(field).data('meta', null);
-        
+        var meta = $.parseJSON($(field).attr('data-meta'));
         $(field).muikkuConnectField({
           fieldName: $(field).data('field-name'),
           embedId: $(field).data('embed-id'),
@@ -781,7 +779,6 @@
           meta: meta
         });
       });
-      
       $('.muikku-connect-field').muikkuConnectField('refresh');
     }); 
     
