@@ -100,29 +100,24 @@ $(document).ready(function(){
     },
 
     _searchUsers: function (searchTerm) {
-      var _this = this;
-      var users = new Array();
+    	var _this = this;
+    	var users = new Array();
 
-      RESTful.doGet(CONTEXTPATH + "/rest/user/searchUsers", {
-        parameters: {
-          'searchString': searchTerm
-        }
-      }).success(function (data, textStatus, jqXHR) {
-        for (var i = 0, l = data.length; i < l; i++) {
-          var img = undefined;
-          
-          if (data[i].hasImage)
-            img = CONTEXTPATH + "/picture?userId=" + data[i].id;
-          
-          users.push({
-            category: getLocaleText("plugin.communicator.users"),
-            label: data[i].firstName + " " + data[i].lastName,
-            id: data[i].id,
-            image: img,
-            type: "USER"
-          });
-        }
-      });
+    	mApi().user.users.read({ 'searchString' : searchTerm }).callback(
+    	 function (err, result) {
+    	   for (var i = 0, l = result.length; i < l; i++) {
+    		 var img = undefined;
+             if (result[i].hasImage)
+              img = CONTEXTPATH + "/picture?userId=" + result[i].id;
+              users.push({
+                category: getLocaleText("plugin.communicator.users"),
+                label: result[i].firstName + " " + result[i].lastName,
+                id: result[i].id,
+                image: img,
+                type: "USER"
+               });
+             }
+     }); 
 
       return users;
     },
