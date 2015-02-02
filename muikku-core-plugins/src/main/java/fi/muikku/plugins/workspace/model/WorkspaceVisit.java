@@ -1,5 +1,7 @@
 package fi.muikku.plugins.workspace.model;
 
+import java.util.Date;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
@@ -38,6 +40,14 @@ public class WorkspaceVisit {
     this.id = id;
   }
 
+  public Date getLastVisit() {
+    return lastVisit;
+  }
+
+  public void setLastVisit(Date lastVisit) {
+    this.lastVisit = lastVisit;
+  }
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -53,4 +63,8 @@ public class WorkspaceVisit {
   @Column
   @NotNull
   private Long numVisits;
+  
+  @Column
+  @NotNull
+  private Date lastVisit;
 }

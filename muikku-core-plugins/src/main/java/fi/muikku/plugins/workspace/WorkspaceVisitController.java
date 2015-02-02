@@ -1,5 +1,7 @@
 package fi.muikku.plugins.workspace;
 
+import java.util.Date;
+
 import javax.inject.Inject;
 
 import fi.muikku.model.users.UserEntity;
@@ -17,7 +19,7 @@ public class WorkspaceVisitController {
   @LocalSession
   private SessionController sessionController;
   
-  public void incrementVisits(WorkspaceEntity workspaceEntity) {
+  public void visit(WorkspaceEntity workspaceEntity) {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     if (userEntity == null) {
       return;
@@ -28,6 +30,7 @@ public class WorkspaceVisitController {
       }
       
       workspaceVisitDAO.updateNumVisits(workspaceVisit, workspaceVisit.getNumVisits() + 1);
+      workspaceVisitDAO.updateLastVisit(workspaceVisit, new Date());
     }
   }
   
@@ -42,6 +45,20 @@ public class WorkspaceVisitController {
       }
       
       return workspaceVisit.getNumVisits();
+    }
+  }
+  
+  public Date getLastVisit(WorkspaceEntity workspaceEntity) {
+    UserEntity userEntity = sessionController.getLoggedUserEntity();
+    if (userEntity == null) {
+      return null;
+    } else {
+      WorkspaceVisit workspaceVisit = workspaceVisitDAO.findByUserEntityAndWorkspaceEntity(userEntity, workspaceEntity);
+      if (workspaceVisit == null) {
+        return null;
+      }
+      
+      return workspaceVisit.getLastVisit();
     }
   }
 }

@@ -88,7 +88,7 @@ public class WorkspaceIndexBackingBean {
   }
 
   public void visit() {
-    workspaceVisitController.incrementVisits(getWorkspaceEntity());
+    workspaceVisitController.visit(getWorkspaceEntity());
   }
   
   public Long getNumVisits() {

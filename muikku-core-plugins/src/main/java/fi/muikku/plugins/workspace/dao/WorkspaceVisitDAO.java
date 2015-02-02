@@ -1,5 +1,7 @@
 package fi.muikku.plugins.workspace.dao;
 
+import java.util.Date;
+
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -40,6 +42,11 @@ public class WorkspaceVisitDAO extends CorePluginsDAO<WorkspaceVisit> {
   
   public void updateNumVisits(WorkspaceVisit workspaceVisit, Long numVisits) {
     workspaceVisit.setNumVisits(numVisits);
+    persist(workspaceVisit);
+  }
+  
+  public void updateLastVisit(WorkspaceVisit workspaceVisit, Date lastVisit) {
+    workspaceVisit.setLastVisit(lastVisit);
     persist(workspaceVisit);
   }
 }
