@@ -9,10 +9,10 @@
   input{
    color:#333;
   
-    &:focus{
-     color:#000;
-    
-    }
+  &:focus{
+   color:#000;
+  
+  }
   }  
 
   .cm-message-new-recipients{
@@ -105,6 +105,15 @@
    .cm-message-header-content-secondary{
 
    }
+
+    &.unread{
+     font-weight:700;
+     background-color:#fffbf0;
+     .mf-item-header-content-primary{
+      color:#ff5a00 e;
+     }
+     
+   }
   
   .cm-message-header-count{
    line-height:2.5em;
@@ -113,6 +122,7 @@
     float:right;
     margin-right:10px;
    }
+   
   }   
   
   .cm-user-picture{
@@ -184,6 +194,7 @@
    div{
     float:left;
    }
+   
   
   }
 
@@ -243,21 +254,4 @@
 
 }
 
-.cm-navi-button-unread-messages-counter-flap {
-  position: relative;
-  bottom: 15px;
-  right: -25px;
-  width: 20px;
-  height: 20px;
 
-  background-color: #FF0000;
-  color: #FFFFFF;
-  font-size: 14px;
-  font-weight: bold;
-  text-align: center;
-  vertical-align: middle;
-}
-
-.cm-unreadmessagesthread {
-  font-weight: bold;
-}
