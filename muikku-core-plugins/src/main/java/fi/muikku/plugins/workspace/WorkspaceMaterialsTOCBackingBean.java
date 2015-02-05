@@ -61,7 +61,7 @@ public class WorkspaceMaterialsTOCBackingBean {
    */
   public List<MaterialNode> getDescendants(WorkspaceNode rootFolder, Boolean includeHidden) {
     List<MaterialNode> materialNodes = new ArrayList<MaterialNode>();
-    List<WorkspaceNode> nodes = workspaceMaterialController.listWorkspaceNodesByParentSortByOrderNumber(rootFolder);
+    List<WorkspaceNode> nodes = workspaceMaterialController.listVisibleWorkspaceNodesByParentSortByOrderNumber(rootFolder);
     
     for (WorkspaceNode node : nodes) {
       if (includeHidden || !node.getHidden()) {
@@ -107,7 +107,7 @@ public class WorkspaceMaterialsTOCBackingBean {
    * @return The children of the given workspace node as material nodes
    */
   public List<MaterialNode> getChildren(WorkspaceNode workspaceNode, Boolean includeHidden) {
-    List<WorkspaceNode> nodes = workspaceMaterialController.listWorkspaceNodesByParentSortByOrderNumber(workspaceNode);
+    List<WorkspaceNode> nodes = workspaceMaterialController.listVisibleWorkspaceNodesByParentSortByOrderNumber(workspaceNode);
     workspaceMaterialController.sortWorkspaceNodes(nodes);
     List<MaterialNode> materialNodes = new ArrayList<MaterialNode>();
     for (WorkspaceNode node : nodes) {
@@ -155,7 +155,7 @@ public class WorkspaceMaterialsTOCBackingBean {
    */
   public List<MaterialNode> getChildren(MaterialNode parent, Boolean includeHidden) {
     WorkspaceNode workspaceNode = workspaceMaterialController.findWorkspaceNodeById(parent.getWorkspaceMaterialId());
-    List<WorkspaceNode> nodes = workspaceMaterialController.listWorkspaceNodesByParentSortByOrderNumber(workspaceNode);
+    List<WorkspaceNode> nodes = workspaceMaterialController.listVisibleWorkspaceNodesByParentSortByOrderNumber(workspaceNode);
     workspaceMaterialController.sortWorkspaceNodes(nodes);
     List<MaterialNode> materialNodes = new ArrayList<MaterialNode>();
     for (WorkspaceNode node : nodes) {
@@ -181,7 +181,7 @@ public class WorkspaceMaterialsTOCBackingBean {
     MaterialNode materialNode = convertWorkspaceNode(workspaceNode);
     materialNodes.add(materialNode);
     // Recursively convert the children of the given WorkspaceNode to MaterialNode instances
-    List<WorkspaceNode> nodes = workspaceMaterialController.listWorkspaceNodesByParentSortByOrderNumber(workspaceNode);
+    List<WorkspaceNode> nodes = workspaceMaterialController.listVisibleWorkspaceNodesByParentSortByOrderNumber(workspaceNode);
     workspaceMaterialController.sortWorkspaceNodes(nodes);
     for (WorkspaceNode node : nodes) {
       if (includeHidden || !node.getHidden()) {

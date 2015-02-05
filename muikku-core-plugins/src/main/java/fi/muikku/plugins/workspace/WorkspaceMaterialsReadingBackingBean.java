@@ -65,7 +65,7 @@ public class WorkspaceMaterialsReadingBackingBean {
     contentNodes = new ArrayList<>();
 
     List<WorkspaceNode> rootMaterialNodes = workspaceMaterialController
-        .listWorkspaceNodesByParentSortByOrderNumber(rootFolder);
+        .listVisibleWorkspaceNodesByParentSortByOrderNumber(rootFolder);
     for (WorkspaceNode rootMaterialNode : rootMaterialNodes) {
       ContentNode node = workspaceMaterialController.createContentNode(rootMaterialNode);
       contentNodes.add(node);
