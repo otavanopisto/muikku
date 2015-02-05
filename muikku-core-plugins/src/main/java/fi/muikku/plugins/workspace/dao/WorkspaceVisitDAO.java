@@ -1,5 +1,7 @@
 package fi.muikku.plugins.workspace.dao;
 
+import java.util.Date;
+
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -14,11 +16,12 @@ import fi.muikku.plugins.workspace.model.WorkspaceVisit_;
 public class WorkspaceVisitDAO extends CorePluginsDAO<WorkspaceVisit> {
   private static final long serialVersionUID = 1L;
 
-  public WorkspaceVisit create(UserEntity userEntity, WorkspaceEntity workspaceEntity) {
+  public WorkspaceVisit create(UserEntity userEntity, WorkspaceEntity workspaceEntity, Date lastVisit) {
     WorkspaceVisit visit = new WorkspaceVisit();
     visit.setUserEntityId(userEntity.getId());
     visit.setWorkspaceEntityId(workspaceEntity.getId());
     visit.setNumVisits(0l);
+    visit.setLastVisit(lastVisit);
     persist(visit);
     return visit;
   }
@@ -38,8 +41,9 @@ public class WorkspaceVisitDAO extends CorePluginsDAO<WorkspaceVisit> {
     return getSingleResult(entityManager.createQuery(criteria));
   }
   
-  public void updateNumVisits(WorkspaceVisit workspaceVisit, Long numVisits) {
+  public void updateNumVisitsAndLastVisit(WorkspaceVisit workspaceVisit, Long numVisits, Date lastVisit) {
     workspaceVisit.setNumVisits(numVisits);
+    workspaceVisit.setLastVisit(lastVisit);
     persist(workspaceVisit);
   }
 }
