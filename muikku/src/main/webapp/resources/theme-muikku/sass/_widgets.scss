@@ -969,14 +969,19 @@ div[class*="wi-dock-static-navi"] {
 
 .wi-messages{
   
-
+ div:nth-child(odd){
+  background-color:#fcfcfc;
+ }
+ 
  .wi-message{
   &:not(:last-child){border-bottom: 1px solid #f0f3f4;}
   &.unread{
      .wi-message-caption{
        font-weight:bold;
     }  
-      
+    .icon-envelope:before{
+      color:#ff0000;
+    }   
   }
  }
 

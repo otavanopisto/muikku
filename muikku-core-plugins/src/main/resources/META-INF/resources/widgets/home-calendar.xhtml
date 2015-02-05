@@ -6,8 +6,8 @@ xmlns:ui="http://java.sun.com/jsf/facelets"
 xmlns:f="http://java.sun.com/jsf/core"
 xmlns:h="http://java.sun.com/jsf/html">
 
-  <h:outputScript name="scripts/fullcalendar/fullcalendar.js" target="head"/>
-  <h:outputScript name="scripts/gui/widget-calendar.js" target="head"/>
+  <h:outputScript name="scripts/fullcalendar/fullcalendar.js" target="head"  rendered="#{sessionBackingBean.loggedIn}"/>
+  <h:outputScript name="scripts/gui/widget-calendar.js" target="head"  rendered="#{sessionBackingBean.loggedIn}"/>
   <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/fullcalendar.css" />  
   <div class="wi-container">
     <div class="wi-content short">

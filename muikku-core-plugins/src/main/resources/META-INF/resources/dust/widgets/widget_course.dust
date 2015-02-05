@@ -1,1 +1,3 @@
-<li class="ilta-pulu"><a href="/workspace/{urlName}">{description}</a></li>
+
+  <li><a href="/workspace/{urlName}">{description} Dippadai</a></li>
+  

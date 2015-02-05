@@ -1,9 +1,9 @@
 <h3>Kurssit</h3>
 
-<ul class="wi-courses">
-
-  {#.}
-  {>"widgets/widget_course.dust"/}  
-  {/.}
-
-</ul>
+{#workspaces}
+   <ul class="wi-courses">
+      {>"widgets/widget_course.dust"/}  
+   </ul>
+{:else}
+   <div class="wi-empty"><span>TODO: Lokalisoi "Ei kursseja", <a href="/coursepicker/coursepicker.jsf">Lokalisoi: Hae kursseja</a></span></div>
+{/workspaces}
