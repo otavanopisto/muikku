@@ -48,6 +48,10 @@ public class WorkspaceEntityController {
     
     return workspaceEntity;
   }
+
+  public WorkspaceEntity findWorkspaceEntityById(Long workspaceEntityId) {
+    return workspaceEntityDAO.findById(workspaceEntityId);
+  }
   
   public WorkspaceEntity findWorkspaceByDataSourceAndIdentifier(String dataSource, String identifier) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
