@@ -1265,3 +1265,7 @@ div[class*="sk-autocomplete-item"]:before {
 #filterSelectList {
 	width:100%;
 }
+
+iframe[id^='twitter-widget-']{
+ width:100% !important;
+}
