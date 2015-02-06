@@ -4,6 +4,6 @@
   {#messages}
     {>"frontpage/widget_message.dust"/}  
   {:else}
-    <h2>{#localize key="plugin.frontPage.messages.noMessages"/}</h2>
+    <h4>{#localize key="plugin.frontPage.messages.noMessages"/}</h4>
   {/messages}
 </div>
