@@ -1,9 +1,0 @@
-<h3>Viestit</h3>
-
-<div class="wi-messages">
-  {#messages}
-    {>"widgets/widget_message.dust"/}  
-  {:else}
-    <h2>Dyhjä</h2>
-  {/messages}
-</div>

@@ -8,7 +8,7 @@ $(document).ready(function(){
     	if( err ){
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('TODO: Virheilmoitus', err));
     	}else{
-        renderDustTemplate('widgets/widget_courses.dust', {
+        renderDustTemplate('frontpage/widget_workspaces.dust', {
         	
         	workspaces :  workspaces
         	

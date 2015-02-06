@@ -1,0 +1,9 @@
+<h3>{#localize key="plugin.frontPage.messages.title"/}</h3>
+
+<div class="wi-messages">
+  {#messages}
+    {>"frontpage/widget_message.dust"/}  
+  {:else}
+    <h2>{#localize key="plugin.frontPage.messages.noMessages"/}</h2>
+  {/messages}
+</div>
