@@ -18,7 +18,7 @@
     
     <!--  Selenium -->
     <selenium-java.version>2.35.0</selenium-java.version>
-    
+    <wiremock.version>1.50</wiremock.version>
   </properties>
 
   <dependencies>
@@ -27,24 +27,42 @@
       <groupId>fi.muikku</groupId>
       <artifactId>muikku</artifactId>
       <type>war</type>
-      <version>1.0.11-SNAPSHOT</version>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>core-plugins</artifactId>
+      <type>jar</type>
+      <scope>test</scope>
     </dependency>
     
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-java</artifactId>
       <version>${selenium-java.version}</version>
+      <scope>test</scope>
     </dependency>
     
     <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.github.tomakehurst</groupId>
+      <artifactId>wiremock</artifactId>
+      <version>${wiremock.version}</version>
+      <scope>test</scope>
+      <!-- Include this if you have dependency conflicts for Guava, Jetty, Jackson or Apache HTTP Client -->
+      <!-- <classifier>standalone</classifier> -->
     </dependency>
 
   </dependencies>
@@ -68,7 +86,9 @@
         <it.hibernate.dialect>org.hibernate.dialect.H2Dialect</it.hibernate.dialect>
         <it.keystore.alias>pyrit</it.keystore.alias>
         <it.keystore.pass>storepass</it.keystore.pass>
-        <it.keystore.file>${project.build.directory}${file.separator}pyrit.keystore</it.keystore.file>
+        <it.keystore.file>pyrit.keystore</it.keystore.file>
+        <it.wiremock.port>8089</it.wiremock.port>
+        <it.report.directory>${project.build.directory}${file.separator}failsafe-reports${file.separator}</it.report.directory>
       </properties>
 
       <dependencies>
@@ -94,8 +114,15 @@
             <artifactId>maven-failsafe-plugin</artifactId>
             <version>2.16</version>
             <configuration>
+
+              <dependenciesToScan>
+                <dependency>fi.muikku:core-plugins</dependency>
+              </dependenciesToScan>
+              
+              
+              
               <includes>
-                <include>fi/muikku/ui/**/*IT.java</include>
+                <include>**/*IT.java</include>
               </includes>
               <systemPropertyVariables>
                 <it.project.version>${project.version}</it.project.version>
@@ -107,9 +134,11 @@
                 <it.jdbc.jndi>${it.jdbc.jndi}</it.jdbc.jndi>
                 <it.jdbc.username>${it.jdbc.username}</it.jdbc.username>
                 <it.jdbc.password>${it.jdbc.password}</it.jdbc.password>
-                <it.keystore.file>${it.keystore.file}</it.keystore.file>
+<!--                 <it.keystore.file>${it.keystore.file}</it.keystore.file>
                 <it.keystore.alias>${it.keystore.alias}</it.keystore.alias>
-                <it.keystore.storepass>${it.keystore.pass}</it.keystore.storepass>
+                <it.keystore.storepass>${it.keystore.pass}</it.keystore.storepass> -->
+                <it.wiremock.port>${it.wiremock.port}</it.wiremock.port>
+                <it.report.directory>${it.report.directory}</it.report.directory>
               </systemPropertyVariables>
             </configuration>
             <executions>
@@ -127,7 +156,7 @@
               </execution>
             </executions>
           </plugin>
-
+<!-- 
           <plugin>
             <groupId>de.juplo</groupId>
             <artifactId>hibernate4-maven-plugin</artifactId>
@@ -145,6 +174,7 @@
               <url><![CDATA[${it.jdbc.url}]]></url>
               <username>${it.jdbc.username}</username>
               <password>${it.jdbc.password}</password>
+                            
             </configuration>
             <executions>
               <execution>
@@ -160,7 +190,7 @@
               </execution>
             </executions>
           </plugin>
-
+ -->
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>sql-maven-plugin</artifactId>
@@ -199,7 +229,7 @@
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>keytool-maven-plugin</artifactId>
-            <version>1.4</version>
+            <version>1.5</version>
             <executions>
               <execution>
                 <phase>generate-resources</phase>
@@ -208,7 +238,7 @@
                   <goal>clean</goal>
                 </goals>
                 <configuration>
-                  <keystore>${it.keystore.file}</keystore>
+                  <keystore>${project.build.directory}${file.separator}${it.keystore.file}</keystore>
                 </configuration>
               </execution>
               <execution>
@@ -218,7 +248,7 @@
                   <goal>generateKeyPair</goal>
                 </goals>
                 <configuration>
-                  <keystore>${it.keystore.file}</keystore>
+                  <keystore>${project.build.directory}${file.separator}${it.keystore.file}</keystore>
                   <dname>cn=${it.host}, ou=None, L=Test, ST=Test, o=Test, c=TE</dname>
                   <storepass>${it.keystore.pass}</storepass>
                   <alias>${it.keystore.alias}</alias>
@@ -233,7 +263,7 @@
                   <goal>exportCertificate</goal>
                 </goals>
                 <configuration>
-                  <keystore>${it.keystore.file}</keystore>
+                  <keystore>${project.build.directory}${file.separator}${it.keystore.file}</keystore>
                   <alias>${it.keystore.alias}</alias>
                   <file>${project.build.directory}/pyrit.crt</file>
                   <storepass>${it.keystore.pass}</storepass>
@@ -246,7 +276,7 @@
                   <goal>importCertificate</goal>
                 </goals>
                 <configuration>
-                  <keystore>${it.keystore.file}</keystore>
+                  <keystore>${project.build.directory}${file.separator}${it.keystore.file}</keystore>
                   <alias>root</alias>
                   <file>${project.build.directory}/pyrit.crt</file>
                   <storepass>${it.keystore.pass}</storepass>
@@ -260,7 +290,7 @@
           <plugin>
             <groupId>org.codehaus.cargo</groupId>
             <artifactId>cargo-maven2-plugin</artifactId>
-            <version>1.4.9</version>
+            <version>1.4.12</version>
             <configuration>
               <container>
                 <containerId>wildfly8x</containerId>
@@ -282,7 +312,7 @@
                 <properties>
                   <cargo.servlet.port>${it.port.http}</cargo.servlet.port>
                   <cargo.jboss.configuration>standalone</cargo.jboss.configuration>
-                  <cargo.jvmargs>-Xms64m -Xmx1152m -XX:MaxPermSize=512m -XX:-UseSplitVerifier</cargo.jvmargs>
+                  <cargo.jvmargs>-Xms64m -Xmx1152m -XX:MaxPermSize=512m</cargo.jvmargs>
                   <cargo.datasource.datasource.pyrit>
                     cargo.datasource.driver=${it.jdbc.driver}|
                     cargo.datasource.url=${it.jdbc.url}|
@@ -308,8 +338,6 @@
                       <groupId>${project.groupId}</groupId>
                       <artifactId>muikku</artifactId>
                       <type>war</type>
-                      <pingURL>https://dev.muikku.fi:8443</pingURL>
-                      <pingTimeout>30000</pingTimeout>
                       <properties>
                         <context></context>
                       </properties>
@@ -342,11 +370,19 @@
                   <execute-commands>
                     <batch>true</batch>
                     <commands>
-                      <command>/system-property=muikku-data:add(value="/home/muikku/muikku/muikku-data/muikku-data.xml,/home/muikku/muikku/muikku-data/muikku-data-private.xml")</command>
+                      <command>/system-property=muikku-data:add(value="${project.build.directory}/../../muikku-data/muikku-data.xml,${project.build.directory}/../../muikku-data/muikku-data-private.xml")</command>
                       <command>/system-property=jsf.project.stage:add(value="Production")</command>
-                      <command>/system-property=muikku.googleServiceAccount.accountId:add(value="860483284276-1pi77he4ccoe6sj2i41405nlm87qsvcl@developer.gserviceaccount.com")</command>
-                      <command>/system-property=muikku.googleServiceAccount.accountUser:add(value="muikku-system@otavanopisto.fi")</command>
-                      <command>/system-property=muikku.googleServiceAccount.keyFile:add(value="/home/muikku/muikku-staging.p12")</command>
+                      <!-- <command>/system-property=muikku.googleServiceAccount.accountId:add(value="860483284276-1pi77he4ccoe6sj2i41405nlm87qsvcl@developer.gserviceaccount.com")</command> -->
+                      <!-- <command>/system-property=muikku.googleServiceAccount.accountUser:add(value="muikku-system@otavanopisto.fi")</command> -->
+                      <!-- <command>/system-property=muikku.googleServiceAccount.keyFile:add(value="${project.build.directory}/../../muikku-staging.p12")</command> -->
+                      <command>/core-service=management/security-realm=ssl-realm:add()</command>
+                      <command>/core-service=management/security-realm=ssl-realm/server-identity=ssl:add(keystore-path="${project.build.directory}${file.separator}${it.keystore.file}",keystore-password="${it.keystore.pass}",alias="${it.keystore.alias}")</command>
+                      <command>/subsystem=undertow/server=default-server/host=muikku:add()</command>
+                      <command>/subsystem=undertow/server=default-server/https-listener=https:add(socket-binding="https",security-realm="ssl-realm")</command>
+                      <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=alias,value=["dev.muikku.fi"])</command>
+                      <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=default-web-module,value=ROOT.war)</command>
+                      
+                      
                     </commands>
                   </execute-commands>
                 </configuration>
@@ -364,6 +400,29 @@
                       <command>:reload</command>
                     </commands>
                   </execute-commands>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+                              
+          <plugin>
+            <groupId>org.sonatype.plugins</groupId>
+            <artifactId>wait-maven-plugin</artifactId>
+            <version>1.0</version>
+            <executions>
+              <execution>
+                <id>wait-rest</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>wait</goal>
+                </goals>
+                <configuration>
+                  <protocol>http</protocol>
+                  <host>${it.host}</host>
+                  <port>${it.port.http}</port>
+                  <file>/</file>
+                  <maxcount>10</maxcount>
+                  <timeout>10000</timeout>
                 </configuration>
               </execution>
             </executions>
