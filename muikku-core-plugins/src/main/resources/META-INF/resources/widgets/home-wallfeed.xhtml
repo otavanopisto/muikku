@@ -6,11 +6,11 @@ xmlns:ui="http://java.sun.com/jsf/facelets"
 xmlns:f="http://java.sun.com/jsf/core"
 xmlns:h="http://java.sun.com/jsf/html">
 
+<h:outputScript name="scripts/gui/widget-visits.js" target="head" rendered="#{sessionBackingBean.loggedIn}"/>
 
    <div class="wi-container">
     <div class="wi-content short">
-      <h3>Seinämä</h3>
-      <p>Seinämädataa</p>
+      <div id="widgetVisits"></div> 
     </div>
   </div>
 
