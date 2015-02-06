@@ -3,7 +3,6 @@ package fi.muikku.plugins.workspace.dao;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.OrderBy;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -102,6 +101,26 @@ public class WorkspaceNodeDAO extends CorePluginsDAO<WorkspaceNode> {
     Root<WorkspaceNode> root = criteria.from(WorkspaceNode.class);
     criteria.select(root);
     criteria.where(criteriaBuilder.equal(root.get(WorkspaceNode_.parent), parent));
+    criteria.orderBy(criteriaBuilder.asc(root.get(WorkspaceNode_.orderNumber)));
+
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
+  public List<WorkspaceNode> listByParentAndHiddenSortByOrderNumber(WorkspaceNode parent, Boolean hidden) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceNode> criteria = criteriaBuilder.createQuery(WorkspaceNode.class);
+    Root<WorkspaceNode> root = criteria.from(WorkspaceNode.class);
+    criteria.select(root);
+    
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(WorkspaceNode_.parent), parent),
+        criteriaBuilder.equal(root.get(WorkspaceNode_.hidden), hidden)    
+      )
+    );
+    
     criteria.orderBy(criteriaBuilder.asc(root.get(WorkspaceNode_.orderNumber)));
 
     return entityManager.createQuery(criteria).getResultList();
