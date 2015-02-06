@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javax.ejb.Lock;
-import javax.ejb.LockType;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
@@ -14,7 +12,6 @@ import javax.inject.Inject;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceDiscoveredEvent;
 
 @ApplicationScoped
-@Lock (LockType.WRITE)
 public class DeusNexMachinaSchoolDataWorkspaceListener {
   
   @Inject
