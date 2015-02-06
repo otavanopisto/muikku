@@ -7,24 +7,24 @@
   <version>1.0.11-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Muikku Parent</name>
-  
+
   <organization>
     <name>Otavan Opisto</name>
     <url>http://www.otavanopisto.fi/</url>
   </organization>
-  
+
   <scm>
     <developerConnection>scm:git:git@github.com:otavanopisto/muikku.git</developerConnection>
     <url>git@github.com:otavanopisto/muikku.git</url>
     <connection>scm:git:git@github.com:otavanopisto/muikku.git</connection>
     <tag>HEAD</tag>
   </scm>
-  
+
   <issueManagement>
     <system>GitHub</system>
     <url>https://github.com/otavanopisto/muikku/issues</url>
   </issueManagement>
-  
+
   <licenses>
     <license>
       <name>GNU General Public License, Version 3</name>
@@ -32,7 +32,7 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
-  
+
   <developers>
     <developer>
       <id>otavanopisto</id>
@@ -67,6 +67,10 @@
     <module>muikku-atests</module>
     <module>muikku</module>
   </modules>
+
+  <prerequisites>
+    <maven>3.0.3</maven>
+  </prerequisites>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
