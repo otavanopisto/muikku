@@ -5,11 +5,11 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.codec.binary.Base64;
@@ -32,6 +32,8 @@ import fi.muikku.plugins.dnm.parser.structure.model.Query;
 import fi.muikku.plugins.dnm.parser.structure.model.Resource;
 
 public class DeusNexStructureParser {
+  
+  private static Logger logger = Logger.getLogger(DeusNexStructureParser.class.getName());
 
 	public DeusNexDocument parseDocument(InputStream inputStream) throws DeusNexException {
 		DeusNexDocumentImpl deusNexDocument = new DeusNexDocumentImpl();
@@ -157,23 +159,21 @@ public class DeusNexStructureParser {
 	
 	private Query parseFCKQuery(Element resourceElement) throws DeusNexSyntaxException, XPathExpressionException, DeusNexInternalException {
 		Element documentElement = (Element) DeusNexXmlUtils.findNodeByXPath(resourceElement, "document");
-		if (documentElement == null) {
-      try {
-        System.out.println( DeusNexXmlUtils.serializeElement(resourceElement, false, true, "html", "5") );
-      } catch (TransformerException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+
+    if (documentElement == null) {
+      logger.severe("Missing data/document node");
+      return null;
+		}
+
+    List<Resource> embeddedElements = new ArrayList<>();
+    List<Element> embeddedResourceElements = DeusNexXmlUtils.getElementsByXPath(resourceElement, "embedded/res");
+    for (Element embeddedResourceElement : embeddedResourceElements) {
+      Resource resource = parseResource(embeddedResourceElement);
+      if (resource != null) {
+        embeddedElements.add(resource);
       }
-
-			throw new DeusNexSyntaxException("Missing data/document node");
-		}
+    }
 		
-		List<Resource> embeddedElements = new ArrayList<>();
-		List<Element> embeddedResourceElements = DeusNexXmlUtils.getElementsByXPath(resourceElement, "embedded/res");
-		for (Element embeddedResourceElement : embeddedResourceElements) {
-			embeddedElements.add( parseResource(embeddedResourceElement) );
-		}
-
 		Query query = new Query();
 		parseBasicResourceProperties(resourceElement, query);
 		query.setDocument(documentElement);
@@ -188,21 +188,19 @@ public class DeusNexStructureParser {
   
   private Document parseStyleDocument(Element resourceElement) throws DeusNexSyntaxException, XPathExpressionException, DeusNexInternalException {
     Element documentElement = (Element) DeusNexXmlUtils.findNodeByXPath(resourceElement, "document/styledocument");
+
     if (documentElement == null) {
-      try {
-        System.out.println( DeusNexXmlUtils.serializeElement(resourceElement, false, true, "html", "5") );
-      } catch (TransformerException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-      
-      throw new DeusNexSyntaxException("Missing data/document node");
+      logger.severe("Missing data/document node");
+      return null;
     }
     
     List<Resource> embeddedElements = new ArrayList<>();
     List<Element> embeddedResourceElements = DeusNexXmlUtils.getElementsByXPath(resourceElement, "embedded/res");
     for (Element embeddedResourceElement : embeddedResourceElements) {
-      embeddedElements.add( parseResource(embeddedResourceElement) );
+      Resource resource = parseResource(embeddedResourceElement);
+      if (resource != null) {
+        embeddedElements.add( resource );
+      }
     }
 
     Document document = new Document();
@@ -215,21 +213,19 @@ public class DeusNexStructureParser {
   
   private Query parseQueryDocument(Element resourceElement) throws DeusNexSyntaxException, XPathExpressionException, DeusNexInternalException {
     Element documentElement = (Element) DeusNexXmlUtils.findNodeByXPath(resourceElement, "styledocument");
-    if (documentElement == null) {
-      try {
-        System.out.println( DeusNexXmlUtils.serializeElement(resourceElement, false, true, "html", "5") );
-      } catch (TransformerException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
+    List<Resource> embeddedElements = new ArrayList<>();
 
-      throw new DeusNexSyntaxException("Missing data/document node");
+    if (documentElement == null) {
+      logger.severe("Missing data/document node"); 
+      return null;
     }
     
-    List<Resource> embeddedElements = new ArrayList<>();
     List<Element> embeddedResourceElements = DeusNexXmlUtils.getElementsByXPath(resourceElement, "embedded/res");
     for (Element embeddedResourceElement : embeddedResourceElements) {
-      embeddedElements.add( parseResource(embeddedResourceElement) );
+      Resource resource = parseResource(embeddedResourceElement) ;
+      if (resource != null) {
+        embeddedElements.add( resource );
+      }
     }
 
     Query query = new Query();
@@ -246,21 +242,19 @@ public class DeusNexStructureParser {
 	
 	private Document parseFCKDocument(Element resourceElement) throws DeusNexSyntaxException, XPathExpressionException, DeusNexInternalException {
 		Element documentElement = (Element) DeusNexXmlUtils.findNodeByXPath(resourceElement, "document");
+		
 		if (documentElement == null) {
-		  try {
-        System.out.println( DeusNexXmlUtils.serializeElement(resourceElement, false, true, "html", "5") );
-      } catch (TransformerException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-		  
-			throw new DeusNexSyntaxException("Missing data/document node");
+		  logger.severe("Missing data/document node");
+		  return null;
 		}
 		
 		List<Resource> embeddedElements = new ArrayList<>();
 		List<Element> embeddedResourceElements = DeusNexXmlUtils.getElementsByXPath(resourceElement, "embedded/res");
 		for (Element embeddedResourceElement : embeddedResourceElements) {
-			embeddedElements.add( parseResource(embeddedResourceElement) );
+		  Resource resource = parseResource(embeddedResourceElement);
+		  if (resource != null) {
+		  	embeddedElements.add( resource );
+		  }
 		}
 
 		Document document = new Document();
@@ -275,7 +269,10 @@ public class DeusNexStructureParser {
 		List<Element> childResources = DeusNexXmlUtils.getElementsByXPath(resourceElement, "res");
 		List<Resource> resources = new ArrayList<>();
 		for (Element childResource : childResources) {
-			resources.add( parseResource(childResource) );
+		  Resource resource = parseResource(childResource);
+		  if (resource != null) {
+			  resources.add(resource);
+		  }
 		}
 		
 		Folder folder = new Folder();
