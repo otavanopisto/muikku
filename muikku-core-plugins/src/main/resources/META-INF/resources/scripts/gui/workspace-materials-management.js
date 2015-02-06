@@ -140,6 +140,11 @@
               page.remove();
             }
           });
+        // TOC
+        var tocElement = $("a[href*='#page-" + workspaceMaterialId + "']");
+        if (tocElement) {
+          tocElement.remove();
+        }
       }
     }, this));
   }
@@ -208,6 +213,7 @@
     var workspaceId = $('.workspaceEntityId').val();
     var nextSibling = node.nextAll('.workspace-materials-view-page').first();
     var nextSiblingId = nextSibling.length > 0 ? nextSibling.data('workspace-material-id') : null;
+    var workspaceMaterialId = node.data('workspace-material-id');
     mApi().workspace.workspaces.materials.update(workspaceId, node.data('workspace-material-id'), {
       id: node.data('workspace-material-id'),
       materialId: node.data('material-id'),
@@ -220,12 +226,20 @@
         if (!hidden) {
           node.removeClass('page-hidden');
           node.find('.hide-page').removeClass('icon-show').addClass('icon-hide');
-          // TODO Table of contents modifications
+          // TOC
+          var tocElement = $("a[href*='#page-" + workspaceMaterialId + "']");
+          if (tocElement) {
+            tocElement.parent().removeClass('item-hidden');
+          }
         }
         else {
           node.addClass('page-hidden');
           node.find('.hide-page').removeClass('icon-hide').addClass('icon-show');
-          // TODO Table of contents modifications
+          // TOC
+          var tocElement = $("a[href*='#page-" + workspaceMaterialId + "']");
+          if (tocElement) {
+            tocElement.parent().addClass('item-hidden');
+          }
         }
     });
   }
@@ -658,8 +672,14 @@
     var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', getLocaleText("plugin.workspace.materialsManagement.publishingMessage"));
     var editing = isPageInEditMode($('#page-' + workspaceMaterialId));
     
+    var page = $('#page-' + workspaceMaterialId);
+    var title = $(page).data('material-title');
     if (editing) {
-      closeEditor($('#page-' + workspaceMaterialId), false);
+      var titleField = $(page).find('.workspace-material-html-editor-title');
+      if (titleField) {
+        title = $(titleField).prop('value'); 
+      }
+      closeEditor(page, false);
     }
     
     mApi().materials.html.publish.create(materialId, {
@@ -678,6 +698,13 @@
         } else {
           $('#page-' + workspaceMaterialId).html('');
           $(document).muikkuMaterialLoader('loadMaterial', $('#page-' + workspaceMaterialId), true);
+        }
+        
+        $(page).attr('data-material-title', title);
+        // TOC
+        var tocElement = $("a[href*='#page-" + workspaceMaterialId + "']");
+        if (tocElement) {
+          $(tocElement).text(title);
         }
 
         $('.notification-queue').notificationQueue('notification', 'info', getLocaleText("plugin.workspace.materialsManagement.publishedMessage"));
