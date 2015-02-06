@@ -180,8 +180,8 @@ public class WorkspaceMaterialController {
     return findWorkspaceNodeByParentAndUrlName(parent, pathElements[pathElements.length - 1]);
   }
 
-  public List<WorkspaceNode> listWorkspaceNodesByParentSortByOrderNumber(WorkspaceNode parent) {
-    return workspaceNodeDAO.listByParentSortByOrderNumber(parent);
+  public List<WorkspaceNode> listVisibleWorkspaceNodesByParentSortByOrderNumber(WorkspaceNode parent) {
+    return workspaceNodeDAO.listByParentAndHiddenSortByOrderNumber(parent, Boolean.FALSE);
   }
 
   public Material getMaterialForWorkspaceMaterial(WorkspaceMaterial workspaceMaterial) {
@@ -306,38 +306,6 @@ public class WorkspaceMaterialController {
     return workspaceNode;
   }
 
-  /**
-   * Hides the given workspace node.
-   * 
-   * @param workspaceNode
-   *          Workspace node
-   */
-  private void hide(WorkspaceNode workspaceNode) {
-    setHidden(workspaceNode, Boolean.TRUE);
-  }
-
-  /**
-   * Shows the given workspace node.
-   * 
-   * @param workspaceNode
-   *          Workspace node
-   */
-  private void show(WorkspaceNode workspaceNode) {
-    setHidden(workspaceNode, Boolean.FALSE);
-  }
-
-  /**
-   * Hides or shows the given workspace node.
-   * 
-   * @param workspaceNode
-   *          Workspace node
-   * @param hidden
-   *          <code>Boolean.TRUE</code> to hide the workspace node, <code>Boolean.FALSE</code> to show it
-   */
-  private void setHidden(WorkspaceNode workspaceNode, Boolean hidden) {
-    workspaceNodeDAO.updateHidden(workspaceNode, hidden);
-  }
-
   public void deleteWorkspaceMaterial(WorkspaceMaterial workspaceMaterial, boolean removeAnswers) throws WorkspaceMaterialContainsAnswersExeption {
     try {
       workspaceMaterialDeleteEvent.fire(new WorkspaceMaterialDeleteEvent(workspaceMaterial, removeAnswers));
@@ -430,7 +398,7 @@ public class WorkspaceMaterialController {
     for (WorkspaceNode workspaceNode : workspaceNodes) {
       if (workspaceNode.getType() == WorkspaceNodeType.FOLDER) {
         WorkspaceFolder workspaceFolder = (WorkspaceFolder)workspaceNode;
-        List<WorkspaceNode> children = listWorkspaceNodesByParentSortByOrderNumber(workspaceFolder);
+        List<WorkspaceNode> children = workspaceNodeDAO.listByParentSortByOrderNumber(workspaceFolder);
         result.add(new FlattenedWorkspaceNode(true, workspaceFolder.getTitle(), null, level));
         result.addAll(flattenWorkspaceNodes(children, level+1));
       } else {
@@ -452,7 +420,7 @@ public class WorkspaceMaterialController {
       ContentNode folderContentNode = new ContentNode(
           workspaceFolder.getTitle(), "folder", rootMaterialNode.getId(), null, level, null);
 
-      List<WorkspaceNode> children = listWorkspaceNodesByParentSortByOrderNumber(workspaceFolder);
+      List<WorkspaceNode> children = workspaceNodeDAO.listByParentSortByOrderNumber(workspaceFolder);
       List<FlattenedWorkspaceNode> flattenedChildren;
       if (level >= FLATTENING_LEVEL) {
         flattenedChildren = flattenWorkspaceNodes(children, level);

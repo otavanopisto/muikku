@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -27,6 +28,8 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 import org.cyberneko.html.parsers.DOMParser;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -271,6 +274,7 @@ public class DeusNexMachinaController {
   }
 
   private final static String LOOKUP_SETTING_NAME = "[_DEUS_NEX_MACHINA_LOOKUP_]";
+  private final static String IDS_SETTING_NAME = "[_DEUS_NEX_MACHINA_IDS_]";
 
   @Inject
   private HtmlMaterialController htmlMaterialController;
@@ -288,6 +292,7 @@ public class DeusNexMachinaController {
   public void init() throws IOException {
     deusNexStructureParser = new DeusNexStructureParser();
     loadLookup();
+    loadIdMap();
   }
 
   public DeusNexDocument parseDeusNexDocument(InputStream inputStream) throws DeusNexException {
@@ -555,7 +560,30 @@ public class DeusNexMachinaController {
     String lookupSetting = lookupSettingWriter.toString();
     pluginSettingsController.setPluginSetting(DeusNexMachinaPluginDescriptor.PLUGIN_NAME, LOOKUP_SETTING_NAME, lookupSetting);
   }
+  
+  public void setWorkspaceEntityIdDnmId(String dnmId, Long workspaceEntityId) throws IOException {
+    idMap.put(dnmId, workspaceEntityId);
+    storeIdMap();
+  }
+  
+  public Long getWorkspaceEntityIdDnmId(String dnmId) {
+    return idMap.get(dnmId);
+  }
+  
+  private void storeIdMap() throws IOException {
+    pluginSettingsController.setPluginSetting(DeusNexMachinaPluginDescriptor.PLUGIN_NAME, IDS_SETTING_NAME, new ObjectMapper().writeValueAsString(idMap));
+  }
+  
+  private void loadIdMap() throws IOException {
+    String setting = pluginSettingsController.getPluginSetting(DeusNexMachinaPluginDescriptor.PLUGIN_NAME, IDS_SETTING_NAME);
+    if (StringUtils.isNotBlank(setting)) {
+      idMap = new ObjectMapper().readValue(setting, new TypeReference<Map<String, Long>>() {});
+    } else {
+      idMap = new HashMap<>();
+    }
+  }
 
   private DeusNexStructureParser deusNexStructureParser;
   private Properties lookupProperties;
+  private Map<String, Long> idMap;
 }
