@@ -15,6 +15,110 @@ body.workspace {
     line-height:1.3em;
   }
   
+  .workspace-meta-wrapper {
+    font-size:13px;
+    text-transform:uppercase;
+    
+    .workspace-study-level-indicator {
+      color:#fff;
+      display:inline-block;
+      margin:0 10px 0 0;
+    
+      &.indicator1 {
+        background:#0099ff;
+        border-radius:2px;
+        padding:0px 6px;
+      }
+    
+    }
+    
+    .workspace-meta-title {
+      color:#7e7e7e;
+      display:inline-block;
+      margin:0 5px 0 0;
+    }
+    
+    .workspace-meta-desc {
+      color:#000;
+      display:inline-block;
+      margin:0 10px 0 0;
+    }
+  }
+  
+  .workspace-description-wrapper {
+    margin:1em 0 1em 0;
+    font-size:17px;
+    font-weight:300;
+    
+    img {
+      max-width:100%;
+    }
+    
+    h1,
+    h2 {
+      
+      
+      &:first-child {
+        margin:20px 0 20px 0;
+      }
+      
+    }
+    
+    h1,
+    h2,
+    h3 {
+      margin:40px 0 20px 0;
+      color:#38393a;
+      font-weight:300;
+      text-transform:none;
+      line-height:1.3em;
+    }
+    
+    h4,
+    h5,
+    h6 {
+      margin:20px 0 20px 0;
+      color:#38393a;
+      font-weight:300;
+      text-transform:none;
+      line-height:1.3em;
+    }
+    
+    h1 {
+      font-size:29px;
+    }
+      
+    h2 {
+      font-size:26px;
+    }
+    
+    h3 {
+      font-size:19px;
+      font-weight:normal;
+    }
+    
+    h4 {
+      font-size:17px;
+      font-weight:normal;
+    }
+    
+    h5 {
+      font-size:15px;
+      font-weight:normal;
+    }
+    
+    h6 {
+      font-size:13px;
+      font-weight:normal;
+    }
+    
+    p {
+      margin:15px 0 15px 0;
+      line-height:1.5em;
+    }
+   
+  }
+  
   #staticNavigationWrapperWorkspace {
     background:none; /* We need to remove all background rules first */
     @include background-image('gfx/workspace-navigation-background.png'); /* Workspace's navigation's background */
@@ -134,8 +238,6 @@ body.workspace-materials {
     }
 
   }
-  
-
 
   nav.workspace-materials-toc-wrapper#workspaceMaterialsTOCWrapper {
     background:#fff;
@@ -470,49 +572,6 @@ body.workspace-materials {
       
     }
 
-    .workspace-meta-wrapper {
-      font-size:13px;
-      text-transform:uppercase;
-      
-      .workspace-study-level-indicator {
-        color:#fff;
-        display:inline-block;
-        margin:0 10px 0 0;
-      
-        &.indicator1 {
-          background:#0099ff;
-          border-radius:2px;
-          padding:0px 6px;
-        }
-      
-      }
-      
-      .workspace-meta-title {
-        color:#7e7e7e;
-        display:inline-block;
-        margin:0 5px 0 0;
-      }
-      
-      .workspace-meta-desc {
-        color:#000;
-        display:inline-block;
-        margin:0 10px 0 0;
-      }
-    }
-    
-    .workspace-description-wrapper {
-      margin:1em 0 1em 0;
-      font-size:17px;
-      font-weight:300;
-      
-      p {
-        margin:1em 0 1em 0;
-      }
-     
-     
-    }
-  
-  
   }
 
 }
