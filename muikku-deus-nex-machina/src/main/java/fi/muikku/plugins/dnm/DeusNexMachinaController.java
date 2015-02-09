@@ -60,10 +60,12 @@ import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.muikku.plugins.workspace.WorkspaceMaterialUtils;
 import fi.muikku.plugins.workspace.model.WorkspaceFolder;
+import fi.muikku.plugins.workspace.model.WorkspaceFrontPage;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.model.WorkspaceNodeType;
+import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.muikku.schooldata.WorkspaceEntityController;
 
 @ApplicationScoped
@@ -301,7 +303,6 @@ public class DeusNexMachinaController {
 
   public void importDeusNexDocument(WorkspaceNode parentNode, InputStream inputStream) throws DeusNexException {
     DeusNexDocument desNexDocument = parseDeusNexDocument(inputStream);
-    // WorkspaceRootFolder rootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(parentNode);
     List<WorkspaceNode> createdNodes = new ArrayList<>();
     for (Resource resource : desNexDocument.getRootFolder().getResources()) {
       importResource(parentNode, parentNode, resource, desNexDocument, createdNodes);
@@ -313,6 +314,45 @@ public class DeusNexMachinaController {
     }
   }
 
+  public void importFrontPageDocument(WorkspaceEntity workspaceEntity, InputStream inputStream) throws DeusNexException {
+    DeusNexDocument deusNexDocument = parseDeusNexDocument(inputStream);
+    
+    List<Resource> resources = deusNexDocument.getRootFolder().getResources();
+    if (resources.size() == 1) {
+      List<WorkspaceNode> createdNodes = new ArrayList<>();
+      
+      WorkspaceRootFolder rootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
+      Resource resource = resources.get(0);
+      Material material = createMaterial(rootFolder, resource, deusNexDocument);
+      
+      WorkspaceFrontPage workspaceFrontPage = workspaceMaterialController.createFrontPage(workspaceEntity, material);
+      try {
+        setResourceWorkspaceNodeId(resource.getNo(), workspaceFrontPage.getId());
+      } catch (IOException e) {
+        throw new DeusNexInternalException("Failed to store resourceNo lookup file", e);
+      }
+      
+      createdNodes.add(workspaceFrontPage);
+      
+      if (resource instanceof ResourceContainer) {
+        List<Resource> childResources = ((ResourceContainer) resource).getResources();
+        if (childResources != null) {
+          for (Resource childResource : childResources) {
+            importResource(rootFolder, workspaceFrontPage, childResource, deusNexDocument, createdNodes);
+          }
+        }
+      }
+      
+      try {
+        postProcessResources(createdNodes);
+      } catch (Exception e) {
+        throw new DeusNexInternalException("PostProcesssing failed. ", e);
+      }
+    } else {
+      logger.severe(String.format("Invalid front-page document, root contains %d resources", resources.size()));
+    }
+  }
+  
   private void postProcessResources(List<WorkspaceNode> createdNodes) throws ParserConfigurationException, SAXException,
       IOException, XPathExpressionException, TransformerException {
     for (WorkspaceNode node : createdNodes) {
