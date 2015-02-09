@@ -2,7 +2,7 @@
 $(document).ready(function(){
 
     mApi().workspace.workspaces
-    .read({ minVisits: 1, orderBy: "numVisits" })
+    .read({ minVisits: 1, orderBy: "lastVisit" })
     .callback( function (err, workspaces) {
     	
     	if( err ){
