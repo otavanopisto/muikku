@@ -959,8 +959,18 @@ div[class*="wi-dock-static-navi"] {
 .wi-content {
   @include padding;
   &.short{
-    min-height:250px;
+    min-height:400px;
   }
+  ul{
+    color:#0F0E13;
+    font-weight:300;
+    margin-left:15px; 
+   
+    li{
+     padding-top: 5px;
+     list-style-type:disc;
+    }
+  }  
 }
 
 /* frontpage widgets */
