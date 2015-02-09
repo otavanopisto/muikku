@@ -12,6 +12,10 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.jsf.NavigationRules;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.plugins.material.MaterialController;
+import fi.muikku.plugins.material.model.HtmlMaterial;
+import fi.muikku.plugins.material.model.Material;
+import fi.muikku.plugins.workspace.model.WorkspaceFrontPage;
 import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.Workspace;
@@ -29,6 +33,12 @@ public class WorkspaceIndexBackingBean {
 	private WorkspaceController workspaceController;
 
   @Inject
+  private WorkspaceMaterialController workspaceMaterialController;
+
+  @Inject
+  private MaterialController materialController;
+  
+  @Inject
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
   
   @Inject
@@ -45,6 +55,14 @@ public class WorkspaceIndexBackingBean {
 	  WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByUrlName(urlName);
     if (workspaceEntity == null) {
       return NavigationRules.NOT_FOUND;
+    }
+    
+    WorkspaceFrontPage frontPage = workspaceMaterialController.findFrontPage(workspaceEntity);
+    if (frontPage != null) {
+      Material material = materialController.findMaterialById(frontPage.getMaterialId());
+      if (material instanceof HtmlMaterial) {
+        contents = ((HtmlMaterial) material).getHtml();
+      }
     }
     
     workspaceNavigationBackingBean.setWorkspaceUrlName(urlName);
@@ -82,6 +100,11 @@ public class WorkspaceIndexBackingBean {
     return workspaceName;
   }
   
+  public String getContents() {
+    return contents;
+  }
+  
 	private Long workspaceId;
 	private String workspaceName;
+	private String contents;
 }
