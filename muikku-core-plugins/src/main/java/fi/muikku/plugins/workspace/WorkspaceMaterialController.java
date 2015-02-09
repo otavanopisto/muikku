@@ -18,6 +18,7 @@ import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.material.MaterialController;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.workspace.dao.WorkspaceFolderDAO;
+import fi.muikku.plugins.workspace.dao.WorkspaceFrontPageDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceNodeDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceRootFolderDAO;
@@ -29,6 +30,7 @@ import fi.muikku.plugins.workspace.events.WorkspaceMaterialUpdateEvent;
 import fi.muikku.plugins.workspace.events.WorkspaceRootFolderCreateEvent;
 import fi.muikku.plugins.workspace.events.WorkspaceRootFolderUpdateEvent;
 import fi.muikku.plugins.workspace.model.WorkspaceFolder;
+import fi.muikku.plugins.workspace.model.WorkspaceFrontPage;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
@@ -50,6 +52,9 @@ public class WorkspaceMaterialController {
 
   @Inject
   private WorkspaceNodeDAO workspaceNodeDAO;
+  
+  @Inject
+  private WorkspaceFrontPageDAO workspaceFrontPageDAO;
 
   @Inject
   private Event<WorkspaceRootFolderCreateEvent> workspaceRootFolderCreateEvent;
@@ -501,6 +506,16 @@ public class WorkspaceMaterialController {
     // get rid of accented characters and all special characters other than minus, period, and underscore
     urlName = StringUtils.stripAccents(urlName).replaceAll("[^a-z0-9\\-\\.\\_]", "");
     return urlName;
+  }
+  
+  /* Front page */
+  
+  public WorkspaceFrontPage createFrontPage(WorkspaceEntity workspaceEntity, Material material) {
+    return workspaceFrontPageDAO.create(workspaceEntity.getId(), workspaceEntity.getUrlName() + "-FP", material.getId());
+  }
+  
+  public WorkspaceFrontPage findFrontPage(WorkspaceEntity workspaceEntity) {
+    return workspaceFrontPageDAO.findByWorkspaceEntityId(workspaceEntity.getId());
   }
   
   private static class FlattenedWorkspaceNode {
