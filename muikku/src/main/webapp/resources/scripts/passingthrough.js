@@ -1,6 +1,7 @@
 $(document).ready(function() {
  
-	// Dynamic navigation
+  // Dynamic navigation
+	
   if ($('.wi-dock-dynami-navi-contentBgr').length > 0) {
     // ToDo: Calculate naviContainer height based on scroll event's scrollTop value
     var height = $(window).height();
@@ -54,7 +55,7 @@ $(document).ready(function() {
   
     // Widget dragging --> 
     
-    $( "div[class*='wi-frontpage-dynamic']" ).draggable({ snapMode: "inner" });
+    // $( "div[class*='wi-frontpage-dynamic']" ).draggable({ snapMode: "inner" });
         
     // Seeker functionalities -->
       

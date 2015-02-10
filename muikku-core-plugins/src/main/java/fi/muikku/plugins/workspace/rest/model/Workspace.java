@@ -1,17 +1,25 @@
 package fi.muikku.plugins.workspace.rest.model;
 
+import java.util.Date;
+
 public class Workspace {
 
   public Workspace() {
   }
 
   public Workspace(Long id, String urlName, Boolean archived, String name, String description) {
+    this(id, urlName, archived, name, description, 0l, null);
+  }
+
+  public Workspace(Long id, String urlName, Boolean archived, String name, String description, Long numVisits, Date lastVisit) {
     super();
     this.id = id;
     this.urlName = urlName;
     this.archived = archived;
     this.name = name;
     this.description = description;
+    this.numVisits = numVisits;
+    this.lastVisit = lastVisit;
   }
 
   public Long getId() {
@@ -54,9 +62,27 @@ public class Workspace {
     this.description = description;
   }
 
+  public Long getNumVisits() {
+    return numVisits;
+  }
+
+  public void setNumVisits(Long numVisits) {
+    this.numVisits = numVisits;
+  }
+
+  public Date getLastVisit() {
+    return lastVisit;
+  }
+
+  public void setLastVisit(Date lastVisit) {
+    this.lastVisit = lastVisit;
+  }
+
   private Long id;
   private String urlName;
   private Boolean archived;
   private String name;
   private String description;
+  private Long numVisits;
+  private Date lastVisit;
 }

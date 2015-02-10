@@ -7,6 +7,18 @@
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:c="http://java.sun.com/jsp/jstl/core">
 
+  <h:outputScript name="scripts/gui/widget-courselist.js" target="head" rendered="#{sessionBackingBean.loggedIn}"/>
+
+
+   <div class="wi-container">
+    <div class="wi-content short">
+      <div id="widgetCourselist">
+
+      </div>
+    </div>
+  </div>
+
+<!-- 
   <h:outputScript name="scripts/gui/courselist.js" target="head"/>
 
   <div class="widget courselist wi-frontpage-dynamic-courses">
@@ -51,5 +63,5 @@
     </div>
   </div>
 
-
+ -->
 </ui:composition>

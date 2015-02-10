@@ -7,6 +7,10 @@
   xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
   xmlns:composite="http://java.sun.com/jsf/composite/composite" 
   template="/workspaces/templates/workspace-view.xhtml">
+  
+  <f:metadata>
+      <f:viewAction action="#{workspaceIndexBackingBean.visit}" />
+  </f:metadata>
 
   <!-- Workspace title -->
   <ui:define name="workspace.content.top.static">
