@@ -10,20 +10,24 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 
 import fi.muikkku.ui.AbstractUITest;
+import fi.muikku.SqlAfter;
+import fi.muikku.SqlBefore;
 
 public class IndexPageTestsBase extends AbstractUITest {
 
   @Before
+  @SqlBefore("loginSetup.sql")
+  @SqlAfter("loginTeardown.sql")
   public void requiredPyramusMocks() {
-    stubFor(get(urlPathEqualTo("/users/authorize.page"))
-        .withQueryParam("client_id", matching(".*"))
-        .withQueryParam("response_type", matching(".*"))
-        .withQueryParam("redirect_uri", matching(".*"))
-        //        .withHeader("Accept", equalTo("text/json"))
-        .willReturn(aResponse()
-          .withStatus(200)
-          .withHeader("Content-Type", "text/html")
-          .withHeader("Location", "https://dev.muikku.fi:8443/login?_stg=rsp&code=322322323232332")));
+//    stubFor(get(urlPathEqualTo("/users/authorize.page"))
+//        .withQueryParam("client_id", matching(".*"))
+//        .withQueryParam("response_type", matching(".*"))
+//        .withQueryParam("redirect_uri", matching(".*"))
+//        //        .withHeader("Accept", equalTo("text/json"))
+//        .willReturn(aResponse()
+//          .withStatus(200)
+//          .withHeader("Content-Type", "text/html")
+//          .withHeader("Location", "https://dev.muikku.fi:8443/login?_stg=rsp&code=322322323232332")));
 
     stubFor(get(urlEqualTo("/oauth/token"))
         .willReturn(aResponse()
@@ -33,7 +37,7 @@ public class IndexPageTestsBase extends AbstractUITest {
     stubFor(get(urlEqualTo("/whoami"))
         .willReturn(aResponse()
           .withHeader("Content-Type", "text/json")
-          .withBody("{\"id\":5,\"firstName\":\"Test\",\"lastName\":\"User\",\"emails\":[\"testuser@made.up\"]}")
+          .withBody("{\"id\":1,\"firstName\":\"Test\",\"lastName\":\"User\",\"emails\":[\"testuser@made.up\"]}")
           .withStatus(200)));
     
   }
