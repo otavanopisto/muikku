@@ -1,2 +1,0 @@
-insert into PluginSettingKey(name, plugin) select 'webhook.secret', 'school-data-pyramus' from PluginSettingKey where plugin = 'school-data-pyramus' and name = 'webhook.secret' having count(*) = 0;
-insert into PluginSetting (value, key_id) select '0b2a9890-58ea-11e4-8ed6-0800200c9a66', (select id from PluginSettingKey where plugin = 'school-data-pyramus' and name = 'webhook.secret') from PluginSetting where key_id = (select id from PluginSettingKey where plugin = 'school-data-pyramus' and name = 'webhook.secret') having count(*) = 0;
