@@ -18,7 +18,7 @@
     
     <!--  Selenium -->
     <selenium-java.version>2.35.0</selenium-java.version>
-    <wiremock.version>1.50</wiremock.version>
+    <wiremock.version>1.53</wiremock.version>
   </properties>
 
   <dependencies>
@@ -64,7 +64,7 @@
       <!-- Include this if you have dependency conflicts for Guava, Jetty, Jackson or Apache HTTP Client -->
       <!-- <classifier>standalone</classifier> -->
     </dependency>
-
+    
   </dependencies>
 
   <profiles>
