@@ -16,18 +16,16 @@ import fi.muikku.SqlBefore;
 public class IndexPageTestsBase extends AbstractUITest {
 
   @Before
-  @SqlBefore("loginSetup.sql")
-  @SqlAfter("loginTeardown.sql")
   public void requiredPyramusMocks() {
-//    stubFor(get(urlPathEqualTo("/users/authorize.page"))
-//        .withQueryParam("client_id", matching(".*"))
-//        .withQueryParam("response_type", matching(".*"))
-//        .withQueryParam("redirect_uri", matching(".*"))
-//        //        .withHeader("Accept", equalTo("text/json"))
-//        .willReturn(aResponse()
-//          .withStatus(200)
-//          .withHeader("Content-Type", "text/html")
-//          .withHeader("Location", "https://dev.muikku.fi:8443/login?_stg=rsp&code=322322323232332")));
+    stubFor(get(urlPathEqualTo("/users/authorize.page"))
+        .withQueryParam("client_id", matching(".*"))
+        .withQueryParam("response_type", matching(".*"))
+        .withQueryParam("redirect_uri", matching(".*"))
+        //        .withHeader("Accept", equalTo("text/json"))
+        .willReturn(aResponse()
+          .withStatus(200)
+          .withHeader("Content-Type", "text/html")
+          .withHeader("Location", "https://dev.muikku.fi:8443/login?_stg=rsp&code=322322323232332")));
 
     stubFor(get(urlEqualTo("/oauth/token"))
         .willReturn(aResponse()
@@ -48,5 +46,16 @@ public class IndexPageTestsBase extends AbstractUITest {
     boolean elementExists = getWebDriver().findElements(By.className("index")).size() > 0;
     assertTrue(elementExists);
   }
-
+  
+  @Test
+  @SqlBefore("loginSetup.sql")
+  @SqlAfter("loginTeardown.sql")
+  public void loginTest() throws IOException {
+    getWebDriver().get(getAppUrl());
+    waitForElementToBeClickable(By.className("bt-login"));
+    getWebDriver().findElement(By.className("bt-login")).click();
+    getWebDriver().get(getAppUrl() + "/login?authSourceId=1");
+    sleep(5000);
+    takeScreenshot();
+  }
 }
