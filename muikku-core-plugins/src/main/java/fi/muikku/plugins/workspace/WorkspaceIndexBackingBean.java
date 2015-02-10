@@ -12,9 +12,6 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.jsf.NavigationRules;
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.plugins.material.MaterialController;
-import fi.muikku.plugins.material.model.HtmlMaterial;
-import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.muikku.schooldata.WorkspaceController;
@@ -23,88 +20,135 @@ import fi.muikku.schooldata.entity.Workspace;
 @Named
 @Stateful
 @RequestScoped
-@Join (path = "/workspace/{workspaceUrlName}", to = "/workspaces/workspace.jsf")
+@Join(path = "/workspace/{workspaceUrlName}", to = "/workspaces/workspace.jsf")
 public class WorkspaceIndexBackingBean {
-  
+
   @Parameter
   private String workspaceUrlName;
 
-	@Inject
-	private WorkspaceController workspaceController;
+  @Inject
+  private WorkspaceController workspaceController;
 
   @Inject
   private WorkspaceMaterialController workspaceMaterialController;
 
   @Inject
-  private MaterialController materialController;
-  
-  @Inject
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
-  
+
   @Inject
   @Named
-	private WorkspaceNavigationBackingBean workspaceNavigationBackingBean;
+  private WorkspaceNavigationBackingBean workspaceNavigationBackingBean;
 
-	@RequestAction
-	public String init() {
-	  String urlName = getWorkspaceUrlName();
-	  if (StringUtils.isBlank(urlName)) {
-	   return NavigationRules.NOT_FOUND;
-	  }
-	  
-	  WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByUrlName(urlName);
+  @RequestAction
+  public String init() {
+    String urlName = getWorkspaceUrlName();
+
+    if (StringUtils.isBlank(urlName)) {
+      return NavigationRules.NOT_FOUND;
+    }
+
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByUrlName(urlName);
     if (workspaceEntity == null) {
       return NavigationRules.NOT_FOUND;
     }
+
+    workspaceEntityId = workspaceEntity.getId();
     
     WorkspaceMaterial frontPage = workspaceMaterialController.findFrontPage(workspaceEntity);
     if (frontPage != null) {
-      Material material = materialController.findMaterialById(frontPage.getMaterialId());
-      if (material instanceof HtmlMaterial) {
-        contents = ((HtmlMaterial) material).getHtml();
-      }
+      workspaceMaterialId = frontPage.getId();
+      materialId = frontPage.getMaterialId();
+      materialType = "html";
+      materialTitle = "Etusivu";
     }
-    
+
     workspaceNavigationBackingBean.setWorkspaceUrlName(urlName);
-    
+
     workspaceId = workspaceEntity.getId();
 
-    schoolDataBridgeSessionController.startSystemSession(); 
-    try { 
-      Workspace workspace = workspaceController.findWorkspace(workspaceEntity); 
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
       workspaceName = workspace.getName();
-    } finally { 
-      schoolDataBridgeSessionController.endSystemSession(); 
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
     }
-    
+
     return null;
-	}
+  }
 
-	public Long getWorkspaceId() {
-		return workspaceId;
-	}
+  public Long getWorkspaceId() {
+    return workspaceId;
+  }
 
-	public void setWorkspaceId(Long workspaceId) {
-		this.workspaceId = workspaceId;
-	}
-	
-	public String getWorkspaceUrlName() {
+  public void setWorkspaceId(Long workspaceId) {
+    this.workspaceId = workspaceId;
+  }
+
+  public String getWorkspaceUrlName() {
     return workspaceUrlName;
   }
 
   public void setWorkspaceUrlName(String workspaceUrlName) {
     this.workspaceUrlName = workspaceUrlName;
   }
-  
+
   public String getWorkspaceName() {
     return workspaceName;
   }
-  
+
   public String getContents() {
     return contents;
   }
-  
-	private Long workspaceId;
-	private String workspaceName;
-	private String contents;
+
+  public long getWorkspaceMaterialId() {
+    return workspaceMaterialId;
+  }
+
+  public void setWorkspaceMaterialId(long workspaceMaterialId) {
+    this.workspaceMaterialId = workspaceMaterialId;
+  }
+
+  public long getMaterialId() {
+    return materialId;
+  }
+
+  public void setMaterialId(long materialId) {
+    this.materialId = materialId;
+  }
+
+  public String getMaterialType() {
+    return materialType;
+  }
+
+  public void setMaterialType(String materialType) {
+    this.materialType = materialType;
+  }
+
+  public String getMaterialTitle() {
+    return materialTitle;
+  }
+
+  public void setMaterialTitle(String materialTitle) {
+    this.materialTitle = materialTitle;
+  }
+
+  public long getWorkspaceEntityId() {
+    return workspaceEntityId;
+  }
+
+  public void setWorkspaceEntityId(long workspaceEntityId) {
+    this.workspaceEntityId = workspaceEntityId;
+  }
+
+  private Long workspaceId;
+  private String workspaceName;
+  private String contents;
+
+  private long workspaceMaterialId;
+  private long materialId;
+  private long workspaceEntityId;
+  private String materialType;
+  private String materialTitle;
+
 }
