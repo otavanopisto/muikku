@@ -1,0 +1,9 @@
+<h3>{#localize key="plugin.frontPage.visits.title"/}</h3>
+
+{#workspaces}
+   <ul class="wi-courses">
+      {>"frontpage/widget_visit.dust"/}  
+   </ul>
+{:else}
+   <div class="wi-empty"><span>{#localize key="plugin.frontPage.visits.noVisits" /}</a></span></div>
+{/workspaces}
