@@ -511,7 +511,7 @@ public class WorkspaceMaterialController {
 
   public WorkspaceFolder createWorkspaceFrontPageFolder(WorkspaceEntity workspaceEntity) {
     // TODO: Check url name
-    return workspaceFolderDAO.create(findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity), null, "frontpage", 0, false, null, WorkspaceFolderType.FRONT_PAGE);
+    return workspaceFolderDAO.create(findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity), "Etusivu", "frontpage", 0, false, null, WorkspaceFolderType.FRONT_PAGE);
   }
 
   public WorkspaceFolder findWorkspaceFrontPageFolder(WorkspaceEntity workspaceEntity) {
@@ -530,6 +530,11 @@ public class WorkspaceMaterialController {
       WorkspaceNode defaultMaterial = frontPageFolder.getDefaultMaterial();
       if (defaultMaterial instanceof WorkspaceMaterial) {
         return (WorkspaceMaterial) defaultMaterial;
+      }else{
+        List<WorkspaceMaterial> frontPageMaterials = listWorkspaceMaterialsByParent(frontPageFolder);
+        if(frontPageMaterials.size() == 1){
+          return frontPageMaterials.get(0);
+        }
       }
     }
     // TODO: fallback to only child
