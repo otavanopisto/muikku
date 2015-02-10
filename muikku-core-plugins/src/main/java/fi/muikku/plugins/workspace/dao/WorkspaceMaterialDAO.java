@@ -17,21 +17,29 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
 	
 	private static final long serialVersionUID = -1777382212388116832L;
 
-  public WorkspaceMaterial create(WorkspaceNode parent, long materialId, String urlName, Integer orderNumber, WorkspaceMaterialAssignmentType assignmentType) {
-    return create(parent, materialId, urlName, orderNumber, Boolean.FALSE, assignmentType);
+  public WorkspaceMaterial create(WorkspaceNode parent, long materialId, String urlName, Integer orderNumber) {
+    return create(parent, materialId, urlName, orderNumber, false);
   }
 
-  public WorkspaceMaterial create(WorkspaceNode parent, long materialId, String urlName, Integer orderNumber, Boolean hidden, WorkspaceMaterialAssignmentType assignmentType) {
-		WorkspaceMaterial workspaceMaterial = new WorkspaceMaterial();
-		workspaceMaterial.setParent(parent);
-		workspaceMaterial.setMaterialId(materialId);
-		workspaceMaterial.setUrlName(urlName);
-		workspaceMaterial.setOrderNumber(orderNumber);
-		workspaceMaterial.setHidden(hidden);
-		workspaceMaterial.setAssignmentType(assignmentType);
-		
-		return persist(workspaceMaterial);
-	}
+  public WorkspaceMaterial create(WorkspaceNode parent, long materialId, String urlName, Integer orderNumber, Boolean hidden) {
+    return create(parent, materialId, urlName, orderNumber, hidden, null);
+  }
+  public WorkspaceMaterial create(WorkspaceNode parent, long materialId, String urlName, Integer orderNumber, WorkspaceMaterialAssignmentType assignmentType) {
+    return create(parent, materialId, urlName, orderNumber, false, assignmentType);
+  }
+
+  public WorkspaceMaterial create(WorkspaceNode parent, long materialId, String urlName, Integer orderNumber,
+      Boolean hidden, WorkspaceMaterialAssignmentType assignmentType) {
+    WorkspaceMaterial workspaceMaterial = new WorkspaceMaterial();
+    workspaceMaterial.setParent(parent);
+    workspaceMaterial.setMaterialId(materialId);
+    workspaceMaterial.setUrlName(urlName);
+    workspaceMaterial.setOrderNumber(orderNumber);
+    workspaceMaterial.setHidden(hidden);
+    workspaceMaterial.setAssignmentType(assignmentType);
+
+    return persist(workspaceMaterial);
+  }
 
 	public List<WorkspaceMaterial> listByParent(WorkspaceNode parent) {
     EntityManager entityManager = getEntityManager();

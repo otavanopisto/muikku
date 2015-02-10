@@ -78,10 +78,11 @@ public class DeusNexServiceDownloadUpdater {
                 if (documentData != null) {
                   String path = document.getPath();
                   int slashIndex = path.indexOf('/');
-                  String workspaceName = slashIndex > -1 ? path.substring(0, slashIndex) : path;
                   String workspacePath = slashIndex > -1 ? path.substring(slashIndex + 1) : null;
-                      
-                  WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByUrlName(workspaceName);
+                  String dnmId = slashIndex > -1 ? path.substring(0, slashIndex) : path;
+                  Long workspaceEntityId = deusNexMachinaController.getWorkspaceEntityIdDnmId(dnmId);
+
+                  WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
                   if (workspaceEntity != null) {
                     
                     WorkspaceNode parentNode = null;
@@ -125,7 +126,7 @@ public class DeusNexServiceDownloadUpdater {
                 logger.severe(String.format("Pending dnm document %d could not be found", pendingDownload));
               }
             } catch (Exception e) {
-              logger.warning(String.format("Dnm document %d processing failed, added it back to queue", pendingDownload));
+              logger.warning(String.format("Dnm document %d processing failed, added it back to queue: " + e.getMessage(), pendingDownload));
             }
           }
         } finally {

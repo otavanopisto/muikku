@@ -100,29 +100,24 @@ $(document).ready(function(){
     },
 
     _searchUsers: function (searchTerm) {
-      var _this = this;
-      var users = new Array();
+    	var _this = this;
+    	var users = new Array();
 
-      RESTful.doGet(CONTEXTPATH + "/rest/user/searchUsers", {
-        parameters: {
-          'searchString': searchTerm
-        }
-      }).success(function (data, textStatus, jqXHR) {
-        for (var i = 0, l = data.length; i < l; i++) {
-          var img = undefined;
-          
-          if (data[i].hasImage)
-            img = CONTEXTPATH + "/picture?userId=" + data[i].id;
-          
-          users.push({
-            category: getLocaleText("plugin.communicator.users"),
-            label: data[i].firstName + " " + data[i].lastName,
-            id: data[i].id,
-            image: img,
-            type: "USER"
-          });
-        }
-      });
+    	mApi().user.users.read({ 'searchString' : searchTerm }).callback(
+    	 function (err, result) {
+    	   for (var i = 0, l = result.length; i < l; i++) {
+    		 var img = undefined;
+             if (result[i].hasImage)
+              img = CONTEXTPATH + "/picture?userId=" + result[i].id;
+              users.push({
+                category: getLocaleText("plugin.communicator.users"),
+                label: result[i].firstName + " " + result[i].lastName,
+                id: result[i].id,
+                image: img,
+                type: "USER"
+               });
+             }
+     }); 
 
       return users;
     },
@@ -241,11 +236,22 @@ $(document).ready(function(){
           }
         } */
       ]
-    });
+  });
 
-    
-	
-    mApi().communicator.items.read()
+
+  CommunicatorImpl = $.klass({
+    init: function () {
+      $('.cm-messages-container').on('click','.cm-message:not(.open)', $.proxy(this._onMessageClick, this));
+      $('.cm-messages-container').on('click','.icon-goback', $.proxy(this._onMessageBackClick, this));
+
+      $(window).on("hashchange", $.proxy(this._onHashChange, this));
+      
+      $(window).trigger("hashchange");
+    },
+    _showNewMessageView : function () {
+    },
+    _showInbox : function () {
+      mApi().communicator.items.read()
       .on('$', function (item, itemCallback) {
         mApi().communicator.communicatormessages.sender.read(item.id)
           .callback(function (err, user) {  
@@ -261,102 +267,150 @@ $(document).ready(function(){
       })
       .callback(function (err, result) {
         renderDustTemplate('communicator/communicator_items.dust', result, function (text) {
+          $('.cm-messages-container').empty();
           $('.cm-messages-container').append($.parseHTML(text));
         });
       });
-    
-    $('.cm-messages-container').on('click','.cm-message:not(.open)', function(){
-      var cmId = $(this).find("input[name='communicatorMessageIdId']").val();
-      var messageId = $(this).find("input[name='communicatorMessageId']").val();
+    },
+    _showMessage : function (communicatorMessageId) {
+      var mCont = $('.cm-messages-container');
+      var _this = $(this); 
       
-    	var mCont = $('.cm-messages-container');
-        var _this = $(this); 
+      mApi().communicator.messages.read(communicatorMessageId).callback(function (err, result) {
+        for (var i = 0; i < result.length; i++) {
+          var sId = result[i].id;
+          mApi().communicator.communicatormessages.sender.read(sId)
+            .callback(function (err, user) {  
 
-        mApi().communicator.messages.read(cmId).callback(function (err, result) {
-        	for (var i = 0; i < result.length; i++){
-        		var sId = result[i].id;
-  	        mApi().communicator.communicatormessages.sender.read(sId)
-  	          .callback(function (err, user) {  
+            if (MUIKKU_LOGGED_USER_ID == user.id){
+              result[i].isOwner = true;         
+            } else {
+              result[i].isOwner = false;    
+            }               
 
-  						if (MUIKKU_LOGGED_USER_ID == user.id){
-  					    result[i].isOwner = true;	    	  
-  						} else {
-  							result[i].isOwner = false;	  
-  						}        	      
-  
-  	        	result[i].senderFullName = user.firstName + ' ' + user.lastName;
-  	        	result[i].senderHasPicture = user.hasImage;
-  	        });
-        	}	
-        	
-      renderDustTemplate('communicator/communicator_items_open.dust', result, function(text) {
-        mCont.empty();
-        mCont.append($.parseHTML(text));
+            result[i].senderFullName = user.firstName + ' ' + user.lastName;
+            result[i].senderHasPicture = user.hasImage;
+          });
+        } 
+            
+        renderDustTemplate('communicator/communicator_items_open.dust', result, function(text) {
+          mCont.empty();
+          mCont.append($.parseHTML(text));
 
-        $(".cm-message-reply-link").click(function(event) {
-          var element = $(event.target);
-          element = element.parents(".cm-message");
-          var eId = element.attr('id');
-          var fCont = element.find('.cm-message-content-tools-reply-container');
-          var tCont = element.find('.cm-message-content-tools-container');
+          $(".cm-message-reply-link").click(function(event) {
+            var element = $(event.target);
+            element = element.parents(".cm-message");
+            var eId = element.attr('id');
+            var fCont = element.find('.cm-message-content-tools-reply-container');
+            var tCont = element.find('.cm-message-content-tools-container');
+            var messageId = element.find('input[name="communicatorMessageId"]').val();
 
-          mApi().communicator.communicatormessages.read(eId).on('$', function(reply, replyCallback) {
-            mApi().communicator.communicatormessages.sender.read(messageId).callback(function(err, user) {
-              reply.senderFullName = user.firstName + ' ' + user.lastName;
-              reply.senderHasPicture = user.hasImage;
-            });
+            mApi().communicator.communicatormessages.read(eId).on('$', function(reply, replyCallback) {
+              mApi().communicator.communicatormessages.sender.read(messageId).callback(function(err, user) {
+                reply.senderFullName = user.firstName + ' ' + user.lastName;
+                reply.senderHasPicture = user.hasImage;
+              });
 
-            replyCallback();
-          })
+              replyCallback();
+            })
 
-          .callback(function(err, result) {
-            renderDustTemplate('communicator/communicator_replymessage.dust', result, function(text) {
+            .callback(function(err, result) {
+              renderDustTemplate('communicator/communicator_replymessage.dust', result, function(text) {
 
-              tCont.hide();
-              fCont.append($.parseHTML(text));
+                tCont.hide();
+                fCont.append($.parseHTML(text));
 
-              var cBtn = $(fCont).find("input[name='cancel']");
-              var sBtn = $(fCont).find("input[name='send']");
+                var cBtn = $(fCont).find("input[name='cancel']");
+                var sBtn = $(fCont).find("input[name='send']");
 
-              $(sBtn).click(function() {
-                var cmId = $(fCont).find("input[name='communicatorMessageId']").val();
-                var subject = $(fCont).find("input[name='subject']").val();
-                var content = $(fCont).find("textarea[name='content']").val();
-                var tagStr = "tagi viesti"; // TODO: Tag content
-                var tags = tagStr != undefined ? tagStr.split(' ') : [];
-                var recipientIdStr = $(fCont).find("input[name='recipientIds']").val();
-                var recipientIds = recipientIdStr != undefined ? recipientIdStr.split(',') : [];
-                var groupIds = [];
+                $(sBtn).click(function() {
+                  var cmId = $(fCont).find("input[name='communicatorMessageId']").val();
+                  var subject = $(fCont).find("input[name='subject']").val();
+                  var content = $(fCont).find("textarea[name='content']").val();
+                  var tagStr = "tagi viesti"; // TODO: Tag content
+                  var tags = tagStr != undefined ? tagStr.split(' ') : [];
+                  var recipientIdStr = $(fCont).find("input[name='recipientIds']").val();
+                  var recipientIds = recipientIdStr != undefined ? recipientIdStr.split(',') : [];
+                  var groupIds = [];
 
-                mApi().communicator.messages.create(cmId, {
-                  categoryName : "message",
-                  caption : subject,
-                  content : content,
-                  tags : tags,
-                  recipientIds : recipientIds,
-                  recipientGroupIds : groupIds
-                }).callback(function(err, result) {
+                  mApi().communicator.messages.create(cmId, {
+                    categoryName : "message",
+                    caption : subject,
+                    content : content,
+                    tags : tags,
+                    recipientIds : recipientIds,
+                    recipientGroupIds : groupIds
+                  }).callback(function(err, result) {
+                  });
+
+                  // Go to inbox
+                  window.location.reload();
                 });
 
-                // Go to inbox
-                window.location.reload();
-              });
+                $(cBtn).click(function() {
+                  tCont.show();
+                  fCont.empty();
 
-              $(cBtn).click(function() {
-                tCont.show();
-                fCont.empty();
+                });
 
               });
-
             });
           });
         });
+
+        mApi().communicator.messages.markasread.create(communicatorMessageId).callback(function (err, result) {});
       });
+    },
+    _showSentItems : function () {
+    },
+    _showSettingsView : function () {
+    },
+    _onMessageClick: function (event) {
+      var element = $(event.target);
+      element = element.parents(".cm-message");
+      var cmId = element.find("input[name='communicatorMessageIdId']").val();
 
-      mApi().communicator.messages.markasread.create(cmId).callback(function (err, result) {});
-    });
+      var box = "#in";
+      
+      if (window.location.hash) {
+        if (window.location.hash.startsWith("#sent"))
+          box = "#sent";
+      }
+      
+      window.location.hash = box + "/" + cmId;
+    },
+    _onMessageBackClick: function (event) {
+      var box = "#in";
+      
+      if (window.location.hash) {
+        if (window.location.hash.startsWith("#sent"))
+          box = "#sent";
+      }
+      
+      window.location.hash = box;
+      return false;
+    },
+    _onHashChange: function (event) {
+      var hash = window.location.hash.substring(1);
+      var _this = this;
+      
+      if (hash == "new") {
+        _this._showNewMessageView();
+      } else if (hash == "settings") {
+        _this._showSettingsView();
+      } else if (hash.startsWith("in/")) {
+        var messageId = hash.substring(3);
+        _this._showMessage(messageId);
+      } else if (hash == "sent") {
+        _this._showSentItems();
+      } else if (hash.startsWith("sent/")) {
+        var messageId = hash.substring(5);
+        _this._showMessage(messageId);
+      } else
+        _this._showInbox();
+    }
   });
-    
-  
 
+  window.mCommunicator = new CommunicatorImpl();
+  
 });

@@ -1,0 +1,5 @@
+
+  <div class="wi-message {?unreadMessagesInThread}unread{/unreadMessagesInThread}">
+    <div class="wi-message-caption icon-envelope"><span>{caption}</span></div>
+    <div class="wi-message-content"><span>{content}</span></div>   
+  </div>

@@ -7,7 +7,7 @@
 @import "_forms.scss";
 @import "_modal.scss";
 @import "_buttons.scss";
-@import "_widgets.scss";
+@import "_widgets.scss"; 
 @import "_notif-queue.scss";
 @import "_mainfunctions.scss";
 @import "_calendar.scss";
@@ -433,22 +433,6 @@ a.header {
   background-postion:center;
   background-repeat:no-repeat;
   @include background-image('gfx/icons/32x32/actions/navigate-search.png');
-}
-
-.languageSelection {
-  float:left;
-  padding:1px 4px 3px 4px;
-  margin-left:2px;    
-}
-
-.languageWidget a {  
-  text-decoration:none; 
-  padding: 3px;      
-}
-
-.languageSelection a:hover {    
-  text-decoration:none;
-  color:#fff;    
 }
 
 #content {

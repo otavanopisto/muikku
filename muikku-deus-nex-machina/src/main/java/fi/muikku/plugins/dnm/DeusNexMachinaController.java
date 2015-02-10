@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -27,6 +28,8 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 import org.cyberneko.html.parsers.DOMParser;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -58,6 +61,7 @@ import fi.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.muikku.plugins.workspace.WorkspaceMaterialUtils;
 import fi.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.model.WorkspaceNodeType;
 import fi.muikku.schooldata.WorkspaceEntityController;
@@ -91,7 +95,12 @@ public class DeusNexMachinaController {
         iframeElement.setAttribute("seamless", "seamless");
         iframeElement.setAttribute("border", "0");
         iframeElement.setAttribute("frameborder", "0");
-
+        if (queryType != null && queryType.intValue() == 1) {
+          iframeElement.setAttribute("data-assignment-type", "EXERCISE");
+        }
+        if (queryType != null && queryType.intValue() == 2) {
+          iframeElement.setAttribute("data-assignment-type", "EVALUATED");
+        }
         iframeElement.setAttribute("data-type", "embedded-document");
 
         iframeElement.setAttribute("width", "100%");
@@ -260,12 +269,12 @@ public class DeusNexMachinaController {
 
       return null;
     }
-
     private WorkspaceNode importRoot;
     private DeusNexDocument deusNexDocument;
   }
 
   private final static String LOOKUP_SETTING_NAME = "[_DEUS_NEX_MACHINA_LOOKUP_]";
+  private final static String IDS_SETTING_NAME = "[_DEUS_NEX_MACHINA_IDS_]";
 
   @Inject
   private HtmlMaterialController htmlMaterialController;
@@ -283,6 +292,7 @@ public class DeusNexMachinaController {
   public void init() throws IOException {
     deusNexStructureParser = new DeusNexStructureParser();
     loadLookup();
+    loadIdMap();
   }
 
   public DeusNexDocument parseDeusNexDocument(InputStream inputStream) throws DeusNexException {
@@ -353,6 +363,41 @@ public class DeusNexMachinaController {
     }
 
   }
+  
+  private WorkspaceMaterialAssignmentType determineEmbeddedAssignmentType(HtmlMaterial material) throws DeusNexException {
+    try {
+      if (material.getHtml() == null) {
+        return null;
+      }
+      StringReader htmlReader = new StringReader(material.getHtml());
+      DOMParser parser = new DOMParser();
+      InputSource inputSource = new InputSource(htmlReader);
+      parser.parse(inputSource);
+      org.w3c.dom.Document domDocument = parser.getDocument();
+      List<Element> elements = DeusNexXmlUtils.getElementsByXPath(domDocument.getDocumentElement(), "//IFRAME[@data-type=\"embedded-document\"]");
+      List<WorkspaceMaterialAssignmentType> assignmentTypes = new ArrayList<>();
+      if (!elements.isEmpty()) {
+        for (Element element : elements) {
+          if ("EXERCISE".equals(element.getAttribute("data-assignment-type"))) {
+            assignmentTypes.add(WorkspaceMaterialAssignmentType.EXERCISE);
+          }
+          if ("EVALUATED".equals(element.getAttribute("data-assignment-type"))) {
+            assignmentTypes.add(WorkspaceMaterialAssignmentType.EVALUATED);
+          }
+        }
+      }
+      if ((assignmentTypes.contains(WorkspaceMaterialAssignmentType.EXERCISE)
+          && assignmentTypes.contains(WorkspaceMaterialAssignmentType.EVALUATED))) {
+        return WorkspaceMaterialAssignmentType.MIXED;
+      } else if (assignmentTypes.isEmpty()) {
+        return null;
+      } else {
+        return assignmentTypes.get(0);
+      }
+    } catch (SAXException | IOException | XPathExpressionException e) {
+      throw new DeusNexInternalException("Embedded assignment type handling failed. ", e);
+    }
+  }
 
   private void importResource(WorkspaceNode importRoot, WorkspaceNode parent, Resource resource, DeusNexDocument deusNexDocument,
       List<WorkspaceNode> createdNodes) throws DeusNexException {
@@ -385,10 +430,25 @@ public class DeusNexMachinaController {
         Material material = createMaterial(importRoot, resource, deusNexDocument);
 
         if (material != null) {
-          WorkspaceNode workspaceNode = workspaceMaterialController.createWorkspaceMaterial(parent, material, resource.getName(), null);
+          WorkspaceMaterialAssignmentType assignmentType = null;
 
+          if (resource instanceof Query) {
+            switch (((Query)resource).getQueryType()) {
+            case "1":
+              assignmentType = WorkspaceMaterialAssignmentType.EXERCISE;
+              break;
+            case "2":
+              assignmentType = WorkspaceMaterialAssignmentType.EVALUATED;
+              break;
+            }
+          } else if (material instanceof HtmlMaterial) {
+            assignmentType = determineEmbeddedAssignmentType((HtmlMaterial) material);
+          }
+          
+          WorkspaceMaterial workspaceMaterial = workspaceMaterialController.createWorkspaceMaterial(parent, material, resource.getName(), assignmentType);
+          
           try {
-            setResourceWorkspaceNodeId(resource.getNo(), workspaceNode.getId());
+            setResourceWorkspaceNodeId(resource.getNo(), workspaceMaterial.getId());
           } catch (IOException e) {
             throw new DeusNexInternalException("Failed to store resourceNo lookup file", e);
           }
@@ -397,11 +457,12 @@ public class DeusNexMachinaController {
             List<Resource> childResources = ((ResourceContainer) resource).getResources();
             if (childResources != null) {
               for (Resource childResource : childResources) {
-                importResource(importRoot, workspaceNode, childResource, deusNexDocument, createdNodes);
+                importResource(importRoot, workspaceMaterial, childResource, deusNexDocument, createdNodes);
               }
             }
           }
-          createdNodes.add(workspaceNode);
+          
+          createdNodes.add(workspaceMaterial);
         }
       } else {
         logger.info(node.getPath() + " already exists, skipping");
@@ -499,7 +560,30 @@ public class DeusNexMachinaController {
     String lookupSetting = lookupSettingWriter.toString();
     pluginSettingsController.setPluginSetting(DeusNexMachinaPluginDescriptor.PLUGIN_NAME, LOOKUP_SETTING_NAME, lookupSetting);
   }
+  
+  public void setWorkspaceEntityIdDnmId(String dnmId, Long workspaceEntityId) throws IOException {
+    idMap.put(dnmId, workspaceEntityId);
+    storeIdMap();
+  }
+  
+  public Long getWorkspaceEntityIdDnmId(String dnmId) {
+    return idMap.get(dnmId);
+  }
+  
+  private void storeIdMap() throws IOException {
+    pluginSettingsController.setPluginSetting(DeusNexMachinaPluginDescriptor.PLUGIN_NAME, IDS_SETTING_NAME, new ObjectMapper().writeValueAsString(idMap));
+  }
+  
+  private void loadIdMap() throws IOException {
+    String setting = pluginSettingsController.getPluginSetting(DeusNexMachinaPluginDescriptor.PLUGIN_NAME, IDS_SETTING_NAME);
+    if (StringUtils.isNotBlank(setting)) {
+      idMap = new ObjectMapper().readValue(setting, new TypeReference<Map<String, Long>>() {});
+    } else {
+      idMap = new HashMap<>();
+    }
+  }
 
   private DeusNexStructureParser deusNexStructureParser;
   private Properties lookupProperties;
+  private Map<String, Long> idMap;
 }

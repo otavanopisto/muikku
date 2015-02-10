@@ -1,6 +1,5 @@
 package fi.muikku.plugins.settings;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -14,16 +13,14 @@ import javax.inject.Named;
 
 import fi.muikku.model.users.RoleEntity;
 import fi.muikku.schooldata.RoleController;
-import fi.muikku.users.UserController;
 import fi.muikku.schooldata.entity.Role;
 import fi.muikku.schooldata.entity.User;
+import fi.muikku.users.UserController;
 
 @Named
 @Stateful
 @RequestScoped
-public class UsersSettingsViewBackingBean implements Serializable {
-
-	private static final long serialVersionUID = -6225679048494162513L;
+public class UsersSettingsViewBackingBean {
 
 	@Inject
 	private UserController userController;

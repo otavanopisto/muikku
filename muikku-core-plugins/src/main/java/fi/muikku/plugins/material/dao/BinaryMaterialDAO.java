@@ -26,6 +26,6 @@ public class BinaryMaterialDAO extends CorePluginsDAO<BinaryMaterial> {
 	}
 	
 	public void delete(BinaryMaterial binaryMaterial) {
-	  delete(binaryMaterial);
+	  super.delete(binaryMaterial);
 	}
 }

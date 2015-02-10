@@ -20,6 +20,7 @@ import javax.inject.Inject;
 import fi.muikku.events.ContextDestroyedEvent;
 import fi.muikku.events.ContextInitializedEvent;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.plugins.dnm.DeusNexMachinaController;
 import fi.muikku.schooldata.WorkspaceEntityController;
 
 @Singleton
@@ -31,6 +32,9 @@ public class DeusNexServiceUpdater {
 
   @Inject
   private WorkspaceEntityController workspaceEntityController;
+
+  @Inject
+  private DeusNexMachinaController deusNexMachinaController;
   
   @Inject
   private RestClient client;
@@ -77,6 +81,7 @@ public class DeusNexServiceUpdater {
           });
           
           List<Long> importNos = deusNexImportQueueController.getImportNos();
+          
           List<Long> newImports = new ArrayList<>();
           for (Document document : documents) {
             if (importNos != null && !importNos.contains(document.getId())) {
@@ -85,14 +90,19 @@ public class DeusNexServiceUpdater {
             
             String path = document.getPath();
             int slashIndex = path.indexOf('/');
-            String workspaceName = slashIndex > -1 ? path.substring(0, slashIndex) : path;
-            
-            WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByUrlName(workspaceName);
-            if (workspaceEntity != null) {
-              newImports.add(document.getId());
-            } else {
-              logger.log(Level.WARNING, String.format("Postponing import because workspace for document %s could not be found", document.getPath()));
+            String dnmId = slashIndex > -1 ? path.substring(0, slashIndex) : path;
+            Long workspaceEntityId = deusNexMachinaController.getWorkspaceEntityIdDnmId(dnmId);
+            if (workspaceEntityId == null) {
+              logger.log(Level.WARNING, String.format("Postponing import because dnm id <> workspace entity id mapping for document %s could not be found", document.getPath()));
               return;
+            } else {
+              WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+              if (workspaceEntity != null) {
+                newImports.add(document.getId());
+              } else {
+                logger.log(Level.WARNING, String.format("Postponing import because workspace for document %s could not be found", document.getPath()));
+                return;
+              }              
             }
           }
           

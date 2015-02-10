@@ -6,12 +6,14 @@ xmlns:ui="http://java.sun.com/jsf/facelets"
 xmlns:f="http://java.sun.com/jsf/core"
 xmlns:h="http://java.sun.com/jsf/html">
 
-<!-- 
-  <div class="wi-frontpage-dynamic-calendar">
-    <ui:include src="/facelets/widget-toolarea.xhtml" />
-
-    <h3>Kalenteri</h3>
-    <div class="wi-frontpage-calendar-container"></div>
+  <h:outputScript name="scripts/fullcalendar/fullcalendar.js" target="head"  rendered="#{sessionBackingBean.loggedIn}"/>
+  <h:outputScript name="scripts/gui/widget-calendar.js" target="head"  rendered="#{sessionBackingBean.loggedIn}"/>
+  <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/fullcalendar.css" />  
+  <div class="wi-container">
+    <div class="wi-content short">
+      <div id="calendarWidget"></div>
+    </div>
   </div>
- -->
+
+
 </ui:composition>
