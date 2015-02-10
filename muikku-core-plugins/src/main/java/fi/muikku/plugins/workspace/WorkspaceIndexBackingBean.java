@@ -15,7 +15,7 @@ import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.material.MaterialController;
 import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.material.model.Material;
-import fi.muikku.plugins.workspace.model.WorkspaceFrontPage;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.Workspace;
@@ -57,7 +57,7 @@ public class WorkspaceIndexBackingBean {
       return NavigationRules.NOT_FOUND;
     }
     
-    WorkspaceFrontPage frontPage = workspaceMaterialController.findFrontPage(workspaceEntity);
+    WorkspaceMaterial frontPage = workspaceMaterialController.findFrontPage(workspaceEntity);
     if (frontPage != null) {
       Material material = materialController.findMaterialById(frontPage.getMaterialId());
       if (material instanceof HtmlMaterial) {
