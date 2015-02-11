@@ -186,7 +186,23 @@ public class WorkspaceMaterialController {
   }
 
   public List<WorkspaceNode> listVisibleWorkspaceNodesByParentSortByOrderNumber(WorkspaceNode parent) {
-    return workspaceNodeDAO.listByParentAndHiddenSortByOrderNumber(parent, Boolean.FALSE);
+    return listVisibleWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(parent, WorkspaceFolderType.DEFAULT);
+  }
+
+  public List<WorkspaceNode> listVisibleWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(WorkspaceNode parent, WorkspaceFolderType folderType) {
+    List<WorkspaceNode> nodes = workspaceNodeDAO.listByParentAndHiddenSortByOrderNumber(parent, Boolean.FALSE);
+    // TODO: Do in database
+    for (int i = nodes.size() - 1; i >= 0; i--) {
+      WorkspaceNode node = nodes.get(i);
+      if (node instanceof WorkspaceFolder) {
+        WorkspaceFolder folder = (WorkspaceFolder) node;
+        if (folder.getFolderType() != folderType) {
+          nodes.remove(i);
+        }
+      }
+    }
+    
+    return nodes;
   }
 
   public Material getMaterialForWorkspaceMaterial(WorkspaceMaterial workspaceMaterial) {
