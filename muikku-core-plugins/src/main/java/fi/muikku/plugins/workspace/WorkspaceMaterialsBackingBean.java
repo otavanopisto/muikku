@@ -15,6 +15,7 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.jsf.NavigationRules;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.plugins.workspace.model.WorkspaceFolderType;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.muikku.schooldata.WorkspaceController;
@@ -65,7 +66,7 @@ public class WorkspaceMaterialsBackingBean {
     contentNodes = new ArrayList<>();
 
     List<WorkspaceNode> rootMaterialNodes = workspaceMaterialController
-        .listVisibleWorkspaceNodesByParentSortByOrderNumber(rootFolder);
+        .listVisibleWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(rootFolder, WorkspaceFolderType.DEFAULT);
     for (WorkspaceNode rootMaterialNode : rootMaterialNodes) {
       ContentNode node = workspaceMaterialController.createContentNode(rootMaterialNode);
       contentNodes.add(node);

@@ -1,1 +1,0 @@
-insert into EnvironmentDefaults (id, httpPort, httpsPort) values (1, 8080, 8443);
