@@ -1,5 +1,7 @@
 package fi.muikku.plugins.workspace;
 
+import java.util.logging.Logger;
+
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -39,6 +41,12 @@ public class WorkspaceIndexBackingBean {
   @Named
   private WorkspaceNavigationBackingBean workspaceNavigationBackingBean;
 
+  @Inject
+  private WorkspaceVisitController workspaceVisitController;
+  
+  @Inject
+  private Logger logger;
+
   @RequestAction
   public String init() {
     String urlName = getWorkspaceUrlName();
@@ -48,10 +56,10 @@ public class WorkspaceIndexBackingBean {
     }
 
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByUrlName(urlName);
+
     if (workspaceEntity == null) {
       return NavigationRules.NOT_FOUND;
     }
-
     workspaceEntityId = workspaceEntity.getId();
     
     WorkspaceMaterial frontPage = workspaceMaterialController.findFrontPage(workspaceEntity);
@@ -64,10 +72,9 @@ public class WorkspaceIndexBackingBean {
 
     workspaceNavigationBackingBean.setWorkspaceUrlName(urlName);
 
-    workspaceId = workspaceEntity.getId();
-
     schoolDataBridgeSessionController.startSystemSession();
     try {
+      workspaceId = workspaceEntity.getId();
       Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
       workspaceName = workspace.getName();
     } finally {
@@ -93,10 +100,13 @@ public class WorkspaceIndexBackingBean {
     this.workspaceUrlName = workspaceUrlName;
   }
 
+  private WorkspaceEntity getWorkspaceEntity() {
+    return workspaceController.findWorkspaceEntityById(workspaceId);
+  }
+
   public String getWorkspaceName() {
     return workspaceName;
   }
-
   public String getContents() {
     return contents;
   }
@@ -141,6 +151,14 @@ public class WorkspaceIndexBackingBean {
     this.workspaceEntityId = workspaceEntityId;
   }
 
+  public void visit() {
+    workspaceVisitController.visit(getWorkspaceEntity());
+  }
+  
+  public Long getNumVisits() {
+    return workspaceVisitController.getNumVisits(getWorkspaceEntity());
+  }
+  
   private Long workspaceId;
   private String workspaceName;
   private String contents;

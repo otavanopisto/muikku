@@ -1,0 +1,9 @@
+
+  <div class="wi-message {?unreadMessagesInThread}unread{/unreadMessagesInThread}">
+    <div class="wi-message-caption icon-envelope">
+      <span>
+        <a href="/communicator/index.jsf#in/{communicatorMessageId}">{caption}</a>
+      </span>
+    </div>
+    <div class="wi-message-content"><span>{content}</span></div>   
+  </div>

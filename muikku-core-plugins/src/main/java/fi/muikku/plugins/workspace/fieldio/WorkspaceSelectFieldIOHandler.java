@@ -36,7 +36,7 @@ public class WorkspaceSelectFieldIOHandler implements WorkspaceFieldIOHandler {
   @Override
   public String retrieve(WorkspaceMaterialField field, WorkspaceMaterialReply reply) throws WorkspaceFieldIOException{
     WorkspaceMaterialSelectFieldAnswer fieldAnswer = workspaceMaterialFieldAnswerController.findWorkspaceMaterialSelectFieldAnswerByFieldAndReply(field, reply);
-    if (fieldAnswer != null && fieldAnswer.getValue() != null) {
+    if (fieldAnswer != null) {
       return fieldAnswer.getValue().getName();
     }
     return null;
