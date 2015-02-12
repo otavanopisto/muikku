@@ -525,6 +525,10 @@ public class WorkspaceMaterialController {
 
   /* Front page */
 
+  public WorkspaceFolder createWorkspaceHelpPageFolder(WorkspaceEntity workspaceEntity) {
+    return workspaceFolderDAO.create(findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity), "Ohjeet", "ohjeet", 0, false, null, WorkspaceFolderType.HELP_PAGE);
+  }
+
   public WorkspaceFolder createWorkspaceFrontPageFolder(WorkspaceEntity workspaceEntity) {
     return workspaceFolderDAO.create(findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity), "Etusivu", "etusivu", 0, false, null, WorkspaceFolderType.FRONT_PAGE);
   }
@@ -534,6 +538,16 @@ public class WorkspaceMaterialController {
         WorkspaceFolderType.FRONT_PAGE);
     if (frontPageFolders.size() == 1) {
       return frontPageFolders.get(0);
+    }
+    // TODO: report error if more than one
+    return null;
+  }
+
+  public WorkspaceFolder findWorkspaceHelpPageFolder(WorkspaceEntity workspaceEntity) {
+    List<WorkspaceFolder> helpPageFolders = workspaceFolderDAO.listByParentAndFolderType(findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity),
+        WorkspaceFolderType.HELP_PAGE);
+    if (helpPageFolders.size() == 1) {
+      return helpPageFolders.get(0);
     }
     // TODO: report error if more than one
     return null;
