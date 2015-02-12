@@ -301,7 +301,6 @@ public class DeusNexMachinaController {
 
   public void importDeusNexDocument(WorkspaceNode parentNode, InputStream inputStream) throws DeusNexException {
     DeusNexDocument desNexDocument = parseDeusNexDocument(inputStream);
-    // WorkspaceRootFolder rootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(parentNode);
     List<WorkspaceNode> createdNodes = new ArrayList<>();
     for (Resource resource : desNexDocument.getRootFolder().getResources()) {
       importResource(parentNode, parentNode, resource, desNexDocument, createdNodes);
@@ -313,6 +312,26 @@ public class DeusNexMachinaController {
     }
   }
 
+  public void importFrontPageDocument(WorkspaceEntity workspaceEntity, InputStream inputStream) throws DeusNexException {
+    DeusNexDocument deusNexDocument = parseDeusNexDocument(inputStream);
+    
+    List<Resource> resources = deusNexDocument.getRootFolder().getResources();
+    if (!resources.isEmpty()) {
+      List<WorkspaceNode> createdNodes = new ArrayList<>();
+      WorkspaceFolder workspaceFrontPageFolder = workspaceMaterialController.createWorkspaceFrontPageFolder(workspaceEntity);
+
+      for (Resource resource : deusNexDocument.getRootFolder().getResources()) {
+        importResource(workspaceFrontPageFolder, workspaceFrontPageFolder, resource, deusNexDocument, createdNodes);
+      }
+      try {
+        postProcessResources(createdNodes);
+      } catch (Exception e) {
+        throw new DeusNexInternalException("PostProcesssing failed. ", e);
+      }
+      
+    }
+  }
+  
   private void postProcessResources(List<WorkspaceNode> createdNodes) throws ParserConfigurationException, SAXException,
       IOException, XPathExpressionException, TransformerException {
     for (WorkspaceNode node : createdNodes) {
