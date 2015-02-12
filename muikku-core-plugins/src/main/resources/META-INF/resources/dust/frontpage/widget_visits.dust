@@ -2,21 +2,21 @@
 <h3>{#localize key="plugin.frontPage.visits.title"/}</h3>
 
 
- {?lastDay}<span>Todo : Lokalisoi "Viimeisen vuorokauden aikana"</span>
+ {?lastDay}<span>{#localize key="plugin.frontPage.visits.lastDay"/}</span>
    <ul class="wi-courses today">
     {#lastDay}
         {>"frontpage/widget_visit.dust"/}  
     {/lastDay} 
      </ul>
  {/lastDay}
- {?lastWeek}<span>Todo : Lokalisoi "Viime viikon aikana"</span>
+ {?lastWeek}<span>{#localize key="plugin.frontPage.visits.lastWeek"/}</span>
    <ul class="wi-courses yesterday">
     {#lastWeek}
           {>"frontpage/widget_visit.dust"/}  
     {/lastWeek}
    </ul>
 {/lastWeek}   
-  {?older}<span>Todo : Lokalisoi "Vanhemmat"</span>
+  {?older}<span>{#localize key="plugin.frontPage.visits.older"/}</span>
    <ul class="wi-courses older">
     {#older}
       {>"frontpage/widget_visit.dust"/}

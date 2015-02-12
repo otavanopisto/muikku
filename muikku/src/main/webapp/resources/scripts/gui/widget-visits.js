@@ -15,7 +15,7 @@ $(document).ready(function(){
     	 var weekScs = (24 * 3600) * 7;
  
     	 
-    	// Turning timestamp from milliseconds to seconds 
+    	// Turning timestamps (visited, now) from milliseconds to seconds 
     	 
        	 var visitScs = eval(workspace.lastVisit / 1000); 
     	 var nowScs = eval(td.getTime() / 1000);
@@ -52,7 +52,7 @@ $(document).ready(function(){
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('TODO: Virheilmoitus', err));
     	}else{
     		
-     // Empty arrays visit categories to present to the dust templates
+     // Empty arrays foe visiting time categories to present to the dust templates
     		
 		var lastDay = [];
 		var lastWeek = [];
@@ -61,12 +61,12 @@ $(document).ready(function(){
 		
     		
      	for (var i = 0, l = workspaces.length; i < l; i++) {
-     	  var td = workspaces[i].lastDay;
+     	  var ld = workspaces[i].lastDay;
      	  var lw = workspaces[i].lastWeek;
      	  
     // sorting the given workspaces into said categories     
      	  
-     	   if( td == true ){
+     	   if( ld == true ){
      		lastDay[i] = workspaces[i];  
      		   
      	   }else if( lw == true ){
