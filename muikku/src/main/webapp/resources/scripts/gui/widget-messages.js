@@ -9,14 +9,11 @@ $(document).ready(function(){
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('TODO: Virheilmoitus', err));
     	}else{    	  
         renderDustTemplate('frontpage/widget_messages.dust', 
+    		{
+    	   	 messages : messages
+    		}, function (text) {
 
-        		{
-        	
-        	   	 messages : messages
-        	
-        		}, function (text) {
-                  	
-          $('#widgetMessages').append($.parseHTML(text));
+    		$('#widgetMessages').append($.parseHTML(text));
           
         });
     	}
