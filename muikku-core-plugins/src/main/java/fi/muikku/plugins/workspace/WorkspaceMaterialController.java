@@ -1,6 +1,7 @@
 package fi.muikku.plugins.workspace;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -16,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.material.MaterialController;
+import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.workspace.dao.WorkspaceFolderDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialDAO;
@@ -568,6 +570,26 @@ public class WorkspaceMaterialController {
       }
     }
     return null;
+  }
+
+  public List<WorkspaceMaterial> findHelpPages(WorkspaceEntity workspaceEntity) {
+    WorkspaceFolder helpPageFolder = findWorkspaceHelpPageFolder(workspaceEntity);
+    if (helpPageFolder != null) {
+      WorkspaceNode defaultMaterial = helpPageFolder.getDefaultMaterial();
+      if (defaultMaterial instanceof WorkspaceMaterial) {
+        return Arrays.asList((WorkspaceMaterial)defaultMaterial);
+      }else{
+        List<WorkspaceMaterial> frontPageMaterials = listWorkspaceMaterialsByParent(helpPageFolder);
+        for (int i=frontPageMaterials.size() - 1; i >= 0; i--) {
+          WorkspaceMaterial workspaceMaterial = frontPageMaterials.get(i);
+          if (!(materialController.findMaterialById(workspaceMaterial.getMaterialId()) instanceof HtmlMaterial)) {
+            frontPageMaterials.remove(i);
+          }
+        }
+        return frontPageMaterials;
+      }
+    }
+    return Arrays.asList();
   }
 
   private static class FlattenedWorkspaceNode {
