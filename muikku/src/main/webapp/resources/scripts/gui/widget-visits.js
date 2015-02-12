@@ -66,16 +66,19 @@ $(document).ready(function(){
      	  
     // sorting the given workspaces into said categories     
      	  
-     	   if( ld == true ){
-     		lastDay[i] = workspaces[i];  
-     		   
-     	   }else if( lw == true ){
-     		  lastWeek[i] = workspaces[i];     		   
 
+     	  
+     	   if( ld == true ){
+     		var ldl = lastDay.length; 
+     		lastDay[ldl] = workspaces[i];
+     	   }else if( lw == true ){
+     	     var lwl = lastWeek.length;
+        	 lastWeek[lwl] = workspaces[i];     			 
      	   }else{
-     		  older[i] = workspaces[i];
+     		 var ol = older.length;
+        	 older[ol] = workspaces[i];     			 
+        	 }
      	   
-     	   }
           
      	}    		
     	renderDustTemplate('frontpage/widget_visits.dust', {
