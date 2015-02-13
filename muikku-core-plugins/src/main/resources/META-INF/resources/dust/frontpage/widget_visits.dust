@@ -1,6 +1,5 @@
-{?workspaces}
 <h3>{#localize key="plugin.frontPage.visits.title"/}</h3>
-
+{?workspaces}
 
  {?lastDay}<span>{#localize key="plugin.frontPage.visits.lastDay"/}</span>
    <ul class="wi-courses today">
@@ -25,5 +24,6 @@
   {/older}
  
 {:else}
+
    <div class="wi-empty"><span>{#localize key="plugin.frontPage.visits.noVisits" /}</a></span></div>
 {/workspaces}
