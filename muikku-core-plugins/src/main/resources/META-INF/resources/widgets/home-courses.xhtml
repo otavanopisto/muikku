@@ -17,51 +17,5 @@
       </div>
     </div>
   </div>
-
-<!-- 
-  <h:outputScript name="scripts/gui/courselist.js" target="head"/>
-
-  <div class="widget courselist wi-frontpage-dynamic-courses">
-    <ui:include src="/facelets/widget-toolarea.xhtml" />    
-    
-    <c:set target="#{CourseList}" property="context" value="#{courselist}" />
-    <c:set target="#{CourseList}" property="defaultSelection" value="MY_COURSES" />
-
-    <c:choose>
-      <c:when test="#{CourseList.courseListSelection eq 'FAVOURITES'}">
-        <h3>Suosikkikurssit</h3>
-      </c:when>
-      
-      <c:otherwise>
-        <h3>Omat kurssit</h3>
-      </c:otherwise>
-    </c:choose>
-
-    <ul>
-      <c:if test="#{empty CourseList.listWorkspacesByContext()}">
-        Ei kursseja, kokeile <a href="#{request.contextPath}/coursepicker/coursepicker.jsf">kurssipoimuria</a>.
-      </c:if>
-
-      <ui:repeat var="workspace" value="#{CourseList.listWorkspacesByContext()}" varStatus="ws_status">
-        <li><a href="#{request.contextPath}/workspace/#{Workspace.findWorkspaceEntity(workspace).urlName}">#{workspace.name}</a></li>
-      </ui:repeat>
-
-    </ul>
-    
-    <div class="courselist-settings" title="Asetukset" style="display: none;">
-      <p>
-        <div>Valitse näytettävä lista</div>
-        
-        <h:form>
-          <h:selectOneMenu value="#{CourseList.courseListSelection}">
-            <f:selectItems value="#{CourseList.courseListSelectionValues}" />
-          </h:selectOneMenu>
-        
-          <h:commandButton value="Tallenna" action="#{CourseList.saveSettings()}" />
-        </h:form>
-      </p>
-    </div>
-  </div>
-
- -->
+ß
 </ui:composition>
