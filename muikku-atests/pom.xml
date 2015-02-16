@@ -161,8 +161,6 @@
                 <dependency>fi.muikku:core-plugins</dependency>
               </dependenciesToScan>
 
-
-
               <includes>
                 <include>**/*IT.java</include>
               </includes>
@@ -196,17 +194,7 @@
               </execution>
             </executions>
           </plugin>
-          <!-- <plugin> <groupId>de.juplo</groupId> <artifactId>hibernate4-maven-plugin</artifactId> <version>1.0.5</version> <dependencies> <dependency> <groupId>com.h2database</groupId> 
-            <artifactId>h2</artifactId> <version>${h2.version}</version> </dependency> </dependencies> <configuration> <driverClassName>${it.jdbc.driver}</driverClassName> <hibernateDialect>${it.hibernate.dialect}</hibernateDialect> 
-            <url><![CDATA[${it.jdbc.url}]]></url> <username>${it.jdbc.username}</username> <password>${it.jdbc.password}</password> </configuration> <executions> <execution> 
-            <id>drop-db-after-test</id> <phase>post-integration-test</phase> <goals> <goal>export</goal> </goals> <configuration> <type>DROP</type> <force>true</force> </configuration> 
-            </execution> </executions> </plugin> -->
-          <!-- <plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>sql-maven-plugin</artifactId> <version>1.5</version> <dependencies> <dependency> <groupId>com.h2database</groupId> 
-            <artifactId>h2</artifactId> <version>${h2.version}</version> </dependency> </dependencies> <configuration> <driver>${it.jdbc.driver}</driver> <url>${it.jdbc.url}</url> 
-            <username>${it.jdbc.username}</username> <password>${it.jdbc.password}</password> </configuration> <executions> <execution> <id>create-schema</id> <phase>pre-integration-test</phase> 
-            <goals> <goal>execute</goal> </goals> <configuration> <autocommit>true</autocommit> <srcFiles> <srcFile>src/test/resources/sql/ui-initial-data.sql</srcFile> </srcFiles> 
-            </configuration> </execution> </executions> </plugin> -->
-
+          
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>keytool-maven-plugin</artifactId>
@@ -351,19 +339,15 @@
                   <execute-commands>
                     <batch>true</batch>
                     <commands>
-                      <command>/system-property=muikku-data:add(value="${project.build.directory}/../../muikku-data/muikku-data.xml,${project.build.directory}/../../muikku-data/muikku-data-private.xml")</command>
+<!--                       <command>/system-property=muikku-data:add(value="${project.build.directory}/../../muikku-data/muikku-data.xml,${project.build.directory}/../../muikku-data/muikku-data-private.xml")</command> -->
+                      <command>/system-property=muikku-data:add(value="${project.build.directory}/../src/test/resources/muikku-data/muikku-data.xml")</command>
                       <command>/system-property=jsf.project.stage:add(value="Production")</command>
-                      <!-- <command>/system-property=muikku.googleServiceAccount.accountId:add(value="860483284276-1pi77he4ccoe6sj2i41405nlm87qsvcl@developer.gserviceaccount.com")</command> -->
-                      <!-- <command>/system-property=muikku.googleServiceAccount.accountUser:add(value="muikku-system@otavanopisto.fi")</command> -->
-                      <!-- <command>/system-property=muikku.googleServiceAccount.keyFile:add(value="${project.build.directory}/../../muikku-staging.p12")</command> -->
                       <command>/core-service=management/security-realm=ssl-realm:add()</command>
                       <command>/core-service=management/security-realm=ssl-realm/server-identity=ssl:add(keystore-path="${project.build.directory}${file.separator}${it.keystore.file}",keystore-password="${it.keystore.pass}",alias="${it.keystore.alias}")</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:add()</command>
                       <command>/subsystem=undertow/server=default-server/https-listener=https:add(socket-binding="https",security-realm="ssl-realm")</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=alias,value=["dev.muikku.fi"])</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=default-web-module,value=ROOT.war)</command>
-
-
                     </commands>
                   </execute-commands>
                 </configuration>
@@ -408,11 +392,6 @@
               </execution>
             </executions>
           </plugin>
-
-          <!-- <plugin> <groupId>org.sonatype.plugins</groupId> <artifactId>wait-maven-plugin</artifactId> <version>1.0</version> <executions> <execution> <id>wait-webapp</id> 
-            <phase>pre-integration-test</phase> <goals> <goal>wait</goal> </goals> <configuration> <protocol>http</protocol> <host>${it.host}</host> <port>${it.port.http}</port> 
-            <file>/</file> <maxcount>10</maxcount> <timeout>10000</timeout> </configuration> </execution> </executions> </plugin> -->
-
         </plugins>
       </build>
     </profile>

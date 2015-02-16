@@ -93,7 +93,7 @@ public class AbstractUITest extends AbstractIntegrationTest {
     Date dNow = new Date( );
     SimpleDateFormat ft = new SimpleDateFormat ("yyyy-MM-dd-hh:mm:ss");
     File screenshot = ((TakesScreenshot) getWebDriver()).getScreenshotAs(OutputType.FILE);
-    FileUtils.copyFile(screenshot, new File(System.getProperty("it.report.directory") + "-" + ft.format(dNow) + "-" + testName.getMethodName() + ".png"));
+    FileUtils.copyFile(screenshot, new File(System.getProperty("it.report.directory") + ft.format(dNow) + "-" + testName.getMethodName() + ".png"));
   }
   
   protected void sleep(long millis) {
