@@ -62,7 +62,7 @@ public class WorkspaceMaterialsTOCBackingBean {
    */
   public List<MaterialNode> getDescendants(WorkspaceNode rootFolder, Boolean includeHidden) {
     List<MaterialNode> materialNodes = new ArrayList<MaterialNode>();
-    List<WorkspaceNode> nodes = workspaceMaterialController.listVisibleWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(rootFolder, WorkspaceFolderType.DEFAULT);
+    List<WorkspaceNode> nodes = workspaceMaterialController.listWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(rootFolder, WorkspaceFolderType.DEFAULT);
     
     for (WorkspaceNode node : nodes) {
       if (includeHidden || !node.getHidden()) {
