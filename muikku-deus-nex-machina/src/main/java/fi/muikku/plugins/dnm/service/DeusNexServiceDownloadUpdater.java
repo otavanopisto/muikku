@@ -85,32 +85,53 @@ public class DeusNexServiceDownloadUpdater {
                   WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
                   if (workspaceEntity != null) {
                     
-                    WorkspaceNode parentNode = null;
-                    if (StringUtils.isBlank(workspacePath)) {
-                      parentNode = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
-                    } else {
-                      String[] pathElements = workspacePath.split("/");
-                      parentNode = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
-                      WorkspaceNode parent = parentNode;
+                    if ("[_FPF_]".equals(workspacePath)) {
+                      logger.info(String.format("Importing front-page document #%d into workspace %s", document.getId(), workspaceEntity.getUrlName()));
                       
-                      for (int i = 0, l = pathElements.length; i < l; i++) {
-                        String pathElement = pathElements[i];
-                        parentNode = workspaceMaterialController.findWorkspaceNodeByParentAndUrlName(parent, pathElement);
-                        if (parentNode == null) {
-                          parentNode = workspaceMaterialController.createWorkspaceFolder(parent, pathElement, pathElement);
-                        }
-        
-                        parent = parentNode;
+                      InputStream documentStream = new ByteArrayInputStream(documentData.getBytes("UTF-8"));
+                      try {
+                        deusNexMachinaController.importFrontPageDocument(workspaceEntity, documentStream);
+                      } finally {
+                        documentStream.close();
                       }
-                    }
-                    
-                    logger.info(String.format("Importing dnm document #%d into workspace %s", document.getId(), workspaceEntity.getUrlName()));
-                    
-                    InputStream documentStream = new ByteArrayInputStream(documentData.getBytes("UTF-8"));
-                    try {
-                      deusNexMachinaController.importDeusNexDocument(parentNode, documentStream);
-                    } finally {
-                      documentStream.close();
+                    } else if ("[_HELP_PAGE_]".equals(workspacePath)){
+                      logger.info(String.format("Importing help-page document #%d into workspace %s", document.getId(), workspaceEntity.getUrlName()));
+                      
+                      InputStream documentStream = new ByteArrayInputStream(documentData.getBytes("UTF-8"));
+                      try {
+                        deusNexMachinaController.importHelpPageDocument(workspaceEntity, documentStream);
+                      } finally {
+                        documentStream.close();
+                      }
+                      
+                    } else {
+                      WorkspaceNode parentNode = null;
+                      if (StringUtils.isBlank(workspacePath)) {
+                        parentNode = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
+                      } else {
+                        String[] pathElements = workspacePath.split("/");
+                        parentNode = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
+                        WorkspaceNode parent = parentNode;
+                        
+                        for (int i = 0, l = pathElements.length; i < l; i++) {
+                          String pathElement = pathElements[i];
+                          parentNode = workspaceMaterialController.findWorkspaceNodeByParentAndUrlName(parent, pathElement);
+                          if (parentNode == null) {
+                            parentNode = workspaceMaterialController.createWorkspaceFolder(parent, pathElement, pathElement);
+                          }
+          
+                          parent = parentNode;
+                        }
+                      }
+                      
+                      logger.info(String.format("Importing dnm document #%d into workspace %s", document.getId(), workspaceEntity.getUrlName()));
+                      
+                      InputStream documentStream = new ByteArrayInputStream(documentData.getBytes("UTF-8"));
+                      try {
+                        deusNexMachinaController.importDeusNexDocument(parentNode, documentStream);
+                      } finally {
+                        documentStream.close();
+                      }
                     }
                    
                     deusNexImportQueueController.removePendingDownload(pendingDownload);

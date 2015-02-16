@@ -1,6 +1,7 @@
 package fi.muikku.plugins.workspace;
 
-import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -22,8 +23,8 @@ import fi.muikku.schooldata.entity.Workspace;
 @Named
 @Stateful
 @RequestScoped
-@Join(path = "/workspace/{workspaceUrlName}", to = "/workspaces/workspace.jsf")
-public class WorkspaceIndexBackingBean {
+@Join(path = "/workspace/{workspaceUrlName}/help", to = "/workspaces/help.jsf")
+public class WorkspaceHelpPageBackingBean {
 
   @Parameter
   private String workspaceUrlName;
@@ -43,9 +44,6 @@ public class WorkspaceIndexBackingBean {
 
   @Inject
   private WorkspaceVisitController workspaceVisitController;
-  
-  @Inject
-  private Logger logger;
 
   @RequestAction
   public String init() {
@@ -62,12 +60,11 @@ public class WorkspaceIndexBackingBean {
     }
     workspaceEntityId = workspaceEntity.getId();
     
-    WorkspaceMaterial frontPage = workspaceMaterialController.findFrontPage(workspaceEntity);
-    if (frontPage != null) {
-      workspaceMaterialId = frontPage.getId();
-      materialId = frontPage.getMaterialId();
-      materialType = "html";
-      materialTitle = "Etusivu";
+    contentNodes = new ArrayList<ContentNode>();
+    List<WorkspaceMaterial> helpPages = workspaceMaterialController.findHelpPages(workspaceEntity);
+    for (WorkspaceMaterial helpPage : helpPages) {
+      ContentNode node = workspaceMaterialController.createContentNode(helpPage);
+      contentNodes.add(node);
     }
 
     workspaceNavigationBackingBean.setWorkspaceUrlName(urlName);
@@ -107,41 +104,6 @@ public class WorkspaceIndexBackingBean {
   public String getWorkspaceName() {
     return workspaceName;
   }
-  public String getContents() {
-    return contents;
-  }
-
-  public long getWorkspaceMaterialId() {
-    return workspaceMaterialId;
-  }
-
-  public void setWorkspaceMaterialId(long workspaceMaterialId) {
-    this.workspaceMaterialId = workspaceMaterialId;
-  }
-
-  public long getMaterialId() {
-    return materialId;
-  }
-
-  public void setMaterialId(long materialId) {
-    this.materialId = materialId;
-  }
-
-  public String getMaterialType() {
-    return materialType;
-  }
-
-  public void setMaterialType(String materialType) {
-    this.materialType = materialType;
-  }
-
-  public String getMaterialTitle() {
-    return materialTitle;
-  }
-
-  public void setMaterialTitle(String materialTitle) {
-    this.materialTitle = materialTitle;
-  }
 
   public long getWorkspaceEntityId() {
     return workspaceEntityId;
@@ -159,14 +121,14 @@ public class WorkspaceIndexBackingBean {
     return workspaceVisitController.getNumVisits(getWorkspaceEntity());
   }
   
+  public List<ContentNode> getContentNodes() {
+    return contentNodes;
+  }
+
   private Long workspaceId;
   private String workspaceName;
-  private String contents;
-
-  private long workspaceMaterialId;
-  private long materialId;
   private long workspaceEntityId;
-  private String materialType;
-  private String materialTitle;
+
+  private List<ContentNode> contentNodes;
 
 }
