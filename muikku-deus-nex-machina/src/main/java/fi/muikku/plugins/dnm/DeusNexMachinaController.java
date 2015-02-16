@@ -501,6 +501,10 @@ public class DeusNexMachinaController {
             }
           }
           
+          if (resource.getHidden()) {
+            workspaceMaterialController.hideWorkspaceNode(workspaceMaterial);
+          }
+          
           createdNodes.add(workspaceMaterial);
         }
       } else {

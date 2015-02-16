@@ -329,6 +329,14 @@ public class WorkspaceMaterialController {
     // Updated node
     return workspaceNode;
   }
+  
+  public void showWorkspaceNode(WorkspaceNode workspaceNode) {
+    workspaceNodeDAO.updateHidden(workspaceNode,  Boolean.TRUE);
+  }
+
+  public void hideWorkspaceNode(WorkspaceNode workspaceNode) {
+    workspaceNodeDAO.updateHidden(workspaceNode,  Boolean.FALSE);
+  }
 
   public void deleteWorkspaceMaterial(WorkspaceMaterial workspaceMaterial, boolean removeAnswers) throws WorkspaceMaterialContainsAnswersExeption {
     try {

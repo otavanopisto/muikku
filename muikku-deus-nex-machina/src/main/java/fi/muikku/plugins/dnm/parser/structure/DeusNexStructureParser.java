@@ -300,6 +300,7 @@ public class DeusNexStructureParser {
     resource.setName(DeusNexXmlUtils.getChildValue(resourceElement, "name"));
     resource.setPath(DeusNexXmlUtils.getChildValue(resourceElement, "path"));
     resource.setTitle(DeusNexXmlUtils.getChildValue(resourceElement, "title"));
+    resource.setHidden(DeusNexXmlUtils.getChildValueInt(resourceElement,  "hidden") == 1 ? Boolean.TRUE : Boolean.FALSE);
   }
 
 }
