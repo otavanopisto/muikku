@@ -1,6 +1,7 @@
 package fi.muikku.plugins.workspace;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -16,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.material.MaterialController;
+import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.workspace.dao.WorkspaceFolderDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialDAO;
@@ -525,6 +527,10 @@ public class WorkspaceMaterialController {
 
   /* Front page */
 
+  public WorkspaceFolder createWorkspaceHelpPageFolder(WorkspaceEntity workspaceEntity) {
+    return workspaceFolderDAO.create(findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity), "Ohjeet", "ohjeet", 0, false, null, WorkspaceFolderType.HELP_PAGE);
+  }
+
   public WorkspaceFolder createWorkspaceFrontPageFolder(WorkspaceEntity workspaceEntity) {
     return workspaceFolderDAO.create(findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity), "Etusivu", "etusivu", 0, false, null, WorkspaceFolderType.FRONT_PAGE);
   }
@@ -534,6 +540,16 @@ public class WorkspaceMaterialController {
         WorkspaceFolderType.FRONT_PAGE);
     if (frontPageFolders.size() == 1) {
       return frontPageFolders.get(0);
+    }
+    // TODO: report error if more than one
+    return null;
+  }
+
+  public WorkspaceFolder findWorkspaceHelpPageFolder(WorkspaceEntity workspaceEntity) {
+    List<WorkspaceFolder> helpPageFolders = workspaceFolderDAO.listByParentAndFolderType(findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity),
+        WorkspaceFolderType.HELP_PAGE);
+    if (helpPageFolders.size() == 1) {
+      return helpPageFolders.get(0);
     }
     // TODO: report error if more than one
     return null;
@@ -554,6 +570,26 @@ public class WorkspaceMaterialController {
       }
     }
     return null;
+  }
+
+  public List<WorkspaceMaterial> findHelpPages(WorkspaceEntity workspaceEntity) {
+    WorkspaceFolder helpPageFolder = findWorkspaceHelpPageFolder(workspaceEntity);
+    if (helpPageFolder != null) {
+      WorkspaceNode defaultMaterial = helpPageFolder.getDefaultMaterial();
+      if (defaultMaterial instanceof WorkspaceMaterial) {
+        return Arrays.asList((WorkspaceMaterial)defaultMaterial);
+      }else{
+        List<WorkspaceMaterial> frontPageMaterials = listWorkspaceMaterialsByParent(helpPageFolder);
+        for (int i=frontPageMaterials.size() - 1; i >= 0; i--) {
+          WorkspaceMaterial workspaceMaterial = frontPageMaterials.get(i);
+          if (!(materialController.findMaterialById(workspaceMaterial.getMaterialId()) instanceof HtmlMaterial)) {
+            frontPageMaterials.remove(i);
+          }
+        }
+        return frontPageMaterials;
+      }
+    }
+    return Arrays.asList();
   }
 
   private static class FlattenedWorkspaceNode {

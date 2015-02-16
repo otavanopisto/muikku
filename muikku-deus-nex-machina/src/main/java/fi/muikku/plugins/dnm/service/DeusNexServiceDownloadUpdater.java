@@ -94,6 +94,16 @@ public class DeusNexServiceDownloadUpdater {
                       } finally {
                         documentStream.close();
                       }
+                    } else if ("[_HELP_PAGE_]".equals(workspacePath)){
+                      logger.info(String.format("Importing help-page document #%d into workspace %s", document.getId(), workspaceEntity.getUrlName()));
+                      
+                      InputStream documentStream = new ByteArrayInputStream(documentData.getBytes("UTF-8"));
+                      try {
+                        deusNexMachinaController.importHelpPageDocument(workspaceEntity, documentStream);
+                      } finally {
+                        documentStream.close();
+                      }
+                      
                     } else {
                       WorkspaceNode parentNode = null;
                       if (StringUtils.isBlank(workspacePath)) {
