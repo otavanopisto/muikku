@@ -228,16 +228,37 @@ body.workspace-materials-management {
       padding:20px 30px 20px 30px;
       margin:30px auto 30px auto;
       box-shadow:0 0 0 5px rgba(137,212,142,0.95);
-      
+      text-align:center;
+
       a.workspace-materials-management-new-page-link {
         color:#0099ff;
         text-decoration:none;
         text-transform:uppercase;
         font-size:16px;
         transition: color 0.3s ease-in-out;
-        
+        font-family:"Open Sans";
+        font-weight:300;
+        display:inline-block;
+        background:#fff;
+        font-family:"Open Sans";
+        font-weight:300;
+        text-align:center;
+
         &:hover {
           color:#0e1d27;
+          
+          &.icon-new-page:before {
+            color:#1e5274;
+          }
+          
+        }
+        
+        &.icon-new-page:before {
+          font-family:"muikku";
+          transition: color 0.5s ease-in-out;
+          font-size:60px;
+          color:#82c8f7;
+          display:block;
         }
       }
       

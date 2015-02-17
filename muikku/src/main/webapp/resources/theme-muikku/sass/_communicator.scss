@@ -1,8 +1,9 @@
-  /* communicator (.cm-*) */
+  /* communicator (.co-*) */
 
 /* Communicator modal new message */
 
 
+/* TODO : new --> create */ 
 
 .cm-message-new{
   input{
@@ -66,6 +67,8 @@
 
 
 
+.cm-content { 
+}
 
 
 .cm-messages-container{
@@ -86,6 +89,7 @@
     font-size:1.5em;
     float:left;
     color:#000;
+    cursor:pointer;
   }
   
 
@@ -93,8 +97,6 @@
 
 
 .cm-message {
-
-
    
    .cm-message-header-content-primary{
       font-weight:700;  

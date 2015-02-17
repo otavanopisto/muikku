@@ -2,11 +2,122 @@
 @import "_workspaces-materials.scss"; 
 @import "_connect-field.scss";
 
-body.workspace,
-body.workspace-materials { 
+body.workspace { 
   background:#ffffff;
   min-height:100%;
   font-size:14px;
+  
+  h1.workspace-title {
+    margin:20px 0 20px 0;
+    color:#38393a;
+    font-weight:300;
+    text-transform:uppercase;
+    line-height:1.3em;
+  }
+  
+  .workspace-meta-wrapper {
+    font-size:13px;
+    text-transform:uppercase;
+    
+    .workspace-study-level-indicator {
+      color:#fff;
+      display:inline-block;
+      margin:0 10px 0 0;
+    
+      &.indicator1 {
+        background:#0099ff;
+        border-radius:2px;
+        padding:0px 6px;
+      }
+    
+    }
+    
+    .workspace-meta-title {
+      color:#7e7e7e;
+      display:inline-block;
+      margin:0 5px 0 0;
+    }
+    
+    .workspace-meta-desc {
+      color:#000;
+      display:inline-block;
+      margin:0 10px 0 0;
+    }
+  }
+  
+  .workspace-description-wrapper {
+    margin:1em 0 1em 0;
+    font-size:17px;
+    font-weight:300;
+    
+    img {
+      max-width:100%;
+    }
+    
+    h1,
+    h2 {
+      
+      
+      &:first-child {
+        margin:20px 0 20px 0;
+      }
+      
+    }
+    
+    h1,
+    h2,
+    h3 {
+      margin:40px 0 20px 0;
+      color:#38393a;
+      font-weight:300;
+      text-transform:none;
+      line-height:1.3em;
+    }
+    
+    h4,
+    h5,
+    h6 {
+      margin:20px 0 20px 0;
+      color:#38393a;
+      font-weight:300;
+      text-transform:none;
+      line-height:1.3em;
+    }
+    
+    h1 {
+      font-size:29px;
+    }
+      
+    h2 {
+      font-size:26px;
+    }
+    
+    h3 {
+      font-size:19px;
+      font-weight:normal;
+    }
+    
+    h4 {
+      font-size:17px;
+      font-weight:normal;
+    }
+    
+    h5 {
+      font-size:15px;
+      font-weight:normal;
+    }
+    
+    h6 {
+      font-size:13px;
+      font-weight:normal;
+    }
+    
+    p {
+      margin:15px 0 15px 0;
+      line-height:1.5em;
+    }
+   
+  }
   
   #staticNavigationWrapperWorkspace {
     background:none; /* We need to remove all background rules first */
@@ -32,6 +143,7 @@ body.workspace-materials {
   #workspaceNavigationWrapper { 
     position:fixed;
     top:100px;
+    z-index:11;
     
     .grid_1 {
       float:none;
@@ -44,6 +156,68 @@ body.workspace-materials {
       @include rounded(3px);
       width:60px;
       box-shadow:0 0 5px rgba(0,0,0,0.25);
+      
+      #workspaceDock {
+        text-align:center;
+      }
+      
+    }
+
+  }
+
+}  
+  
+body.workspace-materials {
+  background:#ffffff;
+  min-height:100%;
+  font-size:14px;
+  
+  h1.workspace-title {
+    margin:20px 0 20px 0;
+    color:#38393a;
+    font-weight:300;
+    text-transform:uppercase;
+    line-height:1.3em;
+  }
+  
+  #staticNavigationWrapperWorkspace {
+    background:none; /* We need to remove all background rules first */
+    @include background-image('gfx/workspace-navigation-background.png'); /* Workspace's navigation's background */
+    background-position:250px 0px;
+    background-repeat:no-repeat;
+    background-color:#32acf6;
+    border-bottom:1px solid #ffffff; 
+    box-shadow:0 3px 10px rgba(0,0,0,0.1);
+    height:76px;
+    
+    &.stuckStNav {
+      content:" ";
+      position:fixed;
+      top:0;
+      left:0;
+      right:0;
+      z-index:99;
+    }
+    
+  }
+  
+  #workspaceNavigationWrapper { 
+    position:fixed;
+    top:100px;
+    z-index:11;
+    
+    .grid_1 {
+      float:none;
+      width:auto;
+      margin:0;
+    }
+    
+    #workspaceDockWrapper {
+      background:#596e7d;
+      @include rounded(3px);
+      width:60px;
+      box-shadow:0 0 5px rgba(0,0,0,0.25);
+      
       #workspaceDock {
         text-align:center;
       }
@@ -59,134 +233,262 @@ body.workspace-materials {
       
       #workspaceMaterialsDock {
         text-align:center;
+      }
+      
+    }
+
+  }
+
+  nav.workspace-materials-toc-wrapper#workspaceMaterialsTOCWrapper {
+    background:#fff;
+    position:fixed;
+    top:100px;
+    width:280px;
+    max-height:520px;
+    text-align:left;
+    font-family:"Open Sans";
+    text-shadow:none;
+    color:#000;
+    font-size:14px;
+    line-height:1.5em;
+    box-shadow:0 0 40px rgba(107,137,158,0.1);
+    border-bottom:10px solid #fff;
+    z-index:11;
+    
+    &:hover > span {
+      display:none;
+    }
+    
+    ul, 
+    li {
+      list-style:none;
+      margin:0;
+      padding:0;
+    }
+    
+    .workspace-materials-toc-container {
+/*       overflow:hidden; */
+      position:relative;
+      height:530px;
+    
+      .workspace-materials-toc-title {
+        text-transform:uppercase;
+        margin:0;
+        padding:10px 12px;
+        font-size:19px;
+        color:#2c2c2c;
+        height:20px;
+      }
+    
+      .workspace-materials-toc-content-outer {
+        overflow:hidden;
+        position:absolute;
+        height:480px;
+        width:280px;
         
-        .wi-workspace-dock-navi-button-materials-toc > .workspace-materials-toc-wrapper {
-          border:2px solid #3d4c56;
-          @include rounded(3px);
-          background:#fff;
+        .workspace-materials-toc-content-inner {  
           position:absolute;
-          left:65px;
-          top:0px;
-          width:300px;
-          max-height:526px;
-          text-align:left;
-          font-family:"Open Sans";
-          text-shadow:none;
-          color:#000;
-          font-size:15px;
-          line-height:1.5em;
-          display:none;
-          opacity:0;
-          
-          &:hover > span {
-            display:none;
-          }
-          
-          .workspace-materials-toc-container {
-            overflow:hidden;
-            position:relative;
-            height:526px;
-          
-            .workspace-materials-toc-title {
-              background:#42525c;
-              color:#fff;
-              text-transform:uppercase;
-              margin:0;
-              padding:10px 12px;
-              font-size:17px;
-            }
-          
-            .workspace-materials-toc-content-outer {
-              overflow:hidden;
-              height:100%;
-              width:300px;
-              
-              .workspace-materials-toc-content-inner {  
-                position:absolute;
-                overflow-x: hidden;
-                overflow-y: scroll;
-                height:100%;
-              
-                .workspace-materials-toc-content-scrolling {
-                  padding:4px;
-                  width:292px;
-                  height: 100%;
-                  
-                  .spacer {
-                    height:30px; /* Creating some bottom margin because use of 100% height  */
-                  }
+          overflow-x: hidden;
+          overflow-y: scroll;
+          height:480px;
+          width:302px;
+        
+          .workspace-materials-toc-content-scrolling {
+            padding:4px;
+            width:272px;
+            height:480px;
             
-                  .workspace-materials-toc-section {
-                    margin:0;
-                    padding-top:5px;
-                    padding-bottom:10px;
+            .spacer {
+              height:30px; /* Creating some bottom margin because use of 100% height  */
+            }
+            
+            .workspace-materials-toc-root {
+
+              .workspace-materials-toc-item {
+                font-weight:300;
+                list-style:none;
+                
+                &:first-child {
+                  margin-top:5px;
+                  padding-top:2px;
+                }
+                
+                &.item-hidden {
+                  opacity:0.4;
+                }
+                
+                a {
+                  text-decoration:none;
+                  color:#2c2c2c;
+                  display:block;
+                  @include genericMenuLinkHoverTransition(background,color,0.15s,ease-in-out);
+                  @include rounded(2px);
+                  padding:2px 8px 2px 6px;
+                  border-left:2px solid #fff;
+                  margin:1px 0;
                   
-                    .workspace-materials-toc-subtitle {
-                      font-weight:bold;
-                      padding:2px 8px;
-                    }
-                    
-                    .workspace-materials-toc-item {
-                      font-weight:300;
-                      
-                      a {
-                        text-decoration:none;
-                        color:#41505b;
-                        display:block;
-                        @include genericMenuLinkHoverTransition(background,color,0.15s,ease-in-out);
-                        @include rounded(2px);
-                        padding:2px 8px;
-                        
-                        &:hover,
-                        &.active {
-                          background:#596e7d;
-                          color:#fff;
-                        }
-                      }
-                    }
+                  &:hover,
+                  &.active {
+                    background:#596e7d;
+                    color:#fff;
+                  }
                   
+                  &.evaluated {
+                    border-left:2px solid #0099ff;
+                  }
+                  
+                  &.exercise {
+                    border-left:2px solid #2ed91c;
                   }
                   
                 }
+    
+              }
+
+              .workspace-materials-toc-section {
+                margin:0;
+                padding-top:5px;
+                padding-bottom:10px;
+              
+                .workspace-materials-toc-subtitle {
+                  text-transform:uppercase;
+                  font-size:15px;
+                  padding:2px 8px;
+                }
+                
+                .workspace-materials-toc-item {
+                  font-weight:300;
+                  
+                  a {
+                    text-decoration:none;
+                    color:#41505b;
+                    display:block;
+                    @include genericMenuLinkHoverTransition(background,color,0.15s,ease-in-out);
+                    @include rounded(2px);
+                    padding:2px 8px;
+                    
+                    &:hover,
+                    &.active {
+                      background:#596e7d;
+                      color:#fff;
+                    }
+                  }
+                }
               
               }
-            
             }
-          
           }
         
         }
-        
-      }
       
+      }
+    
     }
   
   }
   
-  #content {
+  #contentWorkspaceMaterials {
+    position:relative;
+    padding-top:0.01em;
   
-    h1.workspace-title {
-      margin:20px 0 20px 0;
-      color:#38393a;
-      font-weight:300;
-      text-transform:uppercase;
-      line-height:1.3em;
+    & > article {
+      position:relative;
+      z-index:10;
+    
+        & > h1 {
+        position:relative;
+        z-index:12;
+        max-width:700px;
+        width:auto;
+        background:#fff;
+        margin:23px 300px -30px auto; 
+        font-weight:300;
+        color:#000;
+        font-size:30px;
+        padding:30px;
+        text-transform:none;
+        line-height:1.3em;
+        box-shadow:0 -20px 20px rgba(107,137,158,0.05);
+      }
     }
-    
-    .workspace-materials-view-page {
-    
+
+    .workspace-materials-view-page-section.material-view { /* <section> */
+      position:relative;
+      z-index:10;
+      
+      & > h2 {
+        position:relative;
+        z-index:12;
+        max-width:700px;
+        width:auto;
+        background:#fff;
+        margin:30px 300px -30px auto; 
+        font-weight:300;
+        color:#000;
+        font-size:30px;
+        padding:30px 30px 10px 30px;
+        text-transform:none;
+        line-height:1.3em;
+        box-shadow:0 -20px 20px rgba(107,137,158,0.05);
+      }
+      
+      & > h3,h4,h5,h6 {
+        position:relative;
+        z-index:13;
+        max-width:700px;
+        width:auto;
+        background:#fff;
+        margin:30px 300px -30px auto; 
+        font-weight:300;
+        color:#000;
+        font-size:26px;
+        padding:10px 30px 10px 30px;
+        text-transform:none;
+        line-height:1.3em;
+      }
+      
+      .muikku-file-input-field-file-uploader-container {
+       font-size:14px;
+      }
+
+      
+    }
+
+    .workspace-materials-view-page.material-view { /* <article> */
+      padding:10px 30px;
+      margin:23px 300px 37px auto;
+      max-width:640px;
+      box-shadow:0 0 40px rgba(107,137,158,0.1);
+      position:relative;
+
       img {
         max-width:100%;
       }
       
       h1,
+      h2 {
+        
+        
+        &:first-child {
+          margin:20px 0 20px 0;
+        }
+        
+      }
+      
+      h1,
       h2,
-      h3,
+      h3 {
+        margin:40px 0 20px 0;
+        color:#38393a;
+        font-weight:300;
+        text-transform:none;
+        line-height:1.3em;
+      }
+      
       h4,
       h5,
-      h6
-       {
-        margin:40px 0 20px 0;
+      h6 {
+        margin:20px 0 20px 0;
         color:#38393a;
         font-weight:300;
         text-transform:none;
@@ -231,13 +533,11 @@ body.workspace-materials {
         font-size:14px; /* Reset font-size  */
       }
       
-      strong,
-      b {
+      strong,b {
         font-weight:600; /* Override values used in reading/management */
       }
       
-      em,
-      i {
+      em,i {
         font-weight:400;
       }
 
@@ -272,49 +572,6 @@ body.workspace-materials {
       
     }
 
-    .workspace-meta-wrapper {
-      font-size:13px;
-      text-transform:uppercase;
-      
-      .workspace-study-level-indicator {
-        color:#fff;
-        display:inline-block;
-        margin:0 10px 0 0;
-      
-        &.indicator1 {
-          background:#0099ff;
-          border-radius:2px;
-          padding:0px 6px;
-        }
-      
-      }
-      
-      .workspace-meta-title {
-        color:#7e7e7e;
-        display:inline-block;
-        margin:0 5px 0 0;
-      }
-      
-      .workspace-meta-desc {
-        color:#000;
-        display:inline-block;
-        margin:0 10px 0 0;
-      }
-    }
-    
-    .workspace-description-wrapper {
-      margin:1em 0 1em 0;
-      font-size:17px;
-      font-weight:300;
-      
-      p {
-        margin:1em 0 1em 0;
-      }
-     
-     
-    }
-  
-  
   }
 
 }

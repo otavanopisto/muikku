@@ -1,17 +1,23 @@
 /* Lets import all the necessary support files */
 
+@import "_fonts.scss";
 @import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
 @import "_icons.scss"; /* Has to be loaded here, so it can be used with @extend in others */
 @import "_commons.scss";
 @import "_forms.scss";
 @import "_modal.scss";
 @import "_buttons.scss";
-@import "_widgets.scss";
+@import "_widgets.scss"; 
 @import "_notif-queue.scss";
 @import "_mainfunctions.scss";
 @import "_calendar.scss";
 @import "_communicator.scss";
 @import "_coursepicker.scss";
+
+/* CKEditor css rules for modals and form element plugins */
+@import "_custom-ckeditor-modal.scss";
+@import "_custom-ckeditor-selection-checkbox.scss";
+
 /* Note: All in-development- unfinished-temp-styles are in temp.css */
 
 html {
@@ -61,27 +67,27 @@ h1,h2,h3,h4,h5 {
 }
 
 h1 {
-  font-size:1.9em;
+  font-size:29px;
 }
-
+  
 h2 {
-  font-size:1.7em;
+  font-size:26px;
 }
 
 h3 {
-  font-size:1.5em;
+  font-size:19px;
 }
 
 h4 {
-  font-size:1.3em;
+  font-size:17px;
 }
 
 h5 {
-  font-size:1.2em;
+  font-size:15px;
 }
 
 h6 {
-  font-size:1em;
+  font-size:13px;
 }
 
 /* TODO: P, a ... */
@@ -217,7 +223,7 @@ div[class*="dock-navi-tt-container"] {
 	margin-left: 55px;
 	padding-left:5px;
 	position: absolute;
-	top: 15px;
+	top: 5px;
 	height:70px;
   overflow:hidden;
   opacity:0;
@@ -227,14 +233,25 @@ div[class*="dock-navi-tt-container"] {
   min-height:1px;
 }
 
-#header {
-  height:100px;
+#headerSmall {
+  height:90px;
   color: #fff;
   position:relative;
-  #headerContainer {
-    position:relative; 
   
-    #headerFishContainer {
+  #headerContainerSmall {
+    position:relative; 
+    
+    #headerLogoTextContainerSmall {
+      position:absolute;
+      left:0;
+      top:0;
+      @include background-image('gfx/muikku-header-text-small.png');
+      background-repeat:no-repeat; 
+      height:90px;
+      width:245px;
+    }
+  
+    #headerFishContainerSmall {
       position:absolute;
       left:430px;
       top:10px;
@@ -251,6 +268,7 @@ div[class*="dock-navi-tt-container"] {
   height:150px;
   color: #fff;
   position:relative;  
+  
   #headerContainerBig {
     position:relative; 
   
@@ -415,22 +433,6 @@ a.header {
   background-postion:center;
   background-repeat:no-repeat;
   @include background-image('gfx/icons/32x32/actions/navigate-search.png');
-}
-
-.languageSelection {
-  float:left;
-  padding:1px 4px 3px 4px;
-  margin-left:2px;    
-}
-
-.languageWidget a {  
-  text-decoration:none; 
-  padding: 3px;      
-}
-
-.languageSelection a:hover {    
-  text-decoration:none;
-  color:#fff;    
 }
 
 #content {
