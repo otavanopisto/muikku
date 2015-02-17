@@ -18,10 +18,8 @@ insert into EnvironmentRoleEntity (id, archetype) values
 --insert into SchoolDataSource (id, identifier) values (1, 'LOCAL'), (2, 'PYRAMUS');
 insert into WorkspaceRoleEntity (id, archetype) values (6, 'STUDENT'), (4, 'TEACHER'); 
 
-insert into UserEntity (id, archived, defaultIdentifier, defaultSchoolDataSource_id) values (1, false, '1', (select id from SchoolDataSource where identifier = 'PYRAMUS'));
-insert into EnvironmentUser (id, archived, role_id, user_id) values (1, false, 2, 1);
-insert into LocalUser (id, firstName, lastName, roleId, archived) values (1, 'Test', 'User', 2, false);
-insert into LocalUserEmail (user_id, address, archived) values (1, 'testuser@made.up', false);
+insert into UserEntity (id, archived, defaultIdentifier, defaultSchoolDataSource_id) values (1, false, 'STUDENT-1', (select id from SchoolDataSource where identifier = 'PYRAMUS'));
+insert into EnvironmentUser (id, archived, role_id, user_id) values (1, false, 5, 1);
 --insert into InternalAuth (id, password, userEntityId) values (1, '3675ac5c859c806b26e02e6f9fd62192', 1);
 insert into UserSchoolDataIdentifier (identifier, dataSource_id, userEntity_id) values ('1', (select id from SchoolDataSource where identifier = 'PYRAMUS'), 1);
 -- role id 9 ? --

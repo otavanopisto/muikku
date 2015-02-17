@@ -39,31 +39,44 @@ public class IndexPageTestsBase extends AbstractUITest {
           .withBody("{\"id\":1,\"firstName\":\"Test\",\"lastName\":\"User\",\"emails\":[\"testuser@made.up\"]}")
           .withStatus(200)));
     
-    stubFor(get(urlPathEqualTo("/1/students/students/1"))
+    stubFor(get(urlMatching("/1/students/students/.*"))
         .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
-        .withBody("{\"id\":1,\"abstractStudentId\":1,\"firstName\":\"Test\",\"lastName\":\"User\",\"nickname\":null,\"additionalInfo\":null,\"additionalContactInfo\":null,\"nationalityId\":null,\"languageId\":null,\"municipalityId\":null,\"schoolId\":null,\"activityTypeId\":null,\"examinationTypeId\":null,\"educationalLevelId\":null,\"studyTimeEnd\":null,\"studyProgrammeId\":3,\"previousStudies\":null,\"education\":null,\"lodging\":false,\"studyStartDate\":\"2010-09-29T00:00:00.000+03:00\",\"studyEndDate\":null,\"studyEndReasonId\":null,\"studyEndText\":null,\"variables\":{},\"tags\":[],\"archived\":false}")
+        .withBody("{\"id\":1,\"personId\":1,\"firstName\":\"Test\",\"lastName\":\"User\",\"nickname\":null,\"additionalInfo\":null,\"additionalContactInfo\":null,\"nationalityId\":null,\"languageId\":null,\"municipalityId\":null,\"schoolId\":null,\"activityTypeId\":null,\"examinationTypeId\":null,\"educationalLevelId\":null,\"studyTimeEnd\":null,\"studyProgrammeId\":1,\"previousStudies\":null,\"education\":null,\"lodging\":false,\"studyStartDate\":null,\"studyEndDate\":null,\"studyEndReasonId\":null,\"studyEndText\":null,\"variables\":{},\"tags\":[],\"archived\":false}")
         .withStatus(200)));
-
-    stubFor(get(urlMatching("/1/students/students/1/emails"))
+    
+    stubFor(get(urlMatching("/1/students/students/.*/emails"))
         .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody("{\"id\":1,\"contactTypeId\":2,\"defaultAddress\":true,\"address\":\"testuser@made.up\"}")
         .withStatus(200)));
 
-    stubFor(get(urlPathEqualTo("/1/students/students"))
-        .withQueryParam("email", matching(".*"))
+    stubFor(get(urlEqualTo("/1/students/students?email=testuser@made.up"))
+//        .withQueryParam("email", matching(".*"))
         .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody("[{\"id\":1,\"personId\":1,\"firstName\":\"Test\",\"lastName\":\"User\",\"nickname\":\"Student\",\"additionalInfo\":null,\"additionalContactInfo\":null,\"nationalityId\":null,\"languageId\":null,\"municipalityId\":1,\"schoolId\":null,\"activityTypeId\":null,\"examinationTypeId\":null,\"educationalLevelId\":null,\"studyTimeEnd\":null,\"studyProgrammeId\":1,\"previousStudies\":null,\"education\":null,\"lodging\":false,\"studyStartDate\":null,\"studyEndDate\":null,\"studyEndReasonId\":null,\"studyEndText\":null,\"variables\":{},\"tags\":[],\"archived\":false}]")
         .withStatus(200)));
 
-    stubFor(get(urlPathEqualTo("/1/staff/members"))
+    stubFor(get(urlMatching("/1/persons/persons/.*"))
+        .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody("{\"id\":1,\"birthday\":\"1990-02-04T00:00:00.000+02:00\",\"socialSecurityNumber\":\"345345-3453\",\"sex\":\"MALE\",\"secureInfo\":false,\"basicInfo\":null,\"defaultUserId\":1}")
+        .withStatus(200)));
+    
+    
+    stubFor(get(urlMatching("/1/staff/members"))
         .withQueryParam("email", matching("staff@made.up"))
         .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody("[{\"id\":5,\"personId\":5,\"additionalContactInfo\":null,\"firstName\":\"Test\",\"lastName\":\"Staffmember\",\"title\":null,\"role\":\"ADMINISTRATOR\",\"variables\":{},\"tags\":[]}]")
         .withStatus(200)));
+    
+    stubFor(get(urlMatching("/1/courses/staffMemberRoles"))
+        .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody("")
+        .withStatus(204)));
   }
 
 //  @Test
@@ -75,22 +88,25 @@ public class IndexPageTestsBase extends AbstractUITest {
   
   @Test
   @SqlBefore("sql/loginSetup.sql")
-  @SqlAfter("sql/loginTeardown.sql")
+//  @SqlAfter("sql/loginTeardown.sql")
   public void loginTest() throws IOException {
-    getWebDriver().get(getAppUrl());
-    waitForElementToBeClickable(By.className("bt-login"));
-    getWebDriver().findElement(By.className("bt-login")).click();
-    getWebDriver().get("http://0.0.0.0:8089/users/authorize.page?client_id=11111111-1111-1111-1111-111111111111&response_type=code&redirect_uri=http%3A%2F%2Fdev.muikku.fi%2Flogin%3F_stg%3Drsp");
-    sleep(2000);
-    takeScreenshot();
-//    getWebDriver().get("http://0.0.0.0:8089/users/authorize.");
+//    getWebDriver().get(getAppUrl());
+//    waitForElementToBeClickable(By.className("bt-login"));
+//    getWebDriver().findElement(By.className("bt-login")).click();
+    getWebDriver().get("http://dev.muikku.fi:8080/login?authSourceId=1");  
 //    sleep(2000);
-//    takeScreenshot();
-//    getWebDriver().get("http://0.0.0.0:8089/1/students/students?email=some@what.up");
-//    sleep(20000);
-//    takeScreenshot();
 //    waitForElementToBePresent(By.className("index"));
-//    getWebDriver().get(getAppUrl() + "/coursepicker/coursepicker");
+    takeScreenshot();
+    getWebDriver().get(getAppUrl());
+//    getWebDriver().get("http://0.0.0.0:8089/1/students/students/1");
+//    sleep(1000);
+    takeScreenshot();
+//    getWebDriver().get("http://0.0.0.0:8089/1/students/students?email=testuser@made.up");
+//    sleep(1000);
+//    takeScreenshot();
+//    getWebDriver().get("http://0.0.0.0:8089/1/students/students/1/emails");
+//    sleep(1000);
+//    takeScreenshot();
 //    sleep(500);
   }
 }
