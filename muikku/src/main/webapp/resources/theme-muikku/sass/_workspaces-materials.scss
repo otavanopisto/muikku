@@ -114,6 +114,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     }
   }
   
+  
   blockquote {
     font-family: 'Open Sans',Verdana, sans-serif;
     font-style:italic;
@@ -208,107 +209,42 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
   
   }
   
-  /* If page is defined as EXERCISE then render different button */
-  .workspace-materials-view-page[data-workspace-material-assigment-type="EXERCISE"] {
-  
-    button.muikku-save-page {
-      color:#fff;
-      background:#2ed91c;
-      box-shadow:none;
-      border:0;
-      border-radius:2px;
-      font-weight:300;
-      font-size:16px;
-      text-transform:uppercase;
-      padding:12px;
-      transition:background 0.3s ease-in-out;
-      margin:20px auto;
-      min-width:120px;
-      display:block;
-      outline:none;
-      position:relative;
-      line-height:1;
-      cursor:pointer;
-      
-      &:hover {
-        background:#1ec30c;
-      }
-      
-      &.save-successful {
-        background:#1ec30c;
-        cursor:default;
-        padding:12px 12px 12px 46px
-      }
-      
-      &.icon-checkmark:before {
-        position:absolute;
-        top:-0;
-        left:5px;
-        font-size:40px;
-        text-shadow:2px 0 0 #38d32c, -2px 0 0 #38d32c, 0 2px 0 #38d32c, 0 -2px 0 #38d32c, 1px 1px #38d32c, -1px -1px 0 #38d32c, 1px -1px 0 #38d32c, -1px 1px 0 #38d32c;
-      }
+  button.muikku-save-page {
+    color:#fff;
+    background:#85cdff;
+    box-shadow:none;
+    border:0;
+    border-radius:2px;
+    font-weight:300;
+    font-size:16px;
+    text-transform:uppercase;
+    padding:12px;
+    transition:background 0.3s ease-in-out;
+    min-width:200px;
+    margin:20px auto;
+    display:block;
+    outline:none;
+    position:relative;
+    line-height:1;
+    
+    &:hover {
+      background:#32abff;
     }
     
-    .muikku-field-correct-answer {
-      box-shadow:0 0 1px 3px rgba(0,255,42,0.3);
-      border:1px solid #00ff2a;
-      @include rounded(3px);
-      padding-bottom:2px; /* This is only for div containers that are used to wrap checkbox/radio lists */
+    &.save-successful {
+      background:#51db46;
     }
     
-    .muikku-field-incorrect-answer {
-      box-shadow:0 0 1px 3px rgba(255,0,0,0.3);
-      border:1px solid #f64e4e;
-      @include rounded(3px);
-      padding-bottom:2px; /* This is only for div containers that are used to wrap checkbox/radio lists */
+    &.icon-checkmark:before {
+      position: absolute;
+      top: -50%;
+      left: 5px;
+      font-size: 65px;
+      text-shadow: 2px 0 0 #38d32c, -2px 0 0 #38d32c, 0 2px 0 #38d32c, 0 -2px 0 #38d32c, 1px 1px #38d32c, -1px -1px 0 #38d32c, 1px -1px 0 #38d32c, -1px 1px 0 #38d32c;
+      height: 60px;
     }
-  
   }
   
-  /* If page is defined as EVALUATED or MIXED then render different button */
-  .workspace-materials-view-page[data-workspace-material-assigment-type="EVALUATED"],
-  .workspace-materials-view-page[data-workspace-material-assigment-type="MIXED"] {
-  
-    button.muikku-save-page {
-      color:#fff;
-      background:#0099ff;
-      box-shadow:none;
-      border:0;
-      border-radius:2px;
-      font-weight:300;
-      font-size:16px;
-      text-transform:uppercase;
-      padding:12px;
-      transition:background 0.3s ease-in-out;
-      margin:20px auto;
-      min-width:120px;
-      display:block;
-      outline:none;
-      position:relative;
-      line-height:1;
-      cursor:pointer;
-      
-      &:hover {
-        background:#068feb;
-      }
-      
-      &.save-successful {
-        background:#068feb;
-        cursor:default;
-        padding:12px 12px 12px 46px
-      }
-      
-      &.icon-checkmark:before {
-        position:absolute;
-        top:-0;
-        left:5px;
-        font-size:40px;
-        text-shadow:2px 0 0 #58b3f2, -2px 0 0 #58b3f2, 0 2px 0 #58b3f2, 0 -2px 0 #58b3f2, 1px 1px #58b3f2, -1px -1px 0 #58b3f2, 1px -1px 0 #58b3f2, -1px 1px 0 #58b3f2;
-      }
-    }
-  
-  }
-
 }
 
 /* Assigment type indicators under basic view */
