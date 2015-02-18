@@ -186,6 +186,10 @@ public class WorkspaceMaterialController {
 
     return findWorkspaceNodeByParentAndUrlName(parent, pathElements[pathElements.length - 1]);
   }
+  
+  public List<WorkspaceNode> listWorkspaceNodesByParent(WorkspaceNode parent) {
+    return workspaceNodeDAO.listByParentSortByOrderNumber(parent);
+  }
 
   public List<WorkspaceNode> listVisibleWorkspaceNodesByParentSortByOrderNumber(WorkspaceNode parent) {
     return listVisibleWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(parent, WorkspaceFolderType.DEFAULT);

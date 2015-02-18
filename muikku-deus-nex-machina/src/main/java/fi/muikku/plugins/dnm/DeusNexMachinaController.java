@@ -301,6 +301,7 @@ public class DeusNexMachinaController {
 
   public void importDeusNexDocument(WorkspaceNode parentNode, InputStream inputStream) throws DeusNexException {
     DeusNexDocument desNexDocument = parseDeusNexDocument(inputStream);
+
     List<WorkspaceNode> createdNodes = new ArrayList<>();
     for (Resource resource : desNexDocument.getRootFolder().getResources()) {
       importResource(parentNode, parentNode, resource, desNexDocument, createdNodes);
