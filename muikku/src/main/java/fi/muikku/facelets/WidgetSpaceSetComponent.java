@@ -120,4 +120,5 @@ public class WidgetSpaceSetComponent extends UIComponentBase {
 	}
 	
 	private TagAttribute styleClassAttribute;
+	private TagAttribute parentStyleClassAttribute;
 }
