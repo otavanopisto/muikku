@@ -18,7 +18,7 @@ div[class*='dock-dynamic-navi-button'] > a {
   display:inline-block;
 }
 
-/* Workspace material's reading/management view's navigation */
+/* Workspace navigation - Materials */
 div[class*='workspace-materials-full-screen-navi-button'] > a,
 div[class*='workspace-materials-full-screen-navi-button'] > span {
   cursor:pointer;
@@ -94,12 +94,72 @@ div[class*='workspace-dock-navi-button'] > span {
     white-space:nowrap;
   }
   
-    
   &:hover {
     background:#465b6c;
+    
     span[class*='workspace-navi-tt-container-'] {
       display:block;
       background:#465b6c;
+      opacity:1;
+      width:auto;
+      left:45px;
+      
+    }
+  }
+}
+
+/* Workspace navigation - Request Evaluation */
+div[class*='workspace-dock-navi-button-request-evaluation'] > a,
+div[class*='workspace-dock-navi-button-request-evaluation'] > span {
+  cursor:pointer;
+  font-size:32px;
+  color:#fff;
+  text-decoration:none;
+  @include iconShadow;
+  background:transparent;
+  padding:6px;
+  margin:4px;
+  display:inline-block;
+  position:relative;
+  width:34px;
+  @include rounded(3px);
+  
+  &:hover {
+    background:#15b01d;
+    
+    span[class*='workspace-navi-tt-container-'] {
+      display:block;
+      background:#15b01d;
+      opacity:1;
+      width:auto;
+      left:45px;
+      
+    }
+  }
+}
+
+/* Workspace navigation - Cancel Evaluation Request */
+div[class*='workspace-dock-navi-button-cancel-evaluation'] > a,
+div[class*='workspace-dock-navi-button-cancel-evaluation'] > span {
+  cursor:pointer;
+  font-size:32px;
+  color:#fff;
+  text-decoration:none;
+  @include iconShadow;
+  background:transparent;
+  padding:6px;
+  margin:4px;
+  display:inline-block;
+  position:relative;
+  width:34px;
+  @include rounded(3px);
+  
+  &:hover {
+    background:#d55630;
+    
+    span[class*='workspace-navi-tt-container-'] {
+      display:block;
+      background:#d55630;
       opacity:1;
       width:auto;
       left:45px;

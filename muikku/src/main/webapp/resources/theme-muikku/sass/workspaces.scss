@@ -143,6 +143,30 @@ body.workspace {
     
   }
   
+  #workspaceEvaluationDockWrapper {
+
+    #workspaceEvaluationDock {
+      text-align:center;
+      
+      .wi-workspace-dock-navi-button-request-evaluation {
+        background:#1dc525;
+        @include rounded(3px);
+        width:60px;
+        margin-bottom:10px;
+        box-shadow:0 0 5px rgba(0,0,0,0.25);
+      }
+      
+      .wi-workspace-dock-navi-button-cancel-evaluation {
+        background:#e66842;
+        @include rounded(3px);
+        width:60px;
+        margin-bottom:10px;
+        box-shadow:0 0 5px rgba(0,0,0,0.25);
+      }
+    }
+    
+  }
+  
   #workspaceNavigationWrapper { 
     position:fixed;
     top:100px;
@@ -215,6 +239,30 @@ body.workspace-materials {
       margin:0;
     }
     
+    #workspaceEvaluationDockWrapper {
+
+      #workspaceEvaluationDock {
+        text-align:center;
+        
+        .wi-workspace-dock-navi-button-request-evaluation {
+          background:#1dc525;
+          @include rounded(3px);
+          width:60px;
+          margin-bottom:10px;
+          box-shadow:0 0 5px rgba(0,0,0,0.25);
+        }
+        
+        .wi-workspace-dock-navi-button-cancel-evaluation {
+          background:#e66842;
+          @include rounded(3px);
+          width:60px;
+          margin-bottom:10px;
+          box-shadow:0 0 5px rgba(0,0,0,0.25);
+        }
+      }
+      
+    }
+    
     #workspaceDockWrapper {
       background:#596e7d;
       @include rounded(3px);
@@ -242,46 +290,12 @@ body.workspace-materials {
 
   }
   
-  #workspaceEvaluateWrapper {
-    position: fixed;
-    top:100px;
-    z-index: 11;
-    
-    .ask-to-evaluate-workspace-button{
-      @include buttonFontShadow;
-      @include buttonShadow;
-      width:248px;
-      color:#fff;
-      padding:7px 15px 10px 15px;
-      border-radius:3px;
-      box-shadow:0px 0px 40px rgba(107, 137, 158, 0.2);
-      @include gradient-top-bottom(rgba(50,219,58,1),rgba(15,178,22,1),#32db3a);
-      border:1px solid #47e84f;
-      cursor:pointer;
-      
-      &:active {
-        @include gradient-top-bottom(rgba(15,178,22,1),rgba(50,219,58,1),#32db3a);
-      }
-      
-      .evaluate-workspace-title {
-        font-size: 18px;
-        text-transform: uppercase;
-      }
-      
-      .evaluate-workspace-desc {
-      
-      }
-    }
-  }
-  
-  
-
   nav.workspace-materials-toc-wrapper#workspaceMaterialsTOCWrapper {
     background:#fff;
     position:fixed;
-    top:185px;
+    top:100px;
     width:280px;
-    max-height:440px;
+    max-height:580px;
     text-align:left;
     font-family:"Open Sans";
     text-shadow:none;
@@ -304,9 +318,8 @@ body.workspace-materials {
     }
     
     .workspace-materials-toc-container {
-/*       overflow:hidden; */
       position:relative;
-      height:445px;
+      height:530px;
     
       .workspace-materials-toc-title {
         text-transform:uppercase;
@@ -320,20 +333,20 @@ body.workspace-materials {
       .workspace-materials-toc-content-outer {
         overflow:hidden;
         position:absolute;
-        height:400px;
+        height:490px;
         width:280px;
         
         .workspace-materials-toc-content-inner {  
           position:absolute;
           overflow-x: hidden;
           overflow-y: scroll;
-          height:400px;
+          height:490px;
           width:302px;
         
           .workspace-materials-toc-content-scrolling {
             padding:4px;
             width:272px;
-            height:395px;
+            height:490px;
             
             .spacer {
               height:30px; /* Creating some bottom margin because use of 100% height  */

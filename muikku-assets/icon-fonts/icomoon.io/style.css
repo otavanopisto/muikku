@@ -1,10 +1,10 @@
 @font-face {
 	font-family: 'muikku';
-	src:url('fonts/muikku.eot?-y19i3j');
-	src:url('fonts/muikku.eot?#iefix-y19i3j') format('embedded-opentype'),
-		url('fonts/muikku.woff?-y19i3j') format('woff'),
-		url('fonts/muikku.ttf?-y19i3j') format('truetype'),
-		url('fonts/muikku.svg?-y19i3j#muikku') format('svg');
+	src:url('fonts/muikku.eot?-jwcg0g');
+	src:url('fonts/muikku.eot?#iefix-jwcg0g') format('embedded-opentype'),
+		url('fonts/muikku.woff?-jwcg0g') format('woff'),
+		url('fonts/muikku.ttf?-jwcg0g') format('truetype'),
+		url('fonts/muikku.svg?-jwcg0g#muikku') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -107,12 +107,88 @@
 	content: "\e63a";
 }
 
+.icon-request-evaluation:before {
+	content: "\e9e1";
+}
+
+.icon-cancel-evaluation:before {
+	content: "\e9fb";
+}
+
 .icon-exit-editing:before {
 	content: "\f045";
 }
 
 .icon-navicon:before {
 	content: "\e609";
+}
+
+.icon-compass:before {
+	content: "\e60c";
+}
+
+.icon-members:before {
+	content: "\e60d";
+}
+
+.icon-attachment:before {
+	content: "\e60e";
+}
+
+.icon-discussion:before {
+	content: "\e610";
+}
+
+.icon-files:before {
+	content: "\e611";
+}
+
+.icon-home-workspace:before {
+	content: "\e612";
+}
+
+.icon-pin:before {
+	content: "\e613";
+}
+
+.icon-fullscreen:before {
+	content: "\e614";
+}
+
+.icon-show:before {
+	content: "\e60b";
+}
+
+.icon-hide:before {
+	content: "\e63a";
+}
+
+.icon-request-evaluation:before {
+	content: "\e9e1";
+}
+
+.icon-cancel-evaluation:before {
+	content: "\e9fb";
+}
+
+.icon-exit-editing:before {
+	content: "\f045";
+}
+
+.icon-navicon:before {
+	content: "\e609";
+}
+
+.icon-goback:before {
+	content: "\e60f";
+}
+
+.icon-manage-materials:before {
+	content: "\e63c";
+}
+
+.icon-week:before {
+	content: "\e600";
 }
 
 .icon-goback:before {

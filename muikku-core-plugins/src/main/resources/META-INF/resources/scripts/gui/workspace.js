@@ -28,29 +28,6 @@ $(document).ready(function() {
 
     });
     
- // Workspace's material's TOC
-    if ($('#workspaceEvaluateWrapper').length > 0) {
-      
-      var evaluateWrapper = $('#workspaceEvaluateWrapper');
-      var cOffset = contentContainer.offset();
-      var evaluateLeftPos = cOffset.left + contentContainer.width() - evaluateWrapper.width();
-      
-      $(evaluateWrapper).css({
-        left:evaluateLeftPos + 'px'
-      })
-      
-      $(window).resize(function(){
-        cOffset = contentContainer.offset();
-        evaluateLeftPos = cOffset.left + contentContainer.width() - evaluateWrapper.width();
-        
-        $(evaluateLeftPos).css({
-          left:evaluateLeftPos + 'px'
-        })
-        
-      });
-      
-    }
-    
     // Workspace's material's TOC
     if ($('#workspaceMaterialsTOCWrapper').length > 0) {
       
@@ -106,5 +83,24 @@ $(document).ready(function() {
     }
 
   }
+  
+  if ($('.wi-workspace-dock-navi-button-cancel-evaluation'.length > 0)) {
+    $('.wi-workspace-dock-navi-button-cancel-evaluation').hide();
+  }
+  
+  $(document).on('click', '.wi-workspace-dock-navi-button-request-evaluation', function (event) {
+    event.preventDefault();
+    
+    $(this).hide();
+    $('.wi-workspace-dock-navi-button-cancel-evaluation').show();
+    
+  });
+  
+  $(document).on('click', '.wi-workspace-dock-navi-button-cancel-evaluation', function (event) {
+    event.preventDefault();
+    
+    $(this).hide();
+    $('.wi-workspace-dock-navi-button-request-evaluation').show();
+  });
  
 });
