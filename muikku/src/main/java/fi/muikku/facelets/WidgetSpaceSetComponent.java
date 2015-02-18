@@ -9,6 +9,7 @@ import javax.faces.component.FacesComponent;
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIComponentBase;
 import javax.faces.context.FacesContext;
+import javax.faces.context.ResponseWriter;
 import javax.faces.view.facelets.TagAttribute;
 
 import fi.muikku.widgets.WidgetSpaceSizingStrategy;
@@ -26,9 +27,14 @@ public class WidgetSpaceSetComponent extends UIComponentBase {
 	@Override
 	public void encodeBegin(FacesContext context) throws IOException {
 		int spaceLeft = GRID_SIZE;
+		ResponseWriter writer = context.getResponseWriter();
 		String styleClass = (String) getAttributes().get("styleClass");
+		String parentStyleClass = (String) getAttributes().get("parentStyleClass");
 		List<WidgetSpaceComponent> widgetSpaces = getWidgetSpaces();
 		List<WidgetSpaceComponent> maximizeWidgetSpaces = new ArrayList<>();
+		
+		writer.startElement("div", this);
+		writer.writeAttribute("class", parentStyleClass, "class");
 		
 		for (WidgetSpaceComponent widgetSpace : widgetSpaces) {
 			List<WidgetComponent> widgets = getWidgetComponents(widgetSpace);
@@ -71,6 +77,13 @@ public class WidgetSpaceSetComponent extends UIComponentBase {
 		}
 
 		super.encodeBegin(context);
+	}
+	
+	@Override
+	public void encodeEnd(FacesContext context) throws IOException {
+      ResponseWriter writer = context.getResponseWriter();
+	  writer.endElement("div");
+	  super.encodeEnd(context);
 	}
 	
 	private List<WidgetComponent> getWidgetComponents(WidgetSpaceComponent widgetSpace) {
