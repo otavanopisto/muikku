@@ -45,6 +45,10 @@ body.workspace {
     }
   }
   
+  article {
+   margin:30px 0;
+  }
+  
   .workspace-description-wrapper {
     margin:1em 0 1em 0;
     font-size:17px;
@@ -56,8 +60,7 @@ body.workspace {
     
     h1,
     h2 {
-      
-      
+    
       &:first-child {
         margin:20px 0 20px 0;
       }
@@ -238,21 +241,55 @@ body.workspace-materials {
     }
 
   }
+  
+  #workspaceEvaluateWrapper {
+    position: fixed;
+    top:100px;
+    z-index: 11;
+    
+    .ask-to-evaluate-workspace-button{
+      @include buttonFontShadow;
+      @include buttonShadow;
+      width:248px;
+      color:#fff;
+      padding:7px 15px 10px 15px;
+      border-radius:3px;
+      box-shadow:0px 0px 40px rgba(107, 137, 158, 0.2);
+      @include gradient-top-bottom(rgba(50,219,58,1),rgba(15,178,22,1),#32db3a);
+      border:1px solid #47e84f;
+      cursor:pointer;
+      
+      &:active {
+        @include gradient-top-bottom(rgba(15,178,22,1),rgba(50,219,58,1),#32db3a);
+      }
+      
+      .evaluate-workspace-title {
+        font-size: 18px;
+        text-transform: uppercase;
+      }
+      
+      .evaluate-workspace-desc {
+      
+      }
+    }
+  }
+  
+  
 
   nav.workspace-materials-toc-wrapper#workspaceMaterialsTOCWrapper {
     background:#fff;
     position:fixed;
-    top:100px;
+    top:185px;
     width:280px;
-    max-height:520px;
+    max-height:440px;
     text-align:left;
     font-family:"Open Sans";
     text-shadow:none;
     color:#000;
     font-size:14px;
     line-height:1.5em;
-    box-shadow:0 0 40px rgba(107,137,158,0.1);
-    border-bottom:10px solid #fff;
+    box-shadow:0 0 40px rgba(107,137,158,0.2);
+    border-bottom:5px solid #fff;
     z-index:11;
     
     &:hover > span {
@@ -269,7 +306,7 @@ body.workspace-materials {
     .workspace-materials-toc-container {
 /*       overflow:hidden; */
       position:relative;
-      height:530px;
+      height:445px;
     
       .workspace-materials-toc-title {
         text-transform:uppercase;
@@ -283,20 +320,20 @@ body.workspace-materials {
       .workspace-materials-toc-content-outer {
         overflow:hidden;
         position:absolute;
-        height:480px;
+        height:400px;
         width:280px;
         
         .workspace-materials-toc-content-inner {  
           position:absolute;
           overflow-x: hidden;
           overflow-y: scroll;
-          height:480px;
+          height:400px;
           width:302px;
         
           .workspace-materials-toc-content-scrolling {
             padding:4px;
             width:272px;
-            height:480px;
+            height:395px;
             
             .spacer {
               height:30px; /* Creating some bottom margin because use of 100% height  */
@@ -408,7 +445,7 @@ body.workspace-materials {
         padding:30px;
         text-transform:none;
         line-height:1.3em;
-        box-shadow:0 -20px 20px rgba(107,137,158,0.05);
+        box-shadow:0 -10px 20px rgba(107,137,158,0.1);
       }
     }
 
@@ -425,11 +462,14 @@ body.workspace-materials {
         margin:30px 300px -30px auto; 
         font-weight:300;
         color:#000;
-        font-size:30px;
-        padding:30px 30px 10px 30px;
+        font-size:28px;
+        padding:10px 30px;
         text-transform:none;
         line-height:1.3em;
-        box-shadow:0 -20px 20px rgba(107,137,158,0.05);
+        box-shadow:0 -10px 20px rgba(107,137,158,0.11);
+        border:1px solid #fff;
+        background:#ddf5ff;
+        text-transform:uppercase;
       }
       
       & > h3,h4,h5,h6 {
@@ -458,7 +498,7 @@ body.workspace-materials {
       padding:10px 30px;
       margin:23px 300px 37px auto;
       max-width:640px;
-      box-shadow:0 0 40px rgba(107,137,158,0.1);
+      box-shadow:0 0 40px rgba(107,137,158,0.2);
       position:relative;
 
       img {

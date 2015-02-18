@@ -45,12 +45,11 @@ body.workspace-materials-reading {
       }
       
       .workspace-materials-reading-TOC-title {
-        background:#87a1b2;
         padding:12px;
         position:relative;
         
         h1 {
-          color:#fff;
+          color:#2c2c2c;
           font-size:20px;
           margin:0;
           padding:0;
@@ -59,9 +58,8 @@ body.workspace-materials-reading {
         #workspaceMaterialsReadingTOCPinicon {
           cursor:pointer;
           font-size:24px;
-          color:#fff;
+          color:#2c2c2c;
           text-decoration:none;
-          @include iconShadow;
           background:transparent;
           padding:6px;
           margin:2px;
@@ -81,8 +79,7 @@ body.workspace-materials-reading {
           transition: transform 0.2s;
           
           &:hover {
-            @include iconShadow(rgba(255,255,190,0.5));
-            opacity:0.8;
+            opacity:0.7;
             -ms-transform: rotate(10deg); /* IE 9 */
             -webkit-transform: rotate(10deg); /* Chrome, Safari, Opera */
             -moz-transform: rotate(10deg);
