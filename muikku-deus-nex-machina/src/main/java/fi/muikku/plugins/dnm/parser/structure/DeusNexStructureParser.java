@@ -73,30 +73,26 @@ public class DeusNexStructureParser {
   }
 
   private Resource parseResource(Element resourceElement) throws DeusNexSyntaxException, XPathExpressionException, DeusNexInternalException {
-    boolean archived = DeusNexXmlUtils.getChildValueInt(resourceElement, "archived") == 1;
-    if (!archived) {
-      int type = DeusNexXmlUtils.getChildValueInt(resourceElement, "type");
+    int type = DeusNexXmlUtils.getChildValueInt(resourceElement, "type");
 
-      switch (type) {
-      case 3:
-        return parseBinary(resourceElement);
-      case 4:
-        return parseFolder(resourceElement);
-      case 7:
-        return parseStyleDocument(resourceElement);
-      case 34:
-        return parseQueryDocument(resourceElement);
-      case 37:
-        return parseFCKDocument(resourceElement);
-      case 38:
-        return parseFCKQuery(resourceElement);
-      case 11:
-        return parseLink(resourceElement);
-      default:
-        throw new DeusNexInternalException("Unimplemented resource type " + type);
-      }
+    switch (type) {
+    case 3:
+      return parseBinary(resourceElement);
+    case 4:
+      return parseFolder(resourceElement);
+    case 7:
+      return parseStyleDocument(resourceElement);
+    case 34:
+      return parseQueryDocument(resourceElement);
+    case 37:
+      return parseFCKDocument(resourceElement);
+    case 38:
+      return parseFCKQuery(resourceElement);
+    case 11:
+      return parseLink(resourceElement);
+    default:
+      throw new DeusNexInternalException("Unimplemented resource type " + type);
     }
-    return null;
   }
 
   private Resource parseLink(Element resourceElement) throws DeusNexInternalException {
@@ -300,7 +296,7 @@ public class DeusNexStructureParser {
     resource.setName(DeusNexXmlUtils.getChildValue(resourceElement, "name"));
     resource.setPath(DeusNexXmlUtils.getChildValue(resourceElement, "path"));
     resource.setTitle(DeusNexXmlUtils.getChildValue(resourceElement, "title"));
-    resource.setHidden(DeusNexXmlUtils.getChildValueInt(resourceElement,  "hidden") == 1 ? Boolean.TRUE : Boolean.FALSE);
+    resource.setHidden(DeusNexXmlUtils.getChildValueInt(resourceElement, "hidden") == 1 ? Boolean.TRUE : Boolean.FALSE);
   }
 
 }
