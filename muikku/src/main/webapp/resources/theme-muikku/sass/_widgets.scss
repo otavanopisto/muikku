@@ -115,7 +115,7 @@ div[class*='workspace-dock-navi-button-request-evaluation'] > span {
   font-size:32px;
   color:#fff;
   text-decoration:none;
-  @include iconShadow;
+  text-shadow:none;
   background:transparent;
   padding:6px;
   margin:4px;
@@ -144,7 +144,7 @@ div[class*='workspace-dock-navi-button-cancel-evaluation'] > span {
   font-size:32px;
   color:#fff;
   text-decoration:none;
-  @include iconShadow;
+  text-shadow:none;
   background:transparent;
   padding:6px;
   margin:4px;
@@ -154,11 +154,11 @@ div[class*='workspace-dock-navi-button-cancel-evaluation'] > span {
   @include rounded(3px);
   
   &:hover {
-    background:#d55630;
+    background:#e5910d;
     
     span[class*='workspace-navi-tt-container-'] {
       display:block;
-      background:#d55630;
+      background:#e5910d;
       opacity:1;
       width:auto;
       left:45px;

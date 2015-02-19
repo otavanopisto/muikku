@@ -97,7 +97,7 @@
   });
   
   $(document).on('click', '.wi-workspace-dock-navi-button-cancel-evaluation', function (event) {
-
+    confirmEvaluationCancellation()
   });
   
   function confirmEvaluationRequest() {
@@ -105,22 +105,53 @@
       var dialog = $(text);
       $(text).dialog({
         modal: true, 
+        minHeight: 200,
+        maxHeight: $(window).height() - 50,
         resizable: false,
-        width: 360,
-        dialogClass: "workspace-evaluation-request-confirm-dialog",
+        width: 560,
+        dialogClass: "workspace-evaluation-confirm-dialog",
         buttons: [{
           'text': dialog.data('button-request-text'),
           'class': 'request-button',
           'click': function(event) {
-            $(this).dialog("close");
             $('.wi-workspace-dock-navi-button-request-evaluation').hide();
             $('.wi-workspace-dock-navi-button-cancel-evaluation').show();
+            $(this).dialog("destroy").remove();
           }
         }, {
           'text': dialog.data('button-cancel-text'),
           'class': 'cancel-button',
           'click': function(event) {
-            $(this).dialog("close");
+            $(this).dialog("destroy").remove();
+          }
+        }]
+      });
+    }, this));
+  }
+  
+  function confirmEvaluationCancellation() {
+    renderDustTemplate('workspace/workspace-evaluation-cancellation-confirm.dust', { }, $.proxy(function (text) {
+      var dialog = $(text);
+      $(text).dialog({
+        modal: true, 
+        minHeight: 200,
+        maxHeight: $(window).height() - 50,
+        resizable: false,
+        width: 560,
+        dialogClass: "workspace-evaluation-confirm-dialog",
+        buttons: [{
+          'text': dialog.data('button-cancellation-text'),
+          'class': 'cancellation-button',
+          'click': function(event) {
+            $('.wi-workspace-dock-navi-button-cancel-evaluation').hide();
+            $('.wi-workspace-dock-navi-button-request-evaluation').show();
+            $(this).dialog("destroy").remove();
+          }
+        }, {
+          'text': dialog.data('button-cancel-text'),
+          'class': 'cancel-button',
+          'click': function(event) {
+            $(this).dialog("destroy").remove();
           }
         }]
       });
