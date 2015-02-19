@@ -52,6 +52,7 @@ import fi.muikku.plugins.dnm.parser.structure.model.Query;
 import fi.muikku.plugins.dnm.parser.structure.model.Resource;
 import fi.muikku.plugins.dnm.parser.structure.model.ResourceContainer;
 import fi.muikku.plugins.dnm.parser.structure.model.Type;
+import fi.muikku.plugins.dnm.unembed.MaterialUnEmbedder;
 import fi.muikku.plugins.material.BinaryMaterialController;
 import fi.muikku.plugins.material.HtmlMaterialController;
 import fi.muikku.plugins.material.model.BinaryMaterial;
@@ -64,6 +65,7 @@ import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.model.WorkspaceNodeType;
+import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.muikku.schooldata.WorkspaceEntityController;
 
 @ApplicationScoped
@@ -75,6 +77,9 @@ public class DeusNexMachinaController {
 
   @Inject
   private PluginSettingsController pluginSettingsController;
+  
+  @Inject
+  private MaterialUnEmbedder materialUnEmbedder;
 
   private class EmbeddedItemHandler implements DeusNexEmbeddedItemElementHandler {
 
@@ -301,6 +306,7 @@ public class DeusNexMachinaController {
 
   public void importDeusNexDocument(WorkspaceNode parentNode, InputStream inputStream) throws DeusNexException {
     DeusNexDocument desNexDocument = parseDeusNexDocument(inputStream);
+
     List<WorkspaceNode> createdNodes = new ArrayList<>();
     for (Resource resource : desNexDocument.getRootFolder().getResources()) {
       importResource(parentNode, parentNode, resource, desNexDocument, createdNodes);
@@ -310,6 +316,8 @@ public class DeusNexMachinaController {
     } catch (Exception e) {
       throw new DeusNexInternalException("PostProcesssing failed. ", e);
     }
+    
+    materialUnEmbedder.unembedWorkspaceMaterials(parentNode);
   }
 
   public void importFrontPageDocument(WorkspaceEntity workspaceEntity, InputStream inputStream) throws DeusNexException {
@@ -501,12 +509,18 @@ public class DeusNexMachinaController {
             }
           }
           
+          if (resource.getHidden()) {
+            workspaceMaterialController.hideWorkspaceNode(workspaceMaterial);
+          }
+          
           createdNodes.add(workspaceMaterial);
         }
       } else {
         logger.info(node.getPath() + " already exists, skipping");
       }
     }
+    
+    
   }
 
   private Material createMaterial(WorkspaceNode importRoot, Resource resource, DeusNexDocument deusNexDocument) throws DeusNexException {

@@ -186,6 +186,10 @@ public class WorkspaceMaterialController {
 
     return findWorkspaceNodeByParentAndUrlName(parent, pathElements[pathElements.length - 1]);
   }
+  
+  public List<WorkspaceNode> listWorkspaceNodesByParent(WorkspaceNode parent) {
+    return workspaceNodeDAO.listByParentSortByOrderNumber(parent);
+  }
 
   public List<WorkspaceNode> listVisibleWorkspaceNodesByParentSortByOrderNumber(WorkspaceNode parent) {
     return listVisibleWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(parent, WorkspaceFolderType.DEFAULT);
@@ -270,6 +274,10 @@ public class WorkspaceMaterialController {
   }
 
   /* Workspace material */
+  
+  public WorkspaceMaterial createWorkspaceMaterial(WorkspaceNode parent, Material material) {
+    return createWorkspaceMaterial(parent, material, (WorkspaceMaterialAssignmentType) null);
+  }
 
   public WorkspaceMaterial createWorkspaceMaterial(WorkspaceNode parent, Material material, WorkspaceMaterialAssignmentType assignmentType) {
     String urlName = generateUniqueUrlName(parent, material.getTitle());
@@ -344,6 +352,14 @@ public class WorkspaceMaterialController {
 
     // Updated node
     return workspaceNode;
+  }
+  
+  public void showWorkspaceNode(WorkspaceNode workspaceNode) {
+    workspaceNodeDAO.updateHidden(workspaceNode,  Boolean.TRUE);
+  }
+
+  public void hideWorkspaceNode(WorkspaceNode workspaceNode) {
+    workspaceNodeDAO.updateHidden(workspaceNode,  Boolean.FALSE);
   }
 
   public void deleteWorkspaceMaterial(WorkspaceMaterial workspaceMaterial, boolean removeAnswers) throws WorkspaceMaterialContainsAnswersExeption {

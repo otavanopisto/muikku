@@ -42,9 +42,18 @@ public abstract class Resource {
 		this.title = title;
 	}
 	
-	private Integer no;
+	public Boolean getHidden() {
+    return hidden;
+  }
+
+  public void setHidden(Boolean hidden) {
+    this.hidden = hidden;
+  }
+
+  private Integer no;
 	private Type type;
 	private String path;
 	private String title;
 	private String name;
+	private Boolean hidden;
 }
