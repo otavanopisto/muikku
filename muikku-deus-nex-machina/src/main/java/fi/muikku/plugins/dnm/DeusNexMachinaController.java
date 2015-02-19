@@ -52,6 +52,7 @@ import fi.muikku.plugins.dnm.parser.structure.model.Query;
 import fi.muikku.plugins.dnm.parser.structure.model.Resource;
 import fi.muikku.plugins.dnm.parser.structure.model.ResourceContainer;
 import fi.muikku.plugins.dnm.parser.structure.model.Type;
+import fi.muikku.plugins.dnm.unembed.MaterialUnEmbedder;
 import fi.muikku.plugins.material.BinaryMaterialController;
 import fi.muikku.plugins.material.HtmlMaterialController;
 import fi.muikku.plugins.material.model.BinaryMaterial;
@@ -64,6 +65,7 @@ import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.model.WorkspaceNodeType;
+import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.muikku.schooldata.WorkspaceEntityController;
 
 @ApplicationScoped
@@ -75,6 +77,9 @@ public class DeusNexMachinaController {
 
   @Inject
   private PluginSettingsController pluginSettingsController;
+  
+  @Inject
+  private MaterialUnEmbedder materialUnEmbedder;
 
   private class EmbeddedItemHandler implements DeusNexEmbeddedItemElementHandler {
 
@@ -510,6 +515,13 @@ public class DeusNexMachinaController {
         }
       } else {
         logger.info(node.getPath() + " already exists, skipping");
+      }
+    }
+    
+    if (importRoot.getId().equals(parent.getId())) {
+      if (importRoot instanceof WorkspaceRootFolder) {
+        WorkspaceRootFolder workspaceRootFolder = (WorkspaceRootFolder) importRoot;
+        materialUnEmbedder.unembedWorkspaceMaterials(workspaceRootFolder);
       }
     }
   }
