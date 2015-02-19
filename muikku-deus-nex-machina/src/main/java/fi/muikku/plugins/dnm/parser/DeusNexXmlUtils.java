@@ -104,6 +104,7 @@ public class DeusNexXmlUtils {
     transformer.setOutputProperty(OutputKeys.METHOD, method);
     transformer.setOutputProperty(OutputKeys.VERSION, version);
     transformer.setOutputProperty(OutputKeys.INDENT, indent ? "yes" : "no");
+    transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 
     StringWriter writer = new StringWriter();
     transformer.transform(new DOMSource(element), new StreamResult(writer));
