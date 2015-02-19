@@ -404,6 +404,7 @@ public class DeusNexMachinaController {
       transformer.setOutputProperty(OutputKeys.METHOD, "html");
       transformer.setOutputProperty(OutputKeys.VERSION, "5");
       transformer.setOutputProperty(OutputKeys.INDENT, "no");
+      transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
       transformer.transform(new DOMSource(domDocument), new StreamResult(writer));
       htmlMaterialController.updateHtmlMaterialHtml(material, writer.getBuffer().toString());
     }
