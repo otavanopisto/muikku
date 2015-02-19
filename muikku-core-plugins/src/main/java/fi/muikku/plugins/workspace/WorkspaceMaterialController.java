@@ -274,6 +274,10 @@ public class WorkspaceMaterialController {
   }
 
   /* Workspace material */
+  
+  public WorkspaceMaterial createWorkspaceMaterial(WorkspaceNode parent, Material material) {
+    return createWorkspaceMaterial(parent, material, (WorkspaceMaterialAssignmentType) null);
+  }
 
   public WorkspaceMaterial createWorkspaceMaterial(WorkspaceNode parent, Material material, WorkspaceMaterialAssignmentType assignmentType) {
     String urlName = generateUniqueUrlName(parent, material.getTitle());
