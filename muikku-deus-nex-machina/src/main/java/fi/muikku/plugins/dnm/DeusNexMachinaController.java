@@ -316,6 +316,8 @@ public class DeusNexMachinaController {
     } catch (Exception e) {
       throw new DeusNexInternalException("PostProcesssing failed. ", e);
     }
+    
+    materialUnEmbedder.unembedWorkspaceMaterials(parentNode);
   }
 
   public void importFrontPageDocument(WorkspaceEntity workspaceEntity, InputStream inputStream) throws DeusNexException {
@@ -518,12 +520,7 @@ public class DeusNexMachinaController {
       }
     }
     
-    if (importRoot.getId().equals(parent.getId())) {
-      if (importRoot instanceof WorkspaceRootFolder) {
-        WorkspaceRootFolder workspaceRootFolder = (WorkspaceRootFolder) importRoot;
-        materialUnEmbedder.unembedWorkspaceMaterials(workspaceRootFolder);
-      }
-    }
+    
   }
 
   private Material createMaterial(WorkspaceNode importRoot, Resource resource, DeusNexDocument deusNexDocument) throws DeusNexException {
