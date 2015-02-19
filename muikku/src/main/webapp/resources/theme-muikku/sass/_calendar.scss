@@ -4,6 +4,52 @@
 /* TODO - move to core-plugins after mock data is gone... */
 
 
+/* Modal form styles  */
+
+.ca-field-date{
+  display:inline-block;
+  input{
+    width:120px !important;  
+    color:#333;
+  }
+ 
+  &:not(:first-child){
+   margin-left:10px;
+  }
+  
+  &:before{
+   margin-right:5px;
+   font-family: 'muikku';
+   color:#fff;
+   @extend .icon-calendar;
+  }    
+  
+}
+
+ .ca-field-time{
+  display:inline-block; 
+  input{
+   width:120px !important; 
+   color:#333;
+  }
+ 
+  
+  &:not(:first-child){
+   margin-left:10px;
+  }
+  
+  &:before{
+   margin-right:5px;
+   font-family: 'muikku';
+   color:#fff;
+   @extend .icon-clock;
+  }    
+  
+}
+
+
+/* TODO clean up after Fullcalendar implementation */
+
 .ca-home{
   
   background-color:#fff;
@@ -18,6 +64,8 @@
   min-height:500px;  
 
 }
+
+
 
 .ca-today-date{ 
   color:#747474;
@@ -66,8 +114,14 @@
   margin-top:25px;
   color:#fff;  
   .fc00{
-  @extend .co-mainFunction-sub-header; 
+    @extend .co-mainFunction-sub-header; 
   }
+  
+}
+
+.ca-view-container{
+   background-color:#fff; 
+   border-left:solid 1px #F0F3F4; 
   
 }
 
