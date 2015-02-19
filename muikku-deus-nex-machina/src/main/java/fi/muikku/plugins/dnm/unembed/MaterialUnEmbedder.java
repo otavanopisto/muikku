@@ -163,13 +163,13 @@ public class MaterialUnEmbedder {
   
   private boolean isEmbedPiece(Document documentPiece) throws XPathExpressionException {
     NodeList iframes = DeusNexXmlUtils.findNodesByXPath(documentPiece.getDocumentElement(),
-        "/body/iframe[@data-type='embedded-document']/");
+        "/body/iframe[@data-type='embedded-document']");
     return iframes.getLength() > 0;
   }
 
   private long embeddedHtmlMaterialId(Document documentPiece) throws XPathExpressionException {
     NodeList iframes = DeusNexXmlUtils.findNodesByXPath(documentPiece.getDocumentElement(),
-        "/body/iframe[@data-type='embedded-document']/");
+        "/body/iframe[@data-type='embedded-document']");
     return Long.parseLong(iframes.item(0).getAttributes().getNamedItem("data-material-id").getNodeValue(), 10);
   }
 
@@ -200,13 +200,13 @@ public class MaterialUnEmbedder {
 
   private boolean embedIframesInNonTopLevelElement(Document document) throws XPathExpressionException {
     NodeList iframes = DeusNexXmlUtils.findNodesByXPath(document.getDocumentElement(),
-        "/body/*//iframe[@data-type='embedded-document']/");
+        "/body/*//iframe[@data-type='embedded-document']");
     return iframes.getLength() > 0;
   }
 
   private void bubbleUpEmbedIframes(Document document) throws XPathExpressionException {
     NodeList iframes = DeusNexXmlUtils.findNodesByXPath(document.getDocumentElement(),
-        "/body/*//iframe[@data-type='embedded-document']/");
+        "/body/*//iframe[@data-type='embedded-document']");
 
     for (int i = 0; i < iframes.getLength(); i++) {
       Node iframe = iframes.item(i);
