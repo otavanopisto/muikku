@@ -1,0 +1,3 @@
+<div class="workspace-evaluation-confirm-dialog" title="{#localize key="plugin.workspace.evaluation.requestEvaluation.title"/}" data-button-request-text="{#localize key="plugin.workspace.evaluation.requestEvaluation.requestButton"/}" data-button-cancel-text="{#localize key="plugin.workspace.evaluation.requestEvaluation.cancelButton"/}">
+  {#localize key="plugin.workspace.evaluation.requestEvaluation.description"/}
+</div>
