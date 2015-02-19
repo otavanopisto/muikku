@@ -106,7 +106,7 @@ public class MaterialUnEmbedder {
   private boolean hasEmbeds(HtmlMaterial htmlMaterial) throws SAXException, IOException, ParserConfigurationException,
       XPathExpressionException {
     String html = htmlMaterial.getHtml();
-    Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(html);
+    Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new InputSource(new StringReader(html)));
     NodeList iframes = DeusNexXmlUtils.findNodesByXPath(document.getDocumentElement(),
         "//iframe[@data-type='embedded-document']/");
 
