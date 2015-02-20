@@ -112,7 +112,7 @@ public class DeusNexContentParser {
           }
         }
 
-        contents.put(lang, DeusNexXmlUtils.serializeElement(htmlElement, true, false, "html", "5"));
+        contents.put(lang, DeusNexXmlUtils.serializeElement(htmlElement, true, false, "xml"));
       }
     } catch (XPathExpressionException | TransformerException e) {
       throw new DeusNexInternalException("Internal Error occurred while processing document", e);

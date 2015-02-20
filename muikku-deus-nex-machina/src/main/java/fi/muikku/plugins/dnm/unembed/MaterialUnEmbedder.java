@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.ejb.Lock;
 import javax.ejb.Singleton;
@@ -50,6 +51,9 @@ public class MaterialUnEmbedder {
   
   @Inject
   private PluginSettingsController pluginSettingsController;
+  
+  @Inject
+  private Logger logger;
 
   @Lock
   public void unembedWorkspaceMaterials(WorkspaceNode parentNode) throws DeusNexInternalException {
@@ -106,9 +110,17 @@ public class MaterialUnEmbedder {
   private boolean hasEmbeds(HtmlMaterial htmlMaterial) throws SAXException, IOException, ParserConfigurationException,
       XPathExpressionException {
     String html = htmlMaterial.getHtml();
+    if (html == null) {
+      return false;
+    }
+
     Document document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new InputSource(new StringReader(html)));
     NodeList iframes = DeusNexXmlUtils.findNodesByXPath(document.getDocumentElement(),
-        "//iframe[@data-type='embedded-document']/");
+        "//iframe[@data-type='embedded-document']");
+    
+    if (iframes.getLength() != 0) {
+      logger.info("Html material " + htmlMaterial.getId() + " contains embeds");
+    }
 
     return iframes.getLength() != 0;
   }
@@ -132,21 +144,24 @@ public class MaterialUnEmbedder {
         long embeddedHtmlMaterialId = embeddedHtmlMaterialId(documentPiece);
         if (htmlMaterialPieces.containsKey(embeddedHtmlMaterialId)) {
           for (Long htmlMaterialId : htmlMaterialPieces.get(embeddedHtmlMaterialId)) {
+            logger.info("Existing html material " + htmlMaterialId + " embedded in " + htmlMaterial.getId());
             HtmlMaterial pieceHtmlMaterial = htmlMaterialController.findHtmlMaterialById(htmlMaterialId);
             pieceHtmlMaterials.add(pieceHtmlMaterial);
             pieceList.add(pieceHtmlMaterial.getId());
           }
         } else {
           HtmlMaterial pieceHtmlMaterial = htmlMaterialController.findHtmlMaterialById(embeddedHtmlMaterialId);
+          logger.info("Existing html material " + embeddedHtmlMaterialId + " embedded in " + htmlMaterial.getId());
           pieceHtmlMaterials.add(pieceHtmlMaterial);
           pieceList.add(pieceHtmlMaterial.getId());
         }
       } else {
         HtmlMaterial pieceHtmlMaterial = htmlMaterialController.createHtmlMaterial(
             htmlMaterial.getTitle() + " (" + i + ")",
-            DeusNexXmlUtils.serializeElement(documentPiece.getDocumentElement(), true, false, "html", "5"),
+            DeusNexXmlUtils.serializeElement(documentPiece.getDocumentElement(), true, false, "xml"),
             "text/html; editor=CKEditor",
             0l);
+        logger.info("New html material piece " + pieceHtmlMaterial.getId() + " split from " + htmlMaterial.getId());
         pieceHtmlMaterials = new ArrayList<HtmlMaterial>();
         pieceHtmlMaterials.add(pieceHtmlMaterial);
         pieceList.add(pieceHtmlMaterial.getId());
@@ -181,7 +196,7 @@ public class MaterialUnEmbedder {
     }
 
     List<Document> documentPieces = new ArrayList<Document>();
-    NodeList pieceNodes = DeusNexXmlUtils.findNodesByXPath(document.getDocumentElement(), "/html/body/*");
+    NodeList pieceNodes = DeusNexXmlUtils.findNodesByXPath(document.getDocumentElement(), "/BODY/*");
 
     for (int i = 0; i < pieceNodes.getLength(); i++) {
       Node pieceNode = pieceNodes.item(i);
@@ -201,12 +216,21 @@ public class MaterialUnEmbedder {
   private boolean embedIframesInNonTopLevelElement(Document document) throws XPathExpressionException {
     NodeList iframes = DeusNexXmlUtils.findNodesByXPath(document.getDocumentElement(),
         "/body/*//iframe[@data-type='embedded-document']");
+    
+    if (iframes.getLength() != 0) {
+      logger.info(iframes.getLength() + " iframes in non-top-level element");
+    }
+
     return iframes.getLength() > 0;
   }
 
   private void bubbleUpEmbedIframes(Document document) throws XPathExpressionException {
     NodeList iframes = DeusNexXmlUtils.findNodesByXPath(document.getDocumentElement(),
         "/body/*//iframe[@data-type='embedded-document']");
+
+    if (iframes.getLength() != 0) {
+      logger.info("bubbled up " + iframes.getLength() + " iframes");
+    }
 
     for (int i = 0; i < iframes.getLength(); i++) {
       Node iframe = iframes.item(i);

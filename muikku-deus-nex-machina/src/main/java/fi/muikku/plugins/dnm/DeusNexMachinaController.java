@@ -376,6 +376,7 @@ public class DeusNexMachinaController {
       XPathExpressionException, TransformerException {
     StringReader htmlReader = new StringReader(material.getHtml());
     DOMParser parser = new DOMParser();
+    parser.setProperty("http://cyberneko.org/html/properties/names/elems", "lower");
     InputSource inputSource = new InputSource(htmlReader);
     parser.parse(inputSource);
     org.w3c.dom.Document domDocument = parser.getDocument();
@@ -400,11 +401,10 @@ public class DeusNexMachinaController {
       StringWriter writer = new StringWriter();
       TransformerFactory transformerFactory = TransformerFactory.newInstance();
       Transformer transformer = transformerFactory.newTransformer();
-      transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-      transformer.setOutputProperty(OutputKeys.METHOD, "html");
-      transformer.setOutputProperty(OutputKeys.VERSION, "5");
-      transformer.setOutputProperty(OutputKeys.INDENT, "no");
       transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+      transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+      transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+      transformer.setOutputProperty(OutputKeys.INDENT, "no");
       transformer.transform(new DOMSource(domDocument), new StreamResult(writer));
       htmlMaterialController.updateHtmlMaterialHtml(material, writer.getBuffer().toString());
     }
