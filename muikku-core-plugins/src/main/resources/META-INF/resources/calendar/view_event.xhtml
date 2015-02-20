@@ -25,35 +25,13 @@
       </div>
     </ui:define>
 
-    <ui:define name="content.left.widget"> 
-    
-     <!--  TODO : Widget -->
-     
-      <div class="mf-sub-header">
-       <span>Pummikuu</span>
-      </div> 
-      <div class="mf-side-content">
-      <c:forEach var="i" begin="1" end="31">
-        <div class="ca-weekDays numbers">#{i}</div>
-      </c:forEach>      
-      <div class="clear"></div>
-    </div>
-    </ui:define>
 
     <ui:define name="content.center.widget">
-      <div class="ca-grid-events">
-        <div class="mf-sub-header ca-grid-events-topic"><span>Tapahtumat</span></div>
-        <div class="ca-grid-events-content">
-          <div class="ca-grid-events-subTopic"><span>Tänään</span></div>
-          <div class="ca-grid-events-list">
-            <c:forEach var="i" begin="1" end="11">
-              <div class="ca-list-event"><span class="event-tag">P</span><span class="event-time">hh:mm</span><span class="event-name">Tapahtuma #{i}</span></div>
-            </c:forEach>      
-          </div>
-          <div class="clear"></div>
-        </div>
-      </div>
-      <div class="clear"></div>
+        <div class="mf-sub-header ca-grid-events-topic"><span>Tapahtumat</span></div>    
+      <div id="agendaView" class="ca-view-container"></div>
+      
+      
+
     </ui:define>
 
 </ui:composition>
