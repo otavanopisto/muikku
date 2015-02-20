@@ -45,7 +45,7 @@ public class MaterialUnEmbedder {
 
   @Inject
   private WorkspaceMaterialController workspaceMaterialController;
-
+  
   @Inject
   private HtmlMaterialController htmlMaterialController;
   
@@ -174,17 +174,18 @@ public class MaterialUnEmbedder {
     }
     
     workspaceMaterialController.deleteWorkspaceMaterial(workspaceMaterial, true);
+    htmlMaterialController.deleteHtmlMaterial(htmlMaterial);
   }
   
   private boolean isEmbedPiece(Document documentPiece) throws XPathExpressionException {
     NodeList iframes = DeusNexXmlUtils.findNodesByXPath(documentPiece.getDocumentElement(),
-        "/body/iframe[@data-type='embedded-document']");
+        "body/iframe[@data-type='embedded-document']");
     return iframes.getLength() > 0;
   }
 
   private long embeddedHtmlMaterialId(Document documentPiece) throws XPathExpressionException {
     NodeList iframes = DeusNexXmlUtils.findNodesByXPath(documentPiece.getDocumentElement(),
-        "/body/iframe[@data-type='embedded-document']");
+        "body/iframe[@data-type='embedded-document']");
     return Long.parseLong(iframes.item(0).getAttributes().getNamedItem("data-material-id").getNodeValue(), 10);
   }
 
@@ -196,7 +197,7 @@ public class MaterialUnEmbedder {
     }
 
     List<Document> documentPieces = new ArrayList<Document>();
-    NodeList pieceNodes = DeusNexXmlUtils.findNodesByXPath(document.getDocumentElement(), "/body/*");
+    NodeList pieceNodes = DeusNexXmlUtils.findNodesByXPath(document.getDocumentElement(), "body/*");
 
     for (int i = 0; i < pieceNodes.getLength(); i++) {
       Node pieceNode = pieceNodes.item(i);
