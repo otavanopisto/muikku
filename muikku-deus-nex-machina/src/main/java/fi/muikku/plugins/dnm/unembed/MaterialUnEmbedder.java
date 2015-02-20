@@ -196,7 +196,7 @@ public class MaterialUnEmbedder {
     }
 
     List<Document> documentPieces = new ArrayList<Document>();
-    NodeList pieceNodes = DeusNexXmlUtils.findNodesByXPath(document.getDocumentElement(), "/BODY/*");
+    NodeList pieceNodes = DeusNexXmlUtils.findNodesByXPath(document.getDocumentElement(), "/body/*");
 
     for (int i = 0; i < pieceNodes.getLength(); i++) {
       Node pieceNode = pieceNodes.item(i);
@@ -215,7 +215,7 @@ public class MaterialUnEmbedder {
 
   private boolean embedIframesInNonTopLevelElement(Document document) throws XPathExpressionException {
     NodeList iframes = DeusNexXmlUtils.findNodesByXPath(document.getDocumentElement(),
-        "/body/*//iframe[@data-type='embedded-document']");
+        "body/*//iframe[@data-type='embedded-document']");
     
     if (iframes.getLength() != 0) {
       logger.info(iframes.getLength() + " iframes in non-top-level element");
@@ -226,32 +226,31 @@ public class MaterialUnEmbedder {
 
   private void bubbleUpEmbedIframes(Document document) throws XPathExpressionException {
     NodeList iframes = DeusNexXmlUtils.findNodesByXPath(document.getDocumentElement(),
-        "/body/*//iframe[@data-type='embedded-document']");
-
-    if (iframes.getLength() != 0) {
-      logger.info("bubbled up " + iframes.getLength() + " iframes");
-    }
+        "body/*//iframe[@data-type='embedded-document']");
 
     for (int i = 0; i < iframes.getLength(); i++) {
       Node iframe = iframes.item(i);
 
       bubbleUp(iframe);
     }
+
+    if (iframes.getLength() != 0) {
+      logger.info("bubbled up " + iframes.getLength() + " iframes");
+    }
   }
 
   private void bubbleUp(Node node) {
     Node parent = node.getParentNode();
     Node parentsParent = parent.getParentNode();
+    
     Node newParent = node.getOwnerDocument().createElement(parent.getNodeName());
     while (node.getNextSibling() != null) {
       Node sibling = node.getNextSibling();
-      parent.removeChild(sibling);
       newParent.appendChild(sibling);
     }
 
-    parentsParent.insertBefore(parent.getNextSibling(), newParent);
-    parent.removeChild(node);
-    parentsParent.insertBefore(newParent, node);
+    parentsParent.insertBefore(newParent, parent.getNextSibling());
+    parentsParent.insertBefore(node, newParent);
     
     if (!parent.hasChildNodes()) {
       parentsParent.removeChild(parent);

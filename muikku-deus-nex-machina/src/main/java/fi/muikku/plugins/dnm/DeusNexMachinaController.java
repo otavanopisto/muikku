@@ -28,9 +28,10 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.xerces.parsers.DOMParser;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
-import org.cyberneko.html.parsers.DOMParser;
+import org.cyberneko.html.HTMLConfiguration;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
@@ -375,7 +376,7 @@ public class DeusNexMachinaController {
   private void postProcessHtml(HtmlMaterial material) throws ParserConfigurationException, SAXException, IOException,
       XPathExpressionException, TransformerException {
     StringReader htmlReader = new StringReader(material.getHtml());
-    DOMParser parser = new DOMParser();
+    DOMParser parser = new DOMParser(new HTMLConfiguration());
     parser.setProperty("http://cyberneko.org/html/properties/names/elems", "lower");
     InputSource inputSource = new InputSource(htmlReader);
     parser.parse(inputSource);
