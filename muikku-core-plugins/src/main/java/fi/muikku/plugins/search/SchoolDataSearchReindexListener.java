@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 
 import javax.annotation.Resource;
 import javax.ejb.Singleton;
-import javax.ejb.Stateless;
 import javax.ejb.Timeout;
 import javax.ejb.Timer;
 import javax.ejb.TimerConfig;
@@ -15,8 +14,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-import org.jboss.ejb3.annotation.TransactionTimeout;
-
+import fi.muikku.model.users.UserEntity;
+import fi.muikku.model.users.UserSchoolDataIdentifier;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.WorkspaceEntityController;
@@ -25,6 +24,8 @@ import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.search.SearchIndexer;
 import fi.muikku.search.SearchReindexEvent;
 import fi.muikku.users.UserController;
+import fi.muikku.users.UserEntityController;
+import fi.muikku.users.UserSchoolDataIdentifierController;
 
 @ApplicationScoped
 @Singleton
@@ -43,6 +44,12 @@ public class SchoolDataSearchReindexListener {
   private UserController userController;
 
   @Inject
+  private UserEntityController userEntityController;
+  
+  @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController; 
+  
+  @Inject
   private SearchIndexer indexer;
   
   @Resource
@@ -53,42 +60,24 @@ public class SchoolDataSearchReindexListener {
   private static int BATCH = 100;
   
   public void onReindexEvent(@Observes SearchReindexEvent event) {
-//    List<WorkspaceEntity> workspaceEntities = workspaceEntityController.listWorkspaceEntities();
-//    for (WorkspaceEntity workspaceEntity : workspaceEntities) {
-//      Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-//      if (workspace != null) {
-//        try {
-//          indexer.index(Workspace.class.getSimpleName(), workspace);
-//        } catch (Exception e) {
-//          logger.log(Level.WARNING, "could not index WorkspaceEntity #" + workspaceEntity.getId(), e);
-//        }
-//      }
-//    }
-//    
-//    for (User user : userController.listUsers()) {
-//      try {
-//        indexer.index(User.class.getSimpleName(), user);
-//      } catch (Exception e) {
-//        logger.log(Level.WARNING, "could not index User #" + user.getSchoolDataSource() + '/' + user.getIdentifier(), e);
-//      }
-//    }
-    
     userIndex = 0;
     workspaceIndex = 0;
     
-    System.out.println("Starting reindex timer");
+    logger.log(Level.INFO, "Reindex initiated.");
     
-    timerService.createSingleActionTimer(60000, new TimerConfig());
+    timerService.createSingleActionTimer(5000, new TimerConfig());
   }
 
   @Timeout
   private void onTimeOut(Timer timer) {
-    System.out.println("Reindexing timeout");
+    timer.cancel();
+
+    logger.log(Level.INFO, "Commencing Reindex task.");
     try {
       boolean alldone = reindexWorkspaceEntities() || reindexUsers();
   
-  //    if (!alldone)
-      //      timerService.createSingleActionTimer(3000, new TimerConfig());
+      if (!alldone)
+        timerService.createSingleActionTimer(5000, new TimerConfig());
     } catch (Exception ex) {
       logger.log(Level.SEVERE, "Reindexing of entities failed.", ex);
     }
@@ -113,7 +102,7 @@ public class SchoolDataSearchReindexListener {
         }
       }
 
-      System.out.println("Reindexed batch of workspaces (" + workspaceIndex + "-" + last + ")");
+      logger.log(Level.INFO, "Reindexed batch of workspaces (" + workspaceIndex + "-" + last + ")");
       
       workspaceIndex += BATCH;
       return false;
@@ -122,21 +111,27 @@ public class SchoolDataSearchReindexListener {
   }
 
   private boolean reindexUsers() {
-    List<User> users = userController.listUsers();
+    List<UserEntity> users = userEntityController.listUserEntities();
     
     if (userIndex < users.size()) {
       int last = Math.min(users.size(), userIndex + BATCH);
       
       for (int i = userIndex; i < last; i++) {
-        User user = users.get(i);
-        try {
-          indexer.index(User.class.getSimpleName(), user);
-        } catch (Exception e) {
-          logger.log(Level.WARNING, "could not index User #" + user.getSchoolDataSource() + '/' + user.getIdentifier(), e);
+        UserEntity userEntity = users.get(i);
+
+        List<UserSchoolDataIdentifier> identifiers = userSchoolDataIdentifierController.listUserSchoolDataIdentifiersByUserEntity(userEntity);
+
+        for (UserSchoolDataIdentifier identifier : identifiers) {
+          User user = userController.findUserByDataSourceAndIdentifier(identifier.getDataSource(), identifier.getIdentifier());
+          try {
+            indexer.index(User.class.getSimpleName(), user);
+          } catch (Exception e) {
+            logger.log(Level.WARNING, "could not index User #" + user.getSchoolDataSource() + '/' + user.getIdentifier(), e);
+          }
         }
       }
       
-      System.out.println("Reindexed batch of users (" + userIndex + "-" + last + ")");
+      logger.log(Level.INFO, "Reindexed batch of users (" + userIndex + "-" + last + ")");
 
       userIndex += BATCH;
       return false;
