@@ -381,7 +381,7 @@ public class DeusNexMachinaController {
     InputSource inputSource = new InputSource(htmlReader);
     parser.parse(inputSource);
     org.w3c.dom.Document domDocument = parser.getDocument();
-    List<Element> elements = DeusNexXmlUtils.getElementsByXPath(domDocument.getDocumentElement(), "//IFRAME[@data-type=\"embedded-document\"]");
+    List<Element> elements = DeusNexXmlUtils.getElementsByXPath(domDocument.getDocumentElement(), "//iframe[@data-type=\"embedded-document\"]");
     if (!elements.isEmpty()) {
       for (Element element : elements) {
         String path = element.getAttribute("src");
