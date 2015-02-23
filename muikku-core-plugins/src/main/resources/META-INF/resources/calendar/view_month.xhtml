@@ -23,22 +23,11 @@
       </div>
     </ui:define>
 
-    <ui:define name="content.left.widget"> 
-    
-     <!--  TODO : Widget -->
-     
-      <div class="mf-sub-header">
-       <span>Pummikuu</span>
-      </div>
-      <div class="mf-side-content">
-        <c:forEach var="i" begin="1" end="31">
-          <div class="ca-weekDays numbers">#{i}</div>
-        </c:forEach>
-        <div class="clear"></div>        
-      </div>
-  </ui:define>
 
     <ui:define name="content.center.widget">
+    
+      <div id="monthView"  class="ca-view-container"></div>
+<!--     
       <div class="ca-grid-month">
         <div class="mf-sub-header ca-grid-month-topic">
           <c:forEach var="i" begin="1" end="7">
@@ -62,6 +51,8 @@
         </div>        
         <div class="clear"></div>
       </div>
+      
+    -->  
     </ui:define>
 
 </ui:composition>

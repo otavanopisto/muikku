@@ -24,55 +24,42 @@
       </div>
     </ui:define>
 
-    <ui:define name="content.left.widget"> 
-    
-     <!--  TODO : Widget -->
-     
-      <div class="mf-sub-header">
-       <span>Pummikuu</span>
-      </div> 
-      <div class="mf-side-content">
-      <c:forEach var="i" begin="1" end="31">
-        <div class="ca-weekDays numbers">#{i}</div>
-      </c:forEach>      
-      <div class="clear"></div>
-    </div>
-    </ui:define>
 
     <ui:define name="content.center.widget">
-      <div class="ca-grid-week">
-        <div class="mf-sub-header ca-grid-week-topic">
-          <c:forEach var="i" begin="1" end="7">
-            <div class="ca-weekDays names"><span>Day #{i}</span></div>
-          </c:forEach>      
-          <div class="clear"></div>
-        </div>  
-        <div class="ca-grid-day-events">
-          <div class="ca-weekDays-container">
-            <c:forEach var="i" begin="1" end="7">
-              <div class="ca-weekDays grids ca-week-grid">
-                <c:if test="#{i eq 4}">
-                  <div class="ca-time-grid-day today">
-                    <c:forEach var="a" begin="1" end="24">
-                      <div class="ca-time-grid-hour">#{a}:00</div>
-                    </c:forEach>
-                  </div>
-                </c:if>
-                <c:if test="#{i != 4}">
-                  <div class="ca-time-grid-day">
-                    <c:forEach var="a" begin="1" end="24">
-                      <div class="ca-time-grid-hour">#{a}:00</div>
-                    </c:forEach>
-                  </div>
-                </c:if>
-              </div>
-            </c:forEach>        
-            <div class="clear"></div>
-          </div>
-        </div>        
-        <div class="clear"></div>
-      </div>
-      <div class="clear"></div>
+      <div id="weekView" class="ca-view-container"></div>
+<!--       <div class="ca-grid-week"> -->
+<!--         <div class="mf-sub-header ca-grid-week-topic"> -->
+<!--           <c:forEach var="i" begin="1" end="7"> -->
+<!--             <div class="ca-weekDays names"><span>Day #{i}</span></div> -->
+<!--           </c:forEach>       -->
+<!--           <div class="clear"></div> -->
+<!--         </div>   -->
+<!--         <div class="ca-grid-day-events"> -->
+<!--           <div class="ca-weekDays-container"> -->
+<!--             <c:forEach var="i" begin="1" end="7"> -->
+<!--               <div class="ca-weekDays grids ca-week-grid"> -->
+<!--                 <c:if test="#{i eq 4}"> -->
+<!--                   <div class="ca-time-grid-day today"> -->
+<!--                     <c:forEach var="a" begin="1" end="24"> -->
+<!--                       <div class="ca-time-grid-hour">#{a}:00</div> -->
+<!--                     </c:forEach> -->
+<!--                   </div> -->
+<!--                 </c:if> -->
+<!--                 <c:if test="#{i != 4}"> -->
+<!--                   <div class="ca-time-grid-day"> -->
+<!--                     <c:forEach var="a" begin="1" end="24"> -->
+<!--                       <div class="ca-time-grid-hour">#{a}:00</div> -->
+<!--                     </c:forEach> -->
+<!--                   </div> -->
+<!--                 </c:if> -->
+<!--               </div> -->
+<!--             </c:forEach>         -->
+<!--             <div class="clear"></div> -->
+<!--           </div> -->
+<!--         </div>         -->
+<!--         <div class="clear"></div> -->
+<!--       </div> -->
+<!--       <div class="clear"></div> -->
     </ui:define>
 
 </ui:composition>

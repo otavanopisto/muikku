@@ -1,11 +1,10 @@
-(function() {
-  'use strict';
+(function() { 'use strict';
 
   $(document).ready(function() {
-    if($('.workspace-materials-view-page').length > 0){
-      $(document).muikkuMaterialLoader()
-      .muikkuMaterialLoader('loadMaterial', $('.workspace-materials-view-page'), true); 
-    }
+    $(document).muikkuMaterialLoader();
+    $('.workspace-materials-view-page').each(function(index) {
+      $(document).muikkuMaterialLoader('loadMaterial', $(this), true); 
+    });
   });
 
 }).call(this);

@@ -16,6 +16,11 @@
       <name>styleClass</name>
       <type>java.lang.String</type>
     </attribute>
+    <attribute>
+      <description>The class for this widgetSpaceSet.</description>
+      <name>parentStyleClass</name>
+      <type>java.lang.String</type>
+    </attribute>
   </tag>
 
   <tag>

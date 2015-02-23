@@ -331,6 +331,26 @@ public class DeusNexMachinaController {
       
     }
   }
+
+  public void importHelpPageDocument(WorkspaceEntity workspaceEntity, InputStream inputStream) throws DeusNexException {
+    DeusNexDocument deusNexDocument = parseDeusNexDocument(inputStream);
+    
+    List<Resource> resources = deusNexDocument.getRootFolder().getResources();
+    if (!resources.isEmpty()) {
+      List<WorkspaceNode> createdNodes = new ArrayList<>();
+      WorkspaceFolder workspaceHelpPageFolder = workspaceMaterialController.createWorkspaceHelpPageFolder(workspaceEntity);
+
+      for (Resource resource : deusNexDocument.getRootFolder().getResources()) {
+        importResource(workspaceHelpPageFolder, workspaceHelpPageFolder, resource, deusNexDocument, createdNodes);
+      }
+      try {
+        postProcessResources(createdNodes);
+      } catch (Exception e) {
+        throw new DeusNexInternalException("PostProcesssing failed. ", e);
+      }
+      
+    }
+  }
   
   private void postProcessResources(List<WorkspaceNode> createdNodes) throws ParserConfigurationException, SAXException,
       IOException, XPathExpressionException, TransformerException {
