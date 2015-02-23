@@ -208,6 +208,49 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
   
   }
   
+  /* If page is NOT defined as EVALUATED or MIXED or EXERCISE then render different button */
+  .workspace-materials-view-page {
+  
+    button.muikku-save-page {
+      color:#fff;
+      background:#b2b2b2;
+      box-shadow:none;
+      border:0;
+      border-radius:2px;
+      font-weight:300;
+      font-size:16px;
+      text-transform:uppercase;
+      padding:12px;
+      transition:background 0.3s ease-in-out;
+      margin:20px auto;
+      min-width:120px;
+      display:block;
+      outline:none;
+      position:relative;
+      line-height:1;
+      cursor:pointer;
+      
+      &:hover {
+        background:#878787;
+      }
+      
+      &.save-successful {
+        background:#2b2b2b;
+        cursor:default;
+        padding:12px 12px 12px 46px
+      }
+      
+      &.icon-checkmark:before {
+        position:absolute;
+        top:-0;
+        left:5px;
+        font-size:40px;
+        text-shadow:2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000, 1px 1px #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+      }
+    }
+  
+  }
+  
   /* If page is defined as EXERCISE then render different button */
   .workspace-materials-view-page[data-workspace-material-assigment-type="EXERCISE"] {
   
