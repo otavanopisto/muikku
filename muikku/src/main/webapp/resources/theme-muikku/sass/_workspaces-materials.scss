@@ -253,6 +253,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
   
   /* If page is defined as EXERCISE then render different button */
   .workspace-materials-view-page[data-workspace-material-assigment-type="EXERCISE"] {
+    border-left:1px solid #2ed91c;
   
     button.muikku-save-page {
       color:#fff;
@@ -311,6 +312,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
   /* If page is defined as EVALUATED or MIXED then render different button */
   .workspace-materials-view-page[data-workspace-material-assigment-type="EVALUATED"],
   .workspace-materials-view-page[data-workspace-material-assigment-type="MIXED"] {
+    border-left:1px solid #0099ff;
   
     button.muikku-save-page {
       color:#fff;
