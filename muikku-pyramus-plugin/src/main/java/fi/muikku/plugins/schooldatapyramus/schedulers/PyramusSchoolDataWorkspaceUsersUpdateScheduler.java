@@ -3,9 +3,6 @@ package fi.muikku.plugins.schooldatapyramus.schedulers;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.ejb.Lock;
-import javax.ejb.LockType;
-import javax.ejb.Singleton;
 import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
