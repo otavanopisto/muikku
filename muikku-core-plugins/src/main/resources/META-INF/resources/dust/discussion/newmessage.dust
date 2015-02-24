@@ -7,7 +7,7 @@
           <div class="di-message-new-body">
             <div class="mf-fieldRow cm-message-new-subject">
               <div class="mf-textfield">
-                <input type="textfield" value="" name="msgRecipients"></input>
+                <input type="textfield" value="Otsikko" name="msgSubject"></input>
               </div>        
               <div class="di-message-new-content">
                 <div class="mf-textarea">

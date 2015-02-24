@@ -2,13 +2,31 @@
 
 
 .di-message-create{
+  form{
+   width:100%;
+  }
   input{
    color:#333;
-  
-    &:focus{
-     color:#000;
-    
+   font-size:1,5em;
+
+    &[type="textfield"]{
+      width:400px;
+      color: #dadada;
+      line-height: 30px;
+      width: 400px;      
+      
+      &:focus{
+       color:#000;   
+      }
     }
+    &[type="memofield"]{
+      width:100%;
+      color: #dadada;
+      line-height: 30px;
+      width: 400px;      
+      
+    }
+
   }  
 }
 
