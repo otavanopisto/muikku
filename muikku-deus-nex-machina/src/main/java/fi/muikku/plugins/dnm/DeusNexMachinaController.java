@@ -474,7 +474,7 @@ public class DeusNexMachinaController {
       InputSource inputSource = new InputSource(htmlReader);
       parser.parse(inputSource);
       org.w3c.dom.Document domDocument = parser.getDocument();
-      List<Element> elements = DeusNexXmlUtils.getElementsByXPath(domDocument.getDocumentElement(), "//IFRAME[@data-type=\"embedded-document\"]");
+      List<Element> elements = DeusNexXmlUtils.getElementsByXPath(domDocument.getDocumentElement(), "//iframe[@data-type=\"embedded-document\"]");
       List<WorkspaceMaterialAssignmentType> assignmentTypes = new ArrayList<>();
       if (!elements.isEmpty()) {
         for (Element element : elements) {
@@ -486,12 +486,11 @@ public class DeusNexMachinaController {
           }
         }
       }
-      if ((assignmentTypes.contains(WorkspaceMaterialAssignmentType.EXERCISE)
+      if (assignmentTypes.isEmpty() || (assignmentTypes.contains(WorkspaceMaterialAssignmentType.EXERCISE)
           && assignmentTypes.contains(WorkspaceMaterialAssignmentType.EVALUATED))) {
-        return WorkspaceMaterialAssignmentType.MIXED;
-      } else if (assignmentTypes.isEmpty()) {
         return null;
-      } else {
+      }
+      else {
         return assignmentTypes.get(0);
       }
     } catch (SAXException | IOException | XPathExpressionException e) {
