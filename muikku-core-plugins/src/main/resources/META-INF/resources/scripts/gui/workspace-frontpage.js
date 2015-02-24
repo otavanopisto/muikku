@@ -2,7 +2,7 @@
 
   $(document).ready(function() {
     $(document).muikkuMaterialLoader();
-    $('.workspace-materials-view-page').each(function(index) {
+    $('.workspace-description-wrapper').each(function(index) {
       $(document).muikkuMaterialLoader('loadMaterial', $(this), true); 
     });
   });
