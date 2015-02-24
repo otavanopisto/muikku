@@ -381,8 +381,24 @@ public class DeusNexMachinaController {
     InputSource inputSource = new InputSource(htmlReader);
     parser.parse(inputSource);
     org.w3c.dom.Document domDocument = parser.getDocument();
-    List<Element> elements = DeusNexXmlUtils.getElementsByXPath(domDocument.getDocumentElement(), "//iframe[@data-type=\"embedded-document\"]");
+    boolean modified = false;
+    
+    // Embedded YouTube clips; strip protocol
+    List<Element> elements = DeusNexXmlUtils.getElementsByXPath(domDocument.getDocumentElement(), "//iframe");
     if (!elements.isEmpty()) {
+      for (Element element : elements) {
+        String src = element.getAttribute("src");
+        if (src != null && src.startsWith("http://www.youtube.com/")) {
+          element.setAttribute("src", src.substring(5));
+          modified = true;
+        }
+      }
+    }
+    
+    // Embedded documents; add data attributes and determine correct material title
+    elements = DeusNexXmlUtils.getElementsByXPath(domDocument.getDocumentElement(), "//iframe[@data-type=\"embedded-document\"]");
+    if (!elements.isEmpty()) {
+      modified = true;
       for (Element element : elements) {
         String path = element.getAttribute("src");
         String workspaceUrlName = "";
@@ -411,6 +427,10 @@ public class DeusNexMachinaController {
           element.setAttribute("data-workspace-material-id", String.valueOf(workspaceMaterial.getId()));
         }
       }
+    }
+    
+    // Update to post-processed version, if applicable
+    if (modified) {
       StringWriter writer = new StringWriter();
       TransformerFactory transformerFactory = TransformerFactory.newInstance();
       Transformer transformer = transformerFactory.newTransformer();
@@ -421,7 +441,6 @@ public class DeusNexMachinaController {
       transformer.transform(new DOMSource(domDocument), new StreamResult(writer));
       htmlMaterialController.updateHtmlMaterialHtml(material, writer.getBuffer().toString());
     }
-
   }
   
   private Node getPreviousSiblingElement(Node node) {
