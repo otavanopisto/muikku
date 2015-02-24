@@ -20,10 +20,32 @@
           <div class="workspace-materials-toc-content-inner">
             <div class="workspace-materials-toc-content-scrolling">
               <ul class="workspace-materials-toc-root">
-                <ui:include src="/workspaces/templates/workspace-materials-list.xhtml">
-                  <ui:param name="nodes" value="#{workspaceMaterialsTOCBackingBean.getVisibleChildren(workspaceMaterialsBackingBean.getRootFolder())}"/>
-                  <ui:param name="includeHidden" value="false"/>
-                </ui:include>
+                <ui:repeat var="node" value="#{workspaceMaterialsBackingBean.contentNodes}">
+                  <ui:fragment rendered="#{node.type eq 'folder'}">
+                    <li>
+                      <ul class="workspace-materials-toc-section">
+                        <li class="workspace-materials-toc-subtitle">#{node.title}</li>
+
+                        <ui:repeat var="articleNode" value="#{node.children}">
+                          <ui:fragment rendered="#{articleNode.type eq 'folder'}">
+                            <li class="workspace-materials-toc-subtitle">#{articleNode.title}</li>
+                          </ui:fragment>
+                          <ui:fragment rendered="#{articleNode.type ne 'folder'}">
+                            <li class="workspace-materials-toc-item">
+                              <h:outputLink value="#page-#{articleNode.workspaceMaterialId}" class="#{articleNode.assignmentType eq 'EVALUATED' ? 'evaluated' : articleNode.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{articleNode.title}</h:outputLink>
+                            </li>
+                          </ui:fragment>
+                        </ui:repeat>
+                      </ul>
+                    </li>
+                  </ui:fragment>
+
+                  <ui:fragment rendered="#{node.type ne 'folder'}">
+                    <li class="workspace-materials-toc-item">
+                      <h:outputLink value="#page-#{node.workspaceMaterialId}" class="#{node.assignmentType eq 'EVALUATED' ? 'evaluated' : node.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{node.title}</h:outputLink>
+                    </li>
+                  </ui:fragment>
+                </ui:repeat>
               </ul>
             </div>
           </div>

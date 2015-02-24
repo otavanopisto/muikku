@@ -17,6 +17,7 @@ import fi.muikku.plugins.workspace.model.WorkspaceNode;
 
 @Named
 @Stateless
+@Deprecated
 public class WorkspaceMaterialsTOCBackingBean {
 
   @Inject
