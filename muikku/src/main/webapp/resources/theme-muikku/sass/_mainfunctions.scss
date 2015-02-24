@@ -181,6 +181,15 @@
    font-size:2em;
   }
  
+.mf-form-tabs{
+  width:100%;
+}
+.mf-form-tab{
+   background-color: #ededed;
+    box-sizing: border-box;
+    display: inline-block;
+    padding: 10px;
+}
   
   
   .mf-item{
@@ -361,6 +370,9 @@
     min-height:100px;
   
   }
+
+
+
   
 .mf-form-paragraph{  
      padding:5px;
@@ -376,6 +388,8 @@
     }
   }   
 }  
+
+
   
 /* When the item is open (element with "mf-item" has also class "open" ) */    
   

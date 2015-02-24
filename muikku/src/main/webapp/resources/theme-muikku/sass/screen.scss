@@ -393,6 +393,26 @@ a.header {
   padding:10px;
 }
 
+#socialNavigation{
+  .sn-container{
+        background-color:#216aa1;
+        position:fixed;
+        left:0;
+        bottom:0;
+        right:0;
+
+    &.closed{
+        min-height:30px;
+        opacity:0.2;
+     }  
+     
+    &.open{
+        opacity:1;
+     }           
+  }  
+}
+
+
 /* Styles for waypoints */
 
 #staticNavigationWrapper.stuckStNav {

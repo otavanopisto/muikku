@@ -102,20 +102,23 @@
           </m:widgetSpaceSet>
         </ui:insert>
       </h:panelGroup>    
-      <div id="socialNavigation">
-        <ui:insert name="dock.bottom">
-          <m:widgetSpaceSet styleClass="nomargin">
-            <ui:insert name="dock.bottom.left">
-              <ui:include src="/facelets/generic/dock-bottom-left.xhtml"></ui:include>
-            </ui:insert>
-            <ui:insert name="dock.bottom.center">
-              <ui:include src="/facelets/generic/dock-bottom-center.xhtml"></ui:include>
-            </ui:insert>
-            <ui:insert name="dock.bottom.right">
-              <ui:include src="/facelets/generic/dock-bottom-right.xhtml"></ui:include>
-            </ui:insert>
-          </m:widgetSpaceSet>
-        </ui:insert>
+
+      <div id="socialNavigation" class="sn-container open">
+       <div class="sn-container closed" >
+         <ui:insert name="dock.bottom">
+            <m:widgetSpaceSet styleClass="nomargin">
+              <ui:insert name="dock.bottom.left">
+                <ui:include src="/facelets/generic/dock-bottom-left.xhtml"></ui:include>
+              </ui:insert>
+              <ui:insert name="dock.bottom.center">
+                <ui:include src="/facelets/generic/dock-bottom-center.xhtml"></ui:include>
+              </ui:insert>
+              <ui:insert name="dock.bottom.right">
+                <ui:include src="/facelets/generic/dock-bottom-right.xhtml"></ui:include>
+              </ui:insert>
+            </m:widgetSpaceSet>
+          </ui:insert>
+        </div>
       </div>
       <div id="footer">
         <div id="footerContainer" class="container_24">

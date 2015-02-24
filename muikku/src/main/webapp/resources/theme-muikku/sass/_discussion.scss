@@ -1,0 +1,14 @@
+  /* discussion (.di-*) */
+
+
+.di-message-create{
+  input{
+   color:#333;
+  
+    &:focus{
+     color:#000;
+    
+    }
+  }  
+}
+
