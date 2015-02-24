@@ -1,5 +1,8 @@
 package fi.muikku.plugins.workspace;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -12,6 +15,8 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.jsf.NavigationRules;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.plugins.workspace.model.WorkspaceFolderType;
+import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.Workspace;
@@ -56,6 +61,13 @@ public class WorkspaceMaterialsManagementBackingBean {
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
     workspaceName = workspace.getName();
     
+    contentNodes = new ArrayList<>();
+    List<WorkspaceNode> rootMaterialNodes = workspaceMaterialController.listVisibleWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(rootFolder, WorkspaceFolderType.DEFAULT);
+    for (WorkspaceNode rootMaterialNode : rootMaterialNodes) {
+      ContentNode node = workspaceMaterialController.createContentNode(rootMaterialNode);
+      contentNodes.add(node);
+    }
+    
     return null;
 	}
 	
@@ -83,7 +95,12 @@ public class WorkspaceMaterialsManagementBackingBean {
     return workspaceEntityId;
   }
   
+  public List<ContentNode> getContentNodes() {
+    return contentNodes;
+  }
+
 	private WorkspaceRootFolder rootFolder;
   private String workspaceName;
   private Long workspaceEntityId;
+  private List<ContentNode> contentNodes;
 }
