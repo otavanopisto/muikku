@@ -396,6 +396,28 @@ body.workspace-materials #contentWorkspaceMaterials {
     }
   }
   
+    
+    span.muikku-field-examples {
+      border-radius:3px;
+      padding:3px;
+      width:auto;
+      background:#e2ffe2;
+      font-style:italic;
+      font-size:13px;
+      margin:1px 3px 1px -2px;
+      
+      span.muikku-field-examples-title {
+        font-weight:600;
+        margin:0px 4px;
+      }
+      
+      span.muikku-field-example {
+        display:inline-block;
+        margin:0px 5px;
+      }
+      
+    }
+  
 }
 
 
@@ -438,5 +460,27 @@ body.workspace-materials-reading #contentWorkspaceMaterialsReading {
       
     }
   }
+  
+    
+    span.muikku-field-examples {
+      border-radius:3px;
+      padding:3px;
+      width:auto;
+      background:#e2ffe2;
+      font-style:italic;
+      font-size:15px;
+      margin:1px 3px 1px -2px;
+      
+      span.muikku-field-examples-title {
+        font-weight:600;
+        margin:0px 4px;
+      }
+      
+      span.muikku-field-example {
+        display:inline-block;
+        margin:0px 5px;
+      }
+      
+    }
   
 }
