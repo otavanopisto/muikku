@@ -41,6 +41,7 @@ import fi.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
 
 @Singleton
@@ -139,10 +140,13 @@ public class MaterialUnEmbedder {
 
       List<Long> pieceList = new ArrayList<Long>();
       htmlMaterialPieces.put(htmlMaterial.getId(), pieceList);
+      
+      HashMap<Long, WorkspaceMaterialAssignmentType> assignmentTypes = new HashMap<Long, WorkspaceMaterialAssignmentType>();
 
       Document documentPiece = splittedHtmlDocument.get(i);
       List<HtmlMaterial> pieceHtmlMaterials;
       if (isEmbedPiece(documentPiece)) {
+        WorkspaceMaterialAssignmentType assignmentType = embeddedHtmlMaterialAssignmentType(documentPiece);
         pieceHtmlMaterials = new ArrayList<HtmlMaterial>();
         long embeddedHtmlMaterialId = embeddedHtmlMaterialId(documentPiece);
         if (htmlMaterialPieces.containsKey(embeddedHtmlMaterialId)) {
@@ -151,14 +155,18 @@ public class MaterialUnEmbedder {
             HtmlMaterial pieceHtmlMaterial = htmlMaterialController.findHtmlMaterialById(htmlMaterialId);
             pieceHtmlMaterials.add(pieceHtmlMaterial);
             pieceList.add(pieceHtmlMaterial.getId());
+            assignmentTypes.put(pieceHtmlMaterial.getId(), assignmentType);
           }
-        } else {
+        }
+        else {
           HtmlMaterial pieceHtmlMaterial = htmlMaterialController.findHtmlMaterialById(embeddedHtmlMaterialId);
           logger.info("Existing html material " + embeddedHtmlMaterialId + " embedded in " + htmlMaterial.getId());
           pieceHtmlMaterials.add(pieceHtmlMaterial);
           pieceList.add(pieceHtmlMaterial.getId());
+          assignmentTypes.put(pieceHtmlMaterial.getId(), assignmentType);
         }
-      } else {
+      }
+      else {
         HtmlMaterial pieceHtmlMaterial = htmlMaterialController.createHtmlMaterial(
             htmlMaterial.getTitle() + " (" + i + ")",
             DeusNexXmlUtils.serializeElement(documentPiece.getDocumentElement(), true, false, "xml"),
@@ -171,7 +179,7 @@ public class MaterialUnEmbedder {
       }
       
       for (HtmlMaterial pieceHtmlMaterial : pieceHtmlMaterials) {
-        WorkspaceNode newNode = workspaceMaterialController.createWorkspaceMaterial(parent, pieceHtmlMaterial);
+        WorkspaceNode newNode = workspaceMaterialController.createWorkspaceMaterial(parent, pieceHtmlMaterial, assignmentTypes.get(pieceHtmlMaterial.getId()));
         workspaceMaterialController.moveAbove(newNode, workspaceMaterial);
       }
     }
@@ -187,9 +195,21 @@ public class MaterialUnEmbedder {
   }
 
   private long embeddedHtmlMaterialId(Document documentPiece) throws XPathExpressionException {
-    NodeList iframes = DeusNexXmlUtils.findNodesByXPath(documentPiece.getDocumentElement(),
+    Node iframe = DeusNexXmlUtils.findNodeByXPath(documentPiece.getDocumentElement(),
         "body/iframe[@data-type='embedded-document']");
-    return Long.parseLong(iframes.item(0).getAttributes().getNamedItem("data-material-id").getNodeValue(), 10);
+    return Long.parseLong(iframe.getAttributes().getNamedItem("data-material-id").getNodeValue(), 10);
+  }
+  
+  private WorkspaceMaterialAssignmentType embeddedHtmlMaterialAssignmentType(Document documentPiece) throws XPathExpressionException {
+    Node iframe = DeusNexXmlUtils.findNodeByXPath(documentPiece.getDocumentElement(),
+        "body/iframe[@data-type='embedded-document']");
+    Node assignmentTypeNode = iframe.getAttributes().getNamedItem("data-assignment-type");
+    String assignmentType = assignmentTypeNode == null ? null : assignmentTypeNode.getNodeValue();
+    if ("EXERCISE".equals(assignmentType))
+      return WorkspaceMaterialAssignmentType.EXERCISE;
+    if ("EVALUATED".equals(assignmentType))
+      return WorkspaceMaterialAssignmentType.EVALUATED;
+    return null;
   }
 
   private List<Document> splitHtmlDocument(Document document) throws XPathExpressionException, DeusNexInternalException {
