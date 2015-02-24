@@ -69,7 +69,6 @@
     
     $('.workspace-materials-view-page[data-workspace-material-assigment-type="EXERCISE"]').each(function (index, page) {
       $(page).prepend($('<div>')
-          .attr('title','Harjoitustehtävä')
           .addClass('muikku-page-assignment-type exercise')
           .append($('<span>').addClass('icon-assignment'))
       );
@@ -77,7 +76,6 @@
     
     $('.workspace-materials-view-page[data-workspace-material-assigment-type="EVALUATED"]').each(function (index, page) {
       $(page).prepend($('<div>')
-          .attr('title','Arvioitavatehtävä')
           .addClass('muikku-page-assignment-type evaluated')
           .append($('<span>').addClass('icon-assignment'))
       );
@@ -130,9 +128,15 @@
             }
             else {
               if ($(field).muikkuField('hasExamples')) {
-                var exampleDetails = $('<details>')
+                var exampleDetails = $('<span>')
                   .addClass('muikku-field-examples')
                   .attr('data-for-field', $(field).attr('name'));
+                
+                exampleDetails.append( 
+                  $('<span>')
+                    .addClass('muikku-field-examples-title')
+                    .text(getLocaleText('plugin.workspace.assigment.checkAnswers.detailsSummary.title'))
+                );
                 
                 $.each($(field).muikkuField('getExamples'), function (index, example) {
                   exampleDetails.append(

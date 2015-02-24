@@ -208,19 +208,19 @@ $(document).ready(function() {
       } 
     };
     
-    $("div[class*='wi-dock-static-navi']").mouseenter(function() {
-      var _this = $(this);
-      showTooltip(_this);
-    });
+//    $("div[class*='wi-dock-static-navi']").mouseenter(function() {
+//      var _this = $(this);
+//      showTooltip(_this);
+//    });
 
-    $("div[class*='wi-dock-static-navi']").mouseleave(function() {
-      var _this = $(this);
-      hideTooltip(_this);
-    });
+//    $("div[class*='wi-dock-static-navi']").mouseleave(function() {
+//      var _this = $(this);
+//      hideTooltip(_this);
+//    });
     
     
 /* Alternative identity dropdown */    
-    
+    	
 	$(".lu-user-name-button").click(function(){
 
 		  

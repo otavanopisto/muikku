@@ -287,7 +287,7 @@ public class DeusNexContentParser {
 		List<Element> answerElements = DeusNexXmlUtils.getElementsByXPath(fieldElement, "rightanswers/answer");
 		for (Element answerElement : answerElements) {
 			String answerText = DeusNexXmlUtils.getChildValue(answerElement, "text");
-			Double answerPoints = DeusNexXmlUtils.getChildValueDoble(answerElement, "points");
+			Double answerPoints = DeusNexXmlUtils.getChildValueDouble(answerElement, "points");
 			rightAnswers.add(new RightAnswer(answerPoints, answerText));
 		}
 		

@@ -41,6 +41,18 @@
   content: "\e637";
 }
 
+.icon-close-small:before {
+  content: "\e63b";
+}
+
+.icon-add:before {
+  content: "\e114";
+}
+
+.icon-diary:before {
+  content: "\e615";
+}
+
 .icon-compare:before {
   content: "\f0ac";
 }
@@ -105,6 +117,14 @@
   content: "\e63a";
 }
 
+.icon-request-evaluation:before {
+  content: "\e9e1";
+}
+
+.icon-cancel-evaluation:before {
+  content: "\e9f3";
+}
+
 .icon-exit-editing:before {
   content: "\f045";
 }
@@ -139,10 +159,6 @@
 
 .icon-close:before {
   content: "\e604";
-}
-
-.icon-diary:before {
-  content: "\e615";
 }
 
 .icon-materials:before {
@@ -271,14 +287,6 @@
 
 .icon-guides:before {
   content: "\e635";
-}
-
-.icon-close-small:before {
-  content: "\e63b";
-}
-
-.icon-add:before {
-  content: "\e114";
 }
 
 .icon-arrow-left2:before {
