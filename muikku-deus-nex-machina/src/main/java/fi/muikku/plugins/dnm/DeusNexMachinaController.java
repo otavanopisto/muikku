@@ -394,6 +394,18 @@ public class DeusNexMachinaController {
           WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByUrlName(workspaceUrlName);
           WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialByWorkspaceEntityAndPath(workspaceEntity, path);
           HtmlMaterial htmlMaterial = htmlMaterialController.findHtmlMaterialById(workspaceMaterial.getMaterialId());
+          
+          // If a header precedes an embedded document, use its text as the embedded
+          // document's title and remove it from the parent document altogether 
+          Node possibleHeaderNode = getPreviousSiblingElement(element.getParentNode());
+          if (isHeader(possibleHeaderNode)) {
+            String headerText = StringUtils.trim(possibleHeaderNode.getTextContent());
+            if (!StringUtils.isBlank(headerText)) {
+              htmlMaterialController.updateHtmlMaterialTitle(htmlMaterial, headerText);
+              possibleHeaderNode.getParentNode().removeChild(possibleHeaderNode);
+            }
+          }
+          
           element.setAttribute("data-material-id", String.valueOf(htmlMaterial.getId()));
           element.setAttribute("data-material-type", htmlMaterial.getType());
           element.setAttribute("data-workspace-material-id", String.valueOf(workspaceMaterial.getId()));
@@ -410,6 +422,27 @@ public class DeusNexMachinaController {
       htmlMaterialController.updateHtmlMaterialHtml(material, writer.getBuffer().toString());
     }
 
+  }
+  
+  private Node getPreviousSiblingElement(Node node) {
+    Node n = node == null ? null : node.getPreviousSibling();
+    while (n != null && !(n instanceof Element)) {
+      n = n.getPreviousSibling();
+    }
+    return n;
+  }
+  
+  private boolean isHeader(Node node) {
+    return node instanceof Element && stringIn(((Element) node).getTagName(), new String[] {"h1","h2","h3","h4","h5","h6"}); 
+  }
+  
+  private boolean stringIn(String value, String[] values) {
+    for (int i = 0; i < values.length; i++) {
+      if (value.equals(values[i])) {
+        return true;
+      }
+    }
+    return false;
   }
   
   private WorkspaceMaterialAssignmentType determineEmbeddedAssignmentType(HtmlMaterial material) throws DeusNexException {

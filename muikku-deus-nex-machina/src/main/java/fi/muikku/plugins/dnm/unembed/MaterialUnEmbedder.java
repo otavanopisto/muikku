@@ -17,14 +17,17 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathExpressionException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -190,28 +193,75 @@ public class MaterialUnEmbedder {
   }
 
   private List<Document> splitHtmlDocument(Document document) throws XPathExpressionException, DeusNexInternalException {
-    DocumentBuilder documentBuilder = DeusNexXmlUtils.createDocumentBuilder();
 
     while (embedIframesInNonTopLevelElement(document)) {
       bubbleUpEmbedIframes(document);
     }
-
+    
     List<Document> documentPieces = new ArrayList<Document>();
     NodeList pieceNodes = DeusNexXmlUtils.findNodesByXPath(document.getDocumentElement(), "body/*");
-
+    
+    List<Node> paragraphs = new ArrayList<Node>();
+    boolean isEmbeddedDocument = false; 
     for (int i = 0; i < pieceNodes.getLength(); i++) {
+      isEmbeddedDocument = false;
       Node pieceNode = pieceNodes.item(i);
-      Document documentPiece = documentBuilder.newDocument();
-      Node html = documentPiece.createElement("html");
-      documentPiece.appendChild(html);
-      Node body = documentPiece.createElement("body");
-      html.appendChild(body);
-      Node adoptedPieceNode = documentPiece.adoptNode(pieceNode);
-      body.appendChild(adoptedPieceNode);
-      documentPieces.add(documentPiece);
+      if (isBlankOrEmptyParagraph(pieceNode)) {
+        continue;
+      }
+      else if (pieceNode instanceof Element) {
+        Element element = (Element) pieceNode;
+        if ("iframe".equals(element.getTagName())) {
+          String type = element.getAttribute("data-type");
+          isEmbeddedDocument = "embedded-document".equals(type);
+        }
+      }
+      if (isEmbeddedDocument) {
+        // text content
+        if (!paragraphs.isEmpty()) {
+          documentPieces.add(createDocument(paragraphs));
+          paragraphs.clear();
+        }
+        // embedded document
+        paragraphs.add(pieceNode);
+        documentPieces.add(createDocument(paragraphs));
+        paragraphs.clear();
+      }
+      else {
+        paragraphs.add(pieceNode);
+      }
+    }
+    // text content
+    if (!paragraphs.isEmpty()) {
+      documentPieces.add(createDocument(paragraphs));
+      paragraphs.clear();
     }
 
     return documentPieces;
+  }
+  
+  private boolean isBlankOrEmptyParagraph(Node node) {
+    if (node instanceof Text) {
+      return StringUtils.isBlank(((Text) node).getWholeText());
+    }
+    else if (node instanceof Element) {
+      return "p".equals(((Element) node).getTagName()) && StringUtils.isBlank(node.getTextContent());
+    }
+    return false;
+  }
+  
+  private Document createDocument(List<Node> paragraphs) throws DeusNexInternalException {
+    DocumentBuilder documentBuilder = DeusNexXmlUtils.createDocumentBuilder();
+    Document documentPiece = documentBuilder.newDocument();
+    Node html = documentPiece.createElement("html");
+    documentPiece.appendChild(html);
+    Node body = documentPiece.createElement("body");
+    html.appendChild(body);
+    for (Node paragraph : paragraphs) {
+      Node adoptedPieceNode = documentPiece.adoptNode(paragraph);
+      body.appendChild(adoptedPieceNode);
+    }
+    return documentPiece;
   }
 
   private boolean embedIframesInNonTopLevelElement(Document document) throws XPathExpressionException {
@@ -224,7 +274,7 @@ public class MaterialUnEmbedder {
 
     return iframes.getLength() > 0;
   }
-
+  
   private void bubbleUpEmbedIframes(Document document) throws XPathExpressionException {
     NodeList iframes = DeusNexXmlUtils.findNodesByXPath(document.getDocumentElement(),
         "body/*//iframe[@data-type='embedded-document']");
