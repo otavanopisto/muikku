@@ -4,8 +4,10 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import fi.muikku.model.users.EnvironmentRoleArchetype;
+import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.security.AbstractMuikkuPermissionCollection;
-import fi.muikku.security.DefaultPermissionRoles;
+import fi.muikku.security.DefaultEnvironmentPermissionRoles;
 import fi.muikku.security.MuikkuPermissionCollection;
 import fi.muikku.security.PermissionScope;
 import fi.muikku.security.Scope;
@@ -16,19 +18,19 @@ public class StudentsViewPermissions extends AbstractMuikkuPermissionCollection 
   /* Environment */
   
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultPermissionRoles ({ MANAGER, TEACHER })
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.TEACHER })
   public static final String MANAGE_STUDENTS = "MANAGE_STUDENTS";
 
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultPermissionRoles ({ MANAGER, TEACHER })
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.TEACHER })
   public static final String MANAGE_STUDENTS_VIEW_STUDENT = "MANAGE_STUDENTS_VIEW_STUDENT";
 
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultPermissionRoles ({ MANAGER, TEACHER })
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.TEACHER })
   public static final String MANAGE_STUDENTS_VIEW_STUDENT_STUDYPLAN = "MANAGE_STUDENTS_VIEW_STUDENT_STUDYPLAN";
   
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultPermissionRoles ({ MANAGER, TEACHER })
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.TEACHER })
   public static final String MANAGE_STUDENTS_VIEW_STUDENT_CREDITS = "MANAGE_STUDENTS_VIEW_STUDENT_CREDITS";
 
   
@@ -54,7 +56,18 @@ public class StudentsViewPermissions extends AbstractMuikkuPermissionCollection 
   }
 
   @Override
-  public String[] getDefaultRoles(String permission) throws NoSuchFieldException {
-    return getDefaultRoles(StudentsViewPermissions.class, permission);
+  public String[] getDefaultPseudoRoles(String permission) throws NoSuchFieldException {
+    return getDefaultPseudoRoles(StudentsViewPermissions.class, permission);
   }
+
+  @Override
+  public EnvironmentRoleArchetype[] getDefaultEnvironmentRoles(String permission) throws NoSuchFieldException {
+    return getDefaultEnvironmentRoles(StudentsViewPermissions.class, permission);
+  }
+
+  @Override
+  public WorkspaceRoleArchetype[] getDefaultWorkspaceRoles(String permission) throws NoSuchFieldException {
+    return getDefaultWorkspaceRoles(StudentsViewPermissions.class, permission);
+  }
+
 }
