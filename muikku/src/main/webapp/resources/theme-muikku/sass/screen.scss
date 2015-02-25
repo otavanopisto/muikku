@@ -404,11 +404,12 @@ a.header {
 
     &.closed{
         min-height:30px;
-        opacity:0.2;
+        opacity:0.1;
      }  
      
     &.open{
-        opacity:1;
+       background-color:#DFEDF5;
+       opacity:1;
      }           
   }  
 }

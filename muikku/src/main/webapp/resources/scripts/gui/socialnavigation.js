@@ -1,9 +1,18 @@
  
  function openInSN(template){
-	var functionContainer = $('.sn-container');
+
 	var formContainer = $('#mainfunctionFormTabs'); 
+	 
+    // temporary solution for removing existing tabs --> TODO: TABBING
+    
+    formContainer.empty();
+	 
+	var functionContainer = $('.sn-container');
+
     var openTabs = formContainer.children().length;    	
     var tabDiv = $("<div class='mf-form-tab' id='mainfunctionFormTab-" + eval(openTabs + 1) + "'>");
+    
+
     
     tabDiv.appendTo(formContainer);
     
