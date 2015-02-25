@@ -1,14 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:h="http://java.sun.com/jsf/html">
+<ui:composition 
+xmlns="http://www.w3.org/1999/xhtml" 
+xmlns:ui="http://java.sun.com/jsf/facelets" 
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:h="http://java.sun.com/jsf/html">
   
 
 
   <div class="di-messages-container">
-    <div class="mf-content-main">
       <ui:insert name="hiddenFields"></ui:insert>
-
-    </div>
+      
+      <c:forEach begin="1" end="10">
+          <div class="mf-item di-message">
+           <div class="mf-item-header-name di-message-meta">
+             <div class="di-message-meta-topic"><span>Header</span></div>
+             <div class="di-message-meta-content"><span>Content</span></div>
+           </div>
+           <div class="mf-item-header-details di-message-details">
+             <div class="di-message-area"><span>Alue</span></div>
+             <div class="di-message-activity"><span>Aktiviteetit</span></div>
+           </div>
+           <div class="clear"></div>
+          </div>
+      </c:forEach>
     <div class="clear"></div>
   </div>
 </ui:composition>

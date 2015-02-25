@@ -30,3 +30,30 @@
   }  
 }
 
+.di-messages-container{
+    .di-message{
+    
+    .di-message-meta{
+      width:60%;
+      border:1px solid #dadada;
+    }
+    .di-message-details{
+      width:40%;
+      border:1px solid #dadada;
+      div{
+       display:inline-block;
+       box-sizing:border-box;
+       border:1px solid #dadada;
+      }
+      .di-message-area{
+        width:50%
+        
+      }
+      .di-message-activity{
+        width:50%
+      }
+    }
+    }
+    
+  }
+
