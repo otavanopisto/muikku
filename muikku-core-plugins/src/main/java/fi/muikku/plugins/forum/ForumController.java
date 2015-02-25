@@ -4,9 +4,8 @@ import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateful;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import fi.muikku.controller.ResourceRightsController;
 import fi.muikku.model.security.ResourceRights;
@@ -33,9 +32,8 @@ import fi.muikku.session.SessionController;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
 
-@RequestScoped
+@Dependent
 @Stateful
-@Named("Forum")
 public class ForumController {
   @Inject
   private SessionController sessionController;
