@@ -413,7 +413,7 @@ public class DeusNexMachinaController {
           
           // If a header precedes an embedded document, use its text as the embedded
           // document's title and remove it from the parent document altogether 
-          Node possibleHeaderNode = getPreviousSiblingElement(element.getParentNode());
+          Node possibleHeaderNode = getPreviousSiblingElement(element);
           if (isHeader(possibleHeaderNode)) {
             String headerText = StringUtils.trim(possibleHeaderNode.getTextContent());
             if (!StringUtils.isBlank(headerText)) {
@@ -544,7 +544,7 @@ public class DeusNexMachinaController {
             assignmentType = determineEmbeddedAssignmentType((HtmlMaterial) material);
           }
           
-          WorkspaceMaterial workspaceMaterial = workspaceMaterialController.createWorkspaceMaterial(parent, material, resource.getName(), assignmentType);
+          WorkspaceMaterial workspaceMaterial = workspaceMaterialController.createWorkspaceMaterial(parent, material, assignmentType);
           
           try {
             setResourceWorkspaceNodeId(resource.getNo(), workspaceMaterial.getId());

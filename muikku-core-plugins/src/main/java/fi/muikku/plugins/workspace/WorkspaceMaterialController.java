@@ -272,7 +272,7 @@ public class WorkspaceMaterialController {
   /* Workspace material */
   
   public WorkspaceMaterial createWorkspaceMaterial(WorkspaceNode parent, Material material) {
-    return createWorkspaceMaterial(parent, material, (WorkspaceMaterialAssignmentType) null);
+    return createWorkspaceMaterial(parent, material, null);
   }
 
   public WorkspaceMaterial createWorkspaceMaterial(WorkspaceNode parent, Material material, WorkspaceMaterialAssignmentType assignmentType) {
@@ -280,11 +280,7 @@ public class WorkspaceMaterialController {
     return createWorkspaceMaterial(parent, material, urlName, assignmentType);
   }
 
-  public WorkspaceMaterial createWorkspaceMaterial(WorkspaceNode parent, Material material, String urlName) {
-    return createWorkspaceMaterial(parent, material, urlName, null);
-  }
-
-  public WorkspaceMaterial createWorkspaceMaterial(WorkspaceNode parent, Material material, String urlName, WorkspaceMaterialAssignmentType assignmentType) {
+  private WorkspaceMaterial createWorkspaceMaterial(WorkspaceNode parent, Material material, String urlName, WorkspaceMaterialAssignmentType assignmentType) {
     Integer index = workspaceNodeDAO.getMaximumOrderNumber(parent);
     index = index == null ? 0 : ++index;
     WorkspaceMaterial workspaceMaterial = workspaceMaterialDAO.create(parent, material.getId(), urlName, index, false, assignmentType);

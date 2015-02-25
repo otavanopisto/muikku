@@ -143,7 +143,7 @@ public class WorkspaceMaterialUploadBackingBean {
           byte[] fileData = TempFileUtils.getTempFileData(fileId);
           
           BinaryMaterial binaryMaterial = binaryMaterialController.createBinaryMaterial(fileName, contentType, fileData);
-          workspaceMaterialController.createWorkspaceMaterial(parent, binaryMaterial, (String)null);
+          workspaceMaterialController.createWorkspaceMaterial(parent, binaryMaterial);
         } finally {
           TempFileUtils.deleteTempFile(fileId);
         }
