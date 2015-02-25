@@ -31,28 +31,37 @@
 }
 
 .di-messages-container{
-    .di-message{
     
+    .di-message{
+     height:80px;
+     margin-top:2px;
+     margin-right:5px;
+     margin-left:5px;
+     margin-bottom:0;
+     padding:0;
+     > div{
+      height:80px
+     }
     .di-message-meta{
       width:60%;
-      border:1px solid #dadada;
       box-sizing:border-box;
     }
     .di-message-details{
       width:40%;
-      border:1px solid #dadada;
       box-sizing:border-box;
       div{
+       height:80px;
+       padding-left:5px;  
        display:inline-block;
        box-sizing:border-box;
-       border:1px solid #dadada;
+
       }
       .di-message-area{
         width:50%
         
       }
       .di-message-activity{
-        width:50%
+        width:49%
       }
     }
     }
