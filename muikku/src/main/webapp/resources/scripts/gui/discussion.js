@@ -5,6 +5,13 @@ $(document).ready(function(){
 		
 	});
 
+	$(".di-new-area-button").click(function(){
+
+		openInSN('/discussion/newarea.dust')
+		
+	});
+
+	
        
 	});
 

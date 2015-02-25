@@ -22,4 +22,11 @@
     <m:widget name="discussion-new-message" size="6" rendered="#{sessionBackingBean.loggedIn}"/>
   </ui:define>
 
+  <ui:define name="content.tools.center"> 
+    <m:widget name="discussion-browse-areas" size="6" rendered="#{sessionBackingBean.loggedIn}"/>
+  </ui:define>
+   <ui:define name="content.tools.right"> 
+    <m:widget name="discussion-new-area" size="6" rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn}"/>
+  </ui:define>
+
 </ui:composition>

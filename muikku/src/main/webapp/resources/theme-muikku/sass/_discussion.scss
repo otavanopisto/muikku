@@ -1,7 +1,13 @@
   /* discussion (.di-*) */
 
 
+.di-newmessage-form-container{
+
+  
+}
+
 .di-message-create{
+   width:100%;
   form{
    width:100%;
   }
@@ -15,19 +21,58 @@
       line-height: 30px;
       width: 400px;      
       
+      
       &:focus{
        color:#000;   
       }
     }
-    &[type="memofield"]{
-      width:100%;
-      color: #dadada;
-      line-height: 30px;
-      width: 400px;      
-      
-    }
 
   }  
+  
+    textarea{
+
+      margin-left:5px;
+    }
+    .di-message-new-content{
+      width:100%;
+      
+    }  
+}
+
+
+.di-new-area-container{
+  .di-new-area-button{
+    cursor:pointer;
+
+  }
+    
+  
+  
+  div{
+   width:40px;
+   height:40px;
+   float:right;
+   margin-right:10px;
+  &:before{
+   font-size:40px;
+   color:#fda726;
+   
+  }
+  
+
+}
+  
+}
+
+.di-browse-areas-container{
+   margin-top:15px;
+   
+  select{
+     height:37px;
+     line-height:37px;
+    
+  }
+  
 }
 
 .di-messages-container{

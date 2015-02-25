@@ -1,19 +1,12 @@
-<div class="mf-form di-newmessage-form-container wide" id="{id}">
-
-
-  <div class="di-message-create">
+<div class="mf-form di-createarea-form-container wide" id="{id}">
+  <div class="di-area-create">
     <form>
       <div class="mf-content">
-          <div class="di-message-new-body">
+          <div class="di-area-new-body">
             <div class="mf-fieldRow">
               <div class="mf-textfield">
-                <input type="textfield" value="" name="msgSubject"></input>
+                <input type="textfield" value="" name="areName"></input>
               </div>        
-              <div class="di-message-new-content">
-                <div class="mf-textarea">
-                 <textarea name="msgContent"></textarea>
-                </div>
-              </div>
             </div>
           </div>
         </div>
