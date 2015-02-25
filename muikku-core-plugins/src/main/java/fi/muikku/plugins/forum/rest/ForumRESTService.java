@@ -204,4 +204,21 @@ public class ForumRESTService extends PluginRESTService {
   }
   
   
+  @GET
+  @Path ("/latest")
+  public Response listLatestThreads(@QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, 
+      @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults) throws AuthorizationException {
+    List<ForumThread> threads = forumController.listLatestForumThreads(firstResult, maxResults);
+    
+    List<ForumThreadRESTModel> result = new ArrayList<ForumThreadRESTModel>();
+    
+    for (ForumThread thread : threads) {
+      result.add(new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getSticky(), thread.getLocked()));
+    }
+    
+    return Response.ok(
+      result
+    ).build();
+  }
+  
 }

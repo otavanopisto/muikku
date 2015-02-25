@@ -1,5 +1,6 @@
 package fi.muikku.plugins.forum;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -111,6 +112,11 @@ public class ForumController {
         environmentForumAreaDAO.listAll(), ForumResourcePermissionCollection.FORUM_WRITEAREA);
   }
 
+  public List<WorkspaceForumArea> listCourseForums() {
+    return sessionController.filterResources(
+        workspaceForumAreaDAO.listAll(), ForumResourcePermissionCollection.FORUM_WRITEAREA);
+  }
+
   public List<WorkspaceForumArea> listCourseForums(WorkspaceEntity workspace) {
     return sessionController.filterResources(
         workspaceForumAreaDAO.listByWorkspace(workspace), ForumResourcePermissionCollection.FORUM_WRITEAREA);
@@ -126,6 +132,26 @@ public class ForumController {
   @Permit (ForumResourcePermissionCollection.FORUM_LISTTHREADS)
   public List<ForumThreadReply> listForumThreadReplies(@PermitContext ForumThread forumThread, Integer firstResult, Integer maxResults) {
     return forumThreadReplyDAO.listByForumThread(forumThread, firstResult, maxResults);
+  }
+  
+  public List<ForumThread> listLatestForumThreads(int firstResult, int maxResults) {
+    List<EnvironmentForumArea> environmentForums = listEnvironmentForums();
+    List<WorkspaceForumArea> workspaceForums = listCourseForums();
+    List<ForumArea> forumAreas = new ArrayList<ForumArea>();
+
+    // TODO: This could use some optimization
+    
+    for (EnvironmentForumArea ef : environmentForums) {
+      forumAreas.add(ef);
+    }
+    
+    for (WorkspaceForumArea wf : workspaceForums) {
+      forumAreas.add(wf);
+    }
+    
+    List<ForumThread> threads = forumThreadDAO.listLatestOrdered(forumAreas, firstResult, maxResults);
+    
+    return threads;
   }
   
   public UserEntity findUserEntity(Long userEntityId) {
