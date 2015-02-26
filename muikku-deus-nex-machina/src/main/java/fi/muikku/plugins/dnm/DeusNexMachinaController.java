@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
@@ -542,7 +540,7 @@ public class DeusNexMachinaController {
             assignmentType = determineEmbeddedAssignmentType((HtmlMaterial) material);
           }
 
-          WorkspaceMaterial workspaceMaterial = workspaceMaterialController.createWorkspaceMaterial(parent, material, assignmentType);
+          WorkspaceMaterial workspaceMaterial = workspaceMaterialController.createWorkspaceMaterial(parent, material, resource.getName(), assignmentType);
 
           try {
             setResourceWorkspaceNodeId(resource.getNo(), workspaceMaterial.getId());
