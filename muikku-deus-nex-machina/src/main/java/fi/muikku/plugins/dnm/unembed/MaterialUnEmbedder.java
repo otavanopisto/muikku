@@ -243,10 +243,7 @@ public class MaterialUnEmbedder {
     for (int i = 0; i < pieceNodes.getLength(); i++) {
       isEmbeddedDocument = false;
       Node pieceNode = pieceNodes.item(i);
-      if (isBlankOrEmptyParagraph(pieceNode)) {
-        continue;
-      }
-      else if (pieceNode instanceof Element) {
+      if (pieceNode instanceof Element) {
         Element element = (Element) pieceNode;
         if ("iframe".equals(element.getTagName())) {
           String type = element.getAttribute("data-type");
@@ -275,16 +272,6 @@ public class MaterialUnEmbedder {
     }
 
     return documentPieces;
-  }
-  
-  private boolean isBlankOrEmptyParagraph(Node node) {
-    if (node instanceof Text) {
-      return StringUtils.isBlank(((Text) node).getWholeText());
-    }
-    else if (node instanceof Element) {
-      return "p".equals(((Element) node).getTagName()) && StringUtils.isBlank(node.getTextContent());
-    }
-    return false;
   }
   
   private Document createDocument(List<Node> paragraphs) throws DeusNexInternalException {
