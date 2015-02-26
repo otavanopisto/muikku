@@ -77,7 +77,7 @@ public class DeusNexMachinaController {
 
   @Inject
   private PluginSettingsController pluginSettingsController;
-  
+
   @Inject
   private MaterialUnEmbedder materialUnEmbedder;
 
@@ -89,7 +89,8 @@ public class DeusNexMachinaController {
     }
 
     @Override
-    public Node handleEmbeddedDocument(org.w3c.dom.Document ownerDocument, String title, Integer queryType, Integer resourceNo, Integer embeddedResourceNo) {
+    public Node handleEmbeddedDocument(org.w3c.dom.Document ownerDocument, String title, Integer queryType, Integer resourceNo,
+        Integer embeddedResourceNo) {
       // TODO: This is just for show, real implementation depends on HtmlMaterial implementation
 
       String relativePath = getResourcePath(resourceNo);
@@ -107,6 +108,7 @@ public class DeusNexMachinaController {
           iframeElement.setAttribute("data-assignment-type", "EVALUATED");
         }
         iframeElement.setAttribute("data-type", "embedded-document");
+        iframeElement.setAttribute("data-resource-no", String.valueOf(resourceNo));
 
         iframeElement.setAttribute("width", "100%");
         iframeElement.setTextContent("Browser does not support iframes");
@@ -119,8 +121,8 @@ public class DeusNexMachinaController {
     }
 
     @Override
-    public Node handleEmbeddedImage(org.w3c.dom.Document ownerDocument, String title, String alt, Integer width, Integer height, Integer hspace, String align,
-        Integer resourceNo) {
+    public Node handleEmbeddedImage(org.w3c.dom.Document ownerDocument, String title, String alt, Integer width, Integer height,
+        Integer hspace, String align, Integer resourceNo) {
       String relativePath = getResourcePath(resourceNo);
       if (relativePath != null) {
         Element imgElement = ownerDocument.createElement("img");
@@ -140,8 +142,8 @@ public class DeusNexMachinaController {
     }
 
     @Override
-    public Node handleEmbeddedAudio(org.w3c.dom.Document ownerDocument, Integer resourceNo, Boolean showAsLink, String fileName, String linkText,
-        Boolean autoStart, Boolean loop) {
+    public Node handleEmbeddedAudio(org.w3c.dom.Document ownerDocument, Integer resourceNo, Boolean showAsLink, String fileName,
+        String linkText, Boolean autoStart, Boolean loop) {
       String path = getResourcePath(resourceNo);
       if (path != null) {
         if (showAsLink) {
@@ -181,7 +183,8 @@ public class DeusNexMachinaController {
     }
 
     @Override
-    public Node handleEmbeddedHyperlink(org.w3c.dom.Document ownerDocument, Integer resourceNo, String target, String fileName, String linkText) {
+    public Node handleEmbeddedHyperlink(org.w3c.dom.Document ownerDocument, Integer resourceNo, String target, String fileName,
+        String linkText) {
       String path = getResourcePath(resourceNo);
       if (path != null) {
         Element hyperLinkElement = ownerDocument.createElement("a");
@@ -219,12 +222,12 @@ public class DeusNexMachinaController {
           if (reference == null) {
             reference = importRoot;
           }
-          
+
           String rootPath = WorkspaceMaterialUtils.getCompletePath(reference);
           if (!rootPath.endsWith("/")) {
             rootPath += '/';
           }
-          
+
           String resourcePath = getResourcePath(deusNexDocument, resource);
           path = "/" + rootPath + resourcePath;
           type = "DND";
@@ -274,6 +277,7 @@ public class DeusNexMachinaController {
 
       return null;
     }
+
     private WorkspaceNode importRoot;
     private DeusNexDocument deusNexDocument;
   }
@@ -292,7 +296,7 @@ public class DeusNexMachinaController {
 
   @Inject
   private WorkspaceEntityController workspaceEntityController;
-  
+
   @PostConstruct
   public void init() throws IOException {
     deusNexStructureParser = new DeusNexStructureParser();
@@ -311,18 +315,19 @@ public class DeusNexMachinaController {
     for (Resource resource : desNexDocument.getRootFolder().getResources()) {
       importResource(parentNode, parentNode, resource, desNexDocument, createdNodes);
     }
+
     try {
       postProcessResources(createdNodes);
     } catch (Exception e) {
       throw new DeusNexInternalException("PostProcesssing failed. ", e);
     }
-    
+
     materialUnEmbedder.unembedWorkspaceMaterials(parentNode);
   }
 
   public void importFrontPageDocument(WorkspaceEntity workspaceEntity, InputStream inputStream) throws DeusNexException {
     DeusNexDocument deusNexDocument = parseDeusNexDocument(inputStream);
-    
+
     List<Resource> resources = deusNexDocument.getRootFolder().getResources();
     if (!resources.isEmpty()) {
       List<WorkspaceNode> createdNodes = new ArrayList<>();
@@ -336,13 +341,13 @@ public class DeusNexMachinaController {
       } catch (Exception e) {
         throw new DeusNexInternalException("PostProcesssing failed. ", e);
       }
-      
+
     }
   }
 
   public void importHelpPageDocument(WorkspaceEntity workspaceEntity, InputStream inputStream) throws DeusNexException {
     DeusNexDocument deusNexDocument = parseDeusNexDocument(inputStream);
-    
+
     List<Resource> resources = deusNexDocument.getRootFolder().getResources();
     if (!resources.isEmpty()) {
       List<WorkspaceNode> createdNodes = new ArrayList<>();
@@ -356,12 +361,12 @@ public class DeusNexMachinaController {
       } catch (Exception e) {
         throw new DeusNexInternalException("PostProcesssing failed. ", e);
       }
-      
+
     }
   }
-  
-  private void postProcessResources(List<WorkspaceNode> createdNodes) throws ParserConfigurationException, SAXException,
-      IOException, XPathExpressionException, TransformerException {
+
+  private void postProcessResources(List<WorkspaceNode> createdNodes) throws ParserConfigurationException, SAXException, IOException,
+      XPathExpressionException, TransformerException {
     for (WorkspaceNode node : createdNodes) {
       if (node.getType() == WorkspaceNodeType.MATERIAL) {
         WorkspaceMaterial workspaceMaterial = (WorkspaceMaterial) node;
@@ -382,7 +387,7 @@ public class DeusNexMachinaController {
     parser.parse(inputSource);
     org.w3c.dom.Document domDocument = parser.getDocument();
     boolean modified = false;
-    
+
     // Embedded YouTube clips; strip protocol
     List<Element> elements = DeusNexXmlUtils.getElementsByXPath(domDocument.getDocumentElement(), "//iframe");
     if (!elements.isEmpty()) {
@@ -394,41 +399,33 @@ public class DeusNexMachinaController {
         }
       }
     }
-    
+
     // Embedded documents; add data attributes and determine correct material title
     elements = DeusNexXmlUtils.getElementsByXPath(domDocument.getDocumentElement(), "//iframe[@data-type=\"embedded-document\"]");
     if (!elements.isEmpty()) {
       modified = true;
       for (Element element : elements) {
-        String path = element.getAttribute("src");
-        String workspaceUrlName = "";
-        Pattern pattern = Pattern.compile("/([0-9_\\-.a-zA-Z]*)/([0-9_\\-.a-zA-Z]*)/materials/([0-9_\\-.a-zA-Z/]*).*");
-        Matcher matcher = pattern.matcher(path);
-        if (matcher.matches()) {
-          workspaceUrlName = matcher.group(2);
-          path = matcher.group(3);
-          WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByUrlName(workspaceUrlName);
-          WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialByWorkspaceEntityAndPath(workspaceEntity, path);
-          HtmlMaterial htmlMaterial = htmlMaterialController.findHtmlMaterialById(workspaceMaterial.getMaterialId());
-          
-          // If a header precedes an embedded document, use its text as the embedded
-          // document's title and remove it from the parent document altogether 
-          Node possibleHeaderNode = getPreviousSiblingElement(element);
-          if (isHeader(possibleHeaderNode)) {
-            String headerText = StringUtils.trim(possibleHeaderNode.getTextContent());
-            if (!StringUtils.isBlank(headerText)) {
-              htmlMaterialController.updateHtmlMaterialTitle(htmlMaterial, headerText);
-              possibleHeaderNode.getParentNode().removeChild(possibleHeaderNode);
-            }
+        Integer resourceNo = Integer.valueOf(element.getAttribute("data-resource-no"));
+        WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(getResourceWorkspaceNodeId(resourceNo));
+        HtmlMaterial htmlMaterial = htmlMaterialController.findHtmlMaterialById(workspaceMaterial.getMaterialId());
+
+        // If a header precedes an embedded document, use its text as the embedded
+        // document's title and remove it from the parent document altogether
+        Node possibleHeaderNode = getPreviousSiblingElement(element);
+        if (isHeader(possibleHeaderNode)) {
+          String headerText = StringUtils.trim(possibleHeaderNode.getTextContent());
+          if (!StringUtils.isBlank(headerText)) {
+            htmlMaterialController.updateHtmlMaterialTitle(htmlMaterial, headerText);
+            possibleHeaderNode.getParentNode().removeChild(possibleHeaderNode);
           }
-          
-          element.setAttribute("data-material-id", String.valueOf(htmlMaterial.getId()));
-          element.setAttribute("data-material-type", htmlMaterial.getType());
-          element.setAttribute("data-workspace-material-id", String.valueOf(workspaceMaterial.getId()));
         }
+
+        element.setAttribute("data-material-id", String.valueOf(htmlMaterial.getId()));
+        element.setAttribute("data-material-type", htmlMaterial.getType());
+        element.setAttribute("data-workspace-material-id", String.valueOf(workspaceMaterial.getId()));
       }
     }
-    
+
     // Update to post-processed version, if applicable
     if (modified) {
       StringWriter writer = new StringWriter();
@@ -442,7 +439,7 @@ public class DeusNexMachinaController {
       htmlMaterialController.updateHtmlMaterialHtml(material, writer.getBuffer().toString());
     }
   }
-  
+
   private Node getPreviousSiblingElement(Node node) {
     Node n = node == null ? null : node.getPreviousSibling();
     while (n != null && !(n instanceof Element)) {
@@ -450,11 +447,11 @@ public class DeusNexMachinaController {
     }
     return n;
   }
-  
+
   private boolean isHeader(Node node) {
-    return node instanceof Element && stringIn(((Element) node).getTagName(), new String[] {"h1","h2","h3","h4","h5","h6"}); 
+    return node instanceof Element && stringIn(((Element) node).getTagName(), new String[] { "h1", "h2", "h3", "h4", "h5", "h6" });
   }
-  
+
   private boolean stringIn(String value, String[] values) {
     for (int i = 0; i < values.length; i++) {
       if (value.equals(values[i])) {
@@ -463,7 +460,7 @@ public class DeusNexMachinaController {
     }
     return false;
   }
-  
+
   private WorkspaceMaterialAssignmentType determineEmbeddedAssignmentType(HtmlMaterial material) throws DeusNexException {
     try {
       if (material.getHtml() == null) {
@@ -474,7 +471,8 @@ public class DeusNexMachinaController {
       InputSource inputSource = new InputSource(htmlReader);
       parser.parse(inputSource);
       org.w3c.dom.Document domDocument = parser.getDocument();
-      List<Element> elements = DeusNexXmlUtils.getElementsByXPath(domDocument.getDocumentElement(), "//iframe[@data-type=\"embedded-document\"]");
+      List<Element> elements = DeusNexXmlUtils.getElementsByXPath(domDocument.getDocumentElement(),
+          "//iframe[@data-type=\"embedded-document\"]");
       List<WorkspaceMaterialAssignmentType> assignmentTypes = new ArrayList<>();
       if (!elements.isEmpty()) {
         for (Element element : elements) {
@@ -486,11 +484,11 @@ public class DeusNexMachinaController {
           }
         }
       }
-      if (assignmentTypes.isEmpty() || (assignmentTypes.contains(WorkspaceMaterialAssignmentType.EXERCISE)
-          && assignmentTypes.contains(WorkspaceMaterialAssignmentType.EVALUATED))) {
+      if (assignmentTypes.isEmpty()
+          || (assignmentTypes.contains(WorkspaceMaterialAssignmentType.EXERCISE) && assignmentTypes
+              .contains(WorkspaceMaterialAssignmentType.EVALUATED))) {
         return null;
-      }
-      else {
+      } else {
         return assignmentTypes.get(0);
       }
     } catch (SAXException | IOException | XPathExpressionException e) {
@@ -532,7 +530,7 @@ public class DeusNexMachinaController {
           WorkspaceMaterialAssignmentType assignmentType = null;
 
           if (resource instanceof Query) {
-            switch (((Query)resource).getQueryType()) {
+            switch (((Query) resource).getQueryType()) {
             case "1":
               assignmentType = WorkspaceMaterialAssignmentType.EXERCISE;
               break;
@@ -543,9 +541,9 @@ public class DeusNexMachinaController {
           } else if (material instanceof HtmlMaterial) {
             assignmentType = determineEmbeddedAssignmentType((HtmlMaterial) material);
           }
-          
+
           WorkspaceMaterial workspaceMaterial = workspaceMaterialController.createWorkspaceMaterial(parent, material, assignmentType);
-          
+
           try {
             setResourceWorkspaceNodeId(resource.getNo(), workspaceMaterial.getId());
           } catch (IOException e) {
@@ -560,37 +558,37 @@ public class DeusNexMachinaController {
               }
             }
           }
-          
+
           if (resource.getHidden()) {
             workspaceMaterialController.hideWorkspaceNode(workspaceMaterial);
           }
-          
+
           createdNodes.add(workspaceMaterial);
         }
       } else {
         logger.info(node.getPath() + " already exists, skipping");
       }
     }
-    
-    
+
   }
 
   private Material createMaterial(WorkspaceNode importRoot, Resource resource, DeusNexDocument deusNexDocument) throws DeusNexException {
     switch (resource.getType()) {
-      case BINARY:
-        return createBinaryMaterial((Binary) resource);
-      case DOCUMENT:
-        return createDocumentMaterial(importRoot, (Document) resource, deusNexDocument);
-      case QUERY:
-        return createQueryMaterial(importRoot, (Query) resource, deusNexDocument);
-      default:
+    case BINARY:
+      return createBinaryMaterial((Binary) resource);
+    case DOCUMENT:
+      return createDocumentMaterial(importRoot, (Document) resource, deusNexDocument);
+    case QUERY:
+      return createQueryMaterial(importRoot, (Query) resource, deusNexDocument);
+    default:
       break;
     }
 
     return null;
   }
 
-  private Material createDocumentMaterial(WorkspaceNode importRoot, Document resource, DeusNexDocument deusNexDocument) throws DeusNexException {
+  private Material createDocumentMaterial(WorkspaceNode importRoot, Document resource, DeusNexDocument deusNexDocument)
+      throws DeusNexException {
     String title = resource.getTitle();
     String html = parseDocumentContent(importRoot, resource.getDocument(), deusNexDocument);
 
@@ -615,14 +613,15 @@ public class DeusNexMachinaController {
   }
 
   private String parseDocumentContent(WorkspaceNode importRoot, Element document, DeusNexDocument deusNexDocument) throws DeusNexException {
-    Map<String, String> localeContents = new DeusNexContentParser().setEmbeddedItemElementHandler(new EmbeddedItemHandler(this, importRoot, deusNexDocument))
-        .parseContent(document);
+    Map<String, String> localeContents = new DeusNexContentParser().setEmbeddedItemElementHandler(
+        new EmbeddedItemHandler(this, importRoot, deusNexDocument)).parseContent(document);
     String contentFi = localeContents.get("fi");
     return contentFi;
   }
 
   private String parseQueryContent(WorkspaceNode importRoot, Element document, DeusNexDocument deusNexDocument) throws DeusNexException {
-    Map<String, String> localeContents = new DeusNexContentParser().setEmbeddedItemElementHandler(new EmbeddedItemHandler(this, importRoot, deusNexDocument))
+    Map<String, String> localeContents = new DeusNexContentParser()
+        .setEmbeddedItemElementHandler(new EmbeddedItemHandler(this, importRoot, deusNexDocument))
         .setFieldElementHandler(new FieldElementsHandler(deusNexDocument)).parseContent(document);
     String contentFi = localeContents.get("fi");
     return contentFi;
@@ -665,24 +664,26 @@ public class DeusNexMachinaController {
     String lookupSetting = lookupSettingWriter.toString();
     pluginSettingsController.setPluginSetting(DeusNexMachinaPluginDescriptor.PLUGIN_NAME, LOOKUP_SETTING_NAME, lookupSetting);
   }
-  
+
   public void setWorkspaceEntityIdDnmId(String dnmId, Long workspaceEntityId) throws IOException {
     idMap.put(dnmId, workspaceEntityId);
     storeIdMap();
   }
-  
+
   public Long getWorkspaceEntityIdDnmId(String dnmId) {
     return idMap.get(dnmId);
   }
-  
+
   private void storeIdMap() throws IOException {
-    pluginSettingsController.setPluginSetting(DeusNexMachinaPluginDescriptor.PLUGIN_NAME, IDS_SETTING_NAME, new ObjectMapper().writeValueAsString(idMap));
+    pluginSettingsController.setPluginSetting(DeusNexMachinaPluginDescriptor.PLUGIN_NAME, IDS_SETTING_NAME,
+        new ObjectMapper().writeValueAsString(idMap));
   }
-  
+
   private void loadIdMap() throws IOException {
     String setting = pluginSettingsController.getPluginSetting(DeusNexMachinaPluginDescriptor.PLUGIN_NAME, IDS_SETTING_NAME);
     if (StringUtils.isNotBlank(setting)) {
-      idMap = new ObjectMapper().readValue(setting, new TypeReference<Map<String, Long>>() {});
+      idMap = new ObjectMapper().readValue(setting, new TypeReference<Map<String, Long>>() {
+      });
     } else {
       idMap = new HashMap<>();
     }
