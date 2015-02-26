@@ -117,7 +117,7 @@
             $('.wi-workspace-dock-navi-button-request-evaluation').hide();
             $('.wi-workspace-dock-navi-button-cancel-evaluation').show();
             $(this).dialog("destroy").remove();
-            $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.workspace.evaluation.requestEvaluation.notificationText"));
+            $('.notification-queue').notificationQueue('notification', 'info', getLocaleText("plugin.workspace.evaluation.requestEvaluation.notificationText"));
           }
         }, {
           'text': dialog.data('button-cancel-text'),
