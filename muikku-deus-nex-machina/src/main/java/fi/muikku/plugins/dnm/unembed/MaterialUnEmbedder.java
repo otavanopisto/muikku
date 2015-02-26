@@ -189,9 +189,9 @@ public class MaterialUnEmbedder {
   }
   
   private boolean isEmbedPiece(Document documentPiece) throws XPathExpressionException {
-    NodeList iframes = DeusNexXmlUtils.findNodesByXPath(documentPiece.getDocumentElement(),
+    Node iframe = DeusNexXmlUtils.findNodeByXPath(documentPiece.getDocumentElement(),
         "body/iframe[@data-type='embedded-document']");
-    return iframes.getLength() > 0;
+    return iframe != null;
   }
 
   private long embeddedHtmlMaterialId(Document documentPiece) throws XPathExpressionException {
