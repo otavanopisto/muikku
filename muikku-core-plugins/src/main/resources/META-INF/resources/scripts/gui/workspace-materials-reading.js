@@ -128,9 +128,15 @@
             }
             else {
               if ($(field).muikkuField('hasExamples')) {
-                var exampleDetails = $('<details>')
+                var exampleDetails = $('<span>')
                   .addClass('muikku-field-examples')
                   .attr('data-for-field', $(field).attr('name'));
+                
+                exampleDetails.append( 
+                  $('<span>')
+                    .addClass('muikku-field-examples-title')
+                    .text(getLocaleText('plugin.workspace.assigment.checkAnswers.detailsSummary.title'))
+                );
                 
                 $.each($(field).muikkuField('getExamples'), function (index, example) {
                   exampleDetails.append(
