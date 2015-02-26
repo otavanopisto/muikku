@@ -125,11 +125,11 @@ div[class*='workspace-dock-navi-button-request-evaluation'] > span {
   @include rounded(3px);
   
   &:hover {
-    background:#15b01d;
+    background:#0f78be;
     
     span[class*='workspace-navi-tt-container-'] {
       display:block;
-      background:#15b01d;
+      background:#0f78be;
       opacity:1;
       width:auto;
       left:45px;

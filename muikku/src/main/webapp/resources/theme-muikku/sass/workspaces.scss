@@ -144,7 +144,7 @@ body.workspace {
       text-align:center;
       
       .wi-workspace-dock-navi-button-request-evaluation {
-        background:#1dc525;
+        background:#068feb;
         @include rounded(3px);
         width:60px;
         margin-bottom:10px;
@@ -240,7 +240,7 @@ body.workspace-materials {
         text-align:center;
         
         .wi-workspace-dock-navi-button-request-evaluation {
-          background:#1dc525;
+          background:#068feb;
           @include rounded(3px);
           width:60px;
           margin-bottom:10px;
@@ -727,7 +727,7 @@ body.workspace-materials {
         
         button.request-button {
           float:right;
-          background:#27b91c;
+          background:#068feb;
         }
         
         button.cancellation-button {

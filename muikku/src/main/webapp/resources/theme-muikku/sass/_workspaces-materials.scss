@@ -208,47 +208,11 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
   
   }
   
-  /* If page is NOT defined as EVALUATED or MIXED or EXERCISE then render different button */
-  .workspace-materials-view-page {
-  
-    button.muikku-save-page {
-      color:#fff;
-      background:#b2b2b2;
-      box-shadow:none;
-      border:0;
-      border-radius:2px;
-      font-weight:300;
-      font-size:16px;
-      text-transform:uppercase;
-      padding:12px;
-      transition:background 0.3s ease-in-out;
-      margin:20px auto;
-      min-width:120px;
-      display:block;
-      outline:none;
-      position:relative;
-      line-height:1;
-      cursor:pointer;
-      
-      &:hover {
-        background:#878787;
-      }
-      
-      &.save-successful {
-        background:#2b2b2b;
-        cursor:default;
-        padding:12px 12px 12px 46px
-      }
-      
-      &.icon-checkmark:before {
-        position:absolute;
-        top:-0;
-        left:5px;
-        font-size:40px;
-        text-shadow:2px 0 0 #000, -2px 0 0 #000, 0 2px 0 #000, 0 -2px 0 #000, 1px 1px #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
-      }
-    }
-  
+  .muikku-save-page-wrapper {
+    text-align:center;
+    margin:20px auto 15px auto;
+    display:table;
+    clear:both;
   }
   
   /* If page is defined as EXERCISE then render different button */
@@ -262,17 +226,16 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       border:0;
       border-radius:2px;
       font-weight:300;
-      font-size:16px;
       text-transform:uppercase;
       padding:12px;
       transition:background 0.3s ease-in-out;
-      margin:20px auto;
+      margin:0 5px 0 5px;
       min-width:120px;
-      display:block;
       outline:none;
       position:relative;
       line-height:1;
       cursor:pointer;
+      display:inline-block;
       
       &:hover {
         background:#1ec30c;
@@ -309,9 +272,8 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
   
   }
   
-  /* If page is defined as EVALUATED or MIXED then render different button */
-  .workspace-materials-view-page[data-workspace-material-assigment-type="EVALUATED"],
-  .workspace-materials-view-page[data-workspace-material-assigment-type="MIXED"] {
+  /* If page is defined as EVALUATED then render different button */
+  .workspace-materials-view-page[data-workspace-material-assigment-type="EVALUATED"] {
     border-left:1px solid #0099ff;
   
     button.muikku-save-page {
@@ -321,17 +283,17 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       border:0;
       border-radius:2px;
       font-weight:300;
-      font-size:16px;
       text-transform:uppercase;
       padding:12px;
       transition:background 0.3s ease-in-out;
-      margin:20px auto;
-      min-width:120px;
+      margin:0 5px 0 5px;
       display:block;
+      min-width:120px;
       outline:none;
       position:relative;
       line-height:1;
       cursor:pointer;
+      float:left;
       
       &:hover {
         background:#068feb;
@@ -351,14 +313,99 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
         text-shadow:2px 0 0 #58b3f2, -2px 0 0 #58b3f2, 0 2px 0 #58b3f2, 0 -2px 0 #58b3f2, 1px 1px #58b3f2, -1px -1px 0 #58b3f2, 1px -1px 0 #58b3f2, -1px 1px 0 #58b3f2;
       }
     }
-  
+    
+    button.muikku-request-evaluation {
+      color:#fff;
+      background:#0099ff;
+      box-shadow:none;
+      border:0;
+      border-radius:2px;
+      font-weight:300;
+      text-transform:uppercase;
+      padding:7px;
+      transition:background 0.3s ease-in-out;
+      margin:0 5px 0 5px;
+      display:block;
+      outline:none;
+      position:relative;
+      line-height:1;
+      cursor:pointer;
+      position:relative;
+      font-size:24px;
+      float:left;
+      
+      &:hover {
+        background:#068feb;
+      }
+
+    }
+    
+    button.muikku-cancel-evaluation {
+      color:#fff;
+      background:#f6a930;
+      box-shadow:none;
+      border:0;
+      border-radius:2px;
+      font-weight:300;
+      text-transform:uppercase;
+      padding:7px;
+      transition:background 0.3s ease-in-out;
+      margin:0 5px 0 5px;
+      display:block;
+      outline:none;
+      position:relative;
+      line-height:1;
+      cursor:pointer;
+      position:relative;
+      font-size:24px;
+      float:left;
+      
+      &:hover {
+        background:#e5910d;
+      }
+
+    }
+
   }
 
 }
 
-/* Assigment type indicators under basic view */
-body.workspace-materials #contentWorkspaceMaterials {
+/* Different reading view's overrides */
 
+body.workspace-materials #contentWorkspaceMaterials {
+  
+  /* Save answers button's font-size under basic view */
+  .workspace-materials-view-page {
+  
+    button.muikku-save-page {
+      font-size:14px;
+    }
+  
+  }
+
+  /* Textfield example answers under basic view */
+  span.muikku-field-examples {
+    border-radius:3px;
+    padding:3px;
+    width:auto;
+    background:#e2ffe2;
+    font-style:italic;
+    font-size:13px;
+    margin:1px 3px 1px -2px;
+    
+    span.muikku-field-examples-title {
+      font-weight:600;
+      margin:0px 4px;
+    }
+    
+    span.muikku-field-example {
+      display:inline-block;
+      margin:0px 5px;
+    }
+    
+  }
+  
+  /* Assigment type indicators under basic view */
   .muikku-page-assignment-type {
     height: 25px;
     width: 25px;
@@ -396,34 +443,42 @@ body.workspace-materials #contentWorkspaceMaterials {
     }
   }
   
-    
-    span.muikku-field-examples {
-      border-radius:3px;
-      padding:3px;
-      width:auto;
-      background:#e2ffe2;
-      font-style:italic;
-      font-size:13px;
-      margin:1px 3px 1px -2px;
-      
-      span.muikku-field-examples-title {
-        font-weight:600;
-        margin:0px 4px;
-      }
-      
-      span.muikku-field-example {
-        display:inline-block;
-        margin:0px 5px;
-      }
-      
-    }
-  
 }
 
-
-/* Assigment type indicators under reading view */
 body.workspace-materials-reading #contentWorkspaceMaterialsReading {
+  
+  /* Save answers button's font-size under reading view view */
+  .workspace-materials-view-page {
+  
+    button.muikku-save-page {
+      font-size:16px;
+    }
+  
+  }
+  
+  /* Textfield example answers under reading view */
+  span.muikku-field-examples {
+    border-radius:3px;
+    padding:3px;
+    width:auto;
+    background:#e2ffe2;
+    font-style:italic;
+    font-size:15px;
+    margin:1px 3px 1px -2px;
+    
+    span.muikku-field-examples-title {
+      font-weight:600;
+      margin:0px 4px;
+    }
+    
+    span.muikku-field-example {
+      display:inline-block;
+      margin:0px 5px;
+    }
+    
+  }
 
+  /* Assigment type indicators under reading view */
   .muikku-page-assignment-type {
     height: 30px;
     width: 30px;
@@ -460,27 +515,5 @@ body.workspace-materials-reading #contentWorkspaceMaterialsReading {
       
     }
   }
-  
-    
-    span.muikku-field-examples {
-      border-radius:3px;
-      padding:3px;
-      width:auto;
-      background:#e2ffe2;
-      font-style:italic;
-      font-size:15px;
-      margin:1px 3px 1px -2px;
-      
-      span.muikku-field-examples-title {
-        font-weight:600;
-        margin:0px 4px;
-      }
-      
-      span.muikku-field-example {
-        display:inline-block;
-        margin:0px 5px;
-      }
-      
-    }
   
 }
