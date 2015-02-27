@@ -2,7 +2,6 @@ package fi.muikku.plugins.dnm.unembed;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,14 +14,9 @@ import javax.inject.Inject;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPathExpressionException;
 
-import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -32,7 +26,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -203,18 +196,6 @@ public class MaterialUnEmbedder {
     Node iframe = DeusNexXmlUtils.findNodeByXPath(documentPiece.getDocumentElement(),
         "body/iframe[@data-type='embedded-document']");
     return Long.parseLong(iframe.getAttributes().getNamedItem("data-material-id").getNodeValue(), 10);
-  }
-  
-  private String getNodeAsString(Node node) {
-    try {
-      StringWriter writer = new StringWriter();
-      Transformer transformer = TransformerFactory.newInstance().newTransformer();
-      transformer.transform(new DOMSource(node), new StreamResult(writer));
-      return writer.toString();
-    }
-    catch (Exception e) {
-      return null;
-    }
   }
   
   private WorkspaceMaterialAssignmentType embeddedHtmlMaterialAssignmentType(Document documentPiece) throws XPathExpressionException {
