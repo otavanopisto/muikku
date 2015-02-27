@@ -37,7 +37,7 @@
         else {
           try {
             var material = $.parseJSON(response.data.html);
-            var parsed = $('<div>').html(material.html);
+            var parsed = $('<div>').html('<h2>' + material.title + '</h2>' + material.html);
             
             parsed.find('iframe[data-type="embedded-document"]').each($.proxy(function (index, iframe) {
               var embededWorkspaceMaterialId = $(iframe).data('workspace-material-id');
