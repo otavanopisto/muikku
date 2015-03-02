@@ -64,8 +64,8 @@
     <module>muikku-dummy-mail-bridge-plugin</module>
     <module>muikku-deus-nex-machina</module>
     <module>muikku-security</module>
-    <module>muikku-atests</module>
     <module>muikku</module>
+    <module>muikku-atests</module>
   </modules>
 
   <prerequisites>
