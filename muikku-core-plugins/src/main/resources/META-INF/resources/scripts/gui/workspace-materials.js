@@ -67,17 +67,19 @@
       offset: '60%'
     });
     
+    var page = $(this).closest('.workspace-materials-view-page');
+    
     $('.workspace-materials-view-page[data-workspace-material-assigment-type="EXERCISE"]').each(function (index, page) {
-      $(page).prepend($('<div>')
+      $(page).append($('<div>')
           .addClass('muikku-page-assignment-type exercise')
-          .append($('<span>').addClass('icon-assignment'))
+          .text(getLocaleText("plugin.workspace.materialsLoader.exerciseAssignmentLabel"))
       );
     });
     
     $('.workspace-materials-view-page[data-workspace-material-assigment-type="EVALUATED"]').each(function (index, page) {
-      $(page).prepend($('<div>')
+      $(page).append($('<div>')
           .addClass('muikku-page-assignment-type evaluated')
-          .append($('<span>').addClass('icon-assignment'))
+          .text(getLocaleText("plugin.workspace.materialsLoader.evaluatedAssignmentLabel"))
       );
     });
     
