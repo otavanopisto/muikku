@@ -121,8 +121,16 @@
   content: "\e9e1";
 }
 
+.icon-successful-evaluation:before {
+  content: "\e9e9";
+}
+
 .icon-cancel-evaluation:before {
   content: "\e9f3";
+}
+
+.icon-failed-evaluation:before {
+  content: "\e9fb";
 }
 
 .icon-exit-editing:before {
