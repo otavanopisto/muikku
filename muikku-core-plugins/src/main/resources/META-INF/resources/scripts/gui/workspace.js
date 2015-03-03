@@ -97,7 +97,7 @@
   });
   
   $(document).on('click', '.wi-workspace-dock-navi-button-cancel-evaluation', function (event) {
-    confirmEvaluationCancellation()
+    confirmEvaluationCancellation();
   });
   
   function confirmEvaluationRequest() {

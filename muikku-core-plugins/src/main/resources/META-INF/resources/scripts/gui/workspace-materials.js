@@ -93,22 +93,6 @@
         .text(saveButton.data('unsaved-text'));
     }
   });
-  
-  $(document).on('click', '.muikku-request-evaluation', function (event) {
-    $('.icon-cancel-evaluation').show();
-    $(this).hide();
-    
-    $('.notification-queue').notificationQueue('notification', 'success',getLocaleText('plugin.workspace.evaluation.requestAssigmentEvaluationNotification'));
-    
-  });
-  
-  $(document).on('click', '.muikku-cancel-evaluation', function (event) {
-    $(this).hide();
-    $('.icon-request-evaluation').show();
-    
-    $('.notification-queue').notificationQueue('notification', 'success',getLocaleText('plugin.workspace.evaluation.cancelAssignmentEvaluationNotification'));
-    
-  });
 
   $(document).on('click', '.muikku-save-page', function (event, data) {
     var page = $(this).closest('.workspace-materials-view-page');
