@@ -1,7 +1,7 @@
 
 
 
- function openInSN(template){
+ function openInSN(template, result, formFunction){
 	var functionContainer = $('.sn-container');
 	var formContainer = $('#mainfunctionFormTabs'); 
 	 
@@ -17,28 +17,47 @@
 
     
     tabDiv.appendTo(formContainer);
-    
-    mApi().forum.areas.read()
-      .callback(function (err, result) {
-      	if( err ){
-          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('TODO: Virheilmoitus', err));
-    	}else{    	  
-	      renderDustTemplate(template, result, function (text) {
-	        $(tabDiv).append($.parseHTML(text));
-	        
-	        var cancelBtn = $(tabDiv).find("input[name='cancel']");
+       	  
 
-	        cancelBtn.on("click", cancelBtn, function(){
-               formContainer.empty();
-	     	   $('.sn-container').removeClass('open');
-	     	   $('.sn-container').addClass('closed');
-	     	   
-	        });
-	        
-	      });
-    	}
-    });
- 
+	  renderDustTemplate(template, result, function(text) {
+		$(tabDiv).append($.parseHTML(text));
+
+		var cancelBtn = $(tabDiv).find("input[name='cancel']");
+		var sendBtn = $(tabDiv).find("input[name='send']");		
+		var inputs = $(tabDiv).find("input:not([type='button'])");
+		
+
+		
+		
+		cancelBtn.on("click", cancelBtn, function() {
+			formContainer.empty();
+			$('.sn-container').removeClass('open');
+			$('.sn-container').addClass('closed');
+
+		});
+
+		sendBtn.on("click", sendBtn, function() {
+			var values = inputs.serializeArray()
+			var obj = {};
+			$.each(values, function(index,value){
+
+				
+				obj[value.name] = value.value || '';
+				
+				
+				
+			});
+			
+			var stringObj = JSON.stringify(obj);
+			
+			formFunction(stringObj);
+			$('.sn-container').removeClass('open');
+			$('.sn-container').addClass('closed');
+
+		});		
+		
+	});
+
    functionContainer.removeClass('closed');
    functionContainer.addClass('open');
  

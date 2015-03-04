@@ -5,11 +5,11 @@
           <div class="di-area-new-body">
             <div class="mf-fieldRow">
               <div class="mf-textfield">
-                <input type="textfield" value="" name="areName"></input>
+                <input type="textfield" value="" name="name"></input>
               </div>        
             </div>
           </div>
-        </div>
+       </div>
   
        <div class="mf-toolbar">
         <input type="button" name="send" value='{#localize key="plugin.communicator.newmessage.send"/}'/>
