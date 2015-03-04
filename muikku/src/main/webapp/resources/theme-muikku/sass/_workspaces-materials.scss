@@ -23,6 +23,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     outline:none; /* Thanks Chrome! */
     font-size:17px;
     color:#0077c7;
+    width:100%;
     max-width:100%;
     box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
     box-sizing:border-box;
@@ -407,38 +408,22 @@ body.workspace-materials #contentWorkspaceMaterials {
   
   /* Assigment type indicators under basic view */
   .muikku-page-assignment-type {
-    height: 25px;
-    width: 25px;
-    padding: 5px;
-    border-radius: 25px;
-    border: 2px solid #fff;
+    padding:0px 4px;
     position: absolute;
-    left: -20px;
-    top: 27px;
+    border-radius:2px;
+    left: -5px;
+    top: 5px;
     color: #fff;
-    font-size: 20px;
+    font-size: 14px;
     text-align: center;
+    text-transform:uppercase;
     
     &.evaluated {
       background: #0099ff;
-      transform:rotate(330deg);
-      
-      span.icon-assignment { /* Small re-adjust because of rotate */
-        position:relative;
-        top:-2px;
-        left:0px;
-      }
     }
     
     &.exercise {
       background: #2ed91c;
-      transform:rotate(30deg);
-      
-      span.icon-assignment { /* Small re-adjust because of rotate */
-        position:relative;
-        top:-2px;
-        right:-1px;
-      }
       
     }
   }
