@@ -2,9 +2,18 @@ package fi.muikku.plugins.assessmentrequest.rest.model;
 
 public class AssessmentRequestRESTModel {
   
-  public AssessmentRequestRESTModel(Long workspaceId, Long studentId, String message) {
+  public AssessmentRequestRESTModel() {
+  }
+
+  public void setWorkspaceId(Long workspaceId) {
     this.workspaceId = workspaceId;
+  }
+
+  public void setStudentId(Long studentId) {
     this.studentId = studentId;
+  }
+
+  public void setMessage(String message) {
     this.message = message;
   }
 
