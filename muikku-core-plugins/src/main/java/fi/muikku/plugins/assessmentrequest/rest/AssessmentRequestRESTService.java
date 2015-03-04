@@ -1,6 +1,7 @@
 package fi.muikku.plugins.assessmentrequest.rest;
 
-import javax.ejb.Stateless;
+import javax.ejb.Stateful;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -16,9 +17,10 @@ import fi.muikku.plugins.assessmentrequest.rest.model.AssessmentRequestRESTModel
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.users.UserEntityController;
 
+@RequestScoped
 @Path("/assessmentrequest")
 @Produces("application/json")
-@Stateless
+@Stateful
 public class AssessmentRequestRESTService extends PluginRESTService {
   
   private static final long serialVersionUID = 1L;
@@ -39,7 +41,7 @@ public class AssessmentRequestRESTService extends PluginRESTService {
     if (workspaceEntity == null) {
       return Response.status(Status.BAD_REQUEST).build();
     }
-
+    
     UserEntity student = userEntityController.findUserEntityById(assessmentRequest.getStudentId());
     if (student == null) {
       return Response.status(Status.BAD_REQUEST).build();
