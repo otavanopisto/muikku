@@ -10,8 +10,8 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -32,6 +32,15 @@ import fi.muikku.session.AccessToken;
 public class LocalSessionControllerImpl extends AbstractSessionController implements Serializable, LocalSessionController {
   
   private static final long serialVersionUID = 4947154641883149837L;
+  
+  @Inject
+  private HttpServletRequest httpServletRequest;
+
+  @PostConstruct
+  private void init() {
+    representedUserId = null;
+    locale = httpServletRequest.getLocale();
+  }
 
   @Inject
   private UserEntityDAO userEntityDAO;
@@ -45,10 +54,7 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
 
   @Override
   public Locale getLocale() {
-    if (locale != null)
-      return locale;
-    else
-      return FacesContext.getCurrentInstance().getExternalContext().getRequestLocale();
+    return locale;
   }
 
   @Override
@@ -107,11 +113,6 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
    */
   public UserEntity getRepresentedUser() {
     return userEntityDAO.findById(representedUserId);
-  }
-
-  @PostConstruct
-  private void init() {
-    representedUserId = null;
   }
 
   @Override
