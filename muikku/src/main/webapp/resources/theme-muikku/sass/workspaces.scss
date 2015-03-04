@@ -379,11 +379,11 @@ body.workspace-materials {
                   }
                   
                   &.evaluated {
-                    border-left:2px solid #0099ff;
+                    border-left:2px solid $evaluatedAssignment;
                   }
                   
                   &.exercise {
-                    border-left:2px solid #2ed91c;
+                    border-left:2px solid $exerciseAssignment;
                   }
                   
                 }
