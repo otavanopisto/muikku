@@ -11,8 +11,8 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     min-height: 500px;
   }
   
-  /* Input field overrides */
-  input[type="text"], textarea {
+  /* Input field and textarea overrides */
+  input[type="text"] {
     width:auto;
     height:auto;
     border:1px solid #eee;
@@ -20,9 +20,9 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     display:inline-block;
     padding:2px 4px;
     transition:border,box-shadow 0.1s,0.2s ease-in-out;
-    outline:none; /* Thanks Chrome! */
+    outline:none;
     font-size:17px;
-    color:#0077c7;
+    color:#0061a2;
     width:100%;
     max-width:100%;
     box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
@@ -63,8 +63,22 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
   }
   
   textarea {
+    height:auto;
+    border:1px solid #eee;
+    @include rounded(3px);
+    display:inline-block;
+    padding:4px 8px;
+    transition:border,box-shadow 0.1s,0.2s ease-in-out;
+    outline:none;
+    font-size:17px;
+    color:#0061a2;
+    width:100%;
+    max-width:100%;
+    box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
+    box-sizing:border-box;
     text-align:left;
     margin:0;
+    line-height:1.7em;
   }
 
   /* Select and Option field overrides */
@@ -73,7 +87,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     border:1px solid #eee;
     transition:border,box-shadow 0.1s,0.2s ease-in-out;
     outline:none; /* Thanks Chrome! */
-    color:#0077c7;
+    color:#0061a2;
     display:inline-block;
     margin:4px;
     box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
@@ -216,13 +230,12 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     clear:both;
   }
   
-  /* If page is defined as EXERCISE then render different button */
-  .workspace-materials-view-page[data-workspace-material-assigment-type="EXERCISE"] {
-    border-left:1px solid #2ed91c;
+  .workspace-materials-view-page[data-workspace-material-assigment-type="EXERCISE"],
+  .workspace-materials-view-page[data-workspace-material-assigment-type="EVALUATED"] {
   
     button.muikku-save-page {
       color:#fff;
-      background:#2ed91c;
+      background:#71bced;
       box-shadow:none;
       border:0;
       border-radius:2px;
@@ -239,22 +252,14 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       display:inline-block;
       
       &:hover {
-        background:#1ec30c;
+        background:#53afec;
       }
       
       &.save-successful {
         background:#1ec30c;
         cursor:default;
-        padding:12px 12px 12px 46px
       }
-      
-      &.icon-checkmark:before {
-        position:absolute;
-        top:-0;
-        left:5px;
-        font-size:40px;
-        text-shadow:2px 0 0 #38d32c, -2px 0 0 #38d32c, 0 2px 0 #38d32c, 0 -2px 0 #38d32c, 1px 1px #38d32c, -1px -1px 0 #38d32c, 1px -1px 0 #38d32c, -1px 1px 0 #38d32c;
-      }
+
     }
     
     .muikku-field-correct-answer {
@@ -270,105 +275,48 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       @include rounded(3px);
       padding-bottom:2px; /* This is only for div containers that are used to wrap checkbox/radio lists */
     }
+    
+    span.muikku-field-examples {
+      border-radius:3px;
+      padding:3px;
+      width:auto;
+      background:#e2ffe2;
+      font-style:italic;
+      margin:1px 3px 1px -2px;
+      
+      span.muikku-field-examples-title {
+        font-weight:600;
+        margin:0px 4px;
+      }
+      
+      span.muikku-field-example {
+        display:inline-block;
+        margin:0px 5px;
+      }
+      
+    }
+    
+    .muikku-page-assignment-type {
+      padding:0px 4px;
+      border-radius:2px;
+      color: #fff;
+      text-align: center;
+      text-transform:uppercase;
+      display:inline-block;
+      margin:15px 0 0 -32px;
+      
+      &.evaluated {
+        background: $evaluatedAssignment;
+      }
+      
+      &.exercise {
+        background: $exerciseAssignment;
+        
+      }
+    }
   
   }
   
-  /* If page is defined as EVALUATED then render different button */
-  .workspace-materials-view-page[data-workspace-material-assigment-type="EVALUATED"] {
-    border-left:1px solid #0099ff;
-  
-    button.muikku-save-page {
-      color:#fff;
-      background:#0099ff;
-      box-shadow:none;
-      border:0;
-      border-radius:2px;
-      font-weight:300;
-      text-transform:uppercase;
-      padding:12px;
-      transition:background 0.3s ease-in-out;
-      margin:0 5px 0 5px;
-      display:block;
-      min-width:120px;
-      outline:none;
-      position:relative;
-      line-height:1;
-      cursor:pointer;
-      float:left;
-      
-      &:hover {
-        background:#068feb;
-      }
-      
-      &.save-successful {
-        background:#068feb;
-        cursor:default;
-        padding:12px 12px 12px 46px
-      }
-      
-      &.icon-checkmark:before {
-        position:absolute;
-        top:-0;
-        left:5px;
-        font-size:40px;
-        text-shadow:2px 0 0 #58b3f2, -2px 0 0 #58b3f2, 0 2px 0 #58b3f2, 0 -2px 0 #58b3f2, 1px 1px #58b3f2, -1px -1px 0 #58b3f2, 1px -1px 0 #58b3f2, -1px 1px 0 #58b3f2;
-      }
-    }
-    
-    button.muikku-request-evaluation {
-      color:#fff;
-      background:#0099ff;
-      box-shadow:none;
-      border:0;
-      border-radius:2px;
-      font-weight:300;
-      text-transform:uppercase;
-      padding:7px;
-      transition:background 0.3s ease-in-out;
-      margin:0 5px 0 5px;
-      display:block;
-      outline:none;
-      position:relative;
-      line-height:1;
-      cursor:pointer;
-      position:relative;
-      font-size:24px;
-      float:left;
-      
-      &:hover {
-        background:#068feb;
-      }
-
-    }
-    
-    button.muikku-cancel-evaluation {
-      color:#fff;
-      background:#f6a930;
-      box-shadow:none;
-      border:0;
-      border-radius:2px;
-      font-weight:300;
-      text-transform:uppercase;
-      padding:7px;
-      transition:background 0.3s ease-in-out;
-      margin:0 5px 0 5px;
-      display:block;
-      outline:none;
-      position:relative;
-      line-height:1;
-      cursor:pointer;
-      position:relative;
-      font-size:24px;
-      float:left;
-      
-      &:hover {
-        background:#e5910d;
-      }
-
-    }
-
-  }
-
 }
 
 /* Different reading view's overrides */
@@ -386,46 +334,12 @@ body.workspace-materials #contentWorkspaceMaterials {
 
   /* Textfield example answers under basic view */
   span.muikku-field-examples {
-    border-radius:3px;
-    padding:3px;
-    width:auto;
-    background:#e2ffe2;
-    font-style:italic;
     font-size:13px;
-    margin:1px 3px 1px -2px;
-    
-    span.muikku-field-examples-title {
-      font-weight:600;
-      margin:0px 4px;
-    }
-    
-    span.muikku-field-example {
-      display:inline-block;
-      margin:0px 5px;
-    }
-    
   }
   
   /* Assigment type indicators under basic view */
   .muikku-page-assignment-type {
-    padding:0px 4px;
-    position: absolute;
-    border-radius:2px;
-    left: -5px;
-    top: 5px;
-    color: #fff;
     font-size: 14px;
-    text-align: center;
-    text-transform:uppercase;
-    
-    &.evaluated {
-      background: #0099ff;
-    }
-    
-    &.exercise {
-      background: #2ed91c;
-      
-    }
   }
   
 }
@@ -443,62 +357,12 @@ body.workspace-materials-reading #contentWorkspaceMaterialsReading {
   
   /* Textfield example answers under reading view */
   span.muikku-field-examples {
-    border-radius:3px;
-    padding:3px;
-    width:auto;
-    background:#e2ffe2;
-    font-style:italic;
     font-size:15px;
-    margin:1px 3px 1px -2px;
-    
-    span.muikku-field-examples-title {
-      font-weight:600;
-      margin:0px 4px;
-    }
-    
-    span.muikku-field-example {
-      display:inline-block;
-      margin:0px 5px;
-    }
-    
   }
 
   /* Assigment type indicators under reading view */
   .muikku-page-assignment-type {
-    height: 30px;
-    width: 30px;
-    padding: 5px;
-    border-radius: 25px;
-    border: 2px solid #fff;
-    position: absolute;
-    left: -20px;
-    top: 25px;
-    color: #fff;
-    font-size: 22px;
-    text-align: center;
-    
-    &.evaluated {
-      background: #0099ff;
-      transform:rotate(330deg);
-      
-      span.icon-assignment { /* Small re-adjust because of rotate */
-        position:relative;
-        top:-1px;
-        left:0px;
-      }
-    }
-    
-    &.exercise {
-      background: #2ed91c;
-      transform:rotate(30deg);
-      
-      span.icon-assignment { /* Small re-adjust because of rotate */
-        position:relative;
-        top:-1px;
-        right:-1px;
-      }
-      
-    }
+    font-size: 16px;
   }
   
 }

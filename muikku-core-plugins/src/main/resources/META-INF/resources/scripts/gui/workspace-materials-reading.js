@@ -58,19 +58,18 @@
     
     $('.workspace-materials-view-page[data-workspace-material-assigment-type="EXERCISE"]').each(function (index, page) {
       $(page).prepend($('<div>')
-          .attr('title','Harjoitustehtävä')
           .addClass('muikku-page-assignment-type exercise')
-          .append($('<span>').addClass('icon-assignment'))
+          .text(getLocaleText("plugin.workspace.materialsLoader.exerciseAssignmentLabel"))
       );
     });
     
     $('.workspace-materials-view-page[data-workspace-material-assigment-type="EVALUATED"]').each(function (index, page) {
       $(page).prepend($('<div>')
-          .attr('title','Arvioitavatehtävä')
           .addClass('muikku-page-assignment-type evaluated')
-          .append($('<span>').addClass('icon-assignment'))
+          .text(getLocaleText("plugin.workspace.materialsLoader.evaluatedAssignmentLabel"))
       );
     });
+    
   });
   
   $(document).on('click', '.workspace-materials-toc-item a', function (event) {
@@ -90,7 +89,7 @@
     var saveButton = $(page).find('.muikku-save-page');
     if (saveButton.length) {
       saveButton
-        .removeClass('icon-checkmark save-successful')          
+        .removeClass('save-successful')          
         .text(saveButton.data('unsaved-text'));
     }
   });
@@ -169,7 +168,7 @@
         } 
         
         $(this)
-          .addClass("icon-checkmark save-successful")
+          .addClass("save-successful")
           .text(exercise ? getLocaleText('plugin.workspace.materialsReading.answerChecked') : getLocaleText('plugin.workspace.materialsReading.answerSaved'));
       } 
     }, this));

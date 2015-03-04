@@ -89,7 +89,7 @@
     var saveButton = $(page).find('.muikku-save-page');
     if (saveButton.length) {
       saveButton
-        .removeClass('icon-checkmark save-successful')          
+        .removeClass('save-successful')          
         .text(saveButton.data('unsaved-text'));
     }
   });
@@ -154,7 +154,7 @@
         
         // Save button
         $(this)
-          .addClass("icon-checkmark save-successful")
+          .addClass("save-successful")
           .text(exercise ? getLocaleText('plugin.workspace.materials.answerChecked') : getLocaleText('plugin.workspace.materials.answerSaved'));
       } 
     }, this));
