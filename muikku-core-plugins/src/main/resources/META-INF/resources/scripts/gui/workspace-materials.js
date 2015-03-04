@@ -155,7 +155,7 @@
         // Save button
         $(this)
           .addClass("save-successful")
-          .text(exercise ? getLocaleText('plugin.workspace.materials.answerChecked') : getLocaleText('plugin.workspace.materials.answerSaved'));
+          .text(exercise ? getLocaleText('plugin.workspace.materials.exerciseSaved') : getLocaleText('plugin.workspace.materials.assignmentSaved'));
       } 
     }, this));
   });
