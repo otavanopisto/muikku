@@ -13,8 +13,6 @@ import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialSelectFieldAnswer;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialSelectFieldAnswer_;
-import fi.muikku.plugins.workspace.model.WorkspaceNode;
-import fi.muikku.plugins.workspace.model.WorkspaceNode_;
 
 public class WorkspaceMaterialSelectFieldAnswerDAO extends CorePluginsDAO<WorkspaceMaterialSelectFieldAnswer> {
 	

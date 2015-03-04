@@ -37,7 +37,7 @@
         else {
           try {
             var material = $.parseJSON(response.data.html);
-            var parsed = $('<div>').html(material.html);
+            var parsed = $('<div>').html('<h2>' + material.title + '</h2>' + material.html);
             
             parsed.find('iframe[data-type="embedded-document"]').each($.proxy(function (index, iframe) {
               var embededWorkspaceMaterialId = $(iframe).data('workspace-material-id');
@@ -695,12 +695,37 @@
           ? getLocaleText("plugin.workspace.materialsLoader.checkButton")
           : getLocaleText("plugin.workspace.materialsLoader.saveButton");
       
+      var saveButtonWrapper = $('<div>');
+          
       $(page)
-        .append($('<button>')
-           .addClass('muikku-save-page')
-           .text(buttonText)
-           .data('unsaved-text', buttonText))
+        .append(saveButtonWrapper
+            .addClass('muikku-save-page-wrapper'))
         .data('answer-button', 'true');
+
+      $(saveButtonWrapper)
+          .append($('<button>')
+             .addClass('muikku-save-page')
+             .text(buttonText)
+             .data('unsaved-text', buttonText));
+      
+      if ($(page).data('workspace-material-assigment-type') == "EVALUATED") {
+        $(saveButtonWrapper)
+          .append($('<button>')
+            .addClass('muikku-request-evaluation icon-request-evaluation'));
+        
+        $(saveButtonWrapper)
+        .append($('<button>')
+          .addClass('muikku-cancel-evaluation icon-cancel-evaluation')
+          .css({
+            display: 'none'
+          }));
+     
+      }
+      
+      if ($(page).data('workspace-material-assigment-type') == "EVALUATED") {
+        
+     
+      }
     }
   });
   

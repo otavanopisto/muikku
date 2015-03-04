@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.codec.binary.Base64;
@@ -37,20 +35,7 @@ public class DeusNexStructureParser {
 
   public DeusNexDocument parseDocument(InputStream inputStream) throws DeusNexException {
     DeusNexDocumentImpl deusNexDocument = new DeusNexDocumentImpl();
-    DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
-    builderFactory.setNamespaceAware(false);
-    builderFactory.setValidating(false);
-    DocumentBuilder builder;
-
-    try {
-      builderFactory.setFeature("http://xml.org/sax/features/namespaces", false);
-      builderFactory.setFeature("http://xml.org/sax/features/validation", false);
-      builderFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
-      builderFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-      builder = builderFactory.newDocumentBuilder();
-    } catch (ParserConfigurationException e1) {
-      throw new DeusNexInternalException("Invalid XML Parser configuration", e1);
-    }
+    DocumentBuilder builder = DeusNexXmlUtils.createDocumentBuilder();
 
     org.w3c.dom.Document domDocument;
     try {

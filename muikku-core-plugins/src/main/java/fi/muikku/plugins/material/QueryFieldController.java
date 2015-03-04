@@ -11,7 +11,6 @@ import fi.muikku.plugins.material.dao.QueryFieldDAO;
 import fi.muikku.plugins.material.events.QueryFieldDeleteEvent;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.material.model.QueryField;
-import fi.muikku.plugins.workspace.events.WorkspaceMaterialFieldDeleteEvent;
 
 @Stateless
 @Dependent
