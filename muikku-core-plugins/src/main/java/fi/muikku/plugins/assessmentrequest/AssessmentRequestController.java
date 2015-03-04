@@ -23,7 +23,7 @@ public class AssessmentRequestController {
   
   @Permit (AssessmentRequestPermissions.CREATE_WORKSPACE_ASSESSMENTREQUEST)
   public AssessmentRequest create(@PermitContext WorkspaceEntity workspaceEntity, UserEntity student, Date date, String message) {
-    return assessmentRequestDAO.create(workspaceEntity, student, date, message);
+    return assessmentRequestDAO.create(workspaceEntity, student, date, message, AssessmentRequestState.PENDING);
   }
   
   @Permit (AssessmentRequestPermissions.LIST_WORKSPACE_ASSESSMENTREQUESTS)
@@ -34,5 +34,11 @@ public class AssessmentRequestController {
   public void requestAssessment(WorkspaceEntity workspaceEntity, UserEntity student, String message) {
     this.create(workspaceEntity, student, new Date(), message);
     communicatorAssessmentRequestController.sendAssessmentRequestMessage(workspaceEntity, student, message);
+  }
+
+  public List<AssessmentRequest> listByWorkspaceIdAndStudentIdOrderByCreated(
+      Long workspaceEntityId,
+      Long studentEntityId) {
+    return assessmentRequestDAO.listByWorkspaceIdAndStudentIdOrderByCreated(workspaceEntityId, studentEntityId);
   }
 }
