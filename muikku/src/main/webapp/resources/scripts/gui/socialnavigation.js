@@ -39,10 +39,9 @@
 		sendBtn.on("click", sendBtn, function() {
 			var values = inputs.serializeArray()
 			var obj = {};
-			$.each(values, function(value){
-				
+
+			$.each(values, function(index, value) {
 				obj[value.name] = value.value || '';
-				
 			});
 			
 			var stringObj = JSON.stringify(obj);
