@@ -36,12 +36,10 @@
 		});
 
 		sendBtn.on("click", sendBtn, function() {
-			var valz = elements.serializeArray();
+			var vals = elements.serializeArray();
 			var obj = {};
-			$.each(valz, function(index,value){
-				
+			$.each(vals, function(index,value){
 				obj[value.name] = value.value || '';
-				
 			});
 			
 			

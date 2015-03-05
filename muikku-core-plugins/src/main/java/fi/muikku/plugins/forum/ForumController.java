@@ -85,7 +85,7 @@ public class ForumController {
   public EnvironmentForumArea createEnvironmentForumArea(String name, Long groupId) {
     UserEntity owner = sessionController.getLoggedUserEntity();
     ResourceRights rights = resourceRightsController.create();
-    ForumAreaGroup group = findForumAreaGroup(groupId);
+    ForumAreaGroup group = groupId != null ? findForumAreaGroup(groupId) : null;
     return environmentForumAreaDAO.create(name, group, false, owner, rights);
   }
   

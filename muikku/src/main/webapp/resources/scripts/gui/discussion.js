@@ -44,7 +44,9 @@ $(document).ready(function(){
 	          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('TODO: Virheilmoitus', err));
 	    	}else{ 		
 			
+
 			  openInSN('/discussion/newarea.dust', areas, createArea );
+
 			
 	    	}
 	      });
