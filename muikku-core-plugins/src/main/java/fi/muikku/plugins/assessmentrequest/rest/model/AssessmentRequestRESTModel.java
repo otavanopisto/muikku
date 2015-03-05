@@ -6,20 +6,12 @@ public class AssessmentRequestRESTModel {
     this.workspaceId = workspaceId;
   }
 
-  public void setStudentId(Long studentId) {
-    this.studentId = studentId;
-  }
-
   public void setMessage(String message) {
     this.message = message;
   }
 
   public Long getWorkspaceId() {
     return workspaceId;
-  }
-
-  public Long getStudentId() {
-    return studentId;
   }
 
   public String getMessage() {
@@ -44,7 +36,6 @@ public class AssessmentRequestRESTModel {
 
   private Long id;
   private Long workspaceId;
-  private Long studentId;
   private String message;
   private String state;
 }

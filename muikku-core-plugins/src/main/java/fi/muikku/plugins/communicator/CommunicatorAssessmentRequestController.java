@@ -6,10 +6,13 @@ import java.util.Locale;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.hibernate.annotations.Synchronize;
+
 import fi.muikku.i18n.LocaleController;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleArchetype;
+import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
@@ -36,6 +39,9 @@ public class CommunicatorAssessmentRequestController {
   @Inject
   private UserController userController;
   
+  @Inject
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
+  
   private String getText(String key, Object... params) {
     Locale locale = sessionController.getLocale();
     return localeController.getText(locale, key, params);
@@ -61,13 +67,18 @@ public class CommunicatorAssessmentRequestController {
 
   
   public void sendAssessmentRequestMessage(WorkspaceEntity workspaceEntity, UserEntity student, String message) {
-    List<UserEntity> teachers = workspaceController.listUserEntitiesByWorkspaceEntityAndRoleArchetype(
-        workspaceEntity,
-        WorkspaceRoleArchetype.TEACHER);
-    communicatorController.postMessage(student,
-                                       getText("plugin.communicator.assessmentrequest.category"),
-                                       assessmentRequestTitle(workspaceEntity, student),
-                                       assessmentRequestBody(workspaceEntity, student, message),
-                                       teachers);
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+        List<UserEntity> teachers = workspaceController.listUserEntitiesByWorkspaceEntityAndRoleArchetype(
+            workspaceEntity,
+            WorkspaceRoleArchetype.TEACHER);
+        communicatorController.postMessage(student,
+                                           getText("plugin.communicator.assessmentrequest.category"),
+                                           assessmentRequestTitle(workspaceEntity, student),
+                                           assessmentRequestBody(workspaceEntity, student, message),
+                                           teachers);
+    } finally {
+        schoolDataBridgeSessionController.endSystemSession();
+    }
   }
 }
