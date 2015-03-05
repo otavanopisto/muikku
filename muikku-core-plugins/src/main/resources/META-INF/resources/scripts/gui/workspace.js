@@ -145,8 +145,21 @@
           
             evalButton.attr('data-state', 'pending');
             
+            var workspaceEntityId = $('.workspaceEntityId').val();
+            
             $(this).dialog("destroy").remove();
-            $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.workspace.evaluation.requestEvaluation.notificationText"));
+
+            mApi().assessmentrequest.assessmentrequests.create({
+              'workspaceId': parseInt(workspaceEntityId, 10),
+              'message': "Arviointipyyntö"
+            }).callback(function(err, result) {
+              if (err) {
+                $('.notification-queue').notificationQueue('notification', 'error', err);
+              } else {
+                $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.workspace.evaluation.requestEvaluation.notificationText"));
+              }
+            });
+            
           }
         }, {
           'text': dialog.data('button-cancel-text'),

@@ -21,7 +21,8 @@ import fi.muikku.plugins.assessmentrequest.AssessmentRequest;
 import fi.muikku.plugins.assessmentrequest.AssessmentRequestController;
 import fi.muikku.plugins.assessmentrequest.rest.model.AssessmentRequestRESTModel;
 import fi.muikku.schooldata.WorkspaceController;
-import fi.muikku.users.UserEntityController;
+import fi.muikku.session.SessionController;
+import fi.muikku.session.local.LocalSession;
 
 @RequestScoped
 @Path("/assessmentrequest")
@@ -37,8 +38,9 @@ public class AssessmentRequestRESTService extends PluginRESTService {
   @Inject
   private WorkspaceController workspaceController;
   
+  @LocalSession
   @Inject
-  private UserEntityController userEntityController;
+  private SessionController sessionController;
   
   @POST
   @Path("/assessmentrequests")
@@ -48,7 +50,7 @@ public class AssessmentRequestRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
-    UserEntity student = userEntityController.findUserEntityById(assessmentRequest.getStudentId());
+    UserEntity student = sessionController.getLoggedUserEntity();
     if (student == null) {
       return Response.status(Status.BAD_REQUEST).build();
     }
@@ -60,11 +62,9 @@ public class AssessmentRequestRESTService extends PluginRESTService {
   
   @GET
   @Path("/assessmentrequests")
-  public Response listAssessmentRequestsByWorkspaceIdAndStudentId(
-      @QueryParam("workspaceId") long workspaceEntityId,
-      @QueryParam("studentId") long studentEntityId) {
-    List<AssessmentRequest> assessmentRequests = assessmentRequestController.listByWorkspaceIdAndStudentIdOrderByCreated(workspaceEntityId, studentEntityId);
-    
+  public Response listAssessmentRequestsOfCurrentUserByWorkspaceId(@QueryParam("workspaceId") long workspaceEntityId) {
+    UserEntity student = sessionController.getLoggedUserEntity();
+    List<AssessmentRequest> assessmentRequests = assessmentRequestController.listByWorkspaceIdAndStudentIdOrderByCreated(workspaceEntityId, student.getId());
     List<AssessmentRequestRESTModel> restAssessmentRequests = new ArrayList<>();
     
     for (AssessmentRequest assessmentRequest : assessmentRequests) {
@@ -72,7 +72,6 @@ public class AssessmentRequestRESTService extends PluginRESTService {
       
       restAssessmentRequest.setId(assessmentRequest.getId());
       restAssessmentRequest.setWorkspaceId(assessmentRequest.getWorkspace());
-      restAssessmentRequest.setStudentId(assessmentRequest.getStudent());
       restAssessmentRequest.setMessage(assessmentRequest.getMessage());
       restAssessmentRequest.setState(assessmentRequest.getState().toString());
       

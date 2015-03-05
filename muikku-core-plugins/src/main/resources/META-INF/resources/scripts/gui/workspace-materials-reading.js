@@ -112,7 +112,7 @@
 
   $(document).on('click', '.muikku-save-page', function (event, data) {
     var page = $(this).closest('.workspace-materials-view-page');
-    var workspaceEntityId = $('.workspaceEntityId').val(); //  TODO: data?
+    var workspaceEntityId = $('.workspaceEntityId').val(); 
     var workspaceMaterialId = $(page).data('workspace-material-id');
     var reply = [];
     var exercise = $(page).data('workspace-material-assigment-type') == "EXERCISE" ;
