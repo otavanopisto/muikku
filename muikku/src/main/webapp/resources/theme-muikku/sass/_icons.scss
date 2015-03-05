@@ -33,20 +33,12 @@
   display:inline-block;
 }
 
-.icon-assignment:before {
-  content: "\e634";
+.icon-assessment-pending:before {
+  content: "\e9df";
 }
 
-.icon-new-page:before {
-  content: "\e637";
-}
-
-.icon-close-small:before {
-  content: "\e63b";
-}
-
-.icon-add:before {
-  content: "\e114";
+.icon-assessment-unassessed:before {
+  content: "\e320";
 }
 
 .icon-diary:before {
@@ -117,20 +109,28 @@
   content: "\e63a";
 }
 
-.icon-request-evaluation:before {
-  content: "\e9e1";
-}
-
-.icon-successful-evaluation:before {
+.icon-assessment-pass:before {
   content: "\e9e9";
 }
 
-.icon-cancel-evaluation:before {
+.icon-assessment-cancel:before {
   content: "\e9f3";
 }
 
-.icon-failed-evaluation:before {
+.icon-assessment-fail:before {
   content: "\e9fb";
+}
+
+.icon-new-page:before {
+  content: "\e637";
+}
+
+.icon-close-small:before {
+  content: "\e63b";
+}
+
+.icon-add:before {
+  content: "\e114";
 }
 
 .icon-exit-editing:before {

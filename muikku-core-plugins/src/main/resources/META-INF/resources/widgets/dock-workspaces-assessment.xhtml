@@ -2,11 +2,10 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html">
 
-  <div class="widget wi-workspace-dock-navi-button-request-evaluation">
-    <div class="icon-assessment-#{workspaceBackingBean.assessmentState} w-tooltip workspace-assessment-state-#{workspaceBackingBean.assessmentState}" 
-            data-state="#{workspaceBackingBean.assessmentState}"
-            title="#{i18n.text['plugin.workspace.dock.request-evaluation']}">
-      <span class="workspace-navi-tt-container-request-evaluation">#{i18n.text['plugin.workspace.dock.request-evaluation']}</span>
-    </div>
+  <div class="widget wi-workspace-dock-navi-button-evaluation" data-state="#{workspaceBackingBean.assessmentState}">
+    <a class="icon-assessment-#{workspaceBackingBean.assessmentState} w-tooltip" 
+         title="#{i18n.text['plugin.workspace.dock.request-evaluation']}">
+      <span class="workspace-navi-tt-container-evaluation">#{i18n.text['plugin.workspace.dock.request-evaluation']}</span>
+    </a>
   </div>
 </ui:composition>
