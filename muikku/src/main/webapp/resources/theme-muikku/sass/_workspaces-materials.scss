@@ -166,6 +166,11 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
   div {
     line-height:1.5em;
   }
+  
+  p, h1, h2, h3, h4, h5, h6 {
+    word-wrap:break-word;
+  }
+  
   em {
     font-style:italic;
     font-weight:300;
@@ -235,8 +240,15 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     clear:both;
   }
   
-  .workspace-materials-view-page[data-workspace-material-assigment-type="EXERCISE"],
-  .workspace-materials-view-page[data-workspace-material-assigment-type="EVALUATED"] {
+  .workspace-materials-view-page {
+  
+    &[data-workspace-material-assigment-type="EXERCISE"] {
+      
+    }
+    
+    &[data-workspace-material-assigment-type="EVALUATED"] {
+      
+    }
   
     button.muikku-save-page {
       color:#fff;

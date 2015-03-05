@@ -272,7 +272,7 @@ body.workspace-materials-reading {
     
     }
   
-    .workspace-materials-view-page.material-reading-view {
+    .workspace-materials-view-page.material-reading-view { /* <article> */
       max-width:700px;
       width:auto;
       background:#fff;
@@ -310,7 +310,6 @@ body.workspace-materials-reading {
       
       h1,
       h2 {
-        
         
         &:first-child {
           margin:20px 0 20px 0;
