@@ -40,7 +40,7 @@ public class WorkspaceMaterialsBackingBean {
 
   @Inject
   @Named
-  private WorkspaceBackingBean workspaceNavigationBackingBean;
+  private WorkspaceBackingBean workspaceBackingBean;
 
   @RequestAction
   public String init() {
@@ -59,7 +59,7 @@ public class WorkspaceMaterialsBackingBean {
     rootFolder = workspaceMaterialController
         .findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
 
-    workspaceNavigationBackingBean.setWorkspaceUrlName(urlName);
+    workspaceBackingBean.setWorkspaceUrlName(urlName);
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
     workspaceName = workspace.getName();
     workspaceEntityId = workspaceEntity.getId();

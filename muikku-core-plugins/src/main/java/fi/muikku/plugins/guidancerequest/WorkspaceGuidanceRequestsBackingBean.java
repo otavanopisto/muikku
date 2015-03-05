@@ -38,7 +38,7 @@ public class WorkspaceGuidanceRequestsBackingBean {
   private WorkspaceController workspaceController;
   
   @Inject
-  private WorkspaceBackingBean workspaceNavigationBackingBean;
+  private WorkspaceBackingBean workspaceBackingBean;
 
   @RequestAction
   public void init() throws FileNotFoundException {
@@ -52,7 +52,7 @@ public class WorkspaceGuidanceRequestsBackingBean {
       throw new FileNotFoundException();
     }
     
-    workspaceNavigationBackingBean.setWorkspaceUrlName(urlName);
+    workspaceBackingBean.setWorkspaceUrlName(urlName);
 
     workspaceId = workspaceEntity.getId();
   }
