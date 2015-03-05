@@ -7,11 +7,14 @@
           <div class="di-message-new-body">
             <div class="mf-fieldRow">
               <div class="mf-textfield">
-                <input type="textfield" value="" name="msgSubject"></input>
+                <input type="textfield" value="" name="title"></input>
+                <select value="" name="forumAreaId">
+                  <option value="1">dasdasd</option>
+                </select>
               </div>        
               <div class="di-message-new-content">
                 <div class="mf-textarea">
-                 <textarea name="msgContent"></textarea>
+                 <textarea name="message"></textarea>
                 </div>
               </div>
             </div>

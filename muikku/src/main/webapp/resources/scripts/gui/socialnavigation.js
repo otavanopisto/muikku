@@ -24,9 +24,8 @@
 
 		var cancelBtn = $(tabDiv).find("input[name='cancel']");
 		var sendBtn = $(tabDiv).find("input[name='send']");		
-		var inputs = $(tabDiv).find("input:not([type='button'])");
-		
-
+		var elements = $(tabDiv).find("form");
+       
 		
 		
 		cancelBtn.on("click", cancelBtn, function() {
@@ -37,17 +36,16 @@
 		});
 
 		sendBtn.on("click", sendBtn, function() {
-			var values = inputs.serializeArray()
+			var valz = elements.serializeArray();
 			var obj = {};
-			$.each(values, function(value){
+			$.each(valz, function(index,value){
 				
 				obj[value.name] = value.value || '';
 				
 			});
 			
-			var stringObj = JSON.stringify(obj);
 			
-			formFunction(stringObj);
+			formFunction(obj);
 			
 			$('.sn-container').removeClass('open');
 			$('.sn-container').addClass('closed');
