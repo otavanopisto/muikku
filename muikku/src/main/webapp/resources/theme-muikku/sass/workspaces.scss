@@ -138,30 +138,6 @@ body.workspace {
     
   }
   
-  #workspaceEvaluationDockWrapper {
-
-    #workspaceEvaluationDock {
-      text-align:center;
-      
-      .wi-workspace-dock-navi-button-request-evaluation {
-        background:#068feb;
-        @include rounded(3px);
-        width:60px;
-        margin-bottom:10px;
-        box-shadow:0 0 5px rgba(0,0,0,0.25);
-      }
-      
-      .wi-workspace-dock-navi-button-cancel-evaluation {
-        background:#f6a930;
-        @include rounded(3px);
-        width:60px;
-        margin-bottom:10px;
-        box-shadow:0 0 5px rgba(0,0,0,0.25);
-      }
-    }
-    
-  }
-  
   #workspaceNavigationWrapper { 
     position:fixed;
     top:100px;
@@ -624,6 +600,131 @@ body.workspace-materials {
 
 body.workspace,
 body.workspace-materials {
+  
+  #workspaceEvaluationDockWrapper {
+    text-align:center;
+      
+    .wi-workspace-dock-navi-button-evaluation { /* Button's master rules */
+      width:60px;
+      margin-bottom:10px;
+      box-shadow:0 0 5px rgba(0,0,0,0.25);
+      @include rounded(3px);
+      
+      a {
+        text-shadow:none;
+        transition: background 0.2s ease-in-out;
+      }
+      
+      &[data-state='unassessed'] { /* Default state */
+        background:#6ab0df;
+
+        a:hover {
+          background:#509ccf;
+          
+          span[class*='workspace-navi-tt-container-'] {
+            background:#509ccf;
+          }
+          
+        }
+        
+      }
+      
+      &[data-state='pending'] { /* Evaluation Request Pending */
+        background:#0099ff; 
+        transition: background 0.2s ease-in-out;
+
+        a:hover {
+          background:#0075c3;
+          
+          span[class*='workspace-navi-tt-container-'] {
+            background:#0075c3;
+          }
+          
+        }
+        
+        &:hover {
+          background:#f6a930;
+          
+          a {
+            background:#e5961b;
+            
+            &:before {
+              content: "\e9f3"; /* Override Pending icon with Cancellation icon */
+            }
+            
+            &:hover {
+              background:#e5961b;
+            
+              span[class*='workspace-navi-tt-container-'] {
+                background:#e5961b;
+              }
+            
+            }
+
+          }
+
+        }
+        
+      }
+      
+      &[data-state='cancel'] { /* Evaluation Request Cancelled */
+        background:#f6a930; /* Same as Default at this point */
+        
+        a:hover {
+          background:#e5961b;
+          
+          span[class*='workspace-navi-tt-container-'] {
+            background:#e5961b;
+          }
+          
+        }
+        
+      }
+      
+      &[data-state='canceled'] { /* Evaluation Request Cancelled */
+        background:#55bbff; /* Same as Default at this point */
+        
+        a:hover {
+          background:#509ccf;
+          
+          span[class*='workspace-navi-tt-container-'] {
+            background:#509ccf;
+          }
+          
+        }
+        
+      }
+      
+      &[data-state='pass'] { /* Evaluation of Workspace - Pass */
+        background:#1ec30c;
+        
+        a:hover {
+          background:#16a506;
+          
+          span[class*='workspace-navi-tt-container-'] {
+            background:#16a506;
+          }
+          
+        }
+        
+      }
+      
+      &[data-state='fail'] { /* Evaluation of Workspace - Fail */
+        background:#ea7401;
+        
+        a:hover {
+          background:#c56304;
+          
+          span[class*='workspace-navi-tt-container-'] {
+            background:#c56304;
+          }
+          
+        }
+      }
+      
+    }
+    
+  }
   
   /* JQuery UI Dialog Overrides */
   .ui-widget-overlay {
