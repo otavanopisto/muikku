@@ -13,7 +13,7 @@ import fi.muikku.schooldata.WorkspaceController;
 @Named
 @Stateful
 @RequestScoped
-public class WorkspaceNavigationBackingBean {
+public class WorkspaceBackingBean {
 
   @Inject
   private WorkspaceController workspaceController;

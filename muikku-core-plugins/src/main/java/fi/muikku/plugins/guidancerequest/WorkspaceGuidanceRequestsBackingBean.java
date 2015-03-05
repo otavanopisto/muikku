@@ -15,7 +15,7 @@ import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.plugins.workspace.WorkspaceNavigationBackingBean;
+import fi.muikku.plugins.workspace.WorkspaceBackingBean;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.session.SessionController;
 
@@ -38,7 +38,7 @@ public class WorkspaceGuidanceRequestsBackingBean {
   private WorkspaceController workspaceController;
   
   @Inject
-  private WorkspaceNavigationBackingBean workspaceNavigationBackingBean;
+  private WorkspaceBackingBean workspaceNavigationBackingBean;
 
   @RequestAction
   public void init() throws FileNotFoundException {

@@ -3,7 +3,10 @@
   xmlns:h="http://java.sun.com/jsf/html">
 
   <div class="widget wi-workspace-dock-navi-button-request-evaluation">
-    <h:link styleClass="icon-request-evaluation w-tooltip" title="#{i18n.text['plugin.workspace.dock.request-evaluation']}" outcome="#">
+    <h:link styleClass="icon-assessment-#{workspaceBackingBean.assessmentState} w-tooltip workspace-assessment-state-#{workspaceBackingBean.assessmentState}" 
+            data-state="#{workspaceBackingBean.assessmentState}"
+            title="#{i18n.text['plugin.workspace.dock.request-evaluation']}"
+            outcome="#">
       <span class="workspace-navi-tt-container-request-evaluation">#{i18n.text['plugin.workspace.dock.request-evaluation']}</span>
     </h:link>
   </div>

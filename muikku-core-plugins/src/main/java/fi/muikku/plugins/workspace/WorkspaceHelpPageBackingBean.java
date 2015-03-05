@@ -40,7 +40,7 @@ public class WorkspaceHelpPageBackingBean {
 
   @Inject
   @Named
-  private WorkspaceNavigationBackingBean workspaceNavigationBackingBean;
+  private WorkspaceBackingBean workspaceNavigationBackingBean;
 
   @Inject
   private WorkspaceVisitController workspaceVisitController;

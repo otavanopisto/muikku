@@ -20,7 +20,7 @@ public class WorkspaceComingSoonBackingBean {
   
   @Inject
   @Named
-  private WorkspaceNavigationBackingBean workspaceNavigationBackingBean;
+  private WorkspaceBackingBean workspaceNavigationBackingBean;
 
   @RequestAction
   public void init() {

@@ -39,7 +39,7 @@ public class WorkspaceIndexBackingBean {
 
   @Inject
   @Named
-  private WorkspaceNavigationBackingBean workspaceNavigationBackingBean;
+  private WorkspaceBackingBean workspaceNavigationBackingBean;
 
   @Inject
   private WorkspaceVisitController workspaceVisitController;
