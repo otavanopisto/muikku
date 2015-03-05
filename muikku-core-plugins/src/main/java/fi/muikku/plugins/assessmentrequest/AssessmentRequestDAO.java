@@ -29,6 +29,14 @@ public class AssessmentRequestDAO extends CorePluginsDAO<AssessmentRequest> {
 
     return assessmentRequest;
   }
+  
+  public AssessmentRequest updateState(AssessmentRequest assessmentRequest, AssessmentRequestState newState) {
+    assessmentRequest.setState(newState);
+    
+    getEntityManager().persist(assessmentRequest);
+
+    return assessmentRequest;
+  }
 
   public List<AssessmentRequest> listByWorkspace(WorkspaceEntity workspaceEntity) {
     EntityManager entityManager = getEntityManager();

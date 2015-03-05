@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
@@ -79,5 +80,22 @@ public class AssessmentRequestRESTService extends PluginRESTService {
     }
     
     return Response.ok(restAssessmentRequests).build();
+  }
+  
+  @POST
+  @Path("/assessmentrequests/{ID}/cancel")
+  public Response cancelAssessmentRequest(@PathParam("ID") long assessmentRequestId) {
+    AssessmentRequest assessmentRequest = assessmentRequestController.findById(assessmentRequestId);
+    UserEntity student = sessionController.getLoggedUserEntity();
+
+    if (assessmentRequest == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    if (student == null || student.getId() != assessmentRequest.getStudent()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    assessmentRequestController.cancelAssessmentRequest(assessmentRequest);
+    return Response.ok().build();
   }
 }

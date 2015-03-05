@@ -25,6 +25,14 @@ public class AssessmentRequestController {
   public AssessmentRequest create(@PermitContext WorkspaceEntity workspaceEntity, UserEntity student, Date date, String message) {
     return assessmentRequestDAO.create(workspaceEntity, student, date, message, AssessmentRequestState.PENDING);
   }
+
+  public AssessmentRequest findById(Long id) {
+    return assessmentRequestDAO.findById(id);
+  }
+  
+  public void cancelAssessmentRequest(AssessmentRequest assessmentRequest) {
+    assessmentRequestDAO.updateState(assessmentRequest, AssessmentRequestState.CANCELED);
+  }
   
   @Permit (AssessmentRequestPermissions.LIST_WORKSPACE_ASSESSMENTREQUESTS)
   public List<AssessmentRequest> listByWorkspace(@PermitContext WorkspaceEntity workspaceEntity) {
