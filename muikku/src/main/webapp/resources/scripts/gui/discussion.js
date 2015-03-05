@@ -1,7 +1,7 @@
 $(document).ready(function(){
 	$(".di-new-message-button").click(function(){
     
-		var formFunction = function(values){
+		var createMessage = function(values){
 			
 	        var res = text(JSON.stringify(values));
 	        
@@ -16,7 +16,7 @@ $(document).ready(function(){
 	          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('TODO: Virheilmoitus', err));
 	    	}else{ 		
 			
-			openInSN('/discussion/newmessage.dust', areas );
+			openInSN('/discussion/newmessage.dust', areas, createMessage );
 			
 	    	}
 	      });
@@ -25,7 +25,7 @@ $(document).ready(function(){
 
 	$(".di-new-area-button").click(function(){
 
-		var formFunction = function(values){
+		var createArea = function(values){
 			mApi().forum.areas.create(JSON.parse(values)).callback(function(err, result) {
 			});			
 		}			
@@ -36,7 +36,7 @@ $(document).ready(function(){
 	          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('TODO: Virheilmoitus', err));
 	    	}else{ 		
 			
-			openInSN('/discussion/newarea.dust', areas, formFunction );
+			openInSN('/discussion/newarea.dust', areas, createNewArea );
 			
 	    	}
 	      });

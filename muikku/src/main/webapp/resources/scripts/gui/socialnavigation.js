@@ -39,18 +39,16 @@
 		sendBtn.on("click", sendBtn, function() {
 			var values = inputs.serializeArray()
 			var obj = {};
-			$.each(values, function(index,value){
-
+			$.each(values, function(value){
 				
 				obj[value.name] = value.value || '';
-				
-				
 				
 			});
 			
 			var stringObj = JSON.stringify(obj);
 			
 			formFunction(stringObj);
+			
 			$('.sn-container').removeClass('open');
 			$('.sn-container').addClass('closed');
 
