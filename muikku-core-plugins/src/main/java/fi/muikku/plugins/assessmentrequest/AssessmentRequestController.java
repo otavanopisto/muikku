@@ -41,4 +41,15 @@ public class AssessmentRequestController {
       Long studentEntityId) {
     return assessmentRequestDAO.listByWorkspaceIdAndStudentIdOrderByCreated(workspaceEntityId, studentEntityId);
   }
+  
+  public WorkspaceAssessmentState getWorkspaceAssessmentState(
+     WorkspaceEntity workspaceEntity,
+     UserEntity studentEntity) {
+    List<AssessmentRequest> assessmentRequests = listByWorkspaceIdAndStudentIdOrderByCreated(workspaceEntity.getId(), studentEntity.getId());
+    if (assessmentRequests.isEmpty()) {
+      return WorkspaceAssessmentState.UNASSESSED;
+    } else {
+      return WorkspaceAssessmentState.fromAssessmentRequestState(assessmentRequests.get(0).getState());
+    }
+  }
 }
