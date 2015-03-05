@@ -15,15 +15,14 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
   input[type="text"] {
     width:auto;
     height:auto;
-    border:1px solid #eee;
+    border:3px solid #c9e0fb;
     @include rounded(3px);
     display:inline-block;
-    padding:2px 4px;
+    padding:4px 8px;
     transition:border,box-shadow 0.1s,0.2s ease-in-out;
     outline:none;
     font-size:17px;
     color:#0061a2;
-    width:100%;
     max-width:100%;
     box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
     box-sizing:border-box;
@@ -31,7 +30,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     
     &:focus,
     &:hover {
-      border:1px solid #97bfed;
+      border:3px solid #97bfed;
       box-shadow:0 0 0px 3px rgba(202,225,252,0.75);
     }
 
@@ -64,14 +63,14 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
   
   textarea {
     height:auto;
-    border:1px solid #eee;
+    border:3px solid #c9e0fb;
     @include rounded(3px);
     display:inline-block;
     padding:4px 8px;
     transition:border,box-shadow 0.1s,0.2s ease-in-out;
     outline:none;
     font-size:17px;
-    color:#0061a2;
+    color:#4c4c4c;
     width:100%;
     max-width:100%;
     box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
@@ -79,14 +78,20 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     text-align:left;
     margin:0;
     line-height:1.7em;
+    
+    &:focus,
+    &:hover {
+      border:3px solid #97bfed;
+      box-shadow:0 0 0px 3px rgba(202,225,252,0.75);
+    }
   }
 
   /* Select and Option field overrides */
   select {
     background:#fff;
-    border:1px solid #eee;
+    border:3px solid #c9e0fb;
     transition:border,box-shadow 0.1s,0.2s ease-in-out;
-    outline:none; /* Thanks Chrome! */
+    outline:none;
     color:#0061a2;
     display:inline-block;
     margin:4px;
@@ -97,14 +102,14 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     
     &:focus,
     &:hover {
-      border:1px solid #97bfed;
+      border:3px solid #97bfed;
       box-shadow:0 0 0px 3px rgba(202,225,252,0.85);
     }
   
     option {
       background:#fff;
       font-weight:300;
-      padding:2px 6px;
+      padding:4px 8px;
     }
     
   }
@@ -113,7 +118,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
   input[type="checkbox"] {
     margin:0 10px;
     background:#fff;
-    border:1px solid #eee;
+    border:3px solid #c9e0fb;
     transition:border,box-shadow 0.1s,0.2s ease-in-out;
     outline:none;
     display:inline-block;
@@ -124,7 +129,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     &:focus,
     &:hover,
     &:checked {
-      border:1px solid #97bfed;
+      border:3px solid #97bfed;
       box-shadow:0 0 0px 3px rgba(202,225,252,0.85);
     }
   }
@@ -297,13 +302,13 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     }
     
     .muikku-page-assignment-type {
-      padding:0px 4px;
+      padding:2px 8px;
       border-radius:2px;
       color: #fff;
       text-align: center;
       text-transform:uppercase;
       display:inline-block;
-      margin:15px 0 0 -32px;
+      margin:15px 0 0 -36px;
       
       &.evaluated {
         background: $evaluatedAssignment;

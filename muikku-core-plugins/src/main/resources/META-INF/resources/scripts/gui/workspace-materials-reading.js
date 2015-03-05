@@ -169,7 +169,7 @@
         
         $(this)
           .addClass("save-successful")
-          .text(exercise ? getLocaleText('plugin.workspace.materialsReading.answerChecked') : getLocaleText('plugin.workspace.materialsReading.answerSaved'));
+          .text(exercise ? getLocaleText('plugin.workspace.materials.exerciseSaved') : getLocaleText('plugin.workspace.materials.assignmentSaved'));
       } 
     }, this));
   });
