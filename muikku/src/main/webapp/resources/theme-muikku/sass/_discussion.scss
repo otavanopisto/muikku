@@ -65,12 +65,12 @@
 }
 
 .di-browse-areas-container{
-   margin-top:15px;
-   
+  margin-top:15px;
   select{
      height:37px;
      line-height:37px;
-    
+     min-width:200px;
+     margin-left:15px;
   }
   
 }

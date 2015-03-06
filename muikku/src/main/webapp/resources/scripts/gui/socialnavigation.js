@@ -44,7 +44,7 @@
 			
 			
 			formFunction(obj);
-			
+			formContainer.empty();
 			$('.sn-container').removeClass('open');
 			$('.sn-container').addClass('closed');
 
