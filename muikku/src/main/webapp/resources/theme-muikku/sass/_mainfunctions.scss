@@ -408,3 +408,22 @@
    }
   } 
  }
+ 
+ /* Forms */
+ 
+ .mf-fieldRow{
+   > div{
+    display:inline-block;
+    box-sizing:border-box;
+   }
+ }
+ 
+ .mf-select{
+  select{
+     height:37px;
+     line-height:37px;
+     min-width:200px;
+  }
+  
+}
+  
