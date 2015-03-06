@@ -126,7 +126,7 @@ public class ForumRESTService extends PluginRESTService {
     List<ForumThreadRESTModel> result = new ArrayList<ForumThreadRESTModel>();
     
     for (ForumThread thread : threads) {
-      result.add(new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked()));
+      result.add(new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked(), thread.getUpdated()));
     }
     
     return Response.ok(
@@ -139,7 +139,7 @@ public class ForumRESTService extends PluginRESTService {
   public Response findThread(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId) throws AuthorizationException {
     ForumThread thread = forumController.getForumThread(threadId);
 
-    ForumThreadRESTModel result = new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked());
+    ForumThreadRESTModel result = new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked(), thread.getUpdated());
     
     return Response.ok(
       result
@@ -152,7 +152,7 @@ public class ForumRESTService extends PluginRESTService {
     ForumArea forumArea = forumController.getForumArea(areaId);
     ForumThread thread = forumController.createForumThread(forumArea, newThread.getTitle(), newThread.getMessage(), newThread.getSticky(), newThread.getLocked());
 
-    ForumThreadRESTModel result = new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked());
+    ForumThreadRESTModel result = new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked(), thread.getUpdated());
     
     return Response.ok(
       result
@@ -213,7 +213,7 @@ public class ForumRESTService extends PluginRESTService {
     List<ForumThreadRESTModel> result = new ArrayList<ForumThreadRESTModel>();
     
     for (ForumThread thread : threads) {
-      result.add(new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked()));
+      result.add(new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked(), thread.getUpdated()));
     }
     
     return Response.ok(
