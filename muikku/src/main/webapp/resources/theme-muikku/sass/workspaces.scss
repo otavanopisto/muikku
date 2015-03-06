@@ -800,6 +800,43 @@ body.workspace-materials {
     .workspace-evaluation-request-confirm-dialog,
     .workspace-evaluation-cancellation-confirm-dialog {
       margin:10px 0 0 0;
+      
+      .evaluation-request-additional-message-wrapper {
+        margin:10px 0;
+      
+        label {
+          font-weight:400;
+          text-transform:uppercase;
+          padding:0 0 5px 2px;
+          font-size:14px;
+          font-family:"Open Sans";
+          color:#4c4c4c;
+        }
+      
+        #evaluationRequestAdditionalMessage {
+          width:100%;
+          max-width:100%;
+          box-sizing:border-box;
+          min-height:100px;
+          border:3px solid #ededed;
+          font-family:"Open Sans";
+          color:#4c4c4c;
+          padding:4px 8px;
+          font-weight:400;
+          border-radius:0px;
+          
+          &:focus,
+          &:hover,
+          &:active {
+            box-shadow:none;
+            border:3px solid #ededed;
+            outline:none;
+          }
+          
+        }
+      
+      }
+      
     }
     
     .ui-dialog-buttonpane {

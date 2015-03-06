@@ -151,7 +151,7 @@
 
             mApi().assessmentrequest.assessmentrequests.create({
               'workspaceId': parseInt(workspaceEntityId, 10),
-              'message': "Arviointipyyntö"
+              'message': $('#evaluationRequestAdditionalMessage').val()
             }).callback(function(err, result) {
               if (err) {
                 $('.notification-queue').notificationQueue('notification', 'error', err);
