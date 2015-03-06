@@ -141,7 +141,7 @@
                 .removeClass('icon-assessment-' + evalButton.attr('data-state'))
                 .addClass('icon-assessment-pending')
                 .children('span')
-                  .text(getLocaleText("plugin.workspace.materialsLoader.cancelEvaluationButton"));
+                  .text(getLocaleText("plugin.workspace.evaluation.cancelEvaluationButtonTooltip"));
           
             evalButton.attr('data-state', 'pending');
             
@@ -194,7 +194,7 @@
                 .removeClass('icon-assessment-' + evalButton.attr('data-state'))
                 .addClass('icon-assessment-unassessed')
                 .children('span')
-                  .text(getLocaleText("plugin.workspace.materialsLoader.requestEvaluationButton"));
+                  .text(getLocaleText("plugin.workspace.evaluation.requestEvaluationButtonTooltip"));
           
             evalButton.attr('data-state', 'canceled');
             
