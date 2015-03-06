@@ -98,4 +98,22 @@ public class AssessmentRequestRESTService extends PluginRESTService {
     assessmentRequestController.cancelAssessmentRequest(assessmentRequest);
     return Response.ok().build();
   }
+
+  @POST
+  @Path("/assessmentrequests/byWorkspace/{WORKSPACEID}/latest/cancel")
+  public Response cancelLastAssessmentRequestByWorkspace(@PathParam("WORKSPACEID") long workspaceEntityId) {
+    UserEntity student = sessionController.getLoggedUserEntity();
+    List<AssessmentRequest> assessmentRequests = assessmentRequestController.listByWorkspaceIdAndStudentIdOrderByCreated(workspaceEntityId, student.getId());
+
+    if (assessmentRequests.isEmpty()) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    AssessmentRequest assessmentRequest = assessmentRequests.get(0);
+    if (student == null || student.getId() != assessmentRequest.getStudent()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    assessmentRequestController.cancelAssessmentRequest(assessmentRequest);
+    return Response.ok().build();
+  }
 }

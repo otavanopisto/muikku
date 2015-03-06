@@ -195,11 +195,21 @@
                 .addClass('icon-assessment-unassessed')
                 .children('span')
                   .text(getLocaleText("plugin.workspace.evaluation.requestEvaluationButtonTooltip"));
-          
-            evalButton.attr('data-state', 'canceled');
-            
-            $(this).dialog("destroy").remove();
-            $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.workspace.evaluation.cancelEvaluation.notificationText"));
+
+            var workspaceEntityId = $('.workspaceEntityId').val();
+
+            mApi().assessmentrequest.assessmentrequests.byWorkspace[workspaceEntityId].latest.cancel.create({
+            }).callback(function(err, result) {
+              if (err) {
+                $('.notification-queue').notificationQueue('notification', 'error', err);
+              } else {
+                evalButton.attr('data-state', 'canceled');
+                
+                $(this).dialog("destroy").remove();
+                $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.workspace.evaluation.cancelEvaluation.notificationText"));
+              }
+            });
+
           }
         }, {
           'text': dialog.data('button-cancel-text'),
