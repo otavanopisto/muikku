@@ -141,17 +141,16 @@
                 .removeClass('icon-assessment-' + evalButton.attr('data-state'))
                 .addClass('icon-assessment-pending')
                 .children('span')
-                  .text(getLocaleText("plugin.workspace.materialsLoader.cancelEvaluationButton"));
+                  .text(getLocaleText("plugin.workspace.evaluation.cancelEvaluationButtonTooltip"));
           
             evalButton.attr('data-state', 'pending');
             
             var workspaceEntityId = $('.workspaceEntityId').val();
-            
-            $(this).dialog("destroy").remove();
+            var message = $('#evaluationRequestAdditionalMessage').val();
 
             mApi().assessmentrequest.assessmentrequests.create({
               'workspaceId': parseInt(workspaceEntityId, 10),
-              'message': "Arviointipyyntö"
+              'message': message
             }).callback(function(err, result) {
               if (err) {
                 $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -159,6 +158,8 @@
                 $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.workspace.evaluation.requestEvaluation.notificationText"));
               }
             });
+            
+            $(this).dialog("destroy").remove();
             
           }
         }, {
@@ -194,10 +195,9 @@
                 .removeClass('icon-assessment-' + evalButton.attr('data-state'))
                 .addClass('icon-assessment-unassessed')
                 .children('span')
-                  .text(getLocaleText("plugin.workspace.materialsLoader.requestEvaluationButton"));
+                  .text(getLocaleText("plugin.workspace.evaluation.requestEvaluationButtonTooltip"));
           
             evalButton.attr('data-state', 'canceled');
-
             var workspaceEntityId = parseInt($('.workspaceEntityId').val(), 10);
             mApi().assessmentrequest.cancellastassessmentrequest.create(workspaceEntityId)
             .callback(function(err, result) {
