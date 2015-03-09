@@ -147,11 +147,13 @@
             
             var workspaceEntityId = $('.workspaceEntityId').val();
             
-            $(this).dialog("destroy").remove();
+            var message = $('#evaluationRequestAdditionalMessage').val();
+            
+            
 
             mApi().assessmentrequest.assessmentrequests.create({
               'workspaceId': parseInt(workspaceEntityId, 10),
-              'message': $('#evaluationRequestAdditionalMessage').val()
+              'message': message
             }).callback(function(err, result) {
               if (err) {
                 $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -159,6 +161,8 @@
                 $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.workspace.evaluation.requestEvaluation.notificationText"));
               }
             });
+            
+            $(this).dialog("destroy").remove();
             
           }
         }, {
