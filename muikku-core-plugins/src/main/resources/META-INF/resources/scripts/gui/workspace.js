@@ -146,10 +146,7 @@
             evalButton.attr('data-state', 'pending');
             
             var workspaceEntityId = $('.workspaceEntityId').val();
-            
             var message = $('#evaluationRequestAdditionalMessage').val();
-            
-            
 
             mApi().assessmentrequest.assessmentrequests.create({
               'workspaceId': parseInt(workspaceEntityId, 10),
