@@ -32,6 +32,7 @@ public class AssessmentRequestController {
   
   public void cancelAssessmentRequest(AssessmentRequest assessmentRequest) {
     assessmentRequestDAO.updateState(assessmentRequest, AssessmentRequestState.CANCELED);
+    communicatorAssessmentRequestController.sendAssessmentRequestCancelledMessage(assessmentRequest);
   }
   
   @Permit (AssessmentRequestPermissions.LIST_WORKSPACE_ASSESSMENTREQUESTS)
