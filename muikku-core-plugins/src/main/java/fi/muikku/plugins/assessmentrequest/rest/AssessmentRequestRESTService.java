@@ -30,19 +30,19 @@ import fi.muikku.session.local.LocalSession;
 @Produces("application/json")
 @Stateful
 public class AssessmentRequestRESTService extends PluginRESTService {
-  
+
   private static final long serialVersionUID = 1L;
 
   @Inject
   private AssessmentRequestController assessmentRequestController;
-  
+
   @Inject
   private WorkspaceController workspaceController;
-  
+
   @LocalSession
   @Inject
   private SessionController sessionController;
-  
+
   @POST
   @Path("/assessmentrequests")
   public Response requestAssessment(AssessmentRequestRESTModel assessmentRequest) {
@@ -50,7 +50,7 @@ public class AssessmentRequestRESTService extends PluginRESTService {
     if (workspaceEntity == null) {
       return Response.status(Status.BAD_REQUEST).build();
     }
-    
+
     UserEntity student = sessionController.getLoggedUserEntity();
     if (student == null) {
       return Response.status(Status.BAD_REQUEST).build();
@@ -58,62 +58,54 @@ public class AssessmentRequestRESTService extends PluginRESTService {
 
     assessmentRequest.setState("PENDING");
     assessmentRequestController.requestAssessment(workspaceEntity, student, assessmentRequest.getMessage());
-    return Response.ok((Object)assessmentRequest).build();
+    return Response.ok((Object) assessmentRequest).build();
   }
-  
+
   @GET
   @Path("/assessmentrequests")
   public Response listAssessmentRequestsOfCurrentUserByWorkspaceId(@QueryParam("workspaceId") long workspaceEntityId) {
     UserEntity student = sessionController.getLoggedUserEntity();
-    List<AssessmentRequest> assessmentRequests = assessmentRequestController.listByWorkspaceIdAndStudentIdOrderByCreated(workspaceEntityId, student.getId());
+    List<AssessmentRequest> assessmentRequests = assessmentRequestController
+        .listByWorkspaceIdAndStudentIdOrderByCreated(workspaceEntityId, student.getId());
     List<AssessmentRequestRESTModel> restAssessmentRequests = new ArrayList<>();
-    
+
     for (AssessmentRequest assessmentRequest : assessmentRequests) {
       AssessmentRequestRESTModel restAssessmentRequest = new AssessmentRequestRESTModel();
-      
+
       restAssessmentRequest.setId(assessmentRequest.getId());
       restAssessmentRequest.setWorkspaceId(assessmentRequest.getWorkspace());
       restAssessmentRequest.setMessage(assessmentRequest.getMessage());
       restAssessmentRequest.setState(assessmentRequest.getState().toString());
-      
+
       restAssessmentRequests.add(restAssessmentRequest);
     }
-    
+
     return Response.ok(restAssessmentRequests).build();
   }
-  
-  @POST
-  @Path("/assessmentrequests/{ID}/cancel")
-  public Response cancelAssessmentRequest(@PathParam("ID") long assessmentRequestId) {
-    AssessmentRequest assessmentRequest = assessmentRequestController.findById(assessmentRequestId);
-    UserEntity student = sessionController.getLoggedUserEntity();
-
-    if (assessmentRequest == null) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
-    if (student == null || student.getId() != assessmentRequest.getStudent()) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-    
-    assessmentRequestController.cancelAssessmentRequest(assessmentRequest);
-    return Response.ok().build();
-  }
 
   @POST
-  @Path("/assessmentrequests/byWorkspace/{WORKSPACEID}/latest/cancel")
-  public Response cancelLastAssessmentRequestByWorkspace(@PathParam("WORKSPACEID") long workspaceEntityId) {
+  @Path("/cancellastassessmentrequest/{WORKSPACEID}")
+  public Response cancelLastAssessmentRequest(@PathParam("WORKSPACEID") long workspaceEntityId) {
     UserEntity student = sessionController.getLoggedUserEntity();
-    List<AssessmentRequest> assessmentRequests = assessmentRequestController.listByWorkspaceIdAndStudentIdOrderByCreated(workspaceEntityId, student.getId());
+    List<AssessmentRequest> assessmentRequests = assessmentRequestController
+        .listByWorkspaceIdAndStudentIdOrderByCreated(workspaceEntityId, student.getId());
 
     if (assessmentRequests.isEmpty()) {
       return Response.status(Status.NOT_FOUND).build();
     }
+
     AssessmentRequest assessmentRequest = assessmentRequests.get(0);
+
     if (student == null || student.getId() != assessmentRequest.getStudent()) {
       return Response.status(Status.FORBIDDEN).build();
     }
-    
+
     assessmentRequestController.cancelAssessmentRequest(assessmentRequest);
-    return Response.ok().build();
+    AssessmentRequestRESTModel restAssessmentRequest = new AssessmentRequestRESTModel();
+    restAssessmentRequest.setId(assessmentRequest.getId());
+    restAssessmentRequest.setWorkspaceId(assessmentRequest.getWorkspace());
+    restAssessmentRequest.setMessage(assessmentRequest.getMessage());
+    restAssessmentRequest.setState(assessmentRequest.getState().toString());
+    return Response.ok(restAssessmentRequest).build();
   }
 }

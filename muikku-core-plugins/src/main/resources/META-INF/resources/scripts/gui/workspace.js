@@ -146,12 +146,11 @@
             evalButton.attr('data-state', 'pending');
             
             var workspaceEntityId = $('.workspaceEntityId').val();
-            
-            $(this).dialog("destroy").remove();
+            var message = $('#evaluationRequestAdditionalMessage').val();
 
             mApi().assessmentrequest.assessmentrequests.create({
               'workspaceId': parseInt(workspaceEntityId, 10),
-              'message': "Arviointipyyntö"
+              'message': message
             }).callback(function(err, result) {
               if (err) {
                 $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -159,6 +158,8 @@
                 $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.workspace.evaluation.requestEvaluation.notificationText"));
               }
             });
+            
+            $(this).dialog("destroy").remove();
             
           }
         }, {
@@ -195,21 +196,19 @@
                 .addClass('icon-assessment-unassessed')
                 .children('span')
                   .text(getLocaleText("plugin.workspace.evaluation.requestEvaluationButtonTooltip"));
-
-            var workspaceEntityId = $('.workspaceEntityId').val();
-
-            mApi().assessmentrequest.assessmentrequests.byWorkspace[workspaceEntityId].latest.cancel.create({
-            }).callback(function(err, result) {
+          
+            evalButton.attr('data-state', 'canceled');
+            var workspaceEntityId = parseInt($('.workspaceEntityId').val(), 10);
+            mApi().assessmentrequest.cancellastassessmentrequest.create(workspaceEntityId)
+            .callback(function(err, result) {
               if (err) {
                 $('.notification-queue').notificationQueue('notification', 'error', err);
               } else {
-                evalButton.attr('data-state', 'canceled');
-                
-                $(this).dialog("destroy").remove();
-                $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.workspace.evaluation.cancelEvaluation.notificationText"));
+                $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.workspace.evaluation.requestEvaluation.notificationText"));
               }
             });
-
+            
+            $(this).dialog("destroy").remove();
           }
         }, {
           'text': dialog.data('button-cancel-text'),
@@ -217,6 +216,7 @@
           'click': function(event) {
             
             var evalButton = $('.wi-workspace-dock-navi-button-evaluation');
+
             
             evalButton.attr('data-state', 'pending');
             evalButton.children('.icon-assessment-cancel').removeClass('icon-assessment-cancel').addClass('icon-assessment-pending');
