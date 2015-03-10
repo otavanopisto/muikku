@@ -96,8 +96,6 @@ $(document).ready(function(){
 	$(".di-new-area-button").click(function(){
 
 		var createArea = function(values){
-			
-			
 			mApi().forum.areas.create(values).callback(function(err, result) {
 			});			
 		}			
@@ -107,11 +105,7 @@ $(document).ready(function(){
 	      	if( err ){
 	          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('TODO: Virheilmoitus', err));
 	    	}else{ 		
-			
-
 			  openInSN('/discussion/newarea.dust', areas, createArea );
-
-			
 	    	}
 	      });
 		
