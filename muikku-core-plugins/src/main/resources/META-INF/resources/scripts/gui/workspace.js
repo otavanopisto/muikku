@@ -204,7 +204,7 @@
               if (err) {
                 $('.notification-queue').notificationQueue('notification', 'error', err);
               } else {
-                $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.workspace.evaluation.requestEvaluation.notificationText"));
+                $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.workspace.evaluation.cancelEvaluation.notificationText"));
               }
             });
             
