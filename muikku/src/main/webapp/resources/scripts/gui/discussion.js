@@ -29,12 +29,33 @@ $(document).ready(function(){
 	  	}
     });
 	 
+    
+//    var test = function(){
+//	    	
+//          mApi().forum.areas.read(1).callback(function(err, area){
+//          	
+//          	
+//          }).callback(function (err, threads) {
+//		  	  
+//	    });	
+//    }
+//    
+//    test();
+    
 	var refreshLatest = function(){
 		
         $(msgContainer).empty();
 	    
 	    
-	    mApi().forum.latest.read()
+	    mApi().forum.latest.read().on('$', function(msgs, msgsCallback){
+	          mApi().forum.areas.read(msgs.forumAreaId).callback(function(err, area){
+	            msgs.areaName = area.name;	
+	            	
+	          })		    	
+	          
+	          msgsCallback();
+	    	
+	    })
 	    .callback(function (err, threads) {
 	  	  
 		    if( err ){
@@ -98,6 +119,8 @@ $(document).ready(function(){
 		var createArea = function(values){
 			mApi().forum.areas.create(values).callback(function(err, result) {
 			});			
+			
+			refreshLatest();			
 		}			
 	
 	    mApi().forum.areas.read()

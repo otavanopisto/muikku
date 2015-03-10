@@ -5,8 +5,8 @@
    <div class="di-message-meta-content"><span>{message}</span></div>
   </div>
   <div class="mf-item-header-details di-message-details">
-   <div class="di-message-area"><span>Alue</span></div>
-   <div class="di-message-activity"><span>Aktiviteetit</span></div>
+   <div class="di-message-area"><span>{areaName}</span></div>
+   <div class="di-message-activity"><span>{created}</span></div>
   </div>
   <div class="clear"></div>
   <input type="hidden" name="areaId" value="{id}"/>
