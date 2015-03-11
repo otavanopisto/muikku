@@ -50,9 +50,10 @@ $(document).ready(function(){
 	      if (err) {
 	     	  $('.notification-queue').notificationQueue('notification', 'error', err);
 	     	} else {
+	     	 $('#eventCalendar option').remove();
 	        for (var i = 0, l = calendars.length; i < l; i++) {
 	          var calendar = calendars[i];
-	          $('#eventCalendar').append($('<option>').attr('name', calendar.id).text(calendar.summary));
+	          $('#eventCalendar').append($('<option>').attr('value', calendar.id).text(calendar.summary));
 	        }
 	     	}
 	    }));
@@ -109,8 +110,12 @@ $(document).ready(function(){
 	    caption: "Luo tapahtuma",
 	    name : "sendEvent",
 	    action: function (e) {
-	      mApi().calendar.calendars.events.create($('eventCalendar').va(), {
-	        calendarId: paska,
+	      // TODO: switch to ISO8601 date so we can specify the 
+	      // timezone more easily?
+        var start = new Date($('#startDate').datepicker('getDate').getTime() + $('#startTime').timepicker('getTime').getTime());
+        var end = new Date($('#endDate').datepicker('getDate').getTime() + $('#endTime').timepicker('getTime').getTime());
+	      
+	      mApi().calendar.calendars.events.create($('#eventCalendar').val(), {
 	        summary: $('input[name="eventSubject"]').val(),
 	        description: $('input[name="eventContent"]').val(),
 //	      location: calendarEvent.location,
@@ -118,11 +123,11 @@ $(document).ready(function(){
 //	      longitude: calendarEvent.longitude,
 //	      url: calendarEvent.url,
 //	      status: 'CONFIRMED',
-	        start: new Date(),
+	        start: start,
 	        startTimeZone: 'GMT',
-	        end: new Date(),
+	        end: end ,
 	        endTimeZone: 'GMT',
-	        allDay: 'false',
+	        allDay: false,
 //	      attendees: attendees,
 //	      reminders: calendarEvent.reminders
         }).callback(function (err, result) {
