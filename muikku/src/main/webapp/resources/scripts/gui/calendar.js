@@ -1,59 +1,86 @@
- 
 $(document).ready(function(){
 
-//	
-//    mApi().calendar.calendars.read().callback(function (err, result) {
-//
-//    });
-  	
+  /* Create new event modal */ 
+  
+  var createDateField = function (id, name, placeholder) {
+    return $('<div>') 
+      .addClass('ca-field-date')
+      .append($('<input>').attr({
+        'placeholder': placeholder,
+        'type': 'date',
+        'id': id,
+        'name': placeholder, 
+        'required': 'required'
+      }));
+  };
+  
+  var createTimeField = function (id, name, placeholder) {
+    return $('<div>') 
+      .addClass('ca-field-time')
+      .append($('<input>').attr({
+        'placeholder': placeholder,
+        'type': 'time',
+        'id': id,
+        'name': placeholder, 
+        'required': 'required'
+      }));
+  };
+  
+  function createModalContent() { 
+    return $('<div>')
+      .addClass('ca-event-new')
+      .append($('<div>')
+        .append(createDateField('startDate', 'eventStartDate', 'alkaa'))
+        .append(createTimeField('startTime', 'eventStartTime', 'alkaa'))
+        .append(createDateField('endDate', 'eventEndDate', 'loppuu'))
+        .append(createTimeField('endTime', 'eventEndTime', 'loppuu'))
+        .append($('<div>').append($('<input>').attr({ 'placeholder': 'Tapahtuman nimi', 'name': 'eventSubject', 'required': 'required' })))
+        .append($('<div>').append($('<select>').attr({'id': 'eventCalendar', 'required': 'required'}))))
+      .append($('<div>').append($('<textarea>').attr({ 'placeholder': 'Tapahtuman kuvaus', 'name': 'eventContent', 'required': 'required' })));
+  }
+  
+  $(".bt-mainFunction").m3modal({
+	  title : "Uusi tapahtuma! ",
+	  description : "Uuden tapahtuman luonti",
+	  content: createModalContent(),
+	  modalgrid : 24,
+	  contentgrid : 24,
+	  onBeforeOpen: function(modal){
+      mApi().calendar.calendars.read().callback($.proxy(function (err, calendars) {
+	      if (err) {
+	     	  $('.notification-queue').notificationQueue('notification', 'error', err);
+	     	} else {
+	        for (var i = 0, l = calendars.length; i < l; i++) {
+	          var calendar = calendars[i];
+	          $('#eventCalendar').append($('<option>').attr('name', calendar.id).text(calendar.summary));
+	        }
+	     	}
+	    }));
 
-    	
+      $('#startDate').datepicker();
+      $('#endDate').datepicker();
+      $('#startTime').timepicker();
+      $('#endTime').timepicker(); 
+      
+	    $('.ca-event-new').on('focus', 'input', function(){
+		    var dval = this.defaultValue;
+		    var cval = $(this).val();
+		    if (dval == cval){
+		      $(this).val('');
+		    } 
+	    });
+		  
+	    $('.ca-event-new').on('blur', 'input', function(){
+		    var dval = this.defaultValue;
+		    var cval = $(this).val();
+		    if (!cval){ 
+		      $(this).val(dval);	 
+		    }        	
+	    });	 	
 
-/* Create new event modal */ 
-	
-	$(".bt-mainFunction").m3modal({
-	        		title : "Uusi tapahtuma! ",
-	        		description : "Uuden tapahtuman luonti",
-	        		content: $('<div class="ca-event-new"><div><div class="ca-field-date"><input value="alkaa" type="textfield" id="startDate" name="eventStartDate"></input></div><div class="ca-field-time"><input value="alkaa" type="textfield" id="startTime" name="eventStartTime"></input></div><div class="ca-field-date"><input value="loppuu" type="textfield" id="endDate" name="eventStartDate"></input></div><div class="ca-field-time"><input value="loppuu" type="textfield" id="endTime" class="ca-field-date" name="eventStartDate"></input></div><div><input type="textfield" value="Tapahtuman nimi" name="eventSubject"></input></div></div><div><textarea value="Tapahtuman kuvaus" name="eventContent"></textarea></div></div>'),
-	        		modalgrid : 24,
-	        		contentgrid : 24,
-	     		    onBeforeOpen: function(modal){
+	  },
 
-
-
-	     		    	
-	     		    	$('#startDate').datepicker();
-	     		    	$('#endDate').datepicker();
-
-	     		    	$('#startTime').timepicker();
-	     		    	$('#endTime').timepicker();	     		    	
-	     		    	
-	     		    	$('.ca-event-new').on('focus', 'input', function(){
-		     		         var dval = this.defaultValue;
-		     		         var cval = $(this).val();
-		     		         
-
-		     		         if (dval == cval){
-		     		        	 $(this).val('');
-		     		         } 
-
-	
-		     			 });
-		     		      
-		     			 $('.ca-event-new').on('blur', 'input', function(){
-		     		         var dval = this.defaultValue;
-		     		         var cval = $(this).val();
-		     		    	 
-		     		         if (!cval ){ 
-		     		             $(this).val(dval);	 
-		     		      	 }        	
-	
-		     			 });	 	
-
-	    		        	     		    	
-	     		    },
-	     		    	
-	        		options: [
+	  options: [
 //						{
 //						    caption: "Koko päivän tapahtuma",
 //							name : "whole day",
@@ -62,44 +89,36 @@ $(document).ready(function(){
 //											}
 //						},
 //								
-							 ],
-	            		
-	        	    buttons: [
-	        		  {
-	        		    caption: "Luo tapahtuma",
-	        		    name : "sendEvent",
-	        		    action: function (e) {
-	        		    	
-	        		    	mApi().
-	        		    	
-	        		        mApi().calendar.calendars.events.create(calendarId, {
-	        		            calendarId: paska,
-	        		            summary: 'Vittu mitä faindain homoilua',
-	        		            description: 'Mitää elä viiitti',
-//	        		            location: calendarEvent.location,
-//	        		            latitude:calendarEvent.latitude,
-//	        		            longitude: calendarEvent.longitude,
-//	        		            url: calendarEvent.url,
-//	        		            status: 'CONFIRMED',
-	        		            start: new Date(),
-	        		            startTimeZone: GMT,
-	        		            end: new Date(),
-	        		            endTimeZone: GMT,
-	        		            allDay: 'false',
-//	        		            attendees: attendees,
-//	        		            reminders: calendarEvent.reminders
-	        		          }).callback(function (err, result) {
-	        		            });
-	        		        
-	        		        
-	        	            $('.md-background').fadeOut().remove();
-	        		        
-	        		        
-	        		    }
+    ],
+	  buttons: [{
+	    caption: "Luo tapahtuma",
+	    name : "sendEvent",
+	    action: function (e) {
+	      mApi().calendar.calendars.events.create($('eventCalendar').va(), {
+	        calendarId: paska,
+	        summary: $('input[name="eventSubject"]').val(),
+	        description: $('input[name="eventContent"]').val(),
+//	      location: calendarEvent.location,
+//	      latitude:calendarEvent.latitude,
+//	      longitude: calendarEvent.longitude,
+//	      url: calendarEvent.url,
+//	      status: 'CONFIRMED',
+	        start: new Date(),
+	        startTimeZone: 'GMT',
+	        end: new Date(),
+	        endTimeZone: 'GMT',
+	        allDay: 'false',
+//	      attendees: attendees,
+//	      reminders: calendarEvent.reminders
+        }).callback(function (err, result) {
+	      
+        });
+	      
+	      $('.md-background').fadeOut().remove();
+	    }
 	
-	        		  }
-	        		]
-	        	});
+	  }]
+  });
 
 /* Dummy events */ 
 	
