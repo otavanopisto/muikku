@@ -84,7 +84,7 @@
       return this;
     },
     
-    _add: function (path, property, newProperty, resource, removeOriginalProperty) {
+    _add: function (path, property, newProperty, resource, removeOriginalProperty, options) {
       return this.on(path, function (parent, callback) {
         if ($.isArray(parent)) {
           var callbacks = new Array();
@@ -93,7 +93,7 @@
           $.each(parent, function (index, element) {
             var idProperty = element[property];
             elements.push(element);
-            var operation = resource.read(idProperty);
+            var operation = options === undefined ? resource.read(idProperty) : resource.read(idProperty, options);
             callbacks.push($.proxy(operation.callback, operation));
           });
 
@@ -116,7 +116,8 @@
           
         } else {
           var idProperty = parent[property];
-          resource.read(idProperty).callback(function (err, result) {
+          var operation = options === undefined ? resource.read(idProperty) : resource.read(idProperty, options);
+          operation.callback(function (err, result) {
             if (!err) {
               if (removeOriginalProperty) {
                 delete parent[property];
@@ -132,12 +133,12 @@
       });
     },
     
-    replace: function (path, property, newProperty, resource) {
-      return this._add(path, property, newProperty, resource, true);
+    replace: function (path, property, newProperty, resource, options) {
+      return this._add(path, property, newProperty, resource, true, options);
     },
     
-    add: function (path, property, newProperty, resource) {
-      return this._add(path, property, newProperty, resource, false);
+    add: function (path, property, newProperty, resource, options) {
+      return this._add(path, property, newProperty, resource, false, options);
     },
     
     handleResponse: function (data, callback) {

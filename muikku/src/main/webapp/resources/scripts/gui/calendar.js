@@ -1,4 +1,5 @@
 (function() {
+  
   var createDateField = function (id, name, placeholder) {
     return $('<div>') 
       .addClass('ca-field-date')
@@ -170,5 +171,37 @@
     });    
     
 	});
+  
+  window.loadFullCalendarEvents = function (element) {
+    var view = $(element).fullCalendar('getView');
+    // TODO: switch to ISO8601?
+    mApi().calendar.calendars
+      .read()
+      .add('$', 'id', 'events', mApi().calendar.calendars.events, {
+//        timeMin: view.visStart.toISOString(),
+//        timeMax: view.visEnd.toISOString()
+      })
+      .callback($.proxy(function (err, calendars) {
+        var events = [];
+        
+        $.each(calendars, function (index, calendar) {
+          events = $.merge(events, $.map(calendar.events, function (event) {
+            return {
+              title: event.summary,
+              start: new Date(event.start),
+              end: new Date(event.end),
+              allDay: event.allDay,
+              editable: false
+            };
+          }));
+        });
+        
+        $(element).fullCalendar('removeEvents');
+        $(element).fullCalendar("addEventSource", {
+          events: events
+        });
+        
+      }, this));
+  };
   
 })(this);

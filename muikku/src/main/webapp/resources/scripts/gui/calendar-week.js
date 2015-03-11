@@ -3,7 +3,7 @@
     var hdr = $(container).find('.fc-header');
     hdr.remove();
   }
-
+  
   $(document).ready(function(){
     $('#weekView').fullCalendar({
       defaultView : 'basicWeek',
@@ -16,6 +16,9 @@
         right : ''
       }
     });
+    
+    loadFullCalendarEvents($('#weekView'));
+    removeHeader($('#weekView'));
   });
 
 })(this);

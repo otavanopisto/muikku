@@ -17,6 +17,9 @@
       contentHeight : 500
     });
   
+    loadFullCalendarEvents($('#fpDayEvents'));
+    loadFullCalendarEvents($('#fpWeekView'));
+    
     removeHeader('#fpWeekView');
     removeHeader('#fpDayEvents');
   });
