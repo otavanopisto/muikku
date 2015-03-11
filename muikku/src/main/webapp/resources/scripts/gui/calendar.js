@@ -131,12 +131,17 @@ $(document).ready(function(){
 //	      attendees: attendees,
 //	      reminders: calendarEvent.reminders
         }).callback(function (err, result) {
-	      
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            $('.notification-queue').notificationQueue('notification', 'info', "Tapahtuma luotiin onnistuneesti");
+          }
+
+          $('#startDate,#endDate').datepicker('destroy');
+          $('#startTime,#endTime').datepicker('destroy');
+          $('.md-background').fadeOut().remove();
         });
-	      
-	      $('.md-background').fadeOut().remove();
 	    }
-	
 	  }]
   });
 
