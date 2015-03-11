@@ -148,7 +148,7 @@ public class CalendarRESTService extends PluginRESTService {
   @POST
   @Path ("/calendars/{CALID}/events/")
   public Response createEvent(@PathParam ("CALID") Long calendarId, CalendarEvent event) {
-    if (event == null || calendarId == null || event.getCalendarId() == null) {
+    if (event == null || calendarId == null) {
       return Response.status(Response.Status.NOT_FOUND).build();
     }
 
