@@ -51,5 +51,7 @@ public interface CalendarEventRecurrence {
   public int[] getBySetPos();
 
   public CalendarEventRecurrenceWeekDay getWeekStart();
+  
+  public String toIcalRRule();
 
 }

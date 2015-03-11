@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -29,17 +30,19 @@ import fi.muikku.calendar.DefaultCalendarEventTemporalField;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.calendar.CalendarController;
 import fi.muikku.plugins.calendar.model.UserCalendar;
+import fi.muikku.plugins.calendar.model.UserCalendarEventRecurrence;
 import fi.muikku.plugins.calendar.rest.model.Calendar;
 import fi.muikku.plugins.calendar.rest.model.CalendarEvent;
 import fi.muikku.plugins.calendar.rest.model.CalendarEventAttendee;
 import fi.muikku.plugins.calendar.rest.model.CalendarEventReminder;
-import fi.muikku.security.LoggedIn;
 import fi.muikku.session.SessionController;
 
 @RequestScoped
 @Path ("/calendar")
 @Produces ("application/json")
 public class CalendarRESTService extends PluginRESTService {
+
+  private static final long serialVersionUID = 5698069370957155106L;
 
   @Inject
   private CalendarController calendarController;
@@ -49,14 +52,12 @@ public class CalendarRESTService extends PluginRESTService {
 
   @POST
   @Path ("/calendars/")
-  @LoggedIn
   public Response createCalendar(Calendar calendar) {
     return Response.status(501).build();
   }
 
   @GET
   @Path ("/calendars/")
-  @LoggedIn
   public Response listCalendars(@QueryParam ("writableOnly") Boolean writableOnly) {
     List<Calendar> result = new ArrayList<>();
 
@@ -84,7 +85,6 @@ public class CalendarRESTService extends PluginRESTService {
 
   @PUT
   @Path ("/calendars/{CALID}")
-  @LoggedIn
   public Response updateCalendar(@PathParam ("CALID") Long calendarId, Calendar calendar) {
     if (calendar == null || calendarId == null) {
       return Response.status(Response.Status.NOT_FOUND).build();
@@ -122,7 +122,6 @@ public class CalendarRESTService extends PluginRESTService {
 
   @DELETE
   @Path ("/calendars/{CALID}")
-  @LoggedIn
   public Response deleteCalendar(@PathParam ("CALID") Long calendarId) {
     if (calendarId == null) {
       return Response.status(Response.Status.NOT_FOUND).build();
@@ -148,14 +147,9 @@ public class CalendarRESTService extends PluginRESTService {
 
   @POST
   @Path ("/calendars/{CALID}/events/")
-  @LoggedIn
   public Response createEvent(@PathParam ("CALID") Long calendarId, CalendarEvent event) {
     if (event == null || calendarId == null || event.getCalendarId() == null) {
       return Response.status(Response.Status.NOT_FOUND).build();
-    }
-
-    if (!calendarId.equals(event.getCalendarId())) {
-      return Response.status(Response.Status.BAD_REQUEST).entity("Event calendar id does not match path calendar id").build();
     }
 
     if (StringUtils.isBlank(event.getSummary())) {
@@ -174,8 +168,8 @@ public class CalendarRESTService extends PluginRESTService {
     try {
       List<fi.muikku.calendar.CalendarEventAttendee> attendees = createEventAttendeeListFromRestModel(event.getAttendees());
       List<fi.muikku.calendar.CalendarEventReminder> reminders = createEventReminderListFromRestModel(event.getReminders());
-      // TODO: Recurrence
-      fi.muikku.calendar.CalendarEventRecurrence recurrence = null;
+      Locale locale = sessionController.getLocale();
+      fi.muikku.calendar.CalendarEventRecurrence recurrence = new UserCalendarEventRecurrence(event.getRecurrence(), event.getStartTimeZone(), locale);
 
       fi.muikku.calendar.CalendarEvent calendarEvent = calendarController.createCalendarEvent(userCalendar, event.getSummary(), event.getDescription(), event.getStatus(),
           event.getStart(), event.getStartTimeZone(), event.getEnd(), event.getEndTimeZone(), attendees, reminders, recurrence, event.isAllDay(),
@@ -183,7 +177,6 @@ public class CalendarRESTService extends PluginRESTService {
 
       return Response.ok(createEventRestModel(userCalendar, calendarEvent)).build();
     } catch (CalendarServiceException e) {
-      e.printStackTrace(); // TODO: remove
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
   }
@@ -192,7 +185,6 @@ public class CalendarRESTService extends PluginRESTService {
 
   @GET
   @Path ("/calendars/{CALID}/events/")
-  @LoggedIn
   public Response getEvents(@PathParam ("CALID") Long calendarId, @QueryParam ("timeMin") Date timeMin, @QueryParam ("timeMax") Date timeMax) {
     if (calendarId == null) {
       return Response.status(Response.Status.NOT_FOUND).build();
@@ -217,14 +209,12 @@ public class CalendarRESTService extends PluginRESTService {
 
       return Response.ok(result).build();
     } catch (CalendarServiceException e) {
-      e.printStackTrace(); // TODO: remove
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
   }
 
   @GET
   @Path ("/calendars/{CALID}/events/{EVTID}")
-  @LoggedIn
   public Response getEvent(@PathParam ("CALID") Long calendarId, @PathParam ("EVTID") String eventId) {
     if (calendarId == null || StringUtils.isBlank(eventId)) {
       return Response.status(Response.Status.NOT_FOUND).build();
@@ -247,14 +237,12 @@ public class CalendarRESTService extends PluginRESTService {
 
       return Response.ok(createEventRestModel(userCalendar, calendarEvent)).build();
     } catch (CalendarServiceException e) {
-      e.printStackTrace(); // TODO: remove
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
   }
 
   @PUT
   @Path ("/calendars/{CALID}/events/{EVTID}")
-  @LoggedIn
   public Response updateEvent(@PathParam ("CALID") Long calendarId, @PathParam ("EVTID") String eventId, CalendarEvent event) {
     if (calendarId == null || StringUtils.isBlank(eventId)) {
       return Response.status(Response.Status.NOT_FOUND).build();
@@ -285,8 +273,8 @@ public class CalendarRESTService extends PluginRESTService {
 
       List<fi.muikku.calendar.CalendarEventAttendee> attendees = createEventAttendeeListFromRestModel(event.getAttendees());
       List<fi.muikku.calendar.CalendarEventReminder> reminders = createEventReminderListFromRestModel(event.getReminders());
-      // TODO: Recurrence
-      fi.muikku.calendar.CalendarEventRecurrence recurrence = null;
+      Locale locale = sessionController.getLocale();
+      fi.muikku.calendar.CalendarEventRecurrence recurrence = new UserCalendarEventRecurrence(event.getRecurrence(), event.getStartTimeZone(), locale);
 
       fi.muikku.calendar.CalendarEventTemporalField start = new DefaultCalendarEventTemporalField(event.getStart(), event.getStartTimeZone());
       fi.muikku.calendar.CalendarEventTemporalField end = new DefaultCalendarEventTemporalField(event.getEnd(), event.getEndTimeZone());
@@ -308,7 +296,6 @@ public class CalendarRESTService extends PluginRESTService {
 
   @DELETE
   @Path ("/calendars/{CALID}/events/{EVTID}")
-  @LoggedIn
   public Response deleteEvent(@PathParam ("CALID") Long calendarId, @PathParam ("EVTID") String eventId) {
     if (calendarId == null || StringUtils.isBlank(eventId)) {
       return Response.status(Response.Status.NOT_FOUND).build();
@@ -348,8 +335,7 @@ public class CalendarRESTService extends PluginRESTService {
       }
     }
 
-    // TODO: Recurrence
-
+    String recurrence = calendarEvent.getRecurrence().toIcalRRule();
     String location = calendarEvent.getLocation() != null ? calendarEvent.getLocation().getLocation() : null;
     String videoCallLink = calendarEvent.getLocation() != null ? calendarEvent.getLocation().getVideoCallLink() : null;
     BigDecimal longitude = calendarEvent.getLocation() != null ? calendarEvent.getLocation().getLongitude()  : null;
@@ -358,7 +344,7 @@ public class CalendarRESTService extends PluginRESTService {
         calendarEvent.getUrl(), location, videoCallLink, longitude, latitude, calendarEvent.getStatus(),
         calendarEvent.getStart().getDateTime(), calendarEvent.getStart().getTimeZone(),
         calendarEvent.getEnd().getDateTime(), calendarEvent.getEnd().getTimeZone(), calendarEvent.isAllDay(),
-        calendarEvent.getCreated(), calendarEvent.getUpdated(), calendarEvent.getExtendedProperties(), attendees, reminders);
+        calendarEvent.getCreated(), calendarEvent.getUpdated(), calendarEvent.getExtendedProperties(), attendees, reminders, recurrence);
   }
 
   private List<fi.muikku.calendar.CalendarEventAttendee> createEventAttendeeListFromRestModel(List<CalendarEventAttendee> attendees) {
@@ -380,85 +366,4 @@ public class CalendarRESTService extends PluginRESTService {
 
     return result;
   }
-
-//  @GET
-//  @Path ("/settings")
-//  public Response listSettings() {
-//    UserEntity user = sessionController.getUser();
-//
-//    Map<String, Object> settings = new HashMap<>();
-//
-//    String firstDay = pluginSettingsController.getPluginUserSetting("calendar", CalendarPluginDescriptor.DEFAULT_FIRSTDAY_SETTING, user);
-//    if (StringUtils.isBlank(firstDay)) {
-//      firstDay = pluginSettingsController.getPluginSetting("calendar", CalendarPluginDescriptor.DEFAULT_FIRSTDAY_SETTING);
-//    }
-//
-//    settings.put("firstDay", firstDay);
-//
-//    return Response.ok(
-//      settings
-//    ).build();
-//  }
-//
-//  @PUT
-//  @Path ("/settings")
-//  public Response updateSetting(String data) {
-//    UserEntity user = sessionController.getUser();
-//
-//    JSONObject jsonData = JSONObject.fromObject(data);
-//    @SuppressWarnings("unchecked") Set<String> keys = jsonData.keySet();
-//
-//    for (String key : keys) {
-//      switch (key) {
-//        case "firstDay":
-//          pluginSettingsController.setPluginUserSetting("calendar", CalendarPluginDescriptor.DEFAULT_FIRSTDAY_SETTING, jsonData.getString(key), user);
-//        break;
-//        default:
-//          // TODO: Proper error handling
-//          throw new RuntimeException("Calendar setting " + key + " can not be updated");
-//      }
-//    }
-//
-//    return Response.ok(data).build();
-//  }
-//
-//  private BigDecimal getBigDecimal(JSONObject jsonData, String key) {
-//    Object object = jsonData.get(key);
-//    if (object == null) {
-//      return null;
-//    }
-//
-//    String value = null;
-//
-//    if (object instanceof JSONObject) {
-//      JSONObject jsonObject = (JSONObject) object;
-//
-//      if (jsonObject.isNullObject()) {
-//        return null;
-//      }
-//
-//      value = jsonObject.toString();
-//    } else if (object instanceof String) {
-//      value = (String) object;
-//    }
-//
-//    return NumberUtils.createBigDecimal(value);
-//  }
-//
-//  public static class CalendarVisiblityValueGetter implements ValueGetter<Boolean> {
-//
-//    public CalendarVisiblityValueGetter(List<UserCalendar> userCalendars) {
-//      for (UserCalendar userCalendar : userCalendars) {
-//        visibilities.put(userCalendar.getCalendar().getId(), userCalendar.getVisible());
-//      }
-//    }
-//
-//    @Override
-//    public Boolean getValue(TranquilizingContext context) {
-//      Calendar calendar = (Calendar) context.getEntityValue();
-//      return visibilities.get(calendar.getId());
-//    }
-//
-//    private Map<Long, Boolean> visibilities = new HashMap<>();
-//  }
 }
