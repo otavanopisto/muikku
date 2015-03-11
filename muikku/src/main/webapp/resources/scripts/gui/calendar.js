@@ -109,10 +109,8 @@
   	    caption: "Luo tapahtuma",
   	    name : "sendEvent",
   	    action: function (e) {
-  	      // TODO: switch to ISO8601 date so we can specify the 
-  	      // timezone more easily?
-          var start = new Date($('#startDate').datepicker('getDate').getTime() + $('#startTime').timepicker('getTime').getTime());
-          var end = new Date($('#endDate').datepicker('getDate').getTime() + $('#endTime').timepicker('getTime').getTime());
+  	      var startISO = $('#startDate').datepicker('getDate').toISOString().split('T')[0] + 'T' + $('#startTime').timepicker('getTime').toISOString().split('T')[1];
+          var endISO = $('#endDate').datepicker('getDate').toISOString().split('T')[0] + 'T' + $('#endTime').timepicker('getTime').toISOString().split('T')[1];
   	      
   	      mApi().calendar.calendars.events.create($('#eventCalendar').val(), {
   	        summary: $('input[name="eventSubject"]').val(),
@@ -122,9 +120,9 @@
   //	      longitude: calendarEvent.longitude,
   //	      url: calendarEvent.url,
   	        status: 'CONFIRMED',
-  	        start: start,
+  	        start: startISO,
   	        startTimeZone: 'GMT',
-  	        end: end ,
+  	        end: endISO ,
   	        endTimeZone: 'GMT',
   	        allDay: false,
   //	      attendees: attendees,
