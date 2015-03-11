@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -29,11 +30,11 @@ import fi.muikku.calendar.DefaultCalendarEventTemporalField;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.calendar.CalendarController;
 import fi.muikku.plugins.calendar.model.UserCalendar;
+import fi.muikku.plugins.calendar.model.UserCalendarEventRecurrence;
 import fi.muikku.plugins.calendar.rest.model.Calendar;
 import fi.muikku.plugins.calendar.rest.model.CalendarEvent;
 import fi.muikku.plugins.calendar.rest.model.CalendarEventAttendee;
 import fi.muikku.plugins.calendar.rest.model.CalendarEventReminder;
-import fi.muikku.security.LoggedIn;
 import fi.muikku.session.SessionController;
 
 @RequestScoped
@@ -151,10 +152,6 @@ public class CalendarRESTService extends PluginRESTService {
       return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-    if (!calendarId.equals(event.getCalendarId())) {
-      return Response.status(Response.Status.BAD_REQUEST).entity("Event calendar id does not match path calendar id").build();
-    }
-
     if (StringUtils.isBlank(event.getSummary())) {
       return Response.status(Response.Status.BAD_REQUEST).entity("Event summarys is required").build();
     }
@@ -171,8 +168,8 @@ public class CalendarRESTService extends PluginRESTService {
     try {
       List<fi.muikku.calendar.CalendarEventAttendee> attendees = createEventAttendeeListFromRestModel(event.getAttendees());
       List<fi.muikku.calendar.CalendarEventReminder> reminders = createEventReminderListFromRestModel(event.getReminders());
-      // TODO: Recurrence
-      fi.muikku.calendar.CalendarEventRecurrence recurrence = null;
+      Locale locale = sessionController.getLocale();
+      fi.muikku.calendar.CalendarEventRecurrence recurrence = new UserCalendarEventRecurrence(event.getRecurrence(), event.getStartTimeZone(), locale);
 
       fi.muikku.calendar.CalendarEvent calendarEvent = calendarController.createCalendarEvent(userCalendar, event.getSummary(), event.getDescription(), event.getStatus(),
           event.getStart(), event.getStartTimeZone(), event.getEnd(), event.getEndTimeZone(), attendees, reminders, recurrence, event.isAllDay(),
@@ -180,7 +177,6 @@ public class CalendarRESTService extends PluginRESTService {
 
       return Response.ok(createEventRestModel(userCalendar, calendarEvent)).build();
     } catch (CalendarServiceException e) {
-      e.printStackTrace(); // TODO: remove
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
   }
@@ -277,8 +273,8 @@ public class CalendarRESTService extends PluginRESTService {
 
       List<fi.muikku.calendar.CalendarEventAttendee> attendees = createEventAttendeeListFromRestModel(event.getAttendees());
       List<fi.muikku.calendar.CalendarEventReminder> reminders = createEventReminderListFromRestModel(event.getReminders());
-      // TODO: Recurrence
-      fi.muikku.calendar.CalendarEventRecurrence recurrence = null;
+      Locale locale = sessionController.getLocale();
+      fi.muikku.calendar.CalendarEventRecurrence recurrence = new UserCalendarEventRecurrence(event.getRecurrence(), event.getStartTimeZone(), locale);
 
       fi.muikku.calendar.CalendarEventTemporalField start = new DefaultCalendarEventTemporalField(event.getStart(), event.getStartTimeZone());
       fi.muikku.calendar.CalendarEventTemporalField end = new DefaultCalendarEventTemporalField(event.getEnd(), event.getEndTimeZone());
@@ -339,8 +335,7 @@ public class CalendarRESTService extends PluginRESTService {
       }
     }
 
-    // TODO: Recurrence
-
+    String recurrence = calendarEvent.getRecurrence().toIcalRRule();
     String location = calendarEvent.getLocation() != null ? calendarEvent.getLocation().getLocation() : null;
     String videoCallLink = calendarEvent.getLocation() != null ? calendarEvent.getLocation().getVideoCallLink() : null;
     BigDecimal longitude = calendarEvent.getLocation() != null ? calendarEvent.getLocation().getLongitude()  : null;
@@ -349,7 +344,7 @@ public class CalendarRESTService extends PluginRESTService {
         calendarEvent.getUrl(), location, videoCallLink, longitude, latitude, calendarEvent.getStatus(),
         calendarEvent.getStart().getDateTime(), calendarEvent.getStart().getTimeZone(),
         calendarEvent.getEnd().getDateTime(), calendarEvent.getEnd().getTimeZone(), calendarEvent.isAllDay(),
-        calendarEvent.getCreated(), calendarEvent.getUpdated(), calendarEvent.getExtendedProperties(), attendees, reminders);
+        calendarEvent.getCreated(), calendarEvent.getUpdated(), calendarEvent.getExtendedProperties(), attendees, reminders, recurrence);
   }
 
   private List<fi.muikku.calendar.CalendarEventAttendee> createEventAttendeeListFromRestModel(List<CalendarEventAttendee> attendees) {
