@@ -11,6 +11,8 @@ import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.plugins.assessmentrequest.AssessmentRequest;
+import fi.muikku.plugins.communicator.dao.CommunicatorMessageIdDAO;
+import fi.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.WorkspaceEntityController;
@@ -42,6 +44,9 @@ public class CommunicatorAssessmentRequestController {
   
   @Inject
   private UserEntityController userEntityController;
+  
+  @Inject
+  private CommunicatorMessageIdDAO communicatorMessageIdDAO;
   
   @Inject
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
@@ -91,16 +96,27 @@ public class CommunicatorAssessmentRequestController {
   }
 
   
-  public void sendAssessmentRequestMessage(WorkspaceEntity workspaceEntity, UserEntity student, String message) {
+  public CommunicatorMessage sendAssessmentRequestMessage(AssessmentRequest assessmentRequest) {
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(assessmentRequest.getWorkspace());
+    UserEntity student = userEntityController.findUserEntityById(assessmentRequest.getStudent());
+    
     schoolDataBridgeSessionController.startSystemSession();
     try {
         List<UserEntity> teachers = workspaceController.listUserEntitiesByWorkspaceEntityAndRoleArchetype(
             workspaceEntity,
             WorkspaceRoleArchetype.TEACHER);
-        communicatorController.postMessage(student,
+       if(assessmentRequest.getCommunicatorMessageId() != null){
+           return communicatorController.replyToMessage(student,
                                            getText("plugin.communicator.assessmentrequest.category"),
                                            assessmentRequestTitle(workspaceEntity, student),
-                                           assessmentRequestBody(workspaceEntity, student, message),
+                                           assessmentRequestBody(workspaceEntity, student, assessmentRequest.getMessage()),
+                                           teachers,
+                                           communicatorMessageIdDAO.findById(assessmentRequest.getCommunicatorMessageId()));
+       }
+          return communicatorController.postMessage(student,
+                                           getText("plugin.communicator.assessmentrequest.category"),
+                                           assessmentRequestTitle(workspaceEntity, student),
+                                           assessmentRequestBody(workspaceEntity, student, assessmentRequest.getMessage()),
                                            teachers);
     } finally {
         schoolDataBridgeSessionController.endSystemSession();
@@ -110,16 +126,18 @@ public class CommunicatorAssessmentRequestController {
   public void sendAssessmentRequestCancelledMessage(AssessmentRequest assessmentRequest) {
     UserEntity student = userEntityController.findUserEntityById(assessmentRequest.getStudent());
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(assessmentRequest.getWorkspace());
+
     schoolDataBridgeSessionController.startSystemSession();
     try {
         List<UserEntity> teachers = workspaceController.listUserEntitiesByWorkspaceEntityAndRoleArchetype(
             workspaceEntity,
             WorkspaceRoleArchetype.TEACHER);
-        communicatorController.postMessage(student,
+        communicatorController.replyToMessage(student,
                                            getText("plugin.communicator.assessmentrequest.category"),
                                            assessmentCancelledTitle(workspaceEntity, student),
                                            assessmentCancelledBody(workspaceEntity, student),
-                                           teachers);
+                                           teachers,
+                                           communicatorMessageIdDAO.findById(assessmentRequest.getCommunicatorMessageId()));
     } finally {
         schoolDataBridgeSessionController.endSystemSession();
     }

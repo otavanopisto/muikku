@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.communicator.CommunicatorAssessmentRequestController;
+import fi.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.muikku.security.Permit;
 import fi.muikku.security.PermitContext;
 
@@ -41,8 +42,17 @@ public class AssessmentRequestController {
   }
   
   public void requestAssessment(WorkspaceEntity workspaceEntity, UserEntity student, String message) {
-    this.create(workspaceEntity, student, new Date(), message);
-    communicatorAssessmentRequestController.sendAssessmentRequestMessage(workspaceEntity, student, message);
+    AssessmentRequest assessmentRequest = this.create(workspaceEntity, student, new Date(), message);
+    List<AssessmentRequest> oldAssessmentRequests = this.listByWorkspaceIdAndStudentIdOrderByCreated(workspaceEntity.getId(), student.getId());
+    AssessmentRequest oldAssessmentRequest = oldAssessmentRequests.get(oldAssessmentRequests.size() - 1);
+    if(oldAssessmentRequest.getCommunicatorMessageId() == null){
+      CommunicatorMessage msg = communicatorAssessmentRequestController.sendAssessmentRequestMessage(assessmentRequest);
+      assessmentRequestDAO.updateMessageId(assessmentRequest, msg.getCommunicatorMessageId().getId());
+    }else{
+      assessmentRequest = assessmentRequestDAO.updateMessageId(assessmentRequest, oldAssessmentRequest.getCommunicatorMessageId());
+      communicatorAssessmentRequestController.sendAssessmentRequestMessage(assessmentRequest);
+    }
+
   }
 
   public List<AssessmentRequest> listByWorkspaceIdAndStudentIdOrderByCreated(

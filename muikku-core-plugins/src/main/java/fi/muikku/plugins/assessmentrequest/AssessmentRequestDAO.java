@@ -37,6 +37,12 @@ public class AssessmentRequestDAO extends CorePluginsDAO<AssessmentRequest> {
 
     return assessmentRequest;
   }
+  
+  public AssessmentRequest updateMessageId(AssessmentRequest assessmentRequest, long communicatorMessageId){
+    assessmentRequest.setCommunicatorMessageId(communicatorMessageId);
+    getEntityManager().persist(assessmentRequest);
+    return assessmentRequest;
+  }
 
   public List<AssessmentRequest> listByWorkspace(WorkspaceEntity workspaceEntity) {
     EntityManager entityManager = getEntityManager();

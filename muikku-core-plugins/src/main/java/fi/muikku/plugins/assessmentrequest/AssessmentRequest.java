@@ -67,7 +67,15 @@ public class AssessmentRequest {
   public void setState(AssessmentRequestState state) {
     this.state = state;
   }
+  
+  public Long getCommunicatorMessageId() {
+    return communicatorMessageId;
+  }
 
+  public void setCommunicatorMessageId(Long communicatorMessageId) {
+    this.communicatorMessageId = communicatorMessageId;
+  }
+  
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -84,6 +92,9 @@ public class AssessmentRequest {
   private Date date;
   
   private String message;
+  
+  @Column (name = "message_id")
+  private Long communicatorMessageId;
   
   @NotNull
   @Column(nullable = false)
