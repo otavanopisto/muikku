@@ -56,11 +56,26 @@ $(document).ready(function(){
 	        }
 	     	}
 	    }));
-
-      $('#startDate').datepicker();
-      $('#endDate').datepicker();
-      $('#startTime').timepicker();
-      $('#endTime').timepicker(); 
+      
+      var start = new Date();
+      start.setMinutes(0);
+      start.setHours(start.getHours() + 1);
+      var end = new Date(start.getTime());
+      end.setHours(end.getHours() + 1);
+      
+      $('#startDate')
+        .datepicker()
+        .datepicker('setDate', start);
+      $('#startTime')
+        .timepicker()
+        .timepicker('setTime', start);
+      
+      $('#endDate')
+        .datepicker()
+        .datepicker('setDate', end);
+      $('#endTime').timepicker()
+        .timepicker()
+        .timepicker('setTime', end);
       
 	    $('.ca-event-new').on('focus', 'input', function(){
 		    var dval = this.defaultValue;
