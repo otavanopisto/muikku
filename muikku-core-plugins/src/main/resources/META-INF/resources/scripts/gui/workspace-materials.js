@@ -1,6 +1,6 @@
 (function() {
   'use strict';
-  
+
   function scrollToPage(workspaceMaterialId, animate) {
     var topOffset = $('#contentWorkspaceMaterials').offset().top;
     var scrollTop = $('#page-' + workspaceMaterialId).offset().top - topOffset;
@@ -47,13 +47,23 @@
     });
     
     $(document).on('afterHtmlMaterialRender', function (event, data) {
+    // scroll only when toc is not already scrolling
+    if ($(window).data('scrolling') !== true) {
+      // only scroll if current url has a page anchor 
       if (window.location.hash && (window.location.hash.indexOf('p-') > 0)) {
-        scrollToPage(window.location.hash.substring(3).split('/'), false);
+        var windowMaterialId = window.location.hash.substring(3).split('/');
+        var renderedMaterialId = data.workspaceMaterialId;
+        var windowMaterialTop = $('#page-' + windowMaterialId).offset().top;
+        var renderedMaterialTop = $('#page-' + renderedMaterialId).offset().top;
+        // only scroll if page anchor is below a page just rendered
+        if (windowMaterialTop > renderedMaterialTop) {
+          scrollToPage(windowMaterialId, false);
+        }
       }
-      
-      if ($('.workspace-material-loading').length == 0) {
-        $(window).data('loading', false);
-      }
+    }
+    if ($('.workspace-material-loading').length == 0) {
+      $(window).data('loading', false);
+    }
     });
 
     $('.workspace-materials-view-page').waypoint(function(direction) {
