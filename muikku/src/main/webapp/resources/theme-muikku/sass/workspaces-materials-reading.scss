@@ -3,7 +3,7 @@
 @import "_connect-field.scss";
 
 body.workspace-materials-reading {
-  background:#6b899e;
+  background:#8ba4b5;
   /* All this because of the god damn margin collapsing  */
   padding:0.01em;
   min-height:100%;
@@ -17,7 +17,7 @@ body.workspace-materials-reading {
     nav.workspace-waterials-reading-nav {
       width:46px;
       height:100%;
-      background:#7794a8;
+      background:#7893a6;
       position:absolute;
       top:0;
       z-index:36;
@@ -35,8 +35,9 @@ body.workspace-materials-reading {
       background:#e8f0f5;
       z-index:26;
       box-shadow : 0 0 25px rgba(0,0,0,0.15);
-      position:relative;
+      position:absolute;
       top:0;
+      bottom:0;
       border-left:1px solid #fff;
       
       ul,
@@ -100,25 +101,22 @@ body.workspace-materials-reading {
     
       .workspace-materials-toc-content-outer {
         overflow:hidden;
-        height:100%;
+        position:absolute;
+        top:40px;
+        bottom:5px;
         width:350px;
-        position:relative;
       
         .workspace-materials-toc-content-inner {  
           position:absolute;
           overflow-x: hidden;
           overflow-y: scroll;
           width:370px;
-          height:100%;
+          top:0;
+          bottom:0;
         
           .workspace-materials-toc-content-scrolling {
             width:338px;
             padding:0 6px;
-            height:100%;
-            
-            .spacer {
-              height:50px; /* Creating some bottom margin because use of 100% height  */
-            }
         
             .workspace-materials-toc-root {
 
