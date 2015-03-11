@@ -122,7 +122,7 @@ $(document).ready(function(){
 //	      latitude:calendarEvent.latitude,
 //	      longitude: calendarEvent.longitude,
 //	      url: calendarEvent.url,
-//	      status: 'CONFIRMED',
+	        status: 'CONFIRMED',
 	        start: start,
 	        startTimeZone: 'GMT',
 	        end: end ,
