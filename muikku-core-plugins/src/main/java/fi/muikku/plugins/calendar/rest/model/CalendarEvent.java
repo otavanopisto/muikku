@@ -219,5 +219,5 @@ public class CalendarEvent {
   private Map<String, String> extendedProperties;
   private List<CalendarEventAttendee> attendees;
   private List<CalendarEventReminder> reminders;
-  // TODO: recurrence
+  private String recurrence;
 }
