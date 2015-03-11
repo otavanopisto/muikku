@@ -12,9 +12,9 @@ import fi.muikku.security.LoggedIn;
 @Named
 @Stateful
 @RequestScoped
-@Join(path = "/calendar", to = "/calendars/index.jsf")
+@Join(path = "/calendar/month", to = "/calendars/view_month.jsf")
 @LoggedIn
-public class CalendarBackingBean {
+public class CalendarMonthBackingBean {
 	
 	@RequestAction
 	public String init() {
