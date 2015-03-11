@@ -316,9 +316,9 @@ public class GoogleCalendarClient {
   }
 
   private GoogleCredential getServiceAccountCredential() throws GeneralSecurityException, IOException {
-    String accountId = System.getProperty("muikku.googleServiceAccount.accountId");
-    if (StringUtils.isBlank(accountId)) {
-      throw new GeneralSecurityException("muikku.googleServiceAccount.accountId environment property is missing");
+    String accountEmail = System.getProperty("muikku.googleServiceAccount.accountEmail");
+    if (StringUtils.isBlank(accountEmail)) {
+      throw new GeneralSecurityException("muikku.googleServiceAccount.accountEmail environment property is missing");
     }
     
     String accountUser = System.getProperty("muikku.googleServiceAccount.accountUser");
@@ -339,7 +339,7 @@ public class GoogleCalendarClient {
     return new GoogleCredential.Builder()
             .setTransport(new NetHttpTransport())
             .setJsonFactory(new JacksonFactory())
-            .setServiceAccountId(accountId)
+            .setServiceAccountId(accountEmail)
             .setServiceAccountScopes(Arrays.asList(CalendarScopes.CALENDAR))
             .setServiceAccountPrivateKeyFromP12File(keyFile)
             .setServiceAccountUser(accountUser)
