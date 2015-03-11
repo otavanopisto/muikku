@@ -33,6 +33,10 @@
   display:inline-block;
 }
 
+.icon-assignment:before {
+  content: "\e634";
+}
+
 .icon-assessment-canceled:before {
   content: "\e321";
 }
