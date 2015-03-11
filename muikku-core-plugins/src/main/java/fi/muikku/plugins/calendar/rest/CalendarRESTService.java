@@ -146,14 +146,22 @@ public class CalendarRESTService extends PluginRESTService {
   }
 
   @POST
-  @Path ("/calendars/{CALID}/events/")
+  @Path ("/calendars/{CALID:[0-9]*}/events/")
   public Response createEvent(@PathParam ("CALID") Long calendarId, CalendarEvent event) {
-    if (event == null || calendarId == null) {
+    if (event == null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity("Event payload is missing").build();
+    }
+
+    if (calendarId == null) {
       return Response.status(Response.Status.NOT_FOUND).build();
     }
 
     if (StringUtils.isBlank(event.getSummary())) {
       return Response.status(Response.Status.BAD_REQUEST).entity("Event summarys is required").build();
+    }
+
+    if (event.getStatus() == null) {
+      return Response.status(Response.Status.BAD_REQUEST).entity("Event status is required").build();
     }
 
     UserCalendar userCalendar = calendarController.findUserCalendar(calendarId);
@@ -169,7 +177,7 @@ public class CalendarRESTService extends PluginRESTService {
       List<fi.muikku.calendar.CalendarEventAttendee> attendees = createEventAttendeeListFromRestModel(event.getAttendees());
       List<fi.muikku.calendar.CalendarEventReminder> reminders = createEventReminderListFromRestModel(event.getReminders());
       Locale locale = sessionController.getLocale();
-      fi.muikku.calendar.CalendarEventRecurrence recurrence = new UserCalendarEventRecurrence(event.getRecurrence(), event.getStartTimeZone(), locale);
+      fi.muikku.calendar.CalendarEventRecurrence recurrence = event.getRecurrence() != null ? new UserCalendarEventRecurrence(event.getRecurrence(), event.getStartTimeZone(), locale) : null;
 
       fi.muikku.calendar.CalendarEvent calendarEvent = calendarController.createCalendarEvent(userCalendar, event.getSummary(), event.getDescription(), event.getStatus(),
           event.getStart(), event.getStartTimeZone(), event.getEnd(), event.getEndTimeZone(), attendees, reminders, recurrence, event.isAllDay(),
@@ -335,7 +343,7 @@ public class CalendarRESTService extends PluginRESTService {
       }
     }
 
-    String recurrence = calendarEvent.getRecurrence().toIcalRRule();
+    String recurrence = calendarEvent.getRecurrence() != null ? calendarEvent.getRecurrence().toIcalRRule() : null;
     String location = calendarEvent.getLocation() != null ? calendarEvent.getLocation().getLocation() : null;
     String videoCallLink = calendarEvent.getLocation() != null ? calendarEvent.getLocation().getVideoCallLink() : null;
     BigDecimal longitude = calendarEvent.getLocation() != null ? calendarEvent.getLocation().getLongitude()  : null;
@@ -349,9 +357,10 @@ public class CalendarRESTService extends PluginRESTService {
 
   private List<fi.muikku.calendar.CalendarEventAttendee> createEventAttendeeListFromRestModel(List<CalendarEventAttendee> attendees) {
     List<fi.muikku.calendar.CalendarEventAttendee> result = new ArrayList<>();
-
-    for (CalendarEventAttendee attendee : attendees) {
-      result.add(new DefaultCalendarEventAttendee(attendee.getComment(), attendee.getEmail(), attendee.getDisplayName(), attendee.getStatus()));
+    if (attendees != null) {
+      for (CalendarEventAttendee attendee : attendees) {
+        result.add(new DefaultCalendarEventAttendee(attendee.getComment(), attendee.getEmail(), attendee.getDisplayName(), attendee.getStatus()));
+      }
     }
 
     return result;
@@ -360,10 +369,12 @@ public class CalendarRESTService extends PluginRESTService {
   private List<fi.muikku.calendar.CalendarEventReminder> createEventReminderListFromRestModel(List<CalendarEventReminder> reminders) {
     List<fi.muikku.calendar.CalendarEventReminder> result = new ArrayList<>();
 
-    for (CalendarEventReminder reminder : reminders) {
-      result.add(new DefaultCalendarEventReminder(reminder.getMinutesBefore(), reminder.getType()));
+    if (reminders != null) {
+      for (CalendarEventReminder reminder : reminders) {
+        result.add(new DefaultCalendarEventReminder(reminder.getMinutesBefore(), reminder.getType()));
+      }
     }
-
+    
     return result;
   }
 }
