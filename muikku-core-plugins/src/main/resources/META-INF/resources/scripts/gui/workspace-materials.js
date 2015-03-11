@@ -47,8 +47,6 @@
     });
     
     $(document).on('afterHtmlMaterialRender', function (event, data) {
-    // scroll only when toc is not already scrolling
-    if ($(window).data('scrolling') !== true) {
       // only scroll if current url has a page anchor 
       if (window.location.hash && (window.location.hash.indexOf('p-') > 0)) {
         var windowMaterialId = window.location.hash.substring(3).split('/');
@@ -60,10 +58,9 @@
           scrollToPage(windowMaterialId, false);
         }
       }
-    }
-    if ($('.workspace-material-loading').length == 0) {
-      $(window).data('loading', false);
-    }
+      if ($('.workspace-material-loading').length == 0) {
+        $(window).data('loading', false);
+      }
     });
 
     $('.workspace-materials-view-page').waypoint(function(direction) {
