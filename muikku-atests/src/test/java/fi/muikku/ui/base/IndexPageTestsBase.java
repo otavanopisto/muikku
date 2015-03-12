@@ -3,20 +3,31 @@ package fi.muikku.ui.base;
 import static org.junit.Assert.assertTrue;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
+import java.util.List;
+import java.util.Map;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 
+import wiremock.com.fasterxml.jackson.core.JsonProcessingException;
+import wiremock.com.fasterxml.jackson.databind.ObjectMapper;
+import wiremock.com.fasterxml.jackson.databind.ObjectWriter;
 import fi.muikkku.ui.AbstractUITest;
 import fi.muikku.SqlAfter;
 import fi.muikku.SqlBefore;
+import fi.pyramus.rest.model.Email;
+import fi.pyramus.rest.model.Student;
+import fi.pyramus.rest.model.WhoAmI;
 
 public class IndexPageTestsBase extends AbstractUITest {
 
   @Before
-  public void requiredPyramusMocks() {
+  public void requiredPyramusMocks() throws JsonProcessingException {
     
     stubFor(get(urlMatching("/dnm"))
       .willReturn(
@@ -35,35 +46,51 @@ public class IndexPageTestsBase extends AbstractUITest {
           .withStatus(302)
           .withHeader("Content-Length", "0")
           .withHeader("Location", "http://dev.muikku.fi:8080/login?_stg=rsp&code=1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111")));
-
+    
     stubFor(post(urlMatching("/1/oauth/token")).willReturn(
       aResponse().withHeader("Content-Type", "application/json")
         .withBody("{\"expires_in\":3600,\"refresh_token\":\"12312ewsdf34fsd234r43rfsw32rf33e\",\"access_token\":\"ur84ur839843ruwf39843ru39ru37y2e\"}")
         .withStatus(200)));
-
+    
+    List<String> emails = new ArrayList<String>();
+    emails.add("testuser@made.up");
+    WhoAmI whoAmI = new WhoAmI((long)1, "Test", "User", emails);
+    ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+    String whoAmIJson = ow.writeValueAsString(whoAmI);
+    
     stubFor(get(urlMatching("/1/system/whoami")).willReturn(
       aResponse().withHeader("Content-Type", "application/json")
-        .withBody("{\"id\":1,\"firstName\":\"Test\",\"lastName\":\"User\",\"emails\":[\"testuser@made.up\"]}")
+        .withBody(whoAmIJson)
         .withStatus(200)));
 
+    Map<String, String> variables = null;
+    List<String> tags = null;
+    Student student = new Student((long) 1, (long) 1, "Test", "User", null, null, null, null, null, null, null, null, null, null, null,
+      (long) 1, null, null, false, null, null, null, null, variables, tags, false);
+    String studentJson = ow.writeValueAsString(student);
+    
     stubFor(get(urlMatching("/1/students/students/.*"))
       .willReturn(
         aResponse()
           .withHeader("Content-Type", "application/json")
-          .withBody("{\"id\":1,\"personId\":1,\"firstName\":\"Test\",\"lastName\":\"User\",\"nickname\":null,\"additionalInfo\":null,\"additionalContactInfo\":null,\"nationalityId\":null,\"languageId\":null,\"municipalityId\":null,\"schoolId\":null,\"activityTypeId\":null,\"examinationTypeId\":null,\"educationalLevelId\":null,\"studyTimeEnd\":null,\"studyProgrammeId\":1,\"previousStudies\":null,\"education\":null,\"lodging\":false,\"studyStartDate\":null,\"studyEndDate\":null,\"studyEndReasonId\":null,\"studyEndText\":null,\"variables\":{},\"tags\":[],\"archived\":false}")
+          .withBody(studentJson)
           .withStatus(200)));
 
+    Email email = new Email((long) 1, (long) 2, true, "testuser@made.up"); 
+    String emailJson = ow.writeValueAsString(email);
     stubFor(get(urlMatching("/1/students/students/.*/emails")).willReturn(
       aResponse().withHeader("Content-Type", "application/json")
-        .withBody("{\"id\":1,\"contactTypeId\":2,\"defaultAddress\":true,\"address\":\"testuser@made.up\"}")
+        .withBody(emailJson)
         .withStatus(200)));
-
+    
+    Student[] studentArray = {student};
+    String studentArrayJson = ow.writeValueAsString(studentArray);
     stubFor(get(urlEqualTo("/1/students/students?email=testuser@made.up"))
     // .withQueryParam("email", matching(".*"))
       .willReturn(
         aResponse()
           .withHeader("Content-Type", "application/json")
-          .withBody("[{\"id\":1,\"personId\":1,\"firstName\":\"Test\",\"lastName\":\"User\",\"nickname\":\"Student\",\"additionalInfo\":null,\"additionalContactInfo\":null,\"nationalityId\":null,\"languageId\":null,\"municipalityId\":1,\"schoolId\":null,\"activityTypeId\":null,\"examinationTypeId\":null,\"educationalLevelId\":null,\"studyTimeEnd\":null,\"studyProgrammeId\":1,\"previousStudies\":null,\"education\":null,\"lodging\":false,\"studyStartDate\":null,\"studyEndDate\":null,\"studyEndReasonId\":null,\"studyEndText\":null,\"variables\":{},\"tags\":[],\"archived\":false}]")
+          .withBody(studentArrayJson)
           .withStatus(200)));
 
     stubFor(get(urlMatching("/1/persons/persons/.*"))
