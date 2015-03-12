@@ -55,7 +55,7 @@ public class WorkspaceMaterialUploadBackingBean {
   
 	@Inject
   @Named
-  private WorkspaceNavigationBackingBean workspaceNavigationBackingBean;
+  private WorkspaceBackingBean workspaceBackingBean;
 
 	@RequestAction
 	public String init() {
@@ -70,7 +70,7 @@ public class WorkspaceMaterialUploadBackingBean {
       return "/error/not-found.jsf";
 		}
 		
-		workspaceNavigationBackingBean.setWorkspaceUrlName(urlName);
+		workspaceBackingBean.setWorkspaceUrlName(urlName);
 		workspaceEntityId = workspaceEntity.getId();
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
     workspaceName = workspace.getName();
@@ -143,7 +143,7 @@ public class WorkspaceMaterialUploadBackingBean {
           byte[] fileData = TempFileUtils.getTempFileData(fileId);
           
           BinaryMaterial binaryMaterial = binaryMaterialController.createBinaryMaterial(fileName, contentType, fileData);
-          workspaceMaterialController.createWorkspaceMaterial(parent, binaryMaterial, (String)null);
+          workspaceMaterialController.createWorkspaceMaterial(parent, binaryMaterial);
         } finally {
           TempFileUtils.deleteTempFile(fileId);
         }

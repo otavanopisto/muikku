@@ -2,7 +2,7 @@
   'use strict';
   
   function scrollToPage(workspaceMaterialId, animate) {
-    var topOffset = $('#contentWorkspaceMaterials').offset().top;
+    var topOffset = 100;
     var scrollTop = $('#page-' + workspaceMaterialId).offset().top - topOffset;
     if (animate) {
       $(window).data('scrolling', true);
@@ -69,17 +69,15 @@
     
     $('.workspace-materials-view-page[data-workspace-material-assigment-type="EXERCISE"]').each(function (index, page) {
       $(page).prepend($('<div>')
-          .attr('title','Harjoitustehtävä')
           .addClass('muikku-page-assignment-type exercise')
-          .append($('<span>').addClass('icon-assignment'))
+          .text(getLocaleText("plugin.workspace.materialsLoader.exerciseAssignmentLabel"))
       );
     });
     
     $('.workspace-materials-view-page[data-workspace-material-assigment-type="EVALUATED"]').each(function (index, page) {
       $(page).prepend($('<div>')
-          .attr('title','Arvioitavatehtävä')
           .addClass('muikku-page-assignment-type evaluated')
-          .append($('<span>').addClass('icon-assignment'))
+          .text(getLocaleText("plugin.workspace.materialsLoader.evaluatedAssignmentLabel"))
       );
     });
     
@@ -91,7 +89,7 @@
     var saveButton = $(page).find('.muikku-save-page');
     if (saveButton.length) {
       saveButton
-        .removeClass('icon-checkmark save-successful')          
+        .removeClass('save-successful')          
         .text(saveButton.data('unsaved-text'));
     }
   });
@@ -130,9 +128,15 @@
             }
             else {
               if ($(field).muikkuField('hasExamples')) {
-                var exampleDetails = $('<details>')
+                var exampleDetails = $('<span>')
                   .addClass('muikku-field-examples')
                   .attr('data-for-field', $(field).attr('name'));
+                
+                exampleDetails.append( 
+                  $('<span>')
+                    .addClass('muikku-field-examples-title')
+                    .text(getLocaleText('plugin.workspace.assigment.checkAnswers.detailsSummary.title'))
+                );
                 
                 $.each($(field).muikkuField('getExamples'), function (index, example) {
                   exampleDetails.append(
@@ -150,8 +154,8 @@
         
         // Save button
         $(this)
-          .addClass("icon-checkmark save-successful")
-          .text(exercise ? getLocaleText('plugin.workspace.materials.answerChecked') : getLocaleText('plugin.workspace.materials.answerSaved'));
+          .addClass("save-successful")
+          .text(exercise ? getLocaleText('plugin.workspace.materials.exerciseSaved') : getLocaleText('plugin.workspace.materials.assignmentSaved'));
       } 
     }, this));
   });

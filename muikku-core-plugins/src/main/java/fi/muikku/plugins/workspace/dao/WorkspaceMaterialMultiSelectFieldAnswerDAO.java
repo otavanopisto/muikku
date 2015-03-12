@@ -5,18 +5,16 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.material.model.QueryMultiSelectFieldOption;
-import fi.muikku.plugins.material.model.QuerySelectFieldOption;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialMultiSelectFieldAnswer;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialMultiSelectFieldAnswerOption;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialMultiSelectFieldAnswerOption_;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialMultiSelectFieldAnswer_;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
-import fi.muikku.plugins.workspace.model.WorkspaceMaterialMultiSelectFieldAnswer;
 
 public class WorkspaceMaterialMultiSelectFieldAnswerDAO extends CorePluginsDAO<WorkspaceMaterialMultiSelectFieldAnswer> {
 	

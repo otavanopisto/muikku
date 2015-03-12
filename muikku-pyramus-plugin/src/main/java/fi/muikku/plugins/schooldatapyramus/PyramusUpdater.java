@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
@@ -44,6 +46,7 @@ import fi.muikku.users.RoleSchoolDataIdentifierController;
 import fi.muikku.users.UserEntityController;
 import fi.muikku.users.WorkspaceRoleEntityController;
 import fi.muikku.users.WorkspaceUserEntityController;
+import fi.pyramus.rest.model.ContactType;
 import fi.pyramus.rest.model.Course;
 import fi.pyramus.rest.model.CourseStaffMember;
 import fi.pyramus.rest.model.CourseStaffMemberRole;
@@ -53,6 +56,9 @@ import fi.pyramus.rest.model.Student;
 import fi.pyramus.rest.model.UserRole;
 
 public class PyramusUpdater {
+
+  @Inject
+  private Logger logger;
 
   @Inject
   private WorkspaceController workspaceController;
@@ -587,9 +593,15 @@ public class PyramusUpdater {
     String staffMemberIdentifier = identifierMapper.getStaffIdentifier(staffMember.getId());
     List<String> emails = new ArrayList<>();
     
-    Email[] studentEmails = pyramusClient.get("/staff/members/" + staffMember.getId() + "/emails", Email[].class);
-    for (Email studentEmail : studentEmails) {
-      emails.add(studentEmail.getAddress());
+    Email[] staffMemberEmails = pyramusClient.get("/staff/members/" + staffMember.getId() + "/emails", Email[].class);
+    for (Email staffMemberEmail : staffMemberEmails) {
+      if (staffMemberEmail.getContactTypeId() != null) {
+        ContactType contactType = pyramusClient.get("/common/contactTypes/" + staffMemberEmail.getContactTypeId(), ContactType.class);
+      
+        if (!contactType.getNonUnique())
+          emails.add(staffMemberEmail.getAddress());
+      } else
+        logger.log(Level.WARNING, "ContactType of email is null - email is ignored");
     }
     
     schoolDataUserDiscoveredEvent.fire(new SchoolDataUserDiscoveredEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, staffMemberIdentifier, emails));
@@ -599,9 +611,15 @@ public class PyramusUpdater {
     String staffMemberIdentifier = identifierMapper.getStaffIdentifier(staffMember.getId());
     List<String> emails = new ArrayList<>();
     
-    Email[] studentEmails = pyramusClient.get("/staff/members/" + staffMember.getId() + "/emails", Email[].class);
-    for (Email studentEmail : studentEmails) {
-      emails.add(studentEmail.getAddress());
+    Email[] staffMemberEmails = pyramusClient.get("/staff/members/" + staffMember.getId() + "/emails", Email[].class);
+    for (Email staffMemberEmail : staffMemberEmails) {
+      if (staffMemberEmail.getContactTypeId() != null) {
+        ContactType contactType = pyramusClient.get("/common/contactTypes/" + staffMemberEmail.getContactTypeId(), ContactType.class);
+      
+        if (!contactType.getNonUnique())
+          emails.add(staffMemberEmail.getAddress());
+      } else
+        logger.log(Level.WARNING, "ContactType of email is null - email is ignored");
     }
     
     schoolDataUserUpdatedEvent.fire(new SchoolDataUserUpdatedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, staffMemberIdentifier, emails));
@@ -616,10 +634,16 @@ public class PyramusUpdater {
     String studentIdentifier = identifierMapper.getStudentIdentifier(student.getId());
  
     List<String> emails = new ArrayList<>();
-    
+
     Email[] studentEmails = pyramusClient.get("/students/students/" + student.getId() + "/emails", Email[].class);
     for (Email studentEmail : studentEmails) {
-      emails.add(studentEmail.getAddress());
+      if (studentEmail.getContactTypeId() != null) {
+        ContactType contactType = pyramusClient.get("/common/contactTypes/" + studentEmail.getContactTypeId(), ContactType.class);
+      
+        if (!contactType.getNonUnique())
+          emails.add(studentEmail.getAddress());
+      } else
+        logger.log(Level.WARNING, "ContactType of email is null - email is ignored");
     }
     
     schoolDataUserDiscoveredEvent.fire(new SchoolDataUserDiscoveredEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, studentIdentifier, emails));
@@ -628,11 +652,17 @@ public class PyramusUpdater {
   private void fireStudentUpdated(Student student) {
     String studentIdentifier = identifierMapper.getStudentIdentifier(student.getId());
  
-   List<String> emails = new ArrayList<>();
+    List<String> emails = new ArrayList<>();
     
     Email[] studentEmails = pyramusClient.get("/students/students/" + student.getId() + "/emails", Email[].class);
     for (Email studentEmail : studentEmails) {
-      emails.add(studentEmail.getAddress());
+      if (studentEmail.getContactTypeId() != null) {
+        ContactType contactType = pyramusClient.get("/common/contactTypes/" + studentEmail.getContactTypeId(), ContactType.class);
+      
+        if (!contactType.getNonUnique())
+          emails.add(studentEmail.getAddress());
+      } else
+        logger.log(Level.WARNING, "ContactType of email is null - email is ignored");
     }
     
     schoolDataUserUpdatedEvent.fire(new SchoolDataUserUpdatedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, studentIdentifier, emails));

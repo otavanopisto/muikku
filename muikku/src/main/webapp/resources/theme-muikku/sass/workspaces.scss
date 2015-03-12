@@ -3,9 +3,17 @@
 @import "_connect-field.scss";
 
 body.workspace { 
-  background:#ffffff;
+  @include background-image('/gfx/light-diagonal-strips.png');
+  background-repeat:repeat;
+  background-color:#f0f3f5;
   min-height:100%;
   font-size:14px;
+  
+  section {
+    background:#fff;
+    padding:10px 30px;
+    margin:23px 0 0 0;
+  }
   
   h1.workspace-title {
     margin:20px 0 20px 0;
@@ -47,8 +55,7 @@ body.workspace {
   
   .workspace-description-wrapper {
     margin:1em 0 1em 0;
-    font-size:17px;
-    font-weight:300;
+    font-size:14px;
     
     img {
       max-width:100%;
@@ -56,8 +63,7 @@ body.workspace {
     
     h1,
     h2 {
-      
-      
+    
       &:first-child {
         margin:20px 0 20px 0;
       }
@@ -168,7 +174,9 @@ body.workspace {
 }  
   
 body.workspace-materials {
-  background:#ffffff;
+  @include background-image('/gfx/light-diagonal-strips.png');
+  background-repeat:repeat;
+  background-color:#f0f3f5;
   min-height:100%;
   font-size:14px;
   
@@ -238,21 +246,20 @@ body.workspace-materials {
     }
 
   }
-
+  
   nav.workspace-materials-toc-wrapper#workspaceMaterialsTOCWrapper {
     background:#fff;
     position:fixed;
     top:100px;
     width:280px;
-    max-height:520px;
+    bottom:0;
     text-align:left;
     font-family:"Open Sans";
     text-shadow:none;
     color:#000;
     font-size:14px;
     line-height:1.5em;
-    box-shadow:0 0 40px rgba(107,137,158,0.1);
-    border-bottom:10px solid #fff;
+    border-bottom:5px solid #fff;
     z-index:11;
     
     &:hover > span {
@@ -267,9 +274,8 @@ body.workspace-materials {
     }
     
     .workspace-materials-toc-container {
-/*       overflow:hidden; */
       position:relative;
-      height:530px;
+      height:100%;
     
       .workspace-materials-toc-title {
         text-transform:uppercase;
@@ -283,20 +289,23 @@ body.workspace-materials {
       .workspace-materials-toc-content-outer {
         overflow:hidden;
         position:absolute;
-        height:480px;
         width:280px;
+        top:40px;
+        bottom:0;
         
         .workspace-materials-toc-content-inner {  
           position:absolute;
           overflow-x: hidden;
           overflow-y: scroll;
-          height:480px;
+          bottom:0;
+          top:0;
           width:302px;
         
           .workspace-materials-toc-content-scrolling {
             padding:4px;
             width:272px;
-            height:480px;
+            top:0;
+            bottom:0;
             
             .spacer {
               height:30px; /* Creating some bottom margin because use of 100% height  */
@@ -334,11 +343,11 @@ body.workspace-materials {
                   }
                   
                   &.evaluated {
-                    border-left:2px solid #0099ff;
+                    border-left:2px solid $evaluatedAssignment;
                   }
                   
                   &.exercise {
-                    border-left:2px solid #2ed91c;
+                    border-left:2px solid $exerciseAssignment;
                   }
                   
                 }
@@ -408,7 +417,6 @@ body.workspace-materials {
         padding:30px;
         text-transform:none;
         line-height:1.3em;
-        box-shadow:0 -20px 20px rgba(107,137,158,0.05);
       }
     }
 
@@ -421,15 +429,16 @@ body.workspace-materials {
         z-index:12;
         max-width:700px;
         width:auto;
-        background:#fff;
         margin:30px 300px -30px auto; 
         font-weight:300;
         color:#000;
-        font-size:30px;
-        padding:30px 30px 10px 30px;
+        font-size:28px;
+        padding:10px 30px;
         text-transform:none;
         line-height:1.3em;
-        box-shadow:0 -20px 20px rgba(107,137,158,0.05);
+        border:1px solid #fff;
+        background:#ddf5ff;
+        text-transform:uppercase;
       }
       
       & > h3,h4,h5,h6 {
@@ -456,10 +465,10 @@ body.workspace-materials {
 
     .workspace-materials-view-page.material-view { /* <article> */
       padding:10px 30px;
-      margin:23px 300px 37px auto;
+      margin:30px 300px 37px auto;
       max-width:640px;
-      box-shadow:0 0 40px rgba(107,137,158,0.1);
       position:relative;
+      background:#fff;
 
       img {
         max-width:100%;
@@ -467,7 +476,6 @@ body.workspace-materials {
       
       h1,
       h2 {
-        
         
         &:first-child {
           margin:20px 0 20px 0;
@@ -574,4 +582,287 @@ body.workspace-materials {
 
   }
 
+}
+
+body.workspace,
+body.workspace-materials {
+  
+  #workspaceEvaluationDockWrapper {
+    text-align:center;
+      
+    .wi-workspace-dock-navi-button-evaluation { /* Button's master rules */
+      width:60px;
+      margin-bottom:10px;
+      box-shadow:0 0 5px rgba(0,0,0,0.25);
+      @include rounded(3px);
+      
+      a {
+        text-shadow:none;
+        transition: background 0.2s ease-in-out;
+      }
+      
+      &[data-state='unassessed'] { /* Default state */
+        background:#6ab0df;
+
+        a:hover {
+          background:#509ccf;
+          
+          span[class*='workspace-navi-tt-container-'] {
+            background:#509ccf;
+          }
+          
+        }
+        
+      }
+      
+      &[data-state='pending'] { /* Evaluation Request Pending */
+        background:#0099ff; 
+        transition: background 0.2s ease-in-out;
+
+        a:hover {
+          background:#0075c3;
+          
+          span[class*='workspace-navi-tt-container-'] {
+            background:#0075c3;
+          }
+          
+        }
+        
+        &:hover {
+          background:#f6a930;
+          
+          a {
+            background:#e5961b;
+            
+            &:before {
+              content: "\e9f3"; /* Override Pending icon with Cancellation icon */
+            }
+            
+            &:hover {
+              background:#e5961b;
+            
+              span[class*='workspace-navi-tt-container-'] {
+                background:#e5961b;
+              }
+            
+            }
+
+          }
+
+        }
+        
+      }
+      
+      &[data-state='cancel'] { /* Evaluation Request Cancelled */
+        background:#f6a930; /* Same as Default at this point */
+        
+        a:hover {
+          background:#e5961b;
+          
+          span[class*='workspace-navi-tt-container-'] {
+            background:#e5961b;
+          }
+          
+        }
+        
+      }
+      
+      &[data-state='canceled'] { /* Evaluation Request Cancelled */
+        background:#55bbff; /* Same as Default at this point */
+        
+        a:hover {
+          background:#509ccf;
+          
+          span[class*='workspace-navi-tt-container-'] {
+            background:#509ccf;
+          }
+          
+        }
+        
+      }
+      
+      &[data-state='pass'] { /* Evaluation of Workspace - Pass */
+        background:#1ec30c;
+        
+        a:hover {
+          background:#16a506;
+          
+          span[class*='workspace-navi-tt-container-'] {
+            background:#16a506;
+          }
+          
+        }
+        
+      }
+      
+      &[data-state='fail'] { /* Evaluation of Workspace - Fail */
+        background:#ea7401;
+        
+        a:hover {
+          background:#d66b03;
+          
+          span[class*='workspace-navi-tt-container-'] {
+            background:#d66b03;
+          }
+          
+        }
+      }
+      
+    }
+    
+  }
+  
+  /* JQuery UI Dialog Overrides */
+  .ui-widget-overlay {
+    background:#000;
+    opacity:0.5;
+  }
+  
+  .workspace-evaluation-confirm-dialog {
+    box-shadow:0 0 80px rgba(0,0,0,0.4);
+    background:#fff;
+    font-family: 'Open Sans',Verdana, sans-serif;
+    font-weight:300;
+    padding:0;
+    border-radius:5px;
+    border:none;
+    position:fixed;
+    
+    &.ui-corner-all {
+      border-radius:0px;
+    }
+    
+    .ui-dialog-titlebar {
+      text-transform:uppercase;
+      border:0px;
+      background:#7391a7;
+      color:#fff;
+      border-radius:0px;
+      padding:8px 36px 8px 12px;
+      font-weight:400;
+      
+      .ui-dialog-title {
+        margin:0;
+        font-size:18px;
+        width:100%;
+        font-weight:300;
+      }
+      
+      .ui-dialog-titlebar-close {
+        background:#7391a7;
+        border-radius:0px;
+        border:0px;
+        width:24px;
+        margin:-13px 0 0 0;
+        font-size:22px;
+        height:22px; /* Same height as font-size */
+        
+        span {
+          display:none;
+        }
+        
+        &:before {
+          content: "\e63b";
+          color:#fff;
+          font-size:22px;
+          font-weight:normal;
+          font-family: 'muikku';
+          speak: none;
+          font-style: normal;
+          text-decoration:none;
+          font-variant: normal;
+          text-transform: none;
+          line-height: 1;
+          
+          /* Better Font Rendering =========== */
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+        
+      }
+      
+    }
+    
+    .workspace-evaluation-request-confirm-dialog,
+    .workspace-evaluation-cancellation-confirm-dialog {
+      margin:10px 0 0 0;
+      
+      .evaluation-request-additional-message-wrapper {
+        margin:10px 0;
+      
+        label {
+          font-weight:400;
+          text-transform:uppercase;
+          padding:5px 0 5px 2px;
+          font-size:14px;
+          font-family:"Open Sans";
+          color:#4c4c4c;
+        }
+      
+        #evaluationRequestAdditionalMessage {
+          width:100%;
+          max-width:100%;
+          box-sizing:border-box;
+          min-height:100px;
+          border:3px solid #ededed;
+          font-family:"Open Sans";
+          color:#4c4c4c;
+          padding:4px 8px;
+          font-weight:400;
+          border-radius:0px;
+          
+          &:focus,
+          &:hover,
+          &:active {
+            box-shadow:none;
+            border:3px solid #ededed;
+            outline:none;
+          }
+          
+        }
+      
+      }
+      
+    }
+    
+    .ui-dialog-buttonpane {
+      border:0;
+      background:transparent;
+      padding:0px 10px 10px 10px;
+      margin:10px 0 0 0;
+      
+      .ui-dialog-buttonset {
+        float:none;
+        position:relative;
+      
+        button {
+          border-radius:0px;
+          border:0;
+          color:#fff;
+          font-weight:400;
+          text-transform:uppercase;
+          margin:5px;
+          outline:none;
+          font-family:"Open Sans";
+          min-width:90px;
+        }
+        
+        button.request-button {
+          float:right;
+          background:#068feb;
+        }
+        
+        button.cancellation-button {
+          float:right;
+          background:#f6a930;
+        }
+        
+        button.cancel-button {
+          float:right;
+          background:#7391a7;
+        }
+      
+      }
+    }
+  }
 }

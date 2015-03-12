@@ -3,7 +3,7 @@
 @import "_connect-field.scss";
 
 body.workspace-materials-reading {
-  background:#6b899e;
+  background:#8ba4b5;
   /* All this because of the god damn margin collapsing  */
   padding:0.01em;
   min-height:100%;
@@ -17,7 +17,7 @@ body.workspace-materials-reading {
     nav.workspace-waterials-reading-nav {
       width:46px;
       height:100%;
-      background:#7794a8;
+      background:#7893a6;
       position:absolute;
       top:0;
       z-index:36;
@@ -35,8 +35,9 @@ body.workspace-materials-reading {
       background:#e8f0f5;
       z-index:26;
       box-shadow : 0 0 25px rgba(0,0,0,0.15);
-      position:relative;
+      position:absolute;
       top:0;
+      bottom:0;
       border-left:1px solid #fff;
       
       ul,
@@ -45,12 +46,11 @@ body.workspace-materials-reading {
       }
       
       .workspace-materials-reading-TOC-title {
-        background:#87a1b2;
         padding:12px;
         position:relative;
         
         h1 {
-          color:#fff;
+          color:#2c2c2c;
           font-size:20px;
           margin:0;
           padding:0;
@@ -59,9 +59,8 @@ body.workspace-materials-reading {
         #workspaceMaterialsReadingTOCPinicon {
           cursor:pointer;
           font-size:24px;
-          color:#fff;
+          color:#2c2c2c;
           text-decoration:none;
-          @include iconShadow;
           background:transparent;
           padding:6px;
           margin:2px;
@@ -81,8 +80,7 @@ body.workspace-materials-reading {
           transition: transform 0.2s;
           
           &:hover {
-            @include iconShadow(rgba(255,255,190,0.5));
-            opacity:0.8;
+            opacity:0.7;
             -ms-transform: rotate(10deg); /* IE 9 */
             -webkit-transform: rotate(10deg); /* Chrome, Safari, Opera */
             -moz-transform: rotate(10deg);
@@ -103,25 +101,22 @@ body.workspace-materials-reading {
     
       .workspace-materials-toc-content-outer {
         overflow:hidden;
-        height:100%;
+        position:absolute;
+        top:40px;
+        bottom:5px;
         width:350px;
-        position:relative;
       
         .workspace-materials-toc-content-inner {  
           position:absolute;
           overflow-x: hidden;
           overflow-y: scroll;
           width:370px;
-          height:100%;
+          top:0;
+          bottom:0;
         
           .workspace-materials-toc-content-scrolling {
             width:338px;
             padding:0 6px;
-            height:100%;
-            
-            .spacer {
-              height:50px; /* Creating some bottom margin because use of 100% height  */
-            }
         
             .workspace-materials-toc-root {
 
@@ -155,11 +150,11 @@ body.workspace-materials-reading {
                   }
 
                   &.evaluated {
-                    border-left:2px solid #0099ff;
+                    border-left:2px solid $evaluatedAssignment;
                   }
                   
                   &.exercise {
-                    border-left:2px solid #2ed91c;
+                    border-left:2px solid $exerciseAssignment;
                   }
                   
                 }
@@ -241,14 +236,17 @@ body.workspace-materials-reading {
     .workspace-materials-view-page-section.material-reading-view { /* <section> */
     
      & > h2 {
+       position:relative;
+       z-index:12;
        max-width:700px;
        width:auto;
-       background:#fff;
+       border:1px solid #fff;
+       background:#ddf5ff;
        margin:30px auto -30px auto; 
        font-weight:300;
        color:#000;
        font-size:30px;
-       padding:30px 30px 0px 30px;
+       padding:10px 30px;
        text-transform:none;
        line-height:1.3em;
      }
@@ -272,7 +270,7 @@ body.workspace-materials-reading {
     
     }
   
-    .workspace-materials-view-page.material-reading-view {
+    .workspace-materials-view-page.material-reading-view { /* <article> */
       max-width:700px;
       width:auto;
       background:#fff;
@@ -310,7 +308,6 @@ body.workspace-materials-reading {
       
       h1,
       h2 {
-        
         
         &:first-child {
           margin:20px 0 20px 0;

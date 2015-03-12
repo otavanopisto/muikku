@@ -32,14 +32,33 @@
 					<div class="workspace-materials-toc-content-inner">
 						<div class="workspace-materials-toc-content-scrolling">
 							<ul class="workspace-materials-toc-root">
-								<ui:include
-									src="/workspaces/templates/workspace-materials-list.xhtml">
-									<ui:param name="nodes"
-										value="#{workspaceMaterialsTOCBackingBean.getChildren(workspaceMaterialsManagementBackingBean.getRootFolder())}" />
-									<ui:param name="includeHidden" value="true" />
-								</ui:include>
-							</ul>
-							<div class="spacer"></div>
+                <ui:repeat var="node" value="#{workspaceMaterialsManagementBackingBean.contentNodes}">
+                  <ui:fragment rendered="#{node.type eq 'folder'}">
+                    <li>
+                      <ul class="workspace-materials-toc-section">
+                        <li class="workspace-materials-toc-subtitle">#{node.title}</li>
+
+                        <ui:repeat var="articleNode" value="#{node.children}">
+                          <ui:fragment rendered="#{articleNode.type eq 'folder'}">
+                            <li class="workspace-materials-toc-subtitle">#{articleNode.title}</li>
+                          </ui:fragment>
+                          <ui:fragment rendered="#{articleNode.type ne 'folder'}">
+                            <li class="workspace-materials-toc-item">
+                              <h:outputLink value="#page-#{articleNode.workspaceMaterialId}" class="#{articleNode.assignmentType eq 'EVALUATED' ? 'evaluated' : articleNode.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{articleNode.title}</h:outputLink>
+                            </li>
+                          </ui:fragment>
+                        </ui:repeat>
+                      </ul>
+                    </li>
+                  </ui:fragment>
+
+                  <ui:fragment rendered="#{node.type ne 'folder'}">
+                    <li class="workspace-materials-toc-item">
+                      <h:outputLink value="#page-#{node.workspaceMaterialId}" class="#{node.assignmentType eq 'EVALUATED' ? 'evaluated' : node.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{node.title}</h:outputLink>
+                    </li>
+                  </ui:fragment>
+                </ui:repeat>
+              </ul>
 						</div>
 					</div>
 				</div>
@@ -56,27 +75,68 @@
 		<div class="workspaces-materials-management-insert-file">
 			<input type="file" />
 		</div>
-		<ui:repeat var="node"
-			value="#{workspaceMaterialsTOCBackingBean.getDescendants(workspaceMaterialsManagementBackingBean.getRootFolder())}"
-			varStatus="vs">
-			<ui:fragment rendered="#{node.materialType eq 'folder'}">
+		<ui:repeat var="node" value="#{workspaceMaterialsManagementBackingBean.contentNodes}">
+			<ui:fragment rendered="#{node.type eq 'folder'}">
 				<h2 id="page-#{node.workspaceMaterialId}"
 					data-workspace-material-id="#{node.workspaceMaterialId}"
 					data-material-id="#{node.materialId}"
 					data-parent-id="#{node.parentId}"
-					data-material-type="#{node.materialType}"
-					data-material-title="#{node.materialTitle}"
+					data-material-type="#{node.type}"
+					data-material-title="#{node.title}"
 					class="workspace-materials-view-page material-management-view folder"
 					data-assignment-type="#{node.assignmentType}"></h2>
+          
+        <div class="workspace-materials-management-addpage">
+          <span class="workspace-materials-management-line-separator"></span><a
+            class="workspaces-materials-management-add-page icon-add"
+            href="javascript:void(null)"><span>#{i18n.text['plugin.workspace.materialsManagement.addNewPage']}</span></a>
+        </div>
+        <div class="workspaces-materials-management-insert-file">
+          <input type="file" />
+        </div>
+        
+        <ui:repeat var="articleNode" value="#{node.children}">
+          <ui:fragment rendered="#{articleNode.type eq 'folder'}">
+            <h2 id="page-#{articleNode.workspaceMaterialId}"
+              data-workspace-material-id="#{articleNode.workspaceMaterialId}"
+              data-material-id="#{articleNode.materialId}"
+              data-parent-id="#{articleNode.parentId}"
+              data-material-type="#{articleNode.type}"
+              data-material-title="#{articleNode.title}"
+              class="workspace-materials-view-page material-management-view folder"
+              data-assignment-type="#{articleNode.assignmentType}"></h2>
+          </ui:fragment>
+          
+          <ui:fragment rendered="#{articleNode.type ne 'folder'}">
+            <section id="page-#{articleNode.workspaceMaterialId}"
+              data-workspace-material-id="#{articleNode.workspaceMaterialId}"
+              data-material-id="#{articleNode.materialId}"
+              data-parent-id="#{articleNode.parentId}"
+              data-material-type="#{articleNode.type}"
+              data-material-title="#{articleNode.title}"
+              class="workspace-materials-view-page material-management-view #{articleNode.hidden ? 'page-hidden' : ''}"
+              data-assignment-type="#{articleNode.assignmentType}" />
+          </ui:fragment>
+          
+          <div class="workspace-materials-management-addpage">
+            <span class="workspace-materials-management-line-separator"></span><a
+              class="workspaces-materials-management-add-page icon-add"
+              href="javascript:void(null)"><span>#{i18n.text['plugin.workspace.materialsManagement.addNewPage']}</span></a>
+          </div>
+          <div class="workspaces-materials-management-insert-file">
+            <input type="file" />
+          </div>
+        </ui:repeat>
 			</ui:fragment>
-			<ui:fragment rendered="#{node.materialType ne 'folder'}">
+      
+			<ui:fragment rendered="#{node.title ne 'folder'}">
 				<section id="page-#{node.workspaceMaterialId}"
 					data-workspace-material-id="#{node.workspaceMaterialId}"
 					data-material-id="#{node.materialId}"
 					data-parent-id="#{node.parentId}"
-					data-material-type="#{node.materialType}"
-					data-material-title="#{node.materialTitle}"
-					class="workspace-materials-view-page material-management-view #{node.materialHidden ? 'page-hidden' : ''}"
+					data-material-type="#{node.type}"
+					data-material-title="#{node.title}"
+					class="workspace-materials-view-page material-management-view #{node.hidden ? 'page-hidden' : ''}"
 					data-assignment-type="#{node.assignmentType}" />
 			</ui:fragment>
 			<div class="workspace-materials-management-addpage">

@@ -8,8 +8,8 @@ import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 
 public class ContentNode {
 
-  public ContentNode(String title, String type, Long workspaceMaterialId,
-      Long materialId, int level, WorkspaceMaterialAssignmentType assignmentType) {
+  public ContentNode(String title, String type, Long workspaceMaterialId, Long materialId, int level, 
+      WorkspaceMaterialAssignmentType assignmentType, Long parentId, Boolean hidden) {
     super();
     this.children = new ArrayList<>();
     this.title = title;
@@ -18,6 +18,8 @@ public class ContentNode {
     this.materialId = materialId;
     this.level = level;
     this.assignmentType = assignmentType;
+    this.parentId = parentId;
+    this.hidden = hidden;
   }
 
   public void addChild(ContentNode child) {
@@ -59,6 +61,22 @@ public class ContentNode {
   public void setAssignmentType(WorkspaceMaterialAssignmentType assignmentType) {
     this.assignmentType = assignmentType;
   }
+  
+  public Boolean getHidden() {
+    return hidden;
+  }
+  
+  public void setHidden(Boolean hidden) {
+    this.hidden = hidden;
+  }
+  
+  public Long getParentId() {
+    return parentId;
+  }
+  
+  public void setParentId(Long parentId) {
+    this.parentId = parentId;
+  }
 
   private String title;
   private String type;
@@ -67,4 +85,6 @@ public class ContentNode {
   private Long materialId;
   private int level;
   private WorkspaceMaterialAssignmentType assignmentType;
+  private Boolean hidden;
+  private Long parentId;
 }
