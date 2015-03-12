@@ -1,10 +1,10 @@
 @font-face {
 	font-family: 'muikku';
-	src:url('fonts/muikku.eot?-yq6mnu');
-	src:url('fonts/muikku.eot?#iefix-yq6mnu') format('embedded-opentype'),
-		url('fonts/muikku.woff?-yq6mnu') format('woff'),
-		url('fonts/muikku.ttf?-yq6mnu') format('truetype'),
-		url('fonts/muikku.svg?-yq6mnu#muikku') format('svg');
+	src:url('fonts/muikku.eot?zh45da');
+	src:url('fonts/muikku.eot?#iefixzh45da') format('embedded-opentype'),
+		url('fonts/muikku.woff?zh45da') format('woff'),
+		url('fonts/muikku.ttf?zh45da') format('truetype'),
+		url('fonts/muikku.svg?zh45da#muikku') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -27,16 +27,12 @@
 	content: "\e634";
 }
 
-.icon-new-page:before {
-	content: "\e637";
+.icon-assessment-canceled:before {
+	content: "\e321";
 }
 
-.icon-close-small:before {
-	content: "\e63b";
-}
-
-.icon-add:before {
-	content: "\e114";
+.icon-assessment-pending:before {
+	content: "\e9df";
 }
 
 .icon-diary:before {
@@ -107,12 +103,32 @@
 	content: "\e63a";
 }
 
-.icon-request-evaluation:before {
+.icon-assessment-unassessed:before {
 	content: "\e9e1";
 }
 
-.icon-cancel-evaluation:before {
+.icon-assessment-pass:before {
+	content: "\e9e9";
+}
+
+.icon-assessment-cancel:before {
 	content: "\e9f3";
+}
+
+.icon-assessment-fail:before {
+	content: "\e9fb";
+}
+
+.icon-new-page:before {
+	content: "\e637";
+}
+
+.icon-close-small:before {
+	content: "\e63b";
+}
+
+.icon-add:before {
+	content: "\e114";
 }
 
 .icon-exit-editing:before {
@@ -121,6 +137,10 @@
 
 .icon-navicon:before {
 	content: "\e609";
+}
+
+.icon-week:before {
+	content: "\e600";
 }
 
 .icon-goback:before {

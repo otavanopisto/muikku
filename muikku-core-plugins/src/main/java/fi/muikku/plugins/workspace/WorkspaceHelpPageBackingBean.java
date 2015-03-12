@@ -40,7 +40,7 @@ public class WorkspaceHelpPageBackingBean {
 
   @Inject
   @Named
-  private WorkspaceNavigationBackingBean workspaceNavigationBackingBean;
+  private WorkspaceBackingBean workspaceBackingBean;
 
   @Inject
   private WorkspaceVisitController workspaceVisitController;
@@ -67,7 +67,7 @@ public class WorkspaceHelpPageBackingBean {
       contentNodes.add(node);
     }
 
-    workspaceNavigationBackingBean.setWorkspaceUrlName(urlName);
+    workspaceBackingBean.setWorkspaceUrlName(urlName);
 
     schoolDataBridgeSessionController.startSystemSession();
     try {

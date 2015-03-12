@@ -692,8 +692,8 @@
     var page = $(data.pageElement);
     if (!$(page).data('answer-button')) {
       var buttonText = $(page).data('workspace-material-assigment-type') == "EXERCISE" 
-          ? getLocaleText("plugin.workspace.materialsLoader.checkButton")
-          : getLocaleText("plugin.workspace.materialsLoader.saveButton");
+          ? getLocaleText("plugin.workspace.materialsLoader.saveExerciseButton")
+          : getLocaleText("plugin.workspace.materialsLoader.saveAssignmentButton");
       
       var saveButtonWrapper = $('<div>');
           
@@ -708,24 +708,6 @@
              .text(buttonText)
              .data('unsaved-text', buttonText));
       
-      if ($(page).data('workspace-material-assigment-type') == "EVALUATED") {
-        $(saveButtonWrapper)
-          .append($('<button>')
-            .addClass('muikku-request-evaluation icon-request-evaluation'));
-        
-        $(saveButtonWrapper)
-        .append($('<button>')
-          .addClass('muikku-cancel-evaluation icon-cancel-evaluation')
-          .css({
-            display: 'none'
-          }));
-     
-      }
-      
-      if ($(page).data('workspace-material-assigment-type') == "EVALUATED") {
-        
-     
-      }
     }
   });
   

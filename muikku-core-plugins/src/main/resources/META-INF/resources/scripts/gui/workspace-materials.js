@@ -2,7 +2,7 @@
   'use strict';
 
   function scrollToPage(workspaceMaterialId, animate) {
-    var topOffset = $('#contentWorkspaceMaterials').offset().top;
+    var topOffset = 100;
     var scrollTop = $('#page-' + workspaceMaterialId).offset().top - topOffset;
     if (animate) {
       $(window).data('scrolling', true);
@@ -78,14 +78,14 @@
     $('.workspace-materials-view-page[data-workspace-material-assigment-type="EXERCISE"]').each(function (index, page) {
       $(page).prepend($('<div>')
           .addClass('muikku-page-assignment-type exercise')
-          .append($('<span>').addClass('icon-assignment'))
+          .text(getLocaleText("plugin.workspace.materialsLoader.exerciseAssignmentLabel"))
       );
     });
     
     $('.workspace-materials-view-page[data-workspace-material-assigment-type="EVALUATED"]').each(function (index, page) {
       $(page).prepend($('<div>')
           .addClass('muikku-page-assignment-type evaluated')
-          .append($('<span>').addClass('icon-assignment'))
+          .text(getLocaleText("plugin.workspace.materialsLoader.evaluatedAssignmentLabel"))
       );
     });
     
@@ -97,25 +97,9 @@
     var saveButton = $(page).find('.muikku-save-page');
     if (saveButton.length) {
       saveButton
-        .removeClass('icon-checkmark save-successful')          
+        .removeClass('save-successful')          
         .text(saveButton.data('unsaved-text'));
     }
-  });
-  
-  $(document).on('click', '.muikku-request-evaluation', function (event) {
-    $('.icon-cancel-evaluation').show();
-    $(this).hide();
-    
-    $('.notification-queue').notificationQueue('notification', 'success',getLocaleText('plugin.workspace.evaluation.requestAssigmentEvaluationNotification'));
-    
-  });
-  
-  $(document).on('click', '.muikku-cancel-evaluation', function (event) {
-    $(this).hide();
-    $('.icon-request-evaluation').show();
-    
-    $('.notification-queue').notificationQueue('notification', 'success',getLocaleText('plugin.workspace.evaluation.cancelAssignmentEvaluationNotification'));
-    
   });
 
   $(document).on('click', '.muikku-save-page', function (event, data) {
@@ -178,8 +162,8 @@
         
         // Save button
         $(this)
-          .addClass("icon-checkmark save-successful")
-          .text(exercise ? getLocaleText('plugin.workspace.materials.answerChecked') : getLocaleText('plugin.workspace.materials.answerSaved'));
+          .addClass("save-successful")
+          .text(exercise ? getLocaleText('plugin.workspace.materials.exerciseSaved') : getLocaleText('plugin.workspace.materials.assignmentSaved'));
       } 
     }, this));
   });
