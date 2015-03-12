@@ -54,7 +54,7 @@
         var windowMaterialTop = $('#page-' + windowMaterialId).offset().top;
         var renderedMaterialTop = $('#page-' + renderedMaterialId).offset().top;
         // only scroll if page anchor is below a page just rendered
-        if (windowMaterialTop > renderedMaterialTop) {
+        if (windowMaterialTop >= renderedMaterialTop) {
           scrollToPage(windowMaterialId, false);
         }
       }
@@ -68,7 +68,8 @@
         var workspaceMaterialId = parseInt($(this).attr('data-workspace-material-id'));
         $('a.active').removeClass('active');
         $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
-        window.location.hash = '#p-' + workspaceMaterialId;
+        // TODO Setting hash at waypoint can lead to erratic scrolling. Let's not do that. 
+        //window.location.hash = '#p-' + workspaceMaterialId;
       }
     }, {
       offset: '60%'
