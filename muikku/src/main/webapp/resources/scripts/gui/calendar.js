@@ -31,6 +31,7 @@
         .append(createTimeField('startTime', 'eventStartTime', 'alkaa'))
         .append(createDateField('endDate', 'eventEndDate', 'loppuu'))
         .append(createTimeField('endTime', 'eventEndTime', 'loppuu'))
+        .append($('<div>').attr({'id': 'eventRecurrence'}))
         .append($('<div>').append($('<input>').attr({ 'placeholder': 'Tapahtuman nimi', 'name': 'eventSubject', 'required': 'required' })))
         .append($('<div>').append($('<select>').attr({'id': 'eventCalendar', 'required': 'required'}))))
       .append($('<div>').append($('<textarea>').attr({ 'placeholder': 'Tapahtuman kuvaus', 'name': 'eventContent', 'required': 'required' })));
@@ -44,6 +45,7 @@
   	  modalgrid : 24,
   	  contentgrid : 24,
   	  onBeforeOpen: function(modal){
+  	    $('#eventRecurrence').recurrenceInput();
         mApi().calendar.calendars.read().callback($.proxy(function (err, calendars) {
   	      if (err) {
   	     	  $('.notification-queue').notificationQueue('notification', 'error', err);

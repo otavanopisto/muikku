@@ -13,12 +13,10 @@
 		}
 	} else {
 		this.append(
-			    '<label for="new-event-recurrence-list">Repeats:</label>' +
-		        '<div id="recurrenceInput-event-recurrence-list">' +
-		        '<p><span name="humanReadableRecurrence">Not repeating</span><button name="showRecurrenceControls">Add</button></p>' +
+		        '<a data-name="showRecurrenceControls" style="text-decoration:underline !important;cursor:pointer !important;" ><span name="humanReadableRecurrence">Not repeating</span></a>' +
 		        '</div>' +
 		        '<!-- TODO: Make more suitable for humans -->' +
-		        '<div style="display:none;" name="recurrenceControls" id="new-event-recurrence-controls" >' +
+		        '<div style="display:none;background-color:#FFF !important;color:#000 !important; position:fixed !important;border: 1px solid #DDD;padding:15px;" name="recurrenceControls" id="new-event-recurrence-controls" >' +
 		        '<span><b>Repeat:</b></span><select id="recurrenceInput-event-recurrence-freq" name="recurrenceFreq">' +
 		        '<!-- <option value="SECONDLY">SECONDLY</option> TODO: Add support -->' +
 		        '<!-- <option value="MINUTELY">MINUTELY</option> TODO: Add support -->' +
@@ -34,52 +32,63 @@
 		        '</div>'
 		);
 		
-	    this.find('button[name="showRecurrenceControls"]').click(function(e){
+		  this.find('div[name="recurrenceControls"]').blur(function(e){
+		    console.log('blur');
+		    $(this).hide();
+		  });
+		
+	    this.find('a[data-name="showRecurrenceControls"]').click(function(e){
 	    	e.preventDefault();
 	    	_this.find('div[name="recurrenceControls"]').show();
+	    	var offset = _this.offset();
+	    	_this.find('div[name="recurrenceControls"]').css({'top':offset.top, 'left':offset.left});
 	    	_this._updateRecurrenceCtrl(_this.find('select[name="recurrenceFreq"]').val());
 	    });
+	    
 	    this.find('button[name="saveRecurrence"]').click(function(e){
 	    	e.preventDefault();
-			var recurrence = {};
-			recurrence.freq = _this.find('select[name="recurrenceFreq"]').val();
-			recurrence.interval = _this.find('input[name="recurrenceInterval"]').val();
-			_this.find('input[name="endRecurrence"]').each(function(){
-				if($(this).is(':checked')){
-					if($(this).val() !== ""){
-						var endType = $(this).val();
-						switch (endType) {
-						case "count":
-							recurrence.count = _this.find('input[name="recurrenceCount"]').val();
-							break;
-						case "until":
-							recurrence.until = _this.find('input[name="recurrenceUntil"]').datepicker("getDate");
-							break;
-						}
-					}
-				}
-			});
-			var weekdays = [];
-			_this.find('input[name="recurrenceInput-weekday"]').each(function(){
-				if($(this).is(':checked')){
-					weekdays.push($(this).val());
-				}
-			});
-			if(weekdays.length > 0){
-				recurrence.weekdays = weekdays;
-			}
-			if(_this.find('input[name="recurrenceMonthDay"]').length > 0){
-				recurrence.monthDay = _this.find('input[name="recurrenceMonthDay"]').val();
-			}
-			if(_this.find('select[name="recurrenceMonth"]').length > 0){
-				recurrence.month = _this.find('select[name="recurrenceMonth"]').val();
-			}
-			_this._generatehumanReadableRecurrence(recurrence);
-			_this.find('input[name="recurrenceObject"]').val(JSON.stringify(recurrence));
-			
+  			var recurrence = {};
+  			recurrence.freq = _this.find('select[name="recurrenceFreq"]').val();
+  			recurrence.interval = _this.find('input[name="recurrenceInterval"]').val();
+  			_this.find('input[name="endRecurrence"]').each(function(){
+  				if($(this).is(':checked')){
+  					if($(this).data('value') !== ""){
+  						var endType = $(this).data('value');
+  						switch (endType) {
+  						case "count":
+  							recurrence.count = _this.find('input[name="recurrenceCount"]').val();
+  							break;
+  						case "until":
+  							recurrence.until = _this.find('input[name="recurrenceUntil"]').datepicker("getDate");
+  							break;
+  						}
+  					}
+  				}
+  			});
+  			var weekdays = [];
+  			_this.find('input[name="recurrenceInput-weekday"]').each(function(){
+  				if($(this).is(':checked')){
+  					weekdays.push($(this).data('value'));
+  				}
+  			});
+  			if(weekdays.length > 0){
+  				recurrence.weekdays = weekdays;
+  			}
+  			if(_this.find('input[name="recurrenceMonthDay"]').length > 0){
+  				recurrence.monthDay = _this.find('input[name="recurrenceMonthDay"]').val();
+  			}
+  			if(_this.find('select[name="recurrenceMonth"]').length > 0){
+  				recurrence.month = _this.find('select[name="recurrenceMonth"]').val();
+  			}
+  			_this._generatehumanReadableRecurrence(recurrence);
+  			_this.find('input[name="recurrenceObject"]').val(JSON.stringify(recurrence));
+  			_this.find('div[name="recurrenceControls"]').hide();
 	    });
+	    
 	    this.find('button[name="cancelRecurrence"]').click(function(e){
 	    	e.preventDefault();
+	    	_this.find('input[name="recurrenceObject"]').val('');
+	    	_this.find('span[name="humanReadableRecurrence"]').text('Not repeating');
 	    	_this.find('div[name="recurrenceControls"]').hide();
 	    });
 	    
@@ -89,7 +98,11 @@
 	    });
 		
 	    this._generatehumanReadableRecurrence = function(recurrence){ //TODO: make better, localize
-	    	var recurrenceString = "Repeating every ";
+	    	var recurrenceString = "Repeating ";
+	        if(typeof(recurrence.count) !== 'undefined'){
+	          recurrenceString += recurrence.count+' times';
+	        }
+	    	recurrenceString += " every ";
 	    	var many = false;
 	    	if(recurrence.interval > 1){
 	    		many = true;
@@ -108,9 +121,16 @@
 		    		recurrenceString += "s";
 		    	}
 		    	if(recurrence.weekdays){
-		    		recurrenceString += " on: ";
+		    		recurrenceString += " on ";
 		    		for(var i = 0; i < recurrence.weekdays.length;i++){
-		    			recurrenceString += ","+recurrence.weekdays[i];
+		    		  if(i == 0){
+		    		    recurrenceString += recurrence.weekdays[i].toLowerCase();
+		    		  }else if(i > 0 && i < (recurrence.weekdays.length - 1)){
+		    		    recurrenceString += ","+recurrence.weekdays[i].toLowerCase();
+		    		  }else{
+		    		    recurrenceString += " and "+recurrence.weekdays[i].toLowerCase();
+		    		  }
+		    			
 		    		}
 		    	}
 	    		break;
@@ -143,6 +163,9 @@
 		    	}
 	    		break;
 	    	}
+	      if(typeof(recurrence.until) !== 'undefined'){
+	        recurrenceString += ' until '+new Date(recurrence.until).toLocaleString();
+	    	}
 	    	
 	    	_this.find('span[name="humanReadableRecurrence"]').text(recurrenceString);
 	    	
@@ -157,9 +180,9 @@
 	        			'<span><b>Repeat every:</b>&nbsp;</span>' +
 	        	        '<input style="width:15%;" id="recurrenceInput-event-recurrence-interval" name="recurrenceInterval" type="text" /><span>&nbsp;days.</span><br/>' +
 	        	        '<span><b>End recurrence:</b></span><br/>'+
-	        	        '<input type="radio" name="endRecurrence" value="" />Never<br/>' +
-	        	        '<input type="radio" name="endRecurrence" value="count" />After: <input style="width:15%;" id="recurrenceInput-event-recurrence-count" type="text" name="recurrenceCount" /> occurrence(s)<br/>' +
-	        	        '<input type="radio" name="endRecurrence" value="until" />On: <input style="width:20%;" id="recurrenceInput-event-recurrence-until" type="text" name="recurrenceUntil" />'
+	        	        '<input type="radio" name="endRecurrence" data-value="" />Never<br/>' +
+	        	        '<input type="radio" name="endRecurrence" data-value="count" />After: <input style="width:15%;" id="recurrenceInput-event-recurrence-count" type="text" name="recurrenceCount" /> occurrence(s)<br/>' +
+	        	        '<input type="radio" name="endRecurrence" data-value="until" />On: <input style="width:20%;" id="recurrenceInput-event-recurrence-until" type="text" name="recurrenceUntil" />'
 	        	);
 	            break;
 	        case "WEEKLY":
@@ -167,17 +190,18 @@
 	        			'<span><b>Repeat every:</b>&nbsp;</span>' +
 	        	        '<input style="width:15%;" id="recurrenceInput-event-recurrence-interval" name="recurrenceInterval" type="text" /><span>&nbsp;weeks.</span><br/>' +
 	        	        '<span><b>Repeat On:</b>&nbsp;</span>' +
-	        			'<div class="recurrenceWeekdays"><span>Mon:&nbsp;</span><input name="recurrenceweekdayMO" value="MONDAY" type="checkbox">' +
-	        			'<span>Tue:&nbsp;</span><input name="recurrenceInput-weekday" value="TUESDAY" type="checkbox">' +
-	        			'<span>Wed:&nbsp;</span><input name="recurrenceInput-weekday" value="WEDNESDAY" type="checkbox">' +
-	        			'<span>Thu:&nbsp;</span><input name="recurrenceInput-weekday" value="THURSDAY" type="checkbox">' +
-	        			'<span>Fri:&nbsp;</span><input name="recurrenceInput-weekday" value="FRIDAY" type="checkbox">' +
-	        			'<span>Sat:&nbsp;</span><input name="recurrenceInput-weekday" value="SATURDAY" type="checkbox">' +
+	        			'<div class="recurrenceWeekdays">' +
+	        	    '<span>Mon:&nbsp;</span><input name="recurrenceInput-weekday" data-value="MONDAY" type="checkbox" />' +
+	        			'<span>Tue:&nbsp;</span><input name="recurrenceInput-weekday" data-value="TUESDAY" type="checkbox" />' +
+	        			'<span>Wed:&nbsp;</span><input name="recurrenceInput-weekday" data-value="WEDNESDAY" type="checkbox" />' +
+	        			'<span>Thu:&nbsp;</span><input name="recurrenceInput-weekday" data-value="THURSDAY" type="checkbox" />' +
+	        			'<span>Fri:&nbsp;</span><input name="recurrenceInput-weekday" data-value="FRIDAY" type="checkbox" />' +
+	        			'<span>Sat:&nbsp;</span><input name="recurrenceInput-weekday" data-value="SATURDAY" type="checkbox" />' +
 	        	        '<span>Sun:&nbsp;</span><input name="recurrenceInput-weekday" value="SUNDAY" type="checkbox"></div>' + 
 	        	        '<span><b>End recurrence:</b></span><br/>'+
-	        	        '<input type="radio" name="endRecurrence" value="" />Never<br/>' +
-	        	        '<input type="radio" name="endRecurrence" value="count" />After: <input style="width:15%;" id="recurrenceInput-event-recurrence-count" type="text" name="recurrenceCount" /> occurrence(s)<br/>' +
-	        	        '<input type="radio" name="endRecurrence" value="until" />On: <input style="width:20%;" id="recurrenceInput-event-recurrence-until" type="text" name="recurrenceUntil" />'
+	        	        '<input type="radio" name="endRecurrence" data-value="" />Never<br/>' +
+	        	        '<input type="radio" name="endRecurrence" data-value="count" />After: <input style="width:15%;" id="recurrenceInput-event-recurrence-count" type="text" name="recurrenceCount" /> occurrence(s)<br/>' +
+	        	        '<input type="radio" name="endRecurrence" data-value="until" />On: <input style="width:20%;" id="recurrenceInput-event-recurrence-until" type="text" name="recurrenceUntil" />'
 	        	);
 	            break;
 	        case "MONTHLY":
@@ -186,9 +210,9 @@
 	        	        '<input style="width:15%;" id="new-event-recurrence-interval" name="recurrenceInterval" type="text" /><span>&nbsp;months.</span><br/>' +
 	        	        '<span><b>Repeat on:</b><br/>Day of the month:</span><input style="width:15%;"name="recurrenceMonthDay" type="text" /><span>&nbsp;(1 - 31)</span><br/>' +
 	        	        '<span><b>End recurrence:</b></span><br/>'+
-	        	        '<input type="radio" name="endRecurrence" value="" />Never<br/>' +
-	        	        '<input type="radio" name="endRecurrence" value="count" />After: <input style="width:15%;" id="recurrenceInput-event-recurrence-count" type="text" name="recurrenceCount" /> occurrence(s)<br/>' +
-	        	        '<input type="radio" name="endRecurrence" value="until" />On: <input style="width:20%;" id="recurrenceInput-event-recurrence-until" type="text" name="recurrenceUntil" />'
+	        	        '<input type="radio" name="endRecurrence" data-value="" />Never<br/>' +
+	        	        '<input type="radio" name="endRecurrence" data-value="count" />After: <input style="width:15%;" id="recurrenceInput-event-recurrence-count" type="text" name="recurrenceCount" /> occurrence(s)<br/>' +
+	        	        '<input type="radio" name="endRecurrence" data-value="until" />On: <input style="width:20%;" id="recurrenceInput-event-recurrence-until" type="text" name="recurrenceUntil" />'
 	        	);
 	            break;
 	        case "YEARLY":
@@ -210,9 +234,9 @@
 						'<option value="12">December</option> ' +
 						'</select><input style="width:15%;"name="recurrenceMonthDay" type="text" /><span>&nbsp;(1 - 31)</span><br/>' +
 						'<span><b>End recurrence:</b></span><br/>'+
-	        	        '<input type="radio" name="endRecurrence" value="" />Never<br/>' +
-	        	        '<input type="radio" name="endRecurrence" value="count" />After: <input style="width:15%;" id="recurrenceInput-event-recurrence-count" type="text" name="recurrenceCount" /> occurrence(s)<br/>' +
-	        	        '<input type="radio" name="endRecurrence" value="until" />On: <input style="width:20%;" id="recurrenceInput-event-recurrence-until" type="text" name="recurrenceUntil" />'
+	        	        '<input type="radio" name="endRecurrence" data-value="" />Never<br/>' +
+	        	        '<input type="radio" name="endRecurrence" data-value="count" />After: <input style="width:15%;" id="recurrenceInput-event-recurrence-count" type="text" name="recurrenceCount" /> occurrence(s)<br/>' +
+	        	        '<input type="radio" name="endRecurrence" data-value="until" />On: <input style="width:20%;" id="recurrenceInput-event-recurrence-until" type="text" name="recurrenceUntil" />'
 	        	);
 	            break;
 	    	}
