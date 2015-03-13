@@ -163,10 +163,6 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     border-right-width:8px;
   }
   
-  div {
-    line-height:1.5em;
-  }
-  
   p, h1, h2, h3, h4, h5, h6 {
     word-wrap:break-word;
   }
@@ -220,7 +216,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
   
     li {
       margin:5px;
-      line-height:1.5em;
+/*       line-height:1.5em; */
     }
     
     ol {
