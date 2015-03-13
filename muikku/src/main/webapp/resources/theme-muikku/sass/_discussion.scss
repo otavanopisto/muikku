@@ -170,19 +170,27 @@
           width:60%;
           box-sizing:border-box;
         }
+        
         .di-message-details{
           width:40%;
           box-sizing:border-box;
           div{
+           box-sizing:border-box;
            height:80px;
            float:left;
           }
-        .di-message-area{
-          width:50%
           
+        .di-message-area-name{
+          width:50%;
+          padding:30px 0 0 15px;
+          span{
+            padding:5px;
+          }
         }
+        
         .di-message-activity{
-          width:49%
+          width:49%;
+          padding:30px 0 0 15px;
         }
       }    
    }

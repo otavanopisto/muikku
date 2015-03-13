@@ -5,7 +5,7 @@
    <div class="di-message-meta-content"><span>{message}</span></div>
   </div>
   <div class="mf-item-header-details di-message-details">
-   <div class="di-message-area"><span>{areaName}</span></div>
+   <div class="di-message-area-name"><span class="mf-category-{forumAreaId}-brd mf-category-{forumAreaId}-font">{areaName}</span></div>
    <div class="di-message-activity"><span>{prettyDate}</span></div>
   <div class="clear"></div>
   </div>

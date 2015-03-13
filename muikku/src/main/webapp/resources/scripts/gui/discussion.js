@@ -76,6 +76,36 @@ $(document).ready(function(){
     
     
     	},
+    	
+    	refreshThread : function(){
+     		
+            this.clearMessages();
+            
+
+    	    
+    	    mApi().forum.areas.threads.read(aId,tId).on('$', function(thread, threadCallback){
+    	          mApi().forum.areas.read(thread.forumAreaId).callback(function(err, area){
+    	            thread.areaName = area.name;	
+    	             	
+    	          });
+    	          
+    	          threadCallback();
+    	    	
+    	    })
+    	    .callback(function (err, threads) {
+    	  	  
+    		    if( err ){
+    		          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('TODO: Virheilmoitus', err));
+    		  	}else{    	  
+
+    		  	 renderDustTemplate('/discussion/discussion_items_open.dust', threads, function(text) {
+    		 		$(DiscImpl.msgContainer).append($.parseHTML(text));
+    		 		
+    		  	});
+    		  	}
+    	    });		
+    		
+    	},    	
     
 	    loadThread : function(event){
 
@@ -84,9 +114,9 @@ $(document).ready(function(){
 	        var tId = $(element).attr("id");
 	        var aId = $(element).find("input[name='areaId']").attr('value') ;
 	        
-	    	
 		    this.clearMessages();	
-
+		    
+    	    $(DiscImpl.msgContainer).on("click", '.icon-goback', $.proxy(this.refreshLatest,this));
 		    
 		    mApi().forum.areas.threads.read(aId,tId).on('$', function(thread, threadCallback){
 
@@ -184,7 +214,26 @@ $(document).ready(function(){
 		
 	});    		
 
+	$(".di-message-reply-link").click(function(){
 
+		var sendReply = function(values){
+			mApi().mApi().forum.areas.threads.create(values).callback(function(err, result) {
+			});			
+			
+			window.discussion.refreshThread();
+
+		}			
+	
+	    mApi().forum.areas.read()
+	      .callback(function (err, areas) {
+	      	if( err ){
+	          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('TODO: Virheilmoitus', err));
+	    	}else{ 		
+			  openInSN('/discussion/discussion_create_area.dust', areas, leaveRep );
+	    	}
+	      });
+		
+	});   
 	
        
 	});
