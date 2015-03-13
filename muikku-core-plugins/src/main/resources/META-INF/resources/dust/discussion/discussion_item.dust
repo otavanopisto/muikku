@@ -1,14 +1,15 @@
 
-<div class="mf-item di-message area-{forumAreaId}" id="{id}">
+<div class="mf-item di-message mf-category-{forumAreaId} closed" id="{id}">
   <div class="mf-item-header-name di-message-meta">
    <div class="di-message-meta-topic"><span>{title}</span></div>
    <div class="di-message-meta-content"><span>{message}</span></div>
   </div>
   <div class="mf-item-header-details di-message-details">
    <div class="di-message-area"><span>{areaName}</span></div>
-   <div class="di-message-activity"><span><!-- {created}  --></span></div>
+   <div class="di-message-activity"><span>{prettyDate}</span></div>
+  <div class="clear"></div>
   </div>
   <div class="clear"></div>
-  <input type="hidden" name="areaId" value="{id}"/>
+  <input type="hidden" name="areaId" value="{forumAreaId}"/>
 </div>
 

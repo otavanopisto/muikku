@@ -1,85 +1,134 @@
 $(document).ready(function(){
 	
-	var msgContainer = $('.di-messages-container');
-	
-	var areaList = function(select,areas){
-		 var select = $(select);
-		 
-		 for(var i = 0; i < areas.length; i++ ){
-			var name = areas[i].name;
-			var id = areas[i].id;
-			var groupId = areas[i].groupId;
-			
-			if(groupId == null){
-  				$("<option value='" + id + "'>" + name + "</option>").appendTo(select);
-			}
-			
-		 }
-		 
-	 }
-	
-	
-    mApi().forum.areas.read()
-    .callback(function (err, areas) {
-  	  
-	    if( err ){
-	          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('TODO: Virheilmoitus', err));
-	  	}else{    	  
-	  		 areaList("#discussionAreaSelect",areas);
-	  	}
-    });
-	 
+    DiscImpl = $.klass({
+
+    	init : function(){
+    		// todo: parse url
+            this.refreshLatest();	
+            this.refreshAreas();	
     
-//    var test = function(){
-//	    	
-//          mApi().forum.areas.read(1).callback(function(err, area){
-//          	
-//          	
-//          }).callback(function (err, threads) {
-//		  	  
-//	    });	
-//    }
-//    
-//    test();
+    	},
+    	
+    	
+    	refreshLatest : function(){
+ 		
+            this.clearMessages();
+            
+    	    $(DiscImpl.msgContainer).on("click", '.di-message:not(.open)', $.proxy(this.loadThread,this));  
+    	    
+    	    mApi().forum.latest.read().on('$', function(msgs, msgsCallback){
+    	          mApi().forum.areas.read(msgs.forumAreaId).callback(function(err, area){
+    	            msgs.areaName = area.name;	
+    	             	
+    	          });
+    	          
+    	          var d = new Date(msgs.created);
+ 
+    	          msgs.prettyDate = d.toLocaleString();
+    	          
+    	          msgsCallback();
+    	    	
+    	    })
+    	    .callback(function (err, threads) {
+    	  	  
+    		    if( err ){
+    		          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('TODO: Virheilmoitus', err));
+    		  	}else{    	  
+
+    		  	 renderDustTemplate('/discussion/discussion_items.dust', threads, function(text) {
+    		 		$(DiscImpl.msgContainer).append($.parseHTML(text));
+    		 		
+    		  	});
+    		  	}
+    	    });		
+    		
+    	},
+    	
+    	refreshAreas : function(){   
+    		
+    	 mApi().forum.areas.read()
+        .callback(function (err, areas) {
+        	  
+    	    if( err ){
+    	          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('TODO: Virheilmoitus', err));
+    	  	}else{    	  
+
+	  			 var select = $("#discussionAreaSelect");
+
+
+	            $(select).empty();	  			 
+	  			 
+	  			 for(var i = 0; i < areas.length; i++ ){
+	  				var name = areas[i].name;
+	  				var id = areas[i].id;
+	  				var groupId = areas[i].groupId;
+	  				
+	  				if(groupId == null){
+	  	  				$("<option value='" + id + "'>" + name + "</option>").appendTo(select);
+	  				}
+	  				
+	  			 }
+		  			 
+    	  		
+
+    	  	}
+        });
     
-	var refreshLatest = function(){
-		
-        $(msgContainer).empty();
-	    
-	    
-	    mApi().forum.latest.read().on('$', function(msgs, msgsCallback){
-	          mApi().forum.areas.read(msgs.forumAreaId).callback(function(err, area){
-	            msgs.areaName = area.name;	
-	            	
-	          })		    	
-	          
-	          msgsCallback();
+    
+    	},
+    
+	    loadThread : function(event){
+
+	    	var element = $(event.target); 
+	        element = element.parents(".di-message");
+	        var tId = $(element).attr("id");
+	        var aId = $(element).find("input[name='areaId']").attr('value') ;
+	        
 	    	
-	    })
-	    .callback(function (err, threads) {
-	  	  
-		    if( err ){
-		          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('TODO: Virheilmoitus', err));
-		  	}else{    	  
+		    this.clearMessages();	
 
-		  	 renderDustTemplate('/discussion/messages.dust', threads, function(text) {
-		 		$(msgContainer).append($.parseHTML(text));
-		  	});
-		  	}
-	    });		
-		
-	}
+		    
+		    mApi().forum.areas.threads.read(aId,tId).on('$', function(thread, threadCallback){
+
+  	          mApi().forum.areas.read(thread.forumAreaId).callback(function(err, area){
+  	            thread.areaName = area.name;	
+  	             	
+  	          });
+		      threadCallback();
+		    })
+	    	.callback(function(err, threads){
+			    if( err ){
+			        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('TODO: Virheilmoitus', err));
+			  	}else{    	  
+
+				  	renderDustTemplate('/discussion/discussion_items_open.dust', threads, function(text) {
 	
+				  		$(DiscImpl.msgContainer).append($.parseHTML(text));
+	
+				  	});
+			  	}    		
+	    	});
+	    },
+
+	    clearMessages : function(){
+		  $(DiscImpl.msgContainer).empty();
+	    },	    
+	    
+	    
+	    _klass : {
+	    	// Variables for the class
+		  msgContainer : ".di-messages-container" 
+	    }
+    
+    
+    }); 
 	
 
-    refreshLatest();	
-	 
-
+   window.discussion = new DiscImpl();
+  
         
-    
-	
 	$(".di-new-message-button").click(function(){
-    
+	    
 		var createMessage = function(values){
 			var forumAreaId = null;
 	    
@@ -96,7 +145,7 @@ $(document).ready(function(){
 					
 				});	
 			
-			  refreshLatest();
+			 window.discussion.refreshLatest();
 
 		}	
 			
@@ -105,7 +154,7 @@ $(document).ready(function(){
 	      	if( err ){
 	          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('TODO: Virheilmoitus', err));
 	    	}else{ 		
-			  openInSN('/discussion/newmessage.dust', areas, createMessage );
+			  openInSN('/discussion/discussion_create_message.dust', areas, createMessage );
 	
 	    	}
 	      });
@@ -120,7 +169,8 @@ $(document).ready(function(){
 			mApi().forum.areas.create(values).callback(function(err, result) {
 			});			
 			
-			refreshLatest();			
+			window.discussion.refreshLatest();
+			window.discussion.refreshAreas();
 		}			
 	
 	    mApi().forum.areas.read()
@@ -128,11 +178,12 @@ $(document).ready(function(){
 	      	if( err ){
 	          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('TODO: Virheilmoitus', err));
 	    	}else{ 		
-			  openInSN('/discussion/newarea.dust', areas, createArea );
+			  openInSN('/discussion/discussion_create_area.dust', areas, createArea );
 	    	}
 	      });
 		
-	});
+	});    		
+
 
 	
        

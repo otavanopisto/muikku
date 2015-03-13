@@ -78,40 +78,116 @@
 .di-messages-container{
     
     .di-message{
-     height:80px;
-     margin-top:2px;
-     margin-right:5px;
-     margin-left:5px;
-     margin-bottom:0;
-     padding:0;
-     > div{
-      height:80px
-     }
-    .di-message-meta{
-      width:60%;
-      box-sizing:border-box;
-    }
-    .di-message-details{
-      width:40%;
-      box-sizing:border-box;
-      div{
        height:80px;
-       padding-left:5px;  
-       display:inline-block;
-       box-sizing:border-box;
+       margin-top:2px;
+       margin-right:5px;
+       margin-left:5px;
+       margin-bottom:0;
+       padding:0;
+     
+        &.open{
+           height:auto;     
+           height:auto;
 
-      }
-      .di-message-area{
-        width:50%
+           
+           &.owner{
+             border-left:5px solid #dadada; 
+             h3{
+              color:#dadada;
+             }
+             
+            }       
+            
+          .di-message-topic{
+           padding-left:15px;
+          }  
+
+          .di-user-picture{
+           float:left;
+           height:60px;
+           width:60px;
+           
+           
+           &.default{
+            @extend .co-user-picture;
+           }
+           
+           &.reply-recipient{
+            display:inline-block;
+            float:none;
+            height:20px;
+            width:20px;
+           }
+          }   
         
-      }
-      .di-message-activity{
-        width:49%
-      }
-    }
-    }
-    
-  }
+          .di-message-details{
+            padding-left:15px;
+            .di-message-details-sender{
+            
+              div{
+              float:left;
+              }
+              
+              .di-message-header-content-primary{
+                display:inline-block;
+                font-weight:700;
+                padding:0 0 0 20px;
+              }
+              
+              .di-message-header-content-secondary{
+                display:inline-block;
+                font-weight:700;
+                padding:0 0 0 20px;
+              }
+
+              
+            }
+            .di-message-content{
+             float:none;
+             
+             .di-message-content-text{
+               padding:15px;
+               margin-left:60px;
+               font-weight:300;
+             }               
+            }
+
+
+          
+          }            
+
+      
+         
+        }
+        
+        &.closed{
+     
+         > div{
+          height:80px;
+         }
+       
+        .di-message-meta{
+          width:60%;
+          box-sizing:border-box;
+        }
+        .di-message-details{
+          width:40%;
+          box-sizing:border-box;
+          div{
+           height:80px;
+           float:left;
+          }
+        .di-message-area{
+          width:50%
+          
+        }
+        .di-message-activity{
+          width:49%
+        }
+      }    
+   }
+  }    
+}
 
 
 .di-message-meta-content span{
