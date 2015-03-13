@@ -19,6 +19,9 @@
         quickEvent(this, date);
       }
     });
-  });
+    
+    loadFullCalendarEvents($('#monthView'));
+    removeHeader('#monthView');
+ });
 
 })(this);

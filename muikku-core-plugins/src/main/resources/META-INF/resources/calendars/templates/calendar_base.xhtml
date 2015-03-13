@@ -59,15 +59,8 @@
     <!-- Context menu -->
     
     <h:outputScript name="scripts/jquery.contextmenu/jquery.contextmenu.js" target="head"/>
-  
-    <!-- TODO: Move scripts to views -->
-    <h:outputScript name="scripts/gui/calendar-index.js" />
-    <h:outputScript name="scripts/gui/calendar-day.js" />
-    <h:outputScript name="scripts/gui/calendar-event.js" />
-    <h:outputScript name="scripts/gui/calendar-month.js" />
-    <h:outputScript name="scripts/gui/calendar-week.js" />
+    <ui:insert name="calendarViewScripts"/>
   </ui:define>
-
 
     <ui:define name="content.tools.left"> 
       <m:widget name="newevent" size="6" rendered="#{sessionBackingBean.loggedIn}"/>

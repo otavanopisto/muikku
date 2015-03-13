@@ -1,4 +1,5 @@
 (function() {
+  
   var createDateField = function (id, name, placeholder) {
     return $('<div>') 
       .addClass('ca-field-date')
@@ -110,10 +111,8 @@
   	    caption: "Luo tapahtuma",
   	    name : "sendEvent",
   	    action: function (e) {
-  	      // TODO: switch to ISO8601 date so we can specify the 
-  	      // timezone more easily?
-          var start = new Date($('#startDate').datepicker('getDate').getTime() + $('#startTime').timepicker('getTime').getTime());
-          var end = new Date($('#endDate').datepicker('getDate').getTime() + $('#endTime').timepicker('getTime').getTime());
+  	      var startISO = $('#startDate').datepicker('getDate').toISOString().split('T')[0] + 'T' + $('#startTime').timepicker('getTime').toISOString().split('T')[1];
+          var endISO = $('#endDate').datepicker('getDate').toISOString().split('T')[0] + 'T' + $('#endTime').timepicker('getTime').toISOString().split('T')[1];
   	      
   	      mApi().calendar.calendars.events.create($('#eventCalendar').val(), {
   	        summary: $('input[name="eventSubject"]').val(),
@@ -123,9 +122,9 @@
   //	      longitude: calendarEvent.longitude,
   //	      url: calendarEvent.url,
   	        status: 'CONFIRMED',
-  	        start: start,
+  	        start: startISO,
   	        startTimeZone: 'GMT',
-  	        end: end ,
+  	        end: endISO ,
   	        endTimeZone: 'GMT',
   	        allDay: false,
   //	      attendees: attendees,
@@ -172,5 +171,37 @@
     });    
     
 	});
+  
+  window.loadFullCalendarEvents = function (element) {
+    var view = $(element).fullCalendar('getView');
+    // TODO: switch to ISO8601?
+    mApi().calendar.calendars
+      .read()
+      .add('$', 'id', 'events', mApi().calendar.calendars.events, {
+//        timeMin: view.visStart.toISOString(),
+//        timeMax: view.visEnd.toISOString()
+      })
+      .callback($.proxy(function (err, calendars) {
+        var events = [];
+        
+        $.each(calendars, function (index, calendar) {
+          events = $.merge(events, $.map(calendar.events, function (event) {
+            return {
+              title: event.summary,
+              start: new Date(event.start),
+              end: new Date(event.end),
+              allDay: event.allDay,
+              editable: false
+            };
+          }));
+        });
+        
+        $(element).fullCalendar('removeEvents');
+        $(element).fullCalendar("addEventSource", {
+          events: events
+        });
+        
+      }, this));
+  };
   
 })(this);

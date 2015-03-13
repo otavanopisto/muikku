@@ -9,6 +9,7 @@
       defaultView : 'agendaDay'
     });
     
+    loadFullCalendarEvents($('#dayView'));
     removeHeader('#dayView');
   });
   

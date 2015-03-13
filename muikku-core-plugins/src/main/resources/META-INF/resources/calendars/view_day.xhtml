@@ -8,8 +8,10 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:jsf="http://xmlns.jcp.org/jsf"
   template="./templates/calendar_base.xhtml">
-
-
+  
+  <ui:define name="calendarViewScripts">
+    <h:outputScript name="scripts/gui/calendar-day.js" />
+  </ui:define>
 
     <ui:define name="content.tools.center">
     

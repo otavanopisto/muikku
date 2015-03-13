@@ -10,8 +10,9 @@
       timeFormat:{
         agenda: 'h:mm',
       }
-    });   
-    
+    });
+
+    loadFullCalendarEvents($('#agendaView'));
     removeHeader('#agendaView');
   });
   
