@@ -77,7 +77,7 @@ $(document).ready(function(){
     
     	},
     	
-    	refreshThread : function(){
+    	refreshThread : function(aId,tId){
      		
             this.clearMessages();
             
@@ -117,7 +117,9 @@ $(document).ready(function(){
 		    this.clearMessages();	
 		    
     	    $(DiscImpl.msgContainer).on("click", '.icon-goback', $.proxy(this.refreshLatest,this));
-		    
+    	    $(DiscImpl.msgContainer).on("click", '.di-message-reply-link', $.proxy(this.loadReply,this));		    
+    	    
+    
 		    mApi().forum.areas.threads.read(aId,tId).on('$', function(thread, threadCallback){
 
   	          mApi().forum.areas.read(thread.forumAreaId).callback(function(err, area){
@@ -138,6 +140,42 @@ $(document).ready(function(){
 				  	});
 			  	}    		
 	    	});
+	    },
+	    
+	    loadReply : function(event){
+
+	    	var element = $(event.target); 
+	        element = element.parents(".di-message");
+	        var tId = $(element).attr("id");
+	        var aId = $(element).find("input[name='areaId']").attr('value');	    	
+	    	
+			var sendReply = function(values){
+				mApi().forum.areas.threads.create(values).callback(function(err, result) {
+				});			
+				
+				window.discussion.refreshThread(aId,tId);
+	
+				
+			}			
+
+		    mApi().forum.areas.threads.read(aId,tId).on('$', function(thread, threadCallback){
+
+	  	          mApi().forum.areas.read(thread.forumAreaId).callback(function(err, area){
+	  	            thread.areaName = area.name;	
+	  	             	
+	  	          });
+			      threadCallback();
+			    })
+		    	.callback(function(err, thread){
+				    if( err ){
+				        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('TODO: Virheilmoitus', err));
+				  	}else{    	  
+						  openInSN('/discussion/discussion_create_reply.dust', thread, sendReply);		
+					  	}
+				  	});  		
+			
+	    		   	
+	    	
 	    },
 
 	    clearMessages : function(){
@@ -170,7 +208,7 @@ $(document).ready(function(){
 			  }    	
 	         }
 			
-			mApi().forum.areas.threads.create(forumAreaId, values)
+			mApi().forum.areas.threads.replies.create(forumAreaId, values)
 				.callback(function(err, result) {
 					
 				});	
@@ -212,29 +250,10 @@ $(document).ready(function(){
 	    	}
 	      });
 		
-	});    		
+   		
 
-	$(".di-message-reply-link").click(function(){
-
-		var sendReply = function(values){
-			mApi().mApi().forum.areas.threads.create(values).callback(function(err, result) {
-			});			
-			
-			window.discussion.refreshThread();
-
-		}			
-	
-	    mApi().forum.areas.read()
-	      .callback(function (err, areas) {
-	      	if( err ){
-	          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('TODO: Virheilmoitus', err));
-	    	}else{ 		
-			  openInSN('/discussion/discussion_create_area.dust', areas, leaveRep );
-	    	}
-	      });
-		
-	});   
+  
 	
        
 	});
-
+});

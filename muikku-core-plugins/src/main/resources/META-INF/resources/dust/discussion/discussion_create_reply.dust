@@ -13,11 +13,7 @@
                 <input type="textfield" value="" name="title"></input>
               </div>    
               <div id="areaSelect" class="mf-select">
-                <select id="" name="forumAreaId">
-                 {#.}
-                  <option value="{id}">{name}</option>
-                 {/.}
-                </select>
+                <h3><span class="mf-category-{forumAreaId}-font">{areaName}</span> - {title}</h3>
               </div>    
             </div>
             <div class="mf-fieldRow">
