@@ -55,7 +55,7 @@ public class WorkspaceMaterialUploadBackingBean {
   
 	@Inject
   @Named
-  private WorkspaceNavigationBackingBean workspaceNavigationBackingBean;
+  private WorkspaceBackingBean workspaceBackingBean;
 
 	@RequestAction
 	public String init() {
@@ -70,7 +70,7 @@ public class WorkspaceMaterialUploadBackingBean {
       return "/error/not-found.jsf";
 		}
 		
-		workspaceNavigationBackingBean.setWorkspaceUrlName(urlName);
+		workspaceBackingBean.setWorkspaceUrlName(urlName);
 		workspaceEntityId = workspaceEntity.getId();
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
     workspaceName = workspace.getName();

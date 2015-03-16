@@ -108,64 +108,6 @@ div[class*='workspace-dock-navi-button'] > span {
   }
 }
 
-/* Workspace navigation - Request Evaluation */
-div[class*='workspace-dock-navi-button-request-evaluation'] > a,
-div[class*='workspace-dock-navi-button-request-evaluation'] > span {
-  cursor:pointer;
-  font-size:32px;
-  color:#fff;
-  text-decoration:none;
-  text-shadow:none;
-  background:transparent;
-  padding:6px;
-  margin:4px;
-  display:inline-block;
-  position:relative;
-  width:34px;
-  @include rounded(3px);
-  
-  &:hover {
-    background:#0f78be;
-    
-    span[class*='workspace-navi-tt-container-'] {
-      display:block;
-      background:#0f78be;
-      opacity:1;
-      width:auto;
-      left:45px;
-    }
-  }
-}
-
-/* Workspace navigation - Cancel Evaluation Request */
-div[class*='workspace-dock-navi-button-cancel-evaluation'] > a,
-div[class*='workspace-dock-navi-button-cancel-evaluation'] > span {
-  cursor:pointer;
-  font-size:32px;
-  color:#fff;
-  text-decoration:none;
-  text-shadow:none;
-  background:transparent;
-  padding:6px;
-  margin:4px;
-  display:inline-block;
-  position:relative;
-  width:34px;
-  @include rounded(3px);
-  
-  &:hover {
-    background:#e5910d;
-    
-    span[class*='workspace-navi-tt-container-'] {
-      display:block;
-      background:#e5910d;
-      opacity:1;
-      width:auto;
-      left:45px;
-    }
-  }
-}
-
 /* Rule for workspace's dock's selected icon */
 div[class*='workspace-dock-navi-button-selected'] > span {
   background:#465b6c;
@@ -180,8 +122,6 @@ div[class*='workspace-dock-navi-button-selected'] > span {
   width:35px;
   @include rounded(3px);
 }
-
-
 
 div[data-name="generic.dock-top.left"] div:last-child > a{
 	margin-right:0;

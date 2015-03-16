@@ -39,7 +39,7 @@ public class WorkspaceIndexBackingBean {
 
   @Inject
   @Named
-  private WorkspaceNavigationBackingBean workspaceNavigationBackingBean;
+  private WorkspaceBackingBean workspaceBackingBean;
 
   @Inject
   private WorkspaceVisitController workspaceVisitController;
@@ -70,7 +70,7 @@ public class WorkspaceIndexBackingBean {
       materialTitle = "Etusivu";
     }
 
-    workspaceNavigationBackingBean.setWorkspaceUrlName(urlName);
+    workspaceBackingBean.setWorkspaceUrlName(urlName);
 
     schoolDataBridgeSessionController.startSystemSession();
     try {
