@@ -150,7 +150,7 @@ $(document).ready(function(){
 	        var aId = $(element).find("input[name='areaId']").attr('value');	    	
 	    	
 			var sendReply = function(values){
-				mApi().forum.areas.threads.create(values).callback(function(err, result) {
+				mApi().forum.areas.threads.create(aId, tId, values).callback(function(err, result) {
 				});			
 				
 				window.discussion.refreshThread(aId,tId);
