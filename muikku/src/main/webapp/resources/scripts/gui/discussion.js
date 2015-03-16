@@ -150,7 +150,7 @@ $(document).ready(function(){
 	        var aId = $(element).find("input[name='areaId']").attr('value');	    	
 	    	
 			var sendReply = function(values){
-				mApi().forum.areas.threads.create(aId, tId, values).callback(function(err, result) {
+				mApi().forum.areas.threads.replies.create(aId, tId, values).callback(function(err, result) {
 				});			
 				
 				window.discussion.refreshThread(aId,tId);
@@ -208,7 +208,7 @@ $(document).ready(function(){
 			  }    	
 	         }
 			
-			mApi().forum.areas.threads.replies.create(forumAreaId, values)
+			mApi().forum.areas.threads.create(forumAreaId, values)
 				.callback(function(err, result) {
 					
 				});	
