@@ -524,7 +524,48 @@ public class WorkspaceRESTService extends PluginRESTService {
   //
   // return Response.noContent().build();
   // }
-  
+
+  @GET
+  @Path("/workspaces/{WORKSPACEENTITYID}/materialreplies")
+  public Response getWorkspaceMaterialAnswers(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
+    // TODO: Correct workspace entity?
+    // TODO: Security
+    
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).entity("Not logged in").build();
+    }
+    
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity("Workspace could not be found").build();
+    }
+    
+    List<WorkspaceMaterialFieldAnswer> answers = new ArrayList<>();
+    
+    try {
+      List<fi.muikku.plugins.workspace.model.WorkspaceMaterialReply> replies = workspaceMaterialReplyController.listVisibleWorkspaceMaterialRepliesByWorkspaceEntity(workspaceEntity, sessionController.getLoggedUserEntity());
+      for (fi.muikku.plugins.workspace.model.WorkspaceMaterialReply reply : replies) {
+        List<WorkspaceMaterialField> fields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByWorkspaceMaterial(reply.getWorkspaceMaterial());
+        for (WorkspaceMaterialField field : fields) {
+          String value = workspaceMaterialFieldController.retrieveFieldValue(field, reply);
+          Material material = field.getQueryField().getMaterial();
+          WorkspaceMaterialFieldAnswer answer = new WorkspaceMaterialFieldAnswer(reply.getWorkspaceMaterial().getId(), material.getId(), field.getEmbedId(), field.getQueryField().getName(), value);
+          answers.add(answer);
+        }
+      }
+    } catch (WorkspaceFieldIOException e) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity("Internal error occurred while retrieving field answers: " + e.getMessage()).build();
+    }
+    
+    if (answers.isEmpty()) {
+      return Response.noContent().build();
+    }
+    
+    WorkspaceMaterialReply result = new WorkspaceMaterialReply(answers);
+    
+    return Response.ok(result).build();
+  }
+
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/replies")
   public Response getWorkspaceMaterialAnswers(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId) {
@@ -549,7 +590,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         for (WorkspaceMaterialField field : fields) {
           String value = workspaceMaterialFieldController.retrieveFieldValue(field, reply);
           Material material = field.getQueryField().getMaterial();
-          WorkspaceMaterialFieldAnswer answer = new WorkspaceMaterialFieldAnswer(material.getId(), field.getEmbedId(), field.getQueryField().getName(), value);
+          WorkspaceMaterialFieldAnswer answer = new WorkspaceMaterialFieldAnswer(workspaceMaterial.getId(), material.getId(), field.getEmbedId(), field.getQueryField().getName(), value);
           answers.add(answer);
         }
       }

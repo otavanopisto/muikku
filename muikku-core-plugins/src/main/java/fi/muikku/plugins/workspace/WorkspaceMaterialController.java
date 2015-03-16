@@ -1,5 +1,8 @@
 package fi.muikku.plugins.workspace;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -11,8 +14,22 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.lang3.StringUtils;
+import org.cyberneko.html.HTMLConfiguration;
+import org.cyberneko.html.parsers.DOMParser;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.material.MaterialController;
@@ -465,7 +482,7 @@ public class WorkspaceMaterialController {
     switch (rootMaterialNode.getType()) {
       case FOLDER:
         WorkspaceFolder workspaceFolder = (WorkspaceFolder) rootMaterialNode;
-        ContentNode folderContentNode = new ContentNode(workspaceFolder.getTitle(), "folder", rootMaterialNode.getId(), null, level, null, null, rootMaterialNode.getHidden());
+        ContentNode folderContentNode = new ContentNode(workspaceFolder.getTitle(), "folder", rootMaterialNode.getId(), null, level, null, null, rootMaterialNode.getHidden(), null);
 
         List<WorkspaceNode> children = workspaceNodeDAO.listByParentSortByOrderNumber(workspaceFolder);
         List<FlattenedWorkspaceNode> flattenedChildren;
@@ -480,7 +497,7 @@ public class WorkspaceMaterialController {
         for (FlattenedWorkspaceNode child : flattenedChildren) {
           ContentNode contentNode;
           if (child.isEmptyFolder) {
-            contentNode = new ContentNode(child.emptyFolderTitle, "folder", rootMaterialNode.getId(), null, child.level, null, child.parentId, child.hidden);
+            contentNode = new ContentNode(child.emptyFolderTitle, "folder", rootMaterialNode.getId(), null, child.level, null, child.parentId, child.hidden, null);
           } else {
             contentNode = createContentNode(child.node, child.level);
           }
@@ -492,10 +509,67 @@ public class WorkspaceMaterialController {
         WorkspaceMaterial workspaceMaterial = (WorkspaceMaterial) rootMaterialNode;
         Material material = materialController.findMaterialById(workspaceMaterial.getMaterialId());
         return new ContentNode(material.getTitle(), material.getType(), rootMaterialNode.getId(), material.getId(), level,
-            workspaceMaterial.getAssignmentType(), workspaceMaterial.getParent().getId(), workspaceMaterial.getHidden());
+            workspaceMaterial.getAssignmentType(), workspaceMaterial.getParent().getId(), workspaceMaterial.getHidden(),
+            getMaterialHtml(material));
       default:
         return null;
     }
+  }
+
+  private String getMaterialHtml(Material material) {
+    if (material instanceof HtmlMaterial) {
+      String html = ((HtmlMaterial) material).getHtml();
+      
+      StringReader htmlReader = new StringReader(html);
+      try {
+        org.apache.xerces.parsers.DOMParser parser = new org.apache.xerces.parsers.DOMParser(new HTMLConfiguration());
+        parser.setProperty("http://cyberneko.org/html/properties/names/elems", "lower");
+        
+        InputSource inputSource = new InputSource(htmlReader);
+        parser.parse(inputSource);
+        Document document = parser.getDocument();
+        
+        NodeList imgList = document.getElementsByTagName("img");
+        for (int i = 0, l = imgList.getLength(); i < l; i++) {
+          Element img = (Element) imgList.item(i);
+//          img.setAttribute("data-lazy-url", img.getAttribute("src"));
+          img.removeAttribute("src");
+        }
+
+        NodeList iframeList = document.getElementsByTagName("iframe");
+        for (int i = 0, l = iframeList.getLength(); i < l; i++) {
+          Element iframe = (Element) iframeList.item(i);
+          iframe.setAttribute("data-lazy-url", iframe.getAttribute("src"));
+          iframe.removeAttribute("src");
+        }
+
+        StringWriter writer = new StringWriter();
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+        transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+        transformer.setOutputProperty(OutputKeys.INDENT, "no");
+        transformer.transform(new DOMSource(document), new StreamResult(writer));
+        return writer.getBuffer().toString();
+      } catch (SAXException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      } catch (TransformerConfigurationException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      } catch (TransformerException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      } finally {
+        htmlReader.close(); 
+      }
+    }
+    
+    return null;
   }
 
   public synchronized String generateUniqueUrlName(String title) {

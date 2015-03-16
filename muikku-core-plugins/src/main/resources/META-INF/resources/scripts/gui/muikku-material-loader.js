@@ -28,15 +28,19 @@
       var placeHolder = $('#' + placeholderId);
       placeHolder.addClass('workspace-material-loading');
       
-      var worker = new Worker("/scripts/gui/workspace-material-loader.js");
+      // var worker = new Worker("/scripts/gui/workspace-material-loader.js");
       
-      worker.onmessage = $.proxy(function (response) {
-        if ((response.data.statusCode != 200) && (response.data.statusCode != 304)) {
-          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsLoader.htmlMaterialLoadingFailed", response.data.err, response.data.statusCode));
-        }
-        else {
+      //worker.onmessage = $.proxy(function (response) {
+      $.proxy(function (response) {
+//        if ((response.data.statusCode != 200) && (response.data.statusCode != 304)) {
+//          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsLoader.htmlMaterialLoadingFailed", response.data.err, response.data.statusCode));
+//        }
+//        else {
           try {
-            var material = $.parseJSON(response.data.html);
+            var material = {
+              title: 'Otsake',
+              html: $(pageElement).find('.workspace-material-html-data').val()
+            };//$.parseJSON(response.data.html);
             var parsed = $('<div>').html('<h2>' + material.title + '</h2>' + material.html);
             
             parsed.find('iframe[data-type="embedded-document"]').each($.proxy(function (index, iframe) {
@@ -71,7 +75,7 @@
               renderDustTemplate(this.options.dustTemplate, { id: materialId, materialId: materialId, workspaceMaterialId: workspaceMaterialId, type: 'html', data: material }, function (text) {
                 $('#' + placeholderId).replaceWith(text);
                 
-                $.waypoints('refresh');
+                // $.waypoints('refresh');
                 
                 $(document).trigger('afterHtmlMaterialRender', {
                   pageElement: pageElement,
@@ -85,7 +89,7 @@
             else {
               $('#' + placeholderId).replaceWith(parsed);
               
-              $.waypoints('refresh');
+              // $.waypoints('refresh');
               
               $(document).trigger('afterHtmlMaterialRender', {
                 pageElement: pageElement,
@@ -99,14 +103,15 @@
           } catch (e) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsLoader.htmlMaterialReadingFailed", e));
           }
-        }
-      }, this);
-      
+//        }
+      }, this)();
+      /**
       worker.postMessage({
         materialId: materialId, 
         workspaceEntityId: workspaceEntityId, 
         workspaceMaterialId: workspaceMaterialId 
       });
+      **/
     },
     
     /**
@@ -125,40 +130,56 @@
     },
     
     _loadQueuedMaterials: function() {
-      var _this = this;
-      $('.workspace-material-queued-html').waypoint(function() {
-        if ($(this).hasClass('workspace-material-queued-html')) {
-          $(this).removeClass('workspace-material-queued-html');
-          $(this).removeAttr('data-page-type');
-          $(this).attr('id', _this._createUniqueId());
-          var workspaceEntityId = $('.workspaceEntityId').val();
-          var workspaceMaterialId = $(this).data('workspace-material-id');
-    
-          mApi().workspace.workspaces.materials.replies.read(workspaceEntityId, workspaceMaterialId)
-          .callback($.proxy(function (err, reply) {
-            if (err) {
-              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsLoader.answerLoadingFailed", err));
-            } else {
-              var fieldAnswers = {};
-    
-              if (reply && reply.answers.length) {
-                for (var i = 0, l = reply.answers.length; i < l; i++) {
-                  var answer = reply.answers[i];
-                  var answerKey = [answer.materialId, answer.embedId, answer.fieldName].join('.');
-                  fieldAnswers[answerKey] = answer.value;
-                }
-              }
-    
-              _this._loadHtmlMaterial(this.parentNode, workspaceEntityId, workspaceMaterialId ,$(this).data('material-id'), $(this).attr('id'), [], fieldAnswers);
-            }
-          }, this));
-        }
-      }, {
-        triggerOnce: true,
-        offset: function() {
-          return $(window).height() + 200;
-        }
-      });
+      $('.workspace-material-queued-html').css('display', 'none');
+      
+      $('.workspace-material-queued-html').each($.proxy(function (index, material) {
+        var workspaceEntityId = $('.workspaceEntityId').val();
+        var workspaceMaterialId = $(material).data('workspace-material-id');
+        var fieldAnswers = [];
+        
+        $(material).removeClass('workspace-material-queued-html');
+        $(material).removeAttr('data-page-type');        
+        $(material).attr('id', this._createUniqueId());
+        
+        this._loadHtmlMaterial(material.parentNode, workspaceEntityId, workspaceMaterialId ,$(material).data('material-id'), $(material).attr('id'), [], fieldAnswers);
+      }, this));
+      
+      $('.workspace-material-queued-html').css('display', 'block');      
+      
+//      var _this = this;
+//      $('.workspace-material-queued-html').waypoint(function() {
+//        if ($(this).hasClass('workspace-material-queued-html')) {
+//          $(this).removeClass('workspace-material-queued-html');
+//          $(this).removeAttr('data-page-type');
+//          $(this).attr('id', _this._createUniqueId());
+//          var workspaceEntityId = $('.workspaceEntityId').val();
+//          var workspaceMaterialId = $(this).data('workspace-material-id');
+//    
+//          mApi().workspace.workspaces.materials.replies.read(workspaceEntityId, workspaceMaterialId)
+//          .callback($.proxy(function (err, reply) {
+//            if (err) {
+//              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsLoader.answerLoadingFailed", err));
+//            } else {
+//              var fieldAnswers = {};
+//    
+//              if (reply && reply.answers.length) {
+//                for (var i = 0, l = reply.answers.length; i < l; i++) {
+//                  var answer = reply.answers[i];
+//                  var answerKey = [answer.materialId, answer.embedId, answer.fieldName].join('.');
+//                  fieldAnswers[answerKey] = answer.value;
+//                }
+//              }
+//    
+//              _this._loadHtmlMaterial(this.parentNode, workspaceEntityId, workspaceMaterialId ,$(this).data('material-id'), $(this).attr('id'), [], fieldAnswers);
+//            }
+//          }, this));
+//        }
+//      }, {
+//        triggerOnce: true,
+//        offset: function() {
+//          return $(window).height() + 200;
+//        }
+//      });
     },
     
     loadMaterial: function(page, refresh) {
