@@ -1,16 +1,25 @@
 package fi.muikku.plugins.workspace;
 
-import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerFactory;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.xerces.parsers.DOMParser;
+import org.cyberneko.html.HTMLConfiguration;
 import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.annotation.RequestAction;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 
 import fi.muikku.jsf.NavigationRules;
 import fi.muikku.model.workspace.WorkspaceEntity;
@@ -44,9 +53,6 @@ public class WorkspaceIndexBackingBean {
   @Inject
   private WorkspaceVisitController workspaceVisitController;
   
-  @Inject
-  private Logger logger;
-
   @RequestAction
   public String init() {
     String urlName = getWorkspaceUrlName();
@@ -60,14 +66,26 @@ public class WorkspaceIndexBackingBean {
     if (workspaceEntity == null) {
       return NavigationRules.NOT_FOUND;
     }
-    workspaceEntityId = workspaceEntity.getId();
+    setWorkspaceEntityId(workspaceEntity.getId());
     
-    WorkspaceMaterial frontPage = workspaceMaterialController.findFrontPage(workspaceEntity);
-    if (frontPage != null) {
-      workspaceMaterialId = frontPage.getId();
-      materialId = frontPage.getMaterialId();
-      materialType = "html";
-      materialTitle = "Etusivu";
+    contentNodes = new ArrayList<>();
+    DOMParser parser = new DOMParser(new HTMLConfiguration());
+    try {
+      parser.setProperty("http://cyberneko.org/html/properties/names/elems", "lower");
+
+      TransformerFactory transformerFactory = TransformerFactory.newInstance();
+      Transformer transformer = transformerFactory.newTransformer();
+      transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+      transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+      transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+      transformer.setOutputProperty(OutputKeys.INDENT, "no");
+  
+      WorkspaceMaterial frontPage = workspaceMaterialController.findFrontPage(workspaceEntity);
+      ContentNode node = workspaceMaterialController.createContentNode(frontPage, parser, transformer);
+      contentNodes.add(node);
+    } catch (SAXNotRecognizedException | SAXNotSupportedException | TransformerConfigurationException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
     }
 
     workspaceBackingBean.setWorkspaceUrlName(urlName);
@@ -107,49 +125,6 @@ public class WorkspaceIndexBackingBean {
   public String getWorkspaceName() {
     return workspaceName;
   }
-  public String getContents() {
-    return contents;
-  }
-
-  public long getWorkspaceMaterialId() {
-    return workspaceMaterialId;
-  }
-
-  public void setWorkspaceMaterialId(long workspaceMaterialId) {
-    this.workspaceMaterialId = workspaceMaterialId;
-  }
-
-  public long getMaterialId() {
-    return materialId;
-  }
-
-  public void setMaterialId(long materialId) {
-    this.materialId = materialId;
-  }
-
-  public String getMaterialType() {
-    return materialType;
-  }
-
-  public void setMaterialType(String materialType) {
-    this.materialType = materialType;
-  }
-
-  public String getMaterialTitle() {
-    return materialTitle;
-  }
-
-  public void setMaterialTitle(String materialTitle) {
-    this.materialTitle = materialTitle;
-  }
-
-  public long getWorkspaceEntityId() {
-    return workspaceEntityId;
-  }
-
-  public void setWorkspaceEntityId(long workspaceEntityId) {
-    this.workspaceEntityId = workspaceEntityId;
-  }
 
   public void visit() {
     workspaceVisitController.visit(getWorkspaceEntity());
@@ -159,14 +134,22 @@ public class WorkspaceIndexBackingBean {
     return workspaceVisitController.getNumVisits(getWorkspaceEntity());
   }
   
+  public long getWorkspaceEntityId() {
+    return workspaceEntityId;
+  }
+
+  public void setWorkspaceEntityId(long workspaceEntityId) {
+    this.workspaceEntityId = workspaceEntityId;
+  }
+
+  public List<ContentNode> getContentNodes() {
+    return contentNodes;
+  }
+
   private Long workspaceId;
   private String workspaceName;
-  private String contents;
+  private Long workspaceEntityId;
 
-  private long workspaceMaterialId;
-  private long materialId;
-  private long workspaceEntityId;
-  private String materialType;
-  private String materialTitle;
+  private List<ContentNode> contentNodes;
 
 }

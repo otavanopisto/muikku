@@ -34,7 +34,8 @@
             html: $(pageElement).data('material-content')
           };
           $(pageElement).removeAttr('data-material-content');
-          var parsed = $('<div>').html('<h2>' + material.title + '</h2>' + material.html);
+          var title = material.title ? '<h2>' + material.title + '</h2>' : '';
+          var parsed = $('<div>').html(title + material.html);
           
           parsed.find('iframe[data-type="embedded-document"]').each($.proxy(function (index, iframe) {
             var embededWorkspaceMaterialId = $(iframe).data('workspace-material-id');
