@@ -79,11 +79,11 @@
     
     .di-message{
        height:80px;
-       margin-top:2px;
+       margin-top:0;
        margin-right:5px;
        margin-left:5px;
        margin-bottom:0;
-       padding:0;
+       padding:10px;
      
         &.open{
            height:auto;     

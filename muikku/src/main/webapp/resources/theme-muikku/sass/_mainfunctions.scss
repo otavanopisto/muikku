@@ -241,7 +241,7 @@
 }
   
   
-  .mf-item{
+.mf-item{
    @extend .co-listItem;
    padding:5px 5px 5px 5px;
    margin-bottom:5px;
@@ -263,26 +263,24 @@
 
 
   .mf-item-tools{
-     
       .mf-item-tool-btn{
         background:#068feb;
         @include rounded(3px);
         padding:5px;
         display:inline-block;
         color:#fff;
-        margin-bottom:10px;
         margin-top:5px;
         box-shadow:0 0 5px rgba(0,0,0,0.25);
       } 
            
      .mf-item-tool{
-      dispay:inline-block;
-      color:#ededed;
-      text-decoration:none;
-      font-size:1.5em;
-      padding-left:10px;
-      padding-right:10px;
-      border-collapse: collapse;
+        dispay:inline-block;
+        color:#ededed;
+        text-decoration:none;
+        font-size:1.5em;
+        padding-left:10px;
+        padding-right:10px;
+        border-collapse: collapse;
   
       &:hover{
         color:#000;
@@ -290,7 +288,7 @@
     
     }
     
-  }
+}
   
   .mf-item-details-container{
     background-color:#f0f3f4;
@@ -309,10 +307,11 @@
    }
   
   }
-  
+
+
 
   
-  .mf-item-header-name{
+.mf-item-header-name{
     display : inline-block;
     text-transform:uppercase;
     vertical-align:center;
@@ -469,6 +468,25 @@
    }
   } 
  }
+
+
+.mf-subitem-container{  
+  > div:nth-child(odd ){
+   background-color:#f7f9fa;
+  }  
+  > div:nth-child(even){
+   background-color:#c3c3c3;
+  }  
+
+}
+.mf-subitem{
+   padding:15px 15px 15px 15px;
+   margin-bottom:10px;
+   font-weight:300;
+
+
+
+}
  
  /* Forms */
  
