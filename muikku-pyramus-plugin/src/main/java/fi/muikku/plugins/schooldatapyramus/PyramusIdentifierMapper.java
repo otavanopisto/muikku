@@ -97,4 +97,12 @@ public class PyramusIdentifierMapper {
   public String getWorkspaceStudentRoleIdentifier() {
     return "WS-STUDENT";
   }
+  
+  public String getSubjectIdentifier(Long pyramusSubjectId) {
+    return String.valueOf(pyramusSubjectId);
+  }
+
+  public Long getPyramusSubjectId(String subjectIdentifier) {
+    return NumberUtils.createLong(subjectIdentifier);
+  }
 }

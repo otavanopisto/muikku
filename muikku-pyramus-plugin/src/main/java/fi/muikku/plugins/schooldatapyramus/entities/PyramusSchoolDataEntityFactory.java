@@ -205,7 +205,14 @@ public class PyramusSchoolDataEntityFactory {
       modified = course.getCreated();
     }
     
-    return new PyramusWorkspace(identifierMapper.getWorkspaceIdentifier(course.getId()), course.getName(), course.getDescription(), "TODO", "TODO", modified.toDate());
+    return new PyramusWorkspace(
+        identifierMapper.getWorkspaceIdentifier(course.getId()),
+        course.getName(),
+        course.getDescription(),
+        "TODO",
+        "TODO",
+        modified.toDate(),
+        identifierMapper.getSubjectIdentifier(course.getSubjectId()));
   }
   
   public List<Workspace> createEntity(Course... courses) {

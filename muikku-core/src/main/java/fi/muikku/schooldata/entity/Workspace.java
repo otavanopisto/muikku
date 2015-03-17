@@ -28,6 +28,8 @@ public interface Workspace extends SchoolDataEntity {
 	
 	public Date getLastModified();
 	
+	public String getSubjectIdentifier();
+	
 	@IndexId
 	public String getSearchId();
 	

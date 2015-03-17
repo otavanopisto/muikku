@@ -15,8 +15,10 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 import fi.muikku.jsf.NavigationRules;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
+import fi.muikku.schooldata.CourseMetaController;
 import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.muikku.schooldata.WorkspaceController;
+import fi.muikku.schooldata.entity.Subject;
 import fi.muikku.schooldata.entity.Workspace;
 
 @Named
@@ -43,6 +45,9 @@ public class WorkspaceIndexBackingBean {
 
   @Inject
   private WorkspaceVisitController workspaceVisitController;
+  
+  @Inject
+  private CourseMetaController courseMetaController;
   
   @Inject
   private Logger logger;
@@ -77,6 +82,9 @@ public class WorkspaceIndexBackingBean {
       workspaceId = workspaceEntity.getId();
       Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
       workspaceName = workspace.getName();
+      String subjectIdentifier = workspace.getSubjectIdentifier();
+      Subject subjectObject = courseMetaController.findSubject(workspace.getSchoolDataSource(), subjectIdentifier);
+      subject = subjectObject.getName();
     } finally {
       schoolDataBridgeSessionController.endSystemSession();
     }
@@ -159,6 +167,10 @@ public class WorkspaceIndexBackingBean {
     return workspaceVisitController.getNumVisits(getWorkspaceEntity());
   }
   
+  public String getSubject() {
+    return subject;
+  }
+  
   private Long workspaceId;
   private String workspaceName;
   private String contents;
@@ -168,5 +180,6 @@ public class WorkspaceIndexBackingBean {
   private long workspaceEntityId;
   private String materialType;
   private String materialTitle;
+  private String subject;
 
 }
