@@ -21,12 +21,16 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.lang3.StringUtils;
 import org.cyberneko.html.HTMLConfiguration;
 import org.cyberneko.html.parsers.DOMParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -532,7 +536,7 @@ public class WorkspaceMaterialController {
         NodeList imgList = document.getElementsByTagName("img");
         for (int i = 0, l = imgList.getLength(); i < l; i++) {
           Element img = (Element) imgList.item(i);
-//          img.setAttribute("data-lazy-url", img.getAttribute("src"));
+          img.setAttribute("data-original", img.getAttribute("src"));
           img.removeAttribute("src");
         }
 
@@ -550,7 +554,12 @@ public class WorkspaceMaterialController {
         transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
         transformer.setOutputProperty(OutputKeys.METHOD, "xml");
         transformer.setOutputProperty(OutputKeys.INDENT, "no");
-        transformer.transform(new DOMSource(document), new StreamResult(writer));
+        
+        NodeList bodyChildren = (NodeList) XPathFactory.newInstance().newXPath().evaluate("//body/*", document, XPathConstants.NODESET);
+        for (int i = 0, l = bodyChildren.getLength(); i < l; i++) {
+          transformer.transform(new DOMSource(bodyChildren.item(i)), new StreamResult(writer));
+        }
+        
         return writer.getBuffer().toString();
       } catch (SAXException e) {
         // TODO Auto-generated catch block
@@ -562,6 +571,9 @@ public class WorkspaceMaterialController {
         // TODO Auto-generated catch block
         e.printStackTrace();
       } catch (TransformerException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      } catch (XPathExpressionException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
       } finally {
