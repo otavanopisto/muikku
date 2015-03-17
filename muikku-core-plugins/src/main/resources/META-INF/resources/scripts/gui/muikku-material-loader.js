@@ -27,67 +27,46 @@
     _loadHtmlMaterial: function(pageElement, workspaceEntityId, workspaceMaterialId, materialId, placeholderId, parentIds, fieldAnswers) {
       var placeHolder = $('#' + placeholderId);
       placeHolder.addClass('workspace-material-loading');
-      
-      // var worker = new Worker("/scripts/gui/workspace-material-loader.js");
-      
-      //worker.onmessage = $.proxy(function (response) {
       $.proxy(function (response) {
-//        if ((response.data.statusCode != 200) && (response.data.statusCode != 304)) {
-//          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsLoader.htmlMaterialLoadingFailed", response.data.err, response.data.statusCode));
-//        }
-//        else {
-          try {
-            var material = {
-              title: 'Otsake',
-              html: $(pageElement).find('.workspace-material-html-data').val()
-            };//$.parseJSON(response.data.html);
-            var parsed = $('<div>').html('<h2>' + material.title + '</h2>' + material.html);
+        try {
+          var material = {
+            title: $(pageElement).data('material-title'),
+            html: $(pageElement).data('material-content')
+          };
+          $(pageElement).removeAttr('data-material-content');
+          var parsed = $('<div>').html('<h2>' + material.title + '</h2>' + material.html);
+          
+          parsed.find('iframe[data-type="embedded-document"]').each($.proxy(function (index, iframe) {
+            var embededWorkspaceMaterialId = $(iframe).data('workspace-material-id');
+            var embededMaterialId = $(iframe).data('material-id');
+            var embeddedMaterialType = $(iframe).data('material-type');
             
-            parsed.find('iframe[data-type="embedded-document"]').each($.proxy(function (index, iframe) {
-              var embededWorkspaceMaterialId = $(iframe).data('workspace-material-id');
-              var embededMaterialId = $(iframe).data('material-id');
-              var embeddedMaterialType = $(iframe).data('material-type');
+            if (embeddedMaterialType == 'html') {
+              var placeholder = $('<div>')
+                .attr('id', this._createUniqueId())
+                .addClass('workspace-material-loading')
               
-              if (embeddedMaterialType == 'html') {
-                var placeholder = $('<div>')
-                  .attr('id', this._createUniqueId())
-                  .addClass('workspace-material-loading')
-                
-                $(iframe).replaceWith(placeholder);
-                this._loadHtmlMaterial(pageElement, workspaceEntityId, embededWorkspaceMaterialId, embededMaterialId, placeholder.attr('id'), parentIds.concat(materialId), fieldAnswers);
-              } else {
-                $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.materialsLoader.incorrectMaterialType', embeddedMaterialType));
-              }
-            }, this));
-            
-            $(document).trigger('beforeHtmlMaterialRender', {
-              pageElement: pageElement,
-              parentIds: parentIds,
-              workspaceMaterialId: workspaceMaterialId,
-              materialId: materialId,
-              element: parsed,
-              fieldAnswers: fieldAnswers
-            });
-            
-            material.html = parsed.html();
-            
-            if (this._getRenderMode('html') == 'dust') {
-              renderDustTemplate(this.options.dustTemplate, { id: materialId, materialId: materialId, workspaceMaterialId: workspaceMaterialId, type: 'html', data: material }, function (text) {
-                $('#' + placeholderId).replaceWith(text);
-                
-                // $.waypoints('refresh');
-                
-                $(document).trigger('afterHtmlMaterialRender', {
-                  pageElement: pageElement,
-                  parentIds: parentIds,
-                  workspaceMaterialId: workspaceMaterialId,
-                  materialId: materialId,
-                  fieldAnswers: fieldAnswers
-                });
-              });
+              $(iframe).replaceWith(placeholder);
+              this._loadHtmlMaterial(pageElement, workspaceEntityId, embededWorkspaceMaterialId, embededMaterialId, placeholder.attr('id'), parentIds.concat(materialId), fieldAnswers);
+            } else {
+              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.materialsLoader.incorrectMaterialType', embeddedMaterialType));
             }
-            else {
-              $('#' + placeholderId).replaceWith(parsed);
+          }, this));
+          
+          $(document).trigger('beforeHtmlMaterialRender', {
+            pageElement: pageElement,
+            parentIds: parentIds,
+            workspaceMaterialId: workspaceMaterialId,
+            materialId: materialId,
+            element: parsed,
+            fieldAnswers: fieldAnswers
+          });
+          
+          material.html = parsed.html();
+          
+          if (this._getRenderMode('html') == 'dust') {
+            renderDustTemplate(this.options.dustTemplate, { id: materialId, materialId: materialId, workspaceMaterialId: workspaceMaterialId, type: 'html', data: material }, function (text) {
+              $('#' + placeholderId).replaceWith(text);
               
               // $.waypoints('refresh');
               
@@ -98,20 +77,26 @@
                 materialId: materialId,
                 fieldAnswers: fieldAnswers
               });
-            }
-
-          } catch (e) {
-            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsLoader.htmlMaterialReadingFailed", e));
+            });
           }
-//        }
+          else {
+            $('#' + placeholderId).replaceWith(parsed);
+            
+            // $.waypoints('refresh');
+            
+            $(document).trigger('afterHtmlMaterialRender', {
+              pageElement: pageElement,
+              parentIds: parentIds,
+              workspaceMaterialId: workspaceMaterialId,
+              materialId: materialId,
+              fieldAnswers: fieldAnswers
+            });
+          }
+
+        } catch (e) {
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsLoader.htmlMaterialReadingFailed", e));
+        }
       }, this)();
-      /**
-      worker.postMessage({
-        materialId: materialId, 
-        workspaceEntityId: workspaceEntityId, 
-        workspaceMaterialId: workspaceMaterialId 
-      });
-      **/
     },
     
     /**
