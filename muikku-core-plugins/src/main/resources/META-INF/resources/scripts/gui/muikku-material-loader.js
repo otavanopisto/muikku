@@ -808,6 +808,7 @@
         });
       });
       $('.muikku-connect-field').muikkuConnectField('refresh');
+      $(data.pageElement).find('img').lazyload();
     }); 
     
     $(data.pageElement).find('.muikku-file-field').each(function (index, field) {
