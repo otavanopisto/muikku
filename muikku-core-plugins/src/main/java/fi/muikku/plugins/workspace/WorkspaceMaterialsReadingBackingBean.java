@@ -71,8 +71,8 @@ public class WorkspaceMaterialsReadingBackingBean {
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
     workspaceName = workspace.getName();
     workspaceEntityId = workspaceEntity.getId();
+
     contentNodes = new ArrayList<>();
-    
     DOMParser parser = new DOMParser(new HTMLConfiguration());
     try {
       parser.setProperty("http://cyberneko.org/html/properties/names/elems", "lower");
