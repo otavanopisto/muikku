@@ -26,11 +26,13 @@
 
     <!-- Lazy loading -->
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.lazyload/1.9.1/jquery.lazyload.min.js"/>
+    <h:outputScript name="scripts/lazyyt/lazyyt.js" />
   </ui:define>
   
   <ui:define name="viewCss">
     <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/muikku-file-field-component.css" />  
     <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/workspaces-materials-reading.css" />  
+    <h:outputStylesheet name="scripts/lazyyt/lazyyt.css" />  
   </ui:define>
 
   <ui:define name="sitebody">

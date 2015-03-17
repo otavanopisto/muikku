@@ -27,6 +27,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.xerces.parsers.DOMParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -534,10 +535,20 @@ public class WorkspaceMaterialController {
         }
 
         NodeList iframeList = document.getElementsByTagName("iframe");
-        for (int i = 0, l = iframeList.getLength(); i < l; i++) {
+        for (int i = iframeList.getLength() -1 ; i >= 0; i--) {
           Element iframe = (Element) iframeList.item(i);
-          iframe.setAttribute("data-lazy-url", iframe.getAttribute("src"));
-          iframe.removeAttribute("src");
+          String src = iframe.getAttribute("src");
+          if (StringUtils.contains(src, "youtube")) {
+            String youtubeId = src.substring(src.lastIndexOf('/') + 1);
+            iframe.removeAttribute("src");
+            Element youtubeDiv = document.createElement("div");
+            youtubeDiv.setAttribute("class", "js-lazyyt");
+            youtubeDiv.setAttribute("data-youtube-id", youtubeId);
+            youtubeDiv.setAttribute("data-ratio", "16:9");
+            Node paragraphNode = iframe.getParentNode();
+            Node paragraphParent = paragraphNode.getParentNode();
+            paragraphParent.replaceChild(youtubeDiv, paragraphNode);
+          }
         }
 
         StringWriter writer = new StringWriter();
@@ -545,7 +556,6 @@ public class WorkspaceMaterialController {
         for (int i = 0, l = bodyChildren.getLength(); i < l; i++) {
           transformer.transform(new DOMSource(bodyChildren.item(i)), new StreamResult(writer));
         }
-        
         return writer.getBuffer().toString();
       } catch (SAXException e) {
         // TODO Auto-generated catch block

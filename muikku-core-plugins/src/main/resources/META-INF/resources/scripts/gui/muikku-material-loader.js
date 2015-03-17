@@ -794,6 +794,7 @@
       });
       $('.muikku-connect-field').muikkuConnectField('refresh');
       $(data.pageElement).find('img').lazyload();
+      $(data.pageElement).find('.js-lazyyt').lazyYT(); 
     }); 
     
     $(data.pageElement).find('.muikku-file-field').each(function (index, field) {
