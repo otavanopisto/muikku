@@ -26,8 +26,8 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.xerces.parsers.DOMParser;
 import org.cyberneko.html.HTMLConfiguration;
-import org.cyberneko.html.parsers.DOMParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -478,11 +478,11 @@ public class WorkspaceMaterialController {
     return result;
   }
 
-  public ContentNode createContentNode(WorkspaceNode rootMaterialNode) {
-    return createContentNode(rootMaterialNode, 1);
+  public ContentNode createContentNode(WorkspaceNode rootMaterialNode, DOMParser parser, Transformer transformer) {
+    return createContentNode(rootMaterialNode, parser, transformer, 1);
   }
 
-  public ContentNode createContentNode(WorkspaceNode rootMaterialNode, int level) {
+  public ContentNode createContentNode(WorkspaceNode rootMaterialNode, DOMParser parser, Transformer transformer, int level) {
     switch (rootMaterialNode.getType()) {
       case FOLDER:
         WorkspaceFolder workspaceFolder = (WorkspaceFolder) rootMaterialNode;
@@ -503,7 +503,7 @@ public class WorkspaceMaterialController {
           if (child.isEmptyFolder) {
             contentNode = new ContentNode(child.emptyFolderTitle, "folder", rootMaterialNode.getId(), null, child.level, null, child.parentId, child.hidden, null);
           } else {
-            contentNode = createContentNode(child.node, child.level);
+            contentNode = createContentNode(child.node, parser, transformer, child.level);
           }
           folderContentNode.addChild(contentNode);
         }
@@ -514,21 +514,18 @@ public class WorkspaceMaterialController {
         Material material = materialController.findMaterialById(workspaceMaterial.getMaterialId());
         return new ContentNode(material.getTitle(), material.getType(), rootMaterialNode.getId(), material.getId(), level,
             workspaceMaterial.getAssignmentType(), workspaceMaterial.getParent().getId(), workspaceMaterial.getHidden(),
-            getMaterialHtml(material));
+            getMaterialHtml(material, parser, transformer));
       default:
         return null;
     }
   }
 
-  private String getMaterialHtml(Material material) {
+  private String getMaterialHtml(Material material, DOMParser parser, Transformer transformer) {
     if (material instanceof HtmlMaterial) {
       String html = ((HtmlMaterial) material).getHtml();
       
       StringReader htmlReader = new StringReader(html);
       try {
-        org.apache.xerces.parsers.DOMParser parser = new org.apache.xerces.parsers.DOMParser(new HTMLConfiguration());
-        parser.setProperty("http://cyberneko.org/html/properties/names/elems", "lower");
-        
         InputSource inputSource = new InputSource(htmlReader);
         parser.parse(inputSource);
         Document document = parser.getDocument();
@@ -548,13 +545,6 @@ public class WorkspaceMaterialController {
         }
 
         StringWriter writer = new StringWriter();
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        Transformer transformer = transformerFactory.newTransformer();
-        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-        transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-        transformer.setOutputProperty(OutputKeys.INDENT, "no");
-        
         NodeList bodyChildren = (NodeList) XPathFactory.newInstance().newXPath().evaluate("//body/*", document, XPathConstants.NODESET);
         for (int i = 0, l = bodyChildren.getLength(); i < l; i++) {
           transformer.transform(new DOMSource(bodyChildren.item(i)), new StreamResult(writer));

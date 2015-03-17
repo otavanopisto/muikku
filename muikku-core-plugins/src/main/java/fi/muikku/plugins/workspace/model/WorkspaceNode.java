@@ -1,5 +1,6 @@
 package fi.muikku.plugins.workspace.model;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,10 +14,14 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Inheritance (strategy = InheritanceType.JOINED)
+@Cacheable
+@Cache (usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 public class WorkspaceNode {
 	
 	public Long getId() {
