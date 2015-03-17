@@ -105,4 +105,12 @@ public class PyramusIdentifierMapper {
   public Long getPyramusSubjectId(String subjectIdentifier) {
     return NumberUtils.createLong(subjectIdentifier);
   }
+
+  public String getEducationTypeIdentifier(Long pyramusEducationTypeId) {
+    return String.valueOf(pyramusEducationTypeId);
+  }
+
+  public Long getPyramusEducationTypeId(String educationTypeIdentifier) {
+    return NumberUtils.createLong(educationTypeIdentifier);
+  }
 }

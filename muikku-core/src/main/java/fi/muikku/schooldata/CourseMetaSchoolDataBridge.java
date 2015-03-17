@@ -3,6 +3,7 @@ package fi.muikku.schooldata;
 import java.util.List;
 
 import fi.muikku.schooldata.entity.CourseIdentifier;
+import fi.muikku.schooldata.entity.EducationType;
 import fi.muikku.schooldata.entity.Subject;
 
 public interface CourseMetaSchoolDataBridge {
@@ -27,5 +28,9 @@ public interface CourseMetaSchoolDataBridge {
 	public List<CourseIdentifier> listCourseIdentifiers() throws UnexpectedSchoolDataBridgeException;
 
 	public List<CourseIdentifier> listCourseIdentifiersBySubject(String subjectIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+	
+	/* EducationType */
+	
+	public EducationType findEducationType(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
 }

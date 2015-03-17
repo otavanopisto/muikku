@@ -30,6 +30,8 @@ public interface Workspace extends SchoolDataEntity {
 	
 	public String getSubjectIdentifier();
 	
+	public String getEducationTypeIdentifier();
+	
 	@IndexId
 	public String getSearchId();
 	

@@ -212,7 +212,8 @@ public class PyramusSchoolDataEntityFactory {
         "TODO",
         "TODO",
         modified.toDate(),
-        identifierMapper.getSubjectIdentifier(course.getSubjectId()));
+        identifierMapper.getSubjectIdentifier(course.getSubjectId()),
+        "TODO");
   }
   
   public List<Workspace> createEntity(Course... courses) {
