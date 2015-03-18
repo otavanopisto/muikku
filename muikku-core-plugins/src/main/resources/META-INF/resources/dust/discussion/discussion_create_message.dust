@@ -11,12 +11,14 @@
           <div class="di-message-new-body">
             <div class="mf-fieldRow">
               <div class="mf-textfield">
-                <input type="textfield" value="" name="title"></input>
+                <input type="textfield" value="" name="title"}></input>
               </div>    
               <div id="areaSelect" class="mf-select">
                 <select id="" name="forumAreaId">
                  {#.}
-                  <option value="{id}">{name}</option>
+                   <option value="{id}">{name}</option>
+                 {:else}
+                   <option>{#localize key="plugin.discussion.selectarea.empty" /}</option>
                  {/.}
                 </select>
               </div>    
@@ -33,7 +35,7 @@
   
        <div class="mf-toolbar">
         
-        <input type="button" name="send" value='{#localize key="plugin.discussion.createmessage.send"/}'/>
+        <input type="button" name="send" value='{#localize key="plugin.discussion.createmessage.send"/}' {?.}{:else}disabled{/.}/>
         <input type="button" name="cancel" value='{#localize key="plugin.discussion.createmessage.cancel"/}'/>
       </div>   
     </form>

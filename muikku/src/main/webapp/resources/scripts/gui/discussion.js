@@ -16,9 +16,7 @@ $(document).ready(function(){
     	refreshLatest : function(){
 
             this.clearMessages();
-
-//    	    $(DiscImpl.msgContainer).off("click", '.di-message:not(.open)', $.proxy(this.loadThread,this));
-//    	    $(DiscImpl.msgContainer).on("click", '.di-message:not(.open)', $.proxy(this.loadThread,this));  
+;  
     	    
     	    mApi().forum.latest.read().on('$', function(msgs, msgsCallback){
     	          mApi().forum.areas.read(msgs.forumAreaId).callback(function(err, area){
@@ -36,7 +34,7 @@ $(document).ready(function(){
     	    .callback(function (err, threads) {
     	  	  
     		    if( err ){
-    		          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('TODO: Virheilmoitus', err));
+    		          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
     		  	}else{    	  
 
     		  	 renderDustTemplate('/discussion/discussion_items.dust', threads, function(text) {
@@ -54,7 +52,7 @@ $(document).ready(function(){
         .callback(function (err, areas) {
         	  
     	    if( err ){
-    	          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('TODO: Virheilmoitus', err));
+    	          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.selectarea.empty', err));
     	  	}else{    	  
 
 	  			 var select = $("#discussionAreaSelect");
@@ -74,7 +72,7 @@ $(document).ready(function(){
 		  				
 		  		} 			   
 	  		    }else{
-	  		    	$("<option>getLocaleText('No areas', err)</option>").appendTo(select)
+	  		    	$("<option>" + getLocaleText('plugin.discussion.selectarea.empty') + "</option>").appendTo(select)
 	  			   
 	  		    }
 	            
@@ -116,7 +114,7 @@ $(document).ready(function(){
     	    .callback(function (err, threads) {
     	  	  
     		    if( err ){
-    		        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('TODO: Virheilmoitus', err));
+    		        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
     		  	}else{    	  
 
     		  	 renderDustTemplate('/discussion/discussion_items_open.dust', threads, function(text) {
@@ -136,13 +134,8 @@ $(document).ready(function(){
 	        var tId = $(element).attr("id");
 	        var aId = $(element).find("input[name='areaId']").attr('value') ;
 	        
-		    this.clearMessages();	
-//    	    $(DiscImpl.msgContainer).off("click", '.di-message-reply-link', $.proxy(this.replyThread,this));
-//    	    $(DiscImpl.msgContainer).off("click", '.icon-goback', $.proxy(this.refreshLatest,this));
-//    	    $(DiscImpl.msgContainer).on("click", '.icon-goback', $.proxy(this.refreshLatest,this));
-//    	    $(DiscImpl.msgContainer).on("click", '.di-message-reply-link', $.proxy(this.replyThread,this));		    
+		    this.clearMessages();	    
     	    
-    
 		    mApi().forum.areas.threads.read(aId,tId).on('$', function(thread, threadCallback){
 
   	          mApi().forum.areas.read(thread.forumAreaId).callback(function(err, area){
@@ -163,7 +156,7 @@ $(document).ready(function(){
 		    })
 	    	.callback(function(err, threads){
 			    if( err ){
-			        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('TODO: Virheilmoitus', err));
+			        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
 			  	}else{    	  
 
 				  	renderDustTemplate('/discussion/discussion_items_open.dust', threads, function(text) {
@@ -204,7 +197,7 @@ $(document).ready(function(){
 		    })
 	    	.callback(function(err, replies){
 			    if( err ){
-			        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('TODO: Virheilmoitus', err));
+			        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.noreplies', err));
 			  	}else{    	  
 
 				  	renderDustTemplate('/discussion/discussion_subitems.dust', replies, function(text) {
@@ -243,7 +236,7 @@ $(document).ready(function(){
 			    })
 		    	.callback(function(err, thread){
 				    if( err ){
-				        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('TODO: Virheilmoitus', err));
+				        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
 				  	}else{    	  
 						  openInSN('/discussion/discussion_create_reply.dust', thread, sendReply);		
 					  	}
@@ -257,13 +250,6 @@ $(document).ready(function(){
 	    clearReplies : function(){
 	    	$(DiscImpl.subContainer).empty();
 		 },	  	    
-
-	    areaNames : function(){
-	    	
-	    	
-
-		 },	  	    
-		 
 		 
 	    _klass : {
 	    	// Variables for the class
@@ -305,7 +291,7 @@ $(document).ready(function(){
 	    mApi().forum.areas.read()
 	      .callback(function (err, areas) {
 	      	if( err ){
-	          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('TODO: Virheilmoitus', err));
+	          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.noareas', err));
 	    	}else{ 		
 			  openInSN('/discussion/discussion_create_message.dust', areas, createMessage );
 	
@@ -329,7 +315,7 @@ $(document).ready(function(){
 	    mApi().forum.areas.read()
 	      .callback(function (err, areas) {
 	      	if( err ){
-	          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('TODO: Virheilmoitus', err));
+	          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.noareas', err));
 	    	}else{ 		
 			  openInSN('/discussion/discussion_create_area.dust', areas, createArea );
 	    	}
