@@ -52,6 +52,7 @@
               materialId: materialId,
               fieldAnswers: fieldAnswers
             });
+            $.waypoints('refresh');
           });
         }
         else {
