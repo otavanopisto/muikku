@@ -1,5 +1,6 @@
 package fi.muikku.plugins.workspace;
 
+import java.util.Date;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
@@ -104,6 +105,9 @@ public class WorkspaceIndexBackingBean {
         courseLengthSymbol = lengthUnit.getSymbol();
       }
       
+      beginDate = workspace.getBeginDate() != null ? workspace.getBeginDate().toDate() : null;
+      endDate = workspace.getEndDate() != null ? workspace.getEndDate().toDate() : null;
+      
     } finally {
       schoolDataBridgeSessionController.endSystemSession();
     }
@@ -202,10 +206,17 @@ public class WorkspaceIndexBackingBean {
     return courseLengthSymbol;
   }
   
+  public Date getBeginDate() {
+    return beginDate;
+  }
+  
+  public Date getEndDate() {
+    return endDate;
+  }
+  
   private Long workspaceId;
   private String workspaceName;
   private String contents;
-
   private long workspaceMaterialId;
   private long materialId;
   private long workspaceEntityId;
@@ -215,4 +226,6 @@ public class WorkspaceIndexBackingBean {
   private String educationType;
   private Double courseLength;
   private String courseLengthSymbol;
+  private Date beginDate;
+  private Date endDate;
 }

@@ -31,6 +31,16 @@
           <f:param value="#{workspaceIndexBackingBean.courseLengthSymbol}"/>
         </h:outputFormat>
       </span> 
+      
+      <ui:fragment rendered="#{(workspaceIndexBackingBean.beginDate ne null) and (workspaceIndexBackingBean.endDate ne null)}">
+        <span class="workspace-meta-title">Aika</span>
+        <span class="workspace-meta-desc">
+          <h:outputFormat value="#{i18n.text['plugin.workspace.index.courseDates']}">
+            <f:param value="#{workspaceIndexBackingBean.beginDate}"/>
+            <f:param value="#{workspaceIndexBackingBean.endDate}"/>
+          </h:outputFormat>
+        </span> 
+      </ui:fragment>
 		</div>
 	</ui:define>
 
