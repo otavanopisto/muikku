@@ -195,7 +195,7 @@ public class PyramusSchoolDataEntityFactory {
     return result;
   }
 
-  public Workspace createEntity(Course course) {
+  public Workspace createEntity(Course course, String educationTypeIdentifier) {
     if (course == null) {
       return null;
     }
@@ -213,17 +213,7 @@ public class PyramusSchoolDataEntityFactory {
         "TODO",
         modified.toDate(),
         identifierMapper.getSubjectIdentifier(course.getSubjectId()),
-        "TODO");
-  }
-  
-  public List<Workspace> createEntity(Course... courses) {
-    List<Workspace> result = new ArrayList<>();
-    
-    for (Course course : courses) {
-      result.add(createEntity(course));
-    }
-    
-    return result;
+        educationTypeIdentifier);
   }
   
   private EnvironmentRoleArchetype getEnvironmentRoleArchetype(UserRole role) {
