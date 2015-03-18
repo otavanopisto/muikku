@@ -18,14 +18,19 @@
 		<h1 class="workspace-title">#{workspaceIndexBackingBean.workspaceName}</h1>
 		<div class="workspace-meta-wrapper">
 			<span class="workspace-study-level-indicator indicator1">#{workspaceIndexBackingBean.educationType}</span>
-			<span class="workspace-meta-title">Aine</span><span
-				class="workspace-meta-desc">#{workspaceIndexBackingBean.subject}</span> <span
-				class="workspace-meta-title">Tyyppi</span><span
-				class="workspace-meta-desc">Ryhmäkurssi</span> <span
-				class="workspace-meta-title">Laajuus</span><span
-				class="workspace-meta-desc">30 ov</span> <span
-				class="workspace-meta-title">Soveltuvuus</span><span
-				class="workspace-meta-desc">Lukio, Peruskoulu</span>
+			<span class="workspace-meta-title">Aine</span>
+      <span class="workspace-meta-desc">#{workspaceIndexBackingBean.subject}</span> 
+      <span class="workspace-meta-title">Tyyppi</span>
+      <span class="workspace-meta-desc">Ryhmäkurssi</span> 
+      <span class="workspace-meta-title">Laajuus</span>
+      <span class="workspace-meta-desc">
+        <h:outputFormat value="#{i18n.text['plugin.workspace.index.courseLength']}">
+          <f:param value="#{workspaceIndexBackingBean.courseLength}"/>
+          <f:param value="#{workspaceIndexBackingBean.courseLengthSymbol}"/>
+        </h:outputFormat>
+      </span> 
+      <span class="workspace-meta-title">Soveltuvuus</span>
+      <span class="workspace-meta-desc">Lukio, Peruskoulu</span>
 		</div>
 	</ui:define>
 

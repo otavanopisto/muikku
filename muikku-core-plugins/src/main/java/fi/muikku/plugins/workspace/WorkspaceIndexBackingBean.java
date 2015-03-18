@@ -18,6 +18,7 @@ import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.schooldata.CourseMetaController;
 import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.muikku.schooldata.WorkspaceController;
+import fi.muikku.schooldata.entity.CourseLengthUnit;
 import fi.muikku.schooldata.entity.EducationType;
 import fi.muikku.schooldata.entity.Subject;
 import fi.muikku.schooldata.entity.Workspace;
@@ -88,11 +89,21 @@ public class WorkspaceIndexBackingBean {
       
       EducationType educationTypeObject = courseMetaController.findEducationType(workspace.getSchoolDataSource(), workspace.getEducationTypeIdentifier());
       Subject subjectObject = courseMetaController.findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier());
+      CourseLengthUnit lengthUnit = null;
+      if ((workspace.getLength() != null) && (workspace.getLengthUnitIdentifier() != null)) {
+        lengthUnit = courseMetaController.findCourseLengthUnit(workspace.getSchoolDataSource(), workspace.getLengthUnitIdentifier());
+      }
       
       workspaceId = workspaceEntity.getId();
       workspaceName = workspace.getName();
       subject = subjectObject != null ? subjectObject.getName() : null;
       educationType = educationTypeObject != null ? educationTypeObject.getName() : null;
+      
+      if (lengthUnit != null) {
+        courseLength = workspace.getLength();
+        courseLengthSymbol = lengthUnit.getSymbol();
+      }
+      
     } finally {
       schoolDataBridgeSessionController.endSystemSession();
     }
@@ -183,6 +194,14 @@ public class WorkspaceIndexBackingBean {
     return educationType;
   }
   
+  public Double getCourseLength() {
+    return courseLength;
+  }
+  
+  public String getCourseLengthSymbol() {
+    return courseLengthSymbol;
+  }
+  
   private Long workspaceId;
   private String workspaceName;
   private String contents;
@@ -194,5 +213,6 @@ public class WorkspaceIndexBackingBean {
   private String materialTitle;
   private String subject;
   private String educationType;
-
+  private Double courseLength;
+  private String courseLengthSymbol;
 }
