@@ -139,6 +139,12 @@ public class WorkspaceController {
 
     workspaceSchoolDataController.removeWorkspace(workspace);
   }
+  
+  /* WorkspaceType */
+
+  public WorkspaceType findWorkspaceType(String schoolDataSource, String identifier) {
+    return workspaceSchoolDataController.findWorkspaceTypeByDataSourceAndIdentifier(schoolDataSource, identifier);
+  }
 
   /* Workspace Entity */
 

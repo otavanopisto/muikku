@@ -179,19 +179,25 @@ class WorkspaceSchoolDataController {
 
 	/* Workspace Types */
 	
-	public WorkspaceType findWorkspaceTypeByDataSourceAndIdentifier(String schoolDataSourceIdentifier, String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+	public WorkspaceType findWorkspaceTypeByDataSourceAndIdentifier(String schoolDataSourceIdentifier, String identifier) {
 		SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSourceIdentifier);
 		if (schoolDataSource != null) {
-			return findWorkspaceTypeByDataSourceAndIdentifier(schoolDataSource, identifier);
+      return findWorkspaceTypeByDataSourceAndIdentifier(schoolDataSource, identifier);
 		} 
 		
 		return null;
 	}
 	
-	public WorkspaceType findWorkspaceTypeByDataSourceAndIdentifier(SchoolDataSource schoolDataSource, String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+	public WorkspaceType findWorkspaceTypeByDataSourceAndIdentifier(SchoolDataSource schoolDataSource, String identifier) {
 		WorkspaceSchoolDataBridge schoolDataBridge = getWorkspaceBridge(schoolDataSource);
 		if (schoolDataBridge != null) {
-			return schoolDataBridge.findWorkspaceType(identifier);
+      try {
+  			return schoolDataBridge.findWorkspaceType(identifier);
+      } catch (SchoolDataBridgeRequestException e) {
+        logger.log(Level.SEVERE, "School Data Bridge reported a problem while finding a workspace type", e);
+      } catch (UnexpectedSchoolDataBridgeException e) {
+        logger.log(Level.SEVERE, "School Data Bridge reported a problem while finding a workspace type", e);
+      }
 		} else {
 			logger.log(Level.SEVERE, "School Data Bridge not found: " + schoolDataSource.getIdentifier());
 		}
