@@ -2,13 +2,16 @@ package fi.muikku.plugins.schooldatapyramus.entities;
 
 import java.util.Date;
 
+import org.joda.time.DateTime;
+
 import fi.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
 import fi.muikku.schooldata.entity.Workspace;
 
 public class PyramusWorkspace implements Workspace {
 
   public PyramusWorkspace(String identifier, String name, String description, String workspaceTypeId,
-      String courseIdentifierIdentifier, Date modified, String subjectIdentifier, String educationTypeIdentifier, Double length, String lengthUnitIdentifier) {
+      String courseIdentifierIdentifier, Date modified, String subjectIdentifier, String educationTypeIdentifier, 
+      Double length, String lengthUnitIdentifier, DateTime beginDate, DateTime endDate) {
     this.identifier = identifier;
     this.name = name;
     this.description = description;
@@ -19,6 +22,8 @@ public class PyramusWorkspace implements Workspace {
     this.educationTypeIdentifier = educationTypeIdentifier;
     this.length = length;
     this.lengthUnitIdentifier = lengthUnitIdentifier;
+    this.beginDate = beginDate;
+    this.endDate = endDate;
   }
 
   @Override
@@ -90,6 +95,16 @@ public class PyramusWorkspace implements Workspace {
   public String getLengthUnitIdentifier() {
     return lengthUnitIdentifier;
   }
+  
+  @Override
+  public DateTime getBeginDate() {
+    return beginDate;
+  }
+  
+  @Override
+  public DateTime getEndDate() {
+    return endDate;
+  }
 
   private String identifier;
 
@@ -110,4 +125,8 @@ public class PyramusWorkspace implements Workspace {
   private Double length;
   
   private String lengthUnitIdentifier;
+  
+  private DateTime beginDate;
+  
+  private DateTime endDate;
 }

@@ -217,7 +217,10 @@ public class PyramusSchoolDataEntityFactory {
         identifierMapper.getSubjectIdentifier(course.getSubjectId()),
         educationTypeIdentifier,
         course.getLength(),
-        identifierMapper.getCourseLengthUnitIdentifier(course.getLengthUnitId()));
+        identifierMapper.getCourseLengthUnitIdentifier(course.getLengthUnitId()),
+        course.getBeginDate(),
+        course.getEndDate()
+    );
   }
   
   public CourseLengthUnit getCourseLengthUnit(EducationalTimeUnit educationalTimeUnit) {
