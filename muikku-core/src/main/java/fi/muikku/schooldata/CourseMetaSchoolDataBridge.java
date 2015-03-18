@@ -3,6 +3,7 @@ package fi.muikku.schooldata;
 import java.util.List;
 
 import fi.muikku.schooldata.entity.CourseIdentifier;
+import fi.muikku.schooldata.entity.CourseLengthUnit;
 import fi.muikku.schooldata.entity.EducationType;
 import fi.muikku.schooldata.entity.Subject;
 
@@ -33,4 +34,7 @@ public interface CourseMetaSchoolDataBridge {
 	
 	public EducationType findEducationType(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
+	/* CourseLengthUnit */
+
+  public CourseLengthUnit findCourseLengthUnit(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 }
