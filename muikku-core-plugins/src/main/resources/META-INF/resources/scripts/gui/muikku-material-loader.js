@@ -11,80 +11,40 @@
       defaultRenderMode: 'dust'
     },
 
-    _create : function() {
-      this._uniqueIdCounter = 1;
-    },
-
     _getRenderMode: function(type) {
       return this.options.renderMode[type]||this.options.defaultRenderMode;
     },
 
-    _createUniqueId: function() {
-      this._uniqueIdCounter++;
-      return 'uid-' + this._uniqueIdCounter;
-    },
+    _loadHtmlMaterial: function(pageElement) {
+      
+      var workspaceMaterialId = $(pageElement).data('workspace-material-id');
+      var materialId = $(pageElement).data('material-id');
+      var parentIds = []; // TODO needed anymore?
+      var fieldAnswers = []; // TODO implement
 
-    _loadHtmlMaterial: function(pageElement, workspaceEntityId, workspaceMaterialId, materialId, placeholderId, parentIds, fieldAnswers) {
-      var placeHolder = $('#' + placeholderId);
-      placeHolder.addClass('workspace-material-loading');
-      $.proxy(function (response) {
-        try {
-          var material = {
-            title: $(pageElement).data('material-title'),
-            html: $(pageElement).data('material-content')
-          };
-          $(pageElement).removeAttr('data-material-content');
-          var title = material.title ? '<h2>' + material.title + '</h2>' : '';
-          var parsed = $('<div>').html(title + material.html);
-          
-          parsed.find('iframe[data-type="embedded-document"]').each($.proxy(function (index, iframe) {
-            var embededWorkspaceMaterialId = $(iframe).data('workspace-material-id');
-            var embededMaterialId = $(iframe).data('material-id');
-            var embeddedMaterialType = $(iframe).data('material-type');
-            
-            if (embeddedMaterialType == 'html') {
-              var placeholder = $('<div>')
-                .attr('id', this._createUniqueId())
-                .addClass('workspace-material-loading')
-              
-              $(iframe).replaceWith(placeholder);
-              this._loadHtmlMaterial(pageElement, workspaceEntityId, embededWorkspaceMaterialId, embededMaterialId, placeholder.attr('id'), parentIds.concat(materialId), fieldAnswers);
-            } else {
-              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.workspace.materialsLoader.incorrectMaterialType', embeddedMaterialType));
-            }
-          }, this));
-          
-          $(document).trigger('beforeHtmlMaterialRender', {
-            pageElement: pageElement,
-            parentIds: parentIds,
-            workspaceMaterialId: workspaceMaterialId,
-            materialId: materialId,
-            element: parsed,
-            fieldAnswers: fieldAnswers
-          });
-          
-          material.html = parsed.html();
-          
-          if (this._getRenderMode('html') == 'dust') {
-            renderDustTemplate(this.options.dustTemplate, { id: materialId, materialId: materialId, workspaceMaterialId: workspaceMaterialId, type: 'html', data: material }, function (text) {
-              $('#' + placeholderId).replaceWith(text);
-              
-              // $.waypoints('refresh');
-              
-              $(document).trigger('afterHtmlMaterialRender', {
-                pageElement: pageElement,
-                parentIds: parentIds,
-                workspaceMaterialId: workspaceMaterialId,
-                materialId: materialId,
-                fieldAnswers: fieldAnswers
-              });
-            });
-          }
-          else {
-            $('#' + placeholderId).replaceWith(parsed);
-            
-            // $.waypoints('refresh');
-            
+      try {
+        var material = {
+          title: $(pageElement).data('material-title'),
+          html: $(pageElement).data('material-content')
+        };
+        $(pageElement).removeAttr('data-material-content');
+        var title = material.title ? '<h2>' + material.title + '</h2>' : '';
+        var parsed = $('<div>').html(title + material.html);
+        
+        $(document).trigger('beforeHtmlMaterialRender', {
+          pageElement: pageElement,
+          parentIds: parentIds,
+          workspaceMaterialId: workspaceMaterialId,
+          materialId: materialId,
+          element: parsed,
+          fieldAnswers: fieldAnswers
+        });
+        
+        material.html = parsed.html();
+        
+        if (this._getRenderMode('html') == 'dust') {
+          renderDustTemplate(this.options.dustTemplate, { id: materialId, materialId: materialId, workspaceMaterialId: workspaceMaterialId, type: 'html', data: material }, function (text) {
+            $(pageElement).append(text);
             $(document).trigger('afterHtmlMaterialRender', {
               pageElement: pageElement,
               parentIds: parentIds,
@@ -92,89 +52,31 @@
               materialId: materialId,
               fieldAnswers: fieldAnswers
             });
-          }
-
-        } catch (e) {
-          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsLoader.htmlMaterialReadingFailed", e));
+          });
         }
-      }, this)();
+        else {
+          $(pageElement).append(parsed);
+          $(document).trigger('afterHtmlMaterialRender', {
+            pageElement: pageElement,
+            parentIds: parentIds,
+            workspaceMaterialId: workspaceMaterialId,
+            materialId: materialId,
+            fieldAnswers: fieldAnswers
+          });
+        }
+
+      } catch (e) {
+        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsLoader.htmlMaterialReadingFailed", e));
+      }
     },
     
-    /**
-     * 
-     */
-    _queueHtmlMaterial: function(materialId, workspaceMaterialId, page) {
-      $(page).append($('<div>')
-        .attr({
-          'data-material-id': materialId,
-          'data-workspace-material-id': workspaceMaterialId
-        })
-        .addClass('workspace-material-queued-html')
-        .css({
-          height: '500px'
-        }));
-    },
-    
-    _loadQueuedMaterials: function() {
-      $('.workspace-material-queued-html').css('display', 'none');
-      
-      $('.workspace-material-queued-html').each($.proxy(function (index, material) {
-        var workspaceEntityId = $('.workspaceEntityId').val();
-        var workspaceMaterialId = $(material).data('workspace-material-id');
-        var fieldAnswers = [];
-        
-        $(material).removeClass('workspace-material-queued-html');
-        $(material).removeAttr('data-page-type');        
-        $(material).attr('id', this._createUniqueId());
-        
-        this._loadHtmlMaterial(material.parentNode, workspaceEntityId, workspaceMaterialId ,$(material).data('material-id'), $(material).attr('id'), [], fieldAnswers);
-      }, this));
-      
-      $('.workspace-material-queued-html').css('display', 'block');      
-      
-//      var _this = this;
-//      $('.workspace-material-queued-html').waypoint(function() {
-//        if ($(this).hasClass('workspace-material-queued-html')) {
-//          $(this).removeClass('workspace-material-queued-html');
-//          $(this).removeAttr('data-page-type');
-//          $(this).attr('id', _this._createUniqueId());
-//          var workspaceEntityId = $('.workspaceEntityId').val();
-//          var workspaceMaterialId = $(this).data('workspace-material-id');
-//    
-//          mApi().workspace.workspaces.materials.replies.read(workspaceEntityId, workspaceMaterialId)
-//          .callback($.proxy(function (err, reply) {
-//            if (err) {
-//              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsLoader.answerLoadingFailed", err));
-//            } else {
-//              var fieldAnswers = {};
-//    
-//              if (reply && reply.answers.length) {
-//                for (var i = 0, l = reply.answers.length; i < l; i++) {
-//                  var answer = reply.answers[i];
-//                  var answerKey = [answer.materialId, answer.embedId, answer.fieldName].join('.');
-//                  fieldAnswers[answerKey] = answer.value;
-//                }
-//              }
-//    
-//              _this._loadHtmlMaterial(this.parentNode, workspaceEntityId, workspaceMaterialId ,$(this).data('material-id'), $(this).attr('id'), [], fieldAnswers);
-//            }
-//          }, this));
-//        }
-//      }, {
-//        triggerOnce: true,
-//        offset: function() {
-//          return $(window).height() + 200;
-//        }
-//      });
-    },
-    
-    loadMaterial: function(page, refresh) {
+    loadMaterial: function(page) {
       var workspaceMaterialId = $(page).data('workspace-material-id');
       var materialId = $(page).data('material-id');
       var materialType = $(page).data('material-type');
       switch (materialType) {
         case 'html':
-          this._queueHtmlMaterial(materialId, workspaceMaterialId, page);
+          this._loadHtmlMaterial($(page));
         break;
         case 'folder':
           renderDustTemplate(this.options.dustTemplate, { id: materialId, type: materialType, data: { title: $(page).data('material-title') } }, $.proxy(function (text) {
@@ -198,17 +100,31 @@
           }
         break;
       }
-      if (refresh) {
-        this._loadQueuedMaterials();
-      }
     },
     
     loadMaterials: function(pageElements) {
-      var _this = this;
+//    TODO Load field answers (workspaceMaterialId -> [fieldName, answer]
+//    mApi().workspace.workspaces.materials.replies.read(workspaceEntityId, workspaceMaterialId)
+//    .callback($.proxy(function (err, reply) {
+//      if (err) {
+//        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsLoader.answerLoadingFailed", err));
+//      } else {
+//        var fieldAnswers = {};
+//
+//        if (reply && reply.answers.length) {
+//          for (var i = 0, l = reply.answers.length; i < l; i++) {
+//            var answer = reply.answers[i];
+//            var answerKey = [answer.materialId, answer.embedId, answer.fieldName].join('.');
+//            fieldAnswers[answerKey] = answer.value;
+//          }
+//        }
+//
+//        _this._loadHtmlMaterial(this.parentNode, workspaceEntityId, workspaceMaterialId ,$(this).data('material-id'), $(this).attr('id'), [], fieldAnswers);
+//      }
+//    }, this));
       $(pageElements).each($.proxy(function (index, page) {
-        this.loadMaterial(page, false);
+        this.loadMaterial(page);
       }, this));
-      this._loadQueuedMaterials();
     }
   }); // material loader widget
   
