@@ -113,4 +113,13 @@ public class PyramusIdentifierMapper {
   public Long getPyramusEducationTypeId(String educationTypeIdentifier) {
     return NumberUtils.createLong(educationTypeIdentifier);
   }
+
+  public String getCourseLengthUnitIdentifier(Long pyramusEducationalTimeUnitId) {
+    return String.valueOf(pyramusEducationalTimeUnitId);
+  }
+
+  public Long getPyramusEducationalTimeUnitId(String lengthUnitIdentifier) {
+    return NumberUtils.createLong(lengthUnitIdentifier);
+  }
+
 }

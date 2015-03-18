@@ -12,6 +12,7 @@ import org.joda.time.DateTime;
 import fi.muikku.controller.PluginSettingsController;
 import fi.muikku.plugins.schooldatapyramus.PyramusIdentifierMapper;
 import fi.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
+import fi.muikku.schooldata.entity.CourseLengthUnit;
 import fi.muikku.schooldata.entity.EnvironmentRole;
 import fi.muikku.schooldata.entity.EnvironmentRoleArchetype;
 import fi.muikku.schooldata.entity.User;
@@ -23,6 +24,7 @@ import fi.pyramus.rest.model.Course;
 import fi.pyramus.rest.model.CourseStaffMember;
 import fi.pyramus.rest.model.CourseStaffMemberRole;
 import fi.pyramus.rest.model.CourseStudent;
+import fi.pyramus.rest.model.EducationalTimeUnit;
 import fi.pyramus.rest.model.UserRole;
 
 public class PyramusSchoolDataEntityFactory {
@@ -213,7 +215,16 @@ public class PyramusSchoolDataEntityFactory {
         "TODO",
         modified.toDate(),
         identifierMapper.getSubjectIdentifier(course.getSubjectId()),
-        educationTypeIdentifier);
+        educationTypeIdentifier,
+        course.getLength(),
+        identifierMapper.getCourseLengthUnitIdentifier(course.getLengthUnitId()));
+  }
+  
+  public CourseLengthUnit getCourseLengthUnit(EducationalTimeUnit educationalTimeUnit) {
+    return new PyramusCourseLengthUnit(
+        identifierMapper.getCourseLengthUnitIdentifier(educationalTimeUnit.getId()), 
+        "TODO", 
+        educationalTimeUnit.getName());
   }
   
   private EnvironmentRoleArchetype getEnvironmentRoleArchetype(UserRole role) {
