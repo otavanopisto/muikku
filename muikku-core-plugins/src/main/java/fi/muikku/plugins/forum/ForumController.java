@@ -149,7 +149,12 @@ public class ForumController {
       forumAreas.add(wf);
     }
     
-    List<ForumThread> threads = forumThreadDAO.listLatestOrdered(forumAreas, firstResult, maxResults);
+    List<ForumThread> threads;
+    
+    if (!forumAreas.isEmpty())
+      threads = forumThreadDAO.listLatestOrdered(forumAreas, firstResult, maxResults);
+    else
+      threads = new ArrayList<ForumThread>();
     
     return threads;
   }
