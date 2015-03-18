@@ -30,7 +30,7 @@ public class PyramusSchoolDataWorkspaceStudentsUpdateScheduler implements Pyramu
   public void synchronize() throws UnexpectedSchoolDataBridgeException {
     int count = 0;
     try {
-      logger.info("Synchronizing Pyramus workspace students");
+      logger.fine("Synchronizing Pyramus workspace students");
 
       List<WorkspaceEntity> workspaceEntities = workspaceEntityController.listWorkspaceEntitiesByDataSource(
           SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, offset, BATCH_SIZE);
@@ -44,7 +44,7 @@ public class PyramusSchoolDataWorkspaceStudentsUpdateScheduler implements Pyramu
         offset += workspaceEntities.size();
       }
     } finally {
-      logger.info(String.format("Synchronized %d Pyramus workspace students", count));
+      logger.fine(String.format("Synchronized %d Pyramus workspace students", count));
     }
   }
 
