@@ -1,32 +1,6 @@
 (function() {
   'use strict';
   
-//  function scrollToPage(workspaceMaterialId, animate) {
-//    var topOffset = $('#contentWorkspaceMaterialsReading').offset().top;
-//    var scrollTop = $('#page-' + workspaceMaterialId).offset().top - topOffset;
-//    if (animate) {
-//      $(window).data('scrolling', true);
-//      
-//      $('html, body').stop().animate({
-//        scrollTop : scrollTop
-//      }, {
-//        duration : 500,
-//        easing : "easeInOutQuad",
-//        complete : function() {
-//          $('a.active').removeClass('active');
-//          $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
-//          window.location.hash = 'p-' + workspaceMaterialId;
-//          $(window).data('scrolling', false);
-//        }
-//      });
-//    } else {
-//      $('html, body').stop().scrollTop(scrollTop);
-//      window.location.hash = 'p-' + workspaceMaterialId;
-//      $('a.active').removeClass('active');
-//      $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
-//    }
-//  }
-
   function scrollToPage(workspaceMaterialId, animate) {
     var topOffset = 100;
     var scrollTop = $('#page-' + workspaceMaterialId).offset().top - topOffset;
@@ -41,13 +15,11 @@
         complete : function() {
           $('a.active').removeClass('active');
           $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
-          window.location.hash = 'p-' + workspaceMaterialId;
           $(window).data('scrolling', false);
         }
       });
     } else {
       $('html, body').stop().scrollTop(scrollTop);
-      window.location.hash = 'p-' + workspaceMaterialId;
       $('a.active').removeClass('active');
       $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
     }
@@ -66,7 +38,6 @@
         var workspaceMaterialId = parseInt($(this).attr('data-workspace-material-id'));
         $('a.active').removeClass('active');
         $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
-        window.location.hash = 'p-' + workspaceMaterialId;
       }
     }, {
       offset: '60%'
@@ -91,12 +62,6 @@
   $(document).on('click', '.workspace-materials-toc-item a', function (event) {
     event.preventDefault();
     scrollToPage($($(this).attr('href')).data('workspaceMaterialId'), true);
-  });
-  
-  $(window).load(function () {
-    if (window.location.hash && (window.location.hash.indexOf('p-') > 0)) {
-      scrollToPage(window.location.hash.substring(3), false);
-    }
   });
   
   $(document).on('change', '.muikku-field', function (event, data) {

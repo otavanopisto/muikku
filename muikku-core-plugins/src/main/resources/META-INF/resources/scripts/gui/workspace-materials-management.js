@@ -258,13 +258,11 @@
         complete : function() {
           $('a.active').removeClass('active');
           $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
-          window.location.hash = 'p-' + workspaceMaterialId;
           $(window).data('scrolling', false);
         }
       });
     } else {
       $('html, body').stop().scrollTop(scrollTop);
-      window.location.hash = 'p-' + workspaceMaterialId;
       $('a.active').removeClass('active');
       $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
     }
@@ -290,7 +288,6 @@
         var workspaceMaterialId = parseInt($(this).attr('data-workspace-material-id'));
         $('a.active').removeClass('active');
         $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
-        window.location.hash = 'p-' + workspaceMaterialId;
       }
     }, {
       offset: '60%'
