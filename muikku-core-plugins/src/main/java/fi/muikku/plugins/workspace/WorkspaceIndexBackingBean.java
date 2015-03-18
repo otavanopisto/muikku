@@ -23,6 +23,7 @@ import fi.muikku.schooldata.entity.CourseLengthUnit;
 import fi.muikku.schooldata.entity.EducationType;
 import fi.muikku.schooldata.entity.Subject;
 import fi.muikku.schooldata.entity.Workspace;
+import fi.muikku.schooldata.entity.WorkspaceType;
 
 @Named
 @Stateful
@@ -88,6 +89,7 @@ public class WorkspaceIndexBackingBean {
         return NavigationRules.NOT_FOUND;
       }
       
+      WorkspaceType workspaceType = workspaceController.findWorkspaceType(workspace.getSchoolDataSource(), workspace.getWorkspaceTypeId()); 
       EducationType educationTypeObject = courseMetaController.findEducationType(workspace.getSchoolDataSource(), workspace.getEducationTypeIdentifier());
       Subject subjectObject = courseMetaController.findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier());
       CourseLengthUnit lengthUnit = null;
@@ -108,6 +110,9 @@ public class WorkspaceIndexBackingBean {
       beginDate = workspace.getBeginDate() != null ? workspace.getBeginDate().toDate() : null;
       endDate = workspace.getEndDate() != null ? workspace.getEndDate().toDate() : null;
       
+      if (workspaceType != null) {
+        this.workspaceType = workspaceType.getName();
+      }
     } finally {
       schoolDataBridgeSessionController.endSystemSession();
     }
@@ -190,6 +195,10 @@ public class WorkspaceIndexBackingBean {
     return workspaceVisitController.getNumVisits(getWorkspaceEntity());
   }
   
+  public String getWorkspaceType() {
+    return workspaceType;
+  }
+  
   public String getSubject() {
     return subject;
   }
@@ -222,6 +231,7 @@ public class WorkspaceIndexBackingBean {
   private long workspaceEntityId;
   private String materialType;
   private String materialTitle;
+  private String workspaceType;
   private String subject;
   private String educationType;
   private Double courseLength;
