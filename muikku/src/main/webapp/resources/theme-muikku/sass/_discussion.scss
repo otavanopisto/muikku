@@ -131,7 +131,7 @@
               .di-message-header-content-primary{
                 display:inline-block;
                 font-weight:700;
-                padding:0 0 0 20px;
+                padding:0 0 0 10px;
               }
               
               .di-message-header-content-secondary{
@@ -169,6 +169,11 @@
         .di-message-meta{
           width:60%;
           box-sizing:border-box;
+          overflow:hidden;
+          div{
+            text-overflow:ellipsis;
+          } 
+         
         }
         
         .di-message-details{

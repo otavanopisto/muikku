@@ -6,14 +6,16 @@ $(document).ready(function(){
     		// todo: parse url
             this.refreshLatest();	
             this.refreshAreas();	
+
     
     	},
     	
     	
     	refreshLatest : function(){
- 		
+
             this.clearMessages();
-            
+
+    	    $(DiscImpl.msgContainer).off("click", '.di-message:not(.open)', $.proxy(this.loadThread,this));
     	    $(DiscImpl.msgContainer).on("click", '.di-message:not(.open)', $.proxy(this.loadThread,this));  
     	    
     	    mApi().forum.latest.read().on('$', function(msgs, msgsCallback){
@@ -78,7 +80,7 @@ $(document).ready(function(){
     	},
     	
     	refreshThread : function(aId,tId){
-     		
+
             this.clearMessages();
             
 
@@ -88,6 +90,16 @@ $(document).ready(function(){
     	            thread.areaName = area.name;	
     	             	
     	          });
+
+    	          
+    	          mApi().user.users.read(thread.creator).callback(function(err, user){
+      	            thread.creatorFullName = user.firstName + ' ' +  user.lastName;	
+      	             	
+      	          });    	          
+    	          
+       	          var d = new Date(thread.created);
+          	       
+    	          thread.prettyDate = d.toLocaleString();  	      	          
     	          
     	          threadCallback();
     	    	
@@ -104,6 +116,7 @@ $(document).ready(function(){
     		  	});
     		  	}
     	    });		
+    	    
 	  		this.loadThreadReplies(aId, tId);     		
     	},    	
     
@@ -115,7 +128,8 @@ $(document).ready(function(){
 	        var aId = $(element).find("input[name='areaId']").attr('value') ;
 	        
 		    this.clearMessages();	
-		    
+    	    $(DiscImpl.msgContainer).off("click", '.di-message-reply-link', $.proxy(this.replyThread,this));
+    	    $(DiscImpl.msgContainer).off("click", '.icon-goback', $.proxy(this.refreshLatest,this));
     	    $(DiscImpl.msgContainer).on("click", '.icon-goback', $.proxy(this.refreshLatest,this));
     	    $(DiscImpl.msgContainer).on("click", '.di-message-reply-link', $.proxy(this.replyThread,this));		    
     	    
@@ -126,6 +140,16 @@ $(document).ready(function(){
   	            thread.areaName = area.name;	
   	             	
   	          });
+
+	          mApi().user.users.read(thread.creator).callback(function(err, user){
+    	            thread.creatorFullName = user.firstName + ' ' +  user.lastName;	
+    	             	
+    	      });  	          
+  	          
+   	          var d = new Date(thread.created);
+   	       
+	          thread.prettyDate = d.toLocaleString();  	          
+  	          
 		      threadCallback();
 		    })
 	    	.callback(function(err, threads){
@@ -144,7 +168,7 @@ $(document).ready(function(){
 			    
 
 	    	});
-	  		
+
 		    this.loadThreadReplies(aId, tId);   		    
 		    
 	    },
@@ -159,6 +183,14 @@ $(document).ready(function(){
   	            replies.areaName = area.name;	
   	             	
   	          });
+  	          
+	          mApi().user.users.read(replies.creator).callback(function(err, user){
+    	            replies.creatorFullName = user.firstName + ' ' +  user.lastName;	
+    	             	
+    	      }); 
+   	          var d = new Date(replies.created);
+   	       
+	          replies.prettyDate = d.toLocaleString();  	          
 		      repliesCallback();
 		    })
 	    	.callback(function(err, replies){
@@ -216,11 +248,20 @@ $(document).ready(function(){
 	    clearReplies : function(){
 	    	$(DiscImpl.subContainer).empty();
 		 },	  	    
-	    
+
+	    areaNames : function(){
+	    	
+	    	
+
+		 },	  	    
+		 
+		 
 	    _klass : {
 	    	// Variables for the class
 		  msgContainer : ".di-messages-container",
-	      subContainer : ".di-sumbessages-container"
+	      subContainer : ".di-sumbessages-container",
+	    	  
+	    	  
 	    }
     
     

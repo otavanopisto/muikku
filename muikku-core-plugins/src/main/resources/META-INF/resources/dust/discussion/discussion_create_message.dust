@@ -3,6 +3,7 @@
 
   <div class="di-message-create">
     <form>
+     <div class="mf-form-header"><h3>{#localize key="plugin.discussion.createmessage.topic"/}</h3></div>
      <input type="hidden" name="sticky" value="false" />
      <input type="hidden" name="locked" value="false" />
      
@@ -32,8 +33,8 @@
   
        <div class="mf-toolbar">
         
-        <input type="button" name="send" value='{#localize key="plugin.communicator.newmessage.send"/}'/>
-        <input type="button" name="cancel" value='{#localize key="plugin.communicator.newmessage.cancel"/}'/>
+        <input type="button" name="send" value='{#localize key="plugin.discussion.createmessage.send"/}'/>
+        <input type="button" name="cancel" value='{#localize key="plugin.discussion.createmessage.cancel"/}'/>
       </div>   
     </form>
   

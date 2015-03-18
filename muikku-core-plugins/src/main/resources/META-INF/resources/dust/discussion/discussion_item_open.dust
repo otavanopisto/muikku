@@ -12,9 +12,9 @@
             <div class="di-user-picture default "></div>
 
 
-           <span class="mf-item-header-content-primary di-message-header-content-primary">{creator}
+           <span class="mf-item-header-content-primary di-message-header-content-primary">{creatorFullName}
           </span>        
-          <span class="mf-item-header-content-secondary di-message-header-content-secondary">{created}</span>    
+          <span class="mf-item-header-content-secondary di-message-header-content-secondary">{prettyDate}</span>    
           <div class="clear"></div>
         </div>
         <div class="mf-item-content di-message-content ">     
