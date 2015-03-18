@@ -59,17 +59,24 @@ $(document).ready(function(){
 
 
 	            $(select).empty();	  			 
-	  			 
+	  		   if(areas.length != 0){
+	  			   
 	  			 for(var i = 0; i < areas.length; i++ ){
 	  				var name = areas[i].name;
 	  				var id = areas[i].id;
 	  				var groupId = areas[i].groupId;
-	  				
+	  		
 	  				if(groupId == null){
 	  	  				$("<option value='" + id + "'>" + name + "</option>").appendTo(select);
 	  				}
-	  				
-	  			 }
+		  				
+		  		} 			   
+	  		    }else{
+	  		    	$("<option>No areas</option>").appendTo(select)
+	  			   
+	  		    }
+	            
+
 		  			 
     	  		
 

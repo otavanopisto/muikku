@@ -3,6 +3,8 @@
 
   {#.}
       {>"discussion/discussion_item.dust"/}  
+  {:else}
+      {>"discussion/discussion_empty.dust"/}
   {/.}
 
 <div class="clear"></div>
