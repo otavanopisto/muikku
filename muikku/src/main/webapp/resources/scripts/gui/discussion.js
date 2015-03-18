@@ -6,7 +6,9 @@ $(document).ready(function(){
     		// todo: parse url
             this.refreshLatest();	
             this.refreshAreas();	
-
+    	    $(DiscImpl.msgContainer).on("click", '.di-message:not(.open)', $.proxy(this.loadThread,this));  
+            $(DiscImpl.msgContainer).on("click", '.icon-goback', $.proxy(this.refreshLatest,this));
+    	    $(DiscImpl.msgContainer).on("click", '.di-message-reply-link', $.proxy(this.replyThread,this));		    
     
     	},
     	
@@ -15,8 +17,8 @@ $(document).ready(function(){
 
             this.clearMessages();
 
-    	    $(DiscImpl.msgContainer).off("click", '.di-message:not(.open)', $.proxy(this.loadThread,this));
-    	    $(DiscImpl.msgContainer).on("click", '.di-message:not(.open)', $.proxy(this.loadThread,this));  
+//    	    $(DiscImpl.msgContainer).off("click", '.di-message:not(.open)', $.proxy(this.loadThread,this));
+//    	    $(DiscImpl.msgContainer).on("click", '.di-message:not(.open)', $.proxy(this.loadThread,this));  
     	    
     	    mApi().forum.latest.read().on('$', function(msgs, msgsCallback){
     	          mApi().forum.areas.read(msgs.forumAreaId).callback(function(err, area){
@@ -72,7 +74,7 @@ $(document).ready(function(){
 		  				
 		  		} 			   
 	  		    }else{
-	  		    	$("<option>No areas</option>").appendTo(select)
+	  		    	$("<option>getLocaleText('No areas', err)</option>").appendTo(select)
 	  			   
 	  		    }
 	            
@@ -135,10 +137,10 @@ $(document).ready(function(){
 	        var aId = $(element).find("input[name='areaId']").attr('value') ;
 	        
 		    this.clearMessages();	
-    	    $(DiscImpl.msgContainer).off("click", '.di-message-reply-link', $.proxy(this.replyThread,this));
-    	    $(DiscImpl.msgContainer).off("click", '.icon-goback', $.proxy(this.refreshLatest,this));
-    	    $(DiscImpl.msgContainer).on("click", '.icon-goback', $.proxy(this.refreshLatest,this));
-    	    $(DiscImpl.msgContainer).on("click", '.di-message-reply-link', $.proxy(this.replyThread,this));		    
+//    	    $(DiscImpl.msgContainer).off("click", '.di-message-reply-link', $.proxy(this.replyThread,this));
+//    	    $(DiscImpl.msgContainer).off("click", '.icon-goback', $.proxy(this.refreshLatest,this));
+//    	    $(DiscImpl.msgContainer).on("click", '.icon-goback', $.proxy(this.refreshLatest,this));
+//    	    $(DiscImpl.msgContainer).on("click", '.di-message-reply-link', $.proxy(this.replyThread,this));		    
     	    
     
 		    mApi().forum.areas.threads.read(aId,tId).on('$', function(thread, threadCallback){
