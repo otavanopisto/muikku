@@ -18,6 +18,7 @@ import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.schooldata.CourseMetaController;
 import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.muikku.schooldata.WorkspaceController;
+import fi.muikku.schooldata.entity.EducationType;
 import fi.muikku.schooldata.entity.Subject;
 import fi.muikku.schooldata.entity.Workspace;
 
@@ -79,12 +80,19 @@ public class WorkspaceIndexBackingBean {
 
     schoolDataBridgeSessionController.startSystemSession();
     try {
-      workspaceId = workspaceEntity.getId();
       Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+      if (workspace == null) {
+        logger.warning(String.format("Could not find workspace for workspaceEntity #%d", workspaceEntity.getId()));
+        return NavigationRules.NOT_FOUND;
+      }
+      
+      EducationType educationTypeObject = courseMetaController.findEducationType(workspace.getSchoolDataSource(), workspace.getEducationTypeIdentifier());
+      Subject subjectObject = courseMetaController.findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier());
+      
+      workspaceId = workspaceEntity.getId();
       workspaceName = workspace.getName();
-      String subjectIdentifier = workspace.getSubjectIdentifier();
-      Subject subjectObject = courseMetaController.findSubject(workspace.getSchoolDataSource(), subjectIdentifier);
-      subject = subjectObject.getName();
+      subject = subjectObject != null ? subjectObject.getName() : null;
+      educationType = educationTypeObject != null ? educationTypeObject.getName() : null;
     } finally {
       schoolDataBridgeSessionController.endSystemSession();
     }
@@ -171,6 +179,10 @@ public class WorkspaceIndexBackingBean {
     return subject;
   }
   
+  public String getEducationType() {
+    return educationType;
+  }
+  
   private Long workspaceId;
   private String workspaceName;
   private String contents;
@@ -181,5 +193,6 @@ public class WorkspaceIndexBackingBean {
   private String materialType;
   private String materialTitle;
   private String subject;
+  private String educationType;
 
 }
