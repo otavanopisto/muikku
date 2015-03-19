@@ -29,7 +29,7 @@
         };
         $(pageElement).removeAttr('data-material-content');
         var title = material.title ? '<h2>' + material.title + '</h2>' : '';
-        var parsed = $('<div>').html(title + material.html);
+        var parsed = $('<div>').html(title + (material.html ? material.html : ''));
         
         $(document).trigger('beforeHtmlMaterialRender', {
           pageElement: pageElement,

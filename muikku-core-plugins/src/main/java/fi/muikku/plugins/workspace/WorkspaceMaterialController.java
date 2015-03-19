@@ -520,6 +520,9 @@ public class WorkspaceMaterialController {
   private String getMaterialHtml(Material material, DOMParser parser, Transformer transformer) {
     if (material instanceof HtmlMaterial) {
       String html = ((HtmlMaterial) material).getHtml();
+      if (html == null) {
+        return null;
+      }
       
       StringReader htmlReader = new StringReader(html);
       try {
