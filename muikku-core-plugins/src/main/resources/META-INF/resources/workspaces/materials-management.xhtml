@@ -100,6 +100,8 @@
               data-material-id="#{articleNode.materialId}" data-parent-id="#{articleNode.parentId}"
               data-material-type="#{articleNode.type}" data-material-title="#{articleNode.title}"
               data-material-content="#{articleNode.html}"
+              data-material-current-revision="#{articleNode.currentRevision}"
+              data-material-published-revision="#{articleNode.publishedRevision}"
               class="workspace-materials-view-page material-management-view #{articleNode.hidden ? 'page-hidden' : ''}"
               data-assignment-type="#{articleNode.assignmentType}" />
           </ui:fragment>
@@ -118,6 +120,8 @@
         <section id="page-#{node.workspaceMaterialId}" data-workspace-material-id="#{node.workspaceMaterialId}"
           data-material-id="#{node.materialId}" data-parent-id="#{node.parentId}" data-material-type="#{node.type}"
           data-material-title="#{node.title}" data-material-content="#{node.html}"
+          data-material-current-revision="#{node.currentRevision}"
+          data-material-published-revision="#{node.publishedRevision}"
           class="workspace-materials-view-page material-management-view #{node.hidden ? 'page-hidden' : ''}"
           data-assignment-type="#{node.assignmentType}" />
         <div class="workspace-materials-management-addpage">

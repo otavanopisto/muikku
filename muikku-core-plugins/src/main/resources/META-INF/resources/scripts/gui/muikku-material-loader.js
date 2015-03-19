@@ -25,7 +25,9 @@
       try {
         var material = {
           title: $(pageElement).data('material-title'),
-          html: $(pageElement).data('material-content')
+          html: $(pageElement).data('material-content'),
+          currentRevision: $(pageElement).data('material-current-revision'),
+          publishedRevision: $(pageElement).data('material-published-revision')
         };
         $(pageElement).removeAttr('data-material-content');
         var title = material.title ? '<h2>' + material.title + '</h2>' : '';

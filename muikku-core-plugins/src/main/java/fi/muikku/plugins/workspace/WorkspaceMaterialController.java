@@ -33,6 +33,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.plugins.material.HtmlMaterialController;
 import fi.muikku.plugins.material.MaterialController;
 import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.material.model.Material;
@@ -97,6 +98,9 @@ public class WorkspaceMaterialController {
 
   @Inject
   private MaterialController materialController;
+
+  @Inject
+  private HtmlMaterialController htmlMaterialController;
 
   private static final int FLATTENING_LEVEL = 1;
 
@@ -483,7 +487,7 @@ public class WorkspaceMaterialController {
     switch (rootMaterialNode.getType()) {
       case FOLDER:
         WorkspaceFolder workspaceFolder = (WorkspaceFolder) rootMaterialNode;
-        ContentNode folderContentNode = new ContentNode(workspaceFolder.getTitle(), "folder", rootMaterialNode.getId(), null, level, null, null, rootMaterialNode.getHidden(), null);
+        ContentNode folderContentNode = new ContentNode(workspaceFolder.getTitle(), "folder", rootMaterialNode.getId(), null, level, null, null, rootMaterialNode.getHidden(), null, 0l, 0l);
 
         List<WorkspaceNode> children = workspaceNodeDAO.listByParentSortByOrderNumber(workspaceFolder);
         List<FlattenedWorkspaceNode> flattenedChildren;
@@ -498,7 +502,7 @@ public class WorkspaceMaterialController {
         for (FlattenedWorkspaceNode child : flattenedChildren) {
           ContentNode contentNode;
           if (child.isEmptyFolder) {
-            contentNode = new ContentNode(child.emptyFolderTitle, "folder", rootMaterialNode.getId(), null, child.level, null, child.parentId, child.hidden, null);
+            contentNode = new ContentNode(child.emptyFolderTitle, "folder", rootMaterialNode.getId(), null, child.level, null, child.parentId, child.hidden, null, 0l, 0l);
           } else {
             contentNode = createContentNode(child.node, parser, transformer, child.level);
           }
@@ -509,9 +513,11 @@ public class WorkspaceMaterialController {
       case MATERIAL:
         WorkspaceMaterial workspaceMaterial = (WorkspaceMaterial) rootMaterialNode;
         Material material = materialController.findMaterialById(workspaceMaterial.getMaterialId());
+        Long currentRevision = material instanceof HtmlMaterial ? htmlMaterialController.lastHtmlMaterialRevision((HtmlMaterial) material) : 0l;
+        Long publishedRevision = material instanceof HtmlMaterial ? ((HtmlMaterial) material).getRevisionNumber() : 0l;
         return new ContentNode(material.getTitle(), material.getType(), rootMaterialNode.getId(), material.getId(), level,
             workspaceMaterial.getAssignmentType(), workspaceMaterial.getParent().getId(), workspaceMaterial.getHidden(),
-            getMaterialHtml(material, parser, transformer));
+            getMaterialHtml(material, parser, transformer), currentRevision, publishedRevision);
       default:
         return null;
     }
