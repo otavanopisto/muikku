@@ -47,7 +47,7 @@ $(document).ready(function(){
     	},
     	
     	refreshAreas : function(){   
-    		
+
     	 mApi().forum.areas.read()
         .callback(function (err, areas) {
         	  
@@ -58,9 +58,10 @@ $(document).ready(function(){
 	  			 var select = $("#discussionAreaSelect");
 
 
-	            $(select).empty();	  			 
+	           $(select).empty();	  			 
 	  		   if(areas.length != 0){
-	  			   
+	  			 var allAreas = $("<option value='all'>" + getLocaleText('plugin.discussion.browseareas.all', err) + "</option>");
+	  			 allAreas.appendTo(select);
 	  			 for(var i = 0; i < areas.length; i++ ){
 	  				var name = areas[i].name;
 	  				var id = areas[i].id;
@@ -72,7 +73,7 @@ $(document).ready(function(){
 		  				
 		  		} 			   
 	  		    }else{
-	  		    	$("<option>" + getLocaleText('plugin.discussion.selectarea.empty') + "</option>").appendTo(select)
+	  		    	$("<option>" + getLocaleText('plugin.discussion.selectarea.empty') + "</option>").appendTo(select);
 	  			   
 	  		    }
 	            
@@ -126,6 +127,54 @@ $(document).ready(function(){
     	    
 	  		this.loadThreadReplies(aId, tId);     		
     	},    	
+    	
+	    filterMessagesByArea : function(sel){
+            var aId = sel.value;
+//	    	var element = $(event.target); 
+//	        element = element.parents(".di-message");
+//	        var aId = $(element).find("input[name='areaId']").attr('value') ;
+	        
+		    this.clearMessages();	    
+    	    if (aId == 'all'){
+    	    	this.refreshLatest();
+    	    }else{
+			    mApi().forum.areas.threads.read(aId).on('$', function(thread, threadCallback){
+	
+	  	          mApi().forum.areas.read(thread.forumAreaId).callback(function(err, area){
+	  	            thread.areaName = area.name;	
+	  	             	
+	  	          });
+	
+		          mApi().user.users.read(thread.creator).callback(function(err, user){
+	    	            thread.creatorFullName = user.firstName + ' ' +  user.lastName;	
+	    	             	
+	    	      });  	          
+	  	          
+	   	          var d = new Date(thread.created);
+	   	       
+		          thread.prettyDate = d.toLocaleString();  	          
+	  	          
+			      threadCallback();
+			    })
+		    	.callback(function(err, threads){
+				    if( err ){
+				        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
+				  	}else{    	  
+	
+					  	renderDustTemplate('/discussion/discussion_items.dust', threads, function(text) {
+		
+					  		$(DiscImpl.msgContainer).append($.parseHTML(text));
+		
+		
+					  		
+					  	});
+				  	}    
+				    
+	
+		    	});
+
+    	    }
+	    },
     
 	    loadThread : function(event){
 
