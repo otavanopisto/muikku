@@ -84,13 +84,26 @@
     var editor = node[editorName];
     if (editor) {
       editor.call(node, 'destroy');
-      if (loadContent !== false) {
-        $(document).muikkuMaterialLoader('loadMaterial', node, true);
-      }
-
       node.removeClass("page-edit-mode");
-    } else {
-      $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsManagement.missingEditor", materialType));
+    }
+    if (loadContent !== false) {
+      var worker = new Worker("/scripts/gui/workspace-material-loader.js");
+      worker.onmessage = $.proxy(function(response) {
+        var material = $.parseJSON(response.data.html);
+        $(node).data('material-title', material.title);
+        $(node).data('material-content', material.html);
+        $(node).data('material-current-revision', material.currentRevision);
+        $(node).data('material-published-revision', material.publishedRevision);
+        $(document).muikkuMaterialLoader('loadMaterial', node, true);
+        var tocElement = $("a[href*='#page-" + $(node).data('workspace-material-id') + "']");
+        if (tocElement) {
+          $(tocElement).text(material.title);
+        }
+      }, this);
+      worker.postMessage({
+        materialId: $(node).data('material-id'),
+        workspaceMaterialId: $(node).data('workspace-material-id') 
+      });
     }
   }
   
@@ -671,18 +684,6 @@
   
   function publishPage(workspaceMaterialId, materialId, publishedRevision, currentRevision, removeAnswers, errorCallback) {
     var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', getLocaleText("plugin.workspace.materialsManagement.publishingMessage"));
-    var editing = isPageInEditMode($('#page-' + workspaceMaterialId));
-    
-    var page = $('#page-' + workspaceMaterialId);
-    var title = $(page).data('material-title');
-    if (editing) {
-      var titleField = $(page).find('.workspace-material-html-editor-title');
-      if (titleField) {
-        title = $(titleField).prop('value'); 
-      }
-      closeEditor(page, false);
-    }
-    
     mApi().materials.html.publish.create(materialId, {
       fromRevision: publishedRevision,
       toRevision: currentRevision,
@@ -691,23 +692,10 @@
       loadNotification.remove();
       if (err) {
         errorCallback(err, jqXHR);
-      } else {
+      }
+      else {
         setPagePublishedRevision(workspaceMaterialId, currentRevision);
-        
-        if (editing) {
-          editPage($('#page-' + workspaceMaterialId));
-        } else {
-          $('#page-' + workspaceMaterialId).html('');
-          $(document).muikkuMaterialLoader('loadMaterial', $('#page-' + workspaceMaterialId), true);
-        }
-        
-        $(page).attr('data-material-title', title);
-        // TOC
-        var tocElement = $("a[href*='#page-" + workspaceMaterialId + "']");
-        if (tocElement) {
-          $(tocElement).text(title);
-        }
-
+        closeEditor($('#page-' + workspaceMaterialId), true);
         $('.notification-queue').notificationQueue('notification', 'info', getLocaleText("plugin.workspace.materialsManagement.publishedMessage"));
       }
     }, this));   
