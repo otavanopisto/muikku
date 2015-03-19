@@ -109,7 +109,7 @@
     }
     
     if ($(this).attr('data-state') == 'pass') {
-      
+      confirmEvaluationRequest(); 
     }
     
     if ($(this).attr('data-state') == 'fail') {
