@@ -1,0 +1,218 @@
+  /* discussion (.di-*) */
+
+.di-no-messages{
+  min-height:400px;
+  padding-top:200px;
+  h3{
+    text-align:center;
+  }
+}
+
+
+.di-newmessage-form-container{
+
+  
+}
+
+.di-message-create{
+   width:100%;
+  form{
+   width:100%;
+  }
+  input{
+   color:#333;
+   font-size:1,5em;
+
+    &[type="textfield"]{
+      width:400px;
+      color: #dadada;
+      line-height: 30px;
+      width: 400px;      
+      
+      
+      &:focus{
+       color:#000;   
+      }
+    }
+
+  }  
+  
+    textarea{
+
+      margin-left:5px;
+    }
+    .di-message-new-content{
+      width:100%;
+      
+    }  
+}
+
+
+.di-new-area-container{
+   margin-top:15px; 
+   float:left;
+  .di-new-area-button{
+    cursor:pointer;
+
+  }
+    
+  
+  
+  div{
+    width:40px;
+    height:40px;
+    &:before{
+     font-size:40px;
+     color:#fda726;
+     
+    }
+  
+
+}
+  
+}
+
+.di-browse-areas-container{
+  float:left;
+  margin-top:15px;
+  select{
+     height:40px;
+     line-height:40px;
+     min-width:200px;
+     margin-left:15px;
+  }
+  
+}
+
+.di-messages-container{
+    
+    .di-message{
+       height:80px;
+       margin-top:0;
+       margin-right:5px;
+       margin-left:5px;
+       margin-bottom:0;
+       padding:10px;
+     
+        &.open{
+           height:auto;     
+           height:auto;
+
+           
+           &.owner{
+             border-left:5px solid #dadada; 
+             h3{
+              color:#dadada;
+             }
+             
+            }       
+            
+          .di-message-topic{
+           padding-left:15px;
+          }  
+
+          .di-user-picture{
+           float:left;
+           height:60px;
+           width:60px;
+           
+           
+           &.default{
+            @extend .co-user-picture;
+           }
+           
+           &.reply-recipient{
+            display:inline-block;
+            float:none;
+            height:20px;
+            width:20px;
+           }
+          }   
+        
+          .di-message-details{
+            padding-left:15px;
+            .di-message-details-sender{
+            
+              div{
+              float:left;
+              }
+              
+              .di-message-header-content-primary{
+                display:inline-block;
+                font-weight:700;
+                padding:0 0 0 10px;
+              }
+              
+              .di-message-header-content-secondary{
+                display:inline-block;
+                font-weight:700;
+                padding:0 0 0 20px;
+              }
+
+              
+            }
+            .di-message-content{
+             float:none;
+             
+             .di-message-content-text{
+               padding:15px;
+               margin-left:60px;
+               font-weight:300;
+             }               
+            }
+
+
+          
+          }            
+
+      
+         
+        }
+        
+        &.closed{
+     
+         > div{
+          height:80px;
+         }
+       
+        .di-message-meta{
+          width:60%;
+          box-sizing:border-box;
+          overflow:hidden;
+          div{
+            text-overflow:ellipsis;
+          } 
+         
+        }
+        
+        .di-message-details{
+          width:40%;
+          box-sizing:border-box;
+          div{
+           box-sizing:border-box;
+           height:80px;
+           float:left;
+          }
+          
+        .di-message-area-name{
+          width:50%;
+          padding:30px 0 0 15px;
+          span{
+            padding:5px;
+          }
+        }
+        
+        .di-message-activity{
+          width:49%;
+          padding:30px 0 0 15px;
+        }
+      }    
+   }
+  }    
+}
+
+
+.di-message-meta-content span{
+  color:#000;
+  text-transform:none;
+}

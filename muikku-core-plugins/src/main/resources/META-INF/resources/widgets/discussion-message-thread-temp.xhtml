@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition 
+xmlns="http://www.w3.org/1999/xhtml" 
+xmlns:ui="http://java.sun.com/jsf/facelets" 
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:c="http://java.sun.com/jsp/jstl/core" 
+xmlns:h="http://java.sun.com/jsf/html">
+  
+<!--  Näyttää ihan karvattomalta oravan huilulta, mutta elementit on paikollaan, css:t voi jättää meikälle  -->
+
+<div class="di-messages-toolbar"> 
+   <div class="di-messages-tool mf-item-tool icon-goback"></div>
+   <div class="clear"></div>
+</div>
+    <c:forEach begin="1" end="10">
+
+    <div class="mf-item di-message open" id="{id}">
+      <div class="di-message-topic mf-item-topic">
+        <span class="mf-item-header-name di-message-header"><h3>Otsikko</h3></span>
+        <div class="clear"></div>
+      </div>
+      <div class="mf-item-details di-message-details">
+        <div class="mf-item-details-container di-message-details-container">       
+          <div class="mf-item-description di-message-details">
+            <div class="di-message-details-sender">
+              <input type="hidden" name="mf-person-id" value="{sender}"/>
+
+                <div class="di-user-picture default "></div>
+
+
+               <span class="mf-item-header-content-primary di-message-header-content-primary">Etunimi Sukunimi
+              </span>        
+              <span class="mf-item-header-content-secondary di-message-header-content-secondary">DD.MM.YYYY HH:MM</span>    
+              <div class="clear"></div>
+            </div>
+            <div class="mf-item-content di-message-content ">     
+              <div class="mf-item-content-text di-message-content-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent egestas nisi in lorem varius aliquet. Mauris finibus, ex vitae interdum interdum, neque eros interdum augue, quis placerat augue orci quis eros. Duis in lobortis dolor, eget mattis libero. Nulla diam risus, commodo scelerisque lacus in, tempus elementum libero. Nam malesuada nisl sit amet erat consectetur, ac hendrerit ex commodo. Phasellus nulla enim, luctus ac tincidunt vitae, fringilla nec ligula. Sed ornare tortor in diam consectetur tempus. Integer vehicula nunc eu nulla feugiat, sit amet eleifend velit ultrices. Donec est ipsum, facilisis eget libero quis, ornare sollicitudin nisi. Ut vulputate mollis dictum. Donec nec libero tincidunt, pharetra metus vitae, efficitur quam. Donec tincidunt et augue ut sollicitudin. Fusce semper neque eget maximus auctor.
+
+In eu nibh blandit ante molestie sodales. Nam turpis justo, venenatis sit amet mollis non, bibendum ut urna. Sed porta scelerisque lectus vel lacinia. Donec venenatis justo elit, ut vestibulum quam varius a. Vivamus vitae lorem ipsum. Sed blandit tincidunt orci vitae semper. Integer quis ligula imperdiet, porttitor risus a, aliquet lectus. Phasellus ultricies risus eget lorem vestibulum, eu consequat leo tempor. Phasellus ultricies, nisi eget molestie consectetur, nibh eros suscipit elit, eleifend ullamcorper tellus lorem non est. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Mauris vitae enim ut libero vulputate porttitor ut viverra tortor. Sed sed feugiat tortor, eget suscipit magna. Praesent sed dapibus sem, ac imperdiet enim. Etiam et risus tellus.
+
+Vivamus quis augue sodales, feugiat dui eget, mattis dui. Phasellus consequat erat non tincidunt condimentum. Phasellus interdum, nisl sed tristique tristique, lorem metus mollis mi, ac dignissim tellus nisi et augue. Aliquam nisl neque, congue quis blandit nec, aliquet quis lorem. Aliquam erat volutpat. Ut lobortis orci sed justo tincidunt blandit. Vivamus ut ullamcorper diam. Maecenas nec mauris orci. Donec interdum ligula a cursus mollis. Nam ut tincidunt lectus. Morbi gravida justo in varius pharetra.
+
+</div>          
+              <div class="mf-item-content-tools di-message-content-tools">
+                <div class="di-message-content-tools-container">
+                    <div  id="{id}" class="di-message-tool di-message-reply-link mf-item-tool"><span>Vastaa viestiin</span></div>
+                </div>
+                <div class="di-message-content-tools-reply-container"></div>
+                <div class="clear"></div>
+              </div>
+            </div>
+          </div>       
+          <div class="clear"></div>
+        </div>
+      </div>
+    
+</div>  
+</c:forEach>
+
+</ui:composition>
