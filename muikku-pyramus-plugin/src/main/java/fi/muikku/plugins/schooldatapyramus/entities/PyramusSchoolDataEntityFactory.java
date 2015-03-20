@@ -226,7 +226,7 @@ public class PyramusSchoolDataEntityFactory {
   public CourseLengthUnit getCourseLengthUnit(EducationalTimeUnit educationalTimeUnit) {
     return new PyramusCourseLengthUnit(
         identifierMapper.getCourseLengthUnitIdentifier(educationalTimeUnit.getId()), 
-        "TODO", 
+        educationalTimeUnit.getSymbol(),
         educationalTimeUnit.getName());
   }
   
