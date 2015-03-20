@@ -376,7 +376,6 @@
       });
 
       $(tocOpenCloseButton).click(function() {
-        
         // If tocWrapper is visible
         if ($('#workspaceMaterialsManagementTOCContainer:visible').length !== 0) {
           contentPageContainer
@@ -420,12 +419,9 @@
             duration:500,
             easing: "easeInOutQuint",
             complete: function () {
-
-              
             }
           });
         }
-        
       });
       
       // Prevent page scroll happening if TOC scroll reaches bottom

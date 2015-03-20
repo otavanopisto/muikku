@@ -15,12 +15,11 @@
       return this.options.renderMode[type]||this.options.defaultRenderMode;
     },
 
-    _loadHtmlMaterial: function(pageElement) {
+    _loadHtmlMaterial: function(pageElement, fieldAnswers) {
       
       var workspaceMaterialId = $(pageElement).data('workspace-material-id');
       var materialId = $(pageElement).data('material-id');
       var parentIds = []; // TODO needed anymore?
-      var fieldAnswers = []; // TODO implement
 
       try {
         var material = {
@@ -73,13 +72,13 @@
       }
     },
     
-    loadMaterial: function(page) {
+    loadMaterial: function(page, fieldAnswers) {
       var workspaceMaterialId = $(page).data('workspace-material-id');
       var materialId = $(page).data('material-id');
       var materialType = $(page).data('material-type');
       switch (materialType) {
         case 'html':
-          this._loadHtmlMaterial($(page));
+          this._loadHtmlMaterial($(page), fieldAnswers);
         break;
         case 'folder':
           renderDustTemplate(this.options.dustTemplate, { id: materialId, type: materialType, data: { title: $(page).data('material-title') } }, $.proxy(function (text) {
@@ -106,27 +105,26 @@
     },
     
     loadMaterials: function(pageElements) {
-//    TODO Load field answers (workspaceMaterialId -> [fieldName, answer]
-//    mApi().workspace.workspaces.materials.replies.read(workspaceEntityId, workspaceMaterialId)
-//    .callback($.proxy(function (err, reply) {
-//      if (err) {
-//        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsLoader.answerLoadingFailed", err));
-//      } else {
-//        var fieldAnswers = {};
-//
-//        if (reply && reply.answers.length) {
-//          for (var i = 0, l = reply.answers.length; i < l; i++) {
-//            var answer = reply.answers[i];
-//            var answerKey = [answer.materialId, answer.embedId, answer.fieldName].join('.');
-//            fieldAnswers[answerKey] = answer.value;
-//          }
-//        }
-//
-//        _this._loadHtmlMaterial(this.parentNode, workspaceEntityId, workspaceMaterialId ,$(this).data('material-id'), $(this).attr('id'), [], fieldAnswers);
-//      }
-//    }, this));
-      $(pageElements).each($.proxy(function (index, page) {
-        this.loadMaterial(page);
+      var workspaceEntityId = $('.workspaceEntityId').val();
+      mApi().workspace.workspaces.materialreplies.read(workspaceEntityId).callback($.proxy(function (err, reply) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsLoader.answerLoadingFailed", err));
+        }
+        else {
+          // answers array
+          var fieldAnswers = {};
+          if (reply && reply.answers.length) {
+            for (var i = 0, l = reply.answers.length; i < l; i++) {
+              var answer = reply.answers[i];
+              var answerKey = [answer.materialId, answer.embedId, answer.fieldName].join('.');
+              fieldAnswers[answerKey] = answer.value;
+            }
+          }
+        }
+        // actual loading of pages
+        $(pageElements).each($.proxy(function (index, page) {
+          this.loadMaterial(page, fieldAnswers);
+        }, this));
       }, this));
     }
   }); // material loader widget
@@ -225,22 +223,22 @@
   $(document).on('taskFieldDiscovered', function (event, data) {
     var object = data.object;
     if ($(object).attr('type') == 'application/vnd.muikku.field.memo') {
-      
       $(object).replaceWith($('<textarea>')
-          .addClass('muikku-memo-field')
-          .attr({
-            'cols':data.meta.columns,
-            'rows':data.meta.rows,
-            'placeholder': data.meta.help,
-            'title': data.meta.hint,
-            'name': data.name
-          })
-          .val(data.value)
-          .muikkuField({
-            fieldName: data.name,
-            materialId: data.materialId,
-            embedId: data.embedId
-          }));
+        .addClass('muikku-memo-field')
+        .attr({
+          'cols':data.meta.columns,
+          'rows':data.meta.rows,
+          'placeholder': data.meta.help,
+          'title': data.meta.hint,
+          'name': data.name
+        })
+        .val(data.value)
+        .muikkuField({
+          fieldName: data.name,
+          materialId: data.materialId,
+          embedId: data.embedId
+        })
+      );
     }
   });
   

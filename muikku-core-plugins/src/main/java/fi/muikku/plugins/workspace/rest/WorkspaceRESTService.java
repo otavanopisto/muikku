@@ -246,15 +246,6 @@ public class WorkspaceRESTService extends PluginRESTService {
     return Response.ok(workspaces).build();
   }
   
-  private String getSearchResultValue(Map<String, Object> result, String key) {
-    Object value = result.get(key);
-    if (value != null) {
-      return value.toString();
-    }
-    
-    return null;
-  }
-
   @GET
   @Path("/workspaces/{ID}")
   public Response getWorkspace(@PathParam("ID") Long workspaceEntityId) {
@@ -506,25 +497,6 @@ public class WorkspaceRESTService extends PluginRESTService {
     return Response.ok(createRestModel(workspaceMaterial)).build();
   }
   
-  // @DELETE
-  // @Path("/materials/{ID}")
-  // public Response deleteWorkspaceMaterial(@PathParam("ID") Long workspaceMaterialId) {
-  // // TODO: Security
-  //
-  // if (workspaceMaterialId == null) {
-  // return Response.status(Status.NOT_FOUND).entity("workspace material not found").build();
-  // }
-  //
-  // WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
-  // if (workspaceMaterial == null) {
-  // return Response.status(Status.NOT_FOUND).entity("workspace material not found").build();
-  // }
-  //
-  // workspaceMaterialController.deleteWorkspaceMaterial(workspaceMaterial);
-  //
-  // return Response.noContent().build();
-  // }
-
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/materialreplies")
   public Response getWorkspaceMaterialAnswers(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
