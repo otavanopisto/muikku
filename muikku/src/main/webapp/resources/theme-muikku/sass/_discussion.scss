@@ -49,6 +49,8 @@
 
 
 .di-new-area-container{
+   margin-top:15px; 
+   float:left;
   .di-new-area-button{
     cursor:pointer;
 
@@ -57,15 +59,13 @@
   
   
   div{
-   width:40px;
-   height:40px;
-   float:right;
-   margin-right:10px;
-  &:before{
-   font-size:40px;
-   color:#fda726;
-   
-  }
+    width:40px;
+    height:40px;
+    &:before{
+     font-size:40px;
+     color:#fda726;
+     
+    }
   
 
 }
@@ -73,10 +73,11 @@
 }
 
 .di-browse-areas-container{
+  float:left;
   margin-top:15px;
   select{
-     height:37px;
-     line-height:37px;
+     height:40px;
+     line-height:40px;
      min-width:200px;
      margin-left:15px;
   }

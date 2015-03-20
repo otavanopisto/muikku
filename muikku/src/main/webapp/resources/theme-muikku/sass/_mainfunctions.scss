@@ -1,5 +1,10 @@
   /* Mainfunctions (mf-*) */
   
+  /* Pseudo classes */
+  
+  div[data-name="mainfunction.content-tools-top.center"]{
+    height:70px;
+  }
   
   .mainfunction{
     @extend .co-widget;   

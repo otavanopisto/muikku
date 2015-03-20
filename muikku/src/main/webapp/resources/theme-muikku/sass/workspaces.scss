@@ -7,7 +7,8 @@ body.workspace {
   background-repeat:repeat;
   background-color:#f0f3f5;
   min-height:100%;
-  font-size:14px;
+  font-size:16px;
+  font-weight:300;
   
   section {
     background:#fff;
@@ -55,74 +56,6 @@ body.workspace {
   
   .workspace-description-wrapper {
     margin:1em 0 1em 0;
-    font-size:14px;
-    
-    img {
-      max-width:100%;
-    }
-    
-    h1,
-    h2 {
-    
-      &:first-child {
-        margin:20px 0 20px 0;
-      }
-      
-    }
-    
-    h1,
-    h2,
-    h3 {
-      margin:40px 0 20px 0;
-      color:#38393a;
-      font-weight:300;
-      text-transform:none;
-      line-height:1.3em;
-    }
-    
-    h4,
-    h5,
-    h6 {
-      margin:20px 0 20px 0;
-      color:#38393a;
-      font-weight:300;
-      text-transform:none;
-      line-height:1.3em;
-    }
-    
-    h1 {
-      font-size:29px;
-    }
-      
-    h2 {
-      font-size:26px;
-    }
-    
-    h3 {
-      font-size:19px;
-      font-weight:normal;
-    }
-    
-    h4 {
-      font-size:17px;
-      font-weight:normal;
-    }
-    
-    h5 {
-      font-size:15px;
-      font-weight:normal;
-    }
-    
-    h6 {
-      font-size:13px;
-      font-weight:normal;
-    }
-    
-    p {
-      margin:15px 0 15px 0;
-      line-height:1.5em;
-    }
-   
   }
   
   #staticNavigationWrapperWorkspace {
@@ -178,7 +111,8 @@ body.workspace-materials {
   background-repeat:repeat;
   background-color:#f0f3f5;
   min-height:100%;
-  font-size:14px;
+  font-size:16px;
+  font-weight:300;
   
   h1.workspace-title {
     margin:20px 0 20px 0;
@@ -404,7 +338,7 @@ body.workspace-materials {
       position:relative;
       z-index:10;
     
-        & > h1 {
+        & > h1 { /* Material's title */
         position:relative;
         z-index:12;
         max-width:700px;
@@ -424,7 +358,7 @@ body.workspace-materials {
       position:relative;
       z-index:10;
       
-      & > h2 {
+      & > h2 { /* Section's title */
         position:relative;
         z-index:12;
         max-width:700px;
@@ -432,7 +366,7 @@ body.workspace-materials {
         margin:30px 300px -30px auto; 
         font-weight:300;
         color:#000;
-        font-size:28px;
+        font-size:26px;
         padding:10px 30px;
         text-transform:none;
         line-height:1.3em;
@@ -441,7 +375,7 @@ body.workspace-materials {
         text-transform:uppercase;
       }
       
-      & > h3,h4,h5,h6 {
+      & > h3,h4,h5,h6 { /* Alternative Section's titles */
         position:relative;
         z-index:13;
         max-width:700px;
@@ -470,83 +404,9 @@ body.workspace-materials {
       position:relative;
       background:#fff;
 
-      img {
-        max-width:100%;
-      }
-      
-      h1,
-      h2 {
-        
-        &:first-child {
-          margin:20px 0 20px 0;
-        }
-        
-      }
-      
-      h1,
-      h2,
-      h3 {
-        margin:40px 0 20px 0;
-        color:#38393a;
-        font-weight:300;
-        text-transform:none;
-        line-height:1.3em;
-      }
-      
-      h4,
-      h5,
-      h6 {
-        margin:20px 0 20px 0;
-        color:#38393a;
-        font-weight:300;
-        text-transform:none;
-        line-height:1.3em;
-      }
-      
-      h1 {
-        font-size:29px;
-      }
-        
-      h2 {
-        font-size:26px;
-      }
-      
-      h3 {
-        font-size:19px;
-        font-weight:normal;
-      }
-      
-      h4 {
-        font-size:17px;
-        font-weight:normal;
-      }
-      
-      h5 {
-        font-size:15px;
-        font-weight:normal;
-      }
-      
-      h6 {
-        font-size:13px;
-        font-weight:normal;
-      }
-      
-      p {
-        margin:15px 0 15px 0;
-        line-height:1.5em;
-      }
-      
       label,select,option,input,textarea { /* Overrides the values used in reading/management */
-        font-weight:normal;
-        font-size:14px; /* Reset font-size  */
-      }
-      
-      strong,b {
-        font-weight:600; /* Override values used in reading/management */
-      }
-      
-      em,i {
         font-weight:400;
+        font-size:16px; /* Reset font-size  */
       }
 
       blockquote {
@@ -586,6 +446,81 @@ body.workspace-materials {
 
 body.workspace,
 body.workspace-materials {
+  line-height:1.7em;
+  
+  img {
+    max-width:100%;
+  }
+  
+  h1,
+  h2 {
+  
+    &:first-child {
+      margin:20px 0 20px 0;
+    }
+    
+  }
+  
+  h1,
+  h2,
+  h3 {
+    margin:40px 0 20px 0;
+    color:#38393a;
+    font-weight:300;
+    text-transform:none;
+    line-height:1.3em;
+  }
+  
+  h4,
+  h5,
+  h6 {
+    margin:20px 0 20px 0;
+    color:#38393a;
+    font-weight:300;
+    text-transform:none;
+    line-height:1.3em;
+  }
+  
+  h1 {
+    font-size:29px;
+  }
+    
+  h2 { /* Page title */
+    font-size:26px;
+  }
+  
+  h3 {
+    font-size:22px;
+    font-weight:400;
+  }
+  
+  h4 {
+    font-size:19px;
+    font-weight:400;
+  }
+  
+  h5 {
+    font-size:17px;
+    font-weight:400;
+  }
+  
+  h6 {
+    font-size:16px;
+    font-weight:400;
+  }
+  
+  p {
+    margin:15px 0 15px 0;
+/*     line-height:1.5em; */
+  }
+  
+  strong,b {
+    font-weight:600; /* Override values used in reading/management */
+  }
+  
+  em,i {
+    font-weight:400;
+  }
   
   #workspaceEvaluationDockWrapper {
     text-align:center;

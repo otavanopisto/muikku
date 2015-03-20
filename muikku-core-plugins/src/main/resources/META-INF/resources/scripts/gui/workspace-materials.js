@@ -1,6 +1,6 @@
 (function() {
   'use strict';
-  
+
   function scrollToPage(workspaceMaterialId, animate) {
     var topOffset = 100;
     var scrollTop = $('#page-' + workspaceMaterialId).offset().top - topOffset;
@@ -47,10 +47,17 @@
     });
     
     $(document).on('afterHtmlMaterialRender', function (event, data) {
+      // only scroll if current url has a page anchor 
       if (window.location.hash && (window.location.hash.indexOf('p-') > 0)) {
-        scrollToPage(window.location.hash.substring(3).split('/'), false);
+        var windowMaterialId = window.location.hash.substring(3).split('/');
+        var renderedMaterialId = data.workspaceMaterialId;
+        var windowMaterialTop = $('#page-' + windowMaterialId).offset().top;
+        var renderedMaterialTop = $('#page-' + renderedMaterialId).offset().top;
+        // only scroll if page anchor is below a page just rendered
+        if (windowMaterialTop >= renderedMaterialTop) {
+          scrollToPage(windowMaterialId, false);
+        }
       }
-      
       if ($('.workspace-material-loading').length == 0) {
         $(window).data('loading', false);
       }
@@ -61,7 +68,8 @@
         var workspaceMaterialId = parseInt($(this).attr('data-workspace-material-id'));
         $('a.active').removeClass('active');
         $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
-        window.location.hash = '#p-' + workspaceMaterialId;
+        // TODO Setting hash at waypoint can lead to erratic scrolling. Let's not do that. 
+        //window.location.hash = '#p-' + workspaceMaterialId;
       }
     }, {
       offset: '60%'
