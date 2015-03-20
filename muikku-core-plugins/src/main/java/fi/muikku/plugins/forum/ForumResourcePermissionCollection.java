@@ -15,15 +15,17 @@ import fi.muikku.security.Scope;
 @ApplicationScoped
 public class ForumResourcePermissionCollection extends AbstractMuikkuPermissionCollection implements MuikkuPermissionCollection {
 
+  public static final String PERMISSIONSCOPE_FORUM = "FORUM";
+  
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.TEACHER } )
   public static final String FORUM_CREATEENVIRONMENTFORUM = "FORUM_CREATEENVIRONMENTFORUM";
   
-  @Scope ("FORUM")
+  @Scope (PERMISSIONSCOPE_FORUM)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.TEACHER, EnvironmentRoleArchetype.STUDENT } )
   public static final String FORUM_WRITEAREA = "FORUM_WRITEAREA";
   
-  @Scope ("FORUM")
+  @Scope (PERMISSIONSCOPE_FORUM)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.TEACHER, EnvironmentRoleArchetype.STUDENT } )
   public static final String FORUM_LISTTHREADS = "FORUM_LISTTHREADS";
   
