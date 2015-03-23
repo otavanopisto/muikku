@@ -19,11 +19,13 @@ import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceRole;
 import fi.muikku.schooldata.entity.WorkspaceRoleArchetype;
+import fi.muikku.schooldata.entity.WorkspaceType;
 import fi.muikku.schooldata.entity.WorkspaceUser;
 import fi.pyramus.rest.model.Course;
 import fi.pyramus.rest.model.CourseStaffMember;
 import fi.pyramus.rest.model.CourseStaffMemberRole;
 import fi.pyramus.rest.model.CourseStudent;
+import fi.pyramus.rest.model.CourseType;
 import fi.pyramus.rest.model.EducationalTimeUnit;
 import fi.pyramus.rest.model.UserRole;
 
@@ -211,7 +213,7 @@ public class PyramusSchoolDataEntityFactory {
         identifierMapper.getWorkspaceIdentifier(course.getId()),
         course.getName(),
         course.getDescription(),
-        "TODO",
+        identifierMapper.getWorkspaceTypeIdentifier(course.getTypeId()),
         "TODO",
         modified.toDate(),
         identifierMapper.getSubjectIdentifier(course.getSubjectId()),
@@ -221,6 +223,23 @@ public class PyramusSchoolDataEntityFactory {
         course.getBeginDate(),
         course.getEndDate()
     );
+  }
+  
+  public WorkspaceType createEntity(CourseType courseType) {
+    return new PyramusWorkspaceType(
+      identifierMapper.getWorkspaceTypeIdentifier(courseType.getId()), 
+      courseType.getName()
+    );
+  }
+
+  public List<WorkspaceType> createEntity(CourseType... courseTypes) {
+    List<WorkspaceType> result = new ArrayList<>();
+    
+    for (CourseType courseType : courseTypes) {
+      result.add(createEntity(courseType));
+    }
+    
+    return result;
   }
   
   public CourseLengthUnit getCourseLengthUnit(EducationalTimeUnit educationalTimeUnit) {

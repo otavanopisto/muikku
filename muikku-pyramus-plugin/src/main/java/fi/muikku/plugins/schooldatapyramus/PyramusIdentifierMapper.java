@@ -122,4 +122,12 @@ public class PyramusIdentifierMapper {
     return NumberUtils.createLong(lengthUnitIdentifier);
   }
 
+  public String getWorkspaceTypeIdentifier(Long pyramusCourseTypeId) {
+    return pyramusCourseTypeId != null ? String.valueOf(pyramusCourseTypeId) : null;
+  }
+
+  public Long getPyramusCourseTypeId(String workspaceTypeIdentifier) {
+    return workspaceTypeIdentifier != null ? NumberUtils.createLong(workspaceTypeIdentifier) : null;
+  }
+
 }
