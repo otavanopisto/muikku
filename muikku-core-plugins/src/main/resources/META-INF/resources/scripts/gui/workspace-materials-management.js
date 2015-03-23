@@ -292,6 +292,7 @@
     $(window).data('initializing', true);
 
     $(document).muikkuMaterialLoader({
+      workspaceEntityId: $('.workspaceEntityId').val(),
       'dustTemplate': 'workspace/materials-management-page.dust',
       renderMode: {
         "html": "dust"

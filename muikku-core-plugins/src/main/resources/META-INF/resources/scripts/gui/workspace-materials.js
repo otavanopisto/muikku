@@ -39,11 +39,14 @@
 
   $(document).ready(function() {
     $(window).data('initializing', true);
-    $(document).muikkuMaterialLoader().muikkuMaterialLoader('loadMaterials', $('.workspace-materials-view-page'));
+    $(document).muikkuMaterialLoader({
+      loadAnswers: true,
+      workspaceEntityId: $('.workspaceEntityId').val()
+    }).muikkuMaterialLoader('loadMaterials', $('.workspace-materials-view-page'));
 
     $('.workspace-materials-view-page').waypoint(function(direction) {
       if ($(window).data('scrolling') !== true && $(window).data('initializing') !== true) {
-        var workspaceMaterialId = $(this).data('workspace-material-id'));
+        var workspaceMaterialId = $(this).data('workspace-material-id');
         $('a.active').removeClass('active');
         $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
         window.location.hash = 'p-' + workspaceMaterialId;
