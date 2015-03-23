@@ -12,6 +12,7 @@
 @import "_mainfunctions.scss";
 @import "_calendar.scss";
 @import "_communicator.scss";
+@import "_discussion.scss";
 @import "_coursepicker.scss";
 
 /* CKEditor css rules for modals and form element plugins */
@@ -27,7 +28,7 @@ html {
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Open Sans',Verdana, sans-serif;
+  font-family:'Open Sans',Verdana, sans-serif;
   font-size:14px;
   line-height:1.5em;
   @include main-background('gfx/main-background.png','gfx/main-background-slice.png');
@@ -392,6 +393,29 @@ a.header {
   z-index:14;
   padding:10px;
 }
+
+#socialNavigation{
+  .sn-container{
+        background-color:#216aa1;
+        position:fixed;
+        left:0;
+        bottom:0;
+        right:0;
+
+
+    &.closed{
+        min-height:30px;
+        opacity:0.1;
+     }  
+     
+    &.open{
+       background-color:#b7d1e0;
+       opacity:1;
+       min-height:258px;
+     }           
+  }  
+}
+
 
 /* Styles for waypoints */
 

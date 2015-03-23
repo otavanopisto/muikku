@@ -125,6 +125,24 @@ public class WorkspaceNodeDAO extends CorePluginsDAO<WorkspaceNode> {
 
     return entityManager.createQuery(criteria).getResultList();
   }
+
+  public List<WorkspaceNode> listByParentAndHidden(WorkspaceNode parent, Boolean hidden) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceNode> criteria = criteriaBuilder.createQuery(WorkspaceNode.class);
+    Root<WorkspaceNode> root = criteria.from(WorkspaceNode.class);
+    criteria.select(root);
+    
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(WorkspaceNode_.parent), parent),
+        criteriaBuilder.equal(root.get(WorkspaceNode_.hidden), hidden)    
+      )
+    );
+
+    return entityManager.createQuery(criteria).getResultList();
+  }
   
   public WorkspaceNode updateParent(WorkspaceNode node, WorkspaceNode parent) {
     node.setParent(parent);

@@ -198,4 +198,19 @@ public class CommunicatorController {
     return communicatorMessageRecipientDAO.updateRecipientRead(recipient, value);
   }
 
+  public CommunicatorMessage postMessage(UserEntity sender, String category, String subject, String content, List<UserEntity> recipients) {
+    CommunicatorMessageId communicatorMessageId = createMessageId();
+    
+    // TODO Category not existing at this point would technically indicate an invalid state 
+    CommunicatorMessageCategory categoryEntity = persistCategory(category);
+    
+    return createMessage(communicatorMessageId, sender, recipients, categoryEntity, subject, content, null);
+  }
+
+  public CommunicatorMessage replyToMessage(UserEntity sender, String category, String subject, String content, List<UserEntity> recipients, CommunicatorMessageId communicatorMessageId) {
+    CommunicatorMessageCategory categoryEntity = persistCategory(category);
+    
+    return createMessage(communicatorMessageId, sender, recipients, categoryEntity, subject, content, null);
+  }
+  
 }

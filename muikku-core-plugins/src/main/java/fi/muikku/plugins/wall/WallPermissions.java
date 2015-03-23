@@ -4,8 +4,11 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import fi.muikku.model.users.EnvironmentRoleArchetype;
+import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.security.AbstractMuikkuPermissionCollection;
-import fi.muikku.security.DefaultPermissionRoles;
+import fi.muikku.security.DefaultEnvironmentPermissionRoles;
+import fi.muikku.security.DefaultWorkspacePermissionRoles;
 import fi.muikku.security.MuikkuPermissionCollection;
 import fi.muikku.security.PermissionScope;
 import fi.muikku.security.Scope;
@@ -22,17 +25,19 @@ public class WallPermissions extends AbstractMuikkuPermissionCollection implemen
   public static final String READ_ALL_WALLS = "READ_ALL_WALLS";
   
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultPermissionRoles ({ MANAGER, TEACHER })
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.TEACHER })
   public static final String WALL_WRITEENVIRONMENTWALL = "WALL_WRITEENVIRONMENTWALL";
   
   /* Workspace */
   
   @Scope (PermissionScope.WORKSPACE)
-  @DefaultPermissionRoles ({ MANAGER, WORKSPACE_TEACHER })
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.MANAGER })
+  @DefaultWorkspacePermissionRoles({ WorkspaceRoleArchetype.STUDENT, WorkspaceRoleArchetype.TEACHER })
   public static final String WALL_READALLCOURSEMESSAGES = "WALL_READALLCOURSEMESSAGES";
 
   @Scope (PermissionScope.WORKSPACE)
-  @DefaultPermissionRoles ({ MANAGER, WORKSPACE_TEACHER, WORKSPACE_STUDENT })
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.MANAGER })
+  @DefaultWorkspacePermissionRoles({ WorkspaceRoleArchetype.STUDENT, WorkspaceRoleArchetype.TEACHER })
   public static final String WALL_WRITECOURSEWALL = "WALL_WRITECOURSEWALL";
   
   @Override
@@ -51,7 +56,18 @@ public class WallPermissions extends AbstractMuikkuPermissionCollection implemen
   }
 
   @Override
-  public String[] getDefaultRoles(String permission) throws NoSuchFieldException {
-    return getDefaultRoles(WallPermissions.class, permission);
+  public String[] getDefaultPseudoRoles(String permission) throws NoSuchFieldException {
+    return getDefaultPseudoRoles(WallPermissions.class, permission);
   }
+
+  @Override
+  public EnvironmentRoleArchetype[] getDefaultEnvironmentRoles(String permission) throws NoSuchFieldException {
+    return getDefaultEnvironmentRoles(WallPermissions.class, permission);
+  }
+
+  @Override
+  public WorkspaceRoleArchetype[] getDefaultWorkspaceRoles(String permission) throws NoSuchFieldException {
+    return getDefaultWorkspaceRoles(WallPermissions.class, permission);
+  }
+
 }

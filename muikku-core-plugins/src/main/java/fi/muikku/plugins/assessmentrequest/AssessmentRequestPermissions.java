@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import fi.muikku.model.users.EnvironmentRoleArchetype;
+import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.security.AbstractMuikkuPermissionCollection;
 import fi.muikku.security.MuikkuPermissionCollection;
 import fi.muikku.security.PermissionScope;
@@ -34,7 +36,18 @@ public class AssessmentRequestPermissions extends AbstractMuikkuPermissionCollec
   }
 
   @Override
-  public String[] getDefaultRoles(String permission) throws NoSuchFieldException {
-    return getDefaultRoles(AssessmentRequestPermissions.class, permission);
+  public String[] getDefaultPseudoRoles(String permission) throws NoSuchFieldException {
+    return getDefaultPseudoRoles(AssessmentRequestPermissions.class, permission);
   }
+
+  @Override
+  public EnvironmentRoleArchetype[] getDefaultEnvironmentRoles(String permission) throws NoSuchFieldException {
+    return getDefaultEnvironmentRoles(AssessmentRequestPermissions.class, permission);
+  }
+
+  @Override
+  public WorkspaceRoleArchetype[] getDefaultWorkspaceRoles(String permission) throws NoSuchFieldException {
+    return getDefaultWorkspaceRoles(AssessmentRequestPermissions.class, permission);
+  }
+
 }

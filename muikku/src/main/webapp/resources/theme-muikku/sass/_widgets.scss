@@ -18,7 +18,7 @@ div[class*='dock-dynamic-navi-button'] > a {
   display:inline-block;
 }
 
-/* Workspace material's reading/management view's navigation */
+/* Workspace navigation - Materials */
 div[class*='workspace-materials-full-screen-navi-button'] > a,
 div[class*='workspace-materials-full-screen-navi-button'] > span {
   cursor:pointer;
@@ -94,9 +94,9 @@ div[class*='workspace-dock-navi-button'] > span {
     white-space:nowrap;
   }
   
-    
   &:hover {
     background:#465b6c;
+    
     span[class*='workspace-navi-tt-container-'] {
       display:block;
       background:#465b6c;
@@ -122,8 +122,6 @@ div[class*='workspace-dock-navi-button-selected'] > span {
   width:35px;
   @include rounded(3px);
 }
-
-
 
 div[data-name="generic.dock-top.left"] div:last-child > a{
 	margin-right:0;

@@ -13,7 +13,7 @@ public class AbstractPermissionCollection {
 
     for (Field field : declaredFields) {
       if (Modifier.isStatic(field.getModifiers())) {
-        if (field.getType().equals(String.class)) {
+        if (field.getType().equals(String.class) && (field.getAnnotation(Scope.class) != null)) {
           try {
             permissions.add(field.getName());
           } catch (Exception e) {

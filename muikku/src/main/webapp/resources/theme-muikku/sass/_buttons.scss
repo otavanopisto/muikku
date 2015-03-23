@@ -87,7 +87,10 @@ input[type="reset"] {
     color:#000;
     cursor:pointer;
     
-    
+  &:disabled{
+   color:#dadada;
+   
+  }  
     
   &:not(:first-child){
    margin-left:5px;    

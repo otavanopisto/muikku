@@ -2,7 +2,7 @@
   'use strict';
   
   function scrollToPage(workspaceMaterialId, animate) {
-    var topOffset = $('#contentWorkspaceMaterialsReading').offset().top;
+    var topOffset = 100;
     var scrollTop = $('#page-' + workspaceMaterialId).offset().top - topOffset;
     if (animate) {
       $(window).data('scrolling', true);
@@ -15,42 +15,29 @@
         complete : function() {
           $('a.active').removeClass('active');
           $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
-          window.location.hash = 'p-' + workspaceMaterialId;
           $(window).data('scrolling', false);
         }
       });
     } else {
       $('html, body').stop().scrollTop(scrollTop);
-      window.location.hash = 'p-' + workspaceMaterialId;
       $('a.active').removeClass('active');
       $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
     }
   }
+  
+  $(document).on('click', '.workspace-materials-toc-item a', function (event) {
+    event.preventDefault();
+    scrollToPage($($(this).attr('href')).data('workspaceMaterialId'), true);
+  });
 
   $(document).ready(function() {
-    $(document).muikkuMaterialLoader()
-      .muikkuMaterialLoader('loadMaterials', $('.workspace-materials-view-page'));
-
-    $(document).on('beforeHtmlMaterialRender', function (event, data) {
-      $(window).data('loading', true);
-    });
-    
-    $(document).on('afterHtmlMaterialRender', function (event, data) {
-      if (window.location.hash && (window.location.hash.indexOf('p-') > 0)) {
-        scrollToPage(window.location.hash.substring(3).split('/'), false);
-      }
-      
-      if ($('.workspace-material-loading').length == 0) {
-        $(window).data('loading', false);
-      }
-    });
+    $(document).muikkuMaterialLoader().muikkuMaterialLoader('loadMaterials', $('.workspace-materials-view-page'));
 
     $('.workspace-materials-view-page').waypoint(function(direction) {
-      if (($(window).data('scrolling') !== true) && ($(window).data('loading') === false)) {
+      if ($(window).data('scrolling') !== true) {
         var workspaceMaterialId = parseInt($(this).attr('data-workspace-material-id'));
         $('a.active').removeClass('active');
         $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
-        window.location.hash = '#p-' + workspaceMaterialId;
       }
     }, {
       offset: '60%'
@@ -58,30 +45,23 @@
     
     $('.workspace-materials-view-page[data-workspace-material-assigment-type="EXERCISE"]').each(function (index, page) {
       $(page).prepend($('<div>')
-          .attr('title','Harjoitustehtävä')
           .addClass('muikku-page-assignment-type exercise')
-          .append($('<span>').addClass('icon-assignment'))
+          .text(getLocaleText("plugin.workspace.materialsLoader.exerciseAssignmentLabel"))
       );
     });
     
     $('.workspace-materials-view-page[data-workspace-material-assigment-type="EVALUATED"]').each(function (index, page) {
       $(page).prepend($('<div>')
-          .attr('title','Arvioitavatehtävä')
           .addClass('muikku-page-assignment-type evaluated')
-          .append($('<span>').addClass('icon-assignment'))
+          .text(getLocaleText("plugin.workspace.materialsLoader.evaluatedAssignmentLabel"))
       );
     });
+    
   });
   
   $(document).on('click', '.workspace-materials-toc-item a', function (event) {
     event.preventDefault();
     scrollToPage($($(this).attr('href')).data('workspaceMaterialId'), true);
-  });
-  
-  $(window).load(function () {
-    if (window.location.hash && (window.location.hash.indexOf('p-') > 0)) {
-      scrollToPage(window.location.hash.substring(3), false);
-    }
   });
   
   $(document).on('change', '.muikku-field', function (event, data) {
@@ -90,14 +70,30 @@
     var saveButton = $(page).find('.muikku-save-page');
     if (saveButton.length) {
       saveButton
-        .removeClass('icon-checkmark save-successful')          
+        .removeClass('save-successful')          
         .text(saveButton.data('unsaved-text'));
     }
+  });
+  
+  $(document).on('click', '.muikku-request-evaluation', function (event) {
+    $('.icon-cancel-evaluation').show();
+    $(this).hide();
+    
+    $('.notification-queue').notificationQueue('notification', 'success',getLocaleText('plugin.workspace.evaluation.requestAssigmentEvaluationNotification'));
+    
+  });
+  
+  $(document).on('click', '.muikku-cancel-evaluation', function (event) {
+    $(this).hide();
+    $('.icon-request-evaluation').show();
+    
+    $('.notification-queue').notificationQueue('notification', 'success',getLocaleText('plugin.workspace.evaluation.cancelAssignmentEvaluationNotification'));
+    
   });
 
   $(document).on('click', '.muikku-save-page', function (event, data) {
     var page = $(this).closest('.workspace-materials-view-page');
-    var workspaceEntityId = $('.workspaceEntityId').val(); //  TODO: data?
+    var workspaceEntityId = $('.workspaceEntityId').val(); 
     var workspaceMaterialId = $(page).data('workspace-material-id');
     var reply = [];
     var exercise = $(page).data('workspace-material-assigment-type') == "EXERCISE" ;
@@ -128,9 +124,15 @@
             }
             else {
               if ($(field).muikkuField('hasExamples')) {
-                var exampleDetails = $('<details>')
+                var exampleDetails = $('<span>')
                   .addClass('muikku-field-examples')
                   .attr('data-for-field', $(field).attr('name'));
+                
+                exampleDetails.append( 
+                  $('<span>')
+                    .addClass('muikku-field-examples-title')
+                    .text(getLocaleText('plugin.workspace.assigment.checkAnswers.detailsSummary.title'))
+                );
                 
                 $.each($(field).muikkuField('getExamples'), function (index, example) {
                   exampleDetails.append(
@@ -147,8 +149,8 @@
         } 
         
         $(this)
-          .addClass("icon-checkmark save-successful")
-          .text(exercise ? getLocaleText('plugin.workspace.materialsReading.answerChecked') : getLocaleText('plugin.workspace.materialsReading.answerSaved'));
+          .addClass("save-successful")
+          .text(exercise ? getLocaleText('plugin.workspace.materials.exerciseSaved') : getLocaleText('plugin.workspace.materials.assignmentSaved'));
       } 
     }, this));
   });

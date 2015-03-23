@@ -2,8 +2,9 @@ package fi.muikku.plugins.websocket;
 
 import java.util.Date;
 
-import javax.ejb.Stateful;
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Lock;
+import javax.ejb.LockType;
+import javax.ejb.Singleton;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
@@ -20,8 +21,7 @@ import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.session.SessionController;
 
 @Path("/websocket")
-@RequestScoped
-@Stateful
+@Singleton
 @Produces ("application/json")
 public class WebSocketRESTService extends PluginRESTService {
 
@@ -38,6 +38,7 @@ public class WebSocketRESTService extends PluginRESTService {
   
   @GET
   @Path ("/ticket")
+  @Lock(LockType.WRITE)
   public Response ticket() {
     UserEntity user = sessionController.getLoggedUserEntity(); 
 

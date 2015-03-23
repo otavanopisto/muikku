@@ -19,6 +19,7 @@ import fi.muikku.model.users.UserEntity;
 import fi.muikku.users.UserSchoolDataIdentifierController;
 import fi.muikku.users.UserEmailEntityController;
 import fi.muikku.users.UserEntityController;
+import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.muikku.schooldata.SchoolDataController;
 import fi.muikku.schooldata.UserSchoolDataController;
 import fi.muikku.schooldata.entity.User;
@@ -51,6 +52,9 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
   
   @Inject
   private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
+
+  @Inject
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
 
   @Inject
   private Event<LoginEvent> userLoggedInEvent;
@@ -98,8 +102,16 @@ public abstract class AbstractAuthenticationStrategy implements AuthenticationPr
         // New user account        
         UserEntity userEntity = userEntityController.createUserEntity((SchoolDataSource) null, null);
 
+        List<User> users = null;
+        
         // If user can be found from datasources by emails, we just attach those users to new entity
-        List<User> users = userSchoolDataController.listUsersByEmails(emails);
+        schoolDataBridgeSessionController.startSystemSession();
+        try {
+          users = userSchoolDataController.listUsersByEmails(emails);
+        } finally {
+          schoolDataBridgeSessionController.endSystemSession();
+        }
+
         if (!users.isEmpty()) {
           for (User user : users) {
             userSchoolDataIdentifierController.createUserSchoolDataIdentifier(user.getSchoolDataSource(), user.getIdentifier(), userEntity);

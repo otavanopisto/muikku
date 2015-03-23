@@ -20,11 +20,11 @@ public class WorkspaceComingSoonBackingBean {
   
   @Inject
   @Named
-  private WorkspaceNavigationBackingBean workspaceNavigationBackingBean;
+  private WorkspaceBackingBean workspaceBackingBean;
 
   @RequestAction
   public void init() {
-    workspaceNavigationBackingBean.setWorkspaceUrlName(getWorkspaceUrlName());
+    workspaceBackingBean.setWorkspaceUrlName(getWorkspaceUrlName());
   }
   
   public String getWorkspaceUrlName() {

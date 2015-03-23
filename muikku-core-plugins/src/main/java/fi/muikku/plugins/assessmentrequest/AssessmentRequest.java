@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -58,6 +60,22 @@ public class AssessmentRequest {
     this.date = date;
   }
 
+  public AssessmentRequestState getState() {
+    return state;
+  }
+
+  public void setState(AssessmentRequestState state) {
+    this.state = state;
+  }
+  
+  public Long getCommunicatorMessageId() {
+    return communicatorMessageId;
+  }
+
+  public void setCommunicatorMessageId(Long communicatorMessageId) {
+    this.communicatorMessageId = communicatorMessageId;
+  }
+  
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -75,7 +93,13 @@ public class AssessmentRequest {
   
   private String message;
   
+  @Column (name = "message_id")
+  private Long communicatorMessageId;
+  
   @NotNull
   @Column(nullable = false)
   private Boolean archived = Boolean.FALSE;
+  
+  @Enumerated(EnumType.STRING)
+  private AssessmentRequestState state;
 }

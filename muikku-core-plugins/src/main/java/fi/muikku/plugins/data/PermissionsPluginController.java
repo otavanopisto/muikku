@@ -1,6 +1,9 @@
 package fi.muikku.plugins.data;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
@@ -12,15 +15,21 @@ import fi.muikku.dao.security.EnvironmentRolePermissionDAO;
 import fi.muikku.dao.security.PermissionDAO;
 import fi.muikku.dao.security.UserGroupRolePermissionDAO;
 import fi.muikku.dao.security.WorkspaceRolePermissionDAO;
+import fi.muikku.dao.users.EnvironmentRoleEntityDAO;
 import fi.muikku.dao.users.RoleEntityDAO;
 import fi.muikku.dao.users.UserGroupDAO;
 import fi.muikku.dao.workspace.WorkspaceEntityDAO;
+import fi.muikku.dao.workspace.WorkspaceRoleEntityDAO;
 import fi.muikku.dao.workspace.WorkspaceSettingsTemplateDAO;
 import fi.muikku.dao.workspace.WorkspaceSettingsTemplateRolePermissionDAO;
 import fi.muikku.model.security.Permission;
+import fi.muikku.model.users.EnvironmentRoleArchetype;
+import fi.muikku.model.users.EnvironmentRoleEntity;
 import fi.muikku.model.users.RoleEntity;
 import fi.muikku.model.users.UserGroup;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.model.workspace.WorkspaceRoleArchetype;
+import fi.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.muikku.model.workspace.WorkspaceSettingsTemplate;
 import fi.muikku.security.MuikkuPermissionCollection;
 import fi.muikku.security.PermissionScope;
@@ -29,6 +38,9 @@ import fi.muikku.security.PermissionScope;
 @Stateful
 public class PermissionsPluginController {
 	
+  @Inject
+  private Logger logger;
+  
 	@Inject
 	private PermissionDAO permissionDAO;
 	
@@ -38,6 +50,12 @@ public class PermissionsPluginController {
 	@Inject
 	private RoleEntityDAO roleEntityDAO;
 
+	@Inject
+	private EnvironmentRoleEntityDAO environmentRoleEntityDAO; 
+	
+  @Inject
+  private WorkspaceRoleEntityDAO workspaceRoleEntityDAO; 
+  
   @Inject
   private WorkspaceEntityDAO workspaceEntityDAO;
 	
@@ -70,21 +88,44 @@ public class PermissionsPluginController {
         if (permission == null) {
           try {
             String permissionScope = collection.getPermissionScope(permissionName);
-
-            if (!PermissionScope.PERSONAL.equals(permissionScope)) {
-              permission = permissionDAO.create(permissionName, permissionScope);
-              
-              String[] defaultRoles = collection.getDefaultRoles(permissionName);
-              
-              if (defaultRoles != null) {
+            
+            if (permissionScope != null) {
+              if (!PermissionScope.PERSONAL.equals(permissionScope)) {
+                permission = permissionDAO.create(permissionName, permissionScope);
+  
+                String[] pseudoRoles = collection.getDefaultPseudoRoles(permissionName);
+                EnvironmentRoleArchetype[] environmentRoles = collection.getDefaultEnvironmentRoles(permissionName);
+                WorkspaceRoleArchetype[] workspaceRoles = collection.getDefaultWorkspaceRoles(permissionName);
+  
+                List<RoleEntity> roles = new ArrayList<RoleEntity>();
+                
+                if (pseudoRoles != null) {
+                  for (String pseudoRole : pseudoRoles) {
+                    RoleEntity roleEntity = roleEntityDAO.findByName(pseudoRole);
+                    
+                    if (roleEntity != null)
+                      roles.add(roleEntity);
+                  }
+                }
+  
+                if (environmentRoles != null) {
+                  for (EnvironmentRoleArchetype envRole : environmentRoles) {
+                    List<EnvironmentRoleEntity> envRoles = environmentRoleEntityDAO.listByArchetype(envRole);
+                    roles.addAll(envRoles);
+                  }
+                }
+  
+                if (workspaceRoles != null) {
+                  for (WorkspaceRoleArchetype arc : workspaceRoles) {
+                    List<WorkspaceRoleEntity> wsRoles = workspaceRoleEntityDAO.listByArchetype(arc);
+                    roles.addAll(wsRoles);
+                  }
+                }
+                
                 switch (permissionScope) {
                   case PermissionScope.ENVIRONMENT:
-                    for (int i = 0; i < defaultRoles.length; i++) {
-                      String roleName = defaultRoles[i];
-                      RoleEntity roleEntity = roleEntityDAO.findByName(roleName);
-                      
-                      if (roleEntity != null)
-                        environmentRolePermissionDAO.create(roleEntity, permission);
+                    for (RoleEntity role : roles) {
+                      environmentRolePermissionDAO.create(role, permission);
                     }
                   break;
                   
@@ -92,15 +133,12 @@ public class PermissionsPluginController {
                     List<WorkspaceEntity> workspaces = workspaceEntityDAO.listAll();
                     WorkspaceSettingsTemplate workspaceSettingsTemplate = workspaceSettingsTemplateDAO.findById(1l); 
                     
-                    for (int i = 0; i < defaultRoles.length; i++) {
-                      String roleName = defaultRoles[i];
-                      RoleEntity roleEntity = roleEntityDAO.findByName(roleName);
-
-                      workspaceSettingsTemplateRolePermissionDAO.create(workspaceSettingsTemplate, roleEntity, permission);
-
+                    for (RoleEntity role : roles) {
+                      workspaceSettingsTemplateRolePermissionDAO.create(workspaceSettingsTemplate, role, permission);
+  
                       // TODO Workspace creation & templates - is this necessary and bulletproof?
                       for (WorkspaceEntity workspace: workspaces) {
-                        workspaceRolePermissionDAO.create(workspace, roleEntity, permission);
+                        workspaceRolePermissionDAO.create(workspace, role, permission);
                       }
                     }
                   break;
@@ -108,22 +146,20 @@ public class PermissionsPluginController {
                   case PermissionScope.USERGROUP:
                     List<UserGroup> userGroups = userGroupDAO.listAll();
                     
-                    for (int i = 0; i < defaultRoles.length; i++) {
-                      String roleName = defaultRoles[i];
-                      RoleEntity roleEntity = roleEntityDAO.findByName(roleName);
-
+                    for (RoleEntity role : roles) {
                       // TODO Workspace creation & templates - is this necessary and bulletproof?
                       for (UserGroup userGroup: userGroups) {
-                        userGroupRolePermissionDAO.create(userGroup, roleEntity, permission);
+                        userGroupRolePermissionDAO.create(userGroup, role, permission);
                       }
                     }
                   break;
                 }
               }
             }
-            
+            else
+              logger.log(Level.WARNING, "PermissionScope null for " + permissionName);
           } catch (Exception e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Permission handling failed for " + permissionName);
           }
         }
       }

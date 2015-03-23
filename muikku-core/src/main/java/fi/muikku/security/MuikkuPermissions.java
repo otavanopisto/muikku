@@ -4,51 +4,58 @@ import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 
+import fi.muikku.model.users.EnvironmentRoleArchetype;
+import fi.muikku.model.workspace.WorkspaceRoleArchetype;
+
+
 @ApplicationScoped
 public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implements MuikkuPermissionCollection {
 
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultPermissionRoles ({ MANAGER })
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.MANAGER })
   public static final String REPRESENT_USER = "REPRESENT_USER";
   
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultPermissionRoles ({ MANAGER })
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.MANAGER })
   public static final String CREATE_WORKSPACE = "CREATE_WORKSPACE";
   
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultPermissionRoles ({ MANAGER, STUDENT, TEACHER })
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDENT, EnvironmentRoleArchetype.TEACHER })
   public static final String LIST_WORKSPACES = "LIST_WORKSPACES";
   
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultPermissionRoles ({ MANAGER })
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.MANAGER })
   public static final String MANAGE_SETTINGS = "MANAGE_SETTINGS";
   
   @Scope (PermissionScope.ENVIRONMENT)
-  @DefaultPermissionRoles ({ MANAGER })
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.MANAGER })
   public static final String MANAGE_USERS = "MANAGE_USERS";
   
   /* WORKSPACE */
   
   @Scope (PermissionScope.WORKSPACE)
-  @DefaultPermissionRoles ({ MANAGER, STUDENT, TEACHER })
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDENT, EnvironmentRoleArchetype.TEACHER })
   public static final String JOIN_WORKSPACE = "JOIN_WORKSPACE";
 
   @Scope (PermissionScope.WORKSPACE)
-  @DefaultPermissionRoles ({ MANAGER, WORKSPACE_TEACHER })
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.MANAGER })
+  @DefaultWorkspacePermissionRoles({ WorkspaceRoleArchetype.TEACHER })
   public static final String WORKSPACE_MANAGEWORKSPACESETTINGS = "WORKSPACE_MANAGEWORKSPACESETTINGS";
   
   @Scope (PermissionScope.WORKSPACE)
-  @DefaultPermissionRoles ({ MANAGER, WORKSPACE_TEACHER })
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.MANAGER })
+  @DefaultWorkspacePermissionRoles({ WorkspaceRoleArchetype.TEACHER })
   public static final String REPRESENT_WORKSPACEUSER = "REPRESENT_WORKSPACEUSER";
   
   @Scope (PermissionScope.WORKSPACE)
-  @DefaultPermissionRoles ({ MANAGER, WORKSPACE_TEACHER })
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.MANAGER })
+  @DefaultWorkspacePermissionRoles({ WorkspaceRoleArchetype.TEACHER })
   public static final String EVALUATE_USER = "EVALUATE_USER";
 
   /* RESOURCE */
   
   @Scope (PermissionScope.RESOURCE)
-  @DefaultPermissionRoles ({ MANAGER })
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.MANAGER })
   public static final String MANAGE_RESOURCERIGHTS = "MANAGE_RESOURCERIGHTS";
   
   @Override
@@ -65,9 +72,20 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
   public String getPermissionScope(String permission) throws NoSuchFieldException {
     return getPermissionScope(MuikkuPermissions.class, permission);
   }
-  
+
   @Override
-  public String[] getDefaultRoles(String permission) throws NoSuchFieldException {
-    return getDefaultRoles(MuikkuPermissions.class, permission);
+  public String[] getDefaultPseudoRoles(String permission) throws NoSuchFieldException {
+    return getDefaultPseudoRoles(MuikkuPermissions.class, permission);
   }
+
+  @Override
+  public EnvironmentRoleArchetype[] getDefaultEnvironmentRoles(String permission) throws NoSuchFieldException {
+    return getDefaultEnvironmentRoles(MuikkuPermissions.class, permission);
+  }
+
+  @Override
+  public WorkspaceRoleArchetype[] getDefaultWorkspaceRoles(String permission) throws NoSuchFieldException {
+    return getDefaultWorkspaceRoles(MuikkuPermissions.class, permission);
+  }
+  
 }

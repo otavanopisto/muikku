@@ -7,11 +7,19 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerFactory;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.xerces.parsers.DOMParser;
+import org.cyberneko.html.HTMLConfiguration;
 import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.annotation.RequestAction;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 
 import fi.muikku.jsf.NavigationRules;
 import fi.muikku.model.workspace.WorkspaceEntity;
@@ -40,7 +48,7 @@ public class WorkspaceMaterialsReadingBackingBean {
 
   @Inject
   @Named
-  private WorkspaceNavigationBackingBean workspaceNavigationBackingBean;
+  private WorkspaceBackingBean workspaceBackingBean;
 
   @RequestAction
   public String init() {
@@ -59,17 +67,32 @@ public class WorkspaceMaterialsReadingBackingBean {
     rootFolder = workspaceMaterialController
         .findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
 
-    workspaceNavigationBackingBean.setWorkspaceUrlName(urlName);
+    workspaceBackingBean.setWorkspaceUrlName(urlName);
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
     workspaceName = workspace.getName();
     workspaceEntityId = workspaceEntity.getId();
-    contentNodes = new ArrayList<>();
 
-    List<WorkspaceNode> rootMaterialNodes = workspaceMaterialController
-        .listVisibleWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(rootFolder, WorkspaceFolderType.DEFAULT);
-    for (WorkspaceNode rootMaterialNode : rootMaterialNodes) {
-      ContentNode node = workspaceMaterialController.createContentNode(rootMaterialNode);
-      contentNodes.add(node);
+    contentNodes = new ArrayList<>();
+    DOMParser parser = new DOMParser(new HTMLConfiguration());
+    try {
+      parser.setProperty("http://cyberneko.org/html/properties/names/elems", "lower");
+
+      TransformerFactory transformerFactory = TransformerFactory.newInstance();
+      Transformer transformer = transformerFactory.newTransformer();
+      transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+      transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+      transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+      transformer.setOutputProperty(OutputKeys.INDENT, "no");
+  
+      List<WorkspaceNode> rootMaterialNodes = workspaceMaterialController
+          .listVisibleWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(rootFolder, WorkspaceFolderType.DEFAULT);
+      for (WorkspaceNode rootMaterialNode : rootMaterialNodes) {
+        ContentNode node = workspaceMaterialController.createContentNode(rootMaterialNode, parser, transformer);
+        contentNodes.add(node);
+      }
+    } catch (SAXNotRecognizedException | SAXNotSupportedException | TransformerConfigurationException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
     }
 
     return null;
