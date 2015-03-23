@@ -36,7 +36,7 @@ public class PyramusSchoolDataWorkspaceUsersUpdateScheduler implements PyramusUp
 
     int count = 0;
     try {
-      logger.info("Synchronizing Pyramus workspace users");
+      logger.fine("Synchronizing Pyramus workspace users");
 
       List<WorkspaceEntity> workspaceEntities = workspaceEntityController.listWorkspaceEntitiesByDataSource(
           SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, offset, BATCH_SIZE);
@@ -51,7 +51,7 @@ public class PyramusSchoolDataWorkspaceUsersUpdateScheduler implements PyramusUp
         offset += workspaceEntities.size();
       }
     } finally {
-      logger.info(String.format("Synchronized %d Pyramus workspace users", count));
+      logger.fine(String.format("Synchronized %d Pyramus workspace users", count));
     }
   }
 

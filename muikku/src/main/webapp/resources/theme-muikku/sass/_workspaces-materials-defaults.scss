@@ -11,6 +11,11 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     min-height: 500px;
   }
   
+  /* Youtube Lazy loading wrapper */
+  .js-lazyyt {
+    margin:10px 0;
+  }
+  
   /* Input field and textarea overrides */
   input[type="text"] {
     width:auto;

@@ -1,6 +1,7 @@
 package fi.muikku.plugins.workspace;
 
 import java.util.Date;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
@@ -143,6 +144,7 @@ public class WorkspaceIndexBackingBean {
   public String getWorkspaceName() {
     return workspaceName;
   }
+  
   public String getContents() {
     return contents;
   }
@@ -223,12 +225,15 @@ public class WorkspaceIndexBackingBean {
     return endDate;
   }
   
+  public List<ContentNode> getContentNodes() {
+    return contentNodes;
+  }
   private Long workspaceId;
   private String workspaceName;
+  private Long workspaceEntityId;
   private String contents;
   private long workspaceMaterialId;
   private long materialId;
-  private long workspaceEntityId;
   private String materialType;
   private String materialTitle;
   private String workspaceType;
@@ -238,4 +243,5 @@ public class WorkspaceIndexBackingBean {
   private String courseLengthSymbol;
   private Date beginDate;
   private Date endDate;
+  private List<ContentNode> contentNodes;
 }

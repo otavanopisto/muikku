@@ -1,5 +1,5 @@
 @import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
-@import "_workspaces-materials.scss"; 
+@import "_workspaces-materials-defaults.scss";
 @import "_connect-field.scss";
 
 body.workspace-materials-management {
@@ -354,6 +354,7 @@ body.workspace-materials-management {
       
       &.folder { 
         position:relative;
+        font-weight:300;
         max-width:700px;
         width:auto;
         background:#fff;
@@ -363,7 +364,7 @@ body.workspace-materials-management {
         line-height:1.3em;
         font-size:18px;
         color:#38393a;
-        text-transform:none;
+        text-transform:uppercase;
         
         .page-content {
           font-size:27px;

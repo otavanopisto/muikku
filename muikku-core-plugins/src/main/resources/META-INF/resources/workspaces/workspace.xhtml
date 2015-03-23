@@ -44,16 +44,17 @@
 		</div>
 	</ui:define>
 
-	<ui:define name="workspace.content">
-		<ui:fragment rendered="#{not empty workspaceIndexBackingBean.workspaceMaterialId}">
-			<article id="page-#{workspaceIndexBackingBean.workspaceMaterialId}"
-				data-workspace-material-id="#{workspaceIndexBackingBean.workspaceMaterialId}"
-				data-material-id="#{workspaceIndexBackingBean.materialId}"
-				data-material-type="#{workspaceIndexBackingBean.materialType}"
-				data-material-title="#{workspaceIndexBackingBean.materialTitle}"
-				class="workspace-description-wrapper" />
-		</ui:fragment>
-		<input class="workspaceEntityId" type="hidden" value="#{workspaceIndexBackingBean.workspaceEntityId}" />
-	</ui:define>
+  <ui:define name="workspace.content">
+    <ui:repeat value="#{workspaceIndexBackingBean.contentNodes}" var="contentNode">
+      <article id="page-#{contentNode.workspaceMaterialId}"
+        data-workspace-material-id="#{contentNode.workspaceMaterialId}"
+        data-material-id="#{contentNode.materialId}"
+        data-material-type="#{contentNode.type}"
+        data-material-content="#{contentNode.html}"
+        class="workspace-materials-view-page material-view" />
+    </ui:repeat>
+    <input class="workspaceEntityId" type="hidden" value="#{workspaceIndexBackingBean.workspaceEntityId}" />
+
+  </ui:define>
 
 </ui:composition>

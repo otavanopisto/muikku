@@ -74,7 +74,7 @@ $(document).ready(function(){
 	        		    	
 	        		        mApi().calendar.calendars.events.create(calendarId, {
 	        		            calendarId: paska,
-	        		            summary: 'Vittu mitä faindain homoilua',
+	        		            summary: 'Naa',
 	        		            description: 'Mitää elä viiitti',
 //	        		            location: calendarEvent.location,
 //	        		            latitude:calendarEvent.latitude,

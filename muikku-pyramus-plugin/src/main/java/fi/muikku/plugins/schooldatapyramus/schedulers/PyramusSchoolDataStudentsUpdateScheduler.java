@@ -23,7 +23,7 @@ public class PyramusSchoolDataStudentsUpdateScheduler implements PyramusUpdateSc
   public void synchronize() throws UnexpectedSchoolDataBridgeException {
     int count = 0;
     try {
-      logger.info("Synchronizing Pyramus students (" + offset + ")");
+      logger.fine("Synchronizing Pyramus students (" + offset + ")");
       int result = pyramusUpdater.updateStudents(offset, BATCH_SIZE);
       if (result == -1) {
         offset = 0;
@@ -33,7 +33,7 @@ public class PyramusSchoolDataStudentsUpdateScheduler implements PyramusUpdateSc
         offset += BATCH_SIZE;
       }
     } finally {
-      logger.info(String.format("Synchronized %d Pyramus students", count));
+      logger.fine(String.format("Synchronized %d Pyramus students", count));
     }
   }
 
