@@ -8,10 +8,20 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import fi.muikku.controller.PermissionController;
 import fi.muikku.controller.ResourceRightsController;
+import fi.muikku.dao.users.EnvironmentRoleEntityDAO;
+import fi.muikku.dao.users.RoleEntityDAO;
+import fi.muikku.dao.workspace.WorkspaceRoleEntityDAO;
+import fi.muikku.model.security.Permission;
 import fi.muikku.model.security.ResourceRights;
+import fi.muikku.model.users.EnvironmentRoleArchetype;
+import fi.muikku.model.users.EnvironmentRoleEntity;
+import fi.muikku.model.users.RoleEntity;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.model.workspace.WorkspaceRoleArchetype;
+import fi.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.muikku.plugins.forum.dao.EnvironmentForumAreaDAO;
 import fi.muikku.plugins.forum.dao.ForumAreaDAO;
 import fi.muikku.plugins.forum.dao.ForumAreaGroupDAO;
@@ -69,6 +79,22 @@ public class ForumController {
   @Inject
   private UserController userController;
   
+  @Inject
+  private ForumResourcePermissionCollection forumResourcePermissionCollection;
+
+  @Inject
+  private PermissionController permissionController;
+  
+  @Inject
+  private EnvironmentRoleEntityDAO environmentRoleEntityDAO; 
+
+  @Inject
+  private WorkspaceRoleEntityDAO workspaceRoleEntityDAO; 
+  
+  @Inject
+  private RoleEntityDAO roleEntityDAO; 
+  
+
   public ForumArea getForumArea(Long forumAreaId) {
     return forumAreaDAO.findById(forumAreaId);
   }
@@ -81,12 +107,61 @@ public class ForumController {
     return forumThreadReplyDAO.findById(threadReplyId);
   }
   
+  private void createDefaultForumPermissions(ForumArea area, ResourceRights rights) {
+    List<String> permissions = forumResourcePermissionCollection.listPermissions();
+    
+    for (String permission : permissions) {
+      try {
+        String permissionScope = forumResourcePermissionCollection.getPermissionScope(permission);
+      
+        if (ForumResourcePermissionCollection.PERMISSIONSCOPE_FORUM.equals(permissionScope)) {
+          EnvironmentRoleArchetype[] environmentRoles = forumResourcePermissionCollection.getDefaultEnvironmentRoles(permission);
+          WorkspaceRoleArchetype[] workspaceRoles = area instanceof WorkspaceForumArea ? forumResourcePermissionCollection.getDefaultWorkspaceRoles(permission) : null;
+          String[] pseudoRoles = forumResourcePermissionCollection.getDefaultPseudoRoles(permission);
+  
+          Permission perm = permissionController.findByName(permission);
+          List<RoleEntity> roles = new ArrayList<RoleEntity>();
+          
+          if (pseudoRoles != null) {
+            for (String pseudoRole : pseudoRoles) {
+              RoleEntity roleEntity = roleEntityDAO.findByName(pseudoRole);
+              
+              if (roleEntity != null)
+                roles.add(roleEntity);
+            }
+          }
+  
+          if (environmentRoles != null) {
+            for (EnvironmentRoleArchetype envRole : environmentRoles) {
+              List<EnvironmentRoleEntity> envRoles = environmentRoleEntityDAO.listByArchetype(envRole);
+              roles.addAll(envRoles);
+            }
+          }
+  
+          if (workspaceRoles != null) {
+            for (WorkspaceRoleArchetype arc : workspaceRoles) {
+              List<WorkspaceRoleEntity> wsRoles = workspaceRoleEntityDAO.listByArchetype(arc);
+              roles.addAll(wsRoles);
+            }
+          }
+          
+          for (RoleEntity role : roles)
+            resourceRightsController.addResourceUserRolePermission(rights, role, perm);
+        }
+      } catch (NoSuchFieldException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+  
   @Permit (ForumResourcePermissionCollection.FORUM_CREATEENVIRONMENTFORUM)
   public EnvironmentForumArea createEnvironmentForumArea(String name, Long groupId) {
     UserEntity owner = sessionController.getLoggedUserEntity();
     ResourceRights rights = resourceRightsController.create();
     ForumAreaGroup group = groupId != null ? findForumAreaGroup(groupId) : null;
-    return environmentForumAreaDAO.create(name, group, false, owner, rights);
+    EnvironmentForumArea forumArea = environmentForumAreaDAO.create(name, group, false, owner, rights);
+    createDefaultForumPermissions(forumArea, rights);
+    return forumArea;
   }
   
   public ForumAreaGroup findForumAreaGroup(Long groupId) {

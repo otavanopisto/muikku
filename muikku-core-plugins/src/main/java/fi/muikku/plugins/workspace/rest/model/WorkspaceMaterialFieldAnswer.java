@@ -5,8 +5,9 @@ public class WorkspaceMaterialFieldAnswer {
   public WorkspaceMaterialFieldAnswer() {
   }
 
-  public WorkspaceMaterialFieldAnswer(Long materialId, String embedId, String fieldName, String value) {
+  public WorkspaceMaterialFieldAnswer(Long workspaceMaterialId, Long materialId, String embedId, String fieldName, String value) {
     super();
+    this.workspaceMaterialId = workspaceMaterialId;
     this.materialId = materialId;
     this.embedId = embedId;
     this.fieldName = fieldName;
@@ -45,7 +46,16 @@ public class WorkspaceMaterialFieldAnswer {
     this.value = value;
   }
   
+  public Long getWorkspaceMaterialId() {
+    return workspaceMaterialId;
+  }
+  
+  public void setWorkspaceMaterialId(Long workspaceMaterialId) {
+    this.workspaceMaterialId = workspaceMaterialId;
+  }
+  
   private Long materialId;
+  private Long workspaceMaterialId;
   private String fieldName;
   private String embedId;
   private String value;
