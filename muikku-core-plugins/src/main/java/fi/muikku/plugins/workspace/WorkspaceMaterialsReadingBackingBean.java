@@ -1,30 +1,21 @@
 package fi.muikku.plugins.workspace;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerFactory;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.xerces.parsers.DOMParser;
-import org.cyberneko.html.HTMLConfiguration;
 import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.annotation.RequestAction;
-import org.xml.sax.SAXNotRecognizedException;
-import org.xml.sax.SAXNotSupportedException;
 
 import fi.muikku.jsf.NavigationRules;
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.plugins.workspace.model.WorkspaceFolderType;
-import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.Workspace;
@@ -36,6 +27,9 @@ import fi.muikku.security.LoggedIn;
 @Join(path = "/workspace/{workspaceUrlName}/materials-reading", to = "/workspaces/materials-reading.jsf")
 @LoggedIn
 public class WorkspaceMaterialsReadingBackingBean {
+
+  @Inject
+  private Logger logger;
 
   @Parameter
   private String workspaceUrlName;
@@ -72,27 +66,12 @@ public class WorkspaceMaterialsReadingBackingBean {
     workspaceName = workspace.getName();
     workspaceEntityId = workspaceEntity.getId();
 
-    contentNodes = new ArrayList<>();
-    DOMParser parser = new DOMParser(new HTMLConfiguration());
     try {
-      parser.setProperty("http://cyberneko.org/html/properties/names/elems", "lower");
-
-      TransformerFactory transformerFactory = TransformerFactory.newInstance();
-      Transformer transformer = transformerFactory.newTransformer();
-      transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-      transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-      transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-      transformer.setOutputProperty(OutputKeys.INDENT, "no");
-  
-      List<WorkspaceNode> rootMaterialNodes = workspaceMaterialController
-          .listVisibleWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(rootFolder, WorkspaceFolderType.DEFAULT);
-      for (WorkspaceNode rootMaterialNode : rootMaterialNodes) {
-        ContentNode node = workspaceMaterialController.createContentNode(rootMaterialNode, parser, transformer);
-        contentNodes.add(node);
-      }
-    } catch (SAXNotRecognizedException | SAXNotSupportedException | TransformerConfigurationException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      contentNodes = workspaceMaterialController.listWorkspaceMaterialsAsContentNodes(workspaceEntity, false);
+    }
+    catch (Exception e) {
+      logger.log(Level.SEVERE, "Error loading materials", e);
+      return NavigationRules.INTERNAL_ERROR;
     }
 
     return null;
