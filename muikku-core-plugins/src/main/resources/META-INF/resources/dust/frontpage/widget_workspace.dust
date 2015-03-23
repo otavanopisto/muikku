@@ -1,3 +1,3 @@
 
-  <li><a href="/workspace/{urlName}">{description}</a></li>
+  <li><a href="/workspace/{urlName}">{name}</a></li>
   
