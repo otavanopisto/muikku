@@ -20,11 +20,13 @@
 			<span class="workspace-study-level-indicator indicator1">#{workspaceIndexBackingBean.educationType}</span>
 			<span class="workspace-meta-title">Aine</span>
       <span class="workspace-meta-desc">#{workspaceIndexBackingBean.subject}</span> 
-      <span class="workspace-meta-title">Tyyppi</span>
+
       <ui:fragment rendered="#{workspaceIndexBackingBean.workspaceType ne null}">
+        <span class="workspace-meta-title">Tyyppi</span>
         <span class="workspace-meta-desc">#{workspaceIndexBackingBean.workspaceType}</span> 
-        <span class="workspace-meta-title">Laajuus</span>
       </ui:fragment>
+
+      <span class="workspace-meta-title">Laajuus</span>
       <span class="workspace-meta-desc">
         <h:outputFormat value="#{i18n.text['plugin.workspace.index.courseLength']}">
           <f:param value="#{workspaceIndexBackingBean.courseLength}"/>
