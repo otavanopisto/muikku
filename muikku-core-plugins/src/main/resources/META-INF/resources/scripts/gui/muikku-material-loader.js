@@ -31,8 +31,14 @@
           publishedRevision: $(pageElement).data('material-published-revision')
         };
         $(pageElement).removeAttr('data-material-content');
-        var title = material.title ? '<h2>' + material.title + '</h2>' : '';
-        var parsed = $('<div>').html(title + (material.html ? material.html : ''));
+
+        var parsed = $('<div>');
+        if (material.title) {
+          parsed.append($('h2').html(material.title));
+        }
+        if (material.html) {
+          parsed.append(material.html);
+        }
         
         $(document).trigger('beforeHtmlMaterialRender', {
           pageElement: pageElement,
@@ -43,9 +49,8 @@
           fieldAnswers: fieldAnswers
         });
         
-        material.html = parsed.html();
-        
         if (this._getRenderMode('html') == 'dust') {
+          material.html = parsed.html();
           renderDustTemplate(this.options.dustTemplate, { id: materialId, materialId: materialId, workspaceMaterialId: workspaceMaterialId, type: 'html', data: material }, function (text) {
             $(pageElement).append(text);
             $(document).trigger('afterHtmlMaterialRender', {
