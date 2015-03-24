@@ -179,34 +179,39 @@
   
   window.loadFullCalendarEvents = function (element) {
     var view = $(element).fullCalendar('getView');
-    // TODO: switch to ISO8601?
-    mApi().calendar.calendars
-      .read()
-      .add('$', 'id', 'events', mApi().calendar.calendars.events, {
-//        timeMin: view.visStart.toISOString(),
-//        timeMax: view.visEnd.toISOString()
-      })
-      .callback($.proxy(function (err, calendars) {
-        var events = [];
-        
-        $.each(calendars, function (index, calendar) {
-          events = $.merge(events, $.map(calendar.events, function (event) {
-            return {
-              title: event.summary,
-              start: new Date(event.start),
-              end: new Date(event.end),
-              allDay: event.allDay,
-              editable: false
-            };
-          }));
-        });
-        
-        $(element).fullCalendar('removeEvents');
-        $(element).fullCalendar("addEventSource", {
-          events: events
-        });
-        
-      }, this));
+    var calendarIds = $(element).attr('data-user-calendar-ids').split(',');
+    var batchCalls = {};
+    
+    // TODO: filter events
+    var calls = $.map(calendarIds, function (calendarId) {
+      return mApi().calendar.calendars.events.read(parseInt(calendarId));
+    });
+    
+    mApi().batch(calls)
+      .callback(function (err, results) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          var events = [];
+
+          $.each(results, function (index, result) {
+            events = $.merge(events, $.map(result, function (event) {
+              return {
+                title: event.summary,
+                start: new Date(event.start),
+                end: new Date(event.end),
+                allDay: event.allDay,
+                editable: false
+              };
+            }));
+          });
+          
+          $(element).fullCalendar('removeEvents');
+          $(element).fullCalendar("addEventSource", {
+            events: events
+          });          
+        }
+      });
   };
   
 })(this);

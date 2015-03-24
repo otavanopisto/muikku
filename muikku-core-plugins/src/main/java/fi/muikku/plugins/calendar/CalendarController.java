@@ -67,6 +67,10 @@ public class CalendarController {
     return userCalendarDAO.listByUserId(user.getId());
   }
 
+  public List<Long> listUserCalendarIds(UserEntity user) {
+    return userCalendarDAO.listIdsByUserId(user.getId());
+  }
+
   public Calendar updateCalendar(UserCalendar userCalendar, Calendar calendar) throws CalendarServiceException {
     CalendarServiceProvider provider = getCalendarServiceProvider(userCalendar.getCalendarProvider());
 

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -43,6 +45,9 @@ import fi.muikku.session.SessionController;
 public class CalendarRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = 5698069370957155106L;
+  
+  @Inject
+  private Logger logger;
 
   @Inject
   private CalendarController calendarController;
@@ -76,7 +81,7 @@ public class CalendarRESTService extends PluginRESTService {
         }
       }
     } catch (CalendarServiceException e) {
-      e.printStackTrace();
+      logger.log(Level.SEVERE, "Failed to retrieve calendars", e);
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
 
