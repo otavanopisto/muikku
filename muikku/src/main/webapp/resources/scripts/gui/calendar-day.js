@@ -1,16 +1,11 @@
 (function() {
-  function removeHeader(container) {
-    var hdr = $(container).find('.fc-header');
-    hdr.remove();
-  }
-  
   $(document).ready(function(){
     $('#dayView').fullCalendar({
-      defaultView : 'agendaDay'
+      defaultView : 'agendaDay',
+      header: false
     });
     
     loadFullCalendarEvents($('#dayView'));
-    removeHeader('#dayView');
   });
   
 })(this);  

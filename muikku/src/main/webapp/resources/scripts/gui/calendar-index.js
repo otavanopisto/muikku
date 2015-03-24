@@ -1,16 +1,13 @@
 (function() {
-  function removeHeader(container) {
-    var hdr = $(container).find('.fc-header');
-    hdr.remove();
-  }
-  
   $(document).ready(function(){
     $('#fpDayEvents').fullCalendar({
-      defaultView : 'basicDay'
+      defaultView : 'basicDay',
+      header: false
     });
     
     $('#fpWeekView').fullCalendar({
       defaultView : 'agendaWeek',
+      header: false,
       columnFormat : {
         week : 'ddd',
       },
@@ -19,9 +16,6 @@
   
     loadFullCalendarEvents($('#fpDayEvents'));
     loadFullCalendarEvents($('#fpWeekView'));
-    
-    removeHeader('#fpWeekView');
-    removeHeader('#fpDayEvents');
   });
   
 })(this);
