@@ -68,7 +68,7 @@ public class WorkspaceMaterialsBackingBean {
     try {
       contentNodes = workspaceMaterialController.listWorkspaceMaterialsAsContentNodes(workspaceEntity, false);
     }
-    catch (Exception e) {
+    catch (WorkspaceMaterialException e) {
       logger.log(Level.SEVERE, "Error loading materials", e);
       return NavigationRules.INTERNAL_ERROR;
     }
