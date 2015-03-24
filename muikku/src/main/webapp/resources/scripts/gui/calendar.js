@@ -38,6 +38,11 @@
       .append($('<div>').append($('<textarea>').attr({ 'placeholder': 'Tapahtuman kuvaus', 'name': 'eventContent', 'required': 'required' })));
   }
   
+  function getISODateTime(date, time) {
+    date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+    return date.toISOString().split('T')[0] + 'T' + time.toISOString().split('T')[1];
+  }
+  
   $(document).ready(function(){
     $(".bt-mainFunction").m3modal({
   	  title : "Uusi tapahtuma! ",
@@ -111,9 +116,9 @@
   	    caption: "Luo tapahtuma",
   	    name : "sendEvent",
   	    action: function (e) {
-  	      var startISO = $('#startDate').datepicker('getDate').toISOString().split('T')[0] + 'T' + $('#startTime').timepicker('getTime').toISOString().split('T')[1];
-          var endISO = $('#endDate').datepicker('getDate').toISOString().split('T')[0] + 'T' + $('#endTime').timepicker('getTime').toISOString().split('T')[1];
-  	      
+  	      var startISO = getISODateTime($('#startDate').datepicker('getDate'), $('#startTime').timepicker('getTime'));
+          var endISO = getISODateTime($('#endDate').datepicker('getDate'), $('#endTime').timepicker('getTime'));
+          
   	      mApi().calendar.calendars.events.create($('#eventCalendar').val(), {
   	        summary: $('input[name="eventSubject"]').val(),
   	        description: $('input[name="eventContent"]').val(),
