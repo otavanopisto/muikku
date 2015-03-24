@@ -143,12 +143,11 @@
 
 .gt-user {
    @extend .co-listItem;
-   .gt-user-meta-content{
-     display:none;  
+   .gt-user-details{ 
    }
    &.closed{}
    &.open{
-     height:300px;
+
    }
 }
 

@@ -4,14 +4,13 @@ $(document).ready(function(){
 
     	init : function(){
     		// todo: parse url
-            this.refreshUser();	
-//            this.refreshAreas();	
-    	    $(GuideImpl.guideContainer).on("click", '.gt-user:not(.open)', $.proxy(this.viewUser,this));  
-
+            this.refreshUsers();	
+    	    $(GuideImpl.guideContainer).on("click", '.gt-user:not(.open)', $.proxy(this.showUser,this));  
+    	    $(GuideImpl.guideContainer).on("click", '.gt-tool-view-profile', $.proxy(this.viewUserProfile,this));
     	},
     	
     	
-    	refreshUser : function(){
+    	refreshUsers : function(){
 
             this.clearUsers();
 ;  
@@ -243,24 +242,44 @@ $(document).ready(function(){
 //	    },
 //	    
 //	    
-	    viewUser : function(event){
+	    viewUserProfile : function(event){
 
 	    	var element = $(event.target); 
 	        element = element.parents(".gt-user");
 	        var uId = $(element).attr("id");
-		    var cont = $(".gt-user-meta-content"); 
+
+	        this.clearUsers();
+	        
+	        
+		    mApi().user.users.read(uId).callback(function(err, user){
+				    if( err ){
+				        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nouser', err));
+				  	}else{    	  
+					  	renderDustTemplate('/guider/guider_view_profile.dust', user, function(text) {				  		
+					        $(GuideImpl.guideContainer).append($.parseHTML(text));
+					  	});
+				  	}	
+		    });  		
+				
+	    },    	
+	    showUser : function(event){
+
+	    	var element = $(event.target); 
+	        element = element.parents(".gt-user");
+	        var uId = $(element).attr("id");
+		    var det = element.find(".gt-user-details"); 
+	        var detcont = element.find(".gt-user-details-content"); 
 
 	    	$(element).removeClass("closed");
 	    	$(element).addClass("open");
-	    				
+	    	$(det).css("display","block");	    				
 
 		    mApi().user.users.read(uId).callback(function(err, user){
 				    if( err ){
 				        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nouser', err));
 				  	}else{    	  
-					  	renderDustTemplate('/discussion/discussion_subitems.dust', user, function(text) {				  		
-					  		$(cont).append($.parseHTML(text));
-						  
+					  	renderDustTemplate('/guider/guider_item_details.dust', user, function(text) {				  		
+					  		$(detcont).append($.parseHTML(text));
 					  	});
 				  	}	
 		    });  		
@@ -290,38 +309,8 @@ $(document).ready(function(){
    window.guider = new GuideImpl();
   
         
-	$(".di-new-message-button").click(function(){
-	    
-		var createMessage = function(values){
-			var forumAreaId = null;
-	    
-        
-	         for(value in values){
-			  if(value == "forumAreaId"){
-				  var forumAreaId = values[value];
-				  delete values[value];
-			  }    	
-	         }
-			
-			mApi().forum.areas.threads.create(forumAreaId, values)
-				.callback(function(err, result) {
-					
-				});	
-			
-			 window.discussion.refreshLatest();
-
-		}	
-			
-	    mApi().forum.areas.read()
-	      .callback(function (err, areas) {
-	      	if( err ){
-	          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.noareas', err));
-	    	}else{ 		
-			  openInSN('/discussion/discussion_create_message.dust', areas, createMessage );
-	
-	    	}
-	      });
-       
+	$(".gt-main-dropdown-label").click(function(){
+		 window.guider.refreshUsers();   
 	});
 	
 	
