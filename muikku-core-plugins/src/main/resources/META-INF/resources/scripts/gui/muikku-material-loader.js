@@ -34,7 +34,7 @@
 
         var parsed = $('<div>');
         if (material.title) {
-          parsed.append($('h2').html(material.title));
+          parsed.append('<h2>' + material.title + '</h2>');
         }
         if (material.html) {
           parsed.append(material.html);
