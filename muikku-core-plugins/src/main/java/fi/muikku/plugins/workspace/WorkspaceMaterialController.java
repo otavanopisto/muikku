@@ -602,9 +602,8 @@ public class WorkspaceMaterialController {
             youtubeDiv.setAttribute("class", "js-lazyyt");
             youtubeDiv.setAttribute("data-youtube-id", youtubeId);
             youtubeDiv.setAttribute("data-ratio", "16:9");
-            Node paragraphNode = iframe.getParentNode();
-            Node paragraphParent = paragraphNode.getParentNode();
-            paragraphParent.replaceChild(youtubeDiv, paragraphNode);
+            Node iframeParent = iframe.getParentNode();
+            iframeParent.replaceChild(youtubeDiv, iframe);
           }
         }
 
