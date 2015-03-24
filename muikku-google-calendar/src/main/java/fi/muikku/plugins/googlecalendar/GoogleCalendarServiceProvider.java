@@ -1,9 +1,10 @@
 package fi.muikku.plugins.googlecalendar;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import org.joda.time.DateTime;
 
 import fi.muikku.calendar.CalendarEvent;
 import fi.muikku.calendar.CalendarEventAttendee;
@@ -79,7 +80,7 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
   }
 
   @Override
-  public List<CalendarEvent> listEvents(Date minTime, Date maxTime, String... calendarId) throws CalendarServiceException {
+  public List<CalendarEvent> listEvents(DateTime minTime, DateTime maxTime, String... calendarId) throws CalendarServiceException {
     return calendarClient.listEvents(minTime, maxTime, calendarId);
   }
 

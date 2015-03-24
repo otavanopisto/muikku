@@ -1,17 +1,20 @@
 package fi.muikku.plugins.googlecalendar;
 
-import fi.muikku.plugins.googlecalendar.model.GoogleCalendarEvent;
-import fi.muikku.plugins.googlecalendar.model.GoogleCalendarEventUser;
-import fi.muikku.plugins.googlecalendar.model.GoogleCalendar;
-
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.ejb.Stateless;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets.Details;
@@ -35,17 +38,11 @@ import fi.muikku.calendar.CalendarEventAttendee;
 import fi.muikku.calendar.CalendarEventStatus;
 import fi.muikku.calendar.CalendarEventTemporalField;
 import fi.muikku.calendar.CalendarServiceException;
+import fi.muikku.plugins.googlecalendar.model.GoogleCalendar;
+import fi.muikku.plugins.googlecalendar.model.GoogleCalendarEvent;
+import fi.muikku.plugins.googlecalendar.model.GoogleCalendarEventUser;
 import fi.muikku.session.AccessToken;
 import fi.muikku.session.SessionController;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.ejb.Stateless;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
-import org.apache.commons.lang3.StringUtils;
 
 
 @Dependent
@@ -216,7 +213,7 @@ public class GoogleCalendarClient {
     return result;
   }
 
-  public List<CalendarEvent> listEvents(Date minTime, Date maxTime, String... calendarId) throws CalendarServiceException {
+  public List<CalendarEvent> listEvents(org.joda.time.DateTime minTime, org.joda.time.DateTime maxTime, String... calendarId) throws CalendarServiceException {
     ArrayList<CalendarEvent> result = new ArrayList<>();
 
     for (String calId : calendarId) {
@@ -224,8 +221,8 @@ public class GoogleCalendarClient {
         for (Event event : getClient()
                 .events()
                 .list(calId)
-                .setTimeMin(new DateTime(minTime))
-                .setTimeMax(new DateTime(maxTime))
+                .setTimeMin(new DateTime(minTime.getMillis()))
+                .setTimeMax(new DateTime(maxTime.getMillis()))
                 .execute()
                 .getItems()) {
           result.add(

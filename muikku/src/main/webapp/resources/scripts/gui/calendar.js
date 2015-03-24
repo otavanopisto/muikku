@@ -182,9 +182,11 @@
     var calendarIds = $(element).attr('data-user-calendar-ids').split(',');
     var batchCalls = {};
     
-    // TODO: filter events
     var calls = $.map(calendarIds, function (calendarId) {
-      return mApi().calendar.calendars.events.read(parseInt(calendarId));
+      return mApi().calendar.calendars.events.read(parseInt(calendarId), {
+        timeMin: view.visStart.toISOString(),
+        timeMax: view.visEnd.toISOString()
+      });
     });
     
     mApi().batch(calls)

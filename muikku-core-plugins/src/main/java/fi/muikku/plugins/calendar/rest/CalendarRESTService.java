@@ -2,7 +2,6 @@ package fi.muikku.plugins.calendar.rest;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -37,6 +36,7 @@ import fi.muikku.plugins.calendar.rest.model.Calendar;
 import fi.muikku.plugins.calendar.rest.model.CalendarEvent;
 import fi.muikku.plugins.calendar.rest.model.CalendarEventAttendee;
 import fi.muikku.plugins.calendar.rest.model.CalendarEventReminder;
+import fi.muikku.rest.types.DateTimeParameter;
 import fi.muikku.session.SessionController;
 
 @RequestScoped
@@ -194,11 +194,9 @@ public class CalendarRESTService extends PluginRESTService {
     }
   }
 
-
-
   @GET
   @Path ("/calendars/{CALID}/events/")
-  public Response getEvents(@PathParam ("CALID") Long calendarId, @QueryParam ("timeMin") Date timeMin, @QueryParam ("timeMax") Date timeMax) {
+  public Response getEvents(@PathParam ("CALID") Long calendarId, @QueryParam ("timeMin") DateTimeParameter timeMin, @QueryParam ("timeMax") DateTimeParameter timeMax) {
     if (calendarId == null) {
       return Response.status(Response.Status.NOT_FOUND).build();
     }
@@ -215,7 +213,7 @@ public class CalendarRESTService extends PluginRESTService {
     try {
       List<CalendarEvent> result = new ArrayList<>();
 
-      List<fi.muikku.calendar.CalendarEvent> calendarEvents = calendarController.listCalendarEvents(userCalendar, timeMin, timeMax);
+      List<fi.muikku.calendar.CalendarEvent> calendarEvents = calendarController.listCalendarEvents(userCalendar, timeMin != null ? timeMin.getDateTime() : null, timeMax != null ? timeMax.getDateTime() : null);
       for (fi.muikku.calendar.CalendarEvent calendarEvent : calendarEvents) {
         result.add(createEventRestModel(userCalendar, calendarEvent));
       }

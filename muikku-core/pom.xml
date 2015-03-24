@@ -93,6 +93,13 @@
       <groupId>org.scribe</groupId>
       <artifactId>scribe</artifactId>
     </dependency>
+    
+    <!-- Joda -->
+
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+    </dependency>
 
     <!-- Muikku -->
 
