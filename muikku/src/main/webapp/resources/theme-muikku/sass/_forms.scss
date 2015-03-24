@@ -65,6 +65,10 @@ select {
 
 div[class*='form-container']{
   width:300px;
+  &.wide{
+  width:100%;
+  }
+
 }
 
 div[class*='ps-edit-container']{

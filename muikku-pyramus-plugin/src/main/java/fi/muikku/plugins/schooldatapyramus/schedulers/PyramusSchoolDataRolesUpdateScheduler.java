@@ -26,10 +26,10 @@ public class PyramusSchoolDataRolesUpdateScheduler implements PyramusUpdateSched
   public void synchronize() throws UnexpectedSchoolDataBridgeException {
     int count = 0;
     try {
-      logger.info("Synchronizing Pyramus roles");
+      logger.fine("Synchronizing Pyramus roles");
       count = pyramusUpdater.updateUserRoles();
     } finally {
-      logger.info(String.format("Synchronized %d Pyramus roles", count));
+      logger.fine(String.format("Synchronized %d Pyramus roles", count));
     }
   }
 

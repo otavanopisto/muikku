@@ -92,14 +92,33 @@
    
   });
 
-  $(document).on('click', '.wi-workspace-dock-navi-button-request-evaluation', function (event) {
-    confirmEvaluationRequest();
+  $(document).on('click', '.wi-workspace-dock-navi-button-evaluation', function (event) {
+    
+    if ($(this).attr('data-state') == 'unassessed') {
+      confirmEvaluationRequest(); 
+    }
+    
+    if ($(this).attr('data-state') == 'pending') {
+      $(this).attr('data-state', 'cancel');
+      $(this).children('.icon-assessment-pending').removeClass('icon-assessment-pending').addClass('icon-assessment-cancel');
+      confirmEvaluationCancellation();
+    }
+    
+    if ($(this).attr('data-state') == 'canceled') {
+      confirmEvaluationRequest(); 
+    }
+    
+    if ($(this).attr('data-state') == 'pass') {
+      confirmEvaluationRequest(); 
+    }
+    
+    if ($(this).attr('data-state') == 'fail') {
+      confirmEvaluationRequest();
+    }
+    
   });
   
-  $(document).on('click', '.wi-workspace-dock-navi-button-cancel-evaluation', function (event) {
-    confirmEvaluationCancellation()
-  });
-  
+
   function confirmEvaluationRequest() {
     renderDustTemplate('workspace/workspace-evaluation-request-confirm.dust', { }, $.proxy(function (text) {
       var dialog = $(text);
@@ -114,10 +133,34 @@
           'text': dialog.data('button-request-text'),
           'class': 'request-button',
           'click': function(event) {
-            $('.wi-workspace-dock-navi-button-request-evaluation').hide();
-            $('.wi-workspace-dock-navi-button-cancel-evaluation').show();
+            
+            var evalButton = $('.wi-workspace-dock-navi-button-evaluation');
+
+            evalButton
+              .children('.icon-assessment-' + evalButton.attr('data-state'))
+                .removeClass('icon-assessment-' + evalButton.attr('data-state'))
+                .addClass('icon-assessment-pending')
+                .children('span')
+                  .text(getLocaleText("plugin.workspace.evaluation.cancelEvaluationButtonTooltip"));
+          
+            evalButton.attr('data-state', 'pending');
+            
+            var workspaceEntityId = $('.workspaceEntityId').val();
+            var message = $('#evaluationRequestAdditionalMessage').val();
+
+            mApi().assessmentrequest.assessmentrequests.create({
+              'workspaceId': parseInt(workspaceEntityId, 10),
+              'message': message
+            }).callback(function(err, result) {
+              if (err) {
+                $('.notification-queue').notificationQueue('notification', 'error', err);
+              } else {
+                $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.workspace.evaluation.requestEvaluation.notificationText"));
+              }
+            });
+            
             $(this).dialog("destroy").remove();
-            $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.workspace.evaluation.requestEvaluation.notificationText"));
+            
           }
         }, {
           'text': dialog.data('button-cancel-text'),
@@ -144,15 +187,39 @@
           'text': dialog.data('button-cancellation-text'),
           'class': 'cancellation-button',
           'click': function(event) {
-            $('.wi-workspace-dock-navi-button-cancel-evaluation').hide();
-            $('.wi-workspace-dock-navi-button-request-evaluation').show();
+            
+            var evalButton = $('.wi-workspace-dock-navi-button-evaluation');
+
+            evalButton
+              .children('.icon-assessment-' + evalButton.attr('data-state'))
+                .removeClass('icon-assessment-' + evalButton.attr('data-state'))
+                .addClass('icon-assessment-unassessed')
+                .children('span')
+                  .text(getLocaleText("plugin.workspace.evaluation.requestEvaluationButtonTooltip"));
+          
+            evalButton.attr('data-state', 'canceled');
+            var workspaceEntityId = parseInt($('.workspaceEntityId').val(), 10);
+            mApi().assessmentrequest.cancellastassessmentrequest.create(workspaceEntityId)
+            .callback(function(err, result) {
+              if (err) {
+                $('.notification-queue').notificationQueue('notification', 'error', err);
+              } else {
+                $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.workspace.evaluation.cancelEvaluation.notificationText"));
+              }
+            });
+            
             $(this).dialog("destroy").remove();
-            $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.workspace.evaluation.cancelEvaluation.notificationText"));
           }
         }, {
           'text': dialog.data('button-cancel-text'),
           'class': 'cancel-button',
           'click': function(event) {
+            
+            var evalButton = $('.wi-workspace-dock-navi-button-evaluation');
+
+            
+            evalButton.attr('data-state', 'pending');
+            evalButton.children('.icon-assessment-cancel').removeClass('icon-assessment-cancel').addClass('icon-assessment-pending');
             $(this).dialog("destroy").remove();
           }
         }]

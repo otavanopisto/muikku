@@ -16,16 +16,31 @@ public class AssessmentRequestDAO extends CorePluginsDAO<AssessmentRequest> {
 
   private static final long serialVersionUID = -596724055841154832L;
 
-  public AssessmentRequest create(WorkspaceEntity workspaceEntity, UserEntity student, Date date, String message) {
+  public AssessmentRequest create(WorkspaceEntity workspaceEntity, UserEntity student, Date date, String message, AssessmentRequestState state) {
     AssessmentRequest assessmentRequest = new AssessmentRequest();
 
     assessmentRequest.setWorkspace(workspaceEntity.getId());
     assessmentRequest.setStudent(student.getId());
     assessmentRequest.setDate(date);
     assessmentRequest.setMessage(message);
+    assessmentRequest.setState(state);
 
     getEntityManager().persist(assessmentRequest);
 
+    return assessmentRequest;
+  }
+  
+  public AssessmentRequest updateState(AssessmentRequest assessmentRequest, AssessmentRequestState newState) {
+    assessmentRequest.setState(newState);
+    
+    getEntityManager().persist(assessmentRequest);
+
+    return assessmentRequest;
+  }
+  
+  public AssessmentRequest updateMessageId(AssessmentRequest assessmentRequest, long communicatorMessageId){
+    assessmentRequest.setCommunicatorMessageId(communicatorMessageId);
+    getEntityManager().persist(assessmentRequest);
     return assessmentRequest;
   }
 
@@ -40,5 +55,21 @@ public class AssessmentRequestDAO extends CorePluginsDAO<AssessmentRequest> {
 
     return entityManager.createQuery(criteria).getResultList();
   }
+  
+  public List<AssessmentRequest> listByWorkspaceIdAndStudentIdOrderByCreated(
+      Long workspaceEntityId,
+      Long studentEntityId) {
+    EntityManager entityManager = getEntityManager();
 
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<AssessmentRequest> criteria = criteriaBuilder.createQuery(AssessmentRequest.class);
+    Root<AssessmentRequest> root = criteria.from(AssessmentRequest.class);
+    criteria.select(root);
+    criteria.where(criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(AssessmentRequest_.workspace), workspaceEntityId)),
+        criteriaBuilder.equal(root.get(AssessmentRequest_.student), studentEntityId));
+    criteria.orderBy(criteriaBuilder.desc(root.get(AssessmentRequest_.date)));
+
+    return entityManager.createQuery(criteria).getResultList();
+  }
 }
