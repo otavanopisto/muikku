@@ -1,0 +1,52 @@
+.recurrence-input input[type="number"] {
+  text-align: right;
+}
+
+.recurrence-input>div.recurrence-input-controls {
+  position: fixed;
+}
+
+.recurrence-input-interval-input {
+  width: 40px;
+}
+
+.recurrence-input label {
+  margin-left: 8px;
+}
+
+.recurrenceInput-event-recurrence-select input[type="number"] {
+  width: 40px;
+  margin-left: 8px;
+}
+
+.recurrenceInput-event-recurrence-select input.hasDatepicker {
+  width: 100px;
+  margin-left: 8px;
+}
+
+.recurrence-input label {
+  font-weight: bold;
+  display: inline;
+}
+
+.recurrence-input .recurrence-input-recurrence label {
+  display: block;
+}
+
+.recurrence-input-weekdays input {
+  margin-left: 4px;
+  margin-right: 4px;
+}
+
+.recurrence-input-monthday {
+  display: inline-block;
+  margin-left: 4px;
+}
+
+.recurrence-input-monthday input {
+  width: 40px;
+}
+
+.recurrence-input-monthday span {
+  margin-left: 8px;  
+}
