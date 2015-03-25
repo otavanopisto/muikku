@@ -136,7 +136,7 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
 	
 	@Override
 	public List<WorkspaceType> listWorkspaceTypes() throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-    return entityFactory.createEntity(pyramusClient.get("/courses/courseTypes/", fi.pyramus.rest.model.CourseType[].class));
+    return entityFactory.createEntities(pyramusClient.get("/courses/courseTypes/", fi.pyramus.rest.model.CourseType[].class));
 	}
 
   @Override

@@ -232,7 +232,7 @@ public class PyramusSchoolDataEntityFactory {
     );
   }
 
-  public List<WorkspaceType> createEntity(CourseType... courseTypes) {
+  public List<WorkspaceType> createEntities(CourseType... courseTypes) {
     List<WorkspaceType> result = new ArrayList<>();
     
     for (CourseType courseType : courseTypes) {
