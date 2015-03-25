@@ -19,11 +19,14 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang3.StringUtils;
 
+import fi.muikku.model.users.EnvironmentRoleArchetype;
+import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.rest.AbstractRESTService;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.search.SearchProvider;
 import fi.muikku.search.SearchResult;
+import fi.muikku.users.EnvironmentUserController;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
 
@@ -39,12 +42,18 @@ public class UserRESTService extends AbstractRESTService {
   private UserEntityController userEntityController;
   
   @Inject
+  private EnvironmentUserController environmentUserController;
+  
+  @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
 
   @GET
   @Path ("/users")
-  public Response searchUsers(@QueryParam("searchString") String searchString, @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults) {
+  public Response searchUsers(@QueryParam("searchString") String searchString,
+                              @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult,
+                              @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults,
+                              @QueryParam("archetype") String archetype) {
     try {
       SearchProvider elasticSearchProvider = getProvider("elastic-search");
       if (elasticSearchProvider != null) {
@@ -64,10 +73,18 @@ public class UserRESTService extends AbstractRESTService {
   
         if (!results.isEmpty()) {
           for (Map<String, Object> o : results) {
+            boolean filter = false;
             String[] id = ((String) o.get("id")).split("/", 2);
             UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(id[1], id[0]);
+            if (!StringUtils.isEmpty(archetype)) {
+              EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
+              EnvironmentRoleArchetype environmentRoleArchetype = environmentUser.getRole().getArchetype();
+              if (!archetype.equals(environmentRoleArchetype.toString())) {
+                filter = true;
+              }
+            }
     
-            if (userEntity != null)
+            if (!filter && userEntity != null)
               ret.add(new fi.muikku.rest.model.User(userEntity.getId(), (String) o.get("firstName"), (String) o.get("lastName"), hasImage));
           }
           
