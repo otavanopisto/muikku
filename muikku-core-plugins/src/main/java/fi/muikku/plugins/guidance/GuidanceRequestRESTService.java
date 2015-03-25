@@ -1,4 +1,4 @@
-package fi.muikku.plugins.guidancerequest;
+package fi.muikku.plugins.guidance;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;

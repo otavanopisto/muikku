@@ -1,4 +1,4 @@
-package fi.muikku.plugins.guidancerequest;
+package fi.muikku.plugins.guidance;
 
 import java.util.Date;
 import java.util.List;
@@ -8,9 +8,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.CorePluginsDAO;
+import fi.muikku.plugins.guidancerequest.GuidanceRequest_;
 
 
 

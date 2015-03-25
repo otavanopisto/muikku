@@ -1,4 +1,4 @@
-package fi.muikku.plugins.guidancerequest;
+package fi.muikku.plugins.guidance;
 
 import java.util.ArrayList;
 import java.util.List;
