@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
-import fi.muikku.security.ContextReference;
+import fi.otavanopisto.security.ContextReference;
 
 @Entity
 public class UserGroup implements ContextReference {

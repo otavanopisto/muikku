@@ -11,9 +11,9 @@ import fi.muikku.dao.users.SuperUserDAO;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.util.ResourceEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.security.ContextReference;
-import fi.muikku.security.PermissionResolver;
 import fi.muikku.users.UserEntityController;
+import fi.otavanopisto.security.ContextReference;
+import fi.otavanopisto.security.PermissionResolver;
 
 public abstract class AbstractSessionController implements SessionController {
 

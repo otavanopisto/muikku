@@ -19,7 +19,7 @@ import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.Workspace;
-import fi.muikku.security.LoggedIn;
+import fi.otavanopisto.security.LoggedIn;
 
 @Named
 @Stateful

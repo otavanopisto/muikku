@@ -10,6 +10,8 @@ import fi.muikku.model.users.RoleEntity;
 import fi.muikku.model.users.SystemRoleType;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.otavanopisto.security.ContextReference;
+import fi.otavanopisto.security.User;
 
 @RequestScoped
 public class AbstractPermissionResolver {

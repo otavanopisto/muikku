@@ -101,6 +101,10 @@
       <artifactId>persistence</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>fi.otavanopisto</groupId>
+      <artifactId>webapp-permission</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
