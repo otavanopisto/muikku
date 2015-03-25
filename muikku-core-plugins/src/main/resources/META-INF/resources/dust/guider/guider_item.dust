@@ -1,0 +1,15 @@
+
+<div class="mf-item gt-user closed" id="{id}">
+  <div class="mf-item-header-name gt-user-name">
+   <div class="gt-user-meta-topic"><span>{firstName} {lastName}</span></div>
+  </div>
+  <div class="gt-user-details" style="display:none">
+    <div class="gt-user-details-content"></div>
+    <div class="gt-user-details-toolbar mf-item-tools"><div class="gt-tool-view-profile mf-item-tool-btn"><span>Näytä profiili</span></div></div>
+  </div>
+  <div class=""></div>
+
+  <div class="clear"></div>
+  <input type="hidden" name="areaId" value="{id}"/>
+</div>
+

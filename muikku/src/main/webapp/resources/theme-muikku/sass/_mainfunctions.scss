@@ -274,6 +274,7 @@
   .mf-item-tools{
       .mf-item-tool-btn{
         background:#068feb;
+        cursor:pointer;
         @include rounded(3px);
         padding:5px;
         display:inline-block;
@@ -463,18 +464,15 @@
   &.open{
   
   .mf-item-header-name{
-      padding: 0px 10px;  
       white-space:normal;
+
     }
     
   .mf-item-description{
      width:100%;
      height:auto;
     }
-  .mf-item-header-name{
-     line-height:normal;
-  
-   }
+
   } 
  }
 

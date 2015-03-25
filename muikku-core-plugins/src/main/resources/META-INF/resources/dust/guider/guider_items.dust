@@ -1,0 +1,10 @@
+
+
+
+  {#.}
+      {>"guider/guider_item.dust"/}  
+  {:else}
+      {>"guider/guider_empty.dust"/}
+  {/.}
+
+<div class="clear"></div>
