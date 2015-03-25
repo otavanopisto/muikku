@@ -1,6 +1,6 @@
 package fi.muikku.model.util;
 
-import fi.muikku.security.ContextReference;
+import fi.otavanopisto.security.ContextReference;
 
 public interface ResourceEntity extends ContextReference {
 

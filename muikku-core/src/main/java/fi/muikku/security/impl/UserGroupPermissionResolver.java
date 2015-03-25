@@ -12,10 +12,10 @@ import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserGroup;
 import fi.muikku.model.users.UserGroupUser;
 import fi.muikku.security.AbstractPermissionResolver;
-import fi.muikku.security.ContextReference;
-import fi.muikku.security.PermissionResolver;
 import fi.muikku.security.PermissionScope;
-import fi.muikku.security.User;
+import fi.otavanopisto.security.ContextReference;
+import fi.otavanopisto.security.PermissionResolver;
+import fi.otavanopisto.security.User;
 
 @RequestScoped
 public class UserGroupPermissionResolver extends AbstractPermissionResolver implements PermissionResolver {

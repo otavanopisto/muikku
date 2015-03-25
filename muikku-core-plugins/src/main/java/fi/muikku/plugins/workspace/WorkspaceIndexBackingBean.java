@@ -2,6 +2,7 @@ package fi.muikku.plugins.workspace;
 
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
@@ -16,7 +17,6 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.jsf.NavigationRules;
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.schooldata.CourseMetaController;
 import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.muikku.schooldata.WorkspaceController;
@@ -72,12 +72,12 @@ public class WorkspaceIndexBackingBean {
     }
     workspaceEntityId = workspaceEntity.getId();
     
-    WorkspaceMaterial frontPage = workspaceMaterialController.findFrontPage(workspaceEntity);
-    if (frontPage != null) {
-      workspaceMaterialId = frontPage.getId();
-      materialId = frontPage.getMaterialId();
-      materialType = "html";
-      materialTitle = "Etusivu";
+    try {
+      contentNodes = workspaceMaterialController.listWorkspaceFrontPagesAsContentNodes(workspaceEntity);
+    }
+    catch (Exception e) {
+      logger.log(Level.SEVERE, "Error loading materials", e);
+      return NavigationRules.INTERNAL_ERROR;
     }
 
     workspaceBackingBean.setWorkspaceUrlName(urlName);

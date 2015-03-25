@@ -33,8 +33,8 @@ import fi.muikku.plugins.calendar.rest.model.Calendar;
 import fi.muikku.plugins.calendar.rest.model.CalendarEvent;
 import fi.muikku.plugins.calendar.rest.model.CalendarEventAttendee;
 import fi.muikku.plugins.calendar.rest.model.CalendarEventReminder;
-import fi.muikku.security.LoggedIn;
 import fi.muikku.session.SessionController;
+import fi.otavanopisto.security.LoggedIn;
 
 @RequestScoped
 @Path ("/calendar")

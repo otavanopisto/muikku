@@ -9,9 +9,9 @@
         http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
 
   <interceptors>
-    <class>fi.muikku.security.AdminInterceptor</class>
-    <class>fi.muikku.security.LoggedInInterceptor</class>
-    <class>fi.muikku.security.PermitInterceptor</class>
+    <class>fi.otavanopisto.security.AdminInterceptor</class>
+    <class>fi.otavanopisto.security.LoggedInInterceptor</class>
+    <class>fi.otavanopisto.security.PermitInterceptor</class>
     <class>fi.muikku.LoggedInterceptor</class>
   </interceptors>
   
