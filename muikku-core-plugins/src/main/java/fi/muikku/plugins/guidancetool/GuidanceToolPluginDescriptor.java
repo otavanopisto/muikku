@@ -11,7 +11,7 @@ import fi.muikku.i18n.LocaleLocation;
 import fi.muikku.plugin.LocalizedPluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
 
-public class GuidancePluginDescriptor implements PluginDescriptor, LocalizedPluginDescriptor {
+public class GuidanceToolPluginDescriptor implements PluginDescriptor, LocalizedPluginDescriptor {
 
   @Override
   public void init() {
