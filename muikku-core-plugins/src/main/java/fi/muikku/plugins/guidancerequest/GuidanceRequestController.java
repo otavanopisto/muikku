@@ -1,4 +1,4 @@
-package fi.muikku.plugins.guidance;
+package fi.muikku.plugins.guidancerequest;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -106,7 +106,7 @@ public class GuidanceRequestController {
       content = MessageFormat.format(content, userName, message);
 
       for (MessagingWidget messagingWidget : messagingWidgets) {
-        messagingWidget.postMessage(student, caption, GuidancePluginDescriptor.MESSAGING_CATEGORY, content, recipients);
+        messagingWidget.postMessage(student, caption, GuidanceRequestPluginDescriptor.MESSAGING_CATEGORY, content, recipients);
       }
       
       Map<String, Object> params = new HashMap<String, Object>();

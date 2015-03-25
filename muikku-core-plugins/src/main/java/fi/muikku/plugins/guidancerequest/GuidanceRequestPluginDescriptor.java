@@ -1,4 +1,4 @@
-package fi.muikku.plugins.guidance;
+package fi.muikku.plugins.guidancerequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ import fi.muikku.i18n.LocaleLocation;
 import fi.muikku.plugin.LocalizedPluginDescriptor;
 import fi.muikku.plugin.PluginDescriptor;
 
-public class GuidancePluginDescriptor implements PluginDescriptor, LocalizedPluginDescriptor {
+public class GuidanceRequestPluginDescriptor implements PluginDescriptor, LocalizedPluginDescriptor {
 
   public static final String MESSAGING_CATEGORY = "guidancerequest";
   
@@ -39,8 +39,8 @@ public class GuidancePluginDescriptor implements PluginDescriptor, LocalizedPlug
   @Override
   public List<LocaleBundle> getLocaleBundles() {
     List<LocaleBundle> bundles = new ArrayList<LocaleBundle>();
-    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.guidance.GuidancePluginMessages", LocaleUtils.toLocale("fi"))));
-    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.guidance.GuidancePluginMessages", LocaleUtils.toLocale("en"))));
+    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.guidancerequest.GuidanceRequestPluginMessages", LocaleUtils.toLocale("fi"))));
+    bundles.add(new LocaleBundle(LocaleLocation.APPLICATION, ResourceBundle.getBundle("fi.muikku.plugins.guidancerequest.GuidanceRequestPluginMessages", LocaleUtils.toLocale("en"))));
     return bundles;
   }
 }

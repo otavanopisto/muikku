@@ -1,4 +1,4 @@
-package fi.muikku.plugins.guidance;
+package fi.muikku.plugins.guidancerequest;
 
 import java.io.Serializable;
 import java.text.MessageFormat;
