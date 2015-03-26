@@ -94,8 +94,8 @@
       <artifactId>scribe</artifactId>
     </dependency>
     
-    <!-- Joda -->
-
+    <!-- JodaTime -->
+    
     <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
@@ -108,6 +108,10 @@
       <artifactId>persistence</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>fi.otavanopisto</groupId>
+      <artifactId>webapp-permission</artifactId>
+    </dependency>
   </dependencies>
 
   <build>

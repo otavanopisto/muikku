@@ -6,6 +6,7 @@ import javax.enterprise.context.ApplicationScoped;
 
 import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.model.workspace.WorkspaceRoleArchetype;
+import fi.otavanopisto.security.Scope;
 
 
 @ApplicationScoped

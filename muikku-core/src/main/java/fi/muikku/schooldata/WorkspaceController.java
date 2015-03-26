@@ -15,8 +15,6 @@ import fi.muikku.dao.security.WorkspaceRolePermissionDAO;
 import fi.muikku.dao.users.RoleSchoolDataIdentifierDAO;
 import fi.muikku.dao.workspace.WorkspaceEntityDAO;
 import fi.muikku.dao.workspace.WorkspaceSettingsDAO;
-import fi.muikku.dao.workspace.WorkspaceTypeEntityDAO;
-import fi.muikku.dao.workspace.WorkspaceTypeSchoolDataIdentifierDAO;
 import fi.muikku.dao.workspace.WorkspaceUserEntityDAO;
 import fi.muikku.dao.workspace.WorkspaceUserSignupDAO;
 import fi.muikku.model.base.SchoolDataSource;
@@ -29,8 +27,6 @@ import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.muikku.model.workspace.WorkspaceSettings;
-import fi.muikku.model.workspace.WorkspaceTypeEntity;
-import fi.muikku.model.workspace.WorkspaceTypeSchoolDataIdentifier;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.model.workspace.WorkspaceUserSignup;
 import fi.muikku.schooldata.entity.CourseIdentifier;
@@ -74,12 +70,6 @@ public class WorkspaceController {
   private WorkspaceUserEntityDAO workspaceUserEntityDAO;
 
   @Inject
-  private WorkspaceTypeEntityDAO workspaceTypeEntityDAO;
-
-  @Inject
-  private WorkspaceTypeSchoolDataIdentifierDAO workspaceTypeSchoolDataIdentifierDAO;
-
-  @Inject
   private SchoolDataSourceDAO schoolDataSourceDAO;
 
   @Inject
@@ -93,73 +83,7 @@ public class WorkspaceController {
 
   @Inject
   private RoleSchoolDataIdentifierDAO roleSchoolDataIdentifierDAO;
-
-  /* WorkspaceTypeEntity */
-
-  public List<WorkspaceTypeEntity> listWorkspaceTypeEntities() {
-    return workspaceTypeEntityDAO.listAll();
-  }
-
-  public WorkspaceTypeEntity findWorkspaceTypeEntity(WorkspaceType workspaceType) {
-    return workspaceSchoolDataController.findWorkspaceTypeEntity(workspaceType);
-  }
-
-  public WorkspaceTypeEntity updateWorkspaceTypeEntityName(WorkspaceTypeEntity workspaceTypeEntity, String name) {
-    return workspaceTypeEntityDAO.updateName(workspaceTypeEntity, name);
-  }
-
-  /* WorkspaceType */
-
-  public WorkspaceTypeEntity findWorkspaceTypeEntityById(Long id) {
-    return workspaceTypeEntityDAO.findById(id);
-  }
-
-  public List<WorkspaceType> listWorkspaceTypes() {
-    return workspaceSchoolDataController.listWorkspaceTypes();
-  }
-
-  public WorkspaceType findWorkspaceTypeByDataSourceAndIdentifier(String schoolDataSource, String identifier) {
-    try {
-      return workspaceSchoolDataController.findWorkspaceTypeByDataSourceAndIdentifier(schoolDataSource, identifier);
-    } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
-      logger.log(Level.SEVERE, "School Data Bride reported an error while retriving WorkspaceType");
-      return null;
-    }
-  }
-
-  public WorkspaceTypeEntity findWorkspaceTypeEntityByDataSourceAndIdentifier(String schoolDataSource, String identifier) {
-    WorkspaceType workspaceType = findWorkspaceTypeByDataSourceAndIdentifier(schoolDataSource, identifier);
-    if (workspaceType != null) {
-      return findWorkspaceTypeEntity(workspaceType);
-    }
-
-    return null;
-  }
-
-  public void setWorkspaceTypeEntity(WorkspaceType workspaceType, WorkspaceTypeEntity workspaceTypeEntity) {
-    // TODO: Proper error handling
-
-    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(workspaceType.getSchoolDataSource());
-    if (schoolDataSource != null) {
-      WorkspaceTypeSchoolDataIdentifier schoolDataIdentifier = workspaceTypeSchoolDataIdentifierDAO
-          .findByDataSourceAndIdentifier(schoolDataSource, workspaceType.getIdentifier());
-      if (schoolDataIdentifier == null) {
-        if (workspaceTypeEntity != null) {
-          workspaceTypeSchoolDataIdentifierDAO.create(schoolDataSource, workspaceType.getIdentifier(),
-              workspaceTypeEntity);
-        }
-      } else {
-        if (workspaceTypeEntity == null) {
-          workspaceTypeSchoolDataIdentifierDAO.delete(schoolDataIdentifier);
-        } else {
-          if (!schoolDataIdentifier.getWorkspaceTypeEntity().getId().equals(workspaceTypeEntity.getId())) {
-            workspaceTypeSchoolDataIdentifierDAO.updateWorkspaceTypeEntity(schoolDataIdentifier, workspaceTypeEntity);
-          }
-        }
-      }
-    }
-  }
-
+  
   /* Workspace */
 
   public Workspace createWorkspace(String schoolDataSource, String name, String description, WorkspaceType type,
@@ -214,6 +138,12 @@ public class WorkspaceController {
     }
 
     workspaceSchoolDataController.removeWorkspace(workspace);
+  }
+  
+  /* WorkspaceType */
+
+  public WorkspaceType findWorkspaceType(String schoolDataSource, String identifier) {
+    return workspaceSchoolDataController.findWorkspaceTypeByDataSourceAndIdentifier(schoolDataSource, identifier);
   }
 
   /* Workspace Entity */

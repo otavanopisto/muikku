@@ -202,10 +202,6 @@
       <artifactId>persistence</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>fi.muikku</groupId>
-      <artifactId>security</artifactId>
-    </dependency>
 
     <!-- ENABLED PLUGINS START -->
 
@@ -269,6 +265,10 @@
     </dependency>
 
     <!-- ENABLED PLUGINS END -->
+    <dependency>
+      <groupId>fi.otavanopisto</groupId>
+      <artifactId>webapp-permission</artifactId>
+    </dependency>
   </dependencies>
 
   <build>

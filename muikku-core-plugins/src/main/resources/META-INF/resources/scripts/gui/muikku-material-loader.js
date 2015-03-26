@@ -4,6 +4,8 @@
   
   $.widget("custom.muikkuMaterialLoader", {
     options : {
+      workspaceEntityId: -1,
+      loadAnswers: false,
       dustTemplate: 'workspace/materials-page.dust',
       renderMode: {
         "html": "raw"
@@ -29,8 +31,14 @@
           publishedRevision: $(pageElement).data('material-published-revision')
         };
         $(pageElement).removeAttr('data-material-content');
-        var title = material.title ? '<h2>' + material.title + '</h2>' : '';
-        var parsed = $('<div>').html(title + (material.html ? material.html : ''));
+
+        var parsed = $('<div>');
+        if (material.title) {
+          parsed.append('<h2>' + material.title + '</h2>');
+        }
+        if (material.html) {
+          parsed.append(material.html);
+        }
         
         $(document).trigger('beforeHtmlMaterialRender', {
           pageElement: pageElement,
@@ -41,9 +49,8 @@
           fieldAnswers: fieldAnswers
         });
         
-        material.html = parsed.html();
-        
         if (this._getRenderMode('html') == 'dust') {
+          material.html = parsed.html();
           renderDustTemplate(this.options.dustTemplate, { id: materialId, materialId: materialId, workspaceMaterialId: workspaceMaterialId, type: 'html', data: material }, function (text) {
             $(pageElement).append(text);
             $(document).trigger('afterHtmlMaterialRender', {
@@ -105,27 +112,33 @@
     },
     
     loadMaterials: function(pageElements) {
-      var workspaceEntityId = $('.workspaceEntityId').val();
-      mApi().workspace.workspaces.materialreplies.read(workspaceEntityId).callback($.proxy(function (err, reply) {
-        if (err) {
-          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsLoader.answerLoadingFailed", err));
-        }
-        else {
-          // answers array
-          var fieldAnswers = {};
-          if (reply && reply.answers.length) {
-            for (var i = 0, l = reply.answers.length; i < l; i++) {
-              var answer = reply.answers[i];
-              var answerKey = [answer.materialId, answer.embedId, answer.fieldName].join('.');
-              fieldAnswers[answerKey] = answer.value;
+      if (this.options.loadAnswers === true) {
+        mApi().workspace.workspaces.materialreplies.read(this.options.workspaceEntityId).callback($.proxy(function (err, reply) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsLoader.answerLoadingFailed", err));
+          }
+          else {
+            // answers array
+            var fieldAnswers = {};
+            if (reply && reply.answers.length) {
+              for (var i = 0, l = reply.answers.length; i < l; i++) {
+                var answer = reply.answers[i];
+                var answerKey = [answer.materialId, answer.embedId, answer.fieldName].join('.');
+                fieldAnswers[answerKey] = answer.value;
+              }
             }
           }
-        }
-        // actual loading of pages
-        $(pageElements).each($.proxy(function (index, page) {
-          this.loadMaterial(page, fieldAnswers);
+          // actual loading of pages
+          $(pageElements).each($.proxy(function (index, page) {
+            this.loadMaterial(page, fieldAnswers);
+          }, this));
         }, this));
-      }, this));
+      }
+      else {
+        $(pageElements).each($.proxy(function (index, page) {
+          this.loadMaterial(page, {});
+        }, this));
+      }
     }
   }); // material loader widget
   

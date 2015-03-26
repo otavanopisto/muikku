@@ -9,8 +9,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
-import fi.muikku.security.LoggedIn;
 import fi.muikku.session.SessionController;
+import fi.otavanopisto.security.LoggedIn;
 
 @Named
 @Stateful

@@ -20,10 +20,10 @@ import fi.muikku.plugins.forum.model.ForumThread;
 import fi.muikku.plugins.forum.model.WorkspaceForumArea;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.security.AbstractPermissionResolver;
-import fi.muikku.security.ContextReference;
-import fi.muikku.security.PermissionResolver;
-import fi.muikku.security.User;
 import fi.muikku.users.WorkspaceUserEntityController;
+import fi.otavanopisto.security.ContextReference;
+import fi.otavanopisto.security.PermissionResolver;
+import fi.otavanopisto.security.User;
 
 @RequestScoped
 public class ForumPermissionResolver extends AbstractPermissionResolver implements PermissionResolver {

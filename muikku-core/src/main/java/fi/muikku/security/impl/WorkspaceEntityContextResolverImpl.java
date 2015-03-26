@@ -2,8 +2,8 @@ package fi.muikku.security.impl;
 
 import fi.muikku.model.security.WorkspaceRolePermission;
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.security.ContextReference;
 import fi.muikku.security.WorkspaceContextResolver;
+import fi.otavanopisto.security.ContextReference;
 
 public class WorkspaceEntityContextResolverImpl implements WorkspaceContextResolver {
 

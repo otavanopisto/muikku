@@ -19,13 +19,13 @@ import fi.muikku.model.users.UserGroup;
 import fi.muikku.model.users.UserGroupUser;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.notifier.NotifierController;
+import fi.muikku.schooldata.entity.User;
+import fi.muikku.session.SessionController;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserGroupController;
-import fi.muikku.schooldata.entity.User;
-import fi.muikku.security.PermissionResolver;
-import fi.muikku.security.Permit;
-import fi.muikku.security.PermitContext;
-import fi.muikku.session.SessionController;
+import fi.otavanopisto.security.PermissionResolver;
+import fi.otavanopisto.security.Permit;
+import fi.otavanopisto.security.PermitContext;
 
 @Dependent
 public class GuidanceRequestController {
