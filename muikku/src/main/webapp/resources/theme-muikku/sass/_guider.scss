@@ -1,7 +1,7 @@
 
 /* Guider, Guiding tool (.gt-*) */
 
-/* TODO: Clean this ish up from obsolet styles*/
+/* TODO: Clean this ish up from obsolete styles*/
 
 .guider{
   @extend .co-widget;   
@@ -14,7 +14,6 @@
 
 .gt-side-button{
    @extend .co-mainFunction-side-button;
-
 }
 
 
@@ -242,16 +241,22 @@
 
 
 .gt-user-details-toolbar {
-  @include padding(5px);
+  @include padding(10px);
   
+}
+.gt-user-view-headline{
+  h1{
+    margin-bottom: 10px;
+    margin-top: 10px;
+    margin-left:10px;
+  }
 }
 
 .gt-user-view-profile{
- div{padding:5px;}
+ > div{padding:5px;}
   
   div[class*="gt-data-container"]{
-    width:32%;
-    float:left;
+    width:100%;
   }
   
 }
