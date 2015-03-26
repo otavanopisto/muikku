@@ -7,68 +7,53 @@
   xmlns:c="http://java.sun.com/jsp/jstl/core" 
   xmlns:h="http://java.sun.com/jsf/html"
   template="/WEB-INF/templates/mainfunction.xhtml">
-
-
-
-
-    <ui:define name="content.left.widget"> 
-    
-     <!--  TODO : Widget -->
-     
-      <div id="smallMonthCalendar"></div>
-    
-    </ui:define>
+  
+  <ui:define name="content.left.widget"> 
+    <!--  TODO : Widget -->
+    <div id="smallMonthCalendar"></div>
+  </ui:define>
 
   <ui:define name="viewCss">
     <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/fullcalendar_original.css" />  
     <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/fullcalendar.css" />  
     
-     <!-- Time Picker -->
-     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.6.5/jquery.timepicker.min.js"></script>
-     <link rel="StyleSheet" href="//cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.6.5/jquery.timepicker.min.css"></link>
- 
-     <h:outputScript name="scripts/rrule/rrule.js"/>
-     <h:outputScript name="scripts/rrule/nlp.js"/>
-   
-    <h:outputStylesheet name="scripts/jquery.contextmenu/jquery.contextmenu.css"/> 
+    <!-- Time Picker -->
     
+    <link rel="StyleSheet" href="//cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.6.5/jquery.timepicker.min.css"></link>
+    <h:outputStylesheet name="scripts/jquery.contextmenu/jquery.contextmenu.css"/> 
    </ui:define> 
     
   <ui:define name="viewScripts">    
-    
-    <!-- jstimezonedetect 
-    
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jstimezonedetect/1.0.4/jstz.min.js"/>
+    <!-- Time Picker -->
 
--->
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.6.5/jquery.timepicker.min.js"></script>
+  
+    <!-- RRule -->
 
+    <h:outputScript name="scripts/rrule/rrule.js"/>
+    <h:outputScript name="scripts/rrule/nlp.js"/>
+    
     <h:outputScript name="scripts/fullcalendar/fullcalendar.js" target="head"/>
     <h:outputScript name="scripts/fullcalendar/lang/fi.js" target="head"/>    
-    <h:outputScript name="scripts/gui/fullcalendar.js" target="head"/>
     
     <h:outputStylesheet name="scripts/jquery.recurrenceInput/recurrenceinput.css"/>
     <h:outputScript name="scripts/jquery.recurrenceInput/recurrenceinput.js" target="head"/>
-    
-    <!-- Full Calendar 
-    <h:outputScript name="scripts/gui/eventdialog.js" target="head"/>
-    -->
-    
-    <!--  Not so full calendar  -->
-    <h:outputScript name="scripts/gui/calendar.js" />
-    
-    
+
     <!-- Context menu -->
     
     <h:outputScript name="scripts/jquery.contextmenu/jquery.contextmenu.js" target="head"/>
+    
+    <!-- Calendar -->
+    
+    <h:outputScript name="scripts/gui/calendar.js" />
+    
+    <!-- Calendar view specific -->
+    
     <ui:insert name="calendarViewScripts"/>
   </ui:define>
 
-    <ui:define name="content.tools.left"> 
-      <m:widget name="newevent" size="6" rendered="#{sessionBackingBean.loggedIn}"/>
-    </ui:define>
-
-
-
-
+  <ui:define name="content.tools.left"> 
+    <m:widget name="newevent" size="6" rendered="#{sessionBackingBean.loggedIn}"/>
+  </ui:define>
 
 </ui:composition>

@@ -1,5 +1,0 @@
-<div class="deleteEvent">
-  <div>
-    <label>{#localize key="plugin.calendar.removeEventDialog.text" arg0=event.summary/}</label>
-  </div>
-</div>
