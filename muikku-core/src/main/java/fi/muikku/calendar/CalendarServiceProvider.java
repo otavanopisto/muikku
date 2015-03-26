@@ -88,7 +88,7 @@ public interface CalendarServiceProvider {
                                    CalendarEventTemporalField start,
                                    CalendarEventTemporalField end,
                                    List<CalendarEventReminder> reminders,
-                                   CalendarEventRecurrence recurrence,
+                                   String recurrence,
                                    boolean allDay)
           throws CalendarServiceException;
 

@@ -8,7 +8,6 @@ import org.joda.time.DateTime;
 
 import fi.muikku.calendar.CalendarEvent;
 import fi.muikku.calendar.CalendarEventAttendee;
-import fi.muikku.calendar.CalendarEventRecurrence;
 import fi.muikku.calendar.CalendarEventReminder;
 import fi.muikku.calendar.CalendarEventStatus;
 import fi.muikku.calendar.CalendarEventTemporalField;
@@ -69,9 +68,9 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
           CalendarEventTemporalField start,
           CalendarEventTemporalField end,
           List<CalendarEventReminder> reminders,
-          CalendarEventRecurrence recurrence,
+          String recurrence,
           boolean allDay) throws CalendarServiceException {
-    return calendarClient.createEvent(calendarId, summary, description, status, attendees, start, end, allDay);
+    return calendarClient.createEvent(calendarId, summary, description, status, attendees, start, end, recurrence, allDay);
   }
 
   @Override

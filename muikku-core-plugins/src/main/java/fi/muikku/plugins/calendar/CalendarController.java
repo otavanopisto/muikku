@@ -21,7 +21,6 @@ import org.joda.time.DateTime;
 import fi.muikku.calendar.Calendar;
 import fi.muikku.calendar.CalendarEvent;
 import fi.muikku.calendar.CalendarEventAttendee;
-import fi.muikku.calendar.CalendarEventRecurrence;
 import fi.muikku.calendar.CalendarEventReminder;
 import fi.muikku.calendar.CalendarEventStatus;
 import fi.muikku.calendar.CalendarServiceException;
@@ -99,7 +98,7 @@ public class CalendarController {
 
   public CalendarEvent createCalendarEvent(UserCalendar userCalendar, String summary, String description, CalendarEventStatus status,
     Date start, TimeZone startTimeZone, Date end, TimeZone endTimeZone, List<CalendarEventAttendee> attendees, List<CalendarEventReminder> reminders,
-    CalendarEventRecurrence recurrence, boolean allDay, Map<String, String> extendedProperties) throws CalendarServiceException {
+    String recurrence, boolean allDay, Map<String, String> extendedProperties) throws CalendarServiceException {
 
     CalendarServiceProvider provider = getCalendarServiceProvider(userCalendar.getCalendarProvider());
 

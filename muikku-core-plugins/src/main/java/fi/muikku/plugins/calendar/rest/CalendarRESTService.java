@@ -3,7 +3,6 @@ package fi.muikku.plugins.calendar.rest;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,7 +30,6 @@ import fi.muikku.calendar.DefaultCalendarEventTemporalField;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.calendar.CalendarController;
 import fi.muikku.plugins.calendar.model.UserCalendar;
-import fi.muikku.plugins.calendar.model.UserCalendarEventRecurrence;
 import fi.muikku.plugins.calendar.rest.model.Calendar;
 import fi.muikku.plugins.calendar.rest.model.CalendarEvent;
 import fi.muikku.plugins.calendar.rest.model.CalendarEventAttendee;
@@ -181,11 +179,9 @@ public class CalendarRESTService extends PluginRESTService {
     try {
       List<fi.muikku.calendar.CalendarEventAttendee> attendees = createEventAttendeeListFromRestModel(event.getAttendees());
       List<fi.muikku.calendar.CalendarEventReminder> reminders = createEventReminderListFromRestModel(event.getReminders());
-      Locale locale = sessionController.getLocale();
-      fi.muikku.calendar.CalendarEventRecurrence recurrence = event.getRecurrence() != null ? new UserCalendarEventRecurrence(event.getRecurrence(), event.getStartTimeZone(), locale) : null;
 
       fi.muikku.calendar.CalendarEvent calendarEvent = calendarController.createCalendarEvent(userCalendar, event.getSummary(), event.getDescription(), event.getStatus(),
-          event.getStart(), event.getStartTimeZone(), event.getEnd(), event.getEndTimeZone(), attendees, reminders, recurrence, event.isAllDay(),
+          event.getStart(), event.getStartTimeZone(), event.getEnd(), event.getEndTimeZone(), attendees, reminders, event.getRecurrence(), event.isAllDay(),
           event.getExtendedProperties());
 
       return Response.ok(createEventRestModel(userCalendar, calendarEvent)).build();
@@ -284,9 +280,7 @@ public class CalendarRESTService extends PluginRESTService {
 
       List<fi.muikku.calendar.CalendarEventAttendee> attendees = createEventAttendeeListFromRestModel(event.getAttendees());
       List<fi.muikku.calendar.CalendarEventReminder> reminders = createEventReminderListFromRestModel(event.getReminders());
-      Locale locale = sessionController.getLocale();
-      fi.muikku.calendar.CalendarEventRecurrence recurrence = new UserCalendarEventRecurrence(event.getRecurrence(), event.getStartTimeZone(), locale);
-
+      
       fi.muikku.calendar.CalendarEventTemporalField start = new DefaultCalendarEventTemporalField(event.getStart(), event.getStartTimeZone());
       fi.muikku.calendar.CalendarEventTemporalField end = new DefaultCalendarEventTemporalField(event.getEnd(), event.getEndTimeZone());
 
@@ -294,7 +288,7 @@ public class CalendarRESTService extends PluginRESTService {
 
       fi.muikku.calendar.CalendarEvent calendarEvent = new DefaultCalendarEvent(originalCalendarEvent.getId(), originalCalendarEvent.getCalendarId(), originalCalendarEvent.getServiceProvider(),
           event.getSummary(), event.getDescription(), event.getUrl(), calendarEventLocation, event.getStatus(), attendees, originalCalendarEvent.getOrganizer(),
-          start, end, event.isAllDay(), null, null, event.getExtendedProperties(), reminders, recurrence);
+          start, end, event.isAllDay(), null, null, event.getExtendedProperties(), reminders, event.getRecurrence());
 
       calendarController.updateCalendarEvent(userCalendar, calendarEvent);
 
@@ -346,7 +340,7 @@ public class CalendarRESTService extends PluginRESTService {
       }
     }
 
-    String recurrence = calendarEvent.getRecurrence() != null ? calendarEvent.getRecurrence().toIcalRRule() : null;
+    String recurrence = calendarEvent.getRecurrence();
     String location = calendarEvent.getLocation() != null ? calendarEvent.getLocation().getLocation() : null;
     String videoCallLink = calendarEvent.getLocation() != null ? calendarEvent.getLocation().getVideoCallLink() : null;
     BigDecimal longitude = calendarEvent.getLocation() != null ? calendarEvent.getLocation().getLongitude()  : null;
