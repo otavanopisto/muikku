@@ -181,7 +181,7 @@
       recurrenceControls.append(this._buildIntervalCtrls(interval, 'week(s)'));
       recurrenceControls.append($('<label>').text('Repeat on:'));
       
-      var weekdays = $('<div>').addClass('recurrence-input-weekdays');
+      var container = $('<div>').addClass('recurrence-input-weekdays');
       
       for (var i = 0; i < 6; i++) {
         var code = WEEKDAYS[i];
@@ -198,11 +198,11 @@
           weekdayInput.attr("checked", "checked");
         }
         
-        weekdays.append($('<span>').text(short));
-        weekdays.append(weekdayInput);
+        container.append($('<span>').text(short));
+        container.append(weekdayInput);
       }
 
-      recurrenceControls.append(weekdays);
+      recurrenceControls.append(container);
       recurrenceControls.append(this._buildRecurrenceCtrls(freq, count, until));
     },
     
