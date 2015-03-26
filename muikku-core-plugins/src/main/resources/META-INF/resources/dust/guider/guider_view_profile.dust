@@ -14,7 +14,7 @@
 <!--   <div class="gt-user-view-profile-timeline mf-widget"><h1>Timeline</h1></div> -->
   <div class="gt-user-view-profile-data mf-widget">
      <div class="gt-user-view-profile-data gt-data-container-1 mf-widget-subarea">
-       <h3>data-container-1</h3>
+       <h3>{#localize key="plugin.guider.title.workspaces"/}</h3>
        <div class="gt-data"></div>
      </div>
      <div class="clear"></div>

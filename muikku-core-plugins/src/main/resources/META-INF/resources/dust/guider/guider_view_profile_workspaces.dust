@@ -46,7 +46,7 @@
           </div>
           
           <div class="cp-course-header-details">
-           <span class="cp-course-rating">{rating} ({ratingCount})</span>
+           {?ratingCount}<span class="cp-course-rating">{rating} ({ratingCount})</span>{/ratingCount}
            <span class="cp-course-len"></span>
            <span class="cp-course-age"></span>
           </div>

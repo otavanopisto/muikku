@@ -167,30 +167,4 @@ $(document).ready(function(){
 	});
 	
 	
-
-	$(".di-new-area-button").click(function(){
-
-		var createArea = function(values){
-			mApi().forum.areas.create(values).callback(function(err, result) {
-			});			
-			
-			window.discussion.refreshLatest();
-			window.discussion.refreshAreas();
-		}			
-	
-	    mApi().forum.areas.read()
-	      .callback(function (err, areas) {
-	      	if( err ){
-	          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.noareas', err));
-	    	}else{ 		
-			  openInSN('/discussion/discussion_create_area.dust', areas, createArea );
-	    	}
-	      });
-		
-   		
-
-  
-	
-       
-	});
 });
