@@ -56,6 +56,7 @@
   	  modalgrid : 24,
   	  contentgrid : 24,
   	  onBeforeOpen: function(modal){
+  	    $('#eventRecurrence.recurrence-input').recurrenceInput('destroy');
   	    $('#eventRecurrence').recurrenceInput();
         mApi().calendar.calendars.read().callback($.proxy(function (err, calendars) {
   	      if (err) {

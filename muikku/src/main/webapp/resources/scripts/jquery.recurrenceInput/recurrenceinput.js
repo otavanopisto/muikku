@@ -472,6 +472,12 @@
     _onShowControlsLinkClick: function (event) {
       event.preventDefault();
       this.show();
+    },
+    
+    _destroy: function () {
+      this.element
+        .empty()
+        .removeClass('recurrence-input');
     }
   });
 
