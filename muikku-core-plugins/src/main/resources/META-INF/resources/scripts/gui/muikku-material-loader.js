@@ -90,6 +90,7 @@
         case 'folder':
           renderDustTemplate(this.options.dustTemplate, { id: materialId, type: materialType, data: { title: $(page).data('material-title') } }, $.proxy(function (text) {
             $(this).html(text);
+            $.waypoints('refresh');
           }, page));
         break;
         default:
@@ -104,6 +105,7 @@
                 data: result 
               }, $.proxy(function (text) {
                 $(this).html(text);
+                $.waypoints('refresh');
               }, page));
             }, this));
           }
