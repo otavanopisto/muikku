@@ -211,9 +211,9 @@
     var view = $(element).fullCalendar('getView');
     var calendarIds = $(element).attr('data-user-calendar-ids').split(',');
     var batchCalls = {};
-    var viewStart = view.visStart;
-    var viewEnd = view.visEnd;
-    
+    var viewStart = view.start;
+    var viewEnd = view.end;
+      
     var calls = $.map(calendarIds, function (calendarId) {
       return mApi().calendar.calendars.events.read(parseInt(calendarId), {
         timeMin: viewStart.toISOString(),
