@@ -1,7 +1,7 @@
 (function() {
   'use strict';
   
-  var WEEKDAYS = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'];
+  var WEEKDAYS = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
 
   // TODO: Localize
   // TODO: Validation
