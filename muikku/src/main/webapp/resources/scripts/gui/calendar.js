@@ -167,13 +167,12 @@
           }).callback(function (err, result) {
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', err);
+              $('#startDate,#endDate').datepicker('destroy');
+              $('#startTime,#endTime').datepicker('destroy');
+              $('.md-background').fadeOut().remove();
             } else {
-              $('.notification-queue').notificationQueue('notification', 'info', "Tapahtuma luotiin onnistuneesti");
+              window.location.reload(true);
             }
-  
-            $('#startDate,#endDate').datepicker('destroy');
-            $('#startTime,#endTime').datepicker('destroy');
-            $('.md-background').fadeOut().remove();
           });
   	    }
   	  }]
