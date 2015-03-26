@@ -177,21 +177,19 @@ public class GoogleCalendarClient {
     }
 
     try {
-      logger.log(Level.INFO, start.getDateTime().toString());
-      logger.log(Level.INFO, start.getTimeZone().toString());
-      logger.log(Level.INFO, end.getDateTime().toString());
-      logger.log(Level.INFO, end.getTimeZone().toString());
+      Event event = new Event()
+        .setSummary(summary)
+        .setDescription(description)
+        .setStatus(status.toString().toLowerCase(Locale.ROOT))
+        .setAttendees(googleAttendees)
+        .setStart(Convert.toEventDateTime(allDay, start))
+        .setEnd(Convert.toEventDateTime(allDay, end));
+      
+      if (StringUtils.isNotBlank(recurrence)) {
+        event.setRecurrence(Arrays.asList(String.format("RRULE:%s", recurrence)));
+      }
 
-      Event event = getClient().events().insert(calendarId,
-              new Event()
-              .setSummary(summary)
-              .setDescription(description)
-              .setStatus(status.toString().toLowerCase(Locale.ROOT))
-              .setAttendees(googleAttendees)
-              .setStart(Convert.toEventDateTime(allDay, start))
-              .setEnd(Convert.toEventDateTime(allDay, end)))
-              .execute();
-      return toMuikkuEvent(calendarId, event);
+      return toMuikkuEvent(calendarId, getClient().events().insert(calendarId, event).execute());
     } catch (IOException | GeneralSecurityException ex) {
       throw new CalendarServiceException(ex);
     }
@@ -258,17 +256,19 @@ public class GoogleCalendarClient {
     }
 
     try {
-      Event event = getClient().events().patch(calendarEvent.getCalendarId(),
-              calendarEvent.getId(),
-              new Event()
-              .setSummary(calendarEvent.getSummary())
-              .setDescription(calendarEvent.getDescription())
-              .setStatus(calendarEvent.getStatus().toString().toLowerCase(Locale.ROOT))
-              .setAttendees(googleAttendees)
-              .setStart(Convert.toEventDateTime(calendarEvent.isAllDay(), calendarEvent.getStart()))
-              .setEnd(Convert.toEventDateTime(calendarEvent.isAllDay(), calendarEvent.getEnd())))
-              .execute();
-      return toMuikkuEvent(calendarEvent.getCalendarId(), event);
+      Event event = new Event()
+        .setSummary(calendarEvent.getSummary())
+        .setDescription(calendarEvent.getDescription())
+        .setStatus(calendarEvent.getStatus().toString().toLowerCase(Locale.ROOT))
+        .setAttendees(googleAttendees)
+        .setStart(Convert.toEventDateTime(calendarEvent.isAllDay(), calendarEvent.getStart()))
+        .setEnd(Convert.toEventDateTime(calendarEvent.isAllDay(), calendarEvent.getEnd()));
+      
+      if (StringUtils.isNotBlank(calendarEvent.getRecurrence())) {
+        event.setRecurrence(Arrays.asList(String.format("RRULE:%s", calendarEvent.getRecurrence())));
+      }
+      
+      return toMuikkuEvent(calendarEvent.getCalendarId(), getClient().events().patch(calendarEvent.getCalendarId(), calendarEvent.getId(), event).execute());
     } catch (IOException | GeneralSecurityException ex) {
       throw new CalendarServiceException(ex);
     }
