@@ -211,11 +211,13 @@
     var view = $(element).fullCalendar('getView');
     var calendarIds = $(element).attr('data-user-calendar-ids').split(',');
     var batchCalls = {};
+    var viewStart = view.visStart;
+    var viewEnd = view.visEnd;
     
     var calls = $.map(calendarIds, function (calendarId) {
       return mApi().calendar.calendars.events.read(parseInt(calendarId), {
-        timeMin: view.visStart.toISOString(),
-        timeMax: view.visEnd.toISOString()
+        timeMin: viewStart.toISOString(),
+        timeMax: viewEnd.toISOString()
       });
     });
     
@@ -228,13 +230,27 @@
 
           $.each(results, function (index, result) {
             events = $.merge(events, $.map(result, function (event) {
-              return {
-                title: event.summary,
-                start: new Date(event.start),
-                end: new Date(event.end),
-                allDay: event.allDay,
-                editable: false
-              };
+              if (event.recurrence) {
+                var rule = new RRule($.extend(RRule.fromString(event.recurrence).origOptions, { dtstart: new Date(event.start) }));
+                return $.map(rule.between(viewStart, viewEnd), function (date) {
+                  return {
+                    title: event.summary,
+                    start: date,
+                    end: new Date(date.getTime() + (event.end - event.start)),
+                    allDay: true,
+                    allDay: event.allDay,
+                    editable: false
+                  };
+                });
+              } else {
+                return {
+                  title: event.summary,
+                  start: new Date(event.start),
+                  end: new Date(event.end),
+                  allDay: event.allDay,
+                  editable: false
+                };
+              }
             }));
           });
           
