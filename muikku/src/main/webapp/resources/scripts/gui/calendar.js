@@ -49,6 +49,10 @@
   }
   
   $(document).ready(function(){
+    var locale = getLocale().toLowerCase();
+    var dpRegional = $.datepicker.regional[locale] || $.datepicker.regional[''];
+    $.datepicker.setDefaults(dpRegional);
+
     $(".bt-mainFunction").m3modal({
   	  title : "Uusi tapahtuma! ",
   	  description : "Uuden tapahtuman luonti",
@@ -56,9 +60,6 @@
   	  modalgrid : 24,
   	  contentgrid : 24,
   	  onBeforeOpen: function(modal){
-  	    var locale = getLocale().toLowerCase();
-        var dpRegional = $.datepicker.regional[locale] || $.datepicker.regional[''];
-  	   
   	    $('#eventRecurrence.recurrence-input').recurrenceInput('destroy');
   	    $('#eventRecurrence').recurrenceInput({
   	      texts: {
@@ -181,6 +182,7 @@
   	    name : "sendEvent",
   	    action: function (e) {
   	      var startDate = $('#startDate').datepicker('getDate');
+  	      
   	      var startISO = getISODateTime(startDate, $('#startTime').timepicker('getTime'));
           var endISO = getISODateTime($('#endDate').datepicker('getDate'), $('#endTime').timepicker('getTime'));
           var recurrence = $('#eventRecurrence').recurrenceInput("rrule");
