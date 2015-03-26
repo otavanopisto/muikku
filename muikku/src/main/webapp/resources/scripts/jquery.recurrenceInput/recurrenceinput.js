@@ -149,24 +149,25 @@
       }
     },
     
-    _buildIntervalCtrls: function (interval, label) {
+    _buildIntervalCtrls: function (value, label) {
       var interval = $('<div>').addClass('recurrence-input-interval');
       
       var intervalInput = $('<input>')
         .attr({
           'name': "recurrenceInterval",
           'type': "number",
-          'min': '1'
+          'min': '1',
+          'required': 'required'
         })
         .addClass('recurrence-input-interval-input')
-        .val(interval||1);
+        .val(value||1);
         
       interval.append(
         $('<label>')
           .text('Repeat every:')
       );
       interval.append(intervalInput);
-      interval.append($('<span>').addClass('recurrence-input-interval-type-label').text(label));
+      interval.append($('<span>').text(label));
       
       return interval;
     },
@@ -213,7 +214,7 @@
     },
     
     _buildYearlyCtrls: function (recurrenceControls, freq, interval, count, until, monthDay, month) {
-      recurrenceControls.append(this._buildIntervalCtrls(recurrenceControls, interval, 'year(s)'));
+      recurrenceControls.append(this._buildIntervalCtrls(interval, 'year(s)'));
       recurrenceControls.append($('<label>').text('Repeat on every:'));
       
       var monthSelect = $('<select>') 
@@ -337,11 +338,6 @@
     
     _jsonToRRule: function (json) {
       var opts = {};
-      
-//    TODO: dtStart?
-//      if (dtStart !== undefined) {
-//        opts.dtstart = dtStart;
-//      }
 
       if (json.freq !== undefined) {
         opts.freq = RRule[json.freq];
