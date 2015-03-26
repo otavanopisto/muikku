@@ -1,1 +1,7 @@
-<a href="{@contextPath/}/rest/materials/binary/{data.id}/download" target="_blank">{#localize key="plugin.workspace.materialsManagement.binaryDownload"/}</a>
+{@select key=image}
+  {@eq value="true" type="boolean"}  
+    <img src="{@contextPath/}/rest/materials/binary/{data.id}/content"/>
+  {:else}
+    <a href="{@contextPath/}/rest/materials/binary/{data.id}/download" target="_blank">{#localize key="plugin.workspace.materialsManagement.binaryDownload"/}</a>
+  {/eq}
+{/select}

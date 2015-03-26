@@ -32,7 +32,7 @@ public class BinaryMaterial extends Material {
 	@Override
 	@Transient
 	public String getType() {
-	  return contentType != null && contentType.indexOf("image/") >= 0 ? "image" : "binary";
+	  return "binary";
 	}
 
   @NotNull

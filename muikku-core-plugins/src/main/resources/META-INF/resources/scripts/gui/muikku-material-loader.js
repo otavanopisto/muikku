@@ -102,6 +102,7 @@
                 materialId: materialId,
                 id: materialId,
                 type: materialType,
+                image: materialType == 'binary' ? result.contentType.indexOf('image/') != -1 : false,
                 data: result 
               }, $.proxy(function (text) {
                 $(this).html(text);
