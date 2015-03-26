@@ -25,6 +25,11 @@
   };
   
   function createModalContent() { 
+    var repeat = $('<div>')
+      .append($('<input>').attr({"type": "checkbox", "name": "repeat"}))
+      .append($('<span>').text('Repeat:'))
+      .append($('<div>').attr({'id': 'eventRecurrence'}));
+    
     return $('<div>')
       .addClass('ca-event-new')
       .append($('<div>')
@@ -32,7 +37,7 @@
         .append(createTimeField('startTime', 'eventStartTime', 'alkaa'))
         .append(createDateField('endDate', 'eventEndDate', 'loppuu'))
         .append(createTimeField('endTime', 'eventEndTime', 'loppuu'))
-        .append($('<div>').attr({'id': 'eventRecurrence'}))
+        .append(repeat)
         .append($('<div>').append($('<input>').attr({ 'placeholder': 'Tapahtuman nimi', 'name': 'eventSubject', 'required': 'required' })))
         .append($('<div>').append($('<select>').attr({'id': 'eventCalendar', 'required': 'required'}))))
       .append($('<div>').append($('<textarea>').attr({ 'placeholder': 'Tapahtuman kuvaus', 'name': 'eventContent', 'required': 'required' })));
@@ -100,6 +105,28 @@
   		    }        	
   	    });	 	
   
+  	    $('input[name="repeat"]').click(function () {
+  	      if ($(this).is(':checked')){
+            $('#eventRecurrence').recurrenceInput('show');
+  	      } else {
+  	        $('#eventRecurrence').recurrenceInput('rrule', null);  
+            $('#eventRecurrence').recurrenceInput('hide');  
+  	      }
+  	    });
+  	    
+  	    $('#eventRecurrence').on("show", function () {
+          $('input[name="repeat"]')
+            .attr("checked", "checked")
+            .prop("checked", "checked");
+        });
+  	    
+  	    $('#eventRecurrence').on("hide", function () {
+  	      if ($(this).recurrenceInput('rrule')) {
+            $('input[name="repeat"]')
+              .attr("checked", "checked")
+              .prop("checked", "checked");
+  	      }
+  	    });
   	  },
   
   	  options: [
@@ -116,12 +143,15 @@
   	    caption: "Luo tapahtuma",
   	    name : "sendEvent",
   	    action: function (e) {
-  	      var startISO = getISODateTime($('#startDate').datepicker('getDate'), $('#startTime').timepicker('getTime'));
+  	      var startDate = $('#startDate').datepicker('getDate');
+  	      var startISO = getISODateTime(startDate, $('#startTime').timepicker('getTime'));
           var endISO = getISODateTime($('#endDate').datepicker('getDate'), $('#endTime').timepicker('getTime'));
+          var recurrence = $('#eventRecurrence').recurrenceInput("rrule");
           
   	      mApi().calendar.calendars.events.create($('#eventCalendar').val(), {
   	        summary: $('input[name="eventSubject"]').val(),
   	        description: $('input[name="eventContent"]').val(),
+  	        recurrence: recurrence,
   //	      location: calendarEvent.location,
   //	      latitude:calendarEvent.latitude,
   //	      longitude: calendarEvent.longitude,

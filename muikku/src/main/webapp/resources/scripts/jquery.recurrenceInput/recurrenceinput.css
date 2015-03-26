@@ -47,6 +47,8 @@
   width: 40px;
 }
 
-.recurrence-input-monthday span {
+.recurrence-input .recurrence-input-interval span,
+.recurrence-input .recurrenceInput-event-recurrence-select span,
+.recurrence-input .recurrence-input-monthday span {
   margin-left: 8px;  
 }

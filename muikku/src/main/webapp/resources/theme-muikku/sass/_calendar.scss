@@ -49,6 +49,15 @@
 
 /* recurrence */
 
+input[name="repeat"] {
+  margin-right: 4px;
+}
+
+#eventRecurrence {
+  display: inline-block;
+  margin-left: 4px;
+}
+
 .recurrence-input .recurrence-input-show-link {
   color: #fff;
 }
