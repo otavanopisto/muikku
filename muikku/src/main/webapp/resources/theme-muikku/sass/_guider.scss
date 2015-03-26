@@ -1,10 +1,13 @@
 
 /* Guider, Guiding tool (.gt-*) */
 
+/* TODO: Clean this ish up from obsolet styles*/
+
 .guider{
   @extend .co-widget;   
   background-color:$mainFuncSide;
 }
+
 
 .gt-side{
 }
@@ -93,9 +96,9 @@
 
 
 
-.gt-view-students-container{
+.gt-students-view-container{
   min-height:400px;
-  
+  padding:5px;
 }
 
 .gt-content{
@@ -129,10 +132,7 @@
  padding:10px;
  font-size:20px;
  color:#c4cdd1;
-
 }
-
-
 
 .gt-content-main{
   @extend .co-mainFunction-content-main;
@@ -151,8 +151,47 @@
    }
 }
 
+.gt-user-picture{
+  
+   float:left;
+   height:100px;
+   width:100px; 
+   &.default{
+    @extend .co-user-picture;     
+   }
+   
+}
+
 .gt-user-details-container {
   background-color:#f0f3f4;
+}
+
+.gt-user-details-data{
+  padding:10px;
+  
+
+ } 
+ 
+
+.gt-user-details-personal{
+    float:left;
+  
+  }
+.gt-user-details-studies{
+    float:left;
+    padding:10px;
+    width:795px;
+  }
+
+.gt-newmessage-form-container{
+  
+  &.wide{
+   width:100%;
+
+  }
+  .gt-message-new-content{
+   width:100%;
+  }   
 }
 
 .gt-user-details-close {
@@ -191,7 +230,6 @@
   font-size: 0.9em; 
   padding:5px;
   min-height:100px;
-
 }
 
 .gt-user-additionalInfo {
@@ -204,22 +242,22 @@
 
 
 .gt-user-details-toolbar {
-  border-top: 1px solid $brd; 
   @include padding(5px);
   
 }
 
-.gt-user-short:after {
-   content : " -"  ;
+.gt-user-view-profile{
+ div{padding:5px;}
+  
+  div[class*="gt-data-container"]{
+    width:32%;
+    float:left;
+  }
+  
 }
 
-.gt-user-details-teacher {
-  display:inline-block; 
-  height:20px;
-  width:20px;
-  margin-right:3px;
-}
+ .gt-data{
+    width:100%;
+ }
 
-.gt-user-details-teacher-picture-container {
 
-}

@@ -7,6 +7,8 @@ $(document).ready(function(){
             this.refreshUsers();	
     	    $(GuideImpl.guideContainer).on("click", '.gt-user:not(.open)', $.proxy(this.showUser,this));  
     	    $(GuideImpl.guideContainer).on("click", '.gt-tool-view-profile', $.proxy(this.viewUserProfile,this));
+    	    $(GuideImpl.guideContainer).on("click", '.gt-tool-send-mail', $.proxy(this.messageToUser,this));    	    
+    	    
     	},
     	
     	
@@ -257,7 +259,28 @@ $(document).ready(function(){
 				  	}else{    	  
 					  	renderDustTemplate('/guider/guider_view_profile.dust', user, function(text) {				  		
 					        $(GuideImpl.guideContainer).append($.parseHTML(text));
+					        
+						  	var cont1 = $(".gt-data-container-1 div.gt-data");
+						  	var cont2 = $(".gt-data-container-2 div.gt-data");
+						  	var cont3 = $(".gt-data-container-3 div.gt-data");
+						  	
+						  	renderDustTemplate('/dummy/dummy_list_long.dust',null,function(text){
+						  		$(cont1).append($.parseHTML(text));
+
+							  	renderDustTemplate('/dummy/dummy_lorem_short.dust',null, function(text){
+							  		$(cont2).append($.parseHTML(text));
+							  		
+								  	renderDustTemplate('/dummy/dummy_lorem_short.dust',null, function(text){
+								  		$(cont3).append($.parseHTML(text));
+								  		
+								  	});		
+							  	});
+						  		
+						  	});
+					        
 					  	});
+					  	
+			  	
 				  	}	
 		    });  		
 				
@@ -285,6 +308,44 @@ $(document).ready(function(){
 		    });  		
 				
 	    },
+	    
+	   messageToUser : function(event){
+	    	var element = $(event.target); 
+	        element = element.parents(".gt-user");
+	        var uId = $(element).attr("id");
+
+		   
+			var createMessage = function(values){
+
+		         for(value in values){
+					  if(value == "recipienIds"){
+						  var recipientIds = values[value];
+						  delete values[value];
+					  }    	
+			         }				
+//	               	categoryName: "message",
+//	                caption : subject,
+//	                content : content,
+//	                tags : tags,
+//	                recipientId : recipientId,
+//	                recipientGroupIds : groupIds				
+				
+	            mApi().communicator.messages.create(recipientIds,values)
+	              .callback(function (err, result) {
+	              });
+
+			}	
+				
+		    mApi().user.users.read(uId)
+		      .callback(function (err, user) {
+		      	if( err ){
+		          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.noareas', err));
+		    	}else{ 		
+				  openInSN('/guider/guider_create_message.dust', user, createMessage );
+		
+		    	}
+		      });		   
+	   }, 
 
 	    clearUsers : function(){
 	    	$(GuideImpl.guideContainer).empty();
@@ -296,7 +357,7 @@ $(document).ready(function(){
 //		 
 	    _klass : {
 	    	// Variables for the class
-		  guideContainer : ".gt-students-container",
+		  guideContainer : ".gt-students-view-container",
 
 	    	  
 	    	  

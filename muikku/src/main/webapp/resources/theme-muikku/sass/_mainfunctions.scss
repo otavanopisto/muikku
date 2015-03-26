@@ -252,7 +252,6 @@
   
 .mf-item{
    @extend .co-listItem;
-   padding:5px 5px 5px 5px;
    margin-bottom:5px;
  
 
@@ -272,7 +271,11 @@
 
 
   .mf-item-tools{
+
       .mf-item-tool-btn{
+        &:not(:first-child){
+         margin-left:10px;
+        }
         background:#068feb;
         cursor:pointer;
         @include rounded(3px);
@@ -282,8 +285,10 @@
         margin-top:5px;
         box-shadow:0 0 5px rgba(0,0,0,0.25);
       } 
+ 
            
      .mf-item-tool{
+
         dispay:inline-block;
         color:#ededed;
         text-decoration:none;
@@ -291,10 +296,10 @@
         padding-left:10px;
         padding-right:10px;
         border-collapse: collapse;
-  
-      &:hover{
-        color:#000;
-      } 
+
+        &:hover{
+          color:#000;
+        } 
     
     }
     
@@ -494,6 +499,13 @@
 
 
 }
+/* Widgets */
+
+.mf-widget{
+  @extend .co-widget;
+  margin-bottom:5px;
+}
+
  
  /* Forms */
  

@@ -5,7 +5,10 @@
   </div>
   <div class="gt-user-details" style="display:none">
     <div class="gt-user-details-content"></div>
-    <div class="gt-user-details-toolbar mf-item-tools"><div class="gt-tool-view-profile mf-item-tool-btn"><span>Näytä profiili</span></div></div>
+    <div class="gt-user-details-toolbar mf-item-tools">
+      <div class="gt-tool-view-profile mf-item-tool-btn"><span>Näytä profiili</span></div>
+<!--       <div class="gt-tool-send-mail mf-item-tool-btn"><span>Lähetä viesti</span></div> -->
+    </div>
   </div>
   <div class=""></div>
 
