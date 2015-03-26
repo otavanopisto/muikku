@@ -1,6 +1,6 @@
 function getLocaleText(key) {
   var val = window._MUIKKU_LOCALEMAP[key];
-  if (val) {
+  if (val !== undefined) {
     for (var i = 1; i < arguments.length; i++) {
       val = val.replace('{' + (i - 1) + '}', arguments[i]);
     }

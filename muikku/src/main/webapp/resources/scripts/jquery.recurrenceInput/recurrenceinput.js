@@ -3,13 +3,38 @@
   
   var WEEKDAYS = ['SU', 'MO', 'TU', 'WE', 'TH', 'FR', 'SA'];
 
-  // TODO: Localize
   // TODO: Validation
   // TODO: Remove internal format
-  
+  // TODO: Implement SECONDLY and MINUTELY
+
   $.widget("custom.recurrenceInput", {
     options : {
-      rrule: ''
+      rrule: '',
+      texts: {
+        label: 'Repeats',
+        freq: {
+          "SECONDLY": "Secondly",
+          "MINUTELY": "Minutely",
+          "DAILY": "Daily",
+          "WEEKLY": "Weekly",
+          "MONTHLY": "Monthly",
+          "YEARLY": "Yearly"
+        },
+        notRepeating: "Not repeating",
+        intervalLabel: 'every',
+        intervalDays: 'day(s)',
+        weekdaysLabel: 'Repeat on',
+        intervalWeeks: 'week(s)',
+        intervalMonths: 'month(s)',
+        intervalYears: 'year(s)',
+        recurrenceLabel: 'Ends',
+        recurrenceNever: 'Never',
+        recurrenceOccurrencesLabel: 'After',
+        recurrenceOccurrences: 'occurrence(s)',
+        recurrenceUntilLabel: "On",
+        recurrenceUntil: '',
+        dayNamesShort: $.datepicker.regional[''].dayNamesShort
+      }
     },
     _create: function () {
       this.element.addClass('recurrence-input');
@@ -24,23 +49,19 @@
         .addClass('recurrence-input-controls')
         .hide();
       
-      controls.append(
-        $('<label>')
-          .text('Repeat:')
-     );
+      controls.append($('<label>').text(this.options.texts.label));
       
       var freqSelect = $('<select>')
         .attr({
           'name': 'recurrenceFreq'
         });
 
-//      TODO: Implement SECONDLY and MINUTELY
-//      freqSelect.append($('<option>').attr('value', 'SECONDLY').text('SECONDLY'));
-//      freqSelect.append($('<option>').attr('value', 'MINUTELY').text('MINUTELY'));
-      freqSelect.append($('<option>').attr('value', 'DAILY').text('DAILY'));
-      freqSelect.append($('<option>').attr('value', 'WEEKLY').text('WEEKLY'));
-      freqSelect.append($('<option>').attr('value', 'MONTHLY').text('MONTHLY'));
-      freqSelect.append($('<option>').attr('value', 'YEARLY').text('YEARLY'));
+//    freqSelect.append($('<option>').attr('value', 'SECONDLY').text(this.options.texts.freq['SECONDLY']));
+//    freqSelect.append($('<option>').attr('value', 'MINUTELY').text(this.options.texts.freq['MINUTELY']));
+      freqSelect.append($('<option>').attr('value', 'DAILY').text(this.options.texts.freq['DAILY']));
+      freqSelect.append($('<option>').attr('value', 'WEEKLY').text(this.options.texts.freq['WEEKLY']));
+      freqSelect.append($('<option>').attr('value', 'MONTHLY').text(this.options.texts.freq['MONTHLY']));
+      freqSelect.append($('<option>').attr('value', 'YEARLY').text(this.options.texts.freq['YEARLY']));
       
       controls.append(freqSelect);
       controls.append($('<div>').addClass('recurrence-input-control-details'));
@@ -124,7 +145,7 @@
       var json = this.val();
       var rule = json ? this._jsonToRRule(json) : null;
       if (!rule) {
-        return "Not repeating";
+        return this.options.texts.notRepeating;
       }
       
       return rule.toText();
@@ -162,10 +183,7 @@
         .addClass('recurrence-input-interval-input')
         .val(value||1);
         
-      interval.append(
-        $('<label>')
-          .text('Repeat every:')
-      );
+      interval.append($('<label>').text(this.options.texts.intervalLabel));
       interval.append(intervalInput);
       interval.append($('<span>').text(label));
       
@@ -173,19 +191,19 @@
     },
     
     _buildDailyCtrls: function (recurrenceControls, freq, interval, count, until) {
-      recurrenceControls.append(this._buildIntervalCtrls(interval, 'day(s)'));
+      recurrenceControls.append(this._buildIntervalCtrls(interval, this.options.texts.intervalDays));
       recurrenceControls.append(this._buildRecurrenceCtrls(freq, count, until));
     },
 
     _buildWeeklyCtrls: function (recurrenceControls, freq, interval, count, until, weekdays) {
-      recurrenceControls.append(this._buildIntervalCtrls(interval, 'week(s)'));
-      recurrenceControls.append($('<label>').text('Repeat on:'));
+      recurrenceControls.append(this._buildIntervalCtrls(interval, this.options.texts.intervalWeeks));
+      recurrenceControls.append($('<label>').text(this.options.texts.weekdaysLabel));
       
       var container = $('<div>').addClass('recurrence-input-weekdays');
       
       for (var i = 0; i < 6; i++) {
         var code = WEEKDAYS[i];
-        var short = $.datepicker.regional[''].dayNamesShort[i];
+        var short = this.options.texts.dayNamesShort[i];
         
         var weekdayInput = $('<input>')
           .attr({
@@ -201,45 +219,24 @@
         container.append($('<span>').text(short));
         container.append(weekdayInput);
       }
-
+      
       recurrenceControls.append(container);
       recurrenceControls.append(this._buildRecurrenceCtrls(freq, count, until));
     },
     
     _buildMonthlyCtrls: function (recurrenceControls, freq, interval, count, until, monthDay) {
-      recurrenceControls.append(this._buildIntervalCtrls(interval, 'month(s)'));
-      recurrenceControls.append($('<label>').text('Repeat on month days:'));
-      recurrenceControls.append(this._buildMonthDayCtrls(monthDay));
+      recurrenceControls.append(this._buildIntervalCtrls(interval, this.options.texts.intervalMonths));
       recurrenceControls.append(this._buildRecurrenceCtrls(freq, count, until));
     },
     
     _buildYearlyCtrls: function (recurrenceControls, freq, interval, count, until, monthDay, month) {
-      recurrenceControls.append(this._buildIntervalCtrls(interval, 'year(s)'));
-      recurrenceControls.append($('<label>').text('Repeat on every:'));
-      
-      var monthSelect = $('<select>') 
-        .addClass('recurrence-input-month')  
-        .attr('name', 'recurrenceMonth');
-      for (var i = 1, l = 12; i < l; i++) {
-        monthSelect.append(
-          $('<option>')
-            .attr("value", i)
-            .text($.datepicker.regional[''].monthNames[i - 1])
-        );
-      }
-      
-      if (month !== undefined) {
-        monthSelect.val(month);
-      }
-      
-      recurrenceControls.append(monthSelect);
-      recurrenceControls.append(this._buildMonthDayCtrls(monthDay));
+      recurrenceControls.append(this._buildIntervalCtrls(interval, this.options.texts.intervalYears));
       recurrenceControls.append(this._buildRecurrenceCtrls(freq, count, until));
     },
     
     _buildRecurrenceCtrls: function (freq, count, until) {
       var recurrence = $('<div>').addClass('recurrence-input-recurrence');
-      recurrence.append($('<label>').text('End:'));
+      recurrence.append($('<label>').text(this.options.texts.recurrenceLabel));
       
       var neverRadio = $('<input>')
         .attr({
@@ -286,50 +283,47 @@
         untilInput.datepicker('setDate', new Date(Date.parse(until)));
       }
       
-      $('<div>')
+      var never = $('<div>')
         .addClass('recurrenceInput-event-recurrence-select')
-        .append(neverRadio)
-        .append($('<span>').text('Never'))
-        .appendTo(recurrence);
-      
-      $('<div>')
-        .addClass('recurrenceInput-event-recurrence-select')
-        .append(countRadio)
-        .append($('<span>').text('After:'))
-        .append(countInput)
-        .append($('<span>').text('occurrence(s)'))
-        .appendTo(recurrence);
-      
-      $('<div>')
-        .addClass('recurrenceInput-event-recurrence-select')
-        .append(untilRadio)
-        .append($('<span>').text('On:'))
-        .append(untilInput)
-        .appendTo(recurrence);
-      
-      return recurrence;
-    },
-    
-    _buildMonthDayCtrls: function (monthDay) {
-      var monthDay = $('<div>')
-        .addClass('recurrence-input-monthday');
-      
-      var monthDayInput = $('<input>')
-        .attr({
-          "name": "recurrenceMonthDay",
-          "type": "number",
-          "min": "1",
-          "max": "31"
-        });
-      
-      if (!isNaN(parseInt(monthDay))) {
-        monthDayInput.val(monthDay);
+        .append(neverRadio);
+
+      if (this.options.texts.recurrenceNever) {
+        never.append($('<span>').text(this.options.texts.recurrenceNever))
       }
       
-      monthDay.append(monthDayInput);
-      monthDay.append('<span>(1 - 31)</span>');
+      var occurrences = $('<div>')
+        .addClass('recurrenceInput-event-recurrence-select')
+        .append(countRadio);
       
-      return monthDay;
+      if (this.options.texts.recurrenceOccurrencesLabel) {
+        occurrences.append($('<span>').text(this.options.texts.recurrenceOccurrencesLabel));
+      }
+      
+      occurrences.append(countInput);
+       
+      if (this.options.texts.recurrenceOccurrences) {
+        occurrences.append($('<span>').text(this.options.texts.recurrenceOccurrences));
+      }
+      
+      var until = $('<div>')
+        .addClass('recurrenceInput-event-recurrence-select')
+        .append(untilRadio);
+      
+      if (this.options.texts.recurrenceUntilLabel) {
+        until.append($('<span>').text(this.options.texts.recurrenceUntilLabel));
+      }
+      
+      until.append(untilInput);
+
+      if (this.options.texts.recurrenceUntil) {
+        until.append($('<span>').text(this.options.texts.recurrenceUntil));
+      }
+      
+      recurrence.append(never);
+      recurrence.append(occurrences);
+      recurrence.append(until);
+      
+      return recurrence;
     },
     
     _refreshText: function () {
@@ -361,19 +355,10 @@
         });
       }
       
-      if (json.monthDay !== undefined) {
-        opts.bymonthday = json.monthDay;
-      }
-
-      if (json.month !== undefined) {
-        opts.bymonth = json.month;
-      }
-      
       return new RRule(opts);
     },
     
     _rruleToJSON: function (rrule) {
-      // TODO: dtStart?
       var json = {};
       
       if (rrule.options.freq !== undefined) {
@@ -391,10 +376,6 @@
         json.weekdays = $.map(rrule.options.byweekday, function (weekday) {
           return WEEKDAYS[weekday];
         });
-      }
-      
-      if (rrule.options.bymonthday !== undefined) {
-        json.monthDay = rrule.options.bymonthday;
       }
       
       return json;
@@ -431,20 +412,6 @@
       
       if(weekdays.length > 0){
         recurrence.weekdays = weekdays;
-      }
-      
-      if(this.element.find('input[name="recurrenceMonthDay"]').length > 0){
-        var monthDay = parseInt(this.element.find('input[name="recurrenceMonthDay"]').val());
-        if (!isNaN(monthDay)) {
-          recurrence.monthDay = parseInt(monthDay);
-        }
-      }
-      
-      if(this.element.find('select[name="recurrenceMonth"]').length > 0){
-        var month = this.element.find('select[name="recurrenceMonth"]').val();
-        if (!isNaN(month)) {
-          recurrence.month = parseInt(month);
-        }
       }
       
       return recurrence;

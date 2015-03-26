@@ -56,8 +56,40 @@
   	  modalgrid : 24,
   	  contentgrid : 24,
   	  onBeforeOpen: function(modal){
+  	    var locale = getLocale().toLowerCase();
+        var dpRegional = $.datepicker.regional[locale] || $.datepicker.regional[''];
+  	   
   	    $('#eventRecurrence.recurrence-input').recurrenceInput('destroy');
-  	    $('#eventRecurrence').recurrenceInput();
+  	    $('#eventRecurrence').recurrenceInput({
+  	      texts: {
+  	        label: getLocaleText('plugin.calendar.recurrenceInput.label'),
+  	        freq: {
+  	          "SECONDLY": getLocaleText('plugin.calendar.recurrenceInput.freqSecondly'),
+  	          "MINUTELY": getLocaleText('plugin.calendar.recurrenceInput.freqMinutely'),
+  	          "DAILY": getLocaleText('plugin.calendar.recurrenceInput.freqDaily'),
+  	          "WEEKLY": getLocaleText('plugin.calendar.recurrenceInput.freqWeekly'),
+  	          "MONTHLY": getLocaleText('plugin.calendar.recurrenceInput.freqMonthly'),
+  	          "YEARLY": getLocaleText('plugin.calendar.recurrenceInput.freqYearly')
+  	        },
+  	        notRepeating: getLocaleText('plugin.calendar.recurrenceInput.notRepeating'),
+  	        intervalLabel: getLocaleText('plugin.calendar.recurrenceInput.intervalLabel'),
+  	        intervalDays: getLocaleText('plugin.calendar.recurrenceInput.intervalDays'),
+  	        weekdaysLabel: getLocaleText('plugin.calendar.recurrenceInput.weekdaysLabel'),
+  	        intervalWeeks: getLocaleText('plugin.calendar.recurrenceInput.intervalWeeks'),
+  	        intervalMonths: getLocaleText('plugin.calendar.recurrenceInput.intervalMonths'),
+  	        yearLabel: getLocaleText('plugin.calendar.recurrenceInput.yearLabel'),
+  	        intervalYears: getLocaleText('plugin.calendar.recurrenceInput.intervalYears'),
+  	        recurrenceLabel: getLocaleText('plugin.calendar.recurrenceInput.recurrenceLabel'),
+  	        recurrenceNever: getLocaleText('plugin.calendar.recurrenceInput.recurrenceNever'),
+  	        recurrenceOccurrencesLabel: getLocaleText('plugin.calendar.recurrenceInput.recurrenceOccurrencesLabel'),
+  	        recurrenceOccurrences: getLocaleText('plugin.calendar.recurrenceInput.recurrenceOccurrences'),
+            recurrenceUntilLabel: getLocaleText('plugin.calendar.recurrenceInput.recurrenceUntilLabel'),
+            recurrenceUntil: getLocaleText('plugin.calendar.recurrenceInput.recurrenceUntil'),
+  	        dayNamesShort: dpRegional.dayNamesShort
+  	      }
+  	    });
+  	    
+  	    
         mApi().calendar.calendars.read().callback($.proxy(function (err, calendars) {
   	      if (err) {
   	     	  $('.notification-queue').notificationQueue('notification', 'error', err);
