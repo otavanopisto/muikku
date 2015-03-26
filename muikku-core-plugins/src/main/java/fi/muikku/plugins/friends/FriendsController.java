@@ -9,9 +9,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.security.LoggedIn;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.UserEntityController;
+import fi.otavanopisto.security.LoggedIn;
 
 @Dependent
 @Stateful

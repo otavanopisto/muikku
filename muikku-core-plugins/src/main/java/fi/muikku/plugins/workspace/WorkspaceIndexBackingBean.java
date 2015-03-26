@@ -1,5 +1,6 @@
 package fi.muikku.plugins.workspace;
 
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,18 +17,20 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.jsf.NavigationRules;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.schooldata.CourseMetaController;
 import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.muikku.schooldata.WorkspaceController;
+import fi.muikku.schooldata.entity.CourseLengthUnit;
+import fi.muikku.schooldata.entity.EducationType;
+import fi.muikku.schooldata.entity.Subject;
 import fi.muikku.schooldata.entity.Workspace;
+import fi.muikku.schooldata.entity.WorkspaceType;
 
 @Named
 @Stateful
 @RequestScoped
 @Join(path = "/workspace/{workspaceUrlName}", to = "/workspaces/workspace.jsf")
 public class WorkspaceIndexBackingBean {
-
-  @Inject
-  private Logger logger;
 
   @Parameter
   private String workspaceUrlName;
@@ -48,6 +51,12 @@ public class WorkspaceIndexBackingBean {
   @Inject
   private WorkspaceVisitController workspaceVisitController;
   
+  @Inject
+  private CourseMetaController courseMetaController;
+  
+  @Inject
+  private Logger logger;
+
   @RequestAction
   public String init() {
     String urlName = getWorkspaceUrlName();
@@ -61,7 +70,7 @@ public class WorkspaceIndexBackingBean {
     if (workspaceEntity == null) {
       return NavigationRules.NOT_FOUND;
     }
-    setWorkspaceEntityId(workspaceEntity.getId());
+    workspaceEntityId = workspaceEntity.getId();
     
     try {
       contentNodes = workspaceMaterialController.listWorkspaceFrontPagesAsContentNodes(workspaceEntity);
@@ -75,9 +84,36 @@ public class WorkspaceIndexBackingBean {
 
     schoolDataBridgeSessionController.startSystemSession();
     try {
-      workspaceId = workspaceEntity.getId();
       Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+      if (workspace == null) {
+        logger.warning(String.format("Could not find workspace for workspaceEntity #%d", workspaceEntity.getId()));
+        return NavigationRules.NOT_FOUND;
+      }
+      
+      WorkspaceType workspaceType = workspaceController.findWorkspaceType(workspace.getSchoolDataSource(), workspace.getWorkspaceTypeId()); 
+      EducationType educationTypeObject = courseMetaController.findEducationType(workspace.getSchoolDataSource(), workspace.getEducationTypeIdentifier());
+      Subject subjectObject = courseMetaController.findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier());
+      CourseLengthUnit lengthUnit = null;
+      if ((workspace.getLength() != null) && (workspace.getLengthUnitIdentifier() != null)) {
+        lengthUnit = courseMetaController.findCourseLengthUnit(workspace.getSchoolDataSource(), workspace.getLengthUnitIdentifier());
+      }
+      
+      workspaceId = workspaceEntity.getId();
       workspaceName = workspace.getName();
+      subject = subjectObject != null ? subjectObject.getName() : null;
+      educationType = educationTypeObject != null ? educationTypeObject.getName() : null;
+      
+      if (lengthUnit != null) {
+        courseLength = workspace.getLength();
+        courseLengthSymbol = lengthUnit.getSymbol();
+      }
+      
+      beginDate = workspace.getBeginDate() != null ? workspace.getBeginDate().toDate() : null;
+      endDate = workspace.getEndDate() != null ? workspace.getEndDate().toDate() : null;
+      
+      if (workspaceType != null) {
+        this.workspaceType = workspaceType.getName();
+      }
     } finally {
       schoolDataBridgeSessionController.endSystemSession();
     }
@@ -108,6 +144,50 @@ public class WorkspaceIndexBackingBean {
   public String getWorkspaceName() {
     return workspaceName;
   }
+  
+  public String getContents() {
+    return contents;
+  }
+
+  public long getWorkspaceMaterialId() {
+    return workspaceMaterialId;
+  }
+
+  public void setWorkspaceMaterialId(long workspaceMaterialId) {
+    this.workspaceMaterialId = workspaceMaterialId;
+  }
+
+  public long getMaterialId() {
+    return materialId;
+  }
+
+  public void setMaterialId(long materialId) {
+    this.materialId = materialId;
+  }
+
+  public String getMaterialType() {
+    return materialType;
+  }
+
+  public void setMaterialType(String materialType) {
+    this.materialType = materialType;
+  }
+
+  public String getMaterialTitle() {
+    return materialTitle;
+  }
+
+  public void setMaterialTitle(String materialTitle) {
+    this.materialTitle = materialTitle;
+  }
+
+  public long getWorkspaceEntityId() {
+    return workspaceEntityId;
+  }
+
+  public void setWorkspaceEntityId(long workspaceEntityId) {
+    this.workspaceEntityId = workspaceEntityId;
+  }
 
   public void visit() {
     workspaceVisitController.visit(getWorkspaceEntity());
@@ -117,22 +197,51 @@ public class WorkspaceIndexBackingBean {
     return workspaceVisitController.getNumVisits(getWorkspaceEntity());
   }
   
-  public long getWorkspaceEntityId() {
-    return workspaceEntityId;
+  public String getWorkspaceType() {
+    return workspaceType;
   }
-
-  public void setWorkspaceEntityId(long workspaceEntityId) {
-    this.workspaceEntityId = workspaceEntityId;
+  
+  public String getSubject() {
+    return subject;
   }
-
+  
+  public String getEducationType() {
+    return educationType;
+  }
+  
+  public Double getCourseLength() {
+    return courseLength;
+  }
+  
+  public String getCourseLengthSymbol() {
+    return courseLengthSymbol;
+  }
+  
+  public Date getBeginDate() {
+    return beginDate;
+  }
+  
+  public Date getEndDate() {
+    return endDate;
+  }
+  
   public List<ContentNode> getContentNodes() {
     return contentNodes;
   }
-
   private Long workspaceId;
   private String workspaceName;
   private Long workspaceEntityId;
-
+  private String contents;
+  private long workspaceMaterialId;
+  private long materialId;
+  private String materialType;
+  private String materialTitle;
+  private String workspaceType;
+  private String subject;
+  private String educationType;
+  private Double courseLength;
+  private String courseLengthSymbol;
+  private Date beginDate;
+  private Date endDate;
   private List<ContentNode> contentNodes;
-
 }

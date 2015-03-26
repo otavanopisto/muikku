@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.ocpsoft.rewrite.exception.RewriteException;
 
-import fi.muikku.security.AuthorizationException;
+import fi.otavanopisto.security.AuthorizationException;
 
 public class ExceptionHandler extends ExceptionHandlerWrapper {
   

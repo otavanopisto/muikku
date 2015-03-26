@@ -16,6 +16,8 @@ import javax.inject.Inject;
 import fi.muikku.dao.base.SchoolDataSourceDAO;
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.schooldata.entity.CourseIdentifier;
+import fi.muikku.schooldata.entity.CourseLengthUnit;
+import fi.muikku.schooldata.entity.EducationType;
 import fi.muikku.schooldata.entity.Subject;
 
 @Dependent
@@ -76,6 +78,62 @@ public class CourseMetaController {
 		
 		return result;
 	}
+	
+	/* EducationType */
+	
+	public EducationType findEducationType(String schoolDataSource, String identifier) {
+    SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
+    if (dataSource != null) {
+      return findEducationType(dataSource, identifier);
+    } else {
+      logger.log(Level.SEVERE, "School Data Source could not be found by identifier:  " + schoolDataSource);
+    }
+
+    return null;
+  }
+
+  public EducationType findEducationType(SchoolDataSource schoolDataSource, String identifier) {
+    CourseMetaSchoolDataBridge schoolDataBridge = getCourseMetaBridge(schoolDataSource);
+    if (schoolDataBridge != null) {
+      try {
+        return schoolDataBridge.findEducationType(identifier);
+      } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
+        logger.log(Level.SEVERE, "School Data Bridge reported a problem while finding a educationType", e);
+      }
+    } else {
+      logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + schoolDataSource.getIdentifier());
+    }
+  
+    return null;
+  }
+  
+  /* CourseLenthUnit */
+  
+  public CourseLengthUnit findCourseLengthUnit(String schoolDataSource, String identifier) {
+    SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
+    if (dataSource != null) {
+      return findCourseLengthUnit(dataSource, identifier);
+    } else {
+      logger.log(Level.SEVERE, "School Data Source could not be found by identifier:  " + schoolDataSource);
+    }
+
+    return null;
+  }
+
+  public CourseLengthUnit findCourseLengthUnit(SchoolDataSource schoolDataSource, String identifier) {
+    CourseMetaSchoolDataBridge schoolDataBridge = getCourseMetaBridge(schoolDataSource);
+    if (schoolDataBridge != null) {
+      try {
+        return schoolDataBridge.findCourseLengthUnit(identifier);
+      } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
+        logger.log(Level.SEVERE, "School Data Bridge reported a problem while finding a courseLengthUnit", e);
+      }
+    } else {
+      logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + schoolDataSource.getIdentifier());
+    }
+  
+    return null;
+  }
 	
 	/* CourseIdentifier */
 	

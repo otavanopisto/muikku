@@ -5,9 +5,9 @@ import javax.inject.Inject;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
-import fi.muikku.security.ContextReference;
 import fi.muikku.security.UserContextResolver;
 import fi.muikku.users.UserEntityController;
+import fi.otavanopisto.security.ContextReference;
 
 public class CommunicatorInboxOwnerContextResolverImpl implements UserContextResolver {
 
