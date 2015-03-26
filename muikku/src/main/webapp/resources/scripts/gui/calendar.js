@@ -126,6 +126,10 @@
             $('input[name="repeat"]')
               .attr("checked", "checked")
               .prop("checked", "checked");
+  	      } else {
+            $('input[name="repeat"]')
+              .removeAttr("checked")
+              .prop("checked", false);
   	      }
   	    });
   	  },
