@@ -628,29 +628,6 @@
     }
   });
   
-  $(document).on('taskFieldDiscovered', function (event, data) {
-    var page = $(data.pageElement);
-    if (!$(page).data('answer-button')) {
-      var buttonText = $(page).data('workspace-material-assigment-type') == "EXERCISE" 
-          ? getLocaleText("plugin.workspace.materialsLoader.saveExerciseButton")
-          : getLocaleText("plugin.workspace.materialsLoader.saveAssignmentButton");
-      
-      var saveButtonWrapper = $('<div>');
-          
-      $(page)
-        .append(saveButtonWrapper
-            .addClass('muikku-save-page-wrapper'))
-        .data('answer-button', 'true');
-
-      $(saveButtonWrapper)
-          .append($('<button>')
-             .addClass('muikku-save-page')
-             .text(buttonText)
-             .data('unsaved-text', buttonText));
-      
-    }
-  });
-  
   function createEmbedId(parentIds) {
     return (parentIds.length ? parentIds.join(':') : null);
   }
@@ -716,6 +693,24 @@
   });
   
   $(document).on('afterHtmlMaterialRender', function (event, data) {
+
+    // Exercise save support 
+    if ($(data.pageElement).data('workspace-material-assigment-type')) {
+      var buttonText = $(data.pageElement).data('workspace-material-assigment-type') == "EXERCISE" 
+        ? getLocaleText("plugin.workspace.materialsLoader.saveExerciseButton")
+        : getLocaleText("plugin.workspace.materialsLoader.saveAssignmentButton");
+      var saveButtonWrapper = $('<div>');
+      $(data.pageElement)
+        .append(saveButtonWrapper
+          .addClass('muikku-save-page-wrapper'));
+      $(saveButtonWrapper)
+        .append($('<button>')
+          .addClass('muikku-save-page')
+          .text(buttonText)
+          .data('unsaved-text', buttonText));
+    }
+    
+    // Connect field support
     jsPlumb.ready(function() {
       $(data.pageElement).find('.muikku-connect-field-table').each(function (index, field) {
         var meta = $.parseJSON($(field).attr('data-meta'));
@@ -731,6 +726,7 @@
       $(data.pageElement).find('.js-lazyyt').lazyYT(); 
     }); 
     
+    // File field support
     $(data.pageElement).find('.muikku-file-field').each(function (index, field) {
       $(field)
         .muikkuFileField()
@@ -743,7 +739,6 @@
           }
         });
     });
-    
   });
 
 }).call(this);
