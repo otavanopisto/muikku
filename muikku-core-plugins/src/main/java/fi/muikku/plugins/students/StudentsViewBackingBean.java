@@ -7,7 +7,7 @@ import javax.inject.Named;
 import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
-import fi.muikku.security.Permit;
+import fi.otavanopisto.security.Permit;
 
 
 @Named

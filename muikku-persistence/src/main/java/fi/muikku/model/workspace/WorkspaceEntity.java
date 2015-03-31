@@ -15,7 +15,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.util.ArchivableEntity;
-import fi.muikku.security.ContextReference;
+import fi.otavanopisto.security.ContextReference;
 
 @Entity
 @Cacheable

@@ -4,8 +4,8 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 
-import fi.muikku.security.ContextReference;
-import fi.muikku.security.Identity;
+import fi.otavanopisto.security.ContextReference;
+import fi.otavanopisto.security.Identity;
 
 @SessionScoped
 @Stateful

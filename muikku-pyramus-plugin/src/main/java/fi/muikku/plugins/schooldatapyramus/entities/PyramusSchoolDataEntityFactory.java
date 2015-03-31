@@ -12,17 +12,21 @@ import org.joda.time.DateTime;
 import fi.muikku.controller.PluginSettingsController;
 import fi.muikku.plugins.schooldatapyramus.PyramusIdentifierMapper;
 import fi.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
+import fi.muikku.schooldata.entity.CourseLengthUnit;
 import fi.muikku.schooldata.entity.EnvironmentRole;
 import fi.muikku.schooldata.entity.EnvironmentRoleArchetype;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceRole;
 import fi.muikku.schooldata.entity.WorkspaceRoleArchetype;
+import fi.muikku.schooldata.entity.WorkspaceType;
 import fi.muikku.schooldata.entity.WorkspaceUser;
 import fi.pyramus.rest.model.Course;
 import fi.pyramus.rest.model.CourseStaffMember;
 import fi.pyramus.rest.model.CourseStaffMemberRole;
 import fi.pyramus.rest.model.CourseStudent;
+import fi.pyramus.rest.model.CourseType;
+import fi.pyramus.rest.model.EducationalTimeUnit;
 import fi.pyramus.rest.model.UserRole;
 
 public class PyramusSchoolDataEntityFactory {
@@ -209,7 +213,7 @@ public class PyramusSchoolDataEntityFactory {
     return result;
   }
 
-  public Workspace createEntity(Course course) {
+  public Workspace createEntity(Course course, String educationTypeIdentifier) {
     if (course == null) {
       return null;
     }
@@ -219,17 +223,44 @@ public class PyramusSchoolDataEntityFactory {
       modified = course.getCreated();
     }
     
-    return new PyramusWorkspace(identifierMapper.getWorkspaceIdentifier(course.getId()), course.getName(), course.getDescription(), "TODO", "TODO", modified.toDate());
+    return new PyramusWorkspace(
+        identifierMapper.getWorkspaceIdentifier(course.getId()),
+        course.getName(),
+        course.getDescription(),
+        identifierMapper.getWorkspaceTypeIdentifier(course.getTypeId()),
+        "TODO",
+        modified.toDate(),
+        identifierMapper.getSubjectIdentifier(course.getSubjectId()),
+        educationTypeIdentifier,
+        course.getLength(),
+        identifierMapper.getCourseLengthUnitIdentifier(course.getLengthUnitId()),
+        course.getBeginDate(),
+        course.getEndDate()
+    );
   }
   
-  public List<Workspace> createEntity(Course... courses) {
-    List<Workspace> result = new ArrayList<>();
+  public WorkspaceType createEntity(CourseType courseType) {
+    return new PyramusWorkspaceType(
+      identifierMapper.getWorkspaceTypeIdentifier(courseType.getId()), 
+      courseType.getName()
+    );
+  }
+
+  public List<WorkspaceType> createEntities(CourseType... courseTypes) {
+    List<WorkspaceType> result = new ArrayList<>();
     
-    for (Course course : courses) {
-      result.add(createEntity(course));
+    for (CourseType courseType : courseTypes) {
+      result.add(createEntity(courseType));
     }
     
     return result;
+  }
+  
+  public CourseLengthUnit getCourseLengthUnit(EducationalTimeUnit educationalTimeUnit) {
+    return new PyramusCourseLengthUnit(
+        identifierMapper.getCourseLengthUnitIdentifier(educationalTimeUnit.getId()), 
+        educationalTimeUnit.getSymbol(),
+        educationalTimeUnit.getName());
   }
   
   private EnvironmentRoleArchetype getEnvironmentRoleArchetype(UserRole role) {

@@ -22,8 +22,8 @@ import fi.muikku.plugins.wall.WallFeedItem;
 import fi.muikku.plugins.wall.model.Wall;
 import fi.muikku.plugins.wall.model.WallEntry;
 import fi.muikku.plugins.wall.model.WallEntryReply;
-import fi.muikku.security.LoggedIn;
 import fi.muikku.session.SessionController;
+import fi.otavanopisto.security.LoggedIn;
 
 @Path("/wall")
 @Stateless

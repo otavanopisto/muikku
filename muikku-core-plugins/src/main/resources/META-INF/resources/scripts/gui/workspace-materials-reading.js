@@ -2,7 +2,7 @@
   'use strict';
   
   function scrollToPage(workspaceMaterialId, animate) {
-    var topOffset = 100;
+    var topOffset = $('#contentWorkspaceMaterialsReading').offset().top;
     var scrollTop = $('#page-' + workspaceMaterialId).offset().top - topOffset;
     if (animate) {
       $(window).data('scrolling', true);
@@ -15,6 +15,7 @@
         complete : function() {
           $('a.active').removeClass('active');
           $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
+          window.location.hash = 'p-' + workspaceMaterialId;
           $(window).data('scrolling', false);
         }
       });
@@ -22,6 +23,7 @@
       $('html, body').stop().scrollTop(scrollTop);
       $('a.active').removeClass('active');
       $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
+      window.location.hash = 'p-' + workspaceMaterialId;
     }
   }
   
@@ -31,13 +33,18 @@
   });
 
   $(document).ready(function() {
-    $(document).muikkuMaterialLoader().muikkuMaterialLoader('loadMaterials', $('.workspace-materials-view-page'));
+    $(window).data('initializing', true);
+    $(document).muikkuMaterialLoader({
+      loadAnswers: true,
+      workspaceEntityId: $('.workspaceEntityId').val()
+    }).muikkuMaterialLoader('loadMaterials', $('.workspace-materials-view-page'));
 
     $('.workspace-materials-view-page').waypoint(function(direction) {
-      if ($(window).data('scrolling') !== true) {
-        var workspaceMaterialId = parseInt($(this).attr('data-workspace-material-id'));
+      if ($(window).data('scrolling') !== true && $(window).data('initializing') !== true) {
+        var workspaceMaterialId = $(this).data('workspace-material-id');
         $('a.active').removeClass('active');
         $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
+        window.location.hash = 'p-' + workspaceMaterialId;
       }
     }, {
       offset: '60%'
@@ -56,7 +63,7 @@
           .text(getLocaleText("plugin.workspace.materialsLoader.evaluatedAssignmentLabel"))
       );
     });
-    
+    $(window).data('initializing', false);
   });
   
   $(document).on('click', '.workspace-materials-toc-item a', function (event) {
@@ -157,6 +164,9 @@
   
   // Workspace's materials's reading view
   $(window).load(function() {
+    if (window.location.hash && (window.location.hash.indexOf('p-') > 0)) {
+      scrollToPage(window.location.hash.substring(3), false);
+    }    
     if ($('#workspaceMaterialsReadingTOCWrapper').length > 0) {
       
       var height = $(window).height();

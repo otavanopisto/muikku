@@ -373,7 +373,7 @@ $(document).ready(function(){
       var box = "#in";
       
       if (window.location.hash) {
-        if (window.location.hash.startsWith("#sent"))
+        if (window.location.hash.indexOf("#sent") === 0)
           box = "#sent";
       }
       
@@ -383,7 +383,7 @@ $(document).ready(function(){
       var box = "#in";
       
       if (window.location.hash) {
-        if (window.location.hash.startsWith("#sent"))
+        if (window.location.hash.indexOf("#sent") === 0)
           box = "#sent";
       }
       
@@ -398,12 +398,12 @@ $(document).ready(function(){
         _this._showNewMessageView();
       } else if (hash == "settings") {
         _this._showSettingsView();
-      } else if (hash.startsWith("in/")) {
+      } else if (hash.indexOf("in/") === 0) {
         var messageId = hash.substring(3);
         _this._showMessage(messageId);
       } else if (hash == "sent") {
         _this._showSentItems();
-      } else if (hash.startsWith("sent/")) {
+      } else if (hash.indexOf("sent/") === 0) {
         var messageId = hash.substring(5);
         _this._showMessage(messageId);
       } else

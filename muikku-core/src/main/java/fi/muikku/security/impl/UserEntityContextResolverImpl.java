@@ -1,8 +1,8 @@
 package fi.muikku.security.impl;
 
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.security.ContextReference;
 import fi.muikku.security.UserContextResolver;
+import fi.otavanopisto.security.ContextReference;
 
 public class UserEntityContextResolverImpl implements UserContextResolver {
 

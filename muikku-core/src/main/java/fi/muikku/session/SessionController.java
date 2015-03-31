@@ -7,7 +7,7 @@ import java.util.Locale;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.util.ResourceEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.security.ContextReference;
+import fi.otavanopisto.security.ContextReference;
 
 public interface SessionController {
 
