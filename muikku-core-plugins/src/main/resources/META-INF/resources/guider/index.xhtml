@@ -10,7 +10,8 @@
 
 
   <ui:define name="content.center.widget">
-    <m:widget name="guider-content" size="24" />  
+    <m:widget name="guider-content" size="24" rendered="#{sessionBackingBean.loggedIn}"/>  
+    <m:widget name="mainfunction-notlogged" size="24" rendered="#{!sessionBackingBean.loggedIn}"/>
   </ui:define>
      
 </ui:composition>

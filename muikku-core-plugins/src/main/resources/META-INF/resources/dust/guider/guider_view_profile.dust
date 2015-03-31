@@ -1,9 +1,25 @@
+<div class="gt-user-view-profile" id="{id}">
+  <div class="gt-user-view-headline mf-widget"><h1>{firstName} {lastName}</h1></div>
+  <div class="gt-user-view-profile-info mf-widget">
+    <div class="gt-user-details-personal">
+      {?senderHasPicture} 
+        <img class="gt-user-picture custom" src="{@contextPath/}/picture?userId={sender}" width="50" height="50" /> 
+      {:else}
+        <div class="gt-user-picture default "></div>
+      {/senderHasPicture}
+    </div>
+    <div class="gt-user-details-studies">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur ac turpis condimentum, vulputate lorem et, pretium lectus. Pellentesque eget est nec diam facilisis pretium eget id risus.  </div>
+    <div class="clear"></div>  
+  </div>
+<!--   <div class="gt-user-view-profile-timeline mf-widget"><h1>Timeline</h1></div> -->
+  <div class="gt-user-view-profile-data mf-widget">
+     <div class="gt-user-view-profile-data gt-data-container-1 mf-widget-subarea">
+       <h3>{#localize key="plugin.guider.title.workspaces"/}</h3>
+       <div class="gt-data"></div>
+     </div>
+     <div class="clear"></div>
+  </div>
 
-
-<div class="gt-user-details-data" id="{id}">
-  <h3>We're the borg</h3>
-  <h3>You're not</h3>
 </div>
-
 
 
