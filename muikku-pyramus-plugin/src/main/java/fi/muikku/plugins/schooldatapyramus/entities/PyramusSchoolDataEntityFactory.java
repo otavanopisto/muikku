@@ -78,6 +78,10 @@ public class PyramusSchoolDataEntityFactory {
   }
   
   public User createEntity(fi.pyramus.rest.model.Student student, fi.pyramus.rest.model.StudyProgramme studyProgramme) {
+    return createEntity(student, studyProgramme, null, null, null, null);
+  }
+
+  public User createEntity(fi.pyramus.rest.model.Student student, fi.pyramus.rest.model.StudyProgramme studyProgramme, String nationality, String language, String municipality, String school) {
     StringBuilder displayName = new StringBuilder();
     
     displayName
@@ -95,21 +99,51 @@ public class PyramusSchoolDataEntityFactory {
                            student.getFirstName(),
                            student.getLastName(),
                            displayName.toString(),
-                           null,
-                           null,
-                           null,
-                           null);
+                           nationality,
+                           language,
+                           municipality,
+                           school);
   }
   
   public List<User> createEntity(fi.pyramus.rest.model.Student[] students, fi.pyramus.rest.model.StudyProgramme[] studyProgrammes) {
-    if (studyProgrammes.length != students.length) {
+    return createEntity(students,
+                        studyProgrammes,
+                        new String[students.length],
+                        new String[students.length],
+                        new String[students.length],
+                        new String[students.length]);
+  }
+  
+  private boolean notAllEqual(int... values) {
+    int reference = values[0];
+    for (int value : values) {
+      if (value != reference) {
+        return false;
+      }
+    }
+    
+    return true;
+  }
+
+  public List<User> createEntity(fi.pyramus.rest.model.Student[] students, fi.pyramus.rest.model.StudyProgramme[] studyProgrammes, String[] nationalities, String[] languages, String[] municipalities, String[] schools) {
+    if (notAllEqual(students.length,
+                    studyProgrammes.length,
+                    nationalities.length,
+                    languages.length,
+                    municipalities.length,
+                    schools.length)) {
       throw new RuntimeException("StudyProgramme count does not match student count");
     }
     
     List<User> result = new ArrayList<>();
     
     for (int i = 0, l = students. length; i < l; i++) {
-      result.add(createEntity(students[i], studyProgrammes[i])); 
+      result.add(createEntity(students[i],
+                              studyProgrammes[i],
+                              null,
+                              null,
+                              null,
+                              null)); 
     }
     
     return result;

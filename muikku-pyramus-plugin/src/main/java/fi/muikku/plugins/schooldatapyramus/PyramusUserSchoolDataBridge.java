@@ -75,7 +75,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
     }
 
     return entityFactory.createEntity(students,
-        studyProgrammes.toArray(new StudyProgramme[0]));
+        studyProgrammes.toArray(new StudyProgramme[0]), null, null, null, null);
   }
 
   private User createStudentEntity(Student student) {
