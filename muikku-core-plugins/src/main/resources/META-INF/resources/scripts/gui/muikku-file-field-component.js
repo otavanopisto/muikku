@@ -16,6 +16,7 @@
         'name' : 'file'
       }).appendTo(this._uploaderContainer).fileupload({
         url : CONTEXTPATH + '/tempFileUploadServlet',
+        dropZone: $(this.element),
         autoUpload : true,
         add : $.proxy(this._onFileUploadAdd, this),
         done : $.proxy(this._onFileUploadDone, this),
@@ -162,7 +163,7 @@
 
     _onFileUploadAdd : function(e, data) {
       this.element.closest('form').find('input[type="submit"]').attr('disabled', 'disabled');
-      
+
       data.context = this._findFileElementByIndex(this._fileIndex);
       
       if (data.context.length == 0) {
