@@ -9,7 +9,6 @@ import javax.inject.Inject;
 
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.plugins.workspace.dao.WorkspaceMaterialDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceMaterialReplyDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceNodeDAO;
 import fi.muikku.plugins.workspace.dao.WorkspaceRootFolderDAO;
@@ -27,9 +26,6 @@ public class WorkspaceMaterialReplyController {
   
   @Inject
   private WorkspaceRootFolderDAO workspaceRootFolderDAO;
-  
-  @Inject
-  private WorkspaceMaterialDAO workspaceMaterialDAO;
   
   @Inject
   private WorkspaceNodeDAO workspaceNodeDAO;

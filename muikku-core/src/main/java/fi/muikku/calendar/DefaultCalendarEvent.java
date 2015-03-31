@@ -11,7 +11,7 @@ public class DefaultCalendarEvent implements CalendarEvent {
 
   public DefaultCalendarEvent(String id, String calendarId, String serviceProvider, String summary, String description, String url, CalendarEventLocation location, 
       CalendarEventStatus status, List<CalendarEventAttendee> attendees, CalendarEventUser organizer, CalendarEventTemporalField start, CalendarEventTemporalField end, 
-      boolean allDay, Date created, Date updated, Map<String, String> extendedProperties, List<CalendarEventReminder> reminders, CalendarEventRecurrence recurrence) {
+      boolean allDay, Date created, Date updated, Map<String, String> extendedProperties, List<CalendarEventReminder> reminders, String recurrence) {
     this.id = id;
     this.calendarId = calendarId;
     this.serviceProvider = serviceProvider;
@@ -28,6 +28,7 @@ public class DefaultCalendarEvent implements CalendarEvent {
     this.created = created;
     this.updated = updated;
     this.extendedProperties = extendedProperties;
+    this.recurrence = recurrence;
     this.reminders = reminders;
     this.recurrence = recurrence;
   }
@@ -118,7 +119,7 @@ public class DefaultCalendarEvent implements CalendarEvent {
   }
   
   @Override
-  public CalendarEventRecurrence getRecurrence() {
+  public String getRecurrence() {
     return recurrence;
   }
 
@@ -139,5 +140,5 @@ public class DefaultCalendarEvent implements CalendarEvent {
   private Date updated;
   private Map<String, String> extendedProperties;
   private List<CalendarEventReminder> reminders;
-  private CalendarEventRecurrence recurrence;
+  private String recurrence;
 }

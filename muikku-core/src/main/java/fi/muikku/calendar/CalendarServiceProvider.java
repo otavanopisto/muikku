@@ -1,7 +1,8 @@
 package fi.muikku.calendar;
 
-import java.util.Date;
 import java.util.List;
+
+import org.joda.time.DateTime;
 
 public interface CalendarServiceProvider {
 
@@ -87,7 +88,7 @@ public interface CalendarServiceProvider {
                                    CalendarEventTemporalField start,
                                    CalendarEventTemporalField end,
                                    List<CalendarEventReminder> reminders,
-                                   CalendarEventRecurrence recurrence,
+                                   String recurrence,
                                    boolean allDay)
           throws CalendarServiceException;
 
@@ -119,7 +120,7 @@ public interface CalendarServiceProvider {
    * @return a list of events from specified calendars within a specified time span
    * @throws CalendarServiceException when service provider reports an error
    */
-  public List<CalendarEvent> listEvents(Date minTime, Date maxTime, String... calendarId) throws CalendarServiceException;
+  public List<CalendarEvent> listEvents(DateTime minTime, DateTime maxTime, String... calendarId) throws CalendarServiceException;
 
   /**
    * Updates existing calendar event

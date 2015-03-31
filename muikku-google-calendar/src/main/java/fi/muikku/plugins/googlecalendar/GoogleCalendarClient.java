@@ -1,17 +1,23 @@
 package fi.muikku.plugins.googlecalendar;
 
-import fi.muikku.plugins.googlecalendar.model.GoogleCalendarEvent;
-import fi.muikku.plugins.googlecalendar.model.GoogleCalendarEventUser;
-import fi.muikku.plugins.googlecalendar.model.GoogleCalendar;
-
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.SimpleTimeZone;
+import java.util.TimeZone;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.ejb.Stateless;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets.Details;
@@ -32,20 +38,19 @@ import com.google.api.services.calendar.model.EventAttendee;
 
 import fi.muikku.calendar.CalendarEvent;
 import fi.muikku.calendar.CalendarEventAttendee;
+import fi.muikku.calendar.CalendarEventLocation;
+import fi.muikku.calendar.CalendarEventReminder;
 import fi.muikku.calendar.CalendarEventStatus;
 import fi.muikku.calendar.CalendarEventTemporalField;
+import fi.muikku.calendar.CalendarEventUser;
 import fi.muikku.calendar.CalendarServiceException;
+import fi.muikku.calendar.DefaultCalendarEvent;
+import fi.muikku.calendar.DefaultCalendarEventLocation;
+import fi.muikku.plugins.googlecalendar.model.GoogleCalendar;
+import fi.muikku.plugins.googlecalendar.model.GoogleCalendarEventTemporalField;
+import fi.muikku.plugins.googlecalendar.model.GoogleCalendarEventUser;
 import fi.muikku.session.AccessToken;
 import fi.muikku.session.SessionController;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.ejb.Stateless;
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-
-import org.apache.commons.lang3.StringUtils;
 
 
 @Dependent
@@ -158,6 +163,7 @@ public class GoogleCalendarClient {
           List<CalendarEventAttendee> attendees,
           CalendarEventTemporalField start,
           CalendarEventTemporalField end,
+          String recurrence,
           boolean allDay) throws CalendarServiceException {
     ArrayList<EventAttendee> googleAttendees = new ArrayList<>();
     for (CalendarEventAttendee attendee : attendees) {
@@ -171,21 +177,19 @@ public class GoogleCalendarClient {
     }
 
     try {
-      logger.log(Level.INFO, start.getDateTime().toString());
-      logger.log(Level.INFO, start.getTimeZone().toString());
-      logger.log(Level.INFO, end.getDateTime().toString());
-      logger.log(Level.INFO, end.getTimeZone().toString());
+      Event event = new Event()
+        .setSummary(summary)
+        .setDescription(description)
+        .setStatus(status.toString().toLowerCase(Locale.ROOT))
+        .setAttendees(googleAttendees)
+        .setStart(Convert.toEventDateTime(allDay, start))
+        .setEnd(Convert.toEventDateTime(allDay, end));
+      
+      if (StringUtils.isNotBlank(recurrence)) {
+        event.setRecurrence(Arrays.asList(String.format("RRULE:%s", recurrence)));
+      }
 
-      Event event = getClient().events().insert(calendarId,
-              new Event()
-              .setSummary(summary)
-              .setDescription(description)
-              .setStatus(status.toString().toLowerCase(Locale.ROOT))
-              .setAttendees(googleAttendees)
-              .setStart(Convert.toEventDateTime(allDay, start))
-              .setEnd(Convert.toEventDateTime(allDay, end)))
-              .execute();
-      return new GoogleCalendarEvent(event, calendarId);
+      return toMuikkuEvent(calendarId, getClient().events().insert(calendarId, event).execute());
     } catch (IOException | GeneralSecurityException ex) {
       throw new CalendarServiceException(ex);
     }
@@ -194,7 +198,7 @@ public class GoogleCalendarClient {
   public CalendarEvent findEvent(fi.muikku.calendar.Calendar calendar, String eventId) throws CalendarServiceException {
     try {
       Event event = getClient().events().get(calendar.getId(), eventId).execute();
-      return new GoogleCalendarEvent(event, calendar.getId());
+      return toMuikkuEvent(calendar.getId(), event);
     } catch (GeneralSecurityException | IOException ex) {
       throw new CalendarServiceException(ex);
     }
@@ -206,7 +210,7 @@ public class GoogleCalendarClient {
     for (String calId : calendarId) {
       try {
         for (Event event : getClient().events().list(calId).execute().getItems()) {
-          result.add(new GoogleCalendarEvent(event, calId));
+          result.add(toMuikkuEvent(calId, event));
         }
       } catch (GeneralSecurityException | IOException ex) {
         throw new CalendarServiceException(ex);
@@ -216,7 +220,7 @@ public class GoogleCalendarClient {
     return result;
   }
 
-  public List<CalendarEvent> listEvents(Date minTime, Date maxTime, String... calendarId) throws CalendarServiceException {
+  public List<CalendarEvent> listEvents(org.joda.time.DateTime minTime, org.joda.time.DateTime maxTime, String... calendarId) throws CalendarServiceException {
     ArrayList<CalendarEvent> result = new ArrayList<>();
 
     for (String calId : calendarId) {
@@ -224,12 +228,11 @@ public class GoogleCalendarClient {
         for (Event event : getClient()
                 .events()
                 .list(calId)
-                .setTimeMin(new DateTime(minTime))
-                .setTimeMax(new DateTime(maxTime))
+                .setTimeMin(new DateTime(minTime.getMillis()))
+                .setTimeMax(new DateTime(maxTime.getMillis()))
                 .execute()
                 .getItems()) {
-          result.add(
-                  new GoogleCalendarEvent(event, calId));
+          result.add(toMuikkuEvent(calId, event));
           logger.log(Level.INFO, event.toPrettyString());
         }
       } catch (GeneralSecurityException | IOException ex) {
@@ -253,38 +256,86 @@ public class GoogleCalendarClient {
     }
 
     try {
-      Event event = getClient().events().patch(calendarEvent.getCalendarId(),
-              calendarEvent.getId(),
-              new Event()
-              .setSummary(calendarEvent.getSummary())
-              .setDescription(calendarEvent.getDescription())
-              .setStatus(calendarEvent.getStatus().toString().toLowerCase(Locale.ROOT))
-              .setAttendees(googleAttendees)
-              .setStart(Convert.toEventDateTime(calendarEvent.isAllDay(), calendarEvent.getStart()))
-              .setEnd(Convert.toEventDateTime(calendarEvent.isAllDay(), calendarEvent.getEnd())))
-              .execute();
-      return new GoogleCalendarEvent(
-              event.getId(),
-              calendarEvent.getCalendarId(),
-              calendarEvent.getSummary(),
-              calendarEvent.getDescription(),
-              calendarEvent.getStatus(),
-              calendarEvent.getAttendees(),
-              new GoogleCalendarEventUser(event.getOrganizer().getDisplayName(),
-                      event.getOrganizer().getEmail()),
-              calendarEvent.getStart(),
-              calendarEvent.getEnd(),
-              Convert.toDate(event.getCreated()),
-              Convert.toDate(event.getUpdated()),
-              new HashMap<String, String>(),
-              calendarEvent.getEventReminders(),
-              calendarEvent.getRecurrence(),
-              calendarEvent.getUrl(),
-              calendarEvent.getLocation(),
-              calendarEvent.isAllDay());
+      Event event = new Event()
+        .setSummary(calendarEvent.getSummary())
+        .setDescription(calendarEvent.getDescription())
+        .setStatus(calendarEvent.getStatus().toString().toLowerCase(Locale.ROOT))
+        .setAttendees(googleAttendees)
+        .setStart(Convert.toEventDateTime(calendarEvent.isAllDay(), calendarEvent.getStart()))
+        .setEnd(Convert.toEventDateTime(calendarEvent.isAllDay(), calendarEvent.getEnd()));
+      
+      if (StringUtils.isNotBlank(calendarEvent.getRecurrence())) {
+        event.setRecurrence(Arrays.asList(String.format("RRULE:%s", calendarEvent.getRecurrence())));
+      }
+      
+      return toMuikkuEvent(calendarEvent.getCalendarId(), getClient().events().patch(calendarEvent.getCalendarId(), calendarEvent.getId(), event).execute());
     } catch (IOException | GeneralSecurityException ex) {
       throw new CalendarServiceException(ex);
     }
+  }
+  
+  private CalendarEvent toMuikkuEvent(String calendarId, Event event) {
+    String url = event.getHangoutLink();
+    CalendarEventLocation location = new DefaultCalendarEventLocation(event.getLocation(), null, null, null);
+    CalendarEventStatus status = CalendarEventStatus.valueOf(event.getStatus().toUpperCase(Locale.ROOT));
+    // TODO: attendees
+    List<CalendarEventAttendee> attendees = null;
+    CalendarEventUser organizer = new GoogleCalendarEventUser(event.getOrganizer().getDisplayName(), event.getOrganizer().getEmail());
+    CalendarEventTemporalField start = new GoogleCalendarEventTemporalField(Convert.toDate(event.getStart()), getJavaTimeZone(event.getStart().getTimeZone()));
+    CalendarEventTemporalField end = new GoogleCalendarEventTemporalField(Convert.toDate(event.getEnd()), getJavaTimeZone(event.getEnd().getTimeZone()));
+    boolean allDay = event.getStart().getDate() != null;
+    Map<String, String> extendedProperties = Collections.emptyMap();
+    // TODO: reminders
+    List<CalendarEventReminder> reminders = null;
+    String recurrence = null;
+    
+    if (event.getRecurrence() != null && !event.getRecurrence().isEmpty()) {
+      List<String> rrules = new ArrayList<String>();
+      for (String rule : event.getRecurrence()) {
+        if (StringUtils.startsWith(rule, "RRULE:")) {
+          rrules.add(rule);
+        } else {
+          logger.warning(String.format("Ignoring unsupported recurrence rule %s from Google", rule));
+        }
+      }
+      
+      if (rrules.isEmpty()) {
+        logger.warning("Could not parse recurring event recurrene because all rules were in unsupported formats");
+      } else {
+        if (rrules.size() > 1) {
+          logger.warning(String.format("More than one recurrence rule defined. Ignoring %d rules", rrules.size() - 1));
+        }
+        
+        recurrence = StringUtils.substring(rrules.get(0), 6);
+      }
+    }
+
+    return new DefaultCalendarEvent(event.getId(), 
+        calendarId,
+        "google", 
+        event.getSummary(),
+        event.getDescription(),
+        url,
+        location,
+        status,
+        attendees, 
+        organizer, 
+        start, 
+        end, 
+        allDay, 
+        Convert.toDate(event.getCreated()),
+        Convert.toDate(event.getUpdated()),
+        extendedProperties, 
+        reminders, 
+        recurrence);
+  }
+  
+  private static TimeZone getJavaTimeZone(String timeZone) {
+    if (StringUtils.isNotBlank(timeZone)) {
+      return SimpleTimeZone.getTimeZone(timeZone);
+    }
+    // TODO: this should fallback to calendar default timezone
+    return null;
   }
 
   public void deleteEvent(fi.muikku.calendar.Calendar calendar, String eventId) throws CalendarServiceException {
@@ -316,9 +367,9 @@ public class GoogleCalendarClient {
   }
 
   private GoogleCredential getServiceAccountCredential() throws GeneralSecurityException, IOException {
-    String accountId = System.getProperty("muikku.googleServiceAccount.accountId");
-    if (StringUtils.isBlank(accountId)) {
-      throw new GeneralSecurityException("muikku.googleServiceAccount.accountId environment property is missing");
+    String accountEmail = System.getProperty("muikku.googleServiceAccount.accountEmail");
+    if (StringUtils.isBlank(accountEmail)) {
+      throw new GeneralSecurityException("muikku.googleServiceAccount.accountEmail environment property is missing");
     }
     
     String accountUser = System.getProperty("muikku.googleServiceAccount.accountUser");
@@ -339,7 +390,7 @@ public class GoogleCalendarClient {
     return new GoogleCredential.Builder()
             .setTransport(new NetHttpTransport())
             .setJsonFactory(new JacksonFactory())
-            .setServiceAccountId(accountId)
+            .setServiceAccountId(accountEmail)
             .setServiceAccountScopes(Arrays.asList(CalendarScopes.CALENDAR))
             .setServiceAccountPrivateKeyFromP12File(keyFile)
             .setServiceAccountUser(accountUser)

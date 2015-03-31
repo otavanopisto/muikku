@@ -14,9 +14,11 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPathConstants;
@@ -25,12 +27,15 @@ import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.xerces.parsers.DOMParser;
+import org.cyberneko.html.HTMLConfiguration;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.material.HtmlMaterialController;
@@ -478,13 +483,57 @@ public class WorkspaceMaterialController {
 
     return result;
   }
-
-  public ContentNode createContentNode(WorkspaceNode rootMaterialNode, DOMParser parser, Transformer transformer) {
-    return createContentNode(rootMaterialNode, parser, transformer, 1);
+  
+  public List<ContentNode> listWorkspaceMaterialsAsContentNodes(WorkspaceEntity workspaceEntity, boolean includeHidden) throws WorkspaceMaterialException {
+   List<ContentNode> contentNodes = new ArrayList<>();
+   WorkspaceRootFolder rootFolder = findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
+   List<WorkspaceNode> rootMaterialNodes = includeHidden
+       ? listWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(rootFolder, WorkspaceFolderType.DEFAULT)
+       : listVisibleWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(rootFolder, WorkspaceFolderType.DEFAULT);
+   for (WorkspaceNode rootMaterialNode : rootMaterialNodes) {
+     ContentNode node = createContentNode(rootMaterialNode);
+     contentNodes.add(node);
+   }
+   return contentNodes;
   }
 
-  public ContentNode createContentNode(WorkspaceNode rootMaterialNode, DOMParser parser, Transformer transformer, int level) {
-    switch (rootMaterialNode.getType()) {
+  public List<ContentNode> listWorkspaceFrontPagesAsContentNodes(WorkspaceEntity workspaceEntity) throws WorkspaceMaterialException {
+    List<ContentNode> contentNodes = new ArrayList<>();
+    List<WorkspaceMaterial> frontPages = listFrontPages(workspaceEntity);
+    for (WorkspaceNode frontPage : frontPages) {
+      ContentNode node = createContentNode(frontPage);
+      contentNodes.add(node);
+    }
+    return contentNodes;
+  }
+  
+  public List<ContentNode> listWorkspaceHelpPagesAsContentNodes(WorkspaceEntity workspaceEntity) throws WorkspaceMaterialException {
+    List<ContentNode> contentNodes = new ArrayList<>();
+    List<WorkspaceMaterial> helpPages = listHelpPages(workspaceEntity);
+    for (WorkspaceMaterial helpPage : helpPages) {
+      ContentNode node = createContentNode(helpPage);
+      contentNodes.add(node);
+    }
+    return contentNodes;
+  }
+
+  private ContentNode createContentNode(WorkspaceNode rootMaterialNode) throws WorkspaceMaterialException {
+    return createContentNode(rootMaterialNode, 1);
+  }
+
+  private ContentNode createContentNode(WorkspaceNode rootMaterialNode, int level) throws WorkspaceMaterialException {
+    try {
+      DOMParser parser = new DOMParser(new HTMLConfiguration());
+      parser.setProperty("http://cyberneko.org/html/properties/names/elems", "lower");
+
+      TransformerFactory transformerFactory = TransformerFactory.newInstance();
+      Transformer transformer = transformerFactory.newTransformer();
+      transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+      transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+      transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+      transformer.setOutputProperty(OutputKeys.INDENT, "no");
+
+      switch (rootMaterialNode.getType()) {
       case FOLDER:
         WorkspaceFolder workspaceFolder = (WorkspaceFolder) rootMaterialNode;
         ContentNode folderContentNode = new ContentNode(workspaceFolder.getTitle(), "folder", rootMaterialNode.getId(), null, level, null, null, rootMaterialNode.getHidden(), null, 0l, 0l);
@@ -504,7 +553,7 @@ public class WorkspaceMaterialController {
           if (child.isEmptyFolder) {
             contentNode = new ContentNode(child.emptyFolderTitle, "folder", rootMaterialNode.getId(), null, child.level, null, child.parentId, child.hidden, null, 0l, 0l);
           } else {
-            contentNode = createContentNode(child.node, parser, transformer, child.level);
+            contentNode = createContentNode(child.node, child.level);
           }
           folderContentNode.addChild(contentNode);
         }
@@ -520,73 +569,66 @@ public class WorkspaceMaterialController {
             getMaterialHtml(material, parser, transformer), currentRevision, publishedRevision);
       default:
         return null;
+      }
+    }
+    catch (SAXNotRecognizedException | SAXNotSupportedException | TransformerConfigurationException e) {
+      throw new WorkspaceMaterialException(e); 
     }
   }
 
-  private String getMaterialHtml(Material material, DOMParser parser, Transformer transformer) {
-    if (material instanceof HtmlMaterial) {
-      String html = ((HtmlMaterial) material).getHtml();
-      if (html == null) {
-        return null;
-      }
-      
-      StringReader htmlReader = new StringReader(html);
-      try {
-        InputSource inputSource = new InputSource(htmlReader);
-        parser.parse(inputSource);
-        Document document = parser.getDocument();
-        
-        NodeList imgList = document.getElementsByTagName("img");
-        for (int i = 0, l = imgList.getLength(); i < l; i++) {
-          Element img = (Element) imgList.item(i);
-          img.setAttribute("data-original", img.getAttribute("src"));
-          img.removeAttribute("src");
+  private String getMaterialHtml(Material material, DOMParser parser, Transformer transformer) throws WorkspaceMaterialException {
+    try {
+      if (material instanceof HtmlMaterial) {
+        String html = ((HtmlMaterial) material).getHtml();
+        if (html == null) {
+          return null;
         }
 
-        NodeList iframeList = document.getElementsByTagName("iframe");
-        for (int i = iframeList.getLength() -1 ; i >= 0; i--) {
-          Element iframe = (Element) iframeList.item(i);
-          String src = iframe.getAttribute("src");
-          if (StringUtils.contains(src, "youtube")) {
-            String youtubeId = src.substring(src.lastIndexOf('/') + 1);
-            iframe.removeAttribute("src");
-            Element youtubeDiv = document.createElement("div");
-            youtubeDiv.setAttribute("class", "js-lazyyt");
-            youtubeDiv.setAttribute("data-youtube-id", youtubeId);
-            youtubeDiv.setAttribute("data-ratio", "16:9");
-            Node paragraphNode = iframe.getParentNode();
-            Node paragraphParent = paragraphNode.getParentNode();
-            paragraphParent.replaceChild(youtubeDiv, paragraphNode);
+        StringReader htmlReader = new StringReader(html);
+        try {
+          InputSource inputSource = new InputSource(htmlReader);
+          parser.parse(inputSource);
+          Document document = parser.getDocument();
+
+          NodeList imgList = document.getElementsByTagName("img");
+          for (int i = 0, l = imgList.getLength(); i < l; i++) {
+            Element img = (Element) imgList.item(i);
+            img.setAttribute("data-original", img.getAttribute("src"));
+            img.removeAttribute("src");
           }
-        }
 
-        StringWriter writer = new StringWriter();
-        NodeList bodyChildren = (NodeList) XPathFactory.newInstance().newXPath().evaluate("//body/*", document, XPathConstants.NODESET);
-        for (int i = 0, l = bodyChildren.getLength(); i < l; i++) {
-          transformer.transform(new DOMSource(bodyChildren.item(i)), new StreamResult(writer));
+          NodeList iframeList = document.getElementsByTagName("iframe");
+          for (int i = iframeList.getLength() -1 ; i >= 0; i--) {
+            Element iframe = (Element) iframeList.item(i);
+            String src = iframe.getAttribute("src");
+            if (StringUtils.contains(src, "youtube")) {
+              String youtubeId = src.substring(src.lastIndexOf('/') + 1);
+              iframe.removeAttribute("src");
+              Element youtubeDiv = document.createElement("div");
+              youtubeDiv.setAttribute("class", "js-lazyyt");
+              youtubeDiv.setAttribute("data-youtube-id", youtubeId);
+              youtubeDiv.setAttribute("data-ratio", "16:9");
+              Node iframeParent = iframe.getParentNode();
+              iframeParent.replaceChild(youtubeDiv, iframe);
+            }
+          }
+
+          StringWriter writer = new StringWriter();
+          NodeList bodyChildren = (NodeList) XPathFactory.newInstance().newXPath().evaluate("//body/*", document, XPathConstants.NODESET);
+          for (int i = 0, l = bodyChildren.getLength(); i < l; i++) {
+            transformer.transform(new DOMSource(bodyChildren.item(i)), new StreamResult(writer));
+          }
+          return writer.getBuffer().toString();
+        } finally {
+          htmlReader.close(); 
         }
-        return writer.getBuffer().toString();
-      } catch (SAXException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      } catch (IOException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      } catch (TransformerConfigurationException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      } catch (TransformerException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      } catch (XPathExpressionException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      } finally {
-        htmlReader.close(); 
       }
+
+      return null;
     }
-    
-    return null;
+    catch (IOException | XPathExpressionException | TransformerException | SAXException e) {
+      throw new WorkspaceMaterialException(e);
+    }
   }
 
   public synchronized String generateUniqueUrlName(String title) {
@@ -649,7 +691,7 @@ public class WorkspaceMaterialController {
     return workspaceFolderDAO.create(findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity), "Etusivu", "etusivu", 0, false, null, WorkspaceFolderType.FRONT_PAGE);
   }
 
-  public WorkspaceFolder findWorkspaceFrontPageFolder(WorkspaceEntity workspaceEntity) {
+  private WorkspaceFolder findWorkspaceFrontPageFolder(WorkspaceEntity workspaceEntity) {
     List<WorkspaceFolder> frontPageFolders = workspaceFolderDAO.listByParentAndFolderType(findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity),
         WorkspaceFolderType.FRONT_PAGE);
     if (frontPageFolders.size() == 1) {
@@ -659,7 +701,7 @@ public class WorkspaceMaterialController {
     return null;
   }
 
-  public WorkspaceFolder findWorkspaceHelpPageFolder(WorkspaceEntity workspaceEntity) {
+  private WorkspaceFolder findWorkspaceHelpPageFolder(WorkspaceEntity workspaceEntity) {
     List<WorkspaceFolder> helpPageFolders = workspaceFolderDAO.listByParentAndFolderType(findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity),
         WorkspaceFolderType.HELP_PAGE);
     if (helpPageFolders.size() == 1) {
@@ -669,39 +711,18 @@ public class WorkspaceMaterialController {
     return null;
   }
 
-  public WorkspaceMaterial findFrontPage(WorkspaceEntity workspaceEntity) {
+  private List<WorkspaceMaterial> listFrontPages(WorkspaceEntity workspaceEntity) {
     WorkspaceFolder frontPageFolder = findWorkspaceFrontPageFolder(workspaceEntity);
     if (frontPageFolder != null) {
-      WorkspaceNode defaultMaterial = frontPageFolder.getDefaultMaterial();
-      if (defaultMaterial instanceof WorkspaceMaterial) {
-        return (WorkspaceMaterial) defaultMaterial;
-      }else{
-        List<WorkspaceMaterial> frontPageMaterials = listWorkspaceMaterialsByParent(frontPageFolder);
-        if(frontPageMaterials.size() == 1){
-          return frontPageMaterials.get(0);
-        }
-        //TODO: what to do if more than one?
-      }
+      return listWorkspaceMaterialsByParent(frontPageFolder);
     }
-    return null;
+    return Arrays.asList();
   }
 
-  public List<WorkspaceMaterial> findHelpPages(WorkspaceEntity workspaceEntity) {
+  private List<WorkspaceMaterial> listHelpPages(WorkspaceEntity workspaceEntity) {
     WorkspaceFolder helpPageFolder = findWorkspaceHelpPageFolder(workspaceEntity);
     if (helpPageFolder != null) {
-      WorkspaceNode defaultMaterial = helpPageFolder.getDefaultMaterial();
-      if (defaultMaterial instanceof WorkspaceMaterial) {
-        return Arrays.asList((WorkspaceMaterial)defaultMaterial);
-      }else{
-        List<WorkspaceMaterial> frontPageMaterials = listWorkspaceMaterialsByParent(helpPageFolder);
-        for (int i=frontPageMaterials.size() - 1; i >= 0; i--) {
-          WorkspaceMaterial workspaceMaterial = frontPageMaterials.get(i);
-          if (!(materialController.findMaterialById(workspaceMaterial.getMaterialId()) instanceof HtmlMaterial)) {
-            frontPageMaterials.remove(i);
-          }
-        }
-        return frontPageMaterials;
-      }
+      return listWorkspaceMaterialsByParent(helpPageFolder);
     }
     return Arrays.asList();
   }

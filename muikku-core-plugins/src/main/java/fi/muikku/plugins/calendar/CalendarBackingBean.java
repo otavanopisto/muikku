@@ -1,39 +1,40 @@
 package fi.muikku.plugins.calendar;
 
-import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.commons.lang3.StringUtils;
+import org.ocpsoft.rewrite.annotation.Join;
+import org.ocpsoft.rewrite.annotation.RequestAction;
 
-import fi.muikku.controller.PluginSettingsController;
 import fi.muikku.session.SessionController;
+import fi.otavanopisto.security.LoggedIn;
 
 @Named
-@RequestScoped
 @Stateful
+@RequestScoped
+@Join(path = "/calendar", to = "/calendars/index.jsf")
+@LoggedIn
 public class CalendarBackingBean {
 	
-	@Inject
-	private SessionController sessionController;
-	
-	@Inject
-	private PluginSettingsController pluginSettingsController;
+  @Inject
+  private CalendarController calendarController;
 
-	@PostConstruct
-	public void init() {
-    firstDay = pluginSettingsController.getPluginUserSetting("calendar", CalendarPluginDescriptor.DEFAULT_FIRSTDAY_SETTING, sessionController.getLoggedUserEntity());
-    if (StringUtils.isBlank(firstDay)) {
-      firstDay = pluginSettingsController.getPluginSetting("calendar", CalendarPluginDescriptor.DEFAULT_FIRSTDAY_SETTING);
-    }
-	}
-	
-	public String getFirstDay() {
-		return firstDay;
-	}
-	
-	private String firstDay;
+  @Inject
+  private SessionController sessionController;
+
+  @RequestAction
+  public String init() {
+    userCalendarsIds = StringUtils.join(calendarController.listUserCalendarIds(sessionController.getLoggedUserEntity()).toArray(new Long[0]), ",");
+    return null;
+  }
+  
+  public String getUserCalendarsIds() {
+    return userCalendarsIds;
+  }
+  
+  private String userCalendarsIds;
 }
 

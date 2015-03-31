@@ -47,6 +47,38 @@
   
 }
 
+/* recurrence */
+
+input[name="repeat"] {
+  margin-right: 4px;
+}
+
+#eventRecurrence {
+  display: inline-block;
+  margin-left: 4px;
+}
+
+.recurrence-input .recurrence-input-show-link {
+  color: #fff;
+}
+
+#eventRecurrence div.recurrence-input-controls {
+  background-color: #FFF !important;
+  color: #000 !important;
+  border: 1px solid #DDD;
+  padding: 15px;
+}
+
+#eventRecurrence label,
+#eventRecurrence .recurrence-input-recurrence,
+#eventRecurrence .recurrenceInput-event-recurrence-select,
+#eventRecurrence .recurrence-input-control-details,
+#eventRecurrence .recurrence-input-monthday,
+#eventRecurrence .recurrence-input-weekdays {
+  margin: 0px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
 
 /* TODO clean up after Fullcalendar implementation */
 

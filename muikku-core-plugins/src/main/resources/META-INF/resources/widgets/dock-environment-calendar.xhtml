@@ -1,35 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:ui="http://java.sun.com/jsf/facelets"
-    xmlns:f="http://java.sun.com/jsf/core"
-    xmlns:h="http://java.sun.com/jsf/html">
-
-    <h:outputScript name="scripts/jquery.injectcss/jquery.injectCSS.js" target="head"/>
-    <h:outputScript name="scripts/jquery.color/jquery.color-2.1.2.js" target="head"/>
-
-    <h:outputScript name="scripts/jquery/jquery-ui/i18n/jquery.ui.datepicker-#{muikkuSession.locale.language}.js" target="head" rendered="#{muikkuSession.locale.language ne 'en'}"/>
-
-    <h:outputScript name="scripts/gui/genericminicalendar.js" target="head"/>
-    <h:outputScript name="scripts/gui/dockcalendar.js" target="head"/>
-
-    <div class="widget wi-dock-static-navi-button-calendar">
-      <h:outputLink styleClass="icon-calendar tooltip" value="#{request.contextPath}/calendar/index.jsf">
-
-      </h:outputLink>
-       <!-- TODO: minical is hidden because it does not work  -->
-     <div class="dock-navi-tt-container-calendar" style="display: none;">     
-      <div class="tt-calendar">
-        <h5>Kalenteri</h5>
-        <div class="tt-menu-calendar-toolbar">
-          <div class="miniCalendarContainer" ></div>
-          <input type="hidden" name="firstDay" value="#{calendarBackingBean.firstDay}"/>    
-        </div>
-        <div class="tt-menu-calendar-content">
-          <p>Henkilökohtainen kalenterisi </p>
-        </div>
-      </div>
-    </div>
-
-    </div>
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:jsf="http://xmlns.jcp.org/jsf"
+  xmlns:h="http://java.sun.com/jsf/html">
+    
+  <div class="widget wi-dock-static-navi-button-calendar" title="todo: lokalisoi Kalenteri">
+    <a class="icon-calendar" jsf:outcome="/calendars/index.jsf"></a>
+  </div>
 
 </ui:composition>

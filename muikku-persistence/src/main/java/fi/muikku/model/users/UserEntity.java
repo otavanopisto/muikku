@@ -16,8 +16,8 @@ import javax.validation.constraints.NotNull;
 
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.util.ArchivableEntity;
-import fi.muikku.security.ContextReference;
-import fi.muikku.security.User;
+import fi.otavanopisto.security.ContextReference;
+import fi.otavanopisto.security.User;
 
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)

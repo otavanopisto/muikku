@@ -24,6 +24,7 @@ import fi.pyramus.rest.model.Course;
 import fi.pyramus.rest.model.CourseOptionality;
 import fi.pyramus.rest.model.CourseStaffMember;
 import fi.pyramus.rest.model.CourseStudent;
+import fi.pyramus.rest.model.Subject;
 
 @Dependent
 @Stateful
@@ -34,7 +35,7 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
 
   @Inject
   private PyramusIdentifierMapper identifierMapper;
-
+  
   @Inject
   private PyramusSchoolDataEntityFactory entityFactory;
 
@@ -62,7 +63,7 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
 			throw new SchoolDataBridgeRequestException("Identifier has to be numeric");
 		}
 
-    return entityFactory.createEntity(pyramusClient.get("/courses/courses/" + identifier, Course.class));
+    return createWorkspaceEntity(pyramusClient.get("/courses/courses/" + identifier, Course.class));
 	}
 
   @Override
@@ -72,7 +73,13 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
       throw new UnexpectedSchoolDataBridgeException("Null response");
     }
     
-    return entityFactory.createEntity(courses);
+    List<Workspace> result = new ArrayList<Workspace>();
+    
+    for (Course course : courses) {
+      result.add(createWorkspaceEntity(course));
+    }
+    
+    return result;
 	}
 
 	@Override
@@ -90,7 +97,7 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
       String courseNumber2 = course.getCourseNumber() != null ? course.getCourseNumber().toString() : "null";
 
       if (courseNumber.equals(courseNumber2))
-        result.add(entityFactory.createEntity(course));
+        result.add(createWorkspaceEntity(course));
     }
     
     return result;
@@ -116,16 +123,20 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
 
 	@Override
 	public WorkspaceType findWorkspaceType(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-		if (!StringUtils.isNumeric(identifier)) {
+		if (identifier == null) {
+		  return null;
+		}
+	  
+	  if (!StringUtils.isNumeric(identifier)) {
 			throw new SchoolDataBridgeRequestException("Identifier has to be numeric");
 		}
-
-		throw new UnexpectedSchoolDataBridgeException("Not implemented");
-	}
+		
+		return entityFactory.createEntity(pyramusClient.get("/courses/courseTypes/" + identifier, fi.pyramus.rest.model.CourseType.class));
+  }
 	
 	@Override
 	public List<WorkspaceType> listWorkspaceTypes() throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-	  throw new UnexpectedSchoolDataBridgeException("Not implemented");
+    return entityFactory.createEntities(pyramusClient.get("/courses/courseTypes/", fi.pyramus.rest.model.CourseType[].class));
 	}
 
   @Override
@@ -162,4 +173,15 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
     
     return result;
 	}
+  
+  private Workspace createWorkspaceEntity(Course course) {
+    String educationTypeIdentifier = null;
+    
+    if (course.getSubjectId() != null) {
+      Subject subject = pyramusClient.get("/common/subjects/" + course.getSubjectId(), fi.pyramus.rest.model.Subject.class);
+      educationTypeIdentifier = identifierMapper.getEducationTypeIdentifier(subject.getEducationTypeId());
+    }
+    
+    return entityFactory.createEntity(course, educationTypeIdentifier);
+  }
 }

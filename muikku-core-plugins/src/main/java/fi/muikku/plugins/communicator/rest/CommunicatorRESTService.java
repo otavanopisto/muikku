@@ -38,11 +38,11 @@ import fi.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
 import fi.muikku.plugins.communicator.model.InboxCommunicatorMessage;
 import fi.muikku.plugins.websocket.WebSocketMessenger;
-import fi.muikku.security.AuthorizationException;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
 import fi.muikku.users.UserGroupController;
+import fi.otavanopisto.security.AuthorizationException;
 
 @Path("/communicator")
 @RequestScoped

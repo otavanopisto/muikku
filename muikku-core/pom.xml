@@ -93,6 +93,13 @@
       <groupId>org.scribe</groupId>
       <artifactId>scribe</artifactId>
     </dependency>
+    
+    <!-- JodaTime -->
+    
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+    </dependency>
 
     <!-- Muikku -->
 
@@ -101,6 +108,10 @@
       <artifactId>persistence</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>fi.otavanopisto</groupId>
+      <artifactId>webapp-permission</artifactId>
+    </dependency>
   </dependencies>
 
   <build>

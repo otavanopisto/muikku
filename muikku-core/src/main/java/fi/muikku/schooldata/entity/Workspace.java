@@ -2,6 +2,8 @@ package fi.muikku.schooldata.entity;
 
 import java.util.Date;
 
+import org.joda.time.DateTime;
+
 import fi.muikku.search.annotations.IndexId;
 import fi.muikku.search.annotations.Indexable;
 
@@ -18,6 +20,10 @@ public interface Workspace extends SchoolDataEntity {
   
   public void setDescription(String description);
   
+  public DateTime getBeginDate();
+  
+  public DateTime getEndDate();
+  
   // TODO: public String getWorkspaceTypeDataSource();
 	
 	public String getWorkspaceTypeId();
@@ -28,7 +34,15 @@ public interface Workspace extends SchoolDataEntity {
 	
 	public Date getLastModified();
 	
-	@IndexId
+	public String getSubjectIdentifier();
+	
+	public String getEducationTypeIdentifier();
+	
+	public Double getLength();
+	
+	public String getLengthUnitIdentifier();
+  
+  @IndexId
 	public String getSearchId();
 	
 }

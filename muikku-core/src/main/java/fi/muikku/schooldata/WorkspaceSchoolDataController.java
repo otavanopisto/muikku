@@ -14,14 +14,9 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import fi.muikku.dao.base.SchoolDataSourceDAO;
-import fi.muikku.dao.users.UserSchoolDataIdentifierDAO;
 import fi.muikku.dao.workspace.WorkspaceEntityDAO;
-import fi.muikku.dao.workspace.WorkspaceTypeSchoolDataIdentifierDAO;
-import fi.muikku.dao.workspace.WorkspaceUserEntityDAO;
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.model.workspace.WorkspaceTypeEntity;
-import fi.muikku.model.workspace.WorkspaceTypeSchoolDataIdentifier;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.schooldata.entity.CourseIdentifier;
 import fi.muikku.schooldata.entity.User;
@@ -48,15 +43,6 @@ class WorkspaceSchoolDataController {
 
   @Inject
 	private WorkspaceEntityDAO workspaceEntityDAO;
-
-  @Inject
-	private UserSchoolDataIdentifierDAO userSchoolDataIdentifierDAO;
-	
-	@Inject
-	private WorkspaceTypeSchoolDataIdentifierDAO workspaceTypeSchoolDataIdentifierDAO;
-
-	@Inject
-	private WorkspaceUserEntityDAO workspaceUserEntityDAO;
 	
 	/* Workspaces */
 
@@ -190,35 +176,28 @@ class WorkspaceSchoolDataController {
 		WorkspaceEntity workspaceEntity = workspaceEntityDAO.findByDataSourceAndIdentifier(schoolDataSource, workspace.getIdentifier());
 		return workspaceEntity;
 	}
-	
-	public WorkspaceTypeEntity findWorkspaceTypeEntity(WorkspaceType workspaceType) {
-		// TODO: Proper error handling
-		SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(workspaceType.getSchoolDataSource());
-		if (schoolDataSource != null) {
-	  	WorkspaceTypeSchoolDataIdentifier workspaceTypeSchoolDataIdentifier = workspaceTypeSchoolDataIdentifierDAO.findByDataSourceAndIdentifier(schoolDataSource, workspaceType.getIdentifier());
-	  	if (workspaceTypeSchoolDataIdentifier != null) {
-	  		return workspaceTypeSchoolDataIdentifier.getWorkspaceTypeEntity();
-	  	}
-		} 
 
-		return null;
-	}
-	
 	/* Workspace Types */
 	
-	public WorkspaceType findWorkspaceTypeByDataSourceAndIdentifier(String schoolDataSourceIdentifier, String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+	public WorkspaceType findWorkspaceTypeByDataSourceAndIdentifier(String schoolDataSourceIdentifier, String identifier) {
 		SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSourceIdentifier);
 		if (schoolDataSource != null) {
-			return findWorkspaceTypeByDataSourceAndIdentifier(schoolDataSource, identifier);
+      return findWorkspaceTypeByDataSourceAndIdentifier(schoolDataSource, identifier);
 		} 
 		
 		return null;
 	}
 	
-	public WorkspaceType findWorkspaceTypeByDataSourceAndIdentifier(SchoolDataSource schoolDataSource, String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+	public WorkspaceType findWorkspaceTypeByDataSourceAndIdentifier(SchoolDataSource schoolDataSource, String identifier) {
 		WorkspaceSchoolDataBridge schoolDataBridge = getWorkspaceBridge(schoolDataSource);
 		if (schoolDataBridge != null) {
-			return schoolDataBridge.findWorkspaceType(identifier);
+      try {
+  			return schoolDataBridge.findWorkspaceType(identifier);
+      } catch (SchoolDataBridgeRequestException e) {
+        logger.log(Level.SEVERE, "School Data Bridge reported a problem while finding a workspace type", e);
+      } catch (UnexpectedSchoolDataBridgeException e) {
+        logger.log(Level.SEVERE, "School Data Bridge reported a problem while finding a workspace type", e);
+      }
 		} else {
 			logger.log(Level.SEVERE, "School Data Bridge not found: " + schoolDataSource.getIdentifier());
 		}
@@ -242,23 +221,6 @@ class WorkspaceSchoolDataController {
 		}
 		
 		return result;
-	}
-	
-	public List<WorkspaceType> listWorkspaceTypes(WorkspaceTypeEntity workspaceTypeEntity) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-		List<WorkspaceType> workspaceTypes = new ArrayList<>();
-		
-		List<WorkspaceTypeSchoolDataIdentifier> typeIdentifiers = workspaceTypeSchoolDataIdentifierDAO.listByWorkspaceTypeEntity(workspaceTypeEntity);
-		for (WorkspaceTypeSchoolDataIdentifier typeIdentifier : typeIdentifiers) {
-			WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(typeIdentifier.getDataSource());
-			if (workspaceBridge != null) {
-				workspaceTypes.add(workspaceBridge.findWorkspaceType(typeIdentifier.getIdentifier()));
-			} else {
-				logger.log(Level.SEVERE, "School Data Bridge not found: " + typeIdentifier.getDataSource().getIdentifier());
-			}
-		}
-		
-		
-		return workspaceTypes;
 	}
 	
 	/* Workspace Users */

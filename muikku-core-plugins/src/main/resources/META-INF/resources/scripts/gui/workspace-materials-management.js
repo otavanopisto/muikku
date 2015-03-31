@@ -271,6 +271,7 @@
         complete : function() {
           $('a.active').removeClass('active');
           $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
+          window.location.hash = 'p-' + workspaceMaterialId;
           $(window).data('scrolling', false);
         }
       });
@@ -278,6 +279,7 @@
       $('html, body').stop().scrollTop(scrollTop);
       $('a.active').removeClass('active');
       $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
+      window.location.hash = 'p-' + workspaceMaterialId;
     }
   }
   
@@ -287,9 +289,11 @@
   });
 
   $(document).ready(function() {
+    $(window).data('initializing', true);
 
     $(document).muikkuMaterialLoader({
-      'dustTemplate': 'workspace/materials-management-page.dust',
+      workspaceEntityId: $('.workspaceEntityId').val(),
+      dustTemplate: 'workspace/materials-management-page.dust',
       renderMode: {
         "html": "dust"
       }
@@ -297,10 +301,11 @@
     .muikkuMaterialLoader('loadMaterials', $('.workspace-materials-view-page'));
 
     $('.workspace-materials-view-page').waypoint(function(direction) {
-      if ($(window).data('scrolling') !== true) {
-        var workspaceMaterialId = parseInt($(this).attr('data-workspace-material-id'));
+      if ($(window).data('scrolling') !== true && $(window).data('initializing') !== true) {
+        var workspaceMaterialId = $(this).data('workspace-material-id');
         $('a.active').removeClass('active');
         $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
+        window.location.hash = 'p-' + workspaceMaterialId;
       }
     }, {
       offset: '60%'
@@ -312,9 +317,13 @@
       var nextSiblingId = $(nextMaterial).data('workspace-material-id');
       enableFileUploader(element, parentId, nextSiblingId);
     });
+    $(window).data('initializing', false);
   });
   
   $(window).load(function() {
+    if (window.location.hash && (window.location.hash.indexOf('p-') > 0)) {
+      scrollToPage(window.location.hash.substring(3), false);
+    }    
     
     // Workspace's Materials's TOC
     if ($('#workspaceMaterialsManagementTOCWrapper').length > 0) {

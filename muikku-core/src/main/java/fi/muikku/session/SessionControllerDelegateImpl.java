@@ -10,7 +10,7 @@ import javax.inject.Named;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.util.ResourceEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.security.ContextReference;
+import fi.otavanopisto.security.ContextReference;
 
 @RequestScoped 
 @Named ("muikkuSession")

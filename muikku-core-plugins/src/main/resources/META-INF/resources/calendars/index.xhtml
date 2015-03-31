@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition 
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:c="http://java.sun.com/jsp/jstl/core" 
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:jsf="http://xmlns.jcp.org/jsf"
+  template="./templates/calendar_base.xhtml">
+
+  <ui:define name="calendarViewScripts">
+    <h:outputScript name="scripts/gui/calendar-index.js" />
+  </ui:define>
+
+    <ui:define name="content.tools.center">
+    
+      <!--   TODO : Widget --> 
+          
+      <div class="mf-content-toolbar grid_18 omega noLid">  
+        <div class="mf-content-tool-container">
+          <a class="mf-content-tool icon-home selected" jsf:outcome="/calendars/index.jsf"></a>
+          <a class="mf-content-tool icon-day" jsf:outcome="/calendars/view_day.jsf" data-mode="DAY"></a>
+          <a class="mf-content-tool icon-week" jsf:outcome="/calendars/view_week.jsf" data-mode="WEEK"></a>
+          <a class="mf-content-tool icon-month" jsf:outcome="/calendars/view_month.jsf" data-mode="MONTH"></a>  
+          <a class="mf-content-tool icon-numbered-list" jsf:outcome="/calendars/view_event.jsf" data-mode="EVENT_LIST"></a>  
+        </div>
+      </div>
+    </ui:define>
+
+
+
+    <ui:define name="content.center.widget">
+    <div class="ca-home">
+
+      <!--  TODO : Widget -->
+
+      <div class="ca-home-today">
+        <div class="ca-today-date">
+          <div class="ca-date-primary">
+            <span></span>
+          </div>
+          <div class="ca-date-secondary">
+            <div class="ca-date-day-name">
+              <span></span>
+            </div>
+            <div class="ca-date-day-time">
+              <span></span>
+            </div>
+          </div>
+          <div class="clear"></div>
+        </div>
+        <div id="fpDayEvents" class="ca-today-events" data-user-calendar-ids="#{calendarBackingBean.userCalendarsIds}">
+
+        </div>
+
+      </div>
+      <div id="fpWeekView" class="ca-home-week" data-user-calendar-ids="#{calendarBackingBean.userCalendarsIds}">
+
+        
+
+      </div>
+
+    </div>
+    <div class="clear"></div>
+  </ui:define>
+
+</ui:composition>

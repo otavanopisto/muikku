@@ -97,4 +97,37 @@ public class PyramusIdentifierMapper {
   public String getWorkspaceStudentRoleIdentifier() {
     return "WS-STUDENT";
   }
+  
+  public String getSubjectIdentifier(Long pyramusSubjectId) {
+    return String.valueOf(pyramusSubjectId);
+  }
+
+  public Long getPyramusSubjectId(String subjectIdentifier) {
+    return NumberUtils.createLong(subjectIdentifier);
+  }
+
+  public String getEducationTypeIdentifier(Long pyramusEducationTypeId) {
+    return String.valueOf(pyramusEducationTypeId);
+  }
+
+  public Long getPyramusEducationTypeId(String educationTypeIdentifier) {
+    return NumberUtils.createLong(educationTypeIdentifier);
+  }
+
+  public String getCourseLengthUnitIdentifier(Long pyramusEducationalTimeUnitId) {
+    return String.valueOf(pyramusEducationalTimeUnitId);
+  }
+
+  public Long getPyramusEducationalTimeUnitId(String lengthUnitIdentifier) {
+    return NumberUtils.createLong(lengthUnitIdentifier);
+  }
+
+  public String getWorkspaceTypeIdentifier(Long pyramusCourseTypeId) {
+    return pyramusCourseTypeId != null ? String.valueOf(pyramusCourseTypeId) : null;
+  }
+
+  public Long getPyramusCourseTypeId(String workspaceTypeIdentifier) {
+    return workspaceTypeIdentifier != null ? NumberUtils.createLong(workspaceTypeIdentifier) : null;
+  }
+
 }
