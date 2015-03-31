@@ -85,7 +85,15 @@ public class UserRESTService extends AbstractRESTService {
             }
     
             if (!filter && userEntity != null)
-              ret.add(new fi.muikku.rest.model.User(userEntity.getId(), (String) o.get("firstName"), (String) o.get("lastName"), hasImage));
+              ret.add(new fi.muikku.rest.model.User(
+                  userEntity.getId(),
+                  (String) o.get("firstName"),
+                  (String) o.get("lastName"),
+                  hasImage,
+                  (String) o.get("nationality"),
+                  (String) o.get("language"),
+                  (String) o.get("municipality"),
+                  (String) o.get("school")));
           }
           
           return Response.ok(ret).build();
@@ -118,7 +126,15 @@ public class UserRESTService extends AbstractRESTService {
   private fi.muikku.rest.model.User createRestModel(UserEntity userEntity, User user) {
     // TODO: User Image
     boolean hasImage = false;
-    return new fi.muikku.rest.model.User(userEntity.getId(), user.getFirstName(), user.getLastName(), hasImage);
+    return new fi.muikku.rest.model.User(
+        userEntity.getId(),
+        user.getFirstName(),
+        user.getLastName(),
+        hasImage,
+        user.getNationality(),
+        user.getLanguage(),
+        user.getMunicipality(),
+        user.getSchool());
   }
   
 //

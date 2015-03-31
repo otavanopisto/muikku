@@ -57,7 +57,14 @@ public class PyramusSchoolDataEntityFactory {
     }
     
     
-    return new PyramusUser(identifierMapper.getStaffIdentifier(staffMember.getId()), staffMember.getFirstName(), staffMember.getLastName(), displayName);
+    return new PyramusUser(identifierMapper.getStaffIdentifier(staffMember.getId()),
+                           staffMember.getFirstName(),
+                           staffMember.getLastName(),
+                           displayName,
+                           null,
+                           null,
+                           null,
+                           null);
   }
   
   public List<User> createEntity(fi.pyramus.rest.model.StaffMember ... staffMembers) {
@@ -84,7 +91,14 @@ public class PyramusSchoolDataEntityFactory {
         .append(')');
     }
     
-    return new PyramusUser(identifierMapper.getStudentIdentifier(student.getId()), student.getFirstName(), student.getLastName(), displayName.toString());
+    return new PyramusUser(identifierMapper.getStudentIdentifier(student.getId()),
+                           student.getFirstName(),
+                           student.getLastName(),
+                           displayName.toString(),
+                           null,
+                           null,
+                           null,
+                           null);
   }
   
   public List<User> createEntity(fi.pyramus.rest.model.Student[] students, fi.pyramus.rest.model.StudyProgramme[] studyProgrammes) {
