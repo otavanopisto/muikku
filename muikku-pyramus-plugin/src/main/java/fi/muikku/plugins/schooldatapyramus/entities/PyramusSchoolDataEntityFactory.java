@@ -114,7 +114,7 @@ public class PyramusSchoolDataEntityFactory {
                         new String[students.length]);
   }
   
-  private boolean notAllEqual(int... values) {
+  private boolean allEqual(int... values) {
     int reference = values[0];
     for (int value : values) {
       if (value != reference) {
@@ -126,13 +126,13 @@ public class PyramusSchoolDataEntityFactory {
   }
 
   public List<User> createEntity(fi.pyramus.rest.model.Student[] students, fi.pyramus.rest.model.StudyProgramme[] studyProgrammes, String[] nationalities, String[] languages, String[] municipalities, String[] schools) {
-    if (notAllEqual(students.length,
-                    studyProgrammes.length,
-                    nationalities.length,
-                    languages.length,
-                    municipalities.length,
-                    schools.length)) {
-      throw new RuntimeException("StudyProgramme count does not match student count");
+    if (!allEqual(students.length,
+                  studyProgrammes.length,
+                  nationalities.length,
+                  languages.length,
+                  municipalities.length,
+                  schools.length)) {
+      throw new RuntimeException("createEntity parameters not all equal length");
     }
     
     List<User> result = new ArrayList<>();
@@ -140,10 +140,10 @@ public class PyramusSchoolDataEntityFactory {
     for (int i = 0, l = students. length; i < l; i++) {
       result.add(createEntity(students[i],
                               studyProgrammes[i],
-                              null,
-                              null,
-                              null,
-                              null)); 
+                              nationalities[i],
+                              languages[i],
+                              municipalities[i],
+                              schools[i]));
     }
     
     return result;
