@@ -59,11 +59,13 @@ $(document).ready(function(){
 	$(".bt-mainFunction").m3modal({
 		title : "Uusi viesti ",
 		description : "Voit lähettää uuden viestin opettajillesi tai opiskelutovereillesi.",
-		content: $('<div class="cm-message-new"><div><div class="cm-message-new-recipients" id="msgRecipientsContainer"></div><div><input type="textfield" value="Vastaanottajat" name="msgRecipients" id="msgRecipients"></input></div><div><input type="textfield" value="aihe" name="msgSubject"></input></div></div><div><textarea value="" name="msgContent"></textarea></div></div>'),
+		content: $('<div class="cm-message-new"><div><div class="cm-message-new-recipients" id="msgRecipientsContainer"></div><div><input type="textfield" value="Vastaanottajat" name="msgRecipients" id="msgRecipients"></input></div><div><input type="textfield" value="aihe" name="msgSubject"></input></div></div><div><textarea id="msgContent" value="" name="msgContent"></textarea></div></div>'),
 		modalgrid : 24,
 		contentgrid : 24,
 
     onBeforeOpen: function (modal) {
+      CKEDITOR.replace("msgContent");
+      
       var resps = $("#msgRecipients");
       var _this = this;
       
@@ -205,7 +207,7 @@ $(document).ready(function(){
           name : "sendMail",
           action : function(e) {
             var subject = e.contentElement.find("input[name='msgSubject']").val();
-            var content = e.contentElement.find("textarea[name='msgContent']").val();
+            var content = CKEDITOR.instances.msgContent.getData();
             var tagStr = "tagi viesti"; // TODO: Tag content
             var tags = tagStr != undefined ? tagStr.split(' ') : [];
             var recipientIds = [];
