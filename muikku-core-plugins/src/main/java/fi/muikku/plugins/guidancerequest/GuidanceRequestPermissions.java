@@ -12,7 +12,7 @@ import fi.muikku.security.DefaultPermissionRoles;
 import fi.muikku.security.DefaultWorkspacePermissionRoles;
 import fi.muikku.security.MuikkuPermissionCollection;
 import fi.muikku.security.PermissionScope;
-import fi.muikku.security.Scope;
+import fi.otavanopisto.security.Scope;
 
 @ApplicationScoped
 public class GuidanceRequestPermissions extends AbstractMuikkuPermissionCollection implements MuikkuPermissionCollection {

@@ -22,7 +22,7 @@ import fi.muikku.plugins.forum.model.ForumArea;
 import fi.muikku.plugins.forum.model.ForumAreaGroup;
 import fi.muikku.plugins.forum.model.ForumThread;
 import fi.muikku.plugins.forum.model.ForumThreadReply;
-import fi.muikku.security.AuthorizationException;
+import fi.otavanopisto.security.AuthorizationException;
 
 @Path("/forum")
 @RequestScoped

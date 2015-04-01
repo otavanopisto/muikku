@@ -11,17 +11,19 @@
     <div class="wallEntryTitle">
       <a class="wallEntryCreator" href="{@contextPath/}/user/{creatorId}">{creatorName}</a>
   
-      {@if cond="'{wallType}' == 'ENVIRONMENT'"}
-        &gt; <b>{wall.wallName}</b>
-      {/if}
+      {@select key=wallType}
+        {@eq value="ENVIRONMENT"}
+          &gt; <b>{wall.wallName}</b>
+        {/eq}
   
-      {@if cond="'{wallType}' == 'WORKSPACE'"}
-        kurssilla <a class="wallEntryCourseLink" href="{@contextPath/}/workspace/{workspaceUrlName}">{workspaceName}</a>
-      {/if}
+        {@eq value="WORKSPACE"}
+          kurssilla <a class="wallEntryCourseLink" href="{@contextPath/}/workspace/{workspaceUrlName}">{workspaceName}</a>
+        {/eq}
   
-      {@if cond="'{wallType}' == 'USER'"}
-        &gt; <a class="wallEntryCreator" href="{@contextPath/}/user/{wallUserId}">{wallUserName}</a>
-      {/if}
+        {@eq value="USER"}
+          &gt; <a class="wallEntryCreator" href="{@contextPath/}/user/{wallUserId}">{wallUserName}</a>
+        {/eq}
+      {/select}
       
       <span class="wallEntryDate">{created|formatDate}</span>
     </div>
@@ -31,11 +33,12 @@
     </div>
     
     <div class="wallEntryFooter">
-      {@if cond="'{visibility}' == 'PRIVATE'"}
-        yksityinen
-      {/if}
-  
-  	<a class="wallEntryReplyLink">{#localize key="plugin.wall.reply"/}</a>
+      {@select key=visibility}
+        {@eq value="PRIVATE"}
+          yksityinen
+        {/eq}
+      {/select}
+  	  <a class="wallEntryReplyLink">{#localize key="plugin.wall.reply"/}</a>
     </div>
     
     <div class="wallEntryComments">

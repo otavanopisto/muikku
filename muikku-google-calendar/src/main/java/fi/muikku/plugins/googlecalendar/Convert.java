@@ -8,8 +8,12 @@ package fi.muikku.plugins.googlecalendar;
 
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.model.EventDateTime;
+
 import fi.muikku.calendar.CalendarEventTemporalField;
+
 import java.util.Date;
+
+import org.apache.commons.lang3.time.DateUtils;
 
 /**
  *
@@ -18,7 +22,11 @@ import java.util.Date;
 public abstract class Convert {
 
   public static long minutesToMs(long minutes) {
-    return minutes * (60 * 60 * 1000);
+    return DateUtils.MILLIS_PER_MINUTE * minutes;
+  }
+
+  public static long msToMinutes(long ms) {
+    return ms / DateUtils.MILLIS_PER_MINUTE;
   }
 
   public static DateTime toDateTime(CalendarEventTemporalField d) {
@@ -50,10 +58,6 @@ public abstract class Convert {
       result.setDateTime(toDateTime(datetime));
     }
     return result;
-  }
-
-  public static long msToMinutes(long ms) {
-    return ms / (60 * 60 * 1000);
   }
 
 }

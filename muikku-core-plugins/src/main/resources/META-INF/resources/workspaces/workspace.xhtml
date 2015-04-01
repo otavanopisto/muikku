@@ -1,25 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:c="http://java.sun.com/jsp/jstl/core"
-  xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
-  xmlns:h="http://java.sun.com/jsf/html" xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
-  xmlns:composite="http://java.sun.com/jsf/composite/composite" template="/workspaces/templates/workspace-view.xhtml">
-
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:c="http://java.sun.com/jsp/jstl/core" 
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core" 
+  xmlns:h="http://java.sun.com/jsf/html" 
+  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+  xmlns:composite="http://java.sun.com/jsf/composite/composite" 
+  template="/workspaces/templates/workspace-view.xhtml">
+  
   <f:metadata>
-    <f:viewAction action="#{workspaceIndexBackingBean.visit}" />
+      <f:viewAction action="#{workspaceIndexBackingBean.visit}" />
   </f:metadata>
 
-  <!-- Workspace title -->
-  <ui:define name="workspace.content.top.static">
-    <h1 class="workspace-title">#{workspaceIndexBackingBean.workspaceName}</h1>
-    <div class="workspace-meta-wrapper">
-      <span class="workspace-study-level-indicator indicator1">Lukio</span> <span class="workspace-meta-title">Aine</span><span
-        class="workspace-meta-desc">Englanti</span> <span class="workspace-meta-title">Tyyppi</span><span
-        class="workspace-meta-desc">Ryhmäkurssi</span> <span class="workspace-meta-title">Laajuus</span><span
-        class="workspace-meta-desc">30 ov</span> <span class="workspace-meta-title">Soveltuvuus</span><span
-        class="workspace-meta-desc">Lukio, Peruskoulu</span>
-    </div>
-  </ui:define>
+	<!-- Workspace title -->
+	<ui:define name="workspace.content.top.static">
+		<h1 class="workspace-title">#{workspaceIndexBackingBean.workspaceName}</h1>
+		<div class="workspace-meta-wrapper">
+			<span class="workspace-study-level-indicator indicator1">#{workspaceIndexBackingBean.educationType}</span>
+			<span class="workspace-meta-title">#{i18n.text['plugin.workspace.index.courseSubjectLabel']}</span>
+      <span class="workspace-meta-desc">#{workspaceIndexBackingBean.subject}</span> 
+
+      <ui:fragment rendered="#{workspaceIndexBackingBean.workspaceType ne null}">
+        <span class="workspace-meta-title">#{i18n.text['plugin.workspace.index.courseTypeLabel']}</span>
+        <span class="workspace-meta-desc">#{workspaceIndexBackingBean.workspaceType}</span> 
+      </ui:fragment>
+
+      <span class="workspace-meta-title">#{i18n.text['plugin.workspace.index.courseLengthLabel']}</span>
+      <span class="workspace-meta-desc">
+        <h:outputFormat value="#{i18n.text['plugin.workspace.index.courseLength']}">
+          <f:param value="#{workspaceIndexBackingBean.courseLength}"/>
+          <f:param value="#{workspaceIndexBackingBean.courseLengthSymbol}"/>
+        </h:outputFormat>
+      </span> 
+      
+      <ui:fragment rendered="#{(workspaceIndexBackingBean.beginDate ne null) and (workspaceIndexBackingBean.endDate ne null)}">
+        <span class="workspace-meta-title">#{i18n.text['plugin.workspace.index.plugin.workspace.index.courseDatesLabel']}</span>
+        <span class="workspace-meta-desc">
+          <h:outputFormat value="#{i18n.text['plugin.workspace.index.courseDates']}">
+            <f:param value="#{workspaceIndexBackingBean.beginDate}"/>
+            <f:param value="#{workspaceIndexBackingBean.endDate}"/>
+          </h:outputFormat>
+        </span> 
+      </ui:fragment>
+		</div>
+	</ui:define>
 
   <ui:define name="workspace.content">
     <ui:repeat value="#{workspaceIndexBackingBean.contentNodes}" var="contentNode">

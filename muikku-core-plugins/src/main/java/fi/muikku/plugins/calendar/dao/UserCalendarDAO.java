@@ -51,6 +51,18 @@ public class UserCalendarDAO extends CorePluginsDAO<UserCalendar> {
     return entityManager.createQuery(criteria).getResultList();
   }
 
+  public List<Long> listIdsByUserId(Long userId) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<Long> criteria = criteriaBuilder.createQuery(Long.class);
+    Root<UserCalendar> root = criteria.from(UserCalendar.class);
+    criteria.select(root.get(UserCalendar_.id));
+    criteria.where(criteriaBuilder.and(criteriaBuilder.equal(root.get(UserCalendar_.userId), userId)));
+
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
   public UserCalendar updateVisible(UserCalendar userCalendar, Boolean visible) {
     userCalendar.setVisible(visible);
     return persist(userCalendar);

@@ -11,10 +11,10 @@ import javax.ws.rs.core.Response;
 
 import fi.muikku.controller.EnvironmentSettingsController;
 import fi.muikku.controller.ResourceRightsController;
-import fi.muikku.dao.security.WorkspaceRolePermissionDAO;
 import fi.muikku.dao.security.EnvironmentRolePermissionDAO;
 import fi.muikku.dao.security.PermissionDAO;
 import fi.muikku.dao.security.ResourceRolePermissionDAO;
+import fi.muikku.dao.security.WorkspaceRolePermissionDAO;
 import fi.muikku.dao.users.RoleEntityDAO;
 import fi.muikku.model.security.EnvironmentRolePermission;
 import fi.muikku.model.security.Permission;
@@ -23,10 +23,10 @@ import fi.muikku.model.security.ResourceRolePermission;
 import fi.muikku.model.security.WorkspaceRolePermission;
 import fi.muikku.model.users.RoleEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.rest.security.AuthorizedResource;
 import fi.muikku.schooldata.WorkspaceController;
-import fi.muikku.security.Admin;
-import fi.muikku.security.AuthorizationException;
+import fi.otavanopisto.security.Admin;
+import fi.otavanopisto.security.AuthorizationException;
+import fi.otavanopisto.security.rest.AuthorizedResource;
 
 @AuthorizedResource
 @Path("/permission")

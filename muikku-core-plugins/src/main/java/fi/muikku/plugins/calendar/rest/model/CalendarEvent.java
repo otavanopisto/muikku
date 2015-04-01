@@ -16,7 +16,7 @@ public class CalendarEvent {
   public CalendarEvent(Long calendarId, String id, String summary, String description, String url, String location, 
       String videoCallLink, BigDecimal longitude, BigDecimal latitude, CalendarEventStatus status, Date start, TimeZone startTimeZone, Date end,
       TimeZone endTimeZone, boolean allDay, Date created, Date updated, Map<String, String> extendedProperties, List<CalendarEventAttendee> attendees,
-      List<CalendarEventReminder> reminders) {
+      List<CalendarEventReminder> reminders, String recurrence) {
     this.calendarId = calendarId;
     this.id = id;
     this.summary = summary;
@@ -37,6 +37,7 @@ public class CalendarEvent {
     this.extendedProperties = extendedProperties;
     this.attendees = attendees;
     this.reminders = reminders;
+    this.recurrence = recurrence;
   }
 
   public Long getCalendarId() {
@@ -199,6 +200,14 @@ public class CalendarEvent {
     this.id = id;
   }
 
+  public String getRecurrence() {
+    return recurrence;
+  }
+
+  public void setRecurrence(String recurrence) {
+    this.recurrence = recurrence;
+  }
+
   private Long calendarId;
   private String id;
   private String summary;
@@ -219,5 +228,5 @@ public class CalendarEvent {
   private Map<String, String> extendedProperties;
   private List<CalendarEventAttendee> attendees;
   private List<CalendarEventReminder> reminders;
-  // TODO: recurrence
+  private String recurrence;
 }

@@ -10,8 +10,8 @@ import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.communicator.CommunicatorAssessmentRequestController;
 import fi.muikku.plugins.communicator.model.CommunicatorMessage;
-import fi.muikku.security.Permit;
-import fi.muikku.security.PermitContext;
+import fi.otavanopisto.security.Permit;
+import fi.otavanopisto.security.PermitContext;
 
 @Dependent
 public class AssessmentRequestController {
