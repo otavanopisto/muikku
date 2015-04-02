@@ -172,14 +172,30 @@
  } 
  
 
-.gt-user-details-personal{
+.gt-user-details-picture{
     float:left;
   
   }
-.gt-user-details-studies{
+.gt-user-details-items{
     float:left;
     padding:10px;
     width:790px;
+    
+    .gt-user-details-item{
+    
+    }
+    
+   .gt-user-details-label{
+     display:inline-block;
+   
+     &:after{
+      content: ":";
+     }
+   }
+
+   .gt-user-details-value{
+     margin-left:10px;
+   }
   }
 
 .gt-newmessage-form-container{
