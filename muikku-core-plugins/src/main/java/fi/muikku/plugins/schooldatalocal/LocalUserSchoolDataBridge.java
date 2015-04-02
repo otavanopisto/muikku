@@ -424,7 +424,15 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
 	
 	private User toLocalUserImpl(LocalUser localUser) {
 		if (localUser != null) {
-			return new LocalUserImpl(localUser.getId().toString(), localUser.getFirstName(), localUser.getLastName(), localUser.getFirstName() + ' ' + localUser.getLastName() + " (Local)");
+			return new LocalUserImpl(
+			    localUser.getId().toString(), 
+			    localUser.getFirstName(), 
+			    localUser.getLastName(), 
+			    localUser.getFirstName() + ' ' + localUser.getLastName() + " (Local)",
+			    null,
+			    null,
+			    null,
+			    null);
 		}
 		
 		return null;
