@@ -20,7 +20,7 @@
               <div class="clear"></div>
             </div>
             <div class="mf-item-content cm-message-content ">     
-              <div class="mf-item-content-text cm-message-content-text">{content}</div>          
+              <div class="mf-item-content-text cm-message-content-text">{content|s}</div>          
               <div class="mf-item-content-tools cm-message-content-tools">
                 <div class="cm-message-content-tools-container">
                    {^isOwner}

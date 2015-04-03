@@ -6,7 +6,7 @@ CKEDITOR.plugins.setLang('muikku-textfield', 'en', {
   propertiesDialogWidth: 'Width',
   propertiesDialogHint: 'Hint',
   propertiesDialogHelp: 'Help',
-  propertiesDialogRightAnswers: 'Right Answers',
+  propertiesDialogRightAnswers: 'Answers',
   propertiesDialogAddOptionLink: 'Add answer',
   propertiesDialogDeleteOptionLink: 'Delete answer',
   propertiesDialogCorrectTooltip: 'Answer correct'

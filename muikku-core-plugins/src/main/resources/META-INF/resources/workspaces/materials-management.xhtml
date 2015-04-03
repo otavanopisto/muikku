@@ -117,9 +117,13 @@
       </ui:fragment>
 
       <ui:fragment rendered="#{node.type ne 'folder'}">
-        <section id="page-#{node.workspaceMaterialId}" data-workspace-material-id="#{node.workspaceMaterialId}"
-          data-material-id="#{node.materialId}" data-parent-id="#{node.parentId}" data-material-type="#{node.type}"
-          data-material-title="#{node.title}" data-material-content="#{node.html}"
+        <section id="page-#{node.workspaceMaterialId}"
+          data-workspace-material-id="#{node.workspaceMaterialId}"
+          data-material-id="#{node.materialId}"
+          data-parent-id="#{node.parentId}"
+          data-material-type="#{node.type}"
+          data-material-title="#{node.title}"
+          data-material-content="#{node.html}"
           data-material-current-revision="#{node.currentRevision}"
           data-material-published-revision="#{node.publishedRevision}"
           class="workspace-materials-view-page material-management-view #{node.hidden ? 'page-hidden' : ''}"
