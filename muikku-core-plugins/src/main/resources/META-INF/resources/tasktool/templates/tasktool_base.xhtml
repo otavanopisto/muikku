@@ -11,7 +11,7 @@
   <ui:define name="viewCss"></ui:define> 
   
   <ui:define name="viewScripts">
-    <h:outputScript name="scripts/gui/guider.js"  />
+    <h:outputScript name="scripts/gui/tasktool.js"  />
   </ui:define>
 
   <ui:define name="hiddenFields">
@@ -19,11 +19,11 @@
   </ui:define>
 
   <ui:define name="content.tools.left"> 
-    <m:widget name="guider-select-view" size="6" rendered="#{sessionBackingBean.loggedIn}"/>
+    <m:widget name="tasktool-evalueate" size="6" rendered="#{sessionBackingBean.loggedIn}"/>
   </ui:define>
 
   <ui:define name="content.tools.center"> 
-<!--     <m:widget name="guider-filter-students" size="6" rendered="#{sessionBackingBean.loggedIn}"/> -->
+<!--     <m:widget name="tasktool-filter-tasks" size="6" rendered="#{sessionBackingBean.loggedIn}"/> -->
   </ui:define>
 <!--    <ui:define name="content.tools.right">  -->
 
