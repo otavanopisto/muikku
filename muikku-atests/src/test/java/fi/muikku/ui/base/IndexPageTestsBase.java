@@ -21,6 +21,9 @@ import fi.muikkku.ui.AbstractUITest;
 import fi.muikku.SqlAfter;
 import fi.muikku.SqlBefore;
 import fi.pyramus.rest.model.Email;
+import fi.pyramus.rest.model.Person;
+import fi.pyramus.rest.model.Sex;
+import fi.pyramus.rest.model.StaffMember;
 import fi.pyramus.rest.model.Student;
 import fi.pyramus.rest.model.WhoAmI;
 
@@ -93,19 +96,26 @@ public class IndexPageTestsBase extends AbstractUITest {
           .withBody(studentArrayJson)
           .withStatus(200)));
 
+    DateTime birthday = new DateTime(1990, 2, 2, 0, 0, 0, 0);
+    Person person = new Person((long) 1, birthday, "345345-3453", fi.pyramus.rest.model.Sex.MALE, false, "", (long) 1);
+    String personJson = ow.writeValueAsString(person);
     stubFor(get(urlMatching("/1/persons/persons/.*"))
       .willReturn(
         aResponse()
           .withHeader("Content-Type", "application/json")
-          .withBody("{\"id\":1,\"birthday\":\"1990-02-04T00:00:00.000+02:00\",\"socialSecurityNumber\":\"345345-3453\",\"sex\":\"MALE\",\"secureInfo\":false,\"basicInfo\":null,\"defaultUserId\":1}")
+          .withBody(personJson)
           .withStatus(200)));
 
     stubFor(get(urlEqualTo("/1/students/students?filterArchived=false&firstResult=0&maxResults=100"))
       .willReturn(
         aResponse()
           .withHeader("Content-Type", "application/json")
-          .withBody("[{\"id\":1,\"personId\":1,\"firstName\":\"Test\",\"lastName\":\"User\",\"nickname\":null,\"additionalInfo\":null,\"additionalContactInfo\":null,\"nationalityId\":null,\"languageId\":null,\"municipalityId\":null,\"schoolId\":null,\"activityTypeId\":null,\"examinationTypeId\":null,\"educationalLevelId\":null,\"studyTimeEnd\":null,\"studyProgrammeId\":1,\"previousStudies\":null,\"education\":null,\"lodging\":false,\"studyStartDate\":null,\"studyEndDate\":null,\"studyEndReasonId\":null,\"studyEndText\":null,\"variables\":{},\"tags\":[],\"archived\":false}]")
+          .withBody(studentArrayJson)
           .withStatus(200)));
+    
+    StaffMember staffMember = new StaffMember((long) 5, (long) 5, null, "Test", "Staffmember", null, fi.pyramus.rest.model.UserRole.ADMINISTRATOR, tags, variables)
+    StaffMember[] staffArray = {staffMember};
+    String staffArrayJson = ow.writeValueAsString(staffArray);
     
     stubFor(get(urlMatching("/1/staff/members"))
       .withQueryParam("email", matching("staff@made.up"))
