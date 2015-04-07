@@ -1,6 +1,6 @@
 $(document).ready(function(){
 	
-    GuideImpl = $.klass({
+    TaskImpl = $.klass({
 
     	init : function(){
     		// todo: parse url
@@ -21,9 +21,6 @@ $(document).ready(function(){
             	search.show("slide");
             	
             }
-            
- 
-//    	    
 //    	    mApi().user.users.read({archetype : 'STUDENT'})
 //    	    .callback(function (err, users) {
 //    	  	  
@@ -72,13 +69,10 @@ $(document).ready(function(){
 //	    clearReplies : function(){
 //	    	$(DiscImpl.subContainer).empty();
 //		 },	  	    
-//		 
+
 	    _klass : {
 	    	// Variables for the class
 		  taskContainer : ".tt-tasks-view-container",
-
-	    	  
-	    	  
 	    }
     
     
