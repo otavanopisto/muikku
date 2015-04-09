@@ -318,8 +318,9 @@ body.workspace {
     position:absolute;
     right:8px;
     top:8px;
-    font-size:25px;
+    font-size:22px;
     cursor:pointer;
+    width:22px;
     
     &:hover { /* Need to increase action menu icons container for easier use */
       padding-left:100px; 
@@ -345,7 +346,7 @@ body.workspace {
         background-color:transparent;
         float:none;
         position:relative;
-        right:11px;
+        right:12px;
       }
       
       .wi-workspace-widget-action-menu-item-container {
