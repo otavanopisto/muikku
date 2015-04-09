@@ -305,8 +305,104 @@ body.workspace {
 
   }
   
+  div[class^='widget wi-workspace-'] {
+    position:relative;
+  }
+  
   div[class^='widget wi-workspace-']:last-child {
     margin:0 0 10px 0;
+  }
+  
+  /* WORKSPACE WIDGET ACTION MENU */
+  div[class^='widget wi-workspace-widget-action-menu-launcher'] {
+    position:absolute;
+    right:8px;
+    top:8px;
+    font-size:25px;
+    cursor:pointer;
+    
+    &:hover { /* Need to increase action menu icons container for easier use */
+      padding-left:100px; 
+      padding-bottom:20px;  
+    }
+  
+    .wi-workspace-widget-action-menu-container { /* Hiding the menu with visibility and height rules for css transitions, use display:none/block if no transitions are needed */
+      visibility:hidden;
+      height:0px;
+      opacity:0;
+      @include widgetActionMenuTransition(opacity,0.1s,ease-in-out);
+      position:absolute;
+      right:-5px;
+      top:20px;
+      color:#fff;
+      font-family:"Open Sans";
+      
+      .wi-workspace-widget-action-menu-arrow {
+        @include background-image('gfx/workspace-contextual-menu-arrow.png');
+        background-repeat:no-repeat;
+        height:9px;
+        background-position:bottom right;
+        background-color:transparent;
+        float:none;
+        position:relative;
+        right:11px;
+      }
+      
+      .wi-workspace-widget-action-menu-item-container {
+        background:#2c91ce;
+        opacity:0.98;
+      
+        .wi-workspace-widget-action-item {
+          padding:10px 15px;
+          font-size:16px;
+          position:relative;
+          margin:0;
+          display:block;
+          float:none;
+          @include widgetActionMenuItemTransition;
+          
+          .icon-delete,
+          .icon-move {
+            width:16px;
+            display:inline-block;
+            text-align:center;
+          }
+          
+          .wi-workspace-widget-action-item-label {
+            padding:0 0 0 10px;
+            display:inline-block;
+            font-family:"Open Sans";
+            font-size:13px;
+            position:relative;
+            top:-2px; /* Adjusting text in relation to icon as they are different sizes */
+            text-transform:uppercase;
+          }
+        
+          &:hover {
+            color:#fff;
+            background:#4da5da;
+          }
+        }
+      }
+    
+    }
+    
+    &:hover {
+    
+      .wi-workspace-widget-action-menu-container {
+        visibility:visible;
+        height:auto;
+        opacity:1;
+    
+        .wi-workspace-widget-action-menu-arrow {
+      
+        }
+      
+    
+      }
+    
+    }
+  
   }
   
   /* WORKSPACE FOOTER */
@@ -341,7 +437,7 @@ body.workspace {
           text-transform:uppercase;
           color:#727272;
           display:inline-block;
-          margin:0 50px 0 0;
+          margin:0 5px 0 0;
         }
         
         span.workspace-footer-teacher-name-data {
@@ -360,7 +456,7 @@ body.workspace {
     }
     
     .workspace-footer-producers-wrapper {
-      margin:20px 0;
+      margin:20px 0 0 0;
     
       .workspace-footer-producers-name {
         
@@ -368,7 +464,7 @@ body.workspace {
           text-transform:uppercase;
           color:#727272;
           display:inline-block;
-          margin:0 50px 0 0;
+          margin:0 5px 0 0;
         }
         
         span.workspace-footer-producers-name-data {

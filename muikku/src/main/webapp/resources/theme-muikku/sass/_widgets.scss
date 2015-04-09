@@ -325,7 +325,7 @@ div[class*="wi-dock-static-navi"] {
     visibility:hidden;
     height:0px;
     opacity:0;
-    @include widgetActionMenuTransition(opacity,0.15s,ease-in-out);
+    @include widgetActionMenuTransition(opacity,0.1s,ease-in-out);
     position:absolute;
     right:-5px;
     top:20px;
