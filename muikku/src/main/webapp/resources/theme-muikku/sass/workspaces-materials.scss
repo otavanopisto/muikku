@@ -11,14 +11,6 @@ body.workspace-materials {
   font-weight:300;
   line-height:1.7em;
   
-  h1.workspace-title {
-    margin:20px 0 20px 0;
-    color:#38393a;
-    font-weight:300;
-    text-transform:uppercase;
-    line-height:1.3em;
-  }
-  
   #staticNavigationWrapperWorkspace {
     background:none; /* We need to remove all background rules first */
     @include background-image('gfx/workspace-navigation-background.png'); /* Workspace's navigation's background */
@@ -52,10 +44,9 @@ body.workspace-materials {
     }
     
     #workspaceDockWrapper {
-      background:#596e7d;
+      background:#67d9bf;
       @include rounded(3px);
       width:60px;
-      box-shadow:0 0 5px rgba(0,0,0,0.25);
       
       #workspaceDock {
         text-align:center;
@@ -64,11 +55,10 @@ body.workspace-materials {
     }
     
     #workspaceMaterialsDockWrapper {
-      background:#3d4c56;
+      background:#288fcd;
       @include rounded(3px);
       width:60px;
       margin-bottom:10px;
-      box-shadow:0 0 5px rgba(0,0,0,0.25);
       
       #workspaceMaterialsDock {
         text-align:center;
@@ -78,6 +68,101 @@ body.workspace-materials {
 
   }
   
+  /* WORKSPACE NAVIGATION */
+  div[class*='workspace-dock-navi-button'] > a,
+  div[class*='workspace-dock-navi-button'] > span {
+    cursor:pointer;
+    font-size:32px;
+    color:#fff;
+    text-decoration:none;
+    background:transparent;
+    padding:6px;
+    margin:4px;
+    display:inline-block;
+    position:relative;
+    width:34px;
+    @include rounded(3px);
+    
+    span[class*='workspace-navi-tt-container-'] {
+      opacity:0;
+      font-family:"Open Sans";
+      font-size:16px;
+      height:16px;
+      font-weight:300;
+      position:absolute;
+      top:0px;
+      left:-4500px;
+      width:0px;
+      color:#fff;
+      text-transform:uppercase;
+      padding:13px 15px 15px 14px;
+      @include rounded-top-right(3px);
+      @include rounded-bottom-right(3px);
+      @include workspaceTooltipTransition(opacity,0.15s,ease-in-out);
+      z-index:99;
+      white-space:nowrap;
+    }
+    
+    &:hover {
+      background:#25c29e;
+      
+      span[class*='workspace-navi-tt-container-'] {
+        display:block;
+        background:#25c29e;
+        opacity:1;
+        width:auto;
+        left:45px;
+      }
+    }
+  }
+  
+  /* WORKSPACE NAVIGATION - MATERIALS */
+  div[class*='workspace-dock-navi-button-materials-'] > a,
+  div[class*='workspace-dock-navi-button-materials-'] > span {
+    cursor:pointer;
+    font-size:32px;
+    color:#fff;
+    text-decoration:none;
+    background:transparent;
+    padding:6px;
+    margin:4px;
+    display:inline-block;
+    position:relative;
+    width:34px;
+    @include rounded(3px);
+  
+    span[class*='workspace-navi-tt-container-materials-'] {
+      opacity:0;
+      font-family:"Open Sans";
+      font-size:16px;
+      height:16px;
+      font-weight:300;
+      position:absolute;
+      top:0px;
+      left:-4500px;
+      width:0px;
+      color:#fff;
+      text-transform:uppercase;
+      padding:13px 15px 15px 14px;
+      @include rounded-top-left(3px);
+      @include rounded-bottom-left(3px);
+      @include workspaceTooltipTransition(opacity,0.15s,ease-in-out);
+    }
+    
+    &:hover {
+      background:#1a75ac;
+      
+      span[class*='workspace-navi-tt-container-materials-'] {
+        display:block;
+        background:#1a75ac;
+        opacity:1;
+        width:auto;
+        left:45px;
+      }
+    }
+  }
+  
+  /* WORKSPACE MATERIALS TOC */
   nav.workspace-materials-toc-wrapper#workspaceMaterialsTOCWrapper {
     background:#fff;
     position:fixed;
@@ -225,6 +310,16 @@ body.workspace-materials {
     
     }
   
+  }
+
+  /* WORKSPACE CONTENT */
+  
+  h1.workspace-title {
+    margin:20px 0 20px 0;
+    color:#38393a;
+    font-weight:300;
+    text-transform:uppercase;
+    line-height:1.3em;
   }
   
   #contentWorkspaceMaterials {
@@ -417,7 +512,6 @@ body.workspace-materials {
     .wi-workspace-dock-navi-button-evaluation { /* Button's master rules */
       width:60px;
       margin-bottom:10px;
-      box-shadow:0 0 5px rgba(0,0,0,0.25);
       @include rounded(3px);
       
       a {
@@ -426,13 +520,13 @@ body.workspace-materials {
       }
       
       &[data-state='unassessed'] { /* Default state */
-        background:#6ab0df;
+        background:#55bbff;
 
         a:hover {
-          background:#509ccf;
+          background:#1294eb;
           
           span[class*='workspace-navi-tt-container-'] {
-            background:#509ccf;
+            background:#1294eb;
           }
           
         }
