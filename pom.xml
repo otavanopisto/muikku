@@ -1,196 +1,252 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-  <groupId>fi.muikku</groupId>
-  <artifactId>parent</artifactId>
-  <version>1.0.14-SNAPSHOT</version>
-  <packaging>pom</packaging>
-  <name>Muikku Parent</name>
-  
-  <organization>
-    <name>Otavan Opisto</name>
-    <url>http://www.otavanopisto.fi/</url>
-  </organization>
-  
-  <scm>
-    <developerConnection>scm:git:git@github.com:otavanopisto/muikku.git</developerConnection>
-    <url>git@github.com:otavanopisto/muikku.git</url>
-    <connection>scm:git:git@github.com:otavanopisto/muikku.git</connection>
-    <tag>HEAD</tag>
-  </scm>
-  
-  <issueManagement>
-    <system>GitHub</system>
-    <url>https://github.com/otavanopisto/muikku/issues</url>
-  </issueManagement>
-  
-  <licenses>
-    <license>
-      <name>GNU General Public License, Version 3</name>
-      <url>http://www.gnu.org/copyleft/gpl.html</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-  
-  <developers>
-    <developer>
-      <id>otavanopisto</id>
-      <email>ratkaisutiimi@otavanopisto.fi</email>
-      <name>Otavan Opisto</name>
-      <organization>Otavan Opisto</organization>
-      <organizationUrl>http://www.otavanopisto.fi/</organizationUrl>
-      <roles>
-        <role>Owner</role>
-      </roles>
-    </developer>
-  </developers>
+	<groupId>fi.muikku</groupId>
+	<artifactId>parent</artifactId>
+	<version>1.0.14-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>Muikku Parent</name>
 
-  <modules>
-    <module>muikku-bom</module>
-    <module>muikku-core</module>
-    <module>muikku-core-plugins</module>
-    <module>muikku-hsqldb-plugin</module>
-    <module>muikku-google-oauth</module>
-    <module>muikku-google-calendar</module>
-    <module>muikku-facebook-oauth</module>
-    <module>muikku-pyramus-oauth</module>
-    <module>muikku-h2db-plugin</module>
-    <module>muikku-mongo-log</module>
-    <module>muikku-persistence</module>
-    <module>muikku-plugin</module>
-    <module>muikku-rest</module>
-    <module>muikku-pyramus-plugin</module>
-    <module>muikku-dummy-mail-bridge-plugin</module>
-    <module>muikku-deus-nex-machina</module>
-    <module>muikku</module>
-  </modules>
+	<organization>
+		<name>Otavan Opisto</name>
+		<url>http://www.otavanopisto.fi/</url>
+	</organization>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.build.timestamp.format>yyyyMMdd'T'HHmmss</maven.build.timestamp.format>
-    <maven.compiler.source>1.7</maven.compiler.source>
-    <maven.compiler.target>1.7</maven.compiler.target>
-    <hibernate-jpamodelgen.version>4.3.6.Final</hibernate-jpamodelgen.version>
-  </properties>
+	<scm>
+		<developerConnection>scm:git:git@github.com:otavanopisto/muikku.git</developerConnection>
+		<url>git@github.com:otavanopisto/muikku.git</url>
+		<connection>scm:git:git@github.com:otavanopisto/muikku.git</connection>
+		<tag>HEAD</tag>
+	</scm>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>fi.muikku</groupId>
-        <artifactId>bom</artifactId>
-        <version>1.0.14-SNAPSHOT</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
+	<issueManagement>
+		<system>GitHub</system>
+		<url>https://github.com/otavanopisto/muikku/issues</url>
+	</issueManagement>
 
-      <dependency>
-        <groupId>org.jboss.weld</groupId>
-        <artifactId>weld-core-bom</artifactId>
-        <version>1.1.0.Final</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
+	<licenses>
+		<license>
+			<name>GNU General Public License, Version 3</name>
+			<url>http://www.gnu.org/copyleft/gpl.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
 
-    </dependencies>
-  </dependencyManagement>
+	<developers>
+		<developer>
+			<id>otavanopisto</id>
+			<email>ratkaisutiimi@otavanopisto.fi</email>
+			<name>Otavan Opisto</name>
+			<organization>Otavan Opisto</organization>
+			<organizationUrl>http://www.otavanopisto.fi/</organizationUrl>
+			<roles>
+				<role>Owner</role>
+			</roles>
+		</developer>
+	</developers>
 
-  <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.jasig.maven</groupId>
-          <artifactId>sass-maven-plugin</artifactId>
-          <version>1.1.1</version>
-        </plugin>
+	<modules>
+		<module>muikku-bom</module>
+		<module>muikku-core</module>
+		<module>muikku-core-plugins</module>
+		<module>muikku-hsqldb-plugin</module>
+		<module>muikku-google-oauth</module>
+		<module>muikku-google-calendar</module>
+		<module>muikku-facebook-oauth</module>
+		<module>muikku-pyramus-oauth</module>
+		<module>muikku-h2db-plugin</module>
+		<module>muikku-mongo-log</module>
+		<module>muikku-persistence</module>
+		<module>muikku-plugin</module>
+		<module>muikku-rest</module>
+		<module>muikku-pyramus-plugin</module>
+		<module>muikku-dummy-mail-bridge-plugin</module>
+		<module>muikku-deus-nex-machina</module>
+		<module>muikku</module>
+	</modules>
 
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-release-plugin</artifactId>
-          <version>2.5.1</version>
-          <configuration>
-            <mavenExecutorId>forked-path</mavenExecutorId>
-            <useReleaseProfile>false</useReleaseProfile>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.build.timestamp.format>yyyyMMdd'T'HHmmss</maven.build.timestamp.format>
+		<maven.compiler.source>1.7</maven.compiler.source>
+		<maven.compiler.target>1.7</maven.compiler.target>
+		<hibernate-jpamodelgen.version>4.3.6.Final</hibernate-jpamodelgen.version>
+	</properties>
 
-  <repositories>
-    <repository>
-      <id>jboss-public-repository</id>
-      <name>JBoss Repository</name>
-      <url>http://repository.jboss.org/nexus/content/groups/public</url>
-      <releases>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <updatePolicy>daily</updatePolicy>
-      </snapshots>
-    </repository>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>fi.muikku</groupId>
+				<artifactId>bom</artifactId>
+				<version>1.0.14-SNAPSHOT</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 
-    <repository>
-      <id>otavanopisto-snapshots</id>
-      <name>Otavan Opisto Snapshots</name>
-      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/snapshots</url>
-    </repository>
+			<dependency>
+				<groupId>org.jboss.weld</groupId>
+				<artifactId>weld-core-bom</artifactId>
+				<version>1.1.0.Final</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 
-    <repository>
-      <id>otavanopisto-releases</id>
-      <name>Otavan Opisto Releases</name>
-      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases</url>
-    </repository>
+		</dependencies>
+	</dependencyManagement>
 
-    <repository>
-      <id>saucelabs-repository</id>
-      <url>http://repository-saucelabs.forge.cloudbees.com/release</url>
-      <releases />
-      <snapshots />
-    </repository>
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.jasig.maven</groupId>
+					<artifactId>sass-maven-plugin</artifactId>
+					<version>1.1.1</version>
+				</plugin>
 
-  </repositories>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>2.5.1</version>
+					<configuration>
+						<mavenExecutorId>forked-path</mavenExecutorId>
+						<useReleaseProfile>false</useReleaseProfile>
+					</configuration>
+				</plugin>
 
-  <pluginRepositories>
-    <pluginRepository>
-      <id>jboss-public-repository</id>
-      <name>JBoss Repository</name>
-      <url>http://repository.jboss.org/nexus/content/groups/public</url>
-      <releases>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <updatePolicy>daily</updatePolicy>
-      </snapshots>
-    </pluginRepository>
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.codehaus.mojo
+										</groupId>
+										<artifactId>
+											findbugs-maven-plugin
+										</artifactId>
+										<versionRange>
+											[2.5,)
+										</versionRange>
+										<goals>
+											<goal>check</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 
-    <pluginRepository>
-      <id>otavanopisto-snapshots</id>
-      <name>Otavan Opisto Snapshots</name>
-      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/snapshots</url>
-    </pluginRepository>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<version>2.5.2</version>
+				<configuration>
+					<effort>Max</effort>
+					<failOnError>false</failOnError>
+					<threshold>Low</threshold>
+					<xmlOutput>true</xmlOutput>
+					<findbugsXmlOutputDirectory>${project.build.directory}/findbugs</findbugsXmlOutputDirectory>
+				</configuration>
+				<executions>
+					<execution>
+						<id>analyze-compile</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 
-    <pluginRepository>
-      <id>otavanopisto-releases</id>
-      <name>Otavan Opisto Releases</name>
-      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases</url>
-    </pluginRepository>
+	<repositories>
+		<repository>
+			<id>jboss-public-repository</id>
+			<name>JBoss Repository</name>
+			<url>http://repository.jboss.org/nexus/content/groups/public</url>
+			<releases>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<updatePolicy>daily</updatePolicy>
+			</snapshots>
+		</repository>
 
-  </pluginRepositories>
+		<repository>
+			<id>otavanopisto-snapshots</id>
+			<name>Otavan Opisto Snapshots</name>
+			<url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/snapshots</url>
+		</repository>
 
-  <distributionManagement>
-    <snapshotRepository>
-      <uniqueVersion>false</uniqueVersion>
-      <id>otavanopisto-snapshots</id>
-      <name>Otavan Opisto Snapshots</name>
-      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/snapshots</url>
-    </snapshotRepository>
-    <repository>
-      <uniqueVersion>false</uniqueVersion>
-      <id>otavanopisto-releases</id>
-      <name>Otavan Opisto Releases</name>
-      <url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases</url>
-    </repository>
-  </distributionManagement>
+		<repository>
+			<id>otavanopisto-releases</id>
+			<name>Otavan Opisto Releases</name>
+			<url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases</url>
+		</repository>
+
+		<repository>
+			<id>saucelabs-repository</id>
+			<url>http://repository-saucelabs.forge.cloudbees.com/release</url>
+			<releases />
+			<snapshots />
+		</repository>
+
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>jboss-public-repository</id>
+			<name>JBoss Repository</name>
+			<url>http://repository.jboss.org/nexus/content/groups/public</url>
+			<releases>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<updatePolicy>daily</updatePolicy>
+			</snapshots>
+		</pluginRepository>
+
+		<pluginRepository>
+			<id>otavanopisto-snapshots</id>
+			<name>Otavan Opisto Snapshots</name>
+			<url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/snapshots</url>
+		</pluginRepository>
+
+		<pluginRepository>
+			<id>otavanopisto-releases</id>
+			<name>Otavan Opisto Releases</name>
+			<url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases</url>
+		</pluginRepository>
+
+	</pluginRepositories>
+
+	<distributionManagement>
+		<snapshotRepository>
+			<uniqueVersion>false</uniqueVersion>
+			<id>otavanopisto-snapshots</id>
+			<name>Otavan Opisto Snapshots</name>
+			<url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<repository>
+			<uniqueVersion>false</uniqueVersion>
+			<id>otavanopisto-releases</id>
+			<name>Otavan Opisto Releases</name>
+			<url>http://maven.otavanopisto.fi:7070/nexus/content/repositories/releases</url>
+		</repository>
+	</distributionManagement>
 
 </project>
