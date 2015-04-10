@@ -151,6 +151,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         @QueryParam("subjects") List<String> subjects,
         @QueryParam("minVisits") Long minVisits,
         @QueryParam("orderBy") List<String> orderBy,
+        @QueryParam("includeArchived") Boolean includeArchived,
         @Context Request request) {
     List<fi.muikku.plugins.workspace.rest.model.Workspace> workspaces = new ArrayList<>();
 
@@ -206,8 +207,15 @@ public class WorkspaceRESTService extends PluginRESTService {
               }
             }
 
+            Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+            
+            if (includeArchived == null || Boolean.FALSE.equals(includeArchived)) {
+              if (workspace.isArchived()) {
+                  accept = false;
+              }
+            }
+            
             if (accept) {
-              Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
               workspaces.add(createRestModel(workspaceEntity, workspace));
             }
           }
