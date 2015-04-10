@@ -5,12 +5,23 @@ public class User {
   public User() {
   }
 
-  public User(Long id, String firstName, String lastName, boolean hasImage) {
+  public User(Long id,
+              String firstName,
+              String lastName, 
+              boolean hasImage,
+              String nationality,
+              String language,
+              String municipality,
+              String school) {
     super();
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
     this.hasImage = hasImage;
+    this.nationality = nationality;
+    this.language = language;
+    this.municipality = municipality;
+    this.school = school;
   }
 
   public Long getId() {
@@ -45,8 +56,44 @@ public class User {
     this.hasImage = hasImage;
   }
 
+  public String getNationality() {
+    return nationality;
+  }
+
+  public void setNationality(String nationality) {
+    this.nationality = nationality;
+  }
+
+  public String getLanguage() {
+    return language;
+  }
+
+  public void setLanguage(String language) {
+    this.language = language;
+  }
+
+  public String getMunicipality() {
+    return municipality;
+  }
+
+  public void setMunicipality(String municipality) {
+    this.municipality = municipality;
+  }
+
+  public String getSchool() {
+    return school;
+  }
+
+  public void setSchool(String school) {
+    this.school = school;
+  }
+
   private Long id;
   private String firstName;
   private String lastName;
   private boolean hasImage;
+  private String nationality;
+  private String language;
+  private String municipality;
+  private String school;
 }

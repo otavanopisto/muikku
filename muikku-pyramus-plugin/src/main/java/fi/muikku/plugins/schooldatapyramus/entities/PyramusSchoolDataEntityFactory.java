@@ -61,7 +61,14 @@ public class PyramusSchoolDataEntityFactory {
     }
     
     
-    return new PyramusUser(identifierMapper.getStaffIdentifier(staffMember.getId()), staffMember.getFirstName(), staffMember.getLastName(), displayName);
+    return new PyramusUser(identifierMapper.getStaffIdentifier(staffMember.getId()),
+                           staffMember.getFirstName(),
+                           staffMember.getLastName(),
+                           displayName,
+                           null,
+                           null,
+                           null,
+                           null);
   }
   
   public List<User> createEntity(fi.pyramus.rest.model.StaffMember ... staffMembers) {
@@ -75,6 +82,10 @@ public class PyramusSchoolDataEntityFactory {
   }
   
   public User createEntity(fi.pyramus.rest.model.Student student, fi.pyramus.rest.model.StudyProgramme studyProgramme) {
+    return createEntity(student, studyProgramme, null, null, null, null);
+  }
+
+  public User createEntity(fi.pyramus.rest.model.Student student, fi.pyramus.rest.model.StudyProgramme studyProgramme, String nationality, String language, String municipality, String school) {
     StringBuilder displayName = new StringBuilder();
     
     displayName
@@ -88,18 +99,55 @@ public class PyramusSchoolDataEntityFactory {
         .append(')');
     }
     
-    return new PyramusUser(identifierMapper.getStudentIdentifier(student.getId()), student.getFirstName(), student.getLastName(), displayName.toString());
+    return new PyramusUser(identifierMapper.getStudentIdentifier(student.getId()),
+                           student.getFirstName(),
+                           student.getLastName(),
+                           displayName.toString(),
+                           nationality,
+                           language,
+                           municipality,
+                           school);
   }
   
   public List<User> createEntity(fi.pyramus.rest.model.Student[] students, fi.pyramus.rest.model.StudyProgramme[] studyProgrammes) {
-    if (studyProgrammes.length != students.length) {
-      throw new RuntimeException("StudyProgramme count does not match student count");
+    return createEntity(students,
+                        studyProgrammes,
+                        new String[students.length],
+                        new String[students.length],
+                        new String[students.length],
+                        new String[students.length]);
+  }
+  
+  private boolean allEqual(int... values) {
+    int reference = values[0];
+    for (int value : values) {
+      if (value != reference) {
+        return false;
+      }
+    }
+    
+    return true;
+  }
+
+  public List<User> createEntity(fi.pyramus.rest.model.Student[] students, fi.pyramus.rest.model.StudyProgramme[] studyProgrammes, String[] nationalities, String[] languages, String[] municipalities, String[] schools) {
+    if (!allEqual(students.length,
+                  studyProgrammes.length,
+                  nationalities.length,
+                  languages.length,
+                  municipalities.length,
+                  schools.length)) {
+      throw new RuntimeException("createEntity parameters not all equal length");
     }
     
     List<User> result = new ArrayList<>();
     
     for (int i = 0, l = students. length; i < l; i++) {
-      result.add(createEntity(students[i], studyProgrammes[i])); 
+      result.add(createEntity(students[i],
+                              studyProgrammes[i],
+                              nationalities[i],
+                              languages[i],
+                              municipalities[i],
+                              schools[i]));
     }
     
     return result;
@@ -221,7 +269,8 @@ public class PyramusSchoolDataEntityFactory {
         course.getLength(),
         identifierMapper.getCourseLengthUnitIdentifier(course.getLengthUnitId()),
         course.getBeginDate(),
-        course.getEndDate()
+        course.getEndDate(),
+        course.getArchived()
     );
   }
   

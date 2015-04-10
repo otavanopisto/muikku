@@ -466,7 +466,15 @@ public class CommunicatorRESTService extends PluginRESTService {
     fi.muikku.schooldata.entity.User user = userController.findUserByUserEntityDefaults(userEntity);
     Boolean hasPicture = false; // TODO: userController.hasPicture(userEntity);
     
-    fi.muikku.rest.model.User result = new fi.muikku.rest.model.User(userEntity.getId(), user.getFirstName(), user.getLastName(), hasPicture);
+    fi.muikku.rest.model.User result = new fi.muikku.rest.model.User(
+        userEntity.getId(), 
+        user.getFirstName(), 
+        user.getLastName(), 
+        hasPicture,
+        user.getNationality(),
+        user.getLanguage(),
+        user.getMunicipality(),
+        user.getSchool());
     
     return Response.ok(
       result
@@ -484,7 +492,15 @@ public class CommunicatorRESTService extends PluginRESTService {
     fi.muikku.schooldata.entity.User user = userController.findUserByUserEntityDefaults(userEntity);
     Boolean hasPicture = false; // TODO: userController.hasPicture(userEntity);
     
-    fi.muikku.rest.model.User result = new fi.muikku.rest.model.User(userEntity.getId(), user.getFirstName(), user.getLastName(), hasPicture);
+    fi.muikku.rest.model.User result = new fi.muikku.rest.model.User(
+        userEntity.getId(), 
+        user.getFirstName(), 
+        user.getLastName(), 
+        hasPicture,
+        user.getNationality(),
+        user.getLanguage(),
+        user.getMunicipality(),
+        user.getSchool());
     
     return Response.ok(
       result

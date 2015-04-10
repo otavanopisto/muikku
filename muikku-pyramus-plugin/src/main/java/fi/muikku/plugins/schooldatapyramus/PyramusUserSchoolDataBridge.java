@@ -23,7 +23,11 @@ import fi.muikku.schooldata.entity.UserEmail;
 import fi.muikku.schooldata.entity.UserImage;
 import fi.muikku.schooldata.entity.UserProperty;
 import fi.pyramus.rest.model.CourseStaffMemberRole;
+import fi.pyramus.rest.model.Language;
+import fi.pyramus.rest.model.Municipality;
+import fi.pyramus.rest.model.Nationality;
 import fi.pyramus.rest.model.Person;
+import fi.pyramus.rest.model.School;
 import fi.pyramus.rest.model.StaffMember;
 import fi.pyramus.rest.model.Student;
 import fi.pyramus.rest.model.StudyProgramme;
@@ -57,6 +61,10 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   private List<User> createStudentEntities(Student... students) {
     List<StudyProgramme> studyProgrammes = new ArrayList<>(students.length);
     Map<Long, StudyProgramme> studyProgrammeMap = new HashMap<Long, StudyProgramme>();
+    List<String> nationalities = new ArrayList<>();
+    List<String> languages = new ArrayList<>();
+    List<String> municipalities = new ArrayList<>();
+    List<String> schools = new ArrayList<>();
 
     for (Student student : students) {
       if (student.getStudyProgrammeId() != null) {
@@ -72,10 +80,51 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       } else {
         studyProgrammes.add(null);
       }
+      
+      if (student.getNationalityId() != null) {
+          Nationality nationality = pyramusClient.get(
+              "/student/nationalities/" + student.getNationalityId(),
+              Nationality.class);
+          nationalities.add(nationality.getName());
+      } else {
+        nationalities.add(null);
+      }
+      
+      if (student.getLanguageId() != null) {
+          Language language = pyramusClient.get(
+              "/student/languages/" + student.getLanguageId(),
+              Language.class);
+          languages.add(language.getName());
+      } else {
+        languages.add(null);
+      }
+      
+      if (student.getMunicipalityId() != null) {
+          Municipality municipality = pyramusClient.get(
+              "/student/municipalities/" + student.getMunicipalityId(),
+              Municipality.class);
+          municipalities.add(municipality.getName());
+      } else {
+        municipalities.add(null);
+      }
+      
+      if (student.getSchoolId() != null) {
+          School school = pyramusClient.get(
+              "/student/schools/" + student.getSchoolId(),
+              School.class);
+          schools.add(school.getName());
+      } else {
+        schools.add(null);
+      }
+     
     }
 
     return entityFactory.createEntity(students,
-        studyProgrammes.toArray(new StudyProgramme[0]));
+        studyProgrammes.toArray(new StudyProgramme[0]),
+        nationalities.toArray(new String[0]),
+        languages.toArray(new String[0]),
+        municipalities.toArray(new String[0]),
+        schools.toArray(new String[0]));
   }
 
   private User createStudentEntity(Student student) {
