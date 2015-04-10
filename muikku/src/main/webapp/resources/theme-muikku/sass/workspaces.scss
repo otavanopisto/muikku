@@ -65,7 +65,142 @@ body.workspace {
       }
       
     }
+    
+    #workspaceEditIndexDockWrapper {
+      background:#288fcd;
+      @include rounded(3px);
+      width:60px;
+      
+      #workspaceEditIndexDock {
+        text-align:center;
+      }
 
+    }
+    
+    #workspaceEvaluationDockWrapper {
+      text-align:center;
+    }
+
+  }
+  
+  /* WORKSPACE NAVIGATION - EVALUATION */  
+  .wi-workspace-dock-navi-button-evaluation { /* Button's master rules */
+    width:60px;
+    margin-bottom:10px;
+    @include rounded(3px);
+    
+    a {
+      text-shadow:none;
+      transition: background 0.2s ease-in-out;
+    }
+    
+    &[data-state='unassessed'] { /* Default state */
+      background:#55bbff;
+
+      a:hover {
+        background:#28a1f2;
+        
+        span[class*='workspace-navi-tt-container-'] {
+          background:#28a1f2;
+        }
+        
+      }
+      
+    }
+    
+    &[data-state='pending'] { /* Evaluation Request Pending */
+      background:#0099ff; 
+      transition: background 0.2s ease-in-out;
+
+      a:hover {
+        background:#0075c3;
+        
+        span[class*='workspace-navi-tt-container-'] {
+          background:#0075c3;
+        }
+        
+      }
+      
+      &:hover {
+        background:#f6a930;
+        
+        a {
+          background:#e5961b;
+          
+          &:before {
+            content: "\e9f3"; /* Override Pending icon with Cancellation icon */
+          }
+          
+          &:hover {
+            background:#e5961b;
+          
+            span[class*='workspace-navi-tt-container-'] {
+              background:#e5961b;
+            }
+          
+          }
+
+        }
+
+      }
+      
+    }
+    
+    &[data-state='cancel'] { /* Evaluation Request Cancelled */
+      background:#f6a930; /* Same as Default at this point */
+      
+      a:hover {
+        background:#e5961b;
+        
+        span[class*='workspace-navi-tt-container-'] {
+          background:#e5961b;
+        }
+        
+      }
+      
+    }
+    
+    &[data-state='canceled'] { /* Evaluation Request Cancelled */
+      background:#55bbff; /* Same as Default at this point */
+      
+      a:hover {
+        background:#509ccf;
+        
+        span[class*='workspace-navi-tt-container-'] {
+          background:#509ccf;
+        }
+        
+      }
+      
+    }
+    
+    &[data-state='pass'] { /* Evaluation of Workspace - Pass */
+      background:#1ec30c;
+      
+      a:hover {
+        background:#16a506;
+        
+        span[class*='workspace-navi-tt-container-'] {
+          background:#16a506;
+        }
+        
+      }
+      
+    }
+    
+    &[data-state='fail'] { /* Evaluation of Workspace - Fail */
+      background:#ea7401;
+      
+      a:hover {
+        background:#d66b03;
+        
+        span[class*='workspace-navi-tt-container-'] {
+          background:#d66b03;
+        }
+        
+      }
+    }
+    
   }
 
   /* WORKSPACE NAVIGATION */
@@ -109,6 +244,52 @@ body.workspace {
       span[class*='workspace-navi-tt-container-'] {
         display:block;
         background:#25c29e;
+        opacity:1;
+        width:auto;
+        left:45px;
+      }
+    }
+  }
+  
+  /* WORKSPACE NAVIGATION - EDIT VIEW */
+  div[class*='workspace-dock-navi-button-edit-'] > a,
+  div[class*='workspace-dock-navi-button-edit-'] > span {
+    cursor:pointer;
+    font-size:32px;
+    color:#fff;
+    text-decoration:none;
+    background:transparent;
+    padding:6px;
+    margin:4px;
+    display:inline-block;
+    position:relative;
+    width:34px;
+    @include rounded(3px);
+  
+    span[class*='workspace-navi-tt-container-'] {
+      opacity:0;
+      font-family:"Open Sans";
+      font-size:16px;
+      height:16px;
+      font-weight:300;
+      position:absolute;
+      top:0px;
+      left:-4500px;
+      width:0px;
+      color:#fff;
+      text-transform:uppercase;
+      padding:13px 15px 15px 14px;
+      @include rounded-top-left(3px);
+      @include rounded-bottom-left(3px);
+      @include workspaceTooltipTransition(opacity,0.15s,ease-in-out);
+    }
+    
+    &:hover {
+      background:#1a75ac;
+      
+      span[class*='workspace-navi-tt-container-'] {
+        display:block;
+        background:#1a75ac;
         opacity:1;
         width:auto;
         left:45px;
@@ -451,9 +632,35 @@ body.workspace {
     }
     
     .workspace-footer-licence-wrapper {
-      min-height:70px;
+      min-height:40px;
       background:#98c807;
       margin:0 -20px 20px -20px;
+      clear:both;
+      padding:20px;
+      
+      .workspace-footer-licence-icon-wrapper {
+        float:left;
+      }
+      
+      .workspace-footer-licence-text-wrapper {
+        float:left;
+        color:#e6ffe9;
+        font-size:16px;
+        line-height:1.5em;
+        min-height:20px;
+        font-weight:400;
+        
+        a.workspace-footer-licence-link#workspaceFooterLicenceLink {
+          font-weight:600;
+          color:#fff;
+          text-decoration:none;
+          
+          &:hover {
+            text-decoration:underline;
+          }
+          
+        }
+      }
     }
     
     .workspace-footer-producers-wrapper {
@@ -589,131 +796,7 @@ body.workspace {
   em,i {
     font-weight:400;
   }
-  
-  #workspaceEvaluationDockWrapper {
-    text-align:center;
-      
-    .wi-workspace-dock-navi-button-evaluation { /* Button's master rules */
-      width:60px;
-      margin-bottom:10px;
-      @include rounded(3px);
-      
-      a {
-        text-shadow:none;
-        transition: background 0.2s ease-in-out;
-      }
-      
-      &[data-state='unassessed'] { /* Default state */
-        background:#55bbff;
 
-        a:hover {
-          background:#28a1f2;
-          
-          span[class*='workspace-navi-tt-container-'] {
-            background:#28a1f2;
-          }
-          
-        }
-        
-      }
-      
-      &[data-state='pending'] { /* Evaluation Request Pending */
-        background:#0099ff; 
-        transition: background 0.2s ease-in-out;
-
-        a:hover {
-          background:#0075c3;
-          
-          span[class*='workspace-navi-tt-container-'] {
-            background:#0075c3;
-          }
-          
-        }
-        
-        &:hover {
-          background:#f6a930;
-          
-          a {
-            background:#e5961b;
-            
-            &:before {
-              content: "\e9f3"; /* Override Pending icon with Cancellation icon */
-            }
-            
-            &:hover {
-              background:#e5961b;
-            
-              span[class*='workspace-navi-tt-container-'] {
-                background:#e5961b;
-              }
-            
-            }
-
-          }
-
-        }
-        
-      }
-      
-      &[data-state='cancel'] { /* Evaluation Request Cancelled */
-        background:#f6a930; /* Same as Default at this point */
-        
-        a:hover {
-          background:#e5961b;
-          
-          span[class*='workspace-navi-tt-container-'] {
-            background:#e5961b;
-          }
-          
-        }
-        
-      }
-      
-      &[data-state='canceled'] { /* Evaluation Request Cancelled */
-        background:#55bbff; /* Same as Default at this point */
-        
-        a:hover {
-          background:#509ccf;
-          
-          span[class*='workspace-navi-tt-container-'] {
-            background:#509ccf;
-          }
-          
-        }
-        
-      }
-      
-      &[data-state='pass'] { /* Evaluation of Workspace - Pass */
-        background:#1ec30c;
-        
-        a:hover {
-          background:#16a506;
-          
-          span[class*='workspace-navi-tt-container-'] {
-            background:#16a506;
-          }
-          
-        }
-        
-      }
-      
-      &[data-state='fail'] { /* Evaluation of Workspace - Fail */
-        background:#ea7401;
-        
-        a:hover {
-          background:#d66b03;
-          
-          span[class*='workspace-navi-tt-container-'] {
-            background:#d66b03;
-          }
-          
-        }
-      }
-      
-    }
-    
-  }
-  
   /* JQuery UI Dialog Overrides */
   .ui-widget-overlay {
     background:#000;
