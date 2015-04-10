@@ -15,7 +15,7 @@
   <description>Plugin that provides Pyramus OAuth login support </description>
 
   <dependencies>
-
+  
     <!-- Jackson -->
 
     <dependency>
@@ -29,7 +29,7 @@
       <artifactId>jackson-mapper-asl</artifactId>
       <scope>provided</scope>
     </dependency>
-
+    
     <!-- CDI -->
 
     <dependency>
@@ -43,7 +43,7 @@
       <artifactId>jboss-interceptors-api_1.2_spec</artifactId>
       <scope>provided</scope>
     </dependency>
-
+    
     <!-- EJB -->
 
     <dependency>
@@ -51,7 +51,7 @@
       <artifactId>jboss-ejb-api_3.2_spec</artifactId>
       <scope>provided</scope>
     </dependency>
-
+  
     <!-- Faces -->
 
     <dependency>
@@ -65,14 +65,14 @@
       <artifactId>jsf-impl</artifactId>
       <scope>provided</scope>
     </dependency>
-
+    
     <!-- Muikku -->
 
     <dependency>
       <groupId>fi.muikku</groupId>
       <artifactId>plugin</artifactId>
     </dependency>
-
+    
     <!-- Pyramus -->
 
     <dependency>
@@ -80,40 +80,9 @@
       <artifactId>rest-model</artifactId>
       <version>0.7.15-SNAPSHOT</version>
     </dependency>
-
+    
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>findbugs-maven-plugin</artifactId>
-        <version>2.5.2</version>
-        <configuration>
-          <!-- Enables analysis which takes more memory but finds more bugs. If you run out of memory, changes the value of the effort element to 'Low'. -->
-          <effort>Max</effort>
-          <!-- Build doesn't fail if problems are found -->
-          <failOnError>false</failOnError>
-          <!-- Reports all bugs (other values are medium and max) -->
-          <threshold>Low</threshold>
-          <!-- Produces XML report -->
-          <xmlOutput>true</xmlOutput>
-          <!-- Configures the directory in which the XML report is created -->
-          <findbugsXmlOutputDirectory>${project.build.directory}/findbugs</findbugsXmlOutputDirectory>
-        </configuration>
-        <executions>
-          <!-- Ensures that FindBugs inspects source code when project is compiled. -->
-          <execution>
-            <id>analyze-compile</id>
-            <phase>compile</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
+ 
 
   <reporting>
     <plugins>
