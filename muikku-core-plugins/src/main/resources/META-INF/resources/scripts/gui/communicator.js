@@ -1,251 +1,37 @@
-$.widget("custom.communicatorautocomplete", $.ui.autocomplete, {
-  _renderMenu: function(ul, items) {
-    var _this = this;
-    var currentCategory = "";
-  
-    $.each(items, function(index, item) {
-      if (item.category != currentCategory) {
-        if (item.category)
-          ul.append( "<li class='ui-autocomplete-category'>" + item.category + "</li>" );
-        currentCategory = item.category;
-      }
-      _this._renderItemData(ul, item);
-    });
-  },
-  _renderItem: function(ul, item) {
-    var inner_html = 
-      '<a><div class="communicator_autocomplete_item_container">' + 
-      '<span class="communicator_autocomplete_item_label">' + item.label + '</span></div></a>';
-    return $( "<li></li>" ).data( "item.autocomplete", item ).append(inner_html).appendTo( ul );
-  }
-});
-
-$.fn.extend({
-  /**
-   * Thanks to
-   * https://github.com/Kasheftin/jquery-textarea-caret/blob/master/jquery.textarea.caret.js
-   */
-  
-  insertAtCaret: function(myValue) {
-    return this.each(function(i) {
-      if (document.selection) {
-        this.focus();
-        sel = document.selection.createRange();
-        sel.text = myValue;
-        this.focus();
-      }
-      else 
-      if (this.selectionStart || this.selectionStart == "0") {
-        var startPos = this.selectionStart;
-        var endPos = this.selectionEnd;
-        var scrollTop = this.scrollTop;
-        this.value = this.value.substring(0,startPos) + myValue + this.value.substring(endPos,this.value.length);
-        this.focus();
-        this.selectionStart = startPos + myValue.length;
-        this.selectionEnd = startPos + myValue.length;
-        this.scrollTop = scrollTop;
-      }
-      else {
-        this.value += myValue;
-        this.focus();
-      }
-    }
-  )}
-});
+	
 
 
 $(document).ready(function(){
+
 	
-	$(".bt-mainFunction").m3modal({
-		title : "Uusi viesti ",
-		description : "Voit lähettää uuden viestin opettajillesi tai opiskelutovereillesi.",
-		content: $('<div class="cm-message-new"><div><div class="cm-message-new-recipients" id="msgRecipientsContainer"></div><div><input type="textfield" value="Vastaanottajat" name="msgRecipients" id="msgRecipients"></input></div><div><input type="textfield" value="aihe" name="msgSubject"></input></div></div><div><textarea id="msgContent" value="" name="msgContent"></textarea></div></div>'),
-		modalgrid : 24,
-		contentgrid : 24,
-
-    onBeforeOpen: function (modal) {
-      CKEDITOR.replace("msgContent");
-      
-      var resps = $("#msgRecipients");
-      var _this = this;
-      
-      resps.communicatorautocomplete({
-        source: function (request, response) {
-          response(_this._doSearch(request.term));
-        },
-        select: function (event, ui) {
-          _this._selectRecipient(event, ui.item);
-          $(this).val("");
-          return false;
-        }
+	$(".bt-mainFunction").click(function(){
+		
+		
+		
+		var sendMessage = function(values){
+		  
+		  delete values.recipient;
+		  
+      mApi().communicator.messages.create(values)
+      .callback(function (err, result) {
       });
-      
-      $('.cm-message-new').on('focus', 'input', function(){
-        var dval = this.defaultValue;
-        var cval = $(this).val();
-         
-        if (dval == cval){
-          $(this).val('');
-        } 
-      });
-      
-   	  $('.cm-message-new').on('blur', 'input', function(){
-        var dval = this.defaultValue;
-        var cval = $(this).val();
-  	 
-        if (!cval ){ 
-          $(this).val(dval);	 
-        }        	
-      });	 
-      
-      $("#msgRecipientsContainer").on("click", ".cm-message-recipient-name", $.proxy(_this._onRemoveRecipientClick, _this));
-    },
+		}		
+		
 
-    _searchUsers: function (searchTerm) {
-    	var _this = this;
-    	var users = new Array();
+		openInSN('/communicator/communicator_create_message.dust', null, sendMessage);		
+		
 
-    	mApi().user.users.read({ 'searchString' : searchTerm }).callback(
-    	 function (err, result) {
-    	   for (var i = 0, l = result.length; i < l; i++) {
-    		 var img = undefined;
-             if (result[i].hasImage)
-              img = CONTEXTPATH + "/picture?userId=" + result[i].id;
-              users.push({
-                category: getLocaleText("plugin.communicator.users"),
-                label: result[i].firstName + " " + result[i].lastName,
-                id: result[i].id,
-                image: img,
-                type: "USER"
-               });
-             }
-     }); 
-
-      return users;
-    },
-//    _searchGroups: function (searchTerm) {
-//      var _this = this;
-//      var userGroups = new Array();
-//
-//      RESTful.doGet(CONTEXTPATH + "/rest/usergroup/searchGroups", {
-//        parameters: {
-//          'searchString': searchTerm
-//        }
-//      }).success(function (data, textStatus, jqXHR) {
-//        for (var i = 0, l = data.length; i < l; i++) {
-//          userGroups.push({
-//            category: getLocaleText("plugin.communicator.usergroups"),
-//            label: data[i].name,
-//            id: data[i].id,
-//            memberCount: data[i].memberCount,
-//            image: undefined, // TODO usergroup image
-//            type: "GROUP"
-//          });
-//        }
-//      });
-//
-//      return userGroups;
-//    },
-    _doSearch: function (searchTerm) {
-//      var groups = this._searchGroups(searchTerm);
-//      var users = this._searchUsers(searchTerm);
-//      
-//      return $.merge(groups, users);
-      return this._searchUsers(searchTerm);
-    },
-    _selectRecipient: function (event, item) {
-      var _this = this;
-      var element = $(event.target);
-      var recipientListElement = $("#msgRecipientsContainer"); 
-      
-      var prms = {
-        id: item.id,
-        name: item.label
-      };
-  
-      if (item.type == "USER") {
-        renderDustTemplate('communicator/communicator_messagerecipient.dust', prms, function (text) {
-          recipientListElement.append($.parseHTML(text));
-        });
-      } else {
-        if (item.type == "GROUP") {
-//          prms.memberCount = item.memberCount;
-//          
-//          renderDustTemplate('communicator/communicator_messagerecipientgroup.dust', prms, function (text) {
-//            recipientListElement.append($.parseHTML(text));
-//          });
-        }
-      }
-        
-    },
-    _onRemoveRecipientClick : function (event) {
-      var element = $(event.target);
-      if (!element.hasClass("cm-message-recipient"))
-        element = element.parents(".cm-message-recipient");
-      element.remove();
-    },
-    
-		options: [
- /*				{
-          caption : "Lähetä myös itselle",
-          name : "mailSelf",
-          type : "checkbox",
-          action : function(e) {
-          }
-        }, {
-          caption : "Lisää allekirjoitus",
-          name : "addSignature",
-          type : "checkbox",
-          action : function(e) {
-          }
-        }, */
-      ],
-
-      buttons : [ 
-        {
-          caption : "Lähetä",
-          name : "sendMail",
-          action : function(e) {
-            var subject = e.contentElement.find("input[name='msgSubject']").val();
-            var content = CKEDITOR.instances.msgContent.getData();
-            var tagStr = "tagi viesti"; // TODO: Tag content
-            var tags = tagStr != undefined ? tagStr.split(' ') : [];
-            var recipientIds = [];
-            var groupIds = [];
-
-            var recipientListElement = $("#msgRecipientsContainer");
-            $(recipientListElement.children(".cm-message-recipient")).each(function (index) {
-              recipientIds.push($(this).find("input[name='userId']").val());
-            });
-
-            mApi().communicator.messages.create({
-              categoryName: "message",
-              caption : subject,
-              content : content,
-              tags : tags,
-              recipientIds : recipientIds,
-              recipientGroupIds : groupIds
-            })
-            .callback(function (err, result) {
-            });
-            
-            $('.md-background').fadeOut().remove();
-          }
-        } /* , {
-          caption : "Tallenna luonnos",
-          name : "saveMail",
-          action : function(e) {
-          }
-        } */
-      ]
-  });
-
+       
+       
+	})
+	
 
   CommunicatorImpl = $.klass({
     init: function () {
       $('.cm-messages-container').on('click','.cm-message:not(.open)', $.proxy(this._onMessageClick, this));
       $('.cm-messages-container').on('click','.icon-goback', $.proxy(this._onMessageBackClick, this));
-
+      $('#socialNavigation').on('focus', '#recipientContent', $.proxy(this._onRecipientFocus, this));
+      $("#socialNavigation").on("click", ".cm-message-recipient-name", $.proxy(this._onRemoveRecipientClick, this));
       $(window).on("hashchange", $.proxy(this._onHashChange, this));
       
       $(window).trigger("hashchange");
@@ -392,6 +178,80 @@ $(document).ready(function(){
       window.location.hash = box;
       return false;
     },
+    
+    _onRecipientFocus:function(event){
+      $(event.target).autocomplete({
+      source: function (request, response) {
+        response(mCommunicator._doSearch(request.term));
+      },
+      select: function (event, ui) {
+    	mCommunicator._selectRecipient(event, ui.item);
+        $(this).val("");
+        return false;
+      }
+    });    	
+
+
+    	
+    }, 
+ 
+	  _selectRecipient: function (event, item) {
+		  var _this = this;
+		  var element = $(event.target);
+		  var recipientListElement = $("#msgRecipientsContainer"); 		  
+		  var prms = {
+		    id: item.id,
+		    name: item.label
+		  };
+
+		  if (item.type == "USER") {
+		    renderDustTemplate('communicator/communicator_messagerecipient.dust', prms, function (text) {
+		    recipientListElement.prepend($.parseHTML(text));
+		      
+		      
+		    });
+		  } else {
+		    // NOTHING ELSE! 
+		  }
+		    
+	},
+	_onRemoveRecipientClick : function (event) {
+	  var element = $(event.target);
+	  if (!element.hasClass("cm-message-recipient"))
+	    element = element.parents(".cm-message-recipient");
+	  element.remove();
+	},    
+	    
+    _doSearch: function (searchTerm) {
+//  	  var groups = this._searchGroups(searchTerm);
+  	  var users = this._searchUsers(searchTerm);
+  	  
+//  	  return $.merge(groups, users);
+  	  return this._searchUsers(searchTerm);
+  },    	
+
+	_searchUsers: function (searchTerm) {
+		var _this = this;
+		var users = new Array();
+	
+		mApi().user.users.read({ 'searchString' : searchTerm }).callback(
+		 function (err, result) {
+		   for (var i = 0, l = result.length; i < l; i++) {
+			 var img = undefined;
+	       if (result[i].hasImage)
+	        img = CONTEXTPATH + "/picture?userId=" + result[i].id;
+	        users.push({
+	          category: getLocaleText("plugin.communicator.users"),
+	          label: result[i].firstName + " " + result[i].lastName,
+	          id: result[i].id,
+	          image: img,
+	          type: "USER"
+	         });
+	       }
+	}); 
+	
+	return users;
+	},
     _onHashChange: function (event) {
       var hash = window.location.hash.substring(1);
       var _this = this;

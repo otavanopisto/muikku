@@ -266,13 +266,12 @@ $(document).ready(function(){
 	        var tId = $(element).attr("id");
 	        var aId = $(element).find("input[name='areaId']").attr('value');	    	
 	    	
-			var sendReply = function(values){
+			var sendMessage = function(values){
 				mApi().forum.areas.threads.replies.create(aId, tId, values).callback(function(err, result) {
 				});			
 				
 				window.discussion.refreshThread(aId,tId);
-	
-				
+
 			}			
 
 		    mApi().forum.areas.threads.read(aId,tId).on('$', function(thread, threadCallback){
