@@ -48,17 +48,17 @@ public class GoogleCalendarLoginListener {
         try {
           userCalendar = calendarController.createCalendar(userEntity, "google", CALENDAR_SUMMARY, CALENDAR_DESCRIPTION, Boolean.TRUE);
           calendar = calendarController.loadCalendar(userCalendar);
+
+          for (String email : userEmailEntityController.listAddressesByUserEntity(userEntity)) {
+            try {
+              logger.info(String.format("Sharing Google calendar with %s", email));
+              googleCalendarClient.insertCalendarUserAclRule(calendar.getId(), email, "owner");
+            } catch (CalendarServiceException e) {
+              logger.log(Level.WARNING, String.format("Could not share calendar with %s", email), e);
+            }
+          }
         } catch (CalendarServiceException e) {
           logger.log(Level.SEVERE, "Failed to create new Google calendar", e);
-        }
-        
-        for (String email : userEmailEntityController.listAddressesByUserEntity(userEntity)) {
-          try {
-            logger.info(String.format("Sharing Google calendar with %s", email));
-            googleCalendarClient.insertCalendarUserAclRule(calendar.getId(), email, "owner");
-          } catch (CalendarServiceException e) {
-            logger.log(Level.WARNING, String.format("Could not share calendar with %s", email), e);
-          }
         }
       }
     }
