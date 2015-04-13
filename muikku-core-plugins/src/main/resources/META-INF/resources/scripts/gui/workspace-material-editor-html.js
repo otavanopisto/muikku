@@ -126,7 +126,7 @@
           { name: 'links', items : [ 'Link','Unlink','Anchor' ] },
           { name: 'colors', items : [ 'TextColor','BGColor' ] },
           '/',
-          { name: 'styles', items : [ 'Format' ] },
+          { name: 'styles', items : [ 'Styles','Format' ] },
           { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote',
           '-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl' ] },
           { name: 'insert', items : [ 'Image','Flash','Table','SpecialChar' ] },          
@@ -139,7 +139,23 @@
           skin : 'moono',
           height : 500,
           language: getLocale()
-        }
+        },
+        stylesSet = [
+           { name: 'Pohdintalaatikko', element: 'div', styles: {
+             'border': '4px dotted #2c91ce',
+             'background': '#83c5ed'
+             'padding': '4px 8px',
+             'margin': '20px 0px'
+             }
+           },
+           { name: 'Tavoitelaatikko', element: 'div', styles: {
+             'border': '4px dotted #67d9bf',
+             'background': '#b2f3e4'
+             'padding': '4px 8px',
+             'margin': '20px 0px'
+             }
+           }
+         ]
       });
       
       this._editor.on('statusChange', $.proxy(this._onStatusChange, this));
