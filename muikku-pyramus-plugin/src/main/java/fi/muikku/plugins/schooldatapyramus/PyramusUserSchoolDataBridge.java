@@ -83,7 +83,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       
       if (student.getNationalityId() != null) {
           Nationality nationality = pyramusClient.get(
-              "/student/nationalities/" + student.getNationalityId(),
+              "/students/nationalities/" + student.getNationalityId(),
               Nationality.class);
           nationalities.add(nationality.getName());
       } else {
@@ -92,7 +92,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       
       if (student.getLanguageId() != null) {
           Language language = pyramusClient.get(
-              "/student/languages/" + student.getLanguageId(),
+              "/students/languages/" + student.getLanguageId(),
               Language.class);
           languages.add(language.getName());
       } else {
@@ -101,7 +101,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       
       if (student.getMunicipalityId() != null) {
           Municipality municipality = pyramusClient.get(
-              "/student/municipalities/" + student.getMunicipalityId(),
+              "/students/municipalities/" + student.getMunicipalityId(),
               Municipality.class);
           municipalities.add(municipality.getName());
       } else {
@@ -110,7 +110,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       
       if (student.getSchoolId() != null) {
           School school = pyramusClient.get(
-              "/student/schools/" + student.getSchoolId(),
+              "/students/schools/" + student.getSchoolId(),
               School.class);
           schools.add(school.getName());
       } else {
