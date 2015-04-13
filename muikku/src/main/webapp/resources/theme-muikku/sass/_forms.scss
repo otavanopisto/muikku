@@ -40,8 +40,8 @@ input[type="radio"] {
 }
 
 div[class*="form-container"] input{
-	margin:5px;
-	
+  &:not(:first-child){margin-top:5px;}
+  margin-bottom:5px;
 }
 
 textarea {
