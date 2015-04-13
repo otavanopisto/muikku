@@ -21,7 +21,9 @@
       <div class="workspace-study-level-indicator indicator1">
         <div class="workspace-study-level-text">#{workspaceIndexBackingBean.educationType}</div>
       </div>
+      <!-- TODO: After when MVP is ready or when we get this information from Pyramus
       <div class="workspace-additional-info-wrapper"><span>RYHMÄKURSSI</span> 6.4. - 31.4.2015</div>
+      -->
   		<div class="workspace-meta-wrapper">
         <span class="workspace-meta-title">#{i18n.text['plugin.workspace.index.courseLengthLabel']}</span>
         <span class="workspace-meta-desc">
@@ -52,6 +54,7 @@
 	</ui:define>
 
   <ui:define name="workspace.content">
+    <!-- TODO: After when MVP is ready, we use basic document as front page 
     <m:widgetSpaceSet parentStyleClass="workspace-content-widgetspaceset">
       <m:widgetSpace name="workspaces.content.widgetspace" keepEmpty="false" sizing="SUM" styleClass="nomargin noLid">
         <m:widget name="workspace-welcome-to" size="24"/>
@@ -60,11 +63,24 @@
       </m:widgetSpace>
       <div class="clear"></div>
     </m:widgetSpaceSet>
+    -->
+    
+    <div class="workspace-content-widgetspaceset">
+      <ui:repeat value="#{workspaceIndexBackingBean.contentNodes}" var="contentNode">
+        <article id="page-#{contentNode.workspaceMaterialId}"
+          data-workspace-material-id="#{contentNode.workspaceMaterialId}"
+          data-material-id="#{contentNode.materialId}"
+          data-material-type="#{contentNode.type}"
+          data-material-content="#{contentNode.html}"
+          class="workspace-materials-view-page material-view" />
+      </ui:repeat>
+    </div>
 
     <input class="workspaceEntityId" type="hidden" value="#{workspaceIndexBackingBean.workspaceEntityId}" />
   </ui:define>
   
   <ui:define name="workspace.content.bottom.static">
+    <!-- TODO: After when MVP is ready, we don't use footer at all
     <footer class="workspace-footer-wrapper">
       <div class="workspace-footer-teacher-wrapper">
         <div class="workspace-footer-teacher-image"></div>
@@ -86,6 +102,7 @@
         </div>
       </div>
     </footer>
+    -->
   </ui:define>
 
 </ui:composition>
