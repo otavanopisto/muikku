@@ -15,48 +15,94 @@
 
 	<!-- Workspace title -->
 	<ui:define name="workspace.content.top.static">
-		<h1 class="workspace-title">#{workspaceIndexBackingBean.workspaceName}</h1>
-		<div class="workspace-meta-wrapper">
-			<span class="workspace-study-level-indicator indicator1">#{workspaceIndexBackingBean.educationType}</span>
-			<span class="workspace-meta-title">#{i18n.text['plugin.workspace.index.courseSubjectLabel']}</span>
-      <span class="workspace-meta-desc">#{workspaceIndexBackingBean.subject}</span> 
-
-      <ui:fragment rendered="#{workspaceIndexBackingBean.workspaceType ne null}">
-        <span class="workspace-meta-title">#{i18n.text['plugin.workspace.index.courseTypeLabel']}</span>
-        <span class="workspace-meta-desc">#{workspaceIndexBackingBean.workspaceType}</span> 
-      </ui:fragment>
-
-      <span class="workspace-meta-title">#{i18n.text['plugin.workspace.index.courseLengthLabel']}</span>
-      <span class="workspace-meta-desc">
-        <h:outputFormat value="#{i18n.text['plugin.workspace.index.courseLength']}">
-          <f:param value="#{workspaceIndexBackingBean.courseLength}"/>
-          <f:param value="#{workspaceIndexBackingBean.courseLengthSymbol}"/>
-        </h:outputFormat>
-      </span> 
-      
-      <ui:fragment rendered="#{(workspaceIndexBackingBean.beginDate ne null) and (workspaceIndexBackingBean.endDate ne null)}">
-        <span class="workspace-meta-title">#{i18n.text['plugin.workspace.index.plugin.workspace.index.courseDatesLabel']}</span>
+    <header class="workspace-header-wrapper">
+      <div class="workspace-image"></div>
+  		<h1 class="workspace-title">#{workspaceIndexBackingBean.workspaceName}</h1>
+      <div class="workspace-study-level-indicator indicator1">
+        <div class="workspace-study-level-text">#{workspaceIndexBackingBean.educationType}</div>
+      </div>
+      <!-- TODO: After when MVP is ready or when we get this information from Pyramus
+      <div class="workspace-additional-info-wrapper"><span>RYHMÄKURSSI</span> 6.4. - 31.4.2015</div>
+      -->
+  		<div class="workspace-meta-wrapper">
+        <span class="workspace-meta-title">#{i18n.text['plugin.workspace.index.courseLengthLabel']}</span>
         <span class="workspace-meta-desc">
-          <h:outputFormat value="#{i18n.text['plugin.workspace.index.courseDates']}">
-            <f:param value="#{workspaceIndexBackingBean.beginDate}"/>
-            <f:param value="#{workspaceIndexBackingBean.endDate}"/>
+          <h:outputFormat value="#{i18n.text['plugin.workspace.index.courseLength']}">
+            <f:param value="#{workspaceIndexBackingBean.courseLength}"/>
+            <f:param value="#{workspaceIndexBackingBean.courseLengthSymbol}"/>
           </h:outputFormat>
         </span> 
-      </ui:fragment>
-		</div>
+  			<span class="workspace-meta-title">#{i18n.text['plugin.workspace.index.courseSubjectLabel']}</span>
+        <span class="workspace-meta-desc">#{workspaceIndexBackingBean.subject}</span> 
+  
+        <ui:fragment rendered="#{workspaceIndexBackingBean.workspaceType ne null}">
+          <span class="workspace-meta-title">#{i18n.text['plugin.workspace.index.courseTypeLabel']}</span>
+          <span class="workspace-meta-desc">#{workspaceIndexBackingBean.workspaceType}</span> 
+        </ui:fragment>
+  
+        <ui:fragment rendered="#{(workspaceIndexBackingBean.beginDate ne null) and (workspaceIndexBackingBean.endDate ne null)}">
+          <span class="workspace-meta-title">#{i18n.text['plugin.workspace.index.courseDatesLabel']}</span>
+          <span class="workspace-meta-desc">
+            <h:outputFormat value="#{i18n.text['plugin.workspace.index.courseDates']}">
+              <f:param value="#{workspaceIndexBackingBean.beginDate}"/>
+              <f:param value="#{workspaceIndexBackingBean.endDate}"/>
+            </h:outputFormat>
+          </span> 
+        </ui:fragment>
+  		</div>
+    </header>
 	</ui:define>
 
   <ui:define name="workspace.content">
-    <ui:repeat value="#{workspaceIndexBackingBean.contentNodes}" var="contentNode">
-      <article id="page-#{contentNode.workspaceMaterialId}"
-        data-workspace-material-id="#{contentNode.workspaceMaterialId}"
-        data-material-id="#{contentNode.materialId}"
-        data-material-type="#{contentNode.type}"
-        data-material-content="#{contentNode.html}"
-        class="workspace-materials-view-page material-view" />
-    </ui:repeat>
-    <input class="workspaceEntityId" type="hidden" value="#{workspaceIndexBackingBean.workspaceEntityId}" />
+    <!-- TODO: After when MVP is ready, we use basic document as front page 
+    <m:widgetSpaceSet parentStyleClass="workspace-content-widgetspaceset">
+      <m:widgetSpace name="workspaces.content.widgetspace" keepEmpty="false" sizing="SUM" styleClass="nomargin noLid">
+        <m:widget name="workspace-welcome-to" size="24"/>
+        <m:widget name="workspace-essential-contents" size="24"/>
+        <m:widget name="workspace-essential-goals" size="24"/>
+      </m:widgetSpace>
+      <div class="clear"></div>
+    </m:widgetSpaceSet>
+    -->
+    
+    <div class="workspace-content-widgetspaceset">
+      <ui:repeat value="#{workspaceIndexBackingBean.contentNodes}" var="contentNode">
+        <article id="page-#{contentNode.workspaceMaterialId}"
+          data-workspace-material-id="#{contentNode.workspaceMaterialId}"
+          data-material-id="#{contentNode.materialId}"
+          data-material-type="#{contentNode.type}"
+          data-material-content="#{contentNode.html}"
+          class="workspace-materials-view-page material-view" />
+      </ui:repeat>
+    </div>
 
+    <input class="workspaceEntityId" type="hidden" value="#{workspaceIndexBackingBean.workspaceEntityId}" />
+  </ui:define>
+  
+  <ui:define name="workspace.content.bottom.static">
+    <!-- TODO: After when MVP is ready, we don't use footer at all
+    <footer class="workspace-footer-wrapper">
+      <div class="workspace-footer-teacher-wrapper">
+        <div class="workspace-footer-teacher-image"></div>
+        <div class="workspace-footer-teacher-name">
+          <span class="workspace-footer-teacher-name-label">#{i18n.text['plugin.workspace.index.teacherNameLabel']}</span>
+          <span class="workspace-footer-teacher-name-data">Esimerkki Opettaja</span>
+        </div>
+        <div class="clear"></div>
+      </div>
+      <div class="workspace-footer-licence-wrapper">
+        <div class="workspace-footer-licence-icon-wrapper"></div>
+        <div class="workspace-footer-licence-text-wrapper">Tämä oppimateriaali on lisensoitu <a href="#" class="workspace-footer-licence-link" id="workspaceFooterLicenceLink">Creative Commons Nimeä - Tarttuva 4.0 Kansainvälinen</a> -lisenssillä. Mahdollisesti lisenssin ulkopuolelle jäävät oppimateriaalin osat on merkitty erikseen.</div>
+        <div class="clear"></div>
+      </div>
+      <div class="workspace-footer-producers-wrapper">
+        <div class="workspace-footer-producers-name">
+          <span class="workspace-footer-producers-name-label">#{i18n.text['plugin.workspace.index.producersNameLabel']}</span>
+          <span class="workspace-footer-producers-name-data">Esimerkki tuottaja, Todellinen tuottaja, Kokeellinen tuottaja, Proatiivinen tuottaja, Pragmaattinen mies</span>
+        </div>
+      </div>
+    </footer>
+    -->
   </ui:define>
 
 </ui:composition>

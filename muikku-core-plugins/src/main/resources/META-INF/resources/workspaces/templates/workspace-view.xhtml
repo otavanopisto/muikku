@@ -57,6 +57,15 @@
               </ui:insert>
             </div>
           </nav>
+          <!-- 
+          <nav id="workspaceEditIndexDockWrapper">
+            <div id="workspaceEditIndexDock">
+              <ui:insert name="workspaces.EditIndex.dock">
+                <ui:include src="/facelets/generic/workspaces-edit-index-dock.xhtml"></ui:include>
+              </ui:insert>
+            </div>
+          </nav>
+          -->
           <nav id="workspaceDockWrapper">
             <div id="workspaceDock">
               <ui:insert name="workspaces.dock">
@@ -71,41 +80,12 @@
       <section>
         <ui:insert name="workspace.content.top.static"></ui:insert>
         <ui:insert name="workspace.content"></ui:insert>
+        <ui:insert name="workspace.content.bottom.static"></ui:insert>
       </section>
     </main>
     <div id="socialNavigation">
-      <ui:insert name="dock.bottom">
-        <m:widgetSpaceSet styleClass="nomargin">
-          <ui:insert name="dock.bottom.left">
-            <ui:include src="/facelets/generic/dock-bottom-left.xhtml"></ui:include>
-          </ui:insert>
-          <ui:insert name="dock.bottom.center">
-            <ui:include src="/facelets/generic/dock-bottom-center.xhtml"></ui:include>
-          </ui:insert>
-          <ui:insert name="dock.bottom.right">
-            <ui:include src="/facelets/generic/dock-bottom-right.xhtml"></ui:include>
-          </ui:insert>
-        </m:widgetSpaceSet>
-      </ui:insert>
     </div>
-    <footer id="footer">
-      <div id="footerContainer" class="container_24">
-        <ui:insert name="footer">
-          <m:widgetSpaceSet styleClass="nomargin">
-            <ui:insert name="footer.left">
-              <ui:include src="/facelets/generic/footer-left.xhtml"></ui:include>
-            </ui:insert>
-            <ui:insert name="footer.center">
-              <ui:include src="/facelets/generic/footer-center.xhtml"></ui:include>
-            </ui:insert>
-            <ui:insert name="footer.right">
-              <ui:include src="/facelets/generic/footer-right.xhtml"></ui:include>
-            </ui:insert>
-          </m:widgetSpaceSet>
-        </ui:insert>
-        <div class="clear"></div>
-      </div>
-    </footer>
+    
   </ui:define>
 
 </ui:composition>
