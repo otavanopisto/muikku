@@ -22,7 +22,19 @@ function openInSN(template, result, formFunction) {
 
     $(textareas).each(function(index,textarea){
       
-    CKEDITOR.replace(textarea);
+      CKEDITOR.replace(textarea, {
+        height : '100px',
+
+          toolbar: [
+                    { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat' ] },
+                    { name: 'styles', items: [ 'Styles', 'Format', 'Font', 'FontSize' ] },                    
+                    { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ], items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl', 'Language' ] },
+                    { name: 'links', items: [ 'Link', 'Unlink', 'Anchor' ] },
+                    { name: 'insert', items: [ 'Image', 'Flash', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Iframe' ] },
+       
+                  ]          
+          
+      });
       
     });
     
