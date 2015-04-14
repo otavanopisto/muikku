@@ -156,7 +156,7 @@
 				<configuration>
 					<effort>Max</effort>
 					<failOnError>false</failOnError>
-					<threshold>Low</threshold>
+					<threshold>Medium</threshold>
 					<xmlOutput>true</xmlOutput>
 					<findbugsXmlOutputDirectory>${project.build.directory}/findbugs</findbugsXmlOutputDirectory>
 				</configuration>
