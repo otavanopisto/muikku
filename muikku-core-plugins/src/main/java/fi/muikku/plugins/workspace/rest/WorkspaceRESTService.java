@@ -182,7 +182,7 @@ public class WorkspaceRESTService extends PluginRESTService {
           if (workspaceEntity != null) {
             boolean accept = true;
 
-            if (doSubjectFilter) {
+            if (accept && doSubjectFilter) {
               Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
               if (workspace != null) {
                 CourseIdentifier courseIdentifier = courseMetaController.findCourseIdentifier(workspace.getSchoolDataSource(),
@@ -195,13 +195,13 @@ public class WorkspaceRESTService extends PluginRESTService {
               }
             }
 
-            if (doUserFilter) {
+            if (accept && doUserFilter) {
               if (workspaceUserEntityController.listWorkspaceUserEntitiesByWorkspaceAndUser(workspaceEntity, userEntity).isEmpty()) {
                 accept = false;
               }
             }
             
-            if (doMinVisitFilter) {
+            if (accept && doMinVisitFilter) {
               if (workspaceVisitController.getNumVisits(workspaceEntity) < minVisits.intValue()) {
                 accept = false;
               }
