@@ -30,12 +30,12 @@
       this._editor = CKEDITOR.replace(this.element[0],$.extend({ 
         extraPlugins: extraPlugins,
         readOnly: true,
-        contentsCss: ['//cdnjs.cloudflare.com/ajax/libs/ckeditor/4.3.2/contents.css', this.options.contentCss ],
+//        contentsCss: ['//cdnjs.cloudflare.com/ajax/libs/ckeditor/4.3.2/contents.css', this.options.contentCss ],
         coops: {
           serverUrl: this.options.serverUrl,
           readOnly: this.options.readOnly
-        },
-        toolbar: this.options.toolbar
+        }
+//        toolbar: this.options.toolbar
       }, this.options.editorOptions||{}));
 
       this._editor.on("CoOPS:BeforeSessionStart", $.proxy(this._onEditorBeforeSessionStart, this));
