@@ -207,16 +207,18 @@ public class WorkspaceRESTService extends PluginRESTService {
               }
             }
 
-            Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-            
-            if (includeArchived == null || Boolean.FALSE.equals(includeArchived)) {
-              if (workspace.isArchived()) {
-                  accept = false;
-              }
-            }
-            
             if (accept) {
-              workspaces.add(createRestModel(workspaceEntity, workspace));
+              Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+              
+              if (includeArchived == null || Boolean.FALSE.equals(includeArchived)) {
+                if (workspace.isArchived()) {
+                    accept = false;
+                }
+              }
+              
+              if (accept) {
+                workspaces.add(createRestModel(workspaceEntity, workspace));
+              }
             }
           }
         }
