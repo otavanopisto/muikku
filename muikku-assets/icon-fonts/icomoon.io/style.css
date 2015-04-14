@@ -1,10 +1,10 @@
 @font-face {
 	font-family: 'muikku';
-	src:url('fonts/muikku.eot?-rzcxhl');
-	src:url('fonts/muikku.eot?#iefix-rzcxhl') format('embedded-opentype'),
-		url('fonts/muikku.woff?-rzcxhl') format('woff'),
-		url('fonts/muikku.ttf?-rzcxhl') format('truetype'),
-		url('fonts/muikku.svg?-rzcxhl#muikku') format('svg');
+	src:url('fonts/muikku.eot?rs4oqp');
+	src:url('fonts/muikku.eot?#iefixrs4oqp') format('embedded-opentype'),
+		url('fonts/muikku.woff?rs4oqp') format('woff'),
+		url('fonts/muikku.ttf?rs4oqp') format('truetype'),
+		url('fonts/muikku.svg?rs4oqp#muikku') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -21,6 +21,10 @@
 	/* Better Font Rendering =========== */
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+}
+
+.icon-bubble:before {
+	content: "\e638";
 }
 
 .icon-assignment:before {
@@ -183,6 +187,30 @@
 	content: "\e635";
 }
 
+.icon-action-menu-launcher:before {
+	content: "\e636";
+}
+
+.icon-exit-editing:before {
+	content: "\f045";
+}
+
+.icon-navicon:before {
+	content: "\e609";
+}
+
+.icon-new-page:before {
+	content: "\e637";
+}
+
+.icon-close-small:before {
+	content: "\e63b";
+}
+
+.icon-add:before {
+	content: "\e114";
+}
+
 .icon-assessment-canceled:before {
 	content: "\e321";
 }
@@ -273,30 +301,6 @@
 
 .icon-assessment-fail:before {
 	content: "\e9fb";
-}
-
-.icon-bubble:before {
-	content: "\e636";
-}
-
-.icon-new-page:before {
-	content: "\e637";
-}
-
-.icon-close-small:before {
-	content: "\e63b";
-}
-
-.icon-add:before {
-	content: "\e114";
-}
-
-.icon-exit-editing:before {
-	content: "\f045";
-}
-
-.icon-navicon:before {
-	content: "\e609";
 }
 
 .icon-arrow-left2:before {
