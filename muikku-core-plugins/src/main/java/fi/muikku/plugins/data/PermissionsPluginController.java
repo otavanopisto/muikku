@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -77,6 +78,9 @@ public class PermissionsPluginController {
   @Inject
   @Any
   private Instance<MuikkuPermissionCollection> permissionCollections;
+  
+  @Inject
+  private Event<PermissionDiscoveredEvent> permissionDiscoveredEvent;
 	
   public void processPermissions() {
     for (MuikkuPermissionCollection collection : permissionCollections) {
@@ -87,7 +91,7 @@ public class PermissionsPluginController {
         
         if (permission == null) {
           try {
-            String permissionScope = collection.getPermissionScope(permissionName);
+            final String permissionScope = collection.getPermissionScope(permissionName);
             
             if (permissionScope != null) {
               if (!PermissionScope.PERSONAL.equals(permissionScope)) {
@@ -152,6 +156,18 @@ public class PermissionsPluginController {
                         userGroupRolePermissionDAO.create(userGroup, role, permission);
                       }
                     }
+                  break;
+                  
+                  default:
+                    
+                    permissionDiscoveredEvent.select(new PermissionScopeBinding() {
+                      private static final long serialVersionUID = 9009824962970938515L;
+
+                      @Override
+                      public String value() {
+                        return permissionScope;
+                      }
+                    }).fire(new PermissionDiscoveredEvent(permission));
                   break;
                 }
               }

@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
 import fi.muikku.controller.PermissionController;
@@ -22,6 +23,8 @@ import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.model.workspace.WorkspaceRoleEntity;
+import fi.muikku.plugins.data.DiscoveredPermissionScope;
+import fi.muikku.plugins.data.PermissionDiscoveredEvent;
 import fi.muikku.plugins.forum.dao.EnvironmentForumAreaDAO;
 import fi.muikku.plugins.forum.dao.ForumAreaDAO;
 import fi.muikku.plugins.forum.dao.ForumAreaGroupDAO;
@@ -46,6 +49,7 @@ import fi.otavanopisto.security.PermitContext;
 @Dependent
 @Stateful
 public class ForumController {
+  
   @Inject
   private SessionController sessionController;
 
@@ -306,4 +310,55 @@ public class ForumController {
   public List<ForumMessage> listByContributingUser(UserEntity userEntity) {
     return forumMessageDAO.listByContributingUser(userEntity);
   }
+  
+  public void permissionDiscoveredListener(@Observes @DiscoveredPermissionScope("FORUM") PermissionDiscoveredEvent event) {
+    Permission permission = event.getPermission();
+    String permissionName = permission.getName();
+
+    List<ForumArea> forumAreas = forumAreaDAO.listAll();
+    
+    for (ForumArea area : forumAreas) {
+      try {
+        String permissionScope = permission.getScope();
+      
+        if (ForumResourcePermissionCollection.PERMISSIONSCOPE_FORUM.equals(permissionScope)) {
+          ResourceRights rights = resourceRightsController.findResourceRightsById(area.getRights());
+          EnvironmentRoleArchetype[] environmentRoles = forumResourcePermissionCollection.getDefaultEnvironmentRoles(permissionName);
+          WorkspaceRoleArchetype[] workspaceRoles = area instanceof WorkspaceForumArea ? forumResourcePermissionCollection.getDefaultWorkspaceRoles(permissionName) : null;
+          String[] pseudoRoles = forumResourcePermissionCollection.getDefaultPseudoRoles(permissionName);
+  
+          List<RoleEntity> roles = new ArrayList<RoleEntity>();
+          
+          if (pseudoRoles != null) {
+            for (String pseudoRole : pseudoRoles) {
+              RoleEntity roleEntity = roleEntityDAO.findByName(pseudoRole);
+              
+              if (roleEntity != null)
+                roles.add(roleEntity);
+            }
+          }
+  
+          if (environmentRoles != null) {
+            for (EnvironmentRoleArchetype envRole : environmentRoles) {
+              List<EnvironmentRoleEntity> envRoles = environmentRoleEntityDAO.listByArchetype(envRole);
+              roles.addAll(envRoles);
+            }
+          }
+  
+          if (workspaceRoles != null) {
+            for (WorkspaceRoleArchetype arc : workspaceRoles) {
+              List<WorkspaceRoleEntity> wsRoles = workspaceRoleEntityDAO.listByArchetype(arc);
+              roles.addAll(wsRoles);
+            }
+          }
+          
+          for (RoleEntity role : roles)
+            resourceRightsController.addResourceUserRolePermission(rights, role, permission);
+        }
+      } catch (NoSuchFieldException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
 }
