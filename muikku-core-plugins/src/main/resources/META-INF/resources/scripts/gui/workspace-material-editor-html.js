@@ -118,27 +118,28 @@
                        'muikku-connectfield',
                        'muikku-embedded'],
         serverUrl : CONTEXTPATH + '/rest/coops/' + this.options.materialId + '',
-        contentCss : '/css/custom-ckeditor-contentcss.css',
-        toolbar: [
-          { name: 'document', items : [ 'Source' ] },
-          { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
-          { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
-          { name: 'links', items : [ 'Link','Unlink','Anchor' ] },
-          { name: 'colors', items : [ 'TextColor','BGColor' ] },
-          '/',
-          { name: 'styles', items : [ 'Format' ] },
-          { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote',
-          '-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl' ] },
-          { name: 'insert', items : [ 'Image','Flash','Table','SpecialChar' ] },          
-          { name: 'tools', items : [ 'Maximize', 'ShowBlocks','-','About' ] },
-          '/',
-          { name: 'forms', items : ['MuikkuTextField', 'muikku-selection', 'MuikkuMemoField', 'muikku-filefield', 'muikku-connectfield']}
-        ],
         editorOptions: {
           autoGrowOnStartup : true,
           skin : 'moono',
           height : 500,
-          language: getLocale()
+          language: getLocale(),
+          stylesSet : 'workspace-material-styles:' + CONTEXTPATH + '/scripts/ckplugins/styles/workspace-material-styles.js',
+          contentsCss : CONTEXTPATH +  '/css/custom-ckeditor-contentcss.css',
+          toolbar: [
+            { name: 'document', items : [ 'Source' ] },
+            { name: 'clipboard', items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
+            { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
+            { name: 'links', items : [ 'Link','Unlink','Anchor' ] },
+            { name: 'colors', items : [ 'TextColor','BGColor' ] },
+            '/',
+            { name: 'styles', items : [ 'Styles','Format' ] },
+            { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote',
+            '-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl' ] },
+            { name: 'insert', items : [ 'Image','Flash','Table','SpecialChar' ] },          
+            { name: 'tools', items : [ 'Maximize', 'ShowBlocks','-','About' ] },
+            '/',
+            { name: 'forms', items : ['MuikkuTextField', 'muikku-selection', 'MuikkuMemoField', 'muikku-filefield', 'muikku-connectfield']}
+          ],
         }
       });
       
