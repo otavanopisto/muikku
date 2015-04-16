@@ -1,10 +1,10 @@
 @font-face {
 	font-family: 'muikku';
-	src:url('fonts/muikku.eot?rs4oqp');
-	src:url('fonts/muikku.eot?#iefixrs4oqp') format('embedded-opentype'),
-		url('fonts/muikku.woff?rs4oqp') format('woff'),
-		url('fonts/muikku.ttf?rs4oqp') format('truetype'),
-		url('fonts/muikku.svg?rs4oqp#muikku') format('svg');
+	src:url('fonts/muikku.eot?3nha5b');
+	src:url('fonts/muikku.eot?#iefix3nha5b') format('embedded-opentype'),
+		url('fonts/muikku.woff?3nha5b') format('woff'),
+		url('fonts/muikku.ttf?3nha5b') format('truetype'),
+		url('fonts/muikku.svg?3nha5b#muikku') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -25,6 +25,10 @@
 
 .icon-bubble:before {
 	content: "\e638";
+}
+
+.icon-members:before {
+	content: "\e60d";
 }
 
 .icon-assignment:before {
@@ -249,10 +253,6 @@
 
 .icon-compass:before {
 	content: "\e60c";
-}
-
-.icon-members:before {
-	content: "\e60d";
 }
 
 .icon-attachment:before {

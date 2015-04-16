@@ -1,0 +1,256 @@
+@import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
+@import "_workspaces-materials-defaults.scss";
+@import "_connect-field.scss";
+
+body.evaluation {
+  background:#4f6677;
+  padding:0.01em; /* Prevent margin collapsing  */
+  min-height:100%;
+  line-height:1.7em;
+  font-weight:300;
+  font-size:18px;
+  
+  #evaluationQueueWrapper {
+    position:fixed;
+    left:0;
+    top:0;
+    bottom:0;
+    
+    #evaluationQueueShrinkedContainer {
+      width:46px;
+      height:100%;
+      background:#7794a8;
+      position:absolute;
+      top:0;
+      z-index:36;
+      
+      .grid_1 {
+        float:none;
+        width:auto;
+        margin:0;
+      }
+
+    }
+
+    #evaluationQueueFullContainer {
+      width:350px;
+      background:#e8f0f5;
+      z-index:26;
+      box-shadow : 0 0 25px rgba(0,0,0,0.3);
+      position:absolute;
+      top:0;
+      bottom:0; 
+      border-left:1px solid #fff;
+      line-height:1.5em;
+      font-size:14px;
+      
+      ul,
+      li {
+        list-style:none;
+      }
+      
+      .evaluation-queue-title {
+        padding:12px;
+        position:relative;
+        
+        h1 {
+          color:#2c2c2c;
+          font-size:20px;
+          margin:0;
+          padding:0;
+        }
+
+      }
+    
+      .evaluation-queue-content-outer {
+        overflow:hidden;
+        position:absolute;
+        top:40px;
+        bottom:5px;
+        width:350px;
+      
+        .evaluation-queue-content-inner {  
+          position:absolute;
+          overflow-x:hidden;
+          overflow-y:scroll;
+          width:370px;
+          top:0;
+          bottom:0;
+        
+          .evaluation-queue-content-scrolling {
+            width:338px;
+            padding:0 6px;
+            
+            .evaluation-queue-root {
+
+              .evaluation-queue-item {
+                list-style:none;
+                
+                &:first-child {
+                  margin-top:5px;
+                  padding-top:2px;
+                }
+                
+                &.item-hidden {
+                  opacity:0.4;
+                }
+                
+                a {
+                  text-decoration:none;
+                  color:#2c2c2c;
+                  display:block;
+                  @include genericMenuLinkHoverTransition(background,color,0.15s,ease-in-out);
+                  @include rounded(2px);
+                  padding:2px 8px 2px 6px;
+                  border-left:2px solid #e8f0f5;
+                  margin:1px 0;
+                  
+                  &:hover,
+                  &.active {
+                    background:#596e7d;
+                    color:#fff;
+                  }
+                }
+    
+              }
+
+            }
+          }
+        
+        }
+      
+      }
+    
+    }
+
+  } 
+  
+  #evaluationStudentAssignmentListingWrapper {
+    padding-left:60px;
+    padding-top:30px;
+    max-width:700px;
+    width:auto;
+    margin:0 auto;
+  }
+  
+  /* JQuery UI Dialog Overrides */
+  .ui-widget-overlay {
+    background:#000;
+    opacity:0.5;
+  }
+  
+  .evaluation-dialog {
+    box-shadow:0 0 80px rgba(0,0,0,0.4);
+    background:#fff;
+    font-family: 'Open Sans',Verdana, sans-serif;
+    font-size:16px;
+    font-weight:300;
+    padding:0;
+    text-transform:uppercase;
+    border:none;
+    
+    &.ui-corner-all {
+      border-radius:0px;
+    }
+    
+    .ui-dialog-titlebar {
+      border:0px;
+      background:#7391a7;
+      color:#fff;
+      border-radius:0px;
+      padding:8px 36px 8px 12px;
+      font-weight:400;
+      
+      .ui-dialog-title {
+        margin:0;
+        font-size:18px;
+        width:100%;
+        font-weight:300;
+      }
+      
+      .ui-dialog-titlebar-close {
+        background:#7391a7;
+        border-radius:0px;
+        border:0px;
+        width:24px;
+        margin:-13px 0 0 0;
+        font-size:22px;
+        height:22px; /* Same height as font-size */
+        
+        span {
+          display:none;
+        }
+        
+        &:before {
+          content: "\e63b";
+          color:#fff;
+          font-size:22px;
+          font-weight:normal;
+          font-family: 'muikku';
+          speak: none;
+          font-style: normal;
+          text-decoration:none;
+          font-variant: normal;
+          text-transform: none;
+          line-height: 1;
+          
+          /* Better Font Rendering =========== */
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+        
+      }
+      
+    }
+    
+    .evaluation-confirm-dialog {
+      margin:10px 0 0 0;
+    }
+    
+    .ui-dialog-buttonpane {
+      border:0;
+      background:transparent;
+      padding:0px 10px 10px 10px;
+      margin:10px 0 0 0;
+      
+      .ui-dialog-buttonset {
+        float:none;
+        position:relative;
+      
+        button {
+          border-radius:0px;
+          border:0;
+          color:#fff;
+          font-weight:400;
+          text-transform:uppercase;
+          margin:5px;
+          outline:none;
+          font-family:"Open Sans";
+          min-width:90px;
+        }
+        
+        button.delete-button,
+        button.confirm-button {
+          float:right;
+          background:#de3211;
+        }
+        
+        button.publish-button {
+          float:right;
+          background:#27b91c;
+        }
+        
+        button.revert-button {
+          float:right;
+          background:#f6a930;
+        }
+        
+        button.cancel-button {
+          float:right;
+          background:#7391a7;
+        }
+      
+      }
+    }
+  }
+}

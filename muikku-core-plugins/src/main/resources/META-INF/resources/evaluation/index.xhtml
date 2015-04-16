@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html" xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+  xmlns:composite="http://java.sun.com/jsf/composite/composite"
+  template="/evaluation/templates/evaluation-view.xhtml">
+
+  <ui:define name="evaluation.queue">
+    <div id="evaluationQueueWrapper">
+      <div class="evaluation-queue-shrinked" id="evaluationQueueShrinkedContainer">
+        <m:widgetSpaceSet>
+          <m:widgetSpace name="evaluation.dock" keepEmpty="true" sizing="MINIMIZE" styleClass="">
+            <m:widget name="evaluation-queue-toc" size="1" />
+          </m:widgetSpace>
+        </m:widgetSpaceSet>
+        <div class="evaluation-queue-content-outer">
+          <div class="evaluation-queue-content-inner">
+            <div class="evaluation-queue-content-scrolling">
+              <ul class="evaluation-queue-root">
+                <li class="evaluation-queue-item">
+                  
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="evaluation-queue-full" id="evaluationQueueFullContainer">
+        <div class="evaluation-queue-title">
+          <h1>#{i18n.text['plugin.evaluation.queue.title']}</h1>
+        </div>
+        <div class="evaluation-queue-content-outer">
+          <div class="evaluation-queue-content-inner">
+            <div class="evaluation-queue-content-scrolling">
+              <ul class="evaluation-queue-root">
+                <li class="evaluation-queue-item">
+                  
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ui:define>
+
+  <ui:define name="evaluation.content.studentAssignmentListing">
+    <section class="evaluation-content-studentAssignmentListingWrapper" id="evaluationStudentAssignmentListingWrapper">
+    
+    </section>
+  </ui:define>
+  
+  <ui:define name="evaluation.content.evaluateForm">
+    <section class="evaluation-content-evaluateFormWrapper" id="evaluationEvaluateFormWrapper">
+    
+    </section>
+  </ui:define>
+
+</ui:composition>

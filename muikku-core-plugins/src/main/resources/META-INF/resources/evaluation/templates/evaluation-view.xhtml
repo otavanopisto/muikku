@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:c="http://java.sun.com/jsp/jstl/core" 
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core" 
+  xmlns:h="http://java.sun.com/jsf/html" 
+  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+  xmlns:composite="http://java.sun.com/jsf/composite/composite" 
+  template="/WEB-INF/templates/default.xhtml">
+
+  <!-- Lets set the base body class per view -->
+  <ui:param name="bodyClass" value="evaluation" />
+  
+  <ui:define name="viewScripts">
+    <!-- TODO: plugins should be able to introduce new material editors -->
+    
+    <!-- Html editor specific -->
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/ckeditor/4.3.2/ckeditor.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/diff_match_patch/20121119/diff_match_patch.js"></script>
+    <script type="text/javascript" src="//cdn.jsdelivr.net/jshash/2.2/md5-min.js"></script> 
+    <h:outputScript name="scripts/coopsck/coopsck.js" />
+    <h:outputScript name="scripts/diffxml-js/diffxml-js.js" />
+    
+    <!--  View itself -->
+    <h:outputScript name="scripts/gui/evaluation.js" />
+  </ui:define>
+  
+  <ui:define name="viewCss">  
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/evaluation.css" />  
+  </ui:define>
+  
+  <ui:define name="sitebody">
+    
+    <ui:insert name="evaluation.queue"></ui:insert>
+    
+    <main id="contentEvaluation"> <!-- class attribute removed as we are not using grid here -->
+      <ui:insert name="evaluation.content.studentAssignmentListing"></ui:insert>
+      <ui:insert name="evaluation.content.evaluateForm"></ui:insert>
+    </main>
+
+  </ui:define>
+
+</ui:composition>
