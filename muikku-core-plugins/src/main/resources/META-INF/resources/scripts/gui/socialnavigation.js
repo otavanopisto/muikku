@@ -50,7 +50,7 @@ function openInSN(template, result, formFunction) {
       var varIsArray = {};
       
       if(textareas.length > 0){
-        var ckContent =  CKEDITOR.instances.msgContent.getData();
+        var ckContent =  CKEDITOR.instances.textContent.getData();
       
       }
       
@@ -63,7 +63,7 @@ function openInSN(template, result, formFunction) {
       $.each(vals, function(index, value) {
         if (varIsArray[value.name] != true) {
           
-          if(value.name == "content" && textareas.length > 0){
+          if(value.name == "content" || value.name == "message" && textareas.length > 0){
             obj[value.name] = ckContent || '';         
           }else{
             obj[value.name] = value.value || '';   
