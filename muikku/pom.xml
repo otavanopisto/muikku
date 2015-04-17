@@ -299,6 +299,17 @@
     </profile>
     
     <profile>
+      <id>calendar-plugin</id>
+      <dependencies>
+        <dependency>
+          <groupId>fi.muikku</groupId>
+          <artifactId>calendar-plugin</artifactId>
+          <version>1.0.16-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    
+    <profile>
       <id>deus-nex-machina-plugin</id>
       <dependencies>
         <dependency>
