@@ -1,6 +1,8 @@
 package fi.muikku.facelets;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.el.VariableMapper;
 import javax.faces.component.UIComponent;
@@ -8,7 +10,6 @@ import javax.faces.view.facelets.ComponentConfig;
 import javax.faces.view.facelets.ComponentHandler;
 import javax.faces.view.facelets.FaceletContext;
 import javax.faces.view.facelets.TagAttribute;
-import javax.faces.view.facelets.TagException;
 
 import com.sun.faces.facelets.el.VariableMapperWrapper;
 
@@ -28,8 +29,10 @@ public class WidgetComponentHandler extends ComponentHandler {
 	public void apply(FaceletContext context, UIComponent parent) throws IOException {
 		super.apply(context, parent);
 		
+		String widgetName = getName(context);
+		
 		if (getRendered(context)) {
-		  includeWidget(context, parent, getName(context));
+		  includeWidget(context, parent, widgetName);
 		}
 	}
 	
@@ -42,7 +45,7 @@ public class WidgetComponentHandler extends ComponentHandler {
 			this.nextHandler.apply(context, null);
 			context.includeFacelet(parent, path);
 		} catch (IOException e) {
-			throw new TagException(this.tag, "Failed to include widget " + path);
+		  Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Failed to include widget " + path, e);
 		} finally {
 			context.setVariableMapper(orig);
 		}
