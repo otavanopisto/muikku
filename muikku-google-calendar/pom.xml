@@ -29,11 +29,11 @@
       <artifactId>plugin</artifactId>
     </dependency>
 
-    <!-- Core plugins -->
+    <!-- Calendar plugin -->
 
     <dependency>
       <groupId>fi.muikku</groupId>
-      <artifactId>core-plugins</artifactId>
+      <artifactId>calendar-plugin</artifactId>
     </dependency>
 
     <!-- CDI -->

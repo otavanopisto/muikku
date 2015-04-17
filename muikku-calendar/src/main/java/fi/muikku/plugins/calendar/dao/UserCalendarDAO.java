@@ -3,17 +3,25 @@ package fi.muikku.plugins.calendar.dao;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import fi.muikku.plugins.CorePluginsDAO;
+import fi.muikku.dao.PluginDAO;
 import fi.muikku.plugins.calendar.model.UserCalendar;
 import fi.muikku.plugins.calendar.model.UserCalendar_;
 
-public class UserCalendarDAO extends CorePluginsDAO<UserCalendar> {
+public class UserCalendarDAO extends PluginDAO<UserCalendar> {
 
   private static final long serialVersionUID = -4015334453127961131L;
+
+  @PersistenceContext (unitName = "muikku-calendar-plugin")
+  private EntityManager entityManager;
+  
+  protected EntityManager getEntityManager() {
+    return entityManager;
+  }
 
   public UserCalendar create(String calendarId, String calendarProvider, Long userId, Boolean visible) {
     UserCalendar userCalendar = new UserCalendar();
