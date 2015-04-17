@@ -168,12 +168,6 @@
 
       <dependency>
         <groupId>fi.muikku</groupId>
-        <artifactId>calendar-plugin</artifactId>
-        <version>${muikku.version}</version>
-      </dependency>
-
-      <dependency>
-        <groupId>fi.muikku</groupId>
         <artifactId>muikku-schooldata-pyramus</artifactId>
         <version>${muikku.version}</version>
       </dependency>
