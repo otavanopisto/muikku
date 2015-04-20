@@ -1,6 +1,6 @@
 (function() {
 
-  $(window).load(function() {
+  $(document).ready(function() {
 
     // Workspace's Materials's TOC
     if ($('#evaluationQueueWrapper').length > 0) {
@@ -52,7 +52,49 @@
       });
 
     }
-      
+    
+
+  });
+  
+  $(document).on('mouseover', '.evaluation-queue-item', function (event) {
+    
+    sName = $(this).attr('data-student-name');
+    sContainerLoc = $(this).offset().top - $('.evaluation-queue-content-wrapper').offset().top + 2;
+    
+    $('#studentNameContainer').css({
+      position: 'absolute',
+      left: '20px',
+      top: sContainerLoc
+    })
+    .show()
+    .clearQueue()
+    .stop()
+    .animate({
+        opacity: 1
+      },{
+        duration:150,
+        easing: "easeInOutQuint",
+        complete: function () {
+
+        }
+      })
+    .text(sName);
+
+  });
+  
+  $(document).on('mouseout', '.evaluation-queue-item', function (event) {
+    
+    $('#studentNameContainer')
+    .animate({
+        opacity: 0
+      },{
+        duration:150,
+        easing: "easeInOutQuint",
+        complete: function () {
+          $(this).hide();
+        }
+      });
+
   });
 
   

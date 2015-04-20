@@ -33,6 +33,10 @@
   display:inline-block;
 }
 
+.icon-evaluate:before {
+  content: "\e63d";
+}
+
 .icon-bubble:before {
   content: "\e638";
 }

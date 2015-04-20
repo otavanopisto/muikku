@@ -1,10 +1,10 @@
 @font-face {
 	font-family: 'muikku';
-	src:url('fonts/muikku.eot?3nha5b');
-	src:url('fonts/muikku.eot?#iefix3nha5b') format('embedded-opentype'),
-		url('fonts/muikku.woff?3nha5b') format('woff'),
-		url('fonts/muikku.ttf?3nha5b') format('truetype'),
-		url('fonts/muikku.svg?3nha5b#muikku') format('svg');
+	src:url('fonts/muikku.eot?rr32qh');
+	src:url('fonts/muikku.eot?#iefixrr32qh') format('embedded-opentype'),
+		url('fonts/muikku.woff?rr32qh') format('woff'),
+		url('fonts/muikku.ttf?rr32qh') format('truetype'),
+		url('fonts/muikku.svg?rr32qh#muikku') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -21,6 +21,26 @@
 	/* Better Font Rendering =========== */
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+}
+
+.icon-evaluate:before {
+	content: "\e63d";
+}
+
+.icon-arrow-left2:before {
+	content: "\e605";
+}
+
+.icon-arrow-down:before {
+	content: "\e606";
+}
+
+.icon-arrow-up:before {
+	content: "\e607";
+}
+
+.icon-arrow-right2:before {
+	content: "\e608";
 }
 
 .icon-bubble:before {
@@ -301,21 +321,5 @@
 
 .icon-assessment-fail:before {
 	content: "\e9fb";
-}
-
-.icon-arrow-left2:before {
-	content: "\e605";
-}
-
-.icon-arrow-down:before {
-	content: "\e606";
-}
-
-.icon-arrow-up:before {
-	content: "\e607";
-}
-
-.icon-arrow-right2:before {
-	content: "\e608";
 }
 

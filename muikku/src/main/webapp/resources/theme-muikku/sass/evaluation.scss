@@ -67,16 +67,20 @@ body.evaluation {
       &.evaluation-queue-shrinked {
         width:45px;
         
-        .evaluation-queue-content-outer {
+        .evaluation-queue-content-wrapper {
           width:100%;
-          
-          .evaluation-queue-content-inner {
-            width:75px;
+        
+          .evaluation-queue-content-outer {
+            width:100%;
             
-            .evaluation-queue-content-scrolling {
-              width:100%;
+            .evaluation-queue-content-inner {
+              width:75px;
+              
+              .evaluation-queue-content-scrolling {
+                width:100%;
+              }
+              
             }
-            
           }
         }
       }
@@ -115,6 +119,21 @@ body.evaluation {
         bottom:0;
         left:0;
         width:45px;
+        
+        .evaluation-queue-student-name {
+          height:28px;
+          font-size:14px;
+          font-weight:400;
+          white-space:nowrap;
+          padding:1px 12px 2px 24px;
+          background:#72c4f6;
+          color:#fff;
+          z-index:31;
+          display:none;
+          opacity:0;
+          border-top-right-radius:4px;
+          border-bottom-right-radius:4px;
+        }
 
         .evaluation-queue-content-outer {
           overflow:hidden;
@@ -137,7 +156,7 @@ body.evaluation {
     
                 .evaluation-queue-item {
                   margin:0 0 8px 0;
-                  position:relative;
+                  position:static;
                   cursor:pointer;
                   width:45px;
   
@@ -147,14 +166,14 @@ body.evaluation {
                     background:#89b3d0;
                     border:1px solid #ebf7ff;
                     border-radius:17px;
-                    z-index:31;
+                    z-index:32;
                     @include background-image('gfx/evaluation-default-student-picture.jpg');
                     background-size:cover;
+                    position:relative;
                   }
                   
                   .evaluation-queue-student-name {
                     height:28px;
-                    margin-left:40px;
                     font-size:14px;
                     font-weight:400;
                     white-space:nowrap;
@@ -165,31 +184,26 @@ body.evaluation {
                     color:#fff;
                     transition:opacity 0.2s ease-in-out;
                     position:absolute;
-                    top:2px;
-                    left:-18px;
-                    z-index:32;
+                    margin:-33px 0px 0px 20px;
+                    z-index:31;
                   }
                   
-                  &:hover {
-                    z-index:39;
-  /*                   position:absolute; */
+/*                   &:hover { */
+/*                     z-index:39; */
   
-                    .evaluation-queue-student-picture {
-                      position:relative;
-                      z-index:2;
-                    }
+/*                     .evaluation-queue-student-picture { */
+ 
+/*                     } */
                     
-                    .evaluation-queue-student-name {
-                      width:auto;
-                      visibility:visible;
-                      opacity:1;
-                      border-top-right-radius:4px;
-                      border-bottom-right-radius:4px;
-                      position:absolute;
-                      z-index:1;
-                    }
+/*                     .evaluation-queue-student-name { */
+/*                       width:auto; */
+/*                       visibility:visible; */
+/*                       opacity:1; */
+/*                       border-top-right-radius:4px; */
+/*                       border-bottom-right-radius:4px; */
+/*                     } */
   
-                  }
+/*                   } */
   
                 }
   
@@ -248,6 +262,7 @@ body.evaluation {
           padding:10px 30px;
           font-size:13px;
           background:#ebf7ff;
+          position:relative;
           
           .evaluation-content-student-workspace-title {
             font-size:20px;
@@ -304,6 +319,26 @@ body.evaluation {
             }
           
           }
+          
+          .evaluation-content-student-workspace-evaluate-button {
+            position:absolute;
+            right:20px;
+            top:22px;
+            cursor:pointer;
+          
+            &.icon-evaluate {
+              font-size:20px;
+              color:#fff;
+              padding:8px;
+              background:#0099ff;
+              border-radius:30px;
+            }
+            
+            .evaluation-content-student-workspace-evaluate-tooltip {
+              display:none;
+            }
+          
+          }
 
         }
         
@@ -324,6 +359,23 @@ body.evaluation {
     bottom:30px;
     margin-left:755px;
     border-radius:10px;
+    
+    .evaluation-content-evaluateForm-title {
+       width:auto;
+       margin:0 auto 0 auto; 
+       font-weight:300;
+       color:#fff;
+       font-size:24px;
+       padding:30px 30px 30px 30px;
+       text-transform:uppercase;
+       line-height:1.3em;
+       position:relative;
+    }
+    
+    .evaluation-content-evaluateForm-content {
+    
+    
+    }
   }
   
   /* JQuery UI Dialog Overrides */
