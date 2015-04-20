@@ -34,6 +34,7 @@
     <dependency>
       <groupId>fi.muikku</groupId>
       <artifactId>calendar-plugin</artifactId>
+      <version>1.0.17-SNAPSHOT</version>
     </dependency>
 
     <!-- CDI -->
