@@ -9,7 +9,7 @@
   <parent>
     <groupId>fi.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.15-SNAPSHOT</version>
+    <version>1.0.17-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -201,75 +201,115 @@
       <groupId>fi.muikku</groupId>
       <artifactId>persistence</artifactId>
     </dependency>
-
-
-    <!-- ENABLED PLUGINS START -->
+    
+    <dependency>
+      <groupId>fi.otavanopisto</groupId>
+      <artifactId>webapp-permission</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>fi.muikku</groupId>
       <artifactId>core-plugins</artifactId>
     </dependency>
-
-    <dependency>
-      <groupId>fi.muikku</groupId>
-      <artifactId>h2db-plugin</artifactId>
-      <version>1.0.15-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>fi.muikku</groupId>
-      <artifactId>school-data-pyramus</artifactId>
-      <version>1.0.15-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>fi.muikku</groupId>
-      <artifactId>deus-nex-machina</artifactId>
-      <version>1.0.15-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>fi.muikku</groupId>
-      <artifactId>dummy-mail-bridge-plugin</artifactId>
-      <version>1.0.15-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>fi.muikku</groupId>
-      <artifactId>google-oauth-plugin</artifactId>
-      <version>1.0.15-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>fi.muikku</groupId>
-      <artifactId>pyramus-oauth-plugin</artifactId>
-      <version>1.0.15-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>fi.muikku</groupId>
-      <artifactId>facebook-oauth-plugin</artifactId>
-      <version>1.0.15-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>fi.muikku</groupId>
-      <artifactId>mongo-log-plugin</artifactId>
-      <version>1.0.15-SNAPSHOT</version>
-    </dependency>
-
-    <dependency>
-      <groupId>fi.muikku</groupId>
-      <artifactId>google-calendar-plugin</artifactId>
-      <version>1.0.15-SNAPSHOT</version>
-    </dependency>
-
-    <!-- ENABLED PLUGINS END -->
-    <dependency>
-      <groupId>fi.otavanopisto</groupId>
-      <artifactId>webapp-permission</artifactId>
-    </dependency>
+    
   </dependencies>
+
+  <profiles>
+    <profile>
+      <id>pyramus-plugins</id>
+      <dependencies>
+        <dependency>
+          <groupId>fi.muikku</groupId>
+          <artifactId>school-data-pyramus</artifactId>
+          <version>1.0.17-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+          <groupId>fi.muikku</groupId>
+          <artifactId>pyramus-oauth-plugin</artifactId>
+          <version>1.0.17-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    
+    <profile>
+      <id>dummy-mail-plugin</id>
+      <dependencies>
+        <dependency>
+          <groupId>fi.muikku</groupId>
+          <artifactId>dummy-mail-bridge-plugin</artifactId>
+          <version>1.0.17-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    
+    <profile>
+      <id>mongo-log-plugin</id>
+      <dependencies>
+        <dependency>
+          <groupId>fi.muikku</groupId>
+          <artifactId>mongo-log-plugin</artifactId>
+          <version>1.0.17-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    
+    <profile>
+      <id>google-calendar-plugin</id>
+      <dependencies>
+        <dependency>
+          <groupId>fi.muikku</groupId>
+          <artifactId>google-calendar-plugin</artifactId>
+          <version>1.0.17-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    
+    <profile>
+      <id>h2db-plugin</id>
+      <dependencies>
+        <dependency>
+          <groupId>fi.muikku</groupId>
+          <artifactId>h2db-plugin</artifactId>
+          <version>1.0.17-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    
+    <profile>
+      <id>google-oauth-plugin</id>
+      <dependencies>
+        <dependency>
+          <groupId>fi.muikku</groupId>
+          <artifactId>google-oauth-plugin</artifactId>
+          <version>1.0.17-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    
+    <profile>
+      <id>facebook-oauth-plugin</id>
+      <dependencies>
+        <dependency>
+          <groupId>fi.muikku</groupId>
+          <artifactId>facebook-oauth-plugin</artifactId>
+          <version>1.0.17-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    
+    <profile>
+      <id>deus-nex-machina-plugin</id>
+      <dependencies>
+        <dependency>
+          <groupId>fi.muikku</groupId>
+          <artifactId>deus-nex-machina</artifactId>
+          <version>1.0.17-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+
+  </profiles>
 
   <build>
     <pluginManagement>
@@ -330,6 +370,7 @@
               <Dependencies>org.apache.commons.io, org.apache.commons.collections, org.apache.commons.codec, org.codehaus.jackson.jackson-core-asl, org.codehaus.jackson.jackson-mapper-asl, org.apache.httpcomponents, com.h2database.h2, org.jboss.resteasy.resteasy-jackson2-provider</Dependencies>
             </manifestEntries>
           </archive>
+          <classifier>${classifier}</classifier>
         </configuration>
       </plugin>
     </plugins>
