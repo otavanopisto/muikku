@@ -21,6 +21,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
+import org.owasp.esapi.ESAPI;
+import org.owasp.esapi.errors.IntrusionException;
+import org.owasp.esapi.errors.ValidationException;
+
 import fi.muikku.controller.TagController;
 import fi.muikku.model.base.Tag;
 import fi.muikku.model.users.UserEntity;
@@ -236,7 +240,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   @Path ("/messages")
   public Response postMessage(
       CommunicatorMessageRESTModel newMessage
-   ) throws AuthorizationException {
+   ) throws AuthorizationException, ValidationException, IntrusionException {
     UserEntity user = sessionController.getLoggedUserEntity();
     
     CommunicatorMessageId communicatorMessageId = communicatorController.createMessageId();
@@ -262,9 +266,12 @@ public class CommunicatorRESTService extends PluginRESTService {
     
     // TODO Category not existing at this point would technically indicate an invalid state
     CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(newMessage.getCategoryName());
+    
+    String content = ESAPI.validator().getValidSafeHTML("CommunicatorMessageContent", newMessage.getContent(), -1, true);
+    String caption = ESAPI.validator().getValidSafeHTML("CommunicatorMessageCaption", newMessage.getCaption(), -1, true);
 
     CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId, user, recipients, categoryEntity, 
-        newMessage.getCaption(), newMessage.getContent(), tagList);
+        caption, content, tagList);
       
     notifierController.sendNotification(communicatorNewInboxMessageNotification, user, recipients);
     
