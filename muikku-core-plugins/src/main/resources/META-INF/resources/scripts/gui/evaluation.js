@@ -85,6 +85,8 @@
   $(document).on('mouseout', '.evaluation-queue-item', function (event) {
     
     $('#studentNameContainer')
+    .clearQueue()
+    .stop()
     .animate({
         opacity: 0
       },{
