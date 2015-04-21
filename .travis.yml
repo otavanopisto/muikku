@@ -20,7 +20,7 @@ after_success:
 - python travis-upload-reports.py
 - python travis-prepare-maven.py
 - mvn deploy --settings ~/.m2/mySettings.xml -Pdeus-nex-machina-plugin,google-calendar-plugin,mongo-log-plugin,dummy-mail-plugin,pyramus-plugins -Dclassifier=otavanopisto
-- mvn deploy --settings ~/.m2/mySettings.xml -Pgoogle-calendar-plugin,mongo-log-plugin,dummy-mail-plugin,pyramus-plugins -Dclassifier=janakkala
+- mvn deploy --settings ~/.m2/mySettings.xml -Pmongo-log-plugin,dummy-mail-plugin,pyramus-plugins -Dclassifier=janakkala
 notifications:
   irc:
     channels:
