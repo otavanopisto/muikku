@@ -21,9 +21,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-import org.owasp.esapi.ESAPI;
-import org.owasp.esapi.errors.IntrusionException;
-import org.owasp.esapi.errors.ValidationException;
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
 
 import fi.muikku.controller.TagController;
 import fi.muikku.model.base.Tag;
@@ -240,7 +239,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   @Path ("/messages")
   public Response postMessage(
       CommunicatorMessageRESTModel newMessage
-   ) throws AuthorizationException, ValidationException, IntrusionException {
+   ) throws AuthorizationException {
     UserEntity user = sessionController.getLoggedUserEntity();
     
     CommunicatorMessageId communicatorMessageId = communicatorController.createMessageId();
@@ -267,8 +266,8 @@ public class CommunicatorRESTService extends PluginRESTService {
     // TODO Category not existing at this point would technically indicate an invalid state
     CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(newMessage.getCategoryName());
     
-    String content = ESAPI.validator().getValidSafeHTML("CommunicatorMessageContent", newMessage.getContent(), -1, true);
-    String caption = ESAPI.validator().getValidSafeHTML("CommunicatorMessageCaption", newMessage.getCaption(), -1, true);
+    String content = Jsoup.clean(newMessage.getContent(), Whitelist.basic());
+    String caption = Jsoup.clean(newMessage.getCaption(), Whitelist.basic());
 
     CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId, user, recipients, categoryEntity, 
         caption, content, tagList);
