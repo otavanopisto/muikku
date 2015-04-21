@@ -6,7 +6,6 @@ branches:
   only:
   - devel
   - master
-  - FTR-156_active_plugins
 env:
   global:
   - secure: CB9V3CmnZRuNapNI8QYEO+tawsvqgEqLOM1FoIjHiPf2bMdmjud0dwcQWNuiMJzWR0FJaARvqQWmndP7SePNUaeIkkRoGJ0InmIrXwWtvGq/YKdxEWC8JpMxeONjKNZ6w1LhtRHpHKDxa9P1EgvyDMtg9pPIgDtoab86lXCK+2A=
@@ -19,8 +18,8 @@ before_install:
 after_success:
 - python travis-upload-reports.py
 - python travis-prepare-maven.py
-- mvn deploy --settings ~/.m2/mySettings.xml -Pdeus-nex-machina-plugin,google-calendar-plugin,mongo-log-plugin,dummy-mail-plugin,pyramus-plugins -Dclassifier=otavanopisto
-- mvn deploy --settings ~/.m2/mySettings.xml -Pgoogle-calendar-plugin,mongo-log-plugin,dummy-mail-plugin,pyramus-plugins -Dclassifier=janakkala
+- mvn clean deploy --settings ~/.m2/mySettings.xml -Pdeus-nex-machina-plugin,google-calendar-plugin,mongo-log-plugin,dummy-mail-plugin,pyramus-plugins -Dclassifier=otavanopisto
+- mvn clean deploy --settings ~/.m2/mySettings.xml -Pmongo-log-plugin,dummy-mail-plugin,pyramus-plugins -Dclassifier=janakkala
 notifications:
   irc:
     channels:

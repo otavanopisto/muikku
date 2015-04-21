@@ -9,13 +9,25 @@
     <relativePath>../pom.xml</relativePath>
   </parent>
 
-  <artifactId>persistence</artifactId>
+  <artifactId>calendar-plugin</artifactId>
   <packaging>jar</packaging>
-  <name>Muikku Persistence</name>
-  <description>Muikku Persistence</description>
-
+  <name>Muikku Calendar plugin</name>
+  <description>Plugin that provides Calendar support for Muikku</description>
+  
   <dependencies>
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>core-plugins</artifactId>
+    </dependency>
 
+    <!-- Commons -->  
+      
+    <dependency>
+      <groupId>commons-collections</groupId>
+      <artifactId>commons-collections</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    
     <!-- CDI -->
 
     <dependency>
@@ -30,44 +42,51 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- Hibernate -->
+    <!-- EJB -->
 
+    <dependency>
+      <groupId>org.jboss.spec.javax.ejb</groupId>
+      <artifactId>jboss-ejb-api_3.2_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- RESTEasy -->
+
+    <dependency>
+      <groupId>org.jboss.resteasy</groupId>
+      <artifactId>jaxrs-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- Hibernate -->
+    
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
       <scope>provided</scope>
     </dependency>
-
+    
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-infinispan</artifactId>
       <scope>provided</scope>
     </dependency>
-
+    
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-entitymanager</artifactId>
       <scope>provided</scope>
     </dependency>
-
+    
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-validator</artifactId>
       <scope>provided</scope>
     </dependency>
-
-    <!-- Muikku -->
-
-
-    <dependency>
-      <groupId>fi.otavanopisto</groupId>
-      <artifactId>webapp-permission</artifactId>
-    </dependency>
   </dependencies>
-
+  
   <build>
     <plugins>
-
       <plugin>
         <groupId>org.bsc.maven</groupId>
         <artifactId>maven-processor-plugin</artifactId>
@@ -95,6 +114,7 @@
         </dependencies>
       </plugin>
     </plugins>
+    
   </build>
 
 </project>
