@@ -21,6 +21,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
+
 import fi.muikku.controller.TagController;
 import fi.muikku.model.base.Tag;
 import fi.muikku.model.users.UserEntity;
@@ -262,9 +265,12 @@ public class CommunicatorRESTService extends PluginRESTService {
     
     // TODO Category not existing at this point would technically indicate an invalid state
     CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(newMessage.getCategoryName());
+    
+    String content = Jsoup.clean(newMessage.getContent(), Whitelist.basic());
+    String caption = Jsoup.clean(newMessage.getCaption(), Whitelist.basic());
 
     CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId, user, recipients, categoryEntity, 
-        newMessage.getCaption(), newMessage.getContent(), tagList);
+        caption, content, tagList);
       
     notifierController.sendNotification(communicatorNewInboxMessageNotification, user, recipients);
     
