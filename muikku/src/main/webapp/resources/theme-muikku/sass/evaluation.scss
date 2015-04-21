@@ -269,43 +269,16 @@ body.evaluation {
             color:#000;
           }
           
-          .evaluation-content-student-workspace-educationtype {
-            text-transform:uppercase;
-            float:left;
-            
-            .desc {
-              color:#000;
-              display:inline-block;
-              margin:0 10px 0 0;
-            }
-          }
-          
-          .evaluation-content-student-workspace-subject {
-            text-transform:uppercase;
-            float:left;
-          
-            .title {
-              color:#727272;
-              display:inline-block;
-              margin:0 2px 0 0;
-            }
-            
-            .desc {
-              color:#000;
-              display:inline-block;
-              margin:0 10px 0 0;
-            }
-          
-          }
-          
+          .evaluation-content-student-workspace-educationtype,
+          .evaluation-content-student-workspace-subject,
           .evaluation-content-student-workspace-length {
             text-transform:uppercase;
-            float:left;
+            display:inline-block;
           
             .title {
               color:#727272;
               display:inline-block;
-              margin:0 2px 0 0;
+              margin:0 5px 0 0;
             }
             
             .desc {
@@ -353,28 +326,147 @@ body.evaluation {
   
   #evaluationEvaluateFormWrapper {
     position:fixed;
-    width:550px;
-    background:#6989a1;
+    min-width:400px;
+    background:#fff;
     top:30px;
     bottom:30px;
-    margin-left:755px;
+    right:30px;
+    left:755px;
     border-radius:10px;
+    overflow:hidden;
     
     .evaluation-content-evaluateForm-title {
        width:auto;
        margin:0 auto 0 auto; 
        font-weight:300;
-       color:#fff;
+       color:#000;
        font-size:24px;
-       padding:30px 30px 30px 30px;
+       padding:30px 30px 10px 30px;
        text-transform:uppercase;
        line-height:1.3em;
        position:relative;
+       white-space:nowrap;
+       max-width:100%;
+    }
+    
+    .evaluation-content-evaluateForm-meta-wrapper {
+      padding:0px 30px;
+      overflow-x: hidden;
+      overflow-y: auto;
+      max-height:50px;
+    
+      .meta-education-type,
+      .meta-workspace {
+        padding:0px 20px 0 0;
+        text-transform:uppercase;
+        font-size:14px;
+        display:inline-block;
+      
+        .title {
+          color:#727272;
+          display:inline-block;
+          margin:0 5px 0 0;
+        }
+        
+        .desc {
+          color:#000;
+          display:inline-block;
+        }
+      
+      }
+
+    
     }
     
     .evaluation-content-evaluateForm-content {
+      padding:20px 30px;
+      overflow-x: hidden;
+      overflow-y: auto;
+      position: absolute;
+      bottom: 80px;
+      top: 120px;
+      right: 0px;
+      left: 0px;
+      border-top: 1px solid #eee;
+      border-bottom: 1px solid #eee;
+      
+      label {
+        text-transform:uppercase;
+        padding:0 0 3px 0;
+        font-weight:300;
+        font-size:16px;
+      }
     
+      .evaluation-content-evaluateForm-literal-eval-wrapper {
+
+        textarea {
+          border:0;
+          border-radius:3px;
+          width:100%;
+          height:200px;
+          box-shadow:0 0 0 5px #c3e6fb;
+          padding:10px;
+          box-sizing:border-box;
+          font-size:16px;
+          color:#000;
+          outline:none;
+          transition:box-shadow 0.15s ease-in-out;
+          
+          &:hover,
+          &:focus,
+          &:active {
+            box-shadow:0 0 0 5px #9cd3f5;
+          }
+        }
+        
+      }
+      
+      .evaluation-content-evaluateForm-date-wrapper {
+        margin:10px 0;
+      }
+      
+      .evaluation-content-evaluateForm-grade-wrapper {
+        margin:10px 0;
+      }
+      
+      .evaluation-content-evaluateForm-basedOfPhenomenon-wrapper {
+        margin:10px 0;
+      }
+      
+      .evaluation-content-evaluateForm-valuer-wrapper {
+        margin:10px 0;
+      }
+      
+    }
     
+    .evaluation-content-evaluationFormAction-wrapper {
+      text-align:center;
+      width:100%;
+      bottom:20px;
+      position:absolute;
+    
+      .evaluation-content-evaluationForm-button {
+        border-radius:0px;
+        border:0;
+        color:#fff;
+        font-weight:400;
+        padding:5px 15px;
+        text-transform:uppercase;
+        margin:5px;
+        outline:none;
+        font-family:"Open Sans";
+        min-width:90px;
+        font-size:18px;
+      }
+      
+      #evaluateFormCancelButton {
+        background:#7391a7;
+      }
+      
+      #evaluateFormSaveButton {
+        background:#27b91c;
+      }
+      
     }
   }
   

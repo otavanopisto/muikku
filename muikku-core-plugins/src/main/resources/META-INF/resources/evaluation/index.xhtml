@@ -238,9 +238,39 @@
   
   <ui:define name="evaluation.content.evaluateForm">
     <section class="evaluation-content-evaluateFormWrapper" id="evaluationEvaluateFormWrapper">
-      <h2 class="evaluation-content-evaluateForm-title">Opiskelijan arviointi</h2>
+      <h2 class="evaluation-content-evaluateForm-title">Esimerkki Opiskelija 1 - Arviointi</h2>
+      <div class="evaluation-content-evaluateForm-meta-wrapper">
+        <div class="meta-education-type">
+          <span class="title">Opiskelijan linja</span><span class="desc">Lukio</span>
+        </div>
+        <div class="meta-workspace">
+          <span class="title">Kurssi</span><span class="desc">GE1 - Sininen planeetta</span>
+        </div>
+      </div>
       <div class="evaluation-content-evaluateForm-content"> 
-      
+        <div class="evaluation-content-evaluateForm-literal-eval-wrapper">
+          <label for="evaluateFormLiteralEvaluation">Sanallinen arviointi</label>
+          <textarea id="evaluateFormLiteralEvaluation"></textarea>
+        </div>
+        <div class="evaluation-content-evaluateForm-date-wrapper">
+          <label for="evaluateFormLiteralEvaluation">Päivämäärä</label>
+        </div>
+        <div class="evaluation-content-evaluateForm-grade-wrapper">
+          <label for="evaluateFormLiteralEvaluation">Arvosana</label>
+        
+        </div>
+        <div class="evaluation-content-evaluateForm-basedOfPhenomenon-wrapper">
+          <label for="evaluateFormLiteralEvaluation">Ilmiön osuus suorituksesta</label>
+        
+        </div>
+        <div class="evaluation-content-evaluateForm-valuer-wrapper">
+          <label for="evaluateFormLiteralEvaluation">Arvioija</label>
+        
+        </div>
+      </div>
+      <div class="evaluation-content-evaluationFormAction-wrapper">
+        <button id="evaluateFormCancelButton" class="evaluation-content-evaluationForm-button">Peruuta</button>
+        <button id="evaluateFormSaveButton" class="evaluation-content-evaluationForm-button">Tallenna</button>
       </div>
     </section>
   </ui:define>
