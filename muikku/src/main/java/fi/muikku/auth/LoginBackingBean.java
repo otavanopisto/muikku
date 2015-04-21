@@ -111,6 +111,8 @@ public class LoginBackingBean {
                   throw new AuthenticationHandleException(result.getConflictReason().toString());
                 case INVALID_CREDENTIALS:
                   throw new AuthenticationHandleException("Erroneous authentication provider status: INVALID_CREDENTIALS in external login page");
+                case NO_EMAIL:
+                  return NavigationRules.AUTH_NOEMAIL;
                 case PROCESSING:
                   throw new AuthenticationHandleException("Erroneous authentication provider status: PROCESSING without redirectUrl");
               }
