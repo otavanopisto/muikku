@@ -206,6 +206,15 @@
         <artifactId>webapp-permission</artifactId>
         <version>${webapp-permission.version}</version>
       </dependency>
+      
+      <!-- Test -->
+      
+      <dependency>
+        <groupId>com.jayway.restassured</groupId>
+        <artifactId>rest-assured</artifactId>
+        <version>2.3.4</version>
+      </dependency>
+      
     </dependencies>
 
   </dependencyManagement>

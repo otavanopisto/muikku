@@ -16,6 +16,7 @@ import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.plugins.forum.model.ForumArea;
+import fi.muikku.plugins.forum.model.ForumMessage;
 import fi.muikku.plugins.forum.model.ForumThread;
 import fi.muikku.plugins.forum.model.WorkspaceForumArea;
 import fi.muikku.schooldata.WorkspaceController;
@@ -102,8 +103,8 @@ public class ForumPermissionResolver extends AbstractPermissionResolver implemen
     if (contextReference instanceof ForumArea)
       return (ForumArea) contextReference;
     
-    if (contextReference instanceof ForumThread)
-      return ((ForumThread) contextReference).getForumArea();
+    if (contextReference instanceof ForumMessage)
+      return ((ForumMessage) contextReference).getForumArea();
     
     return null;
   }

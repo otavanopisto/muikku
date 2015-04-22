@@ -8,6 +8,7 @@ import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.security.AbstractMuikkuPermissionCollection;
 import fi.muikku.security.DefaultEnvironmentPermissionRoles;
+import fi.muikku.security.DefaultPermissionRoles;
 import fi.muikku.security.MuikkuPermissionCollection;
 import fi.muikku.security.PermissionScope;
 import fi.otavanopisto.security.Scope;
@@ -17,17 +18,46 @@ public class ForumResourcePermissionCollection extends AbstractMuikkuPermissionC
 
   public static final String PERMISSIONSCOPE_FORUM = "FORUM";
   
+  /**
+   * Forum Area Groups
+   */
+  
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.TEACHER } )
+  public static final String FORUM_CREATEFORUMAREAGROUP = "FORUM_CREATEFORUMAREAGROUP";
+  
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultPermissionRoles ( EVERYONE )
+  public static final String FORUM_FIND_FORUMAREAGROUP = "FORUM_FIND_FORUMAREAGROUP";
+
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultPermissionRoles ( EVERYONE )
+  public static final String FORUM_LIST_FORUMAREAGROUPS = "FORUM_LIST_FORUMAREAGROUPS";
+  
+  /**
+   * Forum Area rights
+   */
+  
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.TEACHER } )
   public static final String FORUM_CREATEENVIRONMENTFORUM = "FORUM_CREATEENVIRONMENTFORUM";
   
   @Scope (PERMISSIONSCOPE_FORUM)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.TEACHER, EnvironmentRoleArchetype.STUDENT } )
-  public static final String FORUM_WRITEAREA = "FORUM_WRITEAREA";
+  public static final String FORUM_LISTFORUM = "FORUM_LISTFORUM";
+
+  /**
+   * Forum Message related rights
+   */
   
   @Scope (PERMISSIONSCOPE_FORUM)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.TEACHER, EnvironmentRoleArchetype.STUDENT } )
-  public static final String FORUM_LISTTHREADS = "FORUM_LISTTHREADS";
+  public static final String FORUM_READMESSAGES = "FORUM_READMESSAGES";
+  
+  @Scope (PERMISSIONSCOPE_FORUM)
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.TEACHER, EnvironmentRoleArchetype.STUDENT } )
+  public static final String FORUM_WRITEMESSAGES = "FORUM_WRITEMESSAGES";
+  
   
   @Override
   public List<String> listPermissions() {
