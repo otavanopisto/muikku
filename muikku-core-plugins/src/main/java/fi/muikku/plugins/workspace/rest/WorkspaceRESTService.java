@@ -60,6 +60,7 @@ import fi.muikku.plugins.workspace.rest.model.WorkspaceMaterialReply;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceUser;
 import fi.muikku.schooldata.CourseMetaController;
 import fi.muikku.schooldata.RoleController;
+import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.schooldata.entity.CourseIdentifier;
@@ -128,6 +129,9 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @Inject
   private WorkspaceMaterialFieldController workspaceMaterialFieldController;
+
+  @Inject
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
 
   @Inject
   @Any
@@ -208,16 +212,21 @@ public class WorkspaceRESTService extends PluginRESTService {
             }
 
             if (accept) {
-              Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-              
-              if (includeArchived == null || Boolean.FALSE.equals(includeArchived)) {
-                if (workspace.isArchived()) {
+              schoolDataBridgeSessionController.startSystemSession();
+              try {
+                Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+                
+                if (includeArchived == null || Boolean.FALSE.equals(includeArchived)) {
+                  if (workspace.isArchived()) {
                     accept = false;
+                  }
                 }
-              }
-              
-              if (accept) {
-                workspaces.add(createRestModel(workspaceEntity, workspace));
+                
+                if (accept) {
+                  workspaces.add(createRestModel(workspaceEntity, workspace));
+                }
+              } finally {
+                schoolDataBridgeSessionController.endSystemSession();
               }
             }
           }
