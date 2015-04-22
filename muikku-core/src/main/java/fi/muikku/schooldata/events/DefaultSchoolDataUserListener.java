@@ -165,7 +165,7 @@ public class DefaultSchoolDataUserListener {
       EnvironmentRoleEntity environmentRoleEntity = environmentRoleEntityController.findEnvironmentRoleEntity(event.getRoleDataSource(), event.getRoleIdentifier());
       if (environmentRoleEntity != null) {
         EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
-        if (environmentUser != null) {
+        if ((environmentUser != null) && (environmentUser.getRole() != null)) {
           if (environmentRoleEntity.getId().equals(environmentUser.getRole().getId())) {
             environmentUserController.updateEnvironmentUserRole(environmentUser, null);          
           }

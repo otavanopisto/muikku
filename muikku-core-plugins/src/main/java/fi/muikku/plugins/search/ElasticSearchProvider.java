@@ -21,6 +21,7 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.indices.IndexMissingException;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.search.SearchHit;
 
@@ -48,94 +49,123 @@ public class ElasticSearchProvider implements SearchProvider {
   
   @Override
   public SearchResult search(String query, String[] fields, int start, int maxResults, Class<?>... types) {
-    
-    // TODO: query_string search for case insensitive searches??
-    // http://stackoverflow.com/questions/17266830/case-insensitivity-does-not-work
-    query = query != null ? query.toLowerCase() : null;
-    
-    String[] typenames = new String[types.length];
-    for (int i = 0; i < types.length; i++) {
-      typenames[i] = types[i].getSimpleName();
+    try {
+      // TODO: query_string search for case insensitive searches??
+      // http://stackoverflow.com/questions/17266830/case-insensitivity-does-not-work
+      query = query != null ? query.toLowerCase() : null;
+      
+      String[] typenames = new String[types.length];
+      for (int i = 0; i < types.length; i++) {
+        typenames[i] = types[i].getSimpleName();
+      }
+      
+      SearchRequestBuilder requestBuilder = elasticClient
+          .prepareSearch("muikku")
+          .setTypes(typenames)
+          .setFrom(start)
+          .setSize(maxResults);
+      
+      BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
+      for (String field : fields) {
+        boolQuery.should(QueryBuilders.prefixQuery(field, query));
+      }
+  
+      SearchResponse response = requestBuilder.setQuery(boolQuery).execute().actionGet();
+      
+      List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
+      SearchHit[] results = response.getHits().getHits();
+      for (SearchHit hit : results) {
+        Map<String, Object> hitSource = hit.getSource();
+        hitSource.put("indexType", hit.getType());
+        searchResults.add(hitSource);
+      }
+      SearchResult result = new SearchResult(searchResults.size(), start, maxResults, searchResults);
+      return result;
+    } catch (IndexMissingException ime) {
+      return new SearchResult(0, 0, 0, new ArrayList<Map<String,Object>>()); 
+    } catch (Exception e) {
+      logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
+      return new SearchResult(0, 0, 0, new ArrayList<Map<String,Object>>()); 
     }
-    
-    SearchRequestBuilder requestBuilder = elasticClient
-        .prepareSearch("muikku")
-        .setTypes(typenames)
-        .setFrom(start)
-        .setSize(maxResults);
-    
-    BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
-    for (String field : fields) {
-      boolQuery.should(QueryBuilders.prefixQuery(field, query));
-    }
-
-    SearchResponse response = requestBuilder.setQuery(boolQuery).execute().actionGet();
-    
-    List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
-    SearchHit[] results = response.getHits().getHits();
-    for (SearchHit hit : results) {
-      Map<String, Object> hitSource = hit.getSource();
-      hitSource.put("indexType", hit.getType());
-      searchResults.add(hitSource);
-    }
-    SearchResult result = new SearchResult(searchResults.size(), start, maxResults, searchResults);
-    return result;
   }
 
   @Override
   public SearchResult freeTextSearch(String text, int start, int maxResults) {
-    SearchResponse response = elasticClient.prepareSearch().setQuery(QueryBuilders.matchQuery("_all", text)).setFrom(start).setSize(maxResults).execute()
-        .actionGet();
-    List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
-    SearchHit[] results = response.getHits().getHits();
-    for (SearchHit hit : results) {
-      Map<String, Object> hitSource = hit.getSource();
-      hitSource.put("indexType", hit.getType());
-      searchResults.add(hitSource);
+    try {
+      SearchResponse response = elasticClient.prepareSearch().setQuery(QueryBuilders.matchQuery("_all", text)).setFrom(start).setSize(maxResults).execute()
+          .actionGet();
+      List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
+      SearchHit[] results = response.getHits().getHits();
+      for (SearchHit hit : results) {
+        Map<String, Object> hitSource = hit.getSource();
+        hitSource.put("indexType", hit.getType());
+        searchResults.add(hitSource);
+      }
+      SearchResult result = new SearchResult(searchResults.size(), start, maxResults, searchResults);
+      return result;
+    } catch (IndexMissingException ime) {
+      return new SearchResult(0, 0, 0, new ArrayList<Map<String,Object>>()); 
+    } catch (Exception e) {
+      logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
+      return new SearchResult(0, 0, 0, new ArrayList<Map<String,Object>>()); 
     }
-    SearchResult result = new SearchResult(searchResults.size(), start, maxResults, searchResults);
-    return result;
   }
 
   @Override
   public SearchResult matchAllSearch(int start, int maxResults) {
-    SearchResponse response = elasticClient.prepareSearch().setQuery(QueryBuilders.matchAllQuery()).setFrom(start).setSize(maxResults).execute().actionGet();
-    List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
-    SearchHit[] results = response.getHits().getHits();
-    for (SearchHit hit : results) {
-      Map<String, Object> hitSource = hit.getSource();
-      hitSource.put("indexType", hit.getType());
-      searchResults.add(hitSource);
+    try {
+      SearchResponse response = elasticClient.prepareSearch().setQuery(QueryBuilders.matchAllQuery()).setFrom(start).setSize(maxResults).execute().actionGet();
+      List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
+      SearchHit[] results = response.getHits().getHits();
+      for (SearchHit hit : results) {
+        Map<String, Object> hitSource = hit.getSource();
+        hitSource.put("indexType", hit.getType());
+        searchResults.add(hitSource);
+      }
+      
+      SearchResult result = new SearchResult(searchResults.size(), start, maxResults, searchResults);
+      return result;
+    } catch (IndexMissingException ime) {
+      return new SearchResult(0, 0, 0, new ArrayList<Map<String,Object>>()); 
+    } catch (Exception e) {
+      logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
+      return new SearchResult(0, 0, 0, new ArrayList<Map<String,Object>>()); 
     }
-    SearchResult result = new SearchResult(searchResults.size(), start, maxResults, searchResults);
-    return result;
-    
   }
   
   @Override
   public SearchResult matchAllSearch(int start, int maxResults, Class<?>... types) {
-    String[] typenames = new String[types.length];
-    for (int i = 0; i < types.length; i++) {
-      typenames[i] = types[i].getSimpleName();
+    try {
+      String[] typenames = new String[types.length];
+      for (int i = 0; i < types.length; i++) {
+        typenames[i] = types[i].getSimpleName();
+      }
+      
+      SearchRequestBuilder requestBuilder = elasticClient
+          .prepareSearch("muikku")
+          .setQuery(QueryBuilders.matchAllQuery())
+          .setTypes(typenames)
+          .setFrom(start)
+          .setSize(maxResults);
+      
+      SearchResponse response = requestBuilder.execute().actionGet();
+      List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
+      SearchHit[] results = response.getHits().getHits();
+      for (SearchHit hit : results) {
+        Map<String, Object> hitSource = hit.getSource();
+        hitSource.put("indexType", hit.getType());
+        searchResults.add(hitSource);
+      }
+      
+      SearchResult result = new SearchResult(searchResults.size(), start, maxResults, searchResults);
+      return result;
+
+    } catch (IndexMissingException ime) {
+      return new SearchResult(0, 0, 0, new ArrayList<Map<String,Object>>()); 
+    } catch (Exception e) {
+      logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
+      return new SearchResult(0, 0, 0, new ArrayList<Map<String,Object>>()); 
     }
-    
-    SearchRequestBuilder requestBuilder = elasticClient
-        .prepareSearch("muikku")
-        .setQuery(QueryBuilders.matchAllQuery())
-        .setTypes(typenames)
-        .setFrom(start)
-        .setSize(maxResults);
-    
-    SearchResponse response = requestBuilder.execute().actionGet();
-    List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
-    SearchHit[] results = response.getHits().getHits();
-    for (SearchHit hit : results) {
-      Map<String, Object> hitSource = hit.getSource();
-      hitSource.put("indexType", hit.getType());
-      searchResults.add(hitSource);
-    }
-    SearchResult result = new SearchResult(searchResults.size(), start, maxResults, searchResults);
-    return result;
   }
 
   @Override
