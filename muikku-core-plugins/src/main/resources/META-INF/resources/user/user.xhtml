@@ -4,38 +4,36 @@
     xmlns:ui="http://java.sun.com/jsf/facelets"
     xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:c="http://java.sun.com/jsp/jstl/core"
-    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     template="/WEB-INF/templates/main-view.xhtml">
     
     <ui:define name="content.center.widget">
      <div class="ps-edit-user co-widget">
      
 			<div class="ps-edit-user-name">
-			  #{userIndexBackingBean.user.firstName} #{userIndexBackingBean.user.lastName}
+			  #{userIndexBackingBean.firstName} #{userIndexBackingBean.lastName}
 			</div>
-			
+<!-- 			
 			<div class="ps-edit-user-picture">
 			  <c:choose>
-			    <c:when test="#{User.hasPicture(userIndexBackingBean.userEntity)}">
-			      <img src="#{request.contextPath}/picture?userId=#{userIndexBackingBean.userEntity.id}" />
+			    <c:when test="#{userIndexBackingBean.hasPicture}">
+			      <img src="#{request.contextPath}/picture?userId=#{userIndexBackingBean.userId}" />
 			    </c:when>
 			    <c:otherwise>
 			      <img src="#{request.contextPath}/themes/default/gfx/fish.jpg" />
 			    </c:otherwise>
 			  </c:choose>
 			</div>
-			
+ 			
 			<div class="ps-edit-user-newPicture">
 			  <form method="post" action="#{request.contextPath}/pictureupload" enctype="multipart/form-data">
 			    <input type="file" name="pictureFile"/><br/>
-			    <input type="hidden" name="userId" value="#{userIndexBackingBean.userEntity.id}"/>
+			    <input type="hidden" name="userId" value="#{userIndexBackingBean.userId}"/>
 			    <input type="submit" value="Paivita kuva"/>
 			  </form>
-			</div>
-			
+			</div>-->
+			<!-- 
 			<div class="ps-edit-user-contacts">
-			  <c:forEach var="contact" items="#{User.listUserContacts(userIndexBackingBean.userEntity)}">
+			  <c:forEach var="contact" items="#{userIndexBackingBean.contacts}">
 			    <c:choose>
 			      <c:when test="#{contact.type eq 'PHONE'}">
 			        <div class="userContact">Phone: #{contact.value}</div>
@@ -52,7 +50,7 @@
 			    </c:choose>
 			  </c:forEach>
 			</div>
-			
+			 -->
 			<!--       <div class=""> -->
 			<!--         <h:form> -->
 			<!--           <div class="formElementRow"> -->
@@ -72,18 +70,19 @@
 			<!--       <m:widget name="representuser-button"> -->
 			<!--         <ui:param name="userId" value="#{userIndexBackingBean.userEntity.id}" /> -->
 			<!--       </m:widget> -->
-			
+			<!-- 
 			<div class="ps-edit-user-wall">
-			  <c:set var="wall" value="#{Wall.getUserWall(userIndexBackingBean.userEntity)}" />
+			  <c:set var="wall" value="#{userIndexBackingBean.wall}" />
 			
 			  <ui:include src="/wall/newwallentry.xhtml">
 			    <ui:param name="wallId" value="#{wall.id}" />
 			  </ui:include>
 			
 			  <ui:include src="/wall/userwall.xhtml">
-			    <ui:param name="userId" value="#{userIndexBackingBean.userEntity.id}" />
+			    <ui:param name="userId" value="#{userIndexBackingBean.userId}" />
 			  </ui:include>
 			</div>
+       -->
 	  </div>
 	</ui:define>
 

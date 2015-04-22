@@ -4,7 +4,7 @@
 
 	<groupId>fi.muikku</groupId>
 	<artifactId>parent</artifactId>
-	<version>1.0.17-SNAPSHOT</version>
+	<version>1.0.19-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Muikku Parent</name>
 
@@ -50,6 +50,7 @@
 		<module>muikku-bom</module>
 		<module>muikku-core</module>
 		<module>muikku-core-plugins</module>
+    <module>muikku-calendar</module>
 		<module>muikku-hsqldb-plugin</module>
 		<module>muikku-google-oauth</module>
 		<module>muikku-google-calendar</module>
@@ -79,7 +80,7 @@
 			<dependency>
 				<groupId>fi.muikku</groupId>
 				<artifactId>bom</artifactId>
-				<version>1.0.17-SNAPSHOT</version>
+				<version>1.0.19-SNAPSHOT</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
