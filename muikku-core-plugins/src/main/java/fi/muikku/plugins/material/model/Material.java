@@ -1,5 +1,6 @@
 package fi.muikku.plugins.material.model;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -13,10 +14,14 @@ import javax.persistence.Transient;
 import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
+@Cacheable
+@Cache (usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 public class Material {
 
   public Long getId() {

@@ -113,7 +113,7 @@ public class IndexPageTestsBase extends AbstractUITest {
           .withBody(studentArrayJson)
           .withStatus(200)));
     
-    StaffMember staffMember = new StaffMember((long) 5, (long) 5, null, "Test", "Staffmember", null, fi.pyramus.rest.model.UserRole.ADMINISTRATOR, tags, variables)
+    StaffMember staffMember = new StaffMember((long) 5, (long) 5, null, "Test", "Staffmember", null, fi.pyramus.rest.model.UserRole.ADMINISTRATOR, tags, variables);
     StaffMember[] staffArray = {staffMember};
     String staffArrayJson = ow.writeValueAsString(staffArray);
     

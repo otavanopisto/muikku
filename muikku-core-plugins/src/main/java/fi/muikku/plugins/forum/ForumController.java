@@ -1,16 +1,30 @@
 package fi.muikku.plugins.forum;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import fi.muikku.controller.PermissionController;
 import fi.muikku.controller.ResourceRightsController;
+import fi.muikku.dao.users.EnvironmentRoleEntityDAO;
+import fi.muikku.dao.users.RoleEntityDAO;
+import fi.muikku.dao.workspace.WorkspaceRoleEntityDAO;
+import fi.muikku.model.security.Permission;
 import fi.muikku.model.security.ResourceRights;
+import fi.muikku.model.users.EnvironmentRoleArchetype;
+import fi.muikku.model.users.EnvironmentRoleEntity;
+import fi.muikku.model.users.RoleEntity;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.model.workspace.WorkspaceRoleArchetype;
+import fi.muikku.model.workspace.WorkspaceRoleEntity;
+import fi.muikku.plugins.data.DiscoveredPermissionScope;
+import fi.muikku.plugins.data.PermissionDiscoveredEvent;
 import fi.muikku.plugins.forum.dao.EnvironmentForumAreaDAO;
 import fi.muikku.plugins.forum.dao.ForumAreaDAO;
 import fi.muikku.plugins.forum.dao.ForumAreaGroupDAO;
@@ -26,15 +40,16 @@ import fi.muikku.plugins.forum.model.ForumThread;
 import fi.muikku.plugins.forum.model.ForumThreadReply;
 import fi.muikku.plugins.forum.model.WorkspaceForumArea;
 import fi.muikku.schooldata.entity.User;
-import fi.muikku.security.Permit;
-import fi.muikku.security.PermitContext;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
+import fi.otavanopisto.security.Permit;
+import fi.otavanopisto.security.PermitContext;
 
 @Dependent
 @Stateful
 public class ForumController {
+  
   @Inject
   private SessionController sessionController;
 
@@ -68,6 +83,22 @@ public class ForumController {
   @Inject
   private UserController userController;
   
+  @Inject
+  private ForumResourcePermissionCollection forumResourcePermissionCollection;
+
+  @Inject
+  private PermissionController permissionController;
+  
+  @Inject
+  private EnvironmentRoleEntityDAO environmentRoleEntityDAO; 
+
+  @Inject
+  private WorkspaceRoleEntityDAO workspaceRoleEntityDAO; 
+  
+  @Inject
+  private RoleEntityDAO roleEntityDAO; 
+  
+
   public ForumArea getForumArea(Long forumAreaId) {
     return forumAreaDAO.findById(forumAreaId);
   }
@@ -80,25 +111,77 @@ public class ForumController {
     return forumThreadReplyDAO.findById(threadReplyId);
   }
   
+  private void createDefaultForumPermissions(ForumArea area, ResourceRights rights) {
+    List<String> permissions = forumResourcePermissionCollection.listPermissions();
+    
+    for (String permission : permissions) {
+      try {
+        String permissionScope = forumResourcePermissionCollection.getPermissionScope(permission);
+      
+        if (ForumResourcePermissionCollection.PERMISSIONSCOPE_FORUM.equals(permissionScope)) {
+          EnvironmentRoleArchetype[] environmentRoles = forumResourcePermissionCollection.getDefaultEnvironmentRoles(permission);
+          WorkspaceRoleArchetype[] workspaceRoles = area instanceof WorkspaceForumArea ? forumResourcePermissionCollection.getDefaultWorkspaceRoles(permission) : null;
+          String[] pseudoRoles = forumResourcePermissionCollection.getDefaultPseudoRoles(permission);
+  
+          Permission perm = permissionController.findByName(permission);
+          List<RoleEntity> roles = new ArrayList<RoleEntity>();
+          
+          if (pseudoRoles != null) {
+            for (String pseudoRole : pseudoRoles) {
+              RoleEntity roleEntity = roleEntityDAO.findByName(pseudoRole);
+              
+              if (roleEntity != null)
+                roles.add(roleEntity);
+            }
+          }
+  
+          if (environmentRoles != null) {
+            for (EnvironmentRoleArchetype envRole : environmentRoles) {
+              List<EnvironmentRoleEntity> envRoles = environmentRoleEntityDAO.listByArchetype(envRole);
+              roles.addAll(envRoles);
+            }
+          }
+  
+          if (workspaceRoles != null) {
+            for (WorkspaceRoleArchetype arc : workspaceRoles) {
+              List<WorkspaceRoleEntity> wsRoles = workspaceRoleEntityDAO.listByArchetype(arc);
+              roles.addAll(wsRoles);
+            }
+          }
+          
+          for (RoleEntity role : roles)
+            resourceRightsController.addResourceUserRolePermission(rights, role, perm);
+        }
+      } catch (NoSuchFieldException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+  
   @Permit (ForumResourcePermissionCollection.FORUM_CREATEENVIRONMENTFORUM)
   public EnvironmentForumArea createEnvironmentForumArea(String name, Long groupId) {
     UserEntity owner = sessionController.getLoggedUserEntity();
     ResourceRights rights = resourceRightsController.create();
-    ForumAreaGroup group = findForumAreaGroup(groupId);
-    return environmentForumAreaDAO.create(name, group, false, owner, rights);
+    ForumAreaGroup group = groupId != null ? findForumAreaGroup(groupId) : null;
+    EnvironmentForumArea forumArea = environmentForumAreaDAO.create(name, group, false, owner, rights);
+    createDefaultForumPermissions(forumArea, rights);
+    return forumArea;
   }
   
   public ForumAreaGroup findForumAreaGroup(Long groupId) {
     return forumAreaGroupDAO.findById(groupId);
   }
 
-  @Permit (ForumResourcePermissionCollection.FORUM_WRITEAREA)
+  @Permit (ForumResourcePermissionCollection.FORUM_WRITEMESSAGES)
   public ForumThread createForumThread(@PermitContext ForumArea forumArea, String title, String message, Boolean sticky, Boolean locked) {
     return forumThreadDAO.create(forumArea, title, message, sessionController.getLoggedUserEntity(), sticky, locked);
   }
 
-  @Permit (ForumResourcePermissionCollection.FORUM_WRITEAREA)
+  @Permit (ForumResourcePermissionCollection.FORUM_WRITEMESSAGES)
   public ForumThreadReply createForumThreadReply(@PermitContext ForumThread thread, String message) {
+    if (thread.getLocked())
+      throw new RuntimeException("Thread is locked.");
+    
     ForumThreadReply reply = forumThreadReplyDAO.create(thread.getForumArea(), thread, message, sessionController.getLoggedUserEntity());
     
     forumThreadDAO.updateThreadUpdated(thread, reply.getCreated());
@@ -108,24 +191,54 @@ public class ForumController {
 
   public List<EnvironmentForumArea> listEnvironmentForums() {
     return sessionController.filterResources(
-        environmentForumAreaDAO.listAll(), ForumResourcePermissionCollection.FORUM_WRITEAREA);
+        environmentForumAreaDAO.listAll(), ForumResourcePermissionCollection.FORUM_LISTFORUM);
+  }
+
+  public List<WorkspaceForumArea> listCourseForums() {
+    return sessionController.filterResources(
+        workspaceForumAreaDAO.listAll(), ForumResourcePermissionCollection.FORUM_LISTFORUM);
   }
 
   public List<WorkspaceForumArea> listCourseForums(WorkspaceEntity workspace) {
     return sessionController.filterResources(
-        workspaceForumAreaDAO.listByWorkspace(workspace), ForumResourcePermissionCollection.FORUM_WRITEAREA);
+        workspaceForumAreaDAO.listByWorkspace(workspace), ForumResourcePermissionCollection.FORUM_LISTFORUM);
   }
 
-  @Permit (ForumResourcePermissionCollection.FORUM_LISTTHREADS)
+  @Permit (ForumResourcePermissionCollection.FORUM_READMESSAGES)
   public List<ForumThread> listForumThreads(@PermitContext ForumArea forumArea, int firstResult, int maxResults) {
     List<ForumThread> threads = forumThreadDAO.listByForumAreaOrdered(forumArea, firstResult, maxResults);
     
     return threads;
   }
   
-  @Permit (ForumResourcePermissionCollection.FORUM_LISTTHREADS)
+  @Permit (ForumResourcePermissionCollection.FORUM_READMESSAGES)
   public List<ForumThreadReply> listForumThreadReplies(@PermitContext ForumThread forumThread, Integer firstResult, Integer maxResults) {
     return forumThreadReplyDAO.listByForumThread(forumThread, firstResult, maxResults);
+  }
+  
+  public List<ForumThread> listLatestForumThreads(int firstResult, int maxResults) {
+    List<EnvironmentForumArea> environmentForums = listEnvironmentForums();
+    List<WorkspaceForumArea> workspaceForums = listCourseForums();
+    List<ForumArea> forumAreas = new ArrayList<ForumArea>();
+
+    // TODO: This could use some optimization
+    
+    for (EnvironmentForumArea ef : environmentForums) {
+      forumAreas.add(ef);
+    }
+    
+    for (WorkspaceForumArea wf : workspaceForums) {
+      forumAreas.add(wf);
+    }
+    
+    List<ForumThread> threads;
+    
+    if (!forumAreas.isEmpty())
+      threads = forumThreadDAO.listLatestOrdered(forumAreas, firstResult, maxResults);
+    else
+      threads = new ArrayList<ForumThread>();
+    
+    return threads;
   }
   
   public UserEntity findUserEntity(Long userEntityId) {
@@ -200,4 +313,55 @@ public class ForumController {
   public List<ForumMessage> listByContributingUser(UserEntity userEntity) {
     return forumMessageDAO.listByContributingUser(userEntity);
   }
+  
+  public void permissionDiscoveredListener(@Observes @DiscoveredPermissionScope("FORUM") PermissionDiscoveredEvent event) {
+    Permission permission = event.getPermission();
+    String permissionName = permission.getName();
+
+    List<ForumArea> forumAreas = forumAreaDAO.listAll();
+    
+    for (ForumArea area : forumAreas) {
+      try {
+        String permissionScope = permission.getScope();
+      
+        if (ForumResourcePermissionCollection.PERMISSIONSCOPE_FORUM.equals(permissionScope)) {
+          ResourceRights rights = resourceRightsController.findResourceRightsById(area.getRights());
+          EnvironmentRoleArchetype[] environmentRoles = forumResourcePermissionCollection.getDefaultEnvironmentRoles(permissionName);
+          WorkspaceRoleArchetype[] workspaceRoles = area instanceof WorkspaceForumArea ? forumResourcePermissionCollection.getDefaultWorkspaceRoles(permissionName) : null;
+          String[] pseudoRoles = forumResourcePermissionCollection.getDefaultPseudoRoles(permissionName);
+  
+          List<RoleEntity> roles = new ArrayList<RoleEntity>();
+          
+          if (pseudoRoles != null) {
+            for (String pseudoRole : pseudoRoles) {
+              RoleEntity roleEntity = roleEntityDAO.findByName(pseudoRole);
+              
+              if (roleEntity != null)
+                roles.add(roleEntity);
+            }
+          }
+  
+          if (environmentRoles != null) {
+            for (EnvironmentRoleArchetype envRole : environmentRoles) {
+              List<EnvironmentRoleEntity> envRoles = environmentRoleEntityDAO.listByArchetype(envRole);
+              roles.addAll(envRoles);
+            }
+          }
+  
+          if (workspaceRoles != null) {
+            for (WorkspaceRoleArchetype arc : workspaceRoles) {
+              List<WorkspaceRoleEntity> wsRoles = workspaceRoleEntityDAO.listByArchetype(arc);
+              roles.addAll(wsRoles);
+            }
+          }
+          
+          for (RoleEntity role : roles)
+            resourceRightsController.addResourceUserRolePermission(rights, role, permission);
+        }
+      } catch (NoSuchFieldException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
 }

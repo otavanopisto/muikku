@@ -9,7 +9,7 @@ import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.security.AbstractMuikkuPermissionCollection;
 import fi.muikku.security.MuikkuPermissionCollection;
 import fi.muikku.security.PermissionScope;
-import fi.muikku.security.Scope;
+import fi.otavanopisto.security.Scope;
 
 @ApplicationScoped
 public class AssessmentRequestPermissions extends AbstractMuikkuPermissionCollection implements MuikkuPermissionCollection {

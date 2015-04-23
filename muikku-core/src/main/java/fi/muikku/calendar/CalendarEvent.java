@@ -132,5 +132,5 @@ public interface CalendarEvent {
    * 
    * @return calendar event recurrence data or null for single events
    */
-  public CalendarEventRecurrence getRecurrence();
+  public String getRecurrence();
 }

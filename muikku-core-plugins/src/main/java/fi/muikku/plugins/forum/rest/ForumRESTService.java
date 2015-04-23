@@ -17,12 +17,15 @@ import javax.ws.rs.core.Response;
 
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.forum.ForumController;
+import fi.muikku.plugins.forum.ForumResourcePermissionCollection;
 import fi.muikku.plugins.forum.model.EnvironmentForumArea;
 import fi.muikku.plugins.forum.model.ForumArea;
 import fi.muikku.plugins.forum.model.ForumAreaGroup;
 import fi.muikku.plugins.forum.model.ForumThread;
 import fi.muikku.plugins.forum.model.ForumThreadReply;
-import fi.muikku.security.AuthorizationException;
+import fi.otavanopisto.security.AuthorizationException;
+import fi.otavanopisto.security.Permit;
+import fi.otavanopisto.security.PermitContext;
 
 @Path("/forum")
 @RequestScoped
@@ -37,6 +40,7 @@ public class ForumRESTService extends PluginRESTService {
   
   @GET
   @Path ("/areagroups")
+  @Permit(ForumResourcePermissionCollection.FORUM_LIST_FORUMAREAGROUPS)
   public Response listForumAreaGroups() throws AuthorizationException {
     List<ForumAreaGroup> groups = forumController.listForumAreaGroups();
     
@@ -53,6 +57,7 @@ public class ForumRESTService extends PluginRESTService {
   
   @GET
   @Path ("/areagroups/{AREAGROUPID}")
+  @Permit(ForumResourcePermissionCollection.FORUM_FIND_FORUMAREAGROUP)
   public Response findAreaGroup(@PathParam ("AREAGROUPID") Long areaGroupId) throws AuthorizationException {
     ForumAreaGroup forumArea = forumController.findForumAreaGroup(areaGroupId);
     
@@ -65,6 +70,7 @@ public class ForumRESTService extends PluginRESTService {
   
   @POST
   @Path ("/areagroups")
+  @Permit(ForumResourcePermissionCollection.FORUM_CREATEFORUMAREAGROUP)
   public Response createForumAreaGroup(ForumAreaGroupRESTModel newGroup) throws AuthorizationException {
     ForumAreaGroup forumArea = forumController.createForumAreaGroup(newGroup.getName());
     
@@ -105,6 +111,7 @@ public class ForumRESTService extends PluginRESTService {
   
   @POST
   @Path ("/areas")
+  @Permit(ForumResourcePermissionCollection.FORUM_CREATEENVIRONMENTFORUM)
   public Response createForumArea(ForumAreaRESTModel newForum) throws AuthorizationException {
     EnvironmentForumArea forumArea = forumController.createEnvironmentForumArea(newForum.getName(), newForum.getGroupId());
     
@@ -126,7 +133,7 @@ public class ForumRESTService extends PluginRESTService {
     List<ForumThreadRESTModel> result = new ArrayList<ForumThreadRESTModel>();
     
     for (ForumThread thread : threads) {
-      result.add(new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getSticky(), thread.getLocked()));
+      result.add(new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked(), thread.getUpdated()));
     }
     
     return Response.ok(
@@ -139,7 +146,7 @@ public class ForumRESTService extends PluginRESTService {
   public Response findThread(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId) throws AuthorizationException {
     ForumThread thread = forumController.getForumThread(threadId);
 
-    ForumThreadRESTModel result = new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getSticky(), thread.getLocked());
+    ForumThreadRESTModel result = new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked(), thread.getUpdated());
     
     return Response.ok(
       result
@@ -152,7 +159,7 @@ public class ForumRESTService extends PluginRESTService {
     ForumArea forumArea = forumController.getForumArea(areaId);
     ForumThread thread = forumController.createForumThread(forumArea, newThread.getTitle(), newThread.getMessage(), newThread.getSticky(), newThread.getLocked());
 
-    ForumThreadRESTModel result = new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getSticky(), thread.getLocked());
+    ForumThreadRESTModel result = new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked(), thread.getUpdated());
     
     return Response.ok(
       result
@@ -170,7 +177,7 @@ public class ForumRESTService extends PluginRESTService {
     List<ForumThreadReplyRESTModel> result = new ArrayList<ForumThreadReplyRESTModel>();
     
     for (ForumThreadReply reply : replies) {
-      result.add(new ForumThreadReplyRESTModel(reply.getId(), reply.getMessage(), reply.getCreator(), reply.getCreated()));
+      result.add(new ForumThreadReplyRESTModel(reply.getId(), reply.getMessage(), reply.getCreator(), reply.getCreated(), reply.getForumArea().getId()));
     }
     
     return Response.ok(
@@ -183,7 +190,7 @@ public class ForumRESTService extends PluginRESTService {
   public Response findReply(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, @PathParam ("REPLYID") Long replyId) throws AuthorizationException {
     ForumThreadReply reply = forumController.getForumThreadReply(replyId);
 
-    ForumThreadReplyRESTModel result = new ForumThreadReplyRESTModel(reply.getId(), reply.getMessage(), reply.getCreator(), reply.getCreated());
+    ForumThreadReplyRESTModel result = new ForumThreadReplyRESTModel(reply.getId(), reply.getMessage(), reply.getCreator(), reply.getCreated(), reply.getForumArea().getId());
 
     return Response.ok(
       result
@@ -192,16 +199,34 @@ public class ForumRESTService extends PluginRESTService {
   
   @POST
   @Path ("/areas/{AREAID}/threads/{THREADID}/replies")
+  @Permit(ForumResourcePermissionCollection.FORUM_WRITEMESSAGES)
   public Response createReply(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, ForumThreadReplyRESTModel newReply) throws AuthorizationException {
     ForumThread forumThread = forumController.getForumThread(threadId);
     ForumThreadReply reply = forumController.createForumThreadReply(forumThread, newReply.getMessage());
     
-    ForumThreadReplyRESTModel result = new ForumThreadReplyRESTModel(reply.getId(), reply.getMessage(), reply.getCreator(), reply.getCreated());
+    ForumThreadReplyRESTModel result = new ForumThreadReplyRESTModel(reply.getId(), reply.getMessage(), reply.getCreator(), reply.getCreated(), reply.getForumArea().getId());
     
     return Response.ok(
       result
     ).build();
   }
   
+  
+  @GET
+  @Path ("/latest")
+  public Response listLatestThreads(@QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, 
+      @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults) throws AuthorizationException {
+    List<ForumThread> threads = forumController.listLatestForumThreads(firstResult, maxResults);
+    
+    List<ForumThreadRESTModel> result = new ArrayList<ForumThreadRESTModel>();
+    
+    for (ForumThread thread : threads) {
+      result.add(new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked(), thread.getUpdated()));
+    }
+    
+    return Response.ok(
+      result
+    ).build();
+  }
   
 }

@@ -1,0 +1,386 @@
+body.workspace-materials #contentWorkspaceMaterials,
+body.workspace-materials-reading #contentWorkspaceMaterialsReading,
+body.workspace-materials-management #contentWorkspaceMaterialsManagement {
+  
+  /* Material loading */
+  .workspace-material-queued-html,
+  .workspace-material-loading {
+    @include background-image('gfx/workspace-material-loading.gif'); 
+    background-repeat: no-repeat;
+    background-position: center;
+    min-height: 500px;
+  }
+  
+  /* Youtube Lazy loading wrapper */
+  .js-lazyyt {
+    margin:10px 0;
+  }
+  
+  /* Input field and textarea overrides */
+  input[type="text"] {
+    width:auto;
+    height:auto;
+    border:3px solid #c9e0fb;
+    @include rounded(3px);
+    display:inline-block;
+    padding:4px 8px;
+    transition:border,box-shadow 0.1s,0.2s ease-in-out;
+    outline:none;
+    font-size:17px;
+    color:#0061a2;
+    max-width:100%;
+    box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
+    box-sizing:border-box;
+    margin:4px 3px;
+    
+    &:focus,
+    &:hover {
+      border:3px solid #97bfed;
+      box-shadow:0 0 0px 3px rgba(202,225,252,0.75);
+    }
+
+    &::-webkit-input-placeholder {
+      color:#b4b4b4;
+      font-style:italic;
+    }
+    
+    &:-moz-placeholder { /* older Firefox*/
+      color:#b4b4b4;
+      font-style:italic;
+    }
+    
+    &::-moz-placeholder { /* Firefox 19+ */ 
+      color:#b4b4b4;
+      font-style:italic;
+    }
+     
+    &:-ms-input-placeholder { 
+      color:#b4b4b4;
+      font-style:italic;
+    }
+    
+    &::input-placeholder {
+      color:#b4b4b4;
+      font-style:italic;
+    }
+    
+  }
+  
+  textarea {
+    height:auto;
+    border:3px solid #c9e0fb;
+    @include rounded(3px);
+    display:inline-block;
+    padding:4px 8px;
+    transition:border,box-shadow 0.1s,0.2s ease-in-out;
+    outline:none;
+    font-size:17px;
+    color:#4c4c4c;
+    width:100%;
+    max-width:100%;
+    box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
+    box-sizing:border-box;
+    text-align:left;
+    margin:0;
+    line-height:1.7em;
+    
+    &:focus,
+    &:hover {
+      border:3px solid #97bfed;
+      box-shadow:0 0 0px 3px rgba(202,225,252,0.75);
+    }
+  }
+
+  /* Select and Option field overrides */
+  select {
+    background:#fff;
+    border:3px solid #c9e0fb;
+    transition:border,box-shadow 0.1s,0.2s ease-in-out;
+    outline:none;
+    color:#0061a2;
+    display:inline-block;
+    margin:4px;
+    box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
+    @include rounded(3px);
+    max-width:100%;
+    word-wrap:break-word;
+    
+    &:focus,
+    &:hover {
+      border:3px solid #97bfed;
+      box-shadow:0 0 0px 3px rgba(202,225,252,0.85);
+    }
+  
+    option {
+      background:#fff;
+      font-weight:300;
+      padding:4px 8px;
+    }
+    
+  }
+  
+  input[type="radio"],
+  input[type="checkbox"] {
+    margin:0 10px;
+    background:#fff;
+    border:3px solid #c9e0fb;
+    transition:border,box-shadow 0.1s,0.2s ease-in-out;
+    outline:none;
+    display:inline-block;
+    box-shadow:0 0 0px 3px rgba(215,215,215,0.15);
+    @include rounded(3px);
+    display:inline-block;
+    
+    &:focus,
+    &:hover,
+    &:checked {
+      border:3px solid #97bfed;
+      box-shadow:0 0 0px 3px rgba(202,225,252,0.85);
+    }
+  }
+  
+  blockquote {
+    font-family: 'Open Sans',Verdana, sans-serif;
+    font-style:italic;
+    padding:2px 0;
+    border-style:solid;
+    border-color:#eee;
+    border-width:0;
+    color:#777;
+    font-size:22px;
+    margin:0 40px 0 40px;
+  
+    p {
+      margin:10px 0 10px 0;
+    }
+  
+  }
+  
+  .cke_contents_ltr blockquote {
+    padding-left:20px;
+    padding-right:8px;
+    border-left-width:8px;
+  }
+  
+  .cke_contents_rtl blockquote {
+    padding-left:8px;
+    padding-right:20px;
+    border-right-width:8px;
+  }
+  
+  p, h1, h2, h3, h4, h5, h6 {
+    word-wrap:break-word;
+  }
+  
+  em {
+    font-style:italic;
+    font-weight:300;
+  }
+  
+  strong,
+  b {
+    font-weight:400; /* This is set to 'normal' because we use thinner font with text rendering */
+  }
+
+  table {
+    border-collapse:separate;
+    border-spacing:initial;
+    margin:initial;
+    padding:initial;
+  }
+  
+  td {
+    padding:initial;
+    margin:initial;
+    width:auto;
+    max-width:100%;
+  }
+  
+  label {
+    display:inline;
+    font-weight:300;
+  }
+  
+  /* Content link overrides */
+  a {
+    color:#4290ea; 
+  }
+  
+  /* UL, LI overrides */
+  ul {
+    list-style-type:disc;
+  }
+  
+  ol {
+     list-style-type:decimal;
+  }
+  
+  ul,
+  ol {
+    margin:0 20px;
+  
+    li {
+      margin:5px;
+/*       line-height:1.5em; */
+    }
+    
+    ol {
+      list-style-type:decimal;
+    }
+    
+    ul {
+      list-style-type:circle;
+    }
+  
+  }
+  
+  .muikku-save-page-wrapper {
+    text-align:center;
+    margin:20px auto 15px auto;
+    display:table;
+    clear:both;
+  }
+  
+  .workspace-materials-view-page {
+  
+    &[data-workspace-material-assigment-type="EXERCISE"] {
+      
+    }
+    
+    &[data-workspace-material-assigment-type="EVALUATED"] {
+      
+    }
+  
+    button.muikku-save-page {
+      color:#fff;
+      background:#71bced;
+      box-shadow:none;
+      border:0;
+      border-radius:2px;
+      font-weight:300;
+      text-transform:uppercase;
+      padding:12px;
+      transition:background 0.3s ease-in-out;
+      margin:0 5px 0 5px;
+      min-width:120px;
+      outline:none;
+      position:relative;
+      line-height:1;
+      cursor:pointer;
+      display:inline-block;
+      
+      &:hover {
+        background:#53afec;
+      }
+      
+      &.save-successful {
+        background:#1ec30c;
+        cursor:default;
+      }
+
+    }
+    
+    .muikku-field-correct-answer {
+      box-shadow:0 0 1px 3px rgba(0,255,42,0.3);
+      border:1px solid #00ff2a;
+      @include rounded(3px);
+      padding-bottom:2px; /* This is only for div containers that are used to wrap checkbox/radio lists */
+    }
+    
+    .muikku-field-incorrect-answer {
+      box-shadow:0 0 1px 3px rgba(255,0,0,0.3);
+      border:1px solid #f64e4e;
+      @include rounded(3px);
+      padding-bottom:2px; /* This is only for div containers that are used to wrap checkbox/radio lists */
+    }
+    
+    span.muikku-field-examples {
+      border-radius:3px;
+      padding:3px;
+      width:auto;
+      background:#e2ffe2;
+      font-style:italic;
+      margin:1px 3px 1px -2px;
+      
+      span.muikku-field-examples-title {
+        font-weight:600;
+        margin:0px 4px;
+      }
+      
+      span.muikku-field-example {
+        display:inline-block;
+        margin:0px 5px;
+      }
+      
+    }
+    
+    .muikku-page-assignment-type {
+      padding:2px 8px;
+      border-radius:2px;
+      color: #fff;
+      text-align: center;
+      text-transform:uppercase;
+      display:inline-block;
+      margin:15px 0 0 -36px;
+      
+      &.evaluated {
+        background: $evaluatedAssignment;
+      }
+      
+      &.exercise {
+        background: $exerciseAssignment;
+        
+      }
+    }
+  
+  }
+  
+}
+
+/* Different reading view's overrides */
+
+body.workspace-materials #contentWorkspaceMaterials {
+  
+  /* Save answers button's font-size under basic view */
+  .workspace-materials-view-page {
+  
+    button.muikku-save-page {
+      font-size:14px;
+    }
+  
+  }
+
+  /* Textfield example answers under basic view */
+  span.muikku-field-examples {
+    font-size:13px;
+  }
+  
+  /* Assigment type indicators under basic view */
+  .muikku-page-assignment-type {
+    font-size: 14px;
+  }
+  
+}
+
+body.workspace-materials-reading #contentWorkspaceMaterialsReading {
+  
+  /* Save answers button's font-size under reading view view */
+  .workspace-materials-view-page {
+  
+    button.muikku-save-page {
+      font-size:16px;
+    }
+  
+  }
+  
+  /* Textfield example answers under reading view */
+  span.muikku-field-examples {
+    font-size:15px;
+  }
+
+  /* Assigment type indicators under reading view */
+  .muikku-page-assignment-type {
+    font-size: 16px;
+  }
+  
+}

@@ -1,7 +1,8 @@
 package fi.muikku.plugins.workspace;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -15,7 +16,6 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.jsf.NavigationRules;
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.Workspace;
@@ -25,6 +25,9 @@ import fi.muikku.schooldata.entity.Workspace;
 @RequestScoped
 @Join(path = "/workspace/{workspaceUrlName}/help", to = "/workspaces/help.jsf")
 public class WorkspaceHelpPageBackingBean {
+
+  @Inject
+  private Logger logger;
 
   @Parameter
   private String workspaceUrlName;
@@ -60,11 +63,12 @@ public class WorkspaceHelpPageBackingBean {
     }
     workspaceEntityId = workspaceEntity.getId();
     
-    contentNodes = new ArrayList<ContentNode>();
-    List<WorkspaceMaterial> helpPages = workspaceMaterialController.findHelpPages(workspaceEntity);
-    for (WorkspaceMaterial helpPage : helpPages) {
-      ContentNode node = workspaceMaterialController.createContentNode(helpPage);
-      contentNodes.add(node);
+    try {
+      contentNodes = workspaceMaterialController.listWorkspaceHelpPagesAsContentNodes(workspaceEntity);
+    }
+    catch (Exception e) {
+      logger.log(Level.SEVERE, "Error loading materials", e);
+      return NavigationRules.INTERNAL_ERROR;
     }
 
     workspaceBackingBean.setWorkspaceUrlName(urlName);

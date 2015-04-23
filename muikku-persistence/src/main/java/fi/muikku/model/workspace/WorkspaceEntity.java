@@ -1,5 +1,6 @@
 package fi.muikku.model.workspace;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,13 +9,17 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.util.ArchivableEntity;
-import fi.muikku.security.ContextReference;
+import fi.otavanopisto.security.ContextReference;
 
 @Entity
+@Cacheable
+@Cache (usage = CacheConcurrencyStrategy.TRANSACTIONAL)
 public class WorkspaceEntity implements ArchivableEntity, ContextReference {
   
   public Long getId() {

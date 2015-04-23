@@ -39,7 +39,6 @@ public class WorkspaceMaterialFieldController {
   @Any
   private Instance<WorkspaceFieldIOHandler> fieldIOHandlers;
 
-  @SuppressWarnings("unused")
   @Inject
   private Event<WorkspaceMaterialFieldUpdateEvent> workspaceMaterialFieldUpdateEvent;
   

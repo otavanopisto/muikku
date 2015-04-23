@@ -24,8 +24,8 @@ import fi.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
 import fi.muikku.plugins.communicator.model.InboxCommunicatorMessage;
-import fi.muikku.security.Permit;
-import fi.muikku.security.PermitContext;
+import fi.otavanopisto.security.Permit;
+import fi.otavanopisto.security.PermitContext;
 
 @Dependent
 @Stateful

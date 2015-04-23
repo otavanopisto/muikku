@@ -1,13 +1,13 @@
 package fi.muikku.plugins.googlecalendar;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import org.joda.time.DateTime;
+
 import fi.muikku.calendar.CalendarEvent;
 import fi.muikku.calendar.CalendarEventAttendee;
-import fi.muikku.calendar.CalendarEventRecurrence;
 import fi.muikku.calendar.CalendarEventReminder;
 import fi.muikku.calendar.CalendarEventStatus;
 import fi.muikku.calendar.CalendarEventTemporalField;
@@ -68,9 +68,9 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
           CalendarEventTemporalField start,
           CalendarEventTemporalField end,
           List<CalendarEventReminder> reminders,
-          CalendarEventRecurrence recurrence,
+          String recurrence,
           boolean allDay) throws CalendarServiceException {
-    return calendarClient.createEvent(calendarId, summary, description, status, attendees, start, end, allDay);
+    return calendarClient.createEvent(calendarId, summary, description, status, attendees, start, end, recurrence, allDay);
   }
 
   @Override
@@ -79,7 +79,7 @@ public class GoogleCalendarServiceProvider implements CalendarServiceProvider {
   }
 
   @Override
-  public List<CalendarEvent> listEvents(Date minTime, Date maxTime, String... calendarId) throws CalendarServiceException {
+  public List<CalendarEvent> listEvents(DateTime minTime, DateTime maxTime, String... calendarId) throws CalendarServiceException {
     return calendarClient.listEvents(minTime, maxTime, calendarId);
   }
 

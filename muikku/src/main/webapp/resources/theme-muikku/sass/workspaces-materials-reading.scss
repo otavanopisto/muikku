@@ -1,12 +1,14 @@
 @import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
-@import "_workspaces-materials.scss"; 
+@import "_workspaces-materials-defaults.scss";
 @import "_connect-field.scss";
 
 body.workspace-materials-reading {
   background:#8ba4b5;
-  /* All this because of the god damn margin collapsing  */
-  padding:0.01em;
+  padding:0.01em; /* Prevent margin collapsing  */
   min-height:100%;
+  line-height:1.7em;
+  font-weight:300;
+  font-size:18px;
   
   #workspaceMaterialsReadingTOCWrapper {
     position:fixed;
@@ -39,6 +41,8 @@ body.workspace-materials-reading {
       top:0;
       bottom:0;
       border-left:1px solid #fff;
+      line-height:1.5em;
+      font-size:14px;
       
       ul,
       li {
@@ -121,7 +125,6 @@ body.workspace-materials-reading {
             .workspace-materials-toc-root {
 
               .workspace-materials-toc-item {
-                font-weight:300;
                 list-style:none;
                 
                 &:first-child {
@@ -171,6 +174,7 @@ body.workspace-materials-reading {
                   text-transform:uppercase;
                   font-size:15px;
                   padding:2px 8px;
+                  font-weight:400;
                   
                   &.subtitle-hidden {
                     opacity:0.4;
@@ -179,7 +183,6 @@ body.workspace-materials-reading {
                 }
                 
                 .workspace-materials-toc-item {
-                  font-weight:300;
                   list-style:none;
                   
                   &.item-hidden {
@@ -220,14 +223,14 @@ body.workspace-materials-reading {
     width:auto;
     margin:0 auto;
     
-    & > article > h1 {
+    & > article > h1 { /* Material's title */
       max-width:700px;
       width:auto;
       background:#fff;
       margin:30px auto -30px auto; 
       font-weight:300;
       color:#000;
-      font-size:30px;
+      font-size:34px;
       padding:30px;
       text-transform:none;
       line-height:1.3em;
@@ -235,7 +238,7 @@ body.workspace-materials-reading {
     
     .workspace-materials-view-page-section.material-reading-view { /* <section> */
     
-     & > h2 {
+     & > h2 { /* Section's title */
        position:relative;
        z-index:12;
        max-width:700px;
@@ -247,11 +250,11 @@ body.workspace-materials-reading {
        color:#000;
        font-size:30px;
        padding:10px 30px;
-       text-transform:none;
+       text-transform:uppercase;
        line-height:1.3em;
      }
      
-     & > h3,h4,h5,h6 {
+     & > h3,h4,h5,h6 { /* Alternative Section's titles */
        max-width:700px;
        width:auto;
        background:#fff;
@@ -278,7 +281,6 @@ body.workspace-materials-reading {
       box-shadow:$w-page-sc;
       padding:10px 30px;
       font-size:18px;
-      font-weight:300;
       word-wrap: break-word;
       position:relative;
       
@@ -289,7 +291,6 @@ body.workspace-materials-reading {
         background:#fff;
         box-shadow:$w-page-sc;
         padding:30px 30px 30px 30px;
-        font-weight:300;
         word-wrap: break-word;
         line-height:1.3em;
         font-size:18px;
@@ -330,7 +331,7 @@ body.workspace-materials-reading {
       h6 {
         margin:20px 0 20px 0;
         color:#38393a;
-        font-weight:300;
+        font-weight:400;
         text-transform:none;
         line-height:1.3em;
       }
@@ -339,44 +340,33 @@ body.workspace-materials-reading {
         font-size:31px;
       }
         
-      h2 {
-        font-size:27px;
+      h2 { /* Page title */
+        font-size:30px;
       }
       
       h3 {
         font-size:24px;
+        font-weight:400;
       }
       
       h4 {
-        font-size:20px;
+        font-size:21px;
       }
       
       h5 {
-        font-size:18px;
+        font-size:19px;
       }
       
       h6 {
-        font-size:16px;
-        font-weight:normal;
+        font-size:18px;
+        font-weight:400;
       }
       
       p {
         margin:20px 0 20px 0;
-        line-height:1.5em;
       }
       
     }
-    
-  }
-  
-  #workspaceMaterialsReadingAdditionalNavWrapper {
-    position:fixed;
-    top:0;
-    right:0;
-    width:50px;
-    height:100%;
-    bottom:0;
-    
     
   }
   

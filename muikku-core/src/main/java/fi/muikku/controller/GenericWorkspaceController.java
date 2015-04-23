@@ -7,11 +7,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.model.workspace.WorkspaceTypeEntity;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.CourseIdentifier;
 import fi.muikku.schooldata.entity.Workspace;
-import fi.muikku.schooldata.entity.WorkspaceType;
 import fi.muikku.schooldata.entity.WorkspaceUser;
 
 @RequestScoped
@@ -21,42 +19,6 @@ public class GenericWorkspaceController {
   @Inject
   private WorkspaceController workspaceController;
   
-  /* WorkspaceTypeEntity */
-  
-  public List<WorkspaceTypeEntity> listWorkspaceTypeEntities() {
-    return workspaceController.listWorkspaceTypeEntities();
-  }
-
-  public WorkspaceTypeEntity findWorkspaceTypeEntity(WorkspaceType workspaceType) {
-    return workspaceController.findWorkspaceTypeEntity(workspaceType);
-  }
-  
-  public WorkspaceTypeEntity updateWorkspaceTypeEntityName(WorkspaceTypeEntity workspaceTypeEntity, String name) {
-    return workspaceController.updateWorkspaceTypeEntityName(workspaceTypeEntity, name);
-  }
-
-  /* WorkspaceType */
-
-  public WorkspaceTypeEntity findWorkspaceTypeEntityById(Long id) {
-    return workspaceController.findWorkspaceTypeEntityById(id);
-  }
-  
-  public List<WorkspaceType> listWorkspaceTypes() {
-    return workspaceController.listWorkspaceTypes();
-  }
-  
-  public WorkspaceType findWorkspaceTypeByDataSourceAndIdentifier(String schoolDataSource, String identifier) {
-    return workspaceController.findWorkspaceTypeByDataSourceAndIdentifier(schoolDataSource, identifier);
-  }
-  
-  public WorkspaceTypeEntity findWorkspaceTypeEntityByDataSourceAndIdentifier(String schoolDataSource, String identifier) {
-    return workspaceController.findWorkspaceTypeEntityByDataSourceAndIdentifier(schoolDataSource, identifier);
-  }
-
-  public void setWorkspaceTypeEntity(WorkspaceType workspaceType, WorkspaceTypeEntity workspaceTypeEntity) {
-    workspaceController.setWorkspaceTypeEntity(workspaceType, workspaceTypeEntity);
-  }
-
   /* Workspace */
 
   public Workspace findWorkspace(WorkspaceEntity workspaceEntity) {

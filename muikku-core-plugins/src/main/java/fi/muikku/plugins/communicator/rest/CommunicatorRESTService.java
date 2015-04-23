@@ -38,11 +38,11 @@ import fi.muikku.plugins.communicator.model.CommunicatorMessageSignature;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
 import fi.muikku.plugins.communicator.model.InboxCommunicatorMessage;
 import fi.muikku.plugins.websocket.WebSocketMessenger;
-import fi.muikku.security.AuthorizationException;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
 import fi.muikku.users.UserGroupController;
+import fi.otavanopisto.security.AuthorizationException;
 
 @Path("/communicator")
 @RequestScoped
@@ -466,7 +466,15 @@ public class CommunicatorRESTService extends PluginRESTService {
     fi.muikku.schooldata.entity.User user = userController.findUserByUserEntityDefaults(userEntity);
     Boolean hasPicture = false; // TODO: userController.hasPicture(userEntity);
     
-    fi.muikku.rest.model.User result = new fi.muikku.rest.model.User(userEntity.getId(), user.getFirstName(), user.getLastName(), hasPicture);
+    fi.muikku.rest.model.User result = new fi.muikku.rest.model.User(
+        userEntity.getId(), 
+        user.getFirstName(), 
+        user.getLastName(), 
+        hasPicture,
+        user.getNationality(),
+        user.getLanguage(),
+        user.getMunicipality(),
+        user.getSchool());
     
     return Response.ok(
       result
@@ -484,7 +492,15 @@ public class CommunicatorRESTService extends PluginRESTService {
     fi.muikku.schooldata.entity.User user = userController.findUserByUserEntityDefaults(userEntity);
     Boolean hasPicture = false; // TODO: userController.hasPicture(userEntity);
     
-    fi.muikku.rest.model.User result = new fi.muikku.rest.model.User(userEntity.getId(), user.getFirstName(), user.getLastName(), hasPicture);
+    fi.muikku.rest.model.User result = new fi.muikku.rest.model.User(
+        userEntity.getId(), 
+        user.getFirstName(), 
+        user.getLastName(), 
+        hasPicture,
+        user.getNationality(),
+        user.getLanguage(),
+        user.getMunicipality(),
+        user.getSchool());
     
     return Response.ok(
       result

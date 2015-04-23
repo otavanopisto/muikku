@@ -1,6 +1,6 @@
 (function() {
   'use strict';
-  
+
   function scrollToPage(workspaceMaterialId, animate) {
     var topOffset = 100;
     var scrollTop = $('#page-' + workspaceMaterialId).offset().top - topOffset;
@@ -21,47 +21,35 @@
       });
     } else {
       $('html, body').stop().scrollTop(scrollTop);
-      window.location.hash = 'p-' + workspaceMaterialId;
       $('a.active').removeClass('active');
       $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
     }
   }
+
+  $(window).load(function() {
+    if (window.location.hash && (window.location.hash.indexOf('p-') > 0)) {
+      scrollToPage(window.location.hash.substring(3), false);
+    }
+  });
   
   $(document).on('click', '.workspace-materials-toc-item a', function (event) {
     event.preventDefault();
     scrollToPage($($(this).attr('href')).data('workspaceMaterialId'), true);
   });
-  
-  $(window).load(function () {
-    if (window.location.hash && (window.location.hash.indexOf('p-') > 0)) {
-      scrollToPage(window.location.hash.substring(3), false);
-    }
-  });
 
   $(document).ready(function() {
-    $(document).muikkuMaterialLoader()
-      .muikkuMaterialLoader('loadMaterials', $('.workspace-materials-view-page'));
-    
-    $(document).on('beforeHtmlMaterialRender', function (event, data) {
-      $(window).data('loading', true);
-    });
-    
-    $(document).on('afterHtmlMaterialRender', function (event, data) {
-      if (window.location.hash && (window.location.hash.indexOf('p-') > 0)) {
-        scrollToPage(window.location.hash.substring(3).split('/'), false);
-      }
-      
-      if ($('.workspace-material-loading').length == 0) {
-        $(window).data('loading', false);
-      }
-    });
+    $(window).data('initializing', true);
+    $(document).muikkuMaterialLoader({
+      loadAnswers: true,
+      workspaceEntityId: $('.workspaceEntityId').val()
+    }).muikkuMaterialLoader('loadMaterials', $('.workspace-materials-view-page'));
 
     $('.workspace-materials-view-page').waypoint(function(direction) {
-      if (($(window).data('scrolling') !== true) && ($(window).data('loading') === false)) {
-        var workspaceMaterialId = parseInt($(this).attr('data-workspace-material-id'));
+      if ($(window).data('scrolling') !== true && $(window).data('initializing') !== true) {
+        var workspaceMaterialId = $(this).data('workspace-material-id');
         $('a.active').removeClass('active');
         $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
-        window.location.hash = '#p-' + workspaceMaterialId;
+        window.location.hash = 'p-' + workspaceMaterialId;
       }
     }, {
       offset: '60%'
@@ -80,7 +68,7 @@
           .text(getLocaleText("plugin.workspace.materialsLoader.evaluatedAssignmentLabel"))
       );
     });
-    
+    $(window).data('initializing', false);
   });
 
   $(document).on('change', '.muikku-field', function (event, data) {

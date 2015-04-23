@@ -1,12 +1,14 @@
 @import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
-@import "_workspaces-materials.scss"; 
+@import "_workspaces-materials-defaults.scss";
 @import "_connect-field.scss";
 
 body.workspace-materials-management {
   background:#4f6677;
-  /* All this because of the god damn margin collapsing  */
-  padding:0.01em;
+  padding:0.01em; /* Prevent margin collapsing  */
   min-height:100%;
+  line-height:1.7em;
+  font-weight:300;
+  font-size:18px;
   
   #workspaceMaterialsManagementTOCWrapper {
     position:fixed;
@@ -39,6 +41,8 @@ body.workspace-materials-management {
       top:0;
       bottom:0; 
       border-left:1px solid #fff;
+      line-height:1.5em;
+      font-size:14px;
       
       ul,
       li {
@@ -80,7 +84,6 @@ body.workspace-materials-management {
             .workspace-materials-toc-root {
 
               .workspace-materials-toc-item {
-                font-weight:300;
                 list-style:none;
                 
                 &:first-child {
@@ -137,7 +140,6 @@ body.workspace-materials-management {
                 }
                 
                 .workspace-materials-toc-item {
-                  font-weight:300;
                   list-style:none;
                   
                   &.item-hidden {
@@ -202,6 +204,8 @@ body.workspace-materials-management {
         padding:5px 10px;
         position:relative;
         transition: color 0.3s ease-in-out; 
+        font-size:14px;
+        font-weight:400;
         
         &.icon-add:before {
           font-size:17px;
@@ -235,11 +239,8 @@ body.workspace-materials-management {
         font-size:16px;
         transition: color 0.3s ease-in-out;
         font-family:"Open Sans";
-        font-weight:300;
         display:inline-block;
         background:#fff;
-        font-family:"Open Sans";
-        font-weight:300;
         text-align:center;
 
         &:hover {
@@ -281,6 +282,8 @@ body.workspace-materials-management {
         box-shadow:none;
         border-radius:0;
         text-transform:uppercase;
+        font-size:14px;
+        font-weight:400;
         
         span {
           text-transform:uppercase;
@@ -303,7 +306,6 @@ body.workspace-materials-management {
         margin:25px auto 40px auto;
         box-shadow:0 0 0 5px rgba(137,212,142,0.95);
         padding:20px 30px;
-        font-weight:300;
         word-wrap: break-word;
         -webkit-transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
         -moz-transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
@@ -343,7 +345,6 @@ body.workspace-materials-management {
       box-shadow:$w-page-sc;
       padding:50px 30px 10px 30px;
       font-size:18px;
-      font-weight:300;
       word-wrap: break-word;
       -webkit-transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
       -moz-transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
@@ -353,17 +354,17 @@ body.workspace-materials-management {
       
       &.folder { 
         position:relative;
+        font-weight:300;
         max-width:700px;
         width:auto;
         background:#fff;
         box-shadow:$w-page-sc;
         padding:30px 30px 30px 30px;
-        font-weight:300;
         word-wrap: break-word;
         line-height:1.3em;
         font-size:18px;
         color:#38393a;
-        text-transform:none;
+        text-transform:uppercase;
         
         .page-content {
           font-size:27px;
@@ -401,7 +402,6 @@ body.workspace-materials-management {
           text-align:left;
           color:#38393a;
           font-size:27px;
-          font-weight:300;
           border:0;
           padding:0 0 2px 0;
           margin:19px 30px 0px 30px;
@@ -757,26 +757,10 @@ body.workspace-materials-management {
       
       p {
         margin:20px 0 20px 0;
-        line-height:1.5em;
       }
       
     }
     
-  }
-  
-  #workspaceMaterialsManagementAdditionalNavWrapper {
-    position:fixed;
-    top:0;
-    right:0;
-    width:50px;
-    height:100%;
-    bottom:0;
-    
-    .grid_1 {
-      float:none;
-      width:auto;
-      margin:0;
-    }
   }
   
   /* JQuery UI Dialog Overrides */

@@ -195,46 +195,8 @@ div[class*="wi-dock-static-navi"] {
   padding:13px;
 }
 
-.newCalendarWidget {
-  display: inline-block;
-}
-
-.newCalendarButton {
-  @include naviIcon();
-  @include background-image('gfx/icons/32x32/actions/calendar-settings.png');
-}
-
-.newCalendarButton:hover {
-  @include naviIcon();
-  @include background-image('gfx/icons/32x32/actions/calendar-settings.png');
-}
-
 .newEventWidget {
   display: inline-block;
-}
-
-
-
-
-
-.calendarSettingsButton {
-  @include naviIcon();
-  @include background-image('gfx/icons/32x32/actions/calendar-settings.png');
-}
-
-.calendarSettingsButton:hover {
-  @include naviIcon();
-  @include background-image('gfx/icons/32x32/actions/calendar-settings.png');
-}
-
-.calendarsVisibleButton {
-  @include naviIcon();
-  @include background-image('gfx/icons/32x32/actions/calendar-visible.png');
-}
-
-.calendarsVisibleButton:hover {
-  @include naviIcon();
-  @include background-image('gfx/icons/32x32/actions/calendar-visible.png');
 }
 
 /* Settings navigation */

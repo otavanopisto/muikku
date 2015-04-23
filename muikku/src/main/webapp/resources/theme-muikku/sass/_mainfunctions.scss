@@ -1,11 +1,67 @@
   /* Mainfunctions (mf-*) */
   
+  /* Pseudo classes */
+  
+  div[data-name="mainfunction.content-tools-top.center"]{
+    height:70px;
+  }
   
   .mainfunction{
     @extend .co-widget;   
     background-color:$mainFuncSide;
   }
   
+/* Categories */
+  
+  .mf-category-1-brd{
+   border-left:5px solid $category1;
+  }
+
+  .mf-category-2-brd{
+   border-left:5px solid $category2;
+  }
+
+  .mf-category-3-brd{
+     border-left:5px solid $category3;
+  }
+
+  .mf-category-4-brd{
+    border-left:5px solid $category4;
+  }
+
+  .mf-category-5-brd{
+    border-left:5px solid $category5;
+  }
+
+  .mf-category-6-brd{
+   border-left:5px solid $category6;
+  }
+  
+  .mf-category-1-font{
+   color:$category1;
+  }
+
+  .mf-category-2-font{
+   color:$category2;
+  }
+
+  .mf-category-3-font{
+   color:$category3;
+  }
+
+  .mf-category-4-font{
+   color:$category4;
+  }
+
+  .mf-category-5-font{
+   color:$category5;
+  }
+
+  .mf-category-6-font{
+   color:$category6;
+  }
+  
+
   
   /* TODO: all the "side" to "sub" - there shouldn't be any references to location */
   
@@ -20,7 +76,7 @@
       > div:first-child{
         width:170px;
         margin-left:31px;
-        margin-top:15px;
+        margin-top:20px;
       }
   }
   
@@ -110,6 +166,12 @@
    }
    
   }
+
+  .mf-content-not-logged{
+    min-height:400px;
+    padding:20px;
+    text-align:center;
+  } 
   
   .mf-content-area{
     background-color:$mainFuncSide;
@@ -181,11 +243,21 @@
    font-size:2em;
   }
  
+.mf-form-tabs{
+  width:100%;
+
+}
+.mf-form-tab{
+   padding: 10px;
+   h3{
+     color:#fff;
+     font-weight:700;
+   }
+}
   
   
-  .mf-item{
+.mf-item{
    @extend .co-listItem;
-   padding:5px 5px 5px 5px;
    margin-bottom:5px;
  
 
@@ -205,24 +277,39 @@
 
 
   .mf-item-tools{
-     line-height:normal;
-     border-bottom:1px solid #dadada;
-     .mf-item-tool{
-      dispay:inline-block;
-      color:#ededed;
-      text-decoration:none;
-      font-size:1.5em;
-      padding-left:10px;
-      padding-right:10px;
-      border-collapse: collapse;
-  
-      &:hover{
-        color:#000;
+
+      .mf-item-tool-btn{
+        &:not(:first-child){
+         margin-left:10px;
+        }
+        background:#068feb;
+        cursor:pointer;
+        @include rounded(3px);
+        padding:5px;
+        display:inline-block;
+        color:#fff;
+        margin-top:5px;
+        box-shadow:0 0 5px rgba(0,0,0,0.25);
       } 
+ 
+           
+     .mf-item-tool{
+
+        dispay:inline-block;
+        color:#ededed;
+        text-decoration:none;
+        font-size:1.5em;
+        padding-left:10px;
+        padding-right:10px;
+        border-collapse: collapse;
+
+        &:hover{
+          color:#000;
+        } 
     
     }
     
-  }
+}
   
   .mf-item-details-container{
     background-color:#f0f3f4;
@@ -241,10 +328,11 @@
    }
   
   }
-  
+
+
 
   
-  .mf-item-header-name{
+.mf-item-header-name{
     display : inline-block;
     text-transform:uppercase;
     vertical-align:center;
@@ -361,6 +449,9 @@
     min-height:100px;
   
   }
+
+
+
   
 .mf-form-paragraph{  
      padding:5px;
@@ -376,23 +467,67 @@
     }
   }   
 }  
+
+
   
 /* When the item is open (element with "mf-item" has also class "open" ) */    
   
   &.open{
   
   .mf-item-header-name{
-      padding: 0px 10px;  
       white-space:normal;
+
     }
     
   .mf-item-description{
      width:100%;
      height:auto;
     }
-  .mf-item-header-name{
-     line-height:normal;
-  
-   }
+
   } 
  }
+
+
+.mf-subitem-container{  
+  > div:nth-child(odd ){
+   background-color:#f7f9fa;
+  }  
+  > div:nth-child(even){
+   background-color:#f3f3f3;
+  }  
+
+}
+.mf-subitem{
+   padding:15px 15px 15px 15px;
+   margin-bottom:10px;
+   font-weight:300;
+
+
+
+}
+/* Widgets */
+
+.mf-widget{
+  @extend .co-widget;
+  margin-bottom:5px;
+}
+
+ 
+ /* Forms */
+ 
+ .mf-fieldRow{
+   > div{
+    display:inline-block;
+    box-sizing:border-box;
+   }
+ }
+ 
+ .mf-select{
+  select{
+     height:37px;
+     line-height:37px;
+     min-width:200px;
+  }
+  
+}
+  

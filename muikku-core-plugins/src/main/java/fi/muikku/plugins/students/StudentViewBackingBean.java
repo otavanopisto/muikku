@@ -10,10 +10,10 @@ import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.model.users.UserEntity;
+import fi.muikku.schooldata.entity.User;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
-import fi.muikku.schooldata.entity.User;
-import fi.muikku.security.Permit;
+import fi.otavanopisto.security.Permit;
 
 @Named
 @Stateful

@@ -5,7 +5,7 @@
   <parent>
     <groupId>fi.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.14-SNAPSHOT</version>
+    <version>1.0.15-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -16,8 +16,8 @@
   
   <properties>
 
-    <google-api-services-calendar.version>v3-rev84-1.18.0-rc</google-api-services-calendar.version>
-    <google-http-client-jackson.version>1.18.0-rc</google-http-client-jackson.version>
+    <google-api-services-calendar.version>v3-rev118-1.19.1</google-api-services-calendar.version>
+    <google-http-client-jackson.version>1.19.0</google-http-client-jackson.version>
     <jparsec.version>2.1</jparsec.version> 
   </properties>
  

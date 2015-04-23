@@ -17,8 +17,8 @@ import fi.muikku.model.users.UserEntity;
 import fi.muikku.notifier.NotifierAction;
 import fi.muikku.notifier.NotifierController;
 import fi.muikku.notifier.NotifierMethod;
-import fi.muikku.security.LoggedIn;
 import fi.muikku.session.SessionController;
+import fi.otavanopisto.security.LoggedIn;
 
 @Named
 @Stateful

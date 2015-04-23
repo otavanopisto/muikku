@@ -14,9 +14,7 @@ import fi.muikku.model.security.Permission;
 import fi.muikku.model.security.ResourceRights;
 import fi.muikku.model.security.ResourceRolePermission;
 import fi.muikku.model.users.RoleEntity;
-import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.security.PermissionScope;
-import fi.muikku.security.Permit;
 
 @Stateful
 @Model
@@ -49,12 +47,13 @@ public class ResourceRightsController {
     return resourceUserRolePermissionDAO.hasResourcePermissionAccess(resourceRights, role, permission);
   }
   
-  @Permit (MuikkuPermissions.MANAGE_RESOURCERIGHTS)
+  // TODO: Rethink if these are needed
+//  @Permit (MuikkuPermissions.MANAGE_RESOURCERIGHTS)
   public ResourceRolePermission addResourceUserRolePermission(ResourceRights resourceRights, RoleEntity role, Permission permission) {
     return resourceUserRolePermissionDAO.create(resourceRights, role, permission);
   }
   
-  @Permit (MuikkuPermissions.MANAGE_RESOURCERIGHTS)
+//  @Permit (MuikkuPermissions.MANAGE_RESOURCERIGHTS)
   public void deleteResourceUserRolePermission(ResourceRolePermission rolePermission) {
     resourceUserRolePermissionDAO.delete(rolePermission);
   }

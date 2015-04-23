@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition
+xmlns="http://www.w3.org/1999/xhtml" 
+xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+xmlns:ui="http://java.sun.com/jsf/facelets" 
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:c="http://java.sun.com/jsp/jstl/core"
+xmlns:h="http://java.sun.com/jsf/html"
+template="./main-view.xhtml">
+
+    <ui:param name="contentClass" value="mf-content-master" />
+
+    <ui:define name="content.tools.top">
+      <div class="widgetSpaceSet mf-content-functions grid_24 nomargin">
+    
+        <m:widgetSpaceSet styleClass="nomargin mf-content-tools-top">
+
+          <m:widgetSpace name="mainfunction.content-tools-top.left" keepEmpty="true" sizing="SUM" styleClass="mf-button-container nomargin noLid">
+            <ui:insert name="content.tools.left" />
+          </m:widgetSpace>
+          <m:widgetSpace name="mainfunction.content-tools-top.center" keepEmpty="true" sizing="MAXIMIZE" styleClass="mf-view-container alpha noLid">
+            <ui:insert name="content.tools.center" />
+          </m:widgetSpace>
+          
+          <m:widgetSpace name="mainfunction.content-tools-top.right" keepEmpty="false" sizing="SUM" styleClass="">
+            <ui:insert name="content.tools.right" />
+          </m:widgetSpace>
+   
+        </m:widgetSpaceSet>
+     </div>  
+    </ui:define>
+    
+
+     <ui:define name="content.area">
+      <div class="widgetSpaceSet mf-content-area grid_24 nomargin noLid">
+        <m:widgetSpaceSet styleClass="widgetSpaceSet mf-content-area grid_24 nomargin noLid">
+ 
+          <ui:insert name="content.left.widgetspace">
+            <m:widgetSpace name="generic.content.left" keepEmpty="false" sizing="SUM" styleClass="nomargin mf-side-tools nomargin noLid">
+              <ui:insert name="content.left.widget"></ui:insert>
+            </m:widgetSpace>
+          </ui:insert>
+          <ui:insert name="content.center.widgetspace">
+            <m:widgetSpace name="generic.content.center" keepEmpty="true" sizing="MAXIMIZE" styleClass="mf-content nomargin noLid">
+              <ui:insert name="content.center.widget"></ui:insert>
+            </m:widgetSpace>
+          </ui:insert>
+          <ui:insert name="content.right.widgetspace">
+            <m:widgetSpace name="generic.content.right" keepEmpty="false" sizing="MINIMIZE" styleClass="nomargin">
+              <ui:insert name="content.right.widget"></ui:insert>
+            </m:widgetSpace>
+          </ui:insert>
+          
+ 
+        </m:widgetSpaceSet>
+       </div>
+    </ui:define>   
+</ui:composition>

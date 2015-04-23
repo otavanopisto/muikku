@@ -5,7 +5,7 @@
   <parent>
     <groupId>fi.muikku</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.13-SNAPSHOT</version>
+    <version>1.0.15-SNAPSHOT</version>
     <relativePath>../pom.xml</relativePath>
   </parent>
 
@@ -112,6 +112,47 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+      <groupId>com.jayway.restassured</groupId>
+      <artifactId>rest-assured</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oltu.oauth2</groupId>
+      <artifactId>org.apache.oltu.oauth2.common</artifactId>
+      <version>1.0.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oltu.oauth2</groupId>
+      <artifactId>org.apache.oltu.oauth2.authzserver</artifactId>
+      <version>1.0.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oltu.oauth2</groupId>
+      <artifactId>org.apache.oltu.oauth2.resourceserver</artifactId>
+      <version>1.0.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.oltu.oauth2</groupId>
+      <artifactId>org.apache.oltu.oauth2.client</artifactId>
+      <version>1.0.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.github.tomakehurst</groupId>
+      <artifactId>wiremock</artifactId>
+      <version>1.53</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>fi.pyramus</groupId>
+      <artifactId>rest-model</artifactId>
+      <version>0.7.17-SNAPSHOT</version>
+      <scope>test</scope>
+    </dependency>
 
   </dependencies>
 
@@ -134,7 +175,7 @@
         <it.hibernate.dialect>org.hibernate.dialect.H2Dialect</it.hibernate.dialect>
         <it.keystore.alias>pyrit</it.keystore.alias>
         <it.keystore.pass>storepass</it.keystore.pass>
-        <it.keystore.file>pyrit.keystore</it.keystore.file>
+        <it.keystore.file>${project.build.directory}${file.separator}pyrit.keystore</it.keystore.file>
         <it.wiremock.port>8089</it.wiremock.port>
         <it.report.directory>${project.build.directory}${file.separator}failsafe-reports${file.separator}</it.report.directory>
       </properties>
@@ -180,7 +221,9 @@
                 <it.jdbc.jndi>${it.jdbc.jndi}</it.jdbc.jndi>
                 <it.jdbc.username>${it.jdbc.username}</it.jdbc.username>
                 <it.jdbc.password>${it.jdbc.password}</it.jdbc.password>
-                <!-- <it.keystore.file>${it.keystore.file}</it.keystore.file> <it.keystore.alias>${it.keystore.alias}</it.keystore.alias> <it.keystore.storepass>${it.keystore.pass}</it.keystore.storepass> -->
+                <it.keystore.file>${it.keystore.file}</it.keystore.file>
+                <it.keystore.alias>${it.keystore.alias}</it.keystore.alias>
+                <it.keystore.storepass>${it.keystore.pass}</it.keystore.storepass>
                 <it.wiremock.port>${it.wiremock.port}</it.wiremock.port>
                 <it.report.directory>${it.report.directory}</it.report.directory>
               </systemPropertyVariables>
@@ -213,7 +256,7 @@
                   <goal>clean</goal>
                 </goals>
                 <configuration>
-                  <keystore>${project.build.directory}${file.separator}${it.keystore.file}</keystore>
+                  <keystore>${it.keystore.file}</keystore>
                 </configuration>
               </execution>
               <execution>
@@ -223,7 +266,7 @@
                   <goal>generateKeyPair</goal>
                 </goals>
                 <configuration>
-                  <keystore>${project.build.directory}${file.separator}${it.keystore.file}</keystore>
+                  <keystore>${it.keystore.file}</keystore>
                   <dname>cn=${it.host}, ou=None, L=Test, ST=Test, o=Test, c=TE</dname>
                   <storepass>${it.keystore.pass}</storepass>
                   <alias>${it.keystore.alias}</alias>
@@ -238,7 +281,7 @@
                   <goal>exportCertificate</goal>
                 </goals>
                 <configuration>
-                  <keystore>${project.build.directory}${file.separator}${it.keystore.file}</keystore>
+                  <keystore>${it.keystore.file}</keystore>
                   <alias>${it.keystore.alias}</alias>
                   <file>${project.build.directory}/pyrit.crt</file>
                   <storepass>${it.keystore.pass}</storepass>
@@ -251,7 +294,7 @@
                   <goal>importCertificate</goal>
                 </goals>
                 <configuration>
-                  <keystore>${project.build.directory}${file.separator}${it.keystore.file}</keystore>
+                  <keystore>${it.keystore.file}</keystore>
                   <alias>root</alias>
                   <file>${project.build.directory}/pyrit.crt</file>
                   <storepass>${it.keystore.pass}</storepass>
@@ -349,7 +392,7 @@
                       <command>/system-property=muikku-data:add(value="${project.build.directory}/../src/test/resources/muikku-data/muikku-data.xml")</command>
                       <command>/system-property=jsf.project.stage:add(value="Production")</command>
                       <command>/core-service=management/security-realm=ssl-realm:add()</command>
-                      <command>/core-service=management/security-realm=ssl-realm/server-identity=ssl:add(keystore-path="${project.build.directory}${file.separator}${it.keystore.file}",keystore-password="${it.keystore.pass}",alias="${it.keystore.alias}")</command>
+                      <command>/core-service=management/security-realm=ssl-realm/server-identity=ssl:add(keystore-path="${it.keystore.file}",keystore-password="${it.keystore.pass}",alias="${it.keystore.alias}")</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:add()</command>
                       <command>/subsystem=undertow/server=default-server/https-listener=https:add(socket-binding="https",security-realm="ssl-realm")</command>
                       <command>/subsystem=undertow/server=default-server/host=muikku:write-attribute(name=alias,value=["dev.muikku.fi"])</command>

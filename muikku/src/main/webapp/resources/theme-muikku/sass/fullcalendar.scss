@@ -126,59 +126,6 @@
     text-shadow: none;
     font-size: 12px;
   }
-  
-
-  .calendarSettingsButton {
-    background-color:$bgr;
-  }
-  
-  .fullCalendarWidget {
-  }
-  
-  .fullCalendarWidgetSettings {
-    margin-bottom: 8px;
-    height: 20px;  
-  }
-  
-  .fullCalendarWidgetNavigationContainer {
-    float: left;
-  }
-  
-  .fullCalendarWidgetViewSelectionContainer {
-    float: right;
-  }
-  
-  .fullCalendarWidgetNavigationLeft, .fullCalendarWidgetNavigationRight {
-    font-family: courier;
-    font-size: 12px;
-    font-weight: bold;
-    text-align: center;
-  }
-  
-  /* Event Editor */
-  
-  .fullCalendarWidgetEventEditorField {
-    margin-bottom: 8px;
-  }
-  
-  .fullCalendarWidgetEventEditorField label {
-    display: block;
-  }
-  
-  .fullCalendarWidgetEventEditorFieldAllDay label {
-    display: inline-block;
-  }
-  
-  .fullCalendarWidgetEventEditorFieldAllDay input {
-    margin-left: 8px;
-  }
-  
-  .fullCalendarWidgetEventEditorField textarea {
-  }
-  
-  .fullCalendarWidgetEventEditorField input.ui-timepicker-input {
-    margin-left: 8px;
-  }
 
 }
 

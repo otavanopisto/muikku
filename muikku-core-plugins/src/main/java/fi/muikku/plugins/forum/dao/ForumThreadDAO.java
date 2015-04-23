@@ -125,5 +125,29 @@ public class ForumThreadDAO extends CorePluginsDAO<ForumThread> {
 
     return thread;
   }
+
+  public List<ForumThread> listLatestOrdered(List<ForumArea> forumAreas, int firstResult, int maxResults) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<ForumThread> criteria = criteriaBuilder.createQuery(ForumThread.class);
+    Root<ForumThread> root = criteria.from(ForumThread.class);
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.and(
+            root.get(ForumThread_.forumArea).in(forumAreas),
+            criteriaBuilder.equal(root.get(ForumThread_.archived), Boolean.FALSE)
+        )
+    );
+
+    criteria.orderBy(criteriaBuilder.desc(root.get(ForumThread_.updated)));
+    
+    TypedQuery<ForumThread> query = entityManager.createQuery(criteria);
+    
+    query.setFirstResult(firstResult);
+    query.setMaxResults(maxResults);
+    
+    return query.getResultList();
+  }
   
 }

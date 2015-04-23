@@ -22,8 +22,8 @@ import fi.muikku.model.users.RoleEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.security.PermissionScope;
-import fi.muikku.security.Permit;
-import fi.muikku.security.PermitContext;
+import fi.otavanopisto.security.Permit;
+import fi.otavanopisto.security.PermitContext;
 
 @Stateful
 @Model
