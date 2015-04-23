@@ -60,6 +60,7 @@ import fi.muikku.plugins.workspace.rest.model.WorkspaceMaterialReply;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceUser;
 import fi.muikku.schooldata.CourseMetaController;
 import fi.muikku.schooldata.RoleController;
+import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.schooldata.entity.CourseIdentifier;
@@ -130,6 +131,9 @@ public class WorkspaceRESTService extends PluginRESTService {
   private WorkspaceMaterialFieldController workspaceMaterialFieldController;
 
   @Inject
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
+
+  @Inject
   @Any
   private Instance<SearchProvider> searchProviders;
 
@@ -151,7 +155,6 @@ public class WorkspaceRESTService extends PluginRESTService {
         @QueryParam("subjects") List<String> subjects,
         @QueryParam("minVisits") Long minVisits,
         @QueryParam("orderBy") List<String> orderBy,
-        @QueryParam("includeArchived") Boolean includeArchived,
         @Context Request request) {
     List<fi.muikku.plugins.workspace.rest.model.Workspace> workspaces = new ArrayList<>();
 
@@ -208,17 +211,7 @@ public class WorkspaceRESTService extends PluginRESTService {
             }
 
             if (accept) {
-              Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-              
-              if (includeArchived == null || Boolean.FALSE.equals(includeArchived)) {
-                if (workspace.isArchived()) {
-                    accept = false;
-                }
-              }
-              
-              if (accept) {
-                workspaces.add(createRestModel(workspaceEntity, workspace));
-              }
+              workspaces.add(createRestModel(workspaceEntity, (String) result.get("name"), (String) result.get("description")));
             }
           }
         }
@@ -264,12 +257,20 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
 
-    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+    Workspace workspace = null;
+    
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      workspace = workspaceController.findWorkspace(workspaceEntity);
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
+
     if (workspace == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
 
-    return Response.ok(createRestModel(workspaceEntity, workspace)).build();
+    return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getDescription())).build();
   }
 
   @GET
@@ -664,11 +665,11 @@ public class WorkspaceRESTService extends PluginRESTService {
     return new fi.muikku.plugins.workspace.rest.model.WorkspaceUser(entity.getId(), workspaceEntityId, userId, roleId, entity.getArchived());
   }
 
-  private fi.muikku.plugins.workspace.rest.model.Workspace createRestModel(WorkspaceEntity workspaceEntity, Workspace workspace) {
+  private fi.muikku.plugins.workspace.rest.model.Workspace createRestModel(WorkspaceEntity workspaceEntity, String name, String description) {
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
     return new fi.muikku.plugins.workspace.rest.model.Workspace(workspaceEntity.getId(), workspaceEntity.getUrlName(),
-        workspaceEntity.getArchived(), workspace.getName(), workspace.getDescription(), numVisits, lastVisit);
+        workspaceEntity.getArchived(), name, description, numVisits, lastVisit);
   }
 
   private fi.muikku.plugins.workspace.rest.model.WorkspaceUserSignup createRestModel(WorkspaceUserSignup signup) {
