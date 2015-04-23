@@ -39,15 +39,23 @@ public class SearchIndexer {
   }
   
   public void remove(String name, Object entity) {
+    try {
+      Map<String, Object> indexEntity = indexEntityProcessor.process(entity);
+      if (indexEntity != null) {
+        remove(name, indexEntity.get("id").toString());
+      }
+    } catch (IllegalArgumentException | IllegalAccessException | SecurityException | InvocationTargetException | IntrospectionException | IndexIdMissingException e) {
+      logger.log(Level.WARNING, "Entity processing exception", e);
+    }
+  }
+  
+  public void remove(String name, String id) {
     Iterator<SearchProvider> providers = searchProviders.iterator();
     while (providers.hasNext()) {
       SearchProvider provider = providers.next();
       try {
-        Map<String, Object> indexEntity = indexEntityProcessor.process(entity);
-        if (indexEntity != null) {
-          provider.deleteFromIndex(name, indexEntity.get("id").toString());
-        }
-      } catch (IllegalArgumentException | IllegalAccessException | SecurityException | InvocationTargetException | IntrospectionException | IndexIdMissingException e) {
+        provider.deleteFromIndex(name, id);
+      } catch (IllegalArgumentException | SecurityException e) {
         logger.log(Level.WARNING, "Entity processing exception", e);
       }
     }
