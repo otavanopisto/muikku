@@ -63,18 +63,23 @@ public class SchoolDataIndexListeners {
   }
   
   public void onSchoolDataWorkspaceUpdatedEvent(@Observes SchoolDataWorkspaceUpdatedEvent event) {
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
-    if (workspaceEntity != null) {
-      Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-      if (workspace != null) {
-        try {
-          indexer.index(Workspace.class.getSimpleName(), workspace);
-        } catch (Exception e) {
-          logger.warning("could not index workspace #" + event.getIdentifier() + '/' + event.getDataSource());
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
+      if (workspaceEntity != null) {
+        Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+        if (workspace != null) {
+          try {
+            indexer.index(Workspace.class.getSimpleName(), workspace);
+          } catch (Exception e) {
+            logger.warning("could not index workspace #" + event.getIdentifier() + '/' + event.getDataSource());
+          }
         }
+      } else {
+        logger.warning("could not index workspace because workspace entity #" + event.getIdentifier() + '/' + event.getDataSource() +  " could not be found");
       }
-    } else {
-      logger.warning("could not index workspace because workspace entity #" + event.getIdentifier() + '/' + event.getDataSource() +  " could not be found");
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
     }
   }
   
@@ -97,11 +102,16 @@ public class SchoolDataIndexListeners {
   }
   
   public void onSchoolDataUserUpdatedEvent(@Observes SchoolDataUserUpdatedEvent event) {
-    User user = userController.findUserByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
-    if (user != null) {
-      indexer.index(User.class.getSimpleName(), user);
-    } else {
-      logger.warning("could not index user because user '" + event.getIdentifier() + '/' + event.getDataSource() +  "' could not be found");
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      User user = userController.findUserByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
+      if (user != null) {
+        indexer.index(User.class.getSimpleName(), user);
+      } else {
+        logger.warning("could not index user because user '" + event.getIdentifier() + '/' + event.getDataSource() +  "' could not be found");
+      }
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
     }
   }
   
