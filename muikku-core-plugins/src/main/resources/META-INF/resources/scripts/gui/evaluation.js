@@ -21,112 +21,86 @@
         e.stopPropagation();
       });
 
-      // Prevent page scroll happening if TOC scroll reaches bottom
-      $('.evaluation-queue-content-inner').on('DOMMouseScroll mousewheel', function(ev) {
-        var $this = $(this),
-          scrollTop = this.scrollTop,
-          scrollHeight = this.scrollHeight,
-          height = $this.height(),
-          delta = (ev.type == 'DOMMouseScroll' ?
-            ev.originalEvent.detail * -40 :
-            ev.originalEvent.wheelDelta),
-          up = delta > 0;
+    };
+    
+    //Prevent page scroll happening if TOC scroll reaches bottom
+    $('.evaluation-queue-content-inner, .evaluation-content-evaluateForm-header, .evaluation-content-evaluateForm-content')
+    .on('DOMMouseScroll mousewheel', function(ev) {
+      var $this = $(this),
+        scrollTop = this.scrollTop,
+        scrollHeight = this.scrollHeight,
+        height = $this.height(),
+        delta = (ev.type == 'DOMMouseScroll' ?
+          ev.originalEvent.detail * -40 :
+          ev.originalEvent.wheelDelta),
+        up = delta > 0;
 
-        var prevent = function() {
-          ev.stopPropagation();
-          ev.preventDefault();
-          ev.returnValue = false;
-          return false;
-        }
+      var prevent = function() {
+        ev.stopPropagation();
+        ev.preventDefault();
+        ev.returnValue = false;
+        return false;
+      }
 
-        if (!up && -delta > scrollHeight - height - scrollTop) {
-          // Scrolling down, but this will take us past the bottom.
-          $this.scrollTop(scrollHeight);
+      if (!up && -delta > scrollHeight - height - scrollTop) {
+        // Scrolling down, but this will take us past the bottom.
+        $this.scrollTop(scrollHeight);
 
-          return prevent();
-        } else if (up && delta > scrollTop) {
-          // Scrolling up, but this will take us past the top.
-          $this.scrollTop(0);
-          return prevent();
-        }
-      });
+        return prevent();
+      } else if (up && delta > scrollTop) {
+        // Scrolling up, but this will take us past the top.
+        $this.scrollTop(0);
+        return prevent();
+      }
+    });
+    
+    //Student user picture tooltip show on mouseover
+    $(document).on('mouseover', '.evaluation-queue-item', function (event) {
       
-      $('.evaluation-content-evaluateForm-content').on('DOMMouseScroll mousewheel', function(ev) {
-        var $this = $(this),
-          scrollTop = this.scrollTop,
-          scrollHeight = this.scrollHeight,
-          height = $this.height(),
-          delta = (ev.type == 'DOMMouseScroll' ?
-            ev.originalEvent.detail * -40 :
-            ev.originalEvent.wheelDelta),
-          up = delta > 0;
-
-        var prevent = function() {
-          ev.stopPropagation();
-          ev.preventDefault();
-          ev.returnValue = false;
-          return false;
-        }
-
-        if (!up && -delta > scrollHeight - height - scrollTop) {
-          // Scrolling down, but this will take us past the bottom.
-          $this.scrollTop(scrollHeight);
-
-          return prevent();
-        } else if (up && delta > scrollTop) {
-          // Scrolling up, but this will take us past the top.
-          $this.scrollTop(0);
-          return prevent();
-        }
-      });
-
-    }
-    
-
-  });
-  
-  $(document).on('mouseover', '.evaluation-queue-item', function (event) {
-    
-    sName = $(this).attr('data-student-name');
-    sContainerLoc = $(this).offset().top - $('.evaluation-queue-content-wrapper').offset().top + 2;
-    
-    $('#studentNameContainer').css({
-      position: 'absolute',
-      left: '20px',
-      top: sContainerLoc
-    })
-    .show()
-    .clearQueue()
-    .stop()
-    .animate({
-        opacity: 1
-      },{
-        duration:150,
-        easing: "easeInOutQuint",
-        complete: function () {
-
-        }
+      sName = $(this).attr('data-student-name');
+      sContainerLoc = $(this).offset().top - $('.evaluation-queue-content-wrapper').offset().top + 2;
+      
+      $('#studentNameContainer').css({
+        position: 'absolute',
+        left: '20px',
+        top: sContainerLoc
       })
-    .text(sName);
+      .show()
+      .clearQueue()
+      .stop()
+      .animate({
+          opacity: 1
+        },{
+          duration:150,
+          easing: "easeInOutQuint",
+          complete: function () {
+
+          }
+        })
+      .text(sName);
+
+    });
+    
+    //Student user picture tooltip hide on mouseout
+    $(document).on('mouseout', '.evaluation-queue-item', function (event) {
+      
+      $('#studentNameContainer')
+      .clearQueue()
+      .stop()
+      .animate({
+          opacity: 0
+        },{
+          duration:150,
+          easing: "easeInOutQuint",
+          complete: function () {
+            $(this).hide();
+          }
+        });
+
+    });
 
   });
   
-  $(document).on('mouseout', '.evaluation-queue-item', function (event) {
-    
-    $('#studentNameContainer')
-    .clearQueue()
-    .stop()
-    .animate({
-        opacity: 0
-      },{
-        duration:150,
-        easing: "easeInOutQuint",
-        complete: function () {
-          $(this).hide();
-        }
-      });
-
-  });
 
   
 }).call(this);

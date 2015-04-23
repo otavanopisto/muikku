@@ -256,22 +256,22 @@ body.evaluation {
        }
       }
       
-      .evaluation-content-student-singleworkspace {
+      .evaluation-content-workspace {
       
-        .evaluation-content-student-workspace-info-wrapper {
-          padding:10px 30px;
+        .evaluation-content-workspace-info-wrapper {
+          padding:10px 20px;
           font-size:13px;
           background:#ebf7ff;
           position:relative;
           
-          .evaluation-content-student-workspace-title {
+          .evaluation-content-workspace-title {
             font-size:20px;
             color:#000;
           }
           
-          .evaluation-content-student-workspace-educationtype,
-          .evaluation-content-student-workspace-subject,
-          .evaluation-content-student-workspace-length {
+          .evaluation-content-workspace-educationtype,
+          .evaluation-content-workspace-subject,
+          .evaluation-content-workspace-length {
             text-transform:uppercase;
             display:inline-block;
           
@@ -293,7 +293,7 @@ body.evaluation {
           
           }
           
-          .evaluation-content-student-workspace-evaluate-button {
+          .evaluation-content-workspace-evaluate-button {
             position:absolute;
             right:20px;
             top:22px;
@@ -307,7 +307,7 @@ body.evaluation {
               border-radius:30px;
             }
             
-            .evaluation-content-student-workspace-evaluate-tooltip {
+            .evaluation-content-workspace-evaluate-tooltip {
               display:none;
             }
           
@@ -315,8 +315,86 @@ body.evaluation {
 
         }
         
-        .evaluation-content-student-assignment-info {
+        .evaluation-content-workspace-assignment-info {
           min-height:400px;
+          
+          .evaluation-content-workspace-assignment-title {
+            text-transform:uppercase;
+            font-size:16px;
+            padding:10px 20px;
+            background:#ce01bd;
+            color:#fff;
+            font-weight:400;
+          }
+          
+          .evaluation-content-workspace-assignment-list {
+            padding:20px;
+            
+            h3 {
+              color:#000;
+              font-weight:300;
+              border-left:20px solid #ce01bd;
+              padding:0 0 0 5px;
+              margin-left:-20px;
+            }
+            
+            p {
+              font-size:14px;
+              line-height:22px;
+              margin:10px 0;
+              font-weight:400;
+              color:#000;
+            }
+            
+            p.evaluation-content-assignment-student-answer {
+              border-radius:3px;
+              background:#ebf7ff;
+              padding:5px 10px;
+              margin:10px 0 20px 0;
+              font-weight:300;
+              font-style:italic;
+            }
+          
+          }
+          .evaluation-content-workspace-exercise-title {
+            text-transform:uppercase;
+            font-size:16px;
+            padding:10px 20px;
+            background:#ff9900;
+            color:#fff;
+            font-weight:400;
+          }
+          
+          .evaluation-content-workspace-exercise-list {
+            padding:20px;
+            
+            h3 {
+              color:#000;
+              font-weight:300;
+              border-left:20px solid #ff9900;
+              padding:0 0 0 5px;
+              margin-left:-20px;
+            }
+            
+            p {
+              font-size:14px;
+              line-height:22px;
+              margin:10px 0;
+              font-weight:400;
+              color:#000;
+            }
+            
+            p.evaluation-content-exercise-student-answer {
+              border-radius:3px;
+              background:#fff6e5;
+              padding:5px 10px;
+              margin:10px 0 20px 0;
+              font-weight:300;
+              font-style:italic;
+            }
+            
+          }
+          
         }
       
       }
@@ -334,57 +412,59 @@ body.evaluation {
     left:755px;
     border-radius:10px;
     overflow:hidden;
+    z-index:10;
     
-    .evaluation-content-evaluateForm-title {
-       width:auto;
-       margin:0 auto 0 auto; 
-       font-weight:300;
-       color:#000;
-       font-size:24px;
-       padding:30px 30px 10px 30px;
-       text-transform:uppercase;
-       line-height:1.3em;
-       position:relative;
-       white-space:nowrap;
-       max-width:100%;
-    }
+    header {
+        overflow-x: hidden;
+        overflow-y: auto;
+        max-height:100px;
     
-    .evaluation-content-evaluateForm-meta-wrapper {
-      padding:0px 30px;
-      overflow-x: hidden;
-      overflow-y: auto;
-      max-height:50px;
-    
-      .meta-education-type,
-      .meta-workspace {
-        padding:0px 20px 0 0;
+      .evaluation-content-evaluateForm-title {
+        width:auto;
+        margin:0 auto 0 auto; 
+        font-weight:300;
+        color:#000;
+        font-size:24px;
+        padding:20px 20px 10px 20px;
         text-transform:uppercase;
-        font-size:14px;
-        display:inline-block;
-      
-        .title {
-          color:#727272;
-          display:inline-block;
-          margin:0 5px 0 0;
-        }
-        
-        .desc {
-          color:#000;
-          display:inline-block;
-        }
-      
+        line-height:1.3em;
+        position:relative;
       }
-
+      
+      .evaluation-content-evaluateForm-meta-wrapper {
+        padding:0px 20px;
+      
+        .meta-education-type,
+        .meta-workspace {
+          padding:0px 20px 0 0;
+          text-transform:uppercase;
+          font-size:14px;
+          display:inline-block;
+        
+          .title {
+            color:#727272;
+            display:inline-block;
+            margin:0 5px 0 0;
+          }
+          
+          .desc {
+            color:#000;
+            display:inline-block;
+          }
+        
+        }
+  
+      }
     
     }
-    
+
     .evaluation-content-evaluateForm-content {
-      padding:20px 30px;
+      padding:20px;
       overflow-x: hidden;
       overflow-y: auto;
       position: absolute;
       bottom: 80px;
-      top: 120px;
+      top: 100px;
       right: 0px;
       left: 0px;
       border-top: 1px solid #eee;
@@ -404,18 +484,18 @@ body.evaluation {
           border-radius:3px;
           width:100%;
           height:200px;
-          box-shadow:0 0 0 5px #c3e6fb;
           padding:10px;
           box-sizing:border-box;
+          border:5px solid #c3e6fb;
           font-size:16px;
           color:#000;
           outline:none;
-          transition:box-shadow 0.15s ease-in-out;
+          transition:border 0.15s ease-in-out;
           
           &:hover,
           &:focus,
           &:active {
-            box-shadow:0 0 0 5px #9cd3f5;
+            border:5px solid #9cd3f5;
           }
         }
         
