@@ -48,10 +48,9 @@ function openInSN(template, result, formFunction) {
       var vals = elements.serializeArray();
       var obj = {};
       var varIsArray = {};
-      
+      var ckContent = null;
       if(textareas.length > 0){
-        var ckContent =  CKEDITOR.instances.textContent.getData();
-      
+        ckContent =  CKEDITOR.instances[0].textContent.getData();
       }
       
       elements.find(':input').each(function(index, element) {
