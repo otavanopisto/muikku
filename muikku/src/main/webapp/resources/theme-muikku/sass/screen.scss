@@ -214,7 +214,7 @@ div[class*="dock-navi-tt-container"] {
   }
   
   a {
-    color:#0099ff;
+    color:$link;
   }
   
 }
@@ -336,7 +336,7 @@ a.header {
  left:0;
  width:300px;
  opacity:.95;
- background-color:#b7d8eb;
+ background-color:$dNavBgr;
  z-index:-1;
   
 }
@@ -379,9 +379,9 @@ a.header {
   right:0;
   height:74px;
   z-index:13;
-  background:#216aa1;
-  border-top:1px solid #71c3e1;
-  border-bottom:1px solid #ebf7ff;
+  background:$sNavBgr;
+  border-top:1px solid $sNavBrdT;
+  border-bottom:1px solid $sNavBrdB;
   opacity:0.5;
 }
 
@@ -398,7 +398,7 @@ a.header {
 
 #socialNavigation{
   .sn-container{
-        background-color:#216aa1;
+        background-color:$sNavBgr;
         position:fixed;
         left:0;
         bottom:0;
@@ -411,7 +411,7 @@ a.header {
      }  
      
     &.open{
-       background-color:#b7d1e0;
+       background-color:$btBarBgr;
        opacity:1;
        min-height:258px;
      }           
@@ -434,7 +434,7 @@ a.header {
 
 #staticNavigationBG.stNavScrollStyles {
   opacity:0.95; 
-  background:#2c9fcc;
+  background:$sNavBgrScrll;
 }
 
 
@@ -482,7 +482,7 @@ a.header {
   margin-left:-300px;
   width:300px;
   bottom:0;   
-  box-shadow: 5px 10px 6px -2px #dadada;
+  box-shadow: 5px 10px 6px -2px $bgr2;
   @include dynNaviGr(#fff,#fff);
   @include dynNaviTransition;
   @include background-image('gfx/icons/32x32/actions/navigate-chevron_r.png');
@@ -492,8 +492,8 @@ a.header {
   opacity:1;
   visibility:visible;
   margin-left:-40px;
-  border:1px dotted #ededed;
-  @include dynNaviGr(#fff,#ededed); 
+  border:1px dotted $brd1;
+  @include dynNaviGr(#fff,$bgr1); 
   @include background-image('gfx/icons/32x32/actions/navigate-chevron_l.png');   
 }
 
@@ -800,7 +800,7 @@ a.header {
 .cp-filterListPane {}
 
 .cp-course {
-  @include border(#ededed);
+  @include border($bgr1);
   @include rounded(4px);
   @include gradient-top-bottom;
   @include shadow;
@@ -809,7 +809,7 @@ a.header {
 }
 
 .cp-course-header {
-  @include border(#ededed);
+  @include border($bgr1);
   @include rounded(4px);
   @include gradient-top-bottom(#707070, #666);	
   padding:5px;

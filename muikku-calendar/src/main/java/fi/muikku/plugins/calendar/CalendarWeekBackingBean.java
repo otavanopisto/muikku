@@ -15,7 +15,7 @@ import fi.otavanopisto.security.LoggedIn;
 @Named
 @Stateful
 @RequestScoped
-@Join(path = "/calendar/week", to = "/calendars/view_week.jsf")
+@Join(path = "/calendar/week", to = "/jsf/calendar/view_week.jsf")
 @LoggedIn
 public class CalendarWeekBackingBean {
 	
