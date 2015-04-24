@@ -7,6 +7,7 @@ import javax.enterprise.event.TransactionPhase;
 import javax.inject.Inject;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.schooldata.entity.User;
@@ -30,6 +31,9 @@ public class SchoolDataIndexListeners {
   
   @Inject
   private WorkspaceEntityController workspaceEntityController;
+  
+  @Inject
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
 
   @Inject
   private UserController userController;
@@ -38,34 +42,44 @@ public class SchoolDataIndexListeners {
   private SearchIndexer indexer;
 
   public void onSchoolDataWorkspaceDiscoveredEvent(@Observes (during = TransactionPhase.BEFORE_COMPLETION) SchoolDataWorkspaceDiscoveredEvent event) {
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
-    if (workspaceEntity != null) {
-      Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-      if (workspace != null) {
-        try {
-          indexer.index(Workspace.class.getSimpleName(), workspace);
-        } catch (Exception e) {
-          logger.warning("could not index workspace #" + event.getIdentifier() + '/' + event.getDataSource());
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
+      if (workspaceEntity != null) {
+        Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+        if (workspace != null) {
+          try {
+            indexer.index(Workspace.class.getSimpleName(), workspace);
+          } catch (Exception e) {
+            logger.warning("could not index workspace #" + event.getIdentifier() + '/' + event.getDataSource());
+          }
         }
+      } else {
+        logger.warning("could not index workspace because workspace entity #" + event.getIdentifier() + '/' + event.getDataSource() +  " could not be found");
       }
-    } else {
-      logger.warning("could not index workspace because workspace entity #" + event.getIdentifier() + '/' + event.getDataSource() +  " could not be found");
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
     }
   }
   
   public void onSchoolDataWorkspaceUpdatedEvent(@Observes SchoolDataWorkspaceUpdatedEvent event) {
-    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
-    if (workspaceEntity != null) {
-      Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-      if (workspace != null) {
-        try {
-          indexer.index(Workspace.class.getSimpleName(), workspace);
-        } catch (Exception e) {
-          logger.warning("could not index workspace #" + event.getIdentifier() + '/' + event.getDataSource());
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
+      if (workspaceEntity != null) {
+        Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+        if (workspace != null) {
+          try {
+            indexer.index(Workspace.class.getSimpleName(), workspace);
+          } catch (Exception e) {
+            logger.warning("could not index workspace #" + event.getIdentifier() + '/' + event.getDataSource());
+          }
         }
+      } else {
+        logger.warning("could not index workspace because workspace entity #" + event.getIdentifier() + '/' + event.getDataSource() +  " could not be found");
       }
-    } else {
-      logger.warning("could not index workspace because workspace entity #" + event.getIdentifier() + '/' + event.getDataSource() +  " could not be found");
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
     }
   }
   
@@ -74,20 +88,30 @@ public class SchoolDataIndexListeners {
   }
   
   public void onSchoolDataUserDiscoveredEvent(@Observes (during = TransactionPhase.BEFORE_COMPLETION) SchoolDataUserDiscoveredEvent event) {
-    User user = userController.findUserByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
-    if (user != null) {
-      indexer.index(User.class.getSimpleName(), user);
-    } else {
-      logger.warning("could not index user because user '" + event.getIdentifier() + '/' + event.getDataSource() +  "' could not be found");
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      User user = userController.findUserByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
+      if (user != null) {
+        indexer.index(User.class.getSimpleName(), user);
+      } else {
+        logger.warning("could not index user because user '" + event.getIdentifier() + '/' + event.getDataSource() +  "' could not be found");
+      }
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
     }
   }
   
   public void onSchoolDataUserUpdatedEvent(@Observes SchoolDataUserUpdatedEvent event) {
-    User user = userController.findUserByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
-    if (user != null) {
-      indexer.index(User.class.getSimpleName(), user);
-    } else {
-      logger.warning("could not index user because user '" + event.getIdentifier() + '/' + event.getDataSource() +  "' could not be found");
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      User user = userController.findUserByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
+      if (user != null) {
+        indexer.index(User.class.getSimpleName(), user);
+      } else {
+        logger.warning("could not index user because user '" + event.getIdentifier() + '/' + event.getDataSource() +  "' could not be found");
+      }
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
     }
   }
   
