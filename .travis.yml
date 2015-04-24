@@ -3,6 +3,9 @@ language: java
 script: mvn test
 jdk:
 - openjdk7
+cache:
+  directories:
+  - $HOME/.m2
 branches:
   only:
   - devel
