@@ -11,7 +11,7 @@ import org.ocpsoft.rewrite.annotation.Parameter;
 @Named
 @Stateful
 @RequestScoped
-@Join (path = "/workspace/{workspaceUrlName}/cockpit", to = "/workspaces/workspace-cockpit.jsf")
+@Join (path = "/workspace/{workspaceUrlName}/cockpit", to = "/jsf/workspace/workspace-cockpit.jsf")
 public class WorkspaceCockpitBackingBean {
   
   @Parameter

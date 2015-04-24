@@ -15,7 +15,7 @@ import fi.otavanopisto.security.LoggedIn;
 @Named
 @Stateful
 @RequestScoped
-@Join(path = "/calendar", to = "/calendars/index.jsf")
+@Join(path = "/calendar", to = "/jsf/calendar/index.jsf")
 @LoggedIn
 public class CalendarBackingBean {
 	

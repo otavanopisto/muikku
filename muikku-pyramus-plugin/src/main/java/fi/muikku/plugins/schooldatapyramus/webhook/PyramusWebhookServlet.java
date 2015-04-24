@@ -84,8 +84,8 @@ public class PyramusWebhookServlet extends HttpServlet {
       return;
     }
     
+    schoolDataBridgeSessionController.startSystemSession();
     try {
-      schoolDataBridgeSessionController.startSystemSession();
       switch (payload.getType()) {
         case COURSE_CREATE:
         case COURSE_UPDATE:

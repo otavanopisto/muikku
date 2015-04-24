@@ -24,7 +24,7 @@ import fi.otavanopisto.security.LoggedIn;
 @Named
 @Stateful
 @RequestScoped
-@Join (path = "/workspace/{workspaceUrlName}/materials-management", to = "/workspaces/materials-management.jsf")
+@Join (path = "/workspace/{workspaceUrlName}/materials-management", to = "/jsf/workspace/materials-management.jsf")
 @LoggedIn
 public class WorkspaceMaterialsManagementBackingBean {
 
