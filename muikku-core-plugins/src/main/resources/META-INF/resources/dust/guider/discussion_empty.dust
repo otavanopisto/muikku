@@ -1,0 +1,6 @@
+
+
+<div class="di-no-messages">
+  <h3>{#localize key="plugin.guider.empty.topic"/}</h3>
+</div>
+

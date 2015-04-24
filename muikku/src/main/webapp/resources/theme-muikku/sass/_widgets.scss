@@ -476,7 +476,7 @@ div[class*="wi-dock-static-navi"] {
 
 .visibleCalendars {
   position: absolute;
-  background: linear-gradient(to bottom, #FFFFFF 0%, #F3F3F3 50%, #EDEDED 51%, #FFFFFF 100%) repeat scroll 0 0 transparent;
+  background: linear-gradient(to bottom, #FFFFFF 0%, #F3F3F3 50%, $bgr1 51%, #FFFFFF 100%) repeat scroll 0 0 transparent;
   border: 1px solid #AAAAAA;
   border-radius: 4px 4px 4px 4px;
   box-shadow: 1px 1px 5px #888888;

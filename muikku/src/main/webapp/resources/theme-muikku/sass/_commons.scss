@@ -44,14 +44,14 @@ div[class*='header']{
 
 .co-input-textfield,
 .co-textarea {
-  @include border(1px,#ededed,solid);   
+  @include border(1px,$brd1,solid);   
   color:#606060;
   background-color:#fff; 
 }
 
 .co-input-textfield-hover,
 .co-textarea-hover {
-  @include border(1px,#ededed,solid);   
+  @include border(1px,$brd1,solid);   
   color:#000;
   background-color:#fff; 
 }
@@ -65,14 +65,14 @@ div[class*='header']{
 
 .co-input-textfield-blur,
 .co-textarea-blur {
-  @include border(1px,#dadada,solid);
+  @include border(1px,$brd2,solid);
   color:#606060;
   background-color:#fff; 
 }
 
 .co-input-textfield-blur-hover,
 .co-textarea-blur-hover {
-	@include border(1px,#ededed,solid);
+	@include border(1px,$brd1,solid);
   color:#000;
   background-color:#fff; 
 }
@@ -151,7 +151,7 @@ div[class*='header']{
 }
 
 .co-eventItem{
-  background-color:#ededed;
+  background-color:$bgr1;
 }
 
 .co-widget {
@@ -221,7 +221,7 @@ div[class*='header']{
 }
 
 .co-filter {
-  @include border(1px,#ededed,solid);
+  @include border(1px,$brd1,solid);
   @include rounded(4px);
   @include gradient-top-bottom(#707070, #666);
   @include shadow;
