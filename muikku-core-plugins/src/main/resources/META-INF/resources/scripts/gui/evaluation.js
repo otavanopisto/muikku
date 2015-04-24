@@ -1,6 +1,10 @@
 (function() {
 
   $(document).ready(function() {
+    
+    if ($('#evaluationModalWrapper').length > 0) {
+      $('#evaluationModalWrapper').hide();
+    }
 
     // Evaluation's workspaces
     if ($('#evaluationQueueWrapper').length > 0) {
@@ -58,7 +62,15 @@
       $('#evaluationModalWrapper').hide();
     });
     
+    /* Evaluate assignment when its state is DONE or CRITICAL (means its late) */
+    $(document).on('click', '.assignment-done, .assignment-evaluation-critical', function (event) {
+      $('#evaluationModalWrapper').show();
+    });
     
+    /* View evaluation when assigment's state is EVALUATED */
+    $(document).on('click', '.assignment-evaluated', function (event) {
+      $('#evaluationModalWrapper').show();
+    });
     
     //Student user picture tooltip show on mouseover
     $(document).on('mouseover', '.evaluation-workspacelist-item', function (event) {

@@ -50,6 +50,126 @@ body.evaluation {
     }
   }
   
+  .evaluation-view-wrapper {
+    position:absolute;
+    top:0;
+    right:0;
+    left:50px;
+    bottom:0;
+    overflow-x:scroll;
+    overflow-y:scroll;
+  
+    .evaluation-student-listing-wrapper {
+      margin:10px 10px 10px 10px;
+      white-space:nowrap;
+    
+      .evaluation-student-wrapper {
+        width:100px;
+        box-sizing:border-box;
+        margin:25px 25px;
+        display:inline-block;
+        text-align:center;
+      
+        .evaluation-student-picture {
+          width:100px;
+          height:100px;  
+          width:100%;
+          box-sizing:border-box;
+          @include background-image('gfx/evaluation-default-student-picture.jpg');
+          background-size:cover;
+          border-radius:75px;
+        }
+        
+        .evaluation-student-name {
+          width:100%;
+          box-sizing:border-box;
+          padding:3px 4px;
+          background:#fff;
+          border-radius:3px;
+          margin:-25px 0 0 0;
+          font-size:16px;
+          line-height:1.3em;
+          white-space:normal;
+        }
+      
+      }
+    
+    }
+    
+    .evaluation-student-assignment-listing-wrapper {
+      margin:10px 10px 10px 10px;
+      
+      .evaluation-student-assignment-listing-row {
+        margin:10px 0;
+        white-space:nowrap;
+      
+        .evaluation-assignment-wrapper {
+          width:100px;
+          box-sizing:border-box;
+          margin:25px;
+          display:inline-block;
+          text-align:center;
+          background:#617e94;
+          opacity:0.15;
+          
+          &:hover {
+            box-shadow:0 0 0 5px #8cd1fa;
+          }
+          
+          &.assignment-done {
+            opacity:1;
+            cursor:pointer;
+          }
+          
+          &.assignment-evaluation-critical {
+            opacity:1;
+            box-shadow:0 0 0 5px #c43549;
+            cursor:pointer;
+            
+            &:hover {
+              box-shadow:0 0 0 5px #8cd1fa;
+            }
+            
+          }
+          
+          &.assignment-evaluated {
+            opacity:1;
+            box-shadow:0 0 0 5px #14d646;
+            cursor:pointer;
+            
+            &:hover {
+              box-shadow:0 0 0 5px #8cd1fa;
+            }
+            
+          }
+          
+          .evaluation-assignment-picture {
+            height:100px;  
+            width:100%;
+            box-sizing:border-box;
+          }
+          
+          .evaluation-assignment-title {
+            width:100%;
+            box-sizing:border-box;
+            padding:3px 4px;
+            background:#fff;
+            margin:-25px 0 0 0;
+            font-size:16px;
+            line-height:1.3em;
+            white-space:normal;
+          }
+        
+        }
+      
+      }
+    
+    }
+  
+  }
+  
+  
+  
   #evaluationWorkspacelistWrapper {
     position:fixed;
     left:0;
@@ -562,7 +682,7 @@ body.evaluation {
     }
   
   }
-  
+
   /* JQuery UI Dialog Overrides */
   .ui-widget-overlay {
     background:#000;
