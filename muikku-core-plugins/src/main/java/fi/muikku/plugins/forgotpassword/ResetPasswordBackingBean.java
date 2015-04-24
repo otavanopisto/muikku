@@ -25,7 +25,7 @@ import fi.muikku.utils.FacesUtils;
 @Named
 @Stateful
 @RequestScoped  
-@Join (path = "/forgotpassword/reset", to = "/forgotpassword/reset.jsf")
+@Join (path = "/forgotpassword/reset", to = "/jsf/forgotpassword/reset.jsf")
 public class ResetPasswordBackingBean {
 
   @Parameter ("h")
