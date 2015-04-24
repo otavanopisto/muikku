@@ -1,3 +1,4 @@
+sudo: false
 language: java
 script: mvn test
 jdk:
@@ -18,8 +19,11 @@ before_install:
 after_success:
 - python travis-upload-reports.py
 - python travis-prepare-maven.py
+- pushd .
+- cd muikku
 - mvn clean deploy --settings ~/.m2/mySettings.xml -Pdeus-nex-machina-plugin,google-calendar-plugin,mongo-log-plugin,dummy-mail-plugin,pyramus-plugins -Dclassifier=otavanopisto
 - mvn clean deploy --settings ~/.m2/mySettings.xml -Pmongo-log-plugin,dummy-mail-plugin,pyramus-plugins -Dclassifier=janakkala
+- popd
 notifications:
   irc:
     channels:
