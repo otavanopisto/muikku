@@ -2,7 +2,7 @@
 
   $(document).ready(function() {
 
-    // Workspace's Materials's TOC
+    // Evaluation's workspaces
     if ($('#evaluationQueueWrapper').length > 0) {
       
       var height = $(window).height();
@@ -24,7 +24,7 @@
     };
     
     //Prevent page scroll happening if TOC scroll reaches bottom
-    $('.evaluation-queue-content-inner, .evaluation-content-evaluateForm-header, .evaluation-content-evaluateForm-content')
+    $('.evaluation-queue-content-inner, .evaluation-modal-evaluateForm-header, .evaluation-modal-evaluateForm-content')
     .on('DOMMouseScroll mousewheel', function(ev) {
       var $this = $(this),
         scrollTop = this.scrollTop,
@@ -54,13 +54,19 @@
       }
     });
     
+    $(document).on('click', '.evaluation-modal-close-wrapper', function (event) {
+      $('#evaluationModalWrapper').hide();
+    });
+    
+    
+    
     //Student user picture tooltip show on mouseover
-    $(document).on('mouseover', '.evaluation-queue-item', function (event) {
+    $(document).on('mouseover', '.evaluation-workspacelist-item', function (event) {
       
-      sName = $(this).attr('data-student-name');
-      sContainerLoc = $(this).offset().top - $('.evaluation-queue-content-wrapper').offset().top + 2;
+      sName = $(this).attr('data-workspace-title');
+      sContainerLoc = $(this).offset().top - $('.evaluation-workspacelist-wrapper').offset().top + 2;
       
-      $('#studentNameContainer').css({
+      $('#workspaceTitleContainer').css({
         position: 'absolute',
         left: '20px',
         top: sContainerLoc
@@ -82,9 +88,9 @@
     });
     
     //Student user picture tooltip hide on mouseout
-    $(document).on('mouseout', '.evaluation-queue-item', function (event) {
+    $(document).on('mouseout', '.evaluation-workspacelist-item', function (event) {
       
-      $('#studentNameContainer')
+      $('#workspaceTitleContainer')
       .clearQueue()
       .stop()
       .animate({
