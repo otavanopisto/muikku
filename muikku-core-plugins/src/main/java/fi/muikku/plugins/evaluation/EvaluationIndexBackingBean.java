@@ -13,6 +13,7 @@ import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
+import fi.muikku.jsf.NavigationRules;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.schooldata.CourseMetaController;
 import fi.muikku.schooldata.WorkspaceController;
@@ -51,15 +52,22 @@ public class EvaluationIndexBackingBean {
       CourseIdentifier courseIdentifier = courseMetaController.findCourseIdentifier(workspace.getSchoolDataSource(), workspace.getCourseIdentifierIdentifier());
       if (courseIdentifier != null) {
         if (workspaceEntity.getId().equals(getWorkspaceEntityId())) {
-          items.add(0, new WorkspaceItem(courseIdentifier.getCode(), workspace.getName()));
+          items.add(0, new WorkspaceItem(workspaceEntity.getId(), courseIdentifier.getCode(), workspace.getName()));
         } else {
-          items.add(new WorkspaceItem(courseIdentifier.getCode(), workspace.getName()));
+          items.add(new WorkspaceItem(workspaceEntity.getId(), courseIdentifier.getCode(), workspace.getName()));
         }
-         
       }
     }
     
     workspaceItems = Collections.unmodifiableList(items);
+    
+    if (getWorkspaceEntityId() == null && !workspaceItems.isEmpty()) {
+      workspaceEntityId = workspaceItems.get(0).getWorkspaceEntityId();
+    }
+    
+    if (workspaceEntityId == null) {
+      return NavigationRules.NOT_FOUND;
+    }
     
     return null;
   }
@@ -80,8 +88,9 @@ public class EvaluationIndexBackingBean {
   
   public static class WorkspaceItem {
 
-    public WorkspaceItem(String code, String title) {
+    public WorkspaceItem(Long workspaceEntityId, String code, String title) {
       super();
+      this.workspaceEntityId = workspaceEntityId;
       this.code = code;
       this.title = title;
     }
@@ -101,9 +110,18 @@ public class EvaluationIndexBackingBean {
     public void setTitle(String title) {
       this.title = title;
     }
+    
+    public Long getWorkspaceEntityId() {
+      return workspaceEntityId;
+    }
+    
+    public void setWorkspaceEntityId(Long workspaceEntityId) {
+      this.workspaceEntityId = workspaceEntityId;
+    }
 
     private String code;
     private String title;
+    private Long workspaceEntityId;
   }
 
 }
