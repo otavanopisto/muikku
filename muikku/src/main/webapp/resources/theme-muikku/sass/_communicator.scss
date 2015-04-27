@@ -50,7 +50,7 @@
     
    .cm-message-tool{
     padding:0 10px 0 10px;
-    border:1px solid #dadada;
+    border:1px solid $brd2;
     color:#000;
 
     }   
@@ -78,7 +78,7 @@
    }  
   .cm-message-recipient-remove{
     float:right;    
-    background-color:#dadada;
+    background-color:$bgr2;
     margin-top:0 !important;
    }
 
@@ -95,7 +95,7 @@
 }
 
 .cm-messages-toolbar{
-  border:1px solid #dadada;
+  border:1px solid $brd2;
   background-color: #fff;
   padding:5px;
   margin-bottom:5px;
@@ -103,8 +103,8 @@
   
   .cm-messages-tool{
     padding:0 10px 0 10px;
-    border:1px solid #dadada;
-    background-color:#ededed; 
+    border:1px solid $brd2;
+    background-color:$bgr1; 
     font-size:1.5em;
     float:left;
     color:#000;
@@ -188,8 +188,8 @@
   
   .cm-message-tool{
     padding:0 10px 0 10px;
-    border:1px solid #dadada;
-    background-color:#ededed; 
+    border:1px solid $brd2;
+    background-color:$bgr1; 
     font-size:1.5em;
     float:left;
     color:#000;
@@ -233,9 +233,10 @@
 /* When the message is open */  
   
   &.open{
-     border-left:5px solid orange;     
+     border-left:5px solid orange;   
+     padding-left:10px;
      &.owner{
-       border-left:5px solid #dadada; 
+       border-left:5px solid $brd2; 
        h3{
         color:#dadada;
        }

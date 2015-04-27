@@ -32,6 +32,11 @@
   padding-left:4px;
   display:inline-block;
 }
+
+.icon-bubble:before {
+  content: "\e638";
+}
+
 .icon-assignment:before {
   content: "\e634";
 }
@@ -192,6 +197,30 @@
   content: "\e635";
 }
 
+.icon-action-menu-launcher:before {
+  content: "\e636";
+}
+
+.icon-exit-editing:before {
+  content: "\f045";
+}
+
+.icon-navicon:before {
+  content: "\e609";
+}
+
+.icon-new-page:before {
+  content: "\e637";
+}
+
+.icon-close-small:before {
+  content: "\e63b";
+}
+
+.icon-add:before {
+  content: "\e114";
+}
+
 .icon-assessment-canceled:before {
   content: "\e321";
 }
@@ -282,30 +311,6 @@
 
 .icon-assessment-fail:before {
   content: "\e9fb";
-}
-
-.icon-bubble:before {
-  content: "\e636";
-}
-
-.icon-new-page:before {
-  content: "\e637";
-}
-
-.icon-close-small:before {
-  content: "\e63b";
-}
-
-.icon-add:before {
-  content: "\e114";
-}
-
-.icon-exit-editing:before {
-  content: "\f045";
-}
-
-.icon-navicon:before {
-  content: "\e609";
 }
 
 .icon-arrow-left2:before {

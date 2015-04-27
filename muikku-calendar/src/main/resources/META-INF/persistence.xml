@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+
+  <persistence-unit name="muikku-calendar-plugin">
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+    
+    <jta-data-source>java:/jdbc/muikku</jta-data-source>
+    
+    <properties>
+      <!-- Connection -->
+      
+      <property name="hibernate.connection.useUnicode" value="true" />
+      <property name="hibernate.connection.characterEncoding" value="UTF-8" />
+      
+      <!-- Session Management -->
+
+      <property name="hibernate.current_session_context_class" value="jta" />
+      
+      <!-- Cache -->
+
+      <property name="hibernate.cache.use_second_level_cache" value="true" />
+      <property name="hibernate.cache.use_query_cache" value="true" />
+      
+      <!-- Statistics and Debugging -->
+
+      <property name="hibernate.format_sql" value="false" />
+      <property name="hibernate.show_sql" value="false" />
+      <property name="hibernate.generate_statistics" value="true" />
+      <property name="hibernate.session.events.log" value="false" />
+      <property name="hibernate.hbm2ddl.auto" value="validate" />
+
+      <!-- Byte code instrumentation -->
+      
+      <property name="hibernate.ejb.use_class_enhancer" value="true"/>
+      
+    </properties>
+
+  </persistence-unit>
+
+</persistence>

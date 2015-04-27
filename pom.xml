@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>fi.muikku</groupId>
 	<artifactId>parent</artifactId>
-	<version>1.0.15-SNAPSHOT</version>
+	<version>1.0.23-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Muikku Parent</name>
 
@@ -51,6 +50,7 @@
 		<module>muikku-bom</module>
 		<module>muikku-core</module>
 		<module>muikku-core-plugins</module>
+    <module>muikku-calendar</module>
 		<module>muikku-hsqldb-plugin</module>
 		<module>muikku-google-oauth</module>
 		<module>muikku-google-calendar</module>
@@ -80,7 +80,7 @@
 			<dependency>
 				<groupId>fi.muikku</groupId>
 				<artifactId>bom</artifactId>
-				<version>1.0.15-SNAPSHOT</version>
+				<version>1.0.23-SNAPSHOT</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -156,7 +156,7 @@
 				<configuration>
 					<effort>Max</effort>
 					<failOnError>false</failOnError>
-					<threshold>Low</threshold>
+					<threshold>High</threshold>
 					<xmlOutput>true</xmlOutput>
 					<findbugsXmlOutputDirectory>${project.build.directory}/findbugs</findbugsXmlOutputDirectory>
 				</configuration>

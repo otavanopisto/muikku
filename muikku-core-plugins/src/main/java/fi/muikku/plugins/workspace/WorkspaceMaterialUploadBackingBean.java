@@ -29,7 +29,7 @@ import fi.muikku.schooldata.entity.Workspace;
 @Named
 @Stateful
 @RequestScoped
-@Join (path = "/workspace/{workspaceUrlName}/material-upload", to = "/workspaces/material-upload.jsf")
+@Join (path = "/workspace/{workspaceUrlName}/material-upload", to = "/jsf/workspace/material-upload.jsf")
 public class WorkspaceMaterialUploadBackingBean {
 
   @Parameter

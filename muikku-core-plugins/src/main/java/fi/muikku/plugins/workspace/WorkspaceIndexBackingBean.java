@@ -29,7 +29,7 @@ import fi.muikku.schooldata.entity.WorkspaceType;
 @Named
 @Stateful
 @RequestScoped
-@Join(path = "/workspace/{workspaceUrlName}", to = "/workspaces/workspace.jsf")
+@Join(path = "/workspace/{workspaceUrlName}", to = "/jsf/workspace/workspace.jsf")
 public class WorkspaceIndexBackingBean {
 
   @Parameter

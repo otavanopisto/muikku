@@ -15,6 +15,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
+
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.forum.ForumController;
 import fi.muikku.plugins.forum.ForumResourcePermissionCollection;
@@ -157,7 +160,12 @@ public class ForumRESTService extends PluginRESTService {
   @Path ("/areas/{AREAID}/threads")
   public Response createThread(@PathParam ("AREAID") Long areaId, ForumThreadRESTModel newThread) throws AuthorizationException {
     ForumArea forumArea = forumController.getForumArea(areaId);
-    ForumThread thread = forumController.createForumThread(forumArea, newThread.getTitle(), newThread.getMessage(), newThread.getSticky(), newThread.getLocked());
+    ForumThread thread = forumController.createForumThread(
+        forumArea, 
+        newThread.getTitle(),
+        Jsoup.clean(newThread.getMessage(), Whitelist.basic()), 
+        newThread.getSticky(), 
+        newThread.getLocked());
 
     ForumThreadRESTModel result = new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked(), thread.getUpdated());
     
@@ -202,7 +210,7 @@ public class ForumRESTService extends PluginRESTService {
   @Permit(ForumResourcePermissionCollection.FORUM_WRITEMESSAGES)
   public Response createReply(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, ForumThreadReplyRESTModel newReply) throws AuthorizationException {
     ForumThread forumThread = forumController.getForumThread(threadId);
-    ForumThreadReply reply = forumController.createForumThreadReply(forumThread, newReply.getMessage());
+    ForumThreadReply reply = forumController.createForumThreadReply(forumThread, Jsoup.clean(newReply.getMessage(), Whitelist.basic()));
     
     ForumThreadReplyRESTModel result = new ForumThreadReplyRESTModel(reply.getId(), reply.getMessage(), reply.getCreator(), reply.getCreated(), reply.getForumArea().getId());
     

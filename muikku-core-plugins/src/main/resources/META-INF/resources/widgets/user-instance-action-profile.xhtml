@@ -6,11 +6,8 @@ xmlns:f="http://java.sun.com/jsf/core"
 xmlns:h="http://java.sun.com/jsf/html"
 xmlns:c="http://java.sun.com/jsp/jstl/core">
 
- 
-
   <div class="widget st-action-profile">
-    <h:outputLink styleClass="naviIconUser tooltip" value="#{request.contextPath}/communicator/index.jsf"></h:outputLink>
+    <h:link styleClass="naviIconUser tooltip" outcome="/communicators/index.jsf"/>
   </div>
-  
-  
+
 </ui:composition>

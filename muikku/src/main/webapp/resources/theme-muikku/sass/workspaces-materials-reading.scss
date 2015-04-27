@@ -10,6 +10,46 @@ body.workspace-materials-reading {
   font-weight:300;
   font-size:18px;
   
+  /* WORKSPACE NAVIGATION - FULLSCREEN */
+  div[class*='workspace-materials-full-screen-navi-button'] > a,
+  div[class*='workspace-materials-full-screen-navi-button'] > span {
+    cursor:pointer;
+    font-size:30px;
+    color:#fff;
+    text-decoration:none;
+    @include iconShadow;
+    background:transparent;
+    padding:6px;
+    margin:0px;
+    display:inline-block;
+    position:relative;
+    width:34px;
+    text-align:center;
+  
+    span[class*='workspace-materials-full-screen-tt-container-'] {
+      opacity:0;
+      font-family:"Open Sans";
+      font-size:16px;
+      height:16px;
+      font-weight:300;
+      position:absolute;
+      top:0px;
+      left:-4500px;
+      width:0px;
+      color:#fff;
+      text-transform:uppercase;
+      padding:13px 15px 15px 14px;
+      @include rounded-top-left(3px);
+      @include rounded-bottom-left(3px);
+      @include workspaceTooltipTransition(opacity,0.15s,ease-in-out);
+    }
+      
+    &:hover {
+      @include iconShadow(rgba(255,255,190,0.5));
+      background:transparent;
+    }
+  }
+  
   #workspaceMaterialsReadingTOCWrapper {
     position:fixed;
     left:0;
