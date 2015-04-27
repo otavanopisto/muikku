@@ -250,7 +250,7 @@ class WorkspaceSchoolDataController {
     WorkspaceSchoolDataBridge workspaceBridge = getWorkspaceBridge(workspaceEntity.getDataSource());
     if (workspaceBridge != null) {
       try {
-        return workspaceBridge.findWorkspaceUser(workspaceUserEntity.getIdentifier());
+        return workspaceBridge.findWorkspaceUser(workspaceUserEntity.getWorkspaceEntity().getIdentifier(), workspaceUserEntity.getWorkspaceEntity().getDataSource().getIdentifier(), workspaceUserEntity.getIdentifier());
       } catch (UnexpectedSchoolDataBridgeException e) {
         logger.log(Level.SEVERE, "School Data Bridge reported a problem while finding workspace", e);
       }

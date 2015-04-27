@@ -150,8 +150,14 @@ public class PyramusWorkspaceSchoolDataBridge implements WorkspaceSchoolDataBrid
   }
   
 	@Override
-	public WorkspaceUser findWorkspaceUser(String identifier) throws UnexpectedSchoolDataBridgeException {
-	  throw new UnexpectedSchoolDataBridgeException("Not implemented");
+	public WorkspaceUser findWorkspaceUser(String workspaceIdentifier, String workspaceSchoolDataSource, String userIdentifier) throws UnexpectedSchoolDataBridgeException {
+	  if (!StringUtils.equals(workspaceSchoolDataSource, getSchoolDataSource())) {
+	    throw new UnexpectedSchoolDataBridgeException("Invalid school data source");
+	  }
+	  
+    Long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
+    Long studentId = identifierMapper.getPyramusStudentId(userIdentifier);
+    return Arrays.asList(entityFactory.createEntity(pyramusClient.get(String.format("/courses/%d/students/%d", courseId, studentId), CourseStudent.class))).get(0);
 	}
 	
 	@Override

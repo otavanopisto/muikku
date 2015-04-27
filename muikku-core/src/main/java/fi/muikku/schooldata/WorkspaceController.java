@@ -1,6 +1,7 @@
 package fi.muikku.schooldata;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -56,6 +57,9 @@ public class WorkspaceController {
 
   @Inject
   private WorkspaceEntityController workspaceEntityController;
+  
+  @Inject
+  private RoleController roleController;
 
   @Inject
   private WorkspaceUserEntityController workspaceUserEntityController;
@@ -190,6 +194,15 @@ public class WorkspaceController {
     
     return result;
   }
+
+  public List<WorkspaceUserEntity> listWorkspaceUserEnitiesByWorkspaceRoleArchetype(WorkspaceEntity workspaceEntity, WorkspaceRoleArchetype archtype) {
+    List<WorkspaceRoleEntity> workspaceRoles = roleController.listWorkspaceRoleEntitiesByArchetype(archtype);
+    if (workspaceRoles.isEmpty()) {
+      return Collections.emptyList();
+    }
+    
+    return workspaceUserEntityController.listWorkspaceUserEntitiesByRoles(workspaceEntity, workspaceRoles);
+  }
   
   public List<WorkspaceEntity> listWorkspaceEntitiesBySchoolDataSource(String schoolDataSource) {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
@@ -262,7 +275,11 @@ public class WorkspaceController {
 
     return null;
   }
-
+  
+  public WorkspaceUser findWorkspaceUser(WorkspaceUserEntity workspaceUserEntity) {
+    return workspaceSchoolDataController.findWorkspaceUser(workspaceUserEntity);
+  }
+  
   private void deleteWorkspaceUser(WorkspaceUser workspaceUser) {
     // TODO: Remove users via bridge also
     WorkspaceUserEntity workspaceUserEntity = findWorkspaceUserEntity(workspaceUser);
@@ -336,4 +353,5 @@ public class WorkspaceController {
       Date date, String message) {
     return workspaceUserSignupDAO.create(workspaceEntity, userEntity, date, message);
   }
+
 }
