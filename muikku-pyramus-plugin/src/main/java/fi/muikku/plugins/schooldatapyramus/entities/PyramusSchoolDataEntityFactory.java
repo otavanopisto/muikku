@@ -262,7 +262,7 @@ public class PyramusSchoolDataEntityFactory {
         course.getName(),
         course.getDescription(),
         identifierMapper.getWorkspaceTypeIdentifier(course.getTypeId()),
-        "TODO",
+        identifierMapper.getWorkspaceCourseIdentifier(course.getSubjectId(), course.getCourseNumber()),
         modified.toDate(),
         identifierMapper.getSubjectIdentifier(course.getSubjectId()),
         educationTypeIdentifier,
