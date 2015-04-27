@@ -24,9 +24,9 @@ import fi.otavanopisto.security.LoggedIn;
 @Named
 @Stateful
 @RequestScoped
-@Join(path = "/evaluation", to = "/evaluation/index.jsf")
+@Join(path = "/evaluation", to = "/jsf/evaluation/index.jsf")
 @LoggedIn
-public class EvaluationBackingBean {
+public class EvaluationIndexBackingBean {
   
   @Parameter ("workspaceEntityId")
   private Long workspaceEntityId;

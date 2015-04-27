@@ -64,12 +64,60 @@
     
     /* Evaluate assignment when its state is DONE or CRITICAL (means its late) */
     $(document).on('click', '.assignment-done, .assignment-evaluation-critical', function (event) {
-      $('#evaluationModalWrapper').show();
+      
+      renderDustTemplate('jsf/evaluation/evalution_evaluate_modal_view.dust', { }, $.proxy(function (text) {
+        var dialog = $(text);
+        $(text).dialog({
+          modal: true, 
+          height: $(window).height() - 50,
+          resizable: false,
+          width: $(window).width() - 50,
+          dialogClass: "evaluation-evaluate-modal",
+          buttons: [{
+            'text': dialog.data('button-save-text'),
+            'class': 'save-evaluation-button',
+            'click': function(event) {
+      
+            }
+          }, {
+            'text': dialog.data('button-cancel-text'),
+            'class': 'cancel-evaluation-button',
+            'click': function(event) {
+              $(this).dialog("destroy").remove();
+            }
+          }]
+        });
+      }, this));
+      
     });
     
     /* View evaluation when assigment's state is EVALUATED */
     $(document).on('click', '.assignment-evaluated', function (event) {
-      $('#evaluationModalWrapper').show();
+      
+      renderDustTemplate('evaluation/evalution_evaluate_modal_view.dust', { }, $.proxy(function (text) {
+        var dialog = $(text);
+        $(text).dialog({
+          modal: true, 
+          height: $(window).height() - 50,
+          resizable: false,
+          width: $(window).width() - 50,
+          dialogClass: "evaluation-evaluate-modal",
+          buttons: [{
+            'text': dialog.data('button-save-text'),
+            'class': 'save-evaluation-button',
+            'click': function(event) {
+      
+            }
+          }, {
+            'text': dialog.data('button-cancel-text'),
+            'class': 'cancel-evaluation-button',
+            'click': function(event) {
+              $(this).dialog("destroy").remove();
+            }
+          }]
+        });
+      }, this));
+      
     });
     
     //Student user picture tooltip show on mouseover

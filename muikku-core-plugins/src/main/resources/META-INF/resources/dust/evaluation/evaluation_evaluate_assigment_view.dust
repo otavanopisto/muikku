@@ -1,0 +1,34 @@
+<section class="evaluation-modal-studentAssignmentWrapper" id="evaluationStudentAssignmentWrapper">
+  <article class="evaluation-modal-student-wrapper">
+    <h2 class="evaluation-modal-student-name"><span class="student-picture"></span>Esimerkki Opiskelija 1</h2>
+    <div class="evaluation-modal-workspace-info-wrapper">
+      <div class="evaluation-modal-workspace-title">GE1 - Sininen planeetta</div>
+      <div class="evaluation-modal-workspace-educationtype">
+        <span class="desc">Lukio</span></div>
+      <div class="evaluation-modal-workspace-subject">
+        <span class="title">Aine</span><span class="desc">Maantiede</span></div>
+      <div class="evaluation-modal-workspace-length">
+        <span class="title">Pituus</span><span class="desc">38<span class="symbol">t</span></span>
+      </div>
+      <div class="clear"></div>
+    </div>
+    <div class="evaluation-modal-workspace-assignment-info">
+      <div class="evaluation-modal-workspace-assignment-wrapper">
+        <div class="evaluation-modal-workspace-single-assignment">
+          
+          {>"evaluation/evaluation_evaluate_single_assigment.dust"/}
+          
+        </div>
+      </div>
+      
+      <div class="evaluation-modal-workspace-exercise-wrapper">
+        <div class="evaluation-modal-workspace-single-exercise">
+          
+          {>"evaluation/evaluation_evaluate_single_exercise.dust"/}
+          
+        </div>
+      </div>
+      
+    </div>
+  </article>
+</section>

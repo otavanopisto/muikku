@@ -324,7 +324,7 @@ body.evaluation {
       overflow:hidden;
     }
     
-    .evaluation-modal-close-wrapper {
+    .evaluation-modal-close-button {
       position:absolute;
       right:7px;
       top:5px;
@@ -353,334 +353,317 @@ body.evaluation {
       overflow:auto;
       min-width:990px;
       
-      #evaluationStudentAssignmentWrapper {
-        padding:0 20px 0 10px;
-        min-width:500px;
-        position:absolute;
-        top:0;
-        right:50%;
-        bottom:0;
-        left:10px;
-        overflow:auto;
-        
-        .evaluation-modal-student-wrapper {
-          
-          h2.evaluation-modal-student-name {
-           max-width:625px;
-           width:auto;
-           margin:0 auto 0 auto; 
-           font-weight:300;
-           color:#000;
-           font-size:24px;
-           padding:20px 20px 30px 65px;
-           text-transform:uppercase;
-           line-height:1.3em;
-           position:relative;
-           
-           .student-picture {
-             @include background-image('gfx/evaluation-default-student-picture.jpg');
-             background-size:cover;
-             display:inline-block;
-             position:absolute;
-             width:48px;
-             height:48px;
-             border-radius:24px;
-             top:10px;
-             left:0;
-           }
-          }
-          
-          .evaluation-modal-workspace-info-wrapper {
-            padding:10px 20px;
-            font-size:13px;
-            background:#ebf7ff;
-            position:relative;
-            
-            .evaluation-modal-workspace-title {
-              font-size:20px;
-              color:#000;
-            }
-            
-            .evaluation-modal-workspace-educationtype,
-            .evaluation-modal-workspace-subject,
-            .evaluation-modal-workspace-length {
-              text-transform:uppercase;
-              display:inline-block;
-            
-              .title {
-                color:#727272;
-                display:inline-block;
-                margin:0 5px 0 0;
-              }
-              
-              .desc {
-                color:#000;
-                display:inline-block;
-                margin:0 10px 0 0;
-              }
-              
-              .symbol {
-                text-transform:none;
-              }
-            
-            }
-            
-            .evaluation-modal-workspace-evaluate-button {
-              position:absolute;
-              right:20px;
-              top:22px;
-              cursor:pointer;
-            
-              &.icon-evaluate {
-                font-size:20px;
-                color:#fff;
-                padding:8px;
-                background:#0099ff;
-                border-radius:30px;
-              }
-              
-              .evaluation-modal-workspace-evaluate-tooltip {
-                display:none;
-              }
-            
-            }
-  
-          }
-          
-          .evaluation-modal-workspace-assignment-info {
-            
-            .evaluation-modal-workspace-assignment-title {
-              text-transform:uppercase;
-              font-size:16px;
-              padding:10px 20px;
-              background:#ce01bd;
-              color:#fff;
-              font-weight:400;
-            }
-            
-            .evaluation-modal-workspace-assignment-wrapper {
-              margin:20px 0 0 0;
-              
-              h3 {
-                color:#000;
-                font-weight:300;
-                border-left:20px solid #ce01bd;
-                padding:0 0 0 5px;
-                margin-left:-20px;
-              }
-              
-              p {
-                font-size:14px;
-                line-height:22px;
-                margin:10px 0;
-                font-weight:400;
-                color:#000;
-              }
-              
-              p.evaluation-modal-assignment-student-answer {
-                border-radius:3px;
-                background:#ebf7ff;
-                padding:5px 10px;
-                margin:10px 0 20px 0;
-                font-weight:300;
-                font-style:italic;
-              }
-            
-            }
-            .evaluation-modal-workspace-exercise-title {
-              text-transform:uppercase;
-              font-size:16px;
-              padding:10px 20px;
-              background:#ff9900;
-              color:#fff;
-              font-weight:400;
-            }
-            
-            .evaluation-modal-workspace-exercise-list {
-              padding:20px;
-              
-              h3 {
-                color:#000;
-                font-weight:300;
-                border-left:20px solid #ff9900;
-                padding:0 0 0 5px;
-                margin-left:-20px;
-              }
-              
-              p {
-                font-size:14px;
-                line-height:22px;
-                margin:10px 0;
-                font-weight:400;
-                color:#000;
-              }
-              
-              p.evaluation-modal-exercise-student-answer {
-                border-radius:3px;
-                background:#fff6e5;
-                padding:5px 10px;
-                margin:10px 0 20px 0;
-                font-weight:300;
-                font-style:italic;
-              }
-              
-            }
-            
-          }
-          
-        }
-      }
       
-      #evaluationEvaluateFormWrapper {
-        position:absolute;
-        padding:0 10px;
-        min-width:400px;
-        background:#fff;
-        top:0;
-        bottom:0;
-        right:10px;
-        left:51%;
-        overflow:hidden;
-        z-index:10;
-        
-        header {
-          overflow-x: hidden;
-          overflow-y: auto;
-          max-height:100px;
-        
-          .evaluation-modal-evaluateForm-title {
-            width:auto;
-            margin:0 auto 0 auto; 
-            font-weight:300;
-            color:#000;
-            font-size:24px;
-            padding:20px 20px 10px 20px;
-            text-transform:uppercase;
-            line-height:1.3em;
-            position:relative;
-          }
-          
-          .evaluation-modal-evaluateForm-meta-wrapper {
-            padding:0px 20px;
-          
-            .meta-education-type,
-            .meta-workspace {
-              padding:0px 20px 0 0;
-              text-transform:uppercase;
-              font-size:14px;
-              display:inline-block;
-            
-              .title {
-                color:#727272;
-                display:inline-block;
-                margin:0 5px 0 0;
-              }
-              
-              .desc {
-                color:#000;
-                display:inline-block;
-              }
-            
-            }
-      
-          }
-        
-        }
-    
-        .evaluation-modal-evaluateForm-content {
-          padding:10px 20px;
-          overflow-x:hidden;
-          overflow-y:auto;
-          position:absolute;
-          bottom:65px;
-          top:100px;
-          right:0px;
-          left:0px;
-          border-top:1px solid #eee;
-          border-bottom:1px solid #eee;
-          
-          label {
-            text-transform:uppercase;
-            padding:0 0 3px 0;
-            font-weight:300;
-            font-size:16px;
-          }
-        
-          .evaluation-modal-evaluateForm-literal-eval-wrapper {
-    
-            textarea {
-              border:0;
-              border-radius:3px;
-              width:100%;
-              height:200px;
-              padding:10px;
-              box-sizing:border-box;
-              border:5px solid #c3e6fb;
-              font-size:16px;
-              color:#000;
-              outline:none;
-              transition:border 0.15s ease-in-out;
-              
-              &:hover,
-              &:focus,
-              &:active {
-                border:5px solid #9cd3f5;
-              }
-            }
-            
-          }
-          
-          .evaluation-modal-evaluateForm-date-wrapper {
-            margin:10px 0;
-          }
-          
-          .evaluation-modal-evaluateForm-grade-wrapper {
-            margin:10px 0;
-          }
-          
-          .evaluation-modal-evaluateForm-basedOfPhenomenon-wrapper {
-            margin:10px 0;
-          }
-          
-          .evaluation-modal-evaluateForm-valuer-wrapper {
-            margin:10px 0;
-          }
-          
-        }
-        
-        .evaluation-modal-evaluationFormAction-wrapper {
-          text-align:center;
-          width:100%;
-          bottom:10px;
-          position:absolute;
-        
-          .evaluation-modal-evaluationForm-button {
-            border-radius:0px;
-            border:0;
-            color:#fff;
-            font-weight:400;
-            padding:5px 15px;
-            text-transform:uppercase;
-            margin:5px;
-            outline:none;
-            font-family:"Open Sans";
-            min-width:90px;
-            font-size:18px;
-          }
-          
-          #evaluateFormCancelButton {
-            background:#7391a7;
-          }
-          
-          #evaluateFormSaveButton {
-            background:#27b91c;
-          }
-          
-        }
-      }
     
     }
   
+  }
+  
+  #evaluationStudentAssignmentWrapper {
+    padding:0 20px 0 10px;
+    min-width:500px;
+    position:absolute;
+    top:0;
+    right:50%;
+    bottom:0;
+    left:10px;
+    overflow:auto;
+    
+    .evaluation-modal-student-wrapper {
+      
+      h2.evaluation-modal-student-name {
+       max-width:625px;
+       width:auto;
+       margin:0 auto 0 auto; 
+       font-weight:300;
+       color:#000;
+       font-size:24px;
+       padding:20px 20px 30px 65px;
+       text-transform:uppercase;
+       line-height:1.3em;
+       position:relative;
+       
+       .student-picture {
+         @include background-image('gfx/evaluation-default-student-picture.jpg');
+         background-size:cover;
+         display:inline-block;
+         position:absolute;
+         width:48px;
+         height:48px;
+         border-radius:24px;
+         top:10px;
+         left:0;
+       }
+      }
+      
+      .evaluation-modal-workspace-info-wrapper {
+        padding:10px 20px;
+        font-size:13px;
+        background:#ebf7ff;
+        position:relative;
+        
+        .evaluation-modal-workspace-title {
+          font-size:20px;
+          color:#000;
+        }
+        
+        .evaluation-modal-workspace-educationtype,
+        .evaluation-modal-workspace-subject,
+        .evaluation-modal-workspace-length {
+          text-transform:uppercase;
+          display:inline-block;
+        
+          .title {
+            color:#727272;
+            display:inline-block;
+            margin:0 5px 0 0;
+          }
+          
+          .desc {
+            color:#000;
+            display:inline-block;
+            margin:0 10px 0 0;
+          }
+          
+          .symbol {
+            text-transform:none;
+          }
+        
+        }
+
+      }
+      
+      .evaluation-modal-workspace-assignment-info {
+        
+        .evaluation-modal-workspace-assignment-title {
+          text-transform:uppercase;
+          font-size:16px;
+          padding:10px 20px;
+          background:#ce01bd;
+          color:#fff;
+          font-weight:400;
+        }
+        
+        .evaluation-modal-workspace-assignment-wrapper {
+          margin:20px 0 0 0;
+          
+          h3 {
+            color:#000;
+            font-weight:300;
+            border-left:20px solid #ce01bd;
+            padding:0 0 0 5px;
+            margin-left:-20px;
+          }
+          
+          p {
+            font-size:14px;
+            line-height:22px;
+            margin:10px 0;
+            font-weight:400;
+            color:#000;
+          }
+          
+          p.evaluation-modal-assignment-student-answer {
+            border-radius:3px;
+            background:#ebf7ff;
+            padding:5px 10px;
+            margin:10px 0 20px 0;
+            font-weight:300;
+            font-style:italic;
+          }
+        
+        }
+        
+        .evaluation-modal-workspace-exercise-title {
+          text-transform:uppercase;
+          font-size:16px;
+          padding:10px 20px;
+          background:#ff9900;
+          color:#fff;
+          font-weight:400;
+        }
+        
+        .evaluation-modal-workspace-exercise-wrapper {
+          margin:20px 0 0 0;
+          
+          h3 {
+            color:#000;
+            font-weight:300;
+            border-left:20px solid #ce01bd;
+            padding:0 0 0 5px;
+            margin-left:-20px;
+          }
+          
+          p {
+            font-size:14px;
+            line-height:22px;
+            margin:10px 0;
+            font-weight:400;
+            color:#000;
+          }
+          
+          p.evaluation-modal-exercise-student-answer {
+            border-radius:3px;
+            background:#ebf7ff;
+            padding:5px 10px;
+            margin:10px 0 20px 0;
+            font-weight:300;
+            font-style:italic;
+          }
+        
+        }
+
+      }
+      
+    }
+  }
+  
+  #evaluationEvaluateFormWrapper {
+    position:absolute;
+    padding:0 10px;
+    min-width:400px;
+    background:#fff;
+    top:0;
+    bottom:0;
+    right:10px;
+    left:51%;
+    overflow:hidden;
+    z-index:10;
+    
+    header {
+      overflow-x: hidden;
+      overflow-y: auto;
+      max-height:100px;
+    
+      .evaluation-modal-evaluateForm-title {
+        width:auto;
+        margin:0 auto 0 auto; 
+        font-weight:300;
+        color:#000;
+        font-size:24px;
+        padding:20px 20px 10px 20px;
+        text-transform:uppercase;
+        line-height:1.3em;
+        position:relative;
+      }
+      
+      .evaluation-modal-evaluateForm-meta-wrapper {
+        padding:0px 20px;
+      
+        .meta-education-type,
+        .meta-workspace {
+          padding:0px 20px 0 0;
+          text-transform:uppercase;
+          font-size:14px;
+          display:inline-block;
+        
+          .title {
+            color:#727272;
+            display:inline-block;
+            margin:0 5px 0 0;
+          }
+          
+          .desc {
+            color:#000;
+            display:inline-block;
+          }
+        
+        }
+  
+      }
+    
+    }
+
+    .evaluation-modal-evaluateForm-content {
+      padding:10px 20px;
+      overflow-x:hidden;
+      overflow-y:auto;
+      position:absolute;
+      bottom:65px;
+      top:100px;
+      right:0px;
+      left:0px;
+      border-top:1px solid #eee;
+      border-bottom:1px solid #eee;
+      
+      label {
+        text-transform:uppercase;
+        padding:0 0 3px 0;
+        font-weight:300;
+        font-size:16px;
+      }
+    
+      .evaluation-modal-evaluateForm-literal-eval-wrapper {
+
+        textarea {
+          border:0;
+          border-radius:3px;
+          width:100%;
+          height:200px;
+          padding:10px;
+          box-sizing:border-box;
+          border:5px solid #c3e6fb;
+          font-size:16px;
+          color:#000;
+          outline:none;
+          transition:border 0.15s ease-in-out;
+          
+          &:hover,
+          &:focus,
+          &:active {
+            border:5px solid #9cd3f5;
+          }
+        }
+        
+      }
+      
+      .evaluation-modal-evaluateForm-date-wrapper {
+        margin:10px 0;
+      }
+      
+      .evaluation-modal-evaluateForm-grade-wrapper {
+        margin:10px 0;
+      }
+      
+      .evaluation-modal-evaluateForm-basedOfPhenomenon-wrapper {
+        margin:10px 0;
+      }
+      
+      .evaluation-modal-evaluateForm-valuer-wrapper {
+        margin:10px 0;
+      }
+      
+    }
+    
+    .evaluation-modal-evaluationFormAction-wrapper {
+      text-align:center;
+      width:100%;
+      bottom:10px;
+      position:absolute;
+    
+      .evaluation-modal-evaluationForm-button {
+        border-radius:0px;
+        border:0;
+        color:#fff;
+        font-weight:400;
+        padding:5px 15px;
+        text-transform:uppercase;
+        margin:5px;
+        outline:none;
+        font-family:"Open Sans";
+        min-width:90px;
+        font-size:18px;
+      }
+      
+      #evaluateFormCancelButton {
+        background:#7391a7;
+      }
+      
+      #evaluateFormSaveButton {
+        background:#27b91c;
+      }
+      
+    }
   }
 
   /* JQuery UI Dialog Overrides */
