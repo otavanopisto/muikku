@@ -41,47 +41,12 @@
   <ui:define name="evaluation.content.studentAssignmentListing">
     <div class="evaluation-view-wrapper">
       <div class="evaluation-student-listing-wrapper">
-     
-        <div class="evaluation-student-wrapper">
-          <div class="evaluation-student-picture"></div>
-          <div class="evaluation-student-name">Muikku opiskelija 1</div>
-        </div>
-       
-        <div class="evaluation-student-wrapper">
-          <div class="evaluation-student-picture"></div>
-          <div class="evaluation-student-name">Muikku opiskelija 2</div>
-        </div>
-       
-        <div class="evaluation-student-wrapper">
-          <div class="evaluation-student-picture"></div>
-          <div class="evaluation-student-name">Muikku opiskelija 3</div>
-        </div>
-       
-        <div class="evaluation-student-wrapper">
-          <div class="evaluation-student-picture"></div>
-          <div class="evaluation-student-name">Muikku opiskelija 4</div>
-        </div>
-        
-        <div class="evaluation-student-wrapper">
-          <div class="evaluation-student-picture"></div>
-          <div class="evaluation-student-name">Muikku opiskelija 5</div>
-        </div>
-       
-        <div class="evaluation-student-wrapper">
-          <div class="evaluation-student-picture"></div>
-          <div class="evaluation-student-name">Muikku opiskelija 6</div>
-        </div>
-       
-        <div class="evaluation-student-wrapper">
-          <div class="evaluation-student-picture"></div>
-          <div class="evaluation-student-name">Muikku opiskelija 7</div>
-        </div>
-       
-        <div class="evaluation-student-wrapper">
-          <div class="evaluation-student-picture"></div>
-          <div class="evaluation-student-name">Muikku opiskelija 8</div>
-        </div>
-     
+        <ui:repeat var="student" value="#{evaluationIndexBackingBean.workspaceStudents}">
+          <div class="evaluation-student-wrapper">
+             <div class="evaluation-student-picture"></div>
+             <div class="evaluation-student-name">#{student.displayName}</div>
+           </div>
+        </ui:repeat>
       </div>
       <div class="evaluation-student-assignment-listing-wrapper">
       

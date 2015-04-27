@@ -15,11 +15,15 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.jsf.NavigationRules;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.model.workspace.WorkspaceRoleArchetype;
+import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.schooldata.CourseMetaController;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.CourseIdentifier;
+import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.session.SessionController;
+import fi.muikku.users.UserController;
 import fi.otavanopisto.security.LoggedIn;
 
 @Named
@@ -38,6 +42,9 @@ public class EvaluationIndexBackingBean {
   @Inject
   private WorkspaceController workspaceController;
 
+  @Inject
+  private UserController userController;
+  
   @Inject
   private CourseMetaController courseMetaController;
   
@@ -69,6 +76,18 @@ public class EvaluationIndexBackingBean {
       return NavigationRules.NOT_FOUND;
     }
     
+    List<WorkspaceStudent> students = new ArrayList<>();
+    
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+
+    List<WorkspaceUserEntity> workspaceStudents = workspaceController.listWorkspaceUserEnitiesByWorkspaceRoleArchetype(workspaceEntity, WorkspaceRoleArchetype.STUDENT);
+    for (WorkspaceUserEntity workspaceStudent : workspaceStudents) {
+      User user = userController.findUserByDataSourceAndIdentifier(workspaceEntity.getDataSource(), workspaceStudent.getUserSchoolDataIdentifier().getIdentifier());
+      students.add(new WorkspaceStudent(workspaceStudent.getId(), String.format("%s %s", user.getFirstName(), user.getLastName())));
+    }
+    
+    this.workspaceStudents = Collections.unmodifiableList(students);
+    
     return null;
   }
   
@@ -84,7 +103,31 @@ public class EvaluationIndexBackingBean {
     return workspaceItems;
   }
   
+  public List<WorkspaceStudent> getWorkspaceStudents() {
+    return workspaceStudents;
+  }
+  
   private List<WorkspaceItem> workspaceItems;
+  private List<WorkspaceStudent> workspaceStudents;
+  
+  public static class WorkspaceStudent {
+   
+    public WorkspaceStudent(Long workspaceUserEntityId, String displayName) {
+      this.workspaceUserEntityId = workspaceUserEntityId;
+      this.displayName = displayName;
+    }
+    
+    public Long getWorkspaceUserEntityId() {
+      return workspaceUserEntityId;
+    }
+    
+    public String getDisplayName() {
+      return displayName;
+    }
+    
+    private Long workspaceUserEntityId;
+    private String displayName;
+  }
   
   public static class WorkspaceItem {
 
