@@ -19,12 +19,11 @@
             <div class="evaluation-workspacelist-content-inner">
               <div class="evaluation-workspacelist-content-scrolling">
                 <ul class="evaluation-workspacelist-root">
-                  <li class="evaluation-workspacelist-item" data-workspace-title="BI4 - Ihmisen biologia">
-                    <div class="evaluation-workspacelist-workspace-abbreviation">BI4</div>
-                  </li>
-                  <li class="evaluation-workspacelist-item" data-workspace-title="GE1 - Sininen planeetta">
-                    <div class="evaluation-workspacelist-workspace-abbreviation">GE1</div>
-                  </li>
+                  <ui:repeat var="workspaceItem" value="#{evaluationBackingBean.workspaceItems}">
+                    <li class="evaluation-workspacelist-item" data-workspace-title="#{workspaceItem.title}">
+                      <div class="evaluation-workspacelist-workspace-abbreviation">#{workspaceItem.code}</div>
+                    </li>                  
+                  </ui:repeat>
                 </ul>
               </div>
             </div>

@@ -178,6 +178,19 @@ public class WorkspaceController {
     return workspaceEntityDAO.listAll();
   }
 
+  public List<WorkspaceEntity> listWorkspaceEntitiesByUser(UserEntity userEntity) {
+    List<WorkspaceEntity> result = new ArrayList<>();
+    
+    List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listWorkspaceUserEntitiesByUserEntity(userEntity);
+    for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
+      if (!result.contains(workspaceUserEntity.getWorkspaceEntity())) {
+        result.add(workspaceUserEntity.getWorkspaceEntity());
+      }
+    }
+    
+    return result;
+  }
+  
   public List<WorkspaceEntity> listWorkspaceEntitiesBySchoolDataSource(String schoolDataSource) {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
     if (dataSource != null) {
