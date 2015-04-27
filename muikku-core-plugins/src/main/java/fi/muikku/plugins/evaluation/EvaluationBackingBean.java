@@ -1,6 +1,7 @@
 package fi.muikku.plugins.evaluation;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.ejb.Stateful;
@@ -9,6 +10,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.ocpsoft.rewrite.annotation.Join;
+import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
@@ -25,6 +27,9 @@ import fi.otavanopisto.security.LoggedIn;
 @Join(path = "/evaluation", to = "/evaluation/index.jsf")
 @LoggedIn
 public class EvaluationBackingBean {
+  
+  @Parameter ("workspaceEntityId")
+  private Long workspaceEntityId;
 
   @Inject
   private SessionController sessionController;
@@ -39,17 +44,32 @@ public class EvaluationBackingBean {
   public String init() {
     // TODO: Logged in as teacher?
     
-    workspaceItems = new ArrayList<>();
+    ArrayList<WorkspaceItem> items = new ArrayList<>();
     
     for (WorkspaceEntity workspaceEntity : workspaceController.listWorkspaceEntitiesByUser(sessionController.getLoggedUserEntity())) {
       Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
       CourseIdentifier courseIdentifier = courseMetaController.findCourseIdentifier(workspace.getSchoolDataSource(), workspace.getCourseIdentifierIdentifier());
       if (courseIdentifier != null) {
-        workspaceItems.add(new WorkspaceItem(courseIdentifier.getCode(), workspace.getName()));
+        if (workspaceEntity.getId().equals(getWorkspaceEntityId())) {
+          items.add(0, new WorkspaceItem(courseIdentifier.getCode(), workspace.getName()));
+        } else {
+          items.add(new WorkspaceItem(courseIdentifier.getCode(), workspace.getName()));
+        }
+         
       }
     }
     
+    workspaceItems = Collections.unmodifiableList(items);
+    
     return null;
+  }
+  
+  public Long getWorkspaceEntityId() {
+    return workspaceEntityId;
+  }
+  
+  public void setWorkspaceEntityId(Long workspaceEntityId) {
+    this.workspaceEntityId = workspaceEntityId;
   }
   
   public List<WorkspaceItem> getWorkspaceItems() {
