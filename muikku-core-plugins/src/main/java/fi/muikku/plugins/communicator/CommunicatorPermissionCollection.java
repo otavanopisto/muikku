@@ -14,8 +14,13 @@ import fi.otavanopisto.security.Scope;
 @ApplicationScoped
 public class CommunicatorPermissionCollection extends AbstractMuikkuPermissionCollection implements MuikkuPermissionCollection {
 
+  public static final String PERMISSIONSCOPE_COMMUNICATOR = "COMMUNICATOR";
+
   @Scope (PermissionScope.PERSONAL)
   public static final String COMMUNICATOR_MANAGE_SETTINGS = "COMMUNICATOR_MANAGE_SETTINGS";
+  
+  @Scope (PERMISSIONSCOPE_COMMUNICATOR)
+  public static final String READ_MESSAGE = "READ_MESSAGE";
   
   @Override
   public List<String> listPermissions() {

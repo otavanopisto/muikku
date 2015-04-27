@@ -23,9 +23,11 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import fi.otavanopisto.security.ContextReference;
+
 @Entity
 @Inheritance(strategy=InheritanceType.JOINED)
-public class CommunicatorMessage {
+public class CommunicatorMessage implements ContextReference {
 
   public Long getId() {
     return id;
