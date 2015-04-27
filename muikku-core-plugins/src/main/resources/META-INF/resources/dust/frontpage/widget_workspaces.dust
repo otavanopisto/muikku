@@ -5,5 +5,5 @@
       {>"frontpage/widget_workspace.dust"/}  
    </ul>
 {:else}
-   <div class="wi-empty"><span>{#localize key="plugin.frontPage.workspaces.noWorkspaces" arg0="/coursepicker/coursepicker.jsf"/}</a></span></div>
+   <div class="wi-empty"><span>{#localize key="plugin.frontPage.workspaces.noWorkspaces" arg0="/coursepicker"/}</a></span></div>
 {/workspaces}

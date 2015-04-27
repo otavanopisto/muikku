@@ -22,12 +22,17 @@ $category6 : #c800ca;
 $header:#ff7800;
 $title:#000;
 $subTitle:#4e4e4e;
+$link:#0099ff;
+
 
 /* Shadow */
 $sc: rgba(218,218,218,1);
 
 /* Border */
 $brd:#dadada;
+$brd1:#ededed;
+$brd2:#dadada;
+$brd3:#f8f8f8;
 $brd-top:#9bbee6;
 
 /* Paddings */
@@ -37,9 +42,25 @@ $textContentPadding:15px;
 
 /* Generic background */
 $bgr: #fff;
+$bgr1 : #ededed;
+$bgr2 : #dadada;
+$bgr3 : #f8f8f8;
 
 /* Action area background */
-$aBgr : #f8f8f8;
+$aBgr:#f8f8f8;
+
+/* Dyn Navi background */
+$dNavBgr:#b7d8eb;
+
+/* Static Navi */
+$sNavBgr:#216aa1;
+$sNavBgrScrll:#2c9fcc;
+$sNavBrdT:#71c3e1;
+$sNavBrdB:#ebf7ff;
+
+/* Bottom bar */
+$btBarBgr:#b7d1e0;
+
  
 /* sub-Action area background */
 $saBgr : #e3eaf2;

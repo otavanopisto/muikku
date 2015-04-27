@@ -23,7 +23,7 @@ import fi.muikku.schooldata.entity.Workspace;
 @Named
 @Stateful
 @RequestScoped
-@Join(path = "/workspace/{workspaceUrlName}/help", to = "/workspaces/help.jsf")
+@Join(path = "/workspace/{workspaceUrlName}/help", to = "/jsf/workspace/help.jsf")
 public class WorkspaceHelpPageBackingBean {
 
   @Inject

@@ -10,7 +10,7 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 import fi.muikku.search.SearchReindexEvent;
 
 @Named
-@Join (path = "/system/search/reindex", to = "/system/search-reindex.jsf")
+@Join (path = "/system/search/reindex", to = "/jsf/system/search-reindex.jsf")
 public class SystemReindexBackingBean {
   
   @Inject

@@ -29,7 +29,7 @@ public class ForumResourcePermissionCollection extends AbstractMuikkuPermissionC
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultPermissionRoles ( EVERYONE )
   public static final String FORUM_FIND_FORUMAREAGROUP = "FORUM_FIND_FORUMAREAGROUP";
-  
+
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultPermissionRoles ( EVERYONE )
   public static final String FORUM_LIST_FORUMAREAGROUPS = "FORUM_LIST_FORUMAREAGROUPS";
@@ -45,7 +45,7 @@ public class ForumResourcePermissionCollection extends AbstractMuikkuPermissionC
   @Scope (PERMISSIONSCOPE_FORUM)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.TEACHER, EnvironmentRoleArchetype.STUDENT } )
   public static final String FORUM_LISTFORUM = "FORUM_LISTFORUM";
-  
+
   /**
    * Forum Message related rights
    */
