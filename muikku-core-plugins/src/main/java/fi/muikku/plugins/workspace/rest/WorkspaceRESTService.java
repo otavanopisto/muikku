@@ -329,8 +329,25 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (workspaceUsers.isEmpty()) {
       return Response.noContent().build();
     }
-
-    return Response.ok(createRestModel(workspaceUsers.toArray(new WorkspaceUserEntity[0]))).build();
+    
+    UserEntity userEntity = sessionController.getLoggedUserEntity();
+    boolean hasCurrentUser = false;
+    
+    for (WorkspaceUserEntity workspaceUserEntity : workspaceUsers) {
+      if (workspaceUserEntity
+          .getUserSchoolDataIdentifier()
+          .getUserEntity()
+          .getId()
+          .equals(userEntity)) {
+        hasCurrentUser = true;
+      }
+    }
+    
+    if ("TEACHER".equals(roleArchetype) || hasCurrentUser) {
+      return Response.ok(createRestModel(workspaceUsers.toArray(new WorkspaceUserEntity[0]))).build();
+    } else {
+      return Response.status(Status.FORBIDDEN).entity("You must be enrolled").build();
+    }
   }
 
   @POST
