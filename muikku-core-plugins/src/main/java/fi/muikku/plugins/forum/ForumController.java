@@ -168,12 +168,12 @@ public class ForumController {
     return forumAreaGroupDAO.findById(groupId);
   }
 
-  @Permit (ForumResourcePermissionCollection.FORUM_WRITEAREA)
+  @Permit (ForumResourcePermissionCollection.FORUM_WRITEMESSAGES)
   public ForumThread createForumThread(@PermitContext ForumArea forumArea, String title, String message, Boolean sticky, Boolean locked) {
     return forumThreadDAO.create(forumArea, title, message, sessionController.getLoggedUserEntity(), sticky, locked);
   }
 
-  @Permit (ForumResourcePermissionCollection.FORUM_WRITEAREA)
+  @Permit (ForumResourcePermissionCollection.FORUM_WRITEMESSAGES)
   public ForumThreadReply createForumThreadReply(@PermitContext ForumThread thread, String message) {
     ForumThreadReply reply = forumThreadReplyDAO.create(thread.getForumArea(), thread, message, sessionController.getLoggedUserEntity());
     
@@ -184,27 +184,27 @@ public class ForumController {
 
   public List<EnvironmentForumArea> listEnvironmentForums() {
     return sessionController.filterResources(
-        environmentForumAreaDAO.listAll(), ForumResourcePermissionCollection.FORUM_WRITEAREA);
+        environmentForumAreaDAO.listAll(), ForumResourcePermissionCollection.FORUM_LISTFORUM);
   }
 
   public List<WorkspaceForumArea> listCourseForums() {
     return sessionController.filterResources(
-        workspaceForumAreaDAO.listAll(), ForumResourcePermissionCollection.FORUM_WRITEAREA);
+        workspaceForumAreaDAO.listAll(), ForumResourcePermissionCollection.FORUM_LISTFORUM);
   }
 
   public List<WorkspaceForumArea> listCourseForums(WorkspaceEntity workspace) {
     return sessionController.filterResources(
-        workspaceForumAreaDAO.listByWorkspace(workspace), ForumResourcePermissionCollection.FORUM_WRITEAREA);
+        workspaceForumAreaDAO.listByWorkspace(workspace), ForumResourcePermissionCollection.FORUM_LISTFORUM);
   }
 
-  @Permit (ForumResourcePermissionCollection.FORUM_LISTTHREADS)
+  @Permit (ForumResourcePermissionCollection.FORUM_READMESSAGES)
   public List<ForumThread> listForumThreads(@PermitContext ForumArea forumArea, int firstResult, int maxResults) {
     List<ForumThread> threads = forumThreadDAO.listByForumAreaOrdered(forumArea, firstResult, maxResults);
     
     return threads;
   }
   
-  @Permit (ForumResourcePermissionCollection.FORUM_LISTTHREADS)
+  @Permit (ForumResourcePermissionCollection.FORUM_READMESSAGES)
   public List<ForumThreadReply> listForumThreadReplies(@PermitContext ForumThread forumThread, Integer firstResult, Integer maxResults) {
     return forumThreadReplyDAO.listByForumThread(forumThread, firstResult, maxResults);
   }
