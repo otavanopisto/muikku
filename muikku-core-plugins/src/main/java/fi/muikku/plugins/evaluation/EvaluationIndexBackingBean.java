@@ -6,10 +6,13 @@ import javax.inject.Named;
 
 import org.ocpsoft.rewrite.annotation.Join;
 
+import fi.otavanopisto.security.LoggedIn;
+
 @Named
 @Stateful
 @RequestScoped
-@Join(path = "/evaluation", to = "/evaluation/index.jsf")  
-public class EvaluationBackingBean {
+@Join(path = "/evaluation/", to = "/jsf/evaluation/index.jsf")  
+
+public class EvaluationIndexBackingBean {
 
 }

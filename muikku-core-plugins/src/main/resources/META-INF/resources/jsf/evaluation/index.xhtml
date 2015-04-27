@@ -3,7 +3,7 @@
   xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
   xmlns:h="http://java.sun.com/jsf/html" xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
   xmlns:composite="http://java.sun.com/jsf/composite/composite"
-  template="/evaluation/templates/evaluation-view.xhtml">
+  template="/jsf/evaluation/templates/evaluation-view.xhtml">
 
   <ui:define name="evaluation.queue">
     <div id="evaluationWorkspacelistWrapper">
@@ -218,10 +218,12 @@
     </div>
   </ui:define>
   
+  <!--
   <ui:define name="evaluation.modal">
+     
     <div id="evaluationModalWrapper">
       <div class="evaluation-modal-overlay" id="evaluationModalOverlay"></div>
-      <div class="evaluation-modal-close-wrapper icon-close"></div>
+      <div class="evaluation-modal-close-button icon-close"></div>
       <div class="evaluation-modal-content" id="evaluationModalContent">
         <section class="evaluation-modal-studentAssignmentWrapper" id="evaluationStudentAssignmentWrapper">
           <article class="evaluation-modal-student-wrapper">
@@ -258,7 +260,7 @@
                   <p class="evaluation-modal-assignment-student-answer">Auringon ydintä ympäröi säteilyvyöhyke, jossa ydinreaktioita ei enää tapahdu. Sen halki ytimestä tuleva energia siirtyy pinnalle absorboitumalla ja emittoitumalla nousten säteilyvyöhykkeen pintaa kohden, joka on noin 0,7 Auringon säteen kohdalla. Energian siirtyminen on hidasta, ja ytimestä pintaan siirtyminen kestää kymmeniä miljoonia vuosia.</p>
                 </div>
               </div>
-              <!-- 
+              
               <div class="evaluation-modal-workspace-exercise-title">Harjoitustehtävät</div>
               <div class="evaluation-modal-workspace-exercise-list">
                 <div class="evaluation-modal-workspace-single-exercise">
@@ -286,7 +288,6 @@
                   <p class="evaluation-content-exercise-student-answer">Alueellisuus näkyy erilaisissa kartoissa, jotka ovat maantieteilijälle arvokkaita työvälineitä sekä tutkimusaineiston etsimisessä että tutkimustulosten esittämisessä.</p>
                 </div>
               </div>
-               -->
             </div>
           </article>
         </section>
@@ -330,7 +331,8 @@
         </section>
       </div>
     </div>
+    
   </ui:define>
-
+  -->
 
 </ui:composition>
