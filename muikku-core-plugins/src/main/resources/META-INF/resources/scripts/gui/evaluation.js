@@ -65,7 +65,7 @@
     /* Evaluate assignment when its state is DONE or CRITICAL (means its late) */
     $(document).on('click', '.assignment-done, .assignment-evaluation-critical', function (event) {
       
-      renderDustTemplate('jsf/evaluation/evalution_evaluate_modal_view.dust', { }, $.proxy(function (text) {
+      renderDustTemplate('evaluation/evaluation_evaluate_modal_view.dust', { }, $.proxy(function (text) {
         var dialog = $(text);
         $(text).dialog({
           modal: true, 
@@ -94,7 +94,7 @@
     /* View evaluation when assigment's state is EVALUATED */
     $(document).on('click', '.assignment-evaluated', function (event) {
       
-      renderDustTemplate('evaluation/evalution_evaluate_modal_view.dust', { }, $.proxy(function (text) {
+      renderDustTemplate('evaluation/evaluation_evaluate_modal_view.dust', { }, $.proxy(function (text) {
         var dialog = $(text);
         $(text).dialog({
           modal: true, 
