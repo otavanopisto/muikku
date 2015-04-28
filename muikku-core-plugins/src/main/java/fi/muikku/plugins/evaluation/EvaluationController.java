@@ -1,0 +1,31 @@
+package fi.muikku.plugins.evaluation;
+
+import java.util.Date;
+
+import javax.inject.Inject;
+
+import fi.muikku.model.users.UserEntity;
+import fi.muikku.plugins.evaluation.dao.WorkspaceMaterialEvaluationDAO;
+import fi.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
+import fi.muikku.schooldata.entity.GradingScale;
+import fi.muikku.schooldata.entity.GradingScaleItem;
+
+public class EvaluationController {
+  
+  @Inject
+  private WorkspaceMaterialEvaluationDAO workspaceMaterialEvaluationDAO;
+
+  public WorkspaceMaterialEvaluation createWorkspaceAssignmentEvaluation(UserEntity student, WorkspaceMaterial workspaceMaterial, GradingScale gradingScale, GradingScaleItem grade, UserEntity assessor, Date evaluated, String verbalAssessment) {
+    return workspaceMaterialEvaluationDAO.create(student.getId(), 
+        workspaceMaterial.getId(),  
+        gradingScale.getIdentifier(), 
+        gradingScale.getSchoolDataSource(), 
+        grade.getIdentifier(), 
+        grade.getSchoolDataSource(), 
+        assessor.getId(), 
+        evaluated, 
+        verbalAssessment);
+  }
+  
+}
