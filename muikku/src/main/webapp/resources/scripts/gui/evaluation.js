@@ -138,6 +138,10 @@
         gradingScales: $.parseJSON($('input[name="grading-scales"]').val())
       }, $.proxy(function (text) {
         var dialog = $(text);
+        dialog.find('input[name="evaluated"]')
+          .attr('type', 'text')
+          .datepicker();
+        
         $(text).dialog({
           modal: true, 
           height: $(window).height() - 50,
@@ -148,16 +152,31 @@
             'text': dialog.data('button-save-text'),
             'class': 'save-evaluation-button',
             'click': function(event) {
-              var gradeValue = $(this).find('select[name="grade"]').val();
-              if (gradeValue) {
-                var gradeValueParts = gradeValue.split('@', 2);
-                var grade = gradeValueParts[0];
-                var gradingScale = gradeValueParts[1];
-                
-                console.log("Grade " + grade + ' in grading scale ' + gradingScale);
-              }
+              var gradeValue = $(this).find('select[name="grade"]')
+                .val()
+                .split('@', 2);
+              var grade = gradeValue[0].split('/', 2);
+              var gradingScale = gradeValue[1].split('/', 2);
+              var workspaceEntityId = 1; // TODO
+              var workspaceMaterialId = 1; // TODO
               
-              $(this).dialog("destroy").remove();
+              mApi().workspace.workspaces.materials.evaluations.create(workspaceEntityId, workspaceMaterialId, {
+                evaluated: $(this).find('input[name="evaluated"]').datepicker('getDate'),
+                gradeIdentifier: grade[0],
+                gradeSchoolDataSource: grade[1],
+                gradingScaleIdentifier: gradingScale[0],
+                gradingScaleSchoolDataSource: gradingScale[1],
+                assessorEntityId: 1, // TODO
+                studentEntityId: 1, // TODO
+                workspaceMaterialId: workspaceMaterialId, // TODO
+                verbalAssessment: $(this).find('#evaluateFormLiteralEvaluation').val()
+              }).callback($.proxy(function (err, result) {
+                if (err) {
+                  $('.notification-queue').notificationQueue('notification', 'error', err);
+                } else { 
+                  $(this).dialog("destroy").remove();
+                }
+              }, this));
             }
           }, {
             'text': dialog.data('button-cancel-text'),
