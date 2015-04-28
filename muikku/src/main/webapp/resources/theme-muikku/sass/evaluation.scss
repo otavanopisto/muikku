@@ -9,6 +9,7 @@ body.evaluation {
   line-height:1.7em;
   font-weight:300;
   font-size:18px;
+
   
   /* WORKSPACE NAVIGATION - FULLSCREEN */
   div[class*='wi-evaluation-workspacelist-navi-button'] > a,
@@ -50,25 +51,55 @@ body.evaluation {
     }
   }
   
+  #evaluationToolbar {
+    height:45px;
+    width:100%;
+    position:fixed;
+    z-index:98;
+    top:0;
+    left:0;
+    right:0;
+    background:#5c7486;
+  }
   
+  #evaluationSlyScrollbar {
+    height:1px;
+    background:#fff;
+    position:absolute;
+    top:55px;
+    left:20%;
+    right:20%;
+    
+    &.scrollbar { 
+      height: 1px; 
+      
+      .handle {
+        width: 100px;
+        height: 100%;
+        background: #222;
+      }
+      
+    }
+  }
+
   #evaluation-views-wrapper { 
-    width: 100%; 
-    height: 100%;
-    padding: 0; 
+    width:100%; 
+    height:100%;
+    padding:45px 0 0 45px; 
   }
   
   #evaluation-views-wrapper .evaluation-views-slyder { 
-    margin: 0; 
-    padding: 0; 
-    height: 100%; 
+    margin:0; 
+    padding:0; 
+    height:100%; 
   }
   
   #evaluation-views-wrapper .evaluation-views-slyder .evaluation-view-wrapper { 
-    float: left; 
-    margin: 0 5px 0 0; 
-    padding: 0; 
-    width: 100%;
-    height: 100%; 
+    float:left; 
+    margin:0 5px 0 0; 
+    padding:0; 
+    width:100%;
+    height:100%; 
   }
   
   .evaluation-view-wrapper {
@@ -84,22 +115,27 @@ body.evaluation {
     .evaluation-student-listing-wrapper {
       margin:10px 10px 10px 10px;
       white-space:nowrap;
+      height:150px;
     
       .evaluation-student-wrapper {
-        width:100px;
+        width:160px;
+        height:130px;
         box-sizing:border-box;
-        margin:25px 25px;
-        display:inline-block;
+        margin:10px;
+        display:block;
         text-align:center;
+        float:left;
+        position:relative;
       
         .evaluation-student-picture {
-          width:100px;
-          height:100px;  
-          width:100%;
+          width:120px;
+          height:120px;
+          margin:0 auto;  
           box-sizing:border-box;
           @include background-image('gfx/evaluation-default-student-picture.jpg');
           background-size:cover;
           border-radius:75px;
+          background-position:center center;
         }
         
         .evaluation-student-name {
@@ -108,10 +144,11 @@ body.evaluation {
           padding:3px 4px;
           background:#fff;
           border-radius:3px;
-          margin:-25px 0 0 0;
           font-size:16px;
           line-height:1.3em;
           white-space:normal;
+          position:absolute;
+          bottom:0;
         }
       
       }
@@ -124,11 +161,12 @@ body.evaluation {
       .evaluation-student-assignment-listing-row {
         margin:10px 0;
         white-space:nowrap;
+        clear:both;
       
         .evaluation-assignment-wrapper {
-          width:100px;
+          width:160px;
           box-sizing:border-box;
-          margin:25px;
+          margin:10px;
           display:inline-block;
           text-align:center;
           background:#617e94;
@@ -177,7 +215,7 @@ body.evaluation {
             padding:3px 4px;
             background:#fff;
             margin:-25px 0 0 0;
-            font-size:16px;
+            font-size:14px;
             line-height:1.3em;
             white-space:normal;
           }
@@ -195,7 +233,7 @@ body.evaluation {
     left:0;
     top:0;
     bottom:0;
-    z-index:10;
+    z-index:99;
 
     #evaluationWorkspacelistContainer {
       height:100%;
@@ -295,7 +333,7 @@ body.evaluation {
                 height:100%;
     
                 .evaluation-workspacelist-item {
-                  margin:0 0 5px 0;
+                  margin:0 0 1px 0;
                   position:static;
                   cursor:pointer;
                   width:45px;
@@ -311,6 +349,10 @@ body.evaluation {
                     font-size:14px;
                     text-align:center;
                     padding:4px 0 4px 0;
+                    
+                    &:hover {
+                      background:#72c4f6;
+                    }
 
                     
                     a {
@@ -667,7 +709,7 @@ body.evaluation {
     border:none;
     border-radius:10px !important;
     z-index:998;
-    position:absolute;
+    position:fixed;
     top:15px;
     right:15px;
     bottom:15px;

@@ -37,8 +37,13 @@
 
     </div>
   </ui:define>
+  
+  <ui:define name="evaluation.toolbar">
+    <div class="evaluation-toolbar" id="evaluationToolbar"></div>
+  </ui:define>
 
   <ui:define name="evaluation.content.studentAssignmentListing">
+    <div id="evaluationSlyScrollbar" class="scrollbar"><div class="handle"></div></div>
     <div id="evaluation-views-wrapper" data-workspace-entity-id="#{evaluationIndexBackingBean.workspaceEntityId}"></div>
   </ui:define>
   

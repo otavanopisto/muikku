@@ -24,7 +24,13 @@
             scrollBy: 1,
             speed: 300,
             elasticBounds: 1,
-            easing: 'easeOutExpo'
+            easing: 'easeOutExpo',
+            scrollBar: '.scrollbar',
+            dragHandle:    false,
+            dynamicHandle: 1,
+            minHandleSize: 50,
+            clickBar:      false,
+            syncSpeed:     0.5
           })
           .sly('on', 'active', $.proxy(this._onSlyActive, this));
         }, this));
@@ -126,10 +132,6 @@
         $this.scrollTop(0);
         return prevent();
       }
-    });
-    
-    $(document).on('click', '.evaluation-modal-close-wrapper', function (event) {
-      $('#evaluationModalWrapper').hide();
     });
     
     /* Evaluate assignment when its state is DONE or CRITICAL (means its late) */
