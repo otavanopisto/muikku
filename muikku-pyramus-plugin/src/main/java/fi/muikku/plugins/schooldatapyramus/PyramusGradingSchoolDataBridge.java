@@ -58,7 +58,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
 	@Override
 	public List<GradingScaleItem> listGradingScaleItems(String gradingScaleIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
 
-    Grade[] grades = pyramusClient.get("/gradingScales/" + gradingScaleIdentifier + "/grades/", Grade[].class);
+    Grade[] grades = pyramusClient.get("/common/gradingScales/" + gradingScaleIdentifier + "/grades", Grade[].class);
     if (grades == null) {
       throw new UnexpectedSchoolDataBridgeException("Null response");
     }

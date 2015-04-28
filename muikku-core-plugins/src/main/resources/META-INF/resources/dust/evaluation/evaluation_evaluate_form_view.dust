@@ -17,10 +17,21 @@
     </div>
     <div class="evaluation-modal-evaluateForm-date-wrapper">
       <label for="evaluateFormLiteralEvaluation">Päivämäärä</label>
+      <input type="date" name="evaluated"/>
     </div>
     <div class="evaluation-modal-evaluateForm-grade-wrapper">
       <label for="evaluateFormLiteralEvaluation">Arvosana</label>
-    
+      <select name="grade">
+        {#gradingScales}
+          <optgroup label="{name}">
+          {#grades scaleid=id scaleds=dataSource}
+            <option value="{id}/{dataSource}@{scaleid}/{scaleds}">
+              {name}
+            </option>
+          {/grades}
+          </optgroup>
+        {/gradingScales}
+      </select>
     </div>
     <div class="evaluation-modal-evaluateForm-basedOfPhenomenon-wrapper">
       <label for="evaluateFormLiteralEvaluation">Ilmiön osuus suorituksesta</label>
