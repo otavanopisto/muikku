@@ -16,16 +16,21 @@ import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.jsf.NavigationRules;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.plugins.workspace.ContentNode;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
-import fi.muikku.plugins.workspace.WorkspaceMaterialException;
+import fi.muikku.plugins.workspace.WorkspaceMaterialException;  
+import fi.muikku.plugins.workspace.WorkspaceMaterialReplyController;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.users.UserController;
+import fi.muikku.users.UserEntityController;
 import fi.otavanopisto.security.LoggedIn;
 
 @Named
@@ -46,7 +51,13 @@ public class EvaluationPageBackingBean {
   
   @Parameter ("maxStudents")
   private Integer maxStudents;
-
+  
+  @Inject
+  private WorkspaceMaterialReplyController workspaceMaterialReplyController;
+  
+  @Inject
+  private UserEntityController userEntityController;
+  
   @Inject
   private WorkspaceController workspaceController;
   
@@ -109,9 +120,19 @@ public class EvaluationPageBackingBean {
   private List<Assignment> createAssignments(List<WorkspaceUserEntity> workspaceStudents, List<ContentNode> assignmentNodes) {
     List<Assignment> result = new ArrayList<>(assignmentNodes.size());
     for (ContentNode assignmentNode : assignmentNodes) {
+      WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(assignmentNode.getWorkspaceMaterialId());
+      
       List<StudentAssignment> studentAssignments = new ArrayList<>(workspaceStudents.size());
       for (WorkspaceUserEntity workspaceStudent : workspaceStudents) {
-        studentAssignments.add(new StudentAssignment(StudentAssignmentStatus.DONE));
+        UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(workspaceStudent.getUserSchoolDataIdentifier().getDataSource(), workspaceStudent.getUserSchoolDataIdentifier().getIdentifier());
+        WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
+        StudentAssignmentStatus status = StudentAssignmentStatus.UNANSWERED;
+
+        if (reply != null) {
+          status = StudentAssignmentStatus.DONE;
+        }
+
+        studentAssignments.add(new StudentAssignment(status));
       }
       
       result.add(new Assignment(assignmentNode.getTitle(), studentAssignments));
