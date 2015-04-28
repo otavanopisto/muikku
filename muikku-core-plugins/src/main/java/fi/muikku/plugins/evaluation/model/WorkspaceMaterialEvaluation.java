@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
-public class WorkspaceAssignmentEvaluation {
+public class WorkspaceMaterialEvaluation {
 
   public Long getId() {
     return id;
@@ -49,12 +49,12 @@ public class WorkspaceAssignmentEvaluation {
     this.studentEntityId = studentEntityId;
   }
 
-  public Long getWorkspaceEntityId() {
-    return workspaceEntityId;
+  public Long getWorkspaceMaterialId() {
+    return workspaceMaterialId;
   }
-
-  public void setWorkspaceEntityId(Long workspaceEntityId) {
-    this.workspaceEntityId = workspaceEntityId;
+  
+  public void setWorkspaceMaterialId(Long workspaceMaterialId) {
+    this.workspaceMaterialId = workspaceMaterialId;
   }
 
   public String getGradeIdentifier() {
@@ -71,6 +71,22 @@ public class WorkspaceAssignmentEvaluation {
 
   public void setGradeSchoolDataSource(String gradeSchoolDataSource) {
     this.gradeSchoolDataSource = gradeSchoolDataSource;
+  }
+  
+  public String getGradingScaleIdentifier() {
+    return gradingScaleIdentifier;
+  }
+  
+  public void setGradingScaleIdentifier(String gradingScaleIdentifier) {
+    this.gradingScaleIdentifier = gradingScaleIdentifier;
+  }
+  
+  public String getGradingScaleSchoolDataSource() {
+    return gradingScaleSchoolDataSource;
+  }
+  
+  public void setGradingScaleSchoolDataSource(String gradingScaleSchoolDataSource) {
+    this.gradingScaleSchoolDataSource = gradingScaleSchoolDataSource;
   }
 
   public String getVerbalAssessment() {
@@ -100,7 +116,17 @@ public class WorkspaceAssignmentEvaluation {
 
   @Column(nullable = false)
   @NotNull
-  private Long workspaceEntityId;
+  private Long workspaceMaterialId;
+
+  @Column(nullable = false)
+  @NotNull
+  @NotEmpty
+  private String gradingScaleIdentifier;
+
+  @Column(nullable = false)
+  @NotNull
+  @NotEmpty
+  private String gradingScaleSchoolDataSource;
 
   @Column(nullable = false)
   @NotNull
