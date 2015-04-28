@@ -3,6 +3,8 @@ package fi.muikku.plugins.evaluation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -13,9 +15,13 @@ import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import fi.muikku.jsf.NavigationRules;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.schooldata.CourseMetaController;
+import fi.muikku.schooldata.GradingController;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.CourseIdentifier;
 import fi.muikku.schooldata.entity.Workspace;
@@ -29,6 +35,9 @@ import fi.otavanopisto.security.LoggedIn;
 @LoggedIn
 public class EvaluationIndexBackingBean {
   
+  @Inject
+  private Logger logger;
+  
   @Parameter ("workspaceEntityId")
   private Long workspaceEntityId;
 
@@ -40,6 +49,9 @@ public class EvaluationIndexBackingBean {
   
   @Inject
   private CourseMetaController courseMetaController;
+  
+  @Inject
+  private GradingController gradingController;
   
   @RequestAction
   public String init() {
@@ -69,6 +81,24 @@ public class EvaluationIndexBackingBean {
       return NavigationRules.NOT_FOUND;
     }
     
+    List<GradingScale> gradingScales = new ArrayList<>();
+    for (fi.muikku.schooldata.entity.GradingScale gradingScale : gradingController.listGradingScales()) {
+      List<GradingScaleGrade> gradingScaleGrades = new ArrayList<>();
+      
+      for (fi.muikku.schooldata.entity.GradingScaleItem gradingScaleItem : gradingController.listGradingScaleItems(gradingScale)) {
+        gradingScaleGrades.add(new GradingScaleGrade(gradingScaleItem.getIdentifier(), gradingScaleItem.getSchoolDataSource(), gradingScaleItem.getName()));
+      }
+      
+      gradingScales.add(new GradingScale(gradingScale.getIdentifier(), gradingScale.getSchoolDataSource(), gradingScale.getName(), gradingScaleGrades));
+    }
+    
+    try {
+      this.gradingScales = new ObjectMapper().writeValueAsString(gradingScales);
+    } catch (JsonProcessingException e) {
+      logger.log(Level.SEVERE, "Grading scales serialization failed", e);
+      return NavigationRules.INTERNAL_ERROR;
+    }
+    
     return null;
   }
   
@@ -84,7 +114,12 @@ public class EvaluationIndexBackingBean {
     return workspaceItems;
   }
   
+  public String getGradingScales() {
+    return gradingScales;
+  }
+  
   private List<WorkspaceItem> workspaceItems;
+  private String gradingScales;
   
   public static class WorkspaceItem {
 
@@ -122,6 +157,62 @@ public class EvaluationIndexBackingBean {
     private String code;
     private String title;
     private Long workspaceEntityId;
+  }
+
+  public static class GradingScale {
+    
+    public GradingScale(String id, String dataSource, String name, List<GradingScaleGrade> grades) {
+      this.id = id;
+      this.dataSource = dataSource;
+      this.name = name;
+      this.grades = grades;
+    }
+    
+    public String getId() {
+      return id;
+    }
+    
+    public String getDataSource() {
+      return dataSource;
+    }
+    
+    public String getName() {
+      return name;
+    }
+    
+    public List<GradingScaleGrade> getGrades() {
+      return grades;
+    }
+
+    private String id;
+    private String dataSource;
+    private String name;
+    private List<GradingScaleGrade> grades;
+  }
+  
+  public static class GradingScaleGrade {
+    
+    public GradingScaleGrade(String id, String dataSource, String name) {
+      this.id = id;
+      this.dataSource = dataSource;
+      this.name = name;
+    }
+    
+    public String getId() {
+      return id;
+    }
+    
+    public String getDataSource() {
+      return dataSource;
+    }
+    
+    public String getName() {
+      return name;
+    }
+    
+    private String id;
+    private String dataSource;
+    private String name;
   }
 
 }
