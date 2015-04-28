@@ -1,13 +1,11 @@
 package fi.muikku.schooldata;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import fi.muikku.dao.base.SchoolDataSourceDAO;
 import fi.muikku.dao.grading.GradingScaleEntityDAO;
 import fi.muikku.dao.grading.GradingScaleItemEntityDAO;
 import fi.muikku.model.base.SchoolDataSource;
@@ -21,9 +19,6 @@ import fi.muikku.schooldata.entity.GradingScaleItem;
 public class GradingController {
 	
 	@Inject
-	private Logger logger;
-	
-	@Inject
 	private GradingSchoolDataController gradingSchoolDataController;
 
 	@Inject
@@ -31,9 +26,6 @@ public class GradingController {
 	
 	@Inject
 	private GradingScaleItemEntityDAO gradingScaleItemEntityDAO; 
-
-	@Inject
-	private SchoolDataSourceDAO schoolDataSourceDAO;
 
 	/* GradingScaleEntity */
 
@@ -65,9 +57,13 @@ public class GradingController {
 
 	/* GradingScale */
 
-	public GradingScale findGradingScale(GradingScaleEntity entity) {
-		return gradingSchoolDataController.findGradingScale(entity.getDataSource(), entity.getIdentifier());
-	}
+  public GradingScale findGradingScale(GradingScaleEntity entity) {
+    return gradingSchoolDataController.findGradingScale(entity.getDataSource(), entity.getIdentifier());
+  }
+
+  public GradingScale findGradingScale(String schoolDataSource, String identifier) {
+    return gradingSchoolDataController.findGradingScale(schoolDataSource, identifier);
+  }
 
 	public List<GradingScale> listGradingScales() {
 		return gradingSchoolDataController.listGradingScales();
@@ -78,6 +74,10 @@ public class GradingController {
 	public GradingScaleItem findGradingScaleItem(GradingScale gradingScale, GradingScaleItemEntity entity) {
 		return gradingSchoolDataController.findGradingScaleItem(entity.getDataSource(), gradingScale, entity.getIdentifier());
 	}
+	
+	public GradingScaleItem findGradingScaleItem(GradingScale gradingScale, String schoolDataSource, String identifier) {
+    return gradingSchoolDataController.findGradingScaleItem(schoolDataSource, gradingScale, identifier);
+  }
 
 	public List<GradingScaleItem> listGradingScaleItems(GradingScale gradingScale) {
 		return gradingSchoolDataController.listGradingScaleItems(gradingScale);
