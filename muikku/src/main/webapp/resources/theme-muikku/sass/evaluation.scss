@@ -50,14 +50,37 @@ body.evaluation {
     }
   }
   
+  
+  #evaluation-views-wrapper { 
+    width: 100%; 
+    height: 100%;
+    padding: 0; 
+  }
+  
+  #evaluation-views-wrapper .evaluation-views-slyder { 
+    margin: 0; 
+    padding: 0; 
+    height: 100%; 
+  }
+  
+  #evaluation-views-wrapper .evaluation-views-slyder .evaluation-view-wrapper { 
+    float: left; 
+    margin: 0 5px 0 0; 
+    padding: 0; 
+    width: 100%;
+    height: 100%; 
+  }
+  
   .evaluation-view-wrapper {
+    /**
     position:absolute;
     top:0;
     right:0;
     left:50px;
     bottom:0;
     overflow:auto;
-  
+    **/
+
     .evaluation-student-listing-wrapper {
       margin:10px 10px 10px 10px;
       white-space:nowrap;

@@ -195,13 +195,13 @@ public class WorkspaceController {
     return result;
   }
 
-  public List<WorkspaceUserEntity> listWorkspaceUserEnitiesByWorkspaceRoleArchetype(WorkspaceEntity workspaceEntity, WorkspaceRoleArchetype archtype) {
+  public List<WorkspaceUserEntity> listWorkspaceUserEnitiesByWorkspaceRoleArchetype(WorkspaceEntity workspaceEntity, WorkspaceRoleArchetype archtype, Integer firstResult, Integer maxResults) {
     List<WorkspaceRoleEntity> workspaceRoles = roleController.listWorkspaceRoleEntitiesByArchetype(archtype);
     if (workspaceRoles.isEmpty()) {
       return Collections.emptyList();
     }
     
-    return workspaceUserEntityController.listWorkspaceUserEntitiesByRoles(workspaceEntity, workspaceRoles);
+    return workspaceUserEntityController.listWorkspaceUserEntitiesByRoles(workspaceEntity, workspaceRoles, firstResult, maxResults);
   }
   
   public List<WorkspaceEntity> listWorkspaceEntitiesBySchoolDataSource(String schoolDataSource) {

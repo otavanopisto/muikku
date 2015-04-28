@@ -1,6 +1,76 @@
 (function() {
+  
+  $.widget("custom.evaluationSlyder", {
+    options : {
+      workspaceEntityId: null
+    },
+    
+    _create : function() {
+      this.element.append($('<div>').addClass('evaluation-views-slyder'));
+      
+      this._pagesLoaded = {};
+      
+      this._loadPage(0, $.proxy(function () {
+        this._loadPage(1, $.proxy(function () {
+          this.element.sly({
+            horizontal: 1,
+            itemNav: 'forceCentered',
+            smart: 1,
+            activateMiddle: 1,
+            mouseDragging: 1,
+            touchDragging: 1,
+            releaseSwing: 1,
+            startAt: 0,
+            scrollBy: 1,
+            speed: 300,
+            elasticBounds: 1,
+            easing: 'easeOutExpo'
+          })
+          .sly('on', 'active', $.proxy(this._onSlyActive, this));
+        }, this));
+      }, this));
+    },
+    
+    _loadPage: function (pageId, callback) {
+      console.log("look! im loading a page!");
+      
+      this._pagesLoaded[pageId] = 'LOADING';
+      
+      $.ajax({
+        url : CONTEXTPATH + '/evaluation/' + this.options.workspaceEntityId + '/page/' + pageId + '?maxStudents=' + this.options.maxStudents,
+        success : $.proxy(function(data) {
+          this._pagesLoaded[pageId] = 'LOADED';
+          
+          this.element.find('.evaluation-views-slyder').append($(data).css('width', this.element.width()));
+          this.element.sly('reload');
+              
+          if ($.isFunction(callback)) {
+            callback();
+          }
+        }, this)
+      });
+    },
+    
+    _onSlyActive: function (eventName, index) {
+      if (!this._pagesLoaded[index + 1]) {
+        this._loadPage(index + 1);
+      } else {
+        console.log("look! im NOT loading a page!");
+      }
+    },
+    
+    _destroy: function () {
+      
+    }
+  });
 
   $(document).ready(function() {
+    
+    $('#evaluation-views-wrapper')
+      .evaluationSlyder({
+        workspaceEntityId: $('#evaluation-views-wrapper').attr('data-workspace-entity-id'),
+        maxStudents: 8
+      });
     
     if ($('#evaluationModalWrapper').length > 0) {
       $('#evaluationModalWrapper').hide();
@@ -62,17 +132,16 @@
       $('#evaluationModalWrapper').hide();
     });
     
-    /* Evaluate assignment when its state is DONE or CRITICAL */
+    /* Evaluate assignment when its state is DONE or CRITICAL (means its late) */
     $(document).on('click', '.assignment-done, .assignment-evaluation-critical', function (event) {
       
       renderDustTemplate('evaluation/evaluation_evaluate_modal_view.dust', { }, $.proxy(function (text) {
         var dialog = $(text);
         $(text).dialog({
           modal: true, 
+          height: $(window).height() - 50,
           resizable: false,
-          draggable: false,
-          width: 'auto',
-          title: null,
+          width: $(window).width() - 50,
           dialogClass: "evaluation-evaluate-modal",
           buttons: [{
             'text': dialog.data('button-save-text'),
@@ -99,10 +168,9 @@
         var dialog = $(text);
         $(text).dialog({
           modal: true, 
+          height: $(window).height() - 50,
           resizable: false,
-          draggable: false,
-          width: 'auto',
-          title: null,
+          width: $(window).width() - 50,
           dialogClass: "evaluation-evaluate-modal",
           buttons: [{
             'text': dialog.data('button-save-text'),

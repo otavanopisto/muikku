@@ -3,6 +3,7 @@ package fi.muikku.dao.workspace;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
@@ -125,7 +126,7 @@ public class WorkspaceUserEntityDAO extends CoreDAO<WorkspaceUserEntity> {
     return entityManager.createQuery(criteria).getResultList();
   }
   
-  public List<WorkspaceUserEntity> listByWorkspaceAndRoles(WorkspaceEntity workspaceEntity, List<WorkspaceRoleEntity> workspaceUserRoles) {
+  public List<WorkspaceUserEntity> listByWorkspaceAndRoles(WorkspaceEntity workspaceEntity, List<WorkspaceRoleEntity> workspaceUserRoles, Integer firstResult, Integer maxResults) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -141,7 +142,16 @@ public class WorkspaceUserEntityDAO extends CoreDAO<WorkspaceUserEntity> {
         )
     );
     
-    return entityManager.createQuery(criteria).getResultList();
+    TypedQuery<WorkspaceUserEntity> query = entityManager.createQuery(criteria);
+    if (firstResult != null) {
+      query.setFirstResult(firstResult);
+    }
+    
+    if (maxResults != null) {
+      query.setMaxResults(maxResults);
+    }
+    
+    return query.getResultList();
   }
 
   public List<WorkspaceUserEntity> listByWorkspaceEntityAndUserEntityAndArchived(WorkspaceEntity workspaceEntity, UserEntity userEntity, Boolean archived) {

@@ -85,6 +85,23 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
    
     return entityManager.createQuery(criteria).getResultList();
   }
+
+  public List<WorkspaceMaterial> listByParentAndAssignmentType(WorkspaceNode parent, WorkspaceMaterialAssignmentType assignmentType) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceMaterial> criteria = criteriaBuilder.createQuery(WorkspaceMaterial.class);
+    Root<WorkspaceMaterial> root = criteria.from(WorkspaceMaterial.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(WorkspaceMaterial_.assignmentType), assignmentType),
+        criteriaBuilder.equal(root.get(WorkspaceMaterial_.parent), parent)
+      )
+    );
+   
+    return entityManager.createQuery(criteria).getResultList();
+  }
   
   public WorkspaceMaterial updateMaterialId(WorkspaceMaterial workspaceMaterial, long materialId) {
     workspaceMaterial.setMaterialId(materialId);

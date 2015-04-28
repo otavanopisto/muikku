@@ -1,0 +1,47 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html" 
+  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+  xmlns:composite="http://java.sun.com/jsf/composite/composite"
+  xmlns:jsf="http://xmlns.jcp.org/jsf">
+
+  <div class="evaluation-view-wrapper">
+    <div class="evaluation-student-listing-wrapper">
+      <ui:repeat var="student" value="#{evaluationPageBackingBean.workspaceStudents}">
+        <div class="evaluation-student-wrapper">
+           <div class="evaluation-student-picture"></div>
+           <div class="evaluation-student-name">#{student.displayName}</div>
+         </div>
+      </ui:repeat>
+    </div>
+    <div class="evaluation-student-assignment-listing-wrapper">
+      <ui:repeat var="assignment" value="#{evaluationPageBackingBean.assignments}">
+        <div class="evaluation-student-assignment-listing-row">
+          <ui:repeat var="studentAssignment" value="#{assignment.studentAssignments}">
+            <div class="evaluation-assignment-wrapper" jsf:rendered="#{studentAssignment.status eq 'UNANSWERED'}">
+              <div class="evaluation-assignment-picture"></div>
+              <div class="evaluation-assignment-title">#{assignment.title}</div>
+            </div>
+            
+            <div class="evaluation-assignment-wrapper assignment-done" jsf:rendered="#{studentAssignment.status eq 'DONE'}">
+              <div class="evaluation-assignment-picture"></div>
+              <div class="evaluation-assignment-title">#{assignment.title}</div>
+            </div>
+            
+            <div class="evaluation-assignment-wrapper assignment-evaluated" jsf:rendered="#{studentAssignment.status eq 'EVALUATED'}">
+              <div class="evaluation-assignment-picture"></div>
+              <div class="evaluation-assignment-title">#{assignment.title}</div>
+            </div>
+            
+            <div class="evaluation-assignment-wrapper assignment-evaluation-critical" jsf:rendered="#{studentAssignment.status eq 'EVALUATION_CRITICAL'}">
+              <div class="evaluation-assignment-picture"></div>
+              <div class="evaluation-assignment-title">#{assignment.title}</div>
+            </div>
+          </ui:repeat>
+        </div> 
+      </ui:repeat>      
+
+    </div>
+  </div>
+    
+</ui:composition>
