@@ -29,6 +29,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 
 import fi.muikku.controller.messaging.MessagingWidget;
 import fi.muikku.i18n.LocaleController;
@@ -40,6 +41,7 @@ import fi.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.model.workspace.WorkspaceUserSignup;
 import fi.muikku.plugin.PluginRESTService;
+import fi.muikku.plugins.evaluation.EvaluationController;
 import fi.muikku.plugins.material.MaterialController;
 import fi.muikku.plugins.material.QueryFieldController;
 import fi.muikku.plugins.material.model.Material;
@@ -55,15 +57,19 @@ import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
+import fi.muikku.plugins.workspace.rest.model.WorkspaceMaterialEvaluation;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceMaterialFieldAnswer;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceMaterialReply;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceUser;
 import fi.muikku.schooldata.CourseMetaController;
+import fi.muikku.schooldata.GradingController;
 import fi.muikku.schooldata.RoleController;
 import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.schooldata.entity.CourseIdentifier;
+import fi.muikku.schooldata.entity.GradingScale;
+import fi.muikku.schooldata.entity.GradingScaleItem;
 import fi.muikku.schooldata.entity.Role;
 import fi.muikku.schooldata.entity.Subject;
 import fi.muikku.schooldata.entity.User;
@@ -146,6 +152,12 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @Inject
   private WorkspaceVisitController workspaceVisitController;
+
+  @Inject
+  private GradingController gradingController;
+  
+  @Inject
+  private EvaluationController evaluationController;
   
   @GET
   @Path("/workspaces/")
@@ -729,6 +741,99 @@ public class WorkspaceRESTService extends PluginRESTService {
     Boolean hidden = workspaceMaterial.getHidden();
     workspaceMaterialController.updateWorkspaceNode(workspaceNode, materialId, parentNode, nextSibling, hidden, workspaceMaterial.getAssignmentType());
     return Response.noContent().build();
+  }
+  
+  @POST
+  @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/evaluations/")
+  public Response createWorkspaceMaterialEvaluation(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, WorkspaceMaterialEvaluation payload) {
+    // TODO: Security
+    
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
+    if (workspaceMaterial == null) {
+      return Response.status(Status.NOT_FOUND).entity("workspaceMaterial not found").build();
+    }
+
+    WorkspaceRootFolder rootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(workspaceMaterial);
+    if (rootFolder == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+    }
+    
+    if (!workspaceEntity.getId().equals(rootFolder.getWorkspaceEntityId())) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    if (payload.getEvaluated() == null) {
+      return Response.status(Status.BAD_REQUEST).entity("evaluated is missing").build(); 
+    }
+    
+    if (payload.getAssessorEntityId() == null) {
+      return Response.status(Status.BAD_REQUEST).entity("assessorEntityId is missing").build(); 
+    }
+    
+    if (payload.getStudentEntityId() == null) {
+      return Response.status(Status.BAD_REQUEST).entity("studentEntityId is missing").build(); 
+    }
+    
+    if (payload.getGradingScaleSchoolDataSource() == null) {
+      return Response.status(Status.BAD_REQUEST).entity("gradingScaleSchoolDataSource is missing").build(); 
+    }
+    
+    if (payload.getGradingScaleIdentifier() == null) {
+      return Response.status(Status.BAD_REQUEST).entity("gradingScaleIdentifier is missing").build(); 
+    }
+    
+    if (payload.getGradeSchoolDataSource() == null) {
+      return Response.status(Status.BAD_REQUEST).entity("gradeSchoolDataSource is missing").build(); 
+    }
+    
+    if (payload.getGradeIdentifier() == null) {
+      return Response.status(Status.BAD_REQUEST).entity("gradeIdentifier is missing").build(); 
+    }
+
+    UserEntity assessor = userEntityController.findUserEntityById(payload.getAssessorEntityId());
+    UserEntity student = userEntityController.findUserEntityById(payload.getStudentEntityId());
+    GradingScale gradingScale = gradingController.findGradingScale(payload.getGradingScaleSchoolDataSource(), payload.getGradingScaleIdentifier());
+    GradingScaleItem grade = gradingController.findGradingScaleItem(gradingScale, payload.getGradeSchoolDataSource(), payload.getGradeIdentifier());
+
+    if (assessor == null) {
+      return Response.status(Status.BAD_REQUEST).entity("assessor is invalid").build(); 
+    }
+    
+    if (student == null) {
+      return Response.status(Status.BAD_REQUEST).entity("student is invalid").build(); 
+    }
+    
+    if (gradingScale == null) {
+      return Response.status(Status.BAD_REQUEST).entity("gradingScale is invalid").build(); 
+    }
+    
+    if (grade == null) {
+      return Response.status(Status.BAD_REQUEST).entity("grade is invalid").build(); 
+    }
+    
+    Date evaluated = payload.getEvaluated().toDate();
+    
+    return Response.ok(createRestModel(
+      evaluationController.createWorkspaceAssignmentEvaluation(student, workspaceMaterial, gradingScale, grade, assessor, evaluated, payload.getVerbalAssessment())
+    )).build();
+  }
+  
+  private WorkspaceMaterialEvaluation createRestModel(fi.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation evaluation) {
+    return new WorkspaceMaterialEvaluation(evaluation.getId(), 
+        new DateTime(evaluation.getEvaluated()), 
+        evaluation.getAssessorEntityId(), 
+        evaluation.getStudentEntityId(), 
+        evaluation.getWorkspaceMaterialId(), 
+        evaluation.getGradingScaleIdentifier(), 
+        evaluation.getGradingScaleSchoolDataSource(), 
+        evaluation.getGradeIdentifier(), 
+        evaluation.getGradeSchoolDataSource(),
+        evaluation.getVerbalAssessment());
   }
 
   // //
