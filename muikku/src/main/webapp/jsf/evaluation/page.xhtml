@@ -15,139 +15,32 @@
       </ui:repeat>
     </div>
     <div class="evaluation-student-assignment-listing-wrapper">
-    
-      <div class="evaluation-student-assignment-listing-row">
-      
-        <div class="evaluation-assignment-wrapper">
-          <div class="evaluation-assignment-picture"></div>
-          <div class="evaluation-assignment-title">Arvioitava tehtävä 1</div>
-        </div>
-       
-        <div class="evaluation-assignment-wrapper">
-          <div class="evaluation-assignment-picture"></div>
-          <div class="evaluation-assignment-title">Arvioitava tehtävä 1</div>
-        </div>
-       
-        <div class="evaluation-assignment-wrapper">
-          <div class="evaluation-assignment-picture"></div>
-          <div class="evaluation-assignment-title">Arvioitava tehtävä 1</div>
-        </div>
-       
-        <div class="evaluation-assignment-wrapper">
-          <div class="evaluation-assignment-picture"></div>
-          <div class="evaluation-assignment-title">Arvioitava tehtävä 1</div>
-        </div>
-        
-        <div class="evaluation-assignment-wrapper">
-          <div class="evaluation-assignment-picture"></div>
-          <div class="evaluation-assignment-title">Arvioitava tehtävä 1</div>
-        </div>
-       
-        <div class="evaluation-assignment-wrapper">
-          <div class="evaluation-assignment-picture"></div>
-          <div class="evaluation-assignment-title">Arvioitava tehtävä 1</div>
-        </div>
-       
-        <div class="evaluation-assignment-wrapper">
-          <div class="evaluation-assignment-picture"></div>
-          <div class="evaluation-assignment-title">Arvioitava tehtävä 1</div>
-        </div>
-       
-        <div class="evaluation-assignment-wrapper">
-          <div class="evaluation-assignment-picture"></div>
-          <div class="evaluation-assignment-title">Arvioitava tehtävä 1</div>
-        </div>
-      
-      </div>
-    
-      <div class="evaluation-student-assignment-listing-row">
-      
-        <div class="evaluation-assignment-wrapper">
-          <div class="evaluation-assignment-picture"></div>
-          <div class="evaluation-assignment-title">Arvioitava tehtävä 2</div>
-        </div>
-       
-        <div class="evaluation-assignment-wrapper assignment-done">
-          <div class="evaluation-assignment-picture"></div>
-          <div class="evaluation-assignment-title">Arvioitava tehtävä 2</div>
-        </div>
-       
-        <div class="evaluation-assignment-wrapper assignment-done">
-          <div class="evaluation-assignment-picture"></div>
-          <div class="evaluation-assignment-title">Arvioitava tehtävä 2</div>
-        </div>
-       
-        <div class="evaluation-assignment-wrapper assignment-evaluated">
-          <div class="evaluation-assignment-picture"></div>
-          <div class="evaluation-assignment-title">Arvioitava tehtävä 2</div>
-        </div>
-        
-        <div class="evaluation-assignment-wrapper assignment-done">
-          <div class="evaluation-assignment-picture"></div>
-          <div class="evaluation-assignment-title">Arvioitava tehtävä 2</div>
-        </div>
-       
-        <div class="evaluation-assignment-wrapper assignment-evaluation-critical">
-          <div class="evaluation-assignment-picture"></div>
-          <div class="evaluation-assignment-title">Arvioitava tehtävä 2</div>
-        </div>
-       
-        <div class="evaluation-assignment-wrapper assignment-done">
-          <div class="evaluation-assignment-picture"></div>
-          <div class="evaluation-assignment-title">Arvioitava tehtävä 2</div>
-        </div>
-       
-        <div class="evaluation-assignment-wrapper assignment-evaluated">
-          <div class="evaluation-assignment-picture"></div>
-          <div class="evaluation-assignment-title">Arvioitava tehtävä 2</div>
-        </div>
-      
-      </div>
-      
-      <div class="evaluation-student-assignment-listing-row">
-      
-        <div class="evaluation-assignment-wrapper assignment-evaluation-critical">
-          <div class="evaluation-assignment-picture"></div>
-          <div class="evaluation-assignment-title">Arvioitava tehtävä 3</div>
-        </div>
-       
-        <div class="evaluation-assignment-wrapper assignment-done">
-          <div class="evaluation-assignment-picture"></div>
-          <div class="evaluation-assignment-title">Arvioitava tehtävä 3</div>
-        </div>
-       
-        <div class="evaluation-assignment-wrapper assignment-done">
-          <div class="evaluation-assignment-picture"></div>
-          <div class="evaluation-assignment-title">Arvioitava tehtävä 3</div>
-        </div>
-       
-        <div class="evaluation-assignment-wrapper assignment-evaluated">
-          <div class="evaluation-assignment-picture"></div>
-          <div class="evaluation-assignment-title">Arvioitava tehtävä 3</div>
-        </div>
-      
-        <div class="evaluation-assignment-wrapper assignment-done">
-          <div class="evaluation-assignment-picture"></div>
-          <div class="evaluation-assignment-title">Arvioitava tehtävä 3</div>
-        </div>
-       
-        <div class="evaluation-assignment-wrapper assignment-done">
-          <div class="evaluation-assignment-picture"></div>
-          <div class="evaluation-assignment-title">Arvioitava tehtävä 3</div>
-        </div>
-       
-        <div class="evaluation-assignment-wrapper">
-          <div class="evaluation-assignment-picture"></div>
-          <div class="evaluation-assignment-title">Arvioitava tehtävä 3</div>
-        </div>
-       
-        <div class="evaluation-assignment-wrapper assignment-evaluated">
-          <div class="evaluation-assignment-picture"></div>
-          <div class="evaluation-assignment-title">Arvioitava tehtävä 3</div>
-        </div>
-      
-      </div>
-         
+      <ui:repeat var="assignment" value="#{evaluationPageBackingBean.assignments}">
+        <div class="evaluation-student-assignment-listing-row">
+          <ui:repeat var="studentAssignment" value="#{assignment.studentAssignments}">
+            <div class="evaluation-assignment-wrapper" jsf:rendered="#{studentAssignment.status eq 'UNANSWERED'}">
+              <div class="evaluation-assignment-picture"></div>
+              <div class="evaluation-assignment-title">#{assignment.title}</div>
+            </div>
+            
+            <div class="evaluation-assignment-wrapper assignment-done" jsf:rendered="#{studentAssignment.status eq 'DONE'}">
+              <div class="evaluation-assignment-picture"></div>
+              <div class="evaluation-assignment-title">#{assignment.title}</div>
+            </div>
+            
+            <div class="evaluation-assignment-wrapper assignment-evaluated" jsf:rendered="#{studentAssignment.status eq 'EVALUATED'}">
+              <div class="evaluation-assignment-picture"></div>
+              <div class="evaluation-assignment-title">#{assignment.title}</div>
+            </div>
+            
+            <div class="evaluation-assignment-wrapper assignment-evaluation-critical" jsf:rendered="#{studentAssignment.status eq 'EVALUATION_CRITICAL'}">
+              <div class="evaluation-assignment-picture"></div>
+              <div class="evaluation-assignment-title">#{assignment.title}</div>
+            </div>
+          </ui:repeat>
+        </div> 
+      </ui:repeat>      
+
     </div>
   </div>
     

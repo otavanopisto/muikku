@@ -3,6 +3,8 @@ package fi.muikku.plugins.evaluation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -17,6 +19,10 @@ import fi.muikku.jsf.NavigationRules;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
+import fi.muikku.plugins.workspace.ContentNode;
+import fi.muikku.plugins.workspace.WorkspaceMaterialController;
+import fi.muikku.plugins.workspace.WorkspaceMaterialException;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.users.UserController;
@@ -29,6 +35,9 @@ import fi.otavanopisto.security.LoggedIn;
 @LoggedIn
 public class EvaluationPageBackingBean {
   
+  @Inject
+  private Logger logger;
+  
   @Parameter ("workspaceEntityId")
   private Long workspaceEntityId;
   
@@ -40,6 +49,9 @@ public class EvaluationPageBackingBean {
 
   @Inject
   private WorkspaceController workspaceController;
+  
+  @Inject
+  private WorkspaceMaterialController workspaceMaterialController;
 
   @Inject
   private UserController userController;
@@ -55,9 +67,16 @@ public class EvaluationPageBackingBean {
     Integer firstStudent = getPageId() * getMaxStudents();
     
     List<WorkspaceStudent> students = new ArrayList<>();
+    List<ContentNode> assignmentNodes = null;
     
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
-
+    try {
+      assignmentNodes = getAssignmentNodes(workspaceEntity);
+    } catch (WorkspaceMaterialException e) {
+      logger.log(Level.SEVERE, "Failed to loading workspace materials", e);
+      return NavigationRules.INTERNAL_ERROR;
+    }
+    
     List<WorkspaceUserEntity> workspaceStudents = workspaceController.listWorkspaceUserEnitiesByWorkspaceRoleArchetype(workspaceEntity, WorkspaceRoleArchetype.STUDENT, firstStudent, getMaxStudents());
     for (WorkspaceUserEntity workspaceStudent : workspaceStudents) {
       User user = userController.findUserByDataSourceAndIdentifier(workspaceEntity.getDataSource(), workspaceStudent.getUserSchoolDataIdentifier().getIdentifier());
@@ -65,8 +84,40 @@ public class EvaluationPageBackingBean {
     }
     
     this.workspaceStudents = Collections.unmodifiableList(students);
+    this.assignments = createAssignments(workspaceStudents, assignmentNodes);
     
     return null;
+  }
+  
+  private List<ContentNode> getAssignmentNodes(WorkspaceEntity workspaceEntity) throws WorkspaceMaterialException {
+    // TODO: Optimize this
+    List<ContentNode> result = new ArrayList<>();
+    addAssignmentNodes(workspaceMaterialController.listWorkspaceMaterialsAsContentNodes(workspaceEntity, false), result);
+    return result;
+  }
+  
+  private void addAssignmentNodes(List<ContentNode> contentNodes, List<ContentNode> result) {
+    for (ContentNode contentNode : contentNodes) {
+      if (contentNode.getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED) {
+        result.add(contentNode);
+      } else {
+        addAssignmentNodes(contentNode.getChildren(), result);
+      }
+    }
+  }
+  
+  private List<Assignment> createAssignments(List<WorkspaceUserEntity> workspaceStudents, List<ContentNode> assignmentNodes) {
+    List<Assignment> result = new ArrayList<>(assignmentNodes.size());
+    for (ContentNode assignmentNode : assignmentNodes) {
+      List<StudentAssignment> studentAssignments = new ArrayList<>(workspaceStudents.size());
+      for (WorkspaceUserEntity workspaceStudent : workspaceStudents) {
+        studentAssignments.add(new StudentAssignment(StudentAssignmentStatus.DONE));
+      }
+      
+      result.add(new Assignment(assignmentNode.getTitle(), studentAssignments));
+    }
+    
+    return result;
   }
   
   public Long getWorkspaceEntityId() {
@@ -93,10 +144,15 @@ public class EvaluationPageBackingBean {
     this.pageId = pageId;
   }
   
+  public List<Assignment> getAssignments() {
+    return assignments;
+  }
+  
   public List<WorkspaceStudent> getWorkspaceStudents() {
     return workspaceStudents;
   }
   
+  private List<Assignment> assignments;
   private List<WorkspaceStudent> workspaceStudents;
   
   public static class WorkspaceStudent {
@@ -118,4 +174,48 @@ public class EvaluationPageBackingBean {
     private String displayName;
   }
 
+  public static class Assignment {
+    
+    public Assignment(String title, List<StudentAssignment> studentAssignments) {
+      this.title = title;
+      this.studentAssignments = studentAssignments;
+    }
+    
+    public String getTitle() {
+      return title;
+    }
+    
+    public List<StudentAssignment> getStudentAssignments() {
+      return studentAssignments;
+    }
+    
+    private String title;
+    private List<StudentAssignment> studentAssignments;
+  }
+  
+  public static class StudentAssignment {
+
+    public StudentAssignment(StudentAssignmentStatus status) {
+      this.status = status;
+    }
+    
+    public StudentAssignmentStatus getStatus() {
+      return status;
+    }
+    
+    private StudentAssignmentStatus status;
+  }
+  
+  public static enum StudentAssignmentStatus {
+    
+    UNANSWERED,
+    
+    DONE,
+    
+    EVALUATED,
+    
+    EVALUATION_CRITICAL
+    
+  }
+  
 }
