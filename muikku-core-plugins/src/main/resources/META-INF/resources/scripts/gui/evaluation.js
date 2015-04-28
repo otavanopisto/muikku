@@ -1,6 +1,76 @@
 (function() {
+  
+  $.widget("custom.evaluationSlyder", {
+    options : {
+      workspaceEntityId: null
+    },
+    
+    _create : function() {
+      this.element.append($('<div>').addClass('evaluation-views-slyder'));
+      
+      this._pagesLoaded = {};
+      
+      this._loadPage(0, $.proxy(function () {
+        this._loadPage(1, $.proxy(function () {
+          this.element.sly({
+            horizontal: 1,
+            itemNav: 'forceCentered',
+            smart: 1,
+            activateMiddle: 1,
+            mouseDragging: 1,
+            touchDragging: 1,
+            releaseSwing: 1,
+            startAt: 0,
+            scrollBy: 1,
+            speed: 300,
+            elasticBounds: 1,
+            easing: 'easeOutExpo'
+          })
+          .sly('on', 'active', $.proxy(this._onSlyActive, this));
+        }, this));
+      }, this));
+    },
+    
+    _loadPage: function (pageId, callback) {
+      console.log("look! im loading a page!");
+      
+      this._pagesLoaded[pageId] = 'LOADING';
+      
+      $.ajax({
+        url : CONTEXTPATH + '/evaluation/' + this.options.workspaceEntityId + '/page/' + pageId + '?maxStudents=' + this.options.maxStudents,
+        success : $.proxy(function(data) {
+          this._pagesLoaded[pageId] = 'LOADED';
+          
+          this.element.find('.evaluation-views-slyder').append($(data).css('width', this.element.width()));
+          this.element.sly('reload');
+              
+          if ($.isFunction(callback)) {
+            callback();
+          }
+        }, this)
+      });
+    },
+    
+    _onSlyActive: function (eventName, index) {
+      if (!this._pagesLoaded[index + 1]) {
+        this._loadPage(index + 1);
+      } else {
+        console.log("look! im NOT loading a page!");
+      }
+    },
+    
+    _destroy: function () {
+      
+    }
+  });
 
   $(document).ready(function() {
+    
+    $('#evaluation-views-wrapper')
+      .evaluationSlyder({
+        workspaceEntityId: 1,
+        maxStudents: 8
+      });
     
     if ($('#evaluationModalWrapper').length > 0) {
       $('#evaluationModalWrapper').hide();
