@@ -133,9 +133,10 @@
     });
     
     /* Evaluate assignment when its state is DONE or CRITICAL (means its late) */
-    $(document).on('click', '.assignment-done, .assignment-evaluation-critical', function (event) {
-      
-      renderDustTemplate('evaluation/evaluation_evaluate_modal_view.dust', { }, $.proxy(function (text) {
+    $(document).on('click', '.evaluation-assignment-wrapper, .assignment-evaluation-critical', function (event) {
+      renderDustTemplate('evaluation/evaluation_evaluate_modal_view.dust', {
+        gradingScales: $.parseJSON($('input[name="grading-scales"]').val())
+      }, $.proxy(function (text) {
         var dialog = $(text);
         $(text).dialog({
           modal: true, 
@@ -147,7 +148,16 @@
             'text': dialog.data('button-save-text'),
             'class': 'save-evaluation-button',
             'click': function(event) {
-      
+              var gradeValue = $(this).find('select[name="grade"]').val();
+              if (gradeValue) {
+                var gradeValueParts = gradeValue.split('@', 2);
+                var grade = gradeValueParts[0];
+                var gradingScale = gradeValueParts[1];
+                
+                console.log("Grade " + grade + ' in grading scale ' + gradingScale);
+              }
+              
+              $(this).dialog("destroy").remove();
             }
           }, {
             'text': dialog.data('button-cancel-text'),
