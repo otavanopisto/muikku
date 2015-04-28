@@ -68,7 +68,7 @@
     
     $('#evaluation-views-wrapper')
       .evaluationSlyder({
-        workspaceEntityId: 1,
+        workspaceEntityId: $('#evaluation-views-wrapper').attr('data-workspace-entity-id'),
         maxStudents: 8
       });
     
