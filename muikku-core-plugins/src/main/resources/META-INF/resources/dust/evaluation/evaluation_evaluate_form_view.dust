@@ -31,8 +31,4 @@
     
     </div>
   </div>
-  <div class="evaluation-modal-evaluationFormAction-wrapper">
-    <button id="evaluateFormCancelButton" class="evaluation-modal-evaluationForm-button">Peruuta</button>
-    <button id="evaluateFormSaveButton" class="evaluation-modal-evaluationForm-button">Tallenna</button>
-  </div>
 </section>

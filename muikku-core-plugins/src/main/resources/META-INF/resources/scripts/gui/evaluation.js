@@ -62,16 +62,17 @@
       $('#evaluationModalWrapper').hide();
     });
     
-    /* Evaluate assignment when its state is DONE or CRITICAL (means its late) */
+    /* Evaluate assignment when its state is DONE or CRITICAL */
     $(document).on('click', '.assignment-done, .assignment-evaluation-critical', function (event) {
       
       renderDustTemplate('evaluation/evaluation_evaluate_modal_view.dust', { }, $.proxy(function (text) {
         var dialog = $(text);
         $(text).dialog({
           modal: true, 
-          height: $(window).height() - 50,
           resizable: false,
-          width: $(window).width() - 50,
+          draggable: false,
+          width: 'auto',
+          title: null,
           dialogClass: "evaluation-evaluate-modal",
           buttons: [{
             'text': dialog.data('button-save-text'),
@@ -98,9 +99,10 @@
         var dialog = $(text);
         $(text).dialog({
           modal: true, 
-          height: $(window).height() - 50,
           resizable: false,
-          width: $(window).width() - 50,
+          draggable: false,
+          width: 'auto',
+          title: null,
           dialogClass: "evaluation-evaluate-modal",
           buttons: [{
             'text': dialog.data('button-save-text'),
@@ -124,11 +126,11 @@
     $(document).on('mouseover', '.evaluation-workspacelist-item', function (event) {
       
       sName = $(this).attr('data-workspace-title');
-      sContainerLoc = $(this).offset().top - $('.evaluation-workspacelist-wrapper').offset().top + 2;
+      sContainerLoc = $(this).offset().top - $('.evaluation-workspacelist-wrapper').offset().top;
       
       $('#workspaceTitleContainer').css({
         position: 'absolute',
-        left: '20px',
+        left: '30px',
         top: sContainerLoc
       })
       .show()
