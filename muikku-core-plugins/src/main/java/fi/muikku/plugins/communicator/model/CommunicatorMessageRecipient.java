@@ -8,8 +8,10 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+import fi.otavanopisto.security.ContextReference;
+
 @Entity
-public class CommunicatorMessageRecipient {
+public class CommunicatorMessageRecipient implements ContextReference {
 
   public Long getId() {
     return id;

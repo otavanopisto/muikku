@@ -21,7 +21,7 @@ import fi.muikku.utils.FacesUtils;
 @Named
 @Stateful
 @RequestScoped 
-@Join (path = "/forgotpassword", to = "/forgotpassword/index.jsf")
+@Join (path = "/forgotpassword", to = "/jsf/forgotpassword/index.jsf")
 public class ForgotPasswordBackingBean {
 
   @Inject

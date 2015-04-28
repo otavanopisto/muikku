@@ -48,10 +48,9 @@ function openInSN(template, result, formFunction) {
       var vals = elements.serializeArray();
       var obj = {};
       var varIsArray = {};
-      
+      var ckContent = null;
       if(textareas.length > 0){
-        var ckContent =  CKEDITOR.instances.msgContent.getData();
-      
+        ckContent =  CKEDITOR.instances[0].textContent.getData();
       }
       
       elements.find(':input').each(function(index, element) {
@@ -63,7 +62,7 @@ function openInSN(template, result, formFunction) {
       $.each(vals, function(index, value) {
         if (varIsArray[value.name] != true) {
           
-          if(value.name == "content" && textareas.length > 0){
+          if(value.name == "content" || value.name == "message" && textareas.length > 0){
             obj[value.name] = ckContent || '';         
           }else{
             obj[value.name] = value.value || '';   

@@ -41,6 +41,9 @@ $(document).ready(function(){
     _showInbox : function () {
       mApi().communicator.items.read()
       .on('$', function (item, itemCallback) {
+        item.caption = $('<div>').html(item.caption).text();
+        item.content = $('<div>').html(item.content).text();
+        
         mApi().communicator.communicatormessages.sender.read(item.id)
           .callback(function (err, user) {  
             item.senderFullName = user.firstName + ' ' + user.lastName;
@@ -66,6 +69,9 @@ $(document).ready(function(){
       
       mApi().communicator.messages.read(communicatorMessageId).callback(function (err, result) {
         for (var i = 0; i < result.length; i++) {
+          result[i].caption = $('<div>').html(result[i].caption).text();
+          result[i].content = $('<div>').html(result[i].content).text();
+          
           var sId = result[i].id;
           mApi().communicator.communicatormessages.sender.read(sId)
             .callback(function (err, user) {  
