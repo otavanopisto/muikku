@@ -1,6 +1,7 @@
 package fi.muikku.plugins.schooldatapyramus;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -15,6 +16,7 @@ import fi.muikku.schooldata.SchoolDataBridgeRequestException;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 import fi.muikku.schooldata.entity.GradingScale;
 import fi.muikku.schooldata.entity.GradingScaleItem;
+import fi.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.pyramus.rest.model.Grade;
 
 public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
@@ -99,5 +101,28 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
       
     return result;
   }
+
+  @Override
+  public WorkspaceAssessment createWorkspaceAssessment(String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String assessingUserIdentifier,
+      String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String verbalAssessment, Date date)
+      throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public WorkspaceAssessment findWorkspaceAssessment(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public WorkspaceAssessment updateWorkspaceAssessment(String identifier, String workspaceUserIdentifier, String workspaceUserSchoolDataSource,
+      String assessingUserIdentifier, String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String verbalAssessment,
+      Date date) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
 
 }
