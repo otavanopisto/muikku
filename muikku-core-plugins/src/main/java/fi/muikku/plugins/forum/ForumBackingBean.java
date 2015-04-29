@@ -10,11 +10,13 @@ import javax.inject.Named;
 import org.ocpsoft.rewrite.annotation.Join;
 
 import fi.muikku.plugins.forum.model.EnvironmentForumArea;
+import fi.otavanopisto.security.LoggedIn;
 
 @Named
 @Stateful
 @RequestScoped
-@Join (path = "/discussion", to = "/jsf/discussion/index.jsf")
+@Join (path = "/discussion/", to = "/jsf/discussion/index.jsf")
+@LoggedIn
 public class ForumBackingBean {
   
   @Inject

@@ -17,15 +17,15 @@
   </ui:define>
 
   <ui:define name="hiddenFields">
-   <input type="hidden" name="workspaceStudentRoleId" value="#{coursePickerBackingBean.workspaceStudentRoleId}"/>
+   <input type="hidden" name="workspaceStudentRoleId" />
   </ui:define>
 
   <ui:define name="content.tools.left"> 
-    <m:widget name="coursepicker-change-view" size="6" rendered="#{sessionBackingBean.loggedIn}"/>
+    <m:widget name="coursepicker-change-view" size="6" />
   </ui:define>
 
   <ui:define name="content.tools.center">
-    <m:widget name="coursepicker-filter-workspaces" size="6" rendered="#{sessionBackingBean.loggedIn}"/>
+    <m:widget name="coursepicker-filter-workspaces" size="6" />
   </ui:define>
 
 </ui:composition>

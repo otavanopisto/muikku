@@ -13,11 +13,12 @@ import org.ocpsoft.rewrite.annotation.Join;
 import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.muikku.schooldata.RoleController;
+import fi.otavanopisto.security.LoggedIn;
 
 @Named
 @Stateful
 @RequestScoped
-@Join (path = "/coursepicker", to = "/jsf/coursepicker/coursepicker.jsf")
+@Join (path = "/coursepicker/", to = "/jsf/coursepicker/index.jsf")
 public class CoursePickerBackingBean {
   
   @Inject
