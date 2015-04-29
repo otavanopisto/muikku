@@ -134,20 +134,26 @@
     
     /* Evaluate assignment when its state is DONE or CRITICAL (means its late) */
     $(document).on('click', '.evaluation-assignment-wrapper, .assignment-evaluation-critical', function (event) {
+      var workspaceMaterialId = $(this).attr('data-workspace-material-id');
+      var studentEntityId = $(this).attr('data-student-entity-id');
       renderDustTemplate('evaluation/evaluation_evaluate_modal_view.dust', {
         gradingScales: $.parseJSON($('input[name="grading-scales"]').val())
       }, $.proxy(function (text) {
         var dialog = $(text);
-        dialog.find('input[name="evaluated"]')
-          .attr('type', 'text')
-          .datepicker();
         
-        $(text).dialog({
+        dialog.dialog({
           modal: true, 
           height: $(window).height() - 50,
           resizable: false,
           width: $(window).width() - 50,
           dialogClass: "evaluation-evaluate-modal",
+          open: function() {
+            $(this).find('input[name="evaluated"]')
+              .css({'z-index': 9999, 'position': 'relative'})
+              .attr('type', 'text')
+              .datepicker()
+              .datepicker('setDate', new Date());
+          },
           buttons: [{
             'text': dialog.data('button-save-text'),
             'class': 'save-evaluation-button',
@@ -157,18 +163,19 @@
                 .split('@', 2);
               var grade = gradeValue[0].split('/', 2);
               var gradingScale = gradeValue[1].split('/', 2);
-              var workspaceEntityId = 1; // TODO
-              var workspaceMaterialId = 1; // TODO
+              var workspaceEntityId = $('input[name="workspace-entity-id"]').val();
+              // TODO: Switch to ISO 8601
+              var evaluated = $(this).find('input[name="evaluated"]').datepicker('getDate').getTime();
               
               mApi().workspace.workspaces.materials.evaluations.create(workspaceEntityId, workspaceMaterialId, {
-                evaluated: $(this).find('input[name="evaluated"]').datepicker('getDate'),
+                evaluated: evaluated,
                 gradeIdentifier: grade[0],
                 gradeSchoolDataSource: grade[1],
                 gradingScaleIdentifier: gradingScale[0],
                 gradingScaleSchoolDataSource: gradingScale[1],
-                assessorEntityId: 1, // TODO
-                studentEntityId: 1, // TODO
-                workspaceMaterialId: workspaceMaterialId, // TODO
+                assessorEntityId: MUIKKU_LOGGED_USER_ID,
+                studentEntityId: studentEntityId,
+                workspaceMaterialId: workspaceMaterialId,
                 verbalAssessment: $(this).find('#evaluateFormLiteralEvaluation').val()
               }).callback($.proxy(function (err, result) {
                 if (err) {
