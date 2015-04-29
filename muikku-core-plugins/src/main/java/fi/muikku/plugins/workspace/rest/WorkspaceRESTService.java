@@ -563,13 +563,19 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/replies")
-  public Response getWorkspaceMaterialAnswers(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId) {
-    // TODO: Correct workspace entity?
+  public Response getWorkspaceMaterialAnswers(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @QueryParam ("userEntityId") Long userEntityId) {
+    // TODO: Correct workspace entity?, 
     // TODO: Security
     
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).entity("Not logged in").build();
     }
+    
+    // TODO Return everyone's answers
+    if (userEntityId == null) {
+      return Response.status(Status.NOT_IMPLEMENTED).build();
+    }
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
     
     WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
     if (workspaceMaterial == null) {
@@ -579,7 +585,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     List<WorkspaceMaterialFieldAnswer> answers = new ArrayList<>();
     
     try {
-      fi.muikku.plugins.workspace.model.WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, sessionController.getLoggedUserEntity());
+      fi.muikku.plugins.workspace.model.WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
       if (reply != null) {
         List<WorkspaceMaterialField> fields = workspaceMaterialFieldController.listWorkspaceMaterialFieldsByWorkspaceMaterial(workspaceMaterial);
         for (WorkspaceMaterialField field : fields) {
