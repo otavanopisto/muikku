@@ -8,6 +8,8 @@ import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.search.SearchReindexEvent;
+import fi.muikku.security.MuikkuPermissions;
+import fi.muikku.session.SessionController;
 
 @Named
 @Join (path = "/system/search/reindex", to = "/jsf/system/search-reindex.jsf")
@@ -16,10 +18,15 @@ public class SystemReindexBackingBean {
   @Inject
   private Event<SearchReindexEvent> reindexEvent;
   
+  @Inject
+  private SessionController sessionController;
+  
 	@RequestAction
 	public String init() {
-	  // TODO: Secure this
-	  reindexEvent.fire(new SearchReindexEvent());
+	  if (sessionController.hasPermission(MuikkuPermissions.ADMIN, null)) {
+	    reindexEvent.fire(new SearchReindexEvent());
+	  }
+	  
 	  return "/index.jsf?faces-redirect=true";
 	}
 }

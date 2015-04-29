@@ -16,6 +16,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -28,6 +29,7 @@ import fi.muikku.schooldata.entity.EnvironmentRole;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.search.SearchProvider;
 import fi.muikku.search.SearchResult;
+import fi.muikku.session.SessionController;
 import fi.muikku.users.EnvironmentUserController;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
@@ -47,6 +49,9 @@ public class UserRESTService extends AbstractRESTService {
 	private EnvironmentUserController environmentUserController;
 
 	@Inject
+	private SessionController sessionController;
+	
+	@Inject
 	@Any
 	private Instance<SearchProvider> searchProviders;
 
@@ -57,6 +62,11 @@ public class UserRESTService extends AbstractRESTService {
 			@QueryParam("firstResult") @DefaultValue("0") Integer firstResult,
 			@QueryParam("maxResults") @DefaultValue("10") Integer maxResults,
 			@QueryParam("archetype") String archetype) {
+	  
+	  if (!sessionController.isLoggedIn()) {
+	    return Response.status(Status.FORBIDDEN).build();
+	  }
+	  
 		SearchProvider elasticSearchProvider = getProvider("elastic-search");
 		if (elasticSearchProvider != null) {
 			String[] fields = new String[] { "firstName", "lastName" };
@@ -115,6 +125,10 @@ public class UserRESTService extends AbstractRESTService {
 	@GET
 	@Path("/users/{ID}")
 	public Response findUser(@PathParam("ID") Long id) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
 		UserEntity userEntity = userEntityController.findUserEntityById(id);
 		if (userEntity == null) {
 			return Response.status(Response.Status.NOT_FOUND).build();
