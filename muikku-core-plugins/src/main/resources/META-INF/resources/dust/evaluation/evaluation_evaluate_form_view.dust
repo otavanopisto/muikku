@@ -17,7 +17,7 @@
     </div>
     <div class="evaluation-modal-evaluateForm-date-wrapper">
       <label for="evaluateFormLiteralEvaluation">Päivämäärä</label>
-      <input type="date" name="evaluated"/>
+      <input required="required" type="date" name="evaluated"/>
     </div>
     <div class="evaluation-modal-evaluateForm-grade-wrapper">
       <label for="evaluateFormLiteralEvaluation">Arvosana</label>

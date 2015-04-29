@@ -53,7 +53,7 @@ class GradingSchoolDataController {
   }
 
 	public GradingScale findGradingScale(String schoolDataSource, String identifier) {
-		SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(identifier);
+		SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
 		if (dataSource != null) {
 			 return findGradingScale(dataSource, identifier);
 		} else {
@@ -97,7 +97,7 @@ class GradingSchoolDataController {
   }
 
 	public GradingScaleItem findGradingScaleItem(String schoolDataSource, GradingScale gradingScale, String identifier) {
-		SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(identifier);
+		SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
 		if (dataSource != null) {
 			 return findGradingScaleItem(dataSource, gradingScale, identifier);
 		} else {

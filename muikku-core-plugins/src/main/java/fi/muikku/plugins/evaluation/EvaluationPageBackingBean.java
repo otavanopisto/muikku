@@ -131,11 +131,11 @@ public class EvaluationPageBackingBean {
         if (reply != null) {
           status = StudentAssignmentStatus.DONE;
         }
-
-        studentAssignments.add(new StudentAssignment(status));
+        
+        studentAssignments.add(new StudentAssignment(userEntity.getId(), status));
       }
       
-      result.add(new Assignment(assignmentNode.getTitle(), studentAssignments));
+      result.add(new Assignment(workspaceMaterial.getId(), assignmentNode.getTitle(), studentAssignments));
     }
     
     return result;
@@ -197,9 +197,14 @@ public class EvaluationPageBackingBean {
 
   public static class Assignment {
     
-    public Assignment(String title, List<StudentAssignment> studentAssignments) {
+    public Assignment(Long workspaceMaterialId, String title, List<StudentAssignment> studentAssignments) {
+      this.workspaceMaterialId = workspaceMaterialId;
       this.title = title;
       this.studentAssignments = studentAssignments;
+    }
+    
+    public Long getWorkspaceMaterialId() {
+      return workspaceMaterialId;
     }
     
     public String getTitle() {
@@ -210,20 +215,27 @@ public class EvaluationPageBackingBean {
       return studentAssignments;
     }
     
+    private Long workspaceMaterialId;
     private String title;
     private List<StudentAssignment> studentAssignments;
   }
   
   public static class StudentAssignment {
-
-    public StudentAssignment(StudentAssignmentStatus status) {
+    
+    public StudentAssignment(Long studentEntityId, StudentAssignmentStatus status) {
+      this.studentEntityId = studentEntityId;
       this.status = status;
+    }
+
+    public Long getStudentEntityId() {
+      return studentEntityId;
     }
     
     public StudentAssignmentStatus getStatus() {
       return status;
     }
     
+    private Long studentEntityId;
     private StudentAssignmentStatus status;
   }
   
