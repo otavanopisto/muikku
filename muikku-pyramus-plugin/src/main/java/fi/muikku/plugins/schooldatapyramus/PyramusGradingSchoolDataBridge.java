@@ -104,23 +104,25 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
 
   @Override
   public WorkspaceAssessment createWorkspaceAssessment(String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String assessingUserIdentifier,
-      String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String verbalAssessment, Date date) {
+      String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String verbalAssessment, Date date)
+      throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
     // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public WorkspaceAssessment findWorkspaceAssessment(String identifier, String schoolDataSource) {
+  public WorkspaceAssessment findWorkspaceAssessment(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
     // TODO Auto-generated method stub
     return null;
   }
 
   @Override
-  public WorkspaceAssessment updateWorkspaceAssessment(String identifier, String schoolDataSource, String workspaceUserIdentifier,
-      String workspaceUserSchoolDataSource, String assessingUserIdentifier, String assessingUserSchoolDataSource, String gradeIdentifier,
-      String gradeSchoolDataSource, String verbalAssessment, Date date) {
+  public WorkspaceAssessment updateWorkspaceAssessment(String identifier, String workspaceUserIdentifier, String workspaceUserSchoolDataSource,
+      String assessingUserIdentifier, String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String verbalAssessment,
+      Date date) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
     // TODO Auto-generated method stub
     return null;
   }
+
 
 }

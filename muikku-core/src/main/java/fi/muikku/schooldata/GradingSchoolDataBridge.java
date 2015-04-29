@@ -46,7 +46,7 @@ public interface GradingSchoolDataBridge {
 	public WorkspaceAssessment createWorkspaceAssessment(String workspaceUserIdentifier, String workspaceUserSchoolDataSource,
 	    String assessingUserIdentifier, String assessingUserSchoolDataSource,
 	    String gradeIdentifier, String gradeSchoolDataSource,
-	    String verbalAssessment, Date date);
+	    String verbalAssessment, Date date) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
 	/**
 	 * Finds a workspace assessment
@@ -55,7 +55,7 @@ public interface GradingSchoolDataBridge {
 	 * @param schoolDataSource school data source of workspace assessment
 	 * @return found workspace assessment or null of non found
 	 */
-	public WorkspaceAssessment findWorkspaceAssessment(String identifier, String schoolDataSource);
+	public WorkspaceAssessment findWorkspaceAssessment(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
 	/**
 	 * Updates a workspace assessment
@@ -72,10 +72,10 @@ public interface GradingSchoolDataBridge {
    * @param date assessment date
 	 * @return updated workspace assessment
 	 */
-	public WorkspaceAssessment updateWorkspaceAssessment(String identifier, String schoolDataSource, 
+	public WorkspaceAssessment updateWorkspaceAssessment(String identifier,  
 	    String workspaceUserIdentifier, String workspaceUserSchoolDataSource,
 	    String assessingUserIdentifier, String assessingUserSchoolDataSource,
 	    String gradeIdentifier, String gradeSchoolDataSource,
-	    String verbalAssessment, Date date);
+	    String verbalAssessment, Date date) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
 }
