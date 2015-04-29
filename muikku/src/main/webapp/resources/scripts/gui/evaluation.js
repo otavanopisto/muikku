@@ -14,8 +14,8 @@
         this._loadPage(1, $.proxy(function () {
           this.element.sly({
             horizontal: 1,
-            itemNav: 'forceCentered',
-            smart: 1,
+            itemNav: 'basic',
+            smart: false,
             activateMiddle: 1,
             mouseDragging: 1,
             touchDragging: 1,
@@ -26,11 +26,13 @@
             elasticBounds: 1,
             easing: 'easeOutExpo',
             scrollBar: '.scrollbar',
+            prevPage: '.prevPage',
+            nextPage: '.nextPage',
             dragHandle:    false,
             dynamicHandle: 1,
             minHandleSize: 50,
-            clickBar:      false,
-            syncSpeed:     0.5
+            clickBar: false,
+            syncSpeed: 0.5
           })
           .sly('on', 'active', $.proxy(this._onSlyActive, this));
         }, this));
@@ -39,6 +41,8 @@
     
     _loadPage: function (pageId, callback) {
       console.log("look! im loading a page!");
+      
+      $('#contentEvaluation').append($('<div>').addClass('content-loading'));
       
       this._pagesLoaded[pageId] = 'LOADING';
       
@@ -53,7 +57,25 @@
           if ($.isFunction(callback)) {
             callback();
           }
-        }, this)
+        } ,this),
+        complete : $.proxy(function(data) {
+          $('#evaluation-views-wrapper')
+          .css({
+            width : this.options.maxStudents * $('.evaluation-student-wrapper').width() + this.options.maxStudents * 20 + 20 + 'px'
+          });
+          
+          $('.content-loading')
+          .animate({
+          opacity: 0
+        },{
+          duration:500,
+          easing: "easeInOutQuint",
+          complete: function () {
+            $('.content-loading').remove();
+          }
+        });
+          
+        } ,this)
       });
     },
     
@@ -150,7 +172,7 @@
     $('#evaluation-views-wrapper')
       .evaluationSlyder({
         workspaceEntityId: $('#evaluation-views-wrapper').attr('data-workspace-entity-id'),
-        maxStudents: 8
+        maxStudents: 6
       });
     
     if ($('#evaluationModalWrapper').length > 0) {
