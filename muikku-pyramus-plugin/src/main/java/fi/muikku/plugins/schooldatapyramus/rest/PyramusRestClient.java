@@ -39,6 +39,13 @@ class PyramusRestClient implements Serializable {
   }
   
   public <T> T post(Client client, String accssToken, String path, Entity<?> entity, Class<T> type) {
+    
+    String blockOutgoing = System.getProperty("muikku.schoolDataPyramus.blockOutgoing", "false");
+    
+    if ("true".equals(blockOutgoing)) {
+      throw new RuntimeException("Outgoing school-data-pyramus traffic blocked");
+    }
+    
     WebTarget target = client.target(url + path);
     Builder request = target.request();
     request.header("Authorization", "Bearer " + accssToken);
@@ -53,6 +60,13 @@ class PyramusRestClient implements Serializable {
   @SuppressWarnings("unchecked")
   public <T> T post(Client client, String accssToken, String path, T entity) {
     WebTarget target = client.target(url + path);
+
+    String blockOutgoing = System.getProperty("muikku.schoolDataPyramus.blockOutgoing", "false");
+    
+    if ("true".equals(blockOutgoing)) {
+      throw new RuntimeException("Outgoing school-data-pyramus traffic blocked");
+    }
+
     Builder request = target.request();
     request.header("Authorization", "Bearer " + accssToken);
     Response response = request.post(Entity.entity(entity, MediaType.APPLICATION_JSON));
