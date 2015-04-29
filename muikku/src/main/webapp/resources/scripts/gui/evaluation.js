@@ -63,6 +63,81 @@
       
     }
   });
+  
+  function openMaterialEvaluationDialog(workspaceEntityId, workspaceMaterialId, studentEntityId, workspaceMaterialEvaluation) {
+    renderDustTemplate('evaluation/evaluation_evaluate_modal_view.dust', {
+      gradingScales: $.parseJSON($('input[name="grading-scales"]').val())
+    }, $.proxy(function (text) {
+      var dialog = $(text);
+      
+      dialog.dialog({
+        modal: true, 
+        height: $(window).height() - 50,
+        resizable: false,
+        width: $(window).width() - 50,
+        dialogClass: "evaluation-evaluate-modal",
+        open: function() {
+          // TODO: Assessor select
+          
+          $(this).find('input[name="evaluated"]')
+            .css({'z-index': 9999, 'position': 'relative'})
+            .attr('type', 'text')
+            .datepicker();
+          
+          if (!workspaceMaterialEvaluation) {
+            $(this).find('input[name="evaluated"]')
+              .datepicker('setDate', new Date());
+          } else {
+            var gradeId = 
+              workspaceMaterialEvaluation.gradeIdentifier + '/' + workspaceMaterialEvaluation.gradeSchoolDataSource + '@' + 
+              workspaceMaterialEvaluation.gradingScaleIdentifier + '/' + workspaceMaterialEvaluation.gradingScaleSchoolDataSource;
+                
+            $(this).find('input[name="evaluated"]')
+              .datepicker('setDate', new Date(workspaceMaterialEvaluation.evaluated));
+            $(this).find('#evaluateFormLiteralEvaluation').val(workspaceMaterialEvaluation.verbalAssessment);
+            $(this).find('select[name="grade"]').val(gradeId);
+          }
+        },
+        buttons: [{
+          'text': dialog.data('button-save-text'),
+          'class': 'save-evaluation-button',
+          'click': function(event) {
+            var gradeValue = $(this).find('select[name="grade"]')
+              .val()
+              .split('@', 2);
+            var grade = gradeValue[0].split('/', 2);
+            var gradingScale = gradeValue[1].split('/', 2);
+            // TODO: Switch to ISO 8601
+            var evaluated = $(this).find('input[name="evaluated"]').datepicker('getDate').getTime();
+            
+            mApi().workspace.workspaces.materials.evaluations.create(workspaceEntityId, workspaceMaterialId, {
+              evaluated: evaluated,
+              gradeIdentifier: grade[0],
+              gradeSchoolDataSource: grade[1],
+              gradingScaleIdentifier: gradingScale[0],
+              gradingScaleSchoolDataSource: gradingScale[1],
+              assessorEntityId: MUIKKU_LOGGED_USER_ID,
+              studentEntityId: studentEntityId,
+              workspaceMaterialId: workspaceMaterialId,
+              verbalAssessment: $(this).find('#evaluateFormLiteralEvaluation').val()
+            }).callback($.proxy(function (err, result) {
+              if (err) {
+                $('.notification-queue').notificationQueue('notification', 'error', err);
+              } else { 
+                $(this).dialog("destroy").remove();
+              }
+            }, this));
+          }
+        }, {
+          'text': dialog.data('button-cancel-text'),
+          'class': 'cancel-evaluation-button',
+          'click': function(event) {
+            $(this).dialog("destroy").remove();
+          }
+        }]
+      });
+    }, this));
+  }
 
   $(document).ready(function() {
     
@@ -134,72 +209,29 @@
     
     /* Evaluate assignment when its state is DONE or CRITICAL (means its late) */
     $(document).on('click', '.assignment-done, .assignment-evaluation-critical', function (event) {
+      var workspaceEntityId = $('input[name="workspace-entity-id"]').val();
       var workspaceMaterialId = $(this).attr('data-workspace-material-id');
       var studentEntityId = $(this).attr('data-student-entity-id');
-      renderDustTemplate('evaluation/evaluation_evaluate_modal_view.dust', {
-        gradingScales: $.parseJSON($('input[name="grading-scales"]').val())
-      }, $.proxy(function (text) {
-        var dialog = $(text);
-        
-        dialog.dialog({
-          modal: true, 
-          height: $(window).height() - 50,
-          resizable: false,
-          width: $(window).width() - 50,
-          dialogClass: "evaluation-evaluate-modal",
-          open: function() {
-            $(this).find('input[name="evaluated"]')
-              .css({'z-index': 9999, 'position': 'relative'})
-              .attr('type', 'text')
-              .datepicker()
-              .datepicker('setDate', new Date());
-          },
-          buttons: [{
-            'text': dialog.data('button-save-text'),
-            'class': 'save-evaluation-button',
-            'click': function(event) {
-              var gradeValue = $(this).find('select[name="grade"]')
-                .val()
-                .split('@', 2);
-              var grade = gradeValue[0].split('/', 2);
-              var gradingScale = gradeValue[1].split('/', 2);
-              var workspaceEntityId = $('input[name="workspace-entity-id"]').val();
-              // TODO: Switch to ISO 8601
-              var evaluated = $(this).find('input[name="evaluated"]').datepicker('getDate').getTime();
-              
-              mApi().workspace.workspaces.materials.evaluations.create(workspaceEntityId, workspaceMaterialId, {
-                evaluated: evaluated,
-                gradeIdentifier: grade[0],
-                gradeSchoolDataSource: grade[1],
-                gradingScaleIdentifier: gradingScale[0],
-                gradingScaleSchoolDataSource: gradingScale[1],
-                assessorEntityId: MUIKKU_LOGGED_USER_ID,
-                studentEntityId: studentEntityId,
-                workspaceMaterialId: workspaceMaterialId,
-                verbalAssessment: $(this).find('#evaluateFormLiteralEvaluation').val()
-              }).callback($.proxy(function (err, result) {
-                if (err) {
-                  $('.notification-queue').notificationQueue('notification', 'error', err);
-                } else { 
-                  $(this).dialog("destroy").remove();
-                }
-              }, this));
-            }
-          }, {
-            'text': dialog.data('button-cancel-text'),
-            'class': 'cancel-evaluation-button',
-            'click': function(event) {
-              $(this).dialog("destroy").remove();
-            }
-          }]
-        });
-      }, this));
-      
+      openMaterialEvaluationDialog(workspaceEntityId, workspaceMaterialId, studentEntityId, null);
     });
     
     /* View evaluation when assigment's state is EVALUATED */
     $(document).on('click', '.assignment-evaluated', function (event) {
+      var workspaceEntityId = $('input[name="workspace-entity-id"]').val();
+      var workspaceMaterialId = $(this).attr('data-workspace-material-id');
+      var studentEntityId = $(this).attr('data-student-entity-id');
+      var workspaceMaterialEvaluationId = $(this).attr('data-workspace-material-evaluation-id');
       
+      mApi().workspace.workspaces.materials.evaluations.read(workspaceEntityId, workspaceMaterialId, workspaceMaterialEvaluationId)
+        .callback(function (err, result) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else { 
+            openMaterialEvaluationDialog(workspaceEntityId, workspaceMaterialId, studentEntityId, result);
+          }
+        });
+      
+      /**
       renderDustTemplate('evaluation/evaluation_evaluate_modal_view.dust', { }, $.proxy(function (text) {
         var dialog = $(text);
         $(text).dialog({
@@ -223,7 +255,7 @@
           }]
         });
       }, this));
-      
+      **/
     });
     
     //Student user picture tooltip show on mouseover

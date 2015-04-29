@@ -28,7 +28,7 @@
               <div class="evaluation-assignment-title">#{assignment.title}</div>
             </div>
             
-            <div class="evaluation-assignment-wrapper assignment-evaluated" data-workspace-material-id="#{assignment.workspaceMaterialId}" data-student-entity-id="#{studentAssignment.studentEntityId}" jsf:rendered="#{studentAssignment.status eq 'EVALUATED'}">
+            <div class="evaluation-assignment-wrapper assignment-evaluated" data-workspace-material-id="#{assignment.workspaceMaterialId}" data-student-entity-id="#{studentAssignment.studentEntityId}" data-workspace-material-evaluation-id="#{studentAssignment.workspaceMaterialEvaluationId}" jsf:rendered="#{studentAssignment.status eq 'EVALUATED'}">
               <div class="evaluation-assignment-picture"></div>
               <div class="evaluation-assignment-title">#{assignment.title}</div>
             </div>

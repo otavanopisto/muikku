@@ -816,16 +816,52 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).entity("grade is invalid").build(); 
     }
     
-    Date evaluated = payload.getEvaluated().toDate();
+    Date evaluated = payload.getEvaluated();
     
     return Response.ok(createRestModel(
-      evaluationController.createWorkspaceAssignmentEvaluation(student, workspaceMaterial, gradingScale, grade, assessor, evaluated, payload.getVerbalAssessment())
+      evaluationController.createWorkspaceMaterialEvaluation(student, workspaceMaterial, gradingScale, grade, assessor, evaluated, payload.getVerbalAssessment())
     )).build();
+  }
+  
+  @GET
+  @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/evaluations/{ID}")
+  public Response findWorkspaceMaterialEvaluation(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @PathParam("ID") Long workspaceMaterialEvaluationId) {
+    // TODO: Security
+    
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
+    if (workspaceMaterial == null) {
+      return Response.status(Status.NOT_FOUND).entity("workspaceMaterial not found").build();
+    }
+
+    WorkspaceRootFolder rootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(workspaceMaterial);
+    if (rootFolder == null) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+    }
+    
+    if (!workspaceEntity.getId().equals(rootFolder.getWorkspaceEntityId())) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    fi.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation workspaceMaterialEvaluation = evaluationController.findWorkspaceMaterialEvaluation(workspaceMaterialEvaluationId);
+    if (workspaceMaterialEvaluation == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    if (!workspaceMaterialEvaluation.getWorkspaceMaterialId().equals(workspaceMaterial.getId())) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    return Response.ok(createRestModel(workspaceMaterialEvaluation)).build();
   }
   
   private WorkspaceMaterialEvaluation createRestModel(fi.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation evaluation) {
     return new WorkspaceMaterialEvaluation(evaluation.getId(), 
-        new DateTime(evaluation.getEvaluated()), 
+        evaluation.getEvaluated(), 
         evaluation.getAssessorEntityId(), 
         evaluation.getStudentEntityId(), 
         evaluation.getWorkspaceMaterialId(), 
