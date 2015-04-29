@@ -426,6 +426,10 @@ public class WorkspaceRESTService extends PluginRESTService {
       fi.muikku.plugins.workspace.rest.model.WorkspaceUserSignup entity) {
     // TODO: Security
 
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.BAD_REQUEST).build();
@@ -529,7 +533,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   @Path("/workspaces/{WORKSPACEENTITYID}/materialreplies")
   public Response getWorkspaceMaterialAnswers(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
     // TODO: Correct workspace entity?
-    // TODO: Security
+    // TODO: Available to all logged-in users?
     
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).entity("Not logged in").build();
@@ -570,7 +574,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/replies")
   public Response getWorkspaceMaterialAnswers(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId) {
     // TODO: Correct workspace entity?
-    // TODO: Security
+    // TODO: Available to all logged-in users?
     
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).entity("Not logged in").build();
@@ -607,7 +611,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/replies")
   public Response createWorkspaceMaterialAnswers(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, WorkspaceMaterialReply reply) {
     // TODO: Correct workspace entity?
-    // TODO: Security
+    // TODO: Available to all logged-in users?
     
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).entity("Not logged in").build();
@@ -650,12 +654,6 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     return Response.noContent().build();
   }
-//
-//  @PUT
-//  @Path("/workspaces/{WORKSPACEENTITYID}/materials/{MATERIALID}/answers/{ID}")
-//  public Response updateWorkspaceMaterialAnswer(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("MATERIALID") Long workspaceMaterialId, @PathParam("ID") Long workspaceMaterialAnswerId, WorkspaceMaterialAnswer answer) {
-//    // TODO: Persist answer  
-//  }
   
   private fi.muikku.plugins.workspace.rest.model.WorkspaceMaterial createRestModel(WorkspaceMaterial workspaceMaterial) {
     WorkspaceNode workspaceNode = workspaceMaterialController.findWorkspaceNodeNextSibling(workspaceMaterial);
@@ -698,6 +696,25 @@ public class WorkspaceRESTService extends PluginRESTService {
   @Path("/workspaces/{WORKSPACEID}/materials/{MATERIALID}")
   public Response deleteNode(@PathParam("WORKSPACEID") Long workspaceEntityId, @PathParam("MATERIALID") Long materialId, @QueryParam ("removeAnswers") Boolean removeAnswers) {
     // TODO Our workspace?
+    
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).entity("Not logged in").build();
+    }
+    
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+
+    UserEntity loggedInUserEntity = sessionController.getLoggedUserEntity();
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndIdentifier(
+        workspaceEntity,
+        loggedInUserEntity.getDefaultIdentifier());
+    
+    if (workspaceUserEntity == null ||
+        workspaceUserEntity.getWorkspaceUserRole() == null ||
+        workspaceUserEntity.getWorkspaceUserRole().getArchetype() != WorkspaceRoleArchetype.TEACHER) {
+      
+      return Response.status(Status.UNAUTHORIZED).entity("Not a teacher").build();
+    }
+
     WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(materialId);
     if (workspaceMaterial == null) {
       return Response.status(Status.NOT_FOUND).build();
@@ -718,11 +735,27 @@ public class WorkspaceRESTService extends PluginRESTService {
   // TODO @LoggedIn
   public Response updateWorkspaceMaterial(@PathParam("WORKSPACEID") Long workspaceEntityId,
       @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, fi.muikku.plugins.workspace.rest.model.WorkspaceMaterial workspaceMaterial) {
-
+    
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).entity("Not logged in").build();
+    }
+    
     // Workspace
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.BAD_REQUEST).build();
+    }
+
+    UserEntity loggedInUserEntity = sessionController.getLoggedUserEntity();
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndIdentifier(
+        workspaceEntity,
+        loggedInUserEntity.getDefaultIdentifier());
+    
+    if (workspaceUserEntity == null ||
+        workspaceUserEntity.getWorkspaceUserRole() == null ||
+        workspaceUserEntity.getWorkspaceUserRole().getArchetype() != WorkspaceRoleArchetype.TEACHER) {
+      
+      return Response.status(Status.UNAUTHORIZED).entity("Not a teacher").build();
     }
     
     // WorkspaceNode
