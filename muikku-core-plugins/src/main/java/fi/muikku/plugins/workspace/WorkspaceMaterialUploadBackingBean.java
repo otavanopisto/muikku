@@ -26,7 +26,6 @@ import fi.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.muikku.schooldata.WorkspaceController;
-import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.WorkspaceUserEntityController;
