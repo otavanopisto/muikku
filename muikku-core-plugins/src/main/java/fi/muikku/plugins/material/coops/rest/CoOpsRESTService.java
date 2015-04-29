@@ -23,6 +23,11 @@ import fi.foyt.coops.CoOpsNotImplementedException;
 import fi.foyt.coops.CoOpsUsageException;
 import fi.foyt.coops.model.File;
 import fi.foyt.coops.model.Patch;
+import fi.muikku.model.users.EnvironmentRoleArchetype;
+import fi.muikku.model.users.EnvironmentUser;
+import fi.muikku.model.users.UserEntity;
+import fi.muikku.session.SessionController;
+import fi.muikku.users.EnvironmentUserController;
 
 @Path ("/coops/{FILEID}")
 @RequestScoped
@@ -32,6 +37,28 @@ public class CoOpsRESTService {
 
   @Inject
   private CoOpsApi coOpsApi;
+  
+  @Inject
+  private SessionController muikkuSessionController;
+  
+  @Inject
+  private EnvironmentUserController environmentUserController;
+  
+  private boolean isAuthorized() {
+      if (!muikkuSessionController.isLoggedIn()) {
+        return false;
+      }
+      
+      UserEntity userEntity = muikkuSessionController.getLoggedUserEntity();
+      
+      EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
+      
+      if (environmentUser.getRole() == null || environmentUser.getRole().getArchetype() == EnvironmentRoleArchetype.STUDENT) {
+        return false;
+      }
+      
+      return true;
+  }
 
   @GET
   @Path ("/")
@@ -55,6 +82,11 @@ public class CoOpsRESTService {
   @PATCH
   @Path ("/")
   public Response patch(@PathParam ("FILEID") String fileId, Patch patch) {
+    
+    if (!isAuthorized()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
     try {
       coOpsApi.filePatch(fileId, patch.getSessionId(), patch.getRevisionNumber(), patch.getPatch(), patch.getProperties(), patch.getExtensions());
       return Response.noContent().build();
