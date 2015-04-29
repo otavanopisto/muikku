@@ -28,10 +28,15 @@ import fi.foyt.coops.CoOpsNotFoundException;
 import fi.foyt.coops.CoOpsNotImplementedException;
 import fi.foyt.coops.CoOpsUsageException;
 import fi.foyt.coops.model.File;
+import fi.muikku.model.users.EnvironmentRoleArchetype;
+import fi.muikku.model.users.EnvironmentUser;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.material.HtmlMaterialController;
 import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
+import fi.muikku.session.SessionController;
+import fi.muikku.users.EnvironmentUserController;
 
 @RequestScoped
 @Path("/materials/html")
@@ -46,10 +51,37 @@ public class HtmlMaterialRESTService extends PluginRESTService {
 
   @Inject
   private CoOpsApi coOpsApi;
+  
+  @Inject
+  private SessionController muikkuSessionController;
+  
+  @Inject
+  private EnvironmentUserController environmentUserController;
+  
+  private boolean isAuthorized() {
+      if (!muikkuSessionController.isLoggedIn()) {
+        return false;
+      }
+      
+      UserEntity userEntity = muikkuSessionController.getLoggedUserEntity();
+      
+      EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
+      
+      if (environmentUser.getRole() == null || environmentUser.getRole().getArchetype() == EnvironmentRoleArchetype.STUDENT) {
+        return false;
+      }
+      
+      return true;
+  }
 
   @POST
   @Path("/")
   public Response createMaterial(HtmlRestMaterial entity) {
+    
+    if (!isAuthorized()) {
+      return Response.status(Status.FORBIDDEN).entity("Permission denied").build();
+    }
+
     if (StringUtils.isBlank(entity.getContentType())) {
       return Response.status(Status.BAD_REQUEST).entity("contentType is missing").build();
     }
@@ -100,6 +132,10 @@ public class HtmlMaterialRESTService extends PluginRESTService {
   @POST
   @Path("/{id}/publish/")
   public Response publishMaterial(@PathParam("id") Long id, HtmlRestMaterialPublish entity) {
+    
+    if (!isAuthorized()) {
+      return Response.status(Status.FORBIDDEN).entity("Permission denied").build();
+    }
     HtmlMaterial htmlMaterial = htmlMaterialController.findHtmlMaterialById(id);
     if (htmlMaterial == null) {
       return Response.status(Status.NOT_FOUND).build();
@@ -131,6 +167,10 @@ public class HtmlMaterialRESTService extends PluginRESTService {
   @PUT
   @Path("/{id}/revert/")
   public Response revertMaterial(@PathParam("id") Long id, HtmlRestMaterialRevert entity) {
+    
+    if (!isAuthorized()) {
+      return Response.status(Status.FORBIDDEN).entity("Permission denied").build();
+    }
     HtmlMaterial htmlMaterial = htmlMaterialController.findHtmlMaterialById(id);
     if (htmlMaterial == null) {
       return Response.status(Status.NOT_FOUND).build();
