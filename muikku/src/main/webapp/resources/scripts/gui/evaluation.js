@@ -21,7 +21,7 @@
             touchDragging: 1,
             releaseSwing: 1,
             startAt: 0,
-            scrollBy: 1,
+            scrollBy: 0,
             speed: 300,
             elasticBounds: 1,
             easing: 'easeOutExpo',
