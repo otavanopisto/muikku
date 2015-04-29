@@ -15,6 +15,8 @@ import fi.muikku.model.users.UserEmailEntity;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.UserEmailEntityController;
+import fi.otavanopisto.security.Permit;
+import fi.otavanopisto.security.PermitContext;
 
 
 @Named
@@ -41,7 +43,8 @@ public class EditUserInfoBackingBean {
     return userEmailEntityController.listUserEmailEntitiessByUserEntity(user);
   }
   
-  public void changeEmail(UserEmailEntity changedEmail) {
+  @Permit (UserInfoPermissions.USER_CHANGEEMAIL)
+  public void changeEmail(@PermitContext UserEmailEntity changedEmail) {
     userInfoController.createEmailChange(changedEmail, newEmail);
   }
   
