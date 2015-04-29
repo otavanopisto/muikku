@@ -1,13 +1,13 @@
 package fi.muikku.plugins.workspace.rest.model;
 
-import org.joda.time.DateTime;
+import java.util.Date;
 
 public class WorkspaceMaterialEvaluation {
   
   public WorkspaceMaterialEvaluation() {
   }
   
-  public WorkspaceMaterialEvaluation(Long id, DateTime evaluated, Long assessorEntityId, Long studentEntityId, Long workspaceMaterialId,
+  public WorkspaceMaterialEvaluation(Long id, Date evaluated, Long assessorEntityId, Long studentEntityId, Long workspaceMaterialId,
       String gradingScaleIdentifier, String gradingScaleSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String verbalAssessment) {
     super();
     this.id = id;
@@ -30,11 +30,11 @@ public class WorkspaceMaterialEvaluation {
     this.id = id;
   }
 
-  public DateTime getEvaluated() {
+  public Date getEvaluated() {
     return evaluated;
   }
 
-  public void setEvaluated(DateTime evaluated) {
+  public void setEvaluated(Date evaluated) {
     this.evaluated = evaluated;
   }
 
@@ -103,7 +103,7 @@ public class WorkspaceMaterialEvaluation {
   }
 
   private Long id;
-  private DateTime evaluated;
+  private Date evaluated;
   private Long assessorEntityId;
   private Long studentEntityId;
   private Long workspaceMaterialId;

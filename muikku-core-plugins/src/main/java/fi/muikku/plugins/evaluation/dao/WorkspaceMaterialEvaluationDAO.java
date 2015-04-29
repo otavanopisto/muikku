@@ -2,8 +2,14 @@ package fi.muikku.plugins.evaluation.dao;
 
 import java.util.Date;
 
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
 import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
+import fi.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation_;
 
 public class WorkspaceMaterialEvaluationDAO extends CorePluginsDAO<WorkspaceMaterialEvaluation> {
 
@@ -23,7 +29,22 @@ public class WorkspaceMaterialEvaluationDAO extends CorePluginsDAO<WorkspaceMate
     
     return persist(workspaceMaterialEvaluation);
   }
-  
-  
+
+  public WorkspaceMaterialEvaluation findByWorkspaceMaterialIdAndStudentEntityId(Long workspaceMaterialId, Long studentEntityId) {
+    EntityManager entityManager = getEntityManager(); 
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceMaterialEvaluation> criteria = criteriaBuilder.createQuery(WorkspaceMaterialEvaluation.class);
+    Root<WorkspaceMaterialEvaluation> root = criteria.from(WorkspaceMaterialEvaluation.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(WorkspaceMaterialEvaluation_.workspaceMaterialId), workspaceMaterialId),
+        criteriaBuilder.equal(root.get(WorkspaceMaterialEvaluation_.studentEntityId), studentEntityId)
+      )
+    );
+
+    return getSingleResult(entityManager.createQuery(criteria));
+  }
   
 }

@@ -20,6 +20,7 @@ import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
+import fi.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.muikku.plugins.workspace.ContentNode;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.muikku.plugins.workspace.WorkspaceMaterialException;  
@@ -57,6 +58,9 @@ public class EvaluationPageBackingBean {
   
   @Inject
   private UserEntityController userEntityController;
+
+  @Inject
+  private EvaluationController evaluationController;
   
   @Inject
   private WorkspaceController workspaceController;
@@ -124,15 +128,21 @@ public class EvaluationPageBackingBean {
       
       List<StudentAssignment> studentAssignments = new ArrayList<>(workspaceStudents.size());
       for (WorkspaceUserEntity workspaceStudent : workspaceStudents) {
-        UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(workspaceStudent.getUserSchoolDataIdentifier().getDataSource(), workspaceStudent.getUserSchoolDataIdentifier().getIdentifier());
-        WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
         StudentAssignmentStatus status = StudentAssignmentStatus.UNANSWERED;
 
-        if (reply != null) {
-          status = StudentAssignmentStatus.DONE;
+        UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(workspaceStudent.getUserSchoolDataIdentifier().getDataSource(), workspaceStudent.getUserSchoolDataIdentifier().getIdentifier());
+        WorkspaceMaterialEvaluation evaluation = evaluationController.findWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, userEntity);
+        if (evaluation == null) {
+          WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
+          if (reply != null) {
+            status = StudentAssignmentStatus.DONE;
+          }
+        } else {
+          // TODO: Should it be evaluated even when teacher has given a non passing grade?
+          status = StudentAssignmentStatus.EVALUATED;
         }
         
-        studentAssignments.add(new StudentAssignment(userEntity.getId(), status));
+        studentAssignments.add(new StudentAssignment(userEntity.getId(), evaluation != null ? evaluation.getId() : null, status));
       }
       
       result.add(new Assignment(workspaceMaterial.getId(), assignmentNode.getTitle(), studentAssignments));
@@ -222,8 +232,9 @@ public class EvaluationPageBackingBean {
   
   public static class StudentAssignment {
     
-    public StudentAssignment(Long studentEntityId, StudentAssignmentStatus status) {
+    public StudentAssignment(Long studentEntityId, Long workspaceMaterialEvaluationId, StudentAssignmentStatus status) {
       this.studentEntityId = studentEntityId;
+      this.workspaceMaterialEvaluationId = workspaceMaterialEvaluationId;
       this.status = status;
     }
 
@@ -235,8 +246,13 @@ public class EvaluationPageBackingBean {
       return status;
     }
     
+    public Long getWorkspaceMaterialEvaluationId() {
+      return workspaceMaterialEvaluationId;
+    }
+    
     private Long studentEntityId;
     private StudentAssignmentStatus status;
+    private Long workspaceMaterialEvaluationId;
   }
   
   public static enum StudentAssignmentStatus {
