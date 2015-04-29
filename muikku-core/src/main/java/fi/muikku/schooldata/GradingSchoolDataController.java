@@ -2,6 +2,7 @@ package fi.muikku.schooldata;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
@@ -17,6 +18,7 @@ import fi.muikku.dao.base.SchoolDataSourceDAO;
 import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.schooldata.entity.GradingScale;
 import fi.muikku.schooldata.entity.GradingScaleItem;
+import fi.muikku.schooldata.entity.WorkspaceAssessment;
 
 @Dependent
 @Stateful
@@ -34,6 +36,69 @@ class GradingSchoolDataController {
 
 	@Inject
 	private SchoolDataSourceDAO schoolDataSourceDAO;
+	
+	/* WorkspaceAssessment */
+	
+	public WorkspaceAssessment createWorkspaceAssessment(SchoolDataSource schoolDataSource, String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String assessingUserIdentifier, String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String verbalAssessment, Date date) {
+    GradingSchoolDataBridge schoolDataBridge = getGradingBridge(schoolDataSource);
+    if (schoolDataBridge != null) {
+      try {
+        return schoolDataBridge.createWorkspaceAssessment(
+            workspaceUserIdentifier, 
+            workspaceUserSchoolDataSource, 
+            assessingUserIdentifier, 
+            assessingUserSchoolDataSource, 
+            gradeIdentifier, 
+            gradeSchoolDataSource, 
+            verbalAssessment, 
+            date);
+      } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
+        logger.log(Level.SEVERE, "School Data Bridge reported a problem while create a workspace assessment", e);
+      }
+    } else {
+      logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + schoolDataSource.getIdentifier());
+    }
+  
+    return null;
+  }
+  
+  public WorkspaceAssessment findWorkspaceAssessment(SchoolDataSource schoolDataSource, String identifier) {
+    GradingSchoolDataBridge schoolDataBridge = getGradingBridge(schoolDataSource);
+    if (schoolDataBridge != null) {
+      try {
+        return schoolDataBridge.findWorkspaceAssessment(identifier);
+      } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
+        logger.log(Level.SEVERE, "School Data Bridge reported a problem while finding a workspace assessment", e);
+      }
+    } else {
+      logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + schoolDataSource.getIdentifier());
+    }
+  
+    return null;
+  }
+  
+  public WorkspaceAssessment updateWorkspaceAssessment(SchoolDataSource schoolDataSource, String identifier, String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String assessingUserIdentifier, String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String verbalAssessment, Date date) {
+    GradingSchoolDataBridge schoolDataBridge = getGradingBridge(schoolDataSource);
+    if (schoolDataBridge != null) {
+      try {
+        return schoolDataBridge.createWorkspaceAssessment(
+            workspaceUserIdentifier, 
+            workspaceUserSchoolDataSource, 
+            assessingUserIdentifier, 
+            assessingUserSchoolDataSource, 
+            gradeIdentifier, 
+            gradeSchoolDataSource, 
+            verbalAssessment, 
+            date);
+      } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
+        logger.log(Level.SEVERE, "School Data Bridge reported a problem while updating a workspace assessment", e);
+      }
+    } else {
+      logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + schoolDataSource.getIdentifier());
+    }
+  
+    return null;
+  }
 	
 	/* GradingScales */
 	

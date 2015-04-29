@@ -1,5 +1,6 @@
 package fi.muikku.schooldata;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -13,6 +14,9 @@ import fi.muikku.model.grading.GradingScaleEntity;
 import fi.muikku.model.grading.GradingScaleItemEntity;
 import fi.muikku.schooldata.entity.GradingScale;
 import fi.muikku.schooldata.entity.GradingScaleItem;
+import fi.muikku.schooldata.entity.User;
+import fi.muikku.schooldata.entity.WorkspaceAssessment;
+import fi.muikku.schooldata.entity.WorkspaceUser;
 
 @Dependent
 @Stateless
@@ -82,4 +86,19 @@ public class GradingController {
 	public List<GradingScaleItem> listGradingScaleItems(GradingScale gradingScale) {
 		return gradingSchoolDataController.listGradingScaleItems(gradingScale);
 	}
+	
+	/* Workspace assessment */
+	
+	public WorkspaceAssessment createWorkspaceAssessment(SchoolDataSource schoolDataSource, WorkspaceUser workspaceUser, User assessingUser, GradingScaleItemEntity grade, String verbalAssessment, Date date) {
+	  return gradingSchoolDataController.createWorkspaceAssessment(schoolDataSource, 
+	      workspaceUser.getIdentifier(), 
+	      workspaceUser.getSchoolDataSource(), 
+	      assessingUser.getIdentifier(), 
+	      assessingUser.getSchoolDataSource(), 
+	      grade.getIdentifier(), 
+	      grade.getDataSource().getIdentifier(), 
+	      verbalAssessment, 
+	      date);
+	}
+	
 }
