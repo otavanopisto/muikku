@@ -7,9 +7,12 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation_;
+import fi.muikku.schooldata.entity.GradingScale;
+import fi.muikku.schooldata.entity.GradingScaleItem;
 
 public class WorkspaceMaterialEvaluationDAO extends CorePluginsDAO<WorkspaceMaterialEvaluation> {
 
@@ -47,4 +50,40 @@ public class WorkspaceMaterialEvaluationDAO extends CorePluginsDAO<WorkspaceMate
     return getSingleResult(entityManager.createQuery(criteria));
   }
   
+  public WorkspaceMaterialEvaluation updateAssessorEntityId(WorkspaceMaterialEvaluation workspaceMaterialEvaluation, Long assessorEntityId) {
+    workspaceMaterialEvaluation.setAssessorEntityId(assessorEntityId);
+    return persist(workspaceMaterialEvaluation);
+  }
+  
+  public WorkspaceMaterialEvaluation updateEvaluated(WorkspaceMaterialEvaluation workspaceMaterialEvaluation, Date evaluated) {
+    workspaceMaterialEvaluation.setEvaluated(evaluated);
+    return persist(workspaceMaterialEvaluation);
+  }
+  
+  public WorkspaceMaterialEvaluation updateGradingScaleIdentifier(WorkspaceMaterialEvaluation workspaceMaterialEvaluation, String gradingScaleIdentifier) {
+    workspaceMaterialEvaluation.setGradingScaleIdentifier(gradingScaleIdentifier);
+    return persist(workspaceMaterialEvaluation);
+  }
+  
+  public WorkspaceMaterialEvaluation updateGradingScaleSchoolDataSource(WorkspaceMaterialEvaluation workspaceMaterialEvaluation, String gradingScaleSchoolDataSource) {
+    workspaceMaterialEvaluation.setGradingScaleSchoolDataSource(gradingScaleSchoolDataSource);
+    return persist(workspaceMaterialEvaluation);
+  }
+  
+  public WorkspaceMaterialEvaluation updateGradeIdentifier(WorkspaceMaterialEvaluation workspaceMaterialEvaluation, String gradeIdentifier) {
+    workspaceMaterialEvaluation.setGradeIdentifier(gradeIdentifier);
+    return persist(workspaceMaterialEvaluation);
+  }
+  
+  public WorkspaceMaterialEvaluation updateGradeSchoolDataSource(WorkspaceMaterialEvaluation workspaceMaterialEvaluation, String gradeSchoolDataSource) {
+    workspaceMaterialEvaluation.setGradeSchoolDataSource(gradeSchoolDataSource);
+    return persist(workspaceMaterialEvaluation);
+  }
+  
+  public WorkspaceMaterialEvaluation updateVerbalAssessment(WorkspaceMaterialEvaluation workspaceMaterialEvaluation, String verbalAssessment) {
+    workspaceMaterialEvaluation.setVerbalAssessment(verbalAssessment);
+    return persist(workspaceMaterialEvaluation);
+  }
+
+ 
 }
