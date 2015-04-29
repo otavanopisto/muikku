@@ -21,10 +21,16 @@
             touchDragging: 1,
             releaseSwing: 1,
             startAt: 0,
-            scrollBy: 1,
+            scrollBy: 0,
             speed: 300,
             elasticBounds: 1,
-            easing: 'easeOutExpo'
+            easing: 'easeOutExpo',
+            scrollBar: '.scrollbar',
+            dragHandle:    false,
+            dynamicHandle: 1,
+            minHandleSize: 50,
+            clickBar:      false,
+            syncSpeed:     0.5
           })
           .sly('on', 'active', $.proxy(this._onSlyActive, this));
         }, this));
@@ -203,10 +209,6 @@
       }
     });
     
-    $(document).on('click', '.evaluation-modal-close-wrapper', function (event) {
-      $('#evaluationModalWrapper').hide();
-    });
-    
     /* Evaluate assignment when its state is DONE or CRITICAL (means its late) */
     $(document).on('click', '.assignment-done, .assignment-evaluation-critical', function (event) {
       var workspaceEntityId = $('input[name="workspace-entity-id"]').val();
@@ -262,11 +264,11 @@
     $(document).on('mouseover', '.evaluation-workspacelist-item', function (event) {
       
       sName = $(this).attr('data-workspace-title');
-      sContainerLoc = $(this).offset().top - $('.evaluation-workspacelist-wrapper').offset().top + 2;
+      sContainerLoc = $(this).offset().top - $('.evaluation-workspacelist-wrapper').offset().top;
       
       $('#workspaceTitleContainer').css({
         position: 'absolute',
-        left: '20px',
+        left: '30px',
         top: sContainerLoc
       })
       .show()

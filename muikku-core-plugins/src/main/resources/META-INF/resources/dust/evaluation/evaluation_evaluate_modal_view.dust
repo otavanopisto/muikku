@@ -1,4 +1,4 @@
-<div class="evaluation-evaluate-modal" title="" data-button-save-text="Tallenna" data-button-cancel-text="Peruuta">
+<div class="evaluation-evaluate-modal-wrapper" title="" data-button-save-text="Tallenna" data-button-cancel-text="Peruuta">
   
   {>"evaluation/evaluation_evaluate_assigment_view.dust"/}
   
