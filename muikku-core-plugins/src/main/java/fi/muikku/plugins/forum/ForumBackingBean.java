@@ -7,11 +7,14 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.ocpsoft.rewrite.annotation.Join;
+
 import fi.muikku.plugins.forum.model.EnvironmentForumArea;
 
 @Named
 @Stateful
 @RequestScoped
+@Join (path = "/discussion", to = "/jsf/discussion/index.jsf")
 public class ForumBackingBean {
   
   @Inject
