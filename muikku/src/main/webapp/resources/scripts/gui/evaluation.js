@@ -133,7 +133,7 @@
     });
     
     /* Evaluate assignment when its state is DONE or CRITICAL (means its late) */
-    $(document).on('click', '.evaluation-assignment-wrapper, .assignment-evaluation-critical', function (event) {
+    $(document).on('click', '.assignment-done, .assignment-evaluation-critical', function (event) {
       var workspaceMaterialId = $(this).attr('data-workspace-material-id');
       var studentEntityId = $(this).attr('data-student-entity-id');
       renderDustTemplate('evaluation/evaluation_evaluate_modal_view.dust', {
