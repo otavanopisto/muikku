@@ -1,0 +1,7 @@
+<div class="evaluation-evaluate-modal-wrapper" title="" data-button-save-text="Tallenna" data-button-cancel-text="Peruuta">
+  
+  {>"evaluation/evaluation_evaluate_workspace_view.dust"/}
+  
+  {>"evaluation/evaluation_evaluate_workspace_form_view.dust"/}
+  
+</div>
