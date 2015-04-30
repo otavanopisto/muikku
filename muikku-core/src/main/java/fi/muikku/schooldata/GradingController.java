@@ -92,12 +92,14 @@ public class GradingController {
 	public WorkspaceAssessment createWorkspaceAssessment(SchoolDataSource schoolDataSource, WorkspaceUser workspaceUser, User assessingUser, GradingScaleItemEntity grade, String verbalAssessment, Date date) {
 	  return gradingSchoolDataController.createWorkspaceAssessment(schoolDataSource, 
 	      workspaceUser.getIdentifier(), 
-	      workspaceUser.getSchoolDataSource(), 
+	      workspaceUser.getSchoolDataSource(),
+	      workspaceUser.getWorkspaceIdentifier(), 
+	      workspaceUser.getUserIdentifier(),
 	      assessingUser.getIdentifier(), 
 	      assessingUser.getSchoolDataSource(), 
 	      grade.getIdentifier(), 
 	      grade.getDataSource().getIdentifier(), 
-	      verbalAssessment, 
+	      verbalAssessment,
 	      date);
 	}
 	

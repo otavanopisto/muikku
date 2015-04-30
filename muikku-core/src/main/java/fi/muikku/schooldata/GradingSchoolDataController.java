@@ -39,13 +39,15 @@ class GradingSchoolDataController {
 	
 	/* WorkspaceAssessment */
 	
-	public WorkspaceAssessment createWorkspaceAssessment(SchoolDataSource schoolDataSource, String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String assessingUserIdentifier, String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String verbalAssessment, Date date) {
+	public WorkspaceAssessment createWorkspaceAssessment(SchoolDataSource schoolDataSource, String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String workspaceIdentifier, String studentIdentifier, String assessingUserIdentifier, String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String verbalAssessment, Date date) {
     GradingSchoolDataBridge schoolDataBridge = getGradingBridge(schoolDataSource);
     if (schoolDataBridge != null) {
       try {
         return schoolDataBridge.createWorkspaceAssessment(
-            workspaceUserIdentifier, 
-            workspaceUserSchoolDataSource, 
+            workspaceUserIdentifier,
+            workspaceUserSchoolDataSource,
+            workspaceIdentifier,
+            studentIdentifier,
             assessingUserIdentifier, 
             assessingUserSchoolDataSource, 
             gradeIdentifier, 
@@ -62,11 +64,11 @@ class GradingSchoolDataController {
     return null;
   }
   
-  public WorkspaceAssessment findWorkspaceAssessment(SchoolDataSource schoolDataSource, String identifier) {
+  public WorkspaceAssessment findWorkspaceAssessment(SchoolDataSource schoolDataSource, String identifier, String workspaceIdentifier, String studentIdentifier) {
     GradingSchoolDataBridge schoolDataBridge = getGradingBridge(schoolDataSource);
     if (schoolDataBridge != null) {
       try {
-        return schoolDataBridge.findWorkspaceAssessment(identifier);
+        return schoolDataBridge.findWorkspaceAssessment(identifier, workspaceIdentifier, studentIdentifier);
       } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
         logger.log(Level.SEVERE, "School Data Bridge reported a problem while finding a workspace assessment", e);
       }
@@ -77,13 +79,15 @@ class GradingSchoolDataController {
     return null;
   }
   
-  public WorkspaceAssessment updateWorkspaceAssessment(SchoolDataSource schoolDataSource, String identifier, String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String assessingUserIdentifier, String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String verbalAssessment, Date date) {
+  public WorkspaceAssessment updateWorkspaceAssessment(SchoolDataSource schoolDataSource, String identifier, String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String workspaceIdentifier, String studentIdentifier, String assessingUserIdentifier, String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String verbalAssessment, Date date) {
     GradingSchoolDataBridge schoolDataBridge = getGradingBridge(schoolDataSource);
     if (schoolDataBridge != null) {
       try {
         return schoolDataBridge.createWorkspaceAssessment(
-            workspaceUserIdentifier, 
-            workspaceUserSchoolDataSource, 
+            workspaceUserIdentifier,
+            workspaceUserSchoolDataSource,
+            workspaceIdentifier,
+            studentIdentifier,
             assessingUserIdentifier, 
             assessingUserSchoolDataSource, 
             gradeIdentifier, 
