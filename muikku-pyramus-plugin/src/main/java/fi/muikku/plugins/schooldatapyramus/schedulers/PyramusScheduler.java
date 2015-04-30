@@ -3,10 +3,12 @@ package fi.muikku.plugins.schooldatapyramus.schedulers;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.AccessTimeout;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.enterprise.context.ApplicationScoped;
@@ -23,6 +25,10 @@ import fi.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
 
 @Singleton
 @ApplicationScoped
+@AccessTimeout (
+  value = 30,
+  unit = TimeUnit.SECONDS
+)
 public class PyramusScheduler {
 
   @Any
