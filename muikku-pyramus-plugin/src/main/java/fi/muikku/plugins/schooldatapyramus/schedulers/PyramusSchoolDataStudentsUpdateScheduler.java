@@ -36,6 +36,11 @@ public class PyramusSchoolDataStudentsUpdateScheduler implements PyramusUpdateSc
       logger.fine(String.format("Synchronized %d Pyramus students", count));
     }
   }
+  
+  @Override
+  public int getPriority() {
+    return 2;
+  }
 
   private int offset = 0;
 }

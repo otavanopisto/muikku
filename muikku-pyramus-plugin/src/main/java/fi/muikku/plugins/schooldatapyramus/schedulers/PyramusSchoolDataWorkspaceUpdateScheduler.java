@@ -37,6 +37,11 @@ public class PyramusSchoolDataWorkspaceUpdateScheduler implements PyramusUpdateS
 
     }
   }
+  
+  @Override
+  public int getPriority() {
+    return 3;
+  }
 
   private int offset = 0;
 }

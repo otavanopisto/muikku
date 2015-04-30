@@ -54,6 +54,11 @@ public class PyramusSchoolDataWorkspaceUsersUpdateScheduler implements PyramusUp
       logger.fine(String.format("Synchronized %d Pyramus workspace users", count));
     }
   }
+  
+  @Override
+  public int getPriority() {
+    return 4;
+  }
 
   private int offset = 0;
 }
