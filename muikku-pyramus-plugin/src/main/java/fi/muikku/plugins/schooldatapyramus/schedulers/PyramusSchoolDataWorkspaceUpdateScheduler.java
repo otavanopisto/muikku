@@ -2,8 +2,11 @@ package fi.muikku.plugins.schooldatapyramus.schedulers;
 
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+
+import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.muikku.plugins.schooldatapyramus.PyramusUpdater;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
@@ -11,7 +14,7 @@ import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 @ApplicationScoped
 public class PyramusSchoolDataWorkspaceUpdateScheduler implements PyramusUpdateScheduler {
 
-  private static final int BATCH_SIZE = 20;
+  private static final int BATCH_SIZE = NumberUtils.createInteger(System.getProperty("muikku.pyramus-updater.workspaces.batchsize", "20"));
 
   @Inject
   private Logger logger;
@@ -19,6 +22,11 @@ public class PyramusSchoolDataWorkspaceUpdateScheduler implements PyramusUpdateS
   @Inject
   private PyramusUpdater pyramusUpdater;
 
+  @PostConstruct
+  public void init() {
+    offset = NumberUtils.createInteger(System.getProperty("muikku.pyramus-updater.workspaces.start", "0"));
+  }
+  
   @Override
   public void synchronize() throws UnexpectedSchoolDataBridgeException {
     int count = 0;
