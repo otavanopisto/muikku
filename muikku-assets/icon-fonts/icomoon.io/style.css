@@ -1,10 +1,10 @@
 @font-face {
 	font-family: 'muikku';
-	src:url('fonts/muikku.eot?rr32qh');
-	src:url('fonts/muikku.eot?#iefixrr32qh') format('embedded-opentype'),
-		url('fonts/muikku.woff?rr32qh') format('woff'),
-		url('fonts/muikku.ttf?rr32qh') format('truetype'),
-		url('fonts/muikku.svg?rr32qh#muikku') format('svg');
+	src:url('fonts/muikku.eot?-is6fb');
+	src:url('fonts/muikku.eot?#iefix-is6fb') format('embedded-opentype'),
+		url('fonts/muikku.woff?-is6fb') format('woff'),
+		url('fonts/muikku.ttf?-is6fb') format('truetype'),
+		url('fonts/muikku.svg?-is6fb#muikku') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -211,28 +211,8 @@
 	content: "\e635";
 }
 
-.icon-action-menu-launcher:before {
-	content: "\e636";
-}
-
-.icon-exit-editing:before {
-	content: "\f045";
-}
-
-.icon-navicon:before {
-	content: "\e609";
-}
-
-.icon-new-page:before {
-	content: "\e637";
-}
-
-.icon-close-small:before {
-	content: "\e63b";
-}
-
-.icon-add:before {
-	content: "\e114";
+.icon-spinner:before {
+	content: "\e982";
 }
 
 .icon-assessment-canceled:before {
@@ -321,5 +301,29 @@
 
 .icon-assessment-fail:before {
 	content: "\e9fb";
+}
+
+.icon-action-menu-launcher:before {
+	content: "\e636";
+}
+
+.icon-exit-editing:before {
+	content: "\f045";
+}
+
+.icon-navicon:before {
+	content: "\e609";
+}
+
+.icon-new-page:before {
+	content: "\e637";
+}
+
+.icon-close-small:before {
+	content: "\e63b";
+}
+
+.icon-add:before {
+	content: "\e114";
 }
 

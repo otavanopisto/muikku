@@ -42,8 +42,10 @@
     _loadPage: function (pageId, callback) {
       console.log("look! im loading a page!");
       
-//      $('#contentEvaluation').append($('<div>').addClass('content-loading'));
-      
+      if (pageId == 0) {
+        $('#contentEvaluation').append($('<div>').addClass('content-loading').append($('<div>').addClass('icon-spinner')));
+      }
+
       this._pagesLoaded[pageId] = 'LOADING';
       
       $.ajax({
@@ -60,16 +62,18 @@
         } ,this),
         complete : $.proxy(function(data) {
           
-//          $('.content-loading')
-//            .animate({
-//              opacity: 0
-//          },{
-//            duration:500,
-//            easing: "easeInOutQuint",
-//            complete: function () {
-//              $('.content-loading').remove();
-//            }
-//          });
+          if (pageId == 0) {
+            $('.content-loading')
+              .animate({
+                opacity: 0
+            },{
+              duration:900,
+              easing: "easeInOutQuint",
+              complete: function () {
+                $('.content-loading').remove();
+              }
+            });
+          }
           
         } ,this)
       });
