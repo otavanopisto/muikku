@@ -65,6 +65,7 @@ body.evaluation {
   
   main#contentEvaluation {
     margin:65px 0 0 45px;
+    position:relative;
     
     .content-loading {
       position:fixed;
@@ -73,11 +74,21 @@ body.evaluation {
       bottom:0;
       right:0;
       z-index:9999;
-      background-color:#415666;
-      @include background-image('gfx/eventqueueloader.png');
-      background-position:center center;
-      background-repeat:no-repeat;
-      opacity:1;
+      opacity:0.98;
+      background:#496071;
+      font-size:80px;
+      color:#c8e8ff;
+      
+      .icon-spinner {
+        position:absolute;
+        left:50%;
+        top:50%;
+        -webkit-animation: spinner 0.5s linear infinite;
+        -moz-animation: spinner 0.5s linear infinite;
+        -ms-animation: spinner 0.5s linear infinite;
+        -o-animation: spinner 0.5s linear infinite;
+        animation: spinner 0.5s linear infinite;
+      }
     }
     
     .evaluation-slyder-wrapper {

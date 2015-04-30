@@ -37,8 +37,28 @@
   content: "\e63d";
 }
 
+.icon-arrow-left2:before {
+  content: "\e605";
+}
+
+.icon-arrow-down:before {
+  content: "\e606";
+}
+
+.icon-arrow-up:before {
+  content: "\e607";
+}
+
+.icon-arrow-right2:before {
+  content: "\e608";
+}
+
 .icon-bubble:before {
   content: "\e638";
+}
+
+.icon-members:before {
+  content: "\e60d";
 }
 
 .icon-assignment:before {
@@ -201,28 +221,8 @@
   content: "\e635";
 }
 
-.icon-action-menu-launcher:before {
-  content: "\e636";
-}
-
-.icon-exit-editing:before {
-  content: "\f045";
-}
-
-.icon-navicon:before {
-  content: "\e609";
-}
-
-.icon-new-page:before {
-  content: "\e637";
-}
-
-.icon-close-small:before {
-  content: "\e63b";
-}
-
-.icon-add:before {
-  content: "\e114";
+.icon-spinner:before {
+  content: "\e982";
 }
 
 .icon-assessment-canceled:before {
@@ -263,10 +263,6 @@
 
 .icon-compass:before {
   content: "\e60c";
-}
-
-.icon-members:before {
-  content: "\e60d";
 }
 
 .icon-attachment:before {
@@ -317,18 +313,27 @@
   content: "\e9fb";
 }
 
-.icon-arrow-left2:before {
-  content: "\e605";
+.icon-action-menu-launcher:before {
+  content: "\e636";
 }
 
-.icon-arrow-down:before {
-  content: "\e606";
+.icon-exit-editing:before {
+  content: "\f045";
 }
 
-.icon-arrow-up:before {
-  content: "\e607";
+.icon-navicon:before {
+  content: "\e609";
 }
 
-.icon-arrow-right2:before {
-  content: "\e608";
+.icon-new-page:before {
+  content: "\e637";
 }
+
+.icon-close-small:before {
+  content: "\e63b";
+}
+
+.icon-add:before {
+  content: "\e114";
+}
+
