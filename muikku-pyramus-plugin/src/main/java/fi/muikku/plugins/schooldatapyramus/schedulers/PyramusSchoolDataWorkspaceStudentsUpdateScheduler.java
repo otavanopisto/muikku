@@ -15,7 +15,7 @@ import fi.muikku.schooldata.WorkspaceEntityController;
 @ApplicationScoped
 public class PyramusSchoolDataWorkspaceStudentsUpdateScheduler implements PyramusUpdateScheduler {
 
-  private static final int BATCH_SIZE = 10;
+  private static final int BATCH_SIZE = 20;
 
   @Inject
   private Logger logger;
