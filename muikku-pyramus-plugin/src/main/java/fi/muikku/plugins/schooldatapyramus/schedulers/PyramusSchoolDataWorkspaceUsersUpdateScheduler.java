@@ -3,9 +3,12 @@ package fi.muikku.plugins.schooldatapyramus.schedulers;
 import java.util.List;
 import java.util.logging.Logger;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+
+import org.apache.commons.lang3.math.NumberUtils;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.schooldatapyramus.PyramusIdentifierMapper;
@@ -18,7 +21,7 @@ import fi.muikku.schooldata.WorkspaceEntityController;
 @Stateful
 public class PyramusSchoolDataWorkspaceUsersUpdateScheduler implements PyramusUpdateScheduler {
 
-  private static final int BATCH_SIZE = 20;
+  private static final int BATCH_SIZE = NumberUtils.createInteger(System.getProperty("muikku.pyramus-updater.workspace-users.batchsize", "20"));
 
   @Inject
   private Logger logger;
@@ -31,7 +34,12 @@ public class PyramusSchoolDataWorkspaceUsersUpdateScheduler implements PyramusUp
 
   @Inject
   private PyramusUpdater pyramusUpdater;
-
+  
+  @PostConstruct
+  public void init() {
+    offset = NumberUtils.createInteger(System.getProperty("muikku.pyramus-updater.workspace-users.start", "0"));
+  }
+  
   public void synchronize() throws UnexpectedSchoolDataBridgeException {
 
     int count = 0;
