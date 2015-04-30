@@ -17,11 +17,13 @@ import fi.muikku.schooldata.entity.EnvironmentRole;
 import fi.muikku.schooldata.entity.EnvironmentRoleArchetype;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
+import fi.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.muikku.schooldata.entity.WorkspaceRole;
 import fi.muikku.schooldata.entity.WorkspaceRoleArchetype;
 import fi.muikku.schooldata.entity.WorkspaceType;
 import fi.muikku.schooldata.entity.WorkspaceUser;
 import fi.pyramus.rest.model.Course;
+import fi.pyramus.rest.model.CourseAssessment;
 import fi.pyramus.rest.model.CourseStaffMember;
 import fi.pyramus.rest.model.CourseStaffMemberRole;
 import fi.pyramus.rest.model.CourseStudent;
@@ -281,6 +283,17 @@ public class PyramusSchoolDataEntityFactory {
     );
   }
 
+  public WorkspaceAssessment createEntity(CourseAssessment courseAssessment){
+    return new PyramusWorkspaceAssessment(
+       courseAssessment.getId().toString(),
+       identifierMapper.getWorkspaceStudentIdentifier(courseAssessment.getCourseStudentId()),
+       identifierMapper.getStaffIdentifier(courseAssessment.getAssessorId()),
+       courseAssessment.getId().toString(),
+       courseAssessment.getVerbalAssessment(),
+       courseAssessment.getDate().toDate()
+     );
+  }
+  
   public List<WorkspaceType> createEntities(CourseType... courseTypes) {
     List<WorkspaceType> result = new ArrayList<>();
     

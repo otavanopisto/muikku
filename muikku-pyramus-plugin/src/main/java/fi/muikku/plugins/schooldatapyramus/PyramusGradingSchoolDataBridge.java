@@ -7,9 +7,11 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.math.NumberUtils;
+import org.joda.time.DateTime;
 
 import fi.muikku.plugins.schooldatapyramus.entities.PyramusGradingScale;
 import fi.muikku.plugins.schooldatapyramus.entities.PyramusGradingScaleItem;
+import fi.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
 import fi.muikku.plugins.schooldatapyramus.rest.PyramusClient;
 import fi.muikku.schooldata.GradingSchoolDataBridge;
 import fi.muikku.schooldata.SchoolDataBridgeRequestException;
@@ -17,12 +19,19 @@ import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 import fi.muikku.schooldata.entity.GradingScale;
 import fi.muikku.schooldata.entity.GradingScaleItem;
 import fi.muikku.schooldata.entity.WorkspaceAssessment;
+import fi.pyramus.rest.model.CourseAssessment;
 import fi.pyramus.rest.model.Grade;
 
 public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
 
   @Inject
   private PyramusClient pyramusClient;
+  
+  @Inject
+  private PyramusIdentifierMapper identifierMapper;
+  
+  @Inject
+  private PyramusSchoolDataEntityFactory entityFactory;
   
   @Override
   public String getSchoolDataSource() {
@@ -103,25 +112,41 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
   }
 
   @Override
-  public WorkspaceAssessment createWorkspaceAssessment(String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String assessingUserIdentifier,
+  public WorkspaceAssessment createWorkspaceAssessment(String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String workspaceIdentifier, String studentIdentifier, String assessingUserIdentifier,
       String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String verbalAssessment, Date date)
       throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-    // TODO Auto-generated method stub
-    return null;
+    
+    long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUserIdentifier);
+    long assessingUserId = identifierMapper.getPyramusStaffId(assessingUserIdentifier);
+    long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
+    long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
+    
+    CourseAssessment courseAssessment = new CourseAssessment(null, courseStudentId, Long.parseLong(gradeIdentifier), assessingUserId, new DateTime(date), verbalAssessment);
+    return entityFactory.createEntity(pyramusClient.post(String.format("/students/%d/courses/%d/assessments/", studentId, courseId ), courseAssessment));
   }
 
   @Override
-  public WorkspaceAssessment findWorkspaceAssessment(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-    // TODO Auto-generated method stub
-    return null;
+  public WorkspaceAssessment findWorkspaceAssessment(String identifier, String workspaceIdentifier, String studentIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+    long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
+    long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
+    long id = Long.parseLong(identifier);
+    return entityFactory.createEntity(pyramusClient.get(String.format("/students/%d/courses/%d/assessments/%d", studentId, courseId, id ), CourseAssessment.class));
   }
 
   @Override
-  public WorkspaceAssessment updateWorkspaceAssessment(String identifier, String workspaceUserIdentifier, String workspaceUserSchoolDataSource,
+  public WorkspaceAssessment updateWorkspaceAssessment(String identifier, String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String workspaceIdentifier, String studentIdentifier,
       String assessingUserIdentifier, String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String verbalAssessment,
       Date date) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
-    // TODO Auto-generated method stub
-    return null;
+
+    long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUserIdentifier);
+    long assessingUserId = identifierMapper.getPyramusStaffId(assessingUserIdentifier);
+    long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
+    long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
+    long id = Long.parseLong(identifier);
+    
+    CourseAssessment courseAssessment = new CourseAssessment(id, courseStudentId, Long.parseLong(gradeIdentifier), assessingUserId, new DateTime(date), verbalAssessment);
+    //return entityFactory.createEntity(pyramusClient.post(String.format("/students/%d/courses/%d/assessments/%d", studentId, courseId, id), courseAssessment));
+    throw new UnexpectedSchoolDataBridgeException("Not implemented yet."); //How to use PUT with pyramusClient?
   }
 
 
