@@ -46,12 +46,18 @@
   </ui:define>
 
   <ui:define name="evaluation.content.studentAssignmentListing">
-    <div id="evaluationSlyScrollbar" class="scrollbar"><div class="handle"></div></div>
-    <div id="evaluationSlyPageControllers" class="page-controllers">
-      <div class="prevPage icon-arrow-left"></div>
-      <div class="nextPage icon-arrow-right"></div>
+    <div class="evaluation-slyder-wrapper">
+      <div id="evaluationSlyScrollbar" class="scrollbar">
+        <div class="handle">
+          <div class="mousearea"></div>
+        </div>
+      </div>
+      <div class="evaluation-slyder-controls">
+        <button class="prevPage icon-arrow-left"></button>
+        <button class="nextPage icon-arrow-right"></button>
+      </div>
+      <div id="evaluation-views-wrapper" data-workspace-entity-id="#{evaluationIndexBackingBean.workspaceEntityId}"></div>
     </div>
-    <div id="evaluation-views-wrapper" data-workspace-entity-id="#{evaluationIndexBackingBean.workspaceEntityId}"></div>
   </ui:define>
   
   <ui:define name="evaluation.modal">

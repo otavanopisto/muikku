@@ -14,7 +14,7 @@
         this._loadPage(1, $.proxy(function () {
           this.element.sly({
             horizontal: 1,
-            itemNav: 'basic',
+            itemNav: 'forceCentered',
             smart: false,
             activateMiddle: 1,
             mouseDragging: 1,
@@ -28,10 +28,10 @@
             scrollBar: '.scrollbar',
             prevPage: '.prevPage',
             nextPage: '.nextPage',
-            dragHandle:    false,
+            dragHandle: 1,
             dynamicHandle: 1,
             minHandleSize: 50,
-            clickBar: false,
+            clickBar: 1,
             syncSpeed: 0.5
           })
           .sly('on', 'active', $.proxy(this._onSlyActive, this));
@@ -42,7 +42,7 @@
     _loadPage: function (pageId, callback) {
       console.log("look! im loading a page!");
       
-      $('#contentEvaluation').append($('<div>').addClass('content-loading'));
+//      $('#contentEvaluation').append($('<div>').addClass('content-loading'));
       
       this._pagesLoaded[pageId] = 'LOADING';
       
@@ -59,21 +59,17 @@
           }
         } ,this),
         complete : $.proxy(function(data) {
-          $('#evaluation-views-wrapper')
-          .css({
-            width : this.options.maxStudents * $('.evaluation-student-wrapper').width() + this.options.maxStudents * 20 + 20 + 'px'
-          });
           
-          $('.content-loading')
-          .animate({
-          opacity: 0
-        },{
-          duration:500,
-          easing: "easeInOutQuint",
-          complete: function () {
-            $('.content-loading').remove();
-          }
-        });
+//          $('.content-loading')
+//            .animate({
+//              opacity: 0
+//          },{
+//            duration:500,
+//            easing: "easeInOutQuint",
+//            complete: function () {
+//              $('.content-loading').remove();
+//            }
+//          });
           
         } ,this)
       });
