@@ -1,4 +1,4 @@
-package fi.muikku.plugins.communicator;
+package fi.muikku.plugins.user;
 
 import java.util.List;
 
@@ -11,20 +11,16 @@ import fi.muikku.security.MuikkuPermissionCollection;
 import fi.muikku.security.PermissionScope;
 import fi.otavanopisto.security.Scope;
 
-@ApplicationScoped
-public class CommunicatorPermissionCollection extends AbstractMuikkuPermissionCollection implements MuikkuPermissionCollection {
 
-  public static final String PERMISSIONSCOPE_COMMUNICATOR = "COMMUNICATOR";
+@ApplicationScoped
+public class UserInfoPermissions extends AbstractMuikkuPermissionCollection implements MuikkuPermissionCollection {
 
   @Scope (PermissionScope.PERSONAL)
-  public static final String COMMUNICATOR_MANAGE_SETTINGS = "COMMUNICATOR_MANAGE_SETTINGS";
-  
-  @Scope (PERMISSIONSCOPE_COMMUNICATOR)
-  public static final String READ_MESSAGE = "READ_MESSAGE";
+  public static final String USER_CHANGEEMAIL = "USER_CHANGEEMAIL";
   
   @Override
   public List<String> listPermissions() {
-    return listPermissions(CommunicatorPermissionCollection.class);
+    return listPermissions(UserInfoPermissions.class);
   }
 
   @Override
@@ -34,21 +30,22 @@ public class CommunicatorPermissionCollection extends AbstractMuikkuPermissionCo
   
   @Override
   public String getPermissionScope(String permission) throws NoSuchFieldException {
-    return getPermissionScope(CommunicatorPermissionCollection.class, permission);
+    return getPermissionScope(UserInfoPermissions.class, permission);
   }
-  
+
   @Override
   public String[] getDefaultPseudoRoles(String permission) throws NoSuchFieldException {
-    return getDefaultPseudoRoles(CommunicatorPermissionCollection.class, permission);
+    return getDefaultPseudoRoles(UserInfoPermissions.class, permission);
   }
 
   @Override
   public EnvironmentRoleArchetype[] getDefaultEnvironmentRoles(String permission) throws NoSuchFieldException {
-    return getDefaultEnvironmentRoles(CommunicatorPermissionCollection.class, permission);
+    return getDefaultEnvironmentRoles(UserInfoPermissions.class, permission);
   }
 
   @Override
   public WorkspaceRoleArchetype[] getDefaultWorkspaceRoles(String permission) throws NoSuchFieldException {
-    return getDefaultWorkspaceRoles(CommunicatorPermissionCollection.class, permission);
+    return getDefaultWorkspaceRoles(UserInfoPermissions.class, permission);
   }
+  
 }

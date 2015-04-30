@@ -15,7 +15,7 @@ import fi.muikku.schooldata.WorkspaceEntityController;
 @ApplicationScoped
 public class PyramusSchoolDataWorkspaceStudentsUpdateScheduler implements PyramusUpdateScheduler {
 
-  private static final int BATCH_SIZE = 10;
+  private static final int BATCH_SIZE = 20;
 
   @Inject
   private Logger logger;
@@ -46,6 +46,11 @@ public class PyramusSchoolDataWorkspaceStudentsUpdateScheduler implements Pyramu
     } finally {
       logger.fine(String.format("Synchronized %d Pyramus workspace students", count));
     }
+  }
+  
+  @Override
+  public int getPriority() {
+    return 5;
   }
 
   private int offset = 0;

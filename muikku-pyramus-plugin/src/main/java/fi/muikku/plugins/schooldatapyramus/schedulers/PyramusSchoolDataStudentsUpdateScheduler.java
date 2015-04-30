@@ -11,7 +11,7 @@ import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 @ApplicationScoped
 public class PyramusSchoolDataStudentsUpdateScheduler implements PyramusUpdateScheduler {
 
-  private static final int BATCH_SIZE = 100;
+  private static final int BATCH_SIZE = 20;
 
   @Inject
   private Logger logger;
@@ -35,6 +35,11 @@ public class PyramusSchoolDataStudentsUpdateScheduler implements PyramusUpdateSc
     } finally {
       logger.fine(String.format("Synchronized %d Pyramus students", count));
     }
+  }
+  
+  @Override
+  public int getPriority() {
+    return 2;
   }
 
   private int offset = 0;

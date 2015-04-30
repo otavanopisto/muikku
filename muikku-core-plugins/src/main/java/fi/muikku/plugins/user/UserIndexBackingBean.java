@@ -13,6 +13,7 @@ import fi.muikku.jsf.NavigationRules;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.muikku.schooldata.entity.User;
+import fi.muikku.session.SessionController;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
 
@@ -33,9 +34,15 @@ public class UserIndexBackingBean {
 	
   @Inject
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
+  
+  @Inject
+  private SessionController sessionController;
 
 	@RequestAction
 	public String init() {
+	  if (!sessionController.isLoggedIn())
+	    return NavigationRules.NOT_FOUND;
+	  
     UserEntity userEntity = userEntityController.findUserEntityById(getUserId());
     if (userEntity == null) {
       return NavigationRules.NOT_FOUND;

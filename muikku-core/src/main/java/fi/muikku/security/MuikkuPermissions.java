@@ -13,6 +13,10 @@ import fi.otavanopisto.security.Scope;
 public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implements MuikkuPermissionCollection {
 
   @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR })
+  public static final String ADMIN = "ADMIN";
+  
+  @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.MANAGER })
   public static final String REPRESENT_USER = "REPRESENT_USER";
   

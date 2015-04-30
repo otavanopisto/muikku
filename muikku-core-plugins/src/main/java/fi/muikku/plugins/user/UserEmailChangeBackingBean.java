@@ -12,6 +12,8 @@ import fi.muikku.i18n.LocaleController;
 import fi.muikku.mail.Mailer;
 import fi.muikku.model.users.UserEmailEntity;
 import fi.muikku.session.SessionController;
+import fi.otavanopisto.security.Permit;
+import fi.otavanopisto.security.PermitContext;
 
 @Named
 @Stateful
@@ -33,7 +35,8 @@ public class UserEmailChangeBackingBean {
   @Inject
   private Mailer mailer;
 
-  public UserPendingEmailChange createUserEmailChange(UserEmailEntity userEmailEntity) {
+  @Permit (UserInfoPermissions.USER_CHANGEEMAIL)
+  public UserPendingEmailChange createUserEmailChange(@PermitContext UserEmailEntity userEmailEntity) {
     UserPendingEmailChange pendingEmailChange = userInfoController.createEmailChange(userEmailEntity, newEmail);
     
     String from = environmentSettingsController.getSystemEmailSenderAddress();
@@ -47,6 +50,7 @@ public class UserEmailChangeBackingBean {
     return pendingEmailChange;
   }
 
+  @Permit (UserInfoPermissions.USER_CHANGEEMAIL)
   public boolean hasPendingEmailChange(UserEmailEntity userEmailEntity) {
     return userInfoController.hasPendingEmailChange(userEmailEntity);
   }
