@@ -145,6 +145,11 @@ body.evaluation {
           border-radius:3px;
           outline:none;
           
+          &.disabled {
+            opacity:0;
+            cursor:default;
+          }
+          
           &:before {
   
           }
