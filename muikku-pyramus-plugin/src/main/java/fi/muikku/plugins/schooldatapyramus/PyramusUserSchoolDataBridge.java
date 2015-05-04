@@ -140,6 +140,10 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   private User createStudentEntity(Student student) {
+    if (student == null) {
+      return null;
+    }
+    
     List<User> users = createStudentEntities(new Student[] { student });
     if (users.isEmpty()) {
       return null;
