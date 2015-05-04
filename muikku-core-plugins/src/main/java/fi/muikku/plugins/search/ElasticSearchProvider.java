@@ -58,15 +58,15 @@ public class ElasticSearchProvider implements SearchProvider {
         query = QueryBuilders.boolQuery();
         
         if (StringUtils.isNotBlank(schoolDataSource)) {
-          ((BoolQueryBuilder) query).must(QueryBuilders. matchQuery("schoolDataSource", schoolDataSource));
+          ((BoolQueryBuilder) query).must(QueryBuilders.matchQuery("schoolDataSource", schoolDataSource));
         }
         
         if (subjects != null && !subjects.isEmpty()) {
-          ((BoolQueryBuilder) query).must(QueryBuilders.matchQuery("subjectIdentifier", subjects));
+          ((BoolQueryBuilder) query).must(QueryBuilders.termsQuery("subjectIdentifier", subjects));
         }
         
         if (identifiers != null && !identifiers.isEmpty()) {
-          ((BoolQueryBuilder) query).must(QueryBuilders.matchQuery("identifier", identifiers));
+          ((BoolQueryBuilder) query).must(QueryBuilders.termsQuery("identifier", identifiers));
         }
     
         if (StringUtils.isNotBlank(freeText)) {
