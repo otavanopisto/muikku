@@ -1,5 +1,6 @@
 package fi.muikku.search;
 
+import java.util.List;
 import java.util.Map;
 
 public interface SearchProvider {
@@ -12,4 +13,6 @@ public interface SearchProvider {
   public void deleteFromIndex(String typeName, String id);
   public void init();
   public void deinit();
+  
+  public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, String freeText, int start, int maxResults);
 }
