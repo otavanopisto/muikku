@@ -92,6 +92,9 @@
       
       this._editor = $(this._editorContainer).coOpsCK({
         externalPlugins : {
+          'widget' : CONTEXTPATH + '/scripts/ckplugins/widget/',
+          'lineutils' : CONTEXTPATH + '/scripts/ckplugins/lineutils/',
+          'oembed' : CONTEXTPATH + '/scripts/ckplugins/oembed/',
           'change' : CONTEXTPATH + '/scripts/ckplugins/change/',
           'coops' : CONTEXTPATH + '/scripts/ckplugins/coops/',
           'coops-connector' : CONTEXTPATH + '/scripts/ckplugins/coops-connector/',
@@ -105,7 +108,9 @@
           'muikku-connectfield': CONTEXTPATH + '/scripts/ckplugins/muikku-connectfield/',
           'muikku-embedded': CONTEXTPATH + '/scripts/ckplugins/muikku-embedded/'
         },
-        extraPlugins : ['coops',
+        extraPlugins : [
+                       'oembed',
+                       'coops',
                        'coops-connector', 
                        'coops-dmp',
                        'coops-sessionevents', 
@@ -133,7 +138,7 @@
             { name: 'styles', items : [ 'Styles','Format' ] },
             { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote',
             '-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl' ] },
-            { name: 'insert', items : [ 'Image','Flash','Table','SpecialChar' ] },          
+            { name: 'insert', items : [ 'Image','oembed','Table','SpecialChar' ] },          
             { name: 'tools', items : [ 'Maximize', 'ShowBlocks','-','About' ] },
             '/',
             { name: 'forms', items : ['MuikkuTextField', 'muikku-selection', 'MuikkuMemoField', 'muikku-filefield', 'muikku-connectfield']}

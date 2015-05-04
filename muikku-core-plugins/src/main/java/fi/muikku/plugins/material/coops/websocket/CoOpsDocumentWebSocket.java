@@ -33,29 +33,18 @@ import fi.foyt.coops.extensions.websocket.ErrorMessage;
 import fi.foyt.coops.extensions.websocket.PatchMessage;
 import fi.foyt.coops.extensions.websocket.UpdateMessage;
 import fi.foyt.coops.model.Patch;
-import fi.muikku.model.users.EnvironmentRoleArchetype;
-import fi.muikku.model.users.EnvironmentUser;
-import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugins.material.coops.CoOpsSessionController;
 import fi.muikku.plugins.material.coops.event.CoOpsPatchEvent;
 import fi.muikku.plugins.material.coops.model.CoOpsSession;
 import fi.muikku.plugins.material.coops.model.CoOpsSessionType;
 import fi.muikku.plugins.material.model.HtmlMaterial;
-import fi.muikku.session.SessionController;
-import fi.muikku.users.EnvironmentUserController;
 
 @ServerEndpoint("/ws/coops/{HTMLMATERIALID}/{SESSIONID}")
 @Transactional
 public class CoOpsDocumentWebSocket {
 
   private static final Map<String, Map<String, Session>> fileClients = new HashMap<String, Map<String, Session>>();
-
-  @Inject
-  private SessionController muikkuSessionController;
   
-  @Inject
-  private EnvironmentUserController environmentUserController;
-
   @Inject
   private CoOpsSessionController coOpsSessionController;
 
@@ -66,17 +55,20 @@ public class CoOpsDocumentWebSocket {
   public void onOpen(final Session client, EndpointConfig endpointConfig,
       @PathParam("HTMLMATERIALID") String htmlMaterialId, @PathParam("SESSIONID") String sessionId) throws IOException {
     synchronized (this) {
-      if (!muikkuSessionController.isLoggedIn()) {
-        client.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, "Permission denied"));
-      }
-      
-      UserEntity userEntity = muikkuSessionController.getLoggedUserEntity();
-      
-      EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
-      
-      if (environmentUser.getRole() == null || environmentUser.getRole().getArchetype() == EnvironmentRoleArchetype.STUDENT) {
-        client.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, "Permission denied"));
-      }
+//      
+//  TODO: RequestScope is not available on the websockets, switch to ticket system
+//      
+//      if (!muikkuSessionController.isLoggedIn()) {
+//        client.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, "Permission denied"));
+//      }
+//      
+//      UserEntity userEntity = muikkuSessionController.getLoggedUserEntity();
+//      
+//      EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
+//      
+//      if (environmentUser.getRole() == null || environmentUser.getRole().getArchetype() == EnvironmentRoleArchetype.STUDENT) {
+//        client.close(new CloseReason(CloseReason.CloseCodes.NORMAL_CLOSURE, "Permission denied"));
+//      }
 
       CoOpsSession session = coOpsSessionController.findSessionBySessionId(sessionId);
       if (session == null) {

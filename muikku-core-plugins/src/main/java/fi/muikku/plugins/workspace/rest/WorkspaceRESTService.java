@@ -745,17 +745,15 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (workspaceEntity == null) {
       return Response.status(Status.BAD_REQUEST).build();
     }
-
-    UserEntity loggedInUserEntity = sessionController.getLoggedUserEntity();
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndIdentifier(
-        workspaceEntity,
-        loggedInUserEntity.getDefaultIdentifier());
     
-    if (workspaceUserEntity == null ||
-        workspaceUserEntity.getWorkspaceUserRole() == null ||
-        workspaceUserEntity.getWorkspaceUserRole().getArchetype() != WorkspaceRoleArchetype.TEACHER) {
-      
-      return Response.status(Status.UNAUTHORIZED).entity("Not a teacher").build();
+    WorkspaceRoleEntity workspaceRoleEntity = workspaceUserEntityController.findWorkspaceUserRoleByWorkspaceEntityAndUserEntity(workspaceEntity, sessionController.getLoggedUserEntity());
+    if (workspaceRoleEntity == null) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // TODO: More detailed security check is needed
+    if (workspaceRoleEntity.getArchetype() == WorkspaceRoleArchetype.STUDENT) {
+      return Response.status(Status.FORBIDDEN).build();
     }
     
     // WorkspaceNode
