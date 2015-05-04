@@ -145,8 +145,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
     long id = Long.parseLong(identifier);
     
     CourseAssessment courseAssessment = new CourseAssessment(id, courseStudentId, Long.parseLong(gradeIdentifier), assessingUserId, new DateTime(date), verbalAssessment);
-    //return entityFactory.createEntity(pyramusClient.post(String.format("/students/%d/courses/%d/assessments/%d", studentId, courseId, id), courseAssessment));
-    throw new UnexpectedSchoolDataBridgeException("Not implemented yet."); //How to use PUT with pyramusClient?
+    return entityFactory.createEntity(pyramusClient.put(String.format("/students/%d/courses/%d/assessments/%d", studentId, courseId, id), courseAssessment));
   }
 
 
