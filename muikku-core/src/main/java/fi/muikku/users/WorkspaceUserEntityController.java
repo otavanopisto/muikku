@@ -1,5 +1,6 @@
 package fi.muikku.users;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -105,6 +106,17 @@ public class WorkspaceUserEntityController {
     }
     
     return null;
+  }
+
+  public List<WorkspaceEntity> listWorkspaceEntitiesByUserEntity(UserEntity userEntity) {
+    List<WorkspaceEntity> result = new ArrayList<>();
+    
+    List<WorkspaceUserEntity> workspaceUserEntities = listWorkspaceUserEntitiesByUserEntity(userEntity);
+    for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
+      result.add(workspaceUserEntity.getWorkspaceEntity());
+    }
+    
+    return result;
   }
   
 }

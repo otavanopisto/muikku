@@ -58,14 +58,11 @@ import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceMaterialFieldAnswer;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceMaterialReply;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceUser;
-import fi.muikku.schooldata.CourseMetaController;
 import fi.muikku.schooldata.RoleController;
 import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.WorkspaceEntityController;
-import fi.muikku.schooldata.entity.CourseIdentifier;
 import fi.muikku.schooldata.entity.Role;
-import fi.muikku.schooldata.entity.Subject;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceUserDiscoveredEvent;
@@ -108,9 +105,6 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private RoleController roleController;
-
-  @Inject
-  private CourseMetaController courseMetaController;
 
   @Inject
   private LocaleController localeController;
@@ -158,60 +152,58 @@ public class WorkspaceRESTService extends PluginRESTService {
         @Context Request request) {
     List<fi.muikku.plugins.workspace.rest.model.Workspace> workspaces = new ArrayList<>();
 
-    boolean doSubjectFilter = !subjects.isEmpty();
-    boolean doUserFilter = userId != null;
     boolean doMinVisitFilter = minVisits != null;
     UserEntity userEntity = userId != null ? userEntityController.findUserEntityById(userId) : null;
+    List<WorkspaceEntity> workspaceEntities = null;
+    String schoolDataSourceFilter = null;
+    List<String> workspaceIdentifierFilters = null;
+    
+    if (doMinVisitFilter) {
+      if (userEntity != null) {
+        workspaceEntities = workspaceVisitController.listWorkspaceEntitiesByMinVisitsOrderByLastVisit(userEntity, minVisits);
+      } else {
+        workspaceEntities = workspaceVisitController.listWorkspaceEntitiesByMinVisitsOrderByLastVisit(sessionController.getLoggedUserEntity(), minVisits);
+      }
+    } else {
+      if (userEntity != null) {
+        workspaceEntities = workspaceUserEntityController.listWorkspaceEntitiesByUserEntity(userEntity);
+      }
+    }
 
     Iterator<SearchProvider> searchProviderIterator = searchProviders.iterator();
     if (searchProviderIterator.hasNext()) {
       SearchProvider searchProvider = searchProviderIterator.next();
       SearchResult searchResult = null;
-
-      if (StringUtils.isNotBlank(searchString)) {
-        searchResult = searchProvider.search(searchString, new String[] { "name", "description", "courseIdentifierIdentifier" }, 0,
-            Integer.MAX_VALUE, Workspace.class);
-      } else {
-        searchResult = searchProvider.matchAllSearch(0, Integer.MAX_VALUE, Workspace.class);
+      
+      if (workspaceEntities != null) {
+        workspaceIdentifierFilters = new ArrayList<>();
+        
+        for (WorkspaceEntity workspaceEntity : workspaceEntities) {
+          if (schoolDataSourceFilter == null) {
+            schoolDataSourceFilter = workspaceEntity.getDataSource().getIdentifier();
+          }
+          
+          workspaceIdentifierFilters.add(workspaceEntity.getIdentifier());
+        }
       }
-
+      
+      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, searchString, 0, Integer.MAX_VALUE);
+      
       List<Map<String, Object>> results = searchResult.getResults();
       for (Map<String, Object> result : results) {
-        String[] id = ((String) result.get("id")).split("/", 2);
-        if (id.length == 2) {
-          String dataSource = id[1];
-          String identifier = id[0];
-          WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(dataSource, identifier);
-          if (workspaceEntity != null) {
-            boolean accept = true;
-
-            if (accept && doSubjectFilter) {
-              Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-              if (workspace != null) {
-                CourseIdentifier courseIdentifier = courseMetaController.findCourseIdentifier(workspace.getSchoolDataSource(),
-                    workspace.getCourseIdentifierIdentifier());
-                Subject subject = courseMetaController
-                    .findSubject(workspace.getSchoolDataSource(), courseIdentifier.getSubjectIdentifier());
-                if (!subjects.contains(subject.getIdentifier())) {
-                  accept = false;
-                }
+        String searchId = (String) result.get("id");
+        if (StringUtils.isNotBlank(searchId)) {
+          String[] id = searchId.split("/", 2);
+          if (id.length == 2) {
+            String dataSource = id[1];
+            String identifier = id[0];
+            WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(dataSource, identifier);
+            if (workspaceEntity != null) {
+              String name = (String) result.get("name");
+              String description = (String) result.get("description");
+              if (StringUtils.isNotBlank(name)) {
+                workspaces.add(createRestModel(workspaceEntity, name, description));
               }
-            }
-
-            if (accept && doUserFilter) {
-              if (workspaceUserEntityController.listWorkspaceUserEntitiesByWorkspaceAndUser(workspaceEntity, userEntity).isEmpty()) {
-                accept = false;
-              }
-            }
-            
-            if (accept && doMinVisitFilter) {
-              if (workspaceVisitController.getNumVisits(workspaceEntity) < minVisits.intValue()) {
-                accept = false;
-              }
-            }
-
-            if (accept) {
-              workspaces.add(createRestModel(workspaceEntity, (String) result.get("name"), (String) result.get("description")));
             }
           }
         }
