@@ -2,7 +2,6 @@ package fi.muikku.plugins.search;
 
 import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -14,9 +13,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.elasticsearch.action.delete.DeleteResponse;
-import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
@@ -33,7 +29,7 @@ import fi.muikku.search.SearchResult;
 @ApplicationScoped
 @Stateful
 public class ElasticSearchProvider implements SearchProvider {
-
+  
   @Inject
   private Logger logger;
 
@@ -48,6 +44,7 @@ public class ElasticSearchProvider implements SearchProvider {
     elasticClient.close();
   }
   
+  @Override
   public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, String freeText, int start, int maxResults) {
     QueryBuilder query = null;
     
@@ -219,26 +216,6 @@ public class ElasticSearchProvider implements SearchProvider {
       logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
       return new SearchResult(0, 0, 0, new ArrayList<Map<String,Object>>()); 
     }
-  }
-
-  @Override
-  public void addOrUpdateIndex(String typeName, Map<String, Object> entity) {
-    ObjectMapper mapper = new ObjectMapper();
-    String json;
-    try {
-      json = mapper.writeValueAsString(entity);
-      String id = entity.get("id").toString();
-      @SuppressWarnings("unused")
-      IndexResponse response = elasticClient.prepareIndex("muikku", typeName, id).setSource(json).execute().actionGet();
-    } catch (IOException e) {
-      logger.log(Level.WARNING, "Adding to index failed because of exception", e);
-    }
-  }
-
-  @Override
-  public void deleteFromIndex(String typeName, String id) {
-    @SuppressWarnings("unused")
-    DeleteResponse response = elasticClient.prepareDelete("muikku", typeName, id).execute().actionGet();
   }
 
   private Client elasticClient;

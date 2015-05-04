@@ -187,7 +187,8 @@ public class WorkspaceRESTService extends PluginRESTService {
         }
       }
       
-      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, searchString, 0, Integer.MAX_VALUE);
+      // TODO: Pagination support
+      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, searchString, 0, 50);
       
       List<Map<String, Object>> results = searchResult.getResults();
       for (Map<String, Object> result : results) {

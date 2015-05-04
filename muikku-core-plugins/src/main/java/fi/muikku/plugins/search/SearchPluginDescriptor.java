@@ -9,6 +9,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import fi.muikku.plugin.PluginDescriptor;
+import fi.muikku.search.SearchIndexUpdater;
 import fi.muikku.search.SearchProvider;
 
 public class SearchPluginDescriptor implements PluginDescriptor {
@@ -18,13 +19,24 @@ public class SearchPluginDescriptor implements PluginDescriptor {
   private Instance<SearchProvider> searchProviders;
   
   @Inject
+  @Any
+  private Instance<SearchIndexUpdater> searchIndexUpdaters;
+  
+  @Inject
   private Logger logger;
   
   @Override
   public void init() {
-    Iterator<SearchProvider> i = searchProviders.iterator();
-    while(i.hasNext()){
-      SearchProvider provider = i.next();
+    Iterator<SearchIndexUpdater> updaterIterator = searchIndexUpdaters.iterator();
+    while(updaterIterator.hasNext()){
+      SearchIndexUpdater updater = updaterIterator.next();
+      logger.info("Initializing search index updater: " + updater.getName());
+      updater.init();
+    }
+    
+    Iterator<SearchProvider> providerIterator = searchProviders.iterator();
+    while(providerIterator.hasNext()){
+      SearchProvider provider = providerIterator.next();
       logger.info("Initializing search provider: " + provider.getName());
       provider.init();
     }
