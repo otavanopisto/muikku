@@ -4,7 +4,7 @@ $(document).ready(function(){
     var WORD_COUNT = 50;
   
     function generatePreview(html){
-      var text = html.replace(/<\/?[^>]+(>|$)/g, "");
+      var text = $('<div>').html(html).text();
       var words = text.split(' ');
       if (words.length < WORD_COUNT) {
         return text;
@@ -25,6 +25,7 @@ $(document).ready(function(){
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('TODO: Virheilmoitus', err));
     	}else{
     	  for(var i = 0, j = messages.length; i < j; i++){
+    	    messages[i].caption =  $('<div>').html(messages[i].caption).text();
     	    messages[i].content = generatePreview(messages[i].content);
     	  }
 

@@ -1,7 +1,11 @@
+sudo: false
 language: java
 script: mvn test
 jdk:
 - openjdk7
+cache:
+  directories:
+  - $HOME/.m2
 branches:
   only:
   - devel
@@ -12,13 +16,17 @@ env:
   - secure: HCRUaOrwfMQQgtlFI5iKEa1CAKmf9R6GgifIpIjgLERgzxTzn3hJQkR9GvVpqB5Vo/50mCQM07LI6wB/Q9yI5b9d3M4Ey9RJebRRiHSvUyoOG8/tYHmZ8rphDVqInJSFDDcjHkGWI4KbPCe9cFvIuXhqWKensUEOl9WDFKDl4Uw=
   - secure: adbMocvLB0LZo7WyS3BsMyYAhKIUHUEapkIbZ0PgfZmG1BLLKwNpMvhhlOT5e8g1HkC2CPSlFQyfR5wNv4nH5kR0BwbiScA/QZK/Z3dLUWvSp+GvaKhRfW3G6BDPmyfwlDbjyewlG0fchd3gDqrNgiw3nI5asWyyQADkFPaFWU8=
   - secure: MHUFp5/FFXS8kW2iCl5G5Pr122QmN9FvbRGQX1GwDuNqOtTQHNMsYmcpEit0B5dhLnjl85nuF3IMhYyuw85MJaLlJrRCP1lcWWB5eNCyxsWgWdESmZ17erIifsK0i7QD8ai/yYGf8xtE5kys62T3URqzaK7P2Vyxhv6vgFSd7eI=
-  - secure: bgXW4FRhFiujxthYSB9SmWIzTSONaEjeLP5tCfY5MIXiASgAvOZ0KrLIayqoDrUL1GGlDIOtAoKTXrcIc+EOe5O3jTQm/1PKQDorsUSb3ZFdsiC/Vjqosr5GcU2mkS6l/5EjPkW3dlJatIr08MQPFtQHOVRIVCBLIT2w4LIbN5c=
+  - secure: cc3anD5A6j9z7m0srEOma8PdZjIkkyGjqKBWB0YorT38yOq1D5A+Tt4dReTxurVdiO6DYiJpcwZQ2kxwzPOgjTnydf+e4fOjxn7KrhKSd491vFtu7lfc2RYyVEYHu9XEE7T10hIqXuTNFRslwBSWq6RQLCJAIKL1CUKrBYyaNb8=
 before_install:
 - unset GEM_PATH
 after_success:
-- ./travis-upload-reports.sh
+- python travis-upload-reports.py
 - python travis-prepare-maven.py
-- mvn deploy --settings ~/.m2/mySettings.xml
+- pushd .
+- cd muikku
+- mvn clean deploy --settings ~/.m2/mySettings.xml -Pdeus-nex-machina-plugin,google-calendar-plugin,mongo-log-plugin,dummy-mail-plugin,pyramus-plugins -Dclassifier=otavanopisto
+- mvn clean deploy --settings ~/.m2/mySettings.xml -Pmongo-log-plugin,dummy-mail-plugin,pyramus-plugins -Dclassifier=janakkala
+- popd
 notifications:
   irc:
     channels:

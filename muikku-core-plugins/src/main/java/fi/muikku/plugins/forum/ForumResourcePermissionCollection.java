@@ -53,11 +53,10 @@ public class ForumResourcePermissionCollection extends AbstractMuikkuPermissionC
   @Scope (PERMISSIONSCOPE_FORUM)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.TEACHER, EnvironmentRoleArchetype.STUDENT } )
   public static final String FORUM_READMESSAGES = "FORUM_READMESSAGES";
-  
+
   @Scope (PERMISSIONSCOPE_FORUM)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.TEACHER, EnvironmentRoleArchetype.STUDENT } )
   public static final String FORUM_WRITEMESSAGES = "FORUM_WRITEMESSAGES";
-  
   
   @Override
   public List<String> listPermissions() {

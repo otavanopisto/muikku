@@ -5,7 +5,6 @@ import java.util.List;
 import javax.ejb.Stateful;
 import javax.enterprise.inject.Model;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import fi.muikku.dao.security.PermissionDAO;
 import fi.muikku.dao.security.ResourceRightsDAO;
@@ -18,7 +17,6 @@ import fi.muikku.security.PermissionScope;
 
 @Stateful
 @Model
-@Named ("resourceRights")
 public class ResourceRightsController {
 
   @Inject

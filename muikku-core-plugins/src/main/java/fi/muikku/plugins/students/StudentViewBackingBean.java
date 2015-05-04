@@ -36,11 +36,14 @@ public class StudentViewBackingBean {
   }
   
   public User getUser() {
-    return userController.findUserByDataSourceAndIdentifier(getUserEntity().getDefaultSchoolDataSource(), getUserEntity().getDefaultIdentifier());
+    // FIXME: reenable
+    return null;
+//    return userController.findUserByDataSourceAndIdentifier(getUserEntity().getDefaultSchoolDataSource(), getUserEntity().getDefaultIdentifier());
   }
   
   public UserEntity getUserEntity() {
-    return userEntityController.findUserEntityById(studentId);
+    return null;
+//    return userEntityController.findUserEntityById(studentId);
   }
   
   public Long getStudentId() {

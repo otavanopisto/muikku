@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+  template="/jsf/communicator/templates/communicator_base.xhtml">
+
+
+  <ui:define name="viewScripts">
+    <script type="text/javascript" src="//cdn.ckeditor.com/4.4.7/standard/ckeditor.js"></script>
+    <h:outputScript name="scripts/gui/communicator.js" />
+  </ui:define>
+
+  <ui:define name="content.center.widget">
+
+    <div class="cm-messages-container">
+    
+    </div>
+  </ui:define>
+<!-- 
+  <ui:define name="content.left.widget">
+    <div class="mf-sub-header">
+     <span>Linkit</span>
+    </div> 
+    <ul class="mf-side-links">
+        <li>
+          <a href="#in">#{i18n.text['plugin.communicator.inbox']}</a>
+        </li>
+        <li>
+          <a href="#sent">#{i18n.text['plugin.communicator.sent']}</a>
+        </li>
+    </ul> 
+  </ui:define>
+ -->              
+</ui:composition>

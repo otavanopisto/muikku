@@ -17,7 +17,6 @@ import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.plugins.forum.model.ForumArea;
 import fi.muikku.plugins.forum.model.ForumMessage;
-import fi.muikku.plugins.forum.model.ForumThread;
 import fi.muikku.plugins.forum.model.WorkspaceForumArea;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.security.AbstractPermissionResolver;

@@ -84,8 +84,10 @@ public class PyramusWebhookServlet extends HttpServlet {
       return;
     }
     
+    schoolDataBridgeSessionController.startSystemSession();
     try {
-      schoolDataBridgeSessionController.startSystemSession();
+      logger.log(Level.INFO, String.format("Recived a webhook notification of type %s", payload.getType().toString()));
+      
       switch (payload.getType()) {
         case COURSE_CREATE:
         case COURSE_UPDATE:
@@ -94,7 +96,7 @@ public class PyramusWebhookServlet extends HttpServlet {
           if (courseData == null) {
             return;  
           }
-          
+
           pyramusUpdater.updateCourse(courseData.getCourseId());
         break;
         case COURSE_STAFF_MEMBER_CREATE:

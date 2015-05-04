@@ -1,0 +1,9 @@
+This folder contains database updates for Muikku.
+
+Updates are ran with xmldb-updater (https://github.com/otavanopisto/xmldb-updater)
+
+xmldb-updater uses a bit different version numbering from Maven so the 
+numbers are formed by using major as major and adding minor version numbers as 
+first four decimals
+
+Eg. 1.0.0 -> 1.0000 and 1.1.15 -> 1.0115

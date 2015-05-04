@@ -25,7 +25,7 @@
             <div class="mf-fieldRow">
               <div class="cm-message-create-content">
                 <div class="mf-textarea">
-                 <textarea id="msgContent" name="content"></textarea>
+                 <textarea id="textContent" name="content"></textarea>
                 </div>
               </div>
              </div> 

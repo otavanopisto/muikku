@@ -172,7 +172,8 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     word-wrap:break-word;
   }
   
-  em {
+  em,
+  i {
     font-style:italic;
     font-weight:300;
   }
@@ -180,6 +181,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
   strong,
   b {
     font-weight:400; /* This is set to 'normal' because we use thinner font with text rendering */
+    font-style:inherit;
   }
 
   table {
@@ -383,4 +385,60 @@ body.workspace-materials-reading #contentWorkspaceMaterialsReading {
     font-size: 16px;
   }
   
+}
+
+/* MATERIAL STYLESETS */
+
+.material-styles-block {
+  border-radius:5px;
+  padding:8px 14px;
+  margin:20px 0;
+}
+
+.material-thinkingbox {
+  background:#7fcaf7;
+  color:#fff;
+}
+
+.material-objectivebox {
+  background:#67d9bf;
+  color:#fff;
+}
+
+.material-infobox {
+  background:#ec97c6;
+  color:#fff;
+}
+
+.material-recapbox {
+  background:#6eb5cf;
+  color:#fff;
+}
+
+.material-chatbubble {
+  background:#7082b0;
+  color:#fff;
+}
+
+.material-basicbox {
+  background:#ffc369;
+  color:#fff;
+}
+
+.material-citation-highlight {
+  color:#913333;
+  font-size:18px;
+  font-weight:400;
+  border-left:3px solid #b24d4d;
+  border-radius:0px;
+  line-height:1.7em;
+}
+
+.material-citation-basic {
+  color:#7a8d94;
+  font-size:18px;
+  font-weight:400;
+  border-left:3px solid #7a8d94;
+  border-radius:0px;
+  line-height:1.7em;
 }

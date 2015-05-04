@@ -1,7 +1,5 @@
 package fi.muikku.plugins.user;
 
-import java.io.FileNotFoundException;
-
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -11,9 +9,11 @@ import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
+import fi.muikku.jsf.NavigationRules;
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.plugins.friends.FriendsController;
+import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.muikku.schooldata.entity.User;
+import fi.muikku.session.SessionController;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
 
@@ -28,34 +28,65 @@ public class UserIndexBackingBean {
 
   @Inject
   private UserController userController;
-  
+
   @Inject
   private UserEntityController userEntityController;
-
+	
   @Inject
-  private FriendsController friendsController_TEMP;
-	
-	@RequestAction
-	public void init() throws FileNotFoundException {
-	}
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
+  
+  @Inject
+  private SessionController sessionController;
 
-	public User getUser() {
-	  return userController.findUserByDataSourceAndIdentifier(getUserEntity().getDefaultSchoolDataSource(), getUserEntity().getDefaultIdentifier());
+	@RequestAction
+	public String init() {
+	  if (!sessionController.isLoggedIn())
+	    return NavigationRules.NOT_FOUND;
+	  
+    UserEntity userEntity = userEntityController.findUserEntityById(getUserId());
+    if (userEntity == null) {
+      return NavigationRules.NOT_FOUND;
+    }
+    
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      User user = userController.findUserByDataSourceAndIdentifier(userEntity.getDefaultSchoolDataSource(), userEntity.getDefaultIdentifier());
+      if (user == null) {
+        return NavigationRules.NOT_FOUND;
+      }
+      firstName = user.getFirstName();
+      lastName = user.getLastName();
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
+    
+	  return null;
 	}
-	
-	public UserEntity getUserEntity() {
-	  return userEntityController.findUserEntityById(userId);
-	}
-	
-	public void addFriend(String message) {
-	  friendsController_TEMP.createFriendRequest(getUserEntity(), message);
-	}
-	
-	public Long getUserId() {
+  
+  public Long getUserId() {
     return userId;
   }
 
   public void setUserId(Long userId) {
     this.userId = userId;
   }
+  
+  public String getFirstName() {
+    return firstName;
+  }
+  
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+  
+  public String getLastName() {
+    return lastName;
+  }
+  
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
+  
+  private String firstName;
+  private String lastName;
 }

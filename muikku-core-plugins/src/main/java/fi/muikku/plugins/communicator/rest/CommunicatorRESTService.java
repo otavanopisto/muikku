@@ -20,6 +20,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
+import org.jsoup.Jsoup;
+import org.jsoup.safety.Whitelist;
 
 import fi.muikku.controller.TagController;
 import fi.muikku.model.base.Tag;
@@ -30,6 +34,7 @@ import fi.muikku.notifier.NotifierController;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.communicator.CommunicatorController;
 import fi.muikku.plugins.communicator.CommunicatorNewInboxMessageNotification;
+import fi.muikku.plugins.communicator.CommunicatorPermissionCollection;
 import fi.muikku.plugins.communicator.model.CommunicatorMessage;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageCategory;
 import fi.muikku.plugins.communicator.model.CommunicatorMessageId;
@@ -262,9 +267,12 @@ public class CommunicatorRESTService extends PluginRESTService {
     
     // TODO Category not existing at this point would technically indicate an invalid state
     CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(newMessage.getCategoryName());
+    
+    String content = Jsoup.clean(newMessage.getContent(), Whitelist.basic());
+    String caption = Jsoup.clean(newMessage.getCaption(), Whitelist.basic());
 
     CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId, user, recipients, categoryEntity, 
-        newMessage.getCaption(), newMessage.getContent(), tagList);
+        caption, content, tagList);
       
     notifierController.sendNotification(communicatorNewInboxMessageNotification, user, recipients);
     
@@ -420,6 +428,10 @@ public class CommunicatorRESTService extends PluginRESTService {
       @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId
    ) throws AuthorizationException {
     CommunicatorMessage msg = communicatorController.findCommunicatorMessageById(communicatorMessageId);
+    
+    if (!sessionController.hasPermission(CommunicatorPermissionCollection.READ_MESSAGE, msg)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
 
     String categoryName = msg.getCategory() != null ? msg.getCategory().getName() : null;
     
@@ -438,6 +450,10 @@ public class CommunicatorRESTService extends PluginRESTService {
       @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId
    ) throws AuthorizationException {
     CommunicatorMessage communicatorMessage = communicatorController.findCommunicatorMessageById(communicatorMessageId);
+
+    if (!sessionController.hasPermission(CommunicatorPermissionCollection.READ_MESSAGE, communicatorMessage)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
 
     List<CommunicatorMessageRecipient> messageRecipients = communicatorController.listCommunicatorMessageRecipients(communicatorMessage);
     
@@ -458,9 +474,11 @@ public class CommunicatorRESTService extends PluginRESTService {
       @PathParam ("COMMUNICATORMESSAGEID") Long communicatorMessageId,
       @PathParam ("RECIPIENTID") Long recipientId
    ) throws AuthorizationException {
-//    CommunicatorMessage communicatorMessage = communicatorController.findCommunicatorMessageById(communicatorMessageId);
-
     CommunicatorMessageRecipient recipient = communicatorController.findCommunicatorMessageRecipient(recipientId);
+
+    if (!sessionController.hasPermission(CommunicatorPermissionCollection.READ_MESSAGE, recipient)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
     
     UserEntity userEntity = userEntityController.findUserEntityById(recipient.getRecipient());
     fi.muikku.schooldata.entity.User user = userController.findUserByUserEntityDefaults(userEntity);
@@ -488,6 +506,10 @@ public class CommunicatorRESTService extends PluginRESTService {
    ) throws AuthorizationException {
     CommunicatorMessage communicatorMessage = communicatorController.findCommunicatorMessageById(communicatorMessageId);
 
+    if (!sessionController.hasPermission(CommunicatorPermissionCollection.READ_MESSAGE, communicatorMessage)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     UserEntity userEntity = userEntityController.findUserEntityById(communicatorMessage.getSender());
     fi.muikku.schooldata.entity.User user = userController.findUserByUserEntityDefaults(userEntity);
     Boolean hasPicture = false; // TODO: userController.hasPicture(userEntity);
@@ -546,6 +568,10 @@ public class CommunicatorRESTService extends PluginRESTService {
    ) throws AuthorizationException {
     CommunicatorMessageTemplate template = communicatorController.getMessageTemplate(templateId);
     
+    if (!sessionController.hasPermission(CommunicatorPermissionCollection.COMMUNICATOR_MANAGE_SETTINGS, template)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     CommunicatorMessageTemplateRESTModel result = new CommunicatorMessageTemplateRESTModel(template.getId(), template.getName(), template.getContent());
     
     return Response.ok(
@@ -559,6 +585,11 @@ public class CommunicatorRESTService extends PluginRESTService {
       @PathParam ("TEMPLATEID") Long templateId
    ) throws AuthorizationException {
     CommunicatorMessageTemplate messageTemplate = communicatorController.getMessageTemplate(templateId);
+
+    if (!sessionController.hasPermission(CommunicatorPermissionCollection.COMMUNICATOR_MANAGE_SETTINGS, messageTemplate)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     communicatorController.deleteMessageTemplate(messageTemplate);
     
     return Response.noContent().build();
@@ -576,6 +607,10 @@ public class CommunicatorRESTService extends PluginRESTService {
 
     CommunicatorMessageTemplate messageTemplate = communicatorController.getMessageTemplate(templateId);
 
+    if (!sessionController.hasPermission(CommunicatorPermissionCollection.COMMUNICATOR_MANAGE_SETTINGS, messageTemplate)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     CommunicatorMessageTemplate editMessageTemplate = communicatorController.editMessageTemplate(messageTemplate, template.getName(), template.getContent());
 
     CommunicatorMessageTemplateRESTModel result = new CommunicatorMessageTemplateRESTModel(editMessageTemplate.getId(), editMessageTemplate.getName(), editMessageTemplate.getContent());
@@ -623,6 +658,10 @@ public class CommunicatorRESTService extends PluginRESTService {
    ) throws AuthorizationException {
     CommunicatorMessageSignature signature = communicatorController.getMessageSignature(signatureId);
     
+    if (!sessionController.hasPermission(CommunicatorPermissionCollection.COMMUNICATOR_MANAGE_SETTINGS, signature)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
     CommunicatorMessageSignatureRESTModel result = new CommunicatorMessageSignatureRESTModel(signature.getId(), signature.getName(), signature.getSignature());
     
     return Response.ok(
@@ -636,6 +675,11 @@ public class CommunicatorRESTService extends PluginRESTService {
       @PathParam ("SIGNATUREID") Long signatureId
    ) throws AuthorizationException {
     CommunicatorMessageSignature messageSignature = communicatorController.getMessageSignature(signatureId);
+
+    if (!sessionController.hasPermission(CommunicatorPermissionCollection.COMMUNICATOR_MANAGE_SETTINGS, messageSignature)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
     communicatorController.deleteMessageSignature(messageSignature);
     
     return Response.noContent().build();
@@ -652,6 +696,10 @@ public class CommunicatorRESTService extends PluginRESTService {
     }
 
     CommunicatorMessageSignature messageSignature = communicatorController.getMessageSignature(signatureId);
+
+    if (!sessionController.hasPermission(CommunicatorPermissionCollection.COMMUNICATOR_MANAGE_SETTINGS, messageSignature)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
     
     CommunicatorMessageSignature editMessageSignature = communicatorController.editMessageSignature(messageSignature, signature.getName(), signature.getSignature());
 

@@ -628,7 +628,8 @@ public class PyramusUpdater {
  
   private void fireStaffMemberRemoved(Long staffMemberId) {
     String staffMemberIdentifier = identifierMapper.getStaffIdentifier(staffMemberId);
-    schoolDataUserRemovedEvent.fire(new SchoolDataUserRemovedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, staffMemberIdentifier));
+    String searchId = staffMemberIdentifier + '/' + SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
+    schoolDataUserRemovedEvent.fire(new SchoolDataUserRemovedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, staffMemberIdentifier, searchId));
   }
 
   private void fireStudentDiscovered(Student student) {
@@ -671,7 +672,8 @@ public class PyramusUpdater {
   
   private void fireStudentRemoved(Long studentId) {
     String studentIdentifier = identifierMapper.getStudentIdentifier(studentId);
-    schoolDataUserRemovedEvent.fire(new SchoolDataUserRemovedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, studentIdentifier));
+    String searchId = studentIdentifier + '/' + SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
+    schoolDataUserRemovedEvent.fire(new SchoolDataUserRemovedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, studentIdentifier, searchId));
   }
 
   private void fireWorkspaceDiscovered(Course course) {
@@ -688,7 +690,8 @@ public class PyramusUpdater {
 
   private void fireWorkspaceRemoved(Long courseId) {
     String identifier = identifierMapper.getWorkspaceIdentifier(courseId);
-    schoolDataWorkspaceRemovedEvent.fire(new SchoolDataWorkspaceRemovedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifier));
+    String searchId = identifier + '/' + SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
+    schoolDataWorkspaceRemovedEvent.fire(new SchoolDataWorkspaceRemovedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifier, searchId));
   }
 
   private void fireStaffMemberRoleDiscovered(Long pyramusId, UserRole userRole) {

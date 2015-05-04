@@ -30,25 +30,26 @@ public class UsersSettingsViewBackingBean {
 	
 	@PostConstruct
 	public void init() {
-		users = new ArrayList<>();
-		List<User> users = userController.listUsers();
-		for (User user : users) {
-			Role environmentRole = roleController.findUserEnvironmentRole(user);
-			RoleEntity environmentRoleEntity = roleController.findRoleEntity(environmentRole);
-			this.users.add(new UserBean(user.getSchoolDataSource(), user.getIdentifier(), user.getFirstName(), user.getLastName(), environmentRoleEntity != null ? environmentRoleEntity.getName() : "Unassigned (" + environmentRole.getName() + ")"));
-		}
-		
-		Collections.sort(this.users, new Comparator<UserBean>() {
-			@Override
-			public int compare(UserBean o1, UserBean o2) {
-				int result = o1.getSchoolDataSource().compareTo(o2.getSchoolDataSource());
-				if (result == 0) {
-					return o1.getIdentifier().compareTo(o2.getIdentifier());
-				}
-				
-				return result;
-			}
-		});
+	  // FIXME: REENABLE
+//		users = new ArrayList<>();
+//		List<User> users = userController.listUsers();
+//		for (User user : users) {
+//			Role environmentRole = roleController.findUserEnvironmentRole(user);
+//			RoleEntity environmentRoleEntity = roleController.findRoleEntity(environmentRole);
+//			this.users.add(new UserBean(user.getSchoolDataSource(), user.getIdentifier(), user.getFirstName(), user.getLastName(), environmentRoleEntity != null ? environmentRoleEntity.getName() : "Unassigned (" + environmentRole.getName() + ")"));
+//		}
+//		
+//		Collections.sort(this.users, new Comparator<UserBean>() {
+//			@Override
+//			public int compare(UserBean o1, UserBean o2) {
+//				int result = o1.getSchoolDataSource().compareTo(o2.getSchoolDataSource());
+//				if (result == 0) {
+//					return o1.getIdentifier().compareTo(o2.getIdentifier());
+//				}
+//				
+//				return result;
+//			}
+//		});
 	}
 
 	public List<UserBean> getUsers() {
