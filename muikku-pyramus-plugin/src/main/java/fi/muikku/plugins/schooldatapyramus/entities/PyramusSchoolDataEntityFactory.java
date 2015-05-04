@@ -269,7 +269,8 @@ public class PyramusSchoolDataEntityFactory {
         course.getLength(),
         identifierMapper.getCourseLengthUnitIdentifier(course.getLengthUnitId()),
         course.getBeginDate(),
-        course.getEndDate()
+        course.getEndDate(),
+        course.getArchived()
     );
   }
   

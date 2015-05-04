@@ -8,6 +8,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import fi.muikku.controller.EnvironmentSettingsController;
 import fi.muikku.controller.ResourceRightsController;
@@ -18,12 +19,12 @@ import fi.muikku.dao.security.WorkspaceRolePermissionDAO;
 import fi.muikku.dao.users.RoleEntityDAO;
 import fi.muikku.model.security.EnvironmentRolePermission;
 import fi.muikku.model.security.Permission;
-import fi.muikku.model.security.ResourceRights;
-import fi.muikku.model.security.ResourceRolePermission;
 import fi.muikku.model.security.WorkspaceRolePermission;
 import fi.muikku.model.users.RoleEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.schooldata.WorkspaceController;
+import fi.muikku.security.MuikkuPermissions;
+import fi.muikku.session.SessionController;
 import fi.otavanopisto.security.Admin;
 import fi.otavanopisto.security.AuthorizationException;
 import fi.otavanopisto.security.rest.AuthorizedResource;
@@ -58,6 +59,9 @@ public class PermissionRESTService extends AbstractRESTService {
   @Inject
   private EnvironmentSettingsController environmentSettingsController;
   
+  @Inject
+  private SessionController sessionController;
+  
   @POST
   @Path ("/addEnvironmentUserRolePermission")
   public Response addEnvironmentUserRolePermission(
@@ -65,7 +69,9 @@ public class PermissionRESTService extends AbstractRESTService {
       @FormParam ("permissionId") Long permissionId
    ) throws AuthorizationException {
     
-    // TODO: Security
+    if (!sessionController.hasPermission(MuikkuPermissions.MANAGE_SETTINGS, null)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
 
     RoleEntity userRole = userRoleDAO.findById(userRoleId);
     Permission permission = permissionDAO.findById(permissionId);
@@ -91,7 +97,9 @@ public class PermissionRESTService extends AbstractRESTService {
       @FormParam ("permissionId") Long permissionId
    ) {
     
-    // TODO: Security
+    if (!sessionController.hasPermission(MuikkuPermissions.MANAGE_SETTINGS, null)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
 
     RoleEntity userRole = userRoleDAO.findById(userRoleId);
     Permission permission = permissionDAO.findById(permissionId);
@@ -122,11 +130,13 @@ public class PermissionRESTService extends AbstractRESTService {
       @FormParam ("permissionId") Long permissionId
    ) {
     
-    // TODO: Security
-
     RoleEntity userRole = userRoleDAO.findById(userRoleId);
     Permission permission = permissionDAO.findById(permissionId);
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceId);
+
+    if (!sessionController.hasPermission(MuikkuPermissions.WORKSPACE_MANAGEWORKSPACESETTINGS, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
 
     if ((userRole == null) || (permission == null)) {
       return Response.status(Response.Status.NOT_FOUND).build();
@@ -151,11 +161,13 @@ public class PermissionRESTService extends AbstractRESTService {
       @FormParam ("permissionId") Long permissionId
    ) {
     
-    // TODO: Security
-
     RoleEntity userRole = userRoleDAO.findById(userRoleId);
     Permission permission = permissionDAO.findById(permissionId);
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceId);
+
+    if (!sessionController.hasPermission(MuikkuPermissions.WORKSPACE_MANAGEWORKSPACESETTINGS, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
 
     if ((userRole == null) || (permission == null)) {
       return Response.status(Response.Status.NOT_FOUND).build();
@@ -173,65 +185,65 @@ public class PermissionRESTService extends AbstractRESTService {
     }
   }
   
-  @POST
-  @Path ("/addResourceUserRolePermission")
-  @Admin
-//  @Permit (Permissions.MANAGE_SYSTEM_SETTINGS)
-  public Response addResourceUserRolePermission(
-      @FormParam ("resourceRightsId") Long resourceRightsId,
-      @FormParam ("userRoleId") Long userRoleId,
-      @FormParam ("permissionId") Long permissionId
-   ) {
-    
-    // TODO: Security
-
-    RoleEntity userRole = userRoleDAO.findById(userRoleId);
-    Permission permission = permissionDAO.findById(permissionId);
-    ResourceRights resourceRights = resourceRightsController.findResourceRightsById(resourceRightsId);
-
-    if ((userRole == null) || (permission == null)) {
-      return Response.status(Response.Status.NOT_FOUND).build();
-    }
-    
-    try {
-      resourceRightsController.addResourceUserRolePermission(resourceRights, userRole, permission);
-      
-      return Response.ok().build();
-    } catch (ConstraintViolationException violationException) {
-      return getConstraintViolations(violationException);
-    }
-  }
-
-  @POST
-  @Path ("/deleteResourceUserRolePermission")
-  @Admin
-//  @Permit (Permissions.MANAGE_SYSTEM_SETTINGS)
-  public Response deleteResourceUserRolePermission(
-      @FormParam ("resourceRightsId") Long resourceRightsId,
-      @FormParam ("userRoleId") Long userRoleId,
-      @FormParam ("permissionId") Long permissionId
-   ) {
-    
-    // TODO: Security
-
-    RoleEntity userRole = userRoleDAO.findById(userRoleId);
-    Permission permission = permissionDAO.findById(permissionId);
-    ResourceRights resourceRights = resourceRightsController.findResourceRightsById(resourceRightsId);
-
-    if ((userRole == null) || (permission == null)) {
-      return Response.status(Response.Status.NOT_FOUND).build();
-    }
-    
-    try {
-      ResourceRolePermission rolePermission = resourceUserRolePermissionDAO.findByUserRoleAndPermission(
-          resourceRights, userRole, permission);
-      
-      resourceRightsController.deleteResourceUserRolePermission(rolePermission);
-      
-      return Response.ok().build();
-    } catch (ConstraintViolationException violationException) {
-      return getConstraintViolations(violationException);
-    }
-  }
+//  @POST
+//  @Path ("/addResourceUserRolePermission")
+//  @Admin
+////  @Permit (Permissions.MANAGE_SYSTEM_SETTINGS)
+//  public Response addResourceUserRolePermission(
+//      @FormParam ("resourceRightsId") Long resourceRightsId,
+//      @FormParam ("userRoleId") Long userRoleId,
+//      @FormParam ("permissionId") Long permissionId
+//   ) {
+//    
+//    // TODO: Security
+//
+//    RoleEntity userRole = userRoleDAO.findById(userRoleId);
+//    Permission permission = permissionDAO.findById(permissionId);
+//    ResourceRights resourceRights = resourceRightsController.findResourceRightsById(resourceRightsId);
+//
+//    if ((userRole == null) || (permission == null)) {
+//      return Response.status(Response.Status.NOT_FOUND).build();
+//    }
+//    
+//    try {
+//      resourceRightsController.addResourceUserRolePermission(resourceRights, userRole, permission);
+//      
+//      return Response.ok().build();
+//    } catch (ConstraintViolationException violationException) {
+//      return getConstraintViolations(violationException);
+//    }
+//  }
+//
+//  @POST
+//  @Path ("/deleteResourceUserRolePermission")
+//  @Admin
+////  @Permit (Permissions.MANAGE_SYSTEM_SETTINGS)
+//  public Response deleteResourceUserRolePermission(
+//      @FormParam ("resourceRightsId") Long resourceRightsId,
+//      @FormParam ("userRoleId") Long userRoleId,
+//      @FormParam ("permissionId") Long permissionId
+//   ) {
+//    
+//    // TODO: Security
+//
+//    RoleEntity userRole = userRoleDAO.findById(userRoleId);
+//    Permission permission = permissionDAO.findById(permissionId);
+//    ResourceRights resourceRights = resourceRightsController.findResourceRightsById(resourceRightsId);
+//
+//    if ((userRole == null) || (permission == null)) {
+//      return Response.status(Response.Status.NOT_FOUND).build();
+//    }
+//    
+//    try {
+//      ResourceRolePermission rolePermission = resourceUserRolePermissionDAO.findByUserRoleAndPermission(
+//          resourceRights, userRole, permission);
+//      
+//      resourceRightsController.deleteResourceUserRolePermission(rolePermission);
+//      
+//      return Response.ok().build();
+//    } catch (ConstraintViolationException violationException) {
+//      return getConstraintViolations(violationException);
+//    }
+//  }
   
 }

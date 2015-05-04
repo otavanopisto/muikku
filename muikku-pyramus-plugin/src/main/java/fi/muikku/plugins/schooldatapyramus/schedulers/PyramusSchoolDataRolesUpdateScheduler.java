@@ -32,5 +32,10 @@ public class PyramusSchoolDataRolesUpdateScheduler implements PyramusUpdateSched
       logger.fine(String.format("Synchronized %d Pyramus roles", count));
     }
   }
+  
+  @Override
+  public int getPriority() {
+    return 0;
+  }
 
 }

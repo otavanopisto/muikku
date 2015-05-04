@@ -1,0 +1,1482 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+<sql>
+CREATE TABLE `AbstractWallEntry` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `archived` bit(1) NOT NULL,
+  `created` datetime NOT NULL,
+  `creator_id` bigint(20) DEFAULT NULL,
+  `lastModified` datetime NOT NULL,
+  `lastModifier_id` bigint(20) DEFAULT NULL,
+  `text` varchar(255) NOT NULL,
+  `wall_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_mu7oxbn8el88wc0bdu0rp4ss4` (`wall_id`),
+  CONSTRAINT `FK_mu7oxbn8el88wc0bdu0rp4ss4` FOREIGN KEY (`wall_id`) REFERENCES `Wall` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `AccessToken` (
+  `id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_6bg1dgaxkcuthbnh8w9f1p2sw` FOREIGN KEY (`id`) REFERENCES `Token` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `AssessmentRequest` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `archived` bit(1) NOT NULL,
+  `message_id` bigint(20) DEFAULT NULL,
+  `date` datetime NOT NULL,
+  `message` varchar(255) DEFAULT NULL,
+  `state` varchar(255) DEFAULT NULL,
+  `student_id` bigint(20) DEFAULT NULL,
+  `workspace_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `AuthSource` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `strategy` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `AuthSourceSetting` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `settingKey` varchar(255) NOT NULL,
+  `value` varchar(255) NOT NULL,
+  `authSource_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_momf49smjscwnv4vs1cp1gked` (`authSource_id`),
+  CONSTRAINT `FK_momf49smjscwnv4vs1cp1gked` FOREIGN KEY (`authSource_id`) REFERENCES `AuthSource` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `BinaryMaterial` (
+  `content` longblob NOT NULL,
+  `contentType` varchar(255) NOT NULL,
+  `id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_d9hv889ftyo6ecm5iv1i8hw00` FOREIGN KEY (`id`) REFERENCES `Material` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `CoOpsSession` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `accessed` datetime NOT NULL,
+  `algorithm` varchar(255) NOT NULL,
+  `closed` bit(1) NOT NULL,
+  `joinRevision` bigint(20) NOT NULL,
+  `sessionId` varchar(255) NOT NULL,
+  `type` varchar(255) NOT NULL,
+  `userEntityId` bigint(20) DEFAULT NULL,
+  `htmlMaterial_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UK_gnmr24o8mycwyds1wbmlp3q3p` (`sessionId`),
+  KEY `FK_8jij4ja4p95bgac03hemsjd91` (`htmlMaterial_id`),
+  CONSTRAINT `FK_8jij4ja4p95bgac03hemsjd91` FOREIGN KEY (`htmlMaterial_id`) REFERENCES `HtmlMaterial` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `CommunicatorMessage` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `archivedBySender` bit(1) NOT NULL,
+  `caption` varchar(1024) NOT NULL,
+  `content` longtext NOT NULL,
+  `created` datetime NOT NULL,
+  `sender_id` bigint(20) DEFAULT NULL,
+  `category_id` bigint(20) DEFAULT NULL,
+  `communicatorMessageId_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_i2xx7pjads3pxu2c13fuoe8a3` (`category_id`),
+  KEY `FK_ensb1lc627odhheal1ex3qfpx` (`communicatorMessageId_id`),
+  CONSTRAINT `FK_ensb1lc627odhheal1ex3qfpx` FOREIGN KEY (`communicatorMessageId_id`) REFERENCES `CommunicatorMessageId` (`id`),
+  CONSTRAINT `FK_i2xx7pjads3pxu2c13fuoe8a3` FOREIGN KEY (`category_id`) REFERENCES `CommunicatorMessageCategory` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `CommunicatorMessageAttachment` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `contentType` varchar(255) DEFAULT NULL,
+  `created` datetime NOT NULL,
+  `data` longblob,
+  `communicatorMessage_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_6ukxsd9x1ko1lajk9510lncf8` (`communicatorMessage_id`),
+  CONSTRAINT `FK_6ukxsd9x1ko1lajk9510lncf8` FOREIGN KEY (`communicatorMessage_id`) REFERENCES `CommunicatorMessage` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `CommunicatorMessageCategory` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UK_7uyr69aiem9o9x3m6fxoe6y79` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `CommunicatorMessageId` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `CommunicatorMessageRecipient` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `archivedByReceiver` bit(1) NOT NULL,
+  `readByReceiver` bit(1) NOT NULL,
+  `recipient_id` bigint(20) DEFAULT NULL,
+  `communicatorMessage_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_l0kg5gimfftpo2xebevrfj6kh` (`communicatorMessage_id`),
+  CONSTRAINT `FK_l0kg5gimfftpo2xebevrfj6kh` FOREIGN KEY (`communicatorMessage_id`) REFERENCES `CommunicatorMessage` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `CommunicatorMessageSignature` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `signature` longtext NOT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `CommunicatorMessageTemplate` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `content` longtext NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `Consumer` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `connectURI` varchar(255) NOT NULL,
+  `consumerKey` varchar(255) NOT NULL,
+  `consumerSecret` varchar(255) NOT NULL,
+  `displayName` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `ConsumerPermission` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `permission` varchar(255) NOT NULL,
+  `consumer_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_1rmhjqmxgr5mrdorpsq2cwyf5` (`consumer_id`),
+  CONSTRAINT `FK_1rmhjqmxgr5mrdorpsq2cwyf5` FOREIGN KEY (`consumer_id`) REFERENCES `Consumer` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `ConsumerScope` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `scope` varchar(255) NOT NULL,
+  `consumer_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_pa4qhwbcf6mnytkodlcsa8ajm` (`consumer_id`),
+  CONSTRAINT `FK_pa4qhwbcf6mnytkodlcsa8ajm` FOREIGN KEY (`consumer_id`) REFERENCES `Consumer` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `CourseIdentifierEntity` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `archived` bit(1) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `CourseIdentifierSchoolDataIdentifier` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `identifier` varchar(255) NOT NULL,
+  `courseIdentifierEntity_id` bigint(20) DEFAULT NULL,
+  `dataSource_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_ni5830m64wt68nm8l7tvf7pne` (`courseIdentifierEntity_id`),
+  KEY `FK_7scx7ndgkukh7p6rphpv9hmwc` (`dataSource_id`),
+  CONSTRAINT `FK_7scx7ndgkukh7p6rphpv9hmwc` FOREIGN KEY (`dataSource_id`) REFERENCES `SchoolDataSource` (`id`),
+  CONSTRAINT `FK_ni5830m64wt68nm8l7tvf7pne` FOREIGN KEY (`courseIdentifierEntity_id`) REFERENCES `CourseIdentifierEntity` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `CourseListSelection` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `context` varchar(255) NOT NULL,
+  `selection` int(11) DEFAULT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `DefaultWidget` (
+  `id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_17rum4ksrsgdj9ss50mr2allf` FOREIGN KEY (`id`) REFERENCES `LocatedWidget` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `EnvironmentDefaults` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `httpPort` int(11) NOT NULL,
+  `httpsPort` int(11) NOT NULL,
+  `defaultCourseCreatorRole_id` bigint(20) DEFAULT NULL,
+  `defaultUserRole_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_189xu3ykpc9rrvy76pusat7vt` (`defaultCourseCreatorRole_id`),
+  KEY `FK_hx0fit4ii6t7ft854lo5cwj7e` (`defaultUserRole_id`),
+  CONSTRAINT `FK_189xu3ykpc9rrvy76pusat7vt` FOREIGN KEY (`defaultCourseCreatorRole_id`) REFERENCES `WorkspaceRoleEntity` (`id`),
+  CONSTRAINT `FK_hx0fit4ii6t7ft854lo5cwj7e` FOREIGN KEY (`defaultUserRole_id`) REFERENCES `EnvironmentRoleEntity` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `EnvironmentForumArea` (
+  `id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_f0bl0fnrmeas8onvttrtls8sq` FOREIGN KEY (`id`) REFERENCES `ForumArea` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `EnvironmentRoleEntity` (
+  `archetype` varchar(255) NOT NULL,
+  `id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_34fhqsb2tt4ef5rsdfwvhjbdf` FOREIGN KEY (`id`) REFERENCES `RoleEntity` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `EnvironmentRolePermission` (
+  `id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_fkqtxkwx67k7il9hdhl2i8cgo` FOREIGN KEY (`id`) REFERENCES `RolePermission` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `EnvironmentUser` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `archived` bit(1) NOT NULL,
+  `role_id` bigint(20) DEFAULT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_dk2nvlgya8pcnaeqp7yir05pu` (`role_id`),
+  KEY `FK_oitpnqixfo1dtnyepfpwjcg37` (`user_id`),
+  CONSTRAINT `FK_dk2nvlgya8pcnaeqp7yir05pu` FOREIGN KEY (`role_id`) REFERENCES `EnvironmentRoleEntity` (`id`),
+  CONSTRAINT `FK_oitpnqixfo1dtnyepfpwjcg37` FOREIGN KEY (`user_id`) REFERENCES `UserEntity` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `EnvironmentUserPermissionOverride` (
+  `id` bigint(20) NOT NULL,
+  `environmentUser_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_e08961cnypqiefe9fwbax64be` (`environmentUser_id`),
+  CONSTRAINT `FK_1s9bd460tfdvgo9b5s5nk7bwh` FOREIGN KEY (`id`) REFERENCES `PermissionOverride` (`id`),
+  CONSTRAINT `FK_e08961cnypqiefe9fwbax64be` FOREIGN KEY (`environmentUser_id`) REFERENCES `EnvironmentUser` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `EnvironmentWall` (
+  `id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_myrn1onnbyiagyongk6mo7kvg` FOREIGN KEY (`id`) REFERENCES `Wall` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `ForumArea` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `archived` bit(1) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `owner_id` bigint(20) DEFAULT NULL,
+  `rights_id` bigint(20) DEFAULT NULL,
+  `group_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_34sycakn3chgjrk1g26rhk5f1` (`group_id`),
+  CONSTRAINT `FK_34sycakn3chgjrk1g26rhk5f1` FOREIGN KEY (`group_id`) REFERENCES `ForumAreaGroup` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `ForumAreaGroup` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `archived` bit(1) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `ForumAreaSubscription` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) DEFAULT NULL,
+  `forumArea_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_52xs5w61j5frksoof3f25d5kc` (`forumArea_id`),
+  CONSTRAINT `FK_52xs5w61j5frksoof3f25d5kc` FOREIGN KEY (`forumArea_id`) REFERENCES `ForumArea` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `ForumMessage` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `archived` bit(1) NOT NULL,
+  `created` datetime NOT NULL,
+  `creator_id` bigint(20) DEFAULT NULL,
+  `lastModified` datetime NOT NULL,
+  `lastModifier_id` bigint(20) DEFAULT NULL,
+  `message` longtext,
+  `forumArea_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_6ryor1rd8vsv8vmn07utivxy2` (`forumArea_id`),
+  CONSTRAINT `FK_6ryor1rd8vsv8vmn07utivxy2` FOREIGN KEY (`forumArea_id`) REFERENCES `ForumArea` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `ForumThread` (
+  `locked` bit(1) NOT NULL,
+  `sticky` bit(1) NOT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `updated` datetime NOT NULL,
+  `id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_2arg19vet20awf934fa3nodma` FOREIGN KEY (`id`) REFERENCES `ForumMessage` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `ForumThreadReply` (
+  `id` bigint(20) NOT NULL,
+  `thread_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_5rsrwpnprqannamvkxqgr2202` (`thread_id`),
+  CONSTRAINT `FK_5rsrwpnprqannamvkxqgr2202` FOREIGN KEY (`thread_id`) REFERENCES `ForumThread` (`id`),
+  CONSTRAINT `FK_elrejchpldrq4ajb0d6cx22j3` FOREIGN KEY (`id`) REFERENCES `ForumMessage` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `ForumThreadSubscription` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) DEFAULT NULL,
+  `forumThread_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_adt25qwmtyslmwg9yn9r9g1js` (`forumThread_id`),
+  CONSTRAINT `FK_adt25qwmtyslmwg9yn9r9g1js` FOREIGN KEY (`forumThread_id`) REFERENCES `ForumThread` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `Friend` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `created` datetime NOT NULL,
+  `usera_id` bigint(20) DEFAULT NULL,
+  `userb_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `FriendRequest` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `archived` bit(1) NOT NULL,
+  `created` datetime NOT NULL,
+  `creator_id` bigint(20) DEFAULT NULL,
+  `message` longtext,
+  `recipient_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `GradingScaleEntity` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `archived` bit(1) NOT NULL,
+  `identifier` varchar(255) NOT NULL,
+  `dataSource_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_svipebkvwsyhs0m3md3xkw4g7` (`dataSource_id`),
+  CONSTRAINT `FK_svipebkvwsyhs0m3md3xkw4g7` FOREIGN KEY (`dataSource_id`) REFERENCES `SchoolDataSource` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `GradingScaleItemEntity` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `archived` bit(1) NOT NULL,
+  `identifier` varchar(255) NOT NULL,
+  `dataSource_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_oxw0r4gjnhoo6bvlhe71vwofo` (`dataSource_id`),
+  CONSTRAINT `FK_oxw0r4gjnhoo6bvlhe71vwofo` FOREIGN KEY (`dataSource_id`) REFERENCES `SchoolDataSource` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `GuidanceRequest` (
+  `DTYPE` varchar(31) NOT NULL,
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `archived` bit(1) NOT NULL,
+  `date` datetime NOT NULL,
+  `message` varchar(255) DEFAULT NULL,
+  `student_id` bigint(20) DEFAULT NULL,
+  `workspace_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `HtmlMaterial` (
+  `contentType` varchar(255) NOT NULL,
+  `html` longtext,
+  `revisionNumber` bigint(20) NOT NULL,
+  `id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_6bv3wjlrop5d4y9xmd3672bxm` FOREIGN KEY (`id`) REFERENCES `Material` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `HtmlMaterialRevision` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `checksum` varchar(255) DEFAULT NULL,
+  `created` datetime NOT NULL,
+  `data` longtext,
+  `revision` bigint(20) NOT NULL,
+  `sessionId` varchar(255) DEFAULT NULL,
+  `htmlMaterial_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_7sudd0oy1cc2muad6xlp19g4n` (`htmlMaterial_id`),
+  CONSTRAINT `FK_7sudd0oy1cc2muad6xlp19g4n` FOREIGN KEY (`htmlMaterial_id`) REFERENCES `HtmlMaterial` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `HtmlMaterialRevisionExtensionProperty` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `propertyKey` varchar(255) NOT NULL,
+  `value` longtext NOT NULL,
+  `htmlMaterialRevision_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_1g05w0dgkjm4qrj4fhqsayjkp` (`htmlMaterialRevision_id`),
+  CONSTRAINT `FK_1g05w0dgkjm4qrj4fhqsayjkp` FOREIGN KEY (`htmlMaterialRevision_id`) REFERENCES `HtmlMaterialRevision` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `HtmlMaterialRevisionProperty` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `propertyKey` varchar(255) NOT NULL,
+  `value` longtext NOT NULL,
+  `htmlMaterialRevision_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_b3yd6rwmcu8qpyiptviu83l7h` (`htmlMaterialRevision_id`),
+  CONSTRAINT `FK_b3yd6rwmcu8qpyiptviu83l7h` FOREIGN KEY (`htmlMaterialRevision_id`) REFERENCES `HtmlMaterialRevision` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `InboxCommunicatorMessage` (
+  `id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_9wo2rdvjoxbbctinopd2l3kpb` FOREIGN KEY (`id`) REFERENCES `CommunicatorMessage` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `InternalAuth` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `password` varchar(255) NOT NULL,
+  `userEntityId` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `LocalUser` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `archived` bit(1) NOT NULL,
+  `firstName` varchar(255) DEFAULT NULL,
+  `lastName` varchar(255) DEFAULT NULL,
+  `roleId` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `LocalUserEmail` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `address` varchar(255) NOT NULL,
+  `archived` bit(1) NOT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_8cvjjyjxfdhm3lim0ul73c19c` (`user_id`),
+  CONSTRAINT `FK_8cvjjyjxfdhm3lim0ul73c19c` FOREIGN KEY (`user_id`) REFERENCES `LocalUser` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `LocalUserImage` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `content` longblob NOT NULL,
+  `contentType` varchar(255) NOT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_a5p8tyicucmk6e7h6pf0kkh5o` (`user_id`),
+  CONSTRAINT `FK_a5p8tyicucmk6e7h6pf0kkh5o` FOREIGN KEY (`user_id`) REFERENCES `LocalUser` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `LocalUserProperty` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `value` longtext NOT NULL,
+  `key_id` bigint(20) DEFAULT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_g4lju2o2f66oh1gcdtd4125jt` (`key_id`),
+  KEY `FK_2g394xwomr1ba5jrx0aoy9tny` (`user_id`),
+  CONSTRAINT `FK_2g394xwomr1ba5jrx0aoy9tny` FOREIGN KEY (`user_id`) REFERENCES `LocalUser` (`id`),
+  CONSTRAINT `FK_g4lju2o2f66oh1gcdtd4125jt` FOREIGN KEY (`key_id`) REFERENCES `LocalUserPropertyKey` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `LocalUserPropertyKey` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `archived` bit(1) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `LocatedWidget` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `widget_id` bigint(20) DEFAULT NULL,
+  `widgetSpace_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_spjm3h0qupsm8xb39od3o43jm` (`widget_id`),
+  KEY `FK_badnir3mnbd889puvlvnounxv` (`widgetSpace_id`),
+  CONSTRAINT `FK_badnir3mnbd889puvlvnounxv` FOREIGN KEY (`widgetSpace_id`) REFERENCES `WidgetSpace` (`id`),
+  CONSTRAINT `FK_spjm3h0qupsm8xb39od3o43jm` FOREIGN KEY (`widget_id`) REFERENCES `Widget` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `LocatedWidgetSetting` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `value` varchar(255) DEFAULT NULL,
+  `locatedWidget_id` bigint(20) DEFAULT NULL,
+  `widgetSetting_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_83ph7y61y4g1l1n87c6a7a1re` (`locatedWidget_id`),
+  KEY `FK_erxwl72dppx6aei9364mxo866` (`widgetSetting_id`),
+  CONSTRAINT `FK_83ph7y61y4g1l1n87c6a7a1re` FOREIGN KEY (`locatedWidget_id`) REFERENCES `LocatedWidget` (`id`),
+  CONSTRAINT `FK_erxwl72dppx6aei9364mxo866` FOREIGN KEY (`widgetSetting_id`) REFERENCES `WidgetSetting` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `Material` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) NOT NULL,
+  `version` bigint(20) DEFAULT NULL,
+  `originMaterial_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_ni0oofdm6ctau494pkufung9o` (`originMaterial_id`),
+  CONSTRAINT `FK_ni0oofdm6ctau494pkufung9o` FOREIGN KEY (`originMaterial_id`) REFERENCES `Material` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `NotifierActionEntity` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `NotifierMethodEntity` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `NotifierUserAction` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `allowance` varchar(255) DEFAULT NULL,
+  `user` bigint(20) DEFAULT NULL,
+  `action_id` bigint(20) DEFAULT NULL,
+  `method_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_57c78uovypx3q4rj498qijq5b` (`action_id`),
+  KEY `FK_77h699p6gaovdc7dhu555193l` (`method_id`),
+  CONSTRAINT `FK_57c78uovypx3q4rj498qijq5b` FOREIGN KEY (`action_id`) REFERENCES `NotifierActionEntity` (`id`),
+  CONSTRAINT `FK_77h699p6gaovdc7dhu555193l` FOREIGN KEY (`method_id`) REFERENCES `NotifierMethodEntity` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `PasswordResetRequest` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `resetHash` varchar(255) NOT NULL,
+  `userEntityId` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `Permission` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `scope` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UK_m3j6m9ksltume23qomatoes1r` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `PermissionOverride` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `state` int(11) DEFAULT NULL,
+  `permission_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_kpqful9759jjjsbdpkw11kl8o` (`permission_id`),
+  CONSTRAINT `FK_kpqful9759jjjsbdpkw11kl8o` FOREIGN KEY (`permission_id`) REFERENCES `Permission` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `Plugin` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `enabled` bit(1) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `PluginSetting` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `value` longtext,
+  `key_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_pt6qaw7ovl97ovetvc7peddju` (`key_id`),
+  CONSTRAINT `FK_pt6qaw7ovl97ovetvc7peddju` FOREIGN KEY (`key_id`) REFERENCES `PluginSettingKey` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `PluginSettingKey` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `plugin` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UK_cjdj8o5neuaivkbjynba3dlai` (`plugin`,`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `PluginUserSetting` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `value` varchar(255) DEFAULT NULL,
+  `key_id` bigint(20) DEFAULT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_tcvrk7805rabt3i4s6fuwps9a` (`key_id`),
+  KEY `FK_to1fhi6m9km0up2tc4m2j3bo2` (`user_id`),
+  CONSTRAINT `FK_tcvrk7805rabt3i4s6fuwps9a` FOREIGN KEY (`key_id`) REFERENCES `PluginUserSettingKey` (`id`),
+  CONSTRAINT `FK_to1fhi6m9km0up2tc4m2j3bo2` FOREIGN KEY (`user_id`) REFERENCES `UserEntity` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `PluginUserSettingKey` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `plugin` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UK_6t9uh3nmn7ejg9ovugx2ftg20` (`plugin`,`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `ProcessedScript` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `url` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UK_7vwu2kowvklb3bq86smrvk69h` (`url`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `QueryConnectField` (
+  `id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_sjjdcb61yp8wl9omnrk7xdojs` FOREIGN KEY (`id`) REFERENCES `QueryField` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `QueryConnectFieldCounterpart` (
+  `id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_kdpdsjrxf2hu5pkdlu8vyhykt` FOREIGN KEY (`id`) REFERENCES `QueryConnectFieldOption` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `QueryConnectFieldOption` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `text` varchar(255) DEFAULT NULL,
+  `field_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_m6qiigbd2xifbhh3f3ex6btwj` (`field_id`),
+  CONSTRAINT `FK_m6qiigbd2xifbhh3f3ex6btwj` FOREIGN KEY (`field_id`) REFERENCES `QueryConnectField` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `QueryConnectFieldTerm` (
+  `id` bigint(20) NOT NULL,
+  `counterpart_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_sw4vog6wwltaw7r4408luq1p7` (`counterpart_id`),
+  CONSTRAINT `FK_53fibpffbppdeauowxmcx6ee7` FOREIGN KEY (`id`) REFERENCES `QueryConnectFieldOption` (`id`),
+  CONSTRAINT `FK_sw4vog6wwltaw7r4408luq1p7` FOREIGN KEY (`counterpart_id`) REFERENCES `QueryConnectFieldCounterpart` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `QueryField` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `material_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_5eu2opa3hsbv2n3x2da0k4f2m` (`material_id`),
+  CONSTRAINT `FK_5eu2opa3hsbv2n3x2da0k4f2m` FOREIGN KEY (`material_id`) REFERENCES `Material` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `QueryFileField` (
+  `id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_nsj8ucvq7wrxeeajsaf81x050` FOREIGN KEY (`id`) REFERENCES `QueryField` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `QueryMemoField` (
+  `id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_cbkdgv1yjty8t8x568kevwsp1` FOREIGN KEY (`id`) REFERENCES `QueryField` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `QueryMultiSelectField` (
+  `id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_1spe6kojf7gqxoo7a1cq8fpsf` FOREIGN KEY (`id`) REFERENCES `QueryField` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `QueryMultiSelectFieldOption` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `text` varchar(255) NOT NULL,
+  `field_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_r7qdw9262yar8eg1571gxdtbd` (`field_id`),
+  CONSTRAINT `FK_r7qdw9262yar8eg1571gxdtbd` FOREIGN KEY (`field_id`) REFERENCES `QueryMultiSelectField` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `QuerySelectField` (
+  `id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_kj37j4njyg5nddyea38uheg3p` FOREIGN KEY (`id`) REFERENCES `QueryField` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `QuerySelectFieldOption` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `text` varchar(255) DEFAULT NULL,
+  `selectField_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_37bb9n7vcl8y8hkgbfc742078` (`selectField_id`),
+  CONSTRAINT `FK_37bb9n7vcl8y8hkgbfc742078` FOREIGN KEY (`selectField_id`) REFERENCES `QuerySelectField` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `QueryTextField` (
+  `id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_c8vpa1go3x06qthuppaocgkc6` FOREIGN KEY (`id`) REFERENCES `QueryField` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `RequestToken` (
+  `callback` varchar(255) NOT NULL,
+  `verifier` varchar(255) DEFAULT NULL,
+  `id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_3jd72xcon6f7tqs9mwuspxtt9` FOREIGN KEY (`id`) REFERENCES `Token` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `ResourceRights` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `ResourceRolePermission` (
+  `id` bigint(20) NOT NULL,
+  `resourcePermission_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_hc1tk8y0tu2j75606hwys9jqn` (`resourcePermission_id`),
+  CONSTRAINT `FK_hc1tk8y0tu2j75606hwys9jqn` FOREIGN KEY (`resourcePermission_id`) REFERENCES `ResourceRights` (`id`),
+  CONSTRAINT `FK_ka39hj1yf206170nombkot011` FOREIGN KEY (`id`) REFERENCES `RolePermission` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `RoleEntity` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `RolePermission` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `permission_id` bigint(20) DEFAULT NULL,
+  `role_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_sso4kx05y6klpbhf2bif56hwm` (`permission_id`),
+  KEY `FK_sx47ge56exdwr6sxr0srr58eg` (`role_id`),
+  CONSTRAINT `FK_sso4kx05y6klpbhf2bif56hwm` FOREIGN KEY (`permission_id`) REFERENCES `Permission` (`id`),
+  CONSTRAINT `FK_sx47ge56exdwr6sxr0srr58eg` FOREIGN KEY (`role_id`) REFERENCES `RoleEntity` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `RoleSchoolDataIdentifier` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `identifier` varchar(255) NOT NULL,
+  `dataSource_id` bigint(20) DEFAULT NULL,
+  `roleEntity_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_gvpuwhkrqgnjabbirvwwblpvy` (`dataSource_id`),
+  KEY `FK_j1115ak2catrqb44waom9n3dr` (`roleEntity_id`),
+  CONSTRAINT `FK_gvpuwhkrqgnjabbirvwwblpvy` FOREIGN KEY (`dataSource_id`) REFERENCES `SchoolDataSource` (`id`),
+  CONSTRAINT `FK_j1115ak2catrqb44waom9n3dr` FOREIGN KEY (`roleEntity_id`) REFERENCES `RoleEntity` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `SchoolDataSource` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `identifier` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UK_7dn3q0as73aru4ekcxlk9nfi7` (`identifier`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `SuperUser` (
+  `id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_buisa80gg1p7u2bpd4il13p1v` FOREIGN KEY (`id`) REFERENCES `UserEntity` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `SystemAccessToken` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `accessToken` varchar(255) NOT NULL,
+  `expires` bigint(20) NOT NULL,
+  `refreshToken` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `SystemRoleEntity` (
+  `roleType` varchar(255) NOT NULL,
+  `id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_le54h2ih5v0ev138l263rpp5f` FOREIGN KEY (`id`) REFERENCES `RoleEntity` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `Tag` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `text` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UK_am6x1sovg4dm5l9l581e0ckot` (`text`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `Token` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `secret` varchar(255) NOT NULL,
+  `timeToLive` bigint(20) NOT NULL,
+  `timestamp` bigint(20) NOT NULL,
+  `token` varchar(255) NOT NULL,
+  `type` int(11) NOT NULL,
+  `consumer_id` bigint(20) DEFAULT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_gu2absn1frcd4a4b7deredeqv` (`consumer_id`),
+  KEY `FK_c56184j4djjqx16jwprg167qp` (`user_id`),
+  CONSTRAINT `FK_c56184j4djjqx16jwprg167qp` FOREIGN KEY (`user_id`) REFERENCES `UserEntity` (`id`),
+  CONSTRAINT `FK_gu2absn1frcd4a4b7deredeqv` FOREIGN KEY (`consumer_id`) REFERENCES `Consumer` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `TokenPermission` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `permission` varchar(255) NOT NULL,
+  `token_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_b1g7bc1dfak4vfjm7tcrx36jg` (`token_id`),
+  CONSTRAINT `FK_b1g7bc1dfak4vfjm7tcrx36jg` FOREIGN KEY (`token_id`) REFERENCES `Token` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `TokenScope` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `scope` varchar(255) NOT NULL,
+  `token_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_ir9iars73sak31pl41e9tuc3k` (`token_id`),
+  CONSTRAINT `FK_ir9iars73sak31pl41e9tuc3k` FOREIGN KEY (`token_id`) REFERENCES `Token` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `UserCalendar` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `calendarId` varchar(255) NOT NULL,
+  `calendarProvider` varchar(255) NOT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  `visible` bit(1) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `UserContact` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `hidden` bit(1) NOT NULL,
+  `type` varchar(255) NOT NULL,
+  `value` varchar(255) NOT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_jf2i89c94nmcuq4lc7fv2o4s1` (`user_id`),
+  CONSTRAINT `FK_jf2i89c94nmcuq4lc7fv2o4s1` FOREIGN KEY (`user_id`) REFERENCES `UserEntity` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `UserEmailEntity` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `address` varchar(255) NOT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UK_g0173v4nvpdyt9uqf1mxwu4r6` (`address`),
+  KEY `FK_en80u0et4iwby9b1mtonooi77` (`user_id`),
+  CONSTRAINT `FK_en80u0et4iwby9b1mtonooi77` FOREIGN KEY (`user_id`) REFERENCES `UserEntity` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `UserEmailSchoolDataIdentifier` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `identifier` varchar(255) NOT NULL,
+  `dataSource_id` bigint(20) DEFAULT NULL,
+  `userEmailEntity_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UK_tnnk141f0ojgdds7thwskaiyl` (`dataSource_id`,`identifier`),
+  KEY `FK_g5ofqb6hrwdtxilldnlpls69o` (`userEmailEntity_id`),
+  CONSTRAINT `FK_g5ofqb6hrwdtxilldnlpls69o` FOREIGN KEY (`userEmailEntity_id`) REFERENCES `UserEmailEntity` (`id`),
+  CONSTRAINT `FK_swtxb2lhmh2itmplqdt77xc75` FOREIGN KEY (`dataSource_id`) REFERENCES `SchoolDataSource` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `UserEntity` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `archived` bit(1) NOT NULL,
+  `defaultIdentifier` varchar(255) DEFAULT NULL,
+  `lastLogin` datetime DEFAULT NULL,
+  `defaultSchoolDataSource_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_lprutv09wojvf73qmvdd1udtx` (`defaultSchoolDataSource_id`),
+  CONSTRAINT `FK_lprutv09wojvf73qmvdd1udtx` FOREIGN KEY (`defaultSchoolDataSource_id`) REFERENCES `SchoolDataSource` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `UserEntityProperty` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `propertyKey` varchar(255) NOT NULL,
+  `value` longtext NOT NULL,
+  `userEntity_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UK_iq59pgftn2anw56ie3moj4mij` (`userEntity_id`,`propertyKey`),
+  CONSTRAINT `FK_tcyh5swo5hl5j7hr8p4fa6fa2` FOREIGN KEY (`userEntity_id`) REFERENCES `UserEntity` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `UserFavouriteWorkspace` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) DEFAULT NULL,
+  `workspaceentity_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `UserGroup` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `UserGroupRoleEntity` (
+  `id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_djxsud37xgr7ytou5kpoen3pm` FOREIGN KEY (`id`) REFERENCES `RoleEntity` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `UserGroupRolePermission` (
+  `id` bigint(20) NOT NULL,
+  `userGroup_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_jpj92a6qrtf8kjbs4cb0m12ok` (`userGroup_id`),
+  CONSTRAINT `FK_jpj92a6qrtf8kjbs4cb0m12ok` FOREIGN KEY (`userGroup_id`) REFERENCES `UserGroup` (`id`),
+  CONSTRAINT `FK_kc0209gc7jodh4r3q8x3tixkt` FOREIGN KEY (`id`) REFERENCES `RolePermission` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `UserGroupUser` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `role_id` bigint(20) DEFAULT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  `userGroup_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_437qvca582qur50hs4232sp7v` (`role_id`),
+  KEY `FK_6iyjgrgmjxr5ccrh3y6ry60u2` (`user_id`),
+  KEY `FK_syqni1h91pk7fb1ha3nj7q9le` (`userGroup_id`),
+  CONSTRAINT `FK_437qvca582qur50hs4232sp7v` FOREIGN KEY (`role_id`) REFERENCES `UserGroupRoleEntity` (`id`),
+  CONSTRAINT `FK_6iyjgrgmjxr5ccrh3y6ry60u2` FOREIGN KEY (`user_id`) REFERENCES `UserEntity` (`id`),
+  CONSTRAINT `FK_syqni1h91pk7fb1ha3nj7q9le` FOREIGN KEY (`userGroup_id`) REFERENCES `UserGroup` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `UserIdentification` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `externalId` varchar(255) NOT NULL,
+  `authSource_id` bigint(20) DEFAULT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_mcpkrkar6wh6x2wfyy2p4e2nx` (`authSource_id`),
+  KEY `FK_mvggk2wy5wia6wpp20acvgof6` (`user_id`),
+  CONSTRAINT `FK_mcpkrkar6wh6x2wfyy2p4e2nx` FOREIGN KEY (`authSource_id`) REFERENCES `AuthSource` (`id`),
+  CONSTRAINT `FK_mvggk2wy5wia6wpp20acvgof6` FOREIGN KEY (`user_id`) REFERENCES `UserEntity` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `UserPendingEmailChange` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `confirmationHash` varchar(255) NOT NULL,
+  `newEmail` varchar(255) NOT NULL,
+  `userEmailEntity_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `UserPicture` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `contentType` varchar(255) DEFAULT NULL,
+  `data` longblob,
+  `lastModified` datetime NOT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_gwwr3gmi1rxmtqef6bqt2m40x` (`user_id`),
+  CONSTRAINT `FK_gwwr3gmi1rxmtqef6bqt2m40x` FOREIGN KEY (`user_id`) REFERENCES `UserEntity` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `UserSchoolDataIdentifier` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `identifier` varchar(255) NOT NULL,
+  `dataSource_id` bigint(20) DEFAULT NULL,
+  `userEntity_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UK_45bhmd3a2dt4gpasw0aod54xs` (`dataSource_id`,`identifier`),
+  KEY `FK_sfucg40r03ofc5no6yy8d7f0k` (`userEntity_id`),
+  CONSTRAINT `FK_ottwpmpfrp5lxya23xljyryrp` FOREIGN KEY (`dataSource_id`) REFERENCES `SchoolDataSource` (`id`),
+  CONSTRAINT `FK_sfucg40r03ofc5no6yy8d7f0k` FOREIGN KEY (`userEntity_id`) REFERENCES `UserEntity` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `UserWall` (
+  `user_id` bigint(20) DEFAULT NULL,
+  `id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_qskiid26trrapbgifqlidda6h` FOREIGN KEY (`id`) REFERENCES `Wall` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `UserWallSubscription` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) DEFAULT NULL,
+  `wall_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_ia078ahpuur2o7d3gdteporqu` (`wall_id`),
+  CONSTRAINT `FK_ia078ahpuur2o7d3gdteporqu` FOREIGN KEY (`wall_id`) REFERENCES `Wall` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `UserWidget` (
+  `id` bigint(20) NOT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_nwp6o77g5jgimonw22askdou` (`user_id`),
+  CONSTRAINT `FK_nwp6o77g5jgimonw22askdou` FOREIGN KEY (`user_id`) REFERENCES `UserEntity` (`id`),
+  CONSTRAINT `FK_ppl2vi416yvfi1xijn0dk2fnj` FOREIGN KEY (`id`) REFERENCES `LocatedWidget` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `Wall` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `WallEntry` (
+  `visibility` int(11) DEFAULT NULL,
+  `id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_foqhhg5ixr718q06o09l8vn63` FOREIGN KEY (`id`) REFERENCES `AbstractWallEntry` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `WallEntryReply` (
+  `id` bigint(20) NOT NULL,
+  `wallEntry_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_lhwl5qraym7l2ggn97cd12uhf` (`wallEntry_id`),
+  CONSTRAINT `FK_a32r577q4cmjc84scn7d5b8y7` FOREIGN KEY (`id`) REFERENCES `AbstractWallEntry` (`id`),
+  CONSTRAINT `FK_lhwl5qraym7l2ggn97cd12uhf` FOREIGN KEY (`wallEntry_id`) REFERENCES `WallEntry` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `WebSocketTicket` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `ip` varchar(255) NOT NULL,
+  `ticket` varchar(1024) NOT NULL,
+  `timestamp` datetime NOT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `Widget` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `minimumSize` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `visibility` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `WidgetSetting` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `WidgetSpace` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `WorkspaceEntity` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `archived` bit(1) NOT NULL,
+  `identifier` varchar(255) NOT NULL,
+  `urlName` varchar(255) NOT NULL,
+  `dataSource_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UK_599chflnxvgdasty1tgv533db` (`urlName`),
+  KEY `FK_fr0p95oyys5sof8ydhbdcldsi` (`dataSource_id`),
+  CONSTRAINT `FK_fr0p95oyys5sof8ydhbdcldsi` FOREIGN KEY (`dataSource_id`) REFERENCES `SchoolDataSource` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `WorkspaceFolder` (
+  `folderType` varchar(255) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `id` bigint(20) NOT NULL,
+  `defaultMaterial_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_t28l7h75xhc7ib8n9n758agp4` (`defaultMaterial_id`),
+  CONSTRAINT `FK_syfi3ypoa8qi72pvvygo2dgeg` FOREIGN KEY (`id`) REFERENCES `WorkspaceNode` (`id`),
+  CONSTRAINT `FK_t28l7h75xhc7ib8n9n758agp4` FOREIGN KEY (`defaultMaterial_id`) REFERENCES `WorkspaceNode` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `WorkspaceForumArea` (
+  `workspace_id` bigint(20) DEFAULT NULL,
+  `id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_mlb4eqw4ge34faxei9rwxc4g9` FOREIGN KEY (`id`) REFERENCES `ForumArea` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `WorkspaceMaterial` (
+  `assignmentType` varchar(255) DEFAULT NULL,
+  `materialId` bigint(20) NOT NULL,
+  `id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_or2xl5lw1ka9qhcx509rk2ohi` FOREIGN KEY (`id`) REFERENCES `WorkspaceNode` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `WorkspaceMaterialConnectFieldAnswer` (
+  `id` bigint(20) NOT NULL,
+  `counterpart_id` bigint(20) DEFAULT NULL,
+  `term_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_b31obh0nnwj4rjwhv5enkieg7` (`counterpart_id`),
+  KEY `FK_b5po9xftd1sff1qutb0yl0mua` (`term_id`),
+  CONSTRAINT `FK_6elan2bh59wuumgcrs4lxdi1p` FOREIGN KEY (`id`) REFERENCES `WorkspaceMaterialFieldAnswer` (`id`),
+  CONSTRAINT `FK_b31obh0nnwj4rjwhv5enkieg7` FOREIGN KEY (`counterpart_id`) REFERENCES `QueryConnectFieldCounterpart` (`id`),
+  CONSTRAINT `FK_b5po9xftd1sff1qutb0yl0mua` FOREIGN KEY (`term_id`) REFERENCES `QueryConnectFieldTerm` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `WorkspaceMaterialField` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `embedId` varchar(255) DEFAULT NULL,
+  `queryField_id` bigint(20) DEFAULT NULL,
+  `workspaceMaterial_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UK_j6ptlndkbga3580nde57gug4p` (`embedId`,`queryField_id`,`workspaceMaterial_id`),
+  KEY `FK_87mvnngqax2sfm3bxvr7bsrn5` (`queryField_id`),
+  KEY `FK_l529jxfqqjs5sku85q87qth2v` (`workspaceMaterial_id`),
+  CONSTRAINT `FK_87mvnngqax2sfm3bxvr7bsrn5` FOREIGN KEY (`queryField_id`) REFERENCES `QueryField` (`id`),
+  CONSTRAINT `FK_l529jxfqqjs5sku85q87qth2v` FOREIGN KEY (`workspaceMaterial_id`) REFERENCES `WorkspaceMaterial` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `WorkspaceMaterialFieldAnswer` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `field_id` bigint(20) DEFAULT NULL,
+  `reply_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_gpsv9vkeio4kjm31sti9towi5` (`field_id`),
+  KEY `FK_dcvth7w785j3mc1st0mx38uk1` (`reply_id`),
+  CONSTRAINT `FK_dcvth7w785j3mc1st0mx38uk1` FOREIGN KEY (`reply_id`) REFERENCES `WorkspaceMaterialReply` (`id`),
+  CONSTRAINT `FK_gpsv9vkeio4kjm31sti9towi5` FOREIGN KEY (`field_id`) REFERENCES `WorkspaceMaterialField` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `WorkspaceMaterialFileFieldAnswer` (
+  `id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_vtc52cg3w8nutc3v8d6vcntp` FOREIGN KEY (`id`) REFERENCES `WorkspaceMaterialFieldAnswer` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `WorkspaceMaterialFileFieldAnswerFile` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `content` longblob,
+  `contentType` varchar(255) NOT NULL,
+  `fileId` varchar(255) NOT NULL,
+  `fileName` varchar(255) DEFAULT NULL,
+  `fieldAnswer_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_22hscxwwqw0jfg41g8wvr7u6h` (`fieldAnswer_id`),
+  CONSTRAINT `FK_22hscxwwqw0jfg41g8wvr7u6h` FOREIGN KEY (`fieldAnswer_id`) REFERENCES `WorkspaceMaterialFileFieldAnswer` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `WorkspaceMaterialMultiSelectFieldAnswer` (
+  `id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_fr2lkw5s6r0mqmym0vjw5k5o` FOREIGN KEY (`id`) REFERENCES `WorkspaceMaterialFieldAnswer` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `WorkspaceMaterialMultiSelectFieldAnswerOption` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `fieldAnswer_id` bigint(20) DEFAULT NULL,
+  `option_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_dao91ttlqb6sscdqvtec2efpu` (`fieldAnswer_id`),
+  KEY `FK_awreprg0mr17wkibwwsg40e0p` (`option_id`),
+  CONSTRAINT `FK_awreprg0mr17wkibwwsg40e0p` FOREIGN KEY (`option_id`) REFERENCES `QueryMultiSelectFieldOption` (`id`),
+  CONSTRAINT `FK_dao91ttlqb6sscdqvtec2efpu` FOREIGN KEY (`fieldAnswer_id`) REFERENCES `WorkspaceMaterialMultiSelectFieldAnswer` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `WorkspaceMaterialReply` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `userEntityId` bigint(20) NOT NULL,
+  `workspaceMaterial_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_9f72j9p9vcxu31f847nis6u1p` (`workspaceMaterial_id`),
+  CONSTRAINT `FK_9f72j9p9vcxu31f847nis6u1p` FOREIGN KEY (`workspaceMaterial_id`) REFERENCES `WorkspaceMaterial` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `WorkspaceMaterialSelectFieldAnswer` (
+  `id` bigint(20) NOT NULL,
+  `value_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_heh7m91jf44xm8w7611ib6jjh` (`value_id`),
+  CONSTRAINT `FK_heh7m91jf44xm8w7611ib6jjh` FOREIGN KEY (`value_id`) REFERENCES `QuerySelectFieldOption` (`id`),
+  CONSTRAINT `FK_t5dt14agx8aiymo1rpllr1wl7` FOREIGN KEY (`id`) REFERENCES `WorkspaceMaterialFieldAnswer` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `WorkspaceMaterialTextFieldAnswer` (
+  `value` longtext,
+  `id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_8f8hi6fjlh4u30x9tbsj71dl6` FOREIGN KEY (`id`) REFERENCES `WorkspaceMaterialFieldAnswer` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `WorkspaceNode` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `hidden` bit(1) NOT NULL,
+  `orderNumber` int(11) NOT NULL,
+  `urlName` varchar(255) NOT NULL,
+  `parent_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_8ygf4mog31l4groo3848dot6t` (`parent_id`),
+  CONSTRAINT `FK_8ygf4mog31l4groo3848dot6t` FOREIGN KEY (`parent_id`) REFERENCES `WorkspaceNode` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `WorkspaceRoleEntity` (
+  `archetype` varchar(255) NOT NULL,
+  `id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_h4lgeynpb49cj12r3n9dvi1us` FOREIGN KEY (`id`) REFERENCES `RoleEntity` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `WorkspaceRolePermission` (
+  `id` bigint(20) NOT NULL,
+  `workspace_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_b9jrfbswnxi5ynbp1re3e5yhv` (`workspace_id`),
+  CONSTRAINT `FK_4jwi8h21rfe8ndc1w8u2buy8f` FOREIGN KEY (`id`) REFERENCES `RolePermission` (`id`),
+  CONSTRAINT `FK_b9jrfbswnxi5ynbp1re3e5yhv` FOREIGN KEY (`workspace_id`) REFERENCES `WorkspaceEntity` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `WorkspaceRootFolder` (
+  `workspaceEntityId` bigint(20) DEFAULT NULL,
+  `id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `FK_62gkwhp90ptdgxpvcapb4cnk2` FOREIGN KEY (`id`) REFERENCES `WorkspaceNode` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `WorkspaceSettings` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `defaultWorkspaceUserRole_id` bigint(20) DEFAULT NULL,
+  `workspaceEntity_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_dg81piumh7r7fne67tediquhc` (`defaultWorkspaceUserRole_id`),
+  KEY `FK_mi6qc1axgqhakw232tixtkdph` (`workspaceEntity_id`),
+  CONSTRAINT `FK_dg81piumh7r7fne67tediquhc` FOREIGN KEY (`defaultWorkspaceUserRole_id`) REFERENCES `WorkspaceRoleEntity` (`id`),
+  CONSTRAINT `FK_mi6qc1axgqhakw232tixtkdph` FOREIGN KEY (`workspaceEntity_id`) REFERENCES `WorkspaceEntity` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `WorkspaceSettingsTemplate` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `defaultWorkspaceUserRole_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_ph35iruwytlnnatrl7ikyd1f6` (`defaultWorkspaceUserRole_id`),
+  CONSTRAINT `FK_ph35iruwytlnnatrl7ikyd1f6` FOREIGN KEY (`defaultWorkspaceUserRole_id`) REFERENCES `WorkspaceRoleEntity` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `WorkspaceSettingsTemplateRolePermission` (
+  `id` bigint(20) NOT NULL,
+  `workspaceSettingsTemplate_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_62qeka0c23ssbg3syj8suhym` (`workspaceSettingsTemplate_id`),
+  CONSTRAINT `FK_62qeka0c23ssbg3syj8suhym` FOREIGN KEY (`workspaceSettingsTemplate_id`) REFERENCES `WorkspaceSettingsTemplate` (`id`),
+  CONSTRAINT `FK_lik6iwga1unje09cgdhjir7bl` FOREIGN KEY (`id`) REFERENCES `RolePermission` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `WorkspaceTypeEntity` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `WorkspaceTypeGradingScale` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `gradingScale_id` bigint(20) DEFAULT NULL,
+  `workspaceType_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_i5avvjvawkbheol4ooritwt6o` (`gradingScale_id`),
+  KEY `FK_rlf4repbco2dmuva7h5b4i9sv` (`workspaceType_id`),
+  CONSTRAINT `FK_i5avvjvawkbheol4ooritwt6o` FOREIGN KEY (`gradingScale_id`) REFERENCES `GradingScaleEntity` (`id`),
+  CONSTRAINT `FK_rlf4repbco2dmuva7h5b4i9sv` FOREIGN KEY (`workspaceType_id`) REFERENCES `WorkspaceTypeEntity` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `WorkspaceTypeSchoolDataIdentifier` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `identifier` varchar(255) NOT NULL,
+  `dataSource_id` bigint(20) DEFAULT NULL,
+  `workspaceTypeEntity_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_edah9rx40lon0giwan7o3w1bl` (`dataSource_id`),
+  KEY `FK_s3bfb28bdl03or0imexkbrfhr` (`workspaceTypeEntity_id`),
+  CONSTRAINT `FK_edah9rx40lon0giwan7o3w1bl` FOREIGN KEY (`dataSource_id`) REFERENCES `SchoolDataSource` (`id`),
+  CONSTRAINT `FK_s3bfb28bdl03or0imexkbrfhr` FOREIGN KEY (`workspaceTypeEntity_id`) REFERENCES `WorkspaceTypeEntity` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `WorkspaceUserEntity` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `archived` bit(1) NOT NULL,
+  `identifier` varchar(255) NOT NULL,
+  `userSchoolDataIdentifier_id` bigint(20) DEFAULT NULL,
+  `workspaceEntity_id` bigint(20) DEFAULT NULL,
+  `workspaceUserRole_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UK_ah9ekxp61tsvpas57k7k60knw` (`userSchoolDataIdentifier_id`,`workspaceEntity_id`),
+  KEY `FK_kyln5ywwjeodrglkj8r40rfks` (`workspaceEntity_id`),
+  KEY `FK_aqx3d4g5nm27349416uy2om4m` (`workspaceUserRole_id`),
+  CONSTRAINT `FK_aqx3d4g5nm27349416uy2om4m` FOREIGN KEY (`workspaceUserRole_id`) REFERENCES `WorkspaceRoleEntity` (`id`),
+  CONSTRAINT `FK_kyln5ywwjeodrglkj8r40rfks` FOREIGN KEY (`workspaceEntity_id`) REFERENCES `WorkspaceEntity` (`id`),
+  CONSTRAINT `FK_omwoihpfgl0wt58p2wtjsxsx2` FOREIGN KEY (`userSchoolDataIdentifier_id`) REFERENCES `UserSchoolDataIdentifier` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `WorkspaceUserPermissionOverride` (
+  `id` bigint(20) NOT NULL,
+  `workspaceUserEntity_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_9u061s8g06eplr5mn2nx4qqf1` (`workspaceUserEntity_id`),
+  CONSTRAINT `FK_9u061s8g06eplr5mn2nx4qqf1` FOREIGN KEY (`workspaceUserEntity_id`) REFERENCES `WorkspaceUserEntity` (`id`),
+  CONSTRAINT `FK_p3r5tn59r6ote0sn4qhi00kox` FOREIGN KEY (`id`) REFERENCES `PermissionOverride` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `WorkspaceUserSignup` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `date` datetime NOT NULL,
+  `message` longtext,
+  `userEntity_id` bigint(20) DEFAULT NULL,
+  `workspaceEntity_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK_emp6n0cgbn7txwf47a5xy8ji` (`userEntity_id`),
+  KEY `FK_qedubrr9752yoqq9aoek93edk` (`workspaceEntity_id`),
+  CONSTRAINT `FK_emp6n0cgbn7txwf47a5xy8ji` FOREIGN KEY (`userEntity_id`) REFERENCES `UserEntity` (`id`),
+  CONSTRAINT `FK_qedubrr9752yoqq9aoek93edk` FOREIGN KEY (`workspaceEntity_id`) REFERENCES `WorkspaceEntity` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `WorkspaceVisit` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `lastVisit` datetime NOT NULL,
+  `numVisits` bigint(20) NOT NULL,
+  `userEntityId` bigint(20) NOT NULL,
+  `workspaceEntityId` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `WorkspaceWall` (
+  `workspace_id` bigint(20) DEFAULT NULL,
+  `id` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UK_swif3ovbvj18cgv9ffu29q7d2` (`workspace_id`),
+  CONSTRAINT `FK_q40lrjgi783saciq2q8031kip` FOREIGN KEY (`id`) REFERENCES `Wall` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+<sql>
+CREATE TABLE `communicatormessage_tags` (
+  `communicatorMessage_id` bigint(20) NOT NULL,
+  `tags` bigint(20) DEFAULT NULL,
+  KEY `FK_aabivh77i3ctdgn23ixhx83ax` (`communicatorMessage_id`),
+  CONSTRAINT `FK_aabivh77i3ctdgn23ixhx83ax` FOREIGN KEY (`communicatorMessage_id`) REFERENCES `CommunicatorMessage` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+</sql>
+</update>

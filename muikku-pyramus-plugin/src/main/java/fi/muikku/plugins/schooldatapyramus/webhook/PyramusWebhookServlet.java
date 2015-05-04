@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.muikku.controller.PluginSettingsController;
 import fi.muikku.plugins.schooldatapyramus.PyramusUpdater;
+import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.pyramus.webhooks.data.WebhookCourseData;
 import fi.pyramus.webhooks.data.WebhookCourseStaffMemberData;
 import fi.pyramus.webhooks.data.WebhookCourseStudentData;
@@ -41,7 +42,10 @@ public class PyramusWebhookServlet extends HttpServlet {
 
   @Inject
   private PyramusUpdater pyramusUpdater;
-
+  
+  @Inject
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
+  
   @Override
   protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     String requestSignature = req.getHeader("X-Pyramus-Signature");
@@ -80,60 +84,67 @@ public class PyramusWebhookServlet extends HttpServlet {
       return;
     }
     
-    switch (payload.getType()) {
-      case COURSE_CREATE:
-      case COURSE_UPDATE:
-      case COURSE_ARCHIVE:
-        WebhookCourseData courseData = unmarshalData(resp, payload, WebhookCourseData.class);
-        if (courseData == null) {
-          return;  
-        }
-        
-        pyramusUpdater.updateCourse(courseData.getCourseId());
-      break;
-      case COURSE_STAFF_MEMBER_CREATE:
-      case COURSE_STAFF_MEMBER_UPDATE:
-      case COURSE_STAFF_MEMBER_DELETE:
-        WebhookCourseStaffMemberData courseStaffMemberData = unmarshalData(resp, payload, WebhookCourseStaffMemberData.class);
-        if (courseStaffMemberData == null) {
-          return;  
-        }
-        
-        pyramusUpdater.updateCourseStaffMember(courseStaffMemberData.getCourseStaffMemberId(), courseStaffMemberData.getCourseId(), courseStaffMemberData.getStaffMemberId());
-      case STAFF_MEMBER_CREATE:
-      case STAFF_MEMBER_UPDATE:
-      case STAFF_MEMBER_DELETE:
-        WebhookStaffMemberData staffMemberData = unmarshalData(resp, payload, WebhookStaffMemberData.class);
-        if (staffMemberData == null) {
-          return;  
-        }
-        
-        pyramusUpdater.updateStaffMember(staffMemberData.getStaffMemberId());
-      break;
-      case STUDENT_CREATE:
-      case STUDENT_UPDATE:
-      case STUDENT_ARCHIVE:
-        WebhookStudentData studentData = unmarshalData(resp, payload, WebhookStudentData.class);
-        if (studentData == null) {
-          return;  
-        }
-        
-        pyramusUpdater.updateStudent(studentData.getStudentId());
-      break;      
-      case COURSE_STUDENT_CREATE:
-      case COURSE_STUDENT_UPDATE:
-      case COURSE_STUDENT_ARCHIVE:
-        WebhookCourseStudentData courseStudentData = unmarshalData(resp, payload, WebhookCourseStudentData.class);
-        if (courseStudentData == null) {
-          return;  
-        }
-        
-        pyramusUpdater.updateCourseStudent(courseStudentData.getCourseStudentId(), courseStudentData.getCourseId(), courseStudentData.getStudentId());
-      break;      
-      default:
-        logger.log(Level.WARNING, "Unknown webhook type " + payload.getType());
-        resp.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED);
-        return;
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      logger.log(Level.INFO, String.format("Recived a webhook notification of type %s", payload.getType().toString()));
+      
+      switch (payload.getType()) {
+        case COURSE_CREATE:
+        case COURSE_UPDATE:
+        case COURSE_ARCHIVE:
+          WebhookCourseData courseData = unmarshalData(resp, payload, WebhookCourseData.class);
+          if (courseData == null) {
+            return;  
+          }
+
+          pyramusUpdater.updateCourse(courseData.getCourseId());
+        break;
+        case COURSE_STAFF_MEMBER_CREATE:
+        case COURSE_STAFF_MEMBER_UPDATE:
+        case COURSE_STAFF_MEMBER_DELETE:
+          WebhookCourseStaffMemberData courseStaffMemberData = unmarshalData(resp, payload, WebhookCourseStaffMemberData.class);
+          if (courseStaffMemberData == null) {
+            return;  
+          }
+          
+          pyramusUpdater.updateCourseStaffMember(courseStaffMemberData.getCourseStaffMemberId(), courseStaffMemberData.getCourseId(), courseStaffMemberData.getStaffMemberId());
+        case STAFF_MEMBER_CREATE:
+        case STAFF_MEMBER_UPDATE:
+        case STAFF_MEMBER_DELETE:
+          WebhookStaffMemberData staffMemberData = unmarshalData(resp, payload, WebhookStaffMemberData.class);
+          if (staffMemberData == null) {
+            return;  
+          }
+          
+          pyramusUpdater.updateStaffMember(staffMemberData.getStaffMemberId());
+        break;
+        case STUDENT_CREATE:
+        case STUDENT_UPDATE:
+        case STUDENT_ARCHIVE:
+          WebhookStudentData studentData = unmarshalData(resp, payload, WebhookStudentData.class);
+          if (studentData == null) {
+            return;  
+          }
+          
+          pyramusUpdater.updateStudent(studentData.getStudentId());
+        break;      
+        case COURSE_STUDENT_CREATE:
+        case COURSE_STUDENT_UPDATE:
+        case COURSE_STUDENT_ARCHIVE:
+          WebhookCourseStudentData courseStudentData = unmarshalData(resp, payload, WebhookCourseStudentData.class);
+          if (courseStudentData == null) {
+            return;  
+          }
+          
+          pyramusUpdater.updateCourseStudent(courseStudentData.getCourseStudentId(), courseStudentData.getCourseId(), courseStudentData.getStudentId());
+        break;      
+        default:
+          logger.log(Level.WARNING, "Unknown webhook type " + payload.getType());
+          resp.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED);
+          return;
+      }
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
     }
   }
 

@@ -11,14 +11,6 @@ body.workspace-materials {
   font-weight:300;
   line-height:1.7em;
   
-  h1.workspace-title {
-    margin:20px 0 20px 0;
-    color:#38393a;
-    font-weight:300;
-    text-transform:uppercase;
-    line-height:1.3em;
-  }
-  
   #staticNavigationWrapperWorkspace {
     background:none; /* We need to remove all background rules first */
     @include background-image('gfx/workspace-navigation-background.png'); /* Workspace's navigation's background */
@@ -52,10 +44,9 @@ body.workspace-materials {
     }
     
     #workspaceDockWrapper {
-      background:#596e7d;
+      background:#67d9bf;
       @include rounded(3px);
       width:60px;
-      box-shadow:0 0 5px rgba(0,0,0,0.25);
       
       #workspaceDock {
         text-align:center;
@@ -64,20 +55,238 @@ body.workspace-materials {
     }
     
     #workspaceMaterialsDockWrapper {
-      background:#3d4c56;
+      background:#288fcd;
       @include rounded(3px);
       width:60px;
       margin-bottom:10px;
-      box-shadow:0 0 5px rgba(0,0,0,0.25);
       
       #workspaceMaterialsDock {
         text-align:center;
       }
       
     }
+    
+    #workspaceEvaluationDockWrapper {
+      text-align:center; 
+    }
 
   }
   
+  /* WORKSPACE NAVIGATION - EVALUATION */    
+  .wi-workspace-dock-navi-button-evaluation { /* Button's master rules */
+    width:60px;
+    margin-bottom:10px;
+    @include rounded(3px);
+    
+    a {
+      text-shadow:none;
+      transition: background 0.2s ease-in-out;
+    }
+    
+    &[data-state='unassessed'] { /* Default state */
+      background:#55bbff;
+
+      a:hover {
+        background:#1294eb;
+        
+        span[class*='workspace-navi-tt-container-'] {
+          background:#1294eb;
+        }
+        
+      }
+      
+    }
+    
+    &[data-state='pending'] { /* Evaluation Request Pending */
+      background:#0099ff; 
+      transition: background 0.2s ease-in-out;
+
+      a:hover {
+        background:#0075c3;
+        
+        span[class*='workspace-navi-tt-container-'] {
+          background:#0075c3;
+        }
+        
+      }
+      
+      &:hover {
+        background:#f6a930;
+        
+        a {
+          background:#e5961b;
+          
+          &:before {
+            content: "\e9f3"; /* Override Pending icon with Cancellation icon */
+          }
+          
+          &:hover {
+            background:#e5961b;
+          
+            span[class*='workspace-navi-tt-container-'] {
+              background:#e5961b;
+            }
+          
+          }
+
+        }
+
+      }
+      
+    }
+    
+    &[data-state='cancel'] { /* Evaluation Request Cancelled */
+      background:#f6a930; /* Same as Default at this point */
+      
+      a:hover {
+        background:#e5961b;
+        
+        span[class*='workspace-navi-tt-container-'] {
+          background:#e5961b;
+        }
+        
+      }
+      
+    }
+    
+    &[data-state='canceled'] { /* Evaluation Request Cancelled */
+      background:#55bbff; /* Same as Default at this point */
+      
+      a:hover {
+        background:#509ccf;
+        
+        span[class*='workspace-navi-tt-container-'] {
+          background:#509ccf;
+        }
+        
+      }
+      
+    }
+    
+    &[data-state='pass'] { /* Evaluation of Workspace - Pass */
+      background:#1ec30c;
+      
+      a:hover {
+        background:#16a506;
+        
+        span[class*='workspace-navi-tt-container-'] {
+          background:#16a506;
+        }
+        
+      }
+      
+    }
+    
+    &[data-state='fail'] { /* Evaluation of Workspace - Fail */
+      background:#ea7401;
+      
+      a:hover {
+        background:#d66b03;
+        
+        span[class*='workspace-navi-tt-container-'] {
+          background:#d66b03;
+        }
+        
+      }
+    }
+    
+  }
+  
+  /* WORKSPACE NAVIGATION */
+  div[class*='workspace-dock-navi-button'] > a,
+  div[class*='workspace-dock-navi-button'] > span {
+    cursor:pointer;
+    font-size:32px;
+    color:#fff;
+    text-decoration:none;
+    background:transparent;
+    padding:6px;
+    margin:4px;
+    display:inline-block;
+    position:relative;
+    width:34px;
+    @include rounded(3px);
+    
+    span[class*='workspace-navi-tt-container-'] {
+      opacity:0;
+      font-family:"Open Sans";
+      font-size:16px;
+      height:16px;
+      font-weight:300;
+      position:absolute;
+      top:0px;
+      left:-4500px;
+      width:0px;
+      color:#fff;
+      text-transform:uppercase;
+      padding:13px 15px 15px 14px;
+      @include rounded-top-right(3px);
+      @include rounded-bottom-right(3px);
+      @include workspaceTooltipTransition(opacity,0.15s,ease-in-out);
+      z-index:99;
+      white-space:nowrap;
+    }
+    
+    &:hover {
+      background:#25c29e;
+      
+      span[class*='workspace-navi-tt-container-'] {
+        display:block;
+        background:#25c29e;
+        opacity:1;
+        width:auto;
+        left:45px;
+      }
+    }
+  }
+  
+  /* WORKSPACE NAVIGATION - MATERIALS */
+  div[class*='workspace-dock-navi-button-materials-'] > a,
+  div[class*='workspace-dock-navi-button-materials-'] > span {
+    cursor:pointer;
+    font-size:32px;
+    color:#fff;
+    text-decoration:none;
+    background:transparent;
+    padding:6px;
+    margin:4px;
+    display:inline-block;
+    position:relative;
+    width:34px;
+    @include rounded(3px);
+  
+    span[class*='workspace-navi-tt-container-materials-'] {
+      opacity:0;
+      font-family:"Open Sans";
+      font-size:16px;
+      height:16px;
+      font-weight:300;
+      position:absolute;
+      top:0px;
+      left:-4500px;
+      width:0px;
+      color:#fff;
+      text-transform:uppercase;
+      padding:13px 15px 15px 14px;
+      @include rounded-top-left(3px);
+      @include rounded-bottom-left(3px);
+      @include workspaceTooltipTransition(opacity,0.15s,ease-in-out);
+    }
+    
+    &:hover {
+      background:#1a75ac;
+      
+      span[class*='workspace-navi-tt-container-materials-'] {
+        display:block;
+        background:#1a75ac;
+        opacity:1;
+        width:auto;
+        left:45px;
+      }
+    }
+  }
+  
+  /* WORKSPACE MATERIALS TOC */
   nav.workspace-materials-toc-wrapper#workspaceMaterialsTOCWrapper {
     background:#fff;
     position:fixed;
@@ -225,6 +434,16 @@ body.workspace-materials {
     
     }
   
+  }
+
+  /* WORKSPACE CONTENT */
+  
+  h1.workspace-title {
+    margin:20px 0 20px 0;
+    color:#38393a;
+    font-weight:300;
+    text-transform:uppercase;
+    line-height:1.3em;
   }
   
   #contentWorkspaceMaterials {
@@ -410,132 +629,7 @@ body.workspace-materials {
   em,i {
     font-weight:400;
   }
-  
-  #workspaceEvaluationDockWrapper {
-    text-align:center;
-      
-    .wi-workspace-dock-navi-button-evaluation { /* Button's master rules */
-      width:60px;
-      margin-bottom:10px;
-      box-shadow:0 0 5px rgba(0,0,0,0.25);
-      @include rounded(3px);
-      
-      a {
-        text-shadow:none;
-        transition: background 0.2s ease-in-out;
-      }
-      
-      &[data-state='unassessed'] { /* Default state */
-        background:#6ab0df;
 
-        a:hover {
-          background:#509ccf;
-          
-          span[class*='workspace-navi-tt-container-'] {
-            background:#509ccf;
-          }
-          
-        }
-        
-      }
-      
-      &[data-state='pending'] { /* Evaluation Request Pending */
-        background:#0099ff; 
-        transition: background 0.2s ease-in-out;
-
-        a:hover {
-          background:#0075c3;
-          
-          span[class*='workspace-navi-tt-container-'] {
-            background:#0075c3;
-          }
-          
-        }
-        
-        &:hover {
-          background:#f6a930;
-          
-          a {
-            background:#e5961b;
-            
-            &:before {
-              content: "\e9f3"; /* Override Pending icon with Cancellation icon */
-            }
-            
-            &:hover {
-              background:#e5961b;
-            
-              span[class*='workspace-navi-tt-container-'] {
-                background:#e5961b;
-              }
-            
-            }
-
-          }
-
-        }
-        
-      }
-      
-      &[data-state='cancel'] { /* Evaluation Request Cancelled */
-        background:#f6a930; /* Same as Default at this point */
-        
-        a:hover {
-          background:#e5961b;
-          
-          span[class*='workspace-navi-tt-container-'] {
-            background:#e5961b;
-          }
-          
-        }
-        
-      }
-      
-      &[data-state='canceled'] { /* Evaluation Request Cancelled */
-        background:#55bbff; /* Same as Default at this point */
-        
-        a:hover {
-          background:#509ccf;
-          
-          span[class*='workspace-navi-tt-container-'] {
-            background:#509ccf;
-          }
-          
-        }
-        
-      }
-      
-      &[data-state='pass'] { /* Evaluation of Workspace - Pass */
-        background:#1ec30c;
-        
-        a:hover {
-          background:#16a506;
-          
-          span[class*='workspace-navi-tt-container-'] {
-            background:#16a506;
-          }
-          
-        }
-        
-      }
-      
-      &[data-state='fail'] { /* Evaluation of Workspace - Fail */
-        background:#ea7401;
-        
-        a:hover {
-          background:#d66b03;
-          
-          span[class*='workspace-navi-tt-container-'] {
-            background:#d66b03;
-          }
-          
-        }
-      }
-      
-    }
-    
-  }
-  
   /* JQuery UI Dialog Overrides */
   .ui-widget-overlay {
     background:#000;

@@ -1,5 +1,7 @@
 package fi.muikku.plugins.communicator;
 
+import java.util.List;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
@@ -8,6 +10,8 @@ import fi.muikku.dao.security.PermissionDAO;
 import fi.muikku.dao.security.ResourceRolePermissionDAO;
 import fi.muikku.dao.users.EnvironmentUserDAO;
 import fi.muikku.model.users.UserEntity;
+import fi.muikku.plugins.communicator.model.CommunicatorMessage;
+import fi.muikku.plugins.communicator.model.CommunicatorMessageRecipient;
 import fi.muikku.security.AbstractPermissionResolver;
 import fi.muikku.security.PermissionScope;
 import fi.otavanopisto.security.ContextReference;
@@ -24,6 +28,9 @@ public class CommunicatorPermissionResolver extends AbstractPermissionResolver i
   private EnvironmentUserDAO environmentUserDAO;
 
   @Inject
+  private CommunicatorController communicatorController;
+  
+  @Inject
   private CommunicatorPermissionCollection permissionCollection;
   
   @Inject
@@ -35,7 +42,12 @@ public class CommunicatorPermissionResolver extends AbstractPermissionResolver i
   @Override
   public boolean handlesPermission(String permission) {
     try {
-      return permissionCollection.containsPermission(permission) && PermissionScope.PERSONAL.equals(permissionCollection.getPermissionScope(permission));
+      if (permissionCollection.containsPermission(permission)) {
+        String permissionScope = permissionCollection.getPermissionScope(permission);
+        
+        return CommunicatorPermissionCollection.PERMISSIONSCOPE_COMMUNICATOR.equals(permissionScope); 
+      } else
+        return false;
     } catch (NoSuchFieldException e) {
       e.printStackTrace();
       return false;
@@ -44,52 +56,43 @@ public class CommunicatorPermissionResolver extends AbstractPermissionResolver i
   
   @Override
   public boolean hasPermission(String permission, ContextReference contextReference, User user) {
-    UserEntity user2 = resolveUser(contextReference);
+    UserEntity userEntity = (UserEntity) user;
+    CommunicatorMessage message = resolveMessage(contextReference);
     
-    return ((UserEntity) user).getId().equals(user2.getId());
+    if (message.getSender().equals(userEntity.getId())) {
+      // Sender has access to the message
+      return true;
+    } else {
+      List<CommunicatorMessageRecipient> recipients = communicatorController.listCommunicatorMessageRecipients(message);
+      
+      for (CommunicatorMessageRecipient recipient : recipients) {
+        if (recipient.getRecipient().equals(userEntity.getId()))
+          return true;
+      }
+    }
     
-//    ForumArea forumArea = getForumArea(contextReference);
-//    Permission perm = permissionDAO.findByName(permission);
-//    UserEntity userEntity = getUserEntity(user);
-//    
-//    UserRole userRole;
-//    
-//    // TODO: typecasts
-//    if (forumArea instanceof CourseForumArea) {
-//      CourseForumArea courseForum = (CourseForumArea) forumArea;
-//      CourseUser courseUser = courseUserDAO.findByCourseAndUser(
-//          courseController.findCourseEntityById(courseForum.getCourse()), userEntity);
-//      userRole = courseUser.getCourseUserRole();
-//    } else {
-//      EnvironmentForumArea environmentForum = (EnvironmentForumArea) forumArea;
-//      EnvironmentUser environmentUser = environmentUserDAO.findByEnvironmentAndUser(
-//          environmentController.findEnvironmentById(environmentForum.getEnvironment()), userEntity);
-//      userRole = environmentUser.getRole();
-//    }
-//    
-//    return resourceUserRolePermissionDAO.hasResourcePermissionAccess(
-//        resourceRightsController.findResourceRightsById(forumArea.getRights()), userRole, perm) ||
-//        hasEveryonePermission(permission, forumArea) ||
-//        userEntity.getId().equals(forumArea.getOwner());
+    return false;
+  }
+
+  private CommunicatorMessage resolveMessage(ContextReference contextReference) {
+    if (contextReference instanceof CommunicatorMessage)
+      return (CommunicatorMessage) contextReference;
+
+    if (contextReference instanceof CommunicatorMessageRecipient) {
+      CommunicatorMessageRecipient recipient = (CommunicatorMessageRecipient) contextReference;
+      
+      return recipient.getCommunicatorMessage();
+    }
+      
+//    if (contextReference instanceof CommunicatorMessage)
+//      return (CommunicatorMessage) contextReference;
+    
+    return null;
   }
 
   @Override
   public boolean hasEveryonePermission(String permission, ContextReference contextReference) {
-    try {
-      if (PermissionScope.PERSONAL.equals(permissionCollection.getPermissionScope(permission)))
-        return false;
-    } catch (NoSuchFieldException e) {
-      e.printStackTrace();
-    }
-
     return false;
-    
-//    ForumArea forumArea = getForumArea(contextReference);
-//    UserRole userRole = getEveryoneRole();
-//    Permission perm = permissionDAO.findByName(permission);
-//    
-//    return resourceUserRolePermissionDAO.hasResourcePermissionAccess(
-//        resourceRightsController.findResourceRightsById(forumArea.getRights()), userRole, perm);
   }
   
 }

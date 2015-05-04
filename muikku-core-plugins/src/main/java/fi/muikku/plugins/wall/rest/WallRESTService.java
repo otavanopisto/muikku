@@ -1,29 +1,10 @@
 package fi.muikku.plugins.wall.rest;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.ejb.Stateless;
-import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 
-import org.apache.commons.lang3.StringUtils;
-
-import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugin.PluginRESTService;
-import fi.muikku.plugins.wall.WallController;
-import fi.muikku.plugins.wall.WallFeedItem;
-import fi.muikku.plugins.wall.model.Wall;
-import fi.muikku.plugins.wall.model.WallEntry;
-import fi.muikku.plugins.wall.model.WallEntryReply;
-import fi.muikku.session.SessionController;
-import fi.otavanopisto.security.LoggedIn;
 
 @Path("/wall")
 @Stateless
@@ -32,188 +13,192 @@ public class WallRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = 1517911682419646845L;
 
-  @Inject
-  private SessionController sessionController;
-
-  @Inject
-  private WallController wallController;
+  /**
+   * Commented until redesign
+   */
   
-  /* Wall */
-  
-  @GET
-  @Path ("/walls/{WALLID}")
-  public Response findWallEntry(@PathParam ("WALLID") Long wallId) {
-    Wall wall = wallController.findWallById(wallId); 
-    if (wall == null) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
-
-    return Response.ok(createRestModel(wall)).build();
-  }
-  
-  /* Feed */
-  
-  @GET
-  @Path ("/walls/{WALLID}/feed/")
-  public Response listWallEntries(@PathParam ("WALLID") Long wallId) {
-    Wall wall = wallController.findWallById(wallId); 
-    if (wall == null) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
-    
-    List<WallFeedItem> entries = wallController.listWallFeed(wall);
-    if (entries.isEmpty()) {
-      return Response.noContent().build();
-    }
-
-    return Response.ok(createRestModel(entries.toArray(new WallFeedItem[0]))).build();
-  }
-  
-  /* Entries */
-  
-  @POST
-  @Path ("/walls/{WALLID}/wallEntries/") 
-  @LoggedIn
-  public Response craeteWallEntry(@PathParam ("WALLID") Long wallId, fi.muikku.plugins.wall.rest.model.WallEntry entity){
-    UserEntity user = sessionController.getLoggedUserEntity();
-
-    if (entity.getVisibility() == null) {
-      return Response.status(Status.BAD_REQUEST).build();
-    }
-
-    if (StringUtils.isEmpty(entity.getText())) {
-      return Response.status(Status.BAD_REQUEST).build();
-    }
-  
-    Wall wall = wallController.findWallById(wallId);
-    if (wall == null) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
-    
-    WallEntry entry = wallController.createWallEntry(wall, entity.getText(), entity.getVisibility(), user);
-    
-    return Response.ok(createRestModel(entry)).build();
-  }
-  
-  @GET
-  @Path ("/walls/{WALLID}/wallEntries/{ENTRYID}") 
-  @LoggedIn
-  public Response createWallEntry(@PathParam ("WALLID") Long wallId, @PathParam ("ENTRYID") Long entryId){
-    Wall wall = wallController.findWallById(wallId);
-    if (wall == null) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
-    
-    WallEntry entry = wallController.findWallEntryById(entryId);
-    if (entry == null) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
-    
-//    if (!entry.getWall().getId().equals(wall.getId())) {
+//  @Inject
+//  private SessionController sessionController;
+//
+//  @Inject
+//  private WallController wallController;
+//  
+//  /* Wall */
+//  
+//  @GET
+//  @Path ("/walls/{WALLID}")
+//  public Response findWallEntry(@PathParam ("WALLID") Long wallId) {
+//    Wall wall = wallController.findWallById(wallId); 
+//    if (wall == null) {
 //      return Response.status(Status.NOT_FOUND).build();
 //    }
-    
-    return Response.ok(createRestModel(entry)).build();
-  }
-  
-  /* Replies */
-  
-  @POST
-  @Path ("/walls/{WALLID}/wallEntries/{ENTRYID}/replies/") 
-  @LoggedIn
-  public Response createWallEntryReply(@PathParam ("WALLID") Long wallId, @PathParam ("ENTRYID") Long entryId, fi.muikku.plugins.wall.rest.model.WallEntryReply reply) {
-    if (StringUtils.isEmpty(reply.getText())) {
-      return Response.status(Status.BAD_REQUEST).build();
-    }
-    
-    Wall wall = wallController.findWallById(wallId);
-    if (wall == null) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
-    
-    WallEntry entry = wallController.findWallEntryById(entryId);
-    if (entry == null) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
-    
-//    if (!entry.getWall().getId().equals(wall.getId())) {
+//
+//    return Response.ok(createRestModel(wall)).build();
+//  }
+//  
+//  /* Feed */
+//  
+//  @GET
+//  @Path ("/walls/{WALLID}/feed/")
+//  public Response listWallEntries(@PathParam ("WALLID") Long wallId) {
+//    Wall wall = wallController.findWallById(wallId); 
+//    if (wall == null) {
 //      return Response.status(Status.NOT_FOUND).build();
 //    }
-    
-    WallEntryReply entryReply = wallController.createWallEntryReply(wall, entry, reply.getText(), sessionController.getLoggedUserEntity());
-    
-    return Response.ok(createRestModel(entryReply)).build();
-  }
-  
-  @GET
-  @Path ("/walls/{WALLID}/wallEntries/{ENTRYID}/replies/") 
-  @LoggedIn
-  public Response listWallEntryReplies(@PathParam ("WALLID") Long wallId, @PathParam ("ENTRYID") Long entryId) {
-    Wall wall = wallController.findWallById(wallId);
-    if (wall == null) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
-    
-    WallEntry entry = wallController.findWallEntryById(entryId);
-    if (entry == null) {
-      return Response.status(Status.NOT_FOUND).build();
-    }
-    
-//    if (!entry.getWall().getId().equals(wall.getId())) {
+//    
+//    List<WallFeedItem> entries = wallController.listWallFeed(wall);
+//    if (entries.isEmpty()) {
+//      return Response.noContent().build();
+//    }
+//
+//    return Response.ok(createRestModel(entries.toArray(new WallFeedItem[0]))).build();
+//  }
+//  
+//  /* Entries */
+//  
+//  @POST
+//  @Path ("/walls/{WALLID}/wallEntries/") 
+//  @LoggedIn
+//  public Response craeteWallEntry(@PathParam ("WALLID") Long wallId, fi.muikku.plugins.wall.rest.model.WallEntry entity){
+//    UserEntity user = sessionController.getLoggedUserEntity();
+//
+//    if (entity.getVisibility() == null) {
+//      return Response.status(Status.BAD_REQUEST).build();
+//    }
+//
+//    if (StringUtils.isEmpty(entity.getText())) {
+//      return Response.status(Status.BAD_REQUEST).build();
+//    }
+//  
+//    Wall wall = wallController.findWallById(wallId);
+//    if (wall == null) {
 //      return Response.status(Status.NOT_FOUND).build();
 //    }
-    
-    List<WallEntryReply> replies = wallController.listWallEntryComments(entry);
-    if (replies.isEmpty()) {
-      return Response.status(Status.NO_CONTENT).build(); 
-    }
-    
-    return Response.ok(createRestModel(replies.toArray(new WallEntryReply[0]))).build();
-  }
-  
-  private fi.muikku.plugins.wall.rest.model.Wall createRestModel(Wall entity) {
-    return new fi.muikku.plugins.wall.rest.model.Wall(entity.getId(), entity.getWallType(), entity.getTypeId());
-  }
-
-  private List<fi.muikku.plugins.wall.rest.model.WallFeedItem> createRestModel(WallFeedItem... entries) {
-    List<fi.muikku.plugins.wall.rest.model.WallFeedItem> result = new ArrayList<>();
-    
-    for (WallFeedItem entry : entries) {
-      result.add(createRestModel(entry));
-    }
-    
-    return result;
-  }
-
-  private List<fi.muikku.plugins.wall.rest.model.WallEntryReply> createRestModel(WallEntryReply... entries) {
-    List<fi.muikku.plugins.wall.rest.model.WallEntryReply> result = new ArrayList<>();
-    
-    for (WallEntryReply entry : entries) {
-      result.add(createRestModel(entry));
-    }
-    
-    return result;
-  }
-  
-  private fi.muikku.plugins.wall.rest.model.WallFeedItem createRestModel(WallFeedItem entity) {
-    return new fi.muikku.plugins.wall.rest.model.WallFeedItem(entity.getType(), entity.getIdentifier(), entity.getDate());
-  }
-
-  private fi.muikku.plugins.wall.rest.model.WallEntry createRestModel(WallEntry entity) {
-    Long wallId = entity.getWall() != null ? entity.getWall().getId() : null;
-    Long creatorId = entity.getCreator();
-    Long lastModifierId = entity.getLastModifier();
-    return new fi.muikku.plugins.wall.rest.model.WallEntry(entity.getId(), wallId, entity.getText(), entity.getArchived(), creatorId, entity.getCreated(), lastModifierId, entity.getLastModified(), entity.getVisibility());
-  }
-
-  private fi.muikku.plugins.wall.rest.model.WallEntryReply createRestModel(WallEntryReply entity) {
-    Long wallId = entity.getWall() != null ? entity.getWall().getId() : null;
-    Long creatorId = entity.getCreator();
-    Long lastModifierId = entity.getLastModifier();
-    Long wallEntryId = entity.getWallEntry() != null ? entity.getWallEntry().getId() : null;
-    
-    return new fi.muikku.plugins.wall.rest.model.WallEntryReply(entity.getId(), wallId, entity.getText(), entity.getArchived(), creatorId, entity.getCreated(), lastModifierId, entity.getLastModified(), wallEntryId);
-  }
+//    
+//    WallEntry entry = wallController.createWallEntry(wall, entity.getText(), entity.getVisibility(), user);
+//    
+//    return Response.ok(createRestModel(entry)).build();
+//  }
+//  
+//  @GET
+//  @Path ("/walls/{WALLID}/wallEntries/{ENTRYID}") 
+//  @LoggedIn
+//  public Response createWallEntry(@PathParam ("WALLID") Long wallId, @PathParam ("ENTRYID") Long entryId){
+//    Wall wall = wallController.findWallById(wallId);
+//    if (wall == null) {
+//      return Response.status(Status.NOT_FOUND).build();
+//    }
+//    
+//    WallEntry entry = wallController.findWallEntryById(entryId);
+//    if (entry == null) {
+//      return Response.status(Status.NOT_FOUND).build();
+//    }
+//    
+////    if (!entry.getWall().getId().equals(wall.getId())) {
+////      return Response.status(Status.NOT_FOUND).build();
+////    }
+//    
+//    return Response.ok(createRestModel(entry)).build();
+//  }
+//  
+//  /* Replies */
+//  
+//  @POST
+//  @Path ("/walls/{WALLID}/wallEntries/{ENTRYID}/replies/") 
+//  @LoggedIn
+//  public Response createWallEntryReply(@PathParam ("WALLID") Long wallId, @PathParam ("ENTRYID") Long entryId, fi.muikku.plugins.wall.rest.model.WallEntryReply reply) {
+//    if (StringUtils.isEmpty(reply.getText())) {
+//      return Response.status(Status.BAD_REQUEST).build();
+//    }
+//    
+//    Wall wall = wallController.findWallById(wallId);
+//    if (wall == null) {
+//      return Response.status(Status.NOT_FOUND).build();
+//    }
+//    
+//    WallEntry entry = wallController.findWallEntryById(entryId);
+//    if (entry == null) {
+//      return Response.status(Status.NOT_FOUND).build();
+//    }
+//    
+////    if (!entry.getWall().getId().equals(wall.getId())) {
+////      return Response.status(Status.NOT_FOUND).build();
+////    }
+//    
+//    WallEntryReply entryReply = wallController.createWallEntryReply(wall, entry, reply.getText(), sessionController.getLoggedUserEntity());
+//    
+//    return Response.ok(createRestModel(entryReply)).build();
+//  }
+//  
+//  @GET
+//  @Path ("/walls/{WALLID}/wallEntries/{ENTRYID}/replies/") 
+//  @LoggedIn
+//  public Response listWallEntryReplies(@PathParam ("WALLID") Long wallId, @PathParam ("ENTRYID") Long entryId) {
+//    Wall wall = wallController.findWallById(wallId);
+//    if (wall == null) {
+//      return Response.status(Status.NOT_FOUND).build();
+//    }
+//    
+//    WallEntry entry = wallController.findWallEntryById(entryId);
+//    if (entry == null) {
+//      return Response.status(Status.NOT_FOUND).build();
+//    }
+//    
+////    if (!entry.getWall().getId().equals(wall.getId())) {
+////      return Response.status(Status.NOT_FOUND).build();
+////    }
+//    
+//    List<WallEntryReply> replies = wallController.listWallEntryComments(entry);
+//    if (replies.isEmpty()) {
+//      return Response.status(Status.NO_CONTENT).build(); 
+//    }
+//    
+//    return Response.ok(createRestModel(replies.toArray(new WallEntryReply[0]))).build();
+//  }
+//  
+//  private fi.muikku.plugins.wall.rest.model.Wall createRestModel(Wall entity) {
+//    return new fi.muikku.plugins.wall.rest.model.Wall(entity.getId(), entity.getWallType(), entity.getTypeId());
+//  }
+//
+//  private List<fi.muikku.plugins.wall.rest.model.WallFeedItem> createRestModel(WallFeedItem... entries) {
+//    List<fi.muikku.plugins.wall.rest.model.WallFeedItem> result = new ArrayList<>();
+//    
+//    for (WallFeedItem entry : entries) {
+//      result.add(createRestModel(entry));
+//    }
+//    
+//    return result;
+//  }
+//
+//  private List<fi.muikku.plugins.wall.rest.model.WallEntryReply> createRestModel(WallEntryReply... entries) {
+//    List<fi.muikku.plugins.wall.rest.model.WallEntryReply> result = new ArrayList<>();
+//    
+//    for (WallEntryReply entry : entries) {
+//      result.add(createRestModel(entry));
+//    }
+//    
+//    return result;
+//  }
+//  
+//  private fi.muikku.plugins.wall.rest.model.WallFeedItem createRestModel(WallFeedItem entity) {
+//    return new fi.muikku.plugins.wall.rest.model.WallFeedItem(entity.getType(), entity.getIdentifier(), entity.getDate());
+//  }
+//
+//  private fi.muikku.plugins.wall.rest.model.WallEntry createRestModel(WallEntry entity) {
+//    Long wallId = entity.getWall() != null ? entity.getWall().getId() : null;
+//    Long creatorId = entity.getCreator();
+//    Long lastModifierId = entity.getLastModifier();
+//    return new fi.muikku.plugins.wall.rest.model.WallEntry(entity.getId(), wallId, entity.getText(), entity.getArchived(), creatorId, entity.getCreated(), lastModifierId, entity.getLastModified(), entity.getVisibility());
+//  }
+//
+//  private fi.muikku.plugins.wall.rest.model.WallEntryReply createRestModel(WallEntryReply entity) {
+//    Long wallId = entity.getWall() != null ? entity.getWall().getId() : null;
+//    Long creatorId = entity.getCreator();
+//    Long lastModifierId = entity.getLastModifier();
+//    Long wallEntryId = entity.getWallEntry() != null ? entity.getWallEntry().getId() : null;
+//    
+//    return new fi.muikku.plugins.wall.rest.model.WallEntryReply(entity.getId(), wallId, entity.getText(), entity.getArchived(), creatorId, entity.getCreated(), lastModifierId, entity.getLastModified(), wallEntryId);
+//  }
   
 //FIXME: Re-enable this service
 //

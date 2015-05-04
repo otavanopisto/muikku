@@ -266,7 +266,7 @@
   }
  
   .mf-item-load{
-    background-color:#ededed !important;
+    background-color:$bgr1 !important;
       
   }
  
@@ -296,7 +296,7 @@
      .mf-item-tool{
 
         dispay:inline-block;
-        color:#ededed;
+        color:$bgr1;
         text-decoration:none;
         font-size:1.5em;
         padding-left:10px;
@@ -455,7 +455,7 @@
   
 .mf-form-paragraph{  
      padding:5px;
-     background-color:#ededed;x
+     background-color:$bgr1;x
      
      &:not(:first-child){
       margin-top:5px;    

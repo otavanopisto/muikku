@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:c="http://java.sun.com/jsp/jstl/core" 
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core" 
+  xmlns:h="http://java.sun.com/jsf/html" 
+  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+  xmlns:composite="http://java.sun.com/jsf/composite/composite" 
+  template="/WEB-INF/templates/default.xhtml">
+
+  <!-- Lets set the base body class per view -->
+  <ui:param name="bodyClass" value="workspace-materials-management" />
+  
+  <ui:define name="viewScripts">
+    <!-- TODO: plugins should be able to introduce new material editors -->
+    
+    <!-- Html editor specific -->
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/ckeditor/4.4.5/ckeditor.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/diff_match_patch/20121119/diff_match_patch.js"></script>
+    <script type="text/javascript" src="//cdn.jsdelivr.net/jshash/2.2/md5-min.js"></script> 
+    <h:outputScript name="scripts/coopsck/coopsck.js" />
+    <h:outputScript name="scripts/diffxml-js/diffxml-js.js" />
+    <h:outputScript name="scripts/gui/workspace-material-editor-html.js"/>
+    
+    <!--  Field types -->
+    <h:outputScript name="scripts/jquery.jsplumb/jquery.jsPlumb-1.7.2-min.js"/>
+    <h:outputScript name="scripts/gui/muikku-connect-field-component.js"/>
+    
+    <!-- File upload -->
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/jquery.fileupload.min.js"/>
+    <h:outputScript name="scripts/gui/muikku-file-field-component.js" target="head"/>
+    
+    <!--  View itself -->
+    <h:outputScript name="scripts/gui/muikku-material-loader.js"/> 
+    <h:outputScript name="scripts/gui/workspace-material-upload.js" />
+    <h:outputScript name="scripts/gui/workspace-materials-management.js" />
+    
+    <!-- Lazy loading -->
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.lazyload/1.9.1/jquery.lazyload.min.js"/>
+    <h:outputScript name="scripts/lazyyt/lazyyt.js" />
+  </ui:define>
+  
+  <ui:define name="viewCss">
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/muikku-file-field-component.css" />  
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/workspaces-materials-management.css" />  
+    <h:outputStylesheet name="scripts/lazyyt/lazyyt.css" />  
+  </ui:define>
+  
+  <ui:define name="sitebody">
+    
+    <ui:insert name="workspaces.materials.management.toc"></ui:insert>
+    
+    <main id="contentWorkspaceMaterialsManagement"> <!-- class attribute removed as we are not using grid here -->
+      <ui:insert name="workspace.materials.management.content">
+      </ui:insert>
+    </main>
+
+  </ui:define>
+
+</ui:composition>

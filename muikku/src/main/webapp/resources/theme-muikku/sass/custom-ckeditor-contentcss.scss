@@ -52,7 +52,7 @@ blockquote {
   font-style:italic;
   padding:2px 0;
   border-style:solid;
-  border-color:#eee;
+  border-color:#eee; 
   border-width:0;
   color:#777;
   font-size:22px;
@@ -78,6 +78,11 @@ blockquote {
 
 a {
   color: #2d69af;
+}
+
+b, strong {
+  font-weight:400;
+  font-style:inherit;
 }
 
 ol,ul,dl {
@@ -138,3 +143,61 @@ figure figcaption {
   text-align: center;
   display: block; /* For IE8 */
 }
+
+/* MATERIAL STYLESETS */
+
+.material-styles-block {
+  border-radius:5px;
+  padding:8px 14px;
+  margin:20px 0;
+}
+
+.material-thinkingbox {
+  background:#7fcaf7;
+  color:#fff;
+}
+
+.material-objectivebox {
+  background:#67d9bf;
+  color:#fff;
+}
+
+.material-infobox {
+  background:#ec97c6;
+  color:#fff;
+}
+
+.material-recapbox {
+  background:#6eb5cf;
+  color:#fff;
+}
+
+.material-chatbubble {
+  background:#7082b0;
+  color:#fff;
+}
+
+.material-basicbox {
+  background:#ffc369;
+  color:#fff;
+}
+
+.material-citation-highlight {
+  color:#913333;
+  font-size:18px;
+  font-weight:400;
+  border-left:3px solid #b24d4d;
+  border-radius:0px;
+  line-height:1.7em;
+}
+
+.material-citation-basic {
+  color:#7a8d94;
+  font-size:18px;
+  font-weight:400;
+  border-left:3px solid #7a8d94;
+  border-radius:0px;
+  line-height:1.7em;
+}
+
+

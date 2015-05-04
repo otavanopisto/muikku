@@ -17,7 +17,7 @@ import fi.muikku.schooldata.RoleController;
 @Named
 @Stateful
 @RequestScoped
-@Join (path = "/coursepicker/coursepicker", to = "/coursepicker/coursepicker.jsf")
+@Join (path = "/coursepicker", to = "/jsf/coursepicker/coursepicker.jsf")
 public class CoursePickerBackingBean {
   
   @Inject

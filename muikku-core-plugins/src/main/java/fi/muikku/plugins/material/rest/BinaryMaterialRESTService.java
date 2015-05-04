@@ -24,9 +24,14 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import fi.muikku.files.TempFileUtils;
+import fi.muikku.model.users.EnvironmentRoleArchetype;
+import fi.muikku.model.users.EnvironmentUser;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.material.BinaryMaterialController;
 import fi.muikku.plugins.material.model.BinaryMaterial;
+import fi.muikku.session.SessionController;
+import fi.muikku.users.EnvironmentUserController;
 
 @RequestScoped
 @Path("/materials/binary")
@@ -38,10 +43,37 @@ public class BinaryMaterialRESTService extends PluginRESTService {
 
   @Inject
   private BinaryMaterialController binaryMaterialController;
+  
+  @Inject
+  private SessionController muikkuSessionController;
+  
+  @Inject
+  private EnvironmentUserController environmentUserController;
+  
+  private boolean isAuthorized() {
+      if (!muikkuSessionController.isLoggedIn()) {
+        return false;
+      }
+      
+      UserEntity userEntity = muikkuSessionController.getLoggedUserEntity();
+      
+      EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
+      
+      if (environmentUser.getRole() == null || environmentUser.getRole().getArchetype() == EnvironmentRoleArchetype.STUDENT) {
+        return false;
+      }
+      
+      return true;
+  }
 
   @POST
   @Path("/")
   public Response createMaterial(BinaryRestMaterial entity) {
+    
+    if (!isAuthorized()) {
+      return Response.status(Status.FORBIDDEN).entity("Permission denied").build();
+    }
+
     if (StringUtils.isBlank(entity.getContentType())) {
       return Response.status(Status.BAD_REQUEST)
           .entity("contentType is missing").build();

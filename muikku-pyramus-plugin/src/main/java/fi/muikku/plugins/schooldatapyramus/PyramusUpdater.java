@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.event.Event;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import fi.muikku.model.users.EnvironmentRoleEntity;
@@ -76,7 +77,7 @@ public class PyramusUpdater {
   private PyramusSchoolDataEntityFactory entityFactory;
   
   @Inject
-  private PyramusClient pyramusClient;
+  private Instance<PyramusClient> pyramusClient;
 
   @Inject
   private PyramusIdentifierMapper identifierMapper;
@@ -148,7 +149,7 @@ public class PyramusUpdater {
     String studentIdentifier = identifierMapper.getStudentIdentifier(pyramusId);
     UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, studentIdentifier);
 
-    Student student = pyramusClient.get("/students/students/" + pyramusId, Student.class);
+    Student student = pyramusClient.get().get("/students/students/" + pyramusId, Student.class);
     if (student != null) {
       if (userEntity == null) {
         fireStudentDiscovered(student);
@@ -174,7 +175,7 @@ public class PyramusUpdater {
    * @return count of updated students or -1 when no students were found with given offset
    */
   public int updateStudents(int offset, int maxStudents) {
-    Student[] students = pyramusClient.get("/students/students?filterArchived=false&firstResult=" + offset + "&maxResults=" + maxStudents, Student[].class);
+    Student[] students = pyramusClient.get().get("/students/students?filterArchived=false&firstResult=" + offset + "&maxResults=" + maxStudents, Student[].class);
     if (students.length == 0) {
       return -1;
     }
@@ -232,7 +233,7 @@ public class PyramusUpdater {
    * @return returns whether new staff member was created or not
    */
   public boolean updateStaffMember(Long pyramusId) {
-    fi.pyramus.rest.model.StaffMember staffMember = pyramusClient.get("/staff/members/" + pyramusId, fi.pyramus.rest.model.StaffMember.class);
+    fi.pyramus.rest.model.StaffMember staffMember = pyramusClient.get().get("/staff/members/" + pyramusId, fi.pyramus.rest.model.StaffMember.class);
     String staffMemberIdentifier = identifierMapper.getStaffIdentifier(pyramusId);
     UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, staffMemberIdentifier);
     
@@ -261,7 +262,7 @@ public class PyramusUpdater {
    * @return count of updates staff membres or -1 when no staff members were found with given offset
    */
   public int updateStaffMembers(int offset, int maxStaffMembers) {
-    fi.pyramus.rest.model.StaffMember[] staffMembers = pyramusClient.get("/staff/members?firstResult=" + offset + "&maxResults=" + maxStaffMembers, fi.pyramus.rest.model.StaffMember[].class);
+    fi.pyramus.rest.model.StaffMember[] staffMembers = pyramusClient.get().get("/staff/members?firstResult=" + offset + "&maxResults=" + maxStaffMembers, fi.pyramus.rest.model.StaffMember[].class);
     if (staffMembers.length == 0) {
       return -1;
     }
@@ -330,7 +331,7 @@ public class PyramusUpdater {
    */
   public void updateCourse(Long courseId) {
     String workspaceIdentifier = identifierMapper.getWorkspaceIdentifier(courseId);
-    Course course = pyramusClient.get("/courses/courses/" + courseId, Course.class);
+    Course course = pyramusClient.get().get("/courses/courses/" + courseId, Course.class);
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, workspaceIdentifier);
 
     if (course != null) {
@@ -354,7 +355,7 @@ public class PyramusUpdater {
    * @return count of updated courses or -1 when no courses were found with given offset
    */
   public int updateCourses(int offset, int maxCourses) {
-    Course[] courses = pyramusClient.get("/courses/courses?filterArchived=false&firstResult=" + offset + "&maxResults=" + maxCourses, Course[].class);
+    Course[] courses = pyramusClient.get().get("/courses/courses?filterArchived=false&firstResult=" + offset + "&maxResults=" + maxCourses, Course[].class);
     if ((courses == null) || (courses.length == 0)) {
       return -1;
     }
@@ -412,7 +413,7 @@ public class PyramusUpdater {
     if (workspaceEntity != null) {
       WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndIdentifier(workspaceEntity, identifier);
       
-      CourseStaffMember staffMember = pyramusClient.get("/courses/courses/" + courseId + "/staffMembers/" + courseStaffMemberId, CourseStaffMember.class);
+      CourseStaffMember staffMember = pyramusClient.get().get("/courses/courses/" + courseId + "/staffMembers/" + courseStaffMemberId, CourseStaffMember.class);
       if (staffMember != null) {
         if (workspaceUserEntity == null) {
           fireCourseStaffMemberDiscovered(staffMember);
@@ -441,7 +442,7 @@ public class PyramusUpdater {
     String workspaceIdentifier = identifierMapper.getWorkspaceIdentifier(courseId);
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, workspaceIdentifier);
     
-    CourseStaffMember[] staffMembers = pyramusClient.get("/courses/courses/" + courseId + "/staffMembers", CourseStaffMember[].class);
+    CourseStaffMember[] staffMembers = pyramusClient.get().get("/courses/courses/" + courseId + "/staffMembers", CourseStaffMember[].class);
     if (staffMembers != null) {
       
       for (CourseStaffMember staffMember : staffMembers) {
@@ -482,7 +483,7 @@ public class PyramusUpdater {
       }
     }
     
-    CourseStaffMemberRole[] staffMemberRoles = pyramusClient.get("/courses/staffMemberRoles", CourseStaffMemberRole[].class);
+    CourseStaffMemberRole[] staffMemberRoles = pyramusClient.get().get("/courses/staffMemberRoles", CourseStaffMemberRole[].class);
     for (CourseStaffMemberRole staffMemberRole : staffMemberRoles) {
       String identifier = identifierMapper.getWorkspaceStaffRoleIdentifier(staffMemberRole.getId());
       removedIdentifiers.remove(identifier);
@@ -539,7 +540,7 @@ public class PyramusUpdater {
     if (workspaceEntity != null) {
       WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndIdentifier(workspaceEntity, identifier);
 
-      CourseStudent courseStudent = pyramusClient.get("/courses/courses/" + courseId + "/students/" + courseStudentId, CourseStudent.class);
+      CourseStudent courseStudent = pyramusClient.get().get("/courses/courses/" + courseId + "/students/" + courseStudentId, CourseStudent.class);
       if (courseStudent != null) {
         if (workspaceUserEntity == null) {
           fireCourseStudentDiscovered(courseStudent);
@@ -567,7 +568,7 @@ public class PyramusUpdater {
     int count = 0;
     Long courseId = identifierMapper.getPyramusCourseId(workspaceEntity.getIdentifier());
 
-    CourseStudent[] courseStudents = pyramusClient.get("/courses/courses/" + courseId + "/students?filterArchived=false", CourseStudent[].class);
+    CourseStudent[] courseStudents = pyramusClient.get().get("/courses/courses/" + courseId + "/students?filterArchived=false", CourseStudent[].class);
     if (courseStudents != null) {
       for (CourseStudent courseStudent : courseStudents) {
         String identifier = identifierMapper.getWorkspaceStudentIdentifier(courseStudent.getId());
@@ -593,10 +594,10 @@ public class PyramusUpdater {
     String staffMemberIdentifier = identifierMapper.getStaffIdentifier(staffMember.getId());
     List<String> emails = new ArrayList<>();
     
-    Email[] staffMemberEmails = pyramusClient.get("/staff/members/" + staffMember.getId() + "/emails", Email[].class);
+    Email[] staffMemberEmails = pyramusClient.get().get("/staff/members/" + staffMember.getId() + "/emails", Email[].class);
     for (Email staffMemberEmail : staffMemberEmails) {
       if (staffMemberEmail.getContactTypeId() != null) {
-        ContactType contactType = pyramusClient.get("/common/contactTypes/" + staffMemberEmail.getContactTypeId(), ContactType.class);
+        ContactType contactType = pyramusClient.get().get("/common/contactTypes/" + staffMemberEmail.getContactTypeId(), ContactType.class);
       
         if (!contactType.getNonUnique())
           emails.add(staffMemberEmail.getAddress());
@@ -611,10 +612,10 @@ public class PyramusUpdater {
     String staffMemberIdentifier = identifierMapper.getStaffIdentifier(staffMember.getId());
     List<String> emails = new ArrayList<>();
     
-    Email[] staffMemberEmails = pyramusClient.get("/staff/members/" + staffMember.getId() + "/emails", Email[].class);
+    Email[] staffMemberEmails = pyramusClient.get().get("/staff/members/" + staffMember.getId() + "/emails", Email[].class);
     for (Email staffMemberEmail : staffMemberEmails) {
       if (staffMemberEmail.getContactTypeId() != null) {
-        ContactType contactType = pyramusClient.get("/common/contactTypes/" + staffMemberEmail.getContactTypeId(), ContactType.class);
+        ContactType contactType = pyramusClient.get().get("/common/contactTypes/" + staffMemberEmail.getContactTypeId(), ContactType.class);
       
         if (!contactType.getNonUnique())
           emails.add(staffMemberEmail.getAddress());
@@ -627,7 +628,8 @@ public class PyramusUpdater {
  
   private void fireStaffMemberRemoved(Long staffMemberId) {
     String staffMemberIdentifier = identifierMapper.getStaffIdentifier(staffMemberId);
-    schoolDataUserRemovedEvent.fire(new SchoolDataUserRemovedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, staffMemberIdentifier));
+    String searchId = staffMemberIdentifier + '/' + SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
+    schoolDataUserRemovedEvent.fire(new SchoolDataUserRemovedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, staffMemberIdentifier, searchId));
   }
 
   private void fireStudentDiscovered(Student student) {
@@ -635,10 +637,10 @@ public class PyramusUpdater {
  
     List<String> emails = new ArrayList<>();
 
-    Email[] studentEmails = pyramusClient.get("/students/students/" + student.getId() + "/emails", Email[].class);
+    Email[] studentEmails = pyramusClient.get().get("/students/students/" + student.getId() + "/emails", Email[].class);
     for (Email studentEmail : studentEmails) {
       if (studentEmail.getContactTypeId() != null) {
-        ContactType contactType = pyramusClient.get("/common/contactTypes/" + studentEmail.getContactTypeId(), ContactType.class);
+        ContactType contactType = pyramusClient.get().get("/common/contactTypes/" + studentEmail.getContactTypeId(), ContactType.class);
       
         if (!contactType.getNonUnique())
           emails.add(studentEmail.getAddress());
@@ -654,10 +656,10 @@ public class PyramusUpdater {
  
     List<String> emails = new ArrayList<>();
     
-    Email[] studentEmails = pyramusClient.get("/students/students/" + student.getId() + "/emails", Email[].class);
+    Email[] studentEmails = pyramusClient.get().get("/students/students/" + student.getId() + "/emails", Email[].class);
     for (Email studentEmail : studentEmails) {
       if (studentEmail.getContactTypeId() != null) {
-        ContactType contactType = pyramusClient.get("/common/contactTypes/" + studentEmail.getContactTypeId(), ContactType.class);
+        ContactType contactType = pyramusClient.get().get("/common/contactTypes/" + studentEmail.getContactTypeId(), ContactType.class);
       
         if (!contactType.getNonUnique())
           emails.add(studentEmail.getAddress());
@@ -670,7 +672,8 @@ public class PyramusUpdater {
   
   private void fireStudentRemoved(Long studentId) {
     String studentIdentifier = identifierMapper.getStudentIdentifier(studentId);
-    schoolDataUserRemovedEvent.fire(new SchoolDataUserRemovedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, studentIdentifier));
+    String searchId = studentIdentifier + '/' + SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
+    schoolDataUserRemovedEvent.fire(new SchoolDataUserRemovedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, studentIdentifier, searchId));
   }
 
   private void fireWorkspaceDiscovered(Course course) {
@@ -687,7 +690,8 @@ public class PyramusUpdater {
 
   private void fireWorkspaceRemoved(Long courseId) {
     String identifier = identifierMapper.getWorkspaceIdentifier(courseId);
-    schoolDataWorkspaceRemovedEvent.fire(new SchoolDataWorkspaceRemovedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifier));
+    String searchId = identifier + '/' + SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
+    schoolDataWorkspaceRemovedEvent.fire(new SchoolDataWorkspaceRemovedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifier, searchId));
   }
 
   private void fireStaffMemberRoleDiscovered(Long pyramusId, UserRole userRole) {

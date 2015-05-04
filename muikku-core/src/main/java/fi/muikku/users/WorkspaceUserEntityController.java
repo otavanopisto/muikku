@@ -88,6 +88,23 @@ public class WorkspaceUserEntityController {
   public void archiveWorkspaceUserEntity(WorkspaceUserEntity workspaceUserEntity) {
     workspaceUserEntityDAO.updateArchived(workspaceUserEntity, Boolean.TRUE);
   }
-
+  
+  public WorkspaceUserEntity findWorkspaceUserByWorkspaceEntityAndUserEntity(WorkspaceEntity workspaceEntity, UserEntity userEntity) {
+    UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(userEntity.getDefaultSchoolDataSource(), userEntity.getDefaultIdentifier());
+    if (userSchoolDataIdentifier == null) {
+      return null;
+    }
+    
+    return workspaceUserEntityDAO.findByWorkspaceEntityAndUserSchoolDataIdentifier(workspaceEntity, userSchoolDataIdentifier);
+  }
+  
+  public WorkspaceRoleEntity findWorkspaceUserRoleByWorkspaceEntityAndUserEntity(WorkspaceEntity workspaceEntity, UserEntity userEntity) {
+    WorkspaceUserEntity workspaceUserEntity = findWorkspaceUserByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
+    if (workspaceUserEntity != null) {
+      return workspaceUserEntity.getWorkspaceUserRole();
+    }
+    
+    return null;
+  }
   
 }

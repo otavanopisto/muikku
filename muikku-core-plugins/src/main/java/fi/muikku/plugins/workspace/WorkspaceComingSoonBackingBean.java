@@ -12,7 +12,7 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 @Named
 @Stateful
 @RequestScoped
-@Join (path = "/workspace/{workspaceUrlName}/comingsoon", to = "/workspaces/comingsoon.jsf")
+@Join (path = "/workspace/{workspaceUrlName}/comingsoon", to = "/jsf/workspace/comingsoon.jsf")
 public class WorkspaceComingSoonBackingBean {
   
   @Parameter
