@@ -11,8 +11,10 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import fi.otavanopisto.security.ContextReference;
+
 @Entity
-public class UserEmailEntity {
+public class UserEmailEntity implements ContextReference {
 
   /**
    * Returns the identifier of this entity.

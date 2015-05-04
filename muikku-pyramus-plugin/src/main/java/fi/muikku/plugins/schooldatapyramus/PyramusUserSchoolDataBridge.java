@@ -82,19 +82,25 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
       }
       
       if (student.getNationalityId() != null) {
-          Nationality nationality = pyramusClient.get(
-              "/students/nationalities/" + student.getNationalityId(),
-              Nationality.class);
+        Nationality nationality = pyramusClient.get(
+            "/students/nationalities/" + student.getNationalityId(),
+            Nationality.class);
+        if (nationality != null)
           nationalities.add(nationality.getName());
+        else
+          nationalities.add(null);
       } else {
         nationalities.add(null);
       }
       
       if (student.getLanguageId() != null) {
-          Language language = pyramusClient.get(
-              "/students/languages/" + student.getLanguageId(),
-              Language.class);
+        Language language = pyramusClient.get(
+            "/students/languages/" + student.getLanguageId(),
+            Language.class);
+        if (language != null)
           languages.add(language.getName());
+        else
+          languages.add(null);
       } else {
         languages.add(null);
       }
@@ -103,16 +109,22 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
           Municipality municipality = pyramusClient.get(
               "/students/municipalities/" + student.getMunicipalityId(),
               Municipality.class);
-          municipalities.add(municipality.getName());
+          if (municipality != null)
+            municipalities.add(municipality.getName());
+          else
+            municipalities.add(null);
       } else {
         municipalities.add(null);
       }
       
       if (student.getSchoolId() != null) {
-          School school = pyramusClient.get(
-              "/students/schools/" + student.getSchoolId(),
-              School.class);
+        School school = pyramusClient.get(
+            "/schools/schools/" + student.getSchoolId(),
+            School.class);
+        if (school != null)
           schools.add(school.getName());
+        else
+          schools.add(null);
       } else {
         schools.add(null);
       }
@@ -128,6 +140,10 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
 
   private User createStudentEntity(Student student) {
+    if (student == null) {
+      return null;
+    }
+    
     List<User> users = createStudentEntities(new Student[] { student });
     if (users.isEmpty()) {
       return null;

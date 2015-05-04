@@ -63,6 +63,10 @@ public class CalendarRESTService extends PluginRESTService {
   @Path ("/calendars/")
   public Response listCalendars(@QueryParam ("writableOnly") Boolean writableOnly) {
     List<Calendar> result = new ArrayList<>();
+    
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Response.Status.FORBIDDEN).build();
+    }
 
     try {
       List<UserCalendar> userCalendars = calendarController.listUserCalendars(sessionController.getLoggedUserEntity());
@@ -89,6 +93,11 @@ public class CalendarRESTService extends PluginRESTService {
   @PUT
   @Path ("/calendars/{CALID}")
   public Response updateCalendar(@PathParam ("CALID") Long calendarId, Calendar calendar) {
+    
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Response.Status.FORBIDDEN).build();
+    }
+
     if (calendar == null || calendarId == null) {
       return Response.status(Response.Status.NOT_FOUND).build();
     }
@@ -126,6 +135,11 @@ public class CalendarRESTService extends PluginRESTService {
   @DELETE
   @Path ("/calendars/{CALID}")
   public Response deleteCalendar(@PathParam ("CALID") Long calendarId) {
+    
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Response.Status.FORBIDDEN).build();
+    }
+
     if (calendarId == null) {
       return Response.status(Response.Status.NOT_FOUND).build();
     }
@@ -151,6 +165,11 @@ public class CalendarRESTService extends PluginRESTService {
   @POST
   @Path ("/calendars/{CALID:[0-9]*}/events/")
   public Response createEvent(@PathParam ("CALID") Long calendarId, CalendarEvent event) {
+    
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Response.Status.FORBIDDEN).build();
+    }
+
     if (event == null) {
       return Response.status(Response.Status.BAD_REQUEST).entity("Event payload is missing").build();
     }
@@ -193,6 +212,11 @@ public class CalendarRESTService extends PluginRESTService {
   @GET
   @Path ("/calendars/{CALID}/events/")
   public Response getEvents(@PathParam ("CALID") Long calendarId, @QueryParam ("timeMin") DateTimeParameter timeMin, @QueryParam ("timeMax") DateTimeParameter timeMax) {
+    
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Response.Status.FORBIDDEN).build();
+    }
+
     if (calendarId == null) {
       return Response.status(Response.Status.NOT_FOUND).build();
     }
@@ -223,6 +247,11 @@ public class CalendarRESTService extends PluginRESTService {
   @GET
   @Path ("/calendars/{CALID}/events/{EVTID}")
   public Response getEvent(@PathParam ("CALID") Long calendarId, @PathParam ("EVTID") String eventId) {
+    
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Response.Status.FORBIDDEN).build();
+    }
+
     if (calendarId == null || StringUtils.isBlank(eventId)) {
       return Response.status(Response.Status.NOT_FOUND).build();
     }
@@ -251,6 +280,11 @@ public class CalendarRESTService extends PluginRESTService {
   @PUT
   @Path ("/calendars/{CALID}/events/{EVTID}")
   public Response updateEvent(@PathParam ("CALID") Long calendarId, @PathParam ("EVTID") String eventId, CalendarEvent event) {
+    
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Response.Status.FORBIDDEN).build();
+    }
+
     if (calendarId == null || StringUtils.isBlank(eventId)) {
       return Response.status(Response.Status.NOT_FOUND).build();
     }
@@ -302,6 +336,11 @@ public class CalendarRESTService extends PluginRESTService {
   @DELETE
   @Path ("/calendars/{CALID}/events/{EVTID}")
   public Response deleteEvent(@PathParam ("CALID") Long calendarId, @PathParam ("EVTID") String eventId) {
+    
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Response.Status.FORBIDDEN).build();
+    }
+
     if (calendarId == null || StringUtils.isBlank(eventId)) {
       return Response.status(Response.Status.NOT_FOUND).build();
     }

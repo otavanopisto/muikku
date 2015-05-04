@@ -62,14 +62,16 @@ public class IndexEntityProcessor {
   }
   
   private boolean isIndexable(Object entity) {
-    if (entity.getClass().isAnnotationPresent(Indexable.class))  {
-      return true;
-    }      
-    
-    for (Class<?> entityInterface : entity.getClass().getInterfaces()) {
-      if (entityInterface.isAnnotationPresent(Indexable.class))  {
+    if (entity != null) {
+      if (entity.getClass().isAnnotationPresent(Indexable.class))  {
         return true;
-      }     
+      }      
+      
+      for (Class<?> entityInterface : entity.getClass().getInterfaces()) {
+        if (entityInterface.isAnnotationPresent(Indexable.class))  {
+          return true;
+        }     
+      }
     }
     
     return false;
