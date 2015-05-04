@@ -14,12 +14,14 @@ import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.junit.Before;
+import org.junit.Rule;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
+import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.config.ObjectMapperConfig;
 import com.jayway.restassured.config.RestAssuredConfig;
@@ -34,7 +36,10 @@ import fi.pyramus.rest.model.Student;
 import fi.pyramus.rest.model.WhoAmI;
 
 public abstract class AbstractRESTPermissionsTest extends AbstractIntegrationTest {
-
+  
+  @Rule
+  public WireMockRule wireMockRule = new WireMockRule(Integer.parseInt(System.getProperty("it.wiremock.port")));
+  
   @Before
   public void requiredPyramusMocks() throws JsonProcessingException {
     stubFor(get(urlMatching("/dnm")).willReturn(
