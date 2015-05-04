@@ -330,7 +330,7 @@
     }   
   });
   
-  addWidgetController('coursePicker', CoursePickerController);
+  addWidgetController('mf-content-master', CoursePickerController);
 
   
   
