@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.ejb.Singleton;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.websocket.CloseReason;
@@ -17,7 +17,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import fi.muikku.model.users.UserEntity;
 
-@ApplicationScoped
+@Singleton
 public class WebSocketMessenger {
   
   @Inject
@@ -50,25 +50,21 @@ public class WebSocketMessenger {
       ObjectMapper mapper = new ObjectMapper();
       String strMessage = mapper.writeValueAsString(message);
   
-      for (Session session : sessions) {
-        if (session.isOpen()) {
-          Long userId = (Long) session.getUserProperties().get("UserId");
-  
-          if ((userId != null) && (recipients.contains(userId))) {
-            session.getBasicRemote().sendText(strMessage);
+        for (Session session : sessions) {
+          if (session.isOpen()) {
+            Long userId = (Long) session.getUserProperties().get("UserId");
+    
+            if ((userId != null) && (recipients.contains(userId))) {
+              session.getBasicRemote().sendText(strMessage);
+            }
           }
-        }
       }    
     } catch (Exception e) {
       logger.log(Level.SEVERE, "Failed to send WebSocket message", e);
     }
   }
   
-  private boolean verifyTicket(WebSocketTicket ticket) {
-    return ticket != null;
-  }
-  
-  protected void openSession(Session session, String ticket) {
+  public void openSession(Session session, String ticket) {
     try {
       WebSocketTicket ticket1 = webSocketTicketController.findTicket(ticket);
   
@@ -83,12 +79,12 @@ public class WebSocketMessenger {
     }
   }
 
-  protected void closeSession(Session session, String ticket) {
+  public void closeSession(Session session, String ticket) {
     sessions.remove(session);
     webSocketTicketController.removeTicket(ticket);
   }
 
-  protected void handleMessage(String message, Session session, String ticket) {
+  public void handleMessage(String message, Session session, String ticket) {
     ObjectMapper mapper = new ObjectMapper();
 
     try {
@@ -98,6 +94,10 @@ public class WebSocketMessenger {
     } catch (Exception e) {
       logger.log(Level.SEVERE, "Failed to handle WebSocket message", e);
     }
+  }
+  
+  private boolean verifyTicket(WebSocketTicket ticket) {
+    return ticket != null;
   }
   
 }
