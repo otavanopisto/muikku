@@ -50,14 +50,12 @@ public class WebSocketMessenger {
       ObjectMapper mapper = new ObjectMapper();
       String strMessage = mapper.writeValueAsString(message);
   
-      synchronized (this) {
-        for (Session session : sessions) {
-          if (session.isOpen()) {
-            Long userId = (Long) session.getUserProperties().get("UserId");
-    
-            if ((userId != null) && (recipients.contains(userId))) {
-              session.getBasicRemote().sendText(strMessage);
-            }
+      for (Session session : sessions) {
+        if (session.isOpen()) {
+          Long userId = (Long) session.getUserProperties().get("UserId");
+  
+          if ((userId != null) && (recipients.contains(userId))) {
+            session.getBasicRemote().sendText(strMessage);
           }
         }
       }    
@@ -75,10 +73,8 @@ public class WebSocketMessenger {
       WebSocketTicket ticket1 = webSocketTicketController.findTicket(ticket);
   
       if (verifyTicket(ticket1)) {
-        synchronized (this) {
-          session.getUserProperties().put("UserId", ticket1.getUser());
-          sessions.add(session);
-        }
+        session.getUserProperties().put("UserId", ticket1.getUser());
+        sessions.add(session);
       } else {
         session.close(new CloseReason(CloseReason.CloseCodes.VIOLATED_POLICY, "Ticket could not be validated."));
       }
@@ -88,24 +84,19 @@ public class WebSocketMessenger {
   }
 
   protected void closeSession(Session session, String ticket) {
-    synchronized (this) {
-      sessions.remove(session);
-    }
-    
+    sessions.remove(session);
     webSocketTicketController.removeTicket(ticket);
   }
 
   protected void handleMessage(String message, Session session, String ticket) {
-    synchronized (this) {
-      ObjectMapper mapper = new ObjectMapper();
+    ObjectMapper mapper = new ObjectMapper();
 
-      try {
-        WebSocketMessage message2 = mapper.readValue(message, WebSocketMessage.class);
+    try {
+      WebSocketMessage message2 = mapper.readValue(message, WebSocketMessage.class);
 
-        webSocketMessageEvent.select(new MuikkuWebSocketEventLiteral(message2.getEventType())).fire(message2);
-      } catch (Exception e) {
-        logger.log(Level.SEVERE, "Failed to handle WebSocket message", e);
-      }
+      webSocketMessageEvent.select(new MuikkuWebSocketEventLiteral(message2.getEventType())).fire(message2);
+    } catch (Exception e) {
+      logger.log(Level.SEVERE, "Failed to handle WebSocket message", e);
     }
   }
   
