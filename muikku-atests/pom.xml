@@ -57,7 +57,8 @@
     <dependency>
       <groupId>fi.pyramus</groupId>
       <artifactId>rest-model</artifactId>
-      <version>0.7.13-SNAPSHOT</version>
+      <version>0.7.18-SNAPSHOT</version>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
@@ -146,13 +147,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>fi.pyramus</groupId>
-      <artifactId>rest-model</artifactId>
-      <version>0.7.17-SNAPSHOT</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
       <groupId>fi.muikku</groupId>
       <artifactId>persistence</artifactId>
     </dependency>
@@ -179,17 +173,18 @@
         <it.port.http>8080</it.port.http>
         <it.port.https>8443</it.port.https>
         <it.host>dev.muikku.fi</it.host>
+        <it.build.directory>${project.build.directory}</it.build.directory>
         <it.jdbc.driver>org.h2.Driver</it.jdbc.driver>
-        <it.jdbc.url>jdbc:h2:file:${project.build.directory}${file.separator}h2;AUTO_SERVER=TRUE</it.jdbc.url>
+        <it.jdbc.url>jdbc:h2:file:${project.build.directory}/h2;AUTO_SERVER=TRUE</it.jdbc.url>
         <it.jdbc.jndi>java:/jdbc/muikku</it.jdbc.jndi>
         <it.jdbc.username>sa</it.jdbc.username>
         <it.jdbc.password>sa</it.jdbc.password>
         <it.hibernate.dialect>org.hibernate.dialect.H2Dialect</it.hibernate.dialect>
         <it.keystore.alias>pyrit</it.keystore.alias>
         <it.keystore.pass>storepass</it.keystore.pass>
-        <it.keystore.file>${project.build.directory}${file.separator}pyrit.keystore</it.keystore.file>
+        <it.keystore.file>${it.build.directory}/pyrit.keystore</it.keystore.file>
         <it.wiremock.port>8089</it.wiremock.port>
-        <it.report.directory>${project.build.directory}${file.separator}failsafe-reports${file.separator}</it.report.directory>
+        <it.report.directory>${project.build.directory}/failsafe-reports/</it.report.directory>
       </properties>
 
       <dependencies>
@@ -238,6 +233,7 @@
                 <it.keystore.storepass>${it.keystore.pass}</it.keystore.storepass>
                 <it.wiremock.port>${it.wiremock.port}</it.wiremock.port>
                 <it.report.directory>${it.report.directory}</it.report.directory>
+                <it.build.directory>${it.build.directory}</it.build.directory>
               </systemPropertyVariables>
             </configuration>
             <executions>
@@ -468,7 +464,7 @@
           <plugin>
             <groupId>org.wildfly.plugins</groupId>
             <artifactId>wildfly-maven-plugin</artifactId>
-            <version>1.0.1.Final</version>
+            <version>1.0.2.Final</version>
             <executions>
               <execution>
                 <id>configure-wildfly</id>
@@ -481,7 +477,7 @@
                     <batch>true</batch>
                     <commands>
 <!--                       <command>/system-property=muikku-data:add(value="${project.build.directory}/../../muikku-data/muikku-data.xml,${project.build.directory}/../../muikku-data/muikku-data-private.xml")</command> -->
-                      <command>/system-property=muikku-data:add(value="${project.build.directory}/../src/test/resources/muikku-data/muikku-data.xml")</command>
+                      <command>/system-property=muikku-data:add(value="${it.build.directory}/../src/test/resources/muikku-data/muikku-data.xml")</command>
                       <command>/system-property=jsf.project.stage:add(value="Production")</command>
                       <command>/core-service=management/security-realm=ssl-realm:add()</command>
                       <command>/core-service=management/security-realm=ssl-realm/server-identity=ssl:add(keystore-path="${it.keystore.file}",keystore-password="${it.keystore.pass}",alias="${it.keystore.alias}")</command>
