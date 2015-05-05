@@ -1,10 +1,9 @@
 package fi.muikku.plugins.websocket;
 
 import java.util.Date;
+import java.util.UUID;
 
-import javax.ejb.Lock;
-import javax.ejb.LockType;
-import javax.ejb.Singleton;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
@@ -14,14 +13,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.codec.digest.DigestUtils;
-
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.session.SessionController;
 
 @Path("/websocket")
-@Singleton
+@RequestScoped
 @Produces ("application/json")
 public class WebSocketRESTService extends PluginRESTService {
 
@@ -38,7 +35,6 @@ public class WebSocketRESTService extends PluginRESTService {
   
   @GET
   @Path ("/ticket")
-  @Lock(LockType.WRITE)
   public Response ticket() {
     UserEntity user = sessionController.getLoggedUserEntity(); 
 
@@ -48,8 +44,7 @@ public class WebSocketRESTService extends PluginRESTService {
     Date timestamp = new Date();
     // TODO: Proxy?
     String ip = request.getRemoteAddr();
-    
-    String ticket = DigestUtils.md5Hex(Long.toString(timestamp.getTime()) + ":" + ip + ":" + userId);
+    String ticket = UUID.randomUUID().toString();
     
     webSocketTicketController.createTicket(ticket, userId, ip, timestamp);
     
