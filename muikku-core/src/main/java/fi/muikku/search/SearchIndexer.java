@@ -15,7 +15,7 @@ public class SearchIndexer {
 
   @Any
   @Inject
-  private Instance<SearchProvider> searchProviders;
+  private Instance<SearchIndexUpdater> searchIndexUpdaters;
 
   @Inject
   private IndexEntityProcessor indexEntityProcessor;
@@ -24,13 +24,13 @@ public class SearchIndexer {
   private Logger logger;
 
   public void index(String name, Object entity) {
-    Iterator<SearchProvider> providers = searchProviders.iterator();
-    while (providers.hasNext()) {
-      SearchProvider provider = providers.next();
+    Iterator<SearchIndexUpdater> updaters = searchIndexUpdaters.iterator();
+    while (updaters.hasNext()) {
+      SearchIndexUpdater updater = updaters.next();
       try {
         Map<String, Object> indexEntity = indexEntityProcessor.process(entity);
         if (indexEntity != null) {
-          provider.addOrUpdateIndex(name, indexEntity);
+          updater.addOrUpdateIndex(name, indexEntity);
         }
       } catch (IllegalArgumentException | IllegalAccessException | SecurityException | InvocationTargetException | IntrospectionException | IndexIdMissingException e) {
         logger.log(Level.WARNING, "Entity processing exception", e);
@@ -50,9 +50,9 @@ public class SearchIndexer {
   }
   
   public void remove(String name, String id) {
-    Iterator<SearchProvider> providers = searchProviders.iterator();
+    Iterator<SearchIndexUpdater> providers = searchIndexUpdaters.iterator();
     while (providers.hasNext()) {
-      SearchProvider provider = providers.next();
+      SearchIndexUpdater provider = providers.next();
       try {
         provider.deleteFromIndex(name, id);
       } catch (IllegalArgumentException | SecurityException e) {
