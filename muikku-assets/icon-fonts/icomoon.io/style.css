@@ -1,10 +1,10 @@
 @font-face {
 	font-family: 'muikku';
-	src:url('fonts/muikku.eot?-is6fb');
-	src:url('fonts/muikku.eot?#iefix-is6fb') format('embedded-opentype'),
-		url('fonts/muikku.woff?-is6fb') format('woff'),
-		url('fonts/muikku.ttf?-is6fb') format('truetype'),
-		url('fonts/muikku.svg?-is6fb#muikku') format('svg');
+	src:url('fonts/muikku.eot?2t30bc');
+	src:url('fonts/muikku.eot?#iefix2t30bc') format('embedded-opentype'),
+		url('fonts/muikku.woff?2t30bc') format('woff'),
+		url('fonts/muikku.ttf?2t30bc') format('truetype'),
+		url('fonts/muikku.svg?2t30bc#muikku') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -212,7 +212,7 @@
 }
 
 .icon-spinner:before {
-	content: "\e982";
+	content: "\e97b";
 }
 
 .icon-assessment-canceled:before {
