@@ -9,13 +9,19 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
 import javax.inject.Inject;
 
+import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceDiscoveredEvent;
+import fi.muikku.schooldata.events.SchoolDataWorkspaceUpdatedEvent;
 
 @ApplicationScoped
 public class DeusNexMachinaSchoolDataWorkspaceListener {
   
   @Inject
   private Logger logger;
+  
+  @Inject
+  private WorkspaceEntityController workspaceEntityController;
 
   @Inject
   private DeusNexMachinaController deusNexMachinaController;
@@ -31,6 +37,24 @@ public class DeusNexMachinaSchoolDataWorkspaceListener {
           deusNexMachinaController.setWorkspaceEntityIdDnmId(dnmId, workspaceEntityId);
         } catch (IOException e) {
           logger.severe("Could not store workspace entity id dnmId map");
+        }
+      }
+    }
+  }
+  
+  public void onDeusNexMachinaWorkspaceUpdatedEvent(@Observes SchoolDataWorkspaceUpdatedEvent event) {
+    if (event.getExtra() != null && event.getExtra().containsKey("pyramusVariables")) {
+      @SuppressWarnings("unchecked")
+      Map<String, String> pyramusVariables = (Map<String, String>) event.getExtra().get("pyramusVariables");
+      if (pyramusVariables != null && pyramusVariables.containsKey("dnmid")) {
+        String dnmId = pyramusVariables.get("dnmid");
+        WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
+        if (workspaceEntity != null) {
+          try {
+            deusNexMachinaController.setWorkspaceEntityIdDnmId(dnmId, workspaceEntity.getId());
+          } catch (IOException e) {
+            logger.severe("Could not store workspace entity id dnmId map");
+          }
         }
       }
     }
