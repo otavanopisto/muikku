@@ -40,16 +40,16 @@ public class IndexPageTestsBase extends AbstractUITest {
         .withStatus(204)));
     
     stubFor(get(urlMatching("/users/authorize.*"))
-    // .withQueryParam("client_id", matching("*"))
-    // .withQueryParam("response_type", matching("*"))
-    // .withQueryParam("redirect_uri", matching("*"))
-      // .withHeader("Accept", equalTo("text/json"))
+     .withQueryParam("client_id", matching("*"))
+     .withQueryParam("response_type", matching("*"))
+     .withQueryParam("redirect_uri", matching("*"))
+       .withHeader("Accept", equalTo("text/json"))
       .willReturn(
         aResponse()
           .withStatus(302)
           .withHeader("Content-Length", "0")
           .withHeader("Location", "http://dev.muikku.fi:8080/login?_stg=rsp&code=1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111")));
-    
+   
     stubFor(post(urlMatching("/1/oauth/token")).willReturn(
       aResponse().withHeader("Content-Type", "application/json")
         .withBody("{\"expires_in\":3600,\"refresh_token\":\"12312ewsdf34fsd234r43rfsw32rf33e\",\"access_token\":\"ur84ur839843ruwf39843ru39ru37y2e\"}")
@@ -122,7 +122,7 @@ public class IndexPageTestsBase extends AbstractUITest {
       .willReturn(
         aResponse()
           .withHeader("Content-Type", "application/json")
-          .withBody("[{\"id\":5,\"personId\":5,\"additionalContactInfo\":null,\"firstName\":\"Test\",\"lastName\":\"Staffmember\",\"title\":null,\"role\":\"ADMINISTRATOR\",\"variables\":{},\"tags\":[]}]")
+          .withBody(staffArrayJson)
           .withStatus(200)));
     
     stubFor(get(urlMatching("/1/courses/staffMemberRoles"))
@@ -158,17 +158,17 @@ public class IndexPageTestsBase extends AbstractUITest {
   @SqlBefore("sql/loginSetup.sql")
   @SqlAfter("sql/loginTeardown.sql")
   public void loginTest() throws IOException {
-    getWebDriver().get(getAppUrl());
+//    getWebDriver().get(getAppUrl());
 //    waitForElementToBeClickable(By.className("bt-login"));
 //    getWebDriver().findElement(By.className("bt-login")).click();
-    getWebDriver().get("http://dev.muikku.fi:8080/login?authSourceId=1");
-    sleep(500);
+    getWebDriver().get("http://dev.muikku.fi:8080/");
+//    sleep(500);
 ////    waitForElementToBePresent(By.className("index"));
-    takeScreenshot();
-//    getWebDriver().get(getAppUrl());
-//    getWebDriver().get("http://0.0.0.0:8089/1/students/students?email=testuser@made.up");
-//    sleep(1000);
 //    takeScreenshot();
+//    getWebDriver().get(getAppUrl());
+//    getWebDriver().get("http://localhost:8089/1/students/students/2");
+    sleep(1000);
+    takeScreenshot();
 //    getWebDriver().get("http://0.0.0.0:8089/1/students/students/1/emails");
 //    sleep(1000);
 //    takeScreenshot();
