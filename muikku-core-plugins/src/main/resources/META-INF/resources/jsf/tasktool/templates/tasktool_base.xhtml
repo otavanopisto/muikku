@@ -6,7 +6,7 @@
   xmlns:f="http://java.sun.com/jsf/core"
   xmlns:c="http://java.sun.com/jsp/jstl/core" 
   xmlns:h="http://java.sun.com/jsf/html"
-  template="/WEB-INF/templates/mainfunction_refactoring.xhtml">
+  template="/WEB-INF/templates/mainfunction.xhtml">
    
   <ui:define name="viewCss"></ui:define> 
   
@@ -19,7 +19,7 @@
   </ui:define>
 
   <ui:define name="content.tools.left"> 
-    <m:widget name="tasktool-evalueate" size="6" rendered="#{sessionBackingBean.loggedIn}"/>
+    <m:widget name="tasktool-evaluate" size="6" rendered="#{sessionBackingBean.loggedIn}"/>
   </ui:define>
 
   <ui:define name="content.tools.center"> 
