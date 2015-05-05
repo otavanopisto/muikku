@@ -262,7 +262,8 @@ public abstract class AbstractRESTPermissionsTest extends AbstractIntegrationTes
   
   public void assertOk(Response response, MuikkuPermissionCollection permissionCollection, String permission, int successStatusCode) throws NoSuchFieldException {
 //    if (!Role.EVERYONE.name().equals(getRole())) {
-      List<fi.muikku.model.users.EnvironmentRoleArchetype> allowedRoles = Arrays.asList(permissionCollection.getDefaultEnvironmentRoles(permission));
+    
+      List<fi.muikku.model.users.EnvironmentRoleArchetype> allowedRoles = asList(permissionCollection.getDefaultEnvironmentRoles(permission));
       
       if (roleIsAllowed(getRole(), allowedRoles)) {
         response.then().assertThat().statusCode(successStatusCode);
@@ -274,6 +275,14 @@ public abstract class AbstractRESTPermissionsTest extends AbstractIntegrationTes
 //      response.then().assertThat().statusCode(400);
   }
   
+  @SafeVarargs
+  private static <T> List<T> asList(T... stuff) {
+    if (stuff != null)
+      return Arrays.asList(stuff);
+    else
+      return new ArrayList<T>();
+  }
+
   public static List<Object[]> getGeneratedRoleData() {
     // The parameter generator returns a List of
     // arrays. Each array has two elements: { role }.
