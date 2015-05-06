@@ -122,7 +122,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
     long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
     
     CourseAssessment courseAssessment = new CourseAssessment(null, courseStudentId, Long.parseLong(gradeIdentifier), assessingUserId, new DateTime(date), verbalAssessment);
-    return entityFactory.createEntity(pyramusClient.post(String.format("/students/%d/courses/%d/assessments/", studentId, courseId ), courseAssessment));
+    return entityFactory.createEntity(pyramusClient.post(String.format("/students/students/%d/courses/%d/assessments/", studentId, courseId ), courseAssessment));
   }
 
   @Override
@@ -130,7 +130,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
     long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
     long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
     long id = Long.parseLong(identifier);
-    return entityFactory.createEntity(pyramusClient.get(String.format("/students/%d/courses/%d/assessments/%d", studentId, courseId, id ), CourseAssessment.class));
+    return entityFactory.createEntity(pyramusClient.get(String.format("/students/students/%d/courses/%d/assessments/%d", studentId, courseId, id ), CourseAssessment.class));
   }
 
   @Override
@@ -145,7 +145,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
     long id = Long.parseLong(identifier);
     
     CourseAssessment courseAssessment = new CourseAssessment(id, courseStudentId, Long.parseLong(gradeIdentifier), assessingUserId, new DateTime(date), verbalAssessment);
-    return entityFactory.createEntity(pyramusClient.put(String.format("/students/%d/courses/%d/assessments/%d", studentId, courseId, id), courseAssessment));
+    return entityFactory.createEntity(pyramusClient.put(String.format("/students/students/%d/courses/%d/assessments/%d", studentId, courseId, id), courseAssessment));
   }
 
 

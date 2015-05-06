@@ -1,18 +1,5 @@
 <section class="evaluation-modal-studentAssignmentWrapper" id="evaluationStudentAssignmentWrapper">
   <article class="evaluation-modal-student-wrapper">
-  <!-- 
-    <div class="evaluation-modal-workspace-info-wrapper">
-      <div class="evaluation-modal-workspace-title">GE1 - Sininen planeetta</div>
-      <div class="evaluation-modal-workspace-educationtype">
-        <span class="desc">Lukio</span></div>
-      <div class="evaluation-modal-workspace-subject">
-        <span class="title">Aine</span><span class="desc">Maantiede</span></div>
-      <div class="evaluation-modal-workspace-length">
-        <span class="title">Pituus</span><span class="desc">38<span class="symbol">t</span></span>
-      </div>
-      <div class="clear"></div>
-    </div>
-    -->
     <div class="evaluation-modal-workspace-assignment-info">
       <div class="evaluation-modal-workspace-assignment-wrapper">
         <div class="evaluation-modal-workspace-single-assignment">
