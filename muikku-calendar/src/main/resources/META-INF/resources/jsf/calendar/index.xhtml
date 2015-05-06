@@ -9,60 +9,16 @@
   xmlns:jsf="http://xmlns.jcp.org/jsf"
   template="./templates/calendar_base.xhtml">
 
-  <ui:define name="calendarViewScripts">
-    <h:outputScript name="scripts/gui/calendar-index.js" />
-  </ui:define>
-
-    <ui:define name="content.tools.center">
-    
-      <!--   TODO : Widget --> 
-          
-      <div class="mf-content-toolbar grid_18 omega noLid">  
-        <div class="mf-content-tool-container">
-          <a class="mf-content-tool icon-home selected" jsf:outcome="/jsf/calendar/index.jsf"></a>
-          <a class="mf-content-tool icon-day" jsf:outcome="/jsf/calendar/view_day.jsf" data-mode="DAY"></a>
-          <a class="mf-content-tool icon-week" jsf:outcome="/jsf/calendar/view_week.jsf" data-mode="WEEK"></a>
-          <a class="mf-content-tool icon-month" jsf:outcome="/jsf/calendar/view_month.jsf" data-mode="MONTH"></a>  
-          <a class="mf-content-tool icon-numbered-list" jsf:outcome="/jsf/calendar/view_event.jsf" data-mode="EVENT_LIST"></a>  
-        </div>
-      </div>
+    <ui:define name="calendarViewScripts">
+      <h:outputScript name="scripts/gui/calendar-index.js" />
     </ui:define>
 
-
+    <ui:define name="content.tools.center">
+       <m:widget name="calendar_view_navigation" size="6" rendered="#{sessionBackingBean.loggedIn}"/>
+    </ui:define>
 
     <ui:define name="content.center.widget">
-    <div class="ca-home">
-
-      <!--  TODO : Widget -->
-
-      <div class="ca-home-today">
-        <div class="ca-today-date">
-          <div class="ca-date-primary">
-            <span></span>
-          </div>
-          <div class="ca-date-secondary">
-            <div class="ca-date-day-name">
-              <span></span>
-            </div>
-            <div class="ca-date-day-time">
-              <span></span>
-            </div>
-          </div>
-          <div class="clear"></div>
-        </div>
-        <div id="fpDayEvents" class="ca-today-events" data-user-calendar-ids="#{calendarBackingBean.userCalendarsIds}">
-
-        </div>
-
-      </div>
-      <div id="fpWeekView" class="ca-home-week" data-user-calendar-ids="#{calendarBackingBean.userCalendarsIds}">
-
-        
-
-      </div>
-
-    </div>
-    <div class="clear"></div>
-  </ui:define>
+       <m:widget name="calendar_view_content_index" rendered="#{sessionBackingBean.loggedIn}"/>    
+    </ui:define>
 
 </ui:composition>

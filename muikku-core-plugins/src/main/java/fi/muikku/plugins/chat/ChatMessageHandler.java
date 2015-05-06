@@ -1,12 +1,10 @@
 package fi.muikku.plugins.chat;
 
-import java.io.IOException;
 import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-import javax.websocket.EncodeException;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
@@ -26,21 +24,16 @@ public class ChatMessageHandler {
   private UserEntityController userEntityController; 
   
   public void handleMessage(@Observes @MuikkuWebSocketEvent("Chat:message") WebSocketMessage message) {
-    try {
-      ObjectMapper mapper = new ObjectMapper();
+    ObjectMapper mapper = new ObjectMapper();
 
-      ChatMessage msg = mapper.convertValue(message.getData(), ChatMessage.class);
+    ChatMessage msg = mapper.convertValue(message.getData(), ChatMessage.class);
 
-      // TODO: Room magic
-      // TODO: Recipients
-      
-      List<UserEntity> recipients = userEntityController.listUserEntities();
-      
-      webSocketMessenger.sendMessage2("Chat:message", msg, recipients);
-    } catch (IOException | EncodeException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+    // TODO: Room magic
+    // TODO: Recipients
+    
+    List<UserEntity> recipients = userEntityController.listUserEntities();
+    
+    webSocketMessenger.sendMessage2("Chat:message", msg, recipients);
   }
 
 }

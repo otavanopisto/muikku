@@ -9,27 +9,28 @@
 .cp-side{
 }
 
-.cp-side-button{
-   @extend .co-mainFunction-side-button;
-   height:70px;
-}
+/* .cp-side-button{ */
+/*    @extend .co-mainFunction-side-button; */
+/*    height:70px; */
+/* } */
 
 
-.cp-side-button > div:first-child{
-  width:170px;
-  margin-left:31px;
-  margin-top:15px;
-}
+/* .cp-side-button > div:first-child{ */
+/*   width:170px; */
+/*   margin-left:31px; */
+/*   margin-top:15px; */
+/* } */
 
 .cp-side-button-dropdown{
   display:none;
   width:170px;
-  margin-left:31px;
   background-color:#fff;
   border : 1px solid $brd;
   z-index: 100;
   position:relative;
   top:0;
+  
+  ul{list-style-type:none;}  
   
   li{
     font-size:0.9em;   
@@ -113,8 +114,7 @@
   
 }
 .cp-search-field{
-   width:200px;
-   display:inline-block;
+  display:inline-block;
    margin-top:10px;
 }
 

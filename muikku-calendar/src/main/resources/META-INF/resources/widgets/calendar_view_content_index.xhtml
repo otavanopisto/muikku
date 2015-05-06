@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:jsf="http://xmlns.jcp.org/jsf"
+  xmlns:h="http://java.sun.com/jsf/html">
+
+    <div class="ca-home">
+
+      <!--  TODO : Widget -->
+
+      <div class="ca-home-today">
+        <div class="ca-today-date">
+          <div class="ca-date-primary">
+            <span></span>
+          </div>
+          <div class="ca-date-secondary">
+            <div class="ca-date-day-name">
+              <span></span>
+            </div>
+            <div class="ca-date-day-time">
+              <span></span>
+            </div>
+          </div>
+          <div class="clear"></div>
+        </div>
+        <div id="fpDayEvents" class="ca-today-events" data-user-calendar-ids="#{calendarBackingBean.userCalendarsIds}">
+
+        </div>
+
+      </div>
+      <div id="fpWeekView" class="ca-home-week" data-user-calendar-ids="#{calendarBackingBean.userCalendarsIds}">
+
+        
+
+      </div>
+
+    </div>
+    <div class="clear"></div>
+    
+
+</ui:composition>

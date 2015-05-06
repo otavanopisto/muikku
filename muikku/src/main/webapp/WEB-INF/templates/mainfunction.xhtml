@@ -10,44 +10,44 @@ template="./main-view.xhtml">
 
     <ui:define name="mainfunctionScripts">
       <script type="text/javascript" src="//cdn.ckeditor.com/4.4.7/standard/ckeditor.js"></script>
+      
     </ui:define>
-
+    
     <ui:param name="contentClass" value="mf-content-master" />
 
     <ui:define name="content.tools.top">
       <div class="widgetSpaceSet mf-content-functions grid_24 nomargin">
+    
         <m:widgetSpaceSet styleClass="nomargin mf-content-tools-top">
-          <m:widgetSpace name="mainfunction.content-tools-top.left" keepEmpty="true" sizing="SUM" styleClass="mf-button-container grid_6 nomargin noLid">
-            <ui:insert name="content.tools.left"></ui:insert>  
+
+          <m:widgetSpace name="mainfunction.content-tools-top.left" keepEmpty="true" sizing="SUM" styleClass="mf-button-container nomargin noLid">
+            <ui:insert name="content.tools.left" />
           </m:widgetSpace>
-          <m:widgetSpace name="mainfunction.content-tools-top.center" keepEmpty="false" sizing="SUM" styleClass="mf-view-container grid_18 alpha noLid">
-            <div class="mf-view-container grid_18 alpha noLid"><ui:insert name="content.tools.center" /></div>
+          <m:widgetSpace name="mainfunction.content-tools-top.center" keepEmpty="true" sizing="MAXIMIZE" styleClass="mf-view-container alpha noLid">
+            <ui:insert name="content.tools.center" />
           </m:widgetSpace>
-          <m:widgetSpace name="mainfunction.content-tools-top.right" keepEmpty="false" sizing="SUM" styleClass="razi">
+          
+          <m:widgetSpace name="mainfunction.content-tools-top.right" keepEmpty="false" sizing="SUM" styleClass="">
             <ui:insert name="content.tools.right" />
           </m:widgetSpace>
+   
         </m:widgetSpaceSet>
-      </div>
+     </div>  
     </ui:define>
     
+
      <ui:define name="content.area">
       <div class="widgetSpaceSet mf-content-area grid_24 nomargin noLid">
-
-        <m:widgetSpaceSet>
+        <m:widgetSpaceSet styleClass="widgetSpaceSet mf-content-area grid_24 nomargin noLid">
+ 
           <ui:insert name="content.left.widgetspace">
-            <m:widgetSpace name="generic.content.left" keepEmpty="true" styleClass="nomargin mf-side-tools grid_6 nomargin noLid">
-              <div class="">
-                <ui:insert name="content.left.widget"></ui:insert>
-              </div>
+            <m:widgetSpace name="generic.content.left" keepEmpty="false" sizing="SUM" styleClass="nomargin mf-side-tools nomargin noLid">
+              <ui:insert name="content.left.widget"></ui:insert>
             </m:widgetSpace>
           </ui:insert>
           <ui:insert name="content.center.widgetspace">
-            <m:widgetSpace name="generic.content.center" keepEmpty="true"  styleClass="mf-content grid_18 nomargin noLid">
-                <div class="mf-content-main">
-                  <ui:insert name="hiddenFields"></ui:insert>
-                  <ui:insert name="content.center.widget"></ui:insert>
-                </div>
-               <div class="clear"></div>
+            <m:widgetSpace name="generic.content.center" keepEmpty="true" sizing="MAXIMIZE" styleClass="mf-content nomargin noLid">
+              <ui:insert name="content.center.widget"></ui:insert>
             </m:widgetSpace>
           </ui:insert>
           <ui:insert name="content.right.widgetspace">
@@ -55,8 +55,9 @@ template="./main-view.xhtml">
               <ui:insert name="content.right.widget"></ui:insert>
             </m:widgetSpace>
           </ui:insert>
+          
+ 
         </m:widgetSpaceSet>
-      </div>      
+       </div>
     </ui:define>   
-    
 </ui:composition>

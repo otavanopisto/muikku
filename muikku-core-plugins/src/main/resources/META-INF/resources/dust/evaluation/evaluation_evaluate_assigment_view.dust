@@ -1,6 +1,6 @@
 <section class="evaluation-modal-studentAssignmentWrapper" id="evaluationStudentAssignmentWrapper">
   <article class="evaluation-modal-student-wrapper">
-    <h2 class="evaluation-modal-student-name"><span class="student-picture"></span>Esimerkki Opiskelija 1</h2>
+    <h2 class="evaluation-modal-student-name"><span class="student-picture"></span>{studentDisplayName}</h2>
     <div class="evaluation-modal-workspace-info-wrapper">
       <div class="evaluation-modal-workspace-title">GE1 - Sininen planeetta</div>
       <div class="evaluation-modal-workspace-educationtype">

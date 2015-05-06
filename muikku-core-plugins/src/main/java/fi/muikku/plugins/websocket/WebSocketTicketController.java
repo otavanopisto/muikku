@@ -22,9 +22,10 @@ public class WebSocketTicketController {
   }
 
   public void removeTicket(String ticket) {
-    WebSocketTicket ticketO = findTicket(ticket);
-    webSocketTicketDAO.delete(ticketO);
+    WebSocketTicket webSocketTicket = findTicket(ticket);
+    if (webSocketTicket != null) {
+      webSocketTicketDAO.delete(webSocketTicket);
+    }
   }
-  
   
 }
