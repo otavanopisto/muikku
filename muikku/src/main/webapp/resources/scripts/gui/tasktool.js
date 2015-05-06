@@ -4,46 +4,45 @@ $(document).ready(function(){
 
     	init : function(){
     		// todo: parse url
-            this.refreshUsers();	
-    	    $(GuideImpl.guideContainer).on("click", '.tt-item:not(.open)', $.proxy(this.showUser,this));  
-    	    $(GuideImpl.guideContainer).on("click", '.tt-tool-send-mail', $.proxy(this.messageToUser,this));    	    
+          this.refreshTasks();	
+    	    $(TaskImpl.taskContainer).on("click", '.tt-item:not(.open)', $.proxy(this.showUser,this));  
+    	    $(TaskImpl.taskContainer).on("click", '.tt-tool-send-mail', $.proxy(this.messageToUser,this));    	    
     	    
     	},
     	
     	
-    	refreshItems : function(){
+    	refreshTasks : function(){
 
-            this.clearUsers();
-            var search = $(".gt-search");
+            this.clearTasks();
+            var search = $(".tt-search");
             var searchVisible = search.is(":visible");
             
             if(searchVisible == false ){
             	search.show("slide");
             	
             }
-//    	    mApi().user.users.read({archetype : 'STUDENT'})
-//    	    .callback(function (err, users) {
-//    	  	  
-//    		    if( err ){
-//    		          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nousers', err));
-//    		  	}else{    	  
-//
-//    		  	 renderDustTemplate('/tasktool/tasktool_items.dust', users, function(text) {
-//    		 		$(GuideImpl.guideContainer).append($.parseHTML(text));
-//    		 		
-//    		  	});
-//    		  	}
-//    	    });		
-    		
+            mApi().assessmentrequest.assessmentrequests.read({'workspaceId' : 6 })
+            .callback(function (err, asreq) {
+              
+              if( err ){
+                    $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.tasktool.errormessage.notasks', err));
+              }else{        
+
+               renderDustTemplate('/tasktool/tasktool_items.dust', asreq, function(text) {
+                 $(TaskImpl.taskContainer).append($.parseHTML(text));
+              
+              });
+              }
+            });     		
     	},
     	  	
-	    showItem : function(event){
+	    showTask : function(event){
 
 	    	var element = $(event.target); 
-	        element = element.parents(".gt-user");
+	        element = element.parents(".tt-task");
 	        var uId = $(element).attr("id");
-		    var det = element.find(".gt-user-details"); 
-	        var detcont = element.find(".gt-user-details-content"); 
+		    var det = element.find(".tt-task-details"); 
+	        var detcont = element.find(".tt-task-details-content"); 
 
 	    	$(element).removeClass("closed");
 	    	$(element).addClass("open");
@@ -53,7 +52,7 @@ $(document).ready(function(){
 				    if( err ){
 				        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nouser', err));
 				  	}else{    	  
-					  	renderDustTemplate('/guider/guider_item_details.dust', user, function(text) {				  		
+					  	renderDustTemplate('/tasktool/taskr_item_details.dust', user, function(text) {				  		
 					  		$(detcont).append($.parseHTML(text));
 					  	});
 				  	}	
@@ -62,7 +61,7 @@ $(document).ready(function(){
 	    },
 	    
 
-	    clearItems : function(){
+	    clearTasks : function(){
 	    	$(TaskImpl.taskContainer).empty();
 	    },	    
 	    
@@ -79,10 +78,10 @@ $(document).ready(function(){
     }); 
 	
 
-   window.guider = new TaskImpl();
+   window.tasktool = new TaskImpl();
   
         
-	$(".gt-main-dropdown-label").click(function(){
+	$(".tt-main-dropdown-label").click(function(){
 		alert("To da Evaluation!!!");   
 	});
 	
