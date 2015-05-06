@@ -91,6 +91,30 @@ public class AssessmentRequestRESTService extends PluginRESTService {
 
     return Response.ok(restAssessmentRequests).build();
   }
+  
+  @GET
+  @Path("/assessmentrequestsforme")
+  public Response listAssessmentRequestsForMe() {
+    List<AssessmentRequest> assessmentRequests = new ArrayList<>();
+    UserEntity userEntity = sessionController.getLoggedUserEntity();
+    
+    assessmentRequests = assessmentRequestController.listByUser(userEntity);
+
+    List<AssessmentRequestRESTModel> restAssessmentRequests = new ArrayList<>();
+    for (AssessmentRequest assessmentRequest : assessmentRequests) {
+      AssessmentRequestRESTModel restAssessmentRequest = new AssessmentRequestRESTModel();
+
+      restAssessmentRequest.setId(assessmentRequest.getId());
+      restAssessmentRequest.setWorkspaceId(assessmentRequest.getWorkspace());
+      restAssessmentRequest.setMessage(assessmentRequest.getMessage());
+      restAssessmentRequest.setState(assessmentRequest.getState().toString());
+
+      restAssessmentRequests.add(restAssessmentRequest);
+    }
+
+    return Response.ok(restAssessmentRequests).build();
+    
+  }
 
   @POST
   @Path("/cancellastassessmentrequest/{WORKSPACEID}")
