@@ -39,8 +39,9 @@ class GradingSchoolDataController {
 	
 	/* WorkspaceAssessment */
 	
-	public WorkspaceAssessment createWorkspaceAssessment(SchoolDataSource schoolDataSource, String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String workspaceIdentifier, String studentIdentifier, String assessingUserIdentifier, String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String verbalAssessment, Date date) {
-    GradingSchoolDataBridge schoolDataBridge = getGradingBridge(schoolDataSource);
+	public WorkspaceAssessment createWorkspaceAssessment(String schoolDataSource, String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String workspaceIdentifier, String studentIdentifier, String assessingUserIdentifier, String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String verbalAssessment, Date date) {
+	  SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
+	  GradingSchoolDataBridge schoolDataBridge = getGradingBridge(dataSource);
     if (schoolDataBridge != null) {
       try {
         return schoolDataBridge.createWorkspaceAssessment(
@@ -58,7 +59,7 @@ class GradingSchoolDataController {
         logger.log(Level.SEVERE, "School Data Bridge reported a problem while create a workspace assessment", e);
       }
     } else {
-      logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + schoolDataSource.getIdentifier());
+      logger.log(Level.SEVERE, "School Data Bridge could not be found for data source: "  + dataSource.getIdentifier());
     }
   
     return null;
