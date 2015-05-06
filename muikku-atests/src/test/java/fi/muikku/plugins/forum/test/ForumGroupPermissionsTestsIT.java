@@ -4,13 +4,16 @@ import static com.jayway.restassured.RestAssured.given;
 
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
 
+import fi.muikku.AbstractRESTPermissionsTest;
 import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.plugins.forum.ForumResourcePermissionCollection;
 import fi.muikku.plugins.forum.rest.ForumAreaGroupRESTModel;
@@ -25,12 +28,17 @@ public class ForumGroupPermissionsTestsIT extends AbstractRESTPermissionsTest {
   public static List<Object[]> generateData() {
     return getGeneratedRoleData();
   }
+
+  @Before
+  public void before() {
+    
+  }
   
   public ForumGroupPermissionsTestsIT(String role) {
     this.role = role;
   }
   
-  @Test
+//  @Test
   public void testCreateEnvironmentForum() throws NoSuchFieldException {
     ForumAreaGroupRESTModel contactURLType = new ForumAreaGroupRESTModel(null, "test_create_forumareagroup");
     
@@ -58,14 +66,14 @@ public class ForumGroupPermissionsTestsIT extends AbstractRESTPermissionsTest {
     assertOk(response, forumPermissions, ForumResourcePermissionCollection.FORUM_LIST_FORUMAREAGROUPS, 200);
   }
 
-  @Test
+//  @Test
   public void testSearchUsers() throws NoSuchFieldException {
     Response response = given().headers(getAuthHeaders())
       .get("/user/users?searchString=a");
     assertOk(response, forumPermissions, ForumResourcePermissionCollection.FORUM_LIST_FORUMAREAGROUPS, 200);
   }
   
-  @Test
+//  @Test
   public void testFindAreaGroup() throws NoSuchFieldException {
     Response response = given().headers(getAuthHeaders())
       .get("/forum/areagroups/{ID}", 1);

@@ -1,4 +1,4 @@
-package fi.muikku.plugins.forum.test;
+package fi.muikku;
 
 import static com.jayway.restassured.RestAssured.certificate;
 import static com.jayway.restassured.RestAssured.given;
@@ -28,7 +28,6 @@ import com.jayway.restassured.config.RestAssuredConfig;
 import com.jayway.restassured.mapper.factory.Jackson2ObjectMapperFactory;
 import com.jayway.restassured.response.Response;
 
-import fi.muikku.AbstractIntegrationTest;
 import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.security.MuikkuPermissionCollection;
 import fi.pyramus.rest.model.Email;

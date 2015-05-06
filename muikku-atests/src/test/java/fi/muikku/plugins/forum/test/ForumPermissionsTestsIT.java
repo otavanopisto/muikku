@@ -11,6 +11,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 import com.jayway.restassured.response.Response;
 
+import fi.muikku.AbstractRESTPermissionsTest;
 import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.plugins.forum.ForumResourcePermissionCollection;
 import fi.muikku.plugins.forum.rest.ForumAreaRESTModel;

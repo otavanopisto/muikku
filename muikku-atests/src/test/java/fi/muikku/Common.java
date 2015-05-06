@@ -1,4 +1,4 @@
-package fi.muikku.plugins.forum.test;
+package fi.muikku;
 
 import java.util.HashMap;
 import java.util.Map;
