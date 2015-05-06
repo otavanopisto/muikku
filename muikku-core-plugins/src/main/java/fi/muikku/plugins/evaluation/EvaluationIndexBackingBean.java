@@ -12,6 +12,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.lang3.StringUtils;
 import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.annotation.RequestAction;
@@ -25,10 +26,15 @@ import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.schooldata.CourseMetaController;
 import fi.muikku.schooldata.GradingController;
+import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.CourseIdentifier;
+import fi.muikku.schooldata.entity.CourseLengthUnit;
+import fi.muikku.schooldata.entity.EducationType;
+import fi.muikku.schooldata.entity.Subject;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
+import fi.muikku.schooldata.entity.WorkspaceType;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.UserController;
 import fi.otavanopisto.security.LoggedIn;
@@ -60,7 +66,10 @@ public class EvaluationIndexBackingBean {
 
   @Inject
   private UserController userController;
-  
+
+  @Inject
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
+
   @RequestAction
   public String init() {
     // TODO: Logged in as teacher?
@@ -141,6 +150,38 @@ public class EvaluationIndexBackingBean {
       return NavigationRules.INTERNAL_ERROR;
     }
     
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
+      if (workspace == null) {
+        logger.warning(String.format("Could not find workspace for workspaceEntity #%d", workspaceEntity.getId()));
+        return NavigationRules.NOT_FOUND;
+      }
+      
+      WorkspaceType workspaceType = workspaceController.findWorkspaceType(workspace.getSchoolDataSource(), workspace.getWorkspaceTypeId()); 
+      EducationType educationTypeObject = StringUtils.isBlank(workspace.getEducationTypeIdentifier()) ? null : courseMetaController.findEducationType(workspace.getSchoolDataSource(), workspace.getEducationTypeIdentifier());
+      Subject subjectObject = courseMetaController.findSubject(workspace.getSchoolDataSource(), workspace.getSubjectIdentifier());
+      CourseLengthUnit lengthUnit = null;
+      if ((workspace.getLength() != null) && (workspace.getLengthUnitIdentifier() != null)) {
+        lengthUnit = courseMetaController.findCourseLengthUnit(workspace.getSchoolDataSource(), workspace.getLengthUnitIdentifier());
+      }
+      
+      workspaceName = workspace.getName();
+      subject = subjectObject != null ? subjectObject.getName() : null;
+      educationType = educationTypeObject != null ? educationTypeObject.getName() : null;
+      
+      if (lengthUnit != null) {
+        courseLength = workspace.getLength();
+        courseLengthSymbol = lengthUnit.getSymbol();
+      }
+
+      if (workspaceType != null) {
+        this.workspaceType = workspaceType.getName();
+      }
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
+    
     return null;
   }
   
@@ -164,6 +205,36 @@ public class EvaluationIndexBackingBean {
     return assessors;
   }
   
+  public String getWorkspaceName() {
+    return workspaceName;
+  }
+
+  public String getWorkspaceType() {
+    return workspaceType;
+  }
+
+  public String getSubject() {
+    return subject;
+  }
+
+  public String getEducationType() {
+    return educationType;
+  }
+
+  public Double getCourseLength() {
+    return courseLength;
+  }
+
+  public String getCourseLengthSymbol() {
+    return courseLengthSymbol;
+  }
+
+  private String workspaceName;
+  private String workspaceType;
+  private String subject;
+  private String educationType;
+  private Double courseLength;
+  private String courseLengthSymbol;
   private List<WorkspaceItem> workspaceItems;
   private String gradingScales;
   private String assessors;
