@@ -1,4 +1,16 @@
 (function() {
+  'use strict';
+  
+  // Overrides JQuery.UI dialog setting that prevents html being inserted into title
+  $.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {
+    _title: function(title) {
+      if (!this.options.title ) {
+          title.html("&#160;");
+      } else {
+          title.html(this.options.title);
+      }
+    }
+  })); 
   
   $.widget("custom.evaluationSlyder", {
     options : {
@@ -96,13 +108,14 @@
     renderDustTemplate('evaluation/evaluation_evaluate_modal_view.dust', {
       gradingScales: $.parseJSON($('input[name="grading-scales"]').val())
     }, $.proxy(function (text) {
-      var dialog = $(text);
+      var dialog = $(text); 
       
       dialog.dialog({
         modal: true, 
-        height: $(window).height() - 50,
         resizable: false,
-        width: $(window).width() - 50,
+        width: 'auto',
+        height: 'auto',
+        title: '<span class="modal-title-student-name">Esimerkki Opiskelija 1</span><span class="modal-title-workspace-name">GE1 - Sininen planeetta</span>',
         dialogClass: "evaluation-evaluate-modal",
         open: function() {
           // TODO: Assessor select
@@ -196,9 +209,9 @@
 
     };
     
-    //Prevent page scroll happening if TOC scroll reaches bottom
-    $('.evaluation-queue-content-inner, .evaluation-modal-evaluateForm-header, .evaluation-modal-evaluateForm-content')
-    .on('DOMMouseScroll mousewheel', function(ev) {
+    //Prevent page scroll happening if scrollable area reaches bottom
+    $(document)
+    .on('DOMMouseScroll mousewheel', '.evaluation-workspacelist-content-inner, .evaluation-modal-evaluateForm-header, .evaluation-modal-evaluateForm-content, .evaluation-modal-studentAssignmentWrapper', function(ev) {
       var $this = $(this),
         scrollTop = this.scrollTop,
         scrollHeight = this.scrollHeight,
@@ -250,39 +263,13 @@
             openMaterialEvaluationDialog(workspaceEntityId, workspaceMaterialId, studentEntityId, result);
           }
         });
-      
-      /**
-      renderDustTemplate('evaluation/evaluation_evaluate_modal_view.dust', { }, $.proxy(function (text) {
-        var dialog = $(text);
-        $(text).dialog({
-          modal: true, 
-          height: $(window).height() - 50,
-          resizable: false,
-          width: $(window).width() - 50,
-          dialogClass: "evaluation-evaluate-modal",
-          buttons: [{
-            'text': dialog.data('button-save-text'),
-            'class': 'save-evaluation-button',
-            'click': function(event) {
-      
-            }
-          }, {
-            'text': dialog.data('button-cancel-text'),
-            'class': 'cancel-evaluation-button',
-            'click': function(event) {
-              $(this).dialog("destroy").remove();
-            }
-          }]
-        });
-      }, this));
-      **/
     });
     
     //Student user picture tooltip show on mouseover
     $(document).on('mouseover', '.evaluation-workspacelist-item', function (event) {
       
-      sName = $(this).attr('data-workspace-title');
-      sContainerLoc = $(this).offset().top - $('.evaluation-workspacelist-wrapper').offset().top;
+      var sName = $(this).attr('data-workspace-title');
+      var sContainerLoc = $(this).offset().top - $('.evaluation-workspacelist-wrapper').offset().top;
       
       $('#workspaceTitleContainer').css({
         position: 'absolute',

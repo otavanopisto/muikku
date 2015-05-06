@@ -2,6 +2,6 @@
   
   {>"evaluation/evaluation_evaluate_assigment_view.dust"/}
   
-  {>"evaluation/evaluation_evaluate_form_view.dust"/}
+  {>"evaluation/evaluation_evaluate_assignment_form_view.dust"/}
   
 </div>
