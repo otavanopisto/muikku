@@ -167,11 +167,7 @@
    
   }
 
-  .mf-content-not-logged{
-    min-height:400px;
-    padding:20px;
-    text-align:center;
-  } 
+
   
   .mf-content-area{
     background-color:$mainFuncSide;
@@ -181,6 +177,13 @@
      @extend .co-mainFunction-content-functions;
      height:70px;  
   }
+
+
+  .mf-content-empty{
+    min-height:400px;
+    padding:20px;
+    text-align:center;
+  }   
   
   .mf-search{
     margin-left:10px;

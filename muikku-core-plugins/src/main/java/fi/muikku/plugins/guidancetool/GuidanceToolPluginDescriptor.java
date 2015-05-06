@@ -29,5 +29,4 @@ public class GuidanceToolPluginDescriptor implements PluginDescriptor, Localized
     bundles.add(new LocaleBundle(LocaleLocation.JAVASCRIPT, ResourceBundle.getBundle("fi.muikku.plugins.guidancetool.GuidanceToolPluginMessages", LocaleUtils.toLocale("en"))));
     return bundles;
   }
-
 }
