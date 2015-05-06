@@ -89,7 +89,7 @@ public class GradingController {
 	
 	/* Workspace assessment */
 	
-	public WorkspaceAssessment createWorkspaceAssessment(SchoolDataSource schoolDataSource, WorkspaceUser workspaceUser, User assessingUser, GradingScaleItemEntity grade, String verbalAssessment, Date date) {
+	public WorkspaceAssessment createWorkspaceAssessment(String schoolDataSource, WorkspaceUser workspaceUser, User assessingUser, GradingScaleItem grade, String verbalAssessment, Date date) {
 	  return gradingSchoolDataController.createWorkspaceAssessment(schoolDataSource, 
 	      workspaceUser.getIdentifier(), 
 	      workspaceUser.getSchoolDataSource(),
@@ -98,7 +98,7 @@ public class GradingController {
 	      assessingUser.getIdentifier(), 
 	      assessingUser.getSchoolDataSource(), 
 	      grade.getIdentifier(), 
-	      grade.getDataSource().getIdentifier(), 
+	      grade.getSchoolDataSource(), 
 	      verbalAssessment,
 	      date);
 	}
