@@ -95,7 +95,12 @@ public class EvaluationPageBackingBean {
     List<WorkspaceUserEntity> workspaceStudents = workspaceController.listWorkspaceUserEnitiesByWorkspaceRoleArchetype(workspaceEntity, WorkspaceRoleArchetype.STUDENT, firstStudent, getMaxStudents());
     for (WorkspaceUserEntity workspaceStudent : workspaceStudents) {
       User user = userController.findUserByDataSourceAndIdentifier(workspaceEntity.getDataSource(), workspaceStudent.getUserSchoolDataIdentifier().getIdentifier());
-      students.add(new WorkspaceStudent(workspaceStudent.getId(), String.format("%s %s", user.getFirstName(), user.getLastName())));
+      if (user != null) {
+        UserEntity userEntity = userEntityController.findUserEntityByUser(user);
+        if (userEntity != null) {
+          students.add(new WorkspaceStudent(userEntity.getId(), workspaceStudent.getId(), String.format("%s %s", user.getFirstName(), user.getLastName())));
+        }
+      }
     }
     
     this.workspaceStudents = Collections.unmodifiableList(students);
@@ -188,9 +193,14 @@ public class EvaluationPageBackingBean {
   
   public static class WorkspaceStudent {
    
-    public WorkspaceStudent(Long workspaceUserEntityId, String displayName) {
+    public WorkspaceStudent(Long userEntityId, Long workspaceUserEntityId, String displayName) {
+      this.userEntityId = userEntityId;
       this.workspaceUserEntityId = workspaceUserEntityId;
       this.displayName = displayName;
+    }
+    
+    public Long getUserEntityId() {
+      return userEntityId;
     }
     
     public Long getWorkspaceUserEntityId() {
@@ -202,6 +212,7 @@ public class EvaluationPageBackingBean {
     }
     
     private Long workspaceUserEntityId;
+    private Long userEntityId;
     private String displayName;
   }
 

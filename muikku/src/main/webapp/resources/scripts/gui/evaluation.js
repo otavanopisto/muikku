@@ -92,8 +92,9 @@
     }
   });
   
-  function openMaterialEvaluationDialog(workspaceEntityId, workspaceMaterialId, studentEntityId, workspaceMaterialEvaluation) {
+  function openMaterialEvaluationDialog(workspaceEntityId, workspaceMaterialId, studentEntityId, studentDisplayName, workspaceMaterialEvaluation) {
     renderDustTemplate('evaluation/evaluation_evaluate_modal_view.dust', {
+      studentDisplayName: studentDisplayName,
       gradingScales: $.parseJSON($('input[name="grading-scales"]').val())
     }, $.proxy(function (text) {
       var dialog = $(text);
@@ -236,7 +237,12 @@
       var workspaceEntityId = $('input[name="workspace-entity-id"]').val();
       var workspaceMaterialId = $(this).attr('data-workspace-material-id');
       var studentEntityId = $(this).attr('data-student-entity-id');
-      openMaterialEvaluationDialog(workspaceEntityId, workspaceMaterialId, studentEntityId, null);
+      var studentDisplayName = $(this)
+        .closest('.evaluation-view-wrapper')
+        .find('.evaluation-student-wrapper[data-user-entity-id=' + studentEntityId + ']')
+        .attr('data-display-name');
+      
+      openMaterialEvaluationDialog(workspaceEntityId, workspaceMaterialId, studentEntityId, studentDisplayName, null);
     });
     
     /* View evaluation when assigment's state is EVALUATED */
@@ -244,6 +250,10 @@
       var workspaceEntityId = $('input[name="workspace-entity-id"]').val();
       var workspaceMaterialId = $(this).attr('data-workspace-material-id');
       var studentEntityId = $(this).attr('data-student-entity-id');
+      var studentDisplayName = $(this)
+        .closest('.evaluation-view-wrapper')
+        .find('.evaluation-student-wrapper[data-user-entity-id=' + studentEntityId + ']')
+        .attr('data-display-name');
       var workspaceMaterialEvaluationId = $(this).attr('data-workspace-material-evaluation-id');
       
       mApi().workspace.workspaces.materials.evaluations.read(workspaceEntityId, workspaceMaterialId, workspaceMaterialEvaluationId)
@@ -251,7 +261,7 @@
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
           } else { 
-            openMaterialEvaluationDialog(workspaceEntityId, workspaceMaterialId, studentEntityId, result);
+            openMaterialEvaluationDialog(workspaceEntityId, workspaceMaterialId, studentEntityId,studentDisplayName,  result);
           }
         });
       
