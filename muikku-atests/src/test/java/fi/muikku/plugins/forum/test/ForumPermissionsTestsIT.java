@@ -35,7 +35,7 @@ public class ForumPermissionsTestsIT extends AbstractRESTPermissionsTest {
   public void testCreateEnvironmentForum() throws NoSuchFieldException {
     ForumAreaRESTModel contactURLType = new ForumAreaRESTModel(null, "test_create_environmentforum", null);
     
-    Response response = given().headers(getAuthHeaders())
+    Response response = asRole()
       .contentType("application/json")
       .body(contactURLType)
       .post("/forum/areas");

@@ -27,6 +27,7 @@ import com.jayway.restassured.config.ObjectMapperConfig;
 import com.jayway.restassured.config.RestAssuredConfig;
 import com.jayway.restassured.mapper.factory.Jackson2ObjectMapperFactory;
 import com.jayway.restassured.response.Response;
+import com.jayway.restassured.specification.RequestSpecification;
 
 import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.security.MuikkuPermissionCollection;
@@ -202,7 +203,7 @@ public abstract class AbstractRESTPermissionsTest extends AbstractIntegrationTes
     this.adminAccessToken = adminAccesToken;
   }
 
-  public Map<String, String> getAuthHeaders() {
+  private Map<String, String> getAuthHeaders() {
     OAuthClientRequest bearerClientRequest = null;
     try {
       bearerClientRequest = new OAuthBearerClientRequest("https://dev.muikku.fi")
@@ -213,7 +214,7 @@ public abstract class AbstractRESTPermissionsTest extends AbstractIntegrationTes
     return bearerClientRequest.getHeaders();
   }
   
-  public Map<String, String> getAdminAuthHeaders() {
+  private Map<String, String> getAdminAuthHeaders() {
     OAuthClientRequest bearerClientRequest = null;
     try {
       bearerClientRequest = new OAuthBearerClientRequest("https://dev.muikku.fi")
@@ -226,6 +227,14 @@ public abstract class AbstractRESTPermissionsTest extends AbstractIntegrationTes
   public Long getUserIdForRole(String role) {
     // TODO: could this use the /system/whoami end-point?
     return Common.ROLEUSERS.get(role);
+  }
+  
+  public RequestSpecification asAdmin() {
+    return RestAssured.given().headers(getAdminAuthHeaders());
+  }
+  
+  public RequestSpecification asRole() {
+    return RestAssured.given().headers(getAuthHeaders());
   }
   
   public boolean roleIsAllowed(String role, List<EnvironmentRoleArchetype> allowedRoles) {

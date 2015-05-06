@@ -4,6 +4,7 @@ import static com.jayway.restassured.RestAssured.given;
 
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,6 +24,11 @@ import fi.muikku.plugins.forum.rest.ForumAreaGroupRESTModel;
 public class ForumGroupPermissionsTestsIT extends AbstractRESTPermissionsTest {
 
   private ForumResourcePermissionCollection forumPermissions = new ForumResourcePermissionCollection();
+  private Long areaGroupId = null;
+  
+  public ForumGroupPermissionsTestsIT(String role) {
+    this.role = role;
+  }
   
   @Parameters
   public static List<Object[]> generateData() {
@@ -31,20 +37,28 @@ public class ForumGroupPermissionsTestsIT extends AbstractRESTPermissionsTest {
 
   @Before
   public void before() {
+    ForumAreaGroupRESTModel areaGroup = new ForumAreaGroupRESTModel(null, "test_forumareagroup");
     
-  }
-  
-  public ForumGroupPermissionsTestsIT(String role) {
-    this.role = role;
-  }
-  
-//  @Test
-  public void testCreateEnvironmentForum() throws NoSuchFieldException {
-    ForumAreaGroupRESTModel contactURLType = new ForumAreaGroupRESTModel(null, "test_create_forumareagroup");
-    
-    Response response = given().headers(getAuthHeaders())
+    Response response = asAdmin()
       .contentType("application/json")
-      .body(contactURLType)
+      .body(areaGroup)
+      .post("/forum/areagroups");
+    
+    areaGroupId = new Long(response.body().jsonPath().getInt("id"));
+  }
+  
+  @After
+  public void after() {
+    asAdmin().delete("/forum/areagroups/{ID}?permanent=true", areaGroupId);
+  }
+  
+  @Test
+  public void testCreateAreaGroup() throws NoSuchFieldException {
+    ForumAreaGroupRESTModel areaGroup = new ForumAreaGroupRESTModel(null, "test_create_forumareagroup");
+    
+    Response response = asRole()
+      .contentType("application/json")
+      .body(areaGroup)
       .post("/forum/areagroups");
     assertOk(response, forumPermissions, ForumResourcePermissionCollection.FORUM_CREATEFORUMAREAGROUP, 200);
     
@@ -61,22 +75,19 @@ public class ForumGroupPermissionsTestsIT extends AbstractRESTPermissionsTest {
   
   @Test
   public void testListAreaGroups() throws NoSuchFieldException {
-    Response response = given().headers(getAuthHeaders())
-      .get("/forum/areagroups");
+    Response response = asRole().get("/forum/areagroups");
     assertOk(response, forumPermissions, ForumResourcePermissionCollection.FORUM_LIST_FORUMAREAGROUPS, 200);
   }
 
-//  @Test
+  @Test
   public void testSearchUsers() throws NoSuchFieldException {
-    Response response = given().headers(getAuthHeaders())
-      .get("/user/users?searchString=a");
+    Response response = asRole().get("/user/users?searchString=a");
     assertOk(response, forumPermissions, ForumResourcePermissionCollection.FORUM_LIST_FORUMAREAGROUPS, 200);
   }
   
-//  @Test
+  @Test
   public void testFindAreaGroup() throws NoSuchFieldException {
-    Response response = given().headers(getAuthHeaders())
-      .get("/forum/areagroups/{ID}", 1);
+    Response response = asRole().get("/forum/areagroups/{ID}", 1);
     assertOk(response, forumPermissions, ForumResourcePermissionCollection.FORUM_FIND_FORUMAREAGROUP, 200);
   }
 
@@ -96,7 +107,7 @@ public class ForumGroupPermissionsTestsIT extends AbstractRESTPermissionsTest {
 //    try {
 //      ContactURLType updateContactURLType = new ContactURLType(id, "Updated", Boolean.FALSE);
 //
-//      Response updateResponse = given().headers(getAuthHeaders())
+//      Response updateResponse = asRole()
 //        .contentType("application/json")
 //        .body(updateContactURLType)
 //        .put("/common/contactURLTypes/{ID}", id);
@@ -112,14 +123,14 @@ public class ForumGroupPermissionsTestsIT extends AbstractRESTPermissionsTest {
 //  public void testPermissionsDeleteContactURLType() throws NoSuchFieldException {
 //    ContactURLType contactURLType = new ContactURLType(null, "create type", Boolean.FALSE);
 //    
-//    Response response = given().headers(getAdminAuthHeaders())
+//    Response response = asAdmin()
 //      .contentType("application/json")
 //      .body(contactURLType)
 //      .post("/common/contactURLTypes");
 //    
 //    Long id = new Long(response.body().jsonPath().getInt("id"));
 //
-//    Response deleteResponse = given().headers(getAuthHeaders())
+//    Response deleteResponse = asRole()
 //      .delete("/common/contactURLTypes/{ID}", id);
 //    assertOk(deleteResponse, forumPermissions, CommonPermissions.DELETE_CONTACTURLTYPE, 204);
 //    

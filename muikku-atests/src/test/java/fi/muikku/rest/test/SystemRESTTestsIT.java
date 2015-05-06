@@ -1,6 +1,5 @@
 package fi.muikku.rest.test;
 
-import static com.jayway.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
 
 import org.junit.Test;
@@ -16,7 +15,7 @@ public class SystemRESTTestsIT extends AbstractRESTPermissionsTest {
   
   @Test
   public void testListAreaGroups() throws NoSuchFieldException {
-    Response response = given().headers(getAuthHeaders())
+    Response response = asAdmin()
       .get("/system/ping");
     
     response.then()
