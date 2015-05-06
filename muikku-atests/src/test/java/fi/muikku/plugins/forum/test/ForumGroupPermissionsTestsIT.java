@@ -57,6 +57,13 @@ public class ForumGroupPermissionsTestsIT extends AbstractRESTPermissionsTest {
       .get("/forum/areagroups");
     assertOk(response, forumPermissions, ForumResourcePermissionCollection.FORUM_LIST_FORUMAREAGROUPS, 200);
   }
+
+  @Test
+  public void testSearchUsers() throws NoSuchFieldException {
+    Response response = given().headers(getAuthHeaders())
+      .get("/user/users?searchString=a");
+    assertOk(response, forumPermissions, ForumResourcePermissionCollection.FORUM_LIST_FORUMAREAGROUPS, 200);
+  }
   
   @Test
   public void testFindAreaGroup() throws NoSuchFieldException {
