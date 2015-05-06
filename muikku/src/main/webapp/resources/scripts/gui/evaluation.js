@@ -174,10 +174,6 @@
         workspaceEntityId: $('#evaluation-views-wrapper').attr('data-workspace-entity-id'),
         maxStudents: 6
       });
-    
-    if ($('#evaluationModalWrapper').length > 0) {
-      $('#evaluationModalWrapper').hide();
-    }
 
     // Evaluation's workspaces
     if ($('#evaluationQueueWrapper').length > 0) {
@@ -231,7 +227,7 @@
       }
     });
     
-    /* Evaluate assignment when its state is DONE or CRITICAL (means its late) */
+    /* Evaluate assignment when it state is DONE or CRITICAL (means its late) */
     $(document).on('click', '.assignment-done, .assignment-evaluation-critical', function (event) {
       var workspaceEntityId = $('input[name="workspace-entity-id"]').val();
       var workspaceMaterialId = $(this).attr('data-workspace-material-id');
