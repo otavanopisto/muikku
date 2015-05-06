@@ -139,23 +139,43 @@
             // TODO: Switch to ISO 8601
             var evaluated = $(this).find('input[name="evaluated"]').datepicker('getDate').getTime();
             
-            mApi().workspace.workspaces.materials.evaluations.create(workspaceEntityId, workspaceMaterialId, {
-              evaluated: evaluated,
-              gradeIdentifier: grade[0],
-              gradeSchoolDataSource: grade[1],
-              gradingScaleIdentifier: gradingScale[0],
-              gradingScaleSchoolDataSource: gradingScale[1],
-              assessorEntityId: MUIKKU_LOGGED_USER_ID,
-              studentEntityId: studentEntityId,
-              workspaceMaterialId: workspaceMaterialId,
-              verbalAssessment: $(this).find('#evaluateFormLiteralEvaluation').val()
-            }).callback($.proxy(function (err, result) {
-              if (err) {
-                $('.notification-queue').notificationQueue('notification', 'error', err);
-              } else { 
-                $(this).dialog("destroy").remove();
-              }
-            }, this));
+            if (workspaceMaterialEvaluation && workspaceMaterialEvaluation.id) {
+              mApi().workspace.workspaces.materials.evaluations.update(workspaceEntityId, workspaceMaterialId, workspaceMaterialEvaluation.id, {
+                evaluated: evaluated,
+                gradeIdentifier: grade[0],
+                gradeSchoolDataSource: grade[1],
+                gradingScaleIdentifier: gradingScale[0],
+                gradingScaleSchoolDataSource: gradingScale[1],
+                assessorEntityId: MUIKKU_LOGGED_USER_ID,
+                studentEntityId: studentEntityId,
+                workspaceMaterialId: workspaceMaterialId,
+                verbalAssessment: $(this).find('#evaluateFormLiteralEvaluation').val()
+              }).callback($.proxy(function (err, result) {
+                if (err) {
+                  $('.notification-queue').notificationQueue('notification', 'error', err);
+                } else { 
+                  $(this).dialog("destroy").remove();
+                }
+              }, this));
+            } else {
+              mApi().workspace.workspaces.materials.evaluations.create(workspaceEntityId, workspaceMaterialId, {
+                evaluated: evaluated,
+                gradeIdentifier: grade[0],
+                gradeSchoolDataSource: grade[1],
+                gradingScaleIdentifier: gradingScale[0],
+                gradingScaleSchoolDataSource: gradingScale[1],
+                assessorEntityId: MUIKKU_LOGGED_USER_ID,
+                studentEntityId: studentEntityId,
+                workspaceMaterialId: workspaceMaterialId,
+                verbalAssessment: $(this).find('#evaluateFormLiteralEvaluation').val()
+              }).callback($.proxy(function (err, result) {
+                if (err) {
+                  $('.notification-queue').notificationQueue('notification', 'error', err);
+                } else { 
+                  $(this).dialog("destroy").remove();
+                }
+              }, this));
+            }
           }
         }, {
           'text': dialog.data('button-cancel-text'),
