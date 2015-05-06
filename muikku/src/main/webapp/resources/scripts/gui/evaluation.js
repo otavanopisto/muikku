@@ -95,7 +95,8 @@
   function openMaterialEvaluationDialog(workspaceEntityId, workspaceMaterialId, studentEntityId, studentDisplayName, workspaceMaterialEvaluation) {
     renderDustTemplate('evaluation/evaluation_evaluate_modal_view.dust', {
       studentDisplayName: studentDisplayName,
-      gradingScales: $.parseJSON($('input[name="grading-scales"]').val())
+      gradingScales: $.parseJSON($('input[name="grading-scales"]').val()),
+      assessors: $.parseJSON($('input[name="assessors"]').val())
     }, $.proxy(function (text) {
       var dialog = $(text);
 
@@ -106,8 +107,6 @@
         resizable: false,
         dialogClass: "evaluation-evaluate-modal",
         open: function() {
-          // TODO: Assessor select
-          
           $(this).find('input[name="evaluated"]')
             .css({'z-index': 9999, 'position': 'relative'})
             .attr('type', 'text')
@@ -125,6 +124,7 @@
               .datepicker('setDate', new Date(workspaceMaterialEvaluation.evaluated));
             $(this).find('#evaluateFormLiteralEvaluation').val(workspaceMaterialEvaluation.verbalAssessment);
             $(this).find('select[name="grade"]').val(gradeId);
+            $(this).find('select[name="assessor"]').val(workspaceMaterialEvaluation.assessorEntityId);
           }
         },
         buttons: [{
@@ -138,6 +138,7 @@
             var gradingScale = gradeValue[1].split('/', 2);
             // TODO: Switch to ISO 8601
             var evaluated = $(this).find('input[name="evaluated"]').datepicker('getDate').getTime();
+            var assessorEntityId = $(this).find('select[name="assessor"]').val();
             
             if (workspaceMaterialEvaluation && workspaceMaterialEvaluation.id) {
               mApi().workspace.workspaces.materials.evaluations.update(workspaceEntityId, workspaceMaterialId, workspaceMaterialEvaluation.id, {
@@ -146,7 +147,7 @@
                 gradeSchoolDataSource: grade[1],
                 gradingScaleIdentifier: gradingScale[0],
                 gradingScaleSchoolDataSource: gradingScale[1],
-                assessorEntityId: MUIKKU_LOGGED_USER_ID,
+                assessorEntityId: assessorEntityId,
                 studentEntityId: studentEntityId,
                 workspaceMaterialId: workspaceMaterialId,
                 verbalAssessment: $(this).find('#evaluateFormLiteralEvaluation').val()
@@ -164,7 +165,7 @@
                 gradeSchoolDataSource: grade[1],
                 gradingScaleIdentifier: gradingScale[0],
                 gradingScaleSchoolDataSource: gradingScale[1],
-                assessorEntityId: MUIKKU_LOGGED_USER_ID,
+                assessorEntityId: assessorEntityId,
                 studentEntityId: studentEntityId,
                 workspaceMaterialId: workspaceMaterialId,
                 verbalAssessment: $(this).find('#evaluateFormLiteralEvaluation').val()
