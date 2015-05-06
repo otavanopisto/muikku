@@ -97,12 +97,12 @@
       gradingScales: $.parseJSON($('input[name="grading-scales"]').val())
     }, $.proxy(function (text) {
       var dialog = $(text);
+
+      // TODO: Fix dialog size
       
       dialog.dialog({
         modal: true, 
-        height: $(window).height() - 50,
         resizable: false,
-        width: $(window).width() - 50,
         dialogClass: "evaluation-evaluate-modal",
         open: function() {
           // TODO: Assessor select
