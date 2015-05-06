@@ -124,7 +124,7 @@ public abstract class AbstractRESTPermissionsTest extends AbstractIntegrationTes
   @Before
   public void setupRestAssured() {
 
-    RestAssured.baseURI = getAppUrl(true) + "/1";
+    RestAssured.baseURI = getAppUrl(true) + "/rest";
     RestAssured.port = getPortHttps();
     RestAssured.authentication = certificate(getKeystoreFile(), getKeystorePass());
 
