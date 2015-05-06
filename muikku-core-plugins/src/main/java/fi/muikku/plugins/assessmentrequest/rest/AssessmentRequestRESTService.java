@@ -6,6 +6,7 @@ import java.util.List;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -63,12 +64,20 @@ public class AssessmentRequestRESTService extends PluginRESTService {
 
   @GET
   @Path("/assessmentrequests")
-  public Response listAssessmentRequestsOfCurrentUserByWorkspaceId(@QueryParam("workspaceId") long workspaceEntityId) {
-    UserEntity student = sessionController.getLoggedUserEntity();
-    List<AssessmentRequest> assessmentRequests = assessmentRequestController
-        .listByWorkspaceIdAndStudentIdOrderByCreated(workspaceEntityId, student.getId());
-    List<AssessmentRequestRESTModel> restAssessmentRequests = new ArrayList<>();
+  public Response listAssessmentRequestsByWorkspaceId(
+      @QueryParam("workspaceId") long workspaceEntityId,
+      @QueryParam("allUsers") @DefaultValue("false") boolean allUsers) {
+    List<AssessmentRequest> assessmentRequests = new ArrayList<>();
+    
+    if (allUsers) {
+      WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+      assessmentRequests = assessmentRequestController.listByWorkspace(workspaceEntity);
+    } else {
+      UserEntity student = sessionController.getLoggedUserEntity();
+      assessmentRequests = assessmentRequestController.listByWorkspaceIdAndStudentIdOrderByCreated(workspaceEntityId, student.getId());
+    }
 
+    List<AssessmentRequestRESTModel> restAssessmentRequests = new ArrayList<>();
     for (AssessmentRequest assessmentRequest : assessmentRequests) {
       AssessmentRequestRESTModel restAssessmentRequest = new AssessmentRequestRESTModel();
 
