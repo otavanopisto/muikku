@@ -16,6 +16,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import fi.muikku.model.users.EnvironmentRoleArchetype;
+import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugin.PluginRESTService;
@@ -25,6 +27,7 @@ import fi.muikku.plugins.assessmentrequest.rest.model.AssessmentRequestRESTModel
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.session.SessionController;
 import fi.muikku.session.local.LocalSession;
+import fi.muikku.users.EnvironmentUserController;
 
 @RequestScoped
 @Path("/assessmentrequest")
@@ -43,6 +46,9 @@ public class AssessmentRequestRESTService extends PluginRESTService {
   @LocalSession
   @Inject
   private SessionController sessionController;
+  
+  @Inject
+  private EnvironmentUserController environmentUserController;
 
   @POST
   @Path("/assessmentrequests")
@@ -97,6 +103,11 @@ public class AssessmentRequestRESTService extends PluginRESTService {
   public Response listAssessmentRequestsForMe() {
     List<AssessmentRequest> assessmentRequests = new ArrayList<>();
     UserEntity userEntity = sessionController.getLoggedUserEntity();
+    
+    EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
+    if (environmentUser.getRole() == null || environmentUser.getRole().getArchetype() != EnvironmentRoleArchetype.TEACHER) {
+      return Response.status(Status.FORBIDDEN).entity("Must be a teacher").build();
+    }
     
     assessmentRequests = assessmentRequestController.listByUser(userEntity);
 
