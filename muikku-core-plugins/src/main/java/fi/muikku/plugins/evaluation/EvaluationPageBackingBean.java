@@ -20,6 +20,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.muikku.jsf.NavigationRules;
+import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleArchetype;
@@ -41,6 +42,8 @@ import fi.muikku.schooldata.entity.GradingScaleItem;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceAssessment;
+import fi.muikku.session.SessionController;
+import fi.muikku.users.EnvironmentUserController;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
 import fi.otavanopisto.security.LoggedIn;
@@ -65,6 +68,9 @@ public class EvaluationPageBackingBean {
   private Integer maxStudents;
 
   @Inject
+  private SessionController sessionController;
+  
+  @Inject
   private WorkspaceMaterialReplyController workspaceMaterialReplyController;
 
   @Inject
@@ -88,9 +94,24 @@ public class EvaluationPageBackingBean {
   @Inject
   private AssessmentRequestController assessmentRequestController;
 
+  @Inject
+  private EnvironmentUserController environmentUserController;
+  
   @RequestAction
   public String init() {
-    // TODO: Logged in as teacher?
+    EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(sessionController.getLoggedUserEntity());
+    if (environmentUser == null) {
+      return NavigationRules.ACCESS_DENIED;  
+    }
+    
+    switch (environmentUser.getRole().getArchetype()) {
+      case TEACHER:
+      case ADMINISTRATOR:
+      case MANAGER:
+      break;
+      default:
+        return NavigationRules.ACCESS_DENIED;  
+    }
 
     if (workspaceEntityId == null) {
       return NavigationRules.NOT_FOUND;
