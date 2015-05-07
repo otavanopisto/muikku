@@ -1,17 +1,27 @@
 package fi.muikku.plugins.evaluation;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import fi.muikku.model.users.UserEntity;
+import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.evaluation.dao.WorkspaceMaterialEvaluationDAO;
 import fi.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
+import fi.muikku.plugins.workspace.ContentNode;
+import fi.muikku.plugins.workspace.WorkspaceMaterialController;
+import fi.muikku.plugins.workspace.WorkspaceMaterialException;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.muikku.schooldata.entity.GradingScale;
 import fi.muikku.schooldata.entity.GradingScaleItem;
 
 public class EvaluationController {
+
+  @Inject
+  private WorkspaceMaterialController workspaceMaterialController;
   
   @Inject
   private WorkspaceMaterialEvaluationDAO workspaceMaterialEvaluationDAO;
@@ -46,7 +56,22 @@ public class EvaluationController {
     workspaceMaterialEvaluationDAO.updateEvaluated(workspaceMaterialEvaluation, evaluated);
     return workspaceMaterialEvaluation;
   }
+
+  public List<ContentNode> getAssignmentContentNodes(WorkspaceEntity workspaceEntity) throws WorkspaceMaterialException {
+    // TODO: Optimize this
+    List<ContentNode> result = new ArrayList<>();
+    addAssignmentNodes(workspaceMaterialController.listWorkspaceMaterialsAsContentNodes(workspaceEntity, false), result);
+    return result;
+  }
   
-  
+  private void addAssignmentNodes(List<ContentNode> contentNodes, List<ContentNode> result) {
+    for (ContentNode contentNode : contentNodes) {
+      if (contentNode.getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED) {
+        result.add(contentNode);
+      } else {
+        addAssignmentNodes(contentNode.getChildren(), result);
+      }
+    }
+  }
   
 }

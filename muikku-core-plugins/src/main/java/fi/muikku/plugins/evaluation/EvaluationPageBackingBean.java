@@ -15,6 +15,8 @@ import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import fi.muikku.jsf.NavigationRules;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
@@ -23,10 +25,9 @@ import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.muikku.plugins.workspace.ContentNode;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
-import fi.muikku.plugins.workspace.WorkspaceMaterialException;  
+import fi.muikku.plugins.workspace.WorkspaceMaterialException;
 import fi.muikku.plugins.workspace.WorkspaceMaterialReplyController;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
-import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.muikku.schooldata.GradingController;
 import fi.muikku.schooldata.WorkspaceController;
@@ -88,15 +89,16 @@ public class EvaluationPageBackingBean {
     Integer firstStudent = getPageId() * getMaxStudents();
     
     List<WorkspaceStudent> students = new ArrayList<>();
-    List<ContentNode> assignmentNodes = null;
     
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    List<ContentNode> assignmentNodes;
     try {
-      assignmentNodes = getAssignmentNodes(workspaceEntity);
+      assignmentNodes = evaluationController.getAssignmentContentNodes(workspaceEntity);
     } catch (WorkspaceMaterialException e) {
-      logger.log(Level.SEVERE, "Failed to loading workspace materials", e);
+      logger.log(Level.SEVERE, "Failed to load workspace assignments", e);
       return NavigationRules.INTERNAL_ERROR;
     }
+    
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
     List<WorkspaceUserEntity> workspaceStudents = workspaceController.listWorkspaceUserEnitiesByWorkspaceRoleArchetype(workspaceEntity, WorkspaceRoleArchetype.STUDENT, firstStudent, getMaxStudents());
     for (WorkspaceUserEntity workspaceStudent : workspaceStudents) {
@@ -106,65 +108,50 @@ public class EvaluationPageBackingBean {
         if (userEntity != null) {
           List<WorkspaceAssessment> assessments = gradingController.listWorkspaceAssessments(workspaceEntity.getDataSource(), workspace.getIdentifier(), user.getIdentifier());
           String status = "UNASSESSED";
-          if(!assessments.isEmpty()){
+          if(!assessments.isEmpty()) {
             status = "ASSESSED";
           }
-          students.add(new WorkspaceStudent(userEntity.getId(), workspaceStudent.getId(), String.format("%s %s", user.getFirstName(), user.getLastName()), status));
+          
+          List<StudentAssignment> studentAssignments = new ArrayList<>();
+          
+          try {
+            for (ContentNode assignmentNode : assignmentNodes) {
+              StudentAssignmentStatus assignmentStatus = StudentAssignmentStatus.UNANSWERED;
+              WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(assignmentNode.getWorkspaceMaterialId());
+              WorkspaceMaterialEvaluation assignmentEvaluation = evaluationController.findWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, userEntity);
+
+              if (assignmentEvaluation == null) {
+                WorkspaceMaterialReply assignmentReply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
+                if (assignmentReply != null) {
+                  assignmentStatus = StudentAssignmentStatus.DONE;
+                }
+              } else {
+                assignmentStatus = StudentAssignmentStatus.EVALUATED;
+              }
+              
+              studentAssignments.add(new StudentAssignment(workspaceMaterial.getId(), assignmentEvaluation != null ? assignmentEvaluation.getId() : null, assignmentStatus));
+            }
+          } catch (Exception e) {
+            logger.log(Level.SEVERE, "Failed to load student workspace assignments", e);
+            return NavigationRules.INTERNAL_ERROR;
+          }
+          
+          String studentAssignmentData;
+          try {
+            studentAssignmentData = new ObjectMapper().writeValueAsString(studentAssignments);
+          } catch (Exception e) {
+            logger.log(Level.SEVERE, "Failed to serialize student workspace assignments", e);
+            return NavigationRules.INTERNAL_ERROR;
+          }
+          
+          students.add(new WorkspaceStudent(userEntity.getId(), workspaceStudent.getId(), String.format("%s %s", user.getFirstName(), user.getLastName()), status, studentAssignmentData));
         }
       }
     }
     
     this.workspaceStudents = Collections.unmodifiableList(students);
-    this.assignments = createAssignments(workspaceStudents, assignmentNodes);
     
     return null;
-  }
-  
-  private List<ContentNode> getAssignmentNodes(WorkspaceEntity workspaceEntity) throws WorkspaceMaterialException {
-    // TODO: Optimize this
-    List<ContentNode> result = new ArrayList<>();
-    addAssignmentNodes(workspaceMaterialController.listWorkspaceMaterialsAsContentNodes(workspaceEntity, false), result);
-    return result;
-  }
-  
-  private void addAssignmentNodes(List<ContentNode> contentNodes, List<ContentNode> result) {
-    for (ContentNode contentNode : contentNodes) {
-      if (contentNode.getAssignmentType() == WorkspaceMaterialAssignmentType.EVALUATED) {
-        result.add(contentNode);
-      } else {
-        addAssignmentNodes(contentNode.getChildren(), result);
-      }
-    }
-  }
-  
-  private List<Assignment> createAssignments(List<WorkspaceUserEntity> workspaceStudents, List<ContentNode> assignmentNodes) {
-    List<Assignment> result = new ArrayList<>(assignmentNodes.size());
-    for (ContentNode assignmentNode : assignmentNodes) {
-      WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(assignmentNode.getWorkspaceMaterialId());
-      
-      List<StudentAssignment> studentAssignments = new ArrayList<>(workspaceStudents.size());
-      for (WorkspaceUserEntity workspaceStudent : workspaceStudents) {
-        StudentAssignmentStatus status = StudentAssignmentStatus.UNANSWERED;
-
-        UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(workspaceStudent.getUserSchoolDataIdentifier().getDataSource(), workspaceStudent.getUserSchoolDataIdentifier().getIdentifier());
-        WorkspaceMaterialEvaluation evaluation = evaluationController.findWorkspaceMaterialEvaluationByWorkspaceMaterialAndStudent(workspaceMaterial, userEntity);
-        if (evaluation == null) {
-          WorkspaceMaterialReply reply = workspaceMaterialReplyController.findWorkspaceMaterialReplyByWorkspaceMaterialAndUserEntity(workspaceMaterial, userEntity);
-          if (reply != null) {
-            status = StudentAssignmentStatus.DONE;
-          }
-        } else {
-          // TODO: Should it be evaluated even when teacher has given a non passing grade?
-          status = StudentAssignmentStatus.EVALUATED;
-        }
-        
-        studentAssignments.add(new StudentAssignment(userEntity.getId(), evaluation != null ? evaluation.getId() : null, status));
-      }
-      
-      result.add(new Assignment(workspaceMaterial.getId(), workspaceMaterial.getMaterialId(), assignmentNode.getTitle(), assignmentNode.getHtml(), assignmentNode.getType(), studentAssignments));
-    }
-    
-    return result;
   }
   
   public Long getWorkspaceEntityId() {
@@ -191,24 +178,20 @@ public class EvaluationPageBackingBean {
     this.pageId = pageId;
   }
   
-  public List<Assignment> getAssignments() {
-    return assignments;
-  }
-  
   public List<WorkspaceStudent> getWorkspaceStudents() {
     return workspaceStudents;
   }
   
-  private List<Assignment> assignments;
   private List<WorkspaceStudent> workspaceStudents;
   
   public static class WorkspaceStudent {
    
-    public WorkspaceStudent(Long userEntityId, Long workspaceUserEntityId, String displayName, String status) {
+    public WorkspaceStudent(Long userEntityId, Long workspaceUserEntityId, String displayName, String status, String studentAssignmentData) {
       this.userEntityId = userEntityId;
       this.workspaceUserEntityId = workspaceUserEntityId;
       this.displayName = displayName;
       this.status = status;
+      this.studentAssignmentData = studentAssignmentData;
     }
     
     public Long getUserEntityId() {
@@ -226,66 +209,28 @@ public class EvaluationPageBackingBean {
     public String getStatus() {
       return status;
     }
-
+    
+    public String getStudentAssignmentData() {
+      return studentAssignmentData;
+    }
+    
     private Long workspaceUserEntityId;
     private Long userEntityId;
     private String displayName;
     private String status;
-  }
-
-  public static class Assignment {
-    
-    public Assignment(Long workspaceMaterialId, Long materialId, String title, String html, String type, List<StudentAssignment> studentAssignments) {
-      this.materialId = materialId;
-      this.workspaceMaterialId = workspaceMaterialId;
-      this.title = title;
-      this.html = html;
-      this.type = type;
-      this.studentAssignments = studentAssignments;
-    }
-    
-    public Long getWorkspaceMaterialId() {
-      return workspaceMaterialId;
-    }
-    
-    public Long getMaterialId() {
-      return materialId;
-    }
-    
-    public String getTitle() {
-      return title;
-    }
-    
-    public String getHtml() {
-      return html;
-    }
-    
-    public String getType() {
-      return type;
-    }
-    
-    public List<StudentAssignment> getStudentAssignments() {
-      return studentAssignments;
-    }
-    
-    private Long workspaceMaterialId;
-    private Long materialId;
-    private String title;
-    private String html;
-    private String type;
-    private List<StudentAssignment> studentAssignments;
+    private String studentAssignmentData;
   }
   
   public static class StudentAssignment {
     
-    public StudentAssignment(Long studentEntityId, Long workspaceMaterialEvaluationId, StudentAssignmentStatus status) {
-      this.studentEntityId = studentEntityId;
+    public StudentAssignment(Long workspaceMaterialId, Long workspaceMaterialEvaluationId, StudentAssignmentStatus status) {
+      this.workspaceMaterialId = workspaceMaterialId;
       this.workspaceMaterialEvaluationId = workspaceMaterialEvaluationId;
       this.status = status;
     }
-
-    public Long getStudentEntityId() {
-      return studentEntityId;
+    
+    public Long getWorkspaceMaterialId() {
+      return workspaceMaterialId;
     }
     
     public StudentAssignmentStatus getStatus() {
@@ -296,7 +241,7 @@ public class EvaluationPageBackingBean {
       return workspaceMaterialEvaluationId;
     }
     
-    private Long studentEntityId;
+    private Long workspaceMaterialId;
     private StudentAssignmentStatus status;
     private Long workspaceMaterialEvaluationId;
   }
