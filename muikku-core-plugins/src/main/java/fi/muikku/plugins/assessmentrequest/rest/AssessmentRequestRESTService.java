@@ -110,7 +110,7 @@ public class AssessmentRequestRESTService extends PluginRESTService {
         EnvironmentRoleArchetype.TEACHER);
     
     EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
-    if (environmentUser.getRole() == null || permittedArchetypes.contains(environmentUser.getRole().getArchetype())) {
+    if (environmentUser.getRole() == null || !permittedArchetypes.contains(environmentUser.getRole().getArchetype())) {
       return Response.status(Status.FORBIDDEN).entity("Must be a teacher").build();
     }
     
