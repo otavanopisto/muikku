@@ -478,7 +478,7 @@ body.evaluation {
   .evaluation-evaluate-modal-wrapper {
     position:absolute;
     left:0;
-    top:0;
+    top:72px;
     bottom:0;
     right:0;
     padding:0;
@@ -496,30 +496,6 @@ body.evaluation {
       overflow:auto;
       
       .evaluation-modal-student-wrapper {
-        
-        h2.evaluation-modal-student-name {
-         width:auto;
-         margin:0 auto 0 auto; 
-         font-weight:300;
-         color:#000;
-         font-size:24px;
-         padding:20px 20px 30px 65px;
-         text-transform:uppercase;
-         line-height:1.3em;
-         position:relative;
-         
-         .student-picture {
-           @include background-image('gfx/evaluation-default-student-picture.jpg');
-           background-size:cover;
-           display:inline-block;
-           position:absolute;
-           width:48px;
-           height:48px;
-           border-radius:24px;
-           top:10px;
-           left:0;
-         }
-        }
         
         .evaluation-modal-workspace-info-wrapper {
           padding:10px 20px;
@@ -717,33 +693,41 @@ body.evaluation {
           font-weight:300;
           font-size:16px;
         }
+        
+        textarea,
+        input[type="text"],
+        select {
+          border:0;
+          border-radius:3px;
+          box-sizing:border-box;
+          border:5px solid #c3e6fb;
+          font-size:16px;
+          color:#000;
+          outline:none;
+          transition:border 0.15s ease-in-out;
+          font-family:"Open Sans", arial;
+          font-weight:300;
+          
+          &:hover,
+          &:focus,
+          &:active {
+            border:5px solid #9cd3f5;
+          }
+        }
+
+        textarea {
+          width:100%;
+          height:200px;
+          padding:10px;
+        }
       
         .evaluation-modal-evaluateForm-literal-eval-wrapper {
-  
-          textarea {
-            border:0;
-            border-radius:3px;
-            width:100%;
-            height:200px;
-            padding:10px;
-            box-sizing:border-box;
-            border:5px solid #c3e6fb;
-            font-size:16px;
-            color:#000;
-            outline:none;
-            transition:border 0.15s ease-in-out;
-            
-            &:hover,
-            &:focus,
-            &:active {
-              border:5px solid #9cd3f5;
-            }
-          }
-          
+
         }
         
         .evaluation-modal-evaluateForm-date-wrapper {
           margin:10px 0;
+          
         }
         
         .evaluation-modal-evaluateForm-grade-wrapper {
@@ -807,7 +791,7 @@ body.evaluation {
     padding:0;
     border:none;
     border-radius:10px !important;
-    z-index:998;
+    z-index:9999;
     position:fixed;
     top:15px;
     right:15px;
@@ -819,20 +803,43 @@ body.evaluation {
     min-width:990px;
     
     .ui-dialog-titlebar {
-      border:0px;
-      background:#7391a7;
-      color:#fff;
-      border-radius:0px;
-      padding:0;
-      height:0px;
-      font-weight:400;
+      width:auto;
+      margin:0 auto 0 auto; 
+      font-weight:300;
+      color:#000;
+      font-size:28px;
+      text-transform:uppercase;
+      line-height:1.3em;
+      position:relative;
+      height:50px;
+      border:0;
+      background:#657e90;
+      @include background-image('gfx/evaluation-default-student-picture.jpg');
+      background-repeat:no-repeat;
+      background-position:left center;
+      background-size:contain;
       
       .ui-dialog-title {
+        background-size:cover;
+        display:inline-block;
+        position:absolute;
         margin:0;
-        font-size:0px;
-        height:0px;
-        width:100%;
-        font-weight:300;
+        top:15px;
+        left:80px;
+        color:#fff;
+        
+        span.modal-title-student-name {
+          display:inline-block;
+          margin:0 20px 0 0;
+        }
+        
+        span.modal-title-workspace-name {
+          display:inline-block;
+          font-size:24px;
+          border-left:1px solid #fff;
+          padding:0 0 0 20px;
+        }
+        
       }
       
       .ui-dialog-titlebar-close {
@@ -842,7 +849,7 @@ body.evaluation {
         border:0px;
         background:transparent;
         z-index:999;
-        width:38px;
+        width:44px;
         height:38px;
         
         span {
@@ -850,9 +857,8 @@ body.evaluation {
         }
         
         &:before {
-          background:#7fcaf7;
           color:#fff;
-          padding:11px;
+          padding:14px;
           border-bottom-left-radius:10px;
           cursor:pointer;
           content: "\e604";
@@ -922,5 +928,62 @@ body.evaluation {
       
       }
     }
+  }
+  
+  #ui-datepicker-div {
+    font-family:"Open Sans", arial;
+    font-size:13px;
+    box-shadow:0 0 30px 5px rgba(0,0,0,0.3);
+    border:0;
+    width:20em;
+    padding:0;
+    
+    .ui-widget-header {
+      border:0;
+      background:#7391a7;
+      padding:4px 0px;
+
+      
+      .ui-datepicker-title {
+        color:#fff;
+        text-transform:uppercase;
+        font-weight:300;
+        font-size:18px;
+      }
+      
+    }
+    
+    table.ui-datepicker-calendar {
+      box-sizing:border-box;
+      border:2px solid #fff;
+      margin:0;
+    
+      td {
+      
+        a {
+          border:0;
+          padding:0 6px 2px 0;
+          background:#d4edff;
+          
+          &:hover {
+            background:#9cd5f8;
+          }
+          
+          &.ui-state-highlight {
+            background:#6991aa;
+            color:#fff;
+          }
+          
+          &.ui-state-active {
+            background:#3baae3;
+            color:#fff;
+          }
+          
+        }
+      
+      }
+    
+    }
+    
   }
 }

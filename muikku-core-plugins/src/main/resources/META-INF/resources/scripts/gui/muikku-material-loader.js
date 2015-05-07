@@ -114,7 +114,7 @@
       }
     },
     
-    loadMaterials: function(pageElements) {
+    loadMaterials: function(pageElements, fieldAnswers) {
       if (this.options.loadAnswers === true) {
         mApi().workspace.workspaces.materialreplies.read(this.options.workspaceEntityId).callback($.proxy(function (err, reply) {
           if (err) {
@@ -139,7 +139,7 @@
       }
       else {
         $(pageElements).each($.proxy(function (index, page) {
-          this.loadMaterial(page, {});
+          this.loadMaterial(page, fieldAnswers||{});
         }, this));
       }
     }

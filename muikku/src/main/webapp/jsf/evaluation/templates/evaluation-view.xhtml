@@ -12,7 +12,16 @@
   <ui:param name="bodyClass" value="evaluation" />
   
   <ui:define name="viewScripts">
+    <!-- Sly -->
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/Sly/1.2.1/sly.min.js"></script>
+    
+     <!--  Materials -->
+    <h:outputScript name="scripts/jquery.jsplumb/jquery.jsPlumb-1.7.2-min.js"/>
+    <h:outputScript name="scripts/gui/muikku-connect-field-component.js"/>
+    <h:outputScript name="scripts/gui/muikku-material-loader.js"/> 
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.lazyload/1.9.1/jquery.lazyload.min.js"/>
+    <h:outputScript name="scripts/lazyyt/lazyyt.js" />
+    
     <!--  View itself -->
     <h:outputScript name="scripts/gui/evaluation.js" />
   </ui:define>
