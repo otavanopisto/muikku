@@ -160,8 +160,8 @@
       
     }
   });
-  
-  function openWorkspaceEvaluationDialog(workspaceEntityId, studentEntityId, workspaceStudentEntityId){
+
+  function openWorkspaceEvaluationDialog(workspaceEntityId, studentEntityId, workspaceStudentEntityId, studentDisplayName){
     renderDustTemplate('evaluation/evaluation_evaluate_workspace_modal_view.dust', {
       gradingScales: $.parseJSON($('input[name="grading-scales"]').val()),
       assignments: ASSIGNMENTS
@@ -173,7 +173,7 @@
         resizable: false,
         width: 'auto',
         height: 'auto',
-        title: '<span class="modal-title-student-name">Esimerkki Opiskelija 1</span><span class="modal-title-workspace-name">GE1 - Sininen planeetta</span>',
+        title: '<span class="modal-title-student-name">'+studentDisplayName+'</span><span class="modal-title-workspace-name">'+$('input[name="workspaceName"]').val()+'</span>',
         dialogClass: "evaluation-evaluate-modal",
         open: function() {
           // TODO: Assessor select
@@ -459,8 +459,9 @@
     $(document).on('click', '.evaluation-student-wrapper', function(event){
       var workspaceEntityId = $('input[name="workspace-entity-id"]').val();
       var workspaceStudentEntityId = $(this).attr('data-workspace-student-entity-id');
+      var studentDisplayName = $(this).find('.evaluation-student-name').text();
       var studentEntityId = $(this).attr('data-user-entity-id');
-      openWorkspaceEvaluationDialog(workspaceEntityId, studentEntityId, workspaceStudentEntityId);
+      openWorkspaceEvaluationDialog(workspaceEntityId, studentEntityId, workspaceStudentEntityId, studentDisplayName);
     });
     
     /* Evaluate assignment when its state is DONE or CRITICAL (means its late) */

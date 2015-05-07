@@ -113,7 +113,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
 
   @Override
   public WorkspaceAssessment createWorkspaceAssessment(String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String workspaceIdentifier, String studentIdentifier, String assessingUserIdentifier,
-      String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String verbalAssessment, Date date)
+      String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String gradingScaleIdentifier, String gradingScaleSchoolDataSource, String verbalAssessment, Date date)
       throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
     
     long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUserIdentifier);
@@ -121,7 +121,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
     long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
     long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
     
-    CourseAssessment courseAssessment = new CourseAssessment(null, courseStudentId, Long.parseLong(gradeIdentifier), assessingUserId, new DateTime(date), verbalAssessment);
+    CourseAssessment courseAssessment = new CourseAssessment(null, courseStudentId, Long.parseLong(gradeIdentifier), Long.parseLong(gradingScaleIdentifier), assessingUserId, new DateTime(date), verbalAssessment);
     return entityFactory.createEntity(pyramusClient.post(String.format("/students/students/%d/courses/%d/assessments/", studentId, courseId ), courseAssessment));
   }
 
@@ -135,7 +135,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
 
   @Override
   public WorkspaceAssessment updateWorkspaceAssessment(String identifier, String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String workspaceIdentifier, String studentIdentifier,
-      String assessingUserIdentifier, String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String verbalAssessment,
+      String assessingUserIdentifier, String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String gradingScaleIdentifier, String gradingScaleSchoolDataSource, String verbalAssessment,
       Date date) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
 
     long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUserIdentifier);
@@ -144,7 +144,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
     long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
     long id = Long.parseLong(identifier);
     
-    CourseAssessment courseAssessment = new CourseAssessment(id, courseStudentId, Long.parseLong(gradeIdentifier), assessingUserId, new DateTime(date), verbalAssessment);
+    CourseAssessment courseAssessment = new CourseAssessment(id, courseStudentId, Long.parseLong(gradeIdentifier), Long.parseLong(gradingScaleIdentifier), assessingUserId, new DateTime(date), verbalAssessment);
     return entityFactory.createEntity(pyramusClient.put(String.format("/students/students/%d/courses/%d/assessments/%d", studentId, courseId, id), courseAssessment));
   }
 
