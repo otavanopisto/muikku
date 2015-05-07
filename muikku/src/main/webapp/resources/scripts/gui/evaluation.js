@@ -223,7 +223,7 @@
   function openMaterialEvaluationDialog(workspaceEntityId, workspaceMaterialId, studentEntityId, studentDisplayName, workspaceMaterialEvaluation) {
     var assignmentData = getAssignmentData(workspaceMaterialId);
     
-    renderDustTemplate('evaluation/evaluation_evaluate_modal_view.dust', {
+    renderDustTemplate('evaluation/evaluation_evaluate_assignment_modal_view.dust', {
       studentDisplayName: studentDisplayName,
       gradingScales: $.parseJSON($('input[name="grading-scales"]').val()),
       assessors: $.parseJSON($('input[name="assessors"]').val()),
@@ -237,12 +237,13 @@
       }]
     }, $.proxy(function (text) {
       var dialog = $(text);
-
-      // TODO: Fix dialog size
       
       dialog.dialog({
         modal: true, 
         resizable: false,
+        width: 'auto',
+        height: 'auto',
+        title: '<span class="modal-title-student-name">Esimerkki Opiskelija 1</span><span class="modal-title-workspace-name">GE1 - Sininen planeetta</span>',
         dialogClass: "evaluation-evaluate-modal",
         open: function() {
           $(this).find('input[name="evaluated"]')

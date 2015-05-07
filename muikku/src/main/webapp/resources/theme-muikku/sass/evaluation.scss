@@ -83,6 +83,7 @@ body.evaluation {
         position:absolute;
         left:50%;
         top:50%;
+        margin:-50px 0 0 0;
         -webkit-animation: spinner 0.5s linear infinite;
         -moz-animation: spinner 0.5s linear infinite;
         -ms-animation: spinner 0.5s linear infinite;
@@ -217,6 +218,24 @@ body.evaluation {
               text-align:center;
               float:left;
               position:relative;
+              
+              /* Workspace has been evaluated by teacher */
+              &.workspace-evaluated {
+              
+                .evaluation-student-picture {
+                  box-shadow:0 0 0 5px #16a506;
+                }
+
+              }
+              
+              /* Workspace has been reviewed and needs more input from student */
+              &.workspace-reviewed-but-not-evaluated {
+              
+                .evaluation-student-picture {
+                  box-shadow:0 0 0 5px #ea7401;
+                }
+
+              }
             
               .evaluation-student-picture {
                 width:120px;
@@ -227,6 +246,11 @@ body.evaluation {
                 background-size:cover;
                 border-radius:75px;
                 background-position:center center;
+                cursor:pointer;
+                
+                &:hover {
+                  box-shadow:0 0 0 5px #8cd1fa;
+                }
               }
               
               .evaluation-student-name {
@@ -285,7 +309,7 @@ body.evaluation {
                 
                 &.assignment-evaluated {
                   opacity:1;
-                  box-shadow:0 0 0 5px #14d646;
+                  box-shadow:0 0 0 5px #16a506;
                   cursor:pointer;
                   
                   &:hover {
@@ -548,12 +572,13 @@ body.evaluation {
           .evaluation-modal-workspace-assignment-wrapper {
             margin:20px 0 0 0;
             
-            h3 {
+            h2 {
               color:#000;
               font-weight:300;
               border-left:20px solid #ce01bd;
               padding:0 0 0 5px;
               margin-left:-20px;
+              font-size:24px;
             }
             
             p {
@@ -635,6 +660,7 @@ body.evaluation {
         overflow-x: hidden;
         overflow-y: auto;
         max-height:100px;
+        padding:0 20px;
       
         .evaluation-modal-evaluateForm-title {
           width:auto;
@@ -642,14 +668,14 @@ body.evaluation {
           font-weight:300;
           color:#000;
           font-size:24px;
-          padding:20px 20px 10px 20px;
+          padding:20px 0 10px 0;
           text-transform:uppercase;
           line-height:1.3em;
           position:relative;
         }
         
         .evaluation-modal-evaluateForm-meta-wrapper {
-          padding:0px 20px;
+          padding:0;
         
           .meta-education-type,
           .meta-workspace {
@@ -682,8 +708,8 @@ body.evaluation {
         position:absolute;
         bottom:65px;
         top:100px;
-        right:0px;
-        left:0px;
+        right:10px;
+        left:10px;
         border-top:1px solid #eee;
         border-bottom:1px solid #eee;
         
@@ -943,6 +969,81 @@ body.evaluation {
       background:#7391a7;
       padding:4px 0px;
 
+      .ui-datepicker-prev {
+        color:#fff;
+        position:absolute;
+        height:24px;
+        top:0;
+        left:0;
+        padding:8px 4px;
+        
+        span {
+          display:none;
+        }
+        
+        &:hover {
+          background:transparent;
+          border:0px;
+        }
+      
+        &:before {
+          cursor:pointer;
+          content: "\e605";
+          color:#fff;
+          font-size:24px;
+          font-family: 'muikku';
+          speak: none;
+          font-style: normal;
+          text-decoration:none;
+          font-weight: normal;
+          font-variant: normal;
+          text-transform: none;
+          line-height: 1;
+          
+          /* Better Font Rendering =========== */
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+      
+      }
+
+      .ui-datepicker-next {
+        color:#fff;
+        position:absolute;
+        height:24px;
+        top:0;
+        right:0;
+        padding:8px 4px;
+        
+        span {
+          display:none;
+        }
+        
+        &:hover {
+          background:transparent;
+          border:0px;
+        }
+        
+        &:before {
+          cursor:pointer;
+          content: "\e608";
+          color:#fff;
+          font-size:24px;
+          font-family: 'muikku';
+          speak: none;
+          font-style: normal;
+          text-decoration:none;
+          font-weight: normal;
+          font-variant: normal;
+          text-transform: none;
+          line-height: 1;
+          
+          /* Better Font Rendering =========== */
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+        
+      }
       
       .ui-datepicker-title {
         color:#fff;
