@@ -121,7 +121,7 @@ public class EvaluationPageBackingBean {
             User assessingUser = userController.findUserByDataSourceAndIdentifier(assessment.getAssessingUserSchoolDataSource(), assessment.getAssessingUserIdentifier());
             UserEntity assessingUserEntity = userEntityController.findUserEntityByUser(assessingUser);
             try {
-              assessmentData = new ObjectMapper().writeValueAsString(new WorkspaceStudentEvaluation(gradeString, assessment.getVerbalAssessment(), assessingUserEntity.getId(), assessment.getDate().getTime()));
+              assessmentData = new ObjectMapper().writeValueAsString(new WorkspaceStudentEvaluation(assessment.getIdentifier(), gradeString, assessment.getVerbalAssessment(), assessingUserEntity.getId(), assessment.getDate().getTime()));
             } catch (JsonProcessingException e) {
               logger.log(Level.SEVERE, "Assessment data serialization failed", e);
               return NavigationRules.INTERNAL_ERROR;
@@ -209,6 +209,7 @@ public class EvaluationPageBackingBean {
       this.displayName = displayName;
       this.status = status;
       this.studentAssignmentData = studentAssignmentData;
+      this.workspaceAssessmentData = workspaceAssessmentData;
     }
 
     public Long getUserEntityId() {
@@ -244,7 +245,7 @@ public class EvaluationPageBackingBean {
   }
 
   public static class WorkspaceStudentEvaluation {
-    WorkspaceStudentEvaluation(String gradeString, String verbalAssessment, Long assessingUserEntityId, Long date) {
+    WorkspaceStudentEvaluation(String assessmentIdentifier, String gradeString, String verbalAssessment, Long assessingUserEntityId, Long date) {
       this.assessingUserEntityId = assessingUserEntityId;
       this.gradeString = gradeString;
       this.verbalAssessment = verbalAssessment;
@@ -265,8 +266,13 @@ public class EvaluationPageBackingBean {
 
     public Long getDate() {
       return date;
+    } 
+    
+    public String getAssessmentIdentifier() {
+      return assessmentIdentifier;
     }
-
+    
+    private String assessmentIdentifier;
     private String gradeString;
     private String verbalAssessment;
     private Long assessingUserEntityId;
