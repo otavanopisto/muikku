@@ -212,7 +212,26 @@
             $(this).find('select[name="assessor"]').val(workspaceMaterialEvaluation.assessorEntityId);
           }
           
-          $(document).muikkuMaterialLoader('loadMaterials', $('.evaluation-assignment'));
+          mApi().workspace.workspaces.materials.replies.read(workspaceEntityId, workspaceMaterialId, {
+            userEntityId: studentEntityId
+          }).callback(function (err, reply) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            } else {
+
+              var fieldAnswers = {};
+              if (reply && reply.answers.length) {
+                for (var i = 0, l = reply.answers.length; i < l; i++) {
+                  var answer = reply.answers[i];
+                  var answerKey = [answer.materialId, answer.embedId, answer.fieldName].join('.');
+                  fieldAnswers[answerKey] = answer.value;
+                }
+              }
+              
+              $(document).muikkuMaterialLoader('loadMaterials', $('.evaluation-assignment'), fieldAnswers);
+            }
+          });
+          
         },
         buttons: [{
           'text': dialog.data('button-save-text'),
@@ -280,7 +299,7 @@
     var workspaceEntityId = $('#evaluation-views-wrapper').attr('data-workspace-entity-id');
     
     $(document).muikkuMaterialLoader({
-      loadAnswers: true,
+      loadAnswers: false,
       workspaceEntityId: workspaceEntityId
     });
     
