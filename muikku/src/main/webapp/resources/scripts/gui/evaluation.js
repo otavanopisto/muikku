@@ -190,6 +190,7 @@
         resizable: false,
         width: 'auto',
         height: 'auto',
+        title: '<span class="modal-title-student-name">Esimerkki Opiskelija 1</span><span class="modal-title-workspace-name">GE1 - Sininen planeetta</span>',
         dialogClass: "evaluation-evaluate-modal",
         open: function() {
           $(this).find('input[name="evaluated"]')

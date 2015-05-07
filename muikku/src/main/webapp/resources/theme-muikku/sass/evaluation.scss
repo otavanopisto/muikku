@@ -218,6 +218,24 @@ body.evaluation {
               text-align:center;
               float:left;
               position:relative;
+              
+              /* Workspace has been evaluated by teacher */
+              &.workspace-evaluated {
+              
+                .evaluation-student-picture {
+                  box-shadow:0 0 0 5px #16a506;
+                }
+
+              }
+              
+              /* Workspace has been reviewed and needs more input from student */
+              &.workspace-reviewed-but-not-evaluated {
+              
+                .evaluation-student-picture {
+                  box-shadow:0 0 0 5px #ea7401;
+                }
+
+              }
             
               .evaluation-student-picture {
                 width:120px;
@@ -291,7 +309,7 @@ body.evaluation {
                 
                 &.assignment-evaluated {
                   opacity:1;
-                  box-shadow:0 0 0 5px #14d646;
+                  box-shadow:0 0 0 5px #16a506;
                   cursor:pointer;
                   
                   &:hover {
@@ -642,6 +660,7 @@ body.evaluation {
         overflow-x: hidden;
         overflow-y: auto;
         max-height:100px;
+        padding:0 20px;
       
         .evaluation-modal-evaluateForm-title {
           width:auto;
@@ -649,14 +668,14 @@ body.evaluation {
           font-weight:300;
           color:#000;
           font-size:24px;
-          padding:20px 20px 10px 20px;
+          padding:20px 0 10px 0;
           text-transform:uppercase;
           line-height:1.3em;
           position:relative;
         }
         
         .evaluation-modal-evaluateForm-meta-wrapper {
-          padding:0px 20px;
+          padding:0;
         
           .meta-education-type,
           .meta-workspace {
@@ -689,8 +708,8 @@ body.evaluation {
         position:absolute;
         bottom:65px;
         top:100px;
-        right:0px;
-        left:0px;
+        right:10px;
+        left:10px;
         border-top:1px solid #eee;
         border-bottom:1px solid #eee;
         
