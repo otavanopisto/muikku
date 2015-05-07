@@ -70,6 +70,17 @@ public interface GradingSchoolDataBridge {
       throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 
   /**
+   * Lists workspace assesments by workspace and student
+   * 
+   * @param workspaceIdentifier
+   *        identifier of the workspace
+   * @param studentIdentifier
+   *        identifier of student
+   * @return list of workspace assessments (empty if not found)
+   */
+  public List<WorkspaceAssessment> listWorkspaceAssessments(String workspaceIdentifier, String studentIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+  
+  /**
    * Updates a workspace assessment
    * 
    * @param identifier

@@ -8,10 +8,14 @@
   <div class="evaluation-view-wrapper">
     <div class="evaluation-student-listing-wrapper">
       <ui:repeat var="student" value="#{evaluationPageBackingBean.workspaceStudents}">
-        <div data-user-entity-id="#{student.userEntityId}" data-display-name="#{student.displayName}" data-workspace-student-entity-id="#{student.workspaceUserEntityId}" class="evaluation-student-wrapper">
+        <div jsf:rendered="#{student.status eq 'UNASSESSED'}" data-user-entity-id="#{student.userEntityId}" data-display-name="#{student.displayName}" data-workspace-student-entity-id="#{student.workspaceUserEntityId}" class="evaluation-student-wrapper">
            <div class="evaluation-student-picture"></div>
            <div class="evaluation-student-name">#{student.displayName}</div>
-         </div>
+        </div>
+        <div jsf:rendered="#{student.status eq 'ASSESSED'}" data-user-entity-id="#{student.userEntityId}" data-display-name="#{student.displayName}" data-workspace-student-entity-id="#{student.workspaceUserEntityId}" class="evaluation-student-wrapper assignment-evaluated">
+           <div class="evaluation-student-picture"></div>
+           <div class="evaluation-student-name">#{student.displayName}</div>
+        </div>
       </ui:repeat>
     </div>
     <div class="evaluation-student-assignment-listing-wrapper">

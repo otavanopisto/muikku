@@ -294,6 +294,14 @@ public class PyramusSchoolDataEntityFactory {
      );
   }
   
+  public List<WorkspaceAssessment> createEntity(CourseAssessment... courseAssessments){
+    List<WorkspaceAssessment> result = new ArrayList<>();
+    for(CourseAssessment courseAssessment : courseAssessments){
+      result.add(createEntity(courseAssessment));
+    }
+    return result;
+  }
+  
   public List<WorkspaceType> createEntities(CourseType... courseTypes) {
     List<WorkspaceType> result = new ArrayList<>();
     
