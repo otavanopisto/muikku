@@ -6,6 +6,7 @@
     options : {
       workspaceEntityId: -1,
       loadAnswers: false,
+      readOnlyFields: false,
       dustTemplate: 'workspace/materials-page.dust',
       renderMode: {
         "html": "raw"
@@ -46,22 +47,24 @@
           workspaceMaterialId: workspaceMaterialId,
           materialId: materialId,
           element: parsed,
-          fieldAnswers: fieldAnswers
+          fieldAnswers: fieldAnswers,
+          readOnlyFields: this.options.readOnlyFields
         });
         
         if (this._getRenderMode('html') == 'dust') {
           material.html = parsed.html();
-          renderDustTemplate(this.options.dustTemplate, { id: materialId, materialId: materialId, workspaceMaterialId: workspaceMaterialId, type: 'html', data: material }, function (text) {
+          renderDustTemplate(this.options.dustTemplate, { id: materialId, materialId: materialId, workspaceMaterialId: workspaceMaterialId, type: 'html', data: material }, $.proxy(function (text) {
             $(pageElement).append(text);
             $(document).trigger('afterHtmlMaterialRender', {
               pageElement: pageElement,
               parentIds: parentIds,
               workspaceMaterialId: workspaceMaterialId,
               materialId: materialId,
-              fieldAnswers: fieldAnswers
+              fieldAnswers: fieldAnswers,
+              readOnlyFields: this.options.readOnlyFields
             });
             $.waypoints('refresh');
-          });
+          }, this));
         }
         else {
           $(pageElement).append(parsed);
@@ -70,7 +73,8 @@
             parentIds: parentIds,
             workspaceMaterialId: workspaceMaterialId,
             materialId: materialId,
-            fieldAnswers: fieldAnswers
+            fieldAnswers: fieldAnswers,
+            readOnlyFields: this.options.readOnlyFields
           });
         }
 
@@ -163,6 +167,7 @@
           materialId: data.materialId,
           embedId: data.embedId,
           meta: data.meta,
+          readonly: data.readOnlyFields||false,
           hasExamples: function () {
             var meta = this.options.meta;
             if (meta.rightAnswers && meta.rightAnswers.length > 0) {
@@ -239,7 +244,7 @@
   $(document).on('taskFieldDiscovered', function (event, data) {
     var object = data.object;
     if ($(object).attr('type') == 'application/vnd.muikku.field.memo') {
-      $(object).replaceWith($('<textarea>')
+      var field = $(object).replaceWith($('<textarea>')
         .addClass('muikku-memo-field')
         .attr({
           'cols':data.meta.columns,
@@ -252,7 +257,8 @@
         .muikkuField({
           fieldName: data.name,
           materialId: data.materialId,
-          embedId: data.embedId
+          embedId: data.embedId,
+          readonly: data.readOnlyFields||false
         })
       );
     }
@@ -381,6 +387,7 @@
               materialId: data.materialId,
               embedId: data.embedId,
               meta: meta,
+              readonly: data.readOnlyFields||false,
               canCheckAnswer: function() {
                 for (var i = 0, l = meta.options.length; i < l; i++) {
                   if (meta.options[i].correct == true) {
@@ -437,6 +444,7 @@
             materialId: data.materialId,
             embedId: data.embedId,
             meta: meta,
+            readonly: data.readOnlyFields||false,
             answer: function() {
               return $(this.element).find('input:checked').val();
             },
@@ -504,6 +512,7 @@
         materialId: data.materialId,
         embedId: data.embedId,
         meta: meta,
+        readonly: data.readOnlyFields||false,
         answer: function() {
           var values = [];
           $(this.element).find('input:checked').each(function() {
@@ -594,10 +603,22 @@
       },
       getExamples: function () {
         return [];
-      }
+      },
+      isReadonly: function () {
+        return $(this.element).attr('readonly') == 'readonly';
+      },
+      setReadonly: function (readonly) {
+        if (readonly) {
+          $(this.element).attr('readonly', 'readonly')
+        } else {
+          $(this.element).removeAttr('readonly');
+        } 
+      },
+      readonly: false
     },
     _create : function() {
       $(this.element).addClass('muikku-field');
+      this.readonly(this.options.readonly);
     },
     answer: function () {
       return this.options.answer.call(this)||'';
@@ -625,6 +646,13 @@
     },
     meta: function () {
       return this.options.meta;
+    },
+    readonly: function (readonly) {
+      if (readonly === undefined) {
+        return this.options.isReadonly.call(this);
+      } else {
+        this.options.setReadonly.call(this, readonly);
+      }
     }
   });
   
@@ -686,7 +714,8 @@
         name: meta.name,
         embedId: embedId,
         materialId: materialId,
-        value: value
+        value: value,
+        readOnlyFields: data.readOnlyFields
       });
     });
     fixTables(data.element);
@@ -718,7 +747,8 @@
           fieldName: $(field).data('field-name'),
           embedId: $(field).data('embed-id'),
           materialId: $(field).data('material-id'),
-          meta: meta
+          meta: meta,
+          readonly: data.readOnlyFields||false
         });
       });
       $('.muikku-connect-field').muikkuConnectField('refresh');
@@ -734,6 +764,7 @@
           fieldName: $(field).data('field-name'),
           embedId: $(field).data('embed-id'),
           materialId: $(field).data('material-id'),
+          readonly: data.readOnlyFields||false,
           answer: function () {
             return JSON.stringify($(this.element).muikkuFileField('files'));
           }
