@@ -18,6 +18,7 @@ import fi.muikku.dao.security.UserGroupRolePermissionDAO;
 import fi.muikku.dao.security.WorkspaceRolePermissionDAO;
 import fi.muikku.dao.users.EnvironmentRoleEntityDAO;
 import fi.muikku.dao.users.RoleEntityDAO;
+import fi.muikku.dao.users.SystemRoleEntityDAO;
 import fi.muikku.dao.users.UserGroupDAO;
 import fi.muikku.dao.workspace.WorkspaceEntityDAO;
 import fi.muikku.dao.workspace.WorkspaceRoleEntityDAO;
@@ -27,6 +28,7 @@ import fi.muikku.model.security.Permission;
 import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.model.users.EnvironmentRoleEntity;
 import fi.muikku.model.users.RoleEntity;
+import fi.muikku.model.users.SystemRoleType;
 import fi.muikku.model.users.UserGroup;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleArchetype;
@@ -76,6 +78,9 @@ public class PermissionsPluginController {
   private UserGroupRolePermissionDAO userGroupRolePermissionDAO;
 
   @Inject
+  private SystemRoleEntityDAO systemRoleEntityDAO;
+  
+  @Inject
   @Any
   private Instance<MuikkuPermissionCollection> permissionCollections;
   
@@ -83,6 +88,15 @@ public class PermissionsPluginController {
   private Event<PermissionDiscoveredEvent> permissionDiscoveredEvent;
 	
   public void processPermissions() {
+    // Ensure the system roles exist
+    
+    for (SystemRoleType systemRoleType : SystemRoleType.values()) {
+      if (systemRoleEntityDAO.findByRoleType(systemRoleType) == null)
+        systemRoleEntityDAO.create(systemRoleType.name(), systemRoleType);
+    }
+    
+    // Process permissions
+    
     for (MuikkuPermissionCollection collection : permissionCollections) {
       List<String> permissions = collection.listPermissions();
 

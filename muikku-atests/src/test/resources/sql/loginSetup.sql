@@ -1,25 +1,25 @@
 SET REFERENTIAL_INTEGRITY FALSE;
 
 insert into RoleEntity (id, name) values 
-  (1, 'GUEST'),
-  (2, 'USER'),
-  (3, 'MANAGER'),
-  (4, 'ADMINISTRATOR'),
-  (5, 'STUDENT'),
-  (6, 'Course Student');
+  (2, 'GUEST'),
+  (3, 'USER'),
+  (4, 'MANAGER'),
+  (5, 'ADMINISTRATOR'),
+  (6, 'STUDENT'),
+  (7, 'Course Student');
 
 insert into EnvironmentRoleEntity (id, archetype) values 
-  (1, 'CUSTOM'),
   (2, 'CUSTOM'),
-  (3, 'MANAGER'),
-  (4, 'ADMINISTRATOR'),
-  (5, 'STUDENT');
+  (3, 'CUSTOM'),
+  (4, 'MANAGER'),
+  (5, 'ADMINISTRATOR'),
+  (6, 'STUDENT');
 
 --insert into SchoolDataSource (id, identifier) values (1, 'LOCAL'), (2, 'PYRAMUS');
-insert into WorkspaceRoleEntity (id, archetype) values (6, 'STUDENT'), (4, 'TEACHER'); 
+insert into WorkspaceRoleEntity (id, archetype) values (7, 'STUDENT'), (5, 'TEACHER'); 
 
 insert into UserEntity (id, archived, defaultIdentifier, defaultSchoolDataSource_id) values (1, false, 'STUDENT-1', (select id from SchoolDataSource where identifier = 'PYRAMUS'));
-insert into EnvironmentUser (id, archived, role_id, user_id) values (1, 0, 5, 1);
+insert into EnvironmentUser (id, archived, role_id, user_id) values (1, 0, 6, 1);
 --insert into InternalAuth (id, password, userEntityId) values (1, '3675ac5c859c806b26e02e6f9fd62192', 1);
 insert into UserSchoolDataIdentifier (identifier, dataSource_id, userEntity_id) values ('1', (select id from SchoolDataSource where identifier = 'PYRAMUS'), 1);
 -- role id 9 ? --
