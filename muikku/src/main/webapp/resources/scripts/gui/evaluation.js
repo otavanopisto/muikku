@@ -1,6 +1,18 @@
 (function() {
   'use strict';
   
+  var ASSIGNMENTS = null;
+  
+  function getAssignmentData(workspaceMaterialId) {
+    for (var i = 0, l = ASSIGNMENTS.length; i < l; i++) {
+      if (ASSIGNMENTS[i].workspaceMaterialId == parseInt(workspaceMaterialId)) {
+        return ASSIGNMENTS[i];
+      }
+    }
+    
+    return null;
+  }
+  
   // Overrides JQuery.UI dialog setting that prevents html being inserted into title
   $.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {
     _title: function(title) {
@@ -52,8 +64,6 @@
     },
     
     _loadPage: function (pageId, callback) {
-      console.log("look! im loading a page!");
-      
       if (pageId == 0) {
         $('#contentEvaluation').append($('<div>').addClass('content-loading').append($('<div>').addClass('icon-spinner')));
       }
@@ -64,8 +74,51 @@
         url : CONTEXTPATH + '/evaluation/' + this.options.workspaceEntityId + '/page/' + pageId + '?maxStudents=' + this.options.maxStudents,
         success : $.proxy(function(data) {
           this._pagesLoaded[pageId] = 'LOADED';
+          var parsed = $(data);
+          var studentAssignmentDatas = {};
           
-          this.element.find('.evaluation-views-slyder').append($(data).css('width', this.element.width()));
+          var studentNodes = parsed.find('.evaluation-student-wrapper');
+          studentNodes.each(function (studentIndex, studentElement) {
+            var assignmentData = $.parseJSON($(studentElement).attr('data-assignment-data'));
+            $.each(assignmentData, function (index, entry) {
+              studentAssignmentDatas[$(studentElement).attr('data-workspace-student-entity-id') + '_' + entry.workspaceMaterialId] = entry;
+            });
+          });
+          
+          $.each(ASSIGNMENTS, function (assignmentIndex, assignment) {
+            var row = $('<div>').addClass('evaluation-student-assignment-listing-row')
+
+            studentNodes.each(function (studentIndex, studentElement) {
+              var studentAssignmentData = studentAssignmentDatas[$(studentElement).attr('data-workspace-student-entity-id') + '_' + assignment.workspaceMaterialId];
+              
+              var wrapper = $('<div>')
+                .addClass('evaluation-assignment-wrapper')
+                .attr({
+                  'data-workspace-material-id': assignment.workspaceMaterialId,
+                  'data-workspace-material-evaluation-id': studentAssignmentData.workspaceMaterialEvaluationId,
+                  'data-student-entity-id': $(studentElement).attr('data-user-entity-id')
+                })
+                .append($('<div>').addClass('evaluation-assignment-picture'))
+                .append($('<div>').addClass('evaluation-assignment-title').text(assignment.title))
+                .appendTo(row);
+              
+              switch (studentAssignmentData.status) {
+                case 'DONE':
+                  wrapper.addClass('assignment-done');
+                break;
+                case 'EVALUATED':
+                  wrapper.addClass('assignment-evaluated');
+                break;
+                case 'EVALUATION_CRITICAL':
+                  wrapper.addClass('assignment-evaluation-critical');
+                break;
+              } 
+            });
+            parsed.find('.evaluation-student-assignment-listing-wrapper').append(row);
+          });
+          
+          
+          this.element.find('.evaluation-views-slyder').append(parsed.css('width', this.element.width()));
           this.element.sly('reload');
               
           if ($.isFunction(callback)) {
@@ -94,9 +147,7 @@
     _onSlyActive: function (eventName, index) {
       if (!this._pagesLoaded[index + 1]) {
         this._loadPage(index + 1);
-      } else {
-        console.log("look! im NOT loading a page!");
-      }
+      } 
     },
     
     _destroy: function () {
@@ -169,27 +220,30 @@
     }, this));
   };
   
-  function openMaterialEvaluationDialog(workspaceEntityId, workspaceMaterialId, materialId, materialTitle, materialHtml, materialType, studentEntityId, studentDisplayName, workspaceMaterialEvaluation) {
-    renderDustTemplate('evaluation/evaluation_evaluate_modal_view.dust', {
+  function openMaterialEvaluationDialog(workspaceEntityId, workspaceMaterialId, studentEntityId, studentDisplayName, workspaceMaterialEvaluation) {
+    var assignmentData = getAssignmentData(workspaceMaterialId);
+    
+    renderDustTemplate('evaluation/evaluation_evaluate_assignment_modal_view.dust', {
       studentDisplayName: studentDisplayName,
       gradingScales: $.parseJSON($('input[name="grading-scales"]').val()),
       assessors: $.parseJSON($('input[name="assessors"]').val()),
       workspaceName: $('input[name="workspaceName"]').val(),
       assignments: [{
-        workspaceMaterialId: workspaceMaterialId,
-        materialId: materialId,
-        title: materialTitle, 
-        html: materialHtml,
-        type: materialType,
+        workspaceMaterialId: assignmentData.workspaceMaterialId,
+        materialId: assignmentData.materialId,
+        title: assignmentData.title, 
+        html: assignmentData.html,
+        type: assignmentData.type,
       }]
     }, $.proxy(function (text) {
       var dialog = $(text);
-
-      // TODO: Fix dialog size
       
       dialog.dialog({
         modal: true, 
         resizable: false,
+        width: 'auto',
+        height: 'auto',
+        title: '<span class="modal-title-student-name">Esimerkki Opiskelija 1</span><span class="modal-title-workspace-name">GE1 - Sininen planeetta</span>',
         dialogClass: "evaluation-evaluate-modal",
         open: function() {
           $(this).find('input[name="evaluated"]')
@@ -297,6 +351,7 @@
 
   $(document).ready(function() {
     var workspaceEntityId = $('#evaluation-views-wrapper').attr('data-workspace-entity-id');
+    ASSIGNMENTS = $.parseJSON($('input[name="assignments"]').val())
     
     $(document).muikkuMaterialLoader({
       loadAnswers: false,
@@ -373,27 +428,19 @@
     $(document).on('click', '.assignment-done, .assignment-evaluation-critical', function (event) {
       var workspaceEntityId = $('input[name="workspace-entity-id"]').val();
       var workspaceMaterialId = $(this).attr('data-workspace-material-id');
-      var materialId = $(this).attr('data-material-id');
-      var materialTitle = $(this).attr('data-material-title');
-      var materialHtml = $(this).attr('data-material-html');
-      var materialType = $(this).attr('data-material-type');
       var studentEntityId = $(this).attr('data-student-entity-id');
       var studentDisplayName = $(this)
         .closest('.evaluation-view-wrapper')
         .find('.evaluation-student-wrapper[data-user-entity-id=' + studentEntityId + ']')
         .attr('data-display-name');
       
-      openMaterialEvaluationDialog(workspaceEntityId, workspaceMaterialId, materialId, materialTitle, materialHtml, materialType, studentEntityId, studentDisplayName, null);
+      openMaterialEvaluationDialog(workspaceEntityId, workspaceMaterialId, studentEntityId, studentDisplayName, null);
     });
     
     /* View evaluation when assigment's state is EVALUATED */
     $(document).on('click', '.assignment-evaluated', function (event) {
       var workspaceEntityId = $('input[name="workspace-entity-id"]').val();
       var workspaceMaterialId = $(this).attr('data-workspace-material-id');
-      var materialId = $(this).attr('data-material-id');
-      var materialTitle = $(this).attr('data-material-title');
-      var materialHtml = $(this).attr('data-material-html');
-      var materialType = $(this).attr('data-material-type');
       var studentEntityId = $(this).attr('data-student-entity-id');
       var studentDisplayName = $(this)
         .closest('.evaluation-view-wrapper')
@@ -406,7 +453,7 @@
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
           } else { 
-            openMaterialEvaluationDialog(workspaceEntityId, workspaceMaterialId, materialId, materialTitle, materialHtml, materialType, studentEntityId,studentDisplayName,  result);
+            openMaterialEvaluationDialog(workspaceEntityId, workspaceMaterialId, studentEntityId,studentDisplayName,  result);
           }
         });
     });
