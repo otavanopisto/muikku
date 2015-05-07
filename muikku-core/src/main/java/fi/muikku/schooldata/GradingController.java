@@ -98,7 +98,9 @@ public class GradingController {
 	      assessingUser.getIdentifier(), 
 	      assessingUser.getSchoolDataSource(), 
 	      grade.getIdentifier(), 
-	      grade.getSchoolDataSource(), 
+	      grade.getSchoolDataSource(),
+	      grade.getGradingScaleIdentifier(),
+	      grade.getSchoolDataSource(),
 	      verbalAssessment,
 	      date);
 	}

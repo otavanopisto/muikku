@@ -60,6 +60,20 @@ public interface WorkspaceAssessment extends SchoolDataEntity {
    */
   public String getGradeSchoolDataSource();
   
+  /**
+   * Returns identifier of grading scale
+   * 
+   * @return identifier of gradign scale
+   */
+  public String getGradingScaleIdentifier();
+
+  /**
+   * Return the data source of grading scale
+   * 
+   * @return school data source of grading scale
+   */
+  public String getGradingScaleSchoolDataSource();
+  
 	/**
 	 * Returns verbal assessment
 	 * 
