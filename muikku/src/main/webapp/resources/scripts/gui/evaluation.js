@@ -32,48 +32,57 @@
   
   $.widget("custom.evaluationSlyder", {
     options : {
-      workspaceEntityId: null
+      workspaceEntityId: null,
+      workspaceStudentCount: 0
     },
     
     _create : function() {
       this.element.append($('<div>').addClass('evaluation-views-slyder'));
+      var pageCount = Math.ceil(this.options.workspaceStudentCount / this.options.maxStudents);
+      for (var i = 0; i < pageCount; i++) {
+        this.element.find('.evaluation-views-slyder')
+          .append($('<div>')
+            .attr('data-page-id', i)
+            .css({
+              'width': this.element.width(),
+              'height': '1px'
+            })
+            .addClass('evaluation-view-wrapper evaluation-view-placeholder')
+            .append($('<div>').addClass('content-loading').append($('<div>').addClass('icon-spinner')))
+          );
+      }
+      
+      this.element.sly({
+        horizontal: 1,
+        itemNav: 'forceCentered',
+        smart: false,
+        activateMiddle: 1,
+        mouseDragging: 1,
+        touchDragging: 1,
+        releaseSwing: 1,
+        startAt: 0,
+        scrollBy: 0,
+        speed: 300,
+        elasticBounds: 1,
+        easing: 'easeOutExpo',
+        scrollBar: '.scrollbar',
+        prevPage: '.prevPage',
+        nextPage: '.nextPage',
+        dragHandle: 1,
+        dynamicHandle: 1,
+        minHandleSize: 50,
+        clickBar: 1,
+        syncSpeed: 0.5
+      })
+      .sly('on', 'active', $.proxy(this._onSlyActive, this));
       
       this._pagesLoaded = {};
-      
-      this._loadPage(0, $.proxy(function () {
-        this._loadPage(1, $.proxy(function () {
-          this.element.sly({
-            horizontal: 1,
-            itemNav: 'forceCentered',
-            smart: false,
-            activateMiddle: 1,
-            mouseDragging: 1,
-            touchDragging: 1,
-            releaseSwing: 1,
-            startAt: 0,
-            scrollBy: 0,
-            speed: 300,
-            elasticBounds: 1,
-            easing: 'easeOutExpo',
-            scrollBar: '.scrollbar',
-            prevPage: '.prevPage',
-            nextPage: '.nextPage',
-            dragHandle: 1,
-            dynamicHandle: 1,
-            minHandleSize: 50,
-            clickBar: 1,
-            syncSpeed: 0.5
-          })
-          .sly('on', 'active', $.proxy(this._onSlyActive, this));
-        }, this));
-      }, this));
+
+      this._loadPage(0);
+      this._loadPage(1);
     },
     
     _loadPage: function (pageId, callback) {
-      if (pageId == 0) {
-        $('#contentEvaluation').append($('<div>').addClass('content-loading').append($('<div>').addClass('icon-spinner')));
-      }
-
       this._pagesLoaded[pageId] = 'LOADING';
       
       $.ajax({
@@ -123,9 +132,8 @@
             parsed.find('.evaluation-student-assignment-listing-wrapper').append(row);
           });
           
-          
-          this.element.find('.evaluation-views-slyder').append(parsed.css('width', this.element.width()));
-          this.element.sly('reload');
+          $('.evaluation-view-placeholder[data-page-id=' + pageId + ']')
+            .replaceWith(parsed.css('width', this.element.width()));
               
           if ($.isFunction(callback)) {
             callback();
@@ -411,7 +419,8 @@
     $('#evaluation-views-wrapper')
       .evaluationSlyder({
         workspaceEntityId: workspaceEntityId,
-        maxStudents: 6
+        maxStudents: 6,
+        workspaceStudentCount: $('input[name="workspaceStudentCount"]').val()
       });
 
     // Evaluation's workspaces
