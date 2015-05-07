@@ -484,25 +484,50 @@ public class WorkspaceMaterialController {
     return result;
   }
   
-  public List<ContentNode> listWorkspaceMaterialsAsContentNodes(WorkspaceEntity workspaceEntity, boolean includeHidden) throws WorkspaceMaterialException {
-   List<ContentNode> contentNodes = new ArrayList<>();
-   WorkspaceRootFolder rootFolder = findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
-   List<WorkspaceNode> rootMaterialNodes = includeHidden
-       ? listWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(rootFolder, WorkspaceFolderType.DEFAULT)
-       : listVisibleWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(rootFolder, WorkspaceFolderType.DEFAULT);
-   for (WorkspaceNode rootMaterialNode : rootMaterialNodes) {
-     ContentNode node = createContentNode(rootMaterialNode);
-     contentNodes.add(node);
-   }
-   return contentNodes;
+  public List<ContentNode> listVisibleEvaluableWorkspaceMaterialsAsContentNodes(WorkspaceEntity workspaceEntity) throws WorkspaceMaterialException {
+    // TODO: optimize this
+    
+    List<ContentNode> contentNodes = new ArrayList<>();
+   
+    WorkspaceRootFolder rootFolder = findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
+    List<WorkspaceNode> rootMaterialNodes = listVisibleWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(rootFolder, WorkspaceFolderType.DEFAULT);
+   
+    for (WorkspaceNode rootMaterialNode : rootMaterialNodes) {
+      ContentNode node = createContentNode(rootMaterialNode, WorkspaceMaterialAssignmentType.EVALUATED);
+      if (node != null) {
+        contentNodes.add(node);
+      }
+    }
+   
+    return contentNodes;
   }
 
+  public List<ContentNode> listWorkspaceMaterialsAsContentNodes(WorkspaceEntity workspaceEntity, boolean includeHidden) throws WorkspaceMaterialException {
+    List<ContentNode> contentNodes = new ArrayList<>();
+    
+    WorkspaceRootFolder rootFolder = findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
+    List<WorkspaceNode> rootMaterialNodes = includeHidden
+      ? listWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(rootFolder, WorkspaceFolderType.DEFAULT)
+      : listVisibleWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(rootFolder, WorkspaceFolderType.DEFAULT);
+
+    for (WorkspaceNode rootMaterialNode : rootMaterialNodes) {
+      ContentNode node = createContentNode(rootMaterialNode, null);
+      if (node != null) {
+        contentNodes.add(node);
+      }
+    }
+    
+    return contentNodes;
+  }
+  
   public List<ContentNode> listWorkspaceFrontPagesAsContentNodes(WorkspaceEntity workspaceEntity) throws WorkspaceMaterialException {
     List<ContentNode> contentNodes = new ArrayList<>();
     List<WorkspaceMaterial> frontPages = listFrontPages(workspaceEntity);
     for (WorkspaceNode frontPage : frontPages) {
-      ContentNode node = createContentNode(frontPage);
-      contentNodes.add(node);
+      ContentNode node = createContentNode(frontPage, null);
+      if (node != null) {
+        contentNodes.add(node);
+      }
     }
     return contentNodes;
   }
@@ -511,17 +536,19 @@ public class WorkspaceMaterialController {
     List<ContentNode> contentNodes = new ArrayList<>();
     List<WorkspaceMaterial> helpPages = listHelpPages(workspaceEntity);
     for (WorkspaceMaterial helpPage : helpPages) {
-      ContentNode node = createContentNode(helpPage);
-      contentNodes.add(node);
+      ContentNode node = createContentNode(helpPage, null);
+      if (node != null) {
+        contentNodes.add(node);
+      }
     }
     return contentNodes;
   }
 
-  private ContentNode createContentNode(WorkspaceNode rootMaterialNode) throws WorkspaceMaterialException {
-    return createContentNode(rootMaterialNode, 1);
+  private ContentNode createContentNode(WorkspaceNode rootMaterialNode, WorkspaceMaterialAssignmentType assignmentTypeFilter) throws WorkspaceMaterialException {
+    return createContentNode(rootMaterialNode, 1, assignmentTypeFilter);
   }
 
-  private ContentNode createContentNode(WorkspaceNode rootMaterialNode, int level) throws WorkspaceMaterialException {
+  private ContentNode createContentNode(WorkspaceNode rootMaterialNode, int level, WorkspaceMaterialAssignmentType assignmentTypeFilter) throws WorkspaceMaterialException {
     try {
       DOMParser parser = new DOMParser(new HTMLConfiguration());
       parser.setProperty("http://cyberneko.org/html/properties/names/elems", "lower");
@@ -553,20 +580,25 @@ public class WorkspaceMaterialController {
           if (child.isEmptyFolder) {
             contentNode = new ContentNode(child.emptyFolderTitle, "folder", rootMaterialNode.getId(), null, child.level, null, child.parentId, child.hidden, null, 0l, 0l);
           } else {
-            contentNode = createContentNode(child.node, child.level);
+            contentNode = createContentNode(child.node, child.level, assignmentTypeFilter);
           }
-          folderContentNode.addChild(contentNode);
+          
+          if (contentNode != null) {
+            folderContentNode.addChild(contentNode);
+          }
         }
 
         return folderContentNode;
       case MATERIAL:
         WorkspaceMaterial workspaceMaterial = (WorkspaceMaterial) rootMaterialNode;
-        Material material = materialController.findMaterialById(workspaceMaterial.getMaterialId());
-        Long currentRevision = material instanceof HtmlMaterial ? htmlMaterialController.lastHtmlMaterialRevision((HtmlMaterial) material) : 0l;
-        Long publishedRevision = material instanceof HtmlMaterial ? ((HtmlMaterial) material).getRevisionNumber() : 0l;
-        return new ContentNode(material.getTitle(), material.getType(), rootMaterialNode.getId(), material.getId(), level,
-            workspaceMaterial.getAssignmentType(), workspaceMaterial.getParent().getId(), workspaceMaterial.getHidden(),
-            getMaterialHtml(material, parser, transformer), currentRevision, publishedRevision);
+        if ((assignmentTypeFilter == null)||(assignmentTypeFilter.equals(workspaceMaterial.getAssignmentType()))) {
+          Material material = materialController.findMaterialById(workspaceMaterial.getMaterialId());
+          Long currentRevision = material instanceof HtmlMaterial ? htmlMaterialController.lastHtmlMaterialRevision((HtmlMaterial) material) : 0l;
+          Long publishedRevision = material instanceof HtmlMaterial ? ((HtmlMaterial) material).getRevisionNumber() : 0l;
+          return new ContentNode(material.getTitle(), material.getType(), rootMaterialNode.getId(), material.getId(), level,
+              workspaceMaterial.getAssignmentType(), workspaceMaterial.getParent().getId(), workspaceMaterial.getHidden(),
+              getMaterialHtml(material, parser, transformer), currentRevision, publishedRevision);
+        }
       default:
         return null;
       }
