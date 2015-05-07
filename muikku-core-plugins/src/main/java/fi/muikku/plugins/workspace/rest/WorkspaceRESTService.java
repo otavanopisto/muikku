@@ -838,8 +838,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     if(workspaceStudentEntity == null){
       return Response.status(Status.BAD_REQUEST).entity("WorkspaceUserEntityId is invalid").build();
     }
-    
-    //TODO: why null?
+
     fi.muikku.schooldata.entity.WorkspaceUser workspaceStudent = workspaceController.findWorkspaceUser(workspaceStudentEntity);
     
     Date evaluated = payload.getEvaluated();
