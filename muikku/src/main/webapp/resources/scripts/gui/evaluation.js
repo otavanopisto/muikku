@@ -276,7 +276,7 @@
         resizable: false,
         width: 'auto',
         height: 'auto',
-        title: '<span class="modal-title-student-name">Esimerkki Opiskelija 1</span><span class="modal-title-workspace-name">GE1 - Sininen planeetta</span>',
+        title: '<span class="modal-title-student-name">'+studentDisplayName+'</span><span class="modal-title-workspace-name">'+$('input[name="workspaceName"]').val()+'</span>',
         dialogClass: "evaluation-evaluate-modal",
         open: function() {
           $(this).find('input[name="evaluationDate"]')

@@ -560,90 +560,92 @@ body.evaluation {
         
         .evaluation-modal-workspace-assignment-info {
           
-          .evaluation-modal-workspace-assignment-title {
-            text-transform:uppercase;
-            font-size:16px;
-            padding:10px 20px;
-            background:#ce01bd;
-            color:#fff;
-            font-weight:400;
-          }
-          
+          /* ASSIGNMENT EVALUATION */
           .evaluation-modal-workspace-assignment-wrapper {
             margin:20px 0 0 0;
             
-            h2 {
-              color:#000;
-              font-weight:300;
-              border-left:20px solid #ce01bd;
-              padding:0 0 0 5px;
-              margin-left:-20px;
-              font-size:24px;
-            }
-            
-            p {
-              font-size:14px;
-              line-height:22px;
+            .evaluation-modal-workspace-single-assignment {
               margin:10px 0;
-              font-weight:400;
-              color:#000;
-            }
-            
-            textarea {
-              font-family:'Open Sans',Verdana, sans-serif;
-              border-radius:3px;
-              background:#ebf7ff;
-              padding:5px 10px;
-              margin:10px 0 20px 0;
-              font-weight:300;
-              font-style:italic;
-              border:0px;
-              color:#000;
-              resize:none;
               
-              &:focus {
-                box-shadow:none;
-                outline:none;
+              article {
+              
+                h2 {
+                  color:#000;
+                  font-weight:300;
+                  border-left:20px solid #ce01bd;
+                  padding:0 0 0 5px;
+                  margin-left:-20px;
+                  font-size:24px;
+                }
+                
+                p {
+                  font-size:14px;
+                  line-height:22px;
+                  margin:10px 0;
+                  font-weight:400;
+                  color:#000;
+                }
+                
+                textarea {
+                  font-family:'Open Sans',Verdana, sans-serif;
+                  border-radius:3px;
+                  background:#ebf7ff;
+                  padding:5px 10px;
+                  margin:10;
+                  font-weight:300;
+                  font-style:italic;
+                  border:0px;
+                  color:#000;
+                  resize:none;
+                  
+                  &:focus {
+                    box-shadow:none;
+                    outline:none;
+                  }
+                }
+                
               }
+              
             }
           
           }
           
-          .evaluation-modal-workspace-exercise-title {
-            text-transform:uppercase;
-            font-size:16px;
-            padding:10px 20px;
-            background:#ff9900;
-            color:#fff;
-            font-weight:400;
-          }
-          
+          /* EXERCISE EVALUATION */
           .evaluation-modal-workspace-exercise-wrapper {
             margin:20px 0 0 0;
             
-            h3 {
-              color:#000;
-              font-weight:300;
-              border-left:20px solid #ff9900;
-              padding:0 0 0 5px;
-              margin-left:-20px;
-            }
-            
-            p {
-              font-size:14px;
-              line-height:22px;
+            .evaluation-modal-workspace-single-exercise {
               margin:10px 0;
-              font-weight:400;
-              color:#000;
-            }
+              
+              article {
             
-            p.evaluation-modal-exercise-student-answer {
-              border-radius:3px;
-              background:#ffebcc;
-              padding:5px 10px;
-              margin:10px 0 20px 0;
-              font-weight:300;
-              font-style:italic;
+                h2 {
+                  color:#000;
+                  font-weight:300;
+                  border-left:20px solid #ff9900;
+                  padding:0 0 0 5px;
+                  margin-left:-20px;
+                }
+                
+                p {
+                  font-size:14px;
+                  line-height:22px;
+                  margin:10px 0;
+                  font-weight:400;
+                  color:#000;
+                }
+                
+                textarea {
+                  border-radius:3px;
+                  background:#ffebcc;
+                  padding:5px 10px;
+                  margin:10px 0 20px 0;
+                  font-weight:300;
+                  font-style:italic;
+                }
+                
+              }
+            
             }
           
           }
