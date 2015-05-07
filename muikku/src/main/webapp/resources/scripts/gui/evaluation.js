@@ -154,10 +154,11 @@
       
     }
   });
-  
-  function openWorkspaceEvaluationDialog(workspaceEntityId, workspaceStudentEntityId, studentDisplayName){
+
+  function openWorkspaceEvaluationDialog(workspaceEntityId, studentEntityId, workspaceStudentEntityId, studentDisplayName){
     renderDustTemplate('evaluation/evaluation_evaluate_workspace_modal_view.dust', {
-      gradingScales: $.parseJSON($('input[name="grading-scales"]').val())
+      gradingScales: $.parseJSON($('input[name="grading-scales"]').val()),
+      assignments: ASSIGNMENTS
     }, $.proxy(function (text) {
       var dialog = $(text); 
       
@@ -178,6 +179,38 @@
           
           $(this).find('input[name="evaluated"]')
             .datepicker('setDate', new Date());
+          
+          var workspaceMaterialIds = $.map(ASSIGNMENTS, function (assignment) {
+            return assignment.workspaceMaterialId;
+          });
+         
+          var batchCalls = $.map(workspaceMaterialIds, function (workspaceMaterialId) {
+            return mApi().workspace.workspaces.materials.replies.read(workspaceEntityId, workspaceMaterialId, {
+              userEntityId: studentEntityId
+            });
+          });
+          
+          mApi().batch(batchCalls).callback(function (err, results) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            } else {
+              var answers = $.map(results, function(result) {
+                return result.answers;
+              });
+
+              var fieldAnswers = {};
+              if (answers && answers.length) {
+                for (var i = 0, l = answers.length; i < l; i++) {
+                  var answer = answers[i];
+                  var answerKey = [answer.materialId, answer.embedId, answer.fieldName].join('.');
+                  fieldAnswers[answerKey] = answer.value;
+                }
+              }
+              
+              $(document).muikkuMaterialLoader('loadMaterials', $(dialog).find('.evaluation-assignment'), fieldAnswers);
+            }
+          });
+          
         },
         buttons: [{
           'text': dialog.data('button-save-text'),
@@ -282,7 +315,7 @@
                 }
               }
               
-              $(document).muikkuMaterialLoader('loadMaterials', $('.evaluation-assignment'), fieldAnswers);
+              $(document).muikkuMaterialLoader('loadMaterials', $(dialog).find('.evaluation-assignment'), fieldAnswers);
             }
           });
           
@@ -421,7 +454,7 @@
       var workspaceEntityId = $('input[name="workspace-entity-id"]').val();
       var workspaceStudentEntityId = $(this).attr('data-workspace-student-entity-id');
       var studentDisplayName = $(this).find('.evaluation-student-name').text();
-      openWorkspaceEvaluationDialog(workspaceEntityId, workspaceStudentEntityId, studentDisplayName);
+      openWorkspaceEvaluationDialog(workspaceEntityId, studentEntityId, workspaceStudentEntityId, studentDisplayName);
     });
     
     /* Evaluate assignment when its state is DONE or CRITICAL (means its late) */

@@ -3,9 +3,9 @@
     <div class="evaluation-modal-workspace-assignment-info">
       <div class="evaluation-modal-workspace-assignment-wrapper">
         <div class="evaluation-modal-workspace-single-assignment">
-          <!-- Tässä pitäisi alkaa looppi jossa haetaan kaikki kurssin tehtävien vastaukset joko folding containereihin tai suoraan sivulle -->
-          {>"evaluation/evaluation_evaluate_single_assigment.dust"/}
-          
+          {#assignments}
+            {>"evaluation/evaluation_evaluate_single_assigment.dust"/}
+          {/assignments}
         </div>
       </div>
 
