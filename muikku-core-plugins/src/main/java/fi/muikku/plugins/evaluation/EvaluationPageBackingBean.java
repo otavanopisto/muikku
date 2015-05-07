@@ -150,7 +150,7 @@ public class EvaluationPageBackingBean {
         studentAssignments.add(new StudentAssignment(userEntity.getId(), evaluation != null ? evaluation.getId() : null, status));
       }
       
-      result.add(new Assignment(workspaceMaterial.getId(), assignmentNode.getTitle(), studentAssignments));
+      result.add(new Assignment(workspaceMaterial.getId(), workspaceMaterial.getMaterialId(), assignmentNode.getTitle(), assignmentNode.getHtml(), assignmentNode.getType(), studentAssignments));
     }
     
     return result;
@@ -218,9 +218,12 @@ public class EvaluationPageBackingBean {
 
   public static class Assignment {
     
-    public Assignment(Long workspaceMaterialId, String title, List<StudentAssignment> studentAssignments) {
+    public Assignment(Long workspaceMaterialId, Long materialId, String title, String html, String type, List<StudentAssignment> studentAssignments) {
+      this.materialId = materialId;
       this.workspaceMaterialId = workspaceMaterialId;
       this.title = title;
+      this.html = html;
+      this.type = type;
       this.studentAssignments = studentAssignments;
     }
     
@@ -228,8 +231,20 @@ public class EvaluationPageBackingBean {
       return workspaceMaterialId;
     }
     
+    public Long getMaterialId() {
+      return materialId;
+    }
+    
     public String getTitle() {
       return title;
+    }
+    
+    public String getHtml() {
+      return html;
+    }
+    
+    public String getType() {
+      return type;
     }
     
     public List<StudentAssignment> getStudentAssignments() {
@@ -237,7 +252,10 @@ public class EvaluationPageBackingBean {
     }
     
     private Long workspaceMaterialId;
+    private Long materialId;
     private String title;
+    private String html;
+    private String type;
     private List<StudentAssignment> studentAssignments;
   }
   
