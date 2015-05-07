@@ -185,7 +185,7 @@
         resizable: false,
         width: 'auto',
         height: 'auto',
-        title: '<span class="modal-title-student-name">'+studentDisplayName+'</span><span class="modal-title-workspace-name">'+workspaceName+'</span>',
+        title: '<span class="modal-title-student-name">'+studentDisplayName+'</span><span class="modal-title-workspace-name">'+$('input[name="workspaceName"]').val()+'</span>',
         dialogClass: "evaluation-evaluate-modal",
         open: function() {
           
@@ -303,7 +303,7 @@
         resizable: false,
         width: 'auto',
         height: 'auto',
-        title: '<span class="modal-title-student-name">'+studentDisplayName+'</span><span class="modal-title-workspace-name">'+workspaceName+'</span>',
+        title: '<span class="modal-title-student-name">'+studentDisplayName+'</span><span class="modal-title-workspace-name">'+$('input[name="workspaceName"]').val()+'</span>',
         dialogClass: "evaluation-evaluate-modal",
         open: function() {
           $(this).find('input[name="evaluationDate"]')
