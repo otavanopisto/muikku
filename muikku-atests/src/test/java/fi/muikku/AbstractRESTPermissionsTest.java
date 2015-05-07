@@ -30,6 +30,7 @@ import com.jayway.restassured.response.Response;
 import com.jayway.restassured.specification.RequestSpecification;
 
 import fi.muikku.model.users.EnvironmentRoleArchetype;
+import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.security.MuikkuPermissionCollection;
 import fi.pyramus.rest.model.Email;
 import fi.pyramus.rest.model.Student;
@@ -237,20 +238,32 @@ public abstract class AbstractRESTPermissionsTest extends AbstractIntegrationTes
     return RestAssured.given().headers(getAuthHeaders());
   }
   
-  public boolean roleIsAllowed(String role, List<EnvironmentRoleArchetype> allowedRoles) {
-    // Everyone -> every role has access
-//    if (allowedRoles.contains(Role.EVERYONE.name()))
-//      return true;
-    
-    EnvironmentRoleArchetype environmentRoleArchetype = EnvironmentRoleArchetype.valueOf(role);
-    
-    for (fi.muikku.model.users.EnvironmentRoleArchetype str : allowedRoles) {
-      if (str.equals(environmentRoleArchetype)) {
-        return true;
-      }
-    }
-    return false;
-  }
+//  public boolean roleIsAllowed(String role, List<EnvironmentRoleArchetype> allowedRoles) {
+//    // Everyone -> every role has access
+////    if (allowedRoles.contains(Role.EVERYONE.name()))
+////      return true;
+//    
+//    switch (getRoleType()) {
+//      case PSEUDO:
+//        
+//      break;
+//      
+//      case ENVIRONMENT:
+//        EnvironmentRoleArchetype environmentRoleArchetype = EnvironmentRoleArchetype.valueOf(role);
+//        
+//        for (fi.muikku.model.users.EnvironmentRoleArchetype str : allowedRoles) {
+//          if (str.equals(environmentRoleArchetype)) {
+//            return true;
+//          }
+//        }
+//      break;
+//      
+//      case WORKSPACE:
+//      break;
+//    }
+//    
+//    return false;
+//  }
 
 //  public void assertOk(String path, List<String> allowedRoles) {
 //    if (!Role.EVERYONE.name().equals(getRole())) {
@@ -269,18 +282,54 @@ public abstract class AbstractRESTPermissionsTest extends AbstractIntegrationTes
   }
   
   public void assertOk(Response response, MuikkuPermissionCollection permissionCollection, String permission, int successStatusCode) throws NoSuchFieldException {
-//    if (!Role.EVERYONE.name().equals(getRole())) {
+    boolean roleIsAllowed = false;
     
-      List<fi.muikku.model.users.EnvironmentRoleArchetype> allowedRoles = asList(permissionCollection.getDefaultEnvironmentRoles(permission));
+    switch (getRoleType()) {
+      case PSEUDO:
+        String[] defaultPseudoRoles = permissionCollection.getDefaultPseudoRoles(permission);
+        
+        for (String dpr : defaultPseudoRoles) {
+          System.out.println(dpr + "=" + getRole());
+          
+          if (dpr.equals(getRole())) {
+            roleIsAllowed = true;
+            break;
+          }
+        }
+      break;
       
-      if (roleIsAllowed(getRole(), allowedRoles)) {
-        response.then().assertThat().statusCode(successStatusCode);
-      } else {
-        response.then().assertThat().statusCode(403);
-      }
-//    }
-//    else
-//      response.then().assertThat().statusCode(400);
+      case ENVIRONMENT:
+        List<fi.muikku.model.users.EnvironmentRoleArchetype> allowedRoles = asList(permissionCollection.getDefaultEnvironmentRoles(permission));
+
+        EnvironmentRoleArchetype environmentRoleArchetype = EnvironmentRoleArchetype.valueOf(getRole());
+        
+        for (fi.muikku.model.users.EnvironmentRoleArchetype str : allowedRoles) {
+          if (str.equals(environmentRoleArchetype)) {
+            roleIsAllowed = true;
+            break;
+          }
+        }
+      break;
+      
+      case WORKSPACE:
+        WorkspaceRoleArchetype[] defaultWorkspaceRoles = permissionCollection.getDefaultWorkspaceRoles(permission);
+
+        WorkspaceRoleArchetype workspaceRoleArchetype = WorkspaceRoleArchetype.valueOf(getRole());
+        
+        for (WorkspaceRoleArchetype dwr : defaultWorkspaceRoles) {
+          if (dwr.equals(workspaceRoleArchetype)) {
+            roleIsAllowed = true;
+            break;
+          }
+        }
+      break;
+    }
+
+    if (roleIsAllowed) {
+      response.then().assertThat().statusCode(successStatusCode);
+    } else {
+      response.then().assertThat().statusCode(403);
+    }
   }
   
   @SafeVarargs
@@ -297,11 +346,15 @@ public abstract class AbstractRESTPermissionsTest extends AbstractIntegrationTes
     
     List<Object[]> data = new ArrayList<Object[]>();
     
-    for (EnvironmentRoleArchetype role : EnvironmentRoleArchetype.values()) {
-      data.add(new Object[] { 
-        role.name() 
-      });
-    }
+//    for (EnvironmentRoleArchetype role : EnvironmentRoleArchetype.values()) {
+//      data.add(new Object[] { 
+//        role.name() 
+//      });
+//    }
+    
+    data.add(new Object[] {
+      "PSEUDO-EVERYONE"
+    });
     
     return data;
   }
@@ -311,10 +364,44 @@ public abstract class AbstractRESTPermissionsTest extends AbstractIntegrationTes
   }
 
   protected void setRole(String role) {
-    this.role = role;
+    if (role.startsWith(ROLEPREFIX_PSEUDO)) {
+      roleType = RoleType.PSEUDO;
+      
+      this.role = role.substring(ROLEPREFIX_PSEUDO.length());
+    }
+    
+    if (role.startsWith(ROLEPREFIX_ENVIRONMENT)) {
+      roleType = RoleType.ENVIRONMENT;
+      
+      this.role = role.substring(ROLEPREFIX_ENVIRONMENT.length());
+    }
+
+    if (role.startsWith(ROLEPREFIX_WORKSPACE)) {
+      roleType = RoleType.WORKSPACE;
+      
+      this.role = role.substring(ROLEPREFIX_WORKSPACE.length());
+    }
+
+    System.out.println("Attenzioon deteczioon: " + getRoleType() + " " + getRole());
   }
 
-  protected String role;
+  protected RoleType getRoleType() {
+    return roleType;
+  }
+  
+  enum RoleType {
+    PSEUDO,
+    ENVIRONMENT,
+    WORKSPACE
+  }
+  
+  private static String ROLEPREFIX_PSEUDO = "PSEUDO-";
+  private static String ROLEPREFIX_ENVIRONMENT = "ENVIRONMENT-";
+  private static String ROLEPREFIX_WORKSPACE = "WORKSPACE-";
+  
+  private String role;
+  private RoleType roleType;
+  
   private String accessToken;
   private String adminAccessToken;
 }
