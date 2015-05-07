@@ -173,7 +173,8 @@
     renderDustTemplate('evaluation/evaluation_evaluate_modal_view.dust', {
       studentDisplayName: studentDisplayName,
       gradingScales: $.parseJSON($('input[name="grading-scales"]').val()),
-      assessors: $.parseJSON($('input[name="assessors"]').val())
+      assessors: $.parseJSON($('input[name="assessors"]').val()),
+      workspaceName: $('input[name="workspaceName"]').val()
     }, $.proxy(function (text) {
       var dialog = $(text);
 

@@ -6,7 +6,7 @@
         <span class="title">Opiskelijan linja</span><span class="desc">Lukio</span>
       </div>
       <div class="meta-workspace">
-        <span class="title">Kurssi</span><span class="desc">GE1 - Sininen planeetta</span>
+        <span class="title">Kurssi</span><span class="desc">{workspaceName}</span>
       </div>
     </div>
   </header>
