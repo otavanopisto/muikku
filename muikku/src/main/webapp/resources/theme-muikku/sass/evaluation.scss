@@ -30,7 +30,7 @@ body.evaluation {
   
     span[class*='evaluation-workspacelist-tt-container-'] {
       opacity:0;
-      font-family:"Open Sans";
+      font-family:'Open Sans',Verdana, sans-serif;
       font-size:16px;
       height:16px;
       font-weight:300;
@@ -223,7 +223,7 @@ body.evaluation {
               &.workspace-evaluated {
               
                 .evaluation-student-picture {
-                  box-shadow:0 0 0 5px #16a506;
+                  box-shadow:0 0 0 5px #3cdd2a;
                 }
 
               }
@@ -309,7 +309,7 @@ body.evaluation {
                 
                 &.assignment-evaluated {
                   opacity:1;
-                  box-shadow:0 0 0 5px #16a506;
+                  box-shadow:0 0 0 5px #3cdd2a;
                   cursor:pointer;
                   
                   &:hover {
@@ -589,13 +589,22 @@ body.evaluation {
               color:#000;
             }
             
-            p.evaluation-modal-assignment-student-answer {
+            textarea {
+              font-family:'Open Sans',Verdana, sans-serif;
               border-radius:3px;
               background:#ebf7ff;
               padding:5px 10px;
               margin:10px 0 20px 0;
               font-weight:300;
               font-style:italic;
+              border:0px;
+              color:#000;
+              resize:none;
+              
+              &:focus {
+                box-shadow:none;
+                outline:none;
+              }
             }
           
           }
@@ -731,7 +740,7 @@ body.evaluation {
           color:#000;
           outline:none;
           transition:border 0.15s ease-in-out;
-          font-family:"Open Sans", arial;
+          font-family:'Open Sans',Verdana, sans-serif;
           font-weight:300;
           
           &:hover,
@@ -785,7 +794,7 @@ body.evaluation {
           text-transform:uppercase;
           margin:5px;
           outline:none;
-          font-family:"Open Sans";
+          font-family:'Open Sans',Verdana, sans-serif;
           min-width:90px;
           font-size:18px;
         }
@@ -934,7 +943,7 @@ body.evaluation {
           text-transform:uppercase;
           margin:5px;
           outline:none;
-          font-family:"Open Sans";
+          font-family:'Open Sans',Verdana, sans-serif;
           min-width:90px;
           font-size:18px;
           
@@ -957,7 +966,7 @@ body.evaluation {
   }
   
   #ui-datepicker-div {
-    font-family:"Open Sans", arial;
+    font-family:'Open Sans',Verdana, sans-serif;
     font-size:13px;
     box-shadow:0 0 30px 5px rgba(0,0,0,0.3);
     border:0;

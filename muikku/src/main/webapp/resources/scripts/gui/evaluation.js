@@ -171,12 +171,12 @@
         open: function() {
           // TODO: Assessor select
           
-          $(this).find('input[name="evaluated"]')
+          $(this).find('input[name="evaluationDate"]')
             .css({'z-index': 9999, 'position': 'relative'})
             .attr('type', 'text')
             .datepicker();
           
-          $(this).find('input[name="evaluated"]')
+          $(this).find('input[name="evaluationDate"]')
             .datepicker('setDate', new Date());
         },
         buttons: [{
@@ -189,10 +189,10 @@
             var grade = gradeValue[0].split('/', 2);
             var gradingScale = gradeValue[1].split('/', 2);
             // TODO: Switch to ISO 8601
-            var evaluated = $(this).find('input[name="evaluated"]').datepicker('getDate').getTime();
+            var evaluationDate = $(this).find('input[name="evaluationDate"]').datepicker('getDate').getTime();
             //TODO: Save to pyramus
             mApi().workspace.workspaces.assessments.create(workspaceEntityId, {
-              evaluated: evaluated,
+              evaluated: evaluationDate,
               gradeIdentifier: grade[0],
               gradeSchoolDataSource: grade[1],
               gradingScaleIdentifier: gradingScale[0],
@@ -246,20 +246,20 @@
         title: '<span class="modal-title-student-name">Esimerkki Opiskelija 1</span><span class="modal-title-workspace-name">GE1 - Sininen planeetta</span>',
         dialogClass: "evaluation-evaluate-modal",
         open: function() {
-          $(this).find('input[name="evaluated"]')
+          $(this).find('input[name="evaluationDate"]')
             .css({'z-index': 9999, 'position': 'relative'})
             .attr('type', 'text')
             .datepicker();
           
           if (!workspaceMaterialEvaluation) {
-            $(this).find('input[name="evaluated"]')
+            $(this).find('input[name="evaluationDate"]')
               .datepicker('setDate', new Date());
           } else {
             var gradeId = 
               workspaceMaterialEvaluation.gradeIdentifier + '/' + workspaceMaterialEvaluation.gradeSchoolDataSource + '@' + 
               workspaceMaterialEvaluation.gradingScaleIdentifier + '/' + workspaceMaterialEvaluation.gradingScaleSchoolDataSource;
                 
-            $(this).find('input[name="evaluated"]')
+            $(this).find('input[name="evaluationDate"]')
               .datepicker('setDate', new Date(workspaceMaterialEvaluation.evaluated));
             $(this).find('#evaluateFormLiteralEvaluation').val(workspaceMaterialEvaluation.verbalAssessment);
             $(this).find('select[name="grade"]').val(gradeId);
@@ -297,12 +297,12 @@
             var grade = gradeValue[0].split('/', 2);
             var gradingScale = gradeValue[1].split('/', 2);
             // TODO: Switch to ISO 8601
-            var evaluated = $(this).find('input[name="evaluated"]').datepicker('getDate').getTime();
+            var evaluationDate = $(this).find('input[name="evaluationDate"]').datepicker('getDate').getTime();
             var assessorEntityId = $(this).find('select[name="assessor"]').val();
             
             if (workspaceMaterialEvaluation && workspaceMaterialEvaluation.id) {
               mApi().workspace.workspaces.materials.evaluations.update(workspaceEntityId, workspaceMaterialId, workspaceMaterialEvaluation.id, {
-                evaluated: evaluated,
+                evaluated: evaluationDate,
                 gradeIdentifier: grade[0],
                 gradeSchoolDataSource: grade[1],
                 gradingScaleIdentifier: gradingScale[0],
@@ -320,7 +320,7 @@
               }, this));
             } else {
               mApi().workspace.workspaces.materials.evaluations.create(workspaceEntityId, workspaceMaterialId, {
-                evaluated: evaluated,
+                evaluated: evaluationDate,
                 gradeIdentifier: grade[0],
                 gradeSchoolDataSource: grade[1],
                 gradingScaleIdentifier: gradingScale[0],
