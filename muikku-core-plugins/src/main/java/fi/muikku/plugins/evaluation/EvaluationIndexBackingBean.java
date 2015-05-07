@@ -198,6 +198,8 @@ public class EvaluationIndexBackingBean {
       schoolDataBridgeSessionController.endSystemSession();
     }
     
+    workspaceStudentCount = workspaceController.countWorkspaceUserEntitiesByWorkspaceRoleArchetype(workspaceEntity, WorkspaceRoleArchetype.STUDENT);
+    
     return null;
   }
   
@@ -248,6 +250,10 @@ public class EvaluationIndexBackingBean {
   public String getAssignments() {
     return assignments;
   }
+
+  public Long getWorkspaceStudentCount() {
+    return workspaceStudentCount;
+  }
   
   private List<Assignment> createAssignments(List<ContentNode> assignmentNodes) {
     List<Assignment> result = new ArrayList<>(assignmentNodes.size());
@@ -269,6 +275,7 @@ public class EvaluationIndexBackingBean {
   private String gradingScales;
   private String assessors;
   private String assignments;
+  private Long workspaceStudentCount;
 
   public static class Assignment {
     
