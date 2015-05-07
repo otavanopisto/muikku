@@ -21,6 +21,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.muikku.jsf.NavigationRules;
+import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleArchetype;
@@ -39,6 +40,7 @@ import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceType;
 import fi.muikku.session.SessionController;
+import fi.muikku.users.EnvironmentUserController;
 import fi.muikku.users.UserController;
 import fi.otavanopisto.security.LoggedIn;
 
@@ -77,11 +79,26 @@ public class EvaluationIndexBackingBean {
   private WorkspaceMaterialController workspaceMaterialController;
 
   @Inject
+  private EnvironmentUserController environmentUserController;
+
+  @Inject
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
 
   @RequestAction
   public String init() {
-    // TODO: Logged in as teacher?
+    EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(sessionController.getLoggedUserEntity());
+    if (environmentUser == null) {
+      return NavigationRules.ACCESS_DENIED;  
+    }
+    
+    switch (environmentUser.getRole().getArchetype()) {
+      case TEACHER:
+      case ADMINISTRATOR:
+      case MANAGER:
+      break;
+      default:
+        return NavigationRules.ACCESS_DENIED;  
+    }
     
     Long loggedUserEntityId = sessionController.getLoggedUserEntity().getId();
     
