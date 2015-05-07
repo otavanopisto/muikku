@@ -454,6 +454,7 @@
       var workspaceEntityId = $('input[name="workspace-entity-id"]').val();
       var workspaceStudentEntityId = $(this).attr('data-workspace-student-entity-id');
       var studentDisplayName = $(this).find('.evaluation-student-name').text();
+      var studentEntityId = $(this).attr('data-user-entity-id');
       openWorkspaceEvaluationDialog(workspaceEntityId, studentEntityId, workspaceStudentEntityId, studentDisplayName);
     });
     
