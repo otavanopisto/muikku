@@ -23,6 +23,9 @@ import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
+import fi.muikku.plugins.assessmentrequest.AssessmentRequest;
+import fi.muikku.plugins.assessmentrequest.AssessmentRequestController;
+import fi.muikku.plugins.assessmentrequest.AssessmentRequestState;
 import fi.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.muikku.plugins.workspace.ContentNode;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
@@ -80,6 +83,9 @@ public class EvaluationPageBackingBean {
 
   @Inject
   private GradingController gradingController;
+  
+  @Inject
+  private AssessmentRequestController assessmentRequestController;
 
   @RequestAction
   public String init() {
@@ -128,7 +134,14 @@ public class EvaluationPageBackingBean {
             }
 
           }
-
+          List<AssessmentRequest> assessmentRequests = assessmentRequestController.listByWorkspaceIdAndStudentIdOrderByCreated(workspaceEntity.getId(), userEntity.getId());
+          if(!assessmentRequests.isEmpty()){
+            AssessmentRequest assessmentRequest = assessmentRequests.get(0);
+            if(AssessmentRequestState.PENDING == assessmentRequest.getState()){
+              status = "ASSESSMENTREQUESTED";
+            }
+          }
+          
           List<StudentAssignment> studentAssignments = new ArrayList<>();
 
           try {
