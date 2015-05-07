@@ -82,6 +82,14 @@ public class WorkspaceUserEntityController {
     return workspaceUserEntityDAO.listByWorkspaceAndRoles(workspaceEntity, roles, firstResult, maxResults);
   }
   
+  public Long countWorkspaceUserEntitiesByRoles(WorkspaceEntity workspaceEntity, List<WorkspaceRoleEntity> roles) {
+    if ((roles == null)||(roles.isEmpty())) {
+      return 0l;
+    }
+    
+    return workspaceUserEntityDAO.countByWorkspaceAndRoles(workspaceEntity, roles);
+  }
+  
   public List<WorkspaceUserEntity> listWorkspaceUserEntitiesByUserEntity(UserEntity userEntity) {
     return workspaceUserEntityDAO.listByUserEntityAndArchived(userEntity, Boolean.FALSE);
   }

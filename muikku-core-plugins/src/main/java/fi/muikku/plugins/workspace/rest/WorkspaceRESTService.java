@@ -48,12 +48,15 @@ import fi.muikku.plugins.material.model.QueryField;
 import fi.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.muikku.plugins.workspace.WorkspaceMaterialDeleteError;
+import fi.muikku.plugins.workspace.WorkspaceMaterialFieldAnswerController;
 import fi.muikku.plugins.workspace.WorkspaceMaterialFieldController;
 import fi.muikku.plugins.workspace.WorkspaceMaterialReplyController;
 import fi.muikku.plugins.workspace.WorkspaceVisitController;
 import fi.muikku.plugins.workspace.fieldio.WorkspaceFieldIOException;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswer;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswerFile;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceAssessment;
@@ -120,6 +123,9 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @Inject
   private WorkspaceMaterialReplyController workspaceMaterialReplyController;
+  
+  @Inject
+  private WorkspaceMaterialFieldAnswerController workspaceMaterialFieldAnswerController;
   
   @Inject
   private MaterialController materialController;
@@ -573,6 +579,29 @@ public class WorkspaceRESTService extends PluginRESTService {
     WorkspaceMaterialReply result = new WorkspaceMaterialReply(answers);
     
     return Response.ok(result).build();
+  }
+
+  @GET
+  @Path("/fileanswer/{FILEID}")
+  public Response getFileAnswer(@PathParam("FILEID") String fileId) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    WorkspaceMaterialFileFieldAnswerFile answerFile = workspaceMaterialFieldAnswerController.findWorkspaceMaterialFileFieldAnswerFileByFileId(fileId);
+    if (answerFile != null) {
+      WorkspaceMaterialFileFieldAnswer fieldAnswer = answerFile.getFieldAnswer();
+      fi.muikku.plugins.workspace.model.WorkspaceMaterialReply reply = fieldAnswer.getReply();
+      WorkspaceMaterial workspaceMaterial = reply.getWorkspaceMaterial();
+      Long workspaceEntityId = workspaceMaterialController.getWorkspaceEntityId(workspaceMaterial);
+      // TODO Security; only allow if userEntity is current user or workspace teacher
+      WorkspaceEntity workspace = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+      UserEntity userEntity = userEntityController.findUserEntityById(reply.getUserEntityId());
+      return Response.ok(answerFile.getContent())
+        .type(answerFile.getContentType())
+        .header("content-disposition", "attachment; filename =" + answerFile.getFileName())
+        .build();
+    }
+    return Response.status(Status.NOT_FOUND).build();
   }
 
   @GET

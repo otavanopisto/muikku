@@ -8,11 +8,15 @@
   <div class="evaluation-view-wrapper">
     <div class="evaluation-student-listing-wrapper">
       <ui:repeat var="student" value="#{evaluationPageBackingBean.workspaceStudents}">
-        <div data-assignment-data="#{student.studentAssignmentData}" jsf:rendered="#{student.status eq 'UNASSESSED'}" data-user-entity-id="#{student.userEntityId}" data-display-name="#{student.displayName}" data-workspace-student-entity-id="#{student.workspaceUserEntityId}" class="evaluation-student-wrapper">
+        <div data-workspace-evaluated="false" data-workspace-evaluation-data="#{student.workspaceAssessmentData}" data-assignment-data="#{student.studentAssignmentData}" jsf:rendered="#{student.status eq 'UNASSESSED'}" data-user-entity-id="#{student.userEntityId}" data-display-name="#{student.displayName}" data-workspace-student-entity-id="#{student.workspaceUserEntityId}" class="evaluation-student-wrapper">
            <div class="evaluation-student-picture"></div>
            <div class="evaluation-student-name">#{student.displayName}</div>
         </div>
-        <div data-assignment-data="#{student.studentAssignmentData}" jsf:rendered="#{student.status eq 'ASSESSED'}" data-user-entity-id="#{student.userEntityId}" data-display-name="#{student.displayName}" data-workspace-student-entity-id="#{student.workspaceUserEntityId}" class="evaluation-student-wrapper workspace-evaluated">
+        <div data-workspace-evaluated="true" data-workspace-evaluation-data="#{student.workspaceAssessmentData}" data-assignment-data="#{student.studentAssignmentData}" jsf:rendered="#{student.status eq 'ASSESSED'}" data-user-entity-id="#{student.userEntityId}" data-display-name="#{student.displayName}" data-workspace-student-entity-id="#{student.workspaceUserEntityId}" class="evaluation-student-wrapper workspace-evaluated">
+           <div class="evaluation-student-picture"></div>
+           <div class="evaluation-student-name">#{student.displayName}</div>
+        </div>
+        <div data-workspace-evaluated="true" data-workspace-evaluation-data="#{student.workspaceAssessmentData}" data-assignment-data="#{student.studentAssignmentData}" jsf:rendered="#{student.status eq 'ASSESSMENTREQUESTED'}" data-user-entity-id="#{student.userEntityId}" data-display-name="#{student.displayName}" data-workspace-student-entity-id="#{student.workspaceUserEntityId}" class="evaluation-student-wrapper workspace-assessment-requested">
            <div class="evaluation-student-picture"></div>
            <div class="evaluation-student-name">#{student.displayName}</div>
         </div>

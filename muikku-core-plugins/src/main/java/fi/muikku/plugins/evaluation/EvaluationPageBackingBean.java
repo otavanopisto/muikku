@@ -23,6 +23,9 @@ import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
+import fi.muikku.plugins.assessmentrequest.AssessmentRequest;
+import fi.muikku.plugins.assessmentrequest.AssessmentRequestController;
+import fi.muikku.plugins.assessmentrequest.AssessmentRequestState;
 import fi.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
 import fi.muikku.plugins.workspace.ContentNode;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
@@ -80,6 +83,9 @@ public class EvaluationPageBackingBean {
 
   @Inject
   private GradingController gradingController;
+  
+  @Inject
+  private AssessmentRequestController assessmentRequestController;
 
   @RequestAction
   public String init() {
@@ -121,14 +127,21 @@ public class EvaluationPageBackingBean {
             User assessingUser = userController.findUserByDataSourceAndIdentifier(assessment.getAssessingUserSchoolDataSource(), assessment.getAssessingUserIdentifier());
             UserEntity assessingUserEntity = userEntityController.findUserEntityByUser(assessingUser);
             try {
-              assessmentData = new ObjectMapper().writeValueAsString(new WorkspaceStudentEvaluation(gradeString, assessment.getVerbalAssessment(), assessingUserEntity.getId(), assessment.getDate().getTime()));
+              assessmentData = new ObjectMapper().writeValueAsString(new WorkspaceStudentEvaluation(assessment.getIdentifier(), gradeString, assessment.getVerbalAssessment(), assessingUserEntity.getId(), assessment.getDate().getTime()));
             } catch (JsonProcessingException e) {
               logger.log(Level.SEVERE, "Assessment data serialization failed", e);
               return NavigationRules.INTERNAL_ERROR;
             }
 
           }
-
+          List<AssessmentRequest> assessmentRequests = assessmentRequestController.listByWorkspaceIdAndStudentIdOrderByCreated(workspaceEntity.getId(), userEntity.getId());
+          if(!assessmentRequests.isEmpty()){
+            AssessmentRequest assessmentRequest = assessmentRequests.get(0);
+            if(AssessmentRequestState.PENDING == assessmentRequest.getState()){
+              status = "ASSESSMENTREQUESTED";
+            }
+          }
+          
           List<StudentAssignment> studentAssignments = new ArrayList<>();
 
           try {
@@ -209,6 +222,7 @@ public class EvaluationPageBackingBean {
       this.displayName = displayName;
       this.status = status;
       this.studentAssignmentData = studentAssignmentData;
+      this.workspaceAssessmentData = workspaceAssessmentData;
     }
 
     public Long getUserEntityId() {
@@ -244,7 +258,7 @@ public class EvaluationPageBackingBean {
   }
 
   public static class WorkspaceStudentEvaluation {
-    WorkspaceStudentEvaluation(String gradeString, String verbalAssessment, Long assessingUserEntityId, Long date) {
+    WorkspaceStudentEvaluation(String assessmentIdentifier, String gradeString, String verbalAssessment, Long assessingUserEntityId, Long date) {
       this.assessingUserEntityId = assessingUserEntityId;
       this.gradeString = gradeString;
       this.verbalAssessment = verbalAssessment;
@@ -265,8 +279,13 @@ public class EvaluationPageBackingBean {
 
     public Long getDate() {
       return date;
+    } 
+    
+    public String getAssessmentIdentifier() {
+      return assessmentIdentifier;
     }
-
+    
+    private String assessmentIdentifier;
     private String gradeString;
     private String verbalAssessment;
     private Long assessingUserEntityId;
