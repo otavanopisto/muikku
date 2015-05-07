@@ -28,8 +28,11 @@ import fi.muikku.plugins.workspace.WorkspaceMaterialReplyController;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
+import fi.muikku.schooldata.GradingController;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.User;
+import fi.muikku.schooldata.entity.Workspace;
+import fi.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
 import fi.otavanopisto.security.LoggedIn;
@@ -71,6 +74,9 @@ public class EvaluationPageBackingBean {
   @Inject
   private UserController userController;
   
+  @Inject
+  private GradingController gradingController;
+  
   @RequestAction
   public String init() {
     // TODO: Logged in as teacher?
@@ -91,14 +97,19 @@ public class EvaluationPageBackingBean {
       logger.log(Level.SEVERE, "Failed to loading workspace materials", e);
       return NavigationRules.INTERNAL_ERROR;
     }
-    
+    Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
     List<WorkspaceUserEntity> workspaceStudents = workspaceController.listWorkspaceUserEnitiesByWorkspaceRoleArchetype(workspaceEntity, WorkspaceRoleArchetype.STUDENT, firstStudent, getMaxStudents());
     for (WorkspaceUserEntity workspaceStudent : workspaceStudents) {
       User user = userController.findUserByDataSourceAndIdentifier(workspaceEntity.getDataSource(), workspaceStudent.getUserSchoolDataIdentifier().getIdentifier());
       if (user != null) {
         UserEntity userEntity = userEntityController.findUserEntityByUser(user);
         if (userEntity != null) {
-          students.add(new WorkspaceStudent(userEntity.getId(), workspaceStudent.getId(), String.format("%s %s", user.getFirstName(), user.getLastName())));
+          List<WorkspaceAssessment> assessments = gradingController.listWorkspaceAssessments(workspaceEntity.getDataSource(), workspace.getIdentifier(), user.getIdentifier());
+          String status = "UNASSESSED";
+          if(!assessments.isEmpty()){
+            status = "ASSESSED";
+          }
+          students.add(new WorkspaceStudent(userEntity.getId(), workspaceStudent.getId(), String.format("%s %s", user.getFirstName(), user.getLastName()), status));
         }
       }
     }
@@ -193,10 +204,11 @@ public class EvaluationPageBackingBean {
   
   public static class WorkspaceStudent {
    
-    public WorkspaceStudent(Long userEntityId, Long workspaceUserEntityId, String displayName) {
+    public WorkspaceStudent(Long userEntityId, Long workspaceUserEntityId, String displayName, String status) {
       this.userEntityId = userEntityId;
       this.workspaceUserEntityId = workspaceUserEntityId;
       this.displayName = displayName;
+      this.status = status;
     }
     
     public Long getUserEntityId() {
@@ -210,10 +222,15 @@ public class EvaluationPageBackingBean {
     public String getDisplayName() {
       return displayName;
     }
-    
+
+    public String getStatus() {
+      return status;
+    }
+
     private Long workspaceUserEntityId;
     private Long userEntityId;
     private String displayName;
+    private String status;
   }
 
   public static class Assignment {

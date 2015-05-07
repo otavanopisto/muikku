@@ -103,4 +103,8 @@ public class GradingController {
 	      date);
 	}
 	
+ public List<WorkspaceAssessment> listWorkspaceAssessments(SchoolDataSource schoolDataSource, String workspaceIdentifier, String studentIdentifier){
+	  return gradingSchoolDataController.listWorkspaceAssessments(schoolDataSource, workspaceIdentifier, studentIdentifier);
+	}
+	
 }
