@@ -301,6 +301,7 @@
     
     $(document).muikkuMaterialLoader({
       loadAnswers: false,
+      readOnlyFields: true,
       workspaceEntityId: workspaceEntityId
     });
     
