@@ -13,6 +13,12 @@
     return null;
   }
   
+  $(document).on('afterHtmlMaterialRender', function (event, data) {
+    $(data.pageElement).find('textarea').each(function (index, textarea) {
+      $(textarea).css("min-height", $(textarea).prop('scrollHeight'));
+    });
+  });
+  
   // Overrides JQuery.UI dialog setting that prevents html being inserted into title
   $.widget("ui.dialog", $.extend({}, $.ui.dialog.prototype, {
     _title: function(title) {
