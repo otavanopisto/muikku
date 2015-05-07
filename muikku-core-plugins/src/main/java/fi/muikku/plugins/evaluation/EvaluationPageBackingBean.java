@@ -2,6 +2,7 @@ package fi.muikku.plugins.evaluation;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -137,9 +138,22 @@ public class EvaluationPageBackingBean {
           List<AssessmentRequest> assessmentRequests = assessmentRequestController.listByWorkspaceIdAndStudentIdOrderByCreated(workspaceEntity.getId(), userEntity.getId());
           if(!assessmentRequests.isEmpty()){
             AssessmentRequest assessmentRequest = assessmentRequests.get(0);
-            if(AssessmentRequestState.PENDING == assessmentRequest.getState()){
-              status = "ASSESSMENTREQUESTED";
+            if(assessments.isEmpty()){
+              if(AssessmentRequestState.PENDING == assessmentRequest.getState() ){
+                status = "ASSESSMENTREQUESTED";
+              }
+            }else{
+              WorkspaceAssessment assessment = assessments.get(0);
+              if(AssessmentRequestState.PENDING == assessmentRequest.getState() && assessment.getDate().getTime() < assessmentRequest.getDate().getTime()){
+                status = "ASSESSMENTREQUESTED";
+              }
             }
+           if("ASSESSMENTREQUESTED".equals(status)){
+             if(assessmentRequest.getDate().getTime() + 1209600000 < new Date().getTime()){
+               status = "CRITICAL";
+             }
+           }
+
           }
           
           List<StudentAssignment> studentAssignments = new ArrayList<>();
