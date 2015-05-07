@@ -139,9 +139,11 @@ public class EvaluationPageBackingBean {
         if (userEntity != null) {
           List<WorkspaceAssessment> assessments = gradingController.listWorkspaceAssessments(workspaceEntity.getDataSource(), workspace.getIdentifier(), user.getIdentifier());
           String status = "UNASSESSED";
+          boolean alreadyEvaluated = false;
           String assessmentData = "";
           if (!assessments.isEmpty()) {
             status = "ASSESSED";
+            alreadyEvaluated = true;
             WorkspaceAssessment assessment = assessments.get(0);
             GradingScale gradingScale = gradingController.findGradingScale(assessment.getGradingScaleSchoolDataSource(), assessment.getGradingScaleIdentifier());
             GradingScaleItem grade = gradingController.findGradingScaleItem(gradingScale, assessment.getGradeSchoolDataSource(), assessment.getGradeIdentifier());
@@ -209,7 +211,7 @@ public class EvaluationPageBackingBean {
             return NavigationRules.INTERNAL_ERROR;
           }
 
-          students.add(new WorkspaceStudent(userEntity.getId(), workspaceStudent.getId(), String.format("%s %s", user.getFirstName(), user.getLastName()), status, studentAssignmentData, assessmentData));
+          students.add(new WorkspaceStudent(userEntity.getId(), workspaceStudent.getId(), String.format("%s %s", user.getFirstName(), user.getLastName()), status, studentAssignmentData, assessmentData, alreadyEvaluated));
         }
       }
     }
@@ -251,13 +253,14 @@ public class EvaluationPageBackingBean {
 
   public static class WorkspaceStudent {
 
-    public WorkspaceStudent(Long userEntityId, Long workspaceUserEntityId, String displayName, String status, String studentAssignmentData, String workspaceAssessmentData) {
+    public WorkspaceStudent(Long userEntityId, Long workspaceUserEntityId, String displayName, String status, String studentAssignmentData, String workspaceAssessmentData, boolean evaluated) {
       this.userEntityId = userEntityId;
       this.workspaceUserEntityId = workspaceUserEntityId;
       this.displayName = displayName;
       this.status = status;
       this.studentAssignmentData = studentAssignmentData;
       this.workspaceAssessmentData = workspaceAssessmentData;
+      this.evaluated = evaluated;
     }
 
     public Long getUserEntityId() {
@@ -284,12 +287,17 @@ public class EvaluationPageBackingBean {
       return workspaceAssessmentData;
     }
 
+    public boolean getEvaluated(){
+      return evaluated;
+    }
+    
     private Long workspaceUserEntityId;
     private Long userEntityId;
     private String displayName;
     private String status;
     private String studentAssignmentData;
     private String workspaceAssessmentData;
+    private boolean evaluated;
   }
 
   public static class WorkspaceStudentEvaluation {
