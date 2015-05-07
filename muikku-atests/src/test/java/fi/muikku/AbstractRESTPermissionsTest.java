@@ -289,8 +289,6 @@ public abstract class AbstractRESTPermissionsTest extends AbstractIntegrationTes
         String[] defaultPseudoRoles = permissionCollection.getDefaultPseudoRoles(permission);
         
         for (String dpr : defaultPseudoRoles) {
-          System.out.println(dpr + "=" + getRole());
-          
           if (dpr.equals(getRole())) {
             roleIsAllowed = true;
             break;
@@ -381,8 +379,6 @@ public abstract class AbstractRESTPermissionsTest extends AbstractIntegrationTes
       
       this.role = role.substring(ROLEPREFIX_WORKSPACE.length());
     }
-
-    System.out.println("Attenzioon deteczioon: " + getRoleType() + " " + getRole());
   }
 
   protected RoleType getRoleType() {
