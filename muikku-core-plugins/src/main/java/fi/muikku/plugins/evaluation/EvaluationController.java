@@ -58,9 +58,8 @@ public class EvaluationController {
   }
 
   public List<ContentNode> getAssignmentContentNodes(WorkspaceEntity workspaceEntity) throws WorkspaceMaterialException {
-    // TODO: Optimize this
     List<ContentNode> result = new ArrayList<>();
-    addAssignmentNodes(workspaceMaterialController.listWorkspaceMaterialsAsContentNodes(workspaceEntity, false), result);
+    addAssignmentNodes(workspaceMaterialController.listVisibleEvaluableWorkspaceMaterialsAsContentNodes(workspaceEntity), result);
     return result;
   }
   

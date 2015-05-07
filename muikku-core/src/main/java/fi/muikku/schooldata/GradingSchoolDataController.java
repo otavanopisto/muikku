@@ -39,7 +39,7 @@ class GradingSchoolDataController {
 	
 	/* WorkspaceAssessment */
 	
-	public WorkspaceAssessment createWorkspaceAssessment(String schoolDataSource, String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String workspaceIdentifier, String studentIdentifier, String assessingUserIdentifier, String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String verbalAssessment, Date date) {
+	public WorkspaceAssessment createWorkspaceAssessment(String schoolDataSource, String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String workspaceIdentifier, String studentIdentifier, String assessingUserIdentifier, String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String gradingScaleIdentifier, String gradingScaleSchoolDataSource, String verbalAssessment, Date date) {
 	  SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
 	  GradingSchoolDataBridge schoolDataBridge = getGradingBridge(dataSource);
     if (schoolDataBridge != null) {
@@ -52,7 +52,9 @@ class GradingSchoolDataController {
             assessingUserIdentifier, 
             assessingUserSchoolDataSource, 
             gradeIdentifier, 
-            gradeSchoolDataSource, 
+            gradeSchoolDataSource,
+            gradingScaleIdentifier, 
+            gradingScaleSchoolDataSource,
             verbalAssessment, 
             date);
       } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
@@ -95,7 +97,7 @@ class GradingSchoolDataController {
     return null;
   }
   
-  public WorkspaceAssessment updateWorkspaceAssessment(SchoolDataSource schoolDataSource, String identifier, String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String workspaceIdentifier, String studentIdentifier, String assessingUserIdentifier, String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String verbalAssessment, Date date) {
+  public WorkspaceAssessment updateWorkspaceAssessment(SchoolDataSource schoolDataSource, String identifier, String workspaceUserIdentifier, String workspaceUserSchoolDataSource, String workspaceIdentifier, String studentIdentifier, String assessingUserIdentifier, String assessingUserSchoolDataSource, String gradeIdentifier, String gradeSchoolDataSource, String gradingScaleIdentifier, String gradingScaleSchoolDataSource, String verbalAssessment, Date date) {
     GradingSchoolDataBridge schoolDataBridge = getGradingBridge(schoolDataSource);
     if (schoolDataBridge != null) {
       try {
@@ -107,7 +109,9 @@ class GradingSchoolDataController {
             assessingUserIdentifier, 
             assessingUserSchoolDataSource, 
             gradeIdentifier, 
-            gradeSchoolDataSource, 
+            gradeSchoolDataSource,
+            gradingScaleIdentifier,
+            gradingScaleSchoolDataSource,
             verbalAssessment, 
             date);
       } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {

@@ -288,7 +288,8 @@ public class PyramusSchoolDataEntityFactory {
        courseAssessment.getId().toString(),
        identifierMapper.getWorkspaceStudentIdentifier(courseAssessment.getCourseStudentId()),
        identifierMapper.getStaffIdentifier(courseAssessment.getAssessorId()),
-       courseAssessment.getId().toString(),
+       courseAssessment.getGradeId().toString(),
+       courseAssessment.getGradingScaleId().toString(),
        courseAssessment.getVerbalAssessment(),
        courseAssessment.getDate().toDate()
      );
