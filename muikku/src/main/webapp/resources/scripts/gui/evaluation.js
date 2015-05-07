@@ -173,10 +173,10 @@
     renderDustTemplate('evaluation/evaluation_evaluate_workspace_modal_view.dust', {
       studentDisplayName: studentDisplayName,
       gradingScales: $.parseJSON($('input[name="grading-scales"]').val()),
-
       assessors: $.parseJSON($('input[name="assessors"]').val()),
       workspaceName: $('input[name="workspaceName"]').val(),
       assignments: ASSIGNMENTS
+
     }, $.proxy(function (text) {
       var dialog = $(text); 
       
@@ -185,7 +185,7 @@
         resizable: false,
         width: 'auto',
         height: 'auto',
-        title: '<span class="modal-title-student-name">'+studentDisplayName+'</span><span class="modal-title-workspace-name">'+$('input[name="workspaceName"]').val()+'</span>',
+        title: '<span class="modal-title-student-name">'+studentDisplayName+'</span><span class="modal-title-workspace-name">'+workspaceName+'</span>',
         dialogClass: "evaluation-evaluate-modal",
         open: function() {
           
@@ -244,14 +244,14 @@
               .split('@', 2);
             var grade = gradeValue[0].split('/', 2);
             var gradingScale = gradeValue[1].split('/', 2);
-            var evaluated = $(this).find('input[name="evaluationDate"]').datepicker('getDate').getTime();
+            var evaluationDate = $(this).find('input[name="evaluationDate"]').datepicker('getDate').getTime();
             var assessorEntityId = $(this).find('select[name="assessor"]').val();
             
             if(alreadyEvaluated){
               //TODO: update
             }else{
               mApi().workspace.workspaces.assessments.create(workspaceEntityId, {
-                evaluated: evaluated,
+                evaluated: evaluationDate,
                 gradeIdentifier: grade[0],
                 gradeSchoolDataSource: grade[1],
                 gradingScaleIdentifier: gradingScale[0],
@@ -303,7 +303,7 @@
         resizable: false,
         width: 'auto',
         height: 'auto',
-        title: '<span class="modal-title-student-name">'+studentDisplayName+'</span><span class="modal-title-workspace-name">'+$('input[name="workspaceName"]').val()+'</span>',
+        title: '<span class="modal-title-student-name">'+studentDisplayName+'</span><span class="modal-title-workspace-name">'+workspaceName+'</span>',
         dialogClass: "evaluation-evaluate-modal",
         open: function() {
           $(this).find('input[name="evaluationDate"]')
