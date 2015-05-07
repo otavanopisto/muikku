@@ -204,6 +204,16 @@ public class WorkspaceController {
     return workspaceUserEntityController.listWorkspaceUserEntitiesByRoles(workspaceEntity, workspaceRoles, firstResult, maxResults);
   }
   
+  public Long countWorkspaceUserEntitiesByWorkspaceRoleArchetype(WorkspaceEntity workspaceEntity, WorkspaceRoleArchetype archtype) {
+    List<WorkspaceRoleEntity> workspaceRoles = roleController.listWorkspaceRoleEntitiesByArchetype(archtype);
+    if (workspaceRoles.isEmpty()) {
+      return 0l;
+    }
+    
+    return workspaceUserEntityController.countWorkspaceUserEntitiesByRoles(workspaceEntity, workspaceRoles);
+  }
+  
+  
   public List<WorkspaceEntity> listWorkspaceEntitiesBySchoolDataSource(String schoolDataSource) {
     SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
     if (dataSource != null) {

@@ -24,6 +24,9 @@ import fi.muikku.jsf.NavigationRules;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleArchetype;
+import fi.muikku.plugins.workspace.ContentNode;
+import fi.muikku.plugins.workspace.WorkspaceMaterialController;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.schooldata.CourseMetaController;
 import fi.muikku.schooldata.GradingController;
 import fi.muikku.schooldata.SchoolDataBridgeSessionController;
@@ -66,6 +69,12 @@ public class EvaluationIndexBackingBean {
 
   @Inject
   private UserController userController;
+
+  @Inject
+  private EvaluationController evaluationController;
+
+  @Inject
+  private WorkspaceMaterialController workspaceMaterialController;
 
   @Inject
   private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
@@ -150,6 +159,13 @@ public class EvaluationIndexBackingBean {
       return NavigationRules.INTERNAL_ERROR;
     }
     
+    try {
+      assignments = new ObjectMapper().writeValueAsString(createAssignments(evaluationController.getAssignmentContentNodes(workspaceEntity)));
+    } catch (Exception e) {
+      logger.log(Level.SEVERE, "Failed to load assignments", e);
+      return NavigationRules.INTERNAL_ERROR;
+    }
+    
     schoolDataBridgeSessionController.startSystemSession();
     try {
       Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
@@ -181,6 +197,8 @@ public class EvaluationIndexBackingBean {
     } finally {
       schoolDataBridgeSessionController.endSystemSession();
     }
+    
+    workspaceStudentCount = workspaceController.countWorkspaceUserEntitiesByWorkspaceRoleArchetype(workspaceEntity, WorkspaceRoleArchetype.STUDENT);
     
     return null;
   }
@@ -228,6 +246,24 @@ public class EvaluationIndexBackingBean {
   public String getCourseLengthSymbol() {
     return courseLengthSymbol;
   }
+  
+  public String getAssignments() {
+    return assignments;
+  }
+
+  public Long getWorkspaceStudentCount() {
+    return workspaceStudentCount;
+  }
+  
+  private List<Assignment> createAssignments(List<ContentNode> assignmentNodes) {
+    List<Assignment> result = new ArrayList<>(assignmentNodes.size());
+    for (ContentNode assignmentNode : assignmentNodes) {
+      WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(assignmentNode.getWorkspaceMaterialId());
+      result.add(new Assignment(workspaceMaterial.getId(), workspaceMaterial.getMaterialId(), assignmentNode.getTitle(), assignmentNode.getHtml(), assignmentNode.getType()));
+    }
+    
+    return result;
+  }
 
   private String workspaceName;
   private String workspaceType;
@@ -238,6 +274,45 @@ public class EvaluationIndexBackingBean {
   private List<WorkspaceItem> workspaceItems;
   private String gradingScales;
   private String assessors;
+  private String assignments;
+  private Long workspaceStudentCount;
+
+  public static class Assignment {
+    
+    public Assignment(Long workspaceMaterialId, Long materialId, String title, String html, String type) {
+      this.materialId = materialId;
+      this.workspaceMaterialId = workspaceMaterialId;
+      this.title = title;
+      this.html = html;
+      this.type = type;
+    }
+    
+    public Long getWorkspaceMaterialId() {
+      return workspaceMaterialId;
+    }
+    
+    public Long getMaterialId() {
+      return materialId;
+    }
+    
+    public String getTitle() {
+      return title;
+    }
+    
+    public String getHtml() {
+      return html;
+    }
+    
+    public String getType() {
+      return type;
+    }
+    
+    private Long workspaceMaterialId;
+    private Long materialId;
+    private String title;
+    private String html;
+    private String type;
+  }
   
   public static class WorkspaceItem {
 
