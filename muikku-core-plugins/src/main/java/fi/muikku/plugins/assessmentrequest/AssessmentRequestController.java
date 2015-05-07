@@ -1,5 +1,6 @@
 package fi.muikku.plugins.assessmentrequest;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -10,6 +11,9 @@ import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.communicator.CommunicatorAssessmentRequestController;
 import fi.muikku.plugins.communicator.model.CommunicatorMessage;
+import fi.muikku.plugins.workspace.fieldio.WorkspaceConnectFieldIOHandler;
+import fi.muikku.schooldata.WorkspaceController;
+import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.otavanopisto.security.Permit;
 import fi.otavanopisto.security.PermitContext;
 
@@ -21,6 +25,12 @@ public class AssessmentRequestController {
   
   @Inject
   private CommunicatorAssessmentRequestController communicatorAssessmentRequestController;
+  
+  @Inject
+  private WorkspaceController workspaceController;
+  
+  @Inject
+  private WorkspaceEntityController workspaceEntityController;
   
   @Permit (AssessmentRequestPermissions.CREATE_WORKSPACE_ASSESSMENTREQUEST)
   public AssessmentRequest create(@PermitContext WorkspaceEntity workspaceEntity, UserEntity student, Date date, String message) {
@@ -39,6 +49,17 @@ public class AssessmentRequestController {
   @Permit (AssessmentRequestPermissions.LIST_WORKSPACE_ASSESSMENTREQUESTS)
   public List<AssessmentRequest> listByWorkspace(@PermitContext WorkspaceEntity workspaceEntity) {
     return assessmentRequestDAO.listByWorkspace(workspaceEntity);
+  }
+  
+  public List<AssessmentRequest> listByUser(UserEntity user) {
+    List<WorkspaceEntity> teacherWorkspaces = workspaceEntityController.listWorkspaceEntitiesByWorkspaceUser(user);
+    List<AssessmentRequest> assessmentRequests = new ArrayList<>();
+    
+    for (WorkspaceEntity workspaceEntity : teacherWorkspaces) {
+      assessmentRequests.addAll(listByWorkspace(workspaceEntity));
+    }
+    
+    return assessmentRequests;
   }
   
   public void requestAssessment(WorkspaceEntity workspaceEntity, UserEntity student, String message) {
