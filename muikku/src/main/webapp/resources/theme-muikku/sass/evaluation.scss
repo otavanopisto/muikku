@@ -454,6 +454,8 @@ body.evaluation {
               
               .evaluation-workspacelist-root {
                 height:100%;
+                margin:0;
+                padding:0;
     
                 .evaluation-workspacelist-item {
                   margin:0 0 1px 0;
@@ -563,6 +565,7 @@ body.evaluation {
           /* ASSIGNMENT EVALUATION */
           .evaluation-modal-workspace-assignment-wrapper {
             margin:20px 0 0 0;
+            font-size:14px;
             
             .evaluation-modal-workspace-single-assignment {
               margin:10px 0;
@@ -579,7 +582,6 @@ body.evaluation {
                 }
                 
                 p {
-                  font-size:14px;
                   line-height:22px;
                   margin:10px 0;
                   font-weight:400;
@@ -591,12 +593,13 @@ body.evaluation {
                   border-radius:3px;
                   background:#ebf7ff;
                   padding:5px 10px;
-                  margin:10;
+                  margin:0;
                   font-weight:300;
                   font-style:italic;
                   border:0px;
                   color:#000;
                   resize:none;
+                  box-sizing:border-box;
                   
                   &:focus {
                     box-shadow:none;
@@ -636,12 +639,23 @@ body.evaluation {
                 }
                 
                 textarea {
+                  font-family:'Open Sans',Verdana, sans-serif;
                   border-radius:3px;
-                  background:#ffebcc;
+                  background:#ebf7ff;
                   padding:5px 10px;
-                  margin:10px 0 20px 0;
+                  margin:0;
                   font-weight:300;
                   font-style:italic;
+                  border:0px; 
+                  color:#000;
+                  resize:none;
+                  box-sizing:border-box;
+                  
+                  &:focus {
+                    box-shadow:none;
+                    outline:none;
+                  }
+                  
                 }
                 
               }
@@ -1098,4 +1112,125 @@ body.evaluation {
     }
     
   }
+}
+
+/* MATERIAL DEFAULT STYLES */
+
+p, h1, h2, h3, h4, h5, h6 {
+  word-wrap:break-word;
+}
+
+em,
+i {
+  font-style:italic;
+  font-weight:300;
+}
+
+strong,
+b {
+  font-weight:400; /* This is set to 'normal' because we use thinner font with text rendering */
+  font-style:inherit;
+}
+
+table {
+  border-collapse:separate;
+  border-spacing:initial;
+  margin:initial;
+  padding:initial;
+}
+
+td {
+  padding:initial;
+  margin:initial;
+  width:auto;
+  max-width:100%;
+}
+
+/* Content link overrides */
+a {
+  color:#4290ea; 
+}
+
+/* UL, LI overrides */
+ul {
+  list-style-type:disc;
+}
+
+ol {
+   list-style-type:decimal;
+}
+
+ul,
+ol {
+  margin:0 20px;
+
+  li {
+    margin:5px;
+/*       line-height:1.5em; */
+  }
+  
+  ol {
+    list-style-type:decimal;
+  }
+  
+  ul {
+    list-style-type:circle;
+  }
+
+}
+
+/* MATERIAL STYLESETS */
+
+.material-styles-block {
+  border-radius:5px;
+  padding:8px 14px;
+  margin:20px 0;
+}
+
+.material-thinkingbox {
+  background:#7fcaf7;
+  color:#fff;
+}
+
+.material-objectivebox {
+  background:#67d9bf;
+  color:#fff;
+}
+
+.material-infobox {
+  background:#ec97c6;
+  color:#fff;
+}
+
+.material-recapbox {
+  background:#6eb5cf;
+  color:#fff;
+}
+
+.material-chatbubble {
+  background:#7082b0;
+  color:#fff;
+}
+
+.material-basicbox {
+  background:#ffc369;
+  color:#fff;
+}
+
+.material-citation-highlight {
+  color:#913333;
+  font-size:18px;
+  font-weight:400;
+  border-left:3px solid #b24d4d;
+  border-radius:0px;
+  line-height:1.7em;
+}
+
+.material-citation-basic {
+  color:#7a8d94;
+  font-size:18px;
+  font-weight:400;
+  border-left:3px solid #7a8d94;
+  border-radius:0px;
+  line-height:1.7em;
 }

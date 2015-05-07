@@ -163,7 +163,10 @@
 
   function openWorkspaceEvaluationDialog(workspaceEntityId, studentEntityId, workspaceStudentEntityId, studentDisplayName){
     renderDustTemplate('evaluation/evaluation_evaluate_workspace_modal_view.dust', {
+      studentDisplayName: studentDisplayName,
       gradingScales: $.parseJSON($('input[name="grading-scales"]').val()),
+      assessors: $.parseJSON($('input[name="assessors"]').val()),
+      workspaceName: $('input[name="workspaceName"]').val(),
       assignments: ASSIGNMENTS
     }, $.proxy(function (text) {
       var dialog = $(text); 
