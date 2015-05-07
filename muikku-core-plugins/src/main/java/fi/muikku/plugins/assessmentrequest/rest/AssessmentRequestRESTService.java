@@ -1,6 +1,7 @@
 package fi.muikku.plugins.assessmentrequest.rest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.ejb.Stateful;
@@ -103,9 +104,13 @@ public class AssessmentRequestRESTService extends PluginRESTService {
   public Response listAssessmentRequestsForMe() {
     List<AssessmentRequest> assessmentRequests = new ArrayList<>();
     UserEntity userEntity = sessionController.getLoggedUserEntity();
+    List<EnvironmentRoleArchetype> permittedArchetypes = Arrays.asList(
+        EnvironmentRoleArchetype.ADMINISTRATOR,
+        EnvironmentRoleArchetype.MANAGER,
+        EnvironmentRoleArchetype.TEACHER);
     
     EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
-    if (environmentUser.getRole() == null || environmentUser.getRole().getArchetype() != EnvironmentRoleArchetype.TEACHER) {
+    if (environmentUser.getRole() == null || permittedArchetypes.contains(environmentUser.getRole().getArchetype())) {
       return Response.status(Status.FORBIDDEN).entity("Must be a teacher").build();
     }
     
