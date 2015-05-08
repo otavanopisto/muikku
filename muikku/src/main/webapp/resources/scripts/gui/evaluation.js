@@ -254,7 +254,23 @@
             var assessorEntityId = $(this).find('select[name="assessor"]').val();
             
             if(alreadyEvaluated){
-              //TODO: update
+              mApi().workspace.workspaces.assessments.update(workspaceEntityId, evaluationData.assessmentIdentifier, {
+                evaluated: evaluated,
+                gradeIdentifier: grade[0],
+                gradeSchoolDataSource: grade[1],
+                gradingScaleIdentifier: gradingScale[0],
+                gradingScaleSchoolDataSource: gradingScale[1],
+                workspaceUserEntityId: workspaceStudentEntityId,
+                assessorEntityId: assessorEntityId,
+                verbalAssessment: $(this).find('#evaluateFormLiteralEvaluation').val()
+              }).callback($.proxy(function (err, result) {
+                if (err) {
+                  $('.notification-queue').notificationQueue('notification', 'error', err);
+                } else { 
+                  $(this).dialog("destroy").remove();
+                  console.log(result);
+                }
+              }, this));
             }else{
               mApi().workspace.workspaces.assessments.create(workspaceEntityId, {
                 evaluated: evaluationDate,

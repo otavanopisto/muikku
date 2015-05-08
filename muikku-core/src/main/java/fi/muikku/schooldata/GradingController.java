@@ -106,7 +106,24 @@ public class GradingController {
 	}
 	
  public List<WorkspaceAssessment> listWorkspaceAssessments(SchoolDataSource schoolDataSource, String workspaceIdentifier, String studentIdentifier){
-	  return gradingSchoolDataController.listWorkspaceAssessments(schoolDataSource, workspaceIdentifier, studentIdentifier);
-	}
+   return gradingSchoolDataController.listWorkspaceAssessments(schoolDataSource, workspaceIdentifier, studentIdentifier);
+ }
+ 
+ public WorkspaceAssessment updateWorkspaceAssessment(String schoolDataSource, String workspaceAssesmentIdentifier, WorkspaceUser workspaceUser, User assessingUser, GradingScaleItem grade, String verbalAssessment, Date date){
+   return gradingSchoolDataController.updateWorkspaceAssessment(schoolDataSource,
+       workspaceAssesmentIdentifier,
+       workspaceUser.getIdentifier(),
+       workspaceUser.getSchoolDataSource(),
+       workspaceUser.getWorkspaceIdentifier(),
+       workspaceUser.getUserIdentifier(),
+       assessingUser.getIdentifier(),
+       assessingUser.getSchoolDataSource(),
+       grade.getIdentifier(),
+       grade.getSchoolDataSource(),
+       grade.getGradingScaleIdentifier(),
+       grade.getSchoolDataSource(),
+       verbalAssessment,
+       date);
+ }
 	
 }

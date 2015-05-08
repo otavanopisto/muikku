@@ -315,6 +315,7 @@ public class EvaluationPageBackingBean {
 
   public static class WorkspaceStudentEvaluation {
     WorkspaceStudentEvaluation(String assessmentIdentifier, String gradeString, String verbalAssessment, Long assessingUserEntityId, Long date) {
+      this.assessmentIdentifier = assessmentIdentifier;
       this.assessingUserEntityId = assessingUserEntityId;
       this.gradeString = gradeString;
       this.verbalAssessment = verbalAssessment;
