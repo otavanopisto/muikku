@@ -3,6 +3,7 @@
 
   $.widget("custom.muikkuFileField", {
     _create : function() {
+      this._readonly = false;
       this._fieldName = this.element.attr("name");
       this._multiple = this.element.attr("multiple") == 'multiple';
       this._fileIndex = 0;
@@ -233,6 +234,20 @@
     
     _destroy : function() {
 
+    },
+    isReadonly: function () {
+      return this._readonly;
+    },
+    setReadonly: function (readonly) {
+      this._readonly = readonly;
+      if (readonly) {
+        $(this._uploader).attr("disabled", "disabled");
+        $('.muikku-file-input-field-file-remove').hide();
+      }
+      else {
+        $(this._uploader).removeAttr("disabled");
+        $('.muikku-file-input-field-file-remove').show();
+      }
     }
   });
 
