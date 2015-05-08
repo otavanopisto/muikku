@@ -6,7 +6,7 @@
         <span class="title">Opiskelijan linja</span><span class="desc">Lukio</span>
       </div>
       <div class="meta-workspace">
-        <span class="title">Kurssi</span><span class="desc">GE1 - Sininen planeetta</span>
+        <span class="title">Kurssi</span><span class="desc">{workspaceName}</span>
       </div>
     </div>
   </header>
@@ -16,12 +16,12 @@
       <textarea id="evaluateFormLiteralEvaluation"></textarea>
     </div>
     <div class="evaluation-modal-evaluateForm-date-wrapper">
-      <label for="evaluated">Päivämäärä</label>
-      <input required="required" type="date" name="evaluated"/>
+      <label for="evaluationDate">Päivämäärä</label>
+      <input required="required" type="date" name="evaluationDate" id="evaluationDate"/>
     </div>
     <div class="evaluation-modal-evaluateForm-grade-wrapper">
       <label for="grade">Arvosana</label>
-      <select name="grade">
+      <select name="grade" id="grade">
         {#gradingScales}
           <optgroup label="{name}">
           {#grades scaleid=id scaleds=dataSource}
