@@ -5,7 +5,8 @@
       options : {
         connector:[ "Bezier", { curviness: 25 } ],
         connectorStyle : {  lineWidth: 3, strokeStyle:"#5b9ada" },
-        endpoint: ["Dot", {radius:7}]
+        endpoint: ["Dot", {radius:7}],
+        readonly: false
       },
       _create : function() {
         this._element = $('<div>')
@@ -16,6 +17,7 @@
             materialId: this.options.materialId,
             embedId: this.options.embedId,
             fieldName: this.options.fieldName,
+            readonly: this.options.readonly,
             answer: $.proxy(function () {
               return JSON.stringify(this.pairs());
             }, this),
@@ -42,8 +44,34 @@
             }, this)
           });
         
+        if (this.options.readonly) {
+          this._element.css('position', 'relative');
+          
+          $('<div>')
+            .css({
+              'position': 'absolute',
+              'top': 0,
+              'bottom': 0,
+              'left': 0,
+              'right': 0,
+              'opacity': 0,
+              'z-index': 9999
+            })
+            .click(function (event) {
+              event.preventDefault();
+              event.stopPropagation();
+              return false;
+            })
+            .mousemove(function (event) {
+              event.preventDefault();
+              event.stopPropagation();
+              return false;
+            })
+            .appendTo(this._element);
+        }
+        
         this._taskInstance = jsPlumb.getInstance();
-
+        
         this.element.find('.muikku-connect-field-term-cell').each($.proxy(function (index, term) {
           var fieldName = $(term).closest('tr').find('.muikku-connect-field-value').attr('name');
            

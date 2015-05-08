@@ -1,10 +1,10 @@
 @font-face {
 	font-family: 'muikku';
-	src:url('fonts/muikku.eot?rs4oqp');
-	src:url('fonts/muikku.eot?#iefixrs4oqp') format('embedded-opentype'),
-		url('fonts/muikku.woff?rs4oqp') format('woff'),
-		url('fonts/muikku.ttf?rs4oqp') format('truetype'),
-		url('fonts/muikku.svg?rs4oqp#muikku') format('svg');
+	src:url('fonts/muikku.eot?2t30bc');
+	src:url('fonts/muikku.eot?#iefix2t30bc') format('embedded-opentype'),
+		url('fonts/muikku.woff?2t30bc') format('woff'),
+		url('fonts/muikku.ttf?2t30bc') format('truetype'),
+		url('fonts/muikku.svg?2t30bc#muikku') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -23,8 +23,32 @@
 	-moz-osx-font-smoothing: grayscale;
 }
 
+.icon-evaluate:before {
+	content: "\e63d";
+}
+
+.icon-arrow-left2:before {
+	content: "\e605";
+}
+
+.icon-arrow-down:before {
+	content: "\e606";
+}
+
+.icon-arrow-up:before {
+	content: "\e607";
+}
+
+.icon-arrow-right2:before {
+	content: "\e608";
+}
+
 .icon-bubble:before {
 	content: "\e638";
+}
+
+.icon-members:before {
+	content: "\e60d";
 }
 
 .icon-assignment:before {
@@ -187,28 +211,8 @@
 	content: "\e635";
 }
 
-.icon-action-menu-launcher:before {
-	content: "\e636";
-}
-
-.icon-exit-editing:before {
-	content: "\f045";
-}
-
-.icon-navicon:before {
-	content: "\e609";
-}
-
-.icon-new-page:before {
-	content: "\e637";
-}
-
-.icon-close-small:before {
-	content: "\e63b";
-}
-
-.icon-add:before {
-	content: "\e114";
+.icon-spinner:before {
+	content: "\e97b";
 }
 
 .icon-assessment-canceled:before {
@@ -249,10 +253,6 @@
 
 .icon-compass:before {
 	content: "\e60c";
-}
-
-.icon-members:before {
-	content: "\e60d";
 }
 
 .icon-attachment:before {
@@ -303,19 +303,27 @@
 	content: "\e9fb";
 }
 
-.icon-arrow-left2:before {
-	content: "\e605";
+.icon-action-menu-launcher:before {
+	content: "\e636";
 }
 
-.icon-arrow-down:before {
-	content: "\e606";
+.icon-exit-editing:before {
+	content: "\f045";
 }
 
-.icon-arrow-up:before {
-	content: "\e607";
+.icon-navicon:before {
+	content: "\e609";
 }
 
-.icon-arrow-right2:before {
-	content: "\e608";
+.icon-new-page:before {
+	content: "\e637";
+}
+
+.icon-close-small:before {
+	content: "\e63b";
+}
+
+.icon-add:before {
+	content: "\e114";
 }
 

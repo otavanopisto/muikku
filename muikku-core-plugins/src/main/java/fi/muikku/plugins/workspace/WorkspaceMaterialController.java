@@ -466,6 +466,57 @@ public class WorkspaceMaterialController {
   }
 
   /* Utility methods */
+  
+  
+  public List<ContentNode> listVisibleEvaluableWorkspaceMaterialsAsContentNodes(WorkspaceEntity workspaceEntity, boolean processHtml) throws WorkspaceMaterialException {
+    List<ContentNode> result = new ArrayList<>();
+    
+    final List<WorkspaceNode> folders = listVisibleWorkspaceFolders(workspaceEntity);
+    List<WorkspaceMaterial> workspaceMaterials = workspaceMaterialDAO.listByHiddenAndAssignmentTypeAndParents(Boolean.FALSE, WorkspaceMaterialAssignmentType.EVALUATED, folders);
+
+    Collections.sort(workspaceMaterials, new Comparator<WorkspaceMaterial>() {
+      
+      @Override
+      public int compare(WorkspaceMaterial o1, WorkspaceMaterial o2) {
+        int result = getParentIndex(o1.getParent()) - getParentIndex(o2.getParent());
+        if (result == 0) {
+          result = o1.getOrderNumber().compareTo(o2.getOrderNumber());
+        }
+        
+        return result;
+      }
+      
+      private int getParentIndex(WorkspaceNode parent) {
+        return folders.indexOf(parent);
+      }
+    });
+    
+    for (WorkspaceMaterial workspaceMaterial : workspaceMaterials) {
+      result.add(createContentNode(workspaceMaterial, 0, processHtml));
+    }
+    
+    return result;
+  }
+
+  private List<WorkspaceNode> listVisibleWorkspaceFolders(WorkspaceEntity workspaceEntity) {
+    List<WorkspaceNode> result = new ArrayList<>();
+
+    WorkspaceRootFolder rootFolder = findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
+    result.add(rootFolder);
+    
+    appendVisibleChildFolders(rootFolder, result);
+
+    return result;
+  }
+  
+  private void appendVisibleChildFolders(WorkspaceNode parent, List<WorkspaceNode> result) {
+    List<WorkspaceFolder> childFolders = workspaceFolderDAO.listByHiddenAndParentAndFolderType(Boolean.FALSE, parent, WorkspaceFolderType.DEFAULT);
+    result.addAll(childFolders);
+    
+    for (WorkspaceFolder childFolder : childFolders) {
+      appendVisibleChildFolders(childFolder, result);
+    }
+  }
 
   public List<FlattenedWorkspaceNode> flattenWorkspaceNodes(List<WorkspaceNode> workspaceNodes, int level) {
     List<FlattenedWorkspaceNode> result = new ArrayList<>();
@@ -522,17 +573,11 @@ public class WorkspaceMaterialController {
   }
 
   private ContentNode createContentNode(WorkspaceNode rootMaterialNode, int level) throws WorkspaceMaterialException {
+    return createContentNode(rootMaterialNode, level, true);
+  }
+  
+  private ContentNode createContentNode(WorkspaceNode rootMaterialNode, int level, boolean processHtml) throws WorkspaceMaterialException {
     try {
-      DOMParser parser = new DOMParser(new HTMLConfiguration());
-      parser.setProperty("http://cyberneko.org/html/properties/names/elems", "lower");
-
-      TransformerFactory transformerFactory = TransformerFactory.newInstance();
-      Transformer transformer = transformerFactory.newTransformer();
-      transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-      transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-      transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-      transformer.setOutputProperty(OutputKeys.INDENT, "no");
-
       switch (rootMaterialNode.getType()) {
       case FOLDER:
         WorkspaceFolder workspaceFolder = (WorkspaceFolder) rootMaterialNode;
@@ -560,13 +605,26 @@ public class WorkspaceMaterialController {
 
         return folderContentNode;
       case MATERIAL:
+        DOMParser parser = null;
+        Transformer transformer = null;
+        
+        if (processHtml) {
+          parser = new DOMParser(new HTMLConfiguration());
+          parser.setProperty("http://cyberneko.org/html/properties/names/elems", "lower");
+          transformer = TransformerFactory.newInstance().newTransformer();
+          transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+          transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+          transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+          transformer.setOutputProperty(OutputKeys.INDENT, "no");
+        }
+        
         WorkspaceMaterial workspaceMaterial = (WorkspaceMaterial) rootMaterialNode;
         Material material = materialController.findMaterialById(workspaceMaterial.getMaterialId());
         Long currentRevision = material instanceof HtmlMaterial ? htmlMaterialController.lastHtmlMaterialRevision((HtmlMaterial) material) : 0l;
         Long publishedRevision = material instanceof HtmlMaterial ? ((HtmlMaterial) material).getRevisionNumber() : 0l;
         return new ContentNode(material.getTitle(), material.getType(), rootMaterialNode.getId(), material.getId(), level,
             workspaceMaterial.getAssignmentType(), workspaceMaterial.getParent().getId(), workspaceMaterial.getHidden(),
-            getMaterialHtml(material, parser, transformer), currentRevision, publishedRevision);
+            processHtml ? getMaterialHtml(material, parser, transformer) : null, currentRevision, publishedRevision);
       default:
         return null;
       }

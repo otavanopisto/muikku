@@ -9,6 +9,7 @@ public class PyramusUser implements User {
                      String firstName,
                      String lastName,
                      String displayName,
+                     String studyProgrammeName,
                      String nationality,
                      String language,
                      String municipality,
@@ -17,6 +18,7 @@ public class PyramusUser implements User {
     this.firstName = firstName;
     this.lastName = lastName;
     this.displayName = displayName;
+    this.studyProgrammeName = studyProgrammeName;
     this.nationality = nationality;
     this.municipality = municipality;
     this.language = language;
@@ -59,6 +61,11 @@ public class PyramusUser implements User {
   }
 
   @Override
+  public String getStudyProgrammeName() {
+    return studyProgrammeName;
+  }
+  
+  @Override
   public String getSearchId() {
     return getIdentifier() + "/" + getSchoolDataSource();
   }
@@ -99,6 +106,7 @@ public class PyramusUser implements User {
   private String firstName;
   private String lastName;
   private String displayName;
+  private String studyProgrammeName;
   private String nationality;
   private String language;
   private String municipality;
