@@ -1,0 +1,30 @@
+  /* tasktool (.tt-*) */
+
+
+.tt-task-request-state{
+  float:right;
+  margin-right:10px;
+}
+
+.tt-task-topic{
+  width:100%;
+  
+}
+
+
+.tt-task-meta-topic{
+  width:100%;
+  padding:5px; 
+  span{
+   margin-left:5px;
+   
+   &.PENDING{
+    color:#ff3c00;
+   }
+  }
+}
+
+.tt-task-details-content{
+  font-weight:300;
+  padding:10px;
+}

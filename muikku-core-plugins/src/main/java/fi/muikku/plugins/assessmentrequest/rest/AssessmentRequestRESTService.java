@@ -1,11 +1,13 @@
 package fi.muikku.plugins.assessmentrequest.rest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -15,6 +17,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import fi.muikku.model.users.EnvironmentRoleArchetype;
+import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugin.PluginRESTService;
@@ -24,6 +28,7 @@ import fi.muikku.plugins.assessmentrequest.rest.model.AssessmentRequestRESTModel
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.session.SessionController;
 import fi.muikku.session.local.LocalSession;
+import fi.muikku.users.EnvironmentUserController;
 
 @RequestScoped
 @Path("/assessmentrequest")
@@ -42,6 +47,9 @@ public class AssessmentRequestRESTService extends PluginRESTService {
   @LocalSession
   @Inject
   private SessionController sessionController;
+  
+  @Inject
+  private EnvironmentUserController environmentUserController;
 
   @POST
   @Path("/assessmentrequests")
@@ -63,12 +71,20 @@ public class AssessmentRequestRESTService extends PluginRESTService {
 
   @GET
   @Path("/assessmentrequests")
-  public Response listAssessmentRequestsOfCurrentUserByWorkspaceId(@QueryParam("workspaceId") long workspaceEntityId) {
-    UserEntity student = sessionController.getLoggedUserEntity();
-    List<AssessmentRequest> assessmentRequests = assessmentRequestController
-        .listByWorkspaceIdAndStudentIdOrderByCreated(workspaceEntityId, student.getId());
-    List<AssessmentRequestRESTModel> restAssessmentRequests = new ArrayList<>();
+  public Response listAssessmentRequestsByWorkspaceId(
+      @QueryParam("workspaceId") long workspaceEntityId,
+      @QueryParam("allUsers") @DefaultValue("false") boolean allUsers) {
+    List<AssessmentRequest> assessmentRequests = new ArrayList<>();
+    
+    if (allUsers) {
+      WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+      assessmentRequests = assessmentRequestController.listByWorkspace(workspaceEntity);
+    } else {
+      UserEntity student = sessionController.getLoggedUserEntity();
+      assessmentRequests = assessmentRequestController.listByWorkspaceIdAndStudentIdOrderByCreated(workspaceEntityId, student.getId());
+    }
 
+    List<AssessmentRequestRESTModel> restAssessmentRequests = new ArrayList<>();
     for (AssessmentRequest assessmentRequest : assessmentRequests) {
       AssessmentRequestRESTModel restAssessmentRequest = new AssessmentRequestRESTModel();
 
@@ -81,6 +97,39 @@ public class AssessmentRequestRESTService extends PluginRESTService {
     }
 
     return Response.ok(restAssessmentRequests).build();
+  }
+  
+  @GET
+  @Path("/assessmentrequestsforme")
+  public Response listAssessmentRequestsForMe() {
+    List<AssessmentRequest> assessmentRequests = new ArrayList<>();
+    UserEntity userEntity = sessionController.getLoggedUserEntity();
+    List<EnvironmentRoleArchetype> permittedArchetypes = Arrays.asList(
+        EnvironmentRoleArchetype.ADMINISTRATOR,
+        EnvironmentRoleArchetype.MANAGER,
+        EnvironmentRoleArchetype.TEACHER);
+    
+    EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
+    if (environmentUser.getRole() == null || !permittedArchetypes.contains(environmentUser.getRole().getArchetype())) {
+      return Response.status(Status.FORBIDDEN).entity("Must be a teacher").build();
+    }
+    
+    assessmentRequests = assessmentRequestController.listByUser(userEntity);
+
+    List<AssessmentRequestRESTModel> restAssessmentRequests = new ArrayList<>();
+    for (AssessmentRequest assessmentRequest : assessmentRequests) {
+      AssessmentRequestRESTModel restAssessmentRequest = new AssessmentRequestRESTModel();
+
+      restAssessmentRequest.setId(assessmentRequest.getId());
+      restAssessmentRequest.setWorkspaceId(assessmentRequest.getWorkspace());
+      restAssessmentRequest.setMessage(assessmentRequest.getMessage());
+      restAssessmentRequest.setState(assessmentRequest.getState().toString());
+
+      restAssessmentRequests.add(restAssessmentRequest);
+    }
+
+    return Response.ok(restAssessmentRequests).build();
+    
   }
 
   @POST
