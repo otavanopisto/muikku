@@ -1,15 +1,10 @@
 
 <div class="mf-item tt-task open" id="{id}">
-  <div class="mf-item-header-name gt-user-name">
-   <div class="tt-task-meta-topic"><span>{message}</span></div>
+  <div class="tt-task-topic">
+   <div class="tt-task-meta-topic mf-header-name"><span>{username}</span><span>{workspacename}</span><span class="mf-state tt-task-request-state {state}">{state}</span></div>
   </div>
-  <div class="gt-user-details" style="display:none">
-    <div class="gt-user-details-content">
-    </div>
-    <div class="gt-user-details-toolbar mf-item-tools">
-<!--       <div class="gt-tool-view-profile mf-item-tool-btn"><span>{#localize key="plugin.guider.actions.showprofile"/}</span></div> -->
-<!--        <div class="gt-tool-send-mail mf-item-tool-btn"><span>Lähetä viesti</span></div>  -->
-    </div>
+  <div class=tt-task-details">
+    <div class="tt-task-details-content">{message}</div>
   </div>
   <div class=""></div>
 

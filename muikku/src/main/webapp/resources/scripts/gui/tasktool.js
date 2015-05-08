@@ -21,7 +21,32 @@ $(document).ready(function(){
             	search.show("slide");
             	
             }
-            mApi().assessmentrequest.assessmentrequests.read({'workspaceId' : 6 })
+            mApi().assessmentrequest.assessmentrequestsforme.read().on('$', function(asreq, asreqcallback){
+              mApi().user.users.read(asreq.id).callback(function (err, user){
+                if( err ){
+                  $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.tasktool.errormessage.users', err));
+                }else{        
+                  asreq.username = user.firstName + ' ' + user.lastName;
+                  
+                }               
+                
+                
+              });  
+
+              mApi().workspace.workspaces.read(asreq.workspaceId).callback(function (err, workspace){
+                if( err ){
+                  $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.tasktool.errormessage.noworkspaces', err));
+                }else{        
+                  asreq.workspacename = workspace.name;    
+    
+                }               
+                
+                
+              });
+              
+              asreqcallback();
+              
+            })
             .callback(function (err, asreq) {
               
               if( err ){
@@ -36,29 +61,6 @@ $(document).ready(function(){
             });     		
     	},
     	  	
-	    showTask : function(event){
-
-	    	var element = $(event.target); 
-	        element = element.parents(".tt-task");
-	        var uId = $(element).attr("id");
-		    var det = element.find(".tt-task-details"); 
-	        var detcont = element.find(".tt-task-details-content"); 
-
-	    	$(element).removeClass("closed");
-	    	$(element).addClass("open");
-	    	$(det).css("display","block");	    				
-
-		    mApi().user.users.read(uId).callback(function(err, user){
-				    if( err ){
-				        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.guider.errormessage.nouser', err));
-				  	}else{    	  
-					  	renderDustTemplate('/tasktool/taskr_item_details.dust', user, function(text) {				  		
-					  		$(detcont).append($.parseHTML(text));
-					  	});
-				  	}	
-		    });  		
-				
-	    },
 	    
 
 	    clearTasks : function(){
