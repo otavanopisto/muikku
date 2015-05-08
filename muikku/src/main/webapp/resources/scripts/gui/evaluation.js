@@ -175,7 +175,7 @@
     }
   });
 
-  function openWorkspaceEvaluationDialog(workspaceEntityId, studentEntityId, workspaceStudentEntityId, studentDisplayName, studentStudyProgrammeName, alreadyEvaluated, evaluationData){
+  function openWorkspaceEvaluationDialog(workspaceEntityId, studentEntityId, workspaceStudentEntityId, studentDisplayName, studentStudyProgrammeName, alreadyEvaluated, evaluationData, studentElement){
     renderDustTemplate('evaluation/evaluation_evaluate_workspace_modal_view.dust', {
       studentDisplayName: studentDisplayName,
       gradingScales: $.parseJSON($('input[name="grading-scales"]').val()),
@@ -245,13 +245,13 @@
           'text': dialog.data('button-save-text'),
           'class': 'save-evaluation-button',
           'click': function(event) {
-            var gradeValue = $(this).find('select[name="grade"]')
-              .val()
-              .split('@', 2);
+            var gradeString = $(this).find('select[name="grade"]').val();
+            var gradeValue = gradeString.split('@', 2);
             var grade = gradeValue[0].split('/', 2);
             var gradingScale = gradeValue[1].split('/', 2);
             var evaluationDate = $(this).find('input[name="evaluationDate"]').datepicker('getDate').getTime();
             var assessorEntityId = $(this).find('select[name="assessor"]').val();
+            var verbalAssessment = $(this).find('#evaluateFormLiteralEvaluation').val();
             
             if(alreadyEvaluated){
               mApi().workspace.workspaces.assessments.update(workspaceEntityId, evaluationData.assessmentIdentifier, {
@@ -262,13 +262,23 @@
                 gradingScaleSchoolDataSource: gradingScale[1],
                 workspaceUserEntityId: workspaceStudentEntityId,
                 assessorEntityId: assessorEntityId,
-                verbalAssessment: $(this).find('#evaluateFormLiteralEvaluation').val()
+                verbalAssessment: verbalAssessment
               }).callback($.proxy(function (err, result) {
                 if (err) {
                   $('.notification-queue').notificationQueue('notification', 'error', err);
-                } else { 
+                } else {
+                  var newEvaluationData = {
+                      'assessmentIdentifier': evaluationData.assessmentIdentifier,
+                      'gradeString': gradeString,
+                      'verbalAssessment':verbalAssessment,
+                      'assessingUserEntityId':assessorEntityId,
+                      'date':evaluationDate
+                  };
+                  studentElement.removeClass('workspace-assessment-requested workspace-assessment-critical');
+                  studentElement.addClass('workspace-evaluated');
+                  studentElement.attr('data-workspace-evaluated', 'true');
+                  studentElement.attr('data-workspace-evaluation-data', JSON.stringify(newEvaluationData));
                   $(this).dialog("destroy").remove();
-                  console.log(result);
                 }
               }, this));
             }else{
@@ -280,7 +290,7 @@
                 gradingScaleSchoolDataSource: gradingScale[1],
                 workspaceUserEntityId: workspaceStudentEntityId,
                 assessorEntityId: assessorEntityId,
-                verbalAssessment: $(this).find('#evaluateFormLiteralEvaluation').val()
+                verbalAssessment: verbalAssessment
               }).callback($.proxy(function (err, result) {
                 if (err) {
                   $('.notification-queue').notificationQueue('notification', 'error', err);
@@ -515,7 +525,7 @@
         evaluationData = JSON.parse($(this).attr('data-workspace-evaluation-data'));
       }
       
-      openWorkspaceEvaluationDialog(workspaceEntityId, studentEntityId, workspaceStudentEntityId, studentDisplayName, studentStudyProgrammeName, evaluated, evaluationData);
+      openWorkspaceEvaluationDialog(workspaceEntityId, studentEntityId, workspaceStudentEntityId, studentDisplayName, studentStudyProgrammeName, evaluated, evaluationData, $(this));
     });
     
     /* Evaluate assignment when its state is DONE or CRITICAL (means its late) */
