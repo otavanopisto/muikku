@@ -1,7 +1,5 @@
 package fi.muikku.plugins.forum.test;
 
-import static com.jayway.restassured.RestAssured.given;
-
 import java.util.List;
 
 import org.junit.Test;
@@ -11,7 +9,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 import com.jayway.restassured.response.Response;
 
-import fi.muikku.model.users.EnvironmentRoleArchetype;
+import fi.muikku.AbstractRESTPermissionsTest;
 import fi.muikku.plugins.forum.ForumResourcePermissionCollection;
 import fi.muikku.plugins.forum.rest.ForumAreaRESTModel;
 
@@ -21,20 +19,20 @@ public class ForumPermissionsTestsIT extends AbstractRESTPermissionsTest {
 
   private ForumResourcePermissionCollection forumPermissions = new ForumResourcePermissionCollection();
   
+  public ForumPermissionsTestsIT(String role) {
+    setRole(role);
+  }
+  
   @Parameters
   public static List<Object[]> generateData() {
     return getGeneratedRoleData();
-  }
-  
-  public ForumPermissionsTestsIT(String role) {
-    this.role = role;
   }
   
   @Test
   public void testCreateEnvironmentForum() throws NoSuchFieldException {
     ForumAreaRESTModel contactURLType = new ForumAreaRESTModel(null, "test_create_environmentforum", null);
     
-    Response response = given().headers(getAuthHeaders())
+    Response response = asRole()
       .contentType("application/json")
       .body(contactURLType)
       .post("/forum/areas");

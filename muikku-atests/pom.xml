@@ -198,6 +198,18 @@
       <artifactId>school-data-pyramus</artifactId>
       <version>1.0.29-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>rest</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>plugin</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>fi.muikku</groupId>
+      <artifactId>core</artifactId>
+    </dependency>
   </dependencies>
 
   <profiles>
@@ -560,7 +572,7 @@
                   <protocol>http</protocol>
                   <host>${it.host}</host>
                   <port>${it.port.http}</port>
-                  <file>/</file>
+                  <file>/rest/system/ping</file>
                   <maxcount>10</maxcount>
                   <timeout>10000</timeout>
                 </configuration>
