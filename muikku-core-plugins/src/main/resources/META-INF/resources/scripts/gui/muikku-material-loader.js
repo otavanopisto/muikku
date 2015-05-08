@@ -767,6 +767,12 @@
           readonly: data.readOnlyFields||false,
           answer: function () {
             return JSON.stringify($(this.element).muikkuFileField('files'));
+          },
+          isReadonly: function () {
+            return $(this.element).muikkuFileField("isReadonly");
+          },
+          setReadonly: function (readonly) {
+            $(this.element).muikkuFileField("setReadonly", readonly);
           }
         });
     });

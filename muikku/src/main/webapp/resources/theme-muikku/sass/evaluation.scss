@@ -228,6 +228,24 @@ body.evaluation {
 
               }
               
+              /* Student has sent workspace assessment request */
+              &.workspace-assessment-requested {
+              
+                .evaluation-student-picture {
+                  box-shadow:0 0 0 5px #0099ff;
+                }
+              
+              }
+              
+              /* Workspace hasn't been evaluated in time and TIME IS RUNNING OUT */
+              &.workspace-assessment-critical {
+              
+                .evaluation-student-picture {
+                  box-shadow:0 0 0 5px #de0000;
+                }
+              
+              }
+              
               /* Workspace has been reviewed and needs more input from student */
               &.workspace-reviewed-but-not-evaluated {
               
