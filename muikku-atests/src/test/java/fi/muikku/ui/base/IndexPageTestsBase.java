@@ -3,6 +3,7 @@ package fi.muikku.ui.base;
 import static org.junit.Assert.assertTrue;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.io.IOException;
@@ -14,9 +15,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 
-import wiremock.com.fasterxml.jackson.core.JsonProcessingException;
-import wiremock.com.fasterxml.jackson.databind.ObjectMapper;
-import wiremock.com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
+
 import fi.muikkku.ui.AbstractUITest;
 import fi.muikku.SqlAfter;
 import fi.muikku.SqlBefore;
@@ -40,14 +44,13 @@ public class IndexPageTestsBase extends AbstractUITest {
         .withStatus(204)));
     
     stubFor(get(urlMatching("/users/authorize.*"))
-     .withQueryParam("client_id", matching("*"))
-     .withQueryParam("response_type", matching("*"))
-     .withQueryParam("redirect_uri", matching("*"))
-       .withHeader("Accept", equalTo("text/json"))
+//     .withQueryParam("client_id", matching("*"))
+//     .withQueryParam("response_type", matching("*"))
+//     .withQueryParam("redirect_uri", matching("*"))
       .willReturn(
         aResponse()
           .withStatus(302)
-          .withHeader("Content-Length", "0")
+//          .withHeader("Content-Length", "0")
           .withHeader("Location", "http://dev.muikku.fi:8080/login?_stg=rsp&code=1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111")));
    
     stubFor(post(urlMatching("/1/oauth/token")).willReturn(
@@ -58,8 +61,10 @@ public class IndexPageTestsBase extends AbstractUITest {
     List<String> emails = new ArrayList<String>();
     emails.add("testuser@made.up");
     WhoAmI whoAmI = new WhoAmI((long)1, "Test", "User", emails);
-    ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-    String whoAmIJson = ow.writeValueAsString(whoAmI);
+
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    
+    String whoAmIJson = objectMapper.writeValueAsString(whoAmI);
     
     stubFor(get(urlMatching("/1/system/whoami")).willReturn(
       aResponse().withHeader("Content-Type", "application/json")
@@ -70,7 +75,7 @@ public class IndexPageTestsBase extends AbstractUITest {
     List<String> tags = null;
     Student student = new Student((long) 1, (long) 1, "Test", "User", null, null, null, null, null, null, null, null, null, null, null,
       (long) 1, null, null, false, null, null, null, null, variables, tags, false);
-    String studentJson = ow.writeValueAsString(student);
+    String studentJson = objectMapper.writeValueAsString(student);
     
     stubFor(get(urlMatching("/1/students/students/.*"))
       .willReturn(
@@ -80,14 +85,14 @@ public class IndexPageTestsBase extends AbstractUITest {
           .withStatus(200)));
 
     Email email = new Email((long) 1, (long) 2, true, "testuser@made.up"); 
-    String emailJson = ow.writeValueAsString(email);
+    String emailJson = objectMapper.writeValueAsString(email);
     stubFor(get(urlMatching("/1/students/students/.*/emails")).willReturn(
       aResponse().withHeader("Content-Type", "application/json")
         .withBody(emailJson)
         .withStatus(200)));
     
     Student[] studentArray = {student};
-    String studentArrayJson = ow.writeValueAsString(studentArray);
+    String studentArrayJson = objectMapper.writeValueAsString(studentArray);
     stubFor(get(urlEqualTo("/1/students/students?email=testuser@made.up"))
     // .withQueryParam("email", matching(".*"))
       .willReturn(
@@ -97,8 +102,9 @@ public class IndexPageTestsBase extends AbstractUITest {
           .withStatus(200)));
 
     DateTime birthday = new DateTime(1990, 2, 2, 0, 0, 0, 0);
-    Person person = new Person((long) 1, birthday, "345345-3453", fi.pyramus.rest.model.Sex.MALE, false, "", (long) 1);
-    String personJson = ow.writeValueAsString(person);
+
+    Person person = new Person((long) 1, birthday, "345345-3453", fi.pyramus.rest.model.Sex.MALE, false, "empty", (long) 1);
+    String personJson = objectMapper.writeValueAsString(person);
     stubFor(get(urlMatching("/1/persons/persons/.*"))
       .willReturn(
         aResponse()
@@ -115,7 +121,7 @@ public class IndexPageTestsBase extends AbstractUITest {
     
     StaffMember staffMember = new StaffMember((long) 5, (long) 5, null, "Test", "Staffmember", null, fi.pyramus.rest.model.UserRole.ADMINISTRATOR, tags, variables);
     StaffMember[] staffArray = {staffMember};
-    String staffArrayJson = ow.writeValueAsString(staffArray);
+    String staffArrayJson = objectMapper.writeValueAsString(staffArray);
     
     stubFor(get(urlMatching("/1/staff/members"))
       .withQueryParam("email", matching("staff@made.up"))
@@ -158,17 +164,13 @@ public class IndexPageTestsBase extends AbstractUITest {
   @SqlBefore("sql/loginSetup.sql")
   @SqlAfter("sql/loginTeardown.sql")
   public void loginTest() throws IOException {
-//    getWebDriver().get(getAppUrl());
-//    waitForElementToBeClickable(By.className("bt-login"));
-//    getWebDriver().findElement(By.className("bt-login")).click();
-    getWebDriver().get("http://dev.muikku.fi:8080/");
-//    sleep(500);
-////    waitForElementToBePresent(By.className("index"));
+    getWebDriver().get(getAppUrl() + "/login?authSourceId=1");
+    waitForElementToBePresent(By.className("index"));
 //    takeScreenshot();
 //    getWebDriver().get(getAppUrl());
-//    getWebDriver().get("http://localhost:8089/1/students/students/2");
-    sleep(1000);
-    takeScreenshot();
+//    getWebDriver().get("http://localhost:8089/1/persons/persons/2");
+//    sleep(1000);
+//    takeScreenshot();
 //    getWebDriver().get("http://0.0.0.0:8089/1/students/students/1/emails");
 //    sleep(1000);
 //    takeScreenshot();
