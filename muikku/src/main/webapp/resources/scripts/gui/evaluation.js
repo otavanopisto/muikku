@@ -17,6 +17,10 @@
     $(data.pageElement).find('textarea').each(function (index, textarea) {
       $(textarea).css("min-height", $(textarea).prop('scrollHeight'));
     });
+
+    $(data.pageElement)
+      .find('img')
+      .trigger("appear");
   });
   
   // Overrides JQuery.UI dialog setting that prevents html being inserted into title
