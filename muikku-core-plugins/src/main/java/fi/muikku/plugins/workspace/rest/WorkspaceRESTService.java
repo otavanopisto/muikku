@@ -819,6 +819,62 @@ public class WorkspaceRESTService extends PluginRESTService {
     return Response.noContent().build();
   }
   
+  @PUT
+  @Path("/workspaces/{WORKSPACEENTITYID}/assessments/{ID}")
+  public Response updateWorkspaceAssessment(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("ID") String workspaceAssesmentIdentifier, WorkspaceAssessment payload) {
+    // TODO: Security
+    
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    if (payload.getEvaluated() == null) {
+      return Response.status(Status.BAD_REQUEST).entity("evaluated is missing").build(); 
+    }
+    
+    if (payload.getAssessorEntityId() == null) {
+      return Response.status(Status.BAD_REQUEST).entity("assessorEntityId is missing").build(); 
+    }
+    
+    if (payload.getGradeSchoolDataSource() == null) {
+      return Response.status(Status.BAD_REQUEST).entity("gradeSchoolDataSource is missing").build(); 
+    }
+    
+    if (payload.getGradeIdentifier() == null) {
+      return Response.status(Status.BAD_REQUEST).entity("gradeIdentifier is missing").build(); 
+    }
+
+    UserEntity assessor = userEntityController.findUserEntityById(payload.getAssessorEntityId());
+    User assessingUser = userController.findUserByUserEntityDefaults(assessor);
+    GradingScale gradingScale = gradingController.findGradingScale(payload.getGradingScaleSchoolDataSource(), payload.getGradingScaleIdentifier());
+    GradingScaleItem grade = gradingController.findGradingScaleItem(gradingScale, payload.getGradeSchoolDataSource(), payload.getGradeIdentifier());
+    
+    if (assessor == null) {
+      return Response.status(Status.BAD_REQUEST).entity("assessor is invalid").build(); 
+    }
+    
+    if (gradingScale == null) {
+      return Response.status(Status.BAD_REQUEST).entity("gradingScale is invalid").build(); 
+    }
+    
+    if (grade == null) {
+      return Response.status(Status.BAD_REQUEST).entity("grade is invalid").build(); 
+    }
+    
+    WorkspaceUserEntity workspaceStudentEntity = workspaceUserEntityController.findWorkspaceUserEntityById(payload.getWorkspaceUserEntityId());
+    //TODO: check if workspace is right, check if user is student;
+    if(workspaceStudentEntity == null){
+      return Response.status(Status.BAD_REQUEST).entity("WorkspaceUserEntityId is invalid").build();
+    }
+
+    fi.muikku.schooldata.entity.WorkspaceUser workspaceStudent = workspaceController.findWorkspaceUser(workspaceStudentEntity);
+    
+    Date evaluated = payload.getEvaluated();
+    
+    return Response.ok(gradingController.updateWorkspaceAssessment(workspaceStudent.getSchoolDataSource(), workspaceAssesmentIdentifier, workspaceStudent, assessingUser, grade, payload.getVerbalAssessment(), evaluated)).build();
+  }
+  
   @POST
   @Path("/workspaces/{WORKSPACEENTITYID}/assessments/")
   public Response createWorkspaceAssessment(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, WorkspaceAssessment payload) {

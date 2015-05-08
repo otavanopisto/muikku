@@ -84,8 +84,6 @@ public class WorkspaceAssessment {
   public void setVerbalAssessment(String verbalAssessment) {
     this.verbalAssessment = verbalAssessment;
   }
-  
-
 
   public Long getWorkspaceUserEntityId() {
     return workspaceUserEntityId;
@@ -94,9 +92,7 @@ public class WorkspaceAssessment {
   public void setWorkspaceUserEntityId(Long workspaceUserEntityId) {
     this.workspaceUserEntityId = workspaceUserEntityId;
   }
-
-
-
+  
   private Long id;
   private Date evaluated;
   private Long workspaceUserEntityId;
