@@ -41,7 +41,7 @@ import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceType;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.EnvironmentUserController;
-import fi.muikku.users.UserController;
+import fi.muikku.users.UserEntityController;
 import fi.otavanopisto.security.LoggedIn;
 
 @Named
@@ -70,7 +70,7 @@ public class EvaluationIndexBackingBean {
   private GradingController gradingController;
 
   @Inject
-  private UserController userController;
+  private UserEntityController userEntityController;
 
   @Inject
   private EvaluationController evaluationController;
@@ -148,36 +148,9 @@ public class EvaluationIndexBackingBean {
       logger.log(Level.SEVERE, "Grading scales serialization failed", e);
       return NavigationRules.INTERNAL_ERROR;
     }
-
-    List<UserEntity> teacherUserEntities = workspaceController.listUserEntitiesByWorkspaceEntityAndRoleArchetype(workspaceEntity, WorkspaceRoleArchetype.TEACHER);
-    List<Assessor> assessors = new ArrayList<>(teacherUserEntities.size());
-    for (UserEntity teacherUserEntity : teacherUserEntities) {
-      User teacherUser = userController.findUserByUserEntityDefaults(teacherUserEntity);
-      if (teacherUser != null) {
-        assessors.add(new Assessor(
-          teacherUserEntity.getId(), 
-          String.format("%s, %s", teacherUser.getLastName(), teacherUser.getFirstName()),
-          teacherUserEntity.getId().equals(loggedUserEntityId)
-        ));
-      }
-    }
-    
-    Collections.sort(assessors, new Comparator<Assessor>() {
-      @Override
-      public int compare(Assessor o1, Assessor o2) {
-        return o1.getDisplayName().compareTo(o2.getDisplayName());
-      }
-    });
     
     try {
-      this.assessors = new ObjectMapper().writeValueAsString(assessors);
-    } catch (JsonProcessingException e) {
-      logger.log(Level.SEVERE, "Teacher list serialization failed", e);
-      return NavigationRules.INTERNAL_ERROR;
-    }
-    
-    try {
-      assignments = new ObjectMapper().writeValueAsString(createAssignments(evaluationController.getAssignmentContentNodes(workspaceEntity)));
+      assignments = new ObjectMapper().writeValueAsString(createAssignments(evaluationController.getAssignmentContentNodes(workspaceEntity, true)));
     } catch (Exception e) {
       logger.log(Level.SEVERE, "Failed to load assignments", e);
       return NavigationRules.INTERNAL_ERROR;
@@ -211,10 +184,37 @@ public class EvaluationIndexBackingBean {
       if (workspaceType != null) {
         this.workspaceType = workspaceType.getName();
       }
+      
+      List<User> teacherUsers = workspaceController.listUsersByWorkspaceEntityAndRoleArchetype(workspaceEntity, WorkspaceRoleArchetype.TEACHER);
+      List<Assessor> assessors = new ArrayList<>(teacherUsers.size());
+      for (User teacherUser : teacherUsers) {
+        UserEntity teacherUserEntity = userEntityController.findUserEntityByUser(teacherUser);
+        if (teacherUserEntity != null) {
+          assessors.add(new Assessor(
+            teacherUserEntity.getId(), 
+            String.format("%s, %s", teacherUser.getLastName(), teacherUser.getFirstName()),
+            teacherUserEntity.getId().equals(loggedUserEntityId)
+          ));
+        }
+      }
+      
+      Collections.sort(assessors, new Comparator<Assessor>() {
+        @Override
+        public int compare(Assessor o1, Assessor o2) {
+          return o1.getDisplayName().compareTo(o2.getDisplayName());
+        }
+      });
+      
+      try {
+        this.assessors = new ObjectMapper().writeValueAsString(assessors);
+      } catch (JsonProcessingException e) {
+        logger.log(Level.SEVERE, "Teacher list serialization failed", e);
+        return NavigationRules.INTERNAL_ERROR;
+      }
     } finally {
       schoolDataBridgeSessionController.endSystemSession();
     }
-    
+
     workspaceStudentCount = workspaceController.countWorkspaceUserEntitiesByWorkspaceRoleArchetype(workspaceEntity, WorkspaceRoleArchetype.STUDENT);
     
     return null;

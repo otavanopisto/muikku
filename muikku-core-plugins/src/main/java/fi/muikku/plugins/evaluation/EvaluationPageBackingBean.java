@@ -124,7 +124,7 @@ public class EvaluationPageBackingBean {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     List<ContentNode> assignmentNodes;
     try {
-      assignmentNodes = evaluationController.getAssignmentContentNodes(workspaceEntity);
+      assignmentNodes = evaluationController.getAssignmentContentNodes(workspaceEntity, false);
     } catch (WorkspaceMaterialException e) {
       logger.log(Level.SEVERE, "Failed to load workspace assignments", e);
       return NavigationRules.INTERNAL_ERROR;
