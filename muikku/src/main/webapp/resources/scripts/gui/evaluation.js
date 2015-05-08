@@ -255,7 +255,7 @@
             
             if(alreadyEvaluated){
               mApi().workspace.workspaces.assessments.update(workspaceEntityId, evaluationData.assessmentIdentifier, {
-                evaluated: evaluated,
+                evaluated: evaluationDate,
                 gradeIdentifier: grade[0],
                 gradeSchoolDataSource: grade[1],
                 gradingScaleIdentifier: gradingScale[0],
