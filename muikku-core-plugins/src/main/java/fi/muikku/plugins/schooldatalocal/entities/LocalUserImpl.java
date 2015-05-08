@@ -9,6 +9,7 @@ public class LocalUserImpl implements User {
                      String firstName,
                      String lastName,
                      String displayName,
+                     String studyProgrammeName,
                      String nationality,
                      String language,
                      String municipality,
@@ -16,6 +17,7 @@ public class LocalUserImpl implements User {
     this.identifier = identifier;
     this.firstName = firstName;
     this.lastName = lastName;
+    this.studyProgrammeName = studyProgrammeName;
     this.displayName = displayName;
     this.nationality = nationality;
     this.municipality = municipality;
@@ -56,6 +58,11 @@ public class LocalUserImpl implements User {
   @Override
   public String getDisplayName() {
     return displayName;
+  }
+  
+  @Override
+  public String getStudyProgrammeName() {
+    return studyProgrammeName;
   }
 
   @Override
@@ -99,6 +106,7 @@ public class LocalUserImpl implements User {
   private String firstName;
   private String lastName;
   private String displayName;
+  private String studyProgrammeName;
   private String nationality;
   private String language;
   private String municipality;

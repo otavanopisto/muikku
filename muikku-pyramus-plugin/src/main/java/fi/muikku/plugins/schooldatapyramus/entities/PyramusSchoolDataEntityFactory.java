@@ -70,6 +70,7 @@ public class PyramusSchoolDataEntityFactory {
                            null,
                            null,
                            null,
+                           null,
                            null);
   }
   
@@ -95,16 +96,17 @@ public class PyramusSchoolDataEntityFactory {
       .append(' ')
       .append(student.getLastName());
     
-    if (studyProgramme != null) {
-      displayName.append(" (")
-        .append(studyProgramme.getName())
-        .append(')');
+    String studyProgrammeName = studyProgramme != null ? studyProgramme.getName() : null;
+    
+    if (studyProgrammeName != null) {
+      displayName.append(String.format(" (%s)", studyProgrammeName));
     }
     
     return new PyramusUser(identifierMapper.getStudentIdentifier(student.getId()),
                            student.getFirstName(),
                            student.getLastName(),
                            displayName.toString(),
+                           studyProgrammeName,
                            nationality,
                            language,
                            municipality,
