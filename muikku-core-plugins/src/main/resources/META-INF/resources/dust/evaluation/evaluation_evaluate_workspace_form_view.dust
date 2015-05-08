@@ -33,10 +33,12 @@
         {/gradingScales}
       </select>
     </div>
+    <!--
     <div class="evaluation-modal-evaluateForm-basedOfPhenomenon-wrapper">
       <label for="evaluateFormLiteralEvaluation">Ilmiön osuus suorituksesta</label>
     
     </div>
+    -->
     <div class="evaluation-modal-evaluateForm-valuer-wrapper">
       <label for="evaluateFormLiteralEvaluation">Arvioija</label>
       <select name="assessor">
