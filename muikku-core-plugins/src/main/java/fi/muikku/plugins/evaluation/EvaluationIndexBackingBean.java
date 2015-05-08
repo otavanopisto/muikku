@@ -150,7 +150,7 @@ public class EvaluationIndexBackingBean {
     }
     
     try {
-      assignments = new ObjectMapper().writeValueAsString(createAssignments(evaluationController.getAssignmentContentNodes(workspaceEntity)));
+      assignments = new ObjectMapper().writeValueAsString(createAssignments(evaluationController.getAssignmentContentNodes(workspaceEntity, true)));
     } catch (Exception e) {
       logger.log(Level.SEVERE, "Failed to load assignments", e);
       return NavigationRules.INTERNAL_ERROR;
