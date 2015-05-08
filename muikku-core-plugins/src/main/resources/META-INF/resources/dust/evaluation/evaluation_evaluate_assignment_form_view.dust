@@ -3,7 +3,7 @@
     <h2 class="evaluation-modal-evaluateForm-title">Tehtävän arviointi</h2>
     <div class="evaluation-modal-evaluateForm-meta-wrapper">
       <div class="meta-education-type">
-        <span class="title">Opiskelijan linja</span><span class="desc">Lukio</span>
+        <span class="title">Opiskelijan linja</span><span class="desc">{studentStudyProgrammeName}</span>
       </div>
       <div class="meta-workspace">
         <span class="title">Kurssi</span><span class="desc">{workspaceName}</span>
