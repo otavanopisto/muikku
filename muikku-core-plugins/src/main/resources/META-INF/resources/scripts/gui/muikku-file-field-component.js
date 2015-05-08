@@ -203,6 +203,14 @@
       this._updateFileMeta(this._fileIndex, fileId, fileName, contentType);
       this._updateFileLabel(this._fileIndex, fileName, fileId);
       
+      // Fix for uploading a file over a removed one
+      var fileElement = this._findFileElementByIndex(this._fileIndex);
+      if (fileElement.hasClass('muikku-file-input-field-file-removed')) {
+        fileElement.removeClass('muikku-file-input-field-file-removed');
+        fileElement.find('.muikku-file-input-field-file-restore').hide();
+        fileElement.find('.muikku-file-input-field-file-remove').show();
+      }
+      
       if (this._multiple) {
         this._fileIndex++;
       }
