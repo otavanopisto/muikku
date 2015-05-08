@@ -30,7 +30,7 @@ body.evaluation {
   
     span[class*='evaluation-workspacelist-tt-container-'] {
       opacity:0;
-      font-family:"Open Sans";
+      font-family:'Open Sans',Verdana, sans-serif;
       font-size:16px;
       height:16px;
       font-weight:300;
@@ -223,9 +223,27 @@ body.evaluation {
               &.workspace-evaluated {
               
                 .evaluation-student-picture {
-                  box-shadow:0 0 0 5px #16a506;
+                  box-shadow:0 0 0 5px #3cdd2a;
                 }
 
+              }
+              
+              /* Student has sent workspace assessment request */
+              &.workspace-assessment-requested {
+              
+                .evaluation-student-picture {
+                  box-shadow:0 0 0 5px #0099ff;
+                }
+              
+              }
+              
+              /* Workspace hasn't been evaluated in time and TIME IS RUNNING OUT */
+              &.workspace-assessment-critical {
+              
+                .evaluation-student-picture {
+                  box-shadow:0 0 0 5px #de0000;
+                }
+              
               }
               
               /* Workspace has been reviewed and needs more input from student */
@@ -274,7 +292,7 @@ body.evaluation {
             margin:10px auto 10px auto;
             
             .evaluation-student-assignment-listing-row {
-              margin:10px 0;
+              margin:0;
               white-space:nowrap;
               clear:both;
             
@@ -309,7 +327,7 @@ body.evaluation {
                 
                 &.assignment-evaluated {
                   opacity:1;
-                  box-shadow:0 0 0 5px #16a506;
+                  box-shadow:0 0 0 5px #3cdd2a;
                   cursor:pointer;
                   
                   &:hover {
@@ -454,6 +472,8 @@ body.evaluation {
               
               .evaluation-workspacelist-root {
                 height:100%;
+                margin:0;
+                padding:0;
     
                 .evaluation-workspacelist-item {
                   margin:0 0 1px 0;
@@ -560,81 +580,104 @@ body.evaluation {
         
         .evaluation-modal-workspace-assignment-info {
           
-          .evaluation-modal-workspace-assignment-title {
-            text-transform:uppercase;
-            font-size:16px;
-            padding:10px 20px;
-            background:#ce01bd;
-            color:#fff;
-            font-weight:400;
-          }
-          
+          /* ASSIGNMENT EVALUATION */
           .evaluation-modal-workspace-assignment-wrapper {
             margin:20px 0 0 0;
+            font-size:14px;
             
-            h2 {
-              color:#000;
-              font-weight:300;
-              border-left:20px solid #ce01bd;
-              padding:0 0 0 5px;
-              margin-left:-20px;
-              font-size:24px;
-            }
-            
-            p {
-              font-size:14px;
-              line-height:22px;
+            .evaluation-modal-workspace-single-assignment {
               margin:10px 0;
-              font-weight:400;
-              color:#000;
-            }
-            
-            p.evaluation-modal-assignment-student-answer {
-              border-radius:3px;
-              background:#ebf7ff;
-              padding:5px 10px;
-              margin:10px 0 20px 0;
-              font-weight:300;
-              font-style:italic;
+              
+              article {
+              
+                h2 {
+                  color:#000;
+                  font-weight:300;
+                  border-left:20px solid #ce01bd;
+                  padding:0 0 0 5px;
+                  margin-left:-20px;
+                  font-size:24px;
+                }
+                
+                p {
+                  line-height:22px;
+                  margin:10px 0;
+                  font-weight:400;
+                  color:#000;
+                }
+                
+                textarea {
+                  font-family:'Open Sans',Verdana, sans-serif;
+                  border-radius:3px;
+                  background:#ebf7ff;
+                  padding:5px 10px;
+                  margin:0;
+                  font-weight:300;
+                  font-style:italic;
+                  border:0px;
+                  color:#000;
+                  resize:none;
+                  box-sizing:border-box;
+                  
+                  &:focus {
+                    box-shadow:none;
+                    outline:none;
+                  }
+                }
+                
+              }
+              
             }
           
           }
           
-          .evaluation-modal-workspace-exercise-title {
-            text-transform:uppercase;
-            font-size:16px;
-            padding:10px 20px;
-            background:#ff9900;
-            color:#fff;
-            font-weight:400;
-          }
-          
+          /* EXERCISE EVALUATION */
           .evaluation-modal-workspace-exercise-wrapper {
             margin:20px 0 0 0;
             
-            h3 {
-              color:#000;
-              font-weight:300;
-              border-left:20px solid #ff9900;
-              padding:0 0 0 5px;
-              margin-left:-20px;
-            }
-            
-            p {
-              font-size:14px;
-              line-height:22px;
+            .evaluation-modal-workspace-single-exercise {
               margin:10px 0;
-              font-weight:400;
-              color:#000;
-            }
+              
+              article {
             
-            p.evaluation-modal-exercise-student-answer {
-              border-radius:3px;
-              background:#ffebcc;
-              padding:5px 10px;
-              margin:10px 0 20px 0;
-              font-weight:300;
-              font-style:italic;
+                h2 {
+                  color:#000;
+                  font-weight:300;
+                  border-left:20px solid #ff9900;
+                  padding:0 0 0 5px;
+                  margin-left:-20px;
+                }
+                
+                p {
+                  font-size:14px;
+                  line-height:22px;
+                  margin:10px 0;
+                  font-weight:400;
+                  color:#000;
+                }
+                
+                textarea {
+                  font-family:'Open Sans',Verdana, sans-serif;
+                  border-radius:3px;
+                  background:#ebf7ff;
+                  padding:5px 10px;
+                  margin:0;
+                  font-weight:300;
+                  font-style:italic;
+                  border:0px; 
+                  color:#000;
+                  resize:none;
+                  box-sizing:border-box;
+                  
+                  &:focus {
+                    box-shadow:none;
+                    outline:none;
+                  }
+                  
+                }
+                
+              }
+            
             }
           
           }
@@ -731,7 +774,7 @@ body.evaluation {
           color:#000;
           outline:none;
           transition:border 0.15s ease-in-out;
-          font-family:"Open Sans", arial;
+          font-family:'Open Sans',Verdana, sans-serif;
           font-weight:300;
           
           &:hover,
@@ -785,7 +828,7 @@ body.evaluation {
           text-transform:uppercase;
           margin:5px;
           outline:none;
-          font-family:"Open Sans";
+          font-family:'Open Sans',Verdana, sans-serif;
           min-width:90px;
           font-size:18px;
         }
@@ -934,7 +977,7 @@ body.evaluation {
           text-transform:uppercase;
           margin:5px;
           outline:none;
-          font-family:"Open Sans";
+          font-family:'Open Sans',Verdana, sans-serif;
           min-width:90px;
           font-size:18px;
           
@@ -957,7 +1000,7 @@ body.evaluation {
   }
   
   #ui-datepicker-div {
-    font-family:"Open Sans", arial;
+    font-family:'Open Sans',Verdana, sans-serif;
     font-size:13px;
     box-shadow:0 0 30px 5px rgba(0,0,0,0.3);
     border:0;
@@ -1087,4 +1130,125 @@ body.evaluation {
     }
     
   }
+}
+
+/* MATERIAL DEFAULT STYLES */
+
+p, h1, h2, h3, h4, h5, h6 {
+  word-wrap:break-word;
+}
+
+em,
+i {
+  font-style:italic;
+  font-weight:300;
+}
+
+strong,
+b {
+  font-weight:400; /* This is set to 'normal' because we use thinner font with text rendering */
+  font-style:inherit;
+}
+
+table {
+  border-collapse:separate;
+  border-spacing:initial;
+  margin:initial;
+  padding:initial;
+}
+
+td {
+  padding:initial;
+  margin:initial;
+  width:auto;
+  max-width:100%;
+}
+
+/* Content link overrides */
+a {
+  color:#4290ea; 
+}
+
+/* UL, LI overrides */
+ul {
+  list-style-type:disc;
+}
+
+ol {
+   list-style-type:decimal;
+}
+
+ul,
+ol {
+  margin:0 20px;
+
+  li {
+    margin:5px;
+/*       line-height:1.5em; */
+  }
+  
+  ol {
+    list-style-type:decimal;
+  }
+  
+  ul {
+    list-style-type:circle;
+  }
+
+}
+
+/* MATERIAL STYLESETS */
+
+.material-styles-block {
+  border-radius:5px;
+  padding:8px 14px;
+  margin:20px 0;
+}
+
+.material-thinkingbox {
+  background:#7fcaf7;
+  color:#fff;
+}
+
+.material-objectivebox {
+  background:#67d9bf;
+  color:#fff;
+}
+
+.material-infobox {
+  background:#ec97c6;
+  color:#fff;
+}
+
+.material-recapbox {
+  background:#6eb5cf;
+  color:#fff;
+}
+
+.material-chatbubble {
+  background:#7082b0;
+  color:#fff;
+}
+
+.material-basicbox {
+  background:#ffc369;
+  color:#fff;
+}
+
+.material-citation-highlight {
+  color:#913333;
+  font-size:18px;
+  font-weight:400;
+  border-left:3px solid #b24d4d;
+  border-radius:0px;
+  line-height:1.7em;
+}
+
+.material-citation-basic {
+  color:#7a8d94;
+  font-size:18px;
+  font-weight:400;
+  border-left:3px solid #7a8d94;
+  border-radius:0px;
+  line-height:1.7em;
 }

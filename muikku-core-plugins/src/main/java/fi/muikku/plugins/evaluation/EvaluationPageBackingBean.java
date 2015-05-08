@@ -124,7 +124,7 @@ public class EvaluationPageBackingBean {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     List<ContentNode> assignmentNodes;
     try {
-      assignmentNodes = evaluationController.getAssignmentContentNodes(workspaceEntity);
+      assignmentNodes = evaluationController.getAssignmentContentNodes(workspaceEntity, false);
     } catch (WorkspaceMaterialException e) {
       logger.log(Level.SEVERE, "Failed to load workspace assignments", e);
       return NavigationRules.INTERNAL_ERROR;
@@ -211,7 +211,14 @@ public class EvaluationPageBackingBean {
             return NavigationRules.INTERNAL_ERROR;
           }
 
-          students.add(new WorkspaceStudent(userEntity.getId(), workspaceStudent.getId(), String.format("%s %s", user.getFirstName(), user.getLastName()), status, studentAssignmentData, assessmentData, alreadyEvaluated));
+          students.add(new WorkspaceStudent(userEntity.getId(), 
+              workspaceStudent.getId(), 
+              String.format("%s %s", user.getFirstName(), user.getLastName()), 
+              user.getStudyProgrammeName(), 
+              status, 
+              studentAssignmentData, 
+              assessmentData, 
+              alreadyEvaluated));
         }
       }
     }
@@ -253,10 +260,11 @@ public class EvaluationPageBackingBean {
 
   public static class WorkspaceStudent {
 
-    public WorkspaceStudent(Long userEntityId, Long workspaceUserEntityId, String displayName, String status, String studentAssignmentData, String workspaceAssessmentData, boolean evaluated) {
+    public WorkspaceStudent(Long userEntityId, Long workspaceUserEntityId, String displayName, String studyProgrammeName, String status, String studentAssignmentData, String workspaceAssessmentData, boolean evaluated) {
       this.userEntityId = userEntityId;
       this.workspaceUserEntityId = workspaceUserEntityId;
       this.displayName = displayName;
+      this.studyProgrammeName = studyProgrammeName;
       this.status = status;
       this.studentAssignmentData = studentAssignmentData;
       this.workspaceAssessmentData = workspaceAssessmentData;
@@ -273,6 +281,10 @@ public class EvaluationPageBackingBean {
 
     public String getDisplayName() {
       return displayName;
+    }
+    
+    public String getStudyProgrammeName() {
+      return studyProgrammeName;
     }
 
     public String getStatus() {
@@ -294,6 +306,7 @@ public class EvaluationPageBackingBean {
     private Long workspaceUserEntityId;
     private Long userEntityId;
     private String displayName;
+    private String studyProgrammeName;
     private String status;
     private String studentAssignmentData;
     private String workspaceAssessmentData;

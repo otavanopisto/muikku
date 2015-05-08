@@ -57,9 +57,9 @@ public class EvaluationController {
     return workspaceMaterialEvaluation;
   }
 
-  public List<ContentNode> getAssignmentContentNodes(WorkspaceEntity workspaceEntity) throws WorkspaceMaterialException {
+  public List<ContentNode> getAssignmentContentNodes(WorkspaceEntity workspaceEntity, boolean processHtml) throws WorkspaceMaterialException {
     List<ContentNode> result = new ArrayList<>();
-    addAssignmentNodes(workspaceMaterialController.listVisibleEvaluableWorkspaceMaterialsAsContentNodes(workspaceEntity), result);
+    addAssignmentNodes(workspaceMaterialController.listVisibleEvaluableWorkspaceMaterialsAsContentNodes(workspaceEntity, processHtml), result);
     return result;
   }
   

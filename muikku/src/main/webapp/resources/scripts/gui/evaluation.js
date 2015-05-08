@@ -37,6 +37,8 @@
     },
     
     _create : function() {
+      var placeholderHeight = $(window).height() - this.element.offset().top;
+      
       this.element.append($('<div>').addClass('evaluation-views-slyder'));
       var pageCount = Math.ceil(this.options.workspaceStudentCount / this.options.maxStudents);
       for (var i = 0; i < pageCount; i++) {
@@ -45,7 +47,7 @@
             .attr('data-page-id', i)
             .css({
               'width': this.element.width(),
-              'height': '1px'
+              'height': placeholderHeight + 'px'
             })
             .addClass('evaluation-view-wrapper evaluation-view-placeholder')
             .append($('<div>').addClass('content-loading').append($('<div>').addClass('icon-spinner')))
@@ -169,11 +171,14 @@
     }
   });
 
-  function openWorkspaceEvaluationDialog(workspaceEntityId, studentEntityId, workspaceStudentEntityId, studentDisplayName, alreadyEvaluated, evaluationData){
+  function openWorkspaceEvaluationDialog(workspaceEntityId, studentEntityId, workspaceStudentEntityId, studentDisplayName, studentStudyProgrammeName, alreadyEvaluated, evaluationData){
     renderDustTemplate('evaluation/evaluation_evaluate_workspace_modal_view.dust', {
+      studentDisplayName: studentDisplayName,
       gradingScales: $.parseJSON($('input[name="grading-scales"]').val()),
+      assessors: $.parseJSON($('input[name="assessors"]').val()),
+      workspaceName: $('input[name="workspaceName"]').val(),
       assignments: ASSIGNMENTS,
-      assessors: $.parseJSON($('input[name="assessors"]').val())
+      studentStudyProgrammeName: studentStudyProgrammeName
     }, $.proxy(function (text) {
       var dialog = $(text); 
       
@@ -186,15 +191,15 @@
         dialogClass: "evaluation-evaluate-modal",
         open: function() {
           
-          $(this).find('input[name="evaluated"]')
+          $(this).find('input[name="evaluationDate"]')
             .css({'z-index': 9999, 'position': 'relative'})
             .attr('type', 'text')
             .datepicker();
           
           if(!alreadyEvaluated){
-            $(this).find('input[name="evaluated"]').datepicker('setDate', new Date()); 
+            $(this).find('input[name="evaluationDate"]').datepicker('setDate', new Date()); 
           }else{
-            $(this).find('input[name="evaluated"]').datepicker('setDate', new Date(evaluationData.date));
+            $(this).find('input[name="evaluationDate"]').datepicker('setDate', new Date(evaluationData.date));
             $(this).find('#evaluateFormLiteralEvaluation').val(evaluationData.verbalAssessment);
             $(this).find('select[name="grade"]').val(evaluationData.gradeString);
             $(this).find('select[name="assessor"]').val(evaluationData.assessingUserEntityId);
@@ -241,7 +246,7 @@
               .split('@', 2);
             var grade = gradeValue[0].split('/', 2);
             var gradingScale = gradeValue[1].split('/', 2);
-            var evaluated = $(this).find('input[name="evaluated"]').datepicker('getDate').getTime();
+            var evaluationDate = $(this).find('input[name="evaluationDate"]').datepicker('getDate').getTime();
             var assessorEntityId = $(this).find('select[name="assessor"]').val();
             
             if(alreadyEvaluated){
@@ -264,7 +269,7 @@
               }, this));
             }else{
               mApi().workspace.workspaces.assessments.create(workspaceEntityId, {
-                evaluated: evaluated,
+                evaluated: evaluationDate,
                 gradeIdentifier: grade[0],
                 gradeSchoolDataSource: grade[1],
                 gradingScaleIdentifier: gradingScale[0],
@@ -293,7 +298,7 @@
     }, this));
   };
   
-  function openMaterialEvaluationDialog(workspaceEntityId, workspaceMaterialId, studentEntityId, studentDisplayName, workspaceMaterialEvaluation) {
+  function openMaterialEvaluationDialog(workspaceEntityId, workspaceMaterialId, studentEntityId, studentDisplayName, studentStudyProgrammeName, workspaceMaterialEvaluation) {
     var assignmentData = getAssignmentData(workspaceMaterialId);
     
     renderDustTemplate('evaluation/evaluation_evaluate_assignment_modal_view.dust', {
@@ -301,12 +306,13 @@
       gradingScales: $.parseJSON($('input[name="grading-scales"]').val()),
       assessors: $.parseJSON($('input[name="assessors"]').val()),
       workspaceName: $('input[name="workspaceName"]').val(),
+      studentStudyProgrammeName: studentStudyProgrammeName,
       assignments: [{
         workspaceMaterialId: assignmentData.workspaceMaterialId,
         materialId: assignmentData.materialId,
         title: assignmentData.title, 
         html: assignmentData.html,
-        type: assignmentData.type,
+        type: assignmentData.type
       }]
     }, $.proxy(function (text) {
       var dialog = $(text);
@@ -316,23 +322,23 @@
         resizable: false,
         width: 'auto',
         height: 'auto',
-        title: '<span class="modal-title-student-name">Esimerkki Opiskelija 1</span><span class="modal-title-workspace-name">GE1 - Sininen planeetta</span>',
+        title: '<span class="modal-title-student-name">'+studentDisplayName+'</span><span class="modal-title-workspace-name">'+$('input[name="workspaceName"]').val()+'</span>',
         dialogClass: "evaluation-evaluate-modal",
         open: function() {
-          $(this).find('input[name="evaluated"]')
+          $(this).find('input[name="evaluationDate"]')
             .css({'z-index': 9999, 'position': 'relative'})
             .attr('type', 'text')
             .datepicker();
           
           if (!workspaceMaterialEvaluation) {
-            $(this).find('input[name="evaluated"]')
+            $(this).find('input[name="evaluationDate"]')
               .datepicker('setDate', new Date());
           } else {
             var gradeId = 
               workspaceMaterialEvaluation.gradeIdentifier + '/' + workspaceMaterialEvaluation.gradeSchoolDataSource + '@' + 
               workspaceMaterialEvaluation.gradingScaleIdentifier + '/' + workspaceMaterialEvaluation.gradingScaleSchoolDataSource;
                 
-            $(this).find('input[name="evaluated"]')
+            $(this).find('input[name="evaluationDate"]')
               .datepicker('setDate', new Date(workspaceMaterialEvaluation.evaluated));
             $(this).find('#evaluateFormLiteralEvaluation').val(workspaceMaterialEvaluation.verbalAssessment);
             $(this).find('select[name="grade"]').val(gradeId);
@@ -370,12 +376,12 @@
             var grade = gradeValue[0].split('/', 2);
             var gradingScale = gradeValue[1].split('/', 2);
             // TODO: Switch to ISO 8601
-            var evaluated = $(this).find('input[name="evaluated"]').datepicker('getDate').getTime();
+            var evaluationDate = $(this).find('input[name="evaluationDate"]').datepicker('getDate').getTime();
             var assessorEntityId = $(this).find('select[name="assessor"]').val();
             
             if (workspaceMaterialEvaluation && workspaceMaterialEvaluation.id) {
               mApi().workspace.workspaces.materials.evaluations.update(workspaceEntityId, workspaceMaterialId, workspaceMaterialEvaluation.id, {
-                evaluated: evaluated,
+                evaluated: evaluationDate,
                 gradeIdentifier: grade[0],
                 gradeSchoolDataSource: grade[1],
                 gradingScaleIdentifier: gradingScale[0],
@@ -393,7 +399,7 @@
               }, this));
             } else {
               mApi().workspace.workspaces.materials.evaluations.create(workspaceEntityId, workspaceMaterialId, {
-                evaluated: evaluated,
+                evaluated: evaluationDate,
                 gradeIdentifier: grade[0],
                 gradeSchoolDataSource: grade[1],
                 gradingScaleIdentifier: gradingScale[0],
@@ -494,15 +500,18 @@
     $(document).on('click', '.evaluation-student-wrapper', function(event){
       var workspaceEntityId = $('input[name="workspace-entity-id"]').val();
       var workspaceStudentEntityId = $(this).attr('data-workspace-student-entity-id');
-      var studentDisplayName = $(this).find('.evaluation-student-name').text();
+      var studentElement = $(this).closest('.evaluation-student-wrapper');
+      var studentDisplayName = studentElement.attr('data-display-name');
+      var studentStudyProgrammeName = studentElement.attr('data-study-programme-name');
+      
       var studentEntityId = $(this).attr('data-user-entity-id');
       var evaluated = $(this).attr('data-workspace-evaluated') == 'true' ? true : false;
       var evaluationData = {};
-      if(evaluated){
+      if (evaluated) {
         evaluationData = JSON.parse($(this).attr('data-workspace-evaluation-data'));
       }
       
-      openWorkspaceEvaluationDialog(workspaceEntityId, studentEntityId, workspaceStudentEntityId, studentDisplayName, evaluated, evaluationData);
+      openWorkspaceEvaluationDialog(workspaceEntityId, studentEntityId, workspaceStudentEntityId, studentDisplayName, studentStudyProgrammeName, evaluated, evaluationData);
     });
     
     /* Evaluate assignment when its state is DONE or CRITICAL (means its late) */
@@ -510,12 +519,14 @@
       var workspaceEntityId = $('input[name="workspace-entity-id"]').val();
       var workspaceMaterialId = $(this).attr('data-workspace-material-id');
       var studentEntityId = $(this).attr('data-student-entity-id');
-      var studentDisplayName = $(this)
+      var studentElement = $(this)
         .closest('.evaluation-view-wrapper')
-        .find('.evaluation-student-wrapper[data-user-entity-id=' + studentEntityId + ']')
-        .attr('data-display-name');
-      
-      openMaterialEvaluationDialog(workspaceEntityId, workspaceMaterialId, studentEntityId, studentDisplayName, null);
+        .find('.evaluation-student-wrapper[data-user-entity-id=' + studentEntityId + ']');
+    
+      var studentDisplayName = studentElement.attr('data-display-name');
+      var studentStudyProgrammeName = studentElement.attr('data-study-programme-name');
+  
+      openMaterialEvaluationDialog(workspaceEntityId, workspaceMaterialId, studentEntityId, studentDisplayName, studentStudyProgrammeName, null);
     });
     
     /* View evaluation when assigment's state is EVALUATED */
@@ -523,10 +534,12 @@
       var workspaceEntityId = $('input[name="workspace-entity-id"]').val();
       var workspaceMaterialId = $(this).attr('data-workspace-material-id');
       var studentEntityId = $(this).attr('data-student-entity-id');
-      var studentDisplayName = $(this)
+      var studentElement = $(this)
         .closest('.evaluation-view-wrapper')
-        .find('.evaluation-student-wrapper[data-user-entity-id=' + studentEntityId + ']')
-        .attr('data-display-name');
+        .find('.evaluation-student-wrapper[data-user-entity-id=' + studentEntityId + ']');
+      
+      var studentDisplayName = studentElement.attr('data-display-name');
+      var studentStudyProgrammeName = studentElement.attr('data-study-programme-name');
       var workspaceMaterialEvaluationId = $(this).attr('data-workspace-material-evaluation-id');
       
       mApi().workspace.workspaces.materials.evaluations.read(workspaceEntityId, workspaceMaterialId, workspaceMaterialEvaluationId)
@@ -534,7 +547,7 @@
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
           } else { 
-            openMaterialEvaluationDialog(workspaceEntityId, workspaceMaterialId, studentEntityId,studentDisplayName,  result);
+            openMaterialEvaluationDialog(workspaceEntityId, workspaceMaterialId, studentEntityId, studentDisplayName, studentStudyProgrammeName, result);
           }
         });
     });

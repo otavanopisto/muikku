@@ -303,32 +303,41 @@ public class WorkspaceController {
     return listWorkspaceUsers(workspaceEntity).size();
   }
   
-  public List<UserEntity> listUserEntitiesByWorkspaceEntityAndRoleArchetype(
-      WorkspaceEntity workspaceEntity,
-      WorkspaceRoleArchetype roleArchetype) {
-    SchoolDataSource schoolDataSource = workspaceEntity.getDataSource();
-    List<WorkspaceUser> workspaceUsers = listWorkspaceUsers(workspaceEntity);
-    
-    for (int i = workspaceUsers.size() - 1; i >= 0; i--) {
-      WorkspaceUserEntity userEntity = findWorkspaceUserEntity(workspaceUsers.get(i));
-      WorkspaceRoleEntity roleEntity = userEntity.getWorkspaceUserRole();
-      if (roleEntity.getArchetype() != roleArchetype) {
-        workspaceUsers.remove(i);
-      }
+  public List<WorkspaceUserEntity> listWorkspaceUserEntitiesByWorkspaceEntityAndRoleArchetype(WorkspaceEntity workspaceEntity, WorkspaceRoleArchetype roleArchetype) {
+    List<WorkspaceRoleEntity> workspaceRoles = roleController.listWorkspaceRoleEntitiesByArchetype(roleArchetype);
+    if (workspaceRoles.isEmpty()) {
+      return Collections.emptyList();
     }
     
-    List<UserEntity> result = new ArrayList<UserEntity>();
-    for (WorkspaceUser workspaceUser : workspaceUsers) {
-      User user = userController.findUserByDataSourceAndIdentifier(
-          schoolDataSource,
-          workspaceUser.getUserIdentifier());
-      UserEntity userEntity = userEntityController.findUserEntityByUser(user);
-      result.add(userEntity);
+    return workspaceUserEntityController.listWorkspaceUserEntitiesByRoles(workspaceEntity, workspaceRoles);
+  }
+  
+  public List<User> listUsersByWorkspaceEntityAndRoleArchetype(WorkspaceEntity workspaceEntity, WorkspaceRoleArchetype roleArchetype) {
+    List<WorkspaceUserEntity> workspaceUserEntities = listWorkspaceUserEntitiesByWorkspaceEntityAndRoleArchetype(workspaceEntity, roleArchetype);
+    List<User> result = new ArrayList<>(workspaceUserEntities.size());
+    for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
+      User user = userController.findUserByDataSourceAndIdentifier(workspaceEntity.getDataSource().getIdentifier(), workspaceUserEntity.getUserSchoolDataIdentifier().getIdentifier());
+      if (user != null) {
+        result.add(user);
+      }
     }
     
     return result;
   }
 
+  public List<UserEntity> listUserEntitiesByWorkspaceEntityAndRoleArchetype(WorkspaceEntity workspaceEntity, WorkspaceRoleArchetype roleArchetype) {
+    List<User> users = listUsersByWorkspaceEntityAndRoleArchetype(workspaceEntity, roleArchetype);
+    List<UserEntity> result = new ArrayList<>();
+    for (User user : users) {
+      UserEntity userEntity = userEntityController.findUserEntityByUser(user);
+      if (userEntity != null) {
+        result.add(userEntity);
+      }
+    }
+    
+    return result;
+  }
+  
   /* WorkspaceRoleEntity */
 
   public WorkspaceRoleEntity findWorkspaceRoleEntityByDataSourceAndIdentifier(String schoolDataSource,

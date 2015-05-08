@@ -3,6 +3,7 @@
 
   $.widget("custom.muikkuFileField", {
     _create : function() {
+      this._readonly = false;
       this._fieldName = this.element.attr("name");
       this._multiple = this.element.attr("multiple") == 'multiple';
       this._fileIndex = 0;
@@ -202,6 +203,14 @@
       this._updateFileMeta(this._fileIndex, fileId, fileName, contentType);
       this._updateFileLabel(this._fileIndex, fileName, fileId);
       
+      // Fix for uploading a file over a removed one
+      var fileElement = this._findFileElementByIndex(this._fileIndex);
+      if (fileElement.hasClass('muikku-file-input-field-file-removed')) {
+        fileElement.removeClass('muikku-file-input-field-file-removed');
+        fileElement.find('.muikku-file-input-field-file-restore').hide();
+        fileElement.find('.muikku-file-input-field-file-remove').show();
+      }
+      
       if (this._multiple) {
         this._fileIndex++;
       }
@@ -233,6 +242,20 @@
     
     _destroy : function() {
 
+    },
+    isReadonly: function () {
+      return this._readonly;
+    },
+    setReadonly: function (readonly) {
+      this._readonly = readonly;
+      if (readonly) {
+        $(this._uploader).attr("disabled", "disabled");
+        $('.muikku-file-input-field-file-remove').hide();
+      }
+      else {
+        $(this._uploader).removeAttr("disabled");
+        $('.muikku-file-input-field-file-remove').show();
+      }
     }
   });
 
