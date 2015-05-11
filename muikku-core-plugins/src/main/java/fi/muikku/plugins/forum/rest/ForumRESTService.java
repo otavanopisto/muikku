@@ -27,7 +27,7 @@ import fi.muikku.plugins.forum.model.ForumAreaGroup;
 import fi.muikku.plugins.forum.model.ForumThread;
 import fi.muikku.plugins.forum.model.ForumThreadReply;
 import fi.otavanopisto.security.AuthorizationException;
-import fi.otavanopisto.security.Permit;
+import fi.otavanopisto.security.rest.RESTPermit;
 
 @Path("/forum")
 @RequestScoped
@@ -42,7 +42,7 @@ public class ForumRESTService extends PluginRESTService {
   
   @GET
   @Path ("/areagroups")
-  @Permit(ForumResourcePermissionCollection.FORUM_LIST_FORUMAREAGROUPS)
+  @RESTPermit(ForumResourcePermissionCollection.FORUM_LIST_FORUMAREAGROUPS)
   public Response listForumAreaGroups() throws AuthorizationException {
     List<ForumAreaGroup> groups = forumController.listForumAreaGroups();
     
@@ -59,7 +59,7 @@ public class ForumRESTService extends PluginRESTService {
   
   @GET
   @Path ("/areagroups/{AREAGROUPID}")
-  @Permit(ForumResourcePermissionCollection.FORUM_FIND_FORUMAREAGROUP)
+  @RESTPermit(ForumResourcePermissionCollection.FORUM_FIND_FORUMAREAGROUP)
   public Response findAreaGroup(@PathParam ("AREAGROUPID") Long areaGroupId) throws AuthorizationException {
     ForumAreaGroup forumArea = forumController.findForumAreaGroup(areaGroupId);
     
@@ -72,7 +72,7 @@ public class ForumRESTService extends PluginRESTService {
   
   @POST
   @Path ("/areagroups")
-  @Permit(ForumResourcePermissionCollection.FORUM_CREATEFORUMAREAGROUP)
+  @RESTPermit(ForumResourcePermissionCollection.FORUM_CREATEFORUMAREAGROUP)
   public Response createForumAreaGroup(ForumAreaGroupRESTModel newGroup) throws AuthorizationException {
     ForumAreaGroup forumArea = forumController.createForumAreaGroup(newGroup.getName());
     
@@ -113,7 +113,7 @@ public class ForumRESTService extends PluginRESTService {
   
   @POST
   @Path ("/areas")
-  @Permit(ForumResourcePermissionCollection.FORUM_CREATEENVIRONMENTFORUM)
+  @RESTPermit(ForumResourcePermissionCollection.FORUM_CREATEENVIRONMENTFORUM)
   public Response createForumArea(ForumAreaRESTModel newForum) throws AuthorizationException {
     EnvironmentForumArea forumArea = forumController.createEnvironmentForumArea(newForum.getName(), newForum.getGroupId());
     
@@ -206,7 +206,7 @@ public class ForumRESTService extends PluginRESTService {
   
   @POST
   @Path ("/areas/{AREAID}/threads/{THREADID}/replies")
-  @Permit(ForumResourcePermissionCollection.FORUM_WRITEMESSAGES)
+  @RESTPermit(ForumResourcePermissionCollection.FORUM_WRITEMESSAGES)
   public Response createReply(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, ForumThreadReplyRESTModel newReply) throws AuthorizationException {
     ForumThread forumThread = forumController.getForumThread(threadId);
     ForumThreadReply reply = forumController.createForumThreadReply(forumThread, Jsoup.clean(newReply.getMessage(), Whitelist.basic()));

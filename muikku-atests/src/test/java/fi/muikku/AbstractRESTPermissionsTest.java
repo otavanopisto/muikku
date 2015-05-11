@@ -288,10 +288,12 @@ public abstract class AbstractRESTPermissionsTest extends AbstractIntegrationTes
       case PSEUDO:
         String[] defaultPseudoRoles = permissionCollection.getDefaultPseudoRoles(permission);
         
-        for (String dpr : defaultPseudoRoles) {
-          if (dpr.equals(getRole())) {
-            roleIsAllowed = true;
-            break;
+        if (defaultPseudoRoles != null) {
+          for (String dpr : defaultPseudoRoles) {
+            if (dpr.equals(getRole())) {
+              roleIsAllowed = true;
+              break;
+            }
           }
         }
       break;
@@ -301,10 +303,12 @@ public abstract class AbstractRESTPermissionsTest extends AbstractIntegrationTes
 
         EnvironmentRoleArchetype environmentRoleArchetype = EnvironmentRoleArchetype.valueOf(getRole());
         
-        for (fi.muikku.model.users.EnvironmentRoleArchetype str : allowedRoles) {
-          if (str.equals(environmentRoleArchetype)) {
-            roleIsAllowed = true;
-            break;
+        if (allowedRoles != null) {
+          for (fi.muikku.model.users.EnvironmentRoleArchetype str : allowedRoles) {
+            if (str.equals(environmentRoleArchetype)) {
+              roleIsAllowed = true;
+              break;
+            }
           }
         }
       break;
@@ -314,10 +318,12 @@ public abstract class AbstractRESTPermissionsTest extends AbstractIntegrationTes
 
         WorkspaceRoleArchetype workspaceRoleArchetype = WorkspaceRoleArchetype.valueOf(getRole());
         
-        for (WorkspaceRoleArchetype dwr : defaultWorkspaceRoles) {
-          if (dwr.equals(workspaceRoleArchetype)) {
-            roleIsAllowed = true;
-            break;
+        if (defaultWorkspaceRoles != null) {
+          for (WorkspaceRoleArchetype dwr : defaultWorkspaceRoles) {
+            if (dwr.equals(workspaceRoleArchetype)) {
+              roleIsAllowed = true;
+              break;
+            }
           }
         }
       break;
