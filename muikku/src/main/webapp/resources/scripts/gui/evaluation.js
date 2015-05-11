@@ -151,18 +151,18 @@
         } ,this),
         complete : $.proxy(function(data) {
           
-          if (pageId == 0) {
-            $('.content-loading')
-              .animate({
-                opacity: 0
-            },{
-              duration:900,
-              easing: "easeInOutQuint",
-              complete: function () {
-                $('.content-loading').remove();
-              }
-            });
-          }
+//          if (pageId == 0) {
+//            $('.content-loading')
+//              .animate({
+//                opacity: 0
+//            },{
+//              duration:900,
+//              easing: "easeInOutQuint",
+//              complete: function () {
+//                $('.content-loading').remove();
+//              }
+//            });
+//          }
           
         } ,this)
       });
