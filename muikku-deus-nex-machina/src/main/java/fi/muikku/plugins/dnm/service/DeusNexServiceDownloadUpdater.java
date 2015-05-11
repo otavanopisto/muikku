@@ -2,10 +2,12 @@ package fi.muikku.plugins.dnm.service;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.AccessTimeout;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Schedule;
@@ -24,7 +26,7 @@ import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.schooldata.WorkspaceEntityController;
 
 @Singleton
-@Lock(LockType.READ)
+@AccessTimeout (unit = TimeUnit.MINUTES, value = 5)
 public class DeusNexServiceDownloadUpdater {
   
   @Inject
@@ -59,7 +61,7 @@ public class DeusNexServiceDownloadUpdater {
     contextInitialized = false;
   }
 
-  @Schedule(hour = "*", minute = "*", second = "*/20", persistent = false)
+  @Schedule(hour = "*", minute = "*/5", second = "*", persistent = false)
   public void downloadNext() {
     if (contextInitialized) {
       if (!running) {
@@ -135,7 +137,8 @@ public class DeusNexServiceDownloadUpdater {
                     }
                    
                     deusNexImportQueueController.removePendingDownload(pendingDownload);
-      
+                    deusNexImportQueueController.addDownloaded(document.getId());
+                    
                     logger.info(String.format("Processed dnm document #%d (%s)", document.getId(), document.getPath()));
                   } else {
                     logger.log(Level.WARNING, String.format("Ignoring import for document %s because maching workspace could not be found", document.getPath()));

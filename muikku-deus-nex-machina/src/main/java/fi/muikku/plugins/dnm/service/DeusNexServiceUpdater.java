@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.AccessTimeout;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Schedule;
@@ -24,7 +25,7 @@ import fi.muikku.plugins.dnm.DeusNexMachinaController;
 import fi.muikku.schooldata.WorkspaceEntityController;
 
 @Singleton
-@Lock(LockType.READ)
+@AccessTimeout (unit = TimeUnit.MINUTES, value = 1)
 public class DeusNexServiceUpdater {
   
   @Inject
@@ -62,14 +63,7 @@ public class DeusNexServiceUpdater {
       if (!running) {
         try {
           running = true;
-          List<Document> documents = null;
-          Date since = getSince();
-          
-          if (since == null) {
-            documents = Arrays.asList(client.listDocuments());
-          } else {
-            documents = Arrays.asList(client.listDocuments(since));
-          }
+          List<Document> documents = Arrays.asList(client.listDocuments());
           
           Collections.sort(documents, new Comparator<Document>() {
             
@@ -85,6 +79,14 @@ public class DeusNexServiceUpdater {
           List<Long> newImports = new ArrayList<>();
           for (Document document : documents) {
             if (importNos != null && !importNos.contains(document.getId())) {
+              continue;
+            }
+            
+            if (deusNexImportQueueController.isDownloaded(document.getId())) {
+              continue;
+            }
+            
+            if (deusNexImportQueueController.isPendingDownload(document.getId())) {
               continue;
             }
             
@@ -117,15 +119,6 @@ public class DeusNexServiceUpdater {
         }    
       }
     }
-  }
-  
-  private Date getSince() {
-    Long lastUpdate = deusNexImportQueueController.getLastUpdate();
-    if (lastUpdate != null) {
-      return new Date(lastUpdate);
-    }
-    
-    return null;
   }
 
   private boolean contextInitialized;
