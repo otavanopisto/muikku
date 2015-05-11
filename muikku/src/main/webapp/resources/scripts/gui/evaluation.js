@@ -21,6 +21,10 @@
     $(data.pageElement)
       .find('img')
       .trigger("appear");
+    
+    /* If image is last element inside article node and is floating this prevents image from overlapping its parent container */
+    $(data.pageElement)
+    .append($('<div>').addClass('clear'));
   });
   
   // Overrides JQuery.UI dialog setting that prevents html being inserted into title
