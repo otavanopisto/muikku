@@ -123,7 +123,7 @@
    background-color:#fff;
   }
   
-  
+
   
   
   .mf-filter{
@@ -188,7 +188,7 @@
   .mf-search{
     margin-left:10px;
     width:300px;
-  
+    
   }
   .mf-search-icon{
     display:inline-block;
@@ -201,15 +201,16 @@
      width:200px;
      display:inline-block;
      margin-top:10px;
+     
+     >input{
+       margin-left:10px;
+       padding:10px;
+       font-size:20px;
+       color:#c4cdd1;     
+     }
+     
   }
   
-  .mf-search-field > input{
-   margin-left:10px;
-   padding:10px;
-   font-size:20px;
-   color:#c4cdd1;
-  
-  }
   
   .mf-content-toolbar{
     /* padding:20px 0 0 0px; */
