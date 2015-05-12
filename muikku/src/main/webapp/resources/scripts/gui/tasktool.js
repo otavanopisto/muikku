@@ -7,9 +7,23 @@ $(document).ready(function(){
           this.refreshTasks();	
     	    $(TaskImpl.taskContainer).on("click", '.tt-item:not(.open)', $.proxy(this.showUser,this));  
     	    $(TaskImpl.taskContainer).on("click", '.tt-tool-send-mail', $.proxy(this.messageToUser,this));    	    
-    	    
+          $('.tt-search').on('focus', '#taskToolSearch', $.proxy(this._onTaskFocus, this));
     	},
     	
+
+      _onTaskFocus : function(event){
+        
+        $(event.target).autocomplete({
+          source: function (request, response) {
+            response(tasktool.filterTasks(request.term));
+          },
+          select: function (event, ui) {
+            tasktool._selectRecipient(event, ui.item);
+            $(this).val("");
+            return false;
+          }
+        });             
+      },    	
     	
     	refreshTasks : function(){
 
@@ -66,10 +80,40 @@ $(document).ready(function(){
 	    clearTasks : function(){
 	    	$(TaskImpl.taskContainer).empty();
 	    },	    
+
 	    
-//	    clearReplies : function(){
-//	    	$(DiscImpl.subContainer).empty();
-//		 },	  	    
+	    
+     filterTasks : function(filterTerm){
+
+         var _this = this;
+         var users = new Array();
+         var workspaces= new Array();         
+       
+         mApi().user.users.read({ 'searchString' : filterTerm }).callback(
+          function (err, users) {
+            for (var i = 0, l = users.length; i < l; i++) {
+            var img = undefined;
+              if (users[i].hasImage)
+               img = CONTEXTPATH + "/picture?userId=" + result[i].id;
+               users.push({
+                 category: getLocaleText("plugin.communicator.users"),
+                 label: users[i].firstName + " " + users[i].lastName,
+                 id: users[i].id,
+                 image: img,
+                 type: "USER"
+                });
+              }
+       });       
+       
+//       mApi().workspace.workspaces.read({ 'searchString' : searchTerm }).callback(
+//           function (err, workspaces) {
+//             for (var i = 0, l = workspaces.length; i < l; i++) {
+//
+//             }
+//        });     
+                   
+         
+     },
 
 	    _klass : {
 	    	// Variables for the class
