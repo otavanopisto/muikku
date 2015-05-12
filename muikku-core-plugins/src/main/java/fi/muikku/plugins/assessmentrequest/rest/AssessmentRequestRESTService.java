@@ -2,7 +2,6 @@ package fi.muikku.plugins.assessmentrequest.rest;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -26,7 +25,6 @@ import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.assessmentrequest.AssessmentRequest;
 import fi.muikku.plugins.assessmentrequest.AssessmentRequestController;
-import fi.muikku.plugins.assessmentrequest.AssessmentRequestState;
 import fi.muikku.plugins.assessmentrequest.rest.model.AssessmentRequestRESTModel;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.session.SessionController;
