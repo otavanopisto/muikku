@@ -39,6 +39,15 @@ public class DeusNexXmlUtils {
     return i == null ? 0 : i.intValue();
   }
 
+  public static Boolean getChildValueBoolean(Element parent, String name) throws XPathExpressionException {
+    String childValue = getChildValue(parent, name);
+    if (StringUtils.isNotBlank(childValue)) {
+      return "true".equals(childValue);
+    }
+
+    return null;
+  }
+
   public static Integer getChildValueInteger(Element parent, String name) throws XPathExpressionException {
     String childValue = getChildValue(parent, name);
     if (StringUtils.isNotBlank(childValue)) {
