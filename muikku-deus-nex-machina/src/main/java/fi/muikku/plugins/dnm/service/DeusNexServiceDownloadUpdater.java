@@ -2,12 +2,10 @@ package fi.muikku.plugins.dnm.service;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.AccessTimeout;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Schedule;
@@ -26,7 +24,7 @@ import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.schooldata.WorkspaceEntityController;
 
 @Singleton
-@AccessTimeout (unit = TimeUnit.MINUTES, value = 5)
+@Lock(LockType.READ)
 public class DeusNexServiceDownloadUpdater {
   
   @Inject
@@ -61,7 +59,7 @@ public class DeusNexServiceDownloadUpdater {
     contextInitialized = false;
   }
 
-  @Schedule(hour = "*", minute = "*/5", second = "*", persistent = false)
+  @Schedule(hour = "*", minute = "*", second = "*/20", persistent = false)
   public void downloadNext() {
     if (contextInitialized) {
       if (!running) {

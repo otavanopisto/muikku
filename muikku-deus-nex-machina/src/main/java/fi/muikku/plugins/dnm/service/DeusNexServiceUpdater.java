@@ -5,12 +5,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.AccessTimeout;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Schedule;
@@ -25,7 +23,7 @@ import fi.muikku.plugins.dnm.DeusNexMachinaController;
 import fi.muikku.schooldata.WorkspaceEntityController;
 
 @Singleton
-@AccessTimeout (unit = TimeUnit.MINUTES, value = 1)
+@Lock(LockType.READ)
 public class DeusNexServiceUpdater {
   
   @Inject
