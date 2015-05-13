@@ -147,14 +147,32 @@ public abstract class AbstractRESTPermissionsTest extends AbstractIntegrationTes
 
   @Before
   public void createAccessTokens() {
-//    OAuthClientRequest tokenRequest = null;
 
-    if (!"PSEUDO-EVERYONE".equals(role)) {
-      Response response = given()
+    Response response = given()
         .contentType("application/json")
-        .get("/system/test/login");
+        .get("/test/login?role=" + getFullRoleName());
+
+    String accessToken = response.getCookie("JSESSIONID");
+    setAccessToken(accessToken);
+
+    response = given()
+        .contentType("application/json")
+        .get("/test/login?role=" + getFullRoleName(RoleType.ENVIRONMENT, "ADMINISTRATOR"));
+
+    String adminAccessToken = response.getCookie("JSESSIONID");
+    setAdminAccessToken(adminAccessToken);
+    
+    System.out.println("Accesstoken: " + accessToken);
+    System.out.println("Admin accesstoken: " + adminAccessToken);
+    
+//  OAuthClientRequest tokenRequest = null;
+    
+//    if (!"PSEUDO-EVERYONE".equals(role)) {
+//      Response response = given()
+//        .contentType("application/json")
+//        .get("/system/test/login");
       
-      String accessToken = response.getCookie("JSESSIONID");
+//      String accessToken = response.getCookie("JSESSIONID");
       
 //      try {
 //        tokenRequest = OAuthClientRequest.tokenLocation("https://dev.muikku.fi:8443/rest/oauth/token")
@@ -170,8 +188,8 @@ public abstract class AbstractRESTPermissionsTest extends AbstractIntegrationTes
 //      response = given().contentType("application/x-www-form-urlencoded").body(tokenRequest.getBody())
 //          .post("/oauth/token");
 //      String accessToken = response.body().jsonPath().getString("access_token");
-      setAccessToken(accessToken);
-    }
+//      setAccessToken(accessToken);
+//    }
     
 //    if (!Role.EVERYONE.name().equals(role)) {
 //      try {
@@ -230,26 +248,26 @@ public abstract class AbstractRESTPermissionsTest extends AbstractIntegrationTes
     this.adminAccessToken = adminAccesToken;
   }
 
-  private Map<String, String> getAuthHeaders() {
-    OAuthClientRequest bearerClientRequest = null;
-    try {
-      bearerClientRequest = new OAuthBearerClientRequest("https://dev.muikku.fi")
-          .setAccessToken(this.getAccessToken()).buildHeaderMessage();
-    } catch (OAuthSystemException e) {
-    }
-
-    return bearerClientRequest.getHeaders();
-  }
-  
-  private Map<String, String> getAdminAuthHeaders() {
-    OAuthClientRequest bearerClientRequest = null;
-    try {
-      bearerClientRequest = new OAuthBearerClientRequest("https://dev.muikku.fi")
-          .setAccessToken(this.getAdminAccessToken()).buildHeaderMessage();
-    } catch (OAuthSystemException e) {
-    }
-    return bearerClientRequest.getHeaders();
-  }
+//  private Map<String, String> getAuthHeaders() {
+//    OAuthClientRequest bearerClientRequest = null;
+//    try {
+//      bearerClientRequest = new OAuthBearerClientRequest("https://dev.muikku.fi")
+//          .setAccessToken(this.getAccessToken()).buildHeaderMessage();
+//    } catch (OAuthSystemException e) {
+//    }
+//
+//    return bearerClientRequest.getHeaders();
+//  }
+//  
+//  private Map<String, String> getAdminAuthHeaders() {
+//    OAuthClientRequest bearerClientRequest = null;
+//    try {
+//      bearerClientRequest = new OAuthBearerClientRequest("https://dev.muikku.fi")
+//          .setAccessToken(this.getAdminAccessToken()).buildHeaderMessage();
+//    } catch (OAuthSystemException e) {
+//    }
+//    return bearerClientRequest.getHeaders();
+//  }
 
   public Long getUserIdForRole(String role) {
     // TODO: could this use the /system/whoami end-point?
@@ -260,7 +278,7 @@ public abstract class AbstractRESTPermissionsTest extends AbstractIntegrationTes
     RequestSpecification reSpect = RestAssured.given();
     if (accessToken != null) {
 //      System.out.println("Setting request cookie: " + accessToken);
-      reSpect = reSpect.cookie("JSESSIONID", accessToken);
+      reSpect = reSpect.cookie("JSESSIONID", adminAccessToken);
     }
     
     return reSpect;
@@ -373,10 +391,10 @@ public abstract class AbstractRESTPermissionsTest extends AbstractIntegrationTes
     }
 
     if (roleIsAllowed) {
-//      System.out.println(permission + " @ " + getRoleType().name() + '-' + getRole() + " should be " + successStatusCode);
+      System.out.println(permission + " @ " + getRoleType().name() + '-' + getRole() + " should be " + successStatusCode + " was " + response.statusCode());
       response.then().assertThat().statusCode(successStatusCode);
     } else {
-//      System.out.println(permission + " @ " + getRoleType().name() + '-' + getRole() + " should be 403");
+      System.out.println(permission + " @ " + getRoleType().name() + '-' + getRole() + " should be 403 was " + response.statusCode());
       response.then().assertThat().statusCode(403);
     }
   }
@@ -452,6 +470,14 @@ public abstract class AbstractRESTPermissionsTest extends AbstractIntegrationTes
 
   protected RoleType getRoleType() {
     return roleType;
+  }
+  
+  protected String getFullRoleName() {
+    return getFullRoleName(getRoleType(), getRole());
+  }
+
+  protected String getFullRoleName(RoleType roleType, String role) {
+    return roleType.name() + "-" + role;
   }
   
   enum RoleType {
