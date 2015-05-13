@@ -125,6 +125,7 @@ body.workspace-materials-management {
 
               .workspace-materials-toc-item {
                 list-style:none;
+                position:relative;
                 
                 &:first-child {
                   margin-top:5px;
@@ -139,25 +140,49 @@ body.workspace-materials-management {
                   text-decoration:none;
                   color:#2c2c2c;
                   display:block;
-                  @include genericMenuLinkHoverTransition(background,color,0.15s,ease-in-out);
+                  @include genericMenuLinkHoverTransition(background,0.15s,ease-in-out);
                   @include rounded(2px);
                   padding:2px 8px 2px 6px;
-                  border-left:2px solid #e8f0f5;
-                  margin:1px 0;
+                  margin:1px 0 0 2px;
                   
-                  &:hover,
-                  &.active {
-                    background:#596e7d;
-                    color:#fff;
-                  }
                   
                   &.evaluated {
                     border-left:2px solid $evaluatedAssignment;
+                    margin:1px 0 0 0;
                   }
                   
                   &.exercise {
                     border-left:2px solid $exerciseAssignment;
+                    margin:1px 0 0 0;
                   }
+                }
+                
+                &:hover,
+                &.active {
+                  background:#596e7d;
+                  color:#fff;
+                  border-radius:2px;
+                  
+                  a {
+                    color:#fff;
+                  }
+                
+                  .workspace-materials-toc-dragHandle {
+                    opacity:1;
+                  }
+                
+                }
+                
+                .workspace-materials-toc-dragHandle {
+                  opacity:0;
+                  color:#ffffff;
+                  cursor:move;
+                  font-size:12px;
+                  padding:6px 4px 6px 6px;
+                  position:absolute;
+                  top:0px;
+                  right:0px;
+                  background:#596e7d;
                 }
     
               }
@@ -179,29 +204,6 @@ body.workspace-materials-management {
                   
                 }
                 
-                .workspace-materials-toc-item {
-                  list-style:none;
-                  
-                  &.item-hidden {
-                    opacity:0.4;
-                  }
-                  
-                  a {
-                    text-decoration:none;
-                    color:#2c2c2c;
-                    display:block;
-                    @include genericMenuLinkHoverTransition(background,color,0.15s,ease-in-out);
-                    @include rounded(2px);
-                    padding:2px 8px;
-                    
-                    &:hover,
-                    &.active {
-                      background:#596e7d;
-                      color:#fff;
-                    }
-                  }
-      
-                }
               }
             }
           }
@@ -666,19 +668,19 @@ body.workspace-materials-management {
         a.change-assignment {
           margin:0;
           position:relative;
-          top:-2px;
+          top:-3px;
           left:-1px;
           font-size:17px;
         }
       }
     
       &[data-assignment-type="EVALUATED"] .workspace-materials-management-view-page-controls span.assignment-type { /* Special case for assignment type link */
-        background: #0099ff;
+        background: $evaluatedAssignment;
         
         a.change-assignment {
           margin:0;
           position:relative;
-          top:-2px;
+          top:-3px;
           left:-1px;
           transform:rotate(330deg);
           font-size:17px;
@@ -687,12 +689,12 @@ body.workspace-materials-management {
       }
       
       &[data-assignment-type="EXERCISE"] .workspace-materials-management-view-page-controls span.assignment-type { /* Special case for assignment type link */
-        background: #2ed91c;
+        background: $exerciseAssignment;
         
         a.change-assignment {
           margin:0;
           position:relative;
-          top:-2px;
+          top:-3px;
           left:-1px;
           transform:rotate(30deg);
           font-size:17px;

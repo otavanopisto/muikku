@@ -36,9 +36,9 @@
                             <li class="workspace-materials-toc-subtitle">#{articleNode.title}</li>
                           </ui:fragment>
                           <ui:fragment rendered="#{articleNode.type ne 'folder'}">
-                            <li class="workspace-materials-toc-item"><h:outputLink
-                                value="#page-#{articleNode.workspaceMaterialId}"
-                                class="#{articleNode.assignmentType eq 'EVALUATED' ? 'evaluated' : articleNode.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{articleNode.title}</h:outputLink>
+                            <li class="workspace-materials-toc-item">
+                              <h:outputLink value="#page-#{articleNode.workspaceMaterialId}" class="#{articleNode.assignmentType eq 'EVALUATED' ? 'evaluated' : articleNode.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{articleNode.title}</h:outputLink>
+                              <span class="workspace-materials-toc-dragHandle icon-move"></span>  
                             </li>
                           </ui:fragment>
                         </ui:repeat>
