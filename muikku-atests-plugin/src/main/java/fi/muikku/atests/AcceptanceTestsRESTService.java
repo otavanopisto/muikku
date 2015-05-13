@@ -15,7 +15,7 @@ import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
 @Path("/test")
 @Produces("application/json")
-public class SystemRESTService extends AbstractRESTService {
+public class AcceptanceTestsRESTService extends AbstractRESTService {
 
   @Inject
   @LocalSession
