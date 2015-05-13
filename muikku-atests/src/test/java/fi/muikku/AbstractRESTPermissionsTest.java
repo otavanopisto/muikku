@@ -26,10 +26,12 @@ import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.config.ObjectMapperConfig;
 import com.jayway.restassured.config.RestAssuredConfig;
 import com.jayway.restassured.mapper.factory.Jackson2ObjectMapperFactory;
+import com.jayway.restassured.response.Header;
 import com.jayway.restassured.response.Response;
 import com.jayway.restassured.specification.RequestSpecification;
 
 import fi.muikku.model.users.EnvironmentRoleArchetype;
+import fi.muikku.model.users.SystemRoleType;
 import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.security.MuikkuPermissionCollection;
 import fi.pyramus.rest.model.Email;
@@ -119,7 +121,7 @@ public abstract class AbstractRESTPermissionsTest extends AbstractIntegrationTes
         aResponse().withHeader("Content-Type", "application/json").withBody("").withStatus(204)));
     
     
-    setAccessToken("ur84ur839843ruwf39843ru39ru37y2e");
+//    setAccessToken("ur84ur839843ruwf39843ru39ru37y2e");
   }  
   
   @Before
@@ -145,8 +147,32 @@ public abstract class AbstractRESTPermissionsTest extends AbstractIntegrationTes
 
   @Before
   public void createAccessTokens() {
-    OAuthClientRequest tokenRequest = null;
+//    OAuthClientRequest tokenRequest = null;
 
+    if (!"PSEUDO-EVERYONE".equals(role)) {
+      Response response = given()
+        .contentType("application/json")
+        .get("/system/test/login");
+      
+      String accessToken = response.getCookie("JSESSIONID");
+      
+//      try {
+//        tokenRequest = OAuthClientRequest.tokenLocation("https://dev.muikku.fi:8443/rest/oauth/token")
+//            .setGrantType(GrantType.AUTHORIZATION_CODE).setClientId(Common.CLIENT_ID)
+//            .setClientSecret(Common.CLIENT_SECRET).setRedirectURI(Common.REDIRECT_URL)
+//            .setCode(Common.ROLEAUTHS.get(role)).buildBodyMessage();
+//      } catch (OAuthSystemException e) {
+//        e.printStackTrace();
+//      }
+//
+//      System.out.println("tokenbody: " + tokenRequest.getBody());
+//      
+//      response = given().contentType("application/x-www-form-urlencoded").body(tokenRequest.getBody())
+//          .post("/oauth/token");
+//      String accessToken = response.body().jsonPath().getString("access_token");
+      setAccessToken(accessToken);
+    }
+    
 //    if (!Role.EVERYONE.name().equals(role)) {
 //      try {
 //        tokenRequest = OAuthClientRequest.tokenLocation("https://dev.pyramus.fi:8443/1/oauth/token")
@@ -231,11 +257,26 @@ public abstract class AbstractRESTPermissionsTest extends AbstractIntegrationTes
   }
   
   public RequestSpecification asAdmin() {
-    return RestAssured.given().headers(getAdminAuthHeaders());
+    RequestSpecification reSpect = RestAssured.given();
+    if (accessToken != null) {
+//      System.out.println("Setting request cookie: " + accessToken);
+      reSpect = reSpect.cookie("JSESSIONID", accessToken);
+    }
+    
+    return reSpect;
+//    return reSpect.headers(getAdminAuthHeaders());
   }
   
   public RequestSpecification asRole() {
-    return RestAssured.given().headers(getAuthHeaders());
+    RequestSpecification reSpect = RestAssured.given();
+    if (accessToken != null) {
+//      System.out.println("Setting request cookie: " + accessToken);
+      reSpect = reSpect.cookie("JSESSIONID", accessToken);
+    }
+    
+    return reSpect;
+    
+//    return RestAssured.given().headers(getAuthHeaders());
   }
   
 //  public boolean roleIsAllowed(String role, List<EnvironmentRoleArchetype> allowedRoles) {
@@ -282,60 +323,78 @@ public abstract class AbstractRESTPermissionsTest extends AbstractIntegrationTes
   }
   
   public void assertOk(Response response, MuikkuPermissionCollection permissionCollection, String permission, int successStatusCode) throws NoSuchFieldException {
-    boolean roleIsAllowed = false;
+    boolean roleIsAllowed = hasEveryonePermission(permissionCollection, permission);
     
-    switch (getRoleType()) {
-      case PSEUDO:
-        String[] defaultPseudoRoles = permissionCollection.getDefaultPseudoRoles(permission);
-        
-        if (defaultPseudoRoles != null) {
-          for (String dpr : defaultPseudoRoles) {
-            if (dpr.equals(getRole())) {
-              roleIsAllowed = true;
-              break;
+    if (!roleIsAllowed) {
+      switch (getRoleType()) {
+        case PSEUDO:
+          String[] defaultPseudoRoles = permissionCollection.getDefaultPseudoRoles(permission);
+          
+          if (defaultPseudoRoles != null) {
+            for (String dpr : defaultPseudoRoles) {
+              if (dpr.equals(getRole())) {
+                roleIsAllowed = true;
+                break;
+              }
             }
           }
-        }
-      break;
-      
-      case ENVIRONMENT:
-        List<fi.muikku.model.users.EnvironmentRoleArchetype> allowedRoles = asList(permissionCollection.getDefaultEnvironmentRoles(permission));
-
-        EnvironmentRoleArchetype environmentRoleArchetype = EnvironmentRoleArchetype.valueOf(getRole());
+        break;
         
-        if (allowedRoles != null) {
-          for (fi.muikku.model.users.EnvironmentRoleArchetype str : allowedRoles) {
-            if (str.equals(environmentRoleArchetype)) {
-              roleIsAllowed = true;
-              break;
+        case ENVIRONMENT:
+          List<fi.muikku.model.users.EnvironmentRoleArchetype> allowedRoles = asList(permissionCollection.getDefaultEnvironmentRoles(permission));
+  
+          EnvironmentRoleArchetype environmentRoleArchetype = EnvironmentRoleArchetype.valueOf(getRole());
+          
+          if (allowedRoles != null) {
+            for (fi.muikku.model.users.EnvironmentRoleArchetype str : allowedRoles) {
+              if (str.equals(environmentRoleArchetype)) {
+                roleIsAllowed = true;
+                break;
+              }
             }
           }
-        }
-      break;
-      
-      case WORKSPACE:
-        WorkspaceRoleArchetype[] defaultWorkspaceRoles = permissionCollection.getDefaultWorkspaceRoles(permission);
-
-        WorkspaceRoleArchetype workspaceRoleArchetype = WorkspaceRoleArchetype.valueOf(getRole());
+        break;
         
-        if (defaultWorkspaceRoles != null) {
-          for (WorkspaceRoleArchetype dwr : defaultWorkspaceRoles) {
-            if (dwr.equals(workspaceRoleArchetype)) {
-              roleIsAllowed = true;
-              break;
+        case WORKSPACE:
+          WorkspaceRoleArchetype[] defaultWorkspaceRoles = permissionCollection.getDefaultWorkspaceRoles(permission);
+  
+          WorkspaceRoleArchetype workspaceRoleArchetype = WorkspaceRoleArchetype.valueOf(getRole());
+          
+          if (defaultWorkspaceRoles != null) {
+            for (WorkspaceRoleArchetype dwr : defaultWorkspaceRoles) {
+              if (dwr.equals(workspaceRoleArchetype)) {
+                roleIsAllowed = true;
+                break;
+              }
             }
           }
-        }
-      break;
+        break;
+      }
     }
 
     if (roleIsAllowed) {
+//      System.out.println(permission + " @ " + getRoleType().name() + '-' + getRole() + " should be " + successStatusCode);
       response.then().assertThat().statusCode(successStatusCode);
     } else {
+//      System.out.println(permission + " @ " + getRoleType().name() + '-' + getRole() + " should be 403");
       response.then().assertThat().statusCode(403);
     }
   }
   
+  private boolean hasEveryonePermission(MuikkuPermissionCollection permissionCollection, String permission) throws NoSuchFieldException {
+    String[] defaultPseudoRoles = permissionCollection.getDefaultPseudoRoles(permission);
+    
+    if (defaultPseudoRoles != null) {
+      for (String dpr : defaultPseudoRoles) {
+        if (SystemRoleType.EVERYONE.name().equals(dpr)) {
+          return true;
+        }
+      }
+    }
+    
+    return false;
+  }
+
   @SafeVarargs
   private static <T> List<T> asList(T... stuff) {
     if (stuff != null)
@@ -360,6 +419,10 @@ public abstract class AbstractRESTPermissionsTest extends AbstractIntegrationTes
       "PSEUDO-EVERYONE"
     });
     
+    data.add(new Object[] {
+      "ENVIRONMENT-STUDENT"
+    });
+      
     return data;
   }
   

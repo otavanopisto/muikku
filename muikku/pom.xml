@@ -266,6 +266,17 @@
     </profile>
     
     <profile>
+      <id>atests-plugin</id>
+      <dependencies>
+        <dependency>
+          <groupId>fi.muikku</groupId>
+          <artifactId>atests-plugin</artifactId>
+          <version>1.0.29-SNAPSHOT</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    
+    <profile>
       <id>h2db-plugin</id>
       <dependencies>
         <dependency>

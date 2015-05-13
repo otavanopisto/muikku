@@ -66,6 +66,7 @@
 		<module>muikku-deus-nex-machina</module>
 		<module>muikku</module>
 		<module>muikku-atests</module>
+        <module>muikku-atests-plugin</module>
 	</modules>
 
 	<properties>
