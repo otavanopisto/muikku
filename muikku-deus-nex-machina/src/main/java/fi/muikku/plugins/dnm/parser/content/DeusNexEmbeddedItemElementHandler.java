@@ -12,4 +12,7 @@ public interface DeusNexEmbeddedItemElementHandler {
 	public Node handleEmbeddedAudio(Document ownerDocument, Integer resourceNo, Boolean showAsLink, String fileName, String linkText, Boolean autoStart, Boolean loop);
 	
 	public Node handleEmbeddedHyperlink(Document ownerDocument, Integer resourceNo, String target, String fileName, String linkText);
+
+  public Node handleEmbedded(Document ownerDocument, Integer resRef, Boolean functionalRef, Boolean visible, Boolean autoStart, Integer width, Integer height,
+      Boolean showAsLink, Boolean showControls, Boolean loop, Integer queryType);
 }

@@ -8,8 +8,8 @@ import java.util.Map;
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathExpressionException;
 
-import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -36,8 +36,95 @@ public class DeusNexContentParser {
     this.fieldElementHandler = fieldElementHandler;
     return this;
   }
+  
+  private Map<String, String> parseStyleDocument(Element documentElement) throws DeusNexException {
+    Map<String, String> contents = new HashMap<>();
+
+    Document ownerDocument = documentElement.getOwnerDocument();
+
+    try {
+      NodeList embeddedNodeList = documentElement.getElementsByTagName("ix:embedded");
+      for (int i = embeddedNodeList.getLength() - 1; i >= 0; i--) {
+        Element embeddedElement = (Element) embeddedNodeList.item(i);
+        Node replacement = handleEmbedded(ownerDocument, embeddedElement);
+        replaceElement(ownerDocument, embeddedElement, replacement);
+      }
+      
+      NodeList ixImageNodeList = documentElement.getElementsByTagName("ix:image");
+      for (int i = ixImageNodeList.getLength() - 1; i >= 0; i--) {
+        Element ixImageElement = (Element) ixImageNodeList.item(i);
+        Node replacement = handleIxImage(ownerDocument, ixImageElement);
+        replaceElement(ownerDocument, ixImageElement, replacement);
+      }
+      
+      NodeList embeddedItemNodeList = documentElement.getElementsByTagName("ix:embeddeditem");
+      for (int i = embeddedItemNodeList.getLength() - 1; i >= 0; i--) {
+        Element embeddedItemElement = (Element) embeddedItemNodeList.item(i);
+        Node replacement = handleEmbeddedItem(ownerDocument, embeddedItemElement);
+        replaceElement(ownerDocument, embeddedItemElement, replacement);
+      }
+
+      NodeList textFieldNodeList = documentElement.getElementsByTagName("ixf:textfield");
+      for (int i = textFieldNodeList.getLength() - 1; i >= 0; i--) {
+        Element element = (Element) textFieldNodeList.item(i);
+        Node replacement = handleTextField(ownerDocument, element);
+        replaceElement(ownerDocument, element, replacement);
+      }
+
+      NodeList memoFieldNodeList = documentElement.getElementsByTagName("ixf:memofield");
+      for (int i = memoFieldNodeList.getLength() - 1; i >= 0; i--) {
+        Element element = (Element) memoFieldNodeList.item(i);
+        Node replacement = handleMemoField(ownerDocument, element);
+        replaceElement(ownerDocument, element, replacement);
+      }
+
+      NodeList optionListNodeList = documentElement.getElementsByTagName("ixf:optionlist");
+      for (int i = optionListNodeList.getLength() - 1; i >= 0; i--) {
+        Element element = (Element) optionListNodeList.item(i);
+        Node replacement = handleOptionListField(ownerDocument, element);
+        replaceElement(ownerDocument, element, replacement);
+      }
+
+      NodeList connectFieldNodeList = documentElement.getElementsByTagName("ixf:connectfield");
+      for (int i = connectFieldNodeList.getLength() - 1; i >= 0; i--) {
+        Element element = (Element) connectFieldNodeList.item(i);
+        Node replacement = handleConnectField(ownerDocument, element);
+        replaceElement(ownerDocument, element, replacement);
+      }
+      // ixf:uploadfilefield
+      NodeList fileFieldNodeList = documentElement.getElementsByTagName("ixf:uploadfilefield");
+      for (int i = fileFieldNodeList.getLength() - 1; i >= 0; i--) {
+        Element element = (Element) fileFieldNodeList.item(i);
+        Node replacement = handleFileField(ownerDocument, element);
+        replaceElement(ownerDocument, element, replacement);
+      }
+
+      Element htmlElement = ownerDocument.createElement("html");
+      Element bodyElement = ownerDocument.createElement("body");
+      htmlElement.appendChild(bodyElement);
+
+      NodeList childNodes = documentElement.getChildNodes();
+      for (int i = childNodes.getLength() - 1; i >= 0; i--) {
+        if (bodyElement.getFirstChild() != null) {
+          bodyElement.insertBefore(childNodes.item(i), bodyElement.getFirstChild());
+        } else {
+          bodyElement.appendChild(childNodes.item(i));
+        }
+      }
+
+      contents.put("fi", DeusNexXmlUtils.serializeElement(htmlElement, true, false, "xml"));
+    } catch (XPathExpressionException | TransformerException e) {
+      throw new DeusNexInternalException("Internal Error occurred while processing document", e);
+    }
+
+    return contents;
+  }
 
   public Map<String, String> parseContent(Element documentElement) throws DeusNexException {
+    if ("styledocument".equals(documentElement.getTagName())) {
+      return parseStyleDocument(documentElement);
+    }
+    
     if (!"document".equals(documentElement.getTagName())) {
       throw new DeusNexSyntaxException("Invalid content document");
     }
@@ -56,6 +143,19 @@ public class DeusNexContentParser {
 
         // TODO: Sometimes document and fckdocument nodes are duplicated, when
         // and why?
+        NodeList embeddedNodeList = documentElement.getElementsByTagName("ix:embedded");
+        for (int i = embeddedNodeList.getLength() - 1; i >= 0; i--) {
+          Element embeddedElement = (Element) embeddedNodeList.item(i);
+          Node replacement = handleEmbedded(ownerDocument, embeddedElement);
+          replaceElement(ownerDocument, embeddedElement, replacement);
+        }
+        
+        NodeList ixImageNodeList = documentElement.getElementsByTagName("ix:image");
+        for (int i = ixImageNodeList.getLength() - 1; i >= 0; i--) {
+          Element ixImageElement = (Element) ixImageNodeList.item(i);
+          Node replacement = handleIxImage(ownerDocument, ixImageElement);
+          replaceElement(ownerDocument, ixImageElement, replacement);
+        }
 
         NodeList embeddedItemNodeList = localeDocument.getElementsByTagName("ix:embeddeditem");
         for (int i = embeddedItemNodeList.getLength() - 1; i >= 0; i--) {
@@ -152,9 +252,44 @@ public class DeusNexContentParser {
       return handleEmbeddedItemHyperLink(ownerDocument, embeddedItemElement);
     }
 
+    
     throw new DeusNexInternalException("Unknown ix:embeddeditem type '" + type + "'");
   }
+  
+  private Node handleEmbedded(Document ownerDocument, Element embeddedElement) throws XPathExpressionException,
+    DeusNexInternalException {
+    
+    Integer resRef = DeusNexXmlUtils.getChildValueInteger(embeddedElement, "res_ref");
+    Boolean functionalRef = DeusNexXmlUtils.getChildValueBoolean(embeddedElement, "functionalRef");
+    Boolean visible = DeusNexXmlUtils.getChildValueBoolean(embeddedElement, "visible");
+    Boolean autoStart = DeusNexXmlUtils.getChildValueBoolean(embeddedElement, "autoStart");
+    Integer width = DeusNexXmlUtils.getChildValueInteger(embeddedElement, "width");
+    Integer height = DeusNexXmlUtils.getChildValueInteger(embeddedElement, "height");
+    Boolean showAsLink = DeusNexXmlUtils.getChildValueBoolean(embeddedElement, "showAsLink");
+    Boolean showControls = DeusNexXmlUtils.getChildValueBoolean(embeddedElement, "showControls");
+    Boolean loop = DeusNexXmlUtils.getChildValueBoolean(embeddedElement, "loop");
+    Integer queryType = DeusNexXmlUtils.getChildValueInteger(embeddedElement, "queryType");
+    
+    if (embeddedItemElementHandler != null) {
+      return embeddedItemElementHandler.handleEmbedded(ownerDocument, resRef, functionalRef, visible, autoStart, 
+          width, height, showAsLink, showControls, loop, queryType);
+    } else {
+      return null;
+    }
+  }
 
+  private Node handleIxImage(Document ownerDocument, Element ixImageElement) throws XPathExpressionException {
+    Integer resRef = NumberUtils.createInteger(ixImageElement.getAttribute("res_ref"));
+    Integer width = NumberUtils.createInteger(ixImageElement.getAttribute("width"));
+    Integer height = NumberUtils.createInteger(ixImageElement.getAttribute("height"));
+    
+    if (embeddedItemElementHandler != null) {
+      return embeddedItemElementHandler.handleEmbeddedImage(ownerDocument, null, null, width, height, 0, null, resRef);
+    } else {
+      return null;
+    }
+  }
+  
   private Node handleEmbeddedItemHyperLink(Document ownerDocument, Element embeddedItemElement)
       throws XPathExpressionException {
     Integer resourceNo = DeusNexXmlUtils.getChildValueInteger(embeddedItemElement, "parameters/resourceno");
