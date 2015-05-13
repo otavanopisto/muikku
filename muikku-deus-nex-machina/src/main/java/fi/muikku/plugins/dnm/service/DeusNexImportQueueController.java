@@ -69,6 +69,48 @@ public class DeusNexImportQueueController {
 
     setPendingDownloads(pendingDownloads);
   }
+  
+  public boolean isPendingDownload(Long no) {
+    return getPendingDownloads().contains(no);
+  }
+  
+  public void addDownloaded(Long no) {
+    List<Long> nos = getDownloaded();
+    nos.add(no);
+    setDownloaded(nos);
+  }
+  
+  public void addDownloaded(List<Long> nos) {
+    List<Long> downloadedNos = getDownloaded();
+    for (Long no : nos) {
+      if (!downloadedNos.contains(no)) {
+        downloadedNos.add(no);
+      }
+    }
+
+    setDownloaded(downloadedNos);
+  }
+  
+  public boolean isDownloaded(Long no) {
+    return getDownloaded().contains(no);
+  }
+
+  private void setDownloaded(List<Long> nos) {
+    pluginSettingsController.setPluginSetting(DeusNexMachinaPluginDescriptor.PLUGIN_NAME, "downloaded", StringUtils.join(nos, ","));
+  }
+  
+  private List<Long> getDownloaded() {
+    List<Long> result = new ArrayList<>();
+    
+    String downloaded = pluginSettingsController.getPluginSetting(DeusNexMachinaPluginDescriptor.PLUGIN_NAME, "downloaded");
+    if (StringUtils.isNotBlank(downloaded)) {
+      for (String value : Arrays.asList(downloaded.split(","))) {
+        result.add(NumberUtils.createLong(value));
+      }
+    }
+    
+    return result;
+  }
 
   public Long getLastUpdate() {
     String lastUpdate = pluginSettingsController.getPluginSetting(DeusNexMachinaPluginDescriptor.PLUGIN_NAME, "last-update");
