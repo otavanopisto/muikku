@@ -184,6 +184,9 @@
         height: 'auto',
         title: '<span class="modal-title-student-name">'+studentDisplayName+'</span><span class="modal-title-workspace-name">'+$('input[name="workspaceName"]').val()+'</span>',
         dialogClass: "evaluation-evaluate-modal",
+        close: function () {
+          $(this).remove();
+        },
         open: function() {
           
           $(this).find('input[name="evaluationDate"]')
@@ -329,6 +332,9 @@
         height: 'auto',
         title: '<span class="modal-title-student-name">'+studentDisplayName+'</span><span class="modal-title-workspace-name">'+$('input[name="workspaceName"]').val()+'</span>',
         dialogClass: "evaluation-evaluate-modal",
+        close: function () {
+          $(this).remove();
+        },
         open: function() {
           $(this).find('input[name="evaluationDate"]')
             .css({'z-index': 9999, 'position': 'relative'})
