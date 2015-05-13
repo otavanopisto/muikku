@@ -123,9 +123,18 @@ body.workspace-materials-management {
             
             .workspace-materials-toc-root {
 
+              /* PLACEHOLDER item to indicate where user can drop sortable item */
+              .sortable-placeholder {
+                background:#d4e3ec;
+                border:2px dotted #fff;
+                boz-sizing:border-box;
+                margin: 1px 0 0 2px;
+              }
+
               .workspace-materials-toc-item {
                 list-style:none;
                 position:relative;
+
                 
                 &:first-child {
                   margin-top:5px;
@@ -155,7 +164,6 @@ body.workspace-materials-management {
                     margin:1px 0 0 0;
                   }
                 }
-                
                 &:hover,
                 &.active {
                   background:#596e7d;
@@ -172,6 +180,23 @@ body.workspace-materials-management {
                 
                 }
                 
+                /* ITEM SORTING RULES */
+ 
+                &.ui-sortable-helper {
+                  background:#000;
+                  color:#fff;
+                  border-radius:2px;
+                  
+                  a {
+                    color:#fff;
+                  }
+                
+                  .workspace-materials-toc-dragHandle {
+                    opacity:1;
+                  }
+                  
+                }
+                
                 .workspace-materials-toc-dragHandle {
                   opacity:0;
                   color:#ffffff;
@@ -181,7 +206,6 @@ body.workspace-materials-management {
                   position:absolute;
                   top:0px;
                   right:0px;
-                  background:#596e7d;
                 }
     
               }

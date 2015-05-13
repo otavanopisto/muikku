@@ -290,12 +290,39 @@
 
   $(document).ready(function() {
     
-    $('.workspace-materials-toc-item').draggable({
+    $('.workspace-materials-toc-section').sortable({
       axis: "y",
+      items: ">li",
       cursor: "crosshair",
-      handle: 'span.workspace-materials-toc-dragHandle'
+      handle: "span.workspace-materials-toc-dragHandle",
+      containment: ".workspace-materials-toc-root",
+      connectWith:".workspace-materials-toc-root, .workspace-materials-toc-section",
+      opacity: 0.5,
+      placeholder: "sortable-placeholder",
+      tolerance: "pointer",
+      forcePlaceholderSize: true,
+      forceHelperSize: true,
+      start: function( event, ui ) {
+        
+      },
+      stop: function( event, ui ) {
+        $(ui.item).animate({
+          backgroundColor: "#edeea2"
+        },{
+          duration:2000,
+          easing: "easeInOutQuint",
+          complete: function() {
+            $( this ).animate({
+              backgroundColor: "transparent"
+            }, {
+              duration:3000,
+              easing: "easeInOutQuint"
+            });
+          }
+        });
+      }
     });
-    
+
     $(window).data('initializing', true);
 
     $(document).muikkuMaterialLoader({
