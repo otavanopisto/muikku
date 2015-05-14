@@ -171,8 +171,8 @@ public abstract class AbstractRESTTest extends AbstractIntegrationTest {
     return reSpect;
   }
 
-  protected String getFullRoleName(RoleType roleType, String role) {
-    System.out.println(roleType + " ----- " + role);
+  protected static String getFullRoleName(RoleType roleType, String role) {
+//    System.out.println(roleType + " ----- " + role);
     return roleType.name() + "-" + role;
   }
   

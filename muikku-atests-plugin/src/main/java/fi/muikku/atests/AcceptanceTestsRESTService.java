@@ -27,7 +27,7 @@ public class AcceptanceTestsRESTService extends AbstractRESTService {
   @Produces("text/plain")
   @RESTPermit (handling = Handling.UNSECURED)
   public Response test_login(@QueryParam ("role") String role) {
-    System.out.println("Pälli " + role);
+    System.out.println("Acceptance tests logging in with role " + role);
     
     switch (role) {
       case "ENVIRONMENT-STUDENT":
