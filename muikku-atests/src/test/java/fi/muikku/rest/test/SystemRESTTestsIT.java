@@ -6,9 +6,9 @@ import org.junit.Test;
 
 import com.jayway.restassured.response.Response;
 
-import fi.muikku.AbstractRESTPermissionsTest;
+import fi.muikku.AbstractRESTTest;
 
-public class SystemRESTTestsIT extends AbstractRESTPermissionsTest {
+public class SystemRESTTestsIT extends AbstractRESTTest {
 
   public SystemRESTTestsIT() {
   }
