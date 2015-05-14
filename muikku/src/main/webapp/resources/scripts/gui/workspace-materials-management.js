@@ -306,20 +306,31 @@
         
       },
       stop: function( event, ui ) {
-        $(ui.item).animate({
-          backgroundColor: "#edeea2"
-        },{
-          duration:2000,
-          easing: "easeInOutQuint",
-          complete: function() {
-            $( this ).animate({
-              backgroundColor: "transparent"
-            }, {
-              duration:3000,
-              easing: "easeInOutQuint"
-            });
-          }
-        });
+        /* Lets not animate already active element */
+        if (!$(ui.item).hasClass("active")) {
+        
+          $(ui.item).animate({
+            backgroundColor: "#edeea2",
+            color: "#000"
+          },{
+            duration:2000,
+            easing: "easeInOutQuint",
+            complete: function() {
+              $( this ).animate({
+                backgroundColor: "transparent",
+                color: "#000"
+              }, {
+                duration:3000,
+                easing: "easeInOutQuint",
+                complete: function() {
+                  $(this).removeAttr('style');
+                }
+              });
+            }
+          });
+          
+        }
+        
       }
     });
 
