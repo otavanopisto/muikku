@@ -22,6 +22,5 @@ public class CoursePickerTestsBase extends AbstractUITest {
     takeScreenshot();
     boolean elementExists = getWebDriver().findElements(By.className("coursePicker")).size() > 0;
     assertTrue(elementExists);
-
   }
 }
