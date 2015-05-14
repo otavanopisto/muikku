@@ -21,8 +21,6 @@ public class IndexPageTestsBase extends AbstractUITest {
   }
   
   @Test
-  @SqlBefore("sql/loginSetup.sql")
-  @SqlAfter("sql/loginTeardown.sql")
   public void loginTest() throws IOException {
     initializePyramusLoginMocks();
     getWebDriver().get(getAppUrl() + "/login?authSourceId=1");

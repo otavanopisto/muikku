@@ -12,9 +12,8 @@ import fi.muikku.SqlAfter;
 import fi.muikku.SqlBefore;
 
 public class CoursePickerTestsBase extends AbstractUITest {
+  
   @Test
-  @SqlBefore("sql/loginSetup.sql")
-  @SqlAfter("sql/loginTeardown.sql")
   public void coursePickerExistsTest() throws IOException {
     initializePyramusLoginMocks();
     getWebDriver().get(getAppUrl() + "/login?authSourceId=1");
