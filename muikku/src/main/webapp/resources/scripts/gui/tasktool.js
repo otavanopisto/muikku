@@ -9,6 +9,29 @@ $(document).ready(function(){
     	    $(TaskImpl.taskContainer).on("click", '.tt-tool-send-mail', $.proxy(this.messageToUser,this));    	    
           $(".tt-tasks-filters-container").on("click", 'span', $.proxy(this._removeFilter,this));          
     	    $('.tt-search').on('focus', '#taskToolSearch', $.proxy(this._onTaskFocus, this));
+
+    	    $.widget( "custom.catcomplete", $.ui.autocomplete, {
+    	      _create: function() {
+    	        this._super();
+    	        this.widget().menu( "option", "items", "> :not(.ui-autocomplete-category)" );
+    	      },
+    	      _renderMenu: function( ul, items ) {
+    	        var that = this,
+    	          currentCategory = "";
+    	        $.each( items, function( index, item ) {
+    	          var li;
+    	          var catLoc = getLocaleText('plugin.tasktool.filter.category.' + item.category);
+    	          if ( item.category != currentCategory ) {
+    	            ul.append( "<li class='ui-autocomplete-category'>" + catLoc + "</li>" );
+    	            currentCategory = item.category;
+    	          }
+    	          li = that._renderItemData( ul, item );
+    	          if ( item.category ) {
+    	            li.attr( "aria-label", item.category + " : " + item.label );
+    	          }
+    	        });
+    	      }
+    	    });    	    
     	},
 
       _doSearch: function (searchTerm) {
@@ -31,8 +54,17 @@ $(document).ready(function(){
     }
 
     if (item.type == "USER") {
+       // Let's find all the existing filters - now that we can only have one 
+      
+        var uF = filterListElement.find("span[data-filter-category='USER']");
+       
+        // lets remove it 
+        
+        uF.remove();
+        
         renderDustTemplate('tasktool/tasktool_filter.dust', prms, function (text) {
-        filterListElement.append($.parseHTML(text));
+          filterListElement.append($.parseHTML(text));
+          tasktool.applyFilter(item.id);
       });
 
     } else {
@@ -43,7 +75,8 @@ $(document).ready(function(){
 
   _onTaskFocus : function(event){
     
-    $(event.target).autocomplete({
+    $(event.target).catcomplete({
+      delay:0,
       source: function (request, response) {
         response(tasktool._doSearch(request.term));
       },
@@ -57,20 +90,17 @@ $(document).ready(function(){
  
   _removeFilter : function(event){
     $(event.target).remove();     
+    this.refreshTasks();
   },      
    
   
-  applyFilter : function(){
+  applyFilter : function(uId){
 
     this.clearTasks();
     var search = $(".tt-search");
-    var searchVisible = search.is(":visible");
-    
-    if(searchVisible == false ){
-      search.show("slide");
-      
-    }
-    mApi().assessmentrequest.assessmentrequestsforme.read().on('$', function(asreq, asreqcallback){
+
+
+    mApi().assessmentrequest.assessmentrequestsforme.read({'userId': uId}).on('$', function(asreq, asreqcallback){
       mApi().user.users.read(asreq.id).callback(function (err, user){
         if( err ){
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.tasktool.errormessage.users', err));
@@ -192,7 +222,7 @@ $(document).ready(function(){
                      label: usr[i].firstName + " " + usr[i].lastName,
                      id: usr[i].id,
                      image: img,
-                     type: "USER"
+                     category: "USER"
                     });
               }
               }
