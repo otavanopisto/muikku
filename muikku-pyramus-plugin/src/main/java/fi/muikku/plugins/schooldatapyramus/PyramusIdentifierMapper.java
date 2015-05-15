@@ -129,5 +129,9 @@ public class PyramusIdentifierMapper {
   public Long getPyramusCourseTypeId(String workspaceTypeIdentifier) {
     return workspaceTypeIdentifier != null ? NumberUtils.createLong(workspaceTypeIdentifier) : null;
   }
+  
+  public String getWorkspaceCourseIdentifier(Long subjectId, Integer courseNumber) {
+    return (subjectId == null)||(courseNumber == null) ? null : String.format("%d/%d", subjectId, courseNumber);
+  }
 
 }

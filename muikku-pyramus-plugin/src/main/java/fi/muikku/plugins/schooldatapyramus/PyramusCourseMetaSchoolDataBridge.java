@@ -59,20 +59,20 @@ public class PyramusCourseMetaSchoolDataBridge implements CourseMetaSchoolDataBr
   @Override
   public CourseIdentifier findCourseIdentifier(String identifier) throws SchoolDataBridgeRequestException,
       UnexpectedSchoolDataBridgeException {
-    // if (!StringUtils.isNumeric(identifier)) {
-    // throw new
-    // SchoolDataBridgeRequestException("Identifier has to be numeric");
-    // }
+    
+    if (StringUtils.isBlank(identifier)) {
+      return null;
+    }
 
     if (identifier.indexOf("/") == -1)
       throw new SchoolDataBridgeRequestException("Invalid CourseIdentifierId");
-
-    String subjectId = identifier.substring(0, identifier.indexOf("/"));
-
-    fi.pyramus.rest.model.Subject subject = pyramusClient.get("/common/subjects/" + subjectId,
+    
+    String[] idParts = identifier.split("/");
+  
+    fi.pyramus.rest.model.Subject subject = pyramusClient.get("/common/subjects/" + idParts[0],
         fi.pyramus.rest.model.Subject.class);
 
-    return new PyramusCourseIdentifier(identifier, subject.getCode(), subject.getId().toString());
+    return new PyramusCourseIdentifier(identifier, subject.getCode() + idParts[1], subject.getId().toString());
   }
 
   @Override

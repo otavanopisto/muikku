@@ -3,6 +3,7 @@ package fi.muikku.plugins.assessmentrequest.rest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ListIterator;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -101,8 +102,11 @@ public class AssessmentRequestRESTService extends PluginRESTService {
   
   @GET
   @Path("/assessmentrequestsforme")
-  public Response listAssessmentRequestsForMe() {
-    List<AssessmentRequest> assessmentRequests = new ArrayList<>();
+  public Response listAssessmentRequestsForMe(
+      @QueryParam("workspaceId") Long workspaceEntityId,
+      @QueryParam("userId") Long userEntityId,
+      @QueryParam("state") String state
+  ) {
     UserEntity userEntity = sessionController.getLoggedUserEntity();
     List<EnvironmentRoleArchetype> permittedArchetypes = Arrays.asList(
         EnvironmentRoleArchetype.ADMINISTRATOR,
@@ -114,7 +118,19 @@ public class AssessmentRequestRESTService extends PluginRESTService {
       return Response.status(Status.FORBIDDEN).entity("Must be a teacher").build();
     }
     
-    assessmentRequests = assessmentRequestController.listByUser(userEntity);
+    List<AssessmentRequest> assessmentRequests = new ArrayList<AssessmentRequest>(assessmentRequestController.listByUser(userEntity));
+    ListIterator<AssessmentRequest> iterator = assessmentRequests.listIterator();
+    
+    while (iterator.hasNext()) {
+      AssessmentRequest assessmentRequest = iterator.next();
+      
+      if ((workspaceEntityId != null && !workspaceEntityId.equals(assessmentRequest.getWorkspace()))
+          || (userEntityId != null && !userEntityId.equals(assessmentRequest.getStudent()))
+          || (state != null && !state.equals(assessmentRequest.getState().name()))) {
+        iterator.remove();
+        continue;
+      }
+    }
 
     List<AssessmentRequestRESTModel> restAssessmentRequests = new ArrayList<>();
     for (AssessmentRequest assessmentRequest : assessmentRequests) {

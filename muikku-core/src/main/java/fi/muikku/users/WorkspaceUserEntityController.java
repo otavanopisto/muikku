@@ -75,7 +75,19 @@ public class WorkspaceUserEntityController {
   }
 
   public List<WorkspaceUserEntity> listWorkspaceUserEntitiesByRoles(WorkspaceEntity workspaceEntity, List<WorkspaceRoleEntity> roles) {
-    return workspaceUserEntityDAO.listByWorkspaceAndRoles(workspaceEntity, roles);
+    return listWorkspaceUserEntitiesByRoles(workspaceEntity, roles, null, null);
+  }
+  
+  public List<WorkspaceUserEntity> listWorkspaceUserEntitiesByRoles(WorkspaceEntity workspaceEntity, List<WorkspaceRoleEntity> roles, Integer firstResult, Integer maxResults) {
+    return workspaceUserEntityDAO.listByWorkspaceAndRoles(workspaceEntity, roles, firstResult, maxResults);
+  }
+  
+  public Long countWorkspaceUserEntitiesByRoles(WorkspaceEntity workspaceEntity, List<WorkspaceRoleEntity> roles) {
+    if ((roles == null)||(roles.isEmpty())) {
+      return 0l;
+    }
+    
+    return workspaceUserEntityDAO.countByWorkspaceAndRoles(workspaceEntity, roles);
   }
   
   public List<WorkspaceUserEntity> listWorkspaceUserEntitiesByUserEntity(UserEntity userEntity) {

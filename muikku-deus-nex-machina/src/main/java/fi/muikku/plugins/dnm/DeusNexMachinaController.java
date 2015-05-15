@@ -64,7 +64,6 @@ import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.model.WorkspaceNodeType;
-import fi.muikku.schooldata.WorkspaceEntityController;
 
 @ApplicationScoped
 @Stateful
@@ -201,6 +200,61 @@ public class DeusNexMachinaController {
       return null;
     }
 
+    @Override
+    public Node handleEmbedded(org.w3c.dom.Document ownerDocument, Integer resRef, Boolean functionalRef, Boolean visible, Boolean autoStart, Integer width,
+        Integer height, Boolean showAsLink, Boolean showControls, Boolean loop, Integer queryType) {
+      
+      Resource originalResource = deusNexDocument.getResourceByNo(resRef);
+      if (originalResource != null) {
+        switch (originalResource.getType()) {
+          case BINARY:
+            String contentType = getResorceContentType(resRef);
+            if (StringUtils.startsWith(contentType, "audio")) {
+              return handleEmbeddedAudio(ownerDocument, resRef, showAsLink, originalResource.getName(), originalResource.getTitle(), autoStart, loop);
+            } else if (StringUtils.startsWith(contentType, "image")) {
+              return handleEmbeddedImage(ownerDocument, originalResource.getTitle(), null, width, height, 0, null, resRef);
+            } else {
+              return handleEmbeddedHyperlink(ownerDocument, resRef, null, originalResource.getName(), originalResource.getTitle());
+            } 
+          case DOCUMENT:
+            return handleEmbeddedDocument(ownerDocument, originalResource.getTitle(), queryType, resRef, null);
+          case FOLDER:
+            logger.warning(String.format("ix:embeded (%d) references into a folder, skpping", resRef));
+          break;
+          case QUERY:
+            return handleEmbeddedDocument(ownerDocument, originalResource.getTitle(), queryType, resRef, null);
+        }
+      } else {
+        Long workspaceNodeId = getResourceWorkspaceNodeId(resRef);
+        if (workspaceNodeId != null) {
+          WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceNodeId);
+          if (workspaceMaterial != null) {
+            Material material = workspaceMaterialController.getMaterialForWorkspaceMaterial(workspaceMaterial);
+            if (material instanceof BinaryMaterial) {
+              BinaryMaterial binaryMaterial = ((BinaryMaterial) material);
+              String contentType = binaryMaterial.getContentType();
+              if (StringUtils.startsWith(contentType, "audio")) {
+                return handleEmbeddedAudio(ownerDocument, resRef, showAsLink, workspaceMaterial.getUrlName(), material.getTitle(), autoStart, loop);
+              } else if (StringUtils.startsWith(contentType, "image")) {
+                return handleEmbeddedImage(ownerDocument, material.getTitle(), null, width, height, 0, null, resRef);
+              } else {
+                return handleEmbeddedHyperlink(ownerDocument, resRef, null, workspaceMaterial.getUrlName(), material.getTitle());
+              } 
+            } else if (material instanceof HtmlMaterial) {
+              HtmlMaterial htmlMaterial = ((HtmlMaterial) material);
+              return handleEmbeddedDocument(ownerDocument, htmlMaterial.getTitle(), queryType, resRef, null);
+            }
+          } else {
+            logger.warning(String.format("Could not find workspace material for ix:embeded (%d)", resRef));
+          }       
+        } else {
+          logger.warning(String.format("Could not find node id for ix:embeded (%d)", resRef));
+        }
+      }
+      
+      return null;
+    }
+    
     private String getResourcePath(Integer resourceNo) {
       String path = null;
       String type = null;
@@ -249,6 +303,8 @@ public class DeusNexMachinaController {
       } while (parent != null);
 
       result.add(resource.getName());
+      
+      result.remove(0);
 
       return StringUtils.join(result, '/');
     }
@@ -291,9 +347,6 @@ public class DeusNexMachinaController {
 
   @Inject
   private WorkspaceMaterialController workspaceMaterialController;
-
-  @Inject
-  private WorkspaceEntityController workspaceEntityController;
 
   @PostConstruct
   public void init() throws IOException {

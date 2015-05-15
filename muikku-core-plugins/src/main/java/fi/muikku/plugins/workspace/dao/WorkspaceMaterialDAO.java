@@ -1,5 +1,6 @@
 package fi.muikku.plugins.workspace.dao;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -55,6 +56,28 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
     return entityManager.createQuery(criteria).getResultList();
   }
 
+  public List<WorkspaceMaterial> listByHiddenAndAssignmentTypeAndParents(Boolean hidden, WorkspaceMaterialAssignmentType assignmentType, List<WorkspaceNode> parents) {
+    if (parents == null || parents.isEmpty()) {
+      return Collections.emptyList();
+    }
+     
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceMaterial> criteria = criteriaBuilder.createQuery(WorkspaceMaterial.class);
+    Root<WorkspaceMaterial> root = criteria.from(WorkspaceMaterial.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(WorkspaceMaterial_.hidden), hidden),
+        criteriaBuilder.equal(root.get(WorkspaceMaterial_.assignmentType), assignmentType),
+        root.get(WorkspaceMaterial_.parent).in(parents)
+      )
+    );
+   
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
 	public WorkspaceMaterial findByFolderAndUrlName(WorkspaceNode parent, String urlName) {
     EntityManager entityManager = getEntityManager();
     
@@ -81,6 +104,23 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
     criteria.select(root);
     criteria.where(
       criteriaBuilder.equal(root.get(WorkspaceMaterial_.materialId), materialId)
+    );
+   
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
+  public List<WorkspaceMaterial> listByParentAndAssignmentType(WorkspaceNode parent, WorkspaceMaterialAssignmentType assignmentType) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceMaterial> criteria = criteriaBuilder.createQuery(WorkspaceMaterial.class);
+    Root<WorkspaceMaterial> root = criteria.from(WorkspaceMaterial.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(WorkspaceMaterial_.assignmentType), assignmentType),
+        criteriaBuilder.equal(root.get(WorkspaceMaterial_.parent), parent)
+      )
     );
    
     return entityManager.createQuery(criteria).getResultList();
