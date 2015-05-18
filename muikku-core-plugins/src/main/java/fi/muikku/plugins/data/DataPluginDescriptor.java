@@ -22,6 +22,9 @@ public class DataPluginDescriptor implements PluginDescriptor {
 	@Inject
 	private DataPluginController dataPluginController;
 	
+  @Inject
+  private PermissionsPluginController permissionsPluginController;
+	
 	@Override
 	public String getName() {
 		return "data";
@@ -41,6 +44,17 @@ public class DataPluginDescriptor implements PluginDescriptor {
 				throw new RuntimeException(e);
 			}
 		}
+
+		// TODO:  this should be in permissiondataplugindescriptor but it's dependent on 
+		//        being run after data import and as @observes cannot be prioritized we cant implement it 
+    try {
+      permissionsPluginController.processPermissions();
+    } catch (Exception e) {
+      // TODO: Proper error handling
+      e.printStackTrace();
+      throw new RuntimeException(e);
+    }
+		
 	}
 	
 }

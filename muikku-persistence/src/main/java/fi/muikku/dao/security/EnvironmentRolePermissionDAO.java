@@ -1,5 +1,7 @@
 package fi.muikku.dao.security;
 
+import java.util.List;
+
 import fi.muikku.dao.CoreDAO;
 import fi.muikku.model.security.EnvironmentRolePermission;
 import fi.muikku.model.security.EnvironmentRolePermission_;
@@ -43,6 +45,20 @@ public class EnvironmentRolePermissionDAO extends CoreDAO<EnvironmentRolePermiss
 
 		return getSingleResult(entityManager.createQuery(criteria));
 	}
+
+  public List<EnvironmentRolePermission> listByPermission(Permission permission) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<EnvironmentRolePermission> criteria = criteriaBuilder.createQuery(EnvironmentRolePermission.class);
+    Root<EnvironmentRolePermission> root = criteria.from(EnvironmentRolePermission.class);
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.equal(root.get(EnvironmentRolePermission_.permission), permission)
+    );
+
+    return entityManager.createQuery(criteria).getResultList();
+  }
 
 	@Override
 	public void delete(EnvironmentRolePermission environmentUserRolePermission) {

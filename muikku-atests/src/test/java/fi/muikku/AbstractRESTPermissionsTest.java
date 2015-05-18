@@ -149,10 +149,10 @@ public abstract class AbstractRESTPermissionsTest extends AbstractRESTTest {
     }
 
     if (roleIsAllowed) {
-      System.out.println(permission + " @ " + getRoleType().name() + '-' + getRole() + " should be " + successStatusCode + " was " + response.statusCode());
+//      System.out.println(permission + " @ " + getRoleType().name() + '-' + getRole() + " should be " + successStatusCode + " was " + response.statusCode());
       response.then().assertThat().statusCode(successStatusCode);
     } else {
-      System.out.println(permission + " @ " + getRoleType().name() + '-' + getRole() + " should be 403 was " + response.statusCode());
+//      System.out.println(permission + " @ " + getRoleType().name() + '-' + getRole() + " should be 403 was " + response.statusCode());
       response.then().assertThat().statusCode(403);
     }
   }
@@ -185,20 +185,18 @@ public abstract class AbstractRESTPermissionsTest extends AbstractRESTTest {
     
     List<Object[]> data = new ArrayList<Object[]>();
     
-//    for (EnvironmentRoleArchetype role : EnvironmentRoleArchetype.values()) {
-//      data.add(new Object[] { 
-//        role.name() 
-//      });
-//    }
-    
     data.add(new Object[] {
       "PSEUDO-EVERYONE"
     });
-    
-    data.add(new Object[] {
-      "ENVIRONMENT-STUDENT"
-    });
       
+    for (EnvironmentRoleArchetype role : EnvironmentRoleArchetype.values()) {
+      if (role != EnvironmentRoleArchetype.CUSTOM) {
+        data.add(new Object[] { 
+          getFullRoleName(RoleType.ENVIRONMENT, role.name())
+        });
+      }
+    }
+    
     return data;
   }
   
