@@ -297,7 +297,7 @@
       handle: "span.workspace-materials-toc-dragHandle",
       containment: ".workspace-materials-toc-root",
       connectWith:".workspace-materials-toc-section",
-      opacity: 0.5,
+      opacity: 0.35,
       placeholder: "sortable-placeholder",
       forcePlaceholderSize: true,
       forceHelperSize: true,
@@ -325,6 +325,7 @@
                   $(this).css({
                     backgroundColor: "",
                   });
+                  $(this).removeAttr("style");
                 }
               });
             }
@@ -348,6 +349,7 @@
                   $(this).css({
                     backgroundColor: "",
                   });
+                  $(this).removeAttr("style");
                 }
               });
             }
