@@ -3,18 +3,10 @@
     <img src="{@contextPath/}/rest/materials/binary/{data.id}/content"/>
   {/eq}
   {@eq value="pdf" type="string"}  
-    <object type="application/pdf" data="{@contextPath/}/rest/materials/binary/{data.id}/content" width="595" height="842">
-      <a href="{@contextPath/}/rest/materials/binary/{data.id}/download" target="_blank">{#localize key="plugin.workspace.materialsManagement.binaryDownload"/}</a>
-    </object>
+    <div class="lazyPdf" data-url="{@contextPath/}/rest/materials/binary/{data.id}/content" data-link-text="{#localize key="plugin.workspace.materialsManagement.binaryDownload"/}"/>
   {/eq}
   {@eq value="flash" type="string"}  
-    <object type="application/x-shockwave-flash" data="{@contextPath/}/rest/materials/binary/{data.id}/content" width="100%" height="500">
-      <param name="wmode" value="transparent" />
-      <param name="quality" value="high" />
-      <param name="menu" value="false" />
-      <param name="scale" value="exactfit" />
-      <a href="{@contextPath/}/rest/materials/binary/{data.id}/download" target="_blank">{#localize key="plugin.workspace.materialsManagement.binaryDownload"/}</a>
-    </object>
+    <div class="lazySwf" data-url="{@contextPath/}/rest/materials/binary/{data.id}/content" data-link-text="{#localize key="plugin.workspace.materialsManagement.binaryDownload"/}"/>
   {/eq}
   {@default}
     <a href="{@contextPath/}/rest/materials/binary/{data.id}/download" target="_blank">{#localize key="plugin.workspace.materialsManagement.binaryDownload"/}</a>
