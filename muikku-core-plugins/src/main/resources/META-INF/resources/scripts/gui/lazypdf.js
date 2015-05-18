@@ -8,7 +8,6 @@
     _create : function() {
       $(this.element).addClass('lazy-pdf');
       $(this.element).waypoint($.proxy(function(direction) {
-        $(this.element).addClass('lazy-loading-pdf');
         var url = $(this.element).attr('data-url');
         if (url) {
           $(this.element).removeAttr('data-url');
