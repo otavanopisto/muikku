@@ -156,6 +156,7 @@ body.workspace-materials-management {
                     margin:1px 0 0 0;
                   }
                 }
+                
                 &:hover,
                 &.active {
                   background:#596e7d;
@@ -168,6 +169,14 @@ body.workspace-materials-management {
                 
                   .workspace-materials-toc-dragHandle {
                     opacity:1;
+                  }
+                
+                }
+                
+                &.no-hover:hover {
+                
+                  a {
+                    color:#2c2c2c;
                   }
                 
                 }

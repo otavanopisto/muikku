@@ -302,20 +302,21 @@
       forcePlaceholderSize: true,
       forceHelperSize: true,
       start: function( event, ui ) {
-        
+
       },
       stop: function( event, ui ) {
         /* Lets not animate already active element */
         if (!$(ui.item).hasClass("active")) {
-        
-          $(ui.item).animate({
+          $(ui.item)
+          .addClass("no-hover")
+          .animate({
             backgroundColor: "#edeea2",
             color: "#000"
           },{
             duration:1500,
             easing: "easeInOutQuint",
             complete: function() {
-              $( this ).animate({
+              $(this).animate({
                 backgroundColor: "transparent",
                 color: "#000"
               }, {
@@ -324,13 +325,13 @@
                 complete: function() {
                   $(this).css({
                     backgroundColor: "",
-                  });
+                  })
+                  .removeClass("no-hover");
                   $(this).removeAttr("style");
                 }
               });
             }
           });
-          
         }
         
       }
