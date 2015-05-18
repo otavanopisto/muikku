@@ -312,7 +312,7 @@
             backgroundColor: "#edeea2",
             color: "#000"
           },{
-            duration:1000,
+            duration:1500,
             easing: "easeInOutQuint",
             complete: function() {
               $( this ).animate({
@@ -331,29 +331,6 @@
             }
           });
           
-        } else {
-          $(ui.item).animate({
-            backgroundColor: "#000",
-            color: "#fff"
-          },{
-            duration:1000,
-            easing: "easeInOutQuint",
-            complete: function() {
-              $( this ).animate({
-                backgroundColor: "#596e7d",
-                color: "#fff"
-              }, {
-                duration:1500,
-                easing: "easeInOutQuint",
-                complete: function() {
-                  $(this).css({
-                    backgroundColor: "",
-                  });
-                  $(this).removeAttr("style");
-                }
-              });
-            }
-          });
         }
         
       }
