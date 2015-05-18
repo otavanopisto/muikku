@@ -304,7 +304,9 @@ public class DeusNexMachinaController {
 
       result.add(resource.getName());
       
-      result.remove(0);
+      if ((!result.isEmpty()) && (StringUtils.equals("materiaalit", result.get(0)))) {
+        result.remove(0);
+      }
 
       return StringUtils.join(result, '/');
     }
