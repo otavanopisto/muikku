@@ -122,23 +122,24 @@ body.workspace-materials-management {
             padding:0 6px;
             
             .workspace-materials-toc-root {
+            
+              > li {
+                margin:10px 0;
+              }
 
               /* PLACEHOLDER item to indicate where user can drop sortable item */
               .sortable-placeholder {
-                background:#d4e3ec;
-                border:2px dotted #fff;
-                boz-sizing:border-box;
+                background:#68b4e2;
               }
 
               .workspace-materials-toc-item {
                 list-style:none;
                 position:relative;
 
-                
-                &:first-child {
-                  margin-top:5px;
-                  padding-top:2px;
-                }
+/*                 &:first-child { */
+/*                   margin-top:5px; */
+/*                   padding:1px 0 0 0; */
+/*                 } */
                 
                 &.item-hidden {
                   opacity:0.4;
@@ -150,8 +151,7 @@ body.workspace-materials-management {
                   display:block;
                   @include genericMenuLinkHoverTransition(background,0.15s,ease-in-out);
                   @include rounded(2px);
-                  padding:2px 8px 2px 6px;
-                  margin:1px 0 0 2px;
+                  padding:3px 8px 4px 6px;
                   
                   &.evaluated {
                     border-left:2px solid $evaluatedAssignment;
@@ -200,7 +200,7 @@ body.workspace-materials-management {
                   opacity:0;
                   color:#ffffff;
                   cursor:move;
-                  font-size:12px;
+                  font-size:14px;
                   padding:6px 4px 6px 6px;
                   position:absolute;
                   top:0px;
@@ -211,8 +211,6 @@ body.workspace-materials-management {
         
               .workspace-materials-toc-section {
                 margin:0;
-                padding-top:5px;
-                padding-bottom:10px;
                 
                 .workspace-materials-toc-subtitle {
                   margin:0 0 5px 0;

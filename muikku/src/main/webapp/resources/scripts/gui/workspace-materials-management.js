@@ -299,7 +299,6 @@
       connectWith:".workspace-materials-toc-root, .workspace-materials-toc-section",
       opacity: 0.5,
       placeholder: "sortable-placeholder",
-      tolerance: "pointer",
       forcePlaceholderSize: true,
       forceHelperSize: true,
       start: function( event, ui ) {
