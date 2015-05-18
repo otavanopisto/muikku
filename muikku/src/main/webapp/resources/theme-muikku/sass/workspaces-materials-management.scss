@@ -125,7 +125,7 @@ body.workspace-materials-management {
 
               /* PLACEHOLDER item to indicate where user can drop sortable item */
               .sortable-placeholder {
-                background:#68b4e2;
+                background:#a0bed0;
               }
 
               .workspace-materials-toc-item {
@@ -173,6 +173,7 @@ body.workspace-materials-management {
                 
                 }
                 
+                /* When user drops sortable item this prevents hover effect happening so link stays readable */
                 &.no-hover:hover {
                 
                   a {
@@ -182,12 +183,11 @@ body.workspace-materials-management {
                 }
                 
                 /* ITEM SORTING RULES */
- 
                 &.ui-sortable-helper {
                   background:#000;
                   color:#fff;
                   border-radius:2px;
-                  left:0px;
+                  left:6px;
                   
                   a {
                     color:#fff;
@@ -646,8 +646,7 @@ body.workspace-materials-management {
                 
               }
               
-              
-              
+
             }
             
             .cke_bottom {

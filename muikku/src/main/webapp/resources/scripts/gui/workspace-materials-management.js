@@ -298,6 +298,7 @@
       containment: ".workspace-materials-toc-root",
       connectWith:".workspace-materials-toc-section",
       opacity: 0.35,
+      revert: 200,
       placeholder: "sortable-placeholder",
       forcePlaceholderSize: true,
       forceHelperSize: true,
@@ -327,11 +328,12 @@
                     backgroundColor: "",
                   })
                   .removeClass("no-hover");
-                  $(this).removeAttr("style");
                 }
               });
             }
           });
+        } else {
+
         }
         
       }
