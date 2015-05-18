@@ -139,7 +139,7 @@
             { name: 'paragraph', items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote',
             '-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl' ] },
             { name: 'insert', items : [ 'Image','oembed','Table','Iframe','SpecialChar' ] },          
-            { name: 'tools', items : [ 'Maximize', 'ShowBlocks','-','About', ''] },
+            { name: 'tools', items : [ 'Maximize', 'ShowBlocks','-','About'] },
             '/',
             { name: 'forms', items : ['MuikkuTextField', 'muikku-selection', 'MuikkuMemoField', 'muikku-filefield', 'muikku-connectfield']}
           ],
