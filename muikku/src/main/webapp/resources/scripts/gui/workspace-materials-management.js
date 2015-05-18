@@ -296,7 +296,7 @@
       cursor: "crosshair",
       handle: "span.workspace-materials-toc-dragHandle",
       containment: ".workspace-materials-toc-root",
-      connectWith:".workspace-materials-toc-root, .workspace-materials-toc-section",
+      connectWith:".workspace-materials-toc-section",
       opacity: 0.5,
       placeholder: "sortable-placeholder",
       forcePlaceholderSize: true,
@@ -312,22 +312,46 @@
             backgroundColor: "#edeea2",
             color: "#000"
           },{
-            duration:2000,
+            duration:1000,
             easing: "easeInOutQuint",
             complete: function() {
               $( this ).animate({
                 backgroundColor: "transparent",
                 color: "#000"
               }, {
-                duration:3000,
+                duration:1500,
                 easing: "easeInOutQuint",
                 complete: function() {
-                  $(this).removeAttr('style');
+                  $(this).css({
+                    backgroundColor: "",
+                  });
                 }
               });
             }
           });
           
+        } else {
+          $(ui.item).animate({
+            backgroundColor: "#000",
+            color: "#fff"
+          },{
+            duration:1000,
+            easing: "easeInOutQuint",
+            complete: function() {
+              $( this ).animate({
+                backgroundColor: "#596e7d",
+                color: "#fff"
+              }, {
+                duration:1500,
+                easing: "easeInOutQuint",
+                complete: function() {
+                  $(this).css({
+                    backgroundColor: "",
+                  });
+                }
+              });
+            }
+          });
         }
         
       }

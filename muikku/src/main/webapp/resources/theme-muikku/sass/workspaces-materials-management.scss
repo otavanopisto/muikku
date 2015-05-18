@@ -135,11 +135,7 @@ body.workspace-materials-management {
               .workspace-materials-toc-item {
                 list-style:none;
                 position:relative;
-
-/*                 &:first-child { */
-/*                   margin-top:5px; */
-/*                   padding:1px 0 0 0; */
-/*                 } */
+                margin:1px 0;
                 
                 &.item-hidden {
                   opacity:0.4;
