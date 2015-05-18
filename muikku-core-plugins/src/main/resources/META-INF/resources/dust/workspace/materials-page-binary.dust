@@ -1,7 +1,14 @@
-{@select key=image}
-  {@eq value="true" type="boolean"}  
+{@select key=binaryType}
+  {@eq value="image" type="string"}  
     <img src="{@contextPath/}/rest/materials/binary/{data.id}/content"/>
-  {:else}
-    <a href="{@contextPath/}/rest/materials/binary/{data.id}/download" target="_blank">{#localize key="plugin.workspace.materialsManagement.binaryDownload"/}</a>
   {/eq}
+  {@eq value="pdf" type="string"}  
+    <div class="lazyPdf" data-url="{@contextPath/}/rest/materials/binary/{data.id}/content" data-link-text="{#localize key="plugin.workspace.materialsManagement.binaryDownload"/}"/>
+  {/eq}
+  {@eq value="flash" type="string"}  
+    <div class="lazySwf" data-url="{@contextPath/}/rest/materials/binary/{data.id}/content" data-link-text="{#localize key="plugin.workspace.materialsManagement.binaryDownload"/}"/>
+  {/eq}
+  {@default}
+    <a href="{@contextPath/}/rest/materials/binary/{data.id}/download" target="_blank">{#localize key="plugin.workspace.materialsManagement.binaryDownload"/}</a>
+  {/default}
 {/select}
