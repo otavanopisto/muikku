@@ -535,3 +535,27 @@
   
 }
   
+/* jQuert Ui overrides for mainfunctions */
+
+.mf-autocomplete{
+
+  font-size:12px;
+  font-weight:300;
+  .ui-autocomplete-category{
+   text-transform:uppercase;
+   padding:5px;
+  }
+  .ui-menu-item{
+     padding-left:10px;
+     
+  &.ui-state-focus{
+    background-color:$bgr3;
+    border:none;
+    width:auto;
+    color:$contextualLinkHover;
+    font-weight:normal;
+  }
+  }
+  
+  
+}

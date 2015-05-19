@@ -12,10 +12,12 @@ $(document).ready(function(){
 
     	    $.widget( "custom.catcomplete", $.ui.autocomplete, {
     	      _create: function() {
+              
     	        this._super();
     	        this.widget().menu( "option", "items", "> :not(.ui-autocomplete-category)" );
     	      },
     	      _renderMenu: function( ul, items ) {
+    	        ul.addClass("mf-autocomplete");
     	        var that = this,
     	          currentCategory = "";
     	        $.each( items, function( index, item ) {
@@ -46,7 +48,7 @@ $(document).ready(function(){
     var _this = this;
     var element = $(event.target);
     var filterListElement = $(".tt-tasks-filters-container");      
-    
+    filterListElement.show("blind"); 
     var prms = {
       id: item.id,
       name: item.label,
@@ -97,8 +99,15 @@ $(document).ready(function(){
   },    	
  
   _removeFilter : function(event){
+    var filterListElement = $(".tt-tasks-filters-container");
+    var filters = filterListElement.find("span");
+   
+    
     $(event.target).remove();     
     this.refreshTasks();
+    if (filters.length == 1 ){
+      filterListElement.hide("blind");
+    } 
   },      
    
   
