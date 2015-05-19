@@ -6,6 +6,7 @@
   xmlns:f="http://java.sun.com/jsf/core" 
   xmlns:h="http://java.sun.com/jsf/html" 
   xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+  xmlns:jsf="http://xmlns.jcp.org/jsf"
   xmlns:composite="http://java.sun.com/jsf/composite/composite" 
   template="/jsf/workspace/templates/workspace-view.xhtml">
   
@@ -50,6 +51,17 @@
           </span> 
         </ui:fragment>
   		</div>
+      
+      <div class="workspace-publication-container" jsf:rendered="#{workspaceIndexBackingBean.canPublish}">
+        <ui:fragment rendered="#{!workspaceIndexBackingBean.published}">
+          <a class="workspace-publish-button" href="javascript:void(null)">#{i18n.text['plugin.workspace.index.publish']}</a>
+        </ui:fragment>
+        
+        <ui:fragment rendered="#{workspaceIndexBackingBean.published}">
+          <a class="workspace-unpublish-button" href="javascript:void(null)">#{i18n.text['plugin.workspace.index.unpublish']}</a>
+        </ui:fragment>
+      </div>
+      
     </header>
 	</ui:define>
 

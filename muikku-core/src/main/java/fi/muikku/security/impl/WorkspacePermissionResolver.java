@@ -8,9 +8,11 @@ import javax.inject.Inject;
 import fi.muikku.dao.security.PermissionDAO;
 import fi.muikku.dao.security.WorkspaceRolePermissionDAO;
 import fi.muikku.dao.security.WorkspaceUserPermissionOverrideDAO;
+import fi.muikku.dao.users.EnvironmentUserDAO;
 import fi.muikku.model.security.Permission;
 import fi.muikku.model.security.PermissionOverrideState;
 import fi.muikku.model.security.WorkspaceUserPermissionOverride;
+import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.RoleEntity;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
@@ -36,6 +38,9 @@ public class WorkspacePermissionResolver extends AbstractPermissionResolver impl
 
   @Inject
   private WorkspaceRolePermissionDAO workspaceUserRolePermissionDAO;
+  
+  @Inject
+  private EnvironmentUserDAO environmentUserDAO;
 
   @Override
   public boolean handlesPermission(String permission) {
@@ -52,7 +57,15 @@ public class WorkspacePermissionResolver extends AbstractPermissionResolver impl
     Permission perm = permissionDAO.findByName(permission);
     UserEntity userEntity = getUserEntity(user);
 
-    WorkspaceEntity workspaceEntity = (WorkspaceEntity) contextReference;
+    WorkspaceEntity workspaceEntity = resolveWorkspace(contextReference);
+    if (checkWorkspaceRole(workspaceEntity, userEntity, perm)) {
+      return true;
+    }
+    
+    return checkEnvironmentRole(workspaceEntity, userEntity, perm);
+  }
+  
+  private boolean checkWorkspaceRole(WorkspaceEntity workspaceEntity, UserEntity userEntity, Permission perm) {
     List<WorkspaceUserEntity> workspaceUsers = workspaceUserEntityController.listWorkspaceUserEntitiesByWorkspaceAndUser(workspaceEntity, userEntity);
     if (workspaceUsers.isEmpty()) {
       return false;
@@ -64,8 +77,18 @@ public class WorkspacePermissionResolver extends AbstractPermissionResolver impl
     WorkspaceUserPermissionOverride override = workspaceUserPermissionOverrideDAO.findByCourseUserAndPermission(workspaceUser, perm);
     if (override != null)
       return override.getState() == PermissionOverrideState.ALLOW;
-    else
+    else {
       return workspaceUserRolePermissionDAO.hasWorkspacePermissionAccess(workspaceEntity, workspaceUser.getWorkspaceUserRole(), perm);
+    }
+  }
+  
+  private boolean checkEnvironmentRole(WorkspaceEntity workspaceEntity, UserEntity userEntity, Permission perm) {
+    EnvironmentUser environmentUser = environmentUserDAO.findByUserAndArchived(userEntity, Boolean.FALSE);
+    if (environmentUser == null) {
+      return false;
+    }
+    
+    return workspaceUserRolePermissionDAO.hasWorkspacePermissionAccess(workspaceEntity, environmentUser.getRole(), perm);      
   }
 
   @Override

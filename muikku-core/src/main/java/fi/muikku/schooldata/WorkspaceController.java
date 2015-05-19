@@ -183,12 +183,18 @@ public class WorkspaceController {
   }
 
   public List<WorkspaceEntity> listWorkspaceEntitiesByUser(UserEntity userEntity) {
+    return listWorkspaceEntitiesByUser(userEntity, false);
+  }
+  
+  public List<WorkspaceEntity> listWorkspaceEntitiesByUser(UserEntity userEntity, boolean includeUnpublished) {
     List<WorkspaceEntity> result = new ArrayList<>();
     
     List<WorkspaceUserEntity> workspaceUserEntities = workspaceUserEntityController.listWorkspaceUserEntitiesByUserEntity(userEntity);
     for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
-      if (!result.contains(workspaceUserEntity.getWorkspaceEntity())) {
-        result.add(workspaceUserEntity.getWorkspaceEntity());
+      if (includeUnpublished || workspaceUserEntity.getWorkspaceEntity().getPublished()) {
+        if (!result.contains(workspaceUserEntity.getWorkspaceEntity())) {
+          result.add(workspaceUserEntity.getWorkspaceEntity());
+        }
       }
     }
     

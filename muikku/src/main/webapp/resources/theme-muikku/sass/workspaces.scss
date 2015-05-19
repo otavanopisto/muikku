@@ -1,5 +1,28 @@
 @import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
 
+/* TODO: MOVE TO APPROPRIATE PLACE >>>>>> */
+.workspace-publication-container {
+  position: absolute;
+  bottom: 0px;
+  right: 5px;
+  width: 200px;
+  font-size: 15px;
+  text-transform: uppercase;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  text-align: right;
+}
+
+body.workspace #content a.workspace-publish-button {
+  color: darkgreen;
+}
+
+body.workspace #content a.workspace-unpublish-button {
+  color: red;
+}
+
+/* <<<<<< TODO: MOVE TO APPROPRIATE PLACE */
+
 body.workspace { 
   @include background-image('/gfx/light-diagonal-strips.png');
   background-repeat:repeat;

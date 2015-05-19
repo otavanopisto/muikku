@@ -101,12 +101,31 @@
           var typeEndpoint = mApi().materials[materialType];
           if (typeEndpoint != null) {
             typeEndpoint.read(materialId).callback($.proxy(function (err, result) {
+              var binaryType = 'unknown';
+              if (materialType == 'binary') {
+                if (result.contentType.indexOf('image/') != -1) {
+                  binaryType = 'image';  
+                } else {
+                  switch (result.contentType) {
+                    case "application/pdf":
+                    case "application/x-pdf":
+                    case "application/vnd.pdf":
+                    case "text/pdf":
+                      binaryType = 'pdf';  
+                    break;
+                    case "application/x-shockwave-flash":
+                      binaryType = 'flash';  
+                    break;
+                  }
+                }
+              }
+
               renderDustTemplate(this.options.dustTemplate, { 
                 workspaceMaterialId: workspaceMaterialId,
                 materialId: materialId,
                 id: materialId,
                 type: materialType,
-                image: materialType == 'binary' ? result.contentType.indexOf('image/') != -1 : false,
+                binaryType: binaryType,
                 data: result 
               }, $.proxy(function (text) {
                 $(this).html(text);
