@@ -24,12 +24,23 @@ public class SearchIndexer {
   private Logger logger;
 
   public void index(String name, Object entity) {
+    index(name, entity, null);
+  }
+  
+  public void index(String name, Object entity, Map<String, Object> extraProperties) {
     Iterator<SearchIndexUpdater> updaters = searchIndexUpdaters.iterator();
     while (updaters.hasNext()) {
       SearchIndexUpdater updater = updaters.next();
       try {
         Map<String, Object> indexEntity = indexEntityProcessor.process(entity);
         if (indexEntity != null) {
+          if (extraProperties != null) {
+            for (String key : extraProperties.keySet()) {
+              Object value = extraProperties.get(key);
+              indexEntity.put(key, value);
+            }
+          }
+          
           updater.addOrUpdateIndex(name, indexEntity);
         }
       } catch (IllegalArgumentException | IllegalAccessException | SecurityException | InvocationTargetException | IntrospectionException | IndexIdMissingException e) {

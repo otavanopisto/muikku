@@ -119,6 +119,10 @@ public class PyramusIdentifierMapper {
   }
 
   public Long getPyramusEducationalTimeUnitId(String lengthUnitIdentifier) {
+    if (!StringUtils.isNumeric(lengthUnitIdentifier)) {
+      return null;
+    }
+    
     return NumberUtils.createLong(lengthUnitIdentifier);
   }
 
