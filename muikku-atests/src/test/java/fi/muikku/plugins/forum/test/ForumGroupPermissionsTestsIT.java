@@ -33,22 +33,22 @@ public class ForumGroupPermissionsTestsIT extends AbstractRESTPermissionsTest {
 
   @Before
   public void before() {
-//    ForumAreaGroupRESTModel areaGroup = new ForumAreaGroupRESTModel(null, "test_forumareagroup");
-//    
-//    Response response = asAdmin()
-//      .contentType("application/json")
-//      .body(areaGroup)
-//      .post("/forum/areagroups");
-//    
-//    areaGroupId = new Long(response.body().jsonPath().getInt("id"));
+    ForumAreaGroupRESTModel areaGroup = new ForumAreaGroupRESTModel(null, "test_forumareagroup");
+    
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(areaGroup)
+      .post("/forum/areagroups");
+    
+    areaGroupId = new Long(response.body().jsonPath().getInt("id"));
   }
   
   @After
   public void after() {
-//    asAdmin().delete("/forum/areagroups/{ID}?permanent=true", areaGroupId);
+    asAdmin().delete("/forum/areagroups/{ID}?permanent=true", areaGroupId);
   }
   
-//  @Test
+  @Test
   public void testCreateAreaGroup() throws NoSuchFieldException {
     ForumAreaGroupRESTModel areaGroup = new ForumAreaGroupRESTModel(null, "test_create_forumareagroup");
     
@@ -58,15 +58,12 @@ public class ForumGroupPermissionsTestsIT extends AbstractRESTPermissionsTest {
       .post("/forum/areagroups");
     assertOk(response, forumPermissions, ForumResourcePermissionCollection.FORUM_CREATEFORUMAREAGROUP, 200);
     
-//    Long statusCode = new Long(response.statusCode());
-//    Long id = null;
-//    if (statusCode.toString().equals("200")) {
-//      id = new Long(response.body().jsonPath().getInt("id"));
-//      if (!id.equals(null)) {
-//        given().headers(getAdminAuthHeaders())
-//        .delete("/common/contactURLTypes/{ID}?permanent=true", id);
-//      }
-//    }
+    if (response.statusCode() == 200) {
+      Long id = new Long(response.body().jsonPath().getInt("id"));
+      if (id != null) {
+        asAdmin().delete("/forum/areagroups/{ID}?permanent=true", id);
+      }
+    }
   }
   
   @Test
@@ -75,21 +72,12 @@ public class ForumGroupPermissionsTestsIT extends AbstractRESTPermissionsTest {
     assertOk(response, forumPermissions, ForumResourcePermissionCollection.FORUM_LIST_FORUMAREAGROUPS, 200);
   }
 
-//  @Test
-  public void testSearchUsers() throws NoSuchFieldException {
-    Response response = asRole().get("/user/users?searchString=a");
-    assertOk(response, forumPermissions, ForumResourcePermissionCollection.FORUM_LIST_FORUMAREAGROUPS, 200);
-  }
-  
-//  @Test
+  @Test
   public void testFindAreaGroup() throws NoSuchFieldException {
-    Response response = asRole().get("/forum/areagroups/{ID}", 1);
+    Response response = asRole().get("/forum/areagroups/{ID}", areaGroupId);
     assertOk(response, forumPermissions, ForumResourcePermissionCollection.FORUM_FIND_FORUMAREAGROUP, 200);
   }
 
-//  testUpdate
-//  testDelete
-  
 //  @Test
 //  public void testUpdateContactURLType() throws NoSuchFieldException {
 //    ContactURLType contactURLType = new ContactURLType(null, "Not Updated", Boolean.FALSE);
@@ -114,23 +102,24 @@ public class ForumGroupPermissionsTestsIT extends AbstractRESTPermissionsTest {
 //        .delete("/common/contactURLTypes/{ID}?permanent=true", id);
 //    }
 //  }
-//  
-//  @Test
-//  public void testPermissionsDeleteContactURLType() throws NoSuchFieldException {
-//    ContactURLType contactURLType = new ContactURLType(null, "create type", Boolean.FALSE);
-//    
-//    Response response = asAdmin()
-//      .contentType("application/json")
-//      .body(contactURLType)
-//      .post("/common/contactURLTypes");
-//    
-//    Long id = new Long(response.body().jsonPath().getInt("id"));
-//
-//    Response deleteResponse = asRole()
-//      .delete("/common/contactURLTypes/{ID}", id);
-//    assertOk(deleteResponse, forumPermissions, CommonPermissions.DELETE_CONTACTURLTYPE, 204);
-//    
-//    given().headers(getAdminAuthHeaders())
-//      .delete("/common/contactURLTypes/{ID}?permanent=true", id);
-//  }
+  
+  @Test
+  public void testDeleteAreaGroup() throws NoSuchFieldException {
+    ForumAreaGroupRESTModel areaGroup = new ForumAreaGroupRESTModel(null, "test_forumareagroup");
+    
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(areaGroup)
+      .post("/forum/areagroups");
+    
+    Long id = new Long(response.body().jsonPath().getInt("id"));
+
+    Response deleteResponse = asRole()
+      .delete("/forum/areagroups/{ID}", id);
+    assertOk(deleteResponse, forumPermissions, ForumResourcePermissionCollection.FORUM_DELETE_FORUMAREAGROUP, 204);
+    
+    if (deleteResponse.statusCode() == 403) {
+      asAdmin().delete("/forum/areagroups/{ID}?permanent=true", id);
+    }
+  }
 }

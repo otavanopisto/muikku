@@ -6,6 +6,7 @@ import java.util.List;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -14,6 +15,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
@@ -26,8 +28,10 @@ import fi.muikku.plugins.forum.model.ForumArea;
 import fi.muikku.plugins.forum.model.ForumAreaGroup;
 import fi.muikku.plugins.forum.model.ForumThread;
 import fi.muikku.plugins.forum.model.ForumThreadReply;
+import fi.muikku.session.SessionController;
 import fi.otavanopisto.security.AuthorizationException;
 import fi.otavanopisto.security.rest.RESTPermit;
+import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
 @Path("/forum")
 @RequestScoped
@@ -40,21 +44,28 @@ public class ForumRESTService extends PluginRESTService {
   @Inject
   private ForumController forumController;
   
+  @Inject
+  private SessionController sessionController;
+  
   @GET
   @Path ("/areagroups")
   @RESTPermit(ForumResourcePermissionCollection.FORUM_LIST_FORUMAREAGROUPS)
   public Response listForumAreaGroups() throws AuthorizationException {
     List<ForumAreaGroup> groups = forumController.listForumAreaGroups();
     
-    List<ForumAreaGroupRESTModel> result = new ArrayList<ForumAreaGroupRESTModel>();
-    
-    for (ForumAreaGroup group : groups) {
-      result.add(new ForumAreaGroupRESTModel(group.getId(), group.getName()));
+    if (groups.size() > 0) {
+      List<ForumAreaGroupRESTModel> result = new ArrayList<ForumAreaGroupRESTModel>();
+      
+      for (ForumAreaGroup group : groups) {
+        result.add(new ForumAreaGroupRESTModel(group.getId(), group.getName()));
+      }
+      
+      return Response.ok(
+        result
+      ).build();
+    } else {
+      return Response.noContent().build();
     }
-    
-    return Response.ok(
-      result
-    ).build();
   }
   
   @GET
@@ -83,32 +94,70 @@ public class ForumRESTService extends PluginRESTService {
     ).build();
   }
   
+  @DELETE
+  @Path ("/areagroups/{AREAGROUPID}")
+  @RESTPermit(ForumResourcePermissionCollection.FORUM_DELETE_FORUMAREAGROUP)
+  public Response deleteAreaGroup(@PathParam ("AREAGROUPID") Long areaGroupId) throws AuthorizationException {
+    ForumAreaGroup forumAreaGroup = forumController.findForumAreaGroup(areaGroupId);
+    
+    forumController.deleteAreaGroup(forumAreaGroup);
+    
+    return Response.noContent().build();
+  }
+  
   @GET
   @Path ("/areas")
+  @RESTPermit(handling = Handling.UNSECURED)
   public Response listForumAreas() throws AuthorizationException {
+    // Permission to see the area is checked by controller here
     List<EnvironmentForumArea> forums = forumController.listEnvironmentForums();
     
-    List<ForumAreaRESTModel> result = new ArrayList<ForumAreaRESTModel>();
-    
-    for (EnvironmentForumArea forum : forums) {
-      result.add(new ForumAreaRESTModel(forum.getId(), forum.getName(), forum.getGroup() != null ? forum.getGroup().getId() : null));
+    if (forums.size() > 0) {
+      List<ForumAreaRESTModel> result = new ArrayList<ForumAreaRESTModel>();
+      
+      for (EnvironmentForumArea forum : forums) {
+        result.add(new ForumAreaRESTModel(forum.getId(), forum.getName(), forum.getGroup() != null ? forum.getGroup().getId() : null));
+      }
+      
+      return Response.ok(
+        result
+      ).build();
+    } else {
+      return Response.noContent().build();
     }
-    
-    return Response.ok(
-      result
-    ).build();
   }
   
   @GET
   @Path ("/areas/{AREAID}")
+  @RESTPermit(handling = Handling.INLINE)
   public Response findArea(@PathParam ("AREAID") Long areaId) throws AuthorizationException {
     ForumArea forumArea = forumController.getForumArea(areaId);
     
-    ForumAreaRESTModel result = new ForumAreaRESTModel(forumArea.getId(), forumArea.getName(), forumArea.getGroup() != null ? forumArea.getGroup().getId() : null); 
+    if (forumArea != null) {
+      if (sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_LISTFORUM, forumArea)) {
     
-    return Response.ok(
-      result
-    ).build();
+        ForumAreaRESTModel result = new ForumAreaRESTModel(forumArea.getId(), forumArea.getName(), forumArea.getGroup() != null ? forumArea.getGroup().getId() : null); 
+        
+        return Response.ok(
+          result
+        ).build();
+      } else {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    } else {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+  }
+  
+  @DELETE
+  @Path ("/areas/{AREAID}")
+  @RESTPermit(ForumResourcePermissionCollection.FORUM_DELETEENVIRONMENTFORUM)
+  public Response deleteArea(@PathParam ("AREAID") Long areaId) throws AuthorizationException {
+    ForumArea forumArea = forumController.getForumArea(areaId);
+
+    forumController.deleteArea(forumArea);
+    
+    return Response.noContent().build();
   }
   
   @POST
