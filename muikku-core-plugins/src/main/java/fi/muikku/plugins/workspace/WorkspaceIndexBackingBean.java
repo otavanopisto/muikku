@@ -76,7 +76,7 @@ public class WorkspaceIndexBackingBean {
       return NavigationRules.NOT_FOUND;
     }
 
-    canModify = sessionController.hasCoursePermission(MuikkuPermissions.PUBLISH_WORKSPACE, workspaceEntity);
+    canPublish = sessionController.hasCoursePermission(MuikkuPermissions.PUBLISH_WORKSPACE, workspaceEntity);
     workspaceEntityId = workspaceEntity.getId();
     published = workspaceEntity.getPublished();
     
@@ -235,8 +235,8 @@ public class WorkspaceIndexBackingBean {
     return published;
   }
   
-  public Boolean getCanModify() {
-    return canModify;
+  public Boolean getCanPublish() {
+    return canPublish;
   }
   
   public Date getBeginDate() {
@@ -264,7 +264,7 @@ public class WorkspaceIndexBackingBean {
   private Double courseLength;
   private String courseLengthSymbol;
   private Boolean published;
-  private Boolean canModify;
+  private Boolean canPublish;
   private Date beginDate;
   private Date endDate;
   private List<ContentNode> contentNodes;

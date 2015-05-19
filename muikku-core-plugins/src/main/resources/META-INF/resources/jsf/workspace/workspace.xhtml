@@ -52,7 +52,7 @@
         </ui:fragment>
   		</div>
       
-      <div class="workspace-publication-container" jsf:rendered="#{workspaceIndexBackingBean.canModify}">
+      <div class="workspace-publication-container" jsf:rendered="#{workspaceIndexBackingBean.canPublish}">
         <ui:fragment rendered="#{!workspaceIndexBackingBean.published}">
           <a class="workspace-publish-button" href="javascript:void(null)">#{i18n.text['plugin.workspace.index.publish']}</a>
         </ui:fragment>
