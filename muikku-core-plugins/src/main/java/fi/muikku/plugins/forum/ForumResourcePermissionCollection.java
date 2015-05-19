@@ -34,6 +34,10 @@ public class ForumResourcePermissionCollection extends AbstractMuikkuPermissionC
   @DefaultPermissionRoles ( EVERYONE )
   public static final String FORUM_LIST_FORUMAREAGROUPS = "FORUM_LIST_FORUMAREAGROUPS";
   
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR } )
+  public static final String FORUM_DELETE_FORUMAREAGROUP = "FORUM_DELETE_FORUMAREAGROUP";
+
   /**
    * Forum Area rights
    */
@@ -46,6 +50,10 @@ public class ForumResourcePermissionCollection extends AbstractMuikkuPermissionC
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.TEACHER, EnvironmentRoleArchetype.STUDENT } )
   public static final String FORUM_LISTFORUM = "FORUM_LISTFORUM";
 
+  @Scope (PermissionScope.ENVIRONMENT)
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR } )
+  public static final String FORUM_DELETEENVIRONMENTFORUM = "FORUM_DELETEENVIRONMENTFORUM";
+  
   /**
    * Forum Message related rights
    */

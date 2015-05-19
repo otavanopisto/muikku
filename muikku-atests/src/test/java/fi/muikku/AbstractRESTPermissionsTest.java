@@ -54,51 +54,8 @@ public abstract class AbstractRESTPermissionsTest extends AbstractRESTTest {
     
     return reSpect;
   }
-  
-//  public boolean roleIsAllowed(String role, List<EnvironmentRoleArchetype> allowedRoles) {
-//    // Everyone -> every role has access
-////    if (allowedRoles.contains(Role.EVERYONE.name()))
-////      return true;
-//    
-//    switch (getRoleType()) {
-//      case PSEUDO:
-//        
-//      break;
-//      
-//      case ENVIRONMENT:
-//        EnvironmentRoleArchetype environmentRoleArchetype = EnvironmentRoleArchetype.valueOf(role);
-//        
-//        for (fi.muikku.model.users.EnvironmentRoleArchetype str : allowedRoles) {
-//          if (str.equals(environmentRoleArchetype)) {
-//            return true;
-//          }
-//        }
-//      break;
-//      
-//      case WORKSPACE:
-//      break;
-//    }
-//    
-//    return false;
-//  }
 
-//  public void assertOk(String path, List<String> allowedRoles) {
-//    if (!Role.EVERYONE.name().equals(getRole())) {
-//      if (roleIsAllowed(getRole(), allowedRoles)) {
-//        given().headers(getAuthHeaders()).get(path).then().assertThat().statusCode(200);
-//      } else {
-//        given().headers(getAuthHeaders()).get(path).then().assertThat().statusCode(403);
-//      }
-//    }
-//    else
-//      given().headers(getAuthHeaders()).get(path).then().assertThat().statusCode(400);
-//  }
-
-  public void assertOk(Response response, MuikkuPermissionCollection permissionCollection, String permission) throws NoSuchFieldException {
-    assertOk(response, permissionCollection, permission, 200);
-  }
-  
-  public void assertOk(Response response, MuikkuPermissionCollection permissionCollection, String permission, int successStatusCode) throws NoSuchFieldException {
+  public boolean roleIsAllowed(MuikkuPermissionCollection permissionCollection, String permission) throws NoSuchFieldException {
     boolean roleIsAllowed = hasEveryonePermission(permissionCollection, permission);
     
     if (!roleIsAllowed) {
@@ -147,6 +104,16 @@ public abstract class AbstractRESTPermissionsTest extends AbstractRESTTest {
         break;
       }
     }
+    
+    return roleIsAllowed;
+  }
+
+  public void assertOk(Response response, MuikkuPermissionCollection permissionCollection, String permission) throws NoSuchFieldException {
+    assertOk(response, permissionCollection, permission, 200);
+  }
+  
+  public void assertOk(Response response, MuikkuPermissionCollection permissionCollection, String permission, int successStatusCode) throws NoSuchFieldException {
+    boolean roleIsAllowed = roleIsAllowed(permissionCollection, permission);
 
     if (roleIsAllowed) {
 //      System.out.println(permission + " @ " + getRoleType().name() + '-' + getRole() + " should be " + successStatusCode + " was " + response.statusCode());

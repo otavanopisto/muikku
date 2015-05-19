@@ -1,7 +1,11 @@
 package fi.muikku.plugins.forum.test;
 
+import static org.hamcrest.Matchers.is;
+
 import java.util.List;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -11,6 +15,7 @@ import com.jayway.restassured.response.Response;
 
 import fi.muikku.AbstractRESTPermissionsTest;
 import fi.muikku.plugins.forum.ForumResourcePermissionCollection;
+import fi.muikku.plugins.forum.rest.ForumAreaGroupRESTModel;
 import fi.muikku.plugins.forum.rest.ForumAreaRESTModel;
 
 
@@ -18,6 +23,7 @@ import fi.muikku.plugins.forum.rest.ForumAreaRESTModel;
 public class ForumPermissionsTestsIT extends AbstractRESTPermissionsTest {
 
   private ForumResourcePermissionCollection forumPermissions = new ForumResourcePermissionCollection();
+  private Long areaId = null;
   
   public ForumPermissionsTestsIT(String role) {
     setRole(role);
@@ -28,40 +34,60 @@ public class ForumPermissionsTestsIT extends AbstractRESTPermissionsTest {
     return getGeneratedRoleData();
   }
   
+  @Before
+  public void before() {
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null);
+    
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(forum)
+      .post("/forum/areas");
+    
+    areaId = new Long(response.body().jsonPath().getInt("id"));
+  }
+  
+  @After
+  public void after() {
+    asAdmin().delete("/forum/areas/{ID}?permanent=true", areaId);
+  }
+  
   @Test
   public void testCreateEnvironmentForum() throws NoSuchFieldException {
-    ForumAreaRESTModel contactURLType = new ForumAreaRESTModel(null, "test_create_environmentforum", null);
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null);
     
     Response response = asRole()
       .contentType("application/json")
-      .body(contactURLType)
+      .body(forum)
       .post("/forum/areas");
     assertOk(response, forumPermissions, ForumResourcePermissionCollection.FORUM_CREATEENVIRONMENTFORUM, 200);
     
-//    Long statusCode = new Long(response.statusCode());
-//    Long id = null;
-//    if (statusCode.toString().equals("200")) {
-//      id = new Long(response.body().jsonPath().getInt("id"));
-//      if (!id.equals(null)) {
-//        given().headers(getAdminAuthHeaders())
-//        .delete("/common/contactURLTypes/{ID}?permanent=true", id);
-//      }
-//    }
+    if (response.statusCode() == 200) {
+      Long id = new Long(response.body().jsonPath().getInt("id"));
+      if (id != null)
+        asAdmin().delete("/forum/areas/{ID}?permanent=true", id);
+    }
   }
   
-//  @Test
-//  public void testListAreas() throws NoSuchFieldException {
-//    Response response = given().headers(getAuthHeaders())
-//      .get("/forum/areas");
-//    assertOk(response, forumPermissions, ForumResourcePermissionCollection.forum_listLIST_CONTACTURLTYPES, 200);
-//  }
-//  
-//  @Test
-//  public void testFindArea() throws NoSuchFieldException {
-//    Response response = given().headers(getAuthHeaders())
-//      .get("/forum/areas/{ID}", 1);
-//    assertOk(response, forumPermissions, ForumResourcePermissionCollection.FIND_CONTACTURLTYPE, 200);
-//  }
+  @Test
+  public void testListAreas() throws NoSuchFieldException {
+    // Method is unsecured, but the result list is filtered by permission
+    Response response = asRole().get("/forum/areas");
+
+    /**
+     *  Assert that when role has access, the list has exactly the one test forum, otherwise list should be empty
+     */
+    if (roleIsAllowed(forumPermissions, ForumResourcePermissionCollection.FORUM_LISTFORUM)) {
+      response.then().assertThat().statusCode(200).body("id.size()", is(1));
+    } else {
+      response.then().assertThat().statusCode(204);
+    }
+  }
+  
+  @Test
+  public void testFindArea() throws NoSuchFieldException {
+    Response response = asRole().get("/forum/areas/{ID}", areaId);
+    assertOk(response, forumPermissions, ForumResourcePermissionCollection.FORUM_LISTFORUM, 200);
+  }
 
 //  testUpdate
 //  testDelete
@@ -90,23 +116,24 @@ public class ForumPermissionsTestsIT extends AbstractRESTPermissionsTest {
 //        .delete("/common/contactURLTypes/{ID}?permanent=true", id);
 //    }
 //  }
-//  
-//  @Test
-//  public void testPermissionsDeleteContactURLType() throws NoSuchFieldException {
-//    ContactURLType contactURLType = new ContactURLType(null, "create type", Boolean.FALSE);
-//    
-//    Response response = given().headers(getAdminAuthHeaders())
-//      .contentType("application/json")
-//      .body(contactURLType)
-//      .post("/common/contactURLTypes");
-//    
-//    Long id = new Long(response.body().jsonPath().getInt("id"));
-//
-//    Response deleteResponse = given().headers(getAuthHeaders())
-//      .delete("/common/contactURLTypes/{ID}", id);
-//    assertOk(deleteResponse, forumPermissions, CommonPermissions.DELETE_CONTACTURLTYPE, 204);
-//    
-//    given().headers(getAdminAuthHeaders())
-//      .delete("/common/contactURLTypes/{ID}?permanent=true", id);
-//  }
+
+  @Test
+  public void testDeleteForumArea() throws NoSuchFieldException {
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null);
+    
+    Response response = asAdmin()
+      .contentType("application/json")
+      .body(forum)
+      .post("/forum/areas");
+
+    Long id = new Long(response.body().jsonPath().getInt("id"));
+
+    Response deleteResponse = asRole()
+      .delete("/forum/areas/{ID}", id);
+    assertOk(deleteResponse, forumPermissions, ForumResourcePermissionCollection.FORUM_DELETEENVIRONMENTFORUM, 204);
+    
+    if (deleteResponse.statusCode() == 403) {
+      asAdmin().delete("/forum/areas/{ID}?permanent=true", id);
+    }
+  }
 }

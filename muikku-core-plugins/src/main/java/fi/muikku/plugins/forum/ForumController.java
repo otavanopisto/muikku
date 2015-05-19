@@ -168,6 +168,10 @@ public class ForumController {
     return forumArea;
   }
   
+  public void deleteArea(ForumArea forumArea) {
+    forumAreaDAO.delete(forumArea);
+  }
+
   public ForumAreaGroup findForumAreaGroup(Long groupId) {
     return forumAreaGroupDAO.findById(groupId);
   }
@@ -306,6 +310,10 @@ public class ForumController {
     return forumAreaGroupDAO.create(name, Boolean.FALSE);
   }
 
+  public void deleteAreaGroup(ForumAreaGroup forumAreaGroup) {
+    forumAreaGroupDAO.delete(forumAreaGroup);
+  }
+  
   public List<ForumMessage> listMessagesByWorkspace(WorkspaceEntity workspace) {
     return forumMessageDAO.listByWorkspace(workspace);
   }
