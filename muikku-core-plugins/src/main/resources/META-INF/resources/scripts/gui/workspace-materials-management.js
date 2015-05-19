@@ -220,6 +220,10 @@
     }, this));
   });
   
+  $(document).on('click', '.page-attachments', function (event, data) {
+    alert('attach');
+  });
+  
   function toggleVisibility(node, hidden) {
     var _node = node;
     var _hidden = hidden;
