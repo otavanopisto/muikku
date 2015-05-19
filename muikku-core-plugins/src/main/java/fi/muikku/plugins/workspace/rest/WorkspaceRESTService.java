@@ -16,6 +16,7 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -166,6 +167,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         @QueryParam("search") String searchString,
         @QueryParam("subjects") List<String> subjects,
         @QueryParam("minVisits") Long minVisits,
+        @QueryParam("includeUnpublished") @DefaultValue ("false") Boolean includeUnpublished,
         @QueryParam("orderBy") List<String> orderBy,
         @Context Request request) {
     List<fi.muikku.plugins.workspace.rest.model.Workspace> workspaces = new ArrayList<>();
@@ -206,7 +208,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       }
       
       // TODO: Pagination support
-      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, searchString, 0, 50);
+      searchResult = searchProvider.searchWorkspaces(schoolDataSourceFilter, subjects, workspaceIdentifierFilters, searchString, includeUnpublished, 0, 50);
       
       List<Map<String, Object>> results = searchResult.getResults();
       for (Map<String, Object> result : results) {
