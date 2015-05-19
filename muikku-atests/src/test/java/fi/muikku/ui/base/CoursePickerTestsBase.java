@@ -3,7 +3,7 @@ package fi.muikku.ui.base;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
@@ -21,6 +21,7 @@ import com.jayway.restassured.response.Response;
 import fi.muikkku.ui.AbstractUITest;
 import fi.muikku.SqlAfter;
 import fi.muikku.SqlBefore;
+import fi.muikku.schooldata.entity.Subject;
 import fi.pyramus.rest.model.Course;
 
 public class CoursePickerTestsBase extends AbstractUITest {
@@ -32,7 +33,7 @@ public class CoursePickerTestsBase extends AbstractUITest {
     studentPyramusLoginMocks();
     workspace1PyramusMock();
 //    getWebDriver().get(getAppUrl() + "/test/reindex");    
-    Response response = asAdmin()
+    asAdmin()
       .get("/test/reindex");
     
     getWebDriver().get(getAppUrl() + "/login?authSourceId=1");
@@ -55,16 +56,24 @@ public class CoursePickerTestsBase extends AbstractUITest {
       null, null);
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     String courseJson = objectMapper.writeValueAsString(course);
-    stubFor(get(urlMatching("/1/courses/courses"))
+    stubFor(get(urlEqualTo("/1/courses/courses/"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody(courseJson)
         .withStatus(200)));
     
-    stubFor(get(urlMatching("/1/courses/courses/1"))
+    stubFor(get(urlMatching("/1/courses/courses/.*"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody(courseJson)
+        .withStatus(200)));
+    
+    fi.pyramus.rest.model.Subject subject = new fi.pyramus.rest.model.Subject((long) 1, "tc_11", "Test course", (long) 1, false);
+    String subjectJson = objectMapper.writeValueAsString(subject);
+    stubFor(get(urlMatching("/1/common/subjects/.*"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(subjectJson)
         .withStatus(200)));
   }
   

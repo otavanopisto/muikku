@@ -97,14 +97,16 @@ public class AcceptanceTestsRESTService extends AbstractRESTService {
   public Response test_reindex() {
     List<WorkspaceEntity> workspaceEntities = workspaceEntityController.listWorkspaceEntities();
     System.out.println("workspaceEntities size: " + workspaceEntities.size());
+    System.out.println("-- workspaceEntity ---" + workspaceEntities.toString());
     for (int i = 0; i < workspaceEntities.size(); i++) {
       WorkspaceEntity workspaceEntity = workspaceEntities.get(i);
-      
+      System.out.println("-- workspaceEntity ---" + workspaceEntity.toString());
       Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
       if (workspace != null) {
         try {
+          System.out.println("-- Indexing workspace ---");
           indexer.index(Workspace.class.getSimpleName(), workspace);
-          System.out.println("-- Indexing workspaces ---");
+          System.out.println("-- Finished indexing workspace ---");
         } catch (Exception e) {
           logger.log(Level.WARNING, "could not index WorkspaceEntity #" + workspaceEntity.getId(), e);
         }
