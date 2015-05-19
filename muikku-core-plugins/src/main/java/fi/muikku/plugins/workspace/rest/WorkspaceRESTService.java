@@ -78,6 +78,7 @@ import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.events.SchoolDataWorkspaceUserDiscoveredEvent;
 import fi.muikku.search.SearchProvider;
 import fi.muikku.search.SearchResult;
+import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
@@ -283,6 +284,67 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
 
+    return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getDescription())).build();
+  }
+  
+  @PUT
+  @Path("/workspaces/{WORKSPACEENTITYID}")
+  public Response updateWorkspace(@PathParam ("WORKSPACEENTITYID") Long workspaceEntityId, fi.muikku.plugins.workspace.rest.model.Workspace payload) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity(String.format("WorkspaceEntity #%d not found", workspaceEntityId)).build();
+    }
+    
+    if (!sessionController.hasCoursePermission(MuikkuPermissions.PUBLISH_WORKSPACE, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    if ((payload.getArchived() != null) && payload.getArchived()) {
+      return Response.status(Status.NOT_IMPLEMENTED).entity("Archiving workspaces is currently unimplemented").build();
+    }
+
+    Workspace workspace = null;
+    try {
+      workspace = workspaceController.findWorkspace(workspaceEntity);
+      if (workspace == null) {
+        return Response.status(Status.NOT_FOUND).entity(String.format("Could not find a workspace for WorkspaceEntity #%d", workspaceEntityId)).build();
+      }
+    } catch (Exception e) {
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to retrieve workspace from school data source (%s)", e.getMessage())).build();
+    }
+
+    if ((payload.getDescription() != null) || (payload.getName() != null)) {
+      try {
+        if ((!StringUtils.equals(payload.getName(), workspace.getName())) || (!StringUtils.equals(payload.getDescription(), workspace.getDescription()))) {
+          workspace.setName(payload.getName());
+          workspace.setDescription(payload.getDescription());
+          workspace = workspaceController.updateWorkspace(workspace);
+        }
+      } catch (Exception e) {
+        return Response.status(Status.INTERNAL_SERVER_ERROR).entity(String.format("Failed to update workspace data into school data source (%s)", e.getMessage())).build();
+      }
+    }
+    
+    if (payload.getNumVisits() != null) {
+      if (workspaceVisitController.getNumVisits(workspaceEntity) != payload.getNumVisits().longValue()) {
+        return Response.status(Status.NOT_IMPLEMENTED).entity(String.format("Updating number of visit via this endpoint is currently unimplemented", workspaceEntityId)).build();
+      }
+    }
+    
+    if (payload.getLastVisit() != null) {
+      if (workspaceVisitController.getLastVisit(workspaceEntity).equals(payload.getLastVisit())) {
+        return Response.status(Status.NOT_IMPLEMENTED).entity(String.format("Updating last visit via this endpoint is currently unimplemented", workspaceEntityId)).build();
+      }
+    }
+    
+    if (payload.getPublished() != null && !workspaceEntity.getPublished().equals(payload.getPublished())) {
+      workspaceEntityController.updatePublished(workspaceEntity, payload.getPublished());
+    }
+    
     return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getDescription())).build();
   }
 
@@ -726,7 +788,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     Long numVisits = workspaceVisitController.getNumVisits(workspaceEntity);
     Date lastVisit = workspaceVisitController.getLastVisit(workspaceEntity);
     return new fi.muikku.plugins.workspace.rest.model.Workspace(workspaceEntity.getId(), workspaceEntity.getUrlName(),
-        workspaceEntity.getArchived(), name, description, numVisits, lastVisit);
+        workspaceEntity.getArchived(), workspaceEntity.getPublished(), name, description, numVisits, lastVisit);
   }
 
   private fi.muikku.plugins.workspace.rest.model.WorkspaceUserSignup createRestModel(WorkspaceUserSignup signup) {

@@ -133,6 +133,11 @@ public class WorkspaceEntityDAO extends CoreDAO<WorkspaceEntity> {
    
     return entityManager.createQuery(criteria).getResultList();
   }
+
+  public WorkspaceEntity updatePublished(WorkspaceEntity workspaceEntity, Boolean published) {
+    workspaceEntity.setPublished(published);
+    return persist(workspaceEntity);
+  }
   
   public WorkspaceEntity updateArchived(WorkspaceEntity workspaceEntity, Boolean archived) {
     workspaceEntity.setArchived(archived);
