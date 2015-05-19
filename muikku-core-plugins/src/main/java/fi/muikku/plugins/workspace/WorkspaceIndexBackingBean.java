@@ -25,6 +25,8 @@ import fi.muikku.schooldata.entity.EducationType;
 import fi.muikku.schooldata.entity.Subject;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceType;
+import fi.muikku.security.MuikkuPermissions;
+import fi.muikku.session.SessionController;
 
 @Named
 @Stateful
@@ -34,6 +36,9 @@ public class WorkspaceIndexBackingBean {
 
   @Parameter
   private String workspaceUrlName;
+
+  @Inject
+  private SessionController sessionController;
 
   @Inject
   private WorkspaceController workspaceController;
@@ -70,8 +75,17 @@ public class WorkspaceIndexBackingBean {
     if (workspaceEntity == null) {
       return NavigationRules.NOT_FOUND;
     }
+
+    canModify = sessionController.hasCoursePermission(MuikkuPermissions.PUBLISH_WORKSPACE, workspaceEntity);
     workspaceEntityId = workspaceEntity.getId();
+    published = workspaceEntity.getPublished();
     
+    if (!published) {
+      if (!sessionController.hasCoursePermission(MuikkuPermissions.ACCESS_UNPUBLISHED_WORKSPACE, workspaceEntity)) {
+        return NavigationRules.NOT_FOUND;
+      }
+    }
+
     try {
       contentNodes = workspaceMaterialController.listWorkspaceFrontPagesAsContentNodes(workspaceEntity);
     }
@@ -117,7 +131,7 @@ public class WorkspaceIndexBackingBean {
     } finally {
       schoolDataBridgeSessionController.endSystemSession();
     }
-
+    
     return null;
   }
 
@@ -217,6 +231,14 @@ public class WorkspaceIndexBackingBean {
     return courseLengthSymbol;
   }
   
+  public Boolean getPublished() {
+    return published;
+  }
+  
+  public Boolean getCanModify() {
+    return canModify;
+  }
+  
   public Date getBeginDate() {
     return beginDate;
   }
@@ -241,6 +263,8 @@ public class WorkspaceIndexBackingBean {
   private String educationType;
   private Double courseLength;
   private String courseLengthSymbol;
+  private Boolean published;
+  private Boolean canModify;
   private Date beginDate;
   private Date endDate;
   private List<ContentNode> contentNodes;
