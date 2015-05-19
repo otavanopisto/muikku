@@ -45,14 +45,22 @@ public class ElasticSearchProvider implements SearchProvider {
   }
   
   @Override
-  public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, String freeText, int start, int maxResults) {
+  public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, String freeText, boolean includeUnpublished, int start, int maxResults) {
     QueryBuilder query = null;
     
     try {
       if (StringUtils.isBlank(schoolDataSource) && (subjects == null || subjects.isEmpty()) && StringUtils.isBlank(freeText)) {
-        query = QueryBuilders.matchAllQuery();
+        if (includeUnpublished) {
+          query = QueryBuilders.matchAllQuery();
+        } else {
+          query = QueryBuilders.matchQuery("published", Boolean.TRUE);
+        }
       } else {
         query = QueryBuilders.boolQuery();
+        
+        if (!includeUnpublished) {
+          ((BoolQueryBuilder) query).must(QueryBuilders.matchQuery("published",Boolean.TRUE));
+        }
         
         if (StringUtils.isNotBlank(schoolDataSource)) {
           ((BoolQueryBuilder) query).must(QueryBuilders.matchQuery("schoolDataSource", schoolDataSource));

@@ -1,5 +1,43 @@
 (function() {
   'use strict';
+  
+  $(document).on('click', '.workspace-publish-button', function (event) {
+    var workspaceEntityId = $('.workspaceEntityId').val();
+
+    mApi().workspace.workspaces.read(workspaceEntityId).callback(function (err, workspace) {
+      if (err) {
+        $('.notification-queue').notificationQueue('notification', 'error', err);
+      } else {
+        workspace.published = true;        
+        mApi().workspace.workspaces.update(workspaceEntityId, workspace).callback(function (updErr) {
+          if (updErr) {
+            $('.notification-queue').notificationQueue('notification', 'error', updErr);
+          } else {
+            window.location.reload(true); 
+          }
+        });
+      }
+    });
+  });
+    
+  $(document).on('click', '.workspace-unpublish-button', function (event) {
+    var workspaceEntityId = $('.workspaceEntityId').val();
+
+    mApi().workspace.workspaces.read(workspaceEntityId).callback(function (err, workspace) {
+      if (err) {
+        $('.notification-queue').notificationQueue('notification', 'error', err);
+      } else {
+        workspace.published = false;        
+        mApi().workspace.workspaces.update(workspaceEntityId, workspace).callback(function (updErr) {
+          if (updErr) {
+            $('.notification-queue').notificationQueue('notification', 'error', updErr);
+          } else {
+            window.location.reload(true); 
+          }
+        });
+      }
+    });
+  });
 
   $(document).ready(function() {
     

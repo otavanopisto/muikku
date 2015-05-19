@@ -172,7 +172,11 @@ public class PyramusCourseMetaSchoolDataBridge implements CourseMetaSchoolDataBr
   @Override
   public CourseLengthUnit findCourseLengthUnit(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
     Long educationalTimeUnitId = pyramusIdentifierMapper.getPyramusEducationalTimeUnitId(identifier);
-    return pyramusSchoolDataEntityFactory.getCourseLengthUnit(pyramusClient.get("/common/educationalTimeUnits/" + educationalTimeUnitId, fi.pyramus.rest.model.EducationalTimeUnit.class));
+    if (educationalTimeUnitId != null) {
+      return pyramusSchoolDataEntityFactory.getCourseLengthUnit(pyramusClient.get("/common/educationalTimeUnits/" + educationalTimeUnitId, fi.pyramus.rest.model.EducationalTimeUnit.class));
+    }
+    
+    return null;
   }
 
 }

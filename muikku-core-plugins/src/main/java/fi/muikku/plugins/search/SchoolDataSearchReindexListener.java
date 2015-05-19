@@ -17,10 +17,8 @@ import javax.inject.Inject;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserSchoolDataIdentifier;
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.schooldata.entity.User;
-import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.search.SearchIndexer;
 import fi.muikku.search.SearchReindexEvent;
 import fi.muikku.users.UserController;
@@ -33,9 +31,6 @@ public class SchoolDataSearchReindexListener {
   
   @Inject
   private Logger logger;
-  
-  @Inject
-  private WorkspaceController workspaceController;
   
   @Inject
   private WorkspaceEntityController workspaceEntityController;
@@ -51,6 +46,9 @@ public class SchoolDataSearchReindexListener {
   
   @Inject
   private SearchIndexer indexer;
+  
+  @Inject
+  private WorkspaceIndexer workspaceIndexer;
   
   @Resource
   private TimerService timerService;
@@ -91,15 +89,7 @@ public class SchoolDataSearchReindexListener {
       
       for (int i = workspaceIndex; i < last; i++) {
         WorkspaceEntity workspaceEntity = workspaceEntities.get(i);
-        
-        Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-        if (workspace != null) {
-          try {
-            indexer.index(Workspace.class.getSimpleName(), workspace);
-          } catch (Exception e) {
-            logger.log(Level.WARNING, "could not index WorkspaceEntity #" + workspaceEntity.getId(), e);
-          }
-        }
+        workspaceIndexer.indexWorkspace(workspaceEntity);
       }
 
       logger.log(Level.INFO, "Reindexed batch of workspaces (" + workspaceIndex + "-" + last + ")");

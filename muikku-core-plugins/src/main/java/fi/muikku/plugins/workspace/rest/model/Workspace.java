@@ -7,15 +7,16 @@ public class Workspace {
   public Workspace() {
   }
 
-  public Workspace(Long id, String urlName, Boolean archived, String name, String description) {
-    this(id, urlName, archived, name, description, 0l, null);
+  public Workspace(Long id, String urlName, Boolean archived, Boolean published, String name, String description) {
+    this(id, urlName, archived, published, name, description, 0l, null);
   }
 
-  public Workspace(Long id, String urlName, Boolean archived, String name, String description, Long numVisits, Date lastVisit) {
+  public Workspace(Long id, String urlName, Boolean archived, Boolean published, String name, String description, Long numVisits, Date lastVisit) {
     super();
     this.id = id;
     this.urlName = urlName;
     this.archived = archived;
+    this.published = published;
     this.name = name;
     this.description = description;
     this.numVisits = numVisits;
@@ -77,6 +78,14 @@ public class Workspace {
   public void setLastVisit(Date lastVisit) {
     this.lastVisit = lastVisit;
   }
+  
+  public Boolean getPublished() {
+    return published;
+  }
+  
+  public void setPublished(Boolean published) {
+    this.published = published;
+  }
 
   private Long id;
   private String urlName;
@@ -85,4 +94,5 @@ public class Workspace {
   private String description;
   private Long numVisits;
   private Date lastVisit;
+  private Boolean published;
 }
