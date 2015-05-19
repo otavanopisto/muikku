@@ -35,7 +35,7 @@ public class WorkspaceEntityController {
       return null;
     }
     
-    WorkspaceEntity workspaceEntity = workspaceEntityDAO.create(schoolDataSource, identifier, urlName, Boolean.FALSE);
+    WorkspaceEntity workspaceEntity = workspaceEntityDAO.create(schoolDataSource, identifier, urlName, Boolean.FALSE, Boolean.FALSE);
 
 //  TODO: Re-enable workspace settings template
 //    WorkspaceSettingsTemplate workspaceSettingsTemplate = workspaceSettingsTemplateDAO.findById(1l);

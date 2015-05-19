@@ -49,6 +49,14 @@ public class WorkspaceEntity implements ArchivableEntity, ContextReference {
   public void setUrlName(String urlName) {
 		this.urlName = urlName;
 	}
+  
+  public Boolean getPublished() {
+    return published;
+  }
+  
+  public void setPublished(Boolean published) {
+    this.published = published;
+  }
 
   public Boolean getArchived() {
     return archived;
@@ -74,9 +82,13 @@ public class WorkspaceEntity implements ArchivableEntity, ContextReference {
 	@NotNull
 	@Column(nullable = false, unique = true)
 	private String urlName;
+
+	@NotNull
+  @Column(nullable = false)
+  private Boolean published;
   
   @NotNull
   @Column(nullable = false)
-  private Boolean archived = Boolean.FALSE;
+  private Boolean archived;
   
 }
