@@ -47,9 +47,9 @@
                   </ui:fragment>
 
                   <ui:fragment rendered="#{node.type ne 'folder'}">
-                    <li class="workspace-materials-toc-item"><h:outputLink
-                        value="#page-#{node.workspaceMaterialId}"
-                        class="#{node.assignmentType eq 'EVALUATED' ? 'evaluated' : node.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{node.title}</h:outputLink>
+                    <li class="workspace-materials-toc-item">
+                      <h:outputLink value="#page-#{node.workspaceMaterialId}" class="#{node.assignmentType eq 'EVALUATED' ? 'evaluated' : node.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{node.title}</h:outputLink>
+                      <span class="workspace-materials-toc-dragHandle icon-move"></span> 
                     </li>
                   </ui:fragment>
                 </ui:repeat>

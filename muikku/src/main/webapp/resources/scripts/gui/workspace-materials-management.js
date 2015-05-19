@@ -302,10 +302,11 @@
       placeholder: "sortable-placeholder",
       forcePlaceholderSize: true,
       forceHelperSize: true,
-      start: function( event, ui ) {
+      tolerance: "pointer",
+      start: function(event, ui) {
 
       },
-      stop: function( event, ui ) {
+      stop: function(event, ui) {
         /* Lets not animate already active element */
         if (!$(ui.item).hasClass("active")) {
           $(ui.item)
@@ -328,6 +329,7 @@
                     backgroundColor: "",
                   })
                   .removeClass("no-hover");
+                  $(this).removeAttr("style");
                 }
               });
             }

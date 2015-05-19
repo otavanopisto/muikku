@@ -122,6 +122,11 @@ body.workspace-materials-management {
             padding:0 6px;
             
             .workspace-materials-toc-root {
+            
+              > li,
+              > li.sortable-placeholder {
+                padding:10px 0;
+              }
 
               /* PLACEHOLDER item to indicate where user can drop sortable item */
               .sortable-placeholder {
@@ -214,8 +219,6 @@ body.workspace-materials-management {
         
               .workspace-materials-toc-section {
                 margin:0;
-                padding-top:5px;
-                padding-bottom:10px;
                 
                 .workspace-materials-toc-subtitle {
                   margin:0 0 5px 0;
