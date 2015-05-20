@@ -666,7 +666,7 @@ body.workspace-materials-management {
         a.change-assignment {
           margin:0;
           position:relative;
-          top:-2px;
+          top:-3px;
           left:-1px;
           font-size:17px;
         }
@@ -678,7 +678,7 @@ body.workspace-materials-management {
         a.change-assignment {
           margin:0;
           position:relative;
-          top:-2px;
+          top:-3px;
           left:-1px;
           transform:rotate(330deg);
           font-size:17px;
@@ -692,7 +692,7 @@ body.workspace-materials-management {
         a.change-assignment {
           margin:0;
           position:relative;
-          top:-2px;
+          top:-3px;
           left:-1px;
           transform:rotate(30deg);
           font-size:17px;
@@ -725,7 +725,8 @@ body.workspace-materials-management {
         a.change-assignment,
         a.publish-page,
         a.revert-page,
-        a.close-page-editor {
+        a.close-page-editor,
+        a.page-attachments {
           color:#fff;
           font-size:21px;
           display:inline-block;
@@ -748,7 +749,6 @@ body.workspace-materials-management {
           }
         }
         
-        a.page-attachments,
         a.delete-page {
           font-size:22px;
         }
