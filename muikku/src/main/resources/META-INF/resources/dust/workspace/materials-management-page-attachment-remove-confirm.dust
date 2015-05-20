@@ -1,0 +1,3 @@
+<div class="workspace-material-management-confirm-dialog" title="{#localize key="plugin.workspace.materialsManagement.confirmRemoveAttachment.title"/}" data-button-remove-text="{#localize key="plugin.workspace.materialsManagement.confirmRemoveAttachment.removeButton"/}" data-button-cancel-text="{#localize key="plugin.workspace.materialsManagement.confirmRemoveAttachment.cancelButton"/}">
+  {#localize key="plugin.workspace.materialsManagement.confirmRemoveAttachment.text" arg0=materialTitle/}
+</div>

@@ -307,6 +307,34 @@
     _stopLoading: function () {
       // TODO: end loading animation
     },
+    
+    _confirmRemoval: function (materialTitle, confirmCallback) {
+      renderDustTemplate('workspace/materials-management-page-attachment-remove-confirm.dust', { 
+        materialTitle: materialTitle
+      }, $.proxy(function (text) {
+        var dialog = $(text);
+        $(text).dialog({
+          modal: true, 
+          resizable: false,
+          width: 360,
+          dialogClass: "workspace-materials-management-dialog",
+          buttons: [{
+            'text': dialog.data('button-remove-text'),
+            'class': 'remove-button',
+            'click': function(event) {
+              $(this).dialog("close");
+              confirmCallback();
+            }
+          }, {
+            'text': dialog.data('button-cancel-text'),
+            'class': 'cancel-button',
+            'click': function(event) {
+              $(this).dialog("close");
+            }
+          }]
+        });
+      }, this));
+    },
 
     _onFileUploadAdd : function(e, data) {
       renderDustTemplate('workspace/materials-management-page-attachment.dust', {
@@ -314,7 +342,7 @@
         materialId: 'UPLOADING',
         title: data.files[0].name,
         contentType: data.files[0].type,
-        url: 'Localize: please wait....',
+        url: getLocaleText('plugin.workspace.materialsManagement.uploadingFileName'),
         upload: true,
         metaKeys: this._metaKeys
       }, $.proxy(function (text) {
@@ -379,15 +407,20 @@
     _onAttachmentDeleteClick: function (event) {
       var attachmentElement = $(event.target).closest('.materials-management-page-attachment');
       var workspaceMaterialId = attachmentElement.attr('data-workspace-material-id');
+      var materialTitle = attachmentElement.find('.materials-management-page-attachment-title').text();
       if (workspaceMaterialId) {
-        mApi().workspace.workspaces.materials.del(this.options.workspaceEntityId, workspaceMaterialId)
-          .callback($.proxy(function (err) {
-            if (err) {
-              $('.notification-queue').notificationQueue('notification', 'error', err);
-            } else {
-              attachmentElement.remove();
-            }
-          }, this));
+        this._confirmRemoval(materialTitle, $.proxy(function () {
+          
+          mApi().workspace.workspaces.materials.del(this.options.workspaceEntityId, workspaceMaterialId)
+            .callback($.proxy(function (err) {
+              if (err) {
+                $('.notification-queue').notificationQueue('notification', 'error', err);
+              } else {
+                attachmentElement.remove();
+              }
+            }, this));
+          
+        }, this));
       }
     }
     
