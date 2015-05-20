@@ -122,15 +122,16 @@ body.workspace-materials-management {
             padding:0 6px;
             
             .workspace-materials-toc-root {
-            
-              > li,
-              > li.sortable-placeholder {
-                padding:10px 0;
-              }
 
               /* PLACEHOLDER item to indicate where user can drop sortable item */
               .sortable-placeholder {
-                background:#a0bed0;
+                background:#bed3df;
+              }
+              
+              .sortable-section-placeholder {
+                background:#bed3df;
+                margin:0;
+                padding:10px 0;
               }
 
               .workspace-materials-toc-item {
@@ -172,7 +173,7 @@ body.workspace-materials-management {
                     color:#fff;
                   }
                 
-                  .workspace-materials-toc-dragHandle {
+                  .workspace-materials-toc-itemDragHandle {
                     opacity:1;
                   }
                 
@@ -198,13 +199,13 @@ body.workspace-materials-management {
                     color:#fff;
                   }
                 
-                  .workspace-materials-toc-dragHandle {
+                  .workspace-materials-toc-itemDragHandle {
                     opacity:1;
                   }
                   
                 }
                 
-                .workspace-materials-toc-dragHandle {
+                .workspace-materials-toc-itemDragHandle {
                   opacity:0;
                   color:#ffffff;
                   cursor:move;
@@ -219,6 +220,7 @@ body.workspace-materials-management {
         
               .workspace-materials-toc-section {
                 margin:0;
+                padding:10px 0;
                 
                 .workspace-materials-toc-subtitle {
                   margin:0 0 5px 0;
@@ -226,11 +228,38 @@ body.workspace-materials-management {
                   font-size:15px;
                   padding:2px 8px;
                   font-weight:400;
+                  position:relative;
+                  
+                  .workspace-materials-toc-sectionDragHandle {
+                    opacity:0;
+                    color:#2c2c2c;
+                    cursor:move;
+                    font-size:14px;
+                    padding:6px 4px 6px 6px;
+                    position:absolute;
+                    top:0px;
+                    right:0px;
+                  }
+                  
+                  &:hover {
+
+                    .workspace-materials-toc-sectionDragHandle {
+                      opacity:1;
+                    }
+                  
+                  }
                   
                   &.subtitle-hidden {
                     opacity:0.4;
                   }
                   
+                }
+                
+                &.ui-sortable-helper {
+                  background:#47728c;
+                  color:#fff;
+                  border-radius:2px;
+                  left:6px;
                 }
                 
               }

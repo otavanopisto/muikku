@@ -290,19 +290,66 @@
 
   $(document).ready(function() {
     
+    
+    // TOC sorting - DOES NOT SUPPORT NESTING, only dragging items from section to section. 
+    // If nesting is needed we have to use some other plug-in instead of JQeury.UI sortable
+    
+    $('.workspace-materials-toc-root').sortable({
+      axis: "y",
+      items: ">ul.workspace-materials-toc-section",
+      cursor: "crosshair",
+      handle: "span.workspace-materials-toc-sectionDragHandle",
+      containment: ".workspace-materials-toc-root",
+      connectWith:".workspace-materials-toc-root",
+      opacity: 0.35,
+      revert: 500,
+      placeholder: "sortable-section-placeholder",
+      forcePlaceholderSize: true,
+      start: function(event, ui) {
+
+      },
+      stop: function(event, ui) {
+        if (!$(ui.item).hasClass("active")) {
+          $(ui.item)
+          .addClass("no-hover")
+          .animate({
+            backgroundColor: "#edeea2",
+            color: "#000"
+          },{
+            duration:1500,
+            easing: "easeInOutQuint",
+            complete: function() {
+              $(this).animate({
+                backgroundColor: "transparent",
+                color: "#000"
+              }, {
+                duration:1500,
+                easing: "easeInOutQuint",
+                complete: function() {
+                  $(this).css({
+                    backgroundColor: "",
+                  })
+                  .removeClass("no-hover");
+                  $(this).removeAttr("style");
+                }
+              });
+            }
+          });
+        }
+      }
+    });
+    
     $('.workspace-materials-toc-section').sortable({
       axis: "y",
       items: ">li",
       cursor: "crosshair",
-      handle: "span.workspace-materials-toc-dragHandle",
+      handle: "span.workspace-materials-toc-itemDragHandle",
       containment: ".workspace-materials-toc-root",
       connectWith:".workspace-materials-toc-section",
       opacity: 0.35,
       revert: 200,
       placeholder: "sortable-placeholder",
       forcePlaceholderSize: true,
-      forceHelperSize: true,
-      tolerance: "pointer",
       start: function(event, ui) {
 
       },
@@ -334,8 +381,6 @@
               });
             }
           });
-        } else {
-
         }
         
       }
