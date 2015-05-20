@@ -411,6 +411,81 @@ body.workspace-materials-management {
         }
       }
       
+      /* Material's attachment upload wrapper */
+      .materials-management-page-attachments-upload-container {
+        margin:10px -20px;
+        padding:10px 10px;
+        position:relative;
+        box-sizing:border-box;
+        border:1px solid #7391a7;
+      }
+      
+      /* Uploaded attachments wrapper */
+      .materials-management-page-attachments-container {
+      
+        /* Uploaded single attachment wrapper */
+        .materials-management-page-attachment {
+          background:#ebf8ff;
+          margin:10px -20px;
+          padding:5px 10px;
+          position:relative;
+          
+          &:hover {
+            box-shadow:0 0 0 5px #cce2ed;
+          
+            .materials-management-page-attachment-actions {
+              display:block;
+            }
+          
+          }
+        
+          .materials-management-page-attachment-image-container {
+            
+          }
+          
+          .materials-management-page-attachment-title {
+          
+          }
+          
+          .materials-management-page-attachment-actions {
+            position:absolute;
+            right:2px;
+            top:2px;
+            display:none;
+          
+            .materials-management-page-attachment-action {
+              color:#000;
+              display:inline-block;
+              margin:2px 5px;
+              padding:2px;
+            }
+          
+          }
+          
+          .materials-management-page-attachment-url {
+            color:#1b5f86;
+            font-size:13px;
+            font-style:italic;
+          }
+          
+          .muikku-page-attachments-upload-progress {
+            height:5px;
+            border:0;
+            
+            .ui-widget-header {
+              background:#58e45e;
+              border:0;
+              border-radius:0;
+              margin:0;
+            }
+          }
+        
+        }
+        
+      
+      }
+      
+      
       img {
         max-width:100%;
       }
