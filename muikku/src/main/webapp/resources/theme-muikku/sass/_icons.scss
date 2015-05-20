@@ -33,24 +33,8 @@
   display:inline-block;
 }
 
-.icon-evaluate:before {
-  content: "\e63d";
-}
-
-.icon-arrow-left2:before {
-  content: "\e605";
-}
-
-.icon-arrow-down:before {
-  content: "\e606";
-}
-
-.icon-arrow-up:before {
-  content: "\e607";
-}
-
-.icon-arrow-right2:before {
-  content: "\e608";
+.icon-download:before {
+  content: "\f019";
 }
 
 .icon-bubble:before {
@@ -221,6 +205,38 @@
   content: "\e635";
 }
 
+.icon-new-page:before {
+  content: "\e637";
+}
+
+.icon-close-small:before {
+  content: "\e63b";
+}
+
+.icon-add:before {
+  content: "\e114";
+}
+
+.icon-evaluate:before {
+  content: "\e63d";
+}
+
+.icon-arrow-left2:before {
+  content: "\e605";
+}
+
+.icon-arrow-down:before {
+  content: "\e606";
+}
+
+.icon-arrow-up:before {
+  content: "\e607";
+}
+
+.icon-arrow-right2:before {
+  content: "\e608";
+}
+
 .icon-spinner:before {
   content: "\e97b";
 }
@@ -323,17 +339,5 @@
 
 .icon-navicon:before {
   content: "\e609";
-}
-
-.icon-new-page:before {
-  content: "\e637";
-}
-
-.icon-close-small:before {
-  content: "\e63b";
-}
-
-.icon-add:before {
-  content: "\e114";
 }
 

@@ -251,7 +251,7 @@
             } else {
               
               var data = {
-                attachments: $.map(workspaceMaterials, $.proxy(function (workspaceMaterial) {
+                attachments: $.map(workspaceMaterials||[], $.proxy(function (workspaceMaterial) {
                   return {
                     title: workspaceMaterial.material.title,
                     contentType: workspaceMaterial.material.contentType,
