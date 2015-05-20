@@ -226,63 +226,73 @@
       
       this._workspaceUrl = null;
       
-      mApi().workspace.workspaces.read(this.options.workspaceEntityId).callback($.proxy(function (workspaceErr, workspaceEntity) {
-        if (workspaceErr) {
-          $('.notification-queue').notificationQueue('notification', 'error', workspaceErr);
+      mApi().materials.metakeys.read().callback($.proxy(function (metaErr, metaKeys) {
+        if (metaErr) {
+          $('.notification-queue').notificationQueue('notification', 'error', metaErr);
         } else {
-          this._workspaceUrl = CONTEXTPATH + '/workspace/' + workspaceEntity.urlName;
+          this._metaKeys = metaKeys;
           
-          mApi().workspace.workspaces.materials.read(this.options.workspaceEntityId, {
-            parentId: this.options.parentId
-          })
-          .on('$', function (workspaceMaterial, callback) {
-            mApi().materials.binary.read(workspaceMaterial.materialId).callback(function (binaryErr, binaryMaterial) {
-              if (binaryErr) {
-                $('.notification-queue').notificationQueue('notification', 'error', binaryErr);
-              } else {
-                workspaceMaterial.material = binaryMaterial;
-                callback();
-              }
-            });   
-          })
-          .callback($.proxy(function (err, workspaceMaterials) {
-            if (err) {
-              $('.notification-queue').notificationQueue('notification', 'error', err);
+          mApi().workspace.workspaces.read(this.options.workspaceEntityId).callback($.proxy(function (workspaceErr, workspaceEntity) {
+            if (workspaceErr) {
+              $('.notification-queue').notificationQueue('notification', 'error', workspaceErr);
             } else {
+              this._workspaceUrl = CONTEXTPATH + '/workspace/' + workspaceEntity.urlName;
               
-              var data = {
-                attachments: $.map(workspaceMaterials||[], $.proxy(function (workspaceMaterial) {
-                  return {
-                    title: workspaceMaterial.material.title,
-                    contentType: workspaceMaterial.material.contentType,
-                    url: this._workspaceUrl + '/materials/' + workspaceMaterial.path,
-                    upload: false
+              mApi().workspace.workspaces.materials.read(this.options.workspaceEntityId, {
+                parentId: this.options.parentId
+              })
+              .on('$', function (workspaceMaterial, callback) {
+                mApi().materials.binary.read(workspaceMaterial.materialId).callback(function (binaryErr, binaryMaterial) {
+                  if (binaryErr) {
+                    $('.notification-queue').notificationQueue('notification', 'error', binaryErr);
+                  } else {
+                    workspaceMaterial.material = binaryMaterial;
+                    callback();
+                  }
+                });   
+              })
+              .callback($.proxy(function (err, workspaceMaterials) {
+                if (err) {
+                  $('.notification-queue').notificationQueue('notification', 'error', err);
+                } else {
+                  
+                  var data = {
+                    attachments: $.map(workspaceMaterials||[], $.proxy(function (workspaceMaterial) {
+                      return {
+                        title: workspaceMaterial.material.title,
+                        contentType: workspaceMaterial.material.contentType,
+                        url: this._workspaceUrl + '/materials/' + workspaceMaterial.path,
+                        upload: false,
+                        metaKeys: this._metaKeys
+                      };
+                    }, this))
                   };
-                }, this))
-              };
-    
-              renderDustTemplate('workspace/materials-management-page-attachments.dust', data, $.proxy(function (text) {
-                this.element.html(text);
-                
-                this._uploadContainer = this.element.find('.materials-management-page-attachments-upload-container');
-                this._attachmentsContainer = this.element.find('.materials-management-page-attachments-container');
-                
-                var fileInput = this.element.find('input[type="file"]');
-                fileInput.fileupload({
-                  url : CONTEXTPATH + '/tempFileUploadServlet',
-                  dropZone: fileInput.closest('.materials-management-page-attachments-upload-container'),
-                  autoUpload : true,
-                  add : $.proxy(this._onFileUploadAdd, this),
-                  done : $.proxy(this._onFileUploadDone, this),
-                  progress : $.proxy(this._onFileUploadProgress, this)
-                });
-                
-                this._stopLoading();
+        
+                  renderDustTemplate('workspace/materials-management-page-attachments.dust', data, $.proxy(function (text) {
+                    this.element.html(text);
+                    
+                    this._uploadContainer = this.element.find('.materials-management-page-attachments-upload-container');
+                    this._attachmentsContainer = this.element.find('.materials-management-page-attachments-container');
+                    
+                    var fileInput = this.element.find('input[type="file"]');
+                    fileInput.fileupload({
+                      url : CONTEXTPATH + '/tempFileUploadServlet',
+                      dropZone: fileInput.closest('.materials-management-page-attachments-upload-container'),
+                      autoUpload : true,
+                      add : $.proxy(this._onFileUploadAdd, this),
+                      done : $.proxy(this._onFileUploadDone, this),
+                      progress : $.proxy(this._onFileUploadProgress, this)
+                    });
+                    
+                    this._stopLoading();
+                  }, this));
+                }
               }, this));
             }
           }, this));
         }
       }, this));
+
     },
     
     _startLoading: function () {
@@ -298,7 +308,8 @@
         title: data.files[0].name,
         contentType: data.files[0].type,
         url: 'Localize: please wait....',
-        upload: true
+        upload: true,
+        metaKeys: this._metaKeys
       }, $.proxy(function (text) {
         data.context = $(text);
         data.context  
