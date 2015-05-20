@@ -118,6 +118,31 @@
     padding:3px;
   }
   
+  
+  .mf-list{
+   background-color:#fff;
+   min-height:200px;
+   .mf-list-label{
+    background-color:$bgr1;
+    padding:5px;
+    font-weight:600;
+   }
+   ul{
+ 
+      list-style-type: none;
+      
+      li{
+        border-bottom: 1px solid $brd1;
+        border-bottom: 1px solid $brd1;
+        padding-top:5px;
+        padding-bottom:5px;
+        padding-left:10px; 
+        font-weight:300;      
+      }
+   
+   }
+  } 
+  
   .mf-side-content{
    padding:5px;
    background-color:#fff;
