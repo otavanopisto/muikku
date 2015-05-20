@@ -159,6 +159,7 @@
 					<threshold>High</threshold>
 					<xmlOutput>true</xmlOutput>
 					<findbugsXmlOutputDirectory>${project.build.directory}/findbugs</findbugsXmlOutputDirectory>
+					<skip>${findbugs.skip}</skip>
 				</configuration>
 				<executions>
 					<execution>
