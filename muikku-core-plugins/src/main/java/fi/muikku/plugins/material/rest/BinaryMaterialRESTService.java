@@ -1,6 +1,8 @@
 package fi.muikku.plugins.material.rest;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -8,6 +10,7 @@ import javax.inject.Inject;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -29,7 +32,11 @@ import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.material.BinaryMaterialController;
+import fi.muikku.plugins.material.MaterialController;
 import fi.muikku.plugins.material.model.BinaryMaterial;
+import fi.muikku.plugins.material.model.Material;
+import fi.muikku.plugins.material.model.MaterialMeta;
+import fi.muikku.plugins.material.model.MaterialMetaKey;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.EnvironmentUserController;
 
@@ -43,6 +50,9 @@ public class BinaryMaterialRESTService extends PluginRESTService {
 
   @Inject
   private BinaryMaterialController binaryMaterialController;
+
+  @Inject
+  private MaterialController materialController;
   
   @Inject
   private SessionController muikkuSessionController;
@@ -180,4 +190,133 @@ public class BinaryMaterialRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
   }
+  
+  @POST
+  @Path("/{id}/meta")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response createMaterialMeta(@PathParam("id") Long id, fi.muikku.plugins.material.rest.MaterialMeta payload) {
+    // TODO: Security!!
+    
+    Material material = materialController.findMaterialById(id);
+    if (material == null) {
+      return Response.status(Status.NOT_FOUND).entity("Material not found").build();
+    }
+    
+    if (!(material instanceof BinaryMaterial)) {
+      return Response.status(Status.NOT_FOUND).entity("Material is not binary material").build();
+    }
+    
+    if (StringUtils.isBlank(payload.getKey())) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing key").build();
+    }
+    
+    MaterialMetaKey key = materialController.findMaterialMetaKey(payload.getKey());
+    if (key == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid key").build();
+    }
+    
+    return Response.ok(createRestModel(materialController.createMaterialMeta(material, key, payload.getValue()))).build();
+  }
+
+  @GET
+  @Path("/{id}/meta")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response listMaterialMetas(@PathParam("id") Long id) {
+    // TODO: Security!!
+    
+    Material material = materialController.findMaterialById(id);
+    if (material == null) {
+      return Response.status(Status.NOT_FOUND).entity("Material not found").build();
+    }
+    
+    if (!(material instanceof BinaryMaterial)) {
+      return Response.status(Status.NOT_FOUND).entity("Material is not binary material").build();
+    }
+    
+    List<MaterialMeta> metas = materialController.listMaterialMetas(material);
+    if (metas.isEmpty()) {
+      return Response.noContent().build();
+    }
+    
+    return Response.ok(createRestModel(metas.toArray(new MaterialMeta[0]))).build();
+  }
+  
+  @GET
+  @Path("/{id}/meta/{KEY}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response findMaterialMeta(@PathParam("id") Long id, @PathParam("KEY") String key) {
+    // TODO: Security!!
+    
+    Material material = materialController.findMaterialById(id);
+    if (material == null) {
+      return Response.status(Status.NOT_FOUND).entity("Material not found").build();
+    }
+    
+    if (!(material instanceof BinaryMaterial)) {
+      return Response.status(Status.NOT_FOUND).entity("Material is not binary material").build();
+    }
+    
+    MaterialMetaKey materialMetaKey = materialController.findMaterialMetaKey(key);
+    if (materialMetaKey == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid key").build();
+    }
+    
+    MaterialMeta materialMeta = materialController.findMaterialMeta(material, materialMetaKey);
+    if (materialMeta == null) {
+      return Response.status(Status.NOT_FOUND).entity("Material meta not found").build();
+    }
+    
+    return Response.ok(createRestModel(materialMeta)).build();
+  }
+  
+  @PUT
+  @Path("/{id}/meta/{KEY}")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response updateMaterialMeta(@PathParam("id") Long id, @PathParam("KEY") String key, fi.muikku.plugins.material.rest.MaterialMeta payload) {
+    // TODO: Security!!
+    
+    if (payload.getKey() != null && !StringUtils.equals(payload.getKey(), key)) {
+      return Response.status(Status.BAD_REQUEST).entity("Can not update material meta key").build();
+    }
+
+    Material material = materialController.findMaterialById(id);
+    if (material == null) {
+      return Response.status(Status.NOT_FOUND).entity("Material not found").build();
+    }
+    
+    if (!(material instanceof BinaryMaterial)) {
+      return Response.status(Status.NOT_FOUND).entity("Material is not binary material").build();
+    }
+    
+    if (StringUtils.isBlank(payload.getKey())) {
+      return Response.status(Status.BAD_REQUEST).entity("Missing key").build();
+    }
+    
+    MaterialMetaKey materialMetaKey = materialController.findMaterialMetaKey(key);
+    if (materialMetaKey == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid key").build();
+    }
+    
+    MaterialMeta materialMeta = materialController.findMaterialMeta(material, materialMetaKey);
+    if (materialMeta == null) {
+      return Response.status(Status.BAD_REQUEST).entity("MaterialMeta not found").build();
+    }
+    
+    return Response.ok(createRestModel(materialController.updateMaterialMeta(materialMeta, payload.getValue()))).build();
+  }
+  
+  private fi.muikku.plugins.material.rest.MaterialMeta createRestModel(fi.muikku.plugins.material.model.MaterialMeta materialMeta) {
+    return new fi.muikku.plugins.material.rest.MaterialMeta(materialMeta.getMaterial().getId(), materialMeta.getKey().getName(), materialMeta.getValue());
+  }
+
+  private List<fi.muikku.plugins.material.rest.MaterialMeta> createRestModel(MaterialMeta... entries) {
+    List<fi.muikku.plugins.material.rest.MaterialMeta> result = new ArrayList<>();
+
+    for (MaterialMeta entry : entries) {
+      result.add(createRestModel(entry));
+    }
+
+    return result;
+  }
+  
 }
