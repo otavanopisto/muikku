@@ -121,7 +121,6 @@
   
   .mf-list{
    background-color:#fff;
-   min-height:200px;
    .mf-list-label{
     background-color:$bgr1;
     padding:5px;
@@ -133,11 +132,27 @@
       
       li{
         border-bottom: 1px solid $brd1;
-        border-bottom: 1px solid $brd1;
-        padding-top:5px;
-        padding-bottom:5px;
-        padding-left:10px; 
-        font-weight:300;      
+
+        a{
+          font-weight:300;
+          text-decoration:none;
+          color:#000;
+          display:inline-block;
+          box-sizing:border-box;
+          width:100%;
+          padding-top:5px;
+          padding-bottom:5px;
+          padding-left:10px; 
+        }      
+       &:hover{
+        border-left:5px solid $brd1;     
+        cursor:pointer;   
+       } 
+       &.selected{
+        background-color:$bgr3;
+        border-left:5px solid $brd2;
+        a{font-weight:normal;}
+       } 
       }
    
    }
