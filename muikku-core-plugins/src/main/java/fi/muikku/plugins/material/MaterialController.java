@@ -65,6 +65,10 @@ public class MaterialController {
     
     return null;
 	}
+
+  public List<MaterialMetaKey> listMaterialMetaKeys() {
+    return materialMetaKeyDAO.listAll();
+  }
   
   public MaterialMeta createMaterialMeta(Material material, MaterialMetaKey key, String value) {
     return materialMetaDAO.create(material, key, value);
