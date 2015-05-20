@@ -854,17 +854,8 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-
-    UserEntity loggedInUserEntity = sessionController.getLoggedUserEntity();
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndIdentifier(
-        workspaceEntity,
-        loggedInUserEntity.getDefaultIdentifier());
-    
-    if (workspaceUserEntity == null ||
-        workspaceUserEntity.getWorkspaceUserRole() == null ||
-        workspaceUserEntity.getWorkspaceUserRole().getArchetype() != WorkspaceRoleArchetype.TEACHER) {
-      
-      return Response.status(Status.UNAUTHORIZED).entity("Not a teacher").build();
+    if (!sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
     }
 
     WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(materialId);

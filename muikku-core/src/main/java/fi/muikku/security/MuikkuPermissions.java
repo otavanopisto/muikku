@@ -71,6 +71,11 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
   @DefaultWorkspacePermissionRoles({ WorkspaceRoleArchetype.TEACHER })
   public static final String PUBLISH_WORKSPACE = "PUBLISH_WORKSPACE";
 
+  @Scope (PermissionScope.WORKSPACE)
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.ADMINISTRATOR })
+  @DefaultWorkspacePermissionRoles({ WorkspaceRoleArchetype.TEACHER })
+  public static final String MANAGE_WORKSPACE_MATERIALS = "MANAGE_WORKSPACE_MATERIALS";
+
   /* RESOURCE */
   
   @Scope (PermissionScope.RESOURCE)
