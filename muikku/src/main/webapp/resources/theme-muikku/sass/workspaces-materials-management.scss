@@ -479,6 +479,14 @@ body.workspace-materials-management {
               margin:0;
             }
           }
+
+          .materials-management-page-attachment-meta-container {
+            display: none;
+          }
+          
+          &.materials-management-page-attachment-selected .materials-management-page-attachment-meta-container {
+            display: block;
+          } 
         
         }
         

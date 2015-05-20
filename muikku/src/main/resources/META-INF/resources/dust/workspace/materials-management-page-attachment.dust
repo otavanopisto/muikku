@@ -12,8 +12,10 @@
   
   <div class="materials-management-page-attachment-meta-container">
   {#metaKeys}
-    <label for="materials-management-page-attachment-{.}">{.}</label>
-    <input id="materials-management-page-attachment-{.}" name="{.}" type=""/>
+    <div class="materials-management-page-attachment-meta">
+      <label for="materials-management-page-attachment-{.}">{.}</label>
+      <input id="materials-management-page-attachment-{.}" name="{.}" type="text"/>
+    </div>
   {/metaKeys}
   </div>
 </div>

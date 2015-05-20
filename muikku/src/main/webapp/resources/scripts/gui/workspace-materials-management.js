@@ -288,6 +288,10 @@
 
                     this.element.on('click', '.materials-management-page-attachment-action-download', $.proxy(this._onAttachmentDownloadClick, this));
                     this.element.on('click', '.materials-management-page-attachment-action-delete', $.proxy(this._onAttachmentDeleteClick, this));
+                    this.element.on("click", '.materials-management-page-attachment', $.proxy(this._onAttchmentClick, this));
+                    this.element.on("change", '.materials-management-page-attachment-meta input', $.proxy(this._onMetaChange, this));
+                    
+                    
                     
                     this._stopLoading();
                   }, this));
@@ -297,7 +301,6 @@
           }, this));
         }
       }, this));
-
     },
     
     _startLoading: function () {
@@ -420,6 +423,70 @@
               }
             }, this));
           
+        }, this));
+      }
+    },
+    
+    _onAttchmentClick: function (event) {
+      var selectedAttachment = $(event.target).closest('.materials-management-page-attachment');
+      if (!selectedAttachment.hasClass('materials-management-page-attachment-selected')) {
+        this.element.find('.materials-management-page-attachment').removeClass('materials-management-page-attachment-selected');
+        var materialId = selectedAttachment.attr('data-material-id');
+        
+        var materialId = selectedAttachment.attr('data-material-id');
+        if (materialId) {
+          mApi().materials.materials.meta.read(materialId).callback($.proxy(function (err, metas) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            } else {
+              metas = metas||[];
+              for (var i = 0, l = metas.length; i < l; i++) {
+                selectedAttachment
+                  .find('input[name="' + metas[i].key + '"]')
+                  .attr('data-exists', 'true')
+                  .val(metas[i].value);
+              }
+            }
+          }, this));
+        }
+        
+        selectedAttachment.addClass('materials-management-page-attachment-selected');
+      }
+    },
+    
+    _onMetaChange: function (event) {
+      var attachmentElement = $('.materials-management-page-attachment');
+  
+      var fieldElement = $(event.target);
+      var value = fieldElement.val();
+      var key = fieldElement.attr('name');
+      var exists = fieldElement.attr('data-exists') == 'true';
+      var workspaceMaterialId = $(attachmentElement).attr('data-workspace-material-id');
+      var materialId = $(attachmentElement).attr('data-material-id');
+      
+      if (!exists) {
+        mApi().materials.materials.meta.create(materialId, {
+          'materialId': materialId,
+          'key': key,
+          'value': value
+        })
+        .callback($.proxy(function (err, meta) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            fieldElement.attr('data-exists', 'true');
+          }
+        }, this));
+      } else {
+        mApi().materials.materials.meta.update(materialId, key, {
+          'materialId': materialId,
+          'key': key,
+          'value': value
+        })
+        .callback($.proxy(function (err, meta) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          }
         }, this));
       }
     }
