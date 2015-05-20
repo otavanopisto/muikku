@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+  <sql>create table MaterialMeta (
+        id bigint not null auto_increment,
+        value longtext,
+        key_ bigint not null,
+        material_id bigint not null,
+        primary key (id)
+    )</sql>
+  <sql>create table MaterialMetaKey (
+        id bigint not null auto_increment,
+        name varchar(255) not null,
+        primary key (id)
+    )</sql>
+  <sql>alter table MaterialMeta 
+        add constraint FK_gj9to97r0j58g0xlo6oycgj4n 
+        foreign key (key_) 
+        references MaterialMetaKey (id)</sql>
+  <sql>alter table MaterialMeta 
+        add constraint FK_s2oxbjvqgoojrtac06orda1be 
+        foreign key (material_id) 
+        references Material (id)</sql>
+  <sql>insert into MaterialMetaKey (name) values ('license'), ('source-text'), ('source-url')</sql>
+</update>
