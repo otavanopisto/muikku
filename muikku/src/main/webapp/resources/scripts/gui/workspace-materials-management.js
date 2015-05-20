@@ -220,8 +220,147 @@
     }, this));
   });
   
+  $.widget("custom.muikkuPageAttachments", {
+    _create : function() {
+      this._startLoading();
+      
+      this._workspaceUrl = null;
+      
+      mApi().workspace.workspaces.read(this.options.workspaceEntityId).callback($.proxy(function (workspaceErr, workspaceEntity) {
+        if (workspaceErr) {
+          $('.notification-queue').notificationQueue('notification', 'error', workspaceErr);
+        } else {
+          this._workspaceUrl = CONTEXTPATH + '/workspace/' + workspaceEntity.urlName;
+          
+          mApi().workspace.workspaces.materials.read(this.options.workspaceEntityId, {
+            parentId: this.options.parentId
+          })
+          .on('$', function (workspaceMaterial, callback) {
+            mApi().materials.binary.read(workspaceMaterial.materialId).callback(function (binaryErr, binaryMaterial) {
+              if (binaryErr) {
+                $('.notification-queue').notificationQueue('notification', 'error', binaryErr);
+              } else {
+                workspaceMaterial.material = binaryMaterial;
+                callback();
+              }
+            });   
+          })
+          .callback($.proxy(function (err, workspaceMaterials) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            } else {
+              
+              var data = {
+                attachments: $.map(workspaceMaterials, $.proxy(function (workspaceMaterial) {
+                  return {
+                    title: workspaceMaterial.material.title,
+                    contentType: workspaceMaterial.material.contentType,
+                    url: this._workspaceUrl + '/materials/' + workspaceMaterial.path,
+                    upload: false
+                  };
+                }, this))
+              };
+    
+              renderDustTemplate('workspace/materials-management-page-attachments.dust', data, $.proxy(function (text) {
+                this.element.html(text);
+                
+                this._uploadContainer = this.element.find('.materials-management-page-attachments-upload-container');
+                this._attachmentsContainer = this.element.find('.materials-management-page-attachments-container');
+                
+                var fileInput = this.element.find('input[type="file"]');
+                fileInput.fileupload({
+                  url : CONTEXTPATH + '/tempFileUploadServlet',
+                  dropZone: fileInput.closest('.materials-management-page-attachments-upload-container'),
+                  autoUpload : true,
+                  add : $.proxy(this._onFileUploadAdd, this),
+                  done : $.proxy(this._onFileUploadDone, this),
+                  progress : $.proxy(this._onFileUploadProgress, this)
+                });
+                
+                this._stopLoading();
+              }, this));
+            }
+          }, this));
+        }
+      }, this));
+    },
+    
+    _startLoading: function () {
+      // TODO: start loading animation
+    },
+
+    _stopLoading: function () {
+      // TODO: end loading animation
+    },
+
+    _onFileUploadAdd : function(e, data) {
+      renderDustTemplate('workspace/materials-management-page-attachment.dust', {
+        title: data.files[0].name,
+        contentType: data.files[0].type,
+        url: 'Localize: please wait....',
+        upload: true
+      }, $.proxy(function (text) {
+        data.context = $(text);
+        data.context  
+          .find('.muikku-page-attachments-upload-progress')
+          .progressbar({
+            value: 0
+          });
+        
+        $('.materials-management-page-attachments-container').append(data.context);
+        data.submit();
+      }, this));
+    },
+    
+    _onFileUploadDone: function(e, data) {
+      data.context.find('.muikku-page-attachments-upload-progress').progressbar("value", 100);
+      
+      var fileId = data._response.result.fileId;
+      var fileName = data.files[0].name;
+      var contentType = data.files[0].type;
+      
+      mApi().materials.binary.create({
+        title: fileName,
+        contentType: contentType,
+        fileId: fileId
+      })
+      .callback($.proxy(function (materialErr, materialResult) {
+        if (materialErr) {
+          $('.notification-queue').notificationQueue('notification', 'error', materialErr);
+        } else {
+          mApi().workspace.workspaces.materials.create(this.options.workspaceEntityId, {
+            materialId: materialResult.id,
+            parentId: this.options.parentId
+          })
+          .callback($.proxy(function (workspaceMaterialErr, workspaceMaterialResult) {
+            if (workspaceMaterialErr) {
+              $('.notification-queue').notificationQueue('notification', 'error', workspaceMaterialErr);
+            } else {
+              data.context.find('.muikku-page-attachments-upload-progress').remove();
+              data.context.find('.materials-management-page-attachment-url').text(this._workspaceUrl + '/materials/' + workspaceMaterialResult.path);
+            }
+          }, this));
+        }
+      }, this));
+    },
+    
+    _onFileUploadProgress: function(e, data) {
+      var progress = parseInt(data.loaded / data.total * 100, 10);
+      data.context.find('.muikku-page-attachments-upload-progress').progressbar("value", progress);
+    }
+    
+  });
+  
   $(document).on('click', '.page-attachments', function (event, data) {
-    alert('attach');
+    var workspaceEntityId = $('.workspaceEntityId').val();
+    var workspaceMaterialId = $(event.target).attr('data-workspace-material-id');
+    $(event.target)
+      .closest('section')
+      .find('.workspace-materials-management-view-page-controls')
+      .after($('<div>').muikkuPageAttachments({
+        workspaceEntityId: workspaceEntityId,
+        parentId: workspaceMaterialId
+      }));
   });
   
   function toggleVisibility(node, hidden) {

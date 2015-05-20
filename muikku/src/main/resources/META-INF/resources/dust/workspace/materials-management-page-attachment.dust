@@ -1,0 +1,12 @@
+<div class="materials-management-page-attachment">
+  <div class="materials-management-page-attachment-image-container"/>
+  <div class="materials-management-page-attachment-title">{title}</div>
+  <div class="materials-management-page-attachment-actions">
+    <a class="materials-management-page-attachment-action materials-management-page-attachment-action-delete" href="javascript:void(null)"/>
+    <a class="materials-management-page-attachment-action materials-management-page-attachment-action-download" href="javascript:void(null)"/>
+  </div>
+  <div class="materials-management-page-attachment-url">{url}</div>
+  {?upload} 
+  <div class="muikku-page-attachments-upload-progress"/>
+  {/upload}
+</div>
