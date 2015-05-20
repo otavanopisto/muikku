@@ -46,6 +46,7 @@ import fi.muikku.plugins.material.MaterialController;
 import fi.muikku.plugins.material.QueryFieldController;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.material.model.QueryField;
+import fi.muikku.plugins.search.WorkspaceIndexer;
 import fi.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.muikku.plugins.workspace.WorkspaceMaterialDeleteError;
@@ -160,6 +161,9 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @Inject
   private EvaluationController evaluationController;
+  
+  @Inject
+  private WorkspaceIndexer workspaceIndexer;
   
   @GET
   @Path("/workspaces/")
@@ -344,6 +348,9 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (payload.getPublished() != null && !workspaceEntity.getPublished().equals(payload.getPublished())) {
       workspaceEntityController.updatePublished(workspaceEntity, payload.getPublished());
     }
+    
+    // Reindex the workspace so that Elasticsearch can react to publish/unpublish 
+    workspaceIndexer.indexWorkspace(workspaceEntity);
     
     return Response.ok(createRestModel(workspaceEntity, workspace.getName(), workspace.getDescription())).build();
   }
