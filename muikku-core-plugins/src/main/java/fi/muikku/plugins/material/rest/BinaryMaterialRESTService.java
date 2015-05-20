@@ -180,4 +180,5 @@ public class BinaryMaterialRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
   }
+  
 }
