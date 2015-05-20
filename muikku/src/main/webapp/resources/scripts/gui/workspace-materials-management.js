@@ -259,6 +259,8 @@
                   var data = {
                     attachments: $.map(workspaceMaterials||[], $.proxy(function (workspaceMaterial) {
                       return {
+                        workspaceMaterialId: workspaceMaterial.id,
+                        materialId: workspaceMaterial.material.id,
                         title: workspaceMaterial.material.title,
                         contentType: workspaceMaterial.material.contentType,
                         url: this._workspaceUrl + '/materials/' + workspaceMaterial.path,
@@ -283,6 +285,9 @@
                       done : $.proxy(this._onFileUploadDone, this),
                       progress : $.proxy(this._onFileUploadProgress, this)
                     });
+
+                    this.element.on('click', '.materials-management-page-attachment-action-download', this._onAttachmentDownloadClick);
+                    this.element.on('click', '.materials-management-page-attachment-action-delete', this._onAttachmentDeleteClick);
                     
                     this._stopLoading();
                   }, this));
@@ -305,6 +310,8 @@
 
     _onFileUploadAdd : function(e, data) {
       renderDustTemplate('workspace/materials-management-page-attachment.dust', {
+        workspaceMaterialId: 'UPLOADING',
+        materialId: 'UPLOADING',
         title: data.files[0].name,
         contentType: data.files[0].type,
         url: 'Localize: please wait....',
@@ -358,6 +365,20 @@
     _onFileUploadProgress: function(e, data) {
       var progress = parseInt(data.loaded / data.total * 100, 10);
       data.context.find('.muikku-page-attachments-upload-progress').progressbar("value", progress);
+    },
+
+    _onAttachmentDownloadClick: function (event) {
+      var materialId = $(event.target).closest('.materials-management-page-attachment').attr('data-material-id');
+      if (materialId) {
+        window.location.href = '/rest/materials/binary/' + materialId + '/download';
+      }
+    },
+    
+    _onAttachmentDeleteClick: function (event) {
+      var materialId = $(event.target).closest('.materials-management-page-attachment').attr('data-material-id');
+      if (materialId) {
+        
+      }
     }
     
   });

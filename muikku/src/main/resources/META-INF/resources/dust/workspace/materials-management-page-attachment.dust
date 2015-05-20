@@ -1,4 +1,4 @@
-<div class="materials-management-page-attachment">
+<div class="materials-management-page-attachment" data-material-id="{materialId}" data-workspace-material-id="{workspaceMaterialId}">
   <div class="materials-management-page-attachment-image-container"/>
   <div class="materials-management-page-attachment-title">{title}</div>
   <div class="materials-management-page-attachment-actions">
