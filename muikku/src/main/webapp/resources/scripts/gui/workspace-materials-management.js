@@ -286,8 +286,8 @@
                       progress : $.proxy(this._onFileUploadProgress, this)
                     });
 
-                    this.element.on('click', '.materials-management-page-attachment-action-download', this._onAttachmentDownloadClick);
-                    this.element.on('click', '.materials-management-page-attachment-action-delete', this._onAttachmentDeleteClick);
+                    this.element.on('click', '.materials-management-page-attachment-action-download', $.proxy(this._onAttachmentDownloadClick, this));
+                    this.element.on('click', '.materials-management-page-attachment-action-delete', $.proxy(this._onAttachmentDeleteClick, this));
                     
                     this._stopLoading();
                   }, this));
@@ -377,9 +377,17 @@
     },
     
     _onAttachmentDeleteClick: function (event) {
-      var materialId = $(event.target).closest('.materials-management-page-attachment').attr('data-material-id');
-      if (materialId) {
-        
+      var attachmentElement = $(event.target).closest('.materials-management-page-attachment');
+      var workspaceMaterialId = attachmentElement.attr('data-workspace-material-id');
+      if (workspaceMaterialId) {
+        mApi().workspace.workspaces.materials.del(this.options.workspaceEntityId, workspaceMaterialId)
+          .callback($.proxy(function (err) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            } else {
+              attachmentElement.remove();
+            }
+          }, this));
       }
     }
     
