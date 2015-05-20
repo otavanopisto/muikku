@@ -153,6 +153,7 @@ public class ForumRESTService extends PluginRESTService {
   @Path ("/areas/{AREAID}")
   @RESTPermit(ForumResourcePermissionCollection.FORUM_DELETEENVIRONMENTFORUM)
   public Response deleteArea(@PathParam ("AREAID") Long areaId) throws AuthorizationException {
+    System.out.println("Deleting area " + areaId);
     ForumArea forumArea = forumController.getForumArea(areaId);
 
     forumController.deleteArea(forumArea);
@@ -175,96 +176,160 @@ public class ForumRESTService extends PluginRESTService {
   
   @GET
   @Path ("/areas/{AREAID}/threads")
+  @RESTPermit(handling = Handling.INLINE)
   public Response listThreads(@PathParam ("AREAID") Long areaId, @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, 
       @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults) throws AuthorizationException {
     ForumArea forumArea = forumController.getForumArea(areaId);
     
-    List<ForumThread> threads = forumController.listForumThreads(forumArea, firstResult, maxResults);
-    
-    List<ForumThreadRESTModel> result = new ArrayList<ForumThreadRESTModel>();
-    
-    for (ForumThread thread : threads) {
-      result.add(new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked(), thread.getUpdated()));
+    if (sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_READMESSAGES, forumArea)) {
+      List<ForumThread> threads = forumController.listForumThreads(forumArea, firstResult, maxResults);
+      
+      List<ForumThreadRESTModel> result = new ArrayList<ForumThreadRESTModel>();
+      
+      for (ForumThread thread : threads) {
+        result.add(new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked(), thread.getUpdated()));
+      }
+      
+      return Response.ok(
+        result
+      ).build();
+    } else {
+      return Response.status(Status.FORBIDDEN).build();
     }
-    
-    return Response.ok(
-      result
-    ).build();
   }
   
   @GET
   @Path ("/areas/{AREAID}/threads/{THREADID}")
+  @RESTPermit(handling = Handling.INLINE)
   public Response findThread(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId) throws AuthorizationException {
     ForumThread thread = forumController.getForumThread(threadId);
 
-    ForumThreadRESTModel result = new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked(), thread.getUpdated());
-    
-    return Response.ok(
-      result
-    ).build();
+    if (sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_READMESSAGES, thread)) {
+      ForumThreadRESTModel result = new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked(), thread.getUpdated());
+      
+      return Response.ok(
+        result
+      ).build();
+    } else {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+  }
+  
+  @DELETE
+  @Path ("/areas/{AREAID}/threads/{THREADID}")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response deleteThread(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId) throws AuthorizationException {
+    System.out.println("Deleting thread " + areaId + "/" + threadId);
+    ForumThread thread = forumController.getForumThread(threadId);
+
+    if (sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_DELETEMESSAGES, thread)) {
+      forumController.deleteThread(thread);
+      
+      return Response.noContent().build();
+    } else {
+      return Response.status(Status.FORBIDDEN).build();
+    }
   }
   
   @POST
   @Path ("/areas/{AREAID}/threads")
+  @RESTPermit(handling = Handling.INLINE)
   public Response createThread(@PathParam ("AREAID") Long areaId, ForumThreadRESTModel newThread) throws AuthorizationException {
     ForumArea forumArea = forumController.getForumArea(areaId);
-    ForumThread thread = forumController.createForumThread(
-        forumArea, 
-        newThread.getTitle(),
-        Jsoup.clean(newThread.getMessage(), Whitelist.basic()), 
-        newThread.getSticky(), 
-        newThread.getLocked());
-
-    ForumThreadRESTModel result = new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked(), thread.getUpdated());
     
-    return Response.ok(
-      result
-    ).build();
+    if (sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_WRITEMESSAGES, forumArea)) {
+      ForumThread thread = forumController.createForumThread(
+          forumArea, 
+          newThread.getTitle(),
+          Jsoup.clean(newThread.getMessage(), Whitelist.basic()), 
+          newThread.getSticky(), 
+          newThread.getLocked());
+  
+      ForumThreadRESTModel result = new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked(), thread.getUpdated());
+      
+      return Response.ok(
+        result
+      ).build();
+    } else {
+      return Response.status(Status.FORBIDDEN).build();
+    }
   }
   
   @GET
   @Path ("/areas/{AREAID}/threads/{THREADID}/replies")
+  @RESTPermit(handling = Handling.INLINE)
   public Response listReplies(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, 
       @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, 
       @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults) throws AuthorizationException {
     ForumThread forumThread = forumController.getForumThread(threadId);
-    List<ForumThreadReply> replies = forumController.listForumThreadReplies(forumThread, firstResult, maxResults);
-    
-    List<ForumThreadReplyRESTModel> result = new ArrayList<ForumThreadReplyRESTModel>();
-    
-    for (ForumThreadReply reply : replies) {
-      result.add(new ForumThreadReplyRESTModel(reply.getId(), reply.getMessage(), reply.getCreator(), reply.getCreated(), reply.getForumArea().getId()));
+
+    if (sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_READMESSAGES, forumThread)) {
+      List<ForumThreadReply> replies = forumController.listForumThreadReplies(forumThread, firstResult, maxResults);
+      
+      List<ForumThreadReplyRESTModel> result = new ArrayList<ForumThreadReplyRESTModel>();
+      
+      for (ForumThreadReply reply : replies) {
+        result.add(new ForumThreadReplyRESTModel(reply.getId(), reply.getMessage(), reply.getCreator(), reply.getCreated(), reply.getForumArea().getId()));
+      }
+      
+      return Response.ok(
+        result
+      ).build();
+    } else {
+      return Response.status(Status.FORBIDDEN).build();
     }
-    
-    return Response.ok(
-      result
-    ).build();
   }
   
   @GET
   @Path ("/areas/{AREAID}/threads/{THREADID}/replies/{REPLYID}")
+  @RESTPermit(handling = Handling.INLINE)
   public Response findReply(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, @PathParam ("REPLYID") Long replyId) throws AuthorizationException {
     ForumThreadReply reply = forumController.getForumThreadReply(replyId);
 
-    ForumThreadReplyRESTModel result = new ForumThreadReplyRESTModel(reply.getId(), reply.getMessage(), reply.getCreator(), reply.getCreated(), reply.getForumArea().getId());
+    if (sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_READMESSAGES, reply.getForumArea())) {
+      ForumThreadReplyRESTModel result = new ForumThreadReplyRESTModel(reply.getId(), reply.getMessage(), reply.getCreator(), reply.getCreated(), reply.getForumArea().getId());
+  
+      return Response.ok(
+        result
+      ).build();
+    } else {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+  }
+  
+  @DELETE
+  @Path ("/areas/{AREAID}/threads/{THREADID}/replies/{REPLYID}")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response deleteReply(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, @PathParam ("REPLYID") Long replyId) throws AuthorizationException {
+    System.out.println("Deleting reply " + areaId + "/" + threadId + "/" + replyId);
+    ForumThreadReply reply = forumController.getForumThreadReply(replyId);
 
-    return Response.ok(
-      result
-    ).build();
+    if (sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_DELETEMESSAGES, reply.getForumArea())) {
+      forumController.deleteReply(reply);
+      
+      return Response.noContent().build();
+    } else {
+      return Response.status(Status.FORBIDDEN).build();
+    }
   }
   
   @POST
   @Path ("/areas/{AREAID}/threads/{THREADID}/replies")
-  @RESTPermit(ForumResourcePermissionCollection.FORUM_WRITEMESSAGES)
+  @RESTPermit(handling = Handling.INLINE)
   public Response createReply(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, ForumThreadReplyRESTModel newReply) throws AuthorizationException {
     ForumThread forumThread = forumController.getForumThread(threadId);
-    ForumThreadReply reply = forumController.createForumThreadReply(forumThread, Jsoup.clean(newReply.getMessage(), Whitelist.basic()));
-    
-    ForumThreadReplyRESTModel result = new ForumThreadReplyRESTModel(reply.getId(), reply.getMessage(), reply.getCreator(), reply.getCreated(), reply.getForumArea().getId());
-    
-    return Response.ok(
-      result
-    ).build();
+
+    if (sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_WRITEMESSAGES, forumThread)) {
+      ForumThreadReply reply = forumController.createForumThreadReply(forumThread, Jsoup.clean(newReply.getMessage(), Whitelist.basic()));
+      
+      ForumThreadReplyRESTModel result = new ForumThreadReplyRESTModel(reply.getId(), reply.getMessage(), reply.getCreator(), reply.getCreated(), reply.getForumArea().getId());
+      
+      return Response.ok(
+        result
+      ).build();
+    } else {
+      return Response.status(Status.FORBIDDEN).build();
+    }
   }
   
   

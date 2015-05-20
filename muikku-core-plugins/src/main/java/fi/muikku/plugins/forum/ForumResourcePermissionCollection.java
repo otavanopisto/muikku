@@ -66,6 +66,10 @@ public class ForumResourcePermissionCollection extends AbstractMuikkuPermissionC
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.TEACHER, EnvironmentRoleArchetype.STUDENT } )
   public static final String FORUM_WRITEMESSAGES = "FORUM_WRITEMESSAGES";
   
+  @Scope (PERMISSIONSCOPE_FORUM)
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER } )
+  public static final String FORUM_DELETEMESSAGES = "FORUM_DELETEMESSAGES";
+
   @Override
   public List<String> listPermissions() {
     return listPermissions(ForumResourcePermissionCollection.class);

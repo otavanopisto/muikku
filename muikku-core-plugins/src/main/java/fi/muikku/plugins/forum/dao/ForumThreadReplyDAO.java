@@ -140,5 +140,9 @@ public class ForumThreadReplyDAO extends CorePluginsDAO<ForumThreadReply> {
     
     return reply;
   }
-  
+
+  @Override
+  public void delete(ForumThreadReply e) {
+    super.delete(e);
+  }
 }
