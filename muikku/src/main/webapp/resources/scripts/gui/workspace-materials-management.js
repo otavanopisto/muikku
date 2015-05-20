@@ -354,6 +354,8 @@
             if (workspaceMaterialErr) {
               $('.notification-queue').notificationQueue('notification', 'error', workspaceMaterialErr);
             } else {
+              data.context.attr('data-workspace-material-id', workspaceMaterialResult.id);
+              data.context.attr('data-material-id', materialResult.id);
               data.context.find('.muikku-page-attachments-upload-progress').remove();
               data.context.find('.materials-management-page-attachment-url').text(this._workspaceUrl + '/materials/' + workspaceMaterialResult.path);
             }
