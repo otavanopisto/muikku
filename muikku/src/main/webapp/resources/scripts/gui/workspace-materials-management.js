@@ -222,6 +222,8 @@
   
   $.widget("custom.muikkuPageAttachments", {
     _create : function() {
+      this.element.addClass('materials-management-page-attachment-widget');
+      
       this._startLoading();
       
       this._workspaceUrl = null;
@@ -496,13 +498,26 @@
   $(document).on('click', '.page-attachments', function (event, data) {
     var workspaceEntityId = $('.workspaceEntityId').val();
     var workspaceMaterialId = $(event.target).attr('data-workspace-material-id');
-    $(event.target)
-      .closest('section')
-      .find('.workspace-materials-management-view-page-controls')
+    var section = $(event.target)
+      .closest('section');
+    
+    section.addClass('workspace-materials-management-editing-attachments');
+    
+    section.find('.workspace-materials-management-view-page-controls')
       .after($('<div>').muikkuPageAttachments({
         workspaceEntityId: workspaceEntityId,
         parentId: workspaceMaterialId
       }));
+  });
+  
+  $(document).on('click', '.close-attachments-editor', function (event, data) {
+    var section = $(event.target)
+      .closest('section');
+    
+    section.find('.materials-management-page-attachment-widget')
+      .remove();
+    
+    section.removeClass('workspace-materials-management-editing-attachments');
   });
   
   function toggleVisibility(node, hidden) {
