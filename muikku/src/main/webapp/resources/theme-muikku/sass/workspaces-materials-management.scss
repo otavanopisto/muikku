@@ -170,11 +170,25 @@ body.workspace-materials-management {
                 .workspace-materials-toc-subtitle {
                   margin:0 0 5px 0;
                   text-transform:uppercase;
+                  font-weight:400;
                   font-size:15px;
-                  padding:2px 8px;
                   
                   &.subtitle-hidden {
                     opacity:0.4;
+                  }
+                  
+                  a {
+                    text-decoration:none;
+                    color:#2c2c2c;
+                    display:block;
+                    @include genericMenuLinkHoverTransition(background,color,0.15s,ease-in-out);
+                    @include rounded(2px);
+                    padding:2px 8px;
+                    
+                    &:hover,
+                    &.active {
+                      background:#d0e7f7;
+                    }
                   }
                   
                 }
