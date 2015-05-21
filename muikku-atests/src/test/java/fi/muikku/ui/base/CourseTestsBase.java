@@ -14,24 +14,24 @@ import fi.muikkku.ui.PyramusMocks;
 import fi.muikku.SqlAfter;
 import fi.muikku.SqlBefore;
 
-public class CoursePickerTestsBase extends AbstractUITest {
+public class CourseTestsBase extends AbstractUITest {
   
   @Test
   @SqlBefore("sql/workspace1Setup.sql")
   @SqlAfter("sql/workspace1Delete.sql")
-  public void coursePickerExistsTest() throws IOException {
+  public void courseExistsTest() throws IOException {
     studentPyramusLoginMocks();
     PyramusMocks.workspace1PyramusMock();
+//    getWebDriver().get(getAppUrl() + "/test/reindex");    
     asAdmin().get("/test/reindex");
     
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
     waitForElementToBePresent(By.className("index"));
-    getWebDriver().get(getAppUrl(true) + "/coursepicker/");
-    waitForElementToBePresent(By.className("bt-mainFunction-content"));
+    getWebDriver().get(getAppUrl(true) + "/workspace/testCourse");
+    waitForElementToBePresent(By.className("workspace-title"));
     takeScreenshot();
-    boolean elementExists = getWebDriver().findElements(By.className("coursePicker")).size() > 0;
+    boolean elementExists = getWebDriver().findElements(By.className("workspace-title")).size() > 0;
     WireMock.reset();
     assertTrue(elementExists);
-  }
-
+  }  
 }
