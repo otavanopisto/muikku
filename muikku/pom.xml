@@ -271,7 +271,7 @@
         <dependency>
           <groupId>fi.muikku</groupId>
           <artifactId>atests-plugin</artifactId>
-          <version>1.0.29-SNAPSHOT</version>
+          <version>1.0.34-SNAPSHOT</version>
         </dependency>
       </dependencies>
     </profile>
