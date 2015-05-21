@@ -7,6 +7,8 @@ import java.io.IOException;
 import org.junit.Test;
 import org.openqa.selenium.By;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
+
 import fi.muikkku.ui.AbstractUITest;
 import fi.muikkku.ui.PyramusMocks;
 
@@ -21,10 +23,11 @@ public class IndexPageTestsBase extends AbstractUITest {
   
   @Test
   public void loginTest() throws IOException {
+    PyramusMocks.student1LoginMock();
     PyramusMocks.personsPyramusMocks();
     getWebDriver().get(getAppUrl() + "/login?authSourceId=1");
     boolean elementExists = getWebDriver().findElements(By.className("index")).size() > 0;
+    WireMock.reset();
     assertTrue(elementExists);
-
   }
 }

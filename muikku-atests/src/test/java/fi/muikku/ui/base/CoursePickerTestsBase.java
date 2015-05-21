@@ -20,6 +20,7 @@ public class CoursePickerTestsBase extends AbstractUITest {
   @SqlBefore("sql/workspace1Setup.sql")
   @SqlAfter("sql/workspace1Delete.sql")
   public void coursePickerExistsTest() throws IOException {
+    PyramusMocks.student1LoginMock();
     PyramusMocks.personsPyramusMocks();
     PyramusMocks.workspace1PyramusMock();
     asAdmin().get("/test/reindex");
@@ -29,7 +30,7 @@ public class CoursePickerTestsBase extends AbstractUITest {
     getWebDriver().get(getAppUrl(true) + "/coursepicker/");
     waitForElementToBePresent(By.className("bt-mainFunction-content"));
     takeScreenshot();
-    boolean elementExists = getWebDriver().findElements(By.className("coursePicker")).size() > 0;
+    boolean elementExists = getWebDriver().findElements(By.id("coursesList")).size() > 0;
     WireMock.reset();
     assertTrue(elementExists);
   }
