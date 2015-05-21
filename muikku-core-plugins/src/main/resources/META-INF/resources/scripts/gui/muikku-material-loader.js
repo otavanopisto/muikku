@@ -737,7 +737,7 @@
         readOnlyFields: data.readOnlyFields
       });
     });
-    fixTables(data.element);
+//    fixTables(data.element);
   });
   
   $(document).on('afterHtmlMaterialRender', function (event, data) {
