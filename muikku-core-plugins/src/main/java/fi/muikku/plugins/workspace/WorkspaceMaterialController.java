@@ -63,6 +63,7 @@ import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 
 @Dependent
 @Stateful
+// TODO Should probably be split or renamed WorkspaceNodeController
 public class WorkspaceMaterialController {
 
   @Inject
@@ -338,6 +339,38 @@ public class WorkspaceMaterialController {
   public WorkspaceMaterial updateWorkspaceMaterialAssignmentType(WorkspaceMaterial workspaceMaterial, WorkspaceMaterialAssignmentType assignmentType) {
     return workspaceMaterialDAO.updateAssignmentType(workspaceMaterial, assignmentType);
   }
+  
+  public WorkspaceFolder updateWorkspaceFolder(WorkspaceFolder workspaceFolder, String title, WorkspaceNode parentNode, WorkspaceNode nextSibling, Boolean hidden) {
+    if (nextSibling != null && !nextSibling.getParent().getId().equals(parentNode.getId())) {
+      throw new IllegalArgumentException("Next sibling parent is not parent");
+    }
+    // Parent node
+    if (!workspaceFolder.getParent().getId().equals(parentNode.getId())) {
+      while (parentNode != null) {
+        if (parentNode.getId().equals(workspaceFolder.getId())) {
+          throw new IllegalArgumentException("Circular reference " + workspaceFolder.getId() + " with parent " + parentNode.getId());
+        }
+        parentNode = parentNode.getParent();
+      }
+      workspaceFolder = (WorkspaceFolder) workspaceNodeDAO.updateParent(workspaceFolder, parentNode);
+    }
+    // Next sibling
+    if (nextSibling == null) {
+      Integer orderNumber = workspaceNodeDAO.getMaximumOrderNumber(parentNode);
+      orderNumber = orderNumber == null ? 0 : orderNumber;
+      if (workspaceFolder.getOrderNumber() < orderNumber) {
+        workspaceFolder = (WorkspaceFolder) workspaceNodeDAO.updateOrderNumber(workspaceFolder, ++orderNumber);
+      }
+    } else {
+      workspaceFolder = (WorkspaceFolder) moveAbove(workspaceFolder, nextSibling);
+    }
+    // Hidden
+    workspaceFolder = (WorkspaceFolder) workspaceNodeDAO.updateHidden(workspaceFolder, hidden);
+    // Title
+    String urlName = generateUniqueUrlName(workspaceFolder.getParent(), title);
+    workspaceFolder = workspaceFolderDAO.updateFolderName(workspaceFolder, urlName, title);
+    return workspaceFolder;
+  }
 
   public WorkspaceNode updateWorkspaceNode(WorkspaceNode workspaceNode, Long materialId, WorkspaceNode parentNode, WorkspaceNode nextSibling, Boolean hidden,
       WorkspaceMaterialAssignmentType assignmentType) {
@@ -366,7 +399,7 @@ public class WorkspaceMaterialController {
     } else {
       workspaceNode = moveAbove(workspaceNode, nextSibling);
     }
-    // Next sibling
+    // Hidden
     workspaceNode = workspaceNodeDAO.updateHidden(workspaceNode, hidden);
 
     // Updated node
@@ -581,7 +614,7 @@ public class WorkspaceMaterialController {
       switch (rootMaterialNode.getType()) {
       case FOLDER:
         WorkspaceFolder workspaceFolder = (WorkspaceFolder) rootMaterialNode;
-        ContentNode folderContentNode = new ContentNode(workspaceFolder.getTitle(), "folder", rootMaterialNode.getId(), null, level, null, null, rootMaterialNode.getHidden(), null, 0l, 0l);
+        ContentNode folderContentNode = new ContentNode(workspaceFolder.getTitle(), "folder", rootMaterialNode.getId(), null, level, null, rootMaterialNode.getParent().getId(), rootMaterialNode.getHidden(), null, 0l, 0l);
 
         List<WorkspaceNode> children = workspaceNodeDAO.listByParentSortByOrderNumber(workspaceFolder);
         List<FlattenedWorkspaceNode> flattenedChildren;

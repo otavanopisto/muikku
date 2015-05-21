@@ -73,9 +73,56 @@
       $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsManagement.missingEditor", materialType));
     }
   }
+
+  function editSection(node) {
+    $(node).addClass("section-edit-mode");
+    var pageContent = $(node).find('.page-content');
+    var textfield = $("<input>").attr({
+      'type': 'text'
+    }).val($(pageContent).text());
+    $(pageContent).replaceWith(textfield);
+    textfield.focus();
+    textfield.select();
+  }
   
   function isPageInEditMode(node) {
     return $(node).hasClass('page-edit-mode');
+  }
+  
+  function closeSectionEditor(node) {
+    var title = node.find('input').val();
+    var nextSibling = node.nextAll('.folder').first();
+    var nextSiblingId = nextSibling.length > 0 ? nextSibling.data('workspace-material-id') : null;
+    var workspaceId = $('.workspaceEntityId').val();
+    var hidden = node.hasClass('page-hidden');
+    mApi().workspace.workspaces.folders.update(workspaceId, node.data('workspace-material-id'), {
+      id: node.data('workspace-material-id'),
+      parentId: node.data('parent-id'),
+      nextSiblingId: nextSiblingId,
+      hidden: hidden,
+      title: title
+    }).callback(
+      function (err, html) {
+        // TODO error handling
+        if (!hidden) {
+          node.removeClass('page-hidden');
+          node.find('.hide-page').removeClass('icon-show').addClass('icon-hide');
+          // TOC
+          var tocElement = $("a[href*='#page-" + workspaceMaterialId + "']");
+          if (tocElement) {
+            tocElement.parent().removeClass('item-hidden');
+          }
+        }
+        else {
+          node.addClass('page-hidden');
+          node.find('.hide-page').removeClass('icon-hide').addClass('icon-show');
+          // TOC
+          var tocElement = $("a[href*='#page-" + workspaceMaterialId + "']");
+          if (tocElement) {
+            tocElement.parent().addClass('item-hidden');
+          }
+        }
+    });
   }
   
   function closeEditor(node, loadContent) {
@@ -477,6 +524,10 @@
     editPage($(this).closest('section'));
   });
 
+  $(document).on('click', '.edit-section', function (event, data) {
+    editSection($(this).closest('.folder'));
+  });
+
   $(document).on('click', '.hide-page', function (event, data) {
     // TODO: Better way to toggle classes and observe hidden/visible states?
     var page = $(this).closest('.workspace-materials-view-page');
@@ -801,6 +852,11 @@
   $(document).on('click', '.close-page-editor', function (event, data) {
     var workspaceMaterialId = $(this).data('workspace-material-id');
     closeEditor($('#page-' + workspaceMaterialId), true);
+  });
+
+  $(document).on('click', '.close-section-editor', function (event, data) {
+    var workspaceMaterialId = $(this).data('workspace-material-id');
+    closeSectionEditor($('#page-' + workspaceMaterialId));
   });
   
 }).call(this);

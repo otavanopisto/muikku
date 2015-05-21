@@ -55,6 +55,7 @@ import fi.muikku.plugins.workspace.WorkspaceMaterialFieldController;
 import fi.muikku.plugins.workspace.WorkspaceMaterialReplyController;
 import fi.muikku.plugins.workspace.WorkspaceVisitController;
 import fi.muikku.plugins.workspace.fieldio.WorkspaceFieldIOException;
+import fi.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswer;
@@ -839,6 +840,61 @@ public class WorkspaceRESTService extends PluginRESTService {
         return Response.status(Status.INTERNAL_SERVER_ERROR).build();
       }
     }
+  }
+  
+  @PUT
+  @Path("/workspaces/{WORKSPACEID}/folders/{WORKSPACEFOLDERID}")
+  public Response updateWorkspaceFolder(
+      @PathParam("WORKSPACEID") Long workspaceEntityId,
+      @PathParam("WORKSPACEFOLDERID") Long workspaceFolderId,
+      fi.muikku.plugins.workspace.rest.model.WorkspaceFolder restFolder) {
+    
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).entity("Not logged in").build();
+    }
+    
+    if (restFolder == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    // Workspace
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    WorkspaceRoleEntity workspaceRoleEntity = workspaceUserEntityController.findWorkspaceUserRoleByWorkspaceEntityAndUserEntity(workspaceEntity, sessionController.getLoggedUserEntity());
+    if (workspaceRoleEntity == null) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // TODO: More detailed security check is needed
+    if (workspaceRoleEntity.getArchetype() == WorkspaceRoleArchetype.STUDENT) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // WorkspaceFolder
+    WorkspaceFolder workspaceFolder = workspaceMaterialController.findWorkspaceFolderById(restFolder.getId());
+    if (workspaceFolder == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    // Workspace folder belongs to workspace check
+    
+    Long folderWorkspaceEntityId = workspaceMaterialController.getWorkspaceEntityId(workspaceFolder);
+    if (!folderWorkspaceEntityId.equals(workspaceEntityId)) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    // Actual update
+    
+    WorkspaceNode parentNode = restFolder.getParentId() == null ? null : workspaceMaterialController.findWorkspaceNodeById(restFolder.getParentId());
+    WorkspaceNode nextSibling = restFolder.getNextSiblingId() == null ? null : workspaceMaterialController.findWorkspaceNodeById(restFolder.getNextSiblingId());
+    Boolean hidden = restFolder.getHidden();
+    String title = restFolder.getTitle();
+    
+    workspaceMaterialController.updateWorkspaceFolder(workspaceFolder, title, parentNode, nextSibling, hidden);
+    return Response.noContent().build();
   }
 
   @PUT
