@@ -678,45 +678,6 @@
   function createEmbedId(parentIds) {
     return (parentIds.length ? parentIds.join(':') : null);
   }
-
-  function fixTables(node) {
-    var $tables = $(node).find("table");
-    
-    $tables.each(function() {
-      var $table = $(this);
-      
-      var padding = ($table.attr("cellpadding") !== undefined ? $table.attr("cellpadding") : 0);
-      var margin = ($table.attr("cellspacing") !== undefined ? $table.attr("cellspacing") : 0);
-      var border = ($table.attr("border") !== undefined ? $table.attr("border") : 0);
-      var width = $table.attr("width") !== undefined ? $table.attr("width") + "px;" : "auto;";
-      var bgcolor = $table.attr("bgcolor") !== undefined ? $table.attr("bgcolor") : "transparent;";
-      
-      if ($table.attr("style") !== undefined) {
-        var origStyle = $table.attr("style");
-        $table.attr("style", "width:" + width + "border:" + border + "px solid #000;" + "border-spacing:" + margin + "px; " + origStyle + "background-color:" + bgcolor);  
-      } else {
-        $table.attr("style", "width:" + width + "border:" + border + "px solid #000;" + "border-spacing:" + margin + "px; " + "background-color:" + bgcolor);  
-      }
-      
-      $table.removeAttr("border");
-      $table.removeAttr("width");
-      $table.removeAttr("cellpadding");
-      $table.removeAttr("cellspacing");
-      $table.removeAttr("bgcolor");
-       
-      var $tds = $table.find("td");
-      $tds.each(function(){
-        var $td = $(this);
-        var bgcolor = $td.attr("bgcolor") !== undefined ? $td.attr("bgcolor") : "transparent;";
-        var width = $td.attr("width") !== undefined ? $td.attr("width") + "px; " : "auto;";
-        $td.attr("style", "width:" + width + "padding:" + padding + "px;" + "border:" + border + "px solid #000;" + "background-color:" + bgcolor);
-        
-        $td.removeAttr("border");
-        $td.removeAttr("width");
-        $td.removeAttr("bgcolor");
-      });
-    });
-  }
   
   $(document).on('beforeHtmlMaterialRender', function (event, data) {
     $(data.element).find('object[type*="vnd.muikku.field"]').each(function (index, object) {
@@ -737,7 +698,6 @@
         readOnlyFields: data.readOnlyFields
       });
     });
-//    fixTables(data.element);
   });
   
   $(document).on('afterHtmlMaterialRender', function (event, data) {
