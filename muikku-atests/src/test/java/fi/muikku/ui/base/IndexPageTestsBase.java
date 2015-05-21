@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 
 import fi.muikkku.ui.AbstractUITest;
+import fi.muikkku.ui.PyramusMocks;
 
 public class IndexPageTestsBase extends AbstractUITest {
 
@@ -20,7 +21,7 @@ public class IndexPageTestsBase extends AbstractUITest {
   
   @Test
   public void loginTest() throws IOException {
-    studentPyramusLoginMocks();
+    PyramusMocks.personsPyramusMocks();
     getWebDriver().get(getAppUrl() + "/login?authSourceId=1");
     boolean elementExists = getWebDriver().findElements(By.className("index")).size() > 0;
     assertTrue(elementExists);

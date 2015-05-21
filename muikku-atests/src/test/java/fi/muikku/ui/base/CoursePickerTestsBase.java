@@ -20,7 +20,7 @@ public class CoursePickerTestsBase extends AbstractUITest {
   @SqlBefore("sql/workspace1Setup.sql")
   @SqlAfter("sql/workspace1Delete.sql")
   public void coursePickerExistsTest() throws IOException {
-    studentPyramusLoginMocks();
+    PyramusMocks.personsPyramusMocks();
     PyramusMocks.workspace1PyramusMock();
     asAdmin().get("/test/reindex");
     
