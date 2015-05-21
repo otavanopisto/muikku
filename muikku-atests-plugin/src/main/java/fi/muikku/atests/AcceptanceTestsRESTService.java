@@ -124,8 +124,9 @@ public class AcceptanceTestsRESTService extends AbstractRESTService {
       for (UserSchoolDataIdentifier identifier : identifiers) {
         User user = userController.findUserByDataSourceAndIdentifier(identifier.getDataSource(), identifier.getIdentifier());
         try {
-          indexer.index(User.class.getSimpleName(), user);
           System.out.println("-- Indexing users ---");
+          indexer.index(User.class.getSimpleName(), user);
+          System.out.println("-- Finished indexing users ---");
         } catch (Exception e) {
           logger.log(Level.WARNING, "could not index User #" + user.getSchoolDataSource() + '/' + user.getIdentifier(), e);
         }

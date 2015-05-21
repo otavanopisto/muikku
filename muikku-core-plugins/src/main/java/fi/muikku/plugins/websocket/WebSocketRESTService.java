@@ -19,6 +19,8 @@ import org.apache.commons.codec.digest.DigestUtils;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.session.SessionController;
+import fi.otavanopisto.security.rest.RESTPermit;
+import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
 @Path("/websocket")
 @Singleton
@@ -38,6 +40,7 @@ public class WebSocketRESTService extends PluginRESTService {
   
   @GET
   @Path ("/ticket")
+  @RESTPermit(handling = Handling.UNSECURED)
   @Lock(LockType.WRITE)
   public Response ticket() {
     UserEntity user = sessionController.getLoggedUserEntity(); 
@@ -58,6 +61,7 @@ public class WebSocketRESTService extends PluginRESTService {
 
   @GET
   @Path ("/ticket/{TICKET}/check")
+  @RESTPermit(handling = Handling.UNSECURED)
   public Response check(@PathParam("TICKET") String ticketStr) {
     WebSocketTicket ticket = webSocketTicketController.findTicket(ticketStr);
 

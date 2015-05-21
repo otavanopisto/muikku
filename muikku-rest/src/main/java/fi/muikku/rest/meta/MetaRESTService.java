@@ -21,6 +21,8 @@ import org.jboss.resteasy.core.Dispatcher;
 import org.jboss.resteasy.core.ResourceMethodRegistry;
 
 import fi.muikku.rest.AbstractRESTService;
+import fi.otavanopisto.security.rest.RESTPermit;
+import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
 @Path("/meta")
 @Produces("application/json")
@@ -33,6 +35,7 @@ public class MetaRESTService extends AbstractRESTService {
 
   @GET
   @Path("/resources")
+  @RESTPermit(handling = Handling.INLINE)
   public Response getResources(@Context Request request) {
     EntityTag tag = new EntityTag(ETAG);
     

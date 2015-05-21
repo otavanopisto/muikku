@@ -46,6 +46,7 @@ import com.jayway.restassured.specification.RequestSpecification;
 
 import fi.muikku.AbstractIntegrationTest;
 import fi.pyramus.rest.model.Course;
+import fi.pyramus.rest.model.CourseStaffMemberRole;
 import fi.pyramus.rest.model.Email;
 import fi.pyramus.rest.model.Person;
 import fi.pyramus.rest.model.StaffMember;
@@ -215,8 +216,8 @@ public class AbstractUITest extends AbstractIntegrationTest {
     Student student = new Student((long) 1, (long) 1, "Test", "User", null, null, null, null, null, null, null, null, null, null, null, (long) 1, null, null,
       false, null, null, null, null, variables, tags, false);
     String studentJson = objectMapper.writeValueAsString(student);
-
-    stubFor(get(urlMatching("/1/students/students/.*"))
+    
+    stubFor(get(urlEqualTo("/1/students/students/1"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody(studentJson)
@@ -224,7 +225,7 @@ public class AbstractUITest extends AbstractIntegrationTest {
 
     Email email = new Email((long) 1, (long) 2, true, "testuser@made.up");
     String emailJson = objectMapper.writeValueAsString(email);
-    stubFor(get(urlMatching("/1/students/students/.*/emails"))
+    stubFor(get(urlEqualTo("/1/students/students/1/emails"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody(emailJson).withStatus(200)));
@@ -242,7 +243,7 @@ public class AbstractUITest extends AbstractIntegrationTest {
 
     Person person = new Person((long) 1, birthday, "345345-3453", fi.pyramus.rest.model.Sex.MALE, false, "empty", (long) 1);
     String personJson = objectMapper.writeValueAsString(person);
-    stubFor(get(urlMatching("/1/persons/persons/.*"))
+    stubFor(get(urlEqualTo("/1/persons/persons/1"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody(personJson)
@@ -254,8 +255,7 @@ public class AbstractUITest extends AbstractIntegrationTest {
         .withBody(studentArrayJson)
         .withStatus(200)));
 
-    StaffMember staffMember = new StaffMember((long) 5, (long) 5, null, "Test", "Staffmember", null, fi.pyramus.rest.model.UserRole.ADMINISTRATOR, tags,
-      variables);
+    StaffMember staffMember = new StaffMember((long) 4, (long) 4, null, "Test", "Staffmember", null, fi.pyramus.rest.model.UserRole.ADMINISTRATOR, tags, variables);
     StaffMember[] staffArray = { staffMember };
     String staffArrayJson = objectMapper.writeValueAsString(staffArray);
 
@@ -265,14 +265,28 @@ public class AbstractUITest extends AbstractIntegrationTest {
         .withHeader("Content-Type", "application/json")
         .withBody(staffArrayJson)
         .withStatus(200)));
+    CourseStaffMemberRole teacherRole = new CourseStaffMemberRole((long) 1, "Opettaja");
+    CourseStaffMemberRole tutorRole = new CourseStaffMemberRole((long) 2, "Tutor");
+    CourseStaffMemberRole vRole = new CourseStaffMemberRole((long) 3, "Vastuuhenkilö");
+    CourseStaffMemberRole[] cRoleArray = {teacherRole, tutorRole, vRole};
+    String cRoleJson = objectMapper.writeValueAsString(cRoleArray);
+    stubFor(get(urlMatching("/1/courses/staffMemberRoles"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(cRoleJson)
+        .withStatus(204)));
 
-    stubFor(get(urlMatching("/1/courses/staffMemberRoles")).willReturn(aResponse().withHeader("Content-Type", "application/json").withBody("").withStatus(204)));
+    stubFor(get(urlMatching("/1/courses/courses/.*/students?filterArchived=false"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody("")
+        .withStatus(204)));
 
-    stubFor(get(urlMatching("/1/courses/courses/.*/students?filterArchived=false")).willReturn(
-      aResponse().withHeader("Content-Type", "application/json").withBody("").withStatus(204)));
-
-    stubFor(get(urlMatching("/1/courses/courses/.*/staffMembers")).willReturn(
-      aResponse().withHeader("Content-Type", "application/json").withBody("").withStatus(204)));
+    stubFor(get(urlMatching("/1/courses/courses/.*/staffMembers"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody("")
+        .withStatus(204)));
   }
 
   protected static String getFullRoleName(RoleType roleType, String role) {

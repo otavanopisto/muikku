@@ -76,6 +76,8 @@ import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
 import fi.muikku.users.UserSchoolDataIdentifierController;
 import fi.muikku.users.WorkspaceUserEntityController;
+import fi.otavanopisto.security.rest.RESTPermit;
+import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
 @RequestScoped
 @Path("/workspace")
@@ -149,6 +151,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @GET
   @Path("/workspaces/")
+  @RESTPermit(handling = Handling.UNSECURED)
   public Response listWorkspaces(
         @QueryParam("userId") Long userId,
         @QueryParam("search") String searchString,
@@ -251,6 +254,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @GET
   @Path("/workspaces/{ID}")
+  @RESTPermit(handling = Handling.UNSECURED)
   public Response getWorkspace(@PathParam("ID") Long workspaceEntityId) {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
@@ -275,6 +279,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @GET
   @Path("/workspaces/{ID}/users")
+  @RESTPermit(handling = Handling.UNSECURED)
   public Response getWorkspaceUsers(@PathParam("ID") Long workspaceEntityId, @QueryParam("roleArchtype") String roleArchetype,
       @QueryParam("userId") Long userId) {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
@@ -352,6 +357,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @POST
   @Path("/workspaces/{ID}/users")
+  @RESTPermit(handling = Handling.UNSECURED)
   public Response createWorkspaceUser(@PathParam("ID") Long workspaceEntityId, fi.muikku.plugins.workspace.rest.model.WorkspaceUser entity) {
     // TODO: Security
 
@@ -422,6 +428,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @POST
   @Path("/workspaces/{ID}/signups")
+  @RESTPermit(handling = Handling.UNSECURED)
   public Response createWorkspaceUserSignup(@PathParam("ID") Long workspaceEntityId,
       fi.muikku.plugins.workspace.rest.model.WorkspaceUserSignup entity) {
     // TODO: Security
@@ -455,6 +462,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @POST
   @Path("/workspaces/{ID}/materials/")
+  @RESTPermit(handling = Handling.UNSECURED)
   public Response createWorkspaceMaterial(@PathParam("ID") Long workspaceEntityId,
       fi.muikku.plugins.workspace.rest.model.WorkspaceMaterial entity) {
     // TODO: Security
@@ -504,6 +512,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/materials/{ID}")
+  @RESTPermit(handling = Handling.UNSECURED)
   public Response getWorkspaceMaterial(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("ID") Long workspaceMaterialId) {
     // TODO: Security
 
@@ -531,6 +540,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/materialreplies")
+  @RESTPermit(handling = Handling.UNSECURED)
   public Response getWorkspaceMaterialAnswers(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId) {
     // TODO: Correct workspace entity?
     // TODO: Available to all logged-in users?
@@ -572,6 +582,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/replies")
+  @RESTPermit(handling = Handling.UNSECURED)
   public Response getWorkspaceMaterialAnswers(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId) {
     // TODO: Correct workspace entity?
     // TODO: Available to all logged-in users?
@@ -609,6 +620,7 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @POST
   @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/replies")
+  @RESTPermit(handling = Handling.UNSECURED)
   public Response createWorkspaceMaterialAnswers(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, WorkspaceMaterialReply reply) {
     // TODO: Correct workspace entity?
     // TODO: Available to all logged-in users?
@@ -694,6 +706,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @DELETE
   @Path("/workspaces/{WORKSPACEID}/materials/{MATERIALID}")
+  @RESTPermit(handling = Handling.UNSECURED)
   public Response deleteNode(@PathParam("WORKSPACEID") Long workspaceEntityId, @PathParam("MATERIALID") Long materialId, @QueryParam ("removeAnswers") Boolean removeAnswers) {
     // TODO Our workspace?
     
@@ -732,6 +745,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
   @PUT
   @Path("/workspaces/{WORKSPACEID}/materials/{WORKSPACEMATERIALID}")
+  @RESTPermit(handling = Handling.UNSECURED)
   // TODO @LoggedIn
   public Response updateWorkspaceMaterial(@PathParam("WORKSPACEID") Long workspaceEntityId,
       @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, fi.muikku.plugins.workspace.rest.model.WorkspaceMaterial workspaceMaterial) {

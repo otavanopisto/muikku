@@ -1,8 +1,5 @@
 package fi.muikku.ui.base;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.Assert.assertTrue;
 
@@ -23,6 +20,10 @@ import fi.muikku.SqlAfter;
 import fi.muikku.SqlBefore;
 import fi.muikku.schooldata.entity.Subject;
 import fi.pyramus.rest.model.Course;
+import fi.pyramus.rest.model.CourseType;
+import fi.pyramus.rest.model.EducationType;
+import fi.pyramus.rest.model.EducationalTimeUnit;
+import fi.pyramus.rest.model.Student;
 
 public class CoursePickerTestsBase extends AbstractUITest {
   
@@ -36,12 +37,31 @@ public class CoursePickerTestsBase extends AbstractUITest {
     asAdmin()
       .get("/test/reindex");
     
-    getWebDriver().get(getAppUrl() + "/login?authSourceId=1");
+    getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
     waitForElementToBePresent(By.className("index"));
-    getWebDriver().get(getAppUrl() + "/coursepicker");
+    getWebDriver().get(getAppUrl(true) + "/coursepicker");
     waitForElementToBePresent(By.className("bt-mainFunction-content"));
     takeScreenshot();
     boolean elementExists = getWebDriver().findElements(By.className("coursePicker")).size() > 0;
+    assertTrue(elementExists);
+  }
+  
+  @Test
+  @SqlBefore("sql/workspace1Setup.sql")
+  @SqlAfter("sql/workspace1Delete.sql")
+  public void courseExistsTest() throws IOException {
+    studentPyramusLoginMocks();
+    workspace1PyramusMock();
+//    getWebDriver().get(getAppUrl() + "/test/reindex");    
+    asAdmin()
+      .get("/test/reindex");
+    
+    getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
+    waitForElementToBePresent(By.className("index"));
+    getWebDriver().get(getAppUrl(true) + "/workspace/testCourse");
+    waitForElementToBePresent(By.className("workspace-title"));
+    takeScreenshot();
+    boolean elementExists = getWebDriver().findElements(By.className("workspace-title")).size() > 0;
     assertTrue(elementExists);
   }
   
@@ -75,6 +95,55 @@ public class CoursePickerTestsBase extends AbstractUITest {
         .withHeader("Content-Type", "application/json")
         .withBody(subjectJson)
         .withStatus(200)));
+    
+    fi.pyramus.rest.model.CourseType courseType = new fi.pyramus.rest.model.CourseType((long) 1, "Nonstop", false);
+    CourseType[] courseTypeArray = { courseType };
+    String courseTypeJson = objectMapper.writeValueAsString(courseTypeArray);
+    stubFor(get(urlEqualTo("/1/courses/courseTypes"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(courseTypeJson)
+        .withStatus(200)));
+
+    String courseTypeSingleJson = objectMapper.writeValueAsString(courseType);
+    stubFor(get(urlEqualTo("/1/courses/courseTypes/1"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(courseTypeSingleJson)
+        .withStatus(200)));
+
+    EducationType educationType = new EducationType((long) 1, "testEduType", "ET", false);
+    String educationTypeJson = objectMapper.writeValueAsString(educationType);
+    stubFor(get(urlEqualTo("/1/common/educationTypes/1"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(educationTypeJson)
+        .withStatus(200)));
+    
+    EducationType[] educationTypeArray = { educationType };
+    String educationTypeArrayJson = objectMapper.writeValueAsString(educationTypeArray);
+    stubFor(get(urlEqualTo("/1/common/educationTypes"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(educationTypeArrayJson)
+        .withStatus(200)));
+    
+    EducationalTimeUnit educationalTimeUnit = new EducationalTimeUnit((long) 1, "test time unit", "h", (double) 1, false);
+    String eduTimeUnitJson = objectMapper.writeValueAsString(educationalTimeUnit);
+    stubFor(get(urlEqualTo("/1/common/educationalTimeUnits/1"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(eduTimeUnitJson)
+        .withStatus(200)));
+    
+    EducationalTimeUnit[] eduTimeUnitArray = { educationalTimeUnit };
+    String eduTimeUnitArrayJson = objectMapper.writeValueAsString(eduTimeUnitArray);
+    stubFor(get(urlEqualTo("/1/common/educationalTimeUnits"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(eduTimeUnitArrayJson)
+        .withStatus(200)));
+    
   }
   
 }
