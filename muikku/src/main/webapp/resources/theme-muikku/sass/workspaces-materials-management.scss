@@ -1,5 +1,6 @@
 @import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
 @import "_workspaces-materials-defaults.scss";
+@import "_custom-ckeditor-styles.scss";
 @import "_connect-field.scss";
 
 body.workspace-materials-management {
