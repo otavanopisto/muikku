@@ -55,10 +55,13 @@
       // folder
       $(node).addClass("page-edit-mode");
       var pageContent = $(node).find('.page-content');
+      var editor = $('<div>').attr('class', 'workspace-material-folder-editor-title-wrapper');
       var textfield = $("<input>").attr({
-        'type': 'text'
+        'type': 'text',
+        'class': 'workspace-material-folder-editor-title'
       }).val($(pageContent).text());
-      $(pageContent).replaceWith(textfield);
+      editor.append(textfield);
+      $(pageContent).replaceWith(editor);
       textfield.focus();
       textfield.select();
       $(textfield).on('keydown', function (event, data) {
@@ -119,8 +122,9 @@
         }
         else {
           var pageElement = $('<div>').attr('class', 'page-content').text(title);
-          var editor = node.find('input');
-          editor.off();
+          var textfield = node.find('input');
+          textfield.off();
+          var editor = node.find('.workspace-material-folder-editor-title-wrapper');
           editor.replaceWith(pageElement);
           // TOC
           var tocElement = $("a[href*='#page-" + $(node).data('workspace-material-id') + "']");
