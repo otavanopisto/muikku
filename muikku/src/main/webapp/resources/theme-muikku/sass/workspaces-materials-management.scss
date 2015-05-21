@@ -414,10 +414,16 @@ body.workspace-materials-management {
       /* Material's attachment upload wrapper */
       .materials-management-page-attachments-upload-container {
         margin:10px -20px 20px -20px;
-        padding:30px;
+        padding:20px;
         position:relative;
         box-sizing:border-box;
         border:1px solid #7391a7;
+        transition:background 0.6s ease-in-out;
+        cursor:pointer;
+        
+         &:hover {
+          background:#ebfbff;
+        }
         
         input[type="file"] {
           position:absolute;
@@ -427,6 +433,13 @@ body.workspace-materials-management {
           right:0;
           opacity:0;
           width:100%;
+          cursor:pointer;
+        }
+        
+        .materials-management-page-attachment-description {
+          display:block;
+          font-size:16px;
+          text-align:center;
         }
         
       }
