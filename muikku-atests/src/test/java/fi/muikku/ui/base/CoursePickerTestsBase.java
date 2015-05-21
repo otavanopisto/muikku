@@ -39,7 +39,7 @@ public class CoursePickerTestsBase extends AbstractUITest {
     
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
     waitForElementToBePresent(By.className("index"));
-    getWebDriver().get(getAppUrl(true) + "/coursepicker");
+    getWebDriver().get(getAppUrl(true) + "/coursepicker/");
     waitForElementToBePresent(By.className("bt-mainFunction-content"));
     takeScreenshot();
     boolean elementExists = getWebDriver().findElements(By.className("coursePicker")).size() > 0;

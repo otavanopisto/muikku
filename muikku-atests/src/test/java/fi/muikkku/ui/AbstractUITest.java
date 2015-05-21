@@ -249,22 +249,104 @@ public class AbstractUITest extends AbstractIntegrationTest {
         .withBody(personJson)
         .withStatus(200)));
 
+    Person staff1 = new Person((long) 2, birthday, "345345-3453", fi.pyramus.rest.model.Sex.MALE, false, "empty", (long) 2);
+    String staff1Json = objectMapper.writeValueAsString(staff1);
+    stubFor(get(urlEqualTo("/1/persons/persons/2"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(staff1Json)
+        .withStatus(200)));
+
+    Person staff2 = new Person((long) 3, birthday, "345345-3453", fi.pyramus.rest.model.Sex.MALE, false, "empty", (long) 3);
+    String staff2Json = objectMapper.writeValueAsString(staff2);
+    stubFor(get(urlEqualTo("/1/persons/persons/3"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(staff2Json)
+        .withStatus(200)));
+    
+    Person staff3 = new Person((long) 4, birthday, "345345-3453", fi.pyramus.rest.model.Sex.MALE, false, "empty", (long) 4);
+    String staff3Json = objectMapper.writeValueAsString(staff3);
+    stubFor(get(urlEqualTo("/1/persons/persons/4"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(staff3Json)
+        .withStatus(200)));
+    
+    Person[] personArray = {person, staff1, staff2, staff3};
+    String personArrayJson = objectMapper.writeValueAsString(personArray);
+    stubFor(get(urlEqualTo("/1/persons/persons?filterArchived=false"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(personArrayJson)
+        .withStatus(200)));
+    
     stubFor(get(urlEqualTo("/1/students/students?filterArchived=false&firstResult=0&maxResults=100"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody(studentArrayJson)
         .withStatus(200)));
 
-    StaffMember staffMember = new StaffMember((long) 4, (long) 4, null, "Test", "Staffmember", null, fi.pyramus.rest.model.UserRole.ADMINISTRATOR, tags, variables);
-    StaffMember[] staffArray = { staffMember };
+    StaffMember staffMember1 = new StaffMember((long) 2, (long) 2, null, "Test", "Staff1member", null, fi.pyramus.rest.model.UserRole.ADMINISTRATOR, tags, variables);
+    String staffMemberJson = objectMapper.writeValueAsString(staffMember1);
+    stubFor(get(urlMatching("/1/staff/members/2"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(staffMemberJson)
+        .withStatus(200)));
+    
+    StaffMember staffMember2 = new StaffMember((long) 3, (long) 3, null, "Test", "Staff2member", null, fi.pyramus.rest.model.UserRole.ADMINISTRATOR, tags, variables);
+    staffMemberJson = objectMapper.writeValueAsString(staffMember2);
+    stubFor(get(urlMatching("/1/staff/members/3"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(staffMemberJson)
+        .withStatus(200)));
+    
+    StaffMember staffMember3 = new StaffMember((long) 4, (long) 4, null, "Test", "Staff3member", null, fi.pyramus.rest.model.UserRole.ADMINISTRATOR, tags, variables);
+    staffMemberJson = objectMapper.writeValueAsString(staffMember3);
+    stubFor(get(urlMatching("/1/staff/members/4"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(staffMemberJson)
+        .withStatus(200)));
+    
+    StaffMember[] staffArray = { staffMember1, staffMember2, staffMember3 };
     String staffArrayJson = objectMapper.writeValueAsString(staffArray);
 
     stubFor(get(urlMatching("/1/staff/members"))
-      .withQueryParam("email", matching("staff@made.up"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody(staffArrayJson)
         .withStatus(200)));
+    
+    Email staff1Email = new Email((long) 2, (long) 1, true, "staff1@example.com");
+    Email[] staff1Emails = {staff1Email};
+    String staff1EmailJson = objectMapper.writeValueAsString(staff1Emails);
+    stubFor(get(urlMatching("/1/members/2/emails"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(staff1EmailJson)
+        .withStatus(200)));
+
+    Email staff2Email = new Email((long) 3, (long) 1, true, "staff2@example.com");
+    Email[] staff2Emails = {staff2Email};
+    String staff2EmailJson = objectMapper.writeValueAsString(staff2Emails);
+    stubFor(get(urlMatching("/1/members/3/emails"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(staff2EmailJson)
+        .withStatus(200)));
+
+    Email staff3Email = new Email((long) 4, (long) 1, true, "staff3@example.com");
+    Email[] staff3Emails = {staff3Email};
+    String staff3EmailJson = objectMapper.writeValueAsString(staff3Emails);
+    stubFor(get(urlMatching("/1/members/4/emails"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(staff3EmailJson)
+        .withStatus(200)));
+    
     CourseStaffMemberRole teacherRole = new CourseStaffMemberRole((long) 1, "Opettaja");
     CourseStaffMemberRole tutorRole = new CourseStaffMemberRole((long) 2, "Tutor");
     CourseStaffMemberRole vRole = new CourseStaffMemberRole((long) 3, "Vastuuhenkilö");

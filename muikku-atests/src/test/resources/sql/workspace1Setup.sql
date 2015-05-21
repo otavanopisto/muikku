@@ -1,7 +1,7 @@
 SET REFERENTIAL_INTEGRITY FALSE;
 
-insert into workspaceentity (id, archived, identifier, urlName, dataSource_id) values 
-  (1, 0, 2, 'testCourse', 2);
+insert into workspaceentity (id, archived, identifier, urlName, dataSource_id, published) values 
+  (1, 0, 2, 'testCourse', 2, 1);
 
 insert into workspacenode (id, hidden, orderNumber, urlName, parent_id) values 
   (1, 0, 0, 'testCourse', null);

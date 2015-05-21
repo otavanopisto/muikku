@@ -34,27 +34,27 @@ insert into UserIdentification (id, externalId, authSource_id, user_id) values (
 
 -- User 2 - TEACHER
 
---insert into UserEntity (id, archived, defaultIdentifier, defaultSchoolDataSource_id) values (2, false, 'STAFF-1', (select id from SchoolDataSource where identifier = 'PYRAMUS'));
---insert into EnvironmentUser (id, archived, role_id, user_id) values (2, 0, 4, 2);
---insert into UserSchoolDataIdentifier (id, identifier, dataSource_id, userEntity_id) values (2, 'STAFF-1', (select id from SchoolDataSource where identifier = 'PYRAMUS'), 2);
---insert into UserEmailEntity (id,user_id,address) values (2, 2, 'teacher@made.up');
---insert into UserIdentification (id, externalId, authSource_id, user_id) values (2, 2, 1, 2);
+insert into UserEntity (id, archived, defaultIdentifier, defaultSchoolDataSource_id) values (2, false, 'STAFF-2', (select id from SchoolDataSource where identifier = 'PYRAMUS'));
+insert into EnvironmentUser (id, archived, role_id, user_id) values (2, 0, 4, 2);
+insert into UserSchoolDataIdentifier (id, identifier, dataSource_id, userEntity_id) values (2, 'STAFF-2', (select id from SchoolDataSource where identifier = 'PYRAMUS'), 2);
+insert into UserEmailEntity (id,user_id,address) values (2, 2, 'teacher@made.up');
+insert into UserIdentification (id, externalId, authSource_id, user_id) values (2, 2, 1, 2);
 
 -- User 3 - MANAGER
 
---insert into UserEntity (id, archived, defaultIdentifier, defaultSchoolDataSource_id) values (3, false, 'STAFF-2', (select id from SchoolDataSource where identifier = 'PYRAMUS'));
---insert into EnvironmentUser (id, archived, role_id, user_id) values (3, 0, 5, 3);
---insert into UserSchoolDataIdentifier (id, identifier, dataSource_id, userEntity_id) values (3, 'STAFF-2', (select id from SchoolDataSource where identifier = 'PYRAMUS'), 3);
---insert into UserEmailEntity (id,user_id,address) values (3, 3, 'mana@made.up');
---insert into UserIdentification (id, externalId, authSource_id, user_id) values (3, 3, 1, 3);
+insert into UserEntity (id, archived, defaultIdentifier, defaultSchoolDataSource_id) values (3, false, 'STAFF-3', (select id from SchoolDataSource where identifier = 'PYRAMUS'));
+insert into EnvironmentUser (id, archived, role_id, user_id) values (3, 0, 5, 3);
+insert into UserSchoolDataIdentifier (id, identifier, dataSource_id, userEntity_id) values (3, 'STAFF-3', (select id from SchoolDataSource where identifier = 'PYRAMUS'), 3);
+insert into UserEmailEntity (id,user_id,address) values (3, 3, 'mana@made.up');
+insert into UserIdentification (id, externalId, authSource_id, user_id) values (3, 3, 1, 3);
 
 -- User 4 - ADMINISTRATOR
 
---insert into UserEntity (id, archived, defaultIdentifier, defaultSchoolDataSource_id) values (4, false, 'STAFF-3', (select id from SchoolDataSource where identifier = 'PYRAMUS'));
---insert into EnvironmentUser (id, archived, role_id, user_id) values (4, 0, 6, 4);
---insert into UserSchoolDataIdentifier (id, identifier, dataSource_id, userEntity_id) values (4, 'STAFF-3', (select id from SchoolDataSource where identifier = 'PYRAMUS'), 4);
---insert into UserEmailEntity (id,user_id,address) values (4, 4, 'admin@made.up');
---insert into UserIdentification (id, externalId, authSource_id, user_id) values (4, 4, 1, 4);
+insert into UserEntity (id, archived, defaultIdentifier, defaultSchoolDataSource_id) values (4, false, 'STAFF-4', (select id from SchoolDataSource where identifier = 'PYRAMUS'));
+insert into EnvironmentUser (id, archived, role_id, user_id) values (4, 0, 6, 4);
+insert into UserSchoolDataIdentifier (id, identifier, dataSource_id, userEntity_id) values (4, 'STAFF-4', (select id from SchoolDataSource where identifier = 'PYRAMUS'), 4);
+insert into UserEmailEntity (id,user_id,address) values (4, 4, 'admin@made.up');
+insert into UserIdentification (id, externalId, authSource_id, user_id) values (4, 4, 1, 4);
 
 
 SET REFERENTIAL_INTEGRITY TRUE;
