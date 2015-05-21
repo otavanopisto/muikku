@@ -424,7 +424,9 @@ body.workspace-materials-management {
           font-size:27px;
         }
         
-        &.page-edit.mode {
+        &.page-edit-mode {
+          padding:50px 0 10px 0;
+          box-sizing:border-box;
         
           /* Editor input override */
           input[type="text"].workspace-material-folder-editor-title {
