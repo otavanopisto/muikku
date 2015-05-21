@@ -118,12 +118,52 @@
     padding:3px;
   }
   
+  
+  .mf-list{
+   background-color:#fff;
+   .mf-list-label{
+    background-color:$bgr1;
+    padding:5px;
+    font-weight:600;
+   }
+   ul{
+ 
+      list-style-type: none;
+      
+      li{
+        border-bottom: 1px solid $brd1;
+
+        a{
+          font-weight:300;
+          text-decoration:none;
+          color:#000;
+          display:inline-block;
+          box-sizing:border-box;
+          width:100%;
+          padding-top:5px;
+          padding-bottom:5px;
+          padding-left:10px; 
+        }      
+       &:hover{
+        border-left:5px solid $brd1;     
+        cursor:pointer;   
+       } 
+       &.selected{
+        background-color:$bgr3;
+        border-left:5px solid $brd2;
+        a{font-weight:normal;}
+       } 
+      }
+   
+   }
+  } 
+  
   .mf-side-content{
    padding:5px;
    background-color:#fff;
   }
   
-  
+
   
   
   .mf-filter{
@@ -188,7 +228,7 @@
   .mf-search{
     margin-left:10px;
     width:300px;
-  
+    
   }
   .mf-search-icon{
     display:inline-block;
@@ -201,15 +241,16 @@
      width:200px;
      display:inline-block;
      margin-top:10px;
+     
+     >input{
+       margin-left:10px;
+       padding:10px;
+       font-size:20px;
+       color:#c4cdd1;     
+     }
+     
   }
   
-  .mf-search-field > input{
-   margin-left:10px;
-   padding:10px;
-   font-size:20px;
-   color:#c4cdd1;
-  
-  }
   
   .mf-content-toolbar{
     /* padding:20px 0 0 0px; */
@@ -534,3 +575,27 @@
   
 }
   
+/* jQuert Ui overrides for mainfunctions */
+
+.mf-autocomplete{
+
+  font-size:12px;
+  font-weight:300;
+  .ui-autocomplete-category{
+   text-transform:uppercase;
+   padding:5px;
+  }
+  .ui-menu-item{
+     padding-left:10px;
+     
+  &.ui-state-focus{
+    background-color:$bgr3;
+    border:none;
+    width:auto;
+    color:$contextualLinkHover;
+    font-weight:normal;
+  }
+  }
+  
+  
+}

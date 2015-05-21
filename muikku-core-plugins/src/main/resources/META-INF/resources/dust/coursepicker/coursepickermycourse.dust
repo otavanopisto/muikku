@@ -70,5 +70,9 @@
     </div>
   </div>
  
+{:else}
+<div class="mf-content-empty cm-no-messages">
+  <h3>{#localize key="plugin.coursepicker.empty.topic.my"/}</h3>
+</div>
 
 {/.}
