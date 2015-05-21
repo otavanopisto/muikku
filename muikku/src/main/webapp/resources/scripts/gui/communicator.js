@@ -3,7 +3,8 @@
 
 $(document).ready(function(){
 
-	
+
+  
 	$(".bt-mainFunction").click(function(){
 		
 		
@@ -32,6 +33,9 @@ $(document).ready(function(){
       $('.cm-messages-container').on('click','.icon-goback', $.proxy(this._onMessageBackClick, this));
       $('#socialNavigation').on('focus', '#recipientContent', $.proxy(this._onRecipientFocus, this));
       $("#socialNavigation").on("click", ".cm-message-recipient-name", $.proxy(this._onRemoveRecipientClick, this));
+      $('*[data-message-type="inbox"]').addClass('selected');      
+
+      
       $(window).on("hashchange", $.proxy(this._onHashChange, this));
       
       $(window).trigger("hashchange");
@@ -39,6 +43,7 @@ $(document).ready(function(){
     _showNewMessageView : function () {
     },
     _showInbox : function () {
+      this._setSelected("inbox");
       mApi().communicator.items.read()
       .on('$', function (item, itemCallback) {
         item.caption = $('<div>').html(item.caption).text();
@@ -156,15 +161,37 @@ $(document).ready(function(){
       });
     },
     _showSentItems : function () {
-    },
-    _showSettingsView : function () {
+      mApi().communicator.sentitems.read()
+      .on('$', function (item, itemCallback) {
+        item.caption = $('<div>').html(item.caption).text();
+        item.content = $('<div>').html(item.content).text();
+        
+        mApi().communicator.communicatormessages.sender.read(item.id)
+          .callback(function (err, user) {  
+            item.senderFullName = user.firstName + ' ' + user.lastName;
+            item.senderHasPicture = user.hasImage;
+          });
+        mApi().communicator.messages.messagecount.read(item.communicatorMessageId)
+          .callback(function (err, count) {
+            item.messageCount = count;
+          });
+
+        itemCallback();
+      })
+      .callback(function (err, result) {
+        renderDustTemplate('communicator/communicator_items.dust', result, function (text) {
+          $('.cm-messages-container').empty();
+          $('.cm-messages-container').append($.parseHTML(text));
+        });
+      });      
+      
     },
     _onMessageClick: function (event) {
       var element = $(event.target);
       element = element.parents(".cm-message");
       var cmId = element.find("input[name='communicatorMessageIdId']").val();
 
-      var box = "#in";
+      var box = "#inbox";
       
       if (window.location.hash) {
         if (window.location.hash.indexOf("#sent") === 0)
@@ -174,7 +201,7 @@ $(document).ready(function(){
       window.location.hash = box + "/" + cmId;
     },
     _onMessageBackClick: function (event) {
-      var box = "#in";
+      var box = "#inbox";
       
       if (window.location.hash) {
         if (window.location.hash.indexOf("#sent") === 0)
@@ -258,25 +285,41 @@ $(document).ready(function(){
 	
 	return users;
 	},
+  
+  _setSelected : function(selected){
+    var container = $(".mf-list");
+    var categories = container.find("li");
+    
+    categories.removeClass("selected");
+    
+    $('li[data-message-type='+ selected +']').addClass("selected");
+    
+    
+  },
     _onHashChange: function (event) {
       var hash = window.location.hash.substring(1);
       var _this = this;
-      
-      if (hash == "new") {
-        _this._showNewMessageView();
-      } else if (hash == "settings") {
-        _this._showSettingsView();
-      } else if (hash.indexOf("in/") === 0) {
-        var messageId = hash.substring(3);
-        _this._showMessage(messageId);
-      } else if (hash == "sent") {
-        _this._showSentItems();
-      } else if (hash.indexOf("sent/") === 0) {
-        var messageId = hash.substring(5);
-        _this._showMessage(messageId);
-      } else
-        _this._showInbox();
+       
+        if (hash.indexOf("inbox/") === 0) {
+          var messageId = hash.substring(6);
+          var hI = hash.indexOf('/');
+          var cHash = hash.substring(0, hI);
+          _this._showMessage(messageId);
+          _this._setSelected(cHash);
+        } else if (hash == "sent") {
+          _this._showSentItems();
+          _this._setSelected(hash);
+        } else if (hash.indexOf("sent/") === 0) {
+          var hI = hash.indexOf('/');          
+          var cHash = hash.substring(0, hI );
+          var messageId = hash.substring(5);
+          _this._showMessage(messageId);
+          _this._setSelected(cHash);
+        } else
+          _this._showInbox();
+
     }
+    
   });
 
   window.mCommunicator = new CommunicatorImpl();
