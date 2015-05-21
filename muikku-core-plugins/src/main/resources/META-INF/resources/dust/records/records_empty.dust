@@ -1,5 +1,6 @@
-<a>
-  <div class="sk-autocomplete-container"> 
-    <div class="sk-autocomplete-item-label icon-books">Lokalisoi coursepicker {#localize key="plugin.communicator.seekerresultcaption"/}</div>
+
+
+  <div class="mf-content-empty cm-no-messages">
+    <h3>{#localize key="plugin.communicator.empty.topic"/}</h3>
   </div>
-</a>
+

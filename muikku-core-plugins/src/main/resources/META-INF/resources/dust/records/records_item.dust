@@ -1,82 +1,36 @@
-{#.}
- 
- 
-  <div id="crsId-{id}" class="cp-course ft-01">
-    <input type="hidden" name="workspaceId" value="{id}"/>
-    <input type="hidden" name="workspaceUrl" value="{urlName}"/>
+
+<div id="crsId-{workspaceEntity.id}" class="mf-item rt-item ft-01">
+    <input type="hidden" name="workspaceId" value="{workspaceEntity.id}"/>
+    <input type="hidden" name="workspaceUrl" value="{workspaceEntity.urlName}"/>
 
     
-    <div class="cp-course-details">
-      <div class="cp-course-details-container">       
-        <div class="cp-course-additionalInfo">
-<!--           <div class="cp-course-details-teachers"> -->
-<!--             {?teachers} -->
-<!--               <div style="display:none;" class="cp-course-details-teachers-caption">{#localize key="plugin.coursepicker.course.teachers" /}</div>              -->
-<!--               {#teachers} -->
-<!--                 <div class="cp-course-details-teacher"> -->
-<!--                   <div class="cp-course-details-teacher-picture-container"> -->
-<!--                     {?hasPicture}  -->
-<!--                       <img class="cp-course-details-teacher-picture" title="{fullName}" src="{@contextPath/}/picture?userId={id}" width="20" height="20" /> -->
-<!--                     {:else} -->
-<!--                       <div class="cp-teacher-picture-default"></div> -->
-<!--                     {/hasPicture} -->
-<!--                   </div> -->
-  
+    <div class="rt-item-details">
 
-<!--                   <div class="clear"></div> -->
-<!--                 </div> -->
-  
-<!--               {/teachers} -->
-<!--             {:else} -->
-<!--               {#localize key="plugin.coursepicker.course.noteachers" /} -->
-<!--             {/teachers} -->
-<!--           </div> -->
-  
-<!--           {?hasCourseFee}       -->
-<!--             <div class="cp-course-details-fee">{#localize key="plugin.coursepicker.course.coursehasfee" /}</div> -->
-<!--           {/hasCourseFee} -->
-  
-<!--           {?hasAssessmentFee}       -->
-<!--             <div class="cp-course-details-assessmentFee">{#localize key="plugin.coursepicker.course.assessmenthasfee" /}</div> -->
-<!--           {/hasAssessmentFee} -->
+      <div class="rt-item-details-container">       
+        <div class="rt-item-additionalInfo">
+
         </div>
-        <div class="cp-course-description">
-          <div class="cp-course-header-name">
-           <span class="cp-course-short"></span>
-           <span class="cp-course-long">{name}</span>
+        <div class="rt-item-description">
+          <div class="rt-item-header-name">
+           <span class="rt-item-short"></span>
+           <span class="rt-item-long">{workspaceEntity.name}</span>
           </div>
           
-          <div class="cp-course-header-details">
-<!--            <span class="cp-course-rating">{rating} ({ratingCount})</span> -->
-<!--            <span class="cp-course-len"></span> -->
-<!--            <span class="cp-course-age"></span> -->
+          <div class="rt-item-header-details">
+
           </div>
-         
-          <div id="detailsCrs-{id}" class="cp-course-content-details" style="display:none;">     
-            <div class="cp-course-description-picture"></div>
-            <div class="cp-course-description-text">{description|s}</div>          
-            <div class="cp-course-details-toolbar">
-              <input class="bt-coursepicker cp-course-tour-button" type="button"
-                value='{#localize key="plugin.coursepicker.course.checkout" /}' />
-            
-              {#isLoggedIn}
-                {^isMember}
-                  <input class="bt-coursepicker cp-course-attend-button" type="button"
-                    value='{#localize key="plugin.coursepicker.course.signup" /}' />
-                {/isMember}
-              {/isLoggedIn}
+                  
+          <div id="detailsCrs-{workspaceEntity.id}" class="rt-item-content-details" style="display:none;">     
+            <div class="rt-item-description-picture"></div>
+            <div class="rt-item-description-text">{workspaceEntity.description|s}</div>          
+            <div class="rt-item-details-toolbar">
+              <input class="bt-coursepicker rt-item-tour-button" type="button" value='{#localize key="plugin.coursepicker.course.checkout" /}' />
             </div>
           </div>
-
         </div>       
 
         <div class="clear"></div>
+      </div> 
     </div>
   </div>
-</div>
-{:else}
-<div class="mf-content-empty cm-no-messages">
-  <h3>{#localize key="plugin.coursepicker.empty.topic.all"/}</h3>
-</div>
-
-{/.}
+ 
