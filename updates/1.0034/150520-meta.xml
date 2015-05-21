@@ -20,6 +20,8 @@
         add constraint FK_s2oxbjvqgoojrtac06orda1be 
         foreign key (material_id) 
         references Material (id)</sql>
+  <sql>alter table MaterialMeta 
+        add constraint UK_n45canu0si68lb9itqn7rt5mw unique (key_, material_id)</sql>
   <sql>alter table MaterialMetaKey 
         add constraint UK_9vi9wl75oinml6sxx5hycxira  unique (name);</sql>
   <sql>insert into MaterialMetaKey (name) values ('license'), ('source-text'), ('source-url')</sql>

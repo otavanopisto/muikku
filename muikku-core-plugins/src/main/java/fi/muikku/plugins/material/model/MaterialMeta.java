@@ -10,6 +10,8 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -18,6 +20,11 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Inheritance(strategy=InheritanceType.JOINED)
 @Cacheable
 @Cache (usage = CacheConcurrencyStrategy.TRANSACTIONAL)
+@Table (
+  uniqueConstraints = {
+    @UniqueConstraint (columnNames = { "key_", "material_id" })
+  }    
+)
 public class MaterialMeta {
 
   public Long getId() {

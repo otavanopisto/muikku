@@ -508,6 +508,15 @@ body.workspace-materials-management {
 
           .materials-management-page-attachment-meta-container {
             display: none;
+            
+            input[type="text"].materials-management-page-attachment-meta-unsaved {
+              border-color: yellow;
+            }
+            
+            input[type="text"].materials-management-page-attachment-meta-saved {
+              border-color: green;
+            }
+      
           }
           
           &.materials-management-page-attachment-selected .materials-management-page-attachment-meta-container {
