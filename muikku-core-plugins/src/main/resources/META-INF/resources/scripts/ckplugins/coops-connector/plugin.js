@@ -268,7 +268,11 @@
       },  
 
       _onContentPatch : function(event) {
-        if (this._editor.config.coops.readOnly === true || !this._active) {
+        if (this._editor.config.coops.readOnly === true) {
+          return;
+        }
+        
+        if (!this._active) {
           this._pendingPatches.push({
             type: 'content',
             patch: event.data.patch,
@@ -280,6 +284,10 @@
       },
       
       _onPropertiesChange: function (event) {
+        if (this._editor.config.coops.readOnly === true) {
+          return;
+        }
+        
         var changedProperties = event.data.properties;
         var properties = {};
         
@@ -287,7 +295,7 @@
           properties[changedProperties[i].property] = changedProperties[i].currentValue;
         }
         
-        if (this._editor.config.coops.readOnly === true || !this._active) {
+        if (!this._active) {
           this._pendingPatches.push({
             type: 'properties',
             properties: properties
@@ -298,7 +306,11 @@
       },
       
       _onExtensionPatch: function (event) {
-        if (this._editor.config.coops.readOnly === true || !this._active) {
+        if (this._editor.config.coops.readOnly === true) {
+          return;
+        }
+        
+        if (!this._active) {
           this._pendingPatches.push({
             type: 'extensions',
             extensions: event.data.extensions
@@ -451,6 +463,10 @@
       },
       
       _activate: function () {
+        if (this._active) {
+          return;
+        }
+        
         while (this._pendingPatches.length) {
           var pendingPatch = this._pendingPatches.shift();
           switch (pendingPatch.type) {
