@@ -136,9 +136,16 @@
       this._useWebSocket = false;
       this._patchData = {};
       this._ioHandler = editor.config.coops.restIOHandler||new DefaultIOHandler(editor);
+      this._active = false;
+      this._pendingPatches = [];
+
       editor.on('CoOPS:Join', this._onCoOpsJoin, this);
       editor.on("CoOPS:BeforeSessionStart", this._onBeforeSessionStart, this, null, 9999);
       editor.on("destroy", this._onEditorDestroy, this);
+      editor.on("CoOPS:ContentPatch", this._onContentPatch, this);
+      editor.on("CoOPS:ContentRevert", this._onContentRevert, this);
+      editor.on("propertiesChange", this._onPropertiesChange, this);
+      editor.on("CoOPS:ExtensionPatch", this._onExtensionPatch, this);
     },
     proto : {
       getName: function () {
@@ -183,7 +190,7 @@
                       this._webSocket.onopen = CKEDITOR.tools.bind(this._onWebSocketOpen, this);
                     break;
                     case this._webSocket.OPEN:
-                      this._startListening();
+                      this._activate();
                     break;
                     default:
                       this._editor.fire("CoOPS:Error", {
@@ -200,7 +207,7 @@
           }
           
           if (!this._useWebSocket) {
-            this._startListening();
+            this._activate();
   
             if (this._editor.config.coops.restPolling !== 'manual') {
               this._startUpdatePolling();
@@ -218,42 +225,26 @@
         }
       },
       
-      _onContentPatch : function(event) {
-        if (this._editor.config.coops.readOnly === true) {
-          return;
-        }
-        
+      _sendContentPatch: function (patch, newContent) {
         if (this._patchData[this._revisionNumber + 1]) {
           this._editor.fire("CoOPS:PatchRejected", {
             reason: "already sending a patch"
           });
         } else {
-          var patch = event.data.patch;
           this._patchData[this._revisionNumber + 1] = {
-            content: event.data.newContent
+            content: newContent
           };
          
           this._sendPatch(patch, null, null);
         }
       },
       
-      _onPropertiesChange: function (event) {
-        if (this._editor.config.coops.readOnly === true) {
-          return;
-        }
-        
+      _sendPropertiesPatch: function (properties) {
         if (this._patchData[this._revisionNumber + 1]) {
           this._editor.fire("CoOPS:PatchRejected", {
             reason: "already sending a patch"
           });
         } else {
-          var changedProperties = event.data.properties;
-          var properties = {};
-          
-          for (var i = 0, l = changedProperties.length; i < l; i++) {
-            properties[changedProperties[i].property] = changedProperties[i].currentValue;
-          }
-          
           this._patchData[this._revisionNumber + 1] = {
             properties: properties
           };
@@ -262,21 +253,58 @@
         }
       },
       
-      _onExtensionPatch: function (event) {
-        if (this._editor.config.coops.readOnly === true) {
-          return;
-        }
-        
+      _sendExtensionsPatch: function (extensions) {
         if (this._patchData[this._revisionNumber + 1]) {
           this._editor.fire("CoOPS:PatchRejected", {
             reason: "already sending a patch"
           });
         } else {
           this._patchData[this._revisionNumber + 1] = {
-            extensions: event.data.extensions
+            extensions: extensions
           };
             
-          this._sendPatch(null, null, event.data.extensions);
+          this._sendPatch(null, null, extensions);
+        }
+      },  
+
+      _onContentPatch : function(event) {
+        if (this._editor.config.coops.readOnly === true || !this._active) {
+          this._pendingPatches.push({
+            type: 'content',
+            patch: event.data.patch,
+            newContent: event.data.newContent
+          });
+        } else {
+          this._sendContentPatch(event.data.patch, event.data.newContent);
+        }
+      },
+      
+      _onPropertiesChange: function (event) {
+        var changedProperties = event.data.properties;
+        var properties = {};
+        
+        for (var i = 0, l = changedProperties.length; i < l; i++) {
+          properties[changedProperties[i].property] = changedProperties[i].currentValue;
+        }
+        
+        if (this._editor.config.coops.readOnly === true || !this._active) {
+          this._pendingPatches.push({
+            type: 'properties',
+            properties: properties
+          });
+        } else {
+          this._sendPropertiesPatch(properties);
+        }
+      },
+      
+      _onExtensionPatch: function (event) {
+        if (this._editor.config.coops.readOnly === true || !this._active) {
+          this._pendingPatches.push({
+            type: 'extensions',
+            extensions: event.data.extensions
+          });
+        } else {
+          this._sendExtensionsPatch(event.data.extensions);
         }
       },
       
@@ -365,7 +393,7 @@
       },
       
       _onWebSocketOpen: function (event) {
-        this._startListening();
+        this._activate();
       },
       
       _onWebSocketClose: function (event) {
@@ -378,6 +406,7 @@
       
       _onWebSocketMessage: function (event) {
         var message = JSON.parse(event.data);
+        
         if (message && message.type) {
           switch (message.type) {
             case 'update':
@@ -421,13 +450,25 @@
         return null;
       },
       
-      _startListening: function () {
-        this._editor.on("CoOPS:ContentPatch", this._onContentPatch, this);
-        this._editor.on("CoOPS:ContentRevert", this._onContentRevert, this);
-        this._editor.on("propertiesChange", this._onPropertiesChange, this);
-        this._editor.on("CoOPS:ExtensionPatch", this._onExtensionPatch, this);
+      _activate: function () {
+        while (this._pendingPatches.length) {
+          var pendingPatch = this._pendingPatches.shift();
+          switch (pendingPatch.type) {
+            case 'content':
+              this._sendContentPatch(pendingPatch.patch, pendingPatch.newContent);
+            break;
+            case 'properties':
+              this._sendPropertiesPatch(pendingPatch.properties);
+            break;
+            case 'extensions':
+              this._sendExtensionsPatch(pendingPatch.extensions);
+            break;
+          }
+        }
+        
+        this._active = true;
       },
-
+      
       _sendPatch: function (patch, properties, extensions) {
         if (this._useWebSocket) {
           this._webSocket.send(JSON.stringify({
