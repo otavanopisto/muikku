@@ -291,9 +291,8 @@
                     this.element.on('click', '.materials-management-page-attachment-action-download', $.proxy(this._onAttachmentDownloadClick, this));
                     this.element.on('click', '.materials-management-page-attachment-action-delete', $.proxy(this._onAttachmentDeleteClick, this));
                     this.element.on("click", '.materials-management-page-attachment', $.proxy(this._onAttchmentClick, this));
-                    this.element.on("change", '.materials-management-page-attachment-meta input', $.proxy(this._onMetaChange, this));
-                    
-                    
+                    this.element.on("focus", '.materials-management-page-attachment-meta input', $.proxy(this._onMetaFocus, this));
+                    this.element.on("blur", '.materials-management-page-attachment-meta input', $.proxy(this._onMetaBlur, this));
                     
                     this._stopLoading();
                   }, this));
@@ -455,8 +454,18 @@
         selectedAttachment.addClass('materials-management-page-attachment-selected');
       }
     },
+
+    _onMetaFocus: function (event) {
+      $(event.target)
+        .removeClass('materials-management-page-attachment-meta-saved')
+        .addClass('materials-management-page-attachment-meta-unsaved');
+    },
     
-    _onMetaChange: function (event) {
+    _onMetaBlur: function (event) {
+      $(event.target)
+        .addClass('materials-management-page-attachment-meta-saved')
+        .removeClass('materials-management-page-attachment-meta-unsaved');
+      
       var attachmentElement = $('.materials-management-page-attachment');
   
       var fieldElement = $(event.target);
