@@ -50,6 +50,7 @@
   
   function editPage(node) {
     var materialType = $(node).data('material-type');
+    var workspaceMaterialId = $(node).data('workspace-material-id');
     if (materialType == 'folder') {
       // folder
       $(node).addClass("page-edit-mode");
@@ -60,6 +61,11 @@
       $(pageContent).replaceWith(textfield);
       textfield.focus();
       textfield.select();
+      $(textfield).on('keydown', function (event, data) {
+        if (event.keyCode == 13) {
+          closeEditor($('#page-' + workspaceMaterialId));
+        }
+      });
     }
     else {
       // html
@@ -100,6 +106,7 @@
       var nextSiblingId = nextSibling.length > 0 ? nextSibling.data('workspace-material-id') : null;
       var workspaceId = $('.workspaceEntityId').val();
       var hidden = node.hasClass('page-hidden');
+      node.removeClass("page-edit-mode");
       mApi().workspace.workspaces.folders.update(workspaceId, node.data('workspace-material-id'), {
         id: node.data('workspace-material-id'),
         parentId: node.data('parent-id'),
@@ -107,6 +114,20 @@
         hidden: hidden,
         title: title
       }).callback(function (err, html) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        }
+        else {
+          var pageElement = $('<div>').attr('class', 'page-content').text(title);
+          var editor = node.find('input');
+          editor.off();
+          editor.replaceWith(pageElement);
+          // TOC
+          var tocElement = $("a[href*='#page-" + $(node).data('workspace-material-id') + "']");
+          if (tocElement) {
+            $(tocElement).text(title);
+          }
+        }
         // TODO Update TOC text
       });
     }

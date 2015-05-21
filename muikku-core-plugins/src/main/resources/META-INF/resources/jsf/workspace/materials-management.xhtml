@@ -29,11 +29,15 @@
                   <ui:fragment rendered="#{node.type eq 'folder'}">
                     <li>
                       <ul class="workspace-materials-toc-section">
-                        <li class="workspace-materials-toc-subtitle">#{node.title}</li>
+                        <li class="workspace-materials-toc-subtitle">
+                          <h:outputLink value="#page-#{node.workspaceMaterialId}">#{node.title}</h:outputLink>
+                        </li>
 
                         <ui:repeat var="articleNode" value="#{node.children}">
                           <ui:fragment rendered="#{articleNode.type eq 'folder'}">
-                            <li class="workspace-materials-toc-subtitle">#{articleNode.title}</li>
+                            <li class="workspace-materials-toc-subtitle">
+                              <h:outputLink value="#page-#{node.workspaceMaterialId}">#{articleNode.title}</h:outputLink>
+                            </li>
                           </ui:fragment>
                           <ui:fragment rendered="#{articleNode.type ne 'folder'}">
                             <li class="workspace-materials-toc-item"><h:outputLink
