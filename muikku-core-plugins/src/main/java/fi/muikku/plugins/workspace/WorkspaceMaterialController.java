@@ -367,7 +367,7 @@ public class WorkspaceMaterialController {
     // Hidden
     workspaceFolder = (WorkspaceFolder) workspaceNodeDAO.updateHidden(workspaceFolder, hidden);
     // Title
-    String urlName = generateUniqueUrlName(workspaceFolder.getParent(), title);
+    String urlName = generateUniqueUrlName(workspaceFolder.getParent(), workspaceFolder, title);
     workspaceFolder = workspaceFolderDAO.updateFolderName(workspaceFolder, urlName, title);
     return workspaceFolder;
   }

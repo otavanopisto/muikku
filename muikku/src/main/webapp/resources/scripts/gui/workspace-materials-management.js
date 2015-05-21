@@ -49,108 +49,94 @@
   }
   
   function editPage(node) {
-
     var materialType = $(node).data('material-type');
-    var materialId = $(node).data('material-id');
-    var materialTitle = $(node).data('material-title');
-    var workspaceMaterialId = $(node).data('workspace-material-id');
-    var editorName = 'workspaceMaterialEditor' + (materialType.substring(0, 1).toUpperCase() + materialType.substring(1));
-    var pageElement = $('#page-' + workspaceMaterialId);
-    var pageSection = $(pageElement).closest(".workspace-materials-view-page");
-    
-    pageSection.addClass("page-edit-mode");
-    
-    var editor = pageElement[editorName];
-    if (editor) {
-      $(pageElement).find('.page-content').remove();
+    if (materialType == 'folder') {
+      // folder
+      $(node).addClass("page-edit-mode");
+      var pageContent = $(node).find('.page-content');
+      var textfield = $("<input>").attr({
+        'type': 'text'
+      }).val($(pageContent).text());
+      $(pageContent).replaceWith(textfield);
+      textfield.focus();
+      textfield.select();
+    }
+    else {
+      // html
+      var materialId = $(node).data('material-id');
+      var materialTitle = $(node).data('material-title');
+      var workspaceMaterialId = $(node).data('workspace-material-id');
+      var editorName = 'workspaceMaterialEditor' + (materialType.substring(0, 1).toUpperCase() + materialType.substring(1));
+      var pageElement = $('#page-' + workspaceMaterialId);
+      var pageSection = $(pageElement).closest(".workspace-materials-view-page");
       
-      editor.call(pageElement, {
-        materialId: materialId,
-        materialTitle: materialTitle
-      });
+      pageSection.addClass("page-edit-mode");
       
-    } else {
-      $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsManagement.missingEditor", materialType));
+      var editor = pageElement[editorName];
+      if (editor) {
+        $(pageElement).find('.page-content').remove();
+        
+        editor.call(pageElement, {
+          materialId: materialId,
+          materialTitle: materialTitle
+        });
+        
+      } else {
+        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsManagement.missingEditor", materialType));
+      }
     }
   }
 
-  function editSection(node) {
-    $(node).addClass("section-edit-mode");
-    var pageContent = $(node).find('.page-content');
-    var textfield = $("<input>").attr({
-      'type': 'text'
-    }).val($(pageContent).text());
-    $(pageContent).replaceWith(textfield);
-    textfield.focus();
-    textfield.select();
-  }
-  
   function isPageInEditMode(node) {
     return $(node).hasClass('page-edit-mode');
   }
   
-  function closeSectionEditor(node) {
-    var title = node.find('input').val();
-    var nextSibling = node.nextAll('.folder').first();
-    var nextSiblingId = nextSibling.length > 0 ? nextSibling.data('workspace-material-id') : null;
-    var workspaceId = $('.workspaceEntityId').val();
-    var hidden = node.hasClass('page-hidden');
-    mApi().workspace.workspaces.folders.update(workspaceId, node.data('workspace-material-id'), {
-      id: node.data('workspace-material-id'),
-      parentId: node.data('parent-id'),
-      nextSiblingId: nextSiblingId,
-      hidden: hidden,
-      title: title
-    }).callback(
-      function (err, html) {
-        // TODO error handling
-        if (!hidden) {
-          node.removeClass('page-hidden');
-          node.find('.hide-page').removeClass('icon-show').addClass('icon-hide');
-          // TOC
-          var tocElement = $("a[href*='#page-" + workspaceMaterialId + "']");
-          if (tocElement) {
-            tocElement.parent().removeClass('item-hidden');
-          }
-        }
-        else {
-          node.addClass('page-hidden');
-          node.find('.hide-page').removeClass('icon-hide').addClass('icon-show');
-          // TOC
-          var tocElement = $("a[href*='#page-" + workspaceMaterialId + "']");
-          if (tocElement) {
-            tocElement.parent().addClass('item-hidden');
-          }
-        }
-    });
-  }
-  
   function closeEditor(node, loadContent) {
     var materialType = $(node).data('material-type');
-    var editorName = 'workspaceMaterialEditor' + (materialType.substring(0, 1).toUpperCase() + materialType.substring(1));
-    var editor = node[editorName];
-    if (editor) {
-      editor.call(node, 'destroy');
-      node.removeClass("page-edit-mode");
-    }
-    if (loadContent !== false) {
-      var worker = new Worker("/scripts/gui/workspace-material-loader.js");
-      worker.onmessage = $.proxy(function(response) {
-        var material = $.parseJSON(response.data.html);
-        $(node).data('material-title', material.title);
-        $(node).data('material-content', material.html);
-        $(node).data('material-current-revision', material.currentRevision);
-        $(node).data('material-published-revision', material.publishedRevision);
-        $(document).muikkuMaterialLoader('loadMaterial', node, true);
-        var tocElement = $("a[href*='#page-" + $(node).data('workspace-material-id') + "']");
-        if (tocElement) {
-          $(tocElement).text(material.title);
-        }
-      }, this);
-      worker.postMessage({
-        materialId: $(node).data('material-id'),
-        workspaceMaterialId: $(node).data('workspace-material-id') 
+    if (materialType == 'folder') {
+      // folder
+      var title = node.find('input').val();
+      var nextSibling = node.nextAll('.folder').first();
+      var nextSiblingId = nextSibling.length > 0 ? nextSibling.data('workspace-material-id') : null;
+      var workspaceId = $('.workspaceEntityId').val();
+      var hidden = node.hasClass('page-hidden');
+      mApi().workspace.workspaces.folders.update(workspaceId, node.data('workspace-material-id'), {
+        id: node.data('workspace-material-id'),
+        parentId: node.data('parent-id'),
+        nextSiblingId: nextSiblingId,
+        hidden: hidden,
+        title: title
+      }).callback(function (err, html) {
+        // TODO Update TOC text
       });
+    }
+    else { 
+      // html
+      var editorName = 'workspaceMaterialEditor' + (materialType.substring(0, 1).toUpperCase() + materialType.substring(1));
+      var editor = node[editorName];
+      if (editor) {
+        editor.call(node, 'destroy');
+        node.removeClass("page-edit-mode");
+      }
+      if (loadContent !== false) {
+        var worker = new Worker("/scripts/gui/workspace-material-loader.js");
+        worker.onmessage = $.proxy(function(response) {
+          var material = $.parseJSON(response.data.html);
+          $(node).data('material-title', material.title);
+          $(node).data('material-content', material.html);
+          $(node).data('material-current-revision', material.currentRevision);
+          $(node).data('material-published-revision', material.publishedRevision);
+          $(document).muikkuMaterialLoader('loadMaterial', node, true);
+          var tocElement = $("a[href*='#page-" + $(node).data('workspace-material-id') + "']");
+          if (tocElement) {
+            $(tocElement).text(material.title);
+          }
+        }, this);
+        worker.postMessage({
+          materialId: $(node).data('material-id'),
+          workspaceMaterialId: $(node).data('workspace-material-id') 
+        });
+      }
     }
   }
   
@@ -830,11 +816,7 @@
       page.removeClass('page-hidden');
       page.find('.hide-page').removeClass('icon-show').addClass('icon-hide');
     } 
-    editPage($(this).closest('section'));
-  });
-
-  $(document).on('click', '.edit-section', function (event, data) {
-    editSection($(this).closest('.folder'));
+    editPage(page);
   });
 
   $(document).on('click', '.hide-page', function (event, data) {
@@ -1161,11 +1143,6 @@
   $(document).on('click', '.close-page-editor', function (event, data) {
     var workspaceMaterialId = $(this).data('workspace-material-id');
     closeEditor($('#page-' + workspaceMaterialId), true);
-  });
-
-  $(document).on('click', '.close-section-editor', function (event, data) {
-    var workspaceMaterialId = $(this).data('workspace-material-id');
-    closeSectionEditor($('#page-' + workspaceMaterialId));
   });
   
 }).call(this);
