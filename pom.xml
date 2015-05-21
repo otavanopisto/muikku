@@ -4,7 +4,7 @@
 
 	<groupId>fi.muikku</groupId>
 	<artifactId>parent</artifactId>
-	<version>1.0.29-SNAPSHOT</version>
+	<version>1.0.34-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Muikku Parent</name>
 
@@ -82,7 +82,7 @@
 			<dependency>
 				<groupId>fi.muikku</groupId>
 				<artifactId>bom</artifactId>
-				<version>1.0.29-SNAPSHOT</version>
+				<version>1.0.34-SNAPSHOT</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -161,6 +161,7 @@
 					<threshold>High</threshold>
 					<xmlOutput>true</xmlOutput>
 					<findbugsXmlOutputDirectory>${project.build.directory}/findbugs</findbugsXmlOutputDirectory>
+					<skip>${findbugs.skip}</skip>
 				</configuration>
 				<executions>
 					<execution>

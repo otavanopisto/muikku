@@ -72,13 +72,13 @@ public class AcceptanceTestsRESTService extends AbstractRESTService {
         localSessionController.login("PYRAMUS", "STUDENT-1");
       break;
       case "ENVIRONMENT-TEACHER":
-        localSessionController.login("PYRAMUS", "TEACHER-2");
+        localSessionController.login("PYRAMUS", "STAFF-1");
       break;
       case "ENVIRONMENT-MANAGER":
-        localSessionController.login("PYRAMUS", "MANAGER-3");
+        localSessionController.login("PYRAMUS", "STAFF-2");
       break;
       case "ENVIRONMENT-ADMINISTRATOR":
-        localSessionController.login("PYRAMUS", "ADMINISTRATOR-4");
+        localSessionController.login("PYRAMUS", "STAFF-3");
       break;
       
       case "PSEUDO-EVERYONE":

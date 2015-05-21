@@ -18,6 +18,8 @@ public interface User extends SchoolDataEntity {
 
   public String getDisplayName();
   
+  public String getStudyProgrammeName();
+  
   public String getNationality();
   
   public void setNationality(String nationality);

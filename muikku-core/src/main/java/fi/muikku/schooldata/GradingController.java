@@ -1,13 +1,12 @@
 package fi.muikku.schooldata;
 
+import java.util.Date;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import fi.muikku.dao.base.SchoolDataSourceDAO;
 import fi.muikku.dao.grading.GradingScaleEntityDAO;
 import fi.muikku.dao.grading.GradingScaleItemEntityDAO;
 import fi.muikku.model.base.SchoolDataSource;
@@ -15,13 +14,13 @@ import fi.muikku.model.grading.GradingScaleEntity;
 import fi.muikku.model.grading.GradingScaleItemEntity;
 import fi.muikku.schooldata.entity.GradingScale;
 import fi.muikku.schooldata.entity.GradingScaleItem;
+import fi.muikku.schooldata.entity.User;
+import fi.muikku.schooldata.entity.WorkspaceAssessment;
+import fi.muikku.schooldata.entity.WorkspaceUser;
 
 @Dependent
 @Stateless
 public class GradingController {
-	
-	@Inject
-	private Logger logger;
 	
 	@Inject
 	private GradingSchoolDataController gradingSchoolDataController;
@@ -31,9 +30,6 @@ public class GradingController {
 	
 	@Inject
 	private GradingScaleItemEntityDAO gradingScaleItemEntityDAO; 
-
-	@Inject
-	private SchoolDataSourceDAO schoolDataSourceDAO;
 
 	/* GradingScaleEntity */
 
@@ -65,9 +61,13 @@ public class GradingController {
 
 	/* GradingScale */
 
-	public GradingScale findGradingScale(GradingScaleEntity entity) {
-		return gradingSchoolDataController.findGradingScale(entity.getDataSource(), entity.getIdentifier());
-	}
+  public GradingScale findGradingScale(GradingScaleEntity entity) {
+    return gradingSchoolDataController.findGradingScale(entity.getDataSource(), entity.getIdentifier());
+  }
+
+  public GradingScale findGradingScale(String schoolDataSource, String identifier) {
+    return gradingSchoolDataController.findGradingScale(schoolDataSource, identifier);
+  }
 
 	public List<GradingScale> listGradingScales() {
 		return gradingSchoolDataController.listGradingScales();
@@ -78,8 +78,52 @@ public class GradingController {
 	public GradingScaleItem findGradingScaleItem(GradingScale gradingScale, GradingScaleItemEntity entity) {
 		return gradingSchoolDataController.findGradingScaleItem(entity.getDataSource(), gradingScale, entity.getIdentifier());
 	}
+	
+	public GradingScaleItem findGradingScaleItem(GradingScale gradingScale, String schoolDataSource, String identifier) {
+    return gradingSchoolDataController.findGradingScaleItem(schoolDataSource, gradingScale, identifier);
+  }
 
 	public List<GradingScaleItem> listGradingScaleItems(GradingScale gradingScale) {
 		return gradingSchoolDataController.listGradingScaleItems(gradingScale);
 	}
+	
+	/* Workspace assessment */
+	
+	public WorkspaceAssessment createWorkspaceAssessment(String schoolDataSource, WorkspaceUser workspaceUser, User assessingUser, GradingScaleItem grade, String verbalAssessment, Date date) {
+	  return gradingSchoolDataController.createWorkspaceAssessment(schoolDataSource, 
+	      workspaceUser.getIdentifier(), 
+	      workspaceUser.getSchoolDataSource(),
+	      workspaceUser.getWorkspaceIdentifier(), 
+	      workspaceUser.getUserIdentifier(),
+	      assessingUser.getIdentifier(), 
+	      assessingUser.getSchoolDataSource(), 
+	      grade.getIdentifier(), 
+	      grade.getSchoolDataSource(),
+	      grade.getGradingScaleIdentifier(),
+	      grade.getSchoolDataSource(),
+	      verbalAssessment,
+	      date);
+	}
+	
+ public List<WorkspaceAssessment> listWorkspaceAssessments(SchoolDataSource schoolDataSource, String workspaceIdentifier, String studentIdentifier){
+   return gradingSchoolDataController.listWorkspaceAssessments(schoolDataSource, workspaceIdentifier, studentIdentifier);
+ }
+ 
+ public WorkspaceAssessment updateWorkspaceAssessment(String schoolDataSource, String workspaceAssesmentIdentifier, WorkspaceUser workspaceUser, User assessingUser, GradingScaleItem grade, String verbalAssessment, Date date){
+   return gradingSchoolDataController.updateWorkspaceAssessment(schoolDataSource,
+       workspaceAssesmentIdentifier,
+       workspaceUser.getIdentifier(),
+       workspaceUser.getSchoolDataSource(),
+       workspaceUser.getWorkspaceIdentifier(),
+       workspaceUser.getUserIdentifier(),
+       assessingUser.getIdentifier(),
+       assessingUser.getSchoolDataSource(),
+       grade.getIdentifier(),
+       grade.getSchoolDataSource(),
+       grade.getGradingScaleIdentifier(),
+       grade.getSchoolDataSource(),
+       verbalAssessment,
+       date);
+ }
+	
 }

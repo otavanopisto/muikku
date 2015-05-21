@@ -19,6 +19,8 @@ import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.Workspace;
+import fi.muikku.security.MuikkuPermissions;
+import fi.muikku.session.SessionController;
 import fi.otavanopisto.security.LoggedIn;
 
 @Named
@@ -43,6 +45,9 @@ public class WorkspaceMaterialsBackingBean {
   @Inject
   @Named
   private WorkspaceBackingBean workspaceBackingBean;
+  
+  @Inject
+  private SessionController sessionController;
 
   @RequestAction
   public String init() {
@@ -56,6 +61,12 @@ public class WorkspaceMaterialsBackingBean {
         .findWorkspaceEntityByUrlName(urlName);
     if (workspaceEntity == null) {
       return NavigationRules.NOT_FOUND;
+    }
+    
+    if (!workspaceEntity.getPublished()) {
+      if (!sessionController.hasCoursePermission(MuikkuPermissions.ACCESS_UNPUBLISHED_WORKSPACE, workspaceEntity)) {
+        return NavigationRules.NOT_FOUND;
+      }
     }
 
     rootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);

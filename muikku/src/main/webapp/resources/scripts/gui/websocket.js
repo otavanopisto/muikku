@@ -51,7 +51,8 @@
 
       if (this._ticket) {
         var host = window.location.host;
-        this._webSocket = this._openWebSocket('wss://' + host + '/ws/socket/' + this._ticket);
+        var secure = location.protocol == 'https:';
+        this._webSocket = this._openWebSocket((secure ? 'wss://' : 'ws://')  + host + '/ws/socket/' + this._ticket);
         this._webSocket.onopen = this._onWebSocketOpen;
         this._webSocket.onmessage = this._onWebSocketMessage;
         this._webSocket.onclose = this._onWebSocketClose;

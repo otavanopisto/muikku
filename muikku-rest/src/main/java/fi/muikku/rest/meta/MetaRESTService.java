@@ -35,7 +35,7 @@ public class MetaRESTService extends AbstractRESTService {
 
   @GET
   @Path("/resources")
-  @RESTPermit(handling = Handling.INLINE)
+  @RESTPermit(handling = Handling.UNSECURED)
   public Response getResources(@Context Request request) {
     EntityTag tag = new EntityTag(ETAG);
     

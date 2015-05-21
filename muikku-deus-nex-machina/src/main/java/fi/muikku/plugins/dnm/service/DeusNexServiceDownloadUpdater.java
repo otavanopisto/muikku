@@ -135,7 +135,8 @@ public class DeusNexServiceDownloadUpdater {
                     }
                    
                     deusNexImportQueueController.removePendingDownload(pendingDownload);
-      
+                    deusNexImportQueueController.addDownloaded(document.getId());
+                    
                     logger.info(String.format("Processed dnm document #%d (%s)", document.getId(), document.getPath()));
                   } else {
                     logger.log(Level.WARNING, String.format("Ignoring import for document %s because maching workspace could not be found", document.getPath()));

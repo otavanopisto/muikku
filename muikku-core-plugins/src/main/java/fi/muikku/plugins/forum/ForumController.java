@@ -181,6 +181,11 @@ public class ForumController {
     return forumThreadDAO.create(forumArea, title, message, sessionController.getLoggedUserEntity(), sticky, locked);
   }
 
+  @Permit (ForumResourcePermissionCollection.FORUM_DELETEMESSAGES)
+  public void deleteThread(@PermitContext ForumThread thread) {
+    forumThreadDAO.delete(thread);
+  }
+  
   @Permit (ForumResourcePermissionCollection.FORUM_WRITEMESSAGES)
   public ForumThreadReply createForumThreadReply(@PermitContext ForumThread thread, String message) {
     if (thread.getLocked())
@@ -193,6 +198,11 @@ public class ForumController {
     return reply;
   }
 
+  @Permit (ForumResourcePermissionCollection.FORUM_DELETEMESSAGES)
+  public void deleteReply(@PermitContext ForumThreadReply reply) {
+    forumThreadReplyDAO.delete(reply);
+  }
+  
   public List<EnvironmentForumArea> listEnvironmentForums() {
     return sessionController.filterResources(
         environmentForumAreaDAO.listAll(), ForumResourcePermissionCollection.FORUM_LISTFORUM);

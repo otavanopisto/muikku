@@ -77,6 +77,9 @@ public class LocalSessionControllerImpl extends AbstractSessionController implem
   }
 
   public boolean isLoggedIn() {
+    if (getLoggedUserEntity() == null)
+      return false;
+    
     return activeUserIdentifier != null && this.activeUserSchoolDataSource != null;
   }
   

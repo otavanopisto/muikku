@@ -14,9 +14,6 @@
   </ui:define>
   
     <ui:define name="content.tools.center">
-    
-      <!--   TODO : Widget --> 
-      
       <div class="mf-content-toolbar grid_18 omega noLid">  
         <div class="mf-content-tool-container">
           <a class="mf-content-tool icon-home" jsf:outcome="/jsf/calendar/index.jsf"></a>
@@ -30,34 +27,7 @@
 
 
     <ui:define name="content.center.widget">
-    
-      <div id="monthView"  class="ca-view-container" data-user-calendar-ids="#{calendarMonthBackingBean.userCalendarsIds}"></div>
-<!--     
-      <div class="ca-grid-month">
-        <div class="mf-sub-header ca-grid-month-topic">
-          <c:forEach var="i" begin="1" end="7">
-            <div class="ca-weekDays names"><span>Day #{i}</span></div>
-          </c:forEach>      
-          <div class="clear"></div>
-        </div>  
-        <div class="ca-grid-month-days">
-          <div class="ca-monthDays-container">
-          
-            <c:forEach var="i" begin="1" end="31">
-              <c:if test="#{i eq 4}">
-                <div class="ca-weekDays numbers today"><span>#{i}</span></div>
-              </c:if>
-              <c:if test="#{i != 4}">
-                <div class="ca-weekDays numbers"><span>#{i}</span></div>
-              </c:if>  
-            </c:forEach>        
-            <div class="clear"></div>
-          </div>
-        </div>        
-        <div class="clear"></div>
-      </div>
-      
-    -->  
+          <m:widget name="calendar_view_content_month" rendered="#{sessionBackingBean.loggedIn}"/>
     </ui:define>
 
 </ui:composition>

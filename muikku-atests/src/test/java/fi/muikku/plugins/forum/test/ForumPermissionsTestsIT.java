@@ -15,7 +15,6 @@ import com.jayway.restassured.response.Response;
 
 import fi.muikku.AbstractRESTPermissionsTest;
 import fi.muikku.plugins.forum.ForumResourcePermissionCollection;
-import fi.muikku.plugins.forum.rest.ForumAreaGroupRESTModel;
 import fi.muikku.plugins.forum.rest.ForumAreaRESTModel;
 
 

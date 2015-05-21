@@ -685,7 +685,9 @@ public class PyramusUpdater {
 
   private void fireWorkspaceUpdated(Course course) {
     String identifier = identifierMapper.getWorkspaceIdentifier(course.getId());
-    schoolDataWorkspaceUpdatedEvent.fire(new SchoolDataWorkspaceUpdatedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifier, course.getName()));
+    Map<String, Object> extra = new HashMap<>();
+    extra.put("pyramusVariables", course.getVariables());
+    schoolDataWorkspaceUpdatedEvent.fire(new SchoolDataWorkspaceUpdatedEvent(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifier, course.getName(), extra));
   }
 
   private void fireWorkspaceRemoved(Long courseId) {

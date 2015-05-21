@@ -17,17 +17,16 @@ public class WorkspaceEntityDAO extends CoreDAO<WorkspaceEntity> {
   
 	private static final long serialVersionUID = -5129003092406973620L;
 
-	public WorkspaceEntity create(SchoolDataSource dataSource, String identifier, String urlName, Boolean archived) {
+	public WorkspaceEntity create(SchoolDataSource dataSource, String identifier, String urlName, Boolean published, Boolean archived) {
     WorkspaceEntity workspaceEntity = new WorkspaceEntity();
     
     workspaceEntity.setDataSource(dataSource);
     workspaceEntity.setIdentifier(identifier);
     workspaceEntity.setUrlName(urlName);
     workspaceEntity.setArchived(archived);
+    workspaceEntity.setPublished(published);
     
-    getEntityManager().persist(workspaceEntity);
-    
-    return workspaceEntity;
+    return persist(workspaceEntity);
   }
 
 	public WorkspaceEntity findByDataSourceAndIdentifier(SchoolDataSource schoolDataSource, String identifier) {
@@ -133,6 +132,11 @@ public class WorkspaceEntityDAO extends CoreDAO<WorkspaceEntity> {
     );
    
     return entityManager.createQuery(criteria).getResultList();
+  }
+
+  public WorkspaceEntity updatePublished(WorkspaceEntity workspaceEntity, Boolean published) {
+    workspaceEntity.setPublished(published);
+    return persist(workspaceEntity);
   }
   
   public WorkspaceEntity updateArchived(WorkspaceEntity workspaceEntity, Boolean archived) {

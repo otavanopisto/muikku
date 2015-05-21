@@ -95,6 +95,26 @@ class SystemPyramusClient implements PyramusClient {
       releaseClient(client);
     }
   }
+  
+  @Override
+  public <T> T put(String path, Entity<?> entity, Class<T> type) {
+    Client client = obtainClient();
+    try {
+      return restClient.put(client, getAccessToken(), path, entity, type);
+    } finally {
+      releaseClient(client);
+    }
+  }
+
+  @Override
+  public <T> T put(String path, T entity) {
+    Client client = obtainClient();
+    try {
+      return restClient.put(client, getAccessToken(), path, entity);
+    } finally {
+      releaseClient(client);
+    }
+  }
 
   @Override
   public <T> T get(String path, Class<T> type) {
