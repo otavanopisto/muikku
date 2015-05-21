@@ -584,6 +584,42 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     return Response.ok(createRestModel(workspaceMaterial)).build();
   }
+  
+  @GET
+  @Path("/workspaces/{WORKSPACEENTITYID}/materials/")
+  public Response listWorkspaceMaterials(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @QueryParam("parentId") Long parentId) {
+    // TODO: SecuritY???
+    
+    if (parentId == null) {
+      return Response.status(Status.NOT_IMPLEMENTED).entity("Listing workspace materials without parentId is currently not implemented").build();
+    }
+    
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).entity("Could not find a workspace entity").build();
+    }
+    
+    WorkspaceNode parent = workspaceMaterialController.findWorkspaceNodeById(parentId);
+    if (parent == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Given workspace parent material does not exist").build();
+    }
+    
+    WorkspaceRootFolder rootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(parent);
+    if (rootFolder == null) {
+      return Response.status(Status.BAD_REQUEST).entity("Could not find a workspace root folder").build();
+    }
+    
+    if (!rootFolder.getWorkspaceEntityId().equals(workspaceEntityId)) {
+      return Response.status(Status.BAD_REQUEST).entity("Invalid parentId").build();
+    }
+    
+    List<WorkspaceMaterial> workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsByParent(parent);
+    if (workspaceMaterials.isEmpty()) {
+      return Response.noContent().build();
+    }
+    
+    return Response.ok(createRestModel(workspaceMaterials.toArray(new WorkspaceMaterial[0]))).build();
+  } 
 
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/materials/{ID}")
@@ -766,12 +802,24 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     return Response.noContent().build();
   }
+
+  private List<fi.muikku.plugins.workspace.rest.model.WorkspaceMaterial> createRestModel(WorkspaceMaterial... entries) {
+    List<fi.muikku.plugins.workspace.rest.model.WorkspaceMaterial> result = new ArrayList<>();
+
+    for (WorkspaceMaterial entry : entries) {
+      result.add(createRestModel(entry));
+    }
+
+    return result;
+  }
   
   private fi.muikku.plugins.workspace.rest.model.WorkspaceMaterial createRestModel(WorkspaceMaterial workspaceMaterial) {
     WorkspaceNode workspaceNode = workspaceMaterialController.findWorkspaceNodeNextSibling(workspaceMaterial);
     Long nextSiblingId = workspaceNode != null ? workspaceNode.getId() : null;
+    
     return new fi.muikku.plugins.workspace.rest.model.WorkspaceMaterial(workspaceMaterial.getId(), workspaceMaterial.getMaterialId(),
-        workspaceMaterial.getParent() != null ? workspaceMaterial.getParent().getId() : null, nextSiblingId, workspaceMaterial.getHidden(), workspaceMaterial.getAssignmentType());
+        workspaceMaterial.getParent() != null ? workspaceMaterial.getParent().getId() : null, nextSiblingId, workspaceMaterial.getHidden(), 
+        workspaceMaterial.getAssignmentType(), workspaceMaterial.getPath());
   }
 
   private List<fi.muikku.plugins.workspace.rest.model.WorkspaceUser> createRestModel(WorkspaceUserEntity... entries) {
@@ -814,17 +862,8 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-
-    UserEntity loggedInUserEntity = sessionController.getLoggedUserEntity();
-    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndIdentifier(
-        workspaceEntity,
-        loggedInUserEntity.getDefaultIdentifier());
-    
-    if (workspaceUserEntity == null ||
-        workspaceUserEntity.getWorkspaceUserRole() == null ||
-        workspaceUserEntity.getWorkspaceUserRole().getArchetype() != WorkspaceRoleArchetype.TEACHER) {
-      
-      return Response.status(Status.UNAUTHORIZED).entity("Not a teacher").build();
+    if (!sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
     }
 
     WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(materialId);

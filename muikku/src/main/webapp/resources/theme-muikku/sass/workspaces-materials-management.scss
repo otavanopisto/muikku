@@ -411,6 +411,167 @@ body.workspace-materials-management {
         }
       }
       
+      /* Material's attachment widget */
+      .materials-management-page-attachment-widget {
+        min-height:100px;
+        margin:5px -20px 0px -20px;
+      
+        /* Material's attachment upload wrapper */
+        .materials-management-page-attachments-upload-container {
+          padding:20px;
+          position:relative;
+          box-sizing:border-box;
+          border:1px solid #7391a7;
+          transition:background 0.6s ease-in-out;
+          cursor:pointer;
+          
+           &:hover {
+            background:#ebfbff;
+          }
+          
+          input[type="file"] {
+            position:absolute;
+            top:0;
+            bottom:0;
+            left:0;
+            right:0;
+            opacity:0;
+            width:100%;
+            cursor:pointer;
+          }
+          
+          .materials-management-page-attachment-description {
+            display:block;
+            font-size:16px;
+            text-align:center;
+          }
+          
+        }
+        
+        /* Uploaded attachments wrapper */
+        .materials-management-page-attachments-container {
+          position:relative;
+          
+          .content-loading {
+            position:absolute;
+            top:0;
+            left:0;
+            bottom:0;
+            right:0;
+            z-index:9999;
+            opacity:0.98;
+            background:#4f6677;
+            font-size:80px;
+            color:#c8e8ff;
+            
+            .icon-spinner {
+              position:absolute;
+              left:50%;
+              top:50%;
+              margin:-50px 0 0 -50px;
+              -webkit-animation: spinner 0.5s linear infinite;
+              -moz-animation: spinner 0.5s linear infinite;
+              -ms-animation: spinner 0.5s linear infinite;
+              -o-animation: spinner 0.5s linear infinite;
+              animation: spinner 0.5s linear infinite;
+            }
+          }
+        
+          /* Uploaded single attachment wrapper */
+          .materials-management-page-attachment {
+            background:#ebf8ff;
+            padding:5px 10px;
+            position:relative;
+            margin:10px 0;
+            
+            &:hover {
+              box-shadow:0 0 0 3px #cce2ed;
+            
+              .materials-management-page-attachment-actions {
+                display:block;
+              }
+            
+            }
+          
+            .materials-management-page-attachment-image-container {
+              
+            }
+            
+            .materials-management-page-attachment-title {
+            
+            }
+            
+            .materials-management-page-attachment-actions {
+              position:absolute;
+              right:2px;
+              top:2px;
+              display:none;
+            
+              .materials-management-page-attachment-action {
+                color:#000;
+                display:inline-block;
+                margin:2px 5px;
+                padding:2px;
+              }
+            
+            }
+            
+            .materials-management-page-attachment-url {
+              color:#1b5f86;
+              font-size:13px;
+              font-style:italic;
+            }
+            
+            .muikku-page-attachments-upload-progress {
+              height:5px;
+              border:0;
+              
+              .ui-widget-header {
+                background:#58e45e;
+                border:0;
+                border-radius:0;
+                margin:0;
+              }
+            }
+  
+            .materials-management-page-attachment-meta-container {
+              display: none;
+            }
+            
+            &.materials-management-page-attachment-selected  {
+              box-shadow:0 0 0 3px #cce2ed;
+            
+              .materials-management-page-attachment-meta-container {
+                display: block;
+                
+                label {
+                  min-width:100px;
+                }
+                
+                input[type="text"].materials-management-page-attachment-meta-unsaved {
+                  border-color: #d6ea2f;
+                  box-shadow:0 0 0 3px #f1f6cb;
+                }
+                
+                input[type="text"].materials-management-page-attachment-meta-saved {
+                  border-color: #27b91c;
+                  box-shadow:0 0 0 3px #bcf7b7;
+                }
+                
+              }
+            
+            }
+            
+             
+          
+          }
+          
+        
+        }
+      
+      }
+      
+      
       img {
         max-width:100%;
       }
@@ -643,10 +804,25 @@ body.workspace-materials-management {
           a.close-page-editor {
             display:inline-block;
           }
-        
-        }
-        
+        }   
       }
+        
+      .workspace-materials-management-view-page-controls a.close-attachments-editor {
+        display: none !important;
+      }   
+        
+      &.workspace-materials-management-editing-attachments .workspace-materials-management-view-page-controls a,
+      &.workspace-materials-management-editing-attachments .workspace-materials-management-view-page-controls span.assignment-type {
+        display: none !important;
+      }
+      
+      &.workspace-materials-management-editing-attachments .page-content {
+        display: none;
+      }
+
+      &.workspace-materials-management-editing-attachments .workspace-materials-management-view-page-controls a.close-attachments-editor {
+        display: inline-block !important;
+      }   
       
       .workspace-materials-management-view-page-controls span.assignment-type { /* Special case for assignment type link */
         height:25px;
@@ -666,7 +842,7 @@ body.workspace-materials-management {
         a.change-assignment {
           margin:0;
           position:relative;
-          top:-2px;
+          top:-3px;
           left:-1px;
           font-size:17px;
         }
@@ -678,7 +854,7 @@ body.workspace-materials-management {
         a.change-assignment {
           margin:0;
           position:relative;
-          top:-2px;
+          top:-3px;
           left:-1px;
           transform:rotate(330deg);
           font-size:17px;
@@ -692,7 +868,7 @@ body.workspace-materials-management {
         a.change-assignment {
           margin:0;
           position:relative;
-          top:-2px;
+          top:-3px;
           left:-1px;
           transform:rotate(30deg);
           font-size:17px;
@@ -724,7 +900,9 @@ body.workspace-materials-management {
         a.change-assignment,
         a.publish-page,
         a.revert-page,
-        a.close-page-editor {
+        a.close-page-editor,
+        a.page-attachments,
+        a.close-attachments-editor {
           color:#fff;
           font-size:21px;
           display:inline-block;
@@ -818,6 +996,7 @@ body.workspace-materials-management {
     padding:0;
     text-transform:uppercase;
     border:none;
+    z-index:9999;
     
     &.ui-corner-all {
       border-radius:0px;
