@@ -20,7 +20,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.material.MaterialController;
-import fi.muikku.plugins.material.model.BinaryMaterial;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.material.model.MaterialMeta;
 import fi.muikku.plugins.material.model.MaterialMetaKey;
@@ -72,10 +71,6 @@ public class MaterialMetaRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity("Material not found").build();
     }
     
-    if (!(material instanceof BinaryMaterial)) {
-      return Response.status(Status.NOT_FOUND).entity("Material is not binary material").build();
-    }
-    
     if (StringUtils.isBlank(payload.getKey())) {
       return Response.status(Status.BAD_REQUEST).entity("Missing key").build();
     }
@@ -97,10 +92,6 @@ public class MaterialMetaRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity("Material not found").build();
     }
     
-    if (!(material instanceof BinaryMaterial)) {
-      return Response.status(Status.NOT_FOUND).entity("Material is not binary material").build();
-    }
-    
     List<MaterialMeta> metas = materialController.listMaterialMetas(material);
     if (metas.isEmpty()) {
       return Response.noContent().build();
@@ -116,10 +107,6 @@ public class MaterialMetaRESTService extends PluginRESTService {
     Material material = materialController.findMaterialById(id);
     if (material == null) {
       return Response.status(Status.NOT_FOUND).entity("Material not found").build();
-    }
-    
-    if (!(material instanceof BinaryMaterial)) {
-      return Response.status(Status.NOT_FOUND).entity("Material is not binary material").build();
     }
     
     MaterialMetaKey materialMetaKey = materialController.findMaterialMetaKey(key);
@@ -154,14 +141,6 @@ public class MaterialMetaRESTService extends PluginRESTService {
     Material material = materialController.findMaterialById(id);
     if (material == null) {
       return Response.status(Status.NOT_FOUND).entity("Material not found").build();
-    }
-    
-    if (!(material instanceof BinaryMaterial)) {
-      return Response.status(Status.NOT_FOUND).entity("Material is not binary material").build();
-    }
-    
-    if (StringUtils.isBlank(payload.getKey())) {
-      return Response.status(Status.BAD_REQUEST).entity("Missing key").build();
     }
     
     MaterialMetaKey materialMetaKey = materialController.findMaterialMetaKey(key);
