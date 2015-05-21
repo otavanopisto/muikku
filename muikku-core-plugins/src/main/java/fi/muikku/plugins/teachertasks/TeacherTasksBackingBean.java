@@ -7,7 +7,7 @@ import fi.otavanopisto.security.LoggedIn;
 
 @Named
 @RequestScoped
-@Join(path = "/tasktool/", to = "/jsf/tasktool/index.jsf")
+@Join(path = "/records/", to = "/jsf/records/index.jsf")
 @LoggedIn
 
 
