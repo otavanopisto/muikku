@@ -56,7 +56,7 @@ public class MaterialMetaRESTService extends PluginRESTService {
   }
 
   @POST
-  @Path("/{id}/meta")
+  @Path("/materials/{id}/meta")
   @Produces(MediaType.APPLICATION_JSON)
   public Response createMaterialMeta(@PathParam("id") Long id, fi.muikku.plugins.material.rest.MaterialMeta payload) {
     if (!sessionController.isLoggedIn()) {
@@ -89,7 +89,7 @@ public class MaterialMetaRESTService extends PluginRESTService {
   }
 
   @GET
-  @Path("/{id}/meta")
+  @Path("/materials/{id}/meta/")
   @Produces(MediaType.APPLICATION_JSON)
   public Response listMaterialMetas(@PathParam("id") Long id) {
     Material material = materialController.findMaterialById(id);
@@ -110,7 +110,7 @@ public class MaterialMetaRESTService extends PluginRESTService {
   }
   
   @GET
-  @Path("/{id}/meta/{KEY}")
+  @Path("/materials/{id}/meta/{KEY}")
   @Produces(MediaType.APPLICATION_JSON)
   public Response findMaterialMeta(@PathParam("id") Long id, @PathParam("KEY") String key) {
     Material material = materialController.findMaterialById(id);
@@ -136,7 +136,7 @@ public class MaterialMetaRESTService extends PluginRESTService {
   }
   
   @PUT
-  @Path("/{id}/meta/{KEY}")
+  @Path("/materials/{id}/meta/{KEY}")
   @Produces(MediaType.APPLICATION_JSON)
   public Response updateMaterialMeta(@PathParam("id") Long id, @PathParam("KEY") String key, fi.muikku.plugins.material.rest.MaterialMeta payload) {
     if (!sessionController.isLoggedIn()) {
