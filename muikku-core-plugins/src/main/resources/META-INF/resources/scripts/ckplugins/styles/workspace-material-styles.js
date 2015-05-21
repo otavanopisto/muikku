@@ -22,7 +22,9 @@ CKEDITOR.stylesSet.add( 'workspace-material-styles', [
   { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.recapBox"), element: 'p', attributes: { 'class': 'material-recapbox material-styles-block' } },
   { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.chatBubble"), element: 'p', attributes: { 'class': 'material-chatbubble material-styles-block' } },
   { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.citationBasic"), element: 'p', attributes: { 'class': 'material-citation-basic material-styles-block' } },
-  { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.citationHighlight"), element: 'p', attributes: { 'class': 'material-citation-highlight material-styles-block' } }
+  { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.citationHighlight"), element: 'p', attributes: { 'class': 'material-citation-highlight material-styles-block' } },
+  { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.externalLinkBox"), element: 'p', attributes: { 'class': 'material-linkbox material-styles-block' } },
+  { name: getLocaleText("plugin.workspace.htmlMaterialEditor.stylesSets.audioBox"), element: 'p', attributes: { 'class': 'material-audiobox material-styles-block' } }
   
   /* Inline Styles */
 
