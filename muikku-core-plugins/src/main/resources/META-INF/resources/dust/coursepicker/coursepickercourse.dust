@@ -9,36 +9,36 @@
     <div class="cp-course-details">
       <div class="cp-course-details-container">       
         <div class="cp-course-additionalInfo">
-          <div class="cp-course-details-teachers">
-            {?teachers}
-              <div style="display:none;" class="cp-course-details-teachers-caption">{#localize key="plugin.coursepicker.course.teachers" /}</div>             
-              {#teachers}
-                <div class="cp-course-details-teacher">
-                  <div class="cp-course-details-teacher-picture-container">
-                    {?hasPicture} 
-                      <img class="cp-course-details-teacher-picture" title="{fullName}" src="{@contextPath/}/picture?userId={id}" width="20" height="20" />
-                    {:else}
-                      <div class="cp-teacher-picture-default"></div>
-                    {/hasPicture}
-                  </div>
+<!--           <div class="cp-course-details-teachers"> -->
+<!--             {?teachers} -->
+<!--               <div style="display:none;" class="cp-course-details-teachers-caption">{#localize key="plugin.coursepicker.course.teachers" /}</div>              -->
+<!--               {#teachers} -->
+<!--                 <div class="cp-course-details-teacher"> -->
+<!--                   <div class="cp-course-details-teacher-picture-container"> -->
+<!--                     {?hasPicture}  -->
+<!--                       <img class="cp-course-details-teacher-picture" title="{fullName}" src="{@contextPath/}/picture?userId={id}" width="20" height="20" /> -->
+<!--                     {:else} -->
+<!--                       <div class="cp-teacher-picture-default"></div> -->
+<!--                     {/hasPicture} -->
+<!--                   </div> -->
   
 
-                  <div class="clear"></div>
-                </div>
+<!--                   <div class="clear"></div> -->
+<!--                 </div> -->
   
-              {/teachers}
-            {:else}
-              {#localize key="plugin.coursepicker.course.noteachers" /}
-            {/teachers}
-          </div>
+<!--               {/teachers} -->
+<!--             {:else} -->
+<!--               {#localize key="plugin.coursepicker.course.noteachers" /} -->
+<!--             {/teachers} -->
+<!--           </div> -->
   
-          {?hasCourseFee}      
-            <div class="cp-course-details-fee">{#localize key="plugin.coursepicker.course.coursehasfee" /}</div>
-          {/hasCourseFee}
+<!--           {?hasCourseFee}       -->
+<!--             <div class="cp-course-details-fee">{#localize key="plugin.coursepicker.course.coursehasfee" /}</div> -->
+<!--           {/hasCourseFee} -->
   
-          {?hasAssessmentFee}      
-            <div class="cp-course-details-assessmentFee">{#localize key="plugin.coursepicker.course.assessmenthasfee" /}</div>
-          {/hasAssessmentFee}
+<!--           {?hasAssessmentFee}       -->
+<!--             <div class="cp-course-details-assessmentFee">{#localize key="plugin.coursepicker.course.assessmenthasfee" /}</div> -->
+<!--           {/hasAssessmentFee} -->
         </div>
         <div class="cp-course-description">
           <div class="cp-course-header-name">
@@ -47,9 +47,9 @@
           </div>
           
           <div class="cp-course-header-details">
-           <span class="cp-course-rating">{rating} ({ratingCount})</span>
-           <span class="cp-course-len"></span>
-           <span class="cp-course-age"></span>
+<!--            <span class="cp-course-rating">{rating} ({ratingCount})</span> -->
+<!--            <span class="cp-course-len"></span> -->
+<!--            <span class="cp-course-age"></span> -->
           </div>
          
           <div id="detailsCrs-{id}" class="cp-course-content-details" style="display:none;">     
@@ -74,4 +74,9 @@
     </div>
   </div>
 </div>
+{:else}
+<div class="mf-content-empty cm-no-messages">
+  <h3>{#localize key="plugin.coursepicker.empty.topic.all"/}</h3>
+</div>
+
 {/.}

@@ -2,7 +2,6 @@ package fi.muikku.plugins.search;
 
 import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -13,13 +12,12 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.codehaus.jackson.map.ObjectMapper;
-import org.elasticsearch.action.delete.DeleteResponse;
-import org.elasticsearch.action.index.IndexResponse;
+import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.indices.IndexMissingException;
 import org.elasticsearch.node.Node;
@@ -31,7 +29,7 @@ import fi.muikku.search.SearchResult;
 @ApplicationScoped
 @Stateful
 public class ElasticSearchProvider implements SearchProvider {
-
+  
   @Inject
   private Logger logger;
 
@@ -46,6 +44,66 @@ public class ElasticSearchProvider implements SearchProvider {
     elasticClient.close();
   }
   
+  @Override
+  public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, String freeText, boolean includeUnpublished, int start, int maxResults) {
+    QueryBuilder query = null;
+    
+    try {
+      if (StringUtils.isBlank(schoolDataSource) && (subjects == null || subjects.isEmpty()) && StringUtils.isBlank(freeText)) {
+        if (includeUnpublished) {
+          query = QueryBuilders.matchAllQuery();
+        } else {
+          query = QueryBuilders.matchQuery("published", Boolean.TRUE);
+        }
+      } else {
+        query = QueryBuilders.boolQuery();
+        
+        if (!includeUnpublished) {
+          ((BoolQueryBuilder) query).must(QueryBuilders.matchQuery("published",Boolean.TRUE));
+        }
+        
+        if (StringUtils.isNotBlank(schoolDataSource)) {
+          ((BoolQueryBuilder) query).must(QueryBuilders.matchQuery("schoolDataSource", schoolDataSource));
+        }
+        
+        if (subjects != null && !subjects.isEmpty()) {
+          ((BoolQueryBuilder) query).must(QueryBuilders.termsQuery("subjectIdentifier", subjects));
+        }
+        
+        if (identifiers != null && !identifiers.isEmpty()) {
+          ((BoolQueryBuilder) query).must(QueryBuilders.termsQuery("identifier", identifiers));
+        }
+    
+        if (StringUtils.isNotBlank(freeText)) {
+          ((BoolQueryBuilder) query).should(QueryBuilders.prefixQuery("name", freeText));
+          ((BoolQueryBuilder) query).should(QueryBuilders.prefixQuery("description", freeText));
+        }
+      }
+      
+      SearchRequestBuilder requestBuilder = elasticClient
+        .prepareSearch("muikku")
+        .setTypes("Workspace")
+        .setFrom(start)
+        .setSize(maxResults);
+      
+      SearchResponse response = requestBuilder.setQuery(query).execute().actionGet();
+      List<Map<String, Object>> searchResults = new ArrayList<Map<String, Object>>();
+      SearchHit[] results = response.getHits().getHits();
+      for (SearchHit hit : results) {
+        Map<String, Object> hitSource = hit.getSource();
+        hitSource.put("indexType", hit.getType());
+        searchResults.add(hitSource);
+      }
+      
+      SearchResult result = new SearchResult(searchResults.size(), start, maxResults, searchResults);
+      return result;
+    } catch (IndexMissingException ime) {
+      return new SearchResult(0, 0, 0, new ArrayList<Map<String,Object>>()); 
+    } catch (Exception e) {
+      logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
+      return new SearchResult(0, 0, 0, new ArrayList<Map<String,Object>>()); 
+    }
+  }
   
   @Override
   public SearchResult search(String query, String[] fields, int start, int maxResults, Class<?>... types) {
@@ -166,26 +224,6 @@ public class ElasticSearchProvider implements SearchProvider {
       logger.log(Level.SEVERE, "ElasticSearch query failed unexpectedly", e);
       return new SearchResult(0, 0, 0, new ArrayList<Map<String,Object>>()); 
     }
-  }
-
-  @Override
-  public void addOrUpdateIndex(String typeName, Map<String, Object> entity) {
-    ObjectMapper mapper = new ObjectMapper();
-    String json;
-    try {
-      json = mapper.writeValueAsString(entity);
-      String id = entity.get("id").toString();
-      @SuppressWarnings("unused")
-      IndexResponse response = elasticClient.prepareIndex("muikku", typeName, id).setSource(json).execute().actionGet();
-    } catch (IOException e) {
-      logger.log(Level.WARNING, "Adding to index failed because of exception", e);
-    }
-  }
-
-  @Override
-  public void deleteFromIndex(String typeName, String id) {
-    @SuppressWarnings("unused")
-    DeleteResponse response = elasticClient.prepareDelete("muikku", typeName, id).execute().actionGet();
   }
 
   private Client elasticClient;

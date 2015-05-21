@@ -51,6 +51,24 @@ public class WorkspaceFolderDAO extends CorePluginsDAO<WorkspaceFolder> {
     return entityManager.createQuery(criteria).getResultList();
   }
 
+  public List<WorkspaceFolder> listByHiddenAndParentAndFolderType(Boolean hidden, WorkspaceNode parent, WorkspaceFolderType folderType) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceFolder> criteria = criteriaBuilder.createQuery(WorkspaceFolder.class);
+    Root<WorkspaceFolder> root = criteria.from(WorkspaceFolder.class);
+    criteria.select(root);
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(WorkspaceFolder_.hidden), hidden),
+            criteriaBuilder.equal(root.get(WorkspaceFolder_.parent), parent),
+            criteriaBuilder.equal(root.get(WorkspaceFolder_.folderType), folderType)
+         )
+    );
+
+    return entityManager.createQuery(criteria).getResultList();
+  }
+  
   public void delete(WorkspaceFolder workspaceFolder) {
     super.delete(workspaceFolder);
   }

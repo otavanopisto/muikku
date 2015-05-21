@@ -1,8 +1,10 @@
 package fi.muikku.plugins.workspace.dao;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -39,6 +41,35 @@ public class WorkspaceVisitDAO extends CorePluginsDAO<WorkspaceVisit> {
     );
 
     return getSingleResult(entityManager.createQuery(criteria));
+  }
+  
+  public List<WorkspaceVisit> listByUserEntityAndMinVisitsOrderByLastVisit(UserEntity userEntity, Long numVisits, Integer firstResult, Integer maxResults) {
+    EntityManager entityManager = getEntityManager();
+
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<WorkspaceVisit> criteria = criteriaBuilder.createQuery(WorkspaceVisit.class);
+    Root<WorkspaceVisit> root = criteria.from(WorkspaceVisit.class);
+    criteria.select(root);
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(WorkspaceVisit_.userEntityId), userEntity.getId()),
+        criteriaBuilder.greaterThanOrEqualTo(root.get(WorkspaceVisit_.numVisits), numVisits)
+      )
+    );
+    
+    criteria.orderBy(criteriaBuilder.desc(root.get(WorkspaceVisit_.lastVisit)));
+    
+    TypedQuery<WorkspaceVisit> query = entityManager.createQuery(criteria);
+    
+    if (firstResult != null) {
+      query.setFirstResult(firstResult);
+    }
+    
+    if (maxResults != null) {
+      query.setMaxResults(maxResults);
+    }
+    
+    return query.getResultList();
   }
   
   public void updateNumVisitsAndLastVisit(WorkspaceVisit workspaceVisit, Long numVisits, Date lastVisit) {

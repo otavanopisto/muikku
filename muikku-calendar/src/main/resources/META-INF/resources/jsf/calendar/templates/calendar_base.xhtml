@@ -9,8 +9,7 @@
   template="/WEB-INF/templates/mainfunction.xhtml">
   
   <ui:define name="content.left.widget"> 
-    <!--  TODO : Widget -->
-    <div id="smallMonthCalendar"></div>
+    <m:widget name="calendar_small" size="6" rendered="#{sessionBackingBean.loggedIn}"/>
   </ui:define>
 
   <ui:define name="viewCss">
@@ -21,7 +20,7 @@
     
     <link rel="StyleSheet" href="//cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.6.5/jquery.timepicker.min.css"></link>
     <h:outputStylesheet name="scripts/jquery.contextmenu/jquery.contextmenu.css"/> 
-   </ui:define> 
+  </ui:define> 
     
   <ui:define name="viewScripts">    
     <!-- Time Picker -->

@@ -264,7 +264,7 @@ body.workspace-materials-reading {
     margin:0 auto;
     
     & > article > h1 { /* Material's title */
-      max-width:700px;
+      max-width:640px;
       width:auto;
       background:#fff;
       margin:30px auto -30px auto; 
@@ -281,7 +281,7 @@ body.workspace-materials-reading {
      & > h2 { /* Section's title */
        position:relative;
        z-index:12;
-       max-width:700px;
+       max-width:640px;
        width:auto;
        border:1px solid #fff;
        background:#ddf5ff;
@@ -295,7 +295,7 @@ body.workspace-materials-reading {
      }
      
      & > h3,h4,h5,h6 { /* Alternative Section's titles */
-       max-width:700px;
+       max-width:640px;
        width:auto;
        background:#fff;
        margin:30px auto -30px auto; 

@@ -1,6 +1,5 @@
 @import "_jsf.scss";
 
-
 /* COLORS */
 $contextualLink:#0099ff;
 $contextualLinkHover:#006ab1;
@@ -32,7 +31,7 @@ $sc: rgba(218,218,218,1);
 $brd:#dadada;
 $brd1:#ededed;
 $brd2:#dadada;
-$brd3:#f8f8f8;
+$brd3:#eee;
 $brd-top:#9bbee6;
 
 /* Paddings */
@@ -44,7 +43,7 @@ $textContentPadding:15px;
 $bgr: #fff;
 $bgr1 : #ededed;
 $bgr2 : #dadada;
-$bgr3 : #f8f8f8;
+$bgr3 : #eee;
 
 /* Action area background */
 $aBgr:#f8f8f8;
@@ -462,4 +461,55 @@ background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,1)
  
 @mixin transitionDirection($val1:0,$val2:0,$val3:0,$val4:0) {
   margin:$val1 $val2 $val3 $val4;
+}
+
+/* Generic cross bowser content loading animation for spinner icon */
+
+@-webkit-keyframes spinner /* Safari and Chrome */ {
+  from {
+    -ms-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -ms-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@-moz-keyframes spinner /* Older Firefox */ {
+  from {
+    -ms-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -ms-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes spinner {
+  from {
+    -ms-transform: rotate(0deg);
+    -moz-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    -o-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  to {
+    -ms-transform: rotate(360deg);
+    -moz-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
 }

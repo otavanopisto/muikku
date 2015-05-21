@@ -61,6 +61,7 @@ public class DeusNexStructureParser {
     int type = DeusNexXmlUtils.getChildValueInt(resourceElement, "type");
 
     switch (type) {
+    case 2:
     case 3:
       return parseBinary(resourceElement);
     case 4:

@@ -17,11 +17,13 @@ import fi.muikku.schooldata.entity.EnvironmentRole;
 import fi.muikku.schooldata.entity.EnvironmentRoleArchetype;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
+import fi.muikku.schooldata.entity.WorkspaceAssessment;
 import fi.muikku.schooldata.entity.WorkspaceRole;
 import fi.muikku.schooldata.entity.WorkspaceRoleArchetype;
 import fi.muikku.schooldata.entity.WorkspaceType;
 import fi.muikku.schooldata.entity.WorkspaceUser;
 import fi.pyramus.rest.model.Course;
+import fi.pyramus.rest.model.CourseAssessment;
 import fi.pyramus.rest.model.CourseStaffMember;
 import fi.pyramus.rest.model.CourseStaffMemberRole;
 import fi.pyramus.rest.model.CourseStudent;
@@ -68,6 +70,7 @@ public class PyramusSchoolDataEntityFactory {
                            null,
                            null,
                            null,
+                           null,
                            null);
   }
   
@@ -93,16 +96,17 @@ public class PyramusSchoolDataEntityFactory {
       .append(' ')
       .append(student.getLastName());
     
-    if (studyProgramme != null) {
-      displayName.append(" (")
-        .append(studyProgramme.getName())
-        .append(')');
+    String studyProgrammeName = studyProgramme != null ? studyProgramme.getName() : null;
+    
+    if (studyProgrammeName != null) {
+      displayName.append(String.format(" (%s)", studyProgrammeName));
     }
     
     return new PyramusUser(identifierMapper.getStudentIdentifier(student.getId()),
                            student.getFirstName(),
                            student.getLastName(),
                            displayName.toString(),
+                           studyProgrammeName,
                            nationality,
                            language,
                            municipality,
@@ -262,7 +266,7 @@ public class PyramusSchoolDataEntityFactory {
         course.getName(),
         course.getDescription(),
         identifierMapper.getWorkspaceTypeIdentifier(course.getTypeId()),
-        "TODO",
+        identifierMapper.getWorkspaceCourseIdentifier(course.getSubjectId(), course.getCourseNumber()),
         modified.toDate(),
         identifierMapper.getSubjectIdentifier(course.getSubjectId()),
         educationTypeIdentifier,
@@ -281,6 +285,26 @@ public class PyramusSchoolDataEntityFactory {
     );
   }
 
+  public WorkspaceAssessment createEntity(CourseAssessment courseAssessment){
+    return new PyramusWorkspaceAssessment(
+       courseAssessment.getId().toString(),
+       identifierMapper.getWorkspaceStudentIdentifier(courseAssessment.getCourseStudentId()),
+       identifierMapper.getStaffIdentifier(courseAssessment.getAssessorId()),
+       courseAssessment.getGradeId().toString(),
+       courseAssessment.getGradingScaleId().toString(),
+       courseAssessment.getVerbalAssessment(),
+       courseAssessment.getDate().toDate()
+     );
+  }
+  
+  public List<WorkspaceAssessment> createEntity(CourseAssessment... courseAssessments){
+    List<WorkspaceAssessment> result = new ArrayList<>();
+    for(CourseAssessment courseAssessment : courseAssessments){
+      result.add(createEntity(courseAssessment));
+    }
+    return result;
+  }
+  
   public List<WorkspaceType> createEntities(CourseType... courseTypes) {
     List<WorkspaceType> result = new ArrayList<>();
     

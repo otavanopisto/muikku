@@ -2,6 +2,15 @@
 @import "_workspaces-materials-defaults.scss"; 
 @import "_connect-field.scss";
 
+
+.lazyPdf {
+  height: 850px;
+}
+
+.lazySwf {
+  height: 500px;
+}
+  
 body.workspace-materials {
   @include background-image('/gfx/light-diagonal-strips.png');
   background-repeat:repeat;
@@ -10,7 +19,7 @@ body.workspace-materials {
   font-size:16px;
   font-weight:300;
   line-height:1.7em;
-  
+
   #staticNavigationWrapperWorkspace {
     background:none; /* We need to remove all background rules first */
     @include background-image('gfx/workspace-navigation-background.png'); /* Workspace's navigation's background */

@@ -35,7 +35,7 @@ public class WorkspaceEntityController {
       return null;
     }
     
-    WorkspaceEntity workspaceEntity = workspaceEntityDAO.create(schoolDataSource, identifier, urlName, Boolean.FALSE);
+    WorkspaceEntity workspaceEntity = workspaceEntityDAO.create(schoolDataSource, identifier, urlName, Boolean.FALSE, Boolean.FALSE);
 
 //  TODO: Re-enable workspace settings template
 //    WorkspaceSettingsTemplate workspaceSettingsTemplate = workspaceSettingsTemplateDAO.findById(1l);
@@ -99,6 +99,11 @@ public class WorkspaceEntityController {
     return listWorkspaceEntitiesByDataSource(schoolDataSource, firstResult, maxResults); 
   }
 
+
+  public WorkspaceEntity updatePublished(WorkspaceEntity workspaceEntity, Boolean published) {
+    return workspaceEntityDAO.updatePublished(workspaceEntity, published);
+  }
+
   public WorkspaceEntity archiveWorkspaceEntity(WorkspaceEntity workspaceEntity) {
     return workspaceEntityDAO.updateArchived(workspaceEntity, Boolean.TRUE);
   }
@@ -113,5 +118,4 @@ public class WorkspaceEntityController {
     
     return result;
   }
-
 }

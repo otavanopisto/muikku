@@ -1,5 +1,6 @@
 package fi.muikku.users;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -74,7 +75,19 @@ public class WorkspaceUserEntityController {
   }
 
   public List<WorkspaceUserEntity> listWorkspaceUserEntitiesByRoles(WorkspaceEntity workspaceEntity, List<WorkspaceRoleEntity> roles) {
-    return workspaceUserEntityDAO.listByWorkspaceAndRoles(workspaceEntity, roles);
+    return listWorkspaceUserEntitiesByRoles(workspaceEntity, roles, null, null);
+  }
+  
+  public List<WorkspaceUserEntity> listWorkspaceUserEntitiesByRoles(WorkspaceEntity workspaceEntity, List<WorkspaceRoleEntity> roles, Integer firstResult, Integer maxResults) {
+    return workspaceUserEntityDAO.listByWorkspaceAndRoles(workspaceEntity, roles, firstResult, maxResults);
+  }
+  
+  public Long countWorkspaceUserEntitiesByRoles(WorkspaceEntity workspaceEntity, List<WorkspaceRoleEntity> roles) {
+    if ((roles == null)||(roles.isEmpty())) {
+      return 0l;
+    }
+    
+    return workspaceUserEntityDAO.countByWorkspaceAndRoles(workspaceEntity, roles);
   }
   
   public List<WorkspaceUserEntity> listWorkspaceUserEntitiesByUserEntity(UserEntity userEntity) {
@@ -105,6 +118,17 @@ public class WorkspaceUserEntityController {
     }
     
     return null;
+  }
+
+  public List<WorkspaceEntity> listWorkspaceEntitiesByUserEntity(UserEntity userEntity) {
+    List<WorkspaceEntity> result = new ArrayList<>();
+    
+    List<WorkspaceUserEntity> workspaceUserEntities = listWorkspaceUserEntitiesByUserEntity(userEntity);
+    for (WorkspaceUserEntity workspaceUserEntity : workspaceUserEntities) {
+      result.add(workspaceUserEntity.getWorkspaceEntity());
+    }
+    
+    return result;
   }
   
 }

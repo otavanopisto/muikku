@@ -77,6 +77,45 @@ class PyramusRestClient implements Serializable {
     }
   }
   
+  public <T> T put(Client client, String accssToken, String path, Entity<?> entity, Class<T> type) {
+    
+    String blockOutgoing = System.getProperty("muikku.schoolDataPyramus.blockOutgoing", "false");
+    
+    if ("true".equals(blockOutgoing)) {
+      throw new RuntimeException("Outgoing school-data-pyramus traffic blocked");
+    }
+    
+    WebTarget target = client.target(url + path);
+    Builder request = target.request();
+    request.header("Authorization", "Bearer " + accssToken);
+    Response response = request.put(entity);
+    try {
+      return createResponse(response, type, path);
+    } finally {
+      response.close();
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public <T> T put(Client client, String accssToken, String path, T entity) {
+    WebTarget target = client.target(url + path);
+
+    String blockOutgoing = System.getProperty("muikku.schoolDataPyramus.blockOutgoing", "false");
+    
+    if ("true".equals(blockOutgoing)) {
+      throw new RuntimeException("Outgoing school-data-pyramus traffic blocked");
+    }
+
+    Builder request = target.request();
+    request.header("Authorization", "Bearer " + accssToken);
+    Response response = request.put(Entity.entity(entity, MediaType.APPLICATION_JSON));
+    try {
+      return (T) createResponse(response, entity.getClass(), path);
+    } finally {
+      response.close();
+    }
+  }
+  
   public <T> T get(Client client, String accessToken, String path, Class<T> type) {
     WebTarget target = client.target(url + path);
     Builder request = target.request();

@@ -57,7 +57,7 @@ public abstract class AbstractSessionController implements SessionController {
   
   @Override
   public UserEntity getLoggedUserEntity() {
-    if (!isLoggedIn()) {
+    if ((getLoggedUserSchoolDataSource() == null) || (getLoggedUserIdentifier() == null)) {
       return null;
     }
     
