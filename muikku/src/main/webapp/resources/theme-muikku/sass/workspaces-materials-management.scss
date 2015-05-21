@@ -446,13 +446,15 @@ body.workspace-materials-management {
       
       /* Uploaded attachments wrapper */
       .materials-management-page-attachments-container {
+        margin:0 -20px;
+        min-height:100px;
       
         /* Uploaded single attachment wrapper */
         .materials-management-page-attachment {
           background:#ebf8ff;
-          margin:10px -20px;
           padding:5px 10px;
           position:relative;
+          margin:10px 0;
           
           &:hover {
             box-shadow:0 0 0 5px #cce2ed;
@@ -942,6 +944,7 @@ body.workspace-materials-management {
     padding:0;
     text-transform:uppercase;
     border:none;
+    z-index:9999;
     
     &.ui-corner-all {
       border-radius:0px;

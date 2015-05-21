@@ -325,7 +325,7 @@
           dialogClass: "workspace-materials-management-dialog",
           buttons: [{
             'text': dialog.data('button-remove-text'),
-            'class': 'remove-button',
+            'class': 'delete-button',
             'click': function(event) {
               $(this).dialog("close");
               confirmCallback();
