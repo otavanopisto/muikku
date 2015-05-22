@@ -220,6 +220,315 @@
     }, this));
   });
   
+  $.widget("custom.muikkuPageAttachments", {
+    _create : function() {
+      this.element.addClass('materials-management-page-attachment-widget');
+      
+      this._startLoading();
+      
+      this._workspaceUrl = null;
+      
+      mApi().materials.metakeys.read().callback($.proxy(function (metaErr, metaKeys) {
+        if (metaErr) {
+          $('.notification-queue').notificationQueue('notification', 'error', metaErr);
+        } else {
+          this._metaKeys = metaKeys;
+          
+          mApi().workspace.workspaces.read(this.options.workspaceEntityId).callback($.proxy(function (workspaceErr, workspaceEntity) {
+            if (workspaceErr) {
+              $('.notification-queue').notificationQueue('notification', 'error', workspaceErr);
+            } else {
+              this._workspaceUrl = CONTEXTPATH + '/workspace/' + workspaceEntity.urlName;
+              
+              mApi().workspace.workspaces.materials.read(this.options.workspaceEntityId, {
+                parentId: this.options.parentId
+              })
+              .on('$', function (workspaceMaterial, callback) {
+                mApi().materials.binary.read(workspaceMaterial.materialId).callback(function (binaryErr, binaryMaterial) {
+                  if (binaryErr) {
+                    $('.notification-queue').notificationQueue('notification', 'error', binaryErr);
+                  } else {
+                    workspaceMaterial.material = binaryMaterial;
+                    callback();
+                  }
+                });   
+              })
+              .callback($.proxy(function (err, workspaceMaterials) {
+                if (err) {
+                  $('.notification-queue').notificationQueue('notification', 'error', err);
+                } else {
+                  
+                  var data = {
+                    attachments: $.map(workspaceMaterials||[], $.proxy(function (workspaceMaterial) {
+                      return {
+                        workspaceMaterialId: workspaceMaterial.id,
+                        materialId: workspaceMaterial.material.id,
+                        title: workspaceMaterial.material.title,
+                        contentType: workspaceMaterial.material.contentType,
+                        url: this._workspaceUrl + '/materials/' + workspaceMaterial.path,
+                        upload: false,
+                        metaKeys: this._metaKeys
+                      };
+                    }, this))
+                  };
+        
+                  renderDustTemplate('workspace/materials-management-page-attachments.dust', data, $.proxy(function (text) {
+                    this.element.html(text);
+                    
+                    this._uploadContainer = this.element.find('.materials-management-page-attachments-upload-container');
+                    this._attachmentsContainer = this.element.find('.materials-management-page-attachments-container');
+                    
+                    var fileInput = this.element.find('input[type="file"]');
+                    fileInput.fileupload({
+                      url : CONTEXTPATH + '/tempFileUploadServlet',
+                      dropZone: fileInput.closest('.materials-management-page-attachments-upload-container'),
+                      autoUpload : true,
+                      add : $.proxy(this._onFileUploadAdd, this),
+                      done : $.proxy(this._onFileUploadDone, this),
+                      progress : $.proxy(this._onFileUploadProgress, this)
+                    });
+
+                    this.element.on('click', '.materials-management-page-attachment-action-download', $.proxy(this._onAttachmentDownloadClick, this));
+                    this.element.on('click', '.materials-management-page-attachment-action-delete', $.proxy(this._onAttachmentDeleteClick, this));
+                    this.element.on("click", '.materials-management-page-attachment', $.proxy(this._onAttchmentClick, this));
+                    this.element.on("focus", '.materials-management-page-attachment-meta input', $.proxy(this._onMetaFocus, this));
+                    this.element.on("blur", '.materials-management-page-attachment-meta input', $.proxy(this._onMetaBlur, this));
+                    
+                    this._stopLoading();
+                  }, this));
+                }
+              }, this));
+            }
+          }, this));
+        }
+      }, this));
+    },
+    
+    _startLoading: function () {
+      // TODO: start loading animation
+    },
+
+    _stopLoading: function () {
+      // TODO: end loading animation
+    },
+    
+    _confirmRemoval: function (materialTitle, confirmCallback) {
+      renderDustTemplate('workspace/materials-management-page-attachment-remove-confirm.dust', { 
+        materialTitle: materialTitle
+      }, $.proxy(function (text) {
+        var dialog = $(text);
+        $(text).dialog({
+          modal: true, 
+          resizable: false,
+          width: 360,
+          dialogClass: "workspace-materials-management-dialog",
+          buttons: [{
+            'text': dialog.data('button-remove-text'),
+            'class': 'delete-button',
+            'click': function(event) {
+              $(this).dialog("close");
+              confirmCallback();
+            }
+          }, {
+            'text': dialog.data('button-cancel-text'),
+            'class': 'cancel-button',
+            'click': function(event) {
+              $(this).dialog("close");
+            }
+          }]
+        });
+      }, this));
+    },
+
+    _onFileUploadAdd : function(e, data) {
+      renderDustTemplate('workspace/materials-management-page-attachment.dust', {
+        workspaceMaterialId: 'UPLOADING',
+        materialId: 'UPLOADING',
+        title: data.files[0].name,
+        contentType: data.files[0].type,
+        url: getLocaleText('plugin.workspace.materialsManagement.uploadingFileName'),
+        upload: true,
+        metaKeys: this._metaKeys
+      }, $.proxy(function (text) {
+        data.context = $(text);
+        data.context  
+          .find('.muikku-page-attachments-upload-progress')
+          .progressbar({
+            value: 0
+          });
+        
+        $('.materials-management-page-attachments-container').append(data.context);
+        data.submit();
+      }, this));
+    },
+    
+    _onFileUploadDone: function(e, data) {
+      data.context.find('.muikku-page-attachments-upload-progress').progressbar("value", 100);
+      
+      var fileId = data._response.result.fileId;
+      var fileName = data.files[0].name;
+      var contentType = data.files[0].type;
+      
+      mApi().materials.binary.create({
+        title: fileName,
+        contentType: contentType,
+        fileId: fileId
+      })
+      .callback($.proxy(function (materialErr, materialResult) {
+        if (materialErr) {
+          $('.notification-queue').notificationQueue('notification', 'error', materialErr);
+        } else {
+          mApi().workspace.workspaces.materials.create(this.options.workspaceEntityId, {
+            materialId: materialResult.id,
+            parentId: this.options.parentId
+          })
+          .callback($.proxy(function (workspaceMaterialErr, workspaceMaterialResult) {
+            if (workspaceMaterialErr) {
+              $('.notification-queue').notificationQueue('notification', 'error', workspaceMaterialErr);
+            } else {
+              data.context.attr('data-workspace-material-id', workspaceMaterialResult.id);
+              data.context.attr('data-material-id', materialResult.id);
+              data.context.find('.muikku-page-attachments-upload-progress').remove();
+              data.context.find('.materials-management-page-attachment-url').text(this._workspaceUrl + '/materials/' + workspaceMaterialResult.path);
+            }
+          }, this));
+        }
+      }, this));
+    },
+    
+    _onFileUploadProgress: function(e, data) {
+      var progress = parseInt(data.loaded / data.total * 100, 10);
+      data.context.find('.muikku-page-attachments-upload-progress').progressbar("value", progress);
+    },
+
+    _onAttachmentDownloadClick: function (event) {
+      var materialId = $(event.target).closest('.materials-management-page-attachment').attr('data-material-id');
+      if (materialId) {
+        window.location.href = '/rest/materials/binary/' + materialId + '/download';
+      }
+    },
+    
+    _onAttachmentDeleteClick: function (event) {
+      var attachmentElement = $(event.target).closest('.materials-management-page-attachment');
+      var workspaceMaterialId = attachmentElement.attr('data-workspace-material-id');
+      var materialTitle = attachmentElement.find('.materials-management-page-attachment-title').text();
+      if (workspaceMaterialId) {
+        this._confirmRemoval(materialTitle, $.proxy(function () {
+          
+          mApi().workspace.workspaces.materials.del(this.options.workspaceEntityId, workspaceMaterialId)
+            .callback($.proxy(function (err) {
+              if (err) {
+                $('.notification-queue').notificationQueue('notification', 'error', err);
+              } else {
+                attachmentElement.remove();
+              }
+            }, this));
+          
+        }, this));
+      }
+    },
+    
+    _onAttchmentClick: function (event) {
+      var selectedAttachment = $(event.target).closest('.materials-management-page-attachment');
+      if (!selectedAttachment.hasClass('materials-management-page-attachment-selected')) {
+        this.element.find('.materials-management-page-attachment').removeClass('materials-management-page-attachment-selected');
+        var materialId = selectedAttachment.attr('data-material-id');
+        
+        var materialId = selectedAttachment.attr('data-material-id');
+        if (materialId) {
+          mApi().materials.materials.meta.read(materialId).callback($.proxy(function (err, metas) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            } else {
+              metas = metas||[];
+              for (var i = 0, l = metas.length; i < l; i++) {
+                selectedAttachment
+                  .find('input[name="' + metas[i].key + '"]')
+                  .attr('data-exists', 'true')
+                  .val(metas[i].value);
+              }
+            }
+          }, this));
+        }
+        
+        selectedAttachment.addClass('materials-management-page-attachment-selected');
+      }
+    },
+
+    _onMetaFocus: function (event) {
+      $(event.target)
+        .removeClass('materials-management-page-attachment-meta-saved')
+        .addClass('materials-management-page-attachment-meta-unsaved');
+    },
+    
+    _onMetaBlur: function (event) {
+      $(event.target)
+        .addClass('materials-management-page-attachment-meta-saved')
+        .removeClass('materials-management-page-attachment-meta-unsaved');
+      
+      var attachmentElement = $('.materials-management-page-attachment');
+  
+      var fieldElement = $(event.target);
+      var value = fieldElement.val();
+      var key = fieldElement.attr('name');
+      var exists = fieldElement.attr('data-exists') == 'true';
+      var workspaceMaterialId = $(attachmentElement).attr('data-workspace-material-id');
+      var materialId = $(attachmentElement).attr('data-material-id');
+      
+      if (!exists) {
+        mApi().materials.materials.meta.create(materialId, {
+          'materialId': materialId,
+          'key': key,
+          'value': value
+        })
+        .callback($.proxy(function (err, meta) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            fieldElement.attr('data-exists', 'true');
+          }
+        }, this));
+      } else {
+        mApi().materials.materials.meta.update(materialId, key, {
+          'materialId': materialId,
+          'key': key,
+          'value': value
+        })
+        .callback($.proxy(function (err, meta) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          }
+        }, this));
+      }
+    }
+    
+  });
+  
+  $(document).on('click', '.page-attachments', function (event, data) {
+    var workspaceEntityId = $('.workspaceEntityId').val();
+    var workspaceMaterialId = $(event.target).attr('data-workspace-material-id');
+    var section = $(event.target)
+      .closest('section');
+    
+    section.addClass('workspace-materials-management-editing-attachments');
+    
+    section.find('.workspace-materials-management-view-page-controls')
+      .after($('<div>').muikkuPageAttachments({
+        workspaceEntityId: workspaceEntityId,
+        parentId: workspaceMaterialId
+      }));
+  });
+  
+  $(document).on('click', '.close-attachments-editor', function (event, data) {
+    var section = $(event.target)
+      .closest('section');
+    
+    section.find('.materials-management-page-attachment-widget')
+      .remove();
+    
+    section.removeClass('workspace-materials-management-editing-attachments');
+  });
+  
   function toggleVisibility(node, hidden) {
     var _node = node;
     var _hidden = hidden;
@@ -291,6 +600,10 @@
   $(document).ready(function() {
     $(window).data('initializing', true);
 
+    dust.preload('workspace/materials-management-page-html.dust');
+    dust.preload('workspace/materials-management-page-binary.dust');
+    dust.preload('workspace/materials-management-page-folder.dust');
+    
     $(document).muikkuMaterialLoader({
       workspaceEntityId: $('.workspaceEntityId').val(),
       dustTemplate: 'workspace/materials-management-page.dust',

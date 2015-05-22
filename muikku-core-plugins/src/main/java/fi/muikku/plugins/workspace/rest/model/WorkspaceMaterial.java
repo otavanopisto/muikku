@@ -7,7 +7,7 @@ public class WorkspaceMaterial {
   public WorkspaceMaterial() {
   }
 
-  public WorkspaceMaterial(Long id, Long materialId, Long parentId, Long nextSiblingId, Boolean hidden, WorkspaceMaterialAssignmentType assignmentType) {
+  public WorkspaceMaterial(Long id, Long materialId, Long parentId, Long nextSiblingId, Boolean hidden, WorkspaceMaterialAssignmentType assignmentType, String path) {
     super();
     this.id = id;
     this.materialId = materialId;
@@ -15,6 +15,7 @@ public class WorkspaceMaterial {
     this.nextSiblingId = nextSiblingId;
     this.hidden = hidden;
     this.assignmentType = assignmentType;
+    this.path = path;
   }
   
   public Long getId() {
@@ -65,10 +66,19 @@ public class WorkspaceMaterial {
     this.assignmentType = assignmentType;
   }
 
+  public String getPath() {
+    return path;
+  }
+  
+  public void setPath(String path) {
+    this.path = path;
+  }
+  
   private Long id;
   private Long materialId;
   private Long parentId;
   private Long nextSiblingId;
   private Boolean hidden;
   private WorkspaceMaterialAssignmentType assignmentType;
+  private String path;
 }
