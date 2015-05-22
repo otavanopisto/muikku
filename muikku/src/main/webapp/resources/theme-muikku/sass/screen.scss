@@ -219,7 +219,9 @@ div[class*="dock-navi-tt-container"] {
   a {
     color:$link;
   }
-  
+  ul{
+    list-style-type:none;
+  }
 }
 
 .wi-dock-search{
