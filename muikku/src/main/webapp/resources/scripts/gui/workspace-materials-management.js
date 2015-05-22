@@ -55,11 +55,8 @@
       // folder
       $(node).addClass("page-edit-mode");
       var pageContent = $(node).find('.page-content');
-      var editor = $('<div>').attr('class', 'workspace-material-folder-editor-title-wrapper');
-      var textfield = $("<input>").attr({
-        'type': 'text',
-        'class': 'workspace-material-folder-editor-title'
-      }).val($(pageContent).text());
+      var editor = $('<div>').addClass('workspace-material-folder-editor-title-wrapper');
+      var textfield = $("<input>").attr('type', 'text').addClass('workspace-material-folder-editor-title').val($(pageContent).text());
       editor.append(textfield);
       $(pageContent).replaceWith(editor);
       textfield.focus();
@@ -104,12 +101,13 @@
     var materialType = $(node).data('material-type');
     if (materialType == 'folder') {
       // folder
-      var title = node.find('input').val();
+      var title = node.find('.workspace-material-folder-editor-title').val();
       var nextSibling = node.nextAll('.folder').first();
       var nextSiblingId = nextSibling.length > 0 ? nextSibling.data('workspace-material-id') : null;
       var workspaceId = $('.workspaceEntityId').val();
       var hidden = node.hasClass('page-hidden');
       node.removeClass("page-edit-mode");
+      // TODO Fetch + update
       mApi().workspace.workspaces.folders.update(workspaceId, node.data('workspace-material-id'), {
         id: node.data('workspace-material-id'),
         parentId: node.data('parent-id'),
@@ -122,7 +120,7 @@
         }
         else {
           var pageElement = $('<div>').attr('class', 'page-content').text(title);
-          var textfield = node.find('input');
+          var textfield = node.find('.workspace-material-folder-editor-title');
           textfield.off();
           var editor = node.find('.workspace-material-folder-editor-title-wrapper');
           editor.replaceWith(pageElement);
@@ -132,7 +130,6 @@
             $(tocElement).text(title);
           }
         }
-        // TODO Update TOC text
       });
     }
     else { 

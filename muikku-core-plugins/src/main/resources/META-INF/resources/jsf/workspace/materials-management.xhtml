@@ -29,18 +29,17 @@
                   <ui:fragment rendered="#{node.type eq 'folder'}">
                     <li>
                       <ul class="workspace-materials-toc-section">
-                        <li class="workspace-materials-toc-subtitle">
+                        <li class="workspace-materials-toc-subtitle #{node.hidden ? 'item-hidden' : ''}">
                           <h:outputLink value="#page-#{node.workspaceMaterialId}">#{node.title}</h:outputLink>
                         </li>
-
                         <ui:repeat var="articleNode" value="#{node.children}">
                           <ui:fragment rendered="#{articleNode.type eq 'folder'}">
-                            <li class="workspace-materials-toc-subtitle">
+                            <li class="workspace-materials-toc-subtitle #{articleNode.hidden || node.hidden ? 'item-hidden' : ''}">
                               <h:outputLink value="#page-#{node.workspaceMaterialId}">#{articleNode.title}</h:outputLink>
                             </li>
                           </ui:fragment>
                           <ui:fragment rendered="#{articleNode.type ne 'folder'}">
-                            <li class="workspace-materials-toc-item"><h:outputLink
+                            <li class="workspace-materials-toc-item #{articleNode.hidden || node.hidden ? 'item-hidden' : ''}"><h:outputLink
                                 value="#page-#{articleNode.workspaceMaterialId}"
                                 class="#{articleNode.assignmentType eq 'EVALUATED' ? 'evaluated' : articleNode.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{articleNode.title}</h:outputLink>
                             </li>
@@ -49,9 +48,8 @@
                       </ul>
                     </li>
                   </ui:fragment>
-
                   <ui:fragment rendered="#{node.type ne 'folder'}">
-                    <li class="workspace-materials-toc-item"><h:outputLink
+                    <li class="workspace-materials-toc-item #{node.hidden ? 'item-hidden' : ''}"><h:outputLink
                         value="#page-#{node.workspaceMaterialId}"
                         class="#{node.assignmentType eq 'EVALUATED' ? 'evaluated' : node.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{node.title}</h:outputLink>
                     </li>
