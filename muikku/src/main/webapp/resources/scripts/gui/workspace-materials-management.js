@@ -606,39 +606,7 @@
               $('.notification-queue').notificationQueue('notification', 'error', err);
             }
             else {
-              if (!hidden) {
-                // Node
-                node.removeClass('item-hidden');
-                var hideIcon = node.find('.hide-page')
-                hideIcon.removeClass('icon-show').addClass('icon-hide');
-                hideIcon.attr('title', getLocaleText('plugin.workspace.materialsManagement.materialHideTooltip'));
-                hideIcon.find('span').text(getLocaleText('plugin.workspace.materialsManagement.materialHideTooltip'));
-                // Pages
-                node.nextUntil('.folder').filter('section').removeClass('parent-hidden');
-                // TOC
-                var tocElement = $("a[href*='#page-" + workspaceMaterialId + "']");
-                if (tocElement) {
-                  tocElement.parent().removeClass('item-hidden');
-                }
-                var section = tocElement.closest('.workspace-materials-toc-section');
-                section.find('.workspace-materials-toc-item').removeClass('parent-hidden');
-              }
-              else {
-                // Node
-                node.addClass('item-hidden');
-                var hideIcon = node.find('.hide-page')
-                hideIcon.removeClass('icon-hide').addClass('icon-show');
-                hideIcon.attr('title', getLocaleText('plugin.workspace.materialsManagement.materialShowTooltip'));
-                hideIcon.find('span').text(getLocaleText('plugin.workspace.materialsManagement.materialShowTooltip'));
-                node.nextUntil('.folder').filter('section').addClass('parent-hidden');
-                // TOC
-                var tocElement = $("a[href*='#page-" + workspaceMaterialId + "']");
-                if (tocElement) {
-                  tocElement.parent().addClass('item-hidden');
-                }
-                var section = tocElement.closest('.workspace-materials-toc-section');
-                section.find('.workspace-materials-toc-item').addClass('parent-hidden');
-              }
+              toggleNodeVisibilityUi(node, hidden);
             }
           });
         }
@@ -653,32 +621,54 @@
         hidden: hidden
       }).callback(
         function (err, html) {
-          // TODO error handling
-          if (!hidden) {
-            node.removeClass('item-hidden');
-            var hideIcon = node.find('.hide-page')
-            hideIcon.removeClass('icon-show').addClass('icon-hide');
-            hideIcon.attr('title', getLocaleText('plugin.workspace.materialsManagement.materialHideTooltip'));
-            hideIcon.find('span').text(getLocaleText('plugin.workspace.materialsManagement.materialHideTooltip'));
-            // TOC
-            var tocElement = $("a[href*='#page-" + workspaceMaterialId + "']");
-            if (tocElement) {
-              tocElement.parent().removeClass('item-hidden');
-            }
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
           }
           else {
-            node.addClass('item-hidden');
-            var hideIcon = node.find('.hide-page')
-            hideIcon.removeClass('icon-hide').addClass('icon-show');
-            hideIcon.attr('title', getLocaleText('plugin.workspace.materialsManagement.materialShowTooltip'));
-            hideIcon.find('span').text(getLocaleText('plugin.workspace.materialsManagement.materialShowTooltip'));
-            // TOC
-            var tocElement = $("a[href*='#page-" + workspaceMaterialId + "']");
-            if (tocElement) {
-              tocElement.parent().addClass('item-hidden');
-            }
+            toggleNodeVisibilityUi(node, hidden);
           }
       });
+    }
+  }
+  
+  function toggleNodeVisibilityUi(node, hidden) {
+    var materialType = node.data('material-type');
+    var workspaceMaterialId = node.data('workspace-material-id');
+    if (hidden) {
+      // Node itself
+      node.addClass('item-hidden');
+      // Node toolbar
+      var hideIcon = node.find('.hide-page')
+      hideIcon.removeClass('icon-hide').addClass('icon-show');
+      hideIcon.attr('title', getLocaleText('plugin.workspace.materialsManagement.materialShowTooltip'));
+      hideIcon.find('span').text(getLocaleText('plugin.workspace.materialsManagement.materialShowTooltip'));
+      // TOC
+      var tocElement = $("a[href*='#page-" + workspaceMaterialId + "']");
+      tocElement.parent().addClass('item-hidden');
+      // Folder children
+      if (materialType == 'folder') {
+        node.nextUntil('.folder').filter('section').addClass('parent-hidden');
+        var section = tocElement.closest('.workspace-materials-toc-section');
+        section.find('.workspace-materials-toc-item').addClass('parent-hidden');
+      }
+    }
+    else {
+      // Node itself
+      node.removeClass('item-hidden');
+      // Node toolbar
+      var hideIcon = node.find('.hide-page')
+      hideIcon.removeClass('icon-show').addClass('icon-hide');
+      hideIcon.attr('title', getLocaleText('plugin.workspace.materialsManagement.materialHideTooltip'));
+      hideIcon.find('span').text(getLocaleText('plugin.workspace.materialsManagement.materialHideTooltip'));
+      // TOC
+      var tocElement = $("a[href*='#page-" + workspaceMaterialId + "']");
+      tocElement.parent().removeClass('item-hidden');
+      // Folder children
+      if (materialType == 'folder') {
+        node.nextUntil('.folder').filter('section').removeClass('parent-hidden');
+        var section = tocElement.closest('.workspace-materials-toc-section');
+        section.find('.workspace-materials-toc-item').removeClass('parent-hidden');
+      }
     }
   }
   
