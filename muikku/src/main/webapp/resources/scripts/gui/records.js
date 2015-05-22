@@ -4,7 +4,7 @@ $(document).ready(function(){
 
     	init : function(){
     		// todo: parse url
-          this.loadWorkspaces();	
+          this._loadWorkspaces();	
     	    $(RecordsImpl.recordsContainer).on("click", '.tr-item)', $.proxy(this.loadWorkspace,this));  
 
     	},
@@ -59,7 +59,7 @@ $(document).ready(function(){
 
 	    _klass : {
 	    	// Variables for the class
-		  recordsContainer : ".tr-records-view-container",
+		  recordsContainer : ".tr-records-view-container"
 	    }
     
     

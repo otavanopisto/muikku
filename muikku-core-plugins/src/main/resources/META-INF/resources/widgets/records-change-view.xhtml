@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html">
+     <div>
+       <div class="bt-mainFunction">
+         <div class="bt-mainFunction-content"><span id="btnValue"></span><span class="bt-mainFunction-decoration icon-arrow-down"></span></div>             
+       </div>
+       <div class="tr-side-button-dropdown">
+        <ul id="trCategories">
+          <li id="trCat-1" ><span id="myUnfinishedWps" class="tr-category-unfinishedWps">Lokalisoi:keskeneräiset</span></li>
+          <ui:fragment rendered="#{muikkuSession.loggedIn}">
+            <li id="trCat-2"><span id="myComingWps" class="tr-category-comingWps">Lokalisoi:tulevat</span></li>
+            <li id="trCat-3"><span id="allMyWps" class="tr-category-allWps">Lokalisoi:kaikki</span></li>
+          </ui:fragment>                 
+        </ul>
+      </div>
+     </div>
+</ui:composition>
