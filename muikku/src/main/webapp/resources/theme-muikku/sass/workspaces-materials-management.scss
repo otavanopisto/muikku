@@ -136,6 +136,10 @@ body.workspace-materials-management {
                   opacity:0.4;
                 }
                 
+                &.parent-hidden {
+                  opacity:0.4;
+                }
+                
                 a {
                   text-decoration:none;
                   color:#2c2c2c;
@@ -174,7 +178,7 @@ body.workspace-materials-management {
                   font-weight:400;
                   font-size:15px;
                   
-                  &.subtitle-hidden {
+                  &.item-hidden {
                     opacity:0.4;
                   }
                   
@@ -198,6 +202,10 @@ body.workspace-materials-management {
                   list-style:none;
                   
                   &.item-hidden {
+                    opacity:0.4;
+                  }
+                  
+                  &.parent-hidden {
                     opacity:0.4;
                   }
                   
@@ -624,7 +632,11 @@ body.workspace-materials-management {
         max-width:100%;
       }
       
-      &.page-hidden {
+      &.item-hidden {
+        opacity:0.4;
+      }
+      
+      &.parent-hidden {
         opacity:0.4;
       }
       
