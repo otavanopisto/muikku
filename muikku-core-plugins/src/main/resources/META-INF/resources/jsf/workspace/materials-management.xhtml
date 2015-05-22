@@ -34,12 +34,12 @@
                         </li>
                         <ui:repeat var="articleNode" value="#{node.children}">
                           <ui:fragment rendered="#{articleNode.type eq 'folder'}">
-                            <li class="workspace-materials-toc-subtitle #{articleNode.hidden || node.hidden ? 'item-hidden' : ''}">
+                            <li class="workspace-materials-toc-subtitle #{articleNode.hidden ? 'item-hidden' : ''} #{node.hidden ? 'parent-hidden' : ''}">
                               <h:outputLink value="#page-#{node.workspaceMaterialId}">#{articleNode.title}</h:outputLink>
                             </li>
                           </ui:fragment>
                           <ui:fragment rendered="#{articleNode.type ne 'folder'}">
-                            <li class="workspace-materials-toc-item #{articleNode.hidden || node.hidden ? 'item-hidden' : ''}"><h:outputLink
+                            <li class="workspace-materials-toc-item #{articleNode.hidden ? 'item-hidden' : ''} #{node.hidden ? 'parent-hidden' : ''}"><h:outputLink
                                 value="#page-#{articleNode.workspaceMaterialId}"
                                 class="#{articleNode.assignmentType eq 'EVALUATED' ? 'evaluated' : articleNode.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{articleNode.title}</h:outputLink>
                             </li>
@@ -73,9 +73,13 @@
     </div>
     <ui:repeat var="node" value="#{workspaceMaterialsManagementBackingBean.contentNodes}">
       <ui:fragment rendered="#{node.type eq 'folder'}">
-        <section id="page-#{node.workspaceMaterialId}" data-workspace-material-id="#{node.workspaceMaterialId}"
-          data-material-id="#{node.materialId}" data-parent-id="#{node.parentId}" data-material-type="#{node.type}"
-          data-material-title="#{node.title}" class="workspace-materials-view-page material-management-view folder"></section>
+        <section id="page-#{node.workspaceMaterialId}"
+          data-workspace-material-id="#{node.workspaceMaterialId}"
+          data-material-id="#{node.materialId}"
+          data-parent-id="#{node.parentId}"
+          data-material-type="#{node.type}"
+          data-material-title="#{node.title}"
+          class="workspace-materials-view-page material-management-view folder #{node.hidden ? 'item-hidden' : ''}"></section>
 
         <div class="workspace-materials-management-addpage">
           <span class="workspace-materials-management-line-separator"></span><a
@@ -94,7 +98,7 @@
               data-material-type="#{articleNode.type}"
               data-material-title="#{articleNode.title}"
               data-assignment-type="#{articleNode.assignmentType}"
-              class="workspace-materials-view-page material-management-view folder"></h2>
+              class="workspace-materials-view-page material-management-view folder #{articleNode.hidden ? 'item-hidden' : ''} #{node.hidden ? 'parent-hidden' : ''}"></h2>
           </ui:fragment>
 
           <ui:fragment rendered="#{articleNode.type ne 'folder'}">
@@ -108,7 +112,7 @@
               data-material-current-revision="#{articleNode.currentRevision}"
               data-material-published-revision="#{articleNode.publishedRevision}"
               data-assignment-type="#{articleNode.assignmentType}"
-              class="workspace-materials-view-page material-management-view #{articleNode.hidden ? 'page-hidden' : ''}" />
+              class="workspace-materials-view-page material-management-view #{articleNode.hidden ? 'item-hidden' : ''} #{node.hidden ? 'parent-hidden' : ''}" />
           </ui:fragment>
 
           <div class="workspace-materials-management-addpage">
@@ -132,7 +136,7 @@
           data-material-current-revision="#{node.currentRevision}"
           data-material-published-revision="#{node.publishedRevision}"
           data-assignment-type="#{node.assignmentType}"
-          class="workspace-materials-view-page material-management-view #{node.hidden ? 'page-hidden' : ''}" />
+          class="workspace-materials-view-page material-management-view #{node.hidden ? 'item-hidden' : ''}" />
         <div class="workspace-materials-management-addpage">
           <span class="workspace-materials-management-line-separator"></span><a
             class="workspaces-materials-management-add-page icon-add" href="javascript:void(null)"><span>#{i18n.text['plugin.workspace.materialsManagement.addNewPage']}</span></a>

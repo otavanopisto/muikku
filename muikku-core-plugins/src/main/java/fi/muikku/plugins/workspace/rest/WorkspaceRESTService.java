@@ -847,6 +847,16 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspaceEntity.getArchived(), workspaceEntity.getPublished(), name, description, numVisits, lastVisit);
   }
 
+  private fi.muikku.plugins.workspace.rest.model.WorkspaceFolder createRestModel(WorkspaceFolder workspaceFolder) {
+    WorkspaceNode nextSibling = workspaceMaterialController.findWorkspaceNodeNextSibling(workspaceFolder);
+    return new fi.muikku.plugins.workspace.rest.model.WorkspaceFolder(
+        workspaceFolder.getId(),
+        workspaceFolder.getParent() == null ? null : workspaceFolder.getParent().getId(),
+        nextSibling == null ? null : nextSibling.getId(),
+        workspaceFolder.getHidden(),
+        workspaceFolder.getTitle());
+  }
+
   private fi.muikku.plugins.workspace.rest.model.WorkspaceUserSignup createRestModel(WorkspaceUserSignup signup) {
     return new fi.muikku.plugins.workspace.rest.model.WorkspaceUserSignup(signup.getId(), signup.getWorkspaceEntity().getId(), signup
         .getUserEntity().getId(), signup.getDate(), signup.getMessage());
@@ -879,6 +889,26 @@ public class WorkspaceRESTService extends PluginRESTService {
         return Response.status(Status.INTERNAL_SERVER_ERROR).build();
       }
     }
+  }
+  
+  @GET
+  @Path("/workspaces/{WORKSPACEID}/folders/{WORKSPACEFOLDERID}")
+  public Response getWorkspaceFolder(
+      @PathParam("WORKSPACEID") Long workspaceEntityId,
+      @PathParam("WORKSPACEFOLDERID") Long workspaceFolderId) {
+
+    // Workspace
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+
+    // WorkspaceFolder
+    WorkspaceFolder workspaceFolder = workspaceMaterialController.findWorkspaceFolderById(workspaceFolderId);
+    if (workspaceFolder == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    return Response.ok(createRestModel(workspaceFolder)).build();
   }
   
   @PUT

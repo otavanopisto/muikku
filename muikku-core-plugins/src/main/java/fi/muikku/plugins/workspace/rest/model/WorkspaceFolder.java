@@ -5,12 +5,13 @@ public class WorkspaceFolder {
   public WorkspaceFolder() {
   }
 
-  public WorkspaceFolder(Long id, Long parentId, Long nextSiblingId, Boolean hidden) {
+  public WorkspaceFolder(Long id, Long parentId, Long nextSiblingId, Boolean hidden, String title) {
     super();
     this.id = id;
     this.parentId = parentId;
     this.nextSiblingId = nextSiblingId;
     this.hidden = hidden;
+    this.title = title;
   }
   
   public Long getId() {

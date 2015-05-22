@@ -105,30 +105,32 @@
       var nextSibling = node.nextAll('.folder').first();
       var nextSiblingId = nextSibling.length > 0 ? nextSibling.data('workspace-material-id') : null;
       var workspaceId = $('.workspaceEntityId').val();
-      var hidden = node.hasClass('page-hidden');
+      var hidden = node.hasClass('item-hidden');
       node.removeClass("page-edit-mode");
-      // TODO Fetch + update
-      mApi().workspace.workspaces.folders.update(workspaceId, node.data('workspace-material-id'), {
-        id: node.data('workspace-material-id'),
-        parentId: node.data('parent-id'),
-        nextSiblingId: nextSiblingId,
-        hidden: hidden,
-        title: title
-      }).callback(function (err, html) {
+
+      mApi().workspace.workspaces.folders.read(workspaceId, node.data('workspace-material-id')).callback(function (err, folder) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', err);
         }
         else {
-          var pageElement = $('<div>').attr('class', 'page-content').text(title);
-          var textfield = node.find('.workspace-material-folder-editor-title');
-          textfield.off();
-          var editor = node.find('.workspace-material-folder-editor-title-wrapper');
-          editor.replaceWith(pageElement);
-          // TOC
-          var tocElement = $("a[href*='#page-" + $(node).data('workspace-material-id') + "']");
-          if (tocElement) {
-            $(tocElement).text(title);
-          }
+          folder.title = title;
+          mApi().workspace.workspaces.folders.update(workspaceId, node.data('workspace-material-id'), folder).callback(function (err, html) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            }
+            else {
+              var pageElement = $('<div>').attr('class', 'page-content').text(title);
+              var textfield = node.find('.workspace-material-folder-editor-title');
+              textfield.off();
+              var editor = node.find('.workspace-material-folder-editor-title-wrapper');
+              editor.replaceWith(pageElement);
+              // TOC
+              var tocElement = $("a[href*='#page-" + $(node).data('workspace-material-id') + "']");
+              if (tocElement) {
+                $(tocElement).text(title);
+              }
+            }
+          });
         }
       });
     }
@@ -591,34 +593,93 @@
     var nextSibling = node.nextAll('.workspace-materials-view-page').first();
     var nextSiblingId = nextSibling.length > 0 ? nextSibling.data('workspace-material-id') : null;
     var workspaceMaterialId = node.data('workspace-material-id');
-    mApi().workspace.workspaces.materials.update(workspaceId, node.data('workspace-material-id'), {
-      id: node.data('workspace-material-id'),
-      materialId: node.data('material-id'),
-      parentId: node.data('parent-id'),
-      nextSiblingId: nextSiblingId,
-      hidden: hidden
-    }).callback(
-      function (err, html) {
-        // TODO error handling
-        if (!hidden) {
-          node.removeClass('page-hidden');
-          node.find('.hide-page').removeClass('icon-show').addClass('icon-hide');
-          // TOC
-          var tocElement = $("a[href*='#page-" + workspaceMaterialId + "']");
-          if (tocElement) {
-            tocElement.parent().removeClass('item-hidden');
-          }
+    var materialType = node.data('material-type');
+    if (materialType == 'folder') {
+      mApi().workspace.workspaces.folders.read(workspaceId, node.data('workspace-material-id')).callback(function (err, folder) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
         }
         else {
-          node.addClass('page-hidden');
-          node.find('.hide-page').removeClass('icon-hide').addClass('icon-show');
-          // TOC
-          var tocElement = $("a[href*='#page-" + workspaceMaterialId + "']");
-          if (tocElement) {
-            tocElement.parent().addClass('item-hidden');
-          }
+          folder.hidden = hidden;
+          mApi().workspace.workspaces.folders.update(workspaceId, node.data('workspace-material-id'), folder).callback(function (err, html) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            }
+            else {
+              if (!hidden) {
+                // Node
+                node.removeClass('item-hidden');
+                var hideIcon = node.find('.hide-page')
+                hideIcon.removeClass('icon-show').addClass('icon-hide');
+                hideIcon.attr('title', getLocaleText('plugin.workspace.materialsManagement.materialHideTooltip'));
+                hideIcon.find('span').text(getLocaleText('plugin.workspace.materialsManagement.materialHideTooltip'));
+                // Pages
+                node.nextUntil('.folder').filter('section').removeClass('parent-hidden');
+                // TOC
+                var tocElement = $("a[href*='#page-" + workspaceMaterialId + "']");
+                if (tocElement) {
+                  tocElement.parent().removeClass('item-hidden');
+                }
+                var section = tocElement.closest('.workspace-materials-toc-section');
+                section.find('.workspace-materials-toc-item').removeClass('parent-hidden');
+              }
+              else {
+                // Node
+                node.addClass('item-hidden');
+                var hideIcon = node.find('.hide-page')
+                hideIcon.removeClass('icon-hide').addClass('icon-show');
+                hideIcon.attr('title', getLocaleText('plugin.workspace.materialsManagement.materialShowTooltip'));
+                hideIcon.find('span').text(getLocaleText('plugin.workspace.materialsManagement.materialShowTooltip'));
+                node.nextUntil('.folder').filter('section').addClass('parent-hidden');
+                // TOC
+                var tocElement = $("a[href*='#page-" + workspaceMaterialId + "']");
+                if (tocElement) {
+                  tocElement.parent().addClass('item-hidden');
+                }
+                var section = tocElement.closest('.workspace-materials-toc-section');
+                section.find('.workspace-materials-toc-item').addClass('parent-hidden');
+              }
+            }
+          });
         }
-    });
+      });
+    }
+    else if (materialType == 'html') {
+      mApi().workspace.workspaces.materials.update(workspaceId, node.data('workspace-material-id'), {
+        id: node.data('workspace-material-id'),
+        materialId: node.data('material-id'),
+        parentId: node.data('parent-id'),
+        nextSiblingId: nextSiblingId,
+        hidden: hidden
+      }).callback(
+        function (err, html) {
+          // TODO error handling
+          if (!hidden) {
+            node.removeClass('item-hidden');
+            var hideIcon = node.find('.hide-page')
+            hideIcon.removeClass('icon-show').addClass('icon-hide');
+            hideIcon.attr('title', getLocaleText('plugin.workspace.materialsManagement.materialHideTooltip'));
+            hideIcon.find('span').text(getLocaleText('plugin.workspace.materialsManagement.materialHideTooltip'));
+            // TOC
+            var tocElement = $("a[href*='#page-" + workspaceMaterialId + "']");
+            if (tocElement) {
+              tocElement.parent().removeClass('item-hidden');
+            }
+          }
+          else {
+            node.addClass('item-hidden');
+            var hideIcon = node.find('.hide-page')
+            hideIcon.removeClass('icon-hide').addClass('icon-show');
+            hideIcon.attr('title', getLocaleText('plugin.workspace.materialsManagement.materialShowTooltip'));
+            hideIcon.find('span').text(getLocaleText('plugin.workspace.materialsManagement.materialShowTooltip'));
+            // TOC
+            var tocElement = $("a[href*='#page-" + workspaceMaterialId + "']");
+            if (tocElement) {
+              tocElement.parent().addClass('item-hidden');
+            }
+          }
+      });
+    }
   }
   
   function scrollToPage(workspaceMaterialId, animate) {
@@ -828,14 +889,13 @@
       });
 
     }
-    
   });
   
   $(document).on('click', '.edit-page', function (event, data) {
     // TODO: Better way to toggle classes and observe hidden/visible states?
     var page = $(this).closest('.workspace-materials-view-page');
-    if (page.hasClass('page-hidden')) {
-      page.removeClass('page-hidden');
+    if (page.hasClass('item-hidden')) {
+      page.removeClass('item-hidden');
       page.find('.hide-page').removeClass('icon-show').addClass('icon-hide');
     } 
     editPage(page);
@@ -844,7 +904,7 @@
   $(document).on('click', '.hide-page', function (event, data) {
     // TODO: Better way to toggle classes and observe hidden/visible states?
     var page = $(this).closest('.workspace-materials-view-page');
-    var hidden = page.hasClass('page-hidden');
+    var hidden = page.hasClass('item-hidden');
     toggleVisibility(page, !hidden);
   });
   
