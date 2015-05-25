@@ -1,3 +1,67 @@
+(function() {
+  
+  $.widget("custom.records", {
+    options: {
+      userEntityId: null
+    },
+    
+    _create : function() {
+      this.element.on('click', '.tr-item', $.proxy(this._onItemClick, this));
+      this.element.on('click', '.tr-view-toolbar .icon-goback', $.proxy(this._loadWorkspaces, this));      
+      this._loadWorkspaces();
+    },
+    
+    _loadWorkspaces: function () {
+      this._clear();
+      mApi().workspace.workspaces
+      .read({ userId: this.options.userEntityId })
+      .callback($.proxy(function (err, workspaces) {
+        if( err ){
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.records.errormessage.noworkspaces', err));
+        } else {
+          renderDustTemplate('/records/records_items.dust', workspaces, $.proxy(function(text) {
+            this.element.append(text);
+          }, this));
+        }
+      }, this));
+    },
+    
+    _loadWorkspace: function (workspaceEntityId) {
+      this._clear();
+      mApi().workspace.workspaces
+      .read({ userId: this.options.userEntityId })
+      .callback($.proxy(function (err, workspaces) {
+        if( err ){
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.records.errormessage.noworkspaces', err));
+        } else {
+          renderDustTemplate('/records/records_item_open.dust', workspaces, $.proxy(function(text) {
+            this.element.append(text);
+          }, this));
+        }
+      }, this));
+    },
+    _onItemClick: function (event) {
+      var workspaceEntityId = $(event.target).attr('data-workspace-entity-id');
+      this._loadWorkspace(workspaceEntityId);
+    },
+    _clear: function(){
+      this.element.empty();      
+    },
+    _destroy: function () {
+      this.element.off('click', '.tr-item');
+      this.element.off('click', '.tr-view-tool');
+    }
+  });
+  
+  $(document).ready(function(){
+    $('.tr-records-view-container').records({
+      userEntityId: MUIKKU_LOGGED_USER_ID
+    });
+  });
+  
+  
+ /**
+
 $(document).ready(function(){
 	
     RecordsImpl = $.klass({
@@ -72,4 +136,7 @@ $(document).ready(function(){
 
 	
 	
-});
+}); **/
+
+}).call(this);
+

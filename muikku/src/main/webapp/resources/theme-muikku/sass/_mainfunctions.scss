@@ -217,7 +217,24 @@
      @extend .co-mainFunction-content-functions;
      height:70px;  
   }
-
+  
+  .mf-view-toolbar{
+      background-color: #fff;
+      padding:5px;
+      margin-bottom:5px;
+      margin-top:5px;
+      
+      .mf-view-tool{
+        padding:0 10px 0 10px;
+        border:1px solid $brd2;
+        background-color:$bgr1; 
+        font-size:1.5em;
+        float:left;
+        color:#000;
+        cursor:pointer;      
+      }
+    
+  }  
 
   .mf-content-empty{
     min-height:400px;
@@ -299,10 +316,16 @@
    }
 }
   
-  
+
 .mf-item{
    @extend .co-listItem;
    margin-bottom:5px;
+
+  .topic{padding:5px;}
+
+  .content{padding:10px;}
+
+
  
 
   .mf-item-container{
@@ -314,14 +337,11 @@
       
   }
  
-  .mf-item-topic{
-  
-    
-  } 
-
 
   .mf-item-tools{
+    
 
+  
       .mf-item-tool-btn{
         &:not(:first-child){
          margin-left:10px;

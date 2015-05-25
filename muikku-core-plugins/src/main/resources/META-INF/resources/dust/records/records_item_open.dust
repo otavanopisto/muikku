@@ -1,82 +1,78 @@
+<div class="tr-view-toolbar mf-view-toolbar"> 
+   <div class="tr-view-tool mf-view-tool icon-goback"></div>
+   <div class="clear"></div>
+</div>
+
+
+
 {#.}
  
  
-  <div id="crsId-{id}" class="cp-course ft-01">
+  <div id="crsId-{id}" class="tr-item ft-01">
     <input type="hidden" name="workspaceId" value="{id}"/>
     <input type="hidden" name="workspaceUrl" value="{urlName}"/>
 
     
-    <div class="cp-course-details">
-      <div class="cp-course-details-container">       
-        <div class="cp-course-additionalInfo">
-<!--           <div class="cp-course-details-teachers"> -->
-<!--             {?teachers} -->
-<!--               <div style="display:none;" class="cp-course-details-teachers-caption">{#localize key="plugin.coursepicker.course.teachers" /}</div>              -->
-<!--               {#teachers} -->
-<!--                 <div class="cp-course-details-teacher"> -->
-<!--                   <div class="cp-course-details-teacher-picture-container"> -->
-<!--                     {?hasPicture}  -->
-<!--                       <img class="cp-course-details-teacher-picture" title="{fullName}" src="{@contextPath/}/picture?userId={id}" width="20" height="20" /> -->
-<!--                     {:else} -->
-<!--                       <div class="cp-teacher-picture-default"></div> -->
-<!--                     {/hasPicture} -->
-<!--                   </div> -->
-  
-
-<!--                   <div class="clear"></div> -->
-<!--                 </div> -->
-  
-<!--               {/teachers} -->
-<!--             {:else} -->
-<!--               {#localize key="plugin.coursepicker.course.noteachers" /} -->
-<!--             {/teachers} -->
-<!--           </div> -->
-  
-<!--           {?hasCourseFee}       -->
-<!--             <div class="cp-course-details-fee">{#localize key="plugin.coursepicker.course.coursehasfee" /}</div> -->
-<!--           {/hasCourseFee} -->
-  
-<!--           {?hasAssessmentFee}       -->
-<!--             <div class="cp-course-details-assessmentFee">{#localize key="plugin.coursepicker.course.assessmenthasfee" /}</div> -->
-<!--           {/hasAssessmentFee} -->
+    <div class="tr-item-details">
+      <div class="tr-item-details-container">       
+        <div class="tr-item-additionalInfo">
         </div>
-        <div class="cp-course-description">
-          <div class="cp-course-header-name">
-           <span class="cp-course-short"></span>
-           <span class="cp-course-long">{name}</span>
+        <div class="tr-item-description">
+          <div class="tr-item-header-name">
+           <span class="tr-item-short"></span>
+           <span class="tr-item-long">{name}</span>
           </div>
           
-          <div class="cp-course-header-details">
-<!--            <span class="cp-course-rating">{rating} ({ratingCount})</span> -->
-<!--            <span class="cp-course-len"></span> -->
-<!--            <span class="cp-course-age"></span> -->
+          <div class="tr-item-header-details">
+  
           </div>
          
-          <div id="detailsCrs-{id}" class="cp-course-content-details" style="display:none;">     
-            <div class="cp-course-description-picture"></div>
-            <div class="cp-course-description-text">{description|s}</div>          
-            <div class="cp-course-details-toolbar">
-              <input class="bt-coursepicker cp-course-tour-button" type="button"
-                value='{#localize key="plugin.coursepicker.course.checkout" /}' />
-            
-              {#isLoggedIn}
-                {^isMember}
-                  <input class="bt-coursepicker cp-course-attend-button" type="button"
-                    value='{#localize key="plugin.coursepicker.course.signup" /}' />
-                {/isMember}
-              {/isLoggedIn}
+          <div id="detailsCrs-{id}" class="tr-item-content-details" >     
+            <div class="tr-item-description-picture"></div>
+            <div class="tr-item-description-text">{description|s}</div>          
+            <div class="tr-item-details-toolbar">
             </div>
           </div>
 
         </div>       
 
         <div class="clear"></div>
+      </div>
+    </div>
+
+  </div>
+  
+  <div class="mf-item tr-evaluation-verbal">
+    <div class="topic"><h3>Sanallinen arviointi {verbal.topic}</h3></div>
+    <div class="content">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean et convallis massa, eu auctor odio. Donec eget nibh sit amet velit malesuada interdum et ut quam. Fusce hendrerit elit nisl, ut lobortis urna dignissim eget. Proin elit felis, consectetur eu odio eu, mollis efficitur elit. Aenean consequat tempor aliquam. Morbi tortor diam, lacinia a scelerisque sit amet, dapibus vitae mi. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Phasellus nec mi tellus. Proin sodales mattis massa eget feugiat. Duis eget accumsan sapien. Maecenas quis ullamcorper tellus. In eu purus eget quam pretium mattis. Duis vestibulum sem nec tortor tempor, eget consequat sapien interdum.
+     
+      {verbal.content}
     </div>
   </div>
-</div>
+  
+<!--  TODO: dusto templato -->  
+  <div class="mf-item tr-tasklist">
+    <div class="topic"><h3>Arvioitavat tehtävät {verbal.topic}</h3></div>
+    <div class="content">
+      <div class="mf-subitem tr-task">Tehtävä</div>
+      <div class="mf-subitem tr-task">Tehtävä</div>
+      <div class="mf-subitem tr-task">Tehtävä</div>
+      <div class="mf-subitem tr-task">Tehtävä</div>
+      <div class="mf-subitem tr-task">Tehtävä</div>
+      <div class="mf-subitem tr-task">Tehtävä</div>
+      <div class="mf-subitem tr-task">Tehtävä</div>
+      <div class="mf-subitem tr-task">Tehtävä</div>
+      <div class="mf-subitem tr-task">Tehtävä</div>
+    </div>
+  </div>  
+
+  
+  
+  
 {:else}
-<div class="mf-content-empty cm-no-messages">
-  <h3>{#localize key="plugin.coursepicker.empty.topic.all"/}</h3>
-</div>
+  <div class="mf-content-empty cm-no-messages">
+    <h3>{#localize key="plugin.records.empty.topic.all"/}</h3>
+  </div>
 
 {/.}
