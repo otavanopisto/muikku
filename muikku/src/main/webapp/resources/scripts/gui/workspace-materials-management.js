@@ -287,10 +287,15 @@
     var workspaceId = $('.workspaceEntityId').val();
     
     if ($(this).attr('data-material-type') === 'folder') {
-        confirmPageDeletion($.proxy(function () {
-          deleteFolder(workspaceMaterialId, workspaceId, false, function (err, jqXHR) {
-          });
-        }, this));
+        if($('section[data-parent-id="'+workspaceMaterialId+'"]').length > 0){
+          alert('You can only delete empty folders!'); //TODO: create proper error dialog
+        }else{
+          confirmPageDeletion($.proxy(function () {
+            deleteFolder(workspaceMaterialId, workspaceId, false, function (err, jqXHR) {
+            });
+          }, this));
+        }
+
     } else {
       
         var materialId = $(this).data('material-id');
