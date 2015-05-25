@@ -910,6 +910,27 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     return Response.ok(createRestModel(workspaceFolder)).build();
   }
+
+  @DELETE
+  @Path("/workspaces/{WORKSPACEID}/folders/{WORKSPACEFOLDERID}")
+  public Response deleteWorkspaceFolder(
+      @PathParam("WORKSPACEID") Long workspaceEntityId,
+      @PathParam("WORKSPACEFOLDERID") Long workspaceFolderId) {
+
+    // Workspace
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+
+    // WorkspaceFolder
+    WorkspaceFolder workspaceFolder = workspaceMaterialController.findWorkspaceFolderById(workspaceFolderId);
+    if (workspaceFolder != null) {
+      workspaceMaterialController.deleteWorkspaceFolder(workspaceFolder);
+    }
+
+    return Response.ok(createRestModel(workspaceFolder)).build();
+  }
   
   @PUT
   @Path("/workspaces/{WORKSPACEID}/folders/{WORKSPACEFOLDERID}")

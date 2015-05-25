@@ -218,6 +218,35 @@
       }
     }, this));
   }
+
+  function deleteFolder(workspaceMaterialId, workspaceId, removeAnswers, errorCallback) {
+    mApi().workspace.workspaces.folders.del(workspaceId,workspaceMaterialId).callback($.proxy(function (err, jqXHR){
+      if (err) {
+        errorCallback(err, jqXHR);
+      } else {
+        // TODO: animation won't work
+        var page = $('#page-' + workspaceMaterialId);
+        $(page)
+          .animate({
+            height:0,
+            opacity: 0
+          }, {
+            duration : 500,
+            easing : "easeInOutQuint",
+            complete: function() {
+              page.nextAll('.workspace-materials-management-addpage').first().remove();
+              page.nextAll('.workspaces-materials-management-insert-file').first().remove();
+              page.remove();
+            }
+          });
+        // TOC
+        var tocElement = $("a[href*='#page-" + workspaceMaterialId + "']");
+        if (tocElement) {
+          tocElement.remove();
+        }
+      }
+    }, this));
+  }
   
   function getPagePublishedRevision(workspaceMaterialId) {
     return parseInt($('.workspace-materials-view-page[data-workspace-material-id="' + workspaceMaterialId + '"] input[name="published-revision"]').val()||'0');
@@ -255,26 +284,35 @@
   
   $(document).on('click', '.delete-page', function (event, data) {
     var workspaceMaterialId = $(this).data('workspace-material-id');
-    var materialId = $(this).data('material-id');
     var workspaceId = $('.workspaceEntityId').val();
-    confirmPageDeletion($.proxy(function () {
-      deletePage(workspaceMaterialId, materialId, workspaceId, false, function (err, jqXHR) {
-        if (jqXHR.status == 409) {
-          var response = $.parseJSON(jqXHR.responseText);
-          if (response && response.reason == 'CONTAINS_ANSWERS') {
-            confirmAnswerRemovalDelete(function () {
-              deletePage(workspaceMaterialId, materialId, workspaceId, true, function (err, jqXHR) {
+    
+    if ($(this).attr('data-material-type') === 'folder') {
+        confirmPageDeletion($.proxy(function () {
+          deleteFolder(workspaceMaterialId, workspaceId, false, function (err, jqXHR) {
+          });
+        }, this));
+    } else {
+      
+        var materialId = $(this).data('material-id');
+        confirmPageDeletion($.proxy(function () {
+          deletePage(workspaceMaterialId, materialId, workspaceId, false, function (err, jqXHR) {
+            if (jqXHR.status == 409) {
+              var response = $.parseJSON(jqXHR.responseText);
+              if (response && response.reason == 'CONTAINS_ANSWERS') {
+                confirmAnswerRemovalDelete(function () {
+                  deletePage(workspaceMaterialId, materialId, workspaceId, true, function (err, jqXHR) {
+                    $('.notification-queue').notificationQueue('notification', 'error', err);
+                  });
+                });
+              } else {
                 $('.notification-queue').notificationQueue('notification', 'error', err);
-              });
-            });
-          } else {
-            $('.notification-queue').notificationQueue('notification', 'error', err);
-          }
-        } else {
-          $('.notification-queue').notificationQueue('notification', 'error', err);
-        }    
-      });
-    }, this));
+              }
+            } else {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            }    
+          });
+        }, this));
+    }
   });
   
   $.widget("custom.muikkuPageAttachments", {
