@@ -217,7 +217,7 @@
             workspace.rating = 5;
             workspace.ratingCount = 3;
             workspace.teachers = [];
-            workspace.isMember = userWorkspaceIds.indexOf(workspace.id) > -1;
+            workspace.canJoin = $('input[name="studentLoggedIn"]').val() == 'true' && userWorkspaceIds.indexOf(workspace.id) == -1;
             workspaceCallback();
         })
         .callback($.proxy(function (err, workspaces) {

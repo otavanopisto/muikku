@@ -148,9 +148,43 @@ public class PyramusUpdater {
   public boolean updateStudent(Long pyramusId) {
     String studentIdentifier = identifierMapper.getStudentIdentifier(pyramusId);
     UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, studentIdentifier);
+    Map<Long, UserRole> discoveredUserRoles = new HashMap<>();
+    Map<Long, String> removedUserRoles = new HashMap<>();
 
     Student student = pyramusClient.get().get("/students/students/" + pyramusId, Student.class);
     if (student != null) {
+      UserRole role = UserRole.STUDENT;
+      EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
+      if (environmentUser == null) {
+        discoveredUserRoles.put(student.getId(), role);
+      } else {
+        String roleIdentifier = identifierMapper.getEnvironmentRoleIdentifier(role);
+        EnvironmentRoleEntity environmentRoleEntity = environmentRoleEntityController.findEnvironmentRoleEntity(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, roleIdentifier);
+        if (environmentRoleEntity == null) {
+          removedUserRoles.put(student.getId(), roleIdentifier);
+        } else {
+          if (environmentUser.getRole() == null) {
+            discoveredUserRoles.put(student.getId(), role);
+          } else {
+            if (!environmentUser.getRole().getId().equals(environmentRoleEntity.getId())) {
+              RoleSchoolDataIdentifier removedRoleIdentifier = roleSchoolDataIdentifierController.findRoleSchoolDataIdentifierByDataSourceAndRoleEntity(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, environmentUser.getRole());
+              removedUserRoles.put(student.getId(), removedRoleIdentifier.getIdentifier());
+              discoveredUserRoles.put(student.getId(), role);
+            }
+          }
+        }
+      }
+      
+      for (Long removedPyramusId : removedUserRoles.keySet()) {
+        String removedRoleIdentifier = removedUserRoles.get(removedPyramusId);
+        fireStudentRoleRemoved(removedPyramusId, removedRoleIdentifier);
+      }
+      
+      for (Long discoveredPyramusId : discoveredUserRoles.keySet()) {
+        UserRole userRole = discoveredUserRoles.get(discoveredPyramusId);
+        fireStudentRoleDiscovered(discoveredPyramusId, userRole);
+      }
+      
       if (userEntity == null) {
         fireStudentDiscovered(student);
         return true;
@@ -158,6 +192,7 @@ public class PyramusUpdater {
         fireStudentUpdated(student);
         return false;
       }
+      
     } else {
       if (userEntity != null) {
         fireStudentRemoved(pyramusId);
