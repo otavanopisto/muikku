@@ -916,11 +916,24 @@ public class WorkspaceRESTService extends PluginRESTService {
   public Response deleteWorkspaceFolder(
       @PathParam("WORKSPACEID") Long workspaceEntityId,
       @PathParam("WORKSPACEFOLDERID") Long workspaceFolderId) {
-
+    
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).entity("Not logged in").build();
+    }
     // Workspace
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
-      return Response.status(Status.NOT_FOUND).build();
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    WorkspaceRoleEntity workspaceRoleEntity = workspaceUserEntityController.findWorkspaceUserRoleByWorkspaceEntityAndUserEntity(workspaceEntity, sessionController.getLoggedUserEntity());
+    if (workspaceRoleEntity == null) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // TODO: More detailed security check is needed
+    if (workspaceRoleEntity.getArchetype() == WorkspaceRoleArchetype.STUDENT) {
+      return Response.status(Status.FORBIDDEN).build();
     }
 
     // WorkspaceFolder
