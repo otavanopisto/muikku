@@ -290,7 +290,6 @@
 
   $(document).ready(function() {
     
-    
     // TOC sorting - DOES NOT SUPPORT NESTING, only dragging items from section to section. 
     // If nesting is needed we have to use some other plug-in instead of JQeury.UI sortable
     
