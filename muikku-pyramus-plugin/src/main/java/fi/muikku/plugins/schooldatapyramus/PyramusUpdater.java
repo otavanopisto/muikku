@@ -12,6 +12,7 @@ import javax.enterprise.event.Event;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.model.users.EnvironmentRoleEntity;
 import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.RoleSchoolDataIdentifier;
@@ -152,7 +153,7 @@ public class PyramusUpdater {
     Map<Long, String> removedUserRoles = new HashMap<>();
 
     Student student = pyramusClient.get().get("/students/students/" + pyramusId, Student.class);
-    if (student != null) {
+    if (student != null && !student.getArchived()) {
       UserRole role = UserRole.STUDENT;
       EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
       if (environmentUser == null) {
@@ -268,11 +269,47 @@ public class PyramusUpdater {
    * @return returns whether new staff member was created or not
    */
   public boolean updateStaffMember(Long pyramusId) {
-    fi.pyramus.rest.model.StaffMember staffMember = pyramusClient.get().get("/staff/members/" + pyramusId, fi.pyramus.rest.model.StaffMember.class);
     String staffMemberIdentifier = identifierMapper.getStaffIdentifier(pyramusId);
     UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, staffMemberIdentifier);
-    
+    Map<Long, UserRole> discoveredUserRoles = new HashMap<>();
+    Map<Long, String> removedUserRoles = new HashMap<>();
+
+    fi.pyramus.rest.model.StaffMember staffMember = pyramusClient.get().get("/staff/members/" + pyramusId, fi.pyramus.rest.model.StaffMember.class);
     if (staffMember != null) {
+      UserRole role = staffMember.getRole();
+      EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
+      if (environmentUser == null) {
+        discoveredUserRoles.put(staffMember.getId(), role);
+      } else {
+        String roleIdentifier = identifierMapper.getEnvironmentRoleIdentifier(role);
+        EnvironmentRoleEntity environmentRoleEntity = environmentRoleEntityController.findEnvironmentRoleEntity(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, roleIdentifier);
+        if (environmentRoleEntity == null) {
+          removedUserRoles.put(staffMember.getId(), roleIdentifier);
+        } else {
+          if (environmentUser.getRole() == null) {
+            discoveredUserRoles.put(staffMember.getId(), role);
+          } else {
+            if (environmentUser.getRole().getArchetype() != EnvironmentRoleArchetype.STUDENT) {
+              if (!environmentUser.getRole().getId().equals(environmentRoleEntity.getId())) {
+                RoleSchoolDataIdentifier removedRoleIdentifier = roleSchoolDataIdentifierController.findRoleSchoolDataIdentifierByDataSourceAndRoleEntity(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, environmentUser.getRole());
+                removedUserRoles.put(staffMember.getId(), removedRoleIdentifier.getIdentifier());
+                discoveredUserRoles.put(staffMember.getId(), role);
+              }
+            }
+          }
+        }
+      }
+      
+      for (Long removedPyramusId : removedUserRoles.keySet()) {
+        String removedRoleIdentifier = removedUserRoles.get(removedPyramusId);
+        fireStaffMemberRoleRemoved(removedPyramusId, removedRoleIdentifier);
+      }
+      
+      for (Long discoveredPyramusId : discoveredUserRoles.keySet()) {
+        UserRole userRole = discoveredUserRoles.get(discoveredPyramusId);
+        fireStaffMemberRoleDiscovered(discoveredPyramusId, userRole);
+      }
+      
       if (userEntity == null) {
         fireStaffMemberDiscovered(staffMember);
         return true;
@@ -280,6 +317,7 @@ public class PyramusUpdater {
         fireStaffMemberUpdated(staffMember);
         return false;
       }
+      
     } else {
       if (userEntity != null) {
         fireStaffMemberRemoved(pyramusId);
@@ -330,10 +368,12 @@ public class PyramusUpdater {
             if (environmentUser.getRole() == null) {
               discoveredUserRoles.put(staffMember.getId(), role);
             } else {
-              if (!environmentUser.getRole().getId().equals(environmentRoleEntity.getId())) {
-                RoleSchoolDataIdentifier removedRoleIdentifier = roleSchoolDataIdentifierController.findRoleSchoolDataIdentifierByDataSourceAndRoleEntity(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, environmentUser.getRole());
-                removedUserRoles.put(staffMember.getId(), removedRoleIdentifier.getIdentifier());
-                discoveredUserRoles.put(staffMember.getId(), role);
+              if (environmentUser.getRole().getArchetype() != EnvironmentRoleArchetype.STUDENT) {
+                if (!environmentUser.getRole().getId().equals(environmentRoleEntity.getId())) {
+                  RoleSchoolDataIdentifier removedRoleIdentifier = roleSchoolDataIdentifierController.findRoleSchoolDataIdentifierByDataSourceAndRoleEntity(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, environmentUser.getRole());
+                  removedUserRoles.put(staffMember.getId(), removedRoleIdentifier.getIdentifier());
+                  discoveredUserRoles.put(staffMember.getId(), role);
+                }
               }
             }
           }
