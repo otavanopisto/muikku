@@ -773,6 +773,7 @@
             duration:1500,
             easing: "easeInOutQuint",
             complete: function() {
+
               $(this).animate({
                 backgroundColor: "transparent",
                 color: "#000"
@@ -787,6 +788,9 @@
                   $(this).removeAttr("style");
                 }
               });
+              
+              var workspaceNodeId = $(this).attr('data-workspace-node-id');
+              var nextSiblingId = $(this).next('.workspace-materials-toc-item').attr('data-workspace-node-id');
             }
           });
         }
