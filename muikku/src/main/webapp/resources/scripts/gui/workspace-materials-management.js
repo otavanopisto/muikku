@@ -749,6 +749,10 @@
   function moveWorkspaceNode(workspaceNodeId, nextSiblingId, origNextSiblingId) {
     var workspaceId = $('.workspaceEntityId').val();
     mApi().workspace.workspaces.materials.read(workspaceId, workspaceNodeId).callback(function(err, material) {
+      
+        if (isNaN(nextSiblingId)) {
+          nextSiblingId = null;
+        }
        
         material.nextSiblingId = nextSiblingId;
       
@@ -766,6 +770,10 @@
   function moveWorkspaceFolder(workspaceNodeId, nextSiblingId, origNextSiblingId) {
     var workspaceId = $('.workspaceEntityId').val();
     mApi().workspace.workspaces.folders.read(workspaceId, workspaceNodeId).callback(function(err, material) {
+      
+        if (isNaN(nextSiblingId)) {
+          nextSiblingId = null;
+        }
        
         material.nextSiblingId = nextSiblingId;
       
