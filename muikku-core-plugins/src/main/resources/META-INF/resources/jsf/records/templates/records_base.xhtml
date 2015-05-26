@@ -16,9 +16,14 @@
     <input type="hidden" name="userId" value="#{muikkuSession.loggedUserEntity.id}"/>
   </ui:define>
 
-  <ui:define name="content.tools.left"> 
-    <m:widget name="records-change-view" size="6" rendered="#{sessionBackingBean.loggedIn}"/>
+<!--   <ui:define name="content.tools.left">  -->
+<!--     <m:widget name="records-change-view" size="6" rendered="#{sessionBackingBean.loggedIn}"/> -->
+<!--   </ui:define> -->
+  
+  <ui:define name="content.tools.right"> 
+    <m:widget name="records-workspace-average" size="6" rendered="#{sessionBackingBean.loggedIn}"/>
   </ui:define>
+  
 
 <!--   <ui:define name="content.left.widget">  -->
 <!--     <m:widget name="communicator-categories" size="6" rendered="#{sessionBackingBean.loggedIn}"/> -->
