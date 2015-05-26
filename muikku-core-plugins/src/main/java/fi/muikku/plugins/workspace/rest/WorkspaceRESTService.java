@@ -56,6 +56,7 @@ import fi.muikku.plugins.workspace.WorkspaceMaterialReplyController;
 import fi.muikku.plugins.workspace.WorkspaceVisitController;
 import fi.muikku.plugins.workspace.fieldio.WorkspaceFieldIOException;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswer;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswerFile;
@@ -586,11 +587,11 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/materials/")
-  public Response listWorkspaceMaterials(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @QueryParam("parentId") Long parentId) {
+  public Response listWorkspaceMaterials(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @QueryParam("parentId") Long parentId, @QueryParam ("assignmentType") WorkspaceMaterialAssignmentType assignmentType) {
     // TODO: SecuritY???
     
-    if (parentId == null) {
-      return Response.status(Status.NOT_IMPLEMENTED).entity("Listing workspace materials without parentId is currently not implemented").build();
+    if (parentId == null && assignmentType == null) {
+      return Response.status(Status.NOT_IMPLEMENTED).entity("Listing workspace materials without parentId or assignmentType is currently not implemented").build();
     }
     
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
@@ -598,21 +599,34 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity("Could not find a workspace entity").build();
     }
     
-    WorkspaceNode parent = workspaceMaterialController.findWorkspaceNodeById(parentId);
-    if (parent == null) {
-      return Response.status(Status.BAD_REQUEST).entity("Given workspace parent material does not exist").build();
+    List<WorkspaceMaterial> workspaceMaterials = null;
+    
+    if (parentId != null) {
+      WorkspaceNode parent = workspaceMaterialController.findWorkspaceNodeById(parentId);
+      if (parent == null) {
+        return Response.status(Status.BAD_REQUEST).entity("Given workspace parent material does not exist").build();
+      }
+      
+      WorkspaceRootFolder rootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(parent);
+      if (rootFolder == null) {
+        return Response.status(Status.BAD_REQUEST).entity("Could not find a workspace root folder").build();
+      }
+      
+      if (!rootFolder.getWorkspaceEntityId().equals(workspaceEntityId)) {
+        return Response.status(Status.BAD_REQUEST).entity("Invalid parentId").build();
+      }
+
+      if (assignmentType != null) {
+        // TODO: support for invisible materials
+        workspaceMaterials = workspaceMaterialController.listVisibleWorkspaceMaterialsByParentAndAssignmentType(parent, workspaceEntity, assignmentType);
+      } else {
+        workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsByParent(parent);
+      }
+    } else {
+      // TODO: support for invisible materials
+      workspaceMaterials = workspaceMaterialController.listVisibleWorkspaceMaterialsByAssignmentType(workspaceEntity, assignmentType);
     }
     
-    WorkspaceRootFolder rootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(parent);
-    if (rootFolder == null) {
-      return Response.status(Status.BAD_REQUEST).entity("Could not find a workspace root folder").build();
-    }
-    
-    if (!rootFolder.getWorkspaceEntityId().equals(workspaceEntityId)) {
-      return Response.status(Status.BAD_REQUEST).entity("Invalid parentId").build();
-    }
-    
-    List<WorkspaceMaterial> workspaceMaterials = workspaceMaterialController.listWorkspaceMaterialsByParent(parent);
     if (workspaceMaterials.isEmpty()) {
       return Response.noContent().build();
     }
