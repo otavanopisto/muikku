@@ -269,18 +269,21 @@ $(document).ready(function(){
 	
 		mApi().user.users.read({ 'searchString' : searchTerm }).callback(
 		 function (err, result) {
-		   for (var i = 0, l = result.length; i < l; i++) {
-			 var img = undefined;
-	       if (result[i].hasImage)
-	        img = CONTEXTPATH + "/picture?userId=" + result[i].id;
-	        users.push({
-	          category: getLocaleText("plugin.communicator.users"),
-	          label: result[i].firstName + " " + result[i].lastName,
-	          id: result[i].id,
-	          image: img,
-	          type: "USER"
-	         });
-	       }
+		   if(result != 'undefined'){		   
+  		   for (var i = 0, l = result.length; i < l; i++) {
+  			 var img = undefined;
+  	       if (result[i].hasImage)
+  	        img = CONTEXTPATH + "/picture?userId=" + result[i].id;
+  	        users.push({
+  	          category: getLocaleText("plugin.communicator.users"),
+  	          label: result[i].firstName + " " + result[i].lastName,
+  	          id: result[i].id,
+  	          image: img,
+  	          type: "USER"
+  	         });
+  	       }
+		   }
+
 	}); 
 	
 	return users;
