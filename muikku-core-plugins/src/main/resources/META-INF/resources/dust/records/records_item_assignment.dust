@@ -1,0 +1,5 @@
+<div class="mf-subitem tr-task">
+  <div>{material.title}</div>
+  <div>{grade} ({gradingScale})</div>
+  <div>{verbalAssessment}</div>
+</div>

@@ -53,21 +53,14 @@
   <div class="mf-item tr-tasklist">
     <div class="topic"><h3>Arvioitavat tehtävät {verbal.topic}</h3></div>
     <div class="content">
-      <div class="mf-subitem tr-task">Tehtävä</div>
-      <div class="mf-subitem tr-task">Tehtävä</div>
-      <div class="mf-subitem tr-task">Tehtävä</div>
-      <div class="mf-subitem tr-task">Tehtävä</div>
-      <div class="mf-subitem tr-task">Tehtävä</div>
-      <div class="mf-subitem tr-task">Tehtävä</div>
-      <div class="mf-subitem tr-task">Tehtävä</div>
-      <div class="mf-subitem tr-task">Tehtävä</div>
-      <div class="mf-subitem tr-task">Tehtävä</div>
+      {#assignments}
+        {>"records/records_item_assignment.dust"/}
+      {:else}    
+        {>"records/records_item_noassignments.dust"/}
+      {/assignments}
     </div>
   </div>  
 
-  
-  
-  
 {:else}
   <div class="mf-content-empty cm-no-messages">
     <h3>{#localize key="plugin.records.empty.topic.all"/}</h3>
