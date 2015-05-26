@@ -28,20 +28,34 @@
     
     _loadWorkspace: function (workspaceEntityId) {
       this._clear();
-      mApi().workspace.workspaces
-      .read({ userId: this.options.userEntityId })
-      .callback($.proxy(function (err, workspaces) {
-        if( err ){
-          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.records.errormessage.noworkspaces', err));
-        } else {
-          renderDustTemplate('/records/records_item_open.dust', workspaces, $.proxy(function(text) {
-            this.element.append(text);
-          }, this));
-        }
-      }, this));
+      
+      mApi().workspace.workspaces.materials.read(workspaceEntityId, { assignmentType: 'EVALUATED' })
+        .on('$', function (workspaceMaterial, callback) {
+          // TODO: support for binary materials?
+          
+          mApi().materials.html.read(workspaceMaterial.materialId).callback(function (htmlErr, htmlMaterial) {
+            if (htmlErr) {
+              $('.notification-queue').notificationQueue('notification', 'error', htmlErr);
+            } else {
+              workspaceMaterial.material = htmlMaterial;
+              callback();
+            }
+          });   
+        })
+        .callback($.proxy(function (err, assignments) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.records.errormessage.noworkspaces', err));
+          } else {
+            renderDustTemplate('/records/records_item_open.dust', { assignments: assignments }, $.proxy(function(text) {
+              this.element.append(text);
+            }, this));
+          }
+        }, this));
     },
     _onItemClick: function (event) {
-      var workspaceEntityId = $(event.target).attr('data-workspace-entity-id');
+      var item = $(event.target).hasClass('tr-item') ? $(event.target) : $(event.target).closest('.tr-item');
+      
+      var workspaceEntityId = $(item).attr('data-workspace-entity-id');
       this._loadWorkspace(workspaceEntityId);
     },
     _clear: function(){

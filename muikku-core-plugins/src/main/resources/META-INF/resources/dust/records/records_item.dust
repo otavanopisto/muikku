@@ -1,9 +1,5 @@
 
-<div id="crsId-{id}" class="mf-item tr-item ft-01">
-    <input type="hidden" name="workspaceId" value="{id}"/>
-    <input type="hidden" name="workspaceUrl" value="{urlName}"/>
-
-    
+<div id="crsId-{id}" class="mf-item tr-item ft-01" data-workspace-entity-id="{id}" data-workspace-entity-url-name="{urlName}">
     <div class="tr-item-details">
 
       <div class="tr-item-details-container">       
