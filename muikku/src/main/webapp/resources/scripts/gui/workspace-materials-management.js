@@ -745,6 +745,14 @@
     event.preventDefault();
     scrollToPage($($(this).attr('href')).data('workspaceMaterialId'), true);
   });
+  
+  function moveWorkspaceNode(workspaceNodeId, nextSiblingId) {
+    alert(workspaceNodeId + " moved to " + nextSiblingId);
+    /*
+    mApi().workspace.workspaces.folders.update(workspaceId, workspaceNodeId, folder).callback(function (err, html) {
+    });
+    */
+  }
 
   $(document).ready(function() {
     
@@ -765,9 +773,13 @@
       placeholder: "sortable-section-placeholder",
       forcePlaceholderSize: true,
       start: function(event, ui) {
-
       },
       stop: function(event, ui) {
+        var workspaceNodeId = parseInt($(ui.item).attr('data-workspace-node-id'), 10);
+        var nextSiblingId = parseInt($(ui.item).next('.workspace-materials-toc-item').attr('data-workspace-node-id'), 10);
+        
+        moveWorkspaceNode(workspaceNodeId, nextSiblingId);
+
         if (!$(ui.item).hasClass("active")) {
           $(ui.item)
           .addClass("no-hover")
@@ -793,9 +805,6 @@
                   $(this).removeAttr("style");
                 }
               });
-              
-              var workspaceNodeId = $(this).attr('data-workspace-node-id');
-              var nextSiblingId = $(this).next('.workspace-materials-toc-item').attr('data-workspace-node-id');
             }
           });
         }
@@ -817,6 +826,10 @@
 
       },
       stop: function(event, ui) {
+        var workspaceNodeId = parseInt($(ui.item).attr('data-workspace-node-id'), 10);
+        var nextSiblingId = parseInt($(ui.item).next('.workspace-materials-toc-item').attr('data-workspace-node-id'), 10);
+        
+        moveWorkspaceNode(workspaceNodeId, nextSiblingId);
         /* Lets not animate already active element */
         if (!$(ui.item).hasClass("active")) {
           $(ui.item)

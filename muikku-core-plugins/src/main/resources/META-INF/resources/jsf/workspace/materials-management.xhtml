@@ -27,7 +27,7 @@
               <div class="workspace-materials-toc-root">
                 <ui:repeat var="node" value="#{workspaceMaterialsManagementBackingBean.contentNodes}">
                   <ui:fragment rendered="#{node.type eq 'folder'}">
-                    <ul class="workspace-materials-toc-section">
+                    <ul class="workspace-materials-toc-section" data-workspace-node-id="#{node.workspaceMaterialId}">
                       <li class="workspace-materials-toc-subtitle">
                         <span>#{node.title}</span>
                         <span class="workspace-materials-toc-sectionDragHandle icon-move"></span>
@@ -38,7 +38,7 @@
                           <li class="workspace-materials-toc-subtitle">#{articleNode.title}</li>
                         </ui:fragment>
                         <ui:fragment rendered="#{articleNode.type ne 'folder'}">
-                          <li class="workspace-materials-toc-item"  data-workspace-node-id="#{node.workspaceMaterialId}">
+                          <li class="workspace-materials-toc-item"  data-workspace-node-id="#{articleNode.workspaceMaterialId}">
                             <h:outputLink value="#page-#{articleNode.workspaceMaterialId}" class="#{articleNode.assignmentType eq 'EVALUATED' ? 'evaluated' : articleNode.assignmentType eq 'EXERCISE' ? 'exercise' : ''}">#{articleNode.title}</h:outputLink>
                             <span class="workspace-materials-toc-itemDragHandle icon-move"></span>  
                           </li>
