@@ -136,7 +136,17 @@ public class UserEntityController implements Serializable {
   public UserEntity updateDefaultSchoolDataSource(UserEntity userEntity, SchoolDataSource defaultSchoolDataSource) {
     return userEntityDAO.updateDefaultSchoolDataSource(userEntity, defaultSchoolDataSource);
   }
-
+  
+  public UserEntity updateDefaultSchoolDataSource(UserEntity userEntity, String defaultSchoolDataSource) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(defaultSchoolDataSource);
+    if (schoolDataSource != null) {
+      return updateDefaultSchoolDataSource(userEntity, schoolDataSource);
+    } else {
+      logger.severe(String.format("Could not find school data source %s", defaultSchoolDataSource));
+      return null;
+    }
+  }
+  
   public UserEntity updateDefaultIdentifier(UserEntity userEntity, String defaultIdentifier) {
     return userEntityDAO.updateDefaultIdentifier(userEntity, defaultIdentifier);
   }

@@ -11,6 +11,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import fi.muikku.model.users.EnvironmentRoleEntity;
 import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.UserEmailEntity;
@@ -48,7 +50,7 @@ public class DefaultSchoolDataUserListener {
     discoveredEnvironmentUserRoles = new HashMap<>();
   }
   
-  public synchronized void onSchoolDataUserDiscoveredEvent(@Observes SchoolDataUserDiscoveredEvent event) {
+  public void onSchoolDataUserDiscoveredEvent(@Observes SchoolDataUserDiscoveredEvent event) {
     String discoverId = "U-" + event.getDataSource() + "/" + event.getIdentifier();
     if (discoveredUsers.containsKey(discoverId)) {
       event.setDiscoveredUserEntityId(discoveredUsers.get(discoverId));
@@ -90,7 +92,7 @@ public class DefaultSchoolDataUserListener {
     }
   }
   
-  public synchronized void onSchoolDataUserUpdatedEvent(@Observes SchoolDataUserUpdatedEvent event) {
+  public void onSchoolDataUserUpdatedEvent(@Observes SchoolDataUserUpdatedEvent event) {
     UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
     if (userEntity != null) {
       List<UserEntity> emailUsers = userEntityController.listUserEntitiesByEmails(event.getEmails());
@@ -121,6 +123,13 @@ public class DefaultSchoolDataUserListener {
         UserEmailEntity emailEntity = userEmailEntityController.findUserEmailEntityByAddress(removedAddress);
         userEmailEntityController.removeUserEmailEntity(emailEntity);
       }
+      
+      // Updated user's school data source default has been changed
+      if ((!StringUtils.equals(userEntity.getDefaultSchoolDataSource().getIdentifier(), event.getDefaultDataSource())) || 
+          (!StringUtils.equals(userEntity.getDefaultIdentifier(), event.getDefaultIdentifier()))) {
+        userEntityController.updateDefaultSchoolDataSource(userEntity, event.getDefaultDataSource());
+        userEntityController.updateDefaultIdentifier(userEntity, event.getDefaultIdentifier());
+      }
     }
   }
   
@@ -131,7 +140,7 @@ public class DefaultSchoolDataUserListener {
     }    
   }
   
-  public synchronized void onSchoolDataUserEnvironmentRoleDiscoveredEvent(@Observes SchoolDataUserEnvironmentRoleDiscoveredEvent event) {
+  public void onSchoolDataUserEnvironmentRoleDiscoveredEvent(@Observes SchoolDataUserEnvironmentRoleDiscoveredEvent event) {
     String discoverId = "UER-" + event.getUserDataSource() + "/" + event.getUserIdentifier() + '-' + event.getRoleDataSource() + "/" + event.getRoleIdentifier();
     if (discoveredEnvironmentUserRoles.containsKey(discoverId)) {
       event.setDiscoveredEnvironmentUserRoleEntityId(discoveredEnvironmentUserRoles.get(discoverId));
@@ -159,7 +168,7 @@ public class DefaultSchoolDataUserListener {
     }
   }
   
-  public synchronized void onSchoolDataUserEnvironmentRoleRemovedEvent(@Observes SchoolDataUserEnvironmentRoleRemovedEvent event) {
+  public void onSchoolDataUserEnvironmentRoleRemovedEvent(@Observes SchoolDataUserEnvironmentRoleRemovedEvent event) {
     UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(event.getUserDataSource(), event.getUserIdentifier());
     if (userEntity != null) {
       EnvironmentRoleEntity environmentRoleEntity = environmentRoleEntityController.findEnvironmentRoleEntity(event.getRoleDataSource(), event.getRoleIdentifier());
