@@ -757,13 +757,7 @@
           if (!err) {
               alert ("Siirto onnistui!");
               
-              $("#page-" + workspaceNodeId).insertBefore("#page" - nextSiblingId);
-
-              /*
-              var elem = $("#page-" + workspaceNodeId)[0];
-              elem.parentNode.insertBefore(elem, elem.previousSibling);
-              elem.parentNode.insertBefore(elem, elem.previousSibling);
-              */
+              $("#page-" + workspaceNodeId).insertBefore("#page-" + nextSiblingId);
           }
         });
     });
@@ -779,6 +773,8 @@
           
           if (!err) {
               alert ("Siirto onnistui!");
+
+              $("#page-" + workspaceNodeId).insertBefore("#page-" + nextSiblingId);
           }
         });
     });
