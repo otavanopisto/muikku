@@ -345,15 +345,7 @@ public class WorkspaceMaterialController {
       throw new IllegalArgumentException("Next sibling parent is not parent");
     }
     // Parent node
-    if (!workspaceFolder.getParent().getId().equals(parentNode.getId())) {
-      while (parentNode != null) {
-        if (parentNode.getId().equals(workspaceFolder.getId())) {
-          throw new IllegalArgumentException("Circular reference " + workspaceFolder.getId() + " with parent " + parentNode.getId());
-        }
-        parentNode = parentNode.getParent();
-      }
-      workspaceFolder = (WorkspaceFolder) workspaceNodeDAO.updateParent(workspaceFolder, parentNode);
-    }
+    workspaceFolder = (WorkspaceFolder) workspaceNodeDAO.updateParent(workspaceFolder, parentNode);
     // Next sibling
     if (nextSibling == null) {
       Integer orderNumber = workspaceNodeDAO.getMaximumOrderNumber(parentNode);
@@ -374,21 +366,16 @@ public class WorkspaceMaterialController {
 
   public WorkspaceNode updateWorkspaceNode(WorkspaceNode workspaceNode, Long materialId, WorkspaceNode parentNode, WorkspaceNode nextSibling, Boolean hidden,
       WorkspaceMaterialAssignmentType assignmentType) {
+    if (nextSibling != null && !nextSibling.getParent().getId().equals(parentNode.getId())) {
+      throw new IllegalArgumentException("Next sibling parent is not parent");
+    }
     // Material id
     if (workspaceNode instanceof WorkspaceMaterial) {
       workspaceNode = workspaceMaterialDAO.updateMaterialId((WorkspaceMaterial) workspaceNode, materialId);
       workspaceNode = workspaceMaterialDAO.updateAssignmentType((WorkspaceMaterial) workspaceNode, assignmentType);
     }
     // Parent node
-    if (!workspaceNode.getParent().getId().equals(parentNode.getId())) {
-      while (parentNode != null) {
-        if (parentNode.getId().equals(workspaceNode.getId())) {
-          throw new IllegalArgumentException("Circular reference " + workspaceNode.getId() + " with parent " + parentNode.getId());
-        }
-        parentNode = parentNode.getParent();
-      }
-      workspaceNode = workspaceNodeDAO.updateParent(workspaceNode, parentNode);
-    }
+    workspaceNode = workspaceNodeDAO.updateParent(workspaceNode, parentNode);
     // Next sibling
     if (nextSibling == null) {
       Integer orderNumber = workspaceNodeDAO.getMaximumOrderNumber(parentNode);
