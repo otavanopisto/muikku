@@ -746,20 +746,25 @@
     scrollToPage($($(this).attr('href')).data('workspaceMaterialId'), true);
   });
   
-  function moveWorkspaceNode(workspaceNodeId, nextSiblingId, origNextSiblingId) {
+  function moveWorkspaceMaterial(parentId, workspaceNodeId, nextSiblingId, origNextSiblingId) {
     var workspaceId = $('.workspaceEntityId').val();
     mApi().workspace.workspaces.materials.read(workspaceId, workspaceNodeId).callback(function(err, material) {
       
         if (isNaN(nextSiblingId)) {
           nextSiblingId = null;
         }
+        
+        if (isNaN(parentId)) {
+          parentId = null;
+        }
        
         material.nextSiblingId = nextSiblingId;
+        material.parentId = parentId;
       
         mApi().workspace.workspaces.materials.update(workspaceId, workspaceNodeId, material).callback(function (err, html) {
           
           if (!err) {
-              // Move the "add page" boxes first
+              // Move the "add page" boxes (2) first
               $("#page-" + workspaceNodeId).prev().insertBefore("#page-" + nextSiblingId);
               $("#page-" + workspaceNodeId).prev().insertBefore("#page-" + nextSiblingId);
               $("#page-" + workspaceNodeId).insertBefore($("#page-" + nextSiblingId).prev().prev());
@@ -772,15 +777,15 @@
 
   function moveWorkspaceFolder(workspaceNodeId, nextSiblingId, origNextSiblingId) {
     var workspaceId = $('.workspaceEntityId').val();
-    mApi().workspace.workspaces.folders.read(workspaceId, workspaceNodeId).callback(function(err, material) {
+    mApi().workspace.workspaces.folders.read(workspaceId, workspaceNodeId).callback(function(err, folder) {
       
         if (isNaN(nextSiblingId)) {
           nextSiblingId = null;
         }
        
-        material.nextSiblingId = nextSiblingId;
+        folder.nextSiblingId = nextSiblingId;
       
-        mApi().workspace.workspaces.folders.update(workspaceId, workspaceNodeId, material).callback(function (err, html) {
+        mApi().workspace.workspaces.folders.update(workspaceId, workspaceNodeId, folder).callback(function (err, html) {
           
           if (!err) {
               location.reload(); //TODO: move all child nodes without reloading
@@ -867,11 +872,12 @@
             $(ui.item).next('.workspace-materials-toc-item').attr('data-workspace-node-id'));
       },
       stop: function(event, ui) {
+        var parentId = parseInt($(ui.item).parent().attr('data-workspace-node-id'), 10);
         var workspaceNodeId = parseInt($(ui.item).attr('data-workspace-node-id'), 10);
         var nextSiblingId = parseInt($(ui.item).next('.workspace-materials-toc-item').attr('data-workspace-node-id'), 10);
         var origNextSiblingId = parseInt($(ui.item).attr('data-original-next-sibling'), 10);
         
-        moveWorkspaceNode(workspaceNodeId, nextSiblingId, origNextSiblingId);
+        moveWorkspaceMaterial(parentId, workspaceNodeId, nextSiblingId, origNextSiblingId);
         /* Lets not animate already active element */
         if (!$(ui.item).hasClass("active")) {
           $(ui.item)
