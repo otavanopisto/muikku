@@ -199,7 +199,10 @@ public class PyramusUpdater {
   public void updateStaffMember(Long pyramusId) {
     StaffMember staffMember = pyramusClient.get().get(String.format("/staff/members/%d", pyramusId), StaffMember.class);
     if (staffMember == null) {
-      fireStaffMemberRemoved(pyramusId);
+      UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifierMapper.getStaffIdentifier(pyramusId));
+      if (userEntity != null) {
+        fireStaffMemberRemoved(pyramusId);
+      }
     } else {
       String defaultIdentifier = null;
 
@@ -231,7 +234,10 @@ public class PyramusUpdater {
   public void updateStudent(Long pyramusId) {
     Student student = pyramusClient.get().get(String.format("/students/students/%d", pyramusId), Student.class);
     if (student == null) {
-      fireStudentRemoved(pyramusId);
+      UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, identifierMapper.getStudentIdentifier(pyramusId));
+      if (userEntity != null) {
+        fireStudentRemoved(pyramusId);
+      }
     } else {
       String defaultIdentifier = null;
       
@@ -298,17 +304,18 @@ public class PyramusUpdater {
               if (environmentUser.getRole().getArchetype() == EnvironmentRoleArchetype.STUDENT) {
                 fireStudentRoleRemoved(student.getId(), removedRoleIdentifier.getIdentifier());
               } else {
+                Long staffMemberId = null;
+                
                 if (userEntity.getDefaultIdentifier() != null) {
-                  Long staffmemberId = identifierMapper.getPyramusStaffId(userEntity.getDefaultIdentifier());
-                  if (staffmemberId == null) {
-                    // fall back to student id (staff member role has been assignment to student due a bug)
-                    staffmemberId = student.getId();
-                  }
-                  
-                  fireStudentRoleRemoved(staffmemberId, removedRoleIdentifier.getIdentifier());
-                } else {
-                  logger.warning(String.format("Could not fire staff member role removal event because UserEntity #%d is missing defaultIdentifier", userEntity.getId()));
+                  staffMemberId = identifierMapper.getPyramusStaffId(userEntity.getDefaultIdentifier());
                 }
+                
+                if (staffMemberId == null) {
+                  // fall back to student id (staff member role has been assignment to student due a bug)
+                  staffMemberId = student.getId();
+                }
+                
+                fireStudentRoleRemoved(staffMemberId, removedRoleIdentifier.getIdentifier());
               }
               
               fireStudentRoleDiscovered(student.getId(), userPyramusRole);
@@ -352,17 +359,18 @@ public class PyramusUpdater {
             // with an incorrect role
             RoleSchoolDataIdentifier removedRoleIdentifier = roleSchoolDataIdentifierController.findRoleSchoolDataIdentifierByDataSourceAndRoleEntity(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, environmentUser.getRole());
             if (environmentUser.getRole().getArchetype() == EnvironmentRoleArchetype.STUDENT) {
+              Long studentId = null;
+              
               if (userEntity.getDefaultIdentifier() != null) {
-                Long studentId = identifierMapper.getPyramusStudentId(userEntity.getDefaultIdentifier());
-                if (studentId == null) {
-                  // fall back to staff member id (staff member role has been assignment to student due a bug)
-                  studentId = staffMember.getId();
-                }
-                
-                fireStudentRoleRemoved(studentId, removedRoleIdentifier.getIdentifier());
-              } else {
-                logger.warning(String.format("Could not fire student role removal event because UserEntity #%d is missing defaultIdentifier", userEntity.getId()));
+                studentId = identifierMapper.getPyramusStudentId(userEntity.getDefaultIdentifier());
               }
+
+              if (studentId == null) {
+                // fall back to staff member id (staff member role has been assignment to student due a bug)
+                studentId = staffMember.getId();
+              }
+              
+              fireStudentRoleRemoved(studentId, removedRoleIdentifier.getIdentifier());
             } else {
               fireStaffMemberRoleRemoved(staffMember.getId(), removedRoleIdentifier.getIdentifier());
             }
