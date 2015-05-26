@@ -39,7 +39,7 @@ public class DefaultSchoolDataRoleListener {
     discoveredEnvironmentRoles = new HashMap<>();
   }
   
-  public synchronized void onSchoolDataEnvironmentRoleDiscoveredEvent(@Observes SchoolDataEnvironmentRoleDiscoveredEvent event) {
+  public void onSchoolDataEnvironmentRoleDiscoveredEvent(@Observes SchoolDataEnvironmentRoleDiscoveredEvent event) {
     String discoverId = "ER-" + event.getDataSource() + "/" + event.getIdentifier();
     if (discoveredEnvironmentRoles.containsKey(discoverId)) {
       event.setDiscoveredEnvironmentRoleEntityId(discoveredEnvironmentRoles.get(discoverId));
@@ -64,7 +64,7 @@ public class DefaultSchoolDataRoleListener {
     }
   }
 
-  public synchronized void onSchoolDataWorkspaceRoleDiscoveredEvent(@Observes SchoolDataWorkspaceRoleDiscoveredEvent event) {
+  public void onSchoolDataWorkspaceRoleDiscoveredEvent(@Observes SchoolDataWorkspaceRoleDiscoveredEvent event) {
     String discoverId = "WSR-" + event.getDataSource() + "/" + event.getIdentifier();
     if (discoveredWorkspaceRoles.containsKey(discoverId)) {
       event.setDiscoveredWorkspaceRoleEntityId(discoveredWorkspaceRoles.get(discoverId));

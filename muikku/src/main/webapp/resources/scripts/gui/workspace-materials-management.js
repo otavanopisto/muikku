@@ -901,6 +901,10 @@
       }
     });
 
+    dust.preload('workspace/materials-management-page-html.dust');
+    dust.preload('workspace/materials-management-page-binary.dust');
+    dust.preload('workspace/materials-management-page-folder.dust');
+    
     $(document).muikkuMaterialLoader({
       workspaceEntityId: $('.workspaceEntityId').val(),
       dustTemplate: 'workspace/materials-management-page.dust',
