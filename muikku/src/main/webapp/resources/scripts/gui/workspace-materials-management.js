@@ -773,8 +773,8 @@
           
           if (!err) {
               alert ("Siirto onnistui!");
-
-              $("#page-" + workspaceNodeId).insertBefore("#page-" + nextSiblingId);
+              location.reload(); //TODO: move all child nodes without reloading
+              //$("#page-" + workspaceNodeId).insertBefore("#page-" + nextSiblingId);
           }
         });
     });
