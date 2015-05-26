@@ -4,7 +4,7 @@ insert into workspaceentity (id, archived, identifier, urlName, dataSource_id, p
   (1, 0, 2, 'testCourse', 2, 1);
 
 insert into workspacenode (id, hidden, orderNumber, urlName, parent_id) values 
-  (1, 0, 0, 'testCourse', null);
+  (1, 0, 0, 'Test Course', null);
 
 insert into workspacerootfolder (workspaceEntityId, id) values 
   (1, 1);

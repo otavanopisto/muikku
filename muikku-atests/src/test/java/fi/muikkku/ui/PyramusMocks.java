@@ -38,7 +38,7 @@ public class PyramusMocks{
         .withStatus(302)
         .withHeader("Location",
           "http://dev.muikku.fi:8080/login?_stg=rsp&code=1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111")));
-
+    
     stubFor(post(urlMatching("/1/oauth/token"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
@@ -60,7 +60,7 @@ public class PyramusMocks{
         .withStatus(200)));
   }
 
-  public static void admin1LoginMock() throws JsonProcessingException {
+  public static void adminLoginMock() throws JsonProcessingException {
     stubFor(get(urlMatching("/dnm")).willReturn(aResponse().withHeader("Content-Type", "application/json").withBody("").withStatus(204)));
 
     stubFor(get(urlMatching("/users/authorize.*"))
