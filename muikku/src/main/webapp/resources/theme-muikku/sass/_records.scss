@@ -119,7 +119,6 @@
 .tr-item {
  @extend .co-listItem;
  padding:5px 5px 5px 5px;
- margin-bottom:10px;
  &.ft-01{border-left: 3px solid $mainFuncFilter1;} 
  &.ft-02{border-left: 3px solid $mainFuncFilter2;}
  &.ft-03{border-left: 3px solid $mainFuncFilter3;}
@@ -164,7 +163,6 @@
   @extend .co-description;
   font-size: 0.9em; 
   padding:5px;
-  min-height:100px;
 
 }
 
