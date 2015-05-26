@@ -759,9 +759,9 @@
         mApi().workspace.workspaces.materials.update(workspaceId, workspaceNodeId, material).callback(function (err, html) {
           
           if (!err) {
-              alert ("Siirto onnistui!");
-              
               $("#page-" + workspaceNodeId).insertBefore("#page-" + nextSiblingId);
+          } else {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
           }
         });
     });
@@ -780,9 +780,9 @@
         mApi().workspace.workspaces.folders.update(workspaceId, workspaceNodeId, material).callback(function (err, html) {
           
           if (!err) {
-              alert ("Siirto onnistui!");
               location.reload(); //TODO: move all child nodes without reloading
-              //$("#page-" + workspaceNodeId).insertBefore("#page-" + nextSiblingId);
+          } else {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
           }
         });
     });
