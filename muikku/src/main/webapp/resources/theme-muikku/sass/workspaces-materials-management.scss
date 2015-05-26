@@ -1,5 +1,6 @@
 @import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
 @import "_workspaces-materials-defaults.scss";
+@import "_custom-ckeditor-styles.scss";
 @import "_connect-field.scss";
 
 body.workspace-materials-management {
@@ -36,7 +37,7 @@ body.workspace-materials-management {
       top:0px;
       left:-4500px;
       width:0px;
-      color:#fff;
+      color:#fff; 
       text-transform:uppercase;
       padding:13px 15px 15px 14px;
       @include rounded-top-left(3px);
@@ -143,13 +144,17 @@ body.workspace-materials-management {
                   opacity:0.4;
                 }
                 
+                &.parent-hidden {
+                  opacity:0.4;
+                }
+                
                 a {
                   text-decoration:none;
                   color:#2c2c2c;
                   display:block;
                   @include genericMenuLinkHoverTransition(background,0.15s,ease-in-out);
                   @include rounded(2px);
-                  padding:2px 24px 2px 8px;
+                  padding:2px 24px 2px 6px;
                   border-left:2px solid #e8f0f5;
                   
                   &.evaluated {
@@ -216,7 +221,7 @@ body.workspace-materials-management {
                   right:0px;
                 }
     
-              }
+              } /* Item */
         
               .workspace-materials-toc-section {
                 margin:0;
@@ -246,10 +251,14 @@ body.workspace-materials-management {
                     .workspace-materials-toc-sectionDragHandle {
                       opacity:1;
                     }
-                  
+                    
+                  }
+
+                  &.item-hidden {
+                    opacity:0.4;
                   }
                   
-                  &.subtitle-hidden {
+                  &.parent-hidden {
                     opacity:0.4;
                   }
                   
@@ -262,16 +271,18 @@ body.workspace-materials-management {
                   left:6px;
                 }
                 
-              }
-            }
-          }
+              } 
+              
+            } 
+            
+          } 
+          
+        } 
         
-        }
+      } 
       
-      }
+    } 
     
-    }
-
   } 
   
   #contentWorkspaceMaterialsManagement {
@@ -446,11 +457,12 @@ body.workspace-materials-management {
       padding:50px 30px 10px 30px;
       font-size:18px;
       word-wrap: break-word;
-      -webkit-transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
-      -moz-transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
-      -o-transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
-      -ms-transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
-      transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
+      box-shadow:0 0 0 0 rgba(148,183,208,0.95);
+      -webkit-transition: box-shadow 0.3s ease-in-out, opacity 0.5s ease-in-out;
+      -moz-transition: box-shadow 0.3s ease-in-out, opacity 0.5s ease-in-out;
+      -o-transition: box-shadow 0.3s ease-in-out, opacity 0.5s ease-in-out;
+      -ms-transition: box-shadow 0.3s ease-in-out, opacity 0.5s ease-in-out;
+      transition: box-shadow 0.3s ease-in-out, opacity 0.5s ease-in-out;
       
       &.folder { 
         position:relative;
@@ -458,8 +470,8 @@ body.workspace-materials-management {
         max-width:700px;
         width:auto;
         background:#fff;
-        box-shadow:$w-page-sc;
-        padding:30px 30px 30px 30px;
+        box-shadow:0 0 0 0 rgba(148,183,208,0.95);
+        padding:70px 30px 30px 30px;
         word-wrap: break-word;
         line-height:1.3em;
         font-size:18px;
@@ -469,7 +481,197 @@ body.workspace-materials-management {
         .page-content {
           font-size:27px;
         }
+        
+        &.page-edit-mode {
+          padding:50px 0 10px 0;
+          box-sizing:border-box;
+        
+          /* Editor input override */
+          input[type="text"].workspace-material-folder-editor-title {
+            width:100%;
+            box-sizing:border-box;
+            text-align:left;
+            color:#38393a;
+            font-size:27px;
+            border:0;
+            padding:0 0 2px 0;
+            margin:19px 30px 0px 30px;
+            border-radius:0;
+            background:#f3faff;
+            box-shadow: 0 0 0 10px rgba(243,250,255,0.8);
+          }
+          
+          /* Editor title override */
+          .workspace-material-folder-editor-title-wrapper {
+            margin:19px 30px 26px 30px;
+          
+            input.workspace-material-folder-editor-title {
+              padding:0 0 2px 0;
+              margin:0;
+            }
+          
+          }
+        
+        }
       }
+      
+      /* Material's attachment widget */
+      .materials-management-page-attachment-widget {
+        min-height:100px;
+        margin:5px -20px 0px -20px;
+      
+        /* Material's attachment upload wrapper */
+        .materials-management-page-attachments-upload-container {
+          padding:20px;
+          position:relative;
+          box-sizing:border-box;
+          border:1px solid #7391a7;
+          transition:background 0.6s ease-in-out;
+          cursor:pointer;
+          
+           &:hover {
+            background:#ebfbff;
+          }
+          
+          input[type="file"] {
+            position:absolute;
+            top:0;
+            bottom:0;
+            left:0;
+            right:0;
+            opacity:0;
+            width:100%;
+            cursor:pointer;
+          }
+          
+          .materials-management-page-attachment-description {
+            display:block;
+            font-size:16px;
+            text-align:center;
+          }
+          
+        }
+        
+        /* Uploaded attachments wrapper */
+        .materials-management-page-attachments-container {
+          position:relative;
+          
+          .content-loading {
+            position:absolute;
+            top:0;
+            left:0;
+            bottom:0;
+            right:0;
+            z-index:9999;
+            opacity:0.98;
+            background:#4f6677;
+            font-size:80px;
+            color:#c8e8ff;
+            
+            .icon-spinner {
+              position:absolute;
+              left:50%;
+              top:50%;
+              margin:-50px 0 0 -50px;
+              -webkit-animation: spinner 0.5s linear infinite;
+              -moz-animation: spinner 0.5s linear infinite;
+              -ms-animation: spinner 0.5s linear infinite;
+              -o-animation: spinner 0.5s linear infinite;
+              animation: spinner 0.5s linear infinite;
+            }
+          }
+        
+          /* Uploaded single attachment wrapper */
+          .materials-management-page-attachment {
+            background:#ebf8ff;
+            padding:5px 10px;
+            position:relative;
+            margin:10px 0;
+            
+            &:hover {
+              box-shadow:0 0 0 3px #cce2ed;
+            
+              .materials-management-page-attachment-actions {
+                display:block;
+              }
+            
+            }
+          
+            .materials-management-page-attachment-image-container {
+              
+            }
+            
+            .materials-management-page-attachment-title {
+            
+            }
+            
+            .materials-management-page-attachment-actions {
+              position:absolute;
+              right:2px;
+              top:2px;
+              display:none;
+            
+              .materials-management-page-attachment-action {
+                color:#000;
+                display:inline-block;
+                margin:2px 5px;
+                padding:2px;
+              }
+            
+            }
+            
+            .materials-management-page-attachment-url {
+              color:#1b5f86;
+              font-size:13px;
+              font-style:italic;
+            }
+            
+            .muikku-page-attachments-upload-progress {
+              height:5px;
+              border:0;
+              
+              .ui-widget-header {
+                background:#58e45e;
+                border:0;
+                border-radius:0;
+                margin:0;
+              }
+            }
+  
+            .materials-management-page-attachment-meta-container {
+              display: none;
+            }
+            
+            &.materials-management-page-attachment-selected  {
+              box-shadow:0 0 0 3px #cce2ed;
+            
+              .materials-management-page-attachment-meta-container {
+                display: block;
+                
+                label {
+                  min-width:100px;
+                }
+                
+                input[type="text"].materials-management-page-attachment-meta-unsaved {
+                  border-color: #d6ea2f;
+                  box-shadow:0 0 0 3px #f1f6cb;
+                }
+                
+                input[type="text"].materials-management-page-attachment-meta-saved {
+                  border-color: #27b91c;
+                  box-shadow:0 0 0 3px #bcf7b7;
+                }
+                
+              }
+            
+            }
+
+          }
+
+        }
+      
+      }
+      
       
       img {
         max-width:100%;
@@ -590,7 +792,7 @@ body.workspace-materials-management {
 
         }
         
-        /* Editor save status */
+        Editor save status
         .workspace-material-html-editor-status {
           position:absolute;
           top:9px;
@@ -678,7 +880,8 @@ body.workspace-materials-management {
                 
               }
               
-
+              
+              
             }
             
             .cke_bottom {
@@ -702,10 +905,27 @@ body.workspace-materials-management {
           a.close-page-editor {
             display:inline-block;
           }
-        
-        }
-        
+          
+        }  
+         
       }
+        
+      .workspace-materials-management-view-page-controls a.close-attachments-editor {
+        display: none !important;
+      }   
+        
+      &.workspace-materials-management-editing-attachments .workspace-materials-management-view-page-controls a,
+      &.workspace-materials-management-editing-attachments .workspace-materials-management-view-page-controls span.assignment-type {
+        display: none !important;
+      }
+      
+      &.workspace-materials-management-editing-attachments .page-content {
+        display: none;
+      }
+
+      &.workspace-materials-management-editing-attachments .workspace-materials-management-view-page-controls a.close-attachments-editor {
+        display: inline-block !important;
+      }   
       
       .workspace-materials-management-view-page-controls span.assignment-type { /* Special case for assignment type link */
         height:25px;
@@ -731,7 +951,7 @@ body.workspace-materials-management {
         }
       }
     
-      &[data-assignment-type="EVALUATED"] .workspace-materials-management-view-page-controls span.assignment-type { /* Special case for assignment type link */
+      &[data-assignment-type="EVALUATED"] .workspace-materials-management-view-page-controls span.assignment-type { /* Special case for assignment type link
         background: $evaluatedAssignment;
         
         a.change-assignment {
@@ -783,7 +1003,9 @@ body.workspace-materials-management {
         a.change-assignment,
         a.publish-page,
         a.revert-page,
-        a.close-page-editor {
+        a.close-page-editor,
+        a.page-attachments,
+        a.close-attachments-editor {
           color:#fff;
           font-size:21px;
           display:inline-block;
@@ -877,6 +1099,7 @@ body.workspace-materials-management {
     padding:0;
     text-transform:uppercase;
     border:none;
+    z-index:9999;
     
     &.ui-corner-all {
       border-radius:0px;
@@ -904,7 +1127,7 @@ body.workspace-materials-management {
         width:24px;
         margin:-13px 0 0 0;
         font-size:22px;
-        height:22px; /* Same height as font-size */
+        height:22px; Same height as font-size
         
         span {
           display:none;
@@ -922,8 +1145,6 @@ body.workspace-materials-management {
           font-variant: normal;
           text-transform: none;
           line-height: 1;
-          
-          /* Better Font Rendering =========== */
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
         }
