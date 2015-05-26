@@ -746,12 +746,42 @@
     scrollToPage($($(this).attr('href')).data('workspaceMaterialId'), true);
   });
   
-  function moveWorkspaceNode(workspaceNodeId, nextSiblingId) {
-    alert(workspaceNodeId + " moved to " + nextSiblingId);
-    /*
-    mApi().workspace.workspaces.folders.update(workspaceId, workspaceNodeId, folder).callback(function (err, html) {
+  function moveWorkspaceNode(workspaceNodeId, nextSiblingId, origNextSiblingId) {
+    var workspaceId = $('.workspaceEntityId').val();
+    mApi().workspace.workspaces.materials.read(workspaceId, workspaceNodeId).callback(function(err, material) {
+       
+        material.nextSiblingId = nextSiblingId;
+      
+        mApi().workspace.workspaces.materials.update(workspaceId, workspaceNodeId, material).callback(function (err, html) {
+          
+          if (!err) {
+              alert ("Siirto onnistui!");
+              
+              $("#page-" + workspaceNodeId).insertBefore("#page" - nextSiblingId);
+
+              /*
+              var elem = $("#page-" + workspaceNodeId)[0];
+              elem.parentNode.insertBefore(elem, elem.previousSibling);
+              elem.parentNode.insertBefore(elem, elem.previousSibling);
+              */
+          }
+        });
     });
-    */
+  }
+
+  function moveWorkspaceFolder(workspaceNodeId, nextSiblingId, origNextSiblingId) {
+    var workspaceId = $('.workspaceEntityId').val();
+    mApi().workspace.workspaces.folders.read(workspaceId, workspaceNodeId).callback(function(err, material) {
+       
+        material.nextSiblingId = nextSiblingId;
+      
+        mApi().workspace.workspaces.folders.update(workspaceId, workspaceNodeId, material).callback(function (err, html) {
+          
+          if (!err) {
+              alert ("Siirto onnistui!");
+          }
+        });
+    });
   }
 
   $(document).ready(function() {
@@ -773,12 +803,15 @@
       placeholder: "sortable-section-placeholder",
       forcePlaceholderSize: true,
       start: function(event, ui) {
+        $(ui.item).data('data-original-next-sibling', 
+            $(ui.item).next('.workpsace-materials-toc-section').attr('data-workspace-node-id'));
       },
       stop: function(event, ui) {
         var workspaceNodeId = parseInt($(ui.item).attr('data-workspace-node-id'), 10);
-        var nextSiblingId = parseInt($(ui.item).next('.workspace-materials-toc-item').attr('data-workspace-node-id'), 10);
+        var nextSiblingId = parseInt($(ui.item).next('.workspace-materials-toc-section').attr('data-workspace-node-id'), 10);
+        var origNextSiblingId = parseInt($(ui.item).attr('data-original-next-sibling'), 10);
         
-        moveWorkspaceNode(workspaceNodeId, nextSiblingId);
+        moveWorkspaceFolder(workspaceNodeId, nextSiblingId, origNextSiblingId);
 
         if (!$(ui.item).hasClass("active")) {
           $(ui.item)
@@ -823,13 +856,15 @@
       placeholder: "sortable-placeholder",
       forcePlaceholderSize: true,
       start: function(event, ui) {
-
+        $(ui.item).data('data-original-next-sibling', 
+            $(ui.item).next('.workspace-materials-toc-item').attr('data-workspace-node-id'));
       },
       stop: function(event, ui) {
         var workspaceNodeId = parseInt($(ui.item).attr('data-workspace-node-id'), 10);
         var nextSiblingId = parseInt($(ui.item).next('.workspace-materials-toc-item').attr('data-workspace-node-id'), 10);
+        var origNextSiblingId = parseInt($(ui.item).attr('data-original-next-sibling'), 10);
         
-        moveWorkspaceNode(workspaceNodeId, nextSiblingId);
+        moveWorkspaceNode(workspaceNodeId, nextSiblingId, origNextSiblingId);
         /* Lets not animate already active element */
         if (!$(ui.item).hasClass("active")) {
           $(ui.item)
