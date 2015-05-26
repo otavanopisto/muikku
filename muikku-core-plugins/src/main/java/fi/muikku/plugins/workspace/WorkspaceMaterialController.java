@@ -467,12 +467,9 @@ public class WorkspaceMaterialController {
 
   /* Utility methods */
   
-  
-  public List<ContentNode> listVisibleEvaluableWorkspaceMaterialsAsContentNodes(WorkspaceEntity workspaceEntity, boolean processHtml) throws WorkspaceMaterialException {
-    List<ContentNode> result = new ArrayList<>();
-    
+  public List<WorkspaceMaterial> listVisibleWorkspaceMaterialsByAssignmentType(WorkspaceEntity workspaceEntity, WorkspaceMaterialAssignmentType assignmentType) {
     final List<WorkspaceNode> folders = listVisibleWorkspaceFolders(workspaceEntity);
-    List<WorkspaceMaterial> workspaceMaterials = workspaceMaterialDAO.listByHiddenAndAssignmentTypeAndParents(Boolean.FALSE, WorkspaceMaterialAssignmentType.EVALUATED, folders);
+    List<WorkspaceMaterial> workspaceMaterials = workspaceMaterialDAO.listByHiddenAndAssignmentTypeAndParents(Boolean.FALSE, assignmentType, folders);
 
     Collections.sort(workspaceMaterials, new Comparator<WorkspaceMaterial>() {
       
@@ -490,6 +487,19 @@ public class WorkspaceMaterialController {
         return folders.indexOf(parent);
       }
     });
+    
+    return workspaceMaterials;
+  }
+
+  public List<WorkspaceMaterial> listVisibleWorkspaceMaterialsByParentAndAssignmentType(WorkspaceNode parent, WorkspaceEntity workspaceEntity,
+      WorkspaceMaterialAssignmentType assignmentType) {
+    return workspaceMaterialDAO.listByHiddenAndAssignmentTypeAndParents(Boolean.FALSE, assignmentType, Arrays.asList(parent));
+  }
+  
+  public List<ContentNode> listVisibleEvaluableWorkspaceMaterialsAsContentNodes(WorkspaceEntity workspaceEntity, boolean processHtml) throws WorkspaceMaterialException {
+    List<ContentNode> result = new ArrayList<>();
+    
+    List<WorkspaceMaterial> workspaceMaterials = listVisibleWorkspaceMaterialsByAssignmentType(workspaceEntity, WorkspaceMaterialAssignmentType.EVALUATED);
     
     for (WorkspaceMaterial workspaceMaterial : workspaceMaterials) {
       result.add(createContentNode(workspaceMaterial, 0, processHtml));
