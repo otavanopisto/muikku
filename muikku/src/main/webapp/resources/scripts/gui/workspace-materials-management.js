@@ -759,7 +759,10 @@
         mApi().workspace.workspaces.materials.update(workspaceId, workspaceNodeId, material).callback(function (err, html) {
           
           if (!err) {
-              $("#page-" + workspaceNodeId).insertBefore("#page-" + nextSiblingId);
+              // Move the "add page" boxes first
+              $("#page-" + workspaceNodeId).prev().insertBefore("#page-" + nextSiblingId);
+              $("#page-" + workspaceNodeId).prev().insertBefore("#page-" + nextSiblingId);
+              $("#page-" + workspaceNodeId).insertBefore($("#page-" + nextSiblingId).prev().prev());
           } else {
               $('.notification-queue').notificationQueue('notification', 'error', err);
           }
