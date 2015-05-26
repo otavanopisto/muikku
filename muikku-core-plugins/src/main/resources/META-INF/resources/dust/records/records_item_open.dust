@@ -8,7 +8,7 @@
 {#.}
  
  
-  <div id="crsId-{id}" class="tr-item ft-01">
+  <div id="crsId-{id}" class="mf-item tr-item ft-01">
     <input type="hidden" name="workspaceId" value="{id}"/>
     <input type="hidden" name="workspaceUrl" value="{urlName}"/>
 
@@ -30,8 +30,6 @@
           <div id="detailsCrs-{id}" class="tr-item-content-details" >     
             <div class="tr-item-description-picture"></div>
             <div class="tr-item-description-text">{description|s}</div>          
-            <div class="tr-item-details-toolbar">
-            </div>
           </div>
 
         </div>       
