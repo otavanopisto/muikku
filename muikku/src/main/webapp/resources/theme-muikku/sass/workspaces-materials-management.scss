@@ -221,7 +221,7 @@ body.workspace-materials-management {
                   right:0px;
                 }
     
-              } /* Item */
+              } 
         
               .workspace-materials-toc-section {
                 margin:0;
@@ -231,9 +231,15 @@ body.workspace-materials-management {
                   margin:0 0 5px 0;
                   text-transform:uppercase;
                   font-size:15px;
-                  padding:2px 8px;
-                  font-weight:400;
                   position:relative;
+                  
+                  a {
+                    font-weight:400;
+                    padding:2px 24px 2px 8px;
+                    text-decoration:none;
+                    color:#2c2c2c;
+                    display:inline-block;
+                  }
                   
                   .workspace-materials-toc-sectionDragHandle {
                     opacity:0;
