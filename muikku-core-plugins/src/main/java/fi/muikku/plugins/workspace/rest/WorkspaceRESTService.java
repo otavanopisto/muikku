@@ -863,8 +863,8 @@ public class WorkspaceRESTService extends PluginRESTService {
   }
 
   @DELETE
-  @Path("/workspaces/{WORKSPACEID}/materials/{MATERIALID}")
-  public Response deleteNode(@PathParam("WORKSPACEID") Long workspaceEntityId, @PathParam("MATERIALID") Long materialId, @QueryParam ("removeAnswers") Boolean removeAnswers) {
+  @Path("/workspaces/{WORKSPACEID}/materials/{WORKSPACEMATERIALID}")
+  public Response deleteNode(@PathParam("WORKSPACEID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @QueryParam ("removeAnswers") Boolean removeAnswers) {
     // TODO Our workspace?
     
     if (!sessionController.isLoggedIn()) {
@@ -876,7 +876,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
 
-    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(materialId);
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
     if (workspaceMaterial == null) {
       return Response.status(Status.NOT_FOUND).build();
     } else {
