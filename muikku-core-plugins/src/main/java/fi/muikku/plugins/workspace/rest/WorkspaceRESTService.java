@@ -33,6 +33,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import fi.muikku.controller.messaging.MessagingWidget;
 import fi.muikku.i18n.LocaleController;
+import fi.muikku.model.users.EnvironmentRoleArchetype;
+import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserSchoolDataIdentifier;
 import fi.muikku.model.workspace.WorkspaceEntity;
@@ -83,6 +85,7 @@ import fi.muikku.search.SearchProvider;
 import fi.muikku.search.SearchResult;
 import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.session.SessionController;
+import fi.muikku.users.EnvironmentUserController;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
 import fi.muikku.users.UserSchoolDataIdentifierController;
@@ -163,6 +166,9 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @Inject
   private EvaluationController evaluationController;
+  
+  @Inject
+  private EnvironmentUserController environmentUserController;
   
   @Inject
   private WorkspaceIndexer workspaceIndexer;
@@ -1093,11 +1099,17 @@ public class WorkspaceRESTService extends PluginRESTService {
   @PUT
   @Path("/workspaces/{WORKSPACEENTITYID}/assessments/{ID}")
   public Response updateWorkspaceAssessment(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("ID") String workspaceAssesmentIdentifier, WorkspaceAssessment payload) {
-    // TODO: Security
-    
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    if (!sessionController.hasCoursePermission(MuikkuPermissions.EVALUATE_USER, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
     }
     
     if (payload.getEvaluated() == null) {
@@ -1134,8 +1146,11 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     
     WorkspaceUserEntity workspaceStudentEntity = workspaceUserEntityController.findWorkspaceUserEntityById(payload.getWorkspaceUserEntityId());
-    //TODO: check if workspace is right, check if user is student;
-    if(workspaceStudentEntity == null){
+    if (workspaceStudentEntity == null) {
+      return Response.status(Status.BAD_REQUEST).entity("WorkspaceUserEntityId is invalid").build();
+    }
+    
+    if (!workspaceStudentEntity.getWorkspaceEntity().getId().equals(workspaceEntity.getId())) {
       return Response.status(Status.BAD_REQUEST).entity("WorkspaceUserEntityId is invalid").build();
     }
 
@@ -1149,11 +1164,17 @@ public class WorkspaceRESTService extends PluginRESTService {
   @POST
   @Path("/workspaces/{WORKSPACEENTITYID}/assessments/")
   public Response createWorkspaceAssessment(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, WorkspaceAssessment payload) {
-    // TODO: Security
-    
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    if (!sessionController.hasCoursePermission(MuikkuPermissions.EVALUATE_USER, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
     }
     
     if (payload.getEvaluated() == null) {
@@ -1190,8 +1211,11 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     
     WorkspaceUserEntity workspaceStudentEntity = workspaceUserEntityController.findWorkspaceUserEntityById(payload.getWorkspaceUserEntityId());
-    //TODO: check if workspace is right, check if user is student;
-    if(workspaceStudentEntity == null){
+    if (workspaceStudentEntity == null) {
+      return Response.status(Status.BAD_REQUEST).entity("WorkspaceUserEntityId is invalid").build();
+    }
+    
+    if (!workspaceStudentEntity.getWorkspaceEntity().getId().equals(workspaceEntity.getId())) {
       return Response.status(Status.BAD_REQUEST).entity("WorkspaceUserEntityId is invalid").build();
     }
 
@@ -1205,7 +1229,9 @@ public class WorkspaceRESTService extends PluginRESTService {
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/assessments/")
   public Response listWorkspaceAssessments(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @QueryParam ("userEntityId") Long userEntityId) {
-    // TODO: Security
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
     
     if (userEntityId == null) {
       return Response.status(Status.NOT_IMPLEMENTED).entity("Listing workspace assessments without userEntityId is not implemented yet").build();
@@ -1220,18 +1246,17 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
     }
-    /**
-    WorkspaceUserEntity workspaceStudentEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserDataSourceAndUserIdentifier(workspaceEntity, userEntity.getDefaultSchoolDataSource(), userEntity.getDefaultIdentifier());
-    //TODO: check if workspace is right, check if user is student;
-    if (workspaceStudentEntity == null) {
+    
+    if (!sessionController.getLoggedUserEntity().getId().equals(userEntity.getId())) {
+      if (!sessionController.hasCoursePermission(MuikkuPermissions.VIEW_USER_EVALUATION, workspaceEntity)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
+    
+    EnvironmentUser environmentUser = environmentUserController.findEnvironmentUserByUserEntity(userEntity);
+    if (environmentUser == null || (environmentUser.getRole().getArchetype() != EnvironmentRoleArchetype.STUDENT)) {
       return Response.noContent().build();
     }
-
-    fi.muikku.schooldata.entity.WorkspaceUser workspaceStudent = workspaceController.findWorkspaceUser(workspaceStudentEntity);
-    if (workspaceStudent == null) {
-      return Response.noContent().build();
-    }
-    **/
     
     List<fi.muikku.schooldata.entity.WorkspaceAssessment> assessments = gradingController.listWorkspaceAssessments(workspaceEntity.getDataSource(), workspaceEntity.getIdentifier(), userEntity.getDefaultIdentifier());
     if (assessments.isEmpty()) {
@@ -1244,11 +1269,17 @@ public class WorkspaceRESTService extends PluginRESTService {
   @POST
   @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/evaluations/")
   public Response createWorkspaceMaterialEvaluation(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, WorkspaceMaterialEvaluation payload) {
-    // TODO: Security
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
     
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    if (!sessionController.hasCoursePermission(MuikkuPermissions.EVALUATE_MATERIAL, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
     }
     
     WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
@@ -1324,7 +1355,9 @@ public class WorkspaceRESTService extends PluginRESTService {
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/evaluations/")
   public Response listWorkspaceMaterialEvaluations(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @QueryParam("userEntityId") Long userEntityId) {
-    // TODO: Security
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
     
     if (userEntityId == null) {
       return Response.status(Status.NOT_IMPLEMENTED).entity("Listing workspace material evaluations without userEntityId is not implemented yet").build();
@@ -1338,6 +1371,12 @@ public class WorkspaceRESTService extends PluginRESTService {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
+    }
+
+    if (!sessionController.getLoggedUserEntity().getId().equals(userEntity.getId())) {
+      if (!sessionController.hasCoursePermission(MuikkuPermissions.VIEW_MATERIAL_EVALUATION, workspaceEntity)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
     }
     
     WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
@@ -1375,7 +1414,9 @@ public class WorkspaceRESTService extends PluginRESTService {
   @GET
   @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/evaluations/{ID}")
   public Response findWorkspaceMaterialEvaluation(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @PathParam("ID") Long workspaceMaterialEvaluationId) {
-    // TODO: Security
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
     
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
@@ -1404,6 +1445,12 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (!workspaceMaterialEvaluation.getWorkspaceMaterialId().equals(workspaceMaterial.getId())) {
       return Response.status(Status.NOT_FOUND).build();
     }
+
+    if (!sessionController.getLoggedUserEntity().getId().equals(workspaceMaterialEvaluation.getStudentEntityId())) {
+      if (!sessionController.hasCoursePermission(MuikkuPermissions.VIEW_MATERIAL_EVALUATION, workspaceEntity)) {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    }
     
     return Response.ok(createRestModel(workspaceMaterialEvaluation)).build();
   }
@@ -1411,11 +1458,17 @@ public class WorkspaceRESTService extends PluginRESTService {
   @PUT
   @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/evaluations/{ID}")
   public Response updateWorkspaceMaterialEvaluation(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @PathParam("WORKSPACEMATERIALID") Long workspaceMaterialId, @PathParam("ID") Long workspaceMaterialEvaluationId, WorkspaceMaterialEvaluation payload) {
-    // TODO: Security
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
     
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.NOT_FOUND).build();
+    }
+    
+    if (!sessionController.hasCoursePermission(MuikkuPermissions.EVALUATE_MATERIAL, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
     }
     
     WorkspaceMaterial workspaceMaterial = workspaceMaterialController.findWorkspaceMaterialById(workspaceMaterialId);
