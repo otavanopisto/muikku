@@ -306,7 +306,7 @@
     }, this));
   };
   
-  function openMaterialEvaluationDialog(workspaceEntityId, workspaceMaterialId, studentEntityId, studentDisplayName, studentStudyProgrammeName, workspaceMaterialEvaluation) {
+  function openMaterialEvaluationDialog(workspaceEntityId, workspaceMaterialId, studentEntityId, studentDisplayName, studentStudyProgrammeName, workspaceMaterialEvaluation, assigmentElement) {
     var assignmentData = getAssignmentData(workspaceMaterialId);
     
     renderDustTemplate('evaluation/evaluation_evaluate_assignment_modal_view.dust', {
@@ -404,7 +404,10 @@
               }).callback($.proxy(function (err, result) {
                 if (err) {
                   $('.notification-queue').notificationQueue('notification', 'error', err);
-                } else { 
+                } else {
+                  assigmentElement.removeClass('assignment-done assignment-evaluation-critical');
+                  assigmentElement.addClass('assignment-evaluated');
+                  assigmentElement.attr('data-workspace-material-evaluation-id', result.id);
                   $(this).dialog("destroy").remove();
                 }
               }, this));
@@ -422,7 +425,10 @@
               }).callback($.proxy(function (err, result) {
                 if (err) {
                   $('.notification-queue').notificationQueue('notification', 'error', err);
-                } else { 
+                } else {
+                  assigmentElement.removeClass('assignment-done assignment-evaluation-critical');
+                  assigmentElement.addClass('assignment-evaluated');
+                  assigmentElement.attr('data-workspace-material-evaluation-id', result.id);
                   $(this).dialog("destroy").remove();
                 }
               }, this));
@@ -537,7 +543,7 @@
       var studentDisplayName = studentElement.attr('data-display-name');
       var studentStudyProgrammeName = studentElement.attr('data-study-programme-name');
   
-      openMaterialEvaluationDialog(workspaceEntityId, workspaceMaterialId, studentEntityId, studentDisplayName, studentStudyProgrammeName, null);
+      openMaterialEvaluationDialog(workspaceEntityId, workspaceMaterialId, studentEntityId, studentDisplayName, studentStudyProgrammeName, null, $(this));
     });
     
     /* View evaluation when assigment's state is EVALUATED */
@@ -558,7 +564,7 @@
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
           } else { 
-            openMaterialEvaluationDialog(workspaceEntityId, workspaceMaterialId, studentEntityId, studentDisplayName, studentStudyProgrammeName, result);
+            openMaterialEvaluationDialog(workspaceEntityId, workspaceMaterialId, studentEntityId, studentDisplayName, studentStudyProgrammeName, result, $(this));
           }
         });
     });
