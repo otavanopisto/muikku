@@ -1161,6 +1161,7 @@
   $(document).on('click', '.workspaces-materials-management-add', function (event, data) {
 	  
     var nextMaterial = $(this).parent().nextAll('.workspace-materials-view-page').first();
+    var nextSection = $(this).parent().nextAll('.workspace-materials-view-page[data-material-type="folder"]').first();
     
     renderDustTemplate('workspace/materials-management-new.dust', { }, $.proxy(function (text) {
       var newPage = $(text);
@@ -1223,9 +1224,33 @@
       });
       
       
-      $(newSection).find('.workspace-materials-management-new-section-link').one('click', function (event) {
+      $(newPage).find('.workspace-materials-management-new-section-link').one('click', function (event) {
         event.preventDefault();
+        var nextSiblingId = $(nextSection).data('workspace-material-id');
+        var workspaceEntityId = $('.workspaceEntityId').val();
         
+        mApi().workspace.workspaces.folders.create(workspaceEntityId, {
+          nextSiblingId: nextSiblingId
+        })
+        .callback($.proxy(function (workspaceFolderErr, workspaceFolderResult) {
+          if (workspaceFolderErr) {
+            $('.notification-queue').notificationQueue('notification', 'error', workspaceFolderErr);
+            return;
+          } else {
+              
+            newPage.removeClass('workspace-materials-management-new');
+            newPage.attr({
+              'id': 'page-' + workspaceFolderResult.id,
+              'data-material-title': workspaceFolderResult.title,
+              'data-parent-id': workspaceFolderResult.parentId,
+              'data-material-type': 'folder',
+              'data-workspace-material-id': workspaceFolderResult.id
+            });
+            newPage.empty();
+            $(document).muikkuMaterialLoader('loadMaterial', newPage, true);
+            editPage(newPage);
+          } 
+        }, this));
       });
       
     }, this));

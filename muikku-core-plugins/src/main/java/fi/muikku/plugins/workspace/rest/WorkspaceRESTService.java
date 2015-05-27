@@ -1037,7 +1037,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (nextSibling != null) {
         workspaceMaterialController.moveAbove(workspaceFolder, nextSibling);
     }
-    return Response.noContent().build();
+    return Response.ok(createRestModel(workspaceFolder)).build();
   }
 
   @PUT
