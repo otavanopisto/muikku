@@ -28,6 +28,7 @@ import fi.muikku.plugins.forum.model.ForumArea;
 import fi.muikku.plugins.forum.model.ForumAreaGroup;
 import fi.muikku.plugins.forum.model.ForumThread;
 import fi.muikku.plugins.forum.model.ForumThreadReply;
+import fi.muikku.rest.RESTPermitUnimplemented;
 import fi.muikku.session.SessionController;
 import fi.otavanopisto.security.AuthorizationException;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -335,6 +336,7 @@ public class ForumRESTService extends PluginRESTService {
   
   @GET
   @Path ("/latest")
+  @RESTPermit(handling = Handling.INLINE)
   public Response listLatestThreads(@QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, 
       @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults) throws AuthorizationException {
     List<ForumThread> threads = forumController.listLatestForumThreads(firstResult, maxResults);

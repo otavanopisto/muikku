@@ -18,8 +18,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import fi.muikku.plugin.PluginRESTService;
-import fi.otavanopisto.security.rest.RESTPermit;
-import fi.otavanopisto.security.rest.RESTPermit.Handling;
+import fi.muikku.rest.RESTPermitUnimplemented;
 
 @Path("/seeker")
 @RequestScoped
@@ -35,7 +34,7 @@ public class SeekerRESTService extends PluginRESTService {
 
   @GET
   @Path("/search")
-  @RESTPermit(handling = Handling.UNSECURED)
+  @RESTPermitUnimplemented
   public Response search(@QueryParam("searchString") String searchString) {
     TreeMap<Integer, List<SeekerResult>> sortedResults = new TreeMap<Integer, List<SeekerResult>>();
     Iterator<SeekerResultProvider> i = seekerResultProviders.iterator();

@@ -95,7 +95,15 @@ public class RestSessionFilter implements javax.ws.rs.container.ContainerRequest
       ContextReference permitContext = null;
       
       return PermitUtils.hasPermission(identity, permissions, permitContext, style);
-    } else
+    } else {
+      /** Temporary workaround until all rest permissions are fully implemented **/
+      RESTPermitUnimplemented unimplemented = method.getAnnotation(RESTPermitUnimplemented.class);
+      if (unimplemented != null)
+        return true; // Return true for unimplemented rest endpoints
+      /** Temporary workaround until all rest permissions are fully implemented **/
+
+      // Return false in a normal situation where RESTPermit is not defined 
       return false;
+    }
   }
 }

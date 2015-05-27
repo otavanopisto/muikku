@@ -64,6 +64,7 @@ public class PermissionRESTService extends AbstractRESTService {
   
   @POST
   @Path ("/addEnvironmentUserRolePermission")
+  @RESTPermitUnimplemented
   public Response addEnvironmentUserRolePermission(
       @FormParam ("userRoleId") Long userRoleId,
       @FormParam ("permissionId") Long permissionId
@@ -92,6 +93,7 @@ public class PermissionRESTService extends AbstractRESTService {
   @Path ("/deleteEnvironmentUserRolePermission")
   @Admin
 //  @Permit (Permissions.MANAGE_SYSTEM_SETTINGS)
+  @RESTPermitUnimplemented
   public Response deleteEnvironmentUserRolePermission(
       @FormParam ("userRoleId") Long userRoleId,
       @FormParam ("permissionId") Long permissionId
@@ -124,6 +126,7 @@ public class PermissionRESTService extends AbstractRESTService {
   @Path ("/addCourseUserRolePermission")
   @Admin
 //  @Permit (Permissions.MANAGE_SYSTEM_SETTINGS)
+  @RESTPermitUnimplemented
   public Response addWorkspaceUserRolePermission(
       @FormParam ("workspaceId") Long workspaceId,
       @FormParam ("userRoleId") Long userRoleId,
@@ -155,6 +158,7 @@ public class PermissionRESTService extends AbstractRESTService {
   @Path ("/deleteCourseUserRolePermission")
   @Admin
 //  @Permit (Permissions.MANAGE_SYSTEM_SETTINGS)
+  @RESTPermitUnimplemented
   public Response deleteWorkspaceUserRolePermission(
       @FormParam ("workspaceId") Long workspaceId,
       @FormParam ("userRoleId") Long userRoleId,
