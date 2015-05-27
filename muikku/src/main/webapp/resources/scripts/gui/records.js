@@ -24,7 +24,14 @@
             if( assessmentsErr ){
               $('.notification-queue').notificationQueue('notification', 'error', assessmentsErr );
             } else {
-              workspaceEntity.assessments = assessments;
+              var assessment = assessments && assessments.length == 1 ? assessments[0] : null;
+              if (assessment) {
+                var grade = this._grades[[assessment.gradingScaleSchoolDataSource, assessment.gradingScaleIdentifier, assessment.gradeSchoolDataSource, assessment.gradeIdentifier].join('-')];
+                workspaceEntity.evaluated = new Date(assessment.evaluated);
+                workspaceEntity.verbalAssessment = assessment.verbalAssessment;
+                workspaceEntity.grade = grade.grade;
+                workspaceEntity.gradingScale = grade.scale;
+              }
             }
             
             callback();
@@ -41,7 +48,7 @@
       }, this));
     },
     
-    _loadWorkspace: function (workspaceEntityId) {
+    _loadWorkspace: function (workspaceEntityId, grade, gradingScale, evaluated, verbalAssessment) {
       this._clear();
       
       mApi().workspace.workspaces.materials.read(workspaceEntityId, { assignmentType: 'EVALUATED' })
@@ -78,7 +85,13 @@
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.records.errormessage.noworkspaces', err));
           } else {
-            renderDustTemplate('/records/records_item_open.dust', { assignments: assignments }, $.proxy(function(text) {
+            renderDustTemplate('/records/records_item_open.dust', { 
+              assignments: assignments,
+              workspaceGrade: grade, 
+              workspaceGradingScale: gradingScale, 
+              workspaceEvaluated: evaluated, 
+              workspaceVerbalAssessment: verbalAssessment
+            }, $.proxy(function(text) {
               this.element.append(text);
             }, this));
           }
@@ -86,9 +99,14 @@
     },
     _onItemClick: function (event) {
       var item = $(event.target).hasClass('tr-item') ? $(event.target) : $(event.target).closest('.tr-item');
-      
+
       var workspaceEntityId = $(item).attr('data-workspace-entity-id');
-      this._loadWorkspace(workspaceEntityId);
+      var verbalAssessment = $(item).attr('data-workspace-verbal-assessment');
+      var grade = $(item).attr('data-workspace-grade');
+      var gradingScale = $(item).attr('data-workspace-grading-scale');
+      var evaluated = $(item).attr('data-workspace-evaluated');
+
+      this._loadWorkspace(workspaceEntityId, grade, gradingScale, evaluated, verbalAssessment);
     },
     _clear: function(){
       this.element.empty();      
