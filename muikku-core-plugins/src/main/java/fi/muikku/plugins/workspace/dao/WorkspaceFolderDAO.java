@@ -72,5 +72,11 @@ public class WorkspaceFolderDAO extends CorePluginsDAO<WorkspaceFolder> {
   public void delete(WorkspaceFolder workspaceFolder) {
     super.delete(workspaceFolder);
   }
+  
+  public WorkspaceFolder updateFolderName(WorkspaceFolder workspaceFolder, String urlName, String title) {
+    workspaceFolder.setUrlName(urlName);
+    workspaceFolder.setTitle(title);
+    return persist(workspaceFolder); 
+  }
 
 }

@@ -61,9 +61,15 @@ public class WorkspaceNodeDAO extends CorePluginsDAO<WorkspaceNode> {
     CriteriaQuery<WorkspaceNode> criteria = criteriaBuilder.createQuery(WorkspaceNode.class);
     Root<WorkspaceNode> root = criteria.from(WorkspaceNode.class);
     criteria.select(root);
-    criteria.where(criteriaBuilder.and(criteriaBuilder.equal(root.get(WorkspaceNode_.parent), node.getParent()),
-        criteriaBuilder.greaterThan(root.get(WorkspaceNode_.orderNumber), node.getOrderNumber())));
-
+    criteria.where(
+      criteriaBuilder.and(
+        criteriaBuilder.equal(root.get(WorkspaceNode_.parent), node.getParent()),
+        criteriaBuilder.greaterThan(root.get(WorkspaceNode_.orderNumber), node.getOrderNumber())
+      )
+    );
+    
+    criteria.orderBy(criteriaBuilder.asc(root.get(WorkspaceNode_.orderNumber)));
+    
     return entityManager.createQuery(criteria).getResultList();
   }
 
