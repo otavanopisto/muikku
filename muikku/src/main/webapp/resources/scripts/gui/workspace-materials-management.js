@@ -1,10 +1,10 @@
 (function() {
   
-  function createAddPageLink() {
+  function createAddPageSectionLink() {
     return $('<div>')
-      .addClass('workspace-materials-management-addpage')
+      .addClass('workspace-materials-management-add')
       .append($('<span>').addClass('workspace-materials-management-line-separator'))
-      .append($('<a>').addClass('workspaces-materials-management-add-page icon-add').attr('href', 'javascript:void(null)').append($('<span>').html(getLocaleText("plugin.workspace.materialsManagement.addPage"))));
+      .append($('<a>').addClass('workspaces-materials-management-add icon-add').attr('href', 'javascript:void(null)').append($('<span>').html(getLocaleText("plugin.workspace.materialsManagement.addNew"))));
   }
   
   function createFileUploader() {
@@ -39,7 +39,7 @@
         var nextPage = $(newPage).next('.workspace-materials-view-page');
         
         var uploader = createFileUploader();
-        nextPage.before(createAddPageLink());
+        nextPage.before(createAddPageSectionLink());
         nextPage.before(uploader);
         enableFileUploader(uploader, nextPage.data('parent-id'), nextPage.data('workspace-material-id'));
       })
@@ -205,7 +205,7 @@
             duration : 500,
             easing : "easeInOutQuint",
             complete: function() {
-              page.nextAll('.workspace-materials-management-addpage').first().remove();
+              page.nextAll('.workspace-materials-management-add').first().remove();
               page.nextAll('.workspaces-materials-management-insert-file').first().remove();
               page.remove();
             }
@@ -234,7 +234,7 @@
             duration : 500,
             easing : "easeInOutQuint",
             complete: function() {
-              page.nextAll('.workspace-materials-management-addpage').first().remove();
+              page.nextAll('.workspace-materials-management-add').first().remove();
               page.nextAll('.workspaces-materials-management-insert-file').first().remove();
               page.remove();
             }
@@ -1158,17 +1158,17 @@
     }
   });
   
-  $(document).on('click', '.workspaces-materials-management-add-page', function (event, data) {
+  $(document).on('click', '.workspaces-materials-management-add', function (event, data) {
 	  
     var nextMaterial = $(this).parent().nextAll('.workspace-materials-view-page').first();
     
-    renderDustTemplate('workspace/materials-management-new-page.dust', { }, $.proxy(function (text) {
+    renderDustTemplate('workspace/materials-management-new.dust', { }, $.proxy(function (text) {
       var newPage = $(text);
       $(this).parent().after(newPage);
       var uploader = createFileUploader();
       $(newPage).before(uploader);
       enableFileUploader(uploader, nextMaterial.data('parent-id'), nextMaterial.data('workspace-material-id'));
-      $(newPage).after(createAddPageLink());
+      $(newPage).after(createAddPageSectionLink());
       
       
       $(newPage).find('.workspace-materials-management-new-page-link').one('click', function (event) {
@@ -1201,7 +1201,7 @@
                 return;
               } else {
             	  
-                newPage.removeClass('workspace-materials-management-new-page');
+                newPage.removeClass('workspace-materials-management-new');
                 newPage.attr({
                   'id': 'page-' + workspaceMaterialResult.id,
                   'data-material-title': materialResult.title,
@@ -1221,6 +1221,13 @@
         }
         
       });
+      
+      
+      $(newSection).find('.workspace-materials-management-new-section-link').one('click', function (event) {
+        event.preventDefault();
+        
+      });
+      
     }, this));
   });
   
