@@ -67,7 +67,7 @@
         }
       });
     }
-    else {
+    else if (materialType == 'html') {
       // html
       var materialId = $(node).data('material-id');
       var materialTitle = $(node).data('material-title');
@@ -190,7 +190,7 @@
     }, this));
   }
   
-  function deletePage(workspaceMaterialId, materialId, workspaceId, removeAnswers, errorCallback) {
+  function deletePage(workspaceMaterialId, workspaceId, removeAnswers, errorCallback) {
     mApi().workspace.workspaces.materials.del(workspaceId,workspaceMaterialId, {}, {removeAnswers: removeAnswers}).callback($.proxy(function (err, jqXHR){
       if (err) {
         errorCallback(err, jqXHR);
@@ -285,38 +285,36 @@
   $(document).on('click', '.delete-page', function (event, data) {
     var workspaceMaterialId = $(this).data('workspace-material-id');
     var workspaceId = $('.workspaceEntityId').val();
-    
     if ($(this).attr('data-material-type') === 'folder') {
-        if($('section[data-parent-id="'+workspaceMaterialId+'"]').length > 0){
-          alert('You can only delete empty folders!'); //TODO: create proper error dialog
-        }else{
-          confirmPageDeletion($.proxy(function () {
-            deleteFolder(workspaceMaterialId, workspaceId, false, function (err, jqXHR) {
-            });
-          }, this));
-        }
-
-    } else {
-      
-        var materialId = $(this).data('material-id');
+      if($('section[data-parent-id="'+workspaceMaterialId+'"]').length > 0){
+        alert('You can only delete empty folders!'); //TODO: create proper error dialog
+      }
+      else {
         confirmPageDeletion($.proxy(function () {
-          deletePage(workspaceMaterialId, materialId, workspaceId, false, function (err, jqXHR) {
-            if (jqXHR.status == 409) {
-              var response = $.parseJSON(jqXHR.responseText);
-              if (response && response.reason == 'CONTAINS_ANSWERS') {
-                confirmAnswerRemovalDelete(function () {
-                  deletePage(workspaceMaterialId, materialId, workspaceId, true, function (err, jqXHR) {
-                    $('.notification-queue').notificationQueue('notification', 'error', err);
-                  });
-                });
-              } else {
-                $('.notification-queue').notificationQueue('notification', 'error', err);
-              }
-            } else {
-              $('.notification-queue').notificationQueue('notification', 'error', err);
-            }    
+          deleteFolder(workspaceMaterialId, workspaceId, false, function (err, jqXHR) {
           });
         }, this));
+      }
+    }
+    else {
+      confirmPageDeletion($.proxy(function () {
+        deletePage(workspaceMaterialId, workspaceId, false, function (err, jqXHR) {
+          if (jqXHR.status == 409) {
+            var response = $.parseJSON(jqXHR.responseText);
+            if (response && response.reason == 'CONTAINS_ANSWERS') {
+              confirmAnswerRemovalDelete(function () {
+                deletePage(workspaceMaterialId, workspaceId, true, function (err, jqXHR) {
+                  $('.notification-queue').notificationQueue('notification', 'error', err);
+                });
+              });
+            } else {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            }
+          } else {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          }    
+        });
+      }, this));
     }
   });
   
@@ -655,7 +653,7 @@
         }
       });
     }
-    else if (materialType == 'html') {
+    else {
       mApi().workspace.workspaces.materials.update(workspaceId, node.data('workspace-material-id'), {
         id: node.data('workspace-material-id'),
         materialId: node.data('material-id'),
