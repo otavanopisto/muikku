@@ -57,7 +57,7 @@
         
         if (this._getRenderMode('html') == 'dust') {
           material.html = parsed.html();
-          renderDustTemplate(this.options.dustTemplate, { id: materialId, materialId: materialId, workspaceMaterialId: workspaceMaterialId, type: 'html', data: material }, $.proxy(function (text) {
+          renderDustTemplate(this.options.dustTemplate, { id: materialId, materialId: materialId, workspaceMaterialId: workspaceMaterialId, type: 'html', data: material, hidden: pageElement.hasClass('item-hidden') }, $.proxy(function (text) {
             $(pageElement).append(text);
             $(document).trigger('afterHtmlMaterialRender', {
               pageElement: pageElement,
@@ -96,7 +96,7 @@
           this._loadHtmlMaterial($(page), fieldAnswers);
         break;
         case 'folder':
-          renderDustTemplate(this.options.dustTemplate, { id: materialId, type: materialType, data: { title: $(page).data('material-title') } }, $.proxy(function (text) {
+          renderDustTemplate(this.options.dustTemplate, { id: workspaceMaterialId, type: materialType, hidden: $(page).hasClass('item-hidden'), data: { title: $(page).data('material-title') } }, $.proxy(function (text) {
             $(this).html(text);
             $.waypoints('refresh');
           }, page));
@@ -682,45 +682,6 @@
   function createEmbedId(parentIds) {
     return (parentIds.length ? parentIds.join(':') : null);
   }
-
-  function fixTables(node) {
-    var $tables = $(node).find("table");
-    
-    $tables.each(function() {
-      var $table = $(this);
-      
-      var padding = ($table.attr("cellpadding") !== undefined ? $table.attr("cellpadding") : 0);
-      var margin = ($table.attr("cellspacing") !== undefined ? $table.attr("cellspacing") : 0);
-      var border = ($table.attr("border") !== undefined ? $table.attr("border") : 0);
-      var width = $table.attr("width") !== undefined ? $table.attr("width") + "px;" : "auto;";
-      var bgcolor = $table.attr("bgcolor") !== undefined ? $table.attr("bgcolor") : "transparent;";
-      
-      if ($table.attr("style") !== undefined) {
-        var origStyle = $table.attr("style");
-        $table.attr("style", "width:" + width + "border:" + border + "px solid #000;" + "border-spacing:" + margin + "px; " + origStyle + "background-color:" + bgcolor);  
-      } else {
-        $table.attr("style", "width:" + width + "border:" + border + "px solid #000;" + "border-spacing:" + margin + "px; " + "background-color:" + bgcolor);  
-      }
-      
-      $table.removeAttr("border");
-      $table.removeAttr("width");
-      $table.removeAttr("cellpadding");
-      $table.removeAttr("cellspacing");
-      $table.removeAttr("bgcolor");
-       
-      var $tds = $table.find("td");
-      $tds.each(function(){
-        var $td = $(this);
-        var bgcolor = $td.attr("bgcolor") !== undefined ? $td.attr("bgcolor") : "transparent;";
-        var width = $td.attr("width") !== undefined ? $td.attr("width") + "px; " : "auto;";
-        $td.attr("style", "width:" + width + "padding:" + padding + "px;" + "border:" + border + "px solid #000;" + "background-color:" + bgcolor);
-        
-        $td.removeAttr("border");
-        $td.removeAttr("width");
-        $td.removeAttr("bgcolor");
-      });
-    });
-  }
   
   $(document).on('beforeHtmlMaterialRender', function (event, data) {
     $(data.element).find('object[type*="vnd.muikku.field"]').each(function (index, object) {
@@ -741,7 +702,6 @@
         readOnlyFields: data.readOnlyFields
       });
     });
-    fixTables(data.element);
   });
   
   $(document).on('afterHtmlMaterialRender', function (event, data) {

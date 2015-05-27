@@ -55,6 +55,7 @@ import fi.muikku.plugins.workspace.WorkspaceMaterialFieldController;
 import fi.muikku.plugins.workspace.WorkspaceMaterialReplyController;
 import fi.muikku.plugins.workspace.WorkspaceVisitController;
 import fi.muikku.plugins.workspace.fieldio.WorkspaceFieldIOException;
+import fi.muikku.plugins.workspace.model.WorkspaceFolder;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
@@ -887,6 +888,16 @@ public class WorkspaceRESTService extends PluginRESTService {
         workspaceEntity.getArchived(), workspaceEntity.getPublished(), name, description, numVisits, lastVisit);
   }
 
+  private fi.muikku.plugins.workspace.rest.model.WorkspaceFolder createRestModel(WorkspaceFolder workspaceFolder) {
+    WorkspaceNode nextSibling = workspaceMaterialController.findWorkspaceNodeNextSibling(workspaceFolder);
+    return new fi.muikku.plugins.workspace.rest.model.WorkspaceFolder(
+        workspaceFolder.getId(),
+        workspaceFolder.getParent() == null ? null : workspaceFolder.getParent().getId(),
+        nextSibling == null ? null : nextSibling.getId(),
+        workspaceFolder.getHidden(),
+        workspaceFolder.getTitle());
+  }
+
   private fi.muikku.plugins.workspace.rest.model.WorkspaceUserSignup createRestModel(WorkspaceUserSignup signup) {
     return new fi.muikku.plugins.workspace.rest.model.WorkspaceUserSignup(signup.getId(), signup.getWorkspaceEntity().getId(), signup
         .getUserEntity().getId(), signup.getDate(), signup.getMessage());
@@ -919,6 +930,115 @@ public class WorkspaceRESTService extends PluginRESTService {
         return Response.status(Status.INTERNAL_SERVER_ERROR).build();
       }
     }
+  }
+  
+  @GET
+  @Path("/workspaces/{WORKSPACEID}/folders/{WORKSPACEFOLDERID}")
+  public Response getWorkspaceFolder(
+      @PathParam("WORKSPACEID") Long workspaceEntityId,
+      @PathParam("WORKSPACEFOLDERID") Long workspaceFolderId) {
+
+    // Workspace
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+
+    // WorkspaceFolder
+    WorkspaceFolder workspaceFolder = workspaceMaterialController.findWorkspaceFolderById(workspaceFolderId);
+    if (workspaceFolder == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    return Response.ok(createRestModel(workspaceFolder)).build();
+  }
+
+  @DELETE
+  @Path("/workspaces/{WORKSPACEID}/folders/{WORKSPACEFOLDERID}")
+  public Response deleteWorkspaceFolder(
+      @PathParam("WORKSPACEID") Long workspaceEntityId,
+      @PathParam("WORKSPACEFOLDERID") Long workspaceFolderId) {
+    
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).entity("Not logged in").build();
+    }
+    // Workspace
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    WorkspaceRoleEntity workspaceRoleEntity = workspaceUserEntityController.findWorkspaceUserRoleByWorkspaceEntityAndUserEntity(workspaceEntity, sessionController.getLoggedUserEntity());
+    if (workspaceRoleEntity == null) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // TODO: More detailed security check is needed
+    if (workspaceRoleEntity.getArchetype() == WorkspaceRoleArchetype.STUDENT) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
+    // WorkspaceFolder
+    WorkspaceFolder workspaceFolder = workspaceMaterialController.findWorkspaceFolderById(workspaceFolderId);
+    if (workspaceFolder != null) {
+      workspaceMaterialController.deleteWorkspaceFolder(workspaceFolder);
+    }
+
+    return Response.ok(createRestModel(workspaceFolder)).build();
+  }
+  
+  @PUT
+  @Path("/workspaces/{WORKSPACEID}/folders/{WORKSPACEFOLDERID}")
+  public Response updateWorkspaceFolder(
+      @PathParam("WORKSPACEID") Long workspaceEntityId,
+      @PathParam("WORKSPACEFOLDERID") Long workspaceFolderId,
+      fi.muikku.plugins.workspace.rest.model.WorkspaceFolder restFolder) {
+    
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).entity("Not logged in").build();
+    }
+    
+    if (restFolder == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    // Workspace
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    WorkspaceRoleEntity workspaceRoleEntity = workspaceUserEntityController.findWorkspaceUserRoleByWorkspaceEntityAndUserEntity(workspaceEntity, sessionController.getLoggedUserEntity());
+    if (workspaceRoleEntity == null) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // TODO: More detailed security check is needed
+    if (workspaceRoleEntity.getArchetype() == WorkspaceRoleArchetype.STUDENT) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // WorkspaceFolder
+    WorkspaceFolder workspaceFolder = workspaceMaterialController.findWorkspaceFolderById(restFolder.getId());
+    if (workspaceFolder == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    // Workspace folder belongs to workspace check
+    
+    Long folderWorkspaceEntityId = workspaceMaterialController.getWorkspaceEntityId(workspaceFolder);
+    if (!folderWorkspaceEntityId.equals(workspaceEntityId)) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    // Actual update
+    
+    WorkspaceNode parentNode = restFolder.getParentId() == null ? null : workspaceMaterialController.findWorkspaceNodeById(restFolder.getParentId());
+    WorkspaceNode nextSibling = restFolder.getNextSiblingId() == null ? null : workspaceMaterialController.findWorkspaceNodeById(restFolder.getNextSiblingId());
+    Boolean hidden = restFolder.getHidden();
+    String title = restFolder.getTitle();
+    
+    workspaceMaterialController.updateWorkspaceFolder(workspaceFolder, title, parentNode, nextSibling, hidden);
+    return Response.noContent().build();
   }
 
   @PUT
@@ -1400,178 +1520,5 @@ public class WorkspaceRESTService extends PluginRESTService {
         evaluation.getGradeSchoolDataSource(),
         evaluation.getVerbalAssessment());
   }
-
-  // //
-  // // Workspace
-  // //
-  //
-  // @POST
-  // @Path ("/workspaces/")
-  // public Response createWorkspace(WorkspaceCompact workspaceData) {
-  // if (StringUtils.isNotBlank(workspaceData.getIdentifier())) {
-  // return Response.status(Status.BAD_REQUEST).entity("Identifier can not be specified when creating a workspace").build();
-  // }
-  //
-  // if (StringUtils.isBlank(workspaceData.getSchoolDataSource())) {
-  // return Response.status(Status.BAD_REQUEST).entity("SchoolDataSource must be defined when creating a workspace").build();
-  // }
-  //
-  // if (StringUtils.isBlank(workspaceData.getName())) {
-  // return Response.status(Status.BAD_REQUEST).entity("name must be defined when creating a workspace").build();
-  // }
-  //
-  // if (StringUtils.isBlank(workspaceData.getWorkspaceTypeId())) {
-  // return Response.status(Status.BAD_REQUEST).entity("workspaceTypeId must be defined when creating a workspace").build();
-  // }
-  //
-  // if (StringUtils.isBlank(workspaceData.getCourseIdentifierIdentifier())) {
-  // return Response.status(Status.BAD_REQUEST).entity("courseIdentifierIdentifier must be defined when creating a workspace").build();
-  // }
-  //
-  // // TODO: Incorrect school data source
-  // WorkspaceType workspaceType = workspaceController.findWorkspaceTypeByDataSourceAndIdentifier(workspaceData.getSchoolDataSource(),
-  // workspaceData.getWorkspaceTypeId());
-  // if (workspaceType == null) {
-  // return Response.status(Status.BAD_REQUEST).entity("workspace type could not be found").build();
-  // }
-  //
-  // Workspace workspace = workspaceController.createWorkspace(
-  // workspaceData.getSchoolDataSource(),
-  // workspaceData.getName(),
-  // workspaceData.getDescription(),
-  // workspaceType,
-  // workspaceData.getCourseIdentifierIdentifier());
-  //
-  // return Response.ok(
-  // tranquilityBuilderFactory.createBuilder()
-  // .createTranquility()
-  // .entity(workspace)
-  // ).build();
-  // }
-  //
-
-  //
-  // @PUT
-  // @Path ("/workspaces/{WORKSPACE_ENTITY_ID}")
-  // public Response updateWorkspace(@PathParam ("WORKSPACE_ENTITY_ID") Long workspaceEntityId, WorkspaceCompact workspaceData) {
-  // WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
-  // if (workspaceEntity == null) {
-  // return Response.status(Status.NOT_FOUND).build();
-  // }
-  //
-  // Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-  // if (workspace == null) {
-  // return Response.status(Status.NOT_FOUND).build();
-  // }
-  //
-  // if (isChanged(workspaceData.getSchoolDataSource(), workspace.getSchoolDataSource())) {
-  // return Response.status(Status.BAD_REQUEST).entity("SchoolDataSource can not be changed").build();
-  // }
-  //
-  // if (isChanged(workspaceData.getIdentifier(), workspace.getIdentifier())) {
-  // return Response.status(Status.BAD_REQUEST).entity("identifier can not be changed").build();
-  // }
-  //
-  // // TODO: CourseIdentifierIdentififer should be updateable
-  // if (isChanged(workspaceData.getWorkspaceTypeId(), workspace.getWorkspaceTypeId())) {
-  // return Response.status(Status.BAD_REQUEST).entity("courseIdentifierIdentifier can not be changed").build();
-  // }
-  //
-  // // TODO: WorkspaceTypeId should be updateable
-  // if (isChanged(workspaceData.getCourseIdentifierIdentifier(), workspace.getCourseIdentifierIdentifier())) {
-  // return Response.status(Status.BAD_REQUEST).entity("workspaceTypeId can not be changed").build();
-  // }
-  //
-  // workspace.setDescription(workspaceData.getDescription());
-  // workspace.setName(workspaceData.getName());
-  // workspaceController.updateWorkspace(workspace);
-  //
-  // return Response.ok(
-  // tranquilityBuilderFactory.createBuilder()
-  // .createTranquility()
-  // .entity(workspace)
-  // ).build();
-  // }
-  //
-  // @DELETE
-  // @Path ("/workspaces/{WORKSPACE_ENTITY_ID}")
-  // public Response deleteWorkspace(@PathParam ("WORKSPACE_ENTITY_ID") Long workspaceEntityId, @QueryParam ("permanently") Boolean
-  // permanently) {
-  // WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
-  // if (workspaceEntity == null) {
-  // return Response.status(Status.NOT_FOUND).build();
-  // }
-  //
-  // Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
-  // if (workspace == null) {
-  // return Response.status(Status.NOT_FOUND).build();
-  // }
-  //
-  // if (Boolean.TRUE.equals(permanently)) {
-  // workspaceController.deleteWorkspace(workspace);
-  // } else {
-  // workspaceController.archiveWorkspace(workspace);
-  // }
-  //
-  // return Response.noContent().build();
-  // }
-  //
-
-  // //
-  // // Materials
-  // //
-  //
-
-  // //
-  // // Nodes
-  // //
-  //
-  // @GET
-  // @Path ("/nodes/")
-  // public Response listWorkspaceMaterials(@QueryParam ("parentId") Long parentId, @QueryParam ("workspaceEntityId") Long
-  // workspaceEntityId) {
-  // if (parentId != null && workspaceEntityId != null) {
-  // return
-  // Response.status(Status.BAD_REQUEST).entity("parentId and workspaceEntityId can not both be specified when listing workspace nodes").build();
-  // }
-  //
-  // WorkspaceNode parent = null;
-  // if (parentId != null) {
-  // parent = workspaceMaterialController.findWorkspaceNodeById(parentId);
-  // if (parent == null) {
-  // return Response.status(Status.NOT_FOUND).entity("parent not found").build();
-  // }
-  //
-  // return Response.ok(
-  // tranquilityBuilderFactory.createBuilder()
-  // .createTranquility()
-  // .entities(workspaceMaterialController.listWorkspaceNodesByParent(parent))
-  // ).build();
-  // } else if (workspaceEntityId != null) {
-  // WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
-  // if (workspaceEntity == null) {
-  // return Response.status(Status.NOT_FOUND).entity("parent not found").build();
-  // }
-  //
-  // return Response.ok(
-  // tranquilityBuilderFactory.createBuilder()
-  // .createTranquility()
-  // .entities(Arrays.asList(workspaceMaterialController.findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity)))
-  // ).build();
-  // } else {
-  // return
-  // Response.status(Status.BAD_REQUEST).entity("either parentId or workspaceEntityId must be specified when listing workspace nodes").build();
-  // }
-  // }
-  //
-  // private boolean isChanged(Object object1, Object object2) {
-  // if (object1 == null) {
-  // return false;
-  // }
-  //
-  // return !object1.equals(object2);
-  // }
-  //
-  //
 
 }

@@ -37,7 +37,7 @@ body.workspace-materials-management {
       top:0px;
       left:-4500px;
       width:0px;
-      color:#fff;
+      color:#fff; 
       text-transform:uppercase;
       padding:13px 15px 15px 14px;
       @include rounded-top-left(3px);
@@ -124,15 +124,27 @@ body.workspace-materials-management {
             
             .workspace-materials-toc-root {
 
+              /* PLACEHOLDER item to indicate where user can drop sortable item */
+              .sortable-placeholder {
+                background:#bed3df;
+              }
+              
+              .sortable-section-placeholder {
+                background:#bed3df;
+                margin:0;
+                padding:10px 0;
+              }
+
               .workspace-materials-toc-item {
                 list-style:none;
-                
-                &:first-child {
-                  margin-top:5px;
-                  padding-top:2px;
-                }
+                position:relative;
+                margin:1px 0;
                 
                 &.item-hidden {
+                  opacity:0.4;
+                }
+                
+                &.parent-hidden {
                   opacity:0.4;
                 }
                 
@@ -140,79 +152,144 @@ body.workspace-materials-management {
                   text-decoration:none;
                   color:#2c2c2c;
                   display:block;
-                  @include genericMenuLinkHoverTransition(background,color,0.15s,ease-in-out);
+                  @include genericMenuLinkHoverTransition(background,0.15s,ease-in-out);
                   @include rounded(2px);
-                  padding:2px 8px 2px 6px;
+                  padding:2px 24px 2px 6px;
                   border-left:2px solid #e8f0f5;
-                  margin:1px 0;
-                  
-                  &:hover,
-                  &.active {
-                    background:#596e7d;
-                    color:#fff;
-                  }
                   
                   &.evaluated {
                     border-left:2px solid $evaluatedAssignment;
+                    margin:1px 0 0 0;
                   }
                   
                   &.exercise {
                     border-left:2px solid $exerciseAssignment;
+                    margin:1px 0 0 0;
                   }
                 }
+                
+                &:hover,
+                &.active {
+                  background:#596e7d;
+                  color:#fff;
+                  border-radius:2px;
+                  
+                  a {
+                    color:#fff;
+                  }
+                
+                  .workspace-materials-toc-itemDragHandle {
+                    opacity:1;
+                  }
+                
+                }
+                
+                /* When user drops sortable item this prevents hover effect happening so link stays readable */
+                &.no-hover:hover {
+                
+                  a {
+                    color:#2c2c2c;
+                  }
+                
+                }
+                
+                /* ITEM SORTING RULES */
+                &.ui-sortable-helper {
+                  background:#000;
+                  color:#fff;
+                  border-radius:2px;
+                  left:6px;
+                  
+                  a {
+                    color:#fff;
+                  }
+                
+                  .workspace-materials-toc-itemDragHandle {
+                    opacity:1;
+                  }
+                  
+                }
+                
+                .workspace-materials-toc-itemDragHandle {
+                  opacity:0;
+                  color:#ffffff;
+                  cursor:move;
+                  font-size:14px;
+                  padding:6px 4px 6px 6px;
+                  position:absolute;
+                  top:0px;
+                  right:0px;
+                }
     
-              }
+              } 
         
               .workspace-materials-toc-section {
                 margin:0;
-                padding-top:5px;
-                padding-bottom:10px;
+                padding:10px 0;
                 
                 .workspace-materials-toc-subtitle {
                   margin:0 0 5px 0;
                   text-transform:uppercase;
                   font-size:15px;
-                  padding:2px 8px;
+                  position:relative;
                   
-                  &.subtitle-hidden {
+                  a {
+                    font-weight:400;
+                    padding:2px 24px 2px 8px;
+                    text-decoration:none;
+                    color:#2c2c2c;
+                    display:inline-block;
+                  }
+                  
+                  .workspace-materials-toc-sectionDragHandle {
+                    opacity:0;
+                    color:#2c2c2c;
+                    cursor:move;
+                    font-size:14px;
+                    padding:6px 4px 6px 6px;
+                    position:absolute;
+                    top:0px;
+                    right:0px;
+                  }
+                  
+                  &:hover {
+                    background:#c8e6f7;
+
+                    .workspace-materials-toc-sectionDragHandle {
+                      opacity:1;
+                    }
+                    
+                  }
+
+                  &.item-hidden {
+                    opacity:0.4;
+                  }
+                  
+                  &.parent-hidden {
                     opacity:0.4;
                   }
                   
                 }
                 
-                .workspace-materials-toc-item {
-                  list-style:none;
-                  
-                  &.item-hidden {
-                    opacity:0.4;
-                  }
-                  
-                  a {
-                    text-decoration:none;
-                    color:#2c2c2c;
-                    display:block;
-                    @include genericMenuLinkHoverTransition(background,color,0.15s,ease-in-out);
-                    @include rounded(2px);
-                    padding:2px 8px;
-                    
-                    &:hover,
-                    &.active {
-                      background:#596e7d;
-                      color:#fff;
-                    }
-                  }
-      
+                &.ui-sortable-helper {
+                  background:#47728c;
+                  color:#fff;
+                  border-radius:2px;
+                  left:6px;
                 }
-              }
-            }
-          }
+                
+              } 
+              
+            } 
+            
+          } 
+          
+        } 
         
-        }
+      } 
       
-      }
+    } 
     
-    }
-
   } 
   
   #contentWorkspaceMaterialsManagement {
@@ -387,11 +464,12 @@ body.workspace-materials-management {
       padding:50px 30px 10px 30px;
       font-size:18px;
       word-wrap: break-word;
-      -webkit-transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
-      -moz-transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
-      -o-transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
-      -ms-transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
-      transition: box-shadow,opacity 0.3s,0.5s ease-in-out,ease-in-out;
+      box-shadow:0 0 0 0 rgba(148,183,208,0.95);
+      -webkit-transition: box-shadow 0.3s ease-in-out, opacity 0.5s ease-in-out;
+      -moz-transition: box-shadow 0.3s ease-in-out, opacity 0.5s ease-in-out;
+      -o-transition: box-shadow 0.3s ease-in-out, opacity 0.5s ease-in-out;
+      -ms-transition: box-shadow 0.3s ease-in-out, opacity 0.5s ease-in-out;
+      transition: box-shadow 0.3s ease-in-out, opacity 0.5s ease-in-out;
       
       &.folder { 
         position:relative;
@@ -399,8 +477,8 @@ body.workspace-materials-management {
         max-width:700px;
         width:auto;
         background:#fff;
-        box-shadow:$w-page-sc;
-        padding:30px 30px 30px 30px;
+        box-shadow:0 0 0 0 rgba(148,183,208,0.95);
+        padding:70px 30px 30px 30px;
         word-wrap: break-word;
         line-height:1.3em;
         font-size:18px;
@@ -409,6 +487,38 @@ body.workspace-materials-management {
         
         .page-content {
           font-size:27px;
+        }
+        
+        &.page-edit-mode {
+          padding:50px 0 10px 0;
+          box-sizing:border-box;
+        
+          /* Editor input override */
+          input[type="text"].workspace-material-folder-editor-title {
+            width:100%;
+            box-sizing:border-box;
+            text-align:left;
+            color:#38393a;
+            font-size:27px;
+            border:0;
+            padding:0 0 2px 0;
+            margin:19px 30px 0px 30px;
+            border-radius:0;
+            background:#f3faff;
+            box-shadow: 0 0 0 10px rgba(243,250,255,0.8);
+          }
+          
+          /* Editor title override */
+          .workspace-material-folder-editor-title-wrapper {
+            margin:19px 30px 26px 30px;
+          
+            input.workspace-material-folder-editor-title {
+              padding:0 0 2px 0;
+              margin:0;
+            }
+          
+          }
+        
         }
       }
       
@@ -562,12 +672,9 @@ body.workspace-materials-management {
               }
             
             }
-            
-             
-          
+
           }
-          
-        
+
         }
       
       }
@@ -692,7 +799,7 @@ body.workspace-materials-management {
 
         }
         
-        /* Editor save status */
+        Editor save status
         .workspace-material-html-editor-status {
           position:absolute;
           top:9px;
@@ -805,7 +912,9 @@ body.workspace-materials-management {
           a.close-page-editor {
             display:inline-block;
           }
-        }   
+          
+        }  
+         
       }
         
       .workspace-materials-management-view-page-controls a.close-attachments-editor {
@@ -849,8 +958,8 @@ body.workspace-materials-management {
         }
       }
     
-      &[data-assignment-type="EVALUATED"] .workspace-materials-management-view-page-controls span.assignment-type { /* Special case for assignment type link */
-        background: #0099ff;
+      &[data-assignment-type="EVALUATED"] .workspace-materials-management-view-page-controls span.assignment-type { /* Special case for assignment type link
+        background: $evaluatedAssignment;
         
         a.change-assignment {
           margin:0;
@@ -864,7 +973,7 @@ body.workspace-materials-management {
       }
       
       &[data-assignment-type="EXERCISE"] .workspace-materials-management-view-page-controls span.assignment-type { /* Special case for assignment type link */
-        background: #2ed91c;
+        background: $exerciseAssignment;
         
         a.change-assignment {
           margin:0;
@@ -1025,7 +1134,7 @@ body.workspace-materials-management {
         width:24px;
         margin:-13px 0 0 0;
         font-size:22px;
-        height:22px; /* Same height as font-size */
+        height:22px; Same height as font-size
         
         span {
           display:none;
@@ -1043,8 +1152,6 @@ body.workspace-materials-management {
           font-variant: normal;
           text-transform: none;
           line-height: 1;
-          
-          /* Better Font Rendering =========== */
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
         }
