@@ -1161,7 +1161,6 @@
   $(document).on('click', '.workspaces-materials-management-add', function (event, data) {
 	  
     var nextMaterial = $(this).parent().nextAll('.workspace-materials-view-page').first();
-    var nextSection = $(this).parent().nextAll('.workspace-materials-view-page[data-material-type="folder"]').first();
     
     renderDustTemplate('workspace/materials-management-new.dust', { }, $.proxy(function (text) {
       var newPage = $(text);
@@ -1171,6 +1170,9 @@
       enableFileUploader(uploader, nextMaterial.data('parent-id'), nextMaterial.data('workspace-material-id'));
       $(newPage).after(createAddPageSectionLink());
       
+      if ($(nextMaterial).length && !$(nextMaterial).is('[data-material-type="folder"]')) {
+        $(newPage).find(".workspace-materials-management-new-section-link").remove();
+      }
       
       $(newPage).find('.workspace-materials-management-new-page-link').one('click', function (event) {
         event.preventDefault();
@@ -1226,7 +1228,7 @@
       
       $(newPage).find('.workspace-materials-management-new-section-link').one('click', function (event) {
         event.preventDefault();
-        var nextSiblingId = $(nextSection).data('workspace-material-id');
+        var nextSiblingId = $(nextMaterial).data('workspace-material-id');
         var workspaceEntityId = $('.workspaceEntityId').val();
         
         mApi().workspace.workspaces.folders.create(workspaceEntityId, {
