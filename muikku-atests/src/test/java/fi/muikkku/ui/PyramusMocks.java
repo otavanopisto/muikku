@@ -30,7 +30,7 @@ import fi.pyramus.rest.model.WhoAmI;
 
 public class PyramusMocks{
   
-  public static void personsPyramusMocks() throws JsonProcessingException {
+  public static void student1LoginMock() throws JsonProcessingException {
     stubFor(get(urlMatching("/dnm")).willReturn(aResponse().withHeader("Content-Type", "application/json").withBody("").withStatus(204)));
 
     stubFor(get(urlMatching("/users/authorize.*"))
@@ -38,7 +38,7 @@ public class PyramusMocks{
         .withStatus(302)
         .withHeader("Location",
           "http://dev.muikku.fi:8080/login?_stg=rsp&code=1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111")));
-
+    
     stubFor(post(urlMatching("/1/oauth/token"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
@@ -58,7 +58,40 @@ public class PyramusMocks{
         .withHeader("Content-Type", "application/json")
         .withBody(whoAmIJson)
         .withStatus(200)));
+  }
 
+  public static void adminLoginMock() throws JsonProcessingException {
+    stubFor(get(urlMatching("/dnm")).willReturn(aResponse().withHeader("Content-Type", "application/json").withBody("").withStatus(204)));
+
+    stubFor(get(urlMatching("/users/authorize.*"))
+      .willReturn(aResponse()
+        .withStatus(302)
+        .withHeader("Location",
+          "http://dev.muikku.fi:8080/login?_stg=rsp&code=1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111")));
+
+    stubFor(post(urlMatching("/1/oauth/token"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody("{\"expires_in\":3600,\"refresh_token\":\"12312ewsdf34fsd234r43rfsw32rf33e\",\"access_token\":\"ur84ur839843ruwf39843ru39ru37y2e\"}")
+        .withStatus(200)));
+
+    List<String> emails = new ArrayList<String>();
+    emails.add("admin@made.up");
+    WhoAmI whoAmI = new WhoAmI((long) 4, "Admin", "User", emails);
+
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+    String whoAmIJson = objectMapper.writeValueAsString(whoAmI);
+
+    stubFor(get(urlMatching("/1/system/whoami"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(whoAmIJson)
+        .withStatus(200)));
+  }    
+  
+  public static void personsPyramusMocks() throws JsonProcessingException {
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);    
     Map<String, String> variables = null;
     List<String> tags = null;
     Student student = new Student((long) 1, (long) 1, "Test", "User", null, null, null, null, null, null, null, null, null, null, null, (long) 1, null, null,

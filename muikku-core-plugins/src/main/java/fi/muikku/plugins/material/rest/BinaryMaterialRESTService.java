@@ -161,10 +161,14 @@ public class BinaryMaterialRESTService extends PluginRESTService {
     if (material == null) {
       return Response.status(Status.NOT_FOUND).build();
     } else {
-      // TODO: Better file name
+      String urlName = StringUtils.stripAccents(StringUtils.lowerCase(material.getTitle())).replaceAll("[^a-z0-9\\-\\.\\_]", "");
+      if (StringUtils.isBlank(urlName)) {
+        urlName = String.valueOf(material.getId());
+      }
+      
       return Response.ok(material.getContent())
         .header("Content-Length", material.getContent().length)
-        .header("Content-Disposition", "attachment; filename=\""+ material.getId() + "\"")
+        .header("Content-Disposition", String.format("attachment; filename=\"%s\"", urlName))
         .type(material.getContentType())
         .build();
     }
@@ -186,4 +190,5 @@ public class BinaryMaterialRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
   }
+  
 }

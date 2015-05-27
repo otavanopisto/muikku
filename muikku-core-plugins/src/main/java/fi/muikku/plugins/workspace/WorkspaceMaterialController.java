@@ -63,6 +63,7 @@ import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 
 @Dependent
 @Stateful
+// TODO Should probably be split or renamed WorkspaceNodeController
 public class WorkspaceMaterialController {
 
   @Inject
@@ -338,24 +339,43 @@ public class WorkspaceMaterialController {
   public WorkspaceMaterial updateWorkspaceMaterialAssignmentType(WorkspaceMaterial workspaceMaterial, WorkspaceMaterialAssignmentType assignmentType) {
     return workspaceMaterialDAO.updateAssignmentType(workspaceMaterial, assignmentType);
   }
+  
+  public WorkspaceFolder updateWorkspaceFolder(WorkspaceFolder workspaceFolder, String title, WorkspaceNode parentNode, WorkspaceNode nextSibling, Boolean hidden) {
+    if (nextSibling != null && !nextSibling.getParent().getId().equals(parentNode.getId())) {
+      throw new IllegalArgumentException("Next sibling parent is not parent");
+    }
+    // Parent node
+    workspaceFolder = (WorkspaceFolder) workspaceNodeDAO.updateParent(workspaceFolder, parentNode);
+    // Next sibling
+    if (nextSibling == null) {
+      Integer orderNumber = workspaceNodeDAO.getMaximumOrderNumber(parentNode);
+      orderNumber = orderNumber == null ? 0 : orderNumber;
+      if (workspaceFolder.getOrderNumber() < orderNumber) {
+        workspaceFolder = (WorkspaceFolder) workspaceNodeDAO.updateOrderNumber(workspaceFolder, ++orderNumber);
+      }
+    } else {
+      workspaceFolder = (WorkspaceFolder) moveAbove(workspaceFolder, nextSibling);
+    }
+    // Hidden
+    workspaceFolder = (WorkspaceFolder) workspaceNodeDAO.updateHidden(workspaceFolder, hidden);
+    // Title
+    String urlName = generateUniqueUrlName(workspaceFolder.getParent(), workspaceFolder, title);
+    workspaceFolder = workspaceFolderDAO.updateFolderName(workspaceFolder, urlName, title);
+    return workspaceFolder;
+  }
 
   public WorkspaceNode updateWorkspaceNode(WorkspaceNode workspaceNode, Long materialId, WorkspaceNode parentNode, WorkspaceNode nextSibling, Boolean hidden,
       WorkspaceMaterialAssignmentType assignmentType) {
+    if (nextSibling != null && !nextSibling.getParent().getId().equals(parentNode.getId())) {
+      throw new IllegalArgumentException("Next sibling parent is not parent");
+    }
     // Material id
     if (workspaceNode instanceof WorkspaceMaterial) {
       workspaceNode = workspaceMaterialDAO.updateMaterialId((WorkspaceMaterial) workspaceNode, materialId);
       workspaceNode = workspaceMaterialDAO.updateAssignmentType((WorkspaceMaterial) workspaceNode, assignmentType);
     }
     // Parent node
-    if (!workspaceNode.getParent().getId().equals(parentNode.getId())) {
-      while (parentNode != null) {
-        if (parentNode.getId().equals(workspaceNode.getId())) {
-          throw new IllegalArgumentException("Circular reference " + workspaceNode.getId() + " with parent " + parentNode.getId());
-        }
-        parentNode = parentNode.getParent();
-      }
-      workspaceNode = workspaceNodeDAO.updateParent(workspaceNode, parentNode);
-    }
+    workspaceNode = workspaceNodeDAO.updateParent(workspaceNode, parentNode);
     // Next sibling
     if (nextSibling == null) {
       Integer orderNumber = workspaceNodeDAO.getMaximumOrderNumber(parentNode);
@@ -366,7 +386,7 @@ public class WorkspaceMaterialController {
     } else {
       workspaceNode = moveAbove(workspaceNode, nextSibling);
     }
-    // Next sibling
+    // Hidden
     workspaceNode = workspaceNodeDAO.updateHidden(workspaceNode, hidden);
 
     // Updated node
@@ -492,7 +512,7 @@ public class WorkspaceMaterialController {
     });
     
     for (WorkspaceMaterial workspaceMaterial : workspaceMaterials) {
-      result.add(createContentNode(workspaceMaterial, 0, processHtml));
+      result.add(createContentNode(workspaceMaterial, 0, processHtml, false));
     }
     
     return result;
@@ -518,15 +538,17 @@ public class WorkspaceMaterialController {
     }
   }
 
-  public List<FlattenedWorkspaceNode> flattenWorkspaceNodes(List<WorkspaceNode> workspaceNodes, int level) {
+  public List<FlattenedWorkspaceNode> flattenWorkspaceNodes(List<WorkspaceNode> workspaceNodes, int level, boolean includeHidden) {
     List<FlattenedWorkspaceNode> result = new ArrayList<>();
 
     for (WorkspaceNode workspaceNode : workspaceNodes) {
       if (workspaceNode.getType() == WorkspaceNodeType.FOLDER) {
         WorkspaceFolder workspaceFolder = (WorkspaceFolder) workspaceNode;
-        List<WorkspaceNode> children = workspaceNodeDAO.listByParentSortByOrderNumber(workspaceFolder);
+        List<WorkspaceNode> children = includeHidden
+            ? workspaceNodeDAO.listByParentSortByOrderNumber(workspaceFolder)
+            : workspaceNodeDAO.listByParentAndHiddenSortByOrderNumber(workspaceFolder, Boolean.FALSE);
         result.add(new FlattenedWorkspaceNode(true, workspaceFolder.getTitle(), null, level, workspaceFolder.getParent().getId(), workspaceFolder.getHidden()));
-        result.addAll(flattenWorkspaceNodes(children, level + 1));
+        result.addAll(flattenWorkspaceNodes(children, level + 1, includeHidden));
       } else {
         result.add(new FlattenedWorkspaceNode(false, null, workspaceNode, level, workspaceNode.getParent().getId(), workspaceNode.getHidden()));
       }
@@ -542,7 +564,7 @@ public class WorkspaceMaterialController {
        ? listWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(rootFolder, WorkspaceFolderType.DEFAULT)
        : listVisibleWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(rootFolder, WorkspaceFolderType.DEFAULT);
    for (WorkspaceNode rootMaterialNode : rootMaterialNodes) {
-     ContentNode node = createContentNode(rootMaterialNode);
+     ContentNode node = createContentNode(rootMaterialNode, 1, true, includeHidden);
      contentNodes.add(node);
    }
    return contentNodes;
@@ -569,25 +591,24 @@ public class WorkspaceMaterialController {
   }
 
   private ContentNode createContentNode(WorkspaceNode rootMaterialNode) throws WorkspaceMaterialException {
-    return createContentNode(rootMaterialNode, 1);
+    return createContentNode(rootMaterialNode, 1, true, true);
   }
 
-  private ContentNode createContentNode(WorkspaceNode rootMaterialNode, int level) throws WorkspaceMaterialException {
-    return createContentNode(rootMaterialNode, level, true);
-  }
-  
-  private ContentNode createContentNode(WorkspaceNode rootMaterialNode, int level, boolean processHtml) throws WorkspaceMaterialException {
+  private ContentNode createContentNode(WorkspaceNode rootMaterialNode, int level, boolean processHtml, boolean includeHidden) throws WorkspaceMaterialException {
     try {
       switch (rootMaterialNode.getType()) {
       case FOLDER:
         WorkspaceFolder workspaceFolder = (WorkspaceFolder) rootMaterialNode;
-        ContentNode folderContentNode = new ContentNode(workspaceFolder.getTitle(), "folder", rootMaterialNode.getId(), null, level, null, null, rootMaterialNode.getHidden(), null, 0l, 0l);
+        ContentNode folderContentNode = new ContentNode(workspaceFolder.getTitle(), "folder", rootMaterialNode.getId(), null, level, null, rootMaterialNode.getParent().getId(), rootMaterialNode.getHidden(), null, 0l, 0l);
 
-        List<WorkspaceNode> children = workspaceNodeDAO.listByParentSortByOrderNumber(workspaceFolder);
+        List<WorkspaceNode> children = includeHidden
+            ? workspaceNodeDAO.listByParentSortByOrderNumber(workspaceFolder)
+            : workspaceNodeDAO.listByParentAndHiddenSortByOrderNumber(workspaceFolder, Boolean.FALSE);
         List<FlattenedWorkspaceNode> flattenedChildren;
         if (level >= FLATTENING_LEVEL) {
-          flattenedChildren = flattenWorkspaceNodes(children, level);
-        } else {
+          flattenedChildren = flattenWorkspaceNodes(children, level, includeHidden);
+        }
+        else {
           flattenedChildren = new ArrayList<>();
           for (WorkspaceNode node : children) {
             flattenedChildren.add(new FlattenedWorkspaceNode(false, null, node, level, node.getParent().getId(), node.getHidden()));
@@ -598,7 +619,7 @@ public class WorkspaceMaterialController {
           if (child.isEmptyFolder) {
             contentNode = new ContentNode(child.emptyFolderTitle, "folder", rootMaterialNode.getId(), null, child.level, null, child.parentId, child.hidden, null, 0l, 0l);
           } else {
-            contentNode = createContentNode(child.node, child.level);
+            contentNode = createContentNode(child.node, child.level, processHtml, includeHidden);
           }
           folderContentNode.addChild(contentNode);
         }
