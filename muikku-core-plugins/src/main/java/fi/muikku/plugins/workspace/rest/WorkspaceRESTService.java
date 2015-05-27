@@ -1000,6 +1000,46 @@ public class WorkspaceRESTService extends PluginRESTService {
     return Response.noContent().build();
   }
 
+  @POST
+  @Path("/workspaces/{WORKSPACEID}/folders/")
+  public Response createWorkspaceFolder(
+      @PathParam("WORKSPACEID") Long workspaceEntityId,
+      fi.muikku.plugins.workspace.rest.model.WorkspaceFolder restFolder) {
+    
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).entity("Not logged in").build();
+    }
+    
+    if (restFolder == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    // Workspace
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.BAD_REQUEST).build();
+    }
+    
+    WorkspaceRoleEntity workspaceRoleEntity = workspaceUserEntityController.findWorkspaceUserRoleByWorkspaceEntityAndUserEntity(workspaceEntity, sessionController.getLoggedUserEntity());
+    if (workspaceRoleEntity == null) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    // TODO: More detailed security check is needed
+    if (workspaceRoleEntity.getArchetype() == WorkspaceRoleArchetype.STUDENT) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+    
+    WorkspaceNode rootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
+    WorkspaceNode nextSibling = restFolder.getNextSiblingId() == null ? null : workspaceMaterialController.findWorkspaceNodeById(restFolder.getNextSiblingId());
+    
+    WorkspaceFolder workspaceFolder = workspaceMaterialController.createWorkspaceFolder(rootFolder, "Untitled");
+    if (nextSibling != null) {
+        workspaceMaterialController.moveAbove(workspaceFolder, nextSibling);
+    }
+    return Response.noContent().build();
+  }
+
   @PUT
   @Path("/workspaces/{WORKSPACEID}/materials/{WORKSPACEMATERIALID}")
   // TODO @LoggedIn
