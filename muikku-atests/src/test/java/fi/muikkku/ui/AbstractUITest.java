@@ -112,6 +112,7 @@ public class AbstractUITest extends AbstractIntegrationTest {
   }
 
   protected RemoteWebDriver getWebDriver() {
+    webDriver.manage().window().maximize();
     return webDriver;
   }
 

@@ -28,6 +28,7 @@ public class CourseTestsBase extends AbstractUITest {
     asAdmin().get("/test/reindex");
     
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
+    getWebDriver().manage().window().maximize();
     waitForElementToBePresent(By.className("index"));
     getWebDriver().get(getAppUrl(true) + "/workspace/testCourse");
     waitForElementToBePresent(By.className("workspace-title"));

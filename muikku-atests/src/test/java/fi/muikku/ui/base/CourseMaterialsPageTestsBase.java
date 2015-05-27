@@ -88,6 +88,42 @@ public class CourseMaterialsPageTestsBase extends AbstractUITest {
     boolean elementExists = getWebDriver().findElements(By.cssSelector("#workspaceMaterialsTOCWrapper")).size() > 0;
     WireMock.reset();
     assertTrue(elementExists);
-  } 
+  }
+  
+  @Test
+  @SqlBefore(value = {"sql/workspace1Setup.sql", "sql/workspace1MaterialSetup.sql", "sql/workspace1Material2Setup.sql"})
+  @SqlAfter(value = {"sql/workspace1Delete.sql", "sql/workspace1MaterialDelete.sql", "sql/workspace1Material2Delete.sql"})
+  public void courseMaterialSubTest() throws IOException {
+    PyramusMocks.adminLoginMock();
+    PyramusMocks.personsPyramusMocks();
+    PyramusMocks.workspace1PyramusMock();  
+    asAdmin().get("/test/reindex");
+    getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
+    waitForElementToBePresent(By.className("index"));
+    getWebDriver().get(getAppUrl(true) + "/workspace/testCourse/materials");
+    waitForElementToBePresent(By.cssSelector(".material-view"));
+    takeScreenshot();
+    boolean elementExists = getWebDriver().findElements(By.cssSelector("article p")).size() > 0;
+    WireMock.reset();
+    assertTrue(elementExists);
+  }
+  
+  @Test
+  @SqlBefore(value = {"sql/workspace1Setup.sql", "sql/workspace1MaterialSetup.sql", "sql/workspace1Material2Setup.sql"})
+  @SqlAfter(value = {"sql/workspace1Delete.sql", "sql/workspace1MaterialDelete.sql", "sql/workspace1Material2Delete.sql"})
+  public void courseMaterialTOCHighlightTest() throws IOException {
+    PyramusMocks.adminLoginMock();
+    PyramusMocks.personsPyramusMocks();
+    PyramusMocks.workspace1PyramusMock();  
+    asAdmin().get("/test/reindex");
+    getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
+    waitForElementToBePresent(By.className("index"));
+    getWebDriver().get(getAppUrl(true) + "/workspace/testCourse/materials");
+    waitForElementToBePresent(By.cssSelector("#workspaceMaterialsTOCWrapper"));
+//    getWebDriver().findElements(By.)("#page-43")
+    
+    WireMock.reset();
+    assertTrue(elementExists);
+  }
   
 }
