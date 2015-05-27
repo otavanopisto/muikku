@@ -17,6 +17,19 @@
       this._clear();
       mApi().workspace.workspaces
       .read({ userId: this.options.userEntityId })
+      .on('$', $.proxy(function (workspaceEntity, callback) {
+        mApi().workspace.workspaces.assessments
+          .read(workspaceEntity.id, { userEntityId: this.options.userEntityId })
+          .callback($.proxy(function (assessmentsErr, assessments) {
+            if( assessmentsErr ){
+              $('.notification-queue').notificationQueue('notification', 'error', assessmentsErr );
+            } else {
+              workspaceEntity.assessments = assessments;
+            }
+            
+            callback();
+          }, this));
+      }, this)) 
       .callback($.proxy(function (err, workspaces) {
         if( err ){
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.records.errormessage.noworkspaces', err));
