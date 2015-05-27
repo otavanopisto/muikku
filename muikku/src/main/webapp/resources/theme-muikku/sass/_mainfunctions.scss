@@ -321,9 +321,14 @@
    @extend .co-listItem;
    margin-bottom:5px;
 
-  .topic{padding:5px;}
+  .topic{
+    padding:10px 0 0 10px;
+    h3{
+     margin : 0 0 10px;
+    }
+    }
 
-  .content{padding:10px;}
+  .content{padding:0 10px 10px 10px;}
 
 
  
@@ -562,8 +567,8 @@
 
 }
 .mf-subitem{
-   padding:15px 15px 15px 15px;
-   margin-bottom:10px;
+   padding:5px 15px 5px 15px;
+   margin-bottom:5px;
    font-weight:300;
 
 

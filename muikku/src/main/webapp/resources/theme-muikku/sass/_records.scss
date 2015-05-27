@@ -1,6 +1,11 @@
 
 /* Coursepicker (.tr-*) */
 
+.tr-records-view-container{
+  min-height:400px;  
+  padding:5px;
+}
+
 
 .tr-side-button-dropdown{
   display:none;
@@ -146,6 +151,30 @@
 .tr-item-header-details {
   display : inline-block;
   float:right;  
+  
+  .tr-item-header-detail{
+    display:inline-block;
+    box-sizing:border-box;
+    margin-right:10px;
+    background-color:$bgr2;
+    padding:5px;
+    &.date{
+      
+      span{
+       color:#000;
+       
+      }
+     }
+    &.grade{
+      background-color:#0acf00;
+      padding:5px 10px;
+      span{
+       color:#fff;
+       
+      }
+    
+    }
+  }
 
 }
 .tr-item-rating {
@@ -193,10 +222,10 @@
   
 }
 
-.tr-item-short:after {
-   content : " -"  ;
+.tr-item-long{
+  font-size: 15px;
+  line-height: 30px;
 }
-
 .tr-item-details-teacher {
   display:inline-block; 
   height:20px;

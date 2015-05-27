@@ -8,21 +8,14 @@
         </div>
         <div class="tr-item-description">
           <div class="tr-item-header-name">
-           <span class="tr-item-short"></span>
            <span class="tr-item-long">{name}</span>
           </div>
           
           <div class="tr-item-header-details">
-
+            <div class="tr-item-header-detail date"><span>{#localize key="plugin.records.workspace.evaluated"/} DD/MM/YYYY {date}</div>
+            <div class="tr-item-header-detail grade"><span> N {grade}</span></div>
           </div>
                   
-          <div id="detailsCrs-{workspaceEntity.id}" class="tr-item-content-details" style="display:none;">     
-            <div class="tr-item-description-picture"></div>
-            <div class="tr-item-description-text">{description|s}</div>          
-            <div class="tr-item-details-toolbar">
-              <input class="bt-coursepicker tr-item-tour-button" type="button" value='{#localize key="plugin.coursepicker.course.checkout" /}' />
-            </div>
-          </div>
         </div>       
 
         <div class="clear"></div>
