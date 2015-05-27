@@ -49,7 +49,7 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
 
 	@Override
 	public List<GradingScale> listGradingScales() throws UnexpectedSchoolDataBridgeException {
-	  fi.pyramus.rest.model.GradingScale[] gradingScales = pyramusClient.get("/common/gradingScales/", fi.pyramus.rest.model.GradingScale[].class);
+	  fi.pyramus.rest.model.GradingScale[] gradingScales = pyramusClient.get("/common/gradingScales/?filterArchived=true", fi.pyramus.rest.model.GradingScale[].class);
     if (gradingScales == null) {
       throw new UnexpectedSchoolDataBridgeException("Null response");
     }

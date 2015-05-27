@@ -3,6 +3,7 @@ package fi.muikku.plugins.forum;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
@@ -43,12 +44,13 @@ import fi.muikku.schooldata.entity.User;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
-import fi.otavanopisto.security.Permit;
-import fi.otavanopisto.security.PermitContext;
 
 @Dependent
 @Stateful
 public class ForumController {
+  
+  @Inject
+  private Logger logger;
   
   @Inject
   private SessionController sessionController;
@@ -158,7 +160,7 @@ public class ForumController {
     }
   }
   
-  @Permit (ForumResourcePermissionCollection.FORUM_CREATEENVIRONMENTFORUM)
+//  @Permit (ForumResourcePermissionCollection.FORUM_CREATEENVIRONMENTFORUM)
   public EnvironmentForumArea createEnvironmentForumArea(String name, Long groupId) {
     UserEntity owner = sessionController.getLoggedUserEntity();
     ResourceRights rights = resourceRightsController.create();
@@ -172,21 +174,20 @@ public class ForumController {
     return forumAreaGroupDAO.findById(groupId);
   }
 
-  @Permit (ForumResourcePermissionCollection.FORUM_WRITEMESSAGES)
-  public ForumThread createForumThread(@PermitContext ForumArea forumArea, String title, String message, Boolean sticky, Boolean locked) {
+//  @Permit (ForumResourcePermissionCollection.FORUM_WRITEMESSAGES)
+  public ForumThread createForumThread(/** @PermitContext **/ ForumArea forumArea, String title, String message, Boolean sticky, Boolean locked) {
     return forumThreadDAO.create(forumArea, title, message, sessionController.getLoggedUserEntity(), sticky, locked);
   }
 
-  @Permit (ForumResourcePermissionCollection.FORUM_WRITEMESSAGES)
-  public ForumThreadReply createForumThreadReply(@PermitContext ForumThread thread, String message) {
-    if (thread.getLocked())
-      throw new RuntimeException("Thread is locked.");
-    
-    ForumThreadReply reply = forumThreadReplyDAO.create(thread.getForumArea(), thread, message, sessionController.getLoggedUserEntity());
-    
-    forumThreadDAO.updateThreadUpdated(thread, reply.getCreated());
-    
-    return reply;
+  public ForumThreadReply createForumThreadReply(/**@PermitContext **/ForumThread thread, String message) {
+    if (thread.getLocked()) {
+      logger.severe("Tried to create a forum thread reply for locked thread");
+      return null;
+    } else {
+      ForumThreadReply reply = forumThreadReplyDAO.create(thread.getForumArea(), thread, message, sessionController.getLoggedUserEntity());
+      forumThreadDAO.updateThreadUpdated(thread, reply.getCreated());
+      return reply;
+    }
   }
 
   public List<EnvironmentForumArea> listEnvironmentForums() {
@@ -204,15 +205,14 @@ public class ForumController {
         workspaceForumAreaDAO.listByWorkspace(workspace), ForumResourcePermissionCollection.FORUM_LISTFORUM);
   }
 
-  @Permit (ForumResourcePermissionCollection.FORUM_READMESSAGES)
-  public List<ForumThread> listForumThreads(@PermitContext ForumArea forumArea, int firstResult, int maxResults) {
+//  @Permit (ForumResourcePermissionCollection.FORUM_READMESSAGES)
+  public List<ForumThread> listForumThreads(/**@PermitContext **/ForumArea forumArea, int firstResult, int maxResults) {
     List<ForumThread> threads = forumThreadDAO.listByForumAreaOrdered(forumArea, firstResult, maxResults);
     
     return threads;
   }
   
-  @Permit (ForumResourcePermissionCollection.FORUM_READMESSAGES)
-  public List<ForumThreadReply> listForumThreadReplies(@PermitContext ForumThread forumThread, Integer firstResult, Integer maxResults) {
+  public List<ForumThreadReply> listForumThreadReplies(ForumThread forumThread, Integer firstResult, Integer maxResults) {
     return forumThreadReplyDAO.listByForumThread(forumThread, firstResult, maxResults);
   }
   
