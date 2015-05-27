@@ -826,6 +826,33 @@ public class WorkspaceRESTService extends PluginRESTService {
     return result;
   }
   
+  private fi.muikku.plugins.workspace.rest.model.WorkspaceAssessment createRestModel(WorkspaceEntity workspaceEntity, fi.muikku.schooldata.entity.WorkspaceAssessment entry) {
+    UserEntity assessor = userEntityController.findUserEntityByDataSourceAndIdentifier(entry.getAssessingUserSchoolDataSource(), entry.getAssessingUserIdentifier());
+    WorkspaceUserEntity workspaceUserEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndIdentifier(workspaceEntity, entry.getWorkspaceUserIdentifier());
+    
+    return new fi.muikku.plugins.workspace.rest.model.WorkspaceAssessment(
+      entry.getIdentifier(),
+      entry.getDate(),
+      assessor.getId(),
+      workspaceUserEntity.getId(),
+      entry.getGradingScaleIdentifier(),
+      entry.getGradingScaleSchoolDataSource(),
+      entry.getGradeIdentifier(),
+      entry.getGradeSchoolDataSource(),
+      entry.getVerbalAssessment()
+    ); 
+  }
+  
+  private List<fi.muikku.plugins.workspace.rest.model.WorkspaceAssessment> createRestModel(WorkspaceEntity workspaceEntity, fi.muikku.schooldata.entity.WorkspaceAssessment... entries) {
+    List<fi.muikku.plugins.workspace.rest.model.WorkspaceAssessment> result = new ArrayList<>();
+
+    for (fi.muikku.schooldata.entity.WorkspaceAssessment entry : entries) {
+      result.add(createRestModel(workspaceEntity, entry));
+    }
+
+    return result;
+  }
+  
   private fi.muikku.plugins.workspace.rest.model.WorkspaceMaterial createRestModel(WorkspaceMaterial workspaceMaterial) {
     WorkspaceNode workspaceNode = workspaceMaterialController.findWorkspaceNodeNextSibling(workspaceMaterial);
     Long nextSiblingId = workspaceNode != null ? workspaceNode.getId() : null;
@@ -996,7 +1023,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     Date evaluated = payload.getEvaluated();
     
-    return Response.ok(gradingController.updateWorkspaceAssessment(workspaceStudent.getSchoolDataSource(), workspaceAssesmentIdentifier, workspaceStudent, assessingUser, grade, payload.getVerbalAssessment(), evaluated)).build();
+    return Response.ok(createRestModel(workspaceEntity, gradingController.updateWorkspaceAssessment(workspaceStudent.getSchoolDataSource(), workspaceAssesmentIdentifier, workspaceStudent, assessingUser, grade, payload.getVerbalAssessment(), evaluated))).build();
   }
   
   @POST
@@ -1052,9 +1079,47 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     Date evaluated = payload.getEvaluated();
     
-    return Response.ok(gradingController.createWorkspaceAssessment(workspaceStudent.getSchoolDataSource(), workspaceStudent, assessingUser, grade, payload.getVerbalAssessment(), evaluated)).build();
+    return Response.ok(createRestModel(workspaceEntity, gradingController.createWorkspaceAssessment(workspaceStudent.getSchoolDataSource(), workspaceStudent, assessingUser, grade, payload.getVerbalAssessment(), evaluated))).build();
   }
 
+  @GET
+  @Path("/workspaces/{WORKSPACEENTITYID}/assessments/")
+  public Response listWorkspaceAssessments(@PathParam("WORKSPACEENTITYID") Long workspaceEntityId, @QueryParam ("userEntityId") Long userEntityId) {
+    // TODO: Security
+    
+    if (userEntityId == null) {
+      return Response.status(Status.NOT_IMPLEMENTED).entity("Listing workspace assessments without userEntityId is not implemented yet").build();
+    }
+    
+    UserEntity userEntity = userEntityController.findUserEntityById(userEntityId);
+    if (userEntity == null) {
+      return Response.status(Status.BAD_REQUEST).entity("userEntityId is invalid").build();
+    }
+    
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    /**
+    WorkspaceUserEntity workspaceStudentEntity = workspaceUserEntityController.findWorkspaceUserEntityByWorkspaceAndUserDataSourceAndUserIdentifier(workspaceEntity, userEntity.getDefaultSchoolDataSource(), userEntity.getDefaultIdentifier());
+    //TODO: check if workspace is right, check if user is student;
+    if (workspaceStudentEntity == null) {
+      return Response.noContent().build();
+    }
+
+    fi.muikku.schooldata.entity.WorkspaceUser workspaceStudent = workspaceController.findWorkspaceUser(workspaceStudentEntity);
+    if (workspaceStudent == null) {
+      return Response.noContent().build();
+    }
+    **/
+    
+    List<fi.muikku.schooldata.entity.WorkspaceAssessment> assessments = gradingController.listWorkspaceAssessments(workspaceEntity.getDataSource(), workspaceEntity.getIdentifier(), userEntity.getDefaultIdentifier());
+    if (assessments.isEmpty()) {
+      return Response.noContent().build();
+    }
+    
+    return Response.ok(createRestModel(workspaceEntity, assessments.toArray(new fi.muikku.schooldata.entity.WorkspaceAssessment[0]))).build();
+  }
   
   @POST
   @Path("/workspaces/{WORKSPACEENTITYID}/materials/{WORKSPACEMATERIALID}/evaluations/")
