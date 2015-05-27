@@ -1034,7 +1034,9 @@ public class WorkspaceRESTService extends PluginRESTService {
     WorkspaceNode nextSibling = restFolder.getNextSiblingId() == null ? null : workspaceMaterialController.findWorkspaceNodeById(restFolder.getNextSiblingId());
     
     WorkspaceFolder workspaceFolder = workspaceMaterialController.createWorkspaceFolder(rootFolder, "Untitled");
-    workspaceMaterialController.moveAbove(workspaceFolder, nextSibling);
+    if (nextSibling != null) {
+        workspaceMaterialController.moveAbove(workspaceFolder, nextSibling);
+    }
     return Response.noContent().build();
   }
 
