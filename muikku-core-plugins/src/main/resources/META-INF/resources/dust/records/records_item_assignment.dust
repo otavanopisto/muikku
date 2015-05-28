@@ -1,7 +1,8 @@
-<div class="mf-subitem tr-task evaluated">
-  <div class="tr-task-evaluated-title">{material.title}</div>
-  {#grade}
-    <div class="tr-task-evaluated-grade">{grade} ({gradingScale})</div>
-    <div class="tr-task-evaluated-verbal">{verbalAssessment}</div>
-  {/grade}
+<div class="mf-subitem tr-task-evaluated">
+  <div class="title-container">
+    <div class="title"><span title="{gradingScale}" class="tr-task-evaluated-grade" >{grade}</span><span>{material.title}</span></div>
+  </div>
+  <div class="content-container" style="display:none;">
+    <div class="content"><span class="tr-task-evaluated-verbal">{verbalAssessment}</span></div>
+  </div>
 </div>

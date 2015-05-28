@@ -7,7 +7,7 @@
     
     _create : function() {
       this._grades = $.parseJSON(this.element.attr('data-grades'));
-      
+      this.element.on('click', '.tr-task-evaluated', $.proxy(this._onEvaluationClick, this));
       this.element.on('click', '.tr-item', $.proxy(this._onItemClick, this));
       this.element.on('click', '.tr-view-toolbar .icon-goback', $.proxy(this._loadWorkspaces, this));      
       this._loadWorkspaces();
@@ -114,12 +114,19 @@
      
       this._loadWorkspace(workspaceEntityId, workspaceEntityName, workspaceEntityDescription, grade, gradingScale, evaluated, verbalAssessment);
     },
+    _onEvaluationClick: function(event){
+      var container = $(event.target).parents('.tr-task-evaluated').find('.content-container'); 
+      
+      container.toggle();
+      
+    },    
     _clear: function(){
       this.element.empty();      
     },
     _destroy: function () {
       this.element.off('click', '.tr-item');
       this.element.off('click', '.tr-view-tool');
+      this.element.off('click', '.tr-task-evaluated');
     }
   });
   

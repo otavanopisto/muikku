@@ -236,3 +236,35 @@
 .tr-item-details-teacher-picture-container {
 
 }
+
+.tr-task-evaluated{
+  &:hover{
+   cursor:pointer;
+   background-color:$bgr1;
+  }
+  
+  .title-container{
+  }
+  .content-container{
+    background-color:$bgr4;
+  }  
+  .title{
+    span{
+      display:inline-block;
+      box-sizing:border-box;
+      &:not(:first-child){
+       margin-left:10px;
+      }
+    }
+  
+  }
+  
+  .content{
+    padding:15px;
+  }
+}
+.tr-task-evaluated-grade{
+      background-color:#0acf00;
+      padding:5px 10px;
+      color:#fff;
+}
