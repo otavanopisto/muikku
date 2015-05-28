@@ -150,6 +150,7 @@
           $(node).data('material-content', material.html);
           $(node).data('material-current-revision', material.currentRevision);
           $(node).data('material-published-revision', material.publishedRevision);
+          node.empty();
           $(document).muikkuMaterialLoader('loadMaterial', node, true);
           var tocElement = $("a[href*='#page-" + $(node).data('workspace-material-id') + "']");
           if (tocElement) {
@@ -1211,6 +1212,16 @@
                   'data-material-type': materialType,
                   'data-workspace-material-id': workspaceMaterialResult.id
                 });
+
+                var newPageTocItem = $('<li class="workspace-materials-toc-item " data-workspace-node-id="'+workspaceMaterialResult.id+'" />');
+                newPageTocItem.append('<a href="#page-'+workspaceMaterialResult.id+'">'+materialResult.title+'</a>');
+                newPageTocItem.append('<span class="workspace-materials-toc-itemDragHandle icon-move ui-sortable-handle" />');
+                
+                if(typeof(nextSiblingId) === 'undefined'){
+                  $('.workspace-materials-toc-root > ul').last().append(newPageTocItem);
+                }else{
+                  newPageTocItem.insertBefore('li.workspace-materials-toc-item[data-workspace-node-id="'+nextSiblingId+'"]');
+                }
                 newPage.empty();
                 $(document).muikkuMaterialLoader('loadMaterial', newPage, true);
                 editPage(newPage);
@@ -1246,6 +1257,18 @@
               'data-material-type': 'folder',
               'data-workspace-material-id': workspaceFolderResult.id
             });
+            var newSectionTocItem = $('<ul class="workspace-materials-toc-section ui-sortable" data-workspace-node-id="'+workspaceFolderResult.id+'" />');
+            var newPageTocItem = $('<li class="workspace-materials-toc-subtitle " />');
+            newPageTocItem.append('<a href="#page-'+workspaceFolderResult.id+'">'+workspaceFolderResult.title+'</a>');
+            newPageTocItem.append('<span class="workspace-materials-toc-sectionDragHandle icon-move" />');
+            newSectionTocItem.append(newPageTocItem);
+            
+            if(typeof(nextSiblingId) === 'undefined'){
+              $('.workspace-materials-toc-root').append(newSectionTocItem);
+            }else{
+              newSectionTocItem.insertBefore('ul.workspace-materials-toc-section[data-workspace-node-id="'+nextSiblingId+'"]');
+            }
+            
             newPage.empty();
             $(document).muikkuMaterialLoader('loadMaterial', newPage, true);
             editPage(newPage);
