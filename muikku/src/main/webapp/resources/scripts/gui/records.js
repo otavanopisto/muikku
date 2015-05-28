@@ -49,8 +49,8 @@
     },
     
     _loadWorkspace: function (workspaceEntityId, workspaceEntityName, workspaceEntityDescription, grade, gradingScale, evaluated, verbalAssessment) {
-      this._clear();
 
+       this._load();
       
       mApi().workspace.workspaces.materials.read(workspaceEntityId, { assignmentType: 'EVALUATED' })
         .on('$', $.proxy(function (workspaceMaterial, callback) {
@@ -96,6 +96,7 @@
               workspaceEvaluated: evaluated, 
               workspaceVerbalAssessment: verbalAssessment
             }, $.proxy(function(text) {
+              this._clear();
               this.element.append(text);
             }, this));
           }
@@ -119,6 +120,10 @@
       
       container.toggle();
       
+    },    
+    _load: function(){
+      this.element.empty();      
+      $(this.element).append('<div class="mf-loading"><div class"circle1"></div><div class"circle2"></div><div class"circle3"></div></div>');      
     },    
     _clear: function(){
       this.element.empty();      
