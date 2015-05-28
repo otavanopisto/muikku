@@ -252,7 +252,8 @@ body.workspace-materials-management {
                     right:0px;
                   }
                   
-                  &:hover {
+                  &:hover,
+                  &.active {
                     background:#c8e6f7;
 
                     .workspace-materials-toc-sectionDragHandle {

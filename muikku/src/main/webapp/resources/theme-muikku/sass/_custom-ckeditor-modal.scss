@@ -68,7 +68,7 @@ div.cke_reset_all {
       
       .cke_dialog_contents {
         padding:0;
-        margin:0;
+        /* margin:0; */
       
         .cke_dialog_contents_body {
           max-height:600px;
@@ -288,7 +288,7 @@ div.cke_reset_all {
       /* Input field overrides */
       input[type="text"], textarea {
         width: auto;
-        min-width: 250px;
+/*         min-width: 250px; */
         height:auto;
         border:1px solid #eee;
         @include rounded(3px);
