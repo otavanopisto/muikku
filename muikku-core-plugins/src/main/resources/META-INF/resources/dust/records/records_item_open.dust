@@ -5,9 +5,7 @@
 
 
 
-{#.}
- 
- 
+{#.} 
   <div id="crsId-{id}" class="mf-item tr-item ft-01">
     <input type="hidden" name="workspaceId" value="{id}"/>
     <input type="hidden" name="workspaceUrl" value="{urlName}"/>
@@ -19,8 +17,7 @@
         </div>
         <div class="tr-item-description">
           <div class="tr-item-header-name">
-           <span class="tr-item-short"></span>
-           <span class="tr-item-long">{name}</span>
+           <span class="tr-item-long"><h3>{workspaceName}</h3></span>
           </div>
           
           <div class="tr-item-header-details">
@@ -29,7 +26,7 @@
          
           <div id="detailsCrs-{id}" class="tr-item-content-details" >     
             <div class="tr-item-description-picture"></div>
-            <div class="tr-item-description-text">{description|s}</div>          
+            <div class="tr-item-description-text">{workspaceDescription|s}</div>          
           </div>
 
         </div>       
