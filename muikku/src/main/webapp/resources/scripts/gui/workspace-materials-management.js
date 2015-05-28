@@ -930,8 +930,8 @@
     $('.workspace-materials-view-page').waypoint(function(direction) {
       if ($(window).data('scrolling') !== true && $(window).data('initializing') !== true) {
         var workspaceMaterialId = $(this).data('workspace-material-id');
-        $('a.active').removeClass('active');
-        $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
+        $('li.active').removeClass('active');
+        $('a[href="#page-' + workspaceMaterialId + '"]').parent().addClass('active');
         window.location.hash = 'p-' + workspaceMaterialId;
       }
     }, {
