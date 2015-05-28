@@ -1211,6 +1211,16 @@
                   'data-material-type': materialType,
                   'data-workspace-material-id': workspaceMaterialResult.id
                 });
+
+                var newPageTocItem = $('<li class="workspace-materials-toc-item " data-workspace-node-id="'+workspaceMaterialResult.id+'" />');
+                newPageTocItem.append('<a href="#page-'+workspaceMaterialResult.id+'">'+materialResult.title+'</a>');
+                newPageTocItem.append('<span class="workspace-materials-toc-itemDragHandle icon-move ui-sortable-handle" />');
+                
+                if(typeof(nextSiblingId) === 'undefined'){
+                  $('.workspace-materials-toc-root > ul').last().append(newPageTocItem);
+                }else{
+                  newPageTocItem.insertBefore('li.workspace-materials-toc-item[data-workspace-node-id="'+nextSiblingId+'"]');
+                }
                 newPage.empty();
                 $(document).muikkuMaterialLoader('loadMaterial', newPage, true);
                 editPage(newPage);
