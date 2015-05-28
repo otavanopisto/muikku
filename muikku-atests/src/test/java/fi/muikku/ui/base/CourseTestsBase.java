@@ -1,6 +1,6 @@
 package fi.muikku.ui.base;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 
@@ -92,4 +92,27 @@ public class CourseTestsBase extends AbstractUITest {
     WireMock.reset();
     assertTrue(elementExists);
   }
+  
+  @Test
+  @SqlBefore("sql/workspace1Setup.sql")
+  @SqlAfter("sql/workspace1Delete.sql")
+  public void courseUnpublishTest() throws IOException {
+    PyramusMocks.adminLoginMock();
+    PyramusMocks.personsPyramusMocks();
+    PyramusMocks.workspace1PyramusMock();  
+    asAdmin().get("/test/reindex");
+    
+    getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
+    waitForElementToBePresent(By.className("index"));
+    getWebDriver().get(getAppUrl(true) + "/workspace/testCourse");
+    waitForElementToBePresent(By.className("workspace-title"));
+    getWebDriver().findElementByLinkText("Unpublish").click();
+    getWebDriver().get(getAppUrl(true) + "/workspace/testCourse");
+    waitForElementToBePresent(By.className("workspace-title"));
+    String actual = getWebDriver().findElementByCssSelector(".workspace-publication-container>a").getText();
+    String expected = "Publish";
+    WireMock.reset();
+    assertEquals(expected, actual);
+  }
+  
 }
