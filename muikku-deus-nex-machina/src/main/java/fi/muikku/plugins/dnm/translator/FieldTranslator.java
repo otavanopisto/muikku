@@ -46,7 +46,7 @@ public class FieldTranslator {
   }
 
   public MemoFieldMeta translateMemoField(String name, Integer columns, Integer rows, String help, String hint) {
-    return new MemoFieldMeta(name, columns, rows, help, hint);
+    return new MemoFieldMeta(name, columns, rows, help, hint, "" /* no example */);
   }
   
   public SelectFieldMeta translateOptionList(String name, String listType, List<OptionListOption> options) {

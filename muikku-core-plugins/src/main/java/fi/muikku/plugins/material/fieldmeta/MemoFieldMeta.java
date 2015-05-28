@@ -8,12 +8,13 @@ public class MemoFieldMeta extends FieldMeta {
     
   }
   
-  public MemoFieldMeta(String name, Integer columns, Integer rows, String help, String hint) {
+  public MemoFieldMeta(String name, Integer columns, Integer rows, String help, String hint, String example) {
     super(name);
     this.columns = columns;
     this.rows = rows;
     this.help = help;
     this.hint = hint;
+    this.example = example;
   }
 
   @Override
@@ -54,9 +55,18 @@ public class MemoFieldMeta extends FieldMeta {
     this.hint = hint;
   }
 
+  public String getExample() {
+    return example;
+  }
+
+  public void setExample(String example) {
+    this.example = example;
+  }
+
   private Integer columns;
   private Integer rows;
   private String help;
   private String hint;
+  private String example;
   
 }
