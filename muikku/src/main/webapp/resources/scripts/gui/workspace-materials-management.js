@@ -1256,6 +1256,18 @@
               'data-material-type': 'folder',
               'data-workspace-material-id': workspaceFolderResult.id
             });
+            var newSectionTocItem = $('<ul class="workspace-materials-toc-section ui-sortable" data-workspace-node-id="'+workspaceFolderResult.id+'" />');
+            var newPageTocItem = $('<li class="workspace-materials-toc-subtitle " />');
+            newPageTocItem.append('<a href="#page-'+workspaceFolderResult.id+'">'+workspaceFolderResult.title+'</a>');
+            newPageTocItem.append('<span class="workspace-materials-toc-sectionDragHandle icon-move" />');
+            newSectionTocItem.append(newPageTocItem);
+            
+            if(typeof(nextSiblingId) === 'undefined'){
+              $('.workspace-materials-toc-root').append(newSectionTocItem);
+            }else{
+              newSectionTocItem.insertBefore('ul.workspace-materials-toc-section[data-workspace-node-id="'+nextSiblingId+'"]');
+            }
+            
             newPage.empty();
             $(document).muikkuMaterialLoader('loadMaterial', newPage, true);
             editPage(newPage);
