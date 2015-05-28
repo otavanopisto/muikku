@@ -299,7 +299,7 @@ body.workspace-materials-management {
     width:auto;
     margin:0 auto;
     
-    .workspace-materials-management-addpage {
+    .workspace-materials-management-add {
       text-align:center;
       position:relative;
       margin:10px auto;
@@ -314,7 +314,7 @@ body.workspace-materials-management {
         background:#7391a7;
       }
       
-      a.workspaces-materials-management-add-page {
+      a.workspaces-materials-management-add {
         color:#a8c2d4;
         text-transform:uppercase;
         display:inline-block;
@@ -343,8 +343,8 @@ body.workspace-materials-management {
       
     }
     
-    /* Just added page that creates new article */
-    .workspace-materials-view-page.material-management-view.workspace-materials-management-new-page {
+    /* Just added page that creates new article or section */
+    .workspace-materials-view-page.material-management-view.workspace-materials-management-new {
       padding:20px 30px 20px 30px;
       margin:30px auto 30px auto;
       box-shadow:0 0 0 5px rgba(137,212,142,0.95);
@@ -360,6 +360,7 @@ body.workspace-materials-management {
         display:inline-block;
         background:#fff;
         text-align:center;
+        margin:0 10px;
 
         &:hover {
           color:#0e1d27;
@@ -371,6 +372,36 @@ body.workspace-materials-management {
         }
         
         &.icon-new-page:before {
+          font-family:"muikku";
+          transition: color 0.5s ease-in-out;
+          font-size:60px;
+          color:#82c8f7;
+          display:block;
+        }
+      }
+      
+      a.workspace-materials-management-new-section-link {
+        color:#0099ff;
+        text-decoration:none;
+        text-transform:uppercase;
+        font-size:16px;
+        transition: color 0.3s ease-in-out;
+        font-family:"Open Sans";
+        display:inline-block;
+        background:#fff;
+        text-align:center;
+        margin:0 10px;
+
+        &:hover {
+          color:#0e1d27;
+          
+          &.icon-new-section:before {
+            color:#1e5274;
+          }
+          
+        }
+        
+        &.icon-new-section:before {
           font-family:"muikku";
           transition: color 0.5s ease-in-out;
           font-size:60px;
@@ -485,6 +516,10 @@ body.workspace-materials-management {
         color:#38393a;
         text-transform:uppercase;
         
+        &.item-hidden {
+          opacity:0.4;
+        }
+        
         .page-content {
           font-size:27px;
         }
@@ -522,9 +557,17 @@ body.workspace-materials-management {
         }
       }
       
+      &.item-hidden {
+        opacity:0.4;
+      }
+             
+      &.parent-hidden {
+        opacity:0.4;
+      }
+      
       /* Material's attachment widget */
       .materials-management-page-attachment-widget {
-        min-height:100px;
+        min-height:70px;
         margin:5px -20px 0px -20px;
       
         /* Material's attachment upload wrapper */
@@ -799,10 +842,10 @@ body.workspace-materials-management {
 
         }
         
-        Editor save status
+        /* Editor save status */
         .workspace-material-html-editor-status {
           position:absolute;
-          top:9px;
+          top:12px;
           right:120px;
           z-index:11;
           font-size:14px;
@@ -914,17 +957,40 @@ body.workspace-materials-management {
           }
           
         }  
+        
+        /* If page is in edit-mode then we remove negative margins and adjust min-height */
+        .materials-management-page-attachment-widget {
+          min-height:85px;
+          margin:5px 10px 5px 10px;
+        }
          
       }
         
       .workspace-materials-management-view-page-controls a.close-attachments-editor {
         display: none !important;
-      }   
-        
-      &.workspace-materials-management-editing-attachments .workspace-materials-management-view-page-controls a,
-      &.workspace-materials-management-editing-attachments .workspace-materials-management-view-page-controls span.assignment-type {
-        display: none !important;
       }
+      
+      /* If page is in attachment edit-mode then we hide everything else inclusing ckeditor */  
+      &.workspace-materials-management-editing-attachments {
+      
+        .workspace-material-html-editor-title-wrapper,
+        .cke,
+        .workspace-material-html-editor-status,
+        .material-editor-collaborator-wrapper {
+           display: none !important;
+        }
+      
+        .workspace-materials-management-view-page-controls {
+        
+          a,
+          span.assignment-type {
+            display: none !important;
+          }
+        
+        }
+      
+      } 
+      
       
       &.workspace-materials-management-editing-attachments .page-content {
         display: none;

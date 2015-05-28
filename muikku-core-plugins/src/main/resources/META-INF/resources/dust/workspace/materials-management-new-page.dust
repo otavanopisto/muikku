@@ -1,3 +1,0 @@
-<section class="workspace-materials-view-page material-management-view workspace-materials-management-new-page">
-  <a href="javascript:void(null)" data-material-type="html" class="workspace-materials-management-new-page-link icon-new-page">{#localize key="plugin.workspace.materialsManagement.newDocument"/}</a>
-</section>

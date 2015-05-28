@@ -2,6 +2,8 @@ package fi.muikku.plugins.forum.rest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -28,7 +30,6 @@ import fi.muikku.plugins.forum.model.ForumArea;
 import fi.muikku.plugins.forum.model.ForumAreaGroup;
 import fi.muikku.plugins.forum.model.ForumThread;
 import fi.muikku.plugins.forum.model.ForumThreadReply;
-import fi.muikku.rest.RESTPermitUnimplemented;
 import fi.muikku.session.SessionController;
 import fi.otavanopisto.security.AuthorizationException;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -42,6 +43,9 @@ public class ForumRESTService extends PluginRESTService {
 
   private static final long serialVersionUID = 8910816437728659987L;
 
+  @Inject
+  private Logger logger;
+  
   @Inject
   private ForumController forumController;
   
@@ -262,22 +266,49 @@ public class ForumRESTService extends PluginRESTService {
   public Response listReplies(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, 
       @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, 
       @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults) throws AuthorizationException {
-    ForumThread forumThread = forumController.getForumThread(threadId);
-
-    if (sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_READMESSAGES, forumThread)) {
-      List<ForumThreadReply> replies = forumController.listForumThreadReplies(forumThread, firstResult, maxResults);
-      
-      List<ForumThreadReplyRESTModel> result = new ArrayList<ForumThreadReplyRESTModel>();
-      
-      for (ForumThreadReply reply : replies) {
-        result.add(new ForumThreadReplyRESTModel(reply.getId(), reply.getMessage(), reply.getCreator(), reply.getCreated(), reply.getForumArea().getId()));
+//    ForumThread forumThread = forumController.getForumThread(threadId);
+//
+//    if (sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_READMESSAGES, forumThread)) {
+//      List<ForumThreadReply> replies = forumController.listForumThreadReplies(forumThread, firstResult, maxResults);
+//      
+//      List<ForumThreadReplyRESTModel> result = new ArrayList<ForumThreadReplyRESTModel>();
+//      
+//      for (ForumThreadReply reply : replies) {
+//        result.add(new ForumThreadReplyRESTModel(reply.getId(), reply.getMessage(), reply.getCreator(), reply.getCreated(), reply.getForumArea().getId()));
+//      }
+//      
+//      return Response.ok(
+//        result
+//      ).build();
+//    } else {
+//      return Response.status(Status.FORBIDDEN).build();
+    try {
+      ForumArea forumArea = forumController.getForumArea(areaId);
+      if (forumArea == null) {
+        return Response.status(Status.NOT_FOUND).entity("Forum area not found").build();
       }
       
-      return Response.ok(
-        result
-      ).build();
-    } else {
-      return Response.status(Status.FORBIDDEN).build();
+      ForumThread forumThread = forumController.getForumThread(threadId);
+      if (forumThread == null) {
+        return Response.status(Status.NOT_FOUND).entity("Forum thread not found").build();
+      }
+      
+      if (sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_READMESSAGES, forumThread)) {
+        if (!forumArea.getId().equals(forumThread.getForumArea().getId())) {
+          return Response.status(Status.NOT_FOUND).entity("Forum thread not found from the specified area").build();
+        }
+        
+        List<ForumThreadReply> replies = forumController.listForumThreadReplies(forumThread, firstResult, maxResults);
+        if (replies.isEmpty()) {
+          return Response.noContent().build();
+        }
+        
+        return Response.ok(createRestModel(replies.toArray(new ForumThreadReply[0]))).build();
+      } else
+        return Response.status(Status.FORBIDDEN).build();
+    } catch (Exception e) {
+      logger.log(Level.SEVERE, "Listing forum thread replies failed", e);
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
   }
   
@@ -285,16 +316,38 @@ public class ForumRESTService extends PluginRESTService {
   @Path ("/areas/{AREAID}/threads/{THREADID}/replies/{REPLYID}")
   @RESTPermit(handling = Handling.INLINE)
   public Response findReply(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, @PathParam ("REPLYID") Long replyId) throws AuthorizationException {
-    ForumThreadReply reply = forumController.getForumThreadReply(replyId);
-
-    if (sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_READMESSAGES, reply.getForumArea())) {
-      ForumThreadReplyRESTModel result = new ForumThreadReplyRESTModel(reply.getId(), reply.getMessage(), reply.getCreator(), reply.getCreated(), reply.getForumArea().getId());
-  
-      return Response.ok(
-        result
-      ).build();
-    } else {
-      return Response.status(Status.FORBIDDEN).build();
+    try {
+      ForumArea forumArea = forumController.getForumArea(areaId);
+      if (forumArea == null) {
+        return Response.status(Status.NOT_FOUND).entity("Forum area not found").build();
+      }
+      
+      ForumThread forumThread = forumController.getForumThread(threadId);
+      if (forumThread == null) {
+        return Response.status(Status.NOT_FOUND).entity("Forum thread not found").build();
+      }
+      
+      if (!forumArea.getId().equals(forumThread.getForumArea().getId())) {
+        return Response.status(Status.NOT_FOUND).entity("Forum thread not found from the specified area").build();
+      }
+      
+      ForumThreadReply threadReply = forumController.getForumThreadReply(replyId);
+      if (threadReply == null) {
+        return Response.status(Status.NOT_FOUND).entity("Forum thread reply not found").build();
+      }
+      
+      if (!threadReply.getThread().getId().equals(forumThread.getId())) {
+        return Response.status(Status.NOT_FOUND).entity("Forum thread reply not found from the specified thread").build();
+      }
+      
+      if (sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_READMESSAGES, threadReply.getForumArea())) {
+        return Response.ok(createRestModel(threadReply)).build();
+      } else {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    } catch (Exception e) {
+      logger.log(Level.SEVERE, "Finding forum thread reply failed", e);
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
   }
   
@@ -318,18 +371,32 @@ public class ForumRESTService extends PluginRESTService {
   @Path ("/areas/{AREAID}/threads/{THREADID}/replies")
   @RESTPermit(handling = Handling.INLINE)
   public Response createReply(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, ForumThreadReplyRESTModel newReply) throws AuthorizationException {
-    ForumThread forumThread = forumController.getForumThread(threadId);
-
-    if (sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_WRITEMESSAGES, forumThread)) {
-      ForumThreadReply reply = forumController.createForumThreadReply(forumThread, Jsoup.clean(newReply.getMessage(), Whitelist.basic()));
+    try {
+      ForumArea forumArea = forumController.getForumArea(areaId);
+      if (forumArea == null) {
+        return Response.status(Status.NOT_FOUND).entity("Forum area not found").build();
+      }
       
-      ForumThreadReplyRESTModel result = new ForumThreadReplyRESTModel(reply.getId(), reply.getMessage(), reply.getCreator(), reply.getCreated(), reply.getForumArea().getId());
+      ForumThread forumThread = forumController.getForumThread(threadId);
+      if (forumThread == null) {
+        return Response.status(Status.NOT_FOUND).entity("Forum thread not found").build();
+      }
       
-      return Response.ok(
-        result
-      ).build();
-    } else {
-      return Response.status(Status.FORBIDDEN).build();
+      if (!forumArea.getId().equals(forumThread.getForumArea().getId())) {
+        return Response.status(Status.NOT_FOUND).entity("Forum thread not found from the specified area").build();
+      }
+      
+      if (forumThread.getLocked()) {
+        return Response.status(Status.BAD_REQUEST).entity("Forum thread is locked").build();
+      }
+      if (sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_WRITEMESSAGES, forumThread)) {      
+        return Response.ok(createRestModel(forumController.createForumThreadReply(forumThread, Jsoup.clean(newReply.getMessage(), Whitelist.basic())))).build();
+      } else {
+        return Response.status(Status.FORBIDDEN).build();
+      }
+    } catch (Exception e) {
+      logger.log(Level.SEVERE, "Failed to create new forum thread reply", e);
+      return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
     }
   }
   
@@ -350,6 +417,20 @@ public class ForumRESTService extends PluginRESTService {
     return Response.ok(
       result
     ).build();
+  }
+  
+  private ForumThreadReplyRESTModel createRestModel(ForumThreadReply entity) {
+    return new ForumThreadReplyRESTModel(entity.getId(), entity.getMessage(), entity.getCreator(), entity.getCreated(), entity.getForumArea().getId()); 
+  }
+  
+  private List<ForumThreadReplyRESTModel> createRestModel(ForumThreadReply... entries) {
+    List<ForumThreadReplyRESTModel> result = new ArrayList<>();
+
+    for (ForumThreadReply entry : entries) {
+      result.add(createRestModel(entry));
+    }
+
+    return result;
   }
   
 }

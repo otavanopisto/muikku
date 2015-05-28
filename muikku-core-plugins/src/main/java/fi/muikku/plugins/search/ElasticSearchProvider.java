@@ -46,6 +46,10 @@ public class ElasticSearchProvider implements SearchProvider {
   
   @Override
   public SearchResult searchWorkspaces(String schoolDataSource, List<String> subjects, List<String> identifiers, String freeText, boolean includeUnpublished, int start, int maxResults) {
+    if (identifiers != null && identifiers.isEmpty()) {
+      return new SearchResult(0, 0, 0, new ArrayList<Map<String,Object>>());
+    }
+    
     QueryBuilder query = null;
     
     try {
@@ -70,7 +74,7 @@ public class ElasticSearchProvider implements SearchProvider {
           ((BoolQueryBuilder) query).must(QueryBuilders.termsQuery("subjectIdentifier", subjects));
         }
         
-        if (identifiers != null && !identifiers.isEmpty()) {
+        if (identifiers != null) {
           ((BoolQueryBuilder) query).must(QueryBuilders.termsQuery("identifier", identifiers));
         }
     

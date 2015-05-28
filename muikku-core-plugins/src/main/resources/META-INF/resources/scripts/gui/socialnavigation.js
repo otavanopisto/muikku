@@ -49,8 +49,11 @@ function openInSN(template, result, formFunction) {
       var obj = {};
       var varIsArray = {};
       var ckContent = null;
-      if(textareas.length > 0){
-        ckContent =  CKEDITOR.instances[0].textContent.getData();
+      // TODO: Remove this hack
+      if (CKEDITOR.instances.textContent) {
+        ckContent = CKEDITOR.instances.textContent.getData();
+      } else if (CKEDITOR.instances.length > 0) {
+        ckContent = CKEDITOR.instances[0].textContent.getData();
       }
       
       elements.find(':input').each(function(index, element) {
