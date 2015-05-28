@@ -558,16 +558,16 @@ body.workspace-materials-management {
       }
       
       &.item-hidden {
-          opacity:0.4;
-        }
-               
-        &.parent-hidden {
-          opacity:0.4;
-        }
+        opacity:0.4;
+      }
+             
+      &.parent-hidden {
+        opacity:0.4;
+      }
       
       /* Material's attachment widget */
       .materials-management-page-attachment-widget {
-        min-height:100px;
+        min-height:70px;
         margin:5px -20px 0px -20px;
       
         /* Material's attachment upload wrapper */
@@ -957,17 +957,40 @@ body.workspace-materials-management {
           }
           
         }  
+        
+        /* If page is in edit-mode then we remove negative margins and adjust min-height */
+        .materials-management-page-attachment-widget {
+          min-height:85px;
+          margin:5px 10px 5px 10px;
+        }
          
       }
         
       .workspace-materials-management-view-page-controls a.close-attachments-editor {
         display: none !important;
-      }   
-        
-      &.workspace-materials-management-editing-attachments .workspace-materials-management-view-page-controls a,
-      &.workspace-materials-management-editing-attachments .workspace-materials-management-view-page-controls span.assignment-type {
-        display: none !important;
       }
+      
+      /* If page is in attachment edit-mode then we hide everything else inclusing ckeditor */  
+      &.workspace-materials-management-editing-attachments {
+      
+        .workspace-material-html-editor-title-wrapper,
+        .cke,
+        .workspace-material-html-editor-status,
+        .material-editor-collaborator-wrapper {
+           display: none !important;
+        }
+      
+        .workspace-materials-management-view-page-controls {
+        
+          a,
+          span.assignment-type {
+            display: none !important;
+          }
+        
+        }
+      
+      } 
+      
       
       &.workspace-materials-management-editing-attachments .page-content {
         display: none;
