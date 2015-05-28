@@ -1,10 +1,10 @@
 (function() {
   
-  function createAddPageLink() {
+  function createAddPageSectionLink() {
     return $('<div>')
-      .addClass('workspace-materials-management-addpage')
+      .addClass('workspace-materials-management-add')
       .append($('<span>').addClass('workspace-materials-management-line-separator'))
-      .append($('<a>').addClass('workspaces-materials-management-add-page icon-add').attr('href', 'javascript:void(null)').append($('<span>').html(getLocaleText("plugin.workspace.materialsManagement.addPage"))));
+      .append($('<a>').addClass('workspaces-materials-management-add icon-add').attr('href', 'javascript:void(null)').append($('<span>').html(getLocaleText("plugin.workspace.materialsManagement.addNew"))));
   }
   
   function createFileUploader() {
@@ -39,7 +39,7 @@
         var nextPage = $(newPage).next('.workspace-materials-view-page');
         
         var uploader = createFileUploader();
-        nextPage.before(createAddPageLink());
+        nextPage.before(createAddPageSectionLink());
         nextPage.before(uploader);
         enableFileUploader(uploader, nextPage.data('parent-id'), nextPage.data('workspace-material-id'));
       })
@@ -150,6 +150,7 @@
           $(node).data('material-content', material.html);
           $(node).data('material-current-revision', material.currentRevision);
           $(node).data('material-published-revision', material.publishedRevision);
+          node.empty();
           $(document).muikkuMaterialLoader('loadMaterial', node, true);
           var tocElement = $("a[href*='#page-" + $(node).data('workspace-material-id') + "']");
           if (tocElement) {
@@ -205,7 +206,7 @@
             duration : 500,
             easing : "easeInOutQuint",
             complete: function() {
-              page.nextAll('.workspace-materials-management-addpage').first().remove();
+              page.nextAll('.workspace-materials-management-add').first().remove();
               page.nextAll('.workspaces-materials-management-insert-file').first().remove();
               page.remove();
             }
@@ -234,7 +235,7 @@
             duration : 500,
             easing : "easeInOutQuint",
             complete: function() {
-              page.nextAll('.workspace-materials-management-addpage').first().remove();
+              page.nextAll('.workspace-materials-management-add').first().remove();
               page.nextAll('.workspaces-materials-management-insert-file').first().remove();
               page.remove();
             }
@@ -714,7 +715,7 @@
   }
   
   function scrollToPage(workspaceMaterialId, animate) {
-    var topOffset = 100;
+    var topOffset = 30;
     var scrollTop = $('#page-' + workspaceMaterialId).offset().top - topOffset;
     if (animate) {
       $(window).data('scrolling', true);
@@ -725,21 +726,26 @@
         duration : 500,
         easing : "easeInOutQuad",
         complete : function() {
-          $('a.active').removeClass('active');
-          $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
+          $('li.active').removeClass('active');
+          $('a[href="#page-' + workspaceMaterialId + '"]').parent().addClass('active');
           window.location.hash = 'p-' + workspaceMaterialId;
           $(window).data('scrolling', false);
         }
       });
     } else {
       $('html, body').stop().scrollTop(scrollTop);
-      $('a.active').removeClass('active');
-      $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
+      $('li.active').removeClass('active');
+      $('a[href="#page-' + workspaceMaterialId + '"]').parent().addClass('active');
       window.location.hash = 'p-' + workspaceMaterialId;
     }
   }
   
   $(document).on('click', '.workspace-materials-toc-item a', function (event) {
+    event.preventDefault();
+    scrollToPage($($(this).attr('href')).data('workspaceMaterialId'), true);
+  });
+  
+  $(document).on('click', '.workspace-materials-toc-subtitle a', function (event) {
     event.preventDefault();
     scrollToPage($($(this).attr('href')).data('workspaceMaterialId'), true);
   });
@@ -924,8 +930,8 @@
     $('.workspace-materials-view-page').waypoint(function(direction) {
       if ($(window).data('scrolling') !== true && $(window).data('initializing') !== true) {
         var workspaceMaterialId = $(this).data('workspace-material-id');
-        $('a.active').removeClass('active');
-        $('a[href="#page-' + workspaceMaterialId + '"]').addClass('active');
+        $('li.active').removeClass('active');
+        $('a[href="#page-' + workspaceMaterialId + '"]').parent().addClass('active');
         window.location.hash = 'p-' + workspaceMaterialId;
       }
     }, {
@@ -1156,18 +1162,21 @@
     }
   });
   
-  $(document).on('click', '.workspaces-materials-management-add-page', function (event, data) {
+  $(document).on('click', '.workspaces-materials-management-add', function (event, data) {
 	  
     var nextMaterial = $(this).parent().nextAll('.workspace-materials-view-page').first();
     
-    renderDustTemplate('workspace/materials-management-new-page.dust', { }, $.proxy(function (text) {
+    renderDustTemplate('workspace/materials-management-new.dust', { }, $.proxy(function (text) {
       var newPage = $(text);
       $(this).parent().after(newPage);
       var uploader = createFileUploader();
       $(newPage).before(uploader);
       enableFileUploader(uploader, nextMaterial.data('parent-id'), nextMaterial.data('workspace-material-id'));
-      $(newPage).after(createAddPageLink());
+      $(newPage).after(createAddPageSectionLink());
       
+      if ($(nextMaterial).length && !$(nextMaterial).is('[data-material-type="folder"]')) {
+        $(newPage).find(".workspace-materials-management-new-section-link").remove();
+      }
       
       $(newPage).find('.workspace-materials-management-new-page-link').one('click', function (event) {
         event.preventDefault();
@@ -1199,7 +1208,7 @@
                 return;
               } else {
             	  
-                newPage.removeClass('workspace-materials-management-new-page');
+                newPage.removeClass('workspace-materials-management-new');
                 newPage.attr({
                   'id': 'page-' + workspaceMaterialResult.id,
                   'data-material-title': materialResult.title,
@@ -1208,6 +1217,16 @@
                   'data-material-type': materialType,
                   'data-workspace-material-id': workspaceMaterialResult.id
                 });
+
+                var newPageTocItem = $('<li class="workspace-materials-toc-item " data-workspace-node-id="'+workspaceMaterialResult.id+'" />');
+                newPageTocItem.append('<a href="#page-'+workspaceMaterialResult.id+'">'+materialResult.title+'</a>');
+                newPageTocItem.append('<span class="workspace-materials-toc-itemDragHandle icon-move ui-sortable-handle" />');
+                
+                if(typeof(nextSiblingId) === 'undefined'){
+                  $('.workspace-materials-toc-root > ul').last().append(newPageTocItem);
+                }else{
+                  newPageTocItem.insertBefore('li.workspace-materials-toc-item[data-workspace-node-id="'+nextSiblingId+'"]');
+                }
                 newPage.empty();
                 $(document).muikkuMaterialLoader('loadMaterial', newPage, true);
                 editPage(newPage);
@@ -1219,6 +1238,49 @@
         }
         
       });
+      
+      
+      $(newPage).find('.workspace-materials-management-new-section-link').one('click', function (event) {
+        event.preventDefault();
+        var nextSiblingId = $(nextMaterial).data('workspace-material-id');
+        var workspaceEntityId = $('.workspaceEntityId').val();
+        
+        mApi().workspace.workspaces.folders.create(workspaceEntityId, {
+          nextSiblingId: nextSiblingId
+        })
+        .callback($.proxy(function (workspaceFolderErr, workspaceFolderResult) {
+          if (workspaceFolderErr) {
+            $('.notification-queue').notificationQueue('notification', 'error', workspaceFolderErr);
+            return;
+          } else {
+              
+            newPage.removeClass('workspace-materials-management-new');
+            newPage.attr({
+              'id': 'page-' + workspaceFolderResult.id,
+              'data-material-title': workspaceFolderResult.title,
+              'data-parent-id': workspaceFolderResult.parentId,
+              'data-material-type': 'folder',
+              'data-workspace-material-id': workspaceFolderResult.id
+            });
+            var newSectionTocItem = $('<ul class="workspace-materials-toc-section ui-sortable" data-workspace-node-id="'+workspaceFolderResult.id+'" />');
+            var newPageTocItem = $('<li class="workspace-materials-toc-subtitle " />');
+            newPageTocItem.append('<a href="#page-'+workspaceFolderResult.id+'">'+workspaceFolderResult.title+'</a>');
+            newPageTocItem.append('<span class="workspace-materials-toc-sectionDragHandle icon-move" />');
+            newSectionTocItem.append(newPageTocItem);
+            
+            if(typeof(nextSiblingId) === 'undefined'){
+              $('.workspace-materials-toc-root').append(newSectionTocItem);
+            }else{
+              newSectionTocItem.insertBefore('ul.workspace-materials-toc-section[data-workspace-node-id="'+nextSiblingId+'"]');
+            }
+            
+            newPage.empty();
+            $(document).muikkuMaterialLoader('loadMaterial', newPage, true);
+            editPage(newPage);
+          } 
+        }, this));
+      });
+      
     }, this));
   });
   

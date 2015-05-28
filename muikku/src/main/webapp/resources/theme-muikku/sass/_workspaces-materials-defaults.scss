@@ -185,10 +185,28 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
   }
 
   table {
-    border-collapse:separate;
-    border-spacing:initial;
     margin:initial;
     padding:initial;
+  }
+
+  table[cellspacing] {
+    border-collapse:separate;
+    border-spacing:50px;
+  }
+  
+  table[cellpadding] td{
+    border-collapse:separate;
+    padding:50px;
+  }
+  
+  @for $i from 0 through 49 {
+    table[cellspacing="#{$i}"] {
+      border-spacing:#{$i}px;
+    }
+    
+    table[cellpadding="#{$i}"] td {
+      padding:#{$i}px;
+    }
   }
   
   td {
