@@ -150,6 +150,7 @@
           $(node).data('material-content', material.html);
           $(node).data('material-current-revision', material.currentRevision);
           $(node).data('material-published-revision', material.publishedRevision);
+          node.empty();
           $(document).muikkuMaterialLoader('loadMaterial', node, true);
           var tocElement = $("a[href*='#page-" + $(node).data('workspace-material-id') + "']");
           if (tocElement) {
