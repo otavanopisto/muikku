@@ -27,7 +27,8 @@
               var assessment = assessments && assessments.length == 1 ? assessments[0] : null;
               if (assessment) {
                 var grade = this._grades[[assessment.gradingScaleSchoolDataSource, assessment.gradingScaleIdentifier, assessment.gradeSchoolDataSource, assessment.gradeIdentifier].join('-')];
-                workspaceEntity.evaluated = new Date(assessment.evaluated);
+                var dt = new Date(assessment.evaluated);
+                workspaceEntity.evaluated = dt.toLocaleDateString();
                 workspaceEntity.verbalAssessment = assessment.verbalAssessment;
                 workspaceEntity.grade = grade.grade;
                 workspaceEntity.gradingScale = grade.scale;
@@ -91,6 +92,7 @@
               assignments: assignments,
               workspaceName : workspaceEntityName,
               workspaceDescription : workspaceEntityDescription,
+              workspaceDescription : workspaceEntityGrade,
               workspaceGrade: grade, 
               workspaceGradingScale: gradingScale, 
               workspaceEvaluated: evaluated, 
@@ -108,6 +110,7 @@
       var workspaceEntityId = $(item).attr('data-workspace-entity-id');
       var workspaceEntityName =  $(item).attr('data-workspace-entity-name');
       var workspaceEntityDescription = $(item).attr('data-workspace-entity-description');
+      var workspaceEntityGrade =  $(item).attr('data-workspace-entity-grade');
       var verbalAssessment = $(item).attr('data-workspace-verbal-assessment');
       var grade = $(item).attr('data-workspace-grade');
       var gradingScale = $(item).attr('data-workspace-grading-scale');
