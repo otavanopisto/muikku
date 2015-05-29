@@ -13,7 +13,7 @@
           
           <div class="tr-item-header-details">
             {#grade}
-              <div class="tr-item-header-detail date"><span>{#localize key="plugin.records.workspace.evaluated" arg0=evaluated/}</div>
+              <div class="tr-item-header-detail date"><span>{#localize key="plugin.records.workspace.evaluated" arg0=evaluated /}</div>
               <div class="tr-item-header-detail grade" title="{gradingScale}"><span>{grade}</span></div>
             {/grade}
           </div>
