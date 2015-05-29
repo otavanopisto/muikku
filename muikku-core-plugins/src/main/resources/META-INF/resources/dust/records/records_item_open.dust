@@ -13,17 +13,12 @@
     
     <div class="tr-item-details">
       <div class="tr-item-details-container">       
-        <div class="tr-item-additionalInfo">
-        </div>
         <div class="tr-item-description">
-          <div class="tr-item-header-name">
-           <span class="tr-item-long"><h3>{workspaceName}</h3></span>
+          <div class="tr-item-open-header-name">
+           <span>{workspaceGrade}</span>
+           <span class="tr-item-long">{workspaceName}</span>
           </div>
-          
-          <div class="tr-item-header-details">
-  
-          </div>
-         
+
           <div id="detailsCrs-{id}" class="tr-item-content-details" >     
             <div class="tr-item-description-picture"></div>
             <div class="tr-item-description-text">{workspaceDescription|s}</div>          

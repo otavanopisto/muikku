@@ -1,5 +1,5 @@
 
-/* Coursepicker (.tr-*) */
+/* Transcript of records (.tr-*) */
 
 .tr-records-view-container{
   min-height:400px;  
@@ -144,8 +144,28 @@
  cursor: pointer;
 }
 
-.tr-item-header-name {
-  display : inline-block;
+
+
+.tr-item-header-name{
+  display:inline-block;
+  
+}
+.tr-item-open-header-name{
+  display : inline-block;  
+  span{
+   font-size:19px;
+   display:inline-block;
+  
+    &:first-child{
+     background-color:#0acf00;
+     padding:5px 10px;
+     color:#fff;
+  
+    }
+    &:not(:first-child){
+     margin-left:10px;
+    }
+  }
 }
 
 .tr-item-header-details {
@@ -267,4 +287,9 @@
       background-color:#0acf00;
       padding:5px 10px;
       color:#fff;
+
+      &.nograde{
+       background-color:$bgr1;
+       color:#dadada; 
+      }
 }
