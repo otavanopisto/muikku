@@ -547,11 +547,14 @@ public class WorkspaceRESTService extends PluginRESTService {
   @Path("/workspaces/{ID}/materials/")
   public Response createWorkspaceMaterial(@PathParam("ID") Long workspaceEntityId,
       fi.muikku.plugins.workspace.rest.model.WorkspaceMaterial entity) {
-    // TODO: Security
 
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     if (workspaceEntity == null) {
       return Response.status(Status.BAD_REQUEST).build();
+    }
+
+    if (!sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
     }
 
     if (entity.getMaterialId() == null) {
@@ -973,13 +976,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
-    WorkspaceRoleEntity workspaceRoleEntity = workspaceUserEntityController.findWorkspaceUserRoleByWorkspaceEntityAndUserEntity(workspaceEntity, sessionController.getLoggedUserEntity());
-    if (workspaceRoleEntity == null) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-    
-    // TODO: More detailed security check is needed
-    if (workspaceRoleEntity.getArchetype() == WorkspaceRoleArchetype.STUDENT) {
+    if (!sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
 
@@ -1012,14 +1009,8 @@ public class WorkspaceRESTService extends PluginRESTService {
     if (workspaceEntity == null) {
       return Response.status(Status.BAD_REQUEST).build();
     }
-    
-    WorkspaceRoleEntity workspaceRoleEntity = workspaceUserEntityController.findWorkspaceUserRoleByWorkspaceEntityAndUserEntity(workspaceEntity, sessionController.getLoggedUserEntity());
-    if (workspaceRoleEntity == null) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-    
-    // TODO: More detailed security check is needed
-    if (workspaceRoleEntity.getArchetype() == WorkspaceRoleArchetype.STUDENT) {
+
+    if (!sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -1067,13 +1058,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
-    WorkspaceRoleEntity workspaceRoleEntity = workspaceUserEntityController.findWorkspaceUserRoleByWorkspaceEntityAndUserEntity(workspaceEntity, sessionController.getLoggedUserEntity());
-    if (workspaceRoleEntity == null) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-    
-    // TODO: More detailed security check is needed
-    if (workspaceRoleEntity.getArchetype() == WorkspaceRoleArchetype.STUDENT) {
+    if (!sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
@@ -1103,13 +1088,7 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.BAD_REQUEST).build();
     }
     
-    WorkspaceRoleEntity workspaceRoleEntity = workspaceUserEntityController.findWorkspaceUserRoleByWorkspaceEntityAndUserEntity(workspaceEntity, sessionController.getLoggedUserEntity());
-    if (workspaceRoleEntity == null) {
-      return Response.status(Status.FORBIDDEN).build();
-    }
-    
-    // TODO: More detailed security check is needed
-    if (workspaceRoleEntity.getArchetype() == WorkspaceRoleArchetype.STUDENT) {
+    if (!sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, workspaceEntity)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
