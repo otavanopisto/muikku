@@ -21,7 +21,7 @@ import fi.muikku.schooldata.entity.WorkspaceUser;
 @Dependent
 @Stateless
 public class GradingController {
-	
+  
 	@Inject
 	private GradingSchoolDataController gradingSchoolDataController;
 
@@ -105,12 +105,16 @@ public class GradingController {
 	      date);
 	}
 	
- public List<WorkspaceAssessment> listWorkspaceAssessments(SchoolDataSource schoolDataSource, String workspaceIdentifier, String studentIdentifier){
-   return gradingSchoolDataController.listWorkspaceAssessments(schoolDataSource, workspaceIdentifier, studentIdentifier);
- }
+  public List<WorkspaceAssessment> listWorkspaceAssessments(SchoolDataSource schoolDataSource, String workspaceIdentifier, String studentIdentifier){
+    return gradingSchoolDataController.listWorkspaceAssessments(schoolDataSource, workspaceIdentifier, studentIdentifier);
+  }
+  
+  public List<WorkspaceAssessment> listWorkspaceAssessments(String schoolDataSource, String workspaceIdentifier, String studentIdentifier){
+    return gradingSchoolDataController.listWorkspaceAssessments(schoolDataSource, workspaceIdentifier, studentIdentifier);
+  }
  
- public WorkspaceAssessment updateWorkspaceAssessment(String schoolDataSource, String workspaceAssesmentIdentifier, WorkspaceUser workspaceUser, User assessingUser, GradingScaleItem grade, String verbalAssessment, Date date){
-   return gradingSchoolDataController.updateWorkspaceAssessment(schoolDataSource,
+  public WorkspaceAssessment updateWorkspaceAssessment(String schoolDataSource, String workspaceAssesmentIdentifier, WorkspaceUser workspaceUser, User assessingUser, GradingScaleItem grade, String verbalAssessment, Date date){
+    return gradingSchoolDataController.updateWorkspaceAssessment(schoolDataSource,
        workspaceAssesmentIdentifier,
        workspaceUser.getIdentifier(),
        workspaceUser.getSchoolDataSource(),
