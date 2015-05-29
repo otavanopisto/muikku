@@ -477,6 +477,11 @@ public class WorkspaceMaterialController {
     return workspaceFolder;
   }
 
+  public WorkspaceFolder createWorkspaceFolder(WorkspaceNode parent, String title) {
+    String urlName = generateUniqueUrlName(title);
+    return createWorkspaceFolder(parent, title, urlName);
+  }
+
   public WorkspaceFolder findWorkspaceFolderById(Long workspaceFolderId) {
     return workspaceFolderDAO.findById(workspaceFolderId);
   }

@@ -97,6 +97,7 @@ class FieldElementsHandler implements DeusNexFieldElementHandler {
     textAreaElement.setAttribute("rows", String.valueOf(rows));
     textAreaElement.setAttribute("placeholder", help);
     textAreaElement.setAttribute("title", hint);
+    textAreaElement.setTextContent("\u00A0");
 
     return wrapWithObjectElement(ownerDocument, textAreaElement, fieldData);
   }
