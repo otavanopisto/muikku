@@ -843,8 +843,8 @@ public class WorkspaceRESTService extends PluginRESTService {
     return new fi.muikku.plugins.workspace.rest.model.WorkspaceAssessment(
       entry.getIdentifier(),
       entry.getDate(),
-      assessor.getId(),
-      workspaceUserEntity.getId(),
+      assessor != null ? assessor.getId() : null,
+      workspaceUserEntity != null ? workspaceUserEntity.getId() : null,
       entry.getGradingScaleIdentifier(),
       entry.getGradingScaleSchoolDataSource(),
       entry.getGradeIdentifier(),
@@ -1405,7 +1405,7 @@ public class WorkspaceRESTService extends PluginRESTService {
 
     WorkspaceRootFolder rootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceNode(workspaceMaterial);
     if (rootFolder == null) {
-      return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+      return Response.status(Status.NOT_FOUND).build();
     }
     
     if (!workspaceEntity.getId().equals(rootFolder.getWorkspaceEntityId())) {
