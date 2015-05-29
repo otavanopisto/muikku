@@ -52,7 +52,7 @@
     _loadWorkspace: function (workspaceEntityId, workspaceEntityName, workspaceEntityDescription, grade, gradingScale, evaluated, verbalAssessment) {
 
        this._load();
-      
+
       mApi().workspace.workspaces.materials.read(workspaceEntityId, { assignmentType: 'EVALUATED' })
         .on('$', $.proxy(function (workspaceMaterial, callback) {
           // TODO: support for binary materials?
@@ -92,7 +92,7 @@
               assignments: assignments,
               workspaceName : workspaceEntityName,
               workspaceDescription : workspaceEntityDescription,
-              workspaceDescription : workspaceEntityGrade,
+//              workspaceGrade : workspaceEntityGrade,
               workspaceGrade: grade, 
               workspaceGradingScale: gradingScale, 
               workspaceEvaluated: evaluated, 
