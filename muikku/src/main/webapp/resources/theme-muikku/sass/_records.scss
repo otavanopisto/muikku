@@ -257,6 +257,12 @@
 
 }
 
+.tr-task-not-evaluated{
+    span:not(:first-child){
+       margin-left:10px;
+      }  
+  }
+
 .tr-task-evaluated{
   &:hover{
    cursor:pointer;

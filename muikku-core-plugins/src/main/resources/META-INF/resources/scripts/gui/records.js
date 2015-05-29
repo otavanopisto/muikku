@@ -8,7 +8,7 @@
     _create : function() {
       this._grades = $.parseJSON(this.element.attr('data-grades'));
       this.element.on('click', '.tr-task-evaluated', $.proxy(this._onEvaluationClick, this));
-      this.element.on('click', '.tr-item', $.proxy(this._onItemClick, this));
+      this.element.on('click', '.tr-item:not(.open)', $.proxy(this._onItemClick, this));
       this.element.on('click', '.tr-view-toolbar .icon-goback', $.proxy(this._loadWorkspaces, this));      
       this._loadWorkspaces();
     },

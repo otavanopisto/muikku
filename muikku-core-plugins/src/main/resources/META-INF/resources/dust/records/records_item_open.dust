@@ -6,7 +6,7 @@
 
 
 {#.} 
-  <div class="mf-item tr-item ft-01">
+  <div class="mf-item tr-item ft-01 open">
     <input type="hidden" name="workspaceId" value="{id}"/>
     <input type="hidden" name="workspaceUrl" value="{urlName}"/>
 

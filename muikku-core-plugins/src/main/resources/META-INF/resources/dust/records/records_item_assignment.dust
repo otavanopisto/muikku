@@ -1,4 +1,4 @@
-<div class="mf-subitem tr-task-evaluated">
+<div class="mf-subitem {?grade}tr-task-evaluated{:else}tr-task-not-evaluated{/grade}">
   <div class="title-container">
     <div class="title"><span title="{gradingScale}" class="tr-task-evaluated-grade {?grade}{:else}nograde{/grade}">{?grade}{grade}{:else}N{/grade}</span><span>{material.title}</span></div>
   </div>
