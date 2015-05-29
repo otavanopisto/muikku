@@ -27,7 +27,6 @@
               var assessment = assessments && assessments.length == 1 ? assessments[0] : null;
               if (assessment) {
                 var grade = this._grades[[assessment.gradingScaleSchoolDataSource, assessment.gradingScaleIdentifier, assessment.gradeSchoolDataSource, assessment.gradeIdentifier].join('-')];
-//                var dt = new Date(assessment.evaluated);
                 workspaceEntity.evaluated = formatDate(new Date(assessment.evaluated));
                 workspaceEntity.verbalAssessment = assessment.verbalAssessment;
                 workspaceEntity.grade = grade.grade;
@@ -92,7 +91,6 @@
               assignments: assignments,
               workspaceName : workspaceEntityName,
               workspaceDescription : workspaceEntityDescription,
-//              workspaceGrade : workspaceEntityGrade,
               workspaceGrade: grade, 
               workspaceGradingScale: gradingScale, 
               workspaceEvaluated: evaluated, 

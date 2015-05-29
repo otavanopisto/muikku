@@ -1,6 +1,6 @@
 <div class="mf-subitem tr-task-evaluated">
   <div class="title-container">
-    <div class="title"><span title="{gradingScale}" class="tr-task-evaluated-grade {?grade}{:else}nograde{/grade}" >{?grade}{grade}{:else}N{/grade}</span><span>{material.title}</span></div>
+    <div class="title"><span title="{gradingScale}" class="tr-task-evaluated-grade {?grade}{:else}nograde{/grade}">{?grade}{grade}{:else}N{/grade}</span><span>{material.title}</span></div>
   </div>
   <div class="content-container" style="display:none;">
     <div class="content"><span class="tr-task-evaluated-verbal">{verbalAssessment}</span></div>
