@@ -22,7 +22,7 @@
       .find('img')
       .trigger("appear");
     
-    /* If image is last element inside article node and is floating this prevents image from overlapping its parent container */
+    /* If last element inside article is floating this prevents mentioned element from overlapping its parent container */
     $(data.pageElement)
     .append($('<div>').addClass('clear'));
   });
