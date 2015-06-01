@@ -26,12 +26,13 @@ import fi.pyramus.rest.model.Email;
 import fi.pyramus.rest.model.Person;
 import fi.pyramus.rest.model.StaffMember;
 import fi.pyramus.rest.model.Student;
+import fi.pyramus.rest.model.Subject;
 import fi.pyramus.rest.model.WhoAmI;
 
 public class PyramusMocks{
   
   public static void student1LoginMock() throws JsonProcessingException {
-    stubFor(get(urlMatching("/dnm")).willReturn(aResponse().withHeader("Content-Type", "application/json").withBody("").withStatus(204)));
+    stubFor(get(urlEqualTo("/dnm")).willReturn(aResponse().withHeader("Content-Type", "application/json").withBody("").withStatus(204)));
 
     stubFor(get(urlMatching("/users/authorize.*"))
       .willReturn(aResponse()
@@ -39,7 +40,7 @@ public class PyramusMocks{
         .withHeader("Location",
           "http://dev.muikku.fi:8080/login?_stg=rsp&code=1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111")));
     
-    stubFor(post(urlMatching("/1/oauth/token"))
+    stubFor(post(urlEqualTo("/1/oauth/token"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody("{\"expires_in\":3600,\"refresh_token\":\"12312ewsdf34fsd234r43rfsw32rf33e\",\"access_token\":\"ur84ur839843ruwf39843ru39ru37y2e\"}")
@@ -53,7 +54,7 @@ public class PyramusMocks{
 
     String whoAmIJson = objectMapper.writeValueAsString(whoAmI);
 
-    stubFor(get(urlMatching("/1/system/whoami"))
+    stubFor(get(urlEqualTo("/1/system/whoami"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody(whoAmIJson)
@@ -61,7 +62,7 @@ public class PyramusMocks{
   }
 
   public static void adminLoginMock() throws JsonProcessingException {
-    stubFor(get(urlMatching("/dnm")).willReturn(aResponse().withHeader("Content-Type", "application/json").withBody("").withStatus(204)));
+    stubFor(get(urlEqualTo("/dnm")).willReturn(aResponse().withHeader("Content-Type", "application/json").withBody("").withStatus(204)));
 
     stubFor(get(urlMatching("/users/authorize.*"))
       .willReturn(aResponse()
@@ -69,7 +70,7 @@ public class PyramusMocks{
         .withHeader("Location",
           "http://dev.muikku.fi:8080/login?_stg=rsp&code=1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111")));
 
-    stubFor(post(urlMatching("/1/oauth/token"))
+    stubFor(post(urlEqualTo("/1/oauth/token"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody("{\"expires_in\":3600,\"refresh_token\":\"12312ewsdf34fsd234r43rfsw32rf33e\",\"access_token\":\"ur84ur839843ruwf39843ru39ru37y2e\"}")
@@ -83,7 +84,7 @@ public class PyramusMocks{
 
     String whoAmIJson = objectMapper.writeValueAsString(whoAmI);
 
-    stubFor(get(urlMatching("/1/system/whoami"))
+    stubFor(get(urlEqualTo("/1/system/whoami"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody(whoAmIJson)
@@ -170,7 +171,7 @@ public class PyramusMocks{
 
     StaffMember staffMember1 = new StaffMember((long) 2, (long) 2, null, "Test", "Staff1member", null, fi.pyramus.rest.model.UserRole.ADMINISTRATOR, tags, variables);
     String staffMemberJson = objectMapper.writeValueAsString(staffMember1);
-    stubFor(get(urlMatching("/1/staff/members/2"))
+    stubFor(get(urlEqualTo("/1/staff/members/2"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody(staffMemberJson)
@@ -178,7 +179,7 @@ public class PyramusMocks{
     
     StaffMember staffMember2 = new StaffMember((long) 3, (long) 3, null, "Test", "Staff2member", null, fi.pyramus.rest.model.UserRole.ADMINISTRATOR, tags, variables);
     staffMemberJson = objectMapper.writeValueAsString(staffMember2);
-    stubFor(get(urlMatching("/1/staff/members/3"))
+    stubFor(get(urlEqualTo("/1/staff/members/3"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody(staffMemberJson)
@@ -186,7 +187,7 @@ public class PyramusMocks{
     
     StaffMember staffMember3 = new StaffMember((long) 4, (long) 4, null, "Test", "Staff3member", null, fi.pyramus.rest.model.UserRole.ADMINISTRATOR, tags, variables);
     staffMemberJson = objectMapper.writeValueAsString(staffMember3);
-    stubFor(get(urlMatching("/1/staff/members/4"))
+    stubFor(get(urlEqualTo("/1/staff/members/4"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody(staffMemberJson)
@@ -195,7 +196,13 @@ public class PyramusMocks{
     StaffMember[] staffArray = { staffMember1, staffMember2, staffMember3 };
     String staffArrayJson = objectMapper.writeValueAsString(staffArray);
 
-    stubFor(get(urlMatching("/1/staff/members"))
+    stubFor(get(urlEqualTo("/1/staff/members"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(staffArrayJson)
+        .withStatus(200)));
+    
+    stubFor(get(urlEqualTo("1/courses/courses/1/staffMembers"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody(staffArrayJson)
@@ -204,7 +211,7 @@ public class PyramusMocks{
     Email staff1Email = new Email((long) 2, (long) 1, true, "teacher@made.up");
     Email[] staff1Emails = {staff1Email};
     String staff1EmailJson = objectMapper.writeValueAsString(staff1Emails);
-    stubFor(get(urlMatching("/1/members/2/emails"))
+    stubFor(get(urlEqualTo("/1/members/2/emails"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody(staff1EmailJson)
@@ -213,7 +220,7 @@ public class PyramusMocks{
     Email staff2Email = new Email((long) 3, (long) 1, true, "mana@made.up");
     Email[] staff2Emails = {staff2Email};
     String staff2EmailJson = objectMapper.writeValueAsString(staff2Emails);
-    stubFor(get(urlMatching("/1/members/3/emails"))
+    stubFor(get(urlEqualTo("/1/members/3/emails"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody(staff2EmailJson)
@@ -222,7 +229,7 @@ public class PyramusMocks{
     Email staff3Email = new Email((long) 4, (long) 1, true, "admin@made.up");
     Email[] staff3Emails = {staff3Email};
     String staff3EmailJson = objectMapper.writeValueAsString(staff3Emails);
-    stubFor(get(urlMatching("/1/members/4/emails"))
+    stubFor(get(urlEqualTo("/1/members/4/emails"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody(staff3EmailJson)
@@ -233,23 +240,23 @@ public class PyramusMocks{
     CourseStaffMemberRole vRole = new CourseStaffMemberRole((long) 3, "Vastuuhenkilö");
     CourseStaffMemberRole[] cRoleArray = {teacherRole, tutorRole, vRole};
     String cRoleJson = objectMapper.writeValueAsString(cRoleArray);
-    stubFor(get(urlMatching("/1/courses/staffMemberRoles"))
+    stubFor(get(urlEqualTo("/1/courses/staffMemberRoles"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody(cRoleJson)
         .withStatus(204)));
 
-    stubFor(get(urlMatching("/1/courses/courses/.*/students?filterArchived=false"))
+    stubFor(get(urlEqualTo("/1/courses/courses/1/students?filterArchived=false"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
-        .withBody("")
-        .withStatus(204)));
+        .withBody(studentArrayJson)
+        .withStatus(200)));
 
-    stubFor(get(urlMatching("/1/courses/courses/.*/staffMembers"))
+    stubFor(get(urlEqualTo("/1/courses/courses/1/staffMembers"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
-        .withBody("")
-        .withStatus(204)));
+        .withBody(staffArrayJson)
+        .withStatus(200)));
   }
   
   public static void workspace1PyramusMock() throws JsonProcessingException {
@@ -263,24 +270,35 @@ public class PyramusMocks{
         null, null);
       ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
       String courseJson = objectMapper.writeValueAsString(course);
-      stubFor(get(urlEqualTo("/1/courses/courses/"))
+      
+      stubFor(get(urlEqualTo("/1/courses/courses/1"))
         .willReturn(aResponse()
           .withHeader("Content-Type", "application/json")
           .withBody(courseJson)
           .withStatus(200)));
       
-      stubFor(get(urlMatching("/1/courses/courses/.*"))
+      Course[] courseArray = { course };
+      String courseArrayJson = objectMapper.writeValueAsString(courseArray);
+      stubFor(get(urlEqualTo("/1/courses/courses"))
         .willReturn(aResponse()
           .withHeader("Content-Type", "application/json")
-          .withBody(courseJson)
+          .withBody(courseArrayJson)
           .withStatus(200)));
       
-      fi.pyramus.rest.model.Subject subject = new fi.pyramus.rest.model.Subject((long) 1, "tc_11", "Test course", (long) 1, false);
+      Subject subject = new Subject((long) 1, "tc_11", "Test course", (long) 1, false);
       String subjectJson = objectMapper.writeValueAsString(subject);
       stubFor(get(urlMatching("/1/common/subjects/.*"))
         .willReturn(aResponse()
           .withHeader("Content-Type", "application/json")
           .withBody(subjectJson)
+          .withStatus(200)));
+      
+      Subject[] subjectArray = { subject };
+      String subjectArrayJson = objectMapper.writeValueAsString(subjectArray);
+      stubFor(get(urlMatching("/1/common/subjects"))
+        .willReturn(aResponse()
+          .withHeader("Content-Type", "application/json")
+          .withBody(subjectArrayJson)
           .withStatus(200)));
       
       fi.pyramus.rest.model.CourseType courseType = new fi.pyramus.rest.model.CourseType((long) 1, "Nonstop", false);
@@ -491,7 +509,7 @@ public class PyramusMocks{
     stubFor(get(urlMatching("/1/courses/courses/.*/staffMembers"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
-        .withBody("")
+        .withBody(staffArrayJson)
         .withStatus(204)));
   }
   
