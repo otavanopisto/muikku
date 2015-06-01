@@ -192,7 +192,9 @@
           $(this).find('input[name="evaluationDate"]')
             .css({'z-index': 9999, 'position': 'relative'})
             .attr('type', 'text')
-            .datepicker();
+            .datepicker({
+              firstDay: 1
+            });
           
           if(!alreadyEvaluated){
             $(this).find('input[name="evaluationDate"]').datepicker('setDate', new Date()); 
