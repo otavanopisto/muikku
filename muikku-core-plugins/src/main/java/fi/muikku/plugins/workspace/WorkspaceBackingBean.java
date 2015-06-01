@@ -1,6 +1,5 @@
 package fi.muikku.plugins.workspace;
 
-import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -32,17 +31,13 @@ public class WorkspaceBackingBean {
   @Inject
   private AssessmentRequestController assessmentRequestController;
  
-  @PostConstruct
-  public void init() {
-    mayManageMaterials = sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, getWorkspaceEntity());
-  }
-
   public String getWorkspaceUrlName() {
     return workspaceUrlName;
   }
 
   public void setWorkspaceUrlName(String workspaceUrlName) {
     this.workspaceUrlName = workspaceUrlName;
+    this.mayManageMaterials = sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, getWorkspaceEntity());
   }
   
   public Long getWorkspaceId() {
@@ -75,7 +70,7 @@ public class WorkspaceBackingBean {
   public Boolean getMayManageMaterials() {
     return mayManageMaterials;
   }
-
+  
   private Boolean mayManageMaterials;
   private String workspaceUrlName;
 }
