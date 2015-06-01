@@ -41,5 +41,9 @@ public class QueryMultiSelectFieldDAO extends CorePluginsDAO<QueryMultiSelectFie
 
     return getSingleResult(entityManager.createQuery(criteria));
   }
+
+  public void delete(QueryMultiSelectField queryField) {
+    super.delete(queryField);
+  }
   
 }
