@@ -443,281 +443,7 @@ body.workspace-discussions {
       }
   
   }
-  
-  /* WORKSPACE CONTENT (WIDGETS) */
-  
-  /* Welcome To widget */
-  .wi-workspace-welcometo {/* Name of the widget */
-    border-left:5px solid #67d9bf;
-    padding:0 20px 0 15px;
-    margin:0 0 30px 0;
-  
-  
-    div[class*='-widget-container'] { /* Container for widgets title and content */
-      margin:5px 0;
-    
-      h2[class*='-widget-title'] { /* Title of widget */
-        font-size:29px;
-        font-weight:300;
-        margin:0 0 20px 0;
-      }
-      
-      div[class*='-widget-content'] { /* Content of widget */
 
-      }
-    
-    }
-  
-  }
-  
-  /* Essential contents widget */
-  .wi-workspace-essential-contents {/* Name of the widget */
-    margin:0 0 30px 0;
-    padding:10px 20px;
-    background:#f0fbf8;
-  
-    div[class*='-widget-container'] { /* Container for widgets title and content */
-      margin:5px 0;
-    
-      h2[class*='-widget-title'] { /* Title of widget */
-        font-size:29px;
-        font-weight:300;
-        margin:0 0 20px 0;
-      }
-      
-      div[class*='-widget-content'] { /* Content of widget */
-
-      }
-    
-    }
-  
-  }
-  
-  /* Essential goals widget */
-  .wi-workspace-essential-goals {/* Name of the widget */
-    margin:0 0 30px 0;
-    padding:10px 20px;
-    background:#ecf4ff;
-  
-    div[class*='-widget-container'] { /* Container for widgets title and content */
-      margin:5px 0;
-    
-      h2[class*='-widget-title'] { /* Title of widget */
-        font-size:29px;
-        font-weight:300;
-        margin:0 0 20px 0;
-      }
-      
-      div[class*='-widget-content'] { /* Content of widget */
-
-      }
-    
-    }
-
-  }
-  
-  div[class^='widget wi-workspace-'] {
-    position:relative;
-  }
-  
-  div[class^='widget wi-workspace-']:last-child {
-    margin:0 0 10px 0;
-  }
-  
-  /* WORKSPACE WIDGET ACTION MENU */
-  div[class^='widget wi-workspace-widget-action-menu-launcher'] {
-    position:absolute;
-    right:8px;
-    top:8px;
-    font-size:22px;
-    cursor:pointer;
-    width:22px;
-    
-    &:hover { /* Need to increase action menu icons container for easier use */
-      padding-left:100px; 
-      padding-bottom:20px;  
-    }
-  
-    .wi-workspace-widget-action-menu-container { /* Hiding the menu with visibility and height rules for css transitions, use display:none/block if no transitions are needed */
-      visibility:hidden;
-      height:0px;
-      opacity:0;
-      @include widgetActionMenuTransition(opacity,0.1s,ease-in-out);
-      position:absolute;
-      right:-5px;
-      top:20px;
-      color:#fff;
-      font-family:"Open Sans";
-      
-      .wi-workspace-widget-action-menu-arrow {
-        @include background-image('gfx/workspace-contextual-menu-arrow.png');
-        background-repeat:no-repeat;
-        height:9px;
-        background-position:bottom right;
-        background-color:transparent;
-        float:none;
-        position:relative;
-        right:12px;
-      }
-      
-      .wi-workspace-widget-action-menu-item-container {
-        background:#2c91ce;
-        opacity:0.98;
-      
-        .wi-workspace-widget-action-item {
-          padding:10px 15px;
-          font-size:16px;
-          position:relative;
-          margin:0;
-          display:block;
-          float:none;
-          @include widgetActionMenuItemTransition;
-          
-          .icon-delete,
-          .icon-move {
-            width:16px;
-            display:inline-block;
-            text-align:center;
-          }
-          
-          .wi-workspace-widget-action-item-label {
-            padding:0 0 0 10px;
-            display:inline-block;
-            font-family:"Open Sans";
-            font-size:13px;
-            position:relative;
-            top:-2px; /* Adjusting text in relation to icon as they are different sizes */
-            text-transform:uppercase;
-          }
-        
-          &:hover {
-            color:#fff;
-            background:#4da5da;
-          }
-        }
-      }
-    
-    }
-    
-    &:hover {
-    
-      .wi-workspace-widget-action-menu-container {
-        visibility:visible;
-        height:auto;
-        opacity:1;
-    
-        .wi-workspace-widget-action-menu-arrow {
-      
-        }
-      
-    
-      }
-    
-    }
-  
-  }
-  
-  /* WORKSPACE FOOTER */
-  footer {
-    min-height:200px;
-    background:#fff;
-    box-sizing:border-box;
-    max-width:960px;
-    position:relative;
-    padding:20px;
-    border-top:10px solid #eee;
-    font-size:14px;
-    
-    .workspace-footer-teacher-wrapper {
-      clear:both;
-      margin:0 0 20px 0;
-    
-      .workspace-footer-teacher-image {
-        float:left;
-        width:80px;
-        height:95px;
-        overflow:hidden;
-        margin:0 20px 0 0;
-        @include background-image('gfx/workspace-default-teacher.jpg');
-        background-repeat:no-repeat;
-      }
-      
-      .workspace-footer-teacher-name {
-        float:left;
-        
-        span.workspace-footer-teacher-name-label {
-          text-transform:uppercase;
-          color:#727272;
-          display:inline-block;
-          margin:0 5px 0 0;
-        }
-        
-        span.workspace-footer-teacher-name-data {
-          text-transform:uppercase;
-          color:#000;
-          display:inline-block;
-        }
-      }
-    
-    }
-    
-    .workspace-footer-licence-wrapper {
-      min-height:40px;
-      background:#98c807;
-      margin:0 -20px 20px -20px;
-      clear:both;
-      padding:20px;
-      
-      .workspace-footer-licence-icon-wrapper {
-        float:left;
-      }
-      
-      .workspace-footer-licence-text-wrapper {
-        float:left;
-        color:#e6ffe9;
-        font-size:16px;
-        line-height:1.5em;
-        min-height:20px;
-        font-weight:400;
-        
-        a.workspace-footer-licence-link#workspaceFooterLicenceLink {
-          font-weight:600;
-          color:#fff;
-          text-decoration:none;
-          
-          &:hover {
-            text-decoration:underline;
-          }
-          
-        }
-      }
-    }
-    
-    .workspace-footer-producers-wrapper {
-      margin:20px 0 0 0;
-    
-      .workspace-footer-producers-name {
-        
-        span.workspace-footer-producers-name-label {
-          text-transform:uppercase;
-          color:#727272;
-          display:inline-block;
-          margin:0 5px 0 0;
-        }
-        
-        span.workspace-footer-producers-name-data {
-          text-transform:uppercase;
-          color:#000;
-          display:inline-block;
-        }
-      }
-    
-    }
-    
-    
-    
-  }
-  
   /* TEXT CONTENT RULES */
   
   /* Content link overrides */
@@ -980,5 +706,41 @@ body.workspace-discussions {
       }
     }
   }
+  
+  /* DISCUSSIONS OVERRIDES - HAS TO BE FIXED IN THE FUTURE!!!!! */
+  
+  .mf-content-functions {
+    background-color: #fff;
+    border-bottom:1px solid #eee;
+    height:75px;
+    
+    .mf-button-container {
+      background-color: #fff;
+    }
+    
+    .mf-view-container {
+      background-color:#fff;
+      
+      .di-browse-areas-container {
+        margin-top:20px;
+      }
+      
+      .di-new-area-container {
+        margin-top:19px;
+      }
+    }
+  
+  }
+  
+  .mf-content-area {
+    background-color: #fff;
+  }
+  
+  div[data-name="workspace.content-tools-top.center"] {
+    height: 70px;
+  }
+  
 }
+
+
   

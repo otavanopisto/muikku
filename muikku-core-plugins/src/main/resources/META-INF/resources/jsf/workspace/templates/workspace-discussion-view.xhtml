@@ -65,9 +65,38 @@
     </div>
     <main id="content" class="container_24">
       <section>
-        <ui:insert name="workspace.content.top.static"></ui:insert>
-        <ui:insert name="workspace.content"></ui:insert>
+
+        <ui:insert name="workspace.content.top.static">
+          <div class="widgetSpaceSet mf-content-functions grid_24 nomargin">
+  
+            <m:widgetSpaceSet styleClass="nomargin mf-content-tools-top">
+              <m:widgetSpace name="workspace.content-tools-top.left" keepEmpty="false" sizing="SUM" styleClass="mf-button-container nomargin noLid">
+                <ui:insert name="workspace.content.top.left" />
+              </m:widgetSpace>
+              <m:widgetSpace name="workspace.content-tools-top.center" keepEmpty="true" sizing="MAXIMIZE" styleClass="mf-view-container alpha noLid">
+                <ui:insert name="workspace.content.top.center" />
+              </m:widgetSpace>
+              <m:widgetSpace name="workspace.content-tools-top.right" keepEmpty="false" sizing="SUM" styleClass="">
+                <ui:insert name="workspace.content.top.right" />
+              </m:widgetSpace>
+            </m:widgetSpaceSet>
+          
+          </div>
+          
+        </ui:insert>
+        
+        <ui:insert name="workspace.content">
+          <div class="widgetSpaceSet mf-content-area grid_24 nomargin noLid">
+            <m:widgetSpaceSet styleClass="widgetSpaceSet mf-content-area grid_24 nomargin noLid">
+              <m:widgetSpace name="workspace.content.center" keepEmpty="true" sizing="MAXIMIZE" styleClass="mf-content nomargin noLid">
+                <ui:insert name="workspace.content.center.widget"></ui:insert>
+              </m:widgetSpace>
+            </m:widgetSpaceSet>
+          </div>
+        </ui:insert>
+        
         <ui:insert name="workspace.content.bottom.static"></ui:insert>
+      
       </section>
     </main>
     
