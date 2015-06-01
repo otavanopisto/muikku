@@ -18,6 +18,7 @@ $(document).ready(function(){
             this.clearMessages();
 ;  
     	    
+//          mApi().forum.workspace.latest.read(workspaceId)
     	    mApi().forum.latest.read().on('$', function(msgs, msgsCallback){
     	          mApi().forum.areas.read(msgs.forumAreaId).callback(function(err, area){
     	            msgs.areaName = area.name;	
@@ -48,6 +49,7 @@ $(document).ready(function(){
     	
     	refreshAreas : function(){   
 
+//    	  mApi().forum.workspace.areas.read(workspaceId)
     	 mApi().forum.areas.read()
         .callback(function (err, areas) {
         	  
@@ -336,6 +338,7 @@ $(document).ready(function(){
 
 		}	
 			
+//		  mApi().forum.workspace.areas.read(workspaceId)
 	    mApi().forum.areas.read()
 	      .callback(function (err, areas) {
 	      	if( err ){
@@ -353,6 +356,7 @@ $(document).ready(function(){
 	$(".di-new-area-button").click(function(){
 
 		var createArea = function(values){
+//		  mApi().forum.workspace.areas.create(workspaceId, values)
 			mApi().forum.areas.create(values).callback(function(err, result) {
 			});			
 			
@@ -360,6 +364,7 @@ $(document).ready(function(){
 			window.discussion.refreshAreas();
 		}			
 	
+//		  mApi().forum.workspace.areas.read(workspaceId)
 	    mApi().forum.areas.read()
 	      .callback(function (err, areas) {
 	      	if( err ){
