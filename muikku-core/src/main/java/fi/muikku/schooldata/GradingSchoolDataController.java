@@ -81,6 +81,16 @@ class GradingSchoolDataController {
   
     return null;
   }
+
+  public List<WorkspaceAssessment> listWorkspaceAssessments(String schoolDataSource, String workspaceIdentifier, String studentIdentifier) {
+    SchoolDataSource dataSource = schoolDataSourceDAO.findByIdentifier(schoolDataSource);
+    if (dataSource == null) {
+      logger.severe(String.format("Could not find school data source %s", schoolDataSource));
+      return null;
+    }
+    
+    return listWorkspaceAssessments(dataSource, workspaceIdentifier, studentIdentifier);
+  }
   
   public List<WorkspaceAssessment> listWorkspaceAssessments(SchoolDataSource schoolDataSource, String workspaceIdentifier, String studentIdentifier) {
     GradingSchoolDataBridge schoolDataBridge = getGradingBridge(schoolDataSource);

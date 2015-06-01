@@ -4,5 +4,6 @@ CKEDITOR.plugins.setLang('muikku-memofield', 'fi', {
   propertiesMenu: 'Muistiokentän asetukset',
   propertiesDialogTitle: 'Muistiokentän asetukset', 
   propertiesDialogRows: 'Rivejä',
-  propertiesDialogCols: 'Sarakkeita'
+  propertiesDialogCols: 'Sarakkeita',
+  propertiesDialogExample: 'Mallivastaus'
 });
