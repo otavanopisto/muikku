@@ -5,7 +5,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-
 import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.material.model.QuerySelectField;
@@ -41,6 +40,10 @@ public class QuerySelectFieldDAO extends CorePluginsDAO<QuerySelectField> {
     );
 
     return getSingleResult(entityManager.createQuery(criteria));
+  }
+
+  public void delete(QuerySelectField queryField) {
+    super.delete(queryField);
   }
   
 }
