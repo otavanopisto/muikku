@@ -23,18 +23,14 @@
     <input type="hidden" name="userId" value="#{muikkuSession.loggedUserEntity.id}"/>
   </ui:define>
   
-<!-- 
-  TODO: Add message, area widgets
-
   <ui:define name="content.tools.left"> 
-    <m:widget name="discussion-new-message" size="6" rendered="#{sessionBackingBean.loggedIn}"/>
+    <m:widget name="workspace-discussion-new-message" size="6" rendered="#{sessionBackingBean.loggedIn}"/>
   </ui:define>
 
   <ui:define name="content.tools.center"> 
-    <m:widget name="discussion-browse-areas" size="6" rendered="#{sessionBackingBean.loggedIn}"/>
-    <m:widget name="discussion-new-area" size="6" rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn}"/>
+    <m:widget name="workspace-discussion-browse-areas" size="6" rendered="#{sessionBackingBean.loggedIn}"/>
+    <m:widget name="workspace-discussion-new-area" size="6" rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn}"/>
   </ui:define>
- -->
 
   <ui:define name="sitebody">
     <header id="staticNavigationWrapperWorkspace">
