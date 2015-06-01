@@ -13,6 +13,9 @@
     <m:widget name="workspace-discussion-new-message" size="6" rendered="#{sessionBackingBean.loggedIn}"/>
     <m:widget name="workspace-discussion-new-area" size="6" rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn}"/>
     <m:widget name="discussion-messages" size="24" /> 
+
+    <input type="hidden" name="userEntityId" value="#{muikkuSession.loggedUserEntity.id}"/>
+    <input type="hidden" name="workspaceEntityId" value="#{workspaceDiscussionsBackingBean.workspaceEntityId}"/>
   </ui:define>
 
 </ui:composition>
