@@ -12,16 +12,13 @@
   <ui:param name="bodyClass" value="workspace-discussions" />
   
   <ui:define name="viewScripts">
+    <script type="text/javascript" src="//cdn.ckeditor.com/4.4.7/standard/ckeditor.js"></script>
     <h:outputScript name="scripts/gui/workspace.js"  />
     <h:outputScript name="scripts/gui/workspace-discussions.js"  />
   </ui:define>
   
   <ui:define name="viewCss">
     <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/workspaces-discussions.css" />  
-  </ui:define>
-
-  <ui:define name="hiddenFields">
-    <input type="hidden" name="userId" value="#{muikkuSession.loggedUserEntity.id}"/>
   </ui:define>
 
   <ui:define name="sitebody">

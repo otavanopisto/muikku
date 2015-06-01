@@ -720,6 +720,10 @@
   });
   
   $(document).on('afterHtmlMaterialRender', function (event, data) {
+    
+    /* If last element inside article is floating this prevents mentioned element from overlapping its parent container */
+    $(data.pageElement)
+      .append($('<div>').addClass('clear'));
 
     // Exercise save support 
     if ($(data.pageElement).data('workspace-material-assigment-type')) {
