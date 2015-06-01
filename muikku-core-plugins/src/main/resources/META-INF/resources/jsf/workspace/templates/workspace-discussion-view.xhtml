@@ -70,9 +70,25 @@
         <ui:insert name="workspace.content.bottom.static"></ui:insert>
       </section>
     </main>
-    <div id="socialNavigation">
-    </div>
     
+    <div id="socialNavigation" class="sn-container open">
+      <div class="sn-container closed" >
+        <ui:insert name="dock.bottom">
+          <m:widgetSpaceSet parentStyleClass="container_24">
+            <ui:insert name="dock.bottom.left">
+              <ui:include src="/facelets/generic/dock-bottom-left.xhtml"></ui:include>
+            </ui:insert>
+            <ui:insert name="dock.bottom.center">
+              <ui:include src="/facelets/generic/dock-bottom-center.xhtml"></ui:include>
+            </ui:insert>
+            <ui:insert name="dock.bottom.right">
+              <ui:include src="/facelets/generic/dock-bottom-right.xhtml"></ui:include>
+            </ui:insert>
+          </m:widgetSpaceSet>
+        </ui:insert>
+      </div>
+    </div>
+      
   </ui:define>
 
 </ui:composition>
