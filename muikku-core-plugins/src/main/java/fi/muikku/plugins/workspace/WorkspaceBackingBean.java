@@ -1,5 +1,6 @@
 package fi.muikku.plugins.workspace;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -12,6 +13,7 @@ import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.assessmentrequest.AssessmentRequestController;
 import fi.muikku.plugins.assessmentrequest.WorkspaceAssessmentState;
 import fi.muikku.schooldata.WorkspaceController;
+import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.session.SessionController;
 import fi.muikku.session.local.LocalSession;
 
@@ -29,6 +31,11 @@ public class WorkspaceBackingBean {
   
   @Inject
   private AssessmentRequestController assessmentRequestController;
+ 
+  @PostConstruct
+  public void init() {
+    mayManageMaterials = sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, getWorkspaceEntity());
+  }
 
   public String getWorkspaceUrlName() {
     return workspaceUrlName;
@@ -52,6 +59,7 @@ public class WorkspaceBackingBean {
     if (workspaceEntity == null) {
       return null;
     }
+    
     return workspaceEntity;
   }
 
@@ -63,6 +71,11 @@ public class WorkspaceBackingBean {
     WorkspaceAssessmentState assessmentState = assessmentRequestController.getWorkspaceAssessmentState(getWorkspaceEntity(), userEntity);
     return assessmentState.getStateName();
   }
+  
+  public Boolean getMayManageMaterials() {
+    return mayManageMaterials;
+  }
 
+  private Boolean mayManageMaterials;
   private String workspaceUrlName;
 }
