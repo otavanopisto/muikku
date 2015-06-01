@@ -5,12 +5,10 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-
 import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.material.model.QueryConnectField;
 import fi.muikku.plugins.material.model.QueryConnectField_;
-
 
 public class QueryConnectFieldDAO extends CorePluginsDAO<QueryConnectField> {
 	
@@ -42,5 +40,9 @@ public class QueryConnectFieldDAO extends CorePluginsDAO<QueryConnectField> {
 
     return getSingleResult(entityManager.createQuery(criteria));
   }
-
+  
+  public void delete(QueryConnectField queryField) {
+    super.delete(queryField);
+  }
+  
 }

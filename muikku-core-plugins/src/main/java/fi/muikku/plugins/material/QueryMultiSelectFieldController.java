@@ -13,6 +13,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import fi.muikku.plugins.material.dao.QueryMultiSelectFieldDAO;
 import fi.muikku.plugins.material.dao.QueryMultiSelectFieldOptionDAO;
+import fi.muikku.plugins.material.events.QueryFieldDeleteEvent;
 import fi.muikku.plugins.material.events.QueryFieldUpdateEvent;
 import fi.muikku.plugins.material.fieldmeta.MultiSelectFieldMeta;
 import fi.muikku.plugins.material.fieldmeta.MultiSelectFieldOptionMeta;
@@ -32,6 +33,9 @@ public class QueryMultiSelectFieldController {
 
   @Inject
   private Event<QueryFieldUpdateEvent> queryFieldUpdateEvent;
+  
+  @Inject
+  private Event<QueryFieldDeleteEvent> queryFieldDeleteEvent;
   
   /* QueryMultiSelectField */
 
@@ -93,6 +97,16 @@ public class QueryMultiSelectFieldController {
       }
     }
     return null;
+  }
+
+  public void deleteQueryMultiSelectField(QueryMultiSelectField queryField, boolean removeAnswers) {
+    queryFieldDeleteEvent.fire(new QueryFieldDeleteEvent(queryField, removeAnswers));
+    
+    for (QueryMultiSelectFieldOption option : listQueryMultiSelectFieldOptionsByField(queryField)) {
+      deleteQueryMultiSelectFieldOption(option);
+    }
+    
+    queryMultiSelectFieldDAO.delete(queryField);
   }
   
   /* QueryMultiSelectFieldOption */
