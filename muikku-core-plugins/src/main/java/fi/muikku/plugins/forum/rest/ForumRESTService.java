@@ -22,6 +22,7 @@ import javax.ws.rs.core.Response.Status;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 
+import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.forum.ForumController;
 import fi.muikku.plugins.forum.ForumResourcePermissionCollection;
@@ -30,6 +31,8 @@ import fi.muikku.plugins.forum.model.ForumArea;
 import fi.muikku.plugins.forum.model.ForumAreaGroup;
 import fi.muikku.plugins.forum.model.ForumThread;
 import fi.muikku.plugins.forum.model.ForumThreadReply;
+import fi.muikku.plugins.forum.model.WorkspaceForumArea;
+import fi.muikku.schooldata.WorkspaceEntityController;
 import fi.muikku.session.SessionController;
 import fi.otavanopisto.security.AuthorizationException;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -51,6 +54,9 @@ public class ForumRESTService extends PluginRESTService {
   
   @Inject
   private SessionController sessionController;
+  
+  @Inject
+  private WorkspaceEntityController workspaceEntityController;
   
   @GET
   @Path ("/areagroups")
@@ -179,6 +185,26 @@ public class ForumRESTService extends PluginRESTService {
     ).build();
   }
   
+  @POST
+  @Path ("/workspace/{WORKSPACEID}/areas")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response createWorkspaceForumArea(@PathParam ("WORKSPACEID") Long workspaceId, ForumAreaRESTModel newForum) throws AuthorizationException {
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceId);
+    
+    if (sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_CREATEWORKSPACEFORUM, workspaceEntity)) {
+      WorkspaceForumArea workspaceForumArea = forumController.createWorkspaceForumArea(workspaceEntity, newForum.getName(), newForum.getGroupId());
+      
+      WorkspaceForumAreaRESTModel result = new WorkspaceForumAreaRESTModel(
+          workspaceForumArea.getId(), workspaceForumArea.getWorkspace(), workspaceForumArea.getName(), workspaceForumArea.getGroup() != null ? workspaceForumArea.getGroup().getId() : null); 
+      
+      return Response.ok(
+        result
+      ).build();
+    } else {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+  }
+
   @GET
   @Path ("/areas/{AREAID}/threads")
   @RESTPermit(handling = Handling.INLINE)
@@ -418,6 +444,29 @@ public class ForumRESTService extends PluginRESTService {
       result
     ).build();
   }
+
+  @GET
+  @Path ("/workspace/{WORKSPACEID}/latest")
+  @RESTPermit(handling = Handling.INLINE)
+  public Response listLatestThreadsFromWorkspace(
+      @PathParam ("WORKSPACEID") Long workspaceId, 
+      @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, 
+      @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults) throws AuthorizationException {
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceId);
+    
+    List<ForumThread> threads = forumController.listLatestForumThreadsFromWorkspace(workspaceEntity, firstResult, maxResults);
+    
+    List<ForumThreadRESTModel> result = new ArrayList<ForumThreadRESTModel>();
+    
+    for (ForumThread thread : threads) {
+      result.add(new ForumThreadRESTModel(thread.getId(), thread.getTitle(), thread.getMessage(), thread.getCreator(), thread.getCreated(), thread.getForumArea().getId(), thread.getSticky(), thread.getLocked(), thread.getUpdated()));
+    }
+    
+    return Response.ok(
+      result
+    ).build();
+  }
+  
   
   private ForumThreadReplyRESTModel createRestModel(ForumThreadReply entity) {
     return new ForumThreadReplyRESTModel(entity.getId(), entity.getMessage(), entity.getCreator(), entity.getCreated(), entity.getForumArea().getId()); 

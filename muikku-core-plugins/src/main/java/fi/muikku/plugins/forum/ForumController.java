@@ -172,6 +172,15 @@ public class ForumController {
     return forumArea;
   }
   
+  public WorkspaceForumArea createWorkspaceForumArea(WorkspaceEntity workspace, String name, Long groupId) {
+    UserEntity owner = sessionController.getLoggedUserEntity();
+    ResourceRights rights = resourceRightsController.create();
+    ForumAreaGroup group = groupId != null ? findForumAreaGroup(groupId) : null;
+    WorkspaceForumArea forumArea = workspaceForumAreaDAO.create(workspace, name, group, false, owner, rights);
+    createDefaultForumPermissions(forumArea, rights);
+    return forumArea;
+  }
+  
   public void deleteArea(ForumArea forumArea) {
     forumAreaDAO.delete(forumArea);
   }
@@ -243,6 +252,27 @@ public class ForumController {
     for (EnvironmentForumArea ef : environmentForums) {
       forumAreas.add(ef);
     }
+    
+    for (WorkspaceForumArea wf : workspaceForums) {
+      forumAreas.add(wf);
+    }
+    
+    List<ForumThread> threads;
+    
+    if (!forumAreas.isEmpty())
+      threads = forumThreadDAO.listLatestOrdered(forumAreas, firstResult, maxResults);
+    else
+      threads = new ArrayList<ForumThread>();
+    
+    return threads;
+  }
+  
+  public List<ForumThread> listLatestForumThreadsFromWorkspace(WorkspaceEntity workspaceEntity, Integer firstResult,
+      Integer maxResults) {
+    List<WorkspaceForumArea> workspaceForums = listCourseForums(workspaceEntity);
+    List<ForumArea> forumAreas = new ArrayList<ForumArea>();
+
+    // TODO: This could use some optimization
     
     for (WorkspaceForumArea wf : workspaceForums) {
       forumAreas.add(wf);
