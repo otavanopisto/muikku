@@ -489,6 +489,10 @@ public class WorkspaceMaterialController {
   public void deleteWorkspaceFolder(WorkspaceFolder workspaceFolder) {
     workspaceFolderDAO.delete(workspaceFolder);
   }
+  
+  public void updateDefaultMaterial(WorkspaceFolder workspaceFolder, WorkspaceNode defaultMaterial) {
+    workspaceFolderDAO.updateDefaultMaterial(workspaceFolder, defaultMaterial);
+  }
 
   /* Utility methods */
   
