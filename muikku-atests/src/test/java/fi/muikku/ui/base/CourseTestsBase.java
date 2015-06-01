@@ -98,7 +98,7 @@ public class CourseTestsBase extends AbstractUITest {
   @SqlAfter("sql/workspace1Delete.sql")
   public void courseUnpublishTest() throws IOException {
     PyramusMocks.adminLoginMock();
-    PyramusMocks.adminPyramusMocks();
+    PyramusMocks.personsPyramusMocks();
     PyramusMocks.workspace1PyramusMock();  
     asAdmin().get("/test/reindex");
     
@@ -106,6 +106,7 @@ public class CourseTestsBase extends AbstractUITest {
     waitForElementToBePresent(By.className("index"));
     getWebDriver().get(getAppUrl(true) + "/workspace/testCourse");
     waitForElementToBePresent(By.className("workspace-title"));
+    takeScreenshot();
     getWebDriver().findElementByLinkText("Unpublish").click();
     getWebDriver().get(getAppUrl(true) + "/workspace/testCourse");
     waitForElementToBePresent(By.className("workspace-title"));
