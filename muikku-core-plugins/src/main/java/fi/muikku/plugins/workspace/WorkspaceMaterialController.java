@@ -229,6 +229,8 @@ public class WorkspaceMaterialController {
         if (folder.getFolderType() != folderType) {
           nodes.remove(i);
         }
+      }else{
+        nodes.remove(i);
       }
     }
     
@@ -488,6 +490,10 @@ public class WorkspaceMaterialController {
 
   public void deleteWorkspaceFolder(WorkspaceFolder workspaceFolder) {
     workspaceFolderDAO.delete(workspaceFolder);
+  }
+  
+  public void updateDefaultMaterial(WorkspaceFolder workspaceFolder, WorkspaceNode defaultMaterial) {
+    workspaceFolderDAO.updateDefaultMaterial(workspaceFolder, defaultMaterial);
   }
 
   /* Utility methods */

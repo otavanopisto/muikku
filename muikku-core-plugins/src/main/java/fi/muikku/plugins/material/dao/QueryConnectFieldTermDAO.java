@@ -69,4 +69,8 @@ public class QueryConnectFieldTermDAO extends CorePluginsDAO<QueryConnectFieldTe
     queryConnectFieldTerm.setCounterpart(counterpart);
     return persist(queryConnectFieldTerm);
   }
+  
+  public void delete(QueryConnectFieldTerm queryConnectFieldTerm) {
+    super.delete(queryConnectFieldTerm);
+  }
 }

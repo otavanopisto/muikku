@@ -1,5 +1,6 @@
 package fi.muikku.plugins.workspace;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,6 +17,12 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.jsf.NavigationRules;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.plugins.material.HtmlMaterialController;
+import fi.muikku.plugins.material.model.HtmlMaterial;
+import fi.muikku.plugins.workspace.model.WorkspaceFolder;
+import fi.muikku.plugins.workspace.model.WorkspaceFolderType;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
+import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.Workspace;
@@ -24,9 +31,9 @@ import fi.otavanopisto.security.LoggedIn;
 @Named
 @Stateful
 @RequestScoped
-@Join(path = "/workspace/{workspaceUrlName}/materials-management", to = "/jsf/workspace/materials-management.jsf")
+@Join(path = "/workspace/{workspaceUrlName}/helppage-management", to = "/jsf/workspace/helppage-management.jsf")
 @LoggedIn
-public class WorkspaceMaterialsManagementBackingBean {
+public class WorkspaceHelpPageManagementBackingBean {
 
   @Inject
   private Logger logger;
@@ -36,6 +43,9 @@ public class WorkspaceMaterialsManagementBackingBean {
 
   @Inject
   private WorkspaceController workspaceController;
+  
+  @Inject
+  private HtmlMaterialController htmlMaterialController;
 
   @Inject
   private WorkspaceMaterialController workspaceMaterialController;
@@ -62,9 +72,25 @@ public class WorkspaceMaterialsManagementBackingBean {
     workspaceBackingBean.setWorkspaceUrlName(urlName);
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
     workspaceName = workspace.getName();
+    
+    List<WorkspaceNode> folders = workspaceMaterialController.listWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(
+        rootFolder,
+        WorkspaceFolderType.HELP_PAGE); 
+    
+    if (folders.isEmpty()) {
+      folders = Arrays.asList((WorkspaceNode)workspaceMaterialController.createWorkspaceHelpPageFolder(workspaceEntity));
+    }
+    
+    WorkspaceFolder helpPageFolder = (WorkspaceFolder)folders.get(0);
+    
+    if (helpPageFolder.getDefaultMaterial() == null) {
+      HtmlMaterial htmlMaterial = htmlMaterialController.createHtmlMaterial("Help page", "", "text/html", 0l);
+      WorkspaceMaterial workspaceMaterial = workspaceMaterialController.createWorkspaceMaterial(helpPageFolder, htmlMaterial);
+      workspaceMaterialController.updateDefaultMaterial(helpPageFolder, workspaceMaterial);
+    }
 
     try {
-      contentNodes = workspaceMaterialController.listWorkspaceMaterialsAsContentNodes(workspaceEntity, true);
+      contentNodes = workspaceMaterialController.listWorkspaceHelpPagesAsContentNodes(workspaceEntity);
     } catch (WorkspaceMaterialException e) {
       logger.log(Level.SEVERE, "Error loading materials", e);
       return NavigationRules.INTERNAL_ERROR;

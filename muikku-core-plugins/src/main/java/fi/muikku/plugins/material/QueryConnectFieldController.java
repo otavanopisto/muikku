@@ -4,11 +4,13 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
 import fi.muikku.plugins.material.dao.QueryConnectFieldCounterpartDAO;
 import fi.muikku.plugins.material.dao.QueryConnectFieldDAO;
 import fi.muikku.plugins.material.dao.QueryConnectFieldTermDAO;
+import fi.muikku.plugins.material.events.QueryFieldDeleteEvent;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.material.model.QueryConnectField;
 import fi.muikku.plugins.material.model.QueryConnectFieldCounterpart;
@@ -26,6 +28,9 @@ public class QueryConnectFieldController {
 
   @Inject
   private QueryConnectFieldCounterpartDAO queryConnectFieldCounterpartDAO;
+  
+  @Inject
+  private Event<QueryFieldDeleteEvent> queryFieldDeleteEvent;
 
   /* Connect Field */
   
@@ -39,6 +44,20 @@ public class QueryConnectFieldController {
 
   public QueryConnectField findQueryConnectFieldByMaterialAndName(Material material, String name) {
     return queryConnectFieldDAO.findByMaterialAndName(material, name);
+  }
+
+  public void deleteQueryConnectField(QueryConnectField queryField, boolean removeAnswers) {
+    queryFieldDeleteEvent.fire(new QueryFieldDeleteEvent(queryField, removeAnswers));
+    
+    for (QueryConnectFieldTerm term : listConnectFieldTermsByField(queryField)) {
+      queryConnectFieldTermDAO.delete(term);
+    }
+    
+    for (QueryConnectFieldCounterpart counterpart : listQueryConnectFieldCounterpartByField(queryField)) {
+      queryConnectFieldCounterpartDAO.delete(counterpart);
+    }
+    
+    queryConnectFieldDAO.delete(queryField);
   }
 
   /* Connect Field Terms */
@@ -73,8 +92,12 @@ public class QueryConnectFieldController {
     return queryConnectFieldCounterpartDAO.findByFieldAndName(field, name);
   }
 
+  public List<QueryConnectFieldCounterpart> listQueryConnectFieldCounterpartByField(QueryConnectField field) {
+    return queryConnectFieldCounterpartDAO.listByField(field);
+  }
+
   public QueryConnectFieldCounterpart updateConnectFieldCounterpartText(QueryConnectFieldCounterpart connectFieldCounterpart, String text) {
     return queryConnectFieldCounterpartDAO.updateText(connectFieldCounterpart, text);
   }
-
+  
 }
