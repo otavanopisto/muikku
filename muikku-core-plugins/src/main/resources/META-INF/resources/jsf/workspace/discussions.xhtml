@@ -9,9 +9,10 @@
   template="./templates/workspace-discussion-view.xhtml">
 
   <ui:define name="workspace.content.top.static"> 
-    <m:widget name="workspace-discussion-new-message" size="6" rendered="#{sessionBackingBean.loggedIn}"/>
     <m:widget name="workspace-discussion-browse-areas" size="6" rendered="#{sessionBackingBean.loggedIn}"/>
+    <m:widget name="workspace-discussion-new-message" size="6" rendered="#{sessionBackingBean.loggedIn}"/>
     <m:widget name="workspace-discussion-new-area" size="6" rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn}"/>
+    <m:widget name="discussion-messages" size="24" /> 
   </ui:define>
 
 </ui:composition>
