@@ -229,6 +229,8 @@ public class WorkspaceMaterialController {
         if (folder.getFolderType() != folderType) {
           nodes.remove(i);
         }
+      }else{
+        nodes.remove(i);
       }
     }
     

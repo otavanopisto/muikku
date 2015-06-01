@@ -74,13 +74,22 @@ public class ForumPermissionResolver extends AbstractPermissionResolver implemen
       
       List<WorkspaceUserEntity> workspaceUsers = workspaceUserEntityController.listWorkspaceUserEntitiesByWorkspaceAndUser(workspaceEntity, userEntity);
       // TODO: This is definitely not the way to do this 
-      WorkspaceUserEntity workspaceUser = workspaceUsers.get(0);
       
-      userRole = workspaceUser.getWorkspaceUserRole();
-    } else {
-      EnvironmentUser environmentUser = environmentUserDAO.findByUserAndArchived(userEntity, Boolean.FALSE);
-      userRole = environmentUser.getRole();
-    }
+      if (workspaceUsers.size() > 0) {
+        WorkspaceUserEntity workspaceUser = workspaceUsers.get(0);
+        
+        userRole = workspaceUser.getWorkspaceUserRole();
+        
+        if (resourceUserRolePermissionDAO.hasResourcePermissionAccess(
+            resourceRightsController.findResourceRightsById(forumArea.getRights()), userRole, perm) ||
+            hasEveryonePermission(permission, forumArea) ||
+            userEntity.getId().equals(forumArea.getOwner()))
+          return true;
+      }
+    } 
+
+    EnvironmentUser environmentUser = environmentUserDAO.findByUserAndArchived(userEntity, Boolean.FALSE);
+    userRole = environmentUser.getRole();
     
     return resourceUserRolePermissionDAO.hasResourcePermissionAccess(
         resourceRightsController.findResourceRightsById(forumArea.getRights()), userRole, perm) ||
