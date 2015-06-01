@@ -113,6 +113,25 @@ public class ForumRESTService extends PluginRESTService {
       result
     ).build();
   }
+
+  @GET
+  @Path ("/workspace/{WORKSPACEID}/areas")
+  public Response listWorkspaceForumAreas(@PathParam ("WORKSPACEID") Long workspaceId) throws AuthorizationException {
+    WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceId);
+    
+    List<WorkspaceForumArea> workspaceForumAreas = forumController.listCourseForums(workspaceEntity);
+    
+    List<WorkspaceForumAreaRESTModel> result = new ArrayList<WorkspaceForumAreaRESTModel>();
+    
+    for (WorkspaceForumArea forum : workspaceForumAreas) {
+      result.add(new WorkspaceForumAreaRESTModel(forum.getId(), forum.getWorkspace(), forum.getName(), 
+          forum.getGroup() != null ? forum.getGroup().getId() : null));
+    }
+    
+    return Response.ok(
+      result
+    ).build();
+  }
   
   @GET
   @Path ("/areas/{AREAID}")
