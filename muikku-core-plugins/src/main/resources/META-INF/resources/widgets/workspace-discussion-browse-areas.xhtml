@@ -6,12 +6,10 @@ xmlns:f="http://java.sun.com/jsf/core"
 xmlns:c="http://java.sun.com/jsp/jstl/core" 
 xmlns:h="http://java.sun.com/jsf/html">
   
-  <ui:remove>
-    <h:outputScript name="scripts/gui/widget-discussion-newarea.js" target="header" />
-  </ui:remove>
-
-  <div class="di-new-area-container">
-    <div class="di-new-area-button icon-new-page" title="#{i18n.text['plugin.discussion.createarea.topic']}"></div>    
+  <div class="di-browse-areas-container">
+    <select id="discussionAreaSelect" name="areas" onchange="window.discussion.filterMessagesByArea(this)"> 
+     
+    </select>
   </div>
   
 </ui:composition>
