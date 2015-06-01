@@ -14,9 +14,9 @@ import fi.otavanopisto.security.LoggedIn;
 @Named
 @Stateful
 @RequestScoped
-@Join (path = "/workspace/{workspaceUrlName}/discussion", to = "/jsf/workspace/discussion.jsf")
+@Join (path = "/workspace/{workspaceUrlName}/discussions", to = "/jsf/workspace/discussions.jsf")
 @LoggedIn
-public class WorkspaceDiscussionBackingBean {
+public class WorkspaceDiscussionsBackingBean {
   
   @Parameter
   private String workspaceUrlName;
@@ -26,8 +26,9 @@ public class WorkspaceDiscussionBackingBean {
   private WorkspaceBackingBean workspaceBackingBean;
 
   @RequestAction
-  public void init() {
+  public String init() {
     workspaceBackingBean.setWorkspaceUrlName(getWorkspaceUrlName());
+    return null;
   }
   
   public String getWorkspaceUrlName() {
