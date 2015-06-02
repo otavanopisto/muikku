@@ -229,7 +229,18 @@ public class WorkspaceMaterialController {
         if (folder.getFolderType() != folderType) {
           nodes.remove(i);
         }
-      }else{
+      }
+    }
+    
+    return nodes;
+  }
+  
+  public List<WorkspaceFolder> listWorkspaceFoldersByParentAndFolderTypeSortByOrderNumber(WorkspaceNode parent, WorkspaceFolderType folderType) {
+    List<WorkspaceFolder> nodes = workspaceFolderDAO.listByParentAndFolderType(parent, folderType);
+    // TODO: Do in database
+    for (int i = nodes.size() - 1; i >= 0; i--) {
+      WorkspaceFolder node = nodes.get(i);
+      if (node.getFolderType() != folderType) {
         nodes.remove(i);
       }
     }
