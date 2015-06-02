@@ -107,6 +107,7 @@
           'name': name,
           'columns': this.getContentElement('info', 'cols').getValue(),
           'rows': this.getContentElement('info', 'rows').getValue(),
+          'example': this.getContentElement('info', 'example').getValue()
         };
         
         var object = new CKEDITOR.dom.element('object');
@@ -142,6 +143,14 @@
             label: editor.lang['muikku-memofield'].propertiesDialogRows,
             setup: function(json) {
               this.setValue(json.rows);
+            }
+          },
+          {
+            id: 'example',
+            type: 'textarea',
+            label: editor.lang['muikku-memofield'].propertiesDialogExample,
+            setup: function(json) {
+              this.setValue(json.example);
             }
           }
         ]

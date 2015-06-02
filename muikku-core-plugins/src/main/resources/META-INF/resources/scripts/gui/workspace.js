@@ -38,6 +38,14 @@
       }
     });
   });
+  
+  function refreshNavigationWrapperPosition() {
+    var contentContainer = ($('#contentWorkspaceMaterials').length > 0 ? contentContainer = $('#contentWorkspaceMaterials') : contentContainer = $('#content'));
+    var naviWrapper = $('#workspaceNavigationWrapper');
+    $(naviWrapper).css({
+      left:(Math.max(contentContainer.offset().left - naviWrapper.width() - 30, 10)) + 'px'
+    });
+  }
 
   $(document).ready(function() {
     
@@ -49,24 +57,9 @@
     
     // Workspace navigation
     if ($('#workspaceNavigationWrapper').length > 0) {
-  
-      var naviWrapper = $('#workspaceNavigationWrapper');
-      var cOffset = contentContainer.offset();
-      var naviLeftPos = cOffset.left - naviWrapper.width() - 30;
-      
-      $(naviWrapper).css({
-        left:naviLeftPos + 'px'
-      })
-      
+      refreshNavigationWrapperPosition();
       $(window).resize(function(){
-        cOffset = contentContainer.offset();
-        naviLeftPos = cOffset.left - naviWrapper.width() - 30;
-        naviLeftPos = naviLeftPos < 10 ? naviLeftPos = 10 : naviLeftPos = naviLeftPos;
-        
-        $(naviWrapper).css({
-          left:naviLeftPos + 'px'
-        })
-  
+        refreshNavigationWrapperPosition();
       });
       
       // Workspace's material's TOC

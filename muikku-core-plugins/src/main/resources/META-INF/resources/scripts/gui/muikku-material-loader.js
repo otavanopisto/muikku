@@ -278,10 +278,25 @@
         })
         .val(data.value)
         .muikkuField({
+          meta: data.meta,
           fieldName: data.name,
           materialId: data.materialId,
           embedId: data.embedId,
-          readonly: data.readOnlyFields||false
+          readonly: data.readOnlyFields||false,
+          hasExamples: function () {
+            var meta = this.options.meta;
+            if (meta.example) {
+              return true;
+            }
+          },
+          getExamples: function () {
+            var meta = this.options.meta;
+            if (meta.example) {
+              return [meta.example];
+            } else {
+              return [];
+            }
+          }
         })
       );
     }

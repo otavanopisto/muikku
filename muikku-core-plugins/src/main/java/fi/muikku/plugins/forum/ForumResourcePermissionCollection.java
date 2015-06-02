@@ -9,6 +9,7 @@ import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.security.AbstractMuikkuPermissionCollection;
 import fi.muikku.security.DefaultEnvironmentPermissionRoles;
 import fi.muikku.security.DefaultPermissionRoles;
+import fi.muikku.security.DefaultWorkspacePermissionRoles;
 import fi.muikku.security.MuikkuPermissionCollection;
 import fi.muikku.security.PermissionScope;
 import fi.otavanopisto.security.Scope;
@@ -53,6 +54,15 @@ public class ForumResourcePermissionCollection extends AbstractMuikkuPermissionC
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR } )
   public static final String FORUM_DELETEENVIRONMENTFORUM = "FORUM_DELETEENVIRONMENTFORUM";
+
+  /**
+   * Workspace forum Area rights
+   */
+  
+  @Scope (PermissionScope.WORKSPACE)
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.TEACHER } )
+  @DefaultWorkspacePermissionRoles ( { WorkspaceRoleArchetype.TEACHER })
+  public static final String FORUM_CREATEWORKSPACEFORUM = "FORUM_CREATEWORKSPACEFORUM";
   
   /**
    * Forum Message related rights
