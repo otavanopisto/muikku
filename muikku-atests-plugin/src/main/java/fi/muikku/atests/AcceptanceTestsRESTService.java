@@ -14,6 +14,7 @@ import javax.ws.rs.core.Response;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserSchoolDataIdentifier;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.plugins.schooldatapyramus.PyramusUpdater;
 import fi.muikku.rest.AbstractRESTService;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.WorkspaceEntityController;
@@ -58,6 +59,9 @@ public class AcceptanceTestsRESTService extends AbstractRESTService {
   @Inject
   private SearchIndexer indexer;
    
+  @Inject
+  private PyramusUpdater pyramusUpdater;
+
   @GET
   @Path("/login")
   @Produces("text/plain")
@@ -134,4 +138,20 @@ public class AcceptanceTestsRESTService extends AbstractRESTService {
     
    return Response.ok().build();
   }
+
+  @GET
+  @Path("/mockimport")
+  @Produces("text/plain")
+  @RESTPermit (handling = Handling.UNSECURED)
+  public Response test_importmock() {
+    System.out.println("Importing mock");
+
+    pyramusUpdater.updateUserRoles();
+    pyramusUpdater.updateCourses(0, 100);
+    pyramusUpdater.updateStaffMembers(0, 100);
+    pyramusUpdater.updateStudents(0, 100);
+    
+    return Response.ok().build();
+  }
+  
 }
