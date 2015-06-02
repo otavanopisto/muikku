@@ -17,9 +17,11 @@ import fi.muikku.plugins.schooldatapyramus.rest.PyramusClient;
 import fi.muikku.schooldata.SchoolDataBridgeRequestException;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 import fi.muikku.schooldata.UserSchoolDataBridge;
+import fi.muikku.schooldata.entity.GroupUser;
 import fi.muikku.schooldata.entity.Role;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.UserEmail;
+import fi.muikku.schooldata.entity.UserGroup;
 import fi.muikku.schooldata.entity.UserImage;
 import fi.muikku.schooldata.entity.UserProperty;
 import fi.pyramus.rest.model.CourseStaffMemberRole;
@@ -412,6 +414,31 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
     throw new SchoolDataBridgeRequestException("Malformed user identifier");
   }
+  
+  @Override
+  public UserGroup findUserGroup(String identifier) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public List<UserGroup> listUserGroups() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public GroupUser findGroupUser(String identifier) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public List<GroupUser> listGroupUsersByGroup(String groupIdentifier) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+  
 
   private Person findPyramusPerson(Long personId) {
     Person person = pyramusClient.get("/persons/persons/" + personId,
@@ -438,5 +465,7 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   private Student findPyramusStudent(Long studentId) {
     return pyramusClient.get("/students/students/" + studentId, Student.class);
   }
+
+
 
 }
