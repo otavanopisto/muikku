@@ -5,10 +5,10 @@ import fi.muikku.schooldata.entity.GroupUser;
 
 public class PyramusGroupUser implements GroupUser {
 
-  public PyramusGroupUser(String identifier, String userIdentifier, String groupIdentifier){
+  public PyramusGroupUser(String identifier, String userIdentifier/*, String groupIdentifier*/){
     this.identifier = identifier;
     this.userIdentifier = userIdentifier;
-    this.groupIdentifier = groupIdentifier;
+    //this.groupIdentifier = groupIdentifier;
   }
   
   @Override
@@ -31,7 +31,7 @@ public class PyramusGroupUser implements GroupUser {
     return SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
   }
 
-  @Override
+ /* @Override
   public String getGroupIdentifier() {
     return groupIdentifier;
   }
@@ -39,11 +39,11 @@ public class PyramusGroupUser implements GroupUser {
   @Override
   public String getGroupSchoolDataSource() {
     return SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
-  }
+  }*/
 
   private String identifier;
   private String userIdentifier;
-  private String groupIdentifier;
+  //private String groupIdentifier;
   
   
 }

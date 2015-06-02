@@ -32,6 +32,8 @@ import fi.pyramus.rest.model.Person;
 import fi.pyramus.rest.model.School;
 import fi.pyramus.rest.model.StaffMember;
 import fi.pyramus.rest.model.Student;
+import fi.pyramus.rest.model.StudentGroup;
+import fi.pyramus.rest.model.StudentGroupStudent;
 import fi.pyramus.rest.model.StudyProgramme;
 import fi.pyramus.rest.model.UserRole;
 
@@ -416,27 +418,39 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   }
   
   @Override
-  public UserGroup findUserGroup(String identifier) {
-    // TODO Auto-generated method stub
-    return null;
+  public UserGroup findUserGroup(String identifier) throws SchoolDataBridgeRequestException {
+    Long userGroupId = identifierMapper.getPyramusUserGroupId(identifier);
+    if(userGroupId != null){
+      StudentGroup studentGroup = pyramusClient.get(String.format("/students/studentGroups/%d", userGroupId), StudentGroup.class);
+      return studentGroup != null ? entityFactory.createEntity(studentGroup) : null;
+    }
+    
+    throw new SchoolDataBridgeRequestException("Malformed group identifier");
   }
 
   @Override
   public List<UserGroup> listUserGroups() {
-    // TODO Auto-generated method stub
-    return null;
+    return entityFactory.createEntities(pyramusClient.get("/students/studentGroups", StudentGroup[].class));
   }
 
   @Override
-  public GroupUser findGroupUser(String identifier) {
-    // TODO Auto-generated method stub
-    return null;
+  public GroupUser findGroupUser(String groupIdentifier, String identifier) throws SchoolDataBridgeRequestException {
+    Long userGroupId = identifierMapper.getPyramusUserGroupId(groupIdentifier);
+    Long groupUserId = identifierMapper.getPyramusGroupUserId(identifier);
+    if(userGroupId != null && groupUserId != null){
+      return entityFactory.createEntity(
+          pyramusClient.get(String.format("/students/studentGroups/%d/students/%d", userGroupId, groupUserId) , StudentGroupStudent.class));
+    }
+    throw new SchoolDataBridgeRequestException("Malformed group identifier");
   }
 
   @Override
-  public List<GroupUser> listGroupUsersByGroup(String groupIdentifier) {
-    // TODO Auto-generated method stub
-    return null;
+  public List<GroupUser> listGroupUsersByGroup(String groupIdentifier) throws SchoolDataBridgeRequestException {
+    Long userGroupId = identifierMapper.getPyramusUserGroupId(groupIdentifier);
+    if(userGroupId != null){
+      return entityFactory.createEntities(pyramusClient.get(String.format("/students/studentGroups/%d/students", userGroupId), StudentGroupStudent[].class));
+    }
+    throw new SchoolDataBridgeRequestException("Malformed group identifier");
   }
   
 

@@ -137,5 +137,22 @@ public class PyramusIdentifierMapper {
   public String getWorkspaceCourseIdentifier(Long subjectId, Integer courseNumber) {
     return (subjectId == null)||(courseNumber == null) ? null : String.format("%d/%d", subjectId, courseNumber);
   }
+  
+  public Long getPyramusUserGroupId(String userGroupIdentifier){
+    return NumberUtils.createLong(userGroupIdentifier);
+  }
+  
+  public String getUserGroupIdentifier(Long pyramusUserGroupId){
+    return String.valueOf(pyramusUserGroupId);
+  }
+  
+  public Long getPyramusGroupUserId(String groupUserIdentifier) {
+    return NumberUtils.createLong(groupUserIdentifier);
+  }
+  
+  public String getGroupUserIdentifier(Long pyramusGroupUserId){
+    return String.valueOf(pyramusGroupUserId);
+  }
+  
 
 }
