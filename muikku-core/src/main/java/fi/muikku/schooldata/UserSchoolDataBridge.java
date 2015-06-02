@@ -2,6 +2,8 @@ package fi.muikku.schooldata;
 
 import java.util.List;
 
+import fi.muikku.schooldata.entity.UserGroup;
+import fi.muikku.schooldata.entity.GroupUser;
 import fi.muikku.schooldata.entity.Role;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.UserEmail;
@@ -239,4 +241,17 @@ public interface UserSchoolDataBridge {
 	
 	public Role findUserEnvironmentRole(String userIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 
+	
+	/* UserGroups */
+	
+	public UserGroup findUserGroup(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;;
+	
+	public List<UserGroup> listUserGroups() throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;;
+	
+	/* GroupUsers */
+	
+	public GroupUser findGroupUser(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;;
+	
+	public List<GroupUser> listGroupUsersByGroup(String groupIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;;
+	
 }
