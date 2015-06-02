@@ -169,7 +169,7 @@ public class PyramusMocks{
         .withBody(studentArrayJson)
         .withStatus(200)));
 
-    StaffMember staffMember1 = new StaffMember((long) 2, (long) 2, null, "Test", "Staff1member", null, fi.pyramus.rest.model.UserRole.ADMINISTRATOR, tags, variables);
+    StaffMember staffMember1 = new StaffMember((long) 2, (long) 2, null, "Test", "Staff1member", null, fi.pyramus.rest.model.UserRole.MANAGER, tags, variables);
     String staffMemberJson = objectMapper.writeValueAsString(staffMember1);
     stubFor(get(urlEqualTo("/1/staff/members/2"))
       .willReturn(aResponse()
@@ -177,7 +177,7 @@ public class PyramusMocks{
         .withBody(staffMemberJson)
         .withStatus(200)));
     
-    StaffMember staffMember2 = new StaffMember((long) 3, (long) 3, null, "Test", "Staff2member", null, fi.pyramus.rest.model.UserRole.ADMINISTRATOR, tags, variables);
+    StaffMember staffMember2 = new StaffMember((long) 3, (long) 3, null, "Test", "Staff2member", null, fi.pyramus.rest.model.UserRole.MANAGER, tags, variables);
     staffMemberJson = objectMapper.writeValueAsString(staffMember2);
     stubFor(get(urlEqualTo("/1/staff/members/3"))
       .willReturn(aResponse()
@@ -185,7 +185,7 @@ public class PyramusMocks{
         .withBody(staffMemberJson)
         .withStatus(200)));
     
-    StaffMember staffMember3 = new StaffMember((long) 4, (long) 4, null, "Test", "Staff3member", null, fi.pyramus.rest.model.UserRole.ADMINISTRATOR, tags, variables);
+    StaffMember staffMember3 = new StaffMember((long) 4, (long) 4, null, "Test", "Administrator", null, fi.pyramus.rest.model.UserRole.ADMINISTRATOR, tags, variables);
     staffMemberJson = objectMapper.writeValueAsString(staffMember3);
     stubFor(get(urlEqualTo("/1/staff/members/4"))
       .willReturn(aResponse()
