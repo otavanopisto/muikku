@@ -25,8 +25,5 @@ public class ForumBackingBean {
   public List<EnvironmentForumArea> listForumAreas() {
     return forumController.listEnvironmentForums();
   }
-  
-  public void setup() {
-    forumController.createEnvironmentForumArea("Yleinen keskustelu", null);
-  }
+
 }

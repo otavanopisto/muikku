@@ -47,13 +47,13 @@
         	$(aBt).m3modal({
         		title : title.html(),
         		description : desc.html(),
-        		content: $('<div><div><textarea name="signUpMessage"></textarea></div></div>'),
+        		content: $('<div><div><label>' + getLocaleText("plugin.coursepicker.singup.messageLabel") + '</label><textarea name="signUpMessage"></textarea></div></div>'),
         		modalgrid : 24,
         		contentgrid : 16,
         		
         		options: [
             		  {
-            		    caption: "Haluan herätteitä",
+            		    caption: getLocaleText("plugin.coursepicker.singup.notificationLabel"),
             		    name : "excitation",
             		    type : "checkbox",
             		    action: function (e) {
@@ -65,7 +65,7 @@
             		],
         	    buttons: [
         		  {
-        		    caption: "Ilmoittaudu",
+        		    caption: getLocaleText("plugin.coursepicker.singup.buttonLabel"),
         		    name : "signup",
         		    action: function (e) {
         		      var msg = e.contentElement.find("textarea[name='signUpMessage']").val();

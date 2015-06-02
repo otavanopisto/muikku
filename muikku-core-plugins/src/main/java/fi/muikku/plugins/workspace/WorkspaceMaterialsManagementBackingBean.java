@@ -19,12 +19,15 @@ import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.Workspace;
+import fi.muikku.security.MuikkuPermissions;
+import fi.muikku.session.SessionController;
+import fi.muikku.session.local.LocalSession;
 import fi.otavanopisto.security.LoggedIn;
 
 @Named
 @Stateful
 @RequestScoped
-@Join (path = "/workspace/{workspaceUrlName}/materials-management", to = "/jsf/workspace/materials-management.jsf")
+@Join(path = "/workspace/{workspaceUrlName}/materials-management", to = "/jsf/workspace/materials-management.jsf")
 @LoggedIn
 public class WorkspaceMaterialsManagementBackingBean {
 
@@ -34,75 +37,82 @@ public class WorkspaceMaterialsManagementBackingBean {
   @Parameter
   private String workspaceUrlName;
   
-	@Inject
-	private WorkspaceController workspaceController;
-	
-	@Inject
-	private WorkspaceMaterialController workspaceMaterialController;
+  @LocalSession
+  @Inject
+  private SessionController sessionController;
 
-	@Inject
+  @Inject
+  private WorkspaceController workspaceController;
+
+  @Inject
+  private WorkspaceMaterialController workspaceMaterialController;
+
+  @Inject
   @Named
   private WorkspaceBackingBean workspaceBackingBean;
 
-	@RequestAction
-	public String init() {
-	  String urlName = getWorkspaceUrlName();
-	  
-		if (StringUtils.isBlank(urlName)) {
-		  return NavigationRules.NOT_FOUND;
-		}
-		
-		WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByUrlName(urlName);
-		if (workspaceEntity == null) {
-		  return NavigationRules.NOT_FOUND;
-		}
-		
-		rootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
+  @RequestAction
+  public String init() {
+    String urlName = getWorkspaceUrlName();
+
+    if (StringUtils.isBlank(urlName)) {
+      return NavigationRules.NOT_FOUND;
+    }
+
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityByUrlName(urlName);
+    if (workspaceEntity == null) {
+      return NavigationRules.NOT_FOUND;
+    }
+    
+    if (!sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, workspaceEntity)) {
+      return NavigationRules.ACCESS_DENIED;
+    }
+
+    rootFolder = workspaceMaterialController.findWorkspaceRootFolderByWorkspaceEntity(workspaceEntity);
     workspaceEntityId = workspaceEntity.getId();
     workspaceBackingBean.setWorkspaceUrlName(urlName);
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
     workspaceName = workspace.getName();
-    
+
     try {
       contentNodes = workspaceMaterialController.listWorkspaceMaterialsAsContentNodes(workspaceEntity, true);
-    }
-    catch (WorkspaceMaterialException e) {
+    } catch (WorkspaceMaterialException e) {
       logger.log(Level.SEVERE, "Error loading materials", e);
       return NavigationRules.INTERNAL_ERROR;
     }
-    
-    return null;
-	}
-	
-	public WorkspaceRootFolder getRootFolder() {
-		return rootFolder;
-	}
-	
-	public void setRootFolder(WorkspaceRootFolder rootFolder) {
-		this.rootFolder = rootFolder;
-	}
-	
-	public String getWorkspaceUrlName() {
-		return workspaceUrlName;
-	}
 
-	public void setWorkspaceUrlName(String workspaceUrlName) {
-		this.workspaceUrlName = workspaceUrlName;
-	}
+    return null;
+  }
+
+  public WorkspaceRootFolder getRootFolder() {
+    return rootFolder;
+  }
+
+  public void setRootFolder(WorkspaceRootFolder rootFolder) {
+    this.rootFolder = rootFolder;
+  }
+
+  public String getWorkspaceUrlName() {
+    return workspaceUrlName;
+  }
+
+  public void setWorkspaceUrlName(String workspaceUrlName) {
+    this.workspaceUrlName = workspaceUrlName;
+  }
 
   public String getWorkspaceName() {
     return workspaceName;
   }
-  
+
   public Long getWorkspaceEntityId() {
     return workspaceEntityId;
   }
-  
+
   public List<ContentNode> getContentNodes() {
     return contentNodes;
   }
 
-	private WorkspaceRootFolder rootFolder;
+  private WorkspaceRootFolder rootFolder;
   private String workspaceName;
   private Long workspaceEntityId;
   private List<ContentNode> contentNodes;
