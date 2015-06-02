@@ -88,7 +88,7 @@ public class PermissionsPluginController {
   private Event<PermissionDiscoveredEvent> permissionDiscoveredEvent;
 	
   public void processPermissions() {
-    logger.log(Level.FINE, "Starting permission gathering");
+    logger.log(Level.INFO, "Starting permission gathering");
     
     // Ensure the system roles exist
     
@@ -100,7 +100,7 @@ public class PermissionsPluginController {
     // Process permissions
     
     for (MuikkuPermissionCollection collection : permissionCollections) {
-      logger.log(Level.FINEST, "Processing permission collection " + collection.getClass().getSimpleName());
+      logger.log(Level.INFO, "Processing permission collection " + collection.getClass().getSimpleName());
 
       List<String> permissions = collection.listPermissions();
 
@@ -108,7 +108,7 @@ public class PermissionsPluginController {
         Permission permission = permissionDAO.findByName(permissionName);
         
         if (permission == null) {
-          logger.log(Level.FINEST, "Recording new permission " + permissionName);
+          logger.log(Level.INFO, "Recording new permission " + permissionName);
 
           try {
             final String permissionScope = collection.getPermissionScope(permissionName);
@@ -162,7 +162,7 @@ public class PermissionsPluginController {
   
                       // TODO Workspace creation & templates - is this necessary and bulletproof?
                       for (WorkspaceEntity workspace: workspaces) {
-                        logger.log(Level.FINEST, "Adding workspace role permission for workspace " + workspace.getId() + " role: " + role.getName());
+                        logger.log(Level.INFO, "Adding workspace role permission for workspace " + workspace.getId() + " role: " + role.getName());
                         
                         workspaceRolePermissionDAO.create(workspace, role, permission);
                       }
