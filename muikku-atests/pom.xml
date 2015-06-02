@@ -535,7 +535,7 @@
                     <batch>true</batch>
                     <commands>
                       <!-- <command>/system-property=muikku-data:add(value="${project.build.directory}/../../muikku-data/muikku-data.xml,${project.build.directory}/../../muikku-data/muikku-data-private.xml")</command> -->
-                      <command>/system-property=muikku-data:add(value="${it.build.directory}/../src/test/resources/muikku-data/muikku-data-ui.xml")</command>
+                      <command>/system-property=muikku-data:add(value="${it.build.directory}/../src/test/resources/muikku-data/muikku-data.xml")</command>
                       <command>/system-property=jsf.project.stage:add(value="Production")</command>
                       <command>/core-service=management/security-realm=ssl-realm:add()</command>
                       <command>/core-service=management/security-realm=ssl-realm/server-identity=ssl:add(keystore-path="${it.keystore.file}",keystore-password="${it.keystore.pass}",alias="${it.keystore.alias}")</command>

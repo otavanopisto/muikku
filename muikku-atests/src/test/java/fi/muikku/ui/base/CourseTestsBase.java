@@ -3,7 +3,20 @@ package fi.muikku.ui.base;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -102,6 +115,35 @@ public class CourseTestsBase extends AbstractUITest {
     PyramusMocks.workspace1PyramusMock();  
     asAdmin().get("/test/reindex");
     
+    HttpClient httpClient = new DefaultHttpClient();
+    HttpPost httpPost = new HttpPost("https://dev.muikku.fi:8443/pyramus/webhook");
+    // Request parameters and other properties.
+    List<NameValuePair> params = new ArrayList<NameValuePair>();
+    params.add(new BasicNameValuePair("webhook.secret", "11111111-1111-1111-1111-111111111111"));
+    try {
+        httpPost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
+    } catch (UnsupportedEncodingException e) {
+        // writing error to Log
+        e.printStackTrace();
+    }
+    /*
+     * Execute the HTTP Request
+     */
+    try {
+        HttpResponse response = httpClient.execute(httpPost);
+        HttpEntity respEntity = response.getEntity();
+
+        if (respEntity != null) {
+            // EntityUtils to get the response content
+            String content =  EntityUtils.toString(respEntity);
+        }
+    } catch (ClientProtocolException e) {
+        // writing exception to log
+        e.printStackTrace();
+    } catch (IOException e) {
+        // writing exception to log
+        e.printStackTrace();
+    }
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
     waitForElementToBePresent(By.className("index"));
     getWebDriver().get(getAppUrl(true) + "/workspace/testCourse");
