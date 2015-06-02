@@ -10,6 +10,7 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -279,10 +280,15 @@ public class DeusNexContentParser {
   }
 
   private Node handleIxImage(Document ownerDocument, Element ixImageElement) throws XPathExpressionException {
-    Integer resRef = NumberUtils.createInteger(ixImageElement.getAttribute("res_ref"));
-    Integer width = NumberUtils.createInteger(ixImageElement.getAttribute("width"));
-    Integer height = NumberUtils.createInteger(ixImageElement.getAttribute("height"));
-    
+    Attr resRefAttr = ixImageElement.getAttributeNode("res_ref");
+    if (resRefAttr == null) {
+      return null;
+    }
+    Attr widthAttr = ixImageElement.getAttributeNode("width");
+    Attr heightAttr = ixImageElement.getAttributeNode("height");
+    Integer resRef = NumberUtils.createInteger(resRefAttr.getValue());
+    Integer width = widthAttr == null ? null : NumberUtils.createInteger(widthAttr.getValue());
+    Integer height = heightAttr == null ? null : NumberUtils.createInteger(heightAttr.getValue());
     if (embeddedItemElementHandler != null) {
       return embeddedItemElementHandler.handleEmbeddedImage(ownerDocument, null, null, width, height, 0, null, resRef);
     } else {
