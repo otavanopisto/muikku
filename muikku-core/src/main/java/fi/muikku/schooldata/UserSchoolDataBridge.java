@@ -250,7 +250,7 @@ public interface UserSchoolDataBridge {
 	
 	/* GroupUsers */
 	
-	public GroupUser findGroupUser(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;;
+	public GroupUser findGroupUser(String groupIdentifier, String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;;
 	
 	public List<GroupUser> listGroupUsersByGroup(String groupIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;;
 	

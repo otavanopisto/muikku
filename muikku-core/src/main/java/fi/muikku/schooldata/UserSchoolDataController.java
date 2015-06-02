@@ -305,12 +305,12 @@ public class UserSchoolDataController {
 
   /* Group users */
 
-  public GroupUser findGroupUser(SchoolDataSource schoolDataSource, String identifier) {
+  public GroupUser findGroupUser(SchoolDataSource schoolDataSource, String groupIdentifier, String identifier) {
     if (schoolDataSource != null) {
       UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
       if (schoolDataBridge != null) {
         try {
-          return schoolDataBridge.findGroupUser(identifier);
+          return schoolDataBridge.findGroupUser(groupIdentifier, identifier);
         } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
           logger.log(Level.SEVERE, "SchoolDataBridge reported an error while finding group user", e);
         }
