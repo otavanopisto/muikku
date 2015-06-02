@@ -22,11 +22,23 @@ public class IndexPageTestsBase extends AbstractUITest {
   }
   
   @Test
-  public void loginTest() throws IOException {
+  public void studentLoginTest() throws IOException {
     PyramusMocks.student1LoginMock();
     PyramusMocks.personsPyramusMocks();
     getWebDriver().get(getAppUrl() + "/login?authSourceId=1");
     boolean elementExists = getWebDriver().findElements(By.className("index")).size() > 0;
+    takeScreenshot();
+    WireMock.reset();
+    assertTrue(elementExists);
+  }
+  
+  @Test
+  public void adminLoginTest() throws IOException {
+    PyramusMocks.adminLoginMock();
+    PyramusMocks.personsPyramusMocks();
+    getWebDriver().get(getAppUrl() + "/login?authSourceId=1");
+    boolean elementExists = getWebDriver().findElements(By.className("index")).size() > 0;
+    takeScreenshot();
     WireMock.reset();
     assertTrue(elementExists);
   }

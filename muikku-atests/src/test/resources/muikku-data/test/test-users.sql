@@ -56,5 +56,6 @@ insert into UserSchoolDataIdentifier (id, identifier, dataSource_id, userEntity_
 insert into UserEmailEntity (id,user_id,address) values (4, 4, 'admin@made.up');
 insert into UserIdentification (id, externalId, authSource_id, user_id) values (4, 4, 1, 4);
 
+--insert into superuser (id) values (4);
 
 SET REFERENTIAL_INTEGRITY TRUE;
