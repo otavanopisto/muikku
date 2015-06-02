@@ -734,10 +734,104 @@ body.workspace-discussions {
   
   .mf-content-area {
     background-color: #fff;
+    
+    .di-message {
+      margin:5px;
+          
+      &.closed {
+        cursor:pointer;
+      }
+    
+      .mf-item-description {
+        cursor:default;
+      }
+    
+    }
+    
   }
   
   div[data-name="workspace.content-tools-top.center"] {
     height: 70px;
+  }
+  
+  .sn-container {
+  
+    h3 {
+      color: #fff;
+      font-weight: 300;
+      margin: 0 0 10px;
+      text-transform: uppercase;
+    }
+    
+    .di-message-create {
+    
+      .mf-content {
+      
+        .mf-fieldRow {
+          position:relative;
+          margin:2px 0 3px 0;
+          
+          .mf-textfield {
+            position:relative;
+            top:0;
+          
+              input[type="textfield"] {
+              border:1px solid #fff;
+              border-radius:3px;
+              padding:5px 4px;
+              line-height:1em;
+            }
+            
+          }
+          
+          .mf-select {
+            position:relative;
+            top:0;
+          
+            select {
+        
+              &:hover,
+              &:active,
+              &:focus {
+                box-shadow:none;
+              }
+            
+            }
+          
+          }
+          
+        }
+
+      }
+    
+      .mf-toolbar {
+      
+        input {
+          border-radius:0px;
+          border:0;
+          color:#fff;
+          font-weight:400;
+          text-transform:uppercase;
+          margin:5px;
+          outline:none;
+          font-family:"Open Sans";
+          min-width:90px;
+          padding:10px;
+          font-size:16px;
+        }
+      
+        input[name="send"] {
+          background:#27b91c;
+        }
+        
+        input[name="cancel"] {
+          background:#7391a7;
+        }
+      
+      }
+    
+    }
+  
   }
   
 }
