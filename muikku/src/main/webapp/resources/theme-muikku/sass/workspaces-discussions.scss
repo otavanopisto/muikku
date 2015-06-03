@@ -711,11 +711,15 @@ body.workspace-discussions {
   
   .mf-content-functions {
     background-color: #fff;
-    border-bottom:1px solid #eee;
     height:75px;
     
     .mf-button-container {
       background-color: #fff;
+      
+      .di-new-message-button {
+        font-weight:400;
+      }
+      
     }
     
     .mf-view-container {
@@ -737,9 +741,91 @@ body.workspace-discussions {
     
     .di-message {
       margin:5px;
+      transition:box-shadow 0.3s ease-in-out;
           
       &.closed {
-        cursor:pointer;
+        height:60px;
+        
+        &:hover {
+          box-shadow:0 0 5px #b6e2ff;
+        }
+        
+        .di-message-meta {
+          height:60px;
+        
+          .di-message-meta-topic {
+            color:#0099ff;
+            line-height:1.7em;
+            
+            span {
+              margin:0 0 0 3px;
+              cursor:pointer;
+              
+              &:hover {
+                text-decoration:underline; 
+              }
+            }
+            
+            
+          }
+          
+          .di-message-meta-content {
+            font-size:14px;
+            height:1.7em;
+            line-height:1.7em;
+            overflow:hidden;
+            margin:8px 0 0 0;
+            
+            span {
+              margin:0 0 0 3px;
+              
+              p {
+                margin:0;
+              }
+              
+            }
+          
+          }
+        
+        }
+        
+        .di-message-details {
+          height:60px;
+          
+          .di-message-area-name {
+            padding:20px 15px 20px 30px;
+            height:40px;
+
+            span[class^="mf-category-"] {
+              border-left-width:2px;
+            }
+             
+            span {
+              display:block;
+              font-size:14px;
+              line-height:18px;
+              padding:0 5px;
+            }
+            
+          }
+           
+          .di-message-activity {
+            padding:15px;
+            height:60px;
+            color:#000;
+            font-size:14px;
+          }
+        }
+
+      }
+      
+      &.open {
+      
+        h3 {
+          margin:0 0 1em;
+        }
+        
+        
       }
     
       .mf-item-description {
@@ -754,7 +840,8 @@ body.workspace-discussions {
     height: 70px;
   }
   
-  .sn-container {
+  /* Social navigation with New Message/Area and Answer Message */
+  #socialNavigation.sn-container {
   
     h3 {
       color: #fff;
@@ -763,7 +850,8 @@ body.workspace-discussions {
       text-transform: uppercase;
     }
     
-    .di-message-create {
+    .di-message-create,
+    .di-area-create {
     
       .mf-content {
       
@@ -775,8 +863,9 @@ body.workspace-discussions {
             position:relative;
             top:0;
           
-              input[type="textfield"] {
+            input[type="textfield"] {
               border:1px solid #fff;
+              color:#000;
               border-radius:3px;
               padding:5px 4px;
               line-height:1em;
