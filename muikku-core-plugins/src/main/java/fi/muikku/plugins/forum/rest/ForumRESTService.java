@@ -184,7 +184,6 @@ public class ForumRESTService extends PluginRESTService {
   @Path ("/areas/{AREAID}")
   @RESTPermit(ForumResourcePermissionCollection.FORUM_DELETEENVIRONMENTFORUM)
   public Response deleteArea(@PathParam ("AREAID") Long areaId) throws AuthorizationException {
-    System.out.println("Deleting area " + areaId);
     ForumArea forumArea = forumController.getForumArea(areaId);
 
     forumController.deleteArea(forumArea);
@@ -270,7 +269,6 @@ public class ForumRESTService extends PluginRESTService {
   @Path ("/areas/{AREAID}/threads/{THREADID}")
   @RESTPermit(handling = Handling.INLINE)
   public Response deleteThread(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId) throws AuthorizationException {
-    System.out.println("Deleting thread " + areaId + "/" + threadId);
     ForumThread thread = forumController.getForumThread(threadId);
 
     if (sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_DELETEMESSAGES, thread)) {
@@ -401,7 +399,6 @@ public class ForumRESTService extends PluginRESTService {
   @Path ("/areas/{AREAID}/threads/{THREADID}/replies/{REPLYID}")
   @RESTPermit(handling = Handling.INLINE)
   public Response deleteReply(@PathParam ("AREAID") Long areaId, @PathParam ("THREADID") Long threadId, @PathParam ("REPLYID") Long replyId) throws AuthorizationException {
-    System.out.println("Deleting reply " + areaId + "/" + threadId + "/" + replyId);
     ForumThreadReply reply = forumController.getForumThreadReply(replyId);
 
     if (sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_DELETEMESSAGES, reply.getForumArea())) {
