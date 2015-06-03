@@ -1,12 +1,5 @@
 package fi.muikkku.ui;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.matching;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 import static com.jayway.restassured.RestAssured.certificate;
 import static com.jayway.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
@@ -14,13 +7,9 @@ import static org.junit.Assert.assertEquals;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Rule;
 import org.openqa.selenium.By;
@@ -32,8 +21,6 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
@@ -45,13 +32,6 @@ import com.jayway.restassured.response.Response;
 import com.jayway.restassured.specification.RequestSpecification;
 
 import fi.muikku.AbstractIntegrationTest;
-import fi.pyramus.rest.model.Course;
-import fi.pyramus.rest.model.CourseStaffMemberRole;
-import fi.pyramus.rest.model.Email;
-import fi.pyramus.rest.model.Person;
-import fi.pyramus.rest.model.StaffMember;
-import fi.pyramus.rest.model.Student;
-import fi.pyramus.rest.model.WhoAmI;
 
 public class AbstractUITest extends AbstractIntegrationTest {
 

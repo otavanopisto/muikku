@@ -1,5 +1,4 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <data xmlns="../muikku-core-plugins/schema/1.0/muikku-data.xsd">
   <script run="ONCE" handler="MySQL" url="test/test-data.sql" />
-  <script run="ONCE" handler="MySQL" url="test/test-users.sql" />
 </data>

@@ -113,7 +113,6 @@ public class CourseTestsBase extends AbstractUITest {
     PyramusMocks.adminLoginMock();
     PyramusMocks.personsPyramusMocks();
     PyramusMocks.workspace1PyramusMock();  
-    asAdmin().get("/test/reindex");
     
     HttpClient httpClient = new DefaultHttpClient();
     HttpPost httpPost = new HttpPost("https://dev.muikku.fi:8443/pyramus/webhook");
@@ -144,6 +143,7 @@ public class CourseTestsBase extends AbstractUITest {
         // writing exception to log
         e.printStackTrace();
     }
+//    asAdmin().get("/test/reindex");
     getWebDriver().get(getAppUrl(true) + "/login?authSourceId=1");
     waitForElementToBePresent(By.className("index"));
     getWebDriver().get(getAppUrl(true) + "/workspace/testCourse");

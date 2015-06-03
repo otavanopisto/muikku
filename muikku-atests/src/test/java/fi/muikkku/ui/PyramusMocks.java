@@ -7,6 +7,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -163,7 +164,7 @@ public class PyramusMocks{
         .withBody(personArrayJson)
         .withStatus(200)));
     
-    stubFor(get(urlEqualTo("/1/students/students?filterArchived=false&firstResult=0&maxResults=100"))
+    stubFor(get(urlMatching("/1/students/students?filterArchived=false&firstResult=.*&maxResults=.*"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody(studentArrayJson)
@@ -235,11 +236,19 @@ public class PyramusMocks{
         .withBody(staff3EmailJson)
         .withStatus(200)));
     
+//    CourseStaffMemberRole teacherRole = new CourseStaffMemberRole((long) 1, "Opettaja");
+//    CourseStaffMemberRole tutorRole = new CourseStaffMemberRole((long) 2, "Tutor");
+//    CourseStaffMemberRole vRole = new CourseStaffMemberRole((long) 3, "Vastuuhenkilö");
+//    CourseStaffMemberRole[] cRoleArray = {teacherRole, tutorRole, vRole};
+//    String cRoleJson = objectMapper.writeValueAsString(cRoleArray);
     CourseStaffMemberRole teacherRole = new CourseStaffMemberRole((long) 1, "Opettaja");
     CourseStaffMemberRole tutorRole = new CourseStaffMemberRole((long) 2, "Tutor");
     CourseStaffMemberRole vRole = new CourseStaffMemberRole((long) 3, "Vastuuhenkilö");
-    CourseStaffMemberRole[] cRoleArray = {teacherRole, tutorRole, vRole};
+    List<CourseStaffMemberRole> cRoleArray = Arrays.asList(teacherRole, tutorRole, vRole);
+
     String cRoleJson = objectMapper.writeValueAsString(cRoleArray);
+    System.out.println("Kurssi roolit: " + cRoleJson);
+    
     stubFor(get(urlEqualTo("/1/courses/staffMemberRoles"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
@@ -280,6 +289,12 @@ public class PyramusMocks{
       Course[] courseArray = { course };
       String courseArrayJson = objectMapper.writeValueAsString(courseArray);
       stubFor(get(urlEqualTo("/1/courses/courses"))
+        .willReturn(aResponse()
+          .withHeader("Content-Type", "application/json")
+          .withBody(courseArrayJson)
+          .withStatus(200)));
+      
+      stubFor(get(urlMatching("/1/courses/courses?filterArchived=false&firstResult=.*&maxResults=.*"))
         .willReturn(aResponse()
           .withHeader("Content-Type", "application/json")
           .withBody(courseArrayJson)
@@ -351,6 +366,7 @@ public class PyramusMocks{
       
     }
   
+  @SuppressWarnings("null")
   public static void adminPyramusMocks() throws JsonProcessingException {
     ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);    
     Map<String, String> variables = null;
@@ -492,9 +508,14 @@ public class PyramusMocks{
     CourseStaffMemberRole teacherRole = new CourseStaffMemberRole((long) 1, "Opettaja");
     CourseStaffMemberRole tutorRole = new CourseStaffMemberRole((long) 2, "Tutor");
     CourseStaffMemberRole vRole = new CourseStaffMemberRole((long) 3, "Vastuuhenkilö");
-    CourseStaffMemberRole[] cRoleArray = {teacherRole, tutorRole, vRole};
+    List<CourseStaffMemberRole> cRoleArray = null;
+    cRoleArray.add(teacherRole);
+    cRoleArray.add(tutorRole);
+    cRoleArray.add(vRole);
+
     String cRoleJson = objectMapper.writeValueAsString(cRoleArray);
-    stubFor(get(urlMatching("/1/courses/staffMemberRoles"))
+    System.out.println("Kurssi roolit: " + cRoleJson);
+    stubFor(get(urlEqualTo("/1/courses/staffMemberRoles"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody(cRoleJson)

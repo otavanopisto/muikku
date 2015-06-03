@@ -355,41 +355,6 @@
             </executions>
           </plugin>
 
-          <!-- <plugin> -->
-          <!-- <groupId>org.codehaus.mojo</groupId> -->
-          <!-- <artifactId>sql-maven-plugin</artifactId> -->
-          <!-- <version>1.5</version> -->
-          <!-- <dependencies> -->
-          <!-- <dependency> -->
-          <!-- <groupId>com.h2database</groupId> -->
-          <!-- <artifactId>h2</artifactId> -->
-          <!-- <version>${h2.version}</version> -->
-          <!-- </dependency> -->
-          <!-- </dependencies> -->
-
-          <!-- <configuration> -->
-          <!-- <driver>${it.jdbc.driver}</driver> -->
-          <!-- <url>${it.jdbc.url}</url> -->
-          <!-- <username>${it.jdbc.username}</username> -->
-          <!-- <password>${it.jdbc.password}</password> -->
-          <!-- </configuration> -->
-          <!-- <executions> -->
-          <!-- <execution> -->
-          <!-- <id>create-schema</id> -->
-          <!-- <phase>pre-integration-test</phase> -->
-          <!-- <goals> -->
-          <!-- <goal>execute</goal> -->
-          <!-- </goals> -->
-          <!-- <configuration> -->
-          <!-- <autocommit>true</autocommit> -->
-          <!-- <srcFiles> -->
-          <!-- <srcFile>src/test/resources/rest-data.sql</srcFile> -->
-          <!-- </srcFiles> -->
-          <!-- </configuration> -->
-          <!-- </execution> -->
-          <!-- </executions> -->
-          <!-- </plugin> -->
-
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>keytool-maven-plugin</artifactId>
@@ -535,7 +500,7 @@
                     <batch>true</batch>
                     <commands>
                       <!-- <command>/system-property=muikku-data:add(value="${project.build.directory}/../../muikku-data/muikku-data.xml,${project.build.directory}/../../muikku-data/muikku-data-private.xml")</command> -->
-                      <command>/system-property=muikku-data:add(value="${it.build.directory}/../src/test/resources/muikku-data/muikku-data.xml")</command>
+                      <command>/system-property=muikku-data:add(value="${it.build.directory}/../src/test/resources/muikku-data/muikku-data-ui.xml")</command>
                       <command>/system-property=jsf.project.stage:add(value="Production")</command>
                       <command>/core-service=management/security-realm=ssl-realm:add()</command>
                       <command>/core-service=management/security-realm=ssl-realm/server-identity=ssl:add(keystore-path="${it.keystore.file}",keystore-password="${it.keystore.pass}",alias="${it.keystore.alias}")</command>
@@ -724,41 +689,6 @@
               </execution>
             </executions>
           </plugin>
-
-          <!-- <plugin> -->
-          <!-- <groupId>org.codehaus.mojo</groupId> -->
-          <!-- <artifactId>sql-maven-plugin</artifactId> -->
-          <!-- <version>1.5</version> -->
-          <!-- <dependencies> -->
-          <!-- <dependency> -->
-          <!-- <groupId>com.h2database</groupId> -->
-          <!-- <artifactId>h2</artifactId> -->
-          <!-- <version>${h2.version}</version> -->
-          <!-- </dependency> -->
-          <!-- </dependencies> -->
-
-          <!-- <configuration> -->
-          <!-- <driver>${it.jdbc.driver}</driver> -->
-          <!-- <url>${it.jdbc.url}</url> -->
-          <!-- <username>${it.jdbc.username}</username> -->
-          <!-- <password>${it.jdbc.password}</password> -->
-          <!-- </configuration> -->
-          <!-- <executions> -->
-          <!-- <execution> -->
-          <!-- <id>create-schema</id> -->
-          <!-- <phase>pre-integration-test</phase> -->
-          <!-- <goals> -->
-          <!-- <goal>execute</goal> -->
-          <!-- </goals> -->
-          <!-- <configuration> -->
-          <!-- <autocommit>true</autocommit> -->
-          <!-- <srcFiles> -->
-          <!-- <srcFile>src/test/resources/rest-data.sql</srcFile> -->
-          <!-- </srcFiles> -->
-          <!-- </configuration> -->
-          <!-- </execution> -->
-          <!-- </executions> -->
-          <!-- </plugin> -->
 
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
