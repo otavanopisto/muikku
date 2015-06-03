@@ -1,4 +1,30 @@
 $(document).ready(function() {
+  
+  function confirmThreadRemoval(confirmCallback) {
+    renderDustTemplate('discussion/discussion-confirm-thread-removal.dust', {}, $.proxy(function(text) {
+      var dialog = $(text);
+      $(text).dialog({
+        modal : true,
+        resizable : false,
+        width : 360,
+        dialogClass : "discussion-management-dialog",
+        buttons : [ {
+          'text' : dialog.attr('data-button-confirm-text'),
+          'class' : 'delete-button',
+          'click' : function(event) {
+            $(this).dialog("close");
+            confirmCallback();
+          }
+        }, {
+          'text' : dialog.attr('data-button-cancel-text'),
+          'class' : 'cancel-button',
+          'click' : function(event) {
+            $(this).dialog("close");
+          }
+        } ]
+      });
+    }, this));
+  }
 
   DiscImpl = $.klass({
 
@@ -9,6 +35,7 @@ $(document).ready(function() {
       $(DiscImpl.msgContainer).on("click", '.di-message:not(.open) .di-message-meta-topic span', $.proxy(this.loadThread, this));
       $(DiscImpl.msgContainer).on("click", '.icon-goback', $.proxy(this.refreshLatest, this));
       $(DiscImpl.msgContainer).on("click", '.di-message-reply-link', $.proxy(this.replyThread, this));
+      $(DiscImpl.msgContainer).on("click", '.di-remove-thread-link', $.proxy(this._onRemoveThreadClick,this)); 
     },
 
     refreshLatest : function() {
@@ -209,6 +236,21 @@ $(document).ready(function() {
           });
         }
       });
+    },
+    
+    _onRemoveThreadClick : function(event) {
+      confirmThreadRemoval($.proxy(function() {
+        var areaId = $('input[name="areaId"]').val();
+        var threadId = $('input[name="threadId"]').val();
+
+        mApi().forum.areas.threads.del(areaId, threadId).callback($.proxy(function(err, result) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            window.location.reload(true);
+          }
+        }, this));
+      }, this));
     },
 
     replyThread : function(event) {
