@@ -35,7 +35,7 @@ public class ForumBackingBean {
   
   @RequestAction
   public String init() {
-    forumAreas = forumController.listEnvironmentForums();
+    List<EnvironmentForumArea> forumAreas = forumController.listEnvironmentForums();
     Map<Long, AreaPermission> areaPermissions = new HashMap<>();
     
     for (EnvironmentForumArea forumArea : forumAreas) {
@@ -55,12 +55,7 @@ public class ForumBackingBean {
     return areaPermissions;
   }
   
-  public List<EnvironmentForumArea> listForumAreas() {
-    return forumAreas;
-  }
-  
   private String areaPermissions;
-  private List<EnvironmentForumArea> forumAreas;
 
   public static class AreaPermission {
     
