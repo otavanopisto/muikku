@@ -140,6 +140,7 @@ public class ForumRESTService extends PluginRESTService {
 
   @GET
   @Path ("/workspace/{WORKSPACEID}/areas")
+  @RESTPermit(handling = Handling.INLINE)
   public Response listWorkspaceForumAreas(@PathParam ("WORKSPACEID") Long workspaceId) throws AuthorizationException {
     WorkspaceEntity workspaceEntity = workspaceEntityController.findWorkspaceEntityById(workspaceId);
     
