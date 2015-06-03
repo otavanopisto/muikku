@@ -4,7 +4,9 @@
     <h3><span class="mf-category-{forumAreaId}-font">{areaName}</span> - {title}</h3>
   </div>
   <div class="mf-item-details di-message-details">
-    <div class="mf-item-details-container di-message-details-container">       
+    <div class="mf-item-details-container di-message-details-container">    
+      <a class="di-remove-thread-link">{#localize key="plugin.discussion.removeThread"/}</a>
+       
       <div class="mf-item-description di-message-info">
         <div class="di-message-details-sender">
           <input type="hidden" name="mf-person-id" value="{sender}"/>
@@ -32,6 +34,7 @@
     </div>
   </div>
   <input type="hidden" name="areaId" value="{forumAreaId}"/>
+  <input type="hidden" name="threadId" value="{id}"/>
 </div>  
 
 
