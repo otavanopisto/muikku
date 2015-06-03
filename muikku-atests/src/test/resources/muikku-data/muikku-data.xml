@@ -4,4 +4,8 @@
     run="ONCE"
     handler="MySQL"
     url="test/test-data.sql" />
+  <script
+    run="ONCE"
+    handler="MySQL"
+    url="test/test-users.sql" />
 </data>
