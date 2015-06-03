@@ -25,6 +25,7 @@ import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.pyramus.webhooks.data.WebhookCourseData;
 import fi.pyramus.webhooks.data.WebhookCourseStaffMemberData;
 import fi.pyramus.webhooks.data.WebhookCourseStudentData;
+import fi.pyramus.webhooks.data.WebhookPersonData;
 import fi.pyramus.webhooks.data.WebhookStaffMemberData;
 import fi.pyramus.webhooks.data.WebhookStudentData;
 
@@ -137,7 +138,17 @@ public class PyramusWebhookServlet extends HttpServlet {
           }
           
           pyramusUpdater.updateCourseStudent(courseStudentData.getCourseStudentId(), courseStudentData.getCourseId(), courseStudentData.getStudentId());
-        break;      
+        break;
+        case PERSON_ARCHIVE:
+        case PERSON_CREATE:
+        case PERSON_UPDATE:
+          WebhookPersonData personData = unmarshalData(resp, payload, WebhookPersonData.class);
+          if (personData == null) {
+            return;  
+          }
+          
+          pyramusUpdater.updatePerson(personData.getPersonId());
+        break;
         default:
           logger.log(Level.WARNING, "Unknown webhook type " + payload.getType());
           resp.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED);

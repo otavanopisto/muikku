@@ -1,5 +1,8 @@
 package fi.muikku.plugins.workspace;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -10,9 +13,16 @@ import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import fi.muikku.jsf.NavigationRules;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.plugins.forum.ForumController;
+import fi.muikku.plugins.forum.ForumResourcePermissionCollection;
+import fi.muikku.plugins.forum.model.WorkspaceForumArea;
 import fi.muikku.schooldata.WorkspaceController;
+import fi.muikku.session.SessionController;
 import fi.otavanopisto.security.LoggedIn;
 
 @Named
@@ -26,7 +36,13 @@ public class WorkspaceDiscussionsBackingBean {
   private String workspaceUrlName;
 
   @Inject
+  private SessionController sessionController;
+
+  @Inject
   private WorkspaceController workspaceController;
+
+  @Inject
+  private ForumController forumController;
 
   @Inject
   @Named
@@ -49,6 +65,18 @@ public class WorkspaceDiscussionsBackingBean {
     workspaceBackingBean.setWorkspaceUrlName(urlName);
     workspaceEntityId = workspaceEntity.getId();
     
+    Map<Long, AreaPermission> areaPermissions = new HashMap<>();
+    
+    for (WorkspaceForumArea forumArea : forumController.listCourseForums(workspaceEntity)) {
+      areaPermissions.put(forumArea.getId(), new AreaPermission(sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_DELETEMESSAGES, forumArea)));
+    }
+    
+    try {
+      this.areaPermissions = new ObjectMapper().writeValueAsString(areaPermissions);
+    } catch (JsonProcessingException e) {
+      return NavigationRules.INTERNAL_ERROR;
+    }
+    
     return null;
   }
   
@@ -64,5 +92,23 @@ public class WorkspaceDiscussionsBackingBean {
     return workspaceEntityId;
   }
   
+  public String getAreaPermissions() {
+    return areaPermissions;
+  }
+  
   private Long workspaceEntityId;
+  private String areaPermissions;
+
+  public static class AreaPermission {
+    
+    public AreaPermission(Boolean removeThread) {
+      this.removeThread = removeThread;
+    }
+
+    public Boolean getRemoveThread() {
+      return removeThread;
+    }
+    
+    private Boolean removeThread;
+  }
 }
