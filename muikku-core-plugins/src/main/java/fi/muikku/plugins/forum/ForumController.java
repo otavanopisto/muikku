@@ -196,6 +196,11 @@ public class ForumController {
 
   @Permit (ForumResourcePermissionCollection.FORUM_DELETEMESSAGES)
   public void deleteThread(@PermitContext ForumThread thread) {
+    List<ForumThreadReply> replies = forumThreadReplyDAO.listByForumThread(thread);
+    for (ForumThreadReply reply : replies) {
+      forumThreadReplyDAO.delete(reply);
+    }
+    
     forumThreadDAO.delete(thread);
   }
   

@@ -86,7 +86,7 @@
 
 .di-messages-container{
     
-    .di-message{
+    .di-message {
        height:80px;
        margin-top:0;
        margin-right:5px;
@@ -95,42 +95,55 @@
        padding:10px;
      
         &.open{
-           height:auto;     
-           height:auto;
+          height:auto;     
+          height:auto;
 
-           
-           &.owner{
-             border-left:5px solid $brd2; 
+          &.owner{
+            border-left:5px solid $brd2; 
+             
              h3{
               color:#dadada;
              }
              
             }       
             
-          .di-message-topic{
-           padding-left:15px;
+          .di-message-topic {
+            padding-left:15px;
           }  
 
           .di-user-picture{
-           float:left;
-           height:60px;
-           width:60px;
+            float:left;
+            height:60px;
+            width:60px;
            
            
            &.default{
-            @extend .co-user-picture;
+             @extend .co-user-picture;
            }
            
            &.reply-recipient{
-            display:inline-block;
-            float:none;
-            height:20px;
-            width:20px;
+             display:inline-block;
+             float:none;
+             height:20px;
+             width:20px;
            }
           }   
         
           .di-message-details{
             padding-left:15px;
+            position:relative;
+            
+            .di-remove-thread-link {
+              background:#de3211;
+              border-radius:3px;
+              display:inline-block;
+              position:absolute;
+              right:0;
+              top:-40px;
+              padding:2px 6px;
+              color:#fff;
+            }
+            
             .di-message-details-sender{
             
               div{
