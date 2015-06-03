@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.ocpsoft.rewrite.annotation.Join;
+import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.plugins.forum.model.EnvironmentForumArea;
 import fi.otavanopisto.security.LoggedIn;
@@ -22,8 +23,14 @@ public class ForumBackingBean {
   @Inject
   private ForumController forumController;
   
+  @RequestAction
+  public String init() {
+    return null;
+  }
+  
   public List<EnvironmentForumArea> listForumAreas() {
     return forumController.listEnvironmentForums();
   }
 
+  
 }
