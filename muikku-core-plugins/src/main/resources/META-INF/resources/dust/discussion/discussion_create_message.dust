@@ -14,7 +14,7 @@
                 <input type="textfield" value="" name="title"}></input>
               </div>    
               <div id="areaSelect" class="mf-select">
-                <select id="" name="forumAreaId">
+                <select id="forumAreaIdSelect" name="forumAreaId">
                  {#.}
                    <option value="{id}">{name}</option>
                  {:else}
