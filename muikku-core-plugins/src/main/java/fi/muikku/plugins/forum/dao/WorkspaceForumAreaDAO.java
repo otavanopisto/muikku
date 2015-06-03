@@ -15,8 +15,6 @@ import fi.muikku.plugins.forum.model.ForumAreaGroup;
 import fi.muikku.plugins.forum.model.WorkspaceForumArea;
 import fi.muikku.plugins.forum.model.WorkspaceForumArea_;
 
-
-
 public class WorkspaceForumAreaDAO extends CorePluginsDAO<WorkspaceForumArea> {
   
 	private static final long serialVersionUID = 8627800028194294719L;

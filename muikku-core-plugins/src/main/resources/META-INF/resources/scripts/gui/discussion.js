@@ -83,9 +83,9 @@ $(document).ready(function(){
 
 	  			 var select = $("#discussionAreaSelect");
 
-
-	           $(select).empty();	  			 
-	  		   if(areas.length != 0){
+	  			 $(select).empty();
+	  			 
+	  		   if (areas && (areas.length != 0)) {
 	  			 var allAreas = $("<option value='all'>" + getLocaleText('plugin.discussion.browseareas.all', err) + "</option>");
 	  			 allAreas.appendTo(select);
 	  			 for(var i = 0; i < areas.length; i++ ){

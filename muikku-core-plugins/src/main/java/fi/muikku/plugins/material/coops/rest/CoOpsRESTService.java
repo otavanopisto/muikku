@@ -26,6 +26,7 @@ import fi.foyt.coops.model.Patch;
 import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.UserEntity;
+import fi.muikku.rest.RESTPermitUnimplemented;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.EnvironmentUserController;
 
@@ -62,6 +63,7 @@ public class CoOpsRESTService {
 
   @GET
   @Path ("/")
+  @RESTPermitUnimplemented
   public Response load(@PathParam ("FILEID") String fileId, @QueryParam ("revisionNumber") Long revisionNumber) {
     try {
       File file = coOpsApi.fileGet(fileId, revisionNumber);
@@ -81,6 +83,7 @@ public class CoOpsRESTService {
   
   @PATCH
   @Path ("/")
+  @RESTPermitUnimplemented
   public Response patch(@PathParam ("FILEID") String fileId, Patch patch) {
     
     if (!isAuthorized()) {
@@ -105,6 +108,7 @@ public class CoOpsRESTService {
   
   @GET
   @Path ("/update")
+  @RESTPermitUnimplemented
   public Response update(@PathParam ("FILEID") String fileId, @QueryParam ("sessionId") String sessionId, @QueryParam ("revisionNumber") Long revisionNumber) {
     try {
       List<Patch> patches = coOpsApi.fileUpdate(fileId, sessionId, revisionNumber);
@@ -126,6 +130,7 @@ public class CoOpsRESTService {
   
   @GET
   @Path ("/join")
+  @RESTPermitUnimplemented
   public Response join(@PathParam ("FILEID") String fileId, @QueryParam("algorithm") List<String> algorithms, @QueryParam ("protocolVersion") String protocolVersion) {
     try {
       return Response.ok(coOpsApi.fileJoin(fileId, algorithms, protocolVersion)).build();

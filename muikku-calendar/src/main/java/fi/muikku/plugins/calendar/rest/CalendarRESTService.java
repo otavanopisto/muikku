@@ -34,6 +34,7 @@ import fi.muikku.plugins.calendar.rest.model.Calendar;
 import fi.muikku.plugins.calendar.rest.model.CalendarEvent;
 import fi.muikku.plugins.calendar.rest.model.CalendarEventAttendee;
 import fi.muikku.plugins.calendar.rest.model.CalendarEventReminder;
+import fi.muikku.rest.RESTPermitUnimplemented;
 import fi.muikku.rest.types.DateTimeParameter;
 import fi.muikku.session.SessionController;
 
@@ -55,12 +56,14 @@ public class CalendarRESTService extends PluginRESTService {
 
   @POST
   @Path ("/calendars/")
+  @RESTPermitUnimplemented
   public Response createCalendar(Calendar calendar) {
     return Response.status(501).build();
   }
 
   @GET
   @Path ("/calendars/")
+  @RESTPermitUnimplemented
   public Response listCalendars(@QueryParam ("writableOnly") Boolean writableOnly) {
     List<Calendar> result = new ArrayList<>();
     
@@ -92,6 +95,7 @@ public class CalendarRESTService extends PluginRESTService {
 
   @PUT
   @Path ("/calendars/{CALID}")
+  @RESTPermitUnimplemented
   public Response updateCalendar(@PathParam ("CALID") Long calendarId, Calendar calendar) {
     
     if (!sessionController.isLoggedIn()) {
@@ -134,6 +138,7 @@ public class CalendarRESTService extends PluginRESTService {
 
   @DELETE
   @Path ("/calendars/{CALID}")
+  @RESTPermitUnimplemented
   public Response deleteCalendar(@PathParam ("CALID") Long calendarId) {
     
     if (!sessionController.isLoggedIn()) {
@@ -164,6 +169,7 @@ public class CalendarRESTService extends PluginRESTService {
 
   @POST
   @Path ("/calendars/{CALID:[0-9]*}/events/")
+  @RESTPermitUnimplemented
   public Response createEvent(@PathParam ("CALID") Long calendarId, CalendarEvent event) {
     
     if (!sessionController.isLoggedIn()) {
@@ -211,6 +217,7 @@ public class CalendarRESTService extends PluginRESTService {
 
   @GET
   @Path ("/calendars/{CALID}/events/")
+  @RESTPermitUnimplemented
   public Response getEvents(@PathParam ("CALID") Long calendarId, @QueryParam ("timeMin") DateTimeParameter timeMin, @QueryParam ("timeMax") DateTimeParameter timeMax) {
     
     if (!sessionController.isLoggedIn()) {
@@ -246,6 +253,7 @@ public class CalendarRESTService extends PluginRESTService {
 
   @GET
   @Path ("/calendars/{CALID}/events/{EVTID}")
+  @RESTPermitUnimplemented
   public Response getEvent(@PathParam ("CALID") Long calendarId, @PathParam ("EVTID") String eventId) {
     
     if (!sessionController.isLoggedIn()) {
@@ -279,6 +287,7 @@ public class CalendarRESTService extends PluginRESTService {
 
   @PUT
   @Path ("/calendars/{CALID}/events/{EVTID}")
+  @RESTPermitUnimplemented
   public Response updateEvent(@PathParam ("CALID") Long calendarId, @PathParam ("EVTID") String eventId, CalendarEvent event) {
     
     if (!sessionController.isLoggedIn()) {
@@ -335,6 +344,7 @@ public class CalendarRESTService extends PluginRESTService {
 
   @DELETE
   @Path ("/calendars/{CALID}/events/{EVTID}")
+  @RESTPermitUnimplemented
   public Response deleteEvent(@PathParam ("CALID") Long calendarId, @PathParam ("EVTID") String eventId) {
     
     if (!sessionController.isLoggedIn()) {

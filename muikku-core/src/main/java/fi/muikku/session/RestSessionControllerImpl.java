@@ -69,7 +69,9 @@ public class RestSessionControllerImpl extends AbstractSessionController impleme
     PermissionResolver permissionResolver = getPermissionResolver(permission);
 
     if (isLoggedIn()) {
-      return isSuperuser() || permissionResolver.hasPermission(permission, contextReference, getLoggedUserEntity());
+      return isSuperuser() || 
+          permissionResolver.hasPermission(permission, contextReference, getLoggedUserEntity()) || 
+          permissionResolver.hasEveryonePermission(permission, contextReference);
     } else {
       return permissionResolver.hasEveryonePermission(permission, contextReference);
     }
