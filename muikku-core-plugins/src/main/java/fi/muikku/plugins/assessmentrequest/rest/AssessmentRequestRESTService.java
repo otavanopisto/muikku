@@ -26,6 +26,7 @@ import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.assessmentrequest.AssessmentRequest;
 import fi.muikku.plugins.assessmentrequest.AssessmentRequestController;
 import fi.muikku.plugins.assessmentrequest.rest.model.AssessmentRequestRESTModel;
+import fi.muikku.rest.RESTPermitUnimplemented;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.session.SessionController;
 import fi.muikku.session.local.LocalSession;
@@ -54,6 +55,7 @@ public class AssessmentRequestRESTService extends PluginRESTService {
 
   @POST
   @Path("/assessmentrequests")
+  @RESTPermitUnimplemented
   public Response requestAssessment(AssessmentRequestRESTModel assessmentRequest) {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(assessmentRequest.getWorkspaceId());
     if (workspaceEntity == null) {
@@ -72,6 +74,7 @@ public class AssessmentRequestRESTService extends PluginRESTService {
 
   @GET
   @Path("/assessmentrequests")
+  @RESTPermitUnimplemented
   public Response listAssessmentRequestsByWorkspaceId(
       @QueryParam("workspaceId") long workspaceEntityId,
       @QueryParam("allUsers") @DefaultValue("false") boolean allUsers) {
@@ -102,6 +105,7 @@ public class AssessmentRequestRESTService extends PluginRESTService {
   
   @GET
   @Path("/assessmentrequestsforme")
+  @RESTPermitUnimplemented
   public Response listAssessmentRequestsForMe(
       @QueryParam("workspaceId") Long workspaceEntityId,
       @QueryParam("userId") Long userEntityId,
@@ -150,6 +154,7 @@ public class AssessmentRequestRESTService extends PluginRESTService {
 
   @POST
   @Path("/cancellastassessmentrequest/{WORKSPACEID}")
+  @RESTPermitUnimplemented
   public Response cancelLastAssessmentRequest(@PathParam("WORKSPACEID") long workspaceEntityId) {
     UserEntity student = sessionController.getLoggedUserEntity();
     List<AssessmentRequest> assessmentRequests = assessmentRequestController
