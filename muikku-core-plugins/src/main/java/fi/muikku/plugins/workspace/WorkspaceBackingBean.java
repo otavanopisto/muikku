@@ -12,6 +12,7 @@ import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.assessmentrequest.AssessmentRequestController;
 import fi.muikku.plugins.assessmentrequest.WorkspaceAssessmentState;
 import fi.muikku.schooldata.WorkspaceController;
+import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.session.SessionController;
 import fi.muikku.session.local.LocalSession;
 
@@ -29,13 +30,14 @@ public class WorkspaceBackingBean {
   
   @Inject
   private AssessmentRequestController assessmentRequestController;
-
+ 
   public String getWorkspaceUrlName() {
     return workspaceUrlName;
   }
 
   public void setWorkspaceUrlName(String workspaceUrlName) {
     this.workspaceUrlName = workspaceUrlName;
+    this.mayManageMaterials = sessionController.hasCoursePermission(MuikkuPermissions.MANAGE_WORKSPACE_MATERIALS, getWorkspaceEntity());
   }
   
   public Long getWorkspaceId() {
@@ -52,6 +54,7 @@ public class WorkspaceBackingBean {
     if (workspaceEntity == null) {
       return null;
     }
+    
     return workspaceEntity;
   }
 
@@ -63,6 +66,11 @@ public class WorkspaceBackingBean {
     WorkspaceAssessmentState assessmentState = assessmentRequestController.getWorkspaceAssessmentState(getWorkspaceEntity(), userEntity);
     return assessmentState.getStateName();
   }
-
+  
+  public Boolean getMayManageMaterials() {
+    return mayManageMaterials;
+  }
+  
+  private Boolean mayManageMaterials;
   private String workspaceUrlName;
 }
