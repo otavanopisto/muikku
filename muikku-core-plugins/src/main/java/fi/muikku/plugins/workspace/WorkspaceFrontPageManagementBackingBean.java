@@ -73,12 +73,12 @@ public class WorkspaceFrontPageManagementBackingBean {
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
     workspaceName = workspace.getName();
     
-    List<WorkspaceNode> folders = workspaceMaterialController.listWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(
+    List<WorkspaceFolder> folders = workspaceMaterialController.listWorkspaceFoldersByParentAndFolderTypeSortByOrderNumber(
         rootFolder,
         WorkspaceFolderType.FRONT_PAGE); 
     
     if (folders.isEmpty()) {
-      folders = Arrays.asList((WorkspaceNode)workspaceMaterialController.createWorkspaceFrontPageFolder(workspaceEntity));
+      folders = Arrays.asList((WorkspaceFolder)workspaceMaterialController.createWorkspaceFrontPageFolder(workspaceEntity));
     }
     
     WorkspaceFolder frontPageFolder = (WorkspaceFolder)folders.get(0);
