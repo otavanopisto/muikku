@@ -25,7 +25,7 @@ import fi.muikku.model.users.EnvironmentRoleEntity;
 import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.rest.AbstractRESTService;
-import fi.muikku.schooldata.entity.EnvironmentRole;
+import fi.muikku.rest.RESTPermitUnimplemented;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.search.SearchProvider;
 import fi.muikku.search.SearchResult;
@@ -57,6 +57,7 @@ public class UserRESTService extends AbstractRESTService {
 
 	@GET
 	@Path("/users")
+	@RESTPermitUnimplemented
 	public Response searchUsers(
 			@QueryParam("searchString") String searchString,
 			@QueryParam("firstResult") @DefaultValue("0") Integer firstResult,
@@ -124,6 +125,7 @@ public class UserRESTService extends AbstractRESTService {
 
 	@GET
 	@Path("/users/{ID}")
+  @RESTPermitUnimplemented
 	public Response findUser(@PathParam("ID") Long id) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).build();

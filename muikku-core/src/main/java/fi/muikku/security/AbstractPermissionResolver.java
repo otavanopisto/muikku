@@ -1,5 +1,8 @@
 package fi.muikku.security;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
@@ -16,6 +19,9 @@ import fi.otavanopisto.security.User;
 @RequestScoped
 public class AbstractPermissionResolver {
 
+  @Inject
+  private Logger logger;
+  
   @Inject
   @Any
   private Instance<WorkspaceContextResolver> courseContextResolvers;
@@ -35,9 +41,26 @@ public class AbstractPermissionResolver {
    */
   protected WorkspaceEntity resolveWorkspace(ContextReference contextReference) {
     for (WorkspaceContextResolver resolver : courseContextResolvers) {
-      if (resolver.handlesContextReference(contextReference))
-        return resolver.resolveWorkspace(contextReference);
+      if (resolver.handlesContextReference(contextReference)) {
+        WorkspaceEntity workspaceEntity = resolver.resolveWorkspace(contextReference);
+        
+        if (workspaceEntity != null)
+          return workspaceEntity;
+        else {
+          if (contextReference != null)
+            logger.log(Level.WARNING, "Resolver couldn't resolve workspace from " + contextReference.getClass().getSimpleName());
+          else
+            logger.log(Level.WARNING, "Resolver couldn't resolve workspace from null");
+          
+          return null;
+        }
+      }
     }
+
+    if (contextReference != null)
+      logger.log(Level.WARNING, "Couldn't find workspace resolver for " + contextReference.getClass().getSimpleName());
+    else
+      logger.log(Level.WARNING, "Couldn't find workspace resolver for null contextReference");
     
     return null;
   }
@@ -50,10 +73,27 @@ public class AbstractPermissionResolver {
    */
   protected UserEntity resolveUser(ContextReference contextReference) {
     for (UserContextResolver resolver : userContextResolvers) {
-      if (resolver.handlesContextReference(contextReference))
-        return resolver.resolveUser(contextReference);
+      if (resolver.handlesContextReference(contextReference)) {
+        UserEntity userEntity = resolver.resolveUser(contextReference);
+        
+        if (userEntity != null)
+          return userEntity;
+        else {
+          if (contextReference != null)
+            logger.log(Level.WARNING, "Resolver couldn't resolve user from " + contextReference.getClass().getSimpleName());
+          else
+            logger.log(Level.WARNING, "Resolver couldn't resolve user from null");
+          
+          return null;
+        }
+      }
     }
     
+    if (contextReference != null)
+      logger.log(Level.WARNING, "Couldn't find user resolver for " + contextReference.getClass().getSimpleName());
+    else
+      logger.log(Level.WARNING, "Couldn't find user resolver for null contextReference");
+
     return null;
   }
 

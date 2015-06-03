@@ -7,7 +7,7 @@ import fi.otavanopisto.security.AbstractPermissionCollection;
 
 public class AbstractMuikkuPermissionCollection extends AbstractPermissionCollection {
   
-  public static final String EVERYONE = "Everyone";
+  public static final String EVERYONE = "EVERYONE";
 
   public static final String GROUP_TEACHER = "Group Teacher";
   public static final String GROUP_STUDENT = "Group Student";

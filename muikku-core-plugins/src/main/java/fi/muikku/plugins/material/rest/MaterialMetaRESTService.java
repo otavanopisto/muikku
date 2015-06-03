@@ -23,6 +23,7 @@ import fi.muikku.plugins.material.MaterialController;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.material.model.MaterialMeta;
 import fi.muikku.plugins.material.model.MaterialMetaKey;
+import fi.muikku.rest.RESTPermitUnimplemented;
 import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.session.SessionController;
 
@@ -43,6 +44,7 @@ public class MaterialMetaRESTService extends PluginRESTService {
   @GET
   @Path("/metakeys")
   @Produces(MediaType.APPLICATION_JSON)
+  @RESTPermitUnimplemented
   public Response listMaterialMetaKeys() {
     List<MaterialMetaKey> materialMetaKeys = materialController.listMaterialMetaKeys();
     
@@ -57,6 +59,7 @@ public class MaterialMetaRESTService extends PluginRESTService {
   @POST
   @Path("/materials/{id}/meta")
   @Produces(MediaType.APPLICATION_JSON)
+  @RESTPermitUnimplemented
   public Response createMaterialMeta(@PathParam("id") Long id, fi.muikku.plugins.material.rest.MaterialMeta payload) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).build();
@@ -86,6 +89,7 @@ public class MaterialMetaRESTService extends PluginRESTService {
   @GET
   @Path("/materials/{id}/meta/")
   @Produces(MediaType.APPLICATION_JSON)
+  @RESTPermitUnimplemented
   public Response listMaterialMetas(@PathParam("id") Long id) {
     Material material = materialController.findMaterialById(id);
     if (material == null) {
@@ -103,6 +107,7 @@ public class MaterialMetaRESTService extends PluginRESTService {
   @GET
   @Path("/materials/{id}/meta/{KEY}")
   @Produces(MediaType.APPLICATION_JSON)
+  @RESTPermitUnimplemented
   public Response findMaterialMeta(@PathParam("id") Long id, @PathParam("KEY") String key) {
     Material material = materialController.findMaterialById(id);
     if (material == null) {
@@ -125,6 +130,7 @@ public class MaterialMetaRESTService extends PluginRESTService {
   @PUT
   @Path("/materials/{id}/meta/{KEY}")
   @Produces(MediaType.APPLICATION_JSON)
+  @RESTPermitUnimplemented
   public Response updateMaterialMeta(@PathParam("id") Long id, @PathParam("KEY") String key, fi.muikku.plugins.material.rest.MaterialMeta payload) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).build();
