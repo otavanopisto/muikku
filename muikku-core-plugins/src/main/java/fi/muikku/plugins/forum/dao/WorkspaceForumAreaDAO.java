@@ -15,13 +15,11 @@ import fi.muikku.plugins.forum.model.ForumAreaGroup;
 import fi.muikku.plugins.forum.model.WorkspaceForumArea;
 import fi.muikku.plugins.forum.model.WorkspaceForumArea_;
 
-
-
 public class WorkspaceForumAreaDAO extends CorePluginsDAO<WorkspaceForumArea> {
   
 	private static final long serialVersionUID = 8627800028194294719L;
 
-	public WorkspaceForumArea create(WorkspaceEntity workspace, String name, ForumAreaGroup group, 
+	public WorkspaceForumArea create(WorkspaceEntity workspace, String name, ForumAreaGroup group,
 	    Boolean archived, UserEntity owner, ResourceRights rights) {
     WorkspaceForumArea forumArea = new WorkspaceForumArea();
     
@@ -31,7 +29,7 @@ public class WorkspaceForumAreaDAO extends CorePluginsDAO<WorkspaceForumArea> {
     forumArea.setGroup(group);
     forumArea.setOwner(owner.getId());
     forumArea.setRights(rights.getId());
-    
+
     getEntityManager().persist(forumArea);
     
     return forumArea;

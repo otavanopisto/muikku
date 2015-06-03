@@ -180,7 +180,7 @@ public class ForumController {
     createDefaultForumPermissions(forumArea, rights);
     return forumArea;
   }
-  
+
   public void deleteArea(ForumArea forumArea) {
     forumAreaDAO.delete(forumArea);
   }
@@ -273,21 +273,20 @@ public class ForumController {
     List<ForumArea> forumAreas = new ArrayList<ForumArea>();
 
     // TODO: This could use some optimization
-    
     for (WorkspaceForumArea wf : workspaceForums) {
       forumAreas.add(wf);
     }
     
     List<ForumThread> threads;
-    
+
     if (!forumAreas.isEmpty())
       threads = forumThreadDAO.listLatestOrdered(forumAreas, firstResult, maxResults);
     else
       threads = new ArrayList<ForumThread>();
-    
+
     return threads;
   }
-  
+
   public UserEntity findUserEntity(Long userEntityId) {
     return userEntityController.findUserEntityById(userEntityId);
   }

@@ -9,7 +9,7 @@ public class WorkspaceForumAreaRESTModel extends ForumAreaRESTModel {
   
   public WorkspaceForumAreaRESTModel(Long id, Long workspaceId, String name, Long groupId) {
     super(id, name, groupId);
-    this.setWorkspaceId(workspaceId);
+    this.workspaceId = workspaceId;
   }
 
   public Long getWorkspaceId() {

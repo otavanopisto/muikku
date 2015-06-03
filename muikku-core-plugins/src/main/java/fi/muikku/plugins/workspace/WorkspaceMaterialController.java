@@ -234,6 +234,19 @@ public class WorkspaceMaterialController {
     
     return nodes;
   }
+  
+  public List<WorkspaceFolder> listWorkspaceFoldersByParentAndFolderTypeSortByOrderNumber(WorkspaceNode parent, WorkspaceFolderType folderType) {
+    List<WorkspaceFolder> nodes = workspaceFolderDAO.listByParentAndFolderType(parent, folderType);
+    // TODO: Do in database
+    for (int i = nodes.size() - 1; i >= 0; i--) {
+      WorkspaceFolder node = nodes.get(i);
+      if (node.getFolderType() != folderType) {
+        nodes.remove(i);
+      }
+    }
+    
+    return nodes;
+  }
 
   public List<WorkspaceNode> listVisibleWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(WorkspaceNode parent, WorkspaceFolderType folderType) {
     List<WorkspaceNode> nodes = workspaceNodeDAO.listByParentAndHiddenSortByOrderNumber(parent, Boolean.FALSE);
@@ -488,6 +501,10 @@ public class WorkspaceMaterialController {
 
   public void deleteWorkspaceFolder(WorkspaceFolder workspaceFolder) {
     workspaceFolderDAO.delete(workspaceFolder);
+  }
+  
+  public void updateDefaultMaterial(WorkspaceFolder workspaceFolder, WorkspaceNode defaultMaterial) {
+    workspaceFolderDAO.updateDefaultMaterial(workspaceFolder, defaultMaterial);
   }
 
   /* Utility methods */
