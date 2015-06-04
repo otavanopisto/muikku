@@ -362,11 +362,12 @@ $(document).ready(function() {
         } else {
           // Refresh selected area
           window.discussion.filterMessagesByArea($("#forumAreaIdSelect").val());
+          console.log($("#forumAreaIdSelect").val());
           $("#discussionAreaSelect").val(forumAreaId);
         }
       });
 
-      window.discussion.refreshLatest();
+//      window.discussion.refreshLatest();
 
     }
 
