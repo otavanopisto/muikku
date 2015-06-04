@@ -367,8 +367,6 @@ $(document).ready(function() {
         }
       });
 
-//      window.discussion.refreshLatest();
-
     }
 
     mApi().forum.areas.read().callback(function(err, areas) {
