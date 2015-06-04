@@ -37,6 +37,16 @@ function openInSN(template, result, formFunction) {
       
     });
     
+    // Selects current forum area when new message form loads
+    var selArea = $("#discussionAreaSelect").val();
+    
+    if (selArea != "all") {
+      $("#forumAreaIdSelect option")
+      .prop('selected', false)
+      .filter('[value="' + selArea + '"]')
+      .prop('selected', true);
+    }
+    
     cancelBtn.on("click", cancelBtn, function() {
       formContainer.empty();
       $('.sn-container').removeClass('open');
