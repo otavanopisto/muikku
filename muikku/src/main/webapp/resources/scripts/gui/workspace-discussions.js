@@ -121,7 +121,13 @@ $(document).ready(function() {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
         } else {
-          renderDustTemplate('/discussion/discussion_items_open.dust', threads, function(text) {
+          var areaPermissions = $.parseJSON($('input[name="areaPermissions"]').val());
+          var mayRemoveThread = areaPermissions[aId] && areaPermissions[aId].removeThread;
+
+          renderDustTemplate('/discussion/discussion_items_open.dust', {
+            threads : threads,
+            mayRemoveThread : mayRemoveThread
+          }, function(text) {
             $(DiscImpl.msgContainer).append($.parseHTML(text));
           });
         }
@@ -199,7 +205,13 @@ $(document).ready(function() {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
         } else {
 
-          renderDustTemplate('/discussion/discussion_items_open.dust', threads, function(text) {
+          var areaPermissions = $.parseJSON($('input[name="areaPermissions"]').val());
+          var mayRemoveThread = areaPermissions[aId] && areaPermissions[aId].removeThread;
+
+          renderDustTemplate('/discussion/discussion_items_open.dust', {
+            threads : threads,
+            mayRemoveThread : mayRemoveThread
+          }, function(text) {
             $(DiscImpl.msgContainer).append($.parseHTML(text));
           });
         }
