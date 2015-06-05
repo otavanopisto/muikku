@@ -88,10 +88,6 @@ public class DeusNexServiceUpdater {
               continue;
             }
             
-            if (document.getPath() == null) {
-              logger.log(Level.SEVERE, "Document " + document.getId() + " has no path");
-            }
-            
             String path = document.getPath();
             int slashIndex = path.indexOf('/');
             String dnmId = slashIndex > -1 ? path.substring(0, slashIndex) : path;

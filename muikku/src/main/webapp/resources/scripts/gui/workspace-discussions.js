@@ -108,7 +108,7 @@ $(document).ready(function() {
           thread.areaName = area.name;
         });
 
-        mApi().user.users.basicinfo.read(thread.creator).callback(function(err, user) {
+        mApi().user.users.read(thread.creator).callback(function(err, user) {
           thread.creatorFullName = user.firstName + ' ' + user.lastName;
         });
 
@@ -153,7 +153,7 @@ $(document).ready(function() {
             thread.areaName = area.name;
           });
 
-          mApi().user.users.basicinfo.read(thread.creator).callback(function(err, user) {
+          mApi().user.users.read(thread.creator).callback(function(err, user) {
             thread.creatorFullName = user.firstName + ' ' + user.lastName;
           });
 
@@ -189,7 +189,7 @@ $(document).ready(function() {
           thread.areaName = area.name;
         });
 
-        mApi().user.users.basicinfo.read(thread.creator).callback(function(err, user) {
+        mApi().user.users.read(thread.creator).callback(function(err, user) {
           thread.creatorFullName = user.firstName + ' ' + user.lastName;
         });
 
@@ -229,7 +229,7 @@ $(document).ready(function() {
           replies.areaName = area.name;
         });
 
-        mApi().user.users.basicinfo.read(replies.creator).callback(function(err, user) {
+        mApi().user.users.read(replies.creator).callback(function(err, user) {
           replies.creatorFullName = user.firstName + ' ' + user.lastName;
         });
 
