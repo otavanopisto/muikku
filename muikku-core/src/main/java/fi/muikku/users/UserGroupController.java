@@ -1,23 +1,14 @@
 package fi.muikku.users;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import fi.muikku.dao.users.UserGroupDAO;
-import fi.muikku.dao.users.UserGroupUserDAO;
-import fi.muikku.model.users.UserEntity;
-import fi.muikku.model.users.UserGroup;
-import fi.muikku.model.users.UserGroupUser;
-
 public class UserGroupController {
+  
+  /*
 
   @Inject
-  private UserGroupDAO userGroupDAO;
+  private UserGroupEntityDAO userGroupDAO;
   
   @Inject
-  private UserGroupUserDAO userGroupUserDAO;
+  private GroupUserEntityDAO userGroupUserDAO;
 
   public List<UserGroup> searchUserGroups(String searchTerm) {
     List<UserGroup> grps = userGroupDAO.listAll();
@@ -46,5 +37,7 @@ public class UserGroupController {
   public Long getUserGroupMemberCount(UserGroup userGroup) {
     return userGroupUserDAO.countByUserGroup(userGroup);
   }
+  
+  */
   
 }

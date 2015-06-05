@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+  <sql>create table UserGroupEntity (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    defaultSchoolDataSource_id INTEGER,
+    defaultIdentifier VARCHAR(4096),
+    archived TINYINT(1) NOT NULL,
+    CONSTRAINT FOREIGN KEY 
+      (defaultSchoolDataSource_id)
+    REFERENCES
+      SchoolDataSource(id)
+  )
+    COLLATE='utf8_general_ci'
+    ENGINE=InnoDB
+    ROW_FORMAT=DEFAULT
+  </sql>
+  <sql>create table GroupUserEntity (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    defaultSchoolDataSource_id INTEGER,
+    defaultIdentifier VARCHAR(4096),
+    archived TINYINT(1) NOT NULL,
+    userGroupEntity_id INTEGER,
+    CONSTRAINT FOREIGN KEY 
+      (defaultSchoolDataSource_id)
+    REFERENCES
+      SchoolDataSource(id),
+    CONSTRAINT FOREIGN KEY 
+      (userGroupEntity_id)
+    REFERENCES
+      UserGroupEntity(id)
+  )
+    COLLATE='utf8_general_ci'
+    ENGINE=InnoDB
+    ROW_FORMAT=DEFAULT
+  </sql>
+</update>

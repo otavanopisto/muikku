@@ -7,10 +7,6 @@ public class UserGroupRESTModel {
     this.name = name;
   }
   
-  public UserGroupRESTModel(fi.muikku.model.users.UserGroup domainModel) {
-    this(domainModel.getId(), domainModel.getName());
-  }
-
   public Long getId() {
     return id;
   }

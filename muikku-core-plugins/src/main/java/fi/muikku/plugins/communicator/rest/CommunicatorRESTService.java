@@ -26,8 +26,8 @@ import org.jsoup.safety.Whitelist;
 import fi.muikku.controller.TagController;
 import fi.muikku.model.base.Tag;
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.model.users.UserGroup;
-import fi.muikku.model.users.UserGroupUser;
+import fi.muikku.model.users.UserGroupEntity;
+import fi.muikku.model.users.GroupUserEntity;
 import fi.muikku.notifier.NotifierController;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.communicator.CommunicatorController;
@@ -254,14 +254,18 @@ public class CommunicatorRESTService extends PluginRESTService {
         recipients.add(recipient);
     }
     
+    /*
+    
     for (Long groupId : newMessage.getRecipientGroupIds()) {
-      UserGroup group = userGroupController.findUserGroup(groupId);
+      UserGroupEntity group = userGroupController.findUserGroup(groupId);
       List<UserGroupUser> groupUsers = userGroupController.listUserGroupUsers(group);
       
       for (UserGroupUser gusr : groupUsers) {
         recipients.add(gusr.getUser());
       }
     }
+    
+    */
     
     // TODO Category not existing at this point would technically indicate an invalid state
     CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(newMessage.getCategoryName());
@@ -375,6 +379,8 @@ public class CommunicatorRESTService extends PluginRESTService {
         recipients.add(recipient);
     }
     
+    /*
+    
     for (Long groupId : newMessage.getRecipientGroupIds()) {
       UserGroup group = userGroupController.findUserGroup(groupId);
       List<UserGroupUser> groupUsers = userGroupController.listUserGroupUsers(group);
@@ -383,6 +389,8 @@ public class CommunicatorRESTService extends PluginRESTService {
         recipients.add(gusr.getUser());
       }
     }
+    
+    */
 
     // TODO Category not existing at this point would technically indicate an invalid state
     CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(newMessage.getCategoryName());
