@@ -108,7 +108,7 @@ $(document).ready(function() {
           thread.areaName = area.name;
         });
 
-        mApi().user.users.read(thread.creator).callback(function(err, user) {
+        mApi().user.users.basicinfo.read(thread.creator).callback(function(err, user) {
           thread.creatorFullName = user.firstName + ' ' + user.lastName;
         });
 
@@ -136,9 +136,7 @@ $(document).ready(function() {
       this.loadThreadReplies(aId, tId);
     },
 
-    filterMessagesByArea : function(sel) {
-
-      var aId = sel.value;
+    filterMessagesByArea : function(val) {
 
       //	    	var element = $(event.target); 
       //	        element = element.parents(".di-message");
@@ -146,16 +144,16 @@ $(document).ready(function() {
 
       this.clearMessages();
       
-      if (aId == 'all') {
+      if (val == 'all') {
         this.refreshLatest();
       } else {
-        mApi().forum.areas.threads.read(aId).on('$', function(thread, threadCallback) {
+        mApi().forum.areas.threads.read(val).on('$', function(thread, threadCallback) {
 
           mApi().forum.areas.read(thread.forumAreaId).callback(function(err, area) {
             thread.areaName = area.name;
           });
 
-          mApi().user.users.read(thread.creator).callback(function(err, user) {
+          mApi().user.users.basicinfo.read(thread.creator).callback(function(err, user) {
             thread.creatorFullName = user.firstName + ' ' + user.lastName;
           });
 
@@ -191,7 +189,7 @@ $(document).ready(function() {
           thread.areaName = area.name;
         });
 
-        mApi().user.users.read(thread.creator).callback(function(err, user) {
+        mApi().user.users.basicinfo.read(thread.creator).callback(function(err, user) {
           thread.creatorFullName = user.firstName + ' ' + user.lastName;
         });
 
@@ -231,7 +229,7 @@ $(document).ready(function() {
           replies.areaName = area.name;
         });
 
-        mApi().user.users.read(replies.creator).callback(function(err, user) {
+        mApi().user.users.basicinfo.read(replies.creator).callback(function(err, user) {
           replies.creatorFullName = user.firstName + ' ' + user.lastName;
         });
 
@@ -312,9 +310,12 @@ $(document).ready(function() {
   });
 
   window.discussion = new DiscImpl();
+  
+  $("#discussionAreaSelect").change(function() {
+    window.discussion.filterMessagesByArea($(this).val());
+  });
 
   $(".di-new-message-button").click(function() {
-
     var createMessage = function(values) {
       var forumAreaId = null;
 
@@ -326,13 +327,14 @@ $(document).ready(function() {
       }
 
       mApi().forum.areas.threads.create(forumAreaId, values).callback(function(err, result) {
-
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        } else {
+          // Refresh selected area
+          window.discussion.filterMessagesByArea($("#forumAreaIdSelect").val());
+          $("#discussionAreaSelect").val(forumAreaId);
+        }
       });
-
-      // Change forumArea to match newly written messages area selection
-      window.discussion.filterMessagesByArea($("#forumAreaIdSelect")[0]);
-      $("#discussionAreaSelect").val(forumAreaId);
-
     }
 
     var workspaceId = $("input[name='workspaceEntityId']").val();
