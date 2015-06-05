@@ -36,10 +36,12 @@ div[class*='header']{
 }
 
 .co-user-picture{
-	@include background-image('gfx/default_pic.png');
+	@include background-image('gfx/default-student-picture.jpg');
 	background-size:100%;
-	border:2px solid #FFF;
-	@include shadow();
+	border: 2px solid #fff;
+  border-radius: 40px;
+  box-shadow: 0 0 0 2px #00deff;
+  margin: 2px;
  }
 
 .co-input-textfield,
