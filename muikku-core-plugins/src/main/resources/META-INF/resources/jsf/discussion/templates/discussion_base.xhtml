@@ -16,6 +16,7 @@
 
   <ui:define name="hiddenFields">
     <input type="hidden" name="userId" value="#{muikkuSession.loggedUserEntity.id}"/>
+    <input type="hidden" name="areaPermissions" value="#{forumBackingBean.areaPermissions}"/>
   </ui:define>  
 
   <ui:define name="content.tools.left"> 
