@@ -2,7 +2,7 @@
 <update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
   <sql>create table UserGroupEntity (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    defaultSchoolDataSource_id INTEGER,
+    defaultSchoolDataSource_id BIGINT,
     defaultIdentifier VARCHAR(4096),
     archived TINYINT(1) NOT NULL,
     CONSTRAINT FOREIGN KEY 
@@ -16,7 +16,7 @@
   </sql>
   <sql>create table GroupUserEntity (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
-    defaultSchoolDataSource_id INTEGER,
+    defaultSchoolDataSource_id BIGINT,
     defaultIdentifier VARCHAR(4096),
     archived TINYINT(1) NOT NULL,
     userGroupEntity_id INTEGER,
