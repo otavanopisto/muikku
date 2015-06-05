@@ -96,7 +96,7 @@
           this._loadHtmlMaterial($(page), fieldAnswers);
         break;
         case 'folder':
-          renderDustTemplate(this.options.dustTemplate, { id: workspaceMaterialId, type: materialType, hidden: $(page).hasClass('item-hidden'), data: { title: $(page).data('material-title') } }, $.proxy(function (text) {
+          renderDustTemplate(this.options.dustTemplate, { id: workspaceMaterialId, workspaceMaterialId: workspaceMaterialId, type: materialType, hidden: $(page).hasClass('item-hidden'), data: { title: $(page).data('material-title') } }, $.proxy(function (text) {
             $(this).html(text);
             $.waypoints('refresh');
           }, page));

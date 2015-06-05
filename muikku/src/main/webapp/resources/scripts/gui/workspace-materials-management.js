@@ -165,8 +165,34 @@
     }
   }
   
+  function confirmSectionDeletion(confirmCallback) {
+    renderDustTemplate('workspace/materials-management-section-delete-confirm.dust', { }, $.proxy(function (text) {
+      var dialog = $(text);
+      $(text).dialog({
+        modal: true, 
+        resizable: false,
+        width: 360,
+        dialogClass: "workspace-materials-management-dialog",
+        buttons: [{
+          'text': dialog.data('button-delete-text'),
+          'class': 'delete-button',
+          'click': function(event) {
+            $(this).dialog("close");
+            confirmCallback();
+          }
+        }, {
+          'text': dialog.data('button-cancel-text'),
+          'class': 'cancel-button',
+          'click': function(event) {
+            $(this).dialog("close");
+          }
+        }]
+      });
+    }, this));
+  }
+
   function confirmPageDeletion(confirmCallback) {
-    renderDustTemplate('workspace/materials-management-page-delete-corfirm.dust', { }, $.proxy(function (text) {
+    renderDustTemplate('workspace/materials-management-page-delete-confirm.dust', { }, $.proxy(function (text) {
       var dialog = $(text);
       $(text).dialog({
         modal: true, 
@@ -288,10 +314,11 @@
     var workspaceId = $('.workspaceEntityId').val();
     if ($(this).attr('data-material-type') === 'folder') {
       if($('section[data-parent-id="'+workspaceMaterialId+'"]').length > 0){
-        alert('You can only delete empty folders!'); //TODO: create proper error dialog
+        //TODO: create proper error dialog
+        alert(getLocaleText('plugin.workspace.materialsManagement.sectionDeleteNotEmptyMessage')); 
       }
       else {
-        confirmPageDeletion($.proxy(function () {
+        confirmSectionDeletion($.proxy(function () {
           deleteFolder(workspaceMaterialId, workspaceId, false, function (err, jqXHR) {
           });
         }, this));
