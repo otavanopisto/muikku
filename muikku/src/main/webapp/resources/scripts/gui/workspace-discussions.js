@@ -326,15 +326,25 @@ $(document).ready(function() {
         }
       }
 
-      mApi().forum.areas.threads.create(forumAreaId, values).callback(function(err, result) {
-        if (err) {
-          $('.notification-queue').notificationQueue('notification', 'error', err);
-        } else {
-          // Refresh selected area
-          window.discussion.filterMessagesByArea($("#forumAreaIdSelect").val());
-          $("#discussionAreaSelect").val(forumAreaId);
-        }
-      });
+      if (values.title =='') {
+        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.notitle'));
+        return false;
+      }
+      if (values.message =='') {
+        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nomessage'));
+        return false;
+      } else {
+        mApi().forum.areas.threads.create(forumAreaId, values).callback(function(err, result) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            // Refresh selected area
+            window.discussion.filterMessagesByArea($("#forumAreaIdSelect").val());
+            $("#discussionAreaSelect").val(forumAreaId);
+          }
+        });
+      }
+      
     }
 
     var workspaceId = $("input[name='workspaceEntityId']").val();
