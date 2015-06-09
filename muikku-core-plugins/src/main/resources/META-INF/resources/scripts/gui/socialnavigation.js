@@ -51,7 +51,6 @@ function openInSN(template, result, formFunction) {
       formContainer.empty();
       $('.sn-container').removeClass('open');
       $('.sn-container').addClass('closed');
-
     });
 
     sendBtn.on("click", sendBtn, function() {
@@ -68,16 +67,15 @@ function openInSN(template, result, formFunction) {
       
       elements.find(':input').each(function(index, element) {
         element0r = $(element);
-
         varIsArray[element.name] = element0r.data('array') || false;
       });
 
       $.each(vals, function(index, value) {
         if (varIsArray[value.name] != true) {
           
-          if(value.name == "content" || value.name == "message" && textareas.length > 0){
+          if (value.name == "content" || value.name == "message" && textareas.length > 0) {
             obj[value.name] = ckContent || '';         
-          }else{
+          } else {
             obj[value.name] = value.value || '';   
           }
           
@@ -89,10 +87,12 @@ function openInSN(template, result, formFunction) {
         }
       });
 
-      formFunction(obj);
-      formContainer.empty();
-      $('.sn-container').removeClass('open');
-      $('.sn-container').addClass('closed');
+      var result = formFunction(obj);
+      if (result !== false) {
+        formContainer.empty();
+        $('.sn-container').removeClass('open');
+        $('.sn-container').addClass('closed');
+      }
 
     });
 
