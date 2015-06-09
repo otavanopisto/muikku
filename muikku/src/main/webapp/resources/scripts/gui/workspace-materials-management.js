@@ -1270,10 +1270,7 @@
             $('.notification-queue').notificationQueue('notification', 'error', workspaceFolderErr);
             return;
           } else {
-            
-            var hasSections = $('.workspace-materials-toc-section').length > 0;   
-            
-            newPage.removeClass('workspace-materials-management-new');
+            newPage.removeClass('workspace-materials-management-new').addClass("folder");
             newPage.attr({
               'id': 'page-' + workspaceFolderResult.id,
               'data-material-title': workspaceFolderResult.title,

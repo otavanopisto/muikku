@@ -227,6 +227,10 @@ body.workspace-materials-management {
                 margin:0;
                 padding:10px 0;
                 
+                &.temporary-toc-fix {
+                  padding:0;
+                }
+                
                 .workspace-materials-toc-subtitle {
                   margin:0 0 5px 0;
                   text-transform:uppercase;
