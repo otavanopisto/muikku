@@ -777,7 +777,7 @@
     scrollToPage($($(this).attr('href')).data('workspaceMaterialId'), true);
   });
   
-  function moveWorkspaceMaterial(parentId, workspaceNodeId, nextSiblingId, origNextSiblingId) {
+  function moveWorkspaceMaterial(parentId, workspaceNodeId, nextSiblingId) {
     var workspaceId = $('.workspaceEntityId').val();
     mApi().workspace.workspaces.materials.read(workspaceId, workspaceNodeId).callback(function(err, material) {
       
@@ -806,7 +806,7 @@
     });
   }
 
-  function moveWorkspaceFolder(workspaceNodeId, nextSiblingId, origNextSiblingId) {
+  function moveWorkspaceFolder(workspaceNodeId, nextSiblingId) {
     var workspaceId = $('.workspaceEntityId').val();
     mApi().workspace.workspaces.folders.read(workspaceId, workspaceNodeId).callback(function(err, folder) {
       
@@ -840,21 +840,16 @@
       cursor: "crosshair",
       handle: "span.workspace-materials-toc-sectionDragHandle",
       containment: ".workspace-materials-toc-root",
-      connectWith:".workspace-materials-toc-root",
+      connectWith: ".workspace-materials-toc-root",
       opacity: 0.35,
       revert: 500,
       placeholder: "sortable-section-placeholder",
       forcePlaceholderSize: true,
-      start: function(event, ui) {
-        $(ui.item).data('data-original-next-sibling', 
-            $(ui.item).next('.workpsace-materials-toc-section').attr('data-workspace-node-id'));
-      },
       stop: function(event, ui) {
         var workspaceNodeId = parseInt($(ui.item).attr('data-workspace-node-id'), 10);
         var nextSiblingId = parseInt($(ui.item).next('.workspace-materials-toc-section').attr('data-workspace-node-id'), 10);
-        var origNextSiblingId = parseInt($(ui.item).attr('data-original-next-sibling'), 10);
         
-        moveWorkspaceFolder(workspaceNodeId, nextSiblingId, origNextSiblingId);
+        moveWorkspaceFolder(workspaceNodeId, nextSiblingId);
 
         if (!$(ui.item).hasClass("active")) {
           $(ui.item)
@@ -893,23 +888,19 @@
       cursor: "crosshair",
       handle: "span.workspace-materials-toc-itemDragHandle",
       containment: ".workspace-materials-toc-root",
-      connectWith:".workspace-materials-toc-section",
+      connectWith: ".workspace-materials-toc-section",
       opacity: 0.35,
       revert: 200,
       placeholder: "sortable-placeholder",
       forcePlaceholderSize: true,
-      start: function(event, ui) {
-        $(ui.item).data('data-original-next-sibling', 
-            $(ui.item).next('.workspace-materials-toc-item').attr('data-workspace-node-id'));
-      },
       stop: function(event, ui) {
         var parentId = parseInt($(ui.item).parent().attr('data-workspace-node-id'), 10);
         var workspaceNodeId = parseInt($(ui.item).attr('data-workspace-node-id'), 10);
         var nextSiblingId = parseInt($(ui.item).next('.workspace-materials-toc-item').attr('data-workspace-node-id'), 10);
-        var origNextSiblingId = parseInt($(ui.item).attr('data-original-next-sibling'), 10);
-        
-        moveWorkspaceMaterial(parentId, workspaceNodeId, nextSiblingId, origNextSiblingId);
+        moveWorkspaceMaterial(parentId, workspaceNodeId, nextSiblingId);
+
         /* Lets not animate already active element */
+        
         if (!$(ui.item).hasClass("active")) {
           $(ui.item)
           .addClass("no-hover")
@@ -1281,7 +1272,7 @@
             return;
           } else {
               
-            newPage.removeClass('workspace-materials-management-new');
+            newPage.removeClass('workspace-materials-management-new').addClass("folder");
             newPage.attr({
               'id': 'page-' + workspaceFolderResult.id,
               'data-material-title': workspaceFolderResult.title,

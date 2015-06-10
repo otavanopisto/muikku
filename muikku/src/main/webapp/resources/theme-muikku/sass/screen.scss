@@ -414,16 +414,28 @@ a.header {
     z-index:99;
 
     &.closed{
-        min-height:30px;
-        opacity:0.1;
+      min-height:30px;
+      opacity:0.1;
      }  
      
-    &.open{
-       background-color:$btBarBgr;
-       opacity:0.96;
-       min-height:258px;
-     }           
-  }  
+    &.open {
+      background-color:$btBarBgr;
+      opacity:0.96;
+      min-height:258px;
+      border-top:1px solid #fff;
+       
+      h3 {
+        color:#296389;
+        font-size:22px;
+        font-weight:300;
+        margin:0 0 10px;
+        text-transform:uppercase;
+      }
+      
+    } 
+              
+  } 
+   
 }
 
 

@@ -63,27 +63,47 @@
 /* Categories */
   
   .mf-category-1-brd{
-   border-left:5px solid $category1;
+   border-left:10px solid $category1;
   }
 
   .mf-category-2-brd{
-   border-left:5px solid $category2;
+   border-left:10px solid $category2;
   }
 
   .mf-category-3-brd{
-     border-left:5px solid $category3;
+     border-left:10px solid $category3;
   }
 
   .mf-category-4-brd{
-    border-left:5px solid $category4;
+    border-left:10px solid $category4;
   }
 
   .mf-category-5-brd{
-    border-left:5px solid $category5;
+    border-left:10px solid $category5;
   }
 
   .mf-category-6-brd{
-   border-left:5px solid $category6;
+   border-left:10px solid $category6;
+  }
+  
+  .mf-category-7-brd {
+    border-left:10px solid $category7;
+  }
+  
+  .mf-category-8-brd {
+    border-left:10px solid $category8;
+  }
+  
+  .mf-category-9-brd {
+    border-left:10px solid $category9;
+  }
+  
+  .mf-category-10-brd {
+    border-left:10px solid $category10;
+  }
+  
+  .mf-category-11-brd {
+    border-left:10px solid $category11;
   }
   
   .mf-category-1-font{
@@ -110,7 +130,25 @@
    color:$category6;
   }
   
-
+  .mf-category-7-font{
+   color:$category7;
+  }
+  
+  .mf-category-8-font{
+   color:$category8;
+  }
+  
+  .mf-category-9-font{
+   color:$category9;
+  }
+  
+  .mf-category-10-font{
+   color:$category10;
+  }
+  
+  .mf-category-11-font{
+   color:$category11;
+  }
   
   /* TODO: all the "side" to "sub" - there shouldn't be any references to location */
   
@@ -606,22 +644,20 @@
  }
 
 
-.mf-subitem-container{  
-  > div:nth-child(odd ){
-   background-color:#f7f9fa;
-  }  
-  > div:nth-child(even){
-   background-color:#f3f3f3;
-  }  
+.mf-subitem-container{ 
+/* ARE THESE REALLY NECESSARY? */  
+/*   > div:nth-child(odd ){ */
+/*    background-color:#f7f9fa; */
+/*   }   */
+/*   > div:nth-child(even){ */
+/*    background-color:#f3f3f3; */
+/*   }   */
 
 }
 .mf-subitem{
    padding:5px 15px 5px 15px;
    margin-bottom:5px;
    font-weight:300;
-
-
-
 }
 /* Widgets */
 
@@ -633,42 +669,115 @@
  
  /* Forms */
  
- .mf-fieldRow{
-   > div{
-    display:inline-block;
-    box-sizing:border-box;
-   }
- }
+/*  .mf-fieldRow{ */
+/*    > div{ */
+/*     display:inline-block; */
+/*     box-sizing:border-box; */
+/*    } */
+/*  } */
  
- .mf-select{
-  select{
-     height:37px;
-     line-height:37px;
-     min-width:200px;
+/*  .mf-select { */
+/*    select { */
+/*      height:37px; */
+/*      line-height:37px; */
+/*      min-width:200px; */
+/*   } */
+  
+/* } */
+
+.mf-content {
+      
+  .mf-fieldRow {
+    position:relative;
+    margin:2px 0 3px 0;
+    
+    > div {
+      display:inline-block;
+      box-sizing:border-box;
+    }
+    
+    .mf-textfield {
+      position:relative;
+      top:0;
+    
+      input[type="textfield"] {
+        border:2px solid #fff;
+        color:#000;
+        border-radius:3px;
+        padding:6px 8px;
+        line-height:1em;
+        font-size:18px;
+      }
+      
+    }
+    
+    .mf-select {
+      position:relative;
+      top:0;
+    
+      select {
+        min-width:200px;
+        margin-left:5px;
+        
+        option {
+          padding:8px;
+        }
+      
+      }
+    
+    }
+    
+  }
+
+}
+
+.mf-toolbar {
+      
+  input {
+    border-radius:0px;
+    border:0;
+    color:#fff;
+    font-weight:400;
+    text-transform:uppercase;
+    margin:5px;
+    outline:none;
+    font-family:"Open Sans";
+    min-width:90px;
+    padding:10px;
+    font-size:16px;
+  }
+
+  input[name="send"] {
+    background:#27b91c;
   }
   
+  input[name="cancel"] {
+    background:#7391a7;
+  }
+
 }
   
 /* jQuert Ui overrides for mainfunctions */
 
-.mf-autocomplete{
+.mf-autocomplete {
 
   font-size:12px;
   font-weight:300;
-  .ui-autocomplete-category{
+  
+  .ui-autocomplete-category {
    text-transform:uppercase;
    padding:5px;
   }
-  .ui-menu-item{
+  .ui-menu-item {
      padding-left:10px;
      
-  &.ui-state-focus{
-    background-color:$bgr3;
-    border:none;
-    width:auto;
-    color:$contextualLinkHover;
-    font-weight:normal;
-  }
+    &.ui-state-focus {
+      background-color:$bgr3;
+      border:none;
+      width:auto;
+      color:$contextualLinkHover;
+      font-weight:normal;
+    }
   }
   
   

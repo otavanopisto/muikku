@@ -285,9 +285,7 @@
           readonly: data.readOnlyFields||false,
           hasExamples: function () {
             var meta = this.options.meta;
-            if (meta.example) {
-              return true;
-            }
+            return meta.example && meta.example != '';
           },
           getExamples: function () {
             var meta = this.options.meta;
