@@ -165,4 +165,9 @@ public class WorkspaceNodeDAO extends CorePluginsDAO<WorkspaceNode> {
     return persist(node);
   }
 
+  public WorkspaceNode updateUrlName(WorkspaceNode node, String urlName) {
+    node.setUrlName(urlName);
+    return persist(node);
+  }
+
 }
