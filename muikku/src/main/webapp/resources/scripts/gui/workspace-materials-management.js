@@ -240,7 +240,11 @@
         // TOC
         var tocElement = $("a[href*='#page-" + workspaceMaterialId + "']");
         if (tocElement) {
+          var tocSection = tocElement.closest('.workspace-materials-toc-section');
           tocElement.remove();
+          if (tocSection) {
+            tocSection.sortable('refresh');
+          }
         }
       }
     }, this));
@@ -267,10 +271,11 @@
             }
           });
         // TOC
-        var tocElement = $("a[href*='#page-" + workspaceMaterialId + "']");
+        var tocElement = $('ul[data-workspace-node-id="' + workspaceMaterialId + '"]');
         if (tocElement) {
           tocElement.remove();
         }
+        $('.workspace-materials-toc-root').sortable('refresh');
       }
     }, this));
   }
@@ -1283,6 +1288,10 @@
                 else {
                   var section = $('ul[data-workspace-node-id="' + parentId + '"]');
                   section.append(newPageTocItem);
+                }
+                var tocSection = newPageTocItem.closest('.workspace-materials-toc-section');
+                if (tocSection) {
+                  tocSection.sortable('refresh');
                 }
                 newPage.empty();
                 $(document).muikkuMaterialLoader('loadMaterial', newPage);
