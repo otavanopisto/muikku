@@ -909,6 +909,9 @@
     $('.workspaces-materials-management-insert-file').each(function(index, element) {
       var nextMaterial = $(element).next('.workspace-materials-view-page');
       var parentId = $(nextMaterial).data('parent-id');
+      if (!parentId) {
+        parentId = $('.workspaceRootFolderId').val();
+      }
       var nextSiblingId = $(nextMaterial).data('workspace-material-id');
       enableFileUploader(element, parentId, nextSiblingId);
     });
@@ -1181,6 +1184,9 @@
   
   $(document).on('click', '.workspaces-materials-management-add', function (event, data) {
 	  
+    var parentId = undefined;
+    var nextSiblingId = undefined;
+    var previousMaterial = $(this).parent().prevAll('.workspace-materials-view-page').first();
     var nextMaterial = $(this).parent().nextAll('.workspace-materials-view-page').first();
     
     renderDustTemplate('workspace/materials-management-new.dust', { }, $.proxy(function (text) {
@@ -1188,18 +1194,49 @@
       $(this).parent().after(newPage);
       var uploader = createFileUploader();
       $(newPage).before(uploader);
-      enableFileUploader(uploader, nextMaterial.data('parent-id'), nextMaterial.data('workspace-material-id'));
+      enableFileUploader(uploader, parentId, nextSiblingId);
       $(newPage).after(createAddPageSectionLink());
       
-      if ($(nextMaterial).length && !$(nextMaterial).is('[data-material-type="folder"]')) {
+      // Documents cannot be created at root
+      if (!$(previousMaterial).length) {
+        $(newPage).find(".workspace-materials-management-new-page-link").remove();
+      }
+      
+      // Sections can only be created last or above other sections 
+      if ($(nextMaterial).length && !nextMaterial.hasClass('folder')) {
         $(newPage).find(".workspace-materials-management-new-section-link").remove();
       }
       
       $(newPage).find('.workspace-materials-management-new-page-link').one('click', function (event) {
         event.preventDefault();
+
+        if (!$(nextMaterial).length) {
+          if (!$(previousMaterial).length) {
+            parentId = $('.workspaceRootFolderId').val();  
+          }
+          else if ($(previousMaterial).data('material-type') == 'folder') {
+            parentId = $(previousMaterial).data('workspace-material-id');
+          }
+          else {
+            parentId = $(previousMaterial).data('parent-id');
+          }
+        }
+        else {
+          if ($(nextMaterial).data('material-type') == 'folder') {
+            if ($(previousMaterial).data('material-type') == 'folder') {
+              parentId = $(previousMaterial).data('workspace-material-id');
+            }
+            else {
+              parentId = $(previousMaterial).data('parent-id');
+            }
+          }
+          else {
+            parentId = $(nextMaterial).data('parent-id');
+            nextSiblingId = $(nextMaterial).data('workspace-material-id');
+          }
+        }
+        
         var materialType = $(this).data('material-type');
-        var parentId = $(nextMaterial).data('parent-id');
-        var nextSiblingId = $(nextMaterial).data('workspace-material-id');
         var typeEndpoint = mApi().materials[materialType];
         if (typeEndpoint != null) {
           typeEndpoint.create({
@@ -1223,7 +1260,8 @@
               if (workspaceMaterialErr) {
                 $('.notification-queue').notificationQueue('notification', 'error', workspaceMaterialErr);
                 return;
-              } else {
+              }
+              else {
             	  
                 newPage.removeClass('workspace-materials-management-new');
                 newPage.attr({
@@ -1235,17 +1273,20 @@
                   'data-workspace-material-id': workspaceMaterialResult.id
                 });
 
-                var newPageTocItem = $('<li class="workspace-materials-toc-item " data-workspace-node-id="'+workspaceMaterialResult.id+'" />');
-                newPageTocItem.append('<a href="#page-'+workspaceMaterialResult.id+'">'+materialResult.title+'</a>');
+                var newPageTocItem = $('<li class="workspace-materials-toc-item " data-workspace-node-id="' + workspaceMaterialResult.id + '" />');
+                newPageTocItem.append('<a href="#page-' + workspaceMaterialResult.id + '">' + materialResult.title + '</a>');
                 newPageTocItem.append('<span class="workspace-materials-toc-itemDragHandle icon-move ui-sortable-handle" />');
                 
-                if(typeof(nextSiblingId) === 'undefined'){
-                  $('.workspace-materials-toc-root > ul').last().append(newPageTocItem);
-                }else{
+                if (nextSiblingId) {
                   newPageTocItem.insertBefore('li.workspace-materials-toc-item[data-workspace-node-id="'+nextSiblingId+'"]');
+                }
+                else {
+                  var section = $('ul[data-workspace-node-id="' + parentId + '"]');
+                  section.append(newPageTocItem);
                 }
                 newPage.empty();
                 $(document).muikkuMaterialLoader('loadMaterial', newPage);
+                // TODO Concurrency? Has the material been loaded before edit?
                 editPage(newPage);
               } 
             }, this));
@@ -1253,14 +1294,17 @@
         } else {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText("plugin.workspace.materialsManagement.missingRestService", materialType));
         }
-        
       });
       
       
       $(newPage).find('.workspace-materials-management-new-section-link').one('click', function (event) {
         event.preventDefault();
-        var nextSiblingId = $(nextMaterial).data('workspace-material-id');
         var workspaceEntityId = $('.workspaceEntityId').val();
+
+        parentId = $('.workspaceRootFolderId').val();
+        if ($(nextMaterial).data('material-type') == 'folder') {
+          nextSiblingId = $(nextMaterial).data('workspace-material-id');
+        }
         
         mApi().workspace.workspaces.folders.create(workspaceEntityId, {
           nextSiblingId: nextSiblingId
@@ -1295,7 +1339,7 @@
             
             newPage.empty();
             $(document).muikkuMaterialLoader('loadMaterial', newPage);
-            // TODO Concurrency; muikkuMaterialLoader might not have finished when editPage is already called :|
+            // TODO Concurrency? Has the material been loaded before edit?
             editPage(newPage);
           } 
         }, this));
