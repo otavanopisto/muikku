@@ -34,7 +34,7 @@
         $(element).after(newPage);
         $(element).workspaceMaterialUpload('reset');
         
-        $(document).muikkuMaterialLoader('loadMaterial', newPage, true);
+        $(document).muikkuMaterialLoader('loadMaterial', newPage);
         
         var nextPage = $(newPage).next('.workspace-materials-view-page');
         
@@ -151,7 +151,7 @@
           $(node).data('material-current-revision', material.currentRevision);
           $(node).data('material-published-revision', material.publishedRevision);
           node.empty();
-          $(document).muikkuMaterialLoader('loadMaterial', node, true);
+          $(document).muikkuMaterialLoader('loadMaterial', node);
           var tocElement = $("a[href*='#page-" + $(node).data('workspace-material-id') + "']");
           if (tocElement) {
             $(tocElement).text(material.title);
@@ -778,31 +778,27 @@
   });
   
   function moveWorkspaceMaterial(parentId, workspaceNodeId, nextSiblingId) {
+    if (isNaN(parentId)) {
+      return;
+    }
+    if (isNaN(nextSiblingId)) {
+      nextSiblingId = null;
+    }
     var workspaceId = $('.workspaceEntityId').val();
     mApi().workspace.workspaces.materials.read(workspaceId, workspaceNodeId).callback(function(err, material) {
-      
-        if (isNaN(nextSiblingId)) {
-          nextSiblingId = null;
+      material.parentId = parentId;
+      material.nextSiblingId = nextSiblingId;
+      mApi().workspace.workspaces.materials.update(workspaceId, workspaceNodeId, material).callback(function (err, html) {
+        if (!err) {
+          // Move the "add page" boxes (2) first
+          $("#page-" + workspaceNodeId).prev().insertBefore("#page-" + nextSiblingId);
+          $("#page-" + workspaceNodeId).prev().insertBefore("#page-" + nextSiblingId);
+          $("#page-" + workspaceNodeId).insertBefore($("#page-" + nextSiblingId).prev().prev());
         }
-        
-        if (isNaN(parentId)) {
-          parentId = null;
+        else {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
         }
-       
-        material.nextSiblingId = nextSiblingId;
-        material.parentId = parentId;
-      
-        mApi().workspace.workspaces.materials.update(workspaceId, workspaceNodeId, material).callback(function (err, html) {
-          
-          if (!err) {
-              // Move the "add page" boxes (2) first
-              $("#page-" + workspaceNodeId).prev().insertBefore("#page-" + nextSiblingId);
-              $("#page-" + workspaceNodeId).prev().insertBefore("#page-" + nextSiblingId);
-              $("#page-" + workspaceNodeId).insertBefore($("#page-" + nextSiblingId).prev().prev());
-          } else {
-              $('.notification-queue').notificationQueue('notification', 'error', err);
-          }
-        });
+      });
     });
   }
 
@@ -882,54 +878,8 @@
       }
     });
     
-    $('.workspace-materials-toc-section').sortable({
-      axis: "y",
-      items: ">li",
-      cursor: "crosshair",
-      handle: "span.workspace-materials-toc-itemDragHandle",
-      containment: ".workspace-materials-toc-root",
-      connectWith: ".workspace-materials-toc-section",
-      opacity: 0.35,
-      revert: 200,
-      placeholder: "sortable-placeholder",
-      forcePlaceholderSize: true,
-      stop: function(event, ui) {
-        var parentId = parseInt($(ui.item).parent().attr('data-workspace-node-id'), 10);
-        var workspaceNodeId = parseInt($(ui.item).attr('data-workspace-node-id'), 10);
-        var nextSiblingId = parseInt($(ui.item).next('.workspace-materials-toc-item').attr('data-workspace-node-id'), 10);
-        moveWorkspaceMaterial(parentId, workspaceNodeId, nextSiblingId);
-
-        /* Lets not animate already active element */
-        
-        if (!$(ui.item).hasClass("active")) {
-          $(ui.item)
-          .addClass("no-hover")
-          .animate({
-            backgroundColor: "#edeea2",
-            color: "#000"
-          },{
-            duration:1500,
-            easing: "easeInOutQuint",
-            complete: function() {
-              $(this).animate({
-                backgroundColor: "transparent",
-                color: "#000"
-              }, {
-                duration:1500,
-                easing: "easeInOutQuint",
-                complete: function() {
-                  $(this).css({
-                    backgroundColor: "",
-                  })
-                  .removeClass("no-hover");
-                  $(this).removeAttr("style");
-                }
-              });
-            }
-          });
-        }
-        
-      }
+    $('.workspace-materials-toc-section').each(function(index, node) {
+      setupSortableSection(node);
     });
 
     dust.preload('workspace/materials-management-page-html.dust');
@@ -1142,6 +1092,55 @@
     });
   }
   
+  function setupSortableSection(node) {
+    $(node).sortable({
+      axis: "y",
+      items: ">li",
+      cursor: "crosshair",
+      handle: "span.workspace-materials-toc-itemDragHandle",
+      containment: ".workspace-materials-toc-root",
+      connectWith: ".workspace-materials-toc-section",
+      opacity: 0.35,
+      revert: 200,
+      placeholder: "sortable-placeholder",
+      forcePlaceholderSize: true,
+      stop: function(event, ui) {
+        var parentId = parseInt($(ui.item).parent().attr('data-workspace-node-id'), 10);
+        var workspaceNodeId = parseInt($(ui.item).attr('data-workspace-node-id'), 10);
+        var nextSiblingId = parseInt($(ui.item).next('.workspace-materials-toc-item').attr('data-workspace-node-id'), 10);
+        moveWorkspaceMaterial(parentId, workspaceNodeId, nextSiblingId);
+        /* Lets not animate already active element */
+        if (!$(ui.item).hasClass("active")) {
+          $(ui.item)
+          .addClass("no-hover")
+          .animate({
+            backgroundColor: "#edeea2",
+            color: "#000"
+          },{
+            duration:1500,
+            easing: "easeInOutQuint",
+            complete: function() {
+              $(this).animate({
+                backgroundColor: "transparent",
+                color: "#000"
+              }, {
+                duration:1500,
+                easing: "easeInOutQuint",
+                complete: function() {
+                  $(this).css({
+                    backgroundColor: "",
+                  })
+                  .removeClass("no-hover");
+                  $(this).removeAttr("style");
+                }
+              });
+            }
+          });
+        }
+      }
+    });
+  }
+  
   $(document).on('click', '.change-assignment', function (event, data) {
     // TODO: Actually do something AND DO IT BETTER!
     var page = $(this).closest('.workspace-materials-view-page');
@@ -1246,7 +1245,7 @@
                   newPageTocItem.insertBefore('li.workspace-materials-toc-item[data-workspace-node-id="'+nextSiblingId+'"]');
                 }
                 newPage.empty();
-                $(document).muikkuMaterialLoader('loadMaterial', newPage, true);
+                $(document).muikkuMaterialLoader('loadMaterial', newPage);
                 editPage(newPage);
               } 
             }, this));
@@ -1271,7 +1270,6 @@
             $('.notification-queue').notificationQueue('notification', 'error', workspaceFolderErr);
             return;
           } else {
-              
             newPage.removeClass('workspace-materials-management-new').addClass("folder");
             newPage.attr({
               'id': 'page-' + workspaceFolderResult.id,
@@ -1280,20 +1278,24 @@
               'data-material-type': 'folder',
               'data-workspace-material-id': workspaceFolderResult.id
             });
-            var newSectionTocItem = $('<ul class="workspace-materials-toc-section ui-sortable" data-workspace-node-id="'+workspaceFolderResult.id+'" />');
+            var newSectionTocItem = $('<ul class="workspace-materials-toc-section" data-workspace-node-id="'+workspaceFolderResult.id+'" />');
             var newPageTocItem = $('<li class="workspace-materials-toc-subtitle " />');
             newPageTocItem.append('<a href="#page-'+workspaceFolderResult.id+'">'+workspaceFolderResult.title+'</a>');
             newPageTocItem.append('<span class="workspace-materials-toc-sectionDragHandle icon-move" />');
             newSectionTocItem.append(newPageTocItem);
-            
-            if(typeof(nextSiblingId) === 'undefined'){
+
+            if (typeof(nextSiblingId) === 'undefined') {
               $('.workspace-materials-toc-root').append(newSectionTocItem);
-            }else{
+            } else {
               newSectionTocItem.insertBefore('ul.workspace-materials-toc-section[data-workspace-node-id="'+nextSiblingId+'"]');
             }
+
+            $('.workspace-materials-toc-root').sortable('refresh');
+            setupSortableSection(newSectionTocItem);
             
             newPage.empty();
-            $(document).muikkuMaterialLoader('loadMaterial', newPage, true);
+            $(document).muikkuMaterialLoader('loadMaterial', newPage);
+            // TODO Concurrency; muikkuMaterialLoader might not have finished when editPage is already called :|
             editPage(newPage);
           } 
         }, this));
