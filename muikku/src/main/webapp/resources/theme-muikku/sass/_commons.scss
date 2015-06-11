@@ -36,7 +36,7 @@ div[class*='header']{
 }
 
 .co-user-picture{
-	@include background-image('gfx/default-student-picture.jpg');
+	@include background-image('gfx/default-user-picture.jpg');
 	background-size:100%;
 	border: 2px solid #fff;
   border-radius: 40px;

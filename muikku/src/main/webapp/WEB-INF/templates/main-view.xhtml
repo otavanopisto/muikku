@@ -7,7 +7,7 @@
   template="/WEB-INF/templates/default.xhtml">
 
   <!-- Lets set the base body class per view -->
-  <ui:param name="bodyClass" value="index"/>
+  <ui:param name="bodyClass" value="#{empty bodyClass ? 'index' : bodyClass}"/>
 
   <ui:define name="sitebody">
     <div class="index">

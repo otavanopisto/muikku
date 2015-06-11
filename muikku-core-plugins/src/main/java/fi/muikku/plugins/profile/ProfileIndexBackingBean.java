@@ -22,7 +22,7 @@ import fi.otavanopisto.security.LoggedIn;
 @LoggedIn
 @Stateful
 @RequestScoped
-@Join ( path = "/profile/{userId}", to = "/jsf/profile/profile.jsf")
+@Join ( path = "/profile", to = "/jsf/profile/profile.jsf")
 public class ProfileIndexBackingBean {
 
   
