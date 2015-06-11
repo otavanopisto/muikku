@@ -40,6 +40,7 @@ import org.xml.sax.SAXNotSupportedException;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.material.HtmlMaterialController;
 import fi.muikku.plugins.material.MaterialController;
+import fi.muikku.plugins.material.dao.MaterialDAO;
 import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.workspace.dao.WorkspaceFolderDAO;
@@ -77,6 +78,9 @@ public class WorkspaceMaterialController {
 
   @Inject
   private WorkspaceNodeDAO workspaceNodeDAO;
+
+  @Inject
+  private MaterialDAO materialDAO;
 
   @Inject
   private Event<WorkspaceRootFolderCreateEvent> workspaceRootFolderCreateEvent;
@@ -357,9 +361,31 @@ public class WorkspaceMaterialController {
     if (nextSibling != null && !nextSibling.getParent().getId().equals(parentNode.getId())) {
       throw new IllegalArgumentException("Next sibling parent is not parent");
     }
-    // Parent node
-    workspaceFolder = (WorkspaceFolder) workspaceNodeDAO.updateParent(workspaceFolder, parentNode);
+
+    // Parent node & URL name
+    
+    long oldParent = workspaceFolder.getParent() == null ? 0 : workspaceFolder.getParent().getId();
+    long newParent = parentNode == null ? 0 : parentNode.getId();
+    if (oldParent != newParent) {
+      // Before changing the parent, make sure the folder's URL name will be unique under it
+      String urlName = generateUniqueUrlName(parentNode, title);
+      // Change the parent
+      workspaceFolder = (WorkspaceFolder) workspaceNodeDAO.updateParent(workspaceFolder, parentNode);
+      // Update URL name if applicable 
+      if (!StringUtils.equals(workspaceFolder.getUrlName(), urlName)) {
+        workspaceFolder = (WorkspaceFolder) workspaceNodeDAO.updateUrlName(workspaceFolder, urlName);
+      }
+    }
+    else {
+      // Parent stays the same. Still, make sure title and URL name are in sync  
+      String urlName = generateUniqueUrlName(parentNode, workspaceFolder, title);
+      if (!StringUtils.equals(workspaceFolder.getUrlName(), urlName)) {
+        workspaceFolder = (WorkspaceFolder) workspaceNodeDAO.updateUrlName(workspaceFolder, urlName);
+      }
+    }
+    
     // Next sibling
+    
     if (nextSibling == null) {
       Integer orderNumber = workspaceNodeDAO.getMaximumOrderNumber(parentNode);
       orderNumber = orderNumber == null ? 0 : orderNumber;
@@ -369,11 +395,18 @@ public class WorkspaceMaterialController {
     } else {
       workspaceFolder = (WorkspaceFolder) moveAbove(workspaceFolder, nextSibling);
     }
+    
     // Hidden
+    
     workspaceFolder = (WorkspaceFolder) workspaceNodeDAO.updateHidden(workspaceFolder, hidden);
+    
     // Title
+    
     String urlName = generateUniqueUrlName(workspaceFolder.getParent(), workspaceFolder, title);
     workspaceFolder = workspaceFolderDAO.updateFolderName(workspaceFolder, urlName, title);
+    
+    // Return updated folder
+    
     return workspaceFolder;
   }
 
@@ -382,14 +415,39 @@ public class WorkspaceMaterialController {
     if (nextSibling != null && !nextSibling.getParent().getId().equals(parentNode.getId())) {
       throw new IllegalArgumentException("Next sibling parent is not parent");
     }
+
     // Material id
+    
     if (workspaceNode instanceof WorkspaceMaterial) {
       workspaceNode = workspaceMaterialDAO.updateMaterialId((WorkspaceMaterial) workspaceNode, materialId);
       workspaceNode = workspaceMaterialDAO.updateAssignmentType((WorkspaceMaterial) workspaceNode, assignmentType);
     }
-    // Parent node
-    workspaceNode = workspaceNodeDAO.updateParent(workspaceNode, parentNode);
+    
+    // Parent node & URL name
+    
+    Material material = materialDAO.findById(materialId);
+    long oldParent = workspaceNode.getParent() == null ? 0 : workspaceNode.getParent().getId();
+    long newParent = parentNode == null ? 0 : parentNode.getId();
+    if (oldParent != newParent) {
+      // Before changing the parent, make sure the node's URL name will be unique under it
+      String urlName = generateUniqueUrlName(parentNode, material.getTitle());
+      // Change the parent
+      workspaceNode = workspaceNodeDAO.updateParent(workspaceNode, parentNode);
+      // Update URL name if applicable 
+      if (!StringUtils.equals(workspaceNode.getUrlName(), urlName)) {
+        workspaceNode = workspaceNodeDAO.updateUrlName(workspaceNode, urlName);
+      }
+    }
+    else {
+      // Parent stays the same. Still, make sure title and URL name are in sync
+      String urlName = generateUniqueUrlName(parentNode, workspaceNode, material.getTitle());
+      if (!StringUtils.equals(workspaceNode.getUrlName(), urlName)) {
+        workspaceNode = workspaceNodeDAO.updateUrlName(workspaceNode, urlName);
+      }
+    }
+    
     // Next sibling
+    
     if (nextSibling == null) {
       Integer orderNumber = workspaceNodeDAO.getMaximumOrderNumber(parentNode);
       orderNumber = orderNumber == null ? 0 : orderNumber;
@@ -399,7 +457,9 @@ public class WorkspaceMaterialController {
     } else {
       workspaceNode = moveAbove(workspaceNode, nextSibling);
     }
+
     // Hidden
+    
     workspaceNode = workspaceNodeDAO.updateHidden(workspaceNode, hidden);
 
     // Updated node
@@ -433,7 +493,8 @@ public class WorkspaceMaterialController {
     
     // TODO: set title
 
-    // Updated node
+    // Return updated node
+    
     return workspaceNode;
   }
   
