@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+  <sql>
+    alter table
+      WorkspaceNode
+    add column
+      title VARCHAR(255) NOT NULL
+  </sql>
+  <sql>
+    replace into
+      WorkspaceNode(
+        id,
+        hidden,
+        orderNumber,
+        urlName,
+        parent_id,
+        title)
+    select
+      WorkspaceNode.id,
+      WorkspaceNode.hidden,
+      WorkspaceNode.orderNumber,
+      WorkspaceNode.urlName,
+      WorkspaceNode.parent_id,
+      Material.title
+    from
+      WorkspaceNode
+    inner join
+      WorkspaceMaterial
+    on
+      WorkspaceNode.id = WorkspaceMaterial.id
+    inner join
+      Material
+    on
+      WorkspaceMaterial.materialId = material.id
+  </sql>
+  <sql>
+    replace into
+      WorkspaceNode(
+        id,
+        hidden,
+        orderNumber,
+        urlName,
+        parent_id,
+        title)
+    select
+      WorkspaceNode.id,
+      WorkspaceNode.hidden,
+      WorkspaceNode.orderNumber,
+      WorkspaceNode.urlName,
+      WorkspaceNode.parent_id,
+      WorkspaceFolder.title
+    from
+      WorkspaceNode
+    inner join
+      WorkspaceFolder
+    on
+      WorkspaceNode.id = WorkspaceFolder.id
+  </sql>
+  <sql>
+    replace into
+      WorkspaceNode(
+        id,
+        hidden,
+        orderNumber,
+        urlName,
+        parent_id,
+        title)
+    select
+      WorkspaceNode.id,
+      WorkspaceNode.hidden,
+      WorkspaceNode.orderNumber,
+      WorkspaceNode.urlName,
+      WorkspaceNode.parent_id,
+      'Root'
+    from
+      WorkspaceNode
+    inner join
+      WorkspaceRootFolder
+    on
+      WorkspaceNode.id = WorkspaceRootFolder.id
+  </sql>
+  <sql>
+    alter table
+      WorkspaceFolder
+    drop column
+      Title
+  </sql>
+</update>
