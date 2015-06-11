@@ -411,7 +411,7 @@ public class WorkspaceMaterialController {
   }
 
   public WorkspaceNode updateWorkspaceNode(WorkspaceNode workspaceNode, Long materialId, WorkspaceNode parentNode, WorkspaceNode nextSibling, Boolean hidden,
-      WorkspaceMaterialAssignmentType assignmentType) {
+      WorkspaceMaterialAssignmentType assignmentType, String title) {
     if (nextSibling != null && !nextSibling.getParent().getId().equals(parentNode.getId())) {
       throw new IllegalArgumentException("Next sibling parent is not parent");
     }
@@ -423,27 +423,26 @@ public class WorkspaceMaterialController {
       workspaceNode = workspaceMaterialDAO.updateAssignmentType((WorkspaceMaterial) workspaceNode, assignmentType);
     }
     
+    // Title
+    
+    workspaceNode = workspaceNodeDAO.updateTitle(workspaceNode, title);
+    
     // Parent node & URL name
     
-    Material material = materialDAO.findById(materialId);
     long oldParent = workspaceNode.getParent() == null ? 0 : workspaceNode.getParent().getId();
     long newParent = parentNode == null ? 0 : parentNode.getId();
     if (oldParent != newParent) {
       // Before changing the parent, make sure the node's URL name will be unique under it
-      String urlName = generateUniqueUrlName(parentNode, material.getTitle());
+      String urlName = generateUniqueUrlName(parentNode, title);
       // Change the parent
       workspaceNode = workspaceNodeDAO.updateParent(workspaceNode, parentNode);
-      // Update URL name if applicable 
-      if (!StringUtils.equals(workspaceNode.getUrlName(), urlName)) {
-        workspaceNode = workspaceNodeDAO.updateUrlName(workspaceNode, urlName);
-      }
+      // Update URL name 
+      workspaceNode = workspaceNodeDAO.updateUrlName(workspaceNode, urlName);
     }
     else {
-      // Parent stays the same. Still, make sure title and URL name are in sync
-      String urlName = generateUniqueUrlName(parentNode, workspaceNode, material.getTitle());
-      if (!StringUtils.equals(workspaceNode.getUrlName(), urlName)) {
-        workspaceNode = workspaceNodeDAO.updateUrlName(workspaceNode, urlName);
-      }
+      // Update URL name
+      String urlName = generateUniqueUrlName(parentNode, workspaceNode, title);
+      workspaceNode = workspaceNodeDAO.updateUrlName(workspaceNode, urlName);
     }
     
     // Next sibling
@@ -466,38 +465,6 @@ public class WorkspaceMaterialController {
     return workspaceNode;
   }
 
-  public WorkspaceNode updateWorkspaceNode(WorkspaceNode workspaceNode, Long materialId, WorkspaceNode parentNode, WorkspaceNode nextSibling, Boolean hidden,
-      WorkspaceMaterialAssignmentType assignmentType, String title) {
-    if (nextSibling != null && !nextSibling.getParent().getId().equals(parentNode.getId())) {
-      throw new IllegalArgumentException("Next sibling parent is not parent");
-    }
-    // Material id
-    if (workspaceNode instanceof WorkspaceMaterial) {
-      workspaceNode = workspaceMaterialDAO.updateMaterialId((WorkspaceMaterial) workspaceNode, materialId);
-      workspaceNode = workspaceMaterialDAO.updateAssignmentType((WorkspaceMaterial) workspaceNode, assignmentType);
-    }
-    // Parent node
-    workspaceNode = workspaceNodeDAO.updateParent(workspaceNode, parentNode);
-    // Next sibling
-    if (nextSibling == null) {
-      Integer orderNumber = workspaceNodeDAO.getMaximumOrderNumber(parentNode);
-      orderNumber = orderNumber == null ? 0 : orderNumber;
-      if (workspaceNode.getOrderNumber() < orderNumber) {
-        workspaceNode = workspaceNodeDAO.updateOrderNumber(workspaceNode, ++orderNumber);
-      }
-    } else {
-      workspaceNode = moveAbove(workspaceNode, nextSibling);
-    }
-    // Hidden
-    workspaceNode = workspaceNodeDAO.updateHidden(workspaceNode, hidden);
-    
-    // TODO: set title
-
-    // Return updated node
-    
-    return workspaceNode;
-  }
-  
   public void showWorkspaceNode(WorkspaceNode workspaceNode) {
     workspaceNodeDAO.updateHidden(workspaceNode,  Boolean.TRUE);
   }

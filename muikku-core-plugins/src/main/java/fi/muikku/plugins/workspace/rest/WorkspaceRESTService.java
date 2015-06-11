@@ -1129,8 +1129,9 @@ public class WorkspaceRESTService extends PluginRESTService {
     Long materialId = workspaceMaterial.getMaterialId(); 
     WorkspaceNode parentNode = workspaceMaterialController.findWorkspaceNodeById(workspaceMaterial.getParentId());
     WorkspaceNode nextSibling = workspaceMaterial.getNextSiblingId() == null ? null : workspaceMaterialController.findWorkspaceNodeById(workspaceMaterial.getNextSiblingId());
+    String title = workspaceMaterial.getTitle();
     Boolean hidden = workspaceMaterial.getHidden();
-    workspaceMaterialController.updateWorkspaceNode(workspaceNode, materialId, parentNode, nextSibling, hidden, workspaceMaterial.getAssignmentType());
+    workspaceMaterialController.updateWorkspaceNode(workspaceNode, materialId, parentNode, nextSibling, hidden, workspaceMaterial.getAssignmentType(), title);
     return Response.noContent().build();
   }
   

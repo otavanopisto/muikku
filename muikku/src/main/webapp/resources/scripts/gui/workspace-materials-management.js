@@ -146,16 +146,11 @@
         var worker = new Worker("/scripts/gui/workspace-material-loader.js");
         worker.onmessage = $.proxy(function(response) {
           var material = $.parseJSON(response.data.html);
-          $(node).data('material-title', material.title);
           $(node).data('material-content', material.html);
           $(node).data('material-current-revision', material.currentRevision);
           $(node).data('material-published-revision', material.publishedRevision);
           node.empty();
           $(document).muikkuMaterialLoader('loadMaterial', node);
-          var tocElement = $("a[href*='#page-" + $(node).data('workspace-material-id') + "']");
-          if (tocElement) {
-            $(tocElement).text(material.title);
-          }
         }, this);
         worker.postMessage({
           materialId: $(node).data('material-id'),
@@ -1442,7 +1437,7 @@
     }, this));
   }
   
-  function publishPage(workspaceMaterialId, materialId, publishedRevision, currentRevision, removeAnswers, errorCallback) {
+  function publishPage(workspaceMaterialId, materialId, publishedRevision, currentRevision, title, removeAnswers, errorCallback) {
     var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', getLocaleText("plugin.workspace.materialsManagement.publishingMessage"));
     mApi().materials.html.publish.create(materialId, {
       fromRevision: publishedRevision,
@@ -1454,9 +1449,28 @@
         errorCallback(err, jqXHR);
       }
       else {
+        // Revision update
         setPagePublishedRevision(workspaceMaterialId, currentRevision);
-        closeEditor($('#page-' + workspaceMaterialId), true);
-        $('.notification-queue').notificationQueue('notification', 'info', getLocaleText("plugin.workspace.materialsManagement.publishedMessage"));
+        // Workspace material title update
+        var workspaceId = $('.workspaceEntityId').val();
+        mApi().workspace.workspaces.materials.read(workspaceId, workspaceMaterialId).callback($.proxy(function(err, workspaceMaterial) {
+          workspaceMaterial.title = title;
+          mApi().workspace.workspaces.materials.update(workspaceId, workspaceMaterialId, workspaceMaterial).callback($.proxy(function (err, html) {
+            if (err) {
+              errorCallback(err, jqXHR);
+            }
+            else {
+              var page = $('#page-' + workspaceMaterialId);
+              $(page).data('material-title', title);
+              var tocElement = $("a[href*='#page-" + $(page).data('workspace-material-id') + "']");
+              if (tocElement) {
+                $(tocElement).text(title);
+              }
+              closeEditor(page, true);
+              $('.notification-queue').notificationQueue('notification', 'info', getLocaleText("plugin.workspace.materialsManagement.publishedMessage"));
+            }
+          }), this);
+        }), this);
       }
     }, this));   
   }
@@ -1465,17 +1479,18 @@
     var page = $(this).closest('.workspace-materials-view-page');
     var workspaceMaterialId = $(page).data('workspace-material-id');
     var materialId = $(page).data('material-id');
+    var title = $(page).find('.workspace-material-html-editor-title').val();
     var currentRevision = getPageCurrentRevision(workspaceMaterialId);
     var publishedRevision = getPagePublishedRevision(workspaceMaterialId);
     
     if (currentRevision !== publishedRevision) {
       confirmPagePublication($.proxy(function () {
-        publishPage(workspaceMaterialId, materialId, publishedRevision, currentRevision, false, function (err, jqXHR) {
+        publishPage(workspaceMaterialId, materialId, publishedRevision, currentRevision, title, false, function (err, jqXHR) {
           if (jqXHR.status == 409) {
             var response = $.parseJSON(jqXHR.responseText);
             if (response && response.reason == 'CONTAINS_ANSWERS') {
               confirmAnswerRemovalPublish(function () {
-                publishPage(workspaceMaterialId, materialId, publishedRevision, currentRevision, true, function (err, jqXHR) {
+                publishPage(workspaceMaterialId, materialId, publishedRevision, currentRevision, title, true, function (err, jqXHR) {
                   $('.notification-queue').notificationQueue('notification', 'error', err);
                 });
               });
