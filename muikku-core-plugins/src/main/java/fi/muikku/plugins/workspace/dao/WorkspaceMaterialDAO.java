@@ -31,6 +31,11 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
 
   public WorkspaceMaterial create(WorkspaceNode parent, long materialId, String urlName, Integer orderNumber,
       Boolean hidden, WorkspaceMaterialAssignmentType assignmentType) {
+    return create(parent, materialId, urlName, orderNumber, hidden, assignmentType, "Untitled");
+  }
+
+  public WorkspaceMaterial create(WorkspaceNode parent, long materialId, String urlName, Integer orderNumber,
+      Boolean hidden, WorkspaceMaterialAssignmentType assignmentType, String title) {
     WorkspaceMaterial workspaceMaterial = new WorkspaceMaterial();
     workspaceMaterial.setParent(parent);
     workspaceMaterial.setMaterialId(materialId);
@@ -38,6 +43,7 @@ public class WorkspaceMaterialDAO extends CorePluginsDAO<WorkspaceMaterial> {
     workspaceMaterial.setOrderNumber(orderNumber);
     workspaceMaterial.setHidden(hidden);
     workspaceMaterial.setAssignmentType(assignmentType);
+    workspaceMaterial.setTitle(title);
 
     return persist(workspaceMaterial);
   }
