@@ -13,7 +13,11 @@
           'class': 'send-button',
           'click': function(event) {
             $(this).dialog("close");
-            confirmCallback();
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            } else {
+              $('.notification-queue').notificationQueue('notification', 'successful', getLocaleText("plugin.profile.changePassword.dialog.notif.successful"));
+            }
           }
         }, {
           'text': dialog.data('button-cancel-text'),
