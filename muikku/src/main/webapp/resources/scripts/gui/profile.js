@@ -16,7 +16,7 @@
             if (err) {
               $('.notification-queue').notificationQueue('notification', 'error', err);
             } else {
-              $('.notification-queue').notificationQueue('notification', 'successful', getLocaleText("plugin.profile.changePassword.dialog.notif.successful"));
+              $('.notification-queue').notificationQueue('notification', 'success', getLocaleText("plugin.profile.changePassword.dialog.notif.successful"));
             }
           }
         }, {
