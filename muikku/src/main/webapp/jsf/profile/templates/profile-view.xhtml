@@ -14,6 +14,18 @@
   <ui:define name="viewScripts">
     <h:outputScript name="scripts/gui/profile.js"  />
   </ui:define>
+  
+  <!-- Define center and right widgetspace for profile view so we can add necessary margins (alpha ad omega) -->
+  <ui:define name="content.center.widgetspace">
+    <m:widgetSpace name="generic.content.center" keepEmpty="true" sizing="MAXIMIZE" styleClass="alpha">
+      <ui:insert name="content.center.widget"></ui:insert>
+    </m:widgetSpace>
+  </ui:define>
+  <ui:define name="content.right.widgetspace">
+    <m:widgetSpace name="generic.content.right" keepEmpty="false" sizing="MINIMIZE" styleClass="omega">
+      <ui:insert name="content.right.widget"></ui:insert>
+    </m:widgetSpace>
+  </ui:define>
 
   
 

@@ -19,11 +19,9 @@ import fi.muikku.users.UserEntityController;
 import fi.otavanopisto.security.LoggedIn;
 
 @Named
-@LoggedIn
 @Stateful
 @RequestScoped
 @Join ( path = "/profile", to = "/jsf/profile/profile.jsf")
-public class ProfileIndexBackingBean {
-
+public class ProfileBackingBean {
   
 }

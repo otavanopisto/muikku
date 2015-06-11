@@ -4,10 +4,73 @@ body.profile {
   
   .profile-content {
     background:#fff;
+    padding:20px;
+    box-sizing:border-box;
+    min-height:500px;
+    position:relative;
+    
+    .profile-picture-wrapper {
+      border:3px solid #fff;
+      box-shadow:0 0 15px rgba(0, 0, 0, 0.05);
+      left:20px;
+      min-height:100px;
+      position:absolute;
+      top:20px;
+      width:140px;
+      
+      img {
+        border:0 none;
+        display:block;
+        height:auto;
+        width:140px;
+      }
+    }
+    
+    .profile-data-wrapper {
+      margin:0 0 0 166px;
+    
+      h1.profile-user-realname {
+        font-weight:300;
+        font-size:20px;
+      }
+      
+      .profile-user-email {
+        margin:10px 0;
+      }
+      
+      .profile-change-password-container {
+        margin:10px 0;
+      
+        .profile-change-password {
+          background:#0099ff;
+          color:#fff;
+          display:inline-block;
+          font-size:14px;
+          padding:6px 8px;
+          text-transform:uppercase;
+          cursor:pointer;
+        }
+      
+      }
+    
+    }
+    
+    
+    
   }
   
   .profile-section-links-container {
     background:#fff;
+    padding:20px;
+    box-sizing:border-box;
+    min-height:500px;
+    
+    ul.profile-section-links {
+      padding:0;
+      margin:0;
+      list-style-type:none;
+    }
+    
   }
   
 }
