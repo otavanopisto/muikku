@@ -405,6 +405,37 @@ public class WorkspaceMaterialController {
     // Updated node
     return workspaceNode;
   }
+
+  public WorkspaceNode updateWorkspaceNode(WorkspaceNode workspaceNode, Long materialId, WorkspaceNode parentNode, WorkspaceNode nextSibling, Boolean hidden,
+      WorkspaceMaterialAssignmentType assignmentType, String title) {
+    if (nextSibling != null && !nextSibling.getParent().getId().equals(parentNode.getId())) {
+      throw new IllegalArgumentException("Next sibling parent is not parent");
+    }
+    // Material id
+    if (workspaceNode instanceof WorkspaceMaterial) {
+      workspaceNode = workspaceMaterialDAO.updateMaterialId((WorkspaceMaterial) workspaceNode, materialId);
+      workspaceNode = workspaceMaterialDAO.updateAssignmentType((WorkspaceMaterial) workspaceNode, assignmentType);
+    }
+    // Parent node
+    workspaceNode = workspaceNodeDAO.updateParent(workspaceNode, parentNode);
+    // Next sibling
+    if (nextSibling == null) {
+      Integer orderNumber = workspaceNodeDAO.getMaximumOrderNumber(parentNode);
+      orderNumber = orderNumber == null ? 0 : orderNumber;
+      if (workspaceNode.getOrderNumber() < orderNumber) {
+        workspaceNode = workspaceNodeDAO.updateOrderNumber(workspaceNode, ++orderNumber);
+      }
+    } else {
+      workspaceNode = moveAbove(workspaceNode, nextSibling);
+    }
+    // Hidden
+    workspaceNode = workspaceNodeDAO.updateHidden(workspaceNode, hidden);
+    
+    // TODO: set title
+
+    // Updated node
+    return workspaceNode;
+  }
   
   public void showWorkspaceNode(WorkspaceNode workspaceNode) {
     workspaceNodeDAO.updateHidden(workspaceNode,  Boolean.TRUE);

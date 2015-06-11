@@ -83,6 +83,6 @@
     alter table
       WorkspaceFolder
     drop column
-      Title
+      title
   </sql>
 </update>
