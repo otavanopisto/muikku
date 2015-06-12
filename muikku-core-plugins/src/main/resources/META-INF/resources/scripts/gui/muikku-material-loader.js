@@ -702,7 +702,7 @@
       var embedId = createEmbedId(data.parentIds);
       var materialId = data.materialId;
       var valueKey = [materialId, embedId, meta.name].join('.');
-      var value = data.fieldAnswers[valueKey];
+      var value = data.fieldAnswers ? data.fieldAnswers[valueKey] : '';
       
       $(document).trigger('taskFieldDiscovered', {
         pageElement: data.pageElement,
