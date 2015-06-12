@@ -124,6 +124,7 @@
               textfield.off();
               var editor = node.find('.workspace-material-folder-editor-title-wrapper');
               editor.replaceWith(pageElement);
+              node.data('material-title', title);
               // TOC
               var tocElement = $("a[href*='#page-" + $(node).data('workspace-material-id') + "']");
               if (tocElement) {
