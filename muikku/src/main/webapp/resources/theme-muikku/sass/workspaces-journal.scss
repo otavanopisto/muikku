@@ -1,65 +1,106 @@
 @import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
+@import "_commons.scss"; 
 @import "_workspaces.scss"; /* Generic workspace styles */
 
 body[class^='workspace'] { 
+
+  /* WORKSPACE JOURNAL */
   
-  /* WORKSPACE SPECIFIC DISCUSSIONS OVERRIDES */
-  
-  /* Discussion header overrides */
-  .mf-content-functions {
-    background-color: #fff;
-    height:55px;
+  .workspace-journal-new-entry-container {
+    background-color:#fff;
     font-size:14px;
+    height:35px;
+    padding:0 30px;
     
-    .mf-button-container {
-      background-color: #fff;
-      height:55px;
-      
-      .bt-mainFunction { /* Overrides mainfunction button styles */
-        margin:0 0 10px 30px;
-        box-shadow:none;
-        border:0px;
-        text-shadow:none;
-        background:#0099ff;
-        width:auto;
-      }
-      
-      .di-new-message-button {
-        font-weight:400;
-      }
-      
+    .workspace-journal-new-entry-button {
+      background:#0099ff;
+      border-radius: 3px;
+      color:#ffffff;
+      cursor:pointer;
+      display:inline-block;
+      font-size:1em;
+      line-height:1.3em;
+      text-transform: uppercase;
+      padding:8px 12px;
+      font-weight:400;
     }
-    
-    .mf-view-container {
-      background-color:#fff;
-      height:55px;
-      
-      .di-browse-areas-container {
-        margin:0px 0 10px 0px;
-      }
-      
-      .di-new-area-container {
-        margin:2px 0 0 5px;
-      }
-    }
-  
+
   }
   
-  /* Discussion areas overrides */
-  .mf-content-area {
-    background-color: #fff;
+  .workspace-journal-content-wrapper {
+    min-height:500px;
+    background:#fff;
+    padding:30px;
     
-    .di-no-messages {
-    
-      h3 {
+    .workspace-single-journal-entry {
+      position:relative;
+      margin:0 0 30px 0;
+      border-bottom:8px solid #eee;
+      padding:0 0 25px 0;
+      
+      &:last-child {
+        margin:0;
+        border:none;
+        padding:0;
+      }
+      
+      .workspace-journal-title {
+        font-size:25px;
         font-weight:300;
       }
+      
+      .workspace-journal-entry-meta {
+        margin:10px 0 0 0;
+      
+        .workspace-journal-dateTime {
+          font-style:italic;
+          color:#31638d;
+          font-weight:400;
+          display:inline-block;
+          margin:0 10px 0 0;
+        }
+        
+      }
+      
+      .workspace-journal-content {
+      
+      }
+      
+      .workspace-journal-footer {
+      
+        button {
+          border-radius:3px;
+          border:0;
+          color:#fff;
+          font-weight:400;
+          text-transform:uppercase;
+          margin:5px;
+          outline:none;
+          font-family:"Open Sans";
+          padding:2px 8px;
+          font-size:14px;
+          cursor:pointer;
+        }
+        
+        .journal-edit-button {
+          background:#f6a930;
+        }
+        
+        .journal-delete-button {
+          background:#de3211;
+        }
+        
+        .journal-permanent-url-button {
+          background:#7391a7;
+        }
+      
+      }
     
     }
     
   }
-
-  /* Social navigation with New Message/Area and Answer Message */
+  
+  /* Social navigation with New Journal entry */
   #socialNavigation.sn-container {
   
     .di-message-create,
@@ -141,7 +182,7 @@ body[class^='workspace'] {
     opacity:0.5;
   }
   
-  .discussion-management-dialog {
+  .workspace-journal-confirm-dialog {
     box-shadow:0 0 80px rgba(0,0,0,0.4);
     background:#fff;
     font-family: 'Open Sans',Verdana, sans-serif;
@@ -204,7 +245,7 @@ body[class^='workspace'] {
       
     }
     
-    .discussion-confirm-dialog {
+    .workspace-journal-delete-confirm-dialog {
       margin:10px 0 0 0;
     }
     
@@ -252,9 +293,7 @@ body[class^='workspace'] {
         }
       
       }
-      
     }
-    
   }
   
 }
