@@ -480,4 +480,32 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     return new LocalEnvironmentRoleImpl(environmentRoleEntity.getId().toString(), archetype, environmentRoleEntity.getName());
   }
 
+  @Override
+  public void updateUserCredentials(String userIdentifier, String oldPassword, String newUsername, String newPassword)
+      throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public String requestPasswordResetByEmail(String email) throws SchoolDataBridgeRequestException,
+      UnexpectedSchoolDataBridgeException {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public boolean confirmResetPassword(String resetCode, String newPassword) throws SchoolDataBridgeRequestException,
+      UnexpectedSchoolDataBridgeException {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public String findUsername(String identifier) throws SchoolDataBridgeRequestException,
+      UnexpectedSchoolDataBridgeException {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
 }

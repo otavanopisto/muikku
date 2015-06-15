@@ -12,8 +12,10 @@
       <img src="#{resource['theme-muikku/gfx/default-user-picture.jpg']}"/>
     </div>
     <div class="profile-data-wrapper">
-      <h1 class="profile-user-realname">#{sessionBackingBean.loggedUserName}</h1>
-      <div class="profile-user-email">käyttäjän.sähköpostiosoite@ladataan.tähän</div>
+      <h1 class="profile-user-realname">#{profileBackingBean.loggedUser.displayName}</h1>
+      <ui:repeat var="emailAddress" value="#{profileBackingBean.listUserEmails()}">
+        <div class="profile-user-email">#{emailAddress}</div>
+      </ui:repeat>
       <div class="profile-change-password-container">
         <div class="profile-change-password">#{i18n.text['plugin.profile.changePassword.buttonLabel']}</div>
       </div>
