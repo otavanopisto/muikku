@@ -1,4 +1,3 @@
-
 function openInSN(template, result, formFunction) {
   var functionContainer = $('.sn-container');
   var formContainer = $('#mainfunctionFormTabs');
