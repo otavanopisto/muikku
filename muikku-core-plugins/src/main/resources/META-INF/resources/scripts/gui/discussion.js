@@ -32,7 +32,7 @@ $(document).ready(function() {
       // todo: parse url
       this.refreshLatest();
       this.refreshAreas();
-      $(DiscImpl.msgContainer).on("click", '.di-message:not(.open)', $.proxy(this.loadThread, this));
+      $(DiscImpl.msgContainer).on("click", '.di-message:not(.open) .di-message-meta-topic span', $.proxy(this.loadThread, this));
       $(DiscImpl.msgContainer).on("click", '.icon-goback', $.proxy(this.refreshLatest, this));
       $(DiscImpl.msgContainer).on("click", '.di-message-reply-link', $.proxy(this.replyThread, this));
       $(DiscImpl.msgContainer).on("click", '.di-remove-thread-link', $.proxy(this._onRemoveThreadClick, this));
@@ -355,17 +355,25 @@ $(document).ready(function() {
           delete values[value];
         }
       }
-
-      mApi().forum.areas.threads.create(forumAreaId, values).callback(function(err, result) {
-        if (err) {
-          $('.notification-queue').notificationQueue('notification', 'error', err);
-        } else {
-          // Refresh selected area
-          window.discussion.filterMessagesByArea($("#forumAreaIdSelect").val());
-          console.log($("#forumAreaIdSelect").val());
-          $("#discussionAreaSelect").val(forumAreaId);
-        }
-      });
+      
+      if (values.title =='') {
+        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.notitle'));
+        return false;
+      }
+      if (values.message =='') {
+        $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nomessage'));
+        return false;
+      } else {
+        mApi().forum.areas.threads.create(forumAreaId, values).callback(function(err, result) {
+          if (err) {
+            $('.notification-queue').notificationQueue('notification', 'error', err);
+          } else {
+            // Refresh selected area
+            window.discussion.filterMessagesByArea($("#forumAreaIdSelect").val());
+            $("#discussionAreaSelect").val(forumAreaId);
+          }
+        });
+      }
 
     }
 

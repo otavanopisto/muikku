@@ -156,8 +156,7 @@ public class HtmlMaterialRESTService extends PluginRESTService {
         return Response.status(Status.NOT_FOUND).build();
       }
       
-      String title = htmlMaterialController.getRevisionTitle(htmlMaterial, entity.getToRevision());
-      htmlMaterialController.updateHtmlMaterialToRevision(htmlMaterial, title, fileRevision.getContent(), entity.getToRevision(), false, entity.getRemoveAnswers() != null ? entity.getRemoveAnswers() : false);
+      htmlMaterialController.updateHtmlMaterialToRevision(htmlMaterial, fileRevision.getContent(), entity.getToRevision(), false, entity.getRemoveAnswers() != null ? entity.getRemoveAnswers() : false);
     } catch (WorkspaceMaterialContainsAnswersExeption e) {
       return Response.status(Status.CONFLICT)
           .entity(new HtmlRestMaterialPublishError(HtmlRestMaterialPublishError.Reason.CONTAINS_ANSWERS)).build();
@@ -193,9 +192,7 @@ public class HtmlMaterialRESTService extends PluginRESTService {
         return Response.status(Status.NOT_FOUND).entity("Specified revision could not be found").build(); 
       }
       
-      String title = htmlMaterialController.getRevisionTitle(htmlMaterial, entity.getToRevision());
-      
-      htmlMaterialController.updateHtmlMaterialToRevision(htmlMaterial, title, fileRevision.getContent(), entity.getToRevision(), true, entity.getRemoveAnswers() != null ? entity.getRemoveAnswers() : false);
+      htmlMaterialController.updateHtmlMaterialToRevision(htmlMaterial, fileRevision.getContent(), entity.getToRevision(), true, entity.getRemoveAnswers() != null ? entity.getRemoveAnswers() : false);
     } catch (WorkspaceMaterialContainsAnswersExeption e) {
       return Response.status(Status.CONFLICT)
           .entity(new HtmlRestMaterialPublishError(HtmlRestMaterialPublishError.Reason.CONTAINS_ANSWERS)).build();

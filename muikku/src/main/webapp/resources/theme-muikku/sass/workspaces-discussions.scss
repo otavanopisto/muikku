@@ -1,4 +1,5 @@
 @import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
+@import "_commons.scss"; 
 
 body.workspace-discussions { 
   @include background-image('/gfx/light-diagonal-strips.png');
@@ -707,11 +708,13 @@ body.workspace-discussions {
     }
   }
   
-  /* DISCUSSIONS OVERRIDES - HAS TO BE FIXED IN THE FUTURE!!!!! */
+  /* WORKSPACE SPECIFIC DISCUSSIONS OVERRIDES */
   
+  /* Discussion header overrides */
   .mf-content-functions {
     background-color: #fff;
     height:75px;
+    font-size:14px;
     
     .mf-button-container {
       background-color: #fff;
@@ -724,133 +727,18 @@ body.workspace-discussions {
     
     .mf-view-container {
       background-color:#fff;
-      
-      .di-browse-areas-container {
-        margin-top:20px;
-      }
-      
-      .di-new-area-container {
-        margin-top:19px;
-      }
     }
   
   }
   
+  /* Discussion areas overrides */
   .mf-content-area {
     background-color: #fff;
     
-    .di-message {
-      margin:5px;
-      background:#fff;
-          
-      &.closed {
-        height:58px;
-        border:1px solid #fff;
-        transition:border 0.3s ease-in-out;
-        
-        &:hover {
-          border:1px solid #a6d6f6;
-        }
-        
-        .di-message-meta {
-          height:60px;
-        
-          .di-message-meta-topic {
-            color:#0099ff;
-            line-height:1.7em;
-            
-            span {
-              margin:0 0 0 3px;
-              cursor:pointer;
-              
-              &:hover {
-                text-decoration:underline; 
-              }
-            }
-            
-            
-          }
-          
-          .di-message-meta-content {
-            font-size:14px;
-            height:1.7em;
-            line-height:1.7em;
-            overflow:hidden;
-            margin:8px 0 0 0;
-            
-            span {
-              margin:0 0 0 3px;
-              
-              p {
-                margin:0;
-              }
-              
-            }
-          
-          }
-        
-        }
-        
-        .di-message-details {
-          height:60px;
-          
-          .di-message-area-name {
-            padding:20px 15px 20px 30px;
-            height:40px;
-
-            span[class^="mf-category-"] {
-              border-left-width:2px;
-            }
-             
-            span {
-              display:block;
-              font-size:14px;
-              line-height:18px;
-              padding:0 5px;
-            }
-            
-          }
-           
-          .di-message-activity {
-            padding:15px;
-            height:60px;
-            color:#000;
-            font-size:14px;
-          }
-        }
-
-      }
-      
-      &.open {
-      
-        .di-message-topic {
-        
-          h3 {
-            margin:0 0 1em;
-          } 
-        
-        }
-      
-        .di-message-details {
-        
-          a.di-remove-thread-link {
-            background:#de3211;
-            border-radius:3px;
-            display:inline-block;
-            position:absolute;
-            right:10px;
-            top:10px;
-            padding:2px 6px;
-            color:#fff !important;
-            cursor:pointer;
-          }
-        
-        }
-
-      }
+    .di-no-messages {
     
-      .mf-item-description {
-        cursor:default;
+      h3 {
+        font-weight:300;
       }
     
     }
@@ -864,13 +752,6 @@ body.workspace-discussions {
   /* Social navigation with New Message/Area and Answer Message */
   #socialNavigation.sn-container {
   
-    h3 {
-      color: #fff;
-      font-weight: 300;
-      margin: 0 0 10px;
-      text-transform: uppercase;
-    }
-    
     .di-message-create,
     .di-area-create {
     
@@ -885,10 +766,10 @@ body.workspace-discussions {
             top:0;
           
             input[type="textfield"] {
-              border:1px solid #fff;
+              border:2px solid #fff;
               color:#000;
               border-radius:3px;
-              padding:5px 4px;
+              padding:6px 8px;
               line-height:1em;
             }
             
@@ -899,11 +780,11 @@ body.workspace-discussions {
             top:0;
           
             select {
-        
-              &:hover,
-              &:active,
-              &:focus {
-                box-shadow:none;
+              min-width:200px;
+              margin-left:5px;
+              
+              option {
+                padding:8px;
               }
             
             }

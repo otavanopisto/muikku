@@ -91,7 +91,7 @@ public class HtmlMaterialController {
     return htmlMaterialDAO.updateData(htmlMaterial, html);
   }
   
-  public HtmlMaterial updateHtmlMaterialToRevision(HtmlMaterial htmlMaterial, String title, String html, Long revisionNumber, boolean removeNewerRevisions, boolean removeAnswers) throws WorkspaceMaterialContainsAnswersExeption {
+  public HtmlMaterial updateHtmlMaterialToRevision(HtmlMaterial htmlMaterial, String html, Long revisionNumber, boolean removeNewerRevisions, boolean removeAnswers) throws WorkspaceMaterialContainsAnswersExeption {
     // TODO: WorkspaceMaterialContainsAnswersExeption quick fix should be removed
     try {
       updateHtmlMaterialHtml(htmlMaterial, html, removeAnswers);
@@ -106,7 +106,6 @@ public class HtmlMaterialController {
       throw e;
     }
     
-    htmlMaterialDAO.updateTitle(htmlMaterial, title);
     htmlMaterialDAO.updateRevisionNumber(htmlMaterial, revisionNumber);
     
     if (removeNewerRevisions) {
@@ -156,19 +155,6 @@ public class HtmlMaterialController {
     return result;
   }
 
-  public String getRevisionTitle(HtmlMaterial htmlMaterial, Long revisionNumber) {
-    if (revisionNumber.equals(htmlMaterial.getRevisionNumber())) {
-      return htmlMaterial.getTitle();
-    }
-    
-    String title = getRevisionProperty(htmlMaterial, revisionNumber, "title");
-    if (title == null) {
-      title = htmlMaterial.getTitle();
-    }
-    
-    return title;
-  }
-  
   public String getRevisionProperty(HtmlMaterial htmlMaterial, Long revisionNumber, String property) {
     HtmlMaterialRevisionProperty revisionProperty = null;
     
