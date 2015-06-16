@@ -51,6 +51,8 @@ function openInSN(template, result, formFunction) {
       formContainer.empty();
       $('.sn-container').removeClass('open');
       $('.sn-container').addClass('closed');
+      
+      adjustContentMargin();
     });
 
     sendBtn.on("click", sendBtn, function() {
@@ -92,13 +94,35 @@ function openInSN(template, result, formFunction) {
         formContainer.empty();
         $('.sn-container').removeClass('open');
         $('.sn-container').addClass('closed');
+        adjustContentMargin();
       }
 
     });
+
 
   });
 
   functionContainer.removeClass('closed');
   functionContainer.addClass('open');
+  adjustContentMargin();
+}
 
+// TODO: create more sophisticated fix for content area's bottom margin adjustment when social navigation is opened  
+function adjustContentMargin() {
+  if ($('.sn-container.open').length > 0) {
+  
+    if ($("#content").length > 0) {
+      $("#content").css({
+        "margin-bottom" : "320px"
+      });
+    }
+    
+  } else {
+    if ($("#content").length > 0) {
+      $("#content").css({
+        "margin-bottom" : 0
+      });
+    }
+  }
+  
 }
