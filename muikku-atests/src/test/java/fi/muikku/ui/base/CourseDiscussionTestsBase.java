@@ -34,7 +34,7 @@ public class CourseDiscussionTestsBase extends AbstractUITest {
   @Test
   @SqlBefore(value = {"sql/workspace1Setup.sql", "sql/workspace1DiscussionSetup.sql"})
   @SqlAfter(value = {"sql/workspace1Delete.sql", "sql/workspace1DiscussionDelete.sql"})
-  public void courseExistsTest() throws IOException {
+  public void courseSendDiscussionMessageTest() throws IOException {
     PyramusMocks.student1LoginMock();
     PyramusMocks.personsPyramusMocks();
     PyramusMocks.workspace1PyramusMock();  
