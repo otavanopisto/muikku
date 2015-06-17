@@ -177,7 +177,6 @@
       this._editor.on("collaboratorJoined", $.proxy(this._onCollaboratorJoined, this));
       this._editor.on("collaboratorLeft", $.proxy(this._onCollaboratorLeft, this));
       this._editor.on("patchReceived", $.proxy(this._onPatchReceived, this));
-      this._editor.on("beforeSessionStart", $.proxy(this._onBeforeSessionStart, this));
       this._titleInput.change($.proxy(this._onTitleChange, this));
     },
     
@@ -218,16 +217,6 @@
     
     _onPatchReceived: function (event, data) {
       $.each(data.properties, $.proxy(function(key, value) {
-        if (key === 'title') {
-          $(this._titleInput)
-            .data('old-value', value)
-            .val(value);
-        }
-      }, this));
-    },
-    
-    _onBeforeSessionStart: function (event, data) {
-      $.each(data.joinData.properties||{}, $.proxy(function(key, value) {
         if (key === 'title') {
           $(this._titleInput)
             .data('old-value', value)
