@@ -28,6 +28,7 @@
 
 html {
   height: 100%;
+  background:none;
 }
 
 body {
@@ -420,7 +421,7 @@ a.header {
     &.open {
       background-color:$btBarBgr;
       opacity:0.96;
-      min-height:258px;
+      min-height:314px;
       border-top:1px solid #fff;
        
       h3 {
