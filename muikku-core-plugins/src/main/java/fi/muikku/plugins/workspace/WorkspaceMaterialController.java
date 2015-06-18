@@ -342,7 +342,8 @@ public class WorkspaceMaterialController {
   }
 
   public WorkspaceMaterial findWorkspaceMaterialByWorkspaceEntityAndPath(WorkspaceEntity workspaceEntity, String path) {
-    return (WorkspaceMaterial) findWorkspaceNodeByWorkspaceEntityAndPath(workspaceEntity, path);
+    WorkspaceNode workspaceNode = findWorkspaceNodeByWorkspaceEntityAndPath(workspaceEntity, path); 
+    return workspaceNode instanceof WorkspaceMaterial ? (WorkspaceMaterial) workspaceNode : null;
   }
 
   public List<WorkspaceMaterial> listWorkspaceMaterialsByParent(WorkspaceNode parent) {
