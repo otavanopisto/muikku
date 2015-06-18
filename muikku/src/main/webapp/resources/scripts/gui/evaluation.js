@@ -291,8 +291,18 @@
                 if (err) {
                   $('.notification-queue').notificationQueue('notification', 'error', err);
                 } else { 
+                  var evaluationData = {
+                      'assessmentIdentifier': result.identifier,
+                      'gradeString': gradeString,
+                      'verbalAssessment':verbalAssessment,
+                      'assessingUserEntityId':assessorEntityId,
+                      'date':evaluationDate
+                  };
+                  studentElement.removeClass('workspace-assessment-requested workspace-assessment-critical');
+                  studentElement.addClass('workspace-evaluated');
+                  studentElement.attr('data-workspace-evaluated', 'true');
+                  studentElement.attr('data-workspace-evaluation-data', JSON.stringify(evaluationData));
                   $(this).dialog("destroy").remove();
-                  console.log(result);
                 }
               }, this));
             }
