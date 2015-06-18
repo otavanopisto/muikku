@@ -189,12 +189,14 @@
         },
         open: function() {
           
+          var datePickerLocale = getLocale() == 'en' ? '' : getLocale();
           $(this).find('input[name="evaluationDate"]')
             .css({'z-index': 9999, 'position': 'relative'})
             .attr('type', 'text')
             .datepicker({
               firstDay: 1
             });
+          $(this).find('input[name="evaluationDate"]').datepicker('option', $.datepicker.regional[datePickerLocale]);
           
           if(!alreadyEvaluated){
             $(this).find('input[name="evaluationDate"]').datepicker('setDate', new Date()); 
