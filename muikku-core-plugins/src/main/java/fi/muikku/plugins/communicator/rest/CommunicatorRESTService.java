@@ -316,7 +316,7 @@ public class CommunicatorRESTService extends PluginRESTService {
     List<CommunicatorMessageRecipient> messageRecipients = communicatorController.listCommunicatorMessageRecipients(msg);
     List<Long> recipients = new ArrayList<Long>();
     for (CommunicatorMessageRecipient messageRecipient : messageRecipients) {
-      recipients.add(messageRecipient.getRecipient());
+      recipients.add(messageRecipient.getId());
     }
 
     return recipients;
