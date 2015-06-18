@@ -166,11 +166,18 @@ $(document).ready(function(){
         item.caption = $('<div>').html(item.caption).text();
         item.content = $('<div>').html(item.content).text();
         
-        mApi().communicator.communicatormessages.sender.read(item.id)
-          .callback(function (err, user) {  
-            item.senderFullName = user.firstName + ' ' + user.lastName;
-            item.senderHasPicture = user.hasImage;
-          });
+        // Lets fetch message recipients by their ids
+        var recipients = item.recipientIds;
+        for (var i = 0; i < recipients.length; i++) {
+         
+          mApi().communicator.communicatormessages.recipients.info.read(item.id, recipients[i])
+            .callback(function (err, user) {  
+              item.senderFullName = user.firstName + ' ' + user.lastName;
+              item.senderHasPicture = user.hasImage;
+            });
+        
+        }
+
         mApi().communicator.messages.messagecount.read(item.communicatorMessageId)
           .callback(function (err, count) {
             item.messageCount = count;

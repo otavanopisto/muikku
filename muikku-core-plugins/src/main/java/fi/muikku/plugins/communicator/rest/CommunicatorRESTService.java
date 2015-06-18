@@ -469,7 +469,9 @@ public class CommunicatorRESTService extends PluginRESTService {
    ) throws AuthorizationException {
     CommunicatorMessageRecipient recipient = communicatorController.findCommunicatorMessageRecipient(recipientId);
 
-    if (!sessionController.hasPermission(CommunicatorPermissionCollection.READ_MESSAGE, recipient)) {
+    CommunicatorMessage communicatorMessage = communicatorController.findCommunicatorMessageById(communicatorMessageId);
+
+    if (!sessionController.hasPermission(CommunicatorPermissionCollection.READ_MESSAGE, communicatorMessage)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
