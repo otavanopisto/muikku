@@ -1,0 +1,35 @@
+    <div class="mf-item cm-message {?unreadMessagesInThread}unread{/unreadMessagesInThread}" id="{id}">
+      <div class="mf-item-details">
+        <div class="mf-item-details-container">       
+          <div class="mf-item-additionalInfo">
+            <span>
+              {?threadLatestMessageDate}
+                {threadLatestMessageDate|formatDate} {threadLatestMessageDate|formatTime}
+              {:else}
+                {created|formatDate} {created|formatTime}              
+              {/threadLatestMessageDate}
+             </span>
+          </div>
+          <div class="mf-item-description">
+            <div class="mf-item-header-name cm-message-header-name">
+              {?recipientHasPicture} 
+                <img class="cm-user-picture custom" src="{@contextPath/}/picture?userId={sender}" width="50" height="50" />
+              {:else}
+                <div class="cm-user-picture default"></div>
+              {/recipientHasPicture}            
+              <input type="hidden" name="mf-person-id" value="{sender}"/>
+              <span class="mf-item-header-content-primary">{recipientFullName}</span>        
+              <span class="mf-item-header-content-secondary {?unreadMessagesInThread}cm-message-unread{/unreadMessagesInThread}">{caption}</span>    
+            </div>
+            <div class="mf-item-header-details cm-message-header-count">
+              <span>{@gt key=messageCount value=1} ({messageCount}){/gt}</span>
+            </div>
+          </div>       
+          <div class="clear"></div>
+        </div>
+      </div>
+    
+      <input type="hidden" name="communicatorMessageId" value="{id}"/>
+      <input type="hidden" name="communicatorMessageIdId" value="{communicatorMessageId}"/>
+  
+    </div >
