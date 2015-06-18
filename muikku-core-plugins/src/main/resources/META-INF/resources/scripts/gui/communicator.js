@@ -168,14 +168,17 @@ $(document).ready(function(){
         
         // Lets fetch message recipients by their ids
         var recipients = item.recipientIds;
+        var recipientNames = [];
         for (var i = 0; i < recipients.length; i++) {
          
           mApi().communicator.communicatormessages.recipients.info.read(item.id, recipients[i])
             .callback(function (err, user) {  
-              item.senderFullName = user.firstName + ' ' + user.lastName;
-              item.senderHasPicture = user.hasImage;
+              recipientNames.push(user.firstName + ' ' + user.lastName);
+              
+              item.recipientHasPicture = user.hasImage;
             });
         
+          item.recipientFullName = recipientNames;
         }
 
         mApi().communicator.messages.messagecount.read(item.communicatorMessageId)
@@ -186,7 +189,7 @@ $(document).ready(function(){
         itemCallback();
       })
       .callback(function (err, result) {
-        renderDustTemplate('communicator/communicator_items.dust', result, function (text) {
+        renderDustTemplate('communicator/communicator_sent_items.dust', result, function (text) {
           $('.cm-messages-container').empty();
           $('.cm-messages-container').append($.parseHTML(text));
         });
