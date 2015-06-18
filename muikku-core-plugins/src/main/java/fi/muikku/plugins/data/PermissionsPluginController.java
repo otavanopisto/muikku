@@ -19,6 +19,7 @@ import fi.muikku.dao.security.WorkspaceRolePermissionDAO;
 import fi.muikku.dao.users.EnvironmentRoleEntityDAO;
 import fi.muikku.dao.users.RoleEntityDAO;
 import fi.muikku.dao.users.UserGroupEntityDAO;
+import fi.muikku.dao.users.SystemRoleEntityDAO;
 import fi.muikku.dao.workspace.WorkspaceEntityDAO;
 import fi.muikku.dao.workspace.WorkspaceRoleEntityDAO;
 import fi.muikku.dao.workspace.WorkspaceSettingsTemplateDAO;
@@ -27,6 +28,8 @@ import fi.muikku.model.security.Permission;
 import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.model.users.EnvironmentRoleEntity;
 import fi.muikku.model.users.RoleEntity;
+import fi.muikku.model.users.SystemRoleType;
+import fi.muikku.model.users.UserGroupEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.model.workspace.WorkspaceRoleEntity;
@@ -75,6 +78,9 @@ public class PermissionsPluginController {
   private UserGroupRolePermissionDAO userGroupRolePermissionDAO;
 
   @Inject
+  private SystemRoleEntityDAO systemRoleEntityDAO;
+  
+  @Inject
   @Any
   private Instance<MuikkuPermissionCollection> permissionCollections;
   
@@ -82,13 +88,28 @@ public class PermissionsPluginController {
   private Event<PermissionDiscoveredEvent> permissionDiscoveredEvent;
 	
   public void processPermissions() {
+    logger.log(Level.INFO, "Starting permission gathering");
+    
+    // Ensure the system roles exist
+    
+    for (SystemRoleType systemRoleType : SystemRoleType.values()) {
+      if (systemRoleEntityDAO.findByRoleType(systemRoleType) == null)
+        systemRoleEntityDAO.create(systemRoleType.name(), systemRoleType);
+    }
+    
+    // Process permissions
+    
     for (MuikkuPermissionCollection collection : permissionCollections) {
+      logger.log(Level.INFO, "Processing permission collection " + collection.getClass().getSimpleName());
+
       List<String> permissions = collection.listPermissions();
 
       for (String permissionName : permissions) {
         Permission permission = permissionDAO.findByName(permissionName);
         
         if (permission == null) {
+          logger.log(Level.INFO, "Recording new permission " + permissionName);
+
           try {
             final String permissionScope = collection.getPermissionScope(permissionName);
             
@@ -141,22 +162,22 @@ public class PermissionsPluginController {
   
                       // TODO Workspace creation & templates - is this necessary and bulletproof?
                       for (WorkspaceEntity workspace: workspaces) {
+                        logger.log(Level.INFO, "Adding workspace role permission for workspace " + workspace.getId() + " role: " + role.getName());
+                        
                         workspaceRolePermissionDAO.create(workspace, role, permission);
                       }
                     }
                   break;
                   
                   case PermissionScope.USERGROUP:
-                    /*
-                    List<UserGroup> userGroups = userGroupDAO.listAll();
+                    List<UserGroupEntity> userGroups = userGroupDAO.listAll();
                     
                     for (RoleEntity role : roles) {
                       // TODO Workspace creation & templates - is this necessary and bulletproof?
-                      for (UserGroup userGroup: userGroups) {
+                      for (UserGroupEntity userGroup: userGroups) {
                         userGroupRolePermissionDAO.create(userGroup, role, permission);
                       }
                     }
-                    */
                   break;
                   
                   default:
@@ -181,6 +202,8 @@ public class PermissionsPluginController {
         }
       }
     }
+
+    logger.log(Level.INFO, "Finished permission gathering");
   } 
 	
 }

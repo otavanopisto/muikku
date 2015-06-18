@@ -73,12 +73,12 @@ public class WorkspaceHelpPageManagementBackingBean {
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
     workspaceName = workspace.getName();
     
-    List<WorkspaceNode> folders = workspaceMaterialController.listWorkspaceNodesByParentAndFolderTypeSortByOrderNumber(
+    List<WorkspaceFolder> folders = workspaceMaterialController.listWorkspaceFoldersByParentAndFolderTypeSortByOrderNumber(
         rootFolder,
         WorkspaceFolderType.HELP_PAGE); 
     
     if (folders.isEmpty()) {
-      folders = Arrays.asList((WorkspaceNode)workspaceMaterialController.createWorkspaceHelpPageFolder(workspaceEntity));
+      folders = Arrays.asList((WorkspaceFolder)workspaceMaterialController.createWorkspaceHelpPageFolder(workspaceEntity));
     }
     
     WorkspaceFolder helpPageFolder = (WorkspaceFolder)folders.get(0);

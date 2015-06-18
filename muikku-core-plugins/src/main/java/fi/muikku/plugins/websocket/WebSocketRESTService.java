@@ -15,6 +15,7 @@ import javax.ws.rs.core.Response;
 
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugin.PluginRESTService;
+import fi.muikku.rest.RESTPermitUnimplemented;
 import fi.muikku.session.SessionController;
 
 @Path("/websocket")
@@ -35,6 +36,7 @@ public class WebSocketRESTService extends PluginRESTService {
   
   @GET
   @Path ("/ticket")
+  @RESTPermitUnimplemented
   public Response ticket() {
     UserEntity user = sessionController.getLoggedUserEntity(); 
 
@@ -53,6 +55,7 @@ public class WebSocketRESTService extends PluginRESTService {
 
   @GET
   @Path ("/ticket/{TICKET}/check")
+  @RESTPermitUnimplemented
   public Response check(@PathParam("TICKET") String ticketStr) {
     WebSocketTicket ticket = webSocketTicketController.findTicket(ticketStr);
 

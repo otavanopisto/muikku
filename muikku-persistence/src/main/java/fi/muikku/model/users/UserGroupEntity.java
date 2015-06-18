@@ -13,12 +13,9 @@ import fi.otavanopisto.security.ContextReference;
 
 @Entity
 public class UserGroupEntity implements ContextReference {
+  
   public Long getId() {
     return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
   }
 
   public Boolean getArchived() {
@@ -29,33 +26,32 @@ public class UserGroupEntity implements ContextReference {
     this.archived = archived;
   }
 
-  public String getDefaultIdentifier() {
-    return defaultIdentifier;
+  public SchoolDataSource getSchoolDataSource() {
+    return schoolDataSource;
   }
 
-  public void setDefaultIdentifier(String defaultIdentifier) {
-    this.defaultIdentifier = defaultIdentifier;
+  public void setSchoolDataSource(SchoolDataSource schoolDataSource) {
+    this.schoolDataSource = schoolDataSource;
   }
 
-  public SchoolDataSource getDefaultSchoolDataSource() {
-    return defaultSchoolDataSource;
+  public String getIdentifier() {
+    return identifier;
   }
 
-  public void setDefaultSchoolDataSource(SchoolDataSource defaultSchoolDataSource) {
-    this.defaultSchoolDataSource = defaultSchoolDataSource;
+  public void setIdentifier(String identifier) {
+    this.identifier = identifier;
   }
-
-  @ManyToOne
-  private SchoolDataSource defaultSchoolDataSource;
 
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
   
+  @ManyToOne
+  private SchoolDataSource schoolDataSource;
+
+  private String identifier;
+
   @NotNull
   @Column(nullable = false)
-  private Boolean archived = Boolean.FALSE;
-  
-  private String defaultIdentifier;
-  
+  private Boolean archived;
 }

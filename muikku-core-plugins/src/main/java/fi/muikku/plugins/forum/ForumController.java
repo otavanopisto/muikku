@@ -44,6 +44,8 @@ import fi.muikku.schooldata.entity.User;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
+import fi.otavanopisto.security.Permit;
+import fi.otavanopisto.security.PermitContext;
 
 @Dependent
 @Stateful
@@ -179,6 +181,10 @@ public class ForumController {
     return forumArea;
   }
 
+  public void deleteArea(ForumArea forumArea) {
+    forumAreaDAO.delete(forumArea);
+  }
+
   public ForumAreaGroup findForumAreaGroup(Long groupId) {
     return forumAreaGroupDAO.findById(groupId);
   }
@@ -188,7 +194,18 @@ public class ForumController {
     return forumThreadDAO.create(forumArea, title, message, sessionController.getLoggedUserEntity(), sticky, locked);
   }
 
-  public ForumThreadReply createForumThreadReply(/**@PermitContext **/ForumThread thread, String message) {
+  @Permit (ForumResourcePermissionCollection.FORUM_DELETEMESSAGES)
+  public void deleteThread(@PermitContext ForumThread thread) {
+    List<ForumThreadReply> replies = forumThreadReplyDAO.listByForumThread(thread);
+    for (ForumThreadReply reply : replies) {
+      forumThreadReplyDAO.delete(reply);
+    }
+    
+    forumThreadDAO.delete(thread);
+  }
+  
+  @Permit (ForumResourcePermissionCollection.FORUM_WRITEMESSAGES)
+  public ForumThreadReply createForumThreadReply(@PermitContext ForumThread thread, String message) {
     if (thread.getLocked()) {
       logger.severe("Tried to create a forum thread reply for locked thread");
       return null;
@@ -199,6 +216,11 @@ public class ForumController {
     }
   }
 
+  @Permit (ForumResourcePermissionCollection.FORUM_DELETEMESSAGES)
+  public void deleteReply(@PermitContext ForumThreadReply reply) {
+    forumThreadReplyDAO.delete(reply);
+  }
+  
   public List<EnvironmentForumArea> listEnvironmentForums() {
     return sessionController.filterResources(
         environmentForumAreaDAO.listAll(), ForumResourcePermissionCollection.FORUM_LISTFORUM);
@@ -254,8 +276,8 @@ public class ForumController {
       Integer maxResults) {
     List<WorkspaceForumArea> workspaceForums = listCourseForums(workspaceEntity);
     List<ForumArea> forumAreas = new ArrayList<ForumArea>();
-    // TODO: This could use some optimization
 
+    // TODO: This could use some optimization
     for (WorkspaceForumArea wf : workspaceForums) {
       forumAreas.add(wf);
     }
@@ -335,6 +357,10 @@ public class ForumController {
     return forumAreaGroupDAO.create(name, Boolean.FALSE);
   }
 
+  public void deleteAreaGroup(ForumAreaGroup forumAreaGroup) {
+    forumAreaGroupDAO.delete(forumAreaGroup);
+  }
+  
   public List<ForumMessage> listMessagesByWorkspace(WorkspaceEntity workspace) {
     return forumMessageDAO.listByWorkspace(workspace);
   }

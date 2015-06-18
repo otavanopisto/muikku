@@ -123,6 +123,7 @@
         serverUrl : CONTEXTPATH + '/rest/coops/' + this.options.materialId + '',
         editorOptions: {
           autoGrowOnStartup : true,
+          allowedContent: true, // disable content filtering to preserve all formatting of imported documents; fix for #263
           skin : 'moono',
           height : 500,
           language: getLocale(),

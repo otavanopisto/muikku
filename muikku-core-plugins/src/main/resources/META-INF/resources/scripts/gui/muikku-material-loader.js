@@ -96,7 +96,7 @@
           this._loadHtmlMaterial($(page), fieldAnswers);
         break;
         case 'folder':
-          renderDustTemplate(this.options.dustTemplate, { id: workspaceMaterialId, type: materialType, hidden: $(page).hasClass('item-hidden'), data: { title: $(page).data('material-title') } }, $.proxy(function (text) {
+          renderDustTemplate(this.options.dustTemplate, { id: workspaceMaterialId, workspaceMaterialId: workspaceMaterialId, type: materialType, hidden: $(page).hasClass('item-hidden'), data: { title: $(page).data('material-title') } }, $.proxy(function (text) {
             $(this).html(text);
             $.waypoints('refresh');
           }, page));
@@ -285,9 +285,7 @@
           readonly: data.readOnlyFields||false,
           hasExamples: function () {
             var meta = this.options.meta;
-            if (meta.example) {
-              return true;
-            }
+            return meta.example && meta.example != '';
           },
           getExamples: function () {
             var meta = this.options.meta;
@@ -704,7 +702,7 @@
       var embedId = createEmbedId(data.parentIds);
       var materialId = data.materialId;
       var valueKey = [materialId, embedId, meta.name].join('.');
-      var value = data.fieldAnswers[valueKey];
+      var value = data.fieldAnswers ? data.fieldAnswers[valueKey] : '';
       
       $(document).trigger('taskFieldDiscovered', {
         pageElement: data.pageElement,

@@ -23,6 +23,7 @@ public class WorkspaceRootFolderDAO extends CorePluginsDAO<WorkspaceRootFolder> 
 		workspaceRootFolder.setWorkspaceEntityId(workspaceEntity.getId());
 		workspaceRootFolder.setOrderNumber(0);
 		workspaceRootFolder.setHidden(Boolean.FALSE);
+		workspaceRootFolder.setTitle("Root");
 		return persist(workspaceRootFolder);
 	}
 

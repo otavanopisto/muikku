@@ -25,7 +25,9 @@ import fi.muikku.model.users.EnvironmentRoleEntity;
 import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.rest.AbstractRESTService;
-import fi.muikku.schooldata.entity.EnvironmentRole;
+import fi.muikku.rest.RESTPermitUnimplemented;
+import fi.muikku.rest.model.UserBasicInfo;
+import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.search.SearchProvider;
 import fi.muikku.search.SearchResult;
@@ -51,12 +53,16 @@ public class UserRESTService extends AbstractRESTService {
 	@Inject
 	private SessionController sessionController;
 	
+  @Inject
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
+	
 	@Inject
 	@Any
 	private Instance<SearchProvider> searchProviders;
 
 	@GET
 	@Path("/users")
+	@RESTPermitUnimplemented
 	public Response searchUsers(
 			@QueryParam("searchString") String searchString,
 			@QueryParam("firstResult") @DefaultValue("0") Integer firstResult,
@@ -124,6 +130,7 @@ public class UserRESTService extends AbstractRESTService {
 
 	@GET
 	@Path("/users/{ID}")
+  @RESTPermitUnimplemented
 	public Response findUser(@PathParam("ID") Long id) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.FORBIDDEN).build();
@@ -143,6 +150,36 @@ public class UserRESTService extends AbstractRESTService {
 
 		return Response.ok(createRestModel(userEntity, user)).build();
 	}
+
+  @GET
+  @Path("/users/{ID}/basicinfo")
+  @RESTPermitUnimplemented
+  public Response findUserBasicInfo(@PathParam("ID") Long id) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
+    UserEntity userEntity = userEntityController.findUserEntityById(id);
+    if (userEntity == null) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      User user = userController.findUserByDataSourceAndIdentifier(
+          userEntity.getDefaultSchoolDataSource(),
+          userEntity.getDefaultIdentifier());
+      if (user == null) {
+        return Response.status(Response.Status.NOT_FOUND).build();
+      }
+
+      // TODO: User image
+      boolean hasImage = false;
+      return Response.ok(new UserBasicInfo(userEntity.getId(), user.getFirstName(), user.getLastName(), hasImage )).build();
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
+  }
 
 	private fi.muikku.rest.model.User createRestModel(UserEntity userEntity,
 			User user) {

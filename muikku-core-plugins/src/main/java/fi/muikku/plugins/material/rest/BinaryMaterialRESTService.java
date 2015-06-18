@@ -30,6 +30,7 @@ import fi.muikku.model.users.UserEntity;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.material.BinaryMaterialController;
 import fi.muikku.plugins.material.model.BinaryMaterial;
+import fi.muikku.rest.RESTPermitUnimplemented;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.EnvironmentUserController;
 
@@ -68,6 +69,7 @@ public class BinaryMaterialRESTService extends PluginRESTService {
 
   @POST
   @Path("/")
+  @RESTPermitUnimplemented
   public Response createMaterial(BinaryRestMaterial entity) {
     
     if (!isAuthorized()) {
@@ -115,6 +117,7 @@ public class BinaryMaterialRESTService extends PluginRESTService {
   @GET
   @Path("/{id}")
   @Produces(MediaType.APPLICATION_JSON)
+  @RESTPermitUnimplemented
   public Response findMaterial(@PathParam("id") Long id) {
     BinaryMaterial material = binaryMaterialController.findBinaryMaterialById(id);
     if (material == null) {
@@ -126,6 +129,7 @@ public class BinaryMaterialRESTService extends PluginRESTService {
 
   @GET
   @Path("/{id}/content")
+  @RESTPermitUnimplemented
   public Response getMaterialContent(@PathParam("id") Long id, @Context Request request) {
     BinaryMaterial material = binaryMaterialController.findBinaryMaterialById(id);
     if (material == null) {
@@ -150,6 +154,7 @@ public class BinaryMaterialRESTService extends PluginRESTService {
 
   @GET
   @Path("/{id}/download")
+  @RESTPermitUnimplemented
   public Response downloadMaterialContent(@PathParam("id") Long id) {
     BinaryMaterial material = binaryMaterialController.findBinaryMaterialById(id);
     
@@ -175,6 +180,7 @@ public class BinaryMaterialRESTService extends PluginRESTService {
 
   @DELETE
   @Path("/{id}")
+  @RESTPermitUnimplemented
   public Response deleteMaterial(@PathParam("id") Long id) {
     BinaryMaterial binaryMaterial = binaryMaterialController.findBinaryMaterialById(id);
     if (binaryMaterial != null) {

@@ -47,6 +47,10 @@ public class ForumThreadReplyDAO extends CorePluginsDAO<ForumThreadReply> {
     return reply;
   }
   
+  public List<ForumThreadReply> listByForumThread(ForumThread forumThread) {
+    return listByForumThread(forumThread, null, null);
+  }
+  
   public List<ForumThreadReply> listByForumThread(ForumThread forumThread, Integer firstResult, Integer maxResults) {
     EntityManager entityManager = getEntityManager(); 
     
@@ -63,8 +67,13 @@ public class ForumThreadReplyDAO extends CorePluginsDAO<ForumThreadReply> {
     
     TypedQuery<ForumThreadReply> query = entityManager.createQuery(criteria);
     
-    query.setFirstResult(firstResult);
-    query.setMaxResults(maxResults);
+    if (firstResult != null) {
+      query.setFirstResult(firstResult);
+    }
+    
+    if (maxResults != null) {
+      query.setMaxResults(maxResults);
+    }
     
     return query.getResultList();
   }
@@ -140,5 +149,9 @@ public class ForumThreadReplyDAO extends CorePluginsDAO<ForumThreadReply> {
     
     return reply;
   }
-  
+
+  @Override
+  public void delete(ForumThreadReply e) {
+    super.delete(e);
+  }
 }

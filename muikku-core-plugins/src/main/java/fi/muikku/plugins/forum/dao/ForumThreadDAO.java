@@ -150,4 +150,9 @@ public class ForumThreadDAO extends CorePluginsDAO<ForumThread> {
     return query.getResultList();
   }
   
+  @Override
+  public void delete(ForumThread e) {
+    super.delete(e);
+  }
+  
 }

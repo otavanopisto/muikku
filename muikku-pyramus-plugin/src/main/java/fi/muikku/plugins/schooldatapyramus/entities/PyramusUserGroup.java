@@ -27,5 +27,4 @@ public class PyramusUserGroup implements UserGroup {
 
   private String identifier;
   private String name;
-  
 }

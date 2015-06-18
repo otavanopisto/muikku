@@ -35,6 +35,7 @@ import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.material.HtmlMaterialController;
 import fi.muikku.plugins.material.model.HtmlMaterial;
 import fi.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
+import fi.muikku.rest.RESTPermitUnimplemented;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.EnvironmentUserController;
 
@@ -76,6 +77,7 @@ public class HtmlMaterialRESTService extends PluginRESTService {
 
   @POST
   @Path("/")
+  @RESTPermitUnimplemented
   public Response createMaterial(HtmlRestMaterial entity) {
     
     if (!isAuthorized()) {
@@ -96,6 +98,7 @@ public class HtmlMaterialRESTService extends PluginRESTService {
 
   @GET
   @Path("/{id}")
+  @RESTPermitUnimplemented
   public Response findMaterial(@PathParam("id") Long id, @QueryParam ("revision") Long revision, @Context Request request) {
     HtmlMaterial htmlMaterial = htmlMaterialController.findHtmlMaterialById(id);
     if (htmlMaterial == null) {
@@ -131,6 +134,7 @@ public class HtmlMaterialRESTService extends PluginRESTService {
   
   @POST
   @Path("/{id}/publish/")
+  @RESTPermitUnimplemented
   public Response publishMaterial(@PathParam("id") Long id, HtmlRestMaterialPublish entity) {
     
     if (!isAuthorized()) {
@@ -152,8 +156,7 @@ public class HtmlMaterialRESTService extends PluginRESTService {
         return Response.status(Status.NOT_FOUND).build();
       }
       
-      String title = htmlMaterialController.getRevisionTitle(htmlMaterial, entity.getToRevision());
-      htmlMaterialController.updateHtmlMaterialToRevision(htmlMaterial, title, fileRevision.getContent(), entity.getToRevision(), false, entity.getRemoveAnswers() != null ? entity.getRemoveAnswers() : false);
+      htmlMaterialController.updateHtmlMaterialToRevision(htmlMaterial, fileRevision.getContent(), entity.getToRevision(), false, entity.getRemoveAnswers() != null ? entity.getRemoveAnswers() : false);
     } catch (WorkspaceMaterialContainsAnswersExeption e) {
       return Response.status(Status.CONFLICT)
           .entity(new HtmlRestMaterialPublishError(HtmlRestMaterialPublishError.Reason.CONTAINS_ANSWERS)).build();
@@ -166,6 +169,7 @@ public class HtmlMaterialRESTService extends PluginRESTService {
   
   @PUT
   @Path("/{id}/revert/")
+  @RESTPermitUnimplemented
   public Response revertMaterial(@PathParam("id") Long id, HtmlRestMaterialRevert entity) {
     
     if (!isAuthorized()) {
@@ -188,9 +192,7 @@ public class HtmlMaterialRESTService extends PluginRESTService {
         return Response.status(Status.NOT_FOUND).entity("Specified revision could not be found").build(); 
       }
       
-      String title = htmlMaterialController.getRevisionTitle(htmlMaterial, entity.getToRevision());
-      
-      htmlMaterialController.updateHtmlMaterialToRevision(htmlMaterial, title, fileRevision.getContent(), entity.getToRevision(), true, entity.getRemoveAnswers() != null ? entity.getRemoveAnswers() : false);
+      htmlMaterialController.updateHtmlMaterialToRevision(htmlMaterial, fileRevision.getContent(), entity.getToRevision(), true, entity.getRemoveAnswers() != null ? entity.getRemoveAnswers() : false);
     } catch (WorkspaceMaterialContainsAnswersExeption e) {
       return Response.status(Status.CONFLICT)
           .entity(new HtmlRestMaterialPublishError(HtmlRestMaterialPublishError.Reason.CONTAINS_ANSWERS)).build();
