@@ -65,18 +65,6 @@ public class WorkspaceJournalBackingBean {
     workspaceBackingBean.setWorkspaceUrlName(urlName);
     workspaceEntityId = workspaceEntity.getId();
     
-    Map<Long, AreaPermission> areaPermissions = new HashMap<>();
-    
-    for (WorkspaceForumArea forumArea : forumController.listCourseForums(workspaceEntity)) {
-      areaPermissions.put(forumArea.getId(), new AreaPermission(sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_DELETEMESSAGES, forumArea)));
-    }
-    
-    try {
-      this.areaPermissions = new ObjectMapper().writeValueAsString(areaPermissions);
-    } catch (JsonProcessingException e) {
-      return NavigationRules.INTERNAL_ERROR;
-    }
-    
     return null;
   }
   
@@ -92,23 +80,5 @@ public class WorkspaceJournalBackingBean {
     return workspaceEntityId;
   }
   
-  public String getAreaPermissions() {
-    return areaPermissions;
-  }
-  
   private Long workspaceEntityId;
-  private String areaPermissions;
-
-  public static class AreaPermission {
-    
-    public AreaPermission(Boolean removeThread) {
-      this.removeThread = removeThread;
-    }
-
-    public Boolean getRemoveThread() {
-      return removeThread;
-    }
-    
-    private Boolean removeThread;
-  }
 }

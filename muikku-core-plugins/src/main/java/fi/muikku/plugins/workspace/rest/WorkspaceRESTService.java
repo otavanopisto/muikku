@@ -49,6 +49,7 @@ import fi.muikku.plugins.material.QueryFieldController;
 import fi.muikku.plugins.material.model.Material;
 import fi.muikku.plugins.material.model.QueryField;
 import fi.muikku.plugins.search.WorkspaceIndexer;
+import fi.muikku.plugins.workspace.WorkspaceJournalController;
 import fi.muikku.plugins.workspace.WorkspaceMaterialContainsAnswersExeption;
 import fi.muikku.plugins.workspace.WorkspaceMaterialController;
 import fi.muikku.plugins.workspace.WorkspaceMaterialDeleteError;
@@ -58,6 +59,7 @@ import fi.muikku.plugins.workspace.WorkspaceMaterialReplyController;
 import fi.muikku.plugins.workspace.WorkspaceVisitController;
 import fi.muikku.plugins.workspace.fieldio.WorkspaceFieldIOException;
 import fi.muikku.plugins.workspace.model.WorkspaceFolder;
+import fi.muikku.plugins.workspace.model.WorkspaceJournalEntry;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
@@ -173,6 +175,9 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @Inject
   private WorkspaceIndexer workspaceIndexer;
+  
+  @Inject
+  private WorkspaceJournalController workspaceJournalController;
   
   @GET
   @Path("/workspaces/")
@@ -1597,6 +1602,21 @@ public class WorkspaceRESTService extends PluginRESTService {
     return Response.ok(createRestModel(workspaceMaterialEvaluation)).build();
   }
   
+  @GET
+  @Path("/workspaces/{WORKSPACEID}/journal")
+  public Response listJournalEntries(@PathParam("WORKSPACEID") Long workspaceEntityId) {
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+
+    return Response.ok(workspaceJournalController.listEntries(workspaceEntity)).build();
+  }
+  
   private List<WorkspaceMaterialEvaluation> createRestModel(fi.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation... entries) {
     List<WorkspaceMaterialEvaluation> result = new ArrayList<>();
 
@@ -1619,5 +1639,7 @@ public class WorkspaceRESTService extends PluginRESTService {
         evaluation.getGradeSchoolDataSource(),
         evaluation.getVerbalAssessment());
   }
+  
+  
 
 }
