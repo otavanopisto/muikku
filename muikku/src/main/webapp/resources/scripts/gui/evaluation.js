@@ -88,8 +88,9 @@
       
       this._pagesLoaded = {};
 
-      this._loadPage(0);
-      this._loadPage(1);
+      this._loadPage(0, $.proxy(function() {
+        this._loadPage(1);
+      }, this));
     },
     
     _loadPage: function (pageId, callback) {
