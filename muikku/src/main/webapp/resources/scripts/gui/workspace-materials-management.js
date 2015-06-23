@@ -916,6 +916,9 @@
       var nextSiblingId = $(nextMaterial).data('workspace-material-id');
       enableFileUploader(element, parentId, nextSiblingId);
     });
+
+    $('.muikku-connect-field').muikkuConnectField('refresh');
+    
     $(window).data('initializing', false);
   });
   

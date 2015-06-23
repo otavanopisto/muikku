@@ -751,10 +751,11 @@
           readonly: data.readOnlyFields||false
         });
       });
-      $('.muikku-connect-field').muikkuConnectField('refresh');
-      $(data.pageElement).find('img').lazyload();
-      $(data.pageElement).find('.js-lazyyt').lazyYT(); 
     }); 
+
+    // Image and YouTube lazy loading
+    $(data.pageElement).find('img').lazyload();
+    $(data.pageElement).find('.js-lazyyt').lazyYT(); 
     
     // File field support
     $(data.pageElement).find('.muikku-file-field').each(function (index, field) {
