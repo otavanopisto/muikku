@@ -158,7 +158,13 @@ public class PyramusMocks{
     
     Person[] personArray = {person, staff1, staff2, staff3};
     String personArrayJson = objectMapper.writeValueAsString(personArray);
-    stubFor(get(urlEqualTo("/1/persons/persons?filterArchived=false"))
+    stubFor(get(urlMatching("/1/persons/persons?filterArchived=.*"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(personArrayJson)
+        .withStatus(200)));
+
+    stubFor(get(urlEqualTo("/1/persons/persons"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody(personArrayJson)
@@ -212,7 +218,7 @@ public class PyramusMocks{
     Email staff1Email = new Email((long) 2, (long) 1, true, "teacher@made.up");
     Email[] staff1Emails = {staff1Email};
     String staff1EmailJson = objectMapper.writeValueAsString(staff1Emails);
-    stubFor(get(urlEqualTo("/1/members/2/emails"))
+    stubFor(get(urlEqualTo("/1/staff/members/2/emails"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody(staff1EmailJson)
@@ -221,7 +227,7 @@ public class PyramusMocks{
     Email staff2Email = new Email((long) 3, (long) 1, true, "mana@made.up");
     Email[] staff2Emails = {staff2Email};
     String staff2EmailJson = objectMapper.writeValueAsString(staff2Emails);
-    stubFor(get(urlEqualTo("/1/members/3/emails"))
+    stubFor(get(urlEqualTo("/1/staff/members/3/emails"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody(staff2EmailJson)
@@ -230,24 +236,18 @@ public class PyramusMocks{
     Email staff3Email = new Email((long) 4, (long) 1, true, "admin@made.up");
     Email[] staff3Emails = {staff3Email};
     String staff3EmailJson = objectMapper.writeValueAsString(staff3Emails);
-    stubFor(get(urlEqualTo("/1/members/4/emails"))
+    stubFor(get(urlEqualTo("/1/staff/members/4/emails"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody(staff3EmailJson)
         .withStatus(200)));
     
-//    CourseStaffMemberRole teacherRole = new CourseStaffMemberRole((long) 1, "Opettaja");
-//    CourseStaffMemberRole tutorRole = new CourseStaffMemberRole((long) 2, "Tutor");
-//    CourseStaffMemberRole vRole = new CourseStaffMemberRole((long) 3, "Vastuuhenkilö");
-//    CourseStaffMemberRole[] cRoleArray = {teacherRole, tutorRole, vRole};
-//    String cRoleJson = objectMapper.writeValueAsString(cRoleArray);
     CourseStaffMemberRole teacherRole = new CourseStaffMemberRole((long) 1, "Opettaja");
     CourseStaffMemberRole tutorRole = new CourseStaffMemberRole((long) 2, "Tutor");
     CourseStaffMemberRole vRole = new CourseStaffMemberRole((long) 3, "Vastuuhenkilö");
     List<CourseStaffMemberRole> cRoleArray = Arrays.asList(teacherRole, tutorRole, vRole);
 
     String cRoleJson = objectMapper.writeValueAsString(cRoleArray);
-    System.out.println("Kurssi roolit: " + cRoleJson);
     
     stubFor(get(urlEqualTo("/1/courses/staffMemberRoles"))
       .willReturn(aResponse()
@@ -255,16 +255,10 @@ public class PyramusMocks{
         .withBody(cRoleJson)
         .withStatus(204)));
 
-    stubFor(get(urlEqualTo("/1/courses/courses/1/students?filterArchived=false"))
+    stubFor(get(urlMatching("/1/courses/courses/1/students?filterArchived=.*"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody(studentArrayJson)
-        .withStatus(200)));
-
-    stubFor(get(urlEqualTo("/1/courses/courses/1/staffMembers"))
-      .willReturn(aResponse()
-        .withHeader("Content-Type", "application/json")
-        .withBody(staffArrayJson)
         .withStatus(200)));
   }
   
@@ -294,7 +288,7 @@ public class PyramusMocks{
           .withBody(courseArrayJson)
           .withStatus(200)));
       
-      stubFor(get(urlMatching("/1/courses/courses?filterArchived=false&firstResult=.*&maxResults=.*"))
+      stubFor(get(urlMatching("/1/courses/courses?.*"))
         .willReturn(aResponse()
           .withHeader("Content-Type", "application/json")
           .withBody(courseArrayJson)
@@ -310,7 +304,7 @@ public class PyramusMocks{
       
       Subject[] subjectArray = { subject };
       String subjectArrayJson = objectMapper.writeValueAsString(subjectArray);
-      stubFor(get(urlMatching("/1/common/subjects"))
+      stubFor(get(urlEqualTo("/1/common/subjects"))
         .willReturn(aResponse()
           .withHeader("Content-Type", "application/json")
           .withBody(subjectArrayJson)
@@ -499,7 +493,7 @@ public class PyramusMocks{
     Email staff3Email = new Email((long) 1, (long) 1, true, "admin@made.up");
     Email[] staff3Emails = {staff3Email};
     String staff3EmailJson = objectMapper.writeValueAsString(staff3Emails);
-    stubFor(get(urlMatching("/1/members/1/emails"))
+    stubFor(get(urlMatching("/1/staff/members/1/emails"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody(staff3EmailJson)
@@ -514,7 +508,6 @@ public class PyramusMocks{
     cRoleArray.add(vRole);
 
     String cRoleJson = objectMapper.writeValueAsString(cRoleArray);
-    System.out.println("Kurssi roolit: " + cRoleJson);
     stubFor(get(urlEqualTo("/1/courses/staffMemberRoles"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
