@@ -2,7 +2,6 @@ package fi.muikku.plugins.schooldatapyramus.schedulers;
 
 import java.util.logging.Logger;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -12,9 +11,9 @@ import fi.muikku.plugins.schooldatapyramus.PyramusUpdater;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 
 @ApplicationScoped
-public class PyramusSchoolDataUserGroupUpdateScheduler implements PyramusUpdateScheduler {
+public class PyramusSchoolDataUserGroupUpdateScheduler extends PyramusDataScheduler implements PyramusUpdateScheduler {
 
-  private static final int BATCH_SIZE = NumberUtils.createInteger(System.getProperty("muikku.pyramus-updater.usergroups.batchsize", "100"));
+  private static final int BATCH_SIZE = NumberUtils.createInteger(System.getProperty("muikku.pyramus-updater.usergroups.batchsize", "40"));
 
   @Inject
   private Logger logger;
@@ -22,23 +21,23 @@ public class PyramusSchoolDataUserGroupUpdateScheduler implements PyramusUpdateS
   @Inject
   private PyramusUpdater pyramusUpdater;
 
-  @PostConstruct
-  public void init() {
-    offset = NumberUtils.createInteger(System.getProperty("muikku.pyramus-updater.usergroups.start", "0"));
+  @Override
+  public String getSchedulerName() {
+    return "usergroups";
   }
   
   @Override
   public void synchronize() throws UnexpectedSchoolDataBridgeException {
+    int offset = getOffset();
     int count = 0;
     try {
       logger.fine("Synchronizing Pyramus usergroups");
       int result = pyramusUpdater.updateStudentGroups(offset, BATCH_SIZE);
       if (result == -1) {
-        offset = 0;
-        count = 0;
+        updateOffset(0);
       } else {
         count = result;
-        offset += BATCH_SIZE;
+        updateOffset(offset += BATCH_SIZE);
       }
     } finally {
       logger.fine(String.format("Synchronized %d Pyramus usergroups", count));
@@ -49,6 +48,4 @@ public class PyramusSchoolDataUserGroupUpdateScheduler implements PyramusUpdateS
   public int getPriority() {
     return 3;
   }
-
-  private int offset = 0;
 }
