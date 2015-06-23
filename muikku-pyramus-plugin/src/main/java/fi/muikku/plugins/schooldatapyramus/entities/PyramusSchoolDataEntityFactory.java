@@ -33,6 +33,7 @@ import fi.pyramus.rest.model.CourseType;
 import fi.pyramus.rest.model.EducationalTimeUnit;
 import fi.pyramus.rest.model.StudentGroup;
 import fi.pyramus.rest.model.StudentGroupStudent;
+import fi.pyramus.rest.model.StudentGroupUser;
 import fi.pyramus.rest.model.UserRole;
 
 public class PyramusSchoolDataEntityFactory {
@@ -310,7 +311,7 @@ public class PyramusSchoolDataEntityFactory {
   }
   
   public UserGroup createEntity(StudentGroup studentGroup){
-    return new PyramusUserGroup(identifierMapper.getUserGroupIdentifier(studentGroup.getId()), studentGroup.getName());
+    return new PyramusUserGroup(identifierMapper.getStudentGroupIdentifier(studentGroup.getId()), studentGroup.getName());
   }
   
   public List<UserGroup> createEntities(StudentGroup... studentGroups) {
@@ -322,10 +323,17 @@ public class PyramusSchoolDataEntityFactory {
     return result;
   }
   
-  public GroupUser createEntity(StudentGroupStudent studentGroupStudent){
+  public GroupUser createEntity(StudentGroupStudent studentGroupStudent) {
     return new PyramusGroupUser(
-          identifierMapper.getGroupUserIdentifier(studentGroupStudent.getId()),
+          identifierMapper.getStudentGroupStudentIdentifier(studentGroupStudent.getId()),
           identifierMapper.getStudentIdentifier(studentGroupStudent.getStudentId())
+        );
+  }
+  
+  public GroupUser createEntity(StudentGroupUser studentGroupUser) {
+    return new PyramusGroupUser(
+          identifierMapper.getStudentGroupStaffMemberIdentifier(studentGroupUser.getId()),
+          identifierMapper.getStaffIdentifier(studentGroupUser.getStaffMemberId())
         );
   }
   

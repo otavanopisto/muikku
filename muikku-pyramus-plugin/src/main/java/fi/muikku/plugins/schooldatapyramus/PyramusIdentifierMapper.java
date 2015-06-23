@@ -14,7 +14,8 @@ public class PyramusIdentifierMapper {
   private static final String WORKSPACE_STAFF_ROLE_PREFIX = "WS-";
   private static final String ENVIRONMENT_ROLE_PREFIX = "ENV-";
   private static final String STUDENTGROUP_PREFIX = "USERGROUP-";
-  private static final String STUDENTGROUPUSER_PREFIX = "USERGROUPUSER-";
+  private static final String STUDENTGROUPSTUDENT_PREFIX = "USERGROUPSTUDENT-";
+  private static final String STUDENTGROUPSTAFFMEMBER_PREFIX = "USERGROUPSTAFFMEMBER-";
   
   public String getWorkspaceIdentifier(Long courseId) {
     return courseId.toString();
@@ -140,29 +141,55 @@ public class PyramusIdentifierMapper {
     return (subjectId == null)||(courseNumber == null) ? null : String.format("%d/%d", subjectId, courseNumber);
   }
   
-  public Long getPyramusUserGroupId(String userGroupIdentifier){
-    if (StringUtils.startsWith(userGroupIdentifier, STUDENTGROUP_PREFIX)) {
-      return NumberUtils.createLong(StringUtils.substring(userGroupIdentifier, STUDENTGROUP_PREFIX.length()));
+  public Long getPyramusStudentGroupId(String studentGroupIdentifier){
+    if (StringUtils.startsWith(studentGroupIdentifier, STUDENTGROUP_PREFIX)) {
+      return NumberUtils.createLong(StringUtils.substring(studentGroupIdentifier, STUDENTGROUP_PREFIX.length()));
     }
     
     return null;
   }
   
-  public String getUserGroupIdentifier(Long pyramusUserGroupId){
-    return STUDENTGROUP_PREFIX + String.valueOf(pyramusUserGroupId);
+  public String getStudentGroupIdentifier(Long pyramusStudentGroupId){
+    return STUDENTGROUP_PREFIX + String.valueOf(pyramusStudentGroupId);
   }
   
-  public Long getPyramusUserGroupUserId(String groupUserIdentifier) {
-    if (StringUtils.startsWith(groupUserIdentifier, STUDENTGROUPUSER_PREFIX)) {
-      return NumberUtils.createLong(StringUtils.substring(groupUserIdentifier, STUDENTGROUPUSER_PREFIX.length()));
+  public Long getPyramusStudentGroupStudentId(String groupUserIdentifier) {
+    if (StringUtils.startsWith(groupUserIdentifier, STUDENTGROUPSTUDENT_PREFIX)) {
+      return NumberUtils.createLong(StringUtils.substring(groupUserIdentifier, STUDENTGROUPSTUDENT_PREFIX.length()));
     }
     
     return null;
   }
   
-  public String getUserGroupUserIdentifier(Long pyramusGroupUserId){
-    return STUDENTGROUPUSER_PREFIX + String.valueOf(pyramusGroupUserId);
+  public String getStudentGroupStudentIdentifier(Long pyramusGroupUserId){
+    return STUDENTGROUPSTUDENT_PREFIX + String.valueOf(pyramusGroupUserId);
   }
   
+  public Long getPyramusStudentGroupStaffMemberId(String groupUserIdentifier) {
+    if (StringUtils.startsWith(groupUserIdentifier, STUDENTGROUPSTAFFMEMBER_PREFIX)) {
+      return NumberUtils.createLong(StringUtils.substring(groupUserIdentifier, STUDENTGROUPSTAFFMEMBER_PREFIX.length()));
+    }
+    
+    return null;
+  }
+  
+  public String getStudentGroupStaffMemberIdentifier(Long pyramusGroupUserId){
+    return STUDENTGROUPSTAFFMEMBER_PREFIX + String.valueOf(pyramusGroupUserId);
+  }
 
+  public StudentGroupUserType getStudentGroupUserType(String identifier) {
+    if (StringUtils.startsWith(identifier, STUDENTGROUPSTAFFMEMBER_PREFIX))
+      return StudentGroupUserType.STAFFMEMBER;
+    
+    if (StringUtils.startsWith(identifier, STUDENTGROUPSTUDENT_PREFIX))
+      return StudentGroupUserType.STUDENT;
+    
+    return null;
+  }
+  
+  enum StudentGroupUserType {
+    STUDENT,
+    STAFFMEMBER
+  }
+  
 }

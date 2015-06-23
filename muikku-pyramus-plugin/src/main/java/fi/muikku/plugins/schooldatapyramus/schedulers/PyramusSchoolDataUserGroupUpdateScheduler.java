@@ -32,7 +32,7 @@ public class PyramusSchoolDataUserGroupUpdateScheduler implements PyramusUpdateS
     int count = 0;
     try {
       logger.fine("Synchronizing Pyramus usergroups");
-      int result = pyramusUpdater.updateUserGroups(offset, BATCH_SIZE);
+      int result = pyramusUpdater.updateStudentGroups(offset, BATCH_SIZE);
       if (result == -1) {
         offset = 0;
         count = 0;

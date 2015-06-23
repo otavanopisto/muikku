@@ -3,7 +3,6 @@ package fi.muikku.plugins.schooldatapyramus.schedulers;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -19,7 +18,7 @@ import fi.muikku.users.UserGroupEntityController;
 
 @Dependent
 @Stateful
-public class PyramusSchoolDataUserGroupUsersUpdateScheduler implements PyramusUpdateScheduler {
+public class PyramusSchoolDataUserGroupUsersUpdateScheduler extends PyramusDataScheduler implements PyramusUpdateScheduler {
 
   private static final int BATCH_SIZE = NumberUtils.createInteger(System.getProperty("muikku.pyramus-updater.usergroup-users.batchsize", "20"));
 
@@ -34,14 +33,14 @@ public class PyramusSchoolDataUserGroupUsersUpdateScheduler implements PyramusUp
 
   @Inject
   private PyramusUpdater pyramusUpdater;
-  
-  @PostConstruct
-  public void init() {
-    offset = NumberUtils.createInteger(System.getProperty("muikku.pyramus-updater.usergroup-users.start", "0"));
+
+  @Override
+  public String getSchedulerName() {
+    return "usergroup-users";
   }
   
   public void synchronize() throws UnexpectedSchoolDataBridgeException {
-
+    int offset = getOffset();
     int count = 0;
     try {
       logger.fine("Synchronizing Pyramus user group users");
@@ -49,14 +48,14 @@ public class PyramusSchoolDataUserGroupUsersUpdateScheduler implements PyramusUp
       List<UserGroupEntity> userGroupEntities = userGroupEntityController.listUserGroupEntitiesByDataSource(
           SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, offset, BATCH_SIZE);
       if (userGroupEntities.size() == 0) {
-        offset = 0;
+        updateOffset(0);
       } else {
         for (UserGroupEntity userGroupEntity : userGroupEntities) {
-          Long userGroupId = identityMapper.getPyramusUserGroupId(userGroupEntity.getIdentifier());
-          count += pyramusUpdater.updateUserGroupUsers(userGroupId);
+          Long userGroupId = identityMapper.getPyramusStudentGroupId(userGroupEntity.getIdentifier());
+          count += pyramusUpdater.updateStudentGroupUsers(userGroupId);
         }
 
-        offset += userGroupEntities.size();
+        updateOffset(offset + userGroupEntities.size());
       }
     } finally {
       logger.fine(String.format("Synchronized %d Pyramus user group users", count));
@@ -68,5 +67,4 @@ public class PyramusSchoolDataUserGroupUsersUpdateScheduler implements PyramusUp
     return 4;
   }
 
-  private int offset = 0;
 }

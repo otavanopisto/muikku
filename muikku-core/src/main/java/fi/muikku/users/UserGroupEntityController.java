@@ -84,4 +84,8 @@ public class UserGroupEntityController {
     return userGroupEntityDAO.listByDataSource(schoolDataSource, firstResult, maxResults);
   }
 
+  public List<UserGroupUserEntity> listUserGroupUserEntitiesByUserGroupEntity(UserGroupEntity userGroupEntity) {
+    return userGroupUserEntityDAO.listByUserGroupEntity(userGroupEntity);
+  }
+
 }
