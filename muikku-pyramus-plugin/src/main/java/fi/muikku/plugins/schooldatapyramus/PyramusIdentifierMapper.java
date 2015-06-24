@@ -16,7 +16,9 @@ public class PyramusIdentifierMapper {
   private static final String STUDENTGROUP_PREFIX = "USERGROUP-";
   private static final String STUDENTGROUPSTUDENT_PREFIX = "USERGROUPSTUDENT-";
   private static final String STUDENTGROUPSTAFFMEMBER_PREFIX = "USERGROUPSTAFFMEMBER-";
-  
+  private static final String STUDYPROGRAMME_PREFIX = "STUDYPROGRAMME-";
+  private static final String STUDYPROGRAMMESTUDENT_PREFIX = "STUDYPROGRAMMESTUDENT-";
+
   public String getWorkspaceIdentifier(Long courseId) {
     return courseId.toString();
   }
@@ -191,5 +193,45 @@ public class PyramusIdentifierMapper {
     STUDENT,
     STAFFMEMBER
   }
+  
+  public Long getPyramusStudyProgrammeId(String studyProgrammeIdentifier) {
+    if (StringUtils.startsWith(studyProgrammeIdentifier, STUDYPROGRAMME_PREFIX)) {
+      return NumberUtils.createLong(StringUtils.substring(studyProgrammeIdentifier, STUDYPROGRAMME_PREFIX.length()));
+    }
+    
+    return null;
+  }
+  
+  public String getStudyProgrammeIdentifier(Long pyramusStudyProgrammeId){
+    return STUDYPROGRAMME_PREFIX + String.valueOf(pyramusStudyProgrammeId);
+  }
+
+  public StudentGroupType getStudentGroupType(String identifier) {
+    if (StringUtils.startsWith(identifier, STUDENTGROUP_PREFIX))
+      return StudentGroupType.STUDENTGROUP;
+    
+    if (StringUtils.startsWith(identifier, STUDYPROGRAMME_PREFIX))
+      return StudentGroupType.STUDYPROGRAMME;
+    
+    return null;
+  }
+  
+  enum StudentGroupType {
+    STUDENTGROUP,
+    STUDYPROGRAMME
+  }
+
+  public String getStudyProgrammeStudentIdentifier(Long pyramusStudentId) {
+    return STUDYPROGRAMMESTUDENT_PREFIX + String.valueOf(pyramusStudentId);
+  }
+
+  public Long getPyramusStudyProgrammeStudentId(String studyProgrammeStudentIdentifier) {
+    if (StringUtils.startsWith(studyProgrammeStudentIdentifier, STUDYPROGRAMMESTUDENT_PREFIX)) {
+      return NumberUtils.createLong(StringUtils.substring(studyProgrammeStudentIdentifier, STUDYPROGRAMMESTUDENT_PREFIX.length()));
+    }
+    
+    return null;
+  }
+  
   
 }
