@@ -1131,8 +1131,10 @@ public class PyramusUpdater {
   }
   
   private void fireUserGroupRemoved(String userGroupIdentifier) {
+    String searchId = userGroupIdentifier + '/' + SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE;
     schoolDataUserGroupRemovedEvent.fire(new SchoolDataUserGroupRemovedEvent(
-        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userGroupIdentifier));
+        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userGroupIdentifier,
+        searchId));
   }
   
   private void fireUserGroupUserDiscovered(String userGroupUserIdentifier, String userGroupIdentifier, String userEntityIdentifier) {

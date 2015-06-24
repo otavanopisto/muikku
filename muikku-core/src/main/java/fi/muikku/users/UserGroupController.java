@@ -1,43 +1,31 @@
 package fi.muikku.users;
 
+import javax.inject.Inject;
+
+import fi.muikku.dao.base.SchoolDataSourceDAO;
+import fi.muikku.model.base.SchoolDataSource;
+import fi.muikku.schooldata.UserSchoolDataController;
+import fi.muikku.schooldata.entity.UserGroup;
+
 public class UserGroupController {
-  
-  /*
 
   @Inject
-  private UserGroupEntityDAO userGroupDAO;
+  private SchoolDataSourceDAO schoolDataSourceDAO;
   
   @Inject
-  private GroupUserEntityDAO userGroupUserDAO;
-
-  public List<UserGroup> searchUserGroups(String searchTerm) {
-    List<UserGroup> grps = userGroupDAO.listAll();
-    List<UserGroup> filtered = new ArrayList<UserGroup>();
-
-    for (UserGroup grp : grps) {
-      if (grp.getName().toLowerCase().contains(searchTerm.toLowerCase()))
-        filtered.add(grp);
+  private UserSchoolDataController userSchoolDataController;
+  
+  public UserGroup findUserGroup(String dataSource, String identifier) {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
+    if (dataSource != null) {
+      return userSchoolDataController.findUserGroup(schoolDataSource, identifier);
     }
-
-    return filtered;
-  }
-
-  public UserGroup findUserGroup(Long userGroupId) {
-    return userGroupDAO.findById(userGroupId);
-  }
-
-  public List<UserGroupUser> listUserGroupUsers(UserGroup userGroup) {
-    return userGroupUserDAO.listByUserGroup(userGroup);
-  }
-
-  public List<UserGroup> listUserGroupsByUser(UserEntity userEntity) {
-    return userGroupDAO.listByUser(userEntity);
+    
+    return null;
   }
   
-  public Long getUserGroupMemberCount(UserGroup userGroup) {
-    return userGroupUserDAO.countByUserGroup(userGroup);
+  public UserGroup findUserGroup(SchoolDataSource schoolDataSource, String identifier) {
+    return userSchoolDataController.findUserGroup(schoolDataSource, identifier);
   }
-  
-  */
   
 }

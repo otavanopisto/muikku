@@ -28,6 +28,7 @@ import fi.muikku.model.base.Tag;
 import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserGroupEntity;
 import fi.muikku.model.users.UserGroupUserEntity;
+import fi.muikku.model.users.UserSchoolDataIdentifier;
 import fi.muikku.notifier.NotifierController;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.communicator.CommunicatorController;
@@ -45,7 +46,7 @@ import fi.muikku.rest.RESTPermitUnimplemented;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
-import fi.muikku.users.UserGroupController;
+import fi.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.security.AuthorizationException;
 
 @Path("/communicator")
@@ -69,7 +70,7 @@ public class CommunicatorRESTService extends PluginRESTService {
   private UserController userController;
 
   @Inject
-  private UserGroupController userGroupController;
+  private UserGroupEntityController userGroupEntityController;
 
   @Inject
   private TagController tagController;
@@ -262,18 +263,19 @@ public class CommunicatorRESTService extends PluginRESTService {
         recipients.add(recipient);
     }
     
-    /*
+    // TODO: Duplicates
     
     for (Long groupId : newMessage.getRecipientGroupIds()) {
-      UserGroupEntity group = userGroupController.findUserGroup(groupId);
-      List<UserGroupUser> groupUsers = userGroupController.listUserGroupUsers(group);
+      UserGroupEntity group = userGroupEntityController.findUserGroupEntityById(groupId);
+      List<UserGroupUserEntity> groupUsers = userGroupEntityController.listUserGroupUserEntitiesByUserGroupEntity(group);
       
-      for (UserGroupUser gusr : groupUsers) {
-        recipients.add(gusr.getUser());
+      for (UserGroupUserEntity groupUser : groupUsers) {
+        UserSchoolDataIdentifier userSchoolDataIdentifier = groupUser.getUserSchoolDataIdentifier();
+        UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(userSchoolDataIdentifier.getDataSource(), userSchoolDataIdentifier.getIdentifier());
+        
+        recipients.add(userEntity);
       }
     }
-    
-    */
     
     // TODO Category not existing at this point would technically indicate an invalid state
     CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(newMessage.getCategoryName());
@@ -389,18 +391,17 @@ public class CommunicatorRESTService extends PluginRESTService {
         recipients.add(recipient);
     }
     
-    /*
-    
     for (Long groupId : newMessage.getRecipientGroupIds()) {
-      UserGroup group = userGroupController.findUserGroup(groupId);
-      List<UserGroupUser> groupUsers = userGroupController.listUserGroupUsers(group);
+      UserGroupEntity group = userGroupEntityController.findUserGroupEntityById(groupId);
+      List<UserGroupUserEntity> groupUsers = userGroupEntityController.listUserGroupUserEntitiesByUserGroupEntity(group);
       
-      for (UserGroupUser gusr : groupUsers) {
-        recipients.add(gusr.getUser());
+      for (UserGroupUserEntity groupUser : groupUsers) {
+        UserSchoolDataIdentifier userSchoolDataIdentifier = groupUser.getUserSchoolDataIdentifier();
+        UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(userSchoolDataIdentifier.getDataSource(), userSchoolDataIdentifier.getIdentifier());
+        
+        recipients.add(userEntity);
       }
     }
-    
-    */
 
     // TODO Category not existing at this point would technically indicate an invalid state
     CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(newMessage.getCategoryName());

@@ -94,4 +94,12 @@ public class UserGroupEntityController {
     return userGroupEntityDAO.listByUser(userEntity);
   }
 
+  public List<UserGroupEntity> listUserGroupEntities() {
+    return userGroupEntityDAO.listAll();
+  }
+
+  public UserGroupEntity findUserGroupEntityById(Long groupId) {
+    return userGroupEntityDAO.findById(groupId);
+  }
+
 }

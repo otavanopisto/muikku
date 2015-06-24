@@ -234,19 +234,19 @@ $(document).ready(function(){
 		  var recipientListElement = $("#msgRecipientsContainer"); 		  
 		  var prms = {
 		    id: item.id,
-		    name: item.label
+		    name: item.label,
+		    type: item.type
 		  };
 
 		  if (item.type == "USER") {
 		    renderDustTemplate('communicator/communicator_messagerecipient.dust', prms, function (text) {
-		    recipientListElement.prepend($.parseHTML(text));
-		      
-		      
+		      recipientListElement.prepend($.parseHTML(text));
 		    });
-		  } else {
-		    // NOTHING ELSE! 
-		  }
-		    
+		  } else if (item.type == "GROUP") {
+        renderDustTemplate('communicator/communicator_messagerecipientgroup.dust', prms, function (text) {
+          recipientListElement.prepend($.parseHTML(text));
+        });
+      }
 	},
 	_onRemoveRecipientClick : function (event) {
 	  var element = $(event.target);
@@ -255,38 +255,63 @@ $(document).ready(function(){
 	  element.remove();
 	},    
 	    
-    _doSearch: function (searchTerm) {
-//  	  var groups = this._searchGroups(searchTerm);
-  	  var users = this._searchUsers(searchTerm);
-  	  
-//  	  return $.merge(groups, users);
-  	  return this._searchUsers(searchTerm);
+  _doSearch: function (searchTerm) {
+	  var groups = this._searchGroups(searchTerm);
+	  var users = this._searchUsers(searchTerm);
+	  
+	  return $.merge(groups, users);
+//  	  return this._searchUsers(searchTerm);
   },    	
 
-	_searchUsers: function (searchTerm) {
+  _searchGroups: function (searchTerm) {
+    var _this = this;
+    var users = new Array();
+  
+
+    mApi().usergroup.groups.read({ 'searchString' : searchTerm }).callback(function(err, result) {
+      if (result != undefined) {
+        for (var i = 0, l = result.length; i < l; i++) {
+          var img = undefined;
+          if (result[i].hasImage)
+            img = CONTEXTPATH + "/picture?userId=" + result[i].id;
+
+          users.push({
+            category : getLocaleText("plugin.communicator.usergroups"),
+            label : result[i].name,
+            id : result[i].id,
+            image : img,
+            type : "GROUP"
+          });
+        }
+      }
+    }); 
+    
+    return users;
+  },
+
+  _searchUsers: function (searchTerm) {
 		var _this = this;
 		var users = new Array();
 	
-		mApi().user.users.read({ 'searchString' : searchTerm }).callback(
-		 function (err, result) {
-		   if(result != 'undefined'){		   
-  		   for (var i = 0, l = result.length; i < l; i++) {
-  			 var img = undefined;
-  	       if (result[i].hasImage)
-  	        img = CONTEXTPATH + "/picture?userId=" + result[i].id;
-  	        users.push({
-  	          category: getLocaleText("plugin.communicator.users"),
-  	          label: result[i].firstName + " " + result[i].lastName,
-  	          id: result[i].id,
-  	          image: img,
-  	          type: "USER"
-  	         });
-  	       }
-		   }
+		mApi().user.users.read({ 'searchString' : searchTerm }).callback(function(err, result) {
+      if (result != undefined) {
+        for (var i = 0, l = result.length; i < l; i++) {
+          var img = undefined;
+          if (result[i].hasImage)
+            img = CONTEXTPATH + "/picture?userId=" + result[i].id;
 
-	}); 
-	
-	return users;
+          users.push({
+            category : getLocaleText("plugin.communicator.users"),
+            label : result[i].firstName + " " + result[i].lastName,
+            id : result[i].id,
+            image : img,
+            type : "USER"
+          });
+        }
+      }
+    }); 
+  	
+  	return users;
 	},
   
   _setSelected : function(selected){

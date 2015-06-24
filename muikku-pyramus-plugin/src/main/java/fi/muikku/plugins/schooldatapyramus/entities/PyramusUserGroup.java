@@ -25,6 +25,11 @@ public class PyramusUserGroup implements UserGroup {
     return name;
   }
 
+  @Override
+  public String getSearchId() {
+    return getIdentifier() + "/" + getSchoolDataSource();
+  }
+  
   private String identifier;
   private String name;
 }
