@@ -322,7 +322,7 @@ public class CommunicatorRESTService extends PluginRESTService {
     List<CommunicatorMessageRecipient> messageRecipients = communicatorController.listCommunicatorMessageRecipients(msg);
     List<Long> recipients = new ArrayList<Long>();
     for (CommunicatorMessageRecipient messageRecipient : messageRecipients) {
-      recipients.add(messageRecipient.getRecipient());
+      recipients.add(messageRecipient.getId());
     }
 
     return recipients;
@@ -478,7 +478,9 @@ public class CommunicatorRESTService extends PluginRESTService {
    ) throws AuthorizationException {
     CommunicatorMessageRecipient recipient = communicatorController.findCommunicatorMessageRecipient(recipientId);
 
-    if (!sessionController.hasPermission(CommunicatorPermissionCollection.READ_MESSAGE, recipient)) {
+    CommunicatorMessage communicatorMessage = communicatorController.findCommunicatorMessageById(communicatorMessageId);
+
+    if (!sessionController.hasPermission(CommunicatorPermissionCollection.READ_MESSAGE, communicatorMessage)) {
       return Response.status(Status.FORBIDDEN).build();
     }
     
