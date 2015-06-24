@@ -277,7 +277,8 @@ public class PyramusUpdater {
           
           // If not existing, then it's a new one
           if (!existingGroupUserIds.contains(identifier)) {
-            fireUserGroupUserDiscovered(identifier, studentGroupId);
+            String staffMemberIdentifier = identifierMapper.getStaffIdentifier(sgStaffMember.getStaffMemberId());
+            fireUserGroupUserDiscovered(identifier, studentGroupId, staffMemberIdentifier);
           }
         }
         
@@ -293,7 +294,8 @@ public class PyramusUpdater {
 
           // If not existing, then it's a new one
           if (!existingGroupUserIds.contains(identifier)) {
-            fireUserGroupUserDiscovered(identifier, studentGroupId);
+            String studentIdentifier = identifierMapper.getStudentIdentifier(sgs.getStudentId());
+            fireUserGroupUserDiscovered(identifier, studentGroupId, studentIdentifier);
           }
         }
         
@@ -326,7 +328,8 @@ public class PyramusUpdater {
         fireUserGroupUserRemoved(identifier);
     } else {
       if (userGroupUserEntity == null) {
-        fireUserGroupUserDiscovered(identifier, studentGroupId);
+        String studentIdentifier = identifierMapper.getStudentIdentifier(studentGroupStudent.getStudentId());
+        fireUserGroupUserDiscovered(identifier, studentGroupId, studentIdentifier);
       } else {
         fireUserGroupUserUpdated(identifier);
       }
@@ -344,7 +347,8 @@ public class PyramusUpdater {
         fireUserGroupUserRemoved(identifier);
     } else {
       if (userGroupUserEntity == null) {
-        fireUserGroupUserDiscovered(identifier, studentGroupId);
+        String staffMemberIdentifier = identifierMapper.getStaffIdentifier(studentGroupStaffMember.getStaffMemberId());
+        fireUserGroupUserDiscovered(identifier, studentGroupId, staffMemberIdentifier);
       } else {
         fireUserGroupUserUpdated(identifier);
       }
@@ -1063,11 +1067,12 @@ public class PyramusUpdater {
         SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userGroupIdentifier));
   }
   
-  private void fireUserGroupUserDiscovered(String userGroupUserIdentifier, Long userGroupId) {
+  private void fireUserGroupUserDiscovered(String userGroupUserIdentifier, Long userGroupId, String userEntityIdentifier) {
     String userGroupIdentifier = identifierMapper.getStudentGroupIdentifier(userGroupId);
     schoolDataUserGroupUserDiscoveredEvent.fire(new SchoolDataUserGroupUserDiscoveredEvent(
         SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userGroupUserIdentifier,
-        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userGroupIdentifier));
+        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userGroupIdentifier,
+        SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userEntityIdentifier));
   }
 
   private void fireUserGroupUserUpdated(String userGroupUserIdentifier) {

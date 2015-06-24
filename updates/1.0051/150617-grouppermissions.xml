@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<update xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.ofw.fi/xml/2011/java-xmldb-updater/UpdaterSchema.xsd">
+
+  <createTables>
+    <table primaryKeys="id" name="GroupPermission">
+      <fields>
+        <field name="id" type="java.lang.Long" nullable="false" unique="false" />
+        <field name="permission_id" type="java.lang.Long" nullable="true" unique="false" />
+        <field name="userGroup_id" type="java.lang.Long" nullable="true" unique="false" />
+      </fields>
+      <foreignKeys>
+        <key columns="permission_id" referencedTable="Permission" referencedColumns="id" name="FK_GROUPPERMISSION_PERMISSION" />
+        <key columns="userGroup_id" referencedTable="UserGroupEntity" referencedColumns="id" name="FK_GROUPPERMISSION_USERGROUP" />
+      </foreignKeys>
+    </table>
+
+    <table primaryKeys="id" name="EnvironmentGroupPermission">
+      <fields>
+        <field name="id" type="java.lang.Long" nullable="false" unique="false" />
+      </fields>
+      <foreignKeys>
+        <key columns="id" referencedTable="GroupPermission" referencedColumns="id" name="FK_ENVIRONMENTGROUPPERMISSION_GROUPPERMISSION" />
+      </foreignKeys>
+    </table>
+
+    <table primaryKeys="id" name="WorkspaceGroupPermission">
+      <fields>
+        <field name="id" type="java.lang.Long" nullable="false" unique="false" />
+        <field name="workspace_id" type="java.lang.Long" nullable="true" unique="false" />
+      </fields>
+      <foreignKeys>
+        <key columns="id" referencedTable="GroupPermission" referencedColumns="id" name="FK_WORKSPACEGROUPPERMISSION_GROUPPERMISSION" />
+        <key columns="id" referencedTable="WorkspaceEntity" referencedColumns="id" name="FK_WORKSPACEGROUPPERMISSION_WORKSPACEENTITY" />
+      </foreignKeys>
+    </table>
+  </createTables>
+  
+  <sql>alter table GroupPermission modify column id bigint auto_increment;</sql>
+  
+</update>

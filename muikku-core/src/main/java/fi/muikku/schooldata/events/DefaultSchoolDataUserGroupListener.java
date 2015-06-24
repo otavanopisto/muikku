@@ -11,7 +11,9 @@ import javax.inject.Inject;
 
 import fi.muikku.model.users.UserGroupEntity;
 import fi.muikku.model.users.UserGroupUserEntity;
+import fi.muikku.model.users.UserSchoolDataIdentifier;
 import fi.muikku.users.UserGroupEntityController;
+import fi.muikku.users.UserSchoolDataIdentifierController;
 
 @ApplicationScoped
 public class DefaultSchoolDataUserGroupListener {
@@ -21,6 +23,9 @@ public class DefaultSchoolDataUserGroupListener {
   
   @Inject
   private UserGroupEntityController userGroupEntityController;
+
+  @Inject
+  private UserSchoolDataIdentifierController userSchoolDataIdentifierController;
   
   @PostConstruct
   public void init() {
@@ -77,10 +82,15 @@ public class DefaultSchoolDataUserGroupListener {
 
     if (userGroupEntity != null) {
       if (userGroupUserEntity == null) {
-        userGroupUserEntity = userGroupEntityController.createUserGroupUserEntity(userGroupEntity, event.getDataSource(), event.getIdentifier());
-        
-        discoveredUserGroupUsers.put(discoverId, userGroupUserEntity.getId());
-        event.setDiscoveredUserGroupUserEntityId(userGroupUserEntity.getId());
+        UserSchoolDataIdentifier userSchoolDataIdentifier = userSchoolDataIdentifierController.findUserSchoolDataIdentifierByDataSourceAndIdentifier(event.getUserDataSource(), event.getUserIdentifier());
+        if (userSchoolDataIdentifier != null) {
+          userGroupUserEntity = userGroupEntityController.createUserGroupUserEntity(userGroupEntity, event.getDataSource(), event.getIdentifier(), userSchoolDataIdentifier);
+          
+          discoveredUserGroupUsers.put(discoverId, userGroupUserEntity.getId());
+          event.setDiscoveredUserGroupUserEntityId(userGroupUserEntity.getId());
+        } else {
+          logger.warning("could not add group user because UserSchoolDataIdentifier for " + event.getUserIdentifier() + "/" + event.getUserDataSource() + " wasn't found");
+        }
       } else {
         logger.warning("UserGroupUserEntity for " + event.getIdentifier() + "/" + event.getDataSource() + " already exists");
       }

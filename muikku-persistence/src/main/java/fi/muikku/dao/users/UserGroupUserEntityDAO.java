@@ -12,6 +12,7 @@ import fi.muikku.model.base.SchoolDataSource;
 import fi.muikku.model.users.UserGroupEntity;
 import fi.muikku.model.users.UserGroupUserEntity;
 import fi.muikku.model.users.UserGroupUserEntity_;
+import fi.muikku.model.users.UserSchoolDataIdentifier;
 
 public class UserGroupUserEntityDAO extends CoreDAO<UserGroupUserEntity> {
 
@@ -20,6 +21,7 @@ public class UserGroupUserEntityDAO extends CoreDAO<UserGroupUserEntity> {
   public UserGroupUserEntity create(UserGroupEntity userGroupEntity,
                                 SchoolDataSource schoolDataSource,
                                 String identifier,
+                                UserSchoolDataIdentifier userSchoolDataIdentifier,
                                 boolean archived
   ) {
     UserGroupUserEntity userGroupUser = new UserGroupUserEntity();
@@ -28,6 +30,7 @@ public class UserGroupUserEntityDAO extends CoreDAO<UserGroupUserEntity> {
     userGroupUser.setSchoolDataSource(schoolDataSource);
     userGroupUser.setIdentifier(identifier);
     userGroupUser.setUserGroupEntity(userGroupEntity);
+    userGroupUser.setUserSchoolDataIdentifier(userSchoolDataIdentifier);
 
     getEntityManager().persist(userGroupUser);
 

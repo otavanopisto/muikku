@@ -10,8 +10,8 @@ import javax.persistence.ManyToOne;
 
 import fi.muikku.model.users.UserGroupEntity;
 
-//@Entity
-//@Inheritance(strategy=InheritanceType.JOINED)
+@Entity
+@Inheritance(strategy=InheritanceType.JOINED)
 public class GroupPermission {
 
   /**

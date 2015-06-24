@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import fi.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.security.ContextReference;
 
@@ -49,6 +51,9 @@ public class UserGroupEntity implements ContextReference {
   @ManyToOne
   private SchoolDataSource schoolDataSource;
 
+  @NotEmpty
+  @NotNull
+  @Column(nullable = false)
   private String identifier;
 
   @NotNull

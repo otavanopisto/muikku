@@ -6,8 +6,8 @@ import javax.persistence.PrimaryKeyJoinColumn;
 
 import fi.muikku.model.workspace.WorkspaceEntity;
 
-//@Entity
-//@PrimaryKeyJoinColumn(name="id")
+@Entity
+@PrimaryKeyJoinColumn(name="id")
 public class WorkspaceGroupPermission extends GroupPermission {
 
   // TODO: Unique all?

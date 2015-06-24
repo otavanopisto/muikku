@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import fi.muikku.model.base.SchoolDataSource;
 import fi.otavanopisto.security.ContextReference;
 
@@ -50,6 +52,14 @@ public class UserGroupUserEntity implements ContextReference {
     this.identifier = identifier;
   }
 
+  public UserSchoolDataIdentifier getUserSchoolDataIdentifier() {
+    return userSchoolDataIdentifier;
+  }
+
+  public void setUserSchoolDataIdentifier(UserSchoolDataIdentifier userSchoolDataIdentifier) {
+    this.userSchoolDataIdentifier = userSchoolDataIdentifier;
+  }
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -60,8 +70,14 @@ public class UserGroupUserEntity implements ContextReference {
   @ManyToOne
   private SchoolDataSource schoolDataSource;
 
+  @NotEmpty
+  @NotNull
+  @Column(nullable = false)
   private String identifier;
 
+  @ManyToOne
+  private UserSchoolDataIdentifier userSchoolDataIdentifier;
+  
   @NotNull
   @Column(nullable = false)
   private Boolean archived = Boolean.FALSE;

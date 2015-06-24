@@ -9,8 +9,10 @@ import fi.muikku.dao.base.SchoolDataSourceDAO;
 import fi.muikku.dao.users.UserGroupEntityDAO;
 import fi.muikku.dao.users.UserGroupUserEntityDAO;
 import fi.muikku.model.base.SchoolDataSource;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserGroupEntity;
 import fi.muikku.model.users.UserGroupUserEntity;
+import fi.muikku.model.users.UserSchoolDataIdentifier;
 
 public class UserGroupEntityController {
 
@@ -36,14 +38,14 @@ public class UserGroupEntityController {
     return userGroupEntityDAO.create(schoolDataSource, identifier, false);
   }
   
-  public UserGroupUserEntity createUserGroupUserEntity(UserGroupEntity userGroupEntity, String dataSource, String identifier) {
+  public UserGroupUserEntity createUserGroupUserEntity(UserGroupEntity userGroupEntity, String dataSource, String identifier, UserSchoolDataIdentifier userSchoolDataIdentifier) {
     SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(dataSource);
     if (schoolDataSource == null) {
       logger.severe("Could not find datasource " + dataSource);
       return null;
     }
     
-    return userGroupUserEntityDAO.create(userGroupEntity, schoolDataSource, identifier, false);
+    return userGroupUserEntityDAO.create(userGroupEntity, schoolDataSource, identifier, userSchoolDataIdentifier, false);
   }
   
   public UserGroupEntity findUserGroupEntityByDataSourceAndIdentifier(String dataSource, String identifier) {
@@ -86,6 +88,10 @@ public class UserGroupEntityController {
 
   public List<UserGroupUserEntity> listUserGroupUserEntitiesByUserGroupEntity(UserGroupEntity userGroupEntity) {
     return userGroupUserEntityDAO.listByUserGroupEntity(userGroupEntity);
+  }
+
+  public List<UserGroupEntity> listUserGroupsByUser(UserEntity userEntity) {
+    return userGroupEntityDAO.listByUser(userEntity);
   }
 
 }
