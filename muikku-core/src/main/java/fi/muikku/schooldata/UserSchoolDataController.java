@@ -263,13 +263,81 @@ public class UserSchoolDataController {
 				try {
 					return schoolDataBridge.findUserEnvironmentRole(user.getIdentifier());
 				} catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
-					logger.log(Level.SEVERE, "SchoolDataBridge reported an error while listing user emails", e);
+					logger.log(Level.SEVERE, "SchoolDataBridge reported an error while findUserEnvironmentRole", e);
 				}
 			}
 		}
 		
 		return null;
 	}
+
+	public String findUsername(User user) throws SchoolDataBridgeUnauthorizedException {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(user.getSchoolDataSource());
+    if (schoolDataSource != null) {
+      UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
+      if (schoolDataBridge != null) {
+        try {
+          return schoolDataBridge.findUsername(user.getIdentifier());
+        } catch (SchoolDataBridgeUnauthorizedException surr) {
+          logger.log(Level.WARNING, "Unauthorized error while updateUserCredentials", surr);
+          throw surr;
+        } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
+          logger.log(Level.SEVERE, "SchoolDataBridge reported an error while findUsername", e);
+        }
+      }
+    }
+    
+    return null;
+	}
+	
+	public void updateUserCredentials(User user, String oldPassword, String newUsername, String newPassword) throws SchoolDataBridgeUnauthorizedException {
+    SchoolDataSource schoolDataSource = schoolDataSourceDAO.findByIdentifier(user.getSchoolDataSource());
+    if (schoolDataSource != null) {
+      UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
+      if (schoolDataBridge != null) {
+        try {
+          schoolDataBridge.updateUserCredentials(user.getIdentifier(), oldPassword, newUsername, newPassword);
+        } catch (SchoolDataBridgeUnauthorizedException surr) {
+          logger.log(Level.WARNING, "Unauthorized error while updateUserCredentials", surr);
+          throw surr;
+        } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
+          logger.log(Level.SEVERE, "SchoolDataBridge reported an error while updateUserCredentials", e);
+        } 
+      }
+    }
+	}
+	
+  public String requestPasswordResetByEmail(SchoolDataSource schoolDataSource, String email) throws SchoolDataBridgeUnauthorizedException {
+    UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
+    if (schoolDataBridge != null) {
+      try {
+        return schoolDataBridge.requestPasswordResetByEmail(email);
+      } catch (SchoolDataBridgeUnauthorizedException surr) {
+        logger.log(Level.WARNING, "Unauthorized error while requestPasswordResetByEmail", surr);
+        throw surr;
+      } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
+        logger.log(Level.SEVERE, "SchoolDataBridge reported an error while requestPasswordResetByEmail", e);
+      }
+    }
+    
+    return null;
+  }
+
+  public boolean confirmResetPassword(SchoolDataSource schoolDataSource, String resetCode, String newPassword) throws SchoolDataBridgeUnauthorizedException {
+    UserSchoolDataBridge schoolDataBridge = getUserBridge(schoolDataSource);
+    if (schoolDataBridge != null) {
+      try {
+        return schoolDataBridge.confirmResetPassword(resetCode, newPassword);
+      } catch (SchoolDataBridgeUnauthorizedException surr) {
+        logger.log(Level.WARNING, "Unauthorized error while confirmResetPassword", surr);
+        throw surr;
+      } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e) {
+        logger.log(Level.SEVERE, "SchoolDataBridge reported an error while confirmResetPassword", e);
+      }
+    }
+    
+    return false;
+  }
 	
 	private UserSchoolDataBridge getUserBridge(SchoolDataSource schoolDataSource) {
 		Iterator<UserSchoolDataBridge> iterator = userBridges.iterator();
