@@ -328,7 +328,7 @@ public class WorkspaceMaterialController {
   public WorkspaceMaterial createWorkspaceMaterial(WorkspaceNode parent, Material material, String urlName, WorkspaceMaterialAssignmentType assignmentType) {
     Integer index = workspaceNodeDAO.getMaximumOrderNumber(parent);
     index = index == null ? 0 : ++index;
-    WorkspaceMaterial workspaceMaterial = workspaceMaterialDAO.create(parent, material.getId(), urlName, index, false, assignmentType);
+    WorkspaceMaterial workspaceMaterial = workspaceMaterialDAO.create(parent, material.getId(), urlName, index, false, assignmentType, material.getTitle());
     workspaceMaterialCreateEvent.fire(new WorkspaceMaterialCreateEvent(workspaceMaterial));
     return workspaceMaterial;
   }
@@ -342,7 +342,8 @@ public class WorkspaceMaterialController {
   }
 
   public WorkspaceMaterial findWorkspaceMaterialByWorkspaceEntityAndPath(WorkspaceEntity workspaceEntity, String path) {
-    return (WorkspaceMaterial) findWorkspaceNodeByWorkspaceEntityAndPath(workspaceEntity, path);
+    WorkspaceNode workspaceNode = findWorkspaceNodeByWorkspaceEntityAndPath(workspaceEntity, path); 
+    return workspaceNode instanceof WorkspaceMaterial ? (WorkspaceMaterial) workspaceNode : null;
   }
 
   public List<WorkspaceMaterial> listWorkspaceMaterialsByParent(WorkspaceNode parent) {
@@ -411,7 +412,7 @@ public class WorkspaceMaterialController {
   }
 
   public WorkspaceNode updateWorkspaceNode(WorkspaceNode workspaceNode, Long materialId, WorkspaceNode parentNode, WorkspaceNode nextSibling, Boolean hidden,
-      WorkspaceMaterialAssignmentType assignmentType) {
+      WorkspaceMaterialAssignmentType assignmentType, String title) {
     if (nextSibling != null && !nextSibling.getParent().getId().equals(parentNode.getId())) {
       throw new IllegalArgumentException("Next sibling parent is not parent");
     }
@@ -423,27 +424,26 @@ public class WorkspaceMaterialController {
       workspaceNode = workspaceMaterialDAO.updateAssignmentType((WorkspaceMaterial) workspaceNode, assignmentType);
     }
     
+    // Title
+    
+    workspaceNode = workspaceNodeDAO.updateTitle(workspaceNode, title);
+    
     // Parent node & URL name
     
-    Material material = materialDAO.findById(materialId);
     long oldParent = workspaceNode.getParent() == null ? 0 : workspaceNode.getParent().getId();
     long newParent = parentNode == null ? 0 : parentNode.getId();
     if (oldParent != newParent) {
       // Before changing the parent, make sure the node's URL name will be unique under it
-      String urlName = generateUniqueUrlName(parentNode, material.getTitle());
+      String urlName = generateUniqueUrlName(parentNode, title);
       // Change the parent
       workspaceNode = workspaceNodeDAO.updateParent(workspaceNode, parentNode);
-      // Update URL name if applicable 
-      if (!StringUtils.equals(workspaceNode.getUrlName(), urlName)) {
-        workspaceNode = workspaceNodeDAO.updateUrlName(workspaceNode, urlName);
-      }
+      // Update URL name 
+      workspaceNode = workspaceNodeDAO.updateUrlName(workspaceNode, urlName);
     }
     else {
-      // Parent stays the same. Still, make sure title and URL name are in sync
-      String urlName = generateUniqueUrlName(parentNode, workspaceNode, material.getTitle());
-      if (!StringUtils.equals(workspaceNode.getUrlName(), urlName)) {
-        workspaceNode = workspaceNodeDAO.updateUrlName(workspaceNode, urlName);
-      }
+      // Update URL name
+      String urlName = generateUniqueUrlName(parentNode, workspaceNode, title);
+      workspaceNode = workspaceNodeDAO.updateUrlName(workspaceNode, urlName);
     }
     
     // Next sibling
@@ -462,11 +462,10 @@ public class WorkspaceMaterialController {
     
     workspaceNode = workspaceNodeDAO.updateHidden(workspaceNode, hidden);
 
-    // Return updated node
-    
+    // Updated node
     return workspaceNode;
   }
-  
+
   public void showWorkspaceNode(WorkspaceNode workspaceNode) {
     workspaceNodeDAO.updateHidden(workspaceNode,  Boolean.TRUE);
   }
@@ -736,7 +735,7 @@ public class WorkspaceMaterialController {
         Material material = materialController.findMaterialById(workspaceMaterial.getMaterialId());
         Long currentRevision = material instanceof HtmlMaterial ? htmlMaterialController.lastHtmlMaterialRevision((HtmlMaterial) material) : 0l;
         Long publishedRevision = material instanceof HtmlMaterial ? ((HtmlMaterial) material).getRevisionNumber() : 0l;
-        return new ContentNode(material.getTitle(), material.getType(), rootMaterialNode.getId(), material.getId(), level,
+        return new ContentNode(workspaceMaterial.getTitle(), material.getType(), rootMaterialNode.getId(), material.getId(), level,
             workspaceMaterial.getAssignmentType(), workspaceMaterial.getParent().getId(), workspaceMaterial.getHidden(),
             processHtml ? getMaterialHtml(material, parser, transformer) : null, currentRevision, publishedRevision);
       default:

@@ -80,6 +80,15 @@ public class WorkspaceNode {
     this.hidden = hidden;
   }
 
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+
   @Id
   @GeneratedValue (strategy = GenerationType.IDENTITY)
   private Long id;
@@ -88,6 +97,11 @@ public class WorkspaceNode {
   @NotNull
   @Column (nullable = false)
   private String urlName;
+
+  @NotEmpty
+  @NotNull
+  @Column (nullable = false)
+  private String title;
   
   @ManyToOne
   private WorkspaceNode parent;

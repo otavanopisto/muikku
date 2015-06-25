@@ -882,7 +882,7 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     return new fi.muikku.plugins.workspace.rest.model.WorkspaceMaterial(workspaceMaterial.getId(), workspaceMaterial.getMaterialId(),
         workspaceMaterial.getParent() != null ? workspaceMaterial.getParent().getId() : null, nextSiblingId, workspaceMaterial.getHidden(), 
-        workspaceMaterial.getAssignmentType(), workspaceMaterial.getPath());
+        workspaceMaterial.getAssignmentType(), workspaceMaterial.getPath(), workspaceMaterial.getTitle());
   }
 
   private List<fi.muikku.plugins.workspace.rest.model.WorkspaceUser> createRestModel(WorkspaceUserEntity... entries) {
@@ -1129,8 +1129,9 @@ public class WorkspaceRESTService extends PluginRESTService {
     Long materialId = workspaceMaterial.getMaterialId(); 
     WorkspaceNode parentNode = workspaceMaterialController.findWorkspaceNodeById(workspaceMaterial.getParentId());
     WorkspaceNode nextSibling = workspaceMaterial.getNextSiblingId() == null ? null : workspaceMaterialController.findWorkspaceNodeById(workspaceMaterial.getNextSiblingId());
+    String title = workspaceMaterial.getTitle();
     Boolean hidden = workspaceMaterial.getHidden();
-    workspaceMaterialController.updateWorkspaceNode(workspaceNode, materialId, parentNode, nextSibling, hidden, workspaceMaterial.getAssignmentType());
+    workspaceMaterialController.updateWorkspaceNode(workspaceNode, materialId, parentNode, nextSibling, hidden, workspaceMaterial.getAssignmentType(), title);
     return Response.noContent().build();
   }
   

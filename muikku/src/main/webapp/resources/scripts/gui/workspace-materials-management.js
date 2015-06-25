@@ -13,13 +13,9 @@
       .append($('<input>').attr('type', 'file'));
   }
   
-  function enableFileUploader(element, parentId, nextSiblingId) {
+  function enableFileUploader(element) {
     $(element)
-      .workspaceMaterialUpload({
-        workspaceEntityId: $('.workspaceEntityId').val(),
-        parentId: parentId,
-        nextSiblingId: nextSiblingId
-      })
+      .workspaceMaterialUpload()
       .on('fileUploaded', function (event, data) {
         var newPage = $('<section>')
           .addClass('workspace-materials-view-page material-management-view')
@@ -33,15 +29,29 @@
           });
         $(element).after(newPage);
         $(element).workspaceMaterialUpload('reset');
-        
+        // Page
         $(document).muikkuMaterialLoader('loadMaterial', newPage);
-        
-        var nextPage = $(newPage).next('.workspace-materials-view-page');
-        
+        // TOC
+        var tocItem = $('<li class="workspace-materials-toc-item " data-workspace-node-id="' + data.workspaceMaterialId + '" />');
+        tocItem.append('<a href="#page-' + data.workspaceMaterialId + '">' + data.title + '</a>');
+        tocItem.append('<span class="workspace-materials-toc-itemDragHandle icon-move ui-sortable-handle" />');
+        if (data.nextSiblingId) {
+          var nextSibling = $('li[data-workspace-node-id="' + data.nextSiblingId + '"]');
+          if (nextSibling) {
+            nextSibling.before(tocItem);
+          }
+        }
+        else {
+          var parent = $('ul[data-workspace-node-id="' + data.parentId + '"]');
+          if (parent) {
+            parent.append(tocItem);
+          }
+        } 
+        // Add sections
         var uploader = createFileUploader();
-        nextPage.before(createAddPageSectionLink());
-        nextPage.before(uploader);
-        enableFileUploader(uploader, nextPage.data('parent-id'), nextPage.data('workspace-material-id'));
+        newPage.after(uploader);
+        newPage.after(createAddPageSectionLink());
+        enableFileUploader(uploader);
       })
       .on('fileDiscarded', function (event, data) {
         $(this).workspaceMaterialUpload('reset');
@@ -57,6 +67,22 @@
       var pageContent = $(node).find('.page-content');
       var editor = $('<div>').addClass('workspace-material-folder-editor-title-wrapper');
       var textfield = $("<input>").attr('type', 'text').addClass('workspace-material-folder-editor-title').val($(pageContent).text());
+      editor.append(textfield);
+      $(pageContent).replaceWith(editor);
+      textfield.focus();
+      textfield.select();
+      $(textfield).on('keydown', function (event, data) {
+        if (event.keyCode == 13) {
+          closeEditor($('#page-' + workspaceMaterialId));
+        }
+      });
+    }
+    else if (materialType == 'binary') {
+      // binary
+      $(node).addClass("page-edit-mode");
+      var pageContent = $(node).find('.page-content');
+      var editor = $('<div>').addClass('workspace-material-binary-editor-title-wrapper');
+      var textfield = $("<input>").attr('type', 'text').addClass('workspace-material-binary-editor-title').val($(node).data('material-title'));
       editor.append(textfield);
       $(pageContent).replaceWith(editor);
       textfield.focus();
@@ -124,6 +150,42 @@
               textfield.off();
               var editor = node.find('.workspace-material-folder-editor-title-wrapper');
               editor.replaceWith(pageElement);
+              node.data('material-title', title);
+              // TOC
+              var tocElement = $("a[href*='#page-" + $(node).data('workspace-material-id') + "']");
+              if (tocElement) {
+                $(tocElement).text(title);
+              }
+            }
+          });
+        }
+      });
+    }
+    else if (materialType == 'binary') {
+      // binary
+      var title = node.find('.workspace-material-binary-editor-title').val();
+      var nextSibling = node.nextAll('.folder').first();
+      var nextSiblingId = nextSibling.length > 0 ? nextSibling.data('workspace-material-id') : null;
+      var workspaceId = $('.workspaceEntityId').val();
+      var hidden = node.hasClass('item-hidden');
+      node.removeClass("page-edit-mode");
+
+      mApi().workspace.workspaces.materials.read(workspaceId, node.data('workspace-material-id')).callback(function (err, binary) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        }
+        else {
+          binary.title = title;
+          mApi().workspace.workspaces.materials.update(workspaceId, node.data('workspace-material-id'), binary).callback(function (err, html) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            }
+            else {
+              var textfield = node.find('.workspace-material-binary-editor-title');
+              textfield.off();
+              node.data('material-title', title);
+              node.empty();
+              $(document).muikkuMaterialLoader('loadMaterial', node);
               // TOC
               var tocElement = $("a[href*='#page-" + $(node).data('workspace-material-id') + "']");
               if (tocElement) {
@@ -146,16 +208,11 @@
         var worker = new Worker("/scripts/gui/workspace-material-loader.js");
         worker.onmessage = $.proxy(function(response) {
           var material = $.parseJSON(response.data.html);
-          $(node).data('material-title', material.title);
           $(node).data('material-content', material.html);
           $(node).data('material-current-revision', material.currentRevision);
           $(node).data('material-published-revision', material.publishedRevision);
           node.empty();
           $(document).muikkuMaterialLoader('loadMaterial', node);
-          var tocElement = $("a[href*='#page-" + $(node).data('workspace-material-id') + "']");
-          if (tocElement) {
-            $(tocElement).text(material.title);
-          }
         }, this);
         worker.postMessage({
           materialId: $(node).data('material-id'),
@@ -912,14 +969,11 @@
     });
     
     $('.workspaces-materials-management-insert-file').each(function(index, element) {
-      var nextMaterial = $(element).next('.workspace-materials-view-page');
-      var parentId = $(nextMaterial).data('parent-id');
-      if (!parentId) {
-        parentId = $('.workspaceRootFolderId').val();
-      }
-      var nextSiblingId = $(nextMaterial).data('workspace-material-id');
-      enableFileUploader(element, parentId, nextSiblingId);
+      enableFileUploader(element);
     });
+
+    $('.muikku-connect-field').muikkuConnectField('refresh');
+    
     $(window).data('initializing', false);
   });
   
@@ -1322,7 +1376,8 @@
           if (workspaceFolderErr) {
             $('.notification-queue').notificationQueue('notification', 'error', workspaceFolderErr);
             return;
-          } else {
+          }
+          else {
             newPage.removeClass('workspace-materials-management-new').addClass("folder");
             newPage.attr({
               'id': 'page-' + workspaceFolderResult.id,
@@ -1442,7 +1497,7 @@
     }, this));
   }
   
-  function publishPage(workspaceMaterialId, materialId, publishedRevision, currentRevision, removeAnswers, errorCallback) {
+  function publishPage(workspaceMaterialId, materialId, publishedRevision, currentRevision, title, removeAnswers, errorCallback) {
     var loadNotification = $('.notification-queue').notificationQueue('notification', 'loading', getLocaleText("plugin.workspace.materialsManagement.publishingMessage"));
     mApi().materials.html.publish.create(materialId, {
       fromRevision: publishedRevision,
@@ -1454,9 +1509,28 @@
         errorCallback(err, jqXHR);
       }
       else {
+        // Revision update
         setPagePublishedRevision(workspaceMaterialId, currentRevision);
-        closeEditor($('#page-' + workspaceMaterialId), true);
-        $('.notification-queue').notificationQueue('notification', 'info', getLocaleText("plugin.workspace.materialsManagement.publishedMessage"));
+        // Workspace material title update
+        var workspaceId = $('.workspaceEntityId').val();
+        mApi().workspace.workspaces.materials.read(workspaceId, workspaceMaterialId).callback($.proxy(function(err, workspaceMaterial) {
+          workspaceMaterial.title = title;
+          mApi().workspace.workspaces.materials.update(workspaceId, workspaceMaterialId, workspaceMaterial).callback($.proxy(function (err, html) {
+            if (err) {
+              errorCallback(err, jqXHR);
+            }
+            else {
+              var page = $('#page-' + workspaceMaterialId);
+              $(page).data('material-title', title);
+              var tocElement = $("a[href*='#page-" + $(page).data('workspace-material-id') + "']");
+              if (tocElement) {
+                $(tocElement).text(title);
+              }
+              closeEditor(page, true);
+              $('.notification-queue').notificationQueue('notification', 'info', getLocaleText("plugin.workspace.materialsManagement.publishedMessage"));
+            }
+          }), this);
+        }), this);
       }
     }, this));   
   }
@@ -1465,17 +1539,18 @@
     var page = $(this).closest('.workspace-materials-view-page');
     var workspaceMaterialId = $(page).data('workspace-material-id');
     var materialId = $(page).data('material-id');
+    var title = $(page).find('.workspace-material-html-editor-title').val();
     var currentRevision = getPageCurrentRevision(workspaceMaterialId);
     var publishedRevision = getPagePublishedRevision(workspaceMaterialId);
     
     if (currentRevision !== publishedRevision) {
       confirmPagePublication($.proxy(function () {
-        publishPage(workspaceMaterialId, materialId, publishedRevision, currentRevision, false, function (err, jqXHR) {
+        publishPage(workspaceMaterialId, materialId, publishedRevision, currentRevision, title, false, function (err, jqXHR) {
           if (jqXHR.status == 409) {
             var response = $.parseJSON(jqXHR.responseText);
             if (response && response.reason == 'CONTAINS_ANSWERS') {
               confirmAnswerRemovalPublish(function () {
-                publishPage(workspaceMaterialId, materialId, publishedRevision, currentRevision, true, function (err, jqXHR) {
+                publishPage(workspaceMaterialId, materialId, publishedRevision, currentRevision, title, true, function (err, jqXHR) {
                   $('.notification-queue').notificationQueue('notification', 'error', err);
                 });
               });

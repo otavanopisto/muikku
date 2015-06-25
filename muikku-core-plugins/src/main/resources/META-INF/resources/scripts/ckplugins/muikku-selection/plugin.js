@@ -150,23 +150,10 @@
           deleteTooltip.setText(editor.lang['muikku-selection'].propertiesDialogDeleteOptionLink);
           deleteLink.append(deleteTooltip);
           optionContainer.append(deleteLink);
-          if (this.getOptionCount() == 1) {
-            $(deleteLink.$).hide();
-          }
           // Sorting
           $(optionsContainer.$).sortable({
             handle: '.sort-handle',
-            axis: 'y',
-            stop: function(event, ui) {
-              $(optionsContainer.$).children('.selection-option-container').each(function(index, element) {
-                if (index == 0) {
-                  $(element).find('.icon-delete').hide();
-                }
-                else {
-                  $(element).find('.icon-delete').show();
-                }
-              });
-            }
+            axis: 'y'
           });
           return optionContainer;
         }
@@ -271,9 +258,6 @@
                     optionContainer.findOne('input[name="optionText"]').setValue(json.options[i].text);
                     optionContainer.findOne('input[name="optionCorrect"]').$.checked = json.options[i].correct == true;
                   }
-                }
-                else { // always one option by default
-                  var optionContainer = this.addOption();
                 }
               }
             }

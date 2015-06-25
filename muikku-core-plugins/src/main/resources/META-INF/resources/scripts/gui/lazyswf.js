@@ -6,6 +6,7 @@
     },
     
     _create : function() {
+      $(this.element).removeClass('lazySwf');
       $(this.element).addClass('lazy-swf');
       $(this.element).waypoint($.proxy(function(direction) {
         var url = $(this.element).attr('data-url');
@@ -51,10 +52,6 @@
     _destroy: function () {
       
     }
-  });$(document).ready(function() {
-    $('div.lazySwf').lazySwf({
-      
-    });
   });
   
 }).call(this);

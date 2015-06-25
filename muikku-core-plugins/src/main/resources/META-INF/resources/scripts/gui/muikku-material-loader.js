@@ -91,6 +91,7 @@
       var workspaceMaterialId = $(page).data('workspace-material-id');
       var materialId = $(page).data('material-id');
       var materialType = $(page).data('material-type');
+      var materialTitle = $(page).data('material-title');
       switch (materialType) {
         case 'html':
           this._loadHtmlMaterial($(page), fieldAnswers);
@@ -128,11 +129,15 @@
                 workspaceMaterialId: workspaceMaterialId,
                 materialId: materialId,
                 id: materialId,
+                title: materialTitle,
                 type: materialType,
                 binaryType: binaryType,
-                data: result 
+                data: result
               }, $.proxy(function (text) {
                 $(this).html(text);
+                // PDF and SWF lazy loading 
+                $(this).find('.lazyPdf').lazyPdf();
+                $(this).find('.lazySwf').lazySwf();
                 $.waypoints('refresh');
               }, page));
             }, this));
@@ -702,7 +707,7 @@
       var embedId = createEmbedId(data.parentIds);
       var materialId = data.materialId;
       var valueKey = [materialId, embedId, meta.name].join('.');
-      var value = data.fieldAnswers[valueKey];
+      var value = data.fieldAnswers ? data.fieldAnswers[valueKey] : '';
       
       $(document).trigger('taskFieldDiscovered', {
         pageElement: data.pageElement,
@@ -751,10 +756,11 @@
           readonly: data.readOnlyFields||false
         });
       });
-      $('.muikku-connect-field').muikkuConnectField('refresh');
-      $(data.pageElement).find('img').lazyload();
-      $(data.pageElement).find('.js-lazyyt').lazyYT(); 
-    }); 
+    });
+    
+    // Lazy loading
+    $(data.pageElement).find('img').lazyload();
+    $(data.pageElement).find('.js-lazyyt').lazyYT();
     
     // File field support
     $(data.pageElement).find('.muikku-file-field').each(function (index, field) {

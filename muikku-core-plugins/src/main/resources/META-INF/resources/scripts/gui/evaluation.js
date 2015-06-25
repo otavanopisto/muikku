@@ -88,8 +88,9 @@
       
       this._pagesLoaded = {};
 
-      this._loadPage(0);
-      this._loadPage(1);
+      this._loadPage(0, $.proxy(function() {
+        this._loadPage(1);
+      }, this));
     },
     
     _loadPage: function (pageId, callback) {
@@ -189,12 +190,14 @@
         },
         open: function() {
           
+          var datePickerLocale = getLocale() == 'en' ? '' : getLocale();
           $(this).find('input[name="evaluationDate"]')
             .css({'z-index': 9999, 'position': 'relative'})
             .attr('type', 'text')
             .datepicker({
               firstDay: 1
             });
+          $(this).find('input[name="evaluationDate"]').datepicker('option', $.datepicker.regional[datePickerLocale]);
           
           if(!alreadyEvaluated){
             $(this).find('input[name="evaluationDate"]').datepicker('setDate', new Date()); 
@@ -291,8 +294,18 @@
                 if (err) {
                   $('.notification-queue').notificationQueue('notification', 'error', err);
                 } else { 
+                  var evaluationData = {
+                      'assessmentIdentifier': result.identifier,
+                      'gradeString': gradeString,
+                      'verbalAssessment':verbalAssessment,
+                      'assessingUserEntityId':assessorEntityId,
+                      'date':evaluationDate
+                  };
+                  studentElement.removeClass('workspace-assessment-requested workspace-assessment-critical');
+                  studentElement.addClass('workspace-evaluated');
+                  studentElement.attr('data-workspace-evaluated', 'true');
+                  studentElement.attr('data-workspace-evaluation-data', JSON.stringify(evaluationData));
                   $(this).dialog("destroy").remove();
-                  console.log(result);
                 }
               }, this));
             }
