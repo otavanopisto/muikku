@@ -492,11 +492,19 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
   @Override
   public List<GroupUser> listGroupUsersByGroup(String groupIdentifier) throws SchoolDataBridgeRequestException {
-    // TODO: Studyprogramme groups
-    Long userGroupId = identifierMapper.getPyramusStudentGroupId(groupIdentifier);
-    if (userGroupId != null) {
-      return entityFactory.createEntities(pyramusClient.get(String.format("/students/studentGroups/%d/students", userGroupId), StudentGroupStudent[].class));
+    switch (identifierMapper.getStudentGroupType(groupIdentifier)) {
+      case STUDENTGROUP:
+        Long userGroupId = identifierMapper.getPyramusStudentGroupId(groupIdentifier);
+        if (userGroupId != null) {
+          return entityFactory.createEntities(pyramusClient.get(String.format("/students/studentGroups/%d/students", userGroupId), StudentGroupStudent[].class));
+        }
+      break;
+      
+      // TODO: Studyprogramme groups, Pyramus needs endpoint to list students by studyprogramme - too costly to implement it otherwise
+      case STUDYPROGRAMME:
+        throw new SchoolDataBridgeRequestException("PyramusUserSchoolDataBridge.listGroupUsersByGroup - not implemented");
     }
+
     throw new SchoolDataBridgeRequestException("Malformed group identifier");
   }
   

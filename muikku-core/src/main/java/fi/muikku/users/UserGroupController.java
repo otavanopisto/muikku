@@ -4,6 +4,7 @@ import javax.inject.Inject;
 
 import fi.muikku.dao.base.SchoolDataSourceDAO;
 import fi.muikku.model.base.SchoolDataSource;
+import fi.muikku.model.users.UserGroupEntity;
 import fi.muikku.schooldata.UserSchoolDataController;
 import fi.muikku.schooldata.entity.UserGroup;
 
@@ -26,6 +27,10 @@ public class UserGroupController {
   
   public UserGroup findUserGroup(SchoolDataSource schoolDataSource, String identifier) {
     return userSchoolDataController.findUserGroup(schoolDataSource, identifier);
+  }
+
+  public UserGroup findUserGroup(UserGroupEntity userGroupEntity) {
+    return findUserGroup(userGroupEntity.getSchoolDataSource(), userGroupEntity.getIdentifier());
   }
   
 }

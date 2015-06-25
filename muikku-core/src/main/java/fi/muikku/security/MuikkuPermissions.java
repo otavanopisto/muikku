@@ -43,16 +43,16 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
   /* WORKSPACE */
   
   @Scope (PermissionScope.WORKSPACE)
-  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDENT, EnvironmentRoleArchetype.TEACHER })
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.STUDENT, EnvironmentRoleArchetype.TEACHER })
   public static final String JOIN_WORKSPACE = "JOIN_WORKSPACE";
 
   @Scope (PermissionScope.WORKSPACE)
-  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.MANAGER })
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER })
   @DefaultWorkspacePermissionRoles({ WorkspaceRoleArchetype.TEACHER })
   public static final String WORKSPACE_MANAGEWORKSPACESETTINGS = "WORKSPACE_MANAGEWORKSPACESETTINGS";
   
   @Scope (PermissionScope.WORKSPACE)
-  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.MANAGER })
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER })
   @DefaultWorkspacePermissionRoles({ WorkspaceRoleArchetype.TEACHER })
   public static final String REPRESENT_WORKSPACEUSER = "REPRESENT_WORKSPACEUSER";
   
@@ -90,6 +90,9 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.ADMINISTRATOR })
   @DefaultWorkspacePermissionRoles({ WorkspaceRoleArchetype.TEACHER })
   public static final String MANAGE_WORKSPACE_MATERIALS = "MANAGE_WORKSPACE_MATERIALS";
+  
+  @Scope (PermissionScope.WORKSPACE)
+  public static final String WORKSPACE_SIGNUP = "WORKSPACE_SIGNUP";
   
   /* RESOURCE */
   

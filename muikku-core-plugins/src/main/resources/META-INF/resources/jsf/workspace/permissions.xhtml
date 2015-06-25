@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition 
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+  template="/jsf/workspace/templates/workspace-permission-management-view.xhtml">
+
+  
+  <ui:define name="workspaces.permissions.management.toc">
+  </ui:define>
+  
+  <ui:define name="workspace.permissions.management.content">
+    <h:outputScript name="scripts/gui/workspace-permissions.js" target="head"/>
+
+    <div class="widget userGroupPermissionsWidget">
+      <input type="hidden" name="workspaceId" value="#{workspacePermissionsManagementBackingBean.workspaceEntityId}"/>
+
+      <p>Työtilan käyttäjäryhmien oikeudet</p>
+
+      <table border="1" id="environmentUserRolePermissionsTable">
+        <tr>
+          <td></td>
+          
+          <c:forEach var="permission" items="#{workspacePermissionsManagementBackingBean.permissions}">
+            <td>#{permission.name}</td>
+          </c:forEach>
+        </tr>
+        
+        <c:forEach var="userGroup" items="#{workspacePermissionsManagementBackingBean.userGroups}">
+          <tr>
+            <td>#{userGroup.name}</td>
+          
+            <c:forEach var="permission" items="#{workspacePermissionsManagementBackingBean.permissions}">
+              <td>
+                <input type="hidden" name="permissionId" value="#{permission.id}"/>
+                <input type="hidden" name="userGroupId" value="#{userGroup.id}"/>
+                
+                <c:choose>
+                  <c:when test="#{workspacePermissionsManagementBackingBean.hasUserGroupPermission(userGroup, permission)}">
+                    <input type="checkbox" class="userGroupPermissionsCheckbox" name="userGroupPermission.#{userGroup.id}.#{permission.id}" checked="checked"/>
+                  </c:when>
+                  <c:otherwise>
+                    <input type="checkbox" class="userGroupPermissionsCheckbox" name="userGroupPermission.#{userGroup.id}.#{permission.id}"/>
+                  </c:otherwise>
+                </c:choose>
+              </td>            
+            </c:forEach>
+          </tr>
+        </c:forEach>
+      </table>
+    </div>
+  </ui:define>
+
+</ui:composition>
