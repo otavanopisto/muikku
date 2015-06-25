@@ -280,12 +280,11 @@ public class PyramusUpdater {
         if (userGroupUserEntity == null) {
           String userEntityIdentifier = identifierMapper.getStudentIdentifier(student.getId());
           fireUserGroupUserDiscovered(studyProgrammeStudentIdentifier, studyProgrammeIdentifier, userEntityIdentifier);
-        }
+        } else
+          fireUserGroupUserUpdated(studyProgrammeStudentIdentifier);
       } else {
         if (userGroupUserEntity != null)
           fireUserGroupUserRemoved(studyProgrammeStudentIdentifier, studyProgrammeIdentifier);
-        else
-          fireUserGroupUserUpdated(studyProgrammeStudentIdentifier);
       }
     }
   }
