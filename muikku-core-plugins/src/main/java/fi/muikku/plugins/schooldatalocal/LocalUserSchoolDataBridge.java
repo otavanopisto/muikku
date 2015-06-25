@@ -495,6 +495,18 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
     return null;
   }
 
+  public void updateUserCredentials(String userIdentifier, String oldPassword, String newUsername, String newPassword)
+      throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+    // TODO Auto-generated method stub
+  }
+
+  @Override
+  public String requestPasswordResetByEmail(String email) throws SchoolDataBridgeRequestException,
+      UnexpectedSchoolDataBridgeException {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
   @Override
   public GroupUser findGroupUser(String groupIdentifier, String identifier) throws SchoolDataBridgeRequestException,
       UnexpectedSchoolDataBridgeException {
@@ -506,6 +518,19 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   public List<GroupUser> listGroupUsersByGroup(String groupIdentifier) throws SchoolDataBridgeRequestException,
       UnexpectedSchoolDataBridgeException {
     // TODO implement
+    return null;
+  }
+  
+  public boolean confirmResetPassword(String resetCode, String newPassword) throws SchoolDataBridgeRequestException,
+      UnexpectedSchoolDataBridgeException {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public String findUsername(String identifier) throws SchoolDataBridgeRequestException,
+      UnexpectedSchoolDataBridgeException {
+    // TODO Auto-generated method stub
     return null;
   }
 

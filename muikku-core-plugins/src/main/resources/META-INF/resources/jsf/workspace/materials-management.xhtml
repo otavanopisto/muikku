@@ -70,9 +70,6 @@
       <span class="workspace-materials-management-line-separator"></span><a
         class="workspaces-materials-management-add icon-add" href="javascript:void(null)"><span>#{i18n.text['plugin.workspace.materialsManagement.add']}</span></a>
     </div>
-    <div class="workspaces-materials-management-insert-file">
-      <input type="file" />
-    </div>
     <ui:repeat var="node" value="#{workspaceMaterialsManagementBackingBean.contentNodes}">
       <ui:fragment rendered="#{node.type eq 'folder'}">
         <section id="page-#{node.workspaceMaterialId}"

@@ -3,6 +3,14 @@
 @import "_custom-ckeditor-styles.scss";
 @import "_connect-field.scss";
 
+.lazy-pdf {
+  height: 882px;
+}
+
+.lazy-swf {
+  height: 500px;
+}
+
 body.workspace-materials-reading {
   background:#8ba4b5;
   padding:0.01em; /* Prevent margin collapsing  */

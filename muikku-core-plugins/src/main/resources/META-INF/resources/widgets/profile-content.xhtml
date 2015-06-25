@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition 
+  xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:ui="http://java.sun.com/jsf/facelets" 
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:m="http://www.ofw.fi/xml/2013/muikku/components-taglib.xsd"
+  xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+  <div class="profile-content">
+    <div class="profile-picture-wrapper">
+      <img src="#{resource['theme-muikku/gfx/default-user-picture.jpg']}"/>
+    </div>
+    <div class="profile-data-wrapper">
+      <h1 class="profile-user-realname">#{profileBackingBean.loggedUser.displayName}</h1>
+      <ui:repeat var="emailAddress" value="#{profileBackingBean.listUserEmails()}">
+        <div class="profile-user-email">#{emailAddress}</div>
+      </ui:repeat>
+      <div class="profile-change-password-container">
+        <div class="profile-change-password">#{i18n.text['plugin.profile.changePassword.buttonLabel']}</div>
+      </div>
+    </div>
+    
+  </div>
+
+</ui:composition>

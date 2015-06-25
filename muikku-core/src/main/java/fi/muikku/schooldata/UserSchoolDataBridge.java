@@ -241,7 +241,6 @@ public interface UserSchoolDataBridge {
 	
 	public Role findUserEnvironmentRole(String userIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 
-	
 	/* UserGroups */
 	
 	public UserGroup findUserGroup(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;;
@@ -253,5 +252,13 @@ public interface UserSchoolDataBridge {
 	public GroupUser findGroupUser(String groupIdentifier, String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;;
 	
 	public List<GroupUser> listGroupUsersByGroup(String groupIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;;
+
+  public void updateUserCredentials(String userIdentifier, String oldPassword, String newUsername, String newPassword) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+
+  public String requestPasswordResetByEmail(String email) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+
+  public boolean confirmResetPassword(String resetCode, String newPassword) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+
+  public String findUsername(String userIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 	
 }
