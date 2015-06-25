@@ -320,6 +320,12 @@ public class PyramusUpdater {
     }
   }
 
+  public int updateStudyProgrammeGroupUsers(Long studyProgrammeId) {
+    // TODO: There's no endpoint to do this efficiently atm
+    
+    return 0;
+  }
+  
   public int updateStudentGroupUsers(Long studentGroupId) {
     String userGroupIdentifier = identifierMapper.getStudentGroupIdentifier(studentGroupId);
     UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByDataSourceAndIdentifier(SchoolDataPyramusPluginDescriptor.SCHOOL_DATA_SOURCE, userGroupIdentifier);    

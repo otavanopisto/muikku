@@ -51,8 +51,16 @@ public class PyramusSchoolDataUserGroupUsersUpdateScheduler extends PyramusDataS
         updateOffset(0);
       } else {
         for (UserGroupEntity userGroupEntity : userGroupEntities) {
-          Long userGroupId = identityMapper.getPyramusStudentGroupId(userGroupEntity.getIdentifier());
-          count += pyramusUpdater.updateStudentGroupUsers(userGroupId);
+          switch (identityMapper.getStudentGroupType(userGroupEntity.getIdentifier())) {
+            case STUDENTGROUP:
+              Long userGroupId = identityMapper.getPyramusStudentGroupId(userGroupEntity.getIdentifier());
+              count += pyramusUpdater.updateStudentGroupUsers(userGroupId);
+            break;
+            case STUDYPROGRAMME:
+              Long studyProgrammeId = identityMapper.getPyramusStudyProgrammeId(userGroupEntity.getIdentifier());
+              count += pyramusUpdater.updateStudyProgrammeGroupUsers(studyProgrammeId);
+            break;
+          }
         }
 
         updateOffset(offset + userGroupEntities.size());

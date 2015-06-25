@@ -216,7 +216,7 @@ public class PyramusIdentifierMapper {
     return null;
   }
   
-  enum StudentGroupType {
+  public enum StudentGroupType {
     STUDENTGROUP,
     STUDYPROGRAMME
   }
