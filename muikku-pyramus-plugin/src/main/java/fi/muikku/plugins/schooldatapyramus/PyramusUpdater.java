@@ -378,7 +378,7 @@ public class PyramusUpdater {
       
       return count;
     } else  {
-      logger.log(Level.WARNING, "UserGroup is null - update of users is skipped");
+      logger.log(Level.WARNING, String.format("UserGroup is null for id %d - update of users is skipped", studentGroupId));
     }
     
     return 0;
