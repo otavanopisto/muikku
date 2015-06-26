@@ -9,43 +9,46 @@
   template="/WEB-INF/templates/default.xhtml">
 
   <!-- Lets set the base body class per view -->
-  <ui:param name="bodyClass" value="workspace-materials-reading" />
+  <ui:param name="bodyClass" value="evaluation" />
   
   <ui:define name="viewScripts">
-    <!--  Custom fields -->
+    <!-- Sly -->
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/Sly/1.2.1/sly.min.js"></script>
+    
+     <!--  Materials -->
     <h:outputScript name="scripts/jquery.jsplumb/jquery.jsPlumb-1.7.2-min.js"/>
-    <h:outputScript name="scripts/gui/muikku-connect-field-component.js"/>
-
-    <!-- File upload -->
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/blueimp-file-upload/9.5.7/jquery.fileupload.min.js"/>
-    <h:outputScript name="scripts/gui/muikku-file-field-component.js" target="head"/>
-
-    <!--  View itself -->
+    <h:outputScript name="scripts/gui/muikku-file-field-component.js"/>
+    <h:outputScript name="scripts/gui/muikku-connect-field-component.js"/>
     <h:outputScript name="scripts/gui/muikku-material-loader.js"/> 
-    <h:outputScript name="scripts/gui/workspace-materials-reading.js"/>
-
-    <!-- Lazy loading -->               
-    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery_lazyload/1.9.5/jquery.lazyload.min.js"/>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.lazyload/1.9.5/jquery.lazyload.min.js"/>
     <h:outputScript name="scripts/lazyyt/lazyyt.js" />
     <h:outputScript name="scripts/gui/lazypdf.js" />
     <h:outputScript name="scripts/gui/lazyswf.js" />
+
+    <!-- Datepicker locale support -->   
+    <h:outputScript name="scripts/datepicker/datepicker-fi.js" />    
+    
+    <!--  View itself -->
+    <h:outputScript name="scripts/gui/evaluation.js" />
   </ui:define>
   
-  <ui:define name="viewCss">
+  <ui:define name="viewCss">  
+    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/evaluation.css" />  
     <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/muikku-file-field-component.css" />  
-    <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/workspaces-materials-reading.css" />  
     <h:outputStylesheet name="scripts/lazyyt/lazyyt.css" />  
   </ui:define>
-
+  
   <ui:define name="sitebody">
     
-    <ui:insert name="workspaces.materials.reading.toc"></ui:insert>
+    <ui:insert name="evaluation.queue"></ui:insert>
     
-    <main id="contentWorkspaceMaterialsReading"> <!-- class attribute removed as we are not using grid here -->
-      <ui:insert name="workspace.materials.reading.content">
-      </ui:insert>
+    <ui:insert name="evaluation.toolbar"></ui:insert>
+    
+    <main id="contentEvaluation"> <!-- class attribute removed as we are not using grid here -->
+      <ui:insert name="evaluation.content.studentAssignmentListing"></ui:insert>
     </main>
-    
+
   </ui:define>
 
 </ui:composition>

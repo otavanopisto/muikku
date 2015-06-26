@@ -759,7 +759,7 @@
     });
     
     // Lazy loading
-    $(data.pageElement).find('img').lazyload();
+    $(data.pageElement).find('img.lazy').lazyload();
     $(data.pageElement).find('.js-lazyyt').lazyYT();
     
     // File field support
