@@ -59,6 +59,11 @@ public class UserGroupEntityDAO extends CoreDAO<UserGroupEntity> {
     
     return userGroupEntity;
   }
+  
+  @Override
+  public void delete(UserGroupEntity e) {
+    super.delete(e);
+  } 
 
   public List<UserGroupEntity> listByDataSource(SchoolDataSource schoolDataSource, Integer firstResult, Integer maxResults) {
     EntityManager entityManager = getEntityManager();

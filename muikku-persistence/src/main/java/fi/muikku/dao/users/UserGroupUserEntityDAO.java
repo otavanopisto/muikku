@@ -5,14 +5,18 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 
 import fi.muikku.dao.CoreDAO;
 import fi.muikku.model.base.SchoolDataSource;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.users.UserGroupEntity;
+import fi.muikku.model.users.UserGroupEntity_;
 import fi.muikku.model.users.UserGroupUserEntity;
 import fi.muikku.model.users.UserGroupUserEntity_;
 import fi.muikku.model.users.UserSchoolDataIdentifier;
+import fi.muikku.model.users.UserSchoolDataIdentifier_;
 
 public class UserGroupUserEntityDAO extends CoreDAO<UserGroupUserEntity> {
 
@@ -45,10 +49,11 @@ public class UserGroupUserEntityDAO extends CoreDAO<UserGroupUserEntity> {
     Root<UserGroupUserEntity> root = criteria.from(UserGroupUserEntity.class);
     criteria.select(root);
     criteria.where(
-      criteriaBuilder.and(          
-        criteriaBuilder.equal(root.get(UserGroupUserEntity_.schoolDataSource), schoolDataSource),
-        criteriaBuilder.equal(root.get(UserGroupUserEntity_.identifier), identifier)
-      )
+        criteriaBuilder.and(
+            criteriaBuilder.equal(root.get(UserGroupUserEntity_.archived), Boolean.FALSE),
+            criteriaBuilder.equal(root.get(UserGroupUserEntity_.schoolDataSource), schoolDataSource),
+            criteriaBuilder.equal(root.get(UserGroupUserEntity_.identifier), identifier)
+        )
     );
    
     return getSingleResult(entityManager.createQuery(criteria));
@@ -76,5 +81,30 @@ public class UserGroupUserEntityDAO extends CoreDAO<UserGroupUserEntity> {
     return userGroupUserEntity;
   }
 
-  
+  public List<UserGroupUserEntity> listByUserEntity(UserEntity userEntity) {
+    EntityManager entityManager = getEntityManager();
+    
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<UserGroupUserEntity> criteria = criteriaBuilder.createQuery(UserGroupUserEntity.class);
+    Root<UserGroupUserEntity> root = criteria.from(UserGroupUserEntity.class);
+    Join<UserGroupUserEntity, UserSchoolDataIdentifier> join = root.join(UserGroupUserEntity_.userSchoolDataIdentifier);
+    Join<UserGroupUserEntity, UserGroupEntity> join2 = root.join(UserGroupUserEntity_.userGroupEntity);
+    
+    criteria.select(root);
+
+    criteria.where(
+        criteriaBuilder.and(
+            criteriaBuilder.equal(join.get(UserSchoolDataIdentifier_.userEntity), userEntity),
+            criteriaBuilder.equal(join2.get(UserGroupEntity_.archived), Boolean.FALSE),
+            criteriaBuilder.equal(root.get(UserGroupUserEntity_.archived), Boolean.FALSE)
+        )
+    );
+   
+    return entityManager.createQuery(criteria).getResultList();
+  }
+
+  @Override
+  public void delete(UserGroupUserEntity e) {
+    super.delete(e);
+  }
 }

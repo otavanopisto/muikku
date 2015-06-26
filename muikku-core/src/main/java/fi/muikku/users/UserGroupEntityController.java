@@ -58,8 +58,9 @@ public class UserGroupEntityController {
     return userGroupEntityDAO.findByDataSourceAndIdentifier(schoolDataSource, identifier);
   }
 
-  public void archiveUserGroupEntity(UserGroupEntity userGroupEntity) {
-    userGroupEntityDAO.archive(userGroupEntity);
+  public void deleteUserGroupEntity(UserGroupEntity userGroupEntity) {
+    // TODO: archive instead of delete? Though, identifier being unique is tough on implementation
+    userGroupEntityDAO.delete(userGroupEntity);
   }
 
   public UserGroupUserEntity findUserGroupUserEntityByDataSourceAndIdentifier(String dataSource, String identifier) {
@@ -72,8 +73,9 @@ public class UserGroupEntityController {
     return userGroupUserEntityDAO.findByDataSourceAndIdentifier(schoolDataSource, identifier);
   }
 
-  public void archiveUserGroupUserEntity(UserGroupUserEntity userGroupUserEntity) {
-    userGroupUserEntityDAO.archive(userGroupUserEntity);
+  public void deleteUserGroupUserEntity(UserGroupUserEntity userGroupUserEntity) {
+    // TODO: archive instead of delete? Though, identifier being unique is tough on implementation
+    userGroupUserEntityDAO.delete(userGroupUserEntity);
   }
 
   public List<UserGroupEntity> listUserGroupEntitiesByDataSource(String dataSource, int firstResult, int maxResults) {
@@ -100,6 +102,10 @@ public class UserGroupEntityController {
 
   public UserGroupEntity findUserGroupEntityById(Long groupId) {
     return userGroupEntityDAO.findById(groupId);
+  }
+
+  public List<UserGroupUserEntity> listUserGroupUsersByUser(UserEntity userEntity) {
+    return userGroupUserEntityDAO.listByUserEntity(userEntity);
   }
 
 }

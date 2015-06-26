@@ -63,7 +63,7 @@ public class DefaultSchoolDataUserGroupListener {
   public void onSchoolDataUserGroupRemovedEvent(@Observes SchoolDataUserGroupRemovedEvent event) {
     UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
     if (userGroupEntity != null) {
-      userGroupEntityController.archiveUserGroupEntity(userGroupEntity);
+      userGroupEntityController.deleteUserGroupEntity(userGroupEntity);
     }
   }  
 
@@ -100,9 +100,12 @@ public class DefaultSchoolDataUserGroupListener {
   }  
 
   public void onSchoolDataUserGroupUserRemovedEvent(@Observes SchoolDataUserGroupUserRemovedEvent event) {
+    String discoverId = getUserGroupUserDiscoveryId(event.getDataSource(), event.getIdentifier());
+    discoveredUserGroupUsers.remove(discoverId);
+    
     UserGroupUserEntity userGroupUserEntity = userGroupEntityController.findUserGroupUserEntityByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
     if (userGroupUserEntity != null) {
-      userGroupEntityController.archiveUserGroupUserEntity(userGroupUserEntity);
+      userGroupEntityController.deleteUserGroupUserEntity(userGroupUserEntity);
     }
   }  
 
