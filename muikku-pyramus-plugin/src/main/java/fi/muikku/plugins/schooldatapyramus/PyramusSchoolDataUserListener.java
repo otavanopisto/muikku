@@ -57,10 +57,14 @@ public class PyramusSchoolDataUserListener {
           Long pyramusStudyProgrammeId = student.getStudyProgrammeId();
           
           if (pyramusStudyProgrammeId != null) {
-            String userGroupUserIdentifier = identifierMapper.getStudyProgrammeStudentIdentifier(pyramusStudentId);
-            String userGroupIdentifier = identifierMapper.getStudyProgrammeIdentifier(pyramusStudyProgrammeId);
-            String userEntityIdentifier = event.getIdentifier();
-            fireUserGroupUserDiscovered(userGroupUserIdentifier, userGroupIdentifier, userEntityIdentifier);
+            boolean isActive = (!student.getArchived()) && (student.getStudyEndDate() == null);
+
+            if (isActive) {
+              String userGroupUserIdentifier = identifierMapper.getStudyProgrammeStudentIdentifier(pyramusStudentId);
+              String userGroupIdentifier = identifierMapper.getStudyProgrammeIdentifier(pyramusStudyProgrammeId);
+              String userEntityIdentifier = event.getIdentifier();
+              fireUserGroupUserDiscovered(userGroupUserIdentifier, userGroupIdentifier, userEntityIdentifier);
+            }
           }
         }
       }
@@ -80,6 +84,7 @@ public class PyramusSchoolDataUserListener {
             String userGroupIdentifier = identifierMapper.getStudyProgrammeIdentifier(pyramusStudyProgrammeId);
 
             boolean found = false;
+            boolean isActive = (!student.getArchived()) && (student.getStudyEndDate() == null);
             
             UserEntity userEntity = userEntityController.findUserEntityByDataSourceAndIdentifier(event.getDataSource(), event.getIdentifier());
             // Remove StudyProgrammeGroups
@@ -88,7 +93,7 @@ public class PyramusSchoolDataUserListener {
               UserGroupEntity userGroup = userGroupUser.getUserGroupEntity();
               StudentGroupType studentGroupType = identifierMapper.getStudentGroupType(userGroup.getIdentifier());
               if (studentGroupType == StudentGroupType.STUDYPROGRAMME) {
-                if (!userGroup.getIdentifier().equals(userGroupIdentifier))
+                if ((!isActive) || (!userGroup.getIdentifier().equals(userGroupIdentifier)))
                   fireUserGroupUserRemoved(userGroupUser.getIdentifier(), userGroup.getIdentifier());
                 else
                   found = true;
@@ -96,9 +101,11 @@ public class PyramusSchoolDataUserListener {
             }
             
             if (!found) {
-              String userGroupUserIdentifier = identifierMapper.getStudyProgrammeStudentIdentifier(pyramusStudentId);
-              String userEntityIdentifier = event.getIdentifier();
-              fireUserGroupUserDiscovered(userGroupUserIdentifier, userGroupIdentifier, userEntityIdentifier);
+              if (isActive) {
+                String userGroupUserIdentifier = identifierMapper.getStudyProgrammeStudentIdentifier(pyramusStudentId);
+                String userEntityIdentifier = event.getIdentifier();
+                fireUserGroupUserDiscovered(userGroupUserIdentifier, userGroupIdentifier, userEntityIdentifier);
+              }
             }
           }
         }
