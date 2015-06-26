@@ -761,11 +761,24 @@ public class WorkspaceMaterialController {
           parser.parse(inputSource);
           Document document = parser.getDocument();
 
+          // Lazy load support for images with unknown size or larger than 200px  
           NodeList imgList = document.getElementsByTagName("img");
           for (int i = 0, l = imgList.getLength(); i < l; i++) {
             Element img = (Element) imgList.item(i);
-            img.setAttribute("data-original", img.getAttribute("src"));
-            img.removeAttribute("src");
+            int w = -1;
+            int h = -1;
+            try {
+              w = Integer.parseInt(img.getAttribute("width"));
+              h = Integer.parseInt(img.getAttribute("height"));
+            }
+            catch (NumberFormatException nfe) {
+            }
+            if (w == -1 || h == -1 || w > 200 || h > 200) {
+              String imgClass = img.getAttribute("class");
+              img.setAttribute("class", imgClass == null ? "lazy" : imgClass + " lazy");
+              img.setAttribute("data-original", img.getAttribute("src"));
+              img.removeAttribute("src");
+            }
           }
 
           NodeList iframeList = document.getElementsByTagName("iframe");
