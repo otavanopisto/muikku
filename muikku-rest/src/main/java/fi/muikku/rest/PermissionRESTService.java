@@ -5,12 +5,15 @@ import javax.inject.Inject;
 import javax.validation.ConstraintViolationException;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import fi.muikku.controller.EnvironmentSettingsController;
+import fi.muikku.controller.PermissionController;
 import fi.muikku.controller.ResourceRightsController;
 import fi.muikku.dao.security.EnvironmentRolePermissionDAO;
 import fi.muikku.dao.security.PermissionDAO;
@@ -19,12 +22,16 @@ import fi.muikku.dao.security.WorkspaceRolePermissionDAO;
 import fi.muikku.dao.users.RoleEntityDAO;
 import fi.muikku.model.security.EnvironmentRolePermission;
 import fi.muikku.model.security.Permission;
+import fi.muikku.model.security.WorkspaceGroupPermission;
 import fi.muikku.model.security.WorkspaceRolePermission;
 import fi.muikku.model.users.RoleEntity;
+import fi.muikku.model.users.UserGroupEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
+import fi.muikku.rest.model.WorkspaceUserGroupPermission;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.session.SessionController;
+import fi.muikku.users.UserGroupEntityController;
 import fi.otavanopisto.security.Admin;
 import fi.otavanopisto.security.AuthorizationException;
 import fi.otavanopisto.security.rest.AuthorizedResource;
@@ -58,6 +65,12 @@ public class PermissionRESTService extends AbstractRESTService {
   
   @Inject
   private EnvironmentSettingsController environmentSettingsController;
+  
+  @Inject
+  private UserGroupEntityController userGroupEntityController;
+  
+  @Inject
+  private PermissionController permissionController;
   
   @Inject
   private SessionController sessionController;
@@ -249,5 +262,40 @@ public class PermissionRESTService extends AbstractRESTService {
 //      return getConstraintViolations(violationException);
 //    }
 //  }
+
+  @PUT
+  @Path ("/workspaceUserGroupPermissions")
+//  @Admin
+  @RESTPermitUnimplemented
+  public Response setWorkspaceUserGroupPermission(WorkspaceUserGroupPermission payload) {
+    UserGroupEntity userGroupEntity = userGroupEntityController.findUserGroupEntityById(payload.getUserGroupId());
+    Permission permission = permissionDAO.findById(payload.getPermissionId());
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(payload.getWorkspaceId());
+
+    if (!sessionController.hasPermission(MuikkuPermissions.WORKSPACE_MANAGEWORKSPACESETTINGS, workspaceEntity)) {
+      return Response.status(Status.FORBIDDEN).build();
+    }
+
+    if ((userGroupEntity == null) || (permission == null)) {
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+    
+    try {
+      if (payload.getPermitted())
+        permissionController.addWorkspaceGroupPermission(workspaceEntity, userGroupEntity, permission);
+      else {
+        WorkspaceGroupPermission workspaceGroupPermission = permissionController.findWorkspaceGroupPermission(workspaceEntity, userGroupEntity, permission);
+        
+        if (workspaceGroupPermission != null)
+          permissionController.removeWorkspaceGroupPermission(workspaceGroupPermission);
+        else
+          return Response.status(Response.Status.NOT_FOUND).build();
+      }
+
+      return Response.noContent().build();
+    } catch (ConstraintViolationException violationException) {
+      return getConstraintViolations(violationException);
+    }
+  }
   
 }

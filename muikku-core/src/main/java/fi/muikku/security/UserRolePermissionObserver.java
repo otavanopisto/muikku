@@ -13,7 +13,7 @@ import fi.muikku.dao.security.PermissionDAO;
 import fi.muikku.dao.security.UserGroupRolePermissionDAO;
 import fi.muikku.dao.security.WorkspaceRolePermissionDAO;
 import fi.muikku.dao.users.EnvironmentRoleEntityDAO;
-import fi.muikku.dao.users.UserGroupDAO;
+import fi.muikku.dao.users.UserGroupEntityDAO;
 import fi.muikku.dao.workspace.WorkspaceEntityDAO;
 import fi.muikku.dao.workspace.WorkspaceRoleEntityDAO;
 import fi.muikku.dao.workspace.WorkspaceSettingsTemplateDAO;
@@ -21,7 +21,6 @@ import fi.muikku.dao.workspace.WorkspaceSettingsTemplateRolePermissionDAO;
 import fi.muikku.model.security.Permission;
 import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.model.users.RoleEntity;
-import fi.muikku.model.users.UserGroup;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.model.workspace.WorkspaceSettingsTemplate;
@@ -55,12 +54,16 @@ public class UserRolePermissionObserver {
   
   @Inject
   private WorkspaceRolePermissionDAO workspaceRolePermissionDAO;
+  
+  /*
 
   @Inject
-  private UserGroupDAO userGroupDAO;
+  private UserGroupEntityDAO userGroupDAO;
   
   @Inject
   private UserGroupRolePermissionDAO userGroupRolePermissionDAO;
+  
+  */
 
   @Inject
   @Any
@@ -190,12 +193,14 @@ public class UserRolePermissionObserver {
       break;
       
       case PermissionScope.USERGROUP:
+        /*
         List<UserGroup> userGroups = userGroupDAO.listAll();
         
         // TODO Workspace creation & templates - is this necessary and bulletproof?
         for (UserGroup userGroup: userGroups) {
           userGroupRolePermissionDAO.create(userGroup, role, permission);
         }
+        */
       break;
     }
   }

@@ -12,11 +12,12 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.NotImplementedException;
+
 import fi.muikku.controller.messaging.MessagingWidget;
 import fi.muikku.i18n.LocaleController;
 import fi.muikku.model.users.UserEntity;
-import fi.muikku.model.users.UserGroup;
-import fi.muikku.model.users.UserGroupUser;
+import fi.muikku.model.users.UserGroupEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.notifier.NotifierController;
 import fi.muikku.schooldata.entity.User;
@@ -84,6 +85,7 @@ public class GuidanceRequestController {
     List<UserEntity> recipients = new ArrayList<UserEntity>();
     
     PermissionResolver per = getPermissionResolver(GuidanceRequestPermissions.RECEIVE_USERGROUP_GUIDANCEREQUESTS);
+    /*
     
     List<UserGroup> studentsGroups = userGroupController.listUserGroupsByUser(student);
     
@@ -95,6 +97,7 @@ public class GuidanceRequestController {
           recipients.add(groupUser.getUser());
       }
     }
+    */
 
     if (!recipients.isEmpty()) {
       User user = userController.findUserByDataSourceAndIdentifier(sessionController.getLoggedUserIdentifier(), sessionController.getLoggedUserIdentifier());
@@ -138,7 +141,8 @@ public class GuidanceRequestController {
   }
 
   @Permit (GuidanceRequestPermissions.RECEIVE_USERGROUP_GUIDANCEREQUESTS)
-  public List<GuidanceRequest> listGuidanceRequestsByGroup(@PermitContext UserGroup group) {
+  public List<GuidanceRequest> listGuidanceRequestsByGroup(@PermitContext UserGroupEntity group) {
+    /*
     List<UserGroupUser> users = userGroupController.listUserGroupUsers(group);
     List<GuidanceRequest> list = new ArrayList<GuidanceRequest>();
     
@@ -147,10 +151,13 @@ public class GuidanceRequestController {
     }
 
     return list;
+    */
+    throw new NotImplementedException("User groups are not usable yet");
   }
 
   public List<GuidanceRequest> listGuidanceRequestsByManager(UserEntity manager) {
     PermissionResolver per = getPermissionResolver(GuidanceRequestPermissions.RECEIVE_USERGROUP_GUIDANCEREQUESTS);
+    /*
     
     List<UserGroup> managedGroups = userGroupController.listUserGroupsByUser(manager);
     List<GuidanceRequest> list = new ArrayList<GuidanceRequest>();
@@ -164,6 +171,8 @@ public class GuidanceRequestController {
     }
     
     return list;
+    */
+    throw new NotImplementedException("User groups are not usable yet");
   }
 
   public List<WorkspaceGuidanceRequest> listWorkspaceGuidanceRequestsByWorkspaceAndUser(WorkspaceEntity workspaceEntity,

@@ -28,6 +28,9 @@ import fi.pyramus.webhooks.data.WebhookCourseStudentData;
 import fi.pyramus.webhooks.data.WebhookPersonData;
 import fi.pyramus.webhooks.data.WebhookStaffMemberData;
 import fi.pyramus.webhooks.data.WebhookStudentData;
+import fi.pyramus.webhooks.data.WebhookStudentGroupData;
+import fi.pyramus.webhooks.data.WebhookStudentGroupStaffMemberData;
+import fi.pyramus.webhooks.data.WebhookStudentGroupStudentData;
 
 @WebServlet (urlPatterns = "/pyramus/webhook")
 @Transactional
@@ -149,6 +152,40 @@ public class PyramusWebhookServlet extends HttpServlet {
           
           pyramusUpdater.updatePerson(personData.getPersonId());
         break;
+        
+        case STUDENTGROUP_ARCHIVE:
+        case STUDENTGROUP_CREATE:
+        case STUDENTGROUP_UPDATE:
+          WebhookStudentGroupData groupData = unmarshalData(resp, payload, WebhookStudentGroupData.class);
+          if (groupData == null) {
+            return;  
+          }
+          
+          pyramusUpdater.updateStudentGroup(groupData.getStudentGroupId());
+        break;
+        
+        case STUDENTGROUP_STAFFMEMBER_CREATE:
+        case STUDENTGROUP_STAFFMEMBER_REMOVE:
+        case STUDENTGROUP_STAFFMEMBER_UPDATE:
+          WebhookStudentGroupStaffMemberData studentGroupStaffMemberData = unmarshalData(resp, payload, WebhookStudentGroupStaffMemberData.class);
+          if (studentGroupStaffMemberData == null) {
+            return;  
+          }
+          
+          pyramusUpdater.updateStudentGroupStaffMember(studentGroupStaffMemberData.getStudentGroupId(), studentGroupStaffMemberData.getStudentGroupUserId());
+        break;
+        
+        case STUDENTGROUP_STUDENT_CREATE:
+        case STUDENTGROUP_STUDENT_REMOVE:
+        case STUDENTGROUP_STUDENT_UPDATE:
+          WebhookStudentGroupStudentData studentGroupStudentData = unmarshalData(resp, payload, WebhookStudentGroupStudentData.class);
+          if (studentGroupStudentData == null) {
+            return;  
+          }
+          
+          pyramusUpdater.updateStudentGroupStudent(studentGroupStudentData.getStudentGroupId(), studentGroupStudentData.getStudentGroupUserId());
+        break;
+        
         default:
           logger.log(Level.WARNING, "Unknown webhook type " + payload.getType());
           resp.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED);
