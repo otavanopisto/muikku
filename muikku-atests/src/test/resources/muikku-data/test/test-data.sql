@@ -51,5 +51,3 @@ insert into PluginSetting (value, key_id) select 'http://0.0.0.0:8089/dnm', (sel
 --insert into PluginSettingKey(name, plugin) select '[_DEUS_NEX_MACHINA_IDS_]', 'deus-nex-machina' from PluginSettingKey where plugin = 'deus-nex-machina' and name = '[_DEUS_NEX_MACHINA_IDS_]' having count(*) = 0;
 --insert into PluginSetting (value, key_id) select null, (select id from PluginSettingKey where plugin = 'deus-nex-machina' and name = '[_DEUS_NEX_MACHINA_LOOKUP_]') from PluginSetting where key_id = (select id from PluginSettingKey where plugin = 'deus-nex-machina' and name = '[_DEUS_NEX_MACHINA_LOOKUP_]') having count(*) = 0;
 --insert into PluginSetting (value, key_id) select null, (select id from PluginSettingKey where plugin = 'deus-nex-machina' and name = '[_DEUS_NEX_MACHINA_IDS_]') from PluginSetting where key_id = (select id from PluginSettingKey where plugin = 'deus-nex-machina' and name = '[_DEUS_NEX_MACHINA_IDS_]') having count(*) = 0;
-
-

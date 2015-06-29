@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 
+import fi.pyramus.rest.model.ContactType;
 import fi.pyramus.rest.model.Course;
 import fi.pyramus.rest.model.CourseStaffMemberRole;
 import fi.pyramus.rest.model.CourseType;
@@ -51,7 +52,7 @@ public class PyramusMocks{
     emails.add("testuser@made.up");
     WhoAmI whoAmI = new WhoAmI((long) 1, "Test", "User", emails);
 
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
     String whoAmIJson = objectMapper.writeValueAsString(whoAmI);
 
@@ -81,7 +82,7 @@ public class PyramusMocks{
     emails.add("admin@made.up");
     WhoAmI whoAmI = new WhoAmI((long) 4, "Admin", "User", emails);
 
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
     String whoAmIJson = objectMapper.writeValueAsString(whoAmI);
 
@@ -93,7 +94,7 @@ public class PyramusMocks{
   }    
   
   public static void personsPyramusMocks() throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);    
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);    
     Map<String, String> variables = null;
     List<String> tags = null;
     Student student = new Student((long) 1, (long) 1, "Test", "User", null, null, null, null, null, null, null, null, null, null, null, (long) 1, null, null,
@@ -107,7 +108,8 @@ public class PyramusMocks{
         .withStatus(200)));
 
     Email email = new Email((long) 1, (long) 2, true, "testuser@made.up");
-    String emailJson = objectMapper.writeValueAsString(email);
+    Email[] emails = {email};
+    String emailJson = objectMapper.writeValueAsString(emails);
     stubFor(get(urlEqualTo("/1/students/students/1/emails"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
@@ -253,12 +255,28 @@ public class PyramusMocks{
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody(cRoleJson)
-        .withStatus(204)));
+        .withStatus(200)));
 
     stubFor(get(urlMatching("/1/courses/courses/1/students?filterArchived=.*"))
       .willReturn(aResponse()
         .withHeader("Content-Type", "application/json")
         .withBody(studentArrayJson)
+        .withStatus(200)));
+    
+    ContactType contactType = new ContactType((long)1, "Koti", false, false);
+    ContactType[] contactTypes = { contactType };
+    String contactTypeJson = objectMapper.writeValueAsString(contactType);
+    stubFor(get(urlMatching("/1/common/contactTypes/.*"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(contactTypeJson)
+        .withStatus(200)));
+    
+    String contactTypesJson = objectMapper.writeValueAsString(contactTypes);
+    stubFor(get(urlEqualTo("/1/common/contactTypes"))
+      .willReturn(aResponse()
+        .withHeader("Content-Type", "application/json")
+        .withBody(contactTypesJson)
         .withStatus(200)));
   }
   
@@ -271,9 +289,8 @@ public class PyramusMocks{
         (double) 15, (double) 45, (double) 45, end, (long) 1,
         (long) 1, (long) 1, (double) 45, (long) 1, (long) 1, (long) 1, (long) 1, 
         null, null);
-      ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+      ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
       String courseJson = objectMapper.writeValueAsString(course);
-      
       stubFor(get(urlEqualTo("/1/courses/courses/1"))
         .willReturn(aResponse()
           .withHeader("Content-Type", "application/json")
@@ -287,8 +304,8 @@ public class PyramusMocks{
           .withHeader("Content-Type", "application/json")
           .withBody(courseArrayJson)
           .withStatus(200)));
-      
-      stubFor(get(urlMatching("/1/courses/courses?.*"))
+//      stubFor(get(urlMatching("/1/courses/courses?filterArchived=false&firstResult=.*&maxResults=.*"))
+      stubFor(get(urlMatching("/1/courses/courses?filterArchived=false&firstResult=.*&maxResults=.*"))
         .willReturn(aResponse()
           .withHeader("Content-Type", "application/json")
           .withBody(courseArrayJson)
@@ -362,7 +379,7 @@ public class PyramusMocks{
   
   @SuppressWarnings("null")
   public static void adminPyramusMocks() throws JsonProcessingException {
-    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).enable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);    
+    ObjectMapper objectMapper = new ObjectMapper().registerModule(new JodaModule()).disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);    
     Map<String, String> variables = null;
     List<String> tags = null;
 //    Student student = new Student((long) 1, (long) 1, "Test", "User", null, null, null, null, null, null, null, null, null, null, null, (long) 1, null, null,

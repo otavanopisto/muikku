@@ -11,6 +11,11 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.junit.Before;
 import org.junit.Rule;
 import org.openqa.selenium.By;
@@ -23,6 +28,8 @@ import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
@@ -34,6 +41,8 @@ import com.jayway.restassured.response.Response;
 import com.jayway.restassured.specification.RequestSpecification;
 
 import fi.muikku.AbstractIntegrationTest;
+import fi.muikku.webhooks.WebhookStaffMemberCreatePayload;
+import fi.muikku.webhooks.WebhookStudentCreatePayload;
 
 public class AbstractUITest extends AbstractIntegrationTest {
 
@@ -70,7 +79,7 @@ public class AbstractUITest extends AbstractIntegrationTest {
 
     // System.out.println("Admin accesstoken: " + adminAccessToken);
   }
-
+  
   public String getAdminAccessToken() {
     return adminAccessToken;
   }
@@ -179,6 +188,32 @@ public class AbstractUITest extends AbstractIntegrationTest {
         }
       }
     }
+    return false;
+  }
+
+  protected Boolean webhookCall(String url, String payload) throws Exception {
+    try {
+      String signature = "38c6cbd28bf165070d070980dd1fb595";
+      HttpClient client = new DefaultHttpClient();
+
+      HttpPost httpPost = new HttpPost(url);
+      try {
+        StringEntity dataEntity = new StringEntity(payload);
+        try {
+          httpPost.addHeader("X-Pyramus-Signature", signature);
+          httpPost.setEntity(dataEntity);
+          client.execute(httpPost);
+          return true;
+        } finally {
+          EntityUtils.consume(dataEntity);
+        }
+      } finally {
+        httpPost.releaseConnection();
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    
     return false;
   }
   
