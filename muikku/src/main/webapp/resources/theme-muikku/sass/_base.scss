@@ -30,6 +30,10 @@ $subTitle:#4e4e4e;
 $link:#0099ff;
 
 
+
+  
+
+
 /* Shadow */
 $sc: rgba(218,218,218,1);
 
@@ -44,6 +48,8 @@ $brd-top:#9bbee6;
 $textContentPadding:15px;
 
 /* Margins */
+
+
 
 /* Generic background */
 $bgr: #fff;
@@ -163,6 +169,14 @@ $text: 12px;
 /* Transition durations */
 
 /* Generic Mixins */
+
+@mixin textOverflow{
+    white-space: nowrap;  
+    overflow: hidden;  
+    text-overflow: ellipsis;  
+}
+
+
 @mixin contentMeta($fStyle:normal,$fColor:#4c4c4c) {
   font-style:$fStyle;
   color:$fColor;
