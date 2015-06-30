@@ -68,33 +68,23 @@ public class WorkspaceBinaryMaterialServlet extends HttpServlet {
       
       if (material instanceof BinaryMaterial) {
         BinaryMaterial binaryMaterial = (BinaryMaterial) material;
-  
+        byte[] data = binaryMaterial.getContent();
+        response.setContentLength(data.length);
         response.setContentType(binaryMaterial.getContentType());
-        ServletOutputStream outputStream = response.getOutputStream();
-        try {
-          outputStream.write(binaryMaterial.getContent());
-        } finally {
-          outputStream.flush();
-        }
-      } else if (material instanceof HtmlMaterial) {
+        response.getOutputStream().write(data);
+      }
+      else if (material instanceof HtmlMaterial) {
         HtmlMaterial htmlMaterial = (HtmlMaterial) material;
-  
+        byte[] data = htmlMaterial.getHtml().getBytes("UTF-8");
+        response.setContentLength(data.length);
         response.setContentType("text/html; charset=UTF-8");
-        ServletOutputStream outputStream = response.getOutputStream();
-        try {
-          outputStream.write(htmlMaterial.getHtml().getBytes("UTF-8"));
-        } finally {
-          outputStream.flush();
-        }
+        response.getOutputStream().write(data);
       }  
       
       response.setStatus(HttpServletResponse.SC_OK);
     } else {
-      response.setHeader("ETag", eTag);
-      response.setHeader("Cache-Control", "must-revalidate");
       response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
     }
-    
   }
 
 }
