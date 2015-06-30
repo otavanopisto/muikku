@@ -24,7 +24,8 @@
           <div class="mf-item-content-text di-message-content-text">{message|s}</div>          
           <div class="mf-item-content-tools di-message-content-tools">
             <div class="di-message-content-tools-container mf-item-tools">
-              <div  id="{id}" class="di-message-tool di-message-reply-link mf-item-tool-btn"><span>{#localize key="plugin.discussion.reply.message"/}</span></div>
+              <div class="di-message-tool di-message-reply-link mf-item-tool-btn"><span>{#localize key="plugin.discussion.reply.message"/}</span></div>
+              <div class="di-message-tool di-message-reply-link mf-item-tool-btn"><span>{#localize key="plugin.discussion.reply.edit"/}</span></div>
             </div>
             <div class="di-message-content-tools-reply-container"></div>
             <div class="clear"></div>
