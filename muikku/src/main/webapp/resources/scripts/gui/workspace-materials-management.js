@@ -744,20 +744,21 @@
       });
     }
     else {
-      mApi().workspace.workspaces.materials.update(workspaceId, node.data('workspace-material-id'), {
-        id: node.data('workspace-material-id'),
-        materialId: node.data('material-id'),
-        parentId: node.data('parent-id'),
-        nextSiblingId: nextSiblingId,
-        hidden: hidden
-      }).callback(
-        function (err, html) {
-          if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', err);
-          }
-          else {
-            toggleNodeVisibilityUi(node, hidden);
-          }
+      mApi().workspace.workspaces.materials.read(workspaceId, node.data('workspace-material-id')).callback(function (err, material) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        }
+        else {
+          material.hidden = hidden;
+          mApi().workspace.workspaces.materials.update(workspaceId, node.data('workspace-material-id'), material).callback(function (err, html) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            }
+            else {
+              toggleNodeVisibilityUi(node, hidden);
+            }
+          });
+        }
       });
     }
   }
