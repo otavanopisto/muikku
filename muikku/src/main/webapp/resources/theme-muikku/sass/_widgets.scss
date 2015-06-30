@@ -815,20 +815,30 @@ div[class*="wi-dock-static-navi"] {
  }
  
  .wi-message{
+    font-size:11px; 
+    padding:5px;
+
+    .wi-message-caption{    
+      @include textOverflow;
+    }
+    
+    .wi-message-content{
+      @include textOverflow;    
+    }
   &:not(:last-child){border-bottom: 1px solid #f0f3f4;}
   &.unread{
      .wi-message-caption{
        font-weight:bold;
+       a{color:#ff0000;}
     }  
     .icon-envelope:before{
-      color:#ff0000;
+
     }   
   }
  }
 
  .wi-message-content{
    color:#3a3a3a;
-   font-size:11px; 
    overflow:hidden !important;
    text-overflow: ellipsis;   
    max-height:70px;
