@@ -19,8 +19,17 @@ function openInSN(template, result, formFunction) {
     var cancelBtn = $(tabDiv).find("input[name='cancel']");
     var sendBtn = $(tabDiv).find("input[name='send']");
     var elements = $(tabDiv).find("form");
-
+    
+    
+    // Getting existing content 
+    
+    // Discussion 
+     
+     var msg = result.message;
+    
     $(textareas).each(function(index,textarea){
+      
+      $(textarea).val(msg);
       
       CKEDITOR.replace(textarea, {
         height : '100px',
@@ -34,6 +43,8 @@ function openInSN(template, result, formFunction) {
                 ]          
           
       });
+      
+
       
     });
     

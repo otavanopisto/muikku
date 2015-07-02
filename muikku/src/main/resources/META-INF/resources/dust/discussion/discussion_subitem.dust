@@ -19,10 +19,10 @@
         <div class="mf-subitem-content di-message-content ">     
           <div class="mf-subitem-content-text di-message-content-text">{message|s}</div>          
           <div class="mf-subitem-content-tools di-message-content-tools">
-<!--             <div class="di-message-content-tools-container mf-subitem-tools"> -->
-<!--               <div  id="{id}" class="di-message-tool di-message-reply-link mf-subitem-tool-btn"><span>Vastaa viestiin</span></div> -->
-<!--             </div> -->
-<!--             <div class="di-message-content-tools-reply-container"></div> -->
+            <div class="di-message-content-tools-container mf-subitem-tools">
+              <div class="di-message-tool di-message-edit-link mf-item-tool-btn"><span>{#localize key="plugin.discussion.reply.edit"/}</span></div>
+            </div>
+            <div class="di-message-content-tools-reply-container"></div>
             <div class="clear"></div>
           </div>
         </div>

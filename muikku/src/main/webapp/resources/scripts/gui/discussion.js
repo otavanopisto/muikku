@@ -35,6 +35,8 @@ $(document).ready(function() {
       $(DiscImpl.msgContainer).on("click", '.di-message:not(.open) .di-message-meta-topic span', $.proxy(this.loadThread, this));
       $(DiscImpl.msgContainer).on("click", '.icon-goback', $.proxy(this.refreshLatest, this));
       $(DiscImpl.msgContainer).on("click", '.di-message-reply-link', $.proxy(this.replyThread, this));
+      $(DiscImpl.msgContainer).on("click", '.di-message-edit-link', $.proxy(this.editThread, this));      
+      $(DiscImpl.subMsgContainer).on("click", '.di-message-edit-link', $.proxy(this.editThread, this));   
       $(DiscImpl.msgContainer).on("click", '.di-remove-thread-link', $.proxy(this._onRemoveThreadClick, this));
     },
 
@@ -319,7 +321,39 @@ $(document).ready(function() {
         }
       });
     },
+   editThread : function(event) {
 
+      var element = $(event.target);
+      element = element.parents(".di-message");
+      var tId = $(element).attr("id");
+      var aId = $(element).find("input[name='areaId']").attr('value');
+
+      var sendEditedThread= function(values) {
+        
+        alert("Message thread edited");
+//        mApi().forum.areas.threads.replies.create(aId, tId, values).callback(function(err, result) {
+//        });
+//
+//        window.discussion.refreshThread(aId, tId);
+
+      }
+
+      mApi().forum.areas.threads.read(aId, tId).on('$', function(thread, threadCallback) {
+
+        mApi().forum.areas.read(thread.forumAreaId).callback(function(err, area) {
+          thread.areaName = area.name;
+
+        });
+        threadCallback();
+      }).callback(function(err, thread) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
+        } else {
+          openInSN('/discussion/discussion_edit_reply.dust', thread, sendEditedThread);
+        }
+      });
+    },
+    
     clearMessages : function() {
       $(DiscImpl.msgContainer).empty();
     },
@@ -331,7 +365,7 @@ $(document).ready(function() {
     _klass : {
       // Variables for the class
       msgContainer : ".di-messages-container",
-      subContainer : ".di-sumbessages-container",
+      subContainer : ".di-submessages-container",
 
     }
 
