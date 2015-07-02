@@ -35,8 +35,8 @@ $(document).ready(function() {
       $(DiscImpl.msgContainer).on("click", '.di-message:not(.open) .di-message-meta-topic span', $.proxy(this.loadThread, this));
       $(DiscImpl.msgContainer).on("click", '.icon-goback', $.proxy(this.refreshLatest, this));
       $(DiscImpl.msgContainer).on("click", '.di-message-reply-link', $.proxy(this.replyThread, this));
-      $(DiscImpl.msgContainer).on("click", '.di-message-edit-link', $.proxy(this.editThread, this));      
-      $(DiscImpl.subMsgContainer).on("click", '.di-message-edit-link', $.proxy(this.editThread, this));   
+      $(DiscImpl.msgContainer).on("click", '.di-message-edit-link', $.proxy(this.editMessage, this));         
+//      $(DiscImpl.subMsgContainer).on("click", '.di-reply-edit-link', $.proxy(this.editMessageReply, this));
       $(DiscImpl.msgContainer).on("click", '.di-remove-thread-link', $.proxy(this._onRemoveThreadClick, this));
     },
 
@@ -291,7 +291,7 @@ $(document).ready(function() {
       }, this));
     },
 
-    replyThread : function(event) {
+    replyMessage : function(event) {
 
       var element = $(event.target);
       element = element.parents(".di-message");
@@ -321,21 +321,16 @@ $(document).ready(function() {
         }
       });
     },
-   editThread : function(event) {
+   editMessage : function(event) {
 
       var element = $(event.target);
       element = element.parents(".di-message");
       var tId = $(element).attr("id");
       var aId = $(element).find("input[name='areaId']").attr('value');
 
-      var sendEditedThread= function(values) {
+      var sendEditedMsg= function(values) {
         
-        alert("Message thread edited");
-//        mApi().forum.areas.threads.replies.create(aId, tId, values).callback(function(err, result) {
-//        });
-//
-//        window.discussion.refreshThread(aId, tId);
-
+        alert("Message edited");
       }
 
       mApi().forum.areas.threads.read(aId, tId).on('$', function(thread, threadCallback) {
@@ -349,11 +344,39 @@ $(document).ready(function() {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
         } else {
-          openInSN('/discussion/discussion_edit_reply.dust', thread, sendEditedThread);
+          openInSN('/discussion/discussion_edit_message.dust', thread, sendEditedMsg);
         }
       });
     },
-    
+//    editMessageReply : function(event) {
+//
+//      var element = $(event.target);
+//      element = element.parents(".di-message");
+//      var tId = $(element).attr("id");
+//      var aId = $(element).find("input[name='areaId']").attr('value');
+//
+//      var sendEditedReply= function(values) {
+//        
+//        alert("Message reply edited");
+//
+//
+//      }
+//
+//      mApi().forum.areas.threads.replies.read(aId, tId).on('$', function(thread, threadCallback) {
+//
+//        mApi().forum.areas.read(thread.forumAreaId).callback(function(err, area) {
+//          thread.areaName = area.name;
+//
+//        });
+//        threadCallback();
+//      }).callback(function(err, thread) {
+//        if (err) {
+//          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
+//        } else {
+//          openInSN('/discussion/discussion_edit_reply.dust', thread, sendEditedReply);
+//        }
+//      });
+//    },   
     clearMessages : function() {
       $(DiscImpl.msgContainer).empty();
     },

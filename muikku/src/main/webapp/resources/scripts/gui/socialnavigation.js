@@ -24,9 +24,9 @@ function openInSN(template, result, formFunction) {
     // Getting existing content 
     
     // Discussion 
-     
-     var msg = result.message;
-    
+     if(result != null){
+      var msg = result.message;
+     }
     $(textareas).each(function(index,textarea){
       
       $(textarea).val(msg);
