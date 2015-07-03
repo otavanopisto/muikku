@@ -26,7 +26,7 @@
   
        <div class="mf-toolbar">
         
-        <input type="button" name="send" value='{#localize key="plugin.discussion.reply.send"/}'/>
+        <input type="button" name="send" value='{#localize key="plugin.discussion.reply.edit.send"/}'/>
         <input type="button" name="cancel" value='{#localize key="plugin.discussion.reply.cancel"/}'/>
       </div>   
     </form>
