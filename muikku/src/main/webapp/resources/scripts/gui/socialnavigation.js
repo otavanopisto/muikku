@@ -24,7 +24,7 @@ function openInSN(template, result, formFunction) {
     // Getting existing content 
     
     // Discussion 
-     if(result != null){
+     if(result != null && result.actionType == "edit"){
       var msg = result.message;
      }
     $(textareas).each(function(index,textarea){

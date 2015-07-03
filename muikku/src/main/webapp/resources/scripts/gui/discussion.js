@@ -34,9 +34,9 @@ $(document).ready(function() {
       this.refreshAreas();
       $(DiscImpl.msgContainer).on("click", '.di-message:not(.open) .di-message-meta-topic span', $.proxy(this.loadThread, this));
       $(DiscImpl.msgContainer).on("click", '.icon-goback', $.proxy(this.refreshLatest, this));
-      $(DiscImpl.msgContainer).on("click", '.di-message-reply-link', $.proxy(this.replyThread, this));
+      $(DiscImpl.msgContainer).on("click", '.di-message-reply-link', $.proxy(this.replyMessage, this));
       $(DiscImpl.msgContainer).on("click", '.di-message-edit-link', $.proxy(this.editMessage, this));         
-//      $(DiscImpl.subMsgContainer).on("click", '.di-reply-edit-link', $.proxy(this.editMessageReply, this));
+      $(DiscImpl.msgContainer).on("click", '.di-reply-edit-link', $.proxy(this.editMessageReply, this));
       $(DiscImpl.msgContainer).on("click", '.di-remove-thread-link', $.proxy(this._onRemoveThreadClick, this));
     },
 
@@ -261,7 +261,9 @@ $(document).ready(function() {
         var d = new Date(replies.created);
 
         replies.prettyDate = d.toLocaleString();
+        replies.threadId = threadId;
         repliesCallback();
+        
       }).callback(function(err, replies) {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.noreplies', err));
@@ -312,6 +314,8 @@ $(document).ready(function() {
           thread.areaName = area.name;
 
         });
+        
+         thread.actionType = "reply"
         threadCallback();
       }).callback(function(err, thread) {
         if (err) {
@@ -339,6 +343,8 @@ $(document).ready(function() {
           thread.areaName = area.name;
 
         });
+        thread.actionType = "edit"
+          
         threadCallback();
       }).callback(function(err, thread) {
         if (err) {
@@ -348,35 +354,37 @@ $(document).ready(function() {
         }
       });
     },
-//    editMessageReply : function(event) {
-//
-//      var element = $(event.target);
-//      element = element.parents(".di-message");
-//      var tId = $(element).attr("id");
-//      var aId = $(element).find("input[name='areaId']").attr('value');
-//
-//      var sendEditedReply= function(values) {
-//        
-//        alert("Message reply edited");
-//
-//
-//      }
-//
-//      mApi().forum.areas.threads.replies.read(aId, tId).on('$', function(thread, threadCallback) {
-//
-//        mApi().forum.areas.read(thread.forumAreaId).callback(function(err, area) {
-//          thread.areaName = area.name;
-//
-//        });
-//        threadCallback();
-//      }).callback(function(err, thread) {
-//        if (err) {
-//          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
-//        } else {
-//          openInSN('/discussion/discussion_edit_reply.dust', thread, sendEditedReply);
-//        }
-//      });
-//    },   
+    editMessageReply : function(event) {
+
+      var element = $(event.target);
+      element = element.parents(".di-message");
+      var rId = $(element).attr("id");
+      var tId = $(element).find("input[name='threadId']").attr('value');
+      var aId = $(element).find("input[name='areaId']").attr('value');
+
+      var sendEditedReply= function(values) {
+        
+        alert("Message reply edited");
+
+
+      }
+
+      mApi().forum.areas.threads.replies.read(aId, tId, rId).on('$', function(thread, threadCallback) {
+
+        mApi().forum.areas.read(thread.forumAreaId).callback(function(err, area) {
+          thread.areaName = area.name;
+
+        });
+        thread.actionType = "edit"
+        threadCallback();
+      }).callback(function(err, thread) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
+        } else {
+          openInSN('/discussion/discussion_edit_reply.dust', thread, sendEditedReply);
+        }
+      });
+    },   
     clearMessages : function() {
       $(DiscImpl.msgContainer).empty();
     },
@@ -388,7 +396,7 @@ $(document).ready(function() {
     _klass : {
       // Variables for the class
       msgContainer : ".di-messages-container",
-      subContainer : ".di-submessages-container",
+      subMsgContainer : ".di-submessages-container"
 
     }
 

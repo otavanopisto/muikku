@@ -30,6 +30,7 @@
       <div class="clear"></div>
     </div>
   </div>
+  <input type="hidden" name="threadId" value="{threadId}"/>
   <input type="hidden" name="areaId" value="{forumAreaId}"/>
 </div>  
 
