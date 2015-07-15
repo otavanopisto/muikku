@@ -30,18 +30,19 @@ $(document).ready(function() {
 
     init : function() {
       // todo: parse url
-      this.refreshLatest();
+      
       this.refreshAreas();
-      $(DiscImpl.msgContainer).on("click", '.di-message:not(.open) .di-message-meta-topic span', $.proxy(this.loadThread, this));
-      $(DiscImpl.msgContainer).on("click", '.icon-goback', $.proxy(this.refreshLatest, this));
+      $(DiscImpl.msgContainer).on("click", '.di-message:not(.open) .di-message-meta-topic span', $.proxy(this._onMessageClick, this));
+      $(DiscImpl.msgContainer).on("click", '.icon-goback', $.proxy(this._onBackClick, this));
       $(DiscImpl.msgContainer).on("click", '.di-message-reply-link', $.proxy(this.replyThread, this));
       $(DiscImpl.msgContainer).on("click", '.di-remove-thread-link', $.proxy(this._onRemoveThreadClick, this));
+      $(window).on("hashchange", $.proxy(this._onHashChange, this));
+      $(window).trigger("hashchange");
     },
 
     refreshLatest : function() {
-
       this.clearMessages();
-      ;
+      
 
       mApi().forum.latest.read().on('$', function(msgs, msgsCallback) {
         mApi().forum.areas.read(msgs.forumAreaId).callback(function(err, area) {
@@ -191,12 +192,26 @@ $(document).ready(function() {
       }
     },
 
-    loadThread : function(event) {
+    _onMessageClick : function(event){
 
       var element = $(event.target);
       element = element.parents(".di-message");
       var tId = $(element).attr("id");
       var aId = $(element).find("input[name='areaId']").attr('value');
+      
+      window.location.hash =  "#thread/" + aId + "/" + tId;
+      
+    },
+
+    _onBackClick : function(event){
+      
+      window.location.hash =  '';
+      
+    },   
+    
+    
+    _loadThread : function(aId, tId) {
+
 
       this.clearMessages();
 
@@ -327,6 +342,22 @@ $(document).ready(function() {
     clearReplies : function() {
       $(DiscImpl.subContainer).empty();
     },
+    _onHashChange: function (event) {
+      var hash = window.location.hash.substring(1);
+      var _this = this;
+       
+        if (hash.indexOf("thread/") === 0) {
+          var areaId = hash.substring(7,8);
+          var threadId = hash.substring(9,10);
+          var hI = hash.indexOf('/');
+          var cHash = hash.substring(0, hI);
+          _this._loadThread(areaId,threadId);
+ 
+        }else{
+          this.refreshLatest();
+        }
+
+    },    
 
     _klass : {
       // Variables for the class
