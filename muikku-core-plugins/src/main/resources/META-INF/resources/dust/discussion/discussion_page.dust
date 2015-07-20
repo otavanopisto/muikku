@@ -1,0 +1,21 @@
+
+  <div class="di-messages-page">
+    {#.}
+        {>"discussion/discussion_item.dust"/}
+       
+    {/.} 
+    
+    {?.}  
+      <div class="cm-messages-paging">
+        <div class="cm-paging-toolbar">
+          <div class="cm-paging-tool cm-page-link-load-more">Load morez. Roger Moore. Gary Moore</div>
+        </div>
+      </div>
+    {:else}
+      <div class="cm-messages-paging">
+        <div class="cm-paging-toolbar">
+          <div class="cm-paging-tool cm-page-link-load-more disabled">No more</div>
+        </div>
+      </div>    
+    {/.}    
+  </div>
