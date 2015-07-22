@@ -1,0 +1,20 @@
+
+  <div class="di-replies-page">
+    {#.}
+        {>"discussion/discussion_reply.dust"/}
+       
+    {/.} 
+    {?.}  
+      <div class="di-replies-paging">
+        <div class="di-paging-toolbar">
+          <div class="di-paging-tool di-page-link-load-more-replies" data-area-id="{areaId}" data-thread-id="{threadId}">Load morez. Roger Moore. Gary Moore</div>
+        </div>
+      </div>
+    {:else}
+      <div class="di-replies-paging">
+        <div class="di-paging-toolbar">
+          <div class="di-paging-tool cm-page-link-load-more-disabled">No more</div>
+        </div>
+      </div>    
+    {/.}    
+  </div>

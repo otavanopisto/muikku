@@ -422,7 +422,7 @@
         font-family:"Open Sans";
         min-width:90px;
       }
-      
+
       button.delete-button,
       button.confirm-button {
         float:right;
@@ -448,4 +448,21 @@
   }
 }
 
+.di-page-link-load-more-replies{
+  margin-left:auto;
+  margin-right:auto;
+  display:inline-block;
+  background:#068feb;
+  cursor:pointer;
+  padding:6px 6px;
+  display:inline-block;
+  color:#fff;
+  font-size:18px;
+  box-shadow:0 0 5px rgba(0,0,0,0.25);  
+  
+  &.disabled{
+    background:$bgr1;
+    color:$bgr2;
+  }
+}
 

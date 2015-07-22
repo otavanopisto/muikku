@@ -2,13 +2,11 @@
   <div class="di-messages-page">
     {#.}
         {>"discussion/discussion_item.dust"/}
-       
     {/.} 
-    
     {?.}  
       <div class="cm-messages-paging">
         <div class="cm-paging-toolbar">
-          <div class="cm-paging-tool cm-page-link-load-more">Load morez. Roger Moore. Gary Moore</div>
+          <div class="cm-paging-tool cm-page-link-load-more-messages">Load morez. Roger Moore. Gary Moore</div>
         </div>
       </div>
     {:else}

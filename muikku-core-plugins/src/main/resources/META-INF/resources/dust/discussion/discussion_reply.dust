@@ -30,7 +30,7 @@
       <div class="clear"></div>
     </div>
   </div>
-  <input type="hidden" name="areaId" value="{forumAreaId}"/>
+<!--   <input type="hidden" name="areaId" value="{forumAreaId}" /> -->
 </div>  
 
 

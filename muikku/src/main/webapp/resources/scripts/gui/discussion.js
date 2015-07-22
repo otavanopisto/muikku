@@ -34,7 +34,8 @@ $(document).ready(function() {
       this.refreshAreas();
       $(DiscImpl.msgContainer).on("click", '.di-message:not(.open) .di-message-meta-topic span', $.proxy(this._onMessageClick, this));
       $(DiscImpl.msgContainer).on("click", '.icon-goback', $.proxy(this._onBackClick, this));
-      $(DiscImpl.msgContainer).on("click", '.cm-page-link-load-more:not(.disabled)', $.proxy(this._onMoreClick, this));
+      $(DiscImpl.msgContainer).on("click", '.cm-page-link-load-more-messages:not(.disabled)', $.proxy(this._onMoreClick, this));
+      $(DiscImpl.msgContainer).on("click", '.di-page-link-load-more-replies:not(.disabled)', $.proxy(this._onMoreRepliesClick, this));
       $(DiscImpl.msgContainer).on("click", '.di-message-reply-link', $.proxy(this.replyThread, this));
       $(DiscImpl.msgContainer).on("click", '.di-remove-thread-link', $.proxy(this._onRemoveThreadClick, this));
       $(window).on("hashchange", $.proxy(this._onHashChange, this));
@@ -186,7 +187,7 @@ $(document).ready(function() {
 
             });
             
-            var loadMoreButton = $(".cm-page-link-load-more");
+            var loadMoreButton = $(".cm-page-link-load-more-messages");
             
             loadMoreButton.attr('data-area-id', val);
           }
@@ -229,7 +230,6 @@ $(document).ready(function() {
        }
         
       var fRes = msgsCount;
-      var test = parseInt(areaId);
       
       if (areaId == undefined){
         mApi().forum.latest.read({'firstResult' : fRes}).on('$', function(msgs, msgsCallback) {
@@ -294,7 +294,52 @@ $(document).ready(function() {
         
       }
     },   
-    
+    _onMoreRepliesClick : function(event){
+      var element = $(event.target);
+      var areaId = element.attr("data-area-id");
+      var threadId = element.attr("data-thread-id");
+      element = element.parents(".di-replies-paging");
+
+      
+      
+      $(element).remove();
+      var msgsCount = 0;
+      var msgs = $(DiscImpl.msgContainer).find('.di-message');
+      
+      for(var m = 0; m < msgs.length; m++){
+        msgsCount ++;
+       }
+        
+      var fRes = msgsCount - 1;
+      
+      mApi().forum.areas.threads.replies.read(areaId, threadId, {'firstResult' : fRes}).on('$', function(replies, repliesCallback) {
+
+        mApi().forum.areas.read(replies.forumAreaId).callback(function(err, area) {
+          replies.areaName = area.name;
+
+        });
+
+        mApi().user.users.basicinfo.read(replies.creator).callback(function(err, user) {
+          replies.creatorFullName = user.firstName + ' ' + user.lastName;
+
+        });
+        var d = new Date(replies.created);
+       
+        replies.prettyDate = d.toLocaleString();
+        repliesCallback();
+      }).callback(function(err, replies) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.noreplies', err));
+        } else {
+
+          renderDustTemplate('/discussion/discussion_replies.dust', replies, function(text) {
+
+            $(DiscImpl.msgContainer).append($.parseHTML(text));
+
+          });
+        }
+      });
+    },       
     
     
     _loadThread : function(aId, tId) {
@@ -348,6 +393,8 @@ $(document).ready(function() {
       this.clearReplies();
 
       mApi().forum.areas.threads.replies.read(areaId, threadId).on('$', function(replies, repliesCallback) {
+        
+
 
         mApi().forum.areas.read(replies.forumAreaId).callback(function(err, area) {
           replies.areaName = area.name;
@@ -366,12 +413,14 @@ $(document).ready(function() {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.noreplies', err));
         } else {
-
-          renderDustTemplate('/discussion/discussion_subitems.dust', replies, function(text) {
+          replies.areaId = areaId;
+          replies.threadId = threadId;
+          renderDustTemplate('/discussion/discussion_replies.dust', replies, function(text) {
 
             $(DiscImpl.msgContainer).append($.parseHTML(text));
 
           });
+          
         }
       });
     },
