@@ -274,27 +274,4 @@
 
 }
 
-.cm-messages-paging{
-  padding:10px;
-}
-.cm-paging-toolbar{
-  text-align:center;
-  
-}
-.cm-page-link-load-more-messages{
-  margin-left:auto;
-  margin-right:auto;
-  display:inline-block;
-  background:#068feb;
-  cursor:pointer;
-  padding:6px 6px;
-  display:inline-block;
-  color:#fff;
-  font-size:18px;
-  box-shadow:0 0 5px rgba(0,0,0,0.25);  
-  
-  &.disabled{
-    background:$bgr1;
-    color:$bgr2;
-  }
-}
+

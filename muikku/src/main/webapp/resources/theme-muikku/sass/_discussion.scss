@@ -91,11 +91,12 @@
 }
 
 .di-messages-container {
-    
+   min-height:500px;
   .di-message {
     margin:5px;
     background:#fff;
     padding:10px;
+   
         
     &.closed {
       height:60px;
@@ -448,17 +449,33 @@
   }
 }
 
-.di-page-link-load-more-replies{
-  margin-left:auto;
-  margin-right:auto;
-  display:inline-block;
-  background:#068feb;
-  cursor:pointer;
-  padding:6px 6px;
-  display:inline-block;
-  color:#fff;
-  font-size:18px;
-  box-shadow:0 0 5px rgba(0,0,0,0.25);  
+.di-reply{
+-webkit-animation: flash 1s;
+ -moz-animation: flash 1s;
+   -o-animation: flash 1s;
+      animation: flash 1s; 
+  
+}
+
+.di-messages-paging, .di-replies-paging{
+  padding:10px;
+}
+.di-paging-toolbar{
+  text-align:center;
+  
+}
+
+
+.di-paging-tool{
+    margin-left: auto;
+    margin-right: auto;
+    background: #36A3CE none repeat scroll 0% 0%;
+    cursor: pointer;
+    padding: 6px 26px;
+    display: inline-block;
+    color: #FFF;
+    font-size: 18px;
+
   
   &.disabled{
     background:$bgr1;

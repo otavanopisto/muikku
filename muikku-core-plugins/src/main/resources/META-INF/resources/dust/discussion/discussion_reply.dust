@@ -1,5 +1,5 @@
 
-<div class="mf-subitem di-message open mf-category-{forumAreaId}-brd" id="{id}">
+<div class="mf-subitem di-message di-reply open mf-category-{forumAreaId}-brd" id="{id}">
   <div class="di-message-topic mf-subitem-topic">
   </div>
   <div class="mf-subitem-details di-message-details">

@@ -34,7 +34,7 @@ $(document).ready(function() {
       this.refreshAreas();
       $(DiscImpl.msgContainer).on("click", '.di-message:not(.open) .di-message-meta-topic span', $.proxy(this._onMessageClick, this));
       $(DiscImpl.msgContainer).on("click", '.icon-goback', $.proxy(this._onBackClick, this));
-      $(DiscImpl.msgContainer).on("click", '.cm-page-link-load-more-messages:not(.disabled)', $.proxy(this._onMoreClick, this));
+      $(DiscImpl.msgContainer).on("click", '.di-page-link-load-more-messages:not(.disabled)', $.proxy(this._onMoreClick, this));
       $(DiscImpl.msgContainer).on("click", '.di-page-link-load-more-replies:not(.disabled)', $.proxy(this._onMoreRepliesClick, this));
       $(DiscImpl.msgContainer).on("click", '.di-message-reply-link', $.proxy(this.replyThread, this));
       $(DiscImpl.msgContainer).on("click", '.di-remove-thread-link', $.proxy(this._onRemoveThreadClick, this));
@@ -44,8 +44,7 @@ $(document).ready(function() {
     },
 
     refreshLatest : function() {
-      this.clearMessages();
-
+      this.clearMessages(); 
       mApi().forum.latest.read().on('$', function(msgs, msgsCallback) {
         mApi().forum.areas.read(msgs.forumAreaId).callback(function(err, area) {
           msgs.areaName = area.name;
@@ -63,12 +62,13 @@ $(document).ready(function() {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
         } else {
-
+          
           renderDustTemplate('/discussion/discussion_items.dust', threads, function(text) {
 
             $(DiscImpl.msgContainer).append($.parseHTML(text));
 
           });
+
         }
       });
 
@@ -187,7 +187,7 @@ $(document).ready(function() {
 
             });
             
-            var loadMoreButton = $(".cm-page-link-load-more-messages");
+            var loadMoreButton = $(".di-page-link-load-more-messages");
             
             loadMoreButton.attr('data-area-id', val);
           }
@@ -217,7 +217,7 @@ $(document).ready(function() {
     _onMoreClick : function(event){
       var element = $(event.target);
       var areaId = element.attr("data-area-id");
-      element = element.parents(".cm-messages-paging");
+      element = element.parents(".di-messages-paging");
 
       
       
@@ -303,6 +303,15 @@ $(document).ready(function() {
       
       
       $(element).remove();
+
+      
+      var pgs = $(DiscImpl.msgContainer).find('.di-replies-page');
+      var pgCount = pgs.length;
+
+      var newPg = pgCount + 1;
+      
+      var pgId = "#page-" + newPg;
+       
       var msgsCount = 0;
       var msgs = $(DiscImpl.msgContainer).find('.di-message');
       
@@ -328,17 +337,28 @@ $(document).ready(function() {
         replies.prettyDate = d.toLocaleString();
         repliesCallback();
       }).callback(function(err, replies) {
+        
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.noreplies', err));
         } else {
+          replies.pageNo = newPg;
+          renderDustTemplate('/discussion/discussion_replies_page.dust', replies, function(text) {
 
-          renderDustTemplate('/discussion/discussion_replies.dust', replies, function(text) {
-
-            $(DiscImpl.msgContainer).append($.parseHTML(text));
+            $(".di-replies-container").append($.parseHTML(text));
 
           });
+          
+          
         }
+
+
       });
+      
+      // This does not work. TODO : scroll after the elements have loaded.
+//      $(pgId).load(function(){
+//        this._scrollToElement(pgId);
+//        
+//      });
     },       
     
     
@@ -390,6 +410,8 @@ $(document).ready(function() {
 
     loadThreadReplies : function(areaId, threadId) {
 
+      var pageNo = 1;
+      
       this.clearReplies();
 
       mApi().forum.areas.threads.replies.read(areaId, threadId).on('$', function(replies, repliesCallback) {
@@ -400,7 +422,9 @@ $(document).ready(function() {
           replies.areaName = area.name;
 
         });
-
+ 
+        
+        
         mApi().user.users.basicinfo.read(replies.creator).callback(function(err, user) {
           replies.creatorFullName = user.firstName + ' ' + user.lastName;
 
@@ -408,6 +432,8 @@ $(document).ready(function() {
         var d = new Date(replies.created);
        
         replies.prettyDate = d.toLocaleString();
+
+        
         repliesCallback();
       }).callback(function(err, replies) {
         if (err) {
@@ -415,6 +441,7 @@ $(document).ready(function() {
         } else {
           replies.areaId = areaId;
           replies.threadId = threadId;
+          replies.pageNo = pageNo;
           renderDustTemplate('/discussion/discussion_replies.dust', replies, function(text) {
 
             $(DiscImpl.msgContainer).append($.parseHTML(text));
@@ -474,10 +501,26 @@ $(document).ready(function() {
     clearMessages : function() {
       $(DiscImpl.msgContainer).empty();
     },
-
+    
+    _loading : function(container, func) {
+      if(func == "start"){
+        $(container).addClass('mf-loading');
+      }else{
+        $(container).removeClass('mf-loading');        
+      }
+    },
+    
     clearReplies : function() {
       $(DiscImpl.subContainer).empty();
     },
+    
+    _scrollToElement : function(el){
+        var offT =  $(el).offset().top;
+        var offH =  $(el).height();
+        var offS = offT + offH;
+       $("html,body").scrollTop(offS);
+    },
+    
     _onHashChange: function (event) {
       var hash = window.location.hash.substring(1);
       var _this = this;
@@ -498,7 +541,6 @@ $(document).ready(function() {
     _klass : {
       // Variables for the class
       msgContainer : ".di-messages-container",
-      pageContainer : ".di-pages-container",
       subContainer : ".di-sumbessages-container",
 
     }
