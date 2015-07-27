@@ -13,7 +13,7 @@
     {:else}
       <div class="di-replies-paging">
         <div class="di-paging-toolbar">
-          <div class="di-paging-tool cm-page-link-load-more-disabled">{#localize key="plugin.discussion.links.nomore"/}</div>
+          <div class="di-paging-tool di-page-link-load-more disabled">{#localize key="plugin.discussion.links.nomore"/}</div>
         </div>
       </div>    
     {/.}    

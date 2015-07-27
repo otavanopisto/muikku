@@ -341,7 +341,11 @@ $(document).ready(function() {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.noreplies', err));
         } else {
+          if(replies){
           replies.pageNo = newPg;
+          replies.areaId = areaId;
+          replies.threadId = threadId;
+          }
           renderDustTemplate('/discussion/discussion_replies_page.dust', replies, function(text) {
 
             $(".di-replies-container").append($.parseHTML(text));
