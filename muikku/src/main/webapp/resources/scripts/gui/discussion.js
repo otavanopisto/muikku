@@ -536,6 +536,14 @@ $(document).ready(function() {
           var cHash = hash.substring(0, hI);
           _this._loadThread(areaId,threadId);
  
+        }else if(hash.indexOf("area/") === 0){
+          if (hash.indexOf("all") == -1){
+           var areaId = hash.substring(5,6);
+          }else{
+           var areaId = "all";
+          }
+          this.filterMessagesByArea(areaId);
+          $("#discussionAreaSelect").val(areaId);
         }else{
           this.refreshLatest();
         }
@@ -554,7 +562,9 @@ $(document).ready(function() {
   window.discussion = new DiscImpl();
   
   $("#discussionAreaSelect").change(function() {
-    window.discussion.filterMessagesByArea($(this).val());
+    
+    window.location.hash =  "#area/" + $(this).val() ;
+//    window.discussion.filterMessagesByArea($(this).val());
   });
 
   $(".di-new-message-button").click(function() {

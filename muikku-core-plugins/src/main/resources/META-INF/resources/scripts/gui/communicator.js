@@ -20,9 +20,6 @@ $(document).ready(function(){
 		
 
 		openInSN('/communicator/communicator_create_message.dust', null, sendMessage);		
-		
-
-       
        
 	})
 	
