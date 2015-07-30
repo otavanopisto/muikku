@@ -104,6 +104,18 @@
       > div {
         height:60px;
       }
+       .di-user-picture {
+        float:left;
+        height:30px;
+        width:30px;
+       
+         
+        &.default {
+          @extend .co-user-picture;
+        }
+
+        
+      } 
       
       .di-message-meta {
         height:60px;

@@ -1,6 +1,7 @@
 
 <div class="mf-item di-message mf-category-{forumAreaId} closed" id="{id}">
   <div class="mf-item-header-name di-message-meta">
+   <div class="di-user-picture default" title="{creatorFullName}"></div>
    <div class="di-message-meta-topic"><span>{title}</span></div>
    <div class="di-message-meta-content"><span>{message|s}</span></div>
   </div>

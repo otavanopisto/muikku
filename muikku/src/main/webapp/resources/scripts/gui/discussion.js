@@ -48,8 +48,16 @@ $(document).ready(function() {
       mApi().forum.latest.read().on('$', function(msgs, msgsCallback) {
         mApi().forum.areas.read(msgs.forumAreaId).callback(function(err, area) {
           msgs.areaName = area.name;
+          
+
+          
+        });
+        
+        mApi().user.users.basicinfo.read(msgs.creator).callback(function(err, user) {
+          msgs.creatorFullName = user.firstName + ' ' + user.lastName;
 
         });
+
         
         var d = new Date(msgs.created);
 
