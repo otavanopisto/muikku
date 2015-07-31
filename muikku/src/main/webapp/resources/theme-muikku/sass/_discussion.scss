@@ -201,14 +201,24 @@
         }
          
         .di-message-activity {
-          padding:20px 10px;
+          padding:20px 0px;
           height:60px;
           color:#000;
           font-size:14px;
           width:47%;
           font-weight:300;
+          
+          .di-message-replies{
+            font-weight:600;
+            display:inline-block;
+            width:25px;
+            background-color:$hlBgr;
+            text-align:center;
+            margin-left:10px;
+          }         
+          
         }
-        
+ 
       }
 
     }
