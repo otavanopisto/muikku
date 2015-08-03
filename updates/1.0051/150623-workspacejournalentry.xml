@@ -4,7 +4,7 @@
     create table WorkspaceJournalEntry (
         id bigint not null auto_increment,
         workspaceEntityId bigint,
-        html text,
+        html longtext,
         title varchar(255),
         primary key (id)
     );
