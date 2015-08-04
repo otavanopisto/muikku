@@ -342,7 +342,8 @@ public class WorkspaceMaterialController {
   }
 
   public WorkspaceMaterial findWorkspaceMaterialByWorkspaceEntityAndPath(WorkspaceEntity workspaceEntity, String path) {
-    return (WorkspaceMaterial) findWorkspaceNodeByWorkspaceEntityAndPath(workspaceEntity, path);
+    WorkspaceNode workspaceNode = findWorkspaceNodeByWorkspaceEntityAndPath(workspaceEntity, path); 
+    return workspaceNode instanceof WorkspaceMaterial ? (WorkspaceMaterial) workspaceNode : null;
   }
 
   public List<WorkspaceMaterial> listWorkspaceMaterialsByParent(WorkspaceNode parent) {
@@ -759,10 +760,12 @@ public class WorkspaceMaterialController {
           InputSource inputSource = new InputSource(htmlReader);
           parser.parse(inputSource);
           Document document = parser.getDocument();
-
+ 
           NodeList imgList = document.getElementsByTagName("img");
           for (int i = 0, l = imgList.getLength(); i < l; i++) {
             Element img = (Element) imgList.item(i);
+            String imgClass = img.getAttribute("class");
+            img.setAttribute("class", imgClass == null ? "lazy" : imgClass + " lazy");
             img.setAttribute("data-original", img.getAttribute("src"));
             img.removeAttribute("src");
           }

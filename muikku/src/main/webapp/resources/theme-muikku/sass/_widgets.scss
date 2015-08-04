@@ -555,7 +555,6 @@ div[class*="wi-dock-static-navi"] {
   
     .lu-user-picture {
       @incude border(2px,#fff,solid);
-      background:#fff;
       height:48px;
       width:48px;      
       box-sizing:border-box; 
@@ -563,6 +562,16 @@ div[class*="wi-dock-static-navi"] {
       border-radius:24px;
       margin:0 4px 0 0;
       z-index:15;
+      background-size:100% auto;
+      border:2px solid #fff;
+      @include background-image('/gfx/default-user-picture.jpg');
+      overflow:hidden;
+      
+      img {
+        width:100%;
+        border:0;
+      }
+      
     }
     .lu-infoContainer {
        @incude border(2px,#fff,solid);
@@ -581,6 +590,11 @@ div[class*="wi-dock-static-navi"] {
         padding:13px 6px 14px 20px;
         float:left;
         height:1.5em;
+        
+        a {
+          color:#3c77a0;
+          text-decoration:none;
+        }
       }
       
       .lu-user-name-button  div {
@@ -801,20 +815,30 @@ div[class*="wi-dock-static-navi"] {
  }
  
  .wi-message{
+    font-size:11px; 
+    padding:5px;
+
+    .wi-message-caption{    
+      @include textOverflow;
+    }
+    
+    .wi-message-content{
+      @include textOverflow;    
+    }
   &:not(:last-child){border-bottom: 1px solid #f0f3f4;}
   &.unread{
      .wi-message-caption{
        font-weight:bold;
+       a{color:#ff0000;}
     }  
     .icon-envelope:before{
-      color:#ff0000;
+
     }   
   }
  }
 
  .wi-message-content{
    color:#3a3a3a;
-   font-size:11px; 
    overflow:hidden !important;
    text-overflow: ellipsis;   
    max-height:70px;

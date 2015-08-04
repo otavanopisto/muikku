@@ -6,6 +6,7 @@
     },
     
     _create : function() {
+      $(this.element).removeClass('lazyPdf');
       $(this.element).addClass('lazy-pdf');
       $(this.element).waypoint($.proxy(function(direction) {
         var url = $(this.element).attr('data-url');
@@ -31,12 +32,6 @@
     _destroy: function () {
       
     }
-  });
-
-  $(document).ready(function() {
-    $('div.lazyPdf').lazyPdf({
-      
-    });
   });
   
 }).call(this);

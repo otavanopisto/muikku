@@ -13,13 +13,9 @@
       .append($('<input>').attr('type', 'file'));
   }
   
-  function enableFileUploader(element, parentId, nextSiblingId) {
+  function enableFileUploader(element) {
     $(element)
-      .workspaceMaterialUpload({
-        workspaceEntityId: $('.workspaceEntityId').val(),
-        parentId: parentId,
-        nextSiblingId: nextSiblingId
-      })
+      .workspaceMaterialUpload()
       .on('fileUploaded', function (event, data) {
         var newPage = $('<section>')
           .addClass('workspace-materials-view-page material-management-view')
@@ -33,15 +29,29 @@
           });
         $(element).after(newPage);
         $(element).workspaceMaterialUpload('reset');
-        
+        // Page
         $(document).muikkuMaterialLoader('loadMaterial', newPage);
-        
-        var nextPage = $(newPage).next('.workspace-materials-view-page');
-        
+        // TOC
+        var tocItem = $('<li class="workspace-materials-toc-item " data-workspace-node-id="' + data.workspaceMaterialId + '" />');
+        tocItem.append('<a href="#page-' + data.workspaceMaterialId + '">' + data.title + '</a>');
+        tocItem.append('<span class="workspace-materials-toc-itemDragHandle icon-move ui-sortable-handle" />');
+        if (data.nextSiblingId) {
+          var nextSibling = $('li[data-workspace-node-id="' + data.nextSiblingId + '"]');
+          if (nextSibling) {
+            nextSibling.before(tocItem);
+          }
+        }
+        else {
+          var parent = $('ul[data-workspace-node-id="' + data.parentId + '"]');
+          if (parent) {
+            parent.append(tocItem);
+          }
+        } 
+        // Add sections
         var uploader = createFileUploader();
-        nextPage.before(createAddPageSectionLink());
-        nextPage.before(uploader);
-        enableFileUploader(uploader, nextPage.data('parent-id'), nextPage.data('workspace-material-id'));
+        newPage.after(uploader);
+        newPage.after(createAddPageSectionLink());
+        enableFileUploader(uploader);
       })
       .on('fileDiscarded', function (event, data) {
         $(this).workspaceMaterialUpload('reset');
@@ -57,6 +67,22 @@
       var pageContent = $(node).find('.page-content');
       var editor = $('<div>').addClass('workspace-material-folder-editor-title-wrapper');
       var textfield = $("<input>").attr('type', 'text').addClass('workspace-material-folder-editor-title').val($(pageContent).text());
+      editor.append(textfield);
+      $(pageContent).replaceWith(editor);
+      textfield.focus();
+      textfield.select();
+      $(textfield).on('keydown', function (event, data) {
+        if (event.keyCode == 13) {
+          closeEditor($('#page-' + workspaceMaterialId));
+        }
+      });
+    }
+    else if (materialType == 'binary') {
+      // binary
+      $(node).addClass("page-edit-mode");
+      var pageContent = $(node).find('.page-content');
+      var editor = $('<div>').addClass('workspace-material-binary-editor-title-wrapper');
+      var textfield = $("<input>").attr('type', 'text').addClass('workspace-material-binary-editor-title').val($(node).data('material-title'));
       editor.append(textfield);
       $(pageContent).replaceWith(editor);
       textfield.focus();
@@ -125,6 +151,41 @@
               var editor = node.find('.workspace-material-folder-editor-title-wrapper');
               editor.replaceWith(pageElement);
               node.data('material-title', title);
+              // TOC
+              var tocElement = $("a[href*='#page-" + $(node).data('workspace-material-id') + "']");
+              if (tocElement) {
+                $(tocElement).text(title);
+              }
+            }
+          });
+        }
+      });
+    }
+    else if (materialType == 'binary') {
+      // binary
+      var title = node.find('.workspace-material-binary-editor-title').val();
+      var nextSibling = node.nextAll('.folder').first();
+      var nextSiblingId = nextSibling.length > 0 ? nextSibling.data('workspace-material-id') : null;
+      var workspaceId = $('.workspaceEntityId').val();
+      var hidden = node.hasClass('item-hidden');
+      node.removeClass("page-edit-mode");
+
+      mApi().workspace.workspaces.materials.read(workspaceId, node.data('workspace-material-id')).callback(function (err, binary) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        }
+        else {
+          binary.title = title;
+          mApi().workspace.workspaces.materials.update(workspaceId, node.data('workspace-material-id'), binary).callback(function (err, html) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            }
+            else {
+              var textfield = node.find('.workspace-material-binary-editor-title');
+              textfield.off();
+              node.data('material-title', title);
+              node.empty();
+              $(document).muikkuMaterialLoader('loadMaterial', node);
               // TOC
               var tocElement = $("a[href*='#page-" + $(node).data('workspace-material-id') + "']");
               if (tocElement) {
@@ -683,20 +744,21 @@
       });
     }
     else {
-      mApi().workspace.workspaces.materials.update(workspaceId, node.data('workspace-material-id'), {
-        id: node.data('workspace-material-id'),
-        materialId: node.data('material-id'),
-        parentId: node.data('parent-id'),
-        nextSiblingId: nextSiblingId,
-        hidden: hidden
-      }).callback(
-        function (err, html) {
-          if (err) {
-            $('.notification-queue').notificationQueue('notification', 'error', err);
-          }
-          else {
-            toggleNodeVisibilityUi(node, hidden);
-          }
+      mApi().workspace.workspaces.materials.read(workspaceId, node.data('workspace-material-id')).callback(function (err, material) {
+        if (err) {
+          $('.notification-queue').notificationQueue('notification', 'error', err);
+        }
+        else {
+          material.hidden = hidden;
+          mApi().workspace.workspaces.materials.update(workspaceId, node.data('workspace-material-id'), material).callback(function (err, html) {
+            if (err) {
+              $('.notification-queue').notificationQueue('notification', 'error', err);
+            }
+            else {
+              toggleNodeVisibilityUi(node, hidden);
+            }
+          });
+        }
       });
     }
   }
@@ -908,14 +970,11 @@
     });
     
     $('.workspaces-materials-management-insert-file').each(function(index, element) {
-      var nextMaterial = $(element).next('.workspace-materials-view-page');
-      var parentId = $(nextMaterial).data('parent-id');
-      if (!parentId) {
-        parentId = $('.workspaceRootFolderId').val();
-      }
-      var nextSiblingId = $(nextMaterial).data('workspace-material-id');
-      enableFileUploader(element, parentId, nextSiblingId);
+      enableFileUploader(element);
     });
+
+    $('.muikku-connect-field').muikkuConnectField('refresh');
+    
     $(window).data('initializing', false);
   });
   
@@ -1318,7 +1377,8 @@
           if (workspaceFolderErr) {
             $('.notification-queue').notificationQueue('notification', 'error', workspaceFolderErr);
             return;
-          } else {
+          }
+          else {
             newPage.removeClass('workspace-materials-management-new').addClass("folder");
             newPage.attr({
               'id': 'page-' + workspaceFolderResult.id,

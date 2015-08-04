@@ -29,9 +29,11 @@ import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 import fi.muikku.schooldata.UserSchoolDataBridge;
 import fi.muikku.schooldata.entity.EnvironmentRole;
 import fi.muikku.schooldata.entity.EnvironmentRoleArchetype;
+import fi.muikku.schooldata.entity.GroupUser;
 import fi.muikku.schooldata.entity.Role;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.UserEmail;
+import fi.muikku.schooldata.entity.UserGroup;
 import fi.muikku.schooldata.entity.UserImage;
 import fi.muikku.schooldata.entity.UserProperty;
 import fi.muikku.schooldata.entity.WorkspaceRole;
@@ -478,6 +480,58 @@ public class LocalUserSchoolDataBridge implements UserSchoolDataBridge {
   private EnvironmentRole toLocalEnvironmentRoleEntity(EnvironmentRoleEntity environmentRoleEntity) {
     EnvironmentRoleArchetype archetype = EnvironmentRoleArchetype.valueOf(environmentRoleEntity.getArchetype().name());
     return new LocalEnvironmentRoleImpl(environmentRoleEntity.getId().toString(), archetype, environmentRoleEntity.getName());
+  }
+
+  @Override
+  public UserGroup findUserGroup(String identifier) throws SchoolDataBridgeRequestException,
+      UnexpectedSchoolDataBridgeException {
+    // TODO implement
+    return null;
+  }
+
+  @Override
+  public List<UserGroup> listUserGroups() throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+    // TODO implement
+    return null;
+  }
+
+  public void updateUserCredentials(String userIdentifier, String oldPassword, String newUsername, String newPassword)
+      throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+    // TODO Auto-generated method stub
+  }
+
+  @Override
+  public String requestPasswordResetByEmail(String email) throws SchoolDataBridgeRequestException,
+      UnexpectedSchoolDataBridgeException {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public GroupUser findGroupUser(String groupIdentifier, String identifier) throws SchoolDataBridgeRequestException,
+      UnexpectedSchoolDataBridgeException {
+    // TODO implement
+    return null;
+  }
+
+  @Override
+  public List<GroupUser> listGroupUsersByGroup(String groupIdentifier) throws SchoolDataBridgeRequestException,
+      UnexpectedSchoolDataBridgeException {
+    // TODO implement
+    return null;
+  }
+  
+  public boolean confirmResetPassword(String resetCode, String newPassword) throws SchoolDataBridgeRequestException,
+      UnexpectedSchoolDataBridgeException {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+  @Override
+  public String findUsername(String identifier) throws SchoolDataBridgeRequestException,
+      UnexpectedSchoolDataBridgeException {
+    // TODO Auto-generated method stub
+    return null;
   }
 
 }

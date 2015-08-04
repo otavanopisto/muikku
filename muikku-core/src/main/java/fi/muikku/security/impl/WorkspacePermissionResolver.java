@@ -6,6 +6,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import fi.muikku.dao.security.PermissionDAO;
+import fi.muikku.dao.security.WorkspaceGroupPermissionDAO;
 import fi.muikku.dao.security.WorkspaceRolePermissionDAO;
 import fi.muikku.dao.security.WorkspaceUserPermissionOverrideDAO;
 import fi.muikku.dao.users.EnvironmentUserDAO;
@@ -15,10 +16,12 @@ import fi.muikku.model.security.WorkspaceUserPermissionOverride;
 import fi.muikku.model.users.EnvironmentUser;
 import fi.muikku.model.users.RoleEntity;
 import fi.muikku.model.users.UserEntity;
+import fi.muikku.model.users.UserGroupEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
 import fi.muikku.security.AbstractPermissionResolver;
 import fi.muikku.security.PermissionScope;
+import fi.muikku.users.UserGroupEntityController;
 import fi.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.ContextReference;
 import fi.otavanopisto.security.PermissionResolver;
@@ -40,8 +43,14 @@ public class WorkspacePermissionResolver extends AbstractPermissionResolver impl
   private WorkspaceRolePermissionDAO workspaceUserRolePermissionDAO;
   
   @Inject
+  private WorkspaceGroupPermissionDAO workspaceGroupPermissionDAO; 
+  
+  @Inject
   private EnvironmentUserDAO environmentUserDAO;
-
+  
+  @Inject
+  private UserGroupEntityController userGroupEntityController;
+  
   @Override
   public boolean handlesPermission(String permission) {
     Permission perm = permissionDAO.findByName(permission);
@@ -61,8 +70,12 @@ public class WorkspacePermissionResolver extends AbstractPermissionResolver impl
     if (checkWorkspaceRole(workspaceEntity, userEntity, perm)) {
       return true;
     }
+
+    if (checkEnvironmentRole(workspaceEntity, userEntity, perm)) {
+      return true;
+    }
     
-    return checkEnvironmentRole(workspaceEntity, userEntity, perm);
+    return checkWorkspaceGroupRole(workspaceEntity, userEntity, perm);
   }
   
   private boolean checkWorkspaceRole(WorkspaceEntity workspaceEntity, UserEntity userEntity, Permission perm) {
@@ -82,6 +95,17 @@ public class WorkspacePermissionResolver extends AbstractPermissionResolver impl
     }
   }
   
+  private boolean checkWorkspaceGroupRole(WorkspaceEntity workspaceEntity, UserEntity userEntity, Permission perm) {
+    List<UserGroupEntity> userGroups = userGroupEntityController.listUserGroupsByUser(userEntity);
+    
+    for (UserGroupEntity userGroup : userGroups) {
+      if (workspaceGroupPermissionDAO.hasWorkspacePermissionAccess(workspaceEntity, userGroup, perm))
+        return true;
+    }
+    
+    return false;
+  }
+
   private boolean checkEnvironmentRole(WorkspaceEntity workspaceEntity, UserEntity userEntity, Permission perm) {
     EnvironmentUser environmentUser = environmentUserDAO.findByUserAndArchived(userEntity, Boolean.FALSE);
     if (environmentUser == null) {
