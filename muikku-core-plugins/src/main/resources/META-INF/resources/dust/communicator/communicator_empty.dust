@@ -1,5 +1,3 @@
-
-
 <div class="mf-content-empty cm-no-messages">
   <h3>{#localize key="plugin.communicator.empty.topic"/}</h3>
 </div>

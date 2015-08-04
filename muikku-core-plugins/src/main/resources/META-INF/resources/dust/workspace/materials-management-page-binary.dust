@@ -1,3 +1,4 @@
+<h2>{title}</h2>
 {@select key=image}
   {@eq value="true" type="boolean"}  
     <img src="{@contextPath/}/rest/materials/binary/{data.id}/content"/>

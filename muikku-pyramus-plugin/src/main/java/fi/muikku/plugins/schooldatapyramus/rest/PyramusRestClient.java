@@ -174,6 +174,8 @@ class PyramusRestClient implements Serializable {
         } else {
           return null;
         }
+      case 403:
+        throw new PyramusRestClientUnauthorizedException(String.format("Received http error %d (%s) when requesting %s", response.getStatus(), response.getEntity(), path));
       case 404:
         return null;
       default:

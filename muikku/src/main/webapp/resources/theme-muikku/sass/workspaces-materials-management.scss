@@ -533,7 +533,7 @@ body.workspace-materials-management {
           padding:50px 0 10px 0;
           box-sizing:border-box;
         
-          /* Editor input override */
+          /* Folder editor input override */
           input[type="text"].workspace-material-folder-editor-title {
             width:100%;
             box-sizing:border-box;
@@ -548,11 +548,37 @@ body.workspace-materials-management {
             box-shadow: 0 0 0 10px rgba(243,250,255,0.8);
           }
           
-          /* Editor title override */
+          /* Folder editor title override */
           .workspace-material-folder-editor-title-wrapper {
             margin:19px 30px 26px 30px;
           
             input.workspace-material-folder-editor-title {
+              padding:0 0 2px 0;
+              margin:0;
+            }
+          
+          }
+
+          /* Binary editor input override */
+          input[type="text"].workspace-material-binary-editor-title {
+            width:100%;
+            box-sizing:border-box;
+            text-align:left;
+            color:#38393a;
+            font-size:27px;
+            border:0;
+            padding:0 0 2px 0;
+            margin:19px 30px 0px 30px;
+            border-radius:0;
+            background:#f3faff;
+            box-shadow: 0 0 0 10px rgba(243,250,255,0.8);
+          }
+          
+          /* Binary editor title override */
+          .workspace-material-binary-editor-title-wrapper {
+            margin:19px 30px 26px 30px;
+          
+            input.workspace-material-binary-editor-title {
               padding:0 0 2px 0;
               margin:0;
             }

@@ -8,12 +8,13 @@ public class ForumThreadRESTModel extends ForumMessageRESTModel {
   public ForumThreadRESTModel() {
   }
   
-  public ForumThreadRESTModel(Long id, String title, String message, Long creator, Date created, Long forumAreaId, Boolean sticky, Boolean locked, Date updated) {
+  public ForumThreadRESTModel(Long id, String title, String message, Long creator, Date created, Long forumAreaId, Boolean sticky, Boolean locked, Date updated, Long numReplies) {
     super(id, message, creator, created, forumAreaId);
     this.title = title;
     this.sticky = sticky;
     this.locked = locked;
     this.setUpdated(updated);
+    this.setNumReplies(numReplies);
   }
 
   public String getTitle() {
@@ -48,8 +49,17 @@ public class ForumThreadRESTModel extends ForumMessageRESTModel {
     this.updated = updated;
   }
 
+  public Long getNumReplies() {
+    return numReplies;
+  }
+
+  public void setNumReplies(Long numReplies) {
+    this.numReplies = numReplies;
+  }
+
   private String title;
   private Boolean sticky;
   private Boolean locked;
   private Date updated;
+  private Long numReplies;
 }

@@ -2,6 +2,8 @@ package fi.muikku.schooldata;
 
 import java.util.List;
 
+import fi.muikku.schooldata.entity.UserGroup;
+import fi.muikku.schooldata.entity.GroupUser;
 import fi.muikku.schooldata.entity.Role;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.UserEmail;
@@ -239,4 +241,24 @@ public interface UserSchoolDataBridge {
 	
 	public Role findUserEnvironmentRole(String userIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
 
+	/* UserGroups */
+	
+	public UserGroup findUserGroup(String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;;
+	
+	public List<UserGroup> listUserGroups() throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;;
+	
+	/* GroupUsers */
+	
+	public GroupUser findGroupUser(String groupIdentifier, String identifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;;
+	
+	public List<GroupUser> listGroupUsersByGroup(String groupIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;;
+
+  public void updateUserCredentials(String userIdentifier, String oldPassword, String newUsername, String newPassword) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+
+  public String requestPasswordResetByEmail(String email) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+
+  public boolean confirmResetPassword(String resetCode, String newPassword) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+
+  public String findUsername(String userIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException;
+	
 }

@@ -15,12 +15,12 @@ public class SchoolDataBridgeSessionController {
   
   @PostConstruct
   public void init() {
-    systemSessionActive = false;
+    systemSessionsActive = 0;
   }
   
   @PreDestroy
   public void deinit() {
-    if (systemSessionActive) {
+    if (systemSessionsActive > 0) {
       logger.severe("System session active leak detected!");
     }
   }
@@ -31,14 +31,14 @@ public class SchoolDataBridgeSessionController {
    * Use with caution because incorrect usage may lead to security leaks
    */
   public void startSystemSession() {
-    systemSessionActive = true;
+    systemSessionsActive++;
   }
   
   /**
    * Ends system session forcing
    */
   public void endSystemSession() {
-    systemSessionActive = false;
+    systemSessionsActive--;
   }
 
   /**
@@ -47,8 +47,9 @@ public class SchoolDataBridgeSessionController {
    * @return whether school data bridge should be forced to be used as system user
    */
   public boolean isSystemSessionActive() {
-    return systemSessionActive;
+    return systemSessionsActive > 0;
   }
   
-  private boolean systemSessionActive;
+  private int systemSessionsActive = 0;
+
 }

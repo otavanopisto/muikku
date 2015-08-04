@@ -88,7 +88,7 @@ public class DefaultSchoolDataUserListener {
         event.setDiscoveredUserEntityId(userEntity.getId());
       }
     } catch (Exception ex) {
-      logger.log(Level.SEVERE, "User creation on discovery failed.", ex);
+      logger.log(Level.SEVERE, String.format("User %s creation on discovery failed.", discoverId), ex);
     }
   }
   

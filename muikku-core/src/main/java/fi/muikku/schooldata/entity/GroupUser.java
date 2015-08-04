@@ -8,8 +8,8 @@ public interface GroupUser extends SchoolDataEntity {
 	
 	public String getUserSchoolDataSource();
 	
-	public String getGroupIdentifier();
+	/*public String getGroupIdentifier();
 	
-	public String getGroupSchoolDataSource();
+	public String getGroupSchoolDataSource(); TODO: needed? */
 	
 }

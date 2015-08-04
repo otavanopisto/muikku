@@ -4,6 +4,7 @@
 @import "_textcontent.scss";
 @import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
 @import "_icons.scss"; /* Has to be loaded here, so it can be used with @extend in others */
+@import "_animations.scss";
 @import "_commons.scss";
 @import "_forms.scss";
 @import "_modal.scss";
@@ -16,6 +17,7 @@
 @import "_communicator.scss";
 @import "_guider.scss";
 @import "_discussion.scss";
+@import "_profile.scss";
 @import "_coursepicker.scss";
 @import "_tasktool.scss";
 

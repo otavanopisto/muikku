@@ -266,7 +266,7 @@ body.evaluation {
                 height:120px;
                 margin:0 auto;  
                 box-sizing:border-box;
-                @include background-image('gfx/default-student-picture.jpg');
+                @include background-image('gfx/default-user-picture.jpg');
                 background-size:cover;
                 border-radius:75px;
                 background-position:center center;
@@ -955,7 +955,7 @@ body.evaluation {
       height:50px;
       border:0;
       background:#657e90;
-      @include background-image('gfx/default-student-picture.jpg');
+      @include background-image('gfx/default-user-picture.jpg');
       background-repeat:no-repeat;
       background-position:left center;
       background-size:contain;

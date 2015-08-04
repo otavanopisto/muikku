@@ -1,3 +1,4 @@
+<h2>{title}</h2>
 {@select key=binaryType}
   {@eq value="image" type="string"}  
     <img src="{@contextPath/}/rest/materials/binary/{data.id}/content"/>
@@ -8,7 +9,7 @@
   {@eq value="flash" type="string"}  
     <div class="lazySwf" data-url="{@contextPath/}/rest/materials/binary/{data.id}/content" data-link-text="{#localize key="plugin.workspace.materialsManagement.binaryDownload"/}"/>
   {/eq}
-  {@default}
+  {@eq value="unknown" type="string"}
     <a href="{@contextPath/}/rest/materials/binary/{data.id}/download" target="_blank">{#localize key="plugin.workspace.materialsManagement.binaryDownload"/}</a>
-  {/default}
+  {/eq}
 {/select}

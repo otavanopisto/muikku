@@ -10,14 +10,14 @@ import fi.muikku.model.security.Permission;
 import fi.muikku.model.security.UserGroupRolePermission;
 import fi.muikku.model.security.UserGroupRolePermission_;
 import fi.muikku.model.users.RoleEntity;
-import fi.muikku.model.users.UserGroup;
+import fi.muikku.model.users.UserGroupEntity;
 
 
 public class UserGroupRolePermissionDAO extends CoreDAO<UserGroupRolePermission> {
 
   private static final long serialVersionUID = 1034213846498141630L;
 
-  public UserGroupRolePermission create(UserGroup userGroup, RoleEntity role, Permission permission) {
+  public UserGroupRolePermission create(UserGroupEntity userGroup, RoleEntity role, Permission permission) {
 	  UserGroupRolePermission curpermission = new UserGroupRolePermission();
     
     curpermission.setUserGroup(userGroup);
@@ -30,11 +30,11 @@ public class UserGroupRolePermissionDAO extends CoreDAO<UserGroupRolePermission>
   }
   
 	// TODO: Not a DAO method
-  public boolean hasPermissionAccess(UserGroup userGroup, RoleEntity role, Permission permission) {
+  public boolean hasPermissionAccess(UserGroupEntity userGroup, RoleEntity role, Permission permission) {
     return findByRoleAndPermission(userGroup, role, permission) != null;
   }
 
-  public UserGroupRolePermission findByRoleAndPermission(UserGroup userGroup, RoleEntity role, Permission permission) {
+  public UserGroupRolePermission findByRoleAndPermission(UserGroupEntity userGroup, RoleEntity role, Permission permission) {
     EntityManager entityManager = getEntityManager(); 
     
     CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();

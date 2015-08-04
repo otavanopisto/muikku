@@ -9,17 +9,25 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
+import fi.muikku.controller.PluginSettingsController;
+import fi.muikku.plugins.schooldatapyramus.entities.PyramusGroupUser;
 import fi.muikku.plugins.schooldatapyramus.entities.PyramusSchoolDataEntityFactory;
+import fi.muikku.plugins.schooldatapyramus.entities.PyramusUserGroup;
 import fi.muikku.plugins.schooldatapyramus.rest.PyramusClient;
+import fi.muikku.plugins.schooldatapyramus.rest.PyramusRestClientUnauthorizedException;
 import fi.muikku.schooldata.SchoolDataBridgeRequestException;
+import fi.muikku.schooldata.SchoolDataBridgeUnauthorizedException;
 import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 import fi.muikku.schooldata.UserSchoolDataBridge;
+import fi.muikku.schooldata.entity.GroupUser;
 import fi.muikku.schooldata.entity.Role;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.UserEmail;
+import fi.muikku.schooldata.entity.UserGroup;
 import fi.muikku.schooldata.entity.UserImage;
 import fi.muikku.schooldata.entity.UserProperty;
 import fi.pyramus.rest.model.CourseStaffMemberRole;
@@ -30,7 +38,12 @@ import fi.pyramus.rest.model.Person;
 import fi.pyramus.rest.model.School;
 import fi.pyramus.rest.model.StaffMember;
 import fi.pyramus.rest.model.Student;
+import fi.pyramus.rest.model.StudentGroup;
+import fi.pyramus.rest.model.StudentGroupStudent;
+import fi.pyramus.rest.model.StudentGroupUser;
 import fi.pyramus.rest.model.StudyProgramme;
+import fi.pyramus.rest.model.UserCredentials;
+import fi.pyramus.rest.model.UserCredentialReset;
 import fi.pyramus.rest.model.UserRole;
 
 @Dependent
@@ -45,6 +58,9 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   
   @Inject
   private PyramusClient pyramusClient;
+  
+  @Inject
+  private PluginSettingsController pluginSettingsController;
  
   @Override
   public String getSchoolDataSource() {
@@ -412,6 +428,95 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
 
     throw new SchoolDataBridgeRequestException("Malformed user identifier");
   }
+  
+  @Override
+  public UserGroup findUserGroup(String identifier) throws SchoolDataBridgeRequestException {
+    switch (identifierMapper.getStudentGroupType(identifier)) {
+      case STUDENTGROUP:
+        Long userGroupId = identifierMapper.getPyramusStudentGroupId(identifier);
+        if (userGroupId != null) {
+          StudentGroup studentGroup = pyramusClient.get(String.format("/students/studentGroups/%d", userGroupId), StudentGroup.class);
+          return studentGroup != null ? entityFactory.createEntity(studentGroup) : null;
+        }
+      break;
+      
+      case STUDYPROGRAMME:
+        Long studyProgrammeId = identifierMapper.getPyramusStudyProgrammeId(identifier);
+        if (studyProgrammeId != null) {
+          StudyProgramme studyProgramme = pyramusClient.get(String.format("/students/studyProgrammes/%d", studyProgrammeId), StudyProgramme.class);
+          if (studyProgramme != null)
+            return new PyramusUserGroup(identifierMapper.getStudyProgrammeIdentifier(studyProgramme.getId()), studyProgramme.getName());
+        }
+      break;
+    }
+    
+    throw new SchoolDataBridgeRequestException("Malformed group identifier");
+  }
+
+  @Override
+  public List<UserGroup> listUserGroups() {
+    return entityFactory.createEntities(pyramusClient.get("/students/studentGroups", StudentGroup[].class));
+  }
+
+  @Override
+  public GroupUser findGroupUser(String groupIdentifier, String identifier) throws SchoolDataBridgeRequestException {
+    switch(identifierMapper.getStudentGroupType(groupIdentifier)) {
+      case STUDENTGROUP:
+        Long userGroupId = identifierMapper.getPyramusStudentGroupId(groupIdentifier);
+        Long groupUserId = null;
+        
+        switch (identifierMapper.getStudentGroupUserType(identifier)) {
+          case STAFFMEMBER:
+            groupUserId = identifierMapper.getPyramusStudentGroupStaffMemberId(identifier);
+
+            if (userGroupId != null && groupUserId != null){
+              return entityFactory.createEntity(
+                  pyramusClient.get(String.format("/students/studentGroups/%d/staffmembers/%d", userGroupId, groupUserId) , StudentGroupUser.class));
+            }
+          break;
+          
+          case STUDENT:
+            groupUserId = identifierMapper.getPyramusStudentGroupStudentId(identifier);
+
+            if (userGroupId != null && groupUserId != null){
+              return entityFactory.createEntity(
+                  pyramusClient.get(String.format("/students/studentGroups/%d/students/%d", userGroupId, groupUserId) , StudentGroupStudent.class));
+            }
+          break;
+        }
+      break;
+      case STUDYPROGRAMME:
+        // TODO: Tis not the elegant
+        Long studentId = identifierMapper.getPyramusStudyProgrammeStudentId(identifier);
+
+        if (studentId != null) {
+          return new PyramusGroupUser(identifier,
+              identifierMapper.getStudentIdentifier(studentId));
+        }
+      break;
+    }
+
+    throw new SchoolDataBridgeRequestException("Malformed group identifier");
+  }
+
+  @Override
+  public List<GroupUser> listGroupUsersByGroup(String groupIdentifier) throws SchoolDataBridgeRequestException {
+    switch (identifierMapper.getStudentGroupType(groupIdentifier)) {
+      case STUDENTGROUP:
+        Long userGroupId = identifierMapper.getPyramusStudentGroupId(groupIdentifier);
+        if (userGroupId != null) {
+          return entityFactory.createEntities(pyramusClient.get(String.format("/students/studentGroups/%d/students", userGroupId), StudentGroupStudent[].class));
+        }
+      break;
+      
+      // TODO: Studyprogramme groups, Pyramus needs endpoint to list students by studyprogramme - too costly to implement it otherwise
+      case STUDYPROGRAMME:
+        throw new SchoolDataBridgeRequestException("PyramusUserSchoolDataBridge.listGroupUsersByGroup - not implemented");
+    }
+
+    throw new SchoolDataBridgeRequestException("Malformed group identifier");
+  }
+  
 
   private Person findPyramusPerson(Long personId) {
     Person person = pyramusClient.get("/persons/persons/" + personId,
@@ -438,5 +543,82 @@ public class PyramusUserSchoolDataBridge implements UserSchoolDataBridge {
   private Student findPyramusStudent(Long studentId) {
     return pyramusClient.get("/students/students/" + studentId, Student.class);
   }
+  
+  private Long getPersonId(String userIdentifier) {
+    Long personId = null;
+    
+    Long studentId = identifierMapper.getPyramusStudentId(userIdentifier);
+    if (studentId != null) {
+      Student student = findPyramusStudent(studentId);
+      personId = student.getPersonId();
+    }
+
+    Long staffId = identifierMapper.getPyramusStaffId(userIdentifier);
+    if (staffId != null) {
+      StaffMember staffMember = findPyramusStaffMember(staffId);
+      personId = staffMember.getPersonId();
+    }
+
+    return personId;
+  }
+
+  @Override
+  public void updateUserCredentials(String userIdentifier, String oldPassword, String newUsername, String newPassword)
+      throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+    
+    Long personId = getPersonId(userIdentifier);
+    
+    if (personId == null)
+      throw new SchoolDataBridgeRequestException("Malformed user identifier");
+
+    try {
+      UserCredentials change = new UserCredentials(oldPassword, newUsername, newPassword);
+      
+      pyramusClient.put("/persons/persons/" + personId + "/credentials", change);
+    } catch (PyramusRestClientUnauthorizedException purr) {
+      throw new SchoolDataBridgeUnauthorizedException(purr.getMessage());
+    }
+  }
+
+  @Override
+  public String requestPasswordResetByEmail(String email) {
+    return pyramusClient.get("/persons/resetpasswordbyemail?email=" + email, String.class);
+  }
+
+  @Override
+  public boolean confirmResetPassword(String resetCode, String newPassword) {
+    String clientApplicationSecret = pluginSettingsController.getPluginSetting(SchoolDataPyramusPluginDescriptor.PLUGIN_NAME, "rest.clientSecret");
+    
+    String secret = DigestUtils.md5Hex(resetCode + clientApplicationSecret);
+    
+    UserCredentialReset reset = new UserCredentialReset(secret, newPassword);
+    
+    try {
+      pyramusClient.post("/persons/resetpasswordbyemail", reset);
+      
+      return true;
+    } catch (Exception ex) {
+      return false;
+    }
+  }
+
+  @Override
+  public String findUsername(String userIdentifier) throws SchoolDataBridgeRequestException,
+      UnexpectedSchoolDataBridgeException {
+    Long personId = getPersonId(userIdentifier);
+    
+    if (personId == null)
+      throw new SchoolDataBridgeRequestException("Malformed user identifier");
+    
+    try {
+      UserCredentials userCredentials = pyramusClient.get("/persons/persons/" + personId + "/credentials", UserCredentials.class);
+      
+      return userCredentials.getUsername();
+    } catch (PyramusRestClientUnauthorizedException purr) {
+      throw new SchoolDataBridgeUnauthorizedException(purr.getMessage());
+    }
+  }
+
+
 
 }

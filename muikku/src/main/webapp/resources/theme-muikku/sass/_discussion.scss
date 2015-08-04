@@ -1,4 +1,4 @@
-  /* discussion (.di-*) */
+/* discussion (.di-*) */
 
 .di-no-messages {
   min-height:400px;
@@ -33,8 +33,8 @@
       color: #dadada;
       line-height: 30px;
       width: 400px;      
-      
-      &:focus {
+
+      &:focus{
        color:#000;   
       }
       
@@ -91,11 +91,12 @@
 }
 
 .di-messages-container {
-    
+   min-height:500px;
   .di-message {
     margin:5px;
     background:#fff;
     padding:10px;
+   
         
     &.closed {
       height:60px;
@@ -103,6 +104,18 @@
       > div {
         height:60px;
       }
+       .di-user-picture {
+        float:left;
+        height:30px;
+        width:30px;
+       
+         
+        &.default {
+          @extend .co-user-picture;
+        }
+
+        
+      } 
       
       .di-message-meta {
         height:60px;
@@ -188,14 +201,24 @@
         }
          
         .di-message-activity {
-          padding:20px 10px;
+          padding:20px 0px;
           height:60px;
           color:#000;
           font-size:14px;
           width:47%;
           font-weight:300;
+          
+          .di-message-replies{
+            font-weight:600;
+            display:inline-block;
+            width:25px;
+            background-color:$hlBgr;
+            text-align:center;
+            margin-left:10px;
+          }         
+          
         }
-        
+ 
       }
 
     }
@@ -422,7 +445,7 @@
         font-family:"Open Sans";
         min-width:90px;
       }
-      
+
       button.delete-button,
       button.confirm-button {
         float:right;
@@ -448,4 +471,37 @@
   }
 }
 
+.di-reply{
+-webkit-animation: flash 1s;
+ -moz-animation: flash 1s;
+   -o-animation: flash 1s;
+      animation: flash 1s; 
+  
+}
+
+.di-messages-paging, .di-replies-paging{
+  padding:10px;
+}
+.di-paging-toolbar{
+  text-align:center;
+  
+}
+
+
+.di-paging-tool{
+    margin-left: auto;
+    margin-right: auto;
+    background: #36A3CE none repeat scroll 0% 0%;
+    cursor: pointer;
+    padding: 6px 26px;
+    display: inline-block;
+    color: #FFF;
+    font-size: 18px;
+
+  
+  &.disabled{
+    background:$bgr1;
+    color:$bgr2;
+  }
+}
 
