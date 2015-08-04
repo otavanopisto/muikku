@@ -462,9 +462,11 @@ $(document).ready(function() {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.noreplies', err));
         } else {
           _this.clearLoading();
+          if(replies){
           replies.areaId = areaId;
           replies.threadId = threadId;
           replies.pageNo = pageNo;
+          }
           renderDustTemplate('/discussion/discussion_replies.dust', replies, function(text) {
 
             $(DiscImpl.msgContainer).append($.parseHTML(text));
@@ -556,15 +558,17 @@ $(document).ready(function() {
       var _this = this;
        
         if (hash.indexOf("thread/") === 0) {
-          var areaId = hash.substring(7,8);
-          var threadId = hash.substring(9,10);
+          var areaId = hash.substring(7,hash.indexOf("/",7));
+          var threadId = hash.substring(hash.indexOf("/",7) + 1);
           var hI = hash.indexOf('/');
           var cHash = hash.substring(0, hI);
           _this._loadThread(areaId,threadId);
  
         }else if(hash.indexOf("area/") === 0){
           if (hash.indexOf("all") == -1){
-           var areaId = hash.substring(5,6);
+           
+            var areaId = hash.substring(5);
+           
           }else{
            var areaId = "all";
           }
