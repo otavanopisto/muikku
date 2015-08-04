@@ -266,7 +266,7 @@ body[class^='workspace'] {
         text-transform:uppercase;
       }
       
-      & > h3,h4,h5,h6 { /* Alternative Section's titles */
+      & > h3, > h4, > h5, > h6 { /* Alternative Section's titles */
         position:relative;
         z-index:13;
         max-width:700px;
