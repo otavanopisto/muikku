@@ -125,7 +125,7 @@ $(document).ready(function() {
      var _this = this;
       
      _this.clearMessages();
-
+     _this.addLoading(DiscImpl.msgContainer);
       mApi().forum.areas.threads.read(aId, tId).on('$', function(thread, threadCallback) {
         mApi().forum.areas.read(thread.forumAreaId).callback(function(err, area) {
           thread.areaName = area.name;
@@ -388,7 +388,6 @@ $(document).ready(function() {
     _loadThread : function(aId, tId) {
 
       var _this = this;
- 
 
       mApi().forum.areas.threads.read(aId, tId).on('$', function(thread, threadCallback) {
 
@@ -436,7 +435,7 @@ $(document).ready(function() {
       var pageNo = 1;
       _this = this;
       this.clearReplies();
-
+      _this.addLoading(DiscImpl.msgContainer);
       mApi().forum.areas.threads.replies.read(areaId, threadId).on('$', function(replies, repliesCallback) {
         
 
@@ -462,7 +461,7 @@ $(document).ready(function() {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.noreplies', err));
         } else {
-          _this.clearLoading()
+          _this.clearLoading();
           replies.areaId = areaId;
           replies.threadId = threadId;
           replies.pageNo = pageNo;

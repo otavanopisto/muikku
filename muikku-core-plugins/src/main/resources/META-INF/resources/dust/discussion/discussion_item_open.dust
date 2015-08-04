@@ -37,5 +37,4 @@
   <input type="hidden" name="areaId" value="{forumAreaId}"/>
   <input type="hidden" name="threadId" value="{id}"/>
 </div>  
-<div class="mf-loading"><div class="circle1"></div><div class="circle2"></div><div class="circle3"></div></div>
 {/threads}
