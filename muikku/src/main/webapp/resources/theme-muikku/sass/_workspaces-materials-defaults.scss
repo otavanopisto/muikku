@@ -25,7 +25,7 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
       visibility:hidden;
       opacity:0;
       position:absolute;
-/*       top:42px; */
+      z-index:2;
       left:4px;
       box-shadow:5px 5px 10px rgba(0, 0, 0, 0.2);
       padding:2px 8px;
