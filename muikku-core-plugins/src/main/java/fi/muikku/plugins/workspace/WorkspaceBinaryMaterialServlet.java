@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -57,32 +56,42 @@ public class WorkspaceBinaryMaterialServlet extends HttpServlet {
     }
 
     Material material = workspaceMaterialController.getMaterialForWorkspaceMaterial(workspaceMaterial);
-
-    String eTag = DigestUtils.md5Hex(String.valueOf(material.getVersion()));
+    
+    int materialSize = material instanceof BinaryMaterial ? ((BinaryMaterial) material).getContent().length : material instanceof HtmlMaterial ? ((HtmlMaterial) material).getHtml().length() : 0; 
+    String eTag = DigestUtils.md5Hex(material.getTitle() + ':' + material.getId() + ':' + materialSize + ':' + material.getVersion()); 
+    
     String ifNoneMatch = request.getHeader("If-None-Match");
     
-    if (!StringUtils.equals(ifNoneMatch, eTag)) {    
+    response.setHeader("ETag", eTag);
 
-      response.setHeader("ETag", eTag);
-      response.setHeader("Cache-Control", "must-revalidate");
-      
+    if (!StringUtils.equals(ifNoneMatch, eTag)) {
+      response.setStatus(HttpServletResponse.SC_OK);
       if (material instanceof BinaryMaterial) {
         BinaryMaterial binaryMaterial = (BinaryMaterial) material;
         byte[] data = binaryMaterial.getContent();
         response.setContentLength(data.length);
         response.setContentType(binaryMaterial.getContentType());
-        response.getOutputStream().write(data);
+        try {
+          response.getOutputStream().write(data);
+        }
+        finally {
+          response.getOutputStream().flush();
+        }
       }
       else if (material instanceof HtmlMaterial) {
         HtmlMaterial htmlMaterial = (HtmlMaterial) material;
         byte[] data = htmlMaterial.getHtml().getBytes("UTF-8");
         response.setContentLength(data.length);
         response.setContentType("text/html; charset=UTF-8");
-        response.getOutputStream().write(data);
+        try {
+          response.getOutputStream().write(data);
+        }
+        finally {
+          response.getOutputStream().flush();
+        }
       }  
-      
-      response.setStatus(HttpServletResponse.SC_OK);
-    } else {
+    }
+    else {
       response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
     }
   }
