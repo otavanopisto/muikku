@@ -106,14 +106,25 @@
 
 
 .cm-message {
-   
+   .cm-message-header-name{
+     width:90%;
+   }
+   .cm-message-header-count{
+    width:10%;
+    .cm-message-replies{
+      @extend .co-item-count;
+    }
+   }
    .cm-message-header-content-primary{
       font-weight:700;  
      }
   
   
    .cm-message-header-content-secondary{
-
+      white-space:nowrap;
+      text-overflow:ellipsis;
+      overflow:hidden;
+      padding-left:10px;
    }
 
     &.unread{
@@ -130,18 +141,19 @@
    
    span{
     float:right;
-    margin-right:10px;
    }
    
   }   
   
   .cm-user-picture{
-     float:left;
-     height:27px;
-     width:27px; 
-     &.default{
-     @extend .co-user-picture;     
-     }
+    float:left;
+    height: 20px;
+    width: 20px;
+    margin: 6px 0 0 6px !important;
+
+    &.default{
+    @extend .co-user-picture;     
+    }
      
   }
   .cm-message-view {

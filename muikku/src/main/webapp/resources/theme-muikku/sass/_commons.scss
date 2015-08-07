@@ -162,6 +162,15 @@ div[class*='header']{
   min-height:3em;
   border:1px solid $w-brd;
 }
+.co-item-count{
+  font-weight:600;
+  float:right;
+  width:25px;
+  background-color:$hlBgr;
+  text-align:center;
+  margin-left:10px;
+  
+}
 
 /* Forms 
 
