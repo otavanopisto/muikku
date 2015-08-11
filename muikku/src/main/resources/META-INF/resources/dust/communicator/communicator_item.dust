@@ -20,8 +20,6 @@
               {/senderHasPicture}            
               <input type="hidden" name="mf-person-id" value="{sender}"/>
 
-              
-<!--               <span class="mf-item-header-content-primary">{senderFullName}</span>         -->
 
               <div class="mf-item-header-content-secondary cm-message-header-content-secondary{?unreadMessagesInThread}cm-message-unread{/unreadMessagesInThread}">{caption}</div>    
             </div>
