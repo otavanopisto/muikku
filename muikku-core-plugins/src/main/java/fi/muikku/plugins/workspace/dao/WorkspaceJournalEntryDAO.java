@@ -7,6 +7,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.CorePluginsDAO;
 import fi.muikku.plugins.workspace.model.WorkspaceJournalEntry;
@@ -16,8 +17,9 @@ public class WorkspaceJournalEntryDAO extends CorePluginsDAO<WorkspaceJournalEnt
 
   private static final long serialVersionUID = 63917373561361361L;
 
-  public WorkspaceJournalEntry create(WorkspaceEntity workspaceEntity, String html, String title) {
+  public WorkspaceJournalEntry create(WorkspaceEntity workspaceEntity, UserEntity userEntity, String html, String title) {
     WorkspaceJournalEntry journalEntry = new WorkspaceJournalEntry();
+    journalEntry.setUserEntityId(userEntity.getId());
     journalEntry.setWorkspaceEntityId(workspaceEntity.getId());
     journalEntry.setHtml(html);
     journalEntry.setTitle(title);

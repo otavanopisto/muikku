@@ -72,7 +72,7 @@ public class WorkspaceJournalBackingBean {
   }
   
   public void addWorkspaceJournalEntry(){
-    workspaceJournalController.createJournalEntry(workspaceController.findWorkspaceEntityById(workspaceEntityId), workspaceJournalEntryHtml, workspaceJournalEntryTitle);
+    workspaceJournalController.createJournalEntry(workspaceController.findWorkspaceEntityById(workspaceEntityId), sessionController.getLoggedUserEntity(), workspaceJournalEntryHtml, workspaceJournalEntryTitle);
   }
   
   public String getWorkspaceUrlName() {

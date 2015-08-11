@@ -18,6 +18,14 @@ public class WorkspaceJournalEntry {
     this.workspaceEntityId = workspaceEntityId;
   }
   
+  public Long getUserEntityId() {
+    return userEntityId;
+  }
+
+  public void setUserEntityId(Long userEntityId) {
+    this.userEntityId = userEntityId;
+  }
+
   public String getHtml() {
     return html;
   }
@@ -48,6 +56,9 @@ public class WorkspaceJournalEntry {
 
   @Column
   private Long workspaceEntityId;
+  
+  @Column
+  private Long userEntityId;
   
   @Column
   @Lob
