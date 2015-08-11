@@ -11,9 +11,9 @@
   <ui:define name="workspace.content.top.static">
     <div class="workspace-journal-new-entry-container" style="height:auto;">
 	    <h:form id="newJournalEntryForm">
-	      <h:outputLabel id="newJournalEntryTitle" value="Lokalisoi: Title" />
+	      <h:outputLabel id="newJournalEntryTitle" value="#{i18n.text['plugin.workspace.journal.newEntryTitle.label']}" />
 	      <h:inputText value="#{workspaceJournalBackingBean.workspaceJournalEntryTitle}" />
-	      <h:outputLabel id="newJournalEntryContent" value="Lokalisoi: Content" />
+	      <h:outputLabel id="newJournalEntryContent" value="#{i18n.text['plugin.workspace.journal.newEntryContent.label']}" />
           <h:inputTextarea id="newJournalEntryContentField" value="#{workspaceJournalBackingBean.workspaceJournalEntryHtml}" />
 	      <h:commandButton class="workspace-journal-new-entry-button" action="#{workspaceJournalBackingBean.addWorkspaceJournalEntry()}" value="#{i18n.text['plugin.workspace.journal.newEntryButton.label']}" />
 	    </h:form>
