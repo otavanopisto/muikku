@@ -1,7 +1,6 @@
 package fi.muikku.plugins.workspace;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
@@ -13,14 +12,9 @@ import org.ocpsoft.rewrite.annotation.Join;
 import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import fi.muikku.jsf.NavigationRules;
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.plugins.forum.ForumController;
-import fi.muikku.plugins.forum.ForumResourcePermissionCollection;
-import fi.muikku.plugins.forum.model.WorkspaceForumArea;
+import fi.muikku.plugins.workspace.model.WorkspaceJournalEntry;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.session.SessionController;
 import fi.otavanopisto.security.LoggedIn;
@@ -42,7 +36,7 @@ public class WorkspaceJournalBackingBean {
   private WorkspaceController workspaceController;
 
   @Inject
-  private ForumController forumController;
+  private WorkspaceJournalController workspaceJournalController;
 
   @Inject
   @Named
@@ -81,4 +75,8 @@ public class WorkspaceJournalBackingBean {
   }
   
   private Long workspaceEntityId;
+  
+  public List<WorkspaceJournalEntry> getJournalEntries() {
+    return workspaceJournalController.listEntries(workspaceController.findWorkspaceEntityById(workspaceEntityId));
+  }
 }
