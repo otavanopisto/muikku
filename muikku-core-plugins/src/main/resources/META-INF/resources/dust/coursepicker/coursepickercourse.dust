@@ -60,10 +60,10 @@
                 value='{#localize key="plugin.coursepicker.course.checkout" /}' />
             
               {#isLoggedIn}
-                {#canJoin}
+                {#canSignup}
                   <input class="bt-coursepicker cp-course-attend-button" type="button"
                     value='{#localize key="plugin.coursepicker.course.signup" /}' />
-                {/canJoin}
+                {/canSignup}
               {/isLoggedIn}
             </div>
           </div>
