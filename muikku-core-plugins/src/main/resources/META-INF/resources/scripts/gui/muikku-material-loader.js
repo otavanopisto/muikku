@@ -180,13 +180,15 @@
   $(document).on('taskFieldDiscovered', function (event, data) {
     var object = data.object;
     if ($(object).attr('type') == 'application/vnd.muikku.field.text') {
+      var taskfieldWrapper = $('<div>')
+        .addClass('textfield-wrapper');
       var input = $('<input>')
         .addClass('muikku-text-field')
         .attr({
           'type': "text",
           'size':data.meta.columns,
-          'placeholder': data.meta.help,
-          'title': data.meta.hint,
+          'placeholder': data.meta.hint,
+//          'title': data.meta.hint,
           'name': data.name
         })
         .val(data.value)
@@ -263,9 +265,44 @@
             
             return false; 
           }
-        });   
+        });  
       
-      $(object).replaceWith(input);
+      $(object).replaceWith(taskfieldWrapper.append(input));
+      
+      // If hint is set
+      if (data.meta.hint != '') {
+        taskfieldWrapper.append($('<span class="muikku-text-field-hint">' + data.meta.hint + '</span>'));  
+        
+        $(input).on( "focus", function() {
+          $(taskfieldWrapper).children('.muikku-text-field-hint')
+            .css({
+              visibility:"visible",
+              top: input.outerHeight() + 4 + 'px'
+            })
+            .animate({
+              opacity:1
+              
+            }, 300, function() {
+            
+            })
+        } );
+        
+        $(input).on( "blur", function() {
+          $(taskfieldWrapper).children('.muikku-text-field-hint')
+            .css({
+              visibility:"hidden"  
+            })
+            .animate({
+              opacity:0
+              
+            }, 150, function() {
+            
+            })
+        } );
+      }
+      
+      
+      
     }
   });
   

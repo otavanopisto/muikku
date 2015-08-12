@@ -8,9 +8,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.ejb.AccessTimeout;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
+import javax.ejb.Timeout;
+import javax.ejb.Timer;
+import javax.ejb.TimerConfig;
+import javax.ejb.TimerService;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Any;
@@ -31,9 +36,16 @@ import fi.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
 )
 public class PyramusScheduler {
 
+  private static final int INITIAL_TIMEOUT = 1000 * 180; // 180 sec
+  private static final int TIMEOUT = 1000 * 15; // 15 sec 
+  private static final int ERROR_TIMEOUT = 1000 * 60; // 60 sec 
+  
   @Any
   @Inject
   private Instance<PyramusUpdateScheduler> updateSchedulers;
+  
+  @Resource
+  private TimerService timerService;
   
   @Inject
   private Logger logger;
@@ -43,6 +55,8 @@ public class PyramusScheduler {
     contextInitialized = false;
     running = false;
     schedulerIndex = 0;
+    
+    timerService.createSingleActionTimer(INITIAL_TIMEOUT, new TimerConfig());
   }
   
   public void onContextInitialized(@Observes ContextInitializedEvent event) {
@@ -53,7 +67,20 @@ public class PyramusScheduler {
     contextInitialized = false;
   }
   
-  @Schedule(minute = "*/1", hour = "*", persistent = false)
+  @Timeout
+  public void syncTimeout(Timer timer) {
+    try {
+      synchronizePyramusData();
+
+      timerService.createSingleActionTimer(TIMEOUT, new TimerConfig());
+    } catch (Exception ex) {
+      logger.log(Level.SEVERE, "synchronization failed.", ex);
+      
+      timerService.createSingleActionTimer(ERROR_TIMEOUT, new TimerConfig());
+    }
+  }
+  
+//  @Schedule(minute = "*/1", hour = "*", persistent = false)
   public void synchronizePyramusData() {
     if (!SchoolDataPyramusPluginDescriptor.SCHEDULERS_ACTIVE) {
       return;
