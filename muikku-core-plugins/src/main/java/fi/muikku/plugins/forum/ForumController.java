@@ -344,7 +344,7 @@ public class ForumController {
     forumThreadDAO.update(thread, title, message, sticky, locked, new Date(), user);
   }
 
-  public void updateForumThreadReply(ForumThreadReply reply, String title, String message, Boolean sticky, Boolean locked) {
+  public void updateForumThreadReply(ForumThreadReply reply, String message) {
     UserEntity user = sessionController.getLoggedUserEntity();
     forumThreadReplyDAO.update(reply, message, new Date(), user);
   }
