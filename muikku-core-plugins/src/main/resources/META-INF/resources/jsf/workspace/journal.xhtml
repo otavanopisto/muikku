@@ -9,8 +9,14 @@
   template="./templates/workspace-journal-view.xhtml">
   
   <ui:define name="workspace.content.top.static">
-    <div class="workspace-journal-new-entry-container">
-      <div class="workspace-journal-new-entry-button">#{i18n.text['plugin.workspace.journal.newEntryButton.label']}</div>
+    <div class="workspace-journal-new-entry-container" style="height:auto;">
+	    <h:form>
+	      <h:outputLabel id="newJournalEntryTitle" value="Lokalisoi: Title" />
+	      <h:inputText value="#{workspaceJournalBackingBean.workspaceJournalEntryTitle}" />
+	      <h:outputLabel id="newJournalEntryContent" value="Lokalisoi: Content" />
+          <h:inputText value="#{workspaceJournalBackingBean.workspaceJournalEntryHtml}" />
+	      <h:commandButton class="workspace-journal-new-entry-button" action="#{workspaceJournalBackingBean.addWorkspaceJournalEntry()}" value="#{i18n.text['plugin.workspace.journal.newEntryButton.label']}" />
+	    </h:form>
     </div>
   </ui:define>
   

@@ -34,7 +34,7 @@ public class WorkspaceJournalBackingBean {
 
   @Inject
   private WorkspaceController workspaceController;
-
+  
   @Inject
   private WorkspaceJournalController workspaceJournalController;
 
@@ -62,6 +62,10 @@ public class WorkspaceJournalBackingBean {
     return null;
   }
   
+  public void addWorkspaceJournalEntry(){
+    workspaceJournalController.createJournalEntry(workspaceController.findWorkspaceEntityById(workspaceEntityId), workspaceJournalEntryHtml, workspaceJournalEntryTitle);
+  }
+  
   public String getWorkspaceUrlName() {
     return workspaceUrlName;
   }
@@ -74,9 +78,28 @@ public class WorkspaceJournalBackingBean {
     return workspaceEntityId;
   }
   
+  public String getWorkspaceJournalEntryTitle() {
+    return workspaceJournalEntryTitle;
+  }
+
+  public void setWorkspaceJournalEntryTitle(String workspaceJournalEntryTitle) {
+    this.workspaceJournalEntryTitle = workspaceJournalEntryTitle;
+  }
+
+  public String getWorkspaceJournalEntryHtml() {
+    return workspaceJournalEntryHtml;
+  }
+
+  public void setWorkspaceJournalEntryHtml(String workspaceJournalEntryHtml) {
+    this.workspaceJournalEntryHtml = workspaceJournalEntryHtml;
+  }
+
   private Long workspaceEntityId;
   
   public List<WorkspaceJournalEntry> getJournalEntries() {
     return workspaceJournalController.listEntries(workspaceController.findWorkspaceEntityById(workspaceEntityId));
   }
+
+  private String workspaceJournalEntryTitle;
+  private String workspaceJournalEntryHtml;
 }
