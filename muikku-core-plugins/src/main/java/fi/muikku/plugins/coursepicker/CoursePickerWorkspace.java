@@ -17,10 +17,10 @@ public class CoursePickerWorkspace {
     this.description = description;
     this.numVisits = numVisits;
     this.lastVisit = lastVisit;
-    this.setCanSignup(canSignup);
+    this.canSignup = canSignup;
   }
 
-  public Long getId(Object getId) {
+  public Long getId() {
     return id;
   }
 

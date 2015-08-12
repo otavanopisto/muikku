@@ -488,9 +488,8 @@ public class WorkspaceRESTService extends PluginRESTService {
     // TODO: should this work based on permission? Permission -> Roles -> Recipients
     // TODO: Messaging should be moved into a CDI event listener
 
-    WorkspaceRoleEntity teacherRole = roleController.ROLE_WORKSPACE_TEACHER();
-    List<WorkspaceUserEntity> workspaceTeachers = workspaceUserEntityController.listWorkspaceUserEntitiesByRole(workspaceEntity,
-        teacherRole);
+    List<WorkspaceUserEntity> workspaceTeachers = workspaceUserEntityController.listWorkspaceUserEntitiesByRoleArchetype(workspaceEntity,
+        WorkspaceRoleArchetype.TEACHER);
     List<UserEntity> teachers = new ArrayList<UserEntity>();
 
     String workspaceName = workspace.getName();

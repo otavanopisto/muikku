@@ -37,6 +37,7 @@ import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
+import fi.muikku.model.workspace.WorkspaceUserSignup;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.workspace.WorkspaceVisitController;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceUser;
@@ -57,6 +58,8 @@ import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
 import fi.muikku.users.UserSchoolDataIdentifierController;
 import fi.muikku.users.WorkspaceUserEntityController;
+import fi.otavanopisto.security.rest.RESTPermit;
+import fi.otavanopisto.security.rest.RESTPermit.Handling;
 
 @Path("/coursepicker")
 @RequestScoped
@@ -243,9 +246,9 @@ public class CoursePickerRESTService extends PluginRESTService {
   
   @POST
   @Path("/workspaces/{ID}/signup")
-  @RESTPermitUnimplemented
-  public Response createWorkspaceUser(@PathParam("ID") Long workspaceEntityId) {
-    // TODO: Security
+  @RESTPermit (handling = Handling.INLINE)
+  public Response createWorkspaceUser(@PathParam("ID") Long workspaceEntityId, 
+      fi.muikku.plugins.workspace.rest.model.WorkspaceUserSignup entity) {
 
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).build();
@@ -286,9 +289,8 @@ public class CoursePickerRESTService extends PluginRESTService {
     // TODO: should this work based on permission? Permission -> Roles -> Recipients
     // TODO: Messaging should be moved into a CDI event listener
 
-    WorkspaceRoleEntity teacherRole = roleController.ROLE_WORKSPACE_TEACHER();
-    List<WorkspaceUserEntity> workspaceTeachers = workspaceUserEntityController.listWorkspaceUserEntitiesByRole(workspaceEntity,
-        teacherRole);
+    List<WorkspaceUserEntity> workspaceTeachers = workspaceUserEntityController.listWorkspaceUserEntitiesByRoleArchetype(workspaceEntity,
+        WorkspaceRoleArchetype.TEACHER);
     List<UserEntity> teachers = new ArrayList<UserEntity>();
 
     String workspaceName = workspace.getName();
@@ -298,55 +300,32 @@ public class CoursePickerRESTService extends PluginRESTService {
     for (WorkspaceUserEntity cu : workspaceTeachers) {
       teachers.add(cu.getUserSchoolDataIdentifier().getUserEntity());
     }
+    
+    WorkspaceUser result = new fi.muikku.plugins.workspace.rest.model.WorkspaceUser(discoverEvent.getDiscoveredWorkspaceUserEntityId(),
+        workspaceEntityId, userIdentifier.getUserEntity().getId(), workspaceStudentRoleId, Boolean.FALSE);
+
+    workspaceController.createWorkspaceUserSignup(
+        workspaceEntity, userIdentifier.getUserEntity(), new Date(), entity.getMessage());
+
+    String caption = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.caption");
+    caption = MessageFormat.format(caption, workspaceName);
+
+    String content;
+    if (StringUtils.isEmpty(entity.getMessage())) {
+      content = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.content");
+      content = MessageFormat.format(content, userName, workspaceName);
+    } else {
+      content = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.contentwmessage");
+      content = MessageFormat.format(content, userName, workspaceName, entity.getMessage());
+    }
 
     for (MessagingWidget messagingWidget : messagingWidgets) {
-      String caption = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.caption");
-      String content = localeController.getText(sessionController.getLocale(), "rest.workspace.joinWorkspace.joinNotification.content");
-      caption = MessageFormat.format(caption, workspaceName);
-      content = MessageFormat.format(content, userName, workspaceName);
       // TODO: Category?
       messagingWidget.postMessage(userIdentifier.getUserEntity(), "message", caption, content, teachers);
     }
 
-    WorkspaceUser result = new fi.muikku.plugins.workspace.rest.model.WorkspaceUser(discoverEvent.getDiscoveredWorkspaceUserEntityId(),
-        workspaceEntityId, userIdentifier.getUserEntity().getId(), workspaceStudentRoleId, Boolean.FALSE);
-
     return Response.ok(result).build();
   }
-
-//  @POST
-//  @Path("/workspaces/{ID}/signups")
-//  @RESTPermitUnimplemented
-//  public Response createWorkspaceUserSignup(@PathParam("ID") Long workspaceEntityId,
-//      fi.muikku.plugins.workspace.rest.model.WorkspaceUserSignup entity) {
-//    // TODO: Security
-//
-//    if (!sessionController.isLoggedIn()) {
-//      return Response.status(Status.UNAUTHORIZED).build();
-//    }
-//
-//    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
-//    if (workspaceEntity == null) {
-//      return Response.status(Status.BAD_REQUEST).build();
-//    }
-//
-//    UserEntity userEntity = null;
-//
-//    if (entity.getUserId() != null) {
-//      userEntity = userEntityController.findUserEntityById(entity.getUserId());
-//    } else {
-//      userEntity = sessionController.getLoggedUserEntity();
-//    }
-//
-//    if (userEntity == null) {
-//      return Response.status(Status.BAD_REQUEST).build();
-//    }
-//
-//    WorkspaceUserSignup signup = workspaceController
-//        .createWorkspaceUserSignup(workspaceEntity, userEntity, new Date(), entity.getMessage());
-//
-//    return Response.ok(createRestModel(signup)).build();
-//  }
 
   private boolean getCanSignup(WorkspaceEntity workspaceEntity) {
     if (sessionController.isLoggedIn()) {

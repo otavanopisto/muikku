@@ -7,7 +7,6 @@
       var _this = this;
       widgetElement = $(widgetElement);
       this._widgetElement = widgetElement;
-      this._workspaceStudentRoleId = widgetElement.find("input[name='workspaceStudentRoleId']").val();
       this._coursesContainer = $('#coursesList');
 
       this._searchInput = widgetElement.find("input[name='coursePickerSearch']");
@@ -259,17 +258,12 @@
       window.location = CONTEXTPATH + '/workspace/' + workspaceUrl;
     },
     _joinCourse: function (workspaceId, workspaceUrl, joinMessage) {
-//      mApi().coursepicker.workspaces.users.create(workspaceId, {
-//        roleId: this._workspaceStudentRoleId
-//      })
-//      .callback(function (workspaceUsersErr, workspaceUsers) {
-//        mApi().coursepicker.workspaces.signups.create(workspaceId, {
-//          message: joinMessage
-//        })
-//        .callback(function (workspaceUsersErr, workspaceUsers) {
-//          window.location = CONTEXTPATH + '/workspace/' + workspaceUrl;
-//        });
-//      });
+      mApi().coursepicker.workspaces.signup.create(workspaceId, {
+        message: joinMessage
+      })
+      .callback(function (workspaceUsersErr, workspaceUsers) {
+        window.location = CONTEXTPATH + '/workspace/' + workspaceUrl;
+      });
     },
     _onCourseNameClick: function (event) {
       var element = $(event.target);
