@@ -8,36 +8,26 @@
   xmlns:fn="http://java.sun.com/jsp/jstl/functions"
   template="/jsf/workspace/templates/workspace-permission-management-view.xhtml">
 
-  
-  <ui:define name="workspaces.permissions.management.toc">
-  </ui:define>
-  
   <ui:define name="workspace.permissions.management.content">
-    <h:outputScript name="scripts/gui/workspace-permissions.js" target="head"/>
-
-    <div class="widget userGroupPermissionsWidget">
+    <div class="workspace-content-widgetspaceset">
       <input type="hidden" name="workspaceId" value="#{workspacePermissionsManagementBackingBean.workspaceEntityId}"/>
 
       <p>Työtilan käyttäjäryhmien oikeudet</p>
 
-      <table border="1" id="environmentUserRolePermissionsTable">
+      <table id="environmentUserRolePermissionsTable">
         <tr>
           <td></td>
-          
           <c:forEach var="permission" items="#{workspacePermissionsManagementBackingBean.permissions}">
             <td>#{permission.name}</td>
           </c:forEach>
         </tr>
-        
         <c:forEach var="userGroup" items="#{workspacePermissionsManagementBackingBean.userGroups}">
           <tr>
             <td>#{userGroup.name}</td>
-          
             <c:forEach var="permission" items="#{workspacePermissionsManagementBackingBean.permissions}">
               <td>
                 <input type="hidden" name="permissionId" value="#{permission.id}"/>
                 <input type="hidden" name="userGroupId" value="#{userGroup.id}"/>
-                
                 <c:choose>
                   <c:when test="#{workspacePermissionsManagementBackingBean.hasUserGroupPermission(userGroup, permission)}">
                     <input type="checkbox" class="userGroupPermissionsCheckbox" name="userGroupPermission.#{userGroup.id}.#{permission.id}" checked="checked"/>
