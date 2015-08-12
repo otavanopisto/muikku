@@ -37,7 +37,6 @@ import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.model.workspace.WorkspaceRoleEntity;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
-import fi.muikku.model.workspace.WorkspaceUserSignup;
 import fi.muikku.plugin.PluginRESTService;
 import fi.muikku.plugins.workspace.WorkspaceVisitController;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceUser;
@@ -55,7 +54,6 @@ import fi.muikku.search.SearchResult;
 import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.UserController;
-import fi.muikku.users.UserEntityController;
 import fi.muikku.users.UserSchoolDataIdentifierController;
 import fi.muikku.users.WorkspaceUserEntityController;
 import fi.otavanopisto.security.rest.RESTPermit;
@@ -81,9 +79,6 @@ public class CoursePickerRESTService extends PluginRESTService {
   @Inject
   private UserController userController;
 
-  @Inject
-  private UserEntityController userEntityController;
-  
   @Inject
   private RoleController roleController;
   
