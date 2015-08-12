@@ -38,6 +38,8 @@ $(document).ready(function() {
       $(DiscImpl.msgContainer).on("click", '.di-page-link-load-more-messages:not(.disabled)', $.proxy(this._onMoreClick, this));
       $(DiscImpl.msgContainer).on("click", '.di-page-link-load-more-replies:not(.disabled)', $.proxy(this._onMoreRepliesClick, this));
       $(DiscImpl.msgContainer).on("click", '.di-message-reply-link', $.proxy(this.replyThread, this));
+      $(DiscImpl.msgContainer).on("click", '.di-message-edit-link', $.proxy(this.editMessage, this));      
+      $(DiscImpl.msgContainer).on("click", '.di-reply-edit-link', $.proxy(this.editMessageReply, this));      
       $(DiscImpl.msgContainer).on("click", '.di-remove-thread-link', $.proxy(this._onRemoveThreadClick, this));
       $(window).on("hashchange", $.proxy(this._onHashChange, this));
       $(window).trigger("hashchange");
@@ -135,7 +137,12 @@ $(document).ready(function() {
 
         mApi().user.users.basicinfo.read(thread.creator).callback(function(err, user) {
           thread.creatorFullName = user.firstName + ' ' + user.lastName;
-
+          if(thread.creator == MUIKKU_LOGGED_USER_ID){
+            thread.canEdit = true;
+          }else{
+            thread.canEdit = false;
+            
+          }
         });
 
         var d = new Date(thread.created);
@@ -394,12 +401,16 @@ $(document).ready(function() {
 
         mApi().forum.areas.read(thread.forumAreaId).callback(function(err, area) {
           thread.areaName = area.name;
-
+        
         });
 
         mApi().user.users.basicinfo.read(thread.creator).callback(function(err, user) {
           thread.creatorFullName = user.firstName + ' ' + user.lastName;
-
+          if(thread.creator == MUIKKU_LOGGED_USER_ID){
+            thread.canEdit = true;
+          }else{
+            thread.canEdit = false;
+          }
         });
 
         var d = new Date(thread.created);
@@ -450,7 +461,11 @@ $(document).ready(function() {
         
         mApi().user.users.basicinfo.read(replies.creator).callback(function(err, user) {
           replies.creatorFullName = user.firstName + ' ' + user.lastName;
-
+          if(replies.creator == MUIKKU_LOGGED_USER_ID){
+            replies.canEdit = true;
+          }else{
+            replies.canEdit = false;
+          }
         });
         var d = new Date(replies.created);
        
