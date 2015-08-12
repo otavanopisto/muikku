@@ -54,7 +54,7 @@ public class ForumMessagePermissionsTestsIT extends AbstractRESTPermissionsTest 
     
     // Create forum
     
-    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null);
+    ForumAreaRESTModel forum = new ForumAreaRESTModel(null, "test_create_environmentforum", null, 0l);
     
     Response response = asAdmin()
       .contentType("application/json")
