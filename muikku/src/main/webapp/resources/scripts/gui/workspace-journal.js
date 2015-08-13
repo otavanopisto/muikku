@@ -27,10 +27,12 @@
     }, this));
   }
   
+  /*
   function newJournalEntry() {
     var workspaceId = $("input[name='workspaceEntityId']").val();
     openInSN('/workspace/workspace-journal-new-entry.dust', workspaceId);
   };
+  */
   
   function editJournalEntry() {
     var workspaceId = $("input[name='workspaceEntityId']").val();
