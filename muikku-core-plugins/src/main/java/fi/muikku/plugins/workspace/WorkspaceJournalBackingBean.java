@@ -13,9 +13,11 @@ import org.ocpsoft.rewrite.annotation.Parameter;
 import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.jsf.NavigationRules;
+import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.plugins.workspace.model.WorkspaceJournalEntry;
 import fi.muikku.schooldata.WorkspaceController;
+import fi.muikku.security.MuikkuPermissions;
 import fi.muikku.session.SessionController;
 import fi.otavanopisto.security.LoggedIn;
 
@@ -97,7 +99,13 @@ public class WorkspaceJournalBackingBean {
   private Long workspaceEntityId;
   
   public List<WorkspaceJournalEntry> getJournalEntries() {
-    return workspaceJournalController.listEntries(workspaceController.findWorkspaceEntityById(workspaceEntityId));
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    UserEntity userEntity = sessionController.getLoggedUserEntity();
+    if (!sessionController.hasCoursePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity)) {
+      return workspaceJournalController.listEntries(workspaceController.findWorkspaceEntityById(workspaceEntityId));
+    } else {
+      return workspaceJournalController.listEntriesByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
+    }
   }
 
   private String workspaceJournalEntryTitle;
