@@ -1,5 +1,6 @@
 package fi.muikku.plugins.workspace.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -17,12 +18,13 @@ public class WorkspaceJournalEntryDAO extends CorePluginsDAO<WorkspaceJournalEnt
 
   private static final long serialVersionUID = 63917373561361361L;
 
-  public WorkspaceJournalEntry create(WorkspaceEntity workspaceEntity, UserEntity userEntity, String html, String title) {
+  public WorkspaceJournalEntry create(WorkspaceEntity workspaceEntity, UserEntity userEntity, String html, String title, Date created) {
     WorkspaceJournalEntry journalEntry = new WorkspaceJournalEntry();
     journalEntry.setUserEntityId(userEntity.getId());
     journalEntry.setWorkspaceEntityId(workspaceEntity.getId());
     journalEntry.setHtml(html);
     journalEntry.setTitle(title);
+    journalEntry.setCreated(created);
     return persist(journalEntry);
   }
 
@@ -54,4 +56,19 @@ public class WorkspaceJournalEntryDAO extends CorePluginsDAO<WorkspaceJournalEnt
 
     return entityManager.createQuery(criteria).getResultList();
   }
+  
+  public WorkspaceJournalEntry updateTitle(WorkspaceJournalEntry workspaceJournalEntry, String title){
+    workspaceJournalEntry.setTitle(title);
+    return persist(workspaceJournalEntry);
+  }
+  
+  public WorkspaceJournalEntry updateHtml(WorkspaceJournalEntry workspaceJournalEntry, String html){
+    workspaceJournalEntry.setHtml(html);
+    return persist(workspaceJournalEntry);
+  }
+  
+  public void delete(WorkspaceJournalEntry workspaceJournalEntry){
+    super.delete(workspaceJournalEntry);
+  }
+  
 }

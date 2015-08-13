@@ -1,5 +1,6 @@
 package fi.muikku.plugins.workspace;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -15,7 +16,7 @@ public class WorkspaceJournalController {
   private WorkspaceJournalEntryDAO workspaceJournalEntryDAO;
 
   public void createJournalEntry(WorkspaceEntity workspaceEntity, UserEntity userEntity, String html, String title) {
-    workspaceJournalEntryDAO.create(workspaceEntity, userEntity, html, title);
+    workspaceJournalEntryDAO.create(workspaceEntity, userEntity, html, title, new Date());
   }
 
   public List<WorkspaceJournalEntry> listEntries(WorkspaceEntity workspaceEntity) {
@@ -23,7 +24,15 @@ public class WorkspaceJournalController {
   }
   
   public List<WorkspaceJournalEntry> listEntriesByWorkspaceEntityAndUserEntity(WorkspaceEntity workspaceEntity, UserEntity userEntity){
-   return workspaceJournalEntryDAO.listByWorkspaceEntityIdAndUserEntityId(workspaceEntity.getId(), userEntity.getId());
+    return workspaceJournalEntryDAO.listByWorkspaceEntityIdAndUserEntityId(workspaceEntity.getId(), userEntity.getId());
   }
 
+  public WorkspaceJournalEntry updateJournalEntry(Long workspaceJournalEntryId, String title, String html){
+    WorkspaceJournalEntry workspaceJournalEntry = workspaceJournalEntryDAO.findById(workspaceJournalEntryId);
+    return workspaceJournalEntryDAO.updateHtml(workspaceJournalEntryDAO.updateTitle(workspaceJournalEntry, title), html);
+  }
+  
+  public void deleteJournalEntry(Long workspaceJournalEntryId){
+    workspaceJournalEntryDAO.delete(workspaceJournalEntryDAO.findById(workspaceJournalEntryId));
+  }
 }
