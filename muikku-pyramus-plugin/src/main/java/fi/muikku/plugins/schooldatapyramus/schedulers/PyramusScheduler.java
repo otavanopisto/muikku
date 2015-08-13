@@ -55,12 +55,12 @@ public class PyramusScheduler {
     contextInitialized = false;
     running = false;
     schedulerIndex = 0;
-    
-    timerService.createSingleActionTimer(INITIAL_TIMEOUT, new TimerConfig());
   }
   
   public void onContextInitialized(@Observes ContextInitializedEvent event) {
     contextInitialized = true;
+
+    timerService.createSingleActionTimer(INITIAL_TIMEOUT, new TimerConfig());
   }
 
   public void onContextDestroyed(@Observes ContextDestroyedEvent event) {
