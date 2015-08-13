@@ -11,14 +11,8 @@
 
       this._searchInput = widgetElement.find("input[name='coursePickerSearch']");
       
-      var coursePickerAllCoursesSearchBtn = widgetElement.find(".cp-category-allCourses");
-      coursePickerAllCoursesSearchBtn.click($.proxy(this._onSearchAllCoursesClick, this));
-
-      var searchMyCoursesButton = widgetElement.find('.cp-category-myCourses');
-      if (searchMyCoursesButton) {
-        searchMyCoursesButton.click($.proxy(this._onSearchMyCoursesClick, this));
-      }
-
+      $("#cpCategories").find("span").click($.proxy(this._onDropdownChange, this));
+      
       this._coursesContainer.on("click", ".cp-course-tour-button", $.proxy(this._onCheckCourseClick, this));
 
       var coursePickerSearchCoursesInput = widgetElement.find("input[name='coursePickerSearch']");
@@ -160,16 +154,19 @@
         subjects.push($(this).find("input[name='subjectId']").val());
       });
       
-      var ownWorkspaces = hash == "my"; 
+      var ownWorkspaces = hash == "my" || hash == "te";
+      var includeUnpublished = hash == "te";
       if (((term != undefined) && (term != "")) || (subjects.length > 0)) {
         this._loadCourses({
           subjects: subjects,
           search: term,
-          myWorkspaces: ownWorkspaces
+          myWorkspaces: ownWorkspaces,
+          includeUnpublished: includeUnpublished
         });
       } else {
         this._loadCourses({
-          myWorkspaces: ownWorkspaces
+          myWorkspaces: ownWorkspaces,
+          includeUnpublished: includeUnpublished
         });
       }
     },
@@ -245,6 +242,9 @@
       this._refreshListTimer();
     },
     _onSearchCoursesChange: function (event) {
+      this._refreshListTimer();
+    },
+    _onDropdownChange: function (event) {
       this._refreshListTimer();
     },
     _onCheckCourseClick: function (event) {
