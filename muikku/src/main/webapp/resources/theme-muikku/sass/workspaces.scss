@@ -638,10 +638,16 @@ body.workspace {
     td.workspace-permission-column-label {
       padding:2px 4px;
       text-transform:uppercase;
+      background:#eaf8fe;
     }
     
     td.workspace-permission-column-data {
       padding:4px;
+    }
+    
+    td.workspace-permission-column-input {
+      padding:4px;
+      text-align:center;
     }
   
   }

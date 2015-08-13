@@ -27,7 +27,7 @@
           <tr>
             <td class="workspace-permission-column-data">#{userGroup.name}</td>
             <c:forEach var="permission" items="#{workspacePermissionsManagementBackingBean.permissions}">
-              <td class="workspace-permission-column-data">
+              <td class="workspace-permission-column-input">
                 <input type="hidden" name="permissionId" value="#{permission.id}"/>
                 <input type="hidden" name="userGroupId" value="#{userGroup.id}"/>
                 <c:choose>
