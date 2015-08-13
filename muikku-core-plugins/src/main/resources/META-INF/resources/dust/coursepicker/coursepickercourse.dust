@@ -1,7 +1,7 @@
 {#.}
  
  
-  <div id="crsId-{id}" class="cp-course ft-01">
+  <div id="crsId-{id}" class="cp-course ft-01 {@select key=published}{@eq value="false" type="boolean"}not-published{/eq}{/select}">
     <input type="hidden" name="workspaceId" value="{id}"/>
     <input type="hidden" name="workspaceUrl" value="{urlName}"/>
 
