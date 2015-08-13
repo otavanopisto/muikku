@@ -550,7 +550,12 @@ $(document).ready(function() {
 
       var sendEditedMsg= function(values) {
         
-        alert("Message edited");
+
+          mApi().forum.areas.threads.update(aId, tId, values).callback(function(err, result) {
+          });
+
+          window.discussion.refreshThread(aId, tId);
+
       }
 
       mApi().forum.areas.threads.read(aId, tId).on('$', function(thread, threadCallback) {
@@ -580,7 +585,10 @@ $(document).ready(function() {
 
       var sendEditedReply= function(values) {
         
-        alert("Message reply edited");
+        mApi().forum.areas.threads.replies.update(aId, tId, rId, values).callback(function(err, result) {
+        });
+
+        window.discussion.refreshThread(aId, tId);
 
 
       }
