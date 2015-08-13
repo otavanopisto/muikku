@@ -549,7 +549,7 @@ $(document).ready(function() {
       var aId = $(element).find("input[name='areaId']").attr('value');
 
       var sendEditedMsg= function(values) {
-        
+          values.id = tId;
 
           mApi().forum.areas.threads.update(aId, tId, values).callback(function(err, result) {
           });
@@ -584,7 +584,7 @@ $(document).ready(function() {
       var aId = $(element).find("input[name='areaId']").attr('value');
 
       var sendEditedReply= function(values) {
-        
+        values.id = rId
         mApi().forum.areas.threads.replies.update(aId, tId, rId, values).callback(function(err, result) {
         });
 
