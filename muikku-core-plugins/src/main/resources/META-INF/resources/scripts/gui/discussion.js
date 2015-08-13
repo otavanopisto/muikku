@@ -37,7 +37,7 @@ $(document).ready(function() {
       $(DiscImpl.msgContainer).on("click", '.icon-goback', $.proxy(this._onBackClick, this));
       $(DiscImpl.msgContainer).on("click", '.di-page-link-load-more-messages:not(.disabled)', $.proxy(this._onMoreClick, this));
       $(DiscImpl.msgContainer).on("click", '.di-page-link-load-more-replies:not(.disabled)', $.proxy(this._onMoreRepliesClick, this));
-      $(DiscImpl.msgContainer).on("click", '.di-message-reply-link', $.proxy(this.replyThread, this));
+      $(DiscImpl.msgContainer).on("click", '.di-message-reply-link', $.proxy(this.replyMessage, this));
       $(DiscImpl.msgContainer).on("click", '.di-message-edit-link', $.proxy(this.editMessage, this));      
       $(DiscImpl.msgContainer).on("click", '.di-reply-edit-link', $.proxy(this.editMessageReply, this));      
       $(DiscImpl.msgContainer).on("click", '.di-remove-thread-link', $.proxy(this._onRemoveThreadClick, this));

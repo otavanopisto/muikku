@@ -19,7 +19,9 @@
         <div class="mf-subitem-content di-message-content ">     
           <div class="mf-subitem-content-text di-message-content-text" title="{#localize key="plugin.discussion.titleText.content"/}">{message|s}</div>          
           <div class="mf-subitem-content-tools di-message-content-tools">
-                <div class="di-message-tool di-reply-edit-link mf-item-tool-btn"><span>{#localize key="plugin.discussion.reply.edit"/}</span></div>
+            {?canEdit}
+              <div class="di-message-tool di-reply-edit-link mf-item-tool-btn"><span>{#localize key="plugin.discussion.reply.edit"/}</span></div>
+             {/canEdit}
             <div class="clear"></div>
           </div>
         </div>

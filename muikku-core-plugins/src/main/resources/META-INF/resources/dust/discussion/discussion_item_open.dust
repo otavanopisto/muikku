@@ -25,7 +25,7 @@
           <div class="mf-item-content-tools di-message-content-tools">
             <div class="di-message-content-tools-container mf-item-tools">
               <div class="di-message-tool di-message-reply-link mf-item-tool-btn"><span>{#localize key="plugin.discussion.reply.message"/}</span></div>
-              {?canEdit}
+              {#canEdit}
                 <div class="di-message-tool di-message-edit-link mf-item-tool-btn"><span>{#localize key="plugin.discussion.reply.edit"/}</span></div>
               {/canEdit}                
             </div>
