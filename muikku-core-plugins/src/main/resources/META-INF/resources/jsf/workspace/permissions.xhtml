@@ -6,38 +6,30 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:c="http://java.sun.com/jsp/jstl/core"
   xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-  template="/jsf/workspace/templates/workspace-permission-management-view.xhtml">
-
+  template="/jsf/workspace/templates/workspace-view.xhtml">
   
-  <ui:define name="workspaces.permissions.management.toc">
+    <!-- Workspace view title -->
+  <ui:define name="workspace.content.top.static">
+    <h1 class="workspace-generic-view-title">#{i18n.text['plugin.workspace.permissions.viewTitle']}</h1>
   </ui:define>
-  
-  <ui:define name="workspace.permissions.management.content">
-    <h:outputScript name="scripts/gui/workspace-permissions.js" target="head"/>
 
-    <div class="widget userGroupPermissionsWidget">
+  <ui:define name="workspace.content">
+    <article>
       <input type="hidden" name="workspaceId" value="#{workspacePermissionsManagementBackingBean.workspaceEntityId}"/>
-
-      <p>Työtilan käyttäjäryhmien oikeudet</p>
-
-      <table border="1" id="environmentUserRolePermissionsTable">
+      <table id="environmentUserRolePermissionsTable">
         <tr>
-          <td></td>
-          
+          <td class="workspace-permission-column-label">#{i18n.text['plugin.workspace.permissions.usergroupsColumn.label']}</td>
           <c:forEach var="permission" items="#{workspacePermissionsManagementBackingBean.permissions}">
-            <td>#{permission.name}</td>
+            <td class="workspace-permission-column-label">#{i18n.text['plugin.workspace.permissions.label.WORKSPACE_SIGNUP']}</td>
           </c:forEach>
         </tr>
-        
         <c:forEach var="userGroup" items="#{workspacePermissionsManagementBackingBean.userGroups}">
           <tr>
-            <td>#{userGroup.name}</td>
-          
+            <td class="workspace-permission-column-data">#{userGroup.name}</td>
             <c:forEach var="permission" items="#{workspacePermissionsManagementBackingBean.permissions}">
-              <td>
+              <td class="workspace-permission-column-input">
                 <input type="hidden" name="permissionId" value="#{permission.id}"/>
                 <input type="hidden" name="userGroupId" value="#{userGroup.id}"/>
-                
                 <c:choose>
                   <c:when test="#{workspacePermissionsManagementBackingBean.hasUserGroupPermission(userGroup, permission)}">
                     <input type="checkbox" class="userGroupPermissionsCheckbox" name="userGroupPermission.#{userGroup.id}.#{permission.id}" checked="checked"/>
@@ -51,7 +43,7 @@
           </tr>
         </c:forEach>
       </table>
-    </div>
+    </article>
   </ui:define>
 
 </ui:composition>
