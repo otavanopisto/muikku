@@ -129,7 +129,9 @@ public class ForumRESTService extends PluginRESTService {
       List<ForumAreaRESTModel> result = new ArrayList<ForumAreaRESTModel>();
       
       for (EnvironmentForumArea forum : forums) {
-        result.add(new ForumAreaRESTModel(forum.getId(), forum.getName(), forum.getGroup() != null ? forum.getGroup().getId() : null));
+        Long numThreads = forumController.getThreadCount(forum);
+
+        result.add(new ForumAreaRESTModel(forum.getId(), forum.getName(), forum.getGroup() != null ? forum.getGroup().getId() : null, numThreads));
       }
       
       return Response.ok(
@@ -151,8 +153,10 @@ public class ForumRESTService extends PluginRESTService {
     List<WorkspaceForumAreaRESTModel> result = new ArrayList<WorkspaceForumAreaRESTModel>();
     
     for (WorkspaceForumArea forum : workspaceForumAreas) {
+      Long numThreads = forumController.getThreadCount(forum);
+
       result.add(new WorkspaceForumAreaRESTModel(forum.getId(), forum.getWorkspace(), forum.getName(), 
-          forum.getGroup() != null ? forum.getGroup().getId() : null));
+          forum.getGroup() != null ? forum.getGroup().getId() : null, numThreads));
     }
     
     return Response.ok(
@@ -168,8 +172,10 @@ public class ForumRESTService extends PluginRESTService {
     
     if (forumArea != null) {
       if (sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_LISTFORUM, forumArea)) {
-    
-        ForumAreaRESTModel result = new ForumAreaRESTModel(forumArea.getId(), forumArea.getName(), forumArea.getGroup() != null ? forumArea.getGroup().getId() : null); 
+        Long numThreads = forumController.getThreadCount(forumArea);
+        
+        ForumAreaRESTModel result = new ForumAreaRESTModel(forumArea.getId(), forumArea.getName(), 
+            forumArea.getGroup() != null ? forumArea.getGroup().getId() : null, numThreads); 
         
         return Response.ok(
           result
@@ -199,7 +205,7 @@ public class ForumRESTService extends PluginRESTService {
   public Response createForumArea(ForumAreaRESTModel newForum) throws AuthorizationException {
     EnvironmentForumArea forumArea = forumController.createEnvironmentForumArea(newForum.getName(), newForum.getGroupId());
     
-    ForumAreaRESTModel result = new ForumAreaRESTModel(forumArea.getId(), forumArea.getName(), forumArea.getGroup() != null ? forumArea.getGroup().getId() : null); 
+    ForumAreaRESTModel result = new ForumAreaRESTModel(forumArea.getId(), forumArea.getName(), forumArea.getGroup() != null ? forumArea.getGroup().getId() : null, 0l); 
     
     return Response.ok(
       result
@@ -215,8 +221,11 @@ public class ForumRESTService extends PluginRESTService {
     if (sessionController.hasPermission(ForumResourcePermissionCollection.FORUM_CREATEWORKSPACEFORUM, workspaceEntity)) {
       WorkspaceForumArea workspaceForumArea = forumController.createWorkspaceForumArea(workspaceEntity, newForum.getName(), newForum.getGroupId());
       
+      Long numThreads = forumController.getThreadCount(workspaceForumArea);
+      
       WorkspaceForumAreaRESTModel result = new WorkspaceForumAreaRESTModel(
-          workspaceForumArea.getId(), workspaceForumArea.getWorkspace(), workspaceForumArea.getName(), workspaceForumArea.getGroup() != null ? workspaceForumArea.getGroup().getId() : null); 
+          workspaceForumArea.getId(), workspaceForumArea.getWorkspace(), workspaceForumArea.getName(), 
+          workspaceForumArea.getGroup() != null ? workspaceForumArea.getGroup().getId() : null, numThreads); 
       
       return Response.ok(
         result
