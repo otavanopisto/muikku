@@ -587,7 +587,7 @@ $(document).ready(function() {
       var aId = $(element).find("input[name='areaId']").attr('value');
 
       var sendEditedReply= function(values) {
-        values.id = rId
+        values.id = rId;
         mApi().forum.areas.threads.replies.update(aId, tId, rId, values).callback(function(err, result) {
         });
 

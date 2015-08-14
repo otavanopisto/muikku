@@ -297,7 +297,7 @@ public class ForumRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).entity("Forum thread not found from the specified area").build();
     }
     
-    if (threadId != forumThread.getId()) {
+    if (!forumThread.getId().equals(threadId)) {
       return Response.status(Status.BAD_REQUEST).build();
     }
 
@@ -481,7 +481,7 @@ public class ForumRESTService extends PluginRESTService {
         return Response.status(Status.NOT_FOUND).entity("Forum thread reply not found from the specified thread").build();
       }
       
-      if (replyId != reply.getId()) {
+      if (!reply.getId().equals(replyId)) {
         return Response.status(Status.BAD_REQUEST).build();
       }
       
