@@ -20,7 +20,7 @@ $(document).ready(function(){
 	
     mApi().communicator.items.read({
       'firstResult': 0,
-      'maxResults': 5
+      'maxResults': 6
     }).callback(function (err, messages) {
     	  
       if( err ){
