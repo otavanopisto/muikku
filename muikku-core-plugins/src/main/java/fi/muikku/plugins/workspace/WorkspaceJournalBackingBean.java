@@ -68,6 +68,16 @@ public class WorkspaceJournalBackingBean {
     workspaceJournalController.createJournalEntry(workspaceController.findWorkspaceEntityById(workspaceEntityId), sessionController.getLoggedUserEntity(), workspaceJournalEntryHtml, workspaceJournalEntryTitle);
   }
   
+  public void editWorkspaceJournalEntry(Long workspaceJournalEntryId){
+    workspaceJournalController.updateJournalEntry(workspaceJournalEntryId, workspaceJournalEntryTitle, workspaceJournalEntryHtml);
+    workspaceJournalEntryTitle = "";
+    workspaceJournalEntryHtml = "";
+  }
+  
+  public void deleteWorkspaceJournalEntry(Long workspaceJournalEntryId){
+    workspaceJournalController.deleteJournalEntry(workspaceJournalEntryId);
+  }
+  
   public String getWorkspaceUrlName() {
     return workspaceUrlName;
   }
@@ -96,6 +106,14 @@ public class WorkspaceJournalBackingBean {
     this.workspaceJournalEntryHtml = workspaceJournalEntryHtml;
   }
 
+  public Long getWorkspaceJournalEntryId() {
+    return workspaceJournalEntryId;
+  }
+
+  public void setWorkspaceJournalEntryId(Long workspaceJournalEntryId) {
+    this.workspaceJournalEntryId = workspaceJournalEntryId;
+  }
+
   private Long workspaceEntityId;
   
   public List<WorkspaceJournalEntry> getJournalEntries() {
@@ -110,4 +128,5 @@ public class WorkspaceJournalBackingBean {
 
   private String workspaceJournalEntryTitle;
   private String workspaceJournalEntryHtml;
+  private Long workspaceJournalEntryId;
 }

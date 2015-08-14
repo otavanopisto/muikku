@@ -1,6 +1,6 @@
 (function() {
  
-  function confirmJournalEntryDeleteRequest() {
+  function confirmJournalEntryDeleteRequest(id) {
     renderDustTemplate('workspace/workspace-journal-delete-request-confirm.dust', { }, $.proxy(function (text) {
       var dialog = $(text);
       $(text).dialog({
@@ -14,6 +14,7 @@
           'text': dialog.data('button-delete-text'),
           'class': 'delete-button',
           'click': function(event) {
+            $('.delete-entry-'+id).click();
             $(this).dialog("destroy").remove();
           }
         }, {
@@ -34,21 +35,46 @@
   };
   */
   
-  function editJournalEntry() {
-    var workspaceId = $("input[name='workspaceEntityId']").val();
-    openInSN('/workspace/workspace-journal-edit-entry.dust', workspaceId);
+  function editJournalEntry(element) {
+    //var id = element.attr('data-entry-id');
+    var view = element.find('.workspace-journal-entry-view');
+    var form = element.find('.edit-journal-entry-form');
+    form.find('.edit-journal-entry-form-title').val(view.find('.workspace-journal-title').text());
+    form.find('.edit-journal-entry-form-content').val(view.find('.workspace-journal-content').html());
+    view.hide();
+    form.parent().show();
+    CKEDITOR.replace(form.find('.edit-journal-entry-form-content')[0]);
+    
+    
+    /*var workspaceId = $("input[name='workspaceEntityId']").val();
+    openInSN('/workspace/workspace-journal-edit-entry.dust', workspaceId, function(values){
+      console.log(values);
+    });*/
   };
   
+  function cancelJournalEntryEdit(element){
+    var view = element.find('.workspace-journal-entry-view');
+    var form = element.find('.edit-journal-entry-form');
+    view.show();
+    form.parent().hide();
+  }
+  
+  $(document).on('click', '.cancel-entry-edit-btn', function(event){
+    event.preventDefault();
+    cancelJournalEntryEdit($(this).parent().parent().parent());
+  });
+  
   $(document).on('click', '.journal-delete-button', function (event) {
-    confirmJournalEntryDeleteRequest();
+    var id = $(this).attr('data-entry-id');
+    confirmJournalEntryDeleteRequest(id);
   });
   
   $(document).on('click', '.workspace-journal-new-entry-button', function (event) {
-    newJournalEntry();
+    //newJournalEntry();
   });
 
   $(document).on('click', '.journal-edit-button', function (event) {
-    editJournalEntry();
+    editJournalEntry($(this).parent().parent());
   });
   
 }).call(this);

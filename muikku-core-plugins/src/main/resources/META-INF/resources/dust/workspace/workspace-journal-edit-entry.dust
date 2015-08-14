@@ -8,13 +8,13 @@
           <div class="di-message-new-body">
             <div class="mf-fieldRow">
               <div class="mf-textfield">
-                <input type="textfield" value="" name="title"}></input>
+                <input type="text" value="" name="title"}></input>
               </div>    
             </div>
             <div class="mf-fieldRow">
               <div class="di-message-new-content">
                 <div class="mf-textarea">
-                  <textarea id="textContent" name="message"></textarea>
+                  <textarea id="textContent" name="content"></textarea>
                 </div>
               </div>
             </div> 
