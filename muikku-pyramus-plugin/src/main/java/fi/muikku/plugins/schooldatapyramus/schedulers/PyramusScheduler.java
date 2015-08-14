@@ -3,14 +3,11 @@ package fi.muikku.plugins.schooldatapyramus.schedulers;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.ejb.AccessTimeout;
-import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.ejb.Timeout;
 import javax.ejb.Timer;
@@ -30,10 +27,10 @@ import fi.muikku.plugins.schooldatapyramus.SchoolDataPyramusPluginDescriptor;
 
 @Singleton
 @ApplicationScoped
-@AccessTimeout (
-  value = 30,
-  unit = TimeUnit.SECONDS
-)
+//@AccessTimeout (
+//  value = 30,
+//  unit = TimeUnit.SECONDS
+//)
 public class PyramusScheduler {
 
   private static final int INITIAL_TIMEOUT = 1000 * 180; // 180 sec
@@ -60,11 +57,16 @@ public class PyramusScheduler {
   public void onContextInitialized(@Observes ContextInitializedEvent event) {
     contextInitialized = true;
 
-    timerService.createSingleActionTimer(INITIAL_TIMEOUT, new TimerConfig());
+    startTimer(INITIAL_TIMEOUT);
   }
 
   public void onContextDestroyed(@Observes ContextDestroyedEvent event) {
     contextInitialized = false;
+    
+    if (this.timer != null) {
+      timer.cancel();
+      timer = null;
+    }
   }
   
   @Timeout
@@ -72,11 +74,11 @@ public class PyramusScheduler {
     try {
       synchronizePyramusData();
 
-      timerService.createSingleActionTimer(TIMEOUT, new TimerConfig());
+      startTimer(TIMEOUT);
     } catch (Exception ex) {
       logger.log(Level.SEVERE, "synchronization failed.", ex);
       
-      timerService.createSingleActionTimer(ERROR_TIMEOUT, new TimerConfig());
+      startTimer(ERROR_TIMEOUT);
     }
   }
   
@@ -115,6 +117,19 @@ public class PyramusScheduler {
     }
   }
   
+  private void startTimer(int duration) {
+    if (this.timer != null) {
+      this.timer.cancel();
+      this.timer = null;
+    }
+    
+    TimerConfig timerConfig = new TimerConfig();
+    timerConfig.setPersistent(false);
+    
+    this.timer = timerService.createSingleActionTimer(duration, timerConfig);
+  }
+  
+  private Timer timer;
   private boolean contextInitialized;
   private boolean running;
   private int schedulerIndex;
