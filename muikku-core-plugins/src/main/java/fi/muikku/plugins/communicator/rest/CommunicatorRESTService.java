@@ -12,11 +12,13 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -87,7 +89,9 @@ public class CommunicatorRESTService extends PluginRESTService {
   @GET
   @Path ("/items")
   @RESTPermitUnimplemented
-  public Response listUserCommunicatorItems() {
+  public Response listUserCommunicatorItems(
+      @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, 
+      @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults) {
     UserEntity user = sessionController.getLoggedUserEntity(); 
     List<InboxCommunicatorMessage> receivedItems = communicatorController.listReceivedItems(user);
 
@@ -125,6 +129,8 @@ public class CommunicatorRESTService extends PluginRESTService {
         return o2.getThreadLatestMessageDate().compareTo(o1.getThreadLatestMessageDate());
       }
     });
+    
+    result = result.subList(firstResult, Math.min(firstResult + maxResults, result.size()));
     
     return Response.ok(
       result
