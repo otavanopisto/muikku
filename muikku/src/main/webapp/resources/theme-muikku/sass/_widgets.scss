@@ -809,23 +809,33 @@ div[class*="wi-dock-static-navi"] {
 
 /* frontpage widgets */
 .wi-messages{
-  
- div:nth-child(odd){
-  background-color:#fcfcfc;
- }
  
  .wi-message{
-    font-size:11px; 
-    padding:5px;
+    font-size:13px; 
+    margin-bottom:5px;
+    
+    &:not(:last-child) {
+      padding-bottom:5px;
+      border-bottom:1px solid #f7fdff;
+    }
 
-    .wi-message-caption{    
-      @include textOverflow;
+    .wi-message-caption{ 
+    
+      &:hover {
+      
+        a {
+          color:#0099ff;
+        }
+        
+      } 
+    
+      a {
+        color:#3c77a0;
+        text-decoration:none;
+      }
+    
     }
     
-    .wi-message-content{
-      @include textOverflow;    
-    }
-  &:not(:last-child){border-bottom: 1px solid #f0f3f4;}
   &.unread{
      .wi-message-caption{
        font-weight:bold;
