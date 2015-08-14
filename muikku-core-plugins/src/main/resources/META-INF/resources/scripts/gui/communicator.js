@@ -123,7 +123,7 @@ $(document).ready(function(){
                   var cmId = $(fCont).find("input[name='communicatorMessageId']").val();
                   var subject = $(fCont).find("input[name='subject']").val();
                   var content = $(fCont).find("textarea[name='content']").val();
-                  var tagStr = "tagi viesti"; // TODO: Tag content
+                  var tagStr = ""; // TODO: Tag content
                   var tags = tagStr != undefined ? tagStr.split(' ') : [];
                   var recipientIdStr = $(fCont).find("input[name='recipientIds']").val();
                   var recipientIds = recipientIdStr != undefined ? recipientIdStr.split(',') : [];

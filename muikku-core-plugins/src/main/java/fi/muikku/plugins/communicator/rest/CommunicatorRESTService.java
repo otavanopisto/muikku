@@ -45,6 +45,7 @@ import fi.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
 import fi.muikku.plugins.communicator.model.InboxCommunicatorMessage;
 import fi.muikku.plugins.websocket.WebSocketMessenger;
 import fi.muikku.rest.RESTPermitUnimplemented;
+import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
@@ -82,6 +83,9 @@ public class CommunicatorRESTService extends PluginRESTService {
   
   @Inject
   private NotifierController notifierController;
+  
+  @Inject
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
   
   @Inject
   private WebSocketMessenger webSocketMessenger;
@@ -490,23 +494,24 @@ public class CommunicatorRESTService extends PluginRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
     
-    UserEntity userEntity = userEntityController.findUserEntityById(recipient.getRecipient());
-    fi.muikku.schooldata.entity.User user = userController.findUserByUserEntityDefaults(userEntity);
-    Boolean hasPicture = false; // TODO: userController.hasPicture(userEntity);
-    
-    fi.muikku.rest.model.User result = new fi.muikku.rest.model.User(
-        userEntity.getId(), 
-        user.getFirstName(), 
-        user.getLastName(), 
-        hasPicture,
-        user.getNationality(),
-        user.getLanguage(),
-        user.getMunicipality(),
-        user.getSchool());
-    
-    return Response.ok(
-      result
-    ).build();
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      UserEntity userEntity = userEntityController.findUserEntityById(recipient.getRecipient());
+      fi.muikku.schooldata.entity.User user = userController.findUserByUserEntityDefaults(userEntity);
+      Boolean hasPicture = false; // TODO: userController.hasPicture(userEntity);
+      
+      fi.muikku.rest.model.UserBasicInfo result = new fi.muikku.rest.model.UserBasicInfo(
+          userEntity.getId(), 
+          user.getFirstName(), 
+          user.getLastName(), 
+          hasPicture);
+      
+      return Response.ok(
+        result
+      ).build();
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
   }
   
   @GET
@@ -521,23 +526,24 @@ public class CommunicatorRESTService extends PluginRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
     
-    UserEntity userEntity = userEntityController.findUserEntityById(communicatorMessage.getSender());
-    fi.muikku.schooldata.entity.User user = userController.findUserByUserEntityDefaults(userEntity);
-    Boolean hasPicture = false; // TODO: userController.hasPicture(userEntity);
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      UserEntity userEntity = userEntityController.findUserEntityById(communicatorMessage.getSender());
+      fi.muikku.schooldata.entity.User user = userController.findUserByUserEntityDefaults(userEntity);
+      Boolean hasPicture = false; // TODO: userController.hasPicture(userEntity);
+      
+      fi.muikku.rest.model.UserBasicInfo result = new fi.muikku.rest.model.UserBasicInfo(
+          userEntity.getId(), 
+          user.getFirstName(), 
+          user.getLastName(), 
+          hasPicture);
     
-    fi.muikku.rest.model.User result = new fi.muikku.rest.model.User(
-        userEntity.getId(), 
-        user.getFirstName(), 
-        user.getLastName(), 
-        hasPicture,
-        user.getNationality(),
-        user.getLanguage(),
-        user.getMunicipality(),
-        user.getSchool());
-    
-    return Response.ok(
-      result
-    ).build();
+      return Response.ok(
+        result
+      ).build();
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
   }
 
   @GET
