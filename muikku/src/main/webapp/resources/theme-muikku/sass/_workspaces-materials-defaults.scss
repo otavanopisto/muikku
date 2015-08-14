@@ -16,6 +16,32 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     margin:10px 0;
   }
   
+  .textfield-wrapper {
+    display:inline-block;
+    position:relative;
+  
+    span.muikku-text-field-hint {
+      display:block;
+      visibility:hidden;
+      opacity:0;
+      position:absolute;
+      z-index:2;
+      left:4px;
+      box-shadow:5px 5px 10px rgba(0, 0, 0, 0.2);
+      padding:2px 8px;
+      background:#f8ed8e;
+      border-top-right-radius:3px;
+      border-bottom-right-radius:3px;
+      color:#4c4c4c;
+      white-space:nowrap;
+      font-style:italic;
+      transition:opacity 0.2s ease-in-out;
+      border-left:3px solid #978c33;
+      font-size:14px;
+    }
+
+  }
+  
   /* Input field and textarea overrides */
   input[type="text"] {
     width:auto;
@@ -33,10 +59,21 @@ body.workspace-materials-management #contentWorkspaceMaterialsManagement {
     box-sizing:border-box;
     margin:4px 3px;
     
+
+    
     &:focus,
     &:hover {
       border:3px solid #97bfed;
       box-shadow:0 0 0px 3px rgba(202,225,252,0.75);
+      span.muikku-text-field-hint {
+        display:block;
+        border-bottom-left-radius:3px;
+        border-bottom-right-radius:3px;
+        background:#0099ff;
+        color:#fff;
+        font-size:12px;
+      }
+      
     }
 
     &::-webkit-input-placeholder {

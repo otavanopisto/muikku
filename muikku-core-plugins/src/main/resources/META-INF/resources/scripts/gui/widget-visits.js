@@ -84,6 +84,9 @@ $(document).ready(function(){
 	     	}    		
      	
 		}
+
+		dust.preload("frontpage/widget_visit.dust");
+		
     	renderDustTemplate('frontpage/widget_visits.dust', {
         	
         	workspaces :  workspaces,
