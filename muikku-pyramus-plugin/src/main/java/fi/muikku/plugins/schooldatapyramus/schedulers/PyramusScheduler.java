@@ -118,6 +118,9 @@ public class PyramusScheduler {
   }
   
   private void startTimer(int duration) {
+    if (!contextInitialized)
+      return;
+    
     if (this.timer != null) {
       this.timer.cancel();
       this.timer = null;
