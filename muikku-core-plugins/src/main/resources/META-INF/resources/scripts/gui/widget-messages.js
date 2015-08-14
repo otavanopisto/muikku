@@ -28,7 +28,7 @@ $(document).ready(function(){
     	}else{
     	  for(var i = 0, j = messages.length; i < j; i++){
     	    messages[i].caption =  $('<div>').html(messages[i].caption).text();
-    	    messages[i].content = generatePreview(messages[i].content);
+//    	    messages[i].content = generatePreview(messages[i].content);
     	  }
 
         dust.preload("frontpage/widget_message.dust");
