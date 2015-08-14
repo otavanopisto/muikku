@@ -550,6 +550,9 @@ $(document).ready(function() {
 
       var sendEditedMsg= function(values) {
           values.id = tId;
+          values.title = "Edited."; // TODO
+          values.sticky = false;
+          values.locked = false;
 
           mApi().forum.areas.threads.update(aId, tId, values).callback(function(err, result) {
           });
