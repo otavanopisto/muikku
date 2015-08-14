@@ -18,8 +18,10 @@ $(document).ready(function(){
     }
   
 	
-    mApi().communicator.items.read()
-      .callback(function (err, messages) {
+    mApi().communicator.items.read({
+      'firstResult': 0,
+      'maxResults': 5
+    }).callback(function (err, messages) {
     	  
       if( err ){
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('TODO: Virheilmoitus', err));
