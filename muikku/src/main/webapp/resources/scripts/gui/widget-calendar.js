@@ -12,7 +12,7 @@ $(document).ready(function(){
 			  month: 'MMMM'
 			  
 		  },
-		    	  
+      height: 170
 		  
 		});
 	});

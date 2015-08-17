@@ -2,7 +2,7 @@
   $(document).ready(function(){
     $('#fpDayEvents').fullCalendar({
       defaultView : 'basicDay',
-      header: false
+      header: false,
     });
     
     $('#fpWeekView').fullCalendar({
@@ -11,7 +11,7 @@
       columnFormat : {
         week : 'ddd',
       },
-      contentHeight : 500
+      height : 500
     });
   
     loadFullCalendarEvents($('#fpDayEvents'));

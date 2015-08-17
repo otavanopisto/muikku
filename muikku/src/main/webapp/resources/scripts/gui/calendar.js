@@ -240,7 +240,8 @@
       },  
       titleFormat:{
         month: 'MMMM'
-      }
+      },
+      height: 209
     });    
     
 	});
