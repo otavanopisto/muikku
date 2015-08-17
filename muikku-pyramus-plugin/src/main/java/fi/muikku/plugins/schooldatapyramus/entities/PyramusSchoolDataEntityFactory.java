@@ -20,12 +20,14 @@ import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.UserGroup;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceAssessment;
+import fi.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.muikku.schooldata.entity.WorkspaceRole;
 import fi.muikku.schooldata.entity.WorkspaceRoleArchetype;
 import fi.muikku.schooldata.entity.WorkspaceType;
 import fi.muikku.schooldata.entity.WorkspaceUser;
 import fi.pyramus.rest.model.Course;
 import fi.pyramus.rest.model.CourseAssessment;
+import fi.pyramus.rest.model.CourseAssessmentRequest;
 import fi.pyramus.rest.model.CourseStaffMember;
 import fi.pyramus.rest.model.CourseStaffMemberRole;
 import fi.pyramus.rest.model.CourseStudent;
@@ -290,7 +292,7 @@ public class PyramusSchoolDataEntityFactory {
     );
   }
 
-  public WorkspaceAssessment createEntity(CourseAssessment courseAssessment){
+  public WorkspaceAssessment createEntity(CourseAssessment courseAssessment) {
     return new PyramusWorkspaceAssessment(
        courseAssessment.getId().toString(),
        identifierMapper.getWorkspaceStudentIdentifier(courseAssessment.getCourseStudentId()),
@@ -302,11 +304,30 @@ public class PyramusSchoolDataEntityFactory {
      );
   }
   
-  public List<WorkspaceAssessment> createEntity(CourseAssessment... courseAssessments){
+  public List<WorkspaceAssessment> createEntity(CourseAssessment... courseAssessments) {
     List<WorkspaceAssessment> result = new ArrayList<>();
     for(CourseAssessment courseAssessment : courseAssessments){
       result.add(createEntity(courseAssessment));
     }
+    return result;
+  }
+  
+  public WorkspaceAssessmentRequest createEntity(CourseAssessmentRequest courseAssessmentRequest) {
+    return new PyramusWorkspaceAssessmentRequest(
+       courseAssessmentRequest.getId().toString(),
+       identifierMapper.getWorkspaceStudentIdentifier(courseAssessmentRequest.getCourseStudentId()),
+       courseAssessmentRequest.getRequestText(),
+       courseAssessmentRequest.getCreated().toDate()
+     );
+  }
+  
+  public List<WorkspaceAssessmentRequest> createEntity(CourseAssessmentRequest... courseAssessmentRequests) {
+    List<WorkspaceAssessmentRequest> result = new ArrayList<>();
+    
+    for (CourseAssessmentRequest courseAssessment : courseAssessmentRequests) {
+      result.add(createEntity(courseAssessment));
+    }
+
     return result;
   }
   

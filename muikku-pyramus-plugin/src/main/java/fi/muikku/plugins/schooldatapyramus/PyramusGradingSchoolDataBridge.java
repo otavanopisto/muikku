@@ -19,7 +19,9 @@ import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 import fi.muikku.schooldata.entity.GradingScale;
 import fi.muikku.schooldata.entity.GradingScaleItem;
 import fi.muikku.schooldata.entity.WorkspaceAssessment;
+import fi.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.pyramus.rest.model.CourseAssessment;
+import fi.pyramus.rest.model.CourseAssessmentRequest;
 import fi.pyramus.rest.model.Grade;
 
 public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
@@ -156,5 +158,46 @@ public class PyramusGradingSchoolDataBridge implements GradingSchoolDataBridge {
     return entityFactory.createEntity(pyramusClient.get(String.format("/students/students/%d/courses/%d/assessments/", studentId, courseId), CourseAssessment[].class));
   }
 
+  @Override
+  public WorkspaceAssessmentRequest createWorkspaceAssessmentRequest(String workspaceUserIdentifier,
+      String workspaceUserSchoolDataSource, String workspaceIdentifier, String studentIdentifier, String requestText,
+      Date date) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+    long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUserIdentifier);
+    long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
+    long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
+    
+    CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(null, courseStudentId, new DateTime(date), requestText, Boolean.FALSE);
+    return entityFactory.createEntity(pyramusClient.post(String.format("/students/students/%d/courses/%d/assessmentRequests/", studentId, courseId), courseAssessmentRequest));
+  }
+
+  @Override
+  public WorkspaceAssessmentRequest findWorkspaceAssessmentRequest(String identifier, String workspaceIdentifier,
+      String studentIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+    long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
+    long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
+    long id = Long.parseLong(identifier);
+    return entityFactory.createEntity(pyramusClient.get(String.format("/students/students/%d/courses/%d/assessmentRequests/%d", studentId, courseId, id), CourseAssessmentRequest.class));
+  }
+
+  @Override
+  public List<WorkspaceAssessmentRequest> listWorkspaceAssessmentRequests(String workspaceIdentifier,
+      String studentIdentifier) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+    long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
+    long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
+    return entityFactory.createEntity(pyramusClient.get(String.format("/students/students/%d/courses/%d/assessmentRequests/", studentId, courseId), CourseAssessmentRequest[].class));
+  }
+
+  @Override
+  public WorkspaceAssessmentRequest updateWorkspaceAssessmentRequest(String identifier, String workspaceUserIdentifier,
+      String workspaceUserSchoolDataSource, String workspaceIdentifier, String studentIdentifier,
+      String requestText, Date date) throws SchoolDataBridgeRequestException, UnexpectedSchoolDataBridgeException {
+    long courseStudentId = identifierMapper.getPyramusCourseStudentId(workspaceUserIdentifier);
+    long courseId = identifierMapper.getPyramusCourseId(workspaceIdentifier);
+    long studentId = identifierMapper.getPyramusStudentId(studentIdentifier);
+    long id = Long.parseLong(identifier);
+    
+    CourseAssessmentRequest courseAssessmentRequest = new CourseAssessmentRequest(id, courseStudentId, new DateTime(date), requestText, Boolean.FALSE);
+    return entityFactory.createEntity(pyramusClient.put(String.format("/students/students/%d/courses/%d/assessmentRequests/%d", studentId, courseId, id), courseAssessmentRequest));
+  }
 
 }
