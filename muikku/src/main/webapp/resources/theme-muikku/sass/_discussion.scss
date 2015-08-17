@@ -119,7 +119,7 @@
       
       .di-message-meta {
         height:60px;
-        width:60%;
+        width:50%;
         box-sizing:border-box;
         overflow:hidden;
         
@@ -176,7 +176,7 @@
       
       .di-message-details {
         height:60px;
-        width:40%;
+        width:50%;
         box-sizing:border-box;
         
         div {
@@ -210,7 +210,7 @@
           
           .di-message-replies{
             font-weight:600;
-            display:inline-block;
+            float:right;
             width:25px;
             background-color:$hlBgr;
             text-align:center;

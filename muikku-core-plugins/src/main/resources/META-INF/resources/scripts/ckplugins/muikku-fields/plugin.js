@@ -16,9 +16,7 @@
       CKEDITOR.tools.extend(CKEDITOR.editor.prototype, {
         createRandomMuikkuFieldName: function(editorElement) {
           var nameLength = 24;
-          var idCharacters = 'abcdefghijklmnopqrstuvwxyz' + 
-                             'ABCDEFGHIJKLMNOPQRSTUVWXYZ' +
-                             '0123456789';
+          var idCharacters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
           var result = 'muikku-field-';
           for (var i=0; i<nameLength; i++) {
             result = result + idCharacters[Math.floor(Math.random() * idCharacters.length)];
@@ -43,6 +41,13 @@
           return JSON.parse(content);
         }
       });
+      // ensure field name uniqueness when pasting (dirty hacks, anyone?)
+      editor.on('paste', function (evt) {
+        evt.stop();
+        var data = evt.data.dataValue;
+        data = data.replace(/muikku-field-[a-zA-Z0-9]{24}/, editor.createRandomMuikkuFieldName());
+        evt.editor.insertHtml(data);
+      });    
     }
   });
 })();

@@ -17,9 +17,6 @@
   .mf-textfield{
     width:100%;
 
-    input{
-      width:99%;
-    }
   }
 
 .cm-message-create-content{ 
@@ -30,17 +27,11 @@
 
 
   .cm-message-recipients{
-    background-color: #c5e0f0;
-    margin-bottom: 10px;
-    margin-right: 4px;
-    margin-top: -5px;
-    min-height: 35px;
-    padding-bottom: 5px;
+
   }
   
   .cm-message-recipient{
     float:left;
-    padding:5px;
     cursor:pointer;
     margin-top:0 !important;    
     &:not(:first-child){
@@ -58,14 +49,14 @@
   
   .cm-message-recipient-name{
     float:left;
-    padding:5px;
+    padding:6px 0;
     margin-top:0 !important;
     
     
        &:hover{   
           color:red;
           &:before{
-           color:#fff;
+           color:red;
 /*            @extend .icon-delete; */
           }
          }   

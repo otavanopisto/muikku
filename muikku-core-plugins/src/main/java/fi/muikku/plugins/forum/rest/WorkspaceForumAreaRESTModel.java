@@ -7,8 +7,8 @@ public class WorkspaceForumAreaRESTModel extends ForumAreaRESTModel {
     
   }
   
-  public WorkspaceForumAreaRESTModel(Long id, Long workspaceId, String name, Long groupId) {
-    super(id, name, groupId);
+  public WorkspaceForumAreaRESTModel(Long id, Long workspaceId, String name, Long groupId, Long numThreads) {
+    super(id, name, groupId, numThreads);
     this.workspaceId = workspaceId;
   }
 
