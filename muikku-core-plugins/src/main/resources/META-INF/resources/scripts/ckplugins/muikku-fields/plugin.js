@@ -43,10 +43,7 @@
       });
       // ensure field name uniqueness when pasting (dirty hacks, anyone?)
       editor.on('paste', function (evt) {
-        evt.stop();
-        var data = evt.data.dataValue;
-        data = data.replace(/muikku-field-[a-zA-Z0-9]{24}/, editor.createRandomMuikkuFieldName());
-        evt.editor.insertHtml(data);
+        evt.data.dataValue = evt.data.dataValue.replace(/muikku-field-[a-zA-Z0-9]{24}/, editor.createRandomMuikkuFieldName());
       });    
     }
   });
