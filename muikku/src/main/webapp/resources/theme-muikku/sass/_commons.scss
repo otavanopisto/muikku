@@ -5,8 +5,6 @@ To be used through SASS's extend feature with CSS's selectors.
   */
 @import "_base.scss"; 
 
-
-
 /* Pseudo styles */
 
 div[class*='header']{

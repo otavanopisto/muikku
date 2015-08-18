@@ -16,6 +16,9 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.ADMINISTRATOR })
   public static final String ADMIN = "ADMIN";
   
+  @Scope (PermissionScope.PERSONAL)
+  public static final String OWNER = "OWNER";
+  
   @Scope (PermissionScope.ENVIRONMENT)
   @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.MANAGER })
   public static final String REPRESENT_USER = "REPRESENT_USER";
@@ -93,6 +96,11 @@ public class MuikkuPermissions extends AbstractMuikkuPermissionCollection implem
   
   @Scope (PermissionScope.WORKSPACE)
   public static final String WORKSPACE_SIGNUP = "WORKSPACE_SIGNUP";
+  
+  @Scope (PermissionScope.WORKSPACE)
+  @DefaultEnvironmentPermissionRoles ({ EnvironmentRoleArchetype.MANAGER, EnvironmentRoleArchetype.ADMINISTRATOR })
+  @DefaultWorkspacePermissionRoles({ WorkspaceRoleArchetype.TEACHER })
+  public static final String LIST_ALL_JOURNAL_ENTRIES = "LIST_ALL_JOURNAL_ENTRIES";
   
   /* RESOURCE */
   

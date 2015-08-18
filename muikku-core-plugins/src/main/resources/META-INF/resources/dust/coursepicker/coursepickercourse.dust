@@ -1,7 +1,7 @@
 {#.}
  
  
-  <div id="crsId-{id}" class="cp-course ft-01">
+  <div id="crsId-{id}" class="cp-course ft-01 {@select key=published}{@eq value="false" type="boolean"}not-published{/eq}{/select}">
     <input type="hidden" name="workspaceId" value="{id}"/>
     <input type="hidden" name="workspaceUrl" value="{urlName}"/>
 
@@ -60,10 +60,10 @@
                 value='{#localize key="plugin.coursepicker.course.checkout" /}' />
             
               {#isLoggedIn}
-                {#canJoin}
+                {#canSignup}
                   <input class="bt-coursepicker cp-course-attend-button" type="button"
                     value='{#localize key="plugin.coursepicker.course.signup" /}' />
-                {/canJoin}
+                {/canSignup}
               {/isLoggedIn}
             </div>
           </div>

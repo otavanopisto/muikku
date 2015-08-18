@@ -793,7 +793,8 @@ div[class*="wi-dock-static-navi"] {
 .wi-content {
   @include padding;
   &.short{
-    min-height:400px;
+   height:400px;
+   overflow: auto;
   }
   ul{
     color:#0F0E13;
@@ -809,29 +810,49 @@ div[class*="wi-dock-static-navi"] {
 
 /* frontpage widgets */
 .wi-messages{
-  
- div:nth-child(odd){
-  background-color:#fcfcfc;
- }
  
  .wi-message{
-    font-size:11px; 
-    padding:5px;
-
-    .wi-message-caption{    
-      @include textOverflow;
-    }
+   max-height:3.2em;
+   overflow: hidden; 
+   font-size:13px; 
+   margin-bottom:5px;
     
-    .wi-message-content{
-      @include textOverflow;    
-    }
-  &:not(:last-child){border-bottom: 1px solid #f0f3f4;}
+   &:not(:last-child) {
+     padding-bottom:5px;
+     border-bottom:1px solid #f7fdff;
+   }
+    .wi-message-caption{ 
+   
+     &:hover {
+     
+       a {
+         color:#0099ff;
+       }
+       
+     } 
+   
+     a {
+       color:#3c77a0;
+       text-decoration:none;
+     }
+   
+   }
+   
   &.unread{
-     .wi-message-caption{
-       font-weight:bold;
-       a{color:#ff0000;}
-    }  
-    .icon-envelope:before{
+  
+    &:hover {
+    
+      a:hover {
+        color:#00c5cc;
+      }
+    
+    }
+
+    .wi-message-caption{
+      font-weight:bold;
+      a{color:#036f73;}
+   }  
+   .icon-envelope:before{
 
     }   
   }
