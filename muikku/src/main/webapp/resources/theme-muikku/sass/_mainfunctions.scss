@@ -684,25 +684,28 @@
     .mf-textfield {
       position:relative;
       top:0;
-      .mf-textfield-subelement{
+      
+      .mf-textfield-subelement {
         display:inline-block;
         float:left;
       }
-      .mf-textfield-subcontainer{
-
+      
+      .mf-textfield-subcontainer {
         border:2px solid #fff;
         color:#000;
         border-radius:3px;
         padding:0 8px;
+        margin:0 0 4px 0;
 
         background-color:#fff;
         
-        .mf-textfield-title{
+        .mf-textfield-title {
           color:$formTitle;
           padding:6px 5px;
         }
         
       }
+      
       input[type="textfield"] {
         border:0 solid #fff;
         color:#000;
@@ -712,19 +715,24 @@
         margin-left:5px;
         margin-top:5px;
         min-width:200px;
-        &:focus{
-        background-color:#eee;         
+        
+        &:focus {
+          background-color:#eee;         
         }
-        &:hover{
-        background-color:#eee;         
+        
+        &:hover {
+          background-color:#eee;         
         }
-        &.mf-textfield-subject{        
+        
+        &.mf-textfield-subject {        
           width:750px;
-          &:focus{
-          background-color:#fff;         
+          
+          &:focus {
+            background-color:#fff;         
           }
-          &:hover{
-          background-color:#fff;         
+          
+          &:hover {
+            background-color:#fff;         
           }
          
         }
