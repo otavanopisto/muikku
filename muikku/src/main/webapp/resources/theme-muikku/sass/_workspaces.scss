@@ -13,6 +13,18 @@ body[class^='workspace'] {
     background:#fff;
     margin:23px 0 0 0;
     
+    /* Generic title for view's inside workspace.
+       Use this class if there is no need for specific titles and layouts
+     */
+    h1.workspace-generic-view-title { 
+      padding:20px;
+      margin:0; 
+    }
+    
+    > article {
+      padding:20px;
+    }
+    
     h1.page-title {
       font-size:25px;
       padding:30px;
@@ -403,13 +415,12 @@ body[class^='workspace'] {
       
         }
       
-    
       }
     
     }
   
   }
-  
+
   /* TEXT CONTENT RULES */
   
   /* Content link overrides */

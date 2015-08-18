@@ -1,6 +1,6 @@
 @import "_base.scss"; /* Has to be loaded 1st, has all the mixins */
 
-body.workspace { 
+body[class^='workspace'] { 
   @include background-image('/gfx/light-diagonal-strips.png');
   background-repeat:repeat;
   background-color:#f0f3f5;
@@ -23,6 +23,14 @@ body.workspace {
     
     > article {
       padding:20px;
+    }
+    
+    h1.page-title {
+      font-size:25px;
+      padding:30px;
+      margin:0;
+      
+      text-transform:uppercase;
     }
     
     .workspace-content-widgetspaceset {
@@ -73,6 +81,18 @@ body.workspace {
       width:60px;
       
       #workspaceDock {
+        text-align:center;
+      }
+      
+    }
+    
+    #workspaceMaterialsDockWrapper {
+      background:#288fcd;
+      @include rounded(3px);
+      width:60px;
+      margin-bottom:10px;
+      
+      #workspaceMaterialsDock {
         text-align:center;
       }
       
