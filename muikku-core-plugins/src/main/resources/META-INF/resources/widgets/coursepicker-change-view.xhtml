@@ -7,10 +7,14 @@
        </div>
        <div class="cp-side-button-dropdown">
         <ul id="cpCategories">
-          <li id="cat-1" ><span id="all" class="cp-category-allCourses">Kaikki kurssit</span></li>
+          <li id="cat-1" ><span id="all" class="cp-category-allCourses">#{i18n.text['plugin.coursepicker.allcourses']}</span></li>
           <ui:fragment rendered="#{muikkuSession.loggedIn}">
-            <li id="cat-2"><span id="my" class="cp-category-myCourses">Omat kurssit</span></li>
+            <li id="cat-2"><span id="my" class="cp-category-myCourses">#{i18n.text['plugin.coursepicker.owncourses']}</span></li>
 <!--             <li id="cat-3"><span id="hops" class="cp-category-hops">HOPS</span></li> -->
+
+            <ui:fragment rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn}">
+              <li id="cat-4"><span id="te" class="cp-category-teacherCourses">#{i18n.text['plugin.coursepicker.teachercourses']}</span></li>
+            </ui:fragment>
           </ui:fragment>                 
         </ul>
       </div>

@@ -1,15 +1,8 @@
-	
-
 
 $(document).ready(function(){
-
-
   
 	$(".bt-mainFunction").click(function(){
-		
-		
-		
-		var sendMessage = function(values){
+	  var sendMessage = function(values){
 		  
 		  delete values.recipient;
 		  
@@ -17,11 +10,9 @@ $(document).ready(function(){
       .callback(function (err, result) {
       });
 		}		
-		
 
 		openInSN('/communicator/communicator_create_message.dust', null, sendMessage);		
-       
-	})
+	});
 	
 
   CommunicatorImpl = $.klass({
@@ -32,17 +23,26 @@ $(document).ready(function(){
       $("#socialNavigation").on("click", ".cm-message-recipient-name", $.proxy(this._onRemoveRecipientClick, this));
       $('*[data-message-type="inbox"]').addClass('selected');      
 
-      
+      dust.preload("communicator/communicator_item.dust");
+
       $(window).on("hashchange", $.proxy(this._onHashChange, this));
       
       $(window).trigger("hashchange");
+      
+      var _this = this;
+      $(document).on("Communicator:newmessagereceived", function (event, data) {
+        var hash = window.location.hash.substring(1);
+
+        if ((hash == "") || (hash == "inbox")) {
+          _this._showInbox();
+        }
+      });
     },
     _showNewMessageView : function () {
     },
     _showInbox : function () {
       this._setSelected("inbox");
-      mApi().communicator.items.read()
-      .on('$', function (item, itemCallback) {
+      mApi().communicator.items.read().on('$', function (item, itemCallback) {
         item.caption = $('<div>').html(item.caption).text();
         item.content = $('<div>').html(item.content).text();
         
@@ -123,7 +123,7 @@ $(document).ready(function(){
                   var cmId = $(fCont).find("input[name='communicatorMessageId']").val();
                   var subject = $(fCont).find("input[name='subject']").val();
                   var content = $(fCont).find("textarea[name='content']").val();
-                  var tagStr = "tagi viesti"; // TODO: Tag content
+                  var tagStr = ""; // TODO: Tag content
                   var tags = tagStr != undefined ? tagStr.split(' ') : [];
                   var recipientIdStr = $(fCont).find("input[name='recipientIds']").val();
                   var recipientIds = recipientIdStr != undefined ? recipientIdStr.split(',') : [];
@@ -154,7 +154,9 @@ $(document).ready(function(){
           });
         });
 
-        mApi().communicator.messages.markasread.create(communicatorMessageId).callback(function (err, result) {});
+        mApi().communicator.messages.markasread.create(communicatorMessageId).callback(function (err, result) {
+          $(document).trigger("Communicator:messageread");
+        });
       });
     },
     _showSentItems : function () {

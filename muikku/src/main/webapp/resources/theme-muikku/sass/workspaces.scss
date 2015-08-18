@@ -13,6 +13,18 @@ body.workspace {
     background:#fff;
     margin:23px 0 0 0;
     
+    /* Generic title for view's inside workspace.
+       Use this class if there is no need for specific titles and layouts
+     */
+    h1.workspace-generic-view-title { 
+      padding:20px;
+      margin:0; 
+    }
+    
+    > article {
+      padding:20px;
+    }
+    
     .workspace-content-widgetspaceset {
       padding:20px 20px;
       
@@ -444,7 +456,7 @@ body.workspace {
   
   }
   
-  /* WORKSPACE CONTENT (WIDGETS) */
+  /* WORKSPACE CONTENT */
   
   /* Welcome To widget */
   .wi-workspace-welcometo {/* Name of the widget */
@@ -610,12 +622,36 @@ body.workspace {
       
         }
       
-    
       }
     
     }
   
   }
+  
+  /* WORKSPACE PERMISSIONS VIEW */
+  
+  table#environmentUserRolePermissionsTable {
+    border:0;
+    border-collapse:collapse;
+  
+    td.workspace-permission-column-label {
+      padding:2px 4px;
+      text-transform:uppercase;
+      background:#eaf8fe;
+    }
+    
+    td.workspace-permission-column-data {
+      padding:4px;
+    }
+    
+    td.workspace-permission-column-input {
+      padding:4px;
+      text-align:center;
+    }
+  
+  }
+  
+  
   
   /* WORKSPACE FOOTER */
   footer {
