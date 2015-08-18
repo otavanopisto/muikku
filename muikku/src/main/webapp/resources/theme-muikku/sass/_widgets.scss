@@ -794,7 +794,7 @@ div[class*="wi-dock-static-navi"] {
   @include padding;
   &.short{
    height:400px;
-    overflow: auto;
+   overflow: auto;
   }
   ul{
     color:#0F0E13;
