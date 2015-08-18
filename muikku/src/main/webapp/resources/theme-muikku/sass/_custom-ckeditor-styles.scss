@@ -9,19 +9,11 @@
   min-height:64px;
   font-size:1.05em;
   line-height:1.7em;
-  @include background-image('gfx/material-box-styles-bg.png');
   background-position:-90px 0px;
   background-repeat:no-repeat;
   position:relative;
-  box-shadow:0 0 15px rgba(0, 0, 0, 0.05);
+  box-shadow:0 0 10px rgba(0, 0, 0, 0.03);
   border:1px solid #fff;
-  background: -moz-linear-gradient(top,  rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.4) 1%, rgba(255,255,255,0) 66%, rgba(255,255,255,0) 78%); /* FF3.6+ */
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0.4)), color-stop(1%,rgba(255,255,255,0.4)), color-stop(66%,rgba(255,255,255,0)), color-stop(78%,rgba(255,255,255,0))); /* Chrome,Safari4+ */
-  background: -webkit-linear-gradient(top,  rgba(255,255,255,0.4) 0%,rgba(255,255,255,0.4) 1%,rgba(255,255,255,0) 66%,rgba(255,255,255,0) 78%); /* Chrome10+,Safari5.1+ */
-  background: -o-linear-gradient(top,  rgba(255,255,255,0.4) 0%,rgba(255,255,255,0.4) 1%,rgba(255,255,255,0) 66%,rgba(255,255,255,0) 78%); /* Opera 11.10+ */
-  background: -ms-linear-gradient(top,  rgba(255,255,255,0.4) 0%,rgba(255,255,255,0.4) 1%,rgba(255,255,255,0) 66%,rgba(255,255,255,0) 78%); /* IE10+ */
-  background: linear-gradient(to bottom,  rgba(255,255,255,0.4) 0%,rgba(255,255,255,0.4) 1%,rgba(255,255,255,0) 66%,rgba(255,255,255,0) 78%); /* W3C */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#66ffffff', endColorstr='#00ffffff',GradientType=0 ); /* IE6-9 */
 
   &:after {
     width:64px;
@@ -132,12 +124,14 @@
 
 /* Citation */
 .material-citation-basic {
-  padding:20px 35px;
+  padding:10px 35px;
   color:#000;
   font-size:20px;
   font-style:italic;
   display:inline-block;
   quotes: "\201C""\201D""\2018""\2019";
+  
+  > br {display:none;}
   
   &:before {
     color: #ccc;
@@ -181,6 +175,8 @@
   min-height:1.7em;
   display:inline-block;
   quotes: "\201C""\201D""\2018""\2019";
+  
+  > br {display:none;}
   
     &:before {
     color: #ccc;
