@@ -104,7 +104,10 @@
 
 }
 
-
+.mf-item-details-container{
+  
+  
+}
 .cm-message {
    .cm-message-header-name{
      width:90%;
@@ -129,9 +132,9 @@
 
     &.unread{
      font-weight:700;
-     background-color:#fffbf0;
+
      .mf-item-header-content-primary{
-      color:#ff5a00 e;
+      color:#fff;
      }
      
    }
