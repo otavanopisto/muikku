@@ -66,6 +66,8 @@ public class WorkspaceJournalBackingBean {
   
   public void addWorkspaceJournalEntry(){
     workspaceJournalController.createJournalEntry(workspaceController.findWorkspaceEntityById(workspaceEntityId), sessionController.getLoggedUserEntity(), workspaceJournalEntryHtml, workspaceJournalEntryTitle);
+    workspaceJournalEntryTitle = "";
+    workspaceJournalEntryHtml = "";
   }
   
   public void editWorkspaceJournalEntry(Long workspaceJournalEntryId){
