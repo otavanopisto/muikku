@@ -114,9 +114,9 @@ public class PermissionsPluginController {
             final String permissionScope = collection.getPermissionScope(permissionName);
             
             if (permissionScope != null) {
-              if (!PermissionScope.PERSONAL.equals(permissionScope)) {
-                permission = permissionDAO.create(permissionName, permissionScope);
+              permission = permissionDAO.create(permissionName, permissionScope);
   
+              if (!PermissionScope.PERSONAL.equals(permissionScope)) {
                 String[] pseudoRoles = collection.getDefaultPseudoRoles(permissionName);
                 EnvironmentRoleArchetype[] environmentRoles = collection.getDefaultEnvironmentRoles(permissionName);
                 WorkspaceRoleArchetype[] workspaceRoles = collection.getDefaultWorkspaceRoles(permissionName);
