@@ -9,13 +9,6 @@
   </ui:define>
 
   <ui:define name="workspace.materials.management.content">
-    <div class="workspace-materials-management-add">
-      <span class="workspace-materials-management-line-separator"></span><a
-        class="workspaces-materials-management-add icon-add" href="javascript:void(null)"><span>#{i18n.text['plugin.workspace.materialsManagement.add']}</span></a>
-    </div>
-    <div class="workspaces-materials-management-insert-file">
-      <input type="file" />
-    </div>
     <ui:repeat var="node" value="#{workspaceHelpPageManagementBackingBean.contentNodes}">
       <ui:fragment rendered="#{node.type eq 'folder'}">
         <section id="page-#{node.workspaceMaterialId}"
@@ -25,14 +18,6 @@
           data-material-type="#{node.type}"
           data-material-title="#{node.title}"
           class="workspace-materials-view-page material-management-view folder #{node.hidden ? 'item-hidden' : ''}"></section>
-
-        <div class="workspace-materials-management-add">
-          <span class="workspace-materials-management-line-separator"></span><a
-            class="workspaces-materials-management-add icon-add" href="javascript:void(null)"><span>#{i18n.text['plugin.workspace.materialsManagement.add']}</span></a>
-        </div>
-        <div class="workspaces-materials-management-insert-file">
-          <input type="file" />
-        </div>
 
         <ui:repeat var="articleNode" value="#{node.children}">
           <ui:fragment rendered="#{articleNode.type eq 'folder'}">
@@ -60,13 +45,6 @@
               class="workspace-materials-view-page material-management-view #{articleNode.hidden ? 'item-hidden' : ''} #{node.hidden ? 'parent-hidden' : ''}" />
           </ui:fragment>
 
-          <div class="workspace-materials-management-add">
-            <span class="workspace-materials-management-line-separator"></span><a
-              class="workspaces-materials-management-add icon-add" href="javascript:void(null)"><span>#{i18n.text['plugin.workspace.materialsManagement.add']}</span></a>
-          </div>
-          <div class="workspaces-materials-management-insert-file">
-            <input type="file" />
-          </div>
         </ui:repeat>
       </ui:fragment>
 
@@ -82,13 +60,6 @@
           data-material-published-revision="#{node.publishedRevision}"
           data-assignment-type="#{node.assignmentType}"
           class="workspace-materials-view-page material-management-view #{node.hidden ? 'item-hidden' : ''}" />
-        <div class="workspace-materials-management-add">
-          <span class="workspace-materials-management-line-separator"></span><a
-            class="workspaces-materials-management-add icon-add" href="javascript:void(null)"><span>#{i18n.text['plugin.workspace.materialsManagement.add']}</span></a>
-        </div>
-        <div class="workspaces-materials-management-insert-file">
-          <input type="file" />
-        </div>
       </ui:fragment>
     </ui:repeat>
 

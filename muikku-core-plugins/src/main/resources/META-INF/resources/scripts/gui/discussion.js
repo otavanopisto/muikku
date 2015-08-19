@@ -494,13 +494,13 @@ $(document).ready(function() {
       });
     },
 
+
     _onRemoveThreadClick : function(event) {
-      var _this = this;
       confirmThreadRemoval($.proxy(function() {
         var areaId = $('input[name="areaId"]').val();
         var threadId = $('input[name="threadId"]').val();
 
-        mApi().forum.areas.threads.del(areaId, threadId).callback($.proxy(function(areaId, err, result) {
+        mApi().forum.areas.threads.del(areaId, threadId).callback($.proxy(function(err, result) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
           } else {
@@ -512,6 +512,7 @@ $(document).ready(function() {
     },
 
     replyMessage : function(event) {
+
 
       var element = $(event.target);
       element = element.parents(".di-message");
@@ -670,7 +671,7 @@ $(document).ready(function() {
     _klass : {
       // Variables for the class
       msgContainer : ".di-messages-container",
-      subMsgContainer : ".di-submessages-container"
+      subContainer : ".di-submessages-container"
 
     }
 
