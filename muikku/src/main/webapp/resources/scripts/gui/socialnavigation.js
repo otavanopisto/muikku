@@ -15,6 +15,7 @@ function openInSN(template, result, formFunction) {
     $(tabDiv).append($.parseHTML(text));
 
     var textareas = functionContainer.find("textarea");    
+    var textfields = functionContainer.find("input[type='textfield']"); 
     var cancelBtn = $(tabDiv).find("input[name='cancel']");
     var sendBtn = $(tabDiv).find("input[name='send']");
     var elements = $(tabDiv).find("form");
@@ -24,11 +25,20 @@ function openInSN(template, result, formFunction) {
     
     // Discussion 
      if(result != null && result.actionType == "edit"){
-      var msg = result.message;
+      var textContent = result.message;
+      var topic = result.title;
      }
+
+     $(textfields).each(function(index,textfield){
+       
+       $(textfield).val(topic);
+
+       
+     });     
+     
     $(textareas).each(function(index,textarea){
       
-      $(textarea).val(msg);
+      $(textarea).val(textContent);
       
       CKEDITOR.replace(textarea, {
         height : '100px',
