@@ -156,20 +156,21 @@ body.workspace-materials-reading {
         overflow:hidden;
         position:absolute;
         top:40px;
-        bottom:5px;
+        bottom:0;
         width:350px;
       
         .workspace-materials-toc-content-inner {  
           position:absolute;
           overflow-x: hidden;
           overflow-y: scroll;
-          width:370px;
+          width:100%;
           top:0;
           bottom:0;
         
           .workspace-materials-toc-content-scrolling {
-            width:338px;
+            width:100%;
             padding:0 6px;
+            box-sizing:border-box;
         
             .workspace-materials-toc-root {
 

@@ -74,7 +74,6 @@ body[class^='workspace'] {
     color:#000;
     font-size:14px;
     line-height:1.5em;
-    border-bottom:5px solid #fff;
     z-index:11;
     
     &:hover > span {
@@ -111,16 +110,15 @@ body[class^='workspace'] {
         .workspace-materials-toc-content-inner {  
           position:absolute;
           overflow-x: hidden;
-          overflow-y: scroll;
+          overflow-y: auto;
           bottom:0;
           top:0;
-          width:302px;
+          width:100%;
         
           .workspace-materials-toc-content-scrolling {
             padding:4px;
-            width:272px;
-            top:0;
-            bottom:0;
+            width:100%;
+            box-sizing:border-box;
             
             .spacer {
               height:30px; /* Creating some bottom margin because use of 100% height  */
