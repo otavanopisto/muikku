@@ -33,6 +33,9 @@
   });
 
   $(document).ready(function() {
+    
+    $("#materialsScrollableTOC").perfectScrollbar();
+    
     $(window).data('initializing', true);
     $(document).muikkuMaterialLoader({
       loadAnswers: true,

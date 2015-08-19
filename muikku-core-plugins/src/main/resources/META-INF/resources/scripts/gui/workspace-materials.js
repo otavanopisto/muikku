@@ -1,5 +1,7 @@
 (function() {
   'use strict';
+  
+  
 
   function scrollToPage(workspaceMaterialId, animate) {
     var topOffset = 100;
@@ -38,6 +40,9 @@
   });
 
   $(document).ready(function() {
+    
+    $("#materialsScrollableTOC").perfectScrollbar();
+    
     $(window).data('initializing', true);
     $(document).muikkuMaterialLoader({
       loadAnswers: true,
