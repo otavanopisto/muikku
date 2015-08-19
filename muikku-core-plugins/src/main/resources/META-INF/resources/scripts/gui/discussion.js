@@ -478,15 +478,17 @@ $(document).ready(function() {
     },
 
     _onRemoveThreadClick : function(event) {
+      var _this = this;
       confirmThreadRemoval($.proxy(function() {
         var areaId = $('input[name="areaId"]').val();
         var threadId = $('input[name="threadId"]').val();
 
-        mApi().forum.areas.threads.del(areaId, threadId).callback($.proxy(function(err, result) {
+        mApi().forum.areas.threads.del(areaId, threadId).callback($.proxy(function(areaId, err, result) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
           } else {
-            window.location.reload(true);
+            window.location.hash = "#area/" + areaId;
+            $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.discussion.infomessage.threadremoved'));
           }
         }, this));
       }, this));
@@ -504,7 +506,7 @@ $(document).ready(function() {
         });
 
         window.discussion.refreshThread(aId, tId);
-
+        $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.discussion.infomessage.newreply'));
       }
 
       mApi().forum.areas.threads.read(aId, tId).on('$', function(thread, threadCallback) {
@@ -625,6 +627,7 @@ $(document).ready(function() {
             // Refresh selected area
             window.discussion.filterMessagesByArea($("#forumAreaIdSelect").val());
             $("#discussionAreaSelect").val(forumAreaId);
+            $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.discussion.infomessage.newmessage'));
           }
         });
       }
@@ -649,6 +652,7 @@ $(document).ready(function() {
 
       window.discussion.refreshLatest();
       window.discussion.refreshAreas();
+      $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.discussion.infomessage.newarea'));
     }
 
     mApi().forum.areas.read().callback(function(err, areas) {
@@ -656,6 +660,7 @@ $(document).ready(function() {
         $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.noareas', err));
       } else {
         openInSN('/discussion/discussion_create_area.dust', areas, createArea);
+
       }
     });
 
