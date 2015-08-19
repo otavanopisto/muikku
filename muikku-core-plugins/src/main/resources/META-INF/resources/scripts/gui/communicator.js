@@ -92,7 +92,7 @@ $(document).ready(function(){
         renderDustTemplate('communicator/communicator_items_open.dust', result, function(text) {
           mCont.empty();
           mCont.append($.parseHTML(text));
-
+          
           $(".cm-message-reply-link").click(function(event) {
             var element = $(event.target);
             element = element.parents(".cm-message");
@@ -118,12 +118,13 @@ $(document).ready(function(){
 
                 var cBtn = $(fCont).find("input[name='cancel']");
                 var sBtn = $(fCont).find("input[name='send']");
-
+                
                 $(sBtn).click(function() {
-                  var cmId = $(fCont).find("input[name='communicatorMessageId']").val();
+              
+                  var cmId = $(fCont).find("input[name='communicatorMessageThreadId']").val();
                   var subject = $(fCont).find("input[name='subject']").val();
                   var content = $(fCont).find("textarea[name='content']").val();
-                  var tagStr = ""; // TODO: Tag content
+                  var tagStr = undefined; // TODO: Tag content
                   var tags = tagStr != undefined ? tagStr.split(' ') : [];
                   var recipientIdStr = $(fCont).find("input[name='recipientIds']").val();
                   var recipientIds = recipientIdStr != undefined ? recipientIdStr.split(',') : [];
@@ -137,10 +138,11 @@ $(document).ready(function(){
                     recipientIds : recipientIds,
                     recipientGroupIds : groupIds
                   }).callback(function(err, result) {
+                    
                   });
 
-                  // Go to inbox
                   window.location.reload();
+
                 });
 
                 $(cBtn).click(function() {
@@ -198,7 +200,7 @@ $(document).ready(function(){
     _onMessageClick: function (event) {
       var element = $(event.target);
       element = element.parents(".cm-message");
-      var cmId = element.find("input[name='communicatorMessageIdId']").val();
+      var cmId = element.find("input[name='communicatorMessageThreadId']").val();
 
       var box = "#inbox";
       
@@ -257,6 +259,8 @@ $(document).ready(function(){
         });
       }
 	},
+	
+
 	_onRemoveRecipientClick : function (event) {
 	  var element = $(event.target);
 	  if (!element.hasClass("cm-message-recipient"))
