@@ -74,7 +74,6 @@ body[class^='workspace'] {
     color:#000;
     font-size:14px;
     line-height:1.5em;
-    border-bottom:5px solid #fff;
     z-index:11;
     
     &:hover > span {
@@ -100,111 +99,90 @@ body[class^='workspace'] {
         color:#2c2c2c;
         height:20px;
       }
-    
-      .workspace-materials-toc-content-outer {
-        overflow:hidden;
+
+      .workspace-materials-toc-content-scrolling {
+        padding:4px;
+        width:100%;
+        box-sizing:border-box;
         position:absolute;
-        width:280px;
         top:40px;
         bottom:0;
         
-        .workspace-materials-toc-content-inner {  
-          position:absolute;
-          overflow-x: hidden;
-          overflow-y: scroll;
-          bottom:0;
-          top:0;
-          width:302px;
-        
-          .workspace-materials-toc-content-scrolling {
-            padding:4px;
-            width:272px;
-            top:0;
-            bottom:0;
+        .workspace-materials-toc-root {
+
+          .workspace-materials-toc-item {
+            font-weight:300;
+            list-style:none;
             
-            .spacer {
-              height:30px; /* Creating some bottom margin because use of 100% height  */
+            &:first-child {
+              margin-top:5px;
+              padding-top:2px;
             }
             
-            .workspace-materials-toc-root {
-
-              .workspace-materials-toc-item {
-                font-weight:300;
-                list-style:none;
-                
-                &:first-child {
-                  margin-top:5px;
-                  padding-top:2px;
-                }
-                
-                &.item-hidden {
-                  opacity:0.4;
-                }
-                
-                a {
-                  text-decoration:none;
-                  color:#2c2c2c;
-                  display:block;
-                  @include genericMenuLinkHoverTransition(background,0.15s,ease-in-out);
-                  @include rounded(2px);
-                  padding:2px 8px 2px 6px;
-                  border-left:2px solid #fff;
-                  margin:1px 0;
-                  
-                  &:hover,
-                  &.active {
-                    background:#596e7d;
-                    color:#fff;
-                  }
-                  
-                  &.evaluated {
-                    border-left:2px solid $evaluatedAssignment;
-                  }
-                  
-                  &.exercise {
-                    border-left:2px solid $exerciseAssignment;
-                  }
-                  
-                }
-    
-              }
-
-              .workspace-materials-toc-section {
-                margin:0;
-                padding-top:5px;
-                padding-bottom:10px;
-              
-                .workspace-materials-toc-subtitle {
-                  text-transform:uppercase;
-                  font-size:15px;
-                  padding:2px 8px;
-                }
-                
-                .workspace-materials-toc-item {
-                  font-weight:300;
-                  
-                  a {
-                    text-decoration:none;
-                    color:#41505b;
-                    display:block;
-                    @include genericMenuLinkHoverTransition(background,0.15s,ease-in-out);
-                    @include rounded(2px);
-                    padding:2px 8px;
-                    
-                    &:hover,
-                    &.active {
-                      background:#596e7d;
-                      color:#fff;
-                    }
-                  }
-                }
-              
-              }
+            &.item-hidden {
+              opacity:0.4;
             }
+            
+            a {
+              text-decoration:none;
+              color:#2c2c2c;
+              display:block;
+/*                   @include genericMenuLinkHoverTransition(background,0.05s,ease-in-out); */
+              @include rounded(2px);
+              padding:2px 8px 2px 6px;
+              border-left:2px solid #fff;
+              margin:1px 0;
+              
+              &:hover,
+              &.active {
+                background:#596e7d;
+                color:#fff;
+              }
+              
+              &.evaluated {
+                border-left:2px solid $evaluatedAssignment;
+              }
+              
+              &.exercise {
+                border-left:2px solid $exerciseAssignment;
+              }
+              
+            }
+
           }
-        
+
+          .workspace-materials-toc-section {
+            margin:0;
+            padding-top:5px;
+            padding-bottom:10px;
+          
+            .workspace-materials-toc-subtitle {
+              text-transform:uppercase;
+              font-size:15px;
+              padding:2px 8px;
+            }
+            
+            .workspace-materials-toc-item {
+              font-weight:300;
+              
+              a {
+                text-decoration:none;
+                color:#41505b;
+                display:block;
+/*                     @include genericMenuLinkHoverTransition(background,0.15s,ease-in-out); */
+                @include rounded(2px);
+                padding:2px 8px;
+                
+                &:hover,
+                &.active {
+                  background:#596e7d;
+                  color:#fff;
+                }
+              }
+            }
+          
+          }
         }
-      
       }
     
     }
