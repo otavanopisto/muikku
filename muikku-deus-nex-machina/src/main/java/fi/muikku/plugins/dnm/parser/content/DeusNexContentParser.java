@@ -251,6 +251,8 @@ public class DeusNexContentParser {
       return handleEmbeddedItemAudio(ownerDocument, embeddedItemElement);
     case "hyperlink":
       return handleEmbeddedItemHyperLink(ownerDocument, embeddedItemElement);
+    case "flash":
+      return handleEmbedded(ownerDocument, embeddedItemElement);
     }
 
     

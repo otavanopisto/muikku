@@ -77,7 +77,6 @@
     </m:widgetSpaceSet>
     -->
     
-    <div class="workspace-content-widgetspaceset">
       <ui:repeat value="#{workspaceIndexBackingBean.contentNodes}" var="contentNode">
         <article id="page-#{contentNode.workspaceMaterialId}"
           data-workspace-material-id="#{contentNode.workspaceMaterialId}"
@@ -86,7 +85,6 @@
           data-material-content="#{contentNode.html}"
           class="workspace-materials-view-page material-view" />
       </ui:repeat>
-    </div>
 
     <input class="workspaceEntityId" type="hidden" value="#{workspaceIndexBackingBean.workspaceEntityId}" />
   </ui:define>

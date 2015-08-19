@@ -11,18 +11,20 @@
              </span>
           </div>
           <div class="mf-item-description">
+
             <div class="mf-item-header-name cm-message-header-name">
               {?senderHasPicture} 
-                <img class="cm-user-picture custom" src="{@contextPath/}/picture?userId={sender}" width="50" height="50" />
+                <img class="cm-user-picture custom" title="{senderFullName}" src="{@contextPath/}/picture?userId={sender}" width="50" height="50" />
               {:else}
                 <div class="cm-user-picture default"></div>
               {/senderHasPicture}            
               <input type="hidden" name="mf-person-id" value="{sender}"/>
-              <span class="mf-item-header-content-primary">{senderFullName}</span>        
-              <span class="mf-item-header-content-secondary {?unreadMessagesInThread}cm-message-unread{/unreadMessagesInThread}">{caption}</span>    
+
+
+              <div class="mf-item-header-content-secondary cm-message-header-content-secondary {?unreadMessagesInThread}cm-message-unread{/unreadMessagesInThread}">{caption}</div>    
             </div>
             <div class="mf-item-header-details cm-message-header-count">
-              <span>{@gt key=messageCount value=1} ({messageCount}){/gt}</span>
+              <span class="cm-message-replies">{@gt key=messageCount value=1}{messageCount}{/gt}</span>
             </div>
           </div>       
           <div class="clear"></div>
@@ -30,6 +32,6 @@
       </div>
     
       <input type="hidden" name="communicatorMessageId" value="{id}"/>
-      <input type="hidden" name="communicatorMessageIdId" value="{communicatorMessageId}"/>
+      <input type="hidden" name="communicatorMessageThreadId" value="{communicatorMessageId}"/>
   
     </div >

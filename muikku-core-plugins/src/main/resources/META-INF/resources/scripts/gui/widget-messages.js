@@ -17,28 +17,39 @@ $(document).ready(function(){
       }
     }
   
-	
-    mApi().communicator.items.read()
-      .callback(function (err, messages) {
-    	  
-      if( err ){
-            $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('TODO: Virheilmoitus', err));
-    	}else{
-    	  for(var i = 0, j = messages.length; i < j; i++){
-    	    messages[i].caption =  $('<div>').html(messages[i].caption).text();
-    	    messages[i].content = generatePreview(messages[i].content);
-    	  }
-
-        renderDustTemplate('frontpage/widget_messages.dust', 
-    		{
-    	   	 messages : messages
-    		}, function (text) {
-
-    		$('#widgetMessages').append($.parseHTML(text));
+    function _refreshMessagesWidgetMessagesList() {
+      mApi().communicator.items.read({
+        'firstResult': 0,
+        'maxResults': 6
+      }).callback(function (err, messages) {
           
-        });
-    	}
+        if( err ){
+              $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('TODO: Virheilmoitus', err));
+        }else{
+          for(var i = 0, j = messages.length; i < j; i++){
+            messages[i].caption =  $('<div>').html(messages[i].caption).text();
+//            messages[i].content = generatePreview(messages[i].content);
+          }
+
+          dust.preload("frontpage/widget_message.dust");
+
+          renderDustTemplate('frontpage/widget_messages.dust', 
+          {
+             messages : messages
+          }, function (text) {
+
+            $('#widgetMessages').empty();
+            $('#widgetMessages').append($.parseHTML(text));
+            
+          });
+        }
+      });
+    }
+    
+    $(document).on("Communicator:newmessagereceived", function (event, data) {
+      _refreshMessagesWidgetMessagesList();
     });
       
+    _refreshMessagesWidgetMessagesList();
 	});
  	

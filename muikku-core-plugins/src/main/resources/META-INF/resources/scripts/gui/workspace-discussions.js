@@ -166,7 +166,7 @@ $(document).ready(function() {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.nothreads', err));
           } else {
-            renderDustTemplate('/discussion/discussion_items.dust', threads, function(text) {
+            renderDustTemplate('/discussion/discussion_replies.dust', threads, function(text) {
               $(DiscImpl.msgContainer).append($.parseHTML(text));
             });
           }
@@ -241,7 +241,7 @@ $(document).ready(function() {
         if (err) {
           $('.notification-queue').notificationQueue('notification', 'error', getLocaleText('plugin.discussion.errormessage.noreplies', err));
         } else {
-          renderDustTemplate('/discussion/discussion_subitems.dust', replies, function(text) {
+          renderDustTemplate('/discussion/discussion_replies.dust', replies, function(text) {
             $(DiscImpl.msgContainer).append($.parseHTML(text));
           });
         }

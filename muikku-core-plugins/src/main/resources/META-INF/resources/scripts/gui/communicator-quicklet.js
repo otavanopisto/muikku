@@ -66,6 +66,9 @@
       $(document).on("Communicator:newmessagereceived", function (event, data) {
         _this._refreshUnreadMessagesFlappidiFlap();
       });
+      $(document).on("Communicator:messageread", function (event) {
+        _this._refreshUnreadMessagesFlappidiFlap();
+      });
     },
     deinitialize: function () {
     },
