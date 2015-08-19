@@ -552,7 +552,6 @@ $(document).ready(function() {
 
       var sendEditedMsg= function(values) {
           values.id = tId;
-
           mApi().forum.areas.threads.update(aId, tId, values).callback(function(err, result) {
           });
 

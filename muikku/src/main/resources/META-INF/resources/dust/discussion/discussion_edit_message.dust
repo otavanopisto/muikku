@@ -6,14 +6,14 @@
       <div class="mf-form-header"><h3>{#localize key="plugin.discussion.reply.edit.topic"/}</h3></div>
       <div class="mf-content">
           <div class="di-message-new-body">
-<!--             <div class="mf-fieldRow"> -->
-<!--               <div class="mf-textfield"> -->
-<!--                 <input type="textfield" value="" name="title"></input> -->
-<!--               </div>     -->
-<!--               <div id="areaSelect" class="mf-select"> -->
-<!--                 <h3><span class="mf-category-{forumAreaId}-font">{areaName}</span> - {title}</h3> -->
-<!--               </div>     -->
-<!--             </div> -->
+            <div class="mf-fieldRow">
+            <div class="mf-textfield">
+              <div class="mf-textfield-subcontainer">
+                <span class="mf-textfield-title">{#localize key="plugin.discussion.createmessage.title"/}</span>
+                <input type="textfield" value="" name="title"></input>
+              </div>
+            </div>    
+            </div>
             <div class="mf-fieldRow">
               <div class="di-message-new-content">
                 <div class="mf-textarea">
