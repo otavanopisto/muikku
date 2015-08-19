@@ -888,6 +888,11 @@
 
   $(document).ready(function() {
     
+    $("#materialsScrollableTOC").perfectScrollbar({
+      wheelSpeed:3,
+      swipePropagation:false
+    });
+    
     $(window).data('initializing', true);
     
     // TOC sorting - DOES NOT SUPPORT NESTING, only dragging items from section to section. 
