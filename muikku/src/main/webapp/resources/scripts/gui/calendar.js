@@ -238,6 +238,7 @@
         center: 'title',
         right: 'next'
       },  
+      firstDay : 1,
       titleFormat:{
         month: 'MMMM'
       },
