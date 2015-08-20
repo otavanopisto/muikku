@@ -408,7 +408,7 @@ a.header {
 #socialNavigation{
   
   .sn-container{
-    background-color:$sNavBgr;
+    background-color:$btBarBgr;
     position:fixed;
     left:0;
     bottom:0;
@@ -417,7 +417,7 @@ a.header {
 
     &.closed{
       min-height:30px;
-      opacity:0.1;
+      opacity:0.9;
      }  
      
     &.open {
