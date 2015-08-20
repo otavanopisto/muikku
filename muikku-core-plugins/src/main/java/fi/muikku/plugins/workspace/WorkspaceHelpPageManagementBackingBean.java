@@ -17,12 +17,7 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.jsf.NavigationRules;
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.plugins.material.HtmlMaterialController;
-import fi.muikku.plugins.material.model.HtmlMaterial;
-import fi.muikku.plugins.workspace.model.WorkspaceFolder;
-import fi.muikku.plugins.workspace.model.WorkspaceFolderType;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
-import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.Workspace;
@@ -43,9 +38,6 @@ public class WorkspaceHelpPageManagementBackingBean {
 
   @Inject
   private WorkspaceController workspaceController;
-  
-  @Inject
-  private HtmlMaterialController htmlMaterialController;
 
   @Inject
   private WorkspaceMaterialController workspaceMaterialController;
@@ -72,26 +64,12 @@ public class WorkspaceHelpPageManagementBackingBean {
     workspaceBackingBean.setWorkspaceUrlName(urlName);
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
     workspaceName = workspace.getName();
-    
-    List<WorkspaceFolder> folders = workspaceMaterialController.listWorkspaceFoldersByParentAndFolderTypeSortByOrderNumber(
-        rootFolder,
-        WorkspaceFolderType.HELP_PAGE); 
-    
-    if (folders.isEmpty()) {
-      folders = Arrays.asList((WorkspaceFolder)workspaceMaterialController.createWorkspaceHelpPageFolder(workspaceEntity));
-    }
-    
-    WorkspaceFolder helpPageFolder = (WorkspaceFolder)folders.get(0);
-    
-    if (helpPageFolder.getDefaultMaterial() == null) {
-      HtmlMaterial htmlMaterial = htmlMaterialController.createHtmlMaterial("Help page", "", "text/html", 0l);
-      WorkspaceMaterial workspaceMaterial = workspaceMaterialController.createWorkspaceMaterial(helpPageFolder, htmlMaterial);
-      workspaceMaterialController.updateDefaultMaterial(helpPageFolder, workspaceMaterial);
-    }
 
     try {
-      contentNodes = workspaceMaterialController.listWorkspaceHelpPagesAsContentNodes(workspaceEntity);
-    } catch (WorkspaceMaterialException e) {
+      WorkspaceMaterial helpPage = workspaceMaterialController.ensureWorkspaceHelpPageExists(workspaceEntity);
+      contentNodes = Arrays.asList(workspaceMaterialController.createContentNode(helpPage));
+    }
+    catch (WorkspaceMaterialException e) {
       logger.log(Level.SEVERE, "Error loading materials", e);
       return NavigationRules.INTERNAL_ERROR;
     }

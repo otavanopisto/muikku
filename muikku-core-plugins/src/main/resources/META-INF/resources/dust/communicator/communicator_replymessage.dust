@@ -1,7 +1,7 @@
 <div class="cm-message-reply">
   <form>
     <input type="hidden" name="communicatorMessageId" value="{communicatorMessageId}" />
-    <input type="hidden" name="recipientIds" value="{senderId}" />
+    <input type="hidden" name="recipientIds" value="{senderId}" data-array="true" />
 
     <div class="mf-form-paragraph cm-message-recipients">
       <div class="mf-form-row mf-selected-items cm-message-selected-recipients">
@@ -19,11 +19,11 @@
     <div class="mf-form-paragraph cm-reply-body">
       <div class="mf-form-row cm-reply-subject">
         <div class="mf-textfield">
-          <input type="text" name="subject" value="RE: {caption}" />
+          <input type="text" name="caption" value="RE: {caption}" />
         </div>
       </div>
       <div class="mf-form-row cm-reply-content">
-         <textarea name="content">
+         <textarea id="textContent" name="content">
            
          </textarea>
       </div>  
@@ -31,6 +31,7 @@
       <div class="mf-form-row mf-toolbar cm-reply-toolbar">
         <input type="button" name="send" value='{#localize key="plugin.communicator.newmessage.send"/}'/>
         <input type="button" name="cancel" value='{#localize key="plugin.communicator.newmessage.cancel"/}'/>
+        <input type="hidden" name="categoryName" value="message" />
       </div>        
     </div>		
   </form>

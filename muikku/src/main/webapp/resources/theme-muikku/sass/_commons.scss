@@ -5,8 +5,6 @@ To be used through SASS's extend feature with CSS's selectors.
   */
 @import "_base.scss"; 
 
-
-
 /* Pseudo styles */
 
 div[class*='header']{
@@ -161,6 +159,15 @@ div[class*='header']{
   background:$w-bgr;
   min-height:3em;
   border:1px solid $w-brd;
+}
+.co-item-count{
+  font-weight:600;
+  float:right;
+  width:25px;
+  background-color:$hlBgr;
+  text-align:center;
+  margin-left:10px;
+  
 }
 
 /* Forms 

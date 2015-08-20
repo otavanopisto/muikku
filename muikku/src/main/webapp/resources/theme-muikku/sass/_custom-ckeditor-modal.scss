@@ -193,6 +193,14 @@ div.cke_reset_all {
             
             }
             
+            .selection-options-container,
+            .textfield-elements-container,
+            .connectfield-elements-container {
+              max-height:300px;
+              overflow-y:auto;
+              overflow-x:hidden;
+            }
+            
             .selection-options-container .selection-option-container,
             .textfield-elements-container .textfield-element-container,
             .memofield-elements-container .memofield-element-container {

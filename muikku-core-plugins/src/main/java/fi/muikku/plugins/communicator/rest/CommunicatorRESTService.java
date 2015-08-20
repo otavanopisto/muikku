@@ -12,11 +12,13 @@ import javax.ejb.Stateful;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
@@ -43,6 +45,7 @@ import fi.muikku.plugins.communicator.model.CommunicatorMessageTemplate;
 import fi.muikku.plugins.communicator.model.InboxCommunicatorMessage;
 import fi.muikku.plugins.websocket.WebSocketMessenger;
 import fi.muikku.rest.RESTPermitUnimplemented;
+import fi.muikku.schooldata.SchoolDataBridgeSessionController;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.UserController;
 import fi.muikku.users.UserEntityController;
@@ -82,12 +85,17 @@ public class CommunicatorRESTService extends PluginRESTService {
   private NotifierController notifierController;
   
   @Inject
+  private SchoolDataBridgeSessionController schoolDataBridgeSessionController;
+  
+  @Inject
   private WebSocketMessenger webSocketMessenger;
 
   @GET
   @Path ("/items")
   @RESTPermitUnimplemented
-  public Response listUserCommunicatorItems() {
+  public Response listUserCommunicatorItems(
+      @QueryParam("firstResult") @DefaultValue ("0") Integer firstResult, 
+      @QueryParam("maxResults") @DefaultValue ("10") Integer maxResults) {
     UserEntity user = sessionController.getLoggedUserEntity(); 
     List<InboxCommunicatorMessage> receivedItems = communicatorController.listReceivedItems(user);
 
@@ -125,6 +133,8 @@ public class CommunicatorRESTService extends PluginRESTService {
         return o2.getThreadLatestMessageDate().compareTo(o1.getThreadLatestMessageDate());
       }
     });
+    
+    result = result.subList(firstResult, Math.min(firstResult + maxResults, result.size()));
     
     return Response.ok(
       result
@@ -280,8 +290,8 @@ public class CommunicatorRESTService extends PluginRESTService {
     // TODO Category not existing at this point would technically indicate an invalid state
     CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(newMessage.getCategoryName());
     
-    String content = Jsoup.clean(newMessage.getContent(), Whitelist.basic());
-    String caption = Jsoup.clean(newMessage.getCaption(), Whitelist.basic());
+    String content = Jsoup.clean(newMessage.getContent(), Whitelist.relaxed());
+    String caption = Jsoup.clean(newMessage.getCaption(), Whitelist.relaxed());
 
     CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId, user, recipients, categoryEntity, 
         caption, content, tagList);
@@ -484,23 +494,24 @@ public class CommunicatorRESTService extends PluginRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
     
-    UserEntity userEntity = userEntityController.findUserEntityById(recipient.getRecipient());
-    fi.muikku.schooldata.entity.User user = userController.findUserByUserEntityDefaults(userEntity);
-    Boolean hasPicture = false; // TODO: userController.hasPicture(userEntity);
-    
-    fi.muikku.rest.model.User result = new fi.muikku.rest.model.User(
-        userEntity.getId(), 
-        user.getFirstName(), 
-        user.getLastName(), 
-        hasPicture,
-        user.getNationality(),
-        user.getLanguage(),
-        user.getMunicipality(),
-        user.getSchool());
-    
-    return Response.ok(
-      result
-    ).build();
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      UserEntity userEntity = userEntityController.findUserEntityById(recipient.getRecipient());
+      fi.muikku.schooldata.entity.User user = userController.findUserByUserEntityDefaults(userEntity);
+      Boolean hasPicture = false; // TODO: userController.hasPicture(userEntity);
+      
+      fi.muikku.rest.model.UserBasicInfo result = new fi.muikku.rest.model.UserBasicInfo(
+          userEntity.getId(), 
+          user.getFirstName(), 
+          user.getLastName(), 
+          hasPicture);
+      
+      return Response.ok(
+        result
+      ).build();
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
   }
   
   @GET
@@ -515,23 +526,24 @@ public class CommunicatorRESTService extends PluginRESTService {
       return Response.status(Status.FORBIDDEN).build();
     }
     
-    UserEntity userEntity = userEntityController.findUserEntityById(communicatorMessage.getSender());
-    fi.muikku.schooldata.entity.User user = userController.findUserByUserEntityDefaults(userEntity);
-    Boolean hasPicture = false; // TODO: userController.hasPicture(userEntity);
+    schoolDataBridgeSessionController.startSystemSession();
+    try {
+      UserEntity userEntity = userEntityController.findUserEntityById(communicatorMessage.getSender());
+      fi.muikku.schooldata.entity.User user = userController.findUserByUserEntityDefaults(userEntity);
+      Boolean hasPicture = false; // TODO: userController.hasPicture(userEntity);
+      
+      fi.muikku.rest.model.UserBasicInfo result = new fi.muikku.rest.model.UserBasicInfo(
+          userEntity.getId(), 
+          user.getFirstName(), 
+          user.getLastName(), 
+          hasPicture);
     
-    fi.muikku.rest.model.User result = new fi.muikku.rest.model.User(
-        userEntity.getId(), 
-        user.getFirstName(), 
-        user.getLastName(), 
-        hasPicture,
-        user.getNationality(),
-        user.getLanguage(),
-        user.getMunicipality(),
-        user.getSchool());
-    
-    return Response.ok(
-      result
-    ).build();
+      return Response.ok(
+        result
+      ).build();
+    } finally {
+      schoolDataBridgeSessionController.endSystemSession();
+    }
   }
 
   @GET
