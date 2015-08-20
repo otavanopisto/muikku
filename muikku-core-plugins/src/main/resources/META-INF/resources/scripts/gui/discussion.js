@@ -477,13 +477,28 @@ $(document).ready(function() {
       });
     },
 
+//    _onRemoveThreadClick : function(event) {
+//      var _this = this;
+//      confirmThreadRemoval($.proxy(function() {
+//        var areaId = $('input[name="areaId"]').val();
+//        var threadId = $('input[name="threadId"]').val();
+//
+//        mApi().forum.areas.threads.del(areaId, threadId).callback($.proxy(function(areaId, err, result) {
+//          if (err) {
+//            $('.notification-queue').notificationQueue('notification', 'error', err);
+//          } else {
+//            window.location.hash = "#area/" + areaId;
+//            $('.notification-queue').notificationQueue('notification', 'success', getLocaleText('plugin.discussion.infomessage.threadremoved'));
+//          }
+//        }, this));
+//      }, this));
+//    },
     _onRemoveThreadClick : function(event) {
-      var _this = this;
       confirmThreadRemoval($.proxy(function() {
         var areaId = $('input[name="areaId"]').val();
         var threadId = $('input[name="threadId"]').val();
 
-        mApi().forum.areas.threads.del(areaId, threadId).callback($.proxy(function(areaId, err, result) {
+        mApi().forum.areas.threads.del(areaId, threadId).callback($.proxy(function(err, result) {
           if (err) {
             $('.notification-queue').notificationQueue('notification', 'error', err);
           } else {
@@ -493,7 +508,6 @@ $(document).ready(function() {
         }, this));
       }, this));
     },
-
     replyThread : function(event) {
 
       var element = $(event.target);
