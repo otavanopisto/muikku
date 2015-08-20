@@ -290,8 +290,8 @@ public class CommunicatorRESTService extends PluginRESTService {
     // TODO Category not existing at this point would technically indicate an invalid state
     CommunicatorMessageCategory categoryEntity = communicatorController.persistCategory(newMessage.getCategoryName());
     
-    String content = Jsoup.clean(newMessage.getContent(), Whitelist.basic());
-    String caption = Jsoup.clean(newMessage.getCaption(), Whitelist.basic());
+    String content = Jsoup.clean(newMessage.getContent(), Whitelist.relaxed());
+    String caption = Jsoup.clean(newMessage.getCaption(), Whitelist.relaxed());
 
     CommunicatorMessage message = communicatorController.createMessage(communicatorMessageId, user, recipients, categoryEntity, 
         caption, content, tagList);
