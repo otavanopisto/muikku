@@ -28,12 +28,22 @@
     }, this));
   }
   
-  /*
   function newJournalEntry() {
     var workspaceId = $("input[name='workspaceEntityId']").val();
-    openInSN('/workspace/workspace-journal-new-entry.dust', workspaceId);
+	  var sendJournalEntry = function(values){
+		  
+      mApi().workspace.workspaces.journal.create(workspaceId, values)
+      .callback(function (err, result) {
+        if (!err) {
+          window.location.reload();
+        } else {
+          alert("Error occurred: " + err);
+        }
+      });
+		}		
+
+    openInSN('/workspace/workspace-journal-new-entry.dust', +workspaceId, sendJournalEntry);
   };
-  */
   
   function editJournalEntry(element) {
     //var id = element.attr('data-entry-id');
@@ -70,7 +80,7 @@
   });
   
   $(document).on('click', '.workspace-journal-new-entry-button', function (event) {
-    //newJournalEntry();
+    newJournalEntry();
   });
 
   $(document).on('click', '.journal-edit-button', function (event) {
