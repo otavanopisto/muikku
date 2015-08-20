@@ -1,6 +1,6 @@
 
   <div class="wi-message {?unreadMessagesInThread}unread{/unreadMessagesInThread}">
     <div class="wi-message-caption">
-      <a href="/communicator/#inbox/{communicatorMessageId}">{caption}</a>
+      <a href="/communicator#inbox/{communicatorMessageId}">{caption}</a>
     </div>
   </div>

@@ -96,13 +96,6 @@ public class WorkspaceIndexBackingBean {
       logger.log(Level.SEVERE, "Error loading materials", e);
       return NavigationRules.INTERNAL_ERROR;
     }
-//    try {
-//      contentNodes = workspaceMaterialController.listWorkspaceFrontPagesAsContentNodes(workspaceEntity);
-//    }
-//    catch (Exception e) {
-//      logger.log(Level.SEVERE, "Error loading materials", e);
-//      return NavigationRules.INTERNAL_ERROR;
-//    }
 
     workspaceBackingBean.setWorkspaceUrlName(urlName);
 

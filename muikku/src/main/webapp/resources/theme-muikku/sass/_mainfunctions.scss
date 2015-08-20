@@ -387,7 +387,19 @@
      font-weight:700;
    }
 }
-  
+ .mf-item-tool-btn{
+    &:not(:first-child){
+     margin-left:10px;
+    }
+    background:#068feb;
+    cursor:pointer;
+    @include rounded(3px);
+    padding:2px 6px;
+    display:inline-block;
+    color:#fff;
+    margin-top:5px;
+    box-shadow:0 0 5px rgba(0,0,0,0.25);
+  }   
 
 .mf-item{
    @extend .co-listItem;
@@ -415,25 +427,9 @@
   }
  
 
-  .mf-item-tools{
-    
 
-  
-      .mf-item-tool-btn{
-        &:not(:first-child){
-         margin-left:10px;
-        }
-        background:#068feb;
-        cursor:pointer;
-        @include rounded(3px);
-        padding:2px 6px;
-        display:inline-block;
-        color:#fff;
-        margin-top:5px;
-        box-shadow:0 0 5px rgba(0,0,0,0.25);
-      } 
- 
-           
+  .mf-item-tools{
+
      .mf-item-tool{
 
         dispay:inline-block;
@@ -451,6 +447,7 @@
     }
     
 }
+
   
   .mf-item-details-container{
     min-height:35px;
