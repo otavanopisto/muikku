@@ -51,6 +51,8 @@
     var form = element.find('.edit-journal-entry-form');
     form.find('.edit-journal-entry-form-title').val(view.find('.workspace-journal-title').text());
     form.find('.edit-journal-entry-form-content').val(view.find('.workspace-journal-content').html());
+    element.find('.journal-edit-button').hide();
+    element.find('.journal-delete-button').hide();
     view.hide();
     form.parent().show();
     CKEDITOR.replace(form.find('.edit-journal-entry-form-content')[0]);
@@ -65,6 +67,8 @@
   function cancelJournalEntryEdit(element){
     var view = element.find('.workspace-journal-entry-view');
     var form = element.find('.edit-journal-entry-form');
+    element.find('.journal-edit-button').show();
+    element.find('.journal-delete-button').show();
     view.show();
     form.parent().hide();
   }
