@@ -62,6 +62,39 @@ body[class^='workspace'] {
       z-index:99;
     }
     
+    /* LOGGED IN USER'S PICTURE WIDGET */
+    
+    .lu-picture-widget {
+      margin-top:5px;
+
+      .lu-picture-container {
+        @incude border(2px,#fff,solid);
+        box-shadow:0 0 10px rgba(0, 0, 0, 0.1);
+        height:48px;
+        width:48px;      
+        box-sizing:border-box; 
+        display:inline-block;
+        border-radius:24px;
+        margin:0 4px 0 0;
+        z-index:15;
+        background-size:100% auto;
+        border:2px solid #fff;
+        @include background-image('/gfx/default-user-picture.jpg');
+        overflow:hidden;
+        
+        &:hover {
+            box-shadow:0 0 15px rgba(255, 255, 255, 0.9);
+        }
+      
+        img {
+          width:100%;
+          border:0;
+        }
+        
+      }
+      
+    }
+    
   }
   
   #workspaceNavigationWrapper { 

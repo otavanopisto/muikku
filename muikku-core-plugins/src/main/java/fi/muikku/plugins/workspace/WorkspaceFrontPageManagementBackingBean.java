@@ -17,8 +17,7 @@ import org.ocpsoft.rewrite.annotation.RequestAction;
 
 import fi.muikku.jsf.NavigationRules;
 import fi.muikku.model.workspace.WorkspaceEntity;
-import fi.muikku.plugins.workspace.model.WorkspaceFolder;
-import fi.muikku.plugins.workspace.model.WorkspaceFolderType;
+import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.Workspace;
@@ -39,10 +38,10 @@ public class WorkspaceFrontPageManagementBackingBean {
 
   @Inject
   private WorkspaceController workspaceController;
-  
+
   @Inject
   private WorkspaceMaterialController workspaceMaterialController;
-
+  
   @Inject
   @Named
   private WorkspaceBackingBean workspaceBackingBean;
@@ -66,17 +65,11 @@ public class WorkspaceFrontPageManagementBackingBean {
     Workspace workspace = workspaceController.findWorkspace(workspaceEntity);
     workspaceName = workspace.getName();
     
-    List<WorkspaceFolder> folders = workspaceMaterialController.listWorkspaceFoldersByParentAndFolderTypeSortByOrderNumber(
-        rootFolder,
-        WorkspaceFolderType.FRONT_PAGE); 
-    
-    if (folders.isEmpty()) {
-      folders = Arrays.asList((WorkspaceFolder)workspaceMaterialController.createWorkspaceFrontPageFolder(workspaceEntity));
-    }
-
     try {
-      contentNodes = workspaceMaterialController.listWorkspaceFrontPagesAsContentNodes(workspaceEntity);
-    } catch (WorkspaceMaterialException e) {
+      WorkspaceMaterial frontPage = workspaceMaterialController.ensureWorkspaceFrontPageExists(workspaceEntity);
+      contentNodes = Arrays.asList(workspaceMaterialController.createContentNode(frontPage));
+    }
+    catch (WorkspaceMaterialException e) {
       logger.log(Level.SEVERE, "Error loading materials", e);
       return NavigationRules.INTERNAL_ERROR;
     }

@@ -17,7 +17,7 @@
           var MUIKKU_LOGGEDIN = #{muikkuSession.loggedIn};
       </script>
       
-      <script src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"></script>
+      <script type="text/javascript" src="#{request.contextPath}/JavaScriptLocales?lang=#{muikkuSession.locale}"></script>
       <h:outputScript name="scripts/gui/locales.js" target="head" />
   
       <!-- CSS to remove all default styles -->

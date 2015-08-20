@@ -9,7 +9,7 @@ import org.ocpsoft.rewrite.annotation.Join;
 @Named
 @Stateful
 @RequestScoped
-@Join (path = "/coursepicker/", to = "/jsf/coursepicker/index.jsf")
+@Join (path = "/coursepicker", to = "/jsf/coursepicker/index.jsf")
 public class CoursePickerBackingBean {
   
 }
