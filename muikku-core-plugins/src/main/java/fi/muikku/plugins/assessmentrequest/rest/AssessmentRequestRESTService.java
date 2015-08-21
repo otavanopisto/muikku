@@ -166,7 +166,7 @@ public class AssessmentRequestRESTService extends PluginRESTService {
 
     AssessmentRequest assessmentRequest = assessmentRequests.get(0);
 
-    if (student == null || student.getId() != assessmentRequest.getStudent()) {
+    if (student == null || !student.getId().equals(assessmentRequest.getStudent())) {
       return Response.status(Status.FORBIDDEN).build();
     }
 
