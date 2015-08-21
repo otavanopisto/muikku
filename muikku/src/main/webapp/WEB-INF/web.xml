@@ -12,27 +12,22 @@
   </session-config>
 
   <mime-mapping>
-    <extension>eot.jsf</extension>
+    <extension>eot</extension>
     <mime-type>application/vnd.ms-fontobject</mime-type>
   </mime-mapping>
   
   <mime-mapping>
-    <extension>eot#iefix.jsf</extension>
-    <mime-type>application/vnd.ms-fontobject</mime-type>
-  </mime-mapping>
-  
-  <mime-mapping>
-    <extension>woff.jsf</extension>
+    <extension>woff</extension>
     <mime-type>application/x-font-woff</mime-type>
   </mime-mapping>
   
   <mime-mapping>
-    <extension>ttf.jsf</extension>
+    <extension>ttf</extension>
     <mime-type>application/font-sfnt</mime-type>
   </mime-mapping>
   
   <mime-mapping>
-    <extension>svg.jsf</extension>
+    <extension>svg</extension>
     <mime-type>image/svg+xml</mime-type>
   </mime-mapping>  
   
