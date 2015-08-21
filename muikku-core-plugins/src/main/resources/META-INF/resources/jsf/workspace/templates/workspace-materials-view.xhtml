@@ -37,6 +37,16 @@
     <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/workspaces-materials.css" />  
     <h:outputStylesheet name="scripts/lazyyt/lazyyt.css" />  
   </ui:define>
+  
+  <ui:define name="workspace.navigation.materials">
+    <nav id="workspaceMaterialsDockWrapper">
+      <div id="workspaceMaterialsDock">
+        <ui:insert name="workspaces.materials.dock">
+          <ui:include src="/facelets/generic/workspaces-materials-dock.xhtml"></ui:include>
+        </ui:insert>
+      </div>
+    </nav>
+  </ui:define>
 
   <ui:define name="workspace.main.content">
     <main id="contentWorkspaceMaterials" class="container_24">
