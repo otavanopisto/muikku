@@ -12,7 +12,7 @@
           <div class="gt-message-create-body">
             <div class="mf-fieldRow">
               <div class="mf-textfield">
-                <input type="textfield" name="subject"></input>
+                <input type="text" name="subject"></input>
               </div>      
             </div>
             <div class="mf-fieldRow">
