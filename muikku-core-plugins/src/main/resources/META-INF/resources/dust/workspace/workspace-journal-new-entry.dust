@@ -2,8 +2,6 @@
   <div class="di-message-create">
     <form>
       <div class="mf-form-header"><h3>{#localize key="plugin.workspace.journal.newEntry.title"/}</h3></div>
-      <input type="hidden" name="sticky" value="false" />
-      <input type="hidden" name="locked" value="false" />
         <div class="mf-content">
           <div class="di-message-new-body">
             <div class="mf-fieldRow">
@@ -14,7 +12,7 @@
             <div class="mf-fieldRow">
               <div class="di-message-new-content">
                 <div class="mf-textarea">
-                  <textarea id="textContent" name="message"></textarea>
+                  <textarea id="textContent" name="content"></textarea>
                 </div>
               </div>
             </div> 
@@ -22,7 +20,7 @@
         </div>
   
        <div class="mf-toolbar">
-         <input type="button" name="send" value='{#localize key="plugin.discussion.createmessage.send"/}' {?.}{:else}disabled{/.}/>
+         <input type="button" name="send" value='{#localize key="plugin.discussion.createmessage.send"/}' />
          <input type="button" name="cancel" value='{#localize key="plugin.discussion.createmessage.cancel"/}'/>
       </div>   
     </form>
