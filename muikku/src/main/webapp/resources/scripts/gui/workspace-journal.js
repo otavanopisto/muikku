@@ -28,12 +28,22 @@
     }, this));
   }
   
-  /*
   function newJournalEntry() {
     var workspaceId = $("input[name='workspaceEntityId']").val();
-    openInSN('/workspace/workspace-journal-new-entry.dust', workspaceId);
+	  var sendJournalEntry = function(values){
+		  
+      mApi().workspace.workspaces.journal.create(workspaceId, values)
+      .callback(function (err, result) {
+        if (!err) {
+          window.location.reload();
+        } else {
+          alert("Error occurred: " + err);
+        }
+      });
+		}		
+
+    openInSN('/workspace/workspace-journal-new-entry.dust', +workspaceId, sendJournalEntry);
   };
-  */
   
   function editJournalEntry(element) {
     //var id = element.attr('data-entry-id');
@@ -41,6 +51,8 @@
     var form = element.find('.edit-journal-entry-form');
     form.find('.edit-journal-entry-form-title').val(view.find('.workspace-journal-title').text());
     form.find('.edit-journal-entry-form-content').val(view.find('.workspace-journal-content').html());
+    element.find('.journal-edit-button').hide();
+    element.find('.journal-delete-button').hide();
     view.hide();
     form.parent().show();
     CKEDITOR.replace(form.find('.edit-journal-entry-form-content')[0]);
@@ -55,6 +67,8 @@
   function cancelJournalEntryEdit(element){
     var view = element.find('.workspace-journal-entry-view');
     var form = element.find('.edit-journal-entry-form');
+    element.find('.journal-edit-button').show();
+    element.find('.journal-delete-button').show();
     view.show();
     form.parent().hide();
   }
@@ -70,7 +84,7 @@
   });
   
   $(document).on('click', '.workspace-journal-new-entry-button', function (event) {
-    //newJournalEntry();
+    newJournalEntry();
   });
 
   $(document).on('click', '.journal-edit-button', function (event) {

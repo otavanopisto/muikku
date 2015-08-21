@@ -9,15 +9,11 @@
   template="./templates/workspace-journal-view.xhtml">
   
   <ui:define name="workspace.content.top.static">
+    <form style="display: none;">
+    <input name="workspaceEntityId" type="hidden" value="#{workspaceJournalBackingBean.workspaceEntityId}" />
+    </form>
     <div class="workspace-journal-new-entry-container" style="height:auto;">
-	    <h:form id="newJournalEntryForm">
-	      <h:outputLabel id="newJournalEntryTitle" value="#{i18n.text['plugin.workspace.journal.newEntryTitle.label']}" />
-	      <h:inputText value="#{workspaceJournalBackingBean.workspaceJournalEntryTitle}" />
-	      <h:outputLabel id="newJournalEntryContent" value="#{i18n.text['plugin.workspace.journal.newEntryContent.label']}" />
-          <h:inputTextarea id="newJournalEntryContentField" value="#{workspaceJournalBackingBean.workspaceJournalEntryHtml}" />
-	      <h:commandButton class="workspace-journal-new-entry-button" action="#{workspaceJournalBackingBean.addWorkspaceJournalEntry()}" value="#{i18n.text['plugin.workspace.journal.newEntryButton.label']}" />
-	    </h:form>
-	    <script>CKEDITOR.replace("newJournalEntryForm:newJournalEntryContentField");</script>
+      <div class="workspace-journal-new-entry-button">#{i18n.text['plugin.workspace.journal.newEntryButton.label']}</div>
     </div>
   </ui:define>
   

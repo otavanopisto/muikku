@@ -121,7 +121,7 @@ public class WorkspaceJournalBackingBean {
   public List<WorkspaceJournalEntry> getJournalEntries() {
     WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
     UserEntity userEntity = sessionController.getLoggedUserEntity();
-    if (!sessionController.hasCoursePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity)) {
+    if (sessionController.hasCoursePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity)) {
       return workspaceJournalController.listEntries(workspaceController.findWorkspaceEntityById(workspaceEntityId));
     } else {
       return workspaceJournalController.listEntriesByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);

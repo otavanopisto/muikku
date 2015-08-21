@@ -68,6 +68,7 @@ import fi.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswerFile;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceAssessment;
+import fi.muikku.plugins.workspace.rest.model.WorkspaceJournalEntryRESTModel;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceMaterialEvaluation;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceMaterialFieldAnswer;
 import fi.muikku.plugins.workspace.rest.model.WorkspaceMaterialReply;
@@ -1603,7 +1604,44 @@ public class WorkspaceRESTService extends PluginRESTService {
   
   @GET
   @Path("/workspaces/{WORKSPACEID}/journal")
+  @RESTPermitUnimplemented
   public Response listJournalEntries(@PathParam("WORKSPACEID") Long workspaceEntityId) {
+    List<WorkspaceJournalEntry> entries = new ArrayList<>();
+    List<WorkspaceJournalEntryRESTModel> result = new ArrayList<>();
+    if (!sessionController.isLoggedIn()) {
+      return Response.status(Status.UNAUTHORIZED).build();
+    }
+    
+    WorkspaceEntity workspaceEntity = workspaceController.findWorkspaceEntityById(workspaceEntityId);
+    if (workspaceEntity == null) {
+      return Response.status(Status.NOT_FOUND).build();
+    }
+    UserEntity userEntity = sessionController.getLoggedUserEntity();
+    if (!sessionController.hasCoursePermission(MuikkuPermissions.LIST_ALL_JOURNAL_ENTRIES, workspaceEntity)) {
+      entries = workspaceJournalController.listEntries(workspaceController.findWorkspaceEntityById(workspaceEntityId));
+    } else {
+      entries = workspaceJournalController.listEntriesByWorkspaceEntityAndUserEntity(workspaceEntity, userEntity);
+    }
+    
+    for (WorkspaceJournalEntry entry : entries) {
+      result.add(new WorkspaceJournalEntryRESTModel(
+          entry.getId(),
+          entry.getWorkspaceEntityId(),
+          entry.getUserEntityId(),
+          entry.getHtml(),
+          entry.getTitle(),
+          entry.getCreated()
+      ));
+    }
+
+    return Response.ok(entries).build();
+  }
+
+  @POST
+  @Path("/workspaces/{WORKSPACEID}/journal")
+  @RESTPermitUnimplemented
+  public Response addJournalEntry(@PathParam("WORKSPACEID") Long workspaceEntityId,
+                                  WorkspaceJournalEntryRESTModel restModel) {
     if (!sessionController.isLoggedIn()) {
       return Response.status(Status.UNAUTHORIZED).build();
     }
@@ -1613,7 +1651,12 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.status(Status.NOT_FOUND).build();
     }
 
-    return Response.ok(workspaceJournalController.listEntries(workspaceEntity)).build();
+    workspaceJournalController.createJournalEntry(
+        workspaceController.findWorkspaceEntityById(workspaceEntityId),
+        sessionController.getLoggedUserEntity(),
+        restModel.getContent(),
+        restModel.getTitle());
+    return Response.noContent().build();
   }
   
   private List<WorkspaceMaterialEvaluation> createRestModel(fi.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation... entries) {
