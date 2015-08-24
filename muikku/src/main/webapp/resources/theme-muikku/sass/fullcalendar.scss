@@ -1,9 +1,9 @@
 
 
 
-  .fc th, .fc td {
-    text-align: center;
-  }
+/*   .fc th, .fc td { */
+/*     text-align: center; */
+/*   } */
 
 
   .fc td.fc-today {
@@ -175,138 +175,133 @@
     border-style:none;
   }
   
-/*   .fc-agenda-axis{ */
-/*          border-right:1px solid #F0F3F4;      */
-/*    }  */
+  .fc-agenda-axis{
+         border-right:1px solid #F0F3F4;     
+   } 
 
-/*     thead{ */
-/*       background-color: #AED4E3;   */
-/*       height:27px; */
-/*       color:#fff; */
-/*     } */
+    thead{
+      background-color: #AED4E3;  
+      height:27px;
+      color:#fff;
+    }
   
 
   
-/*   .fc-event{ */
-/*    overflow:hidden; */
-/*    font-size:7 px; */
-/*   } */
+  .fc-event{
+   overflow:hidden;
+   font-size:7 px;
+  }
 
   
-/*   .fc-widget-header{ */
-/*     text-align:center; */
-/*   } */
+  .fc-widget-header{
+    text-align:center;
+  }
 
-/*   .fc-content{ */
-/*     border-left:1px solid #F0F3F4;   */
-/*   } */
-/*   .fc-widget-content{ */
-/*     border-right:1px solid #F0F3F4; x */
-/*   } */
+
+
+  .fc-widget-content{
+    border-right:1px solid #F0F3F4; 
+  }  
+  
+  .fc-agenda-slots{
+    tr:hover{
+      background-color:#f0f5f8;
+    } 
+  }
+
 }
 
-/*   .fc-widget-content{ */
-/*     border-right:1px solid #F0F3F4;  */
-/*   }   */
-  
-/*   .fc-agenda-slots{ */
-/*     tr:hover{ */
-/*       background-color:#f0f5f8; */
-/*     }  */
-/*   } */
+#weekView{
+   thead{
+    background-color: #AED4E3;  
+    height:27px;
+    color:#fff;
+  } 
+  .fc-day{
+    border-right:1px solid #F0F3F4; 
+  }
+}
 
-/* } */
-
-/* #weekView{ */
-/*    thead{ */
-/*     background-color: #AED4E3;   */
-/*     height:27px; */
-/*     color:#fff; */
-/*   }  */
-/*   .fc-day{ */
-/*     border-right:1px solid #F0F3F4;  */
-/*   } */
-/* } */
-
-/* #monthView{  */
-/*   .fc-day{ */
-/*      text-align:center; */
-/*      font-size:2em; */
-/*      line-height:2.5em; */
-/*      color:#c4c4c4; */
-/*      border-bottom:1px solid #f1f1f1; */
-/*      border-right:1px solid #f1f1f1; */
+#monthView{ 
+  .fc-day{
+     text-align:center;
+     font-size:2em;
+     line-height:2.5em;
+     color:#c4c4c4;
+     border-bottom:1px solid #f1f1f1;
+     border-right:1px solid #f1f1f1;
      
-/*     &:hover{ */
-/*      background-color:#cce4ed; */
-/*      color:#fff !important; */
-/*     }   */
+    &:hover{
+     background-color:#cce4ed;
+     color:#fff !important;
+    }  
       
-/*   } */
+  }
 
-/*   .fc-today{ */
-/*     color:#aed4e3; */
-/*     border:5px solid #aed4e3; */
-/*    } */
+  .fc-today{
+    color:#aed4e3;
+    font-weight:700;
+    font-size:20px;
+   }
 
-/*   .fc-other-month { */
-/*     background-color: #F0F5F8; */
-/*     color:#DDDADA; */
-/*   } */
+  .fc-other-month {
+    background-color: #F0F5F8;
+    color:#DDDADA;
+  }
 
-/*   thead{ */
-/*     background-color: #AED4E3;   */
-/*     height:27px; */
-/*     color:#fff; */
-/*   } */
+  .fc-day-header{
+    background-color: #AED4E3;  
+    height:27px;
+    color:#fff;
+  }
 
-/* } */
+}
 
-/* #agendaView{ */
-/*   margin:5px; */
-  
-/*   .fc-day{ */
-/*    div{ */
-/*     min-height:auto !important; */
-/*    } */
-/*   } */
-/*   .fc-today { */
-/*    background-color:#fff;   */
-/*   }      */
+#agendaView{
+  margin:5px;
 
-/*   thead{ */
-/*      background-color: #d5e1e6;   */
-/*      text-align:center; */
-/*      color:#fff; */
-/*      font-weight:700; */
+  .fc-day{
+   div{
+    min-height:auto !important;
+   }
+  }
+  .fc-today {
+   background-color:#fff;  
+  }     
+
+  thead{
+     background-color: #d5e1e6;  
+     text-align:center;
+     color:#fff;
+     font-weight:700;
     
-/*      th{ */
-/*       padding:5px;  */
-/*      } */
+     th{
+      padding:5px; 
+     }
   
-/*   } */
-/*   .fc-widget-content{ */
-/*     border-right:1px solid #F0F3F4;  */
-/*   }   */
+  }
+  .fc-widget-content{
+    border-right:1px solid #F0F3F4; 
+  }  
 
-/*   .fc-event{ */
-/*     padding-left:10px; */
-/*     background-color:#fff; */
-/*     height:30px; */
-/*     font-size:1em; */
-/*     line-height:30px; */
-/*     color:#000; */
-/*     border:none; */
+  .fc-event{
+    padding-left:10px;
+    background-color:#fff;
+    height:30px;
+    font-size:1em;
+    line-height:30px;
+    color:#000;
+    border:none;
  
-/*   } */
+  }
   
-/*   .fc-view-basicDay div{ */
-/*      div:nth-child(even){ */
-/*      background-color:#f7f9fa; */
-/*     }   */
-/*   }   */
+  .fc-content-skeleton tr:nth-child(even){
+     a{
+     background-color:#f7f9fa;
+    }  
+  }  
 
 
-/* } */
+}
 
 
