@@ -16,5 +16,7 @@
   </createTables>
   
   <sql>alter table AssessmentRequestMessageId modify column id bigint auto_increment;</sql>
+  <sql>delete from Permission where name='CREATE_WORKSPACE_ASSESSMENTREQUEST';</sql>
+  <sql>delete from Permission where name='LIST_WORKSPACE_ASSESSMENTREQUESTS';</sql>
   
 </update>
