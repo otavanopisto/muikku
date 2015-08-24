@@ -166,9 +166,10 @@ public class EvaluationPageBackingBean {
             if (!assessmentRequests.isEmpty()){
               WorkspaceAssessmentRequest assessmentRequest = assessmentRequests.get(0);
               
-              boolean hasAssessment = !assessments.isEmpty();
               Date requestDate = assessmentRequest.getDate();
-              WorkspaceAssessment assessment = assessments.get(0);
+
+              boolean hasAssessment = !assessments.isEmpty();
+              WorkspaceAssessment assessment = hasAssessment ? assessments.get(0) : null;
 
               if ((!hasAssessment) || (requestDate.after(assessment.getDate()))) {
                 if (assessmentRequest.getDate().getTime() + 1209600000 < new Date().getTime())
