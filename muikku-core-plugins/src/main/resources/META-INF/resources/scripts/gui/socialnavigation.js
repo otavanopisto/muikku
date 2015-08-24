@@ -15,7 +15,7 @@ function openInSN(template, result, formFunction) {
     $(tabDiv).append($.parseHTML(text));
 
     var textareas = functionContainer.find("textarea");    
-    var textfields = functionContainer.find("input[type='textfield']"); 
+    var textfields = functionContainer.find("input[type='text']"); 
     var cancelBtn = $(tabDiv).find("input[name='cancel']");
     var sendBtn = $(tabDiv).find("input[name='send']");
     var elements = $(tabDiv).find("form");
@@ -43,17 +43,17 @@ function openInSN(template, result, formFunction) {
       CKEDITOR.replace(textarea, {
         height : '100px',
         toolbar: [
-                  { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat' ] },
-                  { name: 'styles', items: [ 'Styles', 'Format' ] },                    
-                  { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi' ], items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock', '-', 'BidiLtr', 'BidiRtl', 'Language' ] },
-                  { name: 'links', items: [ 'Link', 'Unlink', 'Anchor' ] },
-                  { name: 'insert', items: [ 'Table', 'Smiley', 'SpecialChar' ] },
-     
-                ]          
-          
+                    { name: 'basicstyles', items: [ 'Bold', 'Italic', 'Underline', 'Strike', '-', 'RemoveFormat' ] },
+                    { name: 'clipboard', items: [ 'Cut', 'Copy', 'Paste', '-', 'Undo', 'Redo' ] },
+                    { name: 'editing', items: [ 'Find', 'Replace', '-', 'SelectAll' ] },
+                    
+                    { name: 'paragraph', items: [ 'NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote' ] },
+                    { name: 'links', items: [ 'Link' ] },
+                    { name: 'insert', items: [ 'Image', 'Smiley', 'SpecialChar' ] },
+                    { name: 'styles', items: [ 'Format' ] },
+                    { name: 'colors', items: [ 'TextColor', 'BGColor' ] },
+                  ]
       });
-      
-
       
     });
     

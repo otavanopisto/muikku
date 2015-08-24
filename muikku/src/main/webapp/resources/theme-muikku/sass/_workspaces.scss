@@ -131,12 +131,13 @@ body[class^='workspace'] {
       
     }
     
-    #workspaceEditIndexDockWrapper {
+    #workspaceEditDockWrapper {
       background:#288fcd;
       @include rounded(3px);
       width:60px;
+      margin-bottom:10px;
       
-      #workspaceEditIndexDock {
+      #workspaceEditDock {
         text-align:center;
       }
 

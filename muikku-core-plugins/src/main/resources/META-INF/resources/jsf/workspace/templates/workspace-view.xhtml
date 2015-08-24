@@ -27,5 +27,17 @@
     <h:outputStylesheet library="#{sessionBackingBean.resourceLibrary}" name="css/workspaces-index.css" />  
     <h:outputStylesheet name="scripts/lazyyt/lazyyt.css" />  
   </ui:define>
+  
+  <ui:define name="workspace.navigation.edit">
+    <ui:fragment rendered="#{sessionBackingBean.teacherLoggedIn || sessionBackingBean.managerLoggedIn || sessionBackingBean.administratorLoggedIn}">
+      <nav id="workspaceEditDockWrapper">
+        <div id="workspaceEditDock">
+          <ui:insert name="workspaces.edit.dock">
+            <ui:include src="/facelets/generic/workspaces-edit-dock.xhtml"></ui:include>
+          </ui:insert>
+        </div>
+      </nav>
+    </ui:fragment>
+  </ui:define>
 
 </ui:composition>

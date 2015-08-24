@@ -28,7 +28,7 @@
   input {
    font-size:1.1em;
 
-    &[type="textfield"] {
+    &[type="text"] {
       width:400px;
       color: #dadada;
       line-height: 30px;
@@ -42,13 +42,13 @@
 
   }  
   
-    textarea {
-      margin-left:5px;
-    }
-    
-    .di-message-new-content {
-      width:100%;
-    }  
+  textarea {
+    margin-left:5px;
+  }
+  
+  .di-message-new-content {
+    width:100%;
+  }  
 }
 
 

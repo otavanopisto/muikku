@@ -701,7 +701,7 @@
         
       }
       
-      input[type="textfield"] {
+      input[type="text"] {
         border:0 solid #fff;
         color:#000;
         border-radius:3px;
@@ -710,13 +710,18 @@
         margin-left:5px;
         margin-top:5px;
         min-width:200px;
+        width:auto;
         
         &:focus {
-          background-color:#eee;         
+          background-color:#eee;     
+          border:0;
+          box-shadow:none;    
         }
         
         &:hover {
-          background-color:#eee;         
+          background-color:#eee;   
+          border:0;
+          box-shadow:none;      
         }
         
         &.mf-textfield-subject {        

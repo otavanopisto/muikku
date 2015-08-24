@@ -63,7 +63,6 @@ import fi.muikku.plugins.workspace.model.WorkspaceJournalEntry;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialAssignmentType;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialField;
-import fi.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswer;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialFileFieldAnswerFile;
 import fi.muikku.plugins.workspace.model.WorkspaceNode;
 import fi.muikku.plugins.workspace.model.WorkspaceRootFolder;
@@ -353,13 +352,13 @@ public class WorkspaceRESTService extends PluginRESTService {
     
     if (payload.getNumVisits() != null) {
       if (workspaceVisitController.getNumVisits(workspaceEntity) != payload.getNumVisits().longValue()) {
-        return Response.status(Status.NOT_IMPLEMENTED).entity(String.format("Updating number of visit via this endpoint is currently unimplemented", workspaceEntityId)).build();
+        return Response.status(Status.NOT_IMPLEMENTED).entity("Updating number of visit via this endpoint is currently unimplemented").build();
       }
     }
     
     if (payload.getLastVisit() != null) {
       if (workspaceVisitController.getLastVisit(workspaceEntity).equals(payload.getLastVisit())) {
-        return Response.status(Status.NOT_IMPLEMENTED).entity(String.format("Updating last visit via this endpoint is currently unimplemented", workspaceEntityId)).build();
+        return Response.status(Status.NOT_IMPLEMENTED).entity("Updating last visit via this endpoint is currently unimplemented").build();
       }
     }
     
@@ -431,16 +430,13 @@ public class WorkspaceRESTService extends PluginRESTService {
       return Response.noContent().build();
     }
     
-    UserEntity userEntity = sessionController.getLoggedUserEntity();
     boolean hasCurrentUser = false;
-    
+    UserEntity userEntity = sessionController.getLoggedUserEntity();
+    Long loggedUserId = userEntity == null ? null : userEntity.getId();
     for (WorkspaceUserEntity workspaceUserEntity : workspaceUsers) {
-      if (workspaceUserEntity
-          .getUserSchoolDataIdentifier()
-          .getUserEntity()
-          .getId()
-          .equals(userEntity)) {
+      if (workspaceUserEntity.getUserSchoolDataIdentifier().getUserEntity().getId().equals(loggedUserId)) {
         hasCurrentUser = true;
+        break;
       }
     }
     
@@ -737,13 +733,13 @@ public class WorkspaceRESTService extends PluginRESTService {
     }
     WorkspaceMaterialFileFieldAnswerFile answerFile = workspaceMaterialFieldAnswerController.findWorkspaceMaterialFileFieldAnswerFileByFileId(fileId);
     if (answerFile != null) {
-      WorkspaceMaterialFileFieldAnswer fieldAnswer = answerFile.getFieldAnswer();
-      fi.muikku.plugins.workspace.model.WorkspaceMaterialReply reply = fieldAnswer.getReply();
-      WorkspaceMaterial workspaceMaterial = reply.getWorkspaceMaterial();
-      Long workspaceEntityId = workspaceMaterialController.getWorkspaceEntityId(workspaceMaterial);
       // TODO Security; only allow if userEntity is current user or workspace teacher
-      WorkspaceEntity workspace = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
-      UserEntity userEntity = userEntityController.findUserEntityById(reply.getUserEntityId());
+      //WorkspaceMaterialFileFieldAnswer fieldAnswer = answerFile.getFieldAnswer();
+      //fi.muikku.plugins.workspace.model.WorkspaceMaterialReply reply = fieldAnswer.getReply();
+      //WorkspaceMaterial workspaceMaterial = reply.getWorkspaceMaterial();
+      //Long workspaceEntityId = workspaceMaterialController.getWorkspaceEntityId(workspaceMaterial);
+      //WorkspaceEntity workspace = workspaceEntityController.findWorkspaceEntityById(workspaceEntityId);
+      //UserEntity userEntity = userEntityController.findUserEntityById(reply.getUserEntityId());
       return Response.ok(answerFile.getContent())
         .type(answerFile.getContentType())
         .header("content-disposition", "attachment; filename =" + answerFile.getFileName())
