@@ -562,7 +562,7 @@ public class WorkspaceMaterialController {
   public WorkspaceMaterial ensureWorkspaceFrontPageExists(WorkspaceEntity workspace) {
     WorkspaceFolder frontPageFolder = findWorkspaceFrontPageFolder(workspace);
     if (frontPageFolder == null) {
-      createWorkspaceFrontPageFolder(workspace);
+      frontPageFolder = createWorkspaceFrontPageFolder(workspace);
     }
     WorkspaceMaterial frontPageMaterial = null;
     List<WorkspaceMaterial> frontPageMaterials = listWorkspaceMaterialsByParent(frontPageFolder);
@@ -580,7 +580,7 @@ public class WorkspaceMaterialController {
   public WorkspaceMaterial ensureWorkspaceHelpPageExists(WorkspaceEntity workspace) {
     WorkspaceFolder helpPageFolder = findWorkspaceHelpPageFolder(workspace);
     if (helpPageFolder == null) {
-      createWorkspaceHelpPageFolder(workspace);
+      helpPageFolder = createWorkspaceHelpPageFolder(workspace);
     }
     WorkspaceMaterial helpPageMaterial = null;
     List<WorkspaceMaterial> helpPageMaterials = listWorkspaceMaterialsByParent(helpPageFolder);
