@@ -25,7 +25,6 @@ import fi.muikku.model.users.UserEntity;
 import fi.muikku.model.workspace.WorkspaceEntity;
 import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.model.workspace.WorkspaceUserEntity;
-import fi.muikku.plugins.assessmentrequest.AssessmentRequest;
 import fi.muikku.plugins.assessmentrequest.AssessmentRequestController;
 import fi.muikku.plugins.assessmentrequest.AssessmentRequestState;
 import fi.muikku.plugins.evaluation.model.WorkspaceMaterialEvaluation;
@@ -36,12 +35,15 @@ import fi.muikku.plugins.workspace.WorkspaceMaterialReplyController;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterial;
 import fi.muikku.plugins.workspace.model.WorkspaceMaterialReply;
 import fi.muikku.schooldata.GradingController;
+import fi.muikku.schooldata.SchoolDataBridgeRequestException;
+import fi.muikku.schooldata.UnexpectedSchoolDataBridgeException;
 import fi.muikku.schooldata.WorkspaceController;
 import fi.muikku.schooldata.entity.GradingScale;
 import fi.muikku.schooldata.entity.GradingScaleItem;
 import fi.muikku.schooldata.entity.User;
 import fi.muikku.schooldata.entity.Workspace;
 import fi.muikku.schooldata.entity.WorkspaceAssessment;
+import fi.muikku.schooldata.entity.WorkspaceAssessmentRequest;
 import fi.muikku.session.SessionController;
 import fi.muikku.users.EnvironmentUserController;
 import fi.muikku.users.UserController;
@@ -156,27 +158,28 @@ public class EvaluationPageBackingBean {
               logger.log(Level.SEVERE, "Assessment data serialization failed", e);
               return NavigationRules.INTERNAL_ERROR;
             }
-
           }
-          List<AssessmentRequest> assessmentRequests = assessmentRequestController.listByWorkspaceIdAndStudentIdOrderByCreated(workspaceEntity.getId(), userEntity.getId());
-          if(!assessmentRequests.isEmpty()){
-            AssessmentRequest assessmentRequest = assessmentRequests.get(0);
-            if(assessments.isEmpty()){
-              if(AssessmentRequestState.PENDING == assessmentRequest.getState() ){
-                status = "ASSESSMENTREQUESTED";
-              }
-            }else{
+
+          try {
+            List<WorkspaceAssessmentRequest> assessmentRequests = assessmentRequestController.listByWorkspaceUser(workspaceStudent);
+
+            if (!assessmentRequests.isEmpty()){
+              WorkspaceAssessmentRequest assessmentRequest = assessmentRequests.get(0);
+              
+              boolean hasAssessment = !assessments.isEmpty();
+              Date requestDate = assessmentRequest.getDate();
               WorkspaceAssessment assessment = assessments.get(0);
-              if(AssessmentRequestState.PENDING == assessmentRequest.getState() && assessment.getDate().getTime() < assessmentRequest.getDate().getTime()){
-                status = "ASSESSMENTREQUESTED";
+
+              if ((!hasAssessment) || (requestDate.after(assessment.getDate()))) {
+                if (assessmentRequest.getDate().getTime() + 1209600000 < new Date().getTime())
+                  status = "CRITICAL";
+                else
+                  status = "ASSESSMENTREQUESTED";
               }
             }
-           if("ASSESSMENTREQUESTED".equals(status)){
-             if(assessmentRequest.getDate().getTime() + 1209600000 < new Date().getTime()){
-               status = "CRITICAL";
-             }
-           }
-
+          } catch (SchoolDataBridgeRequestException | UnexpectedSchoolDataBridgeException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
           }
           
           List<StudentAssignment> studentAssignments = new ArrayList<>();

@@ -7,6 +7,8 @@ import javax.enterprise.context.ApplicationScoped;
 import fi.muikku.model.users.EnvironmentRoleArchetype;
 import fi.muikku.model.workspace.WorkspaceRoleArchetype;
 import fi.muikku.security.AbstractMuikkuPermissionCollection;
+import fi.muikku.security.DefaultEnvironmentPermissionRoles;
+import fi.muikku.security.DefaultWorkspacePermissionRoles;
 import fi.muikku.security.MuikkuPermissionCollection;
 import fi.muikku.security.PermissionScope;
 import fi.otavanopisto.security.Scope;
@@ -15,9 +17,12 @@ import fi.otavanopisto.security.Scope;
 public class AssessmentRequestPermissions extends AbstractMuikkuPermissionCollection implements MuikkuPermissionCollection {
 
   @Scope (PermissionScope.WORKSPACE)
+  @DefaultWorkspacePermissionRoles ( { WorkspaceRoleArchetype.STUDENT })
   public static final String CREATE_WORKSPACE_ASSESSMENTREQUEST = "CREATE_WORKSPACE_ASSESSMENTREQUEST";
   
   @Scope (PermissionScope.WORKSPACE)
+  @DefaultEnvironmentPermissionRoles ( { EnvironmentRoleArchetype.ADMINISTRATOR, EnvironmentRoleArchetype.MANAGER } )
+  @DefaultWorkspacePermissionRoles ( { WorkspaceRoleArchetype.TEACHER })
   public static final String LIST_WORKSPACE_ASSESSMENTREQUESTS = "LIST_WORKSPACE_ASSESSMENTREQUESTS";
   
   @Override
