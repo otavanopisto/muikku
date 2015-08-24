@@ -126,6 +126,16 @@ class SystemPyramusClient implements PyramusClient {
     }
   }
 
+  @Override
+  public void delete(String path) {
+    Client client = obtainClient();
+    try {
+      restClient.delete(client, getAccessToken(), path);
+    } finally {
+      releaseClient(client);
+    }
+  }
+  
   private String getAccessToken() {
     Client client = obtainClient();
     try {

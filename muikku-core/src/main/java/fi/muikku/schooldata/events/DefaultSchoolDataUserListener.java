@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -79,7 +80,10 @@ public class DefaultSchoolDataUserListener {
         
         List<String> existingAddresses = userEmailEntityController.listAddressesByUserEntity(userEntity);
         for (String email : event.getEmails()) {
-          if (!existingAddresses.contains(email)) {
+          if (!validEmail(email)) {
+            logger.log(Level.SEVERE, String.format("User %s has invalid email %s", discoverId, email));
+          }
+          else if (!existingAddresses.contains(email)) {
             userEmailEntityController.addUserEmail(userEntity, email);
           }
         }
@@ -182,7 +186,13 @@ public class DefaultSchoolDataUserListener {
       }
     }
   }
+  
+  private boolean validEmail(String email) {
+    return emailPattern.matcher(email).matches();
+  }
 
+  private Pattern emailPattern = Pattern.compile("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
   private Map<String, Long> discoveredUsers;
   private Map<String, Long> discoveredEnvironmentUserRoles;
+
 }
